@@ -140,8 +140,7 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
       Result resLeft = compileNode( binOp->opLeft(), opLeft );
       Result resRight = compileNode( binOp->opRight(), opRight );
       Result compileResult;
-      QgsDebugMsg( "left: '" + opLeft + "'; right: '" + opRight +
-                   QString( "'; op: %1; lr: %2; rr: %3" ).arg( binOp->op() ).arg( resLeft ).arg( resRight ) );
+
       if ( resLeft == Fail || resRight == Fail )
         return Fail;
 
@@ -150,19 +149,16 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
         case QgsExpressionNodeBinaryOperator::boMod:
           result = QStringLiteral( "MOD(%1,%2)" ).arg( opLeft, opRight );
           compileResult = ( resLeft == Partial || resRight == Partial ) ? Partial : Complete;
-          QgsDebugMsg( QStringLiteral( "MOD compile status:  %1" ).arg( compileResult ) + "; " + result );
           return compileResult;
 
         case QgsExpressionNodeBinaryOperator::boPow:
           result = QStringLiteral( "POWER(%1,%2)" ).arg( opLeft, opRight );
           compileResult = ( resLeft == Partial || resRight == Partial ) ? Partial : Complete;
-          QgsDebugMsg( QStringLiteral( "POWER compile status:  %1" ).arg( compileResult ) + "; " + result );
           return compileResult;
 
         case QgsExpressionNodeBinaryOperator::boRegexp:
           result = QStringLiteral( "%1 LIKE_REGEXPR %2" ).arg( opLeft, opRight );
           compileResult = ( resLeft == Partial || resRight == Partial ) ? Partial : Complete;
-          QgsDebugMsg( QStringLiteral( "LIKE_REGEXPR compile status:  %1" ).arg( compileResult ) + "; " + result );
           return compileResult;
 
         // We only support IS NULL and IS NOT NULL if the operand on the left is a column

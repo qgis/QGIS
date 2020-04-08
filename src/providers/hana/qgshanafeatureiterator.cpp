@@ -414,7 +414,7 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
   if ( limitAtProvider )
     sql += QStringLiteral( " LIMIT %1" ).arg( mRequest.limit() );
 
-  QgsDebugMsg( sql );
+  QgsDebugMsgLevel( "Query: " + sql, 4 );
   return sql;
 }
 

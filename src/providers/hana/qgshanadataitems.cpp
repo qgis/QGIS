@@ -171,8 +171,6 @@ bool QgsHanaConnectionItem::handleDrop( const QMimeData *data, const QString &to
                            u.name,
                            ( srcLayer->geometryType() != QgsWkbTypes::NullGeometry ) ? ( fieldsInUpperCase ? QStringLiteral( "GEOM" ) : QStringLiteral( "geom" ) ) : nullptr );
 
-        QgsDebugMsg( "URI " + uri.uri( false ) );
-
         std::unique_ptr< QgsVectorLayerExporterTask > exportTask(
           QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, uri.uri( false ),
               QStringLiteral( "hana" ), srcLayer->crs() ) );
@@ -265,7 +263,7 @@ QString QgsHanaLayerItem::createUri() const
   uri.setWkbType( mLayerProperty.type );
   if ( uri.wkbType() != QgsWkbTypes::NoGeometry )
     uri.setSrid( QString::number( mLayerProperty.srid ) );
-  QgsDebugMsg( QStringLiteral( "layer uri: %1" ).arg( uri.uri( false ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "layer uri: %1" ).arg( uri.uri( false ) ), 4 );
   return uri.uri( false );
 }
 
@@ -408,6 +406,5 @@ QgsDataItem *QgsHanaDataItemProvider::createDataItem(
   const QString &pathIn, QgsDataItem *parentItem )
 {
   Q_UNUSED( pathIn );
-  QgsDebugMsg( QStringLiteral( "HANA: Browser Panel; data item detected." ) );
   return new QgsHanaRootItem( parentItem, QStringLiteral( "HANA" ), QStringLiteral( "hana:" ) );
 }

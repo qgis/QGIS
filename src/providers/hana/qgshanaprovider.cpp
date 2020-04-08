@@ -247,7 +247,8 @@ static void setStatementValue(
       }
       break;
     default:
-      QgsDebugMsg( QStringLiteral( "Unknown value type ('%1') for parameter %2" ).arg( QString::number( fieldInfo.type ), QString::number( paramIndex ) ) );
+      QgsDebugMsg( QStringLiteral( "Unknown value type ('%1') for parameter %2" )
+                   .arg( QString::number( fieldInfo.type ), QString::number( paramIndex ) ) );
   }
 }
 
@@ -334,16 +335,16 @@ QgsHanaProvider::QgsHanaProvider(
 
   mValid = true;
 
-  QgsDebugMsg( QStringLiteral( "Connection info is %1" ).arg( mUri.connectionInfo( false ) ) );
-  QgsDebugMsg( QStringLiteral( "Schema is: %1" ).arg( mSchemaName ) );
-  QgsDebugMsg( QStringLiteral( "Table name is: %1" ).arg( mTableName ) );
-  QgsDebugMsg( QStringLiteral( "Geometry column is: %1" ).arg( mGeometryColumn ) );
-  QgsDebugMsg( QStringLiteral( "Query is: %1" ).arg( mQuery ) );
+  QgsDebugMsgLevel( QStringLiteral( "Connection info is %1" ).arg( mUri.connectionInfo( false ) ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Schema is: %1" ).arg( mSchemaName ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Table name is: %1" ).arg( mTableName ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Geometry column is: %1" ).arg( mGeometryColumn ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Query is: %1" ).arg( mQuery ), 4 );
 }
 
 QgsHanaProvider::~QgsHanaProvider()
 {
-  QgsDebugMsg( QStringLiteral( "deconstructing." ) );
+  QgsDebugMsgLevel( QStringLiteral( "deconstructing." ), 4 );
 }
 
 QgsAbstractFeatureSource *QgsHanaProvider::featureSource() const
@@ -470,8 +471,6 @@ bool QgsHanaProvider::setSubsetString( const QString &subset, bool )
   QString whereClause = subset.trimmed();
   if ( whereClause == mQueryWhereClause )
     return true;
-
-  QgsDebugMsg( whereClause );
 
   bool hasErrors = false;
   try
@@ -1023,7 +1022,6 @@ bool QgsHanaProvider::changeAttributeValues( const QgsChangedAttributesMap &attr
       if ( !mFidColumn.isEmpty() )
         sql += QStringLiteral( " WHERE %1=%2" ).arg( QgsHanaUtils::quotedIdentifier( mFidColumn ), FID_TO_STRING( fid ) );
 
-      QgsDebugMsg( QStringLiteral( "Change attributes: " ) + sql );
       PreparedStatementRef stmt = conn->prepareStatement( reinterpret_cast<const char16_t *>( sql.unicode() ) );
 
       unsigned short paramIndex = 1;
@@ -1477,11 +1475,6 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
   if ( wkbType != QgsWkbTypes::NoGeometry && geometryColumn.isEmpty() )
     geometryColumn = "geom";
 
-  QgsDebugMsg( QStringLiteral( "Connection info is: %1" ).arg( dsUri.connectionInfo( false ) ) );
-  QgsDebugMsg( QStringLiteral( "Geometry column is: %1" ).arg( geometryColumn ) );
-  QgsDebugMsg( QStringLiteral( "Schema is: %1" ).arg( schemaName ) );
-  QgsDebugMsg( QStringLiteral( "Table name is: %1" ).arg( tableName ) );
-
   bool fieldsInUpperCase = false;
   if ( fields.size() > 0 )
   {
@@ -1641,8 +1634,6 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
 
       return QgsVectorLayerExporter::ErrAttributeCreationFailed;
     }
-
-    QgsDebugMsg( QStringLiteral( "Done creating fields" ) );
   }
 
   return QgsVectorLayerExporter::NoError;
@@ -1651,7 +1642,6 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
 QgsHanaProviderMetadata::QgsHanaProviderMetadata()
   : QgsProviderMetadata( QgsHanaProvider::HANA_KEY, QgsHanaProvider::HANA_DESCRIPTION )
 {
-  QgsDebugMsg( QStringLiteral( "Create QgsHanaProviderMetadata" ) );
 }
 
 void QgsHanaProviderMetadata::initProvider()
