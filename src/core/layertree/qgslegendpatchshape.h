@@ -119,6 +119,11 @@ class CORE_EXPORT QgsLegendPatchShape
      */
     void setPreserveAspectRatio( bool preserve );
 
+    /**
+     * Returns the default patch geometry for the given symbol \a type and \a size as a set of QPolygonF objects.
+     */
+    static QVector< QPolygonF > defaultPatch( QgsSymbol::SymbolType type, QSizeF size );
+
   private:
     QgsSymbol::SymbolType mSymbolType = QgsSymbol::Fill;
     QgsGeometry mGeometry;

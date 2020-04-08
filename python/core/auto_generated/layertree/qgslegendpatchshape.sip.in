@@ -111,6 +111,11 @@ The default behavior is to respect the geometry()'s aspect ratio.
 .. seealso:: :py:func:`setPreserveAspectRatio`
 %End
 
+    static QVector< QPolygonF > defaultPatch( QgsSymbol::SymbolType type, QSizeF size );
+%Docstring
+Returns the default patch geometry for the given symbol ``type`` and ``size`` as a set of QPolygonF objects.
+%End
+
 };
 
 /************************************************************************
