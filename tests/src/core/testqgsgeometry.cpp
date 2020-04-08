@@ -12211,6 +12211,21 @@ void TestQgsGeometry::multiPoint()
   pCast2.fromWkt( QStringLiteral( "MultiPointZM(PointZM(0 1 1 2))" ) );
   QVERIFY( QgsMultiPoint().cast( &pCast2 ) );
 
+  // bounding box
+  QgsMultiPoint boundingBox;
+  boundingBox.addGeometry( new QgsPoint( 0, 0 ) );
+  QCOMPARE( boundingBox.boundingBox(), QgsRectangle( 0, 0, 0, 0 ) );
+  boundingBox.addGeometry( new QgsPoint( 1, 2 ) );
+  QCOMPARE( boundingBox.boundingBox(), QgsRectangle( 0, 0, 1, 2 ) );
+  QgsMultiPoint boundingBox2;
+  QCOMPARE( boundingBox2.boundingBox(), QgsRectangle( 0, 0, 0, 0 ) );
+  boundingBox2.addGeometry( new QgsPoint( 1, 2 ) );
+  QCOMPARE( boundingBox2.boundingBox(), QgsRectangle( 1, 2, 1, 2 ) );
+  boundingBox2.addGeometry( new QgsPoint( 10, 3 ) );
+  QCOMPARE( boundingBox2.boundingBox(), QgsRectangle( 1, 2, 10, 3 ) );
+  boundingBox2.addGeometry( new QgsPoint( 0, 0 ) );
+  QCOMPARE( boundingBox2.boundingBox(), QgsRectangle( 0, 0, 10, 3 ) );
+
   //boundary
 
   //multipoints have no boundary defined
