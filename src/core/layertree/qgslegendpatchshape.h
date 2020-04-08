@@ -1,0 +1,115 @@
+/***************************************************************************
+                         qgslegendpatchshape.h
+                         -------------------
+begin                : April 2020
+copyright            : (C) 2020 by Nyall Dawson
+email                : nyall dot dawson at gmail dot com
+***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+#ifndef QGSLEGENDPATCHSHAPE_H
+#define QGSLEGENDPATCHSHAPE_H
+
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgssymbol.h"
+
+/**
+ * \ingroup core
+ * Represents a patch shape for use in map legends.
+ *
+ * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsLegendPatchShape
+{
+  public:
+
+    /**
+     * Constructor for QgsLegendPatchShape.
+     *
+     * The \a type argument specifies the symbol type associated with this patch.
+     *
+     * The \a geometry argument gives the shape of the patch to render. See setGeometry()
+     * for further details on the geometry requirements.
+     *
+     * If \a preserveAspectRatio is TRUE, then the patch shape should preserve its aspect ratio when
+     * it is resized to fit a desired legend patch size.
+     */
+    QgsLegendPatchShape( QgsSymbol::SymbolType type,
+                         const QgsGeometry &geometry,
+                         bool preserveAspectRatio = true );
+
+    /**
+     * Returns the symbol type associated with this patch.
+     *
+     * \see setSymbolType()
+     */
+    QgsSymbol::SymbolType symbolType() const;
+
+    /**
+     * Sets the symbol \a type associated with this patch.
+     *
+     * \see symbolType()
+     */
+    void setSymbolType( QgsSymbol::SymbolType type );
+
+    /**
+     * Returns the geometry for the patch shape.
+     *
+     * \see setGeometry()
+     */
+    QgsGeometry geometry() const;
+
+    /**
+     * Sets the \a geometry for the patch shape.
+     *
+     * The origin and size of the \a geometry is not important, as the legend
+     * renderer will automatically scale and transform the geometry to match
+     * the desired overall patch bounds.
+     *
+     * Geometries for legend patches are rendered respecting the traditional
+     * "y values increase toward the top of the map" convention, as opposed
+     * to the standard computer graphics convention of "y values increase toward
+     * the bottom of the display".
+     *
+     * \warning The geometry type should match the patch shape's symbolType(),
+     * e.g. a fill symbol type should only have Polygon or MultiPolygon geometries
+     * set, while a line symbol type must have LineString or MultiLineString geometries.
+     *
+     * \see geometry()
+     */
+    void setGeometry( const QgsGeometry &geometry );
+
+    /**
+     * Returns TRUE if the patch shape should preserve its aspect ratio when
+     * it is resized to fit a desired legend patch size.
+     *
+     * \see setPreserveAspectRatio()
+     */
+    bool preserveAspectRatio() const;
+
+    /**
+     * Sets whether the patch shape should \a preserve its aspect ratio when
+     * it is resized to fit a desired legend patch size.
+     *
+     * The default behavior is to respect the geometry()'s aspect ratio.
+     *
+     * \see setPreserveAspectRatio()
+     */
+    void setPreserveAspectRatio( bool preserve );
+
+  private:
+    QgsSymbol::SymbolType mSymbolType = QgsSymbol::Fill;
+    QgsGeometry mGeometry;
+    bool mPreserveAspectRatio = true;
+
+};
+
+#endif // QGSLEGENDPATCHSHAPE_H

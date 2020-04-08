@@ -97,6 +97,7 @@ SET(QGIS_CORE_SRCS
   layertree/qgslayertreeregistrybridge.cpp
   layertree/qgslayertreeutils.cpp
   layertree/qgslayertree.cpp
+  layertree/qgslegendpatchshape.cpp
 
   metadata/qgsabstractmetadatabase.cpp
   metadata/qgslayermetadata.cpp
@@ -1120,6 +1121,8 @@ SET(QGIS_CORE_HDRS
   layertree/qgslayertreenode.h
   layertree/qgslayertreeregistrybridge.h
   layertree/qgslayertreeutils.h
+  layertree/qgslegendpatchshape.h
+
   layout/qgsabstractlayoutiterator.h
   layout/qgsabstractreportsection.h
   layout/qgscompositionconverter.h

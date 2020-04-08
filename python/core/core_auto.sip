@@ -345,6 +345,7 @@
 %Include auto_generated/layertree/qgslayertreenode.sip
 %Include auto_generated/layertree/qgslayertreeregistrybridge.sip
 %Include auto_generated/layertree/qgslayertreeutils.sip
+%Include auto_generated/layertree/qgslegendpatchshape.sip
 %Include auto_generated/layout/qgsabstractlayoutiterator.sip
 %Include auto_generated/layout/qgsabstractreportsection.sip
 %Include auto_generated/layout/qgslayout.sip
