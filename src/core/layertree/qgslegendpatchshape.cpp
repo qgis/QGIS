@@ -16,7 +16,9 @@ email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 
 #include "qgslegendpatchshape.h"
-
+#include "qgsmultilinestring.h"
+#include "qgslinestring.h"
+#include "qgspolygon.h"
 
 QgsLegendPatchShape::QgsLegendPatchShape( QgsSymbol::SymbolType type, const QgsGeometry &geometry, bool preserveAspectRatio )
   : mSymbolType( type )
@@ -51,26 +53,146 @@ void QgsLegendPatchShape::setPreserveAspectRatio( bool preserveAspectRatio )
   mPreserveAspectRatio = preserveAspectRatio;
 }
 
-QVector<QPolygonF> QgsLegendPatchShape::defaultPatch( QgsSymbol::SymbolType type, QSizeF size )
+QPolygonF lineStringToQPolygonF( const QgsLineString *line )
+{
+  const double *srcX = line->xData();
+  const double *srcY = line->yData();
+  const int count = line->numPoints();
+  QPolygonF thisRes( count );
+  QPointF *dest = thisRes.data();
+  for ( int i = 0; i < count; ++i )
+  {
+    *dest++ = QPointF( *srcX++, *srcY++ );
+  }
+  return thisRes;
+}
+
+QList<QList<QPolygonF> > QgsLegendPatchShape::toQPolygonF( QgsSymbol::SymbolType type, QSizeF size ) const
+{
+  if ( isNull() || type != mSymbolType )
+    return defaultPatch( type, size );
+
+  // scale and translate to desired size
+
+  const QRectF bounds = mGeometry.boundingBox().toRectF();
+
+  double dx = 0;
+  double dy = 0;
+  if ( mPreserveAspectRatio && bounds.height() > 0 && bounds.width() > 0 )
+  {
+    const double scaling = std::min( size.width() / bounds.width(), size.height() / bounds.height() );
+    const QSizeF scaledSize = bounds.size() * scaling;
+    dx = ( size.width() - scaledSize.width() ) / 2.0;
+    dy = ( size.height() - scaledSize.height() ) / 2.0;
+    size = scaledSize;
+  }
+
+  // important -- the transform needs to flip from north-up to painter style "increasing y down" coordinates
+  QPolygonF targetRectPoly = QPolygonF() << QPointF( dx, dy + size.height() )
+                             << QPointF( dx + size.width(), dy + size.height() )
+                             << QPointF( dx + size.width(), dy )
+                             << QPointF( dx, dy );
+  QPolygonF patchRectPoly = QPolygonF( bounds );
+  //workaround QT Bug #21329
+  patchRectPoly.pop_back();
+  QTransform t;
+  QTransform::quadToQuad( patchRectPoly, targetRectPoly, t );
+
+  QgsGeometry geom = mGeometry;
+  geom.transform( t );
+
+  geom.convertToStraightSegment();
+
+  switch ( mSymbolType )
+  {
+    case QgsSymbol::Marker:
+    {
+      QPolygonF points;
+
+      if ( QgsWkbTypes::flatType( mGeometry.wkbType() ) == QgsWkbTypes::MultiPoint )
+      {
+        const QgsGeometry patch = geom;
+        for ( auto it = patch.vertices_begin(); it != patch.vertices_end(); ++it )
+          points << QPointF( ( *it ).x(), ( *it ).y() );
+      }
+      else
+      {
+        points << QPointF( size.width() / 2, size.height() / 2 );
+      }
+      return QList< QList<QPolygonF> >() << ( QList< QPolygonF >() << points );
+    }
+
+    case QgsSymbol::Line:
+    {
+      if ( !geom.isMultipart() )
+        return QList< QList<QPolygonF> >() << ( QList< QPolygonF >() << geom.asQPolygonF() );
+      else
+      {
+        QList< QList<QPolygonF> > res;
+        const QgsGeometry patch = geom;
+        for ( auto it = patch.const_parts_begin(); it != patch.const_parts_end(); ++it )
+        {
+          const QgsLineString *line = qgsgeometry_cast< const QgsLineString * >( *it );
+          if ( !line )
+            continue;
+
+          res << ( QList< QPolygonF >() << lineStringToQPolygonF( line ) );
+        }
+        return res;
+      }
+    }
+
+    case QgsSymbol::Fill:
+    {
+      QList< QList<QPolygonF> > res;
+
+      const QgsGeometry patch = geom;
+      for ( auto it = patch.const_parts_begin(); it != patch.const_parts_end(); ++it )
+      {
+        QList<QPolygonF> thisPart;
+        const QgsPolygon *polygon = qgsgeometry_cast< const QgsPolygon * >( *it );
+        if ( !polygon )
+          continue;
+
+        if ( !polygon->exteriorRing() )
+          continue;
+
+        thisPart << lineStringToQPolygonF( qgsgeometry_cast< const QgsLineString * >( polygon->exteriorRing() ) );
+        for ( int i = 0; i < polygon->numInteriorRings(); ++i )
+          thisPart << lineStringToQPolygonF( qgsgeometry_cast< const QgsLineString * >( polygon->interiorRing( i ) ) );
+        res << thisPart;
+      }
+
+      return res;
+    }
+
+    case QgsSymbol::Hybrid:
+      return QList< QList<QPolygonF> >();
+  }
+
+  return QList< QList<QPolygonF> >();
+}
+
+QList<QList<QPolygonF> > QgsLegendPatchShape::defaultPatch( QgsSymbol::SymbolType type, QSizeF size )
 {
   switch ( type )
   {
     case QgsSymbol::Marker:
-      return QVector< QPolygonF >() << ( QPolygonF() << QPointF( size.width() / 2, size.height() / 2 ) );
+      return QList< QList< QPolygonF > >() << ( QList< QPolygonF >() << ( QPolygonF() << QPointF( size.width() / 2, size.height() / 2 ) ) );
 
     case QgsSymbol::Line:
       // we're adding 0.5 to get rid of blurred preview:
       // drawing antialiased lines of width 1 at (x,0)-(x,100) creates 2px line
-      return QVector< QPolygonF >() << ( QPolygonF()  << QPointF( 0, int( size.height() / 2 ) + 0.5 ) << QPointF( size.width(), int( size.height() / 2 ) + 0.5 ) );
+      return QList< QList<QPolygonF> >() << ( QList< QPolygonF >() << ( QPolygonF()  << QPointF( 0, int( size.height() / 2 ) + 0.5 ) << QPointF( size.width(), int( size.height() / 2 ) + 0.5 ) ) );
 
     case QgsSymbol::Fill:
-      return QVector< QPolygonF >() << QRectF( QPointF( 0, 0 ), QPointF( size.width(), size.height() ) );
+      return QList< QList<QPolygonF> >() << ( QList< QPolygonF> () << ( QRectF( QPointF( 0, 0 ), QPointF( size.width(), size.height() ) ) ) );
 
     case QgsSymbol::Hybrid:
-      return QVector<QPolygonF>();
+      return QList< QList<QPolygonF> >();
   }
 
-  return QVector<QPolygonF>();
+  return QList< QList<QPolygonF> >();
 }
 
 QgsSymbol::SymbolType QgsLegendPatchShape::symbolType() const
