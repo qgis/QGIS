@@ -846,7 +846,8 @@ void QgsAttributesFormProperties::apply()
     QTreeWidgetItem *fieldItem = fieldContainer->child( i );
     FieldConfig cfg = fieldItem->data( 0, FieldConfigRole ).value<FieldConfig>();
 
-    int idx = mLayer->fields().indexOf( fieldItem->data( 0, FieldNameRole ).toString() );
+    const QString fieldName { fieldItem->data( 0, FieldNameRole ).toString() };
+    int idx = mLayer->fields().indexOf( fieldName );
 
     //continue in case field does not exist anymore
     if ( idx < 0 )
@@ -854,7 +855,7 @@ void QgsAttributesFormProperties::apply()
 
     editFormConfig.setReadOnly( idx, !cfg.mEditable );
     editFormConfig.setLabelOnTop( idx, cfg.mLabelOnTop );
-    editFormConfig.setLabelExpression( idx, cfg.mAliasExpression );
+    editFormConfig.setLabelExpression( fieldName, cfg.mAliasExpression );
     mLayer->setEditorWidgetSetup( idx, QgsEditorWidgetSetup( cfg.mEditorWidgetType, cfg.mEditorWidgetConfig ) );
 
     QgsFieldConstraints constraints = cfg.mFieldConstraints;
@@ -935,7 +936,7 @@ void QgsAttributesFormProperties::apply()
 QgsAttributesFormProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx )
 {
   mAlias = layer->fields().at( idx ).alias();
-  mAliasExpression = layer->editFormConfig().labelExpression( idx );
+  mAliasExpression = layer->editFormConfig().labelExpression( layer->fields().field( idx ).name() );
   mComment = layer->fields().at( idx ).comment();
   mEditable = !layer->editFormConfig().readOnly( idx );
   mEditableEnabled = layer->fields().fieldOrigin( idx ) != QgsFields::OriginJoin

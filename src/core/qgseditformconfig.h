@@ -208,7 +208,7 @@ class CORE_EXPORT QgsEditFormConfig
      * If this returns TRUE, the widget at the given index will receive its label on the previous line
      * while if it returns FALSE, the widget will receive its label on the left hand side.
      * Labeling on top leaves more horizontal space for the widget itself.
-     **/
+     */
     bool labelOnTop( int idx ) const;
 
     /**
@@ -216,20 +216,20 @@ class CORE_EXPORT QgsEditFormConfig
      * the previous line while if it is set to FALSE, the widget will receive its label
      * on the left hand side.
      * Labeling on top leaves more horizontal space for the widget itself.
-     **/
+     */
     void setLabelOnTop( int idx, bool onTop );
 
     /**
-     * Returns the (possibly empty) expression for the label, to be evaluated in the form context.
+     * Returns the (possibly empty) expression for the label of \a fieldName, to be evaluated in the form context.
      * \since QGIS 3.14
-     **/
-    QString labelExpression( int idx ) const;
+     */
+    QString labelExpression( const QString &fieldName ) const;
 
     /**
-     * Set the label expression to \a labelExpression, to be evaluated in the form context.
+     * Set the label expression for \a fieldName to \a labelExpression, to be evaluated in the form context.
      * \since QGIS 3.14
-     **/
-    void setLabelExpression( int idx, const QString &labelExpression );
+     */
+    void setLabelExpression( const QString &fieldName, const QString &labelExpression );
 
     // Python form init function stuff
 

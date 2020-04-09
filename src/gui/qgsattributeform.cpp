@@ -1529,7 +1529,7 @@ void QgsAttributeForm::init()
       QString labelText = fieldName;
       labelText.replace( '&', QStringLiteral( "&&" ) ); // need to escape '&' or they'll be replace by _ in the label text
 
-      const QString labelExpression { mLayer->editFormConfig().labelExpression( idx ) };
+      const QString labelExpression { mLayer->editFormConfig().labelExpression( field.name() ) };
       const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, field.name() );
 
       if ( widgetSetup.type() == QLatin1String( "Hidden" ) )

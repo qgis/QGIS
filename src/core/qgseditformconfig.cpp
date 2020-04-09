@@ -211,20 +211,20 @@ void QgsEditFormConfig::setLabelOnTop( int idx, bool onTop )
   }
 }
 
-QString QgsEditFormConfig::labelExpression( int idx ) const
+QString QgsEditFormConfig::labelExpression( const QString &fieldName ) const
 {
-  if ( idx >= 0 && idx < d->mFields.count() )
-    return d->mLabelExpressions.value( d->mFields.at( idx ).name(), QString() );
+  if ( d->mFields.indexOf( fieldName ) != -1 )
+    return d->mLabelExpressions.value( fieldName, QString() );
   else
     return QString();
 }
 
-void QgsEditFormConfig::setLabelExpression( int idx, const QString &labelExpression )
+void QgsEditFormConfig::setLabelExpression( const QString &fieldName, const QString &labelExpression )
 {
-  if ( idx >= 0 && idx < d->mFields.count() )
+  if ( d->mFields.indexOf( fieldName ) != -1 )
   {
     d.detach();
-    d->mLabelExpressions[ d->mFields.at( idx ).name() ] = labelExpression;
+    d->mLabelExpressions[ fieldName ] = labelExpression;
   }
 }
 

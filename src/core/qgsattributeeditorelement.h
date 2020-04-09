@@ -129,7 +129,6 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
 
     /**
      * Controls if this element should be labeled with a title (field, relation or groupname).
-     *
      * \since QGIS 2.18
      */
     void setShowLabel( bool showLabel );
@@ -141,7 +140,9 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
     QString labelExpression() const;
 
     /**
-     * Sets the label expression to \a labelExpression
+     * Sets the label expression for the field to \a labelExpression.
+     * If set to an empty string the field label will be taken from
+     * the label alias if set or from the field name otherwise.
      * \since QGIS 3.14
      */
     void setLabelExpression( const QString &labelExpression );

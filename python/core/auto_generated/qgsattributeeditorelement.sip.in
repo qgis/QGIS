@@ -123,7 +123,9 @@ Returns the (possibly empty) label expression
 
     void setLabelExpression( const QString &labelExpression );
 %Docstring
-Sets the label expression to ``labelExpression``
+Sets the label expression for the field to ``labelExpression``.
+If set to an empty string the field label will be taken from
+the label alias if set or from the field name otherwise.
 
 .. versionadded:: 3.14
 %End
