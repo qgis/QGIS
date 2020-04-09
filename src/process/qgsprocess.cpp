@@ -74,7 +74,7 @@ void ConsoleFeedback::showTerminalProgress( double progress )
 
   if ( mTimer.elapsed() > 2000 )
   {
-    // check for signals every 2s to allow for responsive cancelation
+    // check for signals every 2s to allow for responsive cancellation
     QCoreApplication::processEvents();
     mTimer.restart();
   }
