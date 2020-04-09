@@ -195,6 +195,20 @@ QList<QList<QPolygonF> > QgsLegendPatchShape::defaultPatch( QgsSymbol::SymbolTyp
   return QList< QList<QPolygonF> >();
 }
 
+void QgsLegendPatchShape::readXml( const QDomElement &element, const QgsReadWriteContext & )
+{
+  mGeometry = QgsGeometry::fromWkt( element.attribute( QStringLiteral( "wkt" ) ) );
+  mPreserveAspectRatio = element.attribute( QStringLiteral( "preserveAspect" ) ).toInt();
+  mSymbolType = static_cast< QgsSymbol::SymbolType >( element.attribute( QStringLiteral( "type" ) ).toInt() );
+}
+
+void QgsLegendPatchShape::writeXml( QDomElement &element, QDomDocument &, const QgsReadWriteContext & ) const
+{
+  element.setAttribute( QStringLiteral( "wkt" ), mGeometry.isNull() ? QString() : mGeometry.asWkt( ) );
+  element.setAttribute( QStringLiteral( "preserveAspect" ), mPreserveAspectRatio ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  element.setAttribute( QStringLiteral( "type" ), QString::number( mSymbolType ) );
+}
+
 QgsSymbol::SymbolType QgsLegendPatchShape::symbolType() const
 {
   return mSymbolType;
