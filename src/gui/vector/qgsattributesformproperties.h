@@ -100,11 +100,10 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         //do we need that
         DnDTreeItemData() = default;
 
-        DnDTreeItemData( Type type, const QString &name, const QString &displayName, const QColor &backgroundColor = QColor(), const QString &labelExpression = QString() )
+        DnDTreeItemData( Type type, const QString &name, const QString &displayName, const QColor &backgroundColor = QColor() )
           : mType( type )
           , mName( name )
           , mDisplayName( displayName )
-          , mLabelExpression( labelExpression )
           , mBackgroundColor( backgroundColor )
         {}
 
@@ -143,14 +142,10 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         QColor backgroundColor() const;
         void setBackgroundColor( const QColor &backgroundColor );
 
-        QString labelExpression() const;
-        void setLabelExpression( const QString &labelExpression );
-
       private:
         Type mType = Field;
         QString mName;
         QString mDisplayName;
-        QString mLabelExpression;
         int mColumnCount = 1;
         bool mShowAsGroupBox = false;
         bool mShowLabel = true;

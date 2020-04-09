@@ -639,8 +639,7 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
       newElement->setShowLabel( elem.attribute( QStringLiteral( "showLabel" ) ).toInt() );
     else
       newElement->setShowLabel( true );
-    if ( elem.hasAttribute( QStringLiteral( "labelExpression" ) ) )
-      newElement->setLabelExpression( elem.attribute( QStringLiteral( "labelExpression" ) ) );
+    newElement->setLabelExpression( labelExpression( newElement->name() ) );
   }
 
   return newElement;

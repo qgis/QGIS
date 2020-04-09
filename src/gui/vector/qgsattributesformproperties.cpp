@@ -464,7 +464,6 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
     {
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Field, widgetDef->name(), widgetDef->name() );
       itemData.setShowLabel( widgetDef->showLabel() );
-      itemData.setLabelExpression( widgetDef->labelExpression() );
       newWidget = tree->addItem( parent, itemData );
       break;
     }
@@ -474,7 +473,6 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       const QgsAttributeEditorRelation *relationEditor = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, relationEditor->relation().id(), relationEditor->relation().name() );
       itemData.setShowLabel( widgetDef->showLabel() );
-      itemData.setLabelExpression( widgetDef->labelExpression() );
       RelationEditorConfiguration relEdConfig;
       relEdConfig.showLinkButton = relationEditor->showLinkButton();
       relEdConfig.showUnlinkButton = relationEditor->showUnlinkButton();
@@ -493,7 +491,6 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       if ( !container )
         break;
 
-      itemData.setLabelExpression( widgetDef->labelExpression() );
       itemData.setColumnCount( container->columnCount() );
       itemData.setShowAsGroupBox( container->isGroupBox() );
       itemData.setBackgroundColor( container->backgroundColor() );
@@ -513,7 +510,6 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       const QgsAttributeEditorQmlElement *qmlElementEditor = static_cast<const QgsAttributeEditorQmlElement *>( widgetDef );
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::QmlWidget, widgetDef->name(), widgetDef->name() );
       itemData.setShowLabel( widgetDef->showLabel() );
-      itemData.setLabelExpression( widgetDef->labelExpression() );
       QmlElementEditorConfiguration qmlEdConfig;
       qmlEdConfig.qmlCode = qmlElementEditor->qmlCode();
       itemData.setQmlElementEditorConfiguration( qmlEdConfig );
@@ -526,7 +522,6 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       const QgsAttributeEditorHtmlElement *htmlElementEditor = static_cast<const QgsAttributeEditorHtmlElement *>( widgetDef );
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::HtmlWidget, widgetDef->name(), widgetDef->name() );
       itemData.setShowLabel( widgetDef->showLabel() );
-      itemData.setLabelExpression( widgetDef->labelExpression() );
       HtmlElementEditorConfiguration htmlEdConfig;
       htmlEdConfig.htmlCode = htmlElementEditor->htmlCode();
       itemData.setHtmlElementEditorConfiguration( htmlEdConfig );
@@ -703,6 +698,7 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
     {
       int idx = mLayer->fields().lookupField( itemData.name() );
       widgetDef = new QgsAttributeEditorField( itemData.name(), idx, parent );
+      widgetDef->setLabelExpression( mAttributeTypeDialog->aliasExpression() );
       break;
     }
 
@@ -758,7 +754,6 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
   }
 
   widgetDef->setShowLabel( itemData.showLabel() );
-  widgetDef->setLabelExpression( itemData.labelExpression() );
 
   return widgetDef;
 }
@@ -1611,15 +1606,5 @@ QColor QgsAttributesFormProperties::DnDTreeItemData::backgroundColor() const
 void QgsAttributesFormProperties::DnDTreeItemData::setBackgroundColor( const QColor &backgroundColor )
 {
   mBackgroundColor = backgroundColor;
-}
-
-QString QgsAttributesFormProperties::DnDTreeItemData::labelExpression() const
-{
-  return mLabelExpression;
-}
-
-void QgsAttributesFormProperties::DnDTreeItemData::setLabelExpression( const QString &labelExpression )
-{
-  mLabelExpression = labelExpression;
 }
 

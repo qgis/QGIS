@@ -1470,13 +1470,15 @@ void QgsAttributeForm::init()
         }
         else
         {
-          if ( ! widgetInfo.labelExpression.isEmpty() )
-          {
-            mExpressionLabels[ label ] = QgsExpression( widgetInfo.labelExpression );
-          }
           layout->addWidget( label, row, column++ );
           layout->addWidget( widgetInfo.widget, row, column++ );
         }
+
+        if ( ! widgetInfo.labelExpression.isEmpty() )
+        {
+          mExpressionLabels[ label ] = QgsExpression( widgetInfo.labelExpression );
+        }
+
       }
 
       if ( column >= columnCount * 2 )
