@@ -131,6 +131,18 @@ class CORE_EXPORT QgsLegendPatchShape
      */
     static QList< QList< QPolygonF > > defaultPatch( QgsSymbol::SymbolType type, QSizeF size );
 
+    /**
+     * Read settings from a DOM \a element.
+     * \see writeXml()
+     */
+    void readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    /**
+     * Write settings into a DOM \a element.
+     * \see readXml()
+     */
+    void writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
   private:
     QgsSymbol::SymbolType mSymbolType = QgsSymbol::Fill;
     QgsGeometry mGeometry;

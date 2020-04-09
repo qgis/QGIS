@@ -26,8 +26,11 @@ from qgis.core import (QgsLegendPatchShape,
                        QgsFillSymbol,
                        QgsLineSymbol,
                        QgsMarkerSymbol,
-                       QgsRenderChecker
+                       QgsRenderChecker,
+                       QgsReadWriteContext
                        )
+from qgis.PyQt.QtXml import QDomDocument, QDomElement
+
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
@@ -207,6 +210,21 @@ class TestQgsLegendPatchShape(unittest.TestCase):
         shape = QgsLegendPatchShape(QgsSymbol.Fill, QgsGeometry.fromWkt('MultiPolygon(((1 1 , 6 1, 6 6, 1 1),(4 2, 5 3, 4 3, 4 2)),((1 5, 2 5, 1 6, 1 5)))'), False)
         rendered_image = self.renderPatch(shape)
         self.assertTrue(self.imageCheck('MultiPolygon', 'multipolygon', rendered_image))
+
+    def testReadWriteXml(self):
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement('test')
+        shape = QgsLegendPatchShape(QgsSymbol.Line, QgsGeometry.fromWkt('MultiLineString((5 5, 3 4, 1 2), ( 6 6, 6 0))'), False)
+
+        shape.writeXml(elem, doc, QgsReadWriteContext())
+
+        s2 = QgsLegendPatchShape()
+        s2.readXml(elem, QgsReadWriteContext())
+
+        self.assertFalse(s2.isNull())
+        self.assertEqual(s2.geometry().asWkt(), 'MultiLineString ((5 5, 3 4, 1 2),(6 6, 6 0))')
+        self.assertFalse(s2.preserveAspectRatio())
+        self.assertEqual(s2.symbolType(), QgsSymbol.Line)
 
     def renderPatch(self, patch):
         image = QImage(200, 200, QImage.Format_RGB32)
