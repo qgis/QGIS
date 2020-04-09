@@ -39,6 +39,7 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( const QgsLayerTreeLayer &other )
   : QgsLayerTreeNode( other )
   , mRef( other.mRef )
   , mLayerName( other.mLayerName )
+  , mPatchShape( other.mPatchShape )
 {
   attachToLayer();
 }
@@ -194,5 +195,15 @@ void QgsLayerTreeLayer::layerNameChanged()
 void QgsLayerTreeLayer::setLabelExpression( const QString &expression )
 {
   mLabelExpression = expression;
+}
+
+QgsLegendPatchShape QgsLayerTreeLayer::patchShape() const
+{
+  return mPatchShape;
+}
+
+void QgsLayerTreeLayer::setPatchShape( const QgsLegendPatchShape &shape )
+{
+  mPatchShape = shape;
 }
 
