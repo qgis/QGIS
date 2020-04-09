@@ -178,15 +178,16 @@ QList<QList<QPolygonF> > QgsLegendPatchShape::defaultPatch( QgsSymbol::SymbolTyp
   switch ( type )
   {
     case QgsSymbol::Marker:
-      return QList< QList< QPolygonF > >() << ( QList< QPolygonF >() << ( QPolygonF() << QPointF( size.width() / 2, size.height() / 2 ) ) );
+      return QList< QList< QPolygonF > >() << ( QList< QPolygonF >() << ( QPolygonF() << QPointF( static_cast< int >( size.width() ) / 2,
+             static_cast< int >( size.height() ) / 2 ) ) );
 
     case QgsSymbol::Line:
       // we're adding 0.5 to get rid of blurred preview:
       // drawing antialiased lines of width 1 at (x,0)-(x,100) creates 2px line
-      return QList< QList<QPolygonF> >() << ( QList< QPolygonF >() << ( QPolygonF()  << QPointF( 0, int( size.height() / 2 ) + 0.5 ) << QPointF( size.width(), int( size.height() / 2 ) + 0.5 ) ) );
+      return QList< QList<QPolygonF> >() << ( QList< QPolygonF >() << ( QPolygonF()  << QPointF( 0, static_cast< int >( size.height() ) / 2 + 0.5 ) << QPointF( size.width(), static_cast< int >( size.height() ) / 2 + 0.5 ) ) );
 
     case QgsSymbol::Fill:
-      return QList< QList<QPolygonF> >() << ( QList< QPolygonF> () << ( QRectF( QPointF( 0, 0 ), QPointF( size.width(), size.height() ) ) ) );
+      return QList< QList<QPolygonF> >() << ( QList< QPolygonF> () << ( QRectF( QPointF( 0, 0 ), QPointF( static_cast< int >( size.width() ), static_cast< int >( size.height() ) ) ) ) );
 
     case QgsSymbol::Hybrid:
       return QList< QList<QPolygonF> >();
