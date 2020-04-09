@@ -355,6 +355,15 @@ Removes all tags for the specified symbol or colorramp
 Removes symbol from style (and delete it)
 %End
 
+    bool renameEntity( StyleEntity type, const QString &oldName, const QString &newName );
+%Docstring
+Renames an entity of the specified ``type`` from ``oldName`` to ``newName``.
+
+Returns ``True`` if the entity was successfully renamed.
+
+.. versionadded:: 3.14
+%End
+
     bool renameSymbol( const QString &oldName, const QString &newName );
 %Docstring
 Renames a symbol from ``oldName`` to ``newName``.
