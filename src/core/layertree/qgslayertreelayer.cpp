@@ -121,6 +121,15 @@ QgsLayerTreeLayer *QgsLayerTreeLayer::readXml( QDomElement &element, const QgsRe
   nodeLayer->setItemVisibilityChecked( checked != Qt::Unchecked );
   nodeLayer->setExpanded( isExpanded );
   nodeLayer->setLabelExpression( labelExpression );
+
+  const QDomElement patchElem = element.firstChildElement( QStringLiteral( "patch" ) );
+  if ( !patchElem.isNull() )
+  {
+    QgsLegendPatchShape patch;
+    patch.readXml( patchElem, context );
+    nodeLayer->setPatchShape( patch );
+  }
+
   return nodeLayer;
 }
 
@@ -148,6 +157,14 @@ void QgsLayerTreeLayer::writeXml( QDomElement &parentElement, const QgsReadWrite
   elem.setAttribute( QStringLiteral( "checked" ), mChecked ? QStringLiteral( "Qt::Checked" ) : QStringLiteral( "Qt::Unchecked" ) );
   elem.setAttribute( QStringLiteral( "expanded" ), mExpanded ? "1" : "0" );
   elem.setAttribute( QStringLiteral( "legend_exp" ), mLabelExpression );
+
+  if ( !mPatchShape.isNull() )
+  {
+    QDomElement patchElem = doc.createElement( QStringLiteral( "patch" ) );
+    mPatchShape.writeXml( patchElem, doc, context );
+    elem.appendChild( patchElem );
+  }
+
   writeCommonXml( elem );
 
   parentElement.appendChild( elem );
