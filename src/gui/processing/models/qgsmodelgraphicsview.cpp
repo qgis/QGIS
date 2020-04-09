@@ -486,13 +486,42 @@ void QgsModelGraphicsView::copyItems( const QList<QgsModelComponentGraphicItem *
   QList< QVariant > paramComponents;
   QList< QVariant > groupBoxComponents;
   QList< QVariant > algComponents;
+
+  QList< QgsModelComponentGraphicItem * > selectedCommentParents;
+  QList< QgsProcessingModelOutput > selectedOutputs;
+  QList< QgsProcessingModelOutput > selectedOutputsComments;
   for ( QgsModelComponentGraphicItem *item : items )
   {
-    if ( QgsProcessingModelParameter *param = dynamic_cast< QgsProcessingModelParameter * >( item->component() ) )
+    if ( const QgsModelCommentGraphicItem *commentItem = dynamic_cast< QgsModelCommentGraphicItem * >( item ) )
     {
+      selectedCommentParents << commentItem->parentComponentItem();
+      if ( const QgsModelOutputGraphicItem *outputItem = dynamic_cast< QgsModelOutputGraphicItem * >( commentItem->parentComponentItem() ) )
+      {
+        selectedOutputsComments << *( static_cast< const QgsProcessingModelOutput *>( outputItem->component() ) );
+      }
+    }
+    else if ( const QgsModelOutputGraphicItem *outputItem = dynamic_cast< QgsModelOutputGraphicItem * >( item ) )
+    {
+      selectedOutputs << *( static_cast< const QgsProcessingModelOutput *>( outputItem->component() ) );
+    }
+  }
+
+  for ( QgsModelComponentGraphicItem *item : items )
+  {
+    if ( const QgsProcessingModelParameter *param = dynamic_cast< QgsProcessingModelParameter * >( item->component() ) )
+    {
+      QgsProcessingModelParameter component = *param;
+
+      // was comment selected?
+      if ( !selectedCommentParents.contains( item ) )
+      {
+        // no, so drop comment
+        component.comment()->setDescription( QString() );
+      }
+
       QVariantMap paramDef;
-      paramDef.insert( QStringLiteral( "component" ), param->toVariant() );
-      const QgsProcessingParameterDefinition *def = modelScene()->model()->parameterDefinition( param->parameterName() );
+      paramDef.insert( QStringLiteral( "component" ), component.toVariant() );
+      const QgsProcessingParameterDefinition *def = modelScene()->model()->parameterDefinition( component.parameterName() );
       paramDef.insert( QStringLiteral( "definition" ), def->toVariantMap() );
 
       paramComponents << paramDef;
@@ -501,9 +530,54 @@ void QgsModelGraphicsView::copyItems( const QList<QgsModelComponentGraphicItem *
     {
       groupBoxComponents << groupBox->toVariant();
     }
-    else if ( QgsProcessingModelChildAlgorithm *alg = dynamic_cast< QgsProcessingModelChildAlgorithm * >( item->component() ) )
+    else if ( const QgsProcessingModelChildAlgorithm *alg = dynamic_cast< QgsProcessingModelChildAlgorithm * >( item->component() ) )
     {
-      algComponents << alg->toVariant();
+      QgsProcessingModelChildAlgorithm childAlg = *alg;
+
+      // was comment selected?
+      if ( !selectedCommentParents.contains( item ) )
+      {
+        // no, so drop comment
+        childAlg.comment()->setDescription( QString() );
+      }
+
+      // don't copy outputs which weren't selected either
+      QMap<QString, QgsProcessingModelOutput> clipboardOutputs;
+      const QMap<QString, QgsProcessingModelOutput> existingOutputs = childAlg.modelOutputs();
+      for ( auto it = existingOutputs.constBegin(); it != existingOutputs.constEnd(); ++ it )
+      {
+        bool found = false;
+        for ( const QgsProcessingModelOutput &candidate : selectedOutputs )
+        {
+          if ( candidate.childId() == childAlg.childId() && candidate.name() == it.value().name() && candidate.childOutputName() == it.value().childOutputName() )
+          {
+            found = true;
+            break;
+          }
+        }
+        if ( found )
+        {
+          // should we also copy the comment?
+          bool commentFound = false;
+          for ( const QgsProcessingModelOutput &candidate : selectedOutputsComments )
+          {
+            if ( candidate.childId() == childAlg.childId() && candidate.name() == it.value().name() && candidate.childOutputName() == it.value().childOutputName() )
+            {
+              commentFound = true;
+              break;
+            }
+          }
+
+          QgsProcessingModelOutput output = it.value();
+          if ( !commentFound )
+            output.comment()->setDescription( QString() );
+
+          clipboardOutputs.insert( it.key(), output );
+        }
+      }
+      childAlg.setModelOutputs( clipboardOutputs );
+
+      algComponents << childAlg.toVariant();
     }
   }
   QVariantMap components;

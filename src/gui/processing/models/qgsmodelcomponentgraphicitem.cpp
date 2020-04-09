@@ -1421,5 +1421,10 @@ QgsProcessingModelComment *QgsModelCommentGraphicItem::modelComponent()
   return nullptr;
 }
 
+QgsModelComponentGraphicItem *QgsModelCommentGraphicItem::parentComponentItem() const
+{
+  return mParentItem;
+}
+
 
 ///@endcond

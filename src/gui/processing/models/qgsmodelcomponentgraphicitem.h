@@ -568,6 +568,12 @@ class GUI_EXPORT QgsModelCommentGraphicItem : public QgsModelComponentGraphicIte
     ~QgsModelCommentGraphicItem() override;
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
     bool canDeleteComponent() override;
+
+    /**
+     * Returns the parent model component item.
+     */
+    QgsModelComponentGraphicItem *parentComponentItem() const;
+
   protected:
 
     QColor fillColor( State state ) const override;
