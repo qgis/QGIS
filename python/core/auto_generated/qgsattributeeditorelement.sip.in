@@ -114,6 +114,20 @@ Controls if this element should be labeled with a title (field, relation or grou
 .. versionadded:: 2.18
 %End
 
+    QString labelExpression() const;
+%Docstring
+Returns the (possibly empty) label expression
+
+.. versionadded:: 3.14
+%End
+
+    void setLabelExpression( const QString &labelExpression );
+%Docstring
+Sets the label expression to ``labelExpression``
+
+.. versionadded:: 3.14
+%End
+
   protected:
 
 };

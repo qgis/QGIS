@@ -219,6 +219,17 @@ class CORE_EXPORT QgsEditFormConfig
      **/
     void setLabelOnTop( int idx, bool onTop );
 
+    /**
+     * Returns the (possibly empty) expression for the label, to be evaluated in the form context.
+     * \since QGIS 3.14
+     **/
+    QString labelExpression( int idx ) const;
+
+    /**
+     * Set the label expression to \a labelExpression, to be evaluated in the form context.
+     * \since QGIS 3.14
+     **/
+    void setLabelExpression( int idx, const QString &labelExpression );
 
     // Python form init function stuff
 

@@ -130,6 +130,16 @@ void QgsAttributeEditorElement::setShowLabel( bool showLabel )
   mShowLabel = showLabel;
 }
 
+QString QgsAttributeEditorElement::labelExpression() const
+{
+  return mLabelExpression;
+}
+
+void QgsAttributeEditorElement::setLabelExpression( const QString &labelExpression )
+{
+  mLabelExpression = labelExpression;
+}
+
 void QgsAttributeEditorRelation::saveConfiguration( QDomElement &elem ) const
 {
   elem.setAttribute( QStringLiteral( "relation" ), mRelation.id() );

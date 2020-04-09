@@ -243,6 +243,7 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
   QgsFieldConstraints constraints = cfg.mFieldConstraints;
 
   mAttributeTypeDialog->setAlias( cfg.mAlias );
+  mAttributeTypeDialog->setAliasExpression( cfg.mAliasExpression );
   mAttributeTypeDialog->setComment( cfg.mComment );
   mAttributeTypeDialog->setFieldEditable( cfg.mEditable );
   mAttributeTypeDialog->setLabelOnTop( cfg.mLabelOnTop );
@@ -289,6 +290,7 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
   cfg.mEditable = mAttributeTypeDialog->fieldEditable();
   cfg.mLabelOnTop = mAttributeTypeDialog->labelOnTop();
   cfg.mAlias = mAttributeTypeDialog->alias();
+  cfg.mAliasExpression = mAttributeTypeDialog->aliasExpression();
 
   QgsFieldConstraints constraints;
   if ( mAttributeTypeDialog->notNull() )
@@ -462,6 +464,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
     {
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Field, widgetDef->name(), widgetDef->name() );
       itemData.setShowLabel( widgetDef->showLabel() );
+      itemData.setLabelExpression( widgetDef->labelExpression() );
       newWidget = tree->addItem( parent, itemData );
       break;
     }
@@ -471,6 +474,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       const QgsAttributeEditorRelation *relationEditor = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, relationEditor->relation().id(), relationEditor->relation().name() );
       itemData.setShowLabel( widgetDef->showLabel() );
+      itemData.setLabelExpression( widgetDef->labelExpression() );
       RelationEditorConfiguration relEdConfig;
       relEdConfig.showLinkButton = relationEditor->showLinkButton();
       relEdConfig.showUnlinkButton = relationEditor->showUnlinkButton();
@@ -489,6 +493,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       if ( !container )
         break;
 
+      itemData.setLabelExpression( widgetDef->labelExpression() );
       itemData.setColumnCount( container->columnCount() );
       itemData.setShowAsGroupBox( container->isGroupBox() );
       itemData.setBackgroundColor( container->backgroundColor() );
@@ -508,6 +513,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       const QgsAttributeEditorQmlElement *qmlElementEditor = static_cast<const QgsAttributeEditorQmlElement *>( widgetDef );
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::QmlWidget, widgetDef->name(), widgetDef->name() );
       itemData.setShowLabel( widgetDef->showLabel() );
+      itemData.setLabelExpression( widgetDef->labelExpression() );
       QmlElementEditorConfiguration qmlEdConfig;
       qmlEdConfig.qmlCode = qmlElementEditor->qmlCode();
       itemData.setQmlElementEditorConfiguration( qmlEdConfig );
@@ -520,6 +526,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       const QgsAttributeEditorHtmlElement *htmlElementEditor = static_cast<const QgsAttributeEditorHtmlElement *>( widgetDef );
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::HtmlWidget, widgetDef->name(), widgetDef->name() );
       itemData.setShowLabel( widgetDef->showLabel() );
+      itemData.setLabelExpression( widgetDef->labelExpression() );
       HtmlElementEditorConfiguration htmlEdConfig;
       htmlEdConfig.htmlCode = htmlElementEditor->htmlCode();
       itemData.setHtmlElementEditorConfiguration( htmlEdConfig );
@@ -533,6 +540,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       break;
     }
   }
+
   return newWidget;
 }
 
@@ -750,6 +758,7 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
   }
 
   widgetDef->setShowLabel( itemData.showLabel() );
+  widgetDef->setLabelExpression( itemData.labelExpression() );
 
   return widgetDef;
 }
@@ -845,6 +854,7 @@ void QgsAttributesFormProperties::apply()
 
     editFormConfig.setReadOnly( idx, !cfg.mEditable );
     editFormConfig.setLabelOnTop( idx, cfg.mLabelOnTop );
+    editFormConfig.setLabelExpression( idx, cfg.mAliasExpression );
     mLayer->setEditorWidgetSetup( idx, QgsEditorWidgetSetup( cfg.mEditorWidgetType, cfg.mEditorWidgetConfig ) );
 
     QgsFieldConstraints constraints = cfg.mFieldConstraints;
@@ -925,6 +935,7 @@ void QgsAttributesFormProperties::apply()
 QgsAttributesFormProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx )
 {
   mAlias = layer->fields().at( idx ).alias();
+  mAliasExpression = layer->editFormConfig().labelExpression( idx );
   mComment = layer->fields().at( idx ).comment();
   mEditable = !layer->editFormConfig().readOnly( idx );
   mEditableEnabled = layer->fields().fieldOrigin( idx ) != QgsFields::OriginJoin
@@ -1599,5 +1610,15 @@ QColor QgsAttributesFormProperties::DnDTreeItemData::backgroundColor() const
 void QgsAttributesFormProperties::DnDTreeItemData::setBackgroundColor( const QColor &backgroundColor )
 {
   mBackgroundColor = backgroundColor;
+}
+
+QString QgsAttributesFormProperties::DnDTreeItemData::labelExpression() const
+{
+  return mLabelExpression;
+}
+
+void QgsAttributesFormProperties::DnDTreeItemData::setLabelExpression( const QString &labelExpression )
+{
+  mLabelExpression = labelExpression;
 }
 

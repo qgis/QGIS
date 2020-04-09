@@ -211,6 +211,23 @@ void QgsEditFormConfig::setLabelOnTop( int idx, bool onTop )
   }
 }
 
+QString QgsEditFormConfig::labelExpression( int idx ) const
+{
+  if ( idx >= 0 && idx < d->mFields.count() )
+    return d->mLabelExpressions.value( d->mFields.at( idx ).name(), QString() );
+  else
+    return QString();
+}
+
+void QgsEditFormConfig::setLabelExpression( int idx, const QString &labelExpression )
+{
+  if ( idx >= 0 && idx < d->mFields.count() )
+  {
+    d.detach();
+    d->mLabelExpressions[ d->mFields.at( idx ).name() ] = labelExpression;
+  }
+}
+
 QString QgsEditFormConfig::initFunction() const
 {
   return d->mInitFunction;
@@ -382,6 +399,14 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
     d->mLabelOnTop.insert( labelOnTopElement.attribute( QStringLiteral( "name" ) ), static_cast< bool >( labelOnTopElement.attribute( QStringLiteral( "labelOnTop" ) ).toInt() ) );
   }
 
+  d->mLabelExpressions.clear();
+  QDomNodeList labelExpressionsNodeList = node.namedItem( QStringLiteral( "labelExpression" ) ).toElement().childNodes();
+  for ( int i = 0; i < labelExpressionsNodeList.size(); ++i )
+  {
+    QDomElement labelExpressionElement = labelExpressionsNodeList.at( i ).toElement();
+    d->mLabelExpressions.insert( labelExpressionElement.attribute( QStringLiteral( "name" ) ), labelExpressionElement.attribute( QStringLiteral( "labelExpression" ) ) );
+  }
+
   QDomNodeList widgetsNodeList = node.namedItem( QStringLiteral( "widgets" ) ).toElement().childNodes();
 
   for ( int i = 0; i < widgetsNodeList.size(); ++i )
@@ -505,6 +530,16 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
   }
   node.appendChild( labelOnTopElem );
 
+  QDomElement labelExpressionElem = doc.createElement( QStringLiteral( "labelExpression" ) );
+  for ( auto labelExpressionsIt = d->mLabelExpressions.constBegin(); labelExpressionsIt != d->mLabelExpressions.constEnd(); ++labelExpressionsIt )
+  {
+    QDomElement fieldElem = doc.createElement( QStringLiteral( "field" ) );
+    fieldElem.setAttribute( QStringLiteral( "name" ), labelExpressionsIt.key() );
+    fieldElem.setAttribute( QStringLiteral( "labelExpression" ), labelExpressionsIt.value() );
+    labelExpressionElem.appendChild( fieldElem );
+  }
+  node.appendChild( labelExpressionElem );
+
   QDomElement widgetsElem = doc.createElement( QStringLiteral( "widgets" ) );
 
   QMap<QString, QVariantMap >::ConstIterator configIt( d->mWidgetConfigs.constBegin() );
@@ -604,6 +639,8 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
       newElement->setShowLabel( elem.attribute( QStringLiteral( "showLabel" ) ).toInt() );
     else
       newElement->setShowLabel( true );
+    if ( elem.hasAttribute( QStringLiteral( "labelExpression" ) ) )
+      newElement->setLabelExpression( elem.attribute( QStringLiteral( "labelExpression" ) ) );
   }
 
   return newElement;

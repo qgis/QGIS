@@ -73,6 +73,9 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   mExpressionWidget->registerExpressionContextGenerator( this );
   mExpressionWidget->setLayer( mLayer );
 
+  mAliasExpression->registerExpressionContextGenerator( this );
+  mAliasExpression->setLayer( mLayer );
+
   connect( mExpressionWidget, &QgsExpressionLineEdit::expressionChanged, this, &QgsAttributeTypeDialog::defaultExpressionChanged );
   connect( mUniqueCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
   {
@@ -92,6 +95,8 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
 
   constraintExpressionWidget->setAllowEmptyFieldName( true );
   constraintExpressionWidget->setLayer( vl );
+
+  // TODO: mAliasExpression->registerExpressionContextGenerator( ... );
 }
 
 QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
@@ -303,7 +308,13 @@ QgsExpressionContext QgsAttributeTypeDialog::createExpressionContext() const
       << QgsExpressionContextUtils::globalScope()
       << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
       << QgsExpressionContextUtils::layerScope( mLayer )
+      << QgsExpressionContextUtils::formScope( QgsFeature( mLayer->fields() ) )
       << QgsExpressionContextUtils::mapToolCaptureScope( QList<QgsPointLocator::Match>() );
+
+  context.setHighlightedFunctions( QStringList() << QStringLiteral( "current_value" ) );
+  context.setHighlightedVariables( QStringList() << QStringLiteral( "current_geometry" )
+                                   << QStringLiteral( "current_feature" )
+                                   << QStringLiteral( "form_mode" ) );
 
   return context;
 }
@@ -339,12 +350,22 @@ void QgsAttributeTypeDialog::setFieldEditable( bool editable )
 
 void QgsAttributeTypeDialog::setAlias( const QString &alias )
 {
-  leAlias->setText( alias );
+  mAlias->setText( alias );
 }
 
 QString QgsAttributeTypeDialog::alias() const
 {
-  return leAlias->text();
+  return mAlias->text();
+}
+
+void QgsAttributeTypeDialog::setAliasExpression( const QString &aliasExpression )
+{
+  mAliasExpression->setExpression( aliasExpression );
+}
+
+QString QgsAttributeTypeDialog::aliasExpression() const
+{
+  return mAliasExpression->expression();
 }
 
 void QgsAttributeTypeDialog::setComment( const QString &comment )

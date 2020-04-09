@@ -86,6 +86,7 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &featur
   connect( this, &QgsAttributeForm::modeChanged, this, &QgsAttributeForm::updateContainersVisibility );
 
   updateContainersVisibility();
+
 }
 
 QgsAttributeForm::~QgsAttributeForm()
@@ -305,6 +306,7 @@ void QgsAttributeForm::setFeature( const QgsFeature &feature )
     }
   }
   mIsSettingFeature = false;
+  mExpressionContext.setFeature( feature );
 }
 
 bool QgsAttributeForm::saveEdits()
@@ -899,6 +901,9 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
   updateDefaultValues( eww->fieldIdx() );
   mAlreadyUpdatedFields.removeAll( eww->fieldIdx() );
 
+  // Updates expression controlled labels
+  updateLabels();
+
   if ( !signalEmitted )
   {
     Q_NOWARN_DEPRECATED_PUSH
@@ -1000,6 +1005,28 @@ void QgsAttributeForm::updateConstraint( const QgsFeature &ft, QgsEditorWidgetWr
 
   // default constraint update
   eww->updateConstraint( ft, constraintOrigin );
+}
+
+void QgsAttributeForm::updateLabels()
+{
+  if ( ! mExpressionLabels.isEmpty() )
+  {
+    QgsFeature currentFeature;
+    if ( currentFormFeature( currentFeature ) )
+    {
+      mExpressionContext << QgsExpressionContextUtils::formScope( currentFeature, mContext.attributeFormModeString() );
+      mExpressionContext.setFields( mLayer->fields() );
+      for ( auto it = mExpressionLabels.constBegin() ; it != mExpressionLabels.constEnd(); ++it )
+      {
+        QLabel *label { it.key() };
+        QgsExpression exp { it.value() };
+        if ( exp.prepare( &mExpressionContext ) && ! exp.hasParserError() )
+        {
+          label->setText( exp.evaluate( &mExpressionContext ).toString() );
+        }
+      }
+    }
+  }
 }
 
 bool QgsAttributeForm::currentFormFeature( QgsFeature &feature )
@@ -1443,6 +1470,10 @@ void QgsAttributeForm::init()
         }
         else
         {
+          if ( ! widgetInfo.labelExpression.isEmpty() )
+          {
+            mExpressionLabels[ label ] = QgsExpression( widgetInfo.labelExpression );
+          }
           layout->addWidget( label, row, column++ );
           layout->addWidget( widgetInfo.widget, row, column++ );
         }
@@ -1498,6 +1529,7 @@ void QgsAttributeForm::init()
       QString labelText = fieldName;
       labelText.replace( '&', QStringLiteral( "&&" ) ); // need to escape '&' or they'll be replace by _ in the label text
 
+      const QString labelExpression { mLayer->editFormConfig().labelExpression( idx ) };
       const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, field.name() );
 
       if ( widgetSetup.type() == QLatin1String( "Hidden" ) )
@@ -1506,10 +1538,15 @@ void QgsAttributeForm::init()
       bool labelOnTop = mLayer->editFormConfig().labelOnTop( idx );
 
       // This will also create the widget
-      QLabel *l = new QLabel( labelText );
-      l->setToolTip( QgsFieldModel::fieldToolTipExtended( field, mLayer ) );
+      QLabel *label = new QLabel( labelText );
+      label->setToolTip( QgsFieldModel::fieldToolTipExtended( field, mLayer ) );
       QSvgWidget *i = new QSvgWidget();
       i->setFixedSize( 18, 18 );
+
+      if ( ! labelExpression.isEmpty() )
+      {
+        mExpressionLabels[ label ] = QgsExpression( labelExpression );
+      }
 
       QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( widgetSetup.type(), mLayer, idx, widgetSetup.config(), nullptr, this, mContext );
 
@@ -1522,7 +1559,7 @@ void QgsAttributeForm::init()
         mFormWidgets.append( formWidget );
         formWidget->createSearchWidgetWrappers( mContext );
 
-        l->setBuddy( eww->widget() );
+        label->setBuddy( eww->widget() );
       }
       else
       {
@@ -1541,16 +1578,17 @@ void QgsAttributeForm::init()
 
       if ( labelOnTop )
       {
-        gridLayout->addWidget( l, row++, 0, 1, 2 );
+        gridLayout->addWidget( label, row++, 0, 1, 2 );
         gridLayout->addWidget( w, row++, 0, 1, 2 );
         gridLayout->addWidget( i, row++, 0, 1, 2 );
       }
       else
       {
-        gridLayout->addWidget( l, row, 0 );
+        gridLayout->addWidget( label, row, 0 );
         gridLayout->addWidget( w, row, 1 );
         gridLayout->addWidget( i, row++, 2 );
       }
+
     }
 
     const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer );
@@ -2048,6 +2086,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
   }
 
   newWidgetInfo.showLabel = widgetDef->showLabel();
+  newWidgetInfo.labelExpression = widgetDef->labelExpression();
 
   return newWidgetInfo;
 }

@@ -134,10 +134,23 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      */
     void setShowLabel( bool showLabel );
 
+    /**
+     * Returns the (possibly empty) label expression
+     * \since QGIS 3.14
+     */
+    QString labelExpression() const;
+
+    /**
+     * Sets the label expression to \a labelExpression
+     * \since QGIS 3.14
+     */
+    void setLabelExpression( const QString &labelExpression );
+
   protected:
 #ifndef SIP_RUN
     AttributeEditorType mType;
     QString mName;
+    QString mLabelExpression;
     QgsAttributeEditorElement *mParent = nullptr;
     bool mShowLabel;
 #endif

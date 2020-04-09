@@ -77,6 +77,18 @@ class GUI_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
     QString alias() const;
 
     /**
+     * Sets expression for for label alias
+     * \since QGIS 3.14
+     */
+    void setAliasExpression( const QString &aliasExpression );
+
+    /**
+     * Returns the expression for the label alias
+     * \since QGIS 3.14
+     */
+    QString aliasExpression() const;
+
+    /**
      * Setter for label comment
      */
     void setComment( const QString &comment );

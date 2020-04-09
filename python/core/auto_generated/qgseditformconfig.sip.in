@@ -191,6 +191,19 @@ on the left hand side.
 Labeling on top leaves more horizontal space for the widget itself.
 %End
 
+    QString labelExpression( int idx ) const;
+%Docstring
+Returns the (possibly empty) expression for the label, to be evaluated in the form context.
+
+.. versionadded:: 3.14
+%End
+
+    void setLabelExpression( int idx, const QString &labelExpression );
+%Docstring
+Set the label expression to ``labelExpression``, to be evaluated in the form context.
+
+.. versionadded:: 3.14
+%End
 
 
     QString initFunction() const;

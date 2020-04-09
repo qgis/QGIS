@@ -20,38 +20,34 @@
       <string>General</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>Alias</string>
+      <item row="1" column="2">
+       <widget class="QgsExpressionLineEdit" name="mAliasExpression" native="true">
+        <property name="toolTip">
+         <string>The expression will be evaluated in the form context </string>
+        </property>
+        <property name="text" stdset="0">
+         <string/>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="3" column="2">
+       <widget class="QCheckBox" name="labelOnTopCheckBox">
+        <property name="text">
+         <string>Label on top</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
        <widget class="QLabel" name="label_6">
         <property name="text">
          <string>Comment</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QLineEdit" name="leAlias">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="laComment">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
+      <item row="3" column="0">
        <widget class="QCheckBox" name="isFieldEditableCheckBox">
         <property name="text">
          <string>Editable</string>
@@ -62,14 +58,31 @@
        </widget>
       </item>
       <item row="2" column="2">
-       <widget class="QCheckBox" name="labelOnTopCheckBox">
+       <widget class="QLabel" name="laComment">
         <property name="text">
-         <string>Label on top</string>
+         <string/>
         </property>
-        <property name="checked">
-         <bool>false</bool>
+        <property name="wordWrap">
+         <bool>true</bool>
         </property>
        </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Alias expression</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Alias</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLineEdit" name="mAlias"/>
       </item>
      </layout>
     </widget>
@@ -184,7 +197,7 @@
      <property name="title">
       <string>Defaults</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0">
+     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0">
       <item row="4" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
@@ -235,7 +248,7 @@
          <item>
           <widget class="QLabel" name="label_7">
            <property name="text">
-            <string>Using fields in a default value expression only works if "Apply default value on update" is checked.</string>
+            <string>Using fields in a default value expression only works if &quot;Apply default value on update&quot; is checked.</string>
            </property>
           </widget>
          </item>
@@ -291,7 +304,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>leAlias</tabstop>
+  <tabstop>mAliasExpression</tabstop>
   <tabstop>isFieldEditableCheckBox</tabstop>
   <tabstop>labelOnTopCheckBox</tabstop>
   <tabstop>mWidgetTypeComboBox</tabstop>
@@ -305,6 +318,7 @@
   <tabstop>mExpressionWidget</tabstop>
  </tabstops>
  <resources>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
