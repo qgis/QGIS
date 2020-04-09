@@ -36,7 +36,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
       Ogr,
       Gdal,
       Vsifile,
-      Mdal
+      Mdal //!< \since QGIS 3.14
     };
 
     /**
