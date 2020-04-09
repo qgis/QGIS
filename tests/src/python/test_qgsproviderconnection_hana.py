@@ -37,11 +37,12 @@ class TestPyQgsHanaProviderConnection(unittest.TestCase, TestPyQgsProviderConnec
         TestPyQgsProviderConnectionBase.setUpClass()
 
         cls.uri = 'driver=\'/usr/sap/hdbclient/libodbcHDB.so\' host=localhost port=30015 ' \
-                     'user=SYSTEM password=mypassword '
+                  'user=SYSTEM password=mypassword '
         if 'QGIS_HANA_TEST_DB' in os.environ:
             cls.uri = os.environ['QGIS_HANA_TEST_DB']
         ds_uri = QgsDataSourceUri(cls.uri)
-        cls.conn = dbapi.connect(address=ds_uri.host(), port=ds_uri.port(), user=ds_uri.username(), password=ds_uri.password())
+        cls.conn = dbapi.connect(address=ds_uri.host(), port=ds_uri.port(), user=ds_uri.username(),
+                                 password=ds_uri.password())
 
         QgsHanaProviderUtils.createAndFillDefaultTables(cls.conn)
         # Create test layers
