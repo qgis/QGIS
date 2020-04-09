@@ -27,7 +27,8 @@ from qgis.core import (QgsLegendPatchShape,
                        QgsLineSymbol,
                        QgsMarkerSymbol,
                        QgsRenderChecker,
-                       QgsReadWriteContext
+                       QgsReadWriteContext,
+                       QgsRenderContext
                        )
 from qgis.PyQt.QtXml import QDomDocument, QDomElement
 
@@ -86,7 +87,9 @@ class TestQgsLegendPatchShape(unittest.TestCase):
         self.assertEqual(QgsLegendPatchShape.defaultPatch(QgsSymbol.Hybrid, QSizeF(10, 10)), [])
 
         # markers
-        self.assertEqual(self.polys_to_list(QgsLegendPatchShape.defaultPatch(QgsSymbol.Marker, QSizeF(1, 1))), [[[[0.5, 0.5]]]])
+        self.assertEqual(self.polys_to_list(QgsLegendPatchShape.defaultPatch(QgsSymbol.Marker, QSizeF(1, 1))), [[[[0.0, 0.0]]]])
+        self.assertEqual(self.polys_to_list(QgsLegendPatchShape.defaultPatch(QgsSymbol.Marker, QSizeF(2, 2))),
+                         [[[[1.0, 1.0]]]])
         self.assertEqual(self.polys_to_list(QgsLegendPatchShape.defaultPatch(QgsSymbol.Marker, QSizeF(10, 2))), [[[[5.0, 1.0]]]])
 
         # lines
@@ -228,9 +231,13 @@ class TestQgsLegendPatchShape(unittest.TestCase):
 
     def renderPatch(self, patch):
         image = QImage(200, 200, QImage.Format_RGB32)
-
         painter = QPainter()
         painter.begin(image)
+
+        context = QgsRenderContext.fromQPainter(painter)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+
         try:
             image.fill(QColor(0, 0, 0))
 
