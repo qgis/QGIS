@@ -103,7 +103,7 @@ void ConsoleFeedback::showTerminalProgress( double progress )
 std::unique_ptr< QgsPythonUtils > loadPythonSupport()
 {
   QString pythonlibName( QStringLiteral( "qgispython" ) );
-#if defined(Q_OS_MAC) || defined(Q_OS_LINUX)
+#if defined(Q_OS_UNIX) and !defined(Q_OS_ANDROID)
   pythonlibName.prepend( QgsApplication::libraryPath() );
 #endif
 #ifdef __MINGW32__
