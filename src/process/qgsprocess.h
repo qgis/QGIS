@@ -22,6 +22,8 @@
 #include "qgspythonutils.h"
 #include <QElapsedTimer>
 
+class QgsApplication;
+
 class ConsoleFeedback : public QgsProcessingFeedback
 {
     Q_OBJECT

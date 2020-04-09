@@ -323,7 +323,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &id )
   std::cout << "----------------\n";
   if ( !alg->shortDescription().isEmpty() )
     std::cout << alg->shortDescription().toLocal8Bit().constData() << '\n';
-  if ( !alg->shortHelpString().isEmpty() )
+  if ( !alg->shortHelpString().isEmpty() && alg->shortHelpString() != alg->shortDescription() )
     std::cout << alg->shortHelpString().toLocal8Bit().constData() << '\n';
 
   std::cout << "\n----------------\n";
@@ -333,6 +333,9 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &id )
   const QgsProcessingParameterDefinitions defs = alg->parameterDefinitions();
   for ( const QgsProcessingParameterDefinition *p : defs )
   {
+    if ( p->flags() & QgsProcessingParameterDefinition::FlagHidden )
+      continue;
+
     std::cout << QStringLiteral( "%1: %2\n" ).arg( p->name(), p->description() ).toLocal8Bit().constData();
     std::cout << QStringLiteral( "\tArgument type:\t%1\n" ).arg( p->type() ).toLocal8Bit().constData();
 
