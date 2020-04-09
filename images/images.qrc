@@ -198,6 +198,9 @@
         <file>themes/default/mActionAddArrow.svg</file>
         <file>themes/default/mActionAddBasicShape.svg</file>
         <file>themes/default/mActionAddBasicCircle.svg</file>
+        <file>themes/default/mActionAllowIntersections.svg</file>
+        <file>themes/default/mActionAvoidIntersectionsCurrentLayer.svg</file>
+        <file>themes/default/mActionAvoidIntersectionsLayers.svg</file>
         <file>themes/default/mActionEditNodesItem.svg</file>
         <file>themes/default/mActionEditHelpContent.svg</file>
         <file>themes/default/mActionIconView.svg</file>

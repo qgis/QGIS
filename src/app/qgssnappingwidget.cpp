@@ -113,6 +113,25 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mEnabledAction->setObjectName( QStringLiteral( "EnableSnappingAction" ) );
   connect( mEnabledAction, &QAction::toggled, this, &QgsSnappingWidget::enableSnapping );
 
+  // avoid intersection mode button
+  mAvoidIntersectionsModeButton = new QToolButton();
+  mAvoidIntersectionsModeButton->setToolTip( tr( "When avoid overlap is enabled, digitized features will be clipped to not overlapped existing ones." ) );
+  mAvoidIntersectionsModeButton->setPopupMode( QToolButton::InstantPopup );
+  QMenu *avoidIntersectionsModeMenu = new QMenu( tr( "Set Avoid Overlap Mode" ), this );
+  mAllowIntersectionsAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mActionAllowIntersections.svg" ) ), tr( "Allow Overlap" ), avoidIntersectionsModeMenu );
+  mAvoidIntersectionsCurrentLayerAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mActionAvoidIntersectionsCurrentLayer.svg" ) ), tr( "Avoid Overlap on Active Layer" ), avoidIntersectionsModeMenu );
+  mAvoidIntersectionsLayersAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mActionAvoidIntersectionsLayers.svg" ) ), tr( "Follow Advanced Configuration" ), avoidIntersectionsModeMenu );
+  avoidIntersectionsModeMenu->addAction( mAllowIntersectionsAction );
+  avoidIntersectionsModeMenu->addAction( mAvoidIntersectionsCurrentLayerAction );
+  avoidIntersectionsModeMenu->addAction( mAvoidIntersectionsLayersAction );
+  mAvoidIntersectionsModeButton->setMenu( avoidIntersectionsModeMenu );
+  mAvoidIntersectionsModeButton->setObjectName( QStringLiteral( "AvoidIntersectionsModeButton" ) );
+  if ( mDisplayMode == Widget )
+  {
+    mAvoidIntersectionsModeButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+  }
+  connect( mAvoidIntersectionsModeButton, &QToolButton::triggered, this, &QgsSnappingWidget::avoidIntersectionsModeButtonTriggered );
+
   // mode button
   mModeButton = new QToolButton();
   mModeButton->setToolTip( tr( "Snapping Mode" ) );
@@ -294,6 +313,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     mUnitAction = tb->addWidget( mUnitsComboBox );
 
     tb->addAction( mTopologicalEditingAction );
+    mAvoidIntersectionsModeAction = tb->addWidget( mAvoidIntersectionsModeButton );
     tb->addAction( mIntersectionSnappingAction );
     tb->addAction( mEnableTracingAction );
   }
@@ -322,6 +342,8 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     topoButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
     layout->addWidget( topoButton );
 
+    layout->addWidget( mAvoidIntersectionsModeButton );
+
     QToolButton *interButton = new QToolButton();
     interButton->addAction( mIntersectionSnappingAction );
     interButton->setDefaultAction( mIntersectionSnappingAction );
@@ -341,6 +363,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   // connect settings changed and map units changed to properly update the widget
   connect( project, &QgsProject::snappingConfigChanged, this, &QgsSnappingWidget::projectSnapSettingsChanged );
   connect( project, &QgsProject::topologicalEditingChanged, this, &QgsSnappingWidget::projectTopologicalEditingChanged );
+  connect( project, &QgsProject::avoidIntersectionsModeChanged, this, &QgsSnappingWidget::projectAvoidIntersectionModeChanged );
   connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsSnappingWidget::updateToleranceDecimals );
 
   // Slightly modify the config so the settings changed code doesn't early exit
@@ -469,6 +492,31 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
 
 }
 
+void QgsSnappingWidget::projectAvoidIntersectionModeChanged()
+{
+  switch ( mProject->avoidIntersectionsMode() )
+  {
+    case QgsProject::AvoidIntersectionsMode::AllowIntersections:
+      mAvoidIntersectionsModeButton->setDefaultAction( mAllowIntersectionsAction );
+      mAllowIntersectionsAction->setChecked( true );
+      mAvoidIntersectionsCurrentLayerAction->setChecked( false );
+      mAvoidIntersectionsLayersAction->setChecked( false );
+      break;
+    case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
+      mAvoidIntersectionsModeButton->setDefaultAction( mAvoidIntersectionsCurrentLayerAction );
+      mAllowIntersectionsAction->setChecked( false );
+      mAvoidIntersectionsCurrentLayerAction->setChecked( true );
+      mAvoidIntersectionsLayersAction->setChecked( false );
+      break;
+    case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
+      mAvoidIntersectionsModeButton->setDefaultAction( mAvoidIntersectionsLayersAction );
+      mAllowIntersectionsAction->setChecked( false );
+      mAvoidIntersectionsCurrentLayerAction->setChecked( false );
+      mAvoidIntersectionsLayersAction->setChecked( true );
+      break;
+  }
+}
+
 void QgsSnappingWidget::projectTopologicalEditingChanged()
 {
   if ( mProject->topologicalEditing() != mTopologicalEditingAction->isChecked() )
@@ -549,6 +597,33 @@ void QgsSnappingWidget::onSnappingTreeLayersChanged()
 {
   mLayerTreeView->expandAll();
   mLayerTreeView->resizeColumnToContents( 0 );
+}
+
+void QgsSnappingWidget::avoidIntersectionsModeButtonTriggered( QAction *action )
+{
+  if ( action != mAllowIntersectionsAction &&
+       action != mAvoidIntersectionsCurrentLayerAction &&
+       action != mAvoidIntersectionsLayersAction )
+  {
+    return;
+  }
+
+  if ( action != mAvoidIntersectionsModeButton->defaultAction() )
+  {
+    mAvoidIntersectionsModeButton->setDefaultAction( action );
+    if ( action == mAllowIntersectionsAction )
+    {
+      mProject->setAvoidIntersectionsMode( QgsProject::AvoidIntersectionsMode::AllowIntersections );
+    }
+    else if ( action == mAvoidIntersectionsCurrentLayerAction )
+    {
+      mProject->setAvoidIntersectionsMode( QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer );
+    }
+    else if ( action == mAvoidIntersectionsLayersAction )
+    {
+      mProject->setAvoidIntersectionsMode( QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers );
+    }
+  }
 }
 
 void QgsSnappingWidget::modeButtonTriggered( QAction *action )
