@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgstransform.h
+                          qgsprocess.h
                           -------------------
     begin                : February 2019
     copyright            : (C) 2019 Nyall Dawson
@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstransform.h"
+#include "qgsprocess.h"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsnativealgorithms.h"

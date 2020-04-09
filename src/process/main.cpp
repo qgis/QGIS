@@ -50,7 +50,7 @@ typedef SInt32 SRefCon;
 #endif
 #endif
 
-#include "qgstransform.h"
+#include "qgsprocess.h"
 #include "qgsapplication.h"
 #include "qgsproviderregistry.h"
 

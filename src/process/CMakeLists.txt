@@ -1,16 +1,16 @@
 ########################################################
 # Files
 
-SET(QGIS_TRANSFORM_SRCS
+SET(QGIS_PROCESS_SRCS
   main.cpp
-  qgstransform.cpp
+  qgsprocess.cpp
   ${CMAKE_SOURCE_DIR}/external/qt-unix-signals/sigwatch.cpp
 )
 
 ########################################################
 # Build
 
-ADD_EXECUTABLE (qgis_transform MACOSX_BUNDLE WIN32 ${QGIS_TRANSFORM_SRCS} )
+ADD_EXECUTABLE (qgis_process MACOSX_BUNDLE WIN32 ${QGIS_PROCESS_SRCS} )
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
@@ -49,24 +49,24 @@ IF (WITH_3D)
 ENDIF (WITH_3D)
 
 IF (WITH_BINDINGS)
-  TARGET_LINK_LIBRARIES(qgis_transform qgispython)
+  TARGET_LINK_LIBRARIES(qgis_process qgispython)
 ENDIF(WITH_BINDINGS)
 
-TARGET_LINK_LIBRARIES(qgis_transform
+TARGET_LINK_LIBRARIES(qgis_process
   qgis_core
   qgis_analysis
   ${Qt5Core_LIBRARIES}
 )
 
 IF (WITH_3D)
-  TARGET_LINK_LIBRARIES(qgis_transform
+  TARGET_LINK_LIBRARIES(qgis_process
     qgis_3d
   )
 ENDIF (WITH_3D)
 
 # install
 
-INSTALL (TARGETS qgis_transform
+INSTALL (TARGETS qgis_process
   BUNDLE DESTINATION ${QGIS_BIN_DIR}
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
 )
