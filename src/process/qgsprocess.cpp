@@ -245,7 +245,7 @@ void QgsProcessingExec::showUsage( const QString &appName )
       << "\tplugins\tlist available and active plugins\n"
       << "\tlist\tlist all available processing algorithms\n"
       << "\thelp\tshow help for an algorithm. The algorithm id argument must be specified.\n"
-      << "\trun\truns an algorithm. The algorithm id argument and parameter values must be specified.\n";
+      << "\trun\truns an algorithm. The algorithm id argument and parameter values must be specified. Parameter values are specified via the --PARAMETER=VALUE syntax\n";
 
   std::cout << msg.join( QString() ).toLocal8Bit().constData();
 }
@@ -394,6 +394,27 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params )
   for ( auto it = params.constBegin(); it != params.constEnd(); ++it )
   {
     std::cout << it.key().toLocal8Bit().constData() << ":\t" << it.value().toString().toLocal8Bit().constData() << '\n';
+  }
+
+  const QgsProcessingParameterDefinitions defs = alg->parameterDefinitions();
+  QList< const QgsProcessingParameterDefinition * > missingParams;
+  for ( const QgsProcessingParameterDefinition *p : defs )
+  {
+    if ( !( p->flags() & QgsProcessingParameterDefinition::FlagOptional ) && !params.contains( p->name() ) )
+    {
+      missingParams << p;
+    }
+  }
+
+  if ( !missingParams.isEmpty() )
+  {
+    std::cerr << QStringLiteral( "ERROR: The following mandatory parameters were not specified\n\n" ).toLocal8Bit().constData();
+    for ( const QgsProcessingParameterDefinition *p : qgis::as_const( missingParams ) )
+    {
+      std::cerr << QStringLiteral( "\t%1:\t%2\n" ).arg( p->name(), p->description() ).toLocal8Bit().constData();
+    }
+
+    return 1;
   }
 
   QgsProcessingContext context;
