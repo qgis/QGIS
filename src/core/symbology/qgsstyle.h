@@ -413,6 +413,15 @@ class CORE_EXPORT QgsStyle : public QObject
     bool removeSymbol( const QString &name );
 
     /**
+     * Renames an entity of the specified \a type from \a oldName to \a newName.
+     *
+     * Returns TRUE if the entity was successfully renamed.
+     *
+     * \since QGIS 3.14
+     */
+    bool renameEntity( StyleEntity type, const QString &oldName, const QString &newName );
+
+    /**
      * Renames a symbol from \a oldName to \a newName.
      *
      * Returns TRUE if symbol was successfully renamed.
@@ -865,15 +874,8 @@ class CORE_EXPORT QgsStyle : public QObject
     QgsTextFormatMap mTextFormats;
     QgsLabelSettingsMap mLabelSettings;
 
-    QHash< QString, QStringList > mCachedSymbolTags;
-    QHash< QString, QStringList > mCachedColorRampTags;
-    QHash< QString, QStringList > mCachedTextFormatTags;
-    QHash< QString, QStringList > mCachedLabelSettingsTags;
-
-    QHash< QString, bool > mCachedSymbolFavorites;
-    QHash< QString, bool > mCachedColorRampFavorites;
-    QHash< QString, bool > mCachedTextFormatFavorites;
-    QHash< QString, bool > mCachedLabelSettingsFavorites;
+    QHash< QgsStyle::StyleEntity, QHash< QString, QStringList > > mCachedTags;
+    QHash< QgsStyle::StyleEntity, QHash< QString, bool > > mCachedFavorites;
 
     QString mErrorString;
     QString mFileName;
