@@ -26,7 +26,10 @@
 #include "qgsapplication.h"
 #include "qgsprocessingparametertype.h"
 
+#if !defined(Q_OS_WIN)
 #include "sigwatch.h"
+#endif
+
 #include <iostream>
 
 ConsoleFeedback::ConsoleFeedback()
@@ -393,6 +396,7 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params )
   QgsProcessingContext context;
   ConsoleFeedback feedback;
 
+#if !defined(Q_OS_WIN)
   UnixSignalWatcher sigwatch;
   sigwatch.watchForSignal( SIGINT );
 
@@ -408,6 +412,7 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params )
         break;
     }
   } );
+#endif
 
   bool ok = false;
   std::cout << "\n";
