@@ -4,8 +4,13 @@
 SET(QGIS_PROCESS_SRCS
   main.cpp
   qgsprocess.cpp
-  ${CMAKE_SOURCE_DIR}/external/qt-unix-signals/sigwatch.cpp
 )
+
+IF (UNIX AND NOT APPLE AND NOT ANDROID)
+  SET(QGIS_PROCESS_SRCS ${QGIS_PROCESS_SRCS}
+    ${CMAKE_SOURCE_DIR}/external/qt-unix-signals/sigwatch.cpp
+  )
+ENDIF (UNIX AND NOT APPLE AND NOT ANDROID)
 
 ########################################################
 # Build
@@ -16,10 +21,16 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 INCLUDE_DIRECTORIES(SYSTEM
-  ${CMAKE_SOURCE_DIR}/external/qt-unix-signals
   ${QT_INCLUDE_DIR}
   ${QGIS_INCLUDE_DIR}
 )
+
+IF (UNIX AND NOT APPLE AND NOT ANDROID)
+  INCLUDE_DIRECTORIES(SYSTEM
+    ${CMAKE_SOURCE_DIR}/external/qt-unix-signals
+  )
+ENDIF (UNIX AND NOT APPLE AND NOT ANDROID)
+
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/expression
