@@ -204,7 +204,7 @@ QVariantMap QgsRoundRasterValuesAlgorithm::processAlgorithm( const QVariantMap &
             {
               roundedVal = roundDown( val, mDecimalPrecision );
             }
-            //interger values get automatically cast to double when reading and back to int when writing
+            //integer values get automatically cast to double when reading and back to int when writing
             analysisRasterBlock->setValue( row, column, roundedVal );
           }
         }
