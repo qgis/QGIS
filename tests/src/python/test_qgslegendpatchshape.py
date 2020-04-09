@@ -12,12 +12,21 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.PyQt.QtCore import (QSizeF,
-                              QPointF)
-from qgis.PyQt.QtGui import QPolygonF
+from qgis.PyQt.QtCore import (QSize,
+                              QSizeF,
+                              QPointF,
+                              QDir)
+from qgis.PyQt.QtGui import (QPolygonF,
+                             QImage,
+                             QPainter,
+                             QColor)
 from qgis.core import (QgsLegendPatchShape,
                        QgsGeometry,
-                       QgsSymbol
+                       QgsSymbol,
+                       QgsFillSymbol,
+                       QgsLineSymbol,
+                       QgsMarkerSymbol,
+                       QgsRenderChecker
                        )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -28,6 +37,18 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLegendPatchShape(unittest.TestCase):
+
+    def setUp(self):
+        # Create some simple symbols
+        self.fill_symbol = QgsFillSymbol.createSimple({'color': '#ffffff', 'outline_color': 'black'})
+        self.line_symbol = QgsLineSymbol.createSimple({'color': '#ffffff', 'line_width': '3'})
+        self.marker_symbol = QgsMarkerSymbol.createSimple({'color': '#ffffff', 'size': '3', 'outline_color': 'black'})
+        self.report = "<h1>Python QgsLegendPatchShape Tests</h1>\n"
+
+    def tearDown(self):
+        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(self.report)
 
     def testBasic(self):
         shape = QgsLegendPatchShape(QgsSymbol.Line, QgsGeometry.fromWkt('LineString( 0 0, 1 1)'), False)
@@ -151,6 +172,75 @@ class TestQgsLegendPatchShape(unittest.TestCase):
         shape = QgsLegendPatchShape(QgsSymbol.Fill, QgsGeometry.fromWkt('MultiPolygon(((5 5, 1 2, 3 4, 5 5), (4.5 4.5, 4.4 4.4, 4.5 4.4, 4.5 4.5)),((10 11, 11 11, 11 10, 10 11)))'), False)
         self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.Fill, QSizeF(1, 1))), [[[[0.4, 0.667], [0.0, 1.0], [0.2, 0.778], [0.4, 0.667]], [[0.35, 0.722], [0.34, 0.733], [0.35, 0.733], [0.35, 0.722]]], [[[0.9, 0.0], [1.0, 0.0], [1.0, 0.111], [0.9, 0.0]]]])
         self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.Fill, QSizeF(10, 2))), [[[[4.0, 1.333], [0.0, 2.0], [2.0, 1.556], [4.0, 1.333]], [[3.5, 1.444], [3.4, 1.467], [3.5, 1.467], [3.5, 1.444]]], [[[9.0, 0.0], [10.0, 0.0], [10.0, 0.222], [9.0, 0.0]]]])
+
+    def testRenderMarker(self):
+        shape = QgsLegendPatchShape(QgsSymbol.Marker, QgsGeometry.fromWkt('MultiPoint((5 5), (3 4), (1 2))'), False)
+        rendered_image = self.renderPatch(shape)
+        self.assertTrue(self.imageCheck('Marker', 'marker_multipoint', rendered_image))
+
+    def testRenderMarkerPreserve(self):
+        shape = QgsLegendPatchShape(QgsSymbol.Marker, QgsGeometry.fromWkt('MultiPoint((5 5), (3 4), (1 2))'), True)
+        rendered_image = self.renderPatch(shape)
+        self.assertTrue(self.imageCheck('Marker Preserve', 'marker_multipoint_preserve', rendered_image))
+
+    def testRenderLine(self):
+        shape = QgsLegendPatchShape(QgsSymbol.Line, QgsGeometry.fromWkt('LineString(5 5, 3 4, 1 2)'), False)
+        rendered_image = self.renderPatch(shape)
+        self.assertTrue(self.imageCheck('Line', 'line', rendered_image))
+
+    def testRenderLinePreserve(self):
+        shape = QgsLegendPatchShape(QgsSymbol.Line, QgsGeometry.fromWkt('LineString(5 5, 3 4, 1 2)'), True)
+        rendered_image = self.renderPatch(shape)
+        self.assertTrue(self.imageCheck('Line Preserve', 'line_preserve', rendered_image))
+
+    def testRenderMultiLine(self):
+        shape = QgsLegendPatchShape(QgsSymbol.Line, QgsGeometry.fromWkt('MultiLineString((5 5, 3 4, 1 2), ( 6 6, 6 0))'), True)
+        rendered_image = self.renderPatch(shape)
+        self.assertTrue(self.imageCheck('Multiline', 'multiline', rendered_image))
+
+    def testRenderPolygon(self):
+        shape = QgsLegendPatchShape(QgsSymbol.Fill, QgsGeometry.fromWkt('Polygon((1 1 , 6 1, 6 6, 1 1),(4 2, 5 3, 4 3, 4 2))'), False)
+        rendered_image = self.renderPatch(shape)
+        self.assertTrue(self.imageCheck('Polygon', 'polygon', rendered_image))
+
+    def testRenderMultiPolygon(self):
+        shape = QgsLegendPatchShape(QgsSymbol.Fill, QgsGeometry.fromWkt('MultiPolygon(((1 1 , 6 1, 6 6, 1 1),(4 2, 5 3, 4 3, 4 2)),((1 5, 2 5, 1 6, 1 5)))'), False)
+        rendered_image = self.renderPatch(shape)
+        self.assertTrue(self.imageCheck('MultiPolygon', 'multipolygon', rendered_image))
+
+    def renderPatch(self, patch):
+        image = QImage(200, 200, QImage.Format_RGB32)
+
+        painter = QPainter()
+        painter.begin(image)
+        try:
+            image.fill(QColor(0, 0, 0))
+
+            if patch.symbolType() == QgsSymbol.Fill:
+                self.fill_symbol.drawPreviewIcon(painter, QSize(200, 200), None, False, None, patch)
+            elif patch.symbolType() == QgsSymbol.Line:
+                self.line_symbol.drawPreviewIcon(painter, QSize(200, 200), None, False, None, patch)
+            elif patch.symbolType() == QgsSymbol.Marker:
+                self.marker_symbol.drawPreviewIcon(painter, QSize(200, 200), None, False, None, patch)
+        finally:
+            painter.end()
+
+        return image
+
+    def imageCheck(self, name, reference_image, image):
+        self.report += "<h2>Render {}</h2>\n".format(name)
+        temp_dir = QDir.tempPath() + '/'
+        file_name = temp_dir + 'patch_' + name + ".png"
+        image.save(file_name, "PNG")
+        checker = QgsRenderChecker()
+        checker.setControlPathPrefix("legend_patch")
+        checker.setControlName("expected_" + reference_image)
+        checker.setRenderedImage(file_name)
+        checker.setColorTolerance(2)
+        result = checker.compareImages(name, 20)
+        self.report += checker.report()
+        print((self.report))
+        return result
 
 
 if __name__ == '__main__':

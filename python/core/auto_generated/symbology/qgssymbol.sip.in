@@ -272,7 +272,8 @@ layer.
 .. seealso:: :py:func:`setColor`
 %End
 
-    void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = 0, bool selected = false, const QgsExpressionContext *expressionContext = 0 );
+    void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = 0, bool selected = false, const QgsExpressionContext *expressionContext = 0,
+                          const QgsLegendPatchShape *patchShape = 0 );
 %Docstring
 Draws an icon of the symbol that occupies an area given by ``size`` using the specified ``painter``.
 
@@ -284,6 +285,7 @@ matches the settings from that context.
 :param customContext: the context in which the rendering happens
 :param selected: set to ``True`` to render the symbol in a selected state
 :param expressionContext: optional custom expression context
+:param patchShape: optional patch shape to use for symbol preview. If not specified a default shape will be used instead.
 
 .. seealso:: :py:func:`exportImage`
 
@@ -613,6 +615,8 @@ Constructor for QgsSymbolRenderContext
 :param mapUnitScale:
 %End
 
+    ~QgsSymbolRenderContext();
+
 
     QgsRenderContext &renderContext();
 %Docstring
@@ -800,6 +804,24 @@ Set an expression scope for this symbol.
 Will take ownership.
 
 :param contextScope: An expression scope for details about this symbol
+%End
+
+    const QgsLegendPatchShape *patchShape() const;
+%Docstring
+Returns the symbol patch shape, to use if rendering symbol preview icons.
+
+.. seealso:: :py:func:`setPatchShape`
+
+.. versionadded:: 3.14
+%End
+
+    void setPatchShape( const QgsLegendPatchShape &shape );
+%Docstring
+Sets the symbol patch ``shape``, to use if rendering symbol preview icons.
+
+.. seealso:: :py:func:`patchShape`
+
+.. versionadded:: 3.14
 %End
 
   private:
