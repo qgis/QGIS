@@ -130,6 +130,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrepairshapefile.cpp
   processing/qgsalgorithmreverselinedirection.cpp
   processing/qgsalgorithmrotate.cpp
+  processing/qgsalgorithmroundrastervalues.cpp
   processing/qgsalgorithmruggedness.cpp
   processing/qgsalgorithmsavelog.cpp
   processing/qgsalgorithmsaveselectedfeatures.cpp
