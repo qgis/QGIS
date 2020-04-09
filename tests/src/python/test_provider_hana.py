@@ -19,18 +19,19 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 import base64
 import os
 
+from test_hana_utils import QgsHanaProviderUtils
 from hdbcli import dbapi
 from providertestbase import ProviderTestCase
 from PyQt5.QtCore import QVariant, QDate, QTime, QDateTime, QByteArray
 from qgis.core import (
     NULL,
-    QgsVectorLayer,
+    QgsCoordinateReferenceSystem,
     QgsDataProvider,
     QgsDataSourceUri,
-    QgsSettings,
-    QgsCoordinateReferenceSystem,
     QgsFeatureRequest,
-    QgsFeature)
+    QgsFeature,
+    QgsProviderRegistry,
+    QgsSettings)
 from qgis.gui import QgsGui
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -39,96 +40,28 @@ QGISAPP = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-def executeSQL(conn, statement, parameters=None, return_result=False):
-    assert conn
-    cursor = conn.cursor()
-    assert cursor
-    if parameters is not None:
-        cursor.executemany(statement, parameters)
-    else:
-        cursor.execute(statement)
-    if return_result:
-        res = cursor.fetchone()
-    cursor.close()
-    conn.commit()
-    if return_result:
-        return res[0]
-
-
-def executeSQLMany(conn, statement, parameters):
-    executeSQL(conn, statement, parameters)
-
-
-def executeSQLFetchOne(conn, statement):
-    return executeSQL(conn, statement, return_result=True)
-
-
-def createAndFillTable(conn, create_statement, insert_statement, insert_args):
-    executeSQL(conn, create_statement)
-    executeSQLMany(conn, insert_statement, insert_args)
-
-
-def createAndFillDefaultTables(conn):
-    res = executeSQLFetchOne(conn, "SELECT COUNT(*) FROM SYS.SCHEMAS WHERE SCHEMA_NAME='qgis_test'")
-    if res != 0:
-        executeSQL(conn, 'DROP SCHEMA "qgis_test" CASCADE')
-    executeSQL(conn, 'CREATE SCHEMA "qgis_test"')
-
-    create_sql = 'CREATE TABLE "qgis_test"."some_data" ( ' \
-                 '"pk" INTEGER NOT NULL PRIMARY KEY,' \
-                 '"cnt" INTEGER,' \
-                 '"name" NVARCHAR(32) DEFAULT \'qgis\',' \
-                 '"name2" NVARCHAR(32) DEFAULT \'qgis\',' \
-                 '"num_char" NVARCHAR(1),' \
-                 '"geom" ST_GEOMETRY(4326))'
-    insert_sql = 'INSERT INTO "qgis_test"."some_data" ("pk", "cnt", "name", "name2", "num_char", "geom") VALUES (?, ' \
-                 '?, ?, ?, ?, ST_GeomFromEWKB(?)) '
-    insert_args = [[5, -200, None, 'NuLl', '5', bytes.fromhex('0101000020E61000001D5A643BDFC751C01F85EB51B88E5340')],
-                   [3, 300, 'Pear', 'PEaR', '3', None],
-                   [1, 100, 'Orange', 'oranGe', '1',
-                    bytes.fromhex('0101000020E61000006891ED7C3F9551C085EB51B81E955040')],
-                   [2, 200, 'Apple', 'Apple', '2', bytes.fromhex('0101000020E6100000CDCCCCCCCC0C51C03333333333B35140')],
-                   [4, 400, 'Honey', 'Honey', '4', bytes.fromhex('0101000020E610000014AE47E17A5450C03333333333935340')]]
-    createAndFillTable(conn, create_sql, insert_sql, insert_args)
-    executeSQL(conn, 'COMMENT ON TABLE "qgis_test"."some_data" IS \'QGIS Test Table\'')
-
-    create_sql = 'CREATE TABLE "qgis_test"."some_poly_data" ( ' \
-                 '"pk" INTEGER NOT NULL PRIMARY KEY,' \
-                 '"geom" ST_GEOMETRY(4326))'
-    insert_sql = 'INSERT INTO "qgis_test"."some_poly_data" ("pk", "geom") VALUES (?, ST_GeomFromText(?, 4326))'
-    insert_args = [
-        [1, 'Polygon ((-69.0 81.4, -69.0 80.2, -73.7 80.2, -73.7 76.3, -74.9 76.3, -74.9 81.4, -69.0 81.4))'],
-        [2, 'Polygon ((-67.6 81.2, -66.3 81.2, -66.3 76.9, -67.6 76.9, -67.6 81.2))'],
-        [3, 'Polygon ((-68.4 75.8, -67.5 72.6, -68.6 73.7, -70.2 72.9, -68.4 75.8))'],
-        [4, None]]
-    createAndFillTable(conn, create_sql, insert_sql, insert_args)
-
-
-def createVectorLayer(conn_parameters, layer_name):
-    return QgsVectorLayer(conn_parameters, layer_name, 'hana')
-
-
 class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.dbconn = 'driver=\'/usr/sap/hdbclient/libodbcHDB.so\' host=localhost port=30015 ' \
-                     'user=SYSTEM password=mypassword '
+        cls.uri = 'driver=\'/usr/sap/hdbclient/libodbcHDB.so\' host=localhost port=30015 user=SYSTEM ' \
+                  'password=mypassword '
         if 'QGIS_HANA_TEST_DB' in os.environ:
-            cls.dbconn = os.environ['QGIS_HANA_TEST_DB']
-        uri = QgsDataSourceUri(cls.dbconn)
-        cls.conn = dbapi.connect(address=uri.host(), port=uri.port(), user=uri.username(), password=uri.password())
+            cls.uri = os.environ['QGIS_HANA_TEST_DB']
+        ds_uri = QgsDataSourceUri(cls.uri)
+        cls.conn = dbapi.connect(address=ds_uri.host(), port=ds_uri.port(), user=ds_uri.username(),
+                                 password=ds_uri.password())
 
-        createAndFillDefaultTables(cls.conn)
+        QgsHanaProviderUtils.createAndFillDefaultTables(cls.conn)
 
         # Create test layers
-        cls.vl = createVectorLayer(
-            cls.dbconn + ' key=\'pk\' srid=4326 type=POINT table="qgis_test"."some_data" (geom) sql=', 'test')
+        cls.vl = QgsHanaProviderUtils.createVectorLayer(
+            cls.uri + 'key=\'pk\' srid=4326 type=POINT table="qgis_test"."some_data" (geom) sql=', 'test')
         assert cls.vl.isValid()
         cls.source = cls.vl.dataProvider()
-        cls.poly_vl = createVectorLayer(
-            cls.dbconn + ' key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test')
+        cls.poly_vl = QgsHanaProviderUtils.createVectorLayer(
+            cls.uri + 'key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test')
         assert cls.poly_vl.isValid()
         cls.poly_provider = cls.poly_vl.dataProvider()
         QgsGui.editorWidgetRegistry().initEditors()
@@ -136,17 +69,19 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
+        QgsHanaProviderUtils.cleanUp(cls.conn)
 
     def createVectorLayer(self, conn_parameters, layer_name):
-        return createVectorLayer(self.dbconn + conn_parameters, layer_name)
+        return QgsHanaProviderUtils.createVectorLayer(self.uri + ' ' + conn_parameters, layer_name)
 
     def prepareTestTable(self, table_name, create_sql, insert_sql, insert_args):
-        res = executeSQLFetchOne(self.conn,
-                                 "SELECT COUNT(*) FROM SYS.TABLES WHERE SCHEMA_NAME='qgis_test' AND TABLE_NAME='{}'".
-                                 format(table_name))
+        res = QgsHanaProviderUtils.executeSQLFetchOne(self.conn,
+                                                      "SELECT COUNT(*) FROM SYS.TABLES WHERE SCHEMA_NAME='qgis_test' "
+                                                      "AND TABLE_NAME='{}'".
+                                                      format(table_name))
         if res != 0:
-            executeSQL(self.conn, 'DROP TABLE "qgis_test"."{}" CASCADE'.format(table_name))
-        createAndFillTable(self.conn, create_sql, insert_sql, insert_args)
+            QgsHanaProviderUtils.executeSQL(self.conn, 'DROP TABLE "qgis_test"."{}" CASCADE'.format(table_name))
+        QgsHanaProviderUtils.createAndFillTable(self.conn, create_sql, insert_sql, insert_args)
 
     def getSource(self):
         # create temporary table for edit tests
@@ -156,7 +91,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
                      '"name" NVARCHAR(100), ' \
                      '"name2" NVARCHAR(100), ' \
                      '"num_char" NVARCHAR(100),' \
-                     '"geom" ST_GEOMETRY(4326))'
+                     '"geom" ST_POINT(4326))'
         insert_sql = 'INSERT INTO "qgis_test"."edit_data" ("pk", "cnt", "name", "name2", "num_char", "geom") VALUES (' \
                      '?, ?, ?, ?, ?, ST_GeomFromEWKB(?)) '
         insert_args = [
@@ -167,7 +102,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
             [4, 400, 'Honey', 'Honey', '4', bytes.fromhex('0101000020E610000014AE47E17A5450C03333333333935340')]]
         self.prepareTestTable('edit_data', create_sql, insert_sql, insert_args)
 
-        return self.createVectorLayer(' key=\'pk\' srid=4326 type=POINT table="qgis_test"."edit_data" (geom) sql=',
+        return self.createVectorLayer('key=\'pk\' srid=4326 type=POINT table="qgis_test"."edit_data" (geom) sql=',
                                       'test')
 
     def getEditableLayer(self):
@@ -256,7 +191,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         insert_args = [[1, 'TRUE'], [2, 'FALSE'], [3, None]]
         self.prepareTestTable('boolean_type', create_sql, insert_sql, insert_args)
 
-        vl = self.createVectorLayer(' table="qgis_test"."boolean_type" sql=', 'testbool')
+        vl = self.createVectorLayer('table="qgis_test"."boolean_type" sql=', 'testbool')
         self.assertTrue(vl.isValid())
 
         fields = vl.dataProvider().fields()
@@ -277,7 +212,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         insert_args = [[1, '2004-03-04', '13:41:52', '2004-03-04 13:41:52']]
         self.prepareTestTable('date_time_type', create_sql, insert_sql, insert_args)
 
-        vl = self.createVectorLayer(' table="qgis_test"."date_time_type" sql=', 'testdatetimes')
+        vl = self.createVectorLayer('table="qgis_test"."date_time_type" sql=', 'testdatetimes')
         self.assertTrue(vl.isValid())
 
         fields = vl.dataProvider().fields()
@@ -305,7 +240,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         insert_args = [[1, base64.b64encode(b'binvalue')], [2, None]]
         self.prepareTestTable('binary_type', create_sql, insert_sql, insert_args)
 
-        vl = self.createVectorLayer(' table="qgis_test"."binary_type" sql=', 'testbinary')
+        vl = self.createVectorLayer('table="qgis_test"."binary_type" sql=', 'testbinary')
         self.assertTrue(vl.isValid())
 
         fields = vl.dataProvider().fields()
@@ -324,7 +259,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         insert_args = [[1, base64.b64encode(b'bbb')]]
         self.prepareTestTable('binary_type_edit', create_sql, insert_sql, insert_args)
 
-        vl = self.createVectorLayer(' key=\'id\' table="qgis_test"."binary_type_edit" sql=', 'testbinaryedit')
+        vl = self.createVectorLayer('key=\'id\' table="qgis_test"."binary_type_edit" sql=', 'testbinaryedit')
         self.assertTrue(vl.isValid())
         values = {feat['id']: feat['blob'] for feat in vl.getFeatures()}
         expected = {1: QByteArray(b'YmJi')}
@@ -349,6 +284,62 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         values = {feat['id']: feat['blob'] for feat in vl.getFeatures()}
         expected = {1: QByteArray(b'bbbvx'), 2: QByteArray(b'dddd')}
         self.assertEqual(values, expected)
+
+    def testEncodeDecodeUri(self):
+        """Test HANA encode/decode URI"""
+        md = QgsProviderRegistry.instance().providerMetadata('hana')
+        self.assertEqual(md.decodeUri(
+            "driver='/usr/sap/hdbclient/libodbcHDB.so' dbname='qgis_tests' host=localhost port=30015 "
+            "user='myuser' password='mypwd' srid=2016 table=\"public\".\"gis\" (geom) type=MultiPolygon key='id' "
+            "encrypt='true' sslCryptoProvider='commoncrypto' sslValidateCertificate='false' "
+            "sslHostNameInCertificate='hostname.domain.com' sslKeyStore='mykey.pem' "
+            "sslTrustStore='server_root.crt' "),
+            {
+                'driver': '/usr/sap/hdbclient/libodbcHDB.so',
+                'dbname': 'qgis_tests',
+                'host': 'localhost',
+                'port': '30015',
+                'username': 'myuser',
+                'password': 'mypwd',
+                'schema': 'public',
+                'table': 'gis',
+                'geometrycolumn': 'geom',
+                'srid': '2016',
+                'type': 6,
+                'key': 'id',
+                'encrypt': 'true',
+                'sslCryptoProvider': 'commoncrypto',
+                'sslValidateCertificate': 'false',
+                'sslHostNameInCertificate': 'hostname.domain.com',
+                'sslKeyStore': 'mykey.pem',
+                'sslTrustStore': 'server_root.crt',
+                'selectatid': False})
+
+        self.assertEqual(md.encodeUri({'driver': '/usr/sap/hdbclient/libodbcHDB.so',
+                                       'dbname': 'qgis_tests',
+                                       'host': 'localhost',
+                                       'port': '30015',
+                                       'username': 'myuser',
+                                       'password': 'mypwd',
+                                       'schema': 'public',
+                                       'table': 'gis',
+                                       'geometrycolumn': 'geom',
+                                       'srid': '2016',
+                                       'type': 6,
+                                       'key': 'id',
+                                       'encrypt': 'true',
+                                       'sslCryptoProvider': 'commoncrypto',
+                                       'sslValidateCertificate': 'false',
+                                       'sslHostNameInCertificate': 'hostname.domain.com',
+                                       'sslKeyStore': 'mykey.pem',
+                                       'sslTrustStore': 'server_root.crt',
+                                       'selectatid': False}),
+                         "dbname='qgis_tests' driver='/usr/sap/hdbclient/libodbcHDB.so' user='myuser' "
+                         "password='mypwd' srid=2016 encrypt='true' host='localhost' key='id' port='30015' "
+                         "selectatid='false' sslCryptoProvider='commoncrypto' "
+                         "sslHostNameInCertificate='hostname.domain.com' sslKeyStore='mykey.pem' "
+                         "sslTrustStore='server_root.crt' sslValidateCertificate='false' type='MultiPolygon' "
+                         "table=\"public\".\"gis\" (geom)")
 
 
 if __name__ == '__main__':
