@@ -26,7 +26,7 @@
 #include "qgsapplication.h"
 #include "qgsprocessingparametertype.h"
 
-#if !defined(Q_OS_WIN)
+#if defined(Q_OS_UNIX) and !defined(Q_OS_ANDROID)
 #include "sigwatch.h"
 #endif
 
@@ -420,7 +420,7 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params )
   QgsProcessingContext context;
   ConsoleFeedback feedback;
 
-#if !defined(Q_OS_WIN)
+#if defined(Q_OS_UNIX) and !defined(Q_OS_ANDROID)
   UnixSignalWatcher sigwatch;
   sigwatch.watchForSignal( SIGINT );
 
