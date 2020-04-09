@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgstransform.h
+                          qgsprocess.h
                           -------------------
     begin                : February 2019
     copyright            : (C) 2019 Nyall Dawson
@@ -14,8 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSTRANSFORM_H
-#define QGSTRANSFORM_H
+#ifndef QGSPROCESS_H
+#define QGSPROCESS_H
 
 #include "qgsprocessingfeedback.h"
 #include "qgspythonrunner.h"
@@ -71,5 +71,5 @@ class QgsProcessingExec
     std::unique_ptr< QgsPythonUtils > mPythonUtils;
 };
 
-#endif // QGSTRANSFORM_H
+#endif // QGSPROCESS_H
 
