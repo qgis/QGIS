@@ -86,7 +86,7 @@ int main( int argc, char *argv[] )
 #endif  // _MSC_VER
 #endif  // Q_OS_WIN
 
-  QgsApplication *app = new QgsApplication( argc, argv, false );
+  QgsApplication app( argc, argv, false );
   QString myPrefixPath;
   if ( myPrefixPath.isEmpty() )
   {
@@ -114,10 +114,10 @@ int main( int argc, char *argv[] )
 
   QgsProcessingExec exec;
   int res = 0;
-  QTimer::singleShot( 0, app, [&exec, args, &res]
+  QTimer::singleShot( 0, &app, [&exec, args, &res]
   {
     res = exec.run( args );
     QCoreApplication::exit( res );
   } );
-  return app->exec();
+  return app.exec();
 }
