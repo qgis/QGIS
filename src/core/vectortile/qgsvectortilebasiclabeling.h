@@ -110,7 +110,7 @@ class CORE_EXPORT QgsVectorTileBasicLabeling : public QgsVectorTileLabeling
     QgsVectorTileBasicLabeling();
 
     QString type() const override;
-    QgsVectorTileLabeling *clone() const override;
+    QgsVectorTileLabeling *clone() const override SIP_FACTORY;
     QgsVectorTileLabelProvider *provider( QgsVectorTileLayer *layer ) const override SIP_SKIP;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
