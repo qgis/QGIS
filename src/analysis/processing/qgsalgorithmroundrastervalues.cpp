@@ -37,12 +37,12 @@ QStringList QgsRoundRasterValuesAlgorithm::tags() const
 
 QString QgsRoundRasterValuesAlgorithm::group() const
 {
-  return QObject::tr( "Raster tools" );
+  return QObject::tr( "Raster analysis" );
 }
 
 QString QgsRoundRasterValuesAlgorithm::groupId() const
 {
-  return QStringLiteral( "rastertools" );
+  return QStringLiteral( "rasteranalysis" );
 }
 
 void QgsRoundRasterValuesAlgorithm::initAlgorithm( const QVariantMap & )
