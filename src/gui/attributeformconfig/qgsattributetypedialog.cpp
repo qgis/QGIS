@@ -73,8 +73,12 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   mExpressionWidget->registerExpressionContextGenerator( this );
   mExpressionWidget->setLayer( mLayer );
 
-  mAliasExpression->registerExpressionContextGenerator( this );
-  mAliasExpression->setLayer( mLayer );
+  mAliasExpressionProperty = QgsProperty::fromExpression( QString() );
+  mAliasExpressionButton->registerExpressionContextGenerator( this );
+  connect( mAliasExpressionButton, &QgsPropertyOverrideButton::changed, this, [ = ]
+  {
+    mAliasExpressionProperty = mAliasExpressionButton->toProperty();
+  } );
 
   connect( mExpressionWidget, &QgsExpressionLineEdit::expressionChanged, this, &QgsAttributeTypeDialog::defaultExpressionChanged );
   connect( mUniqueCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
@@ -358,14 +362,21 @@ QString QgsAttributeTypeDialog::alias() const
   return mAlias->text();
 }
 
-void QgsAttributeTypeDialog::setAliasExpression( const QString &aliasExpression )
+void QgsAttributeTypeDialog::setAliasExpression( const QString &aliasExpression, bool isActive )
 {
-  mAliasExpression->setExpression( aliasExpression );
+  mAliasExpressionProperty.setExpressionString( aliasExpression );
+  mAliasExpressionProperty.setActive( isActive );
+  mAliasExpressionButton->setToProperty( mAliasExpressionProperty );
 }
 
 QString QgsAttributeTypeDialog::aliasExpression() const
 {
-  return mAliasExpression->expression();
+  return mAliasExpressionProperty.asExpression();
+}
+
+bool QgsAttributeTypeDialog::aliasExpressionIsActive() const
+{
+  return mAliasExpressionProperty.isActive();
 }
 
 void QgsAttributeTypeDialog::setComment( const QString &comment )

@@ -220,16 +220,31 @@ class CORE_EXPORT QgsEditFormConfig
     void setLabelOnTop( int idx, bool onTop );
 
     /**
-     * Returns the (possibly empty) expression for the label of \a fieldName, to be evaluated in the form context.
+     * Returns the (possibly empty or inactive) expression for the label of \a fieldName, to be evaluated in the form context.
+     * \note The returned expression might not be active.
+     * \see labelExpressionIsActive()
      * \since QGIS 3.14
      */
     QString labelExpression( const QString &fieldName ) const;
 
     /**
-     * Set the label expression for \a fieldName to \a labelExpression, to be evaluated in the form context.
+     * Returns true if the label expression for the label of \a fieldName is active and it is not empty.
      * \since QGIS 3.14
      */
-    void setLabelExpression( const QString &fieldName, const QString &labelExpression );
+    bool labelExpressionIsActive( const QString &fieldName ) const;
+
+    /**
+     * Set the label expression for \a fieldName to \a labelExpression, to be evaluated in the form context.
+     * \see setLabelExpressionIsActive() to control its status
+     * \since QGIS 3.14
+     */
+    void setLabelExpression( const QString &fieldName, const QString &labelExpression, bool isActive );
+
+    /**
+     * Set the label expression active state for \a fieldName to \a isActive
+     * \since QGIS 3.14
+     */
+    void setLabelExpressionIsActive( const QString &fieldName, bool isActive );
 
     // Python form init function stuff
 

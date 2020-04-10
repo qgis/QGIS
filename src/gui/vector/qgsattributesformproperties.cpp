@@ -243,7 +243,7 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
   QgsFieldConstraints constraints = cfg.mFieldConstraints;
 
   mAttributeTypeDialog->setAlias( cfg.mAlias );
-  mAttributeTypeDialog->setAliasExpression( cfg.mAliasExpression );
+  mAttributeTypeDialog->setAliasExpression( cfg.mAliasExpression, cfg.mAliasExpressionIsActive );
   mAttributeTypeDialog->setComment( cfg.mComment );
   mAttributeTypeDialog->setFieldEditable( cfg.mEditable );
   mAttributeTypeDialog->setLabelOnTop( cfg.mLabelOnTop );
@@ -291,6 +291,7 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
   cfg.mLabelOnTop = mAttributeTypeDialog->labelOnTop();
   cfg.mAlias = mAttributeTypeDialog->alias();
   cfg.mAliasExpression = mAttributeTypeDialog->aliasExpression();
+  cfg.mAliasExpressionIsActive = mAttributeTypeDialog->aliasExpressionIsActive();
 
   QgsFieldConstraints constraints;
   if ( mAttributeTypeDialog->notNull() )
@@ -699,6 +700,7 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
       int idx = mLayer->fields().lookupField( itemData.name() );
       widgetDef = new QgsAttributeEditorField( itemData.name(), idx, parent );
       widgetDef->setLabelExpression( mAttributeTypeDialog->aliasExpression() );
+      widgetDef->setLabelExpressionIsActive( mAttributeTypeDialog->aliasExpressionIsActive() );
       break;
     }
 
@@ -850,7 +852,7 @@ void QgsAttributesFormProperties::apply()
 
     editFormConfig.setReadOnly( idx, !cfg.mEditable );
     editFormConfig.setLabelOnTop( idx, cfg.mLabelOnTop );
-    editFormConfig.setLabelExpression( fieldName, cfg.mAliasExpression );
+    editFormConfig.setLabelExpression( fieldName, cfg.mAliasExpression, cfg.mAliasExpressionIsActive );
     mLayer->setEditorWidgetSetup( idx, QgsEditorWidgetSetup( cfg.mEditorWidgetType, cfg.mEditorWidgetConfig ) );
 
     QgsFieldConstraints constraints = cfg.mFieldConstraints;
@@ -932,6 +934,7 @@ QgsAttributesFormProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, in
 {
   mAlias = layer->fields().at( idx ).alias();
   mAliasExpression = layer->editFormConfig().labelExpression( layer->fields().field( idx ).name() );
+  mAliasExpressionIsActive = layer->editFormConfig().labelExpressionIsActive( layer->fields().field( idx ).name() );
   mComment = layer->fields().at( idx ).comment();
   mEditable = !layer->editFormConfig().readOnly( idx );
   mEditableEnabled = layer->fields().fieldOrigin( idx ) != QgsFields::OriginJoin

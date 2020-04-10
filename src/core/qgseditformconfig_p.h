@@ -60,7 +60,7 @@ class QgsEditFormConfigPrivate : public QSharedData
 
     QMap< QString, bool> mFieldEditables;
     QMap< QString, bool> mLabelOnTop;
-    QMap< QString, QString> mLabelExpressions;
+    QMap< QString, QPair<QString, bool>> mLabelExpressions;
 
     QMap<QString, QVariantMap > mWidgetConfigs;
 

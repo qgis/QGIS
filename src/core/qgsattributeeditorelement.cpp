@@ -140,6 +140,16 @@ void QgsAttributeEditorElement::setLabelExpression( const QString &labelExpressi
   mLabelExpression = labelExpression;
 }
 
+bool QgsAttributeEditorElement::labelExpressionIsActive() const
+{
+  return mLabelExpressionIsActive;
+}
+
+void QgsAttributeEditorElement::setLabelExpressionIsActive( bool labelExpressionIsActive )
+{
+  mLabelExpressionIsActive = labelExpressionIsActive;
+}
+
 void QgsAttributeEditorRelation::saveConfiguration( QDomElement &elem ) const
 {
   elem.setAttribute( QStringLiteral( "relation" ), mRelation.id() );

@@ -77,16 +77,22 @@ class GUI_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
     QString alias() const;
 
     /**
-     * Sets expression for for label alias
+     * Sets expression for the label alias override to \a aliasExpression and its active state to \a isActive.
      * \since QGIS 3.14
      */
-    void setAliasExpression( const QString &aliasExpression );
+    void setAliasExpression( const QString &aliasExpression, bool isActive );
 
     /**
      * Returns the expression for the label alias
      * \since QGIS 3.14
      */
     QString aliasExpression() const;
+
+    /**
+     * Returns TRUE if the expression override for the label alias is active.
+     * \since QGIS 3.14
+     */
+    bool aliasExpressionIsActive() const;
 
     /**
      * Setter for label comment
@@ -233,6 +239,8 @@ class GUI_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
 
     //! Cached configuration dialog (lazy loaded)
     QMap< QString, QgsEditorConfigWidget * > mEditorConfigWidgets;
+
+    QgsProperty mAliasExpressionProperty;
 
     QStandardItem *currentItem() const;
 

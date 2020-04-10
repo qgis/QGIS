@@ -1474,7 +1474,7 @@ void QgsAttributeForm::init()
           layout->addWidget( widgetInfo.widget, row, column++ );
         }
 
-        if ( ! widgetInfo.labelExpression.isEmpty() )
+        if ( ! widgetInfo.labelExpression.isEmpty() && widgetInfo.labelExpressionIsActive )
         {
           mExpressionLabels[ label ] = QgsExpression( widgetInfo.labelExpression );
         }
@@ -1532,6 +1532,7 @@ void QgsAttributeForm::init()
       labelText.replace( '&', QStringLiteral( "&&" ) ); // need to escape '&' or they'll be replace by _ in the label text
 
       const QString labelExpression { mLayer->editFormConfig().labelExpression( field.name() ) };
+      const bool labelExpressionIsActive { mLayer->editFormConfig().labelExpressionIsActive( field.name() ) };
       const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, field.name() );
 
       if ( widgetSetup.type() == QLatin1String( "Hidden" ) )
@@ -1545,7 +1546,7 @@ void QgsAttributeForm::init()
       QSvgWidget *i = new QSvgWidget();
       i->setFixedSize( 18, 18 );
 
-      if ( ! labelExpression.isEmpty() )
+      if ( ! labelExpression.isEmpty() && labelExpressionIsActive )
       {
         mExpressionLabels[ label ] = QgsExpression( labelExpression );
       }
@@ -2089,6 +2090,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
   newWidgetInfo.showLabel = widgetDef->showLabel();
   newWidgetInfo.labelExpression = widgetDef->labelExpression();
+  newWidgetInfo.labelExpressionIsActive = widgetDef->labelExpressionIsActive();
 
   return newWidgetInfo;
 }

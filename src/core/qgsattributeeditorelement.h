@@ -134,24 +134,39 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
     void setShowLabel( bool showLabel );
 
     /**
-     * Returns the (possibly empty) label expression
+     * Returns the (possibly empty or inactive) label expression.
+     * \see labelExpressionIsActive()
      * \since QGIS 3.14
      */
     QString labelExpression() const;
 
     /**
-     * Sets the label expression for the field to \a labelExpression.
-     * If set to an empty string the field label will be taken from
+     * Sets the label expression override for the field to \a labelExpression.
+     * If the override is not active or it is set to an empty string the field label will be taken from
      * the label alias if set or from the field name otherwise.
+     * \see setLabelExpressionIsActive
      * \since QGIS 3.14
      */
     void setLabelExpression( const QString &labelExpression );
+
+    /**
+     * Returns the status of the label expression override.
+     * \since QGIS 3.14
+     */
+    bool labelExpressionIsActive() const;
+
+    /**
+     * Sets the status of a label expression override to \a labelExpressionIsActive.
+     * \since QGIS 3.14
+     */
+    void setLabelExpressionIsActive( bool labelExpressionIsActive );
 
   protected:
 #ifndef SIP_RUN
     AttributeEditorType mType;
     QString mName;
     QString mLabelExpression;
+    bool mLabelExpressionIsActive;
     QgsAttributeEditorElement *mParent = nullptr;
     bool mShowLabel;
 #endif
