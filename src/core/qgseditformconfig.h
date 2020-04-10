@@ -234,17 +234,11 @@ class CORE_EXPORT QgsEditFormConfig
     bool labelExpressionIsActive( const QString &fieldName ) const;
 
     /**
-     * Set the label expression for \a fieldName to \a labelExpression, to be evaluated in the form context.
-     * \see setLabelExpressionIsActive() to control its status
+     * Set the label expression for \a fieldName to \a labelExpression and the active state to \a isActive,
+     * to be evaluated in the form context.
      * \since QGIS 3.14
      */
     void setLabelExpression( const QString &fieldName, const QString &labelExpression, bool isActive );
-
-    /**
-     * Set the label expression active state for \a fieldName to \a isActive
-     * \since QGIS 3.14
-     */
-    void setLabelExpressionIsActive( const QString &fieldName, bool isActive );
 
     // Python form init function stuff
 

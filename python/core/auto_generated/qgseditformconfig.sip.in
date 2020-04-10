@@ -213,16 +213,8 @@ Returns true if the label expression for the label of ``fieldName`` is active an
 
     void setLabelExpression( const QString &fieldName, const QString &labelExpression, bool isActive );
 %Docstring
-Set the label expression for ``fieldName`` to ``labelExpression``, to be evaluated in the form context.
-
-.. seealso:: :py:func:`setLabelExpressionIsActive`
-
-.. versionadded:: 3.14
-%End
-
-    void setLabelExpressionIsActive( const QString &fieldName, bool isActive );
-%Docstring
-Set the label expression active state for ``fieldName`` to ``isActive``
+Set the label expression for ``fieldName`` to ``labelExpression`` and the active state to ``isActive``,
+to be evaluated in the form context.
 
 .. versionadded:: 3.14
 %End
