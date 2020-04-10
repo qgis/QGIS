@@ -62,7 +62,6 @@ class QgsRoundRasterValuesAlgorithm : public QgsProcessingAlgorithm
     double roundUpBaseN( double &value, int &multipleOfBaseN );
     double roundDownBaseN( double &value, int &multipleOfBaseN );
 
-    QgsRasterLayer *mInputRaster;
     int mDecimalPrecision = 2;
     int mBaseN = 10;
     int mMultipleOfBaseN;
