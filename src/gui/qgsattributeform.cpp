@@ -1712,7 +1712,7 @@ void QgsAttributeForm::initPython()
   // the source for the function code and the customUi should be used
   if ( !mLayer->editFormConfig().initFunction().isEmpty()
        && mLayer->editFormConfig().initCodeSource() != QgsEditFormConfig::CodeSourceNone 
-       && mContext.allowCustomUi())
+       && mContext.allowCustomUi() )
   {
 
     QString initFunction = mLayer->editFormConfig().initFunction();
