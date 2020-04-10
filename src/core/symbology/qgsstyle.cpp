@@ -168,6 +168,7 @@ bool QgsStyle::saveSymbol( const QString &name, QgsSymbol *symbol, bool favorite
   tagSymbol( SymbolEntity, name, tags );
 
   emit symbolSaved( name, symbol );
+  emit entityAdded( SymbolEntity, name );
 
   return true;
 }
@@ -201,6 +202,7 @@ bool QgsStyle::removeSymbol( const QString &name )
     mCachedTags[ SymbolEntity ].remove( name );
     mCachedFavorites[ SymbolEntity ].remove( name );
     emit symbolRemoved( name );
+    emit entityRemoved( SymbolEntity, name );
   }
   return result;
 }
@@ -345,6 +347,7 @@ bool QgsStyle::saveColorRamp( const QString &name, QgsColorRamp *ramp, bool favo
   tagSymbol( ColorrampEntity, name, tags );
 
   emit rampAdded( name );
+  emit entityAdded( ColorrampEntity, name );
 
   return true;
 }
@@ -366,6 +369,7 @@ bool QgsStyle::removeColorRamp( const QString &name )
   mCachedFavorites[ ColorrampEntity ].remove( name );
 
   emit rampRemoved( name );
+  emit entityRemoved( ColorrampEntity, name );
 
   return true;
 }
@@ -689,7 +693,10 @@ bool QgsStyle::renameSymbol( const QString &oldName, const QString &newName )
 
   const bool result = rename( SymbolEntity, symbolid, newName );
   if ( result )
+  {
     emit symbolRenamed( oldName, newName );
+    emit entityRenamed( SymbolEntity, oldName, newName );
+  }
 
   return result;
 }
@@ -721,7 +728,10 @@ bool QgsStyle::renameColorRamp( const QString &oldName, const QString &newName )
   }
   const bool result = rename( ColorrampEntity, rampid, newName );
   if ( result )
+  {
     emit rampRenamed( oldName, newName );
+    emit entityRenamed( ColorrampEntity, oldName, newName );
+  }
 
   return result;
 }
@@ -755,6 +765,7 @@ bool QgsStyle::saveTextFormat( const QString &name, const QgsTextFormat &format,
   tagSymbol( TextFormatEntity, name, tags );
 
   emit textFormatAdded( name );
+  emit entityAdded( TextFormatEntity, name );
 
   return true;
 }
@@ -777,6 +788,7 @@ bool QgsStyle::removeTextFormat( const QString &name )
   mCachedFavorites[ TextFormatEntity ].remove( name );
 
   emit textFormatRemoved( name );
+  emit entityRemoved( TextFormatEntity, name );
 
   return true;
 
@@ -809,7 +821,10 @@ bool QgsStyle::renameTextFormat( const QString &oldName, const QString &newName 
   }
   const bool result = rename( TextFormatEntity, textFormatId, newName );
   if ( result )
+  {
     emit textFormatRenamed( oldName, newName );
+    emit entityRenamed( TextFormatEntity, oldName, newName );
+  }
 
   return result;
 }
@@ -843,6 +858,7 @@ bool QgsStyle::saveLabelSettings( const QString &name, const QgsPalLayerSettings
   tagSymbol( LabelSettingsEntity, name, tags );
 
   emit labelSettingsAdded( name );
+  emit entityAdded( LabelSettingsEntity, name );
 
   return true;
 }
@@ -865,6 +881,7 @@ bool QgsStyle::removeLabelSettings( const QString &name )
   mCachedFavorites[ LabelSettingsEntity ].remove( name );
 
   emit labelSettingsRemoved( name );
+  emit entityRemoved( LabelSettingsEntity, name );
 
   return true;
 }
@@ -896,7 +913,10 @@ bool QgsStyle::renameLabelSettings( const QString &oldName, const QString &newNa
   }
   const bool result = rename( LabelSettingsEntity, labelSettingsId, newName );
   if ( result )
+  {
     emit labelSettingsRenamed( oldName, newName );
+    emit entityRenamed( LabelSettingsEntity, oldName, newName );
+  }
 
   return result;
 }
@@ -2778,6 +2798,7 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
       case SmartgroupEntity:
         break;
     }
+    emit entityChanged( type, name );
   }
   return true;
 }
