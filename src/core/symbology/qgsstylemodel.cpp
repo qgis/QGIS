@@ -532,47 +532,30 @@ void QgsStyleModel::rebuildSymbolIcons()
 
 QgsStyle::StyleEntity QgsStyleModel::entityTypeFromRow( int row ) const
 {
-  // NOTE -- this is just here to throw warnings when new entity types are added, ensuring that this logic gets upgraded!!
-  switch ( 0 )
+  int maxRowForEntity = 0;
+  for ( QgsStyle::StyleEntity type : ENTITIES )
   {
-    case QgsStyle::LabelSettingsEntity:
-    case QgsStyle::TextFormatEntity:
-    case QgsStyle::ColorrampEntity:
-    case QgsStyle::SymbolEntity:
-    case QgsStyle::TagEntity:
-    case QgsStyle::SmartgroupEntity:
-      break;
+    maxRowForEntity += mEntityNames[ type ].size();
+    if ( row < maxRowForEntity )
+      return type;
   }
 
-  if ( row >= mStyle->symbolCount() + mStyle->colorRampCount() + mEntityNames[ QgsStyle::TextFormatEntity ].count() )
-    return QgsStyle::LabelSettingsEntity;
-  else if ( row >= mStyle->symbolCount() + mStyle->colorRampCount() )
-    return QgsStyle::TextFormatEntity;
-  else if ( row >= mStyle->symbolCount() )
-    return QgsStyle::ColorrampEntity;
+  // should never happen
+  Q_ASSERT( false );
   return QgsStyle::SymbolEntity;
 }
 
 int QgsStyleModel::offsetForEntity( QgsStyle::StyleEntity entity ) const
 {
   int offset = 0;
-  switch ( entity )
+  for ( QgsStyle::StyleEntity type : ENTITIES )
   {
-    case QgsStyle::LabelSettingsEntity:
-      offset += mEntityNames[ QgsStyle::TextFormatEntity ].size();
-      FALLTHROUGH
-    case QgsStyle::TextFormatEntity:
-      offset += mEntityNames[ QgsStyle::ColorrampEntity ].size();
-      FALLTHROUGH
-    case QgsStyle::ColorrampEntity:
-      offset += mEntityNames[ QgsStyle::SymbolEntity ].size();
-      FALLTHROUGH
-    case QgsStyle::SymbolEntity:
-    case QgsStyle::TagEntity:
-    case QgsStyle::SmartgroupEntity:
-      break;
+    if ( type == entity )
+      return offset;
+
+    offset += mEntityNames[ type ].size();
   }
-  return offset;
+  return 0;
 }
 
 //
