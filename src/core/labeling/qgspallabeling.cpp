@@ -499,6 +499,19 @@ QSet<QString> QgsPalLayerSettings::referencedFields() const
   }
 
   referenced.unite( mDataDefinedProperties.referencedFields( QgsExpressionContext(), true ) );
+
+  if ( geometryGeneratorEnabled )
+  {
+    QgsExpression geomGeneratorExpr( geometryGenerator );
+    referenced.unite( geomGeneratorExpr.referencedColumns() );
+  }
+
+  if ( mCallout )
+  {
+    // TODO: this needs further attention
+    referenced.unite( mCallout->referencedFields( QgsRenderContext() ) );
+  }
+
   return referenced;
 }
 

@@ -131,7 +131,7 @@ sub-layer name, geometry type, filter expression, zoom range and label settings.
 
     virtual QString type() const;
 
-    virtual QgsVectorTileLabeling *clone() const;
+    virtual QgsVectorTileLabeling *clone() const /Factory/;
 
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
 
