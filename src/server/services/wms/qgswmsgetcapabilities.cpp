@@ -265,14 +265,26 @@ namespace QgsWms
     nameElem.appendChild( nameText );
     serviceElem.appendChild( nameElem );
 
+    QDomText titleText;
     QString title = QgsServerProjectUtils::owsServiceTitle( *project );
+    QDomElement titleElem = doc.createElement( QStringLiteral( "Title" ) );
     if ( !title.isEmpty() )
     {
-      QDomElement titleElem = doc.createElement( QStringLiteral( "Title" ) );
-      QDomText titleText = doc.createTextNode( title );
-      titleElem.appendChild( titleText );
-      serviceElem.appendChild( titleElem );
+      titleText = doc.createTextNode( title );
     }
+    else
+    {
+      if ( !project->title().isEmpty() )
+      {
+        titleText = doc.createTextNode( project->title() );
+      }
+      else
+      {
+        titleText = doc.createTextNode( QStringLiteral( "untitled" ) );
+      }
+    }
+    titleElem.appendChild( titleText );
+    serviceElem.appendChild( titleElem );
 
     QString abstract = QgsServerProjectUtils::owsServiceAbstract( *project );
     if ( !abstract.isEmpty() )
@@ -312,36 +324,45 @@ namespace QgsWms
 
       //Contact person primary
       if ( !contactPerson.isEmpty() ||
-           !contactOrganization.isEmpty() ||
-           !contactPosition.isEmpty() )
+           !contactOrganization.isEmpty() )
       {
         QDomElement contactPersonPrimaryElem = doc.createElement( QStringLiteral( "ContactPersonPrimary" ) );
 
+        QDomText contactPersonText;
         if ( !contactPerson.isEmpty() )
         {
-          QDomElement contactPersonElem = doc.createElement( QStringLiteral( "ContactPerson" ) );
-          QDomText contactPersonText = doc.createTextNode( contactPerson );
-          contactPersonElem.appendChild( contactPersonText );
-          contactPersonPrimaryElem.appendChild( contactPersonElem );
+          contactPersonText = doc.createTextNode( contactPerson );
         }
+        else
+        {
+          contactPersonText = doc.createTextNode( QStringLiteral( "unknown" ) );
+        }
+        QDomElement contactPersonElem = doc.createElement( QStringLiteral( "ContactPerson" ) );
+        contactPersonElem.appendChild( contactPersonText );
+        contactPersonPrimaryElem.appendChild( contactPersonElem );
 
+        QDomText contactOrganizationText;
         if ( !contactOrganization.isEmpty() )
         {
-          QDomElement contactOrganizationElem = doc.createElement( QStringLiteral( "ContactOrganization" ) );
-          QDomText contactOrganizationText = doc.createTextNode( contactOrganization );
-          contactOrganizationElem.appendChild( contactOrganizationText );
-          contactPersonPrimaryElem.appendChild( contactOrganizationElem );
+          contactOrganizationText = doc.createTextNode( contactOrganization );
         }
-
-        if ( !contactPosition.isEmpty() )
+        else
         {
-          QDomElement contactPositionElem = doc.createElement( QStringLiteral( "ContactPosition" ) );
-          QDomText contactPositionText = doc.createTextNode( contactPosition );
-          contactPositionElem.appendChild( contactPositionText );
-          contactPersonPrimaryElem.appendChild( contactPositionElem );
+          contactOrganizationText = doc.createTextNode( QStringLiteral( "unknown" ) );
         }
+        QDomElement contactOrganizationElem = doc.createElement( QStringLiteral( "ContactOrganization" ) );
+        contactOrganizationElem.appendChild( contactOrganizationText );
+        contactPersonPrimaryElem.appendChild( contactOrganizationElem );
 
         contactInfoElem.appendChild( contactPersonPrimaryElem );
+      }
+
+      if ( !contactPosition.isEmpty() )
+      {
+        QDomElement contactPositionElem = doc.createElement( QStringLiteral( "ContactPosition" ) );
+        QDomText contactPositionText = doc.createTextNode( contactPosition );
+        contactPositionElem.appendChild( contactPositionText );
+        contactInfoElem.appendChild( contactPositionElem );
       }
 
       if ( !contactPhone.isEmpty() )
