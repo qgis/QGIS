@@ -1709,9 +1709,10 @@ void QgsAttributeForm::initPython()
   cleanPython();
 
   // Init Python, if init function is not empty and the combo indicates
-  // the source for the function code
+  // the source for the function code and the customUi should be used
   if ( !mLayer->editFormConfig().initFunction().isEmpty()
-       && mLayer->editFormConfig().initCodeSource() != QgsEditFormConfig::CodeSourceNone )
+       && mLayer->editFormConfig().initCodeSource() != QgsEditFormConfig::CodeSourceNone 
+       && mContext.allowCustomUi())
   {
 
     QString initFunction = mLayer->editFormConfig().initFunction();
