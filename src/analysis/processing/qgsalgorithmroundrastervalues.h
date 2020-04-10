@@ -55,9 +55,9 @@ class QgsRoundRasterValuesAlgorithm : public QgsProcessingAlgorithm
                                   QgsProcessingFeedback *feedback ) override;
 
   private:
-    double roundNearest( double &value, int &decimals );
-    double roundUp( double &value, int &decimals );
-    double roundDown( double &value, int &decimals );
+    double roundNearest( double &value, double &m, int &decimals );
+    double roundUp( double &value, double &m, int &decimals );
+    double roundDown( double &value, double &m, int &decimals );
     double roundNearestBaseN( double &value, int &multipleOfBaseN );
     double roundUpBaseN( double &value, int &multipleOfBaseN );
     double roundDownBaseN( double &value, int &multipleOfBaseN );

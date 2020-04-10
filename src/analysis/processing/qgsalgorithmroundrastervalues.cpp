@@ -187,7 +187,8 @@ QVariantMap QgsRoundRasterValuesAlgorithm::processAlgorithm( const QVariantMap &
             }
             else if ( mRoundingDirection == 0 && mDecimalPrecision > -1 )
             {
-              roundedVal = roundUp( val, mDecimalPrecision );
+              double m = ( val < 0.0 ) ? -1.0 : 1.0;
+              roundedVal = roundUp( val, m, mDecimalPrecision );
             }
             else if ( mRoundingDirection == 1 && mDecimalPrecision < 0 )
             {
@@ -195,7 +196,8 @@ QVariantMap QgsRoundRasterValuesAlgorithm::processAlgorithm( const QVariantMap &
             }
             else if ( mRoundingDirection == 1 && mDecimalPrecision > -1 )
             {
-              roundedVal = roundNearest( val, mDecimalPrecision );
+              double m = ( val < 0.0 ) ? -1.0 : 1.0;
+              roundedVal = roundNearest( val, m, mDecimalPrecision );
             }
             else if ( mRoundingDirection == 2 && mDecimalPrecision < 0 )
             {
@@ -203,7 +205,8 @@ QVariantMap QgsRoundRasterValuesAlgorithm::processAlgorithm( const QVariantMap &
             }
             else
             {
-              roundedVal = roundDown( val, mDecimalPrecision );
+              double m = ( val < 0.0 ) ? -1.0 : 1.0;
+              roundedVal = roundDown( val,  m, mDecimalPrecision );
             }
             //integer values get automatically cast to double when reading and back to int when writing
             analysisRasterBlock->setValue( row, column, roundedVal );
@@ -220,23 +223,20 @@ QVariantMap QgsRoundRasterValuesAlgorithm::processAlgorithm( const QVariantMap &
   return outputs;
 }
 
-double QgsRoundRasterValuesAlgorithm::roundNearest( double &value, int &decimals )
+double QgsRoundRasterValuesAlgorithm::roundNearest( double &value, double &m, int &decimals )
 {
-  double m = ( value < 0.0 ) ? -1.0 : 1.0;
   double scaleFactor = std::pow( 10.0, decimals );
   return ( std::round( value * m * scaleFactor ) / scaleFactor ) * m;
 }
 
-double QgsRoundRasterValuesAlgorithm::roundUp( double &value, int &decimals )
+double QgsRoundRasterValuesAlgorithm::roundUp( double &value, double &m, int &decimals )
 {
-  double m = ( value < 0.0 ) ? -1.0 : 1.0;
   double scaleFactor = std::pow( 10.0, decimals );
   return ( std::ceil( value * m * scaleFactor ) / scaleFactor ) * m;
 }
 
-double QgsRoundRasterValuesAlgorithm::roundDown( double &value, int &decimals )
+double QgsRoundRasterValuesAlgorithm::roundDown( double &value, double &m, int &decimals )
 {
-  double m = ( value < 0.0 ) ? -1.0 : 1.0;
   double scaleFactor = std::pow( 10.0, decimals );
   return ( std::floor( value * m * scaleFactor ) / scaleFactor ) * m;
 }
