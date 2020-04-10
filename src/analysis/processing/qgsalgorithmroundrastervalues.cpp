@@ -172,13 +172,14 @@ QVariantMap QgsRoundRasterValuesAlgorithm::processAlgorithm( const QVariantMap &
           break;
         for ( int column = 0; column < iterCols; column++ )
         {
-          if ( analysisRasterBlock->isNoData( row, column ) )
+          bool isNoData = false;
+          double val = analysisRasterBlock->valueAndNoData( row, column, isNoData );
+          if ( isNoData )
           {
             analysisRasterBlock->setValue( row, column, mInputNoDataValue );
           }
           else
           {
-            double val = analysisRasterBlock->value( row, column );
             double roundedVal = mInputNoDataValue;
             if ( mRoundingDirection == 0 && mDecimalPrecision < 0 )
             {
