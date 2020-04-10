@@ -755,6 +755,36 @@ Emitted whenever an ``entity`` is either favorited or un-favorited.
 .. versionadded:: 3.4
 %End
 
+    void entityAdded( QgsStyle::StyleEntity entity, const QString &name );
+%Docstring
+Emitted every time a new entity has been added to the database.
+
+.. versionadded:: 3.14
+%End
+
+    void entityRemoved( QgsStyle::StyleEntity entity, const QString &name );
+%Docstring
+Emitted whenever an entity of the specified type is removed from the style and the database
+has been updated as a result.
+
+.. versionadded:: 3.14
+%End
+
+    void entityRenamed( QgsStyle::StyleEntity entity, const QString &oldName, const QString &newName );
+%Docstring
+Emitted whenever a entity of the specified type has been renamed from ``oldName`` to ``newName``
+
+.. versionadded:: 3.14
+%End
+
+    void entityChanged( QgsStyle::StyleEntity entity, const QString &name );
+%Docstring
+Emitted whenever an entity's definition is changed. This does not include
+name or tag changes.
+
+.. versionadded:: 3.14
+%End
+
     void symbolRemoved( const QString &name );
 %Docstring
 Emitted whenever a symbol has been removed from the style and the database

@@ -746,6 +746,35 @@ class CORE_EXPORT QgsStyle : public QObject
     void favoritedChanged( QgsStyle::StyleEntity entity, const QString &name, bool isFavorite );
 
     /**
+     * Emitted every time a new entity has been added to the database.
+     *
+     * \since QGIS 3.14
+     */
+    void entityAdded( QgsStyle::StyleEntity entity, const QString &name );
+
+    /**
+     * Emitted whenever an entity of the specified type is removed from the style and the database
+     * has been updated as a result.
+     *
+     * \since QGIS 3.14
+     */
+    void entityRemoved( QgsStyle::StyleEntity entity, const QString &name );
+
+    /**
+     * Emitted whenever a entity of the specified type has been renamed from \a oldName to \a newName
+     * \since QGIS 3.14
+     */
+    void entityRenamed( QgsStyle::StyleEntity entity, const QString &oldName, const QString &newName );
+
+    /**
+     * Emitted whenever an entity's definition is changed. This does not include
+     * name or tag changes.
+     *
+     * \since QGIS 3.14
+     */
+    void entityChanged( QgsStyle::StyleEntity entity, const QString &name );
+
+    /**
      * Emitted whenever a symbol has been removed from the style and the database
      * has been updated as a result.
      * \see symbolSaved()

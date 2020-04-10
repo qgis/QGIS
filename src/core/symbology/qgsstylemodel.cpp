@@ -38,26 +38,10 @@ QgsStyleModel::QgsStyleModel( QgsStyle *style, QObject *parent )
     mEntityNames.insert( entity, mStyle->allNames( entity ) );
   }
 
-  connect( mStyle, &QgsStyle::symbolSaved, this, [ = ]( const QString & name ) { onEntityAdded( QgsStyle::SymbolEntity, name ); } );
-  connect( mStyle, &QgsStyle::symbolRemoved, this, [ = ]( const QString & name ) { onEntityRemoved( QgsStyle::SymbolEntity, name ); } );
-  connect( mStyle, &QgsStyle::symbolRenamed, this, [ = ]( const QString & oldName, const QString & newName ) { onEntityRename( QgsStyle::SymbolEntity, oldName, newName ); } );
-  connect( mStyle, &QgsStyle::symbolChanged, this, [ = ]( const QString & name ) { onEntityChanged( QgsStyle::SymbolEntity, name ); } );
-
-  connect( mStyle, &QgsStyle::rampAdded, this, [ = ]( const QString & name ) { onEntityAdded( QgsStyle::ColorrampEntity, name ); } );
-  connect( mStyle, &QgsStyle::rampChanged, this, [ = ]( const QString & name ) { onEntityChanged( QgsStyle::ColorrampEntity, name ); } );
-  connect( mStyle, &QgsStyle::rampRemoved, this, [ = ]( const QString & name ) { onEntityRemoved( QgsStyle::ColorrampEntity, name ); } );
-  connect( mStyle, &QgsStyle::rampRenamed, this, [ = ]( const QString & oldName, const QString & newName ) { onEntityRename( QgsStyle::ColorrampEntity, oldName, newName ); } );
-
-  connect( mStyle, &QgsStyle::textFormatAdded, this, [ = ]( const QString & name ) { onEntityAdded( QgsStyle::TextFormatEntity, name ); } );
-  connect( mStyle, &QgsStyle::textFormatChanged, this, [ = ]( const QString & name ) { onEntityChanged( QgsStyle::TextFormatEntity, name ); } );
-  connect( mStyle, &QgsStyle::textFormatRemoved, this, [ = ]( const QString & name ) { onEntityRemoved( QgsStyle::TextFormatEntity, name ); } );
-  connect( mStyle, &QgsStyle::textFormatRenamed, this, [ = ]( const QString & oldName, const QString & newName ) { onEntityRename( QgsStyle::TextFormatEntity, oldName, newName ); } );
-
-  connect( mStyle, &QgsStyle::labelSettingsAdded, this, [ = ]( const QString & name ) { onEntityAdded( QgsStyle::LabelSettingsEntity, name ); } );
-  connect( mStyle, &QgsStyle::labelSettingsChanged, this, [ = ]( const QString & name ) { onEntityChanged( QgsStyle::LabelSettingsEntity, name ); } );
-  connect( mStyle, &QgsStyle::labelSettingsRemoved, this, [ = ]( const QString & name ) { onEntityRemoved( QgsStyle::LabelSettingsEntity, name ); } );
-  connect( mStyle, &QgsStyle::labelSettingsRenamed, this, [ = ]( const QString & oldName, const QString & newName ) { onEntityRename( QgsStyle::LabelSettingsEntity, oldName, newName ); } );
-
+  connect( mStyle, &QgsStyle::entityAdded, this, &QgsStyleModel::onEntityAdded );
+  connect( mStyle, &QgsStyle::entityRemoved, this, &QgsStyleModel::onEntityRemoved );
+  connect( mStyle, &QgsStyle::entityRenamed, this, &QgsStyleModel::onEntityRename );
+  connect( mStyle, &QgsStyle::entityChanged, this, &QgsStyleModel::onEntityChanged );
   connect( mStyle, &QgsStyle::entityTagsChanged, this, &QgsStyleModel::onTagsChanged );
 
   // when a remote svg or image has been fetched, update the model's decorations.
