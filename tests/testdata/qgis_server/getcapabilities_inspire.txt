@@ -15,8 +15,8 @@ Content-Type: text/xml; charset=utf-8
    <ContactPersonPrimary>
     <ContactPerson>Alessandro Pasotti</ContactPerson>
     <ContactOrganization>QGIS dev team</ContactOrganization>
-    <ContactPosition>originator</ContactPosition>
    </ContactPersonPrimary>
+   <ContactPosition>originator</ContactPosition>
    <ContactElectronicMailAddress>elpaso@itopen.it</ContactElectronicMailAddress>
   </ContactInformation>
   <Fees>conditions unknown</Fees>
