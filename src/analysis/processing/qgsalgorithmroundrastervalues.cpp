@@ -50,7 +50,7 @@ void QgsRoundRasterValuesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ), QStringLiteral( "Input raster" ) ) );
   addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ), QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT" ) ) );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "ROUNDING_DIRECTION" ), QObject::tr( "Rounding direction" ), QStringList() << QObject::tr( "Round up" ) << QObject::tr( "Round to nearest" ) << QObject::tr( "Round down" ), false, 1 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "DECIMAL_PLACES" ), QObject::tr( "Number of decimals places (use negative values to round cell values to a multiple of a base n, see advanced parameters)" ), QgsProcessingParameterNumber::Integer, 2 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "DECIMAL_PLACES" ), QObject::tr( "Number of decimals places" ), QgsProcessingParameterNumber::Integer, 2 ) );
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output raster" ) ) );
   std::unique_ptr< QgsProcessingParameterDefinition > baseParameter = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "BASE_N" ), QObject::tr( "Base n (provides the base rounding raster values near/up/down to multiples of n when Decimal parameter is negative)" ), QgsProcessingParameterNumber::Integer, 10, true, 1 );
   baseParameter->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
@@ -59,11 +59,11 @@ void QgsRoundRasterValuesAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsRoundRasterValuesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm rounds the cell values of a rasterdataset according to the specified number of decimals.\n "
+  return QObject::tr( "This algorithm rounds the cell values of a raster dataset according to the specified number of decimals.\n "
                       "Alternatively, a negative number of decimal places may be used to round values to powers of a base n "
                       "(specified in the advanced parameter Base n). For example, with a Base value n of 10 and Decimal places of -1 "
                       "the algorithm rounds cell values to multiples of 10, -2 rounds to multiples of 100, and so on. Arbitrary base values "
-                      "may be chosen, the algorithm applies the same multiplicative principle.Rounding cell values to multiples of "
+                      "may be chosen, the algorithm applies the same multiplicative principle. Rounding cell values to multiples of "
                       "a base n may be used to generalize raster layers.\n"
                       "The algorithm preserves the data type of the input raster. Therefore byte/integer rasters can only be rounded "
                       "to multiples of a base n, otherwise a warning is raised and the raster gets copied as byte/integer raster" );
@@ -77,21 +77,21 @@ QgsRoundRasterValuesAlgorithm *QgsRoundRasterValuesAlgorithm::createInstance() c
 bool QgsRoundRasterValuesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
-  mInputRaster = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
+  QgsRasterLayer *inputRaster = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
   mDecimalPrecision = parameterAsInt( parameters, QStringLiteral( "DECIMAL_PLACES" ), context );
   mBaseN = parameterAsInt( parameters, QStringLiteral( "BASE_N" ), context );
   mMultipleOfBaseN = pow( mBaseN, abs( mDecimalPrecision ) );
 
-  if ( !mInputRaster )
+  if ( !inputRaster )
     throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT" ) ) );
 
   mBand = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
-  if ( mBand < 1 || mBand > mInputRaster->bandCount() )
-    throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand ).arg( mInputRaster->bandCount() ) );
+  if ( mBand < 1 || mBand > inputRaster->bandCount() )
+    throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand ).arg( inputRaster->bandCount() ) );
 
   mRoundingDirection = parameterAsEnum( parameters, QStringLiteral( "ROUNDING_DIRECTION" ), context );
 
-  mInterface.reset( mInputRaster->dataProvider()->clone() );
+  mInterface.reset( inputRaster->dataProvider()->clone() );
   mDataType = mInterface->dataType( mBand );
 
   switch ( mDataType )
@@ -110,11 +110,11 @@ bool QgsRoundRasterValuesAlgorithm::prepareAlgorithm( const QVariantMap &paramet
       break;
   }
 
-  mInputNoDataValue = mInputRaster->dataProvider()->sourceNoDataValue( mBand );
-  mExtent = mInputRaster->extent();
-  mLayerWidth = mInputRaster->width();
-  mLayerHeight = mInputRaster->height();
-  mCrs = mInputRaster->crs();
+  mInputNoDataValue = inputRaster->dataProvider()->sourceNoDataValue( mBand );
+  mExtent = inputRaster->extent();
+  mLayerWidth = inputRaster->width();
+  mLayerHeight = inputRaster->height();
+  mCrs = inputRaster->crs();
   mNbCellsXProvider = mInterface->xSize();
   mNbCellsYProvider = mInterface->ySize();
   return true;
