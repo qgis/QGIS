@@ -1293,9 +1293,9 @@ void QgsRasterLayerProperties::setSourceStaticTimeState()
     const QString enableTime = uri.param( QStringLiteral( "enableTime" ) );
 
     if ( temporalSource == QLatin1String( "provider" ) )
-      mStaticTemporalRange->setChecked( true );
+      mStaticTemporalRange->setChecked( !time.isEmpty() );
     else if ( temporalSource == QLatin1String( "project" ) )
-      mProjectTemporalRange->setChecked( true );
+      mProjectTemporalRange->setChecked( !time.isEmpty() );
 
     mDisableTime->setChecked( enableTime == QLatin1String( "no" ) );
   }
