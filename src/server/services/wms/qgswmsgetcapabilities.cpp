@@ -844,6 +844,7 @@ namespace QgsWms
       layerParentElem.appendChild( layerParentAbstElem );
     }
 
+    /*
     // Root Layer name
     QString rootLayerName = QgsServerProjectUtils::wmsRootName( *project );
     if ( rootLayerName.isEmpty() && !project->title().isEmpty() )
@@ -861,6 +862,7 @@ namespace QgsWms
 
     // Keyword list
     addKeywordListElement( project, doc, layerParentElem );
+    */
 
     // Root Layer tree name
     if ( projectSettings )
@@ -1433,7 +1435,15 @@ namespace QgsWms
       QDomElement crsElement = doc.createElement( version == QLatin1String( "1.1.1" ) ? "SRS" : "CRS" );
       QDomText crsTextNode = doc.createTextNode( crsText );
       crsElement.appendChild( crsTextNode );
-      layerElement.insertAfter( crsElement, precedingElement );
+      if ( !precedingElement.isNull() )
+      {
+        layerElement.insertAfter( crsElement, precedingElement );
+      }
+      else
+      {
+        QDomElement first = layerElement.firstChild().toElement();
+        layerElement.insertBefore( crsElement, first );
+      }
     }
 
     void appendLayerBoundingBoxes( QDomDocument &doc, QDomElement &layerElem, const QgsRectangle &lExtent,
