@@ -352,7 +352,7 @@ void QgsVectorLayerSaveAsDialog::accept()
     {
       if ( QMessageBox::question( this,
                                   tr( "Save Vector Layer As" ),
-                                  tr( "The existing layer has different fields. Do you want to add the missing fields to the layer?" ) ) == QMessageBox::Yes )
+                                  tr( "The existing layer has additional fields. Do you want to add the missing fields to the layer?" ) ) == QMessageBox::Yes )
       {
         mActionOnExistingFile = QgsVectorFileWriter::AppendToLayerAddFields;
       }
@@ -361,17 +361,18 @@ void QgsVectorLayerSaveAsDialog::accept()
   else if ( mActionOnExistingFile == QgsVectorFileWriter::CreateOrOverwriteFile )
   {
     const QList<QgsOgrDbLayerInfo *> subLayers = QgsOgrLayerItem::subLayers( filename(), format() );
-    QStringList layerList = QStringList();
-    for ( const auto layer : subLayers )
+    QStringList layerList;
+    for ( const QgsOgrDbLayerInfo *layer : subLayers )
     {
       layerList.append( layer->name() );
     }
+    qDeleteAll( subLayers );
     if ( layerList.length() > 1 )
     {
       layerList.sort( Qt::CaseInsensitive );
       QMessageBox msgBox;
       msgBox.setIcon( QMessageBox::Warning );
-      msgBox.setWindowTitle( tr( "Overwrite file" ) );
+      msgBox.setWindowTitle( tr( "Overwrite File" ) );
       msgBox.setText( tr( "This file contains %1 layers that will be lost!\n" ).arg( QString::number( layerList.length() ) ) );
       msgBox.setDetailedText( tr( "The following layers will be permanently lost:\n\n%1" ).arg( layerList.join( "\n" ) ) );
       msgBox.setStandardButtons( QMessageBox::Ok | QMessageBox::Cancel );
