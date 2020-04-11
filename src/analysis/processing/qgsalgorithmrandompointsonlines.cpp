@@ -273,7 +273,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
 
         if ( !rpGeom.isNull() && !rpGeom.isEmpty() )
         {
-          if ( minDistanceForThisFeature != 0 && pointsAddedForThisFeature > 0 )
+          if ( minDistanceForThisFeature != 0 && totNPoints > 0 )
           {
             // Have to check minimum distance to existing points
             QList<QgsFeatureId> neighbors = index.nearestNeighbor( rpGeom, 1, minDistanceForThisFeature );
