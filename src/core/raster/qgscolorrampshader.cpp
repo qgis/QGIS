@@ -208,7 +208,7 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
 
       double cut1 = std::numeric_limits<double>::quiet_NaN();
       double cut2 = std::numeric_limits<double>::quiet_NaN();
-      int sampleSize = 250000;
+      const int sampleSize = 250000;
 
       // set min and max from histogram, used later to calculate number of decimals to display
       input->cumulativeCut( band, 0.0, 1.0, min, max, extent, sampleSize );
