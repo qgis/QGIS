@@ -286,6 +286,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
       RoleAlgorithmName, //!< Untranslated algorithm name, for algorithm nodes
       RoleAlgorithmShortDescription, //!< Short algorithm description, for algorithm nodes
       RoleAlgorithmTags, //!< List of algorithm tags, for algorithm nodes
+      RoleProviderFlags, //!< Returns the node's provider flags
     };
 
     /**
@@ -493,6 +494,7 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
 
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 
   private:
 

@@ -38,6 +38,16 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
   public:
 
     /**
+     * Flags indicating how and when an provider operates and should be exposed to users
+     * \since QGIS 3.14
+     */
+    enum Flag
+    {
+      FlagDeemphasiseSearchResults = 1 << 1, //!< Algorithms should be de-emphasised in the search results when searching for algorithms. Use for low-priority providers or those with substantial known issues.
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
+    /**
      * Constructor for QgsProcessingProvider.
      */
     QgsProcessingProvider( QObject *parent SIP_TRANSFERTHIS = nullptr );
@@ -60,6 +70,13 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \see icon()
      */
     virtual QString svgIconPath() const;
+
+    /**
+     * Returns the flags indicating how and when the provider operates and should be exposed to users.
+     * Default is no flags.
+     * \since QGIS 3.14
+     */
+    virtual Flags flags() const;
 
     /**
      * Returns the unique provider id, used for identifying the provider. This string
@@ -280,6 +297,8 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     QgsProcessingProvider( const QgsProcessingProvider &other );
 #endif
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingProvider::Flags )
 
 #endif // QGSPROCESSINGPROVIDER_H
 
