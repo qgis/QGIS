@@ -431,7 +431,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
         sessionExportedLayers[layer.source()] = destFilename
         self.exportedLayers[parameterName] = destFilename
 
-        return 'io_gdal 0 -TRANSFORM 1 -RESAMPLING 3 -GRIDS "{}" -FILES "{}"'.format(destFilename, layer.source())
+        return 'io_gdal 0 -TRANSFORM 1 -RESAMPLING 0 -GRIDS "{}" -FILES "{}"'.format(destFilename, layer.source())
 
     def checkParameterValues(self, parameters, context):
         """
