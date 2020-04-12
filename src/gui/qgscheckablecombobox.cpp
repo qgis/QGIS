@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscheckablecombobox.h"
+#include "qgsapplication.h"
 
 #include <QEvent>
 #include <QMouseEvent>
@@ -82,6 +83,9 @@ QgsCheckableComboBox::QgsCheckableComboBox( QWidget *parent )
 
   QLineEdit *lineEdit = new QLineEdit( this );
   lineEdit->setReadOnly( true );
+  QPalette pal = qApp->palette();
+  pal.setBrush( QPalette::Base, pal.button() );
+  lineEdit->setPalette( pal );
   setLineEdit( lineEdit );
 
   mContextMenu = new QMenu( this );
