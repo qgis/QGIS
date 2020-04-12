@@ -153,7 +153,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
 
   mInfoIcon->setPixmap( style()->standardPixmap( QStyle::SP_MessageBoxInformation ) );
 
-  setWindowTitle( tr( "%1 - Field Calculator" ).arg( mVectorLayer->name() ) );
+  setWindowTitle( tr( "%1 — Field Calculator" ).arg( mVectorLayer->name() ) );
 
   setOkButtonState();
 }
