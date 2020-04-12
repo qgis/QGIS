@@ -146,6 +146,11 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
     def supportedOutputTableExtensions(self):
         return ['dbf']
 
+    def flags(self):
+        # push users towards alternative algorithms instead, SAGA algorithms should only be used by experienced
+        # users who understand and can workaround the frequent issues encountered here
+        return QgsProcessingProvider.FlagDeemphasiseSearchResults
+
     def supportsNonFileBasedOutput(self):
         """
         SAGA Provider doesn't support non file based outputs
