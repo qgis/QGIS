@@ -844,6 +844,7 @@
         <file>themes/default/mIconNetworkLogger.svg</file>
         <file>themes/default/mActionAddMarker.svg</file>
         <file>themes/default/mLayoutItemMarker.svg</file>
+        <file>themes/default/algorithms/mAlgorithmConstantRaster.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
