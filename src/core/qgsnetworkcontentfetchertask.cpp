@@ -19,6 +19,7 @@
 #include "qgsnetworkcontentfetchertask.h"
 #include "qgsnetworkcontentfetcher.h"
 
+<<<<<<< HEAD
 QgsNetworkContentFetcherTask::QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg )
   : QgsNetworkContentFetcherTask( QNetworkRequest( url ), authcfg )
 {
@@ -26,6 +27,15 @@ QgsNetworkContentFetcherTask::QgsNetworkContentFetcherTask( const QUrl &url, con
 
 QgsNetworkContentFetcherTask::QgsNetworkContentFetcherTask( const QNetworkRequest &request, const QString &authcfg )
   : QgsTask( tr( "Fetching %1" ).arg( request.url().toString() ) )
+=======
+QgsNetworkContentFetcherTask::QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg, QgsTask::Flags flags )
+  : QgsNetworkContentFetcherTask( QNetworkRequest( url ), authcfg, flags )
+{
+}
+
+QgsNetworkContentFetcherTask::QgsNetworkContentFetcherTask( const QNetworkRequest &request, const QString &authcfg, QgsTask::Flags flags )
+  : QgsTask( tr( "Fetching %1" ).arg( request.url().toString() ), flags )
+>>>>>>> 839a1b85e1... Fix tasks don't show in status bar if they start before the widget is created
   , mRequest( request )
   , mAuthcfg( authcfg )
 {
