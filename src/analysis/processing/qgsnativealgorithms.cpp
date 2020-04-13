@@ -106,6 +106,7 @@
 #include "qgsalgorithmraiseexception.h"
 #include "qgsalgorithmrandomextract.h"
 #include "qgsalgorithmrandompointsextent.h"
+#include "qgsalgorithmrandompointsinpolygons.h"
 #include "qgsalgorithmrandompointsonlines.h"
 #include "qgsalgorithmrasterlayeruniquevalues.h"
 #include "qgsalgorithmrasterlogicalop.h"
@@ -310,6 +311,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRaiseWarningAlgorithm() );
   addAlgorithm( new QgsRandomExtractAlgorithm() );
   addAlgorithm( new QgsRandomPointsExtentAlgorithm() );
+  addAlgorithm( new QgsRandomPointsInPolygonsAlgorithm() );
   addAlgorithm( new QgsRandomPointsOnLinesAlgorithm() );
   addAlgorithm( new QgsRasterLayerUniqueValuesReportAlgorithm() );
   addAlgorithm( new QgsRasterLayerZonalStatsAlgorithm() );

@@ -112,6 +112,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmraiseexception.cpp
   processing/qgsalgorithmrandomextract.cpp
   processing/qgsalgorithmrandompointsextent.cpp
+  processing/qgsalgorithmrandompointsinpolygons.cpp
   processing/qgsalgorithmrandompointsonlines.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
   processing/qgsalgorithmrasterlogicalop.cpp
