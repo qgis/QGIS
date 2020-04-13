@@ -273,14 +273,14 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
         //QgsGeometry rpGeom = QgsGeometry( lGeom.interpolate( randPos ) );
         double posX = bbox.xMinimum() + bbox.width() * uniformDist( mt );
         double posY = bbox.yMinimum() + bbox.height() * uniformDist( mt );
-        QgsGeometry rpGeom = QgsGeometry::fromPointXY( QgsPointXY( posX, posY) );
+        QgsGeometry rpGeom = QgsGeometry::fromPointXY( QgsPointXY( posX, posY ) );
         distCheckIterations++;
         pointProgress += pointProgressIncrement;
 
-        if ( !polyGeom.contains(rpGeom) )
+        if ( !polyGeom.contains( rpGeom) )
         {
-            // Outside the polygon
-            continue;
+          // Outside the polygon
+          continue;
         }
         if ( !rpGeom.isNull() && !rpGeom.isEmpty() )
         {
