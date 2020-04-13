@@ -94,6 +94,7 @@ class TestQgsProperty : public QObject
     void curveTransform();
     void asVariant();
     void isProjectColor();
+    void referencedFieldsIgnoreContext();
 
   private:
 
@@ -1801,6 +1802,29 @@ void TestQgsProperty::isProjectColor()
   QVERIFY( p.isProjectColor() );
   p.setActive( false );
   QVERIFY( p.isProjectColor() );
+}
+
+void TestQgsProperty::referencedFieldsIgnoreContext()
+{
+  // Currently QgsProperty::referencedFields() for an expression will return field names
+  // only if those field names are present in the context's fields. The ignoreContext
+  // argument is a workaround for the case when we don't have fields yet.
+
+  QgsProperty p = QgsProperty::fromExpression( QStringLiteral( "foo + bar" ) );
+  QCOMPARE( p.referencedFields( QgsExpressionContext() ), QSet<QString>() );
+  QCOMPARE( p.referencedFields( QgsExpressionContext(), true ), QSet<QString>() << QStringLiteral( "foo" ) << QStringLiteral( "bar" ) );
+
+  // if the property is from a field, the ignoreContext does not make a difference
+  QgsProperty p2 = QgsProperty::fromField( QStringLiteral( "boo" ) );
+  QCOMPARE( p2.referencedFields( QgsExpressionContext() ), QSet<QString>() << QStringLiteral( "boo" ) );
+  QCOMPARE( p2.referencedFields( QgsExpressionContext(), true ), QSet<QString>() << QStringLiteral( "boo" ) );
+
+  QgsPropertyCollection collection;
+  collection.setProperty( 0, p );
+  collection.setProperty( 1, p2 );
+
+  QCOMPARE( collection.referencedFields( QgsExpressionContext() ), QSet<QString>() << QStringLiteral( "boo" ) );
+  QCOMPARE( collection.referencedFields( QgsExpressionContext(), true ), QSet<QString>() << QStringLiteral( "boo" ) << QStringLiteral( "foo" ) << QStringLiteral( "bar" ) );
 }
 
 void TestQgsProperty::checkCurveResult( const QList<QgsPointXY> &controlPoints, const QVector<double> &x, const QVector<double> &y )

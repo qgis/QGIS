@@ -142,8 +142,10 @@ class QgsVectorTileBasicLabelProvider : public QgsVectorTileLabelProvider
 
     QList<QgsAbstractLabelProvider *> subProviders() override;
     bool prepare( QgsRenderContext &context, QSet<QString> &attributeNames ) override;
+
+    // virtual functions from QgsVectorTileLabelProvider
     void registerTileFeatures( const QgsVectorTileRendererData &tile, QgsRenderContext &context ) override;
-    QMap<QString, QSet<QString> > usedAttributes( int tileZoom ) const override;
+    QMap<QString, QSet<QString> > usedAttributes( const QgsRenderContext &context, int tileZoom ) const override;
     void setFields( const QMap<QString, QSet<QString>> &requiredFields ) override;
 
   private:

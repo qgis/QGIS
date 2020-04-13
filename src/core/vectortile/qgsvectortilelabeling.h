@@ -37,7 +37,7 @@ class QgsVectorTileLabelProvider : public QgsVectorLayerLabelProvider
     explicit QgsVectorTileLabelProvider( QgsVectorTileLayer *layer );
 
     //! Returns field names for each sub-layer that are required for labeling
-    virtual QMap<QString, QSet<QString> > usedAttributes( int tileZoom ) const = 0;
+    virtual QMap<QString, QSet<QString> > usedAttributes( const QgsRenderContext &context, int tileZoom ) const = 0;
 
     //! Sets required fields
     virtual void setFields( const QMap<QString, QSet<QString>> &requiredFields ) = 0;
