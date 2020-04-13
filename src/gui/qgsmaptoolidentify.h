@@ -28,6 +28,7 @@
 
 class QgsRasterLayer;
 class QgsVectorLayer;
+class QgsVectorTileLayer;
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsMeshLayer;
@@ -64,7 +65,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
       VectorLayer = 1,
       RasterLayer = 2,
       MeshLayer = 4, //!< \since QGIS 3.6
-      AllLayers = VectorLayer | RasterLayer | MeshLayer
+      VectorTileLayer = 8,  //!< \since QGIS 3.14
+      AllLayers = VectorLayer | RasterLayer | MeshLayer | VectorTileLayer
     };
     Q_DECLARE_FLAGS( LayerType, Type )
     Q_FLAG( LayerType )
@@ -206,6 +208,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, const QgsGeometry &geometry, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
     bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsGeometry &geometry );
     bool identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMeshLayer *layer, const QgsGeometry &geometry );
+    bool identifyVectorTileLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorTileLayer *layer, const QgsGeometry &geometry );
 
     /**
      * Desired units for distance display.

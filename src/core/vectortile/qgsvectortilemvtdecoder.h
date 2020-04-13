@@ -33,9 +33,11 @@ class QgsFeature;
  *
  * \since QGIS 3.14
  */
-class QgsVectorTileMVTDecoder
+class CORE_EXPORT QgsVectorTileMVTDecoder
 {
   public:
+    QgsVectorTileMVTDecoder();
+    ~QgsVectorTileMVTDecoder();
 
     //! Tries to decode raw tile data, returns true on success
     bool decode( QgsTileXYZ tileID, const QByteArray &rawTileData );

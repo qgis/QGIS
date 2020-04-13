@@ -16,6 +16,8 @@
 #ifndef QGSVECTORTILEUTILS_H
 #define QGSVECTORTILEUTILS_H
 
+#include "qgis_core.h"
+
 #define SIP_NO_FILE
 
 #include <QSet>
@@ -40,7 +42,7 @@ class QgsVectorTileLayer;
  *
  * \since QGIS 3.14
  */
-class QgsVectorTileUtils
+class CORE_EXPORT QgsVectorTileUtils
 {
   public:
 
