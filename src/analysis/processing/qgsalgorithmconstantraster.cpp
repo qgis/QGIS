@@ -70,7 +70,7 @@ void QgsConstantRasterAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "NUMBER" ), QObject::tr( "Constant value" ),
                 QgsProcessingParameterNumber::Double, 1, false ) );
 
-  QStringList rasterDataTypes = QStringList(); //currently supported raster data types that can be handled QgsRasterBlock::writeValue()
+  QStringList rasterDataTypes; //currently supported raster data types that can be handled QgsRasterBlock::writeValue()
   rasterDataTypes << QStringLiteral( "Byte" )
                   << QStringLiteral( "Integer16" )
                   << QStringLiteral( "Unsigned Integer16" )
