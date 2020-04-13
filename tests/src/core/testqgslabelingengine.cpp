@@ -79,6 +79,7 @@ class TestQgsLabelingEngine : public QObject
     void testRotationBasedOrientationLine();
     void testMapUnitLetterSpacing();
     void testMapUnitWordSpacing();
+    void testReferencedFields();
 
   private:
     QgsVectorLayer *vl = nullptr;
@@ -2629,6 +2630,23 @@ void TestQgsLabelingEngine::testMapUnitWordSpacing()
 
   QImage img = job.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "label_word_spacing_map_units" ), img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testReferencedFields()
+{
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "hello+world" );
+  settings.isExpression = false;
+
+  QCOMPARE( settings.referencedFields( QgsRenderContext() ), QSet<QString>() << QStringLiteral( "hello+world" ) );
+
+  settings.isExpression = true;
+
+  QCOMPARE( settings.referencedFields( QgsRenderContext() ), QSet<QString>() << QStringLiteral( "hello" ) << QStringLiteral( "world" ) );
+
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Size, QgsProperty::fromField( QStringLiteral( "my_dd_size" ) ) );
+
+  QCOMPARE( settings.referencedFields( QgsRenderContext() ), QSet<QString>() << QStringLiteral( "hello" ) << QStringLiteral( "world" ) << QStringLiteral( "my_dd_size" ) );
 }
 
 QGSTEST_MAIN( TestQgsLabelingEngine )

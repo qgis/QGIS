@@ -124,7 +124,7 @@ bool QgsVectorTileLayerRenderer::render()
 
   if ( mLabelProvider )
   {
-    QMap<QString, QSet<QString> > requiredFieldsLabeling = mLabelProvider->usedAttributes( mTileZoom );
+    QMap<QString, QSet<QString> > requiredFieldsLabeling = mLabelProvider->usedAttributes( ctx, mTileZoom );
     for ( QString layerName : requiredFieldsLabeling.keys() )
     {
       requiredFields[layerName].unite( requiredFieldsLabeling[layerName] );

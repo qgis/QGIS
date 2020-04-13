@@ -123,7 +123,7 @@ QgsVectorTileBasicLabelProvider::QgsVectorTileBasicLabelProvider( QgsVectorTileL
   }
 }
 
-QMap<QString, QSet<QString> > QgsVectorTileBasicLabelProvider::usedAttributes( int tileZoom ) const
+QMap<QString, QSet<QString> > QgsVectorTileBasicLabelProvider::usedAttributes( const QgsRenderContext &context, int tileZoom ) const
 {
   QMap<QString, QSet<QString> > requiredFields;
   for ( const QgsVectorTileBasicLabelingStyle &layerStyle : qgis::as_const( mStyles ) )
@@ -137,7 +137,7 @@ QMap<QString, QSet<QString> > QgsVectorTileBasicLabelProvider::usedAttributes( i
       requiredFields[layerStyle.layerName()].unite( expr.referencedColumns() );
     }
 
-    requiredFields[layerStyle.layerName()].unite( layerStyle.labelSettings().referencedFields() );
+    requiredFields[layerStyle.layerName()].unite( layerStyle.labelSettings().referencedFields( context ) );
   }
   return requiredFields;
 }
