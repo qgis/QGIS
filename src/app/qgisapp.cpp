@@ -1189,7 +1189,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   mMapCanvas->setTemporalController( mTemporalControllerWidget->temporalController() );
 
-
   QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsAppDirectoryItemGuiProvider() );
   QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsProjectHomeItemGuiProvider() );
   QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsProjectItemGuiProvider() );
@@ -4079,6 +4078,8 @@ void QgisApp::setupConnections()
       canvas->setSelectionColor( selectionColor );
     }
   } );
+
+  connect( QgsProject::instance()->timeSettings(), &QgsProjectTimeSettings::temporalRangeChanged, this, &QgisApp::projectTemporalRangeChanged );
 
   // connect legend signals
   connect( this, &QgisApp::activeLayerChanged,
@@ -11052,6 +11053,41 @@ void QgisApp::projectCrsChanged()
       alreadyAsked.append( it.value()->crs() );
       askUserForDatumTransform( it.value()->crs(),
                                 QgsProject::instance()->crs(), it.value() );
+    }
+  }
+}
+
+void QgisApp::projectTemporalRangeChanged()
+{
+  QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
+  QgsMapLayer *currentLayer = nullptr;
+
+  for ( QMap<QString, QgsMapLayer *>::const_iterator it = layers.constBegin(); it != layers.constEnd(); ++it )
+  {
+    currentLayer = it.value();
+
+    if ( currentLayer->dataProvider() )
+    {
+      QgsDataSourceUri uri;
+      uri.setEncodedUri( currentLayer->dataProvider()->dataSourceUri() );
+
+      if ( uri.hasParam( QStringLiteral( "temporalSource" ) ) &&
+           uri.param( QStringLiteral( "temporalSource" ) ) == QStringLiteral( "project" ) )
+      {
+        QgsDateTimeRange range = QgsProject::instance()->timeSettings()->temporalRange();
+        if ( range.begin().isValid() && range.end().isValid() )
+        {
+          QString time = range.begin().toString( Qt::ISODateWithMs ) + "/" +
+                         range.end().toString( Qt::ISODateWithMs );
+
+          uri.removeParam( QStringLiteral( "time" ) );
+          uri.setParam( QStringLiteral( "time" ), time );
+
+          currentLayer->dataProvider()->setDataSourceUri( uri.encodedUri() );
+          currentLayer->setDataSource( currentLayer->dataProvider()->dataSourceUri(), currentLayer->name(), currentLayer->providerType(), QgsDataProvider::ProviderOptions() );
+
+        }
+      }
     }
   }
 }
