@@ -63,6 +63,7 @@ RUN  apt-get update \
     pkg-config \
     poppler-utils \
     postgresql-client \
+    protobuf-compiler \
     pyqt5-dev \
     pyqt5-dev-tools \
     pyqt5.qsci-dev \
