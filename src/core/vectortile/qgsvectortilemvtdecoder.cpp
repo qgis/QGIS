@@ -48,6 +48,10 @@ inline bool _isExteriorRing( const QVector<QgsPoint> &pts )
 }
 
 
+QgsVectorTileMVTDecoder::QgsVectorTileMVTDecoder() = default;
+
+QgsVectorTileMVTDecoder::~QgsVectorTileMVTDecoder() = default;
+
 bool QgsVectorTileMVTDecoder::decode( QgsTileXYZ tileID, const QByteArray &rawTileData )
 {
   if ( !tile.ParseFromArray( rawTileData.constData(), rawTileData.count() ) )
