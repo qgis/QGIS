@@ -118,6 +118,8 @@ QString QgsRandomPointsInPolygonsAlgorithm::shortHelpString() const
                       "</ul> "
                       "The total number of points will be<br> <b>'number of input features'</b> * "
                       "<i><b>Number of points for each feature</b></i><br> if there are no misses. "
+                      "The <i>Number of points for each feature</i>, <i>Minimum distance between points</i> "
+                      "and <i>Maximum number of attempts per point</i> can be data defined."
                       "<p>Output from the algorithm:</p> "
                       "<ul> "
                       "<li> A point layer containing the random points (<code>OUTPUT</code>).</li> "
