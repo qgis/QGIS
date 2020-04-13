@@ -277,7 +277,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
         distCheckIterations++;
         pointProgress += pointProgressIncrement;
 
-        if ( !polyGeom.contains( rpGeom) )
+        if ( !polyGeom.contains( rpGeom ) )
         {
           // Outside the polygon
           continue;
