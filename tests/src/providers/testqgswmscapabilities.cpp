@@ -106,6 +106,54 @@ class TestQgsWmsCapabilities: public QObject
         QgsWmstResolution resolution = settings.parseWmstResolution( resolutionText );
         QCOMPARE( resolution.text(), resolutionText );
       }
+
+      QgsWmstDimensionExtent extent = settings.parseTemporalExtent( QStringLiteral( "2020-01-02T00:00:00.000Z/2020-01-09T00:00:00.000Z/P1D" ) );
+      settings.setTimeDimensionExtent( extent );
+
+      QDateTime start = QDateTime( QDate( 2020, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC );
+      QDateTime end = QDateTime( QDate( 2020, 1, 9 ), QTime( 0, 0, 0 ), Qt::UTC );
+
+      QgsWmstResolution res;
+      res.day = 1;
+      QgsWmstResolution extentResolution = extent.datesResolutionList.at( 0 ).resolution;
+
+      QCOMPARE( extent.datesResolutionList.at( 0 ).dates.dateTimes.at( 0 ), start );
+      QCOMPARE( extent.datesResolutionList.at( 0 ).dates.dateTimes.at( 1 ), end );
+
+      QCOMPARE( extentResolution.text(), res.text() );
+
+      QDateTime firstClosest = settings.findLeastClosestDateTime( QDateTime( QDate( 2020, 1, 3 ), QTime( 16, 0, 0 ), Qt::UTC ) );
+      QDateTime firstExpected = QDateTime( QDate( 2020, 1, 3 ), QTime( 0, 0, 0 ), Qt::UTC );
+
+      QCOMPARE( firstClosest, firstExpected );
+
+      QDateTime secondClosest = settings.findLeastClosestDateTime( QDateTime( QDate( 2020, 1, 3 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QDateTime secondExpected = QDateTime( QDate( 2020, 1, 3 ), QTime( 0, 0, 0 ), Qt::UTC );
+
+      QCOMPARE( secondClosest, secondExpected );
+
+      QgsWmstDimensionExtent secondExtent = settings.parseTemporalExtent( QStringLiteral( "2020-01-02T00:00:00.000Z/2020-01-04T00:00:00.000Z/PT4H" ) );
+      settings.setTimeDimensionExtent( secondExtent );
+
+      QDateTime thirdClosest = settings.findLeastClosestDateTime( QDateTime( QDate( 2020, 1, 2 ), QTime( 5, 0, 0 ), Qt::UTC ) );
+      QDateTime thirdExpected = QDateTime( QDate( 2020, 1, 2 ), QTime( 4, 0, 0 ), Qt::UTC );
+
+      QCOMPARE( thirdClosest, thirdExpected );
+
+      QDateTime fourthClosest = settings.findLeastClosestDateTime( QDateTime( QDate( 2020, 1, 2 ), QTime( 3, 0, 0 ), Qt::UTC ) );
+      QDateTime fourthExpected = QDateTime( QDate( 2020, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC );
+
+      QCOMPARE( fourthClosest, fourthExpected );
+
+      QDateTime fifthClosest = settings.findLeastClosestDateTime( QDateTime( QDate( 2020, 1, 4 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QDateTime fifthExpected = QDateTime( QDate( 2020, 1, 4 ), QTime( 0, 0, 0 ), Qt::UTC );
+
+      QCOMPARE( fifthClosest, fifthExpected );
+
+      QDateTime outOfBoundsClosest = settings.findLeastClosestDateTime( QDateTime( QDate( 2020, 1, 5 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QDateTime outofBoundsExpected = QDateTime( QDate( 2020, 1, 5 ), QTime( 0, 0, 0 ), Qt::UTC );
+
+      QCOMPARE( outOfBoundsClosest, outofBoundsExpected );
     }
 
 };
