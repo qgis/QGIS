@@ -66,10 +66,10 @@ system "txt2tags -oNEWS -t txt doc/NEWS.t2t";
 
 =head1 NAME
 
-update-news.pl - updates the news file from changelog.qgis.org
+update_news.pl - updates the news file from changelog.qgis.org
 
 =head1 SYNOPSIS
 
-update-news.pl version releasename
+update_news.pl version releasename
 
 =cut

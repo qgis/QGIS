@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###########################################################################
-#    update-indent.sh
+#    update_indent.sh
 #    ---------------------
 #    Date                 : August 2008
 #    Copyright            : (C) 2008 by Juergen E. Fischer

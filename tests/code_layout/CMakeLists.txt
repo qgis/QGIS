@@ -1,5 +1,5 @@
 IF(WITH_ASTYLE)
-  ADD_TEST(qgis_indentation ${CMAKE_SOURCE_DIR}/scripts/verify-indentation.sh)
+  ADD_TEST(qgis_indentation ${CMAKE_SOURCE_DIR}/scripts/verify_indentation.sh)
 ENDIF(WITH_ASTYLE)
 
 ADD_TEST(qgis_banned_keywords ${CMAKE_SOURCE_DIR}/tests/code_layout/test_banned_keywords.sh)

@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 ###########################################################################
-#    ts-clear.pl
+#    ts_clear.pl
 #    ---------------------
 #    begin                : October 2018
 #    copyright            : (C) 2018 by Juergen E. Fischer

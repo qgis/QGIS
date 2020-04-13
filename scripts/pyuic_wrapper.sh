@@ -1,6 +1,6 @@
 #!/bin/sh
 ###########################################################################
-#    pyuic-wrapper.sh
+#    pyuic_wrapper.sh
 #    ---------------------
 #    Date                 : March 2016
 #    Copyright            : (C) 2016 by Juergen E. Fischer
@@ -22,4 +22,4 @@ shift 4
 
 export LD_LIBRARY_PATH PYTHONPATH
 
-exec $PYTHON $(dirname $0)/pyuic-wrapper.py "$@"
+exec $PYTHON $(dirname $0)/pyuic_wrapper.py "$@"
