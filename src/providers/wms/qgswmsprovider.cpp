@@ -1082,8 +1082,10 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
 void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
 {
   QgsDateTimeRange range = temporalCapabilities()->requestedTemporalRange();
+
   QString format { QStringLiteral( "yyyy-MM-ddThh:mm:ssZ" ) };
   QgsDataSourceUri uri { dataSourceUri() };
+  bool dateOnly = false;
 
   if ( range.isInfinite() )
   {
@@ -1101,7 +1103,10 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
   }
 
   if ( uri.param( QStringLiteral( "enableTime" ) ) == QLatin1String( "no" ) )
+  {
     format = "yyyy-MM-dd";
+    dateOnly = true;
+  }
 
   if ( range.begin().isValid() && range.end().isValid() )
   {
@@ -1117,14 +1122,14 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
         break;
       case QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToStartOfRange:
       {
-        QDateTime dateTimeStart = mSettings.findLeastClosestDateTime( range.begin() );
+        QDateTime dateTimeStart = mSettings.findLeastClosestDateTime( range.begin(), dateOnly );
         range = QgsDateTimeRange( dateTimeStart, dateTimeStart );
         break;
       }
 
       case QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToEndOfRange:
       {
-        QDateTime dateTimeEnd = mSettings.findLeastClosestDateTime( range.end() );
+        QDateTime dateTimeEnd = mSettings.findLeastClosestDateTime( range.end(), dateOnly );
         range = QgsDateTimeRange( dateTimeEnd, dateTimeEnd );
         break;
       }
