@@ -243,7 +243,7 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
   QgsFieldConstraints constraints = cfg.mFieldConstraints;
 
   mAttributeTypeDialog->setAlias( cfg.mAlias );
-  mAttributeTypeDialog->setAliasExpression( cfg.mAliasExpression, cfg.mAliasExpressionIsActive );
+  mAttributeTypeDialog->setDataDefinedProperties( cfg.mDataDefinedProperties );
   mAttributeTypeDialog->setComment( cfg.mComment );
   mAttributeTypeDialog->setFieldEditable( cfg.mEditable );
   mAttributeTypeDialog->setLabelOnTop( cfg.mLabelOnTop );
@@ -290,8 +290,7 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
   cfg.mEditable = mAttributeTypeDialog->fieldEditable();
   cfg.mLabelOnTop = mAttributeTypeDialog->labelOnTop();
   cfg.mAlias = mAttributeTypeDialog->alias();
-  cfg.mAliasExpression = mAttributeTypeDialog->aliasExpression();
-  cfg.mAliasExpressionIsActive = mAttributeTypeDialog->aliasExpressionIsActive();
+  cfg.mDataDefinedProperties = mAttributeTypeDialog->dataDefinedProperties();
 
   QgsFieldConstraints constraints;
   if ( mAttributeTypeDialog->notNull() )
@@ -699,8 +698,6 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
     {
       int idx = mLayer->fields().lookupField( itemData.name() );
       widgetDef = new QgsAttributeEditorField( itemData.name(), idx, parent );
-      widgetDef->setLabelExpression( mAttributeTypeDialog->aliasExpression() );
-      widgetDef->setLabelExpressionIsActive( mAttributeTypeDialog->aliasExpressionIsActive() );
       break;
     }
 
@@ -852,7 +849,12 @@ void QgsAttributesFormProperties::apply()
 
     editFormConfig.setReadOnly( idx, !cfg.mEditable );
     editFormConfig.setLabelOnTop( idx, cfg.mLabelOnTop );
-    editFormConfig.setLabelExpression( fieldName, cfg.mAliasExpression, cfg.mAliasExpressionIsActive );
+
+    if ( cfg.mDataDefinedProperties.count() > 0 )
+    {
+      editFormConfig.setDataDefinedFieldProperties( fieldName, cfg.mDataDefinedProperties );
+    }
+
     mLayer->setEditorWidgetSetup( idx, QgsEditorWidgetSetup( cfg.mEditorWidgetType, cfg.mEditorWidgetConfig ) );
 
     QgsFieldConstraints constraints = cfg.mFieldConstraints;
@@ -890,8 +892,20 @@ void QgsAttributesFormProperties::apply()
   for ( int t = 0; t < mFormLayoutTree->invisibleRootItem()->childCount(); t++ )
   {
     QTreeWidgetItem *tabItem = mFormLayoutTree->invisibleRootItem()->child( t );
-
-    editFormConfig.addTab( createAttributeEditorWidget( tabItem, nullptr, false ) );
+    QgsAttributeEditorElement *editorElement { createAttributeEditorWidget( tabItem, nullptr, false ) };
+    /*
+    // Store data defined field properties
+    if ( editorElement->type() == QgsAttributeEditorElement::AttributeEditorType::AeTypeField )
+    {
+      const QgsAttributeEditorField *fieldElement { static_cast<QgsAttributeEditorField *>( editorElement ) };
+      const QString fieldName { mLayer->fields().at( fieldElement->idx() ).name() };
+      if ( editFormConfig.dataDefinedFieldProperties( fieldName ).count() > 0 )
+      {
+        editorElement->setDataDefinedProperties( editFormConfig.dataDefinedFieldProperties( fieldName ) );
+      }
+    }
+    */
+    editFormConfig.addTab( editorElement );
   }
 
   editFormConfig.setUiForm( mEditFormLineEdit->text() );
@@ -933,8 +947,7 @@ void QgsAttributesFormProperties::apply()
 QgsAttributesFormProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx )
 {
   mAlias = layer->fields().at( idx ).alias();
-  mAliasExpression = layer->editFormConfig().labelExpression( layer->fields().field( idx ).name() );
-  mAliasExpressionIsActive = layer->editFormConfig().labelExpressionIsActive( layer->fields().field( idx ).name() );
+  mDataDefinedProperties = layer->editFormConfig().dataDefinedFieldProperties( layer->fields().at( idx ).name() );
   mComment = layer->fields().at( idx ).comment();
   mEditable = !layer->editFormConfig().readOnly( idx );
   mEditableEnabled = layer->fields().fieldOrigin( idx ) != QgsFields::OriginJoin

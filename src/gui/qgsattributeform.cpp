@@ -1474,11 +1474,21 @@ void QgsAttributeForm::init()
           layout->addWidget( widgetInfo.widget, row, column++ );
         }
 
-        if ( ! widgetInfo.labelExpression.isEmpty() && widgetInfo.labelExpressionIsActive )
+        // Alias DD overrides
+        if ( widgDef->type() == QgsAttributeEditorElement::AttributeEditorType::AeTypeField )
         {
-          mExpressionLabels[ label ] = QgsExpression( widgetInfo.labelExpression );
+          const QgsAttributeEditorField *fieldElement { static_cast<QgsAttributeEditorField *>( widgDef ) };
+          const QString fieldName { mLayer->fields().at( fieldElement->idx() ).name() };
+          if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::Alias ) )
+          {
+            const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::Alias ) };
+            const QString labelExpression { property.asExpression() };
+            if ( ! labelExpression.isEmpty() && property.isActive() )
+            {
+              mExpressionLabels[ label ] = QgsExpression( labelExpression );
+            }
+          }
         }
-
       }
 
       if ( column >= columnCount * 2 )
@@ -1531,8 +1541,6 @@ void QgsAttributeForm::init()
       QString labelText = fieldName;
       labelText.replace( '&', QStringLiteral( "&&" ) ); // need to escape '&' or they'll be replace by _ in the label text
 
-      const QString labelExpression { mLayer->editFormConfig().labelExpression( field.name() ) };
-      const bool labelExpressionIsActive { mLayer->editFormConfig().labelExpressionIsActive( field.name() ) };
       const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, field.name() );
 
       if ( widgetSetup.type() == QLatin1String( "Hidden" ) )
@@ -1546,9 +1554,14 @@ void QgsAttributeForm::init()
       QSvgWidget *i = new QSvgWidget();
       i->setFixedSize( 18, 18 );
 
-      if ( ! labelExpression.isEmpty() && labelExpressionIsActive )
+      if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::Alias ) )
       {
-        mExpressionLabels[ label ] = QgsExpression( labelExpression );
+        const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::Alias ) };
+        const QString labelExpression { property.asExpression() };
+        if ( ! labelExpression.isEmpty() && property.isActive() )
+        {
+          mExpressionLabels[ label ] = QgsExpression( labelExpression );
+        }
       }
 
       QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( widgetSetup.type(), mLayer, idx, widgetSetup.config(), nullptr, this, mContext );
@@ -2089,9 +2102,16 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
   }
 
   newWidgetInfo.showLabel = widgetDef->showLabel();
-  newWidgetInfo.labelExpression = widgetDef->labelExpression();
-  newWidgetInfo.labelExpressionIsActive = widgetDef->labelExpressionIsActive();
-
+  // THIS IS NEVER HIT!
+  /*
+  const QgsPropertyCollection properties { widgetDef->dataDefinedProperties() };
+  if ( properties.hasProperty( QgsEditFormConfig::DataDefinedProperty::Alias ) )
+  {
+    const QgsProperty labelProperty { properties.property( QgsEditFormConfig::DataDefinedProperty::Alias ) };
+    newWidgetInfo.labelExpression = labelProperty.asExpression() ;
+    newWidgetInfo.labelExpressionIsActive = labelProperty.isActive() ;
+  }
+  */
   return newWidgetInfo;
 }
 

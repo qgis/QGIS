@@ -15,7 +15,7 @@ class QgsAttributeEditorElement /Abstract/
 This is an abstract base class for any elements of a drag and drop form.
 
 This can either be a container which will be represented on the screen
-as a tab widget or ca collapsible group box. Or it can be a field which will
+as a tab widget or a collapsible group box. Or it can be a field which will
 then be represented based on the QgsEditorWidget type and configuration.
 Or it can be a relation and embed the form of several children of another
 layer.
@@ -112,40 +112,6 @@ Controls if this element should be labeled with a title (field, relation or grou
 Controls if this element should be labeled with a title (field, relation or groupname).
 
 .. versionadded:: 2.18
-%End
-
-    QString labelExpression() const;
-%Docstring
-Returns the (possibly empty or inactive) label expression.
-
-.. seealso:: :py:func:`labelExpressionIsActive`
-
-.. versionadded:: 3.14
-%End
-
-    void setLabelExpression( const QString &labelExpression );
-%Docstring
-Sets the label expression override for the field to ``labelExpression``.
-If the override is not active or it is set to an empty string the field label will be taken from
-the label alias if set or from the field name otherwise.
-
-.. seealso:: :py:func:`setLabelExpressionIsActive`
-
-.. versionadded:: 3.14
-%End
-
-    bool labelExpressionIsActive() const;
-%Docstring
-Returns the status of the label expression override.
-
-.. versionadded:: 3.14
-%End
-
-    void setLabelExpressionIsActive( bool labelExpressionIsActive );
-%Docstring
-Sets the status of a label expression override to ``labelExpressionIsActive``.
-
-.. versionadded:: 3.14
 %End
 
   protected:

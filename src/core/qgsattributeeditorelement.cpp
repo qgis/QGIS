@@ -16,6 +16,7 @@
 #include "qgsattributeeditorelement.h"
 #include "qgsrelationmanager.h"
 
+
 void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement *widget )
 {
   mChildren.append( widget );
@@ -115,7 +116,6 @@ QDomElement QgsAttributeEditorElement::toDomElement( QDomDocument &doc ) const
   QDomElement elem = doc.createElement( typeIdentifier() );
   elem.setAttribute( QStringLiteral( "name" ), mName );
   elem.setAttribute( QStringLiteral( "showLabel" ), mShowLabel );
-
   saveConfiguration( elem );
   return elem;
 }
@@ -128,26 +128,6 @@ bool QgsAttributeEditorElement::showLabel() const
 void QgsAttributeEditorElement::setShowLabel( bool showLabel )
 {
   mShowLabel = showLabel;
-}
-
-QString QgsAttributeEditorElement::labelExpression() const
-{
-  return mLabelExpression;
-}
-
-void QgsAttributeEditorElement::setLabelExpression( const QString &labelExpression )
-{
-  mLabelExpression = labelExpression;
-}
-
-bool QgsAttributeEditorElement::labelExpressionIsActive() const
-{
-  return mLabelExpressionIsActive;
-}
-
-void QgsAttributeEditorElement::setLabelExpressionIsActive( bool labelExpressionIsActive )
-{
-  mLabelExpressionIsActive = labelExpressionIsActive;
 }
 
 void QgsAttributeEditorRelation::saveConfiguration( QDomElement &elem ) const

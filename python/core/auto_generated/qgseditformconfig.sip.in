@@ -67,6 +67,13 @@ Constructor for TabData
       CodeSourceEnvironment
     };
 
+    enum DataDefinedProperty
+    {
+      NoProperty,
+      AllProperties,
+      Alias,
+    };
+
     QgsEditFormConfig( const QgsEditFormConfig &o );
 %Docstring
 Copy constructor
@@ -191,33 +198,6 @@ on the left hand side.
 Labeling on top leaves more horizontal space for the widget itself.
 %End
 
-    QString labelExpression( const QString &fieldName ) const;
-%Docstring
-Returns the (possibly empty or inactive) expression for the label of ``fieldName``, to be evaluated in the form context.
-
-.. note::
-
-   The returned expression might not be active.
-
-.. seealso:: :py:func:`labelExpressionIsActive`
-
-.. versionadded:: 3.14
-%End
-
-    bool labelExpressionIsActive( const QString &fieldName ) const;
-%Docstring
-Returns true if the label expression for the label of ``fieldName`` is active and it is not empty.
-
-.. versionadded:: 3.14
-%End
-
-    void setLabelExpression( const QString &fieldName, const QString &labelExpression, bool isActive );
-%Docstring
-Set the label expression for ``fieldName`` to ``labelExpression`` and the active state to ``isActive``,
-to be evaluated in the form context.
-
-.. versionadded:: 3.14
-%End
 
 
     QString initFunction() const;
@@ -302,6 +282,28 @@ Deserialize drag and drop designer elements.
     explicit QgsEditFormConfig();
 %Docstring
 Create a new edit form config. Normally invoked by :py:class:`QgsVectorLayer`
+%End
+
+    void setDataDefinedFieldProperties( const QString &fieldName, const QgsPropertyCollection &properties );
+%Docstring
+Set data defined properties for ``fieldName`` to ``properties``
+
+.. versionadded:: 4.14
+%End
+
+    QgsPropertyCollection dataDefinedFieldProperties( const QString &fieldName ) const;
+%Docstring
+Returns data defined properties for ``fieldName``
+
+.. versionadded:: 4.14
+%End
+
+
+    static const QgsPropertiesDefinition &propertyDefinitions();
+%Docstring
+Returns data defined property definitions.
+
+.. versionadded:: 4.14
 %End
 
 };

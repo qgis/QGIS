@@ -173,8 +173,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
       QString mEditorWidgetType;
       QMap<QString, QVariant> mEditorWidgetConfig;
       QString mAlias;
-      QString mAliasExpression;
-      bool mAliasExpressionIsActive;
+      QgsPropertyCollection mDataDefinedProperties;
       QString mComment;
 
       operator QVariant();

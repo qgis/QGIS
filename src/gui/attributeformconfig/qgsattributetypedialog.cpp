@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsattributetypedialog.h"
+#include "qgsattributeeditorelement.h"
 #include "qgsattributetypeloaddialog.h"
 #include "qgsvectordataprovider.h"
 #include "qgsmapcanvas.h"
@@ -73,11 +74,10 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   mExpressionWidget->registerExpressionContextGenerator( this );
   mExpressionWidget->setLayer( mLayer );
 
-  mAliasExpressionProperty = QgsProperty::fromExpression( QString() );
   mAliasExpressionButton->registerExpressionContextGenerator( this );
   connect( mAliasExpressionButton, &QgsPropertyOverrideButton::changed, this, [ = ]
   {
-    mAliasExpressionProperty = mAliasExpressionButton->toProperty();
+    mDataDefinedProperties.setProperty( QgsEditFormConfig::DataDefinedProperty::Alias, mAliasExpressionButton->toProperty() );
   } );
 
   connect( mExpressionWidget, &QgsExpressionLineEdit::expressionChanged, this, &QgsAttributeTypeDialog::defaultExpressionChanged );
@@ -100,7 +100,6 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   constraintExpressionWidget->setAllowEmptyFieldName( true );
   constraintExpressionWidget->setLayer( vl );
 
-  // TODO: mAliasExpression->registerExpressionContextGenerator( ... );
 }
 
 QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
@@ -362,21 +361,13 @@ QString QgsAttributeTypeDialog::alias() const
   return mAlias->text();
 }
 
-void QgsAttributeTypeDialog::setAliasExpression( const QString &aliasExpression, bool isActive )
+void QgsAttributeTypeDialog::setDataDefinedProperties( const QgsPropertyCollection &properties )
 {
-  mAliasExpressionProperty.setExpressionString( aliasExpression );
-  mAliasExpressionProperty.setActive( isActive );
-  mAliasExpressionButton->setToProperty( mAliasExpressionProperty );
-}
-
-QString QgsAttributeTypeDialog::aliasExpression() const
-{
-  return mAliasExpressionProperty.asExpression();
-}
-
-bool QgsAttributeTypeDialog::aliasExpressionIsActive() const
-{
-  return mAliasExpressionProperty.isActive();
+  mDataDefinedProperties = properties;
+  if ( properties.hasProperty( QgsEditFormConfig::DataDefinedProperty::Alias ) )
+  {
+    mAliasExpressionButton->setToProperty( properties.property( QgsEditFormConfig::DataDefinedProperty::Alias ) );
+  }
 }
 
 void QgsAttributeTypeDialog::setComment( const QString &comment )
@@ -443,4 +434,9 @@ QStandardItem *QgsAttributeTypeDialog::currentItem() const
 {
   QStandardItemModel *widgetTypeModel = qobject_cast<QStandardItemModel *>( mWidgetTypeComboBox->model() );
   return widgetTypeModel->item( mWidgetTypeComboBox->currentIndex() );
+}
+
+QgsPropertyCollection QgsAttributeTypeDialog::dataDefinedProperties() const
+{
+  return mDataDefinedProperties;
 }

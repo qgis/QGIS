@@ -100,6 +100,20 @@ class CORE_EXPORT QgsEditFormConfig
     Q_ENUM( PythonInitCodeSource )
 
     /**
+     * Data defined properties.
+     * Form data defined overrides are stored in a property collection
+     * and they can be retrieved using the indexes specified in this
+     * enum.
+     * \since QGIS 3.14
+     */
+    enum DataDefinedProperty
+    {
+      NoProperty = 0, //!< No property
+      AllProperties = 1, //!< All properties for item
+      Alias = 2, //!< Alias
+    };
+
+    /**
      * Copy constructor
      *
      * \since QGIS 3.0
@@ -219,26 +233,6 @@ class CORE_EXPORT QgsEditFormConfig
      */
     void setLabelOnTop( int idx, bool onTop );
 
-    /**
-     * Returns the (possibly empty or inactive) expression for the label of \a fieldName, to be evaluated in the form context.
-     * \note The returned expression might not be active.
-     * \see labelExpressionIsActive()
-     * \since QGIS 3.14
-     */
-    QString labelExpression( const QString &fieldName ) const;
-
-    /**
-     * Returns true if the label expression for the label of \a fieldName is active and it is not empty.
-     * \since QGIS 3.14
-     */
-    bool labelExpressionIsActive( const QString &fieldName ) const;
-
-    /**
-     * Set the label expression for \a fieldName to \a labelExpression and the active state to \a isActive,
-     * to be evaluated in the form context.
-     * \since QGIS 3.14
-     */
-    void setLabelExpression( const QString &fieldName, const QString &labelExpression, bool isActive );
 
     // Python form init function stuff
 
@@ -320,6 +314,25 @@ class CORE_EXPORT QgsEditFormConfig
      * Create a new edit form config. Normally invoked by QgsVectorLayer
      */
     explicit QgsEditFormConfig();
+
+    /**
+     * Set data defined properties for \a fieldName to \a properties
+     * \since QGIS 4.14
+     */
+    void setDataDefinedFieldProperties( const QString &fieldName, const QgsPropertyCollection &properties );
+
+    /**
+     * Returns data defined properties for \a fieldName
+     * \since QGIS 4.14
+     */
+    QgsPropertyCollection dataDefinedFieldProperties( const QString &fieldName ) const;
+
+
+    /**
+     * Returns data defined property definitions.
+     * \since QGIS 4.14
+     */
+    static const QgsPropertiesDefinition &propertyDefinitions();
 
   private:
 

@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgsrelation.h"
 #include "qgsoptionalexpression.h"
+#include "qgspropertycollection.h"
 #include <QColor>
 
 class QgsRelationManager;
@@ -28,7 +29,7 @@ class QgsRelationManager;
  * This is an abstract base class for any elements of a drag and drop form.
  *
  * This can either be a container which will be represented on the screen
- * as a tab widget or ca collapsible group box. Or it can be a field which will
+ * as a tab widget or a collapsible group box. Or it can be a field which will
  * then be represented based on the QgsEditorWidget type and configuration.
  * Or it can be a relation and embed the form of several children of another
  * layer.
@@ -133,40 +134,11 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      */
     void setShowLabel( bool showLabel );
 
-    /**
-     * Returns the (possibly empty or inactive) label expression.
-     * \see labelExpressionIsActive()
-     * \since QGIS 3.14
-     */
-    QString labelExpression() const;
-
-    /**
-     * Sets the label expression override for the field to \a labelExpression.
-     * If the override is not active or it is set to an empty string the field label will be taken from
-     * the label alias if set or from the field name otherwise.
-     * \see setLabelExpressionIsActive
-     * \since QGIS 3.14
-     */
-    void setLabelExpression( const QString &labelExpression );
-
-    /**
-     * Returns the status of the label expression override.
-     * \since QGIS 3.14
-     */
-    bool labelExpressionIsActive() const;
-
-    /**
-     * Sets the status of a label expression override to \a labelExpressionIsActive.
-     * \since QGIS 3.14
-     */
-    void setLabelExpressionIsActive( bool labelExpressionIsActive );
-
   protected:
 #ifndef SIP_RUN
     AttributeEditorType mType;
     QString mName;
-    QString mLabelExpression;
-    bool mLabelExpressionIsActive;
+    //QgsPropertyCollection mDataDefinedProperties;
     QgsAttributeEditorElement *mParent = nullptr;
     bool mShowLabel;
 #endif
@@ -187,6 +159,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      * \since QGIS 2.18
      */
     virtual QString typeIdentifier() const = 0;
+
 };
 
 
