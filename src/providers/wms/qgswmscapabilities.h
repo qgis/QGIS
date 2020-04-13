@@ -27,6 +27,7 @@
 #include "qgsrasteriterator.h"
 #include "qgsapplication.h"
 #include "qgsdataprovider.h"
+#include "qgsinterval.h"
 
 
 class QNetworkReply;
@@ -405,6 +406,26 @@ struct QgsWmstResolution
   int hour = -1;
   int minutes = -1;
   int seconds = -1;
+
+  long long interval()
+  {
+    long long secs = 0.0;
+
+    if ( year != -1 )
+      secs += year * QgsInterval::YEARS ;
+    if ( month != -1 )
+      secs += month * QgsInterval::MONTHS;
+    if ( day != -1 )
+      secs += day * QgsInterval::DAY;
+    if ( hour != -1 )
+      secs += hour * QgsInterval::HOUR;
+    if ( minutes != -1 )
+      secs += minutes * QgsInterval::MINUTE;
+    if ( seconds != -1 )
+      secs += seconds;
+
+    return secs;
+  }
 
   bool active()
   {
@@ -786,12 +807,13 @@ class QgsWmsSettings
     QDateTime addTime( QDateTime dateTime, QgsWmstResolution resolution );
 
     /**
-     * Finds the least closest datetime from list of available datetimes
+     * Finds the least closest datetime from list of available dimension temporal ranges
      * with the given \a dateTime.
      *
-     * Returns the passed \a dateTime if it is found in the available datetimes.
+     * \note It works with wms-t capabilities that provide time dimension with temporal ranges only.
+     *
      */
-    QDateTime findLeastClosestDateTime( QDateTime dateTime ) const;
+    QDateTime findLeastClosestDateTime( QDateTime dateTime, bool dateOnly = false ) const;
 
   protected:
     QgsWmsParserSettings    mParserSettings;
@@ -815,9 +837,6 @@ class QgsWmsSettings
 
     //! Fixed reference temporal range for the data provider
     QgsDateTimeRange mFixedReferenceRange;
-
-    //! List of all available datetimes.
-    QList<QDateTime> mDateTimes;
 
     //! Stores WMS-T time dimension extent dates
     QgsWmstDimensionExtent mTimeDimensionExtent;

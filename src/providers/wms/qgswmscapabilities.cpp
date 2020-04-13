@@ -98,8 +98,6 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     else
       mFixedRange = QgsDateTimeRange();
 
-    mDateTimes = dateTimesFromExtent( mTimeDimensionExtent );
-
     if ( uri.param( QStringLiteral( "referenceTimeDimensionExtent" ) ) != QString() )
     {
       QString referenceExtent = uri.param( QStringLiteral( "referenceTimeDimensionExtent" ) );
@@ -335,32 +333,36 @@ QDateTime QgsWmsSettings::addTime( QDateTime dateTime, QgsWmstResolution resolut
   return resultDateTime;
 }
 
-QDateTime QgsWmsSettings::findLeastClosestDateTime( QDateTime dateTime ) const
+QDateTime QgsWmsSettings::findLeastClosestDateTime( QDateTime dateTime, bool dateOnly ) const
 {
   QDateTime closest = dateTime;
-  long long min = std::numeric_limits<long long>::max();
 
-  if ( !dateTime.isValid() || mDateTimes.contains( dateTime ) )
-    return closest;
+  long long seconds;
 
-  for ( QDateTime current : mDateTimes )
+  if ( dateOnly )
+    seconds = QDateTime::fromString( closest.date().toString() ).toSecsSinceEpoch();
+  else
+    seconds = closest.toSecsSinceEpoch();
+
+  for ( QgsWmstExtentPair pair : mTimeDimensionExtent.datesResolutionList )
   {
-    if ( !current.isValid() )
+    if ( pair.dates.dateTimes.size() < 2 )
       continue;
 
-    long long difference = dateTime.secsTo( current );
+    long long startSeconds = pair.dates.dateTimes.at( 0 ).toSecsSinceEpoch();
+    long long endSeconds = pair.dates.dateTimes.at( 1 ).toSecsSinceEpoch();
 
-    // The datetimes list is sorted, if difference is increasing or
-    // it is above zero means search is now looking for greater than
-    // datetimes then search will have to stop.
-    if ( difference > 0 || std::abs( difference ) > min )
+    // if out of bounds
+    if ( seconds < startSeconds || seconds > endSeconds )
+      continue;
+    if ( seconds == endSeconds )
       break;
 
-    if ( std::abs( difference ) < min )
-    {
-      min = std::abs( difference );
-      closest = current;
-    }
+    long long resolutionSeconds = pair.resolution.interval();
+    long long step = std::floor( ( seconds - startSeconds ) / resolutionSeconds );
+    long long resultSeconds = startSeconds + ( step * resolutionSeconds );
+
+    closest.setSecsSinceEpoch( resultSeconds );
   }
 
   return closest;
