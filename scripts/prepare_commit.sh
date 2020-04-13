@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###########################################################################
-#    prepare-commit.sh
+#    prepare_commit.sh
 #    ---------------------
 #    Date                 : August 2008
 #    Copyright            : (C) 2008 by Juergen E. Fischer

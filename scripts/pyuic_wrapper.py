@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    pyuic-wrapper.py
+    pyuic_wrapper.py
     ---------------------
     Date                 : March 2016
     Copyright            : (C) 2016 by Juergen E. Fischer

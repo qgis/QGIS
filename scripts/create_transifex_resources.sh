@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###########################################################################
-#    create-transifex-resources.sh
+#    create_transifex_resources.sh
 #    ---------------------
 #    Date                 : March 2013
 #    Copyright            : (C) 2013 by Tim Sutton
