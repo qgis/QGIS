@@ -53,8 +53,10 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
       MatchUsingWholeRange, //!< Use an exact match to the whole temporal range
       MatchExactUsingStartOfRange, //!< Match the start of the temporal range to a corresponding layer or band, and only use exact matching results
       MatchExactUsingEndOfRange, //!< Match the end of the temporal range to a corresponding layer or band, and only use exact matching results
+      FindClosestMatchToStartOfRange, //! Match the start of the temporal range to the least previous closest datetime.
+      FindClosestMatchToEndOfRange //! Match the end of the temporal range to the least previous closest datetime.
     };
-    // TODO -- add other methods, like "FindClosestMatchToStartOfRange", "FindClosestMatchToEndOfRange", etc
+    // TODO -- add other methods
 
     /**
      * Returns the desired method to use when resolving a temporal interval to matching
@@ -108,58 +110,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     */
     const QgsDateTimeRange &requestedTemporalRange() const;
 
-    /**
-     * Sets the requested reference temporal \a range to retrieve when
-     * returning data from the associated data provider.
-     *
-     * \note this is not normally manually set, and is intended for use by
-     * QgsRasterLayerRenderer to automatically set the requested temporal range
-     *  on a clone of the data provider during a render job.
-     *
-     * \see requestedReferenceTemporalRange()
-    */
-    void setRequestedReferenceTemporalRange( const QgsDateTimeRange &range );
-
-    /**
-     * Returns the requested reference temporal range.
-     * Intended to be used by the provider in fetching data.
-     *
-     * \see setRequestedReferenceTemporalRange()
-    */
-    const QgsDateTimeRange &requestedReferenceTemporalRange() const;
-
-    /**
-     * Sets the time enabled status.
-     * This enables whether time part in the temporal range should be
-     * used when updated the temporal range of these capabilities.
-     *
-     * This is useful in some temporal layers who use dates only.
-     *
-     * \see isTimeEnabled()
-     */
-    void setEnableTime( bool enabled );
-
-    /**
-     * Returns the temporal property status.
-     *
-     * \see setEnableTime()
-    */
-    bool isTimeEnabled() const;
-
-    /**
-     * Sets the usage status of the reference range.
-     *
-     * \see isReferenceEnable()
-     */
-    void setReferenceEnable( bool enabled );
-
-    /**
-     * Returns the enabled status of the reference range.
-     *
-     * \see setReferenceEnable()
-    */
-    bool isReferenceEnable() const;
-
   private:
 
     /**
@@ -184,30 +134,13 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      */
     QgsDateTimeRange mAvailableTemporalRange;
 
-    /**
-     * If the stored time part in temporal ranges should be taked into account.
-     *
-     * This is to enable data providers that use dates only and no datetime, to
-     * configure their temporal properties to consider their state.
-     *
-     * eg. some WMS-T providers only require date with "YYYY-MM-DD" format with
-     *  no time part.
-     */
-    bool mEnableTime = true;
-
     //! Represents the requested temporal range.
     QgsDateTimeRange mRequestedRange;
-
-    //! Represents the requested reference temporal range.
-    QgsDateTimeRange mRequestedReferenceRange;
 
     /**
      * Stores the available reference temporal range
      */
     QgsDateTimeRange mAvailableReferenceRange;
-
-    //! If reference range has been enabled to be used in these properties
-    bool mReferenceEnable = false;
 
     //! Interval handling method
     IntervalHandlingMethod mIntervalMatchMethod = MatchUsingWholeRange;

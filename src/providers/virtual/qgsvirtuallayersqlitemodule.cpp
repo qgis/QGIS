@@ -195,9 +195,6 @@ struct VTable
       mFields = mLayer ? mLayer->fields() : mProvider->fields();
       QStringList sqlFields;
 
-      // add a hidden field for rtree filtering
-      sqlFields << QStringLiteral( "_search_frame_ HIDDEN BLOB" );
-
       const auto constMFields = mFields;
       for ( const QgsField &field : constMFields )
       {
@@ -229,12 +226,15 @@ struct VTable
         // we are using them to set the geometry type and srid
         // these will be reused by the provider when it will introspect the query to detect types
         sqlFields << QStringLiteral( "geometry geometry(%1,%2)" ).arg( provider->wkbType() ).arg( provider->crs().postgisSrid() );
+
+        // add a hidden field for rtree filtering
+        sqlFields << QStringLiteral( "_search_frame_ HIDDEN BLOB" );
       }
 
       QgsAttributeList pkAttributeIndexes = provider->pkAttributeIndexes();
       if ( pkAttributeIndexes.size() == 1 )
       {
-        mPkColumn = pkAttributeIndexes.at( 0 ) + 1;
+        mPkColumn = pkAttributeIndexes.at( 0 );
       }
 
       mCreationStr = "CREATE TABLE vtable (" + sqlFields.join( QStringLiteral( "," ) ) + ")";
@@ -491,8 +491,8 @@ int vtableBestIndex( sqlite3_vtab *pvtab, sqlite3_index_info *indexInfo )
 
     // request for filter with a comparison operator
     if ( ( indexInfo->aConstraint[i].usable ) &&
-         ( indexInfo->aConstraint[i].iColumn > 0 ) &&
-         ( indexInfo->aConstraint[i].iColumn <= vtab->fields().count() ) &&
+         ( indexInfo->aConstraint[i].iColumn >= 0 ) &&
+         ( indexInfo->aConstraint[i].iColumn < vtab->fields().count() ) &&
          ( ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_EQ ) || // if no PK
            ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_GT ) ||
            ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_LE ) ||
@@ -508,7 +508,7 @@ int vtableBestIndex( sqlite3_vtab *pvtab, sqlite3_index_info *indexInfo )
       indexInfo->idxNum = 3; // expression filter
       indexInfo->estimatedCost = 2.0; // probably better than no index
 
-      QString expr = QgsExpression::quotedColumnRef( vtab->fields().at( indexInfo->aConstraint[i].iColumn - 1 ).name() );
+      QString expr = QgsExpression::quotedColumnRef( vtab->fields().at( indexInfo->aConstraint[i].iColumn ).name() );
       switch ( indexInfo->aConstraint[i].op )
       {
         case SQLITE_INDEX_CONSTRAINT_EQ:
@@ -546,7 +546,8 @@ int vtableBestIndex( sqlite3_vtab *pvtab, sqlite3_index_info *indexInfo )
 
     // request for rtree filtering
     if ( ( indexInfo->aConstraint[i].usable ) &&
-         ( 0 == indexInfo->aConstraint[i].iColumn ) &&
+         // request on _search_frame_ column
+         ( vtab->fields().count() + 1 == indexInfo->aConstraint[i].iColumn ) &&
          ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_EQ ) )
     {
       indexInfo->aConstraintUsage[i].argvIndex = 1;
@@ -596,9 +597,12 @@ int vtableFilter( sqlite3_vtab_cursor *cursor, int idxNum, const char *idxStr, i
   {
     // rtree filter
     const char *blob = reinterpret_cast< const char * >( sqlite3_value_blob( argv[0] ) );
-    int bytes = sqlite3_value_bytes( argv[0] );
-    QgsRectangle r( spatialiteBlobBbox( blob, bytes ) );
-    request.setFilterRect( r );
+    if ( blob )
+    {
+      int bytes = sqlite3_value_bytes( argv[0] );
+      QgsRectangle r( spatialiteBlobBbox( blob, bytes ) );
+      request.setFilterRect( r );
+    }
   }
   else if ( idxNum == 3 )
   {
@@ -658,13 +662,9 @@ int vtableRowId( sqlite3_vtab_cursor *cursor, sqlite3_int64 *outRowid )
 int vtableColumn( sqlite3_vtab_cursor *cursor, sqlite3_context *ctxt, int idx )
 {
   VTableCursor *c = reinterpret_cast<VTableCursor *>( cursor );
-  if ( idx == 0 )
-  {
-    // _search_frame_, return null
-    sqlite3_result_null( ctxt );
-    return SQLITE_OK;
-  }
-  if ( idx == c->nColumns() + 1 )
+
+  // geometry column
+  if ( idx == c->nColumns() )
   {
     QPair<char *, int> g = c->currentGeometry();
     if ( !g.first )
@@ -673,7 +673,15 @@ int vtableColumn( sqlite3_vtab_cursor *cursor, sqlite3_context *ctxt, int idx )
       sqlite3_result_blob( ctxt, g.first, g.second, deleteGeometryBlob );
     return SQLITE_OK;
   }
-  QVariant v = c->currentAttribute( idx - 1 );
+
+  // _search_frame_, return null
+  if ( idx == c->nColumns() + 1 )
+  {
+    sqlite3_result_null( ctxt );
+    return SQLITE_OK;
+  }
+
+  QVariant v = c->currentAttribute( idx );
   if ( v.isNull() )
   {
     sqlite3_result_null( ctxt );

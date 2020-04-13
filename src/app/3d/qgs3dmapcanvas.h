@@ -19,6 +19,8 @@
 #include <QWidget>
 #include <Qt3DRender/QRenderCapture>
 
+#include "qgsrange.h"
+
 namespace Qt3DExtras
 {
   class Qt3DWindow;
@@ -31,6 +33,7 @@ class QgsWindow3DEngine;
 class QgsCameraController;
 class QgsPointXY;
 class Qgs3DNavigationWidget;
+class QgsTemporalController;
 
 
 class Qgs3DMapCanvas : public QWidget
@@ -74,13 +77,24 @@ class Qgs3DMapCanvas : public QWidget
     Qgs3DMapTool *mapTool() const { return mMapTool; }
 
     /**
-     * Set the visibility of on-screen navigation widget.
+     * Sets the visibility of on-screen navigation widget.
      */
     void setOnScreenNavigationVisibility( bool visibility );
+
+    /**
+     * Sets the temporal controller
+     */
+    void setTemporalController( QgsTemporalController *temporalController );
 
   signals:
     //! Emitted when the 3D map canvas was successfully saved as image
     void savedAsImage( QString fileName );
+
+    //! Emitted when the the map setting is changed
+    void mapSettingsChanged();
+
+  private slots:
+    void updateTemporalRange( const QgsDateTimeRange &timeRange );
 
   protected:
     void resizeEvent( QResizeEvent *ev ) override;
@@ -104,6 +118,8 @@ class Qgs3DMapCanvas : public QWidget
 
     //! On-Screen Navigation widget.
     Qgs3DNavigationWidget *mNavigationWidget = nullptr;
+
+    QgsTemporalController *mTemporalController = nullptr;
 };
 
 #endif // QGS3DMAPCANVAS_H

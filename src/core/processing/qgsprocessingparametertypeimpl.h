@@ -620,7 +620,8 @@ class CORE_EXPORT QgsProcessingParameterTypeExtent : public QgsProcessingParamet
              << QObject::tr( "QgsProcessingFeatureSourceDefinition: Extent of source is used" )
              << QStringLiteral( "QgsProperty" )
              << QStringLiteral( "QgsRectangle" )
-             << QStringLiteral( "QgsReferencedRectangle" );
+             << QStringLiteral( "QgsReferencedRectangle" )
+             << QStringLiteral( "QgsGeometry: bounding box of geometry is used" );;
     }
 
     QStringList acceptedStringValues() const override
@@ -1888,6 +1889,111 @@ class CORE_EXPORT QgsProcessingParameterTypeProviderConnection : public QgsProce
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "Name of registered database connection" );
+    }
+
+};
+
+/**
+ * A database schema name parameter for processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('databaseschema')
+ * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsProcessingParameterTypeDatabaseSchema : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterDatabaseSchema( name, QString(), QString() );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A database schema parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Database Schema" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "databaseschema" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterDatabaseSchema" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterDatabaseSchema" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Name of existing database schema" );
+    }
+
+};
+
+
+/**
+ * A database table name parameter for processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('databasetable')
+ * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsProcessingParameterTypeDatabaseTable: public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterDatabaseTable( name, QString(), QString(), QString() );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A database table parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Database Table" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "databasetable" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterDatabaseTable" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterDatabaseTable" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Name of existing database table" );
     }
 
 };

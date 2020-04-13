@@ -148,6 +148,24 @@ QStringList QgsCheckableComboBox::checkedItems() const
   return items;
 }
 
+QVariantList QgsCheckableComboBox::checkedItemsData() const
+{
+  QVariantList data;
+
+  if ( model() )
+  {
+    QModelIndex index = model()->index( 0, modelColumn(), rootModelIndex() );
+    QModelIndexList indexes = model()->match( index, Qt::CheckStateRole, Qt::Checked, -1, Qt::MatchExactly );
+    const auto constIndexes = indexes;
+    for ( const QModelIndex &index : constIndexes )
+    {
+      data += index.data( Qt::UserRole ).toString();
+    }
+  }
+
+  return data;
+}
+
 Qt::CheckState QgsCheckableComboBox::itemCheckState( int index ) const
 {
   return static_cast<Qt::CheckState>( itemData( index, Qt::CheckStateRole ).toInt() );

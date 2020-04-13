@@ -107,7 +107,7 @@ std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::create( const QStri
                 mMeshLayer->nativeMesh(),
                 mMeshLayer->triangularMesh(),
                 nullptr,
-                mMeshLayer->rendererSettings().scalarSettings( groupIndex ).dataInterpolationMethod()
+                mMeshLayer->rendererSettings().scalarSettings( groupIndex ).dataResamplingMethod()
               );
             Q_ASSERT( dataX.size() == resultCount );
             QVector<double> dataY =
@@ -116,7 +116,7 @@ std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::create( const QStri
                 mMeshLayer->nativeMesh(),
                 mMeshLayer->triangularMesh(),
                 nullptr,
-                mMeshLayer->rendererSettings().scalarSettings( groupIndex ).dataInterpolationMethod()
+                mMeshLayer->rendererSettings().scalarSettings( groupIndex ).dataResamplingMethod()
               );
 
             Q_ASSERT( dataY.size() == resultCount );

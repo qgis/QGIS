@@ -210,6 +210,13 @@ children.
 .. versionadded:: 3.0
 %End
 
+    int depth() const;
+%Docstring
+Returns the depth of this node, i.e. the number of its ancestors
+
+.. versionadded:: 3.14
+%End
+
     bool isExpanded() const;
 %Docstring
 Returns whether the node should be shown as expanded or collapsed in GUI

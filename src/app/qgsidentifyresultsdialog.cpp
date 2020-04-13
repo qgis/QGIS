@@ -38,6 +38,7 @@
 #include <QFileInfo>
 #include <QRegExp>
 #include <QScreen>
+#include <QFont>
 
 //graph
 #include <qwt_plot.h>
@@ -77,6 +78,7 @@
 #include "qgsfiledownloaderdialog.h"
 #include "qgsfieldformatterregistry.h"
 #include "qgsfieldformatter.h"
+#include "qgsfieldmodel.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsexpressioncontextutils.h"
@@ -497,6 +499,10 @@ void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyRes
       addFeature( qobject_cast<QgsMeshLayer *>( result.mLayer ), result.mLabel, result.mAttributes, result.mDerivedAttributes );
       break;
 
+    case QgsMapLayerType::VectorTileLayer:
+      // TODO
+      break;
+
     case QgsMapLayerType::PluginLayer:
       break;
   }
@@ -511,6 +517,9 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     layItem = new QTreeWidgetItem( QStringList() << vlayer->name() );
     layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( vlayer ) ) );
     lstResults->addTopLevelItem( layItem );
+    QFont boldFont;
+    boldFont.setBold( true );
+    layItem->setFont( 0, boldFont );
 
     connect( vlayer, &QObject::destroyed, this, &QgsIdentifyResultsDialog::layerDestroyed );
     connect( vlayer, &QgsMapLayer::crsChanged, this, &QgsIdentifyResultsDialog::layerDestroyed );
@@ -526,6 +535,12 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
   featItem->setData( 0, Qt::UserRole + 1, mFeatures.size() );
   mFeatures << f;
   layItem->addChild( featItem );
+  layItem->setFirstColumnSpanned( true );
+
+  QString countSuffix = layItem->childCount() > 1
+                        ? QStringLiteral( " [%1]" ).arg( layItem->childCount() )
+                        : QString();
+  layItem->setText( 0, QStringLiteral( "%1 %2" ).arg( vlayer->name(), countSuffix ) );
 
   if ( derivedAttributes.size() >= 0 )
   {
@@ -616,7 +631,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     featItem->addChild( attrItem );
 
     attrItem->setData( 0, Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
-    attrItem->setToolTip( 0, vlayer->attributeDisplayName( i ) );
+    attrItem->setToolTip( 0, QgsFieldModel::fieldToolTipExtended( fields.at( i ), vlayer ) );
     attrItem->setData( 0, Qt::UserRole, fields.at( i ).name() );
     attrItem->setData( 0, Qt::UserRole + 1, i );
 
@@ -1873,7 +1888,7 @@ void QgsIdentifyResultsDialog::zoomToFeature()
     rect.scale( 0.5, &c );
   }
 
-  mCanvas->setExtent( rect );
+  mCanvas->setExtent( rect, true );
   mCanvas->refresh();
 }
 

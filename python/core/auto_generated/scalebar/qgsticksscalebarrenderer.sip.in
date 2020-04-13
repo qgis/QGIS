@@ -28,12 +28,20 @@ A scale bar that draws segments using short ticks.
       TicksMiddle,
     };
 
-    QgsTicksScaleBarRenderer();
+    QgsTicksScaleBarRenderer( TickPosition position = TicksMiddle );
 %Docstring
 Constructor for QgsTicksScaleBarRenderer.
 %End
 
-    virtual QString name() const;
+    virtual QString id() const;
+
+    virtual QString visibleName() const;
+
+    virtual int sortKey() const;
+
+    virtual Flags flags() const;
+
+    virtual QgsTicksScaleBarRenderer *clone() const /Factory/;
 
 
      virtual void draw( QgsRenderContext &context,

@@ -62,8 +62,18 @@ bool QgsFieldProxyModel::isReadOnly( const QModelIndex &index ) const
 
     case QgsFields::OriginEdit:
     case QgsFields::OriginProvider:
-      //not read only
-      return false;
+    {
+      if ( !sourceModel()->data( index, QgsFieldModel::FieldIsWidgetEditable ).toBool() )
+      {
+        return true;
+      }
+      else
+      {
+        //not read only
+        return false;
+      }
+    }
+
   }
   return false; // avoid warnings
 }

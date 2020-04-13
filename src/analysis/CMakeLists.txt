@@ -66,6 +66,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmfiledownloader.cpp
   processing/qgsalgorithmfillnodata.cpp
   processing/qgsalgorithmfilter.cpp
+  processing/qgsalgorithmfilterbygeometry.cpp
   processing/qgsalgorithmfiltervertices.cpp
   processing/qgsalgorithmfixgeometries.cpp
   processing/qgsalgorithmforcerhr.cpp
@@ -111,6 +112,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmraiseexception.cpp
   processing/qgsalgorithmrandomextract.cpp
   processing/qgsalgorithmrandompointsextent.cpp
+  processing/qgsalgorithmrandompointsonlines.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
   processing/qgsalgorithmrasterlogicalop.cpp
   processing/qgsalgorithmrasterize.cpp
@@ -128,7 +130,9 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrepairshapefile.cpp
   processing/qgsalgorithmreverselinedirection.cpp
   processing/qgsalgorithmrotate.cpp
+  processing/qgsalgorithmroundrastervalues.cpp
   processing/qgsalgorithmruggedness.cpp
+  processing/qgsalgorithmsavelog.cpp
   processing/qgsalgorithmsaveselectedfeatures.cpp
   processing/qgsalgorithmsegmentize.cpp
   processing/qgsalgorithmserviceareafromlayer.cpp

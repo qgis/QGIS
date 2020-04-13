@@ -26,10 +26,11 @@ from qgis.core import (QgsDataSourceUri,
                        QgsProcessingAlgorithm,
                        QgsProcessingException,
                        QgsProcessingParameterVectorLayer,
-                       QgsProcessingParameterString)
+                       QgsProcessingParameterString,
+                       QgsProviderRegistry,
+                       QgsProviderConnectionException)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools import spatialite
 
 
 class SpatialiteExecuteSQL(QgisAlgorithm):
@@ -72,12 +73,17 @@ class SpatialiteExecuteSQL(QgisAlgorithm):
             elif '|layerid' in databaseuri:
                 databaseuri = databaseuri[:databaseuri.find('|layerid')]
             uri = QgsDataSourceUri('dbname=\'%s\'' % (databaseuri))
-        db = spatialite.GeoDB(uri)
+
+        try:
+            md = QgsProviderRegistry.instance().providerMetadata('spatialite')
+            conn = md.createConnection(uri.uri(), {})
+        except QgsProviderConnectionException:
+            raise QgsProcessingException(self.tr('Could not connect to {}').format(uri.uri()))
+
         sql = self.parameterAsString(parameters, self.SQL, context).replace('\n', ' ')
         try:
-            db._exec_sql_and_commit(str(sql))
-        except spatialite.DbError as e:
-            raise QgsProcessingException(
-                self.tr('Error executing SQL:\n{0}').format(str(e)))
+            conn.executeSql(sql)
+        except QgsProviderConnectionException as e:
+            raise QgsProcessingException(self.tr('Error executing SQL:\n{0}').format(e))
 
         return {}

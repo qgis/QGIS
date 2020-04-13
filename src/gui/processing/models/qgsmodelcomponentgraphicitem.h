@@ -33,6 +33,7 @@ class QgsModelDesignerFlatButtonGraphicItem;
 class QgsModelDesignerFoldButtonGraphicItem;
 class QgsModelGraphicsView;
 class QgsModelViewMouseEvent;
+class QgsProcessingModelGroupBox;
 
 ///@cond NOT_STABLE
 
@@ -130,12 +131,17 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     void setItemRect( QRectF rect );
 
+#ifndef SIP_RUN
+
     /**
      * Shows a preview of setting a new \a rect for the item.
      */
-    void previewItemRectChange( QRectF rect );
+    QRectF previewItemRectChange( QRectF rect );
 
-#ifndef SIP_RUN
+    /**
+     * Sets a new scene \a rect for the item.
+     */
+    void finalizePreviewedItemRectChange( QRectF rect );
 
     /**
      * Handles a model hover enter \a event.
@@ -163,6 +169,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     void hoverLeaveEvent( QGraphicsSceneHoverEvent *event ) override;
     QVariant itemChange( GraphicsItemChange change, const QVariant &value ) override;
     QRectF boundingRect() const override;
+    bool contains( const QPointF &point ) const override;
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
 
     /**
@@ -202,7 +209,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     /**
      * Returns the location of the link point with the specified \a index on the specified \a edge.
      */
-    QPointF linkPoint( Qt::Edge edge, int index ) const;
+    QPointF linkPoint( Qt::Edge edge, int index, bool incoming ) const;
 
     /**
      * Returns the best link point to use for a link originating at a specified \a other item.
@@ -318,6 +325,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     virtual Qt::PenStyle strokeStyle( State state ) const;
 
     /**
+     * Returns the title alignment
+     */
+    virtual Qt::Alignment titleAlignment() const;
+
+    /**
      * Returns a QPicture version of the item's icon, if available.
      */
     virtual QPicture iconPicture() const;
@@ -357,8 +369,14 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     QgsModelDesignerFlatButtonGraphicItem *mEditButton = nullptr;
     QgsModelDesignerFlatButtonGraphicItem *mDeleteButton = nullptr;
 
+    static constexpr double MIN_COMPONENT_WIDTH = 70;
+    static constexpr double MIN_COMPONENT_HEIGHT = 30;
+
     static constexpr double DEFAULT_BUTTON_WIDTH = 16;
     static constexpr double DEFAULT_BUTTON_HEIGHT = 16;
+    static constexpr double BUTTON_MARGIN = 2;
+    static constexpr double TEXT_MARGIN = 4;
+    static constexpr double RECT_PEN_SIZE = 2;
     QSizeF mButtonSize { DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT };
 
     QFont mFont;
@@ -440,6 +458,16 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
     bool canDeleteComponent() override;
 
+    /**
+     * Sets the results obtained for this child algorithm for the last model execution through the dialog.
+     */
+    void setResults( const QVariantMap &results );
+
+    /**
+     * Sets the inputs used for this child algorithm for the last model execution through the dialog.
+     */
+    void setInputs( const QVariantMap &inputs );
+
   protected:
 
     QColor fillColor( State state ) const override;
@@ -463,6 +491,8 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
   private:
     QPicture mPicture;
     QPixmap mPixmap;
+    QVariantMap mResults;
+    QVariantMap mInputs;
 };
 
 
@@ -559,6 +589,52 @@ class GUI_EXPORT QgsModelCommentGraphicItem : public QgsModelComponentGraphicIte
 
 
 };
+
+
+/**
+ * \ingroup gui
+ * \brief A graphic item representing a group box in the model designer.
+ * \warning Not stable API
+ * \since QGIS 3.14
+ */
+class GUI_EXPORT QgsModelGroupBoxGraphicItem : public QgsModelComponentGraphicItem
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsModelGroupBoxGraphicItem for the specified group \a box, with the specified \a parent item.
+     *
+     * The \a model argument specifies the associated processing model. Ownership of \a model is not transferred, and
+     * it must exist for the lifetime of this object.
+     *
+     * Ownership of \a output is transferred to the item.
+     */
+    QgsModelGroupBoxGraphicItem( QgsProcessingModelGroupBox *box SIP_TRANSFER,
+                                 QgsProcessingModelAlgorithm *model,
+                                 QGraphicsItem *parent SIP_TRANSFERTHIS );
+    ~QgsModelGroupBoxGraphicItem() override;
+    void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
+    bool canDeleteComponent() override;
+  protected:
+
+    QColor fillColor( State state ) const override;
+    QColor strokeColor( State state ) const override;
+    QColor textColor( State state ) const override;
+    Qt::PenStyle strokeStyle( State state ) const override;
+    Qt::Alignment titleAlignment() const override;
+    void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) override;
+
+  protected slots:
+
+    void deleteComponent() override;
+    void editComponent() override;
+  private:
+
+
+};
+
 ///@endcond
 
 #endif // QGSMODELCOMPONENTGRAPHICITEM_H

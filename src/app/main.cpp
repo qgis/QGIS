@@ -1110,8 +1110,7 @@ int main( int argc, char *argv[] )
   // An app bundled with QGIS_MACAPP_BUNDLE > 0 is considered a release bundle.
   QString  relLibPath( QDir::cleanPath( QCoreApplication::applicationDirPath().append( "/../PlugIns" ) ) );
   // Note: relLibPath becomes the defacto QT_PLUGINS_DIR of a release app bundle
-  if ( QFile::exists( relLibPath + QStringLiteral( "/imageformats" ) )
-       && QFile::exists( relLibPath + QStringLiteral( "/codecs" ) ) )
+  if ( QFile::exists( relLibPath + QStringLiteral( "/imageformats" ) ) )
   {
     // We are in a release app bundle.
     // Strip QT_PLUGINS_DIR because it will crash a launched release app bundle, since

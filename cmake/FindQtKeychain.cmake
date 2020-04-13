@@ -28,6 +28,7 @@ FIND_LIBRARY(QTKEYCHAIN_LIBRARY NAMES qt5keychain qtkeychain
   PATHS
   ${LIB_DIR}
   "$ENV{LIB_DIR}"
+  $ENV{LIB_DIR}/lib
   $ENV{LIB}
   /usr/local/lib
   /usr/lib

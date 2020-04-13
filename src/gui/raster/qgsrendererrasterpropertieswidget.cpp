@@ -18,6 +18,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsbrightnesscontrastfilter.h"
 #include "qgshuesaturationfilter.h"
+#include "qgsrastercontourrendererwidget.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrendererwidget.h"
 #include "qgsrasterrendererregistry.h"
@@ -47,6 +48,7 @@ static void _initRendererWidgetFunctions()
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "singlebandpseudocolor" ), QgsSingleBandPseudoColorRendererWidget::create );
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "singlebandgray" ), QgsSingleBandGrayRendererWidget::create );
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "hillshade" ), QgsHillshadeRendererWidget::create );
+  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "contour" ), QgsRasterContourRendererWidget::create );
 
   sInitialized = true;
 }
@@ -338,7 +340,7 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
   {
     if ( rendererEntry.widgetCreateFunction ) // Single band color data renderer e.g. has no widget
     {
-      QgsDebugMsg( QStringLiteral( "renderer has widgetCreateFunction" ) );
+      QgsDebugMsgLevel( QStringLiteral( "renderer has widgetCreateFunction" ), 3 );
       // Current canvas extent (used to calc min/max) in layer CRS
       QgsRectangle myExtent = mMapCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
       if ( oldWidget )

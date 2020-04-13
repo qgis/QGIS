@@ -94,6 +94,32 @@ void QgsMapLayerStyleGuiUtils::addStyleManagerActions( QMenu *m, QgsMapLayer *la
     m->addAction( a );
 }
 
+void QgsMapLayerStyleGuiUtils::removesExtraMenuSeparators( QMenu *m )
+{
+  if ( !m )
+    return;
+
+  // Get rid of previously added style manager actions (they are dynamic)
+  bool gotFirstSeparator = false;
+  QList<QAction *> actions = m->actions();
+  for ( int i = 0; i < actions.count(); ++i )
+  {
+    if ( actions[i]->isSeparator() )
+    {
+      if ( gotFirstSeparator )
+      {
+        // remove all actions after second separator (including it)
+        while ( actions.count() != i )
+          delete actions.takeAt( i );
+        break;
+      }
+      else
+        gotFirstSeparator = true;
+    }
+  }
+
+}
+
 void QgsMapLayerStyleGuiUtils::addStyle()
 {
   QAction *a = qobject_cast<QAction *>( sender() );

@@ -70,6 +70,7 @@
 #include "qgsbearingnumericformat.h"
 #include "qgsprojectdisplaysettings.h"
 #include "qgsprojecttimesettings.h"
+#include "qgstemporalutils.h"
 
 //qt includes
 #include <QInputDialog>
@@ -235,26 +236,12 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   // Set time settings input
   QgsDateTimeRange range = QgsProject::instance()->timeSettings()->temporalRange();
-  QLocale locale;
 
-  mStartDateTimeEdit->setDisplayFormat(
-    locale.dateTimeFormat( QLocale::ShortFormat ) );
-  mEndDateTimeEdit->setDisplayFormat(
-    locale.dateTimeFormat( QLocale::ShortFormat ) );
+  mStartDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
+  mEndDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
 
-  if ( range.begin().isValid() && range.end().isValid() )
-  {
-    mStartDateTimeEdit->setDateTime( range.begin() );
-    mEndDateTimeEdit->setDateTime( range.end() );
-
-    mCurrentRangeLabel->setText( tr( "Current selected range: %1 to %2" ).arg(
-                                   mStartDateTimeEdit->dateTime().toString( locale.dateTimeFormat() ),
-                                   mEndDateTimeEdit->dateTime().toString( locale.dateTimeFormat() ) ) );
-  }
-  else
-  {
-    mCurrentRangeLabel->setText( tr( "Project range is not set" ) );
-  }
+  mStartDateTimeEdit->setDateTime( range.begin() );
+  mEndDateTimeEdit->setDateTime( range.end() );
 
   mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
   title( QgsProject::instance()->title() );
@@ -1045,7 +1032,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->setTrustLayerMetadata( mTrustProjectCheckBox->isChecked() );
 
   // Time settings
-  QDateTime start =  mStartDateTimeEdit->dateTime();
+  QDateTime start = mStartDateTimeEdit->dateTime();
   QDateTime end = mEndDateTimeEdit->dateTime();
 
   QgsProject::instance()->timeSettings()->setTemporalRange( QgsDateTimeRange( start, end ) );
@@ -2510,54 +2497,9 @@ void QgsProjectProperties::mButtonAddColor_clicked()
 
 void QgsProjectProperties::calculateFromLayersButton_clicked()
 {
-  const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
-  QgsMapLayer *currentLayer = nullptr;
-
-  QDateTime minDate;
-  QDateTime maxDate;
-
-  for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
-  {
-    currentLayer = it.value();
-
-    if ( !currentLayer->temporalProperties() || !currentLayer->temporalProperties()->isActive() )
-      continue;
-
-    if ( currentLayer->type() == QgsMapLayerType::RasterLayer )
-    {
-      QgsRasterLayer *rasterLayer  = qobject_cast<QgsRasterLayer *>( currentLayer );
-
-      QgsDateTimeRange layerRange;
-      switch ( rasterLayer->temporalProperties()->mode() )
-      {
-        case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
-          layerRange = rasterLayer->temporalProperties()->fixedTemporalRange();
-          break;
-
-        case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
-          layerRange = rasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange();
-          break;
-      }
-
-      if ( !minDate.isValid() ||  layerRange.begin() < minDate )
-        minDate = layerRange.begin();
-      if ( !maxDate.isValid() ||  layerRange.end() > maxDate )
-        maxDate = layerRange.end();
-    }
-  }
-
-  if ( !minDate.isValid() || !maxDate.isValid() )
-    return;
-
-  mStartDateTimeEdit->setDateTime( minDate );
-  mEndDateTimeEdit->setDateTime( maxDate );
-
-  QLocale locale;
-  mCurrentRangeLabel->setText( tr( "Current selected range: %1 to %2" ).arg(
-                                 mStartDateTimeEdit->dateTime().toString(
-                                   locale.dateTimeFormat( QLocale::ShortFormat ) ),
-                                 mEndDateTimeEdit->dateTime().toString(
-                                   locale.dateTimeFormat( QLocale::ShortFormat ) ) ) );
+  const QgsDateTimeRange range = QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject::instance() );
+  mStartDateTimeEdit->setDateTime( range.begin() );
+  mEndDateTimeEdit->setDateTime( range.end() );
 }
 
 QListWidgetItem *QgsProjectProperties::addScaleToScaleList( const QString &newScale )

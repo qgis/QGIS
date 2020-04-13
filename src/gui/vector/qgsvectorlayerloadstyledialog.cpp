@@ -265,7 +265,7 @@ void QgsVectorLayerLoadStyleDialog::deleteStyleFromDB()
   if ( !msgError.isNull() )
   {
     QgsDebugMsg( opInfo + " failed." );
-    QMessageBox::warning(this, opInfo, tr( "%1: fail. %2" ).arg( opInfo, msgError ) );
+    QMessageBox::warning( this, opInfo, tr( "%1: fail. %2" ).arg( opInfo, msgError ) );
   }
   else
   {
@@ -282,7 +282,7 @@ void QgsVectorLayerLoadStyleDialog::deleteStyleFromDB()
     int sectionLimit = mLayer->listStylesInDatabase( ids, names, descriptions, errorMsg );
     if ( !errorMsg.isNull() )
     {
-      QMessageBox::warning(this, tr( "Error occurred while retrieving styles from database" ), errorMsg );
+      QMessageBox::warning( this, tr( "Error occurred while retrieving styles from database" ), errorMsg );
     }
     else
     {

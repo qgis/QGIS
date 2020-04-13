@@ -21,6 +21,7 @@
 #include <QProgressBar>
 #include <QToolBar>
 #include <QUrl>
+#include <QAction>
 
 #include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
@@ -33,6 +34,8 @@
 #include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgsmapthemecollection.h"
+#include "qgstemporalcontroller.h"
 
 #include "qgs3danimationsettings.h"
 #include "qgs3danimationwidget.h"
@@ -97,6 +100,19 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
                       tr( "Save as Image…" ), this, &Qgs3DMapCanvasDockWidget::saveAsImage );
 
   toolBar->addSeparator();
+
+  // Map Theme Menu
+  mMapThemeMenu = new QMenu();
+  connect( mMapThemeMenu, &QMenu::aboutToShow, this, &Qgs3DMapCanvasDockWidget::mapThemeMenuAboutToShow );
+
+  mBtnMapThemes = new QToolButton();
+  mBtnMapThemes->setAutoRaise( true );
+  mBtnMapThemes->setToolTip( tr( "Set View Theme" ) );
+  mBtnMapThemes->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ) );
+  mBtnMapThemes->setPopupMode( QToolButton::InstantPopup );
+  mBtnMapThemes->setMenu( mMapThemeMenu );
+
+  toolBar->addWidget( mBtnMapThemes );
 
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ),
                       tr( "Configure…" ), this, &Qgs3DMapCanvasDockWidget::configure );
@@ -210,6 +226,9 @@ void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
 
   mAnimationWidget->setCameraController( mCanvas->scene()->cameraController() );
   mAnimationWidget->setMap( map );
+
+  // Disable button for switching the map theme if the terrain generator is a mesh
+  mBtnMapThemes->setDisabled( mCanvas->map()->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
 }
 
 void Qgs3DMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )
@@ -266,6 +285,9 @@ void Qgs3DMapCanvasDockWidget::configure()
     newCameraPose.setCenterPoint( p );
     mCanvas->cameraController()->setCameraPose( newCameraPose );
   }
+
+  // Disable map theme button if the terrain generator is a mesh
+  mBtnMapThemes->setDisabled( map->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
 }
 
 void Qgs3DMapCanvasDockWidget::onMainCanvasLayersChanged()
@@ -285,4 +307,41 @@ void Qgs3DMapCanvasDockWidget::onTotalPendingJobsCountChanged()
   mLabelPendingJobs->setVisible( count );
   if ( count )
     mLabelPendingJobs->setText( tr( "Loading %1 tiles" ).arg( count ) );
+}
+
+void Qgs3DMapCanvasDockWidget::mapThemeMenuAboutToShow()
+{
+  qDeleteAll( mMapThemeMenuPresetActions );
+  mMapThemeMenuPresetActions.clear();
+
+  QString currentTheme = mCanvas->map()->terrainMapTheme();
+
+  QAction *actionFollowMain = new QAction( tr( "(none)" ), mMapThemeMenu );
+  actionFollowMain->setCheckable( true );
+  if ( currentTheme.isEmpty() || !QgsProject::instance()->mapThemeCollection()->hasMapTheme( currentTheme ) )
+  {
+    actionFollowMain->setChecked( true );
+  }
+  connect( actionFollowMain, &QAction::triggered, this, [ = ]
+  {
+    mCanvas->map()->setTerrainMapTheme( QString() );
+  } );
+  mMapThemeMenuPresetActions.append( actionFollowMain );
+
+  const auto constMapThemes = QgsProject::instance()->mapThemeCollection()->mapThemes();
+  for ( const QString &grpName : constMapThemes )
+  {
+    QAction *a = new QAction( grpName, mMapThemeMenu );
+    a->setCheckable( true );
+    if ( grpName == currentTheme )
+    {
+      a->setChecked( true );
+    }
+    connect( a, &QAction::triggered, this, [a, this]
+    {
+      mCanvas->map()->setTerrainMapTheme( a->text() );
+    } );
+    mMapThemeMenuPresetActions.append( a );
+  }
+  mMapThemeMenu->addActions( mMapThemeMenuPresetActions );
 }

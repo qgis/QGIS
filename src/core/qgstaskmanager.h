@@ -64,11 +64,13 @@ class CORE_EXPORT QgsTask : public QObject
       Complete, //!< Task successfully completed
       Terminated, //!< Task was terminated or errored
     };
+    Q_ENUM( TaskStatus )
 
     //! Task flags
     enum Flag
     {
       CanCancel = 1 << 1, //!< Task can be canceled
+      CancelWithoutPrompt = 1 << 2, //!< Task can be canceled without any users prompts, e.g. when closing a project or QGIS.
       AllFlags = CanCancel, //!< Task supports all flags
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -590,6 +592,8 @@ class CORE_EXPORT QgsTaskManager : public QObject
       int priority;
       QgsTaskRunnableWrapper *runnable = nullptr;
     };
+
+    bool mInitialized = false;
 
     mutable QMutex *mTaskMutex;
 

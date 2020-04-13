@@ -107,14 +107,6 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   widgetTerrainMaterial->setDiffuseVisible( false );
   widgetTerrainMaterial->setMaterial( mMap->terrainShadingMaterial() );
 
-  // populate combo box with map themes
-  const QStringList mapThemeNames = QgsProject::instance()->mapThemeCollection()->mapThemes();
-  cboTerrainMapTheme->addItem( tr( "(none)" ) );  // item for no map theme
-  for ( QString themeName : mapThemeNames )
-    cboTerrainMapTheme->addItem( themeName );
-
-  cboTerrainMapTheme->setCurrentText( mMap->terrainMapTheme() );
-
   widgetLights->setPointLights( mMap->pointLights() );
 
   connect( cboTerrainType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainTypeChanged );
@@ -233,8 +225,6 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setTerrainShadingEnabled( groupTerrainShading->isChecked() );
   mMap->setTerrainShadingMaterial( widgetTerrainMaterial->material() );
 
-  mMap->setTerrainMapTheme( cboTerrainMapTheme->currentText() );
-
   mMap->setPointLights( widgetLights->pointLights() );
 }
 
@@ -249,8 +239,6 @@ void Qgs3DMapConfigWidget::onTerrainTypeChanged()
   labelTerrainLayer->setVisible( genType == QgsTerrainGenerator::Dem || genType == QgsTerrainGenerator::Mesh );
   cboTerrainLayer->setVisible( genType == QgsTerrainGenerator::Dem || genType == QgsTerrainGenerator::Mesh );
   groupMeshTerrainShading->setVisible( genType == QgsTerrainGenerator::Mesh );
-  labelTerrainMapTheme->setVisible( !( genType == QgsTerrainGenerator::Mesh ) );
-  cboTerrainMapTheme->setVisible( !( genType == QgsTerrainGenerator::Mesh ) );
 
   QgsMapLayer *oldTerrainLayer = cboTerrainLayer->currentLayer();
   if ( cboTerrainType->currentData() == QgsTerrainGenerator::Dem )

@@ -32,9 +32,14 @@ IF(WIN32)
          CACHE STRING INTERNAL)
     ENDIF (GDAL_LIBRARY)
   ENDIF (MSVC)
-  
-  
+
+ELSEIF(APPLE AND QGIS_MAC_DEPS_DIR)
+
+    FIND_PATH(GDAL_INCLUDE_DIR gdal.h "$ENV{LIB_DIR}/include")
+    FIND_LIBRARY(GDAL_LIBRARY NAMES gdal PATHS "$ENV{LIB_DIR}/lib")
+
 ELSE(WIN32)
+
   IF(UNIX) 
 
     # try to use framework on mac
@@ -81,6 +86,7 @@ ELSE(WIN32)
       FIND_PROGRAM(GDAL_CONFIG gdal-config
           ${GDAL_CONFIG_PREFER_PATH}
           ${GDAL_CONFIG_PREFER_FWTOOLS_PATH}
+          $ENV{LIB_DIR}/bin
           /usr/local/bin/
           /usr/bin/
           )

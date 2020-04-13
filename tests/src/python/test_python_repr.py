@@ -18,7 +18,7 @@ from qgis.core import QgsGeometry, QgsPoint, QgsPointXY, QgsCircle, QgsCircularS
     QgsCurvePolygon, QgsEllipse, QgsLineString, QgsMultiCurve, QgsRectangle, QgsExpression, QgsField, QgsError,\
     QgsMimeDataUtils, QgsVector, QgsVector3D, QgsVectorLayer, QgsReferencedPointXY, QgsReferencedRectangle,\
     QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject, QgsClassificationRange, QgsBookmark, \
-    QgsLayoutMeasurement, QgsLayoutPoint, QgsLayoutSize, QgsUnitTypes, QgsConditionalStyle, QgsTableCell
+    QgsLayoutMeasurement, QgsLayoutPoint, QgsLayoutSize, QgsUnitTypes, QgsConditionalStyle, QgsTableCell, QgsProperty
 
 start_app()
 
@@ -224,6 +224,22 @@ class TestPython__repr__(unittest.TestCase):
         self.assertEqual(b.__repr__(), "<QgsTableCell: test>")
         b.setContent(5)
         self.assertEqual(b.__repr__(), "<QgsTableCell: 5>")
+
+    def testQgsProperty(self):
+        p = QgsProperty.fromValue(5)
+        self.assertEqual(p.__repr__(), '<QgsProperty: static (5)>')
+        p = QgsProperty.fromField('my_field')
+        self.assertEqual(p.__repr__(), '<QgsProperty: field (my_field)>')
+        p = QgsProperty.fromExpression('5*5 || \'a\'')
+        self.assertEqual(p.__repr__(), '<QgsProperty: expression (5*5 || \'a\')>')
+        p = QgsProperty.fromValue(5, False)
+        self.assertEqual(p.__repr__(), '<QgsProperty: INACTIVE static (5)>')
+        p = QgsProperty.fromField('my_field', False)
+        self.assertEqual(p.__repr__(), '<QgsProperty: INACTIVE field (my_field)>')
+        p = QgsProperty.fromExpression('5*5 || \'a\'', False)
+        self.assertEqual(p.__repr__(), '<QgsProperty: INACTIVE expression (5*5 || \'a\')>')
+        p = QgsProperty()
+        self.assertEqual(p.__repr__(), '<QgsProperty: invalid>')
 
 
 if __name__ == "__main__":

@@ -13,6 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QMessageBox>
+
+
 #include "qgsfieldcalculator.h"
 #include "qgsdistancearea.h"
 #include "qgsexpression.h"
@@ -30,7 +33,6 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsvectorlayerjoinbuffer.h"
 
-#include <QMessageBox>
 
 // FTC = FieldTypeCombo
 constexpr int FTC_TYPE_ROLE_IDX = 0;
@@ -65,10 +67,6 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
 
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), 1, true ) );
   expContext.setHighlightedVariables( QStringList() << QStringLiteral( "row_number" ) );
-
-  builder->setLayer( vl );
-  builder->loadFieldNames();
-  builder->setExpressionContext( expContext );
 
   populateFields();
   populateOutputFieldTypes();
@@ -151,17 +149,18 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   mOnlyUpdateSelectedCheckBox->setEnabled( mCanChangeAttributeValue && hasselection );
   mOnlyUpdateSelectedCheckBox->setText( tr( "Only update %1 selected features" ).arg( vl->selectedFeatureCount() ) );
 
-  builder->loadRecent( QStringLiteral( "fieldcalc" ) );
-  builder->loadUserExpressions( );
+  builder->initWithLayer( vl, expContext, QStringLiteral( "fieldcalc" ) );
 
   mInfoIcon->setPixmap( style()->standardPixmap( QStyle::SP_MessageBoxInformation ) );
+
+  setWindowTitle( tr( "%1 — Field Calculator" ).arg( mVectorLayer->name() ) );
 
   setOkButtonState();
 }
 
 void QgsFieldCalculator::accept()
 {
-  builder->saveToRecent( QStringLiteral( "fieldcalc" ) );
+  builder->expressionTree()->saveToRecent( builder->expressionText(), QStringLiteral( "fieldcalc" ) );
 
   if ( !mVectorLayer )
     return;

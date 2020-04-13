@@ -94,6 +94,8 @@ class TestQgsExpression: public QObject
       mPointsLayer->setAttributionUrl( QStringLiteral( "attribution url" ) );
       mPointsLayer->setMinimumScale( 500 );
       mPointsLayer->setMaximumScale( 1000 );
+      mPointsLayer->setMapTipTemplate( QStringLiteral( "Maptip with class = [% \"Class\" %]" ) );
+      mPointsLayer->setDisplayExpression( QStringLiteral( "'Display expression with class = ' ||  \"Class\"" ) );
 
       mPointsLayerMetadata = new QgsVectorLayer( pointFileInfo.filePath(),
           pointFileInfo.completeBaseName() + "_metadata", QStringLiteral( "ogr" ) );
@@ -1411,6 +1413,11 @@ class TestQgsExpression: public QObject
       QTest::newRow( "right associativity" ) << "(2^3)^2" << false << QVariant( 64. );
       QTest::newRow( "left associativity" ) << "1-(2-1)" << false << QVariant( 0 );
 
+      // eval_template tests
+      QTest::newRow( "eval_template" ) << QStringLiteral( "eval_template(\'this is a [% \\'template\\' || \\'!\\' %]\')" ) << false << QVariant( "this is a template!" );
+      QTest::newRow( "eval_template string" ) << QStringLiteral( "eval_template('string')" ) << false << QVariant( "string" );
+      QTest::newRow( "eval_template expression" ) << QStringLiteral( "eval_template('a' || ' string')" ) << false << QVariant( "a string" );
+
       // layer_property tests
       QTest::newRow( "layer_property no layer" ) << "layer_property('','title')" << false << QVariant();
       QTest::newRow( "layer_property bad layer" ) << "layer_property('bad','title')" << false << QVariant();
@@ -1428,10 +1435,12 @@ class TestQgsExpression: public QObject
       QTest::newRow( "layer_property source" ) << QStringLiteral( "layer_property('%1','source')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->publicSource() );
       QTest::newRow( "layer_property min_scale" ) << QStringLiteral( "layer_property('%1','min_scale')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->minimumScale() );
       QTest::newRow( "layer_property max_scale" ) << QStringLiteral( "layer_property('%1','max_scale')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->maximumScale() );
+      QTest::newRow( "layer_property is_editable" ) << QStringLiteral( "layer_property('%1','is_editable')" ).arg( mPointsLayer->name() ) << false << QVariant( mPointsLayer->isEditable() );
       QTest::newRow( "layer_property crs" ) << QStringLiteral( "layer_property('%1','crs')" ).arg( mPointsLayer->name() ) << false << QVariant( "EPSG:4326" );
       QTest::newRow( "layer_property crs_description" ) << QStringLiteral( "layer_property('%1','crs_description')" ).arg( mPointsLayer->name() ) << false << QVariant( "WGS 84" );
       QTest::newRow( "layer_property crs_definition" ) << QStringLiteral( "layer_property('%1','crs_definition')" ).arg( mPointsLayer->name() ) << false << QVariant( "+proj=longlat +datum=WGS84 +no_defs" );
       QTest::newRow( "layer_property extent" ) << QStringLiteral( "geom_to_wkt(layer_property('%1','extent'))" ).arg( mPointsLayer->name() ) << false << QVariant( "Polygon ((-118.88888889 22.80020704, -83.33333333 22.80020704, -83.33333333 46.87198068, -118.88888889 46.87198068, -118.88888889 22.80020704))" );
+      QTest::newRow( "layer_property distance_units" ) << QStringLiteral( "layer_property('%1','distance_units')" ).arg( mPointsLayer->name() ) << false << QVariant( "degrees" );
       QTest::newRow( "layer_property type" ) << QStringLiteral( "layer_property('%1','type')" ).arg( mPointsLayer->name() ) << false << QVariant( "Vector" );
       QTest::newRow( "layer_property storage_type" ) << QStringLiteral( "layer_property('%1','storage_type')" ).arg( mPointsLayer->name() ) << false << QVariant( "ESRI Shapefile" );
       QTest::newRow( "layer_property geometry_type" ) << QStringLiteral( "layer_property('%1','geometry_type')" ).arg( mPointsLayer->name() ) << false << QVariant( "Point" );
@@ -1978,6 +1987,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "range" ) << "range(\"col1\")" << false << QVariant( 18.0 );
       QTest::newRow( "minority" ) << "minority(\"col3\")" << false << QVariant( 1 );
       QTest::newRow( "majority" ) << "majority(\"col3\")" << false << QVariant( 2 );
+      QTest::newRow( "minority string" ) << "minority(\"col2\")" << false << QVariant( "test" );
+      QTest::newRow( "majority string" ) << "majority(\"col2\")" << false << QVariant( "" );
       QTest::newRow( "q1" ) << "q1(\"col1\")" << false << QVariant( 2.5 );
       QTest::newRow( "q3" ) << "q3(\"col1\")" << false << QVariant( 6.5 );
       QTest::newRow( "iqr" ) << "iqr(\"col1\")" << false << QVariant( 4 );
@@ -2013,6 +2024,63 @@ class TestQgsExpression: public QObject
       QTest::newRow( "group by and filter named" ) << "sum(expression:=\"col1\", group_by:=\"col3\", filter:=\"col1\">=3)" << false << QVariant( 7 );
       QTest::newRow( "group by expression" ) << "sum(\"col1\", \"col1\" % 2)" << false << QVariant( 14 );
       QTest::newRow( "group by with null value" ) << "sum(\"col1\", \"col4\")" << false << QVariant( 8 );
+    }
+
+    void maptip_display_data()
+    {
+      QTest::addColumn<QString>( "string" );
+      QTest::addColumn<QgsFeature>( "feature" );
+      QTest::addColumn<QgsVectorLayer *>( "layer" );
+      QTest::addColumn<bool>( "evalError" );
+      QTest::addColumn<QVariant>( "result" );
+
+      QgsFeature firstFeature = mPointsLayer->getFeature( 1 );
+      QgsVectorLayer *noLayer = nullptr;
+
+      QTest::newRow( "display not evaluated" ) << QStringLiteral( "display_expression(@layer_id, $currentfeature, False)" ) << firstFeature << mPointsLayer  << false << QVariant( "'Display expression with class = ' ||  \"Class\"" );
+      QTest::newRow( "display wrong layer" ) << QStringLiteral( "display_expression()" ) << firstFeature << noLayer  << true << QVariant();
+      QTest::newRow( "display wrong feature" ) << QStringLiteral( "display_expression()" ) << QgsFeature() << mPointsLayer << true << QVariant();
+
+      QTest::newRow( "maptip wrong feature" ) << QStringLiteral( "maptip()" ) << QgsFeature() << mPointsLayer << true << QVariant();
+      QTest::newRow( "maptip wrong layer" ) << QStringLiteral( "maptip()" ) << firstFeature << noLayer << true << QVariant();
+      QTest::newRow( "maptip not evaluated" ) << QStringLiteral( "maptip(@layer_id, $currentfeature, False)" ) << firstFeature << mPointsLayer << false << QVariant( "Maptip with class = [% \"Class\" %]" );
+
+      QTest::newRow( "maptip with 2 params" ) << QStringLiteral( "maptip(@layer_id, $currentfeature)" ) << firstFeature << mPointsLayer << false << QVariant( "Maptip with class = Biplane" );
+      QTest::newRow( "maptip with 1 param" ) << QStringLiteral( "maptip($currentfeature)" ) << firstFeature << mPointsLayer << false << QVariant( "Maptip with class = Biplane" );
+      QTest::newRow( "maptip with 0 param" ) << QStringLiteral( "maptip()" ) << firstFeature << mPointsLayer << false << QVariant( "Maptip with class = Biplane" );
+
+      QTest::newRow( "display with 2 params" ) << QStringLiteral( "display_expression(@layer_id, $currentfeature)" ) << firstFeature << mPointsLayer << false << QVariant( "Display expression with class = Biplane" );
+      QTest::newRow( "display with 1 param" ) << QStringLiteral( "display_expression($currentfeature)" ) << firstFeature << mPointsLayer << false << QVariant( "Display expression with class = Biplane" );
+      QTest::newRow( "display with 0 param" ) << QStringLiteral( "display_expression()" ) << firstFeature << mPointsLayer << false << QVariant( "Display expression with class = Biplane" );
+    }
+
+    void maptip_display()
+    {
+      QFETCH( QString, string );
+      QFETCH( QgsFeature, feature );
+      QFETCH( QgsVectorLayer *, layer );
+      QFETCH( bool, evalError );
+      QFETCH( QVariant, result );
+
+      QgsExpressionContext context;
+      context.appendScope( QgsExpressionContextUtils::globalScope() );
+      context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+      if ( layer )
+      {
+        //layer->setDisplayExpression( QStringLiteral( "Display expression with class = ' || Class" ) );
+        context.appendScope( QgsExpressionContextUtils::layerScope( layer ) );
+      }
+      context.setFeature( feature );
+
+      QgsExpression exp( string );
+      exp.prepare( &context );
+
+      if ( exp.hasParserError() )
+        qDebug() << exp.parserErrorString();
+      QCOMPARE( exp.hasParserError(), false );
+      QVariant res = exp.evaluate( &context );
+      QCOMPARE( exp.hasEvalError(), evalError );
+      QCOMPARE( res.toString(), result.toString() );
     }
 
     void selection()

@@ -29,6 +29,8 @@ QgsMapLayerComboBox::QgsMapLayerComboBox( QWidget *parent )
   connect( mProxyModel, &QAbstractItemModel::rowsInserted, this, &QgsMapLayerComboBox::rowsChanged );
   connect( mProxyModel, &QAbstractItemModel::rowsRemoved, this, &QgsMapLayerComboBox::rowsChanged );
 
+  setSizeAdjustPolicy( QComboBox::AdjustToMinimumContentsLengthWithIcon );
+
   setAcceptDrops( true );
 }
 
@@ -74,7 +76,7 @@ QStringList QgsMapLayerComboBox::additionalItems() const
 
 void QgsMapLayerComboBox::setLayer( QgsMapLayer *layer )
 {
-  if ( layer == currentLayer() )
+  if ( layer == currentLayer() && ( layer || !isEditable() || currentText().isEmpty() ) )
     return;
 
   if ( !layer )

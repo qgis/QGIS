@@ -465,8 +465,8 @@ void TestQgsAuthOAuth2Method::testDynamicRegistration()
   {
     qApp->processEvents();
   }
-  QCOMPARE( dlg.leClientId->text(), QLatin1Literal( "___QGIS_ROCKS___@www.qgis.org" ) );
-  QCOMPARE( dlg.leClientSecret->text(), QLatin1Literal( "___QGIS_ROCKS______QGIS_ROCKS______QGIS_ROCKS___" ) );
+  QCOMPARE( dlg.leClientId->text(), QLatin1String( "___QGIS_ROCKS___@www.qgis.org" ) );
+  QCOMPARE( dlg.leClientSecret->text(), QLatin1String( "___QGIS_ROCKS______QGIS_ROCKS______QGIS_ROCKS___" ) );
 }
 
 
@@ -499,8 +499,8 @@ void TestQgsAuthOAuth2Method::testDynamicRegistrationJwt()
   {
     qApp->processEvents();
   }
-  QCOMPARE( dlg.leClientId->text(), QLatin1Literal( "___QGIS_ROCKS___@www.qgis.org" ) );
-  QCOMPARE( dlg.leClientSecret->text(), QLatin1Literal( "___QGIS_ROCKS______QGIS_ROCKS______QGIS_ROCKS___" ) );
+  QCOMPARE( dlg.leClientId->text(), QLatin1String( "___QGIS_ROCKS___@www.qgis.org" ) );
+  QCOMPARE( dlg.leClientSecret->text(), QLatin1String( "___QGIS_ROCKS______QGIS_ROCKS______QGIS_ROCKS___" ) );
 }
 
 

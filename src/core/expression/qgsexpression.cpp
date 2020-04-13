@@ -700,6 +700,12 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "project_home" ), QCoreApplication::translate( "variable_help", "Home path of current project." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "project_crs" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of project (e.g., 'EPSG:4326')." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "project_crs_definition" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of project (full definition)." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "project_units" ), QCoreApplication::translate( "variable_help", "Unit of the project's CRS." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "project_crs_description" ), QCoreApplication::translate( "variable_help", "Name of the coordinate reference system of the project." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "project_crs_acronym" ), QCoreApplication::translate( "variable_help", "Acronym of the coordinate reference system of the project." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "project_crs_ellipsoid" ), QCoreApplication::translate( "variable_help", "Acronym of the ellipsoid of the coordinate reference system of the project." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "project_crs_proj4" ), QCoreApplication::translate( "variable_help", "Proj4 definition of the coordinate reference system of the project." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "project_crs_wkt" ), QCoreApplication::translate( "variable_help", "WKT definition of the coordinate reference system of the project." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "project_author" ), QCoreApplication::translate( "variable_help", "Project author, taken from project metadata." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "project_abstract" ), QCoreApplication::translate( "variable_help", "Project abstract, taken from project metadata." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "project_creation_date" ), QCoreApplication::translate( "variable_help", "Project creation date, taken from project metadata." ) );
@@ -708,6 +714,8 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "project_area_units" ), QCoreApplication::translate( "variable_help", "Area unit for current project, used when calculating areas of geometries." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "project_distance_units" ), QCoreApplication::translate( "variable_help", "Distance unit for current project, used when calculating lengths of geometries." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "project_ellipsoid" ), QCoreApplication::translate( "variable_help", "Name of ellipsoid of current project, used when calculating geodetic areas and lengths of geometries." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "layer_ids" ), QCoreApplication::translate( "variable_help", "List of all map layer IDs from the current project." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "layers" ), QCoreApplication::translate( "variable_help", "List of all map layers from the current project." ) );
 
   //layer variables
   sVariableHelpTexts()->insert( QStringLiteral( "layer_name" ), QCoreApplication::translate( "variable_help", "Name of current layer." ) );
@@ -752,11 +760,11 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "map_crs" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of map (e.g., 'EPSG:4326')." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "map_crs_description" ), QCoreApplication::translate( "variable_help", "Name of the coordinate reference system of the map." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "map_units" ), QCoreApplication::translate( "variable_help", "Units for map measurements." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_crs_definition" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of map (full definition)." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "map_crs_definition" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of the map (full definition)." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "map_crs_acronym" ), QCoreApplication::translate( "variable_help", "Acronym of the coordinate reference system of the map." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "map_crs_ellipsoid" ), QCoreApplication::translate( "variable_help", "Acronym of the ellipsoid of the coordinate reference system of the map." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_crs_proj4" ), QCoreApplication::translate( "variable_help", "Proj4 definition of the coordinate reference system." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "map_crs_wkt" ), QCoreApplication::translate( "variable_help", "WKT definition of the coordinate reference system." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "map_crs_proj4" ), QCoreApplication::translate( "variable_help", "Proj4 definition of the coordinate reference system of the map." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "map_crs_wkt" ), QCoreApplication::translate( "variable_help", "WKT definition of the coordinate reference system of the map." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "map_layer_ids" ), QCoreApplication::translate( "variable_help", "List of map layer IDs visible in the map." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "map_layers" ), QCoreApplication::translate( "variable_help", "List of map layers visible in the map." ) );
 

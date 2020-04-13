@@ -296,7 +296,6 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
 
   private slots:
     void updateCompleter();
-    void gathererThreadFinished();
     void scheduledReload();
 
   private:

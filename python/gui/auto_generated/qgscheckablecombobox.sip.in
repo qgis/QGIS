@@ -71,6 +71,14 @@ Returns currently checked items.
 .. seealso:: :py:func:`setCheckedItems`
 %End
 
+    QVariantList checkedItemsData() const;
+%Docstring
+Returns userData (stored in the Qt.UserRole) associated with
+currently checked items.
+
+.. seealso:: :py:func:`checkedItems`
+%End
+
     Qt::CheckState itemCheckState( int index ) const;
 %Docstring
 Returns the checked state of the item identified by index

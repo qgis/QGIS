@@ -110,15 +110,9 @@ void QgsStyle::clear()
   mSymbols.clear();
   mColorRamps.clear();
   mTextFormats.clear();
-  mCachedColorRampTags.clear();
-  mCachedSymbolTags.clear();
-  mCachedTextFormatTags.clear();
-  mCachedLabelSettingsTags.clear();
 
-  mCachedSymbolFavorites.clear();
-  mCachedColorRampFavorites.clear();
-  mCachedTextFormatFavorites.clear();
-  mCachedLabelSettingsFavorites.clear();
+  mCachedTags.clear();
+  mCachedFavorites.clear();
 }
 
 bool QgsStyle::addSymbol( const QString &name, QgsSymbol *symbol, bool update )
@@ -169,11 +163,12 @@ bool QgsStyle::saveSymbol( const QString &name, QgsSymbol *symbol, bool favorite
     return false;
   }
 
-  mCachedSymbolFavorites[ name ] = favorite;
+  mCachedFavorites[ SymbolEntity ].insert( name, favorite );
 
   tagSymbol( SymbolEntity, name, tags );
 
   emit symbolSaved( name, symbol );
+  emit entityAdded( SymbolEntity, name );
 
   return true;
 }
@@ -204,11 +199,35 @@ bool QgsStyle::removeSymbol( const QString &name )
   const bool result = remove( SymbolEntity, symbolid );
   if ( result )
   {
-    mCachedSymbolTags.remove( name );
-    mCachedSymbolFavorites.remove( name );
+    mCachedTags[ SymbolEntity ].remove( name );
+    mCachedFavorites[ SymbolEntity ].remove( name );
     emit symbolRemoved( name );
+    emit entityRemoved( SymbolEntity, name );
   }
   return result;
+}
+
+bool QgsStyle::renameEntity( QgsStyle::StyleEntity type, const QString &oldName, const QString &newName )
+{
+  switch ( type )
+  {
+    case SymbolEntity:
+      return renameSymbol( oldName, newName );
+
+    case ColorrampEntity:
+      return renameColorRamp( oldName, newName );
+
+    case TextFormatEntity:
+      return renameTextFormat( oldName, newName );
+
+    case LabelSettingsEntity:
+      return renameLabelSettings( oldName, newName );
+
+    case TagEntity:
+    case SmartgroupEntity:
+      return false;
+  }
+  return false;
 }
 
 QgsSymbol *QgsStyle::symbol( const QString &name )
@@ -323,11 +342,12 @@ bool QgsStyle::saveColorRamp( const QString &name, QgsColorRamp *ramp, bool favo
     return false;
   }
 
-  mCachedColorRampFavorites[ name ] = favorite;
+  mCachedFavorites[ ColorrampEntity ].insert( name, favorite );
 
   tagSymbol( ColorrampEntity, name, tags );
 
   emit rampAdded( name );
+  emit entityAdded( ColorrampEntity, name );
 
   return true;
 }
@@ -345,10 +365,11 @@ bool QgsStyle::removeColorRamp( const QString &name )
     return false;
   }
 
-  mCachedColorRampTags.remove( name );
-  mCachedColorRampFavorites.remove( name );
+  mCachedTags[ ColorrampEntity ].remove( name );
+  mCachedFavorites[ ColorrampEntity ].remove( name );
 
   emit rampRemoved( name );
+  emit entityRemoved( ColorrampEntity, name );
 
   return true;
 }
@@ -667,12 +688,15 @@ bool QgsStyle::renameSymbol( const QString &oldName, const QString &newName )
     return false;
   }
 
-  mCachedSymbolTags.remove( oldName );
-  mCachedSymbolFavorites.remove( oldName );
+  mCachedTags[ SymbolEntity ].remove( oldName );
+  mCachedFavorites[ SymbolEntity ].remove( oldName );
 
   const bool result = rename( SymbolEntity, symbolid, newName );
   if ( result )
+  {
     emit symbolRenamed( oldName, newName );
+    emit entityRenamed( SymbolEntity, oldName, newName );
+  }
 
   return result;
 }
@@ -690,8 +714,8 @@ bool QgsStyle::renameColorRamp( const QString &oldName, const QString &newName )
     return false;
 
   mColorRamps.insert( newName, ramp );
-  mCachedColorRampTags.remove( oldName );
-  mCachedColorRampFavorites.remove( oldName );
+  mCachedTags[ ColorrampEntity ].remove( oldName );
+  mCachedFavorites[ ColorrampEntity ].remove( oldName );
 
   int rampid = 0;
   sqlite3_statement_unique_ptr statement;
@@ -704,7 +728,10 @@ bool QgsStyle::renameColorRamp( const QString &oldName, const QString &newName )
   }
   const bool result = rename( ColorrampEntity, rampid, newName );
   if ( result )
+  {
     emit rampRenamed( oldName, newName );
+    emit entityRenamed( ColorrampEntity, oldName, newName );
+  }
 
   return result;
 }
@@ -733,11 +760,12 @@ bool QgsStyle::saveTextFormat( const QString &name, const QgsTextFormat &format,
     return false;
   }
 
-  mCachedTextFormatFavorites[ name ] = favorite;
+  mCachedFavorites[ TextFormatEntity ].insert( name, favorite );
 
   tagSymbol( TextFormatEntity, name, tags );
 
   emit textFormatAdded( name );
+  emit entityAdded( TextFormatEntity, name );
 
   return true;
 }
@@ -756,10 +784,11 @@ bool QgsStyle::removeTextFormat( const QString &name )
     return false;
   }
 
-  mCachedTextFormatTags.remove( name );
-  mCachedTextFormatFavorites.remove( name );
+  mCachedTags[ TextFormatEntity ].remove( name );
+  mCachedFavorites[ TextFormatEntity ].remove( name );
 
   emit textFormatRemoved( name );
+  emit entityRemoved( TextFormatEntity, name );
 
   return true;
 
@@ -778,8 +807,8 @@ bool QgsStyle::renameTextFormat( const QString &oldName, const QString &newName 
   QgsTextFormat format = mTextFormats.take( oldName );
 
   mTextFormats.insert( newName, format );
-  mCachedTextFormatTags.remove( oldName );
-  mCachedTextFormatFavorites.remove( oldName );
+  mCachedTags[ TextFormatEntity ].remove( oldName );
+  mCachedFavorites[ TextFormatEntity ].remove( oldName );
 
   int textFormatId = 0;
   sqlite3_statement_unique_ptr statement;
@@ -792,7 +821,10 @@ bool QgsStyle::renameTextFormat( const QString &oldName, const QString &newName 
   }
   const bool result = rename( TextFormatEntity, textFormatId, newName );
   if ( result )
+  {
     emit textFormatRenamed( oldName, newName );
+    emit entityRenamed( TextFormatEntity, oldName, newName );
+  }
 
   return result;
 }
@@ -821,11 +853,12 @@ bool QgsStyle::saveLabelSettings( const QString &name, const QgsPalLayerSettings
     return false;
   }
 
-  mCachedLabelSettingsFavorites[ name ] = favorite;
+  mCachedFavorites[ LabelSettingsEntity ].insert( name, favorite );
 
   tagSymbol( LabelSettingsEntity, name, tags );
 
   emit labelSettingsAdded( name );
+  emit entityAdded( LabelSettingsEntity, name );
 
   return true;
 }
@@ -844,10 +877,11 @@ bool QgsStyle::removeLabelSettings( const QString &name )
     return false;
   }
 
-  mCachedLabelSettingsTags.remove( name );
-  mCachedLabelSettingsFavorites.remove( name );
+  mCachedTags[ LabelSettingsEntity ].remove( name );
+  mCachedFavorites[ LabelSettingsEntity ].remove( name );
 
   emit labelSettingsRemoved( name );
+  emit entityRemoved( LabelSettingsEntity, name );
 
   return true;
 }
@@ -865,8 +899,8 @@ bool QgsStyle::renameLabelSettings( const QString &oldName, const QString &newNa
   QgsPalLayerSettings settings = mLabelSettings.take( oldName );
 
   mLabelSettings.insert( newName, settings );
-  mCachedLabelSettingsTags.remove( oldName );
-  mCachedLabelSettingsFavorites.remove( oldName );
+  mCachedTags[ LabelSettingsEntity ].remove( oldName );
+  mCachedFavorites[ LabelSettingsEntity ].remove( oldName );
 
   int labelSettingsId = 0;
   sqlite3_statement_unique_ptr statement;
@@ -879,7 +913,10 @@ bool QgsStyle::renameLabelSettings( const QString &oldName, const QString &newNa
   }
   const bool result = rename( LabelSettingsEntity, labelSettingsId, newName );
   if ( result )
+  {
     emit labelSettingsRenamed( oldName, newName );
+    emit entityRenamed( LabelSettingsEntity, oldName, newName );
+  }
 
   return result;
 }
@@ -1080,14 +1117,8 @@ bool QgsStyle::rename( StyleEntity type, int id, const QString &newName )
   }
   else
   {
-    mCachedColorRampTags.clear();
-    mCachedSymbolTags.clear();
-    mCachedTextFormatTags.clear();
-    mCachedLabelSettingsTags.clear();
-    mCachedSymbolFavorites.clear();
-    mCachedColorRampFavorites.clear();
-    mCachedTextFormatFavorites.clear();
-    mCachedLabelSettingsFavorites.clear();
+    mCachedTags.clear();
+    mCachedFavorites.clear();
 
     switch ( type )
     {
@@ -1148,14 +1179,8 @@ bool QgsStyle::remove( StyleEntity type, int id )
   }
   else
   {
-    mCachedColorRampTags.clear();
-    mCachedSymbolTags.clear();
-    mCachedTextFormatTags.clear();
-    mCachedLabelSettingsTags.clear();
-    mCachedSymbolFavorites.clear();
-    mCachedColorRampFavorites.clear();
-    mCachedTextFormatFavorites.clear();
-    mCachedLabelSettingsFavorites.clear();
+    mCachedTags.clear();
+    mCachedFavorites.clear();
 
     if ( groupRemoved )
     {
@@ -1216,20 +1241,12 @@ bool QgsStyle::addFavorite( StyleEntity type, const QString &name )
   {
     switch ( type )
     {
-      case SymbolEntity:
-        mCachedSymbolFavorites[ name ] = true;
-        break;
-      case ColorrampEntity:
-        mCachedColorRampFavorites[ name ] = true;
-        break;
-      case TextFormatEntity:
-        mCachedTextFormatFavorites[ name ] = true;
-        break;
-      case LabelSettingsEntity:
-        mCachedLabelSettingsFavorites[ name ] = true;
-        break;
       case TagEntity:
       case SmartgroupEntity:
+        break;
+
+      default:
+        mCachedFavorites[ type ].insert( name, true );
         break;
     }
     emit favoritedChanged( type, name, true );
@@ -1268,20 +1285,12 @@ bool QgsStyle::removeFavorite( StyleEntity type, const QString &name )
   {
     switch ( type )
     {
-      case SymbolEntity:
-        mCachedSymbolFavorites[ name ] = false;
-        break;
-      case ColorrampEntity:
-        mCachedColorRampFavorites[ name ] = false;
-        break;
-      case TextFormatEntity:
-        mCachedTextFormatFavorites[ name ] = false;
-        break;
-      case LabelSettingsEntity:
-        mCachedLabelSettingsFavorites[ name ] = false;
-        break;
       case TagEntity:
       case SmartgroupEntity:
+        break;
+
+      default:
+        mCachedFavorites[ type ].insert( name, false );
         break;
     }
     emit favoritedChanged( type, name, false );
@@ -1675,28 +1684,13 @@ QStringList QgsStyle::tagsOfSymbol( StyleEntity type, const QString &symbol )
 {
   switch ( type )
   {
-    case SymbolEntity:
-      if ( mCachedSymbolTags.contains( symbol ) )
-        return mCachedSymbolTags.value( symbol );
-      break;
-
-    case ColorrampEntity:
-      if ( mCachedColorRampTags.contains( symbol ) )
-        return mCachedColorRampTags.value( symbol );
-      break;
-
-    case TextFormatEntity:
-      if ( mCachedTextFormatTags.contains( symbol ) )
-        return mCachedTextFormatTags.value( symbol );
-      break;
-
-    case LabelSettingsEntity:
-      if ( mCachedLabelSettingsTags.contains( symbol ) )
-        return mCachedLabelSettingsTags.value( symbol );
-      break;
-
     case TagEntity:
     case SmartgroupEntity:
+      return QStringList();
+
+    default:
+      if ( mCachedTags[ type ].contains( symbol ) )
+        return mCachedTags[ type ].value( symbol );
       break;
   }
 
@@ -1779,24 +1773,12 @@ QStringList QgsStyle::tagsOfSymbol( StyleEntity type, const QString &symbol )
   // update cache
   switch ( type )
   {
-    case SymbolEntity:
-      mCachedSymbolTags[ symbol ] = tagList;
-      break;
-
-    case ColorrampEntity:
-      mCachedColorRampTags[ symbol ] = tagList;
-      break;
-
-    case TextFormatEntity:
-      mCachedTextFormatTags[ symbol ] = tagList;
-      break;
-
-    case LabelSettingsEntity:
-      mCachedLabelSettingsTags[ symbol ] = tagList;
-      break;
-
     case TagEntity:
     case SmartgroupEntity:
+      break;
+
+    default:
+      mCachedTags[ type ].insert( symbol, tagList );
       break;
   }
 
@@ -1813,29 +1795,14 @@ bool QgsStyle::isFavorite( QgsStyle::StyleEntity type, const QString &name )
 
   switch ( type )
   {
-    case SymbolEntity:
-      if ( mCachedSymbolFavorites.contains( name ) )
-        return mCachedSymbolFavorites.value( name );
-      break;
-
-    case ColorrampEntity:
-      if ( mCachedColorRampFavorites.contains( name ) )
-        return mCachedColorRampFavorites.value( name );
-      break;
-
-    case TextFormatEntity:
-      if ( mCachedTextFormatFavorites.contains( name ) )
-        return mCachedTextFormatFavorites.value( name );
-      break;
-
-    case LabelSettingsEntity:
-      if ( mCachedLabelSettingsFavorites.contains( name ) )
-        return mCachedLabelSettingsFavorites.value( name );
-      break;
-
     case TagEntity:
     case SmartgroupEntity:
       return false;
+
+    default:
+      if ( mCachedFavorites[ type ].contains( name ) )
+        return mCachedFavorites[ type ].value( name );
+      break;
   }
 
   const QStringList names = allNames( type );
@@ -1851,28 +1818,7 @@ bool QgsStyle::isFavorite( QgsStyle::StyleEntity type, const QString &name )
     if ( n == name )
       res = isFav;
 
-    switch ( type )
-    {
-      case SymbolEntity:
-        mCachedSymbolFavorites[n] = isFav;
-        break;
-
-      case ColorrampEntity:
-        mCachedColorRampFavorites[ n ] = isFav;
-        break;
-
-      case TextFormatEntity:
-        mCachedTextFormatFavorites[ n ] = isFav;
-        break;
-
-      case LabelSettingsEntity:
-        mCachedLabelSettingsFavorites[ n ] = isFav;
-        break;
-
-      case TagEntity:
-      case SmartgroupEntity:
-        return false;
-    }
+    mCachedFavorites[ type ].insert( n, isFav );
   }
   return res;
 }
@@ -2852,34 +2798,14 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
       case SmartgroupEntity:
         break;
     }
+    emit entityChanged( type, name );
   }
   return true;
 }
 
 void QgsStyle::clearCachedTags( QgsStyle::StyleEntity type, const QString &name )
 {
-  switch ( type )
-  {
-    case SymbolEntity:
-      mCachedSymbolTags.remove( name );
-      break;
-
-    case ColorrampEntity:
-      mCachedColorRampTags.remove( name );
-      break;
-
-    case TextFormatEntity:
-      mCachedTextFormatTags.remove( name );
-      break;
-
-    case LabelSettingsEntity:
-      mCachedLabelSettingsTags.remove( name );
-      break;
-
-    case TagEntity:
-    case SmartgroupEntity:
-      break;
-  }
+  mCachedTags[ type ].remove( name );
 }
 
 QgsStyle::StyleEntity QgsStyleSymbolEntity::type() const

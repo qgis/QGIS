@@ -27,7 +27,16 @@ color for the segments.
 Constructor for QgsSingleBoxScaleBarRenderer.
 %End
 
-    virtual QString name() const;
+    virtual QString id() const;
+
+    virtual QString visibleName() const;
+
+    virtual int sortKey() const;
+
+    virtual Flags flags() const;
+
+    virtual QgsSingleBoxScaleBarRenderer *clone() const /Factory/;
+
 
      virtual void draw( QgsRenderContext &context,
                const QgsScaleBarSettings &settings,

@@ -23,16 +23,19 @@
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 #include "qgssettings.h"
+#include "qgsguiutils.h"
 
+#include <QDialogButtonBox>
+#include <QPushButton>
 
 // List of data item provider keys that are filesystem based
-QStringList QgsNewDatabaseTableNameWidget::FILESYSTEM_BASED_DATAITEM_PROVIDERS { QStringLiteral( "GPKG" ), QStringLiteral( "SPATIALITE" ) };
+QStringList QgsNewDatabaseTableNameWidget::FILESYSTEM_BASED_DATAITEM_PROVIDERS { QStringLiteral( "GPKG" ), QStringLiteral( "spatialite" ) };
 
 QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
   QgsBrowserGuiModel *browserModel,
   const QStringList &providersFilter,
   QWidget *parent )
-  : QWidget( parent )
+  : QgsPanelWidget( parent )
 {
 
   // Initialize the browser
@@ -48,6 +51,9 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
   }
 
   setupUi( this );
+
+  mOkButton->hide();
+  mOkButton->setEnabled( false );
 
   QStringList shownDataItemProvidersFilter;
 
@@ -71,6 +77,8 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
       }
     }
   }
+
+  mBrowserToolbar->setIconSize( QgsGuiUtils::iconSize( true ) );
 
   mBrowserProxyModel.setBrowserModel( mBrowserModel );
   // If a filter was specified but the data provider could not be found
@@ -145,7 +153,15 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
     }
   } );
 
+  connect( this, &QgsNewDatabaseTableNameWidget::validationChanged, mOkButton, &QWidget::setEnabled );
+  connect( mOkButton, &QPushButton::clicked, this, &QgsNewDatabaseTableNameWidget::accepted );
+
   validate();
+}
+
+void QgsNewDatabaseTableNameWidget::setAcceptButtonVisible( bool visible )
+{
+  mOkButton->setVisible( visible );
 }
 
 void QgsNewDatabaseTableNameWidget::refreshModel( const QModelIndex &index )
@@ -370,4 +386,52 @@ void QgsNewDatabaseTableNameWidget::showEvent( QShowEvent *e )
       }
     }
   }
+}
+
+//
+// QgsNewDatabaseTableNameDialog
+//
+QgsNewDatabaseTableNameDialog::QgsNewDatabaseTableNameDialog( QgsBrowserGuiModel *browserModel, const QStringList &providersFilter, QWidget *parent )
+  : QDialog( parent )
+{
+  mWidget = new QgsNewDatabaseTableNameWidget( browserModel, providersFilter );
+  QVBoxLayout *vl = new QVBoxLayout();
+  vl->addWidget( mWidget, 1 );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+  connect( mWidget, &QgsNewDatabaseTableNameWidget::validationChanged, buttonBox->button( QDialogButtonBox::Ok ), &QWidget::setEnabled );
+  vl->addWidget( buttonBox );
+  setLayout( vl );
+}
+
+QString QgsNewDatabaseTableNameDialog::schema() const
+{
+  return mWidget->schema();
+}
+
+QString QgsNewDatabaseTableNameDialog::uri() const
+{
+  return mWidget->uri();
+}
+
+QString QgsNewDatabaseTableNameDialog::table() const
+{
+  return mWidget->table();
+}
+
+QString QgsNewDatabaseTableNameDialog::dataProviderKey() const
+{
+  return mWidget->dataProviderKey();
+}
+
+bool QgsNewDatabaseTableNameDialog::isValid() const
+{
+  return mWidget->isValid();
+}
+
+QString QgsNewDatabaseTableNameDialog::validationError() const
+{
+  return mWidget->validationError();
 }

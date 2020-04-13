@@ -84,7 +84,7 @@ jobs:
           token: ${{ steps.token.outputs.token }}
           owner: qgis
           repo: QGIS-Documentation
-          title: ${{ format('Request in QGIS ({0})', github.event.pull_request.title) }}
+          title: ${{ format('{0} (Request in QGIS)', github.event.pull_request.title) }}
           # do not modify the QGIS version, an action automatically creates a label in the doc repo
           # this is not possible to set labels directly due to security reasons
           # the token is in clear, so no rights are given to qgis-bot

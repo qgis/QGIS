@@ -71,7 +71,7 @@ QgsMesh3dSymbolWidget::QgsMesh3dSymbolWidget( QgsMeshLayer *meshLayer, QWidget *
 
 void QgsMesh3dSymbolWidget::setSymbol( const QgsMesh3DSymbol &symbol )
 {
-  // Advanced symbology
+  mSymbol = symbol;
   mChkSmoothTriangles->setChecked( symbol.smoothedTriangles() );
   mChkWireframe->setChecked( symbol.wireframeEnabled() );
   mColorButtonWireframe->setColor( symbol.wireframeLineColor() );
@@ -143,7 +143,7 @@ double QgsMesh3dSymbolWidget::lineEditValue( const QLineEdit *lineEdit ) const
 
 QgsMesh3DSymbol QgsMesh3dSymbolWidget::symbol() const
 {
-  QgsMesh3DSymbol sym;
+  QgsMesh3DSymbol sym = mSymbol;
 
   sym.setSmoothedTriangles( mChkSmoothTriangles->isChecked() );
   sym.setWireframeEnabled( mChkWireframe->isChecked() );

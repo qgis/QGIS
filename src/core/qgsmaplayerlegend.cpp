@@ -146,6 +146,27 @@ bool QgsMapLayerLegendUtils::hasLegendNodeUserLabel( QgsLayerTreeLayer *nodeLaye
   return nodeLayer->customProperties().contains( "legend/label-" + QString::number( originalIndex ) );
 }
 
+void QgsMapLayerLegendUtils::setLegendNodePatchShape( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QgsLegendPatchShape &shape )
+{
+  QDomDocument patchDoc;
+  QDomElement patchElem = patchDoc.createElement( QStringLiteral( "patch" ) );
+  shape.writeXml( patchElem, patchDoc, QgsReadWriteContext() );
+  patchDoc.appendChild( patchElem );
+  nodeLayer->setCustomProperty( "legend/patch-shape-" + QString::number( originalIndex ), patchDoc.toString() );
+}
+
+QgsLegendPatchShape QgsMapLayerLegendUtils::legendNodePatchShape( QgsLayerTreeLayer *nodeLayer, int originalIndex )
+{
+  QString patchDef = nodeLayer->customProperty( "legend/patch-shape-" + QString::number( originalIndex ) ).toString();
+  if ( patchDef.isEmpty() )
+    return QgsLegendPatchShape();
+
+  QDomDocument doc( QStringLiteral( "patch" ) );
+  doc.setContent( patchDef );
+  QgsLegendPatchShape shape;
+  shape.readXml( doc.documentElement(), QgsReadWriteContext() );
+  return shape;
+}
 
 void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer *nodeLayer, QList<QgsLayerTreeModelLegendNode *> &nodes )
 {
@@ -154,9 +175,17 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer *nodeLa
   const auto constNodes = nodes;
   for ( QgsLayerTreeModelLegendNode *legendNode : constNodes )
   {
-    QString userLabel = QgsMapLayerLegendUtils::legendNodeUserLabel( nodeLayer, i++ );
+    QString userLabel = QgsMapLayerLegendUtils::legendNodeUserLabel( nodeLayer, i );
     if ( !userLabel.isNull() )
       legendNode->setUserLabel( userLabel );
+
+    if ( QgsSymbolLegendNode *symbolNode = dynamic_cast< QgsSymbolLegendNode * >( legendNode ) )
+    {
+      const QgsLegendPatchShape shape = QgsMapLayerLegendUtils::legendNodePatchShape( nodeLayer, i );
+      symbolNode->setPatchShape( shape );
+    }
+
+    i++;
   }
 
   // handle user order of nodes
@@ -361,16 +390,16 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
 
   QgsMeshRendererSettings rendererSettings = mLayer->rendererSettings();
 
-  QgsMeshDatasetIndex indexScalar = rendererSettings.activeScalarDataset();
-  QgsMeshDatasetIndex indexVector = rendererSettings.activeVectorDataset();
+  int indexScalar = rendererSettings.activeScalarDatasetGroup();
+  int indexVector = rendererSettings.activeVectorDatasetGroup();
 
   QString name;
-  if ( indexScalar.isValid() && indexVector.isValid() && indexScalar.group() != indexVector.group() )
-    name = QString( "%1 / %2" ).arg( provider->datasetGroupMetadata( indexScalar.group() ).name(), provider->datasetGroupMetadata( indexVector.group() ).name() );
-  else if ( indexScalar.isValid() )
-    name = provider->datasetGroupMetadata( indexScalar.group() ).name();
-  else if ( indexVector.isValid() )
-    name = provider->datasetGroupMetadata( indexVector.group() ).name();
+  if ( indexScalar > -1 && indexVector > -1 && indexScalar != indexVector )
+    name = QString( "%1 / %2" ).arg( provider->datasetGroupMetadata( indexScalar ).name(), provider->datasetGroupMetadata( indexVector ).name() );
+  else if ( indexScalar > -1 )
+    name = provider->datasetGroupMetadata( indexScalar ).name();
+  else if ( indexVector > -1 )
+    name = provider->datasetGroupMetadata( indexVector ).name();
   else
   {
     // neither contours nor vectors get rendered - no legend needed
@@ -379,9 +408,9 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
 
   nodes << new QgsSimpleLegendNode( nodeLayer, name );
 
-  if ( indexScalar.isValid() )
+  if ( indexScalar > -1 )
   {
-    QgsMeshRendererScalarSettings settings = rendererSettings.scalarSettings( indexScalar.group() );
+    QgsMeshRendererScalarSettings settings = rendererSettings.scalarSettings( indexScalar );
     QgsLegendColorList items;
     settings.colorRampShader().legendSymbologyItems( items );
     for ( const QPair< QString, QColor > &item : qgis::as_const( items ) )

@@ -50,6 +50,7 @@
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsrenderedfeaturehandlerinterface.h"
+#include "qgslegendpatchshape.h"
 
 inline
 QgsProperty rotateWholeSymbol( double additionalRotation, const QgsProperty &property )
@@ -499,7 +500,7 @@ QColor QgsSymbol::color() const
   return QColor( 0, 0, 0 );
 }
 
-void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext, bool selected, const QgsExpressionContext *expressionContext )
+void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext, bool selected, const QgsExpressionContext *expressionContext, const QgsLegendPatchShape *patchShape )
 {
   QgsRenderContext *context = customContext;
   std::unique_ptr< QgsRenderContext > tempContext;
@@ -514,6 +515,8 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
   QgsSymbolRenderContext symbolContext( *context, QgsUnitTypes::RenderUnknownUnit, mOpacity, false, mRenderHints, nullptr );
   symbolContext.setSelected( selected );
   symbolContext.setOriginalGeometryType( mType == Fill ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::UnknownGeometry );
+  if ( patchShape )
+    symbolContext.setPatchShape( *patchShape );
 
   if ( !customContext && expressionContext )
   {
@@ -539,19 +542,31 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
       QgsLineSymbolLayer *lsl = dynamic_cast<QgsLineSymbolLayer *>( layer );
       if ( lsl )
       {
-        // from QgsFillSymbolLayer::drawPreviewIcon()
-        QPolygonF poly = QRectF( QPointF( 0, 0 ), QPointF( size.width() - 1, size.height() - 1 ) );
+        // from QgsFillSymbolLayer::drawPreviewIcon() -- would be nicer to add the
+        // symbol type to QgsSymbolLayer::drawPreviewIcon so this logic could be avoided!
+
+        // hmm... why was this using size -1 ??
+        const QSizeF targetSize = QSizeF( size.width() - 1, size.height() - 1 );
+
+        const QList< QList< QPolygonF > > polys = patchShape ? patchShape->toQPolygonF( QgsSymbol::Fill, targetSize )
+            : QgsLegendPatchShape::defaultPatch( QgsSymbol::Fill, targetSize );
+
         lsl->startRender( symbolContext );
         QgsPaintEffect *effect = lsl->paintEffect();
+
+        std::unique_ptr< QgsEffectPainter > effectPainter;
         if ( effect && effect->enabled() )
+          effectPainter = qgis::make_unique< QgsEffectPainter >( symbolContext.renderContext(), effect );
+
+        for ( const QList< QPolygonF > &poly : polys )
         {
-          QgsEffectPainter p( symbolContext.renderContext(), effect );
-          lsl->renderPolygonStroke( poly, nullptr, symbolContext );
+          QList< QPolygonF > rings;
+          for ( int i = 1; i < poly.size(); ++i )
+            rings << poly.at( i );
+          lsl->renderPolygonStroke( poly.value( 0 ), &rings, symbolContext );
         }
-        else
-        {
-          lsl->renderPolygonStroke( poly, nullptr, symbolContext );
-        }
+
+        effectPainter.reset();
         lsl->stopRender( symbolContext );
       }
     }
@@ -1248,6 +1263,8 @@ QgsSymbolRenderContext::QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitType
 {
 }
 
+QgsSymbolRenderContext::~QgsSymbolRenderContext() = default;
+
 void QgsSymbolRenderContext::setOriginalValueVariable( const QVariant &value )
 {
   mRenderContext.expressionContext().setOriginalValueVariable( value );
@@ -1281,6 +1298,16 @@ QgsExpressionContextScope *QgsSymbolRenderContext::expressionContextScope()
 void QgsSymbolRenderContext::setExpressionContextScope( QgsExpressionContextScope *contextScope )
 {
   mExpressionContextScope.reset( contextScope );
+}
+
+const QgsLegendPatchShape *QgsSymbolRenderContext::patchShape() const
+{
+  return mPatchShape.get();
+}
+
+void QgsSymbolRenderContext::setPatchShape( const QgsLegendPatchShape &patchShape )
+{
+  mPatchShape.reset( new QgsLegendPatchShape( patchShape ) );
 }
 
 ///////////////////

@@ -123,6 +123,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/classification
   ${CMAKE_SOURCE_DIR}/src/core/validity
+  ${CMAKE_SOURCE_DIR}/src/core/vectortile
   ${CMAKE_SOURCE_DIR}/src/plugins
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
@@ -141,6 +142,7 @@ IF (WITH_GUI)
     ${CMAKE_SOURCE_DIR}/src/gui/raster
     ${CMAKE_SOURCE_DIR}/src/gui/attributetable
     ${CMAKE_SOURCE_DIR}/src/gui/auth
+    ${CMAKE_SOURCE_DIR}/src/gui/devtools
     ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
     ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
     ${CMAKE_SOURCE_DIR}/src/gui/effects

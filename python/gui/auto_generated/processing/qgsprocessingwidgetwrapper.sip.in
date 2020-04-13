@@ -36,6 +36,30 @@ return a pointer to a context which they have already created and own.
     virtual ~QgsProcessingContextGenerator();
 };
 
+class QgsProcessingParametersGenerator
+{
+%Docstring
+
+An interface for objects which can create sets of parameter values for processing algorithms.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingwidgetwrapper.h"
+%End
+  public:
+
+    virtual QVariantMap createProcessingParameters() = 0;
+%Docstring
+This method needs to be reimplemented in all classes which implement this interface
+and return a algorithm parameters.
+%End
+
+    virtual ~QgsProcessingParametersGenerator();
+};
+
+
 class QgsProcessingParameterWidgetContext
 {
 %Docstring
@@ -91,6 +115,24 @@ to the user.
 .. versionadded:: 3.12
 %End
 
+    void setBrowserModel( QgsBrowserGuiModel *model );
+%Docstring
+Sets the browser ``model`` associated with the widget. This will usually be the shared app instance of the browser model
+
+.. seealso:: :py:func:`browserModel`
+
+.. versionadded:: 3.14
+%End
+
+    QgsBrowserGuiModel *browserModel() const;
+%Docstring
+Returns the browser model associated with the widget.
+
+.. seealso:: :py:func:`setBrowserModel`
+
+.. versionadded:: 3.12
+%End
+
     void setProject( QgsProject *project );
 %Docstring
 Sets the ``project`` associated with the widget. This allows the widget to retrieve the map layers
@@ -142,6 +184,24 @@ Sets the child algorithm ``id`` within the model which the parameter widget is a
 .. seealso:: :py:func:`modelChildAlgorithmId`
 
 .. seealso:: :py:func:`setModel`
+%End
+
+    QgsMapLayer *activeLayer() const;
+%Docstring
+Returns the current active layer.
+
+.. seealso:: :py:func:`setActiveLayer`
+
+.. versionadded:: 3.14
+%End
+
+    void setActiveLayer( QgsMapLayer *layer );
+%Docstring
+Sets the current active ``layer``.
+
+.. seealso:: :py:func:`activeLayer`
+
+.. versionadded:: 3.14
 %End
 
 };
@@ -268,10 +328,24 @@ Returns the current value of the parameter.
 .. seealso:: :py:func:`setParameterValue`
 %End
 
+    virtual QVariantMap customProperties() const;
+%Docstring
+Returns any custom properties set by the wrapper.
+%End
+
     void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
 %Docstring
 Registers a Processing context ``generator`` class that will be used to retrieve
 a Processing context for the wrapper when required.
+%End
+
+    void registerProcessingParametersGenerator( QgsProcessingParametersGenerator *generator );
+%Docstring
+Registers a Processing parameters ``generator`` class that will be used to retrieve
+algorithm parameters for the wrapper when required (e.g. when a wrapper needs access
+to other parameter's values).
+
+.. versionadded:: 3.14
 %End
 
     virtual void postInitialize( const QList< QgsAbstractProcessingParameterWidgetWrapper * > &wrappers );
@@ -477,10 +551,10 @@ values which can be used as values for the parameter.
 .. seealso:: :py:func:`compatibleDataTypes`
 %End
 
-    virtual QList< int > compatibleDataTypes() const = 0;
+    virtual QList< int > compatibleDataTypes( const QgsProcessingParameterDefinition *parameter ) const;
 %Docstring
 Returns a list of compatible Processing data types for inputs
-for this parameter.
+for this widget for the specified ``parameter``.
 
 In order to determine the available sources for the parameter in a model
 the types returned by this method are checked. The returned list corresponds

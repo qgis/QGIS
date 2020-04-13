@@ -25,7 +25,7 @@
 #include <QComboBox>
 #include <QRadioButton>
 
-QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList < TabPair > &tabList, QWidget *parent )
+QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList < TabPair > &tabList, QTreeWidgetItem *currentTab, QWidget *parent )
   : QDialog( parent )
   , mLayer( lyr )
   , mTabs( tabList )
@@ -43,6 +43,11 @@ QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList < TabPair >
     for ( const TabPair &tab : constMTabs )
     {
       mTabList->addItem( tab.first, i );
+      if ( tab.second == currentTab )
+      {
+        mTabList->setCurrentIndex( i );
+        mGroupButton->setChecked( true );
+      }
       ++i;
     }
   }

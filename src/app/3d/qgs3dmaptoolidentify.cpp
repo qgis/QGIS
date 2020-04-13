@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgs3dmapcanvas.h"
+#include "qgs3dmapcanvasdockwidget.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dutils.h"
 #include "qgsterrainentity_p.h"
@@ -63,9 +64,8 @@ void Qgs3DMapToolIdentifyPickHandler::handlePickOnVectorLayer( QgsVectorLayer *v
 Qgs3DMapToolIdentify::Qgs3DMapToolIdentify( Qgs3DMapCanvas *canvas )
   : Qgs3DMapTool( canvas )
 {
-  connect( mCanvas->scene(), &Qgs3DMapScene::terrainEntityChanged, this, &Qgs3DMapToolIdentify::onTerrainEntityChanged );
-
   mPickHandler.reset( new Qgs3DMapToolIdentifyPickHandler( this ) );
+  connect( canvas, &Qgs3DMapCanvas::mapSettingsChanged, this, &Qgs3DMapToolIdentify::onMapSettingsChanged );
 }
 
 Qgs3DMapToolIdentify::~Qgs3DMapToolIdentify() = default;
@@ -87,6 +87,7 @@ void Qgs3DMapToolIdentify::activate()
   }
 
   mCanvas->scene()->registerPickHandler( mPickHandler.get() );
+  mIsActive = true;
 }
 
 void Qgs3DMapToolIdentify::deactivate()
@@ -97,11 +98,19 @@ void Qgs3DMapToolIdentify::deactivate()
   }
 
   mCanvas->scene()->unregisterPickHandler( mPickHandler.get() );
+  mIsActive = false;
 }
 
 QCursor Qgs3DMapToolIdentify::cursor() const
 {
   return QgsApplication::getThemeCursor( QgsApplication::Cursor::Identify );
+}
+
+void Qgs3DMapToolIdentify::onMapSettingsChanged()
+{
+  if ( !mIsActive )
+    return;
+  connect( mCanvas->scene(), &Qgs3DMapScene::terrainEntityChanged, this, &Qgs3DMapToolIdentify::onTerrainEntityChanged );
 }
 
 void Qgs3DMapToolIdentify::onTerrainPicked( Qt3DRender::QPickEvent *event )
@@ -148,6 +157,8 @@ void Qgs3DMapToolIdentify::onTerrainPicked( Qt3DRender::QPickEvent *event )
 
 void Qgs3DMapToolIdentify::onTerrainEntityChanged()
 {
+  if ( !mIsActive )
+    return;
   // no need to disconnect from the previous entity: it has been destroyed
   // start listening to the new terrain entity
   if ( QgsTerrainEntity *terrainEntity = mCanvas->scene()->terrainEntity() )

@@ -408,9 +408,8 @@ QString QgsFileWidget::toUrl( const QString &path ) const
 
 
 QgsFileDropEdit::QgsFileDropEdit( QWidget *parent )
-  : QgsFilterLineEdit( parent )
+  : QgsHighlightableLineEdit( parent )
 {
-  mDragActive = false;
   setAcceptDrops( true );
 }
 
@@ -510,8 +509,7 @@ void QgsFileDropEdit::dragEnterEvent( QDragEnterEvent *event )
   if ( !filePath.isEmpty() )
   {
     event->acceptProposedAction();
-    mDragActive = true;
-    update();
+    setHighlighted( true );
   }
   else
   {
@@ -523,8 +521,7 @@ void QgsFileDropEdit::dragLeaveEvent( QDragLeaveEvent *event )
 {
   QgsFilterLineEdit::dragLeaveEvent( event );
   event->accept();
-  mDragActive = false;
-  update();
+  setHighlighted( false );
 }
 
 void QgsFileDropEdit::dropEvent( QDropEvent *event )
@@ -536,21 +533,7 @@ void QgsFileDropEdit::dropEvent( QDropEvent *event )
     selectAll();
     setFocus( Qt::MouseFocusReason );
     event->acceptProposedAction();
-    mDragActive = false;
-    update();
-  }
-}
-
-void QgsFileDropEdit::paintEvent( QPaintEvent *e )
-{
-  QgsFilterLineEdit::paintEvent( e );
-  if ( mDragActive )
-  {
-    QPainter p( this );
-    int width = 2;  // width of highlight rectangle inside frame
-    p.setPen( QPen( palette().highlight(), width ) );
-    QRect r = rect().adjusted( width, width, -width, -width );
-    p.drawRect( r );
+    setHighlighted( false );
   }
 }
 

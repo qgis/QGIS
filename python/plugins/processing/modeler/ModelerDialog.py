@@ -120,12 +120,17 @@ class ModelerDialog(QgsModelDesignerDialog):
                 duration=5)
             return
 
+        def on_finished(successful, results):
+            self.setLastRunChildAlgorithmResults(dlg.results().get('CHILD_RESULTS', {}))
+            self.setLastRunChildAlgorithmInputs(dlg.results().get('CHILD_INPUTS', {}))
+
         dlg = AlgorithmDialog(self.model().create(), parent=self)
         dlg.setParameters(self.model().designerParameterValues())
+        dlg.algorithmFinished.connect(on_finished)
         dlg.exec_()
 
         if dlg.wasExecuted():
-            self.model().setDesignerParameterValues(dlg.getParameterValues())
+            self.model().setDesignerParameterValues(dlg.createProcessingParameters())
 
     def saveInProject(self):
         if not self.validateSave():
@@ -200,7 +205,7 @@ class ModelerDialog(QgsModelDesignerDialog):
 
         showComments = QgsSettings().value("/Processing/Modeler/ShowComments", True, bool)
         if not showComments:
-            self.scene.setFlag(QgsModelGraphicsScene.FlagHideComments)
+            scene.setFlag(QgsModelGraphicsScene.FlagHideComments)
 
         context = createContext()
         scene.createItems(self.model(), context)
@@ -214,6 +219,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         widget_context.setProject(QgsProject.instance())
         if iface is not None:
             widget_context.setMapCanvas(iface.mapCanvas())
+            widget_context.setActiveLayer(iface.activeLayer())
         widget_context.setModel(self.model())
         return widget_context
 

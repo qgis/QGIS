@@ -355,6 +355,15 @@ Removes all tags for the specified symbol or colorramp
 Removes symbol from style (and delete it)
 %End
 
+    bool renameEntity( StyleEntity type, const QString &oldName, const QString &newName );
+%Docstring
+Renames an entity of the specified ``type`` from ``oldName`` to ``newName``.
+
+Returns ``True`` if the entity was successfully renamed.
+
+.. versionadded:: 3.14
+%End
+
     bool renameSymbol( const QString &oldName, const QString &newName );
 %Docstring
 Renames a symbol from ``oldName`` to ``newName``.
@@ -744,6 +753,36 @@ Emitted whenever an ``entity``'s tags are changed.
 Emitted whenever an ``entity`` is either favorited or un-favorited.
 
 .. versionadded:: 3.4
+%End
+
+    void entityAdded( QgsStyle::StyleEntity entity, const QString &name );
+%Docstring
+Emitted every time a new entity has been added to the database.
+
+.. versionadded:: 3.14
+%End
+
+    void entityRemoved( QgsStyle::StyleEntity entity, const QString &name );
+%Docstring
+Emitted whenever an entity of the specified type is removed from the style and the database
+has been updated as a result.
+
+.. versionadded:: 3.14
+%End
+
+    void entityRenamed( QgsStyle::StyleEntity entity, const QString &oldName, const QString &newName );
+%Docstring
+Emitted whenever a entity of the specified type has been renamed from ``oldName`` to ``newName``
+
+.. versionadded:: 3.14
+%End
+
+    void entityChanged( QgsStyle::StyleEntity entity, const QString &name );
+%Docstring
+Emitted whenever an entity's definition is changed. This does not include
+name or tag changes.
+
+.. versionadded:: 3.14
 %End
 
     void symbolRemoved( const QString &name );

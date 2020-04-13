@@ -105,13 +105,17 @@ cat <<__TXT__ > ${RELEASE_DIR}/qt.conf
 Plugins = qt5plugins
 __TXT__
 
+# First cleanup
+rm -rf ${BUILD_DIR}
+rm -rf ${CCACHE_DIR}
+
 # Make the zip
 
 cd ${RELEASE_DIR}/..
 ZIP_NAME=qgis-mxe-release-$(date +%Y-%m-%d-%H-%I-%S).zip
-zip -r ${ZIP_NAME} $(basename ${RELEASE_DIR})
+zip -r -m ${ZIP_NAME} $(basename ${RELEASE_DIR})
 
-# Cleanup
+# Second cleanup
 rm -rf ${RELEASE_DIR}
 
 popd

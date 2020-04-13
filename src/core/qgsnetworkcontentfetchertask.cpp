@@ -19,13 +19,13 @@
 #include "qgsnetworkcontentfetchertask.h"
 #include "qgsnetworkcontentfetcher.h"
 
-QgsNetworkContentFetcherTask::QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg )
-  : QgsNetworkContentFetcherTask( QNetworkRequest( url ), authcfg )
+QgsNetworkContentFetcherTask::QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg, QgsTask::Flags flags )
+  : QgsNetworkContentFetcherTask( QNetworkRequest( url ), authcfg, flags )
 {
 }
 
-QgsNetworkContentFetcherTask::QgsNetworkContentFetcherTask( const QNetworkRequest &request, const QString &authcfg )
-  : QgsTask( tr( "Fetching %1" ).arg( request.url().toString() ) )
+QgsNetworkContentFetcherTask::QgsNetworkContentFetcherTask( const QNetworkRequest &request, const QString &authcfg, QgsTask::Flags flags )
+  : QgsTask( tr( "Fetching %1" ).arg( request.url().toString() ), flags )
   , mRequest( request )
   , mAuthcfg( authcfg )
 {

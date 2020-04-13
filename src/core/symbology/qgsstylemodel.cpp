@@ -25,36 +25,23 @@
 
 const double ICON_PADDING_FACTOR = 0.16;
 
+const auto ENTITIES = { QgsStyle::SymbolEntity, QgsStyle::ColorrampEntity, QgsStyle::TextFormatEntity, QgsStyle::LabelSettingsEntity };
+
 QgsStyleModel::QgsStyleModel( QgsStyle *style, QObject *parent )
   : QAbstractItemModel( parent )
   , mStyle( style )
 {
   Q_ASSERT( mStyle );
-  mSymbolNames = mStyle->symbolNames();
-  mRampNames = mStyle->colorRampNames();
-  mTextFormatNames = mStyle->textFormatNames();
-  mLabelSettingsNames = mStyle->labelSettingsNames();
 
-  connect( mStyle, &QgsStyle::symbolSaved, this, &QgsStyleModel::onSymbolAdded );
-  connect( mStyle, &QgsStyle::symbolRemoved, this, &QgsStyleModel::onSymbolRemoved );
-  connect( mStyle, &QgsStyle::symbolRenamed, this, &QgsStyleModel::onSymbolRename );
-  connect( mStyle, &QgsStyle::symbolChanged, this, &QgsStyleModel::onSymbolChanged );
+  for ( QgsStyle::StyleEntity entity : ENTITIES )
+  {
+    mEntityNames.insert( entity, mStyle->allNames( entity ) );
+  }
 
-  connect( mStyle, &QgsStyle::rampAdded, this, &QgsStyleModel::onRampAdded );
-  connect( mStyle, &QgsStyle::rampChanged, this, &QgsStyleModel::onRampChanged );
-  connect( mStyle, &QgsStyle::rampRemoved, this, &QgsStyleModel::onRampRemoved );
-  connect( mStyle, &QgsStyle::rampRenamed, this, &QgsStyleModel::onRampRename );
-
-  connect( mStyle, &QgsStyle::textFormatAdded, this, &QgsStyleModel::onTextFormatAdded );
-  connect( mStyle, &QgsStyle::textFormatChanged, this, &QgsStyleModel::onTextFormatChanged );
-  connect( mStyle, &QgsStyle::textFormatRemoved, this, &QgsStyleModel::onTextFormatRemoved );
-  connect( mStyle, &QgsStyle::textFormatRenamed, this, &QgsStyleModel::onTextFormatRename );
-
-  connect( mStyle, &QgsStyle::labelSettingsAdded, this, &QgsStyleModel::onLabelSettingsAdded );
-  connect( mStyle, &QgsStyle::labelSettingsChanged, this, &QgsStyleModel::onLabelSettingsChanged );
-  connect( mStyle, &QgsStyle::labelSettingsRemoved, this, &QgsStyleModel::onLabelSettingsRemoved );
-  connect( mStyle, &QgsStyle::labelSettingsRenamed, this, &QgsStyleModel::onLabelSettingsRename );
-
+  connect( mStyle, &QgsStyle::entityAdded, this, &QgsStyleModel::onEntityAdded );
+  connect( mStyle, &QgsStyle::entityRemoved, this, &QgsStyleModel::onEntityRemoved );
+  connect( mStyle, &QgsStyle::entityRenamed, this, &QgsStyleModel::onEntityRename );
+  connect( mStyle, &QgsStyle::entityChanged, this, &QgsStyleModel::onEntityChanged );
   connect( mStyle, &QgsStyle::entityTagsChanged, this, &QgsStyleModel::onTagsChanged );
 
   // when a remote svg or image has been fetched, update the model's decorations.
@@ -81,24 +68,12 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
   QString name;
   switch ( entityType )
   {
-    case QgsStyle::SymbolEntity:
-      name = mSymbolNames.value( index.row() );
-      break;
-
-    case QgsStyle::ColorrampEntity:
-      name = mRampNames.value( index.row() - mSymbolNames.size() );
-      break;
-
-    case QgsStyle::TextFormatEntity:
-      name = mTextFormatNames.value( index.row() - mSymbolNames.size() - mRampNames.size() );
-      break;
-
-    case QgsStyle::LabelSettingsEntity:
-      name = mLabelSettingsNames.value( index.row() - mSymbolNames.size() - mRampNames.size() - mTextFormatNames.size() );
-      break;
-
     case QgsStyle::TagEntity:
     case QgsStyle::SmartgroupEntity:
+      break;
+
+    default:
+      name = mEntityNames[ entityType ].value( index.row() - offsetForEntity( entityType ) );
       break;
   }
 
@@ -217,7 +192,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
             case QgsStyle::SymbolEntity:
             {
               // use cached icon if possible
-              QIcon icon = mSymbolIconCache.value( name );
+              QIcon icon = mIconCache[ entityType ].value( name );
               if ( !icon.isNull() )
                 return icon;
 
@@ -233,13 +208,13 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                 }
 
               }
-              mSymbolIconCache.insert( name, icon );
+              mIconCache[ entityType ].insert( name, icon );
               return icon;
             }
             case QgsStyle::ColorrampEntity:
             {
               // use cached icon if possible
-              QIcon icon = mColorRampIconCache.value( name );
+              QIcon icon = mIconCache[ entityType ].value( name );
               if ( !icon.isNull() )
                 return icon;
 
@@ -254,14 +229,14 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                 }
 
               }
-              mColorRampIconCache.insert( name, icon );
+              mIconCache[ entityType ].insert( name, icon );
               return icon;
             }
 
             case QgsStyle::TextFormatEntity:
             {
               // use cached icon if possible
-              QIcon icon = mTextFormatIconCache.value( name );
+              QIcon icon = mIconCache[ entityType ].value( name );
               if ( !icon.isNull() )
                 return icon;
 
@@ -272,14 +247,14 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               {
                 icon.addPixmap( QgsTextFormat::textFormatPreviewPixmap( format, s, QString(),  static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
               }
-              mTextFormatIconCache.insert( name, icon );
+              mIconCache[ entityType ].insert( name, icon );
               return icon;
             }
 
             case QgsStyle::LabelSettingsEntity:
             {
               // use cached icon if possible
-              QIcon icon = mLabelSettingsIconCache.value( name );
+              QIcon icon = mIconCache[ entityType ].value( name );
               if ( !icon.isNull() )
                 return icon;
 
@@ -290,7 +265,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               {
                 icon.addPixmap( QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, s, QString(),  static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
               }
-              mLabelSettingsIconCache.insert( name, icon );
+              mIconCache[ entityType ].insert( name, icon );
               return icon;
             }
 
@@ -353,48 +328,17 @@ bool QgsStyleModel::setData( const QModelIndex &index, const QVariant &value, in
       QString name;
       switch ( entityType )
       {
-        case QgsStyle::SymbolEntity:
-          name = mSymbolNames.value( index.row() );
-          break;
-
-        case QgsStyle::ColorrampEntity:
-          name = mRampNames.value( index.row() - mSymbolNames.size() );
-          break;
-
-        case QgsStyle::TextFormatEntity:
-          name = mTextFormatNames.value( index.row() - mSymbolNames.size() - mRampNames.size() );
-          break;
-
-        case QgsStyle::LabelSettingsEntity:
-          name = mLabelSettingsNames.value( index.row() - mSymbolNames.size() - mRampNames.size() - mTextFormatNames.size() );
-          break;
-
         case QgsStyle::TagEntity:
         case QgsStyle::SmartgroupEntity:
+          return false;
+
+        default:
+          name = mEntityNames[ entityType ].value( index.row() - offsetForEntity( entityType ) );
           break;
       }
 
       const QString newName = value.toString();
-
-      switch ( entityType )
-      {
-        case QgsStyle::SymbolEntity:
-          return mStyle->renameSymbol( name, newName );
-
-        case QgsStyle::ColorrampEntity:
-          return mStyle->renameColorRamp( name, newName );
-
-        case QgsStyle::TextFormatEntity:
-          return mStyle->renameTextFormat( name, newName );
-
-        case QgsStyle::LabelSettingsEntity:
-          return mStyle->renameLabelSettings( name, newName );
-
-        case QgsStyle::TagEntity:
-        case QgsStyle::SmartgroupEntity:
-          return false;
-      }
-      break;
+      return mStyle->renameEntity( entityType, name, newName );
     }
 
     case Tags:
@@ -469,7 +413,10 @@ int QgsStyleModel::rowCount( const QModelIndex &parent ) const
 {
   if ( !parent.isValid() )
   {
-    return mSymbolNames.count() + mRampNames.count() + mTextFormatNames.count() + mLabelSettingsNames.count();
+    int count = 0;
+    for ( QgsStyle::StyleEntity type : ENTITIES )
+      count += mEntityNames[ type ].size();
+    return count;
   }
   return 0;
 }
@@ -485,57 +432,57 @@ void QgsStyleModel::addDesiredIconSize( QSize size )
     return;
 
   mAdditionalSizes << size;
-  mSymbolIconCache.clear();
-  mColorRampIconCache.clear();
-  mTextFormatIconCache.clear();
-  mLabelSettingsIconCache.clear();
+  mIconCache.clear();
 }
 
-void QgsStyleModel::onSymbolAdded( const QString &name, QgsSymbol * )
+void QgsStyleModel::onEntityAdded( QgsStyle::StyleEntity type, const QString &name )
 {
-  mSymbolIconCache.remove( name );
-  const QStringList oldSymbolNames = mSymbolNames;
-  const QStringList newSymbolNames = mStyle->symbolNames();
+  mIconCache[ type ].remove( name );
+  const QStringList oldSymbolNames = mEntityNames[ type ];
+  const QStringList newSymbolNames = mStyle->allNames( type );
 
   // find index of newly added symbol
   const int newNameIndex = newSymbolNames.indexOf( name );
   if ( newNameIndex < 0 )
     return; // shouldn't happen
 
-  beginInsertRows( QModelIndex(), newNameIndex, newNameIndex );
-  mSymbolNames = newSymbolNames;
+  const int offset = offsetForEntity( type );
+  beginInsertRows( QModelIndex(), newNameIndex + offset, newNameIndex + offset );
+  mEntityNames[ type ] = newSymbolNames;
   endInsertRows();
 }
 
-void QgsStyleModel::onSymbolRemoved( const QString &name )
+void QgsStyleModel::onEntityRemoved( QgsStyle::StyleEntity type, const QString &name )
 {
-  mSymbolIconCache.remove( name );
-  const QStringList oldSymbolNames = mSymbolNames;
-  const QStringList newSymbolNames = mStyle->symbolNames();
+  mIconCache[ type ].remove( name );
+  const QStringList oldSymbolNames = mEntityNames[ type ];
+  const QStringList newSymbolNames = mStyle->allNames( type );
 
   // find index of removed symbol
   const int oldNameIndex = oldSymbolNames.indexOf( name );
   if ( oldNameIndex < 0 )
     return; // shouldn't happen
 
-  beginRemoveRows( QModelIndex(), oldNameIndex, oldNameIndex );
-  mSymbolNames = newSymbolNames;
+  const int offset = offsetForEntity( type );
+  beginRemoveRows( QModelIndex(), oldNameIndex + offset, oldNameIndex + offset );
+  mEntityNames[ type ] = newSymbolNames;
   endRemoveRows();
 }
 
-void QgsStyleModel::onSymbolChanged( const QString &name )
+void QgsStyleModel::onEntityChanged( QgsStyle::StyleEntity type, const QString &name )
 {
-  mSymbolIconCache.remove( name );
+  mIconCache[ type ].remove( name );
 
-  QModelIndex i = index( mSymbolNames.indexOf( name ), Tags );
+  const int offset = offsetForEntity( type );
+  QModelIndex i = index( offset + mEntityNames[ type ].indexOf( name ), Tags );
   emit dataChanged( i, i, QVector< int >() << Qt::DecorationRole );
 }
 
-void QgsStyleModel::onSymbolRename( const QString &oldName, const QString &newName )
+void QgsStyleModel::onEntityRename( QgsStyle::StyleEntity type, const QString &oldName, const QString &newName )
 {
-  mSymbolIconCache.remove( oldName );
-  const QStringList oldSymbolNames = mSymbolNames;
-  const QStringList newSymbolNames = mStyle->symbolNames();
+  mIconCache[ type ].remove( oldName );
+  const QStringList oldSymbolNames = mEntityNames[ type ];
+  const QStringList newSymbolNames = mStyle->allNames( type );
 
   // find index of removed symbol
   const int oldNameIndex = oldSymbolNames.indexOf( oldName );
@@ -549,263 +496,66 @@ void QgsStyleModel::onSymbolRename( const QString &oldName, const QString &newNa
 
   if ( newNameIndex == oldNameIndex )
   {
-    mSymbolNames = newSymbolNames;
+    mEntityNames[ type ] = newSymbolNames;
     return;
   }
 
-  beginMoveRows( QModelIndex(), oldNameIndex, oldNameIndex, QModelIndex(), newNameIndex > oldNameIndex ? newNameIndex + 1 : newNameIndex );
-  mSymbolNames = newSymbolNames;
-  endMoveRows();
-}
-
-void QgsStyleModel::onRampAdded( const QString &name )
-{
-  mColorRampIconCache.remove( name );
-  const QStringList oldRampNames = mRampNames;
-  const QStringList newRampNames = mStyle->colorRampNames();
-
-  // find index of newly added symbol
-  const int newNameIndex = newRampNames.indexOf( name );
-  if ( newNameIndex < 0 )
-    return; // shouldn't happen
-
-  beginInsertRows( QModelIndex(), newNameIndex + mSymbolNames.count(), newNameIndex + mSymbolNames.count() );
-  mRampNames = newRampNames;
-  endInsertRows();
-}
-
-void QgsStyleModel::onRampRemoved( const QString &name )
-{
-  mColorRampIconCache.remove( name );
-  const QStringList oldRampNames = mRampNames;
-  const QStringList newRampNames = mStyle->colorRampNames();
-
-  // find index of removed symbol
-  const int oldNameIndex = oldRampNames.indexOf( name );
-  if ( oldNameIndex < 0 )
-    return; // shouldn't happen
-
-  beginRemoveRows( QModelIndex(), oldNameIndex + mSymbolNames.count(), oldNameIndex + mSymbolNames.count() );
-  mRampNames = newRampNames;
-  endRemoveRows();
-}
-
-void QgsStyleModel::onRampChanged( const QString &name )
-{
-  mColorRampIconCache.remove( name );
-
-  QModelIndex i = index( mSymbolNames.count() + mRampNames.indexOf( name ), Tags );
-  emit dataChanged( i, i, QVector< int >() << Qt::DecorationRole );
-}
-
-void QgsStyleModel::onRampRename( const QString &oldName, const QString &newName )
-{
-  mColorRampIconCache.remove( oldName );
-  const QStringList oldRampNames = mRampNames;
-  const QStringList newRampNames = mStyle->colorRampNames();
-
-  // find index of removed ramp
-  const int oldNameIndex = oldRampNames.indexOf( oldName );
-  if ( oldNameIndex < 0 )
-    return; // shouldn't happen
-
-  // find index of newly added ramp
-  const int newNameIndex = newRampNames.indexOf( newName );
-  if ( newNameIndex < 0 )
-    return; // shouldn't happen
-
-  if ( newNameIndex == oldNameIndex )
-  {
-    mRampNames = newRampNames;
-    return;
-  }
-
-  beginMoveRows( QModelIndex(), oldNameIndex + mSymbolNames.count(), oldNameIndex + mSymbolNames.count(),
-                 QModelIndex(), ( newNameIndex > oldNameIndex ? newNameIndex + 1 : newNameIndex ) + mSymbolNames.count() );
-  mRampNames = newRampNames;
-  endMoveRows();
-}
-
-void QgsStyleModel::onTextFormatAdded( const QString &name )
-{
-  mTextFormatIconCache.remove( name );
-  const QStringList oldTextFormatNames = mTextFormatNames;
-  const QStringList newTextFormatNames = mStyle->textFormatNames();
-
-  // find index of newly added symbol
-  const int newNameIndex = newTextFormatNames.indexOf( name );
-  if ( newNameIndex < 0 )
-    return; // shouldn't happen
-
-  beginInsertRows( QModelIndex(), newNameIndex + mSymbolNames.count() + mRampNames.count(), newNameIndex + mSymbolNames.count() + mRampNames.count() );
-  mTextFormatNames = newTextFormatNames;
-  endInsertRows();
-}
-
-void QgsStyleModel::onTextFormatRemoved( const QString &name )
-{
-  mTextFormatIconCache.remove( name );
-  const QStringList oldTextFormatNames = mTextFormatNames;
-  const QStringList newTextFormatNames = mStyle->textFormatNames();
-
-  // find index of removed symbol
-  const int oldNameIndex = oldTextFormatNames.indexOf( name );
-  if ( oldNameIndex < 0 )
-    return; // shouldn't happen
-
-  beginRemoveRows( QModelIndex(), oldNameIndex + mSymbolNames.count() + mRampNames.count(), oldNameIndex + mSymbolNames.count() + mRampNames.count() );
-  mTextFormatNames = newTextFormatNames;
-  endRemoveRows();
-}
-
-void QgsStyleModel::onTextFormatChanged( const QString &name )
-{
-  mTextFormatIconCache.remove( name );
-
-  QModelIndex i = index( mSymbolNames.count() + mRampNames.count() + mTextFormatNames.indexOf( name ), Tags );
-  emit dataChanged( i, i, QVector< int >() << Qt::DecorationRole );
-}
-
-void QgsStyleModel::onTextFormatRename( const QString &oldName, const QString &newName )
-{
-  mTextFormatIconCache.remove( oldName );
-  const QStringList oldTextFormatNames = mTextFormatNames;
-  const QStringList newTextFormatNames = mStyle->textFormatNames();
-
-  // find index of removed format
-  const int oldNameIndex = oldTextFormatNames.indexOf( oldName );
-  if ( oldNameIndex < 0 )
-    return; // shouldn't happen
-
-  // find index of newly added format
-  const int newNameIndex = newTextFormatNames.indexOf( newName );
-  if ( newNameIndex < 0 )
-    return; // shouldn't happen
-
-  if ( newNameIndex == oldNameIndex )
-  {
-    mTextFormatNames = newTextFormatNames;
-    return;
-  }
-
-  beginMoveRows( QModelIndex(), oldNameIndex + mSymbolNames.count() + mRampNames.count(), oldNameIndex + mSymbolNames.count() + mRampNames.count(),
-                 QModelIndex(), ( newNameIndex > oldNameIndex ? newNameIndex + 1 : newNameIndex ) + mSymbolNames.count() + mRampNames.count() );
-  mTextFormatNames = newTextFormatNames;
-  endMoveRows();
-}
-
-void QgsStyleModel::onLabelSettingsAdded( const QString &name )
-{
-  mLabelSettingsIconCache.remove( name );
-  const QStringList oldLabelSettingsNames = mLabelSettingsNames;
-  const QStringList newLabelSettingsNames = mStyle->labelSettingsNames();
-
-  // find index of newly added symbol
-  const int newNameIndex = newLabelSettingsNames.indexOf( name );
-  if ( newNameIndex < 0 )
-    return; // shouldn't happen
-
-  beginInsertRows( QModelIndex(), newNameIndex + mSymbolNames.count() + mRampNames.count() + mTextFormatNames.count(), newNameIndex + mSymbolNames.count() + mRampNames.count() + mTextFormatNames.count() );
-  mLabelSettingsNames = newLabelSettingsNames;
-  endInsertRows();
-}
-
-void QgsStyleModel::onLabelSettingsRemoved( const QString &name )
-{
-  mLabelSettingsIconCache.remove( name );
-  const QStringList oldLabelSettingsNames = mLabelSettingsNames;
-  const QStringList newLabelSettingsNames = mStyle->labelSettingsNames();
-
-  // find index of removed symbol
-  const int oldNameIndex = oldLabelSettingsNames.indexOf( name );
-  if ( oldNameIndex < 0 )
-    return; // shouldn't happen
-
-  beginRemoveRows( QModelIndex(), oldNameIndex + mSymbolNames.count() + mRampNames.count() + mTextFormatNames.count(), oldNameIndex + mSymbolNames.count() + mRampNames.count()  + mTextFormatNames.count() );
-  mLabelSettingsNames = newLabelSettingsNames;
-  endRemoveRows();
-}
-
-void QgsStyleModel::onLabelSettingsChanged( const QString &name )
-{
-  mLabelSettingsIconCache.remove( name );
-
-  QModelIndex i = index( mSymbolNames.count() + mRampNames.count() + mTextFormatNames.count() + mLabelSettingsNames.indexOf( name ), Tags );
-  emit dataChanged( i, i, QVector< int >() << Qt::DecorationRole );
-}
-
-void QgsStyleModel::onLabelSettingsRename( const QString &oldName, const QString &newName )
-{
-  mLabelSettingsIconCache.remove( oldName );
-  const QStringList oldLabelSettingsNames = mLabelSettingsNames;
-  const QStringList newLabelSettingsNames = mStyle->labelSettingsNames();
-
-  // find index of removed format
-  const int oldNameIndex = oldLabelSettingsNames.indexOf( oldName );
-  if ( oldNameIndex < 0 )
-    return; // shouldn't happen
-
-  // find index of newly added format
-  const int newNameIndex = newLabelSettingsNames.indexOf( newName );
-  if ( newNameIndex < 0 )
-    return; // shouldn't happen
-
-  if ( newNameIndex == oldNameIndex )
-  {
-    mLabelSettingsNames = newLabelSettingsNames;
-    return;
-  }
-
-  beginMoveRows( QModelIndex(), oldNameIndex + mSymbolNames.count() + mRampNames.count() + mTextFormatNames.count(), oldNameIndex + mSymbolNames.count() + mRampNames.count() + mTextFormatNames.count(),
-                 QModelIndex(), ( newNameIndex > oldNameIndex ? newNameIndex + 1 : newNameIndex ) + mSymbolNames.count() + mRampNames.count() + mTextFormatNames.count() );
-  mLabelSettingsNames = newLabelSettingsNames;
+  const int offset = offsetForEntity( type );
+  beginMoveRows( QModelIndex(), oldNameIndex + offset, oldNameIndex + offset, QModelIndex(), ( newNameIndex > oldNameIndex ? newNameIndex + 1 : newNameIndex ) + offset );
+  mEntityNames[ type ] = newSymbolNames;
   endMoveRows();
 }
 
 void QgsStyleModel::onTagsChanged( int entity, const QString &name, const QStringList & )
 {
+  QgsStyle::StyleEntity type = static_cast< QgsStyle::StyleEntity >( entity );
   QModelIndex i;
+  int row = mEntityNames[type].indexOf( name ) + offsetForEntity( type );
   switch ( static_cast< QgsStyle::StyleEntity >( entity ) )
   {
-    case QgsStyle::SymbolEntity:
-      i = index( mSymbolNames.indexOf( name ), Tags );
-      break;
-
-    case QgsStyle::ColorrampEntity:
-      i = index( mSymbolNames.count() + mRampNames.indexOf( name ), Tags );
-      break;
-
-    case QgsStyle::TextFormatEntity:
-      i = index( mSymbolNames.count() + mRampNames.count() + mTextFormatNames.indexOf( name ), Tags );
-      break;
-
-    case QgsStyle::LabelSettingsEntity:
-      i = index( mSymbolNames.count() + mRampNames.count() + mTextFormatNames.count() + mLabelSettingsNames.indexOf( name ), Tags );
-      break;
-
     case QgsStyle::TagEntity:
     case QgsStyle::SmartgroupEntity:
       return;
+
+    default:
+      i = index( row, Tags );
   }
   emit dataChanged( i, i );
 }
 
 void QgsStyleModel::rebuildSymbolIcons()
 {
-  mSymbolIconCache.clear();
+  mIconCache[ QgsStyle::SymbolEntity ].clear();
   mExpressionContext.reset();
-  emit dataChanged( index( 0, 0 ), index( mSymbolNames.count() - 1, 0 ), QVector<int>() << Qt::DecorationRole );
+  emit dataChanged( index( 0, 0 ), index( mEntityNames[ QgsStyle::SymbolEntity ].count() - 1, 0 ), QVector<int>() << Qt::DecorationRole );
 }
 
 QgsStyle::StyleEntity QgsStyleModel::entityTypeFromRow( int row ) const
 {
-  if ( row >= mStyle->symbolCount() + mStyle->colorRampCount() + + mTextFormatNames.count() )
-    return QgsStyle::LabelSettingsEntity;
-  else if ( row >= mStyle->symbolCount() + mStyle->colorRampCount() )
-    return QgsStyle::TextFormatEntity;
-  else if ( row >= mStyle->symbolCount() )
-    return QgsStyle::ColorrampEntity;
+  int maxRowForEntity = 0;
+  for ( QgsStyle::StyleEntity type : ENTITIES )
+  {
+    maxRowForEntity += mEntityNames[ type ].size();
+    if ( row < maxRowForEntity )
+      return type;
+  }
+
+  // should never happen
+  Q_ASSERT( false );
   return QgsStyle::SymbolEntity;
+}
+
+int QgsStyleModel::offsetForEntity( QgsStyle::StyleEntity entity ) const
+{
+  int offset = 0;
+  for ( QgsStyle::StyleEntity type : ENTITIES )
+  {
+    if ( type == entity )
+      return offset;
+
+    offset += mEntityNames[ type ].size();
+  }
+  return 0;
 }
 
 //
@@ -984,16 +734,11 @@ void QgsStyleProxyModel::setTagId( int id )
 {
   mTagId = id;
 
+  mTaggedSymbolNames.clear();
   if ( mTagId >= 0 )
   {
-    mTaggedSymbolNames = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, mTagId );
-    mTaggedSymbolNames.append( mStyle->symbolsWithTag( QgsStyle::ColorrampEntity, mTagId ) );
-    mTaggedSymbolNames.append( mStyle->symbolsWithTag( QgsStyle::TextFormatEntity, mTagId ) );
-    mTaggedSymbolNames.append( mStyle->symbolsWithTag( QgsStyle::LabelSettingsEntity, mTagId ) );
-  }
-  else
-  {
-    mTaggedSymbolNames.clear();
+    for ( QgsStyle::StyleEntity entity : ENTITIES )
+      mTaggedSymbolNames.append( mStyle->symbolsWithTag( entity, mTagId ) );
   }
 
   invalidateFilter();
@@ -1008,18 +753,12 @@ void QgsStyleProxyModel::setSmartGroupId( int id )
 {
   mSmartGroupId = id;
 
+  mSmartGroupSymbolNames.clear();
   if ( mSmartGroupId >= 0 )
   {
-    mSmartGroupSymbolNames = mStyle->symbolsOfSmartgroup( QgsStyle::SymbolEntity, mSmartGroupId );
-    mSmartGroupSymbolNames.append( mStyle->symbolsOfSmartgroup( QgsStyle::ColorrampEntity, mSmartGroupId ) );
-    mSmartGroupSymbolNames.append( mStyle->symbolsOfSmartgroup( QgsStyle::TextFormatEntity, mSmartGroupId ) );
-    mSmartGroupSymbolNames.append( mStyle->symbolsOfSmartgroup( QgsStyle::LabelSettingsEntity, mSmartGroupId ) );
+    for ( QgsStyle::StyleEntity entity : ENTITIES )
+      mSmartGroupSymbolNames.append( mStyle->symbolsOfSmartgroup( entity, mSmartGroupId ) );
   }
-  else
-  {
-    mSmartGroupSymbolNames.clear();
-  }
-
   invalidateFilter();
 }
 

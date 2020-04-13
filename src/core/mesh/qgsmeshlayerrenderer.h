@@ -63,7 +63,7 @@ struct CORE_NO_EXPORT QgsMeshLayerRendererCache
   QgsMeshDatasetGroupMetadata::DataType mScalarDataType = QgsMeshDatasetGroupMetadata::DataType::DataOnVertices;
   double mScalarDatasetMinimum = std::numeric_limits<double>::quiet_NaN();
   double mScalarDatasetMaximum = std::numeric_limits<double>::quiet_NaN();
-  QgsMeshRendererScalarSettings::DataInterpolationMethod mDataInterpolationMethod = QgsMeshRendererScalarSettings::None;
+  QgsMeshRendererScalarSettings::DataResamplingMethod mDataInterpolationMethod = QgsMeshRendererScalarSettings::None;
   std::unique_ptr<QgsMesh3dAveragingMethod> mScalarAveragingMethod;
 
   // vector dataset
@@ -112,6 +112,7 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     QgsPointXY fractionPoint( const QgsPointXY &p1, const QgsPointXY &p2, double fraction ) const;
     bool mIsMeshSimplificationActive = false;
     QColor colorAt( QgsColorRampShader *shader, double val ) const;
+
   protected:
     //! feedback class for cancellation
     std::unique_ptr<QgsMeshLayerRendererFeedback> mFeedback;

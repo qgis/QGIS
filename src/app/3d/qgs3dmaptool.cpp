@@ -51,6 +51,11 @@ QCursor Qgs3DMapTool::cursor() const
   return Qt::CrossCursor;
 }
 
+void Qgs3DMapTool::onMapSettingsChanged()
+{
+
+}
+
 Qgs3DMapCanvas *Qgs3DMapTool::canvas()
 {
   return mCanvas;

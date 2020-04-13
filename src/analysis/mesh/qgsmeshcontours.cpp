@@ -58,7 +58,7 @@ QgsGeometry QgsMeshContours::exportPolygons(
   const QgsMeshDatasetIndex &index,
   double min_value,
   double max_value,
-  QgsMeshRendererScalarSettings::DataInterpolationMethod method,
+  QgsMeshRendererScalarSettings::DataResamplingMethod method,
   QgsFeedback *feedback
 )
 {
@@ -254,7 +254,7 @@ QgsGeometry QgsMeshContours::exportPolygons(
 
 QgsGeometry QgsMeshContours::exportLines( const QgsMeshDatasetIndex &index,
     double value,
-    QgsMeshRendererScalarSettings::DataInterpolationMethod method,
+    QgsMeshRendererScalarSettings::DataResamplingMethod method,
     QgsFeedback *feedback )
 {
   // Check if the layer/mesh is valid
@@ -380,7 +380,7 @@ QgsGeometry QgsMeshContours::exportLines( const QgsMeshDatasetIndex &index,
   }
 }
 
-void QgsMeshContours::populateCache( const QgsMeshDatasetIndex &index, QgsMeshRendererScalarSettings::DataInterpolationMethod method )
+void QgsMeshContours::populateCache( const QgsMeshDatasetIndex &index, QgsMeshRendererScalarSettings::DataResamplingMethod method )
 {
   if ( mCachedIndex != index )
   {

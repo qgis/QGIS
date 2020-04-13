@@ -55,6 +55,7 @@ class TestQgsLayerTree : public QObject
     void testUtilsCollectMapLayers();
     void testUtilsCountMapLayers();
     void testSymbolText();
+    void testNodeDepth();
 
   private:
 
@@ -764,6 +765,39 @@ void TestQgsLayerTree::testSymbolText()
   delete root;
 }
 
+void TestQgsLayerTree::testNodeDepth()
+{
+  QCOMPARE( mRoot->depth(), 0 );
+  QgsLayerTreeNode *secondGroup = mRoot->children()[1];
+  QCOMPARE( secondGroup->depth(), 1 );
+
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl->isValid() );
+
+  QgsLayerTreeLayer *n = new QgsLayerTreeLayer( vl->id(), vl->name() );
+  mRoot->addChildNode( n );
+  QCOMPARE( n->depth(), 1 );
+
+  QgsLayerTreeGroup *g1 = mRoot->addGroup( QStringLiteral( "g1" ) );
+  QCOMPARE( g1->depth(), 1 );
+  QgsLayerTreeLayer *n1 = n->clone();
+  g1->addChildNode( n1 );
+  QCOMPARE( n1->depth(), 2 );
+  QgsLayerTreeGroup *g2 = g1->addGroup( QStringLiteral( "g2" ) );
+  QCOMPARE( g2->depth(), 2 );
+  QgsLayerTreeLayer *n2 = n->clone();
+  g2->addChildNode( n2 );
+  QCOMPARE( n2->depth(), 3 );
+  QgsLayerTreeGroup *g3 = g2->addGroup( QStringLiteral( "g3" ) );
+  QCOMPARE( g3->depth(), 3 );
+  QgsLayerTreeLayer *n3 = n->clone();
+  g3->addChildNode( n3 );
+  QCOMPARE( n3->depth(), 4 );
+
+  mRoot->removeChildNode( n );
+  mRoot->removeChildNode( g1 );
+  delete vl;
+}
 
 QGSTEST_MAIN( TestQgsLayerTree )
 #include "testqgslayertree.moc"

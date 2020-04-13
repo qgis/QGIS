@@ -70,10 +70,13 @@ class OtbChoiceWidgetWrapper(WidgetWrapper):
 
         #Fur Qgis modeler
         else:
-            if name in self.dialog.wrappers:
-                self.__setWrapperVisibility(self.dialog.wrappers[name], visible)
-            if name in self.dialog.widget_labels:
-                self.dialog.widget_labels[name].setVisible(visible)
+            try:
+                if name in self.dialog.widget.widget.wrappers:
+                    self.__setWrapperVisibility(self.dialog.widget.widget.wrappers[name], visible)
+                if name in self.dialog.widget.widget.widget_labels:
+                    self.dialog.widget.widget.widget_labels[name].setVisible(visible)
+            except AttributeError:
+                pass
 
     def __setWrapperVisibility(self, wrapper, v):
         # For compatibility with 3.x API, we need to check whether the wrapper is

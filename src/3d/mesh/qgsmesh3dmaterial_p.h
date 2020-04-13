@@ -66,7 +66,11 @@ class QgsMesh3dMaterial : public Qt3DRender::QMaterial
     };
 
     //! Constructor
-    QgsMesh3dMaterial( QgsMeshLayer *layer, const QgsVector3D &origin, const QgsMesh3DSymbol &symbol, MagnitudeType magnitudeType = ZValue );
+    QgsMesh3dMaterial( QgsMeshLayer *layer,
+                       const QgsDateTimeRange &timeRange,
+                       const QgsVector3D &origin,
+                       const QgsMesh3DSymbol &symbol,
+                       MagnitudeType magnitudeType = ZValue );
 
   private:
     QgsMesh3DSymbol mSymbol;
@@ -75,7 +79,7 @@ class QgsMesh3dMaterial : public Qt3DRender::QMaterial
     QgsVector3D mOrigin;
 
     void configure();
-    void configureArrows( QgsMeshLayer *layer );
+    void configureArrows( QgsMeshLayer *layer, const QgsDateTimeRange &timeRange );
 };
 
 ///@endcond

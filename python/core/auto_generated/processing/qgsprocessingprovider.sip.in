@@ -24,6 +24,13 @@ to a common area of analysis.
 %End
   public:
 
+    enum Flag
+    {
+      FlagDeemphasiseSearchResults,
+    };
+    typedef QFlags<QgsProcessingProvider::Flag> Flags;
+
+
     QgsProcessingProvider( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingProvider.
@@ -44,6 +51,14 @@ Returns an icon for the provider.
 Returns a path to an SVG version of the provider's icon.
 
 .. seealso:: :py:func:`icon`
+%End
+
+    virtual Flags flags() const;
+%Docstring
+Returns the flags indicating how and when the provider operates and should be exposed to users.
+Default is no flags.
+
+.. versionadded:: 3.14
 %End
 
     virtual QString id() const = 0;
@@ -283,6 +298,9 @@ Adds an ``algorithm`` to the provider. Ownership of the algorithm is transferred
   private:
     QgsProcessingProvider( const QgsProcessingProvider &other );
 };
+
+QFlags<QgsProcessingProvider::Flag> operator|(QgsProcessingProvider::Flag f1, QFlags<QgsProcessingProvider::Flag> f2);
+
 
 
 

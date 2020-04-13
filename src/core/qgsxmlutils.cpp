@@ -21,6 +21,7 @@
 #include "qgsproperty.h"
 #include "qgssymbollayerutils.h"
 #include "qgsprocessingparameters.h"
+#include "qgsremappingproxyfeaturesink.h"
 
 QgsUnitTypes::DistanceUnit QgsXmlUtils::readMapUnits( const QDomElement &element )
 {
@@ -221,6 +222,20 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
         element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsProcessingOutputLayerDefinition" ) );
         break;
       }
+      else if ( value.canConvert< QgsProcessingFeatureSourceDefinition >() )
+      {
+        QDomElement valueElement = writeVariant( value.value< QgsProcessingFeatureSourceDefinition >().toVariant(), doc );
+        element.appendChild( valueElement );
+        element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsProcessingFeatureSourceDefinition" ) );
+        break;
+      }
+      else if ( value.canConvert< QgsRemappingSinkDefinition >() )
+      {
+        QDomElement valueElement = writeVariant( value.value< QgsRemappingSinkDefinition >().toVariant(), doc );
+        element.appendChild( valueElement );
+        element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsRemappingSinkDefinition" ) );
+        break;
+      }
       Q_ASSERT_X( false, "QgsXmlUtils::writeVariant", QStringLiteral( "unsupported user variant type %1" ).arg( QMetaType::typeName( value.userType() ) ).toLocal8Bit() );
       break;
     }
@@ -356,6 +371,30 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
 
     if ( res.loadVariant( QgsXmlUtils::readVariant( values.at( 0 ).toElement() ).toMap() ) )
       return res;
+
+    return QVariant();
+  }
+  else if ( type == QLatin1String( "QgsProcessingFeatureSourceDefinition" ) )
+  {
+    QgsProcessingFeatureSourceDefinition res;
+    const QDomNodeList values = element.childNodes();
+    if ( values.isEmpty() )
+      return QVariant();
+
+    if ( res.loadVariant( QgsXmlUtils::readVariant( values.at( 0 ).toElement() ).toMap() ) )
+      return res;
+
+    return QVariant();
+  }
+  else if ( type == QLatin1String( "QgsRemappingSinkDefinition" ) )
+  {
+    QgsRemappingSinkDefinition res;
+    const QDomNodeList values = element.childNodes();
+    if ( values.isEmpty() )
+      return QVariant();
+
+    if ( res.loadVariant( QgsXmlUtils::readVariant( values.at( 0 ).toElement() ).toMap() ) )
+      return QVariant::fromValue( res );
 
     return QVariant();
   }

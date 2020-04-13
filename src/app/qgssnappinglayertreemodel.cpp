@@ -27,6 +27,7 @@
 #include "qgssnappingconfig.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
+#include "qgsscalewidget.h"
 
 QgsSnappingLayerDelegate::QgsSnappingLayerDelegate( QgsMapCanvas *canvas, QObject *parent )
   : QItemDelegate( parent )
@@ -100,6 +101,20 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
     return w;
   }
 
+  if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn )
+  {
+    QgsScaleWidget *minLimitSp = new QgsScaleWidget( parent );
+    minLimitSp->setToolTip( tr( "Min Scale" ) );
+    return minLimitSp;
+  }
+
+  if ( index.column() == QgsSnappingLayerTreeModel::MaxScaleColumn )
+  {
+    QgsScaleWidget *maxLimitSp = new QgsScaleWidget( parent );
+    maxLimitSp->setToolTip( tr( "Max Scale" ) );
+    return maxLimitSp;
+  }
+
   return nullptr;
 }
 
@@ -139,6 +154,22 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex
     if ( w )
     {
       w->setCurrentIndex( w->findData( units ) );
+    }
+  }
+  else if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn )
+  {
+    QgsScaleWidget *w = qobject_cast<QgsScaleWidget *>( editor );
+    if ( w )
+    {
+      w->setScale( val.toDouble() );
+    }
+  }
+  else if ( index.column() == QgsSnappingLayerTreeModel::MaxScaleColumn )
+  {
+    QgsScaleWidget *w = qobject_cast<QgsScaleWidget *>( editor );
+    if ( w )
+    {
+      w->setScale( val.toDouble() );
     }
   }
 }
@@ -183,6 +214,22 @@ void QgsSnappingLayerDelegate::setModelData( QWidget *editor, QAbstractItemModel
       model->setData( index, w->value(), Qt::EditRole );
     }
   }
+  else if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn )
+  {
+    QgsScaleWidget *w = qobject_cast<QgsScaleWidget *>( editor );
+    if ( w )
+    {
+      model->setData( index, w->scale(), Qt::EditRole );
+    }
+  }
+  else if ( index.column() == QgsSnappingLayerTreeModel::MaxScaleColumn )
+  {
+    QgsScaleWidget *w = qobject_cast<QgsScaleWidget *>( editor );
+    if ( w )
+    {
+      model->setData( index, w->scale(), Qt::EditRole );
+    }
+  }
 }
 
 
@@ -191,6 +238,7 @@ QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject *project, QgsMa
   , mProject( project )
   , mCanvas( canvas )
   , mIndividualLayerSettings( project->snappingConfig().individualLayerSettings() )
+  , mEnableMinMaxColumn( project->snappingConfig().scaleDependencyMode() == QgsSnappingConfig::PerLayer )
 
 {
   connect( project, &QgsProject::snappingConfigChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
@@ -200,7 +248,7 @@ QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject *project, QgsMa
 int QgsSnappingLayerTreeModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
-  return 5;
+  return 7;
 }
 
 Qt::ItemFlags QgsSnappingLayerTreeModel::flags( const QModelIndex &idx ) const
@@ -229,6 +277,13 @@ Qt::ItemFlags QgsSnappingLayerTreeModel::flags( const QModelIndex &idx ) const
         else
         {
           return Qt::NoItemFlags;
+        }
+      }
+      else if ( idx.column() == MaxScaleColumn || idx.column() == MinScaleColumn )
+      {
+        if ( mEnableMinMaxColumn )
+        {
+          return Qt::ItemIsEnabled | Qt::ItemIsEditable;
         }
       }
       else
@@ -290,6 +345,7 @@ void QgsSnappingLayerTreeModel::setFilterText( const QString &filterText )
 void QgsSnappingLayerTreeModel::onSnappingSettingsChanged()
 {
   const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> oldSettings = mIndividualLayerSettings;
+  bool wasMinMaxEnabled = mEnableMinMaxColumn;
 
   for ( auto it = oldSettings.constBegin(); it != oldSettings.constEnd(); ++it )
   {
@@ -313,17 +369,18 @@ void QgsSnappingLayerTreeModel::onSnappingSettingsChanged()
     }
   }
 
-  hasRowchanged( mLayerTreeModel->rootGroup(), oldSettings );
+  mEnableMinMaxColumn = ( mProject->snappingConfig().scaleDependencyMode() == QgsSnappingConfig::PerLayer );
+  hasRowchanged( mLayerTreeModel->rootGroup(), oldSettings, wasMinMaxEnabled != mEnableMinMaxColumn );
 }
 
-void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode *node, const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &oldSettings )
+void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode *node, const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &oldSettings, bool forceRefresh )
 {
   if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
   {
     const auto constChildren = node->children();
     for ( QgsLayerTreeNode *child : constChildren )
     {
-      hasRowchanged( child, oldSettings );
+      hasRowchanged( child, oldSettings, forceRefresh );
     }
   }
   else
@@ -334,7 +391,7 @@ void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode *node, const QHa
     {
       emit dataChanged( QModelIndex(), idx );
     }
-    if ( oldSettings.value( vl ) != mProject->snappingConfig().individualLayerSettings().value( vl ) )
+    if ( oldSettings.value( vl ) != mProject->snappingConfig().individualLayerSettings().value( vl ) || forceRefresh )
     {
       mIndividualLayerSettings.insert( vl, mProject->snappingConfig().individualLayerSettings().value( vl ) );
       emit dataChanged( idx, index( idx.row(), columnCount( idx ) - 1 ) );
@@ -400,6 +457,10 @@ QVariant QgsSnappingLayerTreeModel::headerData( int section, Qt::Orientation ori
           return tr( "Units" );
         case 4:
           return tr( "Avoid overlap" );
+        case 5:
+          return tr( "Min Scale" );
+        case 6:
+          return tr( "Max Scale" );
         default:
           return QVariant();
       }
@@ -579,6 +640,46 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
         }
       }
     }
+
+    if ( idx.column() == MinScaleColumn )
+    {
+      if ( role == Qt::DisplayRole )
+      {
+        if ( ls.minimumScale() <= 0.0 )
+        {
+          return QString( tr( "not set" ) );
+        }
+        else
+        {
+          return QString::number( ls.minimumScale() );
+        }
+      }
+
+      if ( role == Qt::UserRole )
+      {
+        return ls.minimumScale();
+      }
+    }
+
+    if ( idx.column() == MaxScaleColumn )
+    {
+      if ( role == Qt::DisplayRole )
+      {
+        if ( ls.maximumScale() <= 0.0 )
+        {
+          return QString( tr( "not set" ) );
+        }
+        else
+        {
+          return QString::number( ls.maximumScale() );
+        }
+      }
+
+      if ( role == Qt::UserRole )
+      {
+        return ls.maximumScale();
+      }
+    }
   }
 
   return QVariant();
@@ -707,6 +808,48 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
         avoidIntersectionsList.removeAll( vl );
 
       mProject->setAvoidIntersectionsLayers( avoidIntersectionsList );
+      emit dataChanged( index, index );
+      return true;
+    }
+  }
+
+  if ( index.column() == MinScaleColumn && role == Qt::EditRole )
+  {
+    QgsVectorLayer *vl = vectorLayer( index );
+    if ( vl )
+    {
+      if ( !mIndividualLayerSettings.contains( vl ) )
+        return false;
+
+      QgsSnappingConfig::IndividualLayerSettings ls = mIndividualLayerSettings.value( vl );
+      if ( !ls.valid() )
+        return false;
+
+      ls.setMinimumScale( value.toDouble() );
+      QgsSnappingConfig config = mProject->snappingConfig();
+      config.setIndividualLayerSettings( vl, ls );
+      mProject->setSnappingConfig( config );
+      emit dataChanged( index, index );
+      return true;
+    }
+  }
+
+  if ( index.column() == MaxScaleColumn && role == Qt::EditRole )
+  {
+    QgsVectorLayer *vl = vectorLayer( index );
+    if ( vl )
+    {
+      if ( !mIndividualLayerSettings.contains( vl ) )
+        return false;
+
+      QgsSnappingConfig::IndividualLayerSettings ls = mIndividualLayerSettings.value( vl );
+      if ( !ls.valid() )
+        return false;
+
+      ls.setMaximumScale( value.toDouble() );
+      QgsSnappingConfig config = mProject->snappingConfig();
+      config.setIndividualLayerSettings( vl, ls );
+      mProject->setSnappingConfig( config );
       emit dataChanged( index, index );
       return true;
     }

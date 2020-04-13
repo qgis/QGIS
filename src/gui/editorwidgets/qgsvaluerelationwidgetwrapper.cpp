@@ -342,16 +342,16 @@ void QgsValueRelationWidgetWrapper::populate( )
   {
     if ( context().parentFormFeature().isValid() )
     {
-      mCache = QgsValueRelationFieldFormatter::createCache( config( ), formFeature(), context().parentFormFeature() );
+      mCache = QgsValueRelationFieldFormatter::createCache( config(), formFeature(), context().parentFormFeature() );
     }
     else
     {
-      mCache = QgsValueRelationFieldFormatter::createCache( config( ), formFeature() );
+      mCache = QgsValueRelationFieldFormatter::createCache( config(), formFeature() );
     }
   }
   else if ( mCache.empty() )
   {
-    mCache = QgsValueRelationFieldFormatter::createCache( config( ) );
+    mCache = QgsValueRelationFieldFormatter::createCache( config() );
   }
 
   if ( mComboBox )
@@ -365,6 +365,8 @@ void QgsValueRelationWidgetWrapper::populate( )
     for ( const QgsValueRelationFieldFormatter::ValueRelationItem &element : qgis::as_const( mCache ) )
     {
       whileBlocking( mComboBox )->addItem( element.value, element.key );
+      if ( !element.description.isEmpty() )
+        mComboBox->setItemData( mComboBox->count() - 1, element.description, Qt::ToolTipRole );
     }
 
   }

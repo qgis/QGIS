@@ -13,6 +13,7 @@ SET(SPATIALITE_SRCS
   qgsspatialitefeatureiterator.cpp
   qgsspatialitetablemodel.cpp
   qgsspatialiteproviderconnection.cpp
+  qgsspatialitetransaction.cpp
 )
 
 IF (WITH_GUI)

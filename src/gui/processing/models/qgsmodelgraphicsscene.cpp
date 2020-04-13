@@ -18,6 +18,7 @@
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsmodelcomponentgraphicitem.h"
 #include "qgsmodelarrowitem.h"
+#include "qgsprocessingmodelgroupbox.h"
 #include <QGraphicsSceneMouseEvent>
 
 ///@cond NOT_STABLE
@@ -48,7 +49,7 @@ QgsModelComponentGraphicItem *QgsModelGraphicsScene::createParameterGraphicItem(
   return new QgsModelParameterGraphicItem( param, model, nullptr );
 }
 
-QgsModelComponentGraphicItem *QgsModelGraphicsScene::createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const
+QgsModelChildAlgorithmGraphicItem *QgsModelGraphicsScene::createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const
 {
   return new QgsModelChildAlgorithmGraphicItem( child, model, nullptr );
 }
@@ -63,8 +64,27 @@ QgsModelComponentGraphicItem *QgsModelGraphicsScene::createCommentGraphicItem( Q
   return new QgsModelCommentGraphicItem( comment, parentItem, model, nullptr );
 }
 
+QgsModelComponentGraphicItem *QgsModelGraphicsScene::createGroupBoxGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelGroupBox *box ) const
+{
+  return new QgsModelGroupBoxGraphicItem( box, model, nullptr );
+}
+
 void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, QgsProcessingContext &context )
 {
+  // model group boxes
+  const QList<QgsProcessingModelGroupBox> boxes = model->groupBoxes();
+  mGroupBoxItems.clear();
+  for ( const QgsProcessingModelGroupBox &box : boxes )
+  {
+    QgsModelComponentGraphicItem *item = createGroupBoxGraphicItem( model, box.clone() );
+    addItem( item );
+    item->setPos( box.position().x(), box.position().y() );
+    mGroupBoxItems.insert( box.uuid(), item );
+    connect( item, &QgsModelComponentGraphicItem::requestModelRepaint, this, &QgsModelGraphicsScene::rebuildRequired );
+    connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
+    connect( item, &QgsModelComponentGraphicItem::aboutToChange, this, &QgsModelGraphicsScene::componentAboutToChange );
+  }
+
   // model input parameters
   const QMap<QString, QgsProcessingModelParameter> params = model->parameterComponents();
   for ( auto it = params.constBegin(); it != params.constEnd(); ++it )
@@ -100,9 +120,11 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
   const QMap<QString, QgsProcessingModelChildAlgorithm> childAlgs = model->childAlgorithms();
   for ( auto it = childAlgs.constBegin(); it != childAlgs.constEnd(); ++it )
   {
-    QgsModelComponentGraphicItem *item = createChildAlgGraphicItem( model, it.value().clone() );
+    QgsModelChildAlgorithmGraphicItem *item = createChildAlgGraphicItem( model, it.value().clone() );
     addItem( item );
     item->setPos( it.value().position().x(), it.value().position().y() );
+    item->setResults( mChildResults.value( it.value().childId() ).toMap() );
+    item->setInputs( mChildInputs.value( it.value().childId() ).toMap() );
     mChildAlgorithmItems.insert( it.value().childId(), item );
     connect( item, &QgsModelComponentGraphicItem::requestModelRepaint, this, &QgsModelGraphicsScene::rebuildRequired );
     connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
@@ -114,14 +136,15 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
   // arrows linking child algorithms
   for ( auto it = childAlgs.constBegin(); it != childAlgs.constEnd(); ++it )
   {
-    int idx = 0;
+    int topIdx = 0;
+    int bottomIdx = 0;
     if ( !it.value().algorithm() )
       continue;
 
     const QgsProcessingParameterDefinitions parameters = it.value().algorithm()->parameterDefinitions();
     for ( const QgsProcessingParameterDefinition *parameter : parameters )
     {
-      if ( !parameter->isDestination() && !( parameter->flags() & QgsProcessingParameterDefinition::FlagHidden ) )
+      if ( !( parameter->flags() & QgsProcessingParameterDefinition::FlagHidden ) )
       {
         QList< QgsProcessingModelChildParameterSource > sources;
         if ( it.value().parameterSources().contains( parameter->name() ) )
@@ -133,14 +156,21 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
           {
             QgsModelArrowItem *arrow = nullptr;
             if ( link.linkIndex == -1 )
-              arrow = new QgsModelArrowItem( link.item, mChildAlgorithmItems.value( it.value().childId() ), Qt::TopEdge, idx );
+              arrow = new QgsModelArrowItem( link.item, mChildAlgorithmItems.value( it.value().childId() ), parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge, parameter->isDestination() ? bottomIdx : topIdx );
             else
-              arrow = new QgsModelArrowItem( link.item, link.edge, link.linkIndex, mChildAlgorithmItems.value( it.value().childId() ), Qt::TopEdge, idx );
+              arrow = new QgsModelArrowItem( link.item, link.edge, link.linkIndex, true,
+                                             mChildAlgorithmItems.value( it.value().childId() ),
+                                             parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge,
+                                             parameter->isDestination() ? bottomIdx : topIdx,
+                                             true );
             addItem( arrow );
           }
-          idx += 1;
         }
       }
+      if ( parameter->isDestination() )
+        bottomIdx++;
+      else
+        topIdx++;
     }
     const QStringList dependencies = it.value().dependencies();
     for ( const QString &depend : dependencies )
@@ -163,8 +193,6 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
       connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
       connect( item, &QgsModelComponentGraphicItem::aboutToChange, this, &QgsModelGraphicsScene::componentAboutToChange );
 
-      addCommentItemForComponent( model, outputIt.value(), item );
-
       QPointF pos = outputIt.value().position();
       int idx = -1;
       int i = 0;
@@ -186,6 +214,8 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
       item->setPos( pos );
       outputItems.insert( outputIt.key(), item );
       addItem( new QgsModelArrowItem( mChildAlgorithmItems[it.value().childId()], Qt::BottomEdge, idx, item ) );
+
+      addCommentItemForComponent( model, outputIt.value(), item );
     }
     mOutputItems.insert( it.value().childId(), outputItems );
   }
@@ -222,6 +252,28 @@ QgsModelComponentGraphicItem *QgsModelGraphicsScene::componentItemAt( QPointF po
   return nullptr;
 }
 
+QgsModelComponentGraphicItem *QgsModelGraphicsScene::groupBoxItem( const QString &uuid )
+{
+  return mGroupBoxItems.value( uuid );
+}
+
+void QgsModelGraphicsScene::selectAll()
+{
+  //select all items in scene
+  QgsModelComponentGraphicItem *focusedItem = nullptr;
+  const QList<QGraphicsItem *> itemList = items();
+  for ( QGraphicsItem *graphicsItem : itemList )
+  {
+    if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( graphicsItem ) )
+    {
+      componentItem->setSelected( true );
+      if ( !focusedItem )
+        focusedItem = componentItem;
+    }
+  }
+  emit selectedItemChanged( focusedItem );
+}
+
 void QgsModelGraphicsScene::deselectAll()
 {
   //we can't use QGraphicsScene::clearSelection, as that emits no signals
@@ -246,6 +298,32 @@ void QgsModelGraphicsScene::setSelectedItem( QgsModelComponentGraphicItem *item 
     item->setSelected( true );
   }
   emit selectedItemChanged( item );
+}
+
+void QgsModelGraphicsScene::setChildAlgorithmResults( const QVariantMap &results )
+{
+  mChildResults = results;
+
+  for ( auto it = mChildResults.constBegin(); it != mChildResults.constEnd(); ++it )
+  {
+    if ( QgsModelChildAlgorithmGraphicItem *item = mChildAlgorithmItems.value( it.key() ) )
+    {
+      item->setResults( it.value().toMap() );
+    }
+  }
+}
+
+void QgsModelGraphicsScene::setChildAlgorithmInputs( const QVariantMap &inputs )
+{
+  mChildInputs = inputs;
+
+  for ( auto it = mChildInputs.constBegin(); it != mChildInputs.constEnd(); ++it )
+  {
+    if ( QgsModelChildAlgorithmGraphicItem *item = mChildAlgorithmItems.value( it.key() ) )
+    {
+      item->setInputs( it.value().toMap() );
+    }
+  }
 }
 
 QList<QgsModelGraphicsScene::LinkSource> QgsModelGraphicsScene::linkSourcesForParameterValue( QgsProcessingModelAlgorithm *model, const QVariant &value, const QString &childId, QgsProcessingContext &context ) const
@@ -317,6 +395,7 @@ QList<QgsModelGraphicsScene::LinkSource> QgsModelGraphicsScene::linkSourcesForPa
 
       case QgsProcessingModelChildParameterSource::StaticValue:
       case QgsProcessingModelChildParameterSource::ExpressionText:
+      case QgsProcessingModelChildParameterSource::ModelOutput:
         break;
     }
   }

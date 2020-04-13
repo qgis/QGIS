@@ -31,11 +31,29 @@ QgsSqlExpressionCompiler::Result QgsSQLiteExpressionCompiler::compileNode( const
   {
     case QgsExpressionNode::ntBinaryOperator:
     {
-      switch ( static_cast<const QgsExpressionNodeBinaryOperator *>( node )->op() )
+      const QgsExpressionNodeBinaryOperator *op = static_cast<const QgsExpressionNodeBinaryOperator *>( node );
+      switch ( op->op() )
       {
         case QgsExpressionNodeBinaryOperator::boPow:
         case QgsExpressionNodeBinaryOperator::boRegexp:
           return Fail; //not supported by SQLite
+
+        case QgsExpressionNodeBinaryOperator::boILike:
+        case QgsExpressionNodeBinaryOperator::boNotILike:
+        {
+          QString opL, opR;
+
+          if ( compileNode( op->opLeft(), opL ) != Complete ||
+               compileNode( op->opRight(), opR ) != Complete )
+            return Fail;
+
+          result = QStringLiteral( "lower(%1) %2 lower(%3) ESCAPE '\\'" )
+                   .arg( opL )
+                   .arg( op->op() == QgsExpressionNodeBinaryOperator::boILike ? QStringLiteral( "LIKE" ) : QStringLiteral( "NOT LIKE" ) )
+                   .arg( opR );
+
+          return Complete;
+        }
 
         default:
           //fallback to default handling

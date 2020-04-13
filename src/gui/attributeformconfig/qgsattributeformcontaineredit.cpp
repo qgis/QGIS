@@ -21,11 +21,8 @@
 QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *item, QWidget *parent )
   : QWidget( parent )
   , mTreeItem( item )
-
 {
   setupUi( this );
-
-
 
   const QgsAttributesFormProperties::DnDTreeItemData itemData = mTreeItem->data( 0, QgsAttributesFormProperties::DnDTreeRole ).value<QgsAttributesFormProperties::DnDTreeItemData>();
   Q_ASSERT( itemData.type() == QgsAttributesFormProperties::DnDTreeItemData::Container );
@@ -56,7 +53,7 @@ void QgsAttributeFormContainerEdit::updateItemData()
   QgsAttributesFormProperties::DnDTreeItemData itemData = mTreeItem->data( 0, QgsAttributesFormProperties::DnDTreeRole ).value<QgsAttributesFormProperties::DnDTreeItemData>();
 
   itemData.setColumnCount( mColumnCountSpinBox->value() );
-  itemData.setShowAsGroupBox( mShowAsGroupBoxCheckBox->isVisible() ? mShowAsGroupBoxCheckBox->isChecked() : true );
+  itemData.setShowAsGroupBox( mShowAsGroupBoxCheckBox->isVisible() ? mShowAsGroupBoxCheckBox->isChecked() : false );
   itemData.setName( mTitleLineEdit->text() );
   itemData.setShowLabel( mShowLabelCheckBox->isChecked() );
   itemData.setBackgroundColor( mBackgroundColorButton->color() );

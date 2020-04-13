@@ -229,14 +229,14 @@ void QgsStatisticalSummary::finalize()
   if ( mStatistics & QgsStatisticalSummary::Minority || mStatistics & QgsStatisticalSummary::Majority )
   {
     QList<int> valueCounts = mValueCount.values();
-    std::sort( valueCounts.begin(), valueCounts.end() );
+
     if ( mStatistics & QgsStatisticalSummary::Minority )
     {
-      mMinority = mValueCount.key( valueCounts.first() );
+      mMinority = mValueCount.key( *std::min_element( valueCounts.begin(), valueCounts.end() ) );
     }
     if ( mStatistics & QgsStatisticalSummary::Majority )
     {
-      mMajority = mValueCount.key( valueCounts.last() );
+      mMajority = mValueCount.key( *std::max_element( valueCounts.begin(), valueCounts.end() ) );
     }
   }
 

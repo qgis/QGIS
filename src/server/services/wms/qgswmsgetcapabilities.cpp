@@ -891,6 +891,7 @@ namespace QgsWms
         if ( projectSettings )
         {
           layerElem.setAttribute( QStringLiteral( "visible" ), treeNode->isVisible() );
+          layerElem.setAttribute( QStringLiteral( "expanded" ), treeNode->isExpanded() );
         }
 
         if ( treeNode->nodeType() == QgsLayerTreeNode::NodeGroup )
@@ -1956,6 +1957,7 @@ namespace QgsWms
         }
 
         case QgsMapLayerType::MeshLayer:
+        case QgsMapLayerType::VectorTileLayer:
         case QgsMapLayerType::PluginLayer:
           break;
       }

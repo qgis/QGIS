@@ -43,6 +43,8 @@ class QgsField;
 
 class QgsSqliteHandle;
 class QgsSpatiaLiteFeatureIterator;
+class QgsSpatiaLiteTransaction;
+class QgsTransaction;
 
 #include "qgsdatasourceuri.h"
 
@@ -124,6 +126,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     QVariant defaultValue( int fieldId ) const override;
     bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
     bool createAttributeIndex( int field ) override;
+    SpatialIndexPresence hasSpatialIndex() const override;
 
     /**
      * The SpatiaLite provider does its own transforms so we return
@@ -218,6 +221,12 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
      * Search all the layers using the given table.
      */
     static QList<QgsVectorLayer *> searchLayers( const QList<QgsVectorLayer *> &layers, const QString &connectionInfo, const QString &tableName );
+
+    QgsSpatiaLiteTransaction *mTransaction = nullptr;
+
+    QgsTransaction *transaction() const override;
+
+    void setTransaction( QgsTransaction *transaction ) override;
 
     QgsFields mAttributeFields;
 
@@ -324,6 +333,10 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     //! SpatiaLite minor version
     int mSpatialiteVersionMinor = 0;
 
+    //! Internal transaction handling (for addFeatures etc.)
+    int mSavepointId;
+    static QAtomicInt sSavepointId;
+
     /**
      * internal utility functions used to handle common SQLite tasks
      */
@@ -381,7 +394,17 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     /**
      * Handles an error encountered while executing an sql statement.
      */
-    void handleError( const QString &sql, char *errorMessage, bool rollback = false );
+    void handleError( const QString &sql, char *errorMessage, const QString &savepointId );
+
+    /**
+     * Sqlite exec sql wrapper for SQL logging
+     */
+    int exec_sql( const QString &sql, char *errMsg = nullptr );
+
+    /**
+     * Returns the sqlite handle to be used, if we are inside a transaction it will be the transaction's handle
+     */
+    sqlite3 *sqliteHandle( ) const;
 
     friend class QgsSpatiaLiteFeatureSource;
 
@@ -420,13 +443,13 @@ class QgsSpatiaLiteProviderMetadata final: public QgsProviderMetadata
     QgsAbstractProviderConnection *createConnection( const QString &name ) override;
     void deleteConnection( const QString &name ) override;
     void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) override;
+    QgsTransaction *createTransaction( const QString &connString ) override;
 
   protected:
 
     QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) override;
-
-
 };
+
 
 // clazy:excludeall=qstring-allocations
 

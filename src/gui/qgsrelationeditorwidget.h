@@ -134,8 +134,16 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
 
     /**
      * Sets the editor \a context
+     * \note if context cadDockWidget is null, it won't be possible to digitize
+     * the geometry of a referencing feature from this widget
      */
     void setEditorContext( const QgsAttributeEditorContext &context );
+
+    /**
+     * Returns the attribute editor context.
+     * \since QGIS 3.14
+     */
+    QgsAttributeEditorContext editorContext( ) const;
 
     /**
      * The feature selection manager is responsible for the selected features

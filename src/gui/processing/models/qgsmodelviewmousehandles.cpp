@@ -137,16 +137,17 @@ void QgsModelViewMouseHandles::setItemRect( QGraphicsItem *item, QRectF rect )
 {
   if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
   {
-    componentItem->setItemRect( rect );
+    componentItem->finalizePreviewedItemRectChange( rect );
   }
 }
 
-void QgsModelViewMouseHandles::previewSetItemRect( QGraphicsItem *item, QRectF rect )
+QRectF QgsModelViewMouseHandles::previewSetItemRect( QGraphicsItem *item, QRectF rect )
 {
   if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
   {
-    componentItem->previewItemRectChange( rect );
+    return componentItem->previewItemRectChange( rect );
   }
+  return rect;
 }
 
 void QgsModelViewMouseHandles::startMacroCommand( const QString &text )
@@ -157,6 +158,22 @@ void QgsModelViewMouseHandles::startMacroCommand( const QString &text )
 void QgsModelViewMouseHandles::endMacroCommand()
 {
   mView->endMacroCommand();
+}
+
+QPointF QgsModelViewMouseHandles::snapPoint( QPointF originalPoint, QgsGraphicsViewMouseHandles::SnapGuideMode mode, bool snapHorizontal, bool snapVertical )
+{
+  bool snapped = false;
+
+  QPointF snappedPoint;
+  switch ( mode )
+  {
+    case Item:
+    case Point:
+      snappedPoint = mView->snapper()->snapPoint( originalPoint, mView->transform().m11(), snapped, snapHorizontal, snapVertical );
+      break;
+  }
+
+  return snapped ? snappedPoint : originalPoint;
 }
 
 

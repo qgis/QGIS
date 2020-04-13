@@ -31,6 +31,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgslayertreeutils.h"
 #include "qgslayoututils.h"
+#include "qgsmapthemecollection.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
@@ -678,6 +679,7 @@ void QgsLayoutItemLegend::setupMapConnections( QgsLayoutItemMap *map, bool conne
     disconnect( map, &QgsLayoutObject::changed, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
     disconnect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
     disconnect( map, &QgsLayoutItemMap::layerStyleOverridesChanged, this, &QgsLayoutItemLegend::mapLayerStyleOverridesChanged );
+    disconnect( map, &QgsLayoutItemMap::themeChanged, this, &QgsLayoutItemLegend::mapThemeChanged );
   }
   else
   {
@@ -685,6 +687,7 @@ void QgsLayoutItemLegend::setupMapConnections( QgsLayoutItemMap *map, bool conne
     connect( map, &QgsLayoutObject::changed, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
     connect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
     connect( map, &QgsLayoutItemMap::layerStyleOverridesChanged, this, &QgsLayoutItemLegend::mapLayerStyleOverridesChanged );
+    connect( map, &QgsLayoutItemMap::themeChanged, this, &QgsLayoutItemLegend::mapThemeChanged );
   }
 }
 
@@ -700,10 +703,10 @@ void QgsLayoutItemLegend::setLinkedMap( QgsLayoutItemMap *map )
   if ( mMap )
   {
     setupMapConnections( mMap, true );
+    mapThemeChanged( mMap->themeToRender( mMap->createExpressionContext() ) );
   }
 
   updateFilterByMap();
-
 }
 
 void QgsLayoutItemLegend::invalidateCurrentMap()
@@ -752,6 +755,15 @@ void QgsLayoutItemLegend::updateFilterByMapAndRedraw()
   updateFilterByMap( true );
 }
 
+void QgsLayoutItemLegend::setModelStyleOverrides( const QMap<QString, QString> &overrides )
+{
+  mLegendModel->setLayerStyleOverrides( overrides );
+  const QList< QgsLayerTreeLayer * > layers =  mLegendModel->rootGroup()->findLayers();
+  for ( QgsLayerTreeLayer *nodeLayer : layers )
+    mLegendModel->refreshLayerLegend( nodeLayer );
+
+}
+
 void QgsLayoutItemLegend::mapLayerStyleOverridesChanged()
 {
   if ( !mMap )
@@ -766,14 +778,45 @@ void QgsLayoutItemLegend::mapLayerStyleOverridesChanged()
   }
   else
   {
-    mLegendModel->setLayerStyleOverrides( mMap->layerStyleOverrides() );
-    const QList< QgsLayerTreeLayer * > layers =  mLegendModel->rootGroup()->findLayers();
-    for ( QgsLayerTreeLayer *nodeLayer : layers )
-      mLegendModel->refreshLayerLegend( nodeLayer );
+    setModelStyleOverrides( mMap->layerStyleOverrides() );
   }
 
   adjustBoxSize();
+
   updateFilterByMap( false );
+}
+
+void QgsLayoutItemLegend::mapThemeChanged( const QString &theme )
+{
+  if ( mThemeName == theme )
+    return;
+
+  mThemeName = theme;
+
+  // map's theme has been changed, so make sure to update the legend here
+  if ( mLegendFilterByMap )
+  {
+    // legend is being filtered by map, so we need to re run the hit test too
+    // as the style overrides may also have affected the visible symbols
+    updateFilterByMap( false );
+  }
+  else
+  {
+    if ( mThemeName.isEmpty() )
+    {
+      setModelStyleOverrides( QMap<QString, QString>() );
+    }
+    else
+    {
+      // get style overrides for theme
+      const QMap<QString, QString> overrides = mLayout->project()->mapThemeCollection()->mapThemeStyleOverrides( mThemeName );
+      setModelStyleOverrides( overrides );
+    }
+  }
+
+  adjustBoxSize();
+
+  updateFilterByMap();
 }
 
 void QgsLayoutItemLegend::updateFilterByMap( bool redraw )
@@ -790,7 +833,18 @@ void QgsLayoutItemLegend::updateFilterByMap( bool redraw )
 void QgsLayoutItemLegend::doUpdateFilterByMap()
 {
   if ( mMap )
-    mLegendModel->setLayerStyleOverrides( mMap->layerStyleOverrides() );
+  {
+    if ( !mThemeName.isEmpty() )
+    {
+      // get style overrides for theme
+      const QMap<QString, QString> overrides = mLayout->project()->mapThemeCollection()->mapThemeStyleOverrides( mThemeName );
+      mLegendModel->setLayerStyleOverrides( overrides );
+    }
+    else
+    {
+      mLegendModel->setLayerStyleOverrides( mMap->layerStyleOverrides() );
+    }
+  }
   else
     mLegendModel->setLayerStyleOverrides( QMap<QString, QString>() );
 
@@ -819,6 +873,11 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     mLegendModel->setLegendFilterByMap( nullptr );
 
   mForceResize = true;
+}
+
+QString QgsLayoutItemLegend::themeName() const
+{
+  return mThemeName;
 }
 
 void QgsLayoutItemLegend::setLegendFilterOutAtlas( bool doFilter )

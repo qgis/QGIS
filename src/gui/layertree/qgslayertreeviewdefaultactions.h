@@ -82,6 +82,12 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
      * \since QGIS 3.2
      */
     QAction *actionMoveToTop( QObject *parent = nullptr ) SIP_FACTORY;
+
+    /**
+     * \see moveToBottom()
+     * \since QGIS 3.14
+     */
+    QAction *actionMoveToBottom( QObject *parent = nullptr ) SIP_FACTORY;
     QAction *actionGroupSelected( QObject *parent = nullptr ) SIP_FACTORY;
 
     /**
@@ -133,6 +139,13 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
      * \since QGIS 3.2
      */
     void moveToTop();
+
+    /**
+     * Moves selected layer(s) and/or group(s) to the bottom of the layer panel
+     * or the bottom of the group if the layer/group is placed within a group.
+     * \since QGIS 3.14
+     */
+    void moveToBottom();
     void groupSelected();
 
     /**

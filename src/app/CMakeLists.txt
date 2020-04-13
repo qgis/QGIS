@@ -27,6 +27,7 @@ SET(QGIS_APP_SRCS
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
   qgsdatumtransformtablewidget.cpp
+  qgsdevtoolspanelwidget.cpp
   qgsdiscoverrelationsdialog.cpp
   qgsdxfexportdialog.cpp
   qgsformannotationdialog.cpp
@@ -61,6 +62,7 @@ SET(QGIS_APP_SRCS
   qgsstatusbarmagnifierwidget.cpp
   qgsstatusbarscalewidget.cpp
   qgstemplateprojectsmodel.cpp
+  qgstemporalcontrollerdockwidget.cpp
   qgsversioninfo.cpp
   qgsrecentprojectsitemsmodel.cpp
   qgsvectorlayerdigitizingproperties.cpp
@@ -162,6 +164,12 @@ SET(QGIS_APP_SRCS
 
   browser/qgsinbuiltdataitemproviders.cpp
 
+  devtools/qgsappdevtoolutils.cpp
+  devtools/networklogger/qgsnetworklogger.cpp
+  devtools/networklogger/qgsnetworkloggernode.cpp
+  devtools/networklogger/qgsnetworkloggerpanelwidget.cpp
+  devtools/networklogger/qgsnetworkloggerwidgetfactory.cpp
+
   labeling/qgslabelpropertydialog.cpp
   labeling/qgsmaptoolchangelabelproperties.cpp
   labeling/qgsmaptoolpinlabels.cpp
@@ -211,7 +219,7 @@ SET(QGIS_APP_SRCS
   mesh/qgsmeshrendereractivedatasetwidget.cpp
   mesh/qgsmeshdatasetgrouptreeview.cpp
   mesh/qgsmeshcalculatordialog.cpp
-  mesh/qgsmeshtimeformatdialog.cpp
+  mesh/qgsmeshstaticdatasetwidget.cpp
 )
 
 IF (WITH_3D)
@@ -371,6 +379,7 @@ INCLUDE_DIRECTORIES(
 
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/app/decorations
+  ${CMAKE_SOURCE_DIR}/src/app/devtools/networklogger
   ${CMAKE_SOURCE_DIR}/src/app/labeling
   ${CMAKE_SOURCE_DIR}/src/app/layout
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
@@ -403,11 +412,13 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/validity
+  ${CMAKE_SOURCE_DIR}/src/core/vectortile
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/attributeformconfig
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/src/gui/devtools
   ${CMAKE_SOURCE_DIR}/src/gui/labeling
   ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
@@ -419,6 +430,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/layertree
   ${CMAKE_SOURCE_DIR}/src/gui/locator
   ${CMAKE_SOURCE_DIR}/src/gui/vector
+  ${CMAKE_SOURCE_DIR}/src/gui/vectortile
   ${CMAKE_SOURCE_DIR}/src/plugins
   ${CMAKE_SOURCE_DIR}/src/python
   ${CMAKE_SOURCE_DIR}/src/native

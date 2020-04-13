@@ -38,6 +38,8 @@ The ``enabled`` argument specifies whether the data provider has temporal capabi
       MatchUsingWholeRange,
       MatchExactUsingStartOfRange,
       MatchExactUsingEndOfRange,
+      FindClosestMatchToStartOfRange,
+      FindClosestMatchToEndOfRange
     };
 
     IntervalHandlingMethod intervalHandlingMethod() const;
@@ -90,60 +92,6 @@ extent of datetime values available for reference temporal ranges from the provi
 %Docstring
 Returns the requested temporal range.
 Intended to be used by the provider in fetching data.
-%End
-
-    void setRequestedReferenceTemporalRange( const QgsDateTimeRange &range );
-%Docstring
-Sets the requested reference temporal ``range`` to retrieve when
-returning data from the associated data provider.
-
-.. note::
-
-   this is not normally manually set, and is intended for use by
-   QgsRasterLayerRenderer to automatically set the requested temporal range
-   on a clone of the data provider during a render job.
-
-.. seealso:: :py:func:`requestedReferenceTemporalRange`
-%End
-
-    const QgsDateTimeRange &requestedReferenceTemporalRange() const;
-%Docstring
-Returns the requested reference temporal range.
-Intended to be used by the provider in fetching data.
-
-.. seealso:: :py:func:`setRequestedReferenceTemporalRange`
-%End
-
-    void setEnableTime( bool enabled );
-%Docstring
-Sets the time enabled status.
-This enables whether time part in the temporal range should be
-used when updated the temporal range of these capabilities.
-
-This is useful in some temporal layers who use dates only.
-
-.. seealso:: :py:func:`isTimeEnabled`
-%End
-
-    bool isTimeEnabled() const;
-%Docstring
-Returns the temporal property status.
-
-.. seealso:: :py:func:`setEnableTime`
-%End
-
-    void setReferenceEnable( bool enabled );
-%Docstring
-Sets the usage status of the reference range.
-
-.. seealso:: :py:func:`isReferenceEnable`
-%End
-
-    bool isReferenceEnable() const;
-%Docstring
-Returns the enabled status of the reference range.
-
-.. seealso:: :py:func:`setReferenceEnable`
 %End
 
 };

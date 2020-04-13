@@ -21,6 +21,9 @@
 #include "qgspanelwidgetstack.h"
 #include "qgstableeditorformattingwidget.h"
 
+#include <QClipboard>
+#include <QMessageBox>
+
 QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   : QMainWindow( parent )
 {
@@ -98,6 +101,10 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
 
   addDockWidget( Qt::RightDockWidgetArea, mPropertiesDock );
 
+  mActionImportFromClipboard->setEnabled( !QApplication::clipboard()->text().isEmpty() );
+  connect( QApplication::clipboard(), &QClipboard::dataChanged, this, [ = ]() { mActionImportFromClipboard->setEnabled( !QApplication::clipboard()->text().isEmpty() ); } );
+
+  connect( mActionImportFromClipboard, &QAction::triggered, this, &QgsTableEditorDialog::setTableContentsFromClipboard );
   connect( mActionClose, &QAction::triggered, this, &QMainWindow::close );
   connect( mActionInsertRowsAbove, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::insertRowsAbove );
   connect( mActionInsertRowsBelow, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::insertRowsBelow );
@@ -114,6 +121,42 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
     mTableWidget->setIncludeTableHeader( checked );
     emit includeHeaderChanged( checked );
   } );
+}
+
+bool QgsTableEditorDialog::setTableContentsFromClipboard()
+{
+  if ( QApplication::clipboard()->text().isEmpty() )
+    return false;
+
+  if ( QMessageBox::question( this, tr( "Import Content From Clipboard" ),
+                              tr( "Importing content from clipboard will overwrite current table content. Are you sure?" ) ) != QMessageBox::Yes )
+    return false;
+
+  QgsTableContents contents;
+  const QStringList lines = QApplication::clipboard()->text().split( '\n' );
+  for ( const QString &line : lines )
+  {
+    if ( !line.isEmpty() )
+    {
+      QgsTableRow row;
+      const QStringList cells = line.split( '\t' );
+      for ( const QString &text : cells )
+      {
+        QgsTableCell cell( text );
+        row << cell;
+      }
+      contents << row;
+    }
+  }
+
+  if ( !contents.isEmpty() )
+  {
+    setTableContents( contents );
+    emit tableChanged();
+    return true;
+  }
+
+  return false;
 }
 
 void QgsTableEditorDialog::setTableContents( const QgsTableContents &contents )

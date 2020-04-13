@@ -10,6 +10,7 @@
 
 
 
+
 class QgsDatabaseSchemaComboBox : QWidget
 {
 %Docstring
@@ -43,6 +44,20 @@ Constructor for QgsDatabaseSchemaComboBox, for the specified ``provider`` and ``
 Constructor for QgsDatabaseSchemaComboBox, for the specified ``connection``.
 
 Ownership of ``connection`` is transferred to the combobox.
+%End
+
+    void setAllowEmptySchema( bool allowEmpty );
+%Docstring
+Sets whether an optional empty schema ("not set") option is present in the combobox.
+
+.. seealso:: :py:func:`allowEmptySchema`
+%End
+
+    bool allowEmptySchema() const;
+%Docstring
+Returns ``True`` if the combobox allows the empty schema ("not set") choice.
+
+.. seealso:: :py:func:`setAllowEmptySchema`
 %End
 
     QString currentSchema() const;

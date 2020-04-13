@@ -179,6 +179,39 @@ void QgsGeoPackageProviderConnection::vacuum( const QString &schema, const QStri
   executeGdalSqlPrivate( QStringLiteral( "VACUUM" ) );
 }
 
+void QgsGeoPackageProviderConnection::createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options ) const
+{
+  checkCapability( Capability::CreateSpatialIndex );
+  if ( ! schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+  }
+  executeGdalSqlPrivate( QStringLiteral( "SELECT CreateSpatialIndex(%1, %2)" ).arg( QgsSqliteUtils::quotedString( name ),
+                         QgsSqliteUtils::quotedString( ( options.geometryColumnName ) ) ) );
+}
+
+bool QgsGeoPackageProviderConnection::spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const
+{
+  checkCapability( Capability::CreateSpatialIndex );
+  if ( ! schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+  }
+  const QList<QVariantList> res = executeGdalSqlPrivate( QStringLiteral( "SELECT HasSpatialIndex(%1, %2)" ).arg( QgsSqliteUtils::quotedString( name ),
+                                  QgsSqliteUtils::quotedString( geometryColumn ) ) );
+  return !res.isEmpty() && !res.at( 0 ).isEmpty() && res.at( 0 ).at( 0 ).toBool();
+}
+
+void QgsGeoPackageProviderConnection::deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const
+{
+  checkCapability( Capability::DeleteSpatialIndex );
+  if ( ! schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+  }
+  executeGdalSqlPrivate( QStringLiteral( "SELECT DisableSpatialIndex(%1, %2)" ).arg( QgsSqliteUtils::quotedString( name ),
+                         QgsSqliteUtils::quotedString( geometryColumn ) ) );
+}
 
 QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
 {
@@ -280,6 +313,9 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
     Capability::Spatial,
     Capability::TableExists,
     Capability::ExecuteSql,
+    Capability::CreateSpatialIndex,
+    Capability::SpatialIndexExists,
+    Capability::DeleteSpatialIndex
   };
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
   mCapabilities |= Capability::DropRasterTable;

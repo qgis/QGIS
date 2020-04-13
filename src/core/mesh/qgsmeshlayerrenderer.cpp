@@ -38,6 +38,7 @@
 #include "qgsfillsymbollayer.h"
 #include "qgssettings.h"
 #include "qgsstyle.h"
+#include "qgsmeshdataprovidertemporalcapabilities.h"
 
 QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   QgsMeshLayer *layer,
@@ -102,11 +103,15 @@ void QgsMeshLayerRenderer::calculateOutputSize()
 
 void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
 {
-  const QgsMeshDatasetIndex datasetIndex = mRendererSettings.activeScalarDataset();
+  QgsMeshDatasetIndex datasetIndex;
+  if ( renderContext()->isTemporal() )
+    datasetIndex = layer->activeScalarDatasetAtTime( renderContext()->temporalRange() );
+  else
+    datasetIndex = layer->staticScalarDatasetIndex();
 
   // Find out if we can use cache up to date. If yes, use it and return
   const int datasetGroupCount = layer->dataProvider()->datasetGroupCount();
-  const QgsMeshRendererScalarSettings::DataInterpolationMethod method = mRendererSettings.scalarSettings( datasetIndex.group() ).dataInterpolationMethod();
+  const QgsMeshRendererScalarSettings::DataResamplingMethod method = mRendererSettings.scalarSettings( datasetIndex.group() ).dataResamplingMethod();
   QgsMeshLayerRendererCache *cache = layer->rendererCache();
   if ( ( cache->mDatasetGroupsCount == datasetGroupCount ) &&
        ( cache->mActiveScalarDatasetIndex == datasetIndex ) &&
@@ -125,7 +130,7 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
   // Cache is not up-to-date, gather data
   if ( datasetIndex.isValid() )
   {
-    const QgsMeshDatasetGroupMetadata metadata = layer->dataProvider()->datasetGroupMetadata( datasetIndex );
+    const QgsMeshDatasetGroupMetadata metadata = layer->dataProvider()->datasetGroupMetadata( datasetIndex.group() );
     mScalarDataType = QgsMeshLayerUtils::datasetValuesType( metadata.dataType() );
 
     // populate scalar values
@@ -153,16 +158,31 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
                                     mNativeMesh.faces.count() );
 
     // for data on faces, there could be request to interpolate the data to vertices
-    if ( ( mScalarDataType == QgsMeshDatasetGroupMetadata::DataType::DataOnFaces ) && ( method != QgsMeshRendererScalarSettings::None ) )
+    if ( method != QgsMeshRendererScalarSettings::None )
     {
-      mScalarDataType = QgsMeshDatasetGroupMetadata::DataType::DataOnVertices;
-      mScalarDatasetValues = QgsMeshLayerUtils::interpolateFromFacesData(
-                               mScalarDatasetValues,
-                               &mNativeMesh,
-                               &mTriangularMesh,
-                               &mScalarActiveFaceFlagValues,
-                               method
-                             );
+      if ( mScalarDataType == QgsMeshDatasetGroupMetadata::DataType::DataOnFaces )
+      {
+        mScalarDataType = QgsMeshDatasetGroupMetadata::DataType::DataOnVertices;
+        mScalarDatasetValues = QgsMeshLayerUtils::interpolateFromFacesData(
+                                 mScalarDatasetValues,
+                                 &mNativeMesh,
+                                 &mTriangularMesh,
+                                 &mScalarActiveFaceFlagValues,
+                                 method
+                               );
+      }
+      else if ( mScalarDataType == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices )
+      {
+        mScalarDataType = QgsMeshDatasetGroupMetadata::DataType::DataOnFaces;
+        mScalarDatasetValues = QgsMeshLayerUtils::resampleFromVerticesToFaces(
+                                 mScalarDatasetValues,
+                                 &mNativeMesh,
+                                 &mTriangularMesh,
+                                 &mScalarActiveFaceFlagValues,
+                                 method
+                               );
+      }
+
     }
 
     const QgsMeshDatasetMetadata datasetMetadata = layer->dataProvider()->datasetMetadata( datasetIndex );
@@ -182,9 +202,14 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
   cache->mScalarAveragingMethod.reset( mRendererSettings.averagingMethod() ? mRendererSettings.averagingMethod()->clone() : nullptr );
 }
 
+
 void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
 {
-  const QgsMeshDatasetIndex datasetIndex = mRendererSettings.activeVectorDataset();
+  QgsMeshDatasetIndex datasetIndex;
+  if ( renderContext()->isTemporal() )
+    datasetIndex = layer->activeVectorDatasetAtTime( renderContext()->temporalRange() );
+  else
+    datasetIndex = layer->staticVectorDatasetIndex();
 
   // Find out if we can use cache up to date. If yes, use it and return
   const int datasetGroupCount = layer->dataProvider()->datasetGroupCount();
@@ -409,11 +434,11 @@ void QgsMeshLayerRenderer::renderScalarDataset()
   if ( std::isnan( mScalarDatasetMinimum ) || std::isnan( mScalarDatasetMaximum ) )
     return; // only NODATA values
 
-  QgsMeshDatasetIndex index = mRendererSettings.activeScalarDataset();
-  if ( !index.isValid() )
+  int groupIndex = mRendererSettings.activeScalarDatasetGroup();
+  if ( groupIndex < 0 )
     return; // no shader
 
-  const QgsMeshRendererScalarSettings scalarSettings = mRendererSettings.scalarSettings( index.group() );
+  const QgsMeshRendererScalarSettings scalarSettings = mRendererSettings.scalarSettings( groupIndex );
 
   if ( ( mTriangularMesh.contains( QgsMesh::ElementType::Face ) ) &&
        ( mScalarDataType != QgsMeshDatasetGroupMetadata::DataType::DataOnEdges ) )
@@ -625,8 +650,8 @@ void QgsMeshLayerRenderer::renderScalarDatasetOnFaces( const QgsMeshRendererScal
 
 void QgsMeshLayerRenderer::renderVectorDataset()
 {
-  QgsMeshDatasetIndex index = mRendererSettings.activeVectorDataset();
-  if ( !index.isValid() )
+  int groupIndex = mRendererSettings.activeVectorDatasetGroup();
+  if ( groupIndex < 0 )
     return;
 
   if ( !mVectorDatasetValues.isValid() )
@@ -643,7 +668,7 @@ void QgsMeshLayerRenderer::renderVectorDataset()
         mVectorDatasetMagMaximum,
         mVectorDatasetMagMinimum,
         mVectorDataType,
-        mRendererSettings.vectorSettings( index.group() ),
+        mRendererSettings.vectorSettings( groupIndex ),
         *renderContext(),
         mLayerExtent,
         mOutputSize ) );

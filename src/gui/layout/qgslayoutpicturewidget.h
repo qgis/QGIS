@@ -43,16 +43,8 @@ class GUI_EXPORT QgsLayoutPictureWidget: public QgsLayoutItemBaseWidget, private
     explicit QgsLayoutPictureWidget( QgsLayoutItemPicture *picture );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
-    //! Add the icons of the standard directories to the preview
-    void addStandardDirectoriesToPreview();
-
   private slots:
-    void mPictureBrowseButton_clicked();
-    void mPictureLineEdit_editingFinished();
     void mPictureRotationSpinBox_valueChanged( double d );
-    void mPreviewListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
-    void mAddDirectoryButton_clicked();
-    void mRemoveDirectoryButton_clicked();
     void mRotationFromComposerMapCheckBox_stateChanged( int state );
     void mapChanged( QgsLayoutItem *item );
     void mResizeModeComboBox_currentIndexChanged( int index );
@@ -61,8 +53,6 @@ class GUI_EXPORT QgsLayoutPictureWidget: public QgsLayoutItemBaseWidget, private
   protected:
 
     bool setNewItem( QgsLayoutItem *item ) override;
-
-    void resizeEvent( QResizeEvent *event ) override;
 
   protected slots:
     //! Initializes data defined buttons to current atlas coverage layer
@@ -75,35 +65,24 @@ class GUI_EXPORT QgsLayoutPictureWidget: public QgsLayoutItemBaseWidget, private
     //! Sets the picture rotation GUI control value
     void setPicRotationSpinValue( double r );
 
-    /**
-     * Load SVG and pixel-based image previews
-     * \param collapsed Whether the parent group box is collapsed */
-    void loadPicturePreviews( bool collapsed );
-
     void mFillColorButton_colorChanged( const QColor &color );
     void mStrokeColorButton_colorChanged( const QColor &color );
     void mStrokeWidthSpinBox_valueChanged( double d );
     void mPictureRotationOffsetSpinBox_valueChanged( double d );
     void mNorthTypeComboBox_currentIndexChanged( int index );
+    void modeChanged();
+    void updatePictureTypeWidgets();
 
+    void populateList();
+    void populateIcons( const QModelIndex &idx );
+    void setSvgName( const QModelIndex &idx );
+    void svgSourceChanged( const QString &source );
+    void rasterSourceChanged( const QString &source );
   private:
     QPointer< QgsLayoutItemPicture > mPicture;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
-
-
-    //! Whether the picture selection previews have been loaded
-    bool mPreviewsLoaded = false;
-
-    //! Add the icons of a directory to the preview. Returns 0 in case of success
-    int addDirectoryToPreview( const QString &path );
-
-    //! Tests if a file is valid svg
-    bool testSvgFile( const QString &filename ) const;
-    //! Tests if a file is a valid pixel format
-    bool testImageFile( const QString &filename ) const;
-
-    //! Renders an svg file to a QIcon, correctly handling any SVG parameters present in the file
-    QIcon svgToIcon( const QString &filePath ) const;
+    int mIconSize = 30;
+    int mBlockSvgModelChanges = 0;
 
     void updateSvgParamGui( bool resetValues = true );
 };

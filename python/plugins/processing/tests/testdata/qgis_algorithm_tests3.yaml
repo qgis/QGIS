@@ -588,6 +588,38 @@ tests:
         type: vector
         name: randompointsinextent.gml
 
+  - algorithm: native:randompointsonlines
+    name: Random points on lines, seed 1, multilines - one empty geom
+    params:
+      INCLUDE_LINE_ATTRIBUTES: false
+      INPUT:
+        name: multilines.gml|layername=multilines
+        type: vector
+      MAX_TRIES_PER_POINT: 10
+      MIN_DISTANCE: 0.0
+      POINTS_NUMBER: 10
+      SEED: 1
+    results:
+      OUTPUT:
+        name: expected/randompointsonlines.gml
+        type: vector
+
+  - algorithm: native:randompointsonlines
+    name: Random points on lines, min distance 1, seed 1, attributes, multilines - one empty geom
+    params:
+      INCLUDE_LINE_ATTRIBUTES: true
+      INPUT:
+        name: multilines.gml|layername=multilines
+        type: vector
+      MAX_TRIES_PER_POINT: 10
+      MIN_DISTANCE: 1.0
+      POINTS_NUMBER: 10
+      SEED: 1
+    results:
+      OUTPUT:
+        name: expected/randompointsonlines_min1.gml
+        type: vector
+
   - algorithm: native:randomextract
     name: Random extract by number
     params:

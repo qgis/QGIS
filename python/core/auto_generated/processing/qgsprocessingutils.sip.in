@@ -92,6 +92,28 @@ value.
 .. seealso:: :py:func:`compatibleVectorLayers`
 %End
 
+    static QString encodeProviderKeyAndUri( const QString &providerKey, const QString &uri );
+%Docstring
+Encodes a provider key and layer ``uri`` to a single string, for use with
+decodeProviderKeyAndUri()
+
+.. versionadded:: 3.14
+%End
+
+    static bool decodeProviderKeyAndUri( const QString &string, QString &providerKey /Out/, QString &uri /Out/ );
+%Docstring
+Decodes a provider key and layer ``uri`` from an encoded string, for use with
+encodeProviderKeyAndUri()
+
+:param string: encoded string, as returned by encodeProviderKeyAndUri()
+:param uri: decoded layer uri
+
+:return: - ``True`` if ``string`` was successfully decoded
+         - providerKey: ID key for corresponding data provider
+
+.. versionadded:: 3.14
+%End
+
     enum class LayerHint
     {
       UnknownType,
@@ -241,7 +263,7 @@ a specified ``algorithm``.
         const QStringList &compatibleFormats,
         const QString &preferredFormat,
         QgsProcessingContext &context,
-        QgsProcessingFeedback *feedback );
+        QgsProcessingFeedback *feedback, long long featureLimit = -1 );
 %Docstring
 Converts a source vector ``layer`` to a file path of a vector layer of compatible format.
 
@@ -253,6 +275,8 @@ in a temporary location using ``baseName``. The function will then return the pa
 
 The ``preferredFormat`` argument is used to specify to desired file extension to use when a temporary
 layer export is required. This defaults to shapefiles.
+
+The ``featureLimit`` argument can be used to specify a limit on the number of features read from the layer.
 
 When an algorithm is capable of handling multi-layer input files (such as Geopackage), it is preferable
 to use convertToCompatibleFormatAndLayerName() which may avoid conversion in more situations.
@@ -267,7 +291,7 @@ to use convertToCompatibleFormatAndLayerName() which may avoid conversion in mor
         const QString &preferredFormat,
         QgsProcessingContext &context,
         QgsProcessingFeedback *feedback,
-        QString &layerName /Out/ );
+        QString &layerName /Out/, long long featureLimit = -1 );
 %Docstring
 Converts a source vector ``layer`` to a file path and layer name of a vector layer of compatible format.
 
@@ -276,6 +300,8 @@ If the specified ``layer`` is not of the format listed in the
 in a temporary location using ``baseName``. The function will then return the path to that temporary file.
 
 ``compatibleFormats`` should consist entirely of lowercase file extensions, e.g. 'shp'.
+
+The ``featureLimit`` argument can be used to specify a limit on the number of features read from the layer.
 
 The ``preferredFormat`` argument is used to specify to desired file extension to use when a temporary
 layer export is required. This defaults to shapefiles.
@@ -291,6 +317,7 @@ a conversion in this case and will return the target layer name in the ``layerNa
 :param preferredFormat: preferred format extension to use if conversion if required
 :param context: processing context
 :param feedback: feedback object
+:param featureLimit: can be used to place a limit on the maximum number of features read from the layer
 
 :return: - path to source layer, or nearly converted compatible layer
          - layerName: will be set to the target layer name for multi-layer sources (e.g. Geopackage)
@@ -379,13 +406,17 @@ results according to the settings in a :py:class:`QgsProcessingContext`.
     typedef QFlags<QgsProcessingFeatureSource::Flag> Flags;
 
 
-    QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false );
+    QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false,
+                                long long featureLimit = -1 );
 %Docstring
 Constructor for QgsProcessingFeatureSource, accepting an original feature source ``originalSource``
 and processing ``context``.
 Ownership of ``originalSource`` is dictated by ``ownsOriginalSource``. If ``ownsOriginalSource`` is ``False``,
 ownership is not transferred, and callers must ensure that ``originalSource`` exists for the lifetime of this object.
 If ``ownsOriginalSource`` is ``True``, then this object will take ownership of ``originalSource``.
+
+If ``featureLimit`` is set to a value > 0, then a limit is placed on the maximum number of features which will be
+read from the source.
 %End
 
     ~QgsProcessingFeatureSource();
@@ -428,6 +459,13 @@ iterator, eg by restricting the returned attributes or geometry.
     QgsExpressionContextScope *createExpressionContextScope() const /Factory/;
 %Docstring
 Returns an expression context scope suitable for this source.
+%End
+
+    void setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck method );
+%Docstring
+Overrides the default geometry check method for the source.
+
+.. versionadded:: 3.14
 %End
 
 };

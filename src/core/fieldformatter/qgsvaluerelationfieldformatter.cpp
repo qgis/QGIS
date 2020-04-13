@@ -140,25 +140,32 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
   QgsFeatureRequest request;
 
   request.setFlags( QgsFeatureRequest::NoGeometry );
-  request.setSubsetOfAttributes( QgsAttributeList() << ki << vi );
+  QgsAttributeIds subsetOfAttributes { ki, vi };
 
-  const QString expression = config.value( QStringLiteral( "FilterExpression" ) ).toString();
+  const QString descriptionExpressionString = config.value( "Description" ).toString();
+  QgsExpression descriptionExpression( descriptionExpressionString );
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+  descriptionExpression.prepare( &context );
+  subsetOfAttributes += descriptionExpression.referencedAttributeIndexes( layer->fields() );
+  request.setSubsetOfAttributes( subsetOfAttributes.toList() );
+
+  const QString filterExpression = config.value( QStringLiteral( "FilterExpression" ) ).toString();
 
   // Skip the filter and build a full cache if the form scope is required and the feature
   // is not valid or the attributes required for the filter have no valid value
   // Note: parent form scope is not checked for usability because it's supposed to
   //       be used into a coalesce that retrieve the current value of the parent
   //       from the parent layer when used outside of an embedded form
-  if ( ! expression.isEmpty() && ( !( expressionRequiresFormScope( expression ) )
-                                   || expressionIsUsable( expression, formFeature ) ) )
+  if ( ! filterExpression.isEmpty() && ( !( expressionRequiresFormScope( filterExpression ) )
+                                         || expressionIsUsable( filterExpression, formFeature ) ) )
   {
-    QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
-    if ( formFeature.isValid( ) && QgsValueRelationFieldFormatter::expressionRequiresFormScope( expression ) )
-      context.appendScope( QgsExpressionContextUtils::formScope( formFeature ) );
-    if ( parentFormFeature.isValid() && QgsValueRelationFieldFormatter::expressionRequiresParentFormScope( expression ) )
-      context.appendScope( QgsExpressionContextUtils::parentFormScope( parentFormFeature ) );
-    request.setExpressionContext( context );
-    request.setFilterExpression( expression );
+    QgsExpressionContext filterContext = context;
+    if ( formFeature.isValid( ) && QgsValueRelationFieldFormatter::expressionRequiresFormScope( filterExpression ) )
+      filterContext.appendScope( QgsExpressionContextUtils::formScope( formFeature ) );
+    if ( parentFormFeature.isValid() && QgsValueRelationFieldFormatter::expressionRequiresParentFormScope( filterExpression ) )
+      filterContext.appendScope( QgsExpressionContextUtils::parentFormScope( parentFormFeature ) );
+    request.setExpressionContext( filterContext );
+    request.setFilterExpression( filterExpression );
   }
 
   QgsFeatureIterator fit = layer->getFeatures( request );
@@ -166,7 +173,13 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
-    cache.append( ValueRelationItem( f.attribute( ki ), f.attribute( vi ).toString() ) );
+    QString description;
+    if ( descriptionExpression.isValid() )
+    {
+      context.setFeature( f );
+      description = descriptionExpression.evaluate( &context ).toString();
+    }
+    cache.append( ValueRelationItem( f.attribute( ki ), f.attribute( vi ).toString(), description ) );
   }
 
   if ( config.value( QStringLiteral( "OrderByValue" ) ).toBool() )

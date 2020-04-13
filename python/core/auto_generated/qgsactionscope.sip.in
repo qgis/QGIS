@@ -36,6 +36,9 @@ form.</dd>
 #include "qgsactionscope.h"
 %End
   public:
+%TypeCode
+#include <QHash>
+%End
 
     explicit QgsActionScope();
 %Docstring
@@ -109,6 +112,10 @@ in here, they are extracted automatically from the expressionContextScope().
 Returns if this scope is valid.
 
 .. versionadded:: 3.0
+%End
+    long __hash__();
+%MethodCode
+    sipRes = qHash( *sipCpp );
 %End
 
 };

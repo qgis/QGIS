@@ -24,7 +24,6 @@
 #include "qgslayertree.h"
 #include "qgsfeedback.h"
 #include "qgisapp.h"
-#include "qgsstringutils.h"
 #include "qgsmaplayermodel.h"
 #include "qgslayoutmanager.h"
 #include "qgsmapcanvas.h"
@@ -48,15 +47,26 @@ void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLo
   const QList<QgsLayerTreeLayer *> layers = tree->findLayers();
   for ( QgsLayerTreeLayer *layer : layers )
   {
-    if ( layer->layer() && ( stringMatches( layer->layer()->name(), string ) || ( context.usingPrefix && string.isEmpty() ) ) )
+    // if the layer is broken, don't include it in the results
+    if ( ! layer->layer() )
+      continue;
+
+    QgsLocatorResult result;
+    result.displayString = layer->layer()->name();
+    result.userData = layer->layerId();
+    result.icon = QgsMapLayerModel::iconForLayer( layer->layer() );
+
+    // return all the layers in case the string query is empty using an equal default score
+    if ( context.usingPrefix && string.isEmpty() )
     {
-      QgsLocatorResult result;
-      result.displayString = layer->layer()->name();
-      result.userData = layer->layerId();
-      result.icon = QgsMapLayerModel::iconForLayer( layer->layer() );
-      result.score = static_cast< double >( string.length() ) / layer->layer()->name().length();
       emit resultFetched( result );
+      continue;
     }
+
+    result.score = fuzzyScore( result.displayString, string );
+
+    if ( result.score > 0 )
+      emit resultFetched( result );
   }
 }
 
@@ -85,15 +95,24 @@ void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocat
   const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts();
   for ( QgsMasterLayoutInterface *layout : layouts )
   {
-    if ( layout && ( stringMatches( layout->name(), string ) || ( context.usingPrefix && string.isEmpty() ) ) )
+    // if the layout is broken, don't include it in the results
+    if ( ! layout )
+      continue;
+
+    QgsLocatorResult result;
+    result.displayString = layout->name();
+    result.userData = layout->name();
+
+    if ( context.usingPrefix && string.isEmpty() )
     {
-      QgsLocatorResult result;
-      result.displayString = layout->name();
-      result.userData = layout->name();
-      //result.icon = QgsMapLayerModel::iconForLayer( layer->layer() );
-      result.score = static_cast< double >( string.length() ) / layout->name().length();
       emit resultFetched( result );
+      continue;
     }
+
+    result.score = fuzzyScore( result.displayString, string );
+
+    if ( result.score > 0 )
+      emit resultFetched( result );
   }
 }
 
@@ -106,9 +125,6 @@ void QgsLayoutLocatorFilter::triggerResult( const QgsLocatorResult &result )
 
   QgisApp::instance()->openLayoutDesignerDialog( layout );
 }
-
-
-
 
 QgsActionLocatorFilter::QgsActionLocatorFilter( const QList<QWidget *> &parentObjectsForActions, QObject *parent )
   : QgsLocatorFilter( parent )
@@ -131,7 +147,7 @@ void QgsActionLocatorFilter::fetchResults( const QString &string, const QgsLocat
 
   for ( QWidget *object : qgis::as_const( mActionParents ) )
   {
-    searchActions( string,  object, found );
+    searchActions( string, object, found );
   }
 }
 
@@ -191,15 +207,16 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
       searchText += QStringLiteral( " (%1)" ).arg( tooltip.trimmed() );
     }
 
-    if ( stringMatches( searchText, string ) )
+    QgsLocatorResult result;
+    result.displayString = searchText;
+    result.userData = QVariant::fromValue( action );
+    result.icon = action->icon();
+    result.score = fuzzyScore( result.displayString, string );
+
+    if ( result.score > 0 )
     {
-      QgsLocatorResult result;
-      result.displayString = searchText;
-      result.userData = QVariant::fromValue( action );
-      result.icon = action->icon();
-      result.score = static_cast< double >( string.length() ) / searchText.length();
-      emit resultFetched( result );
       found << action;
+      emit resultFetched( result );
     }
   }
 }
@@ -369,7 +386,12 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
     enhancedSearch.replace( ' ', '%' );
     req.setFilterExpression( QStringLiteral( "%1 ILIKE '%%2%'" )
                              .arg( layer->displayExpression(), enhancedSearch ) );
-    req.setLimit( 30 );
+    req.setLimit( 6 );
+
+    QgsFeatureRequest exactMatchRequest = req;
+    exactMatchRequest.setFilterExpression( QStringLiteral( "%1 ILIKE '%2'" )
+                                           .arg( layer->displayExpression(), enhancedSearch ) );
+    exactMatchRequest.setLimit( 10 );
 
     std::shared_ptr<PreparedLayer> preparedLayer( new PreparedLayer() );
     preparedLayer->expression = expression;
@@ -378,6 +400,7 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
     preparedLayer->layerName = layer->name();
     preparedLayer->featureSource.reset( new QgsVectorLayerFeatureSource( layer ) );
     preparedLayer->request = req;
+    preparedLayer->exactMatchRequest = exactMatchRequest;
     preparedLayer->layerIcon = QgsMapLayerModel::iconForLayer( layer );
 
     mPreparedLayers.append( preparedLayer );
@@ -394,11 +417,46 @@ void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, con
   for ( auto preparedLayer : qgis::as_const( mPreparedLayers ) )
   {
     foundInCurrentLayer = 0;
+
+    QgsFeatureIds foundFeatureIds;
+
+    QgsFeatureIterator exactMatchIt = preparedLayer->featureSource->getFeatures( preparedLayer->exactMatchRequest );
+    while ( exactMatchIt.nextFeature( f ) )
+    {
+      if ( feedback->isCanceled() )
+        return;
+
+      QgsLocatorResult result;
+      result.group = preparedLayer->layerName;
+
+      preparedLayer->context.setFeature( f );
+
+      result.displayString = preparedLayer->expression.evaluate( &( preparedLayer->context ) ).toString();
+
+      result.userData = QVariantList() << f.id() << preparedLayer->layerId;
+      foundFeatureIds << f.id();
+      result.icon = preparedLayer->layerIcon;
+      result.score = static_cast< double >( string.length() ) / result.displayString.size();
+
+      result.actions << QgsLocatorResult::ResultAction( OpenForm, tr( "Open form…" ) );
+      emit resultFetched( result );
+
+      foundInCurrentLayer++;
+      foundInTotal++;
+      if ( foundInCurrentLayer >= mMaxResultsPerLayer )
+        break;
+    }
+    if ( foundInTotal >= mMaxTotalResults )
+      break;
+
     QgsFeatureIterator it = preparedLayer->featureSource->getFeatures( preparedLayer->request );
     while ( it.nextFeature( f ) )
     {
       if ( feedback->isCanceled() )
         return;
+
+      if ( foundFeatureIds.contains( f.id() ) )
+        continue;
 
       QgsLocatorResult result;
       result.group = preparedLayer->layerName;
@@ -524,30 +582,21 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
   for ( auto optionsPagesIterator = optionsPagesMap.constBegin(); optionsPagesIterator != optionsPagesMap.constEnd(); ++optionsPagesIterator )
   {
     QString title = optionsPagesIterator.key();
-    if ( stringMatches( title, string ) || ( context.usingPrefix && string.isEmpty() ) )
-    {
-      matchingSettingsPagesMap.insert( title + " (" + tr( "Options" ) + ")", settingsPage( QStringLiteral( "optionpage" ), QString::number( optionsPagesIterator.value() ) ) );
-    }
+    matchingSettingsPagesMap.insert( title + " (" + tr( "Options" ) + ")", settingsPage( QStringLiteral( "optionpage" ), QString::number( optionsPagesIterator.value() ) ) );
   }
 
   QMap<QString, QString> projectPropertyPagesMap = QgisApp::instance()->projectPropertiesPagesMap();
   for ( auto projectPropertyPagesIterator = projectPropertyPagesMap.constBegin(); projectPropertyPagesIterator != projectPropertyPagesMap.constEnd(); ++projectPropertyPagesIterator )
   {
     QString title = projectPropertyPagesIterator.key();
-    if ( stringMatches( title, string ) || ( context.usingPrefix && string.isEmpty() ) )
-    {
-      matchingSettingsPagesMap.insert( title + " (" + tr( "Project Properties" ) + ")", settingsPage( QStringLiteral( "projectpropertypage" ), projectPropertyPagesIterator.value() ) );
-    }
+    matchingSettingsPagesMap.insert( title + " (" + tr( "Project Properties" ) + ")", settingsPage( QStringLiteral( "projectpropertypage" ), projectPropertyPagesIterator.value() ) );
   }
 
   QMap<QString, QString> settingPagesMap = QgisApp::instance()->settingPagesMap();
   for ( auto settingPagesIterator = settingPagesMap.constBegin(); settingPagesIterator != settingPagesMap.constEnd(); ++settingPagesIterator )
   {
     QString title = settingPagesIterator.key();
-    if ( stringMatches( title, string ) || ( context.usingPrefix && string.isEmpty() ) )
-    {
-      matchingSettingsPagesMap.insert( title, settingsPage( QStringLiteral( "settingspage" ), settingPagesIterator.value() ) );
-    }
+    matchingSettingsPagesMap.insert( title, settingsPage( QStringLiteral( "settingspage" ), settingPagesIterator.value() ) );
   }
 
   for ( auto matchingSettingsPagesIterator = matchingSettingsPagesMap.constBegin(); matchingSettingsPagesIterator != matchingSettingsPagesMap.constEnd(); ++matchingSettingsPagesIterator )
@@ -558,8 +607,17 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
     result.filter = this;
     result.displayString = title;
     result.userData.setValue( settingsPage );
-    result.score = static_cast< double >( string.length() ) / title.length();
-    emit resultFetched( result );
+
+    if ( context.usingPrefix && string.isEmpty() )
+    {
+      emit resultFetched( result );
+      continue;
+    }
+
+    result.score = fuzzyScore( result.displayString, string );;
+
+    if ( result.score > 0 )
+      emit resultFetched( result );
   }
 }
 
@@ -614,22 +672,28 @@ void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLoc
   while ( i.hasNext() )
   {
     i.next();
+
     if ( feedback->isCanceled() )
       return;
 
     QString name = i.key();
+    QModelIndex index = i.value();
+    QgsLocatorResult result;
+    result.filter = this;
+    result.displayString = name;
+    result.userData = index;
+    result.icon = QgsApplication::getThemeIcon( QStringLiteral( "/mItemBookmark.svg" ) );
 
-    if ( stringMatches( name, string ) || ( context.usingPrefix && string.isEmpty() ) )
+    if ( context.usingPrefix && string.isEmpty() )
     {
-      QModelIndex index = i.value();
-      QgsLocatorResult result;
-      result.filter = this;
-      result.displayString = name;
-      result.userData = index;
-      result.icon = QgsApplication::getThemeIcon( QStringLiteral( "/mItemBookmark.svg" ) );
-      result.score = static_cast< double >( string.length() ) / name.length();
       emit resultFetched( result );
+      continue;
     }
+
+    result.score = fuzzyScore( result.displayString, string );
+
+    if ( result.score > 0 )
+      emit resultFetched( result );
   }
 }
 

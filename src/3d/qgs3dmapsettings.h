@@ -48,7 +48,7 @@ class QDomElement;
  *
  * \since QGIS 3.0
  */
-class _3D_EXPORT Qgs3DMapSettings : public QObject
+class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObject
 {
     Q_OBJECT
   public:

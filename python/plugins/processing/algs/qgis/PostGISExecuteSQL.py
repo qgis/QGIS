@@ -24,10 +24,11 @@ __copyright__ = '(C) 2012, Victor Olaya, Carterix Geomatics'
 from qgis.core import (
     QgsProcessingException,
     QgsProcessingParameterString,
-    QgsProcessingParameterProviderConnection
+    QgsProcessingParameterProviderConnection,
+    QgsProviderRegistry,
+    QgsProviderConnectionException
 )
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools import postgis
 
 
 class PostGISExecuteSQL(QgisAlgorithm):
@@ -64,13 +65,19 @@ class PostGISExecuteSQL(QgisAlgorithm):
         return self.tr('postgis,database').split(',')
 
     def processAlgorithm(self, parameters, context, feedback):
-        connection = self.parameterAsConnectionName(parameters, self.DATABASE, context)
-        db = postgis.GeoDB.from_name(connection)
+        connection_name = self.parameterAsConnectionName(parameters, self.DATABASE, context)
+
+        # resolve connection details to uri
+        try:
+            md = QgsProviderRegistry.instance().providerMetadata('postgres')
+            conn = md.createConnection(connection_name)
+        except QgsProviderConnectionException:
+            raise QgsProcessingException(self.tr('Could not retrieve connection details for {}').format(connection_name))
 
         sql = self.parameterAsString(parameters, self.SQL, context).replace('\n', ' ')
         try:
-            db._exec_sql_and_commit(str(sql))
-        except postgis.DbError as e:
-            raise QgsProcessingException(
-                self.tr('Error executing SQL:\n{0}').format(str(e)))
+            conn.executeSql(sql)
+        except QgsProviderConnectionException as e:
+            raise QgsProcessingException(self.tr('Error executing SQL:\n{0}').format(e))
+
         return {}

@@ -143,8 +143,12 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) override;
     void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) override;
     void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) override;
+    void registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) override;
+    void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) override;
     void registerCustomDropHandler( QgsCustomDropHandler *handler ) override;
     void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) override;
+    void registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) override;
+    void unregisterCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) override;
     void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) override;
     void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) override;
     QMenu *projectMenu() override;
@@ -254,6 +258,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionHideAllLayers() override;
     QAction *actionShowAllLayers() override;
     QAction *actionHideSelectedLayers() override;
+    QAction *actionToggleSelectedLayers() override;
+    QAction *actionToggleSelectedLayersIndependently() override;
     QAction *actionHideDeselectedLayers() override;
     QAction *actionShowSelectedLayers() override;
     QAction *actionManagePlugins() override;

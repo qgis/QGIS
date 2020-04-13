@@ -70,7 +70,7 @@
     <addaction name="separator"/>
     <addaction name="mActionClose"/>
    </widget>
-   <widget class="QMenu" name="menu_View">
+   <widget class="QMenu" name="mMenuView">
     <property name="title">
      <string>&amp;View</string>
     </property>
@@ -80,16 +80,23 @@
     <addaction name="mActionZoomToItems"/>
     <addaction name="separator"/>
     <addaction name="mActionShowComments"/>
+    <addaction name="separator"/>
+    <addaction name="mActionSnappingEnabled"/>
    </widget>
    <widget class="QMenu" name="mMenuEdit">
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <addaction name="mActionSelectAll"/>
+    <addaction name="mActionSnapSelected"/>
+    <addaction name="separator"/>
     <addaction name="mActionDeleteComponents"/>
+    <addaction name="separator"/>
+    <addaction name="mActionAddGroupBox"/>
    </widget>
    <addaction name="menu_Model"/>
    <addaction name="mMenuEdit"/>
-   <addaction name="menu_View"/>
+   <addaction name="mMenuView"/>
   </widget>
   <widget class="QToolBar" name="mToolbar">
    <property name="windowTitle">
@@ -608,6 +615,36 @@
    </property>
    <property name="shortcut">
     <string>Del</string>
+   </property>
+  </action>
+  <action name="mActionSnappingEnabled">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Enable Snapping</string>
+   </property>
+  </action>
+  <action name="mActionSnapSelected">
+   <property name="text">
+    <string>Snap Selected Components to Grid</string>
+   </property>
+  </action>
+  <action name="mActionSelectAll">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectAll.svg</normaloff>:/images/themes/default/mActionSelectAll.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select All</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="mActionAddGroupBox">
+   <property name="text">
+    <string>Add Group Box</string>
    </property>
   </action>
  </widget>

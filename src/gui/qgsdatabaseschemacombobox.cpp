@@ -24,7 +24,8 @@ QgsDatabaseSchemaComboBox::QgsDatabaseSchemaComboBox( const QString &provider, c
   : QWidget( parent )
   , mProvider( provider )
 {
-  mModel = new QgsDatabaseSchemaModel( provider, connection, this );
+  if ( !provider.isEmpty() && !connection.isEmpty() )
+    mModel = new QgsDatabaseSchemaModel( provider, connection, this );
   init();
 }
 
@@ -35,12 +36,27 @@ QgsDatabaseSchemaComboBox::QgsDatabaseSchemaComboBox( QgsAbstractDatabaseProvide
   init();
 }
 
+void QgsDatabaseSchemaComboBox::setAllowEmptySchema( bool allowEmpty )
+{
+  mAllowEmpty = allowEmpty;
+  if ( mModel )
+    mModel->setAllowEmptySchema( mAllowEmpty );
+}
+
+bool QgsDatabaseSchemaComboBox::allowEmptySchema() const
+{
+  return mAllowEmpty;
+}
+
 void QgsDatabaseSchemaComboBox::init()
 {
   mComboBox = new QComboBox();
 
-  mSortModel = new QSortFilterProxyModel( this );
-  mSortModel->setSourceModel( mModel );
+  mSortModel = new QgsDatabaseSchemaComboBoxSortModel( this );
+
+  if ( mModel )
+    mSortModel->setSourceModel( mModel );
+
   mSortModel->setSortRole( Qt::DisplayRole );
   mSortModel->setSortLocaleAware( true );
   mSortModel->setSortCaseSensitivity( Qt::CaseInsensitive );
@@ -74,7 +90,11 @@ void QgsDatabaseSchemaComboBox::setSchema( const QString &schema )
 
   if ( schema.isEmpty() )
   {
-    mComboBox->setCurrentIndex( -1 );
+    if ( mAllowEmpty )
+      mComboBox->setCurrentIndex( 0 );
+    else
+      mComboBox->setCurrentIndex( -1 );
+
     emit schemaChanged( QString() );
     return;
   }
@@ -101,9 +121,20 @@ void QgsDatabaseSchemaComboBox::setConnectionName( const QString &connection, co
 
   const QString oldSchema = currentSchema();
   QgsDatabaseSchemaModel *oldModel = mModel;
-  mModel = new QgsDatabaseSchemaModel( mProvider, connection, this );
-  mSortModel->setSourceModel( mModel );
-  oldModel->deleteLater();
+  if ( !connection.isEmpty() && !mProvider.isEmpty() )
+  {
+    mModel = new QgsDatabaseSchemaModel( mProvider, connection, this );
+    mModel->setAllowEmptySchema( mAllowEmpty );
+    mSortModel->setSourceModel( mModel );
+  }
+  else
+  {
+    mModel = nullptr;
+    mSortModel->setSourceModel( nullptr );
+  }
+  if ( oldModel )
+    oldModel->deleteLater();
+
   if ( currentSchema() != oldSchema )
     setSchema( oldSchema );
 }
@@ -111,7 +142,8 @@ void QgsDatabaseSchemaComboBox::setConnectionName( const QString &connection, co
 void QgsDatabaseSchemaComboBox::refreshSchemas()
 {
   const QString oldSchema = currentSchema();
-  mModel->refresh();
+  if ( mModel )
+    mModel->refresh();
   setSchema( oldSchema );
 }
 
@@ -134,7 +166,7 @@ void QgsDatabaseSchemaComboBox::indexChanged( int i )
 
 void QgsDatabaseSchemaComboBox::rowsChanged()
 {
-  if ( mComboBox->count() == 1 )
+  if ( mComboBox->count() == 1 || ( mAllowEmpty && mComboBox->count() == 2 && mComboBox->currentIndex() == 1 ) )
   {
     //currently selected connection item has changed
     emit schemaChanged( currentSchema() );
@@ -144,3 +176,27 @@ void QgsDatabaseSchemaComboBox::rowsChanged()
     emit schemaChanged( QString() );
   }
 }
+
+
+///@cond PRIVATE
+QgsDatabaseSchemaComboBoxSortModel::QgsDatabaseSchemaComboBoxSortModel( QObject *parent )
+  : QSortFilterProxyModel( parent )
+{
+
+}
+
+bool QgsDatabaseSchemaComboBoxSortModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
+{
+  // empty row is always first
+  if ( sourceModel()->data( left, QgsDatabaseSchemaModel::RoleEmpty ).toBool() )
+    return true;
+  else if ( sourceModel()->data( right, QgsDatabaseSchemaModel::RoleEmpty ).toBool() )
+    return false;
+
+  // default mode is alphabetical order
+  QString leftStr = sourceModel()->data( left ).toString();
+  QString rightStr = sourceModel()->data( right ).toString();
+  return QString::localeAwareCompare( leftStr, rightStr ) < 0;
+}
+
+///@endcond

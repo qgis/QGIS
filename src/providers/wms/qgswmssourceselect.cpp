@@ -277,6 +277,7 @@ void QgsWMSSourceSelect::clear()
 bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabilities )
 {
   const QVector<QgsWmsLayerProperty> layers = capabilities.supportedLayers();
+  mLayerProperties = layers;
 
   bool first = true;
   QSet<QString> alreadyAddedLabels;
@@ -515,6 +516,8 @@ void QgsWMSSourceSelect::addButtonClicked()
     collectSelectedLayers( layers, styles, titles );
     crs = mCRS;
     format = mFormats[ mImageFormatGroup->checkedId()].format;
+
+    collectDimensions( layers, uri );
   }
   else
   {
@@ -1017,6 +1020,39 @@ void QgsWMSSourceSelect::collectSelectedLayers( QStringList &layers, QStringList
     layers << mLayerOrderTreeWidget->topLevelItem( i )->text( 0 );
     styles << mLayerOrderTreeWidget->topLevelItem( i )->text( 1 );
     titles << mLayerOrderTreeWidget->topLevelItem( i )->text( 2 );
+  }
+}
+
+void QgsWMSSourceSelect::collectDimensions( QStringList &layers, QgsDataSourceUri &uri )
+{
+  for ( const QgsWmsLayerProperty layerProperty : mLayerProperties )
+  {
+    if ( layerProperty.name == layers.join( ',' ) )
+    {
+      // Check for layer dimensions
+      for ( const QgsWmsDimensionProperty &dimension : qgis::as_const( layerProperty.dimensions ) )
+      {
+        // add temporal dimensions only
+        if ( dimension.name == QLatin1String( "time" ) ||
+             dimension.name == QLatin1String( "reference_time" ) )
+        {
+          QString name = dimension.name == QLatin1String( "time" ) ?
+                         QStringLiteral( "timeDimensionExtent" ) : QStringLiteral( "referenceTimeDimensionExtent" );
+
+          if ( !( uri.param( QLatin1String( "type" ) ) == QLatin1String( "wmst" ) ) )
+            uri.setParam( QLatin1String( "type" ), QLatin1String( "wmst" ) );
+          uri.setParam( name, dimension.extent );
+        }
+      }
+
+      // WMS-T defaults settings
+      if ( uri.param( QLatin1String( "type" ) ) == QLatin1String( "wmst" ) )
+      {
+        uri.setParam( QLatin1String( "temporalSource" ), QLatin1String( "provider" ) );
+        uri.setParam( QLatin1String( "enableTime" ), QLatin1String( "yes" ) );
+      }
+
+    }
   }
 }
 
