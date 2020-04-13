@@ -829,22 +829,6 @@ namespace QgsWms
 
     QDomElement layerParentElem = doc.createElement( QStringLiteral( "Layer" ) );
 
-    if ( !project->title().isEmpty() )
-    {
-      // Root Layer title
-      QDomElement layerParentTitleElem = doc.createElement( QStringLiteral( "Title" ) );
-      QDomText layerParentTitleText = doc.createTextNode( project->title() );
-      layerParentTitleElem.appendChild( layerParentTitleText );
-      layerParentElem.appendChild( layerParentTitleElem );
-
-      // Root Layer abstract
-      QDomElement layerParentAbstElem = doc.createElement( QStringLiteral( "Abstract" ) );
-      QDomText layerParentAbstText = doc.createTextNode( project->title() );
-      layerParentAbstElem.appendChild( layerParentAbstText );
-      layerParentElem.appendChild( layerParentAbstElem );
-    }
-
-    /*
     // Root Layer name
     QString rootLayerName = QgsServerProjectUtils::wmsRootName( *project );
     if ( rootLayerName.isEmpty() && !project->title().isEmpty() )
@@ -860,9 +844,23 @@ namespace QgsWms
       layerParentElem.appendChild( layerParentNameElem );
     }
 
+    if ( !project->title().isEmpty() )
+    {
+      // Root Layer title
+      QDomElement layerParentTitleElem = doc.createElement( QStringLiteral( "Title" ) );
+      QDomText layerParentTitleText = doc.createTextNode( project->title() );
+      layerParentTitleElem.appendChild( layerParentTitleText );
+      layerParentElem.appendChild( layerParentTitleElem );
+
+      // Root Layer abstract
+      QDomElement layerParentAbstElem = doc.createElement( QStringLiteral( "Abstract" ) );
+      QDomText layerParentAbstText = doc.createTextNode( project->title() );
+      layerParentAbstElem.appendChild( layerParentAbstText );
+      layerParentElem.appendChild( layerParentAbstElem );
+    }
+
     // Keyword list
     addKeywordListElement( project, doc, layerParentElem );
-    */
 
     // Root Layer tree name
     if ( projectSettings )
@@ -1397,7 +1395,8 @@ namespace QgsWms
       //insert the CRS elements after the title element to be in accordance with the WMS 1.3 specification
       QDomElement titleElement = layerElement.firstChildElement( QStringLiteral( "Title" ) );
       QDomElement abstractElement = layerElement.firstChildElement( QStringLiteral( "Abstract" ) );
-      QDomElement CRSPrecedingElement = abstractElement.isNull() ? titleElement : abstractElement; //last element before the CRS elements
+      QDomElement keywordListElement = layerElement.firstChildElement( QStringLiteral( "KeywordList" ) );
+      QDomElement CRSPrecedingElement = !keywordListElement.isNull() ? keywordListElement : !abstractElement.isNull() ? abstractElement : titleElement;
 
       if ( CRSPrecedingElement.isNull() )
       {
@@ -1435,15 +1434,7 @@ namespace QgsWms
       QDomElement crsElement = doc.createElement( version == QLatin1String( "1.1.1" ) ? "SRS" : "CRS" );
       QDomText crsTextNode = doc.createTextNode( crsText );
       crsElement.appendChild( crsTextNode );
-      if ( !precedingElement.isNull() )
-      {
-        layerElement.insertAfter( crsElement, precedingElement );
-      }
-      else
-      {
-        QDomElement first = layerElement.firstChild().toElement();
-        layerElement.insertBefore( crsElement, first );
-      }
+      layerElement.insertAfter( crsElement, precedingElement );
     }
 
     void appendLayerBoundingBoxes( QDomDocument &doc, QDomElement &layerElem, const QgsRectangle &lExtent,
