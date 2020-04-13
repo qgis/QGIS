@@ -789,6 +789,22 @@ class QgsWmsSettings
     QgsWmstDimensionExtent parseTemporalExtent( QString extent );
 
     /**
+     * Sets the dimension extent property
+     *
+     * \see timeDimensionExtent()
+     * \since 3.14
+     */
+    void setTimeDimensionExtent( QgsWmstDimensionExtent timeDimensionExtent );
+
+    /**
+     * Returns the dimension extent property.
+     *
+     * \see setTimeDimensionExtent()
+     * \since 3.14
+     */
+    QgsWmstDimensionExtent timeDimensionExtent() const;
+
+    /**
      * Parse the given string item into a resolution structure.
      *
      * \since 3.14
@@ -802,8 +818,11 @@ class QgsWmsSettings
      */
     QDateTime parseWmstDateTimes( QString item );
 
-    QList<QDateTime> dateTimesFromExtent( QgsWmstDimensionExtent dimensionExtent );
-
+    /**
+     * Returns the datetime with the sum of passed \a dateTime and the \a resolution time.
+     *
+     * \since 3.14
+     */
     QDateTime addTime( QDateTime dateTime, QgsWmstResolution resolution );
 
     /**
@@ -812,6 +831,7 @@ class QgsWmsSettings
      *
      * \note It works with wms-t capabilities that provide time dimension with temporal ranges only.
      *
+     * \since 3.14
      */
     QDateTime findLeastClosestDateTime( QDateTime dateTime, bool dateOnly = false ) const;
 

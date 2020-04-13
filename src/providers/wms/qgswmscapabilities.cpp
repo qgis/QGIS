@@ -279,38 +279,14 @@ QgsWmstDimensionExtent QgsWmsSettings::parseTemporalExtent( QString extent )
   return dimensionExtent;
 }
 
-QList<QDateTime> QgsWmsSettings::dateTimesFromExtent( QgsWmstDimensionExtent dimensionExtent )
+void QgsWmsSettings::setTimeDimensionExtent( QgsWmstDimensionExtent timeDimensionExtent )
 {
-  QList<QDateTime> dates;
+  mTimeDimensionExtent = timeDimensionExtent;
+}
 
-  for ( QgsWmstExtentPair pair : dimensionExtent.datesResolutionList )
-  {
-    if ( !pair.dates.dateTimes.isEmpty() )
-    {
-      if ( pair.dates.dateTimes.size() < 2 )
-        dates.append( pair.dates.dateTimes.at( 0 ) );
-      else
-      {
-        QDateTime first = QDateTime( pair.dates.dateTimes.at( 0 ) );
-        QDateTime last = QDateTime( pair.dates.dateTimes.at( 1 ) );
-        dates.append( first );
-
-        while ( first < last )
-        {
-          if ( pair.resolution.active() )
-            first = addTime( first, pair.resolution );
-          else
-            break;
-
-          if ( first <= last )
-            dates.append( first );
-        }
-      }
-    }
-  }
-
-  return dates;
-
+QgsWmstDimensionExtent QgsWmsSettings::timeDimensionExtent() const
+{
+  return mTimeDimensionExtent;
 }
 
 QDateTime QgsWmsSettings::addTime( QDateTime dateTime, QgsWmstResolution resolution )
