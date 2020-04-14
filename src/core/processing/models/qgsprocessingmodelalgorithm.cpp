@@ -1130,6 +1130,30 @@ void QgsProcessingModelAlgorithm::setGroup( const QString &group )
   mModelGroup = group;
 }
 
+bool QgsProcessingModelAlgorithm::validate( QStringList &issues ) const
+{
+  issues.clear();
+  bool res = true;
+
+  if ( mChildAlgorithms.empty() )
+  {
+    res = false;
+    issues << QObject::tr( "Model does not contain any algorithms" );
+  }
+
+  for ( auto it = mChildAlgorithms.constBegin(); it != mChildAlgorithms.constEnd(); ++it )
+  {
+    QStringList childIssues;
+    res = validateChildAlgorithm( it->childId(), childIssues ) && res;
+
+    for ( const QString &issue : qgis::as_const( childIssues ) )
+    {
+      issues << QStringLiteral( "<b>%1</b>: %2" ).arg( it->description(), issue );
+    }
+  }
+  return res;
+}
+
 QMap<QString, QgsProcessingModelChildAlgorithm> QgsProcessingModelAlgorithm::childAlgorithms() const
 {
   return mChildAlgorithms;

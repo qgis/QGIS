@@ -9899,18 +9899,28 @@ void TestQgsProcessing::modelAcceptableValues()
 void TestQgsProcessing::modelValidate()
 {
   QgsProcessingModelAlgorithm m;
+  QStringList errors;
+  QVERIFY( !m.validate( errors ) );
+  QCOMPARE( errors.size(), 1 );
+  QCOMPARE( errors.at( 0 ), QStringLiteral( "Model does not contain any algorithms" ) );
+
   QgsProcessingModelParameter stringParam1( "string" );
   m.addModelParameter( new QgsProcessingParameterString( "string" ), stringParam1 );
   QgsProcessingModelChildAlgorithm alg2c1;
   alg2c1.setChildId( "cx1" );
   alg2c1.setAlgorithmId( "native:centroids" );
+  alg2c1.setDescription( QStringLiteral( "centroids" ) );
   m.addChildAlgorithm( alg2c1 );
 
-  QStringList errors;
   QVERIFY( !m.validateChildAlgorithm( QStringLiteral( "cx1" ), errors ) );
   QCOMPARE( errors.size(), 2 );
   QCOMPARE( errors.at( 0 ), QStringLiteral( "Parameter <i>INPUT</i> is mandatory" ) );
   QCOMPARE( errors.at( 1 ), QStringLiteral( "Parameter <i>ALL_PARTS</i> is mandatory" ) );
+
+  QVERIFY( !m.validate( errors ) );
+  QCOMPARE( errors.size(), 2 );
+  QCOMPARE( errors.at( 0 ), QStringLiteral( "<b>centroids</b>: Parameter <i>INPUT</i> is mandatory" ) );
+  QCOMPARE( errors.at( 1 ), QStringLiteral( "<b>centroids</b>: Parameter <i>ALL_PARTS</i> is mandatory" ) );
 
   QgsProcessingModelChildParameterSource badSource;
   badSource.setSource( QgsProcessingModelChildParameterSource::StaticValue );
@@ -9951,6 +9961,9 @@ void TestQgsProcessing::modelValidate()
   m.childAlgorithm( QStringLiteral( "cx1" ) ).addParameterSources( QStringLiteral( "INPUT" ), QList< QgsProcessingModelChildParameterSource >() << goodSource );
 
   QVERIFY( m.validateChildAlgorithm( QStringLiteral( "cx1" ), errors ) );
+  QCOMPARE( errors.size(), 0 );
+
+  QVERIFY( m.validate( errors ) );
   QCOMPARE( errors.size(), 0 );
 }
 
