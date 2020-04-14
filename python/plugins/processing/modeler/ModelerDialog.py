@@ -317,9 +317,16 @@ class ModelerDialog(QgsModelDesignerDialog):
                 output_offset_y += 1.5 * alg.modelOutput(out).size().height()
 
             self.beginUndoCommand(self.tr('Add Algorithm'))
-            self.model().addChildAlgorithm(alg)
+            id = self.model().addChildAlgorithm(alg)
             self.repaintModel()
             self.endUndoCommand()
+
+            res, errors = self.model().validateChildAlgorithm(id)
+            if not res:
+                self.view().scene().showWarning(self.tr('Algorithm “{}” is invalid').format(alg.description()), self.tr('Algorithm is Invalid'), self.tr(
+                    "<p>The “{}” algorithm is invalid, because:</p><ul><li>{}</li></ul>").format(alg.description(), '</li><li>'.join(errors)), level=Qgis.Warning)
+            else:
+                self.view().scene().messageBar().clearWidgets()
 
     def getPositionForAlgorithmItem(self):
         MARGIN = 20
