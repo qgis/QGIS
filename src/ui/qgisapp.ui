@@ -3302,7 +3302,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
   <action name="mActionAddXyzLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddWmsLayer.svg</normaloff>:/images/themes/default/mActionAddWmsLayer.svg</iconset>
+     <normaloff>:/images/themes/default/mActionAddXyzLayer.svg</normaloff>:/images/themes/default/mActionAddXyzLayer.svg</iconset>
    </property>
    <property name="text">
     <string>Add XYZ Layer…</string>
