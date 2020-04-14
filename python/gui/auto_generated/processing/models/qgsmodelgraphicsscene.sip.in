@@ -134,6 +134,25 @@ Sets the results for child algorithms for the last model execution.
 Sets the inputs for child algorithms for the last model execution.
 %End
 
+    QgsMessageBar *messageBar() const;
+%Docstring
+Returns the message bar associated with the scene.
+
+.. seealso:: :py:func:`setMessageBar`
+%End
+
+    void setMessageBar( QgsMessageBar *bar );
+%Docstring
+Sets the message ``bar`` associated with the scene.
+
+.. seealso:: :py:func:`messageBar`
+%End
+
+    void showWarning( const QString &shortMessage, const QString &title, const QString &longMessage, Qgis::MessageLevel level = Qgis::Warning );
+%Docstring
+Shows a warning message, allowing users to click a button to see the full details (``longMessage``).
+%End
+
   signals:
 
     void rebuildRequired();
