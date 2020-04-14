@@ -329,11 +329,11 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
 
   if ( !layer->isInScaleRange( mCanvas->mapSettings().scale() ) )
   {
-    QgsDebugMsg( QStringLiteral( "Out of scale limits" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Out of scale limits" ), 2 );
     return false;
   }
 
-  QApplication::setOverrideCursor( Qt::WaitCursor );
+  QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
 
   QMap< QString, QString > commonDerivedAttributes;
 
@@ -403,14 +403,16 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
           continue;  // failed to decode
 
         QMap<QString, QgsFields> perLayerFields;
-        for ( QString layerName : decoder.layers() )
+        const QStringList layerNames = decoder.layers();
+        for ( const QString &layerName : layerNames )
         {
           QSet<QString> fieldNames = QSet<QString>::fromList( decoder.layerFieldNames( layerName ) );
           perLayerFields[layerName] = QgsVectorTileUtils::makeQgisFields( fieldNames );
         }
 
         const QgsVectorTileFeatures features = decoder.layerFeatures( perLayerFields, QgsCoordinateTransform() );
-        for ( QString layerName : features.keys() )
+        const QStringList featuresLayerNames = features.keys();
+        for ( const QString &layerName : featuresLayerNames )
         {
           const QgsFields fFields = perLayerFields[layerName];
           const QVector<QgsFeature> &layerFeatures = features[layerName];
@@ -438,7 +440,6 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
     QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
   }
 
-  QApplication::restoreOverrideCursor();
   return featureCount > 0;
 }
 
