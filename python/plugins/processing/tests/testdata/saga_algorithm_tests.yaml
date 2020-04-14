@@ -443,13 +443,13 @@ tests:
       THRESHOLD: 0.5
     results:
       BORDERS:
-        hash: d0cd8bdc7c8400bedb2b5c1edc4a64b4c9b7c14692a4f30fbf3c5f2d
+        hash: 5117a4059b360b6400c9af64bab7e556450cbb998b9e182a80e72a82
         type: rasterhash
       SEEDS:
         name: expected/saga/watershed_segmentation_seeds.shp
         type: vector
       SEGMENTS:
-        hash: f2e71e3374eb229d387db8f87bc24d09b86ffc23d9fca85f324b566b
+        hash: 2b2cd9d30d10502fb71be153e0bff3b5364fbce7fe9f68a432745faa
         type: rasterhash
 
   - algorithm: saga:multilevelbsplineinterpolation
@@ -483,7 +483,7 @@ tests:
       UPDATE: false
     results:
       TARGET_OUT_GRID:
-        hash: 6f81c858fc7575eaff6258b6e75bf4427d0568d5134837523b730929
+        hash: 0fda8f8cde9018ac080842c0ed61741dfec1a8038497c01c7bd16524
         type: rasterhash
 
   - algorithm: saga:pointdistances
@@ -512,7 +512,7 @@ tests:
       RESAMPLING: 0
     results:
       COMPLETED:
-        hash: e016ba480e7c9a7cfe7bbbec50f4f3df0e796be7641fe68744f541b5
+        hash: fa2969d9ce8f49a992ffbc61c228ac1e4a165285a6cfea9ef5adf61a
         type: rasterhash
 
 
@@ -554,8 +554,9 @@ tests:
         type: rasterhash
 
   - algorithm: saga:zonalrasterstatistics
-    name: Zonal grid statistics
+    name: Test (saga:zonalrasterstatistics)
     params:
+      SHORTNAMES: true
       ZONES:
         name: custom/dem_boolean.tif
         type: raster
@@ -577,7 +578,7 @@ tests:
       TARGET_USER_SIZE: 0.0005
     results:
       OUTPUT:
-        hash: 1b3a17a724c489ea2eea60b39bc1b9c79778832bd41e982a4e9fb09f
+        hash: 8aad63a6087c80175fabf0b2b123f42042240b465341216fd64875af
         type: rasterhash
 
   - algorithm: saga:resampling
@@ -593,7 +594,7 @@ tests:
       TARGET_USER_SIZE: 5.0e-05
     results:
       OUTPUT:
-        hash: 32008adf7520fee2848d689fcb53d0f8ac862bcd162575b03fefc7f1
+        hash: 1466d6caf4282927bd8798adf8c5d2626db2fb8a48aad1dfe981c42d
         type: rasterhash
 
   - algorithm: saga:resamplingfilter
@@ -605,10 +606,10 @@ tests:
       SCALE: 10.0
     results:
       HIPASS:
-        hash: cf992e69d506924bb59a5fbabd86617e263cb951a61c1b3c0b10012b
+        hash: d3034201722fed18b16fd1c52f4a0e484c44d00daee4fb9ca949d5ed
         type: rasterhash
       LOPASS:
-        hash: f36069a8ceb7ffe839a34f66b82eebacb80143e9df4ed54485bf8293
+        hash: 50efa9d3361174bf161d2fb39f8906d950e8fd610a1bcd4253d9bbd9
         type: rasterhash
 
   - algorithm: saga:fillsinks
@@ -620,7 +621,7 @@ tests:
       MINSLOPE: 0.01
     results:
       RESULT:
-        hash: aa197cdf1b0bac1595bd337bab08ae3cddb82ddb4d06c17b528a1d43
+        hash: 5574e1f36334e1c0aee3f8a3b0ba2ad953e8376873a7d13adee927b1
         type: rasterhash
 
   - algorithm: saga:fillsinksqmofesp
@@ -632,10 +633,10 @@ tests:
       DZFILL: 0.01
     results:
       FILLED:
-        hash: ebd24bb7d011f0c4d87d1e4748e89d90d5a78cfa820070ece87df4d0
+        hash: 826530a4bae9f0dd11caa4f1fb878e37998f5c0029d2f0cb7bf151e8
         type: rasterhash
       SINKS:
-        hash: 83d1936c0421783372573c9dcd04e6415e9db911c5fa254e74c929b0
+        hash: 5069fba5c4b9fb9fc8f6ca0a7a5adcbd738931388e62e43653f11fb4
         type: rasterhash
 
   - algorithm: saga:fillsinkswangliu
@@ -647,13 +648,13 @@ tests:
       MINSLOPE: 0.01
     results:
       FDIR:
-        hash: 24367e9ca83c757628f329029d82341fe9111138e019138c949c34c0
+        hash: 796d2ec424dc2c3b45a538248c9c6373b51d2d36baf5c5bec6b53ca0
         type: rasterhash
       FILLED:
-        hash: aa197cdf1b0bac1595bd337bab08ae3cddb82ddb4d06c17b528a1d43
+        hash: 10aa3f7961764f420a6eaf19718faef69a943364d171e1242f415945
         type: rasterhash
       WSHED:
-        hash: d891f15de1c742986647d619788c7b16a21909bf9c06c70579a4797c
+        hash: c5d3145c5cc6b0c71a3a692d0e91b90078d7bb7f19a67460c2bfb9a3
         type: rasterhash
 
   - algorithm: saga:fillsinksxxlwangliu
@@ -665,7 +666,7 @@ tests:
       MINSLOPE: 0.1
     results:
       FILLED:
-        hash: aa197cdf1b0bac1595bd337bab08ae3cddb82ddb4d06c17b528a1d43
+        hash: 10aa3f7961764f420a6eaf19718faef69a943364d171e1242f415945
         type: rasterhash
 
   - algorithm: saga:svmclassification
@@ -704,7 +705,7 @@ tests:
       SVM_TYPE: 0
     results:
       CLASSES:
-        hash: deeb8769979916ab544a824cd5400d4a4207e7df37fbeaaa6e4830af
+        hash: 977c5ca9eb907f51bbd1e1d7d3a576279c86c68ca4a29951fafa5353
         type: rasterhash
 
   - algorithm: saga:multipleregressionanalysispointsandpredictorgrids

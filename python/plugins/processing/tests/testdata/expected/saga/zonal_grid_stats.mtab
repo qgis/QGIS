@@ -12,11 +12,11 @@
       <OPTION type="boolean" id="SHORTNAMES" name="Short Field Names">TRUE</OPTION>
       <INPUT type="grid" id="ZONES" name="Zone Grid" system="PARAMETERS_GRID_SYSTEM">
         <MODULE library="io_gdal" id="0" name="Import Raster">
-          <OPTION type="file" id="FILES" name="Files">"/home/nyall/dev/QGIS/python/plugins/processing/tests/testdata/custom/dem_boolean.tif"</OPTION>
+          <OPTION type="file" id="FILES" name="Files">"/media/giovanni/DATA/git/naturalgis_qgis/python/plugins/processing/tests/testdata/custom/dem_boolean.tif"</OPTION>
           <OPTION type="text" id="SELECTION" name="Select from Multiple Bands"/>
           <OPTION type="boolean" id="SELECT_SORT" name="Alphanumeric Sorting">TRUE</OPTION>
           <OPTION type="boolean" id="TRANSFORM" name="Transformation">TRUE</OPTION>
-          <OPTION type="choice" id="RESAMPLING" name="Resampling" index="3">B-Spline Interpolation</OPTION>
+          <OPTION type="choice" id="RESAMPLING" name="Resampling" index="0">Nearest Neighbour</OPTION>
           <OUTPUT type="grid_list" id="GRIDS" name="Grids">dem_boolean</OUTPUT>
         </MODULE>
       </INPUT>
@@ -24,7 +24,7 @@
     </MODULE>
   </HISTORY>
   <SOURCE>
-    <FILE>/home/nyall/dev/QGIS/python/plugins/processing/tests/testdata/expected/saga/zonal_grid_stats.dbf</FILE>
+    <FILE>/media/giovanni/DATA/git/naturalgis_qgis/python/plugins/processing/tests/testdata/expected/saga/zonal_grid_stats.dbf</FILE>
     <DATABASE>
       <FIELDS>
         <FIELD TYPE="INTEGER">demboolean</FIELD>
