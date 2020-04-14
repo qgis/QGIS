@@ -99,7 +99,7 @@ tests:
       METHOD: 2
     results:
       GRID_OUT:
-        hash: 57437ebf7eb3667c5aa390598120967b0a2cd5d85751185bb445d1f8
+        hash: 8c1366ffa56ab06d94660af99c52e9850820bd610622d7e638fc8dbb
         type: rasterhash
 
   - algorithm: saga:rastercalculator
@@ -117,7 +117,7 @@ tests:
         type: multi
     results:
       RESULT:
-        hash: 68d805a45416467e0f1be3066dd642772cf8ffdff9535f3254cd5ffb
+        hash: a949190ac1a4a8850bd0ef2630cd85a718d9c952ae5f27ea5c4945b0
         type: rasterhash
 
   - algorithm: saga:rastercalculator
@@ -137,7 +137,7 @@ tests:
         type: multi
     results:
       RESULT:
-        hash: c8c2c7c32ad3eaa1ebb491aed7af7d16f1c7f574a3de1f7622894092
+        hash: 9750532989b04aa147f81bea2384ca8d18bbecac4e2e41a8e57c8309
         type: rasterhash
 
   - algorithm: saga:rastercalculator
