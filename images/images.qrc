@@ -525,6 +525,7 @@
         <file>themes/default/mIconWcs.svg</file>
         <file>themes/default/mIconWfs.svg</file>
         <file>themes/default/mIconWms.svg</file>
+        <file>themes/default/mIconXyz.svg</file>
         <file>themes/default/mIconZip.svg</file>
         <file>themes/default/mIconZoom.svg</file>
         <file>themes/default/mItemBookmark.svg</file>

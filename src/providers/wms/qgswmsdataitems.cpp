@@ -576,7 +576,7 @@ QgsXyzTileRootItem::QgsXyzTileRootItem( QgsDataItem *parent, QString name, QStri
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "WMS" ) )
 {
   mCapabilities |= Fast;
-  mIconName = QStringLiteral( "mIconWms.svg" );
+  mIconName = QStringLiteral( "mIconXyz.svg" );
   populate();
 }
 
@@ -600,6 +600,7 @@ QVector<QgsDataItem *> QgsXyzTileRootItem::createChildren()
 QgsXyzLayerItem::QgsXyzLayerItem( QgsDataItem *parent, QString name, QString path, const QString &encodedUri )
   : QgsLayerItem( parent, name, path, encodedUri, QgsLayerItem::Raster, QStringLiteral( "wms" ) )
 {
+  mIconName = QStringLiteral( "mIconXyz.svg" );
   setState( Populated );
 }
 
