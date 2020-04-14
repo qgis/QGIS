@@ -51,6 +51,10 @@ QGraphicsScene subclass representing the model designer.
 Constructor for QgsModelGraphicsScene with the specified ``parent`` object.
 %End
 
+    QgsProcessingModelAlgorithm *model();
+
+    void setModel( QgsProcessingModelAlgorithm *model );
+
     void setFlags( QgsModelGraphicsScene::Flags flags );
 %Docstring
 Sets the combination of ``flags`` controlling how the scene is rendered and behaves.
@@ -128,6 +132,25 @@ Sets the results for child algorithms for the last model execution.
     void setChildAlgorithmInputs( const QVariantMap &inputs );
 %Docstring
 Sets the inputs for child algorithms for the last model execution.
+%End
+
+    QgsMessageBar *messageBar() const;
+%Docstring
+Returns the message bar associated with the scene.
+
+.. seealso:: :py:func:`setMessageBar`
+%End
+
+    void setMessageBar( QgsMessageBar *bar );
+%Docstring
+Sets the message ``bar`` associated with the scene.
+
+.. seealso:: :py:func:`messageBar`
+%End
+
+    void showWarning( const QString &shortMessage, const QString &title, const QString &longMessage, Qgis::MessageLevel level = Qgis::Warning );
+%Docstring
+Shows a warning message, allowing users to click a button to see the full details (``longMessage``).
 %End
 
   signals:

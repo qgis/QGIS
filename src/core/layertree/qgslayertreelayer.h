@@ -21,6 +21,7 @@
 #include "qgslayertreenode.h"
 #include "qgsmaplayerref.h"
 #include "qgsreadwritecontext.h"
+#include "qgslegendpatchshape.h"
 
 class QgsMapLayer;
 
@@ -142,6 +143,22 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
      */
     QString labelExpression() const { return mLabelExpression; }
 
+    /**
+     * Returns the symbol patch shape to use when rendering the legend node symbol.
+     *
+     * \see setPatchShape()
+     * \since QGIS 3.14
+     */
+    QgsLegendPatchShape patchShape() const;
+
+    /**
+     * Sets the symbol patch \a shape to use when rendering the legend node symbol.
+     *
+     * \see patchShape()
+     * \since QGIS 3.14
+     */
+    void setPatchShape( const QgsLegendPatchShape &shape );
+
   signals:
 
     /**
@@ -191,6 +208,8 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
      */
     QgsLayerTreeLayer( const QgsLayerTreeLayer &other );
 #endif
+
+    QgsLegendPatchShape mPatchShape;
 };
 
 

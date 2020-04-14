@@ -233,11 +233,14 @@ collection's properties multiple times allows precalculation of expensive setup 
 Returns ``True`` if preparation was successful.
 %End
 
-    virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const = 0;
+    virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const = 0;
 %Docstring
 Returns the set of any fields referenced by the active properties from the collection.
 
 :param context: expression context the properties will be evaluated against.
+:param ignoreContext: This parameter has been added in QGIS 3.14. When set to true, even fields not set
+                      in context's fields() will be reported - this is useful e.g. with vector tiles
+                      where the actual available field names may not be known beforehand.
 %End
 
     virtual bool isActive( int key ) const = 0;
@@ -376,7 +379,7 @@ Returns a reference to a matching property from the collection, if one exists.
 
     virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
-    virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
+    virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const;
 
     virtual bool isActive( int key ) const;
 
@@ -538,12 +541,15 @@ Returns the calculated value of the highest priority property with the specified
 :return: calculated property value, or default value if property could not be evaluated
 %End
 
-    virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
+    virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const;
 
 %Docstring
 Returns the set of any fields referenced by the active properties from the stack.
 
 :param context: expression context the properties will be evaluated against.
+:param ignoreContext: This parameter has been added in QGIS 3.14. When set to true, even fields not set
+                      in context's fields() will be reported - this is useful e.g. with vector tiles
+                      where the actual available field names may not be known beforehand.
 %End
     virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 

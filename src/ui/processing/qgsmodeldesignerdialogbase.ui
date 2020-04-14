@@ -58,6 +58,7 @@
      <addaction name="separator"/>
      <addaction name="mActionExportPython"/>
     </widget>
+    <addaction name="mActionValidate"/>
     <addaction name="mActionRun"/>
     <addaction name="separator"/>
     <addaction name="mActionOpen"/>
@@ -645,6 +646,15 @@
   <action name="mActionAddGroupBox">
    <property name="text">
     <string>Add Group Box</string>
+   </property>
+  </action>
+  <action name="mActionValidate">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconSuccess.svg</normaloff>:/images/themes/default/mIconSuccess.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Validate Model</string>
    </property>
   </action>
  </widget>

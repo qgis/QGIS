@@ -20,7 +20,8 @@ RUN make MXE_TARGETS=x86_64-w64-mingw32.shared.posix -j 16 \
     libzip \
     gsl \
     libspatialindex \
-    exiv2
+    exiv2 \
+    protobuf
 
 RUN chmod -R a+rw /mxe/usr/x86_64-w64-mingw32.shared.posix
 

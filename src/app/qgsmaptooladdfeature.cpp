@@ -70,7 +70,9 @@ void QgsMapToolAddFeature::digitized( const QgsFeature &f )
   {
     //add points to other features to keep topology up-to-date
     bool topologicalEditing = QgsProject::instance()->topologicalEditing();
-    if ( mode() == CaptureLine || mode() == CapturePolygon )
+    QgsProject::AvoidIntersectionsMode avoidIntersectionsMode = QgsProject::instance()->avoidIntersectionsMode();
+    if ( topologicalEditing && avoidIntersectionsMode == QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers &&
+         ( mode() == CaptureLine || mode() == CapturePolygon ) )
     {
 
       //use always topological editing for avoidIntersection.

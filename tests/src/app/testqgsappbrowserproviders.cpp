@@ -123,7 +123,7 @@ void TestQgsAppBrowserProviders::testProjectItemCreation()
       QCOMPARE( child->children().at( 5 )->name(), QStringLiteral( "testlayer" ) );
 
       QVERIFY( dynamic_cast< QgsLayerItem * >( child->children().at( 6 ) ) );
-      QCOMPARE( child->children().at( 6 )->name(), QStringLiteral( "testlayer \u00E8\u00E9" ) );
+      QCOMPARE( child->children().at( 6 )->name(), QStringLiteral( u"testlayer \u00E8\u00E9" ) );
 
       delete dirItem;
       return;

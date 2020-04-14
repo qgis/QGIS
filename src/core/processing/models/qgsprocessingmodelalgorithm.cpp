@@ -1130,6 +1130,30 @@ void QgsProcessingModelAlgorithm::setGroup( const QString &group )
   mModelGroup = group;
 }
 
+bool QgsProcessingModelAlgorithm::validate( QStringList &issues ) const
+{
+  issues.clear();
+  bool res = true;
+
+  if ( mChildAlgorithms.empty() )
+  {
+    res = false;
+    issues << QObject::tr( "Model does not contain any algorithms" );
+  }
+
+  for ( auto it = mChildAlgorithms.constBegin(); it != mChildAlgorithms.constEnd(); ++it )
+  {
+    QStringList childIssues;
+    res = validateChildAlgorithm( it->childId(), childIssues ) && res;
+
+    for ( const QString &issue : qgis::as_const( childIssues ) )
+    {
+      issues << QStringLiteral( "<b>%1</b>: %2" ).arg( it->description(), issue );
+    }
+  }
+  return res;
+}
+
 QMap<QString, QgsProcessingModelChildAlgorithm> QgsProcessingModelAlgorithm::childAlgorithms() const
 {
   return mChildAlgorithms;
@@ -1630,6 +1654,87 @@ QSet< QString > QgsProcessingModelAlgorithm::dependsOnChildAlgorithms( const QSt
   algs.remove( childId );
 
   return algs;
+}
+
+bool QgsProcessingModelAlgorithm::validateChildAlgorithm( const QString &childId, QStringList &issues ) const
+{
+  issues.clear();
+  QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constFind( childId );
+  if ( childIt != mChildAlgorithms.constEnd() )
+  {
+    if ( !childIt->algorithm() )
+    {
+      issues << QObject::tr( "Algorithm is not available: <i>%1</i>" ).arg( childIt->algorithmId() );
+      return false;
+    }
+    bool res = true;
+
+    // loop through child algorithm parameters and check that they are all valid
+    const QgsProcessingParameterDefinitions defs = childIt->algorithm()->parameterDefinitions();
+    for ( const QgsProcessingParameterDefinition *def : defs )
+    {
+      if ( childIt->parameterSources().contains( def->name() ) )
+      {
+        // is the value acceptable?
+        const QList< QgsProcessingModelChildParameterSource > sources = childIt->parameterSources().value( def->name() );
+        for ( const QgsProcessingModelChildParameterSource &source : sources )
+        {
+          switch ( source.source() )
+          {
+            case QgsProcessingModelChildParameterSource::StaticValue:
+              if ( !def->checkValueIsAcceptable( source.staticValue() ) )
+              {
+                res = false;
+                issues <<  QObject::tr( "Value for <i>%1</i> is not acceptable for this parameter" ).arg( def->name() );
+              }
+              break;
+
+            case QgsProcessingModelChildParameterSource::ModelParameter:
+              if ( !parameterComponents().contains( source.parameterName() ) )
+              {
+                res = false;
+                issues <<  QObject::tr( "Model input <i>%1</i> used for parameter <i>%2</i> does not exist" ).arg( source.parameterName(), def->name() );
+              }
+              break;
+
+            case QgsProcessingModelChildParameterSource::ChildOutput:
+              if ( !childAlgorithms().contains( source.outputChildId() ) )
+              {
+                res = false;
+                issues <<  QObject::tr( "Child algorithm <i>%1</i> used for parameter <i>%2</i> does not exist" ).arg( source.outputChildId(), def->name() );
+              }
+              break;
+
+            case QgsProcessingModelChildParameterSource::Expression:
+            case QgsProcessingModelChildParameterSource::ExpressionText:
+            case QgsProcessingModelChildParameterSource::ModelOutput:
+              break;
+          }
+        }
+      }
+      else
+      {
+        // not specified. Is it optional?
+
+        // ignore destination parameters -- they shouldn't ever be mandatory
+        if ( def->isDestination() )
+          continue;
+
+        if ( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) )
+        {
+          res = false;
+          issues <<  QObject::tr( "Parameter <i>%1</i> is mandatory" ).arg( def->name() );
+        }
+      }
+    }
+
+    return res;
+  }
+  else
+  {
+    issues << QObject::tr( "Invalid child ID: <i>%1</i>" ).arg( childId );
+    return false;
+  }
 }
 
 bool QgsProcessingModelAlgorithm::canExecute( QString *errorMessage ) const

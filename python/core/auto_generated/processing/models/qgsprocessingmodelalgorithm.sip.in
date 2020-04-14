@@ -73,6 +73,17 @@ Sets the model ``group``.
 .. seealso:: :py:func:`group`
 %End
 
+    bool validate( QStringList &issues /Out/ ) const;
+%Docstring
+Validates the model, returning ``True`` if all child algorithms in the model are valid.
+
+
+:return: - ``True`` if the child is valid
+         - issues: will be set to a list of issues encountered during the validation
+
+.. versionadded:: 3.14
+%End
+
     QMap<QString, QgsProcessingModelChildAlgorithm> childAlgorithms() const;
 %Docstring
 Returns the map of child algorithms contained in the model. The keys
@@ -180,6 +191,19 @@ Returns a list of the child algorithm IDs on which the child
 algorithm with the specified ``childId`` depends upon.
 
 .. seealso:: :py:func:`dependentChildAlgorithms`
+%End
+
+    bool validateChildAlgorithm( const QString &childId, QStringList &issues /Out/ ) const;
+%Docstring
+Validates the child algorithm with matching ID, returning ``True`` if
+all mandatory inputs to the algorithm have valid values.
+
+:param childId: ID for child to validate
+
+:return: - ``True`` if the child is valid
+         - issues: will be set to a list of issues encountered during the validation
+
+.. versionadded:: 3.14
 %End
 
     void addModelParameter( QgsProcessingParameterDefinition *definition /Transfer/, const QgsProcessingModelParameter &component );

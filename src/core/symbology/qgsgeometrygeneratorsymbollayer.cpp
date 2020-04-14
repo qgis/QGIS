@@ -137,7 +137,7 @@ QgsStringMap QgsGeometryGeneratorSymbolLayer::properties() const
 void QgsGeometryGeneratorSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize size )
 {
   if ( mSymbol )
-    mSymbol->drawPreviewIcon( context.renderContext().painter(), size );
+    mSymbol->drawPreviewIcon( context.renderContext().painter(), size, nullptr, false, nullptr, context.patchShape() );
 }
 
 void QgsGeometryGeneratorSymbolLayer::setGeometryExpression( const QString &exp )

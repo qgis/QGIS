@@ -5480,7 +5480,11 @@ QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &b
   QgsMeshLayer::LayerOptions options;
   std::unique_ptr<QgsMeshLayer> layer( new QgsMeshLayer( url, base, providerKey, options ) );
 
-  if ( ! layer || !layer->isValid() )
+  QDateTime referenceTime = QgsProject::instance()->timeSettings()->temporalRange().begin();
+  if ( !referenceTime.isValid() ) // If project reference time is invalid, use current date
+    referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) );
+
+  if ( ! layer || ( !layer->isValid() && layer->subLayers().isEmpty() ) )
   {
     if ( guiWarning )
     {
@@ -5492,22 +5496,40 @@ QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &b
     return nullptr;
   }
 
-  // Manage default reference time, if not reference time is present by default in the layer -> assign one
-  if ( ! layer->temporalProperties()->referenceTime().isValid() )
+  if ( !layer->isValid() && layer->subLayers().count() > 0 ) //sublayers to load
   {
-    QDateTime referenceTime = QgsProject::instance()->timeSettings()->temporalRange().begin();
-    if ( !referenceTime.isValid() ) // If project reference time is invalid, use current date
-      referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) );
-    layer->temporalProperties()->setReferenceTime( referenceTime, layer->dataProvider()->temporalCapabilities() );
+    QList< QgsMapLayer * > subLayers = askUserForMDALSublayers( layer.get() );
+
+    if ( subLayers.isEmpty() )
+      layer.reset( nullptr );
+    else
+    {
+      for ( QgsMapLayer *newLayer : qgis::as_const( subLayers ) )
+      {
+        askUserForDatumTransform( newLayer->crs(), QgsProject::instance()->crs(), newLayer );
+        QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( newLayer );
+        if ( ! meshLayer->temporalProperties()->referenceTime().isValid() )
+          meshLayer->temporalProperties()->setReferenceTime( referenceTime, layer->dataProvider()->temporalCapabilities() );
+        bool ok;
+        newLayer->loadDefaultStyle( ok );
+        newLayer->loadDefaultMetadata( ok );
+      }
+
+      layer.reset( qobject_cast< QgsMeshLayer * >( subLayers.at( 0 ) ) );
+    }
+
   }
+  else
+  {
+    if ( ! layer->temporalProperties()->referenceTime().isValid() )
+      layer->temporalProperties()->setReferenceTime( referenceTime, layer->dataProvider()->temporalCapabilities() );
+    QgsProject::instance()->addMapLayer( layer.get() );
+    askUserForDatumTransform( layer->crs(), QgsProject::instance()->crs(), layer.get() );
 
-  QgsProject::instance()->addMapLayer( layer.get() );
-
-  askUserForDatumTransform( layer->crs(), QgsProject::instance()->crs(), layer.get() );
-
-  bool ok;
-  layer->loadDefaultStyle( ok );
-  layer->loadDefaultMetadata( ok );
+    bool ok;
+    layer->loadDefaultStyle( ok );
+    layer->loadDefaultMetadata( ok );
+  }
 
   activateDeactivateLayerRelatedActions( activeLayer() );
 
@@ -5952,6 +5974,62 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   return result;
 }
 
+QList<QgsMapLayer *> QgisApp::askUserForMDALSublayers( QgsMeshLayer *layer )
+{
+  QList< QgsMapLayer * > result;
+  if ( !layer )
+    return result;
+
+  QStringList sublayers = layer->subLayers();
+  if ( sublayers.empty() )
+    return result;
+
+  QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Mdal, QStringLiteral( "mdal" ), this );
+  chooseSublayersDialog.setShowAddToGroupCheckbox( true );
+
+  QgsSublayersDialog::LayerDefinitionList layersDefList;
+  int id = 1;
+  for ( const QString &layerUri : sublayers )
+  {
+    QgsSublayersDialog::LayerDefinition definition;
+    QString name = layerUri;
+    definition.layerName = layerUri;
+    definition.layerId = id++;
+    layersDefList.append( definition );
+  }
+
+  chooseSublayersDialog.populateLayerTable( layersDefList );
+  if ( chooseSublayersDialog.exec() )
+  {
+    QgsSublayersDialog::LayerDefinitionList selection = chooseSublayersDialog.selection();
+    for ( auto definition : selection )
+    {
+      int id = definition.layerId;
+      QString name = definition.layerName;
+      QString path = layer->source();
+      name = name.mid( name.indexOf( path ) + path.length() + 2 );
+      result.append( new QgsMeshLayer( sublayers.at( id - 1 ), name, QStringLiteral( "mdal" ) ) );
+    }
+
+    if ( !selection.isEmpty() )
+    {
+      if ( chooseSublayersDialog.addToGroupCheckbox() )
+      {
+        QgsLayerTreeGroup *group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, layer->name() );
+        for ( QgsMapLayer *layerAdded : result )
+        {
+          QgsProject::instance()->addMapLayer( layerAdded, false );
+          group->addLayer( layerAdded );
+        }
+      }
+      else
+        QgsProject::instance()->addMapLayers( result );
+    }
+  }
+
+  return result;
+}
+
 void QgisApp::addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey )
 {
   QList<QgsMapLayer *> myList;
@@ -6067,20 +6145,31 @@ void QgisApp::fileExit()
   if ( QgsApplication::taskManager()->countActiveTasks() > 0 )
   {
     QStringList tasks;
-    const auto constActiveTasks = QgsApplication::taskManager()->activeTasks();
-    for ( QgsTask *task : constActiveTasks )
+    const QList< QgsTask * > activeTasks = QgsApplication::taskManager()->activeTasks();
+    for ( QgsTask *task : activeTasks )
     {
+      if ( task->flags() & QgsTask::CancelWithoutPrompt )
+        continue;
+
       tasks << tr( " • %1" ).arg( task->description() );
     }
 
-    // active tasks
-    if ( QMessageBox::question( this, tr( "Active Tasks" ),
-                                tr( "The following tasks are currently running in the background:\n\n%1\n\nDo you want to try canceling these active tasks?" ).arg( tasks.join( QStringLiteral( "\n" ) ) ),
-                                QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
+    // prompt if any tasks which require user confirmation remain, otherwise just cancel them directly and continue with shutdown.
+    if ( tasks.empty() )
     {
+      // all tasks can be silently terminated without warning
       QgsApplication::taskManager()->cancelAll();
     }
-    return;
+    else
+    {
+      if ( QMessageBox::question( this, tr( "Active Tasks" ),
+                                  tr( "The following tasks are currently running in the background:\n\n%1\n\nDo you want to try canceling these active tasks?" ).arg( tasks.join( QStringLiteral( "\n" ) ) ),
+                                  QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
+      {
+        QgsApplication::taskManager()->cancelAll();
+      }
+      return;
+    }
   }
 
   QgsCanvasRefreshBlocker refreshBlocker;
@@ -9902,8 +9991,24 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
     if ( !( geom.isEmpty() || geom.isNull( ) ) )
     {
       // avoid intersection if enabled in digitize settings
-      geom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
-      // Count collapsed geometries
+      QList<QgsVectorLayer *>  avoidIntersectionsLayers;
+      switch ( QgsProject::instance()->avoidIntersectionsMode() )
+      {
+        case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
+          avoidIntersectionsLayers.append( pasteVectorLayer );
+          break;
+        case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
+          avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
+          break;
+        case QgsProject::AvoidIntersectionsMode::AllowIntersections:
+          break;
+      }
+      if ( avoidIntersectionsLayers.size() > 0 )
+      {
+        geom.avoidIntersections( avoidIntersectionsLayers );
+      }
+
+      // count collapsed geometries
       if ( geom.isEmpty() || geom.isNull( ) )
         invalidGeometriesCount++;
     }

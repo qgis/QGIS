@@ -124,6 +124,7 @@
 #include "qgsalgorithmrepairshapefile.h"
 #include "qgsalgorithmreverselinedirection.h"
 #include "qgsalgorithmrotate.h"
+#include "qgsalgorithmroundrastervalues.h"
 #include "qgsalgorithmruggedness.h"
 #include "qgsalgorithmsavelog.h"
 #include "qgsalgorithmsaveselectedfeatures.h"
@@ -331,6 +332,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRepairShapefileAlgorithm() );
   addAlgorithm( new QgsReverseLineDirectionAlgorithm() );
   addAlgorithm( new QgsRotateFeaturesAlgorithm() );
+  addAlgorithm( new QgsRoundRasterValuesAlgorithm() );
   addAlgorithm( new QgsRuggednessAlgorithm() );
   addAlgorithm( new QgsSaveLogToFileAlgorithm() );
   addAlgorithm( new QgsSaveSelectedFeatures() );

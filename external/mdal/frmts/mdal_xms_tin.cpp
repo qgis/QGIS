@@ -54,7 +54,7 @@ bool MDAL::DriverXmsTin::canReadMesh( const std::string &uri )
   return true;
 }
 
-std::unique_ptr<MDAL::Mesh> MDAL::DriverXmsTin::load( const std::string &meshFile )
+std::unique_ptr<MDAL::Mesh> MDAL::DriverXmsTin::load( const std::string &meshFile, const std::string & )
 {
   MDAL::Log::resetLastStatus();
 

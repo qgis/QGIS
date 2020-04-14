@@ -30,6 +30,7 @@ class QgsProcessingModelComponent;
 class QgsProcessingModelComment;
 class QgsModelChildAlgorithmGraphicItem;
 class QgsProcessingModelGroupBox;
+class QgsMessageBar;
 
 ///@cond NOT_STABLE
 
@@ -69,6 +70,10 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      * Constructor for QgsModelGraphicsScene with the specified \a parent object.
      */
     QgsModelGraphicsScene( QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    QgsProcessingModelAlgorithm *model();
+
+    void setModel( QgsProcessingModelAlgorithm *model );
 
     /**
      * Sets the combination of \a flags controlling how the scene is rendered and behaves.
@@ -142,6 +147,25 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      */
     void setChildAlgorithmInputs( const QVariantMap &inputs );
 
+    /**
+     * Returns the message bar associated with the scene.
+     *
+     * \see setMessageBar()
+     */
+    QgsMessageBar *messageBar() const;
+
+    /**
+     * Sets the message \a bar associated with the scene.
+     *
+     * \see messageBar()
+     */
+    void setMessageBar( QgsMessageBar *bar );
+
+    /**
+     * Shows a warning message, allowing users to click a button to see the full details (\a longMessage).
+     */
+    void showWarning( const QString &shortMessage, const QString &title, const QString &longMessage, Qgis::MessageLevel level = Qgis::Warning );
+
   signals:
 
     /**
@@ -210,12 +234,16 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
 
     Flags mFlags = nullptr;
 
+    QgsProcessingModelAlgorithm *mModel = nullptr;
+
     QMap< QString, QgsModelComponentGraphicItem * > mParameterItems;
     QMap< QString, QgsModelChildAlgorithmGraphicItem * > mChildAlgorithmItems;
     QMap< QString, QMap< QString, QgsModelComponentGraphicItem * > > mOutputItems;
     QMap< QString, QgsModelComponentGraphicItem * > mGroupBoxItems;
     QVariantMap mChildResults;
     QVariantMap mChildInputs;
+
+    QgsMessageBar *mMessageBar = nullptr;
 
 };
 

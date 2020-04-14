@@ -658,7 +658,7 @@ void QgsAttributesFormProperties::addTabOrGroupButton()
       tabList.append( QgsAddTabOrGroup::TabPair( itemData.name(), *it ) );
     }
   }
-  QTreeWidgetItem *currentItem = mFormLayoutTree->selectedItems().at( 0 );
+  QTreeWidgetItem *currentItem = mFormLayoutTree->selectedItems().value( 0 );
   QgsAddTabOrGroup addTabOrGroup( mLayer, tabList, currentItem, this );
 
   if ( !addTabOrGroup.exec() )

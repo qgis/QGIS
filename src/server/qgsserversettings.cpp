@@ -152,6 +152,17 @@ void QgsServerSettings::initSettings()
                                         };
   mSettings[ sOverrideSystemLocale.envVar ] = sOverrideSystemLocale;
 
+  // bad layers handling
+  const Setting sIgnoreBadLayers = { QgsServerSettingsEnv::QGIS_SERVER_IGNORE_BAD_LAYERS,
+                                     QgsServerSettingsEnv::DEFAULT_VALUE,
+                                     QStringLiteral( "Ignore bad layers" ),
+                                     QString(),
+                                     QVariant::Bool,
+                                     QVariant( false ),
+                                     QVariant()
+                                   };
+  mSettings[ sIgnoreBadLayers.envVar ] = sIgnoreBadLayers;
+
   // show group separator
   const Setting sShowGroupSeparator = { QgsServerSettingsEnv::QGIS_SERVER_SHOW_GROUP_SEPARATOR,
                                         QgsServerSettingsEnv::DEFAULT_VALUE,
@@ -417,4 +428,9 @@ QString QgsServerSettings::apiResourcesDirectory() const
 qlonglong QgsServerSettings::apiWfs3MaxLimit() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_API_WFS3_MAX_LIMIT ).toLongLong();
+}
+
+bool QgsServerSettings::ignoreBadLayers() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_IGNORE_BAD_LAYERS ).toBool();
 }

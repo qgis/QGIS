@@ -691,7 +691,7 @@ void MDAL::DriverFlo2D::load( const std::string &uri, MDAL::Mesh *mesh )
   }
 }
 
-std::unique_ptr< MDAL::Mesh > MDAL::DriverFlo2D::load( const std::string &resultsFile )
+std::unique_ptr< MDAL::Mesh > MDAL::DriverFlo2D::load( const std::string &resultsFile, const std::string & )
 {
   mDatFileName = resultsFile;
   MDAL::Log::resetLastStatus();

@@ -71,7 +71,7 @@ namespace MDAL
 
       Driver *create() override;
 
-      virtual std::unique_ptr< Mesh > load( const std::string &uri ) override;
+      virtual std::unique_ptr< Mesh > load( const std::string &uri, const std::string &meshName = "" ) override;
 
       bool canReadMesh( const std::string &uri ) override;
 

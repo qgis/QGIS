@@ -39,10 +39,11 @@ QVariant QgsProcessingModelGroupBox::toVariant() const
   return map;
 }
 
-bool QgsProcessingModelGroupBox::loadVariant( const QVariantMap &map )
+bool QgsProcessingModelGroupBox::loadVariant( const QVariantMap &map, bool ignoreUuid )
 {
   restoreCommonProperties( map );
-  mUuid = map.value( QStringLiteral( "uuid" ) ).toString();
+  if ( !ignoreUuid )
+    mUuid = map.value( QStringLiteral( "uuid" ) ).toString();
   return true;
 }
 

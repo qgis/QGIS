@@ -688,10 +688,10 @@ class CORE_EXPORT QgsMeshRendererSettings
     QHash<int, QgsMeshRendererVectorSettings> mRendererVectorSettings;  //!< Per-group vector settings
 
     //! index of active scalar dataset group
-    int mActiveScalarDatasetGroup;
+    int mActiveScalarDatasetGroup = -1;
 
     //! index of active vector dataset group
-    int mActiveVectorDatasetGroup;
+    int mActiveVectorDatasetGroup = -1;
 
     //! Averaging method to get 2D datasets from 3D stacked mesh datasets
     std::shared_ptr<QgsMesh3dAveragingMethod> mAveragingMethod;

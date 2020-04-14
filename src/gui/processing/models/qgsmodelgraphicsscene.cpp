@@ -19,7 +19,11 @@
 #include "qgsmodelcomponentgraphicitem.h"
 #include "qgsmodelarrowitem.h"
 #include "qgsprocessingmodelgroupbox.h"
+#include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
+#include "qgsmessageviewer.h"
 #include <QGraphicsSceneMouseEvent>
+#include <QPushButton>
 
 ///@cond NOT_STABLE
 
@@ -27,6 +31,16 @@ QgsModelGraphicsScene::QgsModelGraphicsScene( QObject *parent )
   : QGraphicsScene( parent )
 {
   setItemIndexMethod( QGraphicsScene::NoIndex );
+}
+
+QgsProcessingModelAlgorithm *QgsModelGraphicsScene::model()
+{
+  return mModel;
+}
+
+void QgsModelGraphicsScene::setModel( QgsProcessingModelAlgorithm *model )
+{
+  mModel = model;
 }
 
 void QgsModelGraphicsScene::setFlag( QgsModelGraphicsScene::Flag flag, bool on )
@@ -154,6 +168,8 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
           const QList< LinkSource > sourceItems = linkSourcesForParameterValue( model, QVariant::fromValue( source ), it.value().childId(), context );
           for ( const LinkSource &link : sourceItems )
           {
+            if ( !link.item )
+              continue;
             QgsModelArrowItem *arrow = nullptr;
             if ( link.linkIndex == -1 )
               arrow = new QgsModelArrowItem( link.item, mChildAlgorithmItems.value( it.value().childId() ), parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge, parameter->isDestination() ? bottomIdx : topIdx );
@@ -417,6 +433,32 @@ void QgsModelGraphicsScene::addCommentItemForComponent( QgsProcessingModelAlgori
   std::unique_ptr< QgsModelArrowItem > arrow = qgis::make_unique< QgsModelArrowItem >( parentItem, commentItem );
   arrow->setPenStyle( Qt::DotLine );
   addItem( arrow.release() );
+}
+
+QgsMessageBar *QgsModelGraphicsScene::messageBar() const
+{
+  return mMessageBar;
+}
+
+void QgsModelGraphicsScene::setMessageBar( QgsMessageBar *messageBar )
+{
+  mMessageBar = messageBar;
+}
+
+void QgsModelGraphicsScene::showWarning( const QString &shortMessage, const QString &title, const QString &longMessage, Qgis::MessageLevel level )
+{
+  QgsMessageBarItem *messageWidget = mMessageBar->createMessage( QString(), shortMessage );
+  QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
+  connect( detailsButton, &QPushButton::clicked, detailsButton, [ = ]
+  {
+    QgsMessageViewer *dialog = new QgsMessageViewer( detailsButton );
+    dialog->setTitle( title );
+    dialog->setMessage( longMessage, QgsMessageOutput::MessageHtml );
+    dialog->showMessage();
+  } );
+  messageWidget->layout()->addWidget( detailsButton );
+  mMessageBar->clearWidgets();
+  mMessageBar->pushWidget( messageWidget, level, 0 );
 }
 
 ///@endcond

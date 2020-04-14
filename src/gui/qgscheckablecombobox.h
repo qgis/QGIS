@@ -77,9 +77,9 @@ class QgsCheckableItemModel : public QStandardItemModel
   signals:
 
     /**
-     * Emitted whenever the items checkstate has changed.
+     * Emitted whenever the item's checkstate has changed.
      */
-    void itemCheckStateChanged();
+    void itemCheckStateChanged( const QModelIndex &index );
 };
 
 

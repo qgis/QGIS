@@ -861,6 +861,9 @@ QgsModelChildAlgorithmGraphicItem::QgsModelChildAlgorithmGraphicItem( QgsProcess
   }
 
   setLabel( child->description() );
+
+  QStringList issues;
+  mIsValid = model->validateChildAlgorithm( child->childId(), issues );
 }
 
 void QgsModelChildAlgorithmGraphicItem::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
@@ -893,7 +896,13 @@ void QgsModelChildAlgorithmGraphicItem::contextMenuEvent( QGraphicsSceneContextM
 
 QColor QgsModelChildAlgorithmGraphicItem::fillColor( QgsModelComponentGraphicItem::State state ) const
 {
-  QColor c( 255, 255, 255 );
+  QColor c;
+
+  if ( mIsValid )
+    c = QColor( 255, 255, 255 );
+  else
+    c = QColor( 208, 0, 0 );
+
   switch ( state )
   {
     case Selected:
@@ -914,17 +923,17 @@ QColor QgsModelChildAlgorithmGraphicItem::strokeColor( QgsModelComponentGraphicI
   switch ( state )
   {
     case Selected:
-      return QColor( 50, 50, 50 );
+      return mIsValid ? QColor( 50, 50, 50 ) : QColor( 80, 0, 0 );
     case Hover:
     case Normal:
-      return Qt::gray;
+      return mIsValid ? Qt::gray : QColor( 134, 0, 0 );
   }
   return QColor();
 }
 
 QColor QgsModelChildAlgorithmGraphicItem::textColor( QgsModelComponentGraphicItem::State ) const
 {
-  return dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() )->isActive() ? Qt::black : Qt::gray;
+  return mIsValid ? ( dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() )->isActive() ? Qt::black : Qt::gray ) : QColor( 255, 255, 255 );
 }
 
 QPixmap QgsModelChildAlgorithmGraphicItem::iconPixmap() const
@@ -1419,6 +1428,11 @@ QgsProcessingModelComment *QgsModelCommentGraphicItem::modelComponent()
     return model()->childAlgorithm( output->childId() ).modelOutput( output->name() ).comment();
   }
   return nullptr;
+}
+
+QgsModelComponentGraphicItem *QgsModelCommentGraphicItem::parentComponentItem() const
+{
+  return mParentItem;
 }
 
 

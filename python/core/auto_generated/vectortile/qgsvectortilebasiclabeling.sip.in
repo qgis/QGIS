@@ -1,0 +1,161 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectortile/qgsvectortilebasiclabeling.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsVectorTileBasicLabelingStyle
+{
+%Docstring
+Configuration of a single style within QgsVectorTileBasicLabeling
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsvectortilebasiclabeling.h"
+%End
+  public:
+
+    void setLabelSettings( const QgsPalLayerSettings &settings );
+%Docstring
+Sets labeling configuration of this style
+%End
+    QgsPalLayerSettings labelSettings() const;
+%Docstring
+Returns labeling configuration of this style
+%End
+
+    void setStyleName( const QString &name );
+%Docstring
+Sets human readable name of this style
+%End
+    QString styleName() const;
+%Docstring
+Returns human readable name of this style
+%End
+
+    void setLayerName( const QString &name );
+%Docstring
+Sets name of the sub-layer to render (empty layer means that all layers match)
+%End
+    QString layerName() const;
+%Docstring
+Returns name of the sub-layer to render (empty layer means that all layers match)
+%End
+
+    void setGeometryType( QgsWkbTypes::GeometryType geomType );
+%Docstring
+Sets type of the geometry that will be used (point / line / polygon)
+%End
+    QgsWkbTypes::GeometryType geometryType() const;
+%Docstring
+Returns type of the geometry that will be used (point / line / polygon)
+%End
+
+    void setFilterExpression( const QString &expr );
+%Docstring
+Sets filter expression (empty filter means that all features match)
+%End
+    QString filterExpression() const;
+%Docstring
+Returns filter expression (empty filter means that all features match)
+%End
+
+    void setEnabled( bool enabled );
+%Docstring
+Sets whether this style is enabled (used for rendering)
+%End
+    bool isEnabled() const;
+%Docstring
+Returns whether this style is enabled (used for rendering)
+%End
+
+    void setMinZoomLevel( int minZoom );
+%Docstring
+Sets minimum zoom level index (negative number means no limit)
+%End
+    int minZoomLevel() const;
+%Docstring
+Returns minimum zoom level index (negative number means no limit)
+%End
+
+    void setMaxZoomLevel( int maxZoom );
+%Docstring
+Sets maximum zoom level index (negative number means no limit)
+%End
+    int maxZoomLevel() const;
+%Docstring
+Returns maxnimum zoom level index (negative number means no limit)
+%End
+
+    bool isActive( int zoomLevel ) const;
+%Docstring
+Returns whether the style is active at given zoom level (also checks "enabled" flag)
+%End
+
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes object content to given DOM element
+%End
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+%Docstring
+Reads object content from given DOM element
+%End
+
+};
+
+
+class QgsVectorTileBasicLabeling : QgsVectorTileLabeling
+{
+%Docstring
+Basic labeling configuration for vector tile layers. It contains a definition
+of a list of labeling styles, where each labeling style is a combination of
+sub-layer name, geometry type, filter expression, zoom range and label settings.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsvectortilebasiclabeling.h"
+%End
+  public:
+    QgsVectorTileBasicLabeling();
+
+    virtual QString type() const;
+
+    virtual QgsVectorTileLabeling *clone() const /Factory/;
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+
+    void setStyles( const QList<QgsVectorTileBasicLabelingStyle> &styles );
+%Docstring
+Sets list of styles of the renderer
+%End
+    QList<QgsVectorTileBasicLabelingStyle> styles() const;
+%Docstring
+Returns list of styles of the renderer
+%End
+
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectortile/qgsvectortilebasiclabeling.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

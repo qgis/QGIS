@@ -110,6 +110,44 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
      */
     void endMacroCommand();
 
+
+    //! Clipboard operations
+    enum ClipboardOperation
+    {
+      ClipboardCut, //!< Cut items
+      ClipboardCopy, //!< Copy items
+    };
+
+    /**
+     * Cuts or copies the selected items, respecting the specified \a operation.
+     * \see copyItems()
+     * \see pasteItems()
+     */
+    void copySelectedItems( ClipboardOperation operation );
+
+    /**
+     * Cuts or copies the a list of \a items, respecting the specified \a operation.
+     * \see copySelectedItems()
+     * \see pasteItems()
+     */
+    void copyItems( const QList< QgsModelComponentGraphicItem * > &items, ClipboardOperation operation );
+
+    //! Paste modes
+    enum PasteMode
+    {
+      PasteModeCursor, //!< Paste items at cursor position
+      PasteModeCenter, //!< Paste items in center of view
+      PasteModeInPlace, //!< Paste items in place
+    };
+
+    /**
+     * Pastes items from clipboard, using the specified \a mode.
+     *
+     * \see copySelectedItems()
+     * \see hasItemsInClipboard()
+     */
+    void pasteItems( PasteMode mode );
+
   public slots:
 
     /**
@@ -156,6 +194,21 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
      * Emitted when a macro command containing a group of interactions in the view has ended.
      */
     void macroCommandEnded();
+
+    /**
+     * Emitted when an undo command is started in the view.
+     */
+    void beginCommand( const QString &text );
+
+    /**
+     * Emitted when an undo command in the view has ended.
+     */
+    void endCommand();
+
+    /**
+     * Emitted when the selected items should be deleted;
+     */
+    void deleteSelectedItems();
 
   private:
 
