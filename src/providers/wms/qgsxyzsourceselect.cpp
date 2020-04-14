@@ -17,10 +17,12 @@
 
 #include "qgshelp.h"
 #include "qgsgui.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgsxyzsourceselect.h"
 #include "qgsxyzconnection.h"
 #include "qgsxyzconnectiondialog.h"
 
+#include <QFileDialog>
 #include <QMessageBox>
 
 QgsXyzSourceSelect::QgsXyzSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
@@ -80,10 +82,22 @@ void QgsXyzSourceSelect::btnDelete_clicked()
 
 void QgsXyzSourceSelect::btnSave_clicked()
 {
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::XyzTiles );
+  dlg.exec();
 }
 
 void QgsXyzSourceSelect::btnLoad_clicked()
 {
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
+                     tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::XyzTiles, fileName );
+  dlg.exec();
+  populateConnectionList();
 }
 
 void QgsXyzSourceSelect::addButtonClicked()
