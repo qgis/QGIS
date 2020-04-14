@@ -73,6 +73,15 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     void setGroup( const QString &group );
 
     /**
+     * Validates the model, returning TRUE if all child algorithms in the model are valid.
+     *
+     * \param issues will be set to a list of issues encountered during the validation
+     * \returns TRUE if the child is valid
+     * \since QGIS 3.14
+     */
+    bool validate( QStringList &issues SIP_OUT ) const;
+
+    /**
      * Returns the map of child algorithms contained in the model. The keys
      * are the child algorithm ids (see QgsProcessingModelAlgorithm::ChildAlgorithm::childId()).
      * \see childAlgorithm()
