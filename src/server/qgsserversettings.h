@@ -59,14 +59,15 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
       QGIS_SERVER_LOG_STDERR,
       QGIS_PROJECT_FILE,
       MAX_CACHE_LAYERS,
+      QGIS_SERVER_IGNORE_BAD_LAYERS, //!< Do not consider the whole project unavailable if it contains bad layers
       QGIS_SERVER_CACHE_DIRECTORY,
       QGIS_SERVER_CACHE_SIZE,
-      QGIS_SERVER_SHOW_GROUP_SEPARATOR,  //! Show group (thousands) separator when formatting numeric values, defaults to FALSE (since QGIS 3.8)
-      QGIS_SERVER_OVERRIDE_SYSTEM_LOCALE,  //! Override system locale (since QGIS 3.8)
-      QGIS_SERVER_WMS_MAX_HEIGHT, //! Maximum height for a WMS request. The most conservative between this and the project one is used (since QGIS 3.6.2)
-      QGIS_SERVER_WMS_MAX_WIDTH, //! Maximum width for a WMS request. The most conservative between this and the project one is used (since QGIS 3.6.2)
-      QGIS_SERVER_API_RESOURCES_DIRECTORY, //! Base directory where HTML templates and static assets (e.g. images, js and css files) are searched for (since QGIS 3.10).
-      QGIS_SERVER_API_WFS3_MAX_LIMIT //! Maximum value for "limit" in a features request, defaults to 10000 (since QGIS 3.10).
+      QGIS_SERVER_SHOW_GROUP_SEPARATOR,  //!< Show group (thousands) separator when formatting numeric values, defaults to FALSE (since QGIS 3.8)
+      QGIS_SERVER_OVERRIDE_SYSTEM_LOCALE,  //!< Override system locale (since QGIS 3.8)
+      QGIS_SERVER_WMS_MAX_HEIGHT, //!< Maximum height for a WMS request. The most conservative between this and the project one is used (since QGIS 3.6.2)
+      QGIS_SERVER_WMS_MAX_WIDTH, //!< Maximum width for a WMS request. The most conservative between this and the project one is used (since QGIS 3.6.2)
+      QGIS_SERVER_API_RESOURCES_DIRECTORY, //!< Base directory where HTML templates and static assets (e.g. images, js and css files) are searched for (since QGIS 3.10).
+      QGIS_SERVER_API_WFS3_MAX_LIMIT //!< Maximum value for "limit" in a features request, defaults to 10000 (since QGIS 3.10).
     };
     Q_ENUM( EnvVar )
 };
@@ -221,6 +222,17 @@ class SERVER_EXPORT QgsServerSettings
      * \since QGIS 3.10
      */
     qlonglong apiWfs3MaxLimit() const;
+
+    /**
+     * Returns TRUE if the bad layers are ignored and FALSE when the presence of a
+     * bad layers invalidates the whole project making it unavailable.
+     *
+     * The default value is TRUE, this value can be changed by setting the environment
+     * variable QGIS_SERVER_IGNORE_BAD_LAYERS.
+     *
+     * \since QGIS 3.10.5
+     */
+    bool ignoreBadLayers() const;
 
   private:
     void initSettings();
