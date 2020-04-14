@@ -493,6 +493,7 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     QPixmap mPixmap;
     QVariantMap mResults;
     QVariantMap mInputs;
+    bool mIsValid = true;
 };
 
 
