@@ -540,6 +540,9 @@ Returns the native draw action.
     virtual QAction *actionAddPgLayer() = 0;
     virtual QAction *actionAddWmsLayer() = 0;
     virtual QAction *actionAddXyzLayer() = 0;
+%Docstring
+Returns the native Add XYZ layer action.
+%End
     virtual QAction *actionAddAfsLayer() = 0;
 %Docstring
 Returns the native Add ArcGIS FeatureServer action.
