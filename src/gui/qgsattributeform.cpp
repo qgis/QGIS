@@ -2102,16 +2102,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
   }
 
   newWidgetInfo.showLabel = widgetDef->showLabel();
-  // THIS IS NEVER HIT!
-  /*
-  const QgsPropertyCollection properties { widgetDef->dataDefinedProperties() };
-  if ( properties.hasProperty( QgsEditFormConfig::DataDefinedProperty::Alias ) )
-  {
-    const QgsProperty labelProperty { properties.property( QgsEditFormConfig::DataDefinedProperty::Alias ) };
-    newWidgetInfo.labelExpression = labelProperty.asExpression() ;
-    newWidgetInfo.labelExpressionIsActive = labelProperty.isActive() ;
-  }
-  */
+
   return newWidgetInfo;
 }
 

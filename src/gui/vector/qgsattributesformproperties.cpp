@@ -893,18 +893,6 @@ void QgsAttributesFormProperties::apply()
   {
     QTreeWidgetItem *tabItem = mFormLayoutTree->invisibleRootItem()->child( t );
     QgsAttributeEditorElement *editorElement { createAttributeEditorWidget( tabItem, nullptr, false ) };
-    /*
-    // Store data defined field properties
-    if ( editorElement->type() == QgsAttributeEditorElement::AttributeEditorType::AeTypeField )
-    {
-      const QgsAttributeEditorField *fieldElement { static_cast<QgsAttributeEditorField *>( editorElement ) };
-      const QString fieldName { mLayer->fields().at( fieldElement->idx() ).name() };
-      if ( editFormConfig.dataDefinedFieldProperties( fieldName ).count() > 0 )
-      {
-        editorElement->setDataDefinedProperties( editFormConfig.dataDefinedFieldProperties( fieldName ) );
-      }
-    }
-    */
     editFormConfig.addTab( editorElement );
   }
 

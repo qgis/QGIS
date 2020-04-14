@@ -351,8 +351,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     {
       QWidget *widget = nullptr;
       QString labelText;
-      QString labelExpression;
-      bool labelExpressionIsActive;
       QString toolTip;
       QString hint;
       bool labelOnTop = false;
