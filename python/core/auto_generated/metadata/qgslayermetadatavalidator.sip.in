@@ -24,19 +24,47 @@ Abstract base class for metadata validators.
 %End
   public:
 
-    struct ValidationResult
-    {
+    class ValidationResult
+{
+%Docstring
+Contains the parameters describing a metadata validation failure.
 
-      ValidationResult( const QString &section, const QString &note, const QVariant &identifier = QVariant() );
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgslayermetadatavalidator.h"
+%End
+      public:
+
+        ValidationResult( const QString &section, const QString &note, const QVariant &identifier = QVariant() );
 %Docstring
 Constructor for ValidationResult.
 %End
 
-      QString section;
+        QString section;
 
-      QVariant identifier;
 
-      QString note;
+%Property( name = identifier, get = _identifier, set = _setIdentifier )
+
+        QVariant _identifier() const;
+%Docstring
+Returns the optional identifier for the failed metadata item.
+For instance, in list type metadata elements this
+will be set to the list index of the failed metadata
+item.
+%End
+
+        void _setIdentifier( QVariant identifier );
+%Docstring
+Sets the optional ``identifier`` for the failed metadata item.
+For instance, in list type metadata elements this
+will be set to the list index of the failed metadata
+item.
+%End
+
+        QString note;
+
     };
 
     virtual ~QgsAbstractMetadataBaseValidator();
