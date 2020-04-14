@@ -28,6 +28,8 @@
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelcomponentgraphicitem.h"
 #include "processing/models/qgsprocessingmodelgroupbox.h"
+#include "qgsmessageviewer.h"
+#include "qgsmessagebaritem.h"
 
 #include <QShortcut>
 #include <QDesktopWidget>
@@ -39,6 +41,7 @@
 #include <QCloseEvent>
 #include <QMessageBox>
 #include <QUndoView>
+#include <QPushButton>
 
 ///@cond NOT_STABLE
 
@@ -134,6 +137,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mActionSaveAs, &QAction::triggered, this, [ = ] { saveModel( true ); } );
   connect( mActionDeleteComponents, &QAction::triggered, this, &QgsModelDesignerDialog::deleteSelected );
   connect( mActionSnapSelected, &QAction::triggered, mView, &QgsModelGraphicsView::snapSelected );
+  connect( mActionValidate, &QAction::triggered, this, &QgsModelDesignerDialog::validate );
 
   mActionSnappingEnabled->setChecked( settings.value( QStringLiteral( "/Processing/Modeler/enableSnapToGrid" ), false ).toBool() );
   connect( mActionSnappingEnabled, &QAction::toggled, this, [ = ]( bool enabled )
@@ -774,6 +778,38 @@ void QgsModelDesignerDialog::populateZoomToMenu()
       } );
       mGroupMenu->addAction( zoomAction );
     }
+  }
+}
+
+void QgsModelDesignerDialog::validate()
+{
+  QStringList issues;
+  if ( model()->validate( issues ) )
+  {
+    mMessageBar->pushSuccess( QString(), tr( "Model is valid!" ) );
+  }
+  else
+  {
+    QgsMessageBarItem *messageWidget = mMessageBar->createMessage( QString(), tr( "Model is invalid!" ) );
+    QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
+    connect( detailsButton, &QPushButton::clicked, detailsButton, [ = ]
+    {
+      QgsMessageViewer *dialog = new QgsMessageViewer( detailsButton );
+      dialog->setTitle( tr( "Model is Invalid" ) );
+
+      QString longMessage = tr( "<p>This model is not valid:</p>" ) + QStringLiteral( "<ul>" );
+      for ( const QString &issue : issues )
+      {
+        longMessage += QStringLiteral( "<li>%1</li>" ).arg( issue );
+      }
+      longMessage += QStringLiteral( "</ul>" );
+
+      dialog->setMessage( longMessage, QgsMessageOutput::MessageHtml );
+      dialog->showMessage();
+    } );
+    messageWidget->layout()->addWidget( detailsButton );
+    mMessageBar->clearWidgets();
+    mMessageBar->pushWidget( messageWidget, Qgis::Warning, 0 );
   }
 }
 
