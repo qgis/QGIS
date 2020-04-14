@@ -44,27 +44,25 @@ QgsXyzSourceSelect::QgsXyzSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
 void QgsXyzSourceSelect::btnNew_clicked()
 {
-  QgsXyzConnectionDialog *nc = new QgsXyzConnectionDialog( this );
-  if ( nc->exec() )
+  QgsXyzConnectionDialog nc( this );
+  if ( nc.exec() )
   {
-    QgsXyzConnectionUtils::addConnection( nc->connection() );
+    QgsXyzConnectionUtils::addConnection( nc.connection() );
     populateConnectionList();
     emit connectionsChanged();
   }
-  delete nc;
 }
 
 void QgsXyzSourceSelect::btnEdit_clicked()
 {
-  QgsXyzConnectionDialog *nc = new QgsXyzConnectionDialog( this );
-  nc->setConnection( QgsXyzConnectionUtils::connection( cmbConnections->currentText() ) );
-  if ( nc->exec() )
+  QgsXyzConnectionDialog nc( this );
+  nc.setConnection( QgsXyzConnectionUtils::connection( cmbConnections->currentText() ) );
+  if ( nc.exec() )
   {
-    QgsXyzConnectionUtils::addConnection( nc->connection() );
+    QgsXyzConnectionUtils::addConnection( nc.connection() );
     populateConnectionList();
     emit connectionsChanged();
   }
-  delete nc;
 }
 
 void QgsXyzSourceSelect::btnDelete_clicked()
