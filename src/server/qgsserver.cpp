@@ -375,7 +375,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
         QString configFilePath = configPath( *sConfigFilePath, params.map() );
 
         // load the project if needed and not empty
-        project = mConfigCache->project( configFilePath );
+        project = mConfigCache->project( configFilePath, sServerInterface->serverSettings() );
       }
 
       if ( project )
