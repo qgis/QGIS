@@ -418,7 +418,9 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
   mScene->setParent( this );
   mScene->setChildAlgorithmResults( mChildResults );
   mScene->setModel( mModel.get() );
+  mScene->setMessageBar( mMessageBar );
 
+  const QPointF center = mView->mapToScene( mView->viewport()->rect().center() );
   mView->setModelScene( mScene );
 
   mSelectTool->resetCache();
@@ -433,6 +435,8 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
   } );
   connect( mScene, &QgsModelGraphicsScene::componentAboutToChange, this, [ = ]( const QString & description, int id ) { beginUndoCommand( description, id ); } );
   connect( mScene, &QgsModelGraphicsScene::componentChanged, this, [ = ] { endUndoCommand(); } );
+
+  mView->centerOn( center );
 
   if ( oldScene )
     oldScene->deleteLater();
