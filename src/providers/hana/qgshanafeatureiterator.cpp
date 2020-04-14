@@ -377,11 +377,11 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
     {
       QgsHanaExpressionCompiler compiler = QgsHanaExpressionCompiler( mSource );
       QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
-      switch(result)
+      switch ( result )
       {
-      case QgsSqlExpressionCompiler::Result::Complete:
-      case QgsSqlExpressionCompiler::Result::Partial:
-      {
+        case QgsSqlExpressionCompiler::Result::Complete:
+        case QgsSqlExpressionCompiler::Result::Partial:
+        {
           QString filterExpr = compiler.result();
           if ( !filterExpr.isEmpty() )
           {
@@ -391,13 +391,13 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
             mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Result::Complete );
             mCompileStatus = ( mExpressionCompiled ? Compiled : PartiallyCompiled );
           }
-      }
-      break;
-      case QgsSqlExpressionCompiler::Result::Fail:
-          QgsDebugMsg(QStringLiteral("Unable to compile filter expression: '%1'")
-                      .arg(request.filterExpression()->expression()).toStdString().c_str());
+        }
+        break;
+        case QgsSqlExpressionCompiler::Result::Fail:
+          QgsDebugMsg( QStringLiteral( "Unable to compile filter expression: '%1'" )
+                       .arg( request.filterExpression()->expression() ).toStdString().c_str() );
           break;
-      case QgsSqlExpressionCompiler::Result::None:
+        case QgsSqlExpressionCompiler::Result::None:
           break;
       }
       if ( result != QgsSqlExpressionCompiler::Result::Complete )

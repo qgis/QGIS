@@ -133,27 +133,27 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
     }
     break;
     case QgsExpressionNode::ntUnaryOperator:
+    {
+      const QgsExpressionNodeUnaryOperator *unaryOp = static_cast<const QgsExpressionNodeUnaryOperator *>( node );
+      switch ( unaryOp->op() )
       {
-        const QgsExpressionNodeUnaryOperator *unaryOp = static_cast<const QgsExpressionNodeUnaryOperator *>( node );
-        switch ( unaryOp->op() )
+        case QgsExpressionNodeUnaryOperator::uoNot:
         {
-            case QgsExpressionNodeUnaryOperator::uoNot:
-            {
-                Result resRight = compileNode( unaryOp->operand(), result );
-                if ( "NULL" == result.toUpper() )
-                {
-                  result.clear();
-                  return Fail;
-                }
-                result = "NOT " + result;
+          Result resRight = compileNode( unaryOp->operand(), result );
+          if ( "NULL" == result.toUpper() )
+          {
+            result.clear();
+            return Fail;
+          }
+          result = "NOT " + result;
 
-                return resRight;
-            }
-            case QgsExpressionNodeUnaryOperator::uoMinus:
-              break;
+          return resRight;
         }
+        case QgsExpressionNodeUnaryOperator::uoMinus:
+          break;
       }
-      break;
+    }
+    break;
     case QgsExpressionNode::ntBinaryOperator:
     {
       const QgsExpressionNodeBinaryOperator *binOp( static_cast<const QgsExpressionNodeBinaryOperator *>( node ) );
@@ -165,10 +165,10 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
 
       if ( resLeft == Fail || resRight == Fail )
         return Fail;
-
       // NULL can not appear on the left, only as part of IS NULL or IS NOT NULL
       if ( "NULL" == opLeft.toUpper() )
         return Fail;
+
       // NULL can only be on the right for IS and IS NOT
       if ( "NULL" == opRight.toUpper() &&
            ( binOp->op() != QgsExpressionNodeBinaryOperator::boIs && binOp->op() != QgsExpressionNodeBinaryOperator::boIsNot ) )
