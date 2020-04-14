@@ -8407,9 +8407,65 @@ void TestProcessingGui::testModelGraphicsView()
   QCOMPARE( dynamic_cast< QgsProcessingModelGroupBox * >( groupItem->component() )->description(), QStringLiteral( "group" ) );
 
 
+  QgsModelGraphicsView view;
+  view.setModelScene( &scene );
+
+  // copy some items
+  view.copyItems( QList< QgsModelComponentGraphicItem * >() << layerItem << algItem << groupItem, QgsModelGraphicsView::ClipboardCopy );
 
 
+  // second view to paste into
+  QgsProcessingModelAlgorithm algDest;
+  QVERIFY( algDest.childAlgorithms().empty() );
+  QVERIFY( algDest.parameterComponents().empty() );
+  QVERIFY( algDest.groupBoxes().empty() );
+  QgsModelGraphicsScene sceneDest;
+  sceneDest.setModel( &algDest );
+  QgsModelGraphicsView viewDest;
+  viewDest.setModelScene( &sceneDest );
+  viewDest.pasteItems( QgsModelGraphicsView::PasteModeInPlace );
 
+  QCOMPARE( algDest.parameterComponents().size(), 1 );
+  QCOMPARE( algDest.parameterComponents().value( QStringLiteral( "LAYER" ) ).parameterName(), QStringLiteral( "LAYER" ) );
+  // comment should not be copied, was not selected
+  QCOMPARE( algDest.parameterComponents().value( QStringLiteral( "LAYER" ) ).comment()->description(), QString() );
+  QCOMPARE( algDest.childAlgorithms().size(), 1 );
+  QCOMPARE( algDest.childAlgorithms().keys().at( 0 ), QStringLiteral( "native:buffer_1" ) );
+  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_1" ) ).algorithmId(), QStringLiteral( "native:buffer" ) );
+  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_1" ) ).comment()->description(), QString() );
+  // output was not selected
+  QVERIFY( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_1" ) ).modelOutputs().empty() );
+  QCOMPARE( algDest.groupBoxes().size(), 1 );
+  QCOMPARE( algDest.groupBoxes().at( 0 ).description(), QStringLiteral( "group" ) );
+
+  // copy comments and output (not output comment though!)
+  view.copyItems( QList< QgsModelComponentGraphicItem * >() << layerItem << layerCommentItem << algItem << algCommentItem << outputItem << groupItem, QgsModelGraphicsView::ClipboardCopy );
+  viewDest.pasteItems( QgsModelGraphicsView::PasteModeInPlace );
+
+  QCOMPARE( algDest.parameterComponents().size(), 2 );
+  QCOMPARE( algDest.parameterComponents().value( QStringLiteral( "LAYER" ) ).parameterName(), QStringLiteral( "LAYER" ) );
+  QCOMPARE( algDest.parameterComponents().value( QStringLiteral( "LAYER (2)" ) ).parameterName(), QStringLiteral( "LAYER (2)" ) );
+  QCOMPARE( algDest.parameterComponents().value( QStringLiteral( "LAYER" ) ).comment()->description(), QString() );
+  QCOMPARE( algDest.parameterComponents().value( QStringLiteral( "LAYER (2)" ) ).comment()->description(), QStringLiteral( "input comment" ) );
+  QCOMPARE( algDest.childAlgorithms().size(), 2 );
+  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_1" ) ).algorithmId(), QStringLiteral( "native:buffer" ) );
+  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_1" ) ).comment()->description(), QString() );
+  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_2" ) ).algorithmId(), QStringLiteral( "native:buffer" ) );
+  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_2" ) ).comment()->description(), QStringLiteral( "alg comment" ) );
+  QVERIFY( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_1" ) ).modelOutputs().empty() );
+  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_2" ) ).modelOutputs().size(), 1 );
+  // output comment wasn't selected
+  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_2" ) ).modelOutputs().value( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_2" ) ).modelOutputs().keys().at( 0 ) ).comment()->description(), QString() );
+  QCOMPARE( algDest.groupBoxes().size(), 2 );
+  QCOMPARE( algDest.groupBoxes().at( 0 ).description(), QStringLiteral( "group" ) );
+  QCOMPARE( algDest.groupBoxes().at( 1 ).description(), QStringLiteral( "group" ) );
+
+  // output and output comment
+  view.copyItems( QList< QgsModelComponentGraphicItem * >() << algItem << outputItem << outputCommentItem, QgsModelGraphicsView::ClipboardCopy );
+  viewDest.pasteItems( QgsModelGraphicsView::PasteModeInPlace );
+  QCOMPARE( algDest.childAlgorithms().size(), 3 );
+  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_3" ) ).modelOutputs().size(), 1 );
+  QCOMPARE( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_3" ) ).modelOutputs().value( algDest.childAlgorithms().value( QStringLiteral( "native:buffer_3" ) ).modelOutputs().keys().at( 0 ) ).comment()->description(), QStringLiteral( "output comm" ) );
 }
 
 void TestProcessingGui::cleanupTempDir()

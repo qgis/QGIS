@@ -645,6 +645,8 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
 
         pastedGroups << box;
 
+        modelScene()->model()->addGroupBox( box );
+
         if ( !pastedBounds.isValid( ) )
           pastedBounds = QRectF( box.position() - QPointF( box.size().width() / 2.0, box.size().height() / 2.0 ), box.size() );
         else
