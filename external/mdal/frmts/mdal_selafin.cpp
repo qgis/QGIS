@@ -560,7 +560,7 @@ bool MDAL::DriverSelafin::canReadMesh( const std::string &uri )
   return true;
 }
 
-std::unique_ptr<MDAL::Mesh> MDAL::DriverSelafin::load( const std::string &meshFile )
+std::unique_ptr<MDAL::Mesh> MDAL::DriverSelafin::load( const std::string &meshFile, const std::string & )
 {
   MDAL::Log::resetLastStatus();
   mFileName = meshFile;

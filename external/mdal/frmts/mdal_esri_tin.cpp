@@ -17,7 +17,7 @@ MDAL::Driver *MDAL::DriverEsriTin::create()
   return new DriverEsriTin();
 }
 
-std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri )
+std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, const std::string & )
 {
   MDAL::Log::resetLastStatus();
 
