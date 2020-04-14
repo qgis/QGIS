@@ -80,7 +80,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
     def testAlgorithmHelpNoAlg(self):
         rc, output, err = self.run_process(['help'])
         self.assertEqual(rc, 1)
-        self.assertIn('algorithm id not specified', err.lower())
+        self.assertIn('algorithm id or model file not specified', err.lower())
         self.assertFalse(output)
 
     def testAlgorithmHelp(self):
@@ -93,7 +93,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
     def testAlgorithmRunNoAlg(self):
         rc, output, err = self.run_process(['run'])
         self.assertEqual(rc, 1)
-        self.assertIn('algorithm id not specified', err.lower())
+        self.assertIn('algorithm id or model file not specified', err.lower())
         self.assertFalse(output)
 
     def testAlgorithmRunNoArgs(self):
@@ -110,6 +110,21 @@ class TestQgsProcessExecutable(unittest.TestCase):
         self.assertIn('0...10...20...30...40...50...60...70...80...90', output.lower())
         self.assertIn('results', output.lower())
         self.assertIn('OUTPUT:\t' + output_file, output)
+        self.assertTrue(os.path.exists(output_file))
+
+    def testModelHelp(self):
+        rc, output, err = self.run_process(['help', TEST_DATA_DIR + '/test_model.model3'])
+        self.assertEqual(rc, 0)
+        self.assertIn('model description', output.lower())
+        self.assertFalse(err)
+
+    def testModelRun(self):
+        output_file = self.TMP_DIR + '/model_output.shp'
+        rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/test_model.model3', '--FEATS={}'.format(TEST_DATA_DIR + '/polys.shp'), '--native:centroids_1:CENTROIDS={}'.format(output_file)])
+        self.assertEqual(rc, 0)
+        self.assertFalse(err)
+        self.assertIn('0...10...20...30...40...50...60...70...80...90', output.lower())
+        self.assertIn('results', output.lower())
         self.assertTrue(os.path.exists(output_file))
 
 

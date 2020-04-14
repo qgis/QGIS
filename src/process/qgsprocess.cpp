@@ -25,6 +25,7 @@
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsprocessingparametertype.h"
+#include "processing/models/qgsprocessingmodelalgorithm.h"
 
 #if defined(Q_OS_UNIX) and !defined(Q_OS_ANDROID)
 #include "sigwatch.h"
@@ -55,7 +56,7 @@ void ConsoleFeedback::pushInfo( const QString &info )
 
 void ConsoleFeedback::pushCommandInfo( const QString &info )
 {
-  std::cerr << info.toLocal8Bit().constData() << '\n';
+  std::cout << info.toLocal8Bit().constData() << '\n';
 }
 
 void ConsoleFeedback::pushDebugInfo( const QString &info )
@@ -186,7 +187,7 @@ int QgsProcessingExec::run( const QStringList &args )
   {
     if ( args.size() < 3 )
     {
-      std::cerr << QStringLiteral( "Algorithm ID not specified\n" ).toLocal8Bit().constData();
+      std::cerr << QStringLiteral( "Algorithm ID or model file not specified\n" ).toLocal8Bit().constData();
       return 1;
     }
 
@@ -197,7 +198,7 @@ int QgsProcessingExec::run( const QStringList &args )
   {
     if ( args.size() < 3 )
     {
-      std::cerr << QStringLiteral( "Algorithm ID not specified\n" ).toLocal8Bit().constData();
+      std::cerr << QStringLiteral( "Algorithm ID or model file not specified\n" ).toLocal8Bit().constData();
       return 1;
     }
 
@@ -240,12 +241,12 @@ void QgsProcessingExec::showUsage( const QString &appName )
 
   msg << "QGIS Processing Executor - " << VERSION << " '" << RELEASE_NAME << "' ("
       << Qgis::version() << ")\n"
-      << "Usage: " << appName <<  " [command] [algorithm id] [parameters]\n"
+      << "Usage: " << appName <<  " [command] [algorithm id or path to model file] [parameters]\n"
       << "\nAvailable commands:\n"
       << "\tplugins\tlist available and active plugins\n"
       << "\tlist\tlist all available processing algorithms\n"
-      << "\thelp\tshow help for an algorithm. The algorithm id argument must be specified.\n"
-      << "\trun\truns an algorithm. The algorithm id argument and parameter values must be specified. Parameter values are specified via the --PARAMETER=VALUE syntax\n";
+      << "\thelp\tshow help for an algorithm. The algorithm id or a path to a model file must be specified.\n"
+      << "\trun\truns an algorithm. The algorithm id or a path to a model file and parameter values must be specified. Parameter values are specified via the --PARAMETER=VALUE syntax\n";
 
   std::cout << msg.join( QString() ).toLocal8Bit().constData();
 }
@@ -310,11 +311,27 @@ void QgsProcessingExec::listPlugins()
 
 int QgsProcessingExec::showAlgorithmHelp( const QString &id )
 {
-  const QgsProcessingAlgorithm *alg = QgsApplication::processingRegistry()->algorithmById( id );
-  if ( ! alg )
+  std::unique_ptr< QgsProcessingModelAlgorithm > model;
+  const QgsProcessingAlgorithm *alg = nullptr;
+  if ( QFile::exists( id ) && QFileInfo( id ).suffix() == QLatin1String( "model3" ) )
   {
-    std::cerr << QStringLiteral( "Algorithm %1 not found!\n" ).arg( id ).toLocal8Bit().constData();
-    return 1;
+    model = qgis::make_unique< QgsProcessingModelAlgorithm >();
+    if ( !model->fromFile( id ) )
+    {
+      std::cerr << QStringLiteral( "File %1 is not a valid Processing model!\n" ).arg( id ).toLocal8Bit().constData();
+      return 1;
+    }
+
+    alg = model.get();
+  }
+  else
+  {
+    alg = QgsApplication::processingRegistry()->algorithmById( id );
+    if ( ! alg )
+    {
+      std::cerr << QStringLiteral( "Algorithm %1 not found!\n" ).arg( id ).toLocal8Bit().constData();
+      return 1;
+    }
   }
 
   std::cout << QStringLiteral( "%1 (%2)\n" ).arg( alg->displayName(), alg->id() ).toLocal8Bit().constData();
@@ -381,11 +398,27 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &id )
 
 int QgsProcessingExec::execute( const QString &id, const QVariantMap &params )
 {
-  const QgsProcessingAlgorithm *alg = QgsApplication::processingRegistry()->algorithmById( id );
-  if ( ! alg )
+  std::unique_ptr< QgsProcessingModelAlgorithm > model;
+  const QgsProcessingAlgorithm *alg = nullptr;
+  if ( QFile::exists( id ) && QFileInfo( id ).suffix() == QLatin1String( "model3" ) )
   {
-    std::cerr << QStringLiteral( "Algorithm %1 not found!\n" ).arg( id ).toLocal8Bit().constData();
-    return 1;
+    model = qgis::make_unique< QgsProcessingModelAlgorithm >();
+    if ( !model->fromFile( id ) )
+    {
+      std::cerr << QStringLiteral( "File %1 is not a valid Processing model!\n" ).arg( id ).toLocal8Bit().constData();
+      return 1;
+    }
+
+    alg = model.get();
+  }
+  else
+  {
+    alg = QgsApplication::processingRegistry()->algorithmById( id );
+    if ( ! alg )
+    {
+      std::cerr << QStringLiteral( "Algorithm %1 not found!\n" ).arg( id ).toLocal8Bit().constData();
+      return 1;
+    }
   }
 
   std::cout << "\n----------------\n";
@@ -450,6 +483,9 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params )
 
     for ( auto it = res.constBegin(); it != res.constEnd(); ++it )
     {
+      if ( it.key() == QLatin1String( "CHILD_INPUTS" ) || it.key() == QLatin1String( "CHILD_RESULTS" ) )
+        continue;
+
       QVariant res = it.value();
       if ( res.type() == QVariant::List || res.type() == QVariant::StringList )
       {
