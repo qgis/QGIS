@@ -66,9 +66,8 @@ void QgsMessageViewer::showMessage( bool blocking )
 {
   if ( blocking )
   {
-    QApplication::setOverrideCursor( Qt::ArrowCursor );
+    QgsTemporaryCursorRestoreOverride override;
     exec();
-    QApplication::restoreOverrideCursor();
   }
   else
   {
