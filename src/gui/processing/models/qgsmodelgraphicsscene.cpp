@@ -451,13 +451,14 @@ void QgsModelGraphicsScene::showWarning( const QString &shortMessage, const QStr
   QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
   connect( detailsButton, &QPushButton::clicked, detailsButton, [ = ]
   {
-    QgsMessageViewer dialog( mMessageBar, QgsGuiUtils::ModalDialogFlags, false );
+    QgsMessageViewer dialog( detailsButton, QgsGuiUtils::ModalDialogFlags, false );
     dialog.setTitle( title );
     dialog.setMessage( longMessage, QgsMessageOutput::MessageHtml );
     dialog.showMessage();
   } );
   messageWidget->layout()->addWidget( detailsButton );
-  mMessageBar->pushWidget( messageWidget, level, 0 );
+  mMessageBar->clearWidgets();
+  mMessageBar->pushWidget( messageWidget, level, 5 );
 }
 
 ///@endcond
