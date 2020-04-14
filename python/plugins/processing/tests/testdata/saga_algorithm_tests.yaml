@@ -10,7 +10,7 @@ tests:
         type: raster
     results:
       INVERSE:
-        hash: 8e3947b878a00f70ce837fba962f6be6d3f0c8eae2d614099b015f1e
+        hash: 6e584b70ea9d1c59bb8ebbe02fc473392abf67493c8186eda46fe729
         type: rasterhash
 
   - algorithm: saga:fixeddistancebuffer
@@ -109,7 +109,7 @@ tests:
       GRIDS:
         name: raster.tif
         type: raster
-      RESAMPLING: 0
+      RESAMPLING: 3
       TYPE: 7
       USE_NODATA: false
       XGRIDS:
@@ -127,7 +127,7 @@ tests:
       GRIDS:
         name: raster.tif
         type: raster
-      RESAMPLING: 0
+      RESAMPLING: 3
       TYPE: 7
       USE_NODATA: false
       XGRIDS:
@@ -147,7 +147,7 @@ tests:
       GRIDS:
         name: raster.tif
         type: raster
-      RESAMPLING: 0
+      RESAMPLING: 3
       TYPE: 7
       USE_NODATA: false
       XGRIDS:
@@ -726,7 +726,7 @@ tests:
           type: raster
         type: multi
       P_VALUE: 5.0
-      RESAMPLING: 0
+      RESAMPLING: 3
       RESIDUAL_COR: 0
     results:
       INFO_COEFF:
