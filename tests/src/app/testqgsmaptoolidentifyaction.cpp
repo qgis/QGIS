@@ -679,9 +679,10 @@ void TestQgsMapToolIdentifyAction::identifyMesh()
 void TestQgsMapToolIdentifyAction::identifyVectorTile()
 {
   //create a temporary layer
+  QString vtPath = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/vector_tile/{z}-{x}-{y}.pbf" );
   QgsDataSourceUri dsUri;
   dsUri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
-  dsUri.setParam( QStringLiteral( "url" ), QStringLiteral( "file://%1/vector_tile/{z}-{x}-{y}.pbf" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( vtPath ).toString() );
   QgsVectorTileLayer *tempLayer = new QgsVectorTileLayer( dsUri.encodedUri(), QStringLiteral( "testlayer" ) );
   QVERIFY( tempLayer->isValid() );
 
