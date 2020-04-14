@@ -81,6 +81,11 @@ Updates an embedded ``group`` from a ``project``.
 Gets invisible layers
 %End
 
+    static QStringList uncheckedGroupList( QgsLayerTreeNode *node );
+%Docstring
+Gets unchecked group
+%End
+
     static void setLegendFilterByExpression( QgsLayerTreeLayer &layer, const QString &expr, bool enabled = true );
 %Docstring
 Sets the expression filter of a legend layer

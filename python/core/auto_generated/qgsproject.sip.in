@@ -532,7 +532,7 @@ Returns project file path if layer is embedded from other project file. Returns 
 %End
 
 
-    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
+    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, const QStringList &uncheckedGroups, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 %Docstring
 Create layer group instance defined in an arbitrary project file.
 
