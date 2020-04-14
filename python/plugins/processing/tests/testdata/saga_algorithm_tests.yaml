@@ -109,7 +109,7 @@ tests:
       GRIDS:
         name: raster.tif
         type: raster
-      RESAMPLING: 3
+      RESAMPLING: 0
       TYPE: 7
       USE_NODATA: false
       XGRIDS:
@@ -127,7 +127,7 @@ tests:
       GRIDS:
         name: raster.tif
         type: raster
-      RESAMPLING: 3
+      RESAMPLING: 0
       TYPE: 7
       USE_NODATA: false
       XGRIDS:
@@ -147,7 +147,7 @@ tests:
       GRIDS:
         name: raster.tif
         type: raster
-      RESAMPLING: 3
+      RESAMPLING: 0
       TYPE: 7
       USE_NODATA: false
       XGRIDS:
@@ -726,7 +726,7 @@ tests:
           type: raster
         type: multi
       P_VALUE: 5.0
-      RESAMPLING: 3
+      RESAMPLING: 0
       RESIDUAL_COR: 0
     results:
       INFO_COEFF:
