@@ -298,22 +298,22 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
 
         if ( !rpGeom.isNull() && !rpGeom.isEmpty() )
         {
-          if ( ( minDistanceForThisFeature != 0 ) or ( mMinDistanceGlobal != 0 ) )
+          if ( ( minDistanceForThisFeature != 0 ) || ( mMinDistanceGlobal != 0 ) )
           {
-            if ( totNPoints > 0 )
+            // Check minimum distance to existing points
+            // Per feature first
+            if ( ( minDistanceForThisFeature != 0 ) && ( pointsAddedForThisFeature > 0 ) )
             {
-              // Have to check minimum distance to existing points
-              // Per feature first
-              if ( pointsAddedForThisFeature > 0 )
+              QList<QgsFeatureId> neighbors = localIndex.nearestNeighbor( rpGeom, 1, minDistanceForThisFeature );
+              if ( !neighbors.empty() )
               {
-                QList<QgsFeatureId> neighbors = localIndex.nearestNeighbor( rpGeom, 1, minDistanceForThisFeature );
-                if ( !neighbors.empty() )
-                {
-                  feedback->setProgress( baseFeatureProgress + pointProgress );
-                  continue;
-                }
+                feedback->setProgress( baseFeatureProgress + pointProgress );
+                continue;
               }
-              // Global
+            }
+            // Then global
+            if ( ( mMinDistanceGlobal != 0 ) && ( totNPoints > 0 ) )
+            {
               QList<QgsFeatureId> neighbors = index.nearestNeighbor( rpGeom, 1, mMinDistanceGlobal );
               if ( !neighbors.empty() )
               {
@@ -322,7 +322,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
               }
             }
           }
-          // point OK to add
+          // OK to add point
           QgsFeature f = QgsFeature( totNPoints );
           QgsAttributes pAttrs = QgsAttributes();
           pAttrs.append( totNPoints );
