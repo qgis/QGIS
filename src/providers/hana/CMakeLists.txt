@@ -5,9 +5,9 @@ FIND_PACKAGE(ODBCCPP REQUIRED)
 
 SET (HANA_SRCS
   qgshanacolumntypethread.cpp
-  qgshanaconnectionstringbuilder.cpp
   qgshanaconnection.cpp
   qgshanaconnectionpool.cpp
+  qgshanaconnectionstringbuilder.cpp
   qgshanadriver.cpp
   qgshanaexpressioncompiler.cpp
   qgshanafeatureiterator.cpp
@@ -53,7 +53,6 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
-
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
