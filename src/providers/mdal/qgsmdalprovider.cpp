@@ -223,6 +223,7 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &path,
       break;
   }
 
+<<<<<<< HEAD
   DatasetGroupH g = MDAL_M_addDatasetGroup(
                       mMeshH,
                       meta.name().toStdString().c_str(),
@@ -231,6 +232,16 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &path,
                       driver,
                       path.toStdString().c_str()
                     );
+=======
+  MDAL_DatasetGroupH g = MDAL_M_addDatasetGroup(
+                           mMeshH,
+                           meta.name().toStdString().c_str(),
+                           location,
+                           meta.isScalar(),
+                           driver,
+                           filename.toStdString().c_str()
+                         );
+>>>>>>> b40b3fe365... fix #35549
   if ( !g )
     return true;
 
