@@ -381,6 +381,26 @@ QStringList QgsLayerTreeUtils::invisibleLayerList( QgsLayerTreeNode *node )
   return list;
 }
 
+QStringList QgsLayerTreeUtils::uncheckedGroupList( QgsLayerTreeNode *node )
+{
+  QStringList list;
+
+  if ( QgsLayerTree::isGroup( node ) )
+  {
+    const auto constChildren = QgsLayerTree::toGroup( node )->children();
+    for ( QgsLayerTreeNode *child : constChildren )
+    {
+      if ( child->itemVisibilityChecked() == Qt::Unchecked )
+      {
+        QgsLayerTreeGroup *group = QgsLayerTree::toGroup( child );
+        list << group->name() ;
+      }
+      list << uncheckedGroupList( child );
+    }
+  }
+  return list;
+}
+
 void QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTreeGroup *group )
 {
   const auto constChildren = group->children();
@@ -391,6 +411,7 @@ void QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTreeGroup *grou
       if ( child->customProperty( QStringLiteral( "embedded" ) ).toInt() )
       {
         child->setCustomProperty( QStringLiteral( "embedded-invisible-layers" ), invisibleLayerList( child ) );
+        child->setCustomProperty( QStringLiteral( "embedded-unchecked-groups" ), uncheckedGroupList( child ) );
         QgsLayerTree::toGroup( child )->removeAllChildren();
       }
       else

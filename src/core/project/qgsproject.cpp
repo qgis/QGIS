@@ -1819,7 +1819,7 @@ bool QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFl
         // make sure to convert the path from relative to absolute
         QString projectPath = readPath( childGroup->customProperty( QStringLiteral( "embedded_project" ) ).toString() );
         childGroup->setCustomProperty( QStringLiteral( "embedded_project" ), projectPath );
-        QgsLayerTreeGroup *newGroup = createEmbeddedGroup( childGroup->name(), projectPath, childGroup->customProperty( QStringLiteral( "embedded-invisible-layers" ) ).toStringList(), flags );
+        QgsLayerTreeGroup *newGroup = createEmbeddedGroup( childGroup->name(), projectPath, childGroup->customProperty( QStringLiteral( "embedded-invisible-layers" ) ).toStringList(), childGroup->customProperty( QStringLiteral( "embedded-unchecked-groups" ) ).toStringList(), flags );
         if ( newGroup )
         {
           QList<QgsLayerTreeNode *> clonedChildren;
@@ -2920,7 +2920,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
 }
 
 
-QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags )
+QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, const QStringList &uncheckedGroups, QgsProject::ReadFlags flags )
 {
   QString qgsProjectFile = projectFilePath;
   QgsProjectArchive archive;
@@ -2990,6 +2990,16 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
     {
       layer->resolveReferences( this );
       layer->setItemVisibilityChecked( !invisibleLayers.contains( layerId ) );
+    }
+  }
+
+  const auto constFindGroups = newGroup->findGroups();
+  for ( QgsLayerTreeGroup *group : constFindGroups )
+  {
+    if ( group )
+    {
+      group->resolveReferences( this );
+      group->setItemVisibilityChecked( !uncheckedGroups.contains( group->name() ) );
     }
   }
 

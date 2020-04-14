@@ -640,7 +640,7 @@ Returns an empty string if the matching layer is not embedded.
 %End
 
 
-    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
+    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, const QStringList &uncheckedGroups, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 %Docstring
 Create layer group instance defined in an arbitrary project file.
 
