@@ -460,26 +460,25 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                 else:
                     val = wrapper.parameterValue()
             except InvalidParameterValue:
-                self.bar.pushMessage(self.tr("Error"),
-                                     self.tr("Wrong or missing value for parameter '{}'").format(param.description()),
-                                     level=Qgis.Warning)
-                return None
+                val = None
 
             if isinstance(val, QgsProcessingModelChildParameterSource):
                 val = [val]
             elif not (isinstance(val, list) and all(
                     [isinstance(subval, QgsProcessingModelChildParameterSource) for subval in val])):
                 val = [QgsProcessingModelChildParameterSource.fromStaticValue(val)]
+
+            valid = True
             for subval in val:
                 if (isinstance(subval, QgsProcessingModelChildParameterSource) and
                         subval.source() == QgsProcessingModelChildParameterSource.StaticValue and
                         not param.checkValueIsAcceptable(subval.staticValue())) \
                         or (subval is None and not param.flags() & QgsProcessingParameterDefinition.FlagOptional):
-                    self.bar.pushMessage(self.tr("Error"), self.tr("Wrong or missing value for parameter '{}'").format(
-                        param.description()),
-                        level=Qgis.Warning)
-                    return None
-            alg.addParameterSources(param.name(), val)
+                    valid = False
+                    break
+
+            if valid:
+                alg.addParameterSources(param.name(), val)
 
         outputs = {}
         for output in self._alg.destinationParameterDefinitions():
