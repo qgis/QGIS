@@ -655,7 +655,12 @@ void QgsAttributesFormProperties::addTabOrGroupButton()
       tabList.append( QgsAddTabOrGroup::TabPair( itemData.name(), *it ) );
     }
   }
+<<<<<<< HEAD:src/app/qgsattributesformproperties.cpp
   QgsAddTabOrGroup addTabOrGroup( mLayer, tabList, this );
+=======
+  QTreeWidgetItem *currentItem = mFormLayoutTree->selectedItems().value( 0 );
+  QgsAddTabOrGroup addTabOrGroup( mLayer, tabList, currentItem, this );
+>>>>>>> b095ce470f... Fix crash when clicking + in drag and drop form designer and no:src/gui/vector/qgsattributesformproperties.cpp
 
   if ( !addTabOrGroup.exec() )
     return;
