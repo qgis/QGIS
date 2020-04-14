@@ -191,7 +191,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
     const QStringList dependencies = it.value().dependencies();
     for ( const QString &depend : dependencies )
     {
-      addItem( new QgsModelArrowItem( mChildAlgorithmItems.value( depend ), mChildAlgorithmItems.value( it.value().childId() ) ) );
+      addItem( new QgsModelArrowItem( mChildAlgorithmItems.value( depend ), mChildAlgorithmItems.value( it.value().childId() ), true ) );
     }
   }
 

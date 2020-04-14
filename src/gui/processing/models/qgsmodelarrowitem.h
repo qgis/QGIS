@@ -44,7 +44,8 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
      * to \a endEdge and \a endIndex.
      */
     QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, bool startIsOutgoing,
-                       QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming );
+                       QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming,
+                       bool showArrowHead=false );
 
     /**
      * Constructor for QgsModelArrowItem, with the specified \a parent item.
@@ -53,7 +54,8 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
      * to an automatic point on \a endItem.
      */
     QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex,
-                       QgsModelComponentGraphicItem *endItem );
+                       QgsModelComponentGraphicItem *endItem,
+                       bool showArrowHead=false );
 
     /**
      * Constructor for QgsModelArrowItem, with the specified \a parent item.
@@ -62,7 +64,8 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
      * \a endEdge and \a endIndex.
      */
     QgsModelArrowItem( QgsModelComponentGraphicItem *startItem,
-                       QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex );
+                       QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex,
+                       bool showArrowHead=false );
 
     /**
      * Constructor for QgsModelArrowItem, with the specified \a parent item.
@@ -70,7 +73,8 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
      * The arrow will link \a startItem to \a endItem, joining an automatic points on both items.
      */
     QgsModelArrowItem( QgsModelComponentGraphicItem *startItem,
-                       QgsModelComponentGraphicItem *endItem );
+                       QgsModelComponentGraphicItem *endItem,
+                       bool showArrowHead=false );
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
 
@@ -100,7 +104,10 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
     int mEndIndex = -1;
     bool mEndIsIncoming = false;
 
-    QList< QPointF > mNodePoints;
+    bool mShowArrowHead = false;
+
+    QPointF mStartPoint;
+    QPointF mEndPoint;
 
     QColor mColor;
 };

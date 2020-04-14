@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <math.h>
+
 #include "qgsmodelarrowitem.h"
 #include "qgsapplication.h"
 #include "qgsmodelgraphicsscene.h"
@@ -25,7 +27,8 @@
 
 
 QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, bool startIsOutgoing,
-                                      QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming )
+                                      QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming,
+                                      bool showArrowHead )
   : QObject( nullptr )
   , mStartItem( startItem )
   , mStartEdge( startEdge )
@@ -35,6 +38,7 @@ QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Q
   , mEndEdge( endEdge )
   , mEndIndex( endIndex )
   , mEndIsIncoming( endIsIncoming )
+  , mShowArrowHead( showArrowHead )
 {
   setCacheMode( QGraphicsItem::DeviceCoordinateCache );
   setFlag( QGraphicsItem::ItemIsSelectable, false );
@@ -50,18 +54,18 @@ QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Q
   connect( mEndItem, &QgsModelComponentGraphicItem::repaintArrows, this, [ = ] { update(); } );
 }
 
-QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, QgsModelComponentGraphicItem *endItem )
-  : QgsModelArrowItem( startItem, startEdge, startIndex, true, endItem, Qt::LeftEdge, -1, true )
+QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, QgsModelComponentGraphicItem *endItem, bool showArrowHead )
+  : QgsModelArrowItem( startItem, startEdge, startIndex, true, endItem, Qt::LeftEdge, -1, true, showArrowHead )
 {
 }
 
-QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex )
-  : QgsModelArrowItem( startItem, Qt::LeftEdge, -1, true, endItem, endEdge, endIndex, true )
+QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool showArrowHead )
+  : QgsModelArrowItem( startItem, Qt::LeftEdge, -1, true, endItem, endEdge, endIndex, true, showArrowHead )
 {
 }
 
-QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, QgsModelComponentGraphicItem *endItem )
-  : QgsModelArrowItem( startItem, Qt::LeftEdge, -1, true, endItem, Qt::LeftEdge, -1, true )
+QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, QgsModelComponentGraphicItem *endItem, bool showArrowHead )
+  : QgsModelArrowItem( startItem, Qt::LeftEdge, -1, true, endItem, Qt::LeftEdge, -1, true, showArrowHead )
 {
 }
 
@@ -83,9 +87,22 @@ void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem
   painter->setBrush( color );
   painter->setRenderHint( QPainter::Antialiasing );
 
-  for ( const QPointF &point : qgis::as_const( mNodePoints ) )
+  painter->drawEllipse( mStartPoint, 3.0, 3.0 );
+  if ( ! mShowArrowHead )
   {
-    painter->drawEllipse( point, 3.0, 3.0 );
+    painter->drawEllipse( mEndPoint, 3.0, 3.0 );
+  }
+  else
+  {
+    QPointF delta = path().pointAtPercent(1.0) - path().pointAtPercent(0.95);
+    float angle = atan2( delta.y(), delta.x() ) * 180.0 / M_PI;
+    painter->translate(mEndPoint);
+    painter->rotate(angle);
+    QPolygonF arrowHead;
+    arrowHead << QPointF(0, 0) << QPointF(-6, 4) << QPointF(-6, -4) << QPointF(0, 0);
+    painter->drawPolygon( arrowHead );
+    painter->rotate(-angle);
+    painter->translate(-mEndPoint);
   }
 
   painter->setBrush( Qt::NoBrush );
@@ -102,7 +119,6 @@ void QgsModelArrowItem::setPenStyle( Qt::PenStyle style )
 
 void QgsModelArrowItem::updatePath()
 {
-  mNodePoints.clear();
   QList< QPointF > controlPoints;
 
   // is there a fixed start or end point?
@@ -131,12 +147,12 @@ void QgsModelArrowItem::updatePath()
       pt = mStartItem->calculateAutomaticLinkPoint( endPt + mEndItem->pos(), startEdge );
 
     controlPoints.append( pt );
-    mNodePoints.append( pt );
+    mStartPoint = pt;
     controlPoints.append( bezierPointForCurve( pt, startEdge, !mStartIsOutgoing ) );
   }
   else
   {
-    mNodePoints.append( mStartItem->pos() + startPt );
+    mStartPoint = mStartItem->pos() + startPt;
     controlPoints.append( mStartItem->pos() + startPt );
     controlPoints.append( bezierPointForCurve( mStartItem->pos() + startPt, mStartEdge == Qt::BottomEdge ? Qt::RightEdge : Qt::LeftEdge, !mStartIsOutgoing ) );
   }
@@ -152,11 +168,11 @@ void QgsModelArrowItem::updatePath()
 
     controlPoints.append( bezierPointForCurve( pt, endEdge, mEndIsIncoming ) );
     controlPoints.append( pt );
-    mNodePoints.append( pt );
+    mEndPoint = pt;
   }
   else
   {
-    mNodePoints.append( mEndItem->pos() + endPt );
+    mEndPoint = mEndItem->pos() + endPt ;
     controlPoints.append( bezierPointForCurve( mEndItem->pos() + endPt, mEndEdge == Qt::BottomEdge ? Qt::RightEdge : Qt::LeftEdge, mEndIsIncoming ) );
     controlPoints.append( mEndItem->pos() + endPt );
   }
