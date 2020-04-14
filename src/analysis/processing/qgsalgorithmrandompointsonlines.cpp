@@ -109,6 +109,7 @@ QString QgsRandomPointsOnLinesAlgorithm::shortHelpString() const
                       "on the lines of the <i>Input line layer</i>. "
                       "The default behaviour is that the generated point features inherit "
                       "the attributes of the line feature on which they were was generated.</p>"
+                      "<p>Parameters / options:</p> "
                       "<ul> "
                       "<li>For each feature in the <i><b>Input line layer</b></i>, the "
                       "algorithm attempts to add the specified <i><b>Number of points for "
@@ -297,7 +298,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
 
         if ( !rpGeom.isNull() && !rpGeom.isEmpty() )
         {
-          if ( minDistanceForThisFeature != 0 )
+          if ( ( minDistanceForThisFeature != 0 ) or ( mMinDistanceGlobal != 0 ) )
           {
             if ( totNPoints > 0 )
             {
