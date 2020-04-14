@@ -588,6 +588,7 @@ class TestQgsProcessing: public QObject
     void modelWithProviderWithLimitedTypes();
     void modelVectorOutputIsCompatibleType();
     void modelAcceptableValues();
+    void modelValidate();
     void tempUtils();
     void convertCompatible();
     void create();
@@ -9893,6 +9894,64 @@ void TestQgsProcessing::modelAcceptableValues()
   QCOMPARE( sources.count(), 2 );
   QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "fs" ) );
   QCOMPARE( sources.at( 1 ).parameterName(), QStringLiteral( "vl" ) );
+}
+
+void TestQgsProcessing::modelValidate()
+{
+  QgsProcessingModelAlgorithm m;
+  QgsProcessingModelParameter stringParam1( "string" );
+  m.addModelParameter( new QgsProcessingParameterString( "string" ), stringParam1 );
+  QgsProcessingModelChildAlgorithm alg2c1;
+  alg2c1.setChildId( "cx1" );
+  alg2c1.setAlgorithmId( "native:centroids" );
+  m.addChildAlgorithm( alg2c1 );
+
+  QStringList errors;
+  QVERIFY( !m.validateChildAlgorithm( QStringLiteral( "cx1" ), errors ) );
+  QCOMPARE( errors.size(), 2 );
+  QCOMPARE( errors.at( 0 ), QStringLiteral( "Parameter <i>INPUT</i> is mandatory" ) );
+  QCOMPARE( errors.at( 1 ), QStringLiteral( "Parameter <i>ALL_PARTS</i> is mandatory" ) );
+
+  QgsProcessingModelChildParameterSource badSource;
+  badSource.setSource( QgsProcessingModelChildParameterSource::StaticValue );
+  badSource.setStaticValue( 56 );
+  m.childAlgorithm( QStringLiteral( "cx1" ) ).addParameterSources( QStringLiteral( "INPUT" ), QList< QgsProcessingModelChildParameterSource >() << badSource );
+
+  QVERIFY( !m.validateChildAlgorithm( QStringLiteral( "cx1" ), errors ) );
+  QCOMPARE( errors.size(), 2 );
+  QCOMPARE( errors.at( 0 ), QStringLiteral( "Value for <i>INPUT</i> is not acceptable for this parameter" ) );
+  QCOMPARE( errors.at( 1 ), QStringLiteral( "Parameter <i>ALL_PARTS</i> is mandatory" ) );
+
+  QgsProcessingModelChildParameterSource goodSource;
+  goodSource.setSource( QgsProcessingModelChildParameterSource::Expression );
+  m.childAlgorithm( QStringLiteral( "cx1" ) ).addParameterSources( QStringLiteral( "ALL_PARTS" ), QList< QgsProcessingModelChildParameterSource >() << goodSource );
+
+  QVERIFY( !m.validateChildAlgorithm( QStringLiteral( "cx1" ), errors ) );
+  QCOMPARE( errors.size(), 1 );
+  QCOMPARE( errors.at( 0 ), QStringLiteral( "Value for <i>INPUT</i> is not acceptable for this parameter" ) );
+
+  badSource.setSource( QgsProcessingModelChildParameterSource::ChildOutput );
+  badSource.setOutputChildId( QStringLiteral( "cc" ) );
+  m.childAlgorithm( QStringLiteral( "cx1" ) ).addParameterSources( QStringLiteral( "INPUT" ), QList< QgsProcessingModelChildParameterSource >() << badSource );
+
+  QVERIFY( !m.validateChildAlgorithm( QStringLiteral( "cx1" ), errors ) );
+  QCOMPARE( errors.size(), 1 );
+  QCOMPARE( errors.at( 0 ), QStringLiteral( "Child algorithm <i>cc</i> used for parameter <i>INPUT</i> does not exist" ) );
+
+  badSource.setSource( QgsProcessingModelChildParameterSource::ModelParameter );
+  badSource.setParameterName( QStringLiteral( "cc" ) );
+  m.childAlgorithm( QStringLiteral( "cx1" ) ).addParameterSources( QStringLiteral( "INPUT" ), QList< QgsProcessingModelChildParameterSource >() << badSource );
+
+  QVERIFY( !m.validateChildAlgorithm( QStringLiteral( "cx1" ), errors ) );
+  QCOMPARE( errors.size(), 1 );
+  QCOMPARE( errors.at( 0 ), QStringLiteral( "Model input <i>cc</i> used for parameter <i>INPUT</i> does not exist" ) );
+
+  goodSource.setSource( QgsProcessingModelChildParameterSource::StaticValue );
+  goodSource.setStaticValue( QStringLiteral( TEST_DATA_DIR ) + "/polys.shp" );
+  m.childAlgorithm( QStringLiteral( "cx1" ) ).addParameterSources( QStringLiteral( "INPUT" ), QList< QgsProcessingModelChildParameterSource >() << goodSource );
+
+  QVERIFY( m.validateChildAlgorithm( QStringLiteral( "cx1" ), errors ) );
+  QCOMPARE( errors.size(), 0 );
 }
 
 void TestQgsProcessing::tempUtils()
