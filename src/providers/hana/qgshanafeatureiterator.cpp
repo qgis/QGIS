@@ -339,9 +339,10 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
   QString sqlFilter;
   // Set spatial filter
   if ( !( filterRect.isNull() || filterRect.isEmpty() ) && mSource->isSpatial() && mHasGeometryColumn )
-  {
     sqlFilter = getBBOXFilter( filterRect, QgsHanaUtils::toHANAVersion( mConnRef->getDatabaseVersion() ) );
-  }
+
+  if ( !mSource->mQueryWhereClause.isEmpty() )
+    sqlFilter = andWhereClauses( sqlFilter, mSource->mQueryWhereClause );
 
   // Set fid filter
   if ( !mFidColumn.isEmpty() )
@@ -375,22 +376,31 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
     if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
     {
       QgsHanaExpressionCompiler compiler = QgsHanaExpressionCompiler( mSource );
-
       QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
-
-      if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
+      switch(result)
       {
-        QString filterExpr = compiler.result();
-        if ( !filterExpr.isEmpty() )
-        {
-          sqlFilter = andWhereClauses( sqlFilter, filterExpr );
-          //if only partial success when compiling expression, we need to double-check results
-          //using QGIS' expressions
-          mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
-          mCompileStatus = ( mExpressionCompiled ? Compiled : PartiallyCompiled );
-        }
+      case QgsSqlExpressionCompiler::Result::Complete:
+      case QgsSqlExpressionCompiler::Result::Partial:
+      {
+          QString filterExpr = compiler.result();
+          if ( !filterExpr.isEmpty() )
+          {
+            sqlFilter = andWhereClauses( sqlFilter, filterExpr );
+            //if only partial success when compiling expression, we need to double-check results
+            //using QGIS' expressions
+            mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Result::Complete );
+            mCompileStatus = ( mExpressionCompiled ? Compiled : PartiallyCompiled );
+          }
       }
-      if ( result != QgsSqlExpressionCompiler::Complete )
+      break;
+      case QgsSqlExpressionCompiler::Result::Fail:
+          QgsDebugMsg(QStringLiteral("Unable to compile filter expression: '%1'")
+                      .arg(request.filterExpression()->expression()).toStdString().c_str());
+          break;
+      case QgsSqlExpressionCompiler::Result::None:
+          break;
+      }
+      if ( result != QgsSqlExpressionCompiler::Result::Complete )
       {
         //can't apply limit at provider side as we need to check all results using QGIS expressions
         limitAtProvider = false;
@@ -401,9 +411,6 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
       limitAtProvider = false;
     }
   }
-
-  if ( !mSource->mQueryWhereClause.isEmpty() )
-    sqlFilter = andWhereClauses( sqlFilter, mSource->mQueryWhereClause );
 
   if ( !sqlFilter.isEmpty() )
     sql += QStringLiteral( " WHERE " ) + sqlFilter;

@@ -128,6 +128,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
             'NULL or false',
             'NULL or true',
             'NULL or NULL',
+            'not null',
             '\'x\' || "name" IS NOT NULL',
             '\'x\' || "name" IS NULL',
             'radians(cnt) < 2',
