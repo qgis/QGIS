@@ -651,6 +651,31 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
     }
     case PktInt64:
     case PktUint64:
+    {
+      QString expr;
+
+      //simple primary key, so prefer to use an "IN (...)" query. These are much faster then multiple chained ...OR... clauses
+      if ( !featureIds.isEmpty() )
+      {
+        QString delim;
+        expr = QStringLiteral( "%1 IN (" ).arg( QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[0] ).name() ) );
+
+        const auto constFeatureIds = featureIds;
+        for ( const QgsFeatureId featureId : constFeatureIds )
+        {
+          QVariantList pkVals = sharedData->lookupKey( featureId );
+	  if ( !pkVals.isEmpty() )
+	  {
+            QgsField fld = fields.at( pkAttrs[0] );
+            expr += delim + pkVals[0].toString();
+            delim = ',';
+	  }
+        }
+        expr += ')';
+      }
+
+      return expr;
+    }
     case PktFidMap:
     case PktTid:
     case PktUnknown:
