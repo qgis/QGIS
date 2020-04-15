@@ -107,7 +107,7 @@ QString QgsRandomPointsOnLinesAlgorithm::shortHelpString() const
 {
   return QObject::tr( "<p>This algorithm creates a point layer, with points placed randomly "
                       "on the lines of the <i>Input line layer</i>. "
-                      "The default behaviour is that the generated point features inherit "
+                      "The default behavior is that the generated point features inherit "
                       "the attributes of the line feature on which they were was generated.</p>"
                       "<p>Parameters / options:</p> "
                       "<ul> "
