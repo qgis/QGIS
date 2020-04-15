@@ -56,7 +56,6 @@ static const QMap<QString, QString> FUNCTION_NAMES_SQL_FUNCTIONS_MAP
   { "round", "ROUND" },
   { "floor", "FLOOR" },
   { "ceil", "CEIL" },
-  { "pi", "pi" },
   // geometry functions
   { "geom_from_wkt", "ST_GeomFromWKT" },
   // string functions
@@ -107,10 +106,6 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
         result = quotedIdentifier( mGeometryColumn );
         return Complete;
       }
-      else if ( funcName.toLower() == QLatin1String( "log10" ) )
-      {
-        return Fail;
-      }
       else if ( funcName.toLower() == QLatin1String( "pi" ) )
       {
         result = "3.141592653589793238";
@@ -121,7 +116,6 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
     case QgsExpressionNode::ntLiteral:
     {
       const QgsExpressionNodeLiteral *n = static_cast<const QgsExpressionNodeLiteral *>( node );
-
       switch ( n->value().type() )
       {
         case QVariant::Bool:
@@ -146,7 +140,6 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
             return Fail;
           }
           result = "NOT " + result;
-
           return resRight;
         }
         case QgsExpressionNodeUnaryOperator::uoMinus:
