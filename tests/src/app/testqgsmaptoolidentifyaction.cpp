@@ -696,13 +696,12 @@ void TestQgsMapToolIdentifyAction::identifyVectorTile()
   QList<QgsMapToolIdentify::IdentifyResult> results;
   results = testIdentifyVectorTile( tempLayer, 15186127, -2974969 );
   QCOMPARE( results.size(), 1 );
-#if 0
   QCOMPARE( results[0].mLayer, tempLayer );
   QCOMPARE( results[0].mLabel, QStringLiteral( "place" ) );
   QCOMPARE( results[0].mFeature.geometry().wkbType(), QgsWkbTypes::Point );
   QCOMPARE( results[0].mFeature.attribute( QStringLiteral( "class" ) ).toString(), QStringLiteral( "country" ) );
   QCOMPARE( results[0].mFeature.attribute( QStringLiteral( "name" ) ).toString(), QStringLiteral( "Australia" ) );
-#endif
+
   delete tempLayer;
 }
 
