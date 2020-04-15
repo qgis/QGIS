@@ -679,6 +679,7 @@ QAction *QgisAppInterface::actionAddOgrLayer() { return qgis->actionAddOgrLayer(
 QAction *QgisAppInterface::actionAddRasterLayer() { return qgis->actionAddRasterLayer(); }
 QAction *QgisAppInterface::actionAddPgLayer() { return qgis->actionAddPgLayer(); }
 QAction *QgisAppInterface::actionAddWmsLayer() { return qgis->actionAddWmsLayer(); }
+QAction *QgisAppInterface::actionAddXyzLayer() { return qgis->actionAddXyzLayer(); }
 QAction *QgisAppInterface::actionAddAfsLayer() { return qgis->actionAddAfsLayer(); }
 QAction *QgisAppInterface::actionAddAmsLayer() { return qgis->actionAddAmsLayer(); }
 QAction *QgisAppInterface::actionCopyLayerStyle() { return qgis->actionCopyLayerStyle(); }

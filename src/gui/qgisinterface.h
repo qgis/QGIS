@@ -479,6 +479,12 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionAddRasterLayer() = 0;
     virtual QAction *actionAddPgLayer() = 0;
     virtual QAction *actionAddWmsLayer() = 0;
+
+    /**
+     * Returns the native Add XYZ layer action.
+     * \since QGIS 3.14
+     */
+    virtual QAction *actionAddXyzLayer() = 0;
     //! Returns the native Add ArcGIS FeatureServer action.
     virtual QAction *actionAddAfsLayer() = 0;
     //! Returns the native Add ArcGIS MapServer action.

@@ -66,6 +66,18 @@ QStringList QgsXyzConnectionUtils::connectionList()
   return connList;
 }
 
+QString QgsXyzConnectionUtils::selectedConnection()
+{
+  QgsSettings settings;
+  return settings.value( QStringLiteral( "qgis/connections-xyz/selected" ) ).toString();
+}
+
+void QgsXyzConnectionUtils::setSelectedConnection( const QString &name )
+{
+  QgsSettings settings;
+  return settings.setValue( QStringLiteral( "qgis/connections-xyz/selected" ), name );
+}
+
 QgsXyzConnection QgsXyzConnectionUtils::connection( const QString &name )
 {
   QgsSettings settings;
@@ -128,5 +140,4 @@ void QgsXyzConnectionUtils::addConnection( const QgsXyzConnection &conn )
   {
     settings.setValue( QStringLiteral( "hidden" ), false );
   }
-
 }

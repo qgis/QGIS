@@ -517,6 +517,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionAddPgLayer() { return mActionAddPgLayer; }
     QAction *actionAddSpatiaLiteLayer() { return mActionAddSpatiaLiteLayer; }
     QAction *actionAddWmsLayer() { return mActionAddWmsLayer; }
+    QAction *actionAddXyzLayer() { return mActionAddXyzLayer; }
     QAction *actionAddWcsLayer() { return mActionAddWcsLayer; }
     QAction *actionAddWfsLayer() { return mActionAddWfsLayer; }
     QAction *actionAddAfsLayer() { return mActionAddAfsLayer; }
