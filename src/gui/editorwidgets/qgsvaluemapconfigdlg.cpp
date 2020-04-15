@@ -295,7 +295,7 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
 {
   QgsSettings settings;
 
-  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Select a File" ), QDir::homePath() );
+  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Value Map from File" ), QDir::homePath() );
   if ( fileName.isNull() )
     return;
 
