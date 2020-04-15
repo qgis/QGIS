@@ -17,8 +17,8 @@
 #ifndef QGSHANACOLUMNTYPETHREAD_H
 #define QGSHANACOLUMNTYPETHREAD_H
 
+#include "qgsdatasourceuri.h"
 #include "qgshanatablemodel.h"
-#include "qgshanasettings.h"
 #include <QThread>
 
 // A class that determines the geometry type of a given database
@@ -28,14 +28,11 @@ class QgsHanaColumnTypeThread : public QThread
 {
     Q_OBJECT
   public:
-    QgsHanaColumnTypeThread( const QgsHanaSettings &settings );
+    QgsHanaColumnTypeThread( const QString &connName, const QgsDataSourceUri &uri, bool allowGeometrylessTables, bool userTablesOnly );
 
     // These functions get the layer types and pass that information out
     // by emitting the setLayerType() signal.
     void run() override;
-
-    bool isStopped() const { return mStopped; }
-    QVector<QgsHanaLayerProperty> layerProperties() const { return mLayerProperties; }
 
   signals:
     void setLayerType( QgsHanaLayerProperty layerProperty );
@@ -48,9 +45,11 @@ class QgsHanaColumnTypeThread : public QThread
   private:
     QgsHanaColumnTypeThread() = default;
 
-    QgsHanaSettings mSettings;
+    const QString mConnectionName;
+    const QgsDataSourceUri mUri;
+    const bool mAllowGeometrylessTables;
+    const bool mUserTablesOnly;
     bool mStopped = false;
-    QVector<QgsHanaLayerProperty> mLayerProperties;
 };
 
 #endif  // QGSHANACOLUMNTYPETHREAD_H

@@ -53,7 +53,7 @@ QString QgsHanaSettings::getPort() const
     return mIdentifier;
 }
 
-void QgsHanaSettings::setFromDataSourceUri(const QgsDataSourceUri& uri)
+void QgsHanaSettings::setFromDataSourceUri( const QgsDataSourceUri &uri )
 {
   mDriver = uri.driver();
   mHost = uri.host();
@@ -71,7 +71,7 @@ void QgsHanaSettings::setFromDataSourceUri(const QgsDataSourceUri& uri)
   mSslKeyStore = "";
   mSslTrustStore = "";
   if ( uri.hasParam( QStringLiteral( "encrypt" ) ) )
-   mSslEnabled = QVariant(uri.param("encrypt")).toBool();
+    mSslEnabled = QVariant( uri.param( "encrypt" ) ).toBool();
   if ( uri.hasParam( QStringLiteral( "sslCryptoProvider" ) ) )
     mSslCryptoProvider = uri.param( QStringLiteral( "sslCryptoProvider" ) );
   if ( uri.hasParam( QStringLiteral( "sslValidateCertificate" ) ) )

@@ -21,8 +21,12 @@
 #include "qgsmessagelog.h"
 #include <mutex>
 
-QgsHanaColumnTypeThread::QgsHanaColumnTypeThread( const QgsHanaSettings &settings )
-  : mSettings( settings )
+QgsHanaColumnTypeThread::QgsHanaColumnTypeThread( const QString &connName, const QgsDataSourceUri &uri, bool allowGeometrylessTables, bool userTablesOnly )
+  : mConnectionName( connName )
+  , mUri( uri )
+  , mAllowGeometrylessTables( allowGeometrylessTables )
+  , mUserTablesOnly( userTablesOnly )
+  , mStopped( false )
 {
   static std::once_flag initialized;
   std::call_once( initialized, [ = ]( )
@@ -40,20 +44,19 @@ void QgsHanaColumnTypeThread::run()
 {
   mStopped = false;
 
-  QgsDataSourceUri uri = mSettings.toDataSourceUri();
-  QgsHanaConnectionRef conn( uri );
+  QgsHanaConnectionRef conn( mUri );
   if ( conn.isNull() )
   {
-    QgsDebugMsg( "Connection failed - " + uri.connectionInfo( false ) );
+    QgsDebugMsg( "Connection failed - " + mUri.connectionInfo( false ) );
     mStopped = true;
     return;
   }
 
-  emit progressMessage( tr( "Retrieving tables of %1 ." ).arg( mSettings.getName() ) );
+  emit progressMessage( tr( "Retrieving tables of %1 ." ).arg( mConnectionName ) );
   QVector<QgsHanaLayerProperty> layerProperties = conn->getLayers(
-        mSettings.getSchema(),
-        mSettings.getAllowGeometrylessTables(),
-        mSettings.getUserTablesOnly() );
+        mUri.schema(),
+        mAllowGeometrylessTables,
+        mUserTablesOnly );
 
   if ( layerProperties.isEmpty() )
   {
@@ -62,24 +65,27 @@ void QgsHanaColumnTypeThread::run()
     return;
   }
 
-  int i = 0;
-  for ( QgsHanaLayerProperty &layerProperty : layerProperties )
-  {
-    if ( !mStopped )
-    {
-      emit progress( i++, layerProperties.size() );
-      emit progressMessage( tr( "Scanning column %1.%2.%3…" )
-                            .arg( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName ) );
-      conn->readLayerInfo( layerProperty );
-    }
+  const int totalLayers = layerProperties.size();
 
-    // Signal about new layer.
+  emit progress( 0, totalLayers );
+
+  for ( int i = 0; i < totalLayers; ++i )
+  {
+    if ( mStopped )
+      break;
+
+    QgsHanaLayerProperty &layerProperty = layerProperties[i];
+    emit progress( i, totalLayers );
+    emit progressMessage( tr( "Scanning column %1.%2.%3…" )
+                          .arg( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName ) );
+    conn->readLayerInfo( layerProperty );
+
     emit setLayerType( layerProperty );
   }
 
-  if ( !mStopped )
-    mLayerProperties = layerProperties;
-
   emit progress( 0, 0 );
-  emit progressMessage( tr( "Table retrieval finished." ) );
+  if ( mStopped )
+    emit progressMessage( tr( "Table retrieval stopped." ) );
+  else
+    emit progressMessage( tr( "Table retrieval finished." ) );
 }

@@ -543,7 +543,7 @@ void QgsHanaSourceSelect::btnConnect_clicked()
   QgsHanaSettings settings( connName, true );
   settings.setAllowGeometrylessTables( cbxAllowGeometrylessTables->isChecked() );
 
-  QgsDataSourceUri uri = settings.toDataSourceUri();
+  const QgsDataSourceUri uri = settings.toDataSourceUri();
   QgsHanaConnectionRef conn( uri );
   if ( conn.isNull() )
   {
@@ -556,7 +556,7 @@ void QgsHanaSourceSelect::btnConnect_clicked()
 
   QApplication::setOverrideCursor( Qt::BusyCursor );
 
-  mColumnTypeThread = qgis::make_unique<QgsHanaColumnTypeThread>( settings );
+  mColumnTypeThread = qgis::make_unique<QgsHanaColumnTypeThread>( settings.getName(), uri, settings.getAllowGeometrylessTables(), settings.getUserTablesOnly() );
   mColumnTypeTask = qgis::make_unique<QgsProxyProgressTask>( tr( "Scanning tables for %1" ).arg( cmbConnections->currentText() ) );
   QgsApplication::taskManager()->addTask( mColumnTypeTask.get() );
 

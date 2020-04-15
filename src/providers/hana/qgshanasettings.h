@@ -109,8 +109,8 @@ class QgsHanaSettings
     }
 
     QString getPort() const;
-    void setFromDataSourceUri(const QgsDataSourceUri& uri);
-    QgsDataSourceUri toDataSourceUri() const;
+    void setFromDataSourceUri( const QgsDataSourceUri &uri );
+    QgsDataSourceUri toDataSourceUri() const ;
 
     void load();
     void save();
