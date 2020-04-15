@@ -262,11 +262,11 @@ void QgsProcessingExec::loadPlugins()
     {
       if ( !mPythonUtils->loadPlugin( plugin ) )
       {
-        std::cerr << "error loading plugin\n\n";
+        std::cerr << "error loading plugin: " << plugin.toLocal8Bit().constData() << "\n\n";
       }
       else if ( !mPythonUtils->startProcessingPlugin( plugin ) )
       {
-        std::cerr << "error starting plugin\n\n";
+        std::cerr << "error starting plugin: " << plugin.toLocal8Bit().constData() << "\n\n";
       }
     }
   }
