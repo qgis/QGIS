@@ -37,15 +37,20 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
     Q_OBJECT
   public:
 
+    enum Marker
+    {
+      Circle,
+      ArrowHead,
+    };
+
     /**
      * Constructor for QgsModelArrowItem, with the specified \a parent item.
      *
      * The arrow will link \a startItem to \a endItem, joining the specified \a startEdge and \a startIndex
      * to \a endEdge and \a endIndex.
      */
-    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, bool startIsOutgoing,
-                       QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming,
-                       bool showArrowHead=false );
+    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, bool startIsOutgoing, Marker startMarker,
+                       QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming, Marker endMarker );
 
     /**
      * Constructor for QgsModelArrowItem, with the specified \a parent item.
@@ -53,9 +58,8 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
      * The arrow will link \a startItem to \a endItem, joining the specified \a startEdge and \a startIndex
      * to an automatic point on \a endItem.
      */
-    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex,
-                       QgsModelComponentGraphicItem *endItem,
-                       bool showArrowHead=false );
+    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, Marker startMarker,
+                       QgsModelComponentGraphicItem *endItem, Marker endMarker );
 
     /**
      * Constructor for QgsModelArrowItem, with the specified \a parent item.
@@ -63,18 +67,16 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
      * The arrow will link \a startItem to \a endItem, joining an automatic point on \a startItem to the specified
      * \a endEdge and \a endIndex.
      */
-    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem,
-                       QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex,
-                       bool showArrowHead=false );
+    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Marker startMarker,
+                       QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, Marker endMarker );
 
     /**
      * Constructor for QgsModelArrowItem, with the specified \a parent item.
      *
      * The arrow will link \a startItem to \a endItem, joining an automatic points on both items.
      */
-    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem,
-                       QgsModelComponentGraphicItem *endItem,
-                       bool showArrowHead=false );
+    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Marker startMarker,
+                       QgsModelComponentGraphicItem *endItem, Marker endMarker );
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
 
@@ -98,13 +100,13 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
     Qt::Edge mStartEdge = Qt::LeftEdge;
     int mStartIndex = -1;
     bool mStartIsOutgoing = true;
+    Marker mStartMarker;
 
     QgsModelComponentGraphicItem *mEndItem = nullptr;
     Qt::Edge mEndEdge = Qt::LeftEdge;
     int mEndIndex = -1;
     bool mEndIsIncoming = false;
-
-    bool mShowArrowHead = false;
+    Marker mEndMarker;
 
     QPointF mStartPoint;
     QPointF mEndPoint;

@@ -26,19 +26,19 @@
 ///@cond NOT_STABLE
 
 
-QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, bool startIsOutgoing,
-                                      QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming,
-                                      bool showArrowHead )
+QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, bool startIsOutgoing, Marker startMarker,
+                                      QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming, Marker endMarker )
   : QObject( nullptr )
   , mStartItem( startItem )
   , mStartEdge( startEdge )
   , mStartIndex( startIndex )
   , mStartIsOutgoing( startIsOutgoing )
+  , mStartMarker( startMarker )
   , mEndItem( endItem )
   , mEndEdge( endEdge )
   , mEndIndex( endIndex )
   , mEndIsIncoming( endIsIncoming )
-  , mShowArrowHead( showArrowHead )
+  , mEndMarker( endMarker )
 {
   setCacheMode( QGraphicsItem::DeviceCoordinateCache );
   setFlag( QGraphicsItem::ItemIsSelectable, false );
@@ -54,18 +54,18 @@ QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Q
   connect( mEndItem, &QgsModelComponentGraphicItem::repaintArrows, this, [ = ] { update(); } );
 }
 
-QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, QgsModelComponentGraphicItem *endItem, bool showArrowHead )
-  : QgsModelArrowItem( startItem, startEdge, startIndex, true, endItem, Qt::LeftEdge, -1, true, showArrowHead )
+QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, Marker startMarker, QgsModelComponentGraphicItem *endItem, Marker endMarker )
+  : QgsModelArrowItem( startItem, startEdge, startIndex, true, startMarker, endItem, Qt::LeftEdge, -1, true, endMarker )
 {
 }
 
-QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool showArrowHead )
-  : QgsModelArrowItem( startItem, Qt::LeftEdge, -1, true, endItem, endEdge, endIndex, true, showArrowHead )
+QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Marker startMarker, QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, Marker endMarker )
+  : QgsModelArrowItem( startItem, Qt::LeftEdge, -1, true, startMarker, endItem, endEdge, endIndex, true, endMarker )
 {
 }
 
-QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, QgsModelComponentGraphicItem *endItem, bool showArrowHead )
-  : QgsModelArrowItem( startItem, Qt::LeftEdge, -1, true, endItem, Qt::LeftEdge, -1, true, showArrowHead )
+QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Marker startMarker, QgsModelComponentGraphicItem *endItem, Marker endMarker )
+  : QgsModelArrowItem( startItem, Qt::LeftEdge, -1, true, startMarker, endItem, Qt::LeftEdge, -1, true, endMarker )
 {
 }
 
@@ -87,12 +87,28 @@ void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem
   painter->setBrush( color );
   painter->setRenderHint( QPainter::Antialiasing );
 
-  painter->drawEllipse( mStartPoint, 3.0, 3.0 );
-  if ( ! mShowArrowHead )
+  if ( mStartMarker == Marker::Circle )
+  {
+    painter->drawEllipse( mStartPoint, 3.0, 3.0 );
+  }
+  else if ( mStartMarker == Marker::ArrowHead )
+  {
+    QPointF delta = path().pointAtPercent(0.0) - path().pointAtPercent(0.05);
+    float angle = atan2( delta.y(), delta.x() ) * 180.0 / M_PI;
+    painter->translate(mStartPoint);
+    painter->rotate(angle);
+    QPolygonF arrowHead;
+    arrowHead << QPointF(0, 0) << QPointF(-6, 4) << QPointF(-6, -4) << QPointF(0, 0);
+    painter->drawPolygon( arrowHead );
+    painter->rotate(-angle);
+    painter->translate(-mStartPoint);
+  }
+
+  if ( mEndMarker == Marker::Circle )
   {
     painter->drawEllipse( mEndPoint, 3.0, 3.0 );
   }
-  else
+  else if ( mEndMarker == Marker::ArrowHead )
   {
     QPointF delta = path().pointAtPercent(1.0) - path().pointAtPercent(0.95);
     float angle = atan2( delta.y(), delta.x() ) * 180.0 / M_PI;
