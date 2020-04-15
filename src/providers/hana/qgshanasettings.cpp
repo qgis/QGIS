@@ -101,7 +101,7 @@ void QgsHanaSettings::setFromDataSourceUri(const QgsDataSourceUri& uri)
     mAuthcfg = uri.param( QStringLiteral( "authcfg" ) );
 }
 
-QgsDataSourceUri QgsHanaSettings::toDataSourceUri()
+QgsDataSourceUri QgsHanaSettings::toDataSourceUri() const
 {
   QgsDataSourceUri uri;
   uri.setConnection( mHost, getPort(), mDatabase, mUserName, mPassword );
