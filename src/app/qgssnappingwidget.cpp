@@ -707,6 +707,8 @@ void QgsSnappingWidget::snappingScaleModeTriggered( QAction *action )
   mMaxScaleWidget->setEnabled( mode == QgsSnappingConfig::Global );
   mConfig.setScaleDependencyMode( mode );
   mProject->setSnappingConfig( mConfig );
+
+  mLayerTreeView->reset();
 }
 
 void QgsSnappingWidget::updateToleranceDecimals()
