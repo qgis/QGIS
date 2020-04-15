@@ -285,7 +285,7 @@ Sets the tolerance
 
     double minimumScale() const;
 %Docstring
-Returns the min scale
+Returns the min scale (i.e. most \"zoomed out\" scale)
 
 .. versionadded:: 3.14
 %End
@@ -299,7 +299,7 @@ Sets the min scale on which snapping is enabled, 0.0 disable scale limit
 
     double maximumScale() const;
 %Docstring
-Returns the max scale
+Returns the max scale (i.e. most \"zoomed in\" scale)
 
 .. versionadded:: 3.14
 %End
