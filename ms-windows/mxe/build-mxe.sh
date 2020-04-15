@@ -83,6 +83,7 @@ if [[ "$COMMAND" != *"package"* ]]; then
         -DWITH_ASTYLE=OFF \
         -DWITH_SERVER=OFF \
         -DWITH_BINDINGS=FALSE \
+        -DWITH_QGIS_PROCESS=FALSE \
         -DQT_LRELEASE_EXECUTABLE=${MXE}/usr/${TARGET}/qt5/bin/lrelease \
         -DMXE=ON \
         $ARGS

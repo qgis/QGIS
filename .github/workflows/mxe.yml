@@ -1,12 +1,12 @@
 name: Windows cross build with MXE
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v2
     - name: Cross build with MXE
@@ -18,4 +18,4 @@ jobs:
       with:
         name: QGIS for Windows 64bit
         path: qgis-mxe-release.zip
-      
+
