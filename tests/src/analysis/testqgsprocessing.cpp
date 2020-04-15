@@ -10063,7 +10063,7 @@ void TestQgsProcessing::convertCompatible()
   // make sure all features are copied
   std::unique_ptr< QgsVectorLayer > t = qgis::make_unique< QgsVectorLayer >( out, "vl2" );
   QCOMPARE( layer->featureCount(), t->featureCount() );
-  QCOMPARE( layer->crs(), t->crs() );
+  QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:4326" ) );
 
   out = QgsProcessingUtils::convertToCompatibleFormatAndLayerName( layer, false, QStringLiteral( "test2" ), QStringList() << "tab", QString( "tab" ), context, &feedback, layerName );
   QVERIFY( out != layer->source() );
