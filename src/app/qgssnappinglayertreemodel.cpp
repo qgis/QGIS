@@ -574,7 +574,8 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
     {
       if ( role == Qt::DisplayRole )
       {
-        if ( ls.typeFlag() == QgsSnappingConfig::NoSnapFlag )
+        // check if only one or zero flags are set
+        if ( ( ls.typeFlag() & ( ls.typeFlag() - 1 ) ) == 0 )
         {
           return QgsSnappingConfig::snappingTypeFlagToString( ls.typeFlag() );
         }
@@ -588,14 +589,9 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
           {
             if ( ls.typeFlag() & snappingTypeEnum.value( i ) )
             {
-              if ( activeTypes == 2 )
-              {
-                modes.append( tr( ", …" ) );
-                break;
-              }
-              if ( activeTypes > 0 )
-                modes.append( tr( ", " ) );
-              modes.append( QgsSnappingConfig::snappingTypeFlagToString( ls.typeFlag() ) );
+              if ( activeTypes )
+                modes.append( ", " );
+              modes.append( QgsSnappingConfig::snappingTypeFlagToString( QgsSnappingConfig::SnappingTypeFlag( snappingTypeEnum.value( i ) ) ).left( 1 ) );
               activeTypes++;
             }
           }
