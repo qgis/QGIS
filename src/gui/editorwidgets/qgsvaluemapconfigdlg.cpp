@@ -179,6 +179,7 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
       setRow( row, pair.first, QString() );
     else
       setRow( row, pair.first, pair.second.toString() );
+    ++row;
   }
 }
 
