@@ -144,6 +144,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void deleteSelected();
     void populateZoomToMenu();
     void validate();
+    void reorderInputs();
 
   private:
 

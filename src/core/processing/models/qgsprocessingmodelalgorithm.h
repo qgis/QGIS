@@ -256,6 +256,25 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QgsProcessingModelParameter &parameterComponent( const QString &name );
 
     /**
+     * Returns an ordered list of parameters for the model.
+     *
+     * \see setParameterOrder()
+     * \since QGIS 3.14
+     */
+    QList< QgsProcessingModelParameter > orderedParameters() const;
+
+    /**
+     * Sets the \a order for showing parameters for the model.
+     *
+     * The \a order list should consist of parameter names corresponding to existing
+     * model parameterComponents().
+     *
+     * \see orderedParameters()
+     * \since QGIS 3.14
+     */
+    void setParameterOrder( const QStringList &order );
+
+    /**
      * Updates the model's parameter definitions to include all relevant destination
      * parameters as required by child algorithm ModelOutputs.
      * Must be called whenever child algorithm ModelOutputs are altered.
@@ -501,6 +520,8 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QVariantMap mDesignerParameterValues;
 
     QMap< QString, QgsProcessingModelGroupBox > mGroupBoxes;
+
+    QStringList mParameterOrder;
 
     void dependsOnChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
     void dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;

@@ -589,6 +589,7 @@ class TestQgsProcessing: public QObject
     void modelVectorOutputIsCompatibleType();
     void modelAcceptableValues();
     void modelValidate();
+    void modelInputs();
     void tempUtils();
     void convertCompatible();
     void create();
@@ -9965,6 +9966,35 @@ void TestQgsProcessing::modelValidate()
 
   QVERIFY( m.validate( errors ) );
   QCOMPARE( errors.size(), 0 );
+}
+
+void TestQgsProcessing::modelInputs()
+{
+  QgsProcessingModelAlgorithm m;
+
+  // add a bunch of inputs
+  QgsProcessingModelParameter stringParam1( "string" );
+  m.addModelParameter( new QgsProcessingParameterString( "string" ), stringParam1 );
+
+  QgsProcessingModelParameter stringParam2( "a string" );
+  m.addModelParameter( new QgsProcessingParameterString( "a string" ), stringParam2 );
+
+  QgsProcessingModelParameter stringParam3( "cc string" );
+  m.addModelParameter( new QgsProcessingParameterString( "cc string" ), stringParam3 );
+
+  // set specific input order for parameters
+  m.setParameterOrder( QStringList() << "cc string" << "a string" );
+
+  QgsProcessingModelAlgorithm m2;
+  m2.loadVariant( m.toVariant() );
+  QCOMPARE( m2.orderedParameters().count(), 3 );
+  QCOMPARE( m2.orderedParameters().at( 0 ).parameterName(), QStringLiteral( "cc string" ) );
+  QCOMPARE( m2.orderedParameters().at( 1 ).parameterName(), QStringLiteral( "a string" ) );
+  QCOMPARE( m2.orderedParameters().at( 2 ).parameterName(), QStringLiteral( "string" ) );
+
+  QCOMPARE( m2.parameterDefinitions().at( 0 )->name(), QStringLiteral( "cc string" ) );
+  QCOMPARE( m2.parameterDefinitions().at( 1 )->name(), QStringLiteral( "a string" ) );
+  QCOMPARE( m2.parameterDefinitions().at( 2 )->name(), QStringLiteral( "string" ) );
 }
 
 void TestQgsProcessing::tempUtils()

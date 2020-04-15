@@ -28,6 +28,7 @@
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelcomponentgraphicitem.h"
 #include "processing/models/qgsprocessingmodelgroupbox.h"
+#include "processing/models/qgsmodelinputreorderwidget.h"
 #include "qgsmessageviewer.h"
 #include "qgsmessagebaritem.h"
 
@@ -138,6 +139,8 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mActionDeleteComponents, &QAction::triggered, this, &QgsModelDesignerDialog::deleteSelected );
   connect( mActionSnapSelected, &QAction::triggered, mView, &QgsModelGraphicsView::snapSelected );
   connect( mActionValidate, &QAction::triggered, this, &QgsModelDesignerDialog::validate );
+  connect( mActionReorderInputs, &QAction::triggered, this, &QgsModelDesignerDialog::reorderInputs );
+  connect( mReorderInputsButton, &QPushButton::clicked, this, &QgsModelDesignerDialog::reorderInputs );
 
   mActionSnappingEnabled->setChecked( settings.value( QStringLiteral( "/Processing/Modeler/enableSnapToGrid" ), false ).toBool() );
   connect( mActionSnappingEnabled, &QAction::toggled, this, [ = ]( bool enabled )
@@ -810,6 +813,19 @@ void QgsModelDesignerDialog::validate()
     messageWidget->layout()->addWidget( detailsButton );
     mMessageBar->clearWidgets();
     mMessageBar->pushWidget( messageWidget, Qgis::Warning, 0 );
+  }
+}
+
+void QgsModelDesignerDialog::reorderInputs()
+{
+  QgsModelInputReorderDialog dlg( this );
+  dlg.setInputs( mModel->orderedParameters() );
+  if ( dlg.exec() )
+  {
+    const QStringList inputOrder = dlg.inputOrder();
+    beginUndoCommand( tr( "Reorder Inputs" ) );
+    mModel->setParameterOrder( inputOrder );
+    endUndoCommand();
   }
 }
 
