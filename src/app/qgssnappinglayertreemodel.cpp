@@ -104,14 +104,14 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
   if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn )
   {
     QgsScaleWidget *minLimitSp = new QgsScaleWidget( parent );
-    minLimitSp->setToolTip( tr( "Min Scale" ) );
+    minLimitSp->setToolTip( tr( "Minimum scale from which snapping is enabled (i.e. most \"zoomed out\" scale)" ) );
     return minLimitSp;
   }
 
   if ( index.column() == QgsSnappingLayerTreeModel::MaxScaleColumn )
   {
     QgsScaleWidget *maxLimitSp = new QgsScaleWidget( parent );
-    maxLimitSp->setToolTip( tr( "Max Scale" ) );
+    maxLimitSp->setToolTip( tr( "Maximum scale up to which snapping is enabled (i.e. most \"zoomed in\" scale)" ) );
     return maxLimitSp;
   }
 
