@@ -138,7 +138,6 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
 #ifndef SIP_RUN
     AttributeEditorType mType;
     QString mName;
-    //QgsPropertyCollection mDataDefinedProperties;
     QgsAttributeEditorElement *mParent = nullptr;
     bool mShowLabel;
 #endif

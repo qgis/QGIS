@@ -317,20 +317,20 @@ class CORE_EXPORT QgsEditFormConfig
 
     /**
      * Set data defined properties for \a fieldName to \a properties
-     * \since QGIS 4.14
+     * \since QGIS 3.14
      */
     void setDataDefinedFieldProperties( const QString &fieldName, const QgsPropertyCollection &properties );
 
     /**
      * Returns data defined properties for \a fieldName
-     * \since QGIS 4.14
+     * \since QGIS 3.14
      */
     QgsPropertyCollection dataDefinedFieldProperties( const QString &fieldName ) const;
 
 
     /**
      * Returns data defined property definitions.
-     * \since QGIS 4.14
+     * \since QGIS 3.14
      */
     static const QgsPropertiesDefinition &propertyDefinitions();
 

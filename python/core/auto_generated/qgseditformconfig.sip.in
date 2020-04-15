@@ -288,14 +288,14 @@ Create a new edit form config. Normally invoked by :py:class:`QgsVectorLayer`
 %Docstring
 Set data defined properties for ``fieldName`` to ``properties``
 
-.. versionadded:: 4.14
+.. versionadded:: 3.14
 %End
 
     QgsPropertyCollection dataDefinedFieldProperties( const QString &fieldName ) const;
 %Docstring
 Returns data defined properties for ``fieldName``
 
-.. versionadded:: 4.14
+.. versionadded:: 3.14
 %End
 
 
@@ -303,7 +303,7 @@ Returns data defined properties for ``fieldName``
 %Docstring
 Returns data defined property definitions.
 
-.. versionadded:: 4.14
+.. versionadded:: 3.14
 %End
 
 };
