@@ -46,7 +46,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         cls.uri = 'driver=\'/usr/sap/hdbclient/libodbcHDB.so\' host=localhost port=30015 user=SYSTEM ' \
-                  'password=mypassword '
+                  'password=mypassword'
         if 'QGIS_HANA_TEST_DB' in os.environ:
             cls.uri = os.environ['QGIS_HANA_TEST_DB']
         ds_uri = QgsDataSourceUri(cls.uri)
@@ -57,11 +57,11 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
 
         # Create test layers
         cls.vl = QgsHanaProviderUtils.createVectorLayer(
-            cls.uri + 'key=\'pk\' srid=4326 type=POINT table="qgis_test"."some_data" (geom) sql=', 'test')
+            cls.uri + ' key=\'pk\' srid=4326 type=POINT table="qgis_test"."some_data" (geom) sql=', 'test')
         assert cls.vl.isValid()
         cls.source = cls.vl.dataProvider()
         cls.poly_vl = QgsHanaProviderUtils.createVectorLayer(
-            cls.uri + 'key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test')
+            cls.uri + ' key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test')
         assert cls.poly_vl.isValid()
         cls.poly_provider = cls.poly_vl.dataProvider()
         QgsGui.editorWidgetRegistry().initEditors()
