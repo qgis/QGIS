@@ -32,7 +32,9 @@ class QgsManageConnectionsDialog : QDialog
       WCS,
       Oracle,
       GeoNode,
-      XyzTiles
+      XyzTiles,
+      ArcgisMapServer,
+      ArcgisFeatureServer
     };
 
     QgsManageConnectionsDialog( QWidget *parent /TransferThis/ = 0, Mode mode = Export, Type type = WMS, const QString &fileName = QString() );

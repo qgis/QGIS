@@ -49,7 +49,9 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
       WCS,
       Oracle,
       GeoNode,
-      XyzTiles
+      XyzTiles,
+      ArcgisMapServer,
+      ArcgisFeatureServer
     };
 
     /**
@@ -74,6 +76,7 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
     QDomDocument saveDb2Connections( const QStringList &connections );
     QDomDocument saveGeonodeConnections( const QStringList &connections );
     QDomDocument saveXyzTilesConnections( const QStringList &connections );
+    QDomDocument saveArcgisConnections( const QStringList &connections, const QString &service );
 
     void loadOWSConnections( const QDomDocument &doc, const QStringList &items, const QString &service );
     void loadWfsConnections( const QDomDocument &doc, const QStringList &items );
@@ -83,6 +86,7 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
     void loadDb2Connections( const QDomDocument &doc, const QStringList &items );
     void loadGeonodeConnections( const QDomDocument &doc, const QStringList &items );
     void loadXyzTilesConnections( const QDomDocument &doc, const QStringList &items );
+    void loadArcgisConnections( const QDomDocument &doc, const QStringList &items, const QString &service );
 
     QString mFileName;
     Mode mDialogMode;
