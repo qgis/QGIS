@@ -23,8 +23,6 @@
 #include "qgsxmlutils.h"
 #include "qgsapplication.h"
 
-//#include "qgseditorwidgetregistry.h"
-
 QgsAttributeEditorContainer::~QgsAttributeEditorContainer()
 {
   qDeleteAll( mChildren );
@@ -33,6 +31,22 @@ QgsAttributeEditorContainer::~QgsAttributeEditorContainer()
 QgsEditFormConfig::QgsEditFormConfig()
   : d( new QgsEditFormConfigPrivate() )
 {
+}
+
+void QgsEditFormConfig::setDataDefinedFieldProperties( const QString &fieldName, const QgsPropertyCollection &properties )
+{
+  d.detach();
+  d->mDataDefinedFieldProperties[ fieldName ] = properties;
+}
+
+QgsPropertyCollection QgsEditFormConfig::dataDefinedFieldProperties( const QString &fieldName ) const
+{
+  return d->mDataDefinedFieldProperties.value( fieldName );
+}
+
+const QgsPropertiesDefinition &QgsEditFormConfig::propertyDefinitions()
+{
+  return QgsEditFormConfigPrivate::propertyDefinitions();
 }
 
 QVariantMap QgsEditFormConfig::widgetConfig( const QString &widgetName ) const
@@ -382,6 +396,16 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
     d->mLabelOnTop.insert( labelOnTopElement.attribute( QStringLiteral( "name" ) ), static_cast< bool >( labelOnTopElement.attribute( QStringLiteral( "labelOnTop" ) ).toInt() ) );
   }
 
+  // Read data defined field properties
+  QDomNodeList fieldDDPropertiesNodeList = node.namedItem( QStringLiteral( "dataDefinedFieldProperties" ) ).toElement().childNodes();
+  for ( int i = 0; i < fieldDDPropertiesNodeList.size(); ++i )
+  {
+    QDomElement DDElement = fieldDDPropertiesNodeList.at( i ).toElement();
+    QgsPropertyCollection collection;
+    collection.readXml( DDElement, propertyDefinitions() );
+    d->mDataDefinedFieldProperties.insert( DDElement.attribute( QStringLiteral( "name" ) ), collection );
+  }
+
   QDomNodeList widgetsNodeList = node.namedItem( QStringLiteral( "widgets" ) ).toElement().childNodes();
 
   for ( int i = 0; i < widgetsNodeList.size(); ++i )
@@ -504,6 +528,17 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
     labelOnTopElem.appendChild( fieldElem );
   }
   node.appendChild( labelOnTopElem );
+
+  // Store data defined field properties
+  QDomElement ddFieldPropsElement = doc.createElement( QStringLiteral( "dataDefinedFieldProperties" ) );
+  for ( auto it = d->mDataDefinedFieldProperties.constBegin(); it != d->mDataDefinedFieldProperties.constEnd(); ++it )
+  {
+    QDomElement ddPropsElement = doc.createElement( QStringLiteral( "field" ) );
+    ddPropsElement.setAttribute( QStringLiteral( "name" ), it.key() );
+    it.value().writeXml( ddPropsElement, propertyDefinitions() );
+    ddFieldPropsElement.appendChild( ddPropsElement );
+  }
+  node.appendChild( ddFieldPropsElement );
 
   QDomElement widgetsElem = doc.createElement( QStringLiteral( "widgets" ) );
 

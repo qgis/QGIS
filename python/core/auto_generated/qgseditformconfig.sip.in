@@ -67,6 +67,13 @@ Constructor for TabData
       CodeSourceEnvironment
     };
 
+    enum DataDefinedProperty
+    {
+      NoProperty,
+      AllProperties,
+      Alias,
+    };
+
     QgsEditFormConfig( const QgsEditFormConfig &o );
 %Docstring
 Copy constructor
@@ -275,6 +282,28 @@ Deserialize drag and drop designer elements.
     explicit QgsEditFormConfig();
 %Docstring
 Create a new edit form config. Normally invoked by :py:class:`QgsVectorLayer`
+%End
+
+    void setDataDefinedFieldProperties( const QString &fieldName, const QgsPropertyCollection &properties );
+%Docstring
+Set data defined properties for ``fieldName`` to ``properties``
+
+.. versionadded:: 3.14
+%End
+
+    QgsPropertyCollection dataDefinedFieldProperties( const QString &fieldName ) const;
+%Docstring
+Returns data defined properties for ``fieldName``
+
+.. versionadded:: 3.14
+%End
+
+
+    static const QgsPropertiesDefinition &propertyDefinitions();
+%Docstring
+Returns data defined property definitions.
+
+.. versionadded:: 3.14
 %End
 
 };

@@ -17,7 +17,6 @@
 #define QGSEDITFORMCONFIG_P_H
 
 #include <QMap>
-
 #include "qgsfields.h"
 #include "qgseditformconfig.h"
 
@@ -36,6 +35,7 @@ class QgsEditFormConfigPrivate : public QSharedData
       , mConfiguredRootContainer( o.mConfiguredRootContainer )
       , mFieldEditables( o.mFieldEditables )
       , mLabelOnTop( o.mLabelOnTop )
+      , mDataDefinedFieldProperties( o.mDataDefinedFieldProperties )
       , mWidgetConfigs( o.mWidgetConfigs )
       , mEditorLayout( o.mEditorLayout )
       , mUiFormPath( o.mUiFormPath )
@@ -51,6 +51,20 @@ class QgsEditFormConfigPrivate : public QSharedData
       delete mInvisibleRootContainer;
     }
 
+    static QgsPropertiesDefinition &propertyDefinitions()
+    {
+      static QgsPropertiesDefinition sPropertyDefinitions
+      {
+        {
+          QgsEditFormConfig::DataDefinedProperty::Alias,
+          QgsPropertyDefinition( "dataDefinedAlias",
+                                 QObject::tr( "Alias" ),
+                                 QgsPropertyDefinition::String )
+        },
+      };
+      return sPropertyDefinitions;
+    };
+
     //! The invisible root container for attribute editors in the drag and drop designer
     QgsAttributeEditorContainer *mInvisibleRootContainer = nullptr;
 
@@ -59,6 +73,7 @@ class QgsEditFormConfigPrivate : public QSharedData
 
     QMap< QString, bool> mFieldEditables;
     QMap< QString, bool> mLabelOnTop;
+    QMap< QString, QgsPropertyCollection> mDataDefinedFieldProperties;
 
     QMap<QString, QVariantMap > mWidgetConfigs;
 
@@ -80,7 +95,9 @@ class QgsEditFormConfigPrivate : public QSharedData
     QgsEditFormConfig::FeatureFormSuppress mSuppressForm = QgsEditFormConfig::FeatureFormSuppress::SuppressDefault;
 
     QgsFields mFields;
+
 };
+
 
 /// @endcond
 

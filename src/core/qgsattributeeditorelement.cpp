@@ -16,6 +16,7 @@
 #include "qgsattributeeditorelement.h"
 #include "qgsrelationmanager.h"
 
+
 void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement *widget )
 {
   mChildren.append( widget );
@@ -115,7 +116,6 @@ QDomElement QgsAttributeEditorElement::toDomElement( QDomDocument &doc ) const
   QDomElement elem = doc.createElement( typeIdentifier() );
   elem.setAttribute( QStringLiteral( "name" ), mName );
   elem.setAttribute( QStringLiteral( "showLabel" ), mShowLabel );
-
   saveConfiguration( elem );
   return elem;
 }

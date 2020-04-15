@@ -20,27 +20,6 @@
       <string>General</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>Alias</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>Comment</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QLineEdit" name="leAlias">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="2">
        <widget class="QLabel" name="laComment">
         <property name="text">
@@ -48,6 +27,13 @@
         </property>
         <property name="wordWrap">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Alias</string>
         </property>
        </widget>
       </item>
@@ -68,6 +54,23 @@
         </property>
         <property name="checked">
          <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLineEdit" name="mAlias"/>
+      </item>
+      <item row="0" column="3">
+       <widget class="QgsPropertyOverrideButton" name="mAliasExpressionButton">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Comment</string>
         </property>
        </widget>
       </item>
@@ -184,7 +187,7 @@
      <property name="title">
       <string>Defaults</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0">
+     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0">
       <item row="4" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
@@ -235,7 +238,7 @@
          <item>
           <widget class="QLabel" name="label_7">
            <property name="text">
-            <string>Using fields in a default value expression only works if "Apply default value on update" is checked.</string>
+            <string>Using fields in a default value expression only works if &quot;Apply default value on update&quot; is checked.</string>
            </property>
           </widget>
          </item>
@@ -289,9 +292,13 @@
    <header>qgsexpressionlineedit.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>leAlias</tabstop>
   <tabstop>isFieldEditableCheckBox</tabstop>
   <tabstop>labelOnTopCheckBox</tabstop>
   <tabstop>mWidgetTypeComboBox</tabstop>
@@ -305,6 +312,7 @@
   <tabstop>mExpressionWidget</tabstop>
  </tabstops>
  <resources>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>

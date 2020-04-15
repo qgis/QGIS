@@ -132,6 +132,11 @@ class GetCurrentFormFieldValue : public QgsScopedExpressionFunction
       return new GetCurrentFormFieldValue( );
     }
 
+    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
+    {
+      return false;
+    };
+
 };
 
 class GetCurrentParentFormFieldValue : public QgsScopedExpressionFunction
@@ -156,6 +161,11 @@ class GetCurrentParentFormFieldValue : public QgsScopedExpressionFunction
     {
       return new GetCurrentParentFormFieldValue( );
     }
+
+    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
+    {
+      return false;
+    };
 
 };
 
