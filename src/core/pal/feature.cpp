@@ -404,6 +404,10 @@ std::unique_ptr<LabelPosition> FeaturePart::createCandidatePointOnSurface( Point
     {
       const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, pointGeom.get() );
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+      unsigned int nPoints = 0;
+      GEOSCoordSeq_getSize_r( geosctxt, coordSeq, &nPoints );
+      if ( nPoints == 0 )
+        return nullptr;
       GEOSCoordSeq_getXY_r( geosctxt, coordSeq, 0, &px, &py );
 #else
       GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );

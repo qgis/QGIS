@@ -5411,6 +5411,10 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(coerce_to_wkt('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))',
                                        QgsWkbTypes.MultiLineString), ['MultiLineString ((1 1, 1 2, 2 2, 1 1),(3 3, 4 3, 4 4, 3 3))'])
 
+    def testGeosCrash(self):
+        # test we don't crash when geos returns a point geometry with no points
+        QgsGeometry.fromWkt('Polygon ((0 0, 1 1, 1 0, 0 0))').intersection(QgsGeometry.fromWkt('Point (42 0)')).isNull()
+
     def renderGeometry(self, geom, use_pen, as_polygon=False, as_painter_path=False):
         image = QImage(200, 200, QImage.Format_RGB32)
         image.fill(QColor(0, 0, 0))
