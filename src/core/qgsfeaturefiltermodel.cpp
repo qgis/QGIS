@@ -227,6 +227,7 @@ void QgsFeatureFilterModel::updateCompleter()
   emit beginUpdate();
 
   QgsFieldExpressionValuesGatherer *gatherer = qobject_cast<QgsFieldExpressionValuesGatherer *>( sender() );
+  Q_ASSERT( gatherer );
   if ( gatherer->wasCanceled() )
   {
     delete gatherer;
