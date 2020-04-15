@@ -44,6 +44,25 @@
 #include "qgsscalewidget.h"
 
 
+class SnapTypeMenu: public QMenu
+{
+  public:
+    SnapTypeMenu( const QString &title, QWidget *parent = nullptr )
+    {
+      QMenu( title, parent );
+    }
+    void mouseReleaseEvent( QMouseEvent *e )
+    {
+      QAction *action = activeAction();
+      if ( action )
+      {
+        action->trigger();
+      }
+      else
+        QMenu::mouseReleaseEvent( e );
+    }
+};
+
 QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas, QWidget *parent )
   : QWidget( parent )
   , mProject( project )
@@ -162,7 +181,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mTypeButton = new QToolButton();
   mTypeButton->setToolTip( tr( "Snapping Type" ) );
   mTypeButton->setPopupMode( QToolButton::InstantPopup );
-  QMenu *typeMenu = new QMenu( tr( "Set Snapping Mode" ), this );
+  SnapTypeMenu *typeMenu = new SnapTypeMenu( tr( "Set Snapping Mode" ), this );
   mVertexAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertex.svg" ) ), tr( "Vertex" ), typeMenu );
   mSegmentAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingSegment.svg" ) ), tr( "Segment" ), typeMenu );
   mAreaAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingArea.svg" ) ), tr( "Area" ), typeMenu );
