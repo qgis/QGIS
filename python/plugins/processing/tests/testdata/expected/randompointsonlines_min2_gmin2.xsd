@@ -10,8 +10,8 @@
     </xs:extension>
   </xs:complexContent>
 </xs:complexType>
-<xs:element name="randompointsonlines_gmin1" type="ogr:randompointsonlines_gmin1_Type" substitutionGroup="gml:_Feature"/>
-<xs:complexType name="randompointsonlines_gmin1_Type">
+<xs:element name="randompointsonlines_min2_gmin2" type="ogr:randompointsonlines_min2_gmin2_Type" substitutionGroup="gml:_Feature"/>
+<xs:complexType name="randompointsonlines_min2_gmin2_Type">
   <xs:complexContent>
     <xs:extension base="gml:AbstractFeatureType">
       <xs:sequence>
