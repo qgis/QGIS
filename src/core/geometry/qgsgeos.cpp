@@ -1094,8 +1094,15 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
   {
     case GEOS_POINT:                 // a point
     {
+<<<<<<< HEAD
       const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosinit.ctxt, geos );
       return std::unique_ptr<QgsAbstractGeometry>( coordSeqPoint( cs, 0, hasZ, hasM ).clone() );
+=======
+      const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosinit()->ctxt, geos );
+      unsigned int nPoints = 0;
+      GEOSCoordSeq_getSize_r( geosinit()->ctxt, cs, &nPoints );
+      return nPoints > 0 ? std::unique_ptr<QgsAbstractGeometry>( coordSeqPoint( cs, 0, hasZ, hasM ).clone() ) : nullptr;
+>>>>>>> 5ae631ac91... Try to fix crash on GEOS 3.8.1 when empty coordinate sequence is returned
     }
     case GEOS_LINESTRING:
     {
@@ -1115,7 +1122,10 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
         const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosinit.ctxt, GEOSGetGeometryN_r( geosinit.ctxt, geos, i ) );
         if ( cs )
         {
-          multiPoint->addGeometry( coordSeqPoint( cs, 0, hasZ, hasM ).clone() );
+          unsigned int nPoints = 0;
+          GEOSCoordSeq_getSize_r( geosinit()->ctxt, cs, &nPoints );
+          if ( nPoints > 0 )
+            multiPoint->addGeometry( coordSeqPoint( cs, 0, hasZ, hasM ).clone() );
         }
       }
       return std::move( multiPoint );

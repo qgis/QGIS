@@ -345,6 +345,16 @@ std::unique_ptr<LabelPosition> FeaturePart::createCandidatePointOnSurface( Point
     if ( pointGeom )
     {
       const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, pointGeom.get() );
+<<<<<<< HEAD
+=======
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+      unsigned int nPoints = 0;
+      GEOSCoordSeq_getSize_r( geosctxt, coordSeq, &nPoints );
+      if ( nPoints == 0 )
+        return nullptr;
+      GEOSCoordSeq_getXY_r( geosctxt, coordSeq, 0, &px, &py );
+#else
+>>>>>>> 5ae631ac91... Try to fix crash on GEOS 3.8.1 when empty coordinate sequence is returned
       GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
       GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
     }

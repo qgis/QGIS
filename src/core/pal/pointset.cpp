@@ -802,6 +802,17 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
     geos::coord_sequence_unique_ptr nearestCoord( GEOSNearestPoints_r( geosctxt, extRing, geosPt.get() ) );
     double nx;
     double ny;
+<<<<<<< HEAD
+=======
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+    unsigned int nPoints = 0;
+    GEOSCoordSeq_getSize_r( geosctxt, nearestCoord.get(), &nPoints );
+    if ( nPoints == 0 )
+      return 0;
+
+    ( void )GEOSCoordSeq_getXY_r( geosctxt, nearestCoord.get(), 0, &nx, &ny );
+#else
+>>>>>>> 5ae631ac91... Try to fix crash on GEOS 3.8.1 when empty coordinate sequence is returned
     ( void )GEOSCoordSeq_getX_r( geosctxt, nearestCoord.get(), 0, &nx );
     ( void )GEOSCoordSeq_getY_r( geosctxt, nearestCoord.get(), 0, &ny );
 
@@ -834,6 +845,16 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
     if ( centroidGeom )
     {
       const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, centroidGeom.get() );
+<<<<<<< HEAD
+=======
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+      unsigned int nPoints = 0;
+      GEOSCoordSeq_getSize_r( geosctxt, coordSeq, &nPoints );
+      if ( nPoints == 0 )
+        return;
+      GEOSCoordSeq_getXY_r( geosctxt, coordSeq, 0, &px, &py );
+#else
+>>>>>>> 5ae631ac91... Try to fix crash on GEOS 3.8.1 when empty coordinate sequence is returned
       GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
       GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
     }
@@ -846,6 +867,17 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
       if ( pointGeom )
       {
         const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, pointGeom.get() );
+<<<<<<< HEAD
+=======
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+        unsigned int nPoints = 0;
+        GEOSCoordSeq_getSize_r( geosctxt, coordSeq, &nPoints );
+        if ( nPoints == 0 )
+          return;
+
+        GEOSCoordSeq_getXY_r( geosctxt, coordSeq, 0, &px, &py );
+#else
+>>>>>>> 5ae631ac91... Try to fix crash on GEOS 3.8.1 when empty coordinate sequence is returned
         GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
         GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
       }
