@@ -321,8 +321,6 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
 
   QList<QPair<QString, QVariant>> map;
 
-  s.readLine();
-
   while ( !s.atEnd() )
   {
     QString l = s.readLine().trimmed();
