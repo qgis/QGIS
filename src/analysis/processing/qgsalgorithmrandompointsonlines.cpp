@@ -311,7 +311,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
                 continue;
               }
             }
-            // Then global
+            // Then check globally
             if ( ( mMinDistanceGlobal != 0 ) && ( totNPoints > 0 ) )
             {
               QList<QgsFeatureId> neighbors = index.nearestNeighbor( rpGeom, 1, mMinDistanceGlobal );
