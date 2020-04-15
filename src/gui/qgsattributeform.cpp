@@ -1009,20 +1009,21 @@ void QgsAttributeForm::updateConstraint( const QgsFeature &ft, QgsEditorWidgetWr
 
 void QgsAttributeForm::updateLabels()
 {
-  if ( ! mExpressionLabels.isEmpty() )
+  if ( ! mLabelDataDefinedProperties.isEmpty() )
   {
     QgsFeature currentFeature;
     if ( currentFormFeature( currentFeature ) )
     {
       mExpressionContext << QgsExpressionContextUtils::formScope( currentFeature, mContext.attributeFormModeString() );
       mExpressionContext.setFields( mLayer->fields() );
-      for ( auto it = mExpressionLabels.constBegin() ; it != mExpressionLabels.constEnd(); ++it )
+      for ( auto it = mLabelDataDefinedProperties.constBegin() ; it != mLabelDataDefinedProperties.constEnd(); ++it )
       {
         QLabel *label { it.key() };
-        QgsExpression exp { it.value() };
-        if ( exp.prepare( &mExpressionContext ) && ! exp.hasParserError() )
+        bool ok;
+        const QString value { it->valueAsString( mExpressionContext, QString(), &ok ) };
+        if ( ok && ! value.isEmpty() )
         {
-          label->setText( exp.evaluate( &mExpressionContext ).toString() );
+          label->setText( value );
         }
       }
     }
@@ -1482,10 +1483,9 @@ void QgsAttributeForm::init()
           if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::Alias ) )
           {
             const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::Alias ) };
-            const QString labelExpression { property.asExpression() };
-            if ( ! labelExpression.isEmpty() && property.isActive() )
+            if ( property.isActive() && ! property.expressionString().isEmpty() )
             {
-              mExpressionLabels[ label ] = QgsExpression( labelExpression );
+              mLabelDataDefinedProperties[ label ] = property;
             }
           }
         }
@@ -1557,10 +1557,9 @@ void QgsAttributeForm::init()
       if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::Alias ) )
       {
         const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::Alias ) };
-        const QString labelExpression { property.asExpression() };
-        if ( ! labelExpression.isEmpty() && property.isActive() )
+        if ( property.isActive() && ! property.expressionString().isEmpty() )
         {
-          mExpressionLabels[ label ] = QgsExpression( labelExpression );
+          mLabelDataDefinedProperties[ label ] = property;
         }
       }
 

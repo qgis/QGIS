@@ -414,7 +414,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QList< QgsAttributeFormWidget *> mFormWidgets;
     QgsExpressionContext mExpressionContext;
     QMap<const QgsVectorLayerJoinInfo *, QgsFeature> mJoinedFeatures;
-    QMap<QLabel *, QgsExpression> mExpressionLabels;
+    QMap<QLabel *, QgsProperty> mLabelDataDefinedProperties;
     bool mValuesInitialized = false;
     bool mDirty = false;
     bool mIsSettingFeature = false;
