@@ -16,7 +16,6 @@
  ***************************************************************************/
 #include "qgshanacolumntypethread.h"
 #include "qgshanaconnection.h"
-#include "qgshanasettings.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include <mutex>
