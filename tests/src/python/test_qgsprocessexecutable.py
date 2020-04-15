@@ -126,7 +126,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
         if os.environ.get('TRAVIS', '') != 'true':
             # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
             self.assertFalse(err)
-            self.assertEqual(rc, 0)
+        self.assertEqual(rc, 0)
         self.assertIn('model description', output.lower())
 
     def testModelRun(self):
@@ -135,7 +135,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
         if os.environ.get('TRAVIS', '') != 'true':
             # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
             self.assertFalse(err)
-            self.assertEqual(rc, 0)
+        self.assertEqual(rc, 0)
         self.assertIn('0...10...20...30...40...50...60...70...80...90', output.lower())
         self.assertIn('results', output.lower())
         self.assertTrue(os.path.exists(output_file))
