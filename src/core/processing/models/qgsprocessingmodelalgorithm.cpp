@@ -1180,6 +1180,35 @@ QgsProcessingModelParameter &QgsProcessingModelAlgorithm::parameterComponent( co
   return mParameterComponents[ name ];
 }
 
+QList< QgsProcessingModelParameter > QgsProcessingModelAlgorithm::orderedParameters() const
+{
+  QList< QgsProcessingModelParameter > res;
+  QSet< QString > found;
+  for ( const QString &parameter : mParameterOrder )
+  {
+    if ( mParameterComponents.contains( parameter ) )
+    {
+      res << mParameterComponents.value( parameter );
+      found << parameter;
+    }
+  }
+
+  // add any missing ones to end of list
+  for ( auto it = mParameterComponents.constBegin(); it != mParameterComponents.constEnd(); ++it )
+  {
+    if ( !found.contains( it.key() ) )
+    {
+      res << it.value();
+    }
+  }
+  return res;
+}
+
+void QgsProcessingModelAlgorithm::setParameterOrder( const QStringList &order )
+{
+  mParameterOrder = order;
+}
+
 void QgsProcessingModelAlgorithm::updateDestinationParameters()
 {
   //delete existing destination parameters
@@ -1294,6 +1323,8 @@ QVariant QgsProcessingModelAlgorithm::toVariant() const
 
   map.insert( QStringLiteral( "designerParameterValues" ), mDesignerParameterValues );
 
+  map.insert( QStringLiteral( "parameterOrder" ), mParameterOrder );
+
   return map;
 }
 
@@ -1308,6 +1339,8 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
 
   mVariables = map.value( QStringLiteral( "modelVariables" ) ).toMap();
   mDesignerParameterValues = map.value( QStringLiteral( "designerParameterValues" ) ).toMap();
+
+  mParameterOrder = map.value( QStringLiteral( "parameterOrder" ) ).toStringList();
 
   mChildAlgorithms.clear();
   QVariantMap childMap = map.value( QStringLiteral( "children" ) ).toMap();
@@ -1339,10 +1372,10 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
   qDeleteAll( mParameters );
   mParameters.clear();
   QVariantMap paramDefMap = map.value( QStringLiteral( "parameterDefinitions" ) ).toMap();
-  QVariantMap::const_iterator paramDefIt = paramDefMap.constBegin();
-  for ( ; paramDefIt != paramDefMap.constEnd(); ++paramDefIt )
+
+  auto addParam = [ = ]( const QVariant & value )
   {
-    std::unique_ptr< QgsProcessingParameterDefinition > param( QgsProcessingParameters::parameterFromVariantMap( paramDefIt.value().toMap() ) );
+    std::unique_ptr< QgsProcessingParameterDefinition > param( QgsProcessingParameters::parameterFromVariantMap( value.toMap() ) );
     // we be lenient here - even if we couldn't load a parameter, don't interrupt the model loading
     // otherwise models may become unusable (e.g. due to removed plugins providing algs/parameters)
     // with no way for users to repair them
@@ -1350,12 +1383,30 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
       addParameter( param.release() );
     else
     {
-      QVariantMap map = paramDefIt.value().toMap();
+      QVariantMap map = value.toMap();
       QString type = map.value( QStringLiteral( "parameter_type" ) ).toString();
       QString name = map.value( QStringLiteral( "name" ) ).toString();
 
       QgsMessageLog::logMessage( QCoreApplication::translate( "Processing", "Could not load parameter %1 of type %2." ).arg( name, type ), QCoreApplication::translate( "Processing", "Processing" ) );
     }
+  };
+
+  QSet< QString > loadedParams;
+  // first add parameters respecting mParameterOrder
+  for ( const QString &name : qgis::as_const( mParameterOrder ) )
+  {
+    if ( paramDefMap.contains( name ) )
+    {
+      addParam( paramDefMap.value( name ) );
+      loadedParams << name;
+    }
+  }
+  // then load any remaining parameters
+  QVariantMap::const_iterator paramDefIt = paramDefMap.constBegin();
+  for ( ; paramDefIt != paramDefMap.constEnd(); ++paramDefIt )
+  {
+    if ( !loadedParams.contains( paramDefIt.key() ) )
+      addParam( paramDefIt.value() );
   }
 
   mGroupBoxes.clear();

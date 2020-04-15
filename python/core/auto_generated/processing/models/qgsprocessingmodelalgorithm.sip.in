@@ -300,6 +300,27 @@ this name a new component will be added to the model and returned.
 .. seealso:: :py:func:`setParameterComponent`
 %End
 
+    QList< QgsProcessingModelParameter > orderedParameters() const;
+%Docstring
+Returns an ordered list of parameters for the model.
+
+.. seealso:: :py:func:`setParameterOrder`
+
+.. versionadded:: 3.14
+%End
+
+    void setParameterOrder( const QStringList &order );
+%Docstring
+Sets the ``order`` for showing parameters for the model.
+
+The ``order`` list should consist of parameter names corresponding to existing
+model parameterComponents().
+
+.. seealso:: :py:func:`orderedParameters`
+
+.. versionadded:: 3.14
+%End
+
     void updateDestinationParameters();
 %Docstring
 Updates the model's parameter definitions to include all relevant destination
