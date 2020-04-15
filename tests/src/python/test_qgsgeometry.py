@@ -5362,6 +5362,10 @@ class TestQgsGeometry(unittest.TestCase):
         line = QgsLineString.fromQPolygonF(QPolygonF([QPointF(1.5, 2.5), QPointF(3, 4), QPointF(3, 6.5), QPointF(1.5, 2.5)]))
         self.assertEqual(line.asWkt(1), 'LineString (1.5 2.5, 3 4, 3 6.5, 1.5 2.5)')
 
+    def testGeosCrash(self):
+        # test we don't crash when geos returns a point geometry with no points
+        QgsGeometry.fromWkt('Polygon ((0 0, 1 1, 1 0, 0 0))').intersection(QgsGeometry.fromWkt('Point (42 0)')).isNull()
+
     def renderGeometry(self, geom, use_pen, as_polygon=False, as_painter_path=False):
         image = QImage(200, 200, QImage.Format_RGB32)
         image.fill(QColor(0, 0, 0))
