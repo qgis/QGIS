@@ -29,6 +29,10 @@ QgsXyzSourceSelect::QgsXyzSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
 {
   setupUi( this );
+
+  setWindowTitle( tr( "Add XYZ Layer" ) );
+  mConnectionsGroupBox->setTitle( tr( "XYZ Connections" ) );
+
   QgsGui::enableAutoGeometryRestore( this );
 
   connect( btnNew, &QPushButton::clicked, this, &QgsXyzSourceSelect::btnNew_clicked );

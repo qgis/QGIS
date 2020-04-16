@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsXyzSourceSelectBase</class>
- <widget class="QDialog" name="QgsXyzSourceSelectBase">
+ <class>QgsTileSourceSelectBase</class>
+ <widget class="QDialog" name="QgsTileSourceSelectBase">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>558</width>
-    <height>149</height>
+    <height>155</height>
    </rect>
-  </property>
-  <property name="windowTitle">
-   <string>Add XYZ Layer</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QGroupBox" name="GroupBox1">
+    <widget class="QGroupBox" name="mConnectionsGroupBox">
      <property name="title">
-      <string>XYZ Connections</string>
+      <string>Connections</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="1" column="1">
