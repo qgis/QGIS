@@ -47,6 +47,8 @@ as generated layers or calculated values.
       sipType = sipType_QgsProcessingOutputFolder;
     else if ( sipCpp->type() == QgsProcessingOutputFile::typeName() )
       sipType = sipType_QgsProcessingOutputFile;
+    else if ( sipCpp->type() == QgsProcessingOutputConditionalBranch::typeName() )
+      sipType = sipType_QgsProcessingOutputConditionalBranch;
     else
       sipType = nullptr;
 %End
@@ -383,6 +385,33 @@ A file output for processing algorithms.
     QgsProcessingOutputFile( const QString &name, const QString &description = QString() );
 %Docstring
 Constructor for QgsProcessingOutputFile.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the output class.
+%End
+    virtual QString type() const;
+
+};
+
+class QgsProcessingOutputConditionalBranch : QgsProcessingOutputDefinition
+{
+%Docstring
+A conditional branch output for processing algorithms, which represents a possible model logic
+flow which branches out from this algorithm.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingoutputs.h"
+%End
+  public:
+
+    QgsProcessingOutputConditionalBranch( const QString &name, const QString &description = QString() );
+%Docstring
+Constructor for QgsProcessingOutputConditionalBranch.
 %End
 
     static QString typeName();
