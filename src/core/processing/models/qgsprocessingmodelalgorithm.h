@@ -25,6 +25,7 @@
 #include "qgsprocessingmodelparameter.h"
 #include "qgsprocessingmodelchildparametersource.h"
 #include "qgsprocessingmodelgroupbox.h"
+#include "qgsprocessingmodelchilddependency.h"
 
 ///@cond NOT_STABLE
 

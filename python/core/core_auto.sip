@@ -434,6 +434,7 @@
 %Include auto_generated/numericformats/qgsscientificnumericformat.sip
 %Include auto_generated/processing/models/qgsprocessingmodelalgorithm.sip
 %Include auto_generated/processing/models/qgsprocessingmodelchildalgorithm.sip
+%Include auto_generated/processing/models/qgsprocessingmodelchilddependency.sip
 %Include auto_generated/processing/models/qgsprocessingmodelchildparametersource.sip
 %Include auto_generated/processing/models/qgsprocessingmodelcomment.sip
 %Include auto_generated/processing/models/qgsprocessingmodelcomponent.sip
