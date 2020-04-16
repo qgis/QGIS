@@ -160,7 +160,23 @@ void QgsTemporalControllerWidget::onLayersAdded()
     for ( QgsMapLayer *layer : layers )
     {
       if ( layer->temporalProperties() )
+      {
         mHasTemporalLayersLoaded |= layer->temporalProperties()->isActive();
+
+        if ( !mHasTemporalLayersLoaded )
+        {
+          //inspired by  QgsLayerTreeMapCanvasBridge::layersAdded
+          connect( layer, &QgsMapLayer::dataSourceChanged, this, [ this, layer ]
+          {
+            if ( layer->isValid() && layer->temporalProperties()->isActive() && !mHasTemporalLayersLoaded )
+            {
+              mHasTemporalLayersLoaded = true;
+              // if we are moving from zero temporal layers to non-zero temporal layers, let's set temporal extent
+              this->setDatesToProjectTime();
+            }
+          } );
+        }
+      }
     }
 
     if ( mHasTemporalLayersLoaded )

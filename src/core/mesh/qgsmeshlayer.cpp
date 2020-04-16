@@ -72,12 +72,15 @@ void QgsMeshLayer::setDefaultRendererSettings()
   {
     // show data from the first dataset group
     mRendererSettings.setActiveScalarDatasetGroup( 0 );
-    // If the first dataset group is temporal or have nan min/max, display the mesh to avoid nothing displayed
+    // If the first dataset group has nan min/max, display the mesh to avoid nothing displayed
     QgsMeshDatasetGroupMetadata meta = mDataProvider->datasetGroupMetadata( 0 );
-    if ( ( meta.maximum() == std::numeric_limits<double>::quiet_NaN() &&
-           meta.minimum() == std::numeric_limits<double>::quiet_NaN() ) ||
-         meta.isTemporal() )
+    if ( meta.maximum() == std::numeric_limits<double>::quiet_NaN() &&
+         meta.minimum() == std::numeric_limits<double>::quiet_NaN() )
       meshSettings.setEnabled( true );
+
+    //if the mesh is non temporal, set the static scalar dataset
+    if ( !mDataProvider->temporalCapabilities()->hasTemporalCapabilities() )
+      setStaticScalarDatasetIndex( QgsMeshDatasetIndex( 0, 0 ) );
   }
   else
   {
