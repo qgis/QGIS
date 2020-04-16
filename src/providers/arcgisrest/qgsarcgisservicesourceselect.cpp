@@ -63,6 +63,8 @@ QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &servi
   connect( btnEdit, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::modifyEntryOfServerList );
   connect( btnDelete, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::deleteEntryOfServerList );
   connect( btnConnect, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::connectToServer );
+  connect( btnSave, &QPushButton::clicked, this, &QgsArcGisServiceSourceSelect::btnSave_clicked );
+  connect( btnLoad, &QPushButton::clicked, this, &QgsArcGisServiceSourceSelect::btnLoad_clicked );
   connect( btnChangeSpatialRefSys, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::changeCrs );
   connect( lineFilter, &QLineEdit::textChanged, this, &QgsArcGisServiceSourceSelect::filterChanged );
   populateConnectionList();
@@ -459,4 +461,26 @@ QSize QgsAbstractDataSourceWidgetItemDelegate::sizeHint( const QStyleOptionViewI
 void QgsArcGisServiceSourceSelect::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/index.html" ) );
+}
+
+void QgsArcGisServiceSourceSelect::btnSave_clicked()
+{
+  QgsManageConnectionsDialog::Type serverType = mServiceType == FeatureService ? QgsManageConnectionsDialog::ArcgisFeatureServer : QgsManageConnectionsDialog::ArcgisMapServer;
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Export, serverType );
+  dlg.exec();
+}
+
+void QgsArcGisServiceSourceSelect::btnLoad_clicked()
+{
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
+                     tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  QgsManageConnectionsDialog::Type serverType = mServiceType == FeatureService ? QgsManageConnectionsDialog::ArcgisFeatureServer : QgsManageConnectionsDialog::ArcgisMapServer;
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Import, serverType, fileName );
+  dlg.exec();
+  populateConnectionList();
 }

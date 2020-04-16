@@ -359,19 +359,29 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 
       executed.insert( childId );
 
-      std::function< void( const QString & )> pruneAlgorithmBranchRecursive;
-      pruneAlgorithmBranchRecursive = [&]( const QString & id )
+      std::function< void( const QString &, const QString & )> pruneAlgorithmBranchRecursive;
+      pruneAlgorithmBranchRecursive = [&]( const QString & id, const QString &branch = QString() )
       {
-        const QSet<QString> toPrune = dependentChildAlgorithms( id );
+        const QSet<QString> toPrune = dependentChildAlgorithms( id, branch );
         for ( const QString &targetId : toPrune )
         {
           if ( executed.contains( targetId ) )
             continue;
 
           executed.insert( targetId );
-          pruneAlgorithmBranchRecursive( targetId );
+          pruneAlgorithmBranchRecursive( targetId, branch );
         }
       };
+
+      // prune remaining algorithms if they are dependent on a branch from this child which didn't eventuate
+      const QgsProcessingOutputDefinitions outputDefs = childAlg->outputDefinitions();
+      for ( const QgsProcessingOutputDefinition *outputDef : outputDefs )
+      {
+        if ( outputDef->type() == QgsProcessingOutputConditionalBranch::typeName() && !results.value( outputDef->name() ).toBool() )
+        {
+          pruneAlgorithmBranchRecursive( childId, outputDef->name() );
+        }
+      }
 
       if ( childAlg->flags() & QgsProcessingAlgorithm::FlagPruneModelBranchesBasedOnAlgorithmResults )
       {
@@ -402,7 +412,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
                   // skip the dependent alg..
                   executed.insert( candidateId );
                   //... and everything which depends on it
-                  pruneAlgorithmBranchRecursive( candidateId );
+                  pruneAlgorithmBranchRecursive( candidateId, QString() );
                   break;
                 }
               }
@@ -1180,6 +1190,35 @@ QgsProcessingModelParameter &QgsProcessingModelAlgorithm::parameterComponent( co
   return mParameterComponents[ name ];
 }
 
+QList< QgsProcessingModelParameter > QgsProcessingModelAlgorithm::orderedParameters() const
+{
+  QList< QgsProcessingModelParameter > res;
+  QSet< QString > found;
+  for ( const QString &parameter : mParameterOrder )
+  {
+    if ( mParameterComponents.contains( parameter ) )
+    {
+      res << mParameterComponents.value( parameter );
+      found << parameter;
+    }
+  }
+
+  // add any missing ones to end of list
+  for ( auto it = mParameterComponents.constBegin(); it != mParameterComponents.constEnd(); ++it )
+  {
+    if ( !found.contains( it.key() ) )
+    {
+      res << it.value();
+    }
+  }
+  return res;
+}
+
+void QgsProcessingModelAlgorithm::setParameterOrder( const QStringList &order )
+{
+  mParameterOrder = order;
+}
+
 void QgsProcessingModelAlgorithm::updateDestinationParameters()
 {
   //delete existing destination parameters
@@ -1294,6 +1333,8 @@ QVariant QgsProcessingModelAlgorithm::toVariant() const
 
   map.insert( QStringLiteral( "designerParameterValues" ), mDesignerParameterValues );
 
+  map.insert( QStringLiteral( "parameterOrder" ), mParameterOrder );
+
   return map;
 }
 
@@ -1308,6 +1349,8 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
 
   mVariables = map.value( QStringLiteral( "modelVariables" ) ).toMap();
   mDesignerParameterValues = map.value( QStringLiteral( "designerParameterValues" ) ).toMap();
+
+  mParameterOrder = map.value( QStringLiteral( "parameterOrder" ) ).toStringList();
 
   mChildAlgorithms.clear();
   QVariantMap childMap = map.value( QStringLiteral( "children" ) ).toMap();
@@ -1339,10 +1382,10 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
   qDeleteAll( mParameters );
   mParameters.clear();
   QVariantMap paramDefMap = map.value( QStringLiteral( "parameterDefinitions" ) ).toMap();
-  QVariantMap::const_iterator paramDefIt = paramDefMap.constBegin();
-  for ( ; paramDefIt != paramDefMap.constEnd(); ++paramDefIt )
+
+  auto addParam = [ = ]( const QVariant & value )
   {
-    std::unique_ptr< QgsProcessingParameterDefinition > param( QgsProcessingParameters::parameterFromVariantMap( paramDefIt.value().toMap() ) );
+    std::unique_ptr< QgsProcessingParameterDefinition > param( QgsProcessingParameters::parameterFromVariantMap( value.toMap() ) );
     // we be lenient here - even if we couldn't load a parameter, don't interrupt the model loading
     // otherwise models may become unusable (e.g. due to removed plugins providing algs/parameters)
     // with no way for users to repair them
@@ -1350,12 +1393,30 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
       addParameter( param.release() );
     else
     {
-      QVariantMap map = paramDefIt.value().toMap();
+      QVariantMap map = value.toMap();
       QString type = map.value( QStringLiteral( "parameter_type" ) ).toString();
       QString name = map.value( QStringLiteral( "name" ) ).toString();
 
       QgsMessageLog::logMessage( QCoreApplication::translate( "Processing", "Could not load parameter %1 of type %2." ).arg( name, type ), QCoreApplication::translate( "Processing", "Processing" ) );
     }
+  };
+
+  QSet< QString > loadedParams;
+  // first add parameters respecting mParameterOrder
+  for ( const QString &name : qgis::as_const( mParameterOrder ) )
+  {
+    if ( paramDefMap.contains( name ) )
+    {
+      addParam( paramDefMap.value( name ) );
+      loadedParams << name;
+    }
+  }
+  // then load any remaining parameters
+  QVariantMap::const_iterator paramDefIt = paramDefMap.constBegin();
+  for ( ; paramDefIt != paramDefMap.constEnd(); ++paramDefIt )
+  {
+    if ( !loadedParams.contains( paramDefIt.key() ) )
+      addParam( paramDefIt.value() );
   }
 
   mGroupBoxes.clear();
@@ -1555,7 +1616,7 @@ QMap<QString, QgsProcessingModelParameter> QgsProcessingModelAlgorithm::paramete
   return mParameterComponents;
 }
 
-void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const
+void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends, const QString &branch ) const
 {
   QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
   for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
@@ -1564,10 +1625,21 @@ void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QStri
       continue;
 
     // does alg have a direct dependency on this child?
-    if ( childIt->dependencies().contains( childId ) )
+    const QList< QgsProcessingModelChildDependency > constDependencies = childIt->dependencies();
+    bool hasDependency = false;
+    for ( const QgsProcessingModelChildDependency &dep : constDependencies )
+    {
+      if ( dep.childId == childId && ( branch.isEmpty() || dep.conditionalBranch == branch ) )
+      {
+        hasDependency = true;
+        break;
+      }
+    }
+
+    if ( hasDependency )
     {
       depends.insert( childIt->childId() );
-      dependentChildAlgorithmsRecursive( childIt->childId(), depends );
+      dependentChildAlgorithmsRecursive( childIt->childId(), depends, branch );
       continue;
     }
 
@@ -1583,7 +1655,7 @@ void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QStri
              && source.outputChildId() == childId )
         {
           depends.insert( childIt->childId() );
-          dependentChildAlgorithmsRecursive( childIt->childId(), depends );
+          dependentChildAlgorithmsRecursive( childIt->childId(), depends, branch );
           break;
         }
       }
@@ -1591,7 +1663,7 @@ void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QStri
   }
 }
 
-QSet<QString> QgsProcessingModelAlgorithm::dependentChildAlgorithms( const QString &childId ) const
+QSet<QString> QgsProcessingModelAlgorithm::dependentChildAlgorithms( const QString &childId, const QString &conditionalBranch ) const
 {
   QSet< QString > algs;
 
@@ -1599,7 +1671,7 @@ QSet<QString> QgsProcessingModelAlgorithm::dependentChildAlgorithms( const QStri
   // unnecessarily recursion though it
   algs.insert( childId );
 
-  dependentChildAlgorithmsRecursive( childId, algs );
+  dependentChildAlgorithmsRecursive( childId, algs, conditionalBranch );
 
   // remove temporary target alg
   algs.remove( childId );
@@ -1613,13 +1685,13 @@ void QgsProcessingModelAlgorithm::dependsOnChildAlgorithmsRecursive( const QStri
   const QgsProcessingModelChildAlgorithm &alg = mChildAlgorithms.value( childId );
 
   // add direct dependencies
-  const auto constDependencies = alg.dependencies();
-  for ( const QString &c : constDependencies )
+  const QList< QgsProcessingModelChildDependency > constDependencies = alg.dependencies();
+  for ( const QgsProcessingModelChildDependency &val : constDependencies )
   {
-    if ( !depends.contains( c ) )
+    if ( !depends.contains( val.childId ) )
     {
-      depends.insert( c );
-      dependsOnChildAlgorithmsRecursive( c, depends );
+      depends.insert( val.childId );
+      dependsOnChildAlgorithmsRecursive( val.childId, depends );
     }
   }
 
@@ -1654,6 +1726,49 @@ QSet< QString > QgsProcessingModelAlgorithm::dependsOnChildAlgorithms( const QSt
   algs.remove( childId );
 
   return algs;
+}
+
+QList<QgsProcessingModelChildDependency> QgsProcessingModelAlgorithm::availableDependenciesForChildAlgorithm( const QString &childId ) const
+{
+  QSet< QString > dependent;
+  if ( !childId.isEmpty() )
+  {
+    dependent.unite( dependentChildAlgorithms( childId ) );
+    dependent.insert( childId );
+  }
+
+  QList<QgsProcessingModelChildDependency> res;
+  for ( auto it = mChildAlgorithms.constBegin(); it != mChildAlgorithms.constEnd(); ++it )
+  {
+    if ( !dependent.contains( it->childId() ) )
+    {
+      // check first if algorithm provides output branches
+      bool hasBranches = false;
+      if ( it->algorithm() )
+      {
+        const QgsProcessingOutputDefinitions defs = it->algorithm()->outputDefinitions();
+        for ( const QgsProcessingOutputDefinition *def : defs )
+        {
+          if ( def->type() == QgsProcessingOutputConditionalBranch::typeName() )
+          {
+            hasBranches = true;
+            QgsProcessingModelChildDependency alg;
+            alg.childId = it->childId();
+            alg.conditionalBranch = def->name();
+            res << alg;
+          }
+        }
+      }
+
+      if ( !hasBranches )
+      {
+        QgsProcessingModelChildDependency alg;
+        alg.childId = it->childId();
+        res << alg;
+      }
+    }
+  }
+  return res;
 }
 
 bool QgsProcessingModelAlgorithm::validateChildAlgorithm( const QString &childId, QStringList &issues ) const

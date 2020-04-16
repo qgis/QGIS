@@ -126,6 +126,8 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     void showHelp();
     void treeWidgetItemDoubleClicked( const QModelIndex &index );
     void treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous );
+    void btnSave_clicked();
+    void btnLoad_clicked();
 };
 
 /**

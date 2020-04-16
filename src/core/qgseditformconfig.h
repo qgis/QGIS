@@ -100,6 +100,20 @@ class CORE_EXPORT QgsEditFormConfig
     Q_ENUM( PythonInitCodeSource )
 
     /**
+     * Data defined properties.
+     * Form data defined overrides are stored in a property collection
+     * and they can be retrieved using the indexes specified in this
+     * enum.
+     * \since QGIS 3.14
+     */
+    enum DataDefinedProperty
+    {
+      NoProperty = 0, //!< No property
+      AllProperties = 1, //!< All properties for item
+      Alias = 2, //!< Alias
+    };
+
+    /**
      * Copy constructor
      *
      * \since QGIS 3.0
@@ -208,7 +222,7 @@ class CORE_EXPORT QgsEditFormConfig
      * If this returns TRUE, the widget at the given index will receive its label on the previous line
      * while if it returns FALSE, the widget will receive its label on the left hand side.
      * Labeling on top leaves more horizontal space for the widget itself.
-     **/
+     */
     bool labelOnTop( int idx ) const;
 
     /**
@@ -216,7 +230,7 @@ class CORE_EXPORT QgsEditFormConfig
      * the previous line while if it is set to FALSE, the widget will receive its label
      * on the left hand side.
      * Labeling on top leaves more horizontal space for the widget itself.
-     **/
+     */
     void setLabelOnTop( int idx, bool onTop );
 
 
@@ -300,6 +314,25 @@ class CORE_EXPORT QgsEditFormConfig
      * Create a new edit form config. Normally invoked by QgsVectorLayer
      */
     explicit QgsEditFormConfig();
+
+    /**
+     * Set data defined properties for \a fieldName to \a properties
+     * \since QGIS 3.14
+     */
+    void setDataDefinedFieldProperties( const QString &fieldName, const QgsPropertyCollection &properties );
+
+    /**
+     * Returns data defined properties for \a fieldName
+     * \since QGIS 3.14
+     */
+    QgsPropertyCollection dataDefinedFieldProperties( const QString &fieldName ) const;
+
+
+    /**
+     * Returns data defined property definitions.
+     * \since QGIS 3.14
+     */
+    static const QgsPropertiesDefinition &propertyDefinitions();
 
   private:
 

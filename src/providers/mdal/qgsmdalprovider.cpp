@@ -288,7 +288,7 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &path,
                            location,
                            meta.isScalar(),
                            driver,
-                           path.toStdString().c_str()
+                           filename.toStdString().c_str()
                          );
   if ( !g )
     return true;

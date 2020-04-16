@@ -60,6 +60,7 @@
     </widget>
     <addaction name="mActionValidate"/>
     <addaction name="mActionRun"/>
+    <addaction name="mActionReorderInputs"/>
     <addaction name="separator"/>
     <addaction name="mActionOpen"/>
     <addaction name="mActionSave"/>
@@ -165,7 +166,7 @@
           <x>0</x>
           <y>0</y>
           <width>256</width>
-          <height>98</height>
+          <height>90</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout">
@@ -255,7 +256,7 @@
           <x>0</x>
           <y>0</y>
           <width>256</width>
-          <height>152</height>
+          <height>173</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -279,6 +280,39 @@
             </property>
            </column>
           </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <property name="leftMargin">
+            <number>6</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>6</number>
+           </property>
+           <item>
+            <widget class="QPushButton" name="mReorderInputsButton">
+             <property name="text">
+              <string>Reorder Model Inputs…</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
          </item>
         </layout>
        </widget>
@@ -325,7 +359,7 @@
           <x>0</x>
           <y>0</y>
           <width>256</width>
-          <height>180</height>
+          <height>167</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -655,6 +689,11 @@
    </property>
    <property name="text">
     <string>Validate Model</string>
+   </property>
+  </action>
+  <action name="mActionReorderInputs">
+   <property name="text">
+    <string>Reorder Model Inputs…</string>
    </property>
   </action>
  </widget>

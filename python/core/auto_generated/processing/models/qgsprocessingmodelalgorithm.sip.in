@@ -177,10 +177,14 @@ then the child will not be activated and ``False`` will be returned.
 .. seealso:: :py:func:`deactivateChildAlgorithm`
 %End
 
-    QSet< QString > dependentChildAlgorithms( const QString &childId ) const;
+    QSet< QString > dependentChildAlgorithms( const QString &childId, const QString &conditionalBranch = QString() ) const;
 %Docstring
 Returns a list of the child algorithm IDs depending on the child
 algorithm with the specified ``childId``.
+
+Optionally, a specific conditional branch which is created by the child algorithm
+can be specified in order to restrict the returned list to algorithms which depend
+on this specific branch.
 
 .. seealso:: :py:func:`dependsOnChildAlgorithms`
 %End
@@ -191,6 +195,13 @@ Returns a list of the child algorithm IDs on which the child
 algorithm with the specified ``childId`` depends upon.
 
 .. seealso:: :py:func:`dependentChildAlgorithms`
+%End
+
+    QList< QgsProcessingModelChildDependency > availableDependenciesForChildAlgorithm( const QString &childId ) const;
+%Docstring
+Returns details of available dependencies for the child algorithm with matching id.
+
+.. versionadded:: 3.14
 %End
 
     bool validateChildAlgorithm( const QString &childId, QStringList &issues /Out/ ) const;
@@ -298,6 +309,27 @@ this name a new component will be added to the model and returned.
 .. seealso:: :py:func:`setParameterComponents`
 
 .. seealso:: :py:func:`setParameterComponent`
+%End
+
+    QList< QgsProcessingModelParameter > orderedParameters() const;
+%Docstring
+Returns an ordered list of parameters for the model.
+
+.. seealso:: :py:func:`setParameterOrder`
+
+.. versionadded:: 3.14
+%End
+
+    void setParameterOrder( const QStringList &order );
+%Docstring
+Sets the ``order`` for showing parameters for the model.
+
+The ``order`` list should consist of parameter names corresponding to existing
+model parameterComponents().
+
+.. seealso:: :py:func:`orderedParameters`
+
+.. versionadded:: 3.14
 %End
 
     void updateDestinationParameters();

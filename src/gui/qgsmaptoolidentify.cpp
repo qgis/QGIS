@@ -35,8 +35,12 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectortilelayer.h"
+#include "qgsvectortilemvtdecoder.h"
+#include "qgsvectortileutils.h"
 #include "qgsproject.h"
 #include "qgsrenderer.h"
+#include "qgstiles.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometrycollection.h"
 #include "qgscurve.h"
@@ -220,6 +224,10 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
   {
     return identifyMeshLayer( results, qobject_cast<QgsMeshLayer *>( layer ), geometry );
   }
+  else if ( layer->type() == QgsMapLayerType::VectorTileLayer && layerType.testFlag( VectorTileLayer ) )
+  {
+    return identifyVectorTileLayer( results, qobject_cast<QgsVectorTileLayer *>( layer ), geometry );
+  }
   else
   {
     return false;
@@ -312,6 +320,127 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
     }
   }
   return true;
+}
+
+bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorTileLayer *layer, const QgsGeometry &geometry )
+{
+  if ( !layer || !layer->isSpatial() )
+    return false;
+
+  if ( !layer->isInScaleRange( mCanvas->mapSettings().scale() ) )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Out of scale limits" ), 2 );
+    return false;
+  }
+
+  QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
+
+  QMap< QString, QString > commonDerivedAttributes;
+
+  QgsGeometry selectionGeom = geometry;
+  bool isPointOrRectangle;
+  QgsPointXY point;
+  bool isSingleClick = selectionGeom.type() == QgsWkbTypes::PointGeometry;
+  if ( isSingleClick )
+  {
+    isPointOrRectangle = true;
+    point = selectionGeom.asPoint();
+
+    commonDerivedAttributes = derivedAttributesForPoint( QgsPoint( point ) );
+  }
+  else
+  {
+    // we have a polygon - maybe it is a rectangle - in such case we can avoid costly insterestion tests later
+    isPointOrRectangle = QgsGeometry::fromRect( selectionGeom.boundingBox() ).isGeosEqual( selectionGeom );
+  }
+
+  int featureCount = 0;
+
+  QgsFeatureList featureList;
+  std::unique_ptr<QgsGeometryEngine> selectionGeomPrepared;
+
+  // toLayerCoordinates will throw an exception for an 'invalid' point.
+  // For example, if you project a world map onto a globe using EPSG 2163
+  // and then click somewhere off the globe, an exception will be thrown.
+  try
+  {
+    QgsRectangle r;
+    if ( isSingleClick )
+    {
+      double sr = mOverrideCanvasSearchRadius < 0 ? searchRadiusMU( mCanvas ) : mOverrideCanvasSearchRadius;
+      r = toLayerCoordinates( layer, QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr ) );
+    }
+    else
+    {
+      r = toLayerCoordinates( layer, selectionGeom.boundingBox() );
+
+      if ( !isPointOrRectangle )
+      {
+        QgsCoordinateTransform ct( mCanvas->mapSettings().destinationCrs(), layer->crs(), mCanvas->mapSettings().transformContext() );
+        if ( ct.isValid() )
+          selectionGeom.transform( ct );
+
+        // use prepared geometry for faster intersection test
+        selectionGeomPrepared.reset( QgsGeometry::createGeometryEngine( selectionGeom.constGet() ) );
+      }
+    }
+
+    int tileZoom = QgsVectorTileUtils::scaleToZoomLevel( mCanvas->scale(), layer->sourceMinZoom(), layer->sourceMaxZoom() );
+    QgsTileMatrix tileMatrix = QgsTileMatrix::fromWebMercator( tileZoom );
+    QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( r );
+
+    for ( int row = tileRange.startRow(); row <= tileRange.endRow(); ++row )
+    {
+      for ( int col = tileRange.startColumn(); col <= tileRange.endColumn(); ++col )
+      {
+        QgsTileXYZ tileID( col, row, tileZoom );
+        QByteArray data = layer->getRawTile( tileID );
+        if ( data.isEmpty() )
+          continue;  // failed to get data
+
+        QgsVectorTileMVTDecoder decoder;
+        if ( !decoder.decode( tileID, data ) )
+          continue;  // failed to decode
+
+        QMap<QString, QgsFields> perLayerFields;
+        const QStringList layerNames = decoder.layers();
+        for ( const QString &layerName : layerNames )
+        {
+          QSet<QString> fieldNames = QSet<QString>::fromList( decoder.layerFieldNames( layerName ) );
+          perLayerFields[layerName] = QgsVectorTileUtils::makeQgisFields( fieldNames );
+        }
+
+        const QgsVectorTileFeatures features = decoder.layerFeatures( perLayerFields, QgsCoordinateTransform() );
+        const QStringList featuresLayerNames = features.keys();
+        for ( const QString &layerName : featuresLayerNames )
+        {
+          const QgsFields fFields = perLayerFields[layerName];
+          const QVector<QgsFeature> &layerFeatures = features[layerName];
+          for ( const QgsFeature &f : layerFeatures )
+          {
+            if ( f.geometry().intersects( r ) && ( !selectionGeomPrepared || selectionGeomPrepared->intersects( f.geometry().constGet() ) ) )
+            {
+              QMap< QString, QString > derivedAttributes = commonDerivedAttributes;
+              derivedAttributes.insert( tr( "Feature ID" ), FID_TO_STRING( f.id() ) );
+
+              results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), layerName, fFields, f, derivedAttributes ) );
+
+              featureCount++;
+            }
+          }
+        }
+      }
+    }
+
+  }
+  catch ( QgsCsException &cse )
+  {
+    Q_UNUSED( cse )
+    // catch exception for 'invalid' point and proceed with no features found
+    QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+  }
+
+  return featureCount > 0;
 }
 
 QMap<QString, QString> QgsMapToolIdentify::derivedAttributesForPoint( const QgsPoint &point )

@@ -28,8 +28,11 @@
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelcomponentgraphicitem.h"
 #include "processing/models/qgsprocessingmodelgroupbox.h"
+#include "processing/models/qgsmodelinputreorderwidget.h"
 #include "qgsmessageviewer.h"
 #include "qgsmessagebaritem.h"
+#include "qgspanelwidget.h"
+#include "qgsprocessingmultipleselectiondialog.h"
 
 #include <QShortcut>
 #include <QDesktopWidget>
@@ -138,6 +141,8 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mActionDeleteComponents, &QAction::triggered, this, &QgsModelDesignerDialog::deleteSelected );
   connect( mActionSnapSelected, &QAction::triggered, mView, &QgsModelGraphicsView::snapSelected );
   connect( mActionValidate, &QAction::triggered, this, &QgsModelDesignerDialog::validate );
+  connect( mActionReorderInputs, &QAction::triggered, this, &QgsModelDesignerDialog::reorderInputs );
+  connect( mReorderInputsButton, &QPushButton::clicked, this, &QgsModelDesignerDialog::reorderInputs );
 
   mActionSnappingEnabled->setChecked( settings.value( QStringLiteral( "/Processing/Modeler/enableSnapToGrid" ), false ).toBool() );
   connect( mActionSnappingEnabled, &QAction::toggled, this, [ = ]( bool enabled )
@@ -813,6 +818,19 @@ void QgsModelDesignerDialog::validate()
   }
 }
 
+void QgsModelDesignerDialog::reorderInputs()
+{
+  QgsModelInputReorderDialog dlg( this );
+  dlg.setInputs( mModel->orderedParameters() );
+  if ( dlg.exec() )
+  {
+    const QStringList inputOrder = dlg.inputOrder();
+    beginUndoCommand( tr( "Reorder Inputs" ) );
+    mModel->setParameterOrder( inputOrder );
+    endUndoCommand();
+  }
+}
+
 bool QgsModelDesignerDialog::isDirty() const
 {
   return mHasChanged && mUndoStack->index() != -1;
@@ -847,5 +865,86 @@ void QgsModelDesignerDialog::fillInputsTree()
 }
 
 
-///@endcond
+//
+// QgsModelChildDependenciesWidget
+//
 
+QgsModelChildDependenciesWidget::QgsModelChildDependenciesWidget( QWidget *parent,  QgsProcessingModelAlgorithm *model, const QString &childId )
+  : QWidget( parent )
+  , mModel( model )
+  , mChildId( childId )
+{
+  QHBoxLayout *hl = new QHBoxLayout();
+  hl->setMargin( 0 );
+  hl->setContentsMargins( 0, 0, 0, 0 );
+
+  mLineEdit = new QLineEdit();
+  mLineEdit->setEnabled( false );
+  hl->addWidget( mLineEdit, 1 );
+
+  mToolButton = new QToolButton();
+  mToolButton->setText( QString( QChar( 0x2026 ) ) );
+  hl->addWidget( mToolButton );
+
+  setLayout( hl );
+
+  mLineEdit->setText( tr( "%1 dependencies selected" ).arg( 0 ) );
+
+  connect( mToolButton, &QToolButton::clicked, this, &QgsModelChildDependenciesWidget::showDialog );
+}
+
+void QgsModelChildDependenciesWidget::setValue( const QList<QgsProcessingModelChildDependency> &value )
+{
+  mValue = value;
+
+  updateSummaryText();
+}
+
+void QgsModelChildDependenciesWidget::showDialog()
+{
+  const QList<QgsProcessingModelChildDependency> available = mModel->availableDependenciesForChildAlgorithm( mChildId );
+
+  QVariantList availableOptions;
+  for ( const QgsProcessingModelChildDependency &dep : available )
+    availableOptions << QVariant::fromValue( dep );
+  QVariantList selectedOptions;
+  for ( const QgsProcessingModelChildDependency &dep : mValue )
+    selectedOptions << QVariant::fromValue( dep );
+
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel )
+  {
+    QgsProcessingMultipleSelectionPanelWidget *widget = new QgsProcessingMultipleSelectionPanelWidget( availableOptions, selectedOptions );
+    widget->setPanelTitle( tr( "Algorithm Dependencies" ) );
+
+    widget->setValueFormatter( [ = ]( const QVariant & v ) -> QString
+    {
+      const QgsProcessingModelChildDependency dep = v.value< QgsProcessingModelChildDependency >();
+
+      const QString description = mModel->childAlgorithm( dep.childId ).description();
+      if ( dep.conditionalBranch.isEmpty() )
+        return description;
+      else
+        return tr( "Condition “%1” from algorithm “%2”" ).arg( dep.conditionalBranch, description );
+    } );
+
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [ = ]()
+    {
+      QList< QgsProcessingModelChildDependency > res;
+      for ( const QVariant &v : widget->selectedOptions() )
+      {
+        res << v.value< QgsProcessingModelChildDependency >();
+      }
+      setValue( res );
+    } );
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::acceptClicked, widget, &QgsPanelWidget::acceptPanel );
+    panel->openPanel( widget );
+  }
+}
+
+void QgsModelChildDependenciesWidget::updateSummaryText()
+{
+  mLineEdit->setText( tr( "%1 dependencies selected" ).arg( mValue.count() ) );
+}
+
+///@endcond

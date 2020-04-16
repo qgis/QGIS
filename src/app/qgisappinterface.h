@@ -233,6 +233,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionAddRasterLayer() override;
     QAction *actionAddPgLayer() override;
     QAction *actionAddWmsLayer() override;
+    QAction *actionAddXyzLayer() override;
     QAction *actionAddAfsLayer() override;
     QAction *actionAddAmsLayer() override;
     QAction *actionCopyLayerStyle() override;

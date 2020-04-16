@@ -21,6 +21,7 @@
 #include "ui_qgsmodeldesignerdialogbase.h"
 
 #include "qgsprocessingtoolboxmodel.h"
+#include "qgsprocessingmodelchilddependency.h"
 
 class QgsMessageBar;
 class QgsProcessingModelAlgorithm;
@@ -34,6 +35,7 @@ class QgsModelViewToolSelect;
 
 class GUI_EXPORT QgsModelerToolboxModel : public QgsProcessingToolboxProxyModel
 {
+    Q_OBJECT
   public:
     explicit QgsModelerToolboxModel( QObject *parent = nullptr );
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
@@ -51,6 +53,7 @@ class GUI_EXPORT QgsModelerToolboxModel : public QgsProcessingToolboxProxyModel
  */
 class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsModelDesignerDialogBase
 {
+    Q_OBJECT
   public:
 
     QgsModelDesignerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = nullptr );
@@ -144,6 +147,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void deleteSelected();
     void populateZoomToMenu();
     void validate();
+    void reorderInputs();
 
   private:
 
@@ -190,6 +194,35 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void updateVariablesGui();
 };
 
+
+
+class GUI_EXPORT QgsModelChildDependenciesWidget : public QWidget
+{
+    Q_OBJECT
+
+  public:
+
+    QgsModelChildDependenciesWidget( QWidget *parent, QgsProcessingModelAlgorithm *model, const QString &childId );
+    QList< QgsProcessingModelChildDependency > value() const { return mValue; }
+    void setValue( const QList< QgsProcessingModelChildDependency >  &value );
+  private slots:
+
+    void showDialog();
+
+  private:
+
+    void updateSummaryText();
+
+    QLineEdit *mLineEdit = nullptr;
+    QToolButton *mToolButton = nullptr;
+
+    QgsProcessingModelAlgorithm *mModel = nullptr;
+    QString mChildId;
+
+    QList< QgsProcessingModelChildDependency >  mValue;
+
+    friend class TestProcessingGui;
+};
 ///@endcond
 
 #endif // QGSMODELDESIGNERDIALOG_H

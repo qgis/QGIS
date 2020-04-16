@@ -189,10 +189,26 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
       else
         topIdx++;
     }
-    const QStringList dependencies = it.value().dependencies();
-    for ( const QString &depend : dependencies )
+    const QList< QgsProcessingModelChildDependency > dependencies = it.value().dependencies();
+    for ( const QgsProcessingModelChildDependency &depend : dependencies )
     {
-      addItem( new QgsModelArrowItem( mChildAlgorithmItems.value( depend ), QgsModelArrowItem::Marker::Circle, mChildAlgorithmItems.value( it.value().childId() ), QgsModelArrowItem::Marker::ArrowHead ) );
+      if ( depend.conditionalBranch.isEmpty() || !model->childAlgorithm( depend.childId ).algorithm() )
+      {
+        addItem( new QgsModelArrowItem( mChildAlgorithmItems.value( depend.childId ), QgsModelArrowItem::Marker::Circle, mChildAlgorithmItems.value( it.value().childId() ), QgsModelArrowItem::Marker::ArrowHead ) );
+      }
+      else
+      {
+        // find branch link point
+        const QgsProcessingOutputDefinitions outputs = model->childAlgorithm( depend.childId ).algorithm()->outputDefinitions();
+        int i = 0;
+        for ( const QgsProcessingOutputDefinition *output : outputs )
+        {
+          if ( output->name() == depend.conditionalBranch )
+            break;
+          i++;
+        }
+        addItem( new QgsModelArrowItem( mChildAlgorithmItems.value( depend.childId ), Qt::BottomEdge, i, QgsModelArrowItem::Marker::Circle, mChildAlgorithmItems.value( it.value().childId() ), QgsModelArrowItem::Marker::ArrowHead ) );
+      }
     }
   }
 

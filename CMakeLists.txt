@@ -147,6 +147,8 @@ IF(WITH_CORE)
 
   SET (WITH_QUICK FALSE CACHE BOOL "Determines whether QGIS Quick library should be built")
 
+  SET (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
+
   # try to configure and build python bindings by default
   SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
   IF (WITH_BINDINGS)

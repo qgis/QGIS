@@ -118,6 +118,7 @@ class TestQgsProcessingAlgs: public QObject
     void raiseWarning();
 
     void filterByLayerType();
+    void conditionalBranch();
 
     void saveLog();
 
@@ -3058,6 +3059,41 @@ void TestQgsProcessingAlgs::filterByLayerType()
   QVERIFY( ok );
   QVERIFY( !results.value( QStringLiteral( "RASTER" ) ).toString().isEmpty() );
   QVERIFY( !results.contains( QStringLiteral( "VECTOR" ) ) );
+}
+
+void TestQgsProcessingAlgs::conditionalBranch()
+{
+  QVariantMap config;
+  QVariantList conditions;
+  QVariantMap cond1;
+  cond1.insert( QStringLiteral( "name" ), QStringLiteral( "name1" ) );
+  cond1.insert( QStringLiteral( "expression" ), QStringLiteral( "1 * 1" ) );
+  conditions << cond1;
+  QVariantMap cond2;
+  cond2.insert( QStringLiteral( "name" ), QStringLiteral( "name2" ) );
+  cond2.insert( QStringLiteral( "expression" ), QStringLiteral( "1 * 0" ) );
+  conditions << cond2;
+  config.insert( QStringLiteral( "conditions" ), conditions );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:condition" ), config ) );
+  QVERIFY( alg != nullptr );
+
+  QCOMPARE( alg->outputDefinitions().size(), 2 );
+  QCOMPARE( alg->outputDefinitions().at( 0 )->name(), QStringLiteral( "name1" ) );
+  QCOMPARE( alg->outputDefinitions().at( 1 )->name(), QStringLiteral( "name2" ) );
+
+  QVariantMap parameters;
+  // vector input
+  parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( "vl" ) );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok, config );
+  QVERIFY( ok );
+  QCOMPARE( results.value( QStringLiteral( "name1" ) ).toInt(), 1 );
+  QCOMPARE( results.value( QStringLiteral( "name2" ) ).toInt(), 0 );
 }
 
 void TestQgsProcessingAlgs::saveLog()
