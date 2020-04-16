@@ -96,6 +96,8 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
 
     QPointF bezierPointForCurve( const QPointF &point, Qt::Edge edge, bool incoming ) const;
 
+    void drawArrowHead( QPainter *painter, const QPointF &point, const QPointF &vector );
+
     QgsModelComponentGraphicItem *mStartItem = nullptr;
     Qt::Edge mStartEdge = Qt::LeftEdge;
     int mStartIndex = -1;

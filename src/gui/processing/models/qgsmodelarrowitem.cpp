@@ -69,6 +69,7 @@ QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, M
 {
 }
 
+
 void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
 {
   QColor color = mColor;
@@ -87,42 +88,41 @@ void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem
   painter->setBrush( color );
   painter->setRenderHint( QPainter::Antialiasing );
 
-  if ( mStartMarker == Marker::Circle )
+
+  switch ( mStartMarker )
   {
-    painter->drawEllipse( mStartPoint, 3.0, 3.0 );
-  }
-  else if ( mStartMarker == Marker::ArrowHead )
-  {
-    QPointF delta = path().pointAtPercent(0.0) - path().pointAtPercent(0.05);
-    float angle = atan2( delta.y(), delta.x() ) * 180.0 / M_PI;
-    painter->translate(mStartPoint);
-    painter->rotate(angle);
-    QPolygonF arrowHead;
-    arrowHead << QPointF(0, 0) << QPointF(-6, 4) << QPointF(-6, -4) << QPointF(0, 0);
-    painter->drawPolygon( arrowHead );
-    painter->rotate(-angle);
-    painter->translate(-mStartPoint);
+    case Marker::Circle:
+      painter->drawEllipse( mStartPoint, 3.0, 3.0 );
+      break;
+    case Marker::ArrowHead:
+      drawArrowHead( painter, mStartPoint, path().pointAtPercent( 0.0 ) - path().pointAtPercent( 0.05 ) );
+      break;
   }
 
-  if ( mEndMarker == Marker::Circle )
+  switch ( mEndMarker )
   {
-    painter->drawEllipse( mEndPoint, 3.0, 3.0 );
-  }
-  else if ( mEndMarker == Marker::ArrowHead )
-  {
-    QPointF delta = path().pointAtPercent(1.0) - path().pointAtPercent(0.95);
-    float angle = atan2( delta.y(), delta.x() ) * 180.0 / M_PI;
-    painter->translate(mEndPoint);
-    painter->rotate(angle);
-    QPolygonF arrowHead;
-    arrowHead << QPointF(0, 0) << QPointF(-6, 4) << QPointF(-6, -4) << QPointF(0, 0);
-    painter->drawPolygon( arrowHead );
-    painter->rotate(-angle);
-    painter->translate(-mEndPoint);
+    case Marker::Circle:
+      painter->drawEllipse( mEndPoint, 3.0, 3.0 );
+      break;
+    case Marker::ArrowHead:
+      drawArrowHead( painter, mEndPoint, path().pointAtPercent( 1.0 ) - path().pointAtPercent( 0.95 ) );
+      break;
   }
 
   painter->setBrush( Qt::NoBrush );
   painter->drawPath( path() );
+}
+
+void QgsModelArrowItem::drawArrowHead( QPainter *painter, const QPointF &position, const QPointF &vector )
+{
+  float angle = atan2( vector.y(), vector.x() ) * 180.0 / M_PI;
+  painter->translate( position );
+  painter->rotate( angle );
+  QPolygonF arrowHead;
+  arrowHead << QPointF( 0, 0 ) << QPointF( -6, 4 ) << QPointF( -6, -4 ) << QPointF( 0, 0 );
+  painter->drawPolygon( arrowHead );
+  painter->rotate( -angle );
+  painter->translate( -position );
 }
 
 void QgsModelArrowItem::setPenStyle( Qt::PenStyle style )
