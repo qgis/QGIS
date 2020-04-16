@@ -285,41 +285,54 @@ class TestQgsAggregateCalculator(unittest.TestCase):
             features.append(f)
         assert pr.addFeatures(features)
 
-        tests = [[QgsAggregateCalculator.Count, 'flddatetime', 9],
-                 [QgsAggregateCalculator.Count, 'flddate', 9],
-                 [QgsAggregateCalculator.CountDistinct, 'flddatetime', 6],
-                 [QgsAggregateCalculator.CountDistinct, 'flddate', 5],
+        tests = [[QgsAggregateCalculator.Count, 'flddatetime', 7],
+                 [QgsAggregateCalculator.Count, 'flddate', 7],
+                 [QgsAggregateCalculator.CountDistinct, 'flddatetime', 5],
+                 [QgsAggregateCalculator.CountDistinct, 'flddate', 4],
                  [QgsAggregateCalculator.CountMissing, 'flddatetime', 2],
                  [QgsAggregateCalculator.CountMissing, 'flddate', 2],
+                 [QgsAggregateCalculator.Mean, 'flddatetime', QDateTime(QDate(2012, 3, 21), QTime(5, 9, 38, 858))],
+                 [QgsAggregateCalculator.Mean, 'flddate', QDateTime(QDate(2011, 8, 16), QTime(18, 8, 34, 286))],
+                 [QgsAggregateCalculator.Median, 'flddatetime', QDateTime(QDate(2015, 3, 4), QTime(11, 10, 54))],
+                 [QgsAggregateCalculator.Median, 'flddate', QDateTime(QDate(2011, 1, 5), QTime(0, 0, 0))],
+                 [QgsAggregateCalculator.StDev, 'flddatetime', QgsInterval(203658409.3682543)],
+                 [QgsAggregateCalculator.StDev, 'flddate', QgsInterval(200212249.25049075)],
+                 [QgsAggregateCalculator.StDevSample, 'flddatetime', QgsInterval(219976223.69430903)],
+                 [QgsAggregateCalculator.StDevSample, 'flddate', QgsInterval(216253945.33957234)],
                  [QgsAggregateCalculator.Min, 'flddatetime', QDateTime(QDate(1998, 1, 2), QTime(1, 10, 54))],
                  [QgsAggregateCalculator.Min, 'flddate', QDateTime(QDate(1998, 1, 2), QTime(0, 0, 0))],
                  [QgsAggregateCalculator.Max, 'flddatetime', QDateTime(QDate(2019, 12, 28), QTime(23, 10, 1))],
                  [QgsAggregateCalculator.Max, 'flddate', QDateTime(QDate(2019, 12, 28), QTime(0, 0, 0))],
-
                  [QgsAggregateCalculator.Range, 'flddatetime', QgsInterval(693871147)],
                  [QgsAggregateCalculator.Range, 'flddate', QgsInterval(693792000)],
-
+                 [QgsAggregateCalculator.Minority, 'flddatetime', QDateTime(QDate(1998, 1, 2), QTime(1, 10, 54))],
+                 [QgsAggregateCalculator.Minority, 'flddate', QDateTime(QDate(1998, 1, 2), QTime(0, 0, 0))],
+                 [QgsAggregateCalculator.Majority, 'flddatetime', QDateTime(QDate(2015, 3, 4), QTime(11, 10, 54))],
+                 [QgsAggregateCalculator.Majority, 'flddate', QDateTime(QDate(2011, 1, 5), QTime(0, 0, 0))],
+                 [QgsAggregateCalculator.FirstQuartile, 'flddatetime', QDateTime(QDate(2011, 1, 5), QTime(13, 6, 57, 500))],
+                 [QgsAggregateCalculator.FirstQuartile, 'flddate', QDateTime(QDate(2011, 1, 5), QTime(0, 0, 0))],
+                 [QgsAggregateCalculator.ThirdQuartile, 'flddatetime', QDateTime(QDate(2015, 3, 4), QTime(11, 10, 54))],
+                 [QgsAggregateCalculator.ThirdQuartile, 'flddate', QDateTime(QDate(2015, 3, 4), QTime(0, 0, 0))],
+                 [QgsAggregateCalculator.InterQuartileRange, 'flddatetime', QgsInterval(131234636.5)],
+                 [QgsAggregateCalculator.InterQuartileRange, 'flddate', QgsInterval(131241600.0)],
+                 [QgsAggregateCalculator.First, 'flddatetime', datetime_values[0]],
+                 [QgsAggregateCalculator.First, 'flddate', QDateTime(date_values[0], QTime(0, 0))],
+                 [QgsAggregateCalculator.Last, 'flddatetime', datetime_values[-1]],
+                 [QgsAggregateCalculator.Last, 'flddate', QDateTime(date_values[-1], QTime(0, 0))],
                  [QgsAggregateCalculator.ArrayAggregate, 'flddatetime', [None if v.isNull() else v for v in datetime_values]],
                  [QgsAggregateCalculator.ArrayAggregate, 'flddate', [None if v.isNull() else v for v in date_values]],
+                 [QgsAggregateCalculator.Mode, 'flddatetime', [QDateTime(QDate(2015, 3, 4), QTime(11, 10, 54))]],
+                 [QgsAggregateCalculator.Mode, 'flddate', [QDateTime(QDate(2011, 1, 5), QTime(0, 0, 0))]],
                  ]
 
         agg = QgsAggregateCalculator(layer)
         for t in tests:
             val, ok = agg.calculate(t[0], t[1])
-            self.assertTrue(ok)
-            self.assertEqual(val, t[2])
+            self.assertTrue(ok, "Assert failed for {} {} - not ok".format(t[0], t[1]))
+            self.assertEqual(val, t[2], "Assert failed for {} {}".format(t[0], t[1]))
 
         # bad tests - the following stats should not be calculatable for string fields
         for t in [QgsAggregateCalculator.Sum,
-                  QgsAggregateCalculator.Mean,
-                  QgsAggregateCalculator.Median,
-                  QgsAggregateCalculator.StDev,
-                  QgsAggregateCalculator.StDevSample,
-                  QgsAggregateCalculator.Minority,
-                  QgsAggregateCalculator.Majority,
-                  QgsAggregateCalculator.FirstQuartile,
-                  QgsAggregateCalculator.ThirdQuartile,
-                  QgsAggregateCalculator.InterQuartileRange,
                   QgsAggregateCalculator.StringMinimumLength,
                   QgsAggregateCalculator.StringMaximumLength,
                   ]:

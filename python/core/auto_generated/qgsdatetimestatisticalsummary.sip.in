@@ -33,9 +33,22 @@ specifying the statistic in the constructor or via setStatistics().
       Count,
       CountDistinct,
       CountMissing,
+      Mean,
+      Median,
+      StDev,
+      StDevSample,
       Min,
       Max,
       Range,
+      Minority,
+      Majority,
+      FirstQuartile,
+      ThirdQuartile,
+      InterQuartileRange,
+      First,
+      Last,
+      Mode,
+
       All,
     };
     typedef QFlags<QgsDateTimeStatisticalSummary::Statistic> Statistics;
@@ -132,7 +145,7 @@ Returns the calculated count of values.
 Returns the number of distinct datetime values.
 %End
 
-    QSet< QDateTime > distinctValues() const;
+    QSet<QDateTime> distinctValues() const;
 %Docstring
 Returns the set of distinct datetime values.
 %End
@@ -155,6 +168,134 @@ Returns the maximum (latest) non-null datetime value.
     QgsInterval range() const;
 %Docstring
 Returns the range (interval between earliest and latest non-null datetime values).
+%End
+
+    QDateTime mean() const;
+%Docstring
+Returns calculated mean of values. A null QDateTime may be returned if the mean cannot
+be calculated.
+
+.. versionadded:: 3.16
+%End
+
+    QDateTime median() const;
+%Docstring
+Returns calculated median of values. This is only calculated if Statistic.Median has
+been specified in the constructor or via setStatistics. 
+
+.. versionadded:: 3.16
+%End
+
+    QgsInterval stDev() const;
+%Docstring
+Returns population standard deviation. This is only calculated if Statistic.StDev has
+been specified in the constructor or via setStatistics. A null QDateTime may be returned if the standard deviation cannot
+be calculated.
+
+.. seealso:: :py:func:`sampleStDev`
+
+.. versionadded:: 3.16
+%End
+
+    QgsInterval sampleStDev() const;
+%Docstring
+Returns sample standard deviation. This is only calculated if Statistic.StDev has
+been specified in the constructor or via setStatistics. A null QDateTime may be returned if the standard deviation cannot
+be calculated.
+
+.. seealso:: :py:func:`stDev`
+
+.. versionadded:: 3.16
+%End
+
+    QDateTime firstQuartile() const;
+%Docstring
+Returns the first quartile of the values. The quartile is calculated using the
+"Tukey's hinges" method. A null QDateTime may be returned if the first quartile cannot
+be calculated.
+
+.. seealso:: :py:func:`thirdQuartile`
+
+.. seealso:: :py:func:`interQuartileRange`
+
+.. versionadded:: 3.16
+%End
+
+    QDateTime thirdQuartile() const;
+%Docstring
+Returns the third quartile of the values. The quartile is calculated using the
+"Tukey's hinges" method. A null QDateTime may be returned if the third quartile cannot
+be calculated.
+
+.. seealso:: :py:func:`firstQuartile`
+
+.. seealso:: :py:func:`interQuartileRange`
+
+.. versionadded:: 3.16
+%End
+
+    QgsInterval interQuartileRange() const;
+%Docstring
+Returns the inter quartile range of the values. The quartiles are calculated using the
+"Tukey's hinges" method. A null QDateTime may be returned if the IQR cannot
+be calculated.
+
+.. seealso:: :py:func:`firstQuartile`
+
+.. seealso:: :py:func:`thirdQuartile`
+
+.. versionadded:: 3.16
+%End
+
+    QDateTime minority() const;
+%Docstring
+Returns the least common string. The minority is the value with least occurrences in the list
+This is only calculated if Statistic.Minority has been specified in the constructor
+or via setStatistics. If multiple values match, return the first value sorted alphabetically
+ascending (this may change in future versions).
+
+.. seealso:: :py:func:`majority`
+
+.. versionadded:: 3.16
+%End
+
+    QDateTime majority() const;
+%Docstring
+Returns the most common string. The majority is the value with most occurrences in the list
+This is only calculated if Statistic.Majority has been specified in the constructor
+or via setStatistics. If multiple values match, return the first value sorted alphabetically
+ascending (this may change in future versions).
+
+.. seealso:: :py:func:`minority`
+
+.. versionadded:: 3.16
+%End
+
+    QDateTime first() const;
+%Docstring
+Returns the first value obtained.
+
+.. seealso:: :py:func:`last`
+
+.. versionadded:: 3.16
+%End
+
+    QDateTime last() const;
+%Docstring
+Returns the last value obtained.
+
+.. seealso:: :py:func:`first`
+
+.. versionadded:: 3.16
+%End
+
+    QList<QDateTime> mode() const;
+%Docstring
+Returns the mode of the values. The values are sorted alphabetically in ascending order (this may change in future versions).
+
+.. seealso:: :py:func:`majority`
+
+.. versionadded:: 3.16
 %End
 
     static QString displayName( QgsDateTimeStatisticalSummary::Statistic statistic );

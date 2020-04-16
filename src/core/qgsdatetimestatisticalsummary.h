@@ -20,6 +20,7 @@
 #include "qgis_sip.h"
 #include "qgsinterval.h"
 #include <QSet>
+#include <QDate>
 #include <QDateTime>
 #include <QVariantList>
 
@@ -49,13 +50,26 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
     //! Enumeration of flags that specify statistics to be calculated
     enum Statistic
     {
-      Count = 1,  //!< Count
-      CountDistinct = 2,  //!< Number of distinct datetime values
-      CountMissing = 4,  //!< Number of missing (null) values
-      Min = 8, //!< Minimum (earliest) datetime value
-      Max = 16, //!< Maximum (latest) datetime value
-      Range = 32, //!< Interval between earliest and latest datetime value
-      All = Count | CountDistinct | CountMissing | Min | Max | Range, //!< All statistics
+      Count = 1 << 0,               //!< Count
+      CountDistinct = 1 << 1,       //!< Number of distinct datetime values
+      CountMissing = 1 << 2,        //!< Number of missing (null) values
+      Mean = 1 << 14,               //!< Mean of values (since QGIS 3.16)
+      Median = 1 << 15,             //!< Median of values (since QGIS 3.16)
+      StDev = 1 << 16,              //!< Standard deviation of values (since QGIS 3.16)
+      StDevSample = 1 << 17,        //!< Sample standard deviation of values (since QGIS 3.16)
+      Min = 1 << 3,                 //!< Minimum (earliest) datetime value
+      Max = 1 << 4,                 //!< Maximum (latest) datetime value
+      Range = 1 << 5,               //!< Interval between earliest and latest datetime value
+      Minority = 1 << 6,            //!< Minority of values (since QGIS 3.16)
+      Majority = 1 << 7,            //!< Majority of values (since QGIS 3.16)
+      FirstQuartile = 1 << 18,      //!< First quartile (since QGIS 3.16)
+      ThirdQuartile = 1 << 19,      //!< Third quartile (since QGIS 3.16)
+      InterQuartileRange = 1 << 20, //!< Inter quartile range (IQR) (since QGIS 3.16)
+      First = 1 << 11,              //!< First value (since QGIS 3.16)
+      Last = 1 << 12,               //!< Last value (since QGIS 3.16)
+      Mode = 1 << 13,               //!< Mode value (since QGIS 3.16)
+
+      All = Count | CountDistinct | CountMissing | Mean | Median | StDev | StDevSample | Min | Max | Range | FirstQuartile | ThirdQuartile | InterQuartileRange | Minority | Majority | First | Last | Mode, //!< All statistics
     };
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
@@ -135,7 +149,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
     /**
      * Returns the set of distinct datetime values.
      */
-    QSet< QDateTime > distinctValues() const { return mValues; }
+    QSet<QDateTime> distinctValues() const { return QSet<QDateTime>::fromList( mValues.keys() ); }
 
     /**
      * Returns the number of missing (null) datetime values.
@@ -158,6 +172,112 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
     QgsInterval range() const { return mMax - mMin; }
 
     /**
+     * Returns calculated mean of values. A null QDateTime may be returned if the mean cannot
+     * be calculated.
+     * \since QGIS 3.16
+     */
+    QDateTime mean() const { return mMean; }
+
+    /**
+     * Returns calculated median of values. This is only calculated if Statistic::Median has
+     * been specified in the constructor or via setStatistics. 
+     * \since QGIS 3.16
+     */
+    QDateTime median() const { return ( mIsTimes ) ? QDateTime( QDate::fromJulianDay( 0 ), mMedian.time() ) : mMedian; }
+
+    /**
+     * Returns population standard deviation. This is only calculated if Statistic::StDev has
+     * been specified in the constructor or via setStatistics. A null QDateTime may be returned if the standard deviation cannot
+     * be calculated.
+     * \see sampleStDev
+     * \since QGIS 3.16
+     */
+    QgsInterval stDev() const { return mStDev; }
+
+    /**
+     * Returns sample standard deviation. This is only calculated if Statistic::StDev has
+     * been specified in the constructor or via setStatistics. A null QDateTime may be returned if the standard deviation cannot
+     * be calculated.
+     * \see stDev
+     * \since QGIS 3.16
+     */
+    QgsInterval sampleStDev() const { return mSampleStDev; }
+
+    /**
+     * Returns the first quartile of the values. The quartile is calculated using the
+     * "Tukey's hinges" method. A null QDateTime may be returned if the first quartile cannot
+     * be calculated.
+     * \see thirdQuartile
+     * \see interQuartileRange
+     * \since QGIS 3.16
+     */
+    QDateTime firstQuartile() const { return mFirstQuartile; }
+
+    /**
+     * Returns the third quartile of the values. The quartile is calculated using the
+     * "Tukey's hinges" method. A null QDateTime may be returned if the third quartile cannot
+     * be calculated.
+     * \see firstQuartile
+     * \see interQuartileRange
+     * \since QGIS 3.16
+     */
+    QDateTime thirdQuartile() const { return mThirdQuartile; }
+
+    /**
+     * Returns the inter quartile range of the values. The quartiles are calculated using the
+     * "Tukey's hinges" method. A null QDateTime may be returned if the IQR cannot
+     * be calculated.
+     * \see firstQuartile
+     * \see thirdQuartile
+     * \since QGIS 3.16
+     */
+    QgsInterval interQuartileRange() const { return mThirdQuartile - mFirstQuartile; }
+
+    /**
+     * Returns the least common string. The minority is the value with least occurrences in the list
+     * This is only calculated if Statistic::Minority has been specified in the constructor
+     * or via setStatistics. If multiple values match, return the first value sorted alphabetically
+     * ascending (this may change in future versions).
+     * \see majority
+     * \since QGIS 3.16
+     */
+    QDateTime minority() const { return mMinority; }
+
+    /**
+     * Returns the most common string. The majority is the value with most occurrences in the list
+     * This is only calculated if Statistic::Majority has been specified in the constructor
+     * or via setStatistics. If multiple values match, return the first value sorted alphabetically
+     * ascending (this may change in future versions).
+     * \see minority
+     * \since QGIS 3.16
+     */
+    QDateTime majority() const { return mMajority; }
+
+    /**
+     * Returns the first value obtained.
+     *
+     * \see last()
+     * \since QGIS 3.16
+     */
+    QDateTime first() const { return mFirst; }
+
+    /**
+     * Returns the last value obtained.
+     *
+     * \see first()
+     * \since QGIS 3.16
+     */
+    QDateTime last() const { return mLast; }
+
+    /**
+     * Returns the mode of the values. The values are sorted alphabetically in ascending order (this may change in future versions).
+     *
+     * \see majority()
+     * \since QGIS 3.16
+     */
+    QList<QDateTime> mode() const { return mMode; }
+
+    /**
      * Returns the friendly display name for a statistic
      * \param statistic statistic to return name for
      */
@@ -168,10 +288,23 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
     Statistics mStatistics;
 
     int mCount;
-    QSet< QDateTime > mValues;
+    QMap<QDateTime, int> mValues;
+    QList<QDateTime> mAllValues;
     int mCountMissing;
+    long long mSumMSec;
+    QDateTime mMean;
+    QgsInterval mStDev;
+    QgsInterval mSampleStDev;
+    QDateTime mMedian;
     QDateTime mMin;
     QDateTime mMax;
+    QDateTime mFirstQuartile;
+    QDateTime mThirdQuartile;
+    QDateTime mMinority;
+    QDateTime mMajority;
+    QDateTime mFirst;
+    QDateTime mLast;
+    QList<QDateTime> mMode;
     bool mIsTimes;
 
     void testDateTime( const QDateTime &dateTime );

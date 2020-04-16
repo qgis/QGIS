@@ -200,12 +200,14 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
     QStringLiteral( "count" ),
     QCoreApplication::tr( "Count" ),
     QSet<QVariant::Type>()
-        << QVariant::DateTime
-        << QVariant::Date
         << QVariant::Int
         << QVariant::UInt
         << QVariant::LongLong
         << QVariant::ULongLong
+        << QVariant::Double
+        << QVariant::DateTime
+        << QVariant::Date
+        << QVariant::Time
         << QVariant::String
   }
       << AggregateInfo
@@ -213,12 +215,13 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
     QStringLiteral( "count_distinct" ),
     QCoreApplication::tr( "Count Distinct" ),
     QSet<QVariant::Type>()
-        << QVariant::DateTime
-        << QVariant::Date
-        << QVariant::UInt
         << QVariant::Int
+        << QVariant::UInt
         << QVariant::LongLong
         << QVariant::ULongLong
+        << QVariant::DateTime
+        << QVariant::Date
+        << QVariant::Time
         << QVariant::String
   }
       << AggregateInfo
@@ -226,11 +229,14 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
     QStringLiteral( "count_missing" ),
     QCoreApplication::tr( "Count Missing" ),
     QSet<QVariant::Type>()
-        << QVariant::DateTime
-        << QVariant::Date
         << QVariant::Int
         << QVariant::UInt
         << QVariant::LongLong
+        << QVariant::ULongLong
+        << QVariant::Double
+        << QVariant::DateTime
+        << QVariant::Date
+        << QVariant::Time
         << QVariant::String
   }
       << AggregateInfo
@@ -238,13 +244,14 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
     QStringLiteral( "min" ),
     QCoreApplication::tr( "Min" ),
     QSet<QVariant::Type>()
-        << QVariant::DateTime
-        << QVariant::Date
         << QVariant::Int
         << QVariant::UInt
         << QVariant::LongLong
         << QVariant::ULongLong
         << QVariant::Double
+        << QVariant::DateTime
+        << QVariant::Date
+        << QVariant::Time
         << QVariant::String
   }
       << AggregateInfo
@@ -252,13 +259,14 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
     QStringLiteral( "max" ),
     QCoreApplication::tr( "Max" ),
     QSet<QVariant::Type>()
-        << QVariant::DateTime
-        << QVariant::Date
         << QVariant::Int
         << QVariant::UInt
         << QVariant::LongLong
         << QVariant::ULongLong
         << QVariant::Double
+        << QVariant::DateTime
+        << QVariant::Date
+        << QVariant::Time
         << QVariant::String
   }
       << AggregateInfo
@@ -290,6 +298,8 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
     QSet<QVariant::Type>()
         << QVariant::Int
         << QVariant::UInt
+        << QVariant::LongLong
+        << QVariant::ULongLong
         << QVariant::Double
   }
       << AggregateInfo
@@ -313,19 +323,23 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
         << QVariant::LongLong
         << QVariant::ULongLong
         << QVariant::Double
+        << QVariant::DateTime
+        << QVariant::Date
+        << QVariant::Time
   }
       << AggregateInfo
   {
     QStringLiteral( "range" ),
     QCoreApplication::tr( "Range" ),
     QSet<QVariant::Type>()
-        << QVariant::Date
-        << QVariant::DateTime
         << QVariant::Int
         << QVariant::UInt
         << QVariant::LongLong
         << QVariant::ULongLong
         << QVariant::Double
+        << QVariant::DateTime
+        << QVariant::Date
+        << QVariant::Time
   }
       << AggregateInfo
   {
@@ -337,6 +351,9 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
         << QVariant::LongLong
         << QVariant::ULongLong
         << QVariant::Double
+        << QVariant::DateTime
+        << QVariant::Date
+        << QVariant::Time
         << QVariant::String
   }
       << AggregateInfo
@@ -349,6 +366,9 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
         << QVariant::LongLong
         << QVariant::ULongLong
         << QVariant::Double
+        << QVariant::DateTime
+        << QVariant::Date
+        << QVariant::Time
         << QVariant::String
   }
       << AggregateInfo
@@ -361,6 +381,9 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
         << QVariant::LongLong
         << QVariant::ULongLong
         << QVariant::Double
+        << QVariant::DateTime
+        << QVariant::Date
+        << QVariant::Time
   }
       << AggregateInfo
   {
@@ -372,6 +395,9 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
         << QVariant::LongLong
         << QVariant::ULongLong
         << QVariant::Double
+        << QVariant::DateTime
+        << QVariant::Date
+        << QVariant::Time
   }
       << AggregateInfo
   {
@@ -383,6 +409,9 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
         << QVariant::LongLong
         << QVariant::ULongLong
         << QVariant::Double
+        << QVariant::DateTime
+        << QVariant::Date
+        << QVariant::Time
   }
       << AggregateInfo
   {
@@ -427,6 +456,9 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
         << QVariant::LongLong
         << QVariant::ULongLong
         << QVariant::Double
+        << QVariant::DateTime
+        << QVariant::Date
+        << QVariant::Time
         << QVariant::String
   }
       << AggregateInfo
@@ -439,6 +471,9 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
         << QVariant::LongLong
         << QVariant::ULongLong
         << QVariant::Double
+        << QVariant::DateTime
+        << QVariant::Date
+        << QVariant::Time
         << QVariant::String
   }
       << AggregateInfo
@@ -446,6 +481,9 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
     QStringLiteral( "mode" ),
     QCoreApplication::tr( "Mode" ),
     QSet<QVariant::Type>()
+        << QVariant::DateTime
+        << QVariant::Date
+        << QVariant::Time
         << QVariant::String
   };
 
@@ -682,20 +720,31 @@ QgsDateTimeStatisticalSummary::Statistic QgsAggregateCalculator::dateTimeStatFro
       return QgsDateTimeStatisticalSummary::Max;
     case Range:
       return QgsDateTimeStatisticalSummary::Range;
-
-    case Sum:
     case Mean:
+      return QgsDateTimeStatisticalSummary::Mean;
     case Median:
+      return QgsDateTimeStatisticalSummary::Median;
     case StDev:
+      return QgsDateTimeStatisticalSummary::StDev;
     case StDevSample:
+      return QgsDateTimeStatisticalSummary::StDevSample;
     case Minority:
+      return QgsDateTimeStatisticalSummary::Minority;
     case Majority:
+      return QgsDateTimeStatisticalSummary::Majority;
     case FirstQuartile:
+      return QgsDateTimeStatisticalSummary::FirstQuartile;
     case ThirdQuartile:
+      return QgsDateTimeStatisticalSummary::ThirdQuartile;
     case InterQuartileRange:
+      return QgsDateTimeStatisticalSummary::InterQuartileRange;
     case First:
+      return QgsDateTimeStatisticalSummary::First;
     case Last:
+      return QgsDateTimeStatisticalSummary::Last;
     case Mode:
+      return QgsDateTimeStatisticalSummary::Mode;
+    case Sum:
     case StringMinimumLength:
     case StringMaximumLength:
     case StringConcatenate:
