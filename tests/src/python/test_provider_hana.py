@@ -292,7 +292,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(md.decodeUri(
             "driver='/usr/sap/hdbclient/libodbcHDB.so' dbname='qgis_tests' host=localhost port=30015 "
             "user='myuser' password='mypwd' srid=2016 table=\"public\".\"gis\" (geom) type=MultiPolygon key='id' "
-            "encrypt='true' sslCryptoProvider='commoncrypto' sslValidateCertificate='false' "
+            "sslEnabled='true' sslCryptoProvider='commoncrypto' sslValidateCertificate='false' "
             "sslHostNameInCertificate='hostname.domain.com' sslKeyStore='mykey.pem' "
             "sslTrustStore='server_root.crt' "),
             {
@@ -308,7 +308,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
                 'srid': '2016',
                 'type': 6,
                 'key': 'id',
-                'encrypt': 'true',
+                'sslEnabled': 'true',
                 'sslCryptoProvider': 'commoncrypto',
                 'sslValidateCertificate': 'false',
                 'sslHostNameInCertificate': 'hostname.domain.com',
@@ -328,19 +328,19 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
                                        'srid': '2016',
                                        'type': 6,
                                        'key': 'id',
-                                       'encrypt': 'true',
+                                       'sslEnabled': 'true',
                                        'sslCryptoProvider': 'commoncrypto',
                                        'sslValidateCertificate': 'false',
                                        'sslHostNameInCertificate': 'hostname.domain.com',
                                        'sslKeyStore': 'mykey.pem',
                                        'sslTrustStore': 'server_root.crt',
                                        'selectatid': False}),
-                         "dbname='qgis_tests' driver='/usr/sap/hdbclient/libodbcHDB.so' user='myuser' "
-                         "password='mypwd' srid=2016 encrypt='true' host='localhost' key='id' port='30015' "
-                         "selectatid='false' sslCryptoProvider='commoncrypto' "
+                         "dbname='qgis_tests' driver='/usr/sap/hdbclient/libodbcHDB.so' user='myuser' password='mypwd' "
+                         "srid=2016 host='localhost' key='id' port='30015' selectatid='false' "
+                         "sslCryptoProvider='commoncrypto' sslEnabled='true' "
                          "sslHostNameInCertificate='hostname.domain.com' sslKeyStore='mykey.pem' "
-                         "sslTrustStore='server_root.crt' sslValidateCertificate='false' type='MultiPolygon' "
-                         "table=\"public\".\"gis\" (geom)")
+                         "sslTrustStore='server_root.crt' sslValidateCertificate='false' "
+                         "type='MultiPolygon' table=\"public\".\"gis\" (geom)")
 
 
 if __name__ == '__main__':
