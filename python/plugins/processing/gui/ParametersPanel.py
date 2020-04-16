@@ -241,11 +241,11 @@ class ParametersPanel(QgsProcessingParametersWidget):
                     value.destinationProject = dest_project
                 if value:
                     parameters[param.name()] = value
-                    if param.isDestination():
-                        context = createContext()
-                        ok, error = self.algorithm().provider().isSupportedOutputValue(value, param, context)
-                        if not ok:
-                            raise AlgorithmDialogBase.InvalidOutputExtension(widget, error)
+
+                    context = createContext()
+                    ok, error = param.isSupportedOutputValue(value, context)
+                    if not ok:
+                        raise AlgorithmDialogBase.InvalidOutputExtension(widget, error)
 
         return self.algorithm().preprocessParameters(parameters)
 
