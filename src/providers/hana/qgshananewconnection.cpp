@@ -309,14 +309,6 @@ void QgsHanaNewConnection::testConnection()
     warningMsg = QStringLiteral( "Password has not been specified." );
   else if ( txtIdentifier->text().isEmpty() )
     warningMsg = QStringLiteral( "Identifier has not been specified." );
-  else
-  {
-    auto id = QgsHanaIdentifierType::fromInt( static_cast<uint>( cmbIdentifierType->currentIndex() ) );
-    int len = txtIdentifier->text().length();
-    if ( ( id == QgsHanaIdentifierType::INSTANCE_NUMBER && len != 2 ) ||
-         ( id == QgsHanaIdentifierType::PORT_NUMBER && len != 5 ) )
-      warningMsg = QStringLiteral( "Identifier has incorrect format." );
-  }
 
   if ( !warningMsg.isEmpty() )
   {
