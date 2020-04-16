@@ -207,6 +207,16 @@ bool QgsLayoutItem3DMap::writePropertiesToElement( QDomElement &element, QDomDoc
   QDomElement elemCameraPose = mCameraPose.writeXml( document );
   element.appendChild( elemCameraPose );
 
+  //temporal settings
+  QDomElement elemTemporal = document.createElement( QStringLiteral( "temporal-settings" ) );
+  elemTemporal.setAttribute( QStringLiteral( "isTemporal" ), isTemporal() ? 0 : 1 );
+  if ( isTemporal() )
+  {
+    elemTemporal.setAttribute( QStringLiteral( "temporalRangeBegin" ), temporalRange().begin().toString( Qt::ISODate ) );
+    elemTemporal.setAttribute( QStringLiteral( "temporalRangeEnd" ), temporalRange().end().toString( Qt::ISODate ) );
+  }
+  element.appendChild( elemTemporal );
+
   return true;
 }
 
@@ -231,6 +241,16 @@ bool QgsLayoutItem3DMap::readPropertiesFromElement( const QDomElement &element, 
   QDomElement elemCameraPose = element.firstChildElement( QStringLiteral( "camera-pose" ) );
   if ( !elemCameraPose.isNull() )
     mCameraPose.readXml( elemCameraPose );
+
+  //temporal settings
+  QDomElement elemTemporal = element.firstChildElement( QStringLiteral( "temporal-settings" ) );
+  setIsTemporal( elemTemporal.attribute( QStringLiteral( "isTemporal" ) ).toInt() );
+  if ( isTemporal() )
+  {
+    QDateTime begin = QDateTime::fromString( elemTemporal.attribute( QStringLiteral( "temporalRangeBegin" ) ), Qt::ISODate );
+    QDateTime end = QDateTime::fromString( elemTemporal.attribute( QStringLiteral( "temporalRangeBegin" ) ), Qt::ISODate );
+    setTemporalRange( QgsDateTimeRange( begin, end ) );
+  }
 
   return true;
 }
