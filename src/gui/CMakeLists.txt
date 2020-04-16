@@ -326,6 +326,7 @@ SET(QGIS_GUI_SRCS
   vectortile/qgsvectortileconnectiondialog.cpp
   vectortile/qgsvectortiledataitemguiprovider.cpp
   vectortile/qgsvectortileproviderguimetadata.cpp
+  vectortile/qgsvectortilesourceselect.cpp
 
   qgisinterface.cpp
   qgsactionmenu.cpp
@@ -1098,6 +1099,7 @@ SET(QGIS_GUI_HDRS
   vectortile/qgsvectortileconnectiondialog.h
   vectortile/qgsvectortiledataitemguiprovider.h
   vectortile/qgsvectortileproviderguimetadata.h
+  vectortile/qgsvectortilesourceselect.h
 
   qgsbrowserdockwidget_p.h
 )
