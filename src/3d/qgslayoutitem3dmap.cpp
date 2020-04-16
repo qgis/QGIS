@@ -209,7 +209,7 @@ bool QgsLayoutItem3DMap::writePropertiesToElement( QDomElement &element, QDomDoc
 
   //temporal settings
   QDomElement elemTemporal = document.createElement( QStringLiteral( "temporal-settings" ) );
-  elemTemporal.setAttribute( QStringLiteral( "isTemporal" ), isTemporal() ? 0 : 1 );
+  elemTemporal.setAttribute( QStringLiteral( "isTemporal" ), isTemporal() ? 1 : 0 );
   if ( isTemporal() )
   {
     elemTemporal.setAttribute( QStringLiteral( "temporalRangeBegin" ), temporalRange().begin().toString( Qt::ISODate ) );
