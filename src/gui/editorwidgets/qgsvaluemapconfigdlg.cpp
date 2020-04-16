@@ -179,6 +179,7 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
       setRow( row, pair.first, QString() );
     else
       setRow( row, pair.first, pair.second.toString() );
+    ++row;
   }
 }
 
@@ -319,8 +320,6 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
   re1.setMinimal( true );
 
   QList<QPair<QString, QVariant>> map;
-
-  s.readLine();
 
   while ( !s.atEnd() )
   {
