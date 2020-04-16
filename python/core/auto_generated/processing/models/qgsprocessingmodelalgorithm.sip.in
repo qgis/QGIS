@@ -193,6 +193,13 @@ algorithm with the specified ``childId`` depends upon.
 .. seealso:: :py:func:`dependentChildAlgorithms`
 %End
 
+    QList< QgsProcessingModelChildDependency > availableDependenciesForChildAlgorithm( const QString &childId ) const;
+%Docstring
+Returns details of available dependencies for the child algorithm with matching id.
+
+.. versionadded:: 3.14
+%End
+
     bool validateChildAlgorithm( const QString &childId, QStringList &issues /Out/ ) const;
 %Docstring
 Validates the child algorithm with matching ID, returning ``True`` if

@@ -8750,6 +8750,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelAlgorithm alg3( "test", "testGroup" );
   QVERIFY( alg3.dependentChildAlgorithms( "notvalid" ).isEmpty() );
   QVERIFY( alg3.dependsOnChildAlgorithms( "notvalid" ).isEmpty() );
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "notvalid" ) ).isEmpty() );
 
   // add a child
   QgsProcessingModelChildAlgorithm c7;
@@ -8757,6 +8758,7 @@ void TestQgsProcessing::modelerAlgorithm()
   alg3.addChildAlgorithm( c7 );
   QVERIFY( alg3.dependentChildAlgorithms( "c7" ).isEmpty() );
   QVERIFY( alg3.dependsOnChildAlgorithms( "c7" ).isEmpty() );
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c7" ) ).isEmpty() );
 
   // direct dependency
   QgsProcessingModelChildAlgorithm c8;
@@ -8769,6 +8771,9 @@ void TestQgsProcessing::modelerAlgorithm()
   QVERIFY( alg3.dependentChildAlgorithms( "c7" ).contains( "c8" ) );
   QCOMPARE( alg3.dependsOnChildAlgorithms( "c8" ).count(), 1 );
   QVERIFY( alg3.dependsOnChildAlgorithms( "c8" ).contains( "c7" ) );
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c7" ) ).isEmpty() );
+  QCOMPARE( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c8" ) ).size(), 1 );
+  QCOMPARE( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c8" ) ).at( 0 ).childId, QStringLiteral( "c7" ) );
 
   // dependency via parameter source
   QgsProcessingModelChildAlgorithm c9;
@@ -8788,6 +8793,13 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg3.dependsOnChildAlgorithms( "c9" ).count(), 2 );
   QVERIFY( alg3.dependsOnChildAlgorithms( "c9" ).contains( "c7" ) );
   QVERIFY( alg3.dependsOnChildAlgorithms( "c9" ).contains( "c8" ) );
+
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c7" ) ).isEmpty() );
+  QCOMPARE( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c8" ) ).size(), 1 );
+  QCOMPARE( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c8" ) ).at( 0 ).childId, QStringLiteral( "c7" ) );
+  QCOMPARE( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c9" ) ).size(), 2 );
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c9" ) ).contains( QgsProcessingModelChildDependency( QStringLiteral( "c7" ) ) ) );
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c9" ) ).contains( QgsProcessingModelChildDependency( QStringLiteral( "c8" ) ) ) );
 
   QgsProcessingModelChildAlgorithm c9b;
   c9b.setChildId( "c9b" );
@@ -8813,6 +8825,17 @@ void TestQgsProcessing::modelerAlgorithm()
   QVERIFY( alg3.dependsOnChildAlgorithms( "c9b" ).contains( "c7" ) );
   QVERIFY( alg3.dependsOnChildAlgorithms( "c9b" ).contains( "c8" ) );
   QVERIFY( alg3.dependsOnChildAlgorithms( "c9b" ).contains( "c9" ) );
+
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c7" ) ).isEmpty() );
+  QCOMPARE( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c8" ) ).size(), 1 );
+  QCOMPARE( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c8" ) ).at( 0 ).childId, QStringLiteral( "c7" ) );
+  QCOMPARE( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c9" ) ).size(), 2 );
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c9" ) ).contains( QgsProcessingModelChildDependency( QStringLiteral( "c7" ) ) ) );
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c9" ) ).contains( QgsProcessingModelChildDependency( QStringLiteral( "c8" ) ) ) );
+  QCOMPARE( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c9b" ) ).size(), 3 );
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c9b" ) ).contains( QgsProcessingModelChildDependency( QStringLiteral( "c7" ) ) ) );
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c9b" ) ).contains( QgsProcessingModelChildDependency( QStringLiteral( "c8" ) ) ) );
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c9b" ) ).contains( QgsProcessingModelChildDependency( QStringLiteral( "c9" ) ) ) );
 
   alg3.removeChildAlgorithm( "c9b" );
 

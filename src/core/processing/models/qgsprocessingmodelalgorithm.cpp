@@ -1718,6 +1718,31 @@ QSet< QString > QgsProcessingModelAlgorithm::dependsOnChildAlgorithms( const QSt
   return algs;
 }
 
+QList<QgsProcessingModelChildDependency> QgsProcessingModelAlgorithm::availableDependenciesForChildAlgorithm( const QString &childId ) const
+{
+  QSet< QString > dependent;
+  if ( !childId.isEmpty() )
+  {
+    dependent.unite( dependentChildAlgorithms( childId ) );
+    dependent.insert( childId );
+  }
+
+  QList<QgsProcessingModelChildDependency> res;
+  for ( auto it = mChildAlgorithms.constBegin(); it != mChildAlgorithms.constEnd(); ++it )
+  {
+    if ( !dependent.contains( it->childId() ) )
+    {
+      QgsProcessingModelChildDependency alg;
+      alg.childId = it->childId();
+      res << alg;
+
+      //TODO -- conditional branches!
+
+    }
+  }
+  return res;
+}
+
 bool QgsProcessingModelAlgorithm::validateChildAlgorithm( const QString &childId, QStringList &issues ) const
 {
   issues.clear();
