@@ -1292,54 +1292,16 @@ void QgsLayoutLegendWidget::mItemTreeView_doubleClicked( const QModelIndex &idx 
   QgsLayerTreeModel *model = mItemTreeView->layerTreeModel();
   QgsLayerTreeNode *currentNode = model->index2node( idx );
   QgsLayerTreeModelLegendNode *legendNode = model->index2legendNode( idx );
-  QString currentText;
 
-  if ( QgsLayerTree::isGroup( currentNode ) )
+  int originalIndex = -1;
+  if ( legendNode )
   {
-    currentText = QgsLayerTree::toGroup( currentNode )->name();
-  }
-  else if ( QgsLayerTree::isLayer( currentNode ) )
-  {
-    currentText = QgsLayerTree::toLayer( currentNode )->name();
-    QVariant v = currentNode->customProperty( QStringLiteral( "legend/title-label" ) );
-    if ( !v.isNull() )
-      currentText = v.toString();
-  }
-  else if ( legendNode )
-  {
-    currentText = legendNode->data( Qt::EditRole ).toString();
+    originalIndex = _originalLegendNodeIndex( legendNode );
+    currentNode = legendNode->layerNode();
   }
 
-  bool ok;
-  QString newText = QInputDialog::getText( this, tr( "Legend Item Properties" ), tr( "Item text" ),
-                    QLineEdit::Normal, currentText, &ok );
-  if ( !ok || newText == currentText )
-    return;
-
-  mLegend->beginCommand( tr( "Edit Legend Item" ) );
-
-  if ( QgsLayerTree::isGroup( currentNode ) )
-  {
-    QgsLayerTree::toGroup( currentNode )->setName( newText );
-  }
-  else if ( QgsLayerTree::isLayer( currentNode ) )
-  {
-    currentNode->setCustomProperty( QStringLiteral( "legend/title-label" ), newText );
-
-    // force update of label of the legend node with embedded icon (a bit clumsy i know)
-    if ( QgsLayerTreeModelLegendNode *embeddedNode = model->legendNodeEmbeddedInParent( QgsLayerTree::toLayer( currentNode ) ) )
-      embeddedNode->setUserLabel( QString() );
-  }
-  else if ( legendNode )
-  {
-    int originalIndex = _originalLegendNodeIndex( legendNode );
-    QgsMapLayerLegendUtils::setLegendNodeUserLabel( legendNode->layerNode(), originalIndex, newText );
-    model->refreshLayerLegend( legendNode->layerNode() );
-  }
-
-  mLegend->adjustBoxSize();
-  mLegend->updateFilterByMap();
-  mLegend->endCommand();
+  QgsLayoutLegendNodeWidget *widget = new QgsLayoutLegendNodeWidget( mLegend, currentNode, legendNode, originalIndex );
+  openPanel( widget );
 }
 
 
@@ -1381,4 +1343,70 @@ QMenu *QgsLayoutLegendMenuProvider::createContextMenu()
   }
 
   return menu;
+}
+
+//
+// QgsLayoutLegendNodeWidget
+//
+QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legend, QgsLayerTreeNode *node, QgsLayerTreeModelLegendNode *legendNode, int originalLegendNodeIndex, QWidget *parent )
+  : QgsPanelWidget( parent )
+  , mLegend( legend )
+  , mNode( node )
+  , mLayer( qobject_cast< QgsLayerTreeLayer* >( node ) )
+  , mLegendNode( legendNode )
+  , mOriginalLegendNodeIndex( originalLegendNodeIndex )
+{
+  setupUi( this );
+  setPanelTitle( tr( "Legend Item Properties" ) );
+
+  // auto close panel if layer removed
+  connect( node, &QObject::destroyed, this, &QgsPanelWidget::acceptPanel );
+
+  QString currentLabel;
+  if ( mLegendNode )
+  {
+    currentLabel = mLegendNode->data( Qt::EditRole ).toString();
+  }
+  else if ( mLayer )
+  {
+    currentLabel = mLayer->name();
+    QVariant v = mLayer->customProperty( QStringLiteral( "legend/title-label" ) );
+    if ( !v.isNull() )
+      currentLabel = v.toString();
+  }
+  else
+  {
+    currentLabel = QgsLayerTree::toGroup( mNode )->name();
+  }
+
+  mLabelEdit->setText( currentLabel );
+  connect( mLabelEdit, &QLineEdit::textChanged, this, &QgsLayoutLegendNodeWidget::labelChanged );
+
+}
+
+void QgsLayoutLegendNodeWidget::labelChanged( const QString &label )
+{
+  mLegend->beginCommand( tr( "Edit Legend Item" ), QgsLayoutItem::UndoLegendText );
+
+  if ( QgsLayerTree::isGroup( mNode ) )
+  {
+    QgsLayerTree::toGroup( mNode )->setName( label );
+  }
+  else if ( mLegendNode )
+  {
+    QgsMapLayerLegendUtils::setLegendNodeUserLabel( mLayer, mOriginalLegendNodeIndex, label );
+    mLegend->model()->refreshLayerLegend( mLayer );
+  }
+  else if ( mLayer )
+  {
+    mLayer->setCustomProperty( QStringLiteral( "legend/title-label" ), label );
+
+    // force update of label of the legend node with embedded icon (a bit clumsy i know)
+    if ( QgsLayerTreeModelLegendNode *embeddedNode = mLegend->model()->legendNodeEmbeddedInParent( mLayer ) )
+      embeddedNode->setUserLabel( QString() );
+  }
+
+  mLegend->adjustBoxSize();
+  mLegend->updateFilterByMap();
+  mLegend->endCommand();
 }
