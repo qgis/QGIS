@@ -2821,6 +2821,23 @@ value will be a file path or QGIS data provider URI suitable for
 temporary storage of created layers and files.
 %End
 
+    virtual bool isSupportedOutputValue( const QVariant &value, QgsProcessingContext &context, QString &error /Out/ ) const;
+%Docstring
+Tests whether a ``value`` is a supported value for this parameter.
+
+Will return ``False`` when a ``value`` with an unsupported file extension is specified. The default implementation
+calls QgsProcessingProvider.isSupportedOutputValue() to test compatibility.
+
+:param value: value to test
+:param context: Processing context
+
+:return: - ``True`` if ``value`` is supported.
+         - error: will be set to a descriptive error string
+
+
+.. versionadded:: 3.14
+%End
+
     bool createByDefault() const;
 %Docstring
 Returns ``True`` if the destination should be created by default. For optional parameters,
