@@ -44,9 +44,7 @@ QgsVectorTileSourceSelect::QgsVectorTileSourceSelect( QWidget *parent, Qt::Windo
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorTileSourceSelect::showHelp );
   setupButtons( buttonBox );
 
-  // hide import/export buttons and disable help button
-  btnSave->hide();
-  btnLoad->hide();
+  // disable help button until we got an entry in the docs
   buttonBox->button( QDialogButtonBox::Help )->setEnabled( false );
 
   populateConnectionList();
@@ -91,10 +89,22 @@ void QgsVectorTileSourceSelect::btnDelete_clicked()
 
 void QgsVectorTileSourceSelect::btnSave_clicked()
 {
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::VectorTile );
+  dlg.exec();
 }
 
 void QgsVectorTileSourceSelect::btnLoad_clicked()
 {
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
+                     tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::VectorTile, fileName );
+  dlg.exec();
+  populateConnectionList();
 }
 
 void QgsVectorTileSourceSelect::addButtonClicked()
