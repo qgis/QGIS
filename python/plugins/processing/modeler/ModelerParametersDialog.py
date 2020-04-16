@@ -47,12 +47,12 @@ from qgis.gui import (QgsGui,
                       QgsProcessingParameterWidgetContext,
                       QgsPanelWidget,
                       QgsPanelWidgetStack,
-                      QgsColorButton)
+                      QgsColorButton,
+                      QgsModelChildDependenciesWidget)
 from qgis.utils import iface
 
 from processing.gui.wrappers import WidgetWrapperFactory
 from processing.gui.wrappers import InvalidParameterValue
-from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.tools.dataobjects import createContext
 from processing.gui.wrappers import WidgetWrapper
 
@@ -106,12 +106,6 @@ class ModelerParametersDialog(QDialog):
 
     def switchToCommentTab(self):
         self.widget.switchToCommentTab()
-
-    def getAvailableDependencies(self):
-        return self.widget.getAvailableDependencies()
-
-    def getDependenciesPanel(self):
-        return self.widget.getDependenciesPanel()
 
     def getAvailableValuesOfType(self, paramType, outTypes=[], dataTypes=[]):
         return self.widget.getAvailableValuesOfType(paramType, outTypes, dataTypes)
@@ -279,10 +273,10 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
 
         label = QLabel(' ')
         self.verticalLayout.addWidget(label)
-        label = QLabel(self.tr('Parent algorithms'))
-        self.dependenciesPanel = self.getDependenciesPanel()
+        label = QLabel(self.tr('Dependencies'))
+        self.dependencies_panel = QgsModelChildDependenciesWidget(self, self.model, self.childId)
         self.verticalLayout.addWidget(label)
-        self.verticalLayout.addWidget(self.dependenciesPanel)
+        self.verticalLayout.addWidget(self.dependencies_panel)
         self.verticalLayout.addStretch(1000)
 
         self.setPreviousValues()
@@ -303,21 +297,6 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         w.setLayout(self.verticalLayout2)
         self.mainLayout.addWidget(w)
         self.setLayout(self.mainLayout)
-
-    def getAvailableDependencies(self):
-        if self.childId is None:
-            dependent = []
-        else:
-            dependent = list(self.model.dependentChildAlgorithms(self.childId))
-            dependent.append(self.childId)
-        opts = []
-        for alg in list(self.model.childAlgorithms().values()):
-            if alg.childId() not in dependent:
-                opts.append(alg)
-        return opts
-
-    def getDependenciesPanel(self):
-        return MultipleInputPanel([alg.description() for alg in self.getAvailableDependencies()])
 
     def showAdvancedParametersClicked(self):
         self.showAdvanced = not self.showAdvanced
@@ -430,13 +409,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
 
                     wrapper.setWidgetValue(value)
 
-            selected = []
-            dependencies = self.getAvailableDependencies()
-            for idx, dependency in enumerate(dependencies):
-                if dependency.childId() in alg.dependencies():
-                    selected.append(idx)
-
-            self.dependenciesPanel.setSelectedItems(selected)
+            self.dependencies_panel.setValue(alg.dependencies())
 
     def createAlgorithm(self):
         alg = QgsProcessingModelChildAlgorithm(self._alg.id())
@@ -470,9 +443,9 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
 
             valid = True
             for subval in val:
-                if (isinstance(subval, QgsProcessingModelChildParameterSource) and
-                        subval.source() == QgsProcessingModelChildParameterSource.StaticValue and
-                        not param.checkValueIsAcceptable(subval.staticValue())) \
+                if (isinstance(subval, QgsProcessingModelChildParameterSource)
+                        and subval.source() == QgsProcessingModelChildParameterSource.StaticValue
+                        and not param.checkValueIsAcceptable(subval.staticValue())) \
                         or (subval is None and not param.flags() & QgsProcessingParameterDefinition.FlagOptional):
                     valid = False
                     break
@@ -508,13 +481,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                     outputs[output.name()] = model_output
 
         alg.setModelOutputs(outputs)
-
-        selectedOptions = self.dependenciesPanel.selectedoptions
-        availableDependencies = self.getAvailableDependencies()
-        dep_ids = []
-        for selected in selectedOptions:
-            dep_ids.append(availableDependencies[selected].childId())
-        alg.setDependencies(dep_ids)
+        alg.setDependencies(self.dependencies_panel.value())
 
         return alg
 
@@ -601,12 +568,6 @@ class ModelerParametersWidget(QWidget):
 
     def commentColor(self):
         return self.comment_color_button.color() if not self.comment_color_button.isNull() else QColor()
-
-    def getAvailableDependencies(self):
-        return self.widget.getAvailableDependencies()
-
-    def getDependenciesPanel(self):
-        return self.widget.getDependenciesPanel()
 
     def getAvailableValuesOfType(self, paramType, outTypes=[], dataTypes=[]):
         return self.widget.getAvailableValuesOfType(paramType, outTypes, dataTypes)
