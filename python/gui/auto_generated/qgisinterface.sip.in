@@ -542,7 +542,14 @@ Returns the native draw action.
 
     virtual QAction *actionAddXyzLayer() = 0;
 %Docstring
-Returns the native Add XYZ layer action.
+Returns the native Add XYZ Layer action.
+
+.. versionadded:: 3.14
+%End
+
+    virtual QAction *actionAddVectorTileLayer() = 0;
+%Docstring
+Returns the native Add Vector Tile Layer action.
 
 .. versionadded:: 3.14
 %End

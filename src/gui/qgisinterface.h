@@ -482,10 +482,16 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionAddWmsLayer() = 0;
 
     /**
-     * Returns the native Add XYZ layer action.
+     * Returns the native Add XYZ Layer action.
      * \since QGIS 3.14
      */
     virtual QAction *actionAddXyzLayer() = 0;
+
+    /**
+     * Returns the native Add Vector Tile Layer action.
+     * \since QGIS 3.14
+     */
+    virtual QAction *actionAddVectorTileLayer() = 0;
     //! Returns the native Add ArcGIS FeatureServer action.
     virtual QAction *actionAddAfsLayer() = 0;
     //! Returns the native Add ArcGIS MapServer action.

@@ -192,6 +192,7 @@
      <addaction name="mActionAddWcsLayer"/>
      <addaction name="mActionAddWfsLayer"/>
      <addaction name="mActionAddAfsLayer"/>
+     <addaction name="mActionAddVectorTileLayer"/>
     </widget>
     <addaction name="mActionDataSourceManager"/>
     <addaction name="mNewLayerMenu"/>
@@ -3309,6 +3310,18 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="toolTip">
     <string>Add XYZ Layer…</string>
+   </property>
+  </action>
+  <action name="mActionAddVectorTileLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddVectorTileLayer.svg</normaloff>:/images/themes/default/mActionAddVectorTileLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Vector TIle Layer…</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Vector Tile Layer…</string>
    </property>
   </action>
  </widget>
