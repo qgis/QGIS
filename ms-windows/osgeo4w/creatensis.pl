@@ -475,6 +475,7 @@ if($^O eq "cygwin") {
 $instdest =~ s/\s+$//;
 $instdest =~ s/\\/\\\\/g;
 
+$releasename =~ s/ș/ş/;
 
 my $args = "";
 $args .= " -V$verbose";
