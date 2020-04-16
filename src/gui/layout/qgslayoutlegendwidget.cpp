@@ -46,6 +46,8 @@
 #include <QMessageBox>
 #include <QInputDialog>
 
+///@cond PRIVATE
+
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 static int _unfilteredLegendNodeIndex( QgsLayerTreeModelLegendNode *legendNode )
@@ -1491,3 +1493,5 @@ void QgsLayoutLegendNodeWidget::patchChanged( int )
   mLegend->updateFilterByMap();
   mLegend->endCommand();
 }
+
+///@endcond
