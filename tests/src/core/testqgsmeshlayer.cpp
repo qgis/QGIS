@@ -124,10 +124,11 @@ void TestQgsMeshLayer::initTestCase()
   QString uri( mDataDir + "/quad_and_triangle.2dm" );
   mMdalLayer = new QgsMeshLayer( uri, "Triangle and Quad MDAL", "mdal" );
   QCOMPARE( mMdalLayer->dataProvider()->datasetGroupCount(), 1 ); //bed elevation is already in the 2dm
-  QVERIFY( mMdalLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
+  QVERIFY( !mMdalLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
   mMdalLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_vertex_scalar.dat" );
   mMdalLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_vertex_vector.dat" );
   QCOMPARE( mMdalLayer->dataProvider()->extraDatasets().count(), 2 );
+  QVERIFY( mMdalLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
 
   //The face dataset is recognized by "_els_" in the filename for this format
   mMdalLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_els_face_scalar.dat" );
@@ -161,13 +162,13 @@ void TestQgsMeshLayer::initTestCase()
   uri = QString( mDataDir + "/lines.2dm" );
   mMdal1DLayer = new QgsMeshLayer( uri, "Lines MDAL", "mdal" );
   QCOMPARE( mMdal1DLayer->dataProvider()->datasetGroupCount(), 1 ); //bed elevation is already in the 2dm
-  QVERIFY( mMemory1DLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
-  QVERIFY( mMemory1DLayer->temporalProperties()->isActive() );
+  QVERIFY( !mMdal1DLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
+  QVERIFY( !mMdal1DLayer->temporalProperties()->isActive() );
   mMdal1DLayer->dataProvider()->addDataset( mDataDir + "/lines_vertex_scalar.dat" );
   mMdal1DLayer->dataProvider()->addDataset( mDataDir + "/lines_vertex_vector.dat" );
   QCOMPARE( mMdal1DLayer->dataProvider()->extraDatasets().count(), 2 );
-  QVERIFY( mMemory1DLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
-  QVERIFY( mMemory1DLayer->temporalProperties()->isActive() );
+  QVERIFY( mMdal1DLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
+  QVERIFY( mMdal1DLayer->temporalProperties()->isActive() );
 
 
   //The face dataset is recognized by "_els_" in the filename for this format
