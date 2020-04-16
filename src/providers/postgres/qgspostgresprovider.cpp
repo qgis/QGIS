@@ -664,12 +664,12 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
         for ( const QgsFeatureId featureId : constFeatureIds )
         {
           QVariantList pkVals = sharedData->lookupKey( featureId );
-	  if ( !pkVals.isEmpty() )
-	  {
+          if ( !pkVals.isEmpty() )
+          {
             QgsField fld = fields.at( pkAttrs[0] );
             expr += delim + pkVals[0].toString();
             delim = ',';
-	  }
+          }
         }
         expr += ')';
       }
