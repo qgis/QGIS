@@ -162,6 +162,11 @@ QgsMeshLayer *QgisAppInterface::addMeshLayer( const QString &url, const QString 
   return qgis->addMeshLayer( url, baseName, providerKey );
 }
 
+QgsVectorTileLayer *QgisAppInterface::addVectorTileLayer( const QString &url, const QString &baseName )
+{
+  return qgis->addVectorTileLayer( url, baseName );
+}
+
 bool QgisAppInterface::addProject( const QString &projectName )
 {
   return qgis->addProject( projectName );

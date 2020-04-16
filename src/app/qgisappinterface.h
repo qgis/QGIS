@@ -70,6 +70,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsRasterLayer *addRasterLayer( const QString &rasterLayerPath, const QString &baseName ) override;
     QgsRasterLayer *addRasterLayer( const QString &url, const QString &baseName, const QString &providerKey ) override;
     QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) override;
+    QgsVectorTileLayer *addVectorTileLayer( const QString &url, const QString &baseName ) override;
     bool addProject( const QString &projectName ) override;
     bool newProject( bool promptToSaveFlag = false ) override;
     void reloadConnections( ) override;
