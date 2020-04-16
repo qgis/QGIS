@@ -585,6 +585,7 @@ class TestQgsProcessing: public QObject
     void modelerAlgorithm();
     void modelExecution();
     void modelBranchPruning();
+    void modelBranchPruningConditional();
     void modelWithProviderWithLimitedTypes();
     void modelVectorOutputIsCompatibleType();
     void modelAcceptableValues();
@@ -9602,6 +9603,62 @@ void TestQgsProcessing::modelBranchPruning()
   QVERIFY( !results.contains( QStringLiteral( "buffer:BUFFER_OUTPUT" ) ) );
   QVERIFY( !results.contains( QStringLiteral( "buffer2:BUFFER2_OUTPUT" ) ) );
   QVERIFY( !results.contains( QStringLiteral( "buffer3:BUFFER3_OUTPUT" ) ) );
+}
+
+void TestQgsProcessing::modelBranchPruningConditional()
+{
+  QgsProcessingContext context;
+
+  context.expressionContext().appendScope( new QgsExpressionContextScope() );
+  context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "var1" ), 1 );
+  context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "var2" ), 0 );
+
+  // test that model branches are trimmed for algorithms which depend on conditional branches
+  QgsProcessingModelAlgorithm model1;
+
+  // first add the filter by layer type alg
+  QgsProcessingModelChildAlgorithm algc1;
+  algc1.setChildId( "branch" );
+  algc1.setAlgorithmId( "native:condition" );
+  QVariantMap config;
+  QVariantList conditions;
+  QVariantMap cond1;
+  cond1.insert( QStringLiteral( "name" ), QStringLiteral( "name1" ) );
+  cond1.insert( QStringLiteral( "expression" ), QStringLiteral( "@var1" ) );
+  conditions << cond1;
+  QVariantMap cond2;
+  cond2.insert( QStringLiteral( "name" ), QStringLiteral( "name2" ) );
+  cond2.insert( QStringLiteral( "expression" ), QStringLiteral( "@var2" ) );
+  conditions << cond2;
+  config.insert( QStringLiteral( "conditions" ), conditions );
+  algc1.setConfiguration( config );
+  model1.addChildAlgorithm( algc1 );
+
+  //then create some branches which come off this
+  QgsProcessingModelChildAlgorithm algc2;
+  algc2.setChildId( "exception" );
+  algc2.setAlgorithmId( "native:raiseexception" );
+  algc2.setDependencies( QList< QgsProcessingModelChildDependency >() << QgsProcessingModelChildDependency( QStringLiteral( "branch" ), QStringLiteral( "name1" ) ) );
+  model1.addChildAlgorithm( algc2 );
+
+  QgsProcessingModelChildAlgorithm algc3;
+  algc2.setChildId( "exception" );
+  algc3.setAlgorithmId( "native:raisewarning" );
+  algc3.setDependencies( QList< QgsProcessingModelChildDependency >() << QgsProcessingModelChildDependency( QStringLiteral( "branch" ), QStringLiteral( "name2" ) ) );
+  model1.addChildAlgorithm( algc3 );
+
+  QgsProcessingFeedback feedback;
+  QVariantMap params;
+  bool ok = false;
+  QVariantMap results = model1.run( params, context, &feedback, &ok );
+  QVERIFY( !ok ); // the branch with the exception should be hit
+
+  // flip the condition results
+  context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "var1" ), 0 );
+  context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "var2" ), 1 );
+
+  results = model1.run( params, context, &feedback, &ok );
+  QVERIFY( ok ); // the branch with the exception should NOT be hit
 }
 
 void TestQgsProcessing::modelWithProviderWithLimitedTypes()
