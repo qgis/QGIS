@@ -188,10 +188,11 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
       else
         topIdx++;
     }
-    const QStringList dependencies = it.value().dependencies();
-    for ( const QString &depend : dependencies )
+    const QList< QgsProcessingModelChildDependency > dependencies = it.value().dependencies();
+    for ( const QgsProcessingModelChildDependency &depend : dependencies )
     {
-      addItem( new QgsModelArrowItem( mChildAlgorithmItems.value( depend ), mChildAlgorithmItems.value( it.value().childId() ) ) );
+      // TODO link to branch
+      addItem( new QgsModelArrowItem( mChildAlgorithmItems.value( depend.childId ), mChildAlgorithmItems.value( it.value().childId() ) ) );
     }
   }
 

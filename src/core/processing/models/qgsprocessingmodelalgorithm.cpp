@@ -1615,7 +1615,18 @@ void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QStri
       continue;
 
     // does alg have a direct dependency on this child?
-    if ( childIt->dependencies().contains( childId ) )
+    const QList< QgsProcessingModelChildDependency > constDependencies = childIt->dependencies();
+    bool hasDependency = false;
+    for ( const QgsProcessingModelChildDependency &dep : constDependencies )
+    {
+      if ( dep.childId == childId )
+      {
+        hasDependency = true;
+        break;
+      }
+    }
+
+    if ( hasDependency )
     {
       depends.insert( childIt->childId() );
       dependentChildAlgorithmsRecursive( childIt->childId(), depends );
@@ -1664,13 +1675,13 @@ void QgsProcessingModelAlgorithm::dependsOnChildAlgorithmsRecursive( const QStri
   const QgsProcessingModelChildAlgorithm &alg = mChildAlgorithms.value( childId );
 
   // add direct dependencies
-  const auto constDependencies = alg.dependencies();
-  for ( const QString &c : constDependencies )
+  const QList< QgsProcessingModelChildDependency > constDependencies = alg.dependencies();
+  for ( const QgsProcessingModelChildDependency &val : constDependencies )
   {
-    if ( !depends.contains( c ) )
+    if ( !depends.contains( val.childId ) )
     {
-      depends.insert( c );
-      dependsOnChildAlgorithmsRecursive( c, depends );
+      depends.insert( val.childId );
+      dependsOnChildAlgorithmsRecursive( val.childId, depends );
     }
   }
 

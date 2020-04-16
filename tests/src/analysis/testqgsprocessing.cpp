@@ -590,6 +590,7 @@ class TestQgsProcessing: public QObject
     void modelAcceptableValues();
     void modelValidate();
     void modelInputs();
+    void modelDependencies();
     void tempUtils();
     void convertCompatible();
     void create();
@@ -8455,8 +8456,8 @@ void TestQgsProcessing::modelerAlgorithm()
   child.setChildId( QStringLiteral( "my_id" ) );
   QCOMPARE( child.childId(), QStringLiteral( "my_id" ) );
 
-  child.setDependencies( QStringList() << "a" << "b" );
-  QCOMPARE( child.dependencies(), QStringList() << "a" << "b" );
+  child.setDependencies( QList< QgsProcessingModelChildDependency >() << QgsProcessingModelChildDependency( "a" ) << QgsProcessingModelChildDependency( "b" ) );
+  QCOMPARE( child.dependencies(), QList< QgsProcessingModelChildDependency >() << QgsProcessingModelChildDependency( "a" ) << QgsProcessingModelChildDependency( "b" ) );
 
   QMap< QString, QgsProcessingModelChildParameterSources > sources;
   sources.insert( QStringLiteral( "a" ), QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromStaticValue( 5 ) );
@@ -8760,7 +8761,7 @@ void TestQgsProcessing::modelerAlgorithm()
   // direct dependency
   QgsProcessingModelChildAlgorithm c8;
   c8.setChildId( "c8" );
-  c8.setDependencies( QStringList() << "c7" );
+  c8.setDependencies( QList< QgsProcessingModelChildDependency >() << QgsProcessingModelChildDependency( "c7" ) );
   alg3.addChildAlgorithm( c8 );
   QVERIFY( alg3.dependentChildAlgorithms( "c8" ).isEmpty() );
   QVERIFY( alg3.dependsOnChildAlgorithms( "c7" ).isEmpty() );
@@ -8945,7 +8946,7 @@ void TestQgsProcessing::modelerAlgorithm()
   alg5c2.setActive( false );
   alg5c2.setLinksCollapsed( Qt::BottomEdge, false );
   alg5c2.setLinksCollapsed( Qt::TopEdge, false );
-  alg5c2.setDependencies( QStringList() << "a" << "b" );
+  alg5c2.setDependencies( QList< QgsProcessingModelChildDependency >() << QgsProcessingModelChildDependency( "a" ) << QgsProcessingModelChildDependency( "b" ) );
   alg5.addChildAlgorithm( alg5c2 );
 
   QgsProcessingModelParameter alg5pc1;
@@ -9022,7 +9023,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QVERIFY( !alg6c2.isActive() );
   QVERIFY( !alg6c2.linksCollapsed( Qt::BottomEdge ) );
   QVERIFY( !alg6c2.linksCollapsed( Qt::TopEdge ) );
-  QCOMPARE( alg6c2.dependencies(), QStringList() << "a" << "b" );
+  QCOMPARE( alg6c2.dependencies(), QList< QgsProcessingModelChildDependency >() << QgsProcessingModelChildDependency( "a" ) << QgsProcessingModelChildDependency( "b" ) );
 
   QCOMPARE( alg6.parameterComponents().count(), 1 );
   QCOMPARE( alg6.parameterComponents().value( QStringLiteral( "my_param" ) ).parameterName(), QStringLiteral( "my_param" ) );
@@ -9278,7 +9279,7 @@ void TestQgsProcessing::modelExecution()
   alg2c3.addParameterSources( "INPUT", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromChildOutput( "cx1", "OUTPUT" ) );
   alg2c3.addParameterSources( "EXPRESSION", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromStaticValue( "true" ) );
   alg2c3.addParameterSources( "OUTPUT", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromModelParameter( "MY_OUT" ) );
-  alg2c3.setDependencies( QStringList() << "cx2" );
+  alg2c3.setDependencies( QList< QgsProcessingModelChildDependency >() << QgsProcessingModelChildDependency( "cx2" ) );
   QMap<QString, QgsProcessingModelOutput> outputs3;
   QgsProcessingModelOutput out2( "MY_OUT" );
   out2.setChildOutputName( "OUTPUT" );
@@ -9767,7 +9768,7 @@ void TestQgsProcessing::modelAcceptableValues()
   QgsProcessingModelChildAlgorithm alg2c2;
   alg2c2.setChildId( "cx2" );
   alg2c2.setAlgorithmId( "native:centroids" );
-  alg2c2.setDependencies( QStringList() << "cx1" );
+  alg2c2.setDependencies( QList< QgsProcessingModelChildDependency >() << QgsProcessingModelChildDependency( "cx1" ) );
   m.addChildAlgorithm( alg2c2 );
   sources = m.availableSourcesForChild( QString(), QStringList(), QStringList() << "string" << "outputVector" );
   QCOMPARE( sources.count(), 2 );
@@ -9995,6 +9996,35 @@ void TestQgsProcessing::modelInputs()
   QCOMPARE( m2.parameterDefinitions().at( 0 )->name(), QStringLiteral( "cc string" ) );
   QCOMPARE( m2.parameterDefinitions().at( 1 )->name(), QStringLiteral( "a string" ) );
   QCOMPARE( m2.parameterDefinitions().at( 2 )->name(), QStringLiteral( "string" ) );
+}
+
+void TestQgsProcessing::modelDependencies()
+{
+  QgsProcessingModelChildDependency dep( QStringLiteral( "childId" ), QStringLiteral( "branch" ) );
+
+  QCOMPARE( dep.childId, QStringLiteral( "childId" ) );
+  QCOMPARE( dep.conditionalBranch, QStringLiteral( "branch" ) );
+
+  QVariant v = dep.toVariant();
+  QgsProcessingModelChildDependency dep2;
+  QVERIFY( dep2.loadVariant( v.toMap() ) );
+
+  QCOMPARE( dep2.childId, QStringLiteral( "childId" ) );
+  QCOMPARE( dep2.conditionalBranch, QStringLiteral( "branch" ) );
+
+  QVERIFY( dep == dep2 );
+  QVERIFY( !( dep != dep2 ) );
+  dep2.conditionalBranch = QStringLiteral( "b" );
+
+  QVERIFY( !( dep == dep2 ) );
+  QVERIFY( dep != dep2 );
+  dep2.conditionalBranch = QStringLiteral( "branch" );
+  dep2.childId = QStringLiteral( "c" );
+  QVERIFY( !( dep == dep2 ) );
+  QVERIFY( dep != dep2 );
+  dep2.childId = QStringLiteral( "childId" );
+  QVERIFY( dep == dep2 );
+  QVERIFY( !( dep != dep2 ) );
 }
 
 void TestQgsProcessing::tempUtils()

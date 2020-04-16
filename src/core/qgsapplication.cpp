@@ -66,6 +66,7 @@
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
 #include "processing/models/qgsprocessingmodelchildparametersource.h"
+#include "processing/models/qgsprocessingmodelchilddependency.h"
 
 #include "layout/qgspagesizeregistry.h"
 
@@ -232,6 +233,8 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
   qRegisterMetaTypeStreamOperators<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
   qRegisterMetaType<QgsRemappingSinkDefinition>( "QgsRemappingSinkDefinition" );
+  qRegisterMetaType<QgsProcessingModelChildDependency>( "QgsProcessingModelChildDependency" );
+  QMetaType::registerComparators<QgsProcessingModelChildDependency>();
 
   ( void ) resolvePkgPath();
 
