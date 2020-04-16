@@ -44,10 +44,7 @@ namespace Vectoranalysis
                          QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
       ~QgsDifferenceTool() {}
 
-    private:
-      QgsSpatialIndex mSpatialIndex;
-      QgsFeatureSource *mLayerA;
-      QgsFeatureSource *mLayerB;
+    protected:
 
       /**
        * Prepare jobs
@@ -58,6 +55,17 @@ namespace Vectoranalysis
        * Process feature
        */
       void processFeature( const Job *job );
+
+      /**
+       * @brief Create job queue from next feature chunk
+       * @return  true if there are more features. False if all fetures have been processed
+       */
+      bool prepareNextChunk() override;
+
+    private:
+      QgsSpatialIndex mSpatialIndex;
+      QgsFeatureSource *mLayerA;
+      QgsFeatureSource *mLayerB;
   };
 
 } // Geoprocessing

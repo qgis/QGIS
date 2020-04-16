@@ -36,13 +36,12 @@ namespace Vectoranalysis
 
   void QgsDifferenceTool::prepare()
   {
-    appendToJobQueue( mLayerA );
+    prepareLayer( mLayerA );
     buildSpatialIndex( mSpatialIndex, mLayerB );
   }
 
   void QgsDifferenceTool::processFeature( const Job *job )
   {
-    QgsFeature f;
     if ( !mOutput || !mLayerA || !mLayerB )
     {
       return;
@@ -50,6 +49,16 @@ namespace Vectoranalysis
 
     QgsFeatureList difference = QgsOverlayUtils::featureDifference( job->feature, *mLayerA, *mLayerB, mSpatialIndex, mTransformContext, mLayerA->fields().size(), mLayerB->fields().size(), QgsOverlayUtils::OutputA );
     writeFeatures( difference );
+  }
+
+  bool QgsDifferenceTool::prepareNextChunk()
+  {
+    if ( !mLayerA )
+    {
+      return false;
+    }
+
+    return appendNextChunkToJobQueue( mLayerA );
   }
 
 } // Geoprocessing

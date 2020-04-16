@@ -45,6 +45,24 @@ namespace Vectoranalysis
                     QgsCoordinateTransformContext transformContext,
                     QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
 
+    protected:
+
+      /**
+       * Prepare jobs
+       */
+      void prepare();
+
+      /**
+       * Process feature
+       */
+      void processFeature( const Job *job );
+
+      /**
+       * @brief Create job queue from next feature chunk
+       * @return  true if there are more features. False if all fetures have been processed
+       */
+      bool prepareNextChunk() override;
+
     private:
       enum Task
       {
@@ -58,16 +76,7 @@ namespace Vectoranalysis
       QgsFeatureSource *mLayerB;
       QgsAttributeList mFieldIndicesA;
       QgsAttributeList mFieldIndicesB;
-
-      /**
-       * Prepare jobs
-       */
-      void prepare();
-
-      /**
-       * Process feature
-       */
-      void processFeature( const Job *job );
+      bool mLayerAFinished = false;
   };
 
 } // Geoprocessing

@@ -59,6 +59,10 @@ namespace Vectoranalysis
        */
       void processFeature( const Job *job ) override;
 
+      /**
+       * @brief Create job queue from next feature chunk
+       * @return  true if there are more features. False if all fetures have been processed
+       */
       bool prepareNextChunk() override;
 
     private:

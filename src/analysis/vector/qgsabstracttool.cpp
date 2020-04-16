@@ -83,16 +83,6 @@ namespace Vectoranalysis
     index = QgsSpatialIndex( it );
   }
 
-  void QgsAbstractTool::appendToJobQueue( QgsFeatureSource *layer, int taskFlag )
-  {
-#if 0 //todo: remove function
-    for ( const QgsFeatureId &id : layer->allFeatureIds() )
-    {
-      mJobQueue.append( new Job( id, taskFlag ) );
-    }
-#endif //0
-  }
-
   bool QgsAbstractTool::appendNextChunkToJobQueue( QgsFeatureSource *layer, int taskFlag )
   {
 
@@ -112,22 +102,6 @@ namespace Vectoranalysis
     return true;
   }
 
-  bool QgsAbstractTool::getFeatureAtId( QgsFeature &feature, QgsFeatureId id, QgsFeatureSource *layer, const QgsAttributeList &attIdx )
-  {
-    QgsFeatureRequest request( id );
-    request.setSubsetOfAttributes( attIdx );
-    request.setInvalidGeometryCheck( mInvalidGeometryCheck );
-    if ( !layer->getFeatures( request ).nextFeature( feature ) )
-    {
-      return false;
-    }
-    else if ( !feature.hasGeometry() )
-    {
-      return false;
-    }
-    return true;
-  }
-
   void QgsAbstractTool::writeFeatures( QgsFeatureList &outFeatures )
   {
     QMutexLocker locker( &mWriteMutex );
@@ -138,6 +112,17 @@ namespace Vectoranalysis
     }
 
     mOutput->addFeatures( outFeatures, QgsFeatureSink::FastInsert );
+  }
+
+  void QgsAbstractTool::prepareLayer( QgsFeatureSource *source, const QgsAttributeList *sourceFieldIndices )
+  {
+    QgsFeatureRequest request;
+    if ( sourceFieldIndices )
+    {
+      request.setSubsetOfAttributes( *sourceFieldIndices );
+    }
+    request.setInvalidGeometryCheck( mInvalidGeometryCheck );
+    mFeatureIterator = source->getFeatures( request );
   }
 
 } // Geoprocessing

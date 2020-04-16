@@ -105,7 +105,7 @@ namespace Vectoranalysis
        * @brief Create job queue from next feature chunk
        * @return  true if there are more features. False if all fetures have been processed
        */
-      virtual bool prepareNextChunk() { return false; } // = 0;
+      virtual bool prepareNextChunk() = 0;
 
       /**
        * Process individual feature, implemented by subclasses
@@ -118,11 +118,6 @@ namespace Vectoranalysis
       void buildSpatialIndex( QgsSpatialIndex &index, QgsFeatureSource *layer ) const;
 
       /**
-       * Creates jobs for each feature and adds them to the job queue
-       */
-      void appendToJobQueue( QgsFeatureSource *layer, int taskFlag = 0 );
-
-      /**
        * @brief appendNextChunkToJobQueue
        * @param layer
        * @param taskFlag
@@ -130,14 +125,11 @@ namespace Vectoranalysis
       bool appendNextChunkToJobQueue( QgsFeatureSource *layer, int taskFlag = 0 );
 
       /**
-       * Fetch feature at id
-       */
-      bool getFeatureAtId( QgsFeature &feature, QgsFeatureId id, QgsFeatureSource *layer, const QgsAttributeList &attIdx );
-
-      /**
        * Writes feature to output source
        */
       void writeFeatures( QgsFeatureList &outFeatures );
+
+      void prepareLayer( QgsFeatureSource *source, const QgsAttributeList *sourceFieldIndices = 0 );
 
       QList<Job *> mJobQueue;
       QStringList mExceptions;
@@ -148,7 +140,7 @@ namespace Vectoranalysis
       QgsCoordinateTransformContext mTransformContext;
       QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck;
 
-      int mChunkSize = 100; //number of features fetched in one go
+      const int mChunkSize = 100; //number of features fetched in one go
       QgsFeatureIterator mFeatureIterator;
   };
 

@@ -37,21 +37,19 @@ namespace Vectoranalysis
 
   void QgsSymDifferenceTool::prepare()
   {
-    appendToJobQueue( mLayerA, ProcessLayerAFeature );
-    appendToJobQueue( mLayerB, ProcessLayerBFeature );
     buildSpatialIndex( mSpatialIndexA, mLayerA );
     buildSpatialIndex( mSpatialIndexB, mLayerB );
+    mLayerAFinished = false;
+    prepareLayer( mLayerA );
   }
 
   void QgsSymDifferenceTool::processFeature( const Job *job )
   {
-    QgsFeature f;
     if ( !mOutput || !mLayerA || !mLayerB )
     {
       return;
     }
 
-    QgsGeometry geom = f.geometry();
     if ( job->taskFlag == ProcessLayerAFeature )
     {
       QgsFeatureList differenceA = QgsOverlayUtils::featureDifference( job->feature, *mLayerA, *mLayerB, mSpatialIndexB, mTransformContext, mLayerA->fields().size(), mLayerB->fields().size(), QgsOverlayUtils::OutputAB );
@@ -63,4 +61,27 @@ namespace Vectoranalysis
       writeFeatures( differenceB );
     }
   }
+
+  bool QgsSymDifferenceTool::prepareNextChunk()
+  {
+    if ( !mLayerA || !mLayerB )
+    {
+      return false;
+    }
+
+    if ( !mLayerAFinished )
+    {
+      bool a = appendNextChunkToJobQueue( mLayerA, ProcessLayerAFeature );
+      if ( a )
+      {
+        return true;
+      }
+
+      mLayerAFinished = true;
+      prepareLayer( mLayerB );
+    }
+
+    return appendNextChunkToJobQueue( mLayerB, ProcessLayerBFeature );
+  }
+
 } // Geoprocessing

@@ -38,24 +38,22 @@ namespace Vectoranalysis
 
   void QgsUnionTool::prepare()
   {
-    appendToJobQueue( mLayerA, ProcessLayerAFeature );
-    appendToJobQueue( mLayerB, ProcessLayerBFeature );
+    bool mLayerAFinished = false;
     buildSpatialIndex( mSpatialIndexA, mLayerA );
     buildSpatialIndex( mSpatialIndexB, mLayerB );
+    prepareLayer( mLayerA, &mFieldIndicesA );
   }
 
   void QgsUnionTool::processFeature( const Job *job )
   {
-    QgsFeature f;
     if ( !mOutput || !mLayerA || !mLayerB )
     {
       return;
     }
 
-    QgsGeometry geom = f.geometry();
     if ( job->taskFlag == ProcessLayerAFeature )
     {
-      QgsFeatureList intersection = QgsOverlayUtils::featureIntersection( f, *mLayerA, *mLayerB, mSpatialIndexB, mTransformContext, mFieldIndicesA, mFieldIndicesB );
+      QgsFeatureList intersection = QgsOverlayUtils::featureIntersection( job->feature, *mLayerA, *mLayerB, mSpatialIndexB, mTransformContext, mFieldIndicesA, mFieldIndicesB );
       writeFeatures( intersection );
       QgsFeatureList differenceA = QgsOverlayUtils::featureDifference( job->feature, *mLayerA, *mLayerB, mSpatialIndexB, mTransformContext, mLayerA->fields().size(), mLayerB->fields().size(), QgsOverlayUtils::OutputAB );
       writeFeatures( differenceA );
@@ -67,4 +65,25 @@ namespace Vectoranalysis
     }
   }
 
+  bool QgsUnionTool::prepareNextChunk()
+  {
+    if ( !mLayerA || !mLayerB )
+    {
+      return false;
+    }
+
+    if ( !mLayerAFinished )
+    {
+      bool a = appendNextChunkToJobQueue( mLayerA, ProcessLayerAFeature );
+      if ( a )
+      {
+        return true;
+      }
+
+      mLayerAFinished = true;
+      prepareLayer( mLayerB, &mFieldIndicesB );
+    }
+
+    return appendNextChunkToJobQueue( mLayerB, ProcessLayerBFeature );
+  }
 } // Geoprocessing

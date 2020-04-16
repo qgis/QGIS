@@ -41,9 +41,7 @@ namespace Vectoranalysis
   void QgsIntersectionTool::prepare()
   {
     QgsFeatureRequest request;
-    request.setSubsetOfAttributes( mFieldIndicesA );
-    request.setInvalidGeometryCheck( mInvalidGeometryCheck );
-    mFeatureIterator = mLayerA->getFeatures( request );
+    prepareLayer( mLayerA, &mFieldIndicesA );
     buildSpatialIndex( mSpatialIndex, mLayerB );
   }
 
