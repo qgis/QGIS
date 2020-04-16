@@ -221,9 +221,9 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * Sets terrain generator. It takes care of producing terrain tiles from the input data.
      * Takes ownership of the generator
      */
-    void setTerrainGenerator( QgsTerrainGenerator *gen SIP_TRANSFER );
+    void setTerrainGenerator( QgsTerrainGenerator *gen SIP_TRANSFER ) SIP_SKIP;
     //! Returns terrain generator. It takes care of producing terrain tiles from the input data.
-    QgsTerrainGenerator *terrainGenerator() const { return mTerrainGenerator.get(); }
+    QgsTerrainGenerator *terrainGenerator() const SIP_SKIP { return mTerrainGenerator.get(); }
 
     /**
      * Sets whether terrain shading is enabled.
