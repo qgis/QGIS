@@ -25,6 +25,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
+///@cond PRIVATE
+
 QgsVectorTileSourceSelect::QgsVectorTileSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
 {
@@ -152,3 +154,5 @@ void QgsVectorTileSourceSelect::cmbConnections_currentTextChanged( const QString
 void QgsVectorTileSourceSelect::showHelp()
 {
 }
+
+///@endcond

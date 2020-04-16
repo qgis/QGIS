@@ -18,6 +18,7 @@
 #ifndef QGSVECTORTILESOURCESELECT_H
 #define QGSVECTORTILESOURCESELECT_H
 
+///@cond PRIVATE
 #define SIP_NO_FILE
 
 #include "qgsabstractdatasourcewidget.h"
@@ -63,5 +64,7 @@ class QgsVectorTileSourceSelect : public QgsAbstractDataSourceWidget, private Ui
     void setConnectionListPosition();
     void showHelp();
 };
+
+///@endcond
 
 #endif // QGSVECTORTILESOURCESELECT_H
