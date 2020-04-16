@@ -167,7 +167,7 @@ json QgsWfs3APIHandler::schema( const QgsServerApiContext &context ) const
                 {
                   "content", {
                     {
-                      "application/openapi+json;version=3.0", {
+                      "application/vnd.oai.openapi+json;version=3.0", {
                         {
                           "schema",  {
                             { "type", "object" }
@@ -298,7 +298,7 @@ void QgsWfs3LandingPageHandler::handleRequest( const QgsServerApiContext &contex
   } );
   data["links"].push_back(
   {
-    { "href", href( context, "/api" )},
+    { "href", href( context, "/api.json" )},
     { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::service_desc ) },
     { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::OPENAPI3 ) },
     { "title", "API definition" },
