@@ -110,6 +110,20 @@ Sets the inputs for child algorithms for the last run of the model through the d
 };
 
 
+
+class QgsModelChildDependenciesWidget : QWidget
+{
+
+%TypeHeaderCode
+#include "qgsmodeldesignerdialog.h"
+%End
+  public:
+
+    QgsModelChildDependenciesWidget( QWidget *parent, QgsProcessingModelAlgorithm *model, const QString &childId );
+    QList< QgsProcessingModelChildDependency > value() const;
+    void setValue( const QList< QgsProcessingModelChildDependency >  &value );
+};
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
