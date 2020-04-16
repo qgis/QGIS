@@ -61,23 +61,25 @@ QString QgsHanaUtils::connectionInfo( const QgsDataSourceUri &uri )
       connectionItems << "password='" + escape( uri.password() ) + '\'';
   }
 
-  if ( uri.hasParam( QStringLiteral( "encrypt" ) ) )
-    connectionItems << "encrypt='" + uri.param( QStringLiteral( "encrypt" ) ) + '\'';
+  if ( uri.hasParam( QStringLiteral( "sslEnabled" ) ) )
+  {
+    connectionItems << "sslEnabled='" + uri.param( QStringLiteral( "sslEnabled" ) ) + '\'';
 
-  if ( uri.hasParam( QStringLiteral( "sslCryptoProvider" ) ) )
-    connectionItems << "sslCryptoProvider='" + uri.param( QStringLiteral( "sslCryptoProvider" ) ) + '\'';
+    if ( uri.hasParam( QStringLiteral( "sslCryptoProvider" ) ) )
+      connectionItems << "sslCryptoProvider='" + uri.param( QStringLiteral( "sslCryptoProvider" ) ) + '\'';
 
-  if ( uri.hasParam( QStringLiteral( "sslValidateCertificate" ) ) )
-    connectionItems << "sslValidateCertificate='" + uri.param( QStringLiteral( "sslValidateCertificate" ) ) + '\'';
+    if ( uri.hasParam( QStringLiteral( "sslValidateCertificate" ) ) )
+      connectionItems << "sslValidateCertificate='" + uri.param( QStringLiteral( "sslValidateCertificate" ) ) + '\'';
 
-  if ( uri.hasParam( QStringLiteral( "sslHostNameInCertificate" ) ) )
-    connectionItems << "sslHostNameInCertificate='" + uri.param( QStringLiteral( "sslHostNameInCertificate" ) ) + '\'';
+    if ( uri.hasParam( QStringLiteral( "sslHostNameInCertificate" ) ) )
+      connectionItems << "sslHostNameInCertificate='" + uri.param( QStringLiteral( "sslHostNameInCertificate" ) ) + '\'';
 
-  if ( uri.hasParam( QStringLiteral( "sslKeyStore" ) ) )
-    connectionItems << "sslKeyStore='" + uri.param( QStringLiteral( "sslKeyStore" ) ) + '\'';
+    if ( uri.hasParam( QStringLiteral( "sslKeyStore" ) ) )
+      connectionItems << "sslKeyStore='" + uri.param( QStringLiteral( "sslKeyStore" ) ) + '\'';
 
-  if ( uri.hasParam( QStringLiteral( "sslTrustStore" ) ) )
-    connectionItems << "sslTrustStore='" + uri.param( QStringLiteral( "sslTrustStore" ) ) + '\'';
+    if ( uri.hasParam( QStringLiteral( "sslTrustStore" ) ) )
+      connectionItems << "sslTrustStore='" + uri.param( QStringLiteral( "sslTrustStore" ) ) + '\'';
+  }
 
   return connectionItems.join( QStringLiteral( " " ) );
 }

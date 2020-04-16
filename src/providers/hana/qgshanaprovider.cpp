@@ -335,7 +335,7 @@ QgsHanaProvider::QgsHanaProvider(
 
   mValid = true;
 
-  QgsDebugMsgLevel( QStringLiteral( "Connection info is %1" ).arg( mUri.connectionInfo( false ) ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Connection info is %1" ).arg( QgsHanaUtils::connectionInfo( mUri ) ), 4 );
   QgsDebugMsgLevel( QStringLiteral( "Schema is: %1" ).arg( mSchemaName ), 4 );
   QgsDebugMsgLevel( QStringLiteral( "Table name is: %1" ).arg( mTableName ), 4 );
   QgsDebugMsgLevel( QStringLiteral( "Geometry column is: %1" ).arg( mGeometryColumn ), 4 );
@@ -1741,11 +1741,11 @@ QVariantMap QgsHanaProviderMetadata::decodeUri( const QString &uri )
   if ( ! dsUri.srid().isEmpty() )
     uriParts[ QStringLiteral( "srid" ) ] = dsUri.srid();
 
-  if ( dsUri.hasParam( QStringLiteral( "encrypt" ) ) )
+  if ( dsUri.hasParam( QStringLiteral( "sslEnabled" ) ) )
   {
-    QString value = dsUri.param( QStringLiteral( "encrypt" ) );
+    QString value = dsUri.param( QStringLiteral( "sslEnabled" ) );
     if ( ! value.isEmpty() )
-      uriParts[ QStringLiteral( "encrypt" ) ]  = value;
+      uriParts[ QStringLiteral( "sslEnabled" ) ]  = value;
   }
   if ( dsUri.hasParam( QStringLiteral( "sslCryptoProvider" ) ) )
   {
@@ -1817,8 +1817,8 @@ QString QgsHanaProviderMetadata::encodeUri( const QVariantMap &parts )
   if ( parts.contains( QStringLiteral( "srid" ) ) )
     dsUri.setSrid( parts.value( QStringLiteral( "srid" ) ).toString() );
 
-  if ( parts.contains( QStringLiteral( "encrypt" ) ) )
-    dsUri.setParam( QStringLiteral( "encrypt" ), parts.value( QStringLiteral( "encrypt" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "sslEnabled" ) ) )
+    dsUri.setParam( QStringLiteral( "sslEnabled" ), parts.value( QStringLiteral( "sslEnabled" ) ).toString() );
   if ( parts.contains( QStringLiteral( "sslCryptoProvider" ) ) )
     dsUri.setParam( QStringLiteral( "sslCryptoProvider" ), parts.value( QStringLiteral( "sslCryptoProvider" ) ).toString() );
   if ( parts.contains( QStringLiteral( "sslValidateCertificate" ) ) )

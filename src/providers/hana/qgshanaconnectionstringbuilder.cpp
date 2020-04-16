@@ -25,10 +25,10 @@ QgsHanaConnectionStringBuilder::QgsHanaConnectionStringBuilder( const QgsDataSou
   , mPassword( uri.password() )
   , mSslEnabled( false )
 {
-  if ( !uri.hasParam( QStringLiteral( "encrypt" ) ) )
+  if ( !uri.hasParam( QStringLiteral( "sslEnabled" ) ) )
     return;
 
-  mSslEnabled = ( uri.param( QStringLiteral( "encrypt" ) ) == QStringLiteral( "true" ) ) ? true : false;
+  mSslEnabled = ( uri.param( QStringLiteral( "sslEnabled" ) ) == QStringLiteral( "true" ) ) ? true : false;
   mSslCryptoProvider = uri.param( QStringLiteral( "sslCryptoProvider" ) );
   mSslValidateCertificate = uri.param( QStringLiteral( "sslValidateCertificate" ) ) == QStringLiteral( "true" ) ? true : false;
   if ( mSslValidateCertificate )

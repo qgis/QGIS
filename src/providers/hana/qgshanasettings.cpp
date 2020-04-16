@@ -70,8 +70,8 @@ void QgsHanaSettings::setFromDataSourceUri( const QgsDataSourceUri &uri )
   mSslHostNameInCertificate = "";
   mSslKeyStore = "";
   mSslTrustStore = "";
-  if ( uri.hasParam( QStringLiteral( "encrypt" ) ) )
-    mSslEnabled = QVariant( uri.param( "encrypt" ) ).toBool();
+  if ( uri.hasParam( QStringLiteral( "sslEnabled" ) ) )
+    mSslEnabled = QVariant( uri.param( "sslEnabled" ) ).toBool();
   if ( uri.hasParam( QStringLiteral( "sslCryptoProvider" ) ) )
     mSslCryptoProvider = uri.param( QStringLiteral( "sslCryptoProvider" ) );
   if ( uri.hasParam( QStringLiteral( "sslValidateCertificate" ) ) )
@@ -109,7 +109,7 @@ QgsDataSourceUri QgsHanaSettings::toDataSourceUri() const
   uri.setSchema( mSchema );
   if ( mSslEnabled )
   {
-    uri.setParam( QStringLiteral( "encrypt" ), QStringLiteral( "true" ) );
+    uri.setParam( QStringLiteral( "sslEnabled" ), QStringLiteral( "true" ) );
     uri.setParam( QStringLiteral( "sslCryptoProvider" ), mSslCryptoProvider );
     uri.setParam( QStringLiteral( "sslValidateCertificate" ), mSslValidateCertificate ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
     if ( !mSslHostNameInCertificate.isEmpty() )

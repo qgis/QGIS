@@ -42,7 +42,7 @@ QgsHanaProviderConnection::QgsHanaProviderConnection( const QString &name )
 }
 
 QgsHanaProviderConnection::QgsHanaProviderConnection( const QString &uri, const QVariantMap &configuration ):
-  QgsAbstractDatabaseProviderConnection( QgsDataSourceUri( uri ).connectionInfo( false ), configuration )
+  QgsAbstractDatabaseProviderConnection( QgsHanaUtils::connectionInfo( QgsDataSourceUri( uri ) ), configuration )
 {
   setCapabilities();
 }

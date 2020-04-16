@@ -507,7 +507,7 @@ void QgsHanaSourceSelect::addButtonClicked()
     if ( idx.column() != QgsHanaTableModel::DbtmTable )
       continue;
 
-    QString uri = mTableModel.layerURI( mProxyModel.mapToSource( idx ), mDataSrcUri.connectionInfo( false ) );
+    QString uri = mTableModel.layerURI( mProxyModel.mapToSource( idx ), QgsHanaUtils::connectionInfo( mDataSrcUri ) );
     if ( uri.isNull() )
       continue;
 

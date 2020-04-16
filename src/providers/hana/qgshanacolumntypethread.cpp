@@ -16,6 +16,7 @@
  ***************************************************************************/
 #include "qgshanacolumntypethread.h"
 #include "qgshanaconnection.h"
+#include "qgshanautils.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include <mutex>
@@ -46,7 +47,7 @@ void QgsHanaColumnTypeThread::run()
   QgsHanaConnectionRef conn( mUri );
   if ( conn.isNull() )
   {
-    QgsDebugMsg( "Connection failed - " + mUri.connectionInfo( false ) );
+    QgsDebugMsg( "Connection failed - " + conn->connInfo() );
     mStopped = true;
     return;
   }
