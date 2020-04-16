@@ -18,6 +18,8 @@
 #ifndef QGSVECTORTILESOURCESELECT_H
 #define QGSVECTORTILESOURCESELECT_H
 
+#define SIP_NO_FILE
+
 #include "qgsabstractdatasourcewidget.h"
 #include "ui_qgstilesourceselectbase.h"
 
