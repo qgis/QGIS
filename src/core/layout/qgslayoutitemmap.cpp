@@ -650,7 +650,7 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &mapElem, QDomDocum
   mapElem.appendChild( labelBlockingItemsElem );
 
   //temporal settings
-  mapElem.setAttribute( QStringLiteral( "isTemporal" ), isTemporal() ? 0 : 1 );
+  mapElem.setAttribute( QStringLiteral( "isTemporal" ), isTemporal() ? 1 : 0 );
   if ( isTemporal() )
   {
     mapElem.setAttribute( QStringLiteral( "temporalRangeBegin" ), temporalRange().begin().toString( Qt::ISODate ) );
