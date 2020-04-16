@@ -1455,6 +1455,9 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
     jobMapSettings.addRenderedFeatureHandler( handler );
   }
 
+  if ( isTemporal() )
+    jobMapSettings.setTemporalRange( temporalRange() );
+
   return jobMapSettings;
 }
 

@@ -136,6 +136,9 @@ void QgsLayoutItem3DMap::draw( QgsLayoutItemRenderContext &context )
   QSize sizePixelsInt = QSize( static_cast<int>( std::ceil( sizePixels.width() ) ),
                                static_cast<int>( std::ceil( sizePixels.height() ) ) );
 
+  if ( isTemporal() )
+    mSettings->setTemporalRange( temporalRange() );
+
   if ( !mEngine )
   {
     mEngine.reset( new QgsOffscreen3DEngine );
