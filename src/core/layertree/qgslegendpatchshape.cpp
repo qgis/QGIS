@@ -67,6 +67,19 @@ QPolygonF lineStringToQPolygonF( const QgsLineString *line )
   return thisRes;
 }
 
+QPolygonF curveToPolygonF( const QgsCurve *curve )
+{
+  if ( const QgsLineString *line = qgsgeometry_cast< const QgsLineString * >( curve ) )
+  {
+    return lineStringToQPolygonF( line );
+  }
+  else
+  {
+    std::unique_ptr< QgsLineString > straightened( curve->curveToLine() );
+    return lineStringToQPolygonF( straightened.get() );
+  }
+}
+
 QList<QList<QPolygonF> > QgsLegendPatchShape::toQPolygonF( QgsSymbol::SymbolType type, QSizeF size ) const
 {
   if ( isNull() || type != mSymbolType )
@@ -101,8 +114,6 @@ QList<QList<QPolygonF> > QgsLegendPatchShape::toQPolygonF( QgsSymbol::SymbolType
   QgsGeometry geom = mGeometry;
   geom.transform( t );
 
-  geom.convertToStraightSegment();
-
   switch ( mSymbolType )
   {
     case QgsSymbol::Marker:
@@ -124,22 +135,13 @@ QList<QList<QPolygonF> > QgsLegendPatchShape::toQPolygonF( QgsSymbol::SymbolType
 
     case QgsSymbol::Line:
     {
-      if ( !geom.isMultipart() )
-        return QList< QList<QPolygonF> >() << ( QList< QPolygonF >() << geom.asQPolygonF() );
-      else
+      QList< QList<QPolygonF> > res;
+      const QgsGeometry patch = geom;
+      for ( auto it = patch.const_parts_begin(); it != patch.const_parts_end(); ++it )
       {
-        QList< QList<QPolygonF> > res;
-        const QgsGeometry patch = geom;
-        for ( auto it = patch.const_parts_begin(); it != patch.const_parts_end(); ++it )
-        {
-          const QgsLineString *line = qgsgeometry_cast< const QgsLineString * >( *it );
-          if ( !line )
-            continue;
-
-          res << ( QList< QPolygonF >() << lineStringToQPolygonF( line ) );
-        }
-        return res;
+        res << ( QList< QPolygonF >() << curveToPolygonF( qgsgeometry_cast< const QgsCurve * >( *it ) ) );
       }
+      return res;
     }
 
     case QgsSymbol::Fill:
@@ -150,16 +152,17 @@ QList<QList<QPolygonF> > QgsLegendPatchShape::toQPolygonF( QgsSymbol::SymbolType
       for ( auto it = patch.const_parts_begin(); it != patch.const_parts_end(); ++it )
       {
         QList<QPolygonF> thisPart;
-        const QgsPolygon *polygon = qgsgeometry_cast< const QgsPolygon * >( *it );
-        if ( !polygon )
+        const QgsCurvePolygon *surface = qgsgeometry_cast< const QgsCurvePolygon * >( *it );
+        if ( !surface )
           continue;
 
-        if ( !polygon->exteriorRing() )
+        if ( !surface->exteriorRing() )
           continue;
 
-        thisPart << lineStringToQPolygonF( qgsgeometry_cast< const QgsLineString * >( polygon->exteriorRing() ) );
-        for ( int i = 0; i < polygon->numInteriorRings(); ++i )
-          thisPart << lineStringToQPolygonF( qgsgeometry_cast< const QgsLineString * >( polygon->interiorRing( i ) ) );
+        thisPart << curveToPolygonF( surface->exteriorRing() );
+
+        for ( int i = 0; i < surface->numInteriorRings(); ++i )
+          thisPart << curveToPolygonF( surface->interiorRing( i ) );
         res << thisPart;
       }
 
