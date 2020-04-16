@@ -33,6 +33,15 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsmaptooldigitizefeature.h"
 
+QStringList getComboBoxItems( const QComboBox *cb )
+{
+  QStringList items;
+  for ( int i = 0; i < cb->count(); i++ )
+    items << cb->itemText( i );
+
+  return items;
+}
+
 class TestQgsRelationReferenceWidget : public QObject
 {
     Q_OBJECT
@@ -46,6 +55,9 @@ class TestQgsRelationReferenceWidget : public QObject
     void cleanup(); // will be called after every testfunction.
 
     void testChainFilter();
+    void testChainFilter_data();
+    void testChainFilterFirstInit_data();
+    void testChainFilterFirstInit();
     void testChainFilterRefreshed();
     void testChainFilterDeleteForeignKey();
     void testInvalidRelation();
@@ -146,16 +158,30 @@ void TestQgsRelationReferenceWidget::cleanup()
   QgsProject::instance()->removeMapLayer( mLayer2.get() );
 }
 
+void TestQgsRelationReferenceWidget::testChainFilter_data()
+{
+  QTest::addColumn<bool>( "allowNull" );
+
+  QTest::newRow( "allowNull=true" ) << true;
+  QTest::newRow( "allowNull=false" ) << false;
+}
+
 void TestQgsRelationReferenceWidget::testChainFilter()
 {
+  QFETCH( bool, allowNull );
+
   // init a relation reference widget
   QStringList filterFields = { "material", "diameter", "raccord" };
 
   QWidget parentWidget;
   QgsRelationReferenceWidget w( &parentWidget );
+
+  QEventLoop loop;
+  connect( qobject_cast<QgsFeatureFilterModel *>( w.mComboBox->model() ), &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
+
   w.setChainFilters( true );
   w.setFilterFields( filterFields );
-  w.setRelation( *mRelation, true );
+  w.setRelation( *mRelation, allowNull );
   w.init();
 
   // check default status for comboboxes
@@ -171,9 +197,18 @@ void TestQgsRelationReferenceWidget::testChainFilter()
       QCOMPARE( cb->count(), 3 );
   }
 
+  loop.exec();
+  QStringList items = getComboBoxItems( w.mComboBox );
+  QCOMPARE( w.mComboBox->currentText(), allowNull ? QString( "NULL" ) : QString( "10" ) );
+
   // set first filter
   cbs[0]->setCurrentIndex( cbs[0]->findText( QStringLiteral( "iron" ) ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), allowNull ? QString( "NULL" ) : QString( "10" ) );
+
   cbs[1]->setCurrentIndex( cbs[1]->findText( QStringLiteral( "120" ) ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), allowNull ? QString( "NULL" ) : QString( "10" ) );
 
   Q_FOREACH ( const QComboBox *cb, cbs )
   {
@@ -183,9 +218,7 @@ void TestQgsRelationReferenceWidget::testChainFilter()
       QCOMPARE( cb->count(), 2 );
     else if ( cb->itemText( 0 ) == QLatin1String( "raccord" ) )
     {
-      QStringList items;
-      for ( int i = 0; i < cb->count(); i++ )
-        items << cb->itemText( i );
+      QStringList items = getComboBoxItems( cb );
 
       QCOMPARE( cb->count(), 3 );
       QCOMPARE( items.contains( "collar" ), false );
@@ -195,49 +228,175 @@ void TestQgsRelationReferenceWidget::testChainFilter()
     }
   }
 
+
+  // set the filter for "raccord" and then reset filter for "diameter". As
+  // chain filter is activated, the filter on "raccord" field should be reset
+
+  cbs[0]->setCurrentIndex( 0 );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), allowNull ? QString( "NULL" ) : QString( "10" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" << "12" );
+
+  if ( allowNull )
+  {
+    w.mComboBox->setCurrentIndex( w.mComboBox->findText( QStringLiteral( "10" ) ) );
+    QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+    QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" << "12" );
+  }
+
+  cbs[0]->setCurrentIndex( cbs[0]->findText( "iron" ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" );
+
+  // prefer 12 over NULL
+  cbs[0]->setCurrentIndex( cbs[0]->findText( "steel" ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "12" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "12" );
+
+  if ( allowNull )
+  {
+    w.mComboBox->setCurrentIndex( w.mComboBox->findText( QStringLiteral( "12" ) ) );
+    QCOMPARE( w.mComboBox->currentText(), QString( "12" ) );
+    QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "12" );
+  }
+
+  // reset IRON, prefer 10 over NULL
+  cbs[0]->setCurrentIndex( cbs[0]->findText( "iron" ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" );
+
+  if ( allowNull )
+  {
+    w.mComboBox->setCurrentIndex( w.mComboBox->findText( QStringLiteral( "10" ) ) );
+    QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+    QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" );
+  }
+
+  cbs[1]->setCurrentIndex( cbs[1]->findText( "120" ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" );
+
+  cbs[2]->setCurrentIndex( cbs[2]->findText( QStringLiteral( "brides" ) ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" );
+
+  cbs[1]->setCurrentIndex( cbs[1]->findText( QStringLiteral( "diameter" ) ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" );
+
+  // combobox should propose NULL (if allowNull is true), 10 and 11 because the filter is now:
+  // "material" == 'iron'
+  QCOMPARE( w.mComboBox->count(), allowNull ? 3 : 2 );
+
+  // if there's no filter at all, all features' id should be proposed
+  cbs[0]->setCurrentIndex( cbs[0]->findText( QStringLiteral( "material" ) ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->count(), allowNull ? 4 : 3 );
+  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" << "12" );
+
+  // change item to check that currently selected item remains
+  w.mComboBox->setCurrentIndex( w.mComboBox->findText( QStringLiteral( "11" ) ) );
+  cbs[0]->setCurrentIndex( cbs[0]->findText( "iron" ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "11" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" );
+
+  // reset all filter
+  cbs[0]->setCurrentIndex( cbs[0]->findText( QStringLiteral( "material" ) ) );
+  loop.exec();
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" << "12" );
+
+  // set value with foreign key -> all the comboboxes matches feature values
+  w.setForeignKeys( QVariantList() << "11" );
+  loop.exec();
+  QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
+  QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
+  QCOMPARE( cbs[2]->currentText(), QString( "sleeve" ) );
+  QCOMPARE( w.mComboBox->currentText(), QString( "11" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "11" );
+
+  // remove filter on raccord
+  cbs[2]->setCurrentIndex( cbs[2]->findText( "raccord" ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "11" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" );
+
+  // change material, prever 12 over NULL
+  cbs[0]->setCurrentIndex( cbs[0]->findText( QStringLiteral( "steel" ) ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "12" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "12" );
+}
+
+void TestQgsRelationReferenceWidget::testChainFilterFirstInit_data()
+{
+  QTest::addColumn<bool>( "allowNull" );
+
+  QTest::newRow( "allowNull=true" ) << true;
+  QTest::newRow( "allowNull=false" ) << false;
+}
+
+void TestQgsRelationReferenceWidget::testChainFilterFirstInit()
+{
+  QFETCH( bool, allowNull );
+
+  // init a relation reference widget
+  QStringList filterFields = { "material", "diameter", "raccord" };
+
+  QWidget parentWidget;
+  QgsRelationReferenceWidget w( &parentWidget );
+  w.setChainFilters( true );
+  w.setFilterFields( filterFields );
+  w.setRelation( *mRelation, allowNull );
+  w.init();
+
+  // check default status for comboboxes
+  QList<QComboBox *> cbs = w.mFilterComboBoxes;
+  QCOMPARE( cbs.count(), 3 );
+  Q_FOREACH ( const QComboBox *cb, cbs )
+  {
+    if ( cb->currentText() == QLatin1String( "raccord" ) )
+      QCOMPARE( cb->count(), 5 );
+    else if ( cb->currentText() == QLatin1String( "material" ) )
+      QCOMPARE( cb->count(), 4 );
+    else if ( cb->currentText() == QLatin1String( "diameter" ) )
+      QCOMPARE( cb->count(), 3 );
+  }
+
   // set the filter for "raccord" and then reset filter for "diameter". As
   // chain filter is activated, the filter on "raccord" field should be reset
   QEventLoop loop;
   connect( qobject_cast<QgsFeatureFilterModel *>( w.mComboBox->model() ), &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
 
-  cbs[0]->setCurrentIndex( 0 );
+  // set value with foreign key -> all the comboboxes matches feature values
+  w.setForeignKeys( QVariantList() << "11" );
   loop.exec();
-  QCOMPARE( w.mComboBox->currentText(), QString( "NULL" ) );
+  QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
+  QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
+  QCOMPARE( cbs[2]->currentText(), QString( "sleeve" ) );
+  QCOMPARE( w.mComboBox->currentText(), QString( "11" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "11" );
 
-  cbs[0]->setCurrentIndex( cbs[0]->findText( "iron" ) );
+  // remove filter on raccord
+  cbs[2]->setCurrentIndex( cbs[2]->findText( "raccord" ) );
   loop.exec();
-  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+  QCOMPARE( w.mComboBox->currentText(), QString( "11" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" );
 
-  cbs[0]->setCurrentIndex( cbs[0]->findText( "steel" ) );
+  // change material prever 12 over NULL
+  cbs[0]->setCurrentIndex( cbs[0]->findText( QStringLiteral( "steel" ) ) );
   loop.exec();
   QCOMPARE( w.mComboBox->currentText(), QString( "12" ) );
-
-  cbs[0]->setCurrentIndex( cbs[0]->findText( "iron" ) );
-  loop.exec();
-  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
-
-  cbs[1]->setCurrentIndex( cbs[1]->findText( "120" ) );
-  loop.exec();
-  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
-
-  cbs[2]->setCurrentIndex( cbs[2]->findText( QStringLiteral( "brides" ) ) );
-  loop.exec();
-  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
-
-  cbs[1]->setCurrentIndex( cbs[1]->findText( QStringLiteral( "diameter" ) ) );
-  loop.exec();
-  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
-
-  // combobox should propose NULL, 10 and 11 because the filter is now:
-  // "material" == 'iron'
-  QCOMPARE( w.mComboBox->count(), 3 );
-
-  // if there's no filter at all, all features' id should be proposed
-  cbs[0]->setCurrentIndex( cbs[0]->findText( QStringLiteral( "material" ) ) );
-  loop.exec();
-  QCOMPARE( w.mComboBox->count(), 4 );
-  QCOMPARE( w.mComboBox->currentText(), QString( "NULL" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "12" );
 }
+
 
 void TestQgsRelationReferenceWidget::testChainFilterRefreshed()
 {
@@ -352,8 +511,9 @@ void TestQgsRelationReferenceWidget::testSetGetForeignKey()
   QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(12)" ) );
   QCOMPARE( spy.count(), 2 );
 
-  w.setForeignKeys( QVariantList() << QVariant( QVariant::Int ) );
-  Q_ASSERT( w.foreignKeys().at( 0 ).isNull() );
+  w.setForeignKeys( QVariantList() << QVariant() );
+  QVERIFY( w.foreignKeys().at( 0 ).isNull() );
+  QVERIFY( w.foreignKeys().at( 0 ).isValid() );
   QCOMPARE( spy.count(), 3 );
 }
 

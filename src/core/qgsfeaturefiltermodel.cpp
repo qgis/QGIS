@@ -225,6 +225,15 @@ QVariant QgsFeatureFilterModel::data( const QModelIndex &index, int role ) const
 void QgsFeatureFilterModel::updateCompleter()
 {
   emit beginUpdate();
+
+  QgsFieldExpressionValuesGatherer *gatherer = qobject_cast<QgsFieldExpressionValuesGatherer *>( sender() );
+  Q_ASSERT( gatherer );
+  if ( gatherer->wasCanceled() )
+  {
+    delete gatherer;
+    return;
+  }
+
   QVector<Entry> entries = mGatherer->entries();
 
   if ( mExtraIdentifierValueIndex == -1 )
@@ -233,7 +242,8 @@ void QgsFeatureFilterModel::updateCompleter()
   }
 
   // Only reloading the current entry?
-  if ( mGatherer->data().toBool() )
+  bool reloadCurrentFeatureOnly = mGatherer->data().toBool();
+  if ( reloadCurrentFeatureOnly )
   {
     if ( !entries.isEmpty() )
     {
@@ -264,31 +274,30 @@ void QgsFeatureFilterModel::updateCompleter()
 
     const int newEntriesSize = entries.size();
 
-    // Find the index of the extra entry in the new list
+    // fixed entry is either NULL or extra value
+    const int nbFixedEntry = ( mExtraValueDoesNotExist ? 1 : 0 ) + ( mAllowNull ? 1 : 0 );
+
+    // Find the index of the current entry in the new list
     int currentEntryInNewList = -1;
-    if ( mExtraIdentifierValueIndex != -1 )
+    if ( mExtraIdentifierValueIndex != -1 && mExtraIdentifierValueIndex < mEntries.count() )
     {
       for ( int i = 0; i < newEntriesSize; ++i )
       {
-        if ( qVariantListCompare( entries.at( i ).identifierValues, mExtraIdentifierValues ) )
+        if ( qVariantListCompare( entries.at( i ).identifierValues, mEntries.at( mExtraIdentifierValueIndex ).identifierValues ) )
         {
-          currentEntryInNewList = i;
           mEntries.replace( mExtraIdentifierValueIndex, entries.at( i ) );
-          emit dataChanged( index( mExtraIdentifierValueIndex, 0, QModelIndex() ), index( mExtraIdentifierValueIndex, 0, QModelIndex() ) );
+          currentEntryInNewList = i;
           setExtraValueDoesNotExist( false );
           break;
         }
       }
     }
-    else
-    {
-      Q_ASSERT_X( false, "QgsFeatureFilterModel::updateCompleter", "No extra identifier value generated. Should not get here." );
-    }
 
     int firstRow = 0;
 
-    // Move the extra entry to the first position
-    if ( mExtraIdentifierValueIndex != -1 )
+    // Move current entry to the first position if this is a fixed entry or because
+    // the entry exists in the new list
+    if ( mExtraIdentifierValueIndex > -1 && ( mExtraIdentifierValueIndex < nbFixedEntry || currentEntryInNewList != -1 ) )
     {
       if ( mExtraIdentifierValueIndex != 0 )
       {
@@ -302,14 +311,25 @@ void QgsFeatureFilterModel::updateCompleter()
     // Remove all entries (except for extra entry if existent)
     beginRemoveRows( QModelIndex(), firstRow, mEntries.size() - firstRow );
     mEntries.remove( firstRow, mEntries.size() - firstRow );
+
+    // if we remove all rows before endRemoveRows, setExtraIdentifierValuesUnguarded will be called
+    // and a null value will be added to mEntries, so we block setExtraIdentifierValuesUnguarded call
+
+    mIsSettingExtraIdentifierValue = true;
     endRemoveRows();
+    mIsSettingExtraIdentifierValue = false;
+
 
     if ( currentEntryInNewList == -1 )
     {
-      beginInsertRows( QModelIndex(), 1, entries.size() + 1 );
+      beginInsertRows( QModelIndex(), firstRow, entries.size() + 1 );
       mEntries += entries;
       endInsertRows();
-      setExtraIdentifierValuesIndex( 0 );
+
+      // if all entries have been cleaned (firstRow == 0)
+      // and there is a value in entries, prefer this value over NULL
+      // else chose the first one (the previous one)
+      setExtraIdentifierValuesIndex( firstRow == 0 && mAllowNull && !entries.isEmpty() ? 1 : 0, firstRow == 0 );
     }
     else
     {
@@ -324,7 +344,11 @@ void QgsFeatureFilterModel::updateCompleter()
         mEntries.replace( 0, entries.at( 0 ) );
       }
 
-      emit dataChanged( index( currentEntryInNewList, 0, QModelIndex() ), index( currentEntryInNewList, 0, QModelIndex() ) );
+      // don't notify for a change if it's a fixed entry
+      if ( currentEntryInNewList >= nbFixedEntry )
+      {
+        emit dataChanged( index( currentEntryInNewList, 0, QModelIndex() ), index( currentEntryInNewList, 0, QModelIndex() ) );
+      }
 
       beginInsertRows( QModelIndex(), currentEntryInNewList + 1, newEntriesSize - currentEntryInNewList - 1 );
       mEntries += entries.mid( currentEntryInNewList + 1 );
@@ -335,10 +359,11 @@ void QgsFeatureFilterModel::updateCompleter()
     emit filterJobCompleted();
   }
   emit endUpdate();
-}
 
-void QgsFeatureFilterModel::gathererThreadFinished()
-{
+
+  // scheduleReload and updateCompleter lives in the same thread so if the gatherer hasn't been stopped
+  // (checked before), mGatherer still references the current gatherer
+  Q_ASSERT( gatherer == mGatherer );
   delete mGatherer;
   mGatherer = nullptr;
   emit isLoadingChanged();
@@ -353,11 +378,6 @@ void QgsFeatureFilterModel::scheduledReload()
 
   if ( mGatherer )
   {
-    // Send the gatherer thread to the graveyard:
-    //   forget about it, tell it to stop and delete when finished
-    disconnect( mGatherer, &QgsFieldExpressionValuesGatherer::collectedValues, this, &QgsFeatureFilterModel::updateCompleter );
-    disconnect( mGatherer, &QgsFieldExpressionValuesGatherer::finished, this, &QgsFeatureFilterModel::gathererThreadFinished );
-    connect( mGatherer, &QgsFieldExpressionValuesGatherer::finished, mGatherer, &QgsFieldExpressionValuesGatherer::deleteLater );
     mGatherer->stop();
     wasLoading = true;
   }
@@ -406,9 +426,8 @@ void QgsFeatureFilterModel::scheduledReload()
 
   mGatherer = new QgsFieldExpressionValuesGatherer( mSourceLayer, mDisplayExpression, mIdentifierFields, request );
   mGatherer->setData( mShouldReloadCurrentFeature );
+  connect( mGatherer, &QgsFieldExpressionValuesGatherer::finished, this, &QgsFeatureFilterModel::updateCompleter );
 
-  connect( mGatherer, &QgsFieldExpressionValuesGatherer::collectedValues, this, &QgsFeatureFilterModel::updateCompleter );
-  connect( mGatherer, &QgsFieldExpressionValuesGatherer::finished, this, &QgsFeatureFilterModel::gathererThreadFinished );
 
   mGatherer->start();
   if ( !wasLoading )
@@ -475,24 +494,26 @@ void QgsFeatureFilterModel::setExtraIdentifierValuesUnguarded( const QVariantLis
   // Value not found in current entries
   if ( mExtraIdentifierValueIndex != index )
   {
-    beginInsertRows( QModelIndex(), 0, 0 );
-    if ( extraIdentifierValues.isEmpty() )
+    if ( !extraIdentifierValues.isEmpty() || mAllowNull )
     {
-      mEntries.prepend( nullEntry() );
+      beginInsertRows( QModelIndex(), 0, 0 );
+      if ( !extraIdentifierValues.isEmpty() )
+      {
+        QStringList values;
+        for ( const QVariant &v : qgis::as_const( extraIdentifierValues ) )
+          values << QStringLiteral( "(%1)" ).arg( v.toString() );
+
+        mEntries.prepend( Entry( extraIdentifierValues, values.join( QStringLiteral( " " ) ), QgsFeature() ) );
+        reloadCurrentFeature();
+      }
+      else
+      {
+        mEntries.prepend( nullEntry() );
+      }
+      endInsertRows();
+
+      setExtraIdentifierValuesIndex( 0, true );
     }
-    else
-    {
-      QStringList values;
-      for ( const QVariant &v : qgis::as_const( extraIdentifierValues ) )
-        values << QStringLiteral( "(%1)" ).arg( v.toString() );
-
-      mEntries.prepend( Entry( extraIdentifierValues, values.join( QStringLiteral( " " ) ), QgsFeature() ) );
-    }
-    endInsertRows();
-
-    setExtraIdentifierValuesIndex( 0, true );
-
-    reloadCurrentFeature();
   }
 }
 
@@ -603,7 +624,7 @@ QVariantList QgsFeatureFilterModel::extraIdentifierValues() const
   {
     QVariantList nullValues;
     for ( int i = 0; i < mIdentifierFields.count(); i++ )
-      nullValues << QVariant();
+      nullValues << QVariant( QVariant::Int );
     return nullValues;
   }
   return mExtraIdentifierValues;
