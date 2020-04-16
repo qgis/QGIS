@@ -171,6 +171,13 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QSet< QString > dependsOnChildAlgorithms( const QString &childId ) const;
 
     /**
+     * Returns details of available dependencies for the child algorithm with matching id.
+     *
+     * \since QGIS 3.14
+     */
+    QList< QgsProcessingModelChildDependency > availableDependenciesForChildAlgorithm( const QString &childId ) const;
+
+    /**
      * Validates the child algorithm with matching ID, returning TRUE if
      * all mandatory inputs to the algorithm have valid values.
      *
