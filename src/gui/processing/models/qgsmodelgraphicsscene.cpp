@@ -191,8 +191,23 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
     const QList< QgsProcessingModelChildDependency > dependencies = it.value().dependencies();
     for ( const QgsProcessingModelChildDependency &depend : dependencies )
     {
-      // TODO link to branch
-      addItem( new QgsModelArrowItem( mChildAlgorithmItems.value( depend.childId ), mChildAlgorithmItems.value( it.value().childId() ) ) );
+      if ( depend.conditionalBranch.isEmpty() || !model->childAlgorithm( depend.childId ).algorithm() )
+      {
+        addItem( new QgsModelArrowItem( mChildAlgorithmItems.value( depend.childId ), mChildAlgorithmItems.value( it.value().childId() ) ) );
+      }
+      else
+      {
+        // find branch link point
+        const QgsProcessingOutputDefinitions outputs = model->childAlgorithm( depend.childId ).algorithm()->outputDefinitions();
+        int i = 0;
+        for ( const QgsProcessingOutputDefinition *output : outputs )
+        {
+          if ( output->name() == depend.conditionalBranch )
+            break;
+          i++;
+        }
+        addItem( new QgsModelArrowItem( mChildAlgorithmItems.value( depend.childId ), Qt::BottomEdge, i, mChildAlgorithmItems.value( it.value().childId() ) ) );
+      }
     }
   }
 

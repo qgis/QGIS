@@ -1732,12 +1732,27 @@ QList<QgsProcessingModelChildDependency> QgsProcessingModelAlgorithm::availableD
   {
     if ( !dependent.contains( it->childId() ) )
     {
-      QgsProcessingModelChildDependency alg;
-      alg.childId = it->childId();
-      res << alg;
+      // check first if algorithm provides output branches
+      bool hasBranches = false;
+      const QgsProcessingOutputDefinitions defs = it->algorithm()->outputDefinitions();
+      for ( const QgsProcessingOutputDefinition *def : defs )
+      {
+        if ( def->type() == QgsProcessingOutputConditionalBranch::typeName() )
+        {
+          hasBranches = true;
+          QgsProcessingModelChildDependency alg;
+          alg.childId = it->childId();
+          alg.conditionalBranch = def->name();
+          res << alg;
+        }
+      }
 
-      //TODO -- conditional branches!
-
+      if ( !hasBranches )
+      {
+        QgsProcessingModelChildDependency alg;
+        alg.childId = it->childId();
+        res << alg;
+      }
     }
   }
   return res;
