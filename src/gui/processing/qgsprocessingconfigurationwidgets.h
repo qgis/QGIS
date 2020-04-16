@@ -54,6 +54,34 @@ class QgsFilterAlgorithmConfigurationWidgetFactory : public QgsProcessingAlgorit
     bool canCreateFor( const QgsProcessingAlgorithm *algorithm ) const override;
 };
 
+
+
+class QgsConditionalBranchAlgorithmConfigurationWidget : public QgsProcessingAlgorithmConfigurationWidget
+{
+    Q_OBJECT
+
+  public:
+    QgsConditionalBranchAlgorithmConfigurationWidget( QWidget *parent = nullptr );
+
+    QVariantMap configuration() const override;
+
+    void setConfiguration( const QVariantMap &configuration ) override;
+
+  private slots:
+    void removeSelectedConditions();
+    void addCondition();
+
+  private:
+    QTableWidget *mConditionExpressionWidget;
+};
+
+class QgsConditionalBranchAlgorithmConfigurationWidgetFactory : public QgsProcessingAlgorithmConfigurationWidgetFactory
+{
+  public:
+    QgsConditionalBranchAlgorithmConfigurationWidget *create( const QgsProcessingAlgorithm *algorithm ) const override;
+    bool canCreateFor( const QgsProcessingAlgorithm *algorithm ) const override;
+};
+
 ///@endcond
 
 #endif // QGSPROCESSINGCONFIGURATIONWIDGETS_H

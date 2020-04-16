@@ -63,6 +63,8 @@ class CORE_EXPORT QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputFolder;
     else if ( sipCpp->type() == QgsProcessingOutputFile::typeName() )
       sipType = sipType_QgsProcessingOutputFile;
+    else if ( sipCpp->type() == QgsProcessingOutputConditionalBranch::typeName() )
+      sipType = sipType_QgsProcessingOutputConditionalBranch;
     else
       sipType = nullptr;
     SIP_END
@@ -376,6 +378,30 @@ class CORE_EXPORT QgsProcessingOutputFile : public QgsProcessingOutputDefinition
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputFile" ); }
+    QString type() const override { return typeName(); }
+
+};
+
+/**
+ * \class QgsProcessingOutputConditionalBranch
+ * \ingroup core
+ * A conditional branch output for processing algorithms, which represents a possible model logic
+ * flow which branches out from this algorithm.
+  * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsProcessingOutputConditionalBranch : public QgsProcessingOutputDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingOutputConditionalBranch.
+     */
+    QgsProcessingOutputConditionalBranch( const QString &name, const QString &description = QString() );
+
+    /**
+     * Returns the type name for the output class.
+     */
+    static QString typeName() { return QStringLiteral( "outputBranch" ); }
     QString type() const override { return typeName(); }
 
 };
