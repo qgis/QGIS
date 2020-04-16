@@ -28,6 +28,8 @@
 #include <QWidget>
 #include <QItemDelegate>
 
+///@cond PRIVATE
+
 /**
  * \ingroup gui
  * A widget for setting properties relating to a layout legend.
@@ -195,6 +197,8 @@ class GUI_EXPORT QgsLayoutLegendNodeWidget: public QgsPanelWidget, private Ui::Q
     int mOriginalLegendNodeIndex = -1;
 
 };
+
+///@endcond
 
 #endif //QGSLAYOUTLEGENDWIDGET_H
 
