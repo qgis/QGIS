@@ -5557,7 +5557,7 @@ QgsVectorTileLayer *QgisApp::addVectorTileLayerPrivate( const QString &url, cons
     base = QgsMapLayer::formatLayerName( base );
   }
 
-  QgsDebugMsg( "completeBaseName: " + base );
+  QgsDebugMsgLevel( "completeBaseName: " + base, 2 );
 
   // create the layer
   std::unique_ptr<QgsVectorTileLayer> layer( new QgsVectorTileLayer( url, base ) );
