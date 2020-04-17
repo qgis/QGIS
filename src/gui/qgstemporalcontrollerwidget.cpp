@@ -165,7 +165,6 @@ void QgsTemporalControllerWidget::onLayersAdded()
 
         if ( !mHasTemporalLayersLoaded )
         {
-          //inspired by  QgsLayerTreeMapCanvasBridge::layersAdded
           connect( layer, &QgsMapLayer::dataSourceChanged, this, [ this, layer ]
           {
             if ( layer->isValid() && layer->temporalProperties()->isActive() && !mHasTemporalLayersLoaded )
