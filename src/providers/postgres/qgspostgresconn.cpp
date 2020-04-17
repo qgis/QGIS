@@ -1051,15 +1051,10 @@ QString QgsPostgresConn::postgisVersion() const
   {
     result = PQexec( QStringLiteral( "SELECT postgis_geos_version(), postgis_proj_version()" ) );
     mGeosAvailable = result.PQntuples() == 1 && !result.PQgetisnull( 0, 0 );
-<<<<<<< HEAD
-    QgsDebugMsg( QStringLiteral( "geos:%1 proj:%2" )
-                 .arg( mGeosAvailable ? result.PQgetvalue( 0, 0 ) : "none" ) );
-=======
     mProjAvailable = result.PQntuples() == 1 && !result.PQgetisnull( 0, 1 );
     QgsDebugMsg( QStringLiteral( "geos:%1 proj:%2" )
                  .arg( mGeosAvailable ? result.PQgetvalue( 0, 0 ) : "none" )
                  .arg( mProjAvailable ? result.PQgetvalue( 0, 1 ) : "none" ) );
->>>>>>> f48e1c89a3... Merge pull request #35162 from espinafre/pg_bigint_pk_no_cast
   }
   else
   {
