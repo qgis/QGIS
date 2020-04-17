@@ -306,14 +306,12 @@ ADD_DEFINITIONS(-DTEST_DATA_DIR="${TEST_DATA_DIR}")
 
 SET(IMAGE_RCCS ../../images/images.qrc)
 
-QT5_ADD_RESOURCES(IMAGE_RCC_SRCS ${IMAGE_RCCS})
 
 # add test resources, e.g. standard test font
 SET(TEST_RCCS ../../tests/testdata/testdata.qrc)
-QT5_ADD_RESOURCES(TEST_RCC_SRCS ${TEST_RCCS})
 
 IF (WIN32)
-  SET (QGIS_APP_SRCS ${QGIS_APP_SRCS} main.cpp ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
+  SET (QGIS_APP_SRCS ${QGIS_APP_SRCS} main.cpp ${IMAGE_RCCS} ${TEST_RCCS})
   SET (QGIS_APPMAIN_SRCS mainwin.cpp)
 
   IF (MSVC)

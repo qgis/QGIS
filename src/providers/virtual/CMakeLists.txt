@@ -2,7 +2,7 @@
 ########################################################
 # Files
 
-QT5_ADD_RESOURCES(QGIS_VLAYER_SQL_FUNCTIONS_RCC sqlfunctionslist.qrc)
+SET (QGIS_VLAYER_SQL_FUNCTIONS_RCCS  sqlfunctionslist.qrc)
 
 SET(QGIS_VLAYER_PROVIDER_HDRS
   qgsvirtuallayerprovider.h
@@ -73,7 +73,7 @@ ADD_LIBRARY(virtuallayerprovider MODULE
   ${QGIS_VLAYER_PROVIDER_SRCS}
   ${QGIS_VLAYER_PROVIDER_HDRS}
   ${vlayer_provider_UI_H}
-  ${QGIS_VLAYER_SQL_FUNCTIONS_RCC}
+  ${QGIS_VLAYER_SQL_FUNCTIONS_RCCS}
 )
 
 TARGET_LINK_LIBRARIES( virtuallayerprovider
