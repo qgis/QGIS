@@ -22,6 +22,7 @@
 // The algorithm parameter names:
 static const QString INPUT = QStringLiteral( "INPUT" );
 static const QString POINTS_NUMBER = QStringLiteral( "POINTS_NUMBER" );
+static const QString MIN_DISTANCE_GLOBAL = QStringLiteral( "MIN_DISTANCE_GLOBAL" );
 static const QString MIN_DISTANCE = QStringLiteral( "MIN_DISTANCE" );
 static const QString MAX_TRIES_PER_POINT = QStringLiteral( "MAX_TRIES_PER_POINT" );
 static const QString SEED = QStringLiteral( "SEED" );
@@ -74,6 +75,10 @@ void QgsRandomPointsInPolygonsAlgorithm::initAlgorithm( const QVariantMap & )
   minDistParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( minDistParam.release() );
 
+  std::unique_ptr< QgsProcessingParameterDistance > minDistGlobalParam = qgis::make_unique< QgsProcessingParameterDistance >( MIN_DISTANCE_GLOBAL, QObject::tr( "Global minimum distance between points" ), 0, INPUT, true, 0 );
+  minDistGlobalParam->setFlags( minDistGlobalParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( minDistGlobalParam.release() );
+
   std::unique_ptr< QgsProcessingParameterNumber > maxAttemptsParam = qgis::make_unique< QgsProcessingParameterNumber >( MAX_TRIES_PER_POINT, QObject::tr( "Maximum number of search attempts (for Min. dist. > 0)" ), QgsProcessingParameterNumber::Integer, 10, true, 1 );
   maxAttemptsParam->setFlags( maxAttemptsParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   maxAttemptsParam->setIsDynamic( true );
@@ -104,12 +109,19 @@ QString QgsRandomPointsInPolygonsAlgorithm::shortHelpString() const
                       "in the polygons of the <i><b>Input polygon layer</b></i>.</p> "
                       "<ul><li>For each feature in the <i><b>Input polygon layer</b></i>, the algorithm attempts to add "
                       "the specified <i><b>Number of points for each feature</b></i> to the output layer.</li> "
-                      "<li>A <i><b>Minimum distance between points</b></i> can be specified.<br> "
-                      "A point will not be generated if there is an already generated point "
-                      "(on any polygon feature) within this (Euclidean) distance from "
-                      "the generated location. "
-                      "If the <i><b>Minimum distance between points</b></i> is too large, it may not be possible to generate "
-                      "the specified <i><b>Number of points for each feature</b></i>.</li> "
+                      "<li>A <i><b>Minimum distance between points</b></i> and a "
+                      "<i><b>Global minimum distance between points</b></i> can be specified.<br> "
+                      "A point will not be added if there is an already generated point within "
+                      "this (Euclidean) distance from the generated location. "
+                      "With <i>Minimum distance between points</i>, only points in the same "
+                      "polygon feature are considered, while for <i>Global minimum distance "
+                      "between points</i> all previously generated points are considered."
+                      "If the <i>Global minimum distance between points</i> is set larger "
+                      "than the (local) <i>Minimum distance between points</i>, the latter "
+                      "has no effect.<br> "
+                      "If the <i>Minimum distance between points</i> is too large, "
+                      "it may not be possible to generate the specified <i>Number of points "
+                      "for each feature</i>.</li> "
                       "<li>The <i><b>Maximum number of attempts per point</b></i> can be specified.</li> "
                       "<li>The seed for the random generator can be provided (<b><i>Random seed</i></b> "
                       "- integer, greater than 0).</li> "
@@ -154,6 +166,8 @@ bool QgsRandomPointsInPolygonsAlgorithm::prepareAlgorithm( const QVariantMap &pa
   if ( mDynamicMaxAttempts )
     mMaxAttemptsProperty = parameters.value( MAX_TRIES_PER_POINT ).value< QgsProperty >();
 
+  mMinDistanceGlobal = parameterAsDouble( parameters, MIN_DISTANCE_GLOBAL, context );
+
   mUseRandomSeed = parameters.value( SEED ).isValid();
   mRandSeed = parameterAsInt( parameters, SEED, context );
   mIncludePolygonAttr = parameterAsBoolean( parameters, INCLUDE_POLYGON_ATTRIBUTES, context );
@@ -185,8 +199,8 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
   std::mt19937 mt( !mUseRandomSeed ? rd() : mRandSeed );
   std::uniform_real_distribution<> uniformDist( 0, 1 );
 
-  // Index for finding close points (mMinDistance > 0)
-  QgsSpatialIndex index;
+  // Index for finding global close points (mMinDistance > 0)
+  QgsSpatialIndex globalIndex;
 
   int totNPoints = 0;
   int missedPoints = 0;
@@ -254,6 +268,8 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
     const double pointProgressIncrement = featureProgressStep / ( numberPointsForThisFeature * maxAttemptsForThisFeature );
 
     double pointProgress = 0.0;
+    QgsSpatialIndex localIndex;
+
     for ( long pointIndex = 0; pointIndex < numberPointsForThisFeature; pointIndex++ )
     {
       if ( feedback->isCanceled() )
@@ -268,14 +284,14 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
         {
           break;
         }
+        distCheckIterations++;
+        pointProgress += pointProgressIncrement;
         // Generate a random point
         //double randPos = lineLength * uniformDist( mt );
         //QgsGeometry rpGeom = QgsGeometry( lGeom.interpolate( randPos ) );
         double posX = bbox.xMinimum() + bbox.width() * uniformDist( mt );
         double posY = bbox.yMinimum() + bbox.height() * uniformDist( mt );
         QgsGeometry rpGeom = QgsGeometry::fromPointXY( QgsPointXY( posX, posY ) );
-        distCheckIterations++;
-        pointProgress += pointProgressIncrement;
 
         if ( !polyGeom.contains( rpGeom ) )
         {
@@ -284,14 +300,28 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
         }
         if ( !rpGeom.isNull() && !rpGeom.isEmpty() )
         {
-          if ( minDistanceForThisFeature != 0 && totNPoints > 0 )
+          if ( ( minDistanceForThisFeature != 0 ) || ( mMinDistanceGlobal != 0 ) )
           {
-            // Have to check minimum distance to existing points
-            QList<QgsFeatureId> neighbors = index.nearestNeighbor( rpGeom, 1, minDistanceForThisFeature );
-            if ( !neighbors.empty() )
+            // Check minimum distance to existing points
+            // Per feature first
+            if ( ( minDistanceForThisFeature != 0 ) && ( pointsAddedForThisFeature > 0 ) )
             {
-              feedback->setProgress( baseFeatureProgress + pointProgress );
-              continue;
+              QList<QgsFeatureId> neighbors = localIndex.nearestNeighbor( rpGeom, 1, minDistanceForThisFeature );
+              if ( !neighbors.empty() )
+              {
+                feedback->setProgress( baseFeatureProgress + pointProgress );
+                continue;
+              }
+            }
+            // Then check globally
+            if ( ( mMinDistanceGlobal != 0 ) && ( totNPoints > 0 ) )
+            {
+              QList<QgsFeatureId> neighbors = globalIndex.nearestNeighbor( rpGeom, 1, mMinDistanceGlobal );
+              if ( !neighbors.empty() )
+              {
+                feedback->setProgress( baseFeatureProgress + pointProgress );
+                continue;
+              }
             }
           }
           // point OK to add
@@ -305,9 +335,13 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
           f.setAttributes( pAttrs );
           f.setGeometry( rpGeom );
 
+          if ( mMinDistanceGlobal != 0 )
+          {
+            globalIndex.addFeature( f );
+          }
           if ( minDistanceForThisFeature != 0 )
           {
-            index.addFeature( f );
+            localIndex.addFeature( f );
           }
           sink->addFeature( f, QgsFeatureSink::FastInsert );
           totNPoints++;

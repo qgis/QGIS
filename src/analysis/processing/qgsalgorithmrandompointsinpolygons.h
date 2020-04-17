@@ -62,6 +62,8 @@ class QgsRandomPointsInPolygonsAlgorithm : public QgsProcessingAlgorithm
     bool mDynamicMinDistance = false;
     QgsProperty mMinDistanceProperty;
 
+    double mMinDistanceGlobal = 0;
+
     int mMaxAttempts = 10;
     bool mDynamicMaxAttempts = false;
     QgsProperty mMaxAttemptsProperty;
