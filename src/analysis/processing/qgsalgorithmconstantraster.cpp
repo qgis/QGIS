@@ -39,12 +39,12 @@ QStringList QgsConstantRasterAlgorithm::tags() const
 
 QString QgsConstantRasterAlgorithm::group() const
 {
-  return QObject::tr( "Raster tools" );
+  return QObject::tr( "Raster creation" );
 }
 
 QString QgsConstantRasterAlgorithm::groupId() const
 {
-  return QStringLiteral( "rastertools" );
+  return QStringLiteral( "rastercreation" );
 }
 
 QString QgsConstantRasterAlgorithm::shortHelpString() const
