@@ -40,7 +40,7 @@
 #include "qgsunittypes.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgscircle.h"
+#include "qgslegendpatchshapewidget.h"
 
 #include <QMenu>
 #include <QMessageBox>
@@ -842,6 +842,7 @@ void QgsLayoutLegendWidget::mAddToolButton_clicked()
         mLegend->model()->rootGroup()->addLayer( layer );
       }
       mLegend->updateLegend();
+      mLegend->update();
       mLegend->endCommand();
     }
   }
@@ -902,6 +903,7 @@ void QgsLayoutLegendWidget::mRemoveToolButton_clicked()
   }
 
   mLegend->updateLegend();
+  mLegend->update();
   mLegend->endCommand();
 }
 
@@ -953,9 +955,12 @@ void QgsLayoutLegendWidget::resetLayerNodeToDefaults()
       nodeLayer->removeCustomProperty( key );
   }
 
+  nodeLayer->setPatchShape( QgsLegendPatchShape() );
+
   mItemTreeView->layerTreeModel()->refreshLayerLegend( nodeLayer );
 
   mLegend->updateLegend();
+  mLegend->update();
   mLegend->endCommand();
 }
 
@@ -1101,6 +1106,7 @@ void QgsLayoutLegendWidget::mAddGroupToolButton_clicked()
     mLegend->beginCommand( tr( "Add Legend Group" ) );
     mLegend->model()->rootGroup()->addGroup( tr( "Group" ) );
     mLegend->updateLegend();
+    mLegend->update();
     mLegend->endCommand();
   }
 }
@@ -1383,48 +1389,54 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
 
   }
 
+  QgsLegendPatchShape patchShape;
+  if ( QgsSymbolLegendNode *symbolLegendNode = dynamic_cast< QgsSymbolLegendNode * >( mLegendNode ) )
+  {
+    patchShape = symbolLegendNode->patchShape();
+    if ( symbolLegendNode->symbol() )
+      mPatchShapeButton->setPreviewSymbol( symbolLegendNode->symbol()->clone() );
+  }
+  else if ( !mLegendNode && mLayer )
+  {
+    patchShape = mLayer->patchShape();
+    if ( QgsSymbolLegendNode *symbolLegendNode = dynamic_cast< QgsSymbolLegendNode * >( mLegend->model()->legendNodeEmbeddedInParent( mLayer ) ) )
+      mPatchShapeButton->setPreviewSymbol( symbolLegendNode->symbol()->clone() );
+  }
+
   if ( mLayer && mLayer->layer()  && mLayer->layer()->type() == QgsMapLayerType::VectorLayer )
   {
     switch ( qobject_cast< QgsVectorLayer * >( mLayer->layer() )->geometryType() )
     {
       case QgsWkbTypes::PolygonGeometry:
-        mPatchShapeCombo->addItem( tr( "Default" ) );
-        mPatchShapeCombo->addItem( tr( "Oval" ) );
-        if ( ( dynamic_cast< QgsSymbolLegendNode * >( mLegendNode ) && !dynamic_cast< QgsSymbolLegendNode * >( mLegendNode )->patchShape().isNull() )
-             || ( !mLegendNode && !mLayer->patchShape().isNull() ) )
-        {
-          mPatchShapeCombo->addItem( tr( "Custom" ) );
-          mPatchShapeCombo->setCurrentIndex( 2 );
-        }
+        mPatchShapeButton->setSymbolType( QgsSymbol::Fill );
         break;
 
       case QgsWkbTypes::LineGeometry:
-        mPatchShapeCombo->addItem( tr( "Default" ) );
-        mPatchShapeCombo->addItem( tr( "Zig-zag" ) );
-        if ( ( dynamic_cast< QgsSymbolLegendNode * >( mLegendNode ) && !dynamic_cast< QgsSymbolLegendNode * >( mLegendNode )->patchShape().isNull() )
-             || ( !mLegendNode && !mLayer->patchShape().isNull() ) )
-        {
-          mPatchShapeCombo->addItem( tr( "Custom" ) );
-          mPatchShapeCombo->setCurrentIndex( 2 );
-        }
+        mPatchShapeButton->setSymbolType( QgsSymbol::Line );
+        break;
+
+      case QgsWkbTypes::PointGeometry:
+        mPatchShapeButton->setSymbolType( QgsSymbol::Marker );
         break;
 
       default:
         mPatchShapeLabel->hide();
-        mPatchShapeCombo->hide();
+        mPatchShapeButton->hide();
         break;
     }
+    if ( !patchShape.isNull() )
+      mPatchShapeButton->setShape( patchShape );
+
   }
   else
   {
     mPatchShapeLabel->hide();
-    mPatchShapeCombo->hide();
+    mPatchShapeButton->hide();
   }
 
   mLabelEdit->setText( currentLabel );
   connect( mLabelEdit, &QLineEdit::textChanged, this, &QgsLayoutLegendNodeWidget::labelChanged );
-  connect( mPatchShapeCombo, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLayoutLegendNodeWidget::patchChanged );
-
+  connect( mPatchShapeButton, &QgsLegendPatchShapeButton::changed, this, &QgsLayoutLegendNodeWidget::patchChanged );
 }
 
 void QgsLayoutLegendNodeWidget::labelChanged( const QString &label )
@@ -1454,27 +1466,11 @@ void QgsLayoutLegendNodeWidget::labelChanged( const QString &label )
   mLegend->endCommand();
 }
 
-void QgsLayoutLegendNodeWidget::patchChanged( int )
+void QgsLayoutLegendNodeWidget::patchChanged()
 {
   mLegend->beginCommand( tr( "Edit Legend Item" ) );
 
-  QgsLegendPatchShape shape;
-  if ( mPatchShapeCombo->currentText() == tr( "Default" ) )
-  {
-    // use null shape to use default
-  }
-  else if ( mPatchShapeCombo->currentText() == tr( "Oval" ) )
-  {
-    QgsGeometry g = QgsGeometry::fromWkt( QStringLiteral( "CurvePolygon(CircularString (0 5, 5 0, 0 -5, -5 0, 0 5))" ) );
-    g.convertToStraightSegment();
-    shape = QgsLegendPatchShape( QgsSymbol::Fill, g, false );
-  }
-  else if ( mPatchShapeCombo->currentText() == tr( "Zig-zag" ) )
-  {
-    QgsGeometry g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 0, 1 1, 2 0, 3 1)" ) );
-    shape = QgsLegendPatchShape( QgsSymbol::Line, g, false );
-  }
-
+  QgsLegendPatchShape shape = mPatchShapeButton->shape();
   if ( mLegendNode )
   {
     QgsMapLayerLegendUtils::setLegendNodePatchShape( mLayer, mOriginalLegendNodeIndex, shape );
@@ -1483,10 +1479,12 @@ void QgsLayoutLegendNodeWidget::patchChanged( int )
   else if ( mLayer )
   {
     mLayer->setPatchShape( shape );
-
-    // force update of label of the legend node with embedded icon (a bit clumsy i know)
-    if ( QgsLayerTreeModelLegendNode *embeddedNode = mLegend->model()->legendNodeEmbeddedInParent( mLayer ) )
-      embeddedNode->setUserLabel( QString() );
+    const QList<QgsLayerTreeModelLegendNode *> layerLegendNodes = mLegend->model()->layerLegendNodes( mLayer, false );
+    for ( QgsLayerTreeModelLegendNode *node : layerLegendNodes )
+    {
+      QgsMapLayerLegendUtils::setLegendNodePatchShape( mLayer, _originalLegendNodeIndex( node ), shape );
+    }
+    mLegend->model()->refreshLayerLegend( mLayer );
   }
 
   mLegend->adjustBoxSize();

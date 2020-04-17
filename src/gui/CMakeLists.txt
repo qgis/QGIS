@@ -432,6 +432,8 @@ SET(QGIS_GUI_SRCS
   qgskeyvaluewidget.cpp
   qgslistwidget.cpp
   qgslegendfilterbutton.cpp
+  qgslegendpatchshapebutton.cpp
+  qgslegendpatchshapewidget.cpp
   qgslimitedrandomcolorrampdialog.cpp
   qgsratiolockbutton.cpp
   qgsludialog.cpp
@@ -656,6 +658,8 @@ SET(QGIS_GUI_HDRS
   qgsinstallgridshiftdialog.h
   qgskeyvaluewidget.h
   qgslegendfilterbutton.h
+  qgslegendpatchshapebutton.h
+  qgslegendpatchshapewidget.h
   qgslimitedrandomcolorrampdialog.h
   qgslistwidget.h
   qgslonglongvalidator.h
