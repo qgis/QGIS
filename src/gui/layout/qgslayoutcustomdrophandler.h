@@ -21,10 +21,12 @@
 #include <QObject>
 
 class QgsLayoutDesignerInterface;
+class QMimeData;
+class QgsLayoutItem;
 
 /**
  * \ingroup gui
- * Abstract base class that may be implemented to handle new types of data to be dropped in QGIS layouts.
+ * Abstract base class that may be implemented to handle new types of data to be dropped or pasted in QGIS layouts.
  *
  * \since QGIS 3.0
  */
@@ -63,6 +65,27 @@ class GUI_EXPORT QgsLayoutCustomDropHandler : public QObject
      * \since QGIS 3.12
      */
     virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, QPointF dropPoint, const QString &file );
+
+    /**
+     * Called when the specified MIME \a data has been pasted onto a QGIS layout. If TRUE
+     * is returned, then the handler has accepted this data and it should not
+     * be further processed (e.g. by other QgsLayoutCustomDropHandler).
+     *
+     * The \a pastePoint point specifies the location (in layout coordinates) at which
+     * the paste occurred.
+     *
+     * The base class implementation does nothing.
+     *
+     * \param iface pointer to the layout designer interface
+     * \param pastePoint layout point at which the paste should occur
+     * \param data MIME data to paste
+     * \param pastedItems should be filled with any newly created items as a result of the paste
+     *
+     * \returns TRUE if the handler accepted and processed the paste operation
+     *
+     * \since QGIS 3.14
+     */
+    virtual bool handlePaste( QgsLayoutDesignerInterface *iface, QPointF pastePoint, const QMimeData *data, QList< QgsLayoutItem * > &pastedItems SIP_OUT );
 };
 
 
