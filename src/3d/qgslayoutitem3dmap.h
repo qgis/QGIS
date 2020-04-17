@@ -19,7 +19,7 @@
 #include "qgis_3d.h"
 
 #include "qgslayoutitem.h"
-
+#include "qgstemporalrangeobject.h"
 #include "qgscamerapose.h"
 
 
@@ -34,7 +34,7 @@ class QgsOffscreen3DEngine;
  *
  * \since QGIS 3.4
  */
-class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem
+class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem, public QgsTemporalRangeObject
 {
     Q_OBJECT
 

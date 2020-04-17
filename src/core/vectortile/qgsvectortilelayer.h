@@ -21,6 +21,7 @@
 
 #include "qgsmaplayer.h"
 
+class QgsVectorTileLabeling;
 class QgsVectorTileRenderer;
 
 class QgsTileXYZ;
@@ -132,6 +133,14 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     //! Returns currently assigned renderer
     QgsVectorTileRenderer *renderer() const;
 
+    /**
+     * Sets labeling for the map layer.
+     * \note Takes ownership of the passed labeling
+     */
+    void setLabeling( QgsVectorTileLabeling *labeling SIP_TRANSFER );
+    //! Returns currently assigned labeling
+    QgsVectorTileLabeling *labeling() const;
+
     //! Sets whether to render also borders of tiles (useful for debugging)
     void setTileBorderRenderingEnabled( bool enabled ) { mTileBorderRendering = enabled; }
     //! Returns whether to render also borders of tiles (useful for debugging)
@@ -152,6 +161,8 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
 
     //! Renderer assigned to the layer to draw map
     std::unique_ptr<QgsVectorTileRenderer> mRenderer;
+    //! Labeling assigned to the layer to produce labels
+    std::unique_ptr<QgsVectorTileLabeling> mLabeling;
     //! Whether we draw borders of tiles
     bool mTileBorderRendering = false;
 };

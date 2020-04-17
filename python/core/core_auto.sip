@@ -434,6 +434,7 @@
 %Include auto_generated/numericformats/qgsscientificnumericformat.sip
 %Include auto_generated/processing/models/qgsprocessingmodelalgorithm.sip
 %Include auto_generated/processing/models/qgsprocessingmodelchildalgorithm.sip
+%Include auto_generated/processing/models/qgsprocessingmodelchilddependency.sip
 %Include auto_generated/processing/models/qgsprocessingmodelchildparametersource.sip
 %Include auto_generated/processing/models/qgsprocessingmodelcomment.sip
 %Include auto_generated/processing/models/qgsprocessingmodelcomponent.sip
@@ -542,7 +543,9 @@
 %Include auto_generated/validity/qgsabstractvaliditycheck.sip
 %Include auto_generated/validity/qgsvaliditycheckcontext.sip
 %Include auto_generated/validity/qgsvaliditycheckregistry.sip
+%Include auto_generated/vectortile/qgsvectortilebasiclabeling.sip
 %Include auto_generated/vectortile/qgsvectortilebasicrenderer.sip
+%Include auto_generated/vectortile/qgsvectortilelabeling.sip
 %Include auto_generated/vectortile/qgsvectortilelayer.sip
 %Include auto_generated/vectortile/qgsvectortilerenderer.sip
 %Include auto_generated/gps/qgsqtlocationconnection.sip

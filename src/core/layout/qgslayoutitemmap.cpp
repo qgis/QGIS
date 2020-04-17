@@ -649,6 +649,14 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &mapElem, QDomDocum
   }
   mapElem.appendChild( labelBlockingItemsElem );
 
+  //temporal settings
+  mapElem.setAttribute( QStringLiteral( "isTemporal" ), isTemporal() ? 1 : 0 );
+  if ( isTemporal() )
+  {
+    mapElem.setAttribute( QStringLiteral( "temporalRangeBegin" ), temporalRange().begin().toString( Qt::ISODate ) );
+    mapElem.setAttribute( QStringLiteral( "temporalRangeEnd" ), temporalRange().end().toString( Qt::ISODate ) );
+  }
+
   return true;
 }
 
@@ -804,6 +812,15 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
   }
 
   updateBoundingRect();
+
+  //temporal settings
+  setIsTemporal( itemElem.attribute( QStringLiteral( "isTemporal" ) ).toInt() );
+  if ( isTemporal() )
+  {
+    QDateTime begin = QDateTime::fromString( itemElem.attribute( QStringLiteral( "temporalRangeBegin" ) ), Qt::ISODate );
+    QDateTime end = QDateTime::fromString( itemElem.attribute( QStringLiteral( "temporalRangeBegin" ) ), Qt::ISODate );
+    setTemporalRange( QgsDateTimeRange( begin, end ) );
+  }
 
   mUpdatesEnabled = true;
   return true;
@@ -1454,6 +1471,9 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   {
     jobMapSettings.addRenderedFeatureHandler( handler );
   }
+
+  if ( isTemporal() )
+    jobMapSettings.setTemporalRange( temporalRange() );
 
   return jobMapSettings;
 }

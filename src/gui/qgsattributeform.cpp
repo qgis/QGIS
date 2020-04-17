@@ -86,6 +86,7 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &featur
   connect( this, &QgsAttributeForm::modeChanged, this, &QgsAttributeForm::updateContainersVisibility );
 
   updateContainersVisibility();
+
 }
 
 QgsAttributeForm::~QgsAttributeForm()
@@ -305,6 +306,7 @@ void QgsAttributeForm::setFeature( const QgsFeature &feature )
     }
   }
   mIsSettingFeature = false;
+  mExpressionContext.setFeature( feature );
 }
 
 bool QgsAttributeForm::saveEdits()
@@ -899,6 +901,9 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
   updateDefaultValues( eww->fieldIdx() );
   mAlreadyUpdatedFields.removeAll( eww->fieldIdx() );
 
+  // Updates expression controlled labels
+  updateLabels();
+
   if ( !signalEmitted )
   {
     Q_NOWARN_DEPRECATED_PUSH
@@ -1000,6 +1005,29 @@ void QgsAttributeForm::updateConstraint( const QgsFeature &ft, QgsEditorWidgetWr
 
   // default constraint update
   eww->updateConstraint( ft, constraintOrigin );
+}
+
+void QgsAttributeForm::updateLabels()
+{
+  if ( ! mLabelDataDefinedProperties.isEmpty() )
+  {
+    QgsFeature currentFeature;
+    if ( currentFormFeature( currentFeature ) )
+    {
+      mExpressionContext << QgsExpressionContextUtils::formScope( currentFeature, mContext.attributeFormModeString() );
+      mExpressionContext.setFields( mLayer->fields() );
+      for ( auto it = mLabelDataDefinedProperties.constBegin() ; it != mLabelDataDefinedProperties.constEnd(); ++it )
+      {
+        QLabel *label { it.key() };
+        bool ok;
+        const QString value { it->valueAsString( mExpressionContext, QString(), &ok ) };
+        if ( ok && ! value.isEmpty() )
+        {
+          label->setText( value );
+        }
+      }
+    }
+  }
 }
 
 bool QgsAttributeForm::currentFormFeature( QgsFeature &feature )
@@ -1446,6 +1474,21 @@ void QgsAttributeForm::init()
           layout->addWidget( label, row, column++ );
           layout->addWidget( widgetInfo.widget, row, column++ );
         }
+
+        // Alias DD overrides
+        if ( widgDef->type() == QgsAttributeEditorElement::AttributeEditorType::AeTypeField )
+        {
+          const QgsAttributeEditorField *fieldElement { static_cast<QgsAttributeEditorField *>( widgDef ) };
+          const QString fieldName { mLayer->fields().at( fieldElement->idx() ).name() };
+          if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::Alias ) )
+          {
+            const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::Alias ) };
+            if ( property.isActive() && ! property.expressionString().isEmpty() )
+            {
+              mLabelDataDefinedProperties[ label ] = property;
+            }
+          }
+        }
       }
 
       if ( column >= columnCount * 2 )
@@ -1506,10 +1549,19 @@ void QgsAttributeForm::init()
       bool labelOnTop = mLayer->editFormConfig().labelOnTop( idx );
 
       // This will also create the widget
-      QLabel *l = new QLabel( labelText );
-      l->setToolTip( QgsFieldModel::fieldToolTipExtended( field, mLayer ) );
+      QLabel *label = new QLabel( labelText );
+      label->setToolTip( QgsFieldModel::fieldToolTipExtended( field, mLayer ) );
       QSvgWidget *i = new QSvgWidget();
       i->setFixedSize( 18, 18 );
+
+      if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::Alias ) )
+      {
+        const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::Alias ) };
+        if ( property.isActive() && ! property.expressionString().isEmpty() )
+        {
+          mLabelDataDefinedProperties[ label ] = property;
+        }
+      }
 
       QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( widgetSetup.type(), mLayer, idx, widgetSetup.config(), nullptr, this, mContext );
 
@@ -1522,7 +1574,7 @@ void QgsAttributeForm::init()
         mFormWidgets.append( formWidget );
         formWidget->createSearchWidgetWrappers( mContext );
 
-        l->setBuddy( eww->widget() );
+        label->setBuddy( eww->widget() );
       }
       else
       {
@@ -1541,16 +1593,17 @@ void QgsAttributeForm::init()
 
       if ( labelOnTop )
       {
-        gridLayout->addWidget( l, row++, 0, 1, 2 );
+        gridLayout->addWidget( label, row++, 0, 1, 2 );
         gridLayout->addWidget( w, row++, 0, 1, 2 );
         gridLayout->addWidget( i, row++, 0, 1, 2 );
       }
       else
       {
-        gridLayout->addWidget( l, row, 0 );
+        gridLayout->addWidget( label, row, 0 );
         gridLayout->addWidget( w, row, 1 );
         gridLayout->addWidget( i, row++, 2 );
       }
+
     }
 
     const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer );

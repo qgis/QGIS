@@ -146,7 +146,6 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         Type mType = Field;
         QString mName;
         QString mDisplayName;
-
         int mColumnCount = 1;
         bool mShowAsGroupBox = false;
         bool mShowLabel = true;
@@ -174,6 +173,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
       QString mEditorWidgetType;
       QMap<QString, QVariant> mEditorWidgetConfig;
       QString mAlias;
+      QgsPropertyCollection mDataDefinedProperties;
       QString mComment;
 
       operator QVariant();

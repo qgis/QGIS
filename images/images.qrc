@@ -230,6 +230,7 @@
         <file>themes/default/mActionAddWcsLayer.svg</file>
         <file>themes/default/mActionAddWfsLayer.svg</file>
         <file>themes/default/mActionAddWmsLayer.svg</file>
+        <file>themes/default/mActionAddXyzLayer.svg</file>
         <file>themes/default/mActionAddGeonodeLayer.svg</file>
         <file>themes/default/mActionAddDelimitedTextLayer.svg</file>
         <file>themes/default/mActionAddVirtualLayer.svg</file>
@@ -524,6 +525,7 @@
         <file>themes/default/mIconWcs.svg</file>
         <file>themes/default/mIconWfs.svg</file>
         <file>themes/default/mIconWms.svg</file>
+        <file>themes/default/mIconXyz.svg</file>
         <file>themes/default/mIconZip.svg</file>
         <file>themes/default/mIconZoom.svg</file>
         <file>themes/default/mItemBookmark.svg</file>
@@ -845,6 +847,7 @@
         <file>themes/default/mIconNetworkLogger.svg</file>
         <file>themes/default/mActionAddMarker.svg</file>
         <file>themes/default/mLayoutItemMarker.svg</file>
+        <file>themes/default/algorithms/mAlgorithmConstantRaster.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

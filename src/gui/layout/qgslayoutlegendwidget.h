@@ -28,6 +28,8 @@
 #include <QWidget>
 #include <QItemDelegate>
 
+///@cond PRIVATE
+
 /**
  * \ingroup gui
  * A widget for setting properties relating to a layout legend.
@@ -85,7 +87,7 @@ class GUI_EXPORT QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private 
     void mBoxSpaceSpinBox_valueChanged( double d );
     void mColumnSpaceSpinBox_valueChanged( double d );
     void mLineSpacingSpinBox_valueChanged( double d );
-    void mCheckBoxAutoUpdate_stateChanged( int state );
+    void mCheckBoxAutoUpdate_stateChanged( int state, bool userTriggered = true );
     void composerMapChanged( QgsLayoutItem *item );
     void mCheckboxResizeContents_toggled( bool checked );
 
@@ -164,6 +166,39 @@ class GUI_EXPORT QgsLayoutLegendMenuProvider : public QgsLayerTreeViewMenuProvid
     QgsLayoutLegendWidget *mWidget = nullptr;
 };
 
+#include "ui_qgslayoutlegendnodewidgetbase.h"
+
+/**
+ * \ingroup gui
+ * A widget for properties relating to a node in a layout legend.
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.14
+ */
+class GUI_EXPORT QgsLayoutLegendNodeWidget: public QgsPanelWidget, private Ui::QgsLayoutLegendNodeWidgetBase
+{
+    Q_OBJECT
+
+  public:
+
+    QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legend, QgsLayerTreeNode *node, QgsLayerTreeModelLegendNode *legendNode, int originalLegendNodeIndex, QWidget *parent = nullptr );
+
+  private slots:
+
+    void labelChanged( const QString &label );
+    void patchChanged( int index );
+
+  private:
+
+    QgsLayoutItemLegend *mLegend = nullptr;
+    QgsLayerTreeNode *mNode = nullptr;
+    QgsLayerTreeLayer *mLayer = nullptr;
+    QgsLayerTreeModelLegendNode *mLegendNode = nullptr;
+    int mOriginalLegendNodeIndex = -1;
+
+};
+
+///@endcond
 
 #endif //QGSLAYOUTLEGENDWIDGET_H
 

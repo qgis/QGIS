@@ -140,8 +140,9 @@ QgsMeshLayer cannot be copied.
 
     virtual QgsMeshLayerTemporalProperties *temporalProperties();
 
-
     virtual void reload();
+
+    virtual QStringList subLayers() const;
 
 
     QString providerType() const;

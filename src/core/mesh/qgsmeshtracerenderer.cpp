@@ -1318,10 +1318,7 @@ QgsMeshVectorTraceAnimationGenerator::QgsMeshVectorTraceAnimationGenerator( QgsM
     else
       count = layer->nativeMesh()->faces.count();
 
-    vectorDatasetValues = layer->dataProvider()->datasetValues(
-                            datasetIndex,
-                            0,
-                            count );
+    vectorDatasetValues = QgsMeshLayerUtils::datasetValues( layer, datasetIndex, 0, count );
 
     scalarActiveFaceFlagValues = layer->dataProvider()->areFacesActive(
                                    datasetIndex,

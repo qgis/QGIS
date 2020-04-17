@@ -476,6 +476,12 @@ class CORE_EXPORT QgsPalLayerSettings
     bool prepare( QgsRenderContext &context, QSet<QString> &attributeNames SIP_INOUT, const QgsFields &fields, const QgsMapSettings &mapSettings, const QgsCoordinateReferenceSystem &crs );
 
     /**
+     * Returns all field names referenced by the configuration (e.g. field name or expression, data defined properties).
+     * \since QGIS 3.14
+     */
+    QSet<QString> referencedFields( const QgsRenderContext &context ) const;
+
+    /**
      * Prepares the label settings for rendering.
      *
      * This should be called before rendering any labels, and must be

@@ -55,6 +55,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QString name() const override;
     QString description() const override;
     QgsCoordinateReferenceSystem crs() const override;
+    QStringList subLayers() const override;
 
     int vertexCount() const override;
     int edgeCount() const override;
@@ -112,9 +113,10 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QVector<QgsMeshFace> faces( ) const;
     void loadData();
     void addGroupToTemporalCapabilities( int indexGroup );
-    MeshH mMeshH;
+    MDAL_MeshH mMeshH = nullptr;
     QStringList mExtraDatasetUris;
     QgsCoordinateReferenceSystem mCrs;
+    QStringList mSubLayersUris;
 
     /**
      * Closes and reloads dataset

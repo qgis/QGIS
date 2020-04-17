@@ -20,7 +20,8 @@ class QgsSublayersDialog : QDialog
     {
       Ogr,
       Gdal,
-      Vsifile
+      Vsifile,
+      Mdal
     };
 
     struct LayerDefinition
