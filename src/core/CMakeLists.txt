@@ -1538,9 +1538,11 @@ ENDIF (WIN32)
 # Test data dir for QgsRenderChecker
 ADD_DEFINITIONS(-DTEST_DATA_DIR="${TEST_DATA_DIR}")
 
+SET(IMAGE_RCCS ../../images/images.qrc)
+
 #############################################################
 # qgis_core library
-ADD_LIBRARY(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_PRIVATE_HDRS})
+ADD_LIBRARY(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_PRIVATE_HDRS} ${IMAGE_RCCS})
 
 GENERATE_EXPORT_HEADER(
   qgis_core
