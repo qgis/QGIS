@@ -3531,6 +3531,12 @@ QVector<QgsWmsSupportedFormat> QgsWmsProvider::supportedFormats()
     formats << p1 << p2 << p3 << p4 << p5 << p6;
   }
 
+  if ( supportedFormats.contains( "webp" ) )
+  {
+    QgsWmsSupportedFormat p1 = { "image/webp", "WebP" };
+    formats << p1;
+  }
+
   if ( supportedFormats.contains( "jpg" ) )
   {
     QgsWmsSupportedFormat j1 = { "image/jpeg", "JPEG" };
