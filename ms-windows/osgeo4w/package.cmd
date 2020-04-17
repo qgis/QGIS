@@ -264,6 +264,9 @@ for %%g IN (%GRASS_VERSIONS%) do (
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' python.bat.tmpl >%OSGEO4W_ROOT%\bin\python-%PACKAGENAME%.bat.tmpl
 if errorlevel 1 (echo creation of python wrapper template failed & goto error)
 
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' process.bat.tmpl >%OSGEO4W_ROOT%\bin\qgis_process-%PACKAGENAME%.bat.tmpl
+if errorlevel 1 (echo creation of qgis process wrapper template failed & goto error)
+
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' preremove-grass-plugin-common.bat >%OSGEO4W_ROOT%\etc\preremove\%PACKAGENAME%-grass-plugin-common.bat
 if errorlevel 1 (echo creation of grass common preremove failed & goto error)
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' postinstall-grass-plugin-common.bat >%OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%-grass-plugin-common.bat
@@ -285,6 +288,7 @@ for %%i in (%packages%) do (
 	"apps/%PACKAGENAME%/bin/qgis_core.dll" ^
 	"apps/%PACKAGENAME%/bin/qgis_gui.dll" ^
 	"apps/%PACKAGENAME%/bin/qgis_native.dll" ^
+	"apps/%PACKAGENAME%/bin/qgis_process.exe" ^
 	"apps/%PACKAGENAME%/doc/" ^
 	"apps/%PACKAGENAME%/plugins/basicauthmethod.dll" ^
 	"apps/%PACKAGENAME%/plugins/delimitedtextprovider.dll" ^
@@ -369,6 +373,7 @@ if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAG
 	"bin/%PACKAGENAME%-bin.exe" ^
 	"bin/%PACKAGENAME%-bin.vars" ^
 	"bin/python-%PACKAGENAME%.bat.tmpl" ^
+	"bin/qgis_process-%PACKAGENAME%.bat.tmpl" ^
 	"apps/%PACKAGENAME%/bin/qgis_app.dll" ^
 	"apps/%PACKAGENAME%/bin/qgis.reg.tmpl" ^
 	"apps/%PACKAGENAME%/i18n/" ^
