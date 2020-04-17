@@ -38,7 +38,7 @@ namespace Vectoranalysis
 
   void QgsUnionTool::prepare()
   {
-    bool mLayerAFinished = false;
+    mLayerAFinished = false;
     buildSpatialIndex( mSpatialIndexA, mLayerA );
     buildSpatialIndex( mSpatialIndexB, mLayerB );
     prepareLayer( mLayerA, &mFieldIndicesA );

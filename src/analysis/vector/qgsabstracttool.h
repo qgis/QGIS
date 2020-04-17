@@ -134,7 +134,6 @@ namespace Vectoranalysis
       QList<Job *> mJobQueue;
       QStringList mExceptions;
 
-      QMutex mIntersectMutex;
       QMutex mWriteMutex;
       QgsFeatureSink *mOutput;
       QgsCoordinateTransformContext mTransformContext;
