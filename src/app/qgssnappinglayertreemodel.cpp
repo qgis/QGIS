@@ -43,7 +43,15 @@ class SnapTypeMenu: public QMenu
       else
         QMenu::mouseReleaseEvent( e );
     }
+
+    // set focus to parent so that mTypeButton is not displayed
+    void hideEvent( QHideEvent *e )
+    {
+      qobject_cast<QWidget *>( parent() )->setFocus();
+      QMenu::hideEvent( e );
+    }
 };
+
 
 QgsSnappingLayerDelegate::QgsSnappingLayerDelegate( QgsMapCanvas *canvas, QObject *parent )
   : QItemDelegate( parent )
