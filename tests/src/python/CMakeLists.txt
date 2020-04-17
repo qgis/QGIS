@@ -384,6 +384,7 @@ if (WITH_SERVER)
 =======
 IF (ENABLE_HANATEST)
   ADD_PYTHON_TEST(PyQgsHanaProvider test_provider_hana.py)
+  ADD_PYTHON_TEST(PyQgsProviderConnectionHana test_qgsproviderconnection_hana.py)
 ENDIF (ENABLE_HANATEST)
 
 IF (WITH_SERVER)

@@ -24,7 +24,7 @@ from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 from test_hana_utils import QgsHanaProviderUtils
 
 
-class TestPyQgsHanaProviderConnection(unittest.TestCase, TestPyQgsProviderConnectionBase):
+class TestPyQgsProviderConnectionHana(unittest.TestCase, TestPyQgsProviderConnectionBase):
     # Provider test cases must define the string URI for the test
     uri = ''
     # Provider test cases must define the provider name (e.g. "hana" or "ogr")
