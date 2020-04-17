@@ -14,9 +14,7 @@ SET (coordinatecapture_RCCS  coordinatecapture.qrc)
 
 QT5_WRAP_UI (coordinatecapture_UIS_H  ${coordinatecapture_UIS})
 
-QT5_ADD_RESOURCES(coordinatecapture_RCC_SRCS ${coordinatecapture_RCCS})
-
-ADD_LIBRARY (coordinatecaptureplugin MODULE ${coordinatecapture_SRCS} ${coordinatecapture_RCC_SRCS})
+ADD_LIBRARY (coordinatecaptureplugin MODULE ${coordinatecapture_SRCS} ${coordinatecapture_RCCS})
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
