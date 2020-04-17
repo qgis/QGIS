@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsxyzsourceselect.h
+                         qgsvectortilesourceselect.h
                          ---------------------------------
     begin                : April 2020
     copyright            : (C) 2020 by Alexander Bruy
@@ -15,28 +15,31 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSXYZSOURCESELECT_H
-#define QGSXYZSOURCESELECT_H
+#ifndef QGSVECTORTILESOURCESELECT_H
+#define QGSVECTORTILESOURCESELECT_H
+
+///@cond PRIVATE
+#define SIP_NO_FILE
 
 #include "qgsabstractdatasourcewidget.h"
 #include "ui_qgstilesourceselectbase.h"
 
 /*!
- * \brief   Dialog to create connections to XYZ servers.
+ * \brief   Dialog to create connections to vector tile servers.
  *
  * This dialog allows the user to define and save connection information
- * for XYZ servers.
+ * for vector tile servers.
  *
- * The user can then connect and add layers from the XYZ server to the
- * map canvas.
+ * The user can then connect and add layers from the vector tile server
+ * to the map canvas.
  */
-class QgsXyzSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsTileSourceSelectBase
+class QgsVectorTileSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsTileSourceSelectBase
 {
     Q_OBJECT
 
   public:
     //! Constructor
-    QgsXyzSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsVectorTileSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     //! Determines the layers the user selected
     void addButtonClicked() override;
@@ -62,4 +65,6 @@ class QgsXyzSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsTi
     void showHelp();
 };
 
-#endif // QGSXYZSOURCESELECT_H
+///@endcond
+
+#endif // QGSVECTORTILESOURCESELECT_H

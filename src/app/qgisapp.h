@@ -98,6 +98,7 @@ class QgsUndoWidget;
 class QgsUserInputWidget;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
+class QgsVectorTileLayer;
 class QgsWelcomePage;
 class QgsOptionsWidgetFactory;
 class QgsStatusBar;
@@ -518,6 +519,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionAddSpatiaLiteLayer() { return mActionAddSpatiaLiteLayer; }
     QAction *actionAddWmsLayer() { return mActionAddWmsLayer; }
     QAction *actionAddXyzLayer() { return mActionAddXyzLayer; }
+    QAction *actionAddVectorTileLayer() { return mActionAddVectorTileLayer; }
     QAction *actionAddWcsLayer() { return mActionAddWcsLayer; }
     QAction *actionAddWfsLayer() { return mActionAddWfsLayer; }
     QAction *actionAddAfsLayer() { return mActionAddAfsLayer; }
@@ -1022,8 +1024,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**
      * Add a raster layer directly without prompting user for location
       The caller must provide information compatible with the provider plugin
-      using the uri and baseName. The provider can use these
-      parameters in any way necessary to initialize the layer. The baseName
+      using the \a uri and \a baseName. The provider can use these
+      parameters in any way necessary to initialize the layer. The \a baseName
       parameter is used in the Map Legend so it should be formed in a meaningful
       way.
       */
@@ -1032,8 +1034,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**
      * Add a vector layer directly without prompting user for location
       The caller must provide information compatible with the provider plugin
-      using the vectorLayerPath and baseName. The provider can use these
-      parameters in any way necessary to initialize the layer. The baseName
+      using the \a vectorLayerPath and \a baseName. The provider can use these
+      parameters in any way necessary to initialize the layer. The \a baseName
       parameter is used in the Map Legend so it should be formed in a meaningful
       way.
       */
@@ -1041,9 +1043,22 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Adds a mesh layer directly without prompting user for location
-     * \returns true if successfully added layer
+     * The caller must provide information compatible with the provider plugin
+     * using the \a url and \a baseName. The provider can use these
+     * parameters in any way necessary to initialize the layer. The \a baseName
+     * parameter is used in the Map Legend so it should be formed in a meaningful
+     * way.
      */
     QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey );
+
+    /**
+     * Adds a vector tile layer directly without prompting user for location
+     * The caller must provide information needed for layer construction
+     * using the \a url and \a baseName. The \a baseName parameter is used
+     * in the Map Legend so it should be formed in a meaningful way.
+     * \since QGIS 3.14
+     */
+    QgsVectorTileLayer *addVectorTileLayer( const QString &url, const QString &baseName );
 
     /**
      * \brief overloaded version of the private addLayer method that takes a list of
@@ -1914,6 +1929,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Open a mesh layer - this is the generic function which takes all parameters
     QgsMeshLayer *addMeshLayerPrivate( const QString &uri, const QString &baseName,
                                        const QString &providerKey, bool guiWarning = true );
+
+    //! Open a vector tile layer - this is the generic function which takes all parameters
+    QgsVectorTileLayer *addVectorTileLayerPrivate( const QString &uri, const QString &baseName, bool guiWarning = true );
 
     bool addVectorLayersPrivate( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType, bool guiWarning = true );
     QgsVectorLayer *addVectorLayerPrivate( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey, bool guiWarning = true );

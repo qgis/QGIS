@@ -23,7 +23,7 @@ QgsVectorTileRootItem::QgsVectorTileRootItem( QgsDataItem *parent, QString name,
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "vectortile" ) )
 {
   mCapabilities |= Fast;
-  mIconName = QStringLiteral( "mIconWms.svg" );
+  mIconName = QStringLiteral( "mIconVectorTileLayer.svg" );
   populate();
 }
 
@@ -48,6 +48,7 @@ QgsVectorTileLayerItem::QgsVectorTileLayerItem( QgsDataItem *parent, QString nam
   : QgsLayerItem( parent, name, path, encodedUri, QgsLayerItem::VectorTile, QString() )
 {
   setState( Populated );
+  mIconName = QStringLiteral( "mIconVectorTileLayer.svg" );
 }
 
 
