@@ -39,6 +39,7 @@ Copy constructor
 %End
     ~Qgs3DMapSettings();
 
+
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 %Docstring
 Reads configuration from a DOM element previously written by writeXml()
@@ -495,6 +496,8 @@ Emitted when the camera lens field of view changes
 .. versionadded:: 3.8
 %End
 
+  private:
+    Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
 };
 
 
