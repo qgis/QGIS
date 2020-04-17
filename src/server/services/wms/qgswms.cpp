@@ -91,7 +91,7 @@ namespace QgsWms
         if ( req.isEmpty() )
         {
           throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported,
-                                     QStringLiteral( "Please check the value of the REQUEST parameter" ), 501 );
+                                     QStringLiteral( "Please add or check the value of the REQUEST parameter" ), 501 );
         }
 
         if ( ( mVersion.compare( QLatin1String( "1.1.1" ) ) == 0 \
