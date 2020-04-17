@@ -205,12 +205,6 @@ int main( int argc, char *argv[] )
   else
   {
     const int port { tcpServer.serverPort() };
-    std::cout << QObject::tr( "QGIS Development Server listening on http://%1:%2" )
-              .arg( ipAddress ).arg( port ).toStdString() << std::endl;
-
-#ifndef Q_OS_WIN
-    std::cout << QObject::tr( "CTRL+C to exit" ).toStdString() << std::endl;
-#endif
 
     QAtomicInt connCounter { 0 };
 
@@ -237,6 +231,12 @@ int main( int argc, char *argv[] )
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     server.initPython();
+#endif
+
+    std::cout << QObject::tr( "QGIS Development Server listening on http://%1:%2" )
+              .arg( ipAddress ).arg( port ).toStdString() << std::endl;
+#ifndef Q_OS_WIN
+    std::cout << QObject::tr( "CTRL+C to exit" ).toStdString() << std::endl;
 #endif
 
     // Starts HTTP loop with a poor man's HTTP parser
