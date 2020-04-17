@@ -42,6 +42,7 @@ namespace Vectoranalysis
     buildSpatialIndex( mSpatialIndexA, mLayerA );
     buildSpatialIndex( mSpatialIndexB, mLayerB );
     prepareLayer( mLayerA, &mFieldIndicesA );
+    mFeatureCount = mLayerA->featureCount() + mLayerB->featureCount();
   }
 
   void QgsUnionTool::processFeature( const Job *job )

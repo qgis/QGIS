@@ -57,15 +57,25 @@ namespace Vectoranalysis
     return QtConcurrent::run( this, &QgsAbstractTool::prepare );
   }
 
-  void QgsAbstractTool::run()
+  void QgsAbstractTool::run( QgsFeedback *feedback )
   {
     prepare();
+    long processedFeatures = 0;
+
     while ( prepareNextChunk() )
     {
       QFuture<void> f = execute();
       f.waitForFinished();
       qDeleteAll( mJobQueue );
       mJobQueue.clear();
+
+      processedFeatures += 100;
+      feedback->setProgress( 100.0 * ( double )processedFeatures / ( double )mFeatureCount );
+
+      if ( feedback->isCanceled() )
+      {
+        break;
+      }
     }
   }
 

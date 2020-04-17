@@ -58,7 +58,7 @@ namespace Vectoranalysis
       /**
        * @brief run analysis
        */
-      void run();
+      void run( QgsFeedback *feedback );
 
       /**
        * Returns exceptions
@@ -142,6 +142,7 @@ namespace Vectoranalysis
 
       const int mChunkSize = 100; //number of features fetched in one go
       QgsFeatureIterator mFeatureIterator;
+      long mFeatureCount = 0; //number of features to be processed
   };
 
 } // Geoprocessing

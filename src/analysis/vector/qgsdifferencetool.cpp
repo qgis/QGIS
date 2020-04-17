@@ -38,6 +38,7 @@ namespace Vectoranalysis
   {
     prepareLayer( mLayerA );
     buildSpatialIndex( mSpatialIndex, mLayerB );
+    mFeatureCount = mLayerA->featureCount();
   }
 
   void QgsDifferenceTool::processFeature( const Job *job )

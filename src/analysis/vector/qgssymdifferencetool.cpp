@@ -41,6 +41,7 @@ namespace Vectoranalysis
     buildSpatialIndex( mSpatialIndexB, mLayerB );
     mLayerAFinished = false;
     prepareLayer( mLayerA );
+    mFeatureCount = mLayerA->featureCount() + mLayerB->featureCount();
   }
 
   void QgsSymDifferenceTool::processFeature( const Job *job )

@@ -431,7 +431,7 @@ void QgsOverlayUtils::runVectorAnalysisTool( Vectoranalysis::QgsAbstractTool &to
   evLoop.exec();
 #endif //0
 
-  tool.run();
+  tool.run( feedback );
 
   const QStringList &exceptionList = tool.exceptions();
   if ( !exceptionList.isEmpty() )
