@@ -114,11 +114,12 @@ void QgsXyzSourceSelect::populateConnectionList()
   cmbConnections->addItems( QgsXyzConnectionUtils::connectionList() );
   cmbConnections->blockSignals( false );
 
-  setConnectionListPosition();
-
   btnEdit->setDisabled( cmbConnections->count() == 0 );
   btnDelete->setDisabled( cmbConnections->count() == 0 );
+  btnSave->setDisabled( cmbConnections->count() == 0 );
   cmbConnections->setDisabled( cmbConnections->count() == 0 );
+
+  setConnectionListPosition();
 }
 
 void QgsXyzSourceSelect::setConnectionListPosition()
@@ -134,6 +135,7 @@ void QgsXyzSourceSelect::setConnectionListPosition()
     else
       cmbConnections->setCurrentIndex( cmbConnections->count() - 1 );
   }
+
   emit enableButtons( !cmbConnections->currentText().isEmpty() );
 }
 

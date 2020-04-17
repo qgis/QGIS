@@ -482,12 +482,13 @@ void QgsPgSourceSelect::populateConnectionList()
   cmbConnections->addItems( QgsPostgresConn::connectionList() );
   cmbConnections->blockSignals( false );
 
-  setConnectionListPosition();
-
+  btnConnect->setDisabled( cmbConnections->count() == 0 );
   btnEdit->setDisabled( cmbConnections->count() == 0 );
   btnDelete->setDisabled( cmbConnections->count() == 0 );
-  btnConnect->setDisabled( cmbConnections->count() == 0 );
+  btnSave->setDisabled( cmbConnections->count() == 0 );
   cmbConnections->setDisabled( cmbConnections->count() == 0 );
+
+  setConnectionListPosition();
 }
 
 // Slot for performing action when the Add button is clicked
