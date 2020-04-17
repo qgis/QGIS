@@ -760,7 +760,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
     {
       QVariantList pkVal;
 
-      int idx = mSource->mPrimaryKeyAttrs[0];
+      int idx = mSource->mPrimaryKeyAttrs.at( 0 );
       QgsField fld = mSource->mFields.at( idx );
 
       QVariant v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), QString::number( mConn->getBinaryInt( queryResult, row, col ) ), fld.typeName() );
