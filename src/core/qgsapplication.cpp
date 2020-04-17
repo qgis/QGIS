@@ -151,8 +151,6 @@ Q_GLOBAL_STATIC( QString, sTranslation )
 QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &profileFolder, const QString &platformName )
   : QApplication( argc, argv, GUIenabled )
 {
-  Q_INIT_RESOURCE( images );
-
   *sPlatformName() = platformName;
 
   if ( *sTranslation() != QLatin1String( "C" ) )
