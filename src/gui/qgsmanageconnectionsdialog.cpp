@@ -718,6 +718,7 @@ QDomDocument QgsManageConnectionsDialog::saveXyzTilesConnections( const QStringL
     el.setAttribute( QStringLiteral( "username" ), settings.value( path + "/username" ).toString() );
     el.setAttribute( QStringLiteral( "password" ), settings.value( path + "/password" ).toString() );
     el.setAttribute( QStringLiteral( "referer" ), settings.value( path + "/referer" ).toString() );
+    el.setAttribute( QStringLiteral( "tilePixelRatio" ), settings.value( path + "/tilePixelRatio", 0 ).toDouble() );
 
     root.appendChild( el );
   }
@@ -1460,6 +1461,7 @@ void QgsManageConnectionsDialog::loadXyzTilesConnections( const QDomDocument &do
     settings.setValue( QStringLiteral( "username" ), child.attribute( QStringLiteral( "username" ) ) );
     settings.setValue( QStringLiteral( "password" ), child.attribute( QStringLiteral( "password" ) ) );
     settings.setValue( QStringLiteral( "referer" ), child.attribute( QStringLiteral( "referer" ) ) );
+    settings.setValue( QStringLiteral( "tilePixelRatio" ), child.attribute( QStringLiteral( "tilePixelRatio" ) ) );
     settings.endGroup();
 
     child = child.nextSiblingElement();
