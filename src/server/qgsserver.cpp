@@ -397,7 +397,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
         // Project is mandatory for OWS at this point
         if ( ! project )
         {
-          throw QgsServerException( QStringLiteral( "Project file error" ) );
+          throw QgsServerException( QStringLiteral( "Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file" ) );
         }
 
         if ( ! params.fileName().isEmpty() )
