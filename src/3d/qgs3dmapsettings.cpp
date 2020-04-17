@@ -542,3 +542,9 @@ void Qgs3DMapSettings::setFieldOfView( const float fieldOfView )
   emit fieldOfViewChanged();
 }
 
+void Qgs3DMapSettings::setSkybox( bool enabled, const QString &fileBase, const QString &fileExtension )
+{
+  mSkyboxEnabled = enabled;
+  mSkyboxFileBase = fileBase;
+  mSkyboxFileExtension = fileExtension;
+}
