@@ -38,6 +38,8 @@ class QgsPgNewConnection : public QDialog, private Ui::QgsPgNewConnectionBase
     void accept() override;
     void btnConnect_clicked();
     void cb_geometryColumnsOnly_clicked();
+  private slots:
+    void updateOkButtonState();
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
     void showHelp();

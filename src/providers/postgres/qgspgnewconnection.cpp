@@ -38,6 +38,13 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
   connect( cb_geometryColumnsOnly, &QCheckBox::clicked, this, &QgsPgNewConnection::cb_geometryColumnsOnly_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPgNewConnection::showHelp );
 
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
+  connect( txtName, &QLineEdit::textChanged, this, &QgsPgNewConnection::updateOkButtonState );
+  connect( txtService, &QLineEdit::textChanged, this, &QgsPgNewConnection::updateOkButtonState );
+  connect( txtHost, &QLineEdit::textChanged, this, &QgsPgNewConnection::updateOkButtonState );
+  connect( txtPort, &QLineEdit::textChanged, this, &QgsPgNewConnection::updateOkButtonState );
+  connect( txtDatabase, &QLineEdit::textChanged, this, &QgsPgNewConnection::updateOkButtonState );
+
   cbxSSLmode->addItem( tr( "disable" ), QgsDataSourceUri::SslDisable );
   cbxSSLmode->addItem( tr( "allow" ), QgsDataSourceUri::SslAllow );
   cbxSSLmode->addItem( tr( "prefer" ), QgsDataSourceUri::SslPrefer );
@@ -237,4 +244,12 @@ void QgsPgNewConnection::testConnection()
 void QgsPgNewConnection::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#creating-a-stored-connection" ) );
+}
+
+void QgsPgNewConnection::updateOkButtonState()
+{
+  bool enabled = !txtName->text().isEmpty() && (
+                   ( !txtService->text().isEmpty() && !txtDatabase->text().isEmpty() ) ||
+                   ( !txtHost->text().isEmpty() && !txtPort->text().isEmpty() && !txtDatabase->text().isEmpty() ) );
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }

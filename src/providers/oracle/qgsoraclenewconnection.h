@@ -40,6 +40,7 @@ class QgsOracleNewConnection : public QDialog, private Ui::QgsOracleNewConnectio
 
   private slots:
     void testConnection();
+    void updateOkButtonState();
 
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename

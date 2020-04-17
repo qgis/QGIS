@@ -45,6 +45,9 @@ class QgsMssqlNewConnection : public QDialog, private Ui::QgsMssqlNewConnectionB
     void btnListDatabase_clicked();
     void btnConnect_clicked();
     void cb_trustedConnection_clicked();
+
+  private slots:
+    void updateOkButtonState();
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
     void showHelp();

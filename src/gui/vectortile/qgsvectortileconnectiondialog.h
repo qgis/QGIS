@@ -37,8 +37,10 @@ class QgsVectorTileConnectionDialog : public QDialog, public Ui::QgsVectorTileCo
 
     void accept() override;
 
-  private:
+  private slots:
+    void updateOkButtonState();
 
+  private:
     QString mBaseKey;
     QString mCredentialsBaseKey;
 };
