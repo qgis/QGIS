@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmrandomraster.cpp
+                         qgsalgorithmnormalraster.cpp
                          ---------------------
     begin                : April 2020
     copyright            : (C) 2020 by Clemens Raffler
