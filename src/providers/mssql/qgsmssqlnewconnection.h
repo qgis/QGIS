@@ -47,6 +47,7 @@ class QgsMssqlNewConnection : public QDialog, private Ui::QgsMssqlNewConnectionB
     void cb_trustedConnection_clicked();
 
   private slots:
+    //! Updates state of the OK button depending of the filled fields
     void updateOkButtonState();
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename

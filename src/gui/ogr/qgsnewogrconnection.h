@@ -52,6 +52,7 @@ class GUI_EXPORT QgsNewOgrConnection : public QDialog, private Ui::QgsNewOgrConn
 
   public slots:
     void accept() override;
+    //! Updates state of the OK button depending of the filled fields
     void updateOkButtonState();
 
   private slots:

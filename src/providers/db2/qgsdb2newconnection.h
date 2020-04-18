@@ -46,6 +46,7 @@ class QgsDb2NewConnection : public QDialog, private Ui::QgsDb2NewConnectionBase
     void btnConnect_clicked();
     void on_cb_trustedConnection_clicked();
   private slots:
+    //! Updates state of the OK button depending of the filled fields
     void updateOkButtonState();
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
