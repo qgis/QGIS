@@ -28,6 +28,7 @@
 #include "qgssymbollayerutils.h" // QgsStringMap
 #include "qgstextrenderer.h"
 #include "qgspallabeling.h"
+#include "layertree/qgslegendpatchshape.h"
 
 class QgsSymbol;
 class QgsSymbolLayer;
@@ -585,6 +586,22 @@ class CORE_EXPORT QgsStyle : public QObject
     bool renameLabelSettings( const QString &oldName, const QString &newName );
 
     /**
+     * Returns the default legend patch shape for the given symbol \a type.
+     *
+     * \see defaultPatchAsQPolygonF()
+     * \since QGIS 3.14
+     */
+    QgsLegendPatchShape defaultPatch( QgsSymbol::SymbolType type, QSizeF size ) const;
+
+    /**
+     * Returns the default patch geometry for the given symbol \a type and \a size as a set of QPolygonF objects (parts and rings).
+     *
+     * \see defaultPatch()
+     * \since QGIS 3.14
+     */
+    QList< QList< QPolygonF > > defaultPatchAsQPolygonF( QgsSymbol::SymbolType type, QSizeF size ) const;
+
+    /**
      * Creates an on-disk database
      *
      *  This function creates a new on-disk permanent style database.
@@ -910,6 +927,9 @@ class CORE_EXPORT QgsStyle : public QObject
     QString mFileName;
 
     sqlite3_database_unique_ptr mCurrentDB;
+
+    mutable QHash< QgsSymbol::SymbolType, QHash< QSizeF, QgsLegendPatchShape > > mDefaultPatchCache;
+    mutable QHash< QgsSymbol::SymbolType, QHash< QSizeF, QList< QList< QPolygonF > > > > mDefaultPatchQPolygonFCache;
 
     static QgsStyle *sDefaultStyle;
 
