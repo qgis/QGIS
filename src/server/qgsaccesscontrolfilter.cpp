@@ -40,7 +40,7 @@ QString QgsAccessControlFilter::layerFilterExpression( const QgsVectorLayer *lay
 //! Returns an additional layer subset string (typically SQL) filter
 QString QgsAccessControlFilter::layerFilterSubsetString( const QgsVectorLayer *layer ) const
 {
-  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerFilterSQL called" ), QStringLiteral( "AccessControlFilter" ), Qgis::Info );
+  QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerFilterSubsetString called" ), QStringLiteral( "AccessControlFilter" ), Qgis::Info );
   Q_UNUSED( layer )
   return QString();
 }

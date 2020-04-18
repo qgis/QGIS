@@ -124,9 +124,6 @@ class SERVER_EXPORT QgsServer
      */
     static void setupNetworkAccessManager();
 
-    //! Create and return a request handler instance
-    static QgsRequestHandler *createRequestHandler( const QgsServerRequest &request, QgsServerResponse &response );
-
     // Return the server name
     static QString &serverName();
 
