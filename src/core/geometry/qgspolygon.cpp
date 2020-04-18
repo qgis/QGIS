@@ -27,6 +27,16 @@ QgsPolygon::QgsPolygon()
   mWkbType = QgsWkbTypes::Polygon;
 }
 
+QgsPolygon::QgsPolygon( QgsLineString *exterior, const QList<QgsLineString *> &rings )
+{
+  setExteriorRing( exterior );
+  for ( QgsLineString *ring : rings )
+  {
+    addInteriorRing( ring );
+  }
+  clearCache();
+}
+
 QString QgsPolygon::geometryType() const
 {
   return QStringLiteral( "Polygon" );
