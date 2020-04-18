@@ -95,7 +95,7 @@ class TestQgsLegendPatchShape(unittest.TestCase):
 
         # lines
         self.assertEqual(self.polys_to_list(QgsStyle.defaultStyle().defaultPatchAsQPolygonF(QgsSymbol.Line, QSizeF(1, 1))), [[[[0.0, 0.5], [1.0, 0.5]]]])
-        self.assertEqual(self.polys_to_list(QgsStyle.defaultStyle().defaultPatchAsQPolygonF(QgsSymbol.Line, QSizeF(10, 2))), [[[[0.0, 1.5], [10.0, 1.5]]]])
+        self.assertEqual(self.polys_to_list(QgsStyle.defaultStyle().defaultPatchAsQPolygonF(QgsSymbol.Line, QSizeF(10, 2))), [[[[0.0, 1.0], [10.0, 1.0]]]])
         self.assertEqual(self.polys_to_list(QgsStyle.defaultStyle().defaultPatchAsQPolygonF(QgsSymbol.Line, QSizeF(9, 3))), [[[[0.0, 1.5], [9.0, 1.5]]]])
 
         # fills
@@ -137,6 +137,14 @@ class TestQgsLegendPatchShape(unittest.TestCase):
         shape = QgsLegendPatchShape(QgsSymbol.Line, QgsGeometry.fromWkt('LineString(5 5, 1 2)'), False)
         self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.Line, QSizeF(1, 1))), [[[[1.0, 0.0], [0.0, 1.0]]]])
         self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.Line, QSizeF(10, 2))), [[[[10.0, 0.0], [0.0, 2.0]]]])
+
+        shape = QgsLegendPatchShape(QgsSymbol.Line, QgsGeometry.fromWkt('LineString(1 5, 6 5)'), False)
+        self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.Line, QSizeF(1, 1))), [[[[0.0, 0.5], [1.0, 0.5]]]])
+        self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.Line, QSizeF(10, 2))), [[[[0.0, 1], [10.0, 1.0]]]])
+
+        shape = QgsLegendPatchShape(QgsSymbol.Line, QgsGeometry.fromWkt('LineString(1 5, 1 10)'), False)
+        self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.Line, QSizeF(1, 1))), [[[[0.5, 0.0], [0.5, 1.0]]]])
+        self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.Line, QSizeF(10, 2))), [[[[5, 0.0], [5, 2.0]]]])
 
         # requesting different symbol type, should return default
         self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.Fill, QSizeF(1, 1))), [[[[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0], [0.0, 0.0]]]])

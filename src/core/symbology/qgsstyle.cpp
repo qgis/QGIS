@@ -961,7 +961,7 @@ QgsLegendPatchShape QgsStyle::defaultPatch( QgsSymbol::SymbolType type, QSizeF s
       break;
   }
 
-  QgsLegendPatchShape res = QgsLegendPatchShape( type, geom, true );
+  QgsLegendPatchShape res = QgsLegendPatchShape( type, geom, false );
   mDefaultPatchCache[ type ][size ] = res;
   return res;
 }
