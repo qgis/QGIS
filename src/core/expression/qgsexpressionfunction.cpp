@@ -1189,7 +1189,7 @@ static QVariant fcnChar( const QVariantList &values, const QgsExpressionContext 
 
 static QVariant fcnAscii( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QString value = QgsExpressionUtils::getStringValue(values.at( 0 ), parent);
+  QString value = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
 
   if ( value.isEmpty() )
   {
@@ -1197,7 +1197,7 @@ static QVariant fcnAscii( const QVariantList &values, const QgsExpressionContext
   }
 
   int res = value.at( 0 ).unicode();
-  return QVariant(res);
+  return QVariant( res );
 }
 
 static QVariant fcnWordwrap( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
