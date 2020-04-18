@@ -95,9 +95,6 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     //! Stores the selected datasource whenerver it is changed
     void cmbConnections_activated( int );
 
-    //! Add some default wms servers to the list
-    void btnAddDefault_clicked();
-
   private:
     //! Populate the connection list combo box
     void populateConnectionList();
@@ -107,9 +104,6 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
 
     //! Sets the server connection combo box to that stored in the config file.
     void setConnectionListPosition();
-
-    //! Add a few example servers to the list.
-    void addDefaultServers();
 
     //! Selected CRS
     QString mCRS;
