@@ -32,7 +32,7 @@ QMap<QgsServerOgcApi::ContentType, QStringList> QgsServerOgcApi::sContentTypeMim
     QStringLiteral( "application/geojson" )
   };
   map[QgsServerOgcApi::ContentType::HTML] = QStringList { QStringLiteral( "text/html" ) };
-  map[QgsServerOgcApi::ContentType::OPENAPI3] = QStringList { QStringLiteral( "application/openapi+json;version=3.0" ) };
+  map[QgsServerOgcApi::ContentType::OPENAPI3] = QStringList { QStringLiteral( "application/vnd.oai.openapi+json;version=3.0" ) };
   return map;
 }();
 

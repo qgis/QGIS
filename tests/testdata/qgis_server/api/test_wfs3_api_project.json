@@ -1,4 +1,4 @@
-Content-Type: application/openapi+json;version=3.0
+Content-Type: application/vnd.oai.openapi+json;version=3.0
 
 {
   "components": {
@@ -529,7 +529,7 @@ Content-Type: application/openapi+json;version=3.0
         "responses": {
           "200": {
             "content": {
-              "application/openapi+json;version=3.0": {
+              "application/vnd.oai.openapi+json;version=3.0": {
                 "schema": {
                   "type": "object"
                 }
