@@ -198,7 +198,8 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
   std::random_device rd;
   std::mt19937 mt( !mUseRandomSeed ? rd() : mRandSeed );
   std::uniform_real_distribution<> uniformDist( 0, 1 );
-
+  std::uniform_int_distribution<> uniformIntDist( 1, 999999999 );
+  
   // Index for finding global close points (mMinDistance > 0)
   QgsSpatialIndex globalIndex;
 
@@ -268,6 +269,39 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
     const double pointProgressIncrement = featureProgressStep / ( numberPointsForThisFeature * maxAttemptsForThisFeature );
 
     double pointProgress = 0.0;
+
+    if ( ( minDistanceForThisFeature == 0 ) && ( mMinDistanceGlobal == 0 ) )
+    {
+      unsigned long fseed = uniformIntDist( mt );
+      QVector< QgsPointXY > newPoints = polyGeom.randomPointsInPolygon( numberPointsForThisFeature, fseed );
+      for (int i=0; i < newPoints.length(); i++)
+      {
+        // add the point
+        QgsPointXY pt = newPoints[i];
+        QgsFeature f = QgsFeature( totNPoints );
+        QgsAttributes pAttrs = QgsAttributes();
+        pAttrs.append( totNPoints );
+        if ( mIncludePolygonAttr )
+        {
+          pAttrs.append( polyFeat.attributes() );
+        }
+        f.setAttributes( pAttrs );
+        QgsGeometry newGeom = QgsGeometry::fromPointXY( pt );
+        f.setGeometry( newGeom );
+
+        if ( mMinDistanceGlobal != 0 )
+        {
+          globalIndex.addFeature( f );
+        }
+        sink->addFeature( f, QgsFeatureSink::FastInsert );
+        totNPoints++;
+        pointsAddedForThisFeature++;
+        pointProgress += pointProgressIncrement * ( maxAttemptsForThisFeature );
+      }
+      feedback->setProgress( baseFeatureProgress + pointProgress );
+      continue;
+    }
+
     QgsSpatialIndex localIndex;
 
     for ( long pointIndex = 0; pointIndex < numberPointsForThisFeature; pointIndex++ )

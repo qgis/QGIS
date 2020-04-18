@@ -6,14 +6,14 @@
      xmlns:gml="http://www.opengis.net/gml">
   <gml:boundedBy>
     <gml:Box>
-      <gml:coord><gml:X>-0.487502208910776</gml:X><gml:Y>-2.963968017579002</gml:Y></gml:coord>
-      <gml:coord><gml:X>9.525367316257293</gml:X><gml:Y>5.88312547178626</gml:Y></gml:coord>
+      <gml:coord><gml:X>-0.8718169195779761</gml:X><gml:Y>-2.879169289255868</gml:Y></gml:coord>
+      <gml:coord><gml:X>9.862717017235301</gml:X><gml:Y>5.928916900001964</gml:Y></gml:coord>
     </gml:Box>
   </gml:boundedBy>
-                                                                                               
+                                                                                             
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.0">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.98873923292106,2.73022944547266</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>-0.663431758962646,0.500964947767387</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>0</ogr:rand_point_id>
       <ogr:name>aaaaa</ogr:name>
       <ogr:intval>33</ogr:intval>
@@ -22,7 +22,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.0">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>-0.487502208910776,2.99616206186109</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>0.356034175760577,-0.44087986278357</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>1</ogr:rand_point_id>
       <ogr:name>aaaaa</ogr:name>
       <ogr:intval>33</ogr:intval>
@@ -31,7 +31,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.0">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>-0.055644094807323,0.586322904650437</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>-0.781644856551729,0.089400800123232</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>2</ogr:rand_point_id>
       <ogr:name>aaaaa</ogr:name>
       <ogr:intval>33</ogr:intval>
@@ -40,7 +40,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.0">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>0.551642961042244,1.67898416178819</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>1.94872971060507,-0.890615151931993</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>3</ogr:rand_point_id>
       <ogr:name>aaaaa</ogr:name>
       <ogr:intval>33</ogr:intval>
@@ -49,7 +49,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.0">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.74215629081872,2.38524367337936</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>0.059867844501722,0.761801377253825</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>4</ogr:rand_point_id>
       <ogr:name>aaaaa</ogr:name>
       <ogr:intval>33</ogr:intval>
@@ -58,7 +58,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.0">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>0.253094052354986,1.09819265146295</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>1.67159607968492,2.51748865448491</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>5</ogr:rand_point_id>
       <ogr:name>aaaaa</ogr:name>
       <ogr:intval>33</ogr:intval>
@@ -67,7 +67,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.0">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>0.773811575215731,-0.081691119002069</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>-0.871816919577976,1.18578886256746</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>6</ogr:rand_point_id>
       <ogr:name>aaaaa</ogr:name>
       <ogr:intval>33</ogr:intval>
@@ -76,7 +76,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.0">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>1.1376556288706,2.65584809022999</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.91415877071397,2.19068564749017</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>7</ogr:rand_point_id>
       <ogr:name>aaaaa</ogr:name>
       <ogr:intval>33</ogr:intval>
@@ -85,7 +85,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.0">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>0.828819237106764,0.722794280907782</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>1.65717890843584,-0.103442150135173</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>8</ogr:rand_point_id>
       <ogr:name>aaaaa</ogr:name>
       <ogr:intval>33</ogr:intval>
@@ -94,7 +94,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.0">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.75651117986104,2.11355694215568</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>0.400087876705249,0.808217143900066</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>9</ogr:rand_point_id>
       <ogr:name>aaaaa</ogr:name>
       <ogr:intval>33</ogr:intval>
@@ -103,7 +103,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.1">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>5.65920672942188,4.27304997738429</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>4.56837768896859,4.36388759442272</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>10</ogr:rand_point_id>
       <ogr:name>Aaaaa</ogr:name>
       <ogr:intval>-33</ogr:intval>
@@ -112,7 +112,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.1">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>5.18613103362655,4.67165409178033</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>5.40079609407328,4.03848532843734</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>11</ogr:rand_point_id>
       <ogr:name>Aaaaa</ogr:name>
       <ogr:intval>-33</ogr:intval>
@@ -121,7 +121,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.1">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>4.82357575835562,4.19755089365252</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>4.99962313297545,4.33936391392108</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>12</ogr:rand_point_id>
       <ogr:name>Aaaaa</ogr:name>
       <ogr:intval>-33</ogr:intval>
@@ -130,7 +130,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.1">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>4.57925928788813,4.14212013299473</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>4.78222867627323,4.51530685244923</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>13</ogr:rand_point_id>
       <ogr:name>Aaaaa</ogr:name>
       <ogr:intval>-33</ogr:intval>
@@ -139,7 +139,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.1">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>5.56662894537975,4.41253884528638</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>5.05624495978406,4.85792599208634</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>14</ogr:rand_point_id>
       <ogr:name>Aaaaa</ogr:name>
       <ogr:intval>-33</ogr:intval>
@@ -148,7 +148,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.1">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>5.32127144978794,4.29849529865854</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>5.33863219862361,4.13111406400032</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>15</ogr:rand_point_id>
       <ogr:name>Aaaaa</ogr:name>
       <ogr:intval>-33</ogr:intval>
@@ -157,7 +157,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.1">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>4.89226900147295,4.22212454857986</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>4.16167630628072,4.14830937608763</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>16</ogr:rand_point_id>
       <ogr:name>Aaaaa</ogr:name>
       <ogr:intval>-33</ogr:intval>
@@ -166,7 +166,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.1">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>5.16877824789452,4.56591202855421</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>4.52531757095903,4.44648734256775</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>17</ogr:rand_point_id>
       <ogr:name>Aaaaa</ogr:name>
       <ogr:intval>-33</ogr:intval>
@@ -175,7 +175,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.1">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>4.52195796304816,4.23101542161306</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>4.99894393600572,4.3583493574504</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>18</ogr:rand_point_id>
       <ogr:name>Aaaaa</ogr:name>
       <ogr:intval>-33</ogr:intval>
@@ -184,7 +184,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.1">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>4.98611918729469,4.5406005085479</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>4.4652376379308,4.21888220522283</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>19</ogr:rand_point_id>
       <ogr:name>Aaaaa</ogr:name>
       <ogr:intval>-33</ogr:intval>
@@ -193,7 +193,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.2">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.76548510721185,5.04534572515075</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.67093049937975,5.92891690000196</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>20</ogr:rand_point_id>
       <ogr:name>bbaaa</ogr:name>
       <ogr:intval xsi:nil="true"/>
@@ -202,7 +202,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.2">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.13996612039949,5.79240357934378</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.28981346845335,5.56677602152464</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>21</ogr:rand_point_id>
       <ogr:name>bbaaa</ogr:name>
       <ogr:intval xsi:nil="true"/>
@@ -211,7 +211,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.2">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.02980136031858,5.88312547178626</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.70932302357766,5.648915244781</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>22</ogr:rand_point_id>
       <ogr:name>bbaaa</ogr:name>
       <ogr:intval xsi:nil="true"/>
@@ -220,7 +220,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.2">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.54078819181384,5.44798018297587</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.64057635710842,5.64219403962146</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>23</ogr:rand_point_id>
       <ogr:name>bbaaa</ogr:name>
       <ogr:intval xsi:nil="true"/>
@@ -229,7 +229,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.2">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.89213586857991,5.37758434536108</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.35168028582444,5.87063103220936</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>24</ogr:rand_point_id>
       <ogr:name>bbaaa</ogr:name>
       <ogr:intval xsi:nil="true"/>
@@ -238,7 +238,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.2">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.53842469477041,5.65229887821836</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.80145380355336,5.68520603332694</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>25</ogr:rand_point_id>
       <ogr:name>bbaaa</ogr:name>
       <ogr:intval xsi:nil="true"/>
@@ -247,7 +247,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.2">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.36126102365728,5.57100856219134</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.21914372625137,5.70359184438679</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>26</ogr:rand_point_id>
       <ogr:name>bbaaa</ogr:name>
       <ogr:intval xsi:nil="true"/>
@@ -256,7 +256,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.2">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.63783647882538,5.12631488096109</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.65243980625654,5.61938800197338</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>27</ogr:rand_point_id>
       <ogr:name>bbaaa</ogr:name>
       <ogr:intval xsi:nil="true"/>
@@ -265,7 +265,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.2">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.69020458983334,5.64774939595342</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.4652123095617,5.54755265232455</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>28</ogr:rand_point_id>
       <ogr:name>bbaaa</ogr:name>
       <ogr:intval xsi:nil="true"/>
@@ -274,7 +274,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.2">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.35393909196158,5.76323305730449</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.88720249012918,5.43259775415074</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>29</ogr:rand_point_id>
       <ogr:name>bbaaa</ogr:name>
       <ogr:intval xsi:nil="true"/>
@@ -283,7 +283,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.3">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>7.42612686778412,0.011153401709987</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>8.28571070168438,0.760247953265607</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>30</ogr:rand_point_id>
       <ogr:name>ASDF</ogr:name>
       <ogr:intval>0</ogr:intval>
@@ -292,7 +292,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.3">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>9.52536731625729,-2.9533232217982</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>9.11668023238927,-2.87916928925587</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>31</ogr:rand_point_id>
       <ogr:name>ASDF</ogr:name>
       <ogr:intval>0</ogr:intval>
@@ -301,7 +301,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.3">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>7.99243627829798,-2.70483195537543</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>9.86072309516874,-1.94753304191766</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>32</ogr:rand_point_id>
       <ogr:name>ASDF</ogr:name>
       <ogr:intval>0</ogr:intval>
@@ -310,7 +310,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.3">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>9.14780589576321,-2.74373069130863</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>7.26865237085913,0.706859028290083</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>33</ogr:rand_point_id>
       <ogr:name>ASDF</ogr:name>
       <ogr:intval>0</ogr:intval>
@@ -319,7 +319,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.3">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>7.42124145333647,0.767347791770836</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>9.5526519427938,-2.37449646602883</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>34</ogr:rand_point_id>
       <ogr:name>ASDF</ogr:name>
       <ogr:intval>0</ogr:intval>
@@ -328,7 +328,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.3">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>7.51921316088004,0.051680268940541</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>9.49342050673047,-0.65280700188372</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>35</ogr:rand_point_id>
       <ogr:name>ASDF</ogr:name>
       <ogr:intval>0</ogr:intval>
@@ -337,7 +337,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.3">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>9.08637998244109,-1.79455799742259</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>9.8627170172353,0.363441279328882</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>36</ogr:rand_point_id>
       <ogr:name>ASDF</ogr:name>
       <ogr:intval>0</ogr:intval>
@@ -346,7 +346,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.3">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>9.09095657337724,-2.38828070963067</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>8.27676129604969,-2.6661147691723</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>37</ogr:rand_point_id>
       <ogr:name>ASDF</ogr:name>
       <ogr:intval>0</ogr:intval>
@@ -355,7 +355,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.3">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>8.31453572802864,-2.963968017579</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>9.13381645982012,-0.951529163933242</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>38</ogr:rand_point_id>
       <ogr:name>ASDF</ogr:name>
       <ogr:intval>0</ogr:intval>
@@ -364,7 +364,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.3">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>9.05837028278833,-1.13042925798953</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>8.64374883435712,-2.17015919316465</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>39</ogr:rand_point_id>
       <ogr:name>ASDF</ogr:name>
       <ogr:intval>0</ogr:intval>
@@ -373,7 +373,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.5">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>3.07600419876708,1.15846294831652</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>3.7521383759132,0.395414747720244</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>40</ogr:rand_point_id>
       <ogr:name>elim</ogr:name>
       <ogr:intval>2</ogr:intval>
@@ -382,7 +382,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.5">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>3.88990016577052,0.713824135643821</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.97543698193818,-0.978202529057767</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>41</ogr:rand_point_id>
       <ogr:name>elim</ogr:name>
       <ogr:intval>2</ogr:intval>
@@ -391,7 +391,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.5">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.76782430515866,-0.678442461536245</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>3.44266714966203,-0.177746419721665</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>42</ogr:rand_point_id>
       <ogr:name>elim</ogr:name>
       <ogr:intval>2</ogr:intval>
@@ -400,7 +400,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.5">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2.92145121662505,-0.458762311428479</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>4.01086503512371,-0.121301720459499</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>43</ogr:rand_point_id>
       <ogr:name>elim</ogr:name>
       <ogr:intval>2</ogr:intval>
@@ -409,7 +409,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.5">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>5.87067170306372,-1.60840578581901</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>4.5351888171178,-0.218414899636447</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>44</ogr:rand_point_id>
       <ogr:name>elim</ogr:name>
       <ogr:intval>2</ogr:intval>
@@ -418,7 +418,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.5">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>4.28026663194016,-0.910367307521408</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>3.83115562304477,-0.184538917328171</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>45</ogr:rand_point_id>
       <ogr:name>elim</ogr:name>
       <ogr:intval>2</ogr:intval>
@@ -427,7 +427,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.5">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>3.47137296252049,1.06497485821443</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>5.61577768644633,-2.60510758136457</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>46</ogr:rand_point_id>
       <ogr:name>elim</ogr:name>
       <ogr:intval>2</ogr:intval>
@@ -436,7 +436,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.5">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>3.15904000755458,0.586958010253699</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>3.02430498204919,-0.171621333306191</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>47</ogr:rand_point_id>
       <ogr:name>elim</ogr:name>
       <ogr:intval>2</ogr:intval>
@@ -445,7 +445,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.5">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>4.45179236196643,-0.865450881202868</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>4.7557092751718,-2.06777169690475</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>48</ogr:rand_point_id>
       <ogr:name>elim</ogr:name>
       <ogr:intval>2</ogr:intval>
@@ -454,7 +454,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsinpolygons fid="polys.5">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>5.00749187810676,-0.860936823129745</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>3.91439746831596,1.63736323800385</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:rand_point_id>49</ogr:rand_point_id>
       <ogr:name>elim</ogr:name>
       <ogr:intval>2</ogr:intval>
