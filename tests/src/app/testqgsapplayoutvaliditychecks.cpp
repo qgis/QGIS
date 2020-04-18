@@ -222,13 +222,12 @@ void TestQgsLayoutValidityChecks::testPictureValidity()
   QgsLayoutValidityCheckContext context( &l );
   QgsFeedback f;
 
-  // invalid picture source
+  // invalid picture source, will load ":/images/composer/missing_image.svg"
   picture->setPicturePath( QStringLiteral( "blaaaaaaaaaaaaaaaaah" ) );
   QgsLayoutPictureSourceValidityCheck check;
   QVERIFY( check.prepareCheck( &context, &f ) );
   QList< QgsValidityCheckResult > res = check.runCheck( &context, &f );
-  QCOMPARE( res.size(), 1 );
-  QCOMPARE( res.at( 0 ).type, QgsValidityCheckResult::Warning );
+  QCOMPARE( res.size(), 0 );
 
   QgsLayoutPictureSourceValidityCheck check2;
   picture->setPicturePath( QString() );
