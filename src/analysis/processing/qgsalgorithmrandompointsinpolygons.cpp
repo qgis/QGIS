@@ -199,7 +199,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
   std::mt19937 mt( !mUseRandomSeed ? rd() : mRandSeed );
   std::uniform_real_distribution<> uniformDist( 0, 1 );
   std::uniform_int_distribution<> uniformIntDist( 1, 999999999 );
-  
+
   // Index for finding global close points (mMinDistance > 0)
   QgsSpatialIndex globalIndex;
 
@@ -274,7 +274,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
     {
       unsigned long fseed = uniformIntDist( mt );
       QVector< QgsPointXY > newPoints = polyGeom.randomPointsInPolygon( numberPointsForThisFeature, fseed );
-      for (int i=0; i < newPoints.length(); i++)
+      for ( int i=0; i < newPoints.length(); i++ )
       {
         // add the point
         QgsPointXY pt = newPoints[i];
