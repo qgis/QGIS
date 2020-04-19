@@ -142,7 +142,7 @@ QVariantMap QgsNormalRasterAlgorithm::processAlgorithm( const QVariantMap &param
 
   double step = rows > 0 ? 100.0 / rows : 1;
 
-  for ( int i = 0; i < rows ; i++ )
+  for ( int row = 0; row < rows ; row++ )
   {
     if ( feedback->isCanceled() )
     {
@@ -155,9 +155,9 @@ QVariantMap QgsNormalRasterAlgorithm::processAlgorithm( const QVariantMap &param
       case ( 0 ):
       {
         std::vector<float> float32Row( cols );
-        for ( int i = 0; i < cols; i++ )
+        for ( int col = 0; col < cols; col++ )
         {
-          float32Row[i] = static_cast<float>( mNormalDoubleDistribution( mRandomDevice ) );
+          float32Row[col] = static_cast<float>( mNormalDoubleDistribution( mRandomDevice ) );
         }
         block.setData( QByteArray( reinterpret_cast<const char *>( float32Row.data() ), QgsRasterBlock::typeSize( Qgis::Float32 ) * cols ) );
         break;
@@ -165,9 +165,9 @@ QVariantMap QgsNormalRasterAlgorithm::processAlgorithm( const QVariantMap &param
       case ( 1 ):
       {
         std::vector<double> float64Row( cols );
-        for ( int i = 0; i < cols; i++ )
+        for ( int col = 0; col < cols; col++ )
         {
-          float64Row[i] = mNormalDoubleDistribution( mRandomDevice );
+          float64Row[col] = mNormalDoubleDistribution( mRandomDevice );
         }
         block.setData( QByteArray( reinterpret_cast<const char *>( float64Row.data() ), QgsRasterBlock::typeSize( Qgis::Float64 ) * cols ) );
         break;
@@ -175,8 +175,8 @@ QVariantMap QgsNormalRasterAlgorithm::processAlgorithm( const QVariantMap &param
       default:
         break;
     }
-    provider->writeBlock( &block, 1, 0, i );
-    feedback->setProgress( i * step );
+    provider->writeBlock( &block, 1, 0, row );
+    feedback->setProgress( row * step );
   }
 
   QVariantMap outputs;
