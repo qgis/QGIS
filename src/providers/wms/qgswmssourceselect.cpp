@@ -256,6 +256,7 @@ QgsTreeWidgetItem *QgsWMSSourceSelect::createItem(
   item->setText( 0, QString::number( ++layerAndStyleCount ) );
   item->setText( 1, names[0].simplified() );
   item->setText( 2, names[1].simplified() );
+  item->setToolTip( 2, "<font color=black>" + names[1].simplified()  + "</font>" );
   item->setText( 3, names[2].simplified() );
   item->setToolTip( 3, "<font color=black>" + names[2].simplified()  + "</font>" );
 
