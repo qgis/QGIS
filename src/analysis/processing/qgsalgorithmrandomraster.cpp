@@ -113,6 +113,9 @@ bool QgsRandomRasterAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   mRandomUpperBound = parameterAsDouble( parameters, QStringLiteral( "UPPER_BOUND" ), context );
   mRandomLowerBound = parameterAsDouble( parameters, QStringLiteral( "LOWER_BOUND" ), context );
 
+  if ( mRandomLowerBound > mRandomUpperBound )
+    throw QgsProcessingException( QObject::tr( "The chosen lower bound for random number range is greater than the upper bound. The lower bound value must be smaller than the upper bound value." ) );
+
   mRasterDataType = Qgis::Float32; //standard output type
   switch ( mTypeId )
   {
