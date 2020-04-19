@@ -218,7 +218,7 @@ QVariantMap QgsRandomRasterAlgorithm::processAlgorithm( const QVariantMap &param
 
   double step = rows > 0 ? 100.0 / rows : 1;
 
-  for ( int i = 0; i < rows ; i++ )
+  for ( int row = 0; row < rows ; row++ )
   {
     if ( feedback->isCanceled() )
     {
@@ -231,9 +231,9 @@ QVariantMap QgsRandomRasterAlgorithm::processAlgorithm( const QVariantMap &param
       case ( 0 ):
       {
         std::vector<quint8> byteRow( cols );
-        for ( int i = 0; i < cols; i++ )
+        for ( int col = 0; col < cols; col++ )
         {
-          byteRow[i] = static_cast<quint8>( mRandomIntDistribution( mRandomDevice ) );
+          byteRow[col] = static_cast<quint8>( mRandomIntDistribution( mRandomDevice ) );
         }
         block.setData( QByteArray( reinterpret_cast<const char *>( byteRow.data() ), QgsRasterBlock::typeSize( Qgis::Byte ) * cols ) );
         break;
@@ -241,9 +241,9 @@ QVariantMap QgsRandomRasterAlgorithm::processAlgorithm( const QVariantMap &param
       case ( 1 ):
       {
         std::vector<qint16> int16Row( cols );
-        for ( int i = 0; i < cols; i++ )
+        for ( int col = 0; col < cols; col++ )
         {
-          int16Row[i] = static_cast<qint16>( mRandomIntDistribution( mRandomDevice ) );
+          int16Row[col] = static_cast<qint16>( mRandomIntDistribution( mRandomDevice ) );
         }
         block.setData( QByteArray( reinterpret_cast<const char *>( int16Row.data() ), QgsRasterBlock::typeSize( Qgis::Int16 ) * cols ) );
         break;
@@ -251,9 +251,9 @@ QVariantMap QgsRandomRasterAlgorithm::processAlgorithm( const QVariantMap &param
       case ( 2 ):
       {
         std::vector<quint16> uInt16Row( cols );
-        for ( int i = 0; i < cols; i++ )
+        for ( int col = 0; col < cols; col++ )
         {
-          uInt16Row[i] = static_cast<quint16>( mRandomIntDistribution( mRandomDevice ) );
+          uInt16Row[col] = static_cast<quint16>( mRandomIntDistribution( mRandomDevice ) );
         }
         block.setData( QByteArray( reinterpret_cast<const char *>( uInt16Row.data() ), QgsRasterBlock::typeSize( Qgis::UInt16 ) * cols ) );
         break;
@@ -261,9 +261,9 @@ QVariantMap QgsRandomRasterAlgorithm::processAlgorithm( const QVariantMap &param
       case ( 3 ):
       {
         std::vector<qint32> int32Row( cols );
-        for ( int i = 0; i < cols; i++ )
+        for ( int col = 0; col < cols; col++ )
         {
-          int32Row[i] = static_cast<qint32>( mRandomIntDistribution( mRandomDevice ) );
+          int32Row[col] = static_cast<qint32>( mRandomIntDistribution( mRandomDevice ) );
         }
         block.setData( QByteArray( reinterpret_cast<const char *>( int32Row.data() ), QgsRasterBlock::typeSize( Qgis::Int32 ) * cols ) );
         break;
@@ -271,9 +271,9 @@ QVariantMap QgsRandomRasterAlgorithm::processAlgorithm( const QVariantMap &param
       case ( 4 ):
       {
         std::vector<quint32> uInt32Row( cols );
-        for ( int i = 0; i < cols; i++ )
+        for ( int col = 0; col < cols; col++ )
         {
-          uInt32Row[i] = static_cast<quint32>( mRandomIntDistribution( mRandomDevice ) );
+          uInt32Row[col] = static_cast<quint32>( mRandomIntDistribution( mRandomDevice ) );
         }
         block.setData( QByteArray( reinterpret_cast<const char *>( uInt32Row.data() ), QgsRasterBlock::typeSize( Qgis::UInt32 ) * cols ) );
         break;
@@ -281,9 +281,9 @@ QVariantMap QgsRandomRasterAlgorithm::processAlgorithm( const QVariantMap &param
       case ( 5 ):
       {
         std::vector<float> float32Row( cols );
-        for ( int i = 0; i < cols; i++ )
+        for ( int col = 0; col < cols; col++ )
         {
-          float32Row[i] = static_cast<float>( mRandomDoubleDistribution( mRandomDevice ) );
+          float32Row[col] = static_cast<float>( mRandomDoubleDistribution( mRandomDevice ) );
         }
         block.setData( QByteArray( reinterpret_cast<const char *>( float32Row.data() ), QgsRasterBlock::typeSize( Qgis::Float32 ) * cols ) );
         break;
@@ -291,9 +291,9 @@ QVariantMap QgsRandomRasterAlgorithm::processAlgorithm( const QVariantMap &param
       case ( 6 ):
       {
         std::vector<double> float64Row( cols );
-        for ( int i = 0; i < cols; i++ )
+        for ( int col = 0; col < cols; col++ )
         {
-          float64Row[i] = mRandomDoubleDistribution( mRandomDevice );
+          float64Row[col] = mRandomDoubleDistribution( mRandomDevice );
         }
         block.setData( QByteArray( reinterpret_cast<const char *>( float64Row.data() ), QgsRasterBlock::typeSize( Qgis::Float64 ) * cols ) );
         break;
@@ -301,8 +301,8 @@ QVariantMap QgsRandomRasterAlgorithm::processAlgorithm( const QVariantMap &param
       default:
         break;
     }
-    provider->writeBlock( &block, 1, 0, i );
-    feedback->setProgress( i * step );
+    provider->writeBlock( &block, 1, 0, row );
+    feedback->setProgress( row * step );
   }
 
   QVariantMap outputs;
