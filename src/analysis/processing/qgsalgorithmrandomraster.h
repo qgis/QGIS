@@ -52,13 +52,9 @@ class QgsRandomRasterAlgorithm : public QgsProcessingAlgorithm
     double mPixelSize;
     Qgis::DataType mRasterDataType;
     int mTypeId;
-    std::random_device mRandomDevice;
-    std::mt19937 mMersenneTwister;
 
     double mRandomUpperBound;
     double mRandomLowerBound;
-    std::uniform_int_distribution<long> mRandomIntDistribution;
-    std::uniform_real_distribution<double> mRandomDoubleDistribution;
 };
 
 ///@endcond PRIVATE
