@@ -87,7 +87,7 @@ class CORE_EXPORT QgsVectorTileWriter
     void setMaxZoom( int maxZoom ) { mMaxZoom = maxZoom; }
 
     //! Sets vector layers and their configuration for output of vector tiles
-    void setLayers( const QList<Layer> &layers ) { mLayers = layers; }
+    void setLayers( const QList<QgsVectorTileWriter::Layer> &layers ) { mLayers = layers; }
 
     /**
      * Writes vector tiles according to the configuration.
