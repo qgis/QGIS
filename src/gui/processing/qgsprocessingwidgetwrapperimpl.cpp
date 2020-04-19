@@ -521,6 +521,7 @@ QStringList QgsProcessingStringWidgetWrapper::compatibleOutputTypes() const
 {
   return QStringList() << QgsProcessingOutputNumber::typeName()
          << QgsProcessingOutputFile::typeName()
+         << QgsProcessingOutputFolder::typeName()
          << QgsProcessingOutputString::typeName();
 }
 
@@ -1813,6 +1814,7 @@ QStringList QgsProcessingFileWidgetWrapper::compatibleParameterTypes() const
 QStringList QgsProcessingFileWidgetWrapper::compatibleOutputTypes() const
 {
   return QStringList() << QgsProcessingOutputFile::typeName()
+         << QgsProcessingOutputFolder::typeName()
          << QgsProcessingOutputString::typeName()
          << QgsProcessingOutputRasterLayer::typeName()
          << QgsProcessingOutputVectorLayer::typeName()
@@ -5475,7 +5477,8 @@ QStringList QgsProcessingRasterLayerWidgetWrapper::compatibleOutputTypes() const
          << QgsProcessingOutputString::typeName()
          << QgsProcessingOutputRasterLayer::typeName()
          << QgsProcessingOutputMapLayer::typeName()
-         << QgsProcessingOutputFile::typeName();
+         << QgsProcessingOutputFile::typeName()
+         << QgsProcessingOutputFolder::typeName();
 }
 
 QString QgsProcessingRasterLayerWidgetWrapper::modelerExpressionFormatString() const
@@ -5569,7 +5572,8 @@ QStringList QgsProcessingVectorLayerWidgetWrapper::compatibleOutputTypes() const
          << QgsProcessingOutputString::typeName()
          << QgsProcessingOutputVectorLayer::typeName()
          << QgsProcessingOutputMapLayer::typeName()
-         << QgsProcessingOutputFile::typeName();
+         << QgsProcessingOutputFile::typeName()
+         << QgsProcessingOutputFolder::typeName();
 }
 
 QString QgsProcessingVectorLayerWidgetWrapper::modelerExpressionFormatString() const
@@ -5667,7 +5671,8 @@ QStringList QgsProcessingFeatureSourceWidgetWrapper::compatibleOutputTypes() con
          << QgsProcessingOutputString::typeName()
          << QgsProcessingOutputVectorLayer::typeName()
          << QgsProcessingOutputMapLayer::typeName()
-         << QgsProcessingOutputFile::typeName();
+         << QgsProcessingOutputFile::typeName()
+         << QgsProcessingOutputFolder::typeName();
 }
 
 QString QgsProcessingFeatureSourceWidgetWrapper::modelerExpressionFormatString() const
@@ -5723,7 +5728,8 @@ QStringList QgsProcessingMeshLayerWidgetWrapper::compatibleOutputTypes() const
          << QgsProcessingOutputString::typeName()
          // TODO  << QgsProcessingOutputMeshLayer::typeName()
          << QgsProcessingOutputMapLayer::typeName()
-         << QgsProcessingOutputFile::typeName();
+         << QgsProcessingOutputFile::typeName()
+         << QgsProcessingOutputFolder::typeName();
 }
 
 QString QgsProcessingMeshLayerWidgetWrapper::modelerExpressionFormatString() const
@@ -6500,7 +6506,8 @@ QStringList QgsProcessingMultipleLayerWidgetWrapper::compatibleParameterTypes() 
 {
   return QStringList()
          << QgsProcessingParameterBand::typeName()
-         << QgsProcessingParameterNumber::typeName();
+         << QgsProcessingParameterNumber::typeName()
+         << QgsProcessingOutputFolder::typeName();
 }
 
 QStringList QgsProcessingMultipleLayerWidgetWrapper::compatibleOutputTypes() const
@@ -6615,7 +6622,9 @@ QStringList QgsProcessingOutputWidgetWrapper::compatibleParameterTypes() const
 QStringList QgsProcessingOutputWidgetWrapper::compatibleOutputTypes() const
 {
   return QStringList()
-         << QgsProcessingOutputString::typeName();
+         << QgsProcessingOutputString::typeName()
+         << QgsProcessingOutputFolder::typeName()
+         << QgsProcessingOutputFile::typeName();
 }
 
 //
