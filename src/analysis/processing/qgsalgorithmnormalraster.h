@@ -56,13 +56,9 @@ class QgsNormalRasterAlgorithm : public QgsProcessingAlgorithm
     double mPixelSize;
     Qgis::DataType mRasterDataType;
     int mTypeId;
-    std::random_device mRandomDevice;
-    std::mt19937 mMersenneTwister;
 
     double mMean;
     double mStdev;
-
-    std::normal_distribution<double> mNormalDoubleDistribution;
 };
 
 ///@endcond PRIVATE

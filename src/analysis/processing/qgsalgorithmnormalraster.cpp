@@ -113,13 +113,16 @@ bool QgsNormalRasterAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   mMean = parameterAsDouble( parameters, QStringLiteral( "MEAN" ), context );
   mStdev = parameterAsDouble( parameters, QStringLiteral( "STDEV" ), context );
 
-  mNormalDoubleDistribution = std::normal_distribution<double>( mMean, mStdev );
-
   return true;
 }
 
 QVariantMap QgsNormalRasterAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  std::random_device rd {};
+  std::mt19937 mersenneTwister{rd()};
+
+  std::normal_distribution<double> normalDoubleDistribution = std::normal_distribution<double>( mMean, mStdev );
+
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
@@ -157,7 +160,7 @@ QVariantMap QgsNormalRasterAlgorithm::processAlgorithm( const QVariantMap &param
         std::vector<float> float32Row( cols );
         for ( int col = 0; col < cols; col++ )
         {
-          float32Row[col] = static_cast<float>( mNormalDoubleDistribution( mRandomDevice ) );
+          float32Row[col] = static_cast<float>( normalDoubleDistribution( mersenneTwister ) );
         }
         block.setData( QByteArray( reinterpret_cast<const char *>( float32Row.data() ), QgsRasterBlock::typeSize( Qgis::Float32 ) * cols ) );
         break;
@@ -167,7 +170,7 @@ QVariantMap QgsNormalRasterAlgorithm::processAlgorithm( const QVariantMap &param
         std::vector<double> float64Row( cols );
         for ( int col = 0; col < cols; col++ )
         {
-          float64Row[col] = mNormalDoubleDistribution( mRandomDevice );
+          float64Row[col] = normalDoubleDistribution( mersenneTwister );
         }
         block.setData( QByteArray( reinterpret_cast<const char *>( float64Row.data() ), QgsRasterBlock::typeSize( Qgis::Float64 ) * cols ) );
         break;
