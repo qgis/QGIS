@@ -86,7 +86,7 @@ void QgsNormalRasterAlgorithm::initAlgorithm( const QVariantMap & )
   meanParameter->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( meanParameter.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > stdevParameter = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "STDEV" ), QStringLiteral( "Standard deviation of normal distribution" ), QgsProcessingParameterNumber::Double, 1, true, 0 );
+  std::unique_ptr< QgsProcessingParameterNumber > stdevParameter = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "STDDEV" ), QStringLiteral( "Standard deviation of normal distribution" ), QgsProcessingParameterNumber::Double, 1, true, 0 );
   stdevParameter->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( stdevParameter.release() );
 
