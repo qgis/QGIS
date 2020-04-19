@@ -83,7 +83,7 @@ Sets the minimum zoom level of tiles. Allowed values are in interval [0,24]
 Sets the maximum zoom level of tiles. Allowed values are in interval [0,24]
 %End
 
-    void setLayers( const QList<Layer> &layers );
+    void setLayers( const QList<QgsVectorTileWriter::Layer> &layers );
 %Docstring
 Sets vector layers and their configuration for output of vector tiles
 %End
