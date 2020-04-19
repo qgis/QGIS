@@ -5399,12 +5399,13 @@ void QgsProcessingMapLayerWidgetWrapper::setWidgetContext( const QgsProcessingPa
 
 void QgsProcessingMapLayerWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
 {
-  mComboBox->setValue( value, context );
+  if ( mComboBox )
+    mComboBox->setValue( value, context );
 }
 
 QVariant QgsProcessingMapLayerWidgetWrapper::widgetValue() const
 {
-  return mComboBox->value();
+  return mComboBox ? mComboBox->value() : QVariant();
 }
 
 QStringList QgsProcessingMapLayerWidgetWrapper::compatibleParameterTypes() const
