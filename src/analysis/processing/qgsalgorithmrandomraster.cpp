@@ -186,16 +186,18 @@ bool QgsRandomRasterAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
     default:
       break;
   }
-
-  mRandomIntDistribution = std::uniform_int_distribution<long>( mRandomLowerBound, mRandomUpperBound );
-  mRandomDoubleDistribution = std::uniform_real_distribution<double>( mRandomLowerBound, mRandomUpperBound );
-
   return true;
 }
 
 
 QVariantMap QgsRandomRasterAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  std::random_device rd {};
+  std::mt19937 mersenneTwister{rd()};
+
+  std::uniform_int_distribution<long> randomIntDistribution = std::uniform_int_distribution<long>( mRandomLowerBound, mRandomUpperBound );
+  std::uniform_real_distribution<double> randomDoubleDistribution = std::uniform_real_distribution<double>( mRandomLowerBound, mRandomUpperBound );
+
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
@@ -233,7 +235,7 @@ QVariantMap QgsRandomRasterAlgorithm::processAlgorithm( const QVariantMap &param
         std::vector<quint8> byteRow( cols );
         for ( int col = 0; col < cols; col++ )
         {
-          byteRow[col] = static_cast<quint8>( mRandomIntDistribution( mRandomDevice ) );
+          byteRow[col] = static_cast<quint8>( randomIntDistribution( mersenneTwister ) );
         }
         block.setData( QByteArray( reinterpret_cast<const char *>( byteRow.data() ), QgsRasterBlock::typeSize( Qgis::Byte ) * cols ) );
         break;
@@ -243,7 +245,7 @@ QVariantMap QgsRandomRasterAlgorithm::processAlgorithm( const QVariantMap &param
         std::vector<qint16> int16Row( cols );
         for ( int col = 0; col < cols; col++ )
         {
-          int16Row[col] = static_cast<qint16>( mRandomIntDistribution( mRandomDevice ) );
+          int16Row[col] = static_cast<qint16>( randomIntDistribution( mersenneTwister ) );
         }
         block.setData( QByteArray( reinterpret_cast<const char *>( int16Row.data() ), QgsRasterBlock::typeSize( Qgis::Int16 ) * cols ) );
         break;
@@ -253,7 +255,7 @@ QVariantMap QgsRandomRasterAlgorithm::processAlgorithm( const QVariantMap &param
         std::vector<quint16> uInt16Row( cols );
         for ( int col = 0; col < cols; col++ )
         {
-          uInt16Row[col] = static_cast<quint16>( mRandomIntDistribution( mRandomDevice ) );
+          uInt16Row[col] = static_cast<quint16>( randomIntDistribution( mersenneTwister ) );
         }
         block.setData( QByteArray( reinterpret_cast<const char *>( uInt16Row.data() ), QgsRasterBlock::typeSize( Qgis::UInt16 ) * cols ) );
         break;
@@ -263,7 +265,7 @@ QVariantMap QgsRandomRasterAlgorithm::processAlgorithm( const QVariantMap &param
         std::vector<qint32> int32Row( cols );
         for ( int col = 0; col < cols; col++ )
         {
-          int32Row[col] = static_cast<qint32>( mRandomIntDistribution( mRandomDevice ) );
+          int32Row[col] = static_cast<qint32>( randomIntDistribution( mersenneTwister ) );
         }
         block.setData( QByteArray( reinterpret_cast<const char *>( int32Row.data() ), QgsRasterBlock::typeSize( Qgis::Int32 ) * cols ) );
         break;
@@ -273,7 +275,7 @@ QVariantMap QgsRandomRasterAlgorithm::processAlgorithm( const QVariantMap &param
         std::vector<quint32> uInt32Row( cols );
         for ( int col = 0; col < cols; col++ )
         {
-          uInt32Row[col] = static_cast<quint32>( mRandomIntDistribution( mRandomDevice ) );
+          uInt32Row[col] = static_cast<quint32>( randomIntDistribution( mersenneTwister ) );
         }
         block.setData( QByteArray( reinterpret_cast<const char *>( uInt32Row.data() ), QgsRasterBlock::typeSize( Qgis::UInt32 ) * cols ) );
         break;
@@ -283,7 +285,7 @@ QVariantMap QgsRandomRasterAlgorithm::processAlgorithm( const QVariantMap &param
         std::vector<float> float32Row( cols );
         for ( int col = 0; col < cols; col++ )
         {
-          float32Row[col] = static_cast<float>( mRandomDoubleDistribution( mRandomDevice ) );
+          float32Row[col] = static_cast<float>( randomDoubleDistribution( mersenneTwister ) );
         }
         block.setData( QByteArray( reinterpret_cast<const char *>( float32Row.data() ), QgsRasterBlock::typeSize( Qgis::Float32 ) * cols ) );
         break;
@@ -293,7 +295,7 @@ QVariantMap QgsRandomRasterAlgorithm::processAlgorithm( const QVariantMap &param
         std::vector<double> float64Row( cols );
         for ( int col = 0; col < cols; col++ )
         {
-          float64Row[col] = mRandomDoubleDistribution( mRandomDevice );
+          float64Row[col] = randomDoubleDistribution( mersenneTwister );
         }
         block.setData( QByteArray( reinterpret_cast<const char *>( float64Row.data() ), QgsRasterBlock::typeSize( Qgis::Float64 ) * cols ) );
         break;
