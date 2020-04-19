@@ -195,7 +195,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   txtExpressionString->setIndicatorHoverStyle( QgsCodeEditor::DotsIndicator, FUNCTION_MARKER_ID );
 
   connect( txtExpressionString, &QgsCodeEditorExpression::indicatorClicked, this, &QgsExpressionBuilderWidget::indicatorClicked );
-  txtExpressionString->setAutoCompletionCaseSensitivity( true );
+  txtExpressionString->setAutoCompletionCaseSensitivity( false );
   txtExpressionString->setAutoCompletionSource( QsciScintilla::AcsAPIs );
   txtExpressionString->setCallTipsVisible( 0 );
 
