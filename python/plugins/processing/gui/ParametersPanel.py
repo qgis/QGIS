@@ -48,6 +48,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
     def __init__(self, parent, alg, in_place=False):
         super().__init__(alg, parent)
         self.in_place = in_place
+        self.active_layer = None
 
         self.wrappers = {}
 
