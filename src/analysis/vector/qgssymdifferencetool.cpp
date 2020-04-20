@@ -37,10 +37,10 @@ namespace Vectoranalysis
 
   void QgsSymDifferenceTool::prepare()
   {
-    buildSpatialIndex( mSpatialIndexA, mLayerA );
-    buildSpatialIndex( mSpatialIndexB, mLayerB );
+    buildSpatialIndex( mSpatialIndexA, mLayerA, mLayerA->sourceCrs() );
+    buildSpatialIndex( mSpatialIndexB, mLayerB, mLayerA->sourceCrs() );
     mLayerAFinished = false;
-    prepareLayer( mLayerA );
+    prepareLayer( mLayerA, mLayerA->sourceCrs() );
     mFeatureCount = mLayerA->featureCount() + mLayerB->featureCount();
   }
 
@@ -79,7 +79,7 @@ namespace Vectoranalysis
       }
 
       mLayerAFinished = true;
-      prepareLayer( mLayerB );
+      prepareLayer( mLayerB, mLayerA->sourceCrs() );
     }
 
     return appendNextChunkToJobQueue( mLayerB, ProcessLayerBFeature );

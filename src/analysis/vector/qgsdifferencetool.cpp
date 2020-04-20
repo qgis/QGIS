@@ -36,8 +36,8 @@ namespace Vectoranalysis
 
   void QgsDifferenceTool::prepare()
   {
-    prepareLayer( mLayerA );
-    buildSpatialIndex( mSpatialIndex, mLayerB );
+    prepareLayer( mLayerA, mLayerA->sourceCrs() );
+    buildSpatialIndex( mSpatialIndex, mLayerB, mLayerA->sourceCrs() );
     mFeatureCount = mLayerA->featureCount();
   }
 

@@ -115,7 +115,7 @@ namespace Vectoranalysis
       /**
        * Builds spatial index for source
        */
-      void buildSpatialIndex( QgsSpatialIndex &index, QgsFeatureSource *layer ) const;
+      void buildSpatialIndex( QgsSpatialIndex &index, QgsFeatureSource *layer, const QgsCoordinateReferenceSystem &destCRS ) const;
 
       /**
        * @brief appendNextChunkToJobQueue
@@ -129,7 +129,7 @@ namespace Vectoranalysis
        */
       void writeFeatures( QgsFeatureList &outFeatures );
 
-      void prepareLayer( QgsFeatureSource *source, const QgsAttributeList *sourceFieldIndices = 0 );
+      void prepareLayer( QgsFeatureSource *source, const QgsCoordinateReferenceSystem &destCRS, const QgsAttributeList *sourceFieldIndices = 0 );
 
       QList<Job *> mJobQueue;
       QStringList mExceptions;

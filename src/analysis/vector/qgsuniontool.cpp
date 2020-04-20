@@ -39,9 +39,9 @@ namespace Vectoranalysis
   void QgsUnionTool::prepare()
   {
     mLayerAFinished = false;
-    buildSpatialIndex( mSpatialIndexA, mLayerA );
-    buildSpatialIndex( mSpatialIndexB, mLayerB );
-    prepareLayer( mLayerA, &mFieldIndicesA );
+    buildSpatialIndex( mSpatialIndexA, mLayerA, mLayerA->sourceCrs() );
+    buildSpatialIndex( mSpatialIndexB, mLayerB, mLayerA->sourceCrs() );
+    prepareLayer( mLayerA, mLayerA->sourceCrs(), &mFieldIndicesA );
     mFeatureCount = mLayerA->featureCount() + mLayerB->featureCount();
   }
 
@@ -82,7 +82,7 @@ namespace Vectoranalysis
       }
 
       mLayerAFinished = true;
-      prepareLayer( mLayerB, &mFieldIndicesB );
+      prepareLayer( mLayerB, mLayerA->sourceCrs(), &mFieldIndicesB );
     }
 
     return appendNextChunkToJobQueue( mLayerB, ProcessLayerBFeature );

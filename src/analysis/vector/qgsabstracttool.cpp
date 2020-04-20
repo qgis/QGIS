@@ -84,10 +84,11 @@ namespace Vectoranalysis
     return QtConcurrent::map( mJobQueue, ProcessFeatureWrapper( this ) );
   }
 
-  void QgsAbstractTool::buildSpatialIndex( QgsSpatialIndex &index, QgsFeatureSource *layer ) const
+  void QgsAbstractTool::buildSpatialIndex( QgsSpatialIndex &index, QgsFeatureSource *layer, const QgsCoordinateReferenceSystem &destCRS ) const
   {
     QgsFeatureRequest request;
     request.setFlags( QgsFeatureRequest::SubsetOfAttributes );
+    request.setDestinationCrs( destCRS, mTransformContext );
     request.setSubsetOfAttributes( QgsAttributeList() );
     QgsFeatureIterator it = layer->getFeatures( request );
     index = QgsSpatialIndex( it );
@@ -124,13 +125,14 @@ namespace Vectoranalysis
     mOutput->addFeatures( outFeatures, QgsFeatureSink::FastInsert );
   }
 
-  void QgsAbstractTool::prepareLayer( QgsFeatureSource *source, const QgsAttributeList *sourceFieldIndices )
+  void QgsAbstractTool::prepareLayer( QgsFeatureSource *source, const QgsCoordinateReferenceSystem &destCRS, const QgsAttributeList *sourceFieldIndices )
   {
     QgsFeatureRequest request;
     if ( sourceFieldIndices )
     {
       request.setSubsetOfAttributes( *sourceFieldIndices );
     }
+    request.setDestinationCrs( destCRS, mTransformContext );
     request.setInvalidGeometryCheck( mInvalidGeometryCheck );
     mFeatureIterator = source->getFeatures( request );
   }

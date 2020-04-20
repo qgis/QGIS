@@ -41,8 +41,8 @@ namespace Vectoranalysis
   void QgsIntersectionTool::prepare()
   {
     QgsFeatureRequest request;
-    prepareLayer( mLayerA, &mFieldIndicesA );
-    buildSpatialIndex( mSpatialIndex, mLayerB );
+    prepareLayer( mLayerA, mLayerA->sourceCrs(), &mFieldIndicesA );
+    buildSpatialIndex( mSpatialIndex, mLayerB, mLayerA->sourceCrs() );
     mFeatureCount = mLayerA->featureCount();
   }
 
