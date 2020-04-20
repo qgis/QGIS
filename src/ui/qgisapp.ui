@@ -3318,7 +3318,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
      <normaloff>:/images/themes/default/mActionAddVectorTileLayer.svg</normaloff>:/images/themes/default/mActionAddVectorTileLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>Add Vector TIle Layer…</string>
+    <string>Add Vector Tile Layer…</string>
    </property>
    <property name="toolTip">
     <string>Add Vector Tile Layer…</string>
