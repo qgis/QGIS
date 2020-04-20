@@ -2302,6 +2302,8 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         """ test getting and setting aliases """
         layer = createLayerWithOnePoint()
 
+        self.assertEqual(len(layer.attributeAliases()), 2)
+
         self.assertFalse(layer.attributeAlias(0))
         self.assertFalse(layer.attributeAlias(1))
         self.assertFalse(layer.attributeAlias(2))
