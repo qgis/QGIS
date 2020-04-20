@@ -429,6 +429,7 @@ class CORE_EXPORT QgsWkbTypes
      *
      * \note Returns `CompoundCurve` for `CircularString` (and its Z/M variants)
      *
+     * \see linearType()
      * \see isMultiType()
      * \see isCurvedType()
      * \see singleType()
@@ -555,6 +556,147 @@ class CORE_EXPORT QgsWkbTypes
         case MultiPolygonZM:
         case MultiSurfaceZM:
           return MultiSurfaceZM;
+
+        case NoGeometry:
+          return NoGeometry;
+
+        case Point25D:
+        case MultiPoint25D:
+          return MultiPoint25D;
+      }
+      return Unknown;
+    }
+
+    /**
+     * Returns the linear type for a WKB type. For example, for a CompoundCurve, the linear type would be LineString.
+     *
+     * \see curveType()
+     * \see isMultiType()
+     * \see isCurvedType()
+     * \see singleType()
+     * \see flatType()
+     * \see multiType()
+     *
+     * \since QGIS 3.14
+     */
+    static Type linearType( Type type )
+    {
+      switch ( type )
+      {
+        case Unknown:
+        case Triangle:
+        case TriangleZ:
+        case TriangleM:
+        case TriangleZM:
+          return Unknown;
+
+        case GeometryCollection:
+          return GeometryCollection;
+
+        case GeometryCollectionZ:
+          return GeometryCollectionZ;
+
+        case GeometryCollectionM:
+          return GeometryCollectionM;
+
+        case GeometryCollectionZM:
+          return GeometryCollectionZM;
+
+        case Point:
+          return Point;
+
+        case MultiPoint:
+          return MultiPoint;
+
+        case PointZ:
+          return PointZ;
+
+        case MultiPointZ:
+          return MultiPointZ;
+
+        case PointM:
+          return PointM;
+
+        case MultiPointM:
+          return MultiPointM;
+
+        case PointZM:
+          return PointZM;
+
+        case MultiPointZM:
+          return MultiPointZM;
+
+        case LineString:
+        case CompoundCurve:
+        case CircularString:
+          return LineString;
+
+        case MultiLineString:
+        case MultiCurve:
+          return MultiLineString;
+
+        case LineStringZ:
+        case CompoundCurveZ:
+        case CircularStringZ:
+        case LineString25D:
+          return LineStringZ;
+
+        case MultiLineStringZ:
+        case MultiCurveZ:
+        case MultiLineString25D:
+          return MultiLineStringZ;
+
+        case LineStringM:
+        case CompoundCurveM:
+        case CircularStringM:
+          return LineStringM;
+
+        case MultiLineStringM:
+        case MultiCurveM:
+          return MultiLineStringM;
+
+        case LineStringZM:
+        case CompoundCurveZM:
+        case CircularStringZM:
+          return LineStringZM;
+
+        case MultiLineStringZM:
+        case MultiCurveZM:
+          return MultiLineStringZM;
+
+        case Polygon:
+        case CurvePolygon:
+          return Polygon;
+
+        case MultiPolygon:
+        case MultiSurface:
+          return MultiPolygon;
+
+        case PolygonZ:
+        case CurvePolygonZ:
+        case Polygon25D:
+          return PolygonZ;
+
+        case MultiPolygonZ:
+        case MultiSurfaceZ:
+        case MultiPolygon25D:
+          return MultiPolygonZ;
+
+        case PolygonM:
+        case CurvePolygonM:
+          return PolygonM;
+
+        case MultiPolygonM:
+        case MultiSurfaceM:
+          return MultiPolygonM;
+
+        case PolygonZM:
+        case CurvePolygonZM:
+          return PolygonZM;
+
+        case MultiPolygonZM:
+        case MultiSurfaceZM:
+          return MultiPolygonZM;
 
         case NoGeometry:
           return NoGeometry;
