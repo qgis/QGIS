@@ -27,6 +27,7 @@ QgsPolygon::QgsPolygon()
   mWkbType = QgsWkbTypes::Polygon;
 }
 
+///@cond DOXYGEN_SHUTTUP
 QgsPolygon::QgsPolygon( QgsLineString *exterior, const QList<QgsLineString *> &rings )
 {
   setExteriorRing( exterior );
@@ -36,6 +37,7 @@ QgsPolygon::QgsPolygon( QgsLineString *exterior, const QList<QgsLineString *> &r
   }
   clearCache();
 }
+///@endcond
 
 QString QgsPolygon::geometryType() const
 {
