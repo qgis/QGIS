@@ -31,7 +31,7 @@ if "%SITE%"=="" set SITE=qgis.org
 if "%TARGET%"=="" set TARGET=Nightly
 if "%BUILDNAME%"=="" set BUILDNAME=%PACKAGENAME%-%VERSION%%SHA%-%TARGET%-VC14-%ARCH%
 
-set BUILDDIR=%CD%\build-%PACKAGENAME%-%ARCH%
+if "%BUILDDIR%"=="" set BUILDDIR=%CD%\build-%PACKAGENAME%-%ARCH%
 if not exist "%BUILDDIR%" mkdir %BUILDDIR%
 if not exist "%BUILDDIR%" (echo could not create build directory %BUILDDIR% & goto error)
 
