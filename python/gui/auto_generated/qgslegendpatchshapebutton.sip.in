@@ -52,7 +52,7 @@ Returns the symbol type which the button requires.
 %Docstring
 Sets the symbol to use for previewing the legend patch shape.
 
-Ownership is transferred to the button. It is the caller's responsiblity
+Ownership is transferred to the button. It is the caller's responsibility
 to ensure that the symbol type matches the button's symbolType()
 %End
 

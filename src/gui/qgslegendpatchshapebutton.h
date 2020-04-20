@@ -65,7 +65,7 @@ class GUI_EXPORT QgsLegendPatchShapeButton : public QToolButton
     /**
      * Sets the symbol to use for previewing the legend patch shape.
      *
-     * Ownership is transferred to the button. It is the caller's responsiblity
+     * Ownership is transferred to the button. It is the caller's responsibility
      * to ensure that the symbol type matches the button's symbolType()
      */
     void setPreviewSymbol( QgsSymbol *symbol SIP_TRANSFER );
