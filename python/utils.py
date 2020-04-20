@@ -545,9 +545,12 @@ def reloadProjectMacros():
         return
 
     # create a new empty python module
-    import imp
-
-    mod = imp.new_module("proj_macros_mod")
+    if sys.version_info >= (3, 4):
+        import importlib
+        mod = importlib.util.module_from_spec(importlib.machinery.ModuleSpec("proj_macros_mod", None))
+    else:
+        import imp
+        mod = imp.new_module("proj_macros_mod")
 
     # set the module code and store it sys.modules
     exec(str(code), mod.__dict__)
