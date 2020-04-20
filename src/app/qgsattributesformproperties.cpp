@@ -26,6 +26,7 @@
 #include "qgsapplication.h"
 #include "qgscolorbutton.h"
 #include "qgscodeeditorhtml.h"
+#include "qgsexpressioncontextutils.h"
 
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
@@ -183,9 +184,15 @@ void QgsAttributesFormProperties::initSuppressCombo()
   mFormSuppressCmbBx->addItem( tr( "Show form on add feature" ) );
 
   mFormSuppressCmbBx->setCurrentIndex( mLayer->editFormConfig().suppress() );
-
-
 }
+
+QgsExpressionContext QgsAttributesFormProperties::createExpressionContext() const
+{
+  QgsExpressionContext context;
+  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+  return context;
+}
+
 void QgsAttributesFormProperties::initLayoutConfig()
 {
   mEditorLayoutComboBox->setCurrentIndex( mEditorLayoutComboBox->findData( mLayer->editFormConfig().layout() ) );
@@ -428,6 +435,7 @@ void QgsAttributesFormProperties::loadAttributeContainerEdit()
 
   QTreeWidgetItem *currentItem = mFormLayoutTree->selectedItems().at( 0 );
   mAttributeContainerEdit = new QgsAttributeFormContainerEdit( currentItem, this );
+  mAttributeContainerEdit->registerExpressionContextGenerator( this );
   mAttributeTypeFrame->layout()->setMargin( 0 );
   mAttributeTypeFrame->layout()->addWidget( mAttributeContainerEdit );
 }
