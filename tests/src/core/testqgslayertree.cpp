@@ -591,9 +591,9 @@ void TestQgsLayerTree::testEmbeddedGroup()
   projectMaster.layerTreeRoot()->addChildNode( embeddedGroup );
 
   QgsLayerTreeGroup *masterSubGroup1 = projectMaster.layerTreeRoot()->findGroup( QStringLiteral( "EmbedSubGroup1" ) );
-  QCOMPARE( masterSubGroup1->itemVisibilityChecked(), true );
+  QVERIFY( masterSubGroup1->itemVisibilityChecked() );
   QgsLayerTreeGroup *masterSubGroup2 = projectMaster.layerTreeRoot()->findGroup( QStringLiteral( "EmbedSubGroup2" ) );
-  QCOMPARE( masterSubGroup2->itemVisibilityChecked(), true );
+  QVERIFY( masterSubGroup2->itemVisibilityChecked() );
   masterSubGroup2->setItemVisibilityChecked( false );
 
   QString projectMasterFilename = dirPath + QStringLiteral( "/projectMaster.qgs" );
@@ -615,9 +615,9 @@ void TestQgsLayerTree::testEmbeddedGroup()
   }
 
   QgsLayerTreeGroup *copyMasterSubGroup1 = masterEmbeddedGroup->findGroup( QStringLiteral( "EmbedSubGroup1" ) );
-  QCOMPARE( copyMasterSubGroup1->itemVisibilityChecked(), true );
+  QVERIFY( copyMasterSubGroup1->itemVisibilityChecked() );
   QgsLayerTreeGroup *copyMasterSubGroup2 = masterEmbeddedGroup->findGroup( QStringLiteral( "EmbedSubGroup2" ) );
-  QCOMPARE( copyMasterSubGroup2->itemVisibilityChecked(), false );
+  QVERIFY( !copyMasterSubGroup2->itemVisibilityChecked() );
 
 }
 
