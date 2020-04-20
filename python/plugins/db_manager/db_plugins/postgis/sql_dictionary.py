@@ -173,7 +173,7 @@ postgis_functions = [  # from http://www.postgis.org/docs/reference.html
                        "*find_srid", "*ST_mem_size", "*ST_point_inside_circle", "ST_XMax", "ST_XMin", "ST_YMax", "ST_YMin",
                        "ST_ZMax", "ST_ZMin",
                        # 7.13. Exceptional Functions
-                       "*postgis_addbbox", "*postgis_dropbbox", "*postgis_hasbbox"
+                       "*postgis_addbbox", "*postgis_dropbbox", "*postgis_hasbbox",
                        # Raster functions
                        "AddRasterConstraints", "DropRasterConstraints", "AddOverviewConstraints", "DropOverviewConstraints",
                        "PostGIS_GDAL_Version", "PostGIS_Raster_Lib_Build_Date", "PostGIS_Raster_Lib_Version", "ST_GDALDrivers",
