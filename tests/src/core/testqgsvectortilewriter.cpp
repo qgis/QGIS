@@ -41,9 +41,7 @@ class TestQgsVectorTileWriter : public QObject
 
   private:
     QString mDataDir;
-    //QgsVectorTileLayer *mLayer = nullptr;
     QString mReport;
-    QgsMapSettings *mMapSettings = nullptr;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

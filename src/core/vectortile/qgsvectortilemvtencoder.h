@@ -40,6 +40,7 @@
 class CORE_EXPORT QgsVectorTileMVTEncoder
 {
   public:
+    //! Creates MVT encoder for the given tile coordinates
     explicit QgsVectorTileMVTEncoder( QgsTileXYZ tileID );
 
     //! Returns resolution of coordinates of geometries within the tile. The default is 4096.
@@ -55,8 +56,12 @@ class CORE_EXPORT QgsVectorTileMVTEncoder
     //! Sets coordinate transform context for transforms between layers and tile matrix CRS
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) { mTransformContext = transformContext; }
 
-    //! Fetches data from vector layer for the given tile, does reprojection and clipping
-    void addLayer( QgsVectorLayer *layer, QString filterExpression = QString(), QString layerName = QString() );
+    /**
+     * Fetches data from vector layer for the given tile, does reprojection and clipping
+     *
+     * Optional feedback object may be provided to support cancellation.
+     */
+    void addLayer( QgsVectorLayer *layer, QgsFeedback *feedback = nullptr, QString filterExpression = QString(), QString layerName = QString() );
 
     //! Encodes MVT using data stored previously with addLayer() calls
     QByteArray encode() const;

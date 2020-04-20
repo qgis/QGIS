@@ -16,19 +16,16 @@
 #include "qgsvectortilewriter.h"
 
 #include "qgsdatasourceuri.h"
-
+#include "qgsfeedback.h"
+#include "qgstiles.h"
 #include "qgsvectortilemvtencoder.h"
 #include "qgsvectortileutils.h"
-
-#include "qgstiles.h"
 
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QUrl>
 
-#include <QtDebug>
-#include "qgsvectorlayer.h"
 
 QgsVectorTileWriter::QgsVectorTileWriter()
 {
@@ -36,16 +33,16 @@ QgsVectorTileWriter::QgsVectorTileWriter()
 }
 
 
-bool QgsVectorTileWriter::writeTiles()
+bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
 {
   if ( mMinZoom < 0 )
   {
-    mErrorMessage = "Invalid min. zoom level";
+    mErrorMessage = tr( "Invalid min. zoom level" );
     return false;
   }
   if ( mMaxZoom > 24 )
   {
-    mErrorMessage = "Invalid max. zoom level";
+    mErrorMessage = tr( "Invalid max. zoom level" );
     return false;
   }
 
@@ -56,13 +53,31 @@ bool QgsVectorTileWriter::writeTiles()
   QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
   if ( sourceType != QStringLiteral( "xyz" ) )
   {
-    mErrorMessage = "Unsupported source type for writing: " + sourceType;
+    mErrorMessage = tr( "Unsupported source type for writing: " ) + sourceType;
     return false;
   }
 
   // remove the initial file:// scheme
   sourcePath = QUrl( sourcePath ).toLocalFile();
 
+  // figure out how many tiles we will need to do
+  int tilesToCreate = 0;
+  for ( int zoomLevel = mMinZoom; zoomLevel <= mMaxZoom; ++zoomLevel )
+  {
+    QgsTileMatrix tileMatrix = QgsTileMatrix::fromWebMercator( zoomLevel );
+
+    QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( mExtent );
+    tilesToCreate += ( tileRange.endRow() - tileRange.startRow() + 1 ) *
+                     ( tileRange.endColumn() - tileRange.startColumn() + 1 );
+  }
+
+  if ( tilesToCreate == 0 )
+  {
+    mErrorMessage = tr( "No tiles to generate" );
+    return false;
+  }
+
+  int tilesCreated = 0;
   for ( int zoomLevel = mMinZoom; zoomLevel <= mMaxZoom; ++zoomLevel )
   {
     QgsTileMatrix tileMatrix = QgsTileMatrix::fromWebMercator( zoomLevel );
@@ -77,10 +92,22 @@ bool QgsVectorTileWriter::writeTiles()
 
         for ( const Layer &layer : qgis::as_const( mLayers ) )
         {
-          encoder.addLayer( layer.layer() );
+          encoder.addLayer( layer.layer(), feedback );
+        }
+
+        if ( feedback && feedback->isCanceled() )
+        {
+          mErrorMessage = tr( "Operation has been canceled" );
+          return false;
         }
 
         QByteArray tileData = encoder.encode();
+
+        ++tilesCreated;
+        if ( feedback )
+        {
+          feedback->setProgress( static_cast<double>( tilesCreated ) / tilesToCreate * 100 );
+        }
 
         if ( tileData.isEmpty() )
         {
@@ -97,7 +124,7 @@ bool QgsVectorTileWriter::writeTiles()
         {
           if ( !fileDir.mkpath( "." ) )
           {
-            mErrorMessage = "Cannot create directory " + fileDir.path();
+            mErrorMessage = tr( "Cannot create directory " ) + fileDir.path();
             return false;
           }
         }
@@ -105,7 +132,7 @@ bool QgsVectorTileWriter::writeTiles()
         QFile f( filePath );
         if ( !f.open( QIODevice::WriteOnly ) )
         {
-          mErrorMessage = "Cannot open file for writing " + filePath;
+          mErrorMessage = tr( "Cannot open file for writing " ) + filePath;
           return false;
         }
 

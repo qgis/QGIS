@@ -16,8 +16,10 @@
 #ifndef QGSVECTORTILEWRITER_H
 #define QGSVECTORTILEWRITER_H
 
+#include <QCoreApplication>
 #include "qgsrectangle.h"
 
+class QgsFeedback;
 class QgsVectorLayer;
 
 
@@ -45,11 +47,15 @@ class QgsVectorLayer;
  */
 class CORE_EXPORT QgsVectorTileWriter
 {
+    Q_DECLARE_TR_FUNCTIONS( QgsVectorTileWriter )
+
   public:
     QgsVectorTileWriter();
 
     /**
+     * \ingroup core
      * Configuration of a single input vector layer to be included in the output
+     * \since QGIS 3.14
      */
     class Layer
     {
@@ -92,8 +98,11 @@ class CORE_EXPORT QgsVectorTileWriter
     /**
      * Writes vector tiles according to the configuration.
      * Returns true on success (upon failure one can get error cause using errorMessage())
+     *
+     * If a pointer to a feedback object is provided, it can be used to track progress or
+     * provide cancellation functionality.
      */
-    bool writeTiles();
+    bool writeTiles( QgsFeedback *feedback = nullptr );
 
     /**
      * Returns error message related to the previous call to writeTiles(). Will return

@@ -44,6 +44,8 @@ Currently the writer only support MVT encoding of data.
 {
 %Docstring
 Configuration of a single input vector layer to be included in the output
+
+.. versionadded:: 3.14
 %End
 
 %TypeHeaderCode
@@ -88,10 +90,13 @@ Sets the maximum zoom level of tiles. Allowed values are in interval [0,24]
 Sets vector layers and their configuration for output of vector tiles
 %End
 
-    bool writeTiles();
+    bool writeTiles( QgsFeedback *feedback = 0 );
 %Docstring
 Writes vector tiles according to the configuration.
 Returns true on success (upon failure one can get error cause using errorMessage())
+
+If a pointer to a feedback object is provided, it can be used to track progress or
+provide cancellation functionality.
 %End
 
     QString errorMessage() const;
