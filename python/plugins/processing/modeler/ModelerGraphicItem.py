@@ -21,6 +21,8 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProject,
                        Qgis)
@@ -146,8 +148,12 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
 
             res, errors = self.model().validateChildAlgorithm(alg.childId())
             if not res:
-                self.scene().showWarning(self.tr('Algorithm “{}” is invalid').format(alg.description()), self.tr('Algorithm is Invalid'), self.tr(
-                    "<p>The “{}” algorithm is invalid, because:</p><ul><li>{}</li></ul>").format(alg.description(), '</li><li>'.join(errors)), level=Qgis.Warning)
+                self.scene().showWarning(
+                    QCoreApplication.translate('ModelerGraphicItem', 'Algorithm “{}” is invalid').format(alg.description()),
+                    self.tr('Algorithm is Invalid'),
+                    QCoreApplication.translate('ModelerGraphicItem', "<p>The “{}” algorithm is invalid, because:</p><ul><li>{}</li></ul>").format(alg.description(), '</li><li>'.join(errors)),
+                    level=Qgis.Warning
+                )
             else:
                 self.scene().messageBar().clearWidgets()
 
