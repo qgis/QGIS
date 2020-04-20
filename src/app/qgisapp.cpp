@@ -2323,6 +2323,7 @@ void QgisApp::dataSourceManager( const QString &pageName )
     connect( mDataSourceManagerDialog, SIGNAL( addVectorLayers( QStringList const &, QString const &, QString const & ) ),
              this, SLOT( addVectorLayers( QStringList const &, QString const &, QString const & ) ) );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addMeshLayer, this, &QgisApp::addMeshLayer );
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addVectorTileLayer, this, &QgisApp::addVectorTileLayer );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::showStatusMessage, this, &QgisApp::showStatusMessage );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addDatabaseLayers, this, &QgisApp::addDatabaseLayers );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::replaceSelectedVectorLayer, this, &QgisApp::replaceSelectedVectorLayer );
@@ -2661,6 +2662,8 @@ void QgisApp::createActions()
   connect( mActionAddDb2Layer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "DB2" ) ); } );
   connect( mActionAddOracleLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "oracle" ) ); } );
   connect( mActionAddWmsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "wms" ) ); } );
+  connect( mActionAddXyzLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "xyz" ) ); } );
+  connect( mActionAddVectorTileLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "vectortile" ) ); } );
   connect( mActionAddWcsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "wcs" ) ); } );
   connect( mActionAddWfsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "WFS" ) ); } );
   connect( mActionAddAfsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "arcgisfeatureserver" ) ); } );
@@ -3969,6 +3972,8 @@ void QgisApp::setTheme( const QString &themeName )
   mActionNewBookmark->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewBookmark.svg" ) ) );
   mActionCustomProjection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCustomProjection.svg" ) ) );
   mActionAddWmsLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWmsLayer.svg" ) ) );
+  mActionAddXyzLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddXyzLayer.svg" ) ) );
+  mActionAddVectorTileLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddVectorTileLayer.svg" ) ) );
   mActionAddWcsLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWcsLayer.svg" ) ) );
   mActionAddWfsLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWfsLayer.svg" ) ) );
   mActionAddAfsLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAfsLayer.svg" ) ) );
@@ -5456,7 +5461,6 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
   return true;
 }
 
-
 QgsMeshLayer *QgisApp::addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey )
 {
   return addMeshLayerPrivate( url, baseName, providerKey );
@@ -5480,7 +5484,11 @@ QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &b
   QgsMeshLayer::LayerOptions options;
   std::unique_ptr<QgsMeshLayer> layer( new QgsMeshLayer( url, base, providerKey, options ) );
 
-  if ( ! layer || !layer->isValid() )
+  QDateTime referenceTime = QgsProject::instance()->timeSettings()->temporalRange().begin();
+  if ( !referenceTime.isValid() ) // If project reference time is invalid, use current date
+    referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) );
+
+  if ( ! layer || ( !layer->isValid() && layer->subLayers().isEmpty() ) )
   {
     if ( guiWarning )
     {
@@ -5492,23 +5500,81 @@ QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &b
     return nullptr;
   }
 
-  // Manage default reference time, if not reference time is present by default in the layer -> assign one
-  if ( ! layer->temporalProperties()->referenceTime().isValid() )
+  if ( !layer->isValid() && layer->subLayers().count() > 0 ) //sublayers to load
   {
-    QDateTime referenceTime = QgsProject::instance()->timeSettings()->temporalRange().begin();
-    if ( !referenceTime.isValid() ) // If project reference time is invalid, use current date
-      referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) );
-    layer->temporalProperties()->setReferenceTime( referenceTime, layer->dataProvider()->temporalCapabilities() );
+    QList< QgsMapLayer * > subLayers = askUserForMDALSublayers( layer.get() );
+
+    if ( subLayers.isEmpty() )
+      layer.reset( nullptr );
+    else
+    {
+      for ( QgsMapLayer *newLayer : qgis::as_const( subLayers ) )
+      {
+        askUserForDatumTransform( newLayer->crs(), QgsProject::instance()->crs(), newLayer );
+        QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( newLayer );
+        if ( ! meshLayer->temporalProperties()->referenceTime().isValid() )
+          meshLayer->temporalProperties()->setReferenceTime( referenceTime, layer->dataProvider()->temporalCapabilities() );
+        bool ok;
+        newLayer->loadDefaultStyle( ok );
+        newLayer->loadDefaultMetadata( ok );
+      }
+
+      layer.reset( qobject_cast< QgsMeshLayer * >( subLayers.at( 0 ) ) );
+    }
+
+  }
+  else
+  {
+    if ( ! layer->temporalProperties()->referenceTime().isValid() )
+      layer->temporalProperties()->setReferenceTime( referenceTime, layer->dataProvider()->temporalCapabilities() );
+    QgsProject::instance()->addMapLayer( layer.get() );
+    askUserForDatumTransform( layer->crs(), QgsProject::instance()->crs(), layer.get() );
+
+    bool ok;
+    layer->loadDefaultStyle( ok );
+    layer->loadDefaultMetadata( ok );
+  }
+
+  activateDeactivateLayerRelatedActions( activeLayer() );
+
+  return layer.release();
+}
+
+QgsVectorTileLayer *QgisApp::addVectorTileLayer( const QString &url, const QString &baseName )
+{
+  return addVectorTileLayerPrivate( url, baseName );
+}
+
+QgsVectorTileLayer *QgisApp::addVectorTileLayerPrivate( const QString &url, const QString &baseName, const bool guiWarning )
+{
+  QgsCanvasRefreshBlocker refreshBlocker;
+  QgsSettings settings;
+
+  QString base( baseName );
+
+  if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
+  {
+    base = QgsMapLayer::formatLayerName( base );
+  }
+
+  QgsDebugMsgLevel( "completeBaseName: " + base, 2 );
+
+  // create the layer
+  std::unique_ptr<QgsVectorTileLayer> layer( new QgsVectorTileLayer( url, base ) );
+
+  if ( !layer || !layer->isValid() )
+  {
+    if ( guiWarning )
+    {
+      QString msg = tr( "%1 is not a valid or recognized data source." ).arg( url );
+      visibleMessageBar()->pushMessage( tr( "Invalid Data Source" ), msg, Qgis::Critical, messageTimeout() );
+    }
+
+    // since the layer is bad, stomp on it
+    return nullptr;
   }
 
   QgsProject::instance()->addMapLayer( layer.get() );
-
-  askUserForDatumTransform( layer->crs(), QgsProject::instance()->crs(), layer.get() );
-
-  bool ok;
-  layer->loadDefaultStyle( ok );
-  layer->loadDefaultMetadata( ok );
-
   activateDeactivateLayerRelatedActions( activeLayer() );
 
   return layer.release();
@@ -5952,6 +6018,62 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   return result;
 }
 
+QList<QgsMapLayer *> QgisApp::askUserForMDALSublayers( QgsMeshLayer *layer )
+{
+  QList< QgsMapLayer * > result;
+  if ( !layer )
+    return result;
+
+  QStringList sublayers = layer->subLayers();
+  if ( sublayers.empty() )
+    return result;
+
+  QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Mdal, QStringLiteral( "mdal" ), this );
+  chooseSublayersDialog.setShowAddToGroupCheckbox( true );
+
+  QgsSublayersDialog::LayerDefinitionList layersDefList;
+  int id = 1;
+  for ( const QString &layerUri : sublayers )
+  {
+    QgsSublayersDialog::LayerDefinition definition;
+    QString name = layerUri;
+    definition.layerName = layerUri;
+    definition.layerId = id++;
+    layersDefList.append( definition );
+  }
+
+  chooseSublayersDialog.populateLayerTable( layersDefList );
+  if ( chooseSublayersDialog.exec() )
+  {
+    QgsSublayersDialog::LayerDefinitionList selection = chooseSublayersDialog.selection();
+    for ( auto definition : selection )
+    {
+      int id = definition.layerId;
+      QString name = definition.layerName;
+      QString path = layer->source();
+      name = name.mid( name.indexOf( path ) + path.length() + 2 );
+      result.append( new QgsMeshLayer( sublayers.at( id - 1 ), name, QStringLiteral( "mdal" ) ) );
+    }
+
+    if ( !selection.isEmpty() )
+    {
+      if ( chooseSublayersDialog.addToGroupCheckbox() )
+      {
+        QgsLayerTreeGroup *group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, layer->name() );
+        for ( QgsMapLayer *layerAdded : result )
+        {
+          QgsProject::instance()->addMapLayer( layerAdded, false );
+          group->addLayer( layerAdded );
+        }
+      }
+      else
+        QgsProject::instance()->addMapLayers( result );
+    }
+  }
+
+  return result;
+}
+
 void QgisApp::addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey )
 {
   QList<QgsMapLayer *> myList;
@@ -6067,20 +6189,31 @@ void QgisApp::fileExit()
   if ( QgsApplication::taskManager()->countActiveTasks() > 0 )
   {
     QStringList tasks;
-    const auto constActiveTasks = QgsApplication::taskManager()->activeTasks();
-    for ( QgsTask *task : constActiveTasks )
+    const QList< QgsTask * > activeTasks = QgsApplication::taskManager()->activeTasks();
+    for ( QgsTask *task : activeTasks )
     {
+      if ( task->flags() & QgsTask::CancelWithoutPrompt )
+        continue;
+
       tasks << tr( " • %1" ).arg( task->description() );
     }
 
-    // active tasks
-    if ( QMessageBox::question( this, tr( "Active Tasks" ),
-                                tr( "The following tasks are currently running in the background:\n\n%1\n\nDo you want to try canceling these active tasks?" ).arg( tasks.join( QStringLiteral( "\n" ) ) ),
-                                QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
+    // prompt if any tasks which require user confirmation remain, otherwise just cancel them directly and continue with shutdown.
+    if ( tasks.empty() )
     {
+      // all tasks can be silently terminated without warning
       QgsApplication::taskManager()->cancelAll();
     }
-    return;
+    else
+    {
+      if ( QMessageBox::question( this, tr( "Active Tasks" ),
+                                  tr( "The following tasks are currently running in the background:\n\n%1\n\nDo you want to try canceling these active tasks?" ).arg( tasks.join( QStringLiteral( "\n" ) ) ),
+                                  QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
+      {
+        QgsApplication::taskManager()->cancelAll();
+      }
+      return;
+    }
   }
 
   QgsCanvasRefreshBlocker refreshBlocker;
@@ -9902,8 +10035,24 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
     if ( !( geom.isEmpty() || geom.isNull( ) ) )
     {
       // avoid intersection if enabled in digitize settings
-      geom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
-      // Count collapsed geometries
+      QList<QgsVectorLayer *>  avoidIntersectionsLayers;
+      switch ( QgsProject::instance()->avoidIntersectionsMode() )
+      {
+        case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
+          avoidIntersectionsLayers.append( pasteVectorLayer );
+          break;
+        case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
+          avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
+          break;
+        case QgsProject::AvoidIntersectionsMode::AllowIntersections:
+          break;
+      }
+      if ( avoidIntersectionsLayers.size() > 0 )
+      {
+        geom.avoidIntersections( avoidIntersectionsLayers );
+      }
+
+      // count collapsed geometries
       if ( geom.isEmpty() || geom.isNull( ) )
         invalidGeometriesCount++;
     }
@@ -14185,7 +14334,65 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       break;
 
     case QgsMapLayerType::VectorTileLayer:
-      // TODO
+      mActionLocalHistogramStretch->setEnabled( false );
+      mActionFullHistogramStretch->setEnabled( false );
+      mActionLocalCumulativeCutStretch->setEnabled( false );
+      mActionFullCumulativeCutStretch->setEnabled( false );
+      mActionIncreaseBrightness->setEnabled( false );
+      mActionDecreaseBrightness->setEnabled( false );
+      mActionIncreaseContrast->setEnabled( false );
+      mActionDecreaseContrast->setEnabled( false );
+      mActionLayerSubsetString->setEnabled( false );
+      mActionFeatureAction->setEnabled( false );
+      mActionSelectFeatures->setEnabled( false );
+      mActionSelectPolygon->setEnabled( false );
+      mActionSelectFreehand->setEnabled( false );
+      mActionSelectRadius->setEnabled( false );
+      mActionZoomActualSize->setEnabled( false );
+      mActionZoomToLayer->setEnabled( true );
+      mActionZoomToSelected->setEnabled( false );
+      mActionOpenTable->setEnabled( false );
+      mActionSelectAll->setEnabled( false );
+      mActionReselect->setEnabled( false );
+      mActionInvertSelection->setEnabled( false );
+      mActionSelectByExpression->setEnabled( false );
+      mActionSelectByForm->setEnabled( false );
+      mActionOpenFieldCalc->setEnabled( false );
+      mActionToggleEditing->setEnabled( false );
+      mActionToggleEditing->setChecked( false );
+      mActionSaveLayerEdits->setEnabled( false );
+      mUndoDock->widget()->setEnabled( false );
+      mActionUndo->setEnabled( false );
+      mActionRedo->setEnabled( false );
+      mActionSaveLayerDefinition->setEnabled( true );
+      mActionLayerSaveAs->setEnabled( false );
+      mActionAddFeature->setEnabled( false );
+      mActionCircularStringCurvePoint->setEnabled( false );
+      mActionCircularStringRadius->setEnabled( false );
+      mActionDeleteSelected->setEnabled( false );
+      mActionAddRing->setEnabled( false );
+      mActionFillRing->setEnabled( false );
+      mActionAddPart->setEnabled( false );
+      mActionVertexTool->setEnabled( false );
+      mActionVertexToolActiveLayer->setEnabled( false );
+      mActionMoveFeature->setEnabled( false );
+      mActionMoveFeatureCopy->setEnabled( false );
+      mActionRotateFeature->setEnabled( false );
+      mActionOffsetCurve->setEnabled( false );
+      mActionCopyFeatures->setEnabled( false );
+      mActionCutFeatures->setEnabled( false );
+      mActionPasteFeatures->setEnabled( false );
+      mActionRotatePointSymbols->setEnabled( false );
+      mActionOffsetPointSymbol->setEnabled( false );
+      mActionDeletePart->setEnabled( false );
+      mActionDeleteRing->setEnabled( false );
+      mActionSimplifyFeature->setEnabled( false );
+      mActionReshapeFeatures->setEnabled( false );
+      mActionSplitFeatures->setEnabled( false );
+      mActionSplitParts->setEnabled( false );
+      mActionLabeling->setEnabled( false );
+      mActionDiagramProperties->setEnabled( false );
+      mActionIdentify->setEnabled( true );
       break;
 
     case QgsMapLayerType::PluginLayer:

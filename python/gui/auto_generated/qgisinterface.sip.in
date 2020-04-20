@@ -539,6 +539,20 @@ Returns the native draw action.
     virtual QAction *actionAddRasterLayer() = 0;
     virtual QAction *actionAddPgLayer() = 0;
     virtual QAction *actionAddWmsLayer() = 0;
+
+    virtual QAction *actionAddXyzLayer() = 0;
+%Docstring
+Returns the native Add XYZ Layer action.
+
+.. versionadded:: 3.14
+%End
+
+    virtual QAction *actionAddVectorTileLayer() = 0;
+%Docstring
+Returns the native Add Vector Tile Layer action.
+
+.. versionadded:: 3.14
+%End
     virtual QAction *actionAddAfsLayer() = 0;
 %Docstring
 Returns the native Add ArcGIS FeatureServer action.
@@ -760,6 +774,13 @@ Adds a raster layer to the current project, from the specified raster data provi
     virtual QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
 %Docstring
 Adds a mesh layer to the current project.
+%End
+
+    virtual QgsVectorTileLayer *addVectorTileLayer( const QString &url, const QString &baseName ) = 0;
+%Docstring
+Adds a vector tile layer to the current project.
+
+.. versionadded:: 3.14
 %End
 
     virtual bool addProject( const QString &project ) = 0;

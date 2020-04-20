@@ -22,7 +22,8 @@ __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
 from qgis.core import (QgsProcessingParameterDefinition,
-                       QgsProject)
+                       QgsProject,
+                       Qgis)
 from qgis.gui import (
     QgsProcessingParameterDefinitionDialog,
     QgsProcessingParameterWidgetContext,
@@ -142,6 +143,13 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
             self.model().setChildAlgorithm(alg)
             self.requestModelRepaint.emit()
             self.changed.emit()
+
+            res, errors = self.model().validateChildAlgorithm(alg.childId())
+            if not res:
+                self.scene().showWarning(self.tr('Algorithm “{}” is invalid').format(alg.description()), self.tr('Algorithm is Invalid'), self.tr(
+                    "<p>The “{}” algorithm is invalid, because:</p><ul><li>{}</li></ul>").format(alg.description(), '</li><li>'.join(errors)), level=Qgis.Warning)
+            else:
+                self.scene().messageBar().clearWidgets()
 
     def editComponent(self):
         self.edit()

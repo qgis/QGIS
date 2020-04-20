@@ -159,7 +159,23 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         QgsCurvePolygon *cp = new QgsCurvePolygon();
         cp->setExteriorRing( curveToAdd );
         QgsGeometry *geom = new QgsGeometry( cp );
-        geom->avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
+
+        QList<QgsVectorLayer *>  avoidIntersectionsLayers;
+        switch ( QgsProject::instance()->avoidIntersectionsMode() )
+        {
+          case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
+            avoidIntersectionsLayers.append( vlayer );
+            break;
+          case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
+            avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
+            break;
+          case QgsProject::AvoidIntersectionsMode::AllowIntersections:
+            break;
+        }
+        if ( avoidIntersectionsLayers.size() > 0 )
+        {
+          geom->avoidIntersections( avoidIntersectionsLayers );
+        }
 
         const QgsCurvePolygon *cpGeom = qgsgeometry_cast<const QgsCurvePolygon *>( geom->constGet() );
         if ( !cpGeom )

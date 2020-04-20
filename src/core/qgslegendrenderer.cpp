@@ -651,6 +651,9 @@ QgsLegendRenderer::LegendComponent QgsLegendRenderer::drawSymbolItemInternal( Qg
   ctx.columnRight = columnContext.right;
   ctx.maxSiblingSymbolWidth = maxSiblingSymbolWidth;
 
+  if ( const QgsSymbolLegendNode *symbolNode = dynamic_cast< const QgsSymbolLegendNode * >( symbolItem ) )
+    ctx.patchShape = symbolNode->patchShape();
+
   QgsLayerTreeModelLegendNode::ItemMetrics im = symbolItem->draw( mSettings, context ? &ctx
       : ( painter ? &ctx : nullptr ) );
 

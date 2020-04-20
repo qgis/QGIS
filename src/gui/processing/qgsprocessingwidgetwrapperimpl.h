@@ -1671,7 +1671,7 @@ class GUI_EXPORT QgsProcessingMapLayerWidgetWrapper : public QgsAbstractProcessi
 
   private:
 
-    QgsProcessingMapLayerComboBox *mComboBox = nullptr;
+    QPointer< QgsProcessingMapLayerComboBox > mComboBox;
     int mBlockSignals = 0;
 
     friend class TestProcessingGui;

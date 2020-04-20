@@ -26,7 +26,7 @@ QString QgsStringConcatenationAlgorithm::name() const
 
 QgsProcessingAlgorithm::Flags QgsStringConcatenationAlgorithm::flags() const
 {
-  return FlagHideFromToolbox;
+  return FlagHideFromToolbox | FlagSkipGenericModelLogging;
 }
 
 QString QgsStringConcatenationAlgorithm::displayName() const

@@ -774,6 +774,7 @@ void QgsProject::clear()
   mDisplaySettings->reset();
   mSnappingConfig.reset();
   emit snappingConfigChanged( mSnappingConfig );
+  emit avoidIntersectionsModeChanged();
   emit topologicalEditingChanged();
 
   mMapThemeCollection.reset( new QgsMapThemeCollection( this ) );
@@ -970,6 +971,15 @@ void QgsProject::setSnappingConfig( const QgsSnappingConfig &snappingConfig )
   mSnappingConfig = snappingConfig;
   setDirty( true );
   emit snappingConfigChanged( mSnappingConfig );
+}
+
+void QgsProject::setAvoidIntersectionsMode( const AvoidIntersectionsMode mode )
+{
+  if ( mAvoidIntersectionsMode == mode )
+    return;
+
+  mAvoidIntersectionsMode = mode;
+  emit avoidIntersectionsModeChanged();
 }
 
 bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes, QgsProject::ReadFlags flags )
@@ -1529,6 +1539,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   }
 
   mSnappingConfig.readProject( *doc );
+  mAvoidIntersectionsMode = static_cast<AvoidIntersectionsMode>( readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/AvoidIntersectionsMode" ), static_cast<int>( AvoidIntersectionsMode::AvoidIntersectionsLayers ) ) );
 
   // restore older project scales settings
   mViewSettings->setUseProjectScales( readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) ) );
@@ -1569,6 +1580,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   emit readProject( *doc );
   emit readProjectWithContext( *doc, context );
   emit snappingConfigChanged( mSnappingConfig );
+  emit avoidIntersectionsModeChanged();
   emit topologicalEditingChanged();
   emit projectColorsChanged();
 
@@ -2085,6 +2097,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
   delete clonedRoot;
 
   mSnappingConfig.writeProject( *doc );
+  writeEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/AvoidIntersectionsMode" ), static_cast<int>( mAvoidIntersectionsMode ) );
 
   // let map canvas and legend write their information
   emit writeProject( *doc );

@@ -40,10 +40,13 @@
 #include "qgsunittypes.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgscircle.h"
 
 #include <QMenu>
 #include <QMessageBox>
 #include <QInputDialog>
+
+///@cond PRIVATE
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
@@ -96,7 +99,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   connect( mBoxSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mBoxSpaceSpinBox_valueChanged );
   connect( mColumnSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mColumnSpaceSpinBox_valueChanged );
   connect( mLineSpacingSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mLineSpacingSpinBox_valueChanged );
-  connect( mCheckBoxAutoUpdate, &QCheckBox::stateChanged, this, &QgsLayoutLegendWidget::mCheckBoxAutoUpdate_stateChanged );
+  connect( mCheckBoxAutoUpdate, &QCheckBox::stateChanged, this, [ = ]( int state ) { mCheckBoxAutoUpdate_stateChanged( state ); } );
   connect( mCheckboxResizeContents, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mCheckboxResizeContents_toggled );
   connect( mRasterStrokeGroupBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutLegendWidget::mRasterStrokeGroupBox_toggled );
   connect( mRasterStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mRasterStrokeWidthSpinBox_valueChanged );
@@ -255,7 +258,7 @@ void QgsLayoutLegendWidget::setGuiElements()
 
   blockAllSignals( false );
 
-  mCheckBoxAutoUpdate_stateChanged( mLegend->autoUpdateModel() ? Qt::Checked : Qt::Unchecked );
+  mCheckBoxAutoUpdate_stateChanged( mLegend->autoUpdateModel() ? Qt::Checked : Qt::Unchecked, false );
   updateDataDefinedButton( mLegendTitleDDBtn );
   updateDataDefinedButton( mColumnsDDBtn );
 }
@@ -700,14 +703,17 @@ void QgsLayoutLegendWidget::mMoveUpToolButton_clicked()
   mLegend->endCommand();
 }
 
-void QgsLayoutLegendWidget::mCheckBoxAutoUpdate_stateChanged( int state )
+void QgsLayoutLegendWidget::mCheckBoxAutoUpdate_stateChanged( int state, bool userTriggered )
 {
-  mLegend->beginCommand( tr( "Change Auto Update" ) );
+  if ( userTriggered )
+  {
+    mLegend->beginCommand( tr( "Change Auto Update" ) );
 
-  mLegend->setAutoUpdateModel( state == Qt::Checked );
+    mLegend->setAutoUpdateModel( state == Qt::Checked );
 
-  mLegend->updateFilterByMap();
-  mLegend->endCommand();
+    mLegend->updateFilterByMap();
+    mLegend->endCommand();
+  }
 
   // do not allow editing of model if auto update is on - we would modify project's layer tree
   QList<QWidget *> widgets;
@@ -1168,6 +1174,8 @@ void QgsLayoutLegendWidget::blockAllSignals( bool b )
   mSymbolWidthSpinBox->blockSignals( b );
   mSymbolHeightSpinBox->blockSignals( b );
   mGroupSpaceSpinBox->blockSignals( b );
+  mSpaceBelowGroupHeadingSpinBox->blockSignals( b );
+  mSpaceBelowSubgroupHeadingSpinBox->blockSignals( b );
   mLayerSpaceSpinBox->blockSignals( b );
   mSymbolSpaceSpinBox->blockSignals( b );
   mIconLabelSpaceSpinBox->blockSignals( b );
@@ -1187,6 +1195,7 @@ void QgsLayoutLegendWidget::blockAllSignals( bool b )
   mLayerFontButton->blockSignals( b );
   mItemFontButton->blockSignals( b );
   mWrapCharLineEdit->blockSignals( b );
+  mLineSpacingSpinBox->blockSignals( b );
 }
 
 void QgsLayoutLegendWidget::selectedChanged( const QModelIndex &current, const QModelIndex &previous )
@@ -1286,54 +1295,16 @@ void QgsLayoutLegendWidget::mItemTreeView_doubleClicked( const QModelIndex &idx 
   QgsLayerTreeModel *model = mItemTreeView->layerTreeModel();
   QgsLayerTreeNode *currentNode = model->index2node( idx );
   QgsLayerTreeModelLegendNode *legendNode = model->index2legendNode( idx );
-  QString currentText;
 
-  if ( QgsLayerTree::isGroup( currentNode ) )
+  int originalIndex = -1;
+  if ( legendNode )
   {
-    currentText = QgsLayerTree::toGroup( currentNode )->name();
-  }
-  else if ( QgsLayerTree::isLayer( currentNode ) )
-  {
-    currentText = QgsLayerTree::toLayer( currentNode )->name();
-    QVariant v = currentNode->customProperty( QStringLiteral( "legend/title-label" ) );
-    if ( !v.isNull() )
-      currentText = v.toString();
-  }
-  else if ( legendNode )
-  {
-    currentText = legendNode->data( Qt::EditRole ).toString();
+    originalIndex = _originalLegendNodeIndex( legendNode );
+    currentNode = legendNode->layerNode();
   }
 
-  bool ok;
-  QString newText = QInputDialog::getText( this, tr( "Legend Item Properties" ), tr( "Item text" ),
-                    QLineEdit::Normal, currentText, &ok );
-  if ( !ok || newText == currentText )
-    return;
-
-  mLegend->beginCommand( tr( "Edit Legend Item" ) );
-
-  if ( QgsLayerTree::isGroup( currentNode ) )
-  {
-    QgsLayerTree::toGroup( currentNode )->setName( newText );
-  }
-  else if ( QgsLayerTree::isLayer( currentNode ) )
-  {
-    currentNode->setCustomProperty( QStringLiteral( "legend/title-label" ), newText );
-
-    // force update of label of the legend node with embedded icon (a bit clumsy i know)
-    if ( QgsLayerTreeModelLegendNode *embeddedNode = model->legendNodeEmbeddedInParent( QgsLayerTree::toLayer( currentNode ) ) )
-      embeddedNode->setUserLabel( QString() );
-  }
-  else if ( legendNode )
-  {
-    int originalIndex = _originalLegendNodeIndex( legendNode );
-    QgsMapLayerLegendUtils::setLegendNodeUserLabel( legendNode->layerNode(), originalIndex, newText );
-    model->refreshLayerLegend( legendNode->layerNode() );
-  }
-
-  mLegend->adjustBoxSize();
-  mLegend->updateFilterByMap();
-  mLegend->endCommand();
+  QgsLayoutLegendNodeWidget *widget = new QgsLayoutLegendNodeWidget( mLegend, currentNode, legendNode, originalIndex );
+  openPanel( widget );
 }
 
 
@@ -1376,3 +1347,151 @@ QMenu *QgsLayoutLegendMenuProvider::createContextMenu()
 
   return menu;
 }
+
+//
+// QgsLayoutLegendNodeWidget
+//
+QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legend, QgsLayerTreeNode *node, QgsLayerTreeModelLegendNode *legendNode, int originalLegendNodeIndex, QWidget *parent )
+  : QgsPanelWidget( parent )
+  , mLegend( legend )
+  , mNode( node )
+  , mLayer( qobject_cast< QgsLayerTreeLayer* >( node ) )
+  , mLegendNode( legendNode )
+  , mOriginalLegendNodeIndex( originalLegendNodeIndex )
+{
+  setupUi( this );
+  setPanelTitle( tr( "Legend Item Properties" ) );
+
+  // auto close panel if layer removed
+  connect( node, &QObject::destroyed, this, &QgsPanelWidget::acceptPanel );
+
+  QString currentLabel;
+  if ( mLegendNode )
+  {
+    currentLabel = mLegendNode->data( Qt::EditRole ).toString();
+  }
+  else if ( mLayer )
+  {
+    currentLabel = mLayer->name();
+    QVariant v = mLayer->customProperty( QStringLiteral( "legend/title-label" ) );
+    if ( !v.isNull() )
+      currentLabel = v.toString();
+  }
+  else
+  {
+    currentLabel = QgsLayerTree::toGroup( mNode )->name();
+
+  }
+
+  if ( mLayer && mLayer->layer()  && mLayer->layer()->type() == QgsMapLayerType::VectorLayer )
+  {
+    switch ( qobject_cast< QgsVectorLayer * >( mLayer->layer() )->geometryType() )
+    {
+      case QgsWkbTypes::PolygonGeometry:
+        mPatchShapeCombo->addItem( tr( "Default" ) );
+        mPatchShapeCombo->addItem( tr( "Oval" ) );
+        if ( ( dynamic_cast< QgsSymbolLegendNode * >( mLegendNode ) && !dynamic_cast< QgsSymbolLegendNode * >( mLegendNode )->patchShape().isNull() )
+             || ( !mLegendNode && !mLayer->patchShape().isNull() ) )
+        {
+          mPatchShapeCombo->addItem( tr( "Custom" ) );
+          mPatchShapeCombo->setCurrentIndex( 2 );
+        }
+        break;
+
+      case QgsWkbTypes::LineGeometry:
+        mPatchShapeCombo->addItem( tr( "Default" ) );
+        mPatchShapeCombo->addItem( tr( "Zig-zag" ) );
+        if ( ( dynamic_cast< QgsSymbolLegendNode * >( mLegendNode ) && !dynamic_cast< QgsSymbolLegendNode * >( mLegendNode )->patchShape().isNull() )
+             || ( !mLegendNode && !mLayer->patchShape().isNull() ) )
+        {
+          mPatchShapeCombo->addItem( tr( "Custom" ) );
+          mPatchShapeCombo->setCurrentIndex( 2 );
+        }
+        break;
+
+      default:
+        mPatchShapeLabel->hide();
+        mPatchShapeCombo->hide();
+        break;
+    }
+  }
+  else
+  {
+    mPatchShapeLabel->hide();
+    mPatchShapeCombo->hide();
+  }
+
+  mLabelEdit->setText( currentLabel );
+  connect( mLabelEdit, &QLineEdit::textChanged, this, &QgsLayoutLegendNodeWidget::labelChanged );
+  connect( mPatchShapeCombo, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLayoutLegendNodeWidget::patchChanged );
+
+}
+
+void QgsLayoutLegendNodeWidget::labelChanged( const QString &label )
+{
+  mLegend->beginCommand( tr( "Edit Legend Item" ), QgsLayoutItem::UndoLegendText );
+
+  if ( QgsLayerTree::isGroup( mNode ) )
+  {
+    QgsLayerTree::toGroup( mNode )->setName( label );
+  }
+  else if ( mLegendNode )
+  {
+    QgsMapLayerLegendUtils::setLegendNodeUserLabel( mLayer, mOriginalLegendNodeIndex, label );
+    mLegend->model()->refreshLayerLegend( mLayer );
+  }
+  else if ( mLayer )
+  {
+    mLayer->setCustomProperty( QStringLiteral( "legend/title-label" ), label );
+
+    // force update of label of the legend node with embedded icon (a bit clumsy i know)
+    if ( QgsLayerTreeModelLegendNode *embeddedNode = mLegend->model()->legendNodeEmbeddedInParent( mLayer ) )
+      embeddedNode->setUserLabel( QString() );
+  }
+
+  mLegend->adjustBoxSize();
+  mLegend->updateFilterByMap();
+  mLegend->endCommand();
+}
+
+void QgsLayoutLegendNodeWidget::patchChanged( int )
+{
+  mLegend->beginCommand( tr( "Edit Legend Item" ) );
+
+  QgsLegendPatchShape shape;
+  if ( mPatchShapeCombo->currentText() == tr( "Default" ) )
+  {
+    // use null shape to use default
+  }
+  else if ( mPatchShapeCombo->currentText() == tr( "Oval" ) )
+  {
+    QgsGeometry g = QgsGeometry::fromWkt( QStringLiteral( "CurvePolygon(CircularString (0 5, 5 0, 0 -5, -5 0, 0 5))" ) );
+    g.convertToStraightSegment();
+    shape = QgsLegendPatchShape( QgsSymbol::Fill, g, false );
+  }
+  else if ( mPatchShapeCombo->currentText() == tr( "Zig-zag" ) )
+  {
+    QgsGeometry g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 0, 1 1, 2 0, 3 1)" ) );
+    shape = QgsLegendPatchShape( QgsSymbol::Line, g, false );
+  }
+
+  if ( mLegendNode )
+  {
+    QgsMapLayerLegendUtils::setLegendNodePatchShape( mLayer, mOriginalLegendNodeIndex, shape );
+    mLegend->model()->refreshLayerLegend( mLayer );
+  }
+  else if ( mLayer )
+  {
+    mLayer->setPatchShape( shape );
+
+    // force update of label of the legend node with embedded icon (a bit clumsy i know)
+    if ( QgsLayerTreeModelLegendNode *embeddedNode = mLegend->model()->legendNodeEmbeddedInParent( mLayer ) )
+      embeddedNode->setUserLabel( QString() );
+  }
+
+  mLegend->adjustBoxSize();
+  mLegend->updateFilterByMap();
+  mLegend->endCommand();
+}
+
+///@endcond

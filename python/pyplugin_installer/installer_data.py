@@ -85,6 +85,8 @@ mPlugins = dict of dicts {id : {
     "downloads" unicode,                        # number of downloads
     "average_vote" unicode,                     # average vote
     "rating_votes" unicode,                     # number of votes
+    "create_date" unicode,                      # ISO datetime when the plugin has been created
+    "update_date" unicode,                      # ISO datetime when the plugin has been last updated
     "plugin_dependencies" unicode,              # PIP-style comma separated list of plugin dependencies
 }}
 """
@@ -444,6 +446,12 @@ class Repositories(QObject):
                         "downloads": pluginNodes.item(i).firstChildElement("downloads").text().strip(),
                         "average_vote": pluginNodes.item(i).firstChildElement("average_vote").text().strip(),
                         "rating_votes": pluginNodes.item(i).firstChildElement("rating_votes").text().strip(),
+                        "create_date": pluginNodes.item(i).firstChildElement("create_date").text().strip(),
+                        "update_date": pluginNodes.item(i).firstChildElement("update_date").text().strip(),
+                        "create_date_stable": pluginNodes.item(i).firstChildElement("create_date").text().strip() if not experimental else "",
+                        "update_date_stable": pluginNodes.item(i).firstChildElement("update_date").text().strip() if not experimental else "",
+                        "create_date_experimental": pluginNodes.item(i).firstChildElement("create_date").text().strip() if experimental else "",
+                        "update_date_experimental": pluginNodes.item(i).firstChildElement("update_date").text().strip() if experimental else "",
                         "icon": icon,
                         "experimental": experimental,
                         "deprecated": deprecated,
@@ -686,6 +694,12 @@ class Plugins(QObject):
             "downloads": "",
             "average_vote": "",
             "rating_votes": "",
+            "create_date": pluginMetadata("create_date"),
+            "update_date": pluginMetadata("update_date"),
+            "create_date_stable": pluginMetadata("create_date_stable"),
+            "update_date_stable": pluginMetadata("update_date_stable"),
+            "create_date_experimental": pluginMetadata("create_date_experimental"),
+            "update_date_experimental": pluginMetadata("update_date_experimental"),
             "available": False,     # Will be overwritten, if any available version found.
             "installed": True,
             "status": "orphan",  # Will be overwritten, if any available version found.
@@ -771,8 +785,9 @@ class Plugins(QObject):
                         # other remote metadata is preferred:
                         for attrib in ["name", "plugin_id", "description", "about", "category", "tags", "changelog", "author_name", "author_email", "homepage",
                                        "tracker", "code_repository", "experimental", "deprecated", "version_available", "zip_repository",
+                                       "download_url", "filename", "downloads", "average_vote", "rating_votes", "trusted", "plugin_dependencies",
                                        "version_available_stable", "version_available_experimental", "download_url_stable", "download_url_experimental",
-                                       "download_url", "filename", "downloads", "average_vote", "rating_votes", "trusted", "plugin_dependencies"]:
+                                       "create_date", "update_date", "create_date_stable", "update_date_stable", "create_date_experimental", "update_date_experimental"]:
                             if attrib not in translatableAttributes or attrib == "name":  # include name!
                                 if plugin.get(attrib, False):
                                     self.mPlugins[key][attrib] = plugin[attrib]

@@ -293,6 +293,7 @@ SET(QGIS_GUI_SRCS
   processing/models/qgsmodelgraphicsscene.cpp
   processing/models/qgsmodelgraphicsview.cpp
   processing/models/qgsmodelgroupboxdefinitionwidget.cpp
+  processing/models/qgsmodelinputreorderwidget.cpp
   processing/models/qgsmodelsnapper.cpp
   processing/models/qgsmodelundocommand.cpp
   processing/models/qgsmodelviewmouseevent.cpp
@@ -325,6 +326,7 @@ SET(QGIS_GUI_SRCS
   vectortile/qgsvectortileconnectiondialog.cpp
   vectortile/qgsvectortiledataitemguiprovider.cpp
   vectortile/qgsvectortileproviderguimetadata.cpp
+  vectortile/qgsvectortilesourceselect.cpp
 
   qgisinterface.cpp
   qgsactionmenu.cpp
@@ -999,6 +1001,7 @@ SET(QGIS_GUI_HDRS
   processing/models/qgsmodelgraphicsscene.h
   processing/models/qgsmodelgraphicsview.h
   processing/models/qgsmodelgroupboxdefinitionwidget.h
+  processing/models/qgsmodelinputreorderwidget.h
   processing/models/qgsmodelsnapper.h
   processing/models/qgsmodelundocommand.h
   processing/models/qgsmodelviewmouseevent.h
@@ -1096,6 +1099,7 @@ SET(QGIS_GUI_HDRS
   vectortile/qgsvectortileconnectiondialog.h
   vectortile/qgsvectortiledataitemguiprovider.h
   vectortile/qgsvectortileproviderguimetadata.h
+  vectortile/qgsvectortilesourceselect.h
 
   qgsbrowserdockwidget_p.h
 )

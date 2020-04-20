@@ -147,6 +147,8 @@ IF(WITH_CORE)
 
   SET (WITH_QUICK FALSE CACHE BOOL "Determines whether QGIS Quick library should be built")
 
+  SET (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
+
   # try to configure and build python bindings by default
   SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
   IF (WITH_BINDINGS)
@@ -627,6 +629,8 @@ ELSE (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
 ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
 
 IF(MSVC)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8")
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8")
   SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
   SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
   # disable macros that offend std::numeric_limits<T>::min()/max()

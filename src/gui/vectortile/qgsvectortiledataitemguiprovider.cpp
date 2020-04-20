@@ -94,7 +94,7 @@ void QgsVectorTileDataItemGuiProvider::newConnection( QgsDataItem *item )
 
 void QgsVectorTileDataItemGuiProvider::saveXyzTilesServers()
 {
-  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::XyzTiles );
+  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::VectorTile );
   dlg.exec();
 }
 
@@ -107,7 +107,7 @@ void QgsVectorTileDataItemGuiProvider::loadXyzTilesServers( QgsDataItem *item )
     return;
   }
 
-  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::XyzTiles, fileName );
+  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::VectorTile, fileName );
   dlg.exec();
   item->refreshConnections();
 }

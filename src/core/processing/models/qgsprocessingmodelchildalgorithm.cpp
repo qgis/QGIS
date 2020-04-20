@@ -120,7 +120,13 @@ QVariant QgsProcessingModelChildAlgorithm::toVariant() const
   map.insert( QStringLiteral( "alg_id" ), mAlgorithmId );
   map.insert( QStringLiteral( "alg_config" ), mConfiguration );
   map.insert( QStringLiteral( "active" ), mActive );
-  map.insert( QStringLiteral( "dependencies" ), mDependencies );
+
+  QVariantList dependencies;
+  for ( const QgsProcessingModelChildDependency &dependency : mDependencies )
+  {
+    dependencies << dependency.toVariant();
+  }
+  map.insert( QStringLiteral( "dependencies" ), dependencies );
 
   saveCommonProperties( map );
 
@@ -154,10 +160,36 @@ bool QgsProcessingModelChildAlgorithm::loadVariant( const QVariant &child )
   QVariantMap map = child.toMap();
 
   mId = map.value( QStringLiteral( "id" ) ).toString();
+  if ( mId.isEmpty() )
+    return false;
+
   mConfiguration = map.value( QStringLiteral( "alg_config" ) ).toMap();
   setAlgorithmId( map.value( QStringLiteral( "alg_id" ) ).toString() );
+  if ( algorithmId().isEmpty() )
+    return false;
   mActive = map.value( QStringLiteral( "active" ) ).toBool();
-  mDependencies = map.value( QStringLiteral( "dependencies" ) ).toStringList();
+
+  mDependencies.clear();
+  if ( map.value( QStringLiteral( "dependencies" ) ).type() == QVariant::StringList )
+  {
+    const QStringList dependencies = map.value( QStringLiteral( "dependencies" ) ).toStringList();
+    for ( const QString &dependency : dependencies )
+    {
+      QgsProcessingModelChildDependency dep;
+      dep.childId = dependency;
+      mDependencies << dep;
+    }
+  }
+  else
+  {
+    const QVariantList dependencies = map.value( QStringLiteral( "dependencies" ) ).toList();
+    for ( const QVariant &dependency : dependencies )
+    {
+      QgsProcessingModelChildDependency dep;
+      dep.loadVariant( dependency.toMap() );
+      mDependencies << dep;
+    }
+  }
 
   restoreCommonProperties( map );
 

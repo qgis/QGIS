@@ -125,6 +125,19 @@ Sets renderer for the map layer.
 Returns currently assigned renderer
 %End
 
+    void setLabeling( QgsVectorTileLabeling *labeling /Transfer/ );
+%Docstring
+Sets labeling for the map layer.
+
+.. note::
+
+   Takes ownership of the passed labeling
+%End
+    QgsVectorTileLabeling *labeling() const;
+%Docstring
+Returns currently assigned labeling
+%End
+
     void setTileBorderRenderingEnabled( bool enabled );
 %Docstring
 Sets whether to render also borders of tiles (useful for debugging)

@@ -108,7 +108,7 @@ bool MDAL::Driver2dm::canReadMesh( const std::string &uri )
   return true;
 }
 
-std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile )
+std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, const std::string & )
 {
   mMeshFile = meshFile;
 

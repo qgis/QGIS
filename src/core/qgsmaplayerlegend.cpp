@@ -146,6 +146,27 @@ bool QgsMapLayerLegendUtils::hasLegendNodeUserLabel( QgsLayerTreeLayer *nodeLaye
   return nodeLayer->customProperties().contains( "legend/label-" + QString::number( originalIndex ) );
 }
 
+void QgsMapLayerLegendUtils::setLegendNodePatchShape( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QgsLegendPatchShape &shape )
+{
+  QDomDocument patchDoc;
+  QDomElement patchElem = patchDoc.createElement( QStringLiteral( "patch" ) );
+  shape.writeXml( patchElem, patchDoc, QgsReadWriteContext() );
+  patchDoc.appendChild( patchElem );
+  nodeLayer->setCustomProperty( "legend/patch-shape-" + QString::number( originalIndex ), patchDoc.toString() );
+}
+
+QgsLegendPatchShape QgsMapLayerLegendUtils::legendNodePatchShape( QgsLayerTreeLayer *nodeLayer, int originalIndex )
+{
+  QString patchDef = nodeLayer->customProperty( "legend/patch-shape-" + QString::number( originalIndex ) ).toString();
+  if ( patchDef.isEmpty() )
+    return QgsLegendPatchShape();
+
+  QDomDocument doc( QStringLiteral( "patch" ) );
+  doc.setContent( patchDef );
+  QgsLegendPatchShape shape;
+  shape.readXml( doc.documentElement(), QgsReadWriteContext() );
+  return shape;
+}
 
 void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer *nodeLayer, QList<QgsLayerTreeModelLegendNode *> &nodes )
 {
@@ -154,9 +175,17 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer *nodeLa
   const auto constNodes = nodes;
   for ( QgsLayerTreeModelLegendNode *legendNode : constNodes )
   {
-    QString userLabel = QgsMapLayerLegendUtils::legendNodeUserLabel( nodeLayer, i++ );
+    QString userLabel = QgsMapLayerLegendUtils::legendNodeUserLabel( nodeLayer, i );
     if ( !userLabel.isNull() )
       legendNode->setUserLabel( userLabel );
+
+    if ( QgsSymbolLegendNode *symbolNode = dynamic_cast< QgsSymbolLegendNode * >( legendNode ) )
+    {
+      const QgsLegendPatchShape shape = QgsMapLayerLegendUtils::legendNodePatchShape( nodeLayer, i );
+      symbolNode->setPatchShape( shape );
+    }
+
+    i++;
   }
 
   // handle user order of nodes

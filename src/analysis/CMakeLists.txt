@@ -37,6 +37,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcategorizeusingstyle.cpp
   processing/qgsalgorithmcentroid.cpp
   processing/qgsalgorithmclip.cpp
+  processing/qgsalgorithmconditionalbranch.cpp
   processing/qgsalgorithmconstantraster.cpp
   processing/qgsalgorithmconvexhull.cpp
   processing/qgsalgorithmdbscanclustering.cpp
@@ -93,6 +94,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmmultiparttosinglepart.cpp
   processing/qgsalgorithmmultiringconstantbuffer.cpp
   processing/qgsalgorithmnearestneighbouranalysis.cpp
+  processing/qgsalgorithmnormalraster.cpp
   processing/qgsalgorithmoffsetlines.cpp
   processing/qgsalgorithmorderbyexpression.cpp
   processing/qgsalgorithmorientedminimumboundingbox.cpp
@@ -113,6 +115,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrandomextract.cpp
   processing/qgsalgorithmrandompointsextent.cpp
   processing/qgsalgorithmrandompointsonlines.cpp
+  processing/qgsalgorithmrandomraster.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
   processing/qgsalgorithmrasterlogicalop.cpp
   processing/qgsalgorithmrasterize.cpp
@@ -130,6 +133,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrepairshapefile.cpp
   processing/qgsalgorithmreverselinedirection.cpp
   processing/qgsalgorithmrotate.cpp
+  processing/qgsalgorithmroundrastervalues.cpp
   processing/qgsalgorithmruggedness.cpp
   processing/qgsalgorithmsavelog.cpp
   processing/qgsalgorithmsaveselectedfeatures.cpp

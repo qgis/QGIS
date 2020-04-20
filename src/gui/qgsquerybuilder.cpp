@@ -91,6 +91,7 @@ void QgsQueryBuilder::showEvent( QShowEvent *event )
 void QgsQueryBuilder::populateFields()
 {
   const QgsFields &fields = mLayer->fields();
+  txtSQL->setFields( fields );
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     if ( fields.fieldOrigin( idx ) != QgsFields::OriginProvider )

@@ -162,6 +162,11 @@ QgsMeshLayer *QgisAppInterface::addMeshLayer( const QString &url, const QString 
   return qgis->addMeshLayer( url, baseName, providerKey );
 }
 
+QgsVectorTileLayer *QgisAppInterface::addVectorTileLayer( const QString &url, const QString &baseName )
+{
+  return qgis->addVectorTileLayer( url, baseName );
+}
+
 bool QgisAppInterface::addProject( const QString &projectName )
 {
   return qgis->addProject( projectName );
@@ -679,6 +684,8 @@ QAction *QgisAppInterface::actionAddOgrLayer() { return qgis->actionAddOgrLayer(
 QAction *QgisAppInterface::actionAddRasterLayer() { return qgis->actionAddRasterLayer(); }
 QAction *QgisAppInterface::actionAddPgLayer() { return qgis->actionAddPgLayer(); }
 QAction *QgisAppInterface::actionAddWmsLayer() { return qgis->actionAddWmsLayer(); }
+QAction *QgisAppInterface::actionAddXyzLayer() { return qgis->actionAddXyzLayer(); }
+QAction *QgisAppInterface::actionAddVectorTileLayer() { return qgis->actionAddVectorTileLayer(); }
 QAction *QgisAppInterface::actionAddAfsLayer() { return qgis->actionAddAfsLayer(); }
 QAction *QgisAppInterface::actionAddAmsLayer() { return qgis->actionAddAmsLayer(); }
 QAction *QgisAppInterface::actionCopyLayerStyle() { return qgis->actionCopyLayerStyle(); }

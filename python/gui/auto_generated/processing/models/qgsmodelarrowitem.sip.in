@@ -28,8 +28,14 @@ A link arrow item for use in the model designer.
 %End
   public:
 
-    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, bool startIsOutgoing,
-                       QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming );
+    enum Marker
+    {
+      Circle,
+      ArrowHead,
+    };
+
+    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, bool startIsOutgoing, Marker startMarker,
+                       QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming, Marker endMarker );
 %Docstring
 Constructor for QgsModelArrowItem, with the specified ``parent`` item.
 
@@ -37,8 +43,8 @@ The arrow will link ``startItem`` to ``endItem``, joining the specified ``startE
 to ``endEdge`` and ``endIndex``.
 %End
 
-    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex,
-                       QgsModelComponentGraphicItem *endItem );
+    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, Marker startMarker,
+                       QgsModelComponentGraphicItem *endItem, Marker endMarker );
 %Docstring
 Constructor for QgsModelArrowItem, with the specified ``parent`` item.
 
@@ -46,8 +52,8 @@ The arrow will link ``startItem`` to ``endItem``, joining the specified ``startE
 to an automatic point on ``endItem``.
 %End
 
-    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem,
-                       QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex );
+    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Marker startMarker,
+                       QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, Marker endMarker );
 %Docstring
 Constructor for QgsModelArrowItem, with the specified ``parent`` item.
 
@@ -55,8 +61,8 @@ The arrow will link ``startItem`` to ``endItem``, joining an automatic point on 
 ``endEdge`` and ``endIndex``.
 %End
 
-    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem,
-                       QgsModelComponentGraphicItem *endItem );
+    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Marker startMarker,
+                       QgsModelComponentGraphicItem *endItem, Marker endMarker );
 %Docstring
 Constructor for QgsModelArrowItem, with the specified ``parent`` item.
 

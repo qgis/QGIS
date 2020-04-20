@@ -47,6 +47,15 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
                                           const QgsPalLayerSettings *settings,
                                           const QString &layerName = QString() );
 
+    //! Constructor to initialize the provider from any map layer (e.g. vector tile layer)
+    explicit QgsVectorLayerLabelProvider( QgsWkbTypes::GeometryType geometryType,
+                                          const QgsFields &fields,
+                                          const QgsCoordinateReferenceSystem &crs,
+                                          const QString &providerId,
+                                          const QgsPalLayerSettings *settings,
+                                          QgsMapLayer *layer,
+                                          const QString &layerName = QString() );
+
     ~QgsVectorLayerLabelProvider() override;
 
     QList<QgsLabelFeature *> labelFeatures( QgsRenderContext &context ) override;
@@ -97,6 +106,14 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
      * \since QGIS 3.10
      */
     const QgsPalLayerSettings &settings() const;
+
+    /**
+     * Sets fields of this label provider. Normally this is not needed, but when used for vector tiles,
+     * fields are not known at the time of creation of label providers. It should be called before
+     * a call to prepare() which uses the list of fields.
+     * \since QGIS 3.14
+     */
+    void setFields( const QgsFields &fields ) { mFields = fields; }
 
   protected:
     //! initialization method - called from constructors

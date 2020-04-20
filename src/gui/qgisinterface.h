@@ -57,6 +57,7 @@ class QgsPluginManagerInterface;
 class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
+class QgsVectorTileLayer;
 class QgsOptionsWidgetFactory;
 class QgsLocatorFilter;
 class QgsStatusBar;
@@ -479,6 +480,18 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionAddRasterLayer() = 0;
     virtual QAction *actionAddPgLayer() = 0;
     virtual QAction *actionAddWmsLayer() = 0;
+
+    /**
+     * Returns the native Add XYZ Layer action.
+     * \since QGIS 3.14
+     */
+    virtual QAction *actionAddXyzLayer() = 0;
+
+    /**
+     * Returns the native Add Vector Tile Layer action.
+     * \since QGIS 3.14
+     */
+    virtual QAction *actionAddVectorTileLayer() = 0;
     //! Returns the native Add ArcGIS FeatureServer action.
     virtual QAction *actionAddAfsLayer() = 0;
     //! Returns the native Add ArcGIS MapServer action.
@@ -661,6 +674,12 @@ class GUI_EXPORT QgisInterface : public QObject
      * Adds a mesh layer to the current project.
      */
     virtual QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
+
+    /**
+     * Adds a vector tile layer to the current project.
+     * \since QGIS 3.14
+     */
+    virtual QgsVectorTileLayer *addVectorTileLayer( const QString &url, const QString &baseName ) = 0;
 
     //! Adds (opens) a project
     virtual bool addProject( const QString &project ) = 0;

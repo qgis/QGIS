@@ -40,41 +40,54 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
                             const QString &providerKey,
                             const QgsMeshLayer::LayerOptions &options )
-  : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath )
+  : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath ),
+    mTemporalProperties( new QgsMeshLayerTemporalProperties( this ) )
 {
   mShouldValidateCrs = !options.skipCrsValidation;
 
   setProviderType( providerKey );
   // if we’re given a provider type, try to create and bind one to this layer
+  bool ok = false;
   if ( !meshLayerPath.isEmpty() && !providerKey.isEmpty() )
   {
     QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
-    setDataProvider( providerKey, providerOptions );
+    ok = setDataProvider( providerKey, providerOptions );
   }
 
-  setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
-  setDefaultRendererSettings();
+  if ( ok )
+  {
+    setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
+    setDefaultRendererSettings();
 
-  mTemporalProperties = new QgsMeshLayerTemporalProperties( this );
-  if ( mDataProvider )
-    mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
+    if ( mDataProvider )
+      mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
+  }
 }
 
 
 void QgsMeshLayer::setDefaultRendererSettings()
 {
+  QgsMeshRendererMeshSettings meshSettings;
   if ( mDataProvider && mDataProvider->datasetGroupCount() > 0 )
   {
-    // show data from the first dataset group
+    // Show data from the first dataset group
     mRendererSettings.setActiveScalarDatasetGroup( 0 );
+    // If the first dataset group has nan min/max, display the mesh to avoid nothing displayed
+    QgsMeshDatasetGroupMetadata meta = mDataProvider->datasetGroupMetadata( 0 );
+    if ( meta.maximum() == std::numeric_limits<double>::quiet_NaN() &&
+         meta.minimum() == std::numeric_limits<double>::quiet_NaN() )
+      meshSettings.setEnabled( true );
+
+    // If the mesh is non temporal, set the static scalar dataset
+    if ( !mDataProvider->temporalCapabilities()->hasTemporalCapabilities() )
+      setStaticScalarDatasetIndex( QgsMeshDatasetIndex( 0, 0 ) );
   }
   else
   {
     // show at least the mesh by default
-    QgsMeshRendererMeshSettings meshSettings;
     meshSettings.setEnabled( true );
-    mRendererSettings.setNativeMeshSettings( meshSettings );
   }
+  mRendererSettings.setNativeMeshSettings( meshSettings );
 
   // Sets default resample method for scalar dataset
   if ( !mDataProvider )
@@ -728,6 +741,14 @@ void QgsMeshLayer::reload()
     //clear the rendererCache
     mRendererCache.reset( new QgsMeshLayerRendererCache() );
   }
+}
+
+QStringList QgsMeshLayer::subLayers() const
+{
+  if ( mDataProvider )
+    return mDataProvider->subLayers();
+  else
+    return QStringList();
 }
 
 bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
