@@ -346,8 +346,6 @@ void QgsMdalProvider::addGroupToTemporalCapabilities( int indexGroup )
   if ( !mMeshH )
     return;
   QgsMeshDataProviderTemporalCapabilities *tempCap = temporalCapabilities();
-  tempCap->setHasTemporalCapabilities( true );
-  tempCap->setHasTemporalCapabilities( true );
   QgsMeshDatasetGroupMetadata dsgMetadata = datasetGroupMetadata( indexGroup );
   QDateTime refTime = dsgMetadata.referenceTime();
   refTime.setTimeSpec( Qt::UTC ); //For now provider don't support time zone and return always in local time, force UTC
@@ -356,6 +354,7 @@ void QgsMdalProvider::addGroupToTemporalCapabilities( int indexGroup )
 
   if ( dsgMetadata.isTemporal() )
   {
+    tempCap->setHasTemporalCapabilities( true );
     for ( int dsi = 0; dsi < dsCount; ++dsi )
     {
       QgsMeshDatasetMetadata dsMeta = datasetMetadata( QgsMeshDatasetIndex( indexGroup, dsi ) );
