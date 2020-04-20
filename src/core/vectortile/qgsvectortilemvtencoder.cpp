@@ -15,6 +15,7 @@
 
 #include "qgsvectortilemvtencoder.h"
 
+#include "qgsfeedback.h"
 #include "qgslinestring.h"
 #include "qgslogger.h"
 #include "qgsmultilinestring.h"
@@ -82,9 +83,12 @@ struct MVTGeometryWriter
 
 static QVector<QgsPoint> pointsFromLineString( const QgsLineString *ls )
 {
-  QVector<QgsPoint> pts( ls->numPoints() );
-  for ( int i = 0; i < pts.count(); ++i )
-    pts[i] = ls->pointN( i );
+  int count = ls->numPoints();
+  const double *xData = ls->xData();
+  const double *yData = ls->yData();
+  QVector<QgsPoint> pts( count );
+  for ( int i = 0; i < count; ++i )
+    pts[i] = QgsPoint( xData[i], yData[i] );
   return pts;
 }
 
@@ -149,8 +153,11 @@ QgsVectorTileMVTEncoder::QgsVectorTileMVTEncoder( QgsTileXYZ tileID )
   mTileExtent = tm.tileExtent( mTileID );
 }
 
-void QgsVectorTileMVTEncoder::addLayer( QgsVectorLayer *layer, QString filterExpression, QString layerName )
+void QgsVectorTileMVTEncoder::addLayer( QgsVectorLayer *layer, QgsFeedback *feedback, QString filterExpression, QString layerName )
 {
+  if ( feedback && feedback->isCanceled() )
+    return;
+
   QgsCoordinateTransform ct( layer->crs(), QgsCoordinateReferenceSystem( "EPSG:3857" ), mTransformContext );
 
   QgsRectangle layerTileExtent = mTileExtent;
@@ -202,6 +209,9 @@ void QgsVectorTileMVTEncoder::addLayer( QgsVectorLayer *layer, QString filterExp
 
   do
   {
+    if ( feedback && feedback->isCanceled() )
+      break;
+
     QgsGeometry g = f.geometry();
 
     // reproject

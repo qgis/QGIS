@@ -1426,7 +1426,7 @@ protobuf_generate_cpp(VECTOR_TILE_PROTO_SRCS VECTOR_TILE_PROTO_HDRS vectortile/v
 SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS} ${VECTOR_TILE_PROTO_SRCS})
 SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS} ${VECTOR_TILE_PROTO_HDRS})
 IF (MSVC)
-  SET_SOURCE_FILES_PROPERTIES(${VECTOR_TILE_PROTO_SRCS} vectortile/qgsvectortilemvtdecoder.cpp PROPERTIES COMPILE_DEFINITIONS PROTOBUF_USE_DLLS)
+  SET_SOURCE_FILES_PROPERTIES(${VECTOR_TILE_PROTO_SRCS} vectortile/qgsvectortilemvtdecoder.cpp vectortile/qgsvectortilemvtencoder.cpp PROPERTIES COMPILE_DEFINITIONS PROTOBUF_USE_DLLS)
 ELSE (MSVC)
   # automatically generated file produces warnings (unused-parameter, unused-variable, misleading-indentation)
   SET_SOURCE_FILES_PROPERTIES(${VECTOR_TILE_PROTO_SRCS} PROPERTIES COMPILE_FLAGS -w)
