@@ -43,13 +43,9 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsProject,
     QgsWkbTypes,
-<<<<<<< HEAD
-    QgsGeometry
-=======
     QgsGeometry,
     QgsProviderRegistry,
     QgsVectorDataProvider,
->>>>>>> f48e1c89a3... Merge pull request #35162 from espinafre/pg_bigint_pk_no_cast
 )
 from qgis.gui import QgsGui, QgsAttributeForm
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QObject, QByteArray
