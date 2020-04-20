@@ -73,62 +73,6 @@ static bool sanitizeDifferenceResult( QgsGeometry &geom )
   return true;
 }
 
-QgsFeatureList QgsOverlayUtils::featureIntersection( const QgsFeature &featA, const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsSpatialIndex &indexB, const QgsCoordinateTransformContext &transformContext, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB )
-{
-  QgsFeatureList result;
-  if ( !featA.hasGeometry() )
-  {
-    return result;
-  }
-
-  QgsGeometry geom( featA.geometry() );
-  QgsFeatureIds intersects = indexB.intersects( geom.boundingBox() ).toSet();
-
-  QgsFeatureRequest request;
-  request.setFilterFids( intersects );
-  request.setDestinationCrs( sourceA.sourceCrs(), transformContext );
-  request.setSubsetOfAttributes( fieldIndicesB );
-
-  std::unique_ptr< QgsGeometryEngine > engine;
-  if ( !intersects.isEmpty() )
-  {
-    // use prepared geometries for faster intersection tests
-    engine.reset( QgsGeometry::createGeometryEngine( geom.constGet() ) );
-    engine->prepareGeometry();
-  }
-
-  QgsAttributes outAttributes( fieldIndicesA.count() + fieldIndicesB.count() );
-  const QgsAttributes attrsA( featA.attributes() );
-  for ( int i = 0; i < fieldIndicesA.count(); ++i )
-  {
-    outAttributes[i] = attrsA[fieldIndicesA[i]];
-  }
-
-  QgsFeature featB;
-  QgsFeatureIterator fitB = sourceB.getFeatures( request );
-  while ( fitB.nextFeature( featB ) )
-  {
-    QgsGeometry tmpGeom( featB.geometry() );
-    if ( !engine->intersects( tmpGeom.constGet() ) )
-      continue;
-
-    QgsGeometry intGeom = geom.intersection( tmpGeom );
-    if ( !sanitizeIntersectionResult( intGeom, QgsWkbTypes::geometryType( QgsWkbTypes::multiType( sourceA.wkbType() ) ) ) )
-      continue;
-
-    const QgsAttributes attrsB( featB.attributes() );
-    for ( int i = 0; i < fieldIndicesB.count(); ++i )
-      outAttributes[fieldIndicesA.count() + i] = attrsB[fieldIndicesB[i]];
-
-    QgsFeature outFeat;
-    outFeat.setGeometry( intGeom );
-    outFeat.setAttributes( outAttributes );
-    result.append( outFeat );
-  }
-
-  return result;
-}
-
 QgsFeatureList QgsOverlayUtils::featureDifference( const QgsFeature &featA, const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsSpatialIndex &indexB, const QgsCoordinateTransformContext &transformContext,
     int fieldsCountA, int fieldsCountB, QgsOverlayUtils::DifferenceOutput outputAttrs )
 {
@@ -208,6 +152,62 @@ QgsFeatureList QgsOverlayUtils::featureDifference( const QgsFeature &featA, cons
   outFeat.setGeometry( geom );
   outFeat.setAttributes( attrs );
   result.append( outFeat );
+  return result;
+}
+
+QgsFeatureList QgsOverlayUtils::featureIntersection( const QgsFeature &featA, const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsSpatialIndex &indexB, const QgsCoordinateTransformContext &transformContext, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB )
+{
+  QgsFeatureList result;
+  if ( !featA.hasGeometry() )
+  {
+    return result;
+  }
+
+  QgsGeometry geom( featA.geometry() );
+  QgsFeatureIds intersects = indexB.intersects( geom.boundingBox() ).toSet();
+
+  QgsFeatureRequest request;
+  request.setFilterFids( intersects );
+  request.setDestinationCrs( sourceA.sourceCrs(), transformContext );
+  request.setSubsetOfAttributes( fieldIndicesB );
+
+  std::unique_ptr< QgsGeometryEngine > engine;
+  if ( !intersects.isEmpty() )
+  {
+    // use prepared geometries for faster intersection tests
+    engine.reset( QgsGeometry::createGeometryEngine( geom.constGet() ) );
+    engine->prepareGeometry();
+  }
+
+  QgsAttributes outAttributes( fieldIndicesA.count() + fieldIndicesB.count() );
+  const QgsAttributes attrsA( featA.attributes() );
+  for ( int i = 0; i < fieldIndicesA.count(); ++i )
+  {
+    outAttributes[i] = attrsA[fieldIndicesA[i]];
+  }
+
+  QgsFeature featB;
+  QgsFeatureIterator fitB = sourceB.getFeatures( request );
+  while ( fitB.nextFeature( featB ) )
+  {
+    QgsGeometry tmpGeom( featB.geometry() );
+    if ( !engine->intersects( tmpGeom.constGet() ) )
+      continue;
+
+    QgsGeometry intGeom = geom.intersection( tmpGeom );
+    if ( !sanitizeIntersectionResult( intGeom, QgsWkbTypes::geometryType( QgsWkbTypes::multiType( sourceA.wkbType() ) ) ) )
+      continue;
+
+    const QgsAttributes attrsB( featB.attributes() );
+    for ( int i = 0; i < fieldIndicesB.count(); ++i )
+      outAttributes[fieldIndicesA.count() + i] = attrsB[fieldIndicesB[i]];
+
+    QgsFeature outFeat;
+    outFeat.setGeometry( intGeom );
+    outFeat.setAttributes( outAttributes );
+    result.append( outFeat );
+  }
+
   return result;
 }
 
