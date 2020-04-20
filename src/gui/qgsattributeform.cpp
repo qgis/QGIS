@@ -931,28 +931,32 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
     // sync OK button status
     synchronizeEnabledState();
 
-    mExpressionContext.setFeature( ft );
-
-    mExpressionContext << QgsExpressionContextUtils::formScope( ft, mContext.attributeFormModeString() );
+    QgsExpressionContext context;
+    context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+    context.appendScope( QgsExpressionContextUtils::formScope( ft, mContext.attributeFormModeString() ) );
+    context.setFeature( ft );
 
     // Recheck visibility for all containers which are controlled by this value
     const QVector<ContainerInformation *> infos = mContainerInformationDependency.value( eww->field().name() );
     for ( ContainerInformation *info : infos )
     {
-      info->apply( &mExpressionContext );
+      info->apply( &context );
     }
   }
 }
 
 void QgsAttributeForm::updateContainersVisibility()
 {
-  mExpressionContext << QgsExpressionContextUtils::formScope( QgsFeature( mFeature ), mContext.attributeFormModeString() );
+  QgsExpressionContext context;
+  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+  context.appendScope( QgsExpressionContextUtils::formScope( mFeature, mContext.attributeFormModeString() ) );
+  context.setFeature( mFeature );
 
   const QVector<ContainerInformation *> infos = mContainerVisibilityInformation;
 
   for ( ContainerInformation *info : infos )
   {
-    info->apply( &mExpressionContext );
+    info->apply( &context );
   }
 
   //and update the constraints
