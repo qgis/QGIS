@@ -61,7 +61,7 @@ namespace Vectoranalysis
 
       /**
        * @brief Create job queue from next feature chunk
-       * @return  true if there are more features. False if all fetures have been processed
+       * @return  true if there are more features. False if all features have been processed
        */
       bool prepareNextChunk() override;
 

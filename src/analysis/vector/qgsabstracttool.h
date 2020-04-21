@@ -103,7 +103,7 @@ namespace Vectoranalysis
 
       /**
        * @brief Create job queue from next feature chunk
-       * @return  true if there are more features. False if all fetures have been processed
+       * @return  true if there are more features. False if all features have been processed
        */
       virtual bool prepareNextChunk() = 0;
 
@@ -129,6 +129,12 @@ namespace Vectoranalysis
        */
       void writeFeatures( QgsFeatureList &outFeatures );
 
+      /**
+       * @brief prepareLayer Internal function to create the feature iterator
+       * @param source the layer source
+       * @param destCRS the destination CRS
+       * @param sourceFieldIndices the source field indices. If 0, all fields are taken
+       */
       void prepareLayer( QgsFeatureSource *source, const QgsCoordinateReferenceSystem &destCRS, const QgsAttributeList *sourceFieldIndices = 0 );
 
       QList<Job *> mJobQueue;
