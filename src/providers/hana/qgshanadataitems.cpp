@@ -166,10 +166,11 @@ bool QgsHanaConnectionItem::handleDrop( const QMimeData *data, const QString &to
       {
         bool fieldsInUpperCase = QgsHanaUtils::countFieldsWithFirstLetterInUppercase( srcLayer->fields() ) > srcLayer->fields().size() / 2;
 
-        uri.setWkbType( srcLayer->wkbType() );
         uri.setDataSource( !toSchema.isNull() ? toSchema : nullptr,
                            u.name,
                            ( srcLayer->geometryType() != QgsWkbTypes::NullGeometry ) ? ( fieldsInUpperCase ? QStringLiteral( "GEOM" ) : QStringLiteral( "geom" ) ) : nullptr );
+        uri.setKeyColumn( QgsDataSourceUri( u.uri ).keyColumn() );
+        uri.setWkbType( srcLayer->wkbType() );
 
         std::unique_ptr< QgsVectorLayerExporterTask > exportTask(
           QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, uri.uri( false ),
