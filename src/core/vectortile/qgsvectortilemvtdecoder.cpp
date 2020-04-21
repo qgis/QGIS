@@ -235,26 +235,27 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
           {
             tmpPoints.append( tmpPoints.first() );  // close the ring
 
-            if ( QgsVectorTileMVTUtils::isExteriorRing( tmpPoints ) )
+            std::unique_ptr<QgsLineString> ring( new QgsLineString( tmpPoints ) );
+            tmpPoints.clear();
+
+            if ( QgsVectorTileMVTUtils::isExteriorRing( ring.get() ) )
             {
               // start a new polygon
               QgsPolygon *p = new QgsPolygon;
-              p->setExteriorRing( new QgsLineString( tmpPoints ) );
+              p->setExteriorRing( ring.release() );
               outputPolygons.append( p );
-              tmpPoints.clear();
             }
             else
             {
               // interior ring (hole)
               if ( outputPolygons.count() != 0 )
               {
-                outputPolygons[outputPolygons.count() - 1]->addInteriorRing( new QgsLineString( tmpPoints ) );
+                outputPolygons[outputPolygons.count() - 1]->addInteriorRing( ring.release() );
               }
               else
               {
                 QgsDebugMsg( QStringLiteral( "Malformed geometry: first ring of a polygon is interior ring" ) );
               }
-              tmpPoints.clear();
             }
           }
 

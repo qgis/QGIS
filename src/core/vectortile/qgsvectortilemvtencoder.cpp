@@ -59,7 +59,7 @@ struct MVTGeometryWriter
 
   void addPoint( const QgsPoint &pt )
   {
-    addPoint( mapToTileCoordinates( pt ) );
+    addPoint( mapToTileCoordinates( pt.x(), pt.y() ) );
   }
 
   void addPoint( const QPoint &pt )
@@ -73,28 +73,20 @@ struct MVTGeometryWriter
     cursor = pt;
   }
 
-  QPoint mapToTileCoordinates( const QgsPoint &p )
+  QPoint mapToTileCoordinates( double x, double y )
   {
-    return QPoint( static_cast<int>( round( ( p.x() - tileXMin ) * resolution / tileDX ) ),
-                   static_cast<int>( round( ( tileYMax - p.y() ) * resolution / tileDY ) ) );
+    return QPoint( static_cast<int>( round( ( x - tileXMin ) * resolution / tileDX ) ),
+                   static_cast<int>( round( ( tileYMax - y ) * resolution / tileDY ) ) );
   }
 };
 
 
-static QVector<QgsPoint> pointsFromLineString( const QgsLineString *ls )
+static void encodeLineString( const QgsLineString *lineString, bool isRing, bool reversed, MVTGeometryWriter &geomWriter )
 {
-  int count = ls->numPoints();
-  const double *xData = ls->xData();
-  const double *yData = ls->yData();
-  QVector<QgsPoint> pts( count );
-  for ( int i = 0; i < count; ++i )
-    pts[i] = QgsPoint( xData[i], yData[i] );
-  return pts;
-}
+  int count = lineString->numPoints();
+  const double *xData = lineString->xData();
+  const double *yData = lineString->yData();
 
-static void encodeLineString( const QVector<QgsPoint> &ls, bool isRing, bool reversed, MVTGeometryWriter &geomWriter )
-{
-  int count = ls.count();
   if ( isRing )
     count--;  // the last point in linear ring is repeated - but not in MVT
 
@@ -104,7 +96,7 @@ static void encodeLineString( const QVector<QgsPoint> &ls, bool isRing, bool rev
   tilePoints.reserve( count );
   for ( int i = 0; i < count; ++i )
   {
-    QPoint pt = geomWriter.mapToTileCoordinates( ls[i] );
+    QPoint pt = geomWriter.mapToTileCoordinates( xData[i], yData[i] );
     if ( pt == last )
       continue;
 
@@ -130,14 +122,14 @@ static void encodeLineString( const QVector<QgsPoint> &ls, bool isRing, bool rev
 
 static void encodePolygon( const QgsPolygon *polygon, MVTGeometryWriter &geomWriter )
 {
-  QVector<QgsPoint> exterior = pointsFromLineString( qgsgeometry_cast<const QgsLineString *>( polygon->exteriorRing() ) );
-  encodeLineString( exterior, true, !QgsVectorTileMVTUtils::isExteriorRing( exterior ), geomWriter );
+  const QgsLineString *exteriorRing = qgsgeometry_cast<const QgsLineString *>( polygon->exteriorRing() );
+  encodeLineString( exteriorRing, true, !QgsVectorTileMVTUtils::isExteriorRing( exteriorRing ), geomWriter );
   geomWriter.addClosePath();
 
   for ( int i = 0; i < polygon->numInteriorRings(); ++i )
   {
-    QVector<QgsPoint> interior = pointsFromLineString( qgsgeometry_cast<const QgsLineString *>( polygon->interiorRing( i ) ) );
-    encodeLineString( interior, true, QgsVectorTileMVTUtils::isExteriorRing( interior ), geomWriter );
+    const QgsLineString *interiorRing = qgsgeometry_cast<const QgsLineString *>( polygon->interiorRing( i ) );
+    encodeLineString( interiorRing, true, QgsVectorTileMVTUtils::isExteriorRing( interiorRing ), geomWriter );
     geomWriter.addClosePath();
   }
 }
@@ -314,8 +306,7 @@ void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, co
 
     case QgsWkbTypes::LineString:
     {
-      QVector<QgsPoint> lineString = pointsFromLineString( qgsgeometry_cast<const QgsLineString *>( geom ) );
-      encodeLineString( lineString, true, false, geomWriter );
+      encodeLineString( qgsgeometry_cast<const QgsLineString *>( geom ), true, false, geomWriter );
     }
     break;
 
@@ -339,8 +330,7 @@ void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, co
       const QgsMultiLineString *mls = qgsgeometry_cast<const QgsMultiLineString *>( geom );
       for ( int i = 0; i < mls->numGeometries(); ++i )
       {
-        QVector<QgsPoint> lineString = pointsFromLineString( qgsgeometry_cast<const QgsLineString *>( mls->geometryN( i ) ) );
-        encodeLineString( lineString, true, false, geomWriter );
+        encodeLineString( qgsgeometry_cast<const QgsLineString *>( mls->geometryN( i ) ), true, false, geomWriter );
       }
     }
     break;

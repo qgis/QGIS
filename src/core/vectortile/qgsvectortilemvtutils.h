@@ -18,9 +18,7 @@
 
 #define SIP_NO_FILE
 
-#include <QVector>
-
-class QgsPoint;
+class QgsLineString;
 
 
 /**
@@ -37,7 +35,7 @@ class QgsVectorTileMVTUtils
      * Returns whether this linear ring forms an exterior ring according to MVT spec
      * (depending on the orientation - clockwise or counter-clockwise)
      */
-    static bool isExteriorRing( const QVector<QgsPoint> &pts );
+    static bool isExteriorRing( const QgsLineString *lineString );
 };
 
 #endif // QGSVECTORTILEMVTUTILS_H
