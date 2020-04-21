@@ -507,6 +507,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     QgsExpressionContext createExpressionContext() const override;
     ExportLayerBehavior exportLayerBehavior() const override;
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
   public slots:
 
