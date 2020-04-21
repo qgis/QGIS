@@ -32,6 +32,7 @@
 #include "qgslayertreeutils.h"
 #include "qgslayoututils.h"
 #include "qgsmapthemecollection.h"
+#include "qgsstyleentityvisitor.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
@@ -930,6 +931,50 @@ QgsExpressionContext QgsLayoutItemLegend::createExpressionContext() const
 QgsLayoutItem::ExportLayerBehavior QgsLayoutItemLegend::exportLayerBehavior() const
 {
   return MustPlaceInOwnLayer;
+}
+
+bool QgsLayoutItemLegend::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  std::function<bool( QgsLayerTreeGroup *group ) >visit;
+
+  visit = [ =, &visit]( QgsLayerTreeGroup * group ) -> bool
+  {
+    const QList<QgsLayerTreeNode *> childNodes = group->children();
+    for ( QgsLayerTreeNode *node : childNodes )
+    {
+      if ( QgsLayerTree::isGroup( node ) )
+      {
+        QgsLayerTreeGroup *nodeGroup = QgsLayerTree::toGroup( node );
+        if ( !visit( nodeGroup ) )
+          return false;
+      }
+      else if ( QgsLayerTree::isLayer( node ) )
+      {
+        QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+        if ( !nodeLayer->patchShape().isNull() )
+        {
+          QgsStyleLegendPatchShapeEntity entity( nodeLayer->patchShape() );
+          if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, uuid(), displayName() ) ) )
+            return false;
+        }
+        const QList<QgsLayerTreeModelLegendNode *> legendNodes = mLegendModel->layerLegendNodes( nodeLayer );
+        for ( QgsLayerTreeModelLegendNode *legendNode : legendNodes )
+        {
+          if ( QgsSymbolLegendNode *symbolNode = dynamic_cast< QgsSymbolLegendNode * >( legendNode ) )
+          {
+            if ( !symbolNode->patchShape().isNull() )
+            {
+              QgsStyleLegendPatchShapeEntity entity( symbolNode->patchShape() );
+              if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, uuid(), displayName() ) ) )
+                return false;
+            }
+          }
+        }
+      }
+    }
+    return true;
+  };
+  return visit( mLegendModel->rootGroup( ) );
 }
 
 

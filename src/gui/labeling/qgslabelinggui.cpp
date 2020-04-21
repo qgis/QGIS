@@ -654,6 +654,7 @@ void QgsLabelingGui::setFormatFromStyle( const QString &name, QgsStyle::StyleEnt
     case QgsStyle::TagEntity:
     case QgsStyle::SmartgroupEntity:
     case QgsStyle::TextFormatEntity:
+    case QgsStyle::LegendPatchShapeEntity:
     {
       QgsTextFormatWidget::setFormatFromStyle( name, type );
       return;
@@ -753,6 +754,7 @@ void QgsLabelingGui::saveFormat()
     case QgsStyle::ColorrampEntity:
     case QgsStyle::TagEntity:
     case QgsStyle::SmartgroupEntity:
+    case QgsStyle::LegendPatchShapeEntity:
       break;
   }
 }

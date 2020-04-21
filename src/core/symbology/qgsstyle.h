@@ -183,6 +183,7 @@ class CORE_EXPORT QgsStyle : public QObject
       SmartgroupEntity, //!< Smart groups
       TextFormatEntity, //!< Text formats
       LabelSettingsEntity, //!< Label settings
+      LegendPatchShapeEntity, //!< Legend patch shape (since QGIS 3.14)
     };
 
     /**
@@ -204,7 +205,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \note Adding a symbol with the name of existing one replaces it.
      *  \param name is the name of the symbol being added or updated
      *  \param symbol is the Vector symbol
-     *  \param update set to TRUE when the style DB has to be updated, by default it is FALSE
+     *  \param update set to TRUE when the style database has to be updated, by default it is FALSE
      *  \returns success status of the operation
      */
     bool addSymbol( const QString &name, QgsSymbol *symbol SIP_TRANSFER, bool update = false );
@@ -214,7 +215,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \note Adding a color ramp with the name of existing one replaces it.
      *  \param name is the name of the color ramp being added or updated
      *  \param colorRamp is the color ramp. Ownership is transferred.
-     *  \param update set to TRUE when the style DB has to be updated, by default it is FALSE
+     *  \param update set to TRUE when the style database has to be updated, by default it is FALSE
      *  \returns success status of the operation
      */
     bool addColorRamp( const QString &name, QgsColorRamp *colorRamp SIP_TRANSFER, bool update = false );
@@ -222,7 +223,7 @@ class CORE_EXPORT QgsStyle : public QObject
     /**
      * Adds a text \a format with the specified \a name to the style.
      *
-     * If \a update is set to TRUE, the style DB will be automatically updated with the new text format.
+     * If \a update is set to TRUE, the style database will be automatically updated with the new text format.
      *
      * Returns TRUE if the operation was successful.
      *
@@ -234,7 +235,7 @@ class CORE_EXPORT QgsStyle : public QObject
     /**
      * Adds label \a settings with the specified \a name to the style.
      *
-     * If \a update is set to TRUE, the style DB will be automatically updated with the new text format.
+     * If \a update is set to TRUE, the style database will be automatically updated with the new text format.
      *
      * Returns TRUE if the operation was successful.
      *
@@ -244,10 +245,22 @@ class CORE_EXPORT QgsStyle : public QObject
     bool addLabelSettings( const QString &name, const QgsPalLayerSettings &settings, bool update = false );
 
     /**
+     * Adds a legend patch \a shape with the specified \a name to the style.
+     *
+     * If \a update is set to TRUE, the style database will be automatically updated with the new legend patch shape.
+     *
+     * Returns TRUE if the operation was successful.
+     *
+     * \note Adding legend patch shapes with the name of existing ones replaces them.
+     * \since QGIS 3.14
+     */
+    bool addLegendPatchShape( const QString &name, const QgsLegendPatchShape &shape, bool update = false );
+
+    /**
      * Adds a new tag and returns the tag's id
      *
      *  \param tagName the name of the new tag to be created
-     *  \returns returns an int, which is the DB id of the new tag created, 0 if the tag couldn't be created
+     *  \returns returns an int, which is the database id of the new tag created, 0 if the tag couldn't be created
      */
     int addTag( const QString &tagName );
 
@@ -342,6 +355,28 @@ class CORE_EXPORT QgsStyle : public QObject
      * \since QGIS 3.10
      */
     QgsPalLayerSettings labelSettings( const QString &name ) const;
+
+    /**
+     * Returns the legend patch shape with the specified \a name.
+     *
+     * \since QGIS 3.14
+     */
+    QgsLegendPatchShape legendPatchShape( const QString &name ) const;
+
+    /**
+     * Returns count of legend patch shapes in the style.
+     * \since QGIS 3.14
+     */
+    int legendPatchShapesCount() const;
+
+    /**
+     * Returns the symbol type corresponding to the legend patch shape
+     * with the specified \a name, or QgsSymbol::Hybrid
+     * if a matching legend patch shape is not present.
+     *
+     * \since QGIS 3.14
+     */
+    QgsSymbol::SymbolType legendPatchShapeSymbolType( const QString &name ) const;
 
     /**
      * Returns the layer geometry type corresponding to the label settings
@@ -446,9 +481,16 @@ class CORE_EXPORT QgsStyle : public QObject
      * returns 0 if not found
      */
     int symbolId( const QString &name );
-    //! Returns the DB id for the given tag name
+
+    /**
+     * Returns the id in the style database for the given \a name of the specified entity \a type.
+     * Returns 0 if not found.
+     */
+    int entityId( StyleEntity type, const QString &name );
+
+    //! Returns the database id for the given tag name
     int tagId( const QString &tag );
-    //! Returns the DB id for the given smartgroup name
+    //! Returns the database id for the given smartgroup name
     int smartgroupId( const QString &smartgroup );
 
     /**
@@ -496,21 +538,31 @@ class CORE_EXPORT QgsStyle : public QObject
      * Renames the given entity with the specified id
      *
      *  \param type is any of the style entities. Refer enum StyleEntity.
-     *  \param id is the DB id of the entity which is to be renamed
+     *  \param id is the database id of the entity which is to be renamed
      *  \param newName is the new name of the entity
      */
     bool rename( StyleEntity type, int id, const QString &newName );
 
     /**
-     * Removes the specified entity from the db
+     * Removes the specified entity from the database.
      *
      *  \param type is any of the style entities. Refer enum StyleEntity.
-     *  \param id is the DB id of the entity to be removed
+     *  \param id is the database id of the entity to be removed
+     *
+     * \see removeEntityByName()
      */
     bool remove( StyleEntity type, int id );
 
     /**
-     * Adds the symbol to the DB with the tags
+     * Removes the entry of the specified \a type with matching \a name from the database.
+     *
+     * \see remove()
+     * \since QGIS 3.14
+     */
+    bool removeEntityByName( StyleEntity type, const QString &name );
+
+    /**
+     * Adds the symbol to the database with tags.
      *
      *  \param name is the name of the symbol as QString
      *  \param symbol is the pointer to the new QgsSymbol being saved
@@ -521,7 +573,7 @@ class CORE_EXPORT QgsStyle : public QObject
     bool saveSymbol( const QString &name, QgsSymbol *symbol, bool favorite, const QStringList &tags );
 
     /**
-     * Adds the colorramp to the DB
+     * Adds the colorramp to the database.
      *
      *  \param name is the name of the colorramp as QString
      *  \param ramp is the pointer to the new QgsColorRamp being saved
@@ -584,6 +636,32 @@ class CORE_EXPORT QgsStyle : public QObject
      * \since QGIS 3.10
      */
     bool renameLabelSettings( const QString &oldName, const QString &newName );
+
+    /**
+     * Adds a legend patch \a shape to the database.
+     *
+     * \param name is the name of the legend patch shape
+     * \param shape legend patch shape to save
+     * \param favorite is a boolean value to specify whether the legend patch shape should be added to favorites
+     * \param tags is a list of tags that are associated with the legend patch shape
+     * \returns returns the success state of the save operation
+     *
+     * \since QGIS 3.14
+     */
+    bool saveLegendPatchShape( const QString &name, const QgsLegendPatchShape &shape, bool favorite, const QStringList &tags );
+
+    /**
+     * Changes a legend patch shape's name.
+     *
+     * \since QGIS 3.14
+     */
+    bool renameLegendPatchShape( const QString &oldName, const QString &newName );
+
+    /**
+     * Returns a list of names of legend patch shapes in the style.
+     * \since QGIS 3.14
+     */
+    QStringList legendPatchShapeNames() const;
 
     /**
      * Returns the default legend patch shape for the given symbol \a type.
@@ -919,6 +997,7 @@ class CORE_EXPORT QgsStyle : public QObject
     QgsVectorColorRampMap mColorRamps;
     QgsTextFormatMap mTextFormats;
     QgsLabelSettingsMap mLabelSettings;
+    QMap<QString, QgsLegendPatchShape > mLegendPatchShapes;
 
     QHash< QgsStyle::StyleEntity, QHash< QString, QStringList > > mCachedTags;
     QHash< QgsStyle::StyleEntity, QHash< QString, bool > > mCachedFavorites;
@@ -961,6 +1040,21 @@ class CORE_EXPORT QgsStyle : public QObject
     bool updateSymbol( StyleEntity type, const QString &name );
 
     void clearCachedTags( StyleEntity type, const QString &name );
+
+    /**
+     * Returns the table name for the specified entity \a type.
+     */
+    static QString entityTableName( StyleEntity type );
+
+    /**
+     * Returns the tag map table name for the specified entity \a type.
+     */
+    static QString tagmapTableName( StyleEntity type );
+
+    /**
+     * Returns the entity ID field name for for the tag map table for the specified entity \a type.
+     */
+    static QString tagmapEntityIdFieldName( StyleEntity type );
 
     Q_DISABLE_COPY( QgsStyle )
 };
@@ -1134,6 +1228,36 @@ class CORE_EXPORT QgsStyleLabelSettingsEntity : public QgsStyleEntityInterface
   private:
 
     QgsPalLayerSettings mSettings;
+};
+
+/**
+ * \class QgsStyleLegendPatchShapeEntity
+ * \ingroup core
+ * A legend patch shape entity for QgsStyle databases.
+ * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsStyleLegendPatchShapeEntity : public QgsStyleEntityInterface
+{
+  public:
+
+    /**
+     * Constructor for QgsStyleLegendPatchShapeEntity, with the specified legend patch \a shape.
+     */
+    QgsStyleLegendPatchShapeEntity( const QgsLegendPatchShape &shape )
+      : mShape( shape )
+    {}
+
+    QgsStyle::StyleEntity type() const override;
+
+
+    /**
+     * Returns the entity's legend patch shape.
+     */
+    const QgsLegendPatchShape &shape() const { return mShape; }
+
+  private:
+
+    QgsLegendPatchShape mShape;
 };
 
 #endif

@@ -539,6 +539,8 @@ Returns the legend's renderer settings object.
 
     virtual ExportLayerBehavior exportLayerBehavior() const;
 
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
 
   public slots:
 

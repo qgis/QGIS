@@ -25,13 +25,17 @@
 
 const double ICON_PADDING_FACTOR = 0.16;
 
-const auto ENTITIES = { QgsStyle::SymbolEntity, QgsStyle::ColorrampEntity, QgsStyle::TextFormatEntity, QgsStyle::LabelSettingsEntity };
+const auto ENTITIES = { QgsStyle::SymbolEntity, QgsStyle::ColorrampEntity, QgsStyle::TextFormatEntity, QgsStyle::LabelSettingsEntity, QgsStyle::LegendPatchShapeEntity };
 
 QgsStyleModel::QgsStyleModel( QgsStyle *style, QObject *parent )
   : QAbstractItemModel( parent )
   , mStyle( style )
 {
   Q_ASSERT( mStyle );
+
+  mPatchMarkerSymbol.reset( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  mPatchLineSymbol.reset( QgsLineSymbol::createSimple( QgsStringMap() ) );
+  mPatchFillSymbol.reset( QgsFillSymbol::createSimple( QgsStringMap() ) );
 
   for ( QgsStyle::StyleEntity entity : ENTITIES )
   {
@@ -148,6 +152,27 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                 QBuffer buffer( &data );
                 pm.save( &buffer, "PNG", 100 );
                 tooltip += QStringLiteral( "<p><img src='data:image/png;base64, %3'>" ).arg( QString( data.toBase64() ) );
+                break;
+              }
+
+              case QgsStyle::LegendPatchShapeEntity:
+              {
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+                int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).width( 'X' ) * 23 );
+#else
+                int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).horizontalAdvance( 'X' ) * 23 );
+#endif
+                int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
+
+                const QgsLegendPatchShape shape = mStyle->legendPatchShape( name );
+                if ( QgsSymbol *symbol = symbolForPatchShape( shape ) )
+                {
+                  QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol, QSize( width, height ), height / 20, nullptr, false, nullptr, &shape );
+                  QByteArray data;
+                  QBuffer buffer( &data );
+                  pm.save( &buffer, "PNG", 100 );
+                  tooltip += QStringLiteral( "<p><img src='data:image/png;base64, %3'>" ).arg( QString( data.toBase64() ) );
+                }
                 break;
               }
 
@@ -269,6 +294,31 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               return icon;
             }
 
+            case QgsStyle::LegendPatchShapeEntity:
+            {
+              // use cached icon if possible
+              QIcon icon = mIconCache[ entityType ].value( name );
+              if ( !icon.isNull() )
+                return icon;
+
+              const QgsLegendPatchShape shape = mStyle->legendPatchShape( name );
+              if ( !shape.isNull() )
+              {
+                if ( QgsSymbol *symbol = symbolForPatchShape( shape ) )
+                {
+                  if ( mAdditionalSizes.isEmpty() )
+                    icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol, QSize( 24, 24 ), 1, nullptr, false, mExpressionContext.get(), &shape ) );
+
+                  for ( const QSize &s : mAdditionalSizes )
+                  {
+                    icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol, s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ), nullptr, false, mExpressionContext.get(), &shape ) );
+                  }
+                }
+              }
+              mIconCache[ entityType ].insert( name, icon );
+              return icon;
+            }
+
             case QgsStyle::TagEntity:
             case QgsStyle::SmartgroupEntity:
               return QVariant();
@@ -292,11 +342,25 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
 
     case SymbolTypeRole:
     {
-      if ( entityType != QgsStyle::SymbolEntity )
-        return QVariant();
+      switch ( entityType )
+      {
+        case QgsStyle::SymbolEntity:
+        {
+          const QgsSymbol *symbol = mStyle->symbolRef( name );
+          return symbol ? symbol->type() : QVariant();
+        }
 
-      const QgsSymbol *symbol = mStyle->symbolRef( name );
-      return symbol ? symbol->type() : QVariant();
+        case QgsStyle::LegendPatchShapeEntity:
+          return mStyle->legendPatchShapeSymbolType( name );
+
+        case QgsStyle::TagEntity:
+        case QgsStyle::ColorrampEntity:
+        case QgsStyle::SmartgroupEntity:
+        case QgsStyle::LabelSettingsEntity:
+        case QgsStyle::TextFormatEntity:
+          return QVariant();
+      }
+      return QVariant();
     }
 
     case LayerTypeRole:
@@ -545,6 +609,25 @@ QgsStyle::StyleEntity QgsStyleModel::entityTypeFromRow( int row ) const
   return QgsStyle::SymbolEntity;
 }
 
+QgsSymbol *QgsStyleModel::symbolForPatchShape( const QgsLegendPatchShape &shape ) const
+{
+  switch ( shape.symbolType() )
+  {
+    case QgsSymbol::Marker:
+      return mPatchMarkerSymbol.get();
+
+    case QgsSymbol::Line:
+      return mPatchLineSymbol.get();
+
+    case QgsSymbol::Fill:
+      return mPatchFillSymbol.get();
+
+    case QgsSymbol::Hybrid:
+      break;
+  }
+  return nullptr;
+}
+
 int QgsStyleModel::offsetForEntity( QgsStyle::StyleEntity entity ) const
 {
   int offset = 0;
@@ -594,23 +677,18 @@ void QgsStyleProxyModel::initialize()
       setFavoritesOnly( mFavoritesOnly );
   } );
 
-  connect( mStyle, &QgsStyle::rampRenamed, this, [ = ]
+  connect( mStyle, &QgsStyle::entityRenamed, this, [ = ]( QgsStyle::StyleEntity entity, const QString &, const QString & )
   {
-    if ( mSmartGroupId >= 0 )
-      setSmartGroupId( mSmartGroupId );
-  } );
-  connect( mStyle, &QgsStyle::textFormatRenamed, this, [ = ]
-  {
-    if ( mSmartGroupId >= 0 )
-      setSmartGroupId( mSmartGroupId );
-  } );
-  connect( mStyle, &QgsStyle::labelSettingsRenamed, this, [ = ]
-  {
-    if ( mSmartGroupId >= 0 )
-      setSmartGroupId( mSmartGroupId );
-  } );
-  connect( mStyle, &QgsStyle::symbolRenamed, this, [ = ]
-  {
+    switch ( entity )
+    {
+      case QgsStyle::SmartgroupEntity:
+      case QgsStyle::TagEntity:
+        return;
+
+      default:
+        break;
+    }
+
     if ( mSmartGroupId >= 0 )
       setSmartGroupId( mSmartGroupId );
   } );

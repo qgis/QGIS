@@ -1754,6 +1754,7 @@ void QgsTextFormatWidget::setFormatFromStyle( const QString &name, QgsStyle::Sty
     case QgsStyle::ColorrampEntity:
     case QgsStyle::TagEntity:
     case QgsStyle::SmartgroupEntity:
+    case QgsStyle::LegendPatchShapeEntity:
       return;
 
     case QgsStyle::TextFormatEntity:
@@ -1784,7 +1785,7 @@ void QgsTextFormatWidget::saveFormat()
   if ( !style )
     return;
 
-  QgsStyleSaveDialog saveDlg( this );
+  QgsStyleSaveDialog saveDlg( this, QgsStyle::TextFormatEntity );
   saveDlg.setDefaultTags( mTextFormatsListWidget->currentTagFilter() );
   if ( !saveDlg.exec() )
     return;

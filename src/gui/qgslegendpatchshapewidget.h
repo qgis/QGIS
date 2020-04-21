@@ -20,6 +20,9 @@
 #include "qgis_gui.h"
 #include "ui_qgslegendpatchshapewidgetbase.h"
 #include "qgslegendpatchshape.h"
+#include <QDialog>
+
+class QDialogButtonBox;
 
 /**
  * \ingroup gui
@@ -58,9 +61,46 @@ class GUI_EXPORT QgsLegendPatchShapeWidget : public QgsPanelWidget, private Ui::
      */
     void changed();
 
+  private slots:
+    void setShapeFromStyle( const QString &name, QgsStyle::StyleEntity type );
+    void saveShape();
+
   private:
 
     QgsSymbol::SymbolType mType = QgsSymbol::Fill;
+
+};
+
+/**
+ * \ingroup gui
+ * \brief A dialog for configuring a custom legend patch shape.
+ * \since QGIS 3.14
+ */
+class GUI_EXPORT QgsLegendPatchShapeDialog : public QDialog
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsLegendPatchShapeDialog, initially showing the specified \a shape.
+     */
+    QgsLegendPatchShapeDialog( const QgsLegendPatchShape &shape, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Returns the legend patch shape defined by the dialog.
+     */
+    QgsLegendPatchShape shape() const { return mWidget->shape(); }
+
+    /**
+     * Returns a reference to the dialog's button box.
+     */
+    QDialogButtonBox *buttonBox() const;
+
+  private:
+
+    QgsLegendPatchShapeWidget *mWidget = nullptr;
+    QDialogButtonBox *mButtonBox = nullptr;
 
 };
 

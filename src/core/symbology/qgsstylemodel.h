@@ -60,7 +60,7 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     {
       TypeRole = Qt::UserRole + 1, //!< Style entity type, see QgsStyle::StyleEntity
       TagRole, //!< String list of tags
-      SymbolTypeRole, //!< Symbol type (for symbol entities)
+      SymbolTypeRole, //!< Symbol type (for symbol or legend patch shape entities)
       IsFavoriteRole, //!< Whether entity is flagged as a favorite
       LayerTypeRole, //!< Layer type (for label settings entities)
     };
@@ -118,7 +118,13 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
 
     mutable QHash< QgsStyle::StyleEntity, QHash< QString, QIcon > > mIconCache;
 
+    std::unique_ptr< QgsSymbol > mPatchMarkerSymbol;
+    std::unique_ptr< QgsSymbol > mPatchLineSymbol;
+    std::unique_ptr< QgsSymbol > mPatchFillSymbol;
+
     QgsStyle::StyleEntity entityTypeFromRow( int row ) const;
+
+    QgsSymbol *symbolForPatchShape( const QgsLegendPatchShape &shape ) const;
 
     int offsetForEntity( QgsStyle::StyleEntity entity ) const;
 
