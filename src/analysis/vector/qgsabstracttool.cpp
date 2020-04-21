@@ -94,7 +94,7 @@ namespace Vectoranalysis
     index = QgsSpatialIndex( it );
   }
 
-  bool QgsAbstractTool::appendNextChunkToJobQueue( QgsFeatureSource *layer, int taskFlag )
+  bool QgsAbstractTool::appendNextChunkToJobQueue( int taskFlag )
   {
 
     QgsFeature f;

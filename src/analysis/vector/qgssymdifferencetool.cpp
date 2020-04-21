@@ -72,7 +72,7 @@ namespace Vectoranalysis
 
     if ( !mLayerAFinished )
     {
-      bool a = appendNextChunkToJobQueue( mLayerA, ProcessLayerAFeature );
+      bool a = appendNextChunkToJobQueue( ProcessLayerAFeature );
       if ( a )
       {
         return true;
@@ -82,7 +82,7 @@ namespace Vectoranalysis
       prepareLayer( mLayerB, mLayerA->sourceCrs() );
     }
 
-    return appendNextChunkToJobQueue( mLayerB, ProcessLayerBFeature );
+    return appendNextChunkToJobQueue( ProcessLayerBFeature );
   }
 
 } // Geoprocessing

@@ -59,7 +59,7 @@ namespace Vectoranalysis
       return false;
     }
 
-    return appendNextChunkToJobQueue( mLayerA );
+    return appendNextChunkToJobQueue();
   }
 
 } // Geoprocessing

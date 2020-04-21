@@ -122,7 +122,7 @@ namespace Vectoranalysis
        * @param layer
        * @param taskFlag
        */
-      bool appendNextChunkToJobQueue( QgsFeatureSource *layer, int taskFlag = 0 );
+      bool appendNextChunkToJobQueue( int taskFlag = 0 );
 
       /**
        * Writes feature to output source
