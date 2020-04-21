@@ -59,6 +59,11 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *laye
   mExpressionBuilder->initWithLayer( layer, context, QStringLiteral( "selection" ) );
   mExpressionBuilder->setExpressionText( startText );
 
+  QgsDistanceArea da;
+  da.setSourceCrs( layer->crs(), QgsProject::instance()->transformContext() );
+  da.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  mExpressionBuilder->setGeomCalculator( da );
+
   // by default, zoom to features is hidden, shown only if canvas is set
   mButtonZoomToFeatures->setVisible( false );
 
