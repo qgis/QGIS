@@ -2993,15 +2993,7 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
     }
   }
 
-  const auto constFindGroups = newGroup->findGroups();
-  for ( QgsLayerTreeGroup *group : constFindGroups )
-  {
-    if ( group )
-    {
-      group->resolveReferences( this );
-      group->setItemVisibilityChecked( !uncheckedGroups.contains( group->name() ) );
-    }
-  }
+  QgsLayerTreeUtils::setUncheckedGroup( newGroup, uncheckedGroups, 0 );
 
   return newGroup;
 }
