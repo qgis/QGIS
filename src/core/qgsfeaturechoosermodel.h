@@ -1,9 +1,9 @@
 /***************************************************************************
-  qgsfeaturefiltermodel.h - QgsFeatureFilterModel
+  qgsfeaturechoosermodel.h - QgsFeatureChooserModel
  ---------------------
- begin                : 10.3.2017
- copyright            : (C) 2017 by Matthias Kuhn
- email                : matthias@opengis.ch
+ begin                : 03.04.2020
+ copyright            : (C) 2020 by Denis Rouzaud
+ email                : denis@opengis.ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSFEATUREFILTERMODEL_H
-#define QGSFEATUREFILTERMODEL_H
+#ifndef QGSFEATURECHOOSERMODEL_H
+#define QGSFEATURECHOOSERMODEL_H
 
 #include <QAbstractItemModel>
 
@@ -27,7 +27,7 @@
  *
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
+class CORE_EXPORT QgsFeatureChooserModel : public QAbstractItemModel
 {
     Q_OBJECT
 
@@ -38,20 +38,6 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
     Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull NOTIFY allowNullChanged )
     Q_PROPERTY( bool isLoading READ isLoading NOTIFY isLoadingChanged )
 
-    /**
-     * A field of sourceLayer that is unique and should be used to identify features.
-     * Normally the primary key field.
-     * Needs to match the identifierValue.
-     */
-    Q_PROPERTY( QString identifierField READ identifierField WRITE setIdentifierField NOTIFY identifierFieldChanged )
-
-    /**
-     * The value that identifies the current feature.
-     */
-    Q_PROPERTY( QVariant extraIdentifierValue READ extraIdentifierValue WRITE setExtraIdentifierValue NOTIFY extraIdentifierValueChanged )
-
-    Q_PROPERTY( int extraIdentifierValueIndex READ extraIdentifierValueIndex NOTIFY extraIdentifierValueIndexChanged )
-
   public:
 
     /**
@@ -59,16 +45,16 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
      */
     enum Role
     {
-      IdentifierValueRole = Qt::UserRole, //!< \deprecated Use IdentifierValuesRole instead
-      IdentifierValuesRole, //!< Used to retrieve the identifierValues (primary keys) of a feature.
-      ValueRole //!< Used to retrieve the displayExpression of a feature.
+      ValueRole = Qt::UserRole + 1, //!< Used to retrieve the displayExpression of a feature.
+      FeatureRole, //!< Used to retrieve the feature.
+      FeatureIdRole //!< Used to retrieve the id of a feature.
     };
 
     /**
-     * Create a new QgsFeatureFilterModel, optionally specifying a \a parent.
+     * Create a new QgsFeatureChooserModel, optionally specifying a \a parent.
      */
-    explicit QgsFeatureFilterModel( QObject *parent = nullptr );
-    ~QgsFeatureFilterModel() override;
+    explicit QgsFeatureChooserModel( QObject *parent = nullptr );
+    ~QgsFeatureChooserModel() override;
 
     /**
      * The source layer from which features will be fetched.
@@ -134,81 +120,6 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
     bool isLoading() const;
 
     /**
-     * The identifier field should be a unique field that can be used to identify individual features.
-     * It is normally set to the primary key of the layer.
-     * If there are several identifier fields defined, the behavior is not guaranteed
-     * \deprecated since QGIS 3.10 use identifierFields instead
-     */
-    Q_DECL_DEPRECATED QString identifierField() const;
-
-    /**
-     * The identifier field should be a unique field that can be used to identify individual features.
-     * It is normally set to the primary key of the layer.
-     * \since QGIS 3.10
-     */
-    QStringList identifierFields() const;
-
-    /**
-     * The identifier field should be a unique field that can be used to identify individual features.
-     * It is normally set to the primary key of the layer.
-     * \deprecated since QGIS 3.10
-     */
-    Q_DECL_DEPRECATED void setIdentifierField( const QString &identifierField );
-
-    /**
-     * The identifier field should be a unique field that can be used to identify individual features.
-     * It is normally set to the primary key of the layer.
-     * \note This will also reset identifier fields to NULL
-     * \since QGIS 3.10
-     */
-    void setIdentifierFields( const QStringList &identifierFields );
-
-    /**
-     * Allows specifying one value that does not need to match the filter criteria but will
-     * still be available in the model.
-     * \deprecated since QGIS 3.10
-     */
-    Q_DECL_DEPRECATED QVariant extraIdentifierValue() const;
-
-    /**
-     * Allows specifying one value that does not need to match the filter criteria but will
-     * still be available in the model.
-     * \since QGIS 3.10
-     */
-    QVariantList extraIdentifierValues() const;
-
-    /**
-     * Allows specifying one value that does not need to match the filter criteria but will
-     * still be available in the model.
-     * \deprecated since QGIS 3.10
-     */
-    Q_DECL_DEPRECATED void setExtraIdentifierValue( const QVariant &extraIdentifierValue );
-
-    /**
-     * Allows specifying one value that does not need to match the filter criteria but will
-     * still be available in the model.
-     * \since QGIS 3.10
-     */
-    void setExtraIdentifierValues( const QVariantList &extraIdentifierValues );
-
-    /**
-     * Allows specifying one value that does not need to match the filter criteria but will
-     * still be available in the model as NULL value(s).
-     * \since QGIS 3.10
-     */
-    void setExtraIdentifierValuesToNull();
-
-    /**
-     * The index at which the extra identifier value is available within the model.
-     */
-    int extraIdentifierValueIndex() const;
-
-    /**
-     * Flag indicating that the extraIdentifierValue does not exist in the data.
-     */
-    bool extraValueDoesNotExist() const;
-
-    /**
      * Add a NULL entry to the list.
      */
     bool allowNull() const;
@@ -218,7 +129,29 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
      */
     void setAllowNull( bool allowNull );
 
+    QgsFeature currentFeature() const;
+
+    /**
+     * Sets the current feature id
+     */
+    void setCurrentFeature( const QgsFeatureId &featureId );
+
+    /**
+     * Returns the current index
+     */
+    int currentIndex() const {return mCurrentIndex;}
+
   signals:
+
+    /**
+     * Emitted when the current index changed
+     */
+    void currentIndexChanged( int index );
+
+    /**
+     * Emitted when the current feature changed
+     */
+    void currentFeatureChanged( const QgsFeature &feature );
 
     /**
      * The source layer from which features will be fetched.
@@ -252,31 +185,9 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
     void isLoadingChanged();
 
     /**
-     * The identifier field should be a unique field that can be used to identify individual features.
-     * It is normally set to the primary key of the layer.
-     */
-    void identifierFieldChanged();
-
-    /**
      * Indicates that a filter job has been completed and new data may be available.
      */
     void filterJobCompleted();
-
-    /**
-     * Allows specifying one value that does not need to match the filter criteria but will
-     * still be available in the model.
-     */
-    void extraIdentifierValueChanged();
-
-    /**
-     * The index at which the extra identifier value is available within the model.
-     */
-    void extraIdentifierValueIndexChanged( int index );
-
-    /**
-     * Flag indicating that the extraIdentifierValue does not exist in the data.
-     */
-    void extraValueDoesNotExistChanged();
 
     /**
      * Notification that the model is about to be changed because a job was completed.
@@ -298,14 +209,9 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
     void scheduledReload();
 
   private:
-    QSet<QString> requestedAttributes() const;
-    void setExtraIdentifierValuesIndex( int index, bool force = false );
-    void setExtraValueDoesNotExist( bool extraValueDoesNotExist );
+    void setCurrentIndex( int index, bool force = false );
     void reload();
-    void reloadCurrentFeature();
-    void setExtraIdentifierValuesUnguarded( const QVariantList &extraIdentifierValues );
-
-
+    void setCurrentFeatureUnguarded( const QgsFeatureId &featureId );
     QgsConditionalStyle featureStyle( const QgsFeature &feature ) const;
 
     QgsVectorLayer *mSourceLayer = nullptr;
@@ -318,16 +224,11 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
     QVector<QgsFeatureExpressionValuesGatherer::Entry> mEntries;
     QgsFeatureExpressionValuesGatherer *mGatherer = nullptr;
     QTimer mReloadTimer;
-    bool mShouldReloadCurrentFeature = false;
-    bool mExtraValueDoesNotExist = false;
     bool mAllowNull = false;
-    bool mIsSettingExtraIdentifierValue = false;
 
-    QStringList mIdentifierFields;
-    QVariantList mExtraIdentifierValues;
-
-    int mExtraIdentifierValueIndex = -1;
+    int mCurrentIndex = -1;
+    bool mIsSettingCurrentFeature = false;
 
 };
 
-#endif // QGSFEATUREFILTERMODEL_H
+#endif // QGSFEATURECHOOSERMODEL_H

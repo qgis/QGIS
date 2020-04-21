@@ -16,6 +16,9 @@
 #include "qgsexpressionpreviewwidget.h"
 #include "qgsmessageviewer.h"
 #include "qgsvectorlayer.h"
+#include "qgsfeaturechooserwidget.h"
+
+
 
 
 
@@ -25,20 +28,44 @@ QgsExpressionPreviewWidget::QgsExpressionPreviewWidget( QWidget *parent )
   setupUi( this );
   mPreviewLabel->clear();
 
+  connect( mFeatureChooserWidget, &QgsFeatureChooserWidget::currentFeatureChanged, this, &QgsExpressionPreviewWidget::setCurrentFeature );
   connect( mPreviewLabel, &QLabel::linkActivated, this, &QgsExpressionPreviewWidget::linkActivated );
 }
 
 void QgsExpressionPreviewWidget::setLayer( QgsVectorLayer *layer )
 {
   mLayer = layer;
-  mFeatureListComboBox->setSourceLayer( layer );
+  mFeatureChooserWidget->setLayer( layer );
 }
 
 void QgsExpressionPreviewWidget::setExpressionText( const QString &expression )
 {
+  mExpressionText = expression;
+  refreshPreview();
+}
+
+void QgsExpressionPreviewWidget::setCurrentFeature( const QgsFeature &feature )
+{
+  // todo: update the combo box if it has been set externaly?
+  mExpressionContext.setFeature( feature );
+  refreshPreview();
+}
+
+void QgsExpressionPreviewWidget::setGeomCalculator( const QgsDistanceArea &da )
+{
+  mDa = da;
+}
+
+void QgsExpressionPreviewWidget::setExpressionContext( const QgsExpressionContext &context )
+{
+  mExpressionContext = context;
+}
+
+void QgsExpressionPreviewWidget::refreshPreview()
+{
   // If the string is empty the expression will still "fail" although
   // we don't show the user an error as it will be confusing.
-  if ( expression.isEmpty() )
+  if ( mExpressionText.isEmpty() )
   {
     mPreviewLabel->clear();
     mPreviewLabel->setStyleSheet( QString() );
@@ -48,20 +75,13 @@ void QgsExpressionPreviewWidget::setExpressionText( const QString &expression )
   }
   else
   {
-    mExpression = QgsExpression( expression );
+    mExpression = QgsExpression( mExpressionText );
 
     if ( mLayer )
     {
+      // TODO: is this OK?
       // Only set calculator if we have layer, else use default.
       mExpression.setGeomCalculator( &mDa );
-
-      if ( !mExpressionContext.feature().isValid() )
-      {
-        // no feature passed yet, try to get from layer
-        QgsFeature f;
-        mLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ) ).nextFeature( f );
-        mExpressionContext.setFeature( f );
-      }
     }
 
     QVariant value = mExpression.evaluate( &mExpressionContext );
@@ -97,16 +117,6 @@ void QgsExpressionPreviewWidget::setExpressionText( const QString &expression )
       setEvalError( false );
     }
   }
-}
-
-void QgsExpressionPreviewWidget::setGeomCalculator( const QgsDistanceArea &da )
-{
-  mDa = da;
-}
-
-void QgsExpressionPreviewWidget::setExpressionContext( const QgsExpressionContext &context )
-{
-  mExpressionContext = context;
 }
 
 void QgsExpressionPreviewWidget::linkActivated( const QString & )

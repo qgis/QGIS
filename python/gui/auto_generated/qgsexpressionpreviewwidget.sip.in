@@ -54,8 +54,6 @@ Sets the expression context for the widget. The context is used for the expressi
 preview result and to populate the list of available functions and variables.
 
 :param context: expression context
-
-.. versionadded:: 2.12
 %End
 
     void setGeomCalculator( const QgsDistanceArea &da );
@@ -114,6 +112,11 @@ Emitted whenever the tool tip changed
 %End
 
   public slots:
+    void setCurrentFeature( const QgsFeature &feature );
+%Docstring
+sets the current feature used
+%End
+
 
 };
 

@@ -56,7 +56,6 @@ class GUI_EXPORT QgsExpressionPreviewWidget : public QWidget, private Ui::QgsExp
      * Sets the expression context for the widget. The context is used for the expression
      * preview result and to populate the list of available functions and variables.
      * \param context expression context
-     * \since QGIS 2.12
      */
     void setExpressionContext( const QgsExpressionContext &context );
 
@@ -107,6 +106,9 @@ class GUI_EXPORT QgsExpressionPreviewWidget : public QWidget, private Ui::QgsExp
     void toolTipChanged( const QString &toolTip );
 
   public slots:
+    //! sets the current feature used
+    void setCurrentFeature( const QgsFeature &feature );
+
 
   private slots:
     void linkActivated( const QString & );
@@ -116,6 +118,7 @@ class GUI_EXPORT QgsExpressionPreviewWidget : public QWidget, private Ui::QgsExp
 
   private:
     void setExpressionToolTip( const QString &toolTip );
+    void refreshPreview();
 
     QgsVectorLayer *mLayer = nullptr;
     QgsExpressionContext mExpressionContext;
@@ -123,6 +126,7 @@ class GUI_EXPORT QgsExpressionPreviewWidget : public QWidget, private Ui::QgsExp
     QString mToolTip;
     bool mEvalError = true;
     bool mParserError = true;
+    QString mExpressionText;
     QgsExpression mExpression;
 };
 

@@ -1,14 +1,14 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsfeaturefiltermodel.h                                     *
+ * src/core/qgsfeaturechoosermodel.h                                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
 
 
 
-class QgsFeatureFilterModel : QAbstractItemModel
+class QgsFeatureChooserModel : QAbstractItemModel
 {
 %Docstring
 Provides a list of features based on filter conditions.
@@ -18,22 +18,22 @@ Features are fetched asynchronously.
 %End
 
 %TypeHeaderCode
-#include "qgsfeaturefiltermodel.h"
+#include "qgsfeaturechoosermodel.h"
 %End
   public:
 
     enum Role
     {
-      IdentifierValueRole,
-      IdentifierValuesRole,
-      ValueRole
+      ValueRole,
+      FeatureRole,
+      FeatureIdRole
     };
 
-    explicit QgsFeatureFilterModel( QObject *parent = 0 );
+    explicit QgsFeatureChooserModel( QObject *parent = 0 );
 %Docstring
-Create a new QgsFeatureFilterModel, optionally specifying a ``parent``.
+Create a new QgsFeatureChooserModel, optionally specifying a ``parent``.
 %End
-    ~QgsFeatureFilterModel();
+    ~QgsFeatureChooserModel();
 
     QgsVectorLayer *sourceLayer() const;
 %Docstring
@@ -103,94 +103,6 @@ Can be used for spatial filtering etc.
 Indicator if the model is currently performing any feature iteration in the background.
 %End
 
- QString identifierField() const;
-%Docstring
-The identifier field should be a unique field that can be used to identify individual features.
-It is normally set to the primary key of the layer.
-If there are several identifier fields defined, the behavior is not guaranteed
-
-.. deprecated:: QGIS 3.10
-   use identifierFields instead
-%End
-
-    QStringList identifierFields() const;
-%Docstring
-The identifier field should be a unique field that can be used to identify individual features.
-It is normally set to the primary key of the layer.
-
-.. versionadded:: 3.10
-%End
-
- void setIdentifierField( const QString &identifierField );
-%Docstring
-The identifier field should be a unique field that can be used to identify individual features.
-It is normally set to the primary key of the layer.
-
-.. deprecated:: QGIS 3.10
-%End
-
-    void setIdentifierFields( const QStringList &identifierFields );
-%Docstring
-The identifier field should be a unique field that can be used to identify individual features.
-It is normally set to the primary key of the layer.
-
-.. note::
-
-   This will also reset identifier fields to NULL
-
-.. versionadded:: 3.10
-%End
-
- QVariant extraIdentifierValue() const;
-%Docstring
-Allows specifying one value that does not need to match the filter criteria but will
-still be available in the model.
-
-.. deprecated:: QGIS 3.10
-%End
-
-    QVariantList extraIdentifierValues() const;
-%Docstring
-Allows specifying one value that does not need to match the filter criteria but will
-still be available in the model.
-
-.. versionadded:: 3.10
-%End
-
- void setExtraIdentifierValue( const QVariant &extraIdentifierValue );
-%Docstring
-Allows specifying one value that does not need to match the filter criteria but will
-still be available in the model.
-
-.. deprecated:: QGIS 3.10
-%End
-
-    void setExtraIdentifierValues( const QVariantList &extraIdentifierValues );
-%Docstring
-Allows specifying one value that does not need to match the filter criteria but will
-still be available in the model.
-
-.. versionadded:: 3.10
-%End
-
-    void setExtraIdentifierValuesToNull();
-%Docstring
-Allows specifying one value that does not need to match the filter criteria but will
-still be available in the model as NULL value(s).
-
-.. versionadded:: 3.10
-%End
-
-    int extraIdentifierValueIndex() const;
-%Docstring
-The index at which the extra identifier value is available within the model.
-%End
-
-    bool extraValueDoesNotExist() const;
-%Docstring
-Flag indicating that the extraIdentifierValue does not exist in the data.
-%End
-
     bool allowNull() const;
 %Docstring
 Add a NULL entry to the list.
@@ -201,7 +113,29 @@ Add a NULL entry to the list.
 Add a NULL entry to the list.
 %End
 
+    QgsFeature currentFeature() const;
+
+    void setCurrentFeature( const QgsFeatureId &featureId );
+%Docstring
+Sets the current feature id
+%End
+
+    int currentIndex() const;
+%Docstring
+Returns the current index
+%End
+
   signals:
+
+    void currentIndexChanged( int index );
+%Docstring
+Emitted when the current index changed
+%End
+
+    void currentFeatureChanged( const QgsFeature &feature );
+%Docstring
+Emitted when the current feature changed
+%End
 
     void sourceLayerChanged();
 %Docstring
@@ -234,31 +168,9 @@ Can be used for spatial filtering etc.
 Indicator if the model is currently performing any feature iteration in the background.
 %End
 
-    void identifierFieldChanged();
-%Docstring
-The identifier field should be a unique field that can be used to identify individual features.
-It is normally set to the primary key of the layer.
-%End
-
     void filterJobCompleted();
 %Docstring
 Indicates that a filter job has been completed and new data may be available.
-%End
-
-    void extraIdentifierValueChanged();
-%Docstring
-Allows specifying one value that does not need to match the filter criteria but will
-still be available in the model.
-%End
-
-    void extraIdentifierValueIndexChanged( int index );
-%Docstring
-The index at which the extra identifier value is available within the model.
-%End
-
-    void extraValueDoesNotExistChanged();
-%Docstring
-Flag indicating that the extraIdentifierValue does not exist in the data.
 %End
 
     void beginUpdate();
@@ -281,7 +193,7 @@ Add a NULL entry to the list.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsfeaturefiltermodel.h                                     *
+ * src/core/qgsfeaturechoosermodel.h                                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

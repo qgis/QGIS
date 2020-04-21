@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfeaturefiltermodel.h"
-#include "qgsfeaturefiltermodel_p.h"
+#include "qgsfeatureexpressionvaluesgatherer.h"
 
 #include "qgsvectorlayer.h"
 #include "qgsconditionalstyle.h"
@@ -46,7 +46,7 @@ QgsFeatureFilterModel::QgsFeatureFilterModel( QObject *parent )
 QgsFeatureFilterModel::~QgsFeatureFilterModel()
 {
   if ( mGatherer )
-    connect( mGatherer, &QgsFieldExpressionValuesGatherer::finished, mGatherer, &QgsFieldExpressionValuesGatherer::deleteLater );
+    connect( mGatherer, &QgsFeatureExpressionValuesGatherer::finished, mGatherer, &QgsFeatureExpressionValuesGatherer::deleteLater );
 }
 
 QgsVectorLayer *QgsFeatureFilterModel::sourceLayer() const
@@ -228,14 +228,14 @@ void QgsFeatureFilterModel::updateCompleter()
 {
   emit beginUpdate();
 
-  QgsFieldExpressionValuesGatherer *gatherer = qobject_cast<QgsFieldExpressionValuesGatherer *>( sender() );
+  QgsFeatureExpressionValuesGatherer *gatherer = qobject_cast<QgsFeatureExpressionValuesGatherer *>( sender() );
   if ( gatherer->wasCanceled() )
   {
     delete gatherer;
     return;
   }
 
-  QVector<Entry> entries = mGatherer->entries();
+  QVector<QgsFeatureExpressionValuesGatherer::Entry> entries = mGatherer->entries();
 
   if ( mExtraIdentifierValueIndex == -1 )
   {
@@ -266,11 +266,11 @@ void QgsFeatureFilterModel::updateCompleter()
   else
   {
     // We got strings for a filter selection
-    std::sort( entries.begin(), entries.end(), []( const Entry & a, const Entry & b ) { return a.value.localeAwareCompare( b.value ) < 0; } );
+    std::sort( entries.begin(), entries.end(), []( const QgsFeatureExpressionValuesGatherer::Entry & a, const QgsFeatureExpressionValuesGatherer::Entry & b ) { return a.value.localeAwareCompare( b.value ) < 0; } );
 
     if ( mAllowNull )
     {
-      entries.prepend( nullEntry() );
+      entries.prepend( QgsFeatureExpressionValuesGatherer::nullEntry() );
     }
 
     const int newEntriesSize = entries.size();
@@ -425,9 +425,9 @@ void QgsFeatureFilterModel::scheduledReload()
 
   request.setLimit( QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ).toInt() );
 
-  mGatherer = new QgsFieldExpressionValuesGatherer( mSourceLayer, mDisplayExpression, mIdentifierFields, request );
+  mGatherer = new QgsFeatureExpressionValuesGatherer( mSourceLayer, mDisplayExpression, request, mIdentifierFields );
   mGatherer->setData( mShouldReloadCurrentFeature );
-  connect( mGatherer, &QgsFieldExpressionValuesGatherer::finished, this, &QgsFeatureFilterModel::updateCompleter );
+  connect( mGatherer, &QgsFeatureExpressionValuesGatherer::finished, this, &QgsFeatureFilterModel::updateCompleter );
 
 
   mGatherer->start();
@@ -478,10 +478,10 @@ void QgsFeatureFilterModel::reloadCurrentFeature()
 
 void QgsFeatureFilterModel::setExtraIdentifierValuesUnguarded( const QVariantList &extraIdentifierValues )
 {
-  const QVector<Entry> entries = mEntries;
+  const QVector<QgsFeatureExpressionValuesGatherer::Entry> entries = mEntries;
 
   int index = 0;
-  for ( const Entry &entry : entries )
+  for ( const QgsFeatureExpressionValuesGatherer::Entry &entry : entries )
   {
     if ( entry.identifierValues == extraIdentifierValues )
     {
@@ -504,23 +504,18 @@ void QgsFeatureFilterModel::setExtraIdentifierValuesUnguarded( const QVariantLis
         for ( const QVariant &v : qgis::as_const( extraIdentifierValues ) )
           values << QStringLiteral( "(%1)" ).arg( v.toString() );
 
-        mEntries.prepend( Entry( extraIdentifierValues, values.join( QStringLiteral( " " ) ), QgsFeature() ) );
+        mEntries.prepend( QgsFeatureExpressionValuesGatherer::Entry( extraIdentifierValues, values.join( QStringLiteral( " " ) ), QgsFeature() ) );
         reloadCurrentFeature();
       }
       else
       {
-        mEntries.prepend( nullEntry() );
+        mEntries.prepend( QgsFeatureExpressionValuesGatherer::nullEntry() );
       }
       endInsertRows();
 
       setExtraIdentifierValuesIndex( 0, true );
     }
   }
-}
-
-QgsFeatureFilterModel::Entry QgsFeatureFilterModel::nullEntry()
-{
-  return Entry( QVariantList(), QgsApplication::nullRepresentation(), QgsFeature() );
 }
 
 QgsConditionalStyle QgsFeatureFilterModel::featureStyle( const QgsFeature &feature ) const

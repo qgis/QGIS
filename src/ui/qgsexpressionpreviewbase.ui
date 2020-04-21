@@ -68,7 +68,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsFeatureListComboBox" name="mFeatureListComboBox"/>
+      <widget class="QgsFeatureChooserWidget" name="mFeatureChooserWidget"/>
      </item>
     </layout>
    </item>
@@ -76,13 +76,11 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsFeatureListComboBox</class>
+   <class>QgsFeatureChooserWidget</class>
    <extends>QComboBox</extends>
-   <header>qgsfeaturelistcombobox.h</header>
+   <header>qgsfeaturechooserwidget.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

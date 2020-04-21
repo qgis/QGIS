@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsfeaturefiltermodel_p - QgsFieldExpressionValuesGatherer
+  qgsfeatureexpressionvaluesgatherer - QgsFeatureExpressionValuesGatherer
  ---------------------
  begin                : 10.3.2017
  copyright            : (C) 2017 by Matthias Kuhn
@@ -12,13 +12,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSFEATUREFILTERMODEL_P_H
-#define QGSFEATUREFILTERMODEL_P_H
+#ifndef QGSFEATUREEXPRESSIONVALUESGATHERER_H
+#define QGSFEATUREEXPRESSIONVALUESGATHERER_H
 
 #include <QThread>
 #include <QMutex>
-#include "qgsfeaturefiltermodel.h"
+#include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
 
 #define SIP_NO_FILE
@@ -32,20 +33,50 @@
  *
  * \since QGIS 3.0
  */
-class QgsFieldExpressionValuesGatherer: public QThread
+class QgsFeatureExpressionValuesGatherer: public QThread
 {
     Q_OBJECT
 
   public:
-    QgsFieldExpressionValuesGatherer( QgsVectorLayer *layer,
-                                      const QString &displayExpression,
-                                      const QStringList &identifierFields,
-                                      const QgsFeatureRequest &request = QgsFeatureRequest() )
+
+    /**
+       * Constructor
+       * \param layer the vector layer
+       * \param displayExpression if empty, the display expression is taken from the layer definition
+       * \param request the reqeust to perform
+       * \param identifierFields an optional list of fields name to be save in a variant list for an easier reuse
+       */
+    QgsFeatureExpressionValuesGatherer( QgsVectorLayer *layer,
+                                        const QString &displayExpression = QString(),
+                                        const QgsFeatureRequest &request = QgsFeatureRequest(),
+                                        const QStringList &identifierFields = QStringList() )
       : mSource( new QgsVectorLayerFeatureSource( layer ) )
-      , mDisplayExpression( displayExpression )
+      , mDisplayExpression( displayExpression.isEmpty() ? layer->displayExpression() : displayExpression )
       , mRequest( request )
       , mIdentifierFields( identifierFields )
     {
+    }
+
+    struct Entry
+    {
+      Entry() = default;
+
+      Entry( const QVariantList &_identifierValues, const QString &_value, const QgsFeature &_feature )
+        : identifierValues( _identifierValues )
+        , value( _value )
+        , feature( _feature )
+      {}
+
+      QVariantList identifierValues;
+      QString value;
+      QgsFeature feature;
+
+      bool operator()( const Entry &lhs, const Entry &rhs ) const;
+    };
+
+    static Entry nullEntry()
+    {
+      return Entry( QVariantList(), QgsApplication::nullRepresentation(), QgsFeature() );
     }
 
     void run() override
@@ -67,7 +98,7 @@ class QgsFieldExpressionValuesGatherer: public QThread
         QVariantList attributes;
         for ( const int idx : attributeIndexes )
           attributes << feat.attribute( idx );
-        mEntries.append( QgsFeatureFilterModel::Entry( attributes, mDisplayExpression.evaluate( &mExpressionContext ).toString(), feat ) );
+        mEntries.append( Entry( attributes, mDisplayExpression.evaluate( &mExpressionContext ).toString(), feat ) );
 
         QMutexLocker locker( &mCancelMutex );
         if ( mWasCanceled )
@@ -89,7 +120,7 @@ class QgsFieldExpressionValuesGatherer: public QThread
       return mWasCanceled;
     }
 
-    QVector<QgsFeatureFilterModel::Entry> entries() const
+    QVector<Entry> entries() const
     {
       return mEntries;
     }
@@ -124,7 +155,7 @@ class QgsFieldExpressionValuesGatherer: public QThread
     QgsFeatureIterator mIterator;
     bool mWasCanceled = false;
     mutable QMutex mCancelMutex;
-    QVector<QgsFeatureFilterModel::Entry> mEntries;
+    QVector<Entry> mEntries;
     QStringList mIdentifierFields;
     QVariant mData;
 };
@@ -132,4 +163,4 @@ class QgsFieldExpressionValuesGatherer: public QThread
 ///@endcond
 
 
-#endif // QGSFEATUREFILTERMODEL_P_H
+#endif // QGSFEATUREEXPRESSIONVALUESGATHERER_H
