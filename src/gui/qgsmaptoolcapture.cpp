@@ -13,8 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <ogr_api.h>
-#include <ogr_geometry.h>
+#include "ogr_srs_api.h"
 
 #include "qgsmaptoolcapture.h"
 #include "qgsexception.h"
@@ -26,6 +25,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvastracer.h"
 #include "qgsmapmouseevent.h"
+#include "qgsogrutils.h"
 #include "qgspolygon.h"
 #include "qgsrubberband.h"
 #include "qgssnapindicator.h"
@@ -296,34 +296,22 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
   if ( vlayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::CircularGeometries ) )
   {
     // We convert the capture curve to OGR geometry
-    OGRGeometry *ogrCaptureCurve;
-    OGRGeometryFactory::createFromWkt( mCaptureCurve.asWkt().toLocal8Bit().data(), nullptr, &ogrCaptureCurve );
+    QByteArray wkb = mCaptureCurve.asWkb();
+    OGRGeometryH ogrCaptureCurve;
+    OGR_G_CreateFromWkb( ( unsigned char *) wkb.constData(), nullptr, &ogrCaptureCurve, wkb.size() );
 
     // We de-approximate the curves using OGR (the geometry must be forced to linear first, as a mCaptureCurve is a CompoundCurve)
-    OGRGeometry *ogrLinestring = ogrCaptureCurve->getLinearGeometry(); // it must be forced to linear, as captuecurve is a compound curve
-    OGRGeometry *ogrRecurved = ogrLinestring->getCurveGeometry();
+    OGRGeometryH ogrLinestring = OGR_G_GetLinearGeometry( ogrCaptureCurve, 0, nullptr );
+    OGRGeometryH ogrRecurved = OGR_G_GetCurveGeometry( ogrLinestring, nullptr );
 
     // We save back to mCaptureCurve
-    mCaptureCurve.clear();
-    mCaptureCurve.fromWkt( QString::fromStdString( ogrRecurved->exportToWkt() ) );
+    mCaptureCurve = *qgsgeometry_cast<QgsCompoundCurve *>( QgsOgrUtils::ogrGeometryToQgsGeometry( ogrRecurved ).constGet() );
   }
 
   tracer->reportError( QgsTracer::ErrNone, true ); // clear messagebar if there was any error
   return true;
 }
 
-// Required to avoid this (took values from https://github.com/OSGeo/gdal/blob/master/gdal/ogr/ogrgeometry.cpp):
-// qgsmaptoolcapture.cpp.obj : error LNK2019: unresolved external symbol "private: static int __cdecl OGRWktOptions::getDefaultPrecision(void)" (?getDefaultPrecision@OGRWktOptions@@CAHXZ) referenced in function "public: __cdecl OGRWktOptions::OGRWktOptions(void)" (??0OGRWktOptions@@QEAA@XZ)
-// qgsmaptoolcapture.cpp.obj : error LNK2019: unresolved external symbol "private: static bool __cdecl OGRWktOptions::getDefaultRound(void)" (?getDefaultRound@OGRWktOptions@@CA_NXZ) referenced in function "public: __cdecl OGRWktOptions::OGRWktOptions(void)" (??0OGRWktOptions@@QEAA@XZ)
-// output\bin\qgis_gui.dll : fatal error LNK1120: 2 unresolved externals
-int OGRWktOptions::getDefaultPrecision( void )
-{
-  return 15;
-}
-bool OGRWktOptions::getDefaultRound( void )
-{
-  return true;
-}
 
 QgsRubberBand *QgsMapToolCapture::takeRubberBand()
 {
