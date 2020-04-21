@@ -3138,6 +3138,15 @@ static QVariant fcnGeomNumGeometries( const QVariantList &values, const QgsExpre
   return QVariant( geom.constGet()->partCount() );
 }
 
+static QVariant fcnGeomIsMultipart( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  if ( geom.isNull() )
+    return QVariant();
+
+  return QVariant( geom.isMultipart() );
+}
+
 static QVariant fcnGeomNumInteriorRings( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -5927,7 +5936,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "extrude" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "x" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "y" ) ),
-                                            fcnExtrude, QStringLiteral( "GeometryGroup" ), QString() );
+                                            fcnExtrude, QStringLiteral( "GeometryGroup" ), QString() )
+        << new QgsStaticExpressionFunction( QStringLiteral( "is_multipart" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+                                            fcnGeomIsMultipart, QStringLiteral( "GeometryGroup" ) );
+
 
     QgsStaticExpressionFunction *orderPartsFunc = new QgsStaticExpressionFunction( QStringLiteral( "order_parts" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) )
         << QgsExpressionFunction::Parameter( QStringLiteral( "orderby" ) )
