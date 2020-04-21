@@ -50,12 +50,12 @@ namespace Vectoranalysis
       /**
        * Prepare jobs
        */
-      void prepare();
+      void prepare() override;
 
       /**
        * Process feature
        */
-      void processFeature( const Job *job );
+      void processFeature( const Job *job ) override;
 
       /**
        * @brief Create job queue from next feature chunk
