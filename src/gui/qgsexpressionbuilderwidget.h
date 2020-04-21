@@ -340,6 +340,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void operatorButtonClicked();
     void btnRun_pressed();
     void btnNewFile_pressed();
+    void btnRemoveFile_pressed();
 
     /**
      * Display a file dialog to choose where to store the exported expressions JSON file
