@@ -15,10 +15,10 @@
 
 #include "qgsvectortilemvtutils.h"
 
-#include "qgspoint.h"
+#include "qgslinestring.h"
 
 
-bool QgsVectorTileMVTUtils::isExteriorRing( const QVector<QgsPoint> &pts )
+bool QgsVectorTileMVTUtils::isExteriorRing( const QgsLineString *lineString )
 {
   // Exterior rings have POSITIVE area while interior rings have NEGATIVE area
   // when calculated with https://en.wikipedia.org/wiki/Shoelace_formula
@@ -26,12 +26,14 @@ bool QgsVectorTileMVTUtils::isExteriorRing( const QVector<QgsPoint> &pts )
   // the input data are expected to form a closed ring, i.e. first pt == last pt.
 
   double total = 0.0;
-  const QgsPoint *ptsPtr = pts.constData();
-  int count = pts.count();
+  int count = lineString->numPoints();
+  const double *xData = lineString->xData();
+  const double *yData = lineString->yData();
+
   for ( int i = 0; i < count - 1; i++ )
   {
-    double val = ( pts[i + 1].x() - ptsPtr[i].x() ) * ( ptsPtr[i + 1].y() + pts[i].y() );
-    //double val = ptsPtr[i].x() * (-ptsPtr[i+1].y()) - ptsPtr[i+1].x() * (-ptsPtr[i].y());  // gives the same result
+    double val = ( xData[i + 1] - xData[i] ) * ( yData[i + 1] + yData[i] );
+    //double val = xData[i] * (-yData[i+1]) - xData[i+1] * (-yData[i]);  // gives the same result
     total += val;
   }
   return total >= 0;
