@@ -119,7 +119,7 @@ matrix:
       # FOCAL DOCKER BUILD ON CRON OR TAG
       ##########################################################
     - os: linux
-      name: focal docker build 💃
+      name: focal docker build 🔭
       if: repo = qgis/QGIS AND (tag IS PRESENT OR type = cron)
       services: docker
       sudo: required # required to restart Docker Daemon with experimental features
