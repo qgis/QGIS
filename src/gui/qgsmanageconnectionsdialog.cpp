@@ -475,7 +475,7 @@ QDomDocument QgsManageConnectionsDialog::saveWfsConnections( const QStringList &
 {
   QDomDocument doc( QStringLiteral( "connections" ) );
   QDomElement root = doc.createElement( QStringLiteral( "qgsWFSConnections" ) );
-  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
+  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.1" ) );
   doc.appendChild( root );
 
   QgsSettings settings;
@@ -487,7 +487,12 @@ QDomDocument QgsManageConnectionsDialog::saveWfsConnections( const QStringList &
     el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
     el.setAttribute( QStringLiteral( "url" ), settings.value( path + connections[ i ] + "/url", "" ).toString() );
 
-    el.setAttribute( QStringLiteral( "referer" ), settings.value( path + connections[ i ] + "/referer", "" ).toString() );
+    el.setAttribute( QStringLiteral( "version" ), settings.value( path + connections[ i ] + "/version", "" ).toString() );
+    el.setAttribute( QStringLiteral( "maxnumfeatures" ), settings.value( path + connections[ i ] + "/maxnumfeatures", "" ).toString() );
+    el.setAttribute( QStringLiteral( "pagesize" ), settings.value( path + connections[ i ] + "/pagesize", "" ).toString() );
+    el.setAttribute( QStringLiteral( "pagingenabled" ), settings.value( path + connections[ i ] + "/pagingenabled", false ).toString() );
+    el.setAttribute( QStringLiteral( "ignoreAxisOrientation" ), settings.value( path + connections[ i ] + "/ignoreAxisOrientation", false ).toString() );
+    el.setAttribute( QStringLiteral( "invertAxisOrientation" ), settings.value( path + connections[ i ] + "/invertAxisOrientation", false ).toString() );
 
     path = QStringLiteral( "/qgis/WFS/" );
     el.setAttribute( QStringLiteral( "username" ), settings.value( path + connections[ i ] + "/username", "" ).toString() );
@@ -926,6 +931,13 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
     // no dups detected or overwrite is allowed
     settings.beginGroup( QStringLiteral( "/qgis/connections-wfs" ) );
     settings.setValue( QString( '/' + connectionName + "/url" ), child.attribute( QStringLiteral( "url" ) ) );
+
+    settings.setValue( QString( '/' + connectionName + "/version" ), child.attribute( QStringLiteral( "version" ) ) );
+    settings.setValue( QString( '/' + connectionName + "/maxnumfeatures" ), child.attribute( QStringLiteral( "maxnumfeatures" ) ) );
+    settings.setValue( QString( '/' + connectionName + "/pagesize" ), child.attribute( QStringLiteral( "pagesize" ) ) );
+    settings.setValue( QString( '/' + connectionName + "/pagingenabled" ), child.attribute( QStringLiteral( "pagingenabled" ) ) );
+    settings.setValue( QString( '/' + connectionName + "/ignoreAxisOrientation" ), child.attribute( QStringLiteral( "ignoreAxisOrientation" ) ) );
+    settings.setValue( QString( '/' + connectionName + "/invertAxisOrientation" ), child.attribute( QStringLiteral( "invertAxisOrientation" ) ) );
     settings.endGroup();
 
     if ( !child.attribute( QStringLiteral( "username" ) ).isEmpty() )
