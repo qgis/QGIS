@@ -821,7 +821,7 @@ void QgsModelDesignerDialog::validate()
 void QgsModelDesignerDialog::reorderInputs()
 {
   QgsModelInputReorderDialog dlg( this );
-  dlg.setInputs( mModel->orderedParameters() );
+  dlg.setModel( mModel.get() );
   if ( dlg.exec() )
   {
     const QStringList inputOrder = dlg.inputOrder();
