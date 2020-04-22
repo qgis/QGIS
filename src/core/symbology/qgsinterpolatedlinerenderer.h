@@ -1,12 +1,10 @@
 /***************************************************************************
-                         qgsinterpolatedlinerenderer.h
-                         ---------------------
+    qgsinterpolatedlinerenderer.h
+    ---------------------
     begin                : April 2020
     copyright            : (C) 2020 by Vincent Cloarec
     email                : vcloarec at gmail dot com
- ***************************************************************************/
-
-/***************************************************************************
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -14,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 #ifndef QGSINTERPOLATEDLINERENDERER_H
 #define QGSINTERPOLATEDLINERENDERER_H
 
@@ -36,6 +33,7 @@
 class CORE_EXPORT QgsInterpolatedLineColor
 {
   public:
+
     /**
      * Defines how the color is defined
      */
@@ -145,7 +143,7 @@ class CORE_EXPORT QgsInterpolatedLineWidth
     //! Sets the fixed width
     void setFixedStrokeWidth( double fixedWidth );
 
-    //! Returns the varaible width depending on value, if not varying returns the fixed width
+    //! Returns the variable width depending on value, if not varying returns the fixed width
     double strokeWidth( double value ) const;
 
     //! Writes configuration to a new DOM element
@@ -172,7 +170,7 @@ class CORE_EXPORT QgsInterpolatedLineWidth
 /**
  * \ingroup core
  * \class QgsInterpolatedLineRenderer
- * Represents a line with width and color varying dependending on values.
+ * Represents a line with width and color varying depending on values.
  * \since QGIS 3.14
  */
 class CORE_EXPORT QgsInterpolatedLineRenderer

@@ -1,12 +1,10 @@
 ﻿/***************************************************************************
-                         qgsinterpolatedlinerenderer.cpp
-                         ---------------------
+    qgsinterpolatedlinerenderer.cpp
+    ---------------------
     begin                : April 2020
     copyright            : (C) 2020 by Vincent Cloarec
     email                : vcloarec at gmail dot com
- ***************************************************************************/
-
-/***************************************************************************
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -47,15 +45,15 @@ void QgsInterpolatedLineRenderer::render( double value1, double value2, QgsPoint
 
   if ( value1 > value2 )
   {
-    qSwap( value1, value2 );
-    qSwap( point1, point2 );
+    std::swap( value1, value2 );
+    std::swap( point1, point2 );
   }
 
   QPointF p1 = mapToPixel.transform( point1 ).toQPointF();
   QPointF p2 = mapToPixel.transform( point2 ).toQPointF();
   QPointF dir = p2 - p1;
-  double lenght = sqrt( pow( dir.x(), 2 ) + pow( dir.y(), 2 ) );
-  QPointF diru = dir / lenght;
+  double length = sqrt( pow( dir.x(), 2 ) + pow( dir.y(), 2 ) );
+  QPointF diru = dir / length;
   QPointF orthu = QPointF( -diru.y(), diru.x() );
 
   QList<double> breakValues;
