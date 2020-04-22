@@ -67,6 +67,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     QgsLayerMetadata layerMetadata() const override;
     QString dataComment() const override;
     long featureCount() const override;
+    QgsAttributeList pkAttributeIndexes() const override;
     QgsFields fields() const override;
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
