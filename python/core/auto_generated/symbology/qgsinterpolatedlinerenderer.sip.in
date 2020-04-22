@@ -8,8 +8,6 @@
 
 
 
-
-
 class QgsInterpolatedLineColor
 {
 %Docstring
@@ -23,6 +21,7 @@ Class defining color to render mesh datasets. The color can vary depending on th
 #include "qgsinterpolatedlinerenderer.h"
 %End
   public:
+
     enum ColoringMethod
     {
       //! Render with a single color
@@ -168,7 +167,7 @@ Sets the fixed width
 
     double strokeWidth( double value ) const;
 %Docstring
-Returns the varaible width depending on value, if not varying returns the fixed width
+Returns the variable width depending on value, if not varying returns the fixed width
 %End
 
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
@@ -185,7 +184,7 @@ Reads configuration from the given DOM element
 class QgsInterpolatedLineRenderer
 {
 %Docstring
-Represents a line with width and color varying dependending on values.
+Represents a line with width and color varying depending on values.
 
 .. versionadded:: 3.14
 %End
