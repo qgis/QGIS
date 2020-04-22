@@ -1224,7 +1224,7 @@ https://qgis.org/downloads/macos/deps
 
 You should have one bash script and two tar archive in your download folder.
 Run the install script to install Qt and QGIS-Deps to `/opt/` area. You need
-root priviledges or have write access to `/opt/Qt` and `/opt/QGIS`.
+root privileges or have write access to `/opt/Qt` and `/opt/QGIS`.
 
 Alternatively you can download and install Qt Open Source for MacOS from the
 
@@ -1240,7 +1240,7 @@ of the libraries when asked by system.
   5.4. QGIS source
   ================
 
-Unzip or the QGIS source to a working folder of your choice.
+Unzip the QGIS source to a working folder of your choice.
 If you are reading this from the source, you've already done this.
 
 If you want to experiment with the latest development sources, go to the github
