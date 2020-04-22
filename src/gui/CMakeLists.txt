@@ -1269,6 +1269,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${SQLITE3_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
   ${SPATIALINDEX_INCLUDE_DIR}
+  ${Protobuf_INCLUDE_DIRS}
 )
 
 # disable deprecation warnings for classes re-exporting deprecated methods
