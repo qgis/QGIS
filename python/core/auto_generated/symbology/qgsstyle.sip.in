@@ -639,6 +639,15 @@ Returns a list of names of legend patch shapes in the style.
 .. versionadded:: 3.14
 %End
 
+    const QgsSymbol *previewSymbolForPatchShape( const QgsLegendPatchShape &shape ) const;
+%Docstring
+Returns a symbol to use for rendering preview icons for a patch ``shape``.
+
+Ownership of the symbol is not transferred.
+
+.. versionadded:: 3.14
+%End
+
     QgsLegendPatchShape defaultPatch( QgsSymbol::SymbolType type, QSizeF size ) const;
 %Docstring
 Returns the default legend patch shape for the given symbol ``type``.

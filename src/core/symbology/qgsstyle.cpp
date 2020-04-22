@@ -53,6 +53,13 @@ enum LegendPatchTable
 
 QgsStyle *QgsStyle::sDefaultStyle = nullptr;
 
+QgsStyle::QgsStyle()
+{
+  mPatchMarkerSymbol.reset( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  mPatchLineSymbol.reset( QgsLineSymbol::createSimple( QgsStringMap() ) );
+  mPatchFillSymbol.reset( QgsFillSymbol::createSimple( QgsStringMap() ) );
+}
+
 QgsStyle::~QgsStyle()
 {
   clear();
@@ -1918,6 +1925,25 @@ int QgsStyle::labelSettingsId( const QString &name )
 QStringList QgsStyle::legendPatchShapeNames() const
 {
   return mLegendPatchShapes.keys();
+}
+
+const QgsSymbol *QgsStyle::previewSymbolForPatchShape( const QgsLegendPatchShape &shape ) const
+{
+  switch ( shape.symbolType() )
+  {
+    case QgsSymbol::Marker:
+      return mPatchMarkerSymbol.get();
+
+    case QgsSymbol::Line:
+      return mPatchLineSymbol.get();
+
+    case QgsSymbol::Fill:
+      return mPatchFillSymbol.get();
+
+    case QgsSymbol::Hybrid:
+      break;
+  }
+  return nullptr;
 }
 
 int QgsStyle::tagId( const QString &name )

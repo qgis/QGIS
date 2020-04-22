@@ -145,6 +145,8 @@ class GUI_EXPORT QgsLegendPatchShapeButton : public QToolButton
      */
     void prepareMenu();
 
+    void loadPatchFromStyle( const QString &name );
+
   private:
 
     QgsLegendPatchShape mShape;

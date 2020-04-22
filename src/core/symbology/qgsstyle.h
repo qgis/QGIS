@@ -165,7 +165,7 @@ class CORE_EXPORT QgsStyle : public QObject
     /**
      * Constructor for QgsStyle.
      */
-    QgsStyle() = default;
+    QgsStyle();
     ~QgsStyle() override;
 
     /**
@@ -664,6 +664,15 @@ class CORE_EXPORT QgsStyle : public QObject
     QStringList legendPatchShapeNames() const;
 
     /**
+     * Returns a symbol to use for rendering preview icons for a patch \a shape.
+     *
+     * Ownership of the symbol is not transferred.
+     *
+     * \since QGIS 3.14
+     */
+    const QgsSymbol *previewSymbolForPatchShape( const QgsLegendPatchShape &shape ) const;
+
+    /**
      * Returns the default legend patch shape for the given symbol \a type.
      *
      * \see defaultPatchAsQPolygonF()
@@ -1006,6 +1015,10 @@ class CORE_EXPORT QgsStyle : public QObject
     QString mFileName;
 
     sqlite3_database_unique_ptr mCurrentDB;
+
+    std::unique_ptr< QgsSymbol > mPatchMarkerSymbol;
+    std::unique_ptr< QgsSymbol > mPatchLineSymbol;
+    std::unique_ptr< QgsSymbol > mPatchFillSymbol;
 
     mutable QHash< QgsSymbol::SymbolType, QHash< QSizeF, QgsLegendPatchShape > > mDefaultPatchCache;
     mutable QHash< QgsSymbol::SymbolType, QHash< QSizeF, QList< QList< QPolygonF > > > > mDefaultPatchQPolygonFCache;
