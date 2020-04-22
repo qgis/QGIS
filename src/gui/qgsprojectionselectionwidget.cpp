@@ -361,7 +361,7 @@ void QgsProjectionSelectionWidget::updateTooltip()
 {
   QgsCoordinateReferenceSystem c = crs();
   if ( c.isValid() )
-    setToolTip( c.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, true ) );
+    setToolTip( c.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, true ) );
   else
     setToolTip( QString() );
 }
