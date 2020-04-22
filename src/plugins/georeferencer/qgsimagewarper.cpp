@@ -98,7 +98,7 @@ bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDa
   {
     OGRSpatialReference oTargetSRS;
 #if PROJ_VERSION_MAJOR>=6
-    oTargetSRS.importFromWkt( crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ).toUtf8().data() );
+    oTargetSRS.importFromWkt( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toUtf8().data() );
 #else
     oTargetSRS.importFromProj4( crs.toProj().toLatin1().data() );
 #endif
