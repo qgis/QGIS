@@ -332,7 +332,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     mPostgresRasterTemporalGroup->setVisible( false );
   }
 
-  QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
+  QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().userFriendlyIdentifier() );
   mCrsSelector->setCrs( mRasterLayer->crs() );
 
