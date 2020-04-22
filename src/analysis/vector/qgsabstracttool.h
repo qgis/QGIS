@@ -119,7 +119,6 @@ namespace Vectoranalysis
 
       /**
        * @brief appendNextChunkToJobQueue
-       * @param layer
        * @param taskFlag
        */
       bool appendNextChunkToJobQueue( int taskFlag = 0 );
