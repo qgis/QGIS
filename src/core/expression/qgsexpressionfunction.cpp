@@ -3253,6 +3253,110 @@ static QVariant fcnYMax( const QVariantList &values, const QgsExpressionContext 
   return QVariant::fromValue( geom.boundingBox().yMaximum() );
 }
 
+static QVariant fcnZMax( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isNull() )
+    return QVariant();
+
+  if ( !geom.constGet()->is3D() )
+    return QVariant();
+
+  QgsVertexId vId;
+  geom.vertexIdFromVertexNr( 0, vId );
+
+  double max = geom.constGet()->vertexAt( vId ).z();
+
+  for ( auto it = geom.vertices_begin(); it != geom.vertices_end(); ++it )
+  {
+    double z = ( *it ).z();
+
+    if ( max < z )
+      max = z;
+  }
+
+  return QVariant( max );
+}
+
+static QVariant fcnZMin( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isNull() )
+    return QVariant();
+
+  if ( !geom.constGet()->is3D() )
+    return QVariant();
+
+  QgsVertexId vId;
+  geom.vertexIdFromVertexNr( 0, vId );
+
+  double min = geom.constGet()->vertexAt( vId ).z();
+
+  for ( auto it = geom.vertices_begin(); it != geom.vertices_end(); ++it )
+  {
+    double z = ( *it ).z();
+
+    if ( z < min )
+      min = z;
+  }
+
+  return QVariant( min );
+}
+
+static QVariant fcnMMin( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isNull() )
+    return QVariant();
+
+  if ( !geom.constGet()->isMeasure() )
+    return QVariant();
+
+  QgsVertexId vId;
+  geom.vertexIdFromVertexNr( 0, vId );
+
+  double min = geom.constGet()->vertexAt( vId ).m();
+
+  for ( auto it = geom.vertices_begin(); it != geom.vertices_end(); ++it )
+  {
+    double m = ( *it ).m();
+
+    if ( m < min )
+      min = m;
+  }
+
+  return QVariant( min );
+}
+
+static QVariant fcnMMax( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isNull() )
+    return QVariant();
+
+  if ( !geom.constGet()->isMeasure() )
+    return QVariant();
+
+  QgsVertexId vId;
+  geom.vertexIdFromVertexNr( 0, vId );
+
+  double max = geom.constGet()->vertexAt( vId ).m();
+
+  for ( auto it = geom.vertices_begin(); it != geom.vertices_end(); ++it )
+  {
+    double m = ( *it ).m();
+
+    if ( max < m )
+      max = m;
+  }
+
+  return QVariant( max );
+}
+
 static QVariant fcnFlipCoordinates( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -5938,7 +6042,15 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "y" ) ),
                                             fcnExtrude, QStringLiteral( "GeometryGroup" ), QString() )
         << new QgsStaticExpressionFunction( QStringLiteral( "is_multipart" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
-                                            fcnGeomIsMultipart, QStringLiteral( "GeometryGroup" ) );
+                                            fcnGeomIsMultipart, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "z_max" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) ),
+                                            fcnZMax, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "z_min" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) ),
+                                            fcnZMin, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "m_max" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) ),
+                                            fcnMMax, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "m_min" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) ),
+                                            fcnMMin, QStringLiteral( "GeometryGroup" ) );
 
 
     QgsStaticExpressionFunction *orderPartsFunc = new QgsStaticExpressionFunction( QStringLiteral( "order_parts" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) )

@@ -1184,6 +1184,22 @@ class TestQgsExpression: public QObject
       QTest::newRow( "is_multipart false" ) << "is_multipart(geom_from_wkt('POINT (0 0)'))" << false << QVariant( false );
       QTest::newRow( "is_multipart false empty geometry" ) << "is_multipart(geom_from_wkt('POINT EMPTY'))" << false << QVariant( false );
       QTest::newRow( "is_multipart null" ) << "is_multipart(NULL)" << false << QVariant();
+      QTest::newRow( "z_max no 3D" ) << "z_max(geom_from_wkt('POINT (0 0)'))" << false << QVariant();
+      QTest::newRow( "z_max NULL" ) << "z_max(geom_from_wkt(NULL))" << false << QVariant();
+      QTest::newRow( "z_max point" ) << "z_max(geom_from_wkt('POINT (0 0 1)'))" << false << QVariant( 1.0 );
+      QTest::newRow( "z_max line" ) << "z_max(make_line(make_point(0,0,0),make_point(-1,-1,-2)))" << false << QVariant( 0.0 );
+      QTest::newRow( "z_min no 3D" ) << "z_min(geom_from_wkt('POINT (0 0)'))" << false << QVariant();
+      QTest::newRow( "z_min NULL" ) << "z_min(geom_from_wkt(NULL))" << false << QVariant();
+      QTest::newRow( "z_min point" ) << "z_min(geom_from_wkt('POINT (0 0 1)'))" << false << QVariant( 1.0 );
+      QTest::newRow( "z_min line" ) << "z_min(make_line(make_point(0,0,0),make_point(-1,-1,-2)))" << false << QVariant( -2.0 );
+      QTest::newRow( "m_max no measure" ) << "m_max(geom_from_wkt('POINT (0 0)'))" << false << QVariant();
+      QTest::newRow( "m_max NULL" ) << "m_max(geom_from_wkt(NULL))" << false << QVariant();
+      QTest::newRow( "m_max point" ) << "m_max(make_point_m(0,0,1))" << false << QVariant( 1.0 );
+      QTest::newRow( "m_max line" ) << "m_max(make_line(make_point_m(0,0,1),make_point_m(-1,-1,2),make_point_m(-2,-2,0)))" << false << QVariant( 2.0 );
+      QTest::newRow( "m_min no measure" ) << "m_min(geom_from_wkt('POINT (0 0)'))" << false << QVariant();
+      QTest::newRow( "m_min NULL" ) << "m_min(geom_from_wkt(NULL))" << false << QVariant();
+      QTest::newRow( "m_min point" ) << "m_min(make_point_m(0,0,1))" << false << QVariant( 1.0 );
+      QTest::newRow( "m_min line" ) << "m_min(make_line(make_point_m(0,0,1),make_point_m(-1,-1,2),make_point_m(-2,-2,0)))" << false << QVariant( 0.0 );
 
       // string functions
       QTest::newRow( "format_number" ) << "format_number(1999.567,2)" << false << QVariant( "1,999.57" );
