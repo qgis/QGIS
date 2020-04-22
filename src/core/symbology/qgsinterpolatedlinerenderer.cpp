@@ -1,9 +1,9 @@
 ﻿/***************************************************************************
-    qgsinterpolatedlinerenderer.cpp
-    ---------------------
-    begin                : April 2020
-    copyright            : (C) 2020 by Vincent Cloarec
-    email                : vcloarec at gmail dot com
+  qgsinterpolatedlinerenderer.cpp
+  --------------------------------------
+  Date                 : April 2020
+  Copyright            : (C) 2020 by Vincent Cloarec
+  Email                : vcloarec at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

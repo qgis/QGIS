@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgsinterpolatedlinerenderer.h
-    ---------------------
-    begin                : April 2020
-    copyright            : (C) 2020 by Vincent Cloarec
-    email                : vcloarec at gmail dot com
+  qgsinterpolatedlinerenderer.h
+  --------------------------------------
+  Date                 : April 2020
+  Copyright            : (C) 2020 by Vincent Cloarec
+  Email                : vcloarec at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef QGSINTERPOLATEDLINERENDERER_H
 #define QGSINTERPOLATEDLINERENDERER_H
 
@@ -90,7 +91,7 @@ class CORE_EXPORT QgsInterpolatedLineColor
 
     QLinearGradient makeSimpleLinearGradient( const QColor &color1, const QColor &color2 ) const;
 
-    //! Returns the index of the color ramp shader width value immediatly inferior to value
+    //! Returns the index of the color ramp shader with value inferior to value
     int itemColorIndexInf( double value ) const;
 
     void graduatedColorsExact( double value1, double value2, QList<double> &breakValues, QList<QColor> &breakColors, QList<QLinearGradient> &gradients ) const;
