@@ -555,44 +555,32 @@ QSizeF QgsLegendRenderer::drawTitle( QgsRenderContext &context, double top, Qt::
   }
 
   QStringList lines = mSettings.splitStringForWrapping( mSettings.title() );
-  double y = top;
-
-  if ( context.painter() )
-  {
-    context.painter()->setPen( mSettings.fontColor() );
-  }
 
   //calculate width and left pos of rectangle to draw text into
   double textBoxWidth;
   double textBoxLeft;
   widthAndOffsetForTitleText( halignment, legendWidth, textBoxWidth, textBoxLeft );
 
-  QFont titleFont = mSettings.style( QgsLegendStyle::Title ).font();
+  const QgsTextFormat titleFormat = mSettings.style( QgsLegendStyle::Title ).textFormat();
+  const double dotsPerMM = context.scaleFactor();
 
-  for ( QStringList::Iterator titlePart = lines.begin(); titlePart != lines.end(); ++titlePart )
+  const double overallTextHeight = QgsTextRenderer::textHeight( context, titleFormat, lines, QgsTextRenderer::Rect );
+  const double overallTextWidth = QgsTextRenderer::textWidth( context, titleFormat, lines );
+
+  size.rheight() = overallTextHeight / dotsPerMM;
+  size.rwidth() = overallTextWidth / dotsPerMM;
+
+  if ( context.painter() )
   {
-    //last word is not drawn if rectangle width is exactly text width, so add 1
-    //TODO - correctly calculate size of italicized text, since QFontMetrics does not
-    qreal width = mSettings.textWidthMillimeters( titleFont, *titlePart ) + 1;
-    qreal height = mSettings.fontAscentMillimeters( titleFont ) + mSettings.fontDescentMillimeters( titleFont );
+    QgsScopedRenderContextScaleToPixels contextToPixels( context );
 
-    QRectF r( textBoxLeft, y, textBoxWidth, height );
+    const QRectF r( textBoxLeft * dotsPerMM, top * dotsPerMM, textBoxWidth * dotsPerMM, overallTextHeight );
 
-    if ( context.painter() )
-    {
-      mSettings.drawText( context.painter(), r, *titlePart, titleFont, halignment, Qt::AlignVCenter, Qt::TextDontClip );
-    }
+    QgsTextRenderer::HAlignment halign = halignment == Qt::AlignLeft ? QgsTextRenderer::AlignLeft :
+                                         halignment == Qt::AlignRight ? QgsTextRenderer::AlignRight : QgsTextRenderer::AlignCenter;
 
-    //update max width of title
-    size.rwidth() = std::max( width, size.rwidth() );
-
-    y += height;
-    if ( titlePart != ( lines.end() - 1 ) )
-    {
-      y += mSettings.lineSpacing();
-    }
+    QgsTextRenderer::drawText( r, 0, halign, lines, context, titleFormat );
   }
-  size.rheight() = y - top;
 
   return size;
 }
@@ -749,12 +737,7 @@ QSizeF QgsLegendRenderer::drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRende
   if ( titleString.isEmpty() )
     return size;
 
-  double y = top;
-
-  if ( context.painter() )
-    context.painter()->setPen( mSettings.layerFontColor() );
-
-  QFont layerFont = mSettings.style( nodeLegendStyle( nodeLayer ) ).font();
+  const QgsTextFormat layerFormat = mSettings.style( nodeLegendStyle( nodeLayer ) ).textFormat();
 
   QgsExpressionContextScope *layerScope = nullptr;
   if ( nodeLayer->layer() )
@@ -764,35 +747,28 @@ QSizeF QgsLegendRenderer::drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRende
   }
 
   const QStringList lines = mSettings.evaluateItemText( titleString, context.expressionContext() );
-  int i = 0;
 
+  const double dotsPerMM = context.scaleFactor();
+
+  const double overallTextHeight = QgsTextRenderer::textHeight( context, layerFormat, lines, QgsTextRenderer::Rect );
+  const double overallTextWidth = QgsTextRenderer::textWidth( context, layerFormat, lines );
   const double sideMargin = mSettings.style( nodeLegendStyle( nodeLayer ) ).margin( QgsLegendStyle::Left );
-  for ( QStringList::ConstIterator layerItemPart = lines.constBegin(); layerItemPart != lines.constEnd(); ++layerItemPart )
-  {
-    y += mSettings.fontAscentMillimeters( layerFont );
-    if ( QPainter *destPainter = context.painter() )
-    {
-      double x = columnContext.left + sideMargin;
-      if ( mSettings.style( nodeLegendStyle( nodeLayer ) ).alignment() != Qt::AlignLeft )
-      {
-        const double labelWidth = mSettings.textWidthMillimeters( layerFont, *layerItemPart );
-        if ( mSettings.style( nodeLegendStyle( nodeLayer ) ).alignment() == Qt::AlignRight )
-          x = columnContext.right - labelWidth - sideMargin;
-        else if ( mSettings.style( nodeLegendStyle( nodeLayer ) ).alignment() == Qt::AlignHCenter )
-          x = columnContext.left + ( columnContext.right - columnContext.left - labelWidth ) / 2;
-      }
-      mSettings.drawText( destPainter, x, y, *layerItemPart, layerFont );
-    }
-    qreal width = mSettings.textWidthMillimeters( layerFont, *layerItemPart ) + sideMargin *
+
+  size.rheight() = overallTextHeight / dotsPerMM;
+  size.rwidth() = overallTextWidth / dotsPerMM + sideMargin *
                   ( mSettings.style( nodeLegendStyle( nodeLayer ) ).alignment() == Qt::AlignHCenter  ? 2 : 1 );
-    size.rwidth() = std::max( width, size.width() );
-    if ( layerItemPart != ( lines.end() - 1 ) )
-    {
-      y += mSettings.lineSpacing();
-    }
-    i++;
+
+  if ( context.painter() )
+  {
+    QgsScopedRenderContextScaleToPixels contextToPixels( context );
+    QgsTextRenderer::HAlignment halign =  mSettings.style( nodeLegendStyle( nodeLayer ) ).alignment()  == Qt::AlignLeft ? QgsTextRenderer::AlignLeft :
+                                          mSettings.style( nodeLegendStyle( nodeLayer ) ).alignment()  == Qt::AlignRight ? QgsTextRenderer::AlignRight : QgsTextRenderer::AlignCenter;
+
+    const QRectF r( ( columnContext.left + ( halign == QgsTextRenderer::AlignLeft ? sideMargin : 0 ) ) * dotsPerMM, top * dotsPerMM,
+                    ( ( columnContext.right - columnContext.left ) - ( halign == QgsTextRenderer::AlignRight ? sideMargin : 0 ) ) * dotsPerMM, overallTextHeight );
+    QgsTextRenderer::drawText( r, 0, halign, lines, context, layerFormat );
   }
-  size.rheight() = y - top;
+
   size.rheight() += mSettings.style( nodeLegendStyle( nodeLayer ) ).margin( QgsLegendStyle::Side::Bottom );
 
   if ( layerScope )
@@ -806,41 +782,33 @@ QSizeF QgsLegendRenderer::drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QgsRende
   QSizeF size( 0, 0 );
   QModelIndex idx = mLegendModel->node2index( nodeGroup );
 
-  double y = top;
-
-  if ( context.painter() )
-    context.painter()->setPen( mSettings.fontColor() );
-
-  QFont groupFont = mSettings.style( nodeLegendStyle( nodeGroup ) ).font();
-
-  const double sideMargin = mSettings.style( nodeLegendStyle( nodeGroup ) ).margin( QgsLegendStyle::Left );
+  const QgsTextFormat groupFormat = mSettings.style( nodeLegendStyle( nodeGroup ) ).textFormat();
 
   const QStringList lines = mSettings.evaluateItemText( mLegendModel->data( idx, Qt::DisplayRole ).toString(), context.expressionContext() );
-  for ( QStringList::ConstIterator groupPart = lines.constBegin(); groupPart != lines.constEnd(); ++groupPart )
-  {
-    y += mSettings.fontAscentMillimeters( groupFont );
 
-    if ( QPainter *destPainter = context.painter() )
-    {
-      double x = columnContext.left + sideMargin;
-      if ( mSettings.style( nodeLegendStyle( nodeGroup ) ).alignment() != Qt::AlignLeft )
-      {
-        const double labelWidth = mSettings.textWidthMillimeters( groupFont, *groupPart );
-        if ( mSettings.style( nodeLegendStyle( nodeGroup ) ).alignment() == Qt::AlignRight )
-          x = columnContext.right - labelWidth - sideMargin;
-        else if ( mSettings.style( nodeLegendStyle( nodeGroup ) ).alignment() == Qt::AlignHCenter )
-          x = columnContext.left + ( columnContext.right - columnContext.left - labelWidth ) / 2;
-      }
-      mSettings.drawText( destPainter, x, y, *groupPart, groupFont );
-    }
-    qreal width = mSettings.textWidthMillimeters( groupFont, *groupPart ) + sideMargin * ( mSettings.style( nodeLegendStyle( nodeGroup ) ).alignment() == Qt::AlignHCenter ? 2 : 1 );
-    size.rwidth() = std::max( width, size.width() );
-    if ( groupPart != ( lines.end() - 1 ) )
-    {
-      y += mSettings.lineSpacing();
-    }
+  const double dotsPerMM = context.scaleFactor();
+
+  const double overallTextHeight = QgsTextRenderer::textHeight( context, groupFormat, lines, QgsTextRenderer::Rect );
+  const double overallTextWidth = QgsTextRenderer::textWidth( context, groupFormat, lines );
+  const double sideMargin = mSettings.style( nodeLegendStyle( nodeGroup ) ).margin( QgsLegendStyle::Left );
+
+  size.rheight() = overallTextHeight / dotsPerMM;
+  size.rwidth() = overallTextWidth / dotsPerMM + sideMargin *
+                  ( mSettings.style( nodeLegendStyle( nodeGroup ) ).alignment() == Qt::AlignHCenter  ? 2 : 1 );
+
+  if ( context.painter() )
+  {
+    QgsScopedRenderContextScaleToPixels contextToPixels( context );
+
+    QgsTextRenderer::HAlignment halign =  mSettings.style( nodeLegendStyle( nodeGroup ) ).alignment()  == Qt::AlignLeft ? QgsTextRenderer::AlignLeft :
+                                          mSettings.style( nodeLegendStyle( nodeGroup ) ).alignment()  == Qt::AlignRight ? QgsTextRenderer::AlignRight : QgsTextRenderer::AlignCenter;
+
+    const QRectF r( dotsPerMM * ( columnContext.left + ( halign == QgsTextRenderer::AlignLeft ? sideMargin : 0 ) ), top * dotsPerMM,
+                    dotsPerMM * ( ( columnContext.right - columnContext.left ) - ( halign == QgsTextRenderer::AlignRight ? sideMargin : 0 ) ), overallTextHeight );
+    QgsTextRenderer::drawText( r, 0, halign, lines, context, groupFormat );
   }
-  size.rheight() = y - top + mSettings.style( nodeLegendStyle( nodeGroup ) ).margin( QgsLegendStyle::Bottom );
+
+  size.rheight() += mSettings.style( nodeLegendStyle( nodeGroup ) ).margin( QgsLegendStyle::Bottom );
   return size;
 }
 

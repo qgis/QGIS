@@ -203,18 +203,24 @@ Returns legend style.
 Sets the style of ``component`` to ``style`` for the legend.
 %End
 
-    QFont styleFont( QgsLegendStyle::Style component ) const;
+ QFont styleFont( QgsLegendStyle::Style component ) const /Deprecated/;
 %Docstring
 Returns the font settings for a legend ``component``.
 
 .. seealso:: :py:func:`setStyleFont`
+
+.. deprecated::
+   use QgsLegendStyle.textFormat() from style() instead.
 %End
 
-    void setStyleFont( QgsLegendStyle::Style component, const QFont &font );
+ void setStyleFont( QgsLegendStyle::Style component, const QFont &font ) /Deprecated/;
 %Docstring
 Sets the style ``font`` for a legend ``component``.
 
 .. seealso:: :py:func:`styleFont`
+
+.. deprecated::
+   use QgsLegendStyle.setTextFormat() from style() instead.
 %End
 
     void setStyleMargin( QgsLegendStyle::Style component, double margin );
@@ -269,18 +275,24 @@ Sets the legend column ``spacing``.
 .. seealso:: :py:func:`columnSpace`
 %End
 
-    QColor fontColor() const;
+ QColor fontColor() const /Deprecated/;
 %Docstring
 Returns the legend font color.
 
 .. seealso:: :py:func:`setFontColor`
+
+.. deprecated::
+   use QgsLegendStyle.setTextFormat() from style() instead.
 %End
 
-    void setFontColor( const QColor &color );
+ void setFontColor( const QColor &color ) /Deprecated/;
 %Docstring
 Sets the legend font ``color``.
 
 .. seealso:: :py:func:`fontColor`
+
+.. deprecated::
+   use QgsLegendStyle.setTextFormat() from style() instead.
 %End
 
     double symbolWidth() const;

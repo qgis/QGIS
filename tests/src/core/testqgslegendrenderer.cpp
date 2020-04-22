@@ -59,8 +59,9 @@ static void _setStandardTestFont( QgsLegendSettings &settings, const QString &st
   Q_FOREACH ( QgsLegendStyle::Style st, styles )
   {
     QFont font( QgsFontUtils::getStandardTestFont( style ) );
-    font.setPointSizeF( settings.style( st ).font().pointSizeF() );
-    settings.rstyle( st ).setFont( font );
+    QgsTextFormat f = settings.rstyle( st ).textFormat();
+    f.setFont( font );
+    settings.rstyle( st ).setTextFormat( f );
   }
 }
 
