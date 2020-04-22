@@ -1746,26 +1746,6 @@ void TestQgsGeometry::circularString()
   QVERIFY( !segmentized->isMeasure() );
   QCOMPARE( segmentized->wkbType(), QgsWkbTypes::LineString );
 
-  //make sure segmentize works on multi geometries
-  QgsMultiCurve multiCurve2;
-  QgsCompoundCurve compoundCurve2;
-  QgsCircularString circularString2;
-  circularString2.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 10 ) << QgsPoint( 21, 2 ) );
-  compoundCurve2.addCurve( circularString2.clone() );
-  multiCurve2.addGeometry( compoundCurve2.clone() );
-  QgsAbstractGeometry *semgentized2 = multiCurve2.segmentize();
-  QgsMultiLineString *linearMultiCurve2 = static_cast<QgsMultiLineString*>(semgentized2);
-  QCOMPARE( segmentized2->numPoints(), 156 );
-  QCOMPARE( segmentized2->vertexCount(), 156 );
-  QCOMPARE( segmentized2->ringCount(), 1 );
-  QCOMPARE( segmentized2->partCount(), 1 );
-  QCOMPARE( segmentized2->wkbType(), QgsWkbTypes::LineString );
-  QVERIFY( !segmentized2->is3D() );
-  QVERIFY( !segmentized2->isMeasure() );
-  QCOMPARE( segmentized2->pointN( 0 ), circularString2.pointN( 0 ) );
-  QCOMPARE( segmentized2->pointN( segmentized2->numPoints() - 1 ), circularString2.pointN( circularString2.numPoints() - 1 ) );
-  QCOMPARE( semgentized2->wkbType(),  QgsWkbTypes::Type::MultiLineString );
-
   //to/from WKB
   QgsCircularString l15;
   l15.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 )
@@ -13618,6 +13598,20 @@ void TestQgsGeometry::multiCurve()
   QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 27, 53, 21, 52 ) );
   QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 43, 43, 11, 5 ) );
   QCOMPARE( ls->pointN( 2 ), QgsPoint( QgsWkbTypes::PointZM, 27, 37, 6, 2 ) );
+
+  // segmentize
+  QgsMultiCurve multiCurve2;
+  QgsCompoundCurve compoundCurve2;
+  QgsCircularString circularString2;
+  circularString2.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 10 ) << QgsPoint( 21, 2 ) );
+  compoundCurve2.addCurve( circularString2.clone() );
+  multiCurve2.addGeometry( compoundCurve2.clone() );
+  QgsMultiLineString *segmentized2 = static_cast<QgsMultiLineString *>( multiCurve2.segmentize() );
+  QCOMPARE( segmentized2->vertexCount(), 156 );
+  QCOMPARE( segmentized2->partCount(), 1 );
+  QVERIFY( !segmentized2->is3D() );
+  QVERIFY( !segmentized2->isMeasure() );
+  QCOMPARE( segmentized2->wkbType(),  QgsWkbTypes::Type::MultiLineString );
 }
 
 void TestQgsGeometry::multiSurface()
