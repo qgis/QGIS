@@ -48,8 +48,14 @@ Returns the group's id.
 %End
 
     void setId( const QString &id );
+%Docstring
+Sets the group's id.
+%End
 
     QString generateId( QString name ) const;
+%Docstring
+Generate the group's id, according to the groups's name (based on QgsMapLayer.generateId)
+%End
 
     QgsLayerTreeGroup *insertGroup( int index, const QString &name );
 %Docstring
