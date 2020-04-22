@@ -29,7 +29,6 @@
 #include <QJsonArray>
 #include <QFileDialog>
 #include <QMenu>
-#include <QSignalBlocker>
 
 #include "qgsexpressionbuilderwidget.h"
 #include "qgslogger.h"
@@ -431,8 +430,7 @@ void QgsExpressionBuilderWidget::btnRemoveFile_pressed()
   if ( QFile::remove( mFunctionsPath + QDir::separator() + fileName.append( ".py" ) ) )
   {
     {
-      const QSignalBlocker blocker( cmbFileNames );
-      QListWidgetItem *itemToRemove = cmbFileNames->takeItem( currentRow );
+      QListWidgetItem *itemToRemove = whileBlocking( cmbFileNames )->takeItem( currentRow );
       delete itemToRemove;
     }
 
