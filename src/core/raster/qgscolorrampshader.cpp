@@ -207,7 +207,7 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
 
       double cut1 = std::numeric_limits<double>::quiet_NaN();
       double cut2 = std::numeric_limits<double>::quiet_NaN();
-      // Note: the sample size in other parts of QGIS appears to be 25000, it is ten times here.
+      // Note: the sample size in other parts of QGIS appears to be 250000, it is ten times here.
       const int sampleSize = 250000 * 10;
 
       // set min and max from histogram, used later to calculate number of decimals to display
