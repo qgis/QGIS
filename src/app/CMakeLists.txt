@@ -220,6 +220,7 @@ SET(QGIS_APP_SRCS
   mesh/qgsmeshdatasetgrouptreeview.cpp
   mesh/qgsmeshcalculatordialog.cpp
   mesh/qgsmeshstaticdatasetwidget.cpp
+  mesh/qgsmeshvariablestrokewidthwidget.cpp
 )
 
 IF (WITH_3D)

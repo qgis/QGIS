@@ -9,7 +9,6 @@
 
 
 
-
 // this is needed for the "convert to subclass" code below to compile
 %ModuleHeaderCode
 #include "qgslayoutitem3dmap.h"
@@ -17,7 +16,7 @@
 
 
 
-class QgsLayoutItem3DMap : QgsLayoutItem
+class QgsLayoutItem3DMap : QgsLayoutItem, QgsTemporalRangeObject
 {
 %Docstring
 
