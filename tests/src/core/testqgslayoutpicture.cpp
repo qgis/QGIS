@@ -473,9 +473,8 @@ void TestQgsLayoutPicture::valid()
   QVERIFY( !picture->isMissingImage() );
   QCOMPARE( picture->evaluatedPath(), mPngImage );
 
-  // invalid picture source, will load ":/images/composer/missing_image.svg"
   picture->setPicturePath( QStringLiteral( "bad" ) );
-  QVERIFY( !picture->isMissingImage() );
+  QVERIFY( picture->isMissingImage() );
   QCOMPARE( picture->evaluatedPath(), QStringLiteral( "bad" ) );
 
   picture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( QStringLiteral( "'%1'" ).arg( mSvgImage ) ) );
