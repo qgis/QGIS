@@ -79,11 +79,8 @@ class CORE_EXPORT QgsLayerTreeUtils
     //! Gets invisible layers
     static QStringList invisibleLayerList( QgsLayerTreeNode *node );
 
-    //! Gets unchecked group
-    static QStringList uncheckedGroupList( QgsLayerTreeNode *node, int i );
-
-    //! Set embedded group checked state according to the project
-    static void setUncheckedGroup( QgsLayerTreeNode *node, const QStringList uncheckedIndexes, int index );
+    //! Gets unchecked groups
+    static QStringList uncheckedGroupList( QgsLayerTreeNode *node );
 
     //! Sets the expression filter of a legend layer
     static void setLegendFilterByExpression( QgsLayerTreeLayer &layer, const QString &expr, bool enabled = true );

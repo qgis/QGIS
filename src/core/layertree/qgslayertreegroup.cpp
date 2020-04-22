@@ -26,6 +26,7 @@
 QgsLayerTreeGroup::QgsLayerTreeGroup( const QString &name, bool checked )
   : QgsLayerTreeNode( NodeGroup, checked )
   , mName( name )
+  , mId( generateId( mName ) )
 {
   connect( this, &QgsLayerTreeNode::visibilityChanged, this, &QgsLayerTreeGroup::nodeVisibilityChanged );
 }
@@ -33,6 +34,7 @@ QgsLayerTreeGroup::QgsLayerTreeGroup( const QString &name, bool checked )
 QgsLayerTreeGroup::QgsLayerTreeGroup( const QgsLayerTreeGroup &other )
   : QgsLayerTreeNode( other )
   , mName( other.mName )
+  , mId( other.mId )
   , mChangingChildVisibility( other.mChangingChildVisibility )
   , mMutuallyExclusive( other.mMutuallyExclusive )
   , mMutuallyExclusiveChildIndex( other.mMutuallyExclusiveChildIndex )
@@ -54,6 +56,31 @@ void QgsLayerTreeGroup::setName( const QString &n )
   emit nameChanged( this, n );
 }
 
+QString QgsLayerTreeGroup::id() const
+{
+  return mId;
+}
+
+void QgsLayerTreeGroup::setId( const QString &id )
+{
+  mId = id;
+}
+
+QString QgsLayerTreeGroup::generateId( QString groupName ) const
+{
+  // Generate the unique ID of this group
+  QString uuid = QUuid::createUuid().toString();
+  // trim { } from uuid
+  QString id = groupName + '_' + uuid.mid( 1, uuid.length() - 2 );
+  // Tidy the ID up to avoid characters that may cause problems
+  // elsewhere (e.g in some parts of XML). Replaces every non-word
+  // character (word characters are the alphabet, numbers and
+  // underscore) with an underscore.
+  // Note that the first backslash in the regular expression is
+  // there for the compiler, so the pattern is actually \W
+  id.replace( QRegExp( "[\\W]" ), QStringLiteral( "_" ) );
+  return id;
+}
 
 QgsLayerTreeGroup *QgsLayerTreeGroup::insertGroup( int index, const QString &name )
 {
@@ -271,12 +298,15 @@ QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( QDomElement &element, const QgsRe
     return nullptr;
 
   QString name =  context.projectTranslator()->translate( QStringLiteral( "project:layergroups" ), element.attribute( QStringLiteral( "name" ) ) );
+  QString id =  context.projectTranslator()->translate( QStringLiteral( "project:layergroups" ), element.attribute( QStringLiteral( "id" ) ) );
   bool isExpanded = ( element.attribute( QStringLiteral( "expanded" ), QStringLiteral( "1" ) ) == QLatin1String( "1" ) );
   bool checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( QStringLiteral( "checked" ) ) ) != Qt::Unchecked;
   bool isMutuallyExclusive = element.attribute( QStringLiteral( "mutually-exclusive" ), QStringLiteral( "0" ) ) == QLatin1String( "1" );
   int mutuallyExclusiveChildIndex = element.attribute( QStringLiteral( "mutually-exclusive-child" ), QStringLiteral( "-1" ) ).toInt();
 
   QgsLayerTreeGroup *groupNode = new QgsLayerTreeGroup( name, checked );
+  groupNode->setId( id );
+
   groupNode->setExpanded( isExpanded );
 
   groupNode->readCommonXml( element );
@@ -301,6 +331,7 @@ void QgsLayerTreeGroup::writeXml( QDomElement &parentElement, const QgsReadWrite
   QDomDocument doc = parentElement.ownerDocument();
   QDomElement elem = doc.createElement( QStringLiteral( "layer-tree-group" ) );
   elem.setAttribute( QStringLiteral( "name" ), mName );
+  elem.setAttribute( QStringLiteral( "id" ), mId );
   elem.setAttribute( QStringLiteral( "expanded" ), mExpanded ? "1" : "0" );
   elem.setAttribute( QStringLiteral( "checked" ), mChecked ? QStringLiteral( "Qt::Checked" ) : QStringLiteral( "Qt::Unchecked" ) );
   if ( mMutuallyExclusive )
