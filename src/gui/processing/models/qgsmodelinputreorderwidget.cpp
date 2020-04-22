@@ -16,7 +16,7 @@
 #include "qgsmodelinputreorderwidget.h"
 #include "qgsgui.h"
 #include <QDialogButtonBox>
-#include <QStringListModel>
+#include <QStandardItemModel>
 ///@cond NOT_STABLE
 
 QgsModelInputReorderWidget::QgsModelInputReorderWidget( QWidget *parent )
@@ -24,16 +24,22 @@ QgsModelInputReorderWidget::QgsModelInputReorderWidget( QWidget *parent )
 {
   setupUi( this );
 
-  mModel = new QStringListModel( this );
+  mModel = new QStandardItemModel( 0, 1, this );
   mInputsList->setModel( mModel );
+
+  mInputsList->setDropIndicatorShown( true );
+  mInputsList->setDragDropOverwriteMode( false );
+  mInputsList->setDragEnabled( true );
+  mInputsList->setDragDropMode( QAbstractItemView::InternalMove );
 
   connect( mButtonUp, &QPushButton::clicked, this, [ = ]
   {
-    int currentRow = mInputsList->currentIndex().row() - 1;
-    if ( currentRow == -1 )
+    int currentRow = mInputsList->currentIndex().row();
+    if ( currentRow == 0 )
       return;
 
-    mModel->moveRow( QModelIndex(), currentRow, QModelIndex(), currentRow + 2 );
+    mModel->insertRow( currentRow - 1, mModel->takeRow( currentRow ) );
+    mInputsList->setCurrentIndex( mModel->index( currentRow - 1, 0 ) );
   } );
 
   connect( mButtonDown, &QPushButton::clicked, this, [ = ]
@@ -42,7 +48,8 @@ QgsModelInputReorderWidget::QgsModelInputReorderWidget( QWidget *parent )
     if ( currentRow == mModel->rowCount() - 1 )
       return;
 
-    mModel->moveRow( QModelIndex(), currentRow, QModelIndex(), currentRow + 2 );
+    mModel->insertRow( currentRow + 1, mModel->takeRow( currentRow ) );
+    mInputsList->setCurrentIndex( mModel->index( currentRow + 1, 0 ) );
   } );
 
 }
@@ -51,14 +58,23 @@ void QgsModelInputReorderWidget::setInputs( const QList<QgsProcessingModelParame
 {
   mParameters = inputs;
   QStringList res;
+  mModel->clear();
   for ( const QgsProcessingModelParameter &param : inputs )
-    res << param.description();
-  mModel->setStringList( res );
+  {
+    QStandardItem *item = new QStandardItem( param.description() );
+    item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );
+    mModel->appendRow( item );
+  }
 }
 
 QStringList QgsModelInputReorderWidget::inputOrder() const
 {
-  const QStringList order = mModel->stringList();
+  QStringList order;
+  order.reserve( mModel->rowCount( ) );
+  for ( int row = 0; row < mModel->rowCount(); ++row )
+  {
+    order << mModel->data( mModel->index( row, 0 ) ).toString();
+  }
   QStringList res;
   for ( const QString &description : order )
   {
