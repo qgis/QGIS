@@ -24,7 +24,7 @@
 #include "processing/models/qgsprocessingmodelparameter.h"
 #include <QDialog>
 
-class QStringListModel;
+class QStandardItemModel;
 
 ///@cond PRIVATE
 
@@ -58,7 +58,7 @@ class GUI_EXPORT QgsModelInputReorderWidget : public QWidget, private Ui::QgsMod
   private:
 
     QList< QgsProcessingModelParameter > mParameters;
-    QStringListModel *mModel = nullptr;
+    QStandardItemModel *mModel = nullptr;
 };
 
 
