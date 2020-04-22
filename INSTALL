@@ -1173,14 +1173,12 @@ To find out how many CPUs you have available, run the following in Terminal:
   5.1. Install Developer Tools
   ============================
 
-Developer tools are not a part of a standard OS X installation. Main developer tool, Xcode,
-is available as a download and from the App Store. Once installed, open XCode and accept the
-license agreement.
-
-After installation of XCode, install command line tools
+Developer tools are not a part of a standard OS X installation.
+As minimum you require command line tools
 
   sudo xcode-select --install
 
+but installation of Xcode from the App Store is recommended too.
 
   5.2. Install CMake and other build tools
   ========================================
@@ -1278,10 +1276,9 @@ In a Terminal cd to the qgis source folder previously downloaded, then:
     -DCMAKE_BUILD_TYPE=Release \
     -DQGIS_MAC_DEPS_DIR=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage \
     -DCMAKE_PREFIX_PATH=/opt/Qt/${QT_VERSION}/clang_64 \
-    ..
+    ../QGIS
 
-Note: Don't forget the .. on the last line, which tells CMake to look for the
-source files in one directory up.
+Note: Don't forget the ../QGIS on the last line, which tells CMake to look for the source files.
 
 Note: Double check on the screen output that all libraries are picked from QGIS-Deps `/opt/QGIS`
 and not from system `/usr/lib` or Homebrew's `/usr/local/` or system Frameworks `/Library/Frameworks/`.
