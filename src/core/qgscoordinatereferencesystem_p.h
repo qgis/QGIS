@@ -178,6 +178,8 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
 
     mutable QString mProj4;
 
+    mutable QString mWkt
+
     //! True if presence of an inverted axis needs to be recalculated
     mutable bool mAxisInvertedDirty = false;
 

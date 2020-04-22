@@ -68,7 +68,7 @@ QgsDb2Provider::QgsDb2Provider( const QString &uri, const ProviderOptions &optio
   mDatabase = getDatabase( uri, errMsg );
   mConnInfo = anUri.connectionInfo();
   QgsCoordinateReferenceSystem layerCrs = crs();
-  QgsDebugMsg( "CRS: " + layerCrs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
+  QgsDebugMsg( "CRS: " + layerCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
 
   if ( !errMsg.isEmpty() )
   {
@@ -1303,7 +1303,7 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
   // srs->posgisSrid() seems to return the authority id which is
   // most often the EPSG id.  Hopefully DB2 has defined an SRS using this
   // value as the srid / srs_id.  If not, we are out of luck.
-  QgsDebugMsg( "srs: " + srs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
+  QgsDebugMsg( "srs: " + srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
   long srid = srs.postgisSrid();
   QgsDebugMsg( QStringLiteral( "srid: %1" ).arg( srid ) );
   if ( srid >= 0 )

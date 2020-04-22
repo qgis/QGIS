@@ -1296,10 +1296,10 @@ QString QgsCoordinateReferenceSystem::userFriendlyIdentifier( IdentifierType typ
     return description();
   else if ( type == ShortString )
     return QObject::tr( "Unknown CRS" );
-  else if ( !toWkt( WKT2_2018 ).isEmpty() )
+  else if ( !toWkt( WKT_PREFERRED ).isEmpty() )
     return QObject::tr( "Unknown CRS: %1" ).arg(
-             type == MediumString ? ( toWkt( WKT2_2018 ).left( 50 ) + QString( QChar( 0x2026 ) ) )
-             : toWkt( WKT2_2018 ) );
+             type == MediumString ? ( toWkt( WKT_PREFERRED ).left( 50 ) + QString( QChar( 0x2026 ) ) )
+             : toWkt( WKT_PREFERRED ) );
   else if ( !toProj().isEmpty() )
     return QObject::tr( "Unknown CRS: %1" ).arg( type == MediumString ? ( toProj().left( 50 ) + QString( QChar( 0x2026 ) ) )
            : toProj() );
@@ -1889,7 +1889,7 @@ bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSyste
   if ( ( !d->mAuthId.isEmpty() || !srs.d->mAuthId.isEmpty() ) )
     return d->mAuthId == srs.d->mAuthId;
 
-  return toWkt( WKT2_2018 ) == srs.toWkt( WKT2_2018 );
+  return toWkt( WKT_PREFERRED ) == srs.toWkt( WKT_PREFERRED );
 }
 
 bool QgsCoordinateReferenceSystem::operator!=( const QgsCoordinateReferenceSystem &srs ) const
@@ -1917,11 +1917,11 @@ QString QgsCoordinateReferenceSystem::toWkt( WktVariant variant, bool multiline,
       case WKT2_2015_SIMPLIFIED:
         type = PJ_WKT2_2015_SIMPLIFIED;
         break;
-      case WKT2_2018:
-        type = PJ_WKT2_2018;
+      case WKT2_2019:
+        type = PJ_WKT2_2019;
         break;
-      case WKT2_2018_SIMPLIFIED:
-        type = PJ_WKT2_2018_SIMPLIFIED;
+      case WKT2_2019_SIMPLIFIED:
+        type = PJ_WKT2_2019_SIMPLIFIED;
         break;
     }
 
@@ -2049,7 +2049,7 @@ bool QgsCoordinateReferenceSystem::writeXml( QDomNode &node, QDomDocument &doc )
   QDomElement srsElement = doc.createElement( QStringLiteral( "spatialrefsys" ) );
 
   QDomElement wktElement = doc.createElement( QStringLiteral( "wkt" ) );
-  wktElement.appendChild( doc.createTextNode( toWkt( WKT2_2018 ) ) );
+  wktElement.appendChild( doc.createTextNode( toWkt( WKT_PREFERRED ) ) );
   srsElement.appendChild( wktElement );
 
   QDomElement proj4Element = doc.createElement( QStringLiteral( "proj4" ) );
@@ -2189,7 +2189,7 @@ void QgsCoordinateReferenceSystem::debugPrint()
   QgsDebugMsg( "* Valid : " + ( d->mIsValid ? QString( "true" ) : QString( "false" ) ) );
   QgsDebugMsg( "* SrsId : " + QString::number( d->mSrsId ) );
   QgsDebugMsg( "* Proj4 : " + toProj() );
-  QgsDebugMsg( "* WKT   : " + toWkt( WKT2_2018 ) );
+  QgsDebugMsg( "* WKT   : " + toWkt( WKT_PREFERRED ) );
   QgsDebugMsg( "* Desc. : " + d->mDescription );
   if ( mapUnits() == QgsUnitTypes::DistanceMeters )
   {
@@ -2233,7 +2233,7 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name, Format na
   {
     proj4String = toProj();
   }
-  QString wktString = toWkt( WKT2_2018 );
+  QString wktString = toWkt( WKT_PREFERRED );
 
   // ellipsoid acroynym column is incorrectly marked as not null in many crs database instances,
   // hack around this by using an empty string instead
@@ -3565,7 +3565,7 @@ void QgsCoordinateReferenceSystem::pushRecentCoordinateReferenceSystem( const Qg
   {
     authids << c.authid();
     proj << c.toProj();
-    wkt << c.toWkt( WKT2_2018 );
+    wkt << c.toWkt( WKT_PREFERRED );
   }
 
   QgsSettings settings;
