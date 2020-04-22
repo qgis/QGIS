@@ -33,10 +33,6 @@ QgsStyleModel::QgsStyleModel( QgsStyle *style, QObject *parent )
 {
   Q_ASSERT( mStyle );
 
-  mPatchMarkerSymbol.reset( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  mPatchLineSymbol.reset( QgsLineSymbol::createSimple( QgsStringMap() ) );
-  mPatchFillSymbol.reset( QgsFillSymbol::createSimple( QgsStringMap() ) );
-
   for ( QgsStyle::StyleEntity entity : ENTITIES )
   {
     mEntityNames.insert( entity, mStyle->allNames( entity ) );
@@ -165,7 +161,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                 int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
 
                 const QgsLegendPatchShape shape = mStyle->legendPatchShape( name );
-                if ( QgsSymbol *symbol = symbolForPatchShape( shape ) )
+                if ( const QgsSymbol *symbol = mStyle->previewSymbolForPatchShape( shape ) )
                 {
                   QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol, QSize( width, height ), height / 20, nullptr, false, nullptr, &shape );
                   QByteArray data;
@@ -304,7 +300,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               const QgsLegendPatchShape shape = mStyle->legendPatchShape( name );
               if ( !shape.isNull() )
               {
-                if ( QgsSymbol *symbol = symbolForPatchShape( shape ) )
+                if ( const QgsSymbol *symbol = mStyle->previewSymbolForPatchShape( shape ) )
                 {
                   if ( mAdditionalSizes.isEmpty() )
                     icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol, QSize( 24, 24 ), 1, nullptr, false, mExpressionContext.get(), &shape ) );
@@ -607,25 +603,6 @@ QgsStyle::StyleEntity QgsStyleModel::entityTypeFromRow( int row ) const
   // should never happen
   Q_ASSERT( false );
   return QgsStyle::SymbolEntity;
-}
-
-QgsSymbol *QgsStyleModel::symbolForPatchShape( const QgsLegendPatchShape &shape ) const
-{
-  switch ( shape.symbolType() )
-  {
-    case QgsSymbol::Marker:
-      return mPatchMarkerSymbol.get();
-
-    case QgsSymbol::Line:
-      return mPatchLineSymbol.get();
-
-    case QgsSymbol::Fill:
-      return mPatchFillSymbol.get();
-
-    case QgsSymbol::Hybrid:
-      break;
-  }
-  return nullptr;
 }
 
 int QgsStyleModel::offsetForEntity( QgsStyle::StyleEntity entity ) const

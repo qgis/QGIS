@@ -16,6 +16,7 @@
 #include "qgslegendpatchshapebutton.h"
 #include "qgslegendpatchshapewidget.h"
 #include "qgis.h"
+#include "qgsguiutils.h"
 #include <QMenu>
 
 QgsLegendPatchShapeButton::QgsLegendPatchShapeButton( QWidget *parent, const QString &dialogTitle )
@@ -187,6 +188,35 @@ void QgsLegendPatchShapeButton::prepareMenu()
   mMenu->addAction( defaultAction );
   connect( defaultAction, &QAction::triggered, this, [ = ] { setToDefault(); emit changed(); } );
 
+  mMenu->addSeparator();
+
+  QStringList patchNames = QgsStyle::defaultStyle()->symbolsOfFavorite( QgsStyle::LegendPatchShapeEntity );
+  patchNames.sort();
+  const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+  for ( const QString &name : qgis::as_const( patchNames ) )
+  {
+    const QgsLegendPatchShape shape = QgsStyle::defaultStyle()->legendPatchShape( name );
+    if ( shape.symbolType() == mType )
+    {
+      if ( const QgsSymbol *symbol = QgsStyle::defaultStyle()->previewSymbolForPatchShape( shape ) )
+      {
+        QIcon icon = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol, QSize( iconSize, iconSize ), 1, nullptr, false, nullptr, &shape );
+        QAction *action = new QAction( name, this );
+        action->setIcon( icon );
+        connect( action, &QAction::triggered, this, [ = ] { loadPatchFromStyle( name ); } );
+        mMenu->addAction( action );
+      }
+    }
+  }
+}
+
+void QgsLegendPatchShapeButton::loadPatchFromStyle( const QString &name )
+{
+  if ( !QgsStyle::defaultStyle()->legendPatchShapeNames().contains( name ) )
+    return;
+
+  const QgsLegendPatchShape newShape = QgsStyle::defaultStyle()->legendPatchShape( name );
+  setShape( newShape );
 }
 
 void QgsLegendPatchShapeButton::changeEvent( QEvent *e )
