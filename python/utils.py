@@ -545,9 +545,8 @@ def reloadProjectMacros():
         return
 
     # create a new empty python module
-    import imp
-
-    mod = imp.new_module("proj_macros_mod")
+    import importlib
+    mod = importlib.util.module_from_spec(importlib.machinery.ModuleSpec("proj_macros_mod", None))
 
     # set the module code and store it sys.modules
     exec(str(code), mod.__dict__)
