@@ -1922,7 +1922,7 @@ void QgsProjectProperties::pbnLaunchOWSChecker_clicked()
   }
   else
   {
-    errors += QString( tr( "Ok, it seems valid." ) );
+    errors += tr( "Project is valid." );
   }
 
   QString myStyle = QgsApplication::reportStyleSheet();

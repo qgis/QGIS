@@ -27,11 +27,11 @@ QString QgsProjectServerValidator::displayValidationError( QgsProjectServerValid
   switch ( error )
   {
     case QgsProjectServerValidator::Encoding:
-      return QObject::tr( "Encoding is not set properly. A non 'System' encoding is required" );
+      return QObject::tr( "Encoding is not correctly set. A non 'System' encoding is required" );
     case QgsProjectServerValidator::ShortNames:
       return QObject::tr( "Layer short name is not valid. It must start with an unaccented alphabetical letter, followed by any alphanumeric letters, dot, dash or underscore" );
     case QgsProjectServerValidator::DuplicatedNames:
-      return QObject::tr( "One or more layers or groups have the same name or short name. Both the 'name' and 'short name' for layers and groups needs to be unique" );
+      return QObject::tr( "One or more layers or groups have the same name or short name. Both the 'name' and 'short name' for layers and groups must be unique" );
   }
   return QString();
 }
@@ -67,7 +67,7 @@ void QgsProjectServerValidator::browseLayerTree( QgsLayerTreeGroup *treeGroup, Q
         if ( layer->type() == QgsMapLayerType::VectorLayer )
         {
           QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( layer );
-          if ( vl->dataProvider()->encoding() == QLatin1String( "System" ) )
+          if ( vl->dataProvider() && vl->dataProvider()->encoding() == QLatin1String( "System" ) )
             encodingMessages << layer->name();
         }
       }

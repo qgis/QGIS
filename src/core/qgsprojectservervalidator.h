@@ -19,6 +19,7 @@
 #define QGSPROJECTSERVERVALIDATOR_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertree.h"
 
@@ -26,7 +27,7 @@
 /**
  * \ingroup core
  * \class QgsProjectServerValidator
- * \brief Project server validator.
+ * \brief Validates the server specific parts of the configuration of a QGIS project.
  * \since QGIS 3.14
  */
 class CORE_EXPORT QgsProjectServerValidator
@@ -76,13 +77,13 @@ class CORE_EXPORT QgsProjectServerValidator
       QgsProjectServerValidator::ValidationError error;
 
       /**
-       * Identifier related to the error.
+       * Identifier related to the error. It can be a layer/group name.
        */
       QVariant identifier;
     };
 
     /**
-     * Validates a project to avoid some problems on QGIS Server, and returns TRUE if it's considered valid.
+     * Validates a project to detect problems on QGIS Server, and returns TRUE if it's considered valid.
      * If validation fails, the \a results list will be filled with a list of
      * items describing why the validation failed and what needs to be rectified
      * \param project input project to check
