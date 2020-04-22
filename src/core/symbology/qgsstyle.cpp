@@ -22,6 +22,9 @@
 #include "qgslogger.h"
 #include "qgsreadwritecontext.h"
 #include "qgssettings.h"
+#include "qgslegendpatchshape.h"
+#include "qgslinestring.h"
+#include "qgspolygon.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -919,6 +922,61 @@ bool QgsStyle::renameLabelSettings( const QString &oldName, const QString &newNa
   }
 
   return result;
+}
+
+QgsLegendPatchShape QgsStyle::defaultPatch( QgsSymbol::SymbolType type, QSizeF size ) const
+{
+  if ( type == QgsSymbol::Hybrid )
+    return QgsLegendPatchShape();
+
+  if ( mDefaultPatchCache[ type ].contains( size ) )
+    return mDefaultPatchCache[ type ].value( size );
+
+  QgsGeometry geom;
+  switch ( type )
+  {
+    case QgsSymbol::Marker:
+      geom = QgsGeometry( qgis::make_unique< QgsPoint >( static_cast< int >( size.width() ) / 2, static_cast< int >( size.height() ) / 2 ) );
+      break;
+
+    case QgsSymbol::Line:
+    {
+      // we're adding 0.5 to get rid of blurred preview:
+      // drawing antialiased lines of width 1 at (x,0)-(x,100) creates 2px line
+      double y = static_cast< int >( size.height() ) / 2 + 0.5;
+      geom = QgsGeometry( qgis::make_unique< QgsLineString >( ( QVector< double >() << 0 << size.width() ),
+                          ( QVector< double >() << y << y ) ) );
+      break;
+    }
+
+    case QgsSymbol::Fill:
+    {
+      geom = QgsGeometry( qgis::make_unique< QgsPolygon >(
+                            new QgsLineString( QVector< double >() << 0 << static_cast< int >( size.width() ) << static_cast< int >( size.width() ) << 0 << 0,
+                                QVector< double >() << static_cast< int >( size.height() ) << static_cast< int >( size.height() ) << 0 << 0 << static_cast< int >( size.height() ) ) ) );
+      break;
+    }
+
+    case QgsSymbol::Hybrid:
+      break;
+  }
+
+  QgsLegendPatchShape res = QgsLegendPatchShape( type, geom, false );
+  mDefaultPatchCache[ type ][size ] = res;
+  return res;
+}
+
+QList<QList<QPolygonF> > QgsStyle::defaultPatchAsQPolygonF( QgsSymbol::SymbolType type, QSizeF size ) const
+{
+  if ( type == QgsSymbol::Hybrid )
+    return QList<QList<QPolygonF> >();
+
+  if ( mDefaultPatchQPolygonFCache[ type ].contains( size ) )
+    return mDefaultPatchQPolygonFCache[ type ].value( size );
+
+  QList<QList<QPolygonF> > res = defaultPatch( type, size ).toQPolygonF( type, size );
+  mDefaultPatchQPolygonFCache[ type ][size ] = res;
+  return res;
 }
 
 QStringList QgsStyle::symbolsOfFavorite( StyleEntity type ) const

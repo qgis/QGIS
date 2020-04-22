@@ -8967,6 +8967,7 @@ void TestQgsProcessing::modelerAlgorithm()
 
   QgsProcessingModelChildAlgorithm alg5c2;
   alg5c2.setChildId( "cx2" );
+  alg5c2.setAlgorithmId( QStringLiteral( "native:centroids" ) );
   alg5c2.setActive( false );
   alg5c2.setLinksCollapsed( Qt::BottomEdge, false );
   alg5c2.setLinksCollapsed( Qt::TopEdge, false );

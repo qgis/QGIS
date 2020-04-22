@@ -34,6 +34,7 @@
 #include "qgsprojectionselectiondialog.h"
 #include "qgsrenderermeshpropertieswidget.h"
 #include "qgssettings.h"
+#include "qgsprojecttimesettings.h"
 #include "qgsproviderregistry.h"
 #ifdef HAVE_3D
 #include "qgsmeshlayer3drendererwidget.h"
@@ -229,11 +230,27 @@ void QgsMeshLayerProperties::addDataset()
   settings.setValue( QStringLiteral( "lastMeshDatasetDir" ), openFileInfo.absolutePath(), QgsSettings::App );
   QFile datasetFile( openFileString );
 
+  bool isTemporalBefore = mMeshLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities();
   bool ok = mMeshLayer->dataProvider()->addDataset( openFileString );
   if ( ok )
   {
+    if ( !isTemporalBefore && mMeshLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
+    {
+      mMeshLayer->temporalProperties()->setDefaultsFromDataProviderTemporalCapabilities(
+        mMeshLayer->dataProvider()->temporalCapabilities() );
+
+      if ( ! mMeshLayer->temporalProperties()->referenceTime().isValid() )
+      {
+        QDateTime referenceTime = QgsProject::instance()->timeSettings()->temporalRange().begin();
+        if ( !referenceTime.isValid() ) // If project reference time is invalid, use current date
+          referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) );
+        mMeshLayer->temporalProperties()->setReferenceTime( referenceTime, mMeshLayer->dataProvider()->temporalCapabilities() );
+      }
+    }
+
     syncToLayer();
     QMessageBox::information( this, tr( "Load mesh datasets" ), tr( "Datasets successfully added to the mesh layer" ) );
+    emit mMeshLayer->dataSourceChanged();
   }
   else
   {

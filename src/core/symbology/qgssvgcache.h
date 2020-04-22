@@ -75,6 +75,13 @@ class CORE_EXPORT QgsSvgCacheEntry : public QgsAbstractContentCacheEntry
     //content (with params replaced)
     QByteArray svgContent;
 
+    /**
+     * TRUE if the image represents a broken/missing path.
+     *
+     * \since QGIS 3.14
+     */
+    bool isMissingImage = false;
+
     bool isEqual( const QgsAbstractContentCacheEntry *other ) const override;
     int dataSize() const override;
     void dump() const override;
@@ -232,8 +239,13 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
      * be TRUE from GUI based applications (like the main QGIS application) or crashes will result. Only for
      * use in external scripts or QGIS server.
      */
+#ifndef SIP_RUN
+    QByteArray svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
+                           double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false, bool *isMissingImage = nullptr );
+#else
     QByteArray svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                            double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false );
+#endif
 
   signals:
 
@@ -260,7 +272,7 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
     void cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput = false );
     //! Returns entry from cache or creates a new entry if it does not exist already
     QgsSvgCacheEntry *cacheEntry( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                  double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false );
+                                  double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false, bool *isMissingImage = nullptr );
 
     //! Replaces parameters in elements of a dom node and calls method for all child nodes
     void replaceElemParams( QDomElement &elem, const QColor &fill, const QColor &stroke, double strokeWidth );

@@ -326,6 +326,7 @@ SET(QGIS_GUI_SRCS
   vectortile/qgsvectortileconnectiondialog.cpp
   vectortile/qgsvectortiledataitemguiprovider.cpp
   vectortile/qgsvectortileproviderguimetadata.cpp
+  vectortile/qgsvectortilesourceselect.cpp
 
   qgisinterface.cpp
   qgsactionmenu.cpp
@@ -431,6 +432,8 @@ SET(QGIS_GUI_SRCS
   qgskeyvaluewidget.cpp
   qgslistwidget.cpp
   qgslegendfilterbutton.cpp
+  qgslegendpatchshapebutton.cpp
+  qgslegendpatchshapewidget.cpp
   qgslimitedrandomcolorrampdialog.cpp
   qgsratiolockbutton.cpp
   qgsludialog.cpp
@@ -655,6 +658,8 @@ SET(QGIS_GUI_HDRS
   qgsinstallgridshiftdialog.h
   qgskeyvaluewidget.h
   qgslegendfilterbutton.h
+  qgslegendpatchshapebutton.h
+  qgslegendpatchshapewidget.h
   qgslimitedrandomcolorrampdialog.h
   qgslistwidget.h
   qgslonglongvalidator.h
@@ -1098,6 +1103,7 @@ SET(QGIS_GUI_HDRS
   vectortile/qgsvectortileconnectiondialog.h
   vectortile/qgsvectortiledataitemguiprovider.h
   vectortile/qgsvectortileproviderguimetadata.h
+  vectortile/qgsvectortilesourceselect.h
 
   qgsbrowserdockwidget_p.h
 )

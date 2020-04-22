@@ -554,6 +554,24 @@ Changes a label setting's name.
 .. versionadded:: 3.10
 %End
 
+    QgsLegendPatchShape defaultPatch( QgsSymbol::SymbolType type, QSizeF size ) const;
+%Docstring
+Returns the default legend patch shape for the given symbol ``type``.
+
+.. seealso:: :py:func:`defaultPatchAsQPolygonF`
+
+.. versionadded:: 3.14
+%End
+
+    QList< QList< QPolygonF > > defaultPatchAsQPolygonF( QgsSymbol::SymbolType type, QSizeF size ) const;
+%Docstring
+Returns the default patch geometry for the given symbol ``type`` and ``size`` as a set of QPolygonF objects (parts and rings).
+
+.. seealso:: :py:func:`defaultPatch`
+
+.. versionadded:: 3.14
+%End
+
     bool createDatabase( const QString &filename );
 %Docstring
 Creates an on-disk database

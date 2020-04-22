@@ -59,6 +59,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     Qgs3DMapSettings( const Qgs3DMapSettings &other );
     ~Qgs3DMapSettings() override;
 
+    Qgs3DMapSettings &operator=( Qgs3DMapSettings const & ) = delete;
+
     //! Reads configuration from a DOM element previously written by writeXml()
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
     //! Writes configuration to a DOM element, to be used later with readXml()
@@ -221,9 +223,9 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * Sets terrain generator. It takes care of producing terrain tiles from the input data.
      * Takes ownership of the generator
      */
-    void setTerrainGenerator( QgsTerrainGenerator *gen SIP_TRANSFER );
+    void setTerrainGenerator( QgsTerrainGenerator *gen SIP_TRANSFER ) SIP_SKIP;
     //! Returns terrain generator. It takes care of producing terrain tiles from the input data.
-    QgsTerrainGenerator *terrainGenerator() const { return mTerrainGenerator.get(); }
+    QgsTerrainGenerator *terrainGenerator() const SIP_SKIP { return mTerrainGenerator.get(); }
 
     /**
      * Sets whether terrain shading is enabled.
@@ -416,6 +418,11 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * \since QGIS 3.8
      */
     void fieldOfViewChanged();
+
+  private:
+#ifdef SIP_RUN
+    Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
+#endif
 
   private:
     //! Offset in map CRS coordinates at which our 3D world has origin (0,0,0)

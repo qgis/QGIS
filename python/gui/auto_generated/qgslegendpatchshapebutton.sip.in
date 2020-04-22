@@ -1,0 +1,148 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslegendpatchshapebutton.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsLegendPatchShapeButton : QToolButton
+{
+%Docstring
+A button for creating and modifying QgsLegendPatchShape settings.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgslegendpatchshapebutton.h"
+%End
+  public:
+
+    QgsLegendPatchShapeButton( QWidget *parent /TransferThis/ = 0, const QString &dialogTitle = QString() );
+%Docstring
+Construct a new patch shape button with the specified ``parent`` widget.
+Use ``dialogTitle`` string to define the title to show in the legend patch shape widget.
+%End
+
+    virtual QSize minimumSizeHint() const;
+
+    virtual QSize sizeHint() const;
+
+
+    void setSymbolType( QgsSymbol::SymbolType type );
+%Docstring
+Sets the symbol ``type`` which the button requires.
+If the type differs from the current symbol type, the symbol will be reset
+to a default symbol style of the new type.
+
+.. seealso:: :py:func:`symbolType`
+%End
+
+    QgsSymbol::SymbolType symbolType() const;
+%Docstring
+Returns the symbol type which the button requires.
+
+.. seealso:: :py:func:`setSymbolType`
+%End
+
+    void setPreviewSymbol( QgsSymbol *symbol /Transfer/ );
+%Docstring
+Sets the symbol to use for previewing the legend patch shape.
+
+Ownership is transferred to the button. It is the caller's responsibility
+to ensure that the symbol type matches the button's symbolType()
+%End
+
+    void setDialogTitle( const QString &title );
+%Docstring
+Sets the ``title`` for the symbol settings dialog window.
+
+.. seealso:: :py:func:`dialogTitle`
+%End
+
+    QString dialogTitle() const;
+%Docstring
+Returns the title for the symbol settings dialog window.
+
+.. seealso:: :py:func:`setDialogTitle`
+%End
+
+    QgsLegendPatchShape shape();
+%Docstring
+Returns the current shape defined by the button.
+
+.. seealso:: :py:func:`setShape`
+
+.. seealso:: :py:func:`changed`
+%End
+
+    void setMessageBar( QgsMessageBar *bar );
+%Docstring
+Sets the message ``bar`` associated with the widget. This allows the widget to push feedback messages
+to the appropriate message bar.
+
+.. seealso:: :py:func:`messageBar`
+
+.. versionadded:: 3.6
+%End
+
+    QgsMessageBar *messageBar() const;
+%Docstring
+Returns the message bar associated with the widget.
+
+.. seealso:: :py:func:`setMessageBar`
+
+.. versionadded:: 3.6
+%End
+
+  public slots:
+
+    void setShape( const QgsLegendPatchShape &shape );
+%Docstring
+Sets the ``shape`` for the button.
+
+.. seealso:: :py:func:`shape`
+
+.. seealso:: :py:func:`changed`
+%End
+
+    void setToDefault();
+%Docstring
+Resets the shape to the default shape.
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when the shape's settings are changed.
+
+.. seealso:: :py:func:`shape`
+
+.. seealso:: :py:func:`setShape`
+%End
+
+  protected:
+
+    virtual void changeEvent( QEvent *e );
+
+    virtual void showEvent( QShowEvent *e );
+
+    virtual void resizeEvent( QResizeEvent *event );
+
+
+    virtual void mousePressEvent( QMouseEvent *e );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslegendpatchshapebutton.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

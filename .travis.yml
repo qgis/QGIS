@@ -8,7 +8,7 @@ cache:
   pip: true
   directories:
     - ${HOME}/.ccache_testing
-    - ${HOME}/.ccache_docker_build_disco
+    - ${HOME}/.ccache_docker_build_focal
     - ${HOME}/.ccache_docker_build_bionic
   timeout: 1000
 if: NOT branch =~ /^(cherry-pick-)?backport-\d+-/ AND NOT branch =~ /-patch-\d+$/
@@ -116,19 +116,19 @@ matrix:
         - CXX=/usr/lib/ccache/clang++
 
       ##########################################################
-      # DISCO DOCKER BUILD ON CRON OR TAG
+      # FOCAL DOCKER BUILD ON CRON OR TAG
       ##########################################################
     - os: linux
-      name: disco docker build 💃
+      name: focal docker build 🔭
       if: repo = qgis/QGIS AND (tag IS PRESENT OR type = cron)
       services: docker
       sudo: required # required to restart Docker Daemon with experimental features
       env:
         - TRAVIS_CONFIG=docker_image
-        - CCACHE_DIR=${HOME}/.ccache_docker_build_disco
+        - CCACHE_DIR=${HOME}/.ccache_docker_build_focal
         - TRIGGER_PYQGIS_DOC=TRUE
-        - DOCKER_TAG="$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )_disco"
-        - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps-disco.dockerfile
+        - DOCKER_TAG="$( echo $TRAVIS_BRANCH | sed 's/master/latest/' )_focal"
+        - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps-focal.dockerfile
         - CC=/usr/lib/ccache/gcc
         - CXX=/usr/lib/ccache/g++ # Building SIP binding freezes with Clang in Docker, maybe a SIP issue, maybe not
 
@@ -152,8 +152,8 @@ git:
   depth: 120
 
 notifications:
-  irc: 
-    channels:  
+  irc:
+    channels:
       - "chat.freenode.net#qgis-test"
       - "chat.freenode.net#qgis-activity"
     on_failure: change

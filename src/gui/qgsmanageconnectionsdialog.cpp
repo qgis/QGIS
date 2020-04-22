@@ -142,6 +142,9 @@ void QgsManageConnectionsDialog::doExportImport()
       case ArcgisFeatureServer:
         doc = saveArcgisConnections( items, QStringLiteral( "ARCGISFEATURESERVER" ) );
         break;
+      case VectorTile:
+        doc = saveVectorTileConnections( items );
+        break;
     }
 
     QFile file( mFileName );
@@ -219,6 +222,9 @@ void QgsManageConnectionsDialog::doExportImport()
       case ArcgisFeatureServer:
         loadArcgisConnections( doc, items, QStringLiteral( "ARCGISFEATURESERVER" ) );
         break;
+      case VectorTile:
+        loadVectorTileConnections( doc, items );
+        break;
     }
     // clear connections list and close window
     listConnections->clear();
@@ -268,6 +274,9 @@ bool QgsManageConnectionsDialog::populateConnections()
         break;
       case ArcgisFeatureServer:
         settings.beginGroup( QStringLiteral( "/qgis/connections-arcgisfeatureserver" ) );
+        break;
+      case VectorTile:
+        settings.beginGroup( QStringLiteral( "/qgis/connections-vector-tile" ) );
         break;
     }
     QStringList keys = settings.childGroups();
@@ -401,6 +410,14 @@ bool QgsManageConnectionsDialog::populateConnections()
         {
           QMessageBox::information( this, tr( "Loading Connections" ),
                                     tr( "The file is not a ArcGIS FeatureServer connections exchange file." ) );
+          return false;
+        }
+        break;
+      case VectorTile:
+        if ( root.tagName() != QLatin1String( "qgsVectorTileConnections" ) )
+        {
+          QMessageBox::information( this, tr( "Loading Connections" ),
+                                    tr( "The file is not a Vector Tile connections exchange file." ) );
           return false;
         }
         break;
@@ -724,6 +741,31 @@ QDomDocument QgsManageConnectionsDialog::saveArcgisConnections( const QStringLis
     el.setAttribute( QStringLiteral( "username" ), settings.value( path + connections[ i ] + "/username", "" ).toString() );
     el.setAttribute( QStringLiteral( "password" ), settings.value( path + connections[ i ] + "/password", "" ).toString() );
     el.setAttribute( QStringLiteral( "authcfg" ), settings.value( path + connections[ i ] + "/authcfg", "" ).toString() );
+    root.appendChild( el );
+  }
+
+  return doc;
+}
+
+QDomDocument QgsManageConnectionsDialog::saveVectorTileConnections( const QStringList &connections )
+{
+  QDomDocument doc( QStringLiteral( "connections" ) );
+  QDomElement root = doc.createElement( QStringLiteral( "qgsVectorTileConnections" ) );
+  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
+  doc.appendChild( root );
+
+  QgsSettings settings;
+  QString path;
+  for ( int i = 0; i < connections.count(); ++i )
+  {
+    path = "qgis/connections-vector-tile/" + connections[ i ];
+    QDomElement el = doc.createElement( QStringLiteral( "vectortile" ) );
+
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
+    el.setAttribute( QStringLiteral( "url" ), settings.value( path + "/url", "" ).toString() );
+    el.setAttribute( QStringLiteral( "zmin" ), settings.value( path + "/zmin", -1 ).toInt() );
+    el.setAttribute( QStringLiteral( "zmax" ), settings.value( path + "/zmax", -1 ).toInt() );
+
     root.appendChild( el );
   }
 
@@ -1486,6 +1528,80 @@ void QgsManageConnectionsDialog::loadArcgisConnections( const QDomDocument &doc,
     settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
     settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
     settings.setValue( QStringLiteral( "/authcfg" ), child.attribute( QStringLiteral( "authcfg" ) ) );
+    settings.endGroup();
+
+    child = child.nextSiblingElement();
+  }
+}
+
+void QgsManageConnectionsDialog::loadVectorTileConnections( const QDomDocument &doc, const QStringList &items )
+{
+  QDomElement root = doc.documentElement();
+  if ( root.tagName() != QLatin1String( "qgsVectorTileConnections" ) )
+  {
+    QMessageBox::information( this, tr( "Loading Connections" ),
+                              tr( "The file is not a Vector Tile connections exchange file." ) );
+    return;
+  }
+
+  QString connectionName;
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "/qgis/connections-vector-tile" ) );
+  QStringList keys = settings.childGroups();
+  settings.endGroup();
+  QDomElement child = root.firstChildElement();
+  bool prompt = true;
+  bool overwrite = true;
+
+  while ( !child.isNull() )
+  {
+    connectionName = child.attribute( QStringLiteral( "name" ) );
+    if ( !items.contains( connectionName ) )
+    {
+      child = child.nextSiblingElement();
+      continue;
+    }
+
+    // check for duplicates
+    if ( keys.contains( connectionName ) && prompt )
+    {
+      int res = QMessageBox::warning( this,
+                                      tr( "Loading Connections" ),
+                                      tr( "Connection with name '%1' already exists. Overwrite?" )
+                                      .arg( connectionName ),
+                                      QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+
+      switch ( res )
+      {
+        case QMessageBox::Cancel:
+          return;
+        case QMessageBox::No:
+          child = child.nextSiblingElement();
+          continue;
+        case QMessageBox::Yes:
+          overwrite = true;
+          break;
+        case QMessageBox::YesToAll:
+          prompt = false;
+          overwrite = true;
+          break;
+        case QMessageBox::NoToAll:
+          prompt = false;
+          overwrite = false;
+          break;
+      }
+    }
+
+    if ( keys.contains( connectionName ) && !overwrite )
+    {
+      child = child.nextSiblingElement();
+      continue;
+    }
+
+    settings.beginGroup( "qgis/connections-vector-tile/" + connectionName );
+    settings.setValue( QStringLiteral( "url" ), child.attribute( QStringLiteral( "url" ) ) );
+    settings.setValue( QStringLiteral( "zmin" ), child.attribute( QStringLiteral( "zmin" ) ) );
+    settings.setValue( QStringLiteral( "zmax" ), child.attribute( QStringLiteral( "zmax" ) ) );
     settings.endGroup();
 
     child = child.nextSiblingElement();

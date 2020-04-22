@@ -19,7 +19,7 @@
 #define QGSXYZSOURCESELECT_H
 
 #include "qgsabstractdatasourcewidget.h"
-#include "ui_qgsxyzsourceselectbase.h"
+#include "ui_qgstilesourceselectbase.h"
 
 /*!
  * \brief   Dialog to create connections to XYZ servers.
@@ -30,7 +30,7 @@
  * The user can then connect and add layers from the XYZ server to the
  * map canvas.
  */
-class QgsXyzSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsXyzSourceSelectBase
+class QgsXyzSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsTileSourceSelectBase
 {
     Q_OBJECT
 

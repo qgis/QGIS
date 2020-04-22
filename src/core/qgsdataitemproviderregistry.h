@@ -18,6 +18,7 @@
 
 #include <QList>
 #include <QMap>
+#include <QObject>
 
 #include "qgis_sip.h"
 
@@ -35,8 +36,9 @@ class QgsDataItemProvider;
  *
  * \since QGIS 2.10
  */
-class CORE_EXPORT QgsDataItemProviderRegistry
+class CORE_EXPORT QgsDataItemProviderRegistry : public QObject
 {
+    Q_OBJECT
   public:
 
     QgsDataItemProviderRegistry();
@@ -78,6 +80,20 @@ class CORE_EXPORT QgsDataItemProviderRegistry
      * \since QGIS 3.14
      */
     QString dataProviderKey( const QString &dataItemProviderName );
+
+  signals:
+
+    /**
+     * Emitted when a new data item provider has been added.
+     * \since QGIS 3.14
+     */
+    void providerAdded( QgsDataItemProvider *provider );
+
+    /**
+     * Emitted when a data item provider is about to be removed
+     * \since QGIS 3.14
+     */
+    void providerWillBeRemoved( QgsDataItemProvider *provider );
 
   private:
 #ifdef SIP_RUN

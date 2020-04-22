@@ -5578,6 +5578,16 @@ QString QgsProcessingDestinationParameter::generateTemporaryDestination() const
   }
 }
 
+bool QgsProcessingDestinationParameter::isSupportedOutputValue( const QVariant &value, QgsProcessingContext &context, QString &error ) const
+{
+  if ( originalProvider() )
+    return originalProvider()->isSupportedOutputValue( value, this, context, error );
+  else if ( provider() )
+    return provider()->isSupportedOutputValue( value, this, context, error );
+
+  return true;
+}
+
 bool QgsProcessingDestinationParameter::createByDefault() const
 {
   return mCreateByDefault;

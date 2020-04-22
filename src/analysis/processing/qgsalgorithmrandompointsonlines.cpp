@@ -22,6 +22,7 @@
 // The algorithm parameter names:
 static const QString INPUT = QStringLiteral( "INPUT" );
 static const QString POINTS_NUMBER = QStringLiteral( "POINTS_NUMBER" );
+static const QString MIN_DISTANCE_GLOBAL = QStringLiteral( "MIN_DISTANCE_GLOBAL" );
 static const QString MIN_DISTANCE = QStringLiteral( "MIN_DISTANCE" );
 static const QString MAX_TRIES_PER_POINT = QStringLiteral( "MAX_TRIES_PER_POINT" );
 static const QString SEED = QStringLiteral( "SEED" );
@@ -70,9 +71,13 @@ void QgsRandomPointsOnLinesAlgorithm::initAlgorithm( const QVariantMap & )
 
   std::unique_ptr< QgsProcessingParameterDistance > minDistParam = qgis::make_unique< QgsProcessingParameterDistance >( MIN_DISTANCE, QObject::tr( "Minimum distance between points" ), 0, INPUT, true, 0 );
   minDistParam->setIsDynamic( true );
-  minDistParam->setDynamicPropertyDefinition( QgsPropertyDefinition( MIN_DISTANCE, QObject::tr( "Minimum distance between points" ), QgsPropertyDefinition::DoublePositive ) );
+  minDistParam->setDynamicPropertyDefinition( QgsPropertyDefinition( MIN_DISTANCE, QObject::tr( "Minimum distance between points (per feature)" ), QgsPropertyDefinition::DoublePositive ) );
   minDistParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( minDistParam.release() );
+
+  std::unique_ptr< QgsProcessingParameterDistance > minDistGlobalParam = qgis::make_unique< QgsProcessingParameterDistance >( MIN_DISTANCE_GLOBAL, QObject::tr( "Global minimum distance between points" ), 0, INPUT, true, 0 );
+  minDistGlobalParam->setFlags( minDistGlobalParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( minDistGlobalParam.release() );
 
   std::unique_ptr< QgsProcessingParameterNumber > maxAttemptsParam = qgis::make_unique< QgsProcessingParameterNumber >( MAX_TRIES_PER_POINT, QObject::tr( "Maximum number of search attempts (for Min. dist. > 0)" ), QgsProcessingParameterNumber::Integer, 10, true, 1 );
   maxAttemptsParam->setFlags( maxAttemptsParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
@@ -94,38 +99,54 @@ void QgsRandomPointsOnLinesAlgorithm::initAlgorithm( const QVariantMap & )
 
   addOutput( new QgsProcessingOutputNumber( OUTPUT_POINTS, QObject::tr( "Total number of points generated" ) ) );
   addOutput( new QgsProcessingOutputNumber( POINTS_MISSED, QObject::tr( "Number of missed points" ) ) );
-  addOutput( new QgsProcessingOutputNumber( LINES_WITH_MISSED_POINTS, QObject::tr( "Number of lines with missed points" ) ) );
+  addOutput( new QgsProcessingOutputNumber( LINES_WITH_MISSED_POINTS, QObject::tr( "Number of features with missed points" ) ) );
   addOutput( new QgsProcessingOutputNumber( FEATURES_WITH_EMPTY_OR_NO_GEOMETRY, QObject::tr( "Number of features with empty or no geometry" ) ) );
 }
 
 QString QgsRandomPointsOnLinesAlgorithm::shortHelpString() const
 {
   return QObject::tr( "<p>This algorithm creates a point layer, with points placed randomly "
-                      "on the lines of the <i><b>Input line layer</b></i>.</p> "
-                      "<ul><li>For each feature in the <i><b>Input line layer</b></i>, the algorithm attempts to add "
-                      "the specified <i><b>Number of points for each feature</b></i> to the output layer.</li> "
-                      "<li>A <i><b>Minimum distance between points</b></i> can be specified.<br> "
-                      "A point will not be generated if there is an already generated point "
-                      "(on any line feature) within this (Euclidean) distance from "
-                      "the generated location. "
-                      "If the <i><b>Minimum distance between points</b></i> is too large, it may not be possible to generate "
-                      "the specified <i><b>Number of points for each feature</b></i>.</li> "
+                      "on the lines of the <i>Input line layer</i>. "
+                      "The default behavior is that the generated point features inherit "
+                      "the attributes of the line feature on which they were was generated.</p>"
+                      "<p>Parameters / options:</p> "
+                      "<ul> "
+                      "<li>For each feature in the <i><b>Input line layer</b></i>, the "
+                      "algorithm attempts to add the specified <i><b>Number of points for "
+                      "each feature</b></i> to the output layer.</li> "
+                      "<li>A <i><b>Minimum distance between points</b></i> and a "
+                      "<i><b>Global minimum distance between points</b></i> can be specified. "
+                      "A point will not be added if there is an already generated point within "
+                      "this (Euclidean) distance from the generated location. "
+                      "With <i>Minimum distance between points</i>, only points on the same "
+                      "line feature are considered, while for <i>Global minimum distance "
+                      "between points</i> all previously generated points are considered."
+                      "If the <i>Global minimum distance between points</i> is set larger "
+                      "than the (local) <i>Minimum distance between points</i>, the latter "
+                      "has no effect.<br> "
+                      "If the <i>Minimum distance between points</i> is too large, "
+                      "it may not be possible to generate the specified <i>Number of points "
+                      "for each feature</i>.</li> "
                       "<li>The <i><b>Maximum number of attempts per point</b></i> "
-                      "is only relevant if the <i><b>Minimum distance between points</b></i> is greater than 0. "
-                      "The total number of points will be<br> <b>'number of input features'</b> * "
-                      "<i><b>Number of points for each feature</b></i><br> if there are no misses.</li> "
+                      "is only relevant if <i>Minimum distance between points</i> or <i>Global "
+                      "minimum distance between points</i> is greater than 0. "
+                      "The total number of points will be<br> <b>number of input features</b> * "
+                      "<b>Number of points for each feature</i><br> if there are no "
+                      "misses and all features have proper geometries.</li> "
                       "<li>The seed for the random generator can be provided (<i>Random seed</i> "
                       "- integer, greater than 0).</li> "
-                      "<li>The user can choose not to <i><b>Include line feature attributes</b></i> in "
-                      "the attributes of the generated point features.</li> "
+                      "<li>The user can choose not to <i><b>Include line feature attributes</b></i> "
+                      "in the generated point features.</li> "
                       "</ul> "
                       "<p>Output from the algorithm:</p> "
                       "<ul> "
                       "<li> A point layer containing the random points (<code>OUTPUT</code>).</li> "
                       "<li> The number of generated features (<code>POINTS_GENERATED</code>).</li> "
                       "<li> The number of missed points (<code>POINTS_MISSED</code>).</li> "
-                      "<li> The number of features with non-empty geometry and missing points (<code>LINES_WITH_MISSED_POINTS</code>).</li> "
-                      "<li> The number of features with an empty or no geometry (<code>LINES_WITH_EMPTY_OR_NO_GEOMETRY</code>).</li> "
+                      "<li> The number of features with non-empty geometry and missing points "
+                      "(<code>LINES_WITH_MISSED_POINTS</code>).</li> "
+                      "<li> The number of features with an empty or no geometry "
+                      "(<code>LINES_WITH_EMPTY_OR_NO_GEOMETRY</code>).</li> "
                       "</ul>"
                     );
 }
@@ -152,6 +173,8 @@ bool QgsRandomPointsOnLinesAlgorithm::prepareAlgorithm( const QVariantMap &param
   mDynamicMaxAttempts = QgsProcessingParameters::isDynamic( parameters, MAX_TRIES_PER_POINT );
   if ( mDynamicMaxAttempts )
     mMaxAttemptsProperty = parameters.value( MAX_TRIES_PER_POINT ).value< QgsProperty >();
+
+  mMinDistanceGlobal = parameterAsDouble( parameters, MIN_DISTANCE_GLOBAL, context );
 
   mUseRandomSeed = parameters.value( SEED ).isValid();
   mRandSeed = parameterAsInt( parameters, SEED, context );
@@ -184,7 +207,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
   std::mt19937 mt( !mUseRandomSeed ? rd() : mRandSeed );
   std::uniform_real_distribution<> uniformDist( 0, 1 );
 
-  // Index for finding close points (mMinDistance > 0)
+  // Index for finding global close points (mMinDistance > 0)
   QgsSpatialIndex index;
 
   int totNPoints = 0;
@@ -251,6 +274,8 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
     const double pointProgressIncrement = featureProgressStep / ( numberPointsForThisFeature * maxAttemptsForThisFeature );
 
     double pointProgress = 0.0;
+    QgsSpatialIndex localIndex;
+
     for ( long pointIndex = 0; pointIndex < numberPointsForThisFeature; pointIndex++ )
     {
       if ( feedback->isCanceled() )
@@ -273,17 +298,31 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
 
         if ( !rpGeom.isNull() && !rpGeom.isEmpty() )
         {
-          if ( minDistanceForThisFeature != 0 && totNPoints > 0 )
+          if ( ( minDistanceForThisFeature != 0 ) || ( mMinDistanceGlobal != 0 ) )
           {
-            // Have to check minimum distance to existing points
-            QList<QgsFeatureId> neighbors = index.nearestNeighbor( rpGeom, 1, minDistanceForThisFeature );
-            if ( !neighbors.empty() )
+            // Check minimum distance to existing points
+            // Per feature first
+            if ( ( minDistanceForThisFeature != 0 ) && ( pointsAddedForThisFeature > 0 ) )
             {
-              feedback->setProgress( baseFeatureProgress + pointProgress );
-              continue;
+              QList<QgsFeatureId> neighbors = localIndex.nearestNeighbor( rpGeom, 1, minDistanceForThisFeature );
+              if ( !neighbors.empty() )
+              {
+                feedback->setProgress( baseFeatureProgress + pointProgress );
+                continue;
+              }
+            }
+            // Then check globally
+            if ( ( mMinDistanceGlobal != 0 ) && ( totNPoints > 0 ) )
+            {
+              QList<QgsFeatureId> neighbors = index.nearestNeighbor( rpGeom, 1, mMinDistanceGlobal );
+              if ( !neighbors.empty() )
+              {
+                feedback->setProgress( baseFeatureProgress + pointProgress );
+                continue;
+              }
             }
           }
-          // point OK to add
+          // OK to add point
           QgsFeature f = QgsFeature( totNPoints );
           QgsAttributes pAttrs = QgsAttributes();
           pAttrs.append( totNPoints );
@@ -294,9 +333,13 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
           f.setAttributes( pAttrs );
           f.setGeometry( rpGeom );
 
-          if ( minDistanceForThisFeature != 0 )
+          if ( mMinDistanceGlobal != 0 )
           {
             index.addFeature( f );
+          }
+          if ( minDistanceForThisFeature != 0 )
+          {
+            localIndex.addFeature( f );
           }
           sink->addFeature( f, QgsFeatureSink::FastInsert );
           totNPoints++;
@@ -321,7 +364,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
   } // while features
   missedPoints = desiredNumberOfPoints - totNPoints;
   feedback->pushInfo( QObject::tr( "Total number of points generated: "
-                                   " %1\nNumber of missed points: %2\nLines with missing points: "
+                                   " %1\nNumber of missed points: %2\nFeatures with missing points: "
                                    " %3\nFeatures with empty or missing geometries: %4"
                                  ).arg( totNPoints ).arg( missedPoints ).arg( missedLines ).arg( emptyOrNullGeom ) );
   QVariantMap outputs;

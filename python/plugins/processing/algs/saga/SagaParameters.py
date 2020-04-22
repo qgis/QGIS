@@ -22,8 +22,13 @@ __author__ = 'Nyall Dawson'
 __date__ = 'December 2018'
 __copyright__ = '(C) 2018, Nyall Dawson'
 
+import pathlib
+
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsProcessingParameterRasterDestination
+from qgis.core import (
+    QgsProcessingParameterRasterDestination,
+    QgsProcessingParameters
+)
 from processing.core.parameters import getParameterFromString
 
 
@@ -42,6 +47,25 @@ class SagaImageOutputParam(QgsProcessingParameterRasterDestination):
 
     def supportedOutputRasterLayerExtensions(self):
         return ['tif']
+
+    def clone(self):
+        copy = SagaImageOutputParam(self.name(), self.description())
+        return copy
+
+    def defaultFileExtension(self):
+        return 'tif'
+
+    def createFileFilter(self):
+        return '{} (*.tif *.TIF)'.format(QCoreApplication.translate("SAGAAlgorithm", 'TIF files'))
+
+    def supportedOutputRasterLayerExtensions(self):
+        return ['tif']
+
+    def isSupportedOutputValue(self, value, context):
+        output_path = QgsProcessingParameters.parameterAsOutputLayer(self, value, context)
+        if pathlib.Path(output_path).suffix.lower() != '.tif':
+            return False, QCoreApplication.translate("SAGAAlgorithm", 'Output filename must use a .tif extension')
+        return True, ''
 
 
 class Parameters:
