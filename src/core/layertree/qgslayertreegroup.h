@@ -56,6 +56,21 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     void setName( const QString &n ) override;
 
     /**
+     * Returns the group's id.
+     */
+    QString id() const;
+
+    /**
+     * Sets the group's id.
+     */
+    void setId( const QString &id );
+
+    /**
+     * Generate the group's id, according to the groups's name (based on QgsMapLayer::generateId)
+     */
+    QString generateId( QString name ) const;
+
+    /**
      * Insert a new group node with given name at specified position. The newly created node is owned by this group.
      */
     QgsLayerTreeGroup *insertGroup( int index, const QString &name );
@@ -217,6 +232,8 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     void updateChildVisibilityMutuallyExclusive();
 
     QString mName;
+
+    QString mId;
 
     bool mChangingChildVisibility = false;
 

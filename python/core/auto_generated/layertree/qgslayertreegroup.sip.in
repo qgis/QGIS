@@ -42,6 +42,15 @@ Returns the group's name.
 Sets the group's name.
 %End
 
+    QString id() const;
+%Docstring
+Returns the group's id.
+%End
+
+    void setId( const QString &id );
+
+    QString generateId( QString name ) const;
+
     QgsLayerTreeGroup *insertGroup( int index, const QString &name );
 %Docstring
 Insert a new group node with given name at specified position. The newly created node is owned by this group.
