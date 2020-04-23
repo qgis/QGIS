@@ -253,12 +253,12 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &path,
   QString filename = path;
   // ASCII dat supports face, edge and vertex datasets
   QString driverName = QStringLiteral( "DAT" );
-  QStringList parts = path.split( ':' );
-  if ( parts.size() > 1 )
+  int separatorPosition = path.indexOf( ":\"" );
+  if ( separatorPosition >= 0 )
   {
-    driverName = parts[0];
-    parts.removeFirst();
-    filename = parts.join( QString() );
+    driverName = path.left( separatorPosition );
+    filename = path.right( path.count() - separatorPosition - 1 );
+    filename.remove( QStringLiteral( "\"" ) );
   }
 
   MDAL_DriverH driver = MDAL_driverFromName( driverName.toStdString().c_str() );
