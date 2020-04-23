@@ -600,6 +600,7 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
 
   QgsDebugMsgLevel( "load CRS from " + db + " where " + expression + " is " + value, 3 );
   d->mIsValid = false;
+  d->mWktPreferred.clear();
 
   QFileInfo myInfo( db );
   if ( !myInfo.exists() )
@@ -647,6 +648,7 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
     d->mEllipsoidAcronym = statement.columnAsText( 3 );
 #endif
     d->mProj4 = statement.columnAsText( 4 );
+    d->mWktPreferred.clear();
     d->mSRID = statement.columnAsText( 5 ).toLong();
     d->mAuthId = statement.columnAsText( 6 );
     d->mIsGeographic = statement.columnAsText( 7 ).toInt() != 0;
@@ -844,6 +846,7 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
 
   d->mIsValid = false;
   d->mProj4.clear();
+  d->mWktPreferred.clear();
   if ( wkt.isEmpty() )
   {
     QgsDebugMsgLevel( QStringLiteral( "theWkt is uninitialized, operation failed" ), 4 );
@@ -902,6 +905,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
   {
     d->mIsValid = false;
     d->mProj4.clear();
+    d->mWktPreferred.clear();
     return false;
   }
 
@@ -931,6 +935,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
   myProj4String = myProj4String.trimmed();
 
   d->mIsValid = false;
+  d->mWktPreferred.clear();
 #if PROJ_VERSION_MAJOR>=6
   // first, try to use proj to do this for us...
   const QString projCrsString = myProj4String + ( myProj4String.contains( QStringLiteral( "+type=crs" ) ) ? QString() : QStringLiteral( " +type=crs" ) );
@@ -1472,6 +1477,7 @@ void QgsCoordinateReferenceSystem::setProjString( const QString &proj4String )
 {
   d.detach();
   d->mProj4 = proj4String;
+  d->mWktPreferred.clear();
 
   QgsLocaleNumC l;
   QString trimmed = proj4String.trimmed();
@@ -1527,6 +1533,7 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt, bool allowP
 {
   bool res = false;
   d->mIsValid = false;
+  d->mWktPreferred.clear();
 
 #if PROJ_VERSION_MAJOR>=6
   // TODO - remove allowProjFallback when we require proj 6+ to build
@@ -1902,6 +1909,13 @@ QString QgsCoordinateReferenceSystem::toWkt( WktVariant variant, bool multiline,
 #if PROJ_VERSION_MAJOR>=6
   if ( PJ *obj = d->threadLocalProjObject() )
   {
+    const bool isDefaultPreferredFormat = variant == WKT_PREFERRED && !multiline;
+    if ( isDefaultPreferredFormat && !d->mWktPreferred.isEmpty() )
+    {
+      // can use cached value
+      return d->mWktPreferred;
+    }
+
     PJ_WKT_TYPE type = PJ_WKT1_GDAL;
     switch ( variant )
     {
@@ -1928,7 +1942,15 @@ QString QgsCoordinateReferenceSystem::toWkt( WktVariant variant, bool multiline,
     const QByteArray multiLineOption = QStringLiteral( "MULTILINE=%1" ).arg( multiline ? QStringLiteral( "YES" ) : QStringLiteral( "NO" ) ).toLocal8Bit();
     const QByteArray indentatationWidthOption = QStringLiteral( "INDENTATION_WIDTH=%1" ).arg( multiline ? QString::number( indentationWidth ) : QStringLiteral( "0" ) ).toLocal8Bit();
     const char *const options[] = {multiLineOption.constData(), indentatationWidthOption.constData(), nullptr};
-    return QString( proj_as_wkt( QgsProjContext::get(), obj, type, options ) );
+    QString res = proj_as_wkt( QgsProjContext::get(), obj, type, options );
+
+    if ( isDefaultPreferredFormat )
+    {
+      // cache result for later use
+      d->mWktPreferred = res;
+    }
+
+    return res;
   }
   return QString();
 #else
@@ -2029,6 +2051,8 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
 
       node = srsNode.namedItem( QStringLiteral( "geographicflag" ) );
       d->mIsGeographic = node.toElement().text().compare( QLatin1String( "true" ) );
+
+      d->mWktPreferred.clear();
 
       //make sure the map units have been set
       setMapUnits();
@@ -2390,6 +2414,7 @@ bool QgsCoordinateReferenceSystem::loadFromAuthCode( const QString &auth, const 
 {
   d.detach();
   d->mIsValid = false;
+  d->mWktPreferred.clear();
 
   PJ_CONTEXT *pjContext = QgsProjContext::get();
   QgsProjUtils::proj_pj_unique_ptr crs( proj_create_from_database( pjContext, auth.toUtf8().constData(), code.toUtf8().constData(), PJ_CATEGORY_CRS, false, nullptr ) );
@@ -2415,6 +2440,7 @@ bool QgsCoordinateReferenceSystem::loadFromAuthCode( const QString &auth, const 
 
   d->mIsValid = true;
   d->mProj4 = proj4;
+  d->mWktPreferred.clear();
   d->mDescription = QString( proj_get_name( crs.get() ) );
   d->mAuthId = QStringLiteral( "%1:%2" ).arg( auth, code );
   d->mIsGeographic = testIsGeographic( crs.get() );
