@@ -1434,15 +1434,17 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
     mPatchShapeButton->hide();
   }
 
-  mLabelEdit->setText( currentLabel );
-  connect( mLabelEdit, &QLineEdit::textChanged, this, &QgsLayoutLegendNodeWidget::labelChanged );
+  mLabelEdit->setPlainText( currentLabel );
+  connect( mLabelEdit, &QPlainTextEdit::textChanged, this, &QgsLayoutLegendNodeWidget::labelChanged );
   connect( mPatchShapeButton, &QgsLegendPatchShapeButton::changed, this, &QgsLayoutLegendNodeWidget::patchChanged );
+  connect( mInsertExpressionButton, &QPushButton::clicked, this, &QgsLayoutLegendNodeWidget::insertExpression );
 }
 
-void QgsLayoutLegendNodeWidget::labelChanged( const QString &label )
+void QgsLayoutLegendNodeWidget::labelChanged()
 {
   mLegend->beginCommand( tr( "Edit Legend Item" ), QgsLayoutItem::UndoLegendText );
 
+  const QString label = mLabelEdit->toPlainText();
   if ( QgsLayerTree::isGroup( mNode ) )
   {
     QgsLayerTree::toGroup( mNode )->setName( label );
@@ -1490,6 +1492,52 @@ void QgsLayoutLegendNodeWidget::patchChanged()
   mLegend->adjustBoxSize();
   mLegend->updateFilterByMap();
   mLegend->endCommand();
+}
+
+void QgsLayoutLegendNodeWidget::insertExpression()
+{
+  if ( !mLegend )
+    return;
+
+  QString selText = mLabelEdit->textCursor().selectedText();
+
+  // html editor replaces newlines with Paragraph Separator characters - see https://github.com/qgis/QGIS/issues/27568
+  selText = selText.replace( QChar( 0x2029 ), QChar( '\n' ) );
+
+  // edit the selected expression if there's one
+  if ( selText.startsWith( QLatin1String( "[%" ) ) && selText.endsWith( QLatin1String( "%]" ) ) )
+    selText = selText.mid( 2, selText.size() - 4 );
+
+  // use the atlas coverage layer, if any
+  QgsVectorLayer *layer = mLegend->layout() ? mLegend->layout()->reportContext().layer() : nullptr;
+
+  QgsExpressionContext context = mLegend->createExpressionContext();
+
+  if ( mLayer && mLayer->layer() )
+  {
+    context.appendScope( QgsExpressionContextUtils::layerScope( mLayer->layer() ) );
+  }
+
+  context.setHighlightedVariables( QStringList() << QStringLiteral( "legend_title" )
+                                   << QStringLiteral( "legend_column_count" )
+                                   << QStringLiteral( "legend_split_layers" )
+                                   << QStringLiteral( "legend_wrap_string" )
+                                   << QStringLiteral( "legend_filter_by_map" )
+                                   << QStringLiteral( "legend_filter_out_atlas" ) );
+
+  QgsExpressionBuilderDialog exprDlg( layer, selText, this, QStringLiteral( "generic" ), context );
+
+  exprDlg.setWindowTitle( tr( "Insert Expression" ) );
+  if ( exprDlg.exec() == QDialog::Accepted )
+  {
+    QString expression = exprDlg.expressionText();
+    if ( !expression.isEmpty() )
+    {
+      mLegend->beginCommand( tr( "Insert expression" ) );
+      mLabelEdit->insertPlainText( "[%" + expression + "%]" );
+      mLegend->endCommand();
+    }
+  }
 }
 
 ///@endcond

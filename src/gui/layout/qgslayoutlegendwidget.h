@@ -185,8 +185,9 @@ class GUI_EXPORT QgsLayoutLegendNodeWidget: public QgsPanelWidget, private Ui::Q
 
   private slots:
 
-    void labelChanged( const QString &label );
+    void labelChanged();
     void patchChanged();
+    void insertExpression();
 
   private:
 

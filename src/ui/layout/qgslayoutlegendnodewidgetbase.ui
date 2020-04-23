@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>282</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,17 +26,17 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Label</string>
+   <item row="0" column="1">
+    <widget class="QPlainTextEdit" name="mLabelEdit">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>150</height>
+      </size>
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QLineEdit" name="mLabelEdit"/>
-   </item>
-   <item row="2" column="1">
+   <item row="3" column="1">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -49,14 +49,14 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="mPatchShapeLabel">
+   <item row="1" column="1">
+    <widget class="QPushButton" name="mInsertExpressionButton">
      <property name="text">
-      <string>Patch shape</string>
+      <string>Insert an Expression…</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
+   <item row="2" column="1">
     <widget class="QgsLegendPatchShapeButton" name="mPatchShapeButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -66,6 +66,20 @@
      </property>
      <property name="text">
       <string>Customize</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="mPatchShapeLabel">
+     <property name="text">
+      <string>Patch shape</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Label</string>
      </property>
     </widget>
    </item>
