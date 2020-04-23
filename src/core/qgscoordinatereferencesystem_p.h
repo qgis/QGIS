@@ -71,6 +71,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
       , mCRS( nullptr )
 #endif
       , mProj4( other.mProj4 )
+      , mWktPreferred( other.mWktPreferred )
       , mAxisInvertedDirty( other.mAxisInvertedDirty )
       , mAxisInverted( other.mAxisInverted )
     {
@@ -178,6 +179,11 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
 
     mutable QString mProj4;
 
+<<<<<<< HEAD
+=======
+    mutable QString mWktPreferred;
+
+>>>>>>> 96b7db4307... Cache generated WKT if it's in the preferred format
     //! True if presence of an inverted axis needs to be recalculated
     mutable bool mAxisInvertedDirty = false;
 
