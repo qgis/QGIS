@@ -70,7 +70,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
                   << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String, -1, -1, -1, -1 )
                 );
 
-  QgsDebugMsg( "Delimited text file uri is " + uri );
+  QgsDebugMsgLevel( "Delimited text file uri is " + uri, 2 );
 
   const QUrl url = QUrl::fromEncoded( uri.toLatin1() );
   mFile = qgis::make_unique< QgsDelimitedTextFile >();
@@ -94,7 +94,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
     {
       mWktFieldName = query.queryItemValue( QStringLiteral( "wktField" ) );
       mGeomRep = GeomAsWkt;
-      QgsDebugMsg( "wktField is: " + mWktFieldName );
+      QgsDebugMsgLevel( "wktField is: " + mWktFieldName, 2 );
     }
     else if ( query.hasQueryItem( QStringLiteral( "xField" ) ) && query.hasQueryItem( QStringLiteral( "yField" ) ) )
     {
@@ -106,10 +106,10 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
         mZFieldName = query.queryItemValue( QStringLiteral( "zField" ) );
       if ( query.hasQueryItem( QStringLiteral( "mField" ) ) )
         mMFieldName = query.queryItemValue( QStringLiteral( "mField" ) );
-      QgsDebugMsg( "xField is: " + mXFieldName );
-      QgsDebugMsg( "yField is: " + mYFieldName );
-      QgsDebugMsg( "zField is: " + mZFieldName );
-      QgsDebugMsg( "mField is: " + mMFieldName );
+      QgsDebugMsgLevel( "xField is: " + mXFieldName, 2 );
+      QgsDebugMsgLevel( "yField is: " + mYFieldName, 2 );
+      QgsDebugMsgLevel( "zField is: " + mZFieldName, 2 );
+      QgsDebugMsgLevel( "mField is: " + mMFieldName, 2 );
 
       if ( query.hasQueryItem( QStringLiteral( "xyDms" ) ) )
       {
@@ -146,7 +146,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
   {
     // We need to specify FullyDecoded so that %25 is decoded as %
     subset = query.queryItemValue( QStringLiteral( "subset" ), QUrl::FullyDecoded );
-    QgsDebugMsg( "subset is: " + subset );
+    QgsDebugMsgLevel( "subset is: " + subset, 2 );
   }
 
   if ( query.hasQueryItem( QStringLiteral( "quiet" ) ) ) mShowInvalidLines = false;
@@ -226,16 +226,15 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
   }
 
   // All good, so pull out the types from the string.  Currently only returning integer, real, and string types
-
-  QgsDebugMsg( QStringLiteral( "Reading field types from %1" ).arg( csvtInfo.fileName() ) );
-  QgsDebugMsg( QStringLiteral( "Field type string: %1" ).arg( strTypeList ) );
+  QgsDebugMsgLevel( QStringLiteral( "Reading field types from %1" ).arg( csvtInfo.fileName() ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Field type string: %1" ).arg( strTypeList ), 2 );
 
   int pos = 0;
   QRegExp reType( "(integer|real|double|string|date|datetime|time)" );
 
   while ( ( pos = reType.indexIn( strTypeList, pos ) ) != -1 )
   {
-    QgsDebugMsg( QStringLiteral( "Found type: %1" ).arg( reType.cap( 1 ) ) );
+    QgsDebugMsgLevel( QStringLiteral( "Found type: %1" ).arg( reType.cap( 1 ) ), 2 );
     types << reType.cap( 1 );
     pos += reType.matchedLength();
   }
@@ -326,7 +325,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
     messages.append( tr( "File cannot be opened or delimiter parameters are not valid" ) );
     reportErrors( messages );
-    QgsDebugMsg( QStringLiteral( "Delimited text source invalid - filename or delimiter parameters" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Delimited text source invalid - filename or delimiter parameters" ), 2 );
     return;
   }
 
@@ -374,7 +373,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
   if ( !messages.isEmpty() )
   {
     reportErrors( messages );
-    QgsDebugMsg( QStringLiteral( "Delimited text source invalid - missing geometry fields" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Delimited text source invalid - missing geometry fields" ), 2 );
     return;
   }
 
@@ -681,10 +680,9 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
     attributeFields.append( QgsField( fieldNames[i], fieldType, typeName ) );
   }
 
-
-  QgsDebugMsg( "Field count for the delimited text file is " + QString::number( attributeFields.size() ) );
-  QgsDebugMsg( "geometry type is: " + QString::number( mWkbType ) );
-  QgsDebugMsg( "feature count is: " + QString::number( mNumberFeatures ) );
+  QgsDebugMsgLevel( "Field count for the delimited text file is " + QString::number( attributeFields.size() ), 2 );
+  QgsDebugMsgLevel( "geometry type is: " + QString::number( mWkbType ), 2 );
+  QgsDebugMsgLevel( "feature count is: " + QString::number( mNumberFeatures ), 2 );
 
   QStringList warnings;
   if ( ! csvtMessage.isEmpty() )
@@ -769,7 +767,7 @@ void QgsDelimitedTextProvider::rescanFile() const
   if ( !messages.isEmpty() )
   {
     reportErrors( messages );
-    QgsDebugMsg( QStringLiteral( "Delimited text source invalid on rescan - missing geometry fields" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Delimited text source invalid on rescan - missing geometry fields" ), 2 );
     mValid = false;
     return;
   }
@@ -1091,14 +1089,14 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString &subset, bool upda
     {
       if ( ! mCachedSubsetString.isNull() && mSubsetString == mCachedSubsetString )
       {
-        QgsDebugMsg( QStringLiteral( "DelimitedText: Resetting cached subset string %1" ).arg( mSubsetString ) );
+        QgsDebugMsgLevel( QStringLiteral( "DelimitedText: Resetting cached subset string %1" ).arg( mSubsetString ), 3 );
         mUseSpatialIndex = mCachedUseSpatialIndex;
         mUseSubsetIndex = mCachedUseSubsetIndex;
         resetCachedSubset();
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "DelimitedText: Setting new subset string %1" ).arg( mSubsetString ) );
+        QgsDebugMsgLevel( QStringLiteral( "DelimitedText: Setting new subset string %1" ).arg( mSubsetString ), 3 );
         // Reset the subset index
         rescanFile();
         // Encode the subset string into the data source URI.
@@ -1108,10 +1106,10 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString &subset, bool upda
     else
     {
       // If not already using temporary subset, then cache the current subset
-      QgsDebugMsg( QStringLiteral( "DelimitedText: Setting temporary subset string %1" ).arg( mSubsetString ) );
+      QgsDebugMsgLevel( QStringLiteral( "DelimitedText: Setting temporary subset string %1" ).arg( mSubsetString ), 3 );
       if ( mCachedSubsetString.isNull() )
       {
-        QgsDebugMsg( QStringLiteral( "DelimitedText: Caching previous subset %1" ).arg( previousSubset ) );
+        QgsDebugMsgLevel( QStringLiteral( "DelimitedText: Caching previous subset %1" ).arg( previousSubset ), 3 );
         mCachedSubsetString = previousSubset;
         mCachedUseSpatialIndex = mUseSpatialIndex;
         mCachedUseSubsetIndex = mUseSubsetIndex;
