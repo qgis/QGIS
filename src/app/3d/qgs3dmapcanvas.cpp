@@ -57,6 +57,14 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
 
 Qgs3DMapCanvas::~Qgs3DMapCanvas()
 {
+<<<<<<< HEAD
+=======
+  if ( mMapTool )
+    mMapTool->deactivate();
+  // make sure the scene is deleted while map settings object is still alive
+  delete mScene;
+  mScene = nullptr;
+>>>>>>> fa0cfe832e... Close 3D measurement on 3D canvas close
   delete mMap;
 }
 
