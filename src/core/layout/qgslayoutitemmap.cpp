@@ -1825,6 +1825,14 @@ void QgsLayoutItemMap::mapThemeChanged( const QString &theme )
     mCachedLayerStyleOverridesPresetName.clear(); // force cache regeneration at next redraw
 }
 
+void QgsLayoutItemMap::currentMapThemeRenamed( const QString &theme, const QString &newTheme )
+{
+  if ( theme == mFollowVisibilityPresetName )
+  {
+    mFollowVisibilityPresetName = newTheme;
+  }
+}
+
 void QgsLayoutItemMap::connectUpdateSlot()
 {
   //connect signal from layer registry to update in case of new or deleted layers
@@ -1867,6 +1875,7 @@ void QgsLayoutItemMap::connectUpdateSlot()
   } );
 
   connect( project->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsLayoutItemMap::mapThemeChanged );
+  connect( project->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &QgsLayoutItemMap::currentMapThemeRenamed );
 }
 
 QTransform QgsLayoutItemMap::layoutToMapCoordsTransform() const

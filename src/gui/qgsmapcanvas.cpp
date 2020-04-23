@@ -138,6 +138,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
            this, &QgsMapCanvas::writeProject );
 
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsMapCanvas::mapThemeChanged );
+  connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &QgsMapCanvas::mapThemeRenamed );
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemesChanged, this, &QgsMapCanvas::projectThemesChanged );
 
   mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
@@ -613,6 +614,17 @@ void QgsMapCanvas::mapThemeChanged( const QString &theme )
     clearCache();
     refresh();
   }
+}
+
+void QgsMapCanvas::mapThemeRenamed( const QString &theme, const QString &newTheme )
+{
+  if ( mTheme.isEmpty() || theme != mTheme )
+  {
+    return;
+  }
+
+  setTheme( newTheme );
+  refresh();
 }
 
 void QgsMapCanvas::rendererJobFinished()

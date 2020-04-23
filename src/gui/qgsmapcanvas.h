@@ -835,6 +835,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void refreshMap();
 
     void mapThemeChanged( const QString &theme );
+    //! Renames the active map theme called \a theme to \a newTheme
+    void mapThemeRenamed( const QString &theme, const QString &newTheme );
 
   signals:
 
