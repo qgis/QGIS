@@ -31,24 +31,6 @@ namespace QgsWms
 
   void writeGetSchemaExtension( QgsServerResponse &response )
   {
-<<<<<<< HEAD
-    QDomDocument doc = getSchemaExtension( serverIface, version, request );
-    response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
-    response.write( doc.toByteArray() );
-  }
-
-  QDomDocument getSchemaExtension( QgsServerInterface *serverIface, const QString &version,
-                                   const QgsServerRequest &request )
-  {
-    Q_UNUSED( version )
-    Q_UNUSED( serverIface )
-
-    QgsServerRequest::Parameters parameters = request.parameters();
-
-    QDomDocument xsdDoc;
-
-=======
->>>>>>> 970149f13e... Merge pull request #35702 from jgrocha/fix-wms-capabilities
     QDir resourcesDir = QFileInfo( QgsApplication::serverResourcesPath() ).absoluteDir();
     QFileInfo xsdFileInfo( resourcesDir, QStringLiteral( "schemaExtension.xsd" ) );
     QString schema_str = QStringLiteral( "<?xml version='1.0'?>" );
