@@ -57,6 +57,8 @@ Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   mDialog->setWindowFlags( mDialog->windowFlags() | Qt::Tool );
   mDialog->restorePosition();
 
+  // Update scale if the terrain vertical scale changed
+  connect( mCanvas->map(), &Qgs3DMapSettings::terrainVerticalScaleChanged, this, &Qgs3DMapToolMeasureLine::updateMeasurementLayer );
   connect( canvas, &Qgs3DMapCanvas::mapSettingsChanged, this, &Qgs3DMapToolMeasureLine::onMapSettingsChanged );
 }
 
@@ -97,7 +99,6 @@ void Qgs3DMapToolMeasureLine::activate()
     updateSettings();
     mIsAlreadyActivated = true;
   }
-
   // Show dialog
   mDialog->updateSettings();
   mDialog->show();
@@ -281,3 +282,4 @@ QVector<QgsPoint> Qgs3DMapToolMeasureLine::points() const
 {
   return mPoints;
 }
+

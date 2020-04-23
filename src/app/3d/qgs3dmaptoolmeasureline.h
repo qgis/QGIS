@@ -73,6 +73,9 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     void handleClick( Qt3DRender::QPickEvent *event, const QgsVector3D &worldIntersection );
     void onMapSettingsChanged() override;
 
+  signals:
+    void closingTool();
+
   private:
     std::unique_ptr<Qgs3DMapToolMeasureLinePickHandler> mPickHandler;
 
@@ -92,6 +95,8 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
 
     //! Dialog
     Qgs3DMeasureDialog *mDialog = nullptr;
+
+    bool mCanvasClosed = false;
 };
 
 #endif // QGS3DMAPTOOLMEASURELINE_H
