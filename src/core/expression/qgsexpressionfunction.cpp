@@ -3257,16 +3257,13 @@ static QVariant fcnZMax( const QVariantList &values, const QgsExpressionContext 
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isNull() )
+  if ( geom.isNull() || geom.isEmpty() )
     return QVariant();
 
   if ( !geom.constGet()->is3D() )
     return QVariant();
 
-  QgsVertexId vId;
-  geom.vertexIdFromVertexNr( 0, vId );
-
-  double max = geom.constGet()->vertexAt( vId ).z();
+  double max = std::numeric_limits< double >::lowest();
 
   for ( auto it = geom.vertices_begin(); it != geom.vertices_end(); ++it )
   {
@@ -3289,10 +3286,7 @@ static QVariant fcnZMin( const QVariantList &values, const QgsExpressionContext 
   if ( !geom.constGet()->is3D() )
     return QVariant();
 
-  QgsVertexId vId;
-  geom.vertexIdFromVertexNr( 0, vId );
-
-  double min = geom.constGet()->vertexAt( vId ).z();
+  double min = std::numeric_limits< double >::max();
 
   for ( auto it = geom.vertices_begin(); it != geom.vertices_end(); ++it )
   {
@@ -6043,7 +6037,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             fcnExtrude, QStringLiteral( "GeometryGroup" ), QString() )
         << new QgsStaticExpressionFunction( QStringLiteral( "is_multipart" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
                                             fcnGeomIsMultipart, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "z_max" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) ),
+        << new QgsStaticExpressionFunction( QStringLiteral( "z_max" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
                                             fcnZMax, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "z_min" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) ),
                                             fcnZMin, QStringLiteral( "GeometryGroup" ) )
