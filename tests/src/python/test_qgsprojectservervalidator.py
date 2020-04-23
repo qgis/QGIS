@@ -49,7 +49,7 @@ class TestQgsprojectServerValidator(unittest.TestCase):
         valid, results = QgsProjectServerValidator.validate(project)
         self.assertFalse(valid)
         self.assertEqual(1, len(results))
-        self.assertEqual(QgsProjectServerValidator.ShortNames, results[0].error)
+        self.assertEqual(QgsProjectServerValidator.LayerShortName, results[0].error)
 
         # Not valid, same short name as the first layer name
         layer_1.setShortName('layer_1')
@@ -76,6 +76,40 @@ class TestQgsprojectServerValidator(unittest.TestCase):
         valid, results = QgsProjectServerValidator.validate(project)
         self.assertTrue(valid)
         self.assertEqual(0, len(results))
+
+        # Not valid, the project title is invalid
+        project.setTitle('@ layer 1')
+        valid, results = QgsProjectServerValidator.validate(project)
+        self.assertFalse(valid)
+        self.assertEqual(1, len(results))
+        self.assertEqual(QgsProjectServerValidator.ProjectShortName, results[0].error)
+
+        # Valid project title
+        project.setTitle('project_title')
+        valid, results = QgsProjectServerValidator.validate(project)
+        self.assertTrue(valid)
+        self.assertEqual(0, len(results))
+
+        # Valid despite the bad project title, use project short name
+        project.setTitle('@ layer 1')
+        project.writeEntry('WMSRootName', '/', 'project_short_name')
+        valid, results = QgsProjectServerValidator.validate(project)
+        self.assertTrue(valid)
+        self.assertEqual(0, len(results))
+
+        # Not valid project short name
+        project.setTitle('project_title')
+        project.writeEntry('WMSRootName', '/', 'project with space')
+        valid, results = QgsProjectServerValidator.validate(project)
+        self.assertFalse(valid)
+        self.assertEqual(1, len(results))
+        self.assertEqual(QgsProjectServerValidator.ProjectShortName, results[0].error)
+
+        # Not valid, duplicated project short name
+        project.writeEntry('WMSRootName', '/', 'layer_1')
+        valid, results = QgsProjectServerValidator.validate(project)
+        self.assertEqual(1, len(results))
+        self.assertEqual(QgsProjectServerValidator.ProjectRootNameConflict, results[0].error)
 
 
 if __name__ == '__main__':
