@@ -20,6 +20,7 @@
 #include "qgsrectangle.h"
 
 class QgsFeedback;
+class QgsTileXYZ;
 class QgsVectorLayer;
 
 
@@ -38,8 +39,8 @@ class QgsVectorLayer;
  * - "xyz" - tile data written as local files, using a template where {x},{y},{z}
  *   are replaced by the actual tile column, row and zoom level numbers, e.g.:
  *   file:///home/qgis/tiles/{z}/{x}/{y}.pbf
- *
- * (More types such as "mbtiles" or "gpkg" may be added later.)
+ * - "mbtiles" - tile data written to a new MBTiles file, the "url" key should
+ *   be ordinary file system path, e.g.: /home/qgis/output.mbtiles
  *
  * Currently the writer only support MVT encoding of data.
  *
@@ -109,6 +110,10 @@ class CORE_EXPORT QgsVectorTileWriter
      * an empty string if writing was successful.
      */
     QString errorMessage() const { return mErrorMessage; }
+
+  private:
+    bool writeTileFileXYZ( const QString &sourcePath, QgsTileXYZ tileID, const QByteArray &tileData );
+    QString mbtilesJsonSchema();
 
   private:
     QgsRectangle mExtent;

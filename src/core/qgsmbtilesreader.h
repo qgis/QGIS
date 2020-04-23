@@ -44,8 +44,21 @@ class CORE_EXPORT QgsMBTilesReader
     //! Returns whether the MBTiles file is currently opened
     bool isOpen() const;
 
+    /**
+     * Creates a new MBTiles file and initializes it with metadata and tiles tables.
+     * It is up to the caller to set appropriate metadata entries and add tiles afterwards.
+     * Returns true on success. If the file exists already, returns false.
+     */
+    bool create();
+
     //! Requests metadata value for the given key
     QString metadataValue( const QString &key );
+
+    /**
+     * Sets metadata value for the given key. Does not overwrite existing entries.
+     * \note the database has to be opened in read-write mode (currently only when opened with create()
+     */
+    void setMetadataValue( const QString &key, const QString &value );
 
     //! Returns bounding box from metadata, given in WGS 84 (if available)
     QgsRectangle extent();
@@ -55,6 +68,17 @@ class CORE_EXPORT QgsMBTilesReader
 
     //! Returns tile decoded as a raster image (if stored in a known format like JPG or PNG)
     QImage tileDataAsImage( int z, int x, int y );
+
+    /**
+     * Adds tile data for the given tile coordinates. Does not overwrite existing entries.
+     * \note the database has to be opened in read-write mode (currently only when opened with create()
+     */
+    void setTileData( int z, int x, int y, const QByteArray &data );
+
+    //! Decodes gzip byte stream, returns true on success. Useful for reading vector tiles.
+    static bool decodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut );
+    //! Encodes gzip byte stream, returns true on success. Useful for writing vector tiles.
+    static bool encodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut );
 
   private:
     QString mFilename;

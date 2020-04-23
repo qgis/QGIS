@@ -68,6 +68,13 @@ bool QgsVectorTileLayer::loadDataSource()
       return false;
     }
 
+    QString format = reader.metadataValue( QStringLiteral( "format" ) );
+    if ( format != QStringLiteral( "pbf" ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Cannot open MBTiles for vector tiles. Format = " ) + format );
+      return false;
+    }
+
     QgsDebugMsgLevel( QStringLiteral( "name: " ) + reader.metadataValue( QStringLiteral( "name" ) ), 2 );
     bool minZoomOk, maxZoomOk;
     int minZoom = reader.metadataValue( QStringLiteral( "minzoom" ) ).toInt( &minZoomOk );

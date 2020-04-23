@@ -50,6 +50,7 @@ class TestQgsVectorTileWriter : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void test_basic();
+    void test_mbtiles();
 };
 
 
@@ -105,6 +106,75 @@ void TestQgsVectorTileWriter::test_basic()
   QStringList dirFiles = dirInfo.entryList( QStringList( "*.pbf" ) );
   QCOMPARE( dirFiles.count(), 8 );   // 1 tile at z0, 1 tile at z1, 2 tiles at z2, 4 tiles at z3
   QVERIFY( dirFiles.contains( "0-0-0.pbf" ) );
+
+  QgsVectorTileLayer *vtLayer = new QgsVectorTileLayer( ds.encodedUri(), "output" );
+
+  QByteArray tile0 = vtLayer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
+  QgsVectorTileMVTDecoder decoder;
+  bool resDecode0 = decoder.decode( QgsTileXYZ( 0, 0, 0 ), tile0 );
+  QVERIFY( resDecode0 );
+  QStringList layerNames = decoder.layers();
+  QCOMPARE( layerNames, QStringList() << "points" << "lines" << "polys" );
+  QStringList fieldNamesLines = decoder.layerFieldNames( "lines" );
+  QCOMPARE( fieldNamesLines, QStringList() << "Name" << "Value" );
+
+  QgsFields fieldsPolys;
+  fieldsPolys.append( QgsField( "Name", QVariant::String ) );
+  QMap<QString, QgsFields> perLayerFields;
+  perLayerFields["polys"] = fieldsPolys;
+  perLayerFields["lines"] = QgsFields();
+  perLayerFields["points"] = QgsFields();
+  QgsVectorTileFeatures features0 = decoder.layerFeatures( perLayerFields, QgsCoordinateTransform() );
+  QCOMPARE( features0["points"].count(), 17 );
+  QCOMPARE( features0["lines"].count(), 6 );
+  QCOMPARE( features0["polys"].count(), 10 );
+
+  QCOMPARE( features0["points"][0].geometry().wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( features0["lines"][0].geometry().wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( features0["polys"][0].geometry().wkbType(), QgsWkbTypes::MultiPolygon );   // source geoms in shp are multipolygons
+
+  QgsAttributes attrsPolys0_0 = features0["polys"][0].attributes();
+  QCOMPARE( attrsPolys0_0.count(), 1 );
+  QString attrNamePolys0_0 = attrsPolys0_0[0].toString();
+  QVERIFY( attrNamePolys0_0 == "Dam" || attrNamePolys0_0 == "Lake" );
+
+  delete vtLayer;
+}
+
+
+void TestQgsVectorTileWriter::test_mbtiles()
+{
+  QString fileName = QDir::tempPath() + "/test_qgsvectortilewriter.mbtiles";
+  if ( QFile::exists( fileName ) )
+    QFile::remove( fileName );
+
+  QgsDataSourceUri ds;
+  ds.setParam( "type", "mbtiles" );
+  ds.setParam( "url", fileName );
+
+  QgsVectorLayer *vlPoints = new QgsVectorLayer( mDataDir + "/points.shp", "points", "ogr" );
+  QgsVectorLayer *vlLines = new QgsVectorLayer( mDataDir + "/lines.shp", "lines", "ogr" );
+  QgsVectorLayer *vlPolys = new QgsVectorLayer( mDataDir + "/polys.shp", "polys", "ogr" );
+
+  QList<QgsVectorTileWriter::Layer> layers;
+  layers << QgsVectorTileWriter::Layer( vlPoints );
+  layers << QgsVectorTileWriter::Layer( vlLines );
+  layers << QgsVectorTileWriter::Layer( vlPolys );
+
+  QgsVectorTileWriter writer;
+  writer.setDestinationUri( ds.encodedUri() );
+  writer.setMaxZoom( 3 );
+  writer.setLayers( layers );
+
+  bool res = writer.writeTiles();
+  QVERIFY( res );
+  QVERIFY( writer.errorMessage().isEmpty() );
+
+  delete vlPoints;
+  delete vlLines;
+  delete vlPolys;
+
+  // do some checks on the output
 
   QgsVectorTileLayer *vtLayer = new QgsVectorTileLayer( ds.encodedUri(), "output" );
 

@@ -17,13 +17,17 @@
 
 #include "qgsdatasourceuri.h"
 #include "qgsfeedback.h"
+#include "qgsmbtilesreader.h"
 #include "qgstiles.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectortilemvtencoder.h"
 #include "qgsvectortileutils.h"
 
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QJsonDocument>
+#include <QJsonArray>
 #include <QUrl>
 
 
@@ -46,19 +50,27 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
     return false;
   }
 
+  std::unique_ptr<QgsMBTilesReader> mbtiles;
+
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDestinationUri );
 
   QString sourceType = dsUri.param( QStringLiteral( "type" ) );
   QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
-  if ( sourceType != QStringLiteral( "xyz" ) )
+  if ( sourceType == QStringLiteral( "xyz" ) )
+  {
+    // remove the initial file:// scheme
+    sourcePath = QUrl( sourcePath ).toLocalFile();
+  }
+  else if ( sourceType == QStringLiteral( "mbtiles" ) )
+  {
+    mbtiles.reset( new QgsMBTilesReader( sourcePath ) );
+  }
+  else
   {
     mErrorMessage = tr( "Unsupported source type for writing: " ) + sourceType;
     return false;
   }
-
-  // remove the initial file:// scheme
-  sourcePath = QUrl( sourcePath ).toLocalFile();
 
   // figure out how many tiles we will need to do
   int tilesToCreate = 0;
@@ -75,6 +87,28 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
   {
     mErrorMessage = tr( "No tiles to generate" );
     return false;
+  }
+
+  if ( mbtiles )
+  {
+    if ( !mbtiles->create() )
+    {
+      mErrorMessage = tr( "Failed to create MBTiles file: " ) + sourcePath;
+      return false;
+    }
+
+    // required metadata
+    mbtiles->setMetadataValue( "name", "???" );  // TODO: custom name?
+    mbtiles->setMetadataValue( "format", "pbf" );
+
+    // optional metadata
+    mbtiles->setMetadataValue( "bounds", "-180.0,-85,180,85" );
+    mbtiles->setMetadataValue( "minzoom", QString::number( mMinZoom ) );
+    mbtiles->setMetadataValue( "maxzoom", QString::number( mMaxZoom ) );
+    // TODO: "center"? initial view with [lon,lat,zoom]
+
+    // required metadata for vector tiles: "json" with schema of layers
+    mbtiles->setMetadataValue( "json", mbtilesJsonSchema() );
   }
 
   int tilesCreated = 0;
@@ -115,32 +149,85 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
           continue;
         }
 
-        QString filePath = QgsVectorTileUtils::formatXYZUrlTemplate( sourcePath, tileID );
-
-        // make dirs if needed
-        QFileInfo fi( filePath );
-        QDir fileDir = fi.dir();
-        if ( !fileDir.exists() )
+        if ( sourceType == QStringLiteral( "xyz" ) )
         {
-          if ( !fileDir.mkpath( "." ) )
-          {
-            mErrorMessage = tr( "Cannot create directory " ) + fileDir.path();
-            return false;
-          }
+          if ( !writeTileFileXYZ( sourcePath, tileID, tileData ) )
+            return false;  // error message already set
         }
-
-        QFile f( filePath );
-        if ( !f.open( QIODevice::WriteOnly ) )
+        else  // mbtiles
         {
-          mErrorMessage = tr( "Cannot open file for writing " ) + filePath;
-          return false;
+          QByteArray gzipTileData;
+          QgsMBTilesReader::encodeGzip( tileData, gzipTileData );
+          int rowTMS = pow( 2, tileID.zoomLevel() ) - tileID.row() - 1;
+          mbtiles->setTileData( tileID.zoomLevel(), tileID.column(), rowTMS, gzipTileData );
         }
-
-        f.write( tileData );
-        f.close();
       }
     }
   }
 
   return true;
+}
+
+bool QgsVectorTileWriter::writeTileFileXYZ( const QString &sourcePath, QgsTileXYZ tileID, const QByteArray &tileData )
+{
+  QString filePath = QgsVectorTileUtils::formatXYZUrlTemplate( sourcePath, tileID );
+
+  // make dirs if needed
+  QFileInfo fi( filePath );
+  QDir fileDir = fi.dir();
+  if ( !fileDir.exists() )
+  {
+    if ( !fileDir.mkpath( "." ) )
+    {
+      mErrorMessage = tr( "Cannot create directory " ) + fileDir.path();
+      return false;
+    }
+  }
+
+  QFile f( filePath );
+  if ( !f.open( QIODevice::WriteOnly ) )
+  {
+    mErrorMessage = tr( "Cannot open file for writing " ) + filePath;
+    return false;
+  }
+
+  f.write( tileData );
+  f.close();
+  return true;
+}
+
+QString QgsVectorTileWriter::mbtilesJsonSchema()
+{
+  QJsonArray arrayLayers;
+  for ( const Layer &layer : qgis::as_const( mLayers ) )
+  {
+    QgsVectorLayer *vl = layer.layer();
+    const QgsFields fields = vl->fields();
+
+    QJsonObject fieldsObj;
+    for ( const QgsField &field : fields )
+    {
+      QString fieldTypeStr;
+      if ( field.type() == QVariant::Bool )
+        fieldTypeStr = "Boolean";
+      else if ( field.type() == QVariant::Int || field.type() == QVariant::Double )
+        fieldTypeStr = "Number";
+      else
+        fieldTypeStr = "String";
+
+      fieldsObj["field"] = fieldTypeStr;
+    }
+
+    QJsonObject layerObj;
+    layerObj["id"] = vl->name();
+    layerObj["fields"] = fieldsObj;
+    arrayLayers.append( layerObj );
+  }
+
+  QJsonObject rootObj;
+  rootObj["vector_layers"] = arrayLayers;
+
+  QJsonDocument doc;
+  doc.setObject( rootObj );
+  return doc.toJson();
 }
