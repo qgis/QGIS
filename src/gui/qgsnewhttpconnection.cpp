@@ -129,14 +129,8 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
       mGroupBox->layout()->removeWidget( cmbDpiMode );
       lblDpiMode->setVisible( false );
       mGroupBox->layout()->removeWidget( lblDpiMode );
-
-      txtReferer->setVisible( false );
-      mGroupBox->layout()->removeWidget( txtReferer );
-      lblReferer->setVisible( false );
-      mGroupBox->layout()->removeWidget( lblReferer );
     }
   }
-
 
   if ( !( flags & FlagShowTestConnection ) )
   {
@@ -328,7 +322,7 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   // Enable/disable these items per WFS versions
   wfsVersionCurrentIndexChanged( versionIdx );
 
-  txtReferer->setText( settings.value( wmsKey + "/referer" ).toString() );
+  mRefererLineEdit->setText( settings.value( wmsKey + "/referer" ).toString() );
   txtMaxNumFeatures->setText( settings.value( wfsKey + "/maxnumfeatures" ).toString() );
 
   // Only default to paging enabled if WFS 2.0.0 or higher
@@ -336,8 +330,6 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   txtPageSize->setText( settings.value( wfsKey + "/pagesize" ).toString() );
   cbxWfsFeaturePaging->setChecked( pagingEnabled );
 }
-
-
 
 // Mega ewwww. all this is taken from Qt's QUrl::setEncodedPath compatibility helper.
 // (I can't see any way to port the below code to NOT require this).
@@ -503,7 +495,7 @@ void QgsNewHttpConnection::accept()
 
     settings.setValue( wmsKey + "/dpiMode", dpiMode );
 
-    settings.setValue( wmsKey + "/referer", txtReferer->text() );
+    settings.setValue( wmsKey + "/referer", mRefererLineEdit->text() );
   }
   if ( mTypes & ConnectionWms )
   {

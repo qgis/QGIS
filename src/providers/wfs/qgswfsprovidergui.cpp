@@ -27,7 +27,7 @@ class QgsWfsSourceSelectProvider : public QgsSourceSelectProvider
 
     QString providerKey() const override { return QgsWFSProvider::WFS_PROVIDER_KEY; }
     QString text() const override { return QObject::tr( "WFS / OGC API - Features" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 40; }
+    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 20; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWfsLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
