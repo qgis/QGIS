@@ -17,13 +17,6 @@
    <string>Widget display</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QCheckBox" name="mShowLabelCheckBox">
-     <property name="text">
-      <string>Show label</string>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0">
     <widget class="QCheckBox" name="mRelationShowLinkCheckBox">
      <property name="text">
@@ -31,10 +24,24 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="0">
+    <widget class="QCheckBox" name="mShowLabelCheckBox">
+     <property name="text">
+      <string>Show label</string>
+     </property>
+    </widget>
+   </item>
    <item row="2" column="0">
     <widget class="QCheckBox" name="mRelationShowUnlinkCheckBox">
      <property name="text">
       <string>Show unlink button</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QCheckBox" name="mRelationShowSaveChildEditsCheckBox">
+     <property name="text">
+      <string>Show save child layer edits button</string>
      </property>
     </widget>
    </item>

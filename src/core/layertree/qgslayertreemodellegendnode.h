@@ -28,6 +28,7 @@
 
 #include "qgsrasterdataprovider.h" // for QgsImageFetcher dtor visibility
 #include "qgsexpressioncontext.h"
+#include "qgslegendpatchshape.h"
 
 class QgsLayerTreeLayer;
 class QgsLayerTreeModel;
@@ -145,6 +146,12 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
        */
       double maxSiblingSymbolWidth = 0.0;
 
+      /**
+       * The patch shape to render for the node.
+       *
+       * \since QGIS 3.14
+       */
+      QgsLegendPatchShape patchShape;
     };
 
     struct ItemMetrics
@@ -221,6 +228,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     QgsLayerTreeLayer *mLayerNode = nullptr;
     bool mEmbeddedInParent;
     QString mUserLabel;
+    QgsLegendPatchShape mPatchShape;
 };
 
 #include "qgslegendsymbolitem.h"
@@ -334,6 +342,22 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * \since QGIS 3.10
      */
     QString symbolLabel() const;
+
+    /**
+     * Returns the symbol patch shape to use when rendering the legend node symbol.
+     *
+     * \see setPatchShape()
+     * \since QGIS 3.14
+     */
+    QgsLegendPatchShape patchShape() const;
+
+    /**
+     * Sets the symbol patch \a shape to use when rendering the legend node symbol.
+     *
+     * \see patchShape()
+     * \since QGIS 3.14
+     */
+    void setPatchShape( const QgsLegendPatchShape &shape );
 
     /**
      * Evaluates  and returns the text label of the current node

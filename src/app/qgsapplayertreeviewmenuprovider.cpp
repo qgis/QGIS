@@ -117,6 +117,11 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( actions->actionMoveToTop( menu ) );
       }
 
+      if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == idx.model()->rowCount() - 1 ) )
+      {
+        menu->addAction( actions->actionMoveToBottom( menu ) );
+      }
+
       menu->addSeparator();
 
       if ( mView->selectedNodes( true ).count() >= 2 )
@@ -204,6 +209,11 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( actions->actionMoveToTop( menu ) );
       }
 
+      if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == idx.model()->rowCount() - 1 ) )
+      {
+        menu->addAction( actions->actionMoveToBottom( menu ) );
+      }
+
       QAction *checkAll = actions->actionCheckAndAllParents( menu );
       if ( checkAll )
         menu->addAction( checkAll );
@@ -248,9 +258,16 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         if ( provider && provider->supportsSubsetString() )
         {
-          QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), &QgisApp::layerSubsetString );
+          QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), qgis::overload<>::of( &QgisApp::layerSubsetString ) );
           action->setEnabled( !vlayer->isEditable() );
         }
+      }
+
+      if ( rlayer &&
+           rlayer->dataProvider() &&
+           rlayer->dataProvider()->supportsSubsetString() )
+      {
+        menu->addAction( tr( "&Filter…" ), QgisApp::instance(), qgis::overload<>::of( &QgisApp::layerSubsetString ) );
       }
 
       // change data source is only supported for vectors and rasters

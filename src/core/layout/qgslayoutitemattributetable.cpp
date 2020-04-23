@@ -32,45 +32,6 @@
 #include "qgsgeometryengine.h"
 #include "qgsconditionalstyle.h"
 
-//QgsLayoutAttributeTableCompare
-
-///@cond PRIVATE
-
-/**
- * Helper class for sorting tables, takes into account sorting column and ascending / descending
-*/
-class CORE_EXPORT QgsLayoutAttributeTableCompare
-{
-  public:
-
-    /**
-     * Constructor for QgsLayoutAttributeTableCompare.
-     */
-    QgsLayoutAttributeTableCompare() = default;
-    bool operator()( const QVector< QPair< QVariant, QgsConditionalStyle > > &m1, const QVector< QPair< QVariant, QgsConditionalStyle > > &m2 )
-    {
-      return ( mAscending ? qgsVariantLessThan( m1[mCurrentSortColumn].first, m2[mCurrentSortColumn].first )
-               : qgsVariantGreaterThan( m1[mCurrentSortColumn].first, m2[mCurrentSortColumn].first ) );
-    }
-
-    /**
-     * Sets \a column number to sort by.
-     */
-    void setSortColumn( int column ) { mCurrentSortColumn = column; }
-
-    /**
-     * Sets sort order for column sorting
-     * Set \a ascending to true to sort in ascending order, false to sort in descending order
-     */
-    void setAscending( bool ascending ) { mAscending = ascending; }
-
-  private:
-    int mCurrentSortColumn = 0;
-    bool mAscending = true;
-};
-
-///@endcond
-
 //
 // QgsLayoutItemAttributeTable
 //
@@ -519,6 +480,12 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     req.setFilterFid( atlasFeature.id() );
   }
 
+  QVector< QPair<int, bool> > sortColumns = sortAttributes();
+  for ( int i = sortColumns.size() - 1; i >= 0; --i )
+  {
+    req = req.addOrderBy( mColumns.at( sortColumns.at( i ).first )->attribute(), sortColumns.at( i ).second );
+  }
+
   QgsFeature f;
   int counter = 0;
   QgsFeatureIterator fit = layer->getFeatures( req );
@@ -626,16 +593,6 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     tempContents << currentRow;
     existingContents << rowContents;
     ++counter;
-  }
-
-  //sort the list, starting with the last attribute
-  QgsLayoutAttributeTableCompare c;
-  QVector< QPair<int, bool> > sortColumns = sortAttributes();
-  for ( int i = sortColumns.size() - 1; i >= 0; --i )
-  {
-    c.setSortColumn( sortColumns.at( i ).first );
-    c.setAscending( sortColumns.at( i ).second );
-    std::stable_sort( tempContents.begin(), tempContents.end(), c );
   }
 
   // build final table contents

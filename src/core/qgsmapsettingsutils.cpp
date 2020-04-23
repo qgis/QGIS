@@ -31,7 +31,7 @@ const QStringList QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSett
   const auto constLayers = mapSettings.layers();
   for ( QgsMapLayer *layer : constLayers )
   {
-    if ( layer )
+    if ( layer && layer->isInScaleRange( mapSettings.scale() ) )
     {
       if ( layer->blendMode() != QPainter::CompositionMode_SourceOver )
       {

@@ -51,6 +51,15 @@ class GUI_EXPORT QgsMapLayerStyleGuiUtils : public QObject
      */
     void addStyleManagerActions( QMenu *m, QgsMapLayer *layer );
 
+    /**
+     * \brief removes extra separators from the menu
+     *
+     * \since QGIS 3.14
+     */
+    void removesExtraMenuSeparators( QMenu *m );
+
+  public slots:
+
   private :
     QAction *actionAddStyle( QgsMapLayer *layer, QObject *parent = nullptr );
     QAction *actionRemoveStyle( QgsMapLayer *layer, QObject *parent = nullptr );

@@ -30,6 +30,7 @@
 #include "qgsproject.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsvectorlayer.h"
+#include "qgslinesymbollayer.h"
 
 #include "qgsprintlayout.h"
 #include "qgslayoutatlas.h"
@@ -53,6 +54,7 @@
 #include "qgslayoutmultiframe.h"
 #include "qgslayoutframe.h"
 #include "qgslayoutguidecollection.h"
+#include "qgslayoutnortharrowhandler.h"
 
 QgsPropertiesDefinition QgsCompositionConverter::sPropertyDefinitions;
 
@@ -688,8 +690,8 @@ bool QgsCompositionConverter::readPictureXml( QgsLayoutItemPicture *layoutItem, 
   }
 
   //rotation map
-  layoutItem->mNorthMode = static_cast< QgsLayoutItemPicture::NorthMode >( itemElem.attribute( QStringLiteral( "northMode" ), QStringLiteral( "0" ) ).toInt() );
-  layoutItem->mNorthOffset = itemElem.attribute( QStringLiteral( "northOffset" ), QStringLiteral( "0" ) ).toDouble();
+  layoutItem->mNorthArrowHandler->setNorthMode( static_cast< QgsLayoutNorthArrowHandler::NorthMode >( itemElem.attribute( QStringLiteral( "northMode" ), QStringLiteral( "0" ) ).toInt() ) );
+  layoutItem->mNorthArrowHandler->setNorthOffset( itemElem.attribute( QStringLiteral( "northOffset" ), QStringLiteral( "0" ) ).toDouble() );
 
   QString rotationMapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) );
   if ( rotationMapId != QStringLiteral( "-1" ) )
@@ -1029,10 +1031,8 @@ bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem
   layoutItem->setMaximumBarWidth( itemElem.attribute( QStringLiteral( "maxBarWidth" ), QStringLiteral( "150" ) ).toDouble() );
   layoutItem->mSegmentMillimeters = itemElem.attribute( QStringLiteral( "segmentMillimeters" ), QStringLiteral( "0.0" ) ).toDouble();
   layoutItem->setMapUnitsPerScaleBarUnit( itemElem.attribute( QStringLiteral( "numMapUnitsPerScaleBarUnit" ), QStringLiteral( "1.0" ) ).toDouble() );
-  layoutItem->setLineWidth( itemElem.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "0.3" ) ).toDouble() );
   layoutItem->setUnitLabel( itemElem.attribute( QStringLiteral( "unitLabel" ) ) );
-  layoutItem->setLineJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( itemElem.attribute( QStringLiteral( "lineJoinStyle" ), QStringLiteral( "miter" ) ) ) );
-  layoutItem->setLineCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( itemElem.attribute( QStringLiteral( "lineCapStyle" ), QStringLiteral( "square" ) ) ) );
+
   QFont f;
   if ( !QgsFontUtils::setFromXmlChildNode( f, itemElem, QStringLiteral( "scaleBarFont" ) ) )
   {
@@ -1058,12 +1058,12 @@ bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem
 
     if ( redOk && greenOk && blueOk && alphaOk )
     {
-      layoutItem->setFillColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) );
+      layoutItem->fillSymbol()->setColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) );
     }
   }
   else
   {
-    layoutItem->setFillColor( QColor( itemElem.attribute( QStringLiteral( "brushColor" ), QStringLiteral( "#000000" ) ) ) );
+    layoutItem->fillSymbol()->setColor( QColor( itemElem.attribute( QStringLiteral( "brushColor" ), QStringLiteral( "#000000" ) ) ) );
   }
 
   //fill color 2
@@ -1081,14 +1081,20 @@ bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem
 
     if ( redOk && greenOk && blueOk && alphaOk )
     {
-      layoutItem->setFillColor2( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) );
+      layoutItem->alternateFillSymbol()->setColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) );
     }
   }
   else
   {
-    layoutItem->setFillColor2( QColor( itemElem.attribute( QStringLiteral( "brush2Color" ), QStringLiteral( "#ffffff" ) ) ) );
+    layoutItem->alternateFillSymbol()->setColor( QColor( itemElem.attribute( QStringLiteral( "brush2Color" ), QStringLiteral( "#ffffff" ) ) ) );
   }
 
+  std::unique_ptr< QgsLineSymbol > lineSymbol = qgis::make_unique< QgsLineSymbol >();
+  std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >();
+  lineSymbolLayer->setWidth( itemElem.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "0.3" ) ).toDouble() );
+  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setPenJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( itemElem.attribute( QStringLiteral( "lineJoinStyle" ), QStringLiteral( "miter" ) ) ) );
+  lineSymbolLayer->setPenCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( itemElem.attribute( QStringLiteral( "lineCapStyle" ), QStringLiteral( "square" ) ) ) );
   //stroke color
   QDomNodeList strokeColorList = itemElem.elementsByTagName( QStringLiteral( "strokeColor" ) );
   if ( !strokeColorList.isEmpty() )
@@ -1104,19 +1110,15 @@ bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem
 
     if ( redOk && greenOk && blueOk && alphaOk )
     {
-      layoutItem->setLineColor( QColor( strokeRed, strokeGreen, strokeBlue, strokeAlpha ) );
-      QPen p = layoutItem->mSettings.pen();
-      p.setColor( layoutItem->mSettings.lineColor() );
-      layoutItem->setPen( p );
+      lineSymbolLayer->setColor( QColor( strokeRed, strokeGreen, strokeBlue, strokeAlpha ) );
     }
   }
   else
   {
-    layoutItem->setLineColor( QColor( itemElem.attribute( QStringLiteral( "penColor" ), QStringLiteral( "#000000" ) ) ) );
-    QPen p = layoutItem->mSettings.pen();
-    p.setColor( layoutItem->mSettings.lineColor() );
-    layoutItem->setPen( p );
+    lineSymbolLayer->setColor( QColor( itemElem.attribute( QStringLiteral( "penColor" ), QStringLiteral( "#000000" ) ) ) );
   }
+  lineSymbol->changeSymbolLayer( 0, lineSymbolLayer.release() );
+  layoutItem->setLineSymbol( lineSymbol.release() );
 
   //font color
   QDomNodeList textColorList = itemElem.elementsByTagName( QStringLiteral( "textColor" ) );

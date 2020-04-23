@@ -39,6 +39,10 @@ class QgsSLConnectionItem : public QgsDataCollectionItem
 
   protected:
     QString mDbPath;
+
+    // QgsDataItem interface
+  public:
+    bool layerCollection() const override;
 };
 
 class QgsSLRootItem : public QgsDataCollectionItem
@@ -72,6 +76,7 @@ class QgsSpatiaLiteDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
+    QString dataProviderKey() const override;
 
     int capabilities() const override;
 

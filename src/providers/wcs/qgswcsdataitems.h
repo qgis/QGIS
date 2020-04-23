@@ -78,7 +78,7 @@ class QgsWcsDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-
+    QString dataProviderKey() const override;
     int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;

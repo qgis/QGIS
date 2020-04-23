@@ -92,45 +92,6 @@ void QgsMapToolDigitizeFeature::setCheckGeometryType( bool checkGeometryType )
   mCheckGeometryType = checkGeometryType;
 }
 
-void QgsMapToolDigitizeFeature::keyPressEvent( QKeyEvent *e )
-{
-  if ( e && e->key() == Qt::Key_C )
-  {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
-    if ( !vlayer )
-      //if no given layer take the current from canvas
-      vlayer = currentVectorLayer();
-
-    if ( !vlayer )
-    {
-      notifyNotVectorLayer();
-      return;
-    }
-
-    QgsVectorDataProvider *provider = vlayer->dataProvider();
-
-    if ( !( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
-    {
-      emit messageEmitted( tr( "The data provider for this layer does not support the addition of features." ), Qgis::Warning );
-      return;
-    }
-
-    if ( !vlayer->isEditable() )
-    {
-      notifyNotEditableLayer();
-      return;
-    }
-
-    if ( ( mode() == CaptureLine && vlayer->geometryType() == QgsWkbTypes::LineGeometry && mCheckGeometryType ) || ( mode() == CapturePolygon && vlayer->geometryType() == QgsWkbTypes::PolygonGeometry && mCheckGeometryType ) )
-    {
-      closePolygon();
-      QgsMapMouseEvent e2( mCanvas, QEvent::MouseButtonRelease, QPoint( ), Qt::RightButton );
-      cadCanvasReleaseEvent( &e2 );
-    }
-  }
-  else
-    QgsMapToolCapture::keyPressEvent( e );
-}
 void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
@@ -313,7 +274,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         return;
       }
 
-      if ( mode() == CapturePolygon )
+      if ( mode() == CapturePolygon || e->modifiers() == Qt::ShiftModifier )
       {
         closePolygon();
       }
@@ -358,18 +319,33 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         QgsGeometry g( poly );
         f->setGeometry( g );
 
-        QgsGeometry featGeom = f->geometry();
-        int avoidIntersectionsReturn = featGeom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
-        f->setGeometry( featGeom );
-        if ( avoidIntersectionsReturn == 1 )
+        QList<QgsVectorLayer *>  avoidIntersectionsLayers;
+        switch ( QgsProject::instance()->avoidIntersectionsMode() )
         {
-          //not a polygon type. Impossible to get there
+          case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
+            avoidIntersectionsLayers.append( vlayer );
+            break;
+          case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
+            avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
+            break;
+          case QgsProject::AvoidIntersectionsMode::AllowIntersections:
+            break;
         }
-        if ( f->geometry().isEmpty() ) //avoid intersection might have removed the whole geometry
+        if ( avoidIntersectionsLayers.size() > 0 )
         {
-          emit messageEmitted( tr( "The feature cannot be added because it's geometry collapsed due to intersection avoidance" ), Qgis::Critical );
-          stopCapturing();
-          return;
+          QgsGeometry featGeom = f->geometry();
+          int avoidIntersectionsReturn = featGeom.avoidIntersections( avoidIntersectionsLayers );
+          f->setGeometry( featGeom );
+          if ( avoidIntersectionsReturn == 1 )
+          {
+            //not a polygon type. Impossible to get there
+          }
+          if ( f->geometry().isEmpty() ) //avoid intersection might have removed the whole geometry
+          {
+            emit messageEmitted( tr( "The feature cannot be added because its geometry collapsed due to intersection avoidance" ), Qgis::Critical );
+            stopCapturing();
+            return;
+          }
         }
       }
       f->setValid( true );

@@ -34,6 +34,15 @@ void QgsMapToolEllipseExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsPoint point = mapPoint( *e );
 
+  if ( !currentVectorLayer() )
+  {
+    notifyNotVectorLayer();
+    clean();
+    stopCapturing();
+    e->ignore();
+    return;
+  }
+
   if ( e->button() == Qt::LeftButton )
   {
     if ( mPoints.empty() )
@@ -47,11 +56,7 @@ void QgsMapToolEllipseExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   }
   else if ( e->button() == Qt::RightButton )
   {
-    deactivate();
-    if ( mParentTool )
-    {
-      mParentTool->canvasReleaseEvent( e );
-    }
+    release( e );
   }
 }
 

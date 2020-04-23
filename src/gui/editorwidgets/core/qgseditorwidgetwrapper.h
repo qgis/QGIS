@@ -306,6 +306,19 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     void emitValueChanged();
 
+    /**
+     * Is called in embedded form widgets when an \a attribute \a value in
+     * the parent form has changed.
+     *
+     * The default implementations does nothing.
+     * Subclasses should reimplement this method to notify the form widgets
+     * that something has changed in case they have filter expressions that
+     * depend on the parent form scope.
+     *
+     * \since QGIS 3.14
+     */
+    virtual void parentFormValueChanged( const QString &attribute, const QVariant &value );
+
   protected:
 
     /**

@@ -254,6 +254,14 @@ Filter subclasses should use this method when comparing strings instead
 of directly using QString.contains() or Python 'in' checks.
 %End
 
+    static double fuzzyScore( const QString &candidate, const QString &search );
+%Docstring
+Tests a ``candidate`` string to see how likely it is a match for
+a specified ``search`` string.
+
+.. versionadded:: 3.14
+%End
+
     bool enabled() const;
 %Docstring
 Returns ``True`` if the filter is enabled.

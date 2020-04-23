@@ -353,7 +353,7 @@ int main( int argc, char *argv[] )
             const int headerColonPos { headerLine.indexOf( ':' ) };
             if ( headerColonPos > 0 )
             {
-              headers.insert( headerLine.left( headerColonPos ), headerLine.mid( headerColonPos + 1 ) );
+              headers.insert( headerLine.left( headerColonPos ), headerLine.mid( headerColonPos + 2 ) );
             }
           }
 
@@ -402,12 +402,14 @@ int main( int argc, char *argv[] )
 
           // 10.185.248.71 [09/Jan/2015:19:12:06 +0000] 808840 <time> "GET / HTTP/1.1" 500"
           std::cout << QStringLiteral( "%1 [%2] %3 %4ms \"%5\" %6" )
-                    .arg( clientConnection->peerAddress().toString() )
-                    .arg( QDateTime::currentDateTime().toString() )
-                    .arg( body.size() )
-                    .arg( std::chrono::duration_cast<std::chrono::milliseconds>( elapsedTime ).count() )
-                    .arg( firstLinePieces.join( ' ' ) )
-                    .arg( response.statusCode() ).toStdString() << std::endl;
+                    .arg( clientConnection->peerAddress().toString(),
+                          QDateTime::currentDateTime().toString(),
+                          QString::number( body.size() ),
+                          QString::number( std::chrono::duration_cast<std::chrono::milliseconds>( elapsedTime ).count() ),
+                          firstLinePieces.join( ' ' ),
+                          QString::number( response.statusCode() ) )
+                    .toStdString()
+                    << std::endl;
 
           clientConnection->disconnectFromHost();
         }

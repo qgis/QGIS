@@ -95,9 +95,6 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     //! Stores the selected datasource whenerver it is changed
     void cmbConnections_activated( int );
 
-    //! Add some default wms servers to the list
-    void btnAddDefault_clicked();
-
   private:
     //! Populate the connection list combo box
     void populateConnectionList();
@@ -107,9 +104,6 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
 
     //! Sets the server connection combo box to that stored in the config file.
     void setConnectionListPosition();
-
-    //! Add a few example servers to the list.
-    void addDefaultServers();
 
     //! Selected CRS
     QString mCRS;
@@ -178,12 +172,22 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     void enableLayersForCrs( QTreeWidgetItem *item );
 
     void collectSelectedLayers( QStringList &layers, QStringList &styles, QStringList &titles );
+
+    /**
+     * Collects the available dimensions from the WMS layers and adds them
+     * to the passed \a uri.
+     */
+    void collectDimensions( QStringList &layers, QgsDataSourceUri &uri );
+
     QString selectedImageEncoding();
 
     QList<QTreeWidgetItem *> mCurrentSelection;
     QTableWidgetItem *mCurrentTileset = nullptr;
 
     QList<QgsWmtsTileLayer> mTileLayers;
+
+    //! Stores all the layers properties from the service capabilities.
+    QVector<QgsWmsLayerProperty> mLayerProperties;
 
   private slots:
     void btnSearch_clicked();

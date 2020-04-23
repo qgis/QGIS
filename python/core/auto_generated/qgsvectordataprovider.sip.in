@@ -626,6 +626,9 @@ from the ``source`` provider.
 .. versionadded:: 3.8.1
 %End
 
+    virtual QgsVectorDataProviderTemporalCapabilities *temporalCapabilities();
+
+
   signals:
 
     void raiseError( const QString &msg ) const;

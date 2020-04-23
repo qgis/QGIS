@@ -40,7 +40,7 @@ from .unzip import unzip
 class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallingDialogBase):
     # ----------------------------------------- #
 
-    def __init__(self, parent, plugin):
+    def __init__(self, parent, plugin, stable=True):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.plugin = plugin
@@ -50,7 +50,7 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
         self.labelName.setText(plugin["name"])
         self.buttonBox.clicked.connect(self.abort)
 
-        self.url = QUrl(plugin["download_url"])
+        self.url = QUrl(plugin["download_url_stable"] if stable else plugin["download_url_experimental"])
         self.redirectionCounter = 0
 
         fileName = plugin["filename"]

@@ -356,6 +356,12 @@ bool QgsUserColorScheme::erase()
     return false;
   }
 
+  // if file does not exist, nothing to do on the disk, so we can consider erasing done
+  if ( ! QFile::exists( filePath ) )
+  {
+    return true;
+  }
+
   //try to erase gpl file
   return QFile::remove( filePath );
 }

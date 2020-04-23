@@ -44,7 +44,7 @@ ComboBox {
   delegate: ItemDelegate {
     width: comboBox.width
     height: comboBox.height * 0.8
-    text: modelData
+    text: model.display
     font.weight: comboBox.currentIndex === index ? Font.DemiBold : Font.Normal
     font.pixelSize: comboStyle.fontPixelSize
     highlighted: comboBox.highlightedIndex == index

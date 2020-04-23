@@ -298,14 +298,17 @@ void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
   // and signals unblocked (we want this to propagate to the feature itself)
   if ( formFeature().isValid()
        && ! formFeature().attribute( fieldIdx() ).isValid()
-       && ! mCache.empty()
+       && ! mCache.isEmpty()
        && ! config( QStringLiteral( "AllowNull" ) ).toBool( ) )
   {
     // This is deferred because at the time the feature is set in one widget it is not
     // set in the next, which is typically the "down" in a drill-down
     QTimer::singleShot( 0, this, [ this ]
     {
-      updateValues( mCache.at( 0 ).key );
+      if ( ! mCache.isEmpty() )
+      {
+        updateValues( mCache.at( 0 ).key );
+      }
     } );
   }
 }
@@ -334,13 +337,21 @@ QVariant::Type QgsValueRelationWidgetWrapper::fkType() const
 void QgsValueRelationWidgetWrapper::populate( )
 {
   // Initialize, note that signals are blocked, to avoid double signals on new features
-  if ( QgsValueRelationFieldFormatter::expressionRequiresFormScope( mExpression ) )
+  if ( QgsValueRelationFieldFormatter::expressionRequiresFormScope( mExpression ) ||
+       QgsValueRelationFieldFormatter::expressionRequiresParentFormScope( mExpression ) )
   {
-    mCache = QgsValueRelationFieldFormatter::createCache( config( ), formFeature() );
+    if ( context().parentFormFeature().isValid() )
+    {
+      mCache = QgsValueRelationFieldFormatter::createCache( config(), formFeature(), context().parentFormFeature() );
+    }
+    else
+    {
+      mCache = QgsValueRelationFieldFormatter::createCache( config(), formFeature() );
+    }
   }
   else if ( mCache.empty() )
   {
-    mCache = QgsValueRelationFieldFormatter::createCache( config( ) );
+    mCache = QgsValueRelationFieldFormatter::createCache( config() );
   }
 
   if ( mComboBox )
@@ -354,7 +365,10 @@ void QgsValueRelationWidgetWrapper::populate( )
     for ( const QgsValueRelationFieldFormatter::ValueRelationItem &element : qgis::as_const( mCache ) )
     {
       whileBlocking( mComboBox )->addItem( element.value, element.key );
+      if ( !element.description.isEmpty() )
+        mComboBox->setItemData( mComboBox->count() - 1, element.description, Qt::ToolTipRole );
     }
+
   }
   else if ( mTableWidget )
   {
@@ -384,6 +398,7 @@ void QgsValueRelationWidgetWrapper::populate( )
       whileBlocking( mTableWidget )->setItem( row, column, item );
       column++;
     }
+
   }
   else if ( mLineEdit )
   {
@@ -450,6 +465,28 @@ void QgsValueRelationWidgetWrapper::setEnabled( bool enabled )
   }
   else
     QgsEditorWidgetWrapper::setEnabled( enabled );
+}
+
+void QgsValueRelationWidgetWrapper::parentFormValueChanged( const QString &attribute, const QVariant &value )
+{
+
+  // Update the parent feature in the context ( which means to replace the whole context :/ )
+  QgsAttributeEditorContext ctx { context() };
+  QgsFeature feature { context().parentFormFeature() };
+  feature.setAttribute( attribute, value );
+  ctx.setParentFormFeature( feature );
+  setContext( ctx );
+
+  // Check if the change might affect the filter expression and the cache needs updates
+  if ( QgsValueRelationFieldFormatter::expressionRequiresParentFormScope( mExpression )
+       && ( config( QStringLiteral( "Value" ) ).toString() == attribute ||
+            config( QStringLiteral( "Key" ) ).toString() == attribute ||
+            ! QgsValueRelationFieldFormatter::expressionParentFormVariables( mExpression ).isEmpty() ||
+            QgsValueRelationFieldFormatter::expressionParentFormAttributes( mExpression ).contains( attribute ) ) )
+  {
+    populate();
+  }
+
 }
 
 void QgsValueRelationWidgetWrapper::emitValueChangedInternal( const QString &value )

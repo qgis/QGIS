@@ -142,7 +142,6 @@ void QgsNumericFormatSelectorWidget::updateFormatWidget()
     stackedWidget->setCurrentWidget( w );
     // start receiving updates from widget
     connect( w, &QgsNumericFormatWidget::changed, this, &QgsNumericFormatSelectorWidget::formatChanged );
-    return;
   }
   else
   {

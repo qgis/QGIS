@@ -26,6 +26,7 @@
 QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
 {
   addAlgorithmConfigurationWidgetFactory( new QgsFilterAlgorithmConfigurationWidgetFactory() );
+  addAlgorithmConfigurationWidgetFactory( new QgsConditionalBranchAlgorithmConfigurationWidgetFactory() );
 
   addParameterWidgetFactory( new QgsProcessingBooleanWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingCrsWidgetWrapper() );
@@ -46,6 +47,23 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingCoordinateOperationWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingFieldWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingMapThemeWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingDateTimeWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingProviderConnectionWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingDatabaseSchemaWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingDatabaseTableWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingExtentWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingMapLayerWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingVectorLayerWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingFeatureSourceWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingRasterLayerWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingMeshLayerWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingBandWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingMultipleLayerWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingFeatureSinkWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingVectorDestinationWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingRasterDestinationWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingFileDestinationWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingFolderDestinationWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()

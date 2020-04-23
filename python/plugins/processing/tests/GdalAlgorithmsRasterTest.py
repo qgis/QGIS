@@ -47,7 +47,7 @@ from processing.algs.gdal.GridNearestNeighbor import GridNearestNeighbor
 from processing.algs.gdal.gdal2tiles import gdal2tiles
 from processing.algs.gdal.gdalcalc import gdalcalc
 from processing.algs.gdal.gdaltindex import gdaltindex
-from processing.algs.gdal.contour import contour
+from processing.algs.gdal.contour import contour, contour_polygon
 from processing.algs.gdal.gdalinfo import gdalinfo
 from processing.algs.gdal.hillshade import hillshade
 from processing.algs.gdal.aspect import aspect
@@ -403,6 +403,25 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  mask + ' -cl polys2 -crop_to_cutline -multi -nosrcalpha -wm 2048 -nomd ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
+
+    def testContourPolygon(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = contour_polygon()
+        alg.initAlgorithm()
+        with tempfile.TemporaryDirectory() as outdir:
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'FIELD_NAME_MIN': 'min',
+                                        'FIELD_NAME_MAX': 'max',
+                                        'INTERVAL': 5,
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['gdal_contour',
+                    '-p -amax max -amin min -b 1 -i 5.0 -f "ESRI Shapefile" ' +
+                    source + ' ' +
+                    outdir + '/check.shp'])
 
     def testContour(self):
         context = QgsProcessingContext()

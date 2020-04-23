@@ -447,6 +447,7 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
 
         case QgsMapLayerType::PluginLayer:
         case QgsMapLayerType::MeshLayer:
+        case QgsMapLayerType::VectorTileLayer:
           break;
       }
     } );

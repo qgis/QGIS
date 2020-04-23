@@ -37,6 +37,16 @@ Sets the ``contents`` to show in the editor widget.
 .. seealso:: :py:func:`tableContents`
 %End
 
+
+    bool setTableContentsFromClipboard();
+%Docstring
+Parses the clipboard text into contents to show in the editor widget.
+
+:return: ``True`` if the clipboard was successfully parsed
+
+.. seealso:: :py:func:`tableContents`
+%End
+
     QgsTableContents tableContents() const;
 %Docstring
 Returns the current contents of the editor widget table.

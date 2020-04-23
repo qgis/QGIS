@@ -27,14 +27,18 @@
 #include "qgsmesh3dmaterial_p.h"
 
 
-QgsMesh3dEntity::QgsMesh3dEntity( const Qgs3DMapSettings &map,
-                                  const QgsTriangularMesh triangularMesh,
-                                  const QgsRectangle &extent,
-                                  const QgsMesh3DSymbol &symbol ):
-  mExtent( extent ),
-  mSymbol( symbol ),
+
+QgsMesh3dEntity::QgsMesh3dEntity( const Qgs3DMapSettings &map, QgsMeshLayer *meshLayer, const QgsMesh3DSymbol &symbol ):
   mMapSettings( map ),
-  mTriangularMesh( triangularMesh )
+  mLayerRef( meshLayer ),
+  mSymbol( symbol )
+{}
+
+QgsMeshDataset3dEntity::QgsMeshDataset3dEntity(
+  const Qgs3DMapSettings &map,
+  QgsMeshLayer *meshLayer,
+  const QgsMesh3DSymbol &symbol ):
+  QgsMesh3dEntity( map, meshLayer, symbol )
 {}
 
 void QgsMesh3dEntity::build()
@@ -43,59 +47,61 @@ void QgsMesh3dEntity::build()
   applyMaterial();
 }
 
-void QgsMesh3dEntity::buildGeometry()
+void QgsMeshDataset3dEntity::buildGeometry()
 {
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-  QVector<double> fakeScalarMag( mTriangularMesh.vertices().count() );
-  for ( int i = 0; i < mTriangularMesh.vertices().count(); ++i )
-  {
-    fakeScalarMag[i] = mTriangularMesh.vertices().at( i ).z();
-  }
 
-  mesh->setGeometry( new QgsMesh3dGeometry( mTriangularMesh,
-                     mMapSettings.origin(),
-                     mExtent,
-                     mSymbol.verticaleScale(),
-                     mesh ) );
+  if ( !layer() )
+    return;
 
+  mesh->setGeometry( new QgsMeshDataset3dGeometry( layer(), mMapSettings.temporalRange(), mMapSettings.origin(), mSymbol, mesh ) );
   addComponent( mesh );
 }
 
-void QgsMesh3dEntity::applyMaterial()
+void QgsMeshDataset3dEntity::applyMaterial()
 {
-  mMaterial = new QgsMesh3dMaterial( mSymbol );
-  addComponent( mMaterial );
+  if ( mSymbol.renderingStyle() == QgsMesh3DSymbol::ColorRamp2DRendering && layer() )
+  {
+    const QgsMeshRendererSettings rendererSettings = layer()->rendererSettings();
+    int datasetGroupIndex = rendererSettings.activeScalarDatasetGroup();
+    if ( datasetGroupIndex >= 0 )
+      mSymbol.setColorRampShader( rendererSettings.scalarSettings( datasetGroupIndex ).colorRampShader() );
+  }
+  QgsMesh3dMaterial *material = new QgsMesh3dMaterial( layer(), mMapSettings.temporalRange(), mMapSettings.origin(), mSymbol, QgsMesh3dMaterial::ScalarDataSet );
+  addComponent( material );
 }
 
 QgsMesh3dTerrainTileEntity::QgsMesh3dTerrainTileEntity( const Qgs3DMapSettings &map,
-    const QgsTriangularMesh triangularMesh,
-    const QgsRectangle &extent,
+    QgsMeshLayer *meshLayer,
     const QgsMesh3DSymbol &symbol,
     QgsChunkNodeId nodeId,
     Qt3DCore::QNode *parent ):
-  QgsTerrainTileEntity( nodeId, parent ),
-  mExtent( extent ),
-  mSymbol( symbol ),
-  mMapSettings( map ),
-  mTriangularMesh( triangularMesh )
+  QgsMesh3dEntity( map, meshLayer, symbol ),
+  QgsTerrainTileEntity( nodeId, parent )
 {}
-
-void QgsMesh3dTerrainTileEntity::build()
-{
-  buildGeometry();
-  applyMaterial();
-}
 
 void QgsMesh3dTerrainTileEntity::buildGeometry()
 {
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
 
-  mesh->setGeometry( new QgsMesh3dGeometry( mTriangularMesh, mMapSettings.origin(), mExtent, mSymbol.verticaleScale(), mesh ) );
+  if ( !layer() )
+    return;
+
+  mesh->setGeometry( new QgsMeshTerrain3dGeometry( layer(), mMapSettings.origin(), mSymbol, mesh ) );
   addComponent( mesh );
 }
 
 void QgsMesh3dTerrainTileEntity::applyMaterial()
 {
-  mMaterial = new QgsMesh3dMaterial( mSymbol );
-  addComponent( mMaterial );
+  QgsMesh3dMaterial *material = new QgsMesh3dMaterial(
+    layer(), mMapSettings.temporalRange(),
+    mMapSettings.origin(),
+    mSymbol,
+    QgsMesh3dMaterial::ZValue );
+  addComponent( material );
+}
+
+QgsMeshLayer *QgsMesh3dEntity::layer() const
+{
+  return qobject_cast<QgsMeshLayer *>( mLayerRef.layer.data() );
 }

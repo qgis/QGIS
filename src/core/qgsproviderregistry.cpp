@@ -30,6 +30,7 @@
 #include "qgsmessagelog.h"
 #include "qgsprovidermetadata.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectortileprovidermetadata.h"
 #include "qgsproject.h"
 #include "providers/memory/qgsmemoryprovider.h"
 #include "providers/gdal/qgsgdalprovider.h"
@@ -66,9 +67,10 @@ QgsProviderRegistry *QgsProviderRegistry::instance( const QString &pluginPath )
   without accidentally adding a null meta data item to the metadata map.
 */
 static
-QgsProviderMetadata *findMetadata_( QgsProviderRegistry::Providers const &metaData,
-                                    QString const &providerKey )
+QgsProviderMetadata *findMetadata_( const QgsProviderRegistry::Providers &metaData,
+                                    const QString &providerKey )
 {
+  // first do case-sensitive match
   QgsProviderRegistry::Providers::const_iterator i =
     metaData.find( providerKey );
 
@@ -77,8 +79,15 @@ QgsProviderMetadata *findMetadata_( QgsProviderRegistry::Providers const &metaDa
     return i->second;
   }
 
+  // fallback to case-insensitive match
+  for ( auto it = metaData.begin(); it != metaData.end(); ++it )
+  {
+    if ( providerKey.compare( it->first, Qt::CaseInsensitive ) == 0 )
+      return it->second;
+  }
+
   return nullptr;
-} // findMetadata_
+}
 
 QgsProviderRegistry::QgsProviderRegistry( const QString &pluginPath )
 {
@@ -98,7 +107,6 @@ QgsProviderRegistry::QgsProviderRegistry( const QString &pluginPath )
   init();
 }
 
-
 void QgsProviderRegistry::init()
 {
   // add static providers
@@ -108,6 +116,8 @@ void QgsProviderRegistry::init()
   Q_NOWARN_DEPRECATED_POP
   mProviders[ QgsGdalProvider::providerKey() ] = new QgsGdalProviderMetadata();
   mProviders[ QgsOgrProvider::providerKey() ] = new QgsOgrProviderMetadata();
+  QgsProviderMetadata *vt = new QgsVectorTileProviderMetadata();
+  mProviders[ vt->key() ] = vt;
 #ifdef HAVE_STATIC_PROVIDERS
   mProviders[ QgsWmsProvider::providerKey() ] = new QgsWmsProviderMetadata();
   mProviders[ QgsPostgresProvider::providerKey() ] = new QgsPostgresProviderMetadata();
@@ -125,7 +135,7 @@ void QgsProviderRegistry::init()
 #if defined(Q_OS_WIN) || defined(__CYGWIN__)
   mLibraryDirectory.setNameFilters( QStringList( "*.dll" ) );
 #elif defined(ANDROID)
-  mLibraryDirectory.setNameFilters( QStringList( "*provider.so" ) );
+  mLibraryDirectory.setNameFilters( QStringList( "*provider*.so" ) );
 #else
   mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*.so" ) ) );
 #endif
@@ -568,7 +578,7 @@ QWidget *QgsProviderRegistry::createSelectionWidget( const QString &providerKey,
   Q_UNUSED( parent );
   Q_UNUSED( fl );
   Q_UNUSED( widgetMode );
-  QgsDebugMsg( "deprecated call - use QgsGui::providerGuiRegistry()->sourceSelectProviders(providerKey)[0]->createDataSourceWidget() instead" );
+  QgsDebugMsg( "deprecated call - use QgsGui::sourceSelectProviderRegistry()->createDataSourceWidget() instead" );
   return nullptr;
 }
 

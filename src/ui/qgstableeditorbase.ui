@@ -100,6 +100,8 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="mActionImportFromClipboard"/>
+    <addaction name="separator"/>
     <addaction name="mActionClose"/>
    </widget>
    <addaction name="menuFile"/>
@@ -159,6 +161,11 @@
   <action name="mActionSelectColumn">
    <property name="text">
     <string>Select Column</string>
+   </property>
+  </action>
+  <action name="mActionImportFromClipboard">
+   <property name="text">
+    <string>Import Content from Clipboard</string>
    </property>
   </action>
   <action name="mActionClose">

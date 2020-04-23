@@ -111,6 +111,9 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     //! Gets the view mode for the dual view
     QgsDualView::ViewMode viewMode() {return mViewMode;}
 
+    /**
+     * Sets the \a relation and the \a feature
+     */
     void setRelationFeature( const QgsRelation &relation, const QgsFeature &feature );
 
     /**
@@ -124,9 +127,23 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
      */
     void setRelations( const QgsRelation &relation, const QgsRelation &nmrelation );
 
-    void setFeature( const QgsFeature &feature );
+    /**
+     * Sets the \a feature being edited and updates the UI unless \a update is set to FALSE
+     */
+    void setFeature( const QgsFeature &feature, bool update = true );
 
+    /**
+     * Sets the editor \a context
+     * \note if context cadDockWidget is null, it won't be possible to digitize
+     * the geometry of a referencing feature from this widget
+     */
     void setEditorContext( const QgsAttributeEditorContext &context );
+
+    /**
+     * Returns the attribute editor context.
+     * \since QGIS 3.14
+     */
+    QgsAttributeEditorContext editorContext( ) const;
 
     /**
      * The feature selection manager is responsible for the selected features
@@ -175,6 +192,36 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
      * \since QGIS 2.18
      */
     void setShowUnlinkButton( bool showUnlinkButton );
+
+    /**
+     * Determines if the "Save child layer edits" button should be shown
+     *
+     * \since QGIS 3.14
+     */
+    void setShowSaveChildEditsButton( bool showChildEdits );
+
+    /**
+     * Determines if the "Save child layer edits" button should be shown
+     *
+     * \since QGIS 3.14
+     */
+    bool showSaveChildEditsButton() const;
+
+    /**
+     * Returns the widget's current feature
+     *
+     * \since QGIS 3.14
+     */
+    QgsFeature feature() const;
+
+  public slots:
+
+    /**
+     * Called when an \a attribute value in the parent widget has changed to \a newValue
+     *
+     * \since QGIS 3.14
+     */
+    void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
 
   private slots:
     void setViewMode( int mode ) {setViewMode( static_cast<QgsDualView::ViewMode>( mode ) );}

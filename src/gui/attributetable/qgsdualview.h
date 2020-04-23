@@ -157,8 +157,17 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      *
      * \param filteredFeatures  A list of feature ids
      *
+     * \deprecated since filterFeatures is handled in the attribute filter model itself
+    */
+    Q_DECL_DEPRECATED void setFilteredFeatures( const QgsFeatureIds &filteredFeatures );
+
+    /**
+     * Sets the expression and Updates the filtered features in the filter model.
+     * It is called when the filter expression changed.
+     *
+     * \since QGIS 3.10.3
      */
-    void setFilteredFeatures( const QgsFeatureIds &filteredFeatures );
+    void filterFeatures( const QgsExpression &filterExpression, const QgsExpressionContext &context );
 
     /**
      * Gets a list of currently visible feature ids.
@@ -258,6 +267,16 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * \since QGIS 3.0
      */
     void cancelProgress( );
+
+    /**
+     * Called in embedded forms when an \a attribute \a value in the parent form has changed.
+     *
+     * Notify the form widgets that something has changed in case they
+     * have filter expression that depend on the parent form scope.
+     *
+     * \since QGIS 3.14
+     */
+    void parentFormValueChanged( const QString &attribute, const QVariant &value );
 
   signals:
 

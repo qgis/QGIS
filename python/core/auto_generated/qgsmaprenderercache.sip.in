@@ -93,6 +93,13 @@ Removes an image from the cache with matching ``cacheKey``.
 .. seealso:: :py:func:`clear`
 %End
 
+    void invalidateCacheForLayer( QgsMapLayer *layer );
+%Docstring
+Invalidates cached images which relate to the specified map ``layer``.
+
+.. versionadded:: 3.14
+%End
+
 };
 
 

@@ -79,7 +79,7 @@ class TestQgsTaskManager(unittest.TestCase):
         task = QgsTask.fromFunction('test task', run, 20)
         QgsApplication.taskManager().addTask(task)
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
-            pass
+            QCoreApplication.processEvents()
 
         self.assertEqual(task.returned_values, 20)
         self.assertFalse(task.exception)
@@ -89,7 +89,7 @@ class TestQgsTaskManager(unittest.TestCase):
         bad_task = QgsTask.fromFunction('test task2', run, None)
         QgsApplication.taskManager().addTask(bad_task)
         while bad_task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
-            pass
+            QCoreApplication.processEvents()
 
         self.assertFalse(bad_task.returned_values)
         self.assertTrue(bad_task.exception)
@@ -109,7 +109,7 @@ class TestQgsTaskManager(unittest.TestCase):
         task = QgsTask.fromFunction('test task3', run_with_kwargs, result=5, password=1)
         QgsApplication.taskManager().addTask(task)
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
-            pass
+            QCoreApplication.processEvents()
 
         self.assertEqual(task.returned_values, 5)
         self.assertFalse(task.exception)
@@ -120,11 +120,11 @@ class TestQgsTaskManager(unittest.TestCase):
         bad_task = QgsTask.fromFunction('test task4', cancelable)
         QgsApplication.taskManager().addTask(bad_task)
         while bad_task.status() != QgsTask.Running:
-            pass
+            QCoreApplication.processEvents()
 
         bad_task.cancel()
         while bad_task.status() == QgsTask.Running:
-            pass
+            QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
 
@@ -136,7 +136,7 @@ class TestQgsTaskManager(unittest.TestCase):
         task = QgsTask.fromFunction('test task5', progress_function)
         QgsApplication.taskManager().addTask(task)
         while task.status() != QgsTask.Running:
-            pass
+            QCoreApplication.processEvents()
 
         # wait a fraction so that setProgress gets a chance to be called
         sleep(0.001)
@@ -145,7 +145,7 @@ class TestQgsTaskManager(unittest.TestCase):
 
         task.cancel()
         while task.status() == QgsTask.Running:
-            pass
+            QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
 
@@ -162,7 +162,7 @@ class TestQgsTaskManager(unittest.TestCase):
         task = QgsTask.fromFunction('test task', run_no_result, on_finished=finished_no_val)
         QgsApplication.taskManager().addTask(task)
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
-            pass
+            QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
 
@@ -183,7 +183,7 @@ class TestQgsTaskManager(unittest.TestCase):
         task = QgsTask.fromFunction('test task', run_fail, on_finished=finished_fail)
         QgsApplication.taskManager().addTask(task)
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
-            pass
+            QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
 
@@ -206,7 +206,7 @@ class TestQgsTaskManager(unittest.TestCase):
         QgsApplication.taskManager().addTask(task)
         task.cancel()
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
-            pass
+            QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
 
@@ -228,7 +228,7 @@ class TestQgsTaskManager(unittest.TestCase):
         task = QgsTask.fromFunction('test task', run_single_val_result, on_finished=finished_single_value_result)
         QgsApplication.taskManager().addTask(task)
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
-            pass
+            QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
 
@@ -252,7 +252,7 @@ class TestQgsTaskManager(unittest.TestCase):
         task = QgsTask.fromFunction('test task', run_multiple_val_result, on_finished=finished_multiple_value_result)
         QgsApplication.taskManager().addTask(task)
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
-            pass
+            QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
 

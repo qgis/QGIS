@@ -63,12 +63,15 @@
 #include "qgsmessagelog.h"
 #include "qgslayercapabilitiesmodel.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsprojectservervalidator.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsnumericformatwidget.h"
 #include "qgsbearingnumericformat.h"
 #include "qgsprojectdisplaysettings.h"
+#include "qgsprojecttimesettings.h"
+#include "qgstemporalutils.h"
 
 //qt includes
 #include <QInputDialog>
@@ -77,6 +80,8 @@
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QAbstractListModel>
+#include <QList>
+#include <QtCore>
 
 const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
 
@@ -119,6 +124,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( mButtonAddColor, &QToolButton::clicked, this, &QgsProjectProperties::mButtonAddColor_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectProperties::showHelp );
   connect( mCustomizeBearingFormatButton, &QPushButton::clicked, this, &QgsProjectProperties::customizeBearingFormat );
+  connect( mCalculateFromLayerButton, &QPushButton::clicked, this, &QgsProjectProperties::calculateFromLayersButton_clicked );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -228,6 +234,15 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
       mAutoTransaction->setToolTip( tr( "Layers are in edit mode. Stop edit mode on all layers to toggle transactional editing." ) );
     }
   }
+
+  // Set time settings input
+  QgsDateTimeRange range = QgsProject::instance()->timeSettings()->temporalRange();
+
+  mStartDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
+  mEndDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
+
+  mStartDateTimeEdit->setDateTime( range.begin() );
+  mEndDateTimeEdit->setDateTime( range.end() );
 
   mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
   title( QgsProject::instance()->title() );
@@ -1016,6 +1031,12 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->setAutoTransaction( mAutoTransaction->isChecked() );
   QgsProject::instance()->setEvaluateDefaultValues( mEvaluateDefaultValues->isChecked() );
   QgsProject::instance()->setTrustLayerMetadata( mTrustProjectCheckBox->isChecked() );
+
+  // Time settings
+  QDateTime start = mStartDateTimeEdit->dateTime();
+  QDateTime end = mEndDateTimeEdit->dateTime();
+
+  QgsProject::instance()->timeSettings()->setTemporalRange( QgsDateTimeRange( start, end ) );
 
   // set the mouse display precision method and the
   // number of decimal places for the manual option
@@ -1887,60 +1908,28 @@ void QgsProjectProperties::pbnWCSLayersDeselectAll_clicked()
 
 void QgsProjectProperties::pbnLaunchOWSChecker_clicked()
 {
+  QList<QgsProjectServerValidator::ValidationResult> validationResults;
+  bool results = QgsProjectServerValidator::validate( QgsProject::instance(), validationResults );
+
+  QString errors;
+  if ( !results )
+  {
+    for ( const QgsProjectServerValidator::ValidationResult &result : qgis::as_const( validationResults ) )
+    {
+      errors += QLatin1String( "<b>" ) % QgsProjectServerValidator::displayValidationError( result.error ) % QLatin1String( " :</b> " );
+      errors += result.identifier.toString();
+    }
+  }
+  else
+  {
+    errors += tr( "Project is valid." );
+  }
+
   QString myStyle = QgsApplication::reportStyleSheet();
+  myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
   teOWSChecker->clear();
   teOWSChecker->document()->setDefaultStyleSheet( myStyle );
-  teOWSChecker->setHtml( "<h1>" + tr( "Start checking QGIS Server" ) + "</h1>" );
-
-  QStringList owsNames, encodingMessages;
-  checkOWS( QgisApp::instance()->layerTreeView()->layerTreeModel()->rootGroup(), owsNames, encodingMessages );
-
-  QStringList duplicateNames, regExpMessages;
-  QRegExp snRegExp = QgsApplication::shortNameRegExp();
-  const auto constOwsNames = owsNames;
-  for ( const QString &name : constOwsNames )
-  {
-    if ( !snRegExp.exactMatch( name ) )
-      regExpMessages << tr( "Use short name for \"%1\"" ).arg( name );
-    if ( duplicateNames.contains( name ) )
-      continue;
-    if ( owsNames.count( name ) > 1 )
-      duplicateNames << name;
-  }
-
-  if ( !duplicateNames.empty() )
-  {
-    QString nameMessage = "<h1>" + tr( "Some layers and groups have the same name or short name" ) + "</h1>";
-    nameMessage += "<h2>" + tr( "Duplicate names:" ) + "</h2>";
-    nameMessage += duplicateNames.join( QStringLiteral( "</li><li>" ) ) + "</li></ul>";
-    teOWSChecker->setHtml( teOWSChecker->toHtml() + nameMessage );
-  }
-  else
-  {
-    teOWSChecker->setHtml( teOWSChecker->toHtml() + "<h1>" + tr( "All names and short names of layer and group are unique" ) + "</h1>" );
-  }
-
-  if ( !regExpMessages.empty() )
-  {
-    QString encodingMessage = "<h1>" + tr( "Some layer short names have to be updated:" ) + "</h1><ul><li>" + regExpMessages.join( QStringLiteral( "</li><li>" ) ) + "</li></ul>";
-    teOWSChecker->setHtml( teOWSChecker->toHtml() + encodingMessage );
-  }
-  else
-  {
-    teOWSChecker->setHtml( teOWSChecker->toHtml() + "<h1>" + tr( "All layer short names are well formed" ) + "</h1>" );
-  }
-
-  if ( !encodingMessages.empty() )
-  {
-    QString encodingMessage = "<h1>" + tr( "Some layer encodings are not set:" ) + "</h1><ul><li>" + encodingMessages.join( QStringLiteral( "</li><li>" ) ) + "</li></ul>";
-    teOWSChecker->setHtml( teOWSChecker->toHtml() + encodingMessage );
-  }
-  else
-  {
-    teOWSChecker->setHtml( teOWSChecker->toHtml() + "<h1>" + tr( "All layer encodings are set" ) + "</h1>" );
-  }
-
-  teOWSChecker->setHtml( teOWSChecker->toHtml() + "<h1>" + tr( "Start checking QGIS Server" ) + "</h1>" );
+  teOWSChecker->setHtml( errors );
 }
 
 void QgsProjectProperties::pbnAddScale_clicked()
@@ -2303,44 +2292,6 @@ void QgsProjectProperties::addWmtsGrid( const QString &crsStr )
   twWmtsGrids->blockSignals( false );
 }
 
-void QgsProjectProperties::checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages )
-{
-  QList< QgsLayerTreeNode * > treeGroupChildren = treeGroup->children();
-  for ( int i = 0; i < treeGroupChildren.size(); ++i )
-  {
-    QgsLayerTreeNode *treeNode = treeGroupChildren.at( i );
-    if ( treeNode->nodeType() == QgsLayerTreeNode::NodeGroup )
-    {
-      QgsLayerTreeGroup *treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
-      QString shortName = treeGroupChild->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
-      if ( shortName.isEmpty() )
-        owsNames << treeGroupChild->name();
-      else
-        owsNames << shortName;
-      checkOWS( treeGroupChild, owsNames, encodingMessages );
-    }
-    else
-    {
-      QgsLayerTreeLayer *treeLayer = static_cast<QgsLayerTreeLayer *>( treeNode );
-      QgsMapLayer *l = treeLayer->layer();
-      if ( l )
-      {
-        QString shortName = l->shortName();
-        if ( shortName.isEmpty() )
-          owsNames << l->name();
-        else
-          owsNames << shortName;
-        if ( l->type() == QgsMapLayerType::VectorLayer )
-        {
-          QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( l );
-          if ( vl->dataProvider()->encoding() == QLatin1String( "System" ) )
-            encodingMessages << tr( "Update layer \"%1\" encoding" ).arg( l->name() );
-        }
-      }
-    }
-  }
-}
-
 void QgsProjectProperties::populateEllipsoidList()
 {
   //
@@ -2473,6 +2424,13 @@ void QgsProjectProperties::mButtonAddColor_clicked()
   activateWindow();
 
   mTreeProjectColors->addColor( newColor, QgsSymbolLayerUtils::colorToName( newColor ) );
+}
+
+void QgsProjectProperties::calculateFromLayersButton_clicked()
+{
+  const QgsDateTimeRange range = QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject::instance() );
+  mStartDateTimeEdit->setDateTime( range.begin() );
+  mEndDateTimeEdit->setDateTime( range.end() );
 }
 
 QListWidgetItem *QgsProjectProperties::addScaleToScaleList( const QString &newScale )

@@ -26,6 +26,7 @@
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerrenderer.h"
+#include "qgsmeshlayertemporalproperties.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshtimesettings.h"
 #include "qgspainting.h"
@@ -35,42 +36,103 @@
 #include "qgstriangularmesh.h"
 #include "qgsmesh3daveraging.h"
 
-
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
                             const QString &providerKey,
                             const QgsMeshLayer::LayerOptions &options )
-  : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath )
+  : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath ),
+    mTemporalProperties( new QgsMeshLayerTemporalProperties( this ) )
 {
   mShouldValidateCrs = !options.skipCrsValidation;
 
   setProviderType( providerKey );
   // if we’re given a provider type, try to create and bind one to this layer
+  bool ok = false;
   if ( !meshLayerPath.isEmpty() && !providerKey.isEmpty() )
   {
     QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
-    setDataProvider( providerKey, providerOptions );
+    ok = setDataProvider( providerKey, providerOptions );
   }
 
-  setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
-  setDefaultRendererSettings();
+  if ( ok )
+  {
+    setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
+    setDefaultRendererSettings();
+
+    if ( mDataProvider )
+      mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
+  }
 }
 
 
 void QgsMeshLayer::setDefaultRendererSettings()
 {
+  QgsMeshRendererMeshSettings meshSettings;
   if ( mDataProvider && mDataProvider->datasetGroupCount() > 0 )
   {
-    // show data from the first dataset group
-    mRendererSettings.setActiveScalarDataset( QgsMeshDatasetIndex( 0, 0 ) );
+    // Show data from the first dataset group
+    mRendererSettings.setActiveScalarDatasetGroup( 0 );
+    // If the first dataset group has nan min/max, display the mesh to avoid nothing displayed
+    QgsMeshDatasetGroupMetadata meta = mDataProvider->datasetGroupMetadata( 0 );
+    if ( meta.maximum() == std::numeric_limits<double>::quiet_NaN() &&
+         meta.minimum() == std::numeric_limits<double>::quiet_NaN() )
+      meshSettings.setEnabled( true );
+
+    // If the mesh is non temporal, set the static scalar dataset
+    if ( !mDataProvider->temporalCapabilities()->hasTemporalCapabilities() )
+      setStaticScalarDatasetIndex( QgsMeshDatasetIndex( 0, 0 ) );
   }
   else
   {
     // show at least the mesh by default
-    QgsMeshRendererMeshSettings meshSettings;
     meshSettings.setEnabled( true );
-    mRendererSettings.setNativeMeshSettings( meshSettings );
   }
+  mRendererSettings.setNativeMeshSettings( meshSettings );
+
+  // Sets default resample method for scalar dataset
+  if ( !mDataProvider )
+    return;
+  for ( int i = 0; i < mDataProvider->datasetGroupCount(); ++i )
+  {
+    QgsMeshDatasetGroupMetadata meta = mDataProvider->datasetGroupMetadata( i );
+    QgsMeshRendererScalarSettings scalarSettings = mRendererSettings.scalarSettings( i );
+    switch ( meta.dataType() )
+    {
+      case QgsMeshDatasetGroupMetadata::DataOnFaces:
+      case QgsMeshDatasetGroupMetadata::DataOnVolumes: // data on volumes are averaged to 2D data on faces
+        scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::NeighbourAverage );
+        break;
+      case QgsMeshDatasetGroupMetadata::DataOnVertices:
+        scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::None );
+        break;
+      case QgsMeshDatasetGroupMetadata::DataOnEdges:
+        break;
+    }
+    mRendererSettings.setScalarSettings( i, scalarSettings );
+  }
+
+}
+
+void QgsMeshLayer::createSimplifiedMeshes()
+{
+  if ( mSimplificationSettings.isEnabled() && !hasSimplifiedMeshes() )
+  {
+    double reductionFactor = mSimplificationSettings.reductionFactor();
+
+    QVector<QgsTriangularMesh *> simplifyMeshes =
+      mTriangularMeshes[0]->simplifyMesh( reductionFactor );
+
+    for ( int i = 0; i < simplifyMeshes.count() ; ++i )
+    {
+      mTriangularMeshes.emplace_back( simplifyMeshes[i] );
+    }
+  }
+}
+
+bool QgsMeshLayer::hasSimplifiedMeshes() const
+{
+  //First mesh is the base mesh, so if size>1, there is no simplified meshes
+  return ( mTriangularMeshes.size() > 1 );
 }
 
 QgsMeshLayer::~QgsMeshLayer()
@@ -127,14 +189,38 @@ const QgsMesh *QgsMeshLayer::nativeMesh() const
   return mNativeMesh.get();
 }
 
-QgsTriangularMesh *QgsMeshLayer::triangularMesh()
+QgsTriangularMesh *QgsMeshLayer::triangularMesh( double minimumTriangleSize ) const
 {
-  return mTriangularMesh.get();
+  for ( const std::unique_ptr<QgsTriangularMesh> &lod : mTriangularMeshes )
+  {
+    if ( lod && lod->averageTriangleSize() > minimumTriangleSize )
+      return lod.get();
+  }
+
+  if ( !mTriangularMeshes.empty() )
+    return mTriangularMeshes.back().get();
+  else
+    return nullptr;
 }
 
-const QgsTriangularMesh *QgsMeshLayer::triangularMesh() const
+void  QgsMeshLayer::updateTriangularMesh( const QgsCoordinateTransform &transform )
 {
-  return mTriangularMesh.get();
+  // Native mesh
+  if ( !mNativeMesh )
+  {
+    // lazy loading of mesh data
+    fillNativeMesh();
+  }
+
+  // Triangular mesh
+  if ( mTriangularMeshes.empty() )
+  {
+    QgsTriangularMesh *baseMesh = new QgsTriangularMesh;
+    mTriangularMeshes.emplace_back( baseMesh );
+  }
+
+  if ( mTriangularMeshes[0].get()->update( mNativeMesh.get(), transform ) )
+    mTriangularMeshes.resize( 1 ); //if the base triangular mesh is effectivly updated, remove simplified meshes
 }
 
 QgsMeshLayerRendererCache *QgsMeshLayer::rendererCache()
@@ -167,32 +253,45 @@ void QgsMeshLayer::setTimeSettings( const QgsMeshTimeSettings &settings )
 
 QString QgsMeshLayer::formatTime( double hours )
 {
-  return QgsMeshLayerUtils::formatTime( hours, mTimeSettings );
+  if ( dataProvider() && dataProvider()->temporalCapabilities()->hasReferenceTime() )
+    return QgsMeshLayerUtils::formatTime( hours, temporalProperties()->referenceTime(), mTimeSettings );
+  else
+    return QgsMeshLayerUtils::formatTime( hours, QDateTime(), mTimeSettings );
 }
 
 QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const
 {
   QgsMeshDatasetValue value;
 
-  if ( mTriangularMesh && dataProvider() && dataProvider()->isValid() && index.isValid() )
+  const QgsTriangularMesh *mesh = triangularMesh();
+
+  if ( mesh && dataProvider() && dataProvider()->isValid() && index.isValid() )
   {
-    int faceIndex = mTriangularMesh->faceIndexForPoint( point ) ;
+    if ( dataProvider()->contains( QgsMesh::ElementType::Edge ) )
+    {
+      // Identify for edges not implemented yet
+      return value;
+    }
+    int faceIndex = mesh->faceIndexForPoint( point ) ;
     if ( faceIndex >= 0 )
     {
-      int nativeFaceIndex = mTriangularMesh->trianglesToNativeFaces().at( faceIndex );
+      int nativeFaceIndex = mesh->trianglesToNativeFaces().at( faceIndex );
       const QgsMeshDatasetGroupMetadata::DataType dataType = dataProvider()->datasetGroupMetadata( index ).dataType();
       if ( dataProvider()->isFaceActive( index, nativeFaceIndex ) )
       {
         switch ( dataType )
         {
           case QgsMeshDatasetGroupMetadata::DataOnFaces:
+          {
             value = dataProvider()->datasetValue( index, nativeFaceIndex );
-            break;
+          }
+          break;
+
           case QgsMeshDatasetGroupMetadata::DataOnVertices:
           {
-            const QgsMeshFace &face = mTriangularMesh->triangles()[faceIndex];
+            const QgsMeshFace &face = mesh->triangles()[faceIndex];
             const int v1 = face[0], v2 = face[1], v3 = face[2];
-            const QgsPoint p1 = mTriangularMesh->vertices()[v1], p2 = mTriangularMesh->vertices()[v2], p3 = mTriangularMesh->vertices()[v3];
+            const QgsPoint p1 = mesh->vertices()[v1], p2 = mesh->vertices()[v2], p3 = mesh->vertices()[v3];
             const QgsMeshDatasetValue val1 = dataProvider()->datasetValue( index, v1 );
             const QgsMeshDatasetValue val2 = dataProvider()->datasetValue( index, v2 );
             const QgsMeshDatasetValue val3 = dataProvider()->datasetValue( index, v3 );
@@ -205,7 +304,9 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
             value = QgsMeshDatasetValue( x, y );
           }
           break;
+
           case QgsMeshDatasetGroupMetadata::DataOnVolumes:
+          {
             const QgsMesh3dAveragingMethod *avgMethod = mRendererSettings.averagingMethod();
             if ( avgMethod )
             {
@@ -216,6 +317,10 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
                 value = block2d.value( 0 );
               }
             }
+          }
+          break;
+
+          default:
             break;
         }
       }
@@ -229,15 +334,17 @@ QgsMesh3dDataBlock QgsMeshLayer::dataset3dValue( const QgsMeshDatasetIndex &inde
 {
   QgsMesh3dDataBlock block3d;
 
-  if ( mTriangularMesh && dataProvider() && dataProvider()->isValid() && index.isValid() )
+  const QgsTriangularMesh *baseTriangularMesh = triangularMesh();
+
+  if ( baseTriangularMesh && dataProvider() && dataProvider()->isValid() && index.isValid() )
   {
     const QgsMeshDatasetGroupMetadata::DataType dataType = dataProvider()->datasetGroupMetadata( index ).dataType();
     if ( dataType == QgsMeshDatasetGroupMetadata::DataOnVolumes )
     {
-      int faceIndex = mTriangularMesh->faceIndexForPoint( point ) ;
+      int faceIndex = baseTriangularMesh->faceIndexForPoint( point ) ;
       if ( faceIndex >= 0 )
       {
-        int nativeFaceIndex = mTriangularMesh->trianglesToNativeFaces().at( faceIndex );
+        int nativeFaceIndex = baseTriangularMesh->trianglesToNativeFaces().at( faceIndex );
         block3d = dataProvider()->dataset3dValues( index, nativeFaceIndex, 1 );
       }
     }
@@ -249,6 +356,34 @@ void QgsMeshLayer::setTransformContext( const QgsCoordinateTransformContext &tra
 {
   if ( mDataProvider )
     mDataProvider->setTransformContext( transformContext );
+}
+
+QgsMeshDatasetIndex QgsMeshLayer::datasetIndexAtTime( const QgsDateTimeRange &timeRange, int datasetGroupIndex ) const
+{
+  const QDateTime layerReferenceTime = mTemporalProperties->referenceTime();
+  qint64 startTime = layerReferenceTime.msecsTo( timeRange.begin() );
+  qint64 endTime = layerReferenceTime.msecsTo( timeRange.end() );
+
+  if ( dataProvider() )
+    return dataProvider()->temporalCapabilities()->datasetIndexFromRelativeTimeRange( datasetGroupIndex, startTime, endTime );
+  else
+    return QgsMeshDatasetIndex();
+}
+
+QgsMeshDatasetIndex QgsMeshLayer::activeScalarDatasetAtTime( const QgsDateTimeRange &timeRange ) const
+{
+  if ( mTemporalProperties->isActive() )
+    return datasetIndexAtTime( timeRange, mRendererSettings.activeScalarDatasetGroup() );
+  else
+    return mStaticScalarDatasetIndex;
+}
+
+QgsMeshDatasetIndex QgsMeshLayer::activeVectorDatasetAtTime( const QgsDateTimeRange &timeRange ) const
+{
+  if ( mTemporalProperties->isActive() )
+    return datasetIndexAtTime( timeRange, mRendererSettings.activeVectorDatasetGroup() );
+  else
+    return mStaticVectorDatasetIndex;
 }
 
 void QgsMeshLayer::fillNativeMesh()
@@ -269,6 +404,52 @@ void QgsMeshLayer::onDatasetGroupsAdded( int count )
   int newDatasetGroupCount = mDataProvider->datasetGroupCount();
   for ( int i = newDatasetGroupCount - count; i < newDatasetGroupCount; ++i )
     assignDefaultStyleToDatasetGroup( i );
+
+  if ( mDataProvider )
+    temporalProperties()->setIsActive( mDataProvider->temporalCapabilities()->hasTemporalCapabilities() );
+
+}
+
+QgsMeshDatasetIndex QgsMeshLayer::staticVectorDatasetIndex() const
+{
+  return mStaticVectorDatasetIndex;
+}
+
+void QgsMeshLayer::setReferenceTime( const QDateTime &referenceTime )
+{
+  if ( dataProvider() )
+    temporalProperties()->setReferenceTime( referenceTime, dataProvider()->temporalCapabilities() );
+  else
+    temporalProperties()->setReferenceTime( referenceTime, nullptr );
+}
+
+QgsMeshDatasetIndex QgsMeshLayer::staticScalarDatasetIndex() const
+{
+  return mStaticScalarDatasetIndex;
+}
+
+void QgsMeshLayer::setStaticVectorDatasetIndex( const QgsMeshDatasetIndex &staticVectorDatasetIndex )
+{
+  mStaticVectorDatasetIndex = staticVectorDatasetIndex;
+  if ( !temporalProperties()->isActive() )
+    mRendererSettings.setActiveVectorDatasetGroup( staticVectorDatasetIndex.group() );
+}
+
+void QgsMeshLayer::setStaticScalarDatasetIndex( const QgsMeshDatasetIndex &staticScalarDatasetIndex )
+{
+  mStaticScalarDatasetIndex = staticScalarDatasetIndex;
+  if ( !temporalProperties()->isActive() )
+    mRendererSettings.setActiveScalarDatasetGroup( staticScalarDatasetIndex.group() );
+}
+
+QgsMeshSimplificationSettings QgsMeshLayer::meshSimplificationSettings() const
+{
+  return mSimplificationSettings;
+}
+
+void QgsMeshLayer::setMeshSimplificationSettings( const QgsMeshSimplificationSettings &simplifySettings )
+{
+  mSimplificationSettings = simplifySettings;
 }
 
 static QgsColorRamp *_createDefaultColorRamp()
@@ -308,22 +489,22 @@ void QgsMeshLayer::assignDefaultStyleToDatasetGroup( int groupIndex )
   scalarSettings.setClassificationMinimumMaximum( groupMin, groupMax );
   scalarSettings.setColorRampShader( fcn );
   mRendererSettings.setScalarSettings( groupIndex, scalarSettings );
+
+  if ( metadata.isVector() )
+  {
+    QgsMeshRendererVectorSettings vectorSettings;
+    vectorSettings.setColorRampShader( fcn );
+    mRendererSettings.setVectorSettings( groupIndex, vectorSettings );
+  }
 }
 
 QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &rendererContext )
 {
-  // Native mesh
-  if ( !mNativeMesh )
-  {
-    // lazy loading of mesh data
-    fillNativeMesh();
-  }
-
   // Triangular mesh
-  if ( !mTriangularMesh )
-    mTriangularMesh.reset( new QgsTriangularMesh() );
+  updateTriangularMesh( rendererContext.coordinateTransform() );
 
-  mTriangularMesh->update( mNativeMesh.get(), &rendererContext );
+  // Build overview triangular meshes if needed
+  createSimplifiedMeshes();
 
   // Cache
   if ( !mRendererCache )
@@ -346,9 +527,9 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
   if ( !elemRendererSettings.isNull() )
     mRendererSettings.readXml( elemRendererSettings );
 
-  QDomElement elemTimeSettings = elem.firstChildElement( "mesh-time-settings" );
-  if ( !elemTimeSettings.isNull() )
-    mTimeSettings.readXml( elemTimeSettings, context );
+  QDomElement elemSimplifySettings = elem.firstChildElement( "mesh-simplify-settings" );
+  if ( !elemSimplifySettings.isNull() )
+    mSimplificationSettings.readXml( elemSimplifySettings, context );
 
   // get and set the blend mode if it exists
   QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
@@ -374,8 +555,8 @@ bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &e
   QDomElement elemRendererSettings = mRendererSettings.writeXml( doc );
   elem.appendChild( elemRendererSettings );
 
-  QDomElement elemTimeSettings = mTimeSettings.writeXml( doc, context );
-  elem.appendChild( elemTimeSettings );
+  QDomElement elemSimplifySettings = mSimplificationSettings.writeXml( doc, context );
+  elem.appendChild( elemSimplifySettings );
 
   // add blend mode node
   QDomElement blendModeElement  = doc.createElement( QStringLiteral( "blendMode" ) );
@@ -384,6 +565,16 @@ bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &e
   node.appendChild( blendModeElement );
 
   return true;
+}
+
+bool QgsMeshLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
+{
+  return writeSymbology( node, doc, errorMessage, context, categories );
+}
+
+bool QgsMeshLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
+{
+  return readSymbology( node, errorMessage, context, categories );
 }
 
 QString QgsMeshLayer::decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const
@@ -453,8 +644,33 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
     }
   }
 
+  if ( mDataProvider && pkeyNode.toElement().hasAttribute( QStringLiteral( "time-unit" ) ) )
+    mDataProvider->setTemporalUnit(
+      static_cast<QgsUnitTypes::TemporalUnit>( pkeyNode.toElement().attribute( QStringLiteral( "time-unit" ) ).toInt() ) );
+
   QString errorMsg;
   readSymbology( layer_node, errorMsg, context );
+
+  // read temporal
+  temporalProperties()->readXml( layer_node.toElement(), context );
+  if ( !temporalProperties()->timeExtent().begin().isValid() )
+    temporalProperties()->setDefaultsFromDataProviderTemporalCapabilities( dataProvider()->temporalCapabilities() );
+
+
+  // read static dataset
+  QDomElement elemStaticDataset = layer_node.firstChildElement( QStringLiteral( "static-active-dataset" ) );
+  if ( elemStaticDataset.hasAttribute( QStringLiteral( "scalar" ) ) )
+  {
+    QStringList lst = elemStaticDataset.attribute( QStringLiteral( "scalar" ) ).split( QChar( ',' ) );
+    if ( lst.count() == 2 )
+      mStaticScalarDatasetIndex = QgsMeshDatasetIndex( lst[0].toInt(), lst[1].toInt() );
+  }
+  if ( elemStaticDataset.hasAttribute( QStringLiteral( "vector" ) ) )
+  {
+    QStringList lst = elemStaticDataset.attribute( QStringLiteral( "vector" ) ).split( QChar( ',' ) );
+    if ( lst.count() == 2 )
+      mStaticVectorDatasetIndex = QgsMeshDatasetIndex( lst[0].toInt(), lst[1].toInt() );
+  }
 
   return mValid; // should be true if read successfully
 }
@@ -479,6 +695,7 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
     QDomText providerText = document.createTextNode( providerType() );
     provider.appendChild( providerText );
     layer_node.appendChild( provider );
+    provider.setAttribute( QStringLiteral( "time-unit" ), mDataProvider->temporalCapabilities()->temporalUnit() );
 
     const QStringList extraDatasetUris = mDataProvider->extraDatasets();
     QDomElement elemExtraDatasets = document.createElement( QStringLiteral( "extra-datasets" ) );
@@ -491,6 +708,15 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
     }
     layer_node.appendChild( elemExtraDatasets );
   }
+  // write temporal
+  mTemporalProperties->writeXml( mapLayerNode, document, context );
+
+  QDomElement elemStaticDataset = document.createElement( QStringLiteral( "static-active-dataset" ) );
+  if ( mStaticScalarDatasetIndex.isValid() )
+    elemStaticDataset.setAttribute( QStringLiteral( "scalar" ), QStringLiteral( "%1,%2" ).arg( mStaticScalarDatasetIndex.group() ).arg( mStaticScalarDatasetIndex.dataset() ) );
+  if ( mStaticVectorDatasetIndex.isValid() )
+    elemStaticDataset.setAttribute( QStringLiteral( "vector" ), QStringLiteral( "%1,%2" ).arg( mStaticVectorDatasetIndex.group() ).arg( mStaticVectorDatasetIndex.dataset() ) );
+  layer_node.appendChild( elemStaticDataset );
 
   // renderer specific settings
   QString errorMsg;
@@ -501,7 +727,6 @@ void QgsMeshLayer::reload()
 {
   if ( mDataProvider && mDataProvider->isValid() )
   {
-
     mDataProvider->reloadData();
 
     //reload the mesh structure
@@ -510,12 +735,20 @@ void QgsMeshLayer::reload()
 
     dataProvider()->populateMesh( mNativeMesh.get() );
 
-    //clear the TriangularMesh
-    mTriangularMesh.reset( new QgsTriangularMesh() );
+    //clear the TriangularMeshes
+    mTriangularMeshes.clear();
 
     //clear the rendererCache
     mRendererCache.reset( new QgsMeshLayerRendererCache() );
   }
+}
+
+QStringList QgsMeshLayer::subLayers() const
+{
+  if ( mDataProvider )
+    return mDataProvider->subLayers();
+  else
+    return QStringList();
 }
 
 bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
@@ -550,13 +783,6 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
     mDataSource = mDataSource + QStringLiteral( "&uid=%1" ).arg( QUuid::createUuid().toString() );
   }
 
-  QDateTime referenceTime = QgsMeshLayerUtils::firstReferenceTime( this );
-  if ( referenceTime.isValid() )
-  {
-    mTimeSettings.setAbsoluteTimeReferenceTime( referenceTime );
-    mTimeSettings.setUseAbsoluteTime( true );
-  }
-
   for ( int i = 0; i < mDataProvider->datasetGroupCount(); ++i )
     assignDefaultStyleToDatasetGroup( i );
 
@@ -564,4 +790,9 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
   connect( mDataProvider, &QgsMeshDataProvider::datasetGroupsAdded, this, &QgsMeshLayer::onDatasetGroupsAdded );
 
   return true;
+}
+
+QgsMeshLayerTemporalProperties *QgsMeshLayer::temporalProperties()
+{
+  return  mTemporalProperties;
 }

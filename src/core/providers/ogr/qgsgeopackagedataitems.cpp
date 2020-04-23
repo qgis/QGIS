@@ -46,6 +46,11 @@ QString QgsGeoPackageDataItemProvider::name()
   return QStringLiteral( "GPKG" );
 }
 
+QString QgsGeoPackageDataItemProvider::dataProviderKey() const
+{
+  return QStringLiteral( "ogr" );
+}
+
 int QgsGeoPackageDataItemProvider::capabilities() const
 {
   return QgsDataProvider::Database;
@@ -62,7 +67,7 @@ QgsDataItem *QgsGeoPackageDataItemProvider::createDataItem( const QString &path,
 }
 
 QgsGeoPackageRootItem::QgsGeoPackageRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "GPKG" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mGeoPackage.svg" );
@@ -76,7 +81,7 @@ QVector<QgsDataItem *> QgsGeoPackageRootItem::createChildren()
   for ( const QString &connName : connList )
   {
     QgsOgrDbConnection connection( connName, QStringLiteral( "GPKG" ) );
-    QgsDataItem *conn = new QgsGeoPackageConnectionItem( this, connection.name(), connection.path() );
+    QgsDataItem *conn = new QgsGeoPackageConnectionItem( this, connection.name(), mPath + '/' + connection.path() );
 
     connections.append( conn );
   }
@@ -97,9 +102,9 @@ void QgsGeoPackageRootItem::newConnection()
 }
 
 QgsGeoPackageCollectionItem::QgsGeoPackageCollectionItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "GPKG" ) )
 {
-  mToolTip = path;
+  mToolTip = QString( path ).remove( QLatin1String( "gpkg:/" ) );
   mCapabilities |= Collapse;
 }
 
@@ -107,7 +112,7 @@ QgsGeoPackageCollectionItem::QgsGeoPackageCollectionItem( QgsDataItem *parent, c
 QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
 {
   QVector<QgsDataItem *> children;
-  const auto layers = QgsOgrLayerItem::subLayers( mPath, QStringLiteral( "GPKG" ) );
+  const auto layers = QgsOgrLayerItem::subLayers( mPath.remove( QLatin1String( "gpkg:/" ) ), QStringLiteral( "GPKG" ) );
   for ( const QgsOgrDbLayerInfo *info : layers )
   {
     if ( info->layerType() == QgsLayerItem::LayerType::Raster )
@@ -367,3 +372,9 @@ bool QgsGeoPackageVectorLayerItem::executeDeleteLayer( QString &errCause )
 }
 
 ///@endcond
+
+
+bool QgsGeoPackageCollectionItem::layerCollection() const
+{
+  return true;
+}

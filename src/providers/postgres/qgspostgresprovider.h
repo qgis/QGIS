@@ -192,6 +192,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
     bool supportsSubsetString() const override { return true; }
     QgsVectorDataProvider::Capabilities capabilities() const override;
+    SpatialIndexPresence hasSpatialIndex() const override;
 
     /**
      * The Postgres provider does its own transforms so we return
@@ -503,7 +504,7 @@ class QgsPostgresUtils
 
     static QString andWhereClauses( const QString &c1, const QString &c2 );
 
-    static const qint64 INT32PK_OFFSET = 4294967296;
+    static const qint64 INT32PK_OFFSET = 4294967296; // 2^32
 
     // We shift negative 32bit integers to above the max 32bit
     // positive integer to support the whole range of int32 values
@@ -583,6 +584,7 @@ class QgsPostgresProviderMetadata final: public QgsProviderMetadata
     void initProvider() override;
     void cleanupProvider() override;
     QVariantMap decodeUri( const QString &uri ) override;
+    QString encodeUri( const QVariantMap &parts ) override;
 };
 
 // clazy:excludeall=qstring-allocations

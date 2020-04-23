@@ -55,6 +55,16 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
+    /**
+     * Returns filtered list of active legend nodes attached to a particular layer node
+     * (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is true)
+     * \note Parameter skipNodeEmbeddedInParent added in QGIS 2.18
+     * \note Not available in Python bindings
+     * \see layerOriginalLegendNodes()
+     * \since QGIS 3.10
+     */
+    QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false ) const SIP_SKIP;
+
   signals:
 
     /**
@@ -72,15 +82,6 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
     void forceRefresh();
 
   private:
-
-    /**
-     * Returns filtered list of active legend nodes attached to a particular layer node
-     * (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is true)
-     * \note Parameter skipNodeEmbeddedInParent added in QGIS 2.18
-     * \see layerOriginalLegendNodes()
-     * \since QGIS 3.10
-     */
-    QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false ) const;
 
     /**
      * Pointer to the QgsLayoutItemLegend class that made the model.
@@ -477,6 +478,15 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     QgsLayoutItemMap *linkedMap() const { return mMap; }
 
     /**
+     * Returns the name of the theme currently linked to the legend.
+     *
+     * This usually equates to the theme rendered in the linkedMap().
+     *
+     * \since QGIS 3.14
+     */
+    QString themeName() const;
+
+    /**
      * Updates the model and all legend entries.
      */
     void updateLegend();
@@ -497,6 +507,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     QgsExpressionContext createExpressionContext() const override;
     ExportLayerBehavior exportLayerBehavior() const override;
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
   public slots:
 
@@ -518,6 +529,8 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     //! update legend in case style of associated map has changed
     void mapLayerStyleOverridesChanged();
+    //! update legend in case theme of associated map has changed
+    void mapThemeChanged( const QString &theme );
 
     //! react to atlas
     void onAtlasEnded();
@@ -533,6 +546,8 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void setCustomLayerTree( QgsLayerTree *rootGroup );
 
     void setupMapConnections( QgsLayoutItemMap *map, bool connect = true );
+
+    void setModelStyleOverrides( const QMap<QString, QString> &overrides );
 
     std::unique_ptr< QgsLegendModel > mLegendModel;
     std::unique_ptr< QgsLayerTreeGroup > mCustomLayerTree;
@@ -566,6 +581,9 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     //! Will be TRUE if the legend should be resized automatically to fit contents
     bool mSizeToContents = true;
+
+    //! Name of theme for legend -- usually the theme associated with the linked map.
+    QString mThemeName;
 
     friend class QgsCompositionConverter;
 

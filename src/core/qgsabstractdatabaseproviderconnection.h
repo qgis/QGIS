@@ -57,6 +57,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       Raster = 1 << 3,            //!< Raster table
       View = 1 << 4,              //!< View table
       MaterializedView = 1 << 5,  //!< Materialized view table
+      Foreign = 1 << 6,           //!< Foreign data wrapper
     };
 
     Q_ENUMS( TableFlag )
@@ -141,7 +142,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          * Returns the default name for the table entry
          *
          * It is usually the table name but in case there are multiple geometry
-         * columns, the geometry column name is appendend to the table name.
+         * columns, the geometry column name is appended to the table name.
          * \see geometryColumnCount()
          */
         QString defaultName() const;
@@ -247,6 +248,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          */
         int maxCoordinateDimensions() const;
 
+        bool operator==( const QgsAbstractDatabaseProviderConnection::TableProperty &other ) const;
 
       private:
 
@@ -288,6 +290,9 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       SqlLayers = 1 << 13,          //!< Can create vector layers from SQL SELECT queries
       TableExists = 1 << 14,        //!< Can check if table exists
       Spatial = 1 << 15,            //!< The connection supports spatial tables
+      CreateSpatialIndex = 1 << 16, //!< The connection can create spatial indices
+      SpatialIndexExists = 1 << 17, //!< The connection can determine if a spatial index exists
+      DeleteSpatialIndex = 1 << 18, //!< The connection can delete spatial indices for tables
     };
 
     Q_ENUM( Capability )
@@ -326,7 +331,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual QString tableUri( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Creates an empty table with \a name in the given \a schema (schema is ignored  if not supported by the backend).
+     * Creates an empty table with \a name in the given \a schema (schema is ignored if not supported by the backend).
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \throws QgsProviderConnectionException
      */
@@ -348,7 +353,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual void dropVectorTable( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Drops a raster table with given \a schema (schema is ignored  if not supported by the backend) and \a name.
+     * Drops a raster table with given \a schema (schema is ignored if not supported by the backend) and \a name.
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \note it is responsibility of the caller to handle open layers and registry entries.
      * \throws QgsProviderConnectionException
@@ -356,7 +361,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual void dropRasterTable( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Renames a vector or aspatial table with given \a schema (schema is ignored  if not supported by the backend) and \a name.
+     * Renames a vector or aspatial table with given \a schema (schema is ignored if not supported by the backend) and \a name.
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \note it is responsibility of the caller to handle open layers and registry entries.
      * \throws QgsProviderConnectionException
@@ -364,7 +369,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Renames a raster table with given \a schema (schema is ignored  if not supported by the backend) and \a name.
+     * Renames a raster table with given \a schema (schema is ignored if not supported by the backend) and \a name.
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \note it is responsibility of the caller to handle open layers and registry entries.
      * \throws QgsProviderConnectionException
@@ -403,11 +408,53 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual QList<QList<QVariant>> executeSql( const QString &sql ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Vacuum the database table with given \a schema and \a name (schema is ignored  if not supported by the backend).
+     * Vacuum the database table with given \a schema and \a name (schema is ignored if not supported by the backend).
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \throws QgsProviderConnectionException
      */
     virtual void vacuum( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Contains extra options relating to spatial index creation.
+     *
+     * \since QGIS 3.14
+     */
+    struct CORE_EXPORT SpatialIndexOptions
+    {
+      //! Specifies the name of the geometry column to create the index for
+      QString geometryColumnName;
+    };
+
+    /**
+     * Creates a spatial index for the database table with given \a schema and \a name (schema is ignored if not supported by the backend).
+     *
+     * The \a options argument can be used to provide extra options controlling the spatial index creation.
+     *
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \throws QgsProviderConnectionException
+     * \since QGIS 3.14
+     */
+    virtual void createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options = QgsAbstractDatabaseProviderConnection::SpatialIndexOptions() ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Determines whether a spatial index exists for the database table with given \a schema, \a name and \a geometryColumn (\a schema and \a geometryColumn are
+     * ignored if not supported by the backend).
+     *
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \throws QgsProviderConnectionException
+     * \since QGIS 3.14
+     */
+    virtual bool spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Deletes the existing spatial index for the database table with given \a schema, \a name and \a geometryColumn (\a schema and \a geometryColumn are
+     * ignored if not supported by the backend).
+     *
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \throws QgsProviderConnectionException
+     * \since QGIS 3.14
+     */
+    virtual void deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Returns information on the tables in the given schema.

@@ -46,6 +46,9 @@ Abstract base class for processing algorithms.
       FlagDisplayNameIsLiteral,
       FlagSupportsInPlaceEdits,
       FlagKnownIssues,
+      FlagCustomException,
+      FlagPruneModelBranchesBasedOnAlgorithmResults,
+      FlagSkipGenericModelLogging,
       FlagDeprecated,
     };
     typedef QFlags<QgsProcessingAlgorithm::Flag> Flags;
@@ -293,6 +296,43 @@ manner.
     bool hasHtmlOutputs() const;
 %Docstring
 Returns ``True`` if this algorithm generates HTML outputs.
+%End
+
+    enum PropertyAvailability
+    {
+      NotAvailable,
+      Available,
+    };
+
+    struct VectorProperties
+    {
+      QgsFields fields;
+
+      QgsWkbTypes::Type wkbType;
+
+      QgsCoordinateReferenceSystem crs;
+
+      QgsProcessingAlgorithm::PropertyAvailability availability;
+    };
+
+    virtual QgsProcessingAlgorithm::VectorProperties sinkProperties( const QString &sink,
+        const QVariantMap &parameters,
+        QgsProcessingContext &context,
+        const QMap< QString, QgsProcessingAlgorithm::VectorProperties > &sourceProperties ) const;
+%Docstring
+Returns the vector properties which will be used for the ``sink`` with matching name.
+
+The ``parameters`` argument specifies the values of all parameters which would be used to generate
+the sink. These can be used alongside the provided ``context`` in order to pre-evaluate inputs
+when required in order to determine the sink's properties.
+
+The ``sourceProperties`` map will contain the vector properties of the various sources used
+as inputs to the algorithm. These will only be available in certain circumstances (e.g. when the
+algorithm is used within a model), so implementations will need to be adaptable to circumstances
+when either ``sourceParameters`` is empty or ``parameters`` is empty, and use whatever information
+is passed in order to make a best guess determination of the output properties.
+
+.. versionadded:: 3.14
 %End
 
     QVariantMap run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok /Out/ = 0, const QVariantMap &configuration = QVariantMap() ) const;
@@ -622,7 +662,7 @@ Evaluates the parameter with matching ``name`` to a static boolean value.
 %End
 
     QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier /Out/,
-                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = 0 ) const /Factory/;
+                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = 0 ) const throw( QgsProcessingException ) /Factory/;
 %Docstring
 Evaluates the parameter with matching ``name`` to a feature sink.
 
@@ -636,6 +676,8 @@ The ``destinationIdentifier`` argument will be set to a string which can be used
 to the sink, e.g. via calling :py:func:`QgsProcessingUtils.mapLayerFromString()`
 
 This function creates a new object and the caller takes responsibility for deleting the returned object.
+
+:raises :: py:class:`QgsProcessingException`
 %End
 
     QgsProcessingFeatureSource *parameterAsSource( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const /Factory/;
@@ -866,6 +908,35 @@ Evaluates the parameter with matching ``name`` to a color, or returns an invalid
 
 .. versionadded:: 3.10
 %End
+
+    QString parameterAsConnectionName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``name`` to a connection name string.
+
+.. versionadded:: 3.14
+%End
+
+    QString parameterAsSchema( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``name`` to a database schema name string.
+
+.. versionadded:: 3.14
+%End
+
+    QString parameterAsDatabaseTableName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``name`` to a database table name string.
+
+.. versionadded:: 3.14
+%End
+
+    QDateTime parameterAsDateTime( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``name`` to a DateTime, or returns an invalid date time if the parameter was not set.
+
+.. versionadded:: 3.14
+%End
+
 
     static QString invalidSourceError( const QVariantMap &parameters, const QString &name );
 %Docstring
@@ -1119,6 +1190,11 @@ Read the source from ``parameters`` and ``context`` and set it
 
 .. versionadded:: 3.4
 %End
+
+     virtual QgsProcessingAlgorithm::VectorProperties sinkProperties( const QString &sink,
+        const QVariantMap &parameters,
+        QgsProcessingContext &context,
+        const QMap< QString, QgsProcessingAlgorithm::VectorProperties > &sourceProperties ) const;
 
 };
 

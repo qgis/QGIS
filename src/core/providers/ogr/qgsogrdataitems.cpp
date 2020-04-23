@@ -410,6 +410,11 @@ QString QgsOgrDataItemProvider::name()
   return QStringLiteral( "OGR" );
 }
 
+QString QgsOgrDataItemProvider::dataProviderKey() const
+{
+  return QStringLiteral( "ogr" );
+}
+
 int QgsOgrDataItemProvider::capabilities() const
 {
   return QgsDataProvider::File | QgsDataProvider::Dir | QgsDataProvider::Net;
@@ -558,7 +563,9 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
       QStringLiteral( "sqlite" ),
       QStringLiteral( "db" ),
       QStringLiteral( "gdb" ),
-      QStringLiteral( "kml" ) };
+      QStringLiteral( "kml" ),
+      QStringLiteral( "osm" ),
+      QStringLiteral( "pbf" ) };
   static QStringList sOgrSupportedDbDriverNames { QStringLiteral( "GPKG" ),
       QStringLiteral( "db" ),
       QStringLiteral( "gdb" ) };

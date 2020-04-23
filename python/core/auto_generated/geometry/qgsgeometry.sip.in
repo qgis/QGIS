@@ -839,7 +839,7 @@ Rotate this geometry around the Z axis
 :return: OperationResult a result code: success or reason of failure
 %End
 
- OperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries /Out/, bool topological, QVector<QgsPointXY> &topologyTestPoints /Out/ ) /Deprecated/;
+ OperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries /Out/, bool topological, QVector<QgsPointXY> &topologyTestPoints /Out/, bool splitFeature = true ) /Deprecated/;
 %Docstring
 Splits this geometry according to a given line.
 
@@ -847,6 +847,7 @@ Splits this geometry according to a given line.
 \param[out] newGeometries list of new geometries that have been created with the split
 :param topological: ``True`` if topological editing is enabled
 \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+:param splitFeature: Set to True if you want to split a feature, otherwise set to False to split parts
 
 :return: OperationResult a result code: success or reason of failure
 
@@ -854,7 +855,7 @@ Splits this geometry according to a given line.
    - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
-    OperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries /Out/, bool topological, QgsPointSequence &topologyTestPoints /Out/ );
+    OperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries /Out/, bool topological, QgsPointSequence &topologyTestPoints /Out/, bool splitFeature = true );
 %Docstring
 Splits this geometry according to a given line.
 
@@ -862,6 +863,8 @@ Splits this geometry according to a given line.
 \param[out] newGeometries list of new geometries that have been created with the split
 :param topological: ``True`` if topological editing is enabled
 \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+:param splitFeature: Set to True if you want to split a feature, otherwise set to False to split parts
+                     fix this bug?
 
 :return: OperationResult a result code: success or reason of failure
 %End
@@ -1539,7 +1542,32 @@ Exports the geometry to a GeoJSON string.
 %End
 
 
-    QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const /Factory/;
+    QVector< QgsGeometry > coerceToType( QgsWkbTypes::Type type ) const;
+%Docstring
+Attempts to coerce this geometry into the specified destination ``type``.
+
+This method will do anything possible to force the current geometry into the specified type. E.g.
+- lines or polygons will be converted to points by return either a single multipoint geometry or multiple
+single point geometries.
+- polygons will be converted to lines by extracting their exterior and interior rings, returning
+either a multilinestring or multiple single line strings as dictated by ``type``.
+- lines will be converted to polygon rings if ``type`` is a polygon type
+- curved geometries will be segmented if ``type`` is non-curved.
+- multi geometries will be converted to a list of single geometries
+- single geometries will be upgraded to multi geometries
+- z or m values will be added or dropped as required.
+
+.. note::
+
+   This method is much stricter than convertToType(), as it considers the exact WKB type
+   of geometries instead of the geometry family (point/line/polygon), and tries more exhaustively
+   to coerce geometries to the desired ``type``. It also correctly maintains curves and z/m values
+   wherever appropriate.
+
+.. versionadded:: 3.14
+%End
+
+    QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const;
 %Docstring
 Try to convert the geometry to the requested type
 
@@ -1547,6 +1575,12 @@ Try to convert the geometry to the requested type
 :param destMultipart: determines if the output geometry will be multipart or not
 
 :return: the converted geometry or ``None`` if the conversion fails.
+
+.. note::
+
+   The coerceToType() method applies much stricter and more exhaustive attempts to convert
+   between geometry types, and is recommended instead of this method. This method force drops
+   curves and any z or m values present in the geometry.
 
 .. versionadded:: 2.2
 %End

@@ -101,9 +101,11 @@ QgsImageCache::QgsImageCache( QObject *parent )
   connect( this, &QgsAbstractContentCacheBase::remoteContentFetched, this, &QgsImageCache::remoteImageFetched );
 }
 
-QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking )
+QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, bool *isMissing )
 {
   const QString file = f.trimmed();
+  if ( isMissing )
+    *isMissing = true;
 
   if ( file.isEmpty() )
     return QImage();
@@ -122,7 +124,8 @@ QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const boo
   if ( currentEntry->image.isNull() )
   {
     long cachedDataSize = 0;
-    result = renderImage( file, size, keepAspectRatio, opacity, blocking );
+    bool isBroken = false;
+    result = renderImage( file, size, keepAspectRatio, opacity, isBroken, blocking );
     cachedDataSize += result.width() * result.height() * 32;
     if ( cachedDataSize > mMaxCacheSize / 2 )
     {
@@ -134,11 +137,18 @@ QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const boo
       mTotalSize += ( result.width() * result.height() * 32 );
       currentEntry->image = result;
     }
+
+    if ( isMissing )
+      *isMissing = isBroken;
+    currentEntry->isMissingImage = isBroken;
+
     trimToMaximumSize();
   }
   else
   {
     result = currentEntry->image;
+    if ( isMissing )
+      *isMissing = currentEntry->isMissingImage;
   }
 
   return result;
@@ -180,9 +190,11 @@ QSize QgsImageCache::originalSize( const QString &path, bool blocking ) const
   return QSize();
 }
 
-QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, bool blocking ) const
+QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, bool &isBroken, bool blocking ) const
 {
   QImage im;
+  isBroken = false;
+
   // direct read if path is a file -- maybe more efficient than going the bytearray route? (untested!)
   if ( !path.startsWith( QStringLiteral( "base64:" ) ) && QFile::exists( path ) )
   {
@@ -194,6 +206,8 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
 
     if ( ba == "broken" )
     {
+      isBroken = true;
+
       // if image size is set to respect aspect ratio, correct for broken image aspect ratio
       if ( size.width() == 0 )
         size.setWidth( size.height() );

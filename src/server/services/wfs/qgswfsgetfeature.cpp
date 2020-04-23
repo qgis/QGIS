@@ -103,7 +103,7 @@ namespace QgsWfs
     QDomDocument doc;
     QString errorMsg;
 
-    if ( doc.setContent( mRequestParameters.value( QStringLiteral( "REQUEST_BODY" ) ), true, &errorMsg ) )
+    if ( doc.setContent( request.data(), true, &errorMsg ) )
     {
       QDomElement docElem = doc.documentElement();
       aRequest = parseGetFeatureRequestBody( docElem, project );

@@ -49,6 +49,10 @@ QgsBrowserModel::QgsBrowserModel( QObject *parent )
   : QAbstractItemModel( parent )
 
 {
+  connect( QgsApplication::dataItemProviderRegistry(), &QgsDataItemProviderRegistry::providerAdded,
+           this, &QgsBrowserModel::dataItemProviderAdded );
+  connect( QgsApplication::dataItemProviderRegistry(), &QgsDataItemProviderRegistry::providerWillBeRemoved,
+           this, &QgsBrowserModel::dataItemProviderWillBeRemoved );
 }
 
 QgsBrowserModel::~QgsBrowserModel()
@@ -132,23 +136,9 @@ void QgsBrowserModel::addRootItems()
   const auto constProviders = QgsApplication::dataItemProviderRegistry()->providers();
   for ( QgsDataItemProvider *pr : constProviders )
   {
-    int capabilities = pr->capabilities();
-    if ( capabilities == QgsDataProvider::NoDataCapabilities )
+    if ( QgsDataItem *item = addProviderRootItem( pr ) )
     {
-      QgsDebugMsgLevel( pr->name() + " does not have any dataCapabilities", 4 );
-      continue;
-    }
-
-    QgsDataItem *item = pr->createDataItem( QString(), nullptr );  // empty path -> top level
-    if ( item )
-    {
-      // make sure the top level key is set always
-      item->setProviderKey( pr->name() );
-      // Forward the signal from the root items to the model (and then to the app)
-      connect( item, &QgsDataItem::connectionsChanged, this, &QgsBrowserModel::connectionsChanged );
-      QgsDebugMsgLevel( "Add new top level item : " + item->name(), 4 );
-      setupItemConnections( item );
-      providerMap.insertMulti( capabilities, item );
+      providerMap.insertMulti( pr->capabilities(), item );
     }
   }
 
@@ -180,6 +170,32 @@ void QgsBrowserModel::removeRootItems()
 
   mRootItems.clear();
   mDriveItems.clear();
+}
+
+void QgsBrowserModel::dataItemProviderAdded( QgsDataItemProvider *provider )
+{
+  if ( !mInitialized )
+    return;
+
+  if ( QgsDataItem *item = addProviderRootItem( provider ) )
+  {
+    beginInsertRows( QModelIndex(), rowCount(), rowCount() );
+    mRootItems << item;
+    endInsertRows();
+  }
+}
+
+void QgsBrowserModel::dataItemProviderWillBeRemoved( QgsDataItemProvider *provider )
+{
+  const auto constMRootItems = mRootItems;
+  for ( QgsDataItem *item : constMRootItems )
+  {
+    if ( item->providerKey() == provider->name() )
+    {
+      removeRootItem( item );
+      break;  // assuming there is max. 1 root item per provider
+    }
+  }
 }
 
 QMap<QString, QgsDirectoryItem *> QgsBrowserModel::driveItems() const
@@ -733,3 +749,24 @@ void QgsBrowserModel::removeRootItem( QgsDataItem *item )
   endRemoveRows();
 }
 
+QgsDataItem *QgsBrowserModel::addProviderRootItem( QgsDataItemProvider *pr )
+{
+  int capabilities = pr->capabilities();
+  if ( capabilities == QgsDataProvider::NoDataCapabilities )
+  {
+    QgsDebugMsgLevel( pr->name() + " does not have any dataCapabilities", 4 );
+    return nullptr;
+  }
+
+  QgsDataItem *item = pr->createDataItem( QString(), nullptr );  // empty path -> top level
+  if ( item )
+  {
+    // make sure the top level key is set always
+    item->setProviderKey( pr->name() );
+    // Forward the signal from the root items to the model (and then to the app)
+    connect( item, &QgsDataItem::connectionsChanged, this, &QgsBrowserModel::connectionsChanged );
+    QgsDebugMsgLevel( "Add new top level item : " + item->name(), 4 );
+    setupItemConnections( item );
+  }
+  return item;
+}

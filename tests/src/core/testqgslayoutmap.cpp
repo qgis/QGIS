@@ -56,6 +56,7 @@ class TestQgsLayoutMap : public QObject
     void mapPolygonVertices(); // test mapPolygon function with no map rotation
     void dataDefinedLayers(); //test data defined layer string
     void dataDefinedStyles(); //test data defined styles
+    void dataDefinedCrs(); //test data defined crs
     void rasterized();
     void layersToRender();
     void mapRotation();
@@ -67,6 +68,7 @@ class TestQgsLayoutMap : public QObject
     void testRenderedFeatureHandler();
     void testLayeredExport();
     void testLayeredExportLabelsByLayer();
+    void testTemporal();
 
   private:
     QgsRasterLayer *mRasterLayer = nullptr;
@@ -458,6 +460,32 @@ void TestQgsLayoutMap::dataDefinedStyles()
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
 }
 
+void TestQgsLayoutMap::dataDefinedCrs()
+{
+  QList<QgsMapLayer *> layers = QList<QgsMapLayer *>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer;
+
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptMove( QgsLayoutPoint( 20, 20 ) );
+  map->attemptResize( QgsLayoutSize( 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setLayers( layers );
+  l.addLayoutItem( map );
+
+  //test epsg variable
+  map->dataDefinedProperties().setProperty( QgsLayoutObject::MapCrs, QgsProperty::fromValue( QStringLiteral( "EPSG:2192" ) ) );
+  map->refreshDataDefinedProperty( QgsLayoutObject::MapCrs );
+  QCOMPARE( map->crs().authid(), QStringLiteral( "EPSG:2192" ) );
+
+  //test proj string variable
+  map->dataDefinedProperties().setProperty( QgsLayoutObject::MapCrs, QgsProperty::fromValue( QStringLiteral( "PROJ4: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs" ) ) );
+  map->refreshDataDefinedProperty( QgsLayoutObject::MapCrs );
+  QCOMPARE( map->crs().toProj(), QStringLiteral( "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs" ) );
+
+}
+
 void TestQgsLayoutMap::rasterized()
 {
   // test a map which must be rasterized
@@ -652,7 +680,11 @@ void TestQgsLayoutMap::expressionContext()
 
   QgsExpression e9( QStringLiteral( "@map_crs_ellipsoid" ) );
   r = e9.evaluate( &c );
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( r.toString(), QString( "EPSG:7030" ) );
+#else
   QCOMPARE( r.toString(), QString( "WGS84" ) );
+#endif
 
   QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
   QgsVectorLayer *layer2 = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
@@ -1798,6 +1830,27 @@ void TestQgsLayoutMap::testLayeredExportLabelsByLayer()
   QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
   QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
   QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+}
+
+void TestQgsLayoutMap::testTemporal()
+{
+  QgsLayout l( QgsProject::instance( ) );
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  QDateTime begin( QDate( 2020, 01, 01 ), QTime( 10, 0, 0, Qt::UTC ) );
+  QDateTime end = begin.addSecs( 3600 );
+
+  QgsMapSettings settings = map->mapSettings( map->extent(), QSize( 512, 512 ), 72, false );
+  QgsRenderContext renderContext = QgsRenderContext::fromMapSettings( settings );
+
+  QVERIFY( !renderContext.isTemporal() );
+
+  map->setTemporalRange( QgsDateTimeRange( begin, end ) );
+  map->refresh();
+
+  settings = map->mapSettings( map->extent(), QSize( 512, 512 ), 72, false );
+  renderContext = QgsRenderContext::fromMapSettings( settings );
+  QVERIFY( renderContext.isTemporal() );
+  QCOMPARE( renderContext.temporalRange(), QgsDateTimeRange( begin, end ) );
 }
 
 QGSTEST_MAIN( TestQgsLayoutMap )

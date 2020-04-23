@@ -64,11 +64,13 @@ class CORE_EXPORT QgsTask : public QObject
       Complete, //!< Task successfully completed
       Terminated, //!< Task was terminated or errored
     };
+    Q_ENUM( TaskStatus )
 
     //! Task flags
     enum Flag
     {
       CanCancel = 1 << 1, //!< Task can be canceled
+      CancelWithoutPrompt = 1 << 2, //!< Task can be canceled without any users prompts, e.g. when closing a project or QGIS.
       AllFlags = CanCancel, //!< Task supports all flags
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -282,7 +284,7 @@ class CORE_EXPORT QgsTask : public QObject
      * flag, then derived classes' run() methods should periodically check this and
      * terminate in a safe manner.
      */
-    bool isCanceled() const { return mShouldTerminate; }
+    bool isCanceled() const;
 
   protected slots:
 
@@ -322,6 +324,7 @@ class CORE_EXPORT QgsTask : public QObject
     //! Overall progress of this task and all subtasks
     double mTotalProgress = 0.0;
     bool mShouldTerminate = false;
+    mutable QMutex mShouldTerminateMutex;
     int mStartCount = 0;
 
     struct SubTask
@@ -357,15 +360,18 @@ class CORE_EXPORT QgsTask : public QObject
      */
     void terminated();
 
-    void processSubTasksForCompletion();
-
-    void processSubTasksForTermination();
 
     void processSubTasksForHold();
 
     friend class QgsTaskManager;
     friend class QgsTaskRunnableWrapper;
     friend class TestQgsTaskManager;
+
+  private slots:
+
+    void processSubTasksForCompletion();
+
+    void processSubTasksForTermination();
 
 };
 
@@ -586,6 +592,8 @@ class CORE_EXPORT QgsTaskManager : public QObject
       int priority;
       QgsTaskRunnableWrapper *runnable = nullptr;
     };
+
+    bool mInitialized = false;
 
     mutable QMutex *mTaskMutex;
 

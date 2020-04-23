@@ -15,12 +15,13 @@ namespace MDAL
   enum Capability
   {
     None                      = 0,
-    ReadMesh                  = 1 << 0, //! Can read mesh and all datasets stored in the mesh file
-    SaveMesh                  = 1 << 1, //! Can save the mesh
-    ReadDatasets              = 1 << 2, //! Can read only datasets (groups) from existing mesh
-    WriteDatasetsOnVertices2D = 1 << 3, //! Can write datasets (groups) on MDAL_DataLocation::DataOnVertices2D
-    WriteDatasetsOnFaces2D    = 1 << 4, //! Can write datasets (groups) on MDAL_DataLocation::DataOnFaces2D
-    WriteDatasetsOnVolumes3D  = 1 << 5, //! Can write datasets (groups) on MDAL_DataLocation::DataOnVolumes3D
+    ReadMesh                  = 1 << 0, //!< Can read mesh and all datasets stored in the mesh file
+    SaveMesh                  = 1 << 1, //!< Can save the mesh
+    ReadDatasets              = 1 << 2, //!< Can read only datasets (groups) from existing mesh
+    WriteDatasetsOnVertices   = 1 << 3, //!< Can write datasets (groups) on MDAL_DataLocation::DataOnVertices
+    WriteDatasetsOnFaces      = 1 << 4, //!< Can write datasets (groups) on MDAL_DataLocation::DataOnFaces
+    WriteDatasetsOnVolumes    = 1 << 5, //!< Can write datasets (groups) on MDAL_DataLocation::DataOnVolumes
+    WriteDatasetsOnEdges      = 1 << 6, //!< Can write datasets (groups) on MDAL_DataLocation::DataOnEdges
   };
 
   class Driver
@@ -47,12 +48,14 @@ namespace MDAL
       //! returns the maximum vertices per face
       virtual int faceVerticesMaximumCount() const;
 
+      // constructs loading uri / uris
+      virtual std::string buildUri( const std::string &meshFile );
       // loads mesh
-      virtual std::unique_ptr< Mesh > load( const std::string &uri, MDAL_Status *status );
+      virtual std::unique_ptr< Mesh > load( const std::string &uri, const std::string &meshName = "" );
       // loads datasets
-      virtual void load( const std::string &uri, Mesh *mesh, MDAL_Status *status );
+      virtual void load( const std::string &uri, Mesh *mesh );
       // save mesh
-      virtual void save( const std::string &uri, Mesh *mesh, MDAL_Status *status );
+      virtual void save( const std::string &uri, Mesh *mesh );
 
       // create new dataset group
       virtual void createDatasetGroup(

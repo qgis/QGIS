@@ -2690,6 +2690,7 @@ void TestQgsGeometry::circularString()
   QVERIFY( !nodeLine.removeDuplicateNodes() );
   QCOMPARE( nodeLine.asWkt( 2 ), QStringLiteral( "CircularString (11 2, 11.01 1.99, 11.02 2.01, 11 12, 111 12, 111.01 11.99)" ) );
   QVERIFY( nodeLine.removeDuplicateNodes( 0.02 ) );
+  QVERIFY( !nodeLine.removeDuplicateNodes( 0.02 ) );
   QCOMPARE( nodeLine.asWkt( 2 ), QStringLiteral( "CircularString (11 2, 11 12, 111 12, 111.01 11.99)" ) );
 
   // don't create degenerate lines
@@ -4777,6 +4778,7 @@ void TestQgsGeometry::lineString()
   nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 11.02, 2.01 )
                       << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) << QgsPoint( 111.01, 11.99 ) );
   QVERIFY( nodeLine.removeDuplicateNodes( 0.02 ) );
+  QVERIFY( !nodeLine.removeDuplicateNodes( 0.02 ) );
   QCOMPARE( nodeLine.asWkt(), QStringLiteral( "LineString (11 2, 11 12, 111 12)" ) );
   nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 11.02, 2.01 )
                       << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) << QgsPoint( 111.01, 11.99 ) );
@@ -5177,6 +5179,12 @@ void TestQgsGeometry::polygon()
   QVERIFY( p6c.interiorRing( 2 )->is3D() );
   QVERIFY( !p6c.interiorRing( 2 )->isMeasure() );
   QCOMPARE( p6c.interiorRing( 2 )->wkbType(), QgsWkbTypes::LineString25D );
+
+  // alternate constructor
+  QgsPolygon pc6( new QgsLineString( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 ) << QgsPoint( 10, 0 ) << QgsPoint( 0, 0 ) ),
+                  QList< QgsLineString *>() << new QgsLineString( QVector< QgsPoint >() << QgsPoint( 1, 1 ) << QgsPoint( 2, 1 ) << QgsPoint( 2, 2 ) << QgsPoint( 1, 2 ) << QgsPoint( 1, 1 ) )
+                  << new QgsLineString( QVector< QgsPoint >() << QgsPoint( 3, 1 ) << QgsPoint( 4, 1 ) << QgsPoint( 4, 2 ) << QgsPoint( 3, 2 ) << QgsPoint( 3, 1 ) ) );
+  QCOMPARE( pc6.asWkt(), QStringLiteral( "Polygon ((0 0, 0 10, 10 10, 10 0, 0 0),(1 1, 2 1, 2 2, 1 2, 1 1),(3 1, 4 1, 4 2, 3 2, 3 1))" ) );
 
   //set interior rings
   QgsPolygon p7;
@@ -6634,6 +6642,7 @@ void TestQgsGeometry::polygon()
                       << QgsPoint( 11, 12 ) << QgsPoint( 11, 22 ) << QgsPoint( 11.01, 21.99 ) << QgsPoint( 10.99, 1.99 ) << QgsPoint( 11, 2 ) );
   nodePolygon.setExteriorRing( nodeLine.clone() );
   QVERIFY( nodePolygon.removeDuplicateNodes( 0.02 ) );
+  QVERIFY( !nodePolygon.removeDuplicateNodes( 0.02 ) );
   QCOMPARE( nodePolygon.asWkt( 2 ), QStringLiteral( "Polygon ((11 2, 11 12, 11 22, 11 2))" ) );
   nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 11.02, 2.01 )
                       << QgsPoint( 11, 12 ) << QgsPoint( 11, 22 ) << QgsPoint( 11.01, 21.99 ) << QgsPoint( 10.99, 1.99 ) << QgsPoint( 11, 2 ) );
@@ -11705,6 +11714,7 @@ void TestQgsGeometry::compoundCurve()
   QVERIFY( !nodeCurve.removeDuplicateNodes() );
   QCOMPARE( nodeCurve.asWkt( 2 ), QStringLiteral( "CompoundCurve (CircularString (11 2, 11.01 1.99, 11.02 2.01, 11 12, 111 12, 111.01 11.99))" ) );
   QVERIFY( nodeCurve.removeDuplicateNodes( 0.02 ) );
+  QVERIFY( !nodeCurve.removeDuplicateNodes( 0.02 ) );
   QCOMPARE( nodeCurve.asWkt( 2 ), QStringLiteral( "CompoundCurve (CircularString (11 2, 11 12, 111 12, 111.01 11.99))" ) );
 
   // with tiny segment
@@ -12258,6 +12268,21 @@ void TestQgsGeometry::multiPoint()
   QVERIFY( QgsMultiPoint().cast( &pCast2 ) );
   pCast2.fromWkt( QStringLiteral( "MultiPointZM(PointZM(0 1 1 2))" ) );
   QVERIFY( QgsMultiPoint().cast( &pCast2 ) );
+
+  // bounding box
+  QgsMultiPoint boundingBox;
+  boundingBox.addGeometry( new QgsPoint( 0, 0 ) );
+  QCOMPARE( boundingBox.boundingBox(), QgsRectangle( 0, 0, 0, 0 ) );
+  boundingBox.addGeometry( new QgsPoint( 1, 2 ) );
+  QCOMPARE( boundingBox.boundingBox(), QgsRectangle( 0, 0, 1, 2 ) );
+  QgsMultiPoint boundingBox2;
+  QCOMPARE( boundingBox2.boundingBox(), QgsRectangle( 0, 0, 0, 0 ) );
+  boundingBox2.addGeometry( new QgsPoint( 1, 2 ) );
+  QCOMPARE( boundingBox2.boundingBox(), QgsRectangle( 1, 2, 1, 2 ) );
+  boundingBox2.addGeometry( new QgsPoint( 10, 3 ) );
+  QCOMPARE( boundingBox2.boundingBox(), QgsRectangle( 1, 2, 10, 3 ) );
+  boundingBox2.addGeometry( new QgsPoint( 0, 0 ) );
+  QCOMPARE( boundingBox2.boundingBox(), QgsRectangle( 0, 0, 10, 3 ) );
 
   //boundary
 
@@ -14953,6 +14978,15 @@ void TestQgsGeometry::multiPolygon()
   QVERIFY( it2.hasNext() );
   QCOMPARE( it2.next(), QgsPoint( 10.8, 10.8 ) );
   QVERIFY( !it2.hasNext() );
+
+  //removeDuplicateNodes
+  QgsMultiPolygon dn1;
+  QVERIFY( dn1.fromWkt( QStringLiteral( "MultiPolygonZ (((0 0 0, 10 10 0, 11 9 0, 9 8 0, 9 8 0, 1 -1 0, 0 0 0)),((7 -1 0, 12 7 0, 13 6 0, 13 6 0, 8 -3 0, 7 -1 0)))" ) ) );
+  QCOMPARE( dn1.numGeometries(), 2 );
+  // First call should remove all duplicate nodes (one per part)
+  QVERIFY( dn1.removeDuplicateNodes( 0.001, false ) );
+  QVERIFY( !dn1.removeDuplicateNodes( 0.001, false ) );
+  QCOMPARE( dn1.asWkt(), QStringLiteral( "MultiPolygonZ (((0 0 0, 10 10 0, 11 9 0, 9 8 0, 1 -1 0, 0 0 0)),((7 -1 0, 12 7 0, 13 6 0, 8 -3 0, 7 -1 0)))" ) );
 }
 
 void TestQgsGeometry::geometryCollection()
@@ -16269,6 +16303,7 @@ void TestQgsGeometry::geometryCollection()
                       << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) << QgsPoint( 111.01, 11.99 ) );
   gcNodes.addGeometry( nodeLine.clone() );
   QVERIFY( gcNodes.removeDuplicateNodes( 0.02 ) );
+  QVERIFY( !gcNodes.removeDuplicateNodes( 0.02 ) );
   QCOMPARE( gcNodes.asWkt( 2 ), QStringLiteral( "GeometryCollection (LineString (11 2, 11 12, 111 12),LineString (11 2, 11 12, 111 12))" ) );
 
   //swapXy

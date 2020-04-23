@@ -1,5 +1,4 @@
 SET (WMS_SRCS
-  qgsmbtilesreader.cpp
   qgswmscapabilities.cpp
   qgswmsprovider.cpp
   qgswmsconnection.cpp
@@ -15,6 +14,7 @@ IF (WITH_GUI)
     qgstilescalewidget.cpp
     qgswmtsdimensions.cpp
     qgsxyzconnectiondialog.cpp
+    qgsxyzsourceselect.cpp
   )
 ENDIF ()
 

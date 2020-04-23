@@ -49,6 +49,7 @@ class TestQgsProject : public QObject
     void testSetGetCrs();
     void testEmbeddedLayerGroupFromQgz();
     void projectSaveUser();
+    void testCrsExpressions();
 };
 
 void TestQgsProject::init()
@@ -576,7 +577,11 @@ void TestQgsProject::testSetGetCrs()
   QCOMPARE( ellipsoidChangedSpy.count(), 1 );
 
   QCOMPARE( p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 21781 ) );
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( p.ellipsoid(), QStringLiteral( "EPSG:7004" ) );
+#else
   QCOMPARE( p.ellipsoid(), QStringLiteral( "bessel" ) );
+#endif
 
   crsChangedSpy.clear();
   ellipsoidChangedSpy.clear();
@@ -591,12 +596,61 @@ void TestQgsProject::testSetGetCrs()
   QCOMPARE( ellipsoidChangedSpy.count(), 0 );
 
   QCOMPARE( p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 2056 ) );
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( p.ellipsoid(), QStringLiteral( "EPSG:7004" ) );
+#else
   QCOMPARE( p.ellipsoid(), QStringLiteral( "bessel" ) );
+#endif
 
   crsChangedSpy.clear();
   ellipsoidChangedSpy.clear();
 }
 
+void TestQgsProject::testCrsExpressions()
+{
+  QgsProject p;
+  QVariant r;
+
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+
+  QgsExpressionContext c = p.createExpressionContext();
+
+  QgsExpression e2( QStringLiteral( "@project_crs" ) );
+  r = e2.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "EPSG:4326" ) );
+
+  QgsExpression e3( QStringLiteral( "@project_crs_definition" ) );
+  r = e3.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );
+
+  QgsExpression e4( QStringLiteral( "@project_units" ) );
+  r = e4.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "degrees" ) );
+
+  QgsExpression e5( QStringLiteral( "@project_crs_description" ) );
+  r = e5.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "WGS 84" ) );
+
+  QgsExpression e6( QStringLiteral( "@project_crs_acronym" ) );
+  r = e6.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "longlat" ) );
+
+  QgsExpression e7( QStringLiteral( "@project_crs_proj4" ) );
+  r = e7.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );
+
+  QgsExpression e8( QStringLiteral( "@project_crs_wkt" ) );
+  r = e8.evaluate( &c );
+  QVERIFY( r.toString().length() >= 15 );
+
+  QgsExpression e9( QStringLiteral( "@project_crs_ellipsoid" ) );
+  r = e9.evaluate( &c );
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( r.toString(), QString( "EPSG:7030" ) );
+#else
+  QCOMPARE( r.toString(), QString( "WGS84" ) );
+#endif
+}
 
 QGSTEST_MAIN( TestQgsProject )
 #include "testqgsproject.moc"

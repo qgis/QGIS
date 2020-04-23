@@ -102,7 +102,10 @@ class TestQgisAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             # check that pythonImportString correctly imports
             exec(import_string)
             # and now we should be able to instantiate an object!
-            exec('test = {}(\'id\',\'name\')\nself.assertIsNotNone(test)'.format(t.className()))
+            if t.className() == 'QgsProcessingParameterProviderConnection':
+                exec('test = {}(\'id\',\'name\', \'provider\')\nself.assertIsNotNone(test)'.format(t.className()))
+            else:
+                exec('test = {}(\'id\',\'name\')\nself.assertIsNotNone(test)'.format(t.className()))
 
 
 if __name__ == '__main__':

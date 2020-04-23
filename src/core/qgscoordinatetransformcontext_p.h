@@ -70,7 +70,7 @@ class QgsCoordinateTransformContextPrivate : public QSharedData
           return operation == other.operation && allowFallback == other.allowFallback;
         }
     };
-    QMap< QPair< QString, QString >, OperationDetails > mSourceDestDatumTransforms;
+    QMap< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem >, OperationDetails > mSourceDestDatumTransforms;
 #else
     QMap< QPair< QString, QString >, QgsDatumTransform::TransformPair > mSourceDestDatumTransforms;
 #endif

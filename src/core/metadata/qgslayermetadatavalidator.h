@@ -39,34 +39,55 @@ class CORE_EXPORT QgsAbstractMetadataBaseValidator
   public:
 
     /**
-     * Contains the parameters describing a metadata validation
-     * failure.
+     * \ingroup core
+     * \brief Contains the parameters describing a metadata validation failure.
+     * \since QGIS 3.0
      */
-    struct ValidationResult
+    class ValidationResult
     {
 
-      /**
-       * Constructor for ValidationResult.
-       */
-      ValidationResult( const QString &section, const QString &note, const QVariant &identifier = QVariant() )
-        : section( section )
-        , identifier( identifier )
-        , note( note )
-      {}
+      public:
 
-      //! Metadata section which failed the validation
-      QString section;
+        /**
+         * Constructor for ValidationResult.
+         */
+        ValidationResult( const QString &section, const QString &note, const QVariant &identifier = QVariant() )
+          : section( section )
+          , note( note )
+          , mIdentifier( identifier )
+        {}
 
-      /**
-       * Optional identifier for the failed metadata item.
-       * For instance, in list type metadata elements this
-       * will be set to the list index of the failed metadata
-       * item.
-       */
-      QVariant identifier;
+        //! Metadata section which failed the validation
+        QString section;
 
-      //! The reason behind the validation failure.
-      QString note;
+        // TODO QGIS 4.0 - fix this
+
+#ifdef SIP_RUN
+        SIP_PROPERTY( name = identifier, get = _identifier, set = _setIdentifier )
+#endif
+
+        /**
+         * Returns the optional identifier for the failed metadata item.
+         * For instance, in list type metadata elements this
+         * will be set to the list index of the failed metadata
+         * item.
+         */
+        QVariant _identifier() const { return mIdentifier; }
+
+        /**
+         * Sets the optional \a identifier for the failed metadata item.
+         * For instance, in list type metadata elements this
+         * will be set to the list index of the failed metadata
+         * item.
+         */
+        void _setIdentifier( QVariant identifier ) { mIdentifier = identifier; }
+
+        //! The reason behind the validation failure.
+        QString note;
+
+      private:
+
+        QVariant mIdentifier;
     };
 
     virtual ~QgsAbstractMetadataBaseValidator() = default;

@@ -169,7 +169,7 @@ json QgsWfs3APIHandler::schema( const QgsServerApiContext &context ) const
                 {
                   "content", {
                     {
-                      "application/openapi+json;version=3.0", {
+                      "application/vnd.oai.openapi+json;version=3.0", {
                         {
                           "schema",  {
                             { "type", "object" }
@@ -301,7 +301,7 @@ void QgsWfs3LandingPageHandler::handleRequest( const QgsServerApiContext &contex
   } );
   data["links"].push_back(
   {
-    { "href", href( context, "/api" )},
+    { "href", href( context, "/api.json" )},
     { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::service_desc ) },
     { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::OPENAPI3 ) },
     { "title", "API description" },
@@ -1031,9 +1031,13 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
                 "201", {
                   { "description", "A new feature was successfully added to the collection" }
                 },
+              },
+              {
                 "403", {
                   { "description", "Forbidden: the operation requested was not authorized" }
                 },
+              },
+              {
                 "500", {
                   { "description", "Posted data could not be parsed correctly or another error occurred" }
                 }
@@ -1963,12 +1967,16 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
                 "200", {
                   { "description", "The feature was successfully updated" }
                 },
+              },
+              {
                 "403", {
                   { "description", "Forbidden: the operation requested was not authorized" }
                 },
+              },
+              {
                 "500", {
                   { "description", "Posted data could not be parsed correctly or another error occurred" }
-                }
+                },
               },
               { "default", defaultResponse() }
             }
@@ -1987,12 +1995,16 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
                 "200", {
                   { "description", "The feature was successfully updated" }
                 },
+              },
+              {
                 "403", {
                   { "description", "Forbidden: the operation requested was not authorized" }
                 },
+              },
+              {
                 "500", {
                   { "description", "Posted data could not be parsed correctly or another error occurred" }
-                }
+                },
               },
               { "default", defaultResponse() }
             }
@@ -2011,9 +2023,13 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
                 "201", {
                   { "description", "The feature was successfully deleted from the collection" }
                 },
+              },
+              {
                 "403", {
                   { "description", "Forbidden: the operation requested was not authorized" }
                 },
+              },
+              {
                 "500", {
                   { "description", "Posted data could not be parsed correctly or another error occurred" }
                 }

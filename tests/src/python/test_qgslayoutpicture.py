@@ -17,13 +17,15 @@ import socketserver
 import threading
 import http.server
 from qgis.PyQt.QtCore import QRectF, QDir
-
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsLayoutItemPicture,
                        QgsLayout,
                        QgsLayoutItemMap,
                        QgsRectangle,
                        QgsCoordinateReferenceSystem,
-                       QgsProject
+                       QgsProject,
+                       QgsReadWriteContext
                        )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -57,6 +59,7 @@ class TestQgsLayoutPicture(unittest.TestCase, LayoutItemTestCase):
 
         TEST_DATA_DIR = unitTestDataPath()
         self.pngImage = TEST_DATA_DIR + "/sample_image.png"
+        self.svgImage = TEST_DATA_DIR + "/sample_svg.svg"
 
         # create composition
         self.layout = QgsLayout(QgsProject.instance())
@@ -75,6 +78,59 @@ class TestQgsLayoutPicture(unittest.TestCase, LayoutItemTestCase):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
+
+    def testMode(self):
+        pic = QgsLayoutItemPicture(self.layout)
+        # should default to unknown
+        self.assertEquals(pic.mode(), QgsLayoutItemPicture.FormatUnknown)
+        spy = QSignalSpy(pic.changed)
+        pic.setMode(QgsLayoutItemPicture.FormatRaster)
+        self.assertEquals(pic.mode(), QgsLayoutItemPicture.FormatRaster)
+        self.assertEqual(len(spy), 1)
+        pic.setMode(QgsLayoutItemPicture.FormatRaster)
+        self.assertEqual(len(spy), 1)
+        pic.setMode(QgsLayoutItemPicture.FormatSVG)
+        self.assertEqual(len(spy), 3) # ideally only 2!
+        self.assertEquals(pic.mode(), QgsLayoutItemPicture.FormatSVG)
+
+        # set picture path without explicit format
+        pic.setPicturePath(self.pngImage)
+        self.assertEquals(pic.mode(), QgsLayoutItemPicture.FormatRaster)
+        pic.setPicturePath(self.svgImage)
+        self.assertEquals(pic.mode(), QgsLayoutItemPicture.FormatSVG)
+        # forced format
+        pic.setPicturePath(self.pngImage, QgsLayoutItemPicture.FormatSVG)
+        self.assertEquals(pic.mode(), QgsLayoutItemPicture.FormatSVG)
+        pic.setPicturePath(self.pngImage, QgsLayoutItemPicture.FormatRaster)
+        self.assertEquals(pic.mode(), QgsLayoutItemPicture.FormatRaster)
+        pic.setPicturePath(self.svgImage, QgsLayoutItemPicture.FormatSVG)
+        self.assertEquals(pic.mode(), QgsLayoutItemPicture.FormatSVG)
+        pic.setPicturePath(self.svgImage, QgsLayoutItemPicture.FormatRaster)
+        self.assertEquals(pic.mode(), QgsLayoutItemPicture.FormatRaster)
+
+    def testReadWriteXml(self):
+        pr = QgsProject()
+        l = QgsLayout(pr)
+
+        pic = QgsLayoutItemPicture(l)
+        # mode should be saved/restored
+        pic.setMode(QgsLayoutItemPicture.FormatRaster)
+
+        #save original item to xml
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("test")
+        self.assertTrue(pic.writeXml(elem, doc, QgsReadWriteContext()))
+
+        pic2 = QgsLayoutItemPicture(l)
+        self.assertTrue(pic2.readXml(elem.firstChildElement(), doc, QgsReadWriteContext()))
+        self.assertEqual(pic2.mode(), QgsLayoutItemPicture.FormatRaster)
+
+        pic.setMode(QgsLayoutItemPicture.FormatSVG)
+        elem = doc.createElement("test2")
+        self.assertTrue(pic.writeXml(elem, doc, QgsReadWriteContext()))
+        pic3 = QgsLayoutItemPicture(l)
+        self.assertTrue(pic3.readXml(elem.firstChildElement(), doc, QgsReadWriteContext()))
+        self.assertEqual(pic3.mode(), QgsLayoutItemPicture.FormatSVG)
 
     def testResizeZoom(self):
         """Test picture resize zoom mode."""

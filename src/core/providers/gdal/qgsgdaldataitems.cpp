@@ -18,10 +18,12 @@
 ///@cond PRIVATE
 #include "qgsgdalprovider.h"
 #include "qgslogger.h"
+#include "qgsmbtilesreader.h"
 #include "qgssettings.h"
 #include "qgsogrutils.h"
 #include "qgsproject.h"
 #include "qgsgdalutils.h"
+#include "qgsvectortiledataitems.h"
 #include "symbology/qgsstyle.h"
 
 #include <QFileInfo>
@@ -263,14 +265,30 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
 
   if ( suffix == QStringLiteral( "mbtiles" ) )
   {
-    // handled by WMS provider
-    QUrlQuery uq;
-    uq.addQueryItem( "type", "mbtiles" );
-    uq.addQueryItem( "url", QUrl::fromLocalFile( path ).toString() );
-    QString encodedUri = uq.toString();
-    QgsLayerItem *item = new QgsLayerItem( parentItem, name, path, encodedUri, QgsLayerItem::Raster, QStringLiteral( "wms" ) );
-    item->setState( QgsDataItem::Populated );
-    return item;
+    QgsMBTilesReader reader( path );
+    if ( reader.open() )
+    {
+      if ( reader.metadataValue( "format" ) == QStringLiteral( "pbf" ) )
+      {
+        // these are vector tiles
+        QUrlQuery uq;
+        uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
+        uq.addQueryItem( QStringLiteral( "url" ), path );
+        QString encodedUri = uq.toString();
+        return new QgsVectorTileLayerItem( parentItem, name, path, encodedUri );
+      }
+      else
+      {
+        // handled by WMS provider
+        QUrlQuery uq;
+        uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
+        uq.addQueryItem( QStringLiteral( "url" ), QUrl::fromLocalFile( path ).toString() );
+        QString encodedUri = uq.toString();
+        QgsLayerItem *item = new QgsLayerItem( parentItem, name, path, encodedUri, QgsLayerItem::Raster, QStringLiteral( "wms" ) );
+        item->setState( QgsDataItem::Populated );
+        return item;
+      }
+    }
   }
 
   // Filters out the OGR/GDAL supported formats that can contain multiple layers

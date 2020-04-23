@@ -140,22 +140,22 @@ def compareWkt(a, b, tol=0.000001):
     b0 = b.lower()
 
     # remove optional spaces before z/m
-    r = re.compile("\s+([zm])")
+    r = re.compile(r"\s+([zm])")
     a0 = r.sub(r'\1', a0)
     b0 = r.sub(r'\1', b0)
 
     # spaces before brackets are optional
-    r = re.compile("\s*\(\s*")
+    r = re.compile(r"\s*\(\s*")
     a0 = r.sub('(', a0)
     b0 = r.sub('(', b0)
     # spaces after brackets are optional
-    r = re.compile("\s*\)\s*")
+    r = re.compile(r"\s*\)\s*")
     a0 = r.sub(')', a0)
     b0 = r.sub(')', b0)
 
     # compare the structure
-    r0 = re.compile("-?\d+(?:\.\d+)?(?:[eE]\d+)?")
-    r1 = re.compile("\s*,\s*")
+    r0 = re.compile(r"-?\d+(?:\.\d+)?(?:[eE]\d+)?")
+    r1 = re.compile(r"\s*,\s*")
     a0 = r1.sub(",", r0.sub("#", a0))
     b0 = r1.sub(",", r0.sub("#", b0))
     if a0 != b0:

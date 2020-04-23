@@ -131,6 +131,24 @@
             <normaloff>:/images/themes/default/3d.svg</normaloff>:/images/themes/default/3d.svg</iconset>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Rendering</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/rendering.svg</normaloff>:/images/themes/default/propertyicons/rendering.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Temporal</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/temporal.svg</normaloff>:/images/themes/default/propertyicons/temporal.svg</iconset>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>
@@ -169,8 +187,11 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
          <property name="currentIndex">
-          <number>3</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -206,8 +227,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>270</width>
-                <height>175</height>
+                <width>643</width>
+                <height>727</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -292,6 +313,23 @@ border-radius: 2px;</string>
                 </widget>
                </item>
                <item>
+                <widget class="QCheckBox" name="mTemporalStaticDatasetCheckBox">
+                 <property name="text">
+                  <string>Static Dataset</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QgsMeshStaticDatasetWidget" name="mStaticScalarWidget" native="true">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <spacer name="verticalSpacer_3">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
@@ -337,8 +375,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>634</width>
-                <height>711</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10"/>
@@ -348,6 +386,247 @@ border-radius: 2px;</string>
           </layout>
          </widget>
          <widget class="QWidget" name="mOptsPage_3DView"/>
+         <widget class="QWidget" name="mOptsPage_Rendering">
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <item>
+            <widget class="QgsCollapsibleGroupBox" name="mSimplifyMeshGroupBox">
+             <property name="title">
+              <string>Simplify Mesh</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_2">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_5">
+                <property name="text">
+                 <string>Reduction Factor</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_2">
+                <property name="text">
+                 <string>Maximal Mesh Resolution</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QSpinBox" name="mSimplifyMeshResolutionSpinBox">
+                <property name="suffix">
+                 <string> pixels/triangle</string>
+                </property>
+                <property name="minimum">
+                 <number>1</number>
+                </property>
+                <property name="maximum">
+                 <number>200</number>
+                </property>
+                <property name="value">
+                 <number>5</number>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QDoubleSpinBox" name="mSimplifyReductionFactorSpinBox">
+                <property name="decimals">
+                 <number>1</number>
+                </property>
+                <property name="minimum">
+                 <double>1.100000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>1000000.000000000000000</double>
+                </property>
+                <property name="value">
+                 <double>10.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="mOptsPage_Temporal">
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="1" column="3">
+            <widget class="QDateTimeEdit" name="mTemporalDateTimeStart">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::NoButtons</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="4">
+            <widget class="QPushButton" name="mTemporalReloadButton">
+             <property name="maximumSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Reload from provider</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>Layer Time Reference</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="2" colspan="7">
+            <widget class="QGroupBox" name="groupBox_2">
+             <property name="title">
+              <string>Provider Time Settings</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_5">
+              <item row="0" column="2">
+               <spacer name="horizontalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_12">
+                <property name="text">
+                 <string>Time unit</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QComboBox" name="mTemporalProviderTimeUnitComboBox"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="0" column="3">
+            <widget class="QDateTimeEdit" name="mTemporalDateTimeReference">
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="calendarPopup">
+              <bool>true</bool>
+             </property>
+             <property name="timeSpec">
+              <enum>Qt::UTC</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="7" colspan="2">
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="1" column="4" colspan="2">
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>Layer End Time</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="6">
+            <widget class="QDateTimeEdit" name="mTemporalDateTimeEnd">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="wrapping">
+              <bool>false</bool>
+             </property>
+             <property name="frame">
+              <bool>true</bool>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::NoButtons</enum>
+             </property>
+             <property name="accelerated">
+              <bool>false</bool>
+             </property>
+             <property name="showGroupSeparator" stdset="0">
+              <bool>false</bool>
+             </property>
+             <property name="timeSpec">
+              <enum>Qt::UTC</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="2">
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="1" column="2">
+            <widget class="QLabel" name="label_6">
+             <property name="text">
+              <string>Layer Start Time</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -387,7 +666,7 @@ border-radius: 2px;</string>
          <enum>Qt::Horizontal</enum>
         </property>
         <property name="standardButtons">
-         <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+         <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
         </property>
        </widget>
       </item>
@@ -397,6 +676,18 @@ border-radius: 2px;</string>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
@@ -409,9 +700,9 @@ border-radius: 2px;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
+   <class>QgsMeshStaticDatasetWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsmeshstaticdatasetwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

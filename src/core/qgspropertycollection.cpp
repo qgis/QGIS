@@ -229,7 +229,7 @@ bool QgsPropertyCollection::prepare( const QgsExpressionContext &context ) const
   return result;
 }
 
-QSet< QString > QgsPropertyCollection::referencedFields( const QgsExpressionContext &context ) const
+QSet< QString > QgsPropertyCollection::referencedFields( const QgsExpressionContext &context, bool ignoreContext ) const
 {
   QSet< QString > cols;
   QHash<int, QgsProperty>::const_iterator it = mProperties.constBegin();
@@ -238,7 +238,7 @@ QSet< QString > QgsPropertyCollection::referencedFields( const QgsExpressionCont
     if ( !it.value().isActive() )
       continue;
 
-    cols.unite( it.value().referencedFields( context ) );
+    cols.unite( it.value().referencedFields( context, ignoreContext ) );
   }
   return cols;
 }
@@ -482,13 +482,13 @@ QVariant QgsPropertyCollectionStack::value( int key, const QgsExpressionContext 
   return p.value( context, defaultValue );
 }
 
-QSet< QString > QgsPropertyCollectionStack::referencedFields( const QgsExpressionContext &context ) const
+QSet< QString > QgsPropertyCollectionStack::referencedFields( const QgsExpressionContext &context, bool ignoreContext ) const
 {
   QSet< QString > cols;
   const auto constMStack = mStack;
   for ( QgsPropertyCollection *collection : constMStack )
   {
-    cols.unite( collection->referencedFields( context ) );
+    cols.unite( collection->referencedFields( context, ignoreContext ) );
   }
   return cols;
 }

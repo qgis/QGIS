@@ -96,13 +96,13 @@ class CheckValidity(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.IGNORE_RING_SELF_INTERSECTION,
                                                         self.tr('Ignore ring self intersections'), defaultValue=False))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.VALID_OUTPUT, self.tr('Valid output'), QgsProcessing.TypeVectorAnyGeometry, '', True))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.VALID_OUTPUT, self.tr('Valid output'), QgsProcessing.TypeVectorAnyGeometry, None, True))
         self.addOutput(QgsProcessingOutputNumber(self.VALID_COUNT, self.tr('Count of valid features')))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.INVALID_OUTPUT, self.tr('Invalid output'), QgsProcessing.TypeVectorAnyGeometry, '', True))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.INVALID_OUTPUT, self.tr('Invalid output'), QgsProcessing.TypeVectorAnyGeometry, None, True))
         self.addOutput(QgsProcessingOutputNumber(self.INVALID_COUNT, self.tr('Count of invalid features')))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.ERROR_OUTPUT, self.tr('Error output'), QgsProcessing.TypeVectorAnyGeometry, '', True))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.ERROR_OUTPUT, self.tr('Error output'), QgsProcessing.TypeVectorAnyGeometry, None, True))
         self.addOutput(QgsProcessingOutputNumber(self.ERROR_COUNT, self.tr('Count of errors')))
 
     def name(self):

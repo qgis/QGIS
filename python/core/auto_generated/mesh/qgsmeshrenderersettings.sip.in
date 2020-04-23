@@ -54,6 +54,20 @@ Returns color used for rendering
 Sets color used for rendering of the mesh
 %End
 
+    QgsUnitTypes::RenderUnit lineWidthUnit() const;
+%Docstring
+Returns units of the width of the mesh frame
+
+.. versionadded:: 3.14
+%End
+
+    void setLineWidthUnit( const QgsUnitTypes::RenderUnit &lineWidthUnit );
+%Docstring
+Sets units of the width of the mesh frame
+
+.. versionadded:: 3.14
+%End
+
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
 Writes configuration to a new DOM element
@@ -82,7 +96,8 @@ Represents a mesh renderer settings for scalar datasets
 #include "qgsmeshrenderersettings.h"
 %End
   public:
-    enum DataInterpolationMethod
+
+    enum DataResamplingMethod
     {
 
       None,
@@ -121,7 +136,7 @@ Returns opacity
 Sets opacity
 %End
 
-    DataInterpolationMethod dataInterpolationMethod() const;
+    DataResamplingMethod dataResamplingMethod() const;
 %Docstring
 Returns the type of interpolation to use to
 convert face defined datasets to
@@ -130,7 +145,7 @@ values on vertices
 .. versionadded:: 3.12
 %End
 
-    void setDataInterpolationMethod( const DataInterpolationMethod &dataInterpolationMethod );
+    void setDataResamplingMethod( const DataResamplingMethod &dataResamplingMethod );
 %Docstring
 Sets data interpolation method
 
@@ -144,6 +159,34 @@ Writes configuration to a new DOM element
     void readXml( const QDomElement &elem );
 %Docstring
 Reads configuration from the given DOM element
+%End
+
+    double edgeWidth() const;
+%Docstring
+Returns width of the edge
+
+.. versionadded:: 3.14
+%End
+
+    void setEdgeWidth( double edgeWidth );
+%Docstring
+Sets width of the edge
+
+.. versionadded:: 3.14
+%End
+
+    QgsUnitTypes::RenderUnit edgeWidthUnit() const;
+%Docstring
+Returns length units of the width of the edge
+
+.. versionadded:: 3.14
+%End
+
+    void setEdgeWidthUnit( const QgsUnitTypes::RenderUnit &edgeWidthUnit );
+%Docstring
+Sets length units of the width of the edge
+
+.. versionadded:: 3.14
 %End
 
 };
@@ -292,7 +335,7 @@ Represents a streamline renderer settings for vector datasets displayed by strea
 
       MeshGridded,
 
-      Random,
+      Random
     };
 
     SeedingStartPointsMethod seedingMethod() const;
@@ -382,7 +425,7 @@ class QgsMeshRendererVectorSettings
 {
 %Docstring
 
-Represents a streamline renderer settings for vector datasets
+Represents a renderer settings for vector datasets
 
 .. note::
 
@@ -402,8 +445,16 @@ Represents a streamline renderer settings for vector datasets
       Arrows,
       //! Displaying vector dataset with streamlines
       Streamlines,
-      //! Displaying vector dataset with streamlines
+      //! Displaying vector dataset with particle traces
       Traces
+    };
+
+    enum ColoringMethod
+    {
+      //! Render the vector with a single color
+      SingleColor,
+      //! Render the vector with a color ramp
+      ColorRamp
     };
 
 
@@ -494,6 +545,34 @@ Sets the displaying method used to render vector datasets
 .. versionadded:: 3.12
 %End
 
+    ColoringMethod coloringMethod() const;
+%Docstring
+Returns the coloring method used to render vector datasets
+
+.. versionadded:: 3.14
+%End
+
+    void setColoringMethod( const ColoringMethod &coloringMethod );
+%Docstring
+Sets the coloring method used to render vector datasets
+
+.. versionadded:: 3.14
+%End
+
+    QgsColorRampShader colorRampShader() const;
+%Docstring
+Sets the color ramp shader used to render vector datasets
+
+.. versionadded:: 3.14
+%End
+
+    void setColorRampShader( const QgsColorRampShader &colorRampShader );
+%Docstring
+Returns the color ramp shader used to render vector datasets
+
+.. versionadded:: 3.14
+%End
+
     QgsMeshRendererVectorArrowSettings arrowSettings() const;
 %Docstring
 Returns settings for vector rendered with arrows
@@ -545,7 +624,6 @@ Writes configuration to a new DOM element
 Reads configuration from the given DOM element
 %End
 
-
 };
 
 class QgsMeshRendererSettings
@@ -574,20 +652,34 @@ Constructs renderer with default single layer averaging method
 
     QgsMeshRendererMeshSettings nativeMeshSettings() const;
 %Docstring
-Returns renderer settings
+Returns native mesh renderer settings
 %End
     void setNativeMeshSettings( const QgsMeshRendererMeshSettings &settings );
 %Docstring
-Sets new renderer settings, triggers repaint
+Sets new native mesh  renderer settings, triggers repaint
 %End
 
     QgsMeshRendererMeshSettings triangularMeshSettings() const;
 %Docstring
-Returns renderer settings
+Returns triangular mesh renderer settings
 %End
     void setTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings );
 %Docstring
-Sets new renderer settings
+Sets new triangular mesh renderer settings
+%End
+
+    QgsMeshRendererMeshSettings edgeMeshSettings() const;
+%Docstring
+Returns edge mesh renderer settings
+
+.. versionadded:: 3.14
+%End
+
+    void setEdgeMeshSettings( const QgsMeshRendererMeshSettings &settings );
+%Docstring
+Sets new edge mesh renderer settings
+
+.. versionadded:: 3.14
 %End
 
     QgsMeshRendererScalarSettings scalarSettings( int groupIndex ) const;
@@ -622,24 +714,6 @@ Sets averaging method for conversion of 3d stacked mesh data to 2d data
 Ownership of the method is not transferred.
 %End
 
-    QgsMeshDatasetIndex activeScalarDataset() const;
-%Docstring
-Returns active scalar dataset
-%End
-    void setActiveScalarDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
-%Docstring
-Sets active scalar dataset for rendering
-%End
-
-    QgsMeshDatasetIndex activeVectorDataset() const;
-%Docstring
-Returns active vector dataset
-%End
-    void setActiveVectorDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
-%Docstring
-Sets active vector dataset for rendering.
-%End
-
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
 Writes configuration to a new DOM element
@@ -647,6 +721,34 @@ Writes configuration to a new DOM element
     void readXml( const QDomElement &elem );
 %Docstring
 Reads configuration from the given DOM element
+%End
+
+    int activeScalarDatasetGroup() const;
+%Docstring
+Returns the active scalar dataset group
+
+.. versionadded:: 3.14
+%End
+
+    void setActiveScalarDatasetGroup( int activeScalarDatasetGroup );
+%Docstring
+Sets the active scalar dataset group
+
+.. versionadded:: 3.14
+%End
+
+    int activeVectorDatasetGroup() const;
+%Docstring
+Returns the active vector dataset group
+
+.. versionadded:: 3.14
+%End
+
+    void setActiveVectorDatasetGroup( int activeVectorDatasetGroup );
+%Docstring
+Sets the active vector dataset group
+
+.. versionadded:: 3.14
 %End
 
 };

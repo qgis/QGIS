@@ -37,6 +37,7 @@
 
 QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri, const ProviderOptions &options )
   : QgsDataProvider( uri, options )
+  , mTemporalCapabilities( qgis::make_unique< QgsVectorDataProviderTemporalCapabilities >() )
 {
 }
 
@@ -199,7 +200,8 @@ void QgsVectorDataProvider::setEncoding( const QString &e )
 
   if ( !mEncoding && e != QLatin1String( "System" ) )
   {
-    QgsMessageLog::logMessage( tr( "Codec %1 not found. Falling back to system locale" ).arg( e ) );
+    if ( !e.isEmpty() )
+      QgsMessageLog::logMessage( tr( "Codec %1 not found. Falling back to system locale" ).arg( e ) );
     mEncoding = QTextCodec::codecForName( "System" );
   }
 
@@ -838,4 +840,14 @@ QList<QgsRelation> QgsVectorDataProvider::discoverRelations( const QgsVectorLaye
 void QgsVectorDataProvider::handlePostCloneOperations( QgsVectorDataProvider * )
 {
 
+}
+
+QgsVectorDataProviderTemporalCapabilities *QgsVectorDataProvider::temporalCapabilities()
+{
+  return mTemporalCapabilities.get();
+}
+
+const QgsVectorDataProviderTemporalCapabilities *QgsVectorDataProvider::temporalCapabilities() const
+{
+  return mTemporalCapabilities.get();
 }

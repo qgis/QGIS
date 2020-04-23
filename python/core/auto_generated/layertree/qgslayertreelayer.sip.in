@@ -138,6 +138,24 @@ Returns the expression member of the LayerTreeNode
 .. versionadded:: 3.10
 %End
 
+    QgsLegendPatchShape patchShape() const;
+%Docstring
+Returns the symbol patch shape to use when rendering the legend node symbol.
+
+.. seealso:: :py:func:`setPatchShape`
+
+.. versionadded:: 3.14
+%End
+
+    void setPatchShape( const QgsLegendPatchShape &shape );
+%Docstring
+Sets the symbol patch ``shape`` to use when rendering the legend node symbol.
+
+.. seealso:: :py:func:`patchShape`
+
+.. versionadded:: 3.14
+%End
+
   signals:
 
     void layerLoaded();

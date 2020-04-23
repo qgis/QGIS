@@ -4,6 +4,7 @@
 */
 
 #include "mdal_esri_tin.hpp"
+#include "mdal_logger.hpp"
 
 MDAL::DriverEsriTin::DriverEsriTin(): Driver( "ESRI_TIN",
       "Esri TIN",
@@ -16,9 +17,9 @@ MDAL::Driver *MDAL::DriverEsriTin::create()
   return new DriverEsriTin();
 }
 
-std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, MDAL_Status *status )
+std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, const std::string & )
 {
-  if ( status ) *status = MDAL_Status::None;
+  MDAL::Log::resetLastStatus();
 
   try
   {
@@ -33,7 +34,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, M
     {
       inDenv.open( denv9File( uri ), std::ifstream::in | std::ifstream::binary );
       if ( !inDenv.is_open() )
-        throw MDAL_Status::Err_UnknownFormat;
+        throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not open file " + uri + " as denv file" );
     }
     readValue( totalIndexesCount32, inDenv, isNativeLittleEndian );
     size_t totalIndexesCount = static_cast<size_t>( totalIndexesCount32 );
@@ -50,27 +51,27 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, M
     std::ifstream inMsx( msxFile( uri ), std::ifstream::in | std::ifstream::binary );
 
     if ( ! inFaces.is_open() )
-      throw MDAL_Status::Err_FileNotFound;
+      throw MDAL::Error( MDAL_Status::Err_FileNotFound, "Could not open file " + uri + " as faces file" );
     if ( ! inMsk.is_open() )
-      throw MDAL_Status::Err_FileNotFound;
+      throw MDAL::Error( MDAL_Status::Err_FileNotFound, "Could not open file " + uri + " as msk file" );
     if ( ! inMsx.is_open() )
-      throw MDAL_Status::Err_FileNotFound;
+      throw MDAL::Error( MDAL_Status::Err_FileNotFound, "Could not open file " + uri + " as msx file" );
 
     //Find the beginning of data in mskFile
     inMsx.seekg( -4, std::ios::end );
     int32_t mskBegin;
     if ( ! readValue( mskBegin, inMsx, true ) )
-      throw  MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to find the beggining of data in msk file" );
 
     //read information in mskFile
     inMsk.seekg( -mskBegin * 2, std::ios::end );
     int32_t maskIntergerCount;
     if ( ! readValue( maskIntergerCount, inMsk, true ) )
-      throw MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to read information in msk file" );
     inMsk.ignore( 4 ); //unused 4 bytes
     int32_t maskBitsCount;
     if ( ! readValue( maskBitsCount, inMsk, true ) )
-      throw MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to read information in msk file" );
 
     int c = 0;
     int32_t maskInt = 0;
@@ -79,7 +80,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, M
       //read mask file
       if ( c % 32 == 0 && c < maskBitsCount ) //first bit in the mask array have to be used-->read next maskInt
         if ( ! readValue( maskInt, inMsk, true ) )
-          throw MDAL_Status::Err_UnknownFormat;
+          throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to read information in mask file" );
 
       Face f;
       for ( int i = 0; i < 3; ++i )
@@ -95,7 +96,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, M
         break;
 
       if ( f.size() < 3 ) //that's mean the face is not complete
-        throw MDAL_Status::Err_UnknownFormat;
+        throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to read information in mask file, face is not complete" );
 
       //exclude masked face
       if ( !( maskInt & 0x01 ) )
@@ -105,7 +106,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, M
         for ( auto ri : f )
         {
           if ( ri >= totalIndexesCount )
-            throw MDAL_Status::Err_UnknownFormat;
+            throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "More raw indexes than total number of indexes" );
           rawAndCorrectedIndexesMap[ri] = 1;
         }
       }
@@ -135,10 +136,10 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, M
     std::ifstream inZ( zFile( uri ), std::ifstream::in | std::ifstream::binary );
 
     if ( ! inXY.is_open() )
-      throw MDAL_Status::Err_FileNotFound;
+      throw MDAL::Error( MDAL_Status::Err_FileNotFound, "Could not open file " + uri + " as xyFile type" );
 
     if ( ! inZ.is_open() )
-      throw MDAL_Status::Err_FileNotFound;
+      throw MDAL::Error( MDAL_Status::Err_FileNotFound, "Could not open file " + uri + " as zFile type" );
 
     size_t rawIndex = 0;
     while ( rawIndex < rawAndCorrectedIndexesMap.size() )
@@ -149,11 +150,11 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, M
         break;
 
       if ( !readValue( vert.y, inXY, isNativeLittleEndian ) )
-        throw MDAL_Status::Err_UnknownFormat;
+        throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read value from xy file" );
 
       float zValue;
       if ( !readValue( zValue, inZ, isNativeLittleEndian ) )
-        throw MDAL_Status::Err_UnknownFormat;
+        throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not read value from z file" );
       vert.z = double( zValue );
 
       // store the vertex only if it is a wanted index
@@ -176,6 +177,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, M
       new MemoryMesh(
         name(),
         vertices.size(),
+        0,
         faces.size(),
         3,
         computeExtent( vertices ),
@@ -199,7 +201,12 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, M
   }
   catch ( MDAL_Status error )
   {
-    if ( status ) *status = ( error );
+    MDAL::Log::error( error, name(), "error while loading file " + uri );
+    return std::unique_ptr<Mesh>();
+  }
+  catch ( MDAL::Error err )
+  {
+    MDAL::Log::error( err, name() );
     return std::unique_ptr<Mesh>();
   }
 }
@@ -274,6 +281,7 @@ std::string MDAL::DriverEsriTin::crsFile( const std::string &uri ) const
   return pathJoin( dirName( uri ), "prj.adf" );
 }
 
+/*
 void MDAL::DriverEsriTin::readSuperpoints( const std::string &uri, std::list<int> &superpointsIndexes ) const
 {
   superpointsIndexes.clear();
@@ -305,7 +313,7 @@ std::string MDAL::DriverEsriTin::getTinName( const std::string &uri ) const
 
   return tinName;
 }
-
+*/
 
 std::string MDAL::DriverEsriTin::getCrsWkt( const std::string &uri ) const
 {

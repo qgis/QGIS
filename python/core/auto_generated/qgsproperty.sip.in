@@ -307,10 +307,16 @@ property multiple times allows precalculation of expensive setup tasks such as p
 Returns ``True`` if preparation was successful.
 %End
 
-    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
+    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const;
 %Docstring
 Returns the set of any fields referenced by the property for a specified
 expression context.
+
+.. note::
+
+   The optional argument ignoreContext has been added in QGIS 3.14. When set to true,
+   even fields not set in context's fields() will be reported - this is useful e.g. with vector tiles
+   where the actual available field names may not be known beforehand.
 %End
 
     bool isProjectColor() const;
@@ -490,6 +496,39 @@ be called in non-performance critical code.
 %End
 
     operator QVariant() const;
+
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString typeString;
+    QString definitionString;
+    switch ( sipCpp->propertyType() )
+    {
+      case QgsProperty::StaticProperty:
+        typeString = QStringLiteral( "static" );
+        definitionString = sipCpp->staticValue().toString();
+        break;
+
+      case QgsProperty::FieldBasedProperty:
+        typeString = QStringLiteral( "field" );
+        definitionString = sipCpp->field();
+        break;
+
+      case QgsProperty::ExpressionBasedProperty:
+        typeString = QStringLiteral( "expression" );
+        definitionString = sipCpp->expressionString();
+        break;
+
+      case QgsProperty::InvalidProperty:
+        typeString = QStringLiteral( "invalid" );
+        break;
+    }
+
+    QString str = QStringLiteral( "<QgsProperty: %1%2%3>" ).arg( !sipCpp->isActive() && sipCpp->propertyType() != QgsProperty::InvalidProperty ? QStringLiteral( "INACTIVE " ) : QString(),
+                  typeString,
+                  definitionString.isEmpty() ? QString() : QStringLiteral( " (%1)" ).arg( definitionString ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 
 };
 

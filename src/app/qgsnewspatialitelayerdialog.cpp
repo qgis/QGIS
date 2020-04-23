@@ -22,12 +22,16 @@
 
 #include "qgis.h"
 #include "qgsapplication.h"
-#include "qgsproviderregistry.h"
+#include "qgsabstractdatabaseproviderconnection.h"
 #include "qgisapp.h" // <- for theme icons
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsfileutils.h"
 #include "qgsprojectionselectiondialog.h"
+#include "qgsproviderconnectionmodel.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 #include "qgsspatialiteutils.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
@@ -51,7 +55,7 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   connect( mGeometryTypeBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewSpatialiteLayerDialog::mGeometryTypeBox_currentIndexChanged );
   connect( mTypeBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewSpatialiteLayerDialog::mTypeBox_currentIndexChanged );
   connect( pbnFindSRID, &QPushButton::clicked, this, &QgsNewSpatialiteLayerDialog::pbnFindSRID_clicked );
-  connect( toolButtonNewDatabase, &QToolButton::clicked, this, &QgsNewSpatialiteLayerDialog::toolButtonNewDatabase_clicked );
+  connect( toolButtonNewDatabase, &QToolButton::clicked, this, &QgsNewSpatialiteLayerDialog::createDb );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsNewSpatialiteLayerDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsNewSpatialiteLayerDialog::buttonBox_rejected );
 
@@ -75,20 +79,7 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole number" ), "integer" );
   mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), tr( "Decimal number" ), "real" );
 
-  // Populate the database list from the stored connections
-  QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "SpatiaLite/connections" ) );
-  QStringList keys = settings.childGroups();
-  QStringList::Iterator it = keys.begin();
-  mDatabaseComboBox->clear();
-  while ( it != keys.end() )
-  {
-    // retrieving the SQLite DB name and full path
-    QString text = settings.value( *it + "/sqlitepath", "###unknown###" ).toString();
-    mDatabaseComboBox->addItem( text );
-    ++it;
-  }
-  settings.endGroup();
+  mDatabaseComboBox->setProvider( QStringLiteral( "spatialite" ) );
 
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
   mOkButton->setEnabled( false );
@@ -130,26 +121,6 @@ void QgsNewSpatialiteLayerDialog::mTypeBox_currentIndexChanged( int index )
     default:
       break;
   }
-}
-
-void QgsNewSpatialiteLayerDialog::toolButtonNewDatabase_clicked()
-{
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "New SpatiaLite Database File" ),
-                     QDir::homePath(),
-                     tr( "SpatiaLite" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db)", nullptr, QFileDialog::DontConfirmOverwrite );
-
-  if ( fileName.isEmpty() )
-    return;
-
-  if ( !fileName.endsWith( QLatin1String( ".sqlite" ), Qt::CaseInsensitive ) && !fileName.endsWith( QLatin1String( ".db" ), Qt::CaseInsensitive ) )
-  {
-    fileName += QLatin1String( ".sqlite" );
-  }
-
-  mDatabaseComboBox->insertItem( 0, fileName );
-  mDatabaseComboBox->setCurrentIndex( 0 );
-
-  createDb();
 }
 
 QString QgsNewSpatialiteLayerDialog::selectedType() const
@@ -206,11 +177,14 @@ void QgsNewSpatialiteLayerDialog::mRemoveAttributeButton_clicked()
 
 void QgsNewSpatialiteLayerDialog::pbnFindSRID_clicked()
 {
+  const QgsDataSourceUri dbUri = mDatabaseComboBox->currentConnectionUri();
+  const QString dbPath = dbUri.database();
+
   // first get list of supported SRID from the selected SpatiaLite database
   // to build filter for projection selector
   sqlite3_database_unique_ptr database;
   bool status = true;
-  int rc = database.open_v2( mDatabaseComboBox->currentText(), SQLITE_OPEN_READONLY, nullptr );
+  int rc = database.open_v2( dbPath, SQLITE_OPEN_READONLY, nullptr );
   if ( rc != SQLITE_OK )
   {
     QMessageBox::warning( this, tr( "SpatiaLite Database" ), tr( "Unable to open the database" ) );
@@ -274,10 +248,15 @@ void QgsNewSpatialiteLayerDialog::selectionChanged()
 
 bool QgsNewSpatialiteLayerDialog::createDb()
 {
-  QString dbPath = mDatabaseComboBox->currentText();
+  QString dbPath = QFileDialog::getSaveFileName( this, tr( "New SpatiaLite Database File" ),
+                   QDir::homePath(),
+                   tr( "SpatiaLite" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db)", nullptr, QFileDialog::DontConfirmOverwrite );
+
   if ( dbPath.isEmpty() )
     return false;
 
+  QgsFileUtils::ensureFileNameHasExtension( dbPath, QStringList() << QStringLiteral( ".sqlite" ) << QLatin1String( ".db" ) << QLatin1String( ".sqlite3" )
+      << QLatin1String( ".db3" ) << QLatin1String( ".s3db" ) );
   QFile newDb( dbPath );
   if ( newDb.exists() )
   {
@@ -316,24 +295,21 @@ bool QgsNewSpatialiteLayerDialog::createDb()
   if ( !fi.exists() )
   {
     pbnFindSRID->setEnabled( false );
-    return false;
   }
-
-  QString key = "/SpatiaLite/connections/" + fi.fileName() + "/sqlitepath";
-
-  QgsSettings settings;
-  if ( !settings.contains( key ) )
+  else
   {
-    settings.setValue( QStringLiteral( "SpatiaLite/connections/selected" ), fi.fileName() + tr( "@" ) + fi.canonicalFilePath() );
-    settings.setValue( key, fi.canonicalFilePath() );
-
-    // Reload connections to refresh browser panel
-    QgisApp::instance()->reloadConnections();
+    QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) ) };
+    std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( QStringLiteral( "dbname='%1'" ).arg( dbPath ), QVariantMap() ) ) );
+    if ( conn )
+    {
+      md->saveConnection( conn.get(), fi.fileName() );
+      mDatabaseComboBox->setConnection( fi.fileName() );
+      pbnFindSRID->setEnabled( true );
+      return true;
+    }
   }
 
-  pbnFindSRID->setEnabled( true );
-
-  return true;
+  return false;
 }
 
 void QgsNewSpatialiteLayerDialog::buttonBox_accepted()
@@ -349,6 +325,9 @@ void QgsNewSpatialiteLayerDialog::buttonBox_rejected()
 
 bool QgsNewSpatialiteLayerDialog::apply()
 {
+  const QgsDataSourceUri dbUri = mDatabaseComboBox->currentConnectionUri();
+  const QString dbPath = dbUri.database();
+
   // Build up the sql statement for creating the table
   QString sql = QStringLiteral( "create table %1(" ).arg( quotedIdentifier( leLayerName->text() ) );
   QString delim;
@@ -369,16 +348,16 @@ bool QgsNewSpatialiteLayerDialog::apply()
   // complete the create table statement
   sql += ')';
 
-  QgsDebugMsg( QStringLiteral( "Creating table in database %1" ).arg( mDatabaseComboBox->currentText() ) );
+  QgsDebugMsg( QStringLiteral( "Creating table in database %1" ).arg( dbPath ) );
   QgsDebugMsg( sql );
 
   spatialite_database_unique_ptr database;
-  int rc = database.open( mDatabaseComboBox->currentText() );
+  int rc = database.open( dbPath );
   if ( rc != SQLITE_OK )
   {
     QMessageBox::warning( this,
                           tr( "SpatiaLite Database" ),
-                          tr( "Unable to open the database: %1" ).arg( mDatabaseComboBox->currentText() ) );
+                          tr( "Unable to open the database: %1" ).arg( dbPath ) );
     return false;
   }
 
@@ -433,8 +412,10 @@ bool QgsNewSpatialiteLayerDialog::apply()
   }
 
   const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "dbname='%1' table='%2'%3 sql=" )
-      .arg( mDatabaseComboBox->currentText(),
+  const QString uri = QStringLiteral( "dbname='%1' table='%2'%3 sql=" ).arg( dbPath, leLayerName->text(),
+                      mGeometryTypeBox->currentIndex() != 0 ? QStringLiteral( "(%1)" ).arg( leGeometryColumn->text() ) : QString() );
+  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "%1 table='%2'%3 sql=" )
+      .arg( mDatabaseComboBox->currentConnectionUri(),
             leLayerName->text(),
             mGeometryTypeBox->currentIndex() != 0 ? QStringLiteral( "(%1)" ).arg( leGeometryColumn->text() ) : QString() ),
       leLayerName->text(), QStringLiteral( "spatialite" ), options );

@@ -347,9 +347,11 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
     }
     else
     {
-      // There is no best default value, to display something reasonable in histogram chart, binCount should be small, OTOH, to get precise data for cumulative cut, the number should be big. Because it is easier to define fixed lower value for the chart, we calc optimum binCount for higher resolution (to avoid calculating that where histogram() is used. In any any case, it does not make sense to use more than width*height;
-      myBinCount = histogram.width * histogram.height;
-      if ( myBinCount > 1000 )  myBinCount = 1000;
+      // There is no best default value, to display something reasonable in histogram chart,
+      // binCount should be small, OTOH, to get precise data for cumulative cut, the number should be big.
+      // Because it is easier to define fixed lower value for the chart, we calc optimum binCount
+      // for higher resolution (to avoid calculating that where histogram() is used. In any any case,
+      // it does not make sense to use more than width*height;
 
       // for Int16/Int32 make sure bin count <= actual range, because there is no sense in having
       // bins at fractional values
@@ -357,8 +359,12 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
              mySrcDataType == Qgis::Int16 || mySrcDataType == Qgis::Int32 ||
              mySrcDataType == Qgis::UInt16 || mySrcDataType == Qgis::UInt32 ) )
       {
-        if ( myBinCount > histogram.maximum - histogram.minimum + 1 )
-          myBinCount = int( std::ceil( histogram.maximum - histogram.minimum + 1 ) );
+        myBinCount = std::min( histogram.width * histogram.height, static_cast<int>( std::ceil( histogram.maximum - histogram.minimum + 1 ) ) );
+      }
+      else
+      {
+        // This is for not integer types:
+        myBinCount = std::min( 2000, histogram.width * histogram.height );
       }
     }
   }

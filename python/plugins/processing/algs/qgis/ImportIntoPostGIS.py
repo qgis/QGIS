@@ -22,7 +22,6 @@ __date__ = 'October 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
 from qgis.core import (QgsVectorLayerExporter,
-                       QgsSettings,
                        QgsFeatureSink,
                        QgsProcessing,
                        QgsProcessingException,
@@ -30,10 +29,16 @@ from qgis.core import (QgsVectorLayerExporter,
                        QgsProcessingParameterString,
                        QgsProcessingParameterField,
                        QgsProcessingParameterBoolean,
-                       QgsWkbTypes)
+                       QgsProcessingParameterProviderConnection,
+                       QgsProcessingParameterDatabaseSchema,
+                       QgsProcessingParameterDatabaseTable,
+                       QgsWkbTypes,
+                       QgsProviderRegistry,
+                       QgsProviderConnectionException,
+                       QgsDataSourceUri,
+                       QgsAbstractDatabaseProviderConnection)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools import postgis
 
 
 class ImportIntoPostGIS(QgisAlgorithm):
@@ -64,30 +69,21 @@ class ImportIntoPostGIS(QgisAlgorithm):
                                                               self.tr('Layer to import'),
                                                               types=[QgsProcessing.TypeVector]))
 
-        db_param = QgsProcessingParameterString(
+        db_param = QgsProcessingParameterProviderConnection(
             self.DATABASE,
-            self.tr('Database (connection name)'))
-        db_param.setMetadata({
-            'widget_wrapper': {
-                'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}})
+            self.tr('Database (connection name)'), 'postgres'
+        )
         self.addParameter(db_param)
 
-        schema_param = QgsProcessingParameterString(
+        schema_param = QgsProcessingParameterDatabaseSchema(
             self.SCHEMA,
-            self.tr('Schema (schema name)'), 'public', False, True)
-        schema_param.setMetadata({
-            'widget_wrapper': {
-                'class': 'processing.gui.wrappers_postgis.SchemaWidgetWrapper',
-                'connection_param': self.DATABASE}})
+            self.tr('Schema (schema name)'), connectionParameterName=self.DATABASE, defaultValue='public', optional=True)
         self.addParameter(schema_param)
 
-        table_param = QgsProcessingParameterString(
+        table_param = QgsProcessingParameterDatabaseTable(
             self.TABLENAME,
-            self.tr('Table to import to (leave blank to use layer name)'), '', False, True)
-        table_param.setMetadata({
-            'widget_wrapper': {
-                'class': 'processing.gui.wrappers_postgis.TableWidgetWrapper',
-                'schema_param': self.SCHEMA}})
+            self.tr('Table to import to (leave blank to use layer name)'), defaultValue=None, connectionParameterName=self.DATABASE,
+            schemaParameterName=self.SCHEMA, optional=True, allowNewTableNames=True)
         self.addParameter(table_param)
 
         self.addParameter(QgsProcessingParameterField(self.PRIMARY_KEY,
@@ -123,10 +119,16 @@ class ImportIntoPostGIS(QgisAlgorithm):
         return self.tr('import,postgis,table,layer,into,copy').split(',')
 
     def processAlgorithm(self, parameters, context, feedback):
-        connection = self.parameterAsString(parameters, self.DATABASE, context)
-        db = postgis.GeoDB.from_name(connection)
+        connection_name = self.parameterAsConnectionName(parameters, self.DATABASE, context)
 
-        schema = self.parameterAsString(parameters, self.SCHEMA, context)
+        # resolve connection details to uri
+        try:
+            md = QgsProviderRegistry.instance().providerMetadata('postgres')
+            conn = md.createConnection(connection_name)
+        except QgsProviderConnectionException:
+            raise QgsProcessingException(self.tr('Could not retrieve connection details for {}').format(connection_name))
+
+        schema = self.parameterAsSchema(parameters, self.SCHEMA, context)
         overwrite = self.parameterAsBoolean(parameters, self.OVERWRITE, context)
         createIndex = self.parameterAsBoolean(parameters, self.CREATEINDEX, context)
         convertLowerCase = self.parameterAsBoolean(parameters, self.LOWERCASE_NAMES, context)
@@ -139,7 +141,7 @@ class ImportIntoPostGIS(QgisAlgorithm):
         if source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
-        table = self.parameterAsString(parameters, self.TABLENAME, context)
+        table = self.parameterAsDatabaseTableName(parameters, self.TABLENAME, context)
         if table:
             table.strip()
         if not table or table == '':
@@ -167,8 +169,11 @@ class ImportIntoPostGIS(QgisAlgorithm):
         if source.wkbType() == QgsWkbTypes.NoGeometry:
             geomColumn = None
 
-        uri = db.uri
-        uri.setDataSource(schema, table, geomColumn, '', primaryKeyField)
+        uri = QgsDataSourceUri(conn.uri())
+        uri.setSchema(schema)
+        uri.setTable(table)
+        uri.setKeyColumn(primaryKeyField)
+        uri.setGeometryColumn(geomColumn)
 
         if encoding:
             options['fileEncoding'] = encoding
@@ -197,13 +202,16 @@ class ImportIntoPostGIS(QgisAlgorithm):
                 self.tr('Error importing to PostGIS\n{0}').format(exporter.errorMessage()))
 
         if geomColumn and createIndex:
-            db.create_spatial_index(table, schema, geomColumn)
+            try:
+                options = QgsAbstractDatabaseProviderConnection.SpatialIndexOptions()
+                options.geometryColumnName = geomColumn
+                conn.createSpatialIndex(schema, table, options)
+            except QgsProviderConnectionException as e:
+                raise QgsProcessingException(self.tr('Error creating spatial index:\n{0}').format(e))
 
-        db.vacuum_analyze(table, schema)
+        try:
+            conn.vacuum(schema, table)
+        except QgsProviderConnectionException as e:
+            feedback.reportError(self.tr('Error vacuuming table:\n{0}').format(e))
 
         return {}
-
-    def dbConnectionNames(self):
-        settings = QgsSettings()
-        settings.beginGroup('/PostgreSQL/connections/')
-        return settings.childGroups()

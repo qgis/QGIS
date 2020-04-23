@@ -78,6 +78,10 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
         if self._filter_rect is not None and self._source._provider._spatialindex is not None:
             self._feature_id_list = self._source._provider._spatialindex.intersects(self._filter_rect)
 
+        if self._request.filterType() == QgsFeatureRequest.FilterFid or self._request.filterType() == QgsFeatureRequest.FilterFids:
+            fids = [self._request.filterFid()] if self._request.filterType() == QgsFeatureRequest.FilterFid else self._request.filterFids()
+            self._feature_id_list = list(set(self._feature_id_list).intersection(set(fids))) if self._feature_id_list else fids
+
     def fetchFeature(self, f):
         """fetch next feature, return true on success"""
         #virtual bool nextFeature( QgsFeature &f );

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>505</width>
-    <height>487</height>
+    <height>576</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -47,7 +47,7 @@
    <item row="8" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBox" name="mUseJoinFieldsSubset">
      <property name="title">
-      <string>&amp;Joined Fields</string>
+      <string>&amp;Joined fields</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -68,7 +68,7 @@
    <item row="9" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBox" name="mUseCustomPrefix">
      <property name="title">
-      <string>Custom Field &amp;Name Prefix</string>
+      <string>Custom field &amp;name prefix</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -105,7 +105,7 @@
    <item row="3" column="0" colspan="2">
     <widget class="QCheckBox" name="mCacheInMemoryCheckBox">
      <property name="text">
-      <string>Cache join layer in virtual memory</string>
+      <string>Cache join layer in memory</string>
      </property>
     </widget>
    </item>
@@ -126,14 +126,14 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="0">
+   <item row="6" column="0" colspan="2">
     <widget class="QCheckBox" name="mDynamicFormCheckBox">
      <property name="text">
       <string>Dynamic form</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="0">
+   <item row="7" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBox" name="mEditableJoinLayer">
      <property name="title">
       <string>Edi&amp;table join layer</string>

@@ -212,8 +212,6 @@ class TestQgsAggregateCalculator(unittest.TestCase):
                   QgsAggregateCalculator.StDev,
                   QgsAggregateCalculator.StDevSample,
                   QgsAggregateCalculator.Range,
-                  QgsAggregateCalculator.Minority,
-                  QgsAggregateCalculator.Majority,
                   QgsAggregateCalculator.FirstQuartile,
                   QgsAggregateCalculator.ThirdQuartile,
                   QgsAggregateCalculator.InterQuartileRange
@@ -232,6 +230,10 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         self.assertEqual(val, ['', '', 'aaaa', 'aaaa', 'bbbbbbbb', 'cc', 'dddd', 'eeee', 'eeee'])
         val, ok = agg.calculate(QgsAggregateCalculator.StringConcatenate, 'fldstring')
         self.assertEqual(val, 'aaaaaaaabbbbbbbbccddddeeeeeeee')
+        val, ok = agg.calculate(QgsAggregateCalculator.Minority, 'fldstring')
+        self.assertEqual(val, 'bbbbbbbb')
+        val, ok = agg.calculate(QgsAggregateCalculator.Majority, 'fldstring')
+        self.assertEqual(val, '')
 
     def testDateTime(self):
         """ Test calculation of aggregates on date/datetime fields"""

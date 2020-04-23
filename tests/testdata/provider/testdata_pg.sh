@@ -13,6 +13,8 @@ SCRIPTS="
   tests/testdata/provider/testdata_pg_topology.sql
   tests/testdata/provider/testdata_pg_domain.sql
   tests/testdata/provider/testdata_pg_json.sql
+  tests/testdata/provider/testdata_pg_pointcloud.sql
+  tests/testdata/provider/testdata_pg_bigint_pk.sql
 "
 
 dropdb --if-exists $DB

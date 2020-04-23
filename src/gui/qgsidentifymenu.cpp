@@ -126,6 +126,10 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
         break;
       }
 
+      case QgsMapLayerType::VectorTileLayer:
+        // TODO: add support
+        break;
+
       case QgsMapLayerType::PluginLayer:
       case QgsMapLayerType::MeshLayer:
         break;

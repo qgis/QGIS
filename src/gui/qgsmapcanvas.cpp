@@ -75,6 +75,8 @@ email                : sherman at mrcc.com
 #include "qgscustomdrophandler.h"
 #include "qgsreferencedgeometry.h"
 #include "qgsprojectviewsettings.h"
+#include "qgsmaplayertemporalproperties.h"
+#include "qgstemporalcontroller.h"
 
 /**
  * \ingroup gui
@@ -136,6 +138,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
            this, &QgsMapCanvas::writeProject );
 
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsMapCanvas::mapThemeChanged );
+  connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &QgsMapCanvas::mapThemeRenamed );
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemesChanged, this, &QgsMapCanvas::projectThemesChanged );
 
   mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
@@ -212,6 +215,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   // make sure we have the same default in QgsMapSettings and the scene's background brush
   // (by default map settings has white bg color, scene background brush is black)
   setCanvasColor( mSettings.backgroundColor() );
+
+  setTemporalRange( mSettings.temporalRange() );
 
   refresh();
 
@@ -413,6 +418,20 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
   emit destinationCrsChanged();
 }
 
+void QgsMapCanvas::setTemporalController( QgsTemporalController *controller )
+{
+  if ( mController )
+    disconnect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
+
+  mController = controller;
+  connect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
+}
+
+const QgsTemporalController *QgsMapCanvas::temporalController() const
+{
+  return mController;
+}
+
 void QgsMapCanvas::setMapSettingsFlags( QgsMapSettings::Flags flags )
 {
   mSettings.setFlags( flags );
@@ -597,6 +616,17 @@ void QgsMapCanvas::mapThemeChanged( const QString &theme )
   }
 }
 
+void QgsMapCanvas::mapThemeRenamed( const QString &theme, const QString &newTheme )
+{
+  if ( mTheme.isEmpty() || theme != mTheme )
+  {
+    return;
+  }
+
+  setTheme( newTheme );
+  refresh();
+}
+
 void QgsMapCanvas::rendererJobFinished()
 {
   QgsDebugMsgLevel( QStringLiteral( "CANVAS finish! %1" ).arg( !mJobCanceled ), 2 );
@@ -724,6 +754,35 @@ void QgsMapCanvas::setPreviewJobsEnabled( bool enabled )
 void QgsMapCanvas::setCustomDropHandlers( const QVector<QPointer<QgsCustomDropHandler> > &handlers )
 {
   mDropHandlers = handlers;
+}
+
+void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
+{
+  if ( temporalRange() == dateTimeRange )
+    return;
+
+  mSettings.setTemporalRange( dateTimeRange );
+
+  if ( mCache )
+  {
+    // we need to discard any previously cached images which have temporal properties enabled, so that these will be updated when
+    // the canvas is redrawn
+    const QList<QgsMapLayer *> layerList = mapSettings().layers();
+    for ( QgsMapLayer *layer : layerList )
+    {
+      if ( layer->temporalProperties() && layer->temporalProperties()->isActive() )
+        mCache->invalidateCacheForLayer( layer );
+    }
+  }
+
+  emit temporalRangeChanged();
+
+  autoRefreshTriggered();
+}
+
+const QgsDateTimeRange &QgsMapCanvas::temporalRange() const
+{
+  return mSettings.temporalRange();
 }
 
 void QgsMapCanvas::mapUpdateTimeout()
@@ -896,7 +955,7 @@ bool QgsMapCanvas::setReferencedExtent( const QgsReferencedRectangle &extent )
     }
   }
 
-  setExtent( canvasExtent );
+  setExtent( canvasExtent, true );
   return true;
 }
 
@@ -1680,9 +1739,9 @@ void QgsMapCanvas::zoomOut()
   zoomByFactor( zoomOutFactor() );
 }
 
-void QgsMapCanvas::zoomScale( double newScale )
+void QgsMapCanvas::zoomScale( double newScale, bool ignoreScaleLock )
 {
-  zoomByFactor( newScale / scale() );
+  zoomByFactor( newScale / scale(), nullptr, ignoreScaleLock );
 }
 
 void QgsMapCanvas::zoomWithCenter( int x, int y, bool zoomIn )
@@ -2261,9 +2320,9 @@ void QgsMapCanvas::writeProject( QDomDocument &doc )
   // TODO: store only units, extent, projections, dest CRS
 }
 
-void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPointXY *center )
+void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPointXY *center, bool ignoreScaleLock )
 {
-  if ( mScaleLocked )
+  if ( mScaleLocked && !ignoreScaleLock )
   {
     // zoom map to mouse cursor by magnifying
     setMagnificationFactor( mapSettings().magnificationFactor() / scaleFactor );
@@ -2436,6 +2495,12 @@ const QgsLabelingEngineSettings &QgsMapCanvas::labelingEngineSettings() const
 void QgsMapCanvas::startPreviewJobs()
 {
   stopPreviewJobs(); //just in case still running
+
+  //canvas preview jobs aren't compatible with rotation
+  // TODO fix this
+  if ( !qgsDoubleNear( mSettings.rotation(), 0.0 ) )
+    return;
+
   schedulePreviewJob( 0 );
 }
 

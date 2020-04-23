@@ -23,15 +23,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 import os
 
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsProcessingProvider,
                        QgsMessageLog,
-                       QgsProcessingModelAlgorithm,
-                       QgsProcessingUtils,
-                       QgsXmlUtils)
+                       QgsProcessingModelAlgorithm)
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 
@@ -45,7 +41,6 @@ from processing.modeler.DeleteModelAction import DeleteModelAction
 from processing.modeler.EditModelAction import EditModelAction
 from processing.modeler.ExportModelAsPythonScriptAction import ExportModelAsPythonScriptAction
 from processing.modeler.OpenModelFromFileAction import OpenModelFromFileAction
-from processing.modeler.exceptions import WrongModelException
 from processing.modeler.ModelerUtils import ModelerUtils
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -120,17 +115,13 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
         for path, subdirs, files in os.walk(folder):
             for descriptionFile in files:
                 if descriptionFile.endswith('model3'):
-                    try:
-                        fullpath = os.path.join(path, descriptionFile)
+                    fullpath = os.path.join(path, descriptionFile)
 
-                        alg = QgsProcessingModelAlgorithm()
-                        if alg.fromFile(fullpath):
-                            if alg.name():
-                                alg.setSourceFilePath(fullpath)
-                                self.algs.append(alg)
-                        else:
-                            QgsMessageLog.logMessage(self.tr('Could not load model {0}', 'ModelerAlgorithmProvider').format(descriptionFile),
-                                                     self.tr('Processing'), Qgis.Critical)
-                    except WrongModelException as e:
-                        QgsMessageLog.logMessage(self.tr('Could not load model {0}\n{1}', 'ModelerAlgorithmProvider').format(descriptionFile, str(e)),
+                    alg = QgsProcessingModelAlgorithm()
+                    if alg.fromFile(fullpath):
+                        if alg.name():
+                            alg.setSourceFilePath(fullpath)
+                            self.algs.append(alg)
+                    else:
+                        QgsMessageLog.logMessage(self.tr('Could not load model {0}', 'ModelerAlgorithmProvider').format(descriptionFile),
                                                  self.tr('Processing'), Qgis.Critical)

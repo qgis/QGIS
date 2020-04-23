@@ -80,6 +80,11 @@ QIcon QgsLayerItem::iconMesh()
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconMeshLayer.svg" ) );
 }
 
+QIcon QgsLayerItem::iconVectorTile()
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconVectorTileLayer.svg" ) );
+}
+
 QIcon QgsLayerItem::iconDefault()
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayer.png" ) );
@@ -459,6 +464,11 @@ bool QgsDataItem::hasChildren()
   return ( state() == Populated ? !mChildren.isEmpty() : true );
 }
 
+bool QgsDataItem::layerCollection() const
+{
+  return false;
+}
+
 void QgsDataItem::setParent( QgsDataItem *parent )
 {
   if ( mParent )
@@ -638,6 +648,9 @@ QgsMapLayerType QgsLayerItem::mapLayerType() const
     case QgsLayerItem::Mesh:
       return QgsMapLayerType::MeshLayer;
 
+    case QgsLayerItem::VectorTile:
+      return QgsMapLayerType::VectorTileLayer;
+
     case QgsLayerItem::Plugin:
       return QgsMapLayerType::PluginLayer;
 
@@ -688,6 +701,8 @@ QgsLayerItem::LayerType QgsLayerItem::typeFromMapLayer( QgsMapLayer *layer )
       return Plugin;
     case QgsMapLayerType::MeshLayer:
       return Mesh;
+    case QgsMapLayerType::VectorTileLayer:
+      return VectorTile;
   }
   return Vector; // no warnings
 }
@@ -773,6 +788,7 @@ QgsMimeDataUtils::Uri QgsLayerItem::mimeUri() const
         case Raster:
         case Plugin:
         case Mesh:
+        case VectorTile:
           break;
       }
       break;
@@ -781,6 +797,9 @@ QgsMimeDataUtils::Uri QgsLayerItem::mimeUri() const
       break;
     case QgsMapLayerType::MeshLayer:
       u.layerType = QStringLiteral( "mesh" );
+      break;
+    case QgsMapLayerType::VectorTileLayer:
+      u.layerType = QStringLiteral( "vector-tile" );
       break;
     case QgsMapLayerType::PluginLayer:
       u.layerType = QStringLiteral( "plugin" );

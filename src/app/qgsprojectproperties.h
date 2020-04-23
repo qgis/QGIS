@@ -184,6 +184,18 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     void customizeBearingFormat();
 
+    /**
+     * Sets the start and end dates input values from the project
+     * temporal layers.
+     *
+     * Looks for the smallest date and the greatest date from the
+     * project layers and set them for start and end dates
+     *  input respectively.
+     *
+     * \since QGIS 3.14
+     */
+    void calculateFromLayersButton_clicked();
+
   private:
 
     /**
@@ -239,8 +251,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void populateWmtsTree( const QgsLayerTreeGroup *treeGroup, QgsTreeWidgetItem *treeItem );
     //! add WMTS Grid definition based on CRS
     void addWmtsGrid( const QString &crsStr );
-    //! Check OWS configuration
-    void checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages );
 
     //! Populates list with ellipsoids from Sqlite3 db
     void populateEllipsoidList();

@@ -103,6 +103,13 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     bool hasChildren();
 
+    /**
+     * Returns TRUE if the data item is a collection of layers
+     * The default implementation returns FALSE, subclasses must implement this method if their children are layers.
+     * \since QGIS 3.14
+     */
+    virtual bool layerCollection() const;
+
     int rowCount();
 
     /**
@@ -499,7 +506,8 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
       Database,
       Table,
       Plugin,    //!< Added in 2.10
-      Mesh       //!< Added in 3.2
+      Mesh,      //!< Added in 3.2
+      VectorTile //!< Added in 3.14
     };
 
     Q_ENUM( LayerType )
@@ -588,6 +596,8 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static QIcon iconDefault();
     //! Returns icon for mesh layer type
     static QIcon iconMesh();
+    //! Returns icon for vector tile layer
+    static QIcon iconVectorTile();
 
     //! \returns the layer name
     virtual QString layerName() const { return name(); }

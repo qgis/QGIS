@@ -33,6 +33,7 @@
 #include "qgsfeatureaction.h"
 #include "qgisapp.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsrubberband.h"
 
 #include <QSettings>
 
@@ -69,7 +70,9 @@ void QgsMapToolAddFeature::digitized( const QgsFeature &f )
   {
     //add points to other features to keep topology up-to-date
     bool topologicalEditing = QgsProject::instance()->topologicalEditing();
-    if ( mode() == CaptureLine || mode() == CapturePolygon )
+    QgsProject::AvoidIntersectionsMode avoidIntersectionsMode = QgsProject::instance()->avoidIntersectionsMode();
+    if ( topologicalEditing && avoidIntersectionsMode == QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers &&
+         ( mode() == CaptureLine || mode() == CapturePolygon ) )
     {
 
       //use always topological editing for avoidIntersection.
@@ -91,7 +94,6 @@ void QgsMapToolAddFeature::digitized( const QgsFeature &f )
     if ( topologicalEditing )
     {
       QList<QgsPointLocator::Match> sm = snappingMatches();
-      Q_ASSERT( f.geometry().constGet()->vertexCount() == sm.size() );
       for ( int i = 0; i < sm.size() ; ++i )
       {
         if ( sm.at( i ).layer() )

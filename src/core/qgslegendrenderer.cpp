@@ -38,7 +38,13 @@ QgsLegendRenderer::QgsLegendRenderer( QgsLayerTreeModel *legendModel, const QgsL
 
 QSizeF QgsLegendRenderer::minimumSize( QgsRenderContext *renderContext )
 {
-  return paintAndDetermineSize( renderContext );
+  QPainter *prevPainter = renderContext ? renderContext->painter() : nullptr;
+  if ( renderContext )
+    renderContext->setPainter( nullptr );
+  const QSizeF res = paintAndDetermineSize( renderContext );
+  if ( renderContext )
+    renderContext->setPainter( prevPainter );
+  return res;
 }
 
 void QgsLegendRenderer::drawLegend( QPainter *painter )
@@ -650,6 +656,9 @@ QgsLegendRenderer::LegendComponent QgsLegendRenderer::drawSymbolItemInternal( Qg
   ctx.columnLeft = columnContext.left;
   ctx.columnRight = columnContext.right;
   ctx.maxSiblingSymbolWidth = maxSiblingSymbolWidth;
+
+  if ( const QgsSymbolLegendNode *symbolNode = dynamic_cast< const QgsSymbolLegendNode * >( symbolItem ) )
+    ctx.patchShape = symbolNode->patchShape();
 
   QgsLayerTreeModelLegendNode::ItemMetrics im = symbolItem->draw( mSettings, context ? &ctx
       : ( painter ? &ctx : nullptr ) );

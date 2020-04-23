@@ -69,6 +69,14 @@ The optional ``providerKey`` string (added in QGIS 3.12) can be used to specify 
 
     bool hasChildren();
 
+    virtual bool layerCollection() const;
+%Docstring
+Returns ``True`` if the data item is a collection of layers
+The default implementation returns ``False``, subclasses must implement this method if their children are layers.
+
+.. versionadded:: 3.14
+%End
+
     int rowCount();
 
     virtual QVector<QgsDataItem *> createChildren() /Factory/;
@@ -471,7 +479,8 @@ Item that represents a layer that can be opened with one of the providers
       Database,
       Table,
       Plugin,
-      Mesh
+      Mesh,
+      VectorTile
     };
 
 
@@ -565,6 +574,10 @@ Use QgsDataItemGuiProvider.deleteLayer instead
     static QIcon iconMesh();
 %Docstring
 Returns icon for mesh layer type
+%End
+    static QIcon iconVectorTile();
+%Docstring
+Returns icon for vector tile layer
 %End
 
     virtual QString layerName() const;

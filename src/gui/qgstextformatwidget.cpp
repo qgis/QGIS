@@ -493,6 +493,11 @@ void QgsTextFormatWidget::initWidget()
   {
     updateShadowFrameStatus();
   } );
+  connect( mCalloutDrawDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::updateCalloutFrameStatus );
+  connect( mCalloutsDrawCheckBox, &QCheckBox::stateChanged, this, [ = ]( int )
+  {
+    updateCalloutFrameStatus();
+  } );
 
   mGeometryGeneratorType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "Polygon / MultiPolygon" ), QgsWkbTypes::GeometryType::PolygonGeometry );
   mGeometryGeneratorType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "LineString / MultiLineString" ), QgsWkbTypes::GeometryType::LineGeometry );
@@ -500,6 +505,8 @@ void QgsTextFormatWidget::initWidget()
 
   // set correct initial tab to match displayed setting page
   whileBlocking( mOptionsTab )->setCurrentIndex( mLabelStackedWidget->currentIndex() );
+  mOptionsTab->tabBar()->setUsesScrollButtons( true );
+
 
   if ( mMapCanvas )
   {
@@ -533,7 +540,12 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
       mOptionsTab->removeTab( 8 );
       mOptionsTab->removeTab( 7 );
       mOptionsTab->removeTab( 6 );
-      mOptionsTab->removeTab( 5 );
+      mOptionsTab->removeTab( 3 );
+      mLabelStackedWidget->removeWidget( mLabelPage_Rendering );
+      mLabelStackedWidget->removeWidget( mLabelPage_Callouts );
+      mLabelStackedWidget->removeWidget( mLabelPage_Mask );
+      mLabelStackedWidget->removeWidget( mLabelPage_Placement );
+      mLabelStackedWidget->setCurrentIndex( 0 );
 
       frameLabelWith->hide();
       mDirectSymbolsFrame->hide();
@@ -795,6 +807,8 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mZIndexDDBtn, QgsPalLayerSettings::ZIndex );
 
   registerDataDefinedButton( mCalloutDrawDDBtn, QgsPalLayerSettings::CalloutDraw );
+  mCalloutDrawDDBtn->registerCheckedWidget( mCalloutsDrawCheckBox );
+
   registerDataDefinedButton( mLabelAllPartsDDBtn, QgsPalLayerSettings::LabelAllParts );
 }
 
@@ -1727,6 +1741,11 @@ void QgsTextFormatWidget::updateShadowFrameStatus()
   mShadowFrame->setEnabled( mShadowDrawDDBtn->isActive() || mShadowDrawChkBx->isChecked() );
 }
 
+void QgsTextFormatWidget::updateCalloutFrameStatus()
+{
+  mCalloutFrame->setEnabled( mCalloutDrawDDBtn->isActive() || mCalloutsDrawCheckBox->isChecked() );
+}
+
 void QgsTextFormatWidget::setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type )
 {
   switch ( type )
@@ -1735,6 +1754,7 @@ void QgsTextFormatWidget::setFormatFromStyle( const QString &name, QgsStyle::Sty
     case QgsStyle::ColorrampEntity:
     case QgsStyle::TagEntity:
     case QgsStyle::SmartgroupEntity:
+    case QgsStyle::LegendPatchShapeEntity:
       return;
 
     case QgsStyle::TextFormatEntity:
@@ -1765,7 +1785,7 @@ void QgsTextFormatWidget::saveFormat()
   if ( !style )
     return;
 
-  QgsStyleSaveDialog saveDlg( this );
+  QgsStyleSaveDialog saveDlg( this, QgsStyle::TextFormatEntity );
   saveDlg.setDefaultTags( mTextFormatsListWidget->currentTagFilter() );
   if ( !saveDlg.exec() )
     return;

@@ -38,7 +38,7 @@ class DeleteModelAction(ContextAction):
         self.name = QCoreApplication.translate('DeleteModelAction', 'Delete Model…')
 
     def isEnabled(self):
-        return isinstance(self.itemData, QgsProcessingAlgorithm) and self.itemData.provider().id() == "model"
+        return isinstance(self.itemData, QgsProcessingAlgorithm) and self.itemData.provider().id() in ("model", "project")
 
     def execute(self):
         model = self.itemData

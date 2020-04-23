@@ -173,7 +173,30 @@ postgis_functions = [  # from http://www.postgis.org/docs/reference.html
                        "*find_srid", "*ST_mem_size", "*ST_point_inside_circle", "ST_XMax", "ST_XMin", "ST_YMax", "ST_YMin",
                        "ST_ZMax", "ST_ZMin",
                        # 7.13. Exceptional Functions
-                       "*postgis_addbbox", "*postgis_dropbbox", "*postgis_hasbbox"
+                       "*postgis_addbbox", "*postgis_dropbbox", "*postgis_hasbbox",
+                       # Raster functions
+                       "AddRasterConstraints", "DropRasterConstraints", "AddOverviewConstraints", "DropOverviewConstraints",
+                       "PostGIS_GDAL_Version", "PostGIS_Raster_Lib_Build_Date", "PostGIS_Raster_Lib_Version", "ST_GDALDrivers",
+                       "UpdateRasterSRID", "ST_CreateOverview", "ST_AddBand", "ST_AsRaster", "ST_Band", "ST_MakeEmptyCoverage",
+                       "ST_MakeEmptyRaster", "ST_Tile", "ST_Retile", "ST_FromGDALRaster", "ST_GeoReference", "ST_Height",
+                       "ST_IsEmpty", "ST_MemSize", "ST_MetaData", "ST_NumBands", "ST_PixelHeight", "ST_PixelWidth", "ST_ScaleX",
+                       "ST_ScaleY", "ST_RasterToWorldCoord", "ST_RasterToWorldCoordX", "ST_RasterToWorldCoordY", "ST_Rotation",
+                       "ST_SkewX", "ST_SkewY", "ST_SRID", "ST_Summary", "ST_UpperLeftX", "ST_UpperLeftY", "ST_Width",
+                       "ST_WorldToRasterCoord", "ST_WorldToRasterCoordX", "ST_WorldToRasterCoordY", "ST_BandMetaData",
+                       "ST_BandNoDataValue", "ST_BandIsNoData", "ST_BandPath", "ST_BandFileSize", "ST_BandFileTimestamp",
+                       "ST_BandPixelType", "ST_MinPossibleValue", "ST_HasNoBand", "ST_PixelAsPolygon", "ST_PixelAsPolygons",
+                       "ST_PixelAsPoint", "ST_PixelAsPoints", "ST_PixelAsCentroid", "ST_PixelAsCentroids", "ST_Value",
+                       "ST_NearestValue", "ST_Neighborhood", "ST_SetValue", "ST_SetValues", "ST_DumpValues", "ST_PixelOfValue",
+                       "ST_SetGeoReference", "ST_SetRotation", "ST_SetScale", "ST_SetSkew", "ST_SetSRID", "ST_SetUpperLeft",
+                       "ST_Resample", "ST_Rescale", "ST_Reskew", "ST_SnapToGrid", "ST_Resize", "ST_Transform",
+                       "ST_SetBandNoDataValue", "ST_SetBandIsNoData", "ST_SetBandPath", "ST_SetBandIndex", "ST_Count",
+                       "ST_CountAgg", "ST_Histogram", "ST_Quantile", "ST_SummaryStats", "ST_SummaryStatsAgg", "ST_ValueCount",
+                       "ST_RastFromWKB", "ST_RastFromHexWKB", "ST_AsBinary", "ST_AsWKB", "ST_AsHexWKB", "ST_AsGDALRaster",
+                       "ST_AsJPEG", "ST_AsPNG", "ST_AsTIFF", "ST_Clip", "ST_ColorMap", "ST_Grayscale", "ST_Intersection",
+                       "ST_MapAlgebra", "ST_MapAlgebraExpr", "ST_MapAlgebraFct", "ST_MapAlgebraFctNgb", "ST_Reclass", "ST_Union",
+                       "ST_Distinct4ma", "ST_InvDistWeight4ma", "ST_Max4ma", "ST_Mean4ma", "ST_Min4ma", "ST_MinDist4ma",
+                       "ST_Range4ma", "ST_StdDev4ma", "ST_Sum4ma", "ST_Aspect", "ST_HillShade", "ST_Roughness", "ST_Slope",
+                       "ST_TPI", "ST_TRI",
 ]
 
 # constants

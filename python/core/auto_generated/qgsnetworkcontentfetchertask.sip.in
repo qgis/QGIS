@@ -34,7 +34,7 @@ without danger of the task being first removed by the QgsTaskManager.
 %End
   public:
 
-    QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg = QString() );
+    QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg = QString(), QgsTask::Flags flags = QgsTask::CanCancel );
 %Docstring
 Constructor for a QgsNetworkContentFetcherTask which fetches
 the specified ``url``.
@@ -42,7 +42,7 @@ the specified ``url``.
 Optionally, authentication configuration can be set via the ``authcfg`` argument.
 %End
 
-    QgsNetworkContentFetcherTask( const QNetworkRequest &request, const QString &authcfg = QString() );
+    QgsNetworkContentFetcherTask( const QNetworkRequest &request, const QString &authcfg = QString(), QgsTask::Flags flags = QgsTask::CanCancel );
 %Docstring
 Constructor for a QgsNetworkContentFetcherTask which fetches
 the specified network ``request``.

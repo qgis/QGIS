@@ -52,6 +52,12 @@ QgsDualView::QgsDualView( QWidget *parent )
   connect( mFeatureListView, &QgsFeatureListView::aboutToChangeEditSelection, this, &QgsDualView::featureListAboutToChangeEditSelection );
   connect( mFeatureListView, &QgsFeatureListView::currentEditSelectionChanged, this, &QgsDualView::featureListCurrentEditSelectionChanged );
   connect( mFeatureListView, &QgsFeatureListView::currentEditSelectionProgressChanged, this, &QgsDualView::updateEditSelectionProgress );
+  connect( mFeatureListView, &QgsFeatureListView::willShowContextMenu, this, &QgsDualView::widgetWillShowContextMenu );
+
+  connect( mTableView, &QgsAttributeTableView::willShowContextMenu, this, &QgsDualView::viewWillShowContextMenu );
+  mTableView->horizontalHeader()->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( mTableView->horizontalHeader(), &QHeaderView::customContextMenuRequested, this, &QgsDualView::showViewHeaderMenu );
+  connect( mTableView, &QgsAttributeTableView::columnResized, this, &QgsDualView::tableColumnResized );
 
   mConditionalFormatWidgetStack->hide();
   mConditionalFormatWidget = new QgsFieldConditionalFormatWidget( this );
@@ -118,12 +124,6 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   mLayer = layer;
   mEditorContext = context;
 
-  connect( mTableView, &QgsAttributeTableView::willShowContextMenu, this, &QgsDualView::viewWillShowContextMenu );
-  mTableView->horizontalHeader()->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( mTableView->horizontalHeader(), &QHeaderView::customContextMenuRequested, this, &QgsDualView::showViewHeaderMenu );
-  connect( mTableView, &QgsAttributeTableView::columnResized, this, &QgsDualView::tableColumnResized );
-  connect( mFeatureListView, &QgsFeatureListView::willShowContextMenu, this, &QgsDualView::widgetWillShowContextMenu );
-
   initLayerCache( !( request.flags() & QgsFeatureRequest::NoGeometry ) || !request.filterRect().isNull() );
   initModels( mapCanvas, request, loadFeatures );
 
@@ -148,8 +148,8 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
 
   connect( mAttributeForm, &QgsAttributeForm::widgetValueChanged, this, &QgsDualView::featureFormAttributeChanged );
   connect( mAttributeForm, &QgsAttributeForm::modeChanged, this, &QgsDualView::formModeChanged );
-  connect( mMasterModel, &QgsAttributeTableModel::modelChanged, mAttributeForm, &QgsAttributeForm::refreshFeature );
   connect( mAttributeForm, &QgsAttributeForm::filterExpressionSet, this, &QgsDualView::filterExpressionSet );
+  connect( mMasterModel, &QgsAttributeTableModel::modelChanged, mAttributeForm, &QgsAttributeForm::refreshFeature );
   connect( mFilterModel, &QgsAttributeTableFilterModel::sortColumnChanged, this, &QgsDualView::onSortColumnChanged );
 
   if ( mFeatureListPreviewButton->defaultAction() )
@@ -159,6 +159,10 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
 
   // This slows down load of the attribute table heaps and uses loads of memory.
   //mTableView->resizeColumnsToContents();
+
+  if ( mFeatureListModel->rowCount( ) > 0 )
+    mFeatureListView->setEditSelection( QgsFeatureIds() << mFeatureListModel->data( mFeatureListModel->index( 0, 0 ), QgsFeatureListModel::Role::FeatureRole ).value<QgsFeature>().id() );
+
 }
 
 void QgsDualView::columnBoxInit()
@@ -300,6 +304,7 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
     whileBlocking( mLayerCache )->setCacheGeometry( needsGeometry );
     mMasterModel->loadLayer();
   }
+
 
   // disable the browsing auto pan/scale if the list only shows visible items
   switch ( filterMode )
@@ -682,6 +687,14 @@ void QgsDualView::cancelProgress()
     mProgressDlg->cancel();
 }
 
+void QgsDualView::parentFormValueChanged( const QString &attribute, const QVariant &newValue )
+{
+  if ( mAttributeForm )
+  {
+    mAttributeForm->parentFormValueChanged( attribute, newValue );
+  }
+}
+
 void QgsDualView::hideEvent( QHideEvent *event )
 {
   Q_UNUSED( event )
@@ -906,11 +919,8 @@ void QgsDualView::modifySort()
 
   QgsExpressionBuilderWidget *expressionBuilder = new QgsExpressionBuilderWidget();
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
-  expressionBuilder->setExpressionContext( context );
-  expressionBuilder->setLayer( mLayer );
-  expressionBuilder->loadFieldNames();
-  expressionBuilder->loadRecent( QStringLiteral( "generic" ) );
-  expressionBuilder->loadUserExpressions( );
+
+  expressionBuilder->initWithLayer( mLayer, context, QStringLiteral( "generic" ) );
   expressionBuilder->setExpressionText( sortExpression().isEmpty() ? mLayer->displayExpression() : sortExpression() );
 
   sortingGroupBox->layout()->addWidget( expressionBuilder );
@@ -1062,6 +1072,13 @@ void QgsDualView::setFilteredFeatures( const QgsFeatureIds &filteredFeatures )
 {
   mFilterModel->setFilteredFeatures( filteredFeatures );
 }
+
+void QgsDualView::filterFeatures( const QgsExpression &filterExpression, const QgsExpressionContext &context )
+{
+  mFilterModel->setFilterExpression( filterExpression, context );
+  mFilterModel->filterFeatures();
+}
+
 
 void QgsDualView::setRequest( const QgsFeatureRequest &request )
 {

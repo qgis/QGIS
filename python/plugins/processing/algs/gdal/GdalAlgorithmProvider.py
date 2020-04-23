@@ -37,7 +37,7 @@ from .buildvrt import buildvrt
 from .ClipRasterByExtent import ClipRasterByExtent
 from .ClipRasterByMask import ClipRasterByMask
 from .ColorRelief import ColorRelief
-from .contour import contour
+from .contour import contour, contour_polygon
 from .Datasources2Vrt import Datasources2Vrt
 from .fillnodata import fillnodata
 from .gdalinfo import gdalinfo
@@ -147,6 +147,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             ClipRasterByMask(),
             ColorRelief(),
             contour(),
+            contour_polygon(),
             Datasources2Vrt(),
             fillnodata(),
             gdalinfo(),

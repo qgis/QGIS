@@ -56,7 +56,9 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
       TypeColumn,
       ToleranceColumn,
       UnitsColumn,
-      AvoidIntersectionColumn
+      AvoidIntersectionColumn,
+      MinScaleColumn,
+      MaxScaleColumn
     };
 
     QgsSnappingLayerTreeModel( QgsProject *project, QgsMapCanvas *canvas, QObject *parent = nullptr );
@@ -93,8 +95,9 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
     QString mFilterText;
     QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> mIndividualLayerSettings;
     QgsLayerTreeModel *mLayerTreeModel = nullptr;
+    bool mEnableMinMaxColumn = true;
 
-    void hasRowchanged( QgsLayerTreeNode *node, const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &oldSettings );
+    void hasRowchanged( QgsLayerTreeNode *node, const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &oldSettings, bool forceRefresh );
 };
 
 #endif // QGSSNAPPINGLAYERTREEVIEW_H

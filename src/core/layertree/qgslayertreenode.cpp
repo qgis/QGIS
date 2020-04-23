@@ -155,6 +155,18 @@ QList<QgsMapLayer *> QgsLayerTreeNode::checkedLayers() const
   return layers;
 }
 
+int QgsLayerTreeNode::depth() const
+{
+  int depth = 0;
+  QgsLayerTreeNode *node = mParent;
+  while ( node )
+  {
+    node = node->parent();
+    ++depth;
+  }
+  return depth;
+}
+
 void QgsLayerTreeNode::setExpanded( bool expanded )
 {
   if ( mExpanded == expanded )

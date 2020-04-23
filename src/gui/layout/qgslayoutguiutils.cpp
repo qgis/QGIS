@@ -22,9 +22,11 @@
 #include "qgslayoutitemshape.h"
 #include "qgslayoutmapwidget.h"
 #include "qgslayoutshapewidget.h"
+#include "qgslayoutmarkerwidget.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitempolygon.h"
 #include "qgslayoutitempolyline.h"
+#include "qgslayoutitemmarker.h"
 #include "qgslayoutpolygonwidget.h"
 #include "qgslayoutpolylinewidget.h"
 #include "qgslayoutpicturewidget.h"
@@ -302,6 +304,13 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     shape->setShapeType( QgsLayoutItemShape::Triangle );
     return shape.release();
   } ) );
+
+  // marker
+  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutMarker, QObject::tr( "Marker" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMarker.svg" ) ),
+                                      [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return new QgsLayoutMarkerWidget( qobject_cast< QgsLayoutItemMarker * >( item ) );
+  }, nullptr ) );
 
   // arrow
   std::unique_ptr< QgsLayoutItemGuiMetadata > arrowMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata>(

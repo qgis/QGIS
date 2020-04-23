@@ -53,6 +53,20 @@ Determines if the "link feature" button should be shown
 .. versionadded:: 2.18
 %End
 
+    bool showSaveChildEditsButton() const;
+%Docstring
+Determines if the "save child layer edits" button should be shown
+
+.. versionadded:: 3.14
+%End
+
+    void setShowSaveChildEditsButton( bool showSaveChildEditsButton );
+%Docstring
+Determines if the "save child layer edits" button should be shown
+
+.. versionadded:: 3.14
+%End
+
     bool showUnlinkButton() const;
 %Docstring
 Determines if the "unlink feature" button should be shown
@@ -73,6 +87,21 @@ The relation for which this wrapper is created.
 
 .. versionadded:: 3.0
 %End
+
+    void widgetValueChanged( const QString &attribute, const QVariant &newValue, bool attributeChanged );
+%Docstring
+Will be called when a value in the current edited form or table row
+changes
+
+Forward the signal to the embedded form
+
+:param attribute: The name of the attribute that changed.
+:param newValue: The new value of the attribute.
+:param attributeChanged: If ``True``, it corresponds to an actual change of the feature attribute
+
+.. versionadded:: 3.14
+%End
+
 
   protected:
     virtual QWidget *createWidget( QWidget *parent );

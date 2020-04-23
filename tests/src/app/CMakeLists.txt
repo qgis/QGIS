@@ -19,6 +19,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/validity
+  ${CMAKE_SOURCE_DIR}/src/core/vectortile
   ${CMAKE_SOURCE_DIR}/src/ui
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
@@ -28,6 +29,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/raster
+  ${CMAKE_SOURCE_DIR}/src/gui/vector
   ${CMAKE_SOURCE_DIR}/src/python
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/app/attributeformconfig
@@ -128,6 +130,7 @@ ADD_QGIS_TEST(maptoolmovefeaturetest testqgsmaptoolmovefeature.cpp)
 ADD_QGIS_TEST(maptoolellipsetest testqgsmaptoolellipse.cpp)
 ADD_QGIS_TEST(maptoolrectangletest testqgsmaptoolrectangle.cpp)
 ADD_QGIS_TEST(maptoolregularpolygontest testqgsmaptoolregularpolygon.cpp)
+ADD_QGIS_TEST(maptoolsplitpartstest testqgsmaptoolsplitparts.cpp)
 ADD_QGIS_TEST(measuretool testqgsmeasuretool.cpp)
 ADD_QGIS_TEST(vertextool testqgsvertextool.cpp)
 ADD_QGIS_TEST(vectorlayersaveasdialogtest testqgsvectorlayersaveasdialog.cpp)

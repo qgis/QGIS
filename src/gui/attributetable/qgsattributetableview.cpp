@@ -39,7 +39,8 @@
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   : QTableView( parent )
 {
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "BetterAttributeTable/geometry" ) ).toByteArray() );
 
   //verticalHeader()->setDefaultSectionSize( 20 );
   horizontalHeader()->setHighlightSections( false );
@@ -54,6 +55,8 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   setSelectionMode( QAbstractItemView::ExtendedSelection );
   setSortingEnabled( true ); // At this point no data is in the model yet, so actually nothing is sorted.
   horizontalHeader()->setSortIndicatorShown( false ); // So hide the indicator to avoid confusion.
+
+  setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
 
   verticalHeader()->viewport()->installEventFilter( this );
 
@@ -283,6 +286,8 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
 void QgsAttributeTableView::closeEvent( QCloseEvent *e )
 {
   Q_UNUSED( e )
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "BetterAttributeTable/geometry" ), QVariant( saveGeometry() ) );
 }
 
 void QgsAttributeTableView::mousePressEvent( QMouseEvent *event )

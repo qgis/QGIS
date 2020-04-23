@@ -27,6 +27,18 @@ QgsPolygon::QgsPolygon()
   mWkbType = QgsWkbTypes::Polygon;
 }
 
+///@cond DOXYGEN_SHUTTUP
+QgsPolygon::QgsPolygon( QgsLineString *exterior, const QList<QgsLineString *> &rings )
+{
+  setExteriorRing( exterior );
+  for ( QgsLineString *ring : rings )
+  {
+    addInteriorRing( ring );
+  }
+  clearCache();
+}
+///@endcond
+
 QString QgsPolygon::geometryType() const
 {
   return QStringLiteral( "Polygon" );

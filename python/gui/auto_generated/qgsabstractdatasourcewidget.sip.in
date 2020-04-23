@@ -94,6 +94,13 @@ Emitted when a mesh layer has been selected for addition.
 .. versionadded:: 3.4
 %End
 
+    void addVectorTileLayer( const QString &url, const QString &baseName );
+%Docstring
+Emitted when a vector tile layer has been selected for addition.
+
+.. versionadded:: 3.14
+%End
+
     void addVectorLayers( const QStringList &layerList, const QString &encoding, const QString &dataSourceType );
 %Docstring
 Emitted when one or more OGR supported layers are selected for addition

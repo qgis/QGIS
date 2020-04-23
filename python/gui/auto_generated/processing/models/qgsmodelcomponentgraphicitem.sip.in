@@ -1,0 +1,614 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/models/qgsmodelcomponentgraphicitem.h             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsModelComponentGraphicItem : QGraphicsObject
+{
+%Docstring
+Base class for graphic items representing model components in the model designer.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodelcomponentgraphicitem.h"
+%End
+  public:
+
+    enum State
+    {
+      Normal,
+      Selected,
+      Hover,
+    };
+
+    enum Flag
+    {
+    };
+    typedef QFlags<QgsModelComponentGraphicItem::Flag> Flags;
+
+
+    QgsModelComponentGraphicItem( QgsProcessingModelComponent *component /Transfer/,
+                                  QgsProcessingModelAlgorithm *model,
+                                  QGraphicsItem *parent /TransferThis/ );
+%Docstring
+Constructor for QgsModelComponentGraphicItem for the specified ``component``, with the specified ``parent`` item.
+
+The ``model`` argument specifies the associated processing model. Ownership of ``model`` is not transferred, and
+it must exist for the lifetime of this object.
+
+Ownership of ``component`` is transferred to the item.
+%End
+
+    ~QgsModelComponentGraphicItem();
+
+    virtual Flags flags() const;
+%Docstring
+Returns item flags.
+%End
+
+    QgsProcessingModelComponent *component();
+%Docstring
+Returns the model component associated with this item.
+%End
+
+
+    QgsProcessingModelAlgorithm *model();
+%Docstring
+Returns the model associated with this item.
+%End
+
+    QgsModelGraphicsView *view();
+%Docstring
+Returns the associated view.
+%End
+
+    QFont font() const;
+%Docstring
+Returns the font used to render text in the item.
+
+.. seealso:: :py:func:`setFont`
+%End
+
+    void setFont( const QFont &font );
+%Docstring
+Sets the ``font`` used to render text in the item.
+
+.. seealso:: :py:func:`font`
+%End
+
+    void moveComponentBy( qreal dx, qreal dy );
+%Docstring
+Moves the component by the specified ``dx`` and ``dy``.
+
+.. warning::
+
+   Call this method, not QGraphicsItem.moveBy!
+%End
+
+    void previewItemMove( qreal dx, qreal dy );
+%Docstring
+Shows a preview of moving the item from its stored position by ``dx``, ``dy``.
+%End
+
+    void setItemRect( QRectF rect );
+%Docstring
+Sets a new scene ``rect`` for the item.
+%End
+
+    virtual void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event );
+
+    virtual void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
+
+    virtual void hoverMoveEvent( QGraphicsSceneHoverEvent *event );
+
+    virtual void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
+
+    virtual QVariant itemChange( GraphicsItemChange change, const QVariant &value );
+
+    virtual QRectF boundingRect() const;
+
+    virtual bool contains( const QPointF &point ) const;
+
+    virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
+
+
+    QRectF itemRect( bool storedRect = false ) const;
+%Docstring
+Returns the rectangle representing the body of the item.
+%End
+
+    QString label() const;
+%Docstring
+Returns the item's label text.
+
+.. seealso:: :py:func:`setLabel`
+%End
+
+    void setLabel( const QString &label );
+%Docstring
+Returns the item's ``label`` text.
+
+.. seealso:: :py:func:`label`
+%End
+
+    State state() const;
+%Docstring
+Returns the item's current state.
+%End
+
+    virtual int linkPointCount( Qt::Edge edge ) const;
+%Docstring
+Returns the number of link points associated with the component on the specified ``edge``.
+%End
+
+    virtual QString linkPointText( Qt::Edge edge, int index ) const;
+%Docstring
+Returns the text to use for the link point with the specified ``index`` on the specified ``edge``.
+%End
+
+    QPointF linkPoint( Qt::Edge edge, int index, bool incoming ) const;
+%Docstring
+Returns the location of the link point with the specified ``index`` on the specified ``edge``.
+%End
+
+    QPointF calculateAutomaticLinkPoint( QgsModelComponentGraphicItem *other, Qt::Edge &edge /Out/ ) const;
+%Docstring
+Returns the best link point to use for a link originating at a specified ``other`` item.
+
+:param other: item at other end of link
+
+:return: - calculated link point in item coordinates.
+         - edge: item edge for calculated best link point
+%End
+
+    QPointF calculateAutomaticLinkPoint( const QPointF &point, Qt::Edge &edge /Out/ ) const;
+%Docstring
+Returns the best link point to use for a link originating at a specified ``other`` point.
+
+:param other: point for other end of link (in scene coordinates)
+
+:return: - calculated link point in item coordinates.
+         - edge: item edge for calculated best link point
+%End
+
+    virtual void editComment();
+%Docstring
+Called when the comment attached to the item should be edited.
+
+The default implementation does nothing.
+%End
+
+    virtual bool canDeleteComponent();
+%Docstring
+Returns ``True`` if the component can be deleted.
+%End
+
+    virtual void deleteComponent();
+%Docstring
+Called when the component should be deleted.
+
+The default implementation does nothing.
+%End
+
+  signals:
+
+
+    void requestModelRepaint();
+%Docstring
+Emitted by the item to request a repaint of the parent model scene.
+%End
+
+    void aboutToChange( const QString &text, int id = 0 );
+%Docstring
+Emitted when the definition of the associated component is about to be changed
+by the item.
+
+The ``text`` argument gives the translated text describing the change about to occur, and the
+optional ``id`` can be used to group the associated undo commands.
+%End
+
+    void changed();
+%Docstring
+Emitted when the definition of the associated component is changed
+by the item.
+%End
+
+    void repaintArrows();
+%Docstring
+Emitted when item requests that all connected arrows are repainted.
+%End
+
+    void updateArrowPaths();
+%Docstring
+Emitted when item requires that all connected arrow paths are recalculated.
+%End
+
+    void sizePositionChanged();
+%Docstring
+Emitted when the item's size or position changes.
+%End
+
+  protected slots:
+
+    virtual void editComponent();
+%Docstring
+Called when the component should be edited.
+
+The default implementation does nothing.
+%End
+
+  protected:
+
+    QString truncatedTextForItem( const QString &text ) const;
+%Docstring
+Truncates a ``text`` string so that it fits nicely within the item's width,
+accounting for margins and interactive buttons.
+%End
+
+    virtual QColor fillColor( State state ) const = 0;
+%Docstring
+Returns the fill color for the item for the specified ``state``.
+%End
+
+    virtual QColor strokeColor( State state ) const = 0;
+%Docstring
+Returns the stroke color for the item for the specified ``state``.
+%End
+
+    virtual QColor textColor( State state ) const = 0;
+%Docstring
+Returns the label text color for the item for the specified ``state``.
+%End
+
+    virtual Qt::PenStyle strokeStyle( State state ) const;
+%Docstring
+Returns the stroke style to use while rendering the outline of the item.
+%End
+
+    virtual Qt::Alignment titleAlignment() const;
+%Docstring
+Returns the title alignment
+%End
+
+    virtual QPicture iconPicture() const;
+%Docstring
+Returns a QPicture version of the item's icon, if available.
+%End
+
+    virtual QPixmap iconPixmap() const;
+%Docstring
+Returns a QPixmap version of the item's icon, if available.
+%End
+
+    virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) = 0;
+%Docstring
+Updates the position and size stored in the model for the associated comment
+%End
+
+    void updateButtonPositions();
+%Docstring
+Updates the item's button positions, based on the current item rect.
+%End
+
+};
+QFlags<QgsModelComponentGraphicItem::Flag> operator|(QgsModelComponentGraphicItem::Flag f1, QFlags<QgsModelComponentGraphicItem::Flag> f2);
+
+
+class QgsModelParameterGraphicItem : QgsModelComponentGraphicItem
+{
+%Docstring
+A graphic item representing a model parameter (input) in the model designer.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodelcomponentgraphicitem.h"
+%End
+  public:
+
+    QgsModelParameterGraphicItem( QgsProcessingModelParameter *parameter /Transfer/,
+                                  QgsProcessingModelAlgorithm *model,
+                                  QGraphicsItem *parent /TransferThis/ );
+%Docstring
+Constructor for QgsModelParameterGraphicItem for the specified ``parameter``, with the specified ``parent`` item.
+
+The ``model`` argument specifies the associated processing model. Ownership of ``model`` is not transferred, and
+it must exist for the lifetime of this object.
+
+Ownership of ``parameter`` is transferred to the item.
+%End
+
+    virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
+
+    virtual bool canDeleteComponent();
+
+
+  protected:
+
+    virtual QColor fillColor( State state ) const;
+
+    virtual QColor strokeColor( State state ) const;
+
+    virtual QColor textColor( State state ) const;
+
+    virtual QPicture iconPicture() const;
+
+    virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size );
+
+
+  protected slots:
+
+    virtual void deleteComponent();
+
+
+};
+
+class QgsModelChildAlgorithmGraphicItem : QgsModelComponentGraphicItem
+{
+%Docstring
+A graphic item representing a child algorithm in the model designer.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodelcomponentgraphicitem.h"
+%End
+  public:
+
+    QgsModelChildAlgorithmGraphicItem( QgsProcessingModelChildAlgorithm *child /Transfer/,
+                                       QgsProcessingModelAlgorithm *model,
+                                       QGraphicsItem *parent /TransferThis/ );
+%Docstring
+Constructor for QgsModelChildAlgorithmGraphicItem for the specified ``child``, with the specified ``parent`` item.
+
+The ``model`` argument specifies the associated processing model. Ownership of ``model`` is not transferred, and
+it must exist for the lifetime of this object.
+
+Ownership of ``child`` is transferred to the item.
+%End
+    virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
+
+    virtual bool canDeleteComponent();
+
+
+    void setResults( const QVariantMap &results );
+%Docstring
+Sets the results obtained for this child algorithm for the last model execution through the dialog.
+%End
+
+    void setInputs( const QVariantMap &inputs );
+%Docstring
+Sets the inputs used for this child algorithm for the last model execution through the dialog.
+%End
+
+  protected:
+
+    virtual QColor fillColor( State state ) const;
+
+    virtual QColor strokeColor( State state ) const;
+
+    virtual QColor textColor( State state ) const;
+
+    virtual QPixmap iconPixmap() const;
+
+    virtual QPicture iconPicture() const;
+
+
+    virtual int linkPointCount( Qt::Edge edge ) const;
+
+    virtual QString linkPointText( Qt::Edge edge, int index ) const;
+
+    virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size );
+
+
+  protected slots:
+
+    virtual void deleteComponent();
+
+
+};
+
+
+class QgsModelOutputGraphicItem : QgsModelComponentGraphicItem
+{
+%Docstring
+A graphic item representing a model output in the model designer.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodelcomponentgraphicitem.h"
+%End
+  public:
+
+    QgsModelOutputGraphicItem( QgsProcessingModelOutput *output /Transfer/,
+                               QgsProcessingModelAlgorithm *model,
+                               QGraphicsItem *parent /TransferThis/ );
+%Docstring
+Constructor for QgsModelOutputGraphicItem for the specified ``output``, with the specified ``parent`` item.
+
+The ``model`` argument specifies the associated processing model. Ownership of ``model`` is not transferred, and
+it must exist for the lifetime of this object.
+
+Ownership of ``output`` is transferred to the item.
+%End
+
+    virtual bool canDeleteComponent();
+
+
+  protected:
+
+    virtual QColor fillColor( State state ) const;
+
+    virtual QColor strokeColor( State state ) const;
+
+    virtual QColor textColor( State state ) const;
+
+    virtual QPicture iconPicture() const;
+
+    virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size );
+
+
+  protected slots:
+
+    virtual void deleteComponent();
+
+
+};
+
+
+
+class QgsModelCommentGraphicItem : QgsModelComponentGraphicItem
+{
+%Docstring
+A graphic item representing a model comment in the model designer.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodelcomponentgraphicitem.h"
+%End
+  public:
+
+    QgsModelCommentGraphicItem( QgsProcessingModelComment *comment /Transfer/,
+                                QgsModelComponentGraphicItem *parentItem,
+                                QgsProcessingModelAlgorithm *model,
+                                QGraphicsItem *parent /TransferThis/ );
+%Docstring
+Constructor for QgsModelCommentGraphicItem for the specified ``comment``, with the specified ``parent`` item.
+
+The ``model`` argument specifies the associated processing model. Ownership of ``model`` is not transferred, and
+it must exist for the lifetime of this object.
+
+Ownership of ``output`` is transferred to the item.
+%End
+    ~QgsModelCommentGraphicItem();
+    virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
+
+    virtual bool canDeleteComponent();
+
+
+    QgsModelComponentGraphicItem *parentComponentItem() const;
+%Docstring
+Returns the parent model component item.
+%End
+
+  protected:
+
+    virtual QColor fillColor( State state ) const;
+
+    virtual QColor strokeColor( State state ) const;
+
+    virtual QColor textColor( State state ) const;
+
+    virtual Qt::PenStyle strokeStyle( State state ) const;
+
+    virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size );
+
+
+  protected slots:
+
+    virtual void deleteComponent();
+
+    virtual void editComponent();
+
+};
+
+
+class QgsModelGroupBoxGraphicItem : QgsModelComponentGraphicItem
+{
+%Docstring
+A graphic item representing a group box in the model designer.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodelcomponentgraphicitem.h"
+%End
+  public:
+
+    QgsModelGroupBoxGraphicItem( QgsProcessingModelGroupBox *box /Transfer/,
+                                 QgsProcessingModelAlgorithm *model,
+                                 QGraphicsItem *parent /TransferThis/ );
+%Docstring
+Constructor for QgsModelGroupBoxGraphicItem for the specified group ``box``, with the specified ``parent`` item.
+
+The ``model`` argument specifies the associated processing model. Ownership of ``model`` is not transferred, and
+it must exist for the lifetime of this object.
+
+Ownership of ``output`` is transferred to the item.
+%End
+    ~QgsModelGroupBoxGraphicItem();
+    virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
+
+    virtual bool canDeleteComponent();
+
+  protected:
+
+    virtual QColor fillColor( State state ) const;
+
+    virtual QColor strokeColor( State state ) const;
+
+    virtual QColor textColor( State state ) const;
+
+    virtual Qt::PenStyle strokeStyle( State state ) const;
+
+    virtual Qt::Alignment titleAlignment() const;
+
+    virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size );
+
+
+  protected slots:
+
+    virtual void deleteComponent();
+
+    virtual void editComponent();
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/models/qgsmodelcomponentgraphicitem.h             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

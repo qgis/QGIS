@@ -33,6 +33,13 @@ QgsInterval::QgsInterval( double seconds )
   , mValid( true )
 { }
 
+QgsInterval::QgsInterval( double duration, QgsUnitTypes::TemporalUnit unit )
+  : mSeconds( duration * QgsUnitTypes::fromUnitToUnitFactor( unit, QgsUnitTypes::TemporalSeconds ) )
+  , mValid( true )
+{
+
+}
+
 bool QgsInterval::operator==( QgsInterval other ) const
 {
   if ( !mValid && !other.mValid )

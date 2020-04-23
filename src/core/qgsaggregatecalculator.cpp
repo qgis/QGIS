@@ -331,6 +331,7 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
         << QVariant::LongLong
         << QVariant::ULongLong
         << QVariant::Double
+        << QVariant::String
   }
       << AggregateInfo
   {
@@ -342,6 +343,7 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
         << QVariant::LongLong
         << QVariant::ULongLong
         << QVariant::Double
+        << QVariant::String
   }
       << AggregateInfo
   {
@@ -583,6 +585,10 @@ QgsStringStatisticalSummary::Statistic QgsAggregateCalculator::stringStatFromAgg
       return QgsStringStatisticalSummary::MinimumLength;
     case StringMaximumLength:
       return QgsStringStatisticalSummary::MaximumLength;
+    case Minority:
+      return QgsStringStatisticalSummary::Minority;
+    case Majority:
+      return QgsStringStatisticalSummary::Majority;
 
     case Sum:
     case Mean:
@@ -590,8 +596,6 @@ QgsStringStatisticalSummary::Statistic QgsAggregateCalculator::stringStatFromAgg
     case StDev:
     case StDevSample:
     case Range:
-    case Minority:
-    case Majority:
     case FirstQuartile:
     case ThirdQuartile:
     case InterQuartileRange:

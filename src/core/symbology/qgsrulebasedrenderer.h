@@ -163,7 +163,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
         /**
-         * Returns TRUE if this rule or one of its chilren needs the geometry to be applied.
+         * Returns TRUE if this rule or one of its children needs the geometry to be applied.
          */
         bool needsGeometry() const;
 

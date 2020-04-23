@@ -17,9 +17,11 @@ import re
 import sys
 import shutil
 import tempfile
+from osgeo import ogr
 from datetime import datetime
 
 from qgis.core import (QgsProviderRegistry,
+                       QgsDataSourceUri,
                        QgsVectorLayer,
                        QgsVectorDataProvider,
                        QgsPointXY,
@@ -237,9 +239,15 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         INSERT INTO test_bigint (id, value, position) VALUES
         (987654321012345, 1, ST_GeomFromtext('LINESTRINGM(10.416255 55.3786316 1577093516, 10.516255 55.4786316 157709)', 4326) ),
         (987654321012346, 2, ST_GeomFromtext('LINESTRINGM(10.316255 55.3786316 1577093516, 11.216255 56.3786316 157709)', 4326) )"""
-
         cur.execute(sql)
 
+        # no fields table
+        sql = "CREATE TABLE \"test_nofields\"(pkuid integer primary key autoincrement)"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('test_nofields', 'geometry', 4326, 'POINT', 'XY')"
+        cur.execute(sql)
+
+        # Commit all test data
         cur.execute("COMMIT")
         con.close()
 
@@ -764,7 +772,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         testPath = "dbname=%s table='test_filter' (geometry) key='id'" % self.dbname
         vl = QgsVectorLayer(testPath, 'test', 'spatialite')
         self.assertTrue(vl.isValid())
-        vl.setSubsetString('"name" REGEXP \'[txe]\'')
+        vl.setSubsetString('"name" REGEXP \'[txe]{3}\'')
         self.assertEqual(vl.featureCount(), 4)
         del(vl)
 
@@ -831,7 +839,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
 
         parts = {'path': filename, 'layerName': 'test'}
         uri = registry.encodeUri('spatialite', parts)
-        self.assertEqual(uri, 'dbname=\'{}\' table="test" (geometry) sql='.format(filename))
+        self.assertEqual(uri, 'dbname=\'{}\' table="test"'.format(filename))
 
     def testPKNotInt(self):
         """ Check when primary key is not an integer """
@@ -1273,6 +1281,100 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         # Verify
         self.assertEqual(vl.getFeature(1).attributes(), [1, 123, 'a note'])
         self.assertEqual(vl.getFeature(2).attributes(), [2, 456, 'another note'])
+
+    def testAddFeatureNoFields(self):
+        """Test regression #34696"""
+
+        vl = QgsVectorLayer("dbname=%s table='test_nofields' (geometry)" % self.dbname, "test_nofields", "spatialite")
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.startEditing())
+        f = QgsFeature(vl.fields())
+        g = QgsGeometry.fromWkt('point(9 45)')
+        f.setGeometry(g)
+        self.assertTrue(vl.addFeatures([f]))
+        self.assertTrue(vl.commitChanges())
+        vl = QgsVectorLayer("dbname=%s table='test_nofields' (geometry)" % self.dbname, "test_nofields", "spatialite")
+        self.assertEqual(vl.featureCount(), 1)
+        self.assertEqual(vl.getFeature(1).geometry().asWkt().upper(), 'POINT (9 45)')
+
+    def testTransaction(self):
+        """Test spatialite transactions"""
+
+        tmpfile = tempfile.mktemp('.db')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile, options=['SPATIALITE=YES'])
+        lyr = ds.CreateLayer('lyr1', geom_type=ogr.wkbPoint)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(0 1)'))
+        lyr.CreateFeature(f)
+        lyr = ds.CreateLayer('lyr2', geom_type=ogr.wkbPoint)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(2 3)'))
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(4 5)'))
+        lyr.CreateFeature(f)
+        ds = None
+
+        uri1 = QgsDataSourceUri()
+        uri1.setDatabase(tmpfile)
+        uri1.setTable('lyr1')
+        uri2 = QgsDataSourceUri()
+        uri2.setDatabase(tmpfile)
+        uri2.setTable('lyr2')
+
+        vl1 = QgsVectorLayer(uri1.uri(), 'test', 'spatialite')
+        self.assertTrue(vl1.isValid())
+        vl2 = QgsVectorLayer(uri2.uri(), 'test', 'spatialite')
+        self.assertTrue(vl2.isValid())
+
+        # prepare a project with transactions enabled
+        p = QgsProject()
+        p.setAutoTransaction(True)
+        p.addMapLayers([vl1, vl2])
+
+        self.assertTrue(vl1.startEditing())
+        self.assertIsNotNone(vl1.dataProvider().transaction())
+
+        self.assertTrue(vl1.deleteFeature(1))
+
+        # An iterator opened on the layer should see the feature deleted
+        self.assertEqual(len([f for f in vl1.getFeatures(QgsFeatureRequest())]), 0)
+
+        # But not if opened from another connection
+        vl1_external = QgsVectorLayer(uri1.uri(), 'test', 'spatialite')
+        self.assertTrue(vl1_external.isValid())
+        self.assertEqual(len([f for f in vl1_external.getFeatures(QgsFeatureRequest())]), 1)
+        del vl1_external
+
+        self.assertTrue(vl1.commitChanges())
+
+        # Should still get zero features on vl1
+        self.assertEqual(len([f for f in vl1.getFeatures(QgsFeatureRequest())]), 0)
+        self.assertEqual(len([f for f in vl2.getFeatures(QgsFeatureRequest())]), 2)
+
+        # Test undo/redo
+        self.assertTrue(vl2.startEditing())
+        self.assertIsNotNone(vl2.dataProvider().transaction())
+        self.assertTrue(vl2.editBuffer().deleteFeature(1))
+        self.assertEqual(len([f for f in vl2.getFeatures(QgsFeatureRequest())]), 1)
+        self.assertTrue(vl2.editBuffer().deleteFeature(2))
+        self.assertEqual(len([f for f in vl2.getFeatures(QgsFeatureRequest())]), 0)
+        vl2.undoStack().undo()
+        self.assertEqual(len([f for f in vl2.getFeatures(QgsFeatureRequest())]), 1)
+        vl2.undoStack().undo()
+        self.assertEqual(len([f for f in vl2.getFeatures(QgsFeatureRequest())]), 2)
+        vl2.undoStack().redo()
+        self.assertEqual(len([f for f in vl2.getFeatures(QgsFeatureRequest())]), 1)
+        self.assertTrue(vl2.commitChanges())
+
+        self.assertEqual(len([f for f in vl2.getFeatures(QgsFeatureRequest())]), 1)
+        del vl1
+        del vl2
+
+        vl2_external = QgsVectorLayer(uri2.uri(), 'test', 'spatialite')
+        self.assertTrue(vl2_external.isValid())
+        self.assertEqual(len([f for f in vl2_external.getFeatures(QgsFeatureRequest())]), 1)
+        del vl2_external
 
 
 if __name__ == '__main__':

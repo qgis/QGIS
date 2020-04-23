@@ -70,17 +70,11 @@ QgsCoordinateOperationWidget::QgsCoordinateOperationWidget( QWidget *parent )
 #if PROJ_VERSION_MAJOR>=6
   // proj 6 doesn't provide deprecated operations
   mHideDeprecatedCheckBox->setVisible( false );
-
-#if PROJ_VERSION_MAJOR>6 || PROJ_VERSION_MINOR>=2
   mShowSupersededCheckBox->setVisible( true );
-#else
-  mAllowFallbackCheckBox->setVisible( false );
-  mShowSupersededCheckBox->setVisible( false );
-#endif
-
   mLabelDstDescription->hide();
 #else
   mShowSupersededCheckBox->setVisible( false );
+  mAllowFallbackCheckBox->setVisible( false );
   QgsSettings settings;
   mHideDeprecatedCheckBox->setChecked( settings.value( QStringLiteral( "Windows/DatumTransformDialog/hideDeprecated" ), true ).toBool() );
 #endif
@@ -257,7 +251,6 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     QStringList areasOfUse;
     QStringList authorityCodes;
 
-#if PROJ_VERSION_MAJOR > 6 || PROJ_VERSION_MINOR >= 2
     QStringList opText;
     for ( const QgsDatumTransform::SingleOperationDetails &singleOpDetails : transform.operationDetails )
     {
@@ -311,7 +304,6 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
       for ( int k = 0; k < opText.count(); ++k )
         opText[k] = QStringLiteral( "<li>%1</li>" ).arg( opText.at( k ) );
     }
-#endif
 
     if ( !transform.areaOfUse.isEmpty() && !areasOfUse.contains( transform.areaOfUse ) )
       areasOfUse << transform.areaOfUse;
@@ -321,7 +313,6 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     if ( !id.isEmpty() && !authorityCodes.contains( id ) )
       authorityCodes << id;
 
-#if PROJ_VERSION_MAJOR > 6 || PROJ_VERSION_MINOR >= 2
     const QColor disabled = palette().color( QPalette::Disabled, QPalette::Text );
     const QColor active = palette().color( QPalette::Active, QPalette::Text );
 
@@ -334,13 +325,7 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
                                   + ( !authorityCodes.empty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Identifiers" ), authorityCodes.join( QStringLiteral( ", " ) ) ) : QString() )
                                   + ( !missingMessage.isEmpty() ? QStringLiteral( "<p><b style=\"color: red\">%1</b></p>" ).arg( missingMessage ) : QString() )
                                   + QStringLiteral( "<p><code style=\"color: %1\">%2</code></p>" ).arg( codeColor.name(), transform.proj );
-#else
-    const QString toolTipString = QStringLiteral( "<b>%1</b>%2%3%4<p><code>%5</code></p>" ).arg( transform.name,
-                                  ( !transform.areaOfUse.isEmpty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Area of use" ), transform.areaOfUse ) : QString() ),
-                                  ( !id.isEmpty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Identifier" ), id ) : QString() ),
-                                  ( !missingMessage.isEmpty() ? QStringLiteral( "<p><b style=\"color: red\">%1</b></p>" ).arg( missingMessage ) : QString() ),
-                                  transform.proj );
-#endif
+
     item->setToolTip( toolTipString );
     mCoordinateOperationTableWidget->setRowCount( row + 1 );
     mCoordinateOperationTableWidget->setItem( row, 0, item.release() );

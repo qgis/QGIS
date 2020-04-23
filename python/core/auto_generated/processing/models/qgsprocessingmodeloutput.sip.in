@@ -28,6 +28,9 @@ Represents a final output created by the model.
 Constructor for QgsProcessingModelOutput with the specified ``name`` and ``description``.
 %End
 
+    virtual QgsProcessingModelOutput *clone() const /Factory/;
+
+
     QString name() const;
 %Docstring
 Returns the model output name.
@@ -123,6 +126,9 @@ Loads this output from a QVariantMap.
 
 .. seealso:: :py:func:`toVariant`
 %End
+
+    virtual QgsProcessingModelComment *comment();
+    virtual void setComment( const QgsProcessingModelComment &comment );
 
 };
 

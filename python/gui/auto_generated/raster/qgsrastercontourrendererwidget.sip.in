@@ -1,0 +1,43 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgsrastercontourrendererwidget.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsRasterContourRendererWidget : QgsRasterRendererWidget
+{
+%Docstring
+Configuration widget for QgsRasterContourRenderer
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsrastercontourrendererwidget.h"
+%End
+  public:
+    QgsRasterContourRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
+%Docstring
+Constructs the widget
+%End
+
+    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) /Factory/;
+%Docstring
+Widget creation function (mainly for the use by the renderer registry)
+%End
+
+    virtual QgsRasterRenderer *renderer();
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgsrastercontourrendererwidget.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

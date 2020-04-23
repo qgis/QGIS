@@ -203,6 +203,9 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         case QgsMapLayerType::MeshLayer:
           return QgsLayerItem::iconMesh();
 
+        case QgsMapLayerType::VectorTileLayer:
+          return QgsLayerItem::iconVectorTile();
+
         case QgsMapLayerType::VectorLayer:
         case QgsMapLayerType::PluginLayer:
           break;

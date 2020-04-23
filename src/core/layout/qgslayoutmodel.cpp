@@ -102,17 +102,18 @@ int QgsLayoutModel::rowCount( const QModelIndex &parent ) const
     return mItemsInScene.size() + 1;
   }
 
+#if 0
   QGraphicsItem *parentItem = itemFromIndex( parent );
 
-  if ( !parentItem )
+  if ( parentItem )
   {
-    return mItemsInScene.size() + 1;
-  }
-  else
-  {
-    //no children for now
+    // return child count for item
     return 0;
   }
+#endif
+
+  //no children for now
+  return 0;
 }
 
 int QgsLayoutModel::columnCount( const QModelIndex &parent ) const

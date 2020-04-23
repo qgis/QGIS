@@ -355,6 +355,48 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_StyleCustom")
 
+    def test_wms_getprint_group(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectGroupsPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "map0:LAYERS": "Country_Diagrams,Country_Labels,Country",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r_individual, _ = self._result(self._execute_request(qs))
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectGroupsPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "map0:LAYERS": "CountryGroup",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r_group, h = self._result(self._execute_request(qs))
+
+        """ Debug check:
+        f = open('grouped.png', 'wb+')
+        f.write(r_group)
+        f.close()
+        f = open('individual.png', 'wb+')
+        f.write(r_individual)
+        f.close()
+        #"""
+
+        self.assertEqual(r_individual, r_group, 'Individual layers query and group layers query results should be identical')
+
+        self._img_diff_error(r_group, h, "WMS_GetPrint_Group")
+
     def test_wms_getprint_legend(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),

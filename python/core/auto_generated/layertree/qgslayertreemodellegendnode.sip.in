@@ -99,6 +99,7 @@ Default implementation does nothing. *
 
       double maxSiblingSymbolWidth;
 
+      QgsLegendPatchShape patchShape;
     };
 
     struct ItemMetrics
@@ -322,6 +323,24 @@ Sets format of text to be shown on top of the symbol.
 Label of the symbol, user defined label will be used, otherwise will default to the label made by QGIS.
 
 .. versionadded:: 3.10
+%End
+
+    QgsLegendPatchShape patchShape() const;
+%Docstring
+Returns the symbol patch shape to use when rendering the legend node symbol.
+
+.. seealso:: :py:func:`setPatchShape`
+
+.. versionadded:: 3.14
+%End
+
+    void setPatchShape( const QgsLegendPatchShape &shape );
+%Docstring
+Sets the symbol patch ``shape`` to use when rendering the legend node symbol.
+
+.. seealso:: :py:func:`patchShape`
+
+.. versionadded:: 3.14
 %End
 
     QString evaluateLabel( const QgsExpressionContext &context = QgsExpressionContext(), const QString &label = QString() );
