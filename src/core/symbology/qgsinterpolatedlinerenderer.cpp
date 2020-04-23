@@ -79,97 +79,154 @@ void QgsInterpolatedLineRenderer::render( double value1, double value2, QgsPoint
   }
   else
   {
-    double width1 = context.convertToPainterUnits( mStrokeWidth.strokeWidth( value1 ), mStrokeWidthUnit );
-    double width2 = context.convertToPainterUnits( mStrokeWidth.strokeWidth( value2 ), mStrokeWidthUnit ) ;
+    double width1 = mStrokeWidth.strokeWidth( value1 );
+    double width2 = mStrokeWidth.strokeWidth( value2 );
 
-    //Draw line cap
-    QRectF capBox1( p1.x() - width1 / 2, p1.y() - width1 / 2, width1, width1 );
-    QRectF capBox2( p2.x() - width2 / 2, p2.y() - width2 / 2, width2, width2 );
-    int startAngle;
-    startAngle = ( acos( -orthu.x() ) / M_PI ) * 180;
-    if ( orthu.y() < 0 )
-      startAngle = 360 - startAngle;
-
-    QBrush brush( Qt::SolidPattern );
-    QPen pen;
-
-    brush.setColor( mStrokeColoring.color( value1 ) );
-    painter->setBrush( brush );
-    pen.setBrush( brush );
-    painter->setPen( pen );
-
-    painter->drawPie( capBox1, ( startAngle - 1 ) * 16, 182 * 16 );
-
-    brush.setColor( mStrokeColoring.color( value2 ) );
-    pen.setBrush( brush );
-    painter->setBrush( brush );
-    painter->setPen( pen );
-
-    painter->drawPie( capBox2, ( startAngle + 179 ) * 16, 182 * 16 );
-
-    if ( gradients.isEmpty() && breakValues.empty() && breakColors.count() == 1 ) //only one color to render
+    if ( !std::isnan( width1 ) || !std::isnan( width2 ) ) // the two widths on extremity are not out of range and ignored
     {
-      QPolygonF varLine;
-      double semiWidth1 = width1 / 2;
-      double semiWidth2 = width2 / 2;
-
-      varLine.append( p1 + orthu * semiWidth1 );
-      varLine.append( p2 + orthu * semiWidth2 );
-      varLine.append( p2 - orthu * semiWidth2 );
-      varLine.append( p1 - orthu * semiWidth1 );
-
+      //Draw line cap
       QBrush brush( Qt::SolidPattern );
-      brush.setColor( breakColors.first() );
-      painter->setBrush( brush );
-      painter->setPen( pen );
-
       QPen pen;
-      pen.setBrush( brush );
-      pen.setWidthF( 0 );
-      painter->setPen( pen );
+      int startAngle;
+      startAngle = ( acos( -orthu.x() ) / M_PI ) * 180;
+      if ( orthu.y() < 0 )
+        startAngle = 360 - startAngle;
 
-      painter->drawPolygon( varLine );
-    }
-    else if ( !gradients.isEmpty() && !breakValues.isEmpty() && !breakColors.isEmpty() )
-    {
-      Q_ASSERT( breakColors.count() == breakValues.count() );
-      Q_ASSERT( breakColors.count() == gradients.count() + 1 );
-      for ( int i = 0; i < gradients.count(); ++i )
+      bool outOfRange1 = std::isnan( width1 );
+      bool outOfRange2 = std::isnan( width2 );
+
+      if ( !outOfRange1 )
       {
-        double firstValue = breakValues.at( i );
-        double secondValue = breakValues.at( i + 1 );
-        double width1 = context.convertToPainterUnits( mStrokeWidth.strokeWidth( firstValue ), mStrokeWidthUnit );
-        double width2 = context.convertToPainterUnits( mStrokeWidth.strokeWidth( secondValue ), mStrokeWidthUnit ) ;
+        width1 = context.convertToPainterUnits( width1, mStrokeWidthUnit );
+        QRectF capBox1( p1.x() - width1 / 2, p1.y() - width1 / 2, width1, width1 );
+        brush.setColor( mStrokeColoring.color( value1 ) );
+        painter->setBrush( brush );
+        pen.setBrush( brush );
+        painter->setPen( pen );
+        painter->drawPie( capBox1, ( startAngle - 1 ) * 16, 182 * 16 );
+      }
 
-        QPointF pointStart = p1 + dir * ( firstValue - value1 ) / ( value2 - value1 );
-        QPointF pointEnd = p1 + dir * ( secondValue - value1 ) / ( value2 - value1 );
+      if ( !outOfRange2 )
+      {
+        width2 = context.convertToPainterUnits( width2, mStrokeWidthUnit ) ;
+        QRectF capBox2( p2.x() - width2 / 2, p2.y() - width2 / 2, width2, width2 );
+        brush.setColor( mStrokeColoring.color( value2 ) );
+        pen.setBrush( brush );
+        painter->setBrush( brush );
+        painter->setPen( pen );
+        painter->drawPie( capBox2, ( startAngle + 179 ) * 16, 182 * 16 );
+      }
+
+      if ( gradients.isEmpty() && breakValues.empty() && breakColors.count() == 1 ) //only one color to render
+      {
+        double startAdjusting = 0;
+        if ( outOfRange1 )
+          adjustLine( value1, value1, value2, width1, startAdjusting );
+
+
+        double endAdjusting = 0;
+        if ( outOfRange2 )
+          adjustLine( value2, value1, value2, width2, endAdjusting );
+
+        QPointF pointStartAdjusted = p1 + dir * startAdjusting;
+        QPointF pointEndAdjusted  = p2 - dir * endAdjusting;
 
         QPolygonF varLine;
         double semiWidth1 = width1 / 2;
         double semiWidth2 = width2 / 2;
 
-        QLinearGradient gradient = gradients.at( i );
-        gradient.setStart( pointStart );
-        gradient.setFinalStop( pointEnd );
-        QBrush brush( gradient );
+        varLine.append( pointStartAdjusted + orthu * semiWidth1 );
+        varLine.append( pointEndAdjusted + orthu * semiWidth2 );
+        varLine.append( pointEndAdjusted - orthu * semiWidth2 );
+        varLine.append( pointStartAdjusted - orthu * semiWidth1 );
+
+        QBrush brush( Qt::SolidPattern );
+        brush.setColor( breakColors.first() );
         painter->setBrush( brush );
+        painter->setPen( pen );
 
         QPen pen;
         pen.setBrush( brush );
         pen.setWidthF( 0 );
         painter->setPen( pen );
 
-        varLine.append( pointStart + orthu * semiWidth1 );
-        varLine.append( pointEnd + orthu * semiWidth2 );
-        varLine.append( pointEnd - orthu * semiWidth2 );
-        varLine.append( pointStart - orthu * semiWidth1 );
-
         painter->drawPolygon( varLine );
+      }
+      else if ( !gradients.isEmpty() && !breakValues.isEmpty() && !breakColors.isEmpty() )
+      {
+        Q_ASSERT( breakColors.count() == breakValues.count() );
+        Q_ASSERT( breakColors.count() == gradients.count() + 1 );
+
+        for ( int i = 0; i < gradients.count(); ++i )
+        {
+          double firstValue = breakValues.at( i );
+          double secondValue = breakValues.at( i + 1 );
+          double w1 =  mStrokeWidth.strokeWidth( firstValue );
+          double w2 =  mStrokeWidth.strokeWidth( secondValue );
+
+          if ( std::isnan( w1 ) && std::isnan( w2 ) )
+            continue;
+
+          double firstAdjusting = 0;
+          if ( std::isnan( w1 ) )
+            adjustLine( firstValue, value1, value2, w1, firstAdjusting );
+
+
+          double secondAdjusting = 0;
+          if ( std::isnan( w2 ) )
+            adjustLine( secondValue, value1, value2, w2, secondAdjusting );
+
+          w1 = context.convertToPainterUnits( w1, mStrokeWidthUnit );
+          w2 = context.convertToPainterUnits( w2, mStrokeWidthUnit ) ;
+
+          QPointF pointStart = p1 + dir * ( firstValue - value1 ) / ( value2 - value1 );
+          QPointF pointEnd = p1 + dir * ( secondValue - value1 ) / ( value2 - value1 );
+
+          QPointF pointStartAdjusted = pointStart + dir * firstAdjusting;
+          QPointF pointEndAdjusted  = pointEnd - dir * secondAdjusting;
+
+          QPolygonF varLine;
+          double sw1 = w1 / 2;
+          double sw2 = w2 / 2;
+
+          varLine.append( pointStartAdjusted + orthu * sw1 );
+          varLine.append( pointEndAdjusted + orthu * sw2 );
+          varLine.append( pointEndAdjusted - orthu * sw2 );
+          varLine.append( pointStartAdjusted - orthu * sw1 );
+
+          QLinearGradient gradient = gradients.at( i );
+          gradient.setStart( pointStart );
+          gradient.setFinalStop( pointEnd );
+          QBrush brush( gradient );
+          painter->setBrush( brush );
+
+          QPen pen;
+          pen.setBrush( brush );
+          pen.setWidthF( 0 );
+          painter->setPen( pen );
+
+          painter->drawPolygon( varLine );
+        }
       }
     }
   }
   painter->restore();
 }
+
+void QgsInterpolatedLineRenderer::adjustLine( const double &value, const double &value1, const double &value2, double &width, double &adjusting ) const
+{
+  if ( value > mStrokeWidth.maximumValue() )
+  {
+    adjusting = fabs( ( value - mStrokeWidth.maximumValue() ) / ( value2 - value1 ) );
+    width = mStrokeWidth.maximumWidth();
+  }
+  else
+  {
+    adjusting = fabs( ( value - mStrokeWidth.minimumValue() ) / ( value2 - value1 ) );
+    width = mStrokeWidth.minimumWidth();
+  }
+}
+
 
 void QgsInterpolatedLineRenderer::setOpacity( double opacity )
 {

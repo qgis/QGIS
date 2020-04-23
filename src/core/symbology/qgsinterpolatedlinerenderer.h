@@ -202,6 +202,7 @@ class CORE_EXPORT QgsInterpolatedLineRenderer
     double mOpacity;
 
     QPolygonF varyingWidthLine( double value1, double value2, QPointF point1, QPointF point2, QgsRenderContext &context ) const;
+    void adjustLine( const double &value, const double &value1, const double &value2, double &width, double &adjusting ) const;
 };
 
 #endif // QGSINTERPOLATEDLINERENDERER_H
