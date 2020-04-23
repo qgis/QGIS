@@ -49,7 +49,7 @@ class CORE_EXPORT QgsProjectServerValidator
       LayerShortName = 1, //!< Layer/group short name is not valid.
       LayerEncoding = 2,  //!< Encoding is not correctly set on a vector layer.
       ProjectShortName = 3,  //!< The project short name is not valid.
-      ProjectRootNameConflict = 4,  //!< The project root name isady used by a layer or a group.
+      ProjectRootNameConflict = 4,  //!< The project root name is already used by a layer or a group.
     };
 
     /**
