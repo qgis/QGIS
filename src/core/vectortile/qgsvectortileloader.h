@@ -65,8 +65,6 @@ class QgsVectorTileLoader : public QObject
     static QByteArray loadFromNetwork( const QgsTileXYZ &id, const QString &requestUrl );
     //! Returns raw tile data for a single tile loaded from MBTiles file
     static QByteArray loadFromMBTiles( const QgsTileXYZ &id, QgsMBTilesReader &mbTileReader );
-    //! Decodes gzip byte stream, returns true on success
-    static bool decodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut );
 
     //
     // non-static stuff
