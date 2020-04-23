@@ -203,6 +203,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   , mOpenCursors( 0 )
   , mConnInfo( conninfo )
   , mGeosAvailable( false )
+  , mProjAvailable( false )
   , mTopologyAvailable( false )
   , mGotPostgisVersion( false )
   , mPostgresqlVersion( 0 )
@@ -1048,10 +1049,12 @@ QString QgsPostgresConn::postgisVersion() const
   // apparently PostGIS 1.5.2 doesn't report capabilities in postgis_version() anymore
   if ( mPostgisVersionMajor > 1 || ( mPostgisVersionMajor == 1 && mPostgisVersionMinor >= 5 ) )
   {
-    result = PQexec( QStringLiteral( "SELECT postgis_geos_version()" ) );
+    result = PQexec( QStringLiteral( "SELECT postgis_geos_version(), postgis_proj_version()" ) );
     mGeosAvailable = result.PQntuples() == 1 && !result.PQgetisnull( 0, 0 );
+    mProjAvailable = result.PQntuples() == 1 && !result.PQgetisnull( 0, 1 );
     QgsDebugMsg( QStringLiteral( "geos:%1 proj:%2" )
-                 .arg( mGeosAvailable ? result.PQgetvalue( 0, 0 ) : "none" ) );
+                 .arg( mGeosAvailable ? result.PQgetvalue( 0, 0 ) : "none" )
+                 .arg( mProjAvailable ? result.PQgetvalue( 0, 1 ) : "none" ) );
   }
   else
   {
@@ -1619,6 +1622,10 @@ QString QgsPostgresConn::fieldExpression( const QgsField &fld, QString expr )
   else if ( type == QLatin1String( "geography" ) )
   {
     return QStringLiteral( "st_astext(%1)" ).arg( expr );
+  }
+  else if ( type == QLatin1String( "int8" ) )
+  {
+    return expr;
   }
   //TODO: add support for hstore
   //TODO: add support for json/jsonb
