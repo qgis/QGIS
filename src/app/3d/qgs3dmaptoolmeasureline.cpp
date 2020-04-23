@@ -59,7 +59,11 @@ Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   mDialog->restorePosition();
 
   // Update scale if the terrain vertical scale changed
+<<<<<<< HEAD
   connect( mCanvas->map(), &Qgs3DMapSettings::terrainVerticalScaleChanged, this, &Qgs3DMapToolMeasureLine::updateMeasurementLayer );
+=======
+  connect( canvas, &Qgs3DMapCanvas::mapSettingsChanged, this, &Qgs3DMapToolMeasureLine::onMapSettingsChanged );
+>>>>>>> fa0cfe832e... Close 3D measurement on 3D canvas close
 }
 
 Qgs3DMapToolMeasureLine::~Qgs3DMapToolMeasureLine() = default;
@@ -99,7 +103,6 @@ void Qgs3DMapToolMeasureLine::activate()
     updateSettings();
     mIsAlreadyActivated = true;
   }
-
   // Show dialog
   mDialog->updateSettings();
   mDialog->show();
