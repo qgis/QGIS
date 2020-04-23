@@ -136,6 +136,8 @@ Returns the curve type for a WKB type. For example, for Polygon WKB types the cu
 
    Returns `CompoundCurve` for `CircularString` (and its Z/M variants)
 
+.. seealso:: :py:func:`linearType`
+
 .. seealso:: :py:func:`isMultiType`
 
 .. seealso:: :py:func:`isCurvedType`
@@ -148,6 +150,25 @@ Returns the curve type for a WKB type. For example, for Polygon WKB types the cu
 
 
 .. versionadded:: 3.10
+%End
+
+    static Type linearType( Type type );
+%Docstring
+Returns the linear type for a WKB type. For example, for a CompoundCurve, the linear type would be LineString.
+
+.. seealso:: :py:func:`curveType`
+
+.. seealso:: :py:func:`isMultiType`
+
+.. seealso:: :py:func:`isCurvedType`
+
+.. seealso:: :py:func:`singleType`
+
+.. seealso:: :py:func:`flatType`
+
+.. seealso:: :py:func:`multiType`
+
+.. versionadded:: 3.14
 %End
 
     static Type flatType( Type type );
