@@ -157,6 +157,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     void mapExtentChanged();
     void mapCrsChanged();
     void menuAboutToShow();
+    //! Renames the active map theme called \a theme to \a newTheme
     void currentMapThemeRenamed( const QString &theme, const QString &newTheme );
     void settingsMenuAboutToShow();
     void syncMarker( const QgsPointXY &p );
