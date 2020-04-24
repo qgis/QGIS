@@ -615,7 +615,8 @@ namespace QgsWms
             {
               QList<QgsMapLayer *> layersFromGroup;
 
-              for ( QgsMapLayer *layerFromGroup : mContext.layersFromGroup( layer.mNickname ) )
+              const QList<QgsMapLayer *> cLayersFromGroup = mContext.layersFromGroup( layer.mNickname );
+              for ( QgsMapLayer *layerFromGroup : cLayersFromGroup )
               {
 
                 if ( ! layerFromGroup )
