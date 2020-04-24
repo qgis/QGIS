@@ -289,15 +289,7 @@ bool QgsWmsRenderContext::isValidLayer( const QString &nickname ) const
 
 QList<QgsMapLayer *> QgsWmsRenderContext::layersFromGroup( const QString &nickname ) const
 {
-  QList<QgsMapLayer *> layers;
-  if ( mLayerGroups.contains( nickname ) )
-  {
-    for ( QgsMapLayer *layer : mLayerGroups[nickname] )
-    {
-      layers.append( layer );
-    }
-  }
-  return layers;
+  return mLayerGroups.value( nickname );
 }
 
 bool QgsWmsRenderContext::isValidGroup( const QString &name ) const
