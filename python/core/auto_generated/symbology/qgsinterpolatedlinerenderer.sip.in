@@ -1,0 +1,231 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsinterpolatedlinerenderer.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsInterpolatedLineColor
+{
+%Docstring
+
+Class defining color to render mesh datasets. The color can vary depending on the dataset value.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsinterpolatedlinerenderer.h"
+%End
+  public:
+
+    enum ColoringMethod
+    {
+      //! Render with a single color
+      SingleColor,
+      //! Render with a color ramp
+      ColorRamp
+    };
+
+    QgsInterpolatedLineColor();
+%Docstring
+Default constructor
+%End
+    QgsInterpolatedLineColor( const QgsColorRampShader &colorRampShader );
+%Docstring
+Constructor  with variable color depending on magnitude
+%End
+    QgsInterpolatedLineColor( const QColor &color );
+%Docstring
+Constructor  with fixed color
+%End
+
+    void setColor( const QgsColorRampShader &colorRampShader );
+%Docstring
+Sets the color ramp to define the coloring
+%End
+
+    void setColor( const QColor &color );
+%Docstring
+Sets the single color to define the coloring
+%End
+
+    QColor color( double magnitude ) const;
+%Docstring
+Returns the color corresponding to the magnitude
+%End
+
+    QgsInterpolatedLineColor::ColoringMethod coloringMethod() const;
+%Docstring
+Returns the coloring method used
+%End
+
+    QgsColorRampShader colorRampShader() const;
+%Docstring
+Returns the color ramp shader
+%End
+
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+%Docstring
+Reads configuration from the given DOM element
+%End
+
+    void graduatedColors( double value1, double value2, QList<double> &breakValues, QList<QColor> &breakColors, QList<QLinearGradient> &gradients ) const;
+%Docstring
+Returns the break values, graduated colors and the associated gradients between two values
+- If the color is fixed or only one color for the interval (value1, value2), returns only one color in ``breakColors``
+and void lists for  ``breakValues``, ``gradients``
+- If the color ramp is classified with 'exact', returns void ``gradients``
+- If the color ramp is classified with 'discrete', return ``gradients`` with uniform colors
+- if nothing to render (out of range), return all lists void
+%End
+
+};
+
+class QgsInterpolatedLineWidth
+{
+%Docstring
+
+Represents a width than can vary depending on values
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsinterpolatedlinerenderer.h"
+%End
+  public:
+    double minimumValue() const;
+%Docstring
+Returns the minimum value used to defined the variable width
+%End
+    void setMinimumValue( double minimumValue );
+%Docstring
+Sets the minimum value used to defined the variable width
+%End
+
+    double maximumValue() const;
+%Docstring
+Returns the maximum value used to defined the variable width
+%End
+    void setMaximumValue( double maximumValue );
+%Docstring
+Sets the maximum value used to defined the variable width
+%End
+
+    double minimumWidth() const;
+%Docstring
+Returns the minimum width used to defined the variable width
+%End
+    void setMinimumWidth( double minimumWidth );
+%Docstring
+Sets the minimum width used to defined the variable width
+%End
+
+    double maximumWidth() const;
+%Docstring
+Returns the maximum width used to defined the variable width
+%End
+    void setMaximumWidth( double maximumWidth );
+%Docstring
+Sets the maximum width used to defined the variable width
+%End
+
+    bool ignoreOutOfRange() const;
+%Docstring
+Returns whether the variable width ignores out of range value
+%End
+    void setIgnoreOutOfRange( bool ignoreOutOfRange );
+%Docstring
+Sets whether the variable width ignores out of range value
+%End
+
+    bool isVariableWidth() const;
+%Docstring
+Returns whether the width is variable
+%End
+    void setIsVariableWidth( bool isVariableWidth );
+%Docstring
+Returns whether the width is variable
+%End
+
+    double fixedStrokeWidth() const;
+%Docstring
+Returns the fixed width
+%End
+    void setFixedStrokeWidth( double fixedWidth );
+%Docstring
+Sets the fixed width
+%End
+
+    double strokeWidth( double value ) const;
+%Docstring
+Returns the variable width depending on value, if not varying returns the fixed width
+%End
+
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+%Docstring
+Reads configuration from the given DOM element
+%End
+
+};
+
+class QgsInterpolatedLineRenderer
+{
+%Docstring
+Represents a line with width and color varying depending on values.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsinterpolatedlinerenderer.h"
+%End
+  public:
+    void setInterpolatedWidth( const QgsInterpolatedLineWidth &strokeWidth );
+%Docstring
+Sets the stroke width used to plot
+%End
+
+    void setWidthUnit( const QgsUnitTypes::RenderUnit &strokeWidthUnit );
+%Docstring
+Sets the unit of the stroke width
+%End
+
+    void setInterpolatedColor( const QgsInterpolatedLineColor &strokeColoring );
+%Docstring
+Sets the stroke color used to plot
+%End
+
+    void setOpacity( double opacity );
+%Docstring
+Sets the opacity used to plot
+%End
+
+    void render( double value1, double value2, QgsPointXY point1, QgsPointXY point2, QgsRenderContext &context ) const;
+%Docstring
+Render a line in the ``context`` between ``point1`` and ``point2``
+with color and width that vary depending on ``value1`` and ``value2``
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsinterpolatedlinerenderer.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

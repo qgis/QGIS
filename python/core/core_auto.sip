@@ -410,15 +410,15 @@
 %Include auto_generated/locator/qgslocatormodelbridge.sip
 %Include auto_generated/mesh/qgsmesh3daveraging.sip
 %Include auto_generated/mesh/qgsmeshdataprovider.sip
+%Include auto_generated/mesh/qgsmeshdataprovidertemporalcapabilities.sip
 %Include auto_generated/mesh/qgsmeshdataset.sip
 %Include auto_generated/mesh/qgsmeshlayer.sip
 %Include auto_generated/mesh/qgsmeshlayerinterpolator.sip
+%Include auto_generated/mesh/qgsmeshlayertemporalproperties.sip
 %Include auto_generated/mesh/qgsmeshrenderersettings.sip
 %Include auto_generated/mesh/qgsmeshspatialindex.sip
 %Include auto_generated/mesh/qgsmeshtimesettings.sip
 %Include auto_generated/mesh/qgsmeshtracerenderer.sip
-%Include auto_generated/mesh/qgsmeshlayertemporalproperties.sip
-%Include auto_generated/mesh/qgsmeshdataprovidertemporalcapabilities.sip
 %Include auto_generated/metadata/qgsabstractmetadatabase.sip
 %Include auto_generated/metadata/qgslayermetadata.sip
 %Include auto_generated/metadata/qgslayermetadataformatter.sip
@@ -518,6 +518,7 @@
 %Include auto_generated/symbology/qgsgeometrygeneratorsymbollayer.sip
 %Include auto_generated/symbology/qgsgraduatedsymbolrenderer.sip
 %Include auto_generated/symbology/qgsheatmaprenderer.sip
+%Include auto_generated/symbology/qgsinterpolatedlinerenderer.sip
 %Include auto_generated/symbology/qgsinvertedpolygonrenderer.sip
 %Include auto_generated/symbology/qgslegendsymbolitem.sip
 %Include auto_generated/symbology/qgslinesymbollayer.sip
