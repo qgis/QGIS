@@ -61,7 +61,7 @@
 %Include auto_generated/qgsexpressioncontextscopegenerator.sip
 %Include auto_generated/qgsexpressionfieldbuffer.sip
 %Include auto_generated/qgsfeature.sip
-%Include auto_generated/qgsfeaturechoosermodel.sip
+%Include auto_generated/qgsfeaturepickermodel.sip
 %Include auto_generated/qgsfeaturefiltermodel.sip
 %Include auto_generated/qgsfeaturefilterprovider.sip
 %Include auto_generated/qgsfeatureid.sip

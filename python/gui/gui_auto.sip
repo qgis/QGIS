@@ -80,7 +80,7 @@
 %Include auto_generated/qgsextentgroupbox.sip
 %Include auto_generated/qgsextentwidget.sip
 %Include auto_generated/qgsexternalresourcewidget.sip
-%Include auto_generated/qgsfeaturechooserwidget.sip
+%Include auto_generated/qgsfeaturepickerwidget.sip
 %Include auto_generated/qgsfeaturelistcombobox.sip
 %Include auto_generated/qgsfeatureselectiondlg.sip
 %Include auto_generated/qgsfieldcombobox.sip

@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsfeaturechoosermodel.cpp - QgsFeatureChooserModel
+  qgsfeaturepickermodel.cpp - QgsFeaturePickerModel
  ---------------------
  begin                : 03.04.2020
  copyright            : (C) 2020 by Denis Rouzaud
@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsfeaturechoosermodel.h"
+#include "qgsfeaturepickermodel.h"
 #include "qgsfeatureexpressionvaluesgatherer.h"
 
 #include "qgsvectorlayer.h"
@@ -21,27 +21,27 @@
 #include "qgssettings.h"
 
 
-QgsFeatureChooserModel::QgsFeatureChooserModel( QObject *parent )
+QgsFeaturePickerModel::QgsFeaturePickerModel( QObject *parent )
   : QAbstractItemModel( parent )
 {
   mReloadTimer.setInterval( 100 );
   mReloadTimer.setSingleShot( true );
-  connect( &mReloadTimer, &QTimer::timeout, this, &QgsFeatureChooserModel::scheduledReload );
+  connect( &mReloadTimer, &QTimer::timeout, this, &QgsFeaturePickerModel::scheduledReload );
   setCurrentFeatureUnguarded( FID_NULL );
 }
 
-QgsFeatureChooserModel::~QgsFeatureChooserModel()
+QgsFeaturePickerModel::~QgsFeaturePickerModel()
 {
   if ( mGatherer )
     connect( mGatherer, &QgsFeatureExpressionValuesGatherer::finished, mGatherer, &QgsFeatureExpressionValuesGatherer::deleteLater );
 }
 
-QgsVectorLayer *QgsFeatureChooserModel::sourceLayer() const
+QgsVectorLayer *QgsFeaturePickerModel::sourceLayer() const
 {
   return mSourceLayer;
 }
 
-void QgsFeatureChooserModel::setSourceLayer( QgsVectorLayer *sourceLayer )
+void QgsFeaturePickerModel::setSourceLayer( QgsVectorLayer *sourceLayer )
 {
   if ( mSourceLayer == sourceLayer )
     return;
@@ -54,12 +54,12 @@ void QgsFeatureChooserModel::setSourceLayer( QgsVectorLayer *sourceLayer )
   setDisplayExpression( sourceLayer->displayExpression() );
 }
 
-QString QgsFeatureChooserModel::displayExpression() const
+QString QgsFeaturePickerModel::displayExpression() const
 {
   return mDisplayExpression.expression();
 }
 
-void QgsFeatureChooserModel::setDisplayExpression( const QString &displayExpression )
+void QgsFeaturePickerModel::setDisplayExpression( const QString &displayExpression )
 {
   if ( mDisplayExpression.expression() == displayExpression )
     return;
@@ -69,12 +69,12 @@ void QgsFeatureChooserModel::setDisplayExpression( const QString &displayExpress
   emit displayExpressionChanged();
 }
 
-QString QgsFeatureChooserModel::filterValue() const
+QString QgsFeaturePickerModel::filterValue() const
 {
   return mFilterValue;
 }
 
-void QgsFeatureChooserModel::setFilterValue( const QString &filterValue )
+void QgsFeaturePickerModel::setFilterValue( const QString &filterValue )
 {
   if ( mFilterValue == filterValue )
     return;
@@ -84,12 +84,12 @@ void QgsFeatureChooserModel::setFilterValue( const QString &filterValue )
   emit filterValueChanged();
 }
 
-QString QgsFeatureChooserModel::filterExpression() const
+QString QgsFeaturePickerModel::filterExpression() const
 {
   return mFilterExpression;
 }
 
-void QgsFeatureChooserModel::setFilterExpression( const QString &filterExpression )
+void QgsFeaturePickerModel::setFilterExpression( const QString &filterExpression )
 {
   if ( mFilterExpression == filterExpression )
     return;
@@ -99,37 +99,37 @@ void QgsFeatureChooserModel::setFilterExpression( const QString &filterExpressio
   emit filterExpressionChanged();
 }
 
-bool QgsFeatureChooserModel::isLoading() const
+bool QgsFeaturePickerModel::isLoading() const
 {
   return mGatherer;
 }
 
-QModelIndex QgsFeatureChooserModel::index( int row, int column, const QModelIndex &parent ) const
+QModelIndex QgsFeaturePickerModel::index( int row, int column, const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
   return createIndex( row, column, nullptr );
 }
 
-QModelIndex QgsFeatureChooserModel::parent( const QModelIndex &child ) const
+QModelIndex QgsFeaturePickerModel::parent( const QModelIndex &child ) const
 {
   Q_UNUSED( child )
   return QModelIndex();
 }
 
-int QgsFeatureChooserModel::rowCount( const QModelIndex &parent ) const
+int QgsFeaturePickerModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
 
   return mEntries.size();
 }
 
-int QgsFeatureChooserModel::columnCount( const QModelIndex &parent ) const
+int QgsFeaturePickerModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
   return 1;
 }
 
-QVariant QgsFeatureChooserModel::data( const QModelIndex &index, int role ) const
+QVariant QgsFeaturePickerModel::data( const QModelIndex &index, int role ) const
 {
   if ( !index.isValid() )
     return QVariant();
@@ -194,7 +194,7 @@ QVariant QgsFeatureChooserModel::data( const QModelIndex &index, int role ) cons
   return QVariant();
 }
 
-void QgsFeatureChooserModel::updateCompleter()
+void QgsFeaturePickerModel::updateCompleter()
 {
   emit beginUpdate();
 
@@ -313,7 +313,7 @@ void QgsFeatureChooserModel::updateCompleter()
   emit isLoadingChanged();
 }
 
-void QgsFeatureChooserModel::scheduledReload()
+void QgsFeaturePickerModel::scheduledReload()
 {
   if ( !mSourceLayer )
     return;
@@ -342,14 +342,14 @@ void QgsFeatureChooserModel::scheduledReload()
   request.setLimit( QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ).toInt() );
 
   mGatherer = new QgsFeatureExpressionValuesGatherer( mSourceLayer, mDisplayExpression, request );
-  connect( mGatherer, &QgsFeatureExpressionValuesGatherer::finished, this, &QgsFeatureChooserModel::updateCompleter );
+  connect( mGatherer, &QgsFeatureExpressionValuesGatherer::finished, this, &QgsFeaturePickerModel::updateCompleter );
 
   mGatherer->start();
   if ( !wasLoading )
     emit isLoadingChanged();
 }
 
-void QgsFeatureChooserModel::setCurrentIndex( int index, bool force )
+void QgsFeaturePickerModel::setCurrentIndex( int index, bool force )
 {
   if ( mCurrentIndex == index && !force )
     return;
@@ -359,7 +359,7 @@ void QgsFeatureChooserModel::setCurrentIndex( int index, bool force )
   emit currentFeatureChanged( currentFeature() );
 }
 
-void QgsFeatureChooserModel::setCurrentFeature( const QgsFeatureId &featureId )
+void QgsFeaturePickerModel::setCurrentFeature( const QgsFeatureId &featureId )
 {
   if ( featureId == 0 || featureId == currentFeature().id() )
     return;
@@ -374,7 +374,7 @@ void QgsFeatureChooserModel::setCurrentFeature( const QgsFeatureId &featureId )
   mIsSettingCurrentFeature = false;
 }
 
-void QgsFeatureChooserModel::setCurrentFeatureUnguarded( const QgsFeatureId &featureId )
+void QgsFeaturePickerModel::setCurrentFeatureUnguarded( const QgsFeatureId &featureId )
 {
   const QVector<QgsFeatureExpressionValuesGatherer::Entry> entries = mEntries;
 
@@ -399,7 +399,7 @@ void QgsFeatureChooserModel::setCurrentFeatureUnguarded( const QgsFeatureId &fea
   }
 }
 
-QgsConditionalStyle QgsFeatureChooserModel::featureStyle( const QgsFeature &feature ) const
+QgsConditionalStyle QgsFeaturePickerModel::featureStyle( const QgsFeature &feature ) const
 {
   if ( !mSourceLayer )
     return QgsConditionalStyle();
@@ -427,12 +427,12 @@ QgsConditionalStyle QgsFeatureChooserModel::featureStyle( const QgsFeature &feat
   return style;
 }
 
-bool QgsFeatureChooserModel::allowNull() const
+bool QgsFeaturePickerModel::allowNull() const
 {
   return mAllowNull;
 }
 
-void QgsFeatureChooserModel::setAllowNull( bool allowNull )
+void QgsFeaturePickerModel::setAllowNull( bool allowNull )
 {
   if ( mAllowNull == allowNull )
     return;
@@ -443,7 +443,7 @@ void QgsFeatureChooserModel::setAllowNull( bool allowNull )
   reload();
 }
 
-QgsFeature QgsFeatureChooserModel::currentFeature() const
+QgsFeature QgsFeaturePickerModel::currentFeature() const
 {
   if ( mCurrentIndex < mEntries.count() )
     return mEntries.at( mCurrentIndex ).feature;
@@ -451,7 +451,7 @@ QgsFeature QgsFeatureChooserModel::currentFeature() const
     return QgsFeature();
 }
 
-void QgsFeatureChooserModel::reload()
+void QgsFeaturePickerModel::reload()
 {
   mReloadTimer.start();
 }

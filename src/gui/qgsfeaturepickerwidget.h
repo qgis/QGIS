@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsfeaturechooserwidget.h - QgsFeatureChooserWidget
+  qgsfeaturepickerwidget.h - QgsFeaturePickerWidget
  ---------------------
  begin                : 03.04.2020
  copyright            : (C) 2020 by Denis Rouzaud
@@ -25,7 +25,7 @@
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
-class QgsFeatureChooserModel;
+class QgsFeaturePickerModel;
 class QgsAnimatedIcon;
 class QgsFilterLineEdit;
 
@@ -39,7 +39,7 @@ class QgsFilterLineEdit;
  *
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsFeatureChooserWidget : public QWidget
+class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
 {
     Q_OBJECT
 
@@ -51,9 +51,9 @@ class GUI_EXPORT QgsFeatureChooserWidget : public QWidget
   public:
 
     /**
-     * Create a new QgsFeatureChooserWidget, optionally specifying a \a parent.
+     * Create a new QgsFeaturePickerWidget, optionally specifying a \a parent.
      */
-    QgsFeatureChooserWidget( QWidget *parent = nullptr );
+    QgsFeaturePickerWidget( QWidget *parent = nullptr );
 
     /**
      * The layer from which features should be listed.
@@ -181,7 +181,7 @@ class GUI_EXPORT QgsFeatureChooserWidget : public QWidget
     };
 
     QComboBox *mComboBox;
-    QgsFeatureChooserModel *mModel = nullptr;
+    QgsFeaturePickerModel *mModel = nullptr;
     QCompleter *mCompleter = nullptr;
     QgsFilterLineEdit *mLineEdit;
     bool mPopupRequested = false;
@@ -189,7 +189,7 @@ class GUI_EXPORT QgsFeatureChooserWidget : public QWidget
     bool mHasStoredEditState = false;
     LineEditState mLineEditState;
 
-    friend class TestQgsFeatureChooserWidget;
+    friend class TestQgsFeaturePickerWidget;
 };
 
 

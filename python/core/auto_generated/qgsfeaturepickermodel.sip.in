@@ -1,14 +1,14 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsfeaturechoosermodel.h                                    *
+ * src/core/qgsfeaturepickermodel.h                                     *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
 
 
 
-class QgsFeatureChooserModel : QAbstractItemModel
+class QgsFeaturePickerModel : QAbstractItemModel
 {
 %Docstring
 Provides a list of features based on filter conditions.
@@ -18,7 +18,7 @@ Features are fetched asynchronously.
 %End
 
 %TypeHeaderCode
-#include "qgsfeaturechoosermodel.h"
+#include "qgsfeaturepickermodel.h"
 %End
   public:
 
@@ -29,11 +29,11 @@ Features are fetched asynchronously.
       FeatureIdRole
     };
 
-    explicit QgsFeatureChooserModel( QObject *parent = 0 );
+    explicit QgsFeaturePickerModel( QObject *parent = 0 );
 %Docstring
-Create a new QgsFeatureChooserModel, optionally specifying a ``parent``.
+Create a new QgsFeaturePickerModel, optionally specifying a ``parent``.
 %End
-    ~QgsFeatureChooserModel();
+    ~QgsFeaturePickerModel();
 
     QgsVectorLayer *sourceLayer() const;
 %Docstring
@@ -193,7 +193,7 @@ Add a NULL entry to the list.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsfeaturechoosermodel.h                                    *
+ * src/core/qgsfeaturepickermodel.h                                     *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

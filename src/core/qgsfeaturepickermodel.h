@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsfeaturechoosermodel.h - QgsFeatureChooserModel
+  qgsfeaturepickermodel.h - QgsFeaturePickerModel
  ---------------------
  begin                : 03.04.2020
  copyright            : (C) 2020 by Denis Rouzaud
@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSFEATURECHOOSERMODEL_H
-#define QGSFEATURECHOOSERMODEL_H
+#ifndef QGSFEATUREPICKERMODEL_H
+#define QGSFEATUREPICKERMODEL_H
 
 #include <QAbstractItemModel>
 
@@ -27,7 +27,7 @@
  *
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsFeatureChooserModel : public QAbstractItemModel
+class CORE_EXPORT QgsFeaturePickerModel : public QAbstractItemModel
 {
     Q_OBJECT
 
@@ -51,10 +51,10 @@ class CORE_EXPORT QgsFeatureChooserModel : public QAbstractItemModel
     };
 
     /**
-     * Create a new QgsFeatureChooserModel, optionally specifying a \a parent.
+     * Create a new QgsFeaturePickerModel, optionally specifying a \a parent.
      */
-    explicit QgsFeatureChooserModel( QObject *parent = nullptr );
-    ~QgsFeatureChooserModel() override;
+    explicit QgsFeaturePickerModel( QObject *parent = nullptr );
+    ~QgsFeaturePickerModel() override;
 
     /**
      * The source layer from which features will be fetched.
@@ -231,4 +231,4 @@ class CORE_EXPORT QgsFeatureChooserModel : public QAbstractItemModel
 
 };
 
-#endif // QGSFEATURECHOOSERMODEL_H
+#endif // QGSFEATUREPICKERMODEL_H

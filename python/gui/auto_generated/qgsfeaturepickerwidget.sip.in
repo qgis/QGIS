@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsfeaturechooserwidget.h                                    *
+ * src/gui/qgsfeaturepickerwidget.h                                     *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -10,7 +10,7 @@
 
 
 
-class QgsFeatureChooserWidget : QWidget
+class QgsFeaturePickerWidget : QWidget
 {
 %Docstring
 This offers a combobox with autocompleter that allows selecting features from a layer.
@@ -22,13 +22,13 @@ and whenever text is typed into the combobox, the completer and popup will adjus
 %End
 
 %TypeHeaderCode
-#include "qgsfeaturechooserwidget.h"
+#include "qgsfeaturepickerwidget.h"
 %End
   public:
 
-    QgsFeatureChooserWidget( QWidget *parent = 0 );
+    QgsFeaturePickerWidget( QWidget *parent = 0 );
 %Docstring
-Create a new QgsFeatureChooserWidget, optionally specifying a ``parent``.
+Create a new QgsFeaturePickerWidget, optionally specifying a ``parent``.
 %End
 
     QgsVectorLayer *layer() const;
@@ -41,7 +41,7 @@ The layer from which features should be listed.
 The layer from which features should be listed.
 %End
 
-    void setCurrentFeature( const QgsFeature &feature );
+    void setCurrentFeature( QgsFeatureId featureId );
 %Docstring
 Sets the current index by using the given feature
 %End
@@ -144,7 +144,7 @@ Sends the feature as soon as it is chosen
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsfeaturechooserwidget.h                                    *
+ * src/gui/qgsfeaturepickerwidget.h                                     *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

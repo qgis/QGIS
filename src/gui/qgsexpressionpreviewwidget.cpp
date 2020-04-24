@@ -16,7 +16,7 @@
 #include "qgsexpressionpreviewwidget.h"
 #include "qgsmessageviewer.h"
 #include "qgsvectorlayer.h"
-#include "qgsfeaturechooserwidget.h"
+#include "qgsfeaturepickerwidget.h"
 
 
 
@@ -28,7 +28,7 @@ QgsExpressionPreviewWidget::QgsExpressionPreviewWidget( QWidget *parent )
   setupUi( this );
   mPreviewLabel->clear();
 
-  connect( mFeatureChooserWidget, &QgsFeatureChooserWidget::currentFeatureChanged, this, &QgsExpressionPreviewWidget::setCurrentFeature );
+  connect( mFeatureChooserWidget, &QgsFeaturePickerWidget::currentFeatureChanged, this, &QgsExpressionPreviewWidget::setCurrentFeature );
   connect( mPreviewLabel, &QLabel::linkActivated, this, &QgsExpressionPreviewWidget::linkActivated );
 }
 

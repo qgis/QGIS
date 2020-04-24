@@ -257,7 +257,7 @@ SET(QGIS_CORE_SRCS
   qgsexpressioncontext.cpp
   qgsexpressionfieldbuffer.cpp
   qgsfeature.cpp
-  qgsfeaturechoosermodel.cpp
+  qgsfeaturepickermodel.cpp
   qgsfeatureiterator.cpp
   qgsfeaturerequest.cpp
   qgsfeaturesink.cpp
@@ -797,7 +797,7 @@ SET(QGIS_CORE_HDRS
   qgsexpressioncontextscopegenerator.h
   qgsexpressionfieldbuffer.h
   qgsfeature.h
-  qgsfeaturechoosermodel.h
+  qgsfeaturepickermodel.h
   qgsfeatureexpressionvaluesgatherer.h
   qgsfeaturefiltermodel.h
   qgsfeaturefilterprovider.h

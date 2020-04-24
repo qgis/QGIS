@@ -403,7 +403,7 @@ SET(QGIS_GUI_SRCS
   qgsfeatureselectiondlg.cpp
   qgsfieldcombobox.cpp
   qgsfieldexpressionwidget.cpp
-  qgsfeaturechooserwidget.cpp
+  qgsfeaturepickerwidget.cpp
   qgsfieldmappingwidget.cpp
   qgsfieldmappingmodel.cpp
   qgsfeaturelistcombobox.cpp
@@ -628,7 +628,7 @@ SET(QGIS_GUI_HDRS
   qgsextentgroupbox.h
   qgsextentwidget.h
   qgsexternalresourcewidget.h
-  qgsfeaturechooserwidget.h
+  qgsfeaturepickerwidget.h
   qgsfeaturelistcombobox.h
   qgsfeatureselectiondlg.h
   qgsfieldcombobox.h
