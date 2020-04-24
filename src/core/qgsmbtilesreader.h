@@ -35,7 +35,7 @@ class QgsRectangle;
 class CORE_EXPORT QgsMBTilesReader
 {
   public:
-    //! Contructs MBTiles reader (but it does not open the file yet)
+    //! Constructs MBTiles reader (but it does not open the file yet)
     explicit QgsMBTilesReader( const QString &filename );
 
     //! Tries to open the file, returns true on success
