@@ -303,12 +303,12 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
      * \since QGIS 3.6
      * \deprecated QGIS 3.12.3
      */
-    virtual bool persistDatasetGroup( const QString &path,
-                                      const QgsMeshDatasetGroupMetadata &meta,
-                                      const QVector<QgsMeshDataBlock> &datasetValues,
-                                      const QVector<QgsMeshDataBlock> &datasetActive,
-                                      const QVector<double> &times
-                                    );
+    Q_DECL_DEPRECATED virtual bool persistDatasetGroup( const QString &path,
+        const QgsMeshDatasetGroupMetadata &meta,
+        const QVector<QgsMeshDataBlock> &datasetValues,
+        const QVector<QgsMeshDataBlock> &datasetActive,
+        const QVector<double> &times
+                                                      ) SIP_DEPRECATED;
 
     /**
      * Creates a new dataset group from a data and
