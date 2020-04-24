@@ -329,6 +329,12 @@ void QgsProcessingAlgorithm::removeParameter( const QString &name )
     delete def;
     mParameters.removeAll( def );
   }
+  const QgsProcessingOutputDefinition *outputDef = outputDefinition( name );
+  if ( outputDef )
+  {
+    delete outputDef;
+    mOutputs.removeAll( outputDef );
+  }
 }
 
 bool QgsProcessingAlgorithm::addOutput( QgsProcessingOutputDefinition *definition )
