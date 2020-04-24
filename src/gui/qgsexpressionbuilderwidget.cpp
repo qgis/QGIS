@@ -425,6 +425,11 @@ void QgsExpressionBuilderWidget::btnNewFile_pressed()
 
 void QgsExpressionBuilderWidget::btnRemoveFile_pressed()
 {
+  if ( QMessageBox::question( this, tr( "Remove File" ),
+                              tr( "Are you sure you want to remove current functions file?" ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::No )
+    return;
+
   int currentRow = cmbFileNames->currentRow();
   QString fileName = cmbFileNames->currentItem()->text();
   if ( QFile::remove( mFunctionsPath + QDir::separator() + fileName.append( ".py" ) ) )
