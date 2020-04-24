@@ -33,7 +33,7 @@ QString QgsNormalRasterAlgorithm::name() const
 
 QString QgsNormalRasterAlgorithm::displayName() const
 {
-  return QObject::tr( "Create normal raster layer" );
+  return QObject::tr( "Create normally distributed random raster layer" );
 }
 
 QString QgsNormalRasterAlgorithm::group() const
