@@ -132,6 +132,7 @@ class TestQgsLegendRenderer : public QObject
 
     void testBasic();
     void testMultiline();
+    void testSpacing();
     void testEffects();
     void testBigMarker();
 
@@ -337,6 +338,38 @@ void TestQgsLegendRenderer::testMultiline()
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   _renderLegend( testName, &legendModel, settings );
   QVERIFY( _verifyImage( testName, mReport ) );
+}
+
+void TestQgsLegendRenderer::testSpacing()
+{
+  QgsMarkerSymbol *sym = new QgsMarkerSymbol();
+  sym->setColor( Qt::red );
+  sym->setSize( sym->size() * 6 );
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategorySymbol( 0, sym );
+
+  QgsLayerTreeModel legendModel( mRoot );
+  QgsLegendSettings settings;
+
+  settings.rstyle( QgsLegendStyle::Group ).setMargin( QgsLegendStyle::Left, 7 );
+  settings.rstyle( QgsLegendStyle::Subgroup ).setMargin( QgsLegendStyle::Left, 11 );
+  settings.rstyle( QgsLegendStyle::Symbol ).setMargin( QgsLegendStyle::Left, 5 );
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+
+  settings.rstyle( QgsLegendStyle::Group ).setAlignment( Qt::AlignLeft );
+  settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignLeft );
+  settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignLeft );
+
+  _renderLegend( QStringLiteral( "legend_left_align_side_space" ), &legendModel, settings );
+  QVERIFY( _verifyImage( QStringLiteral( "legend_left_align_side_space" ), mReport ) );
+
+  settings.rstyle( QgsLegendStyle::Group ).setAlignment( Qt::AlignRight );
+  settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignRight );
+  settings.setSymbolAlignment( Qt::AlignRight );
+
+  _renderLegend( QStringLiteral( "legend_right_align_side_space" ), &legendModel, settings );
+  QVERIFY( _verifyImage( QStringLiteral( "legend_right_align_side_space" ), mReport ) );
 }
 
 void TestQgsLegendRenderer::testEffects()
