@@ -1298,6 +1298,9 @@ void QgsLayoutLegendWidget::mItemTreeView_doubleClicked( const QModelIndex &idx 
     return;
   }
 
+  if ( mLegend->autoUpdateModel() )
+    return;
+
   QgsLayerTreeModel *model = mItemTreeView->layerTreeModel();
   QgsLayerTreeNode *currentNode = model->index2node( idx );
   QgsLayerTreeModelLegendNode *legendNode = model->index2legendNode( idx );
