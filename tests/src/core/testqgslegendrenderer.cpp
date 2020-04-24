@@ -131,6 +131,7 @@ class TestQgsLegendRenderer : public QObject
     void testModel();
 
     void testBasic();
+    void testMultiline();
     void testEffects();
     void testBigMarker();
 
@@ -314,6 +315,26 @@ void TestQgsLegendRenderer::testBasic()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+}
+
+void TestQgsLegendRenderer::testMultiline()
+{
+  QString testName = QStringLiteral( "legend_multiline" );
+
+  QgsLayerTreeModel legendModel( mRoot );
+
+  legendModel.findLegendNode( mVL1->id(), QString() );
+
+  QgsLayerTreeLayer *layer = legendModel.rootGroup()->findLayer( mVL1 );
+  layer->setCustomProperty( QStringLiteral( "legend/title-label" ), QStringLiteral( "some legend text\nwith newline\ncharacters in it" ) );
+
+  QgsLayerTreeModelLegendNode *embeddedNode = legendModel.legendNodeEmbeddedInParent( layer );
+  embeddedNode->setUserLabel( QString() );
+
+  QgsLegendSettings settings;
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   _renderLegend( testName, &legendModel, settings );
   QVERIFY( _verifyImage( testName, mReport ) );
 }

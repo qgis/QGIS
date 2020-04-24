@@ -53,15 +53,20 @@ QStringList QgsLegendSettings::evaluateItemText( const QString &text, const QgsE
   return splitStringForWrapping( textToRender );
 }
 
-QStringList QgsLegendSettings::splitStringForWrapping( const QString &stringToSplt ) const
+QStringList QgsLegendSettings::splitStringForWrapping( const QString &stringToSplit ) const
 {
-  QStringList list;
+  const QStringList lines = stringToSplit.split( '\n' );
+
   // If the string contains nothing then just return the string without splitting.
-  if ( wrapChar().count() == 0 )
-    list << stringToSplt;
-  else
-    list = stringToSplt.split( wrapChar() );
-  return list;
+  if ( wrapChar().isEmpty() )
+    return lines;
+
+  QStringList res;
+  for ( const QString &line : lines )
+  {
+    res.append( line.split( wrapChar() ) );
+  }
+  return res;
 }
 
 #define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
