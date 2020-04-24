@@ -52,7 +52,11 @@ class QgsAttributeRelationEdit;
 class QgsAttributeWidgetEdit;
 class DnDTree;
 
+<<<<<<< HEAD:src/app/qgsattributesformproperties.h
 class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAttributesFormProperties
+=======
+class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpressionContextGenerator, private Ui_QgsAttributesFormProperties
+>>>>>>> 4059305d58... Merge pull request #35881 from nyalldawson/fix_35558:src/gui/vector/qgsattributesformproperties.h
 {
     Q_OBJECT
 
@@ -207,6 +211,8 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     void initLayoutConfig();
     void initInitPython();
     void initSuppressCombo();
+
+    QgsExpressionContext createExpressionContext() const override;
 
   protected:
     void updateButtons();
