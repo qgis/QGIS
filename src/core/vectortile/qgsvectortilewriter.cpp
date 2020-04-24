@@ -17,17 +17,18 @@
 
 #include "qgsdatasourceuri.h"
 #include "qgsfeedback.h"
+#include "qgsjsonutils.h"
 #include "qgsmbtilesreader.h"
 #include "qgstiles.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectortilemvtencoder.h"
 #include "qgsvectortileutils.h"
 
+#include <nlohmann/json.hpp>
+
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
-#include <QJsonDocument>
-#include <QJsonArray>
 #include <QUrl>
 
 
@@ -196,38 +197,36 @@ bool QgsVectorTileWriter::writeTileFileXYZ( const QString &sourcePath, QgsTileXY
   return true;
 }
 
+
 QString QgsVectorTileWriter::mbtilesJsonSchema()
 {
-  QJsonArray arrayLayers;
+  QVariantList arrayLayers;
   for ( const Layer &layer : qgis::as_const( mLayers ) )
   {
     QgsVectorLayer *vl = layer.layer();
     const QgsFields fields = vl->fields();
 
-    QJsonObject fieldsObj;
+    QVariantMap fieldsObj;
     for ( const QgsField &field : fields )
     {
       QString fieldTypeStr;
       if ( field.type() == QVariant::Bool )
-        fieldTypeStr = "Boolean";
+        fieldTypeStr = QStringLiteral( "Boolean" );
       else if ( field.type() == QVariant::Int || field.type() == QVariant::Double )
-        fieldTypeStr = "Number";
+        fieldTypeStr = QStringLiteral( "Number" );
       else
-        fieldTypeStr = "String";
+        fieldTypeStr = QStringLiteral( "String" );
 
-      fieldsObj["field"] = fieldTypeStr;
+      fieldsObj[field.name()] = fieldTypeStr;
     }
 
-    QJsonObject layerObj;
+    QVariantMap layerObj;
     layerObj["id"] = vl->name();
     layerObj["fields"] = fieldsObj;
     arrayLayers.append( layerObj );
   }
 
-  QJsonObject rootObj;
+  QVariantMap rootObj;
   rootObj["vector_layers"] = arrayLayers;
-
-  QJsonDocument doc;
-  doc.setObject( rootObj );
-  return doc.toJson();
+  return QString::fromStdString( QgsJsonUtils::jsonFromVariant( rootObj ).dump() );
 }
