@@ -53,6 +53,27 @@ QgsMeshDatasetGroupMetadata QgsMeshDatasetSourceInterface::datasetGroupMetadata(
   return datasetGroupMetadata( index.group() );
 }
 
+bool QgsMeshDatasetSourceInterface::persistDatasetGroup(
+  const QString &path,
+  const QgsMeshDatasetGroupMetadata &meta,
+  const QVector<QgsMeshDataBlock> &datasetValues,
+  const QVector<QgsMeshDataBlock> &datasetActive,
+  const QVector<double> &times )
+{
+  // Form DRIVER:filename
+  QString filename = path;
+  // ASCII dat supports face, edge and vertex datasets
+  QString driverName = QStringLiteral( "DAT" );
+  int separatorPosition = path.indexOf( ":\"" );
+  if ( separatorPosition >= 0 )
+  {
+    driverName = path.left( separatorPosition );
+    filename = path.right( path.count() - separatorPosition - 1 );
+    filename.remove( QStringLiteral( "\"" ) );
+  }
+  return persistDatasetGroup( filename, driverName, meta, datasetValues, datasetActive, times );
+}
+
 QgsMeshVertex QgsMesh::vertex( int index ) const
 {
   if ( index < vertices.size() && index >= 0 )
