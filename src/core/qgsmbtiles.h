@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsmbtilesreader.h
+  qgsmbtiles.h
   --------------------------------------
   Date                 : January 2020
   Copyright            : (C) 2020 by Martin Dobias
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMBTILESREADER_H
-#define QGSMBTILESREADER_H
+#ifndef QGSMBTILES_H
+#define QGSMBTILES_H
 
 #include "qgis_core.h"
 
@@ -28,15 +28,18 @@ class QgsRectangle;
 
 /**
  * \ingroup core
- * Utility class for reading MBTiles files (which are SQLite3 databases).
+ * Utility class for reading and writing MBTiles files (which are SQLite3 databases).
+ *
+ * See the specification for more details:
+ * https://github.com/mapbox/mbtiles-spec/blob/master/1.3/spec.md
  *
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsMBTilesReader
+class CORE_EXPORT QgsMbTiles
 {
   public:
     //! Constructs MBTiles reader (but it does not open the file yet)
-    explicit QgsMBTilesReader( const QString &filename );
+    explicit QgsMbTiles( const QString &filename );
 
     //! Tries to open the file, returns true on success
     bool open();
@@ -86,4 +89,4 @@ class CORE_EXPORT QgsMBTilesReader
 };
 
 
-#endif // QGSMBTILESREADER_H
+#endif // QGSMBTILES_H

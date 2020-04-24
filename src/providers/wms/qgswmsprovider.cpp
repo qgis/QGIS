@@ -37,7 +37,7 @@
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmapsettings.h"
-#include "qgsmbtilesreader.h"
+#include "qgsmbtiles.h"
 #include "qgsmessageoutput.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
@@ -821,10 +821,10 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
     QList<TileImage> tileImages;  // in the correct resolution
     QList<QRectF> missing;  // rectangles (in map coords) of missing tiles for this view
 
-    std::unique_ptr<QgsMBTilesReader> mbtilesReader;
+    std::unique_ptr<QgsMbTiles> mbtilesReader;
     if ( mSettings.mIsMBTiles )
     {
-      mbtilesReader.reset( new QgsMBTilesReader( QUrl( mSettings.mBaseUrl ).path() ) );
+      mbtilesReader.reset( new QgsMbTiles( QUrl( mSettings.mBaseUrl ).path() ) );
       mbtilesReader->open();
     }
 
@@ -1460,7 +1460,7 @@ void QgsWmsProvider::setupXyzCapabilities( const QString &uri, const QgsRectangl
 bool QgsWmsProvider::setupMBTilesCapabilities( const QString &uri )
 {
   // if it is MBTiles source, let's prepare the reader to get some metadata
-  QgsMBTilesReader mbtilesReader( QUrl( mSettings.mBaseUrl ).path() );
+  QgsMbTiles mbtilesReader( QUrl( mSettings.mBaseUrl ).path() );
   if ( !mbtilesReader.open() )
     return false;
 

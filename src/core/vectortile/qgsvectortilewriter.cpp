@@ -18,7 +18,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsfeedback.h"
 #include "qgsjsonutils.h"
-#include "qgsmbtilesreader.h"
+#include "qgsmbtiles.h"
 #include "qgstiles.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectortilemvtencoder.h"
@@ -51,7 +51,7 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
     return false;
   }
 
-  std::unique_ptr<QgsMBTilesReader> mbtiles;
+  std::unique_ptr<QgsMbTiles> mbtiles;
 
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDestinationUri );
@@ -65,7 +65,7 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
   }
   else if ( sourceType == QStringLiteral( "mbtiles" ) )
   {
-    mbtiles.reset( new QgsMBTilesReader( sourcePath ) );
+    mbtiles.reset( new QgsMbTiles( sourcePath ) );
   }
   else
   {
@@ -158,7 +158,7 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
         else  // mbtiles
         {
           QByteArray gzipTileData;
-          QgsMBTilesReader::encodeGzip( tileData, gzipTileData );
+          QgsMbTiles::encodeGzip( tileData, gzipTileData );
           int rowTMS = pow( 2, tileID.zoomLevel() ) - tileID.row() - 1;
           mbtiles->setTileData( tileID.zoomLevel(), tileID.column(), rowTMS, gzipTileData );
         }

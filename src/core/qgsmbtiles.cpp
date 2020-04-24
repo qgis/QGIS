@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsmbtilesreader.cpp
+  qgsmbtiles.cpp
   --------------------------------------
   Date                 : January 2020
   Copyright            : (C) 2020 by Martin Dobias
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmbtilesreader.h"
+#include "qgsmbtiles.h"
 
 #include "qgslogger.h"
 #include "qgsrectangle.h"
@@ -24,12 +24,12 @@
 #include <zlib.h>
 
 
-QgsMBTilesReader::QgsMBTilesReader( const QString &filename )
+QgsMbTiles::QgsMbTiles( const QString &filename )
   : mFilename( filename )
 {
 }
 
-bool QgsMBTilesReader::open()
+bool QgsMbTiles::open()
 {
   if ( mDatabase )
     return true;  // already opened
@@ -44,12 +44,12 @@ bool QgsMBTilesReader::open()
   return true;
 }
 
-bool QgsMBTilesReader::isOpen() const
+bool QgsMbTiles::isOpen() const
 {
   return bool( mDatabase );
 }
 
-bool QgsMBTilesReader::create()
+bool QgsMbTiles::create()
 {
   if ( mDatabase )
     return false;
@@ -80,7 +80,7 @@ bool QgsMBTilesReader::create()
   return true;
 }
 
-QString QgsMBTilesReader::metadataValue( const QString &key )
+QString QgsMbTiles::metadataValue( const QString &key )
 {
   if ( !mDatabase )
   {
@@ -106,7 +106,7 @@ QString QgsMBTilesReader::metadataValue( const QString &key )
   return preparedStatement.columnAsText( 0 );
 }
 
-void QgsMBTilesReader::setMetadataValue( const QString &key, const QString &value )
+void QgsMbTiles::setMetadataValue( const QString &key, const QString &value )
 {
   if ( !mDatabase )
   {
@@ -130,7 +130,7 @@ void QgsMBTilesReader::setMetadataValue( const QString &key, const QString &valu
   }
 }
 
-QgsRectangle QgsMBTilesReader::extent()
+QgsRectangle QgsMbTiles::extent()
 {
   QString boundsStr = metadataValue( "bounds" );
   if ( boundsStr.isEmpty() )
@@ -143,7 +143,7 @@ QgsRectangle QgsMBTilesReader::extent()
                        boundsArray[2].toDouble(), boundsArray[3].toDouble() );
 }
 
-QByteArray QgsMBTilesReader::tileData( int z, int x, int y )
+QByteArray QgsMbTiles::tileData( int z, int x, int y )
 {
   if ( !mDatabase )
   {
@@ -169,7 +169,7 @@ QByteArray QgsMBTilesReader::tileData( int z, int x, int y )
   return preparedStatement.columnAsBlob( 0 );
 }
 
-QImage QgsMBTilesReader::tileDataAsImage( int z, int x, int y )
+QImage QgsMbTiles::tileDataAsImage( int z, int x, int y )
 {
   QImage tileImage;
   QByteArray tileBlob = tileData( z, x, y );
@@ -181,7 +181,7 @@ QImage QgsMBTilesReader::tileDataAsImage( int z, int x, int y )
   return tileImage;
 }
 
-void QgsMBTilesReader::setTileData( int z, int x, int y, const QByteArray &data )
+void QgsMbTiles::setTileData( int z, int x, int y, const QByteArray &data )
 {
   if ( !mDatabase )
   {
@@ -207,7 +207,7 @@ void QgsMBTilesReader::setTileData( int z, int x, int y, const QByteArray &data 
   }
 }
 
-bool QgsMBTilesReader::decodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut )
+bool QgsMbTiles::decodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut )
 {
   unsigned char *bytesInPtr = reinterpret_cast<unsigned char *>( const_cast<char *>( bytesIn.constData() ) );
   uint bytesInLeft = static_cast<uint>( bytesIn.count() );
@@ -263,7 +263,7 @@ bool QgsMBTilesReader::decodeGzip( const QByteArray &bytesIn, QByteArray &bytesO
 }
 
 
-bool QgsMBTilesReader::encodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut )
+bool QgsMbTiles::encodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut )
 {
   unsigned char *bytesInPtr = reinterpret_cast<unsigned char *>( const_cast<char *>( bytesIn.constData() ) );
   uint bytesInLeft = static_cast<uint>( bytesIn.count() );
