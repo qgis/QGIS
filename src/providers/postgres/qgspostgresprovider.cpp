@@ -541,6 +541,11 @@ QString QgsPostgresProvider::whereClause( QgsFeatureId featureId ) const
   return QgsPostgresUtils::whereClause( featureId, mAttributeFields, connectionRO(), mPrimaryKeyType, mPrimaryKeyAttrs, mShared );
 }
 
+QString QgsPostgresProvider::whereClause( QgsFeatureIds featureIds ) const
+{
+  return QgsPostgresUtils::whereClause( featureIds, mAttributeFields, connectionRO(), mPrimaryKeyType, mPrimaryKeyAttrs, mShared );
+}
+
 
 QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields &fields, QgsPostgresConn *conn, QgsPostgresPrimaryKeyType pkType, const QList<int> &pkAttrs, const std::shared_ptr<QgsPostgresSharedData> &sharedData )
 {
@@ -2529,7 +2534,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   return returnvalue;
 }
 
-bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds &id )
+bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds &ids )
 {
   bool returnvalue = true;
 
@@ -2550,17 +2555,17 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds &id )
   {
     conn->begin();
 
-    for ( QgsFeatureIds::const_iterator it = id.begin(); it != id.end(); ++it )
+    QString sql = QStringLiteral( "DELETE FROM %1 WHERE %2" )
+                  .arg( mQuery, whereClause( ids ) );
+    QgsDebugMsgLevel( "delete sql: " + sql, 2 );
+
+    //send DELETE statement and do error handling
+    QgsPostgresResult result( conn->PQexec( sql ) );
+    if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
+      throw PGException( result );
+
+    for ( QgsFeatureIds::const_iterator it = ids.begin(); it != ids.end(); ++it )
     {
-      QString sql = QStringLiteral( "DELETE FROM %1 WHERE %2" )
-                    .arg( mQuery, whereClause( *it ) );
-      QgsDebugMsgLevel( "delete sql: " + sql, 2 );
-
-      //send DELETE statement and do error handling
-      QgsPostgresResult result( conn->PQexec( sql ) );
-      if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
-        throw PGException( result );
-
       mShared->removeFid( *it );
     }
 
@@ -2579,7 +2584,7 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds &id )
       dropOrphanedTopoGeoms();
     }
 
-    mShared->addFeaturesCounted( -id.size() );
+    mShared->addFeaturesCounted( -ids.size() );
   }
   catch ( PGException &e )
   {
