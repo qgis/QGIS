@@ -136,6 +136,11 @@ class GUI_EXPORT QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private 
     void spaceBelowSubGroupHeadingChanged( double space );
     void spaceBelowGroupHeadingChanged( double space );
 
+    void spaceGroupSideChanged( double space );
+    void spaceSubGroupSideChanged( double space );
+
+    void spaceSymbolSideChanged( double space );
+
   private:
     QgsLayoutLegendWidget() = delete;
     void blockAllSignals( bool b );

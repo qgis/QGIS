@@ -653,8 +653,22 @@ QgsLegendRenderer::LegendComponent QgsLegendRenderer::drawSymbolItemInternal( Qg
   Q_NOWARN_DEPRECATED_POP
 
   ctx.top = top;
+
   ctx.columnLeft = columnContext.left;
   ctx.columnRight = columnContext.right;
+
+  switch ( mSettings.symbolAlignment() )
+  {
+    case Qt::AlignLeft:
+    default:
+      ctx.columnLeft += mSettings.style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Left );
+      break;
+
+    case Qt::AlignRight:
+      ctx.columnRight -= mSettings.style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Left );
+      break;
+  }
+
   ctx.maxSiblingSymbolWidth = maxSiblingSymbolWidth;
 
   if ( const QgsSymbolLegendNode *symbolNode = dynamic_cast< const QgsSymbolLegendNode * >( symbolItem ) )
@@ -675,6 +689,7 @@ QgsLegendRenderer::LegendComponent QgsLegendRenderer::drawSymbolItemInternal( Qg
   // ideally we could (should?) expose all these margins as settings, and then adapt the below to respect the current symbol/text alignment
   // and consider the correct margin sides...
   double width = std::max( static_cast< double >( im.symbolSize.width() ), maxSiblingSymbolWidth )
+                 + mSettings.style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Left )
                  + mSettings.style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Right )
                  + mSettings.style( QgsLegendStyle::SymbolLabel ).margin( QgsLegendStyle::Left )
                  + im.labelSize.width();
@@ -719,23 +734,26 @@ QSizeF QgsLegendRenderer::drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, 
   const QStringList lines = mSettings.evaluateItemText( titleString,
                             context ? context->expressionContext() : tempContext );
   int i = 0;
+
+  const double sideMargin = mSettings.style( nodeLegendStyle( nodeLayer ) ).margin( QgsLegendStyle::Left );
   for ( QStringList::ConstIterator layerItemPart = lines.constBegin(); layerItemPart != lines.constEnd(); ++layerItemPart )
   {
     y += mSettings.fontAscentMillimeters( layerFont );
     if ( QPainter *destPainter = context && context->painter() ? context->painter() : painter )
     {
-      double x = columnContext.left;
+      double x = columnContext.left + sideMargin;
       if ( mSettings.style( nodeLegendStyle( nodeLayer ) ).alignment() != Qt::AlignLeft )
       {
         const double labelWidth = mSettings.textWidthMillimeters( layerFont, *layerItemPart );
         if ( mSettings.style( nodeLegendStyle( nodeLayer ) ).alignment() == Qt::AlignRight )
-          x = columnContext.right - labelWidth;
+          x = columnContext.right - labelWidth - sideMargin;
         else if ( mSettings.style( nodeLegendStyle( nodeLayer ) ).alignment() == Qt::AlignHCenter )
           x = columnContext.left + ( columnContext.right - columnContext.left - labelWidth ) / 2;
       }
       mSettings.drawText( destPainter, x, y, *layerItemPart, layerFont );
     }
-    qreal width = mSettings.textWidthMillimeters( layerFont, *layerItemPart );
+    qreal width = mSettings.textWidthMillimeters( layerFont, *layerItemPart ) + sideMargin *
+                  ( mSettings.style( nodeLegendStyle( nodeLayer ) ).alignment() == Qt::AlignHCenter  ? 2 : 1 );
     size.rwidth() = std::max( width, size.width() );
     if ( layerItemPart != ( lines.end() - 1 ) )
     {
@@ -773,6 +791,8 @@ QSizeF QgsLegendRenderer::drawGroupTitleInternal( QgsLayerTreeGroup *nodeGroup, 
 
   QgsExpressionContext tempContext;
 
+  const double sideMargin = mSettings.style( nodeLegendStyle( nodeGroup ) ).margin( QgsLegendStyle::Left );
+
   const QStringList lines = mSettings.evaluateItemText( mLegendModel->data( idx, Qt::DisplayRole ).toString(),
                             context ? context->expressionContext() : tempContext );
   for ( QStringList::ConstIterator groupPart = lines.constBegin(); groupPart != lines.constEnd(); ++groupPart )
@@ -781,18 +801,18 @@ QSizeF QgsLegendRenderer::drawGroupTitleInternal( QgsLayerTreeGroup *nodeGroup, 
 
     if ( QPainter *destPainter = context && context->painter() ? context->painter() : painter )
     {
-      double x = columnContext.left;
+      double x = columnContext.left + sideMargin;
       if ( mSettings.style( nodeLegendStyle( nodeGroup ) ).alignment() != Qt::AlignLeft )
       {
         const double labelWidth = mSettings.textWidthMillimeters( groupFont, *groupPart );
         if ( mSettings.style( nodeLegendStyle( nodeGroup ) ).alignment() == Qt::AlignRight )
-          x = columnContext.right - labelWidth;
+          x = columnContext.right - labelWidth - sideMargin;
         else if ( mSettings.style( nodeLegendStyle( nodeGroup ) ).alignment() == Qt::AlignHCenter )
           x = columnContext.left + ( columnContext.right - columnContext.left - labelWidth ) / 2;
       }
       mSettings.drawText( destPainter, x, y, *groupPart, groupFont );
     }
-    qreal width = mSettings.textWidthMillimeters( groupFont, *groupPart );
+    qreal width = mSettings.textWidthMillimeters( groupFont, *groupPart ) + sideMargin * ( mSettings.style( nodeLegendStyle( nodeGroup ) ).alignment() == Qt::AlignHCenter ? 2 : 1 );
     size.rwidth() = std::max( width, size.width() );
     if ( groupPart != ( lines.end() - 1 ) )
     {
