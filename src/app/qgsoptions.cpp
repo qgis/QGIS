@@ -403,9 +403,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     mSettings->setValue( QStringLiteral( "clear_auth_cache_on_errors" ), checked, QgsSettings::Section::Auth );
   } );
 
-  //wms search server
-  leWmsSearch->setText( mSettings->value( QStringLiteral( "/qgis/WMSSearchUrl" ), "http://geopole.org/wms/search?search=%1&type=rss" ).toString() );
-
   // set the attribute table default filter
   cmbAttrTableBehavior->clear();
   cmbAttrTableBehavior->addItem( tr( "Show all features" ), QgsAttributeTableFilterModel::ShowAll );
@@ -1471,9 +1468,6 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "proxy/noProxyUrls" ), noProxyUrls );
 
   QgisApp::instance()->namUpdate();
-
-  //wms search url
-  mSettings->setValue( QStringLiteral( "/qgis/WMSSearchUrl" ), leWmsSearch->text() );
 
   //general settings
   mSettings->setValue( QStringLiteral( "/Map/searchRadiusMM" ), spinBoxIdentifyValue->value() );

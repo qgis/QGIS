@@ -36,7 +36,6 @@ QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   mLayersTab->layout()->removeWidget( mWMSGroupBox );
   mTabWidget->removeTab( mTabWidget->indexOf( mLayerOrderTab ) );
   mTabWidget->removeTab( mTabWidget->indexOf( mTilesetsTab ) );
-  mTabWidget->removeTab( mTabWidget->indexOf( mSearchTab ) );
   mAddDefaultButton->hide();
 
   mLayersTreeWidget->setSelectionMode( QAbstractItemView::SingleSelection );
