@@ -17,7 +17,7 @@
 
 #include "qgslogger.h"
 #include "qgsvectortilelayerrenderer.h"
-#include "qgsmbtilesreader.h"
+#include "qgsmbtiles.h"
 #include "qgsvectortilebasiclabeling.h"
 #include "qgsvectortilebasicrenderer.h"
 #include "qgsvectortilelabeling.h"
@@ -61,7 +61,7 @@ bool QgsVectorTileLayer::loadDataSource()
   }
   else if ( mSourceType == QStringLiteral( "mbtiles" ) )
   {
-    QgsMBTilesReader reader( mSourcePath );
+    QgsMbTiles reader( mSourcePath );
     if ( !reader.open() )
     {
       QgsDebugMsg( QStringLiteral( "failed to open MBTiles file: " ) + mSourcePath );

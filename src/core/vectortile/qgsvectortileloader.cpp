@@ -19,7 +19,7 @@
 
 #include "qgsblockingnetworkrequest.h"
 #include "qgslogger.h"
-#include "qgsmbtilesreader.h"
+#include "qgsmbtiles.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsvectortileutils.h"
 
@@ -147,7 +147,7 @@ QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const
 {
   QList<QgsVectorTileRawData> rawTiles;
 
-  QgsMBTilesReader mbReader( sourcePath );
+  QgsMbTiles mbReader( sourcePath );
   bool isUrl = ( sourceType == QStringLiteral( "xyz" ) );
   if ( !isUrl )
   {
@@ -187,7 +187,7 @@ QByteArray QgsVectorTileLoader::loadFromNetwork( const QgsTileXYZ &id, const QSt
 }
 
 
-QByteArray QgsVectorTileLoader::loadFromMBTiles( const QgsTileXYZ &id, QgsMBTilesReader &mbTileReader )
+QByteArray QgsVectorTileLoader::loadFromMBTiles( const QgsTileXYZ &id, QgsMbTiles &mbTileReader )
 {
   // MBTiles uses TMS specs with Y starting at the bottom while XYZ uses Y starting at the top
   int rowTMS = pow( 2, id.zoomLevel() ) - id.row() - 1;
@@ -199,7 +199,7 @@ QByteArray QgsVectorTileLoader::loadFromMBTiles( const QgsTileXYZ &id, QgsMBTile
   }
 
   QByteArray data;
-  if ( !QgsMBTilesReader::decodeGzip( gzippedTileData, data ) )
+  if ( !QgsMbTiles::decodeGzip( gzippedTileData, data ) )
   {
     QgsDebugMsg( QStringLiteral( "Failed to decompress tile " ) + id.toString() );
     return QByteArray();

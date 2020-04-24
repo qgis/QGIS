@@ -315,7 +315,7 @@ SET(QGIS_CORE_SRCS
   qgsmapunitscale.cpp
   qgsmargins.cpp
   qgsmaskidprovider.cpp
-  qgsmbtilesreader.cpp
+  qgsmbtiles.cpp
   qgsmessagelog.cpp
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
@@ -861,7 +861,7 @@ SET(QGIS_CORE_HDRS
   qgsmapunitscale.h
   qgsmargins.h
   qgsmaskidprovider.h
-  qgsmbtilesreader.h
+  qgsmbtiles.h
   qgsmessagelog.h
   qgsmessageoutput.h
   qgsmimedatautils.h
@@ -1487,7 +1487,6 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/external/poly2tri
   ${CMAKE_SOURCE_DIR}/external/rtree/include
   ${CMAKE_SOURCE_DIR}/external/meshOptimizer
-  ${CMAKE_SOURCE_DIR}/external/mapbox-vector-tile
 )
 
 INCLUDE_DIRECTORIES(SYSTEM

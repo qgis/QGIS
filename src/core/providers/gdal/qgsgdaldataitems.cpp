@@ -18,7 +18,7 @@
 ///@cond PRIVATE
 #include "qgsgdalprovider.h"
 #include "qgslogger.h"
-#include "qgsmbtilesreader.h"
+#include "qgsmbtiles.h"
 #include "qgssettings.h"
 #include "qgsogrutils.h"
 #include "qgsproject.h"
@@ -265,7 +265,7 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
 
   if ( suffix == QStringLiteral( "mbtiles" ) )
   {
-    QgsMBTilesReader reader( path );
+    QgsMbTiles reader( path );
     if ( reader.open() )
     {
       if ( reader.metadataValue( "format" ) == QStringLiteral( "pbf" ) )
