@@ -497,11 +497,13 @@ bool QgsAuthManager::setMasterPassword( bool verify )
   if ( mMasterPass.isEmpty() )
   {
     QgsDebugMsg( QStringLiteral( "Master password is not yet set by user" ) );
+    locker.unlock();
     if ( !masterPasswordInput() )
     {
       QgsDebugMsg( QStringLiteral( "Master password input canceled by user" ) );
       return false;
     }
+    locker.relock();
   }
   else
   {
@@ -1200,12 +1202,13 @@ bool QgsAuthManager::updateAuthenticationConfig( const QgsAuthMethodConfig &conf
 
 bool QgsAuthManager::loadAuthenticationConfig( const QString &authcfg, QgsAuthMethodConfig &mconfig, bool full )
 {
-  QMutexLocker locker( mMutex );
   if ( isDisabled() )
     return false;
 
   if ( full && !setMasterPassword( true ) )
     return false;
+
+  QMutexLocker locker( mMutex );
 
   QSqlQuery query( authDatabaseConnection() );
   if ( full )
