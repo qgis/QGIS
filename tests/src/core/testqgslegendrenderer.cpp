@@ -87,6 +87,7 @@ static void _renderLegend( const QString &testName, QgsLayerTreeModel *legendMod
   QPainter painter( &img );
   painter.setRenderHint( QPainter::Antialiasing, true );
   QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
+  context.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
 
   QgsScopedRenderContextScaleToMm scaleToMm( context );
   context.setRendererScale( 1000 );
