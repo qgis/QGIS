@@ -31,6 +31,24 @@ be ordinary file system path, e.g.: /home/qgis/output.mbtiles
 
 Currently the writer only support MVT encoding of data.
 
+Metadata support: it is possible to pass a QVariantMap with metadata. This
+is backend dependent. Currently only "mbtiles" source type supports writing
+of metadata. The key-value pairs will be written to the "metadata" table
+in the MBTiles file. Some useful metadata keys listed here, but see MBTiles spec
+for more details:
+- "name" - human-readable name of the tileset
+- "bounds" - extent in WGS 84: "minlon,minlat,maxlon,maxlat"
+- "center" - default view of the map: "longitude,latitude,zoomlevel"
+- "minzoom" - lowest zoom level
+- "maxzoom" - highest zoom level
+- "attribution" - string that explains the sources of data
+- "description" - descriptions of the content
+- "type" - whether this is an overlay or a basemap
+- "version" - version of the tileset
+Vector tile writer always writes "format" and "json" metadata. If not specified
+in metadata by the client, tile writer also writes "name", "bounds", "minzoom"
+and "maxzoom".
+
 .. versionadded:: 3.14
 %End
 
@@ -62,6 +80,42 @@ Constructs an entry for a vector layer
 Returns vector layer of this entry
 %End
 
+        QString filterExpression() const;
+%Docstring
+Returns filter expression. If not empty, only features matching the expression will be used
+%End
+        void setFilterExpression( const QString &expr );
+%Docstring
+Sets filter expression. If not empty, only features matching the expression will be used
+%End
+
+        QString layerName() const;
+%Docstring
+Returns layer name in the output. If not set, layer()->name() will be used.
+%End
+        void setLayerName( const QString &name );
+%Docstring
+Sets layer name in the output. If not set, layer()->name() will be used.
+%End
+
+        int minZoom() const;
+%Docstring
+Returns minimum zoom level at which this layer will be used. Negative value means no min. zoom level
+%End
+        void setMinZoom( int minzoom );
+%Docstring
+Sets minimum zoom level at which this layer will be used. Negative value means no min. zoom level
+%End
+
+        int maxZoom() const;
+%Docstring
+Returns maximum zoom level at which this layer will be used. Negative value means no max. zoom level
+%End
+        void setMaxZoom( int maxzoom );
+%Docstring
+Sets maximum zoom level at which this layer will be used. Negative value means no max. zoom level
+%End
+
     };
 
     void setDestinationUri( const QString &uri );
@@ -73,7 +127,7 @@ See the class description about the syntax of destination URIs.
     void setExtent( const QgsRectangle &extent );
 %Docstring
 Sets extent of vector tile output. Currently always in EPSG:3857.
-If unset, it will use the standard range of the Web Mercator system.
+If unset, it will use the full extent of all input layers combined
 %End
 
     void setMinZoom( int minZoom );
@@ -90,6 +144,16 @@ Sets the maximum zoom level of tiles. Allowed values are in interval [0,24]
 Sets vector layers and their configuration for output of vector tiles
 %End
 
+    void setMetadata( const QVariantMap &metadata );
+%Docstring
+Sets that will be written to the output dataset. See class description for more on metadata support
+%End
+
+    void setTransformContext( const QgsCoordinateTransformContext &transformContext );
+%Docstring
+Sets coordinate transform context for transforms between layers and tile matrix CRS
+%End
+
     bool writeTiles( QgsFeedback *feedback = 0 );
 %Docstring
 Writes vector tiles according to the configuration.
@@ -103,6 +167,11 @@ provide cancellation functionality.
 %Docstring
 Returns error message related to the previous call to writeTiles(). Will return
 an empty string if writing was successful.
+%End
+
+    QgsRectangle fullExtent() const;
+%Docstring
+Returns calculated extent that combines extent of all input layers
 %End
 
 };

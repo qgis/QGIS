@@ -18,6 +18,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsfeedback.h"
 #include "qgsjsonutils.h"
+#include "qgslogger.h"
 #include "qgsmbtiles.h"
 #include "qgstiles.h"
 #include "qgsvectorlayer.h"
@@ -34,7 +35,6 @@
 
 QgsVectorTileWriter::QgsVectorTileWriter()
 {
-  mExtent = QgsTileMatrix::fromWebMercator( 0 ).tileExtent( QgsTileXYZ( 0, 0, 0 ) );
 }
 
 
@@ -73,13 +73,24 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
     return false;
   }
 
+  QgsRectangle outputExtent = mExtent;
+  if ( outputExtent.isEmpty() )
+  {
+    outputExtent = fullExtent();
+    if ( outputExtent.isEmpty() )
+    {
+      mErrorMessage = tr( "Failed to calculate output extent" );
+      return false;
+    }
+  }
+
   // figure out how many tiles we will need to do
   int tilesToCreate = 0;
   for ( int zoomLevel = mMinZoom; zoomLevel <= mMaxZoom; ++zoomLevel )
   {
     QgsTileMatrix tileMatrix = QgsTileMatrix::fromWebMercator( zoomLevel );
 
-    QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( mExtent );
+    QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( outputExtent );
     tilesToCreate += ( tileRange.endRow() - tileRange.startRow() + 1 ) *
                      ( tileRange.endColumn() - tileRange.startColumn() + 1 );
   }
@@ -99,17 +110,39 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
     }
 
     // required metadata
-    mbtiles->setMetadataValue( "name", "???" );  // TODO: custom name?
     mbtiles->setMetadataValue( "format", "pbf" );
-
-    // optional metadata
-    mbtiles->setMetadataValue( "bounds", "-180.0,-85,180,85" );
-    mbtiles->setMetadataValue( "minzoom", QString::number( mMinZoom ) );
-    mbtiles->setMetadataValue( "maxzoom", QString::number( mMaxZoom ) );
-    // TODO: "center"? initial view with [lon,lat,zoom]
-
-    // required metadata for vector tiles: "json" with schema of layers
     mbtiles->setMetadataValue( "json", mbtilesJsonSchema() );
+
+    // metadata specified by the client
+    const QStringList metaKeys = mMetadata.keys();
+    for ( const QString &key : metaKeys )
+    {
+      mbtiles->setMetadataValue( key, mMetadata[key].toString() );
+    }
+
+    // default metadata that we always write (if not written by the client)
+    if ( !mMetadata.contains( "name" ) )
+      mbtiles->setMetadataValue( "name",  "unnamed" );  // required by the spec
+    if ( !mMetadata.contains( "minzoom" ) )
+      mbtiles->setMetadataValue( "minzoom", QString::number( mMinZoom ) );
+    if ( !mMetadata.contains( "maxzoom" ) )
+      mbtiles->setMetadataValue( "maxzoom", QString::number( mMaxZoom ) );
+    if ( !mMetadata.contains( "bounds" ) )
+    {
+      QString boundsStr = "-180,-85,180,85";  // fallback value - whole world except for poles
+      try
+      {
+        QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( "EPSG:3857" ), QgsCoordinateReferenceSystem( "EPSG:4326" ), mTransformContext );
+        QgsRectangle wgsExtent = ct.transform( outputExtent );
+        boundsStr = QString( "%1,%2,%3,%4" )
+                    .arg( wgsExtent.xMinimum() ).arg( wgsExtent.yMinimum() )
+                    .arg( wgsExtent.xMaximum() ).arg( wgsExtent.yMaximum() );
+      }
+      catch ( const QgsCsException & )
+      {
+      }
+      mbtiles->setMetadataValue( "bounds", boundsStr );
+    }
   }
 
   int tilesCreated = 0;
@@ -117,17 +150,22 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
   {
     QgsTileMatrix tileMatrix = QgsTileMatrix::fromWebMercator( zoomLevel );
 
-    QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( mExtent );
+    QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( outputExtent );
     for ( int row = tileRange.startRow(); row <= tileRange.endRow(); ++row )
     {
       for ( int col = tileRange.startColumn(); col <= tileRange.endColumn(); ++col )
       {
         QgsTileXYZ tileID( col, row, zoomLevel );
         QgsVectorTileMVTEncoder encoder( tileID );
+        encoder.setTransformContext( mTransformContext );
 
         for ( const Layer &layer : qgis::as_const( mLayers ) )
         {
-          encoder.addLayer( layer.layer(), feedback );
+          if ( ( layer.minZoom() >= 0 && zoomLevel < layer.minZoom() ) ||
+               ( layer.maxZoom() >= 0 && zoomLevel > layer.maxZoom() ) )
+            continue;
+
+          encoder.addLayer( layer.layer(), feedback, layer.filterExpression(), layer.layerName() );
         }
 
         if ( feedback && feedback->isCanceled() )
@@ -167,6 +205,28 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
   }
 
   return true;
+}
+
+QgsRectangle QgsVectorTileWriter::fullExtent() const
+{
+  QgsRectangle extent;
+  QgsCoordinateReferenceSystem destCrs( "EPSG:3857" );
+
+  for ( const Layer &layer : mLayers )
+  {
+    QgsVectorLayer *vl = layer.layer();
+    QgsCoordinateTransform ct( vl->crs(), destCrs, mTransformContext );
+    try
+    {
+      QgsRectangle r = ct.transformBoundingBox( vl->extent() );
+      extent.combineExtentWith( r );
+    }
+    catch ( const QgsCsException & )
+    {
+      QgsDebugMsg( "Failed to reproject layer extent to destination CRS" );
+    }
+  }
+  return extent;
 }
 
 bool QgsVectorTileWriter::writeTileFileXYZ( const QString &sourcePath, QgsTileXYZ tileID, const QByteArray &tileData )
