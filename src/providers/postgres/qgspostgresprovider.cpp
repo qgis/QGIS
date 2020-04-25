@@ -908,7 +908,14 @@ bool QgsPostgresProvider::loadFields()
         QString attGenerated = connectionRO()->pgVersion() >= 120000 ? fmtFieldTypeResult.PQgetvalue( i, 9 ) : " ";
         fmtFieldTypeMap[attrelid][attnum] = formatType;
         descrMap[attrelid][attnum] = descr;
-        defValMap[attrelid][attnum] = attGenerated.isEmpty() ? defVal : "DEFAULT";
+        if ( connectionRO()->pgVersion() >= 120000 )
+        {
+          defValMap[attrelid][attnum] = attGenerated.isEmpty() ? defVal : "DEFAULT";
+        }
+        else
+        {
+          defValMap[attrelid][attnum] = defVal;
+        }
         attTypeIdMap[attrelid][attnum] = attType;
         notNullMap[attrelid][attnum] = attNotNull;
         uniqueMap[attrelid][attnum] = uniqueConstraint;
