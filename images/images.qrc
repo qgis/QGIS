@@ -113,6 +113,7 @@
         <file>themes/default/algorithms/mAlgorithmNormalRaster.svg</file>
         <file>themes/default/algorithms/mAlgorithmNetworkAnalysis.svg</file>
         <file>themes/default/algorithms/mAlgorithmPolygonToLine.svg</file>
+        <file>themes/default/algorithms/mAlgorithmRandomExponentialRaster.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomPointsOnLines.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomPointsWithinPolygon.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomPointsWithinExtent.svg</file>
