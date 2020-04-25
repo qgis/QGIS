@@ -368,7 +368,10 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
             "CRS": "EPSG:3857"
         }.items())])
 
-        r_individual, _ = self._result(self._execute_request(qs))
+        r_individual, h = self._result(self._execute_request(qs))
+
+        # test reference image
+        self._img_diff_error(r_individual, h, "WMS_GetPrint_Group")
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectGroupsPath),
@@ -384,6 +387,9 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
 
         r_group, h = self._result(self._execute_request(qs))
 
+        # Test group image
+        self._img_diff_error(r_group, h, "WMS_GetPrint_Group")
+
         """ Debug check:
         f = open('grouped.png', 'wb+')
         f.write(r_group)
@@ -393,9 +399,8 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
         f.close()
         #"""
 
-        self.assertEqual(r_individual, r_group, 'Individual layers query and group layers query results should be identical')
-
-        self._img_diff_error(r_group, h, "WMS_GetPrint_Group")
+        # This test is too strict, it can fail
+        #self.assertEqual(r_individual, r_group, 'Individual layers query and group layers query results should be identical')
 
     def test_wms_getprint_legend(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
