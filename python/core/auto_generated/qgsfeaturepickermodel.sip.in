@@ -173,6 +173,11 @@ Indicator if the model is currently performing any feature iteration in the back
 Indicates that a filter job has been completed and new data may be available.
 %End
 
+    void extraValueDoesNotExistChanged();
+%Docstring
+Flag indicating that the extraIdentifierValue does not exist in the data.
+%End
+
     void beginUpdate();
 %Docstring
 Notification that the model is about to be changed because a job was completed.

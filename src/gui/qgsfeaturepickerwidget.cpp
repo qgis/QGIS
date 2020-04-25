@@ -75,7 +75,7 @@ void QgsFeaturePickerWidget::setLayer( QgsVectorLayer *sourceLayer )
   mModel->setSourceLayer( sourceLayer );
 }
 
-void QgsFeaturePickerWidget::setCurrentFeature(QgsFeatureId featureId )
+void QgsFeaturePickerWidget::setCurrentFeature( QgsFeatureId featureId )
 {
   mModel->setCurrentFeature( featureId );
 }

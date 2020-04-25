@@ -190,6 +190,11 @@ class CORE_EXPORT QgsFeaturePickerModel : public QAbstractItemModel
     void filterJobCompleted();
 
     /**
+     * Flag indicating that the extraIdentifierValue does not exist in the data.
+     */
+    void extraValueDoesNotExistChanged();
+
+    /**
      * Notification that the model is about to be changed because a job was completed.
      */
     void beginUpdate();
@@ -212,6 +217,7 @@ class CORE_EXPORT QgsFeaturePickerModel : public QAbstractItemModel
     void setCurrentIndex( int index, bool force = false );
     void reload();
     void setCurrentFeatureUnguarded( const QgsFeatureId &featureId );
+    void setExtraValueDoesNotExist( bool extraValueDoesNotExist );
     QgsConditionalStyle featureStyle( const QgsFeature &feature ) const;
 
     QgsVectorLayer *mSourceLayer = nullptr;
@@ -224,11 +230,12 @@ class CORE_EXPORT QgsFeaturePickerModel : public QAbstractItemModel
     QVector<QgsFeatureExpressionValuesGatherer::Entry> mEntries;
     QgsFeatureExpressionValuesGatherer *mGatherer = nullptr;
     QTimer mReloadTimer;
+    QgsFeatureId mShouldReloadCurrentFeature = 0;
+    bool mExtraValueDoesNotExist = false;
     bool mAllowNull = false;
 
     int mCurrentIndex = -1;
     bool mIsSettingCurrentFeature = false;
-
 };
 
 #endif // QGSFEATUREPICKERMODEL_H

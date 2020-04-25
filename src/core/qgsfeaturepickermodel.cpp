@@ -211,97 +211,121 @@ void QgsFeaturePickerModel::updateCompleter()
   {
     setCurrentFeatureUnguarded( FID_NULL );
   }
-  // We got strings for a filter selection
-  std::sort( entries.begin(), entries.end(), []( const QgsFeatureExpressionValuesGatherer::Entry & a, const QgsFeatureExpressionValuesGatherer::Entry & b ) { return a.value.localeAwareCompare( b.value ) < 0; } );
 
-  if ( mAllowNull )
+  // Only reloading the current entry?
+  bool reloadCurrentFeatureOnly = mGatherer->data().toBool();
+  if ( reloadCurrentFeatureOnly )
   {
-    entries.prepend( QgsFeatureExpressionValuesGatherer::nullEntry() );
-  }
-
-  const int newEntriesSize = entries.size();
-
-  // fixed entry is either NULL or extra value
-  const int nbFixedEntry = mAllowNull ? 1 : 0 ;
-
-  // Find the index of the current entry in the new list
-  int currentEntryInNewList = -1;
-  if ( mCurrentIndex != -1 && mCurrentIndex < mEntries.count() )
-  {
-    for ( int i = 0; i < newEntriesSize; ++i )
+    if ( !entries.isEmpty() )
     {
-      if ( entries.at( i ).feature.id() == mEntries.at( mCurrentIndex ).feature.id() )
-      {
-        mEntries.replace( mCurrentIndex, entries.at( i ) );
-        currentEntryInNewList = i;
-        break;
-      }
-    }
-  }
-
-  int firstRow = 0;
-
-  // Move current entry to the first position if this is a fixed entry or because
-  // the entry exists in the new list
-  if ( mCurrentIndex > -1 && ( mCurrentIndex < nbFixedEntry || currentEntryInNewList != -1 ) )
-  {
-    if ( mCurrentIndex != 0 )
-    {
-      beginMoveRows( QModelIndex(), mCurrentIndex, mCurrentIndex, QModelIndex(), 0 );
-      mEntries.move( mCurrentIndex, 0 );
-      endMoveRows();
-    }
-    firstRow = 1;
-  }
-
-  // Remove all entries (except for extra entry if existent)
-  beginRemoveRows( QModelIndex(), firstRow, mEntries.size() - firstRow );
-  mEntries.remove( firstRow, mEntries.size() - firstRow );
-
-  // if we remove all rows before endRemoveRows, setExtraIdentifierValuesUnguarded will be called
-  // and a null value will be added to mEntries, so we block setExtraIdentifierValuesUnguarded call
-
-  endRemoveRows();
-
-
-  if ( currentEntryInNewList == -1 )
-  {
-    beginInsertRows( QModelIndex(), firstRow, entries.size() + 1 );
-    mEntries += entries;
-    endInsertRows();
-
-    // if all entries have been cleaned (firstRow == 0)
-    // and there is a value in entries, prefer this value over NULL
-    // else chose the first one (the previous one)
-    setCurrentIndex( firstRow == 0 && mAllowNull && !entries.isEmpty() ? 1 : 0, firstRow == 0 );
-  }
-  else
-  {
-    if ( currentEntryInNewList != 0 )
-    {
-      beginInsertRows( QModelIndex(), 0, currentEntryInNewList - 1 );
-      mEntries = entries.mid( 0, currentEntryInNewList ) + mEntries;
-      endInsertRows();
+      mEntries.replace( mCurrentIndex, entries.at( 0 ) );
+      emit dataChanged( index( mCurrentIndex, 0, QModelIndex() ), index( mCurrentIndex, 0, QModelIndex() ) );
+      mShouldReloadCurrentFeature = 0;
+      setExtraValueDoesNotExist( false );
     }
     else
     {
-      mEntries.replace( 0, entries.at( 0 ) );
+      setExtraValueDoesNotExist( true );
     }
 
-    // don't notify for a change if it's a fixed entry
-    if ( currentEntryInNewList >= nbFixedEntry )
-    {
-      emit dataChanged( index( currentEntryInNewList, 0, QModelIndex() ), index( currentEntryInNewList, 0, QModelIndex() ) );
-    }
+    mShouldReloadCurrentFeature = 0;
 
-    beginInsertRows( QModelIndex(), currentEntryInNewList + 1, newEntriesSize - currentEntryInNewList - 1 );
-    mEntries += entries.mid( currentEntryInNewList + 1 );
-    endInsertRows();
-    setCurrentIndex( currentEntryInNewList );
+    if ( mFilterValue.isEmpty() )
+      reload();
   }
+  else
+  {
+    // We got strings for a filter selection
+    std::sort( entries.begin(), entries.end(), []( const QgsFeatureExpressionValuesGatherer::Entry & a, const QgsFeatureExpressionValuesGatherer::Entry & b ) { return a.value.localeAwareCompare( b.value ) < 0; } );
 
-  emit filterJobCompleted();
+    if ( mAllowNull )
+    {
+      entries.prepend( QgsFeatureExpressionValuesGatherer::nullEntry() );
+    }
 
+    const int newEntriesSize = entries.size();
+
+    // fixed entry is either NULL or extra value
+    const int nbFixedEntry = ( mExtraValueDoesNotExist ? 1 : 0 ) + ( mAllowNull ? 1 : 0 );
+
+    // Find the index of the current entry in the new list
+    int currentEntryInNewList = -1;
+    if ( mCurrentIndex != -1 && mCurrentIndex < mEntries.count() )
+    {
+      for ( int i = 0; i < newEntriesSize; ++i )
+      {
+        if ( entries.at( i ).feature.id() == mEntries.at( mCurrentIndex ).feature.id() )
+        {
+          mEntries.replace( mCurrentIndex, entries.at( i ) );
+          currentEntryInNewList = i;
+          break;
+        }
+      }
+    }
+
+    int firstRow = 0;
+
+    // Move current entry to the first position if this is a fixed entry or because
+    // the entry exists in the new list
+    if ( mCurrentIndex > -1 && ( mCurrentIndex < nbFixedEntry || currentEntryInNewList != -1 ) )
+    {
+      if ( mCurrentIndex != 0 )
+      {
+        beginMoveRows( QModelIndex(), mCurrentIndex, mCurrentIndex, QModelIndex(), 0 );
+        mEntries.move( mCurrentIndex, 0 );
+        endMoveRows();
+      }
+      firstRow = 1;
+    }
+
+    // Remove all entries (except for extra entry if existent)
+    beginRemoveRows( QModelIndex(), firstRow, mEntries.size() - firstRow );
+    mEntries.remove( firstRow, mEntries.size() - firstRow );
+
+    // if we remove all rows before endRemoveRows, setExtraIdentifierValuesUnguarded will be called
+    // and a null value will be added to mEntries, so we block setExtraIdentifierValuesUnguarded call
+
+    endRemoveRows();
+
+
+    if ( currentEntryInNewList == -1 )
+    {
+      beginInsertRows( QModelIndex(), firstRow, entries.size() + 1 );
+      mEntries += entries;
+      endInsertRows();
+
+      // if all entries have been cleaned (firstRow == 0)
+      // and there is a value in entries, prefer this value over NULL
+      // else chose the first one (the previous one)
+      setCurrentIndex( firstRow == 0 && mAllowNull && !entries.isEmpty() ? 1 : 0, firstRow == 0 );
+    }
+    else
+    {
+      if ( currentEntryInNewList != 0 )
+      {
+        beginInsertRows( QModelIndex(), 0, currentEntryInNewList - 1 );
+        mEntries = entries.mid( 0, currentEntryInNewList ) + mEntries;
+        endInsertRows();
+      }
+      else
+      {
+        mEntries.replace( 0, entries.at( 0 ) );
+      }
+
+      // don't notify for a change if it's a fixed entry
+      if ( currentEntryInNewList >= nbFixedEntry )
+      {
+        emit dataChanged( index( currentEntryInNewList, 0, QModelIndex() ), index( currentEntryInNewList, 0, QModelIndex() ) );
+      }
+
+      beginInsertRows( QModelIndex(), currentEntryInNewList + 1, newEntriesSize - currentEntryInNewList - 1 );
+      mEntries += entries.mid( currentEntryInNewList + 1 );
+      endInsertRows();
+      setCurrentIndex( currentEntryInNewList );
+    }
+
+    emit filterJobCompleted();
+  }
   emit endUpdate();
 
 
@@ -328,20 +352,28 @@ void QgsFeaturePickerModel::scheduledReload()
 
   QgsFeatureRequest request;
 
-  QString filterClause;
-  if ( mFilterValue.isEmpty() && !mFilterExpression.isEmpty() )
-    filterClause = mFilterExpression;
-  else if ( mFilterExpression.isEmpty() && !mFilterValue.isEmpty() )
-    filterClause = QStringLiteral( "(%1) ILIKE '%%2%'" ).arg( mDisplayExpression, mFilterValue );
-  else if ( !mFilterExpression.isEmpty() && !mFilterValue.isEmpty() )
-    filterClause = QStringLiteral( "(%1) AND ((%2) ILIKE '%%3%')" ).arg( mFilterExpression, mDisplayExpression, mFilterValue );
+  if ( mShouldReloadCurrentFeature != 0 )
+  {
+    request.setFilterFid( mShouldReloadCurrentFeature );
+  }
+  else
+  {
+    QString filterClause;
+    if ( mFilterValue.isEmpty() && !mFilterExpression.isEmpty() )
+      filterClause = mFilterExpression;
+    else if ( mFilterExpression.isEmpty() && !mFilterValue.isEmpty() )
+      filterClause = QStringLiteral( "(%1) ILIKE '%%2%'" ).arg( mDisplayExpression, mFilterValue );
+    else if ( !mFilterExpression.isEmpty() && !mFilterValue.isEmpty() )
+      filterClause = QStringLiteral( "(%1) AND ((%2) ILIKE '%%3%')" ).arg( mFilterExpression, mDisplayExpression, mFilterValue );
 
-  if ( !filterClause.isEmpty() )
-    request.setFilterExpression( filterClause );
+    if ( !filterClause.isEmpty() )
+      request.setFilterExpression( filterClause );
+  }
 
   request.setLimit( QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ).toInt() );
 
   mGatherer = new QgsFeatureExpressionValuesGatherer( mSourceLayer, mDisplayExpression, request );
+  mGatherer->setData( mShouldReloadCurrentFeature );
   connect( mGatherer, &QgsFeatureExpressionValuesGatherer::finished, this, &QgsFeaturePickerModel::updateCompleter );
 
   mGatherer->start();
@@ -390,13 +422,30 @@ void QgsFeaturePickerModel::setCurrentFeatureUnguarded( const QgsFeatureId &feat
   }
 
   // Value not found in current entries
-  if ( mCurrentIndex != index && ( mAllowNull || featureId == 0 ) )
+  if ( mCurrentIndex != index && ( mAllowNull || featureId != 0 ) )
   {
     beginInsertRows( QModelIndex(), 0, 0 );
-    mEntries.prepend( QgsFeatureExpressionValuesGatherer::nullEntry() );
+    if ( featureId != 0 )
+    {
+      mShouldReloadCurrentFeature = featureId;
+      mReloadTimer.start();
+    }
+    else
+    {
+      mEntries.prepend( QgsFeatureExpressionValuesGatherer::nullEntry() );
+    }
     endInsertRows();
     setCurrentIndex( 0, true );
   }
+}
+
+void QgsFeaturePickerModel::setExtraValueDoesNotExist( bool extraValueDoesNotExist )
+{
+  if ( mExtraValueDoesNotExist == extraValueDoesNotExist )
+    return;
+
+  mExtraValueDoesNotExist = extraValueDoesNotExist;
+  emit extraValueDoesNotExistChanged();
 }
 
 QgsConditionalStyle QgsFeaturePickerModel::featureStyle( const QgsFeature &feature ) const
@@ -445,7 +494,7 @@ void QgsFeaturePickerModel::setAllowNull( bool allowNull )
 
 QgsFeature QgsFeaturePickerModel::currentFeature() const
 {
-  if ( mCurrentIndex < mEntries.count() )
+  if ( mCurrentIndex >= 0 && mCurrentIndex < mEntries.count() )
     return mEntries.at( mCurrentIndex ).feature;
   else
     return QgsFeature();
