@@ -852,7 +852,7 @@ bool QgsPostgresProvider::loadFields()
   }
 
 
-  QMap<Oid, QMap<int, QString> > fmtFieldTypeMap, descrMap, defValMap, identityMap;
+  QMap<Oid, QMap<int, QString> > fmtFieldTypeMap, descrMap, defValMap, identityMap, generatedMap;
   QMap<Oid, QMap<int, Oid> > attTypeIdMap;
   QMap<Oid, QMap<int, bool> > notNullMap, uniqueMap;
   if ( result.PQnfields() > 0 )
@@ -881,15 +881,17 @@ bool QgsPostgresProvider::loadFields()
 
       // Collect formatted field types
       sql = QStringLiteral(
-              "SELECT attrelid, attnum, pg_catalog.format_type(atttypid,atttypmod), pg_catalog.col_description(attrelid,attnum), pg_catalog.pg_get_expr(adbin,adrelid), atttypid, attnotnull::int, indisunique::int%1"
+              "SELECT attrelid, attnum, pg_catalog.format_type(atttypid,atttypmod), pg_catalog.col_description(attrelid,attnum), pg_catalog.pg_get_expr(adbin,adrelid), atttypid, attnotnull::int, indisunique::int%1%2"
               " FROM pg_attribute"
               " LEFT OUTER JOIN pg_attrdef ON attrelid=adrelid AND attnum=adnum"
 
               // find unique constraints if present. Text cast required to handle int2vector comparison. Distinct required as multiple unique constraints may exist
               " LEFT OUTER JOIN ( SELECT DISTINCT indrelid, indkey, indisunique FROM pg_index WHERE indisunique ) uniq ON attrelid=indrelid AND attnum::text=indkey::text "
 
-              " WHERE attrelid IN %2"
-            ).arg( connectionRO()->pgVersion() >= 100000 ? QStringLiteral( ", attidentity" ) : QString() ).arg( tableoidsFilter );
+              " WHERE attrelid IN %3"
+            ).arg( connectionRO()->pgVersion() >= 100000 ? QStringLiteral( ", attidentity" ) : QString() )
+            .arg( connectionRO()->pgVersion() >= 120000 ? QStringLiteral( ", attgenerated" ) : QString() )
+            .arg( tableoidsFilter );
 
       QgsPostgresResult fmtFieldTypeResult( connectionRO()->PQexec( sql ) );
       for ( int i = 0; i < fmtFieldTypeResult.PQntuples(); ++i )
@@ -903,13 +905,15 @@ bool QgsPostgresProvider::loadFields()
         bool attNotNull = fmtFieldTypeResult.PQgetvalue( i, 6 ).toInt();
         bool uniqueConstraint = fmtFieldTypeResult.PQgetvalue( i, 7 ).toInt();
         QString attIdentity = connectionRO()->pgVersion() >= 100000 ? fmtFieldTypeResult.PQgetvalue( i, 8 ) : " ";
+        QString attGenerated = connectionRO()->pgVersion() >= 120000 ? fmtFieldTypeResult.PQgetvalue( i, 9 ) : " ";
         fmtFieldTypeMap[attrelid][attnum] = formatType;
         descrMap[attrelid][attnum] = descr;
-        defValMap[attrelid][attnum] = defVal;
+        defValMap[attrelid][attnum] = attGenerated.isEmpty() ? defVal : "DEFAULT";
         attTypeIdMap[attrelid][attnum] = attType;
         notNullMap[attrelid][attnum] = attNotNull;
         uniqueMap[attrelid][attnum] = uniqueConstraint;
         identityMap[attrelid][attnum] = attIdentity.isEmpty() ? " " : attIdentity;
+        generatedMap[attrelid][attnum] = attGenerated.isEmpty() ? " " : attGenerated;
       }
     }
   }
