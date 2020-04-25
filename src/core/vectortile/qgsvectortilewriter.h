@@ -18,6 +18,7 @@
 
 #include <QCoreApplication>
 #include "qgsrectangle.h"
+#include "qgscoordinatetransformcontext.h"
 
 class QgsFeedback;
 class QgsTileXYZ;
@@ -43,6 +44,25 @@ class QgsVectorLayer;
  *   be ordinary file system path, e.g.: /home/qgis/output.mbtiles
  *
  * Currently the writer only support MVT encoding of data.
+ *
+ * Metadata support: it is possible to pass a QVariantMap with metadata. This
+ * is backend dependent. Currently only "mbtiles" source type supports writing
+ * of metadata. The key-value pairs will be written to the "metadata" table
+ * in the MBTiles file. Some useful metadata keys listed here, but see MBTiles spec
+ * for more details:
+ * - "name" - human-readable name of the tileset
+ * - "bounds" - extent in WGS 84: "minlon,minlat,maxlon,maxlat"
+ * - "center" - default view of the map: "longitude,latitude,zoomlevel"
+ * - "minzoom" - lowest zoom level
+ * - "maxzoom" - highest zoom level
+ * - "attribution" - string that explains the sources of data
+ * - "description" - descriptions of the content
+ * - "type" - whether this is an overlay or a basemap
+ * - "version" - version of the tileset
+ * Vector tile writer always writes "format" and "json" metadata. If not specified
+ * in metadata by the client, tile writer also writes "name", "bounds", "minzoom"
+ * and "maxzoom".
+ *
  *
  * \since QGIS 3.14
  */
@@ -70,10 +90,32 @@ class CORE_EXPORT QgsVectorTileWriter
         //! Returns vector layer of this entry
         QgsVectorLayer *layer() const { return mLayer; }
 
+        //! Returns filter expression. If not empty, only features matching the expression will be used
+        QString filterExpression() const { return mFilterExpression; }
+        //! Sets filter expression. If not empty, only features matching the expression will be used
+        void setFilterExpression( const QString &expr ) { mFilterExpression = expr; }
+
+        //! Returns layer name in the output. If not set, layer()->name() will be used.
+        QString layerName() const { return mLayerName; }
+        //! Sets layer name in the output. If not set, layer()->name() will be used.
+        void setLayerName( const QString &name ) { mLayerName = name; }
+
+        //! Returns minimum zoom level at which this layer will be used. Negative value means no min. zoom level
+        int minZoom() const { return mMinZoom; }
+        //! Sets minimum zoom level at which this layer will be used. Negative value means no min. zoom level
+        void setMinZoom( int minzoom ) { mMinZoom = minzoom; }
+
+        //! Returns maximum zoom level at which this layer will be used. Negative value means no max. zoom level
+        int maxZoom() const { return mMaxZoom; }
+        //! Sets maximum zoom level at which this layer will be used. Negative value means no max. zoom level
+        void setMaxZoom( int maxzoom ) { mMaxZoom = maxzoom; }
+
       private:
         QgsVectorLayer *mLayer;
-        //QString mFilterExpression;
-        //QString mLayerName;
+        QString mFilterExpression;
+        QString mLayerName;
+        int mMinZoom = -1;
+        int mMaxZoom = -1;
     };
 
     /**
@@ -84,7 +126,7 @@ class CORE_EXPORT QgsVectorTileWriter
 
     /**
      * Sets extent of vector tile output. Currently always in EPSG:3857.
-     * If unset, it will use the standard range of the Web Mercator system.
+     * If unset, it will use the full extent of all input layers combined
      */
     void setExtent( const QgsRectangle &extent ) { mExtent = extent; }
 
@@ -95,6 +137,12 @@ class CORE_EXPORT QgsVectorTileWriter
 
     //! Sets vector layers and their configuration for output of vector tiles
     void setLayers( const QList<QgsVectorTileWriter::Layer> &layers ) { mLayers = layers; }
+
+    //! Sets that will be written to the output dataset. See class description for more on metadata support
+    void setMetadata( const QVariantMap &metadata ) { mMetadata = metadata; }
+
+    //! Sets coordinate transform context for transforms between layers and tile matrix CRS
+    void setTransformContext( const QgsCoordinateTransformContext &transformContext ) { mTransformContext = transformContext; }
 
     /**
      * Writes vector tiles according to the configuration.
@@ -111,6 +159,9 @@ class CORE_EXPORT QgsVectorTileWriter
      */
     QString errorMessage() const { return mErrorMessage; }
 
+    //! Returns calculated extent that combines extent of all input layers
+    QgsRectangle fullExtent() const;
+
   private:
     bool writeTileFileXYZ( const QString &sourcePath, QgsTileXYZ tileID, const QByteArray &tileData );
     QString mbtilesJsonSchema();
@@ -121,6 +172,8 @@ class CORE_EXPORT QgsVectorTileWriter
     int mMaxZoom = 4;
     QList<Layer> mLayers;
     QString mDestinationUri;
+    QVariantMap mMetadata;
+    QgsCoordinateTransformContext mTransformContext;
 
     QString mErrorMessage;
 };
