@@ -593,15 +593,15 @@ namespace QgsWms
             {
               QList<QgsMapLayer *> layersFromGroup;
 
-              for ( QgsMapLayer *layer : mContext.layersFromGroup( layer.mNickname ) )
+              for ( QgsMapLayer *layerFromGroup : mContext.layersFromGroup( layer.mNickname ) )
               {
 
-                if ( ! layer )
+                if ( ! layerFromGroup )
                 {
                   continue;
                 }
 
-                layersFromGroup.push_front( layer );
+                layersFromGroup.push_front( layerFromGroup );
               }
 
               if ( !layersFromGroup.isEmpty() )
