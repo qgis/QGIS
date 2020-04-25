@@ -64,12 +64,12 @@ bool QgsMeshDatasetSourceInterface::persistDatasetGroup(
   QString filename = path;
   // ASCII dat supports face, edge and vertex datasets
   QString driverName = QStringLiteral( "DAT" );
-  int separatorPosition = path.indexOf( ":\"" );
-  if ( separatorPosition >= 0 )
+  QStringList parts = path.split( ':' );
+  if ( parts.size() > 1 )
   {
-    driverName = path.left( separatorPosition );
-    filename = path.right( path.count() - separatorPosition - 1 );
-    filename.remove( QStringLiteral( "\"" ) );
+    driverName = parts[0];
+    parts.removeFirst();
+    filename = parts.join( QString() );
   }
   return persistDatasetGroup( filename, driverName, meta, datasetValues, datasetActive, times );
 }
