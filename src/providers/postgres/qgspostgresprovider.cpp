@@ -2536,6 +2536,9 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
 bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds &ids )
 {
+  if ( ids.isEmpty() )
+    return true;
+
   bool returnvalue = true;
 
   if ( mIsQuery )
