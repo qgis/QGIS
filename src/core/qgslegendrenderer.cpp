@@ -750,7 +750,7 @@ QSizeF QgsLegendRenderer::drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRende
 
   const double dotsPerMM = context.scaleFactor();
 
-  const double overallTextHeight = QgsTextRenderer::textHeight( context, layerFormat, lines, QgsTextRenderer::Rect );
+  const double overallTextHeight = QgsTextRenderer::textHeight( context, layerFormat, lines, QgsTextRenderer::Rect ) - QgsTextRenderer::fontMetrics( context, layerFormat ).descent();
   const double overallTextWidth = QgsTextRenderer::textWidth( context, layerFormat, lines );
   const double sideMargin = mSettings.style( nodeLegendStyle( nodeLayer ) ).margin( QgsLegendStyle::Left );
 
@@ -788,7 +788,7 @@ QSizeF QgsLegendRenderer::drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QgsRende
 
   const double dotsPerMM = context.scaleFactor();
 
-  const double overallTextHeight = QgsTextRenderer::textHeight( context, groupFormat, lines, QgsTextRenderer::Rect );
+  const double overallTextHeight = QgsTextRenderer::textHeight( context, groupFormat, lines, QgsTextRenderer::Rect ) - QgsTextRenderer::fontMetrics( context, groupFormat ).descent();
   const double overallTextWidth = QgsTextRenderer::textWidth( context, groupFormat, lines );
   const double sideMargin = mSettings.style( nodeLegendStyle( nodeGroup ) ).margin( QgsLegendStyle::Left );
 

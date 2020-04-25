@@ -72,7 +72,9 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
 {
   const QgsTextFormat f = settings.style( QgsLegendStyle::SymbolLabel ).textFormat();
 
-  double textHeight = QgsTextRenderer::textHeight( *ctx->context, f, QStringList() << QChar( '0' ), QgsTextRenderer::Rect ) / ctx->context->scaleFactor();
+  double textHeight = QgsTextRenderer::textHeight( *ctx->context, f, QStringList() << QChar( '0' ), QgsTextRenderer::Rect )
+                      - QgsTextRenderer::fontMetrics( *ctx->context, f ).descent();
+  textHeight /= ctx->context->scaleFactor();
 
   // itemHeight here is not really item height, it is only for symbol
   // vertical alignment purpose, i.e. OK take single line height
@@ -173,7 +175,8 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
     format = settings.style( QgsLegendStyle::SymbolLabel ).textFormat();
   }
 
-  const double overallTextHeight = QgsTextRenderer::textHeight( *context, format, lines, QgsTextRenderer::Rect );
+  const double overallTextHeight = QgsTextRenderer::textHeight( *context, format, lines, QgsTextRenderer::Rect )
+                                   - QgsTextRenderer::fontMetrics( *context, format ).descent();
   const double overallTextWidth = QgsTextRenderer::textWidth( *context, format, lines );
 
   labelSize.rheight() = overallTextHeight / dotsPerMM;
