@@ -4551,6 +4551,30 @@ QList<QgsDataItemProvider *> QgsWmsProviderMetadata::dataItemProviders() const
   return providers;
 }
 
+QVariantMap QgsWmsProviderMetadata::decodeUri( const QString &uri )
+{
+  const QUrlQuery query { uri };
+  const auto constItems { query.queryItems() };
+  QVariantMap decoded;
+  for ( const auto &item : constItems )
+  {
+    decoded[ item.first ] = item.second;
+  }
+  return decoded;
+}
+
+QString QgsWmsProviderMetadata::encodeUri( const QVariantMap &parts )
+{
+  QUrlQuery query;
+  QList<QPair<QString, QString> > items;
+  for ( auto it = parts.constBegin(); it != parts.constEnd(); ++it )
+  {
+    items.push_back( {it.key(), it.value().toString() } );
+  }
+  query.setQueryItems( items );
+  return query.toString();
+}
+
 #ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
