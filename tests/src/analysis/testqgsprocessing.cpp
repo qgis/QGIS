@@ -164,6 +164,23 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QVERIFY( addParameter( p1C ) );
       QCOMPARE( parameterDefinitions().count(), 8 );
 
+      // remove parameter and auto created output
+      QgsProcessingParameterVectorDestination *p9 = new QgsProcessingParameterVectorDestination( "p9", "output" );
+      QVERIFY( addParameter( p9 ) );
+      QVERIFY( outputDefinition( "p9" ) );
+      QCOMPARE( outputDefinition( "p9" )->name(), QStringLiteral( "p9" ) );
+      QCOMPARE( outputDefinition( "p9" )->type(), QStringLiteral( "outputVector" ) );
+      removeParameter( "p9" );
+      QVERIFY( !outputDefinition( "p9" ) );
+
+      // remove parameter and check manually added output isn't removed
+      QVERIFY( addParameter( new QgsProcessingParameterVectorDestination( "p10", "output" ), false ) );
+      QVERIFY( addOutput( new QgsProcessingOutputVectorLayer( "p10" ) ) );
+      QCOMPARE( outputDefinition( "p10" )->name(), QStringLiteral( "p10" ) );
+      QCOMPARE( outputDefinition( "p10" )->type(), QStringLiteral( "outputVector" ) );
+      removeParameter( "p10" );
+      QVERIFY( outputDefinition( "p10" ) );
+
       // parameterDefinition should be case insensitive, but prioritize correct case matches
       QCOMPARE( parameterDefinition( "p1" ), parameterDefinitions().at( 0 ) );
       QCOMPARE( parameterDefinition( "P1" ), parameterDefinitions().at( 7 ) );
@@ -194,6 +211,10 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QVERIFY( addOutput( new QgsProcessingOutputVectorLayer( "p1" ) ) );
       QCOMPARE( outputDefinitions().count(), 1 );
       QCOMPARE( outputDefinitions().at( 0 )->name(), QString( "p1" ) );
+
+      // make sure manually added outputs are not deleted by calling removeParameter
+      removeParameter( "p1" );
+      QCOMPARE( outputDefinitions().count(), 1 );
 
       QVERIFY( !addOutput( nullptr ) );
       QCOMPARE( outputDefinitions().count(), 1 );
