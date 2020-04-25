@@ -293,8 +293,6 @@ void TestQgsMeshCalculator::calcWithMixedLayers()
   QCOMPARE( newGroupCount, groupCount + 1 );
   const QgsMeshDatasetValue val = mpMeshLayer->dataProvider()->datasetValue( QgsMeshDatasetIndex( newGroupCount - 1, 0 ), 0 );
   QCOMPARE( val.scalar(), 2.0 );
-
-
 }
 
 void TestQgsMeshCalculator::calcAndSave()
