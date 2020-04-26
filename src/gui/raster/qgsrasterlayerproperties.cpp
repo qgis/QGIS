@@ -1273,7 +1273,7 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
                        range.end().toString( Qt::ISODateWithMs );
 
         uri[ QStringLiteral( "time" ) ] = time;
-        uri[ QStringLiteral( "temporalSource" ) ] = QLatin1String( "project" );
+        uri[ QStringLiteral( "temporalSource" ) ] = QLatin1String( "project" )
       }
     }
 
