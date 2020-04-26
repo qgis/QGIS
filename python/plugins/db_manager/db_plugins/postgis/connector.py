@@ -652,6 +652,9 @@ class PostGisDBConnector(DBConnector):
         version_number = int(self.getInfo()[0].split(' ')[1].split('.')[0])
         con_col_name = 'consrc' if version_number < 12 else 'conbin'
 
+        # In the query below, we exclude rows where pg_constraint.contype whose values are equal to 't'
+        # because 't' describes a CONSTRAINT TRIGGER, which is not really a constraint in the traditional
+        # sense, but a special type of trigger, and an extension to the SQL standard.
         sql = u"""SELECT c.conname, c.contype, c.condeferrable, c.condeferred, array_to_string(c.conkey, ' '), c.%s,
                          t2.relname, c.confupdtype, c.confdeltype, c.confmatchtype, array_to_string(c.confkey, ' ') FROM pg_constraint c
                   LEFT JOIN pg_class t ON c.conrelid = t.oid
