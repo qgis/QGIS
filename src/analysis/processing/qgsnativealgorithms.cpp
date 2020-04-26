@@ -111,6 +111,7 @@
 #include "qgsalgorithmrandombinomialraster.h"
 #include "qgsalgorithmrandomgammaraster.h"
 #include "qgsalgorithmrandomgeometricraster.h"
+#include "qgsalgorithmrandomnegativebinomialraster.h"
 #include "qgsalgorithmrandompointsextent.h"
 #include "qgsalgorithmrandompointsonlines.h"
 #include "qgsalgorithmrandompoissonraster.h"
@@ -323,6 +324,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRandomGammaRasterAlgorithm() );
   addAlgorithm( new QgsRandomGeometricRasterAlgorithm() );
   addAlgorithm( new QgsRandomExponentialRasterAlgorithm() );
+  addAlgorithm( new QgsRandomNegativeBinomialRasterAlgorithm() );
   addAlgorithm( new QgsRandomPointsExtentAlgorithm() );
   addAlgorithm( new QgsRandomPointsOnLinesAlgorithm() );
   addAlgorithm( new QgsRandomPoissonRasterAlgorithm() );

@@ -116,6 +116,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrandomextract.cpp
   processing/qgsalgorithmrandomgammaraster.cpp
   processing/qgsalgorithmrandomgeometricraster.cpp
+  processing/qgsalgorithmrandomnegativebinomialraster.cpp
   processing/qgsalgorithmrandompointsextent.cpp
   processing/qgsalgorithmrandompointsonlines.cpp
   processing/qgsalgorithmrandompoissonraster.cpp
