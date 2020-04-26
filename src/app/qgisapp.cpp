@@ -11068,11 +11068,13 @@ void QgisApp::projectTemporalRangeChanged()
 
     if ( currentLayer->dataProvider() )
     {
-      QgsDataSourceUri uri;
-      uri.setEncodedUri( currentLayer->dataProvider()->dataSourceUri() );
+      QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata(
+                                        currentLayer->providerType() );
 
-      if ( uri.hasParam( QStringLiteral( "temporalSource" ) ) &&
-           uri.param( QStringLiteral( "temporalSource" ) ) == QStringLiteral( "project" ) )
+      QVariantMap uri = metadata->decodeUri( currentLayer->dataProvider()->dataSourceUri() );
+
+      if ( uri.contains( QStringLiteral( "temporalSource" ) ) &&
+           uri.value( QStringLiteral( "temporalSource" ) ).toString() == QStringLiteral( "project" ) )
       {
         QgsDateTimeRange range = QgsProject::instance()->timeSettings()->temporalRange();
         if ( range.begin().isValid() && range.end().isValid() )
@@ -11080,12 +11082,9 @@ void QgisApp::projectTemporalRangeChanged()
           QString time = range.begin().toString( Qt::ISODateWithMs ) + "/" +
                          range.end().toString( Qt::ISODateWithMs );
 
-          uri.removeParam( QStringLiteral( "time" ) );
-          uri.setParam( QStringLiteral( "time" ), time );
+          uri["time"] = time;
 
-          currentLayer->dataProvider()->setDataSourceUri( uri.encodedUri() );
-          currentLayer->setDataSource( currentLayer->dataProvider()->dataSourceUri(), currentLayer->name(), currentLayer->providerType(), QgsDataProvider::ProviderOptions() );
-
+          currentLayer->setDataSource( metadata->encodeUri( uri ), currentLayer->name(), currentLayer->providerType(), QgsDataProvider::ProviderOptions() );
         }
       }
     }
