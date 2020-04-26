@@ -53,6 +53,20 @@ class QgsWMSItemBase
                     const QgsDataSourceUri &dataSourceUri,
                     const QgsWmsLayerProperty &layerProperty );
 
+    /**
+     * Returns the uri for the wms dataitem.
+     *
+     * The WMS temporal layers can contain the following parameters uri.
+     * - "type": the type of the wms provider e.g WMS-T
+     * - "timeDimensionExtent": the layer's time dimension extent it is available
+     * - "referencetimeDimensionExtent": reference time extent for the bi-temporal dimension layers
+     * - "time": time value of the current layer data from the provider
+     * - "reference_time": reference time value of the current of the layer data, this is applicable for the
+     *   bi-temporal dimension layers
+     * - "allowTemporalUpdates": whether to allow updates on temporal parameters on this uri
+     * - "temporalSource": the source of the layer's temporal range, can be either "provider" or "project"
+     * - "enableTime": if the provider using time part in the temporal range datetime instances
+     */
     QString createUri();
 
     //! Stores GetCapabilities response
