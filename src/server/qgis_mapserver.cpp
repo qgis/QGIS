@@ -361,7 +361,7 @@ int main( int argc, char *argv[] )
             }
             else
             {
-              url = QStringLiteral( "http://%2:%3%4" ).arg( ipAddress ).arg( port ).arg( path );
+              url = QStringLiteral( "http://%1:%2%3" ).arg( ipAddress ).arg( port ).arg( path );
             }
           }
 
