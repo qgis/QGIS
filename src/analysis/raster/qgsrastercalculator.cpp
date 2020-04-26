@@ -124,11 +124,18 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
     }
   }
 
+  // Check if we need to read the raster as a whole (which is memory inefficient
+  // and not interruptible by the user) by checking if any raster matrix nodes are
+  // in the expression
+  bool requiresMatrix = ! calcNode->findNodes( QgsRasterCalcNode::Type::tMatrix ).isEmpty();
+
 #ifdef HAVE_OPENCL
   // Check for matrix nodes, GPU implementation does not support them
   QList<const QgsRasterCalcNode *> nodeList;
-  if ( QgsOpenClUtils::enabled() && QgsOpenClUtils::available() && calcNode->findNodes( QgsRasterCalcNode::Type::tMatrix ).isEmpty() )
+  if ( QgsOpenClUtils::enabled() && QgsOpenClUtils::available() && ! requiresMatrix )
+  {
     return processCalculationGPU( std::move( calcNode ), feedback );
+  }
 #endif
 
   //open output dataset for writing
@@ -146,16 +153,12 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
     return CreateOutputError;
   }
 
-  GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ).toLocal8Bit().data() );
+  GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toLocal8Bit().data() );
   GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset.get(), 1 );
 
   float outputNodataValue = -FLT_MAX;
   GDALSetRasterNoDataValue( outputRasterBand, outputNodataValue );
 
-  // Check if we need to read the raster as a whole (which is memory inefficient
-  // and not interruptible by the user) by checking if any raster matrix nodes are
-  // in the expression
-  bool requiresMatrix = ! calcNode->findNodes( QgsRasterCalcNode::Type::tMatrix ).isEmpty();
 
   // Take the fast route (process one line at a time) if we can
   if ( ! requiresMatrix )
@@ -526,11 +529,15 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
       return CreateOutputError;
     }
 
-    GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ).toLocal8Bit().data() );
+    GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toLocal8Bit().data() );
+
 
     GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset.get(), 1 );
     if ( !outputRasterBand )
       return BandError;
+
+    float outputNodataValue = -FLT_MAX;
+    GDALSetRasterNoDataValue( outputRasterBand, outputNodataValue );
 
     // Input block (buffer)
     std::unique_ptr<QgsRasterBlock> block;

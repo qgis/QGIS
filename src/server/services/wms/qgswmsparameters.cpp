@@ -59,7 +59,7 @@ namespace QgsWms
 
     if ( !ok )
     {
-      const QString msg = QString( "%1 ('%2') cannot be converted into a list of geometries" ).arg( name( mName ), toString(), typeName() );
+      const QString msg = QString( "%1 ('%2') cannot be converted into a list of geometries" ).arg( name( mName ), toString() );
       QgsServerParameterDefinition::raiseError( msg );
     }
 
@@ -73,7 +73,7 @@ namespace QgsWms
 
     if ( !ok )
     {
-      const QString msg = QString( "%1 ('%2') cannot be converted into a rectangle" ).arg( name( mName ), toString(), typeName() );
+      const QString msg = QString( "%1 ('%2') cannot be converted into a rectangle" ).arg( name( mName ), toString() );
       QgsServerParameterDefinition::raiseError( msg );
     }
 
@@ -143,7 +143,7 @@ namespace QgsWms
 
     if ( !ok )
     {
-      const QString msg = QString( "%1 ('%2') cannot be converted into a list of colors" ).arg( name( mName ), toString(), typeName() );
+      const QString msg = QString( "%1 ('%2') cannot be converted into a list of colors" ).arg( name( mName ), toString() );
       QgsServerParameterDefinition::raiseError( msg );
     }
 
@@ -157,7 +157,7 @@ namespace QgsWms
 
     if ( !ok )
     {
-      const QString msg = QString( "%1 ('%2') cannot be converted into a list of int" ).arg( name( mName ), toString(), typeName() );
+      const QString msg = QString( "%1 ('%2') cannot be converted into a list of int" ).arg( name( mName ), toString() );
       QgsServerParameterDefinition::raiseError( msg );
     }
 
@@ -171,7 +171,7 @@ namespace QgsWms
 
     if ( !ok )
     {
-      const QString msg = QString( "%1 ('%2') cannot be converted into a list of float" ).arg( name( mName ), toString(), typeName() );
+      const QString msg = QString( "%1 ('%2') cannot be converted into a list of float" ).arg( name( mName ), toString() );
       QgsServerParameterDefinition::raiseError( msg );
     }
 

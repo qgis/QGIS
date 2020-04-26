@@ -91,6 +91,7 @@ void QgsQueryBuilder::showEvent( QShowEvent *event )
 void QgsQueryBuilder::populateFields()
 {
   const QgsFields &fields = mLayer->fields();
+  txtSQL->setFields( fields );
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     if ( fields.fieldOrigin( idx ) != QgsFields::OriginProvider )
@@ -218,9 +219,20 @@ void QgsQueryBuilder::test()
   {
     mUseUnfilteredLayer->setDisabled( mLayer->subsetString().isEmpty() );
 
-    QMessageBox::information( this,
-                              tr( "Query Result" ),
-                              tr( "The where clause returned %n row(s).", "returned test rows", mLayer->featureCount() ) );
+    const long featureCount { mLayer->featureCount() };
+    // Check for errors
+    if ( featureCount < 0 )
+    {
+      QMessageBox::warning( this,
+                            tr( "Query Result" ),
+                            tr( "An error occurred when executing the query, please check the expression syntax." ) );
+    }
+    else
+    {
+      QMessageBox::information( this,
+                                tr( "Query Result" ),
+                                tr( "The where clause returned %n row(s).", "returned test rows", featureCount ) );
+    }
   }
   else if ( mLayer->dataProvider()->hasErrors() )
   {

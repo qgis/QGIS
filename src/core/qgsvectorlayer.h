@@ -582,7 +582,16 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsVectorDataProvider *dataProvider() FINAL;
     const QgsVectorDataProvider *dataProvider() const FINAL SIP_SKIP;
 
-    //! Sets the textencoding of the data provider
+    /**
+     * Sets the text \a encoding of the data provider.
+     *
+     * An empty \a encoding string indicates that the provider should automatically
+     * select the most appropriate encoding.
+     *
+     * \warning Support for setting the provider encoding depends on the underlying data
+     * provider. Check dataProvider().capabilities() for the QgsVectorDataProvider::SelectEncoding
+     * capability in order to determine if the provider supports this ability.
+     */
     void setProviderEncoding( const QString &encoding );
 
     //! Setup the coordinate system transformation for the layer
@@ -860,10 +869,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setRenderer( QgsFeatureRenderer *r SIP_TRANSFER );
 
     //! Returns point, line or polygon
-    QgsWkbTypes::GeometryType geometryType() const;
+    Q_INVOKABLE QgsWkbTypes::GeometryType geometryType() const;
 
     //! Returns the WKBType or WKBUnknown in case of error
-    QgsWkbTypes::Type wkbType() const FINAL;
+    Q_INVOKABLE QgsWkbTypes::Type wkbType() const FINAL;
 
     QgsCoordinateReferenceSystem sourceCrs() const FINAL;
     QString sourceName() const FINAL;
@@ -1863,7 +1872,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see startEditing()
      * \see commitChanges()
      */
-    bool rollBack( bool deleteBuffer = true );
+    Q_INVOKABLE bool rollBack( bool deleteBuffer = true );
 
     /**
      * Returns the layer's relations, where the foreign key is on this layer.
@@ -2314,7 +2323,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \see select(QgsFeatureId)
      */
-    void select( const QgsFeatureIds &featureIds );
+    Q_INVOKABLE void select( const QgsFeatureIds &featureIds );
 
     /**
      * Deselects feature by its ID
@@ -2332,7 +2341,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \see deselect(const QgsFeatureId)
      */
-    void deselect( const QgsFeatureIds &featureIds );
+    Q_INVOKABLE void deselect( const QgsFeatureIds &featureIds );
 
     /**
      * Clear selection
@@ -2340,7 +2349,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see selectByIds()
      * \see reselect()
      */
-    void removeSelection();
+    Q_INVOKABLE void removeSelection();
 
     /**
      * Reselects the previous set of selected features. This is only applicable

@@ -22,9 +22,11 @@
 #include "qgslayoutitemshape.h"
 #include "qgslayoutmapwidget.h"
 #include "qgslayoutshapewidget.h"
+#include "qgslayoutmarkerwidget.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitempolygon.h"
 #include "qgslayoutitempolyline.h"
+#include "qgslayoutitemmarker.h"
 #include "qgslayoutpolygonwidget.h"
 #include "qgslayoutpolylinewidget.h"
 #include "qgslayoutpicturewidget.h"
@@ -303,6 +305,13 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     return shape.release();
   } ) );
 
+  // marker
+  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutMarker, QObject::tr( "Marker" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMarker.svg" ) ),
+                                      [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return new QgsLayoutMarkerWidget( qobject_cast< QgsLayoutItemMarker * >( item ) );
+  }, nullptr ) );
+
   // arrow
   std::unique_ptr< QgsLayoutItemGuiMetadata > arrowMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata>(
         QgsLayoutItemRegistry::LayoutPolyline, QObject::tr( "Arrow" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddArrow.svg" ) ),
@@ -411,7 +420,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
 
   // manual table item
 
-  auto manualTableItemMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutManualTable, QObject::tr( "Fixed Table" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddTable.svg" ) ),
+  auto manualTableItemMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutManualTable, QObject::tr( "Fixed Table" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddManualTable.svg" ) ),
                                  [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
     return new QgsLayoutManualTableWidget( qobject_cast< QgsLayoutFrame * >( item ) );

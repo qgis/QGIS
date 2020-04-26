@@ -46,11 +46,11 @@ E.g. to create mesh with one quad and one triangle
           "3.0, 2.0 \n" \
           "2.0, 3.0 \n" \
           "1.0, 3.0 \n" \
-          "---"
+          "---" \
           "0, 1, 3, 4 \n" \
           "1, 2, 3 \n"
         );
-        QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch layer", "memory_mesh");
+        QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch layer", "mesh_memory");
 
 \subsection mdal MDAL data provider (mdal)
 
@@ -126,6 +126,10 @@ QgsMeshLayer cannot be copied.
                         QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
      virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
                          const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const;
+    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const;
+
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
+
     virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const;
 
     virtual QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const;
@@ -134,8 +138,11 @@ QgsMeshLayer cannot be copied.
 
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
+    virtual QgsMeshLayerTemporalProperties *temporalProperties();
 
     virtual void reload();
+
+    virtual QStringList subLayers() const;
 
 
     QString providerType() const;
@@ -146,6 +153,12 @@ Returns the provider type for this layer
 
 
 
+    void updateTriangularMesh( const QgsCoordinateTransform &transform = QgsCoordinateTransform() );
+%Docstring
+Gets native mesh and updates (creates if it doesn't exist) the base triangular mesh
+
+:param transform: Transformation from layer CRS to destination (e.g. map) CRS. With invalid transform, it keeps the native mesh CRS
+%End
 
 
     QgsMeshRendererSettings rendererSettings() const;
@@ -170,6 +183,8 @@ Sets time format settings
 
 .. versionadded:: 3.8
 %End
+
+
 
     QString formatTime( double hours );
 %Docstring
@@ -224,6 +239,55 @@ Returns the 3d values of stacked 3d mesh defined by the given point
 .. versionadded:: 3.12
 %End
 
+    QgsMeshDatasetIndex activeScalarDatasetAtTime( const QgsDateTimeRange &timeRange ) const;
+%Docstring
+Returns dataset index from active scalar group depending on the time range.
+If the temporal properties is not active, return the static dataset
+
+:param timeRange: the time range
+
+:return: dataset index
+
+.. versionadded:: 3.14
+%End
+
+    QgsMeshDatasetIndex activeVectorDatasetAtTime( const QgsDateTimeRange &timeRange ) const;
+%Docstring
+Returns dataset index from active vector group depending on the time range
+If the temporal properties is not active, return the static dataset
+
+:param timeRange: the time range
+
+:return: dataset index
+
+.. versionadded:: 3.14
+%End
+
+
+
+    QgsMeshDatasetIndex staticScalarDatasetIndex() const;
+%Docstring
+Returns the static scalar dataset index that is rendered if the temporal properties is not active
+
+.. versionadded:: 3.14
+%End
+
+    QgsMeshDatasetIndex staticVectorDatasetIndex() const;
+%Docstring
+Returns the static vector dataset index that is rendered if the temporal properties is not active
+
+.. versionadded:: 3.14
+%End
+
+    void setReferenceTime( const QDateTime &referenceTime );
+%Docstring
+Sets the reference time of the layer
+
+:param referenceTime: the reference time
+
+.. versionadded:: 3.14
+%End
+
   public slots:
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
@@ -234,21 +298,20 @@ Sets the coordinate transform context to ``transformContext``.
 .. versionadded:: 3.8
 %End
 
-
   signals:
 
-    void activeScalarDatasetChanged( const QgsMeshDatasetIndex &index );
+    void activeScalarDatasetGroupChanged( int index );
 %Docstring
-Emitted when active scalar dataset is changed
+Emitted when active scalar group dataset is changed
 
-.. versionadded:: 3.4
+.. versionadded:: 3.14
 %End
 
-    void activeVectorDatasetChanged( const QgsMeshDatasetIndex &index );
+    void activeVectorDatasetGroupChanged( int index );
 %Docstring
-Emitted when active vector dataset is changed
+Emitted when active vector group dataset is changed
 
-.. versionadded:: 3.4
+.. versionadded:: 3.14
 %End
 
     void timeSettingsChanged( );

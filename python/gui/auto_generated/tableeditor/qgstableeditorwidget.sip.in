@@ -162,6 +162,18 @@ Returns a list of the columns associated with the current table selected cells.
 .. seealso:: :py:func:`rowsAssociatedWithSelection`
 %End
 
+    QVariantList tableHeaders() const;
+%Docstring
+Returns the table header values.
+
+.. seealso:: :py:func:`setTableHeaders`
+%End
+
+    bool isHeaderCellSelected();
+%Docstring
+Returns ``True`` if any header cells are selected.
+%End
+
   public slots:
 
     void insertRowsBelow();
@@ -257,6 +269,20 @@ Sets the row ``height`` (in millimeters) for the currently selected rows, or 0 f
 Sets the column ``width`` (in millimeters) for the currently selected columns, or 0 for automatic column width.
 
 .. seealso:: :py:func:`setSelectionRowHeight`
+%End
+
+    void setIncludeTableHeader( bool included );
+%Docstring
+Sets whether the table includes a header row.
+
+.. seealso:: :py:func:`includeTableHeader`
+%End
+
+    void setTableHeaders( const QVariantList &headers );
+%Docstring
+Sets the table ``headers``.
+
+.. seealso:: :py:func:`tableHeaders`
 %End
 
   protected:

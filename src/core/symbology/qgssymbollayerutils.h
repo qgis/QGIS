@@ -212,9 +212,10 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param symbol symbol
      * \param size target pixmap size
      * \param padding space between icon edge and symbol
+     * \param shape optional legend patch shape to use for rendering the preview icon
      * \see symbolPreviewPixmap()
      */
-    static QIcon symbolPreviewIcon( const QgsSymbol *symbol, QSize size, int padding = 0 );
+    static QIcon symbolPreviewIcon( const QgsSymbol *symbol, QSize size, int padding = 0, QgsLegendPatchShape *shape = nullptr );
 
     /**
      * Returns a pixmap preview for a color ramp.
@@ -224,13 +225,16 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param customContext render context to use when rendering symbol
      * \param selected set to TRUE to render the symbol in a selected state
      * \param expressionContext optional custom expression context
+     * \param shape optional legend patch shape to use for rendering the preview icon
      * \note Parameter customContext added in QGIS 2.6
      * \note Parameter selected added in QGIS 3.10
      * \note Parameter expressionContext added in QGIS 3.10
+     * \note Parameter shape added in QGIS 3.14
      * \see symbolPreviewIcon()
      */
     static QPixmap symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = nullptr, bool selected = false,
-                                        const QgsExpressionContext *expressionContext = nullptr );
+                                        const QgsExpressionContext *expressionContext = nullptr,
+                                        const QgsLegendPatchShape *shape = nullptr );
 
     /**
      * Draws a symbol layer preview to a QPicture

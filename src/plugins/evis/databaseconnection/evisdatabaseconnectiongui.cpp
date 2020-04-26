@@ -112,10 +112,12 @@ void eVisDatabaseConnectionGui::drawNewVectorLayer( const QString &layerName, co
     //the last file in the list is always the newest
     mTempOutputFileList->last()->open();
     QUrl url = QUrl::fromLocalFile( mTempOutputFileList->last()->fileName() );
-    url.addQueryItem( QStringLiteral( "delimiter" ), QStringLiteral( "\t" ) );
-    url.addQueryItem( QStringLiteral( "delimiterType" ), QStringLiteral( "regexp" ) );
-    url.addQueryItem( QStringLiteral( "xField" ), xCoordinate );
-    url.addQueryItem( QStringLiteral( "yField" ), yCoordinate );
+    QUrlQuery query;
+    query.addQueryItem( QStringLiteral( "delimiter" ), QStringLiteral( "\t" ) );
+    query.addQueryItem( QStringLiteral( "delimiterType" ), QStringLiteral( "regexp" ) );
+    query.addQueryItem( QStringLiteral( "xField" ), xCoordinate );
+    query.addQueryItem( QStringLiteral( "yField" ), yCoordinate );
+    url.setQuery( query );
     emit drawVectorLayer( QString::fromLatin1( url.toEncoded() ), layerName, QStringLiteral( "delimitedtext" ) );
     mTempOutputFileList->last()->close();
   }

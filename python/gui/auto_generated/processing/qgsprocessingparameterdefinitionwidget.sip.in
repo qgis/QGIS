@@ -142,6 +142,47 @@ Returns a new instance of a parameter definition, using the current settings def
 The ``name`` parameter specifies the name for the newly created parameter.
 %End
 
+    void setComments( const QString &comments );
+%Docstring
+Sets the comments for the parameter.
+
+.. seealso:: :py:func:`comments`
+
+.. versionadded:: 3.14
+%End
+
+    QString comments() const;
+%Docstring
+Returns the comments for the parameter.
+
+.. seealso:: :py:func:`setComments`
+
+.. versionadded:: 3.14
+%End
+
+    void setCommentColor( const QColor &color );
+%Docstring
+Sets the color for the comments for the parameter.
+
+.. seealso:: :py:func:`commentColor`
+
+.. versionadded:: 3.14
+%End
+
+    QColor commentColor() const;
+%Docstring
+Returns the color for the comments for the parameter.
+
+.. seealso:: :py:func:`setCommentColor`
+
+.. versionadded:: 3.14
+%End
+
+    void switchToCommentTab();
+%Docstring
+Switches the dialog to the comments tab.
+%End
+
   public slots:
     virtual void accept();
 

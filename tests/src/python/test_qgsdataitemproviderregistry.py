@@ -72,6 +72,14 @@ class TestQgsDataItemProviderRegistry(unittest.TestCase):
         self.assertNotIn('p2', [p.name() for p in registry.providers()])
         self.assertEqual(registry.providers(), initial_providers)
 
+    def testProviderKey(self):
+        """Tests finding provider by name and return dataProviderKey"""
+
+        registry = QgsDataItemProviderRegistry()
+        self.assertIsNotNone(registry.provider('PostGIS'))
+        self.assertIsNone(registry.provider('paper_and_pencil'))
+        self.assertEqual(registry.provider('PostGIS').dataProviderKey(), 'postgres')
+
 
 if __name__ == '__main__':
     unittest.main()

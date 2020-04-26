@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ogr:FeatureCollection
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:schemaLocation=""
+     xsi:schemaLocation="http://ogr.maptools.org/ mbg_rect_field.xsd"
      xmlns:ogr="http://ogr.maptools.org/"
      xmlns:gml="http://www.opengis.net/gml">
   <gml:boundedBy>
     <gml:Box>
       <gml:coord><gml:X>-2.056603773584904</gml:X><gml:Y>-3</gml:Y></gml:coord>
-      <gml:coord><gml:X>9.162955854126681</gml:X><gml:Y>6.088675623800386</gml:Y></gml:coord>
+      <gml:coord><gml:X>9.162955854126682</gml:X><gml:Y>6.489909219550769</gml:Y></gml:coord>
     </gml:Box>
   </gml:boundedBy>
                                                                                                               
@@ -25,26 +25,26 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:mbg_rect_field fid="mbg_rect_field.1">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>5.24145873320538,-0.054510556621882 5.24145873320538,-1.05451055662188 7.24145873320538,-1.05451055662188 7.24145873320538,-0.054510556621882 5.24145873320538,-0.054510556621882</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>5.24145873320538,-1.05451055662188 6.24145873320538,-2.05451055662188 7.24145873320538,-1.05451055662188 6.24145873320538,-0.054510556621882 5.24145873320538,-1.05451055662188</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
       <ogr:id>1</ogr:id>
       <ogr:name>dd</ogr:name>
-      <ogr:width>1.000000</ogr:width>
-      <ogr:height>2.000000</ogr:height>
-      <ogr:angle>90.000000</ogr:angle>
+      <ogr:width>1.414214</ogr:width>
+      <ogr:height>1.414214</ogr:height>
+      <ogr:angle>45.000000</ogr:angle>
       <ogr:area>2.000000</ogr:area>
-      <ogr:perimeter>6.000000</ogr:perimeter>
+      <ogr:perimeter>5.656854</ogr:perimeter>
     </ogr:mbg_rect_field>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:mbg_rect_field fid="mbg_rect_field.2">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>2.0,6.08867562380039 2.0,4.4236084452975 5.1725527831094,4.4236084452975 5.1725527831094,6.08867562380039 2.0,6.08867562380039</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>5.34748915030878,4.7278689643513 5.06593031585745,6.48990921955077 1.84418704183259,5.97510243323637 2.12574587628392,4.2130621780369 5.34748915030878,4.7278689643513</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
       <ogr:id>2</ogr:id>
       <ogr:name>bb</ogr:name>
-      <ogr:width>1.665067</ogr:width>
-      <ogr:height>3.172553</ogr:height>
-      <ogr:angle>90.000000</ogr:angle>
-      <ogr:area>5.282514</ogr:area>
-      <ogr:perimeter>9.675240</ogr:perimeter>
+      <ogr:width>1.784394</ogr:width>
+      <ogr:height>3.262615</ogr:height>
+      <ogr:angle>80.921378</ogr:angle>
+      <ogr:area>5.821790</ogr:area>
+      <ogr:perimeter>10.094017</ogr:perimeter>
     </ogr:mbg_rect_field>
   </gml:featureMember>
   <gml:featureMember>

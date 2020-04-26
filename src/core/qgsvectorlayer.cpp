@@ -178,6 +178,11 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
     setDataSource( vectorLayerPath, baseName, providerKey, providerOptions, options.loadDefaultStyle );
   }
 
+  for ( const QgsField &field : qgis::as_const( mFields ) )
+  {
+    mAttributeAliasMap.insert( field.name(), QString() );
+  }
+
   connect( this, &QgsVectorLayer::selectionChanged, this, [ = ] { triggerRepaint(); } );
   connect( QgsProject::instance()->relationManager(), &QgsRelationManager::relationsLoaded, this, &QgsVectorLayer::onRelationsLoaded );
 
@@ -190,7 +195,6 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   mSimplifyMethod.setThreshold( settings.value( QStringLiteral( "qgis/simplifyDrawingTol" ), mSimplifyMethod.threshold() ).toFloat() );
   mSimplifyMethod.setForceLocalOptimization( settings.value( QStringLiteral( "qgis/simplifyLocal" ), mSimplifyMethod.forceLocalOptimization() ).toBool() );
   mSimplifyMethod.setMaximumScale( settings.value( QStringLiteral( "qgis/simplifyMaxScale" ), mSimplifyMethod.maximumScale() ).toFloat() );
-
 } // QgsVectorLayer ctor
 
 
@@ -2059,7 +2063,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         const QDomNodeList fieldPairNodes { relationElement.elementsByTagName( QStringLiteral( "fieldPair" ) ) };
         for ( int j = 0; j < fieldPairNodes.length(); ++j )
         {
-          const QDomElement fieldPairElement = fieldPairNodes.at( i ).toElement();
+          const QDomElement fieldPairElement = fieldPairNodes.at( j ).toElement();
           fieldPairs.push_back( { fieldPairElement.attribute( QStringLiteral( "referencing" ) ),
                                   fieldPairElement.attribute( QStringLiteral( "referenced" ) ) } );
         }
@@ -2093,7 +2097,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         const QDomNodeList fieldPairNodes { relationElement.elementsByTagName( QStringLiteral( "fieldPair" ) ) };
         for ( int j = 0; j < fieldPairNodes.length(); ++j )
         {
-          const QDomElement fieldPairElement = fieldPairNodes.at( i ).toElement();
+          const QDomElement fieldPairElement = fieldPairNodes.at( j ).toElement();
           fieldPairs.push_back( { fieldPairElement.attribute( QStringLiteral( "referencing" ) ),
                                   fieldPairElement.attribute( QStringLiteral( "referenced" ) ) } );
         }
@@ -2623,7 +2627,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     node.appendChild( fieldConfigurationElement );
 
     int index = 0;
-    for ( const QgsField &field : mFields )
+    for ( const QgsField &field : qgis::as_const( mFields ) )
     {
       QDomElement fieldElement = doc.createElement( QStringLiteral( "field" ) );
       fieldElement.setAttribute( QStringLiteral( "name" ), field.name() );
@@ -2647,7 +2651,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
     //attribute aliases
     QDomElement aliasElem = doc.createElement( QStringLiteral( "aliases" ) );
-    for ( const QgsField &field : mFields )
+    for ( const QgsField &field : qgis::as_const( mFields ) )
     {
       QDomElement aliasEntryElem = doc.createElement( QStringLiteral( "alias" ) );
       aliasEntryElem.setAttribute( QStringLiteral( "field" ), field.name() );
@@ -2683,7 +2687,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
     //default expressions
     QDomElement defaultsElem = doc.createElement( QStringLiteral( "defaults" ) );
-    for ( const QgsField &field : mFields )
+    for ( const QgsField &field : qgis::as_const( mFields ) )
     {
       QDomElement defaultElem = doc.createElement( QStringLiteral( "default" ) );
       defaultElem.setAttribute( QStringLiteral( "field" ), field.name() );
@@ -2695,7 +2699,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
     // constraints
     QDomElement constraintsElem = doc.createElement( QStringLiteral( "constraints" ) );
-    for ( const QgsField &field : mFields )
+    for ( const QgsField &field : qgis::as_const( mFields ) )
     {
       QDomElement constraintElem = doc.createElement( QStringLiteral( "constraint" ) );
       constraintElem.setAttribute( QStringLiteral( "field" ), field.name() );
@@ -2709,7 +2713,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
     // constraint expressions
     QDomElement constraintExpressionsElem = doc.createElement( QStringLiteral( "constraintExpressions" ) );
-    for ( const QgsField &field : mFields )
+    for ( const QgsField &field : qgis::as_const( mFields ) )
     {
       QDomElement constraintExpressionElem = doc.createElement( QStringLiteral( "constraint" ) );
       constraintExpressionElem.setAttribute( QStringLiteral( "field" ), field.name() );
@@ -3481,7 +3485,7 @@ QString QgsVectorLayer::displayExpression() const
                                     QStringLiteral( "id" )};
     for ( const QString &candidate : sCandidates )
     {
-      for ( const QgsField &field : mFields )
+      for ( const QgsField &field : qgis::as_const( mFields ) )
       {
         QString fldName = field.name();
         if ( fldName.indexOf( candidate, 0, Qt::CaseInsensitive ) > -1 )
@@ -4618,6 +4622,10 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
     if ( !pointPlacementElem.isNull() )
     {
       settings.placement = QgsPalLayerSettings::OverPoint;
+      if ( geometryType() == QgsWkbTypes::LineGeometry )
+      {
+        settings.placement = QgsPalLayerSettings::Horizontal;
+      }
 
       QDomElement displacementElem = pointPlacementElem.firstChildElement( QStringLiteral( "Displacement" ) );
       if ( !displacementElem.isNull() )
@@ -4681,6 +4689,15 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
         {
           settings.angleOffset = 360 - rotation;
         }
+      }
+    }
+    else
+    {
+      // PointPlacement
+      QDomElement linePlacementElem = labelPlacementElem.firstChildElement( QStringLiteral( "LinePlacement" ) );
+      if ( !linePlacementElem.isNull() )
+      {
+        settings.placement = QgsPalLayerSettings::Line;
       }
     }
   }

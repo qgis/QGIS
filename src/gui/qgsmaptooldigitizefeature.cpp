@@ -274,7 +274,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         return;
       }
 
-      if ( mode() == CapturePolygon )
+      if ( mode() == CapturePolygon || e->modifiers() == Qt::ShiftModifier )
       {
         closePolygon();
       }
@@ -319,18 +319,33 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         QgsGeometry g( poly );
         f->setGeometry( g );
 
-        QgsGeometry featGeom = f->geometry();
-        int avoidIntersectionsReturn = featGeom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
-        f->setGeometry( featGeom );
-        if ( avoidIntersectionsReturn == 1 )
+        QList<QgsVectorLayer *>  avoidIntersectionsLayers;
+        switch ( QgsProject::instance()->avoidIntersectionsMode() )
         {
-          //not a polygon type. Impossible to get there
+          case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
+            avoidIntersectionsLayers.append( vlayer );
+            break;
+          case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
+            avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
+            break;
+          case QgsProject::AvoidIntersectionsMode::AllowIntersections:
+            break;
         }
-        if ( f->geometry().isEmpty() ) //avoid intersection might have removed the whole geometry
+        if ( avoidIntersectionsLayers.size() > 0 )
         {
-          emit messageEmitted( tr( "The feature cannot be added because it's geometry collapsed due to intersection avoidance" ), Qgis::Critical );
-          stopCapturing();
-          return;
+          QgsGeometry featGeom = f->geometry();
+          int avoidIntersectionsReturn = featGeom.avoidIntersections( avoidIntersectionsLayers );
+          f->setGeometry( featGeom );
+          if ( avoidIntersectionsReturn == 1 )
+          {
+            //not a polygon type. Impossible to get there
+          }
+          if ( f->geometry().isEmpty() ) //avoid intersection might have removed the whole geometry
+          {
+            emit messageEmitted( tr( "The feature cannot be added because its geometry collapsed due to intersection avoidance" ), Qgis::Critical );
+            stopCapturing();
+            return;
+          }
         }
       }
       f->setValid( true );

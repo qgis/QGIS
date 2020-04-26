@@ -7,6 +7,7 @@
  ************************************************************************/
 
 
+
 class QgsNumericFormatWidget : QgsPanelWidget
 {
 %Docstring
@@ -231,6 +232,33 @@ Constructor for QgsScientificNumericFormatWidget, initially showing the specifie
 };
 
 
+
+class QgsFractionNumericFormatWidget : QgsNumericFormatWidget
+{
+%Docstring
+A widget which allow control over the properties of a :py:class:`QgsFractionNumericFormat`.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsnumericformatwidget.h"
+%End
+  public:
+
+    QgsFractionNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsFractionNumericFormatWidget, initially showing the specified ``format``.
+%End
+    ~QgsFractionNumericFormatWidget();
+
+    virtual void setFormat( QgsNumericFormat *format );
+
+
+    virtual QgsNumericFormat *format() /Factory/;
+
+
+};
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

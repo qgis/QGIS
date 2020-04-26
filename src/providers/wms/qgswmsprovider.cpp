@@ -37,7 +37,7 @@
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmapsettings.h"
-#include "qgsmbtilesreader.h"
+#include "qgsmbtiles.h"
 #include "qgsmessageoutput.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
@@ -150,6 +150,21 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
     {
       return;
     }
+
+    // Setup temporal properties for layers in WMS-T
+    if ( mSettings.mIsTemporal )
+    {
+      Q_ASSERT_X( temporalCapabilities(), "QgsWmsProvider::QgsWmsProvider()", "Data provider temporal capabilities object does not exist" );
+      temporalCapabilities()->setHasTemporalCapabilities( true );
+      temporalCapabilities()->setAvailableTemporalRange( mSettings.mFixedRange );
+      temporalCapabilities()->setIntervalHandlingMethod(
+        QgsRasterDataProviderTemporalCapabilities::MatchExactUsingStartOfRange );
+
+      if ( mSettings.mIsBiTemporal )
+      {
+        temporalCapabilities()->setAvailableReferenceTemporalRange( mSettings.mFixedReferenceRange );
+      }
+    }
   }
 
   // setImageCrs is using mTiled !!!
@@ -210,7 +225,6 @@ QgsWmsProvider *QgsWmsProvider::clone() const
   provider->copyBaseSettings( *this );
   return provider;
 }
-
 
 QString QgsWmsProvider::getMapUrl() const
 {
@@ -807,10 +821,10 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
     QList<TileImage> tileImages;  // in the correct resolution
     QList<QRectF> missing;  // rectangles (in map coords) of missing tiles for this view
 
-    std::unique_ptr<QgsMBTilesReader> mbtilesReader;
+    std::unique_ptr<QgsMbTiles> mbtilesReader;
     if ( mSettings.mIsMBTiles )
     {
-      mbtilesReader.reset( new QgsMBTilesReader( QUrl( mSettings.mBaseUrl ).path() ) );
+      mbtilesReader.reset( new QgsMbTiles( QUrl( mSettings.mBaseUrl ).path() ) );
       mbtilesReader->open();
     }
 
@@ -1031,6 +1045,14 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
   setQueryItem( query, QStringLiteral( "HEIGHT" ), QString::number( pixelHeight ) );
   setQueryItem( query, QStringLiteral( "LAYERS" ), layers );
   setQueryItem( query, QStringLiteral( "STYLES" ), styles );
+
+  // For WMS-T layers
+  if ( temporalCapabilities() &&
+       temporalCapabilities()->hasTemporalCapabilities() )
+  {
+    addWmstParameters( query );
+  }
+
   setFormatQueryItem( query );
 
   if ( mDpi != -1 )
@@ -1057,6 +1079,85 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
   return url;
 }
 
+void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
+{
+  QgsDateTimeRange range = temporalCapabilities()->requestedTemporalRange();
+  QString format { QStringLiteral( "yyyy-MM-ddThh:mm:ssZ" ) };
+  QgsDataSourceUri uri { dataSourceUri() };
+
+  if ( range.isInfinite() )
+  {
+    if ( uri.hasParam( QStringLiteral( "time" ) ) &&
+         !uri.param( QStringLiteral( "time" ) ).isEmpty() )
+    {
+      QString time = uri.param( QStringLiteral( "time" ) );
+      QStringList timeParts = time.split( '/' );
+
+      QDateTime start = QDateTime::fromString( timeParts.at( 0 ), Qt::ISODateWithMs );
+      QDateTime end = QDateTime::fromString( timeParts.at( 1 ), Qt::ISODateWithMs );
+
+      range = QgsDateTimeRange( start, end );
+    }
+  }
+
+  if ( uri.param( QStringLiteral( "enableTime" ) ) == QLatin1String( "no" ) )
+    format = "yyyy-MM-dd";
+
+  if ( range.begin().isValid() && range.end().isValid() )
+  {
+    switch ( temporalCapabilities()->intervalHandlingMethod() )
+    {
+      case QgsRasterDataProviderTemporalCapabilities::MatchUsingWholeRange:
+        break;
+      case QgsRasterDataProviderTemporalCapabilities::MatchExactUsingStartOfRange:
+        range = QgsDateTimeRange( range.begin(), range.begin() );
+        break;
+      case QgsRasterDataProviderTemporalCapabilities::MatchExactUsingEndOfRange:
+        range = QgsDateTimeRange( range.end(), range.end() );
+        break;
+      case QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToStartOfRange:
+      {
+        QDateTime dateTimeStart = mSettings.findLeastClosestDateTime( range.begin() );
+        range = QgsDateTimeRange( dateTimeStart, dateTimeStart );
+        break;
+      }
+
+      case QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToEndOfRange:
+      {
+        QDateTime dateTimeEnd = mSettings.findLeastClosestDateTime( range.end() );
+        range = QgsDateTimeRange( dateTimeEnd, dateTimeEnd );
+        break;
+      }
+    }
+
+    if ( range.begin() == range.end() )
+      setQueryItem( query, QStringLiteral( "TIME" ),
+                    range.begin().toString( format ) );
+    else
+    {
+      QString extent = range.begin().toString( format );
+      extent.append( "/" );
+      extent.append( range.end().toString( format ) );
+
+      setQueryItem( query, QStringLiteral( "TIME" ), extent );
+    }
+  }
+
+  // If the data provider has bi-temporal properties and they are enabled
+  if ( uri.hasParam( QStringLiteral( "reference_time" ) ) &&
+       !uri.param( QStringLiteral( "reference_time" ) ).isEmpty() )
+  {
+    QString time = uri.param( QStringLiteral( "reference_time" ) );
+
+    QDateTime dateTime = QDateTime::fromString( time, Qt::ISODateWithMs );
+
+    if ( dateTime.isValid() )
+    {
+      setQueryItem( query, QStringLiteral( "DIM_REFERENCE_TIME" ),
+                    dateTime.toString( format ) );
+    }
+  }
+}
 
 void QgsWmsProvider::createTileRequestsWMSC( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests )
 {
@@ -1359,7 +1460,7 @@ void QgsWmsProvider::setupXyzCapabilities( const QString &uri, const QgsRectangl
 bool QgsWmsProvider::setupMBTilesCapabilities( const QString &uri )
 {
   // if it is MBTiles source, let's prepare the reader to get some metadata
-  QgsMBTilesReader mbtilesReader( QUrl( mSettings.mBaseUrl ).path() );
+  QgsMbTiles mbtilesReader( QUrl( mSettings.mBaseUrl ).path() );
   if ( !mbtilesReader.open() )
     return false;
 
@@ -1674,7 +1775,6 @@ bool QgsWmsProvider::isValid() const
 {
   return mValid;
 }
-
 
 QString QgsWmsProvider::wmsVersion()
 {
@@ -3431,6 +3531,12 @@ QVector<QgsWmsSupportedFormat> QgsWmsProvider::supportedFormats()
     formats << p1 << p2 << p3 << p4 << p5 << p6;
   }
 
+  if ( supportedFormats.contains( "webp" ) )
+  {
+    QgsWmsSupportedFormat p1 = { "image/webp", "WebP" };
+    formats << p1;
+  }
+
   if ( supportedFormats.contains( "jpg" ) )
   {
     QgsWmsSupportedFormat j1 = { "image/jpeg", "JPEG" };
@@ -4443,6 +4549,30 @@ QList<QgsDataItemProvider *> QgsWmsProviderMetadata::dataItemProviders() const
       << new QgsXyzTileDataItemProvider;
 
   return providers;
+}
+
+QVariantMap QgsWmsProviderMetadata::decodeUri( const QString &uri )
+{
+  const QUrlQuery query { uri };
+  const auto constItems { query.queryItems() };
+  QVariantMap decoded;
+  for ( const auto &item : constItems )
+  {
+    decoded[ item.first ] = item.second;
+  }
+  return decoded;
+}
+
+QString QgsWmsProviderMetadata::encodeUri( const QVariantMap &parts )
+{
+  QUrlQuery query;
+  QList<QPair<QString, QString> > items;
+  for ( auto it = parts.constBegin(); it != parts.constEnd(); ++it )
+  {
+    items.push_back( {it.key(), it.value().toString() } );
+  }
+  query.setQueryItems( items );
+  return query.toString();
 }
 
 #ifndef HAVE_STATIC_PROVIDERS

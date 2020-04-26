@@ -117,9 +117,9 @@ class GUI_EXPORT QgsFeatureListView : public QListView
 
     /**
      * \brief setFeatureSelectionManager
-     * \param featureSelectionManager We will take ownership
+     * \param featureSelectionManager
      */
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager SIP_TRANSFER );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
 
   protected:
     void mouseMoveEvent( QMouseEvent *event ) override;
@@ -215,6 +215,11 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     void editSelectionChanged( const QItemSelection &deselected, const QItemSelection &selected );
 
     /**
+     * Emits the signal for the feature and the selection information
+     */
+    void updateEditSelectionDependencies();
+
+    /**
      * Make sure, there is an edit selection. If there is none, choose the first item.
      * If \a inSelection is set to TRUE, the edit selection is done in selected entries if
      * there is a selected entry visible.
@@ -239,6 +244,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     QgsFeatureListModel *mModel = nullptr;
     QItemSelectionModel *mCurrentEditSelectionModel = nullptr;
     QgsFeatureSelectionModel *mFeatureSelectionModel = nullptr;
+    QgsIFeatureSelectionManager *mOwnedFeatureSelectionManager = nullptr;
     QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
     QgsFeatureListViewDelegate *mItemDelegate = nullptr;
     bool mEditSelectionDrag = false; // Is set to true when the user initiated a left button click over an edit button and still keeps pressing //!< TODO

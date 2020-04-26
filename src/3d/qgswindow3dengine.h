@@ -57,6 +57,7 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
     Qt3DRender::QRenderSettings *renderSettings() override;
     Qt3DRender::QCamera *camera() override;
     QSize size() const override;
+    QSurface *surface() const override;
 
   private:
     //! 3D window with all the 3D magic inside

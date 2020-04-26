@@ -70,7 +70,7 @@ QgsSLLayerItem::QgsSLLayerItem( QgsDataItem *parent, const QString &name, const 
 // ------
 
 QgsSLConnectionItem::QgsSLConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "spatialite" ) )
 {
   mDbPath = QgsSpatiaLiteConnection::connectionPath( name );
   mToolTip = mDbPath;
@@ -162,7 +162,7 @@ bool QgsSLConnectionItem::equal( const QgsDataItem *other )
 // ---------------------------------------------------------------------------
 
 QgsSLRootItem::QgsSLRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "spatialite" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconSpatialite.svg" );
@@ -276,7 +276,12 @@ bool SpatiaLiteUtils::createDb( const QString &dbPath, QString &errCause )
 
 QString QgsSpatiaLiteDataItemProvider::name()
 {
-  return QStringLiteral( "SPATIALITE" );
+  return QStringLiteral( "spatialite" );
+}
+
+QString QgsSpatiaLiteDataItemProvider::dataProviderKey() const
+{
+  return QStringLiteral( "spatialite" );
 }
 
 int QgsSpatiaLiteDataItemProvider::capabilities() const
@@ -288,4 +293,10 @@ QgsDataItem *QgsSpatiaLiteDataItemProvider::createDataItem( const QString &pathI
 {
   Q_UNUSED( pathIn )
   return new QgsSLRootItem( parentItem, QStringLiteral( "SpatiaLite" ), QStringLiteral( "spatialite:" ) );
+}
+
+
+bool QgsSLConnectionItem::layerCollection() const
+{
+  return true;
 }

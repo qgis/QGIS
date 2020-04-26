@@ -1,7 +1,7 @@
 {
   "name": "project",
   "type": "function",
-  "description": "Returns a point projected from a start point using a distance and bearing (azimuth) in radians.",
+  "description": "Returns a point projected from a start point using a distance, a bearing (azimuth) and an elevation in radians.",
   "arguments": [
     {"arg":"point","description":"start point"},
     {"arg":"distance","description":"distance to project"},
@@ -9,6 +9,6 @@
     {"arg":"elevation","description":"angle of inclination in radians", "optional":true}
   ],
   "examples": [
-	{ "expression":"project(make_point(1, 2), 3, radians(270))", "returns":"Point(-2, 2)"}
+	{ "expression":"geom_to_wkt(project(make_point(1, 2), 3, radians(270)))", "returns":"Point(-2, 2)"}
   ]
 }

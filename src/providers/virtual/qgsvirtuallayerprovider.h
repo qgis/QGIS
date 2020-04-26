@@ -30,7 +30,7 @@ email                : hugo dot mercier at oslandia dot com
 
 class QgsVirtualLayerFeatureIterator;
 
-class QgsVirtualLayerProvider: public QgsVectorDataProvider
+class QgsVirtualLayerProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
   public:
@@ -129,7 +129,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
 
 };
 
-class QgsVirtualLayerProviderMetadata: public QgsProviderMetadata
+class QgsVirtualLayerProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsVirtualLayerProviderMetadata();
@@ -137,7 +137,7 @@ class QgsVirtualLayerProviderMetadata: public QgsProviderMetadata
 };
 
 #ifdef HAVE_GUI
-class QgsVirtualLayerProviderGuiMetadata: public QgsProviderGuiMetadata
+class QgsVirtualLayerProviderGuiMetadata final: public QgsProviderGuiMetadata
 {
   public:
     QgsVirtualLayerProviderGuiMetadata();

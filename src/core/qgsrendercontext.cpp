@@ -38,7 +38,8 @@ QgsRenderContext::QgsRenderContext()
 }
 
 QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
-  : mFlags( rh.mFlags )
+  : QgsTemporalRangeObject( rh )
+  , mFlags( rh.mFlags )
   , mPainter( rh.mPainter )
   , mMaskPainter( rh.mMaskPainter )
   , mCoordTransform( rh.mCoordTransform )
@@ -96,6 +97,8 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mRenderedFeatureHandlers = rh.mRenderedFeatureHandlers;
   mHasRenderedFeatureHandlers = rh.mHasRenderedFeatureHandlers;
   mCustomRenderingFlags = rh.mCustomRenderingFlags;
+  setIsTemporal( rh.isTemporal() );
+  setTemporalRange( rh.temporalRange() );
 #ifdef QGISDEBUG
   mHasTransformContext = rh.mHasTransformContext;
 #endif
@@ -200,6 +203,9 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   //so must be false at every new render operation
   ctx.setRenderingStopped( false );
   ctx.mCustomRenderingFlags = mapSettings.customRenderingFlags();
+  ctx.setIsTemporal( mapSettings.isTemporal() );
+  if ( ctx.isTemporal() )
+    ctx.setTemporalRange( mapSettings.temporalRange() );
 
   return ctx;
 }

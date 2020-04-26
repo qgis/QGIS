@@ -22,6 +22,7 @@
 #include "qgsphongmaterialsettings.h"
 #include "qgs3dtypes.h"
 #include "qgscolorrampshader.h"
+#include "qgsmeshdataprovider.h"
 
 #include <Qt3DRender/QCullFace>
 
@@ -39,7 +40,7 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
   public:
 
     /**
-     * How to render the color of the mesh with advanced symbology
+     * How to render the color of the mesh
      *
      * \since QGIS 3.12
      */
@@ -48,7 +49,22 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
       //! Render the mesh with a single color
       SingleColor = 0,
       //! Render the mesh with a color ramp
-      ColorRamp
+      ColorRamp,
+      //! Render the mesh with the color ramp shader of the 2D rendering
+      ColorRamp2DRendering
+    };
+
+    /**
+     * How to render the Z value of the mesh
+     *
+     * \since QGIS 3.14
+     */
+    enum ZValueType
+    {
+      //! Use the Z value of the vertices
+      VerticesZValue = 0,
+      //! Use the value from a dataset (for example, water surface value)
+      ScalarDatasetZvalue
     };
 
     //! Constructor for QgsMesh3DSymbol
@@ -59,6 +75,20 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+
+    /**
+     * Returns if the 3d rendering is enabled
+     *
+     * \since QGIS 3.14
+     */
+    bool isEnabled() const;
+
+    /**
+     * Sets if the 3d rendering is enabled
+     *
+     * \since QGIS 3.14
+     */
+    void setEnabled( bool enabled );
 
     //! Returns method that determines altitude (whether to clamp to feature to terrain)
     Qgs3DTypes::AltitudeClamping altitudeClamping() const { return mAltClamping; }
@@ -142,18 +172,18 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     void setWireframeLineColor( const QColor &wireframeLineColor );
 
     /**
-     * Returns mesh verticale scale
+     * Returns mesh vertical scale
      *
      * \since QGIS 3.12
      */
-    double verticaleScale() const;
+    double verticalScale() const;
 
     /**
-     * Sets mesh verticale scale
+     * Sets mesh vertical scale
      *
      * \since QGIS 3.12
      */
-    void setVerticaleScale( double verticaleScale );
+    void setVerticalScale( double verticalScale );
 
     /**
      * Returns the color ramp shader used to render the color
@@ -197,6 +227,94 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
      */
     void setRenderingStyle( const QgsMesh3DSymbol::RenderingStyle &textureType );
 
+    /**
+     * Returns the index of the dataset group that will be used to render the vertical component of the 3D mesh geometry
+     *
+     * \since QGIS 3.14
+     */
+    int verticalDatasetGroupIndex() const;
+
+    /**
+     * Sets the index of the dataset group that will be used to render the vertical component of the 3D mesh geometry
+     *
+     * \since QGIS 3.14
+     */
+    void setVerticalDatasetGroupIndex( int verticalDatasetGroupIndex );
+
+    /**
+     * Returns if the vertical component of the mesh is relative to the mesh vertices Z value
+     *
+     * \since QGIS 3.14
+     */
+    bool isVerticalMagnitudeRelative() const;
+
+    /**
+     * Sets if the vertical component of the mesh is relative to the mesh vertices Z value
+     *
+     * \since QGIS 3.14
+     */
+    void setIsVerticalMagnitudeRelative( bool isVerticalMagnitudeRelative );
+
+    /**
+     * Returns if arrows are enabled for 3D rendering
+     *
+     * \since QGIS 3.14
+     */
+    bool arrowsEnabled() const;
+
+    /**
+     * Sets if arrows are enabled for 3D rendering
+     *
+     * \since QGIS 3.14
+     */
+    void setArrowsEnabled( bool arrowsEnabled );
+
+    /**
+     * Returns the arrow spacing
+     *
+     * \since QGIS 3.14
+     */
+    double arrowsSpacing() const;
+
+    /**
+     * Sets the arrow spacing
+     *
+     * \since QGIS 3.14
+     */
+    void setArrowsSpacing( double arrowsSpacing );
+
+    /**
+     * Returns the maximum texture size supported by the hardware
+     * Used to store the GL_MAX_TEXTURE_SIZE value that comes from the 3D engine
+     * before creating the entity
+     *
+     * \since QGIS 3.14
+     */
+    int maximumTextureSize() const;
+
+    /**
+     * Sets the maximum texture size supported by the hardware
+     * Used to store the GL_MAX_TEXTURE_SIZE value that comes from the 3D engine
+     * before creating the entity
+     *
+     * \since QGIS 3.14
+     */
+    void setMaximumTextureSize( int maximumTextureSize );
+
+    /**
+     * Returns if the arrow size is fixed
+     *
+     * \since QGIS 3.14
+     */
+    bool arrowsFixedSize() const;
+
+    /**
+     * Sets if the arrow size is fixed
+     *
+     * \since QGIS 3.14
+     */
+    void setArrowsFixedSize( bool arrowsFixedSize );
+
   private:
 
     //! how to handle altitude of vector features
@@ -205,15 +323,30 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
     bool mAddBackFaces = false;
 
+    bool mEnabled = true;
+
+    //! Triangles settings
     bool mSmoothedTriangles = false;
     bool mWireframeEnabled = false;
     double mWireframeLineWidth = 1.0;
     QColor mWireframeLineColor = Qt::darkGray;
-    double mVerticaleScale = 1.0;
 
+    //! Verticals settings
+    double mVerticalScale = 1.0;
+    int mVerticalDatasetGroupIndex = -1;
+    bool mIsVerticalMagnitudeRelative = false;
+
+    //! Color rendering settings
     QgsMesh3DSymbol::RenderingStyle mRenderingStyle = QgsMesh3DSymbol::SingleColor;
     QgsColorRampShader mColorRampShader;
     QColor mSingleColor = Qt::darkGreen;
+
+    //! Arrows rendering
+    bool mArrowsEnabled = false;
+    double mArrowsSpacing = 25;
+    bool mArrowsFixedSize = false;
+    QColor mArrowsColor = Qt::yellow;
+    int mMaximumTextureSize = 1024;
 };
 
 #endif // QGSMESH3DSYMBOL_H

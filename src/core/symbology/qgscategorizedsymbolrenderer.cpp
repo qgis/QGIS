@@ -1060,7 +1060,8 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
     if ( graduatedSymbolRenderer )
     {
       r.reset( new QgsCategorizedSymbolRenderer( QString(), QgsCategoryList() ) );
-      r->setSourceSymbol( graduatedSymbolRenderer->sourceSymbol()->clone() );
+      if ( graduatedSymbolRenderer->sourceSymbol() )
+        r->setSourceSymbol( graduatedSymbolRenderer->sourceSymbol()->clone() );
       if ( graduatedSymbolRenderer->sourceColorRamp() )
       {
         r->setSourceColorRamp( graduatedSymbolRenderer->sourceColorRamp()->clone() );

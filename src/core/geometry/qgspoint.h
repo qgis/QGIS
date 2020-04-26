@@ -78,7 +78,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     if ( sipCanConvertToType( a0, sipType_QgsPointXY, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
     {
       int state;
-      int sipIsErr = 0;
+      sipIsErr = 0;
 
       QgsPointXY *p = reinterpret_cast<QgsPointXY *>( sipConvertToType( a0, sipType_QgsPointXY, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
       if ( sipIsErr )
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     else if ( sipCanConvertToType( a0, sipType_QPointF, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
     {
       int state;
-      int sipIsErr = 0;
+      sipIsErr = 0;
 
       QPointF *p = reinterpret_cast<QPointF *>( sipConvertToType( a0, sipType_QPointF, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
       if ( sipIsErr )
@@ -118,6 +118,11 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
       double m = a3 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a3 );
       QgsWkbTypes::Type wkbType = a4 == Py_None ? QgsWkbTypes::Unknown : static_cast<QgsWkbTypes::Type>( sipConvertToEnum( a4, sipType_QgsWkbTypes_Type ) );
       sipCpp = new sipQgsPoint( QgsPoint( x, y, z, m, wkbType ) );
+    }
+    else // Invalid ctor arguments
+    {
+      PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type in constructor arguments." ).toUtf8().constData() );
+      sipIsErr = 1;
     }
     % End
 #endif

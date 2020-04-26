@@ -56,7 +56,7 @@ class CORE_EXPORT QgsOgrDbLayerInfo
 };
 
 
-class CORE_EXPORT QgsOgrLayerItem : public QgsLayerItem
+class CORE_EXPORT QgsOgrLayerItem final: public QgsLayerItem
 {
     Q_OBJECT
   public:
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsOgrLayerItem : public QgsLayerItem
 };
 
 
-class CORE_EXPORT QgsOgrDataCollectionItem : public QgsDataCollectionItem
+class CORE_EXPORT QgsOgrDataCollectionItem final: public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
@@ -99,11 +99,11 @@ class CORE_EXPORT QgsOgrDataCollectionItem : public QgsDataCollectionItem
 };
 
 //! Provider for OGR root data item
-class QgsOgrDataItemProvider : public QgsDataItemProvider
+class QgsOgrDataItemProvider final: public QgsDataItemProvider
 {
   public:
     QString name() override;
-
+    QString dataProviderKey() const override;
     int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;

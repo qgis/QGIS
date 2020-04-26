@@ -24,6 +24,7 @@
 #include "qgscoordinatereferencesystem.h"
 
 #include <QUrl>
+#include <QUrlQuery>
 #include <QRegExp>
 
 ///@cond PRIVATE
@@ -255,7 +256,7 @@ QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
     }
     else
     {
-      crsDef = QStringLiteral( "wkt:%1" ).arg( mCrs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
+      crsDef = QStringLiteral( "wkt:%1" ).arg( mCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
     }
     query.addQueryItem( QStringLiteral( "crs" ), crsDef );
   }

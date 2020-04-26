@@ -33,6 +33,7 @@ class QTextCodec;
 #include "qgsfeaturesink.h"
 #include "qgsfeaturesource.h"
 #include "qgsfeaturerequest.h"
+#include "qgsvectordataprovidertemporalcapabilities.h"
 
 typedef QList<int> QgsAttributeList SIP_SKIP;
 typedef QSet<int> QgsAttributeIds SIP_SKIP;
@@ -197,7 +198,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * Returns a short comment for the data that this provider is
      * providing access to (e.g. the comment for postgres table).
      */
-    virtual QString dataComment() const;
+    virtual QString dataComment() const override;
 
     /**
      * Returns the minimum value of an attribute
@@ -404,12 +405,23 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     QString capabilitiesString() const;
 
     /**
-     * Set encoding used for accessing data from layer
+     * Set encoding used for accessing data from layer.
+     *
+     * An empty encoding string indicates that the provider should automatically
+     * select the most appropriate encoding for the data source.
+     *
+     * \warning Support for setting the provider encoding depends on the underlying data
+     * provider. Check capabilities() for the QgsVectorDataProvider::SelectEncoding
+     * capability in order to determine if the provider supports this ability.
+     *
+     * \see encoding()
      */
     virtual void setEncoding( const QString &e );
 
     /**
-     * Gets encoding which is used for accessing data
+     * Returns the encoding which is used for accessing data.
+     *
+     * \see setEncoding()
      */
     QString encoding() const;
 
@@ -605,6 +617,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     virtual void handlePostCloneOperations( QgsVectorDataProvider *source );
 
+    QgsVectorDataProviderTemporalCapabilities *temporalCapabilities() override;
+    const QgsVectorDataProviderTemporalCapabilities *temporalCapabilities() const override SIP_SKIP;
+
   signals:
 
     /**
@@ -674,6 +689,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
     //! List of errors
     mutable QStringList mErrors;
+
+    std::unique_ptr< QgsVectorDataProviderTemporalCapabilities > mTemporalCapabilities;
 
     static QStringList sEncodings;
 

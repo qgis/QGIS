@@ -311,7 +311,7 @@
     <string>Copy Feature</string>
    </property>
    <property name="toolTip">
-    <string>Copy Selected Feature to Clipboard</string>
+    <string>Copy the Identified Feature to Clipboard</string>
    </property>
   </action>
   <action name="mActionPrint">

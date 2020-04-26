@@ -33,6 +33,7 @@ Holds metadata about mesh driver
     {
       CanWriteFaceDatasets,
       CanWriteVertexDatasets,
+      CanWriteEdgeDatasets,
     };
 
     typedef QFlags<QgsMeshDriverMetadata::MeshDriverCapability> MeshDriverCapabilities;
@@ -74,7 +75,7 @@ Returns the description for this driver.
 QFlags<QgsMeshDriverMetadata::MeshDriverCapability> operator|(QgsMeshDriverMetadata::MeshDriverCapability f1, QFlags<QgsMeshDriverMetadata::MeshDriverCapability> f2);
 
 
-class QgsProviderMetadata
+class QgsProviderMetadata : QObject
 {
 %Docstring
 Holds data provider key, description, and associated shared library file or function pointer information.
@@ -210,7 +211,15 @@ Breaks a provider data source URI into its component paths (e.g. file path, laye
 
 :param uri: uri string
 
-:return: map containing components. Standard components include "path", "layerName", "url".
+:return: map containing components. Standard components may include:
+         - "path": file path
+         - "layerName"
+         - "url": base URL, for online services
+         - "referer": referrer string, for HTTP requests
+         - "host": hostname, for database services
+         - "bounds": hardcoded layer bounds (as a QgsRectangle)
+         - "crs": CRS definition
+         - "authcfg": authentication configuration ID
 
 .. note::
 
@@ -346,22 +355,26 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 %End
 
 
-    virtual QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) /Factory/;
+    virtual QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) throw( QgsProviderConnectionException ) /Factory/;
 %Docstring
 Creates a new connection from ``uri`` and ``configuration``,
 the newly created connection is not automatically stored in the settings, call
 saveConnection() to save it.
 Ownership is transferred to the caller.
 
+:raises :: py:class:`QgsProviderConnectionException`
+
 .. seealso:: :py:func:`saveConnection`
 
 .. versionadded:: 3.10
 %End
 
-    virtual QgsAbstractProviderConnection *createConnection( const QString &name );
+    virtual QgsAbstractProviderConnection *createConnection( const QString &name ) throw( QgsProviderConnectionException );
 %Docstring
 Creates a new connection by loading the connection with the given ``name`` from the settings.
 Ownership is transferred to the caller.
+
+:raises :: py:class:`QgsProviderConnectionException`
 
 .. seealso:: :py:func:`findConnection`
 %End
@@ -376,14 +389,52 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 .. versionadded:: 3.10
 %End
 
-    virtual void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name );
+    virtual void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) throw( QgsProviderConnectionException );
 %Docstring
 Stores the connection in the settings
 
 :param connection: the connection to be stored in the settings
 :param name: the name under which the connection will be stored
 
+:raises :: py:class:`QgsProviderConnectionException`
+
 .. versionadded:: 3.10
+%End
+
+  signals:
+
+    void connectionCreated( const QString &name );
+%Docstring
+Emitted when a connection with the specified ``name`` is created.
+
+.. note::
+
+   Only providers which implement the connection handling API will emit this signal.
+
+.. versionadded:: 3.14
+%End
+
+    void connectionDeleted( const QString &name );
+%Docstring
+Emitted when the connection with the specified ``name`` was deleted.
+
+.. note::
+
+   Only providers which implement the connection handling API will emit this signal.
+
+.. versionadded:: 3.14
+%End
+
+    void connectionChanged( const QString &name );
+%Docstring
+Emitted when the connection with the specified ``name`` is changed, e.g. the settings
+relating to the connection have been updated.
+
+.. note::
+
+   Only providers which implement the connection handling API will emit this signal.
+
+.. versionadded:: 3.14
 %End
 
   protected:

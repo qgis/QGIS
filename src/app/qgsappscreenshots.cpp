@@ -236,7 +236,7 @@ void QgsAppScreenShots::setGradientSize( int size )
 void QgsAppScreenShots::takeVectorLayerProperties()
 {
   QString folder = QStringLiteral( "working_with_vector/img/auto_generated/vector_layer_properties" );
-  QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( mLineLayer, QgisApp::instance() );
+  QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( QgisApp::instance()->mapCanvas(), QgisApp::instance()->visibleMessageBar(), mLineLayer, QgisApp::instance() );
   dlg->show();
   dlg->mJoinTreeWidget->expandAll(); // expand join tree
   // ----------------
@@ -273,7 +273,7 @@ void QgsAppScreenShots::takeVectorLayerProperties()
 void QgsAppScreenShots::takeVectorLayerProperties25DSymbol()
 {
   QString folder = QStringLiteral( "working_with_vector/img/auto_generated/vector_layer_properties/" );
-  QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( mPolygonLayer, QgisApp::instance() );
+  QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( QgisApp::instance()->mapCanvas(), QgisApp::instance()->visibleMessageBar(), mPolygonLayer, QgisApp::instance() );
   dlg->show();
   dlg->mOptionsListWidget->setCurrentRow( 2 );
   Q_ASSERT( dlg->mOptionsListWidget->currentItem()->icon().pixmap( 24, 24 ).toImage()

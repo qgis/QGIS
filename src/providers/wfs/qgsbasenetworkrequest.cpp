@@ -264,7 +264,9 @@ bool QgsBaseNetworkRequest::sendPOST( const QUrl &url, const QString &contentTyp
   {
     // Hack for testing purposes
     QUrl modifiedUrl( url );
-    modifiedUrl.addQueryItem( QStringLiteral( "POSTDATA" ), QString::fromUtf8( data ) );
+    QUrlQuery query( modifiedUrl );
+    query.addQueryItem( QStringLiteral( "POSTDATA" ), QString::fromUtf8( data ) );
+    modifiedUrl.setQuery( query );
     return sendGET( modifiedUrl, QString(), true, true, false );
   }
 

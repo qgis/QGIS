@@ -90,7 +90,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Recently used coordinate reference systems</string>
+         <string>Recently Used Coordinate Reference Systems</string>
         </property>
        </widget>
       </item>
@@ -190,7 +190,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Coordinate reference systems of the world</string>
+             <string>Predefined Coordinate Reference Systems</string>
             </property>
            </widget>
           </item>

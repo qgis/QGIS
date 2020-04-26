@@ -373,16 +373,9 @@ void QgsGraduatedSymbolRendererModel::sort( int column, Qt::SortOrder order )
   emit dataChanged( createIndex( 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
 }
 
-void QgsGraduatedSymbolRendererModel::updateSymbology( bool resetModel )
+void QgsGraduatedSymbolRendererModel::updateSymbology()
 {
-  if ( resetModel )
-  {
-    reset();
-  }
-  else
-  {
-    emit dataChanged( createIndex( 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
-  }
+  emit dataChanged( createIndex( 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
 }
 
 void QgsGraduatedSymbolRendererModel::updateLabels()
@@ -898,12 +891,12 @@ void QgsGraduatedSymbolRendererWidget::clearParameterWidgets()
   mParameterWidgetWrappers.clear();
 }
 
-void QgsGraduatedSymbolRendererWidget::refreshRanges( bool reset )
+void QgsGraduatedSymbolRendererWidget::refreshRanges( bool )
 {
   if ( !mModel )
     return;
 
-  mModel->updateSymbology( reset );
+  mModel->updateSymbology();
 
   disconnectUpdateHandlers();
   spinGraduatedClasses->setValue( mRenderer->ranges().count() );

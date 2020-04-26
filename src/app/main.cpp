@@ -884,13 +884,32 @@ int main( int argc, char *argv[] )
   QCoreApplication::setAttribute( Qt::AA_DisableWindowContextHelpButton, true );
 #endif
 
+  // Set up an OpenGL Context to be shared between threads beforehand
+  // for plugins that depend on Qt WebEngine module.
+  // As suggested by Qt documentation at:
+  //   - https://doc.qt.io/qt-5/qtwebengine.html
+  //   - https://code.qt.io/cgit/qt/qtwebengine.git/plain/src/webenginewidgets/api/qtwebenginewidgetsglobal.cpp
+#if defined(QT_OS_WIN) && !defined(QT_NO_OPENGL) && (QT_VERSION >= QT_VERSION_CHECK(5, 4, 0) )
+  QCoreApplication::setAttribute( Qt::AA_ShareOpenGLContexts, true );
+#endif
+
   // Set up the QgsSettings Global Settings:
   // - use the path specified with --globalsettingsfile path,
   // - use the environment if not found
+  // - use the AppDataLocation ($HOME/.local/share/QGIS/QGIS3 on Linux, roaming path on Windows)
   // - use a default location as a fallback
   if ( globalsettingsfile.isEmpty() )
   {
     globalsettingsfile = getenv( "QGIS_GLOBAL_SETTINGS_FILE" );
+  }
+
+  if ( globalsettingsfile.isEmpty() )
+  {
+    QStringList startupPaths = QStandardPaths::locateAll( QStandardPaths::AppDataLocation, QStringLiteral( "qgis_global_settings.ini" ) );
+    if ( !startupPaths.isEmpty() )
+    {
+      globalsettingsfile = startupPaths.at( 0 );
+    }
   }
 
   if ( globalsettingsfile.isEmpty() )
@@ -1101,8 +1120,7 @@ int main( int argc, char *argv[] )
   // An app bundled with QGIS_MACAPP_BUNDLE > 0 is considered a release bundle.
   QString  relLibPath( QDir::cleanPath( QCoreApplication::applicationDirPath().append( "/../PlugIns" ) ) );
   // Note: relLibPath becomes the defacto QT_PLUGINS_DIR of a release app bundle
-  if ( QFile::exists( relLibPath + QStringLiteral( "/imageformats" ) )
-       && QFile::exists( relLibPath + QStringLiteral( "/codecs" ) ) )
+  if ( QFile::exists( relLibPath + QStringLiteral( "/imageformats" ) ) )
   {
     // We are in a release app bundle.
     // Strip QT_PLUGINS_DIR because it will crash a launched release app bundle, since

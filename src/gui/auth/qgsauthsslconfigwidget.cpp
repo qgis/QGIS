@@ -122,8 +122,8 @@ void QgsAuthSslConfigWidget::setUpSslConfigTree()
                            static_cast<int>( QSsl::SecureProtocols ) );
   mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::TlsV1SslV3 ),
                            static_cast<int>( QSsl::TlsV1SslV3 ) );
-  mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::TlsV1 ),
-                           static_cast<int>( QSsl::TlsV1 ) );
+  mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::TlsV1_0 ),
+                           static_cast<int>( QSsl::TlsV1_0 ) );
   mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::SslV3 ),
                            static_cast<int>( QSsl::SslV3 ) );
   mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::SslV2 ),

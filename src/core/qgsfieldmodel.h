@@ -29,7 +29,8 @@ class QgsVectorLayer;
 
 /**
  * \ingroup core
- * \brief The QgsFieldModel class is a model to display the list of fields of a layer in widgets.
+ * \brief The QgsFieldModel class is a model to display the list of fields in widgets
+ * (optionally associated with a vector layer).
  * If allowed, expressions might be added to the end of the model.
  * It can be associated with a QgsMapLayerModel to dynamically display a layer and its fields.
  * \since QGIS 2.3
@@ -57,6 +58,7 @@ class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
       IsEmptyRole = Qt::UserRole + 8, //!< Return if the index corresponds to the empty value
       EditorWidgetType = Qt::UserRole + 9, //!< Editor widget type
       JoinedFieldIsEditable = Qt::UserRole + 10, //!< TRUE if a joined field is editable (returns QVariant if not a joined field)
+      FieldIsWidgetEditable = Qt::UserRole + 11, //!< TRUE if a is editable from the widget
     };
 
     /**
@@ -136,6 +138,35 @@ class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
      * \since QGIS 3.0
      */
     static QString fieldToolTip( const QgsField &field );
+
+    /**
+     * Returns a HTML formatted tooltip string for a \a field, containing details
+     * like the field name, alias, type and expression.
+     * \since QGIS 3.14
+     */
+    static QString fieldToolTipExtended( const QgsField &field, const QgsVectorLayer *layer );
+
+    /**
+     * Manually sets the \a fields to use for the model.
+     *
+     * This method should only be used when the model ISN'T associated with a layer()
+     * and needs to show the fields from an arbitrary field collection instead. Calling
+     * setFields() will automatically clear any existing layer().
+     *
+     * \see fields()
+     * \since QGIS 3.14
+     */
+    void setFields( const QgsFields &fields );
+
+    /**
+     * Returns the fields currently shown in the model.
+     *
+     * This will either be fields from the associated layer() or the fields
+     * manually set by a call to setFields().
+     *
+     * \since QGIS 3.14
+     */
+    QgsFields fields() const;
 
   public slots:
 

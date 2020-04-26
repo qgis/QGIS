@@ -101,6 +101,7 @@ QgsRasterLayer::QgsRasterLayer()
   : QgsMapLayer( QgsMapLayerType::RasterLayer )
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
+  , mTemporalProperties( new QgsRasterLayerTemporalProperties( this ) )
 
 {
   init();
@@ -115,6 +116,7 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
     // Constant that signals property not used.
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
+  , mTemporalProperties( new QgsRasterLayerTemporalProperties( this ) )
 {
   mShouldValidateCrs = !options.skipCrsValidation;
 
@@ -646,7 +648,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   // Setup source CRS
   setCrs( QgsCoordinateReferenceSystem( mDataProvider->crs() ) );
 
-  QgsDebugMsgLevel( "using wkt:\n" + crs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ), 4 );
+  QgsDebugMsgLevel( "using wkt:\n" + crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ), 4 );
 
   //defaults - Needs to be set after the Contrast list has been build
   //Try to read the default contrast enhancement from the config file
@@ -806,7 +808,14 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   //mark the layer as valid
   mValid = true;
 
+  if ( mDataProvider->supportsSubsetString() )
+    connect( this, &QgsRasterLayer::subsetStringChanged, this, &QgsMapLayer::configChanged, Qt::UniqueConnection );
+  else
+    disconnect( this, &QgsRasterLayer::subsetStringChanged, this, &QgsMapLayer::configChanged );
+
+
   QgsDebugMsgLevel( QStringLiteral( "exiting." ), 4 );
+
 }
 
 void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
@@ -857,8 +866,13 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
 
   setDataProvider( provider, options );
 
+  if ( mDataProvider )
+    mDataProvider->setDataSourceUri( mDataSource );
+
   if ( mValid )
   {
+    mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
+
     // load default style
     bool defaultLoadedFlag = false;
     bool restoredStyle = false;
@@ -889,6 +903,7 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
     {
       setDefaultContrastEnhancement();
     }
+
     emit statusChanged( tr( "QgsRasterLayer created" ) );
   }
   emit dataSourceChanged();
@@ -941,6 +956,11 @@ void QgsRasterLayer::computeMinMax( int band,
 bool QgsRasterLayer::ignoreExtents() const
 {
   return mDataProvider ? mDataProvider->ignoreExtents() : false;
+}
+
+QgsRasterLayerTemporalProperties *QgsRasterLayer::temporalProperties()
+{
+  return mTemporalProperties;
 }
 
 void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, QgsRasterMinMaxOrigin::Limits limits, const QgsRectangle &extent, int sampleSize, bool generateLookupTableFlag )
@@ -1128,98 +1148,152 @@ void QgsRasterLayer::refreshContrastEnhancement( const QgsRectangle &extent )
 void QgsRasterLayer::refreshRendererIfNeeded( QgsRasterRenderer *rasterRenderer,
     const QgsRectangle &extent )
 {
-  if ( !( mDataProvider &&
-          mLastRectangleUsedByRefreshContrastEnhancementIfNeeded != extent &&
-          rasterRenderer->minMaxOrigin().limits() != QgsRasterMinMaxOrigin::None &&
-          rasterRenderer->minMaxOrigin().extent() == QgsRasterMinMaxOrigin::UpdatedCanvas ) )
-    return;
-
-  QgsSingleBandGrayRenderer *singleBandRenderer = nullptr;
-  QgsMultiBandColorRenderer *multiBandRenderer = nullptr;
-  QgsSingleBandPseudoColorRenderer *sbpcr = nullptr;
-  const QgsContrastEnhancement *ce = nullptr;
-  if ( ( singleBandRenderer = dynamic_cast<QgsSingleBandGrayRenderer *>( rasterRenderer ) ) )
+  if ( mDataProvider &&
+       mLastRectangleUsedByRefreshContrastEnhancementIfNeeded != extent &&
+       rasterRenderer->minMaxOrigin().limits() != QgsRasterMinMaxOrigin::None &&
+       rasterRenderer->minMaxOrigin().extent() == QgsRasterMinMaxOrigin::UpdatedCanvas )
   {
-    ce = singleBandRenderer->contrastEnhancement();
+    refreshRenderer( rasterRenderer, extent );
   }
-  else if ( ( multiBandRenderer = dynamic_cast<QgsMultiBandColorRenderer *>( rasterRenderer ) ) )
-  {
-    ce = multiBandRenderer->redContrastEnhancement();
-  }
-  else if ( ( sbpcr = dynamic_cast<QgsSingleBandPseudoColorRenderer *>( rasterRenderer ) ) )
-  {
-    mLastRectangleUsedByRefreshContrastEnhancementIfNeeded = extent;
-    double min;
-    double max;
-    computeMinMax( sbpcr->band(),
-                   rasterRenderer->minMaxOrigin(),
-                   rasterRenderer->minMaxOrigin().limits(), extent,
-                   SAMPLE_SIZE, min, max );
-    sbpcr->setClassificationMin( min );
-    sbpcr->setClassificationMax( max );
+}
 
-    if ( sbpcr->shader() )
+void QgsRasterLayer::refreshRenderer( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent )
+{
+  if ( mDataProvider )
+  {
+    QgsSingleBandGrayRenderer *singleBandRenderer = nullptr;
+    QgsMultiBandColorRenderer *multiBandRenderer = nullptr;
+    QgsSingleBandPseudoColorRenderer *sbpcr = nullptr;
+    const QgsContrastEnhancement *ce = nullptr;
+    if ( ( singleBandRenderer = dynamic_cast<QgsSingleBandGrayRenderer *>( rasterRenderer ) ) )
     {
-      QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( sbpcr->shader()->rasterShaderFunction() );
-      if ( colorRampShader )
+      ce = singleBandRenderer->contrastEnhancement();
+    }
+    else if ( ( multiBandRenderer = dynamic_cast<QgsMultiBandColorRenderer *>( rasterRenderer ) ) )
+    {
+      ce = multiBandRenderer->redContrastEnhancement();
+    }
+    else if ( ( sbpcr = dynamic_cast<QgsSingleBandPseudoColorRenderer *>( rasterRenderer ) ) )
+    {
+      mLastRectangleUsedByRefreshContrastEnhancementIfNeeded = extent;
+      double min;
+      double max;
+      computeMinMax( sbpcr->band(),
+                     rasterRenderer->minMaxOrigin(),
+                     rasterRenderer->minMaxOrigin().limits(), extent,
+                     SAMPLE_SIZE, min, max );
+      sbpcr->setClassificationMin( min );
+      sbpcr->setClassificationMax( max );
+
+      if ( sbpcr->shader() )
       {
-        colorRampShader->classifyColorRamp( sbpcr->band(), extent, rasterRenderer->input() );
+        QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( sbpcr->shader()->rasterShaderFunction() );
+        if ( colorRampShader )
+        {
+          colorRampShader->classifyColorRamp( sbpcr->band(), extent, rasterRenderer->input() );
+        }
       }
+
+      QgsSingleBandPseudoColorRenderer *r = dynamic_cast<QgsSingleBandPseudoColorRenderer *>( renderer() );
+      r->setClassificationMin( min );
+      r->setClassificationMax( max );
+
+      if ( r->shader() )
+      {
+        QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( r->shader()->rasterShaderFunction() );
+        if ( colorRampShader )
+        {
+          colorRampShader->classifyColorRamp( sbpcr->band(), extent, rasterRenderer->input() );
+        }
+      }
+
+      emit repaintRequested();
+      emit styleChanged();
+      emit rendererChanged();
+      return;
     }
 
-    QgsSingleBandPseudoColorRenderer *r = dynamic_cast<QgsSingleBandPseudoColorRenderer *>( renderer() );
-    r->setClassificationMin( min );
-    r->setClassificationMax( max );
-
-    if ( r->shader() )
+    if ( ce &&
+         ce->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement )
     {
-      QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( r->shader()->rasterShaderFunction() );
-      if ( colorRampShader )
+      mLastRectangleUsedByRefreshContrastEnhancementIfNeeded = extent;
+
+      setContrastEnhancement( ce->contrastEnhancementAlgorithm(),
+                              rasterRenderer->minMaxOrigin().limits(),
+                              extent,
+                              SAMPLE_SIZE,
+                              true,
+                              rasterRenderer );
+
+      // Update main renderer so that the legends get updated
+      if ( singleBandRenderer )
+        static_cast<QgsSingleBandGrayRenderer *>( renderer() )->setContrastEnhancement( new QgsContrastEnhancement( * singleBandRenderer->contrastEnhancement() ) );
+      else if ( multiBandRenderer )
       {
-        colorRampShader->classifyColorRamp( sbpcr->band(), extent, rasterRenderer->input() );
+        if ( multiBandRenderer->redContrastEnhancement() )
+        {
+          static_cast<QgsMultiBandColorRenderer *>( renderer() )->setRedContrastEnhancement( new QgsContrastEnhancement( *multiBandRenderer->redContrastEnhancement() ) );
+        }
+        if ( multiBandRenderer->greenContrastEnhancement() )
+        {
+          static_cast<QgsMultiBandColorRenderer *>( renderer() )->setGreenContrastEnhancement( new QgsContrastEnhancement( *multiBandRenderer->greenContrastEnhancement() ) );
+        }
+        if ( multiBandRenderer->blueContrastEnhancement() )
+        {
+          static_cast<QgsMultiBandColorRenderer *>( renderer() )->setBlueContrastEnhancement( new QgsContrastEnhancement( *multiBandRenderer->blueContrastEnhancement() ) );
+        }
       }
+
+      emit styleChanged();
+      emit rendererChanged();
     }
-
-    emit repaintRequested();
-    emit styleChanged();
-    emit rendererChanged();
-    return;
   }
+}
 
-  if ( ce &&
-       ce->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement )
+QString QgsRasterLayer::subsetString() const
+{
+  if ( !mValid || !mDataProvider )
   {
-    mLastRectangleUsedByRefreshContrastEnhancementIfNeeded = extent;
-
-    setContrastEnhancement( ce->contrastEnhancementAlgorithm(),
-                            rasterRenderer->minMaxOrigin().limits(),
-                            extent,
-                            SAMPLE_SIZE,
-                            true,
-                            rasterRenderer );
-
-    // Update main renderer so that the legends get updated
-    if ( singleBandRenderer )
-      static_cast<QgsSingleBandGrayRenderer *>( renderer() )->setContrastEnhancement( new QgsContrastEnhancement( * singleBandRenderer->contrastEnhancement() ) );
-    else if ( multiBandRenderer )
-    {
-      if ( multiBandRenderer->redContrastEnhancement() )
-      {
-        static_cast<QgsMultiBandColorRenderer *>( renderer() )->setRedContrastEnhancement( new QgsContrastEnhancement( *multiBandRenderer->redContrastEnhancement() ) );
-      }
-      if ( multiBandRenderer->greenContrastEnhancement() )
-      {
-        static_cast<QgsMultiBandColorRenderer *>( renderer() )->setGreenContrastEnhancement( new QgsContrastEnhancement( *multiBandRenderer->greenContrastEnhancement() ) );
-      }
-      if ( multiBandRenderer->blueContrastEnhancement() )
-      {
-        static_cast<QgsMultiBandColorRenderer *>( renderer() )->setBlueContrastEnhancement( new QgsContrastEnhancement( *multiBandRenderer->blueContrastEnhancement() ) );
-      }
-    }
-
-    emit styleChanged();
-    emit rendererChanged();
+    QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider" ), 3 );
+    return customProperty( QStringLiteral( "storedSubsetString" ) ).toString();
   }
+  if ( !mDataProvider->supportsSubsetString() )
+  {
+    return QString();
+  }
+  return mDataProvider->subsetString();
+}
+
+bool QgsRasterLayer::setSubsetString( const QString &subset )
+{
+  if ( !mValid || !mDataProvider )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider or while editing" ), 3 );
+    setCustomProperty( QStringLiteral( "storedSubsetString" ), subset );
+    return false;
+  }
+
+  if ( !mDataProvider->supportsSubsetString() )
+  {
+    return false;
+  }
+
+  if ( subset == mDataProvider->subsetString() )
+    return true;
+
+  bool res = mDataProvider->setSubsetString( subset );
+
+  // get the updated data source string from the provider
+  mDataSource = mDataProvider->dataSourceUri();
+
+  if ( res )
+  {
+    setExtent( mDataProvider->extent() );
+    refreshRenderer( renderer(), extent() );
+    emit subsetStringChanged();
+  }
+
+  return res;
 }
 
 bool QgsRasterLayer::defaultContrastEnhancementSettings(
@@ -1263,7 +1337,7 @@ bool QgsRasterLayer::defaultContrastEnhancementSettings(
 
   if ( key.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "No default contrast enhancement for this drawing style" ) );
+    QgsDebugMsgLevel( QStringLiteral( "No default contrast enhancement for this drawing style" ), 2 );
     myAlgorithm = QgsContrastEnhancement::contrastEnhancementAlgorithmFromString( QString() );
     myLimits = QgsRasterMinMaxOrigin::limitsFromString( QString() );
     return false;
@@ -1889,6 +1963,8 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     }
   }
 
+  mTemporalProperties->readXml( layer_node.toElement(), context );
+
   readStyleManager( layer_node );
 
   return res;
@@ -1990,6 +2066,9 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
   {
     layer_node.appendChild( noData );
   }
+
+  // write temporal properties
+  mTemporalProperties->writeXml( mapLayerNode, document, context );
 
   writeStyleManager( layer_node, document );
 

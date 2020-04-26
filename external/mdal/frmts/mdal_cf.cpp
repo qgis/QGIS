@@ -14,8 +14,7 @@
 #include "mdal_data_model.hpp"
 #include "mdal_cf.hpp"
 #include "mdal_utils.hpp"
-
-#define CF_THROW_ERR throw MDAL_Status::Err_UnknownFormat
+#include "mdal_logger.hpp"
 
 MDAL::cfdataset_info_map MDAL::DriverCF::parseDatasetGroupInfo()
 {
@@ -144,8 +143,6 @@ MDAL::cfdataset_info_map MDAL::DriverCF::parseDatasetGroupInfo()
   }
   while ( true );
 
-  if ( dsinfo_map.size() == 0 ) throw MDAL_Status::Err_InvalidData;
-
   return dsinfo_map;
 }
 
@@ -179,12 +176,14 @@ void MDAL::DriverCF::addDatasetGroups( MDAL::Mesh *mesh, const std::vector<Relat
         );
     group->setIsScalar( !dsi.is_vector );
 
-    if ( dsi.outputType == CFDimensions::Vertex2D )
-      group->setDataLocation( MDAL_DataLocation::DataOnVertices2D );
-    else if ( dsi.outputType == CFDimensions::Face2D )
-      group->setDataLocation( MDAL_DataLocation::DataOnFaces2D );
+    if ( dsi.outputType == CFDimensions::Vertex )
+      group->setDataLocation( MDAL_DataLocation::DataOnVertices );
+    else if ( dsi.outputType == CFDimensions::Edge )
+      group->setDataLocation( MDAL_DataLocation::DataOnEdges );
+    else if ( dsi.outputType == CFDimensions::Face )
+      group->setDataLocation( MDAL_DataLocation::DataOnFaces );
     else if ( dsi.outputType == CFDimensions::Volume3D )
-      group->setDataLocation( MDAL_DataLocation::DataOnVolumes3D );
+      group->setDataLocation( MDAL_DataLocation::DataOnVolumes );
     else
     {
       // unsupported
@@ -317,6 +316,10 @@ bool MDAL::DriverCF::canReadMesh( const std::string &uri )
   {
     return false;
   }
+  catch ( MDAL::Error )
+  {
+    return false;
+  }
   return true;
 }
 
@@ -376,15 +379,21 @@ void MDAL::DriverCF::setProjection( MDAL::Mesh *mesh )
   {
     return;
   }
+  catch ( MDAL::Error )
+  {
+    return;
+  }
 }
 
-std::unique_ptr< MDAL::Mesh > MDAL::DriverCF::load( const std::string &fileName, MDAL_Status *status )
+std::unique_ptr< MDAL::Mesh > MDAL::DriverCF::load( const std::string &fileName, const std::string &meshName )
 {
   mNcFile.reset( new NetCDFFile );
 
   mFileName = fileName;
 
-  if ( status ) *status = MDAL_Status::None;
+  mRequestedMeshName = meshName;
+
+  MDAL::Log::resetLastStatus();
 
   //Dimensions dims;
   std::vector<MDAL::RelativeTimestamp> times;
@@ -399,12 +408,14 @@ std::unique_ptr< MDAL::Mesh > MDAL::DriverCF::load( const std::string &fileName,
 
     // Create mMesh
     Faces faces;
+    Edges edges;
     Vertices vertices;
-    populateFacesAndVertices( vertices, faces );
+    populateElements( vertices, edges, faces );
     std::unique_ptr< MemoryMesh > mesh(
       new MemoryMesh(
         name(),
         vertices.size(),
+        edges.size(),
         faces.size(),
         mDimensions.size( mDimensions.MaxVerticesInFace ),
         computeExtent( vertices ),
@@ -412,6 +423,7 @@ std::unique_ptr< MDAL::Mesh > MDAL::DriverCF::load( const std::string &fileName,
       )
     );
     mesh->faces = faces;
+    mesh->edges = edges;
     mesh->vertices = vertices;
     addBedElevation( mesh.get() );
     setProjection( mesh.get() );
@@ -429,7 +441,12 @@ std::unique_ptr< MDAL::Mesh > MDAL::DriverCF::load( const std::string &fileName,
   }
   catch ( MDAL_Status error )
   {
-    if ( status ) *status = ( error );
+    MDAL::Log::error( error, name(), "error while loading file " + fileName );
+    return std::unique_ptr<Mesh>();
+  }
+  catch ( MDAL::Error err )
+  {
+    MDAL::Log::error( err, name() );
     return std::unique_ptr<Mesh>();
   }
 }
@@ -464,11 +481,10 @@ void MDAL::CFDimensions::setDimension( MDAL::CFDimensions::Type type,
 bool MDAL::CFDimensions::isDatasetType( MDAL::CFDimensions::Type type ) const
 {
   return (
-           ( type == Vertex1D ) ||
-           ( type == Vertex2D ) ||
-           ( type == Line1D ) ||
+           ( type == Vertex ) ||
+           ( type == Edge ) ||
            ( type == Face2DEdge ) ||
-           ( type == Face2D ) ||
+           ( type == Face ) ||
            ( type == Volume3D )
          );
 }

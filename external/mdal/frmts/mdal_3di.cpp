@@ -29,12 +29,12 @@ MDAL::CFDimensions MDAL::Driver3Di::populateDimensions( )
 
   // 2D Mesh
   mNcFile->getDimension( "nMesh2D_nodes", &count, &ncid );
-  dims.setDimension( CFDimensions::Face2D, count, ncid );
+  dims.setDimension( CFDimensions::Face, count, ncid );
 
   mNcFile->getDimension( "nCorner_Nodes", &count, &ncid );
   dims.setDimension( CFDimensions::MaxVerticesInFace, count, ncid );
 
-  // Vertices count is populated later in populateFacesAndVertices
+  // Vertices count is populated later in populateElements
   // it is not known from the array dimensions
 
   // Time
@@ -44,10 +44,10 @@ MDAL::CFDimensions MDAL::Driver3Di::populateDimensions( )
   return dims;
 }
 
-void MDAL::Driver3Di::populateFacesAndVertices( Vertices &vertices, Faces &faces )
+void MDAL::Driver3Di::populateElements( Vertices &vertices, Edges &, Faces &faces )
 {
   assert( vertices.empty() );
-  size_t faceCount = mDimensions.size( CFDimensions::Face2D );
+  size_t faceCount = mDimensions.size( CFDimensions::Face );
   faces.resize( faceCount );
   size_t verticesInFace = mDimensions.size( CFDimensions::MaxVerticesInFace );
   size_t arrsize = faceCount * verticesInFace;
@@ -57,13 +57,13 @@ void MDAL::Driver3Di::populateFacesAndVertices( Vertices &vertices, Faces &faces
   int ncidX = mNcFile->getVarId( "Mesh2DContour_x" );
   double fillX = mNcFile->getFillValue( ncidX );
   std::vector<double> faceVerticesX( arrsize );
-  if ( nc_get_var_double( mNcFile->handle(), ncidX, faceVerticesX.data() ) ) throw MDAL_Status::Err_UnknownFormat;
+  if ( nc_get_var_double( mNcFile->handle(), ncidX, faceVerticesX.data() ) ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unknown format" );
 
   // Y coordinate
   int ncidY = mNcFile->getVarId( "Mesh2DContour_y" );
   double fillY = mNcFile->getFillValue( ncidY );
   std::vector<double> faceVerticesY( arrsize );
-  if ( nc_get_var_double( mNcFile->handle(), ncidY, faceVerticesY.data() ) ) throw MDAL_Status::Err_UnknownFormat;
+  if ( nc_get_var_double( mNcFile->handle(), ncidY, faceVerticesY.data() ) ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unknown format" );
 
   // now populate create faces and backtrack which vertices
   // are used in multiple faces
@@ -109,7 +109,7 @@ void MDAL::Driver3Di::populateFacesAndVertices( Vertices &vertices, Faces &faces
 
   // Only now we have number of vertices, since we identified vertices that
   // are used in multiple faces
-  mDimensions.setDimension( CFDimensions::Vertex2D, vertices.size() );
+  mDimensions.setDimension( CFDimensions::Vertex, vertices.size() );
 }
 
 void MDAL::Driver3Di::addBedElevation( MemoryMesh *mesh )
@@ -135,7 +135,7 @@ void MDAL::Driver3Di::addBedElevation( MemoryMesh *mesh )
                                           "Bed Elevation"
                                         );
 
-  group->setDataLocation( MDAL_DataLocation::DataOnFaces2D );
+  group->setDataLocation( MDAL_DataLocation::DataOnFaces );
   group->setIsScalar( true );
 
   std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MemoryDataset2D >( group.get() );

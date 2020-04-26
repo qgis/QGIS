@@ -321,6 +321,13 @@ names which the labeling requires for the rendering.
 .. versionadded:: 3.8
 %End
 
+    QSet<QString> referencedFields( const QgsRenderContext &context ) const;
+%Docstring
+Returns all field names referenced by the configuration (e.g. field name or expression, data defined properties).
+
+.. versionadded:: 3.14
+%End
+
     void startRender( QgsRenderContext &context );
 %Docstring
 Prepares the label settings for rendering.

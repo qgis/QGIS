@@ -59,7 +59,7 @@ enum QgsOraclePrimaryKeyType
   interface defined in the QgsDataProvider class to provide access to spatial
   data residing in a oracle enabled database.
   */
-class QgsOracleProvider : public QgsVectorDataProvider
+class QgsOracleProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
     Q_PROPERTY( QString workspace READ getWorkspace WRITE setWorkspace )
@@ -385,7 +385,7 @@ class QgsOracleSharedData
     QMap<QgsFeatureId, QVariantList> mFidToKey;      // map feature back to fea
 };
 
-class QgsOracleProviderMetadata: public QgsProviderMetadata
+class QgsOracleProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsOracleProviderMetadata();
@@ -408,7 +408,7 @@ class QgsOracleProviderMetadata: public QgsProviderMetadata
 };
 
 #ifdef HAVE_GUI
-class QgsOracleProviderGuiMetadata: public QgsProviderGuiMetadata
+class QgsOracleProviderGuiMetadata final: public QgsProviderGuiMetadata
 {
   public:
     QgsOracleProviderGuiMetadata();

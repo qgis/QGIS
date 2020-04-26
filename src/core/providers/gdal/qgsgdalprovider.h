@@ -62,7 +62,7 @@ class QgsCoordinateTransform;
   to provide access to spatial data residing in a GDAL layers.
 
 */
-class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
+class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 {
     Q_OBJECT
 
@@ -343,7 +343,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 /**
  * Metadata of the GDAL data provider
  */
-class QgsGdalProviderMetadata: public QgsProviderMetadata
+class QgsGdalProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsGdalProviderMetadata();

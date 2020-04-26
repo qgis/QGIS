@@ -100,7 +100,6 @@ namespace MDAL
 
       DateTime( int64_t julianTime );
 
-      DateTimeValues dateTimeGregorianJulianCalendar() const;
       DateTimeValues dateTimeGregorianProleptic() const;
 
       void setWithGregorianCalendarDate( DateTimeValues values );

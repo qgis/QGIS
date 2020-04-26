@@ -714,7 +714,7 @@ QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &fea
                       QgsWkbTypes::Type::NoGeometry &&
                       inputWkbType != QgsWkbTypes::Type::Unknown;
   // Drop geometry if layer is geometry-less
-  if ( newFHasGeom && ! layerHasGeom )
+  if ( ( newFHasGeom && !layerHasGeom ) || !newFHasGeom )
   {
     QgsFeature _f = QgsFeature( layer->fields() );
     _f.setAttributes( newF.attributes() );
@@ -722,133 +722,26 @@ QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &fea
   }
   else
   {
-    // Geometry need fixing
-    if ( newFHasGeom && layerHasGeom && newF.geometry().wkbType() != inputWkbType )
+    // Geometry need fixing?
+    const QVector< QgsGeometry > geometries = newF.geometry().coerceToType( inputWkbType );
+
+    if ( geometries.count() != 1 )
     {
-      // Curved -> straight
-      if ( !QgsWkbTypes::isCurvedType( inputWkbType ) && QgsWkbTypes::isCurvedType( newF.geometry().wkbType() ) )
+      QgsAttributeMap attrMap;
+      for ( int j = 0; j < newF.fields().count(); j++ )
       {
-        QgsGeometry newGeom( newF.geometry().constGet()->segmentize() );
-        newF.setGeometry( newGeom );
+        attrMap[j] = newF.attribute( j );
       }
-
-      // polygon -> line
-      if ( QgsWkbTypes::geometryType( inputWkbType ) == QgsWkbTypes::LineGeometry &&
-           newF.geometry().type() == QgsWkbTypes::PolygonGeometry )
+      resultFeatures.reserve( geometries.size() );
+      for ( const QgsGeometry &geometry : geometries )
       {
-        // boundary gives us a (multi)line string of exterior + interior rings
-        QgsGeometry newGeom( newF.geometry().constGet()->boundary() );
-        newF.setGeometry( newGeom );
-      }
-      // line -> polygon
-      if ( QgsWkbTypes::geometryType( inputWkbType ) == QgsWkbTypes::PolygonGeometry &&
-           newF.geometry().type() == QgsWkbTypes::LineGeometry )
-      {
-        std::unique_ptr< QgsGeometryCollection > gc( QgsGeometryFactory::createCollectionOfType( inputWkbType ) );
-        const QgsGeometry source = newF.geometry();
-        for ( auto part = source.const_parts_begin(); part != source.const_parts_end(); ++part )
-        {
-          std::unique_ptr< QgsAbstractGeometry > exterior( ( *part )->clone() );
-          if ( QgsCurve *curve = qgsgeometry_cast< QgsCurve * >( exterior.get() ) )
-          {
-            if ( QgsWkbTypes::isCurvedType( inputWkbType ) )
-            {
-              std::unique_ptr< QgsCurvePolygon > cp = qgis::make_unique< QgsCurvePolygon >();
-              cp->setExteriorRing( curve );
-              exterior.release();
-              gc->addGeometry( cp.release() );
-            }
-            else
-            {
-              std::unique_ptr< QgsPolygon > p = qgis::make_unique< QgsPolygon  >();
-              p->setExteriorRing( qgsgeometry_cast< QgsLineString * >( curve ) );
-              exterior.release();
-              gc->addGeometry( p.release() );
-            }
-          }
-        }
-        QgsGeometry newGeom( std::move( gc ) );
-        newF.setGeometry( newGeom );
-      }
-
-      // line/polygon -> points
-      if ( QgsWkbTypes::geometryType( inputWkbType ) == QgsWkbTypes::PointGeometry &&
-           ( newF.geometry().type() == QgsWkbTypes::LineGeometry ||
-             newF.geometry().type() == QgsWkbTypes::PolygonGeometry ) )
-      {
-        // lines/polygons to a point layer, extract all vertices
-        std::unique_ptr< QgsMultiPoint > mp = qgis::make_unique< QgsMultiPoint >();
-        const QgsGeometry source = newF.geometry();
-        QSet< QgsPoint > added;
-        for ( auto vertex = source.vertices_begin(); vertex != source.vertices_end(); ++vertex )
-        {
-          if ( added.contains( *vertex ) )
-            continue; // avoid duplicate points, e.g. start/end of rings
-          mp->addGeometry( ( *vertex ).clone() );
-          added.insert( *vertex );
-        }
-        QgsGeometry newGeom( std::move( mp ) );
-        newF.setGeometry( newGeom );
-      }
-
-      // Single -> multi
-      if ( QgsWkbTypes::isMultiType( inputWkbType ) && ! newF.geometry().isMultipart( ) )
-      {
-        QgsGeometry newGeom( newF.geometry( ) );
-        newGeom.convertToMultiType();
-        newF.setGeometry( newGeom );
-      }
-      // Drop Z/M
-      if ( newF.geometry().constGet()->is3D() && ! QgsWkbTypes::hasZ( inputWkbType ) )
-      {
-        QgsGeometry newGeom( newF.geometry( ) );
-        newGeom.get()->dropZValue();
-        newF.setGeometry( newGeom );
-      }
-      if ( newF.geometry().constGet()->isMeasure() && ! QgsWkbTypes::hasM( inputWkbType ) )
-      {
-        QgsGeometry newGeom( newF.geometry( ) );
-        newGeom.get()->dropMValue();
-        newF.setGeometry( newGeom );
-      }
-      // Add Z/M back, set to 0
-      if ( ! newF.geometry().constGet()->is3D() && QgsWkbTypes::hasZ( inputWkbType ) )
-      {
-        QgsGeometry newGeom( newF.geometry( ) );
-        newGeom.get()->addZValue( 0.0 );
-        newF.setGeometry( newGeom );
-      }
-      if ( ! newF.geometry().constGet()->isMeasure() && QgsWkbTypes::hasM( inputWkbType ) )
-      {
-        QgsGeometry newGeom( newF.geometry( ) );
-        newGeom.get()->addMValue( 0.0 );
-        newF.setGeometry( newGeom );
-      }
-      // Multi -> single
-      if ( ! QgsWkbTypes::isMultiType( inputWkbType ) && newF.geometry().isMultipart( ) )
-      {
-        QgsGeometry newGeom( newF.geometry( ) );
-        const QgsGeometryCollection *parts( static_cast< const QgsGeometryCollection * >( newGeom.constGet() ) );
-        QgsAttributeMap attrMap;
-        for ( int j = 0; j < newF.fields().count(); j++ )
-        {
-          attrMap[j] = newF.attribute( j );
-        }
-        resultFeatures.reserve( parts->partCount() );
-        for ( int i = 0; i < parts->partCount( ); i++ )
-        {
-          QgsGeometry g( parts->geometryN( i )->clone() );
-          QgsFeature _f( createFeature( layer, g, attrMap ) );
-          resultFeatures.append( _f );
-        }
-      }
-      else
-      {
-        resultFeatures.append( newF );
+        QgsFeature _f( createFeature( layer, geometry, attrMap ) );
+        resultFeatures.append( _f );
       }
     }
     else
     {
+      newF.setGeometry( geometries.at( 0 ) );
       resultFeatures.append( newF );
     }
   }

@@ -26,6 +26,7 @@
 
 #include <QDomDocument>
 #include <QStringList>
+#include <QUrlQuery>
 
 QgsWfsCapabilities::QgsWfsCapabilities( const QString &uri, const QgsDataProvider::ProviderOptions &options )
   : QgsWfsRequest( QgsWFSDataSourceURI( uri ) ),
@@ -41,15 +42,17 @@ QgsWfsCapabilities::QgsWfsCapabilities( const QString &uri, const QgsDataProvide
 bool QgsWfsCapabilities::requestCapabilities( bool synchronous, bool forceRefresh )
 {
   QUrl url( mUri.baseURL( ) );
-  url.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetCapabilities" ) );
+  QUrlQuery query( url );
+  query.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetCapabilities" ) );
 
   const QString &version = mUri.version();
   if ( version == QgsWFSConstants::VERSION_AUTO )
     // MapServer honours the order with the first value being the preferred one
-    url.addQueryItem( QStringLiteral( "ACCEPTVERSIONS" ), QStringLiteral( "2.0.0,1.1.0,1.0.0" ) );
+    query.addQueryItem( QStringLiteral( "ACCEPTVERSIONS" ), QStringLiteral( "2.0.0,1.1.0,1.0.0" ) );
   else
-    url.addQueryItem( QStringLiteral( "VERSION" ), version );
+    query.addQueryItem( QStringLiteral( "VERSION" ), version );
 
+  url.setQuery( query );
   if ( !sendGET( url, QString(), synchronous, forceRefresh ) )
   {
     emit gotCapabilities();

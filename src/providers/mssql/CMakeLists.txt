@@ -1,6 +1,7 @@
 SET(MSSQL_SRCS
   qgsmssqlconnection.cpp
   qgsmssqlprovider.cpp
+  qgsmssqlproviderconnection.cpp
   qgsmssqlgeometryparser.cpp
   qgsmssqltablemodel.cpp
   qgsmssqldataitems.cpp

@@ -309,6 +309,19 @@ class DlgCreateTable(QDialog, Ui_Dialog):
 
             except (ConnectionError, DbError) as e:
                 DlgDbError.showError(e, self)
-            return
+
+        # clear UI
+        self.editName.clear()
+        self.fields.model().removeRows(0, self.fields.model().rowCount())
+        self.cboPrimaryKey.clear()
+        self.chkGeomColumn.setChecked(False)
+        self.chkSpatialIndex.setChecked(False)
+        self.editGeomSrid.clear()
+
+        self.cboGeomType.setEnabled(False)
+        self.editGeomColumn.setEnabled(False)
+        self.spinGeomDim.setEnabled(False)
+        self.editGeomSrid.setEnabled(False)
+        self.chkSpatialIndex.setEnabled(False)
 
         QMessageBox.information(self, self.tr("DB Manager"), self.tr("Table created successfully."))

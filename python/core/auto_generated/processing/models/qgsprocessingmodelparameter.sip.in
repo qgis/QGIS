@@ -30,6 +30,9 @@ Constructor for QgsProcessingModelParameter. The parameter name should match one
 parameters from the parent model.
 %End
 
+    virtual QgsProcessingModelParameter *clone() const /Factory/;
+
+
     QString parameterName() const;
 %Docstring
 Returns the associated parameter name. The parameter name should match one of the
@@ -59,6 +62,9 @@ Loads this parameter from a QVariantMap.
 
 .. seealso:: :py:func:`toVariant`
 %End
+
+    virtual QgsProcessingModelComment *comment();
+    virtual void setComment( const QgsProcessingModelComment &comment );
 
 };
 

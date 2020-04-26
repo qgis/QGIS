@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1041</width>
+    <width>1117</width>
     <height>556</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,1">
    <property name="leftMargin">
@@ -52,21 +52,6 @@
         <property name="toolTip">
          <string>Select attribute layout editor</string>
         </property>
-        <item>
-         <property name="text">
-          <string>Autogenerate</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Drag and drop designer</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Provide ui-file</string>
-         </property>
-        </item>
        </widget>
       </item>
       <item>
@@ -238,7 +223,7 @@ Use this function to add extra logic to your forms.</string>
          <x>0</x>
          <y>0</y>
          <width>598</width>
-         <height>490</height>
+         <height>480</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_4">

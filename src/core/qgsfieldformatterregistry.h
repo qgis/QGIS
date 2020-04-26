@@ -24,6 +24,7 @@
 #include "qgis_core.h"
 
 class QgsFieldFormatter;
+class QgsVectorLayer;
 
 /**
  * \ingroup core

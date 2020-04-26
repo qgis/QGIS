@@ -1095,7 +1095,9 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     case GEOS_POINT:                 // a point
     {
       const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosinit()->ctxt, geos );
-      return std::unique_ptr<QgsAbstractGeometry>( coordSeqPoint( cs, 0, hasZ, hasM ).clone() );
+      unsigned int nPoints = 0;
+      GEOSCoordSeq_getSize_r( geosinit()->ctxt, cs, &nPoints );
+      return  nPoints > 0 ? std::unique_ptr<QgsAbstractGeometry>( coordSeqPoint( cs, 0, hasZ, hasM ).clone() ) : qgis::make_unique< QgsPoint >();
     }
     case GEOS_LINESTRING:
     {
@@ -1115,7 +1117,10 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
         const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosinit()->ctxt, GEOSGetGeometryN_r( geosinit()->ctxt, geos, i ) );
         if ( cs )
         {
-          multiPoint->addGeometry( coordSeqPoint( cs, 0, hasZ, hasM ).clone() );
+          unsigned int nPoints = 0;
+          GEOSCoordSeq_getSize_r( geosinit()->ctxt, cs, &nPoints );
+          if ( nPoints > 0 )
+            multiPoint->addGeometry( coordSeqPoint( cs, 0, hasZ, hasM ).clone() );
         }
       }
       return std::move( multiPoint );

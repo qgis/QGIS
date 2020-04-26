@@ -21,6 +21,8 @@
 #include <QStringList>
 #include <QMutex>
 
+#include "qgsdatasourceuri.h"
+
 class QString;
 class QSqlDatabase;
 
@@ -150,6 +152,17 @@ class QgsMssqlConnection
      * Returns true if the given \a schema is a system schema.
      */
     static bool isSystemSchema( const QString &schema );
+
+    /**
+     * Reads a connection named \a connName from the settings and returns the datasource uri
+     */
+    static QgsDataSourceUri connUri( const QString &connName );
+
+    /**
+     * Reads MSSQL connections from the settings and return a list of connection names
+     */
+    static QStringList connectionList();
+
 
   private:
 

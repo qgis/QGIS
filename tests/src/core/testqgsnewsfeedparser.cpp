@@ -75,7 +75,7 @@ void TestQgsNewsFeedParser::testFetch()
   const QString feedKey = QgsNewsFeedParser::keyForFeed( url.toString() );
   QgsSettings().remove( feedKey, QgsSettings::Core );
 
-  uint beforeTime = QDateTime::currentDateTimeUtc().toTime_t();
+  qint64 beforeTime = QDateTime::currentDateTimeUtc().toSecsSinceEpoch();
 
   QgsNewsFeedParser parser( url );
   QSignalSpy spy( &parser, &QgsNewsFeedParser::entryAdded );

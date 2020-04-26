@@ -198,6 +198,14 @@ in which order they are shown as well as if and where an action column
 is shown.
 %End
 
+    void setFilterExpression( const QgsExpression &expression, const QgsExpressionContext &context );
+%Docstring
+Set the ``expression`` and the ``context`` to be stored in case of the features
+need to be filtered again (like on filter or on main model data change).
+
+.. versionadded:: 3.10.3
+%End
+
   signals:
 
     void sortColumnChanged( int column, Qt::SortOrder order );
@@ -234,10 +242,21 @@ selection state of the feature in case selected features are to be shown on top.
 
   public slots:
 
-    void extentsChanged();
+ void extentsChanged();
 %Docstring
 Is called upon every change of the visible extents on the map canvas.
 When a change is signalled, the filter is updated and invalidated if needed.
+
+.. deprecated:: QGIS 3.10.3
+   - made private as reloadVisible()
+%End
+
+    void filterFeatures();
+%Docstring
+Updates the filtered features in the filter model. It is called when the data of the
+main table or the filter expression changed.
+
+.. versionadded:: 3.10.3
 %End
 
 };

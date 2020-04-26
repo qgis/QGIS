@@ -63,7 +63,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
         bool operator==( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const
         {
-          return mLayer == other.mLayer &&
+          return mLayer == other.mLayer && isVisible == other.isVisible &&
                  usingCurrentStyle == other.usingCurrentStyle && currentStyle == other.currentStyle &&
                  usingLegendItems == other.usingLegendItems && checkedLegendItems == other.checkedLegendItems &&
                  expandedLegendItems == other.expandedLegendItems && expandedLayerNode == other.expandedLayerNode;
@@ -78,6 +78,12 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
         //! Sets the map layer for this record
         void setLayer( QgsMapLayer *layer );
+
+        /**
+         * TRUE if the layer is visible in the associated theme.
+         * \since QGIS 3.14
+         */
+        bool isVisible = true;
 
         //! Whether current style is valid and should be applied
         bool usingCurrentStyle = false;
@@ -251,12 +257,19 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     void update( const QString &name, const QgsMapThemeCollection::MapThemeRecord &state );
 
     /**
-     * Remove an existing map theme from collection.
+     * Removes an existing map theme from collection.
      * \since QGIS 3.0
      */
     void removeMapTheme( const QString &name );
 
-    //! Remove all map themes from the collection.
+    /**
+     * Renames the existing map theme called \a name to \a newName.
+     * Returns TRUE if the rename was successful, or FALSE if it failed (e.g. due to a duplicate name for \a newName).
+     * \since QGIS 3.14
+     */
+    bool renameMapTheme( const QString &name, const QString &newName );
+
+    //! Removes all map themes from the collection.
     void clear();
 
     /**
@@ -366,6 +379,12 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * \since QGIS 3.0
      */
     void mapThemeChanged( const QString &theme );
+
+    /**
+     * Emitted when a map theme within the collection is renamed.
+     * \since QGIS 3.14
+     */
+    void mapThemeRenamed( const QString &name, const QString &newName );
 
     /**
      * Emitted when the project changes

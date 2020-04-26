@@ -278,7 +278,7 @@ bool QgsServer::init()
 
   // Load service module
   QString modulePath = QgsApplication::libexecPath() + "server";
-  qDebug() << "Initializing server modules from " << modulePath << endl;
+  // qDebug() << QStringLiteral( "Initializing server modules from: %1" ).arg( modulePath );
   sServiceRegistry->init( modulePath,  sServerInterface );
 
   sInitialized = true;
@@ -290,11 +290,14 @@ bool QgsServer::init()
 
 void QgsServer::putenv( const QString &var, const QString &val )
 {
-#ifdef _MSC_VER
-  _putenv_s( var.toStdString().c_str(), val.toStdString().c_str() );
-#else
-  setenv( var.toStdString().c_str(), val.toStdString().c_str(), 1 );
-#endif
+  if ( val.isEmpty() )
+  {
+    qunsetenv( var.toUtf8().data() );
+  }
+  else
+  {
+    qputenv( var.toUtf8().data(), val.toUtf8() );
+  }
   sSettings()->load( var );
 }
 
@@ -372,7 +375,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
         QString configFilePath = configPath( *sConfigFilePath, params.map() );
 
         // load the project if needed and not empty
-        project = mConfigCache->project( configFilePath );
+        project = mConfigCache->project( configFilePath, sServerInterface->serverSettings() );
       }
 
       if ( project )
@@ -420,7 +423,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
     {
       responseDecorator.write( ex );
       QString format;
-      QgsMessageLog::logMessage( ex.formatResponse( format ), QStringLiteral( "Server" ), Qgis::Info );
+      QgsMessageLog::logMessage( ex.formatResponse( format ), QStringLiteral( "Server" ), Qgis::Warning );
     }
     catch ( QgsException &ex )
     {

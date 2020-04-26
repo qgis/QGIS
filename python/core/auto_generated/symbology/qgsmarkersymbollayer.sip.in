@@ -877,8 +877,6 @@ class QgsFontMarkerSymbolLayer : QgsMarkerSymbolLayer
 Constructs a font marker symbol layer.
 %End
 
-    ~QgsFontMarkerSymbolLayer();
-
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
@@ -925,6 +923,24 @@ Returns the font family name for the associated font which will be used to rende
 Sets the font ``family`` for the font which will be used to render the point.
 
 .. seealso:: :py:func:`fontFamily`
+%End
+
+    QString fontStyle() const;
+%Docstring
+Returns the font style for the associated font which will be used to render the point.
+
+.. seealso:: :py:func:`setFontStyle`
+
+.. versionadded:: 3.14
+%End
+
+    void setFontStyle( const QString &style );
+%Docstring
+Sets the font ``style`` for the font which will be used to render the point.
+
+.. seealso:: :py:func:`fontStyle`
+
+.. versionadded:: 3.14
 %End
 
     QString character() const;
@@ -1041,10 +1057,6 @@ Sets the stroke join ``style``.
 %End
 
     virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context );
-
-
-  protected:
-
 
 
 };

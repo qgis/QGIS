@@ -75,6 +75,7 @@ class _3D_EXPORT QgsOffscreen3DEngine : public QgsAbstract3DEngine
     Qt3DRender::QRenderSettings *renderSettings() override;
     Qt3DRender::QCamera *camera() override;
     QSize size() const override;
+    QSurface *surface() const override;
 
     void requestCaptureImage() override;
 

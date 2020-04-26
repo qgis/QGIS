@@ -105,7 +105,7 @@ struct QgsWcsAuthorization
   data residing in a OGC Web Map Service.
 
 */
-class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
+class QgsWcsProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 {
     Q_OBJECT
 
@@ -438,7 +438,7 @@ class QgsWcsDownloadHandler : public QObject
     static int sErrors; // this should be ideally per-provider...?
 };
 
-class QgsWcsProviderMetadata: public QgsProviderMetadata
+class QgsWcsProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsWcsProviderMetadata();

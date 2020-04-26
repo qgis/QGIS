@@ -808,8 +808,6 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
                               const QColor &color = DEFAULT_FONTMARKER_COLOR,
                               double angle = DEFAULT_FONTMARKER_ANGLE );
 
-    ~QgsFontMarkerSymbolLayer() override;
-
     // static stuff
 
     /**
@@ -853,6 +851,22 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * \see fontFamily()
      */
     void setFontFamily( const QString &family ) { mFontFamily = family; }
+
+    /**
+     * Returns the font style for the associated font which will be used to render the point.
+     *
+     * \see setFontStyle()
+     * \since QGIS 3.14
+     */
+    QString fontStyle() const { return mFontStyle; }
+
+    /**
+     * Sets the font \a style for the font which will be used to render the point.
+     *
+     * \see fontStyle()
+     * \since QGIS 3.14
+     */
+    void setFontStyle( const QString &style ) { mFontStyle = style; }
 
     /**
      * Returns the character(s) used when rendering points.
@@ -956,18 +970,18 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) override;
 
-  protected:
+  private:
 
     QString mFontFamily;
-    QFontMetrics *mFontMetrics = nullptr;
+    QString mFontStyle;
+    QFont mFont;
+    std::unique_ptr< QFontMetrics >mFontMetrics;
+
     QString mString;
 
     double mChrWidth = 0;
     QPointF mChrOffset;
-    QFont mFont;
     double mOrigSize;
-
-  private:
 
     QColor mStrokeColor;
     double mStrokeWidth;

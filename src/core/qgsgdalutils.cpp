@@ -61,7 +61,7 @@ gdal::dataset_unique_ptr QgsGdalUtils::createMultiBandMemoryDataset( GDALDataTyp
   geoTransform[4] = 0;
   geoTransform[5] = -cellSizeY;
 
-  GDALSetProjection( hSrcDS.get(), crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ).toLatin1().constData() );
+  GDALSetProjection( hSrcDS.get(), crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toLatin1().constData() );
   GDALSetGeoTransform( hSrcDS.get(), geoTransform );
   return hSrcDS;
 }
@@ -92,7 +92,7 @@ gdal::dataset_unique_ptr QgsGdalUtils::createSingleBandTiffDataset( const QStrin
   }
 
   // Write out the projection definition.
-  GDALSetProjection( hDstDS.get(), crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ).toLatin1().constData() );
+  GDALSetProjection( hDstDS.get(), crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toLatin1().constData() );
   GDALSetGeoTransform( hDstDS.get(), geoTransform );
   return hDstDS;
 }

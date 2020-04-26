@@ -221,6 +221,14 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     void setAttributeTableConfig( const QgsAttributeTableConfig &config );
 
+    /**
+     * Set the \a expression and the \a context to be stored in case of the features
+     * need to be filtered again (like on filter or on main model data change).
+     *
+     * \since QGIS 3.10.3
+     */
+    void setFilterExpression( const QgsExpression &expression, const QgsExpressionContext &context );
+
   signals:
 
     /**
@@ -257,12 +265,23 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     /**
      * Is called upon every change of the visible extents on the map canvas.
      * When a change is signalled, the filter is updated and invalidated if needed.
+     *
+     * \deprecated since QGIS 3.10.3 - made private as reloadVisible()
      */
-    void extentsChanged();
+    Q_DECL_DEPRECATED void extentsChanged();
+
+    /**
+     * Updates the filtered features in the filter model. It is called when the data of the
+     * main table or the filter expression changed.
+     *
+     * \since QGIS 3.10.3
+     */
+    void filterFeatures();
 
   private slots:
     void selectionChanged();
     void onColumnsChanged();
+    void reloadVisible();
 
   private:
     QgsFeatureIds mFilteredFeatures;
@@ -273,6 +292,9 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
 
     QgsAttributeTableConfig mConfig;
     QVector<int> mColumnMapping;
+    QgsExpression mFilterExpression;
+    QgsExpressionContext mFilterExpressionContext;
+
     int mapColumnToSource( int column ) const;
     int mapColumnFromSource( int column ) const;
 

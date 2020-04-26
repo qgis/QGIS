@@ -36,6 +36,9 @@ QString QgsUnitTypes::encodeUnitType( QgsUnitTypes::UnitType type )
     case TypeVolume:
       return QStringLiteral( "volume" );
 
+    case TypeTemporal:
+      return QStringLiteral( "temporal" );
+
     case TypeUnknown:
       return QStringLiteral( "<unknown>" );
 
@@ -56,6 +59,8 @@ QgsUnitTypes::UnitType QgsUnitTypes::decodeUnitType( const QString &string, bool
     return TypeArea;
   if ( normalized == encodeUnitType( TypeVolume ) )
     return TypeVolume;
+  if ( normalized == encodeUnitType( TypeTemporal ) )
+    return TypeTemporal;
   if ( normalized == encodeUnitType( TypeUnknown ) )
     return TypeUnknown;
 
@@ -1244,6 +1249,472 @@ QgsUnitTypes::DistanceUnit QgsUnitTypes::areaToDistanceUnit( AreaUnit areaUnit )
   }
 
   return DistanceUnknownUnit;
+}
+
+QString QgsUnitTypes::encodeUnit( QgsUnitTypes::TemporalUnit unit )
+{
+  switch ( unit )
+  {
+    case TemporalSeconds:
+      return QStringLiteral( "s" );
+    case TemporalMilliseconds:
+      return QStringLiteral( "ms" );
+    case TemporalMinutes:
+      return QStringLiteral( "min" );
+    case TemporalHours:
+      return QStringLiteral( "h" );
+    case TemporalDays:
+      return QStringLiteral( "d" );
+    case TemporalWeeks:
+      return QStringLiteral( "wk" );
+    case TemporalMonths:
+      return QStringLiteral( "mon" );
+    case TemporalYears:
+      return QStringLiteral( "y" );
+    case TemporalDecades:
+      return QStringLiteral( "dec" );
+    case TemporalCenturies:
+      return QStringLiteral( "c" );
+    case TemporalUnknownUnit:
+      return QStringLiteral( "<unknown>" );
+  }
+  return QString();
+}
+
+QgsUnitTypes::TemporalUnit QgsUnitTypes::decodeTemporalUnit( const QString &string, bool *ok )
+{
+  QString normalized = string.trimmed().toLower();
+
+  if ( ok )
+    *ok = true;
+
+  if ( normalized == encodeUnit( TemporalSeconds ) )
+    return TemporalSeconds;
+  if ( normalized == encodeUnit( TemporalMilliseconds ) )
+    return TemporalMilliseconds;
+  if ( normalized == encodeUnit( TemporalMinutes ) )
+    return TemporalMinutes;
+  if ( normalized == encodeUnit( TemporalHours ) )
+    return TemporalHours;
+  if ( normalized == encodeUnit( TemporalDays ) )
+    return TemporalDays;
+  if ( normalized == encodeUnit( TemporalWeeks ) )
+    return TemporalWeeks;
+  if ( normalized == encodeUnit( TemporalMonths ) )
+    return TemporalMonths;
+  if ( normalized == encodeUnit( TemporalYears ) )
+    return TemporalYears;
+  if ( normalized == encodeUnit( TemporalDecades ) )
+    return TemporalDecades;
+  if ( normalized == encodeUnit( TemporalCenturies ) )
+    return TemporalCenturies;
+  if ( normalized == encodeUnit( TemporalUnknownUnit ) )
+    return TemporalUnknownUnit;
+
+  if ( ok )
+    *ok = false;
+
+  return TemporalUnknownUnit;
+}
+
+QString QgsUnitTypes::toString( QgsUnitTypes::TemporalUnit unit )
+{
+  switch ( unit )
+  {
+    case TemporalSeconds:
+      return QObject::tr( "seconds", "temporal" );
+    case TemporalMilliseconds:
+      return QObject::tr( "milliseconds", "temporal" );
+    case TemporalMinutes:
+      return QObject::tr( "minutes", "temporal" );
+    case TemporalHours:
+      return QObject::tr( "hours", "temporal" );
+    case TemporalDays:
+      return QObject::tr( "days", "temporal" );
+    case TemporalWeeks:
+      return QObject::tr( "weeks", "temporal" );
+    case TemporalMonths:
+      return QObject::tr( "months", "temporal" );
+    case TemporalYears:
+      return QObject::tr( "years", "temporal" );
+    case TemporalDecades:
+      return QObject::tr( "decades", "temporal" );
+    case TemporalCenturies:
+      return QObject::tr( "centuries", "temporal" );
+    case TemporalUnknownUnit:
+      return QObject::tr( "<unknown>", "temporal" );
+  }
+  return QString();
+}
+
+QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::TemporalUnit unit )
+{
+  switch ( unit )
+  {
+    case TemporalSeconds:
+      return QObject::tr( "s", "temporal" );
+    case TemporalMilliseconds:
+      return QObject::tr( "ms", "temporal" );
+    case TemporalMinutes:
+      return QObject::tr( "min", "temporal" );
+    case TemporalHours:
+      return QObject::tr( "h", "temporal" );
+    case TemporalDays:
+      return QObject::tr( "d", "temporal" );
+    case TemporalWeeks:
+      return QObject::tr( "wk", "temporal" );
+    case TemporalMonths:
+      return QObject::tr( "mon", "temporal" );
+    case TemporalYears:
+      return QObject::tr( "y", "temporal" );
+    case TemporalDecades:
+      return QObject::tr( "dec", "temporal" );
+    case TemporalCenturies:
+      return QObject::tr( "cen", "temporal" );
+    case TemporalUnknownUnit:
+      return QObject::tr( "<unknown>", "temporal" );
+  }
+  return QString();
+}
+
+QgsUnitTypes::TemporalUnit QgsUnitTypes::stringToTemporalUnit( const QString &string, bool *ok )
+{
+  QString normalized = string.trimmed().toLower();
+
+  if ( ok )
+    *ok = true;
+
+  if ( normalized == toString( TemporalSeconds ) )
+    return TemporalSeconds;
+  if ( normalized == toString( TemporalMilliseconds ) )
+    return TemporalMilliseconds;
+  if ( normalized == toString( TemporalMinutes ) )
+    return TemporalMinutes;
+  if ( normalized == toString( TemporalHours ) )
+    return TemporalHours;
+  if ( normalized == toString( TemporalDays ) )
+    return TemporalDays;
+  if ( normalized == toString( TemporalWeeks ) )
+    return TemporalWeeks;
+  if ( normalized == toString( TemporalMonths ) )
+    return TemporalMonths;
+  if ( normalized == toString( TemporalYears ) )
+    return TemporalYears;
+  if ( normalized == toString( TemporalDecades ) )
+    return TemporalDecades;
+  if ( normalized == toString( TemporalCenturies ) )
+    return TemporalCenturies;
+  if ( normalized == toString( TemporalUnknownUnit ) )
+    return TemporalUnknownUnit;
+
+  if ( ok )
+    *ok = false;
+
+  return TemporalUnknownUnit;
+}
+
+double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, QgsUnitTypes::TemporalUnit toUnit )
+{
+  switch ( fromUnit )
+  {
+    case TemporalSeconds:
+    {
+      switch ( toUnit )
+      {
+        case TemporalSeconds:
+          return 1.0;
+        case TemporalMilliseconds:
+          return 1000.0;
+        case TemporalMinutes:
+          return 1 / 60.0;
+        case TemporalHours:
+          return 1 / 3600.0;
+        case TemporalDays:
+          return 1 / 86400.0;
+        case TemporalWeeks:
+          return 1 / 604800.0;
+        case TemporalMonths:
+          return 1 / 2592000.0;
+        case TemporalYears:
+          return 1 / 31557600.0;
+        case TemporalDecades:
+          return 1 / 315576000.0;
+        case TemporalCenturies:
+          return 1 / 3155760000.0;
+        case TemporalUnknownUnit:
+          return 1.0;
+      }
+      break;
+    }
+    case TemporalMilliseconds:
+    {
+      switch ( toUnit )
+      {
+        case TemporalSeconds:
+          return 1 / 1000.0;
+        case TemporalMilliseconds:
+          return 1.0;
+        case TemporalMinutes:
+          return 1 / 60000.0;
+        case TemporalHours:
+          return 1 / 3600000.0;
+        case TemporalDays:
+          return 1 / 86400000.0;
+        case TemporalWeeks:
+          return 1 / 60480000.0;
+        case TemporalMonths:
+          return 1 / 259200000.0;
+        case TemporalYears:
+          return 1 / 3155760000.0;
+        case TemporalDecades:
+          return 1 / 31557600000.0;
+        case TemporalCenturies:
+          return 1 / 315576000000.0;
+        case TemporalUnknownUnit:
+          return 1.0;
+      }
+      break;
+    }
+    case TemporalMinutes:
+    {
+      switch ( toUnit )
+      {
+        case TemporalSeconds:
+          return 60.0;
+        case TemporalMilliseconds:
+          return 60000.0;
+        case TemporalMinutes:
+          return 1;
+        case TemporalHours:
+          return 1 / 60.0;
+        case TemporalDays:
+          return 1 / 1440.0;
+        case TemporalWeeks:
+          return 1 / 10080.0;
+        case TemporalMonths:
+          return 1 / 43200.0;
+        case TemporalYears:
+          return 1 / 525960.0;
+        case TemporalDecades:
+          return 1 / 5259600.0;
+        case TemporalCenturies:
+          return 1 / 52596000.0;
+        case TemporalUnknownUnit:
+          return 1.0;
+      }
+      break;
+    }
+    case TemporalHours:
+    {
+      switch ( toUnit )
+      {
+        case TemporalSeconds:
+          return 3600.0;
+        case TemporalMilliseconds:
+          return 3600000.0;
+        case TemporalMinutes:
+          return 60;
+        case TemporalHours:
+          return 1;
+        case TemporalDays:
+          return 1 / 24.0;
+        case TemporalWeeks:
+          return 1 / 168.0;
+        case TemporalMonths:
+          return 1 / 720.0;
+        case TemporalYears:
+          return 1 / 8766.0;
+        case TemporalDecades:
+          return 1 / 87660.0;
+        case TemporalCenturies:
+          return 1 / 876600.0;
+        case TemporalUnknownUnit:
+          return 1.0;
+      }
+      break;
+    }
+    case TemporalDays:
+    {
+      switch ( toUnit )
+      {
+        case TemporalSeconds:
+          return 86400.0;
+        case TemporalMilliseconds:
+          return 86400000.0;
+        case TemporalMinutes:
+          return 1440;
+        case TemporalHours:
+          return 24;
+        case TemporalDays:
+          return 1;
+        case TemporalWeeks:
+          return 1 / 7.0;
+        case TemporalMonths:
+          return 1 / 30.0;
+        case TemporalYears:
+          return 1 / 365.25;
+        case TemporalDecades:
+          return 1 / 3652.5;
+        case TemporalCenturies:
+          return 1 / 36525.0;
+        case TemporalUnknownUnit:
+          return 1.0;
+      }
+      break;
+    }
+    case TemporalWeeks:
+    {
+      switch ( toUnit )
+      {
+        case TemporalSeconds:
+          return 604800.0;
+        case TemporalMilliseconds:
+          return 604800000.0;
+        case TemporalMinutes:
+          return 10080;
+        case TemporalHours:
+          return 168;
+        case TemporalDays:
+          return 7;
+        case TemporalWeeks:
+          return 1;
+        case TemporalMonths:
+          return 7 / 30.0;
+        case TemporalYears:
+          return 7 / 365.25;
+        case TemporalDecades:
+          return 7 / 3652.5;
+        case TemporalCenturies:
+          return 7 / 36525.0;
+        case TemporalUnknownUnit:
+          return 1.0;
+      }
+      break;
+    }
+    case TemporalMonths:
+    {
+      switch ( toUnit )
+      {
+        case TemporalSeconds:
+          return 2592000.0;
+        case TemporalMilliseconds:
+          return 2592000000.0;
+        case TemporalMinutes:
+          return 43200;
+        case TemporalHours:
+          return 720;
+        case TemporalDays:
+          return 30;
+        case TemporalWeeks:
+          return 30 / 7.0;
+        case TemporalMonths:
+          return 1;
+        case TemporalYears:
+          return 30 / 365.25;
+        case TemporalDecades:
+          return 30 / 3652.5;
+        case TemporalCenturies:
+          return 30 / 36525.0;
+        case TemporalUnknownUnit:
+          return 1.0;
+      }
+      break;
+    }
+    case TemporalYears:
+    {
+      switch ( toUnit )
+      {
+        case TemporalSeconds:
+          return 31557600.0;
+        case TemporalMilliseconds:
+          return 31557600000.0;
+        case TemporalMinutes:
+          return 525960.0;
+        case TemporalHours:
+          return 8766.0;
+        case TemporalDays:
+          return 365.25;
+        case TemporalWeeks:
+          return 365.25 / 7.0;
+        case TemporalMonths:
+          return 365.25 / 30.0;
+        case TemporalYears:
+          return 1;
+        case TemporalDecades:
+          return 0.1;
+        case TemporalCenturies:
+          return 0.01;
+        case TemporalUnknownUnit:
+          return 1.0;
+      }
+      break;
+    }
+    case TemporalDecades:
+    {
+      switch ( toUnit )
+      {
+        case TemporalSeconds:
+          return 315576000.0;
+        case TemporalMilliseconds:
+          return 315576000000.0;
+        case TemporalMinutes:
+          return 5259600.0;
+        case TemporalHours:
+          return 87660.0;
+        case TemporalDays:
+          return 3652.5;
+        case TemporalWeeks:
+          return 3652.5 / 7.0;
+        case TemporalMonths:
+          return 3652.5 / 30.0;
+        case TemporalYears:
+          return 10;
+        case TemporalDecades:
+          return 1;
+        case TemporalCenturies:
+          return 0.1;
+        case TemporalUnknownUnit:
+          return 1.0;
+      }
+      break;
+    }
+
+    case TemporalCenturies:
+    {
+      switch ( toUnit )
+      {
+        case TemporalSeconds:
+          return 3155760000.0;
+        case TemporalMilliseconds:
+          return 3155760000000.0;
+        case TemporalMinutes:
+          return 52596000.0;
+        case TemporalHours:
+          return 876600.0;
+        case TemporalDays:
+          return 36525;
+        case TemporalWeeks:
+          return 36525 / 7.0;
+        case TemporalMonths:
+          return 36525 / 30.0;
+        case TemporalYears:
+          return 100;
+        case TemporalDecades:
+          return 10;
+        case TemporalCenturies:
+          return 1;
+        case TemporalUnknownUnit:
+          return 1.0;
+      }
+      break;
+    }
+
+    case TemporalUnknownUnit:
+    {
+      return 1.0;
+    }
+  }
+  return 1.0;
 }
 
 QgsUnitTypes::VolumeUnit QgsUnitTypes::decodeVolumeUnit( const QString &string, bool *ok )

@@ -8,4 +8,4 @@ QgsProcessingParameterRasterDestination|HO|Slope Height
 QgsProcessingParameterRasterDestination|HU|Valley Depth
 QgsProcessingParameterRasterDestination|NH|Normalized Height
 QgsProcessingParameterRasterDestination|SH|Standardized Height
-QgsProcessingParameterRasterDestination|MS|Mid-Slope Positon
+QgsProcessingParameterRasterDestination|MS|Mid-Slope Position

@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsabstractproviderconnection.h"
-
+#include <QIcon>
 
 QgsAbstractProviderConnection::QgsAbstractProviderConnection( const QString &name )
 {
@@ -28,6 +28,11 @@ QgsAbstractProviderConnection::QgsAbstractProviderConnection( const QString &uri
   , mConfiguration( configuration )
 {
 
+}
+
+QIcon QgsAbstractProviderConnection::icon() const
+{
+  return QIcon();
 }
 
 QString QgsAbstractProviderConnection::uri() const

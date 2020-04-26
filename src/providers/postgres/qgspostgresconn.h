@@ -51,6 +51,7 @@ enum QgsPostgresPrimaryKeyType
 {
   PktUnknown,
   PktInt,
+  PktInt64,
   PktUint64,
   PktTid,
   PktOid,
@@ -82,6 +83,7 @@ struct QgsPostgresLayerProperty
   QString                       relKind;
   bool                          isView = false;
   bool                          isMaterializedView = false;
+  bool                          isForeignTable = false;
   bool                          isRaster = false;
   QString                       tableComment;
 
@@ -390,6 +392,9 @@ class QgsPostgresConn : public QObject
 
     //! GEOS capability
     mutable bool mGeosAvailable;
+
+    //! PROJ capability
+    mutable bool mProjAvailable;
 
     //! Topology capability
     mutable bool mTopologyAvailable;

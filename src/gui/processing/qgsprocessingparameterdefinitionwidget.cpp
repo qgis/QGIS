@@ -22,6 +22,7 @@
 #include "qgsapplication.h"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingparametertype.h"
+#include "qgscolorbutton.h"
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -29,6 +30,8 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QMessageBox>
+#include <QTabWidget>
+#include <QTextEdit>
 
 QgsProcessingAbstractParameterDefinitionWidget::QgsProcessingAbstractParameterDefinitionWidget( QgsProcessingContext &,
     const QgsProcessingParameterWidgetContext &,
@@ -130,11 +133,39 @@ QgsProcessingParameterDefinitionDialog::QgsProcessingParameterDefinitionDialog( 
   : QDialog( parent )
 {
   QVBoxLayout *vLayout = new QVBoxLayout();
+  mTabWidget = new QTabWidget();
+  vLayout->addWidget( mTabWidget );
+
+  QVBoxLayout *vLayout2 = new QVBoxLayout();
   mWidget = new QgsProcessingParameterDefinitionWidget( type, context, widgetContext, definition, algorithm );
-  vLayout->addWidget( mWidget );
+  vLayout2->addWidget( mWidget );
+  QWidget *w = new QWidget();
+  w->setLayout( vLayout2 );
+  mTabWidget->addTab( w, tr( "Properties" ) );
+
+  QVBoxLayout *commentLayout = new QVBoxLayout();
+  mCommentEdit = new QTextEdit();
+  mCommentEdit->setAcceptRichText( false );
+  commentLayout->addWidget( mCommentEdit, 1 );
+
+  QHBoxLayout *hl = new QHBoxLayout();
+  hl->setContentsMargins( 0, 0, 0, 0 );
+  hl->addWidget( new QLabel( tr( "Color" ) ) );
+  mCommentColorButton = new QgsColorButton();
+  mCommentColorButton->setAllowOpacity( true );
+  mCommentColorButton->setWindowTitle( tr( "Comment Color" ) );
+  mCommentColorButton->setShowNull( true, tr( "Default" ) );
+  hl->addWidget( mCommentColorButton );
+  commentLayout->addLayout( hl );
+
+  QWidget *w2 = new QWidget();
+  w2->setLayout( commentLayout );
+  mTabWidget->addTab( w2, tr( "Comments" ) );
+
   QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Ok );
   connect( bbox, &QDialogButtonBox::accepted, this, &QgsProcessingParameterDefinitionDialog::accept );
   connect( bbox, &QDialogButtonBox::rejected, this, &QgsProcessingParameterDefinitionDialog::reject );
+
   vLayout->addWidget( bbox );
   setLayout( vLayout );
   setWindowTitle( definition ? tr( "%1 Parameter Definition" ).arg( definition->description() )
@@ -147,6 +178,36 @@ QgsProcessingParameterDefinitionDialog::QgsProcessingParameterDefinitionDialog( 
 QgsProcessingParameterDefinition *QgsProcessingParameterDefinitionDialog::createParameter( const QString &name ) const
 {
   return mWidget->createParameter( name );
+}
+
+void QgsProcessingParameterDefinitionDialog::setComments( const QString &comments )
+{
+  mCommentEdit->setPlainText( comments );
+}
+
+QString QgsProcessingParameterDefinitionDialog::comments() const
+{
+  return mCommentEdit->toPlainText();
+}
+
+void QgsProcessingParameterDefinitionDialog::setCommentColor( const QColor &color )
+{
+  if ( color.isValid() )
+    mCommentColorButton->setColor( color );
+  else
+    mCommentColorButton->setToNull();
+}
+
+QColor QgsProcessingParameterDefinitionDialog::commentColor() const
+{
+  return !mCommentColorButton->isNull() ? mCommentColorButton->color() : QColor();
+}
+
+void QgsProcessingParameterDefinitionDialog::switchToCommentTab()
+{
+  mTabWidget->setCurrentIndex( 1 );
+  mCommentEdit->setFocus();
+  mCommentEdit->selectAll();
 }
 
 void QgsProcessingParameterDefinitionDialog::accept()

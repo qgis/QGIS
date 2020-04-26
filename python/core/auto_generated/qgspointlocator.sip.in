@@ -11,6 +11,11 @@
 
 
 
+
+
+
+
+
 class QgsPointLocator : QObject
 {
 %Docstring
@@ -86,6 +91,8 @@ Configure render context  - if not ``None``, it will use to index only visible f
       Vertex,
       Edge,
       Area,
+      Centroid,
+      MiddleOfSegment,
       All
     };
 
@@ -125,8 +132,25 @@ construct invalid match
 
         bool isValid() const;
         bool hasVertex() const;
+%Docstring
+Returns true if the Match is a vertex
+%End
         bool hasEdge() const;
+%Docstring
+Returns true if the Match is an edge
+%End
+        bool hasCentroid() const;
+%Docstring
+Returns true if the Match is a centroid
+%End
         bool hasArea() const;
+%Docstring
+Returns true if the Match is an area
+%End
+        bool hasMiddleSegment() const;
+%Docstring
+Returns true if the Match is the middle of a segment
+%End
 
         double distance() const;
 %Docstring
@@ -188,6 +212,24 @@ interpolation of the Z value.
 Find nearest vertex to the specified point - up to distance specified by tolerance
 Optional filter may discard unwanted matches.
 This method is either blocking or non blocking according to ``relaxed`` parameter passed
+%End
+
+    Match nearestCentroid( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
+%Docstring
+Find nearest centroid to the specified point - up to distance specified by tolerance
+Optional filter may discard unwanted matches.
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
+
+.. versionadded:: 3.12
+%End
+
+    Match nearestMiddleOfSegment( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
+%Docstring
+Find nearest middle of segment to the specified point - up to distance specified by tolerance
+Optional filter may discard unwanted matches.
+This method is either blocking or non blocking according to ``relaxed`` parameter passed
+
+.. versionadded:: 3.12
 %End
 
     Match nearestEdge( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );

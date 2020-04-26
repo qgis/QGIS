@@ -18,6 +18,7 @@
 
 
 
+
 class QgsMapCanvas : QGraphicsView
 {
 %Docstring
@@ -70,6 +71,22 @@ empty string before setLayers() calls can be made.
 Gets access to properties used for map rendering
 
 .. versionadded:: 2.4
+%End
+
+    void setTemporalController( QgsTemporalController *controller );
+%Docstring
+Sets the temporal controller, this controller will be used to
+update the canvas temporal range.
+
+.. versionadded:: 3.14
+%End
+
+    const QgsTemporalController *temporalController() const;
+%Docstring
+Gets access to the temporal controller that will be used to
+update the canvas temporal range.
+
+.. versionadded:: 3.14
 %End
 
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
@@ -175,7 +192,15 @@ Returns the combined extent for all layers on the map canvas
 
     void setExtent( const QgsRectangle &r, bool magnified = false );
 %Docstring
-Sets the extent of the map canvas
+Sets the extent of the map canvas to the specified rectangle.
+
+The ``magnified`` argument dictates whether existing canvas constraints such
+as a scale lock should be respected or not during the operation. If ``magnified`` is
+``True`` then an existing scale lock constraint will be applied. This means that the final
+visible canvas extent may not match the specified extent.
+
+If ``magnified`` is ``False`` then scale lock settings will be ignored, and the specified
+rectangle will ALWAYS be visible in the canvas.
 %End
 
     bool setReferencedExtent( const QgsReferencedRectangle &extent ) throw( QgsCsException );
@@ -474,16 +499,22 @@ returns current layer (set by legend widget)
 Sets wheel zoom factor (should be greater than 1)
 %End
 
-    void zoomScale( double scale );
+    void zoomScale( double scale, bool ignoreScaleLock = false );
 %Docstring
 Zooms the canvas to a specific ``scale``.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+
+If ``ignoreScaleLock`` is set to ``True``, then any existing constraint on the map scale
+of the canvas will be ignored during the zoom operation.
 %End
 
-    void zoomByFactor( double scaleFactor, const QgsPointXY *center = 0 );
+    void zoomByFactor( double scaleFactor, const QgsPointXY *center = 0, bool ignoreScaleLock = false );
 %Docstring
 Zoom with the factor supplied. Factor > 1 zooms out, interval (0,1) zooms in
-If point is given, re-center on it
+If point is given, re-center on it.
+
+If ``ignoreScaleLock`` is set to ``True``, then any existing constraint on the map scale
+of the canvas will be ignored during the zoom operation.
 %End
 
     void zoomWithCenter( int x, int y, bool zoomIn );
@@ -731,6 +762,30 @@ for the canvas.
 .. versionadded:: 3.0
 %End
 
+
+    void setTemporalRange( const QgsDateTimeRange &range );
+%Docstring
+Set datetime ``range`` for the map canvas.
+
+The temporalRangeChanged() signal will be emitted if the temporal range has been changed.
+
+.. note::
+
+   Calling setTemporalRange() does not automatically trigger a map refresh.
+
+.. seealso:: :py:func:`temporalRange`
+
+.. versionadded:: 3.14
+%End
+
+    const QgsDateTimeRange &temporalRange() const;
+%Docstring
+Returns map canvas datetime range.
+
+.. seealso:: :py:func:`setTemporalRange`
+
+.. versionadded:: 3.14
+%End
 
   public slots:
 
@@ -1021,6 +1076,20 @@ giving the total distance and bearing between the map position at the
 start of the pan and the current pan position.
 
 .. versionadded:: 3.12
+%End
+
+    void tapAndHoldGestureOccurred( const QgsPointXY &mapPoint, QTapAndHoldGesture *gesture );
+%Docstring
+Emitted whenever a tap and hold ``gesture`` occurs at the specified map point.
+
+.. versionadded:: 3.12
+%End
+
+    void temporalRangeChanged();
+%Docstring
+Emitted when the map canvas temporal range changes.
+
+.. versionadded:: 3.14
 %End
 
   protected:

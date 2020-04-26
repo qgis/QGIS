@@ -37,6 +37,16 @@ Sets the ``contents`` to show in the editor widget.
 .. seealso:: :py:func:`tableContents`
 %End
 
+
+    bool setTableContentsFromClipboard();
+%Docstring
+Parses the clipboard text into contents to show in the editor widget.
+
+:return: ``True`` if the clipboard was successfully parsed
+
+.. seealso:: :py:func:`tableContents`
+%End
+
     QgsTableContents tableContents() const;
 %Docstring
 Returns the current contents of the editor widget table.
@@ -80,11 +90,44 @@ This should be called after a call to setTableContents().
 .. seealso:: :py:func:`tableColumnWidth`
 %End
 
+    bool includeTableHeader() const;
+%Docstring
+Returns ``True`` if the table includes a header row.
+
+.. seealso:: :py:func:`setIncludeTableHeader`
+%End
+
+    void setIncludeTableHeader( bool included );
+%Docstring
+Sets whether the table includes a header row.
+
+.. seealso:: :py:func:`includeTableHeader`
+%End
+
+    QVariantList tableHeaders() const;
+%Docstring
+Returns the table header values.
+
+.. seealso:: :py:func:`setTableHeaders`
+%End
+
+    void setTableHeaders( const QVariantList &headers );
+%Docstring
+Sets the table ``headers``.
+
+.. seealso:: :py:func:`tableHeaders`
+%End
+
   signals:
 
     void tableChanged();
 %Docstring
 Emitted whenever the table contents are changed.
+%End
+
+    void includeHeaderChanged( bool included );
+%Docstring
+Emitted whenever the "include table header" setting is changed.
 %End
 
 };

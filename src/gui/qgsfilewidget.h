@@ -26,7 +26,7 @@ class QHBoxLayout;
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgsfilterlineedit.h"
+#include "qgshighlightablelineedit.h"
 
 /**
  * \ingroup gui
@@ -67,6 +67,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
       GetMultipleFiles, //!< Select multiple files
       SaveFile, //!< Select a single new or pre-existing file
     };
+    Q_ENUM( StorageMode )
 
     /**
      * \brief The RelativeStorage enum determines if path is absolute, relative to the current project path or relative to a defined default path.
@@ -77,6 +78,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
       RelativeProject,
       RelativeDefaultPath
     };
+    Q_ENUM( RelativeStorage )
 
     /**
      * \brief QgsFileWidget creates a widget for selecting a file or a folder.
@@ -241,7 +243,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
  * or directories only. By default, dropping is limited to files only.
  * \note not available in Python bindings
  */
-class GUI_EXPORT QgsFileDropEdit: public QgsFilterLineEdit
+class GUI_EXPORT QgsFileDropEdit: public QgsHighlightableLineEdit
 {
     Q_OBJECT
 
@@ -257,7 +259,6 @@ class GUI_EXPORT QgsFileDropEdit: public QgsFilterLineEdit
     void dragEnterEvent( QDragEnterEvent *event ) override;
     void dragLeaveEvent( QDragLeaveEvent *event ) override;
     void dropEvent( QDropEvent *event ) override;
-    void paintEvent( QPaintEvent *e ) override;
 
   private:
 
@@ -266,7 +267,6 @@ class GUI_EXPORT QgsFileDropEdit: public QgsFilterLineEdit
 
     QStringList mAcceptableExtensions;
     QgsFileWidget::StorageMode mStorageMode = QgsFileWidget::GetFile;
-    bool mDragActive;
     friend class TestQgsFileWidget;
 };
 

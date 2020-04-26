@@ -25,6 +25,7 @@
 #include <QDir>
 #include <QSettings>
 #include <QUrl>
+#include <QUrlQuery>
 
 
 QString QgsO2::O2_OAUTH2_STATE = QStringLiteral( "state" );
@@ -232,7 +233,7 @@ void QgsO2::link()
     QUrl url( tokenUrl_ );
     QNetworkRequest tokenRequest( url );
     QgsSetRequestInitiatorClass( tokenRequest, QStringLiteral( "QgsO2" ) );
-    tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1Literal( "application/x-www-form-urlencoded" ) );
+    tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/x-www-form-urlencoded" ) );
     QNetworkReply *tokenReply = getManager()->post( tokenRequest, payload );
 
     connect( tokenReply, SIGNAL( finished() ), this, SLOT( onTokenReplyFinished() ), Qt::QueuedConnection );

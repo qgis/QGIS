@@ -19,8 +19,15 @@
 #include "qgis_3d.h"
 
 #include "qgslayoutitem.h"
-
+#include "qgstemporalrangeobject.h"
 #include "qgscamerapose.h"
+
+#ifdef SIP_RUN
+// this is needed for the "convert to subclass" code below to compile
+% ModuleHeaderCode
+#include "qgslayoutitem3dmap.h"
+% End
+#endif
 
 
 class Qgs3DMapScene;
@@ -34,7 +41,7 @@ class QgsOffscreen3DEngine;
  *
  * \since QGIS 3.4
  */
-class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem
+class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem, public QgsTemporalRangeObject
 {
     Q_OBJECT
 

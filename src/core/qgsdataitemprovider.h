@@ -49,6 +49,14 @@ class CORE_EXPORT QgsDataItemProvider
     //! Human-readable name of the provider name
     virtual QString name() = 0;
 
+    /**
+     * Returns the data provider key (if the data item provider is associated with a data provider),
+     * the default implementation returns an empty string.
+     *
+     * \since QGIS 3.14
+     */
+    virtual QString dataProviderKey() const { return QString(); };
+
     //! Returns combination of flags from QgsDataProvider::DataCapabilities
     virtual int capabilities() const = 0;
 

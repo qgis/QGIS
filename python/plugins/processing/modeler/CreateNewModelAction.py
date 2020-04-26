@@ -26,6 +26,7 @@ import os
 from qgis.PyQt.QtCore import QCoreApplication
 
 from qgis.core import QgsApplication
+from qgis.utils import iface
 
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.modeler.ModelerDialog import ModelerDialog
@@ -43,7 +44,7 @@ class CreateNewModelAction(ToolboxAction):
         return QgsApplication.getThemeIcon("/processingModel.svg")
 
     def execute(self):
-        dlg = ModelerDialog()
+        dlg = ModelerDialog.create()
         dlg.update_model.connect(self.updateModel)
         dlg.show()
 

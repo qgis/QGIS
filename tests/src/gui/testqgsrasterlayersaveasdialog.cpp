@@ -16,6 +16,7 @@
 
 #include "qgstest.h"
 
+#include "qgscoordinatetransformcontext.h"
 #include "qgsrasterlayersaveasdialog.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
@@ -116,11 +117,11 @@ QString TestQgsRasterLayerSaveAsDialog::prepareDb()
   tmpFile.open();
   QString fileName( tmpFile.fileName( ) );
   QgsVectorLayer vl( QStringLiteral( "Point?field=firstfield:string(1024)" ), "test_vector_layer", "memory" );
-  QgsVectorFileWriter w( fileName,
-                         QStringLiteral( "UTF-8" ),
-                         vl.fields(),
-                         QgsWkbTypes::Point,
-                         vl.crs() );
+
+  QgsVectorFileWriter::SaveVectorOptions saveOptions;
+  saveOptions.fileEncoding = QStringLiteral( "UTF-8" );
+  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( fileName, vl.fields(), QgsWkbTypes::Point, vl.crs(), QgsCoordinateTransformContext(), saveOptions ) );
+
   QgsFeature f { vl.fields() };
   f.setAttribute( 0, QString( 1024, 'x' ) );
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "point(9 45)" ) ) );
@@ -130,10 +131,13 @@ QString TestQgsRasterLayerSaveAsDialog::prepareDb()
   options.driverName = QStringLiteral( "GPKG" );
   options.layerName = QStringLiteral( "test_vector_layer" );
   QString errorMessage;
-  QgsVectorFileWriter::writeAsVectorFormat(
+  QgsVectorFileWriter::writeAsVectorFormatV2(
     &vl,
     fileName,
+    vl.transformContext(),
     options,
+    nullptr,
+    nullptr,
     &errorMessage );
   QgsVectorLayer vl2( QStringLiteral( "%1|layername=test_vector_layer" ).arg( fileName ), "test_vector_layer", "ogr" );
   Q_ASSERT( vl2.isValid() );

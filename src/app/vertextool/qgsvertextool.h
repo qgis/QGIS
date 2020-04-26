@@ -253,19 +253,13 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     //! Allow moving back and forth selected vertex within a feature
     void highlightAdjacentVertex( double offset );
 
-    /**
-     * Initialize rectangle that is being dragged to select vertices.
-     * Argument point0 is in screen coordinates.
-     */
-    void startSelectionRect( QPoint point0 );
+    //! Initialize the rubberband for vertex selection using a rectangle
+    void initSelectionRubberBand();
 
-    /**
-     * Update bottom-right corner of the existing selection rectangle.
-     * Argument point1 is in screen coordinates.
-     */
-    void updateSelectionRect( QPoint point1 );
+    //! Update the rubberband for vertex selection using a rectangle
+    void updateSelectionRubberBand( QgsMapMouseEvent *e );
 
-    void stopSelectionRect();
+    void stopSelectionRubberBand();
 
     /**
      * Using a given edge match and original map point, find out
@@ -409,12 +403,10 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 
     // members for rectangle for selection
 
-    //! QPoint if user is dragging a selection rect
-    std::unique_ptr<QPoint> mSelectionRectStartPos;
-    //! QRect in screen coordinates or null
-    std::unique_ptr<QRect> mSelectionRect;
-    //! QRubberBand to show mSelectionRect
-    QRubberBand *mSelectionRectItem = nullptr;
+    //! the rubberband for rectangle selection visualization
+    std::unique_ptr<QgsRubberBand> mSelectionRubberBand;
+    //! Initial point (in screen coordinates) when using rectangle selection
+    std::unique_ptr<QPoint> mSelectionRubberBandStartPos;
 
     // members for addition of vertices at the end of a curve
 

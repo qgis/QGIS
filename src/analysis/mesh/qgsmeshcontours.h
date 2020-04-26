@@ -69,7 +69,7 @@ class ANALYSIS_EXPORT QgsMeshContours
      */
     QgsGeometry exportLines( const QgsMeshDatasetIndex &index,
                              double value,
-                             QgsMeshRendererScalarSettings::DataInterpolationMethod method,
+                             QgsMeshRendererScalarSettings::DataResamplingMethod method,
                              QgsFeedback *feedback = nullptr );
 
     /**
@@ -84,13 +84,13 @@ class ANALYSIS_EXPORT QgsMeshContours
     QgsGeometry exportPolygons( const QgsMeshDatasetIndex &index,
                                 double min_value,
                                 double max_value,
-                                QgsMeshRendererScalarSettings::DataInterpolationMethod method,
+                                QgsMeshRendererScalarSettings::DataResamplingMethod method,
                                 QgsFeedback *feedback = nullptr );
 
   private:
     void populateCache(
       const QgsMeshDatasetIndex &index,
-      QgsMeshRendererScalarSettings::DataInterpolationMethod method );
+      QgsMeshRendererScalarSettings::DataResamplingMethod method );
 
     QgsMeshLayer *mMeshLayer = nullptr;
 

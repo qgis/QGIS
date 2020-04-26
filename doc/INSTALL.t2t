@@ -11,7 +11,7 @@ Building QGIS from source - step by step
 %! PostProc(html):  \(R\)   &reg;
 % Next line will replace tabs with 2 spaces in txt generated outputs
 %! PostProc(txt): '(?i)(\t)' '  '
-%! encoding: iso-8859-1
+%! encoding: utf-8
 %
 % Tex processing
 %
@@ -36,7 +36,7 @@ Building QGIS from source - step by step
 %! PostProc(tex): NEWPAGE  '\\newpage'
 % Give alternating table rows different colors and use a smaller font in tables (\tiny)
 %! PostProc(tex): '\\begin{tabular}' '\\rowcolors{2}{tableShade}{white} \n\\tiny\\begin{tabular}'
-%! encoding: iso-8859-1
+%! encoding: utf-8
 
 %! PostProc(tex): WALLPAPER-IMAGE 'qgis-footer.png'
 % These are comments and will not be generated in any output

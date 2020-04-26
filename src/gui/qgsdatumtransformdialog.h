@@ -53,6 +53,9 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
 
       //! Proj coordinate operation description, for Proj >= 6.0 builds only
       QString proj;
+
+      //! TRUE if fallback transforms can be used
+      bool allowFallback = true;
     };
 
     /**
@@ -75,7 +78,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
                      QgsMapCanvas *mapCanvas = nullptr,
                      const QString &windowTitle = QString() );
 
-    // TODO QGIS 4.0 - remove selectedDatumTransform
+    // TODO QGIS 4.0 - remove selectedDatumTransform, forceChoice
 
     /**
      * Constructor for QgsDatumTransformDialog.
@@ -89,7 +92,8 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
                              QWidget *parent = nullptr,
                              Qt::WindowFlags f = nullptr,
                              const QString &selectedProj = QString(),
-                             QgsMapCanvas *mapCanvas = nullptr );
+                             QgsMapCanvas *mapCanvas = nullptr,
+                             bool allowFallback = true );
 
     void accept() override;
     void reject() override;

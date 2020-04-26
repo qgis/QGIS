@@ -48,6 +48,7 @@ class TestQgsField: public QObject
     void dataStream();
     void displayName();
     void displayNameWithAlias();
+    void displayType();
     void editorWidgetSetup();
     void collection();
 
@@ -749,6 +750,24 @@ void TestQgsField::displayNameWithAlias()
   QCOMPARE( field.displayNameWithAlias(), QString( "name (alias)" ) );
   field.setAlias( QString() );
   QCOMPARE( field.displayNameWithAlias(), QString( "name" ) );
+}
+
+
+void TestQgsField::displayType()
+{
+  QgsField field;
+  field.setTypeName( QStringLiteral( "numeric" ) );
+  QCOMPARE( field.displayType(), QString( "numeric" ) );
+  field.setLength( 20 );
+  QCOMPARE( field.displayType(), QString( "numeric(20)" ) );
+  field.setPrecision( 10 );
+  field.setPrecision( 10 );
+  QCOMPARE( field.displayType(), QString( "numeric(20, 10)" ) );
+  QCOMPARE( field.displayType( true ), QString( "numeric(20, 10) NULL" ) );
+  QgsFieldConstraints constraints;
+  constraints.setConstraint( QgsFieldConstraints::ConstraintUnique );
+  field.setConstraints( constraints );
+  QCOMPARE( field.displayType( true ), QString( "numeric(20, 10) NULL UNIQUE" ) );
 }
 
 

@@ -160,6 +160,7 @@ void QgsColorButton::setToDefaultColor()
 void QgsColorButton::setToNull()
 {
   setColor( QColor() );
+  emit cleared();
 }
 
 void QgsColorButton::unlink()
@@ -507,7 +508,7 @@ void QgsColorButton::prepareMenu()
   {
     if ( mShowNull )
     {
-      QAction *nullAction = new QAction( tr( "Clear Color" ), this );
+      QAction *nullAction = new QAction( mNullColorString.isEmpty() ? tr( "Clear Color" ) : mNullColorString, this );
       nullAction->setIcon( createMenuIcon( Qt::transparent, false ) );
       mMenu->addAction( nullAction );
       connect( nullAction, &QAction::triggered, this, &QgsColorButton::setToNull );
@@ -824,9 +825,10 @@ void QgsColorButton::setDefaultColor( const QColor &color )
   mDefaultColor = color;
 }
 
-void QgsColorButton::setShowNull( bool showNull )
+void QgsColorButton::setShowNull( bool showNull, const QString &nullString )
 {
   mShowNull = showNull;
+  mNullColorString = nullString;
 }
 
 bool QgsColorButton::showNull() const

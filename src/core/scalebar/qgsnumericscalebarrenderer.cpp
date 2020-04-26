@@ -21,6 +21,31 @@
 #include <QList>
 #include <QPainter>
 
+QString QgsNumericScaleBarRenderer::id() const
+{
+  return QStringLiteral( "Numeric" );
+}
+
+QString QgsNumericScaleBarRenderer::visibleName() const
+{
+  return QObject::tr( "Numeric" );
+}
+
+int QgsNumericScaleBarRenderer::sortKey() const
+{
+  return 100;
+}
+
+QgsScaleBarRenderer::Flags QgsNumericScaleBarRenderer::flags() const
+{
+  return Flag::FlagUsesAlignment;
+}
+
+QgsNumericScaleBarRenderer *QgsNumericScaleBarRenderer::clone() const
+{
+  return new QgsNumericScaleBarRenderer( *this );
+}
+
 void QgsNumericScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBarSettings &settings, const ScaleBarContext &scaleContext ) const
 {
   if ( !context.painter() )
@@ -58,7 +83,7 @@ void QgsNumericScaleBarRenderer::draw( QgsRenderContext &context, const QgsScale
   painter->restore();
 }
 
-QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &settings,
+QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( QgsRenderContext &, const QgsScaleBarSettings &settings,
     const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const
 {
   QFont font = settings.textFormat().toQFont();
@@ -66,7 +91,18 @@ QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &
   double textWidth = QgsLayoutUtils::textWidthMM( font, scaleText( scaleContext.scale, settings ) );
   double textHeight = QgsLayoutUtils::fontAscentMM( font );
 
-  return QSizeF( 2 * settings.boxContentSpace() + 2 * settings.pen().width() + textWidth,
+  return QSizeF( 2 * settings.boxContentSpace() + textWidth,
+                 textHeight + 2 * settings.boxContentSpace() );
+}
+
+QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const
+{
+  QFont font = settings.textFormat().toQFont();
+
+  double textWidth = QgsLayoutUtils::textWidthMM( font, scaleText( scaleContext.scale, settings ) );
+  double textHeight = QgsLayoutUtils::fontAscentMM( font );
+
+  return QSizeF( 2 * settings.boxContentSpace() + textWidth,
                  textHeight + 2 * settings.boxContentSpace() );
 }
 

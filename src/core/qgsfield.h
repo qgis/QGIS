@@ -130,6 +130,17 @@ class CORE_EXPORT QgsField
      */
     QString displayNameWithAlias() const;
 
+
+    /**
+     * Returns the type to use when displaying this field, including the length and precision of the datatype if applicable.
+     *
+     * This will be used when the full datatype with details has to displayed to the user.
+     *
+     * \see type()
+     * \since QGIS 3.14
+     */
+    QString displayType( bool showConstraints = false ) const;
+
     //! Gets variant type of the field as it will be retrieved from data source
     QVariant::Type type() const;
 

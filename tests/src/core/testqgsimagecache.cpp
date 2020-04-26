@@ -49,6 +49,7 @@ class TestQgsImageCache : public QObject
     void cleanup() {} // will be called after every testfunction.
     void fillCache();
     void threadSafeImage();
+    void broken();
     void changeImage(); // check that cache is updated if image source file changes
     void size(); // check various size-specific handling
     void opacity(); // check non-opaque image rendering
@@ -136,6 +137,20 @@ void TestQgsImageCache::threadSafeImage()
   QVector< int > list;
   list.resize( 100 );
   QtConcurrent::blockingMap( list, RenderImageWrapper( cache, imagePath ) );
+}
+
+void TestQgsImageCache::broken()
+{
+  QgsImageCache cache;
+  bool inCache = false;
+  bool missingImage = false;
+  QImage img = cache.pathAsImage( QStringLiteral( "bbbbbbb" ), QSize( 200, 200 ), true, 1.0, inCache, false, &missingImage );
+  QVERIFY( missingImage );
+  cache.pathAsImage( QStringLiteral( "bbbbbbb" ), QSize( 200, 200 ), true, 1.0, inCache, false, &missingImage );
+  QVERIFY( missingImage );
+  QString originalImage = TEST_DATA_DIR + QStringLiteral( "/sample_image.png" );
+  cache.pathAsImage( originalImage, QSize( 200, 200 ), true, 1.0, inCache, false, &missingImage );
+  QVERIFY( !missingImage );
 }
 
 void TestQgsImageCache::changeImage()

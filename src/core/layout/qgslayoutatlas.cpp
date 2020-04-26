@@ -509,8 +509,18 @@ QgsExpressionContext QgsLayoutAtlas::createExpressionContext() const
     expressionContext.appendScope( mCoverageLayer->createExpressionContextScope() );
 
   if ( mLayout && mEnabled )
-    expressionContext.lastScope()->setFeature( mCurrentFeature );
-
+  {
+    if ( mCurrentFeature.isValid() )
+    {
+      expressionContext.lastScope()->setFeature( mCurrentFeature );
+    }
+    else if ( mCoverageLayer )  // Create an empty feature for the expression validation
+    {
+      QgsFeature feature{ mCoverageLayer->fields() };
+      feature.setValid( true );
+      expressionContext.lastScope()->setFeature( feature );
+    }
+  }
   return expressionContext;
 }
 
@@ -522,6 +532,7 @@ bool QgsLayoutAtlas::updateFilenameExpression( QString &error )
   }
 
   QgsExpressionContext expressionContext = createExpressionContext();
+  bool evalResult { true };
 
   if ( !mFilenameExpressionString.isEmpty() )
   {
@@ -535,12 +546,21 @@ bool QgsLayoutAtlas::updateFilenameExpression( QString &error )
     }
 
     // prepare the filename expression
-    mFilenameExpression.prepare( &expressionContext );
+    evalResult = mFilenameExpression.prepare( &expressionContext );
   }
 
   // regenerate current filename
-  evalFeatureFilename( expressionContext );
-  return true;
+  if ( evalResult )
+  {
+    evalResult = evalFeatureFilename( expressionContext );
+  }
+
+  if ( ! evalResult )
+  {
+    error = mFilenameExpression.evalErrorString();
+  }
+
+  return evalResult;
 }
 
 bool QgsLayoutAtlas::evalFeatureFilename( const QgsExpressionContext &context )

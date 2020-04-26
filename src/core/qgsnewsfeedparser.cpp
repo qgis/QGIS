@@ -37,7 +37,7 @@ QgsNewsFeedParser::QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcf
 
   QUrlQuery query( feedUrl );
 
-  const uint after = QgsSettings().value( QStringLiteral( "%1/lastFetchTime" ).arg( mSettingsKey ), 0, QgsSettings::Core ).toUInt();
+  const qint64 after = QgsSettings().value( QStringLiteral( "%1/lastFetchTime" ).arg( mSettingsKey ), 0, QgsSettings::Core ).toUInt();
   if ( after > 0 )
     query.addQueryItem( QStringLiteral( "after" ), qgsDoubleToString( after, 0 ) );
 
@@ -138,9 +138,10 @@ void QgsNewsFeedParser::fetch()
   QNetworkRequest req( mFeedUrl );
   QgsSetRequestInitiatorClass( req, QStringLiteral( "QgsNewsFeedParser" ) );
 
-  mFetchStartTime = QDateTime::currentDateTimeUtc().toTime_t();
+  mFetchStartTime = QDateTime::currentDateTimeUtc().toSecsSinceEpoch();
 
-  QgsNetworkContentFetcherTask *task = new QgsNetworkContentFetcherTask( req, mAuthCfg );
+  // allow canceling the news fetching without prompts -- it's not crucial if this gets finished or not
+  QgsNetworkContentFetcherTask *task = new QgsNetworkContentFetcherTask( req, mAuthCfg, QgsTask::CanCancel | QgsTask::CancelWithoutPrompt );
   task->setDescription( tr( "Fetching News Feed" ) );
   connect( task, &QgsNetworkContentFetcherTask::fetched, this, [this, task]
   {
@@ -186,7 +187,7 @@ void QgsNewsFeedParser::onFetch( const QString &content )
     bool ok = false;
     const uint expiry = entryMap.value( QStringLiteral( "publish_to" ) ).toUInt( &ok );
     if ( ok )
-      newEntry.expiry.setTime_t( expiry );
+      newEntry.expiry.setSecsSinceEpoch( expiry );
     newEntries.append( newEntry );
 
     if ( !newEntry.imageUrl.isEmpty() )

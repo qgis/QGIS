@@ -96,6 +96,14 @@ class TestQgsJsonUtils(unittest.TestCase):
         self.assertEqual(fields[1].name(), "height")
         self.assertEqual(fields[1].type(), QVariant.Double)
 
+        # geojson string with 2 features
+        fields = QgsJsonUtils.stringToFields('{ "type": "FeatureCollection","features":[{\n"type": "Feature","geometry": {"type": "Point","coordinates": [125, 10]},"properties": {"name": "Dinagat Islands","height":5.5}}, {\n"type": "Feature","geometry": {"type": "Point","coordinates": [110, 20]},"properties": {"name": "Henry Gale Island","height":6.5}}]}', codec)
+        self.assertEqual(fields.count(), 2)
+        self.assertEqual(fields[0].name(), "name")
+        self.assertEqual(fields[0].type(), QVariant.String)
+        self.assertEqual(fields[1].name(), "height")
+        self.assertEqual(fields[1].type(), QVariant.Double)
+
     def testEncodeValue(self):
         """ test encoding various values for use in GeoJSON strings """
         self.assertEqual(QgsJsonUtils.encodeValue(NULL), 'null')

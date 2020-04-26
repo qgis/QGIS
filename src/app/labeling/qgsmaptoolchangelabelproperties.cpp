@@ -41,6 +41,7 @@ QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas *
   mPalProperties << QgsPalLayerSettings::MultiLineAlignment;
   mPalProperties << QgsPalLayerSettings::BufferSize;
   mPalProperties << QgsPalLayerSettings::BufferColor;
+  mPalProperties << QgsPalLayerSettings::BufferDraw;
   mPalProperties << QgsPalLayerSettings::LabelDistance;
   mPalProperties << QgsPalLayerSettings::Hali;
   mPalProperties << QgsPalLayerSettings::Vali;

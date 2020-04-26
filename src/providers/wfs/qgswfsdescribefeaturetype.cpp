@@ -15,6 +15,7 @@
 
 #include "qgswfsdescribefeaturetype.h"
 #include "qgsmessagelog.h"
+#include <QUrlQuery>
 
 QgsWFSDescribeFeatureType::QgsWFSDescribeFeatureType( QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )
@@ -25,25 +26,27 @@ bool QgsWFSDescribeFeatureType::requestFeatureType( const QString &WFSVersion,
     const QString &typeName, const QgsWfsCapabilities::Capabilities &caps )
 {
   QUrl url( mUri.requestUrl( QStringLiteral( "DescribeFeatureType" ) ) );
-  url.addQueryItem( QStringLiteral( "VERSION" ), WFSVersion );
+  QUrlQuery query( url );
+  query.addQueryItem( QStringLiteral( "VERSION" ), WFSVersion );
 
   QString namespaceValue( caps.getNamespaceParameterValue( WFSVersion, typeName ) );
 
   if ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) )
   {
-    url.addQueryItem( QStringLiteral( "TYPENAMES" ), typeName );
+    query.addQueryItem( QStringLiteral( "TYPENAMES" ), typeName );
     if ( !namespaceValue.isEmpty() )
     {
-      url.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaceValue );
+      query.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaceValue );
     }
   }
 
-  url.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
+  query.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
   if ( !namespaceValue.isEmpty() )
   {
-    url.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
+    query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
   }
 
+  url.setQuery( query );
   return sendGET( url, QString(), true, false );
 }
 

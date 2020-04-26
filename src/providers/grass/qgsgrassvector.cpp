@@ -107,7 +107,7 @@ QgsFields QgsGrassVectorLayer::fields()
   {
     QgsDebugMsg( "dbln does not exist" );
     mFields.clear();
-    mFieldsTimeStamp.setTime_t( 0 );
+    mFieldsTimeStamp.setSecsSinceEpoch( 0 );
     return mFields;
   }
   if ( dblnFileInfo.lastModified() >  mFieldsTimeStamp && !mDriver.isEmpty()

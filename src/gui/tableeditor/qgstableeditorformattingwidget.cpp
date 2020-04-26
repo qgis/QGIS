@@ -43,10 +43,20 @@ QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent 
     if ( !mBlockSignals )
       emit foregroundColorChanged( mTextColorButton->color() );
   } );
+  connect( mTextColorButton, &QgsColorButton::cleared, this, [ = ]
+  {
+    if ( !mBlockSignals )
+      emit foregroundColorChanged( QColor() );
+  } );
   connect( mBackgroundColorButton, &QgsColorButton::colorChanged, this,  [ = ]
   {
     if ( !mBlockSignals )
       emit backgroundColorChanged( mBackgroundColorButton->color() );
+  } );
+  connect( mBackgroundColorButton, &QgsColorButton::cleared, this,  [ = ]
+  {
+    if ( !mBlockSignals )
+      emit backgroundColorChanged( QColor() );
   } );
 
   connect( mFormatNumbersCheckBox, &QCheckBox::stateChanged, this, [ = ]( int state )

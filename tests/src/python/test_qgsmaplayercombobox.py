@@ -174,8 +174,13 @@ class TestQgsMapLayerComboBox(unittest.TestCase):
         m.setLayer(None)
         self.assertEqual(len(spy), 3)
         self.assertIsNone(m.currentLayer())
+        self.assertFalse(m.currentText())
         m.setLayer(None)
         self.assertEqual(len(spy), 3)
+        self.assertIsNone(m.currentLayer())
+
+        m.setEditable(True)
+        m.setCurrentText('aaa')
         self.assertIsNone(m.currentLayer())
 
         m.setLayer(l1)

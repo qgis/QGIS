@@ -1,7 +1,7 @@
 variables:
-  LR: release-3_10
-  LTR: release-3_4
-  CTEST_CUSTOM_TESTS_IGNORE: "ProcessingGdalAlgorithmsRasterTest;ProcessingGdalAlgorithmsVectorTest;ProcessingGrass7AlgorithmsImageryTest;ProcessingGrass7AlgorithmsRasterTest;ProcessingGrass7AlgorithmsVectorTest;ProcessingGuiTest;ProcessingOtbAlgorithmsTest;ProcessingQgisAlgorithmsTestPt1;ProcessingQgisAlgorithmsTestPt2;ProcessingQgisAlgorithmsTestPt3;ProcessingQgisAlgorithmsTestPt4;ProcessingScriptUtilsTest;PyQgsAnnotation;PyQgsAppStartup;PyQgsAuthManagerOAuth2OWSTest;PyQgsAuthManagerPasswordOWSTest;PyQgsAuthManagerPKIOWSTest;PyQgsAuthManagerProxy;PyQgsAuthSettingsWidget;PyQgsAuxiliaryStorage;PyQgsBlockingNetworkRequest;PyQgsExifTools;PyQgsFileDownloader;PyQgsFileUtils;PyQgsGeometryTest;PyQgsImageCache;PyQgsImportIntoPostGIS;PyQgsLayoutAtlas;PyQgsLayoutLegend;PyQgsLayoutMap;PyQgsLayoutMapGrid;PyQgsMapLayer;PyQgsOfflineEditingWFS;PyQgsOGRProvider;PyQgsOGRProviderGpkg;PyQgsOGRProviderSqlite;PyQgsPalLabelingCanvas;PyQgsPalLabelingLayout;PyQgsPalLabelingPlacement;PyQgsPointDisplacementRenderer;PyQgsProject;PyQgsProviderConnectionGpkg;PyQgsProviderConnectionPostgres;PyQgsPythonProvider;PyQgsRasterFileWriter;PyQgsRasterLayer;PyQgsSelectiveMasking;PyQgsServerAccessControlWMSGetlegendgraphic;PyQgsServerApi;PyQgsServerCacheManager;PyQgsServerLocaleOverride;PyQgsServerSecurity;PyQgsServerSettings;PyQgsServerWMS;PyQgsServerWMSDimension;PyQgsServerWMSGetFeatureInfo;PyQgsServerWMSGetLegendGraphic;PyQgsServerWMSGetMap;PyQgsServerWMSGetPrint;PyQgsServerWMTS;PyQgsSettings;PyQgsShapefileProvider;PyQgsSpatialiteProvider;PyQgsSvgCache;PyQgsSymbolLayer;PyQgsTaskManager;PyQgsTextRenderer;PyQgsVectorFileWriter;PyQgsVectorLayer;PyQgsVectorLayerUtils;PyQgsVirtualLayerProvider;PyQgsWFSProviderGUI;PyQgsZipUtils;qgis_3drenderingtest;qgis_alignrastertest;qgis_arcgisrestutilstest;qgis_banned_keywords;qgis_browsermodeltest;qgis_callouttest;qgis_compositionconvertertest;qgis_coordinatereferencesystemtest;qgis_datadefinedsizelegendtest;qgis_datumtransformdialog;qgis_diagramtest;qgis_doxygen_order;qgis_dxfexporttest;qgis_expressiontest;qgis_filedownloader;qgis_geometrycheckstest;qgis_geometrytest;qgis_geonodeconnectiontest;qgis_grassprovidertest7;qgis_imagecachetest;qgis_invertedpolygonrenderertest;qgis_labelingenginetest;qgis_layerdefinitiontest;qgis_layout3dmaptest;qgis_layouthtmltest;qgis_layoutlabeltest;qgis_layoutmapgridtest;qgis_layoutmaptest;qgis_layoutpicturetest;qgis_layoutscalebartest;qgis_layouttabletest;qgis_legendrenderertest;qgis_licenses;qgis_maprendererjobtest;qgis_maprotationtest;qgis_mapsettingsutilstest;qgis_maptooladdfeatureline;qgis_mimedatautilstest;qgis_networkaccessmanagertest;qgis_openclutilstest;qgis_painteffecttest;qgis_pallabelingtest;qgis_processingtest;qgis_projecttest;qgis_qgisappclipboard;qgis_rasterlayersaveasdialog;qgis_shellcheck;qgis_sipify;qgis_sip_include;qgis_sip_uptodate;qgis_spelling;qgis_styletest;qgis_svgcachetest;qgis_taskmanagertest;qgis_transformdialog;qgis_vectorfilewritertest;qgis_wcsprovidertest;qgis_ziplayertest;qgis_meshcalculator;qgis_pointlocatortest;PyQgsExpressionBuilderWidget;PyQgsDatumTransform"
+  LR: release-3_12
+  LTR: release-3_10
+  CTEST_CUSTOM_TESTS_IGNORE: "ProcessingGdalAlgorithmsRasterTest;ProcessingGdalAlgorithmsVectorTest;ProcessingGrass7AlgorithmsImageryTest;ProcessingGrass7AlgorithmsRasterTest;ProcessingGrass7AlgorithmsVectorTest;ProcessingGuiTest;ProcessingOtbAlgorithmsTest;ProcessingQgisAlgorithmsTestPt1;ProcessingQgisAlgorithmsTestPt2;ProcessingQgisAlgorithmsTestPt3;ProcessingQgisAlgorithmsTestPt4;ProcessingScriptUtilsTest;PyQgsAnnotation;PyQgsAppStartup;PyQgsAuthManagerOAuth2OWSTest;PyQgsAuthManagerPasswordOWSTest;PyQgsAuthManagerPKIOWSTest;PyQgsAuthManagerProxy;PyQgsAuthSettingsWidget;PyQgsAuxiliaryStorage;PyQgsBlockingNetworkRequest;PyQgsExifTools;PyQgsFileDownloader;PyQgsFileUtils;PyQgsGeometryTest;PyQgsImageCache;PyQgsImportIntoPostGIS;PyQgsLayoutAtlas;PyQgsLayoutLegend;PyQgsLayoutMap;PyQgsLayoutMapGrid;PyQgsMapLayer;PyQgsOfflineEditingWFS;PyQgsOGRProvider;PyQgsOGRProviderGpkg;PyQgsOGRProviderSqlite;PyQgsPalLabelingCanvas;PyQgsPalLabelingLayout;PyQgsPalLabelingPlacement;PyQgsPointDisplacementRenderer;PyQgsProject;PyQgsProviderConnectionGpkg;PyQgsProviderConnectionPostgres;PyQgsPythonProvider;PyQgsRasterFileWriter;PyQgsRasterLayer;PyQgsSelectiveMasking;PyQgsServerAccessControlWMSGetlegendgraphic;PyQgsServerApi;PyQgsServerCacheManager;PyQgsServerLocaleOverride;PyQgsServerSecurity;PyQgsServerSettings;PyQgsServerWMS;PyQgsServerWMSDimension;PyQgsServerWMSGetFeatureInfo;PyQgsServerWMSGetLegendGraphic;PyQgsServerWMSGetMap;PyQgsServerWMSGetPrint;PyQgsServerWMTS;PyQgsSettings;PyQgsShapefileProvider;PyQgsSpatialiteProvider;PyQgsSvgCache;PyQgsSymbolLayer;PyQgsTaskManager;PyQgsTextRenderer;PyQgsVectorFileWriter;PyQgsVectorLayer;PyQgsVectorLayerUtils;PyQgsVirtualLayerProvider;PyQgsWFSProviderGUI;PyQgsZipUtils;qgis_3drenderingtest;qgis_alignrastertest;qgis_arcgisrestutilstest;qgis_banned_keywords;qgis_browsermodeltest;qgis_callouttest;qgis_compositionconvertertest;qgis_coordinatereferencesystemtest;qgis_datadefinedsizelegendtest;qgis_datumtransformdialog;qgis_diagramtest;qgis_doxygen_order;qgis_dxfexporttest;qgis_expressiontest;qgis_filedownloader;qgis_geometrycheckstest;qgis_geometrytest;qgis_geonodeconnectiontest;qgis_grassprovidertest7;qgis_imagecachetest;qgis_invertedpolygonrenderertest;qgis_labelingenginetest;qgis_layerdefinitiontest;qgis_layout3dmaptest;qgis_layouthtmltest;qgis_layoutlabeltest;qgis_layoutmapgridtest;qgis_layoutmaptest;qgis_layoutpicturetest;qgis_layoutscalebartest;qgis_layouttabletest;qgis_legendrenderertest;qgis_licenses;qgis_defwindowtitle;qgis_maprendererjobtest;qgis_maprotationtest;qgis_mapsettingsutilstest;qgis_maptooladdfeatureline;qgis_mimedatautilstest;qgis_networkaccessmanagertest;qgis_openclutilstest;qgis_painteffecttest;qgis_pallabelingtest;qgis_processingtest;qgis_projecttest;qgis_qgisappclipboard;qgis_rasterlayersaveasdialog;qgis_shellcheck;qgis_sipify;qgis_sip_include;qgis_sip_uptodate;qgis_spelling;qgis_styletest;qgis_svgcachetest;qgis_taskmanagertest;qgis_transformdialog;qgis_vectorfilewritertest;qgis_wcsprovidertest;qgis_ziplayertest;qgis_meshcalculator;qgis_pointlocatortest;PyQgsExpressionBuilderWidget;PyQgsDatumTransform;qgis_vertextool;PyQgsCoordinateOperationWidget;PyQgsProviderConnectionSpatialite;qgis_maptoolsplitpartstest;qgis_vectortilelayertest"
   Agent.Source.Git.ShallowFetchDepth: 120
 
 trigger:
@@ -20,7 +20,7 @@ pr:
 jobs:
 - job: OSGeo4W
   pool:
-    vmImage: vs2015-win2012r2
+    vmImage: vs2017-win2016
   timeoutInMinutes: 360
   strategy:
     maxParallel: 4
@@ -90,7 +90,7 @@ jobs:
       url=${url//(/%28}
       url=${url//)/%29}
       url=${url// /+}
-      url="https://cdash.orfeo-toolbox.org/index.php?project=QGIS&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercount=2&showfilters=1&filtercombine=and&field1=buildname&compare1=61&value1=$url&field2=site&compare2=61&value2=azure-pipelines"
+      url="https://cdash.orfeo-toolbox.org/index.php?project=QGIS&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercount=4&showfilters=0&filtercombine=and&field1=buildname&compare1=61&value1=$url&field2=site&compare2=65&value2=azure-pipelines&field3=buildstarttime&compare3=83&value3=$(date +%Y-%m-%d --date=yesterday)&field4=buildstarttime&compare4=84&value4=$(date +%Y-%m-%d --date=tomorrow)"
 
       echo "##vso[task.setvariable variable=TARGET]$target"
       echo "##vso[task.setvariable variable=OSGEO4W_PKG]$OSGEO4W_PKG"
@@ -101,7 +101,7 @@ jobs:
       echo "##vso[task.setvariable variable=BINARY]$binary"
       echo "##vso[task.setvariable variable=VERSION]$version"
       echo "##vso[task.setvariable variable=BUILDNAME]$buildname"
-      echo "##vso[task.setvariable variable=DASHURL]$url"
+      echo "##vso[task.setvariable variable=DASHURL]${url//&/^&}"
 
     displayName: 'Setup build variables'
 
@@ -110,9 +110,6 @@ jobs:
 
   - script: curl --output c:\osgeo4w-setup.exe http://ftp.osuosl.org/pub/osgeo/download/osgeo4w/osgeo4w-setup-%OSGEO4W_ARCH%.exe
     displayName: 'Download OSGeo4W Installer'
-
-  - script: curl --location-trusted --output c:\cmake.msi https://github.com/Kitware/CMake/releases/download/v3.15.5/cmake-3.15.5-win64-x64.msi
-    displayName: 'Download CMake Installer'
 
   - script: curl --location-trusted --output c:\ninja.zip https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-win.zip
     displayName: 'Download Ninja'
@@ -154,12 +151,6 @@ jobs:
       rmdir /s /q c:\temp\osgeo4w
     displayName: 'Clear package caches'
 
-  - powershell: ms-windows/osgeo4w/runasadmin.ps1 msiexec.exe /X C:\Windows\Installer\146218.msi /qn /norestart /l*v c:\cmake-uninstall.log
-    displayName: 'Uninstalling old CMake'
-
-  - powershell: ms-windows/osgeo4w/runasadmin.ps1 msiexec.exe /I c:\cmake.msi /qn /norestart /l*v c:\cmake-install.log
-    displayName: 'Installing CMake'
-
   - script: c:\cygwin\bin\unzip -o c:\ninja.zip -d %OSGEO4W_ROOT%\bin
     displayName: 'Extracting Ninja'
 
@@ -192,7 +183,7 @@ jobs:
       cd ms-windows\osgeo4w
       touch skippackage
       set OSGEO4W_CXXFLAGS=/MD /MP /Od /D NDEBUG
-      @echo "##[section] %OSGEO4W_ARCH% results available at %DASHURL%"
+      @echo ##[section]%OSGEO4W_ARCH% results available at %DASHURL%
       package-nightly.cmd %VERSION% %BINARY% %OSGEO4W_PKG% %OSGEO4W_ARCH% %BUILD_SOURCEVERSION:~0,10% azure-pipelines
     displayName: 'Building QGIS'
 

@@ -453,7 +453,16 @@ Uses :py:class:`QgsExpression`
 
     void setProviderEncoding( const QString &encoding );
 %Docstring
-Sets the textencoding of the data provider
+Sets the text ``encoding`` of the data provider.
+
+An empty ``encoding`` string indicates that the provider should automatically
+select the most appropriate encoding.
+
+.. warning::
+
+   Support for setting the provider encoding depends on the underlying data
+   provider. Check dataProvider().capabilities() for the QgsVectorDataProvider.SelectEncoding
+   capability in order to determine if the provider supports this ability.
 %End
 
     void setCoordinateSystem();

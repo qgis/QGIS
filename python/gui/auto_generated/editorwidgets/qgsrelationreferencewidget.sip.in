@@ -77,6 +77,14 @@ Returns the related feature foreign keys
 %End
 
     void setEditorContext( const QgsAttributeEditorContext &context, QgsMapCanvas *canvas, QgsMessageBar *messageBar );
+%Docstring
+Sets the editor ``context``
+
+.. note::
+
+   if context cadDockWidget is null, it won't be possible to digitize
+   the geometry of a referenced feature from this widget
+%End
 
     bool embedForm();
 %Docstring

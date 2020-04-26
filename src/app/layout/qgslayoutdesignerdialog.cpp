@@ -91,6 +91,8 @@
 #include <QPageSetupDialog>
 #include <QWidgetAction>
 #include <QProgressBar>
+#include <QClipboard>
+
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
 #endif
@@ -2553,12 +2555,10 @@ void QgsLayoutDesignerDialog::printAtlas()
     proxyTask->setProxyProgress( progress );
 
 #ifdef Q_OS_LINUX
-    // For some reason on Windows hasPendingEvents() always return true,
-    // but one iteration is actually enough on Windows to get good interactivity
+    // One iteration is actually enough on Windows to get good interactivity
     // whereas on Linux we must allow for far more iterations.
-    // For safety limit the number of iterations
     int nIters = 0;
-    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+    while ( ++nIters < 100 )
 #endif
     {
       QCoreApplication::processEvents();
@@ -2653,6 +2653,15 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
   if ( !printAtlas || !printAtlas->enabled() )
     return;
 
+  if ( !printAtlas->coverageLayer() )
+  {
+    QMessageBox::warning( this, tr( "Export Atlas" ),
+                          tr( "Error: No coverage layer is set." ),
+                          QMessageBox::Ok,
+                          QMessageBox::Ok );
+    return;
+  }
+
   // else, it has an atlas to render, so a directory must first be selected
   if ( printAtlas->filenameExpression().isEmpty() )
   {
@@ -2667,6 +2676,21 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
     QString error;
     printAtlas->setFilenameExpression( QStringLiteral( "'output_'||@atlas_featurenumber" ), error );
   }
+  else
+  {
+    // Validate filename expression
+    QString errorString;
+    if ( ! printAtlas->setFilenameExpression( printAtlas->filenameExpression(), errorString ) )
+    {
+      QMessageBox::warning( nullptr, tr( "Export Atlas" ),
+                            tr( "Output file name expression is not valid. Canceling.\n"
+                                "Evaluation error: %1" ).arg( errorString ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      return;
+    }
+  }
+
 
   QString lastUsedDir = defaultExportPath();
 
@@ -2737,12 +2761,10 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
     proxyTask->setProxyProgress( progress );
 
 #ifdef Q_OS_LINUX
-    // For some reason on Windows hasPendingEvents() always return true,
-    // but one iteration is actually enough on Windows to get good interactivity
+    // One iteration is actually enough on Windows to get good interactivity
     // whereas on Linux we must allow for far more iterations.
-    // For safety limit the number of iterations
     int nIters = 0;
-    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+    while ( ++nIters < 100 )
 #endif
     {
       QCoreApplication::processEvents();
@@ -2811,6 +2833,15 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
   QgsLayoutAtlas *printAtlas = atlas();
   if ( !printAtlas || !printAtlas->enabled() )
     return;
+
+  if ( !printAtlas->coverageLayer() )
+  {
+    QMessageBox::warning( this, tr( "Export Atlas" ),
+                          tr( "Error: No coverage layer is set." ),
+                          QMessageBox::Ok,
+                          QMessageBox::Ok );
+    return;
+  }
 
   if ( containsWmsLayers() )
   {
@@ -2894,12 +2925,10 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
     proxyTask->setProxyProgress( progress );
 
 #ifdef Q_OS_LINUX
-    // For some reason on Windows hasPendingEvents() always return true,
-    // but one iteration is actually enough on Windows to get good interactivity
+    // One iteration is actually enough on Windows to get good interactivity
     // whereas on Linux we must allow for far more iterations.
-    // For safety limit the number of iterations
     int nIters = 0;
-    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+    while ( ++nIters < 100 )
 #endif
     {
       QCoreApplication::processEvents();
@@ -2981,6 +3010,15 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   QgsLayoutAtlas *printAtlas = atlas();
   if ( !printAtlas || !printAtlas->enabled() )
     return;
+
+  if ( !printAtlas->coverageLayer() )
+  {
+    QMessageBox::warning( this, tr( "Export Atlas" ),
+                          tr( "Error: No coverage layer is set." ),
+                          QMessageBox::Ok,
+                          QMessageBox::Ok );
+    return;
+  }
 
   if ( containsWmsLayers() )
   {
@@ -3108,12 +3146,10 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
     proxyTask->setProxyProgress( progress );
 
 #ifdef Q_OS_LINUX
-    // For some reason on Windows hasPendingEvents() always return true,
-    // but one iteration is actually enough on Windows to get good interactivity
+    // One iteration is actually enough on Windows to get good interactivity
     // whereas on Linux we must allow for far more iterations.
-    // For safety limit the number of iterations
     int nIters = 0;
-    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+    while ( ++nIters < 100 )
 #endif
     {
       QCoreApplication::processEvents();
@@ -3243,12 +3279,10 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
     progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
 
 #ifdef Q_OS_LINUX
-    // For some reason on Windows hasPendingEvents() always return true,
-    // but one iteration is actually enough on Windows to get good interactivity
+    // One iteration is actually enough on Windows to get good interactivity
     // whereas on Linux we must allow for far more iterations.
-    // For safety limit the number of iterations
     int nIters = 0;
-    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+    while ( ++nIters < 100 )
 #endif
     {
       QCoreApplication::processEvents();
@@ -3361,12 +3395,10 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
     progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
 
 #ifdef Q_OS_LINUX
-    // For some reason on Windows hasPendingEvents() always return true,
-    // but one iteration is actually enough on Windows to get good interactivity
+    // One iteration is actually enough on Windows to get good interactivity
     // whereas on Linux we must allow for far more iterations.
-    // For safety limit the number of iterations
     int nIters = 0;
-    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+    while ( ++nIters < 100 )
 #endif
     {
       QCoreApplication::processEvents();
@@ -3498,12 +3530,10 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
     progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
 
 #ifdef Q_OS_LINUX
-    // For some reason on Windows hasPendingEvents() always return true,
-    // but one iteration is actually enough on Windows to get good interactivity
+    // One iteration is actually enough on Windows to get good interactivity
     // whereas on Linux we must allow for far more iterations.
-    // For safety limit the number of iterations
     int nIters = 0;
-    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+    while ( ++nIters < 100 )
 #endif
     {
       QCoreApplication::processEvents();
@@ -3605,12 +3635,10 @@ void QgsLayoutDesignerDialog::printReport()
     progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
 
 #ifdef Q_OS_LINUX
-    // For some reason on Windows hasPendingEvents() always return true,
-    // but one iteration is actually enough on Windows to get good interactivity
+    // One iteration is actually enough on Windows to get good interactivity
     // whereas on Linux we must allow for far more iterations.
-    // For safety limit the number of iterations
     int nIters = 0;
-    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+    while ( ++nIters < 100 )
 #endif
     {
       QCoreApplication::processEvents();
@@ -3722,19 +3750,48 @@ void QgsLayoutDesignerDialog::populateLayoutsMenu()
 
 void QgsLayoutDesignerDialog::paste()
 {
-  QPointF pt = mView->mapFromGlobal( QCursor::pos() );
+  const QPoint viewPoint = mView->mapFromGlobal( QCursor::pos() );
   //TODO - use a better way of determining whether paste was triggered by keystroke
   //or menu item
-  QList< QgsLayoutItem * > items;
-  if ( ( pt.x() < 0 ) || ( pt.y() < 0 ) )
+  QPointF layoutPoint;
+  if ( ( viewPoint.x() < 0 ) || ( viewPoint.y() < 0 ) )
   {
     //action likely triggered by menu, paste items in center of screen
-    items = mView->pasteItems( QgsLayoutView::PasteModeCenter );
+    layoutPoint = mView->mapToScene( mView->viewport()->rect().center() );
   }
   else
   {
-    //action likely triggered by keystroke, paste items at cursor position
-    items = mView->pasteItems( QgsLayoutView::PasteModeCursor );
+    layoutPoint = mView->mapToScene( viewPoint );
+  }
+
+  QList< QgsLayoutItem * > items;
+
+  // give custom paste handlers first shot at processing this
+  QClipboard *clipboard = QApplication::clipboard();
+  const QMimeData *data = clipboard->mimeData();
+  const QVector<QPointer<QgsLayoutCustomDropHandler >> handlers = QgisApp::instance()->customLayoutDropHandlers();
+  bool handled = false;
+  for ( QgsLayoutCustomDropHandler *handler : handlers )
+  {
+    if ( handler && handler->handlePaste( iface(), layoutPoint, data, items ) )
+    {
+      handled = true;
+      break;
+    }
+  }
+
+  if ( !handled )
+  {
+    if ( ( viewPoint.x() < 0 ) || ( viewPoint.y() < 0 ) )
+    {
+      //action likely triggered by menu, paste items in center of screen
+      items = mView->pasteItems( QgsLayoutView::PasteModeCenter );
+    }
+    else
+    {
+      //action likely triggered by keystroke, paste items at cursor position
+      items = mView->pasteItems( QgsLayoutView::PasteModeCursor );
+    }
   }
 
   whileBlocking( currentLayout() )->deselectAll();

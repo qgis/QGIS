@@ -53,6 +53,7 @@ void QgsLayoutViewToolAddItem::layoutPressEvent( QgsLayoutViewMouseEvent *event 
 
   mDrawing = true;
   mMousePressStartPos = event->pos();
+  mMousePressStartLayoutPos = event->layoutPoint();
   mRubberBand.reset( QgsGui::layoutItemGuiRegistry()->createItemRubberBand( mItemMetadataId, view() ) );
   if ( mRubberBand )
   {
@@ -85,7 +86,7 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   }
   mDrawing = false;
 
-  QRectF rect = mRubberBand->finish( event->snappedPoint(), event->modifiers() );
+  QRectF rect = mRubberBand ? mRubberBand->finish( event->snappedPoint(), event->modifiers() ) : QRectF();
 
   QString undoText;
   if ( QgsLayoutItemAbstractGuiMetadata *metadata = QgsGui::layoutItemGuiRegistry()->itemMetadata( mItemMetadataId ) )
@@ -107,7 +108,7 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
 
   // click? or click-and-drag?
   bool clickOnly = !isClickAndDrag( mMousePressStartPos, event->pos() );
-  if ( clickOnly )
+  if ( clickOnly && mRubberBand )
   {
     QgsLayoutItemPropertiesDialog dlg( view() );
     dlg.setLayout( layout() );
@@ -125,17 +126,25 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
       return;
     }
   }
-  else
+  else if ( mRubberBand )
   {
     item->attemptResize( QgsLayoutSize( rect.width(), rect.height(), QgsUnitTypes::LayoutMillimeters ) );
     item->attemptMove( QgsLayoutPoint( rect.left(), rect.top(), QgsUnitTypes::LayoutMillimeters ) );
   }
+  else
+  {
+    // item type doesn't use rubber bands -- e.g. marker items
+    item->attemptMove( QgsLayoutPoint( mMousePressStartLayoutPos, layout()->units() ) );
+  }
 
   // record last created item size
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "LayoutDesigner/lastItemWidth" ), item->sizeWithUnits().width() );
-  settings.setValue( QStringLiteral( "LayoutDesigner/lastItemHeight" ), item->sizeWithUnits().height() );
-  settings.setEnumValue( QStringLiteral( "LayoutDesigner/lastSizeUnit" ), item->sizeWithUnits().units() );
+  if ( mRubberBand )
+  {
+    QgsSettings settings;
+    settings.setValue( QStringLiteral( "LayoutDesigner/lastItemWidth" ), item->sizeWithUnits().width() );
+    settings.setValue( QStringLiteral( "LayoutDesigner/lastItemHeight" ), item->sizeWithUnits().height() );
+    settings.setEnumValue( QStringLiteral( "LayoutDesigner/lastSizeUnit" ), item->sizeWithUnits().units() );
+  }
 
   QgsGui::layoutItemGuiRegistry()->newItemAddedToLayout( mItemMetadataId, item );
 
@@ -154,7 +163,8 @@ void QgsLayoutViewToolAddItem::deactivate()
   if ( mDrawing )
   {
     // canceled mid operation
-    mRubberBand->finish();
+    if ( mRubberBand )
+      mRubberBand->finish();
     mDrawing = false;
   }
   QgsLayoutViewTool::deactivate();

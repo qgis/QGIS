@@ -40,13 +40,14 @@ QgsGpsBearingItem::QgsGpsBearingItem( QgsMapCanvas *mapCanvas )
 
 void QgsGpsBearingItem::setGpsPosition( const QgsPointXY &point )
 {
+  mCenterWGS84 = point;
   //transform to map crs
   if ( mMapCanvas )
   {
     QgsCoordinateTransform t( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
     try
     {
-      mCenter = t.transform( point );
+      mCenter = t.transform( mCenterWGS84 );
     }
     catch ( QgsCsException &e ) //silently ignore transformation exceptions
     {
@@ -69,7 +70,7 @@ void QgsGpsBearingItem::setGpsBearing( double bearing )
 
 void QgsGpsBearingItem::updatePosition()
 {
-  setGpsPosition( mCenter );
+  setGpsPosition( mCenterWGS84 );
 }
 
 void QgsGpsBearingItem::updateLine()

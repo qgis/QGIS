@@ -285,6 +285,41 @@ class CORE_EXPORT QgsOgrUtils
      * \since QGIS 3.10.1
      */
     static QgsCoordinateReferenceSystem OGRSpatialReferenceToCrs( OGRSpatialReferenceH srs );
+
+    /**
+     * Reads the encoding of the shapefile at the specified \a path (where \a path is the
+     * location of the ".shp" file).
+     *
+     * This method considers both the CPG specified encoding and the DBF LDID encoding
+     * (priority goes to CPG based encoding)
+     *
+     * \see readShapefileEncodingFromCpg()
+     * \see readShapefileEncodingFromLdid()
+     * \since QGIS 3.12
+     */
+    static QString readShapefileEncoding( const QString &path );
+
+    /**
+     * Reads the encoding of the shapefile at the specified \a path (where \a path is the
+     * location of the ".shp" file), from the CPG specified encoding.
+     *
+     * Return an empty string if CPG based encoding was not found.
+     *
+     * \see readShapefileEncoding()
+     * \since QGIS 3.12
+     */
+    static QString readShapefileEncodingFromCpg( const QString &path );
+
+    /**
+     * Reads the encoding of the shapefile at the specified \a path (where \a path is the
+     * location of the ".shp" file), from the DBF LDID encoding.
+     *
+     * Return an empty string if LDID based encoding was not found.
+     *
+     * \see readShapefileEncoding()
+     * \since QGIS 3.12
+     */
+    static QString readShapefileEncodingFromLdid( const QString &path );
 };
 
 #endif // QGSOGRUTILS_H

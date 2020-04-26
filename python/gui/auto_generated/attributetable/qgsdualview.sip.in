@@ -122,11 +122,22 @@ filter restrictions
 :return: Number of features
 %End
 
-    void setFilteredFeatures( const QgsFeatureIds &filteredFeatures );
+ void setFilteredFeatures( const QgsFeatureIds &filteredFeatures );
 %Docstring
 Set a list of currently visible features
 
 :param filteredFeatures: A list of feature ids
+
+.. deprecated::
+   since filterFeatures is handled in the attribute filter model itself
+%End
+
+    void filterFeatures( const QgsExpression &filterExpression, const QgsExpressionContext &context );
+%Docstring
+Sets the expression and Updates the filtered features in the filter model.
+It is called when the filter expression changed.
+
+.. versionadded:: 3.10.3
 %End
 
     QgsFeatureIds filteredFeatures();
@@ -232,6 +243,16 @@ Copy the content of the selected cell in the clipboard.
 Cancel the progress dialog (if any)
 
 .. versionadded:: 3.0
+%End
+
+    void parentFormValueChanged( const QString &attribute, const QVariant &value );
+%Docstring
+Called in embedded forms when an ``attribute`` ``value`` in the parent form has changed.
+
+Notify the form widgets that something has changed in case they
+have filter expression that depend on the parent form scope.
+
+.. versionadded:: 3.14
 %End
 
   signals:

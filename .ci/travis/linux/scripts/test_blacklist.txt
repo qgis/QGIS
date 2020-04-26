@@ -15,12 +15,11 @@ PyQgsAuthManagerPKIPostgresTest
 PyQgsAuthManagerOgrPostgresTest
 PyQgsDbManagerPostgis
 
-# Broken on master builds due to failure while loading pg raster test data
-PyQgsPostgresRasterProvider
-
 # Needs an OpenCL device, the library is not enough
 qgis_openclutilstest
 
 # Relies on a broken/unreliable 3rd party service
 qgis_layerdefinition
 
+# MSSQL requires the MSSQL docker
+PyQgsProviderConnectionMssql

@@ -112,6 +112,11 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     */
     QVariantList foreignKeys() const;
 
+    /**
+     * Sets the editor \a context
+     * \note if context cadDockWidget is null, it won't be possible to digitize
+     * the geometry of a referenced feature from this widget
+     */
     void setEditorContext( const QgsAttributeEditorContext &context, QgsMapCanvas *canvas, QgsMessageBar *messageBar );
 
     //! determines if the form of the related feature will be shown
@@ -281,12 +286,6 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void updateAddEntryButton();
     void entryAdded( const QgsFeature &f );
     void onKeyPressed( QKeyEvent *e );
-
-    /**
-     * Updates the FK index as soon as the underlying model is updated when
-     * the chainFilter option is activated.
-     */
-    void updateIndex();
 
   private:
     void highlightFeature( QgsFeature f = QgsFeature(), CanvasExtent canvasExtent = Fixed );

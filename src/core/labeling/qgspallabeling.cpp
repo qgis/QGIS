@@ -483,6 +483,40 @@ bool QgsPalLayerSettings::prepare( QgsRenderContext &context, QSet<QString> &att
   return true;
 }
 
+QSet<QString> QgsPalLayerSettings::referencedFields( const QgsRenderContext &context ) const
+{
+  QSet<QString> referenced;
+  if ( drawLabels )
+  {
+    if ( isExpression )
+    {
+      referenced.unite( QgsExpression( fieldName ).referencedColumns() );
+    }
+    else
+    {
+      referenced.insert( fieldName );
+    }
+  }
+
+  // calling referencedFields() with ignoreContext=true because in our expression context
+  // we do not have valid QgsFields yet - because of that the field names from expressions
+  // wouldn't get reported
+  referenced.unite( mDataDefinedProperties.referencedFields( context.expressionContext(), true ) );
+
+  if ( geometryGeneratorEnabled )
+  {
+    QgsExpression geomGeneratorExpr( geometryGenerator );
+    referenced.unite( geomGeneratorExpr.referencedColumns() );
+  }
+
+  if ( mCallout )
+  {
+    referenced.unite( mCallout->referencedFields( context ) );
+  }
+
+  return referenced;
+}
+
 void QgsPalLayerSettings::startRender( QgsRenderContext &context )
 {
   if ( mRenderStarted )
@@ -1962,7 +1996,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   }
   geos_geom_clone = QgsGeos::asGeos( geom );
 
-  if ( isObstacle )
+  if ( isObstacle || ( geom.type() == QgsWkbTypes::PointGeometry && offsetType == FromSymbolBounds ) )
   {
     if ( !obstacleGeometry.isNull() && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines ) )
     {
@@ -2363,7 +2397,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   ( *labelFeature )->setOverrunDistance( overrunDistanceEval );
   ( *labelFeature )->setOverrunSmoothDistance( overrunSmoothDist );
   ( *labelFeature )->setLabelAllParts( labelAll );
-  if ( geom.type() == QgsWkbTypes::PointGeometry && isObstacle && !obstacleGeometry.isNull() )
+  if ( geom.type() == QgsWkbTypes::PointGeometry && !obstacleGeometry.isNull() )
   {
     //register symbol size
     ( *labelFeature )->setSymbolSize( QSizeF( obstacleGeometry.boundingBox().width(),
@@ -2919,6 +2953,11 @@ void QgsPalLayerSettings::parseTextBuffer( QgsRenderContext &context )
   if ( dataDefinedValEval( DDBool, QgsPalLayerSettings::BufferDraw, exprVal, context.expressionContext(), buffer.enabled() ) )
   {
     drawBuffer = exprVal.toBool();
+  }
+  else if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::BufferDraw ) && exprVal.isNull() )
+  {
+    drawBuffer = false;
+    dataDefinedValues.insert( QgsPalLayerSettings::BufferDraw, QVariant( drawBuffer ) );
   }
 
   if ( !drawBuffer )

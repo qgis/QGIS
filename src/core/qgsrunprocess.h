@@ -44,7 +44,7 @@ class CORE_EXPORT QgsRunProcess: public QObject SIP_NODEFAULTCTORS
 
   public:
     // This class deletes itself, so to ensure that it is only created
-    // using new, the Named Consturctor Idiom is used, and one needs to
+    // using new, the Named Constructor Idiom is used, and one needs to
     // use the create() static function to get an instance of this class.
 
     // The action argument contains string with the command.

@@ -141,12 +141,12 @@ QgsLegendSymbolList QgsDataDefinedSizeLegend::legendSymbolList() const
 }
 
 
-void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, QSize *outputSize, int *labelXOffset ) const
+void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, QSizeF *outputSize, double *labelXOffset ) const
 {
   if ( mType != LegendCollapsed || mSizeClasses.isEmpty() || !mSymbol )
   {
     if ( outputSize )
-      *outputSize = QSize();
+      *outputSize = QSizeF();
     if ( labelXOffset )
       *labelXOffset = 0;
     return;
@@ -170,78 +170,76 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   // make sure we draw bigger symbols first
   std::sort( classes.begin(), classes.end(), []( const SizeClass & a, const SizeClass & b ) { return a.size > b.size; } );
 
-  int hLengthLine = std::round( context.convertToPainterUnits( hLengthLineMM, QgsUnitTypes::RenderMillimeters ) );
-  int hSpaceLineText = std::round( context.convertToPainterUnits( hSpaceLineTextMM, QgsUnitTypes::RenderMillimeters ) );
+  double hLengthLine = context.convertToPainterUnits( hLengthLineMM, QgsUnitTypes::RenderMillimeters );
+  double hSpaceLineText = context.convertToPainterUnits( hSpaceLineTextMM, QgsUnitTypes::RenderMillimeters );
   int dpm = std::round( context.scaleFactor() * 1000 );  // scale factor = dots per millimeter
 
   // get font metrics - we need a temporary image just to get the metrics right for the given DPI
   QImage tmpImg( QSize( 1, 1 ), QImage::Format_ARGB32_Premultiplied );
   tmpImg.setDotsPerMeterX( dpm );
   tmpImg.setDotsPerMeterY( dpm );
-  QFontMetrics fm( mFont, &tmpImg );
-  int textHeight = fm.height();
-  int leading = fm.leading();
-  int minTextDistY = textHeight + leading;
+  QFontMetricsF fm( mFont, &tmpImg );
+  double textHeight = fm.height();
+  double leading = fm.leading();
+  double minTextDistY = textHeight + leading;
 
   //
   // determine layout of the rendered elements
   //
 
   // find out how wide the text will be
-  int maxTextWidth = 0;
+  double maxTextWidth = 0;
   for ( const SizeClass &c : qgis::as_const( classes ) )
   {
-    int w = fm.width( c.label );
-    if ( w > maxTextWidth )
-      maxTextWidth = w;
+    maxTextWidth = std::max( maxTextWidth, fm.boundingRect( c.label ).width() );
   }
   // add extra width needed to handle varying rendering of font weight
   maxTextWidth += 1;
 
   // find out size of the largest symbol
   double largestSize = classes.at( 0 ).size;
-  int outputLargestSize = std::round( context.convertToPainterUnits( largestSize, s->sizeUnit(), s->sizeMapUnitScale() ) );
+  double outputLargestSize = context.convertToPainterUnits( largestSize, s->sizeUnit(), s->sizeMapUnitScale() );
 
   // find out top Y coordinate for individual symbol sizes
-  QList<int> symbolTopY;
+  QList<double> symbolTopY;
   for ( const SizeClass &c : qgis::as_const( classes ) )
   {
-    int outputSymbolSize = std::round( context.convertToPainterUnits( c.size, s->sizeUnit(), s->sizeMapUnitScale() ) );
+    double outputSymbolSize = context.convertToPainterUnits( c.size, s->sizeUnit(), s->sizeMapUnitScale() );
     switch ( mVAlign )
     {
       case AlignCenter:
-        symbolTopY << std::round( outputLargestSize / 2 - outputSymbolSize / 2 );
+        symbolTopY << outputLargestSize / 2 - outputSymbolSize / 2;
         break;
       case AlignBottom:
-        symbolTopY << std::round( outputLargestSize - outputSymbolSize );
+        symbolTopY <<  outputLargestSize - outputSymbolSize;
         break;
     }
   }
 
   // determine Y coordinate of texts: ideally they should be at the same level as symbolTopY
   // but we need to avoid overlapping texts, so adjust the vertical positions
-  int middleIndex = 0; // classes.count() / 2;  // will get the ideal position
-  QList<int> textCenterY;
-  int lastY = symbolTopY[middleIndex];
+  double middleIndex = 0; // classes.count() / 2;  // will get the ideal position
+  QList<double> textCenterY;
+  double lastY = symbolTopY[middleIndex];
   textCenterY << lastY;
   for ( int i = middleIndex + 1; i < classes.count(); ++i )
   {
-    int symbolY = symbolTopY[i];
+    double symbolY = symbolTopY[i];
     if ( symbolY - lastY < minTextDistY )
       symbolY = lastY + minTextDistY;
     textCenterY << symbolY;
     lastY = symbolY;
   }
 
-  int textTopY = textCenterY.first() - textHeight / 2;
-  int textBottomY = textCenterY.last() + textHeight / 2;
-  int totalTextHeight = textBottomY - textTopY;
+  double textTopY = textCenterY.first() - textHeight / 2;
+  double textBottomY = textCenterY.last() + textHeight / 2;
+  double totalTextHeight = textBottomY - textTopY;
 
-  int fullWidth = outputLargestSize + hLengthLine + hSpaceLineText + maxTextWidth;
-  int fullHeight = std::max( static_cast< int >( std::round( outputLargestSize ) ) - textTopY, totalTextHeight );
+  double fullWidth = outputLargestSize + hLengthLine + hSpaceLineText + maxTextWidth;
+  double fullHeight = std::max( outputLargestSize - textTopY, totalTextHeight );
 
   if ( outputSize )
-    *outputSize = QSize( fullWidth, fullHeight );
+    *outputSize = QSizeF( fullWidth, fullHeight );
   if ( labelXOffset )
     *labelXOffset = outputLargestSize + hLengthLine + hSpaceLineText;
 
@@ -262,7 +260,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   {
     s->setSize( c.size );
 
-    int outputSymbolSize = std::round( context.convertToPainterUnits( c.size, s->sizeUnit(), s->sizeMapUnitScale() ) );
+    double outputSymbolSize = context.convertToPainterUnits( c.size, s->sizeUnit(), s->sizeMapUnitScale() );
     double tx = ( outputLargestSize - outputSymbolSize ) / 2;
 
     p->save();
@@ -305,10 +303,10 @@ QImage QgsDataDefinedSizeLegend::collapsedLegendImage( QgsRenderContext &context
     return QImage();
 
   // find out the size first
-  QSize contentSize;
+  QSizeF contentSize;
   drawCollapsedLegend( context, &contentSize );
 
-  int padding = std::round( context.convertToPainterUnits( paddingMM, QgsUnitTypes::RenderMillimeters ) );
+  double padding = context.convertToPainterUnits( paddingMM, QgsUnitTypes::RenderMillimeters );
   int dpm = std::round( context.scaleFactor() * 1000 );  // scale factor = dots per millimeter
 
   QImage img( contentSize.width() + padding * 2, contentSize.height() + padding * 2, QImage::Format_ARGB32_Premultiplied );

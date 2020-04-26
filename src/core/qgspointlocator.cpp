@@ -134,6 +134,117 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
 };
 
 
+
+/**
+ * \ingroup core
+ * Helper class used when traversing the index looking for centroid - builds a list of matches.
+ * \note not available in Python bindings
+ * \since QGIS 3.12
+*/
+class QgsPointLocator_VisitorNearestCentroid : public IVisitor
+{
+  public:
+
+    /**
+     * \ingroup core
+     * Helper class used when traversing the index looking for centroid - builds a list of matches.
+     * \note not available in Python bindings
+     * \since QGIS 3.12
+    */
+    QgsPointLocator_VisitorNearestCentroid( QgsPointLocator *pl, QgsPointLocator::Match &m, const QgsPointXY &srcPoint, QgsPointLocator::MatchFilter *filter = nullptr )
+      : mLocator( pl )
+      , mBest( m )
+      , mSrcPoint( srcPoint )
+      , mFilter( filter )
+    {}
+
+    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+
+    void visitData( const IData &d ) override
+    {
+      QgsFeatureId id = d.getIdentifier();
+      QgsGeometry *geom = mLocator->mGeoms.value( id );
+
+      QgsPointXY pt = geom->centroid().asPoint();
+
+      QgsPointLocator::Match m( QgsPointLocator::Centroid, mLocator->mLayer, id, std::sqrt( mSrcPoint.sqrDist( pt ) ), pt, -1 );
+      // in range queries the filter may reject some matches
+      if ( mFilter && !mFilter->acceptMatch( m ) )
+        return;
+
+      if ( !mBest.isValid() || m.distance() < mBest.distance() )
+        mBest = m;
+
+    }
+
+  private:
+    QgsPointLocator *mLocator = nullptr;
+    QgsPointLocator::Match &mBest;
+    QgsPointXY mSrcPoint;
+    QgsPointLocator::MatchFilter *mFilter = nullptr;
+};
+
+////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \ingroup core
+ * Helper class used when traversing the index looking for middle segment - builds a list of matches.
+ * \note not available in Python bindings
+ * \since QGIS 3.12
+*/
+class QgsPointLocator_VisitorNearestMiddleOfSegment: public IVisitor
+{
+  public:
+
+    /**
+     * \ingroup core
+     * Helper class used when traversing the index looking for middle segment - builds a list of matches.
+     * \note not available in Python bindings
+     * \since QGIS 3.12
+    */
+    QgsPointLocator_VisitorNearestMiddleOfSegment( QgsPointLocator *pl, QgsPointLocator::Match &m, const QgsPointXY &srcPoint, QgsPointLocator::MatchFilter *filter = nullptr )
+      : mLocator( pl )
+      , mBest( m )
+      , mSrcPoint( srcPoint )
+      , mFilter( filter )
+    {}
+
+    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+
+    void visitData( const IData &d ) override
+    {
+      QgsFeatureId id = d.getIdentifier();
+      QgsGeometry *geom = mLocator->mGeoms.value( id );
+      QgsPointXY pt;
+      int afterVertex;
+      double sqrDist = geom->closestSegmentWithContext( mSrcPoint, pt, afterVertex, nullptr, POINT_LOC_EPSILON );
+      if ( sqrDist < 0 )
+        return;
+
+      QgsPointXY edgePoints[2];
+      edgePoints[0] = geom->vertexAt( afterVertex - 1 );
+      edgePoints[1] = geom->vertexAt( afterVertex );
+      pt = QgsPointXY( ( edgePoints[0].x() + edgePoints[1].x() ) / 2.0, ( edgePoints[0].y() + edgePoints[1].y() ) / 2.0 );
+
+      QgsPointLocator::Match m( QgsPointLocator::MiddleOfSegment, mLocator->mLayer, id, std::sqrt( mSrcPoint.sqrDist( pt ) ), pt, -1 );
+      // in range queries the filter may reject some matches
+      if ( mFilter && !mFilter->acceptMatch( m ) )
+        return;
+
+      if ( !mBest.isValid() || m.distance() < mBest.distance() )
+        mBest = m;
+
+    }
+
+  private:
+    QgsPointLocator *mLocator = nullptr;
+    QgsPointLocator::Match &mBest;
+    QgsPointXY mSrcPoint;
+    QgsPointLocator::MatchFilter *mFilter = nullptr;
+};
+
 ////////////////////////////////////////////////////////////////////////////
 
 
@@ -471,6 +582,101 @@ class QgsPointLocator_VisitorVerticesInRect : public IVisitor
     QgsPointLocator::MatchFilter *mFilter = nullptr;
 };
 
+/**
+ * \ingroup core
+ * Helper class used when traversing the index looking for centroid - builds a list of matches.
+ * \note not available in Python bindings
+ * \since QGIS 3.10
+*/
+class QgsPointLocator_VisitorCentroidsInRect : public IVisitor
+{
+  public:
+    //! Constructs the visitor
+    QgsPointLocator_VisitorCentroidsInRect( QgsPointLocator *pl, QgsPointLocator::MatchList &lst, const QgsRectangle &srcRect, QgsPointLocator::MatchFilter *filter = nullptr )
+      : mLocator( pl )
+      , mList( lst )
+      , mSrcRect( srcRect )
+      , mFilter( filter )
+    {}
+
+    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+
+    void visitData( const IData &d ) override
+    {
+      QgsFeatureId id = d.getIdentifier();
+      const QgsGeometry *geom = mLocator->mGeoms.value( id );
+      const QgsPointXY centroid = geom->centroid().asPoint();
+      if ( mSrcRect.contains( centroid ) )
+      {
+        QgsPointLocator::Match m( QgsPointLocator::Centroid, mLocator->mLayer, id, 0, centroid, -1 );
+
+        // in range queries the filter may reject some matches
+        if ( !( mFilter && !mFilter->acceptMatch( m ) ) )
+          mList << m;
+      }
+    }
+
+  private:
+    QgsPointLocator *mLocator = nullptr;
+    QgsPointLocator::MatchList &mList;
+    QgsRectangle mSrcRect;
+    QgsPointLocator::MatchFilter *mFilter = nullptr;
+};
+
+/**
+ * \ingroup core
+ * Helper class used when traversing the index looking for middle segment - builds a list of matches.
+ * \note not available in Python bindings
+ * \since QGIS 3.10
+*/
+class QgsPointLocator_VisitorMiddlesInRect : public IVisitor
+{
+  public:
+    //! Constructs the visitor
+    QgsPointLocator_VisitorMiddlesInRect( QgsPointLocator *pl, QgsPointLocator::MatchList &lst, const QgsRectangle &srcRect, QgsPointLocator::MatchFilter *filter = nullptr )
+      : mLocator( pl )
+      , mList( lst )
+      , mSrcRect( srcRect )
+      , mFilter( filter )
+    {}
+
+    void visitNode( const INode &n ) override { Q_UNUSED( n ); }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ); }
+
+    void visitData( const IData &d ) override
+    {
+      QgsFeatureId id = d.getIdentifier();
+      const QgsGeometry *geom = mLocator->mGeoms.value( id );
+
+      for ( QgsAbstractGeometry::const_part_iterator itPart = geom->const_parts_begin() ; itPart != geom->const_parts_end() ; ++itPart )
+      {
+        QgsAbstractGeometry::vertex_iterator it = ( *itPart )->vertices_begin();
+        QgsAbstractGeometry::vertex_iterator itPrevious = ( *itPart )->vertices_begin();
+        it++;
+        for ( ; it != geom->vertices_end(); ++it, ++itPrevious )
+        {
+          QgsPointXY pt( ( ( *itPrevious ).x() + ( *it ).x() ) / 2.0, ( ( *itPrevious ).y() + ( *it ).y() ) / 2.0 );
+          if ( mSrcRect.contains( pt ) )
+          {
+            QgsPointLocator::Match m( QgsPointLocator::MiddleOfSegment, mLocator->mLayer, id, 0, pt, -1 );
+
+            // in range queries the filter may reject some matches
+            if ( mFilter && !mFilter->acceptMatch( m ) )
+              continue;
+
+            mList << m;
+          }
+        }
+      }
+    }
+
+  private:
+    QgsPointLocator *mLocator = nullptr;
+    QgsPointLocator::MatchList &mList;
+    QgsRectangle mSrcRect;
+    QgsPointLocator::MatchFilter *mFilter = nullptr;
+};
 
 ////////////////////////////////////////////////////////////////////////////
 #include <QStack>
@@ -690,7 +896,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   QElapsedTimer t;
   t.start();
 
-  QgsDebugMsg( QStringLiteral( "RebuildIndex start : %1" ).arg( mSource->id() ) );
+  QgsDebugMsgLevel( QStringLiteral( "RebuildIndex start : %1" ).arg( mSource->id() ), 2 );
 
   destroyIndex();
 
@@ -810,7 +1016,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
     mRenderer->stopRender( *ctx );
   }
 
-  QgsDebugMsg( QStringLiteral( "RebuildIndex end : %1 ms (%2)" ).arg( t.elapsed() ).arg( mSource->id() ) );
+  QgsDebugMsgLevel( QStringLiteral( "RebuildIndex end : %1 ms (%2)" ).arg( t.elapsed() ).arg( mSource->id() ), 2 );
 
   return true;
 }
@@ -960,6 +1166,36 @@ QgsPointLocator::Match QgsPointLocator::nearestVertex( const QgsPointXY &point, 
 
   Match m;
   QgsPointLocator_VisitorNearestVertex visitor( this, m, point, filter );
+  QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
+  mRTree->intersectsWithQuery( rect2region( rect ), visitor );
+  if ( m.isValid() && m.distance() > tolerance )
+    return Match(); // make sure that only match strictly within the tolerance is returned
+  return m;
+}
+
+QgsPointLocator::Match QgsPointLocator::nearestCentroid( const QgsPointXY &point, double tolerance, MatchFilter *filter, bool relaxed )
+{
+  if ( !prepare( relaxed ) )
+    return Match();
+
+  Match m;
+  QgsPointLocator_VisitorNearestCentroid visitor( this, m, point, filter );
+
+  QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
+  mRTree->intersectsWithQuery( rect2region( rect ), visitor );
+  if ( m.isValid() && m.distance() > tolerance )
+    return Match(); // make sure that only match strictly within the tolerance is returned
+  return m;
+}
+
+QgsPointLocator::Match QgsPointLocator::nearestMiddleOfSegment( const QgsPointXY &point, double tolerance, MatchFilter *filter, bool relaxed )
+{
+  if ( !prepare( relaxed ) )
+    return Match();
+
+  Match m;
+  QgsPointLocator_VisitorNearestMiddleOfSegment visitor( this, m, point, filter );
+
   QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
   mRTree->intersectsWithQuery( rect2region( rect ), visitor );
   if ( m.isValid() && m.distance() > tolerance )

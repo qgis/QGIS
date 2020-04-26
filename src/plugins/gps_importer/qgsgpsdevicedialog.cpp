@@ -107,7 +107,7 @@ void QgsGpsDeviceDialog::slotUpdateDeviceList( const QString &selection )
   }
 
   // We're going to be changing the selected item, so disable our
-  // notificaton of that.
+  // notification of that.
   QObject::disconnect( lbDeviceList, &QListWidget::currentItemChanged,
                        this, &QgsGpsDeviceDialog::slotSelectionChanged );
 

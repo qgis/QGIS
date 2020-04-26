@@ -12,9 +12,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <QClipboard>
 
 #include "qgsapplayertreeviewmenuprovider.h"
-
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
@@ -22,6 +22,7 @@
 #include "qgscolorwidgets.h"
 #include "qgscolorschemeregistry.h"
 #include "qgscolorswatchgrid.h"
+#include "qgsgui.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
@@ -42,7 +43,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsxmlutils.h"
 
-#include <QClipboard>
+
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
   : mView( view )
@@ -114,6 +115,11 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == 0 ) )
       {
         menu->addAction( actions->actionMoveToTop( menu ) );
+      }
+
+      if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == idx.model()->rowCount() - 1 ) )
+      {
+        menu->addAction( actions->actionMoveToBottom( menu ) );
       }
 
       menu->addSeparator();
@@ -203,6 +209,11 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( actions->actionMoveToTop( menu ) );
       }
 
+      if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == idx.model()->rowCount() - 1 ) )
+      {
+        menu->addAction( actions->actionMoveToBottom( menu ) );
+      }
+
       QAction *checkAll = actions->actionCheckAndAllParents( menu );
       if ( checkAll )
         menu->addAction( checkAll );
@@ -247,9 +258,16 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         if ( provider && provider->supportsSubsetString() )
         {
-          QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), &QgisApp::layerSubsetString );
+          QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), qgis::overload<>::of( &QgisApp::layerSubsetString ) );
           action->setEnabled( !vlayer->isEditable() );
         }
+      }
+
+      if ( rlayer &&
+           rlayer->dataProvider() &&
+           rlayer->dataProvider()->supportsSubsetString() )
+      {
+        menu->addAction( tr( "&Filter…" ), QgisApp::instance(), qgis::overload<>::of( &QgisApp::layerSubsetString ) );
       }
 
       // change data source is only supported for vectors and rasters
@@ -270,6 +288,34 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           } );
         }
         menu->addAction( a );
+      }
+
+      // actions on the selection
+      if ( vlayer && vlayer->selectedFeatureCount() > 0 )
+      {
+        int selectionCount = vlayer->selectedFeatureCount();
+        QgsMapLayerAction::Target target;
+        if ( selectionCount == 1 )
+          target = QgsMapLayerAction::Target::SingleFeature;
+        else
+          target = QgsMapLayerAction::Target::MultipleFeatures;
+
+        const QList<QgsMapLayerAction *> constRegisteredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, target );
+        if ( !constRegisteredActions.isEmpty() )
+        {
+          QMenu *actionMenu = menu->addMenu( tr( "Actions on Selection (%1)" ).arg( selectionCount ) );
+          for ( QgsMapLayerAction *action : constRegisteredActions )
+          {
+            if ( target == QgsMapLayerAction::Target::SingleFeature )
+            {
+              actionMenu->addAction( action->text(), action, [ = ]() { action->triggerForFeature( vlayer,  vlayer->selectedFeatures().at( 0 ) ); } );
+            }
+            else if ( target == QgsMapLayerAction::Target::MultipleFeatures )
+            {
+              actionMenu->addAction( action->text(), action, [ = ]() {action->triggerForFeatures( vlayer, vlayer->selectedFeatures() );} );
+            }
+          }
+        }
       }
 
       menu->addSeparator();

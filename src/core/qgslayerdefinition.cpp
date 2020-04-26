@@ -28,6 +28,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsreadwritecontext.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectortilelayer.h"
 #include "qgsapplication.h"
 
 bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage )
@@ -210,7 +211,8 @@ bool QgsLayerDefinition::exportLayerDefinition( QString path, const QList<QgsLay
   }
 
   QgsReadWriteContext context;
-  context.setPathResolver( QgsPathResolver( path ) );
+  bool writeAbsolutePath = QgsProject::instance()->readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
+  context.setPathResolver( QgsPathResolver( writeAbsolutePath ? QString() : path ) );
 
   QDomDocument doc( QStringLiteral( "qgis-layer-definition" ) );
   if ( !exportLayerDefinition( doc, selectedTreeNodes, errorMessage, context ) )
@@ -291,6 +293,10 @@ QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayers( QDomDocument
     else if ( type == QLatin1String( "raster" ) )
     {
       layer = new QgsRasterLayer;
+    }
+    else if ( type == QLatin1String( "vector-tile" ) )
+    {
+      layer = new QgsVectorTileLayer;
     }
     else if ( type == QLatin1String( "plugin" ) )
     {

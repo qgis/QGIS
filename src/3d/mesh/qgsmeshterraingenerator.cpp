@@ -29,10 +29,9 @@
 #include "qgsterraintextureimage_p.h"
 
 
-QgsMeshTerrainTileLoader::QgsMeshTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, const QgsTriangularMesh &triangularMesh, const QgsRectangle &extent, const QgsMesh3DSymbol &symbol ):
+QgsMeshTerrainTileLoader::QgsMeshTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, QgsMeshLayer *layer, const QgsMesh3DSymbol &symbol ):
   QgsTerrainTileLoader( terrain, node ),
-  mExtent( extent ),
-  mTriangularMesh( triangularMesh ),
+  mLayerRef( layer ),
   mSymbol( symbol )
 {
   loadTexture();
@@ -40,7 +39,13 @@ QgsMeshTerrainTileLoader::QgsMeshTerrainTileLoader( QgsTerrainEntity *terrain, Q
 
 Qt3DCore::QEntity *QgsMeshTerrainTileLoader::createEntity( Qt3DCore::QEntity *parent )
 {
-  auto entity = new QgsMesh3dTerrainTileEntity( terrain()->map3D(), mTriangularMesh, mExtent, mSymbol, mNode->tileId(), parent );
+  QgsMeshLayer *layer = qobject_cast<QgsMeshLayer *>( mLayerRef.layer.data() );
+  if ( !layer )
+    return nullptr;
+
+  QgsCoordinateTransform transform( terrain()->map3D().crs(), layer->crs(), terrain()->map3D().transformContext() );
+  layer->updateTriangularMesh( transform );
+  QgsMesh3dTerrainTileEntity *entity = new QgsMesh3dTerrainTileEntity( terrain()->map3D(), layer, mSymbol, mNode->tileId(), parent );
   entity->build();
   createTexture( entity );
 
@@ -52,21 +57,13 @@ QgsChunkLoader *QgsMeshTerrainGenerator::createChunkLoader( QgsChunkNode *node )
   if ( !mLayer )
     return nullptr;
 
-  QgsCoordinateTransform terrainToMapTransform( mLayer->crs(), mCrs, mTransformContext );
-
-  /*
-   * Force to create a triangularMesh by create a renderer, if it does not have been created yet
-   * Not very clean but could be improve with mesh triangulation handling in the future
-   */
-  QgsRenderContext renderContext;
-  renderContext.setCoordinateTransform( terrainToMapTransform );
-  renderContext.setTransformContext( mTransformContext );
-  meshLayer()->createMapRenderer( renderContext );
-
-  return new QgsMeshTerrainTileLoader( mTerrain, node, *meshLayer()->triangularMesh(), extent(), symbol() );
+  return new QgsMeshTerrainTileLoader( mTerrain, node, meshLayer(), symbol() );
 }
 
-float QgsMeshTerrainGenerator::rootChunkError( const Qgs3DMapSettings &map ) const {Q_UNUSED( map ); return 0;}
+float QgsMeshTerrainGenerator::rootChunkError( const Qgs3DMapSettings & ) const
+{
+  return 0;
+}
 
 void QgsMeshTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) const
 {
@@ -83,7 +80,7 @@ void QgsMeshTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) c
 
   for ( int i = 0; i < triangularMesh->vertices().count(); ++i )
   {
-    float zValue = triangularMesh->vertices().at( i ).z();
+    float zValue = static_cast< float >( triangularMesh->vertices().at( i ).z() );
     if ( min > zValue )
       min = zValue;
     if ( max < zValue )
@@ -137,7 +134,7 @@ QgsRectangle QgsMeshTerrainGenerator::extent() const
   {
     extentInMap = terrainToMapTransform.transform( mLayer->extent() );
   }
-  catch ( QgsCsException &e )
+  catch ( QgsCsException & )
   {
     extentInMap = mLayer->extent();
   }

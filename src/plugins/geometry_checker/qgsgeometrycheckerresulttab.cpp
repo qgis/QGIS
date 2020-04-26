@@ -106,10 +106,7 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, 
   ui.tableWidgetErrors->horizontalHeader()->setSortIndicator( 0, Qt::AscendingOrder );
   ui.tableWidgetErrors->resizeColumnToContents( 0 );
   ui.tableWidgetErrors->resizeColumnToContents( 1 );
-  ui.tableWidgetErrors->horizontalHeader()->setResizeMode( 2, QHeaderView::Stretch );
-  ui.tableWidgetErrors->horizontalHeader()->setResizeMode( 3, QHeaderView::Stretch );
-  ui.tableWidgetErrors->horizontalHeader()->setResizeMode( 4, QHeaderView::Stretch );
-  ui.tableWidgetErrors->horizontalHeader()->setResizeMode( 5, QHeaderView::Stretch );
+  ui.tableWidgetErrors->horizontalHeader()->setStretchLastSection( true );
   // Not sure why, but this is needed...
   ui.tableWidgetErrors->setSortingEnabled( true );
   ui.tableWidgetErrors->setSortingEnabled( false );
@@ -278,9 +275,16 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   for ( int row = 0, nRows = ui.tableWidgetErrors->rowCount(); row < nRows; ++row )
   {
     QgsGeometryCheckError *error = ui.tableWidgetErrors->item( row, 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError *>();
-    QgsVectorLayer *srcLayer = mChecker->featurePools()[error->layerId()]->layer();
+    QString layerName = QString();
+    const QString layerId = error->layerId();
+    if ( mChecker->featurePools().keys().contains( layerId ) )
+    {
+      QgsVectorLayer *srcLayer = mChecker->featurePools()[layerId]->layer();
+      layerName = srcLayer->name();
+    }
+
     QgsFeature f( layer->fields() );
-    f.setAttribute( fieldLayer, srcLayer->name() );
+    f.setAttribute( fieldLayer, layerName );
     f.setAttribute( fieldFeatureId, error->featureId() );
     f.setAttribute( fieldErrDesc, error->description() );
     QgsGeometry geom( new QgsPoint( error->location() ) );
@@ -404,7 +408,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
 
   if ( !totextent.isEmpty() )
   {
-    mIface->mapCanvas()->setExtent( totextent );
+    mIface->mapCanvas()->setExtent( totextent, true );
   }
   mIface->mapCanvas()->refresh();
 }

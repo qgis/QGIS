@@ -34,7 +34,6 @@ class QPushButton;
 class QLineEdit;
 class QComboBox;
 class QMenu;
-class QSignalMapper;
 class QgsAttributeTableModel;
 class QgsAttributeTableFilterModel;
 class QgsRubberBand;
@@ -155,6 +154,11 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void mActionDeleteSelected_triggered();
 
     /**
+     * Opens organize columns dialog
+     */
+    void mActionOrganizeColumns_triggered();
+
+    /**
      * Called when the current index changes in the main view
      * i.e. when the view mode is switched from table to form view
      * or vice versa.
@@ -217,7 +221,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     QPointer< QgsVectorLayer > mLayer = nullptr;
     QStringList mVisibleFields;
-    QgsAttributeEditorContext mEditorContext;
 
     void updateMultiEditButtonState();
     void deleteFeature( QgsFeatureId fid );

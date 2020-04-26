@@ -54,6 +54,7 @@
 #include "qgsguiutils.h"
 #include "qgsproxyprogresstask.h"
 #include "qgisapp.h"
+#include "qgsorganizetablecolumnsdialog.h"
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
@@ -73,7 +74,7 @@ QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 
 void QgsAttributeTableDialog::updateMultiEditButtonState()
 {
-  if ( ! mLayer || ( mLayer->editFormConfig().layout() == QgsEditFormConfig::UiFileLayout ) )
+  if ( ! mLayer || ( mLayer->editFormConfig().layout() == QgsEditFormConfig::EditorLayout::UiFileLayout ) )
     return;
 
   mActionToggleMultiEdit->setEnabled( mLayer->isEditable() );
@@ -105,6 +106,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   connect( mActionSelectedToTop, &QAction::toggled, this, &QgsAttributeTableDialog::mActionSelectedToTop_toggled );
   connect( mActionAddAttribute, &QAction::triggered, this, &QgsAttributeTableDialog::mActionAddAttribute_triggered );
   connect( mActionRemoveAttribute, &QAction::triggered, this, &QgsAttributeTableDialog::mActionRemoveAttribute_triggered );
+  connect( mActionOrganizeColumns, &QAction::triggered, this, &QgsAttributeTableDialog::mActionOrganizeColumns_triggered );
   connect( mActionOpenFieldCalculator, &QAction::triggered, this, &QgsAttributeTableDialog::mActionOpenFieldCalculator_triggered );
   connect( mActionDeleteSelected, &QAction::triggered, this, &QgsAttributeTableDialog::mActionDeleteSelected_triggered );
   connect( mMainView, &QgsDualView::currentChanged, this, &QgsAttributeTableDialog::mMainView_currentChanged );
@@ -150,12 +152,9 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   QgsDistanceArea da;
   da.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
   da.setEllipsoid( QgsProject::instance()->ellipsoid() );
-  mEditorContext.setDistanceArea( da );
 
-  mEditorContext.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
-  mEditorContext.setMapCanvas( QgisApp::instance()->mapCanvas() );
-  mEditorContext.setMainMessageBar( QgisApp::instance()->messageBar() );
-  mEditorContext.setCadDockWidget( QgisApp::instance()->cadDockWidget() );
+  QgsAttributeEditorContext editorContext = QgisApp::instance()->createAttributeEditorContext();
+  editorContext.setDistanceArea( da );
 
   QgsFeatureRequest r;
   bool needsGeom = false;
@@ -175,12 +174,12 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
     r.setFlags( QgsFeatureRequest::NoGeometry );
 
   // Initialize dual view
-  mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, mEditorContext, false );
+  mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, editorContext, false );
 
   QgsAttributeTableConfig config = mLayer->attributeTableConfig();
   mMainView->setAttributeTableConfig( config );
 
-  mFeatureFilterWidget->init( mLayer, mEditorContext, mMainView, QgisApp::instance()->messageBar(), QgisApp::instance()->messageTimeout() );
+  mFeatureFilterWidget->init( mLayer, editorContext, mMainView, QgisApp::instance()->messageBar(), QgisApp::instance()->messageTimeout() );
 
   mActionFeatureActions = new QToolButton();
   mActionFeatureActions->setAutoRaise( false );
@@ -320,7 +319,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
     connect( mActionSearchForm, &QAction::toggled, mMainView, &QgsDualView::toggleSearchMode );
     updateMultiEditButtonState();
 
-    if ( mLayer->editFormConfig().layout() == QgsEditFormConfig::UiFileLayout )
+    if ( mLayer->editFormConfig().layout() == QgsEditFormConfig::EditorLayout::UiFileLayout )
     {
       //not supported with custom UI
       mActionToggleMultiEdit->setEnabled( false );
@@ -835,6 +834,20 @@ void QgsAttributeTableDialog::mActionRemoveAttribute_triggered()
   }
 }
 
+void QgsAttributeTableDialog::mActionOrganizeColumns_triggered()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  QgsOrganizeTableColumnsDialog dlg( mLayer, mLayer->attributeTableConfig(), this );
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    QgsAttributeTableConfig config = dlg.config();
+    mMainView->setAttributeTableConfig( config );
+  }
+}
 
 void QgsAttributeTableDialog::openConditionalStyles()
 {

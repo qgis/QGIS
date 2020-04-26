@@ -38,6 +38,8 @@
 #include "qgsogrutils.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
 
 #include <QDir>
 #include <QDomDocument>
@@ -135,7 +137,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
 
       QgsSnappingConfig snappingConfig = QgsProject::instance()->snappingConfig();
 
-      // copy selected vector layers to SpatiaLite
+      // copy selected vector layers to offline layer
       for ( int i = 0; i < layerIds.count(); i++ )
       {
         emit layerProgressUpdated( i + 1, layerIds.count() );
@@ -162,7 +164,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
 
       QgsProject::instance()->setSnappingConfig( snappingConfig );
 
-      // restore join info on new SpatiaLite layer
+      // restore join info on new offline layer
       QMap<QString, QgsVectorJoinList >::ConstIterator it;
       for ( it = joinInfoBuffer.constBegin(); it != joinInfoBuffer.constEnd(); ++it )
       {
@@ -687,7 +689,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       }
 
       OGRSFDriverH hDriver = nullptr;
-      OGRSpatialReferenceH hSRS = OSRNewSpatialReference( layer->crs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ).toLocal8Bit().data() );
+      OGRSpatialReferenceH hSRS = OSRNewSpatialReference( layer->crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toLocal8Bit().data() );
       gdal::ogr_datasource_unique_ptr hDS( OGROpen( offlineDbPath.toUtf8().constData(), true, &hDriver ) );
       OGRLayerH hLayer = OGR_DS_CreateLayer( hDS.get(), tableName.toUtf8().constData(), hSRS, static_cast<OGRwkbGeometryType>( layer->wkbType() ), options );
       CSLDestroy( options );
@@ -847,6 +849,9 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
     {
       showWarning( newLayer->commitErrors().join( QStringLiteral( "\n" ) ) );
     }
+
+    // copy the custom properties from original layer
+    newLayer->setCustomProperties( layer->customProperties() );
 
     // mark as offline layer
     newLayer->setCustomProperty( CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE, true );
@@ -1453,9 +1458,8 @@ void QgsOfflineEditing::committedAttributesAdded( const QString &qgisLayerId, co
   int layerId = getOrCreateLayerId( database.get(), qgisLayerId );
   int commitNo = getCommitNo( database.get() );
 
-  for ( QList<QgsField>::const_iterator it = addedAttributes.begin(); it != addedAttributes.end(); ++it )
+  for ( const QgsField &field : addedAttributes )
   {
-    QgsField field = *it;
     QString sql = QStringLiteral( "INSERT INTO 'log_added_attrs' VALUES ( %1, %2, '%3', %4, %5, %6, '%7' )" )
                   .arg( layerId )
                   .arg( commitNo )
@@ -1481,7 +1485,8 @@ void QgsOfflineEditing::committedFeaturesAdded( const QString &qgisLayerId, cons
 
   // get new feature ids from db
   QgsMapLayer *layer = QgsProject::instance()->mapLayer( qgisLayerId );
-  QgsDataSourceUri uri = QgsDataSourceUri( layer->source() );
+  QString dataSourceString = layer->source();
+  QgsDataSourceUri uri = QgsDataSourceUri( dataSourceString );
 
   QString offlinePath = QgsProject::instance()->readPath( QgsProject::instance()->readEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH ) );
   QString tableName;
@@ -1492,7 +1497,13 @@ void QgsOfflineEditing::committedFeaturesAdded( const QString &qgisLayerId, cons
   }
   else
   {
-    tableName = uri.param( offlinePath + "|layername" );
+    QgsProviderMetadata *ogrProviderMetaData = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
+    QVariantMap decodedUri = ogrProviderMetaData->decodeUri( dataSourceString );
+    tableName = decodedUri.value( QStringLiteral( "layerName" ) ).toString();
+    if ( tableName.isEmpty() )
+    {
+      showWarning( tr( "Could not deduce table name from data source %1." ).arg( dataSourceString ) );
+    }
   }
 
   // only store feature ids
@@ -1516,19 +1527,19 @@ void QgsOfflineEditing::committedFeaturesRemoved( const QString &qgisLayerId, co
   // insert log
   int layerId = getOrCreateLayerId( database.get(), qgisLayerId );
 
-  for ( QgsFeatureIds::const_iterator it = deletedFeatureIds.begin(); it != deletedFeatureIds.end(); ++it )
+  for ( QgsFeatureId id : deletedFeatureIds )
   {
-    if ( isAddedFeature( database.get(), layerId, *it ) )
+    if ( isAddedFeature( database.get(), layerId, id ) )
     {
       // remove from added features log
-      QString sql = QStringLiteral( "DELETE FROM 'log_added_features' WHERE \"layer_id\" = %1 AND \"fid\" = %2" ).arg( layerId ).arg( *it );
+      QString sql = QStringLiteral( "DELETE FROM 'log_added_features' WHERE \"layer_id\" = %1 AND \"fid\" = %2" ).arg( layerId ).arg( id );
       sqlExec( database.get(), sql );
     }
     else
     {
       QString sql = QStringLiteral( "INSERT INTO 'log_removed_features' VALUES ( %1, %2)" )
                     .arg( layerId )
-                    .arg( *it );
+                    .arg( id );
       sqlExec( database.get(), sql );
     }
   }

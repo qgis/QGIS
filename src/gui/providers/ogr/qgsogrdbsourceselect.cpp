@@ -193,7 +193,6 @@ void QgsOgrDbSourceSelect::mSearchModeComboBox_currentIndexChanged( const QStrin
   mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
-
 void QgsOgrDbSourceSelect::populateConnectionList()
 {
   cmbConnections->clear();
@@ -203,12 +202,14 @@ void QgsOgrDbSourceSelect::populateConnectionList()
     QString text = name + tr( "@" ) + QgsOgrDbConnection( name, ogrDriverName( ) ).path();
     cmbConnections->addItem( text );
   }
-  setConnectionListPosition();
 
   btnConnect->setDisabled( cmbConnections->count() == 0 );
+  btnEdit->setDisabled( cmbConnections->count() == 0 );
   btnDelete->setDisabled( cmbConnections->count() == 0 );
-
+  btnSave->setDisabled( cmbConnections->count() == 0 );
   cmbConnections->setDisabled( cmbConnections->count() == 0 );
+
+  setConnectionListPosition();
 }
 
 void QgsOgrDbSourceSelect::btnNew_clicked()

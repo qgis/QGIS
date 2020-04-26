@@ -36,42 +36,30 @@ Item {
   }
 
   QgsQuick.EditorWidgetComboBox {
-    // Value relation cache map
-    property var currentMap
-    // Reversed to currentMap. It is used to find key (currentValue) according value (currentText)
-    property var reversedMap: ({})
+
     property var currentValue: value
 
     comboStyle: customStyle.fields
-    textRole: 'text'
+    textRole: 'display'
     height: parent.height
-    model: ListModel {
-      id: listModel
+
+    model: QgsQuick.ValueRelationListModel {
+        id: vrModel
     }
 
     Component.onCompleted: {
-      currentMap = QgsQuick.Utils.createValueRelationCache(config)
-      var valueInKeys = false
-      var keys = Object.keys(currentMap)
-      for(var i=0; i< keys.length; i++)
-      {
-        var currentKey = keys[i]
-        if (value == currentKey) valueInKeys = true
-        var valueText = currentMap[currentKey]
-        listModel.append( { text: valueText } )
-        reversedMap[valueText] = currentKey;
-      }
-      model = listModel
-      currentIndex = valueInKeys ? find(currentMap[value]) : -1
+        vrModel.populate(config)
+        currentIndex = vrModel.rowForKey(value);
     }
 
-    onCurrentTextChanged: {
-      valueChanged(reversedMap[currentText], false)
+    // Called when user makes selection in the combo box
+    onCurrentIndexChanged: {
+      valueChanged(vrModel.keyForRow(currentIndex), false)
     }
 
-    // Workaround to get a signal when the value has changed
+    // Called when the same form is used for a different feature
     onCurrentValueChanged: {
-      currentIndex = currentMap ? find(currentMap[value]) : -1
+        currentIndex = vrModel.rowForKey(value);
     }
 
   }

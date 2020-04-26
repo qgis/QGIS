@@ -1653,6 +1653,8 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineCentral( const QPolygonF &po
                            ( last.y() - it->y() ) * ( last.y() - it->y() ) );
       last = *it;
     }
+    if ( qgsDoubleNear( length, 0.0 ) )
+      return;
 
     const double midPoint = length / 2;
 

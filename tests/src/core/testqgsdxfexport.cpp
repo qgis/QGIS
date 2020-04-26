@@ -52,6 +52,7 @@ class TestQgsDxfExport : public QObject
     void testMtext();
     void testMtext_data();
     void testMTextEscapeSpaces();
+    void testMTextEscapeLineBreaks();
     void testText();
     void testTextAngle();
     void testTextAlign();
@@ -396,6 +397,48 @@ void TestQgsDxfExport::testMTextEscapeSpaces()
   dxfFile.close();
   QString debugInfo;
   QVERIFY2( fileContainsText( file, "\\fQGIS Vera Sans|i0|b1;\\H3.81136;A\\~text\\~with\\~spaces", &debugInfo ), debugInfo.toUtf8().constData() );
+}
+
+void TestQgsDxfExport::testMTextEscapeLineBreaks()
+{
+  int field = mPointLayerNoSymbols->addExpressionField( QStringLiteral( "'A text with ' || char(13) || char(10) || 'line break'" ), QgsField( QStringLiteral( "linebreaktest" ), QVariant::String ) );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "linebreaktest" );
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+  mPointLayerNoSymbols->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  mPointLayerNoSymbols->setLabelsEnabled( true );
+
+  QgsDxfExport d;
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayerNoSymbols ) );
+
+  QgsMapSettings mapSettings;
+  QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( mPointLayerNoSymbols->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << mPointLayerNoSymbols );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( mPointLayerNoSymbols->crs() );
+
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 1000 );
+  d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
+
+  QString file = getTempFileName( "mtext_escape_linebreaks" );
+  QFile dxfFile( file );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
+  dxfFile.close();
+
+  dxfFile.open( QIODevice::ReadOnly );
+  QString fileContent = QTextStream( &dxfFile ).readAll();
+  dxfFile.close();
+  QVERIFY( fileContent.contains( "A\\~text\\~with\\~\\Pline\\~break" ) );
+  mPointLayerNoSymbols->removeExpressionField( field );
 }
 
 void TestQgsDxfExport::testText()

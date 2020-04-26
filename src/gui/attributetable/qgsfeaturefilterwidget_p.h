@@ -114,7 +114,7 @@ class GUI_EXPORT QgsFeatureFilterWidget : public QWidget, private Ui::QgsFeature
      */
     void updateCurrentStoredFilterExpression( );
 
-    void filterColumnChanged( QObject *filterAction );
+    void filterColumnChanged( QAction *filterAction );
 
   private:
 
@@ -122,7 +122,6 @@ class GUI_EXPORT QgsFeatureFilterWidget : public QWidget, private Ui::QgsFeature
     void replaceSearchWidget( QWidget *oldw, QWidget *neww );
 
     QMenu *mFilterColumnsMenu = nullptr;
-    QSignalMapper *mFilterActionMapper = nullptr;
     QMenu *mStoredFilterExpressionMenu = nullptr;
     QTimer mFilterQueryTimer;
     QgsSearchWidgetWrapper *mCurrentSearchWidgetWrapper = nullptr;

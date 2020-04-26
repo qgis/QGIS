@@ -22,7 +22,7 @@
 
 #include "qgsdelimitedtextprovider.h"
 
-class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
+class QgsDelimitedTextFeatureSource final: public QgsAbstractFeatureSource
 {
   public:
     explicit QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider *p );
@@ -57,7 +57,7 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
 };
 
 
-class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsDelimitedTextFeatureSource>
+class QgsDelimitedTextFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsDelimitedTextFeatureSource>
 {
     enum IteratorMode
     {

@@ -303,6 +303,23 @@ QString QgsSymbolLegendNode::symbolLabel() const
   return label;
 }
 
+QgsLegendPatchShape QgsSymbolLegendNode::patchShape() const
+{
+  if ( mEmbeddedInParent )
+  {
+    return mLayerNode->patchShape();
+  }
+  else
+  {
+    return mPatchShape;
+  }
+}
+
+void QgsSymbolLegendNode::setPatchShape( const QgsLegendPatchShape &shape )
+{
+  mPatchShape = shape;
+}
+
 void QgsSymbolLegendNode::setSymbol( QgsSymbol *symbol )
 {
   if ( !symbol )
@@ -493,6 +510,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
   // setup temporary render context
   QgsRenderContext *context = nullptr;
   std::unique_ptr< QgsRenderContext > tempRenderContext;
+  QgsLegendPatchShape patchShape = ctx ? ctx->patchShape : QgsLegendPatchShape();
   if ( ctx && ctx->context )
     context = ctx->context;
   else
@@ -577,7 +595,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       imagePainter.setRenderHint( QPainter::Antialiasing );
       context->setPainter( &imagePainter );
       imagePainter.translate( maxBleed, maxBleed );
-      s->drawPreviewIcon( &imagePainter, symbolSize, context );
+      s->drawPreviewIcon( &imagePainter, symbolSize, context, false, nullptr, &patchShape );
       imagePainter.translate( -maxBleed, -maxBleed );
       context->setPainter( ctx->painter );
       //reduce opacity of image
@@ -589,7 +607,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     }
     else
     {
-      s->drawPreviewIcon( p, QSize( static_cast< int >( std::round( width * dotsPerMM ) ), static_cast< int >( std::round( height * dotsPerMM ) ) ), context );
+      s->drawPreviewIcon( p, QSize( static_cast< int >( std::round( width * dotsPerMM ) ), static_cast< int >( std::round( height * dotsPerMM ) ) ), context, false, nullptr, &patchShape );
     }
 
     if ( !mTextOnSymbolLabel.isEmpty() )
@@ -1134,8 +1152,8 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( con
   ddsLegend.setFont( settings.style( QgsLegendStyle::SymbolLabel ).font() );
   ddsLegend.setTextColor( settings.fontColor() );
 
-  QSize contentSize;
-  int labelXOffset;
+  QSizeF contentSize;
+  double labelXOffset;
   ddsLegend.drawCollapsedLegend( context, &contentSize, &labelXOffset );
 
   if ( ctx && ctx->painter )

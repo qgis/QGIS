@@ -125,7 +125,7 @@ Returns ``True`` if the new transform pair was added successfully.
    Has no effect on builds based on Proj 6.0 or later, use addCoordinateOperation() instead.
 %End
 
-    bool addCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &coordinateOperationProjString );
+    bool addCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &coordinateOperationProjString, bool allowFallback = true );
 %Docstring
 Adds a new ``coordinateOperationProjString`` to use when projecting coordinates
 from the specified ``sourceCrs`` to the specified ``destinationCrs``.
@@ -133,6 +133,14 @@ from the specified ``sourceCrs`` to the specified ``destinationCrs``.
 ``coordinateOperationProjString`` should be set to a valid Proj coordinate operation
 string. If ``coordinateOperationProjString`` is empty, then the default Proj operation
 will be used when transforming between the coordinate reference systems.
+
+If ``allowFallback`` is ``True`` (since QGIS 3.12), then "ballpark" fallback transformations
+will be used in the case that the specified coordinate operation fails (such as when
+coordinates from outside a required grid shift file are transformed). See
+QgsCoordinateTransform.fallbackOperationOccurred() for further details. Note that if an
+existing ``sourceCrs`` and ``destinationCrs`` pair are added with a different ``allowFallback``
+value, that value will replace the existing one (i.e. each combination of ``sourceCrs`` and
+``destinationCrs`` must be unique).
 
 .. warning::
 
@@ -229,6 +237,17 @@ be used.
 
 
 .. versionadded:: 3.8
+%End
+
+    bool allowFallbackTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
+%Docstring
+Returns ``True`` if approximate "ballpark" transforms may be used when transforming
+between a ``source`` and ``destination`` CRS pair, in the case that the preferred
+coordinate operation fails (such as when
+coordinates from outside a required grid shift file are transformed). See
+QgsCoordinateTransform.fallbackOperationOccurred() for further details.
+
+.. versionadded:: 3.12
 %End
 
     bool mustReverseCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;

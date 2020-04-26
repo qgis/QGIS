@@ -730,6 +730,16 @@ QVector< QPair<int, QgsVertexId> > QgsCompoundCurve::curveVertexId( QgsVertexId 
       }
       break;
     }
+    else if ( id.vertex >= currentVertexIndex && id.vertex == currentVertexIndex + increment + 1 && i == ( mCurves.size() - 1 ) )
+    {
+      int curveVertexId = id.vertex - currentVertexIndex;
+      QgsVertexId vid;
+      vid.part = 0;
+      vid.ring = 0;
+      vid.vertex = curveVertexId;
+      curveIds.append( qMakePair( i, vid ) );
+      break;
+    }
     currentVertexIndex += increment;
   }
 

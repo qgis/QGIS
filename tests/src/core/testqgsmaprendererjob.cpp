@@ -87,6 +87,8 @@ class TestQgsMapRendererJob : public QObject
 
     void vectorLayerBoundsWithReprojection();
 
+    void temporalRender();
+
   private:
     bool imageCheck( const QString &type, const QImage &image, int mismatchCount = 0 );
 
@@ -132,11 +134,9 @@ void TestQgsMapRendererJob::initTestCase()
   {
     qDebug( "Creating test dataset: " );
 
-    QgsVectorFileWriter myWriter( myFileName,
-                                  mEncoding,
-                                  mFields,
-                                  QgsWkbTypes::Polygon,
-                                  mCRS );
+    QgsVectorFileWriter::SaveVectorOptions saveOptions;
+    saveOptions.fileEncoding = mEncoding;
+    std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( myFileName, mFields, QgsWkbTypes::Polygon, mCRS, QgsCoordinateTransformContext(), saveOptions ) );
     double myInterval = 0.5;
     for ( double i = -180.0; i <= 180.0; i += myInterval )
     {
@@ -168,8 +168,8 @@ void TestQgsMapRendererJob::initTestCase()
         // Write the feature to the filewriter
         // and check for errors
         //
-        QVERIFY( myWriter.addFeature( myFeature ) );
-        mError = myWriter.hasError();
+        QVERIFY( writer->addFeature( myFeature ) );
+        mError = writer->hasError();
         if ( mError == QgsVectorFileWriter::ErrDriverNotFound )
         {
           std::cout << "Driver not found error" << std::endl;
@@ -886,6 +886,62 @@ void TestQgsMapRendererJob::vectorLayerBoundsWithReprojection()
   renderJob.waitForFinished();
   QImage img = renderJob.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "vector_layer_bounds_with_reprojection" ), img ) );
+}
+
+void TestQgsMapRendererJob::temporalRender()
+{
+  std::unique_ptr< QgsRasterLayer > rasterLayer = qgis::make_unique< QgsRasterLayer >( TEST_DATA_DIR + QStringLiteral( "/raster_layer.tiff" ),
+      QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
+  QVERIFY( rasterLayer->isValid() );
+
+  QgsMapSettings mapSettings;
+  mapSettings.setExtent( rasterLayer->extent() );
+  mapSettings.setDestinationCrs( rasterLayer->crs() );
+  mapSettings.setOutputSize( QSize( 512, 512 ) );
+  mapSettings.setFlag( QgsMapSettings::DrawLabeling, false );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setLayers( QList< QgsMapLayer * >() << rasterLayer.get() );
+
+  QgsMapRendererSequentialJob renderJob( mapSettings );
+  renderJob.start();
+  renderJob.waitForFinished();
+  QImage img = renderJob.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "temporal_render_visible" ), img ) );
+
+  // set temporal properties for layer
+  rasterLayer->temporalProperties()->setIsActive( true );
+  rasterLayer->temporalProperties()->setMode( QgsRasterLayerTemporalProperties::ModeFixedTemporalRange );
+  rasterLayer->temporalProperties()->setFixedTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
+      QDateTime( QDate( 2020, 1, 5 ) ) ) );
+
+  // should still be visible -- map render job isn't temporal
+  QgsMapRendererSequentialJob renderJob2( mapSettings );
+  renderJob2.start();
+  renderJob2.waitForFinished();
+  img = renderJob2.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "temporal_render_visible" ), img ) );
+
+  // make render job temporal, outside of layer's fixed range
+  mapSettings.setIsTemporal( true );
+  mapSettings.setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2021, 1, 1 ) ),
+                                QDateTime( QDate( 2021, 1, 5 ) ) ) );
+// should no longer be visible
+  QgsMapRendererSequentialJob renderJob3( mapSettings );
+  renderJob3.start();
+  renderJob3.waitForFinished();
+  img = renderJob3.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "temporal_render_invisible" ), img ) );
+
+// temporal range ok for layer
+  mapSettings.setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 2 ) ),
+                                QDateTime( QDate( 2020, 1, 3 ) ) ) );
+// should be visible
+  QgsMapRendererSequentialJob renderJob4( mapSettings );
+  renderJob4.start();
+  renderJob4.waitForFinished();
+  img = renderJob4.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "temporal_render_visible" ), img ) );
+
 }
 
 bool TestQgsMapRendererJob::imageCheck( const QString &testName, const QImage &image, int mismatchCount )

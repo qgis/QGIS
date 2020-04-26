@@ -293,6 +293,18 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void refreshFeature();
 
+    /**
+     * Is called in embedded forms when an \a attribute value in the parent form
+     * has changed to \a newValue.
+     *
+     * Notify the form widgets that something has changed in case they
+     * have filter expressions that depend on the parent form scope.
+     *
+     * \since QGIS 3.14
+     */
+    void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
+
+
   private slots:
     void onAttributeChanged( const QVariant &value, const QVariantList &additionalFieldValues );
     void onAttributeAdded( int idx );
@@ -332,6 +344,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     bool fieldIsEditable( int fieldIndex ) const;
 
     bool fieldIsEditable( const QgsVectorLayer &layer, int fieldIndex, QgsFeatureId fid ) const;
+
+    void updateDefaultValueDependencies();
 
     struct WidgetInfo
     {
@@ -378,6 +392,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void updateConstraints( QgsEditorWidgetWrapper *w );
     void updateContainersVisibility();
     void updateConstraint( const QgsFeature &ft, QgsEditorWidgetWrapper *eww );
+    void updateLabels();
     bool currentFormFeature( QgsFeature &feature );
     bool currentFormValidConstraints( QStringList &invalidFields, QStringList &descriptions );
     QList<QgsEditorWidgetWrapper *> constraintDependencies( QgsEditorWidgetWrapper *w );
@@ -397,8 +412,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QList<QgsAttributeFormInterface *> mInterfaces;
     QMap< int, QgsAttributeFormEditorWidget * > mFormEditorWidgets;
     QList< QgsAttributeFormWidget *> mFormWidgets;
-    QgsExpressionContext mExpressionContext;
     QMap<const QgsVectorLayerJoinInfo *, QgsFeature> mJoinedFeatures;
+    QMap<QLabel *, QgsProperty> mLabelDataDefinedProperties;
     bool mValuesInitialized = false;
     bool mDirty = false;
     bool mIsSettingFeature = false;

@@ -69,6 +69,16 @@ class QgsScientificNumericFormatConfigurationWidgetFactory : public QgsNumericFo
       return new QgsScientificNumericFormatWidget( format );
     }
 };
+
+class QgsFractionNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
+{
+  public:
+
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    {
+      return new QgsFractionNumericFormatWidget( format );
+    }
+};
 ///@endcond
 
 QgsNumericFormatGuiRegistry::QgsNumericFormatGuiRegistry()
@@ -78,6 +88,7 @@ QgsNumericFormatGuiRegistry::QgsNumericFormatGuiRegistry()
   addFormatConfigurationWidgetFactory( QStringLiteral( "currency" ), new QgsCurrencyNumericFormatConfigurationWidgetFactory() );
   addFormatConfigurationWidgetFactory( QStringLiteral( "percentage" ), new QgsPercentageNumericFormatConfigurationWidgetFactory() );
   addFormatConfigurationWidgetFactory( QStringLiteral( "scientific" ), new QgsScientificNumericFormatConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( QStringLiteral( "fraction" ), new QgsFractionNumericFormatConfigurationWidgetFactory() );
 }
 
 QgsNumericFormatGuiRegistry::~QgsNumericFormatGuiRegistry()

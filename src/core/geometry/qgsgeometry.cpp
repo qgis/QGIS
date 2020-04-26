@@ -813,14 +813,14 @@ QgsGeometry::OperationResult QgsGeometry::rotate( double rotation, const QgsPoin
   return QgsGeometry::Success;
 }
 
-QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QVector<QgsPointXY> &topologyTestPoints )
+QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QVector<QgsPointXY> &topologyTestPoints, bool splitFeature )
 {
   QgsPointSequence split, topology;
   convertPointList( splitLine, split );
   convertPointList( topologyTestPoints, topology );
-  return splitGeometry( split, newGeometries, topological, topology );
+  return splitGeometry( split, newGeometries, topological, topology, splitFeature );
 }
-QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QgsPointSequence &topologyTestPoints )
+QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QgsPointSequence &topologyTestPoints, bool splitFeature )
 {
   if ( !d->geometry )
   {
@@ -836,8 +836,8 @@ QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QgsPointSequence 
 
   if ( result == QgsGeometryEngine::Success )
   {
-    *this = newGeoms.takeAt( 0 );
-
+    if ( splitFeature )
+      *this = newGeoms.takeAt( 0 );
     newGeometries = newGeoms;
   }
 
@@ -1000,7 +1000,7 @@ QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle
       height = bounds.height();
     }
 
-    pt2 = pt1;
+    pt1 = pt2;
   }
 
   QgsGeometry minBounds = QgsGeometry::fromRect( minRect );
@@ -1308,6 +1308,129 @@ json QgsGeometry::asJsonObject( int precision ) const
   }
   return d->geometry->asJsonObject( precision );
 
+}
+
+QVector<QgsGeometry> QgsGeometry::coerceToType( const QgsWkbTypes::Type type ) const
+{
+  QVector< QgsGeometry > res;
+  if ( isNull() )
+    return res;
+
+  if ( wkbType() == type || type == QgsWkbTypes::Unknown )
+  {
+    res << *this;
+    return res;
+  }
+
+  if ( type == QgsWkbTypes::NoGeometry )
+  {
+    return res;
+  }
+
+  QgsGeometry newGeom = *this;
+
+  // Curved -> straight
+  if ( !QgsWkbTypes::isCurvedType( type ) && QgsWkbTypes::isCurvedType( newGeom.wkbType() ) )
+  {
+    newGeom = QgsGeometry( d->geometry.get()->segmentize() );
+  }
+
+  // polygon -> line
+  if ( QgsWkbTypes::geometryType( type ) == QgsWkbTypes::LineGeometry &&
+       newGeom.type() == QgsWkbTypes::PolygonGeometry )
+  {
+    // boundary gives us a (multi)line string of exterior + interior rings
+    newGeom = QgsGeometry( newGeom.constGet()->boundary() );
+  }
+  // line -> polygon
+  if ( QgsWkbTypes::geometryType( type ) == QgsWkbTypes::PolygonGeometry &&
+       newGeom.type() == QgsWkbTypes::LineGeometry )
+  {
+    std::unique_ptr< QgsGeometryCollection > gc( QgsGeometryFactory::createCollectionOfType( type ) );
+    const QgsGeometry source = newGeom;
+    for ( auto part = source.const_parts_begin(); part != source.const_parts_end(); ++part )
+    {
+      std::unique_ptr< QgsAbstractGeometry > exterior( ( *part )->clone() );
+      if ( QgsCurve *curve = qgsgeometry_cast< QgsCurve * >( exterior.get() ) )
+      {
+        if ( QgsWkbTypes::isCurvedType( type ) )
+        {
+          std::unique_ptr< QgsCurvePolygon > cp = qgis::make_unique< QgsCurvePolygon >();
+          cp->setExteriorRing( curve );
+          exterior.release();
+          gc->addGeometry( cp.release() );
+        }
+        else
+        {
+          std::unique_ptr< QgsPolygon > p = qgis::make_unique< QgsPolygon  >();
+          p->setExteriorRing( qgsgeometry_cast< QgsLineString * >( curve ) );
+          exterior.release();
+          gc->addGeometry( p.release() );
+        }
+      }
+    }
+    newGeom = QgsGeometry( std::move( gc ) );
+  }
+
+  // line/polygon -> points
+  if ( QgsWkbTypes::geometryType( type ) == QgsWkbTypes::PointGeometry &&
+       ( newGeom.type() == QgsWkbTypes::LineGeometry ||
+         newGeom.type() == QgsWkbTypes::PolygonGeometry ) )
+  {
+    // lines/polygons to a point layer, extract all vertices
+    std::unique_ptr< QgsMultiPoint > mp = qgis::make_unique< QgsMultiPoint >();
+    const QgsGeometry source = newGeom;
+    QSet< QgsPoint > added;
+    for ( auto vertex = source.vertices_begin(); vertex != source.vertices_end(); ++vertex )
+    {
+      if ( added.contains( *vertex ) )
+        continue; // avoid duplicate points, e.g. start/end of rings
+      mp->addGeometry( ( *vertex ).clone() );
+      added.insert( *vertex );
+    }
+    newGeom = QgsGeometry( std::move( mp ) );
+  }
+
+  // Single -> multi
+  if ( QgsWkbTypes::isMultiType( type ) && ! newGeom.isMultipart( ) )
+  {
+    newGeom.convertToMultiType();
+  }
+  // Drop Z/M
+  if ( newGeom.constGet()->is3D() && ! QgsWkbTypes::hasZ( type ) )
+  {
+    newGeom.get()->dropZValue();
+  }
+  if ( newGeom.constGet()->isMeasure() && ! QgsWkbTypes::hasM( type ) )
+  {
+    newGeom.get()->dropMValue();
+  }
+  // Add Z/M back, set to 0
+  if ( ! newGeom.constGet()->is3D() && QgsWkbTypes::hasZ( type ) )
+  {
+    newGeom.get()->addZValue( 0.0 );
+  }
+  if ( ! newGeom.constGet()->isMeasure() && QgsWkbTypes::hasM( type ) )
+  {
+    newGeom.get()->addMValue( 0.0 );
+  }
+
+  // Multi -> single
+  if ( ! QgsWkbTypes::isMultiType( type ) && newGeom.isMultipart( ) )
+  {
+    const QgsGeometryCollection *parts( static_cast< const QgsGeometryCollection * >( newGeom.constGet() ) );
+    QgsAttributeMap attrMap;
+    res.reserve( parts->partCount() );
+    for ( int i = 0; i < parts->partCount( ); i++ )
+    {
+      res << QgsGeometry( parts->geometryN( i )->clone() );
+    }
+  }
+  else
+  {
+    res << newGeom;
+  }
+  return res;
 }
 
 QgsGeometry QgsGeometry::convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart ) const
