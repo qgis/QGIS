@@ -112,7 +112,9 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmprojectpointcartesian.cpp
   processing/qgsalgorithmpromotetomultipart.cpp
   processing/qgsalgorithmraiseexception.cpp
+  processing/qgsalgorithmrandombinomialraster.cpp
   processing/qgsalgorithmrandomextract.cpp
+  processing/qgsalgorithmrandomgammaraster.cpp
   processing/qgsalgorithmrandompointsextent.cpp
   processing/qgsalgorithmrandompointsonlines.cpp
   processing/qgsalgorithmrandompoissonraster.cpp
