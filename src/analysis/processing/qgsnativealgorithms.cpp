@@ -108,6 +108,7 @@
 #include "qgsalgorithmraiseexception.h"
 #include "qgsalgorithmrandomexponentialraster.h"
 #include "qgsalgorithmrandomextract.h"
+#include "qgsalgorithmrandombinomialraster.h"
 #include "qgsalgorithmrandomgammaraster.h"
 #include "qgsalgorithmrandompointsextent.h"
 #include "qgsalgorithmrandompointsonlines.h"
@@ -316,6 +317,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
   addAlgorithm( new QgsRaiseExceptionAlgorithm() );
   addAlgorithm( new QgsRaiseWarningAlgorithm() );
+  addAlgorithm( new QgsRandomBinomialRasterAlgorithm() );
   addAlgorithm( new QgsRandomExtractAlgorithm() );
   addAlgorithm( new QgsRandomGammaRasterAlgorithm() );
   addAlgorithm( new QgsRandomExponentialRasterAlgorithm() );
