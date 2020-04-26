@@ -1091,6 +1091,10 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
 
   QVariantMap uri = metadata->decodeUri( dataSourceUri() );
 
+  // Skip fetching if updates are not allowed
+  if ( uri.value( QStringLiteral( "allowTemporalUpdates" ), QStringLiteral( "true" ) ).toString() != QStringLiteral( "true" ) )
+    return;
+
   if ( range.isInfinite() )
   {
     if ( uri.contains( QStringLiteral( "time" ) ) &&

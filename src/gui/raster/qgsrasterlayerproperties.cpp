@@ -1244,15 +1244,15 @@ void QgsRasterLayerProperties::apply()
 
 void QgsRasterLayerProperties::updateSourceStaticTime()
 {
+  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata(
+                                    mRasterLayer->providerType() );
+  QVariantMap uri = metadata->decodeUri( mRasterLayer->dataProvider()->dataSourceUri() );
+  uri["allowTemporalUpdates"] = mWmstGroup->isChecked() ? QStringLiteral( "true" ) :  QStringLiteral( "false" );
+
   if ( mWmstGroup->isEnabled() &&
        mRasterLayer->dataProvider() &&
        mRasterLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
   {
-    QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata(
-                                      mRasterLayer->providerType() );
-
-    QVariantMap uri = metadata->decodeUri( mRasterLayer->dataProvider()->dataSourceUri() );
-
     if ( mStaticTemporalRange->isChecked() )
     {
       QString time = mStartStaticDateTimeEdit->dateTime().toString( Qt::ISODateWithMs ) + '/' +
@@ -1290,12 +1290,11 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
     const QLatin1String enableTime = mDisableTime->isChecked() ? QLatin1String( "no" ) : QLatin1String( "yes" );
 
     uri["enableTime"] = enableTime;
-
-    mRasterLayer->setDataSource( metadata->encodeUri( uri ), mRasterLayer->name(), mRasterLayer->providerType(), QgsDataProvider::ProviderOptions() );
-
     mRasterLayer->temporalProperties()->setIntervalHandlingMethod( static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >(
           mFetchModeComboBox->currentData().toInt() ) );
   }
+  mRasterLayer->setDataSource( metadata->encodeUri( uri ), mRasterLayer->name(), mRasterLayer->providerType(), QgsDataProvider::ProviderOptions() );
+
 }
 
 void QgsRasterLayerProperties::setSourceStaticTimeState()
@@ -1373,6 +1372,9 @@ void QgsRasterLayerProperties::setSourceStaticTimeState()
       mProjectTemporalRange->setChecked( !time.isEmpty() );
 
     mDisableTime->setChecked( enableTime == QLatin1String( "no" ) );
+
+    mWmstGroup->setChecked( uri.contains( QStringLiteral( "allowTemporalUpdates" ) ) &&
+                            uri.value( QStringLiteral( "allowTemporalUpdates" ) ).toString() == QStringLiteral( "true" ) );
   }
 }
 
