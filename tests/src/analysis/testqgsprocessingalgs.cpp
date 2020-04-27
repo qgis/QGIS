@@ -3078,7 +3078,7 @@ void TestQgsProcessingAlgs::normalRaster()
 
   //prepare input params
   QgsProject p;
-  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:createnormalrasterlayer" ) ) );
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:createrandomnormalrasterlayer" ) ) );
 
   QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
 
@@ -3369,7 +3369,7 @@ void TestQgsProcessingAlgs::randomRaster()
 
   //prepare input params
   QgsProject p;
-  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:createrandomrasterlayer" ) ) );
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:createrandomuniformrasterlayer" ) ) );
 
   QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
 
