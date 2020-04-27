@@ -674,8 +674,9 @@ QgsLegendRenderer::LegendComponent QgsLegendRenderer::drawSymbolItemInternal( Qg
   if ( const QgsSymbolLegendNode *symbolNode = dynamic_cast< const QgsSymbolLegendNode * >( symbolItem ) )
     ctx.patchShape = symbolNode->patchShape();
 
-  QgsLayerTreeModelLegendNode::ItemMetrics im = symbolItem->draw( mSettings, context ? &ctx
-      : ( painter ? &ctx : nullptr ) );
+  ctx.patchSize = symbolItem->userPatchSize();
+
+  QgsLayerTreeModelLegendNode::ItemMetrics im = symbolItem->draw( mSettings, &ctx );
 
   if ( layerScope )
     delete context->expressionContext().popScope();

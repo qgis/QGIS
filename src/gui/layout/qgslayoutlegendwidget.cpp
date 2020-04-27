@@ -1001,6 +1001,7 @@ void QgsLayoutLegendWidget::resetLayerNodeToDefaults()
   }
 
   nodeLayer->setPatchShape( QgsLegendPatchShape() );
+  nodeLayer->setPatchSize( QSizeF() );
 
   mItemTreeView->layerTreeModel()->refreshLayerLegend( nodeLayer );
 
@@ -1437,7 +1438,23 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   else
   {
     currentLabel = QgsLayerTree::toGroup( mNode )->name();
+  }
 
+  mWidthSpinBox->setClearValue( 0, tr( "Default" ) );
+  mHeightSpinBox->setClearValue( 0, tr( "Default" ) );
+  mWidthSpinBox->setVisible( mLegendNode || mLayer );
+  mHeightSpinBox->setVisible( mLegendNode || mLayer );
+  mPatchWidthLabel->setVisible( mLegendNode || mLayer );
+  mPatchHeightLabel->setVisible( mLegendNode || mLayer );
+  if ( mLegendNode )
+  {
+    mWidthSpinBox->setValue( mLegendNode->userPatchSize().width() );
+    mHeightSpinBox->setValue( mLegendNode->userPatchSize().height() );
+  }
+  else if ( mLayer )
+  {
+    mWidthSpinBox->setValue( mLayer->patchSize().width() );
+    mHeightSpinBox->setValue( mLayer->patchSize().height() );
   }
 
   QgsLegendPatchShape patchShape;
@@ -1489,6 +1506,9 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   connect( mLabelEdit, &QPlainTextEdit::textChanged, this, &QgsLayoutLegendNodeWidget::labelChanged );
   connect( mPatchShapeButton, &QgsLegendPatchShapeButton::changed, this, &QgsLayoutLegendNodeWidget::patchChanged );
   connect( mInsertExpressionButton, &QPushButton::clicked, this, &QgsLayoutLegendNodeWidget::insertExpression );
+
+  connect( mWidthSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendNodeWidget::sizeChanged );
+  connect( mHeightSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendNodeWidget::sizeChanged );
 }
 
 void QgsLayoutLegendNodeWidget::labelChanged()
@@ -1589,6 +1609,32 @@ void QgsLayoutLegendNodeWidget::insertExpression()
       mLegend->endCommand();
     }
   }
+}
+
+void QgsLayoutLegendNodeWidget::sizeChanged( double )
+{
+  mLegend->beginCommand( tr( "Edit Legend Item" ) );
+  const QSizeF size = QSizeF( mWidthSpinBox->value(), mHeightSpinBox->value() );
+
+  if ( mLegendNode )
+  {
+    QgsMapLayerLegendUtils::setLegendNodeSymbolSize( mLayer, mOriginalLegendNodeIndex, size );
+    mLegend->model()->refreshLayerLegend( mLayer );
+  }
+  else if ( mLayer )
+  {
+    mLayer->setPatchSize( size );
+    const QList<QgsLayerTreeModelLegendNode *> layerLegendNodes = mLegend->model()->layerLegendNodes( mLayer, false );
+    for ( QgsLayerTreeModelLegendNode *node : layerLegendNodes )
+    {
+      QgsMapLayerLegendUtils::setLegendNodeSymbolSize( mLayer, _originalLegendNodeIndex( node ), size );
+    }
+    mLegend->model()->refreshLayerLegend( mLayer );
+  }
+
+  mLegend->adjustBoxSize();
+  mLegend->updateFilterByMap();
+  mLegend->endCommand();
 }
 
 ///@endcond

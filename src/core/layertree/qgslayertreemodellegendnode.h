@@ -87,6 +87,28 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     virtual QString userLabel() const { return mUserLabel; }
     virtual void setUserLabel( const QString &userLabel ) { mUserLabel = userLabel; }
 
+    /**
+     * Returns the user (overridden) size for the legend node.
+     *
+     * If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+     * symbol width or height from QgsLegendSettings.
+     *
+     * \see setUserPatchSize()
+     * \since QGIS 3.14
+     */
+    virtual QSizeF userPatchSize() const;
+
+    /**
+     * Sets the user (overridden) \a size for the legend node.
+     *
+     * If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+     * symbol width or height from QgsLegendSettings.
+     *
+     * \see userPatchSize()
+     * \since QGIS 3.14
+     */
+    virtual void setUserPatchSize( QSizeF size ) { mUserSize = size; }
+
     virtual bool isScaleOK( double scale ) const { Q_UNUSED( scale ) return true; }
 
     /**
@@ -152,6 +174,15 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
        * \since QGIS 3.14
        */
       QgsLegendPatchShape patchShape;
+
+      /**
+       * Symbol patch size to render for the node.
+       *
+       * If either the width or height are zero, then the default width/height from QgsLegendSettings::symbolSize() should be used instead.
+       *
+       * \since QGIS 3.14
+       */
+      QSizeF patchSize;
     };
 
     struct ItemMetrics
@@ -229,6 +260,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     bool mEmbeddedInParent;
     QString mUserLabel;
     QgsLegendPatchShape mPatchShape;
+    QSizeF mUserSize;
 };
 
 #include "qgslegendsymbolitem.h"

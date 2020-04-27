@@ -114,6 +114,30 @@ Returns the legend patch shape for the legend node belonging to ``nodeLayer`` at
 .. versionadded:: 3.14
 %End
 
+    static void setLegendNodeSymbolSize( QgsLayerTreeLayer *nodeLayer, int originalIndex, QSizeF size );
+%Docstring
+Sets the legend symbol ``size`` for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+
+If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+symbol width or height from :py:class:`QgsLegendSettings`.
+
+.. seealso:: :py:func:`legendNodeSymbolSize`
+
+.. versionadded:: 3.14
+%End
+
+    static QSizeF legendNodeSymbolSize( QgsLayerTreeLayer *nodeLayer, int originalIndex );
+%Docstring
+Returns the legend node symbol size for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+
+If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+symbol width or height from :py:class:`QgsLegendSettings`.
+
+.. seealso:: :py:func:`setLegendNodeSymbolSize`
+
+.. versionadded:: 3.14
+%End
+
     static void applyLayerNodeProperties( QgsLayerTreeLayer *nodeLayer, QList<QgsLayerTreeModelLegendNode *> &nodes );
 %Docstring
 update according to layer node's custom properties (order of items, user labels for items)
