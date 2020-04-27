@@ -512,7 +512,40 @@ Returns whether the faces are active for particular dataset
 .. versionadded:: 3.6
 %End
 
-    virtual bool persistDatasetGroup( const QString &path,
+ virtual bool persistDatasetGroup( const QString &path,
+        const QgsMeshDatasetGroupMetadata &meta,
+        const QVector<QgsMeshDataBlock> &datasetValues,
+        const QVector<QgsMeshDataBlock> &datasetActive,
+        const QVector<double> &times
+                                                      ) /Deprecated/;
+%Docstring
+Creates a new dataset group from a data and
+persists it into a destination path
+
+On success, the mesh's dataset group count is changed
+
+:param path: destination path of the stored file in form DRIVER_NAME:path
+:param meta: new group's metadata
+:param datasetValues: scalar/vector values for all datasets and all faces/vertices in the group
+:param datasetActive: active flag values for all datasets in the group. Empty array represents can be used
+                      when all faces are active
+:param times: times in hours for all datasets in the group
+
+:return: ``True`` on failure, ``False`` on success
+
+.. note::
+
+   Doesn't work if there is ":" in the path (e.g. Windows system)
+
+
+.. versionadded:: 3.6
+
+.. deprecated::
+   QGIS 3.12.3
+%End
+
+    virtual bool persistDatasetGroup( const QString &outputFilePath,
+                                      const QString &outputDriver,
                                       const QgsMeshDatasetGroupMetadata &meta,
                                       const QVector<QgsMeshDataBlock> &datasetValues,
                                       const QVector<QgsMeshDataBlock> &datasetActive,
@@ -524,7 +557,12 @@ persists it into a destination path
 
 On success, the mesh's dataset group count is changed
 
+<<<<<<< HEAD
 :param path: destination path of the stored file
+=======
+:param outputFilePath: destination path of the stored file
+:param outputDriver: output driver name
+>>>>>>> c2bc0f63e3... [MESH] fix mesh calculator saving for windows (#35963)
 :param meta: new group's metadata
 :param datasetValues: scalar/vector values for all datasets and all faces/vertices in the group
 :param datasetActive: active flag values for all datasets in the group. Empty array represents can be used
@@ -533,7 +571,7 @@ On success, the mesh's dataset group count is changed
 
 :return: ``True`` on failure, ``False`` on success
 
-.. versionadded:: 3.6
+.. versionadded:: 3.12.3
 %End
 };
 

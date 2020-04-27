@@ -180,6 +180,10 @@ QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *fe
   const QgsMeshDatasetGroupMetadata meta = outputGroup->groupMetadata();
   bool err = mMeshLayer->dataProvider()->persistDatasetGroup(
                mOutputFile,
+<<<<<<< HEAD
+=======
+               mOutputDriver,
+>>>>>>> c2bc0f63e3... [MESH] fix mesh calculator saving for windows (#35963)
                meta,
                datasetValues,
                datasetActive,

@@ -187,6 +187,7 @@ QgsMeshDatasetGroupMetadata QgsMeshDatasetSourceInterface::datasetGroupMetadata(
   return datasetGroupMetadata( index.group() );
 }
 
+<<<<<<< HEAD
 QgsMeshDatasetMetadata::QgsMeshDatasetMetadata( double time,
     bool isValid,
     double minimum,
@@ -195,6 +196,30 @@ QgsMeshDatasetMetadata::QgsMeshDatasetMetadata( double time,
   , mIsValid( isValid )
   , mMinimumValue( minimum )
   , mMaximumValue( maximum )
+=======
+bool QgsMeshDatasetSourceInterface::persistDatasetGroup(
+  const QString &path,
+  const QgsMeshDatasetGroupMetadata &meta,
+  const QVector<QgsMeshDataBlock> &datasetValues,
+  const QVector<QgsMeshDataBlock> &datasetActive,
+  const QVector<double> &times )
+{
+  // Form DRIVER:filename
+  QString filename = path;
+  // ASCII dat supports face, edge and vertex datasets
+  QString driverName = QStringLiteral( "DAT" );
+  QStringList parts = path.split( ':' );
+  if ( parts.size() > 1 )
+  {
+    driverName = parts[0];
+    parts.removeFirst();
+    filename = parts.join( QString() );
+  }
+  return persistDatasetGroup( filename, driverName, meta, datasetValues, datasetActive, times );
+}
+
+QgsMeshVertex QgsMesh::vertex( int index ) const
+>>>>>>> c2bc0f63e3... [MESH] fix mesh calculator saving for windows (#35963)
 {
 }
 

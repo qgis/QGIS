@@ -148,7 +148,8 @@ class CORE_EXPORT QgsMeshMemoryDataProvider: public QgsMeshDataProvider
     QgsMeshDataBlock datasetValues( QgsMeshDatasetIndex index, int valueIndex, int count ) const override;
     bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const override;
     QgsMeshDataBlock areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const override;
-    bool persistDatasetGroup( const QString &path,
+    bool persistDatasetGroup( const QString &outputFilePath,
+                              const QString &outputDriver,
                               const QgsMeshDatasetGroupMetadata &meta,
                               const QVector<QgsMeshDataBlock> &datasetValues,
                               const QVector<QgsMeshDataBlock> &datasetActive,

@@ -45,7 +45,16 @@ class TestQgsMeshCalculator : public QObject
     void singleOp_data();
     void singleOp(); //test operators which operate on a single value
 
+<<<<<<< HEAD
     void calcWithLayers();
+=======
+    void calcWithVertexLayers();
+    void calcWithFaceLayers();
+    void calcWithMixedLayers();
+
+    void calcAndSave();
+
+>>>>>>> c2bc0f63e3... [MESH] fix mesh calculator saving for windows (#35963)
   private:
 
     QgsMeshLayer *mpMeshLayer = nullptr;
@@ -233,6 +242,27 @@ void TestQgsMeshCalculator::calcWithLayers()
   QCOMPARE( static_cast< int >( rc.processCalculation() ), 0 );
   int newGroupCount = mpMeshLayer->dataProvider()->datasetGroupCount();
   QCOMPARE( newGroupCount, groupCount + 1 );
+}
+
+void TestQgsMeshCalculator::calcAndSave()
+{
+  QgsRectangle extent( 1000.000, 1000.000, 3000.000, 3000.000 );
+
+  QString tempFilePath = QDir::tempPath() + '/' + "meshCalculatorResult.out";
+  QgsMeshCalculator rc( QStringLiteral( "\"VertexScalarDataset\" + \"FaceScalarDataset\"" ),
+                        QStringLiteral( "BINARY_DAT" ),
+                        "NewMixScalarDataset",
+                        tempFilePath,
+                        extent,
+                        0,
+                        3600,
+                        mpMeshLayer
+                      );
+
+  rc.processCalculation();
+
+  QFileInfo fileInfo( tempFilePath );
+  QVERIFY( fileInfo.exists() );
 }
 
 QGSTEST_MAIN( TestQgsMeshCalculator )
