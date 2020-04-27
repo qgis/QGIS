@@ -1092,7 +1092,7 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
   QVariantMap uri = metadata->decodeUri( dataSourceUri() );
 
   // Skip fetching if updates are not allowed
-  if ( uri.value( QStringLiteral( "allowTemporalUpdates" ), QStringLiteral( "true" ) ).toString() != QStringLiteral( "true" ) )
+  if ( !uri.value( QStringLiteral( "allowTemporalUpdates" ), true ).toBool() )
     return;
 
   if ( range.isInfinite() )
@@ -1110,8 +1110,7 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
     }
   }
 
-  if ( uri.contains( QStringLiteral( "enableTime" ) ) &&
-       uri.value( QStringLiteral( "enableTime" ) ) == QLatin1String( "no" ) )
+  if ( !uri.value( QStringLiteral( "enableTime" ), true ).toBool() )
   {
     format = "yyyy-MM-dd";
     dateOnly = true;

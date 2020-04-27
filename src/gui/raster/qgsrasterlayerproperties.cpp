@@ -1247,7 +1247,7 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
   QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata(
                                     mRasterLayer->providerType() );
   QVariantMap uri = metadata->decodeUri( mRasterLayer->dataProvider()->dataSourceUri() );
-  uri["allowTemporalUpdates"] = mWmstGroup->isChecked() ? QStringLiteral( "true" ) :  QStringLiteral( "false" );
+  uri[ QStringLiteral( "allowTemporalUpdates" ) ] = mWmstGroup->isChecked() ;
 
   if ( mWmstGroup->isEnabled() &&
        mRasterLayer->dataProvider() &&
@@ -1257,8 +1257,8 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
     {
       QString time = mStartStaticDateTimeEdit->dateTime().toString( Qt::ISODateWithMs ) + '/' +
                      mEndStaticDateTimeEdit->dateTime().toString( Qt::ISODateWithMs );
-      uri["time"] = time;
-      uri["temporalSource"] = QLatin1String( "provider" );
+      uri[ QStringLiteral( "time" ) ] = time;
+      uri[ QStringLiteral( "temporalSource" ) ] = QLatin1String( "provider" );
     }
 
     if ( mProjectTemporalRange->isChecked() )
@@ -1272,24 +1272,24 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
         QString time = range.begin().toString( Qt::ISODateWithMs ) + "/" +
                        range.end().toString( Qt::ISODateWithMs );
 
-        uri["time"] = time;
-        uri["temporalSource"] = QLatin1String( "project" );
+        uri[ QStringLiteral( "time" ) ] = time;
+        uri[ QStringLiteral( "temporalSource" ) ] = QLatin1String( "project" );
       }
     }
 
     if ( mReferenceTime->isChecked() )
     {
       QString reference_time = mReferenceDateTimeEdit->dateTime().toString( Qt::ISODateWithMs );
-      uri["reference_time"] = reference_time;
+      uri[ QStringLiteral( "reference_time" ) ] = reference_time;
     }
     else
     {
       if ( uri.contains( QStringLiteral( "reference_time" ) ) )
         uri.remove( QStringLiteral( "reference_time" ) );
     }
-    const QLatin1String enableTime = mDisableTime->isChecked() ? QLatin1String( "no" ) : QLatin1String( "yes" );
+    bool enableTime = !mDisableTime->isChecked();
 
-    uri["enableTime"] = enableTime;
+    uri[ QStringLiteral( "enableTime" ) ] = enableTime;
     mRasterLayer->temporalProperties()->setIntervalHandlingMethod( static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >(
           mFetchModeComboBox->currentData().toInt() ) );
   }
@@ -1364,17 +1364,17 @@ void QgsRasterLayerProperties::setSourceStaticTimeState()
     mFetchModeComboBox->setCurrentIndex( mFetchModeComboBox->findData( mRasterLayer->temporalProperties()->intervalHandlingMethod() ) );
 
     const QString temporalSource = uri.value( QStringLiteral( "temporalSource" ) ).toString();
-    const QString enableTime = uri.value( QStringLiteral( "enableTime" ) ).toString();
+    bool enableTime = uri.value( QStringLiteral( "enableTime" ), true ).toBool();
 
     if ( temporalSource == QLatin1String( "provider" ) )
       mStaticTemporalRange->setChecked( !time.isEmpty() );
     else if ( temporalSource == QLatin1String( "project" ) )
       mProjectTemporalRange->setChecked( !time.isEmpty() );
 
-    mDisableTime->setChecked( enableTime == QLatin1String( "no" ) );
+    mDisableTime->setChecked( !enableTime );
 
     mWmstGroup->setChecked( uri.contains( QStringLiteral( "allowTemporalUpdates" ) ) &&
-                            uri.value( QStringLiteral( "allowTemporalUpdates" ) ).toString() == QStringLiteral( "true" ) );
+                            uri.value( QStringLiteral( "allowTemporalUpdates" ), true ).toBool() );
   }
 }
 

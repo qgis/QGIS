@@ -11082,7 +11082,7 @@ void QgisApp::projectTemporalRangeChanged()
           QString time = range.begin().toString( Qt::ISODateWithMs ) + "/" +
                          range.end().toString( Qt::ISODateWithMs );
 
-          uri["time"] = time;
+          uri[ QStringLiteral( "time" ) ] = time;
 
           currentLayer->setDataSource( metadata->encodeUri( uri ), currentLayer->name(), currentLayer->providerType(), QgsDataProvider::ProviderOptions() );
         }
