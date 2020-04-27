@@ -28,7 +28,18 @@ in QgsLegendModel class.
     QgsLegendSettings();
 
     void setTitle( const QString &t );
+%Docstring
+Sets the title for the legend, which will be rendered above all legend items.
+
+.. seealso:: :py:func:`title`
+%End
+
     QString title() const;
+%Docstring
+Returns the title for the legend, which will be rendered above all legend items.
+
+.. seealso:: :py:func:`setTitle`
+%End
 
     Qt::AlignmentFlag titleAlignment() const;
 %Docstring
@@ -44,17 +55,56 @@ Sets the ``alignment`` of the legend title.
 .. seealso:: :py:func:`titleAlignment`
 %End
 
+
     QgsLegendStyle style( QgsLegendStyle::Style s ) const;
 %Docstring
-Returns style
+Returns the style for a legend component.
+
+.. seealso:: :py:func:`setStyle`
 %End
+
     void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle &style );
+%Docstring
+Sets the ``style`` for a legend component.
+
+.. seealso:: :py:func:`style`
+%End
 
     double boxSpace() const;
+%Docstring
+Returns the legend box space (in millimeters), which is the empty margin around the inside of the legend's
+rectangle.
+
+.. seealso:: :py:func:`setBoxSpace`
+%End
+
     void setBoxSpace( double s );
+%Docstring
+Sets the legend box space (in millimeters), which is the empty margin around the inside of the legend's
+rectangle.
+
+.. seealso:: :py:func:`boxSpace`
+%End
 
     void setWrapChar( const QString &t );
+%Docstring
+Sets a string to use as a wrapping character.
+
+Whenever this string is encountered inside legend component text it will be automatically replaced with a new
+line character.
+
+.. seealso:: :py:func:`wrapChar`
+%End
+
     QString wrapChar() const;
+%Docstring
+Returns the string used as a wrapping character.
+
+Whenever this string is encountered inside legend component text it will be automatically replaced with a new
+line character.
+
+.. seealso:: :py:func:`setWrapChar`
+%End
 
     double columnSpace() const;
     void setColumnSpace( double s );
@@ -214,48 +264,89 @@ only drawn if drawRasterStroke() is ``True``.
     double lineSpacing() const;
     void setLineSpacing( double s );
 
-    double mmPerMapUnit() const;
-    void setMmPerMapUnit( double mmPerMapUnit );
+ double mmPerMapUnit() const /Deprecated/;
+%Docstring
 
-    bool useAdvancedEffects() const;
-    void setUseAdvancedEffects( bool use );
+.. deprecated::
+   Use scale factor from render contexts instead.
+%End
 
-    double mapScale() const;
+ void setMmPerMapUnit( double mmPerMapUnit ) /Deprecated/;
+%Docstring
+
+.. deprecated::
+   Set scale factor on render contexts instead.
+%End
+
+ bool useAdvancedEffects() const /Deprecated/;
+%Docstring
+
+.. deprecated::
+   Use flags from render contexts instead.
+%End
+
+ void setUseAdvancedEffects( bool use ) /Deprecated/;
+%Docstring
+
+.. deprecated::
+   Set flag on render contexts instead.
+%End
+
+ double mapScale() const /Deprecated/;
 %Docstring
 Returns the legend map scale.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
 .. seealso:: :py:func:`setMapScale`
+
+.. deprecated::
+   take this property from the render context instead
 %End
 
-    void setMapScale( double scale );
+ void setMapScale( double scale ) /Deprecated/;
 %Docstring
 Sets the legend map ``scale``.
 The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
 .. seealso:: :py:func:`mapScale`
+
+.. deprecated::
+   set this property on the render context instead
 %End
 
-    double mapUnitsPerPixel() const;
+ double mapUnitsPerPixel() const /Deprecated/;
 %Docstring
 Returns the factor of map units per pixel for symbols with size given in map units calculated by dpi and mmPerMapUnit
 
 .. seealso:: :py:func:`setMapUnitsPerPixel`
 
-.. versionadded:: 3.8
+.. deprecated::
+   take these properties on render contexts instead
 %End
 
-    void setMapUnitsPerPixel( double mapUnitsPerPixel );
+ void setMapUnitsPerPixel( double mapUnitsPerPixel ) /Deprecated/;
 %Docstring
 Sets the mmPerMapUnit calculated by ``mapUnitsPerPixel`` mostly taken from the map settings.
 
 .. seealso:: :py:func:`mapUnitsPerPixel`
 
-.. versionadded:: 3.8
+.. deprecated::
+   set these properties on render contexts instead
 %End
 
-    int dpi() const;
-    void setDpi( int dpi );
+ int dpi() const /Deprecated/;
+%Docstring
+
+.. deprecated::
+   Take dpi from render contexts instead.
+%End
+
+ void setDpi( int dpi ) /Deprecated/;
+%Docstring
+
+.. deprecated::
+   Set dpi on render contexts instead.
+%End
 
 
 

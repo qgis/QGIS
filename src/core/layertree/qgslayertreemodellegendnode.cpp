@@ -532,10 +532,13 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
   else
   {
     tempRenderContext = qgis::make_unique< QgsRenderContext >();
+    // QGIS 4.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
+    Q_NOWARN_DEPRECATED_PUSH
     tempRenderContext->setScaleFactor( settings.dpi() / 25.4 );
     tempRenderContext->setRendererScale( settings.mapScale() );
     tempRenderContext->setFlag( QgsRenderContext::Antialiasing, true );
     tempRenderContext->setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * tempRenderContext->scaleFactor() ) ) );
+    Q_NOWARN_DEPRECATED_POP
     tempRenderContext->setForceVectorOutput( true );
     tempRenderContext->setPainter( ctx ? ctx->painter : nullptr );
 
@@ -599,7 +602,11 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     }
 
     p->scale( 1.0 / dotsPerMM, 1.0 / dotsPerMM );
-    if ( opacity != 255 && settings.useAdvancedEffects() )
+    Q_NOWARN_DEPRECATED_PUSH
+    // QGIS 4.0 -- ctx->context will be mandatory
+    const bool useAdvancedEffects = ctx->context ? ctx->context->flags() & QgsRenderContext::UseAdvancedEffects : settings.useAdvancedEffects();
+    Q_NOWARN_DEPRECATED_POP
+    if ( opacity != 255 && useAdvancedEffects )
     {
       const int maxBleed = static_cast< int >( std::ceil( QgsSymbolLayerUtils::estimateMaxSymbolBleed( s, *context ) ) );
 
@@ -651,11 +658,15 @@ void QgsSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &settings,
     return;
   }
 
+
   QgsRenderContext ctx;
+  // QGIS 4.0 - use render context directly here, and note in the dox that the context must be correctly setup
+  Q_NOWARN_DEPRECATED_PUSH
   ctx.setScaleFactor( settings.dpi() / 25.4 );
   ctx.setRendererScale( settings.mapScale() );
   ctx.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * ctx.scaleFactor() ) ) );
   ctx.setForceVectorOutput( true );
+  Q_NOWARN_DEPRECATED_POP
 
   // ensure that a minimal expression context is available
   QgsExpressionContext expContext = context.expressionContext();
@@ -1166,20 +1177,37 @@ QVariant QgsDataDefinedSizeLegendNode::data( int role ) const
 
 QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( const QgsLegendSettings &settings, QgsLayerTreeModelLegendNode::ItemContext *ctx )
 {
-  // setup temporary render context
-  QgsRenderContext context;
-  context.setScaleFactor( settings.dpi() / 25.4 );
-  context.setRendererScale( settings.mapScale() );
-  context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) );
-  context.setForceVectorOutput( true );
-
-  if ( ctx && ctx->painter )
+  // setup temporary render context if none specified
+  QgsRenderContext *context = nullptr;
+  std::unique_ptr< QgsRenderContext > tempRenderContext;
+  if ( ctx && ctx->context )
+    context = ctx->context;
+  else
   {
-    context.setPainter( ctx->painter );
-    ctx->painter->save();
-    ctx->painter->setRenderHint( QPainter::Antialiasing );
-    ctx->painter->translate( ctx->columnLeft, ctx->top );
-    ctx->painter->scale( 1 / context.scaleFactor(), 1 / context.scaleFactor() );
+    tempRenderContext = qgis::make_unique< QgsRenderContext >();
+    // QGIS 4.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
+    Q_NOWARN_DEPRECATED_PUSH
+    tempRenderContext->setScaleFactor( settings.dpi() / 25.4 );
+    tempRenderContext->setRendererScale( settings.mapScale() );
+    tempRenderContext->setFlag( QgsRenderContext::Antialiasing, true );
+    tempRenderContext->setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * tempRenderContext->scaleFactor() ) ) );
+    tempRenderContext->setForceVectorOutput( true );
+    tempRenderContext->setPainter( ctx ? ctx->painter : nullptr );
+    tempRenderContext->setFlag( QgsRenderContext::Antialiasing, true );
+    Q_NOWARN_DEPRECATED_POP
+
+    // setup a minimal expression context
+    QgsExpressionContext expContext;
+    expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
+    tempRenderContext->setExpressionContext( expContext );
+    context = tempRenderContext.get();
+  }
+
+  if ( context->painter() )
+  {
+    context->painter()->save();
+    context->painter()->translate( ctx->columnLeft, ctx->top );
+    context->painter()->scale( 1 / context->scaleFactor(), 1 / context->scaleFactor() );
   }
 
   QgsDataDefinedSizeLegend ddsLegend( *mSettings );
@@ -1188,14 +1216,14 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( con
 
   QSizeF contentSize;
   double labelXOffset;
-  ddsLegend.drawCollapsedLegend( context, &contentSize, &labelXOffset );
+  ddsLegend.drawCollapsedLegend( *context, &contentSize, &labelXOffset );
 
-  if ( ctx && ctx->painter )
-    ctx->painter->restore();
+  if ( context->painter() )
+    context->painter()->restore();
 
   ItemMetrics im;
-  im.symbolSize = QSizeF( ( contentSize.width() - labelXOffset ) / context.scaleFactor(), contentSize.height() / context.scaleFactor() );
-  im.labelSize = QSizeF( labelXOffset / context.scaleFactor(), contentSize.height() / context.scaleFactor() );
+  im.symbolSize = QSizeF( ( contentSize.width() - labelXOffset ) / context->scaleFactor(), contentSize.height() / context->scaleFactor() );
+  im.labelSize = QSizeF( labelXOffset / context->scaleFactor(), contentSize.height() / context->scaleFactor() );
   return im;
 }
 

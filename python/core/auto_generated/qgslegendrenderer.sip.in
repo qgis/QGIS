@@ -65,10 +65,13 @@ If the returned size is null, the legend will be drawn with the minimum possible
 .. seealso:: :py:func:`setLegendSize`
 %End
 
-    void drawLegend( QPainter *painter );
+ void drawLegend( QPainter *painter ) /Deprecated/;
 %Docstring
 Draws the legend with given ``painter``. The legend will occupy the area reported in legendSize().
 The ``painter`` should be scaled beforehand so that units correspond to millimeters.
+
+.. deprecated::
+   Use the variant which accepts a QgsRenderContext instead.
 %End
 
     void drawLegend( QgsRenderContext &context );

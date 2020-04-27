@@ -84,8 +84,14 @@ static void _renderLegend( const QString &testName, QgsLayerTreeModel *legendMod
   img.fill( Qt::white );
 
   QPainter painter( &img );
-  painter.scale( dpmm, dpmm );
-  legendRenderer.drawLegend( &painter );
+  painter.setRenderHint( QPainter::Antialiasing, true );
+  QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
+
+  QgsScopedRenderContextScaleToMm scaleToMm( context );
+  context.setRendererScale( 1000 );
+  context.setMapToPixel( QgsMapToPixel( 1 / ( 0.1 * context.scaleFactor() ) ) );
+
+  legendRenderer.drawLegend( context );
   painter.end();
 
   img.save( _fileNameForTest( testName ) );
@@ -652,8 +658,13 @@ void TestQgsLegendRenderer::testMapUnits()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings );
+
+  Q_NOWARN_DEPRECATED_PUSH
+  // TODO QGIS 4.0 -- move these to parameters on _renderLegend, and set the render context to match
   settings.setMmPerMapUnit( 0.1 );
   settings.setMapScale( 1000 );
+  Q_NOWARN_DEPRECATED_POP
+
   _renderLegend( testName, &legendModel, settings );
   QVERIFY( _verifyImage( testName, mReport ) );
 }
