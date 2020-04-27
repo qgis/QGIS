@@ -439,7 +439,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     const double *zData = !mNoZ ? exterior->zData() : nullptr;
     for ( int i = 0; i < 3; i++ )
     {
-      mData << *xData++ - mOriginX << ( mNoZ ? 0 : *zData++ ) << - *yData++ + mOriginY;
+      mData << *xData++ - mOriginX << ( !zData ? 0 : *zData++ ) << - *yData++ + mOriginY;
       if ( mAddNormals )
         mData << pNormal.x() << pNormal.z() << - pNormal.y();
     }
