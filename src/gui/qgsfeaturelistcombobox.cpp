@@ -263,7 +263,7 @@ void QgsFeatureListComboBox::setIdentifierValues( const QVariantList &identifier
 
 void QgsFeatureListComboBox::setIdentifierValuesToNull()
 {
-  mModel->setExtraIdentifierValuesToNull();
+  mModel->setExtraIdentifierValueToNull();
 }
 
 QgsFeatureRequest QgsFeatureListComboBox::currentFeatureRequest() const

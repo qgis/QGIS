@@ -1,9 +1,9 @@
 /***************************************************************************
-  qgsfeaturepickermodel.cpp - QgsFeaturePickerModel
+  qgsfeaturepickermodelbase.cpp - QgsFeaturePickerModelBase
  ---------------------
- begin                : 03.04.2020
- copyright            : (C) 2020 by Denis Rouzaud
- email                : denis@opengis.ch
+ begin                : 10.3.2017
+ copyright            : (C) 2017 by Matthias Kuhn
+ email                : matthias@opengis.ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -12,7 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsfeaturepickermodel.h"
+
+#include "qgsfeaturepickermodelbase.h"
 #include "qgsfeatureexpressionvaluesgatherer.h"
 
 #include "qgsvectorlayer.h"
@@ -20,25 +21,30 @@
 #include "qgsapplication.h"
 #include "qgssettings.h"
 
-
-QgsFeaturePickerModel::QgsFeaturePickerModel( QObject *parent )
+template <class T>
+QgsFeaturePickerModelBase<T>::QgsFeaturePickerModelBase( QObject *parent )
   : QAbstractItemModel( parent )
 {
-  setCurrentFeatureUnguarded( FID_NULL );
+  mReloadTimer.setInterval( 100 );
+  mReloadTimer.setSingleShot( true );
+  connect( &mReloadTimer, &QTimer::timeout, this, &QgsFeaturePickerModelBase::scheduledReload );
 }
 
-QgsFeaturePickerModel::~QgsFeaturePickerModel()
+template <class T>
+QgsFeaturePickerModelBase<T>::~QgsFeaturePickerModelBase()
 {
   if ( mGatherer )
-    connect( mGatherer, &QgsFeatureExpressionValuesGatherer::finished, mGatherer, &QgsFeatureExpressionValuesGatherer::deleteLater );
+    connect( mGatherer, &T::finished, mGatherer, &T::deleteLater );
 }
 
-QgsVectorLayer *QgsFeaturePickerModel::sourceLayer() const
+template <class T>
+QgsVectorLayer *QgsFeaturePickerModelBase<T>::sourceLayer() const
 {
   return mSourceLayer;
 }
 
-void QgsFeaturePickerModel::setSourceLayer( QgsVectorLayer *sourceLayer )
+template <class T>
+void QgsFeaturePickerModelBase<T>::setSourceLayer( QgsVectorLayer *sourceLayer )
 {
   if ( mSourceLayer == sourceLayer )
     return;
@@ -51,12 +57,14 @@ void QgsFeaturePickerModel::setSourceLayer( QgsVectorLayer *sourceLayer )
   setDisplayExpression( sourceLayer->displayExpression() );
 }
 
-QString QgsFeaturePickerModel::displayExpression() const
+template <class T>
+QString QgsFeaturePickerModelBase<T>::displayExpression() const
 {
   return mDisplayExpression.expression();
 }
 
-void QgsFeaturePickerModel::setDisplayExpression( const QString &displayExpression )
+template <class T>
+void QgsFeaturePickerModelBase<T>::setDisplayExpression( const QString &displayExpression )
 {
   if ( mDisplayExpression.expression() == displayExpression )
     return;
@@ -66,12 +74,14 @@ void QgsFeaturePickerModel::setDisplayExpression( const QString &displayExpressi
   emit displayExpressionChanged();
 }
 
-QString QgsFeaturePickerModel::filterValue() const
+template <class T>
+QString QgsFeaturePickerModelBase<T>::filterValue() const
 {
   return mFilterValue;
 }
 
-void QgsFeaturePickerModel::setFilterValue( const QString &filterValue )
+template <class T>
+void QgsFeaturePickerModelBase<T>::setFilterValue( const QString &filterValue )
 {
   if ( mFilterValue == filterValue )
     return;
@@ -81,12 +91,14 @@ void QgsFeaturePickerModel::setFilterValue( const QString &filterValue )
   emit filterValueChanged();
 }
 
-QString QgsFeaturePickerModel::filterExpression() const
+template <class T>
+QString QgsFeaturePickerModelBase<T>::filterExpression() const
 {
   return mFilterExpression;
 }
 
-void QgsFeaturePickerModel::setFilterExpression( const QString &filterExpression )
+template <class T>
+void QgsFeaturePickerModelBase<T>::setFilterExpression( const QString &filterExpression )
 {
   if ( mFilterExpression == filterExpression )
     return;
@@ -96,37 +108,36 @@ void QgsFeaturePickerModel::setFilterExpression( const QString &filterExpression
   emit filterExpressionChanged();
 }
 
-bool QgsFeaturePickerModel::isLoading() const
+template <class T>
+bool QgsFeaturePickerModelBase<T>::isLoading() const
 {
   return mGatherer;
 }
 
-QModelIndex QgsFeaturePickerModel::index( int row, int column, const QModelIndex &parent ) const
+template <class T>
+QModelIndex QgsFeaturePickerModelBase<T>::index( int row, int column, const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
   return createIndex( row, column, nullptr );
 }
 
-QModelIndex QgsFeaturePickerModel::parent( const QModelIndex &child ) const
+template <class T>
+QModelIndex QgsFeaturePickerModelBase<T>::parent( const QModelIndex &child ) const
 {
   Q_UNUSED( child )
   return QModelIndex();
 }
 
-int QgsFeaturePickerModel::rowCount( const QModelIndex &parent ) const
+template <class T>
+int QgsFeaturePickerModelBase<T>::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
-
   return mEntries.size();
 }
 
-int QgsFeaturePickerModel::columnCount( const QModelIndex &parent ) const
-{
-  Q_UNUSED( parent )
-  return 1;
-}
 
-QVariant QgsFeaturePickerModel::data( const QModelIndex &index, int role ) const
+template <class T>
+QVariant QgsFeaturePickerModelBase<T>::data( const QModelIndex &index, int role ) const
 {
   if ( !index.isValid() )
     return QVariant();
@@ -139,17 +150,35 @@ QVariant QgsFeaturePickerModel::data( const QModelIndex &index, int role ) const
       return mEntries.value( index.row() ).value;
 
     case FeatureIdRole:
-      return mEntries.value( index.row() ).feature.id();
+      return mEntries.value( index.row() ).featureId;
 
     case FeatureRole:
       return mEntries.value( index.row() ).feature;
+
+    case IdentifierValueRole:
+    {
+      const QVariantList values = mEntries.value( index.row() ).identifierValues;
+      return values.value( 0 );
+    }
+
+    case IdentifierValuesRole:
+      return mEntries.value( index.row() ).identifierValues;
 
     case Qt::BackgroundColorRole:
     case Qt::TextColorRole:
     case Qt::DecorationRole:
     case Qt::FontRole:
     {
-      bool isNull = !mEntries.value( index.row() ).feature.isValid();
+      bool isNull = true;
+      const QVariantList values = mEntries.value( index.row() ).identifierValues;
+      for ( const QVariant &value : values )
+      {
+        if ( !value.isNull() )
+        {
+          isNull = false;
+          break;
+        }
+      }
       if ( isNull )
       {
         // Representation for NULL value
@@ -160,7 +189,7 @@ QVariant QgsFeaturePickerModel::data( const QModelIndex &index, int role ) const
         if ( role == Qt::FontRole )
         {
           QFont font = QFont();
-          if ( index.row() == mCurrentIndex )
+          if ( index.row() == mExtraValueIndex )
             font.setBold( true );
           else
             font.setItalic( true );
@@ -191,22 +220,23 @@ QVariant QgsFeaturePickerModel::data( const QModelIndex &index, int role ) const
   return QVariant();
 }
 
-void QgsFeaturePickerModel::updateCompleter()
+template <class T>
+void QgsFeaturePickerModelBase<T>::updateCompleter()
 {
   emit beginUpdate();
 
-  QgsFeatureExpressionValuesGatherer *gatherer = qobject_cast<QgsFeatureExpressionValuesGatherer *>( sender() );
+  T *gatherer = qobject_cast<T *>( sender() );
   if ( gatherer->wasCanceled() )
   {
     delete gatherer;
     return;
   }
 
-  QVector<QgsFeatureExpressionValuesGatherer::Entry> entries = mGatherer->entries();
+  QVector<typename T::Entry> entries = mGatherer->entries();
 
-  if ( mCurrentIndex == -1 )
+  if ( mExtraValueIndex == -1 )
   {
-    setCurrentFeatureUnguarded( FID_NULL );
+    setExtraIdentifierValueUnguarded( T::nullEntry() );
   }
 
   // Only reloading the current entry?
@@ -215,9 +245,9 @@ void QgsFeaturePickerModel::updateCompleter()
   {
     if ( !entries.isEmpty() )
     {
-      mEntries.replace( mCurrentIndex, entries.at( 0 ) );
-      emit dataChanged( index( mCurrentIndex, 0, QModelIndex() ), index( mCurrentIndex, 0, QModelIndex() ) );
-      mShouldReloadCurrentFeature = 0;
+      mEntries.replace( mExtraValueIndex, entries.at( 0 ) );
+      emit dataChanged( index( mExtraValueIndex, 0, QModelIndex() ), index( mExtraValueIndex, 0, QModelIndex() ) );
+      mShouldReloadCurrentFeature = false;
       setExtraValueDoesNotExist( false );
     }
     else
@@ -225,7 +255,7 @@ void QgsFeaturePickerModel::updateCompleter()
       setExtraValueDoesNotExist( true );
     }
 
-    mShouldReloadCurrentFeature = 0;
+    mShouldReloadCurrentFeature = false;
 
     if ( mFilterValue.isEmpty() )
       reload();
@@ -233,11 +263,11 @@ void QgsFeaturePickerModel::updateCompleter()
   else
   {
     // We got strings for a filter selection
-    std::sort( entries.begin(), entries.end(), []( const QgsFeatureExpressionValuesGatherer::Entry & a, const QgsFeatureExpressionValuesGatherer::Entry & b ) { return a.value.localeAwareCompare( b.value ) < 0; } );
+    std::sort( entries.begin(), entries.end(), []( const EntryType & a, const EntryType & b ) { return a.value.localeAwareCompare( b.value ) < 0; } );
 
     if ( mAllowNull )
     {
-      entries.prepend( QgsFeatureExpressionValuesGatherer::nullEntry() );
+      entries.prepend( T::nullEntry() );
     }
 
     const int newEntriesSize = entries.size();
@@ -247,14 +277,15 @@ void QgsFeaturePickerModel::updateCompleter()
 
     // Find the index of the current entry in the new list
     int currentEntryInNewList = -1;
-    if ( mCurrentIndex != -1 && mCurrentIndex < mEntries.count() )
+    if ( mExtraValueIndex != -1 && mExtraValueIndex < mEntries.count() )
     {
       for ( int i = 0; i < newEntriesSize; ++i )
       {
-        if ( entries.at( i ).feature.id() == mEntries.at( mCurrentIndex ).feature.id() )
+        if ( mGatherer->compareEntries( entries.at( i ), mEntries.at( mExtraValueIndex ) ) )
         {
-          mEntries.replace( mCurrentIndex, entries.at( i ) );
+          mEntries.replace( mExtraValueIndex, entries.at( i ) );
           currentEntryInNewList = i;
+          setExtraValueDoesNotExist( false );
           break;
         }
       }
@@ -264,12 +295,12 @@ void QgsFeaturePickerModel::updateCompleter()
 
     // Move current entry to the first position if this is a fixed entry or because
     // the entry exists in the new list
-    if ( mCurrentIndex > -1 && ( mCurrentIndex < nbFixedEntry || currentEntryInNewList != -1 ) )
+    if ( mExtraValueIndex > -1 && ( mExtraValueIndex < nbFixedEntry || currentEntryInNewList != -1 ) )
     {
-      if ( mCurrentIndex != 0 )
+      if ( mExtraValueIndex != 0 )
       {
-        beginMoveRows( QModelIndex(), mCurrentIndex, mCurrentIndex, QModelIndex(), 0 );
-        mEntries.move( mCurrentIndex, 0 );
+        beginMoveRows( QModelIndex(), mExtraValueIndex, mExtraValueIndex, QModelIndex(), 0 );
+        mEntries.move( mExtraValueIndex, 0 );
         endMoveRows();
       }
       firstRow = 1;
@@ -282,7 +313,9 @@ void QgsFeaturePickerModel::updateCompleter()
     // if we remove all rows before endRemoveRows, setExtraIdentifierValuesUnguarded will be called
     // and a null value will be added to mEntries, so we block setExtraIdentifierValuesUnguarded call
 
+    mIsSettingExtraIdentifierValue = true;
     endRemoveRows();
+    mIsSettingExtraIdentifierValue = false;
 
 
     if ( currentEntryInNewList == -1 )
@@ -294,7 +327,7 @@ void QgsFeaturePickerModel::updateCompleter()
       // if all entries have been cleaned (firstRow == 0)
       // and there is a value in entries, prefer this value over NULL
       // else chose the first one (the previous one)
-      setCurrentIndex( firstRow == 0 && mAllowNull && !entries.isEmpty() ? 1 : 0, firstRow == 0 );
+      setExtraIdentifierValueIndex( firstRow == 0 && mAllowNull && !entries.isEmpty() ? 1 : 0, firstRow == 0 );
     }
     else
     {
@@ -318,7 +351,7 @@ void QgsFeaturePickerModel::updateCompleter()
       beginInsertRows( QModelIndex(), currentEntryInNewList + 1, newEntriesSize - currentEntryInNewList - 1 );
       mEntries += entries.mid( currentEntryInNewList + 1 );
       endInsertRows();
-      setCurrentIndex( currentEntryInNewList );
+      setExtraIdentifierValueIndex( currentEntryInNewList );
     }
 
     emit filterJobCompleted();
@@ -334,7 +367,8 @@ void QgsFeaturePickerModel::updateCompleter()
   emit isLoadingChanged();
 }
 
-void QgsFeaturePickerModel::scheduledReload()
+template<class T>
+void QgsFeaturePickerModelBase<T>::scheduledReload()
 {
   if ( !mSourceLayer )
     return;
@@ -349,13 +383,14 @@ void QgsFeaturePickerModel::scheduledReload()
 
   QgsFeatureRequest request;
 
-  if ( mShouldReloadCurrentFeature != 0 )
+  if ( mShouldReloadCurrentFeature )
   {
-    request.setFilterFid( mShouldReloadCurrentFeature );
+    requestToReloadCurrentFeature( request );
   }
   else
   {
     QString filterClause;
+
     if ( mFilterValue.isEmpty() && !mFilterExpression.isEmpty() )
       filterClause = mFilterExpression;
     else if ( mFilterExpression.isEmpty() && !mFilterValue.isEmpty() )
@@ -366,92 +401,121 @@ void QgsFeaturePickerModel::scheduledReload()
     if ( !filterClause.isEmpty() )
       request.setFilterExpression( filterClause );
   }
+  QSet<QString> attributes = requestedAttributes();
+  if ( !attributes.isEmpty() )
+  {
+    if ( request.filterExpression() )
+      attributes += request.filterExpression()->referencedColumns();
+    attributes += requestedAttributesForStyle();
 
+    request.setSubsetOfAttributes( attributes, mSourceLayer->fields() );
+  }
+
+  request.setFlags( QgsFeatureRequest::NoGeometry );
   request.setLimit( QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ).toInt() );
 
-  mGatherer = new QgsFeatureExpressionValuesGatherer( mSourceLayer, mDisplayExpression, request );
+  mGatherer = new QgsFeatureExpressionValuesGatherer( mSourceLayer, mDisplayExpression, request, mIdentifierFields );
   mGatherer->setData( mShouldReloadCurrentFeature );
-  connect( mGatherer, &QgsFeatureExpressionValuesGatherer::finished, this, &QgsFeaturePickerModel::updateCompleter );
+  connect( mGatherer, &T::finished, this, &T::updateCompleter );
+
 
   mGatherer->start();
   if ( !wasLoading )
     emit isLoadingChanged();
 }
 
-void QgsFeaturePickerModel::requestToReloadCurrentFeature( QgsFeatureRequest &request )
+template<class T>
+T QgsFeaturePickerModelBase<T>::createValuesGatherer( const QgsFeatureRequest &request ) const
 {
-  request.setFilterFid( mFeatureFidToReload );
-
+  new QgsFeatureExpressionValuesGatherer( mSourceLayer, mDisplayExpression, request );
 }
 
-void QgsFeaturePickerModel::setCurrentIndex( int index, bool force )
+template<class T>
+QSet<QString> QgsFeaturePickerModelBase<T>::requestedAttributesForStyle() const
 {
-  if ( mCurrentIndex == index && !force )
-    return;
+  QSet<QString> requestedAttrs;
 
-  mCurrentIndex = index;
-  emit currentIndexChanged( index );
-  emit currentFeatureChanged( currentFeature() );
+  const auto rowStyles = mSourceLayer->conditionalStyles()->rowStyles();
+
+  for ( const QgsConditionalStyle &style : rowStyles )
+  {
+    QgsExpression exp( style.rule() );
+    requestedAttrs += exp.referencedColumns();
+  }
+
+  if ( mDisplayExpression.isField() )
+  {
+    QString fieldName = *mDisplayExpression.referencedColumns().constBegin();
+    const auto constFieldStyles = mSourceLayer->conditionalStyles()->fieldStyles( fieldName );
+    for ( const QgsConditionalStyle &style : constFieldStyles )
+    {
+      QgsExpression exp( style.rule() );
+      requestedAttrs += exp.referencedColumns();
+    }
+  }
+
+  return requestedAttrs;
 }
 
-void QgsFeaturePickerModel::setCurrentFeature( const QgsFeatureId &featureId )
+template<class T>
+void QgsFeaturePickerModelBase<T>::setExtraIdentifierValueIndex( int index, bool force )
 {
-  if ( featureId == 0 || featureId == currentFeature().id() )
+  if ( mExtraValueIndex == index && !force )
     return;
 
-  if ( mIsSettingCurrentFeature )
-    return;
-
-  mIsSettingCurrentFeature = true;
-
-  setCurrentFeatureUnguarded( featureId );
-
-  mIsSettingCurrentFeature = false;
+  mExtraValueIndex = index;
+  emit extraIdentifierValueIndexChanged( index );
 }
 
-void QgsFeaturePickerModel::setCurrentFeatureUnguarded( const QgsFeatureId &featureId )
+template<class T>
+void QgsFeaturePickerModelBase<T>::reloadCurrentFeature()
 {
-  const QVector<QgsFeatureExpressionValuesGatherer::Entry> entries = mEntries;
+  mShouldReloadCurrentFeature = true;
+  mReloadTimer.start();
+}
+
+template<class T>
+void QgsFeaturePickerModelBase<T>::setExtraIdentifierValueUnguarded( const IdentifierType &identifierValue )
+{
+  const QVector<EntryType> entries = mEntries;
 
   int index = 0;
-  for ( const QgsFeatureExpressionValuesGatherer::Entry &entry : entries )
+  for ( const EntryType &entry : entries )
   {
-    if ( entry.feature.id() == featureId )
+    if ( entry.identifier == identifierValue )
     {
-      setCurrentIndex( index );
+      setExtraIdentifierValueIndex( index );
       break;
     }
+
     index++;
   }
 
   // Value not found in current entries
-  if ( mCurrentIndex != index && ( mAllowNull || featureId != 0 ) )
+  if ( mExtraValueIndex != index )
   {
-    beginInsertRows( QModelIndex(), 0, 0 );
-    if ( featureId != 0 )
+    bool identifierIsNull = mGatherer->identifierIsNull( identifierValue );
+    if ( !identifierIsNull || mAllowNull )
     {
-      mShouldReloadCurrentFeature = featureId;
-      mReloadTimer.start();
+      beginInsertRows( QModelIndex(), 0, 0 );
+      if ( !identifierIsNull )
+      {
+        mEntries.prepend( EntryType( identifierValue, mGatherer->identifierToString( identifierValue ), QgsFeature() ) );
+        reloadCurrentFeature();
+      }
+      else
+      {
+        mEntries.prepend( T::nullEntry() );
+      }
+      endInsertRows();
+
+      setExtraIdentifierValueIndex( 0, true );
     }
-    else
-    {
-      mEntries.prepend( QgsFeatureExpressionValuesGatherer::nullEntry() );
-    }
-    endInsertRows();
-    setCurrentIndex( 0, true );
   }
 }
 
-void QgsFeaturePickerModel::setExtraValueDoesNotExist( bool extraValueDoesNotExist )
-{
-  if ( mExtraValueDoesNotExist == extraValueDoesNotExist )
-    return;
-
-  mExtraValueDoesNotExist = extraValueDoesNotExist;
-  emit extraValueDoesNotExistChanged();
-}
-
-QgsConditionalStyle QgsFeaturePickerModel::featureStyle( const QgsFeature &feature ) const
+template<class T>
+QgsConditionalStyle QgsFeaturePickerModelBase<T>::featureStyle( const QgsFeature &feature ) const
 {
   if ( !mSourceLayer )
     return QgsConditionalStyle();
@@ -479,12 +543,14 @@ QgsConditionalStyle QgsFeaturePickerModel::featureStyle( const QgsFeature &featu
   return style;
 }
 
-bool QgsFeaturePickerModel::allowNull() const
+template<class T>
+bool QgsFeaturePickerModelBase<T>::allowNull() const
 {
   return mAllowNull;
 }
 
-void QgsFeaturePickerModel::setAllowNull( bool allowNull )
+template<class T>
+void QgsFeaturePickerModelBase<T>::setAllowNull( bool allowNull )
 {
   if ( mAllowNull == allowNull )
     return;
@@ -495,15 +561,51 @@ void QgsFeaturePickerModel::setAllowNull( bool allowNull )
   reload();
 }
 
-QgsFeature QgsFeaturePickerModel::currentFeature() const
+template<class T>
+bool QgsFeaturePickerModelBase<T>::extraValueDoesNotExist() const
 {
-  if ( mCurrentIndex >= 0 && mCurrentIndex < mEntries.count() )
-    return mEntries.at( mCurrentIndex ).feature;
-  else
-    return QgsFeature();
+  return mExtraValueDoesNotExist;
 }
 
-void QgsFeaturePickerModel::reload()
+template<class T>
+void QgsFeaturePickerModelBase<T>::setExtraValueDoesNotExist( bool extraValueDoesNotExist )
+{
+  if ( mExtraValueDoesNotExist == extraValueDoesNotExist )
+    return;
+
+  mExtraValueDoesNotExist = extraValueDoesNotExist;
+  emit extraValueDoesNotExistChanged();
+}
+
+template<class T>
+int QgsFeaturePickerModelBase<T>::extraIdentifierValueIndex() const
+{
+  return mExtraValueIndex;
+}
+
+template<class T>
+void QgsFeaturePickerModelBase<T>::reload()
 {
   mReloadTimer.start();
 }
+
+template<class T>
+void QgsFeaturePickerModelBase<T>::setExtraIdentifierValue( const IdentifierType &extraIdentifierValue )
+{
+  if ( extraIdentifierValue == mExtraIdentifierValue && !mGatherer->identifierIsNull( extraIdentifierValue ) )
+    return;
+
+  if ( mIsSettingExtraIdentifierValue )
+    return;
+
+  mIsSettingExtraIdentifierValue = true;
+
+  mExtraIdentifierValue = extraIdentifierValue;
+
+  setExtraIdentifierValueUnguarded( extraIdentifierValue );
+
+  mIsSettingExtraIdentifierValue = false;
+
+  emit extraIdentifierValueChanged();
+}
+
