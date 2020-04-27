@@ -132,6 +132,7 @@ class TestQgsLegendRenderer : public QObject
 
     void testBasic();
     void testMultiline();
+    void testOverrideSize();
     void testSpacing();
     void testEffects();
     void testBigMarker();
@@ -333,6 +334,34 @@ void TestQgsLegendRenderer::testMultiline()
 
   QgsLayerTreeModelLegendNode *embeddedNode = legendModel.legendNodeEmbeddedInParent( layer );
   embeddedNode->setUserLabel( QString() );
+
+  QgsLegendSettings settings;
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+}
+
+void TestQgsLegendRenderer::testOverrideSize()
+{
+  QString testName = QStringLiteral( "legend_override_size" );
+
+  QgsLayerTreeModel legendModel( mRoot );
+
+  legendModel.findLegendNode( mVL1->id(), QString() );
+
+  QgsLayerTreeLayer *layer = legendModel.rootGroup()->findLayer( mVL1 );
+  layer->setPatchSize( QSizeF( 30, 0 ) );
+
+  QgsLayerTreeModelLegendNode *embeddedNode = legendModel.legendNodeEmbeddedInParent( layer );
+  embeddedNode->setUserLabel( QString() );
+
+  layer = legendModel.rootGroup()->findLayer( mVL3 );
+  QgsMapLayerLegendUtils::setLegendNodeSymbolSize( layer, 1, QSizeF( 0, 30 ) );
+  legendModel.refreshLayerLegend( layer );
+
+  layer = legendModel.rootGroup()->findLayer( mRL );
+  QgsMapLayerLegendUtils::setLegendNodeSymbolSize( layer, 0, QSizeF( 50, 30 ) );
+  legendModel.refreshLayerLegend( layer );
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );

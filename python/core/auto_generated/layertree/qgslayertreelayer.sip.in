@@ -156,6 +156,30 @@ Sets the symbol patch ``shape`` to use when rendering the legend node symbol.
 .. versionadded:: 3.14
 %End
 
+    QSizeF patchSize() const;
+%Docstring
+Returns the user (overridden) size for the legend node.
+
+If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+symbol width or height from :py:class:`QgsLegendSettings`.
+
+.. seealso:: :py:func:`setPatchSize`
+
+.. versionadded:: 3.14
+%End
+
+    void setPatchSize( QSizeF size );
+%Docstring
+Sets the user (overridden) ``size`` for the legend node.
+
+If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+symbol width or height from :py:class:`QgsLegendSettings`.
+
+.. seealso:: :py:func:`patchSize`
+
+.. versionadded:: 3.14
+%End
+
   signals:
 
     void layerLoaded();

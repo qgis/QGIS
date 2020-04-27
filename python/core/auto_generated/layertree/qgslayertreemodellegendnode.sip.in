@@ -72,6 +72,30 @@ Sets some data associated with the item. Default implementation does nothing and
     virtual QString userLabel() const;
     virtual void setUserLabel( const QString &userLabel );
 
+    virtual QSizeF userPatchSize() const;
+%Docstring
+Returns the user (overridden) size for the legend node.
+
+If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+symbol width or height from :py:class:`QgsLegendSettings`.
+
+.. seealso:: :py:func:`setUserPatchSize`
+
+.. versionadded:: 3.14
+%End
+
+    virtual void setUserPatchSize( QSizeF size );
+%Docstring
+Sets the user (overridden) ``size`` for the legend node.
+
+If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+symbol width or height from :py:class:`QgsLegendSettings`.
+
+.. seealso:: :py:func:`userPatchSize`
+
+.. versionadded:: 3.14
+%End
+
     virtual bool isScaleOK( double scale ) const;
 
     virtual void invalidateMapBasedData();
@@ -100,6 +124,8 @@ Default implementation does nothing. *
       double maxSiblingSymbolWidth;
 
       QgsLegendPatchShape patchShape;
+
+      QSizeF patchSize;
     };
 
     struct ItemMetrics
