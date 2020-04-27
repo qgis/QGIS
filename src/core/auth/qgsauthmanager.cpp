@@ -99,6 +99,7 @@ QgsAuthManager *QgsAuthManager::instance()
 QgsAuthManager::QgsAuthManager()
 {
   mMutex = new QMutex( QMutex::Recursive );
+  mMasterPasswordMutex = new QMutex( QMutex::Recursive );
   connect( this, &QgsAuthManager::messageOut,
            this, &QgsAuthManager::writeToConsole );
 }
@@ -487,7 +488,7 @@ const QString QgsAuthManager::disabledMessage() const
 
 bool QgsAuthManager::setMasterPassword( bool verify )
 {
-  QMutexLocker locker( mMutex );
+  QMutexLocker locker( mMasterPasswordMutex );
   if ( isDisabled() )
     return false;
 
@@ -497,13 +498,11 @@ bool QgsAuthManager::setMasterPassword( bool verify )
   if ( mMasterPass.isEmpty() )
   {
     QgsDebugMsg( QStringLiteral( "Master password is not yet set by user" ) );
-    locker.unlock();
     if ( !masterPasswordInput() )
     {
       QgsDebugMsg( QStringLiteral( "Master password input canceled by user" ) );
       return false;
     }
-    locker.relock();
   }
   else
   {
