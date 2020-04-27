@@ -3253,6 +3253,110 @@ static QVariant fcnYMax( const QVariantList &values, const QgsExpressionContext 
   return QVariant::fromValue( geom.boundingBox().yMaximum() );
 }
 
+static QVariant fcnZMax( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isNull() || geom.isEmpty( ) )
+    return QVariant();
+
+  if ( !geom.constGet()->is3D() )
+    return QVariant();
+
+  double max = std::numeric_limits< double >::lowest();
+
+  for ( auto it = geom.vertices_begin(); it != geom.vertices_end(); ++it )
+  {
+    double z = ( *it ).z();
+
+    if ( max < z )
+      max = z;
+  }
+
+  if ( max == std::numeric_limits< double >::lowest() )
+    return QVariant( QVariant::Double );
+
+  return QVariant( max );
+}
+
+static QVariant fcnZMin( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isNull() || geom.isEmpty() )
+    return QVariant();
+
+  if ( !geom.constGet()->is3D() )
+    return QVariant();
+
+  double min = std::numeric_limits< double >::max();
+
+  for ( auto it = geom.vertices_begin(); it != geom.vertices_end(); ++it )
+  {
+    double z = ( *it ).z();
+
+    if ( z < min )
+      min = z;
+  }
+
+  if ( min == std::numeric_limits< double >::max() )
+    return QVariant( QVariant::Double );
+
+  return QVariant( min );
+}
+
+static QVariant fcnMMin( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isNull() || geom.isEmpty() )
+    return QVariant();
+
+  if ( !geom.constGet()->isMeasure() )
+    return QVariant();
+
+  double min = std::numeric_limits< double >::max();
+
+  for ( auto it = geom.vertices_begin(); it != geom.vertices_end(); ++it )
+  {
+    double m = ( *it ).m();
+
+    if ( m < min )
+      min = m;
+  }
+
+  if ( min == std::numeric_limits< double >::max() )
+    return QVariant( QVariant::Double );
+
+  return QVariant( min );
+}
+
+static QVariant fcnMMax( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+
+  if ( geom.isNull() || geom.isEmpty() )
+    return QVariant();
+
+  if ( !geom.constGet()->isMeasure() )
+    return QVariant();
+
+  double max = std::numeric_limits< double >::lowest();
+
+  for ( auto it = geom.vertices_begin(); it != geom.vertices_end(); ++it )
+  {
+    double m = ( *it ).m();
+
+    if ( max < m )
+      max = m;
+  }
+
+  if ( max == std::numeric_limits< double >::lowest() )
+    return QVariant( QVariant::Double );
+
+  return QVariant( max );
+}
+
 static QVariant fcnFlipCoordinates( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -5938,7 +6042,15 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "y" ) ),
                                             fcnExtrude, QStringLiteral( "GeometryGroup" ), QString() )
         << new QgsStaticExpressionFunction( QStringLiteral( "is_multipart" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
-                                            fcnGeomIsMultipart, QStringLiteral( "GeometryGroup" ) );
+                                            fcnGeomIsMultipart, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "z_max" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+                                            fcnZMax, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "z_min" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+                                            fcnZMin, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "m_max" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+                                            fcnMMax, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "m_min" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+                                            fcnMMin, QStringLiteral( "GeometryGroup" ) );
 
 
     QgsStaticExpressionFunction *orderPartsFunc = new QgsStaticExpressionFunction( QStringLiteral( "order_parts" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) )
