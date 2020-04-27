@@ -322,15 +322,6 @@ int main( int argc, char *argv[] )
             throw HttpException( QStringLiteral( "HTTP error unsupported method: %1" ).arg( methodString ) );
           }
 
-          // Build URL from env ...
-          QString url { qgetenv( "REQUEST_URI" ) };
-          // ... or from server ip/port and request path
-          if ( url.isEmpty() )
-          {
-            const QString path { firstLinePieces.at( 1 )};
-            url = QStringLiteral( "http://%1:%2%3" ).arg( ipAddress ).arg( port ).arg( path );
-          }
-
           const QString protocol { firstLinePieces.at( 2 )};
           if ( protocol != QStringLiteral( "HTTP/1.0" ) && protocol != QStringLiteral( "HTTP/1.1" ) )
           {
@@ -354,6 +345,23 @@ int main( int argc, char *argv[] )
             if ( headerColonPos > 0 )
             {
               headers.insert( headerLine.left( headerColonPos ), headerLine.mid( headerColonPos + 2 ) );
+            }
+          }
+
+          // Build URL from env ...
+          QString url { qgetenv( "REQUEST_URI" ) };
+          // ... or from server ip/port and request path
+          if ( url.isEmpty() )
+          {
+            const QString path { firstLinePieces.at( 1 )};
+            // Take Host header if defined
+            if ( headers.contains( QStringLiteral( "Host" ) ) )
+            {
+              url = QStringLiteral( "http://%1%2" ).arg( headers.value( QStringLiteral( "Host" ) ) ).arg( path );
+            }
+            else
+            {
+              url = QStringLiteral( "http://%1:%2%3" ).arg( ipAddress ).arg( port ).arg( path );
             }
           }
 
