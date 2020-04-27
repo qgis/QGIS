@@ -37,7 +37,6 @@ QgsMeshLayer3DRendererWidget::QgsMeshLayer3DRendererWidget( QgsMeshLayer *layer,
   mWidgetMesh = new QgsMesh3dSymbolWidget( layer, this );
   mWidgetMesh->configureForDataset();
   layout->addWidget( mWidgetMesh );
-  mWidgetMesh->setEnabled( false );
 
   connect( mChkEnabled, &QCheckBox::clicked, this, &QgsMeshLayer3DRendererWidget::onEnabledClicked );
   connect( mWidgetMesh, &QgsMesh3dSymbolWidget::changed, this, &QgsMeshLayer3DRendererWidget::widgetChanged );
@@ -58,6 +57,7 @@ void QgsMeshLayer3DRendererWidget::setLayer( QgsMeshLayer *layer )
   else
   {
     setRenderer( nullptr );
+    mWidgetMesh->setEnabled( false );
   }
 }
 
