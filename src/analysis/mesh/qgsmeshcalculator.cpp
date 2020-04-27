@@ -235,7 +235,8 @@ QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *fe
 
   const QgsMeshDatasetGroupMetadata meta = outputGroup->groupMetadata();
   bool err = mMeshLayer->dataProvider()->persistDatasetGroup(
-               mOutputDriver + ':' + mOutputFile,
+               mOutputFile,
+               mOutputDriver,
                meta,
                datasetValues,
                datasetActive,
