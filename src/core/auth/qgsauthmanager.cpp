@@ -99,6 +99,7 @@ QgsAuthManager *QgsAuthManager::instance()
 QgsAuthManager::QgsAuthManager()
 {
   mMutex = new QMutex( QMutex::Recursive );
+  mMasterPasswordMutex = new QMutex( QMutex::Recursive );
   connect( this, &QgsAuthManager::messageOut,
            this, &QgsAuthManager::writeToConsole );
 }
@@ -487,7 +488,7 @@ const QString QgsAuthManager::disabledMessage() const
 
 bool QgsAuthManager::setMasterPassword( bool verify )
 {
-  QMutexLocker locker( mMutex );
+  QMutexLocker locker( mMasterPasswordMutex );
   if ( isDisabled() )
     return false;
 
