@@ -129,19 +129,19 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
       mbtiles->setMetadataValue( "maxzoom", QString::number( mMaxZoom ) );
     if ( !mMetadata.contains( "bounds" ) )
     {
-      QString boundsStr = "-180,-85,180,85";  // fallback value - whole world except for poles
       try
       {
         QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( "EPSG:3857" ), QgsCoordinateReferenceSystem( "EPSG:4326" ), mTransformContext );
         QgsRectangle wgsExtent = ct.transform( outputExtent );
-        boundsStr = QString( "%1,%2,%3,%4" )
-                    .arg( wgsExtent.xMinimum() ).arg( wgsExtent.yMinimum() )
-                    .arg( wgsExtent.xMaximum() ).arg( wgsExtent.yMaximum() );
+        QString boundsStr = QString( "%1,%2,%3,%4" )
+                            .arg( wgsExtent.xMinimum() ).arg( wgsExtent.yMinimum() )
+                            .arg( wgsExtent.xMaximum() ).arg( wgsExtent.yMaximum() );
+        mbtiles->setMetadataValue( "bounds", boundsStr );
       }
       catch ( const QgsCsException & )
       {
+        // bounds won't be written (not a problem - it is an optional value)
       }
-      mbtiles->setMetadataValue( "bounds", boundsStr );
     }
   }
 
