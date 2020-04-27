@@ -442,7 +442,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     const double *zData = !mNoZ ? exterior->zData() : nullptr;
     for ( int i = 0; i < 3; i++ )
     {
-      float z = ( mNoZ ? 0 : *zData++ );
+      float z = ( ( mNoZ || !exterior->is3D() ) ? 0 : *zData++ );
       if ( z < zMin )
         zMin = z;
       if ( z > zMax )
