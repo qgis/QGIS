@@ -39,7 +39,11 @@ QStringList QgsServiceAreaFromLayerAlgorithm::tags() const
 
 QString QgsServiceAreaFromLayerAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a new vector with all the edges or parts of edges of a network line layer that can be reached within a distance or a time, starting from features of a point layer. The distance and the time (both referred to as \"travel cost\") must be specified respectively in the network layer units or in seconds." );
+  return QObject::tr( "This algorithm creates a new vector with all the edges or parts of "
+                      "edges of a network line layer that can be reached within a distance "
+                      "or a time, starting from features of a point layer. The distance and "
+                      "the time (both referred to as \"travel cost\") must be specified "
+                      "respectively in the network layer units or in hours." );
 }
 
 QgsServiceAreaFromLayerAlgorithm *QgsServiceAreaFromLayerAlgorithm::createInstance() const
@@ -78,6 +82,10 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "START_POINTS" ) ) );
 
   double travelCost = parameterAsDouble( parameters, QStringLiteral( "TRAVEL_COST" ), context );
+
+  int strategy = parameterAsInt( parameters, QStringLiteral( "STRATEGY" ), context );
+  if ( strategy )
+    travelCost *= mMultiplier;
 
   bool includeBounds = true;  // default to true to maintain 3.0 API
   if ( parameters.contains( QStringLiteral( "INCLUDE_BOUNDS" ) ) )
