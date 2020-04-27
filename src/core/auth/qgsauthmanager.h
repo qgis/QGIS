@@ -863,6 +863,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool mScheduledDbEraseRequestEmitted = false;
     int mScheduledDbEraseRequestCount = 0;
     QMutex *mMutex = nullptr;
+    QMutex *mMasterPasswordMutex = nullptr;
 
 #ifndef QT_NO_SSL
     // mapping of sha1 digest and cert source and cert
