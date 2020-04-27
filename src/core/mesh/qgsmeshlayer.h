@@ -204,6 +204,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * Gets native mesh and updates (creates if it doesn't exist) the base triangular mesh
      *
      * \param transform Transformation from layer CRS to destination (e.g. map) CRS. With invalid transform, it keeps the native mesh CRS
+     *
+     * \since QGIS 3.14
      */
     void updateTriangularMesh( const QgsCoordinateTransform &transform = QgsCoordinateTransform() );
 
@@ -257,20 +259,24 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     /**
       * Interpolates the value on the given point from given dataset.
+      * For 3D datasets, it uses #dataset3dValue \n
+      * For 1D datasets, it uses #dataset1dValue with \a searchRadius
       *
       * \note It uses previously cached and indexed triangular mesh
       * and so if the layer has not been rendered previously
       * (e.g. when used in a script) it returns NaN value
+      * \see updateTriangularMesh
       *
       * \param index dataset index specifying group and dataset to extract value from
       * \param point point to query in map coordinates
+      * \param searchRadius the radius of the search area in map unit
       * \returns interpolated value at the point. Returns NaN values for values
       * outside the mesh layer, nodata values and in case triangular mesh was not
       * previously used for rendering
       *
       * \since QGIS 3.4
       */
-    QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
+    QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius = 0 ) const;
 
     /**
       * Returns the 3d values of stacked 3d mesh defined by the given point
@@ -278,6 +284,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       * \note It uses previously cached and indexed triangular mesh
       * and so if the layer has not been rendered previously
       * (e.g. when used in a script) it returns NaN value
+      * \see updateTriangularMesh
       *
       * \param index dataset index specifying group and dataset to extract value from
       * \param point point to query in map coordinates
@@ -288,6 +295,24 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       * \since QGIS 3.12
       */
     QgsMesh3dDataBlock dataset3dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
+
+    /**
+      * Returns the value of 1D mesh dataset defined on edge that are in the search area defined by point ans searchRadius
+      *
+      * \note It uses previously cached and indexed triangular mesh
+      * and so if the layer has not been rendered previously
+      * (e.g. when used in a script) it returns NaN value
+      * \see updateTriangularMesh
+      *
+      * \param index dataset index specifying group and dataset to extract value from
+      * \param point the center point of the search area
+      * \param searchRadius the radius of the searc area in map unit
+      * \returns interpolated value at the projected point. Returns NaN values for values
+      * outside the mesh layer and in case triangular mesh was not previously used for rendering
+      *
+      * \since QGIS 3.14
+      */
+    QgsMeshDatasetValue dataset1dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius ) const;
 
     /**
       * Returns dataset index from active scalar group depending on the time range.

@@ -269,6 +269,12 @@ double QgsMeshLayerUtils::interpolateFromVerticesData( double fraction, double v
   return val1 + ( val2 - val1 ) * fraction;
 }
 
+QgsMeshDatasetValue QgsMeshLayerUtils::interpolateFromVerticesData( double fraction, const QgsMeshDatasetValue &val1, const QgsMeshDatasetValue &val2 )
+{
+  return QgsMeshDatasetValue( interpolateFromVerticesData( fraction, val1.x(), val2.x() ),
+                              interpolateFromVerticesData( fraction, val1.y(), val2.y() ) );
+}
+
 
 QgsVector QgsMeshLayerUtils::interpolateVectorFromVerticesData( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3, QgsVector vect1, QgsVector vect2, QgsVector vect3, const QgsPointXY &pt )
 {

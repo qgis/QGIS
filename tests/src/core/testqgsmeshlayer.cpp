@@ -82,6 +82,8 @@ class TestQgsMeshLayer : public QObject
     void test_reload_extra_dataset();
 
     void test_mesh_simplification();
+
+    void test_dataset_value_from_layer();
 };
 
 QString TestQgsMeshLayer::readFile( const QString &fname ) const
@@ -907,6 +909,38 @@ void TestQgsMeshLayer::test_mesh_simplification()
   // Delete simplified meshes
   for ( QgsTriangularMesh *m : simplifiedMeshes )
     delete m;
+}
+
+void TestQgsMeshLayer::test_dataset_value_from_layer()
+{
+  QgsMeshDatasetValue value;
+
+  //1D mesh
+  mMdal1DLayer->updateTriangularMesh();
+  value = mMdal1DLayer->datasetValue( QgsMeshDatasetIndex( 0, 0 ), QgsPointXY( 1500, 2009 ), 10 );
+  QCOMPARE( QgsMeshDatasetValue( 25 ), value );
+  value = mMdal1DLayer->datasetValue( QgsMeshDatasetIndex( 1, 0 ), QgsPointXY( 2500, 1991 ), 10 );
+  QCOMPARE( QgsMeshDatasetValue( 2.5 ), value );
+  value = mMdal1DLayer->datasetValue( QgsMeshDatasetIndex( 2, 0 ), QgsPointXY( 2500, 2500 ), 10 );
+  QCOMPARE( QgsMeshDatasetValue( 2.5, 2 ), value );
+  value = mMdal1DLayer->datasetValue( QgsMeshDatasetIndex( 3, 1 ), QgsPointXY( 2495, 2000 ), 10 );
+  QCOMPARE( QgsMeshDatasetValue( 3 ), value );
+  value = mMdal1DLayer->datasetValue( QgsMeshDatasetIndex( 4, 1 ), QgsPointXY( 2500, 2495 ), 10 );
+  QCOMPARE( QgsMeshDatasetValue( 4, 4 ), value );
+
+  //2D mesh
+  mMdalLayer->updateTriangularMesh();
+  value = mMdalLayer->datasetValue( QgsMeshDatasetIndex( 0, 0 ), QgsPointXY( 1750, 2250 ) );
+  QCOMPARE( QgsMeshDatasetValue( 32.5 ), value );
+  value = mMdalLayer->datasetValue( QgsMeshDatasetIndex( 1, 0 ), QgsPointXY( 1750, 2250 ) );
+  QCOMPARE( QgsMeshDatasetValue( 1.75 ), value );
+  value = mMdalLayer->datasetValue( QgsMeshDatasetIndex( 2, 0 ), QgsPointXY( 1750, 2250 ) );
+  QCOMPARE( QgsMeshDatasetValue( 1.75, 1.25 ), value );
+  value = mMdalLayer->datasetValue( QgsMeshDatasetIndex( 3, 1 ), QgsPointXY( 1750, 2250 ) );
+  QCOMPARE( QgsMeshDatasetValue( 2 ), value );
+  value = mMdalLayer->datasetValue( QgsMeshDatasetIndex( 4, 1 ), QgsPointXY( 1750, 2250 ) );
+  QCOMPARE( QgsMeshDatasetValue( 2, 2 ), value );
+
 }
 
 void TestQgsMeshLayer::test_temporal()
