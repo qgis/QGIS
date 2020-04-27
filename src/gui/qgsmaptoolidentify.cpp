@@ -259,12 +259,14 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
 
   QMap< QString, QString > scalarAttributes, vectorAttributes, raw3dAttributes;
 
+  double searchRadius = mOverrideCanvasSearchRadius < 0 ? searchRadiusMU( mCanvas ) : mOverrideCanvasSearchRadius;
+
   QString scalarGroup;
   if ( scalarDatasetIndex.isValid() )
   {
     scalarGroup = layer->dataProvider()->datasetGroupMetadata( scalarDatasetIndex.group() ).name();
 
-    const QgsMeshDatasetValue scalarValue = layer->datasetValue( scalarDatasetIndex, point );
+    const QgsMeshDatasetValue scalarValue = layer->datasetValue( scalarDatasetIndex, point, searchRadius );
     const double scalar = scalarValue.scalar();
     if ( std::isnan( scalar ) )
       scalarAttributes.insert( tr( "Scalar Value" ), tr( "no data" ) );
@@ -277,7 +279,7 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
   {
     vectorGroup = layer->dataProvider()->datasetGroupMetadata( vectorDatasetIndex.group() ).name();
 
-    const QgsMeshDatasetValue vectorValue = layer->datasetValue( vectorDatasetIndex, point );
+    const QgsMeshDatasetValue vectorValue = layer->datasetValue( vectorDatasetIndex, point, searchRadius );
     const double vectorX = vectorValue.x();
     const double vectorY = vectorValue.y();
 

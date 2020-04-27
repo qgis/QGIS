@@ -259,18 +259,17 @@ QString QgsMeshLayer::formatTime( double hours )
     return QgsMeshLayerUtils::formatTime( hours, QDateTime(), mTimeSettings );
 }
 
-QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const
+QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius ) const
 {
   QgsMeshDatasetValue value;
-
   const QgsTriangularMesh *mesh = triangularMesh();
 
   if ( mesh && dataProvider() && dataProvider()->isValid() && index.isValid() )
   {
     if ( dataProvider()->contains( QgsMesh::ElementType::Edge ) )
     {
-      // Identify for edges not implemented yet
-      return value;
+      QgsRectangle searchRectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius );
+      return dataset1dValue( index, point, searchRadius );
     }
     int faceIndex = mesh->faceIndexForPoint( point ) ;
     if ( faceIndex >= 0 )
@@ -350,6 +349,68 @@ QgsMesh3dDataBlock QgsMeshLayer::dataset3dValue( const QgsMeshDatasetIndex &inde
     }
   }
   return block3d;
+}
+
+QgsMeshDatasetValue QgsMeshLayer::dataset1dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius ) const
+{
+  QgsMeshDatasetValue value;
+  QgsRectangle searchRectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius );
+  const QgsTriangularMesh *mesh = triangularMesh();
+  if ( mesh &&
+       mesh->contains( QgsMesh::Edge ) &&
+       mDataProvider->isValid() &&
+       index.isValid() )
+  {
+    // search for the closest edge in rectangle from point
+    const QList<int> edgeIndexes = mesh->edgeIndexesForRectangle( searchRectangle );
+    int selectedIndex = -1;
+    double sqrMaxDistFromPoint = pow( searchRadius, 2 );
+    QgsPointXY projectedPoint;
+    for ( const int edgeIndex : edgeIndexes )
+    {
+      const QgsMeshEdge &edge = mesh->edges().at( edgeIndex );
+      const QgsMeshVertex &vertex1 = mesh->vertices()[edge.first];
+      const QgsMeshVertex &vertex2 = mesh->vertices()[edge.second];
+      QgsPointXY projPoint;
+      double sqrDist = point.sqrDistToSegment( vertex1.x(), vertex1.y(), vertex2.x(), vertex2.y(), projPoint );
+      if ( sqrDist < sqrMaxDistFromPoint )
+      {
+        selectedIndex = edgeIndex;
+        projectedPoint = projPoint;
+        sqrMaxDistFromPoint = sqrDist;
+      }
+    }
+
+    if ( selectedIndex >= 0 )
+    {
+      const QgsMeshDatasetGroupMetadata::DataType dataType = dataProvider()->datasetGroupMetadata( index ).dataType();
+      switch ( dataType )
+      {
+        case QgsMeshDatasetGroupMetadata::DataOnEdges:
+        {
+          value = dataProvider()->datasetValue( index, selectedIndex );
+        }
+        break;
+
+        case QgsMeshDatasetGroupMetadata::DataOnVertices:
+        {
+          const QgsMeshEdge &edge = mesh->edges()[selectedIndex];
+          const int v1 = edge.first, v2 = edge.second;
+          const QgsPoint p1 = mesh->vertices()[v1], p2 = mesh->vertices()[v2];
+          const QgsMeshDatasetValue val1 = dataProvider()->datasetValue( index, v1 );
+          const QgsMeshDatasetValue val2 = dataProvider()->datasetValue( index, v2 );
+          double edgeLength = p1.distance( p2 );
+          double dist1 = p1.distance( projectedPoint.x(), projectedPoint.y() );
+          value = QgsMeshLayerUtils::interpolateFromVerticesData( dist1 / edgeLength, val1, val2 );
+        }
+        break;
+        default:
+          break;
+      }
+    }
+  }
+
+  return value;
 }
 
 void QgsMeshLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
