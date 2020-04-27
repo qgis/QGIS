@@ -1768,14 +1768,7 @@ QVariant QgsPostgresProvider::minimumValue( int index ) const
     sql = QStringLiteral( "SELECT %1 FROM (%2) foo" ).arg( connectionRO()->fieldExpression( fld ), sql );
 
     QgsPostgresResult rmin( connectionRO()->PQexec( sql ) );
-    if ( fld.type() == QVariant::LongLong )
-    {
-      return convertValue( fld.type(), fld.subType(), QString::number( connectionRO()->getBinaryInt( rmin, 0, 0 ) ), fld.typeName() );
-    }
-    else
-    {
-      return convertValue( fld.type(), fld.subType(), rmin.PQgetvalue( 0, 0 ), fld.typeName() );
-    }
+    return convertValue( fld.type(), fld.subType(), rmin.PQgetvalue( 0, 0 ), fld.typeName() );
   }
   catch ( PGFieldNotFound )
   {
@@ -2040,14 +2033,7 @@ QVariant QgsPostgresProvider::maximumValue( int index ) const
 
     QgsPostgresResult rmax( connectionRO()->PQexec( sql ) );
 
-    if ( fld.type() == QVariant::LongLong )
-    {
-      return convertValue( fld.type(), fld.subType(), QString::number( connectionRO()->getBinaryInt( rmax, 0, 0 ) ), fld.typeName() );
-    }
-    else
-    {
-      return convertValue( fld.type(), fld.subType(), rmax.PQgetvalue( 0, 0 ), fld.typeName() );
-    }
+    return convertValue( fld.type(), fld.subType(), rmax.PQgetvalue( 0, 0 ), fld.typeName() );
   }
   catch ( PGFieldNotFound )
   {
