@@ -58,6 +58,27 @@ QgsMeshDataProvider::QgsMeshDataProvider( const QString &uri, const QgsDataProvi
 {
 }
 
+bool QgsMeshDatasetSourceInterface::persistDatasetGroup(
+  const QString &path,
+  const QgsMeshDatasetGroupMetadata &meta,
+  const QVector<QgsMeshDataBlock> &datasetValues,
+  const QVector<QgsMeshDataBlock> &datasetActive,
+  const QVector<double> &times )
+{
+  // Form DRIVER:filename
+  QString filename = path;
+  // ASCII dat supports face, edge and vertex datasets
+  QString driverName = QStringLiteral( "DAT" );
+  QStringList parts = path.split( ':' );
+  if ( parts.size() > 1 )
+  {
+    driverName = parts[0];
+    parts.removeFirst();
+    filename = parts.join( QString() );
+  }
+  return persistDatasetGroup( filename, driverName, meta, datasetValues, datasetActive, times );
+}
+
 QgsMeshDatasetValue::QgsMeshDatasetValue( double x, double y )
   : mX( x ), mY( y )
 {}
