@@ -3257,7 +3257,7 @@ static QVariant fcnZMax( const QVariantList &values, const QgsExpressionContext 
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isNull() || geom.isEmpty() )
+  if ( geom.isNull() || geom.isEmpty( ) )
     return QVariant();
 
   if ( !geom.constGet()->is3D() )
@@ -3274,7 +3274,7 @@ static QVariant fcnZMax( const QVariantList &values, const QgsExpressionContext 
   }
 
   if ( max == std::numeric_limits< double >::lowest() )
-      return QVariant( QVariant::Double );
+    return QVariant( QVariant::Double );
 
   return QVariant( max );
 }
@@ -3300,7 +3300,7 @@ static QVariant fcnZMin( const QVariantList &values, const QgsExpressionContext 
   }
 
   if ( min == std::numeric_limits< double >::max() )
-      return QVariant( QVariant::Double );
+    return QVariant( QVariant::Double );
 
   return QVariant( min );
 }
@@ -3326,7 +3326,7 @@ static QVariant fcnMMin( const QVariantList &values, const QgsExpressionContext 
   }
 
   if ( min == std::numeric_limits< double >::max() )
-      return QVariant( QVariant::Double );
+    return QVariant( QVariant::Double );
 
   return QVariant( min );
 }
@@ -3352,7 +3352,7 @@ static QVariant fcnMMax( const QVariantList &values, const QgsExpressionContext 
   }
 
   if ( max == std::numeric_limits< double >::lowest() )
-      return QVariant( QVariant::Double );
+    return QVariant( QVariant::Double );
 
   return QVariant( max );
 }
