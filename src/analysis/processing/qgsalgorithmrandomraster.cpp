@@ -28,7 +28,7 @@
 //
 QString QgsRandomRasterAlgorithm::name() const
 {
-  return QStringLiteral( "createrandomrasterlayer" );
+  return QStringLiteral( "createrandomuniformrasterlayer" );
 }
 
 QString QgsRandomRasterAlgorithm::group() const
@@ -43,7 +43,7 @@ QString QgsRandomRasterAlgorithm::groupId() const
 
 QString QgsRandomRasterAlgorithm::displayName() const
 {
-  return QObject::tr( "Create random raster layer" );
+  return QObject::tr( "Create random raster layer (uniform distribution)" );
 }
 
 QStringList QgsRandomRasterAlgorithm::tags() const
