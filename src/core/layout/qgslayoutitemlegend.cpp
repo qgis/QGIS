@@ -97,19 +97,29 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
 
   if ( mLayout )
   {
+    Q_NOWARN_DEPRECATED_PUSH
+    // no longer required, but left set for api stability
     mSettings.setUseAdvancedEffects( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects );
     mSettings.setDpi( dpi );
+    Q_NOWARN_DEPRECATED_POP
   }
   if ( mMap && mLayout )
   {
+    Q_NOWARN_DEPRECATED_PUSH
+    // no longer required, but left set for api stability
     mSettings.setMmPerMapUnit( mLayout->convertFromLayoutUnits( mMap->mapUnitsToLayoutUnits(), QgsUnitTypes::LayoutMillimeters ).length() );
+    Q_NOWARN_DEPRECATED_POP
 
     // use a temporary QgsMapSettings to find out real map scale
     QSizeF mapSizePixels = QSizeF( mMap->rect().width() * dotsPerMM, mMap->rect().height() * dotsPerMM );
     QgsRectangle mapExtent = mMap->extent();
 
     QgsMapSettings ms = mMap->mapSettings( mapExtent, mapSizePixels, dpi, false );
+
+    // no longer required, but left set for api stability
+    Q_NOWARN_DEPRECATED_PUSH
     mSettings.setMapScale( ms.scale() );
+    Q_NOWARN_DEPRECATED_POP
   }
   mInitialMapScaleCalculated = true;
 
@@ -179,7 +189,12 @@ void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
   }
 
   if ( mLayout )
+  {
+    // no longer required, but left for API compatibility
+    Q_NOWARN_DEPRECATED_PUSH
     mSettings.setDpi( mLayout->renderContext().dpi() );
+    Q_NOWARN_DEPRECATED_POP
+  }
 
   QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
   legendRenderer.setLegendSize( rect().size() );
@@ -577,7 +592,7 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
     {
       QDomElement styleElem = stylesNode.childNodes().at( i ).toElement();
       QgsLegendStyle style;
-      style.readXml( styleElem, doc );
+      style.readXml( styleElem, doc, context );
       QString name = styleElem.attribute( QStringLiteral( "name" ) );
       QgsLegendStyle::Style s;
       if ( name == QLatin1String( "title" ) ) s = QgsLegendStyle::Title;
@@ -1041,8 +1056,6 @@ QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
 
       if ( mLayoutLegend )
         expressionContext = mLayoutLegend->createExpressionContext();
-      else
-        expressionContext = QgsExpressionContext();
 
       const QList<QgsLayerTreeModelLegendNode *> legendnodes = layerLegendNodes( nodeLayer, false );
       if ( legendnodes.count() > 1 ) // evaluate all existing legend nodes but leave the name for the legend evaluator
