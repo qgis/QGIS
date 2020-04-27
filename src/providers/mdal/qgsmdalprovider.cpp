@@ -162,12 +162,14 @@ QgsRectangle QgsMdalProvider::extent() const
   return ret;
 }
 
-bool QgsMdalProvider::persistDatasetGroup( const QString &path,
-    const QgsMeshDatasetGroupMetadata &meta,
-    const QVector<QgsMeshDataBlock> &datasetValues,
-    const QVector<QgsMeshDataBlock> &datasetActive,
-    const QVector<double> &times
-                                         )
+bool QgsMdalProvider::persistDatasetGroup(
+  const QString &outputFilePath,
+  const QString &outputDriver,
+  const QgsMeshDatasetGroupMetadata &meta,
+  const QVector<QgsMeshDataBlock> &datasetValues,
+  const QVector<QgsMeshDataBlock> &datasetActive,
+  const QVector<double> &times
+)
 {
   if ( !mMeshH )
     return true;
@@ -190,9 +192,10 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &path,
       return true;
   }
 
-  if ( path.isEmpty() )
+  if ( outputFilePath.isEmpty() )
     return true;
 
+<<<<<<< HEAD
   // Form DRIVER:filename
   QString filename = path;
   // ASCII dat supports both face and vertex datasets
@@ -206,6 +209,9 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &path,
   }
 
   DriverH driver = MDAL_driverFromName( driverName.toStdString().c_str() );
+=======
+  MDAL_DriverH driver = MDAL_driverFromName( outputDriver.toStdString().c_str() );
+>>>>>>> c2bc0f63e3... [MESH] fix mesh calculator saving for windows (#35963)
   if ( !driver )
     return true;
 
@@ -223,6 +229,7 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &path,
       break;
   }
 
+<<<<<<< HEAD
   DatasetGroupH g = MDAL_M_addDatasetGroup(
                       mMeshH,
                       meta.name().toStdString().c_str(),
@@ -231,6 +238,16 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &path,
                       driver,
                       path.toStdString().c_str()
                     );
+=======
+  MDAL_DatasetGroupH g = MDAL_M_addDatasetGroup(
+                           mMeshH,
+                           meta.name().toStdString().c_str(),
+                           location,
+                           meta.isScalar(),
+                           driver,
+                           outputFilePath.toStdString().c_str()
+                         );
+>>>>>>> c2bc0f63e3... [MESH] fix mesh calculator saving for windows (#35963)
   if ( !g )
     return true;
 
