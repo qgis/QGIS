@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmnormalraster.cpp
+                         qgsalgorithmrandomnormal.cpp
                          ---------------------
     begin                : April 2020
     copyright            : (C) 2020 by Clemens Raffler
@@ -15,43 +15,42 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsalgorithmnormalraster.h"
+#include "qgsalgorithmrandomnormalraster.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsstringutils.h"
 #include "random"
-#include "limits"
 
 ///@cond PRIVATE
 
 //
-// QgsNormalRasterAlgorithm
+// QgsRandomNormalRasterAlgorithm
 //
-QString QgsNormalRasterAlgorithm::name() const
+QString QgsRandomNormalRasterAlgorithm::name() const
 {
-  return QStringLiteral( "createnormalrasterlayer" );
+  return QStringLiteral( "createrandomnormalrasterlayer" );
 }
 
-QString QgsNormalRasterAlgorithm::displayName() const
+QString QgsRandomNormalRasterAlgorithm::displayName() const
 {
-  return QObject::tr( "Create normally distributed random raster layer" );
+  return QObject::tr( "Create random raster layer (normal distribution)" );
 }
 
-QString QgsNormalRasterAlgorithm::group() const
+QString QgsRandomNormalRasterAlgorithm::group() const
 {
   return QObject::tr( "Raster creation" );
 }
 
-QString QgsNormalRasterAlgorithm::groupId() const
+QString QgsRandomNormalRasterAlgorithm::groupId() const
 {
   return QStringLiteral( "rastercreation" );
 }
 
-QStringList QgsNormalRasterAlgorithm::tags() const
+QStringList QgsRandomNormalRasterAlgorithm::tags() const
 {
   return QObject::tr( "raster,create,normal,distribution,random" ).split( ',' );
 }
 
-QString QgsNormalRasterAlgorithm::shortHelpString() const
+QString QgsRandomNormalRasterAlgorithm::shortHelpString() const
 {
   return QObject::tr( "Generates a raster layer for given extent and cell size "
                       "filled with normally distributed random values.\n"
@@ -62,12 +61,12 @@ QString QgsNormalRasterAlgorithm::shortHelpString() const
                       "as the normal distribution random values are floating point numbers." );
 }
 
-QgsNormalRasterAlgorithm *QgsNormalRasterAlgorithm::createInstance() const
+QgsRandomNormalRasterAlgorithm *QgsRandomNormalRasterAlgorithm::createInstance() const
 {
-  return new QgsNormalRasterAlgorithm();
+  return new QgsRandomNormalRasterAlgorithm();
 }
 
-void QgsNormalRasterAlgorithm::initAlgorithm( const QVariantMap & )
+void QgsRandomNormalRasterAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Desired extent" ) ) );
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "TARGET_CRS" ), QObject::tr( "Target CRS" ), QStringLiteral( "ProjectCrs" ) ) );
@@ -93,7 +92,7 @@ void QgsNormalRasterAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output raster" ) ) );
 }
 
-bool QgsNormalRasterAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+bool QgsRandomNormalRasterAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback )
   mCrs = parameterAsCrs( parameters, QStringLiteral( "TARGET_CRS" ), context );
@@ -116,7 +115,7 @@ bool QgsNormalRasterAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   return true;
 }
 
-QVariantMap QgsNormalRasterAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsRandomNormalRasterAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   std::random_device rd {};
   std::mt19937 mersenneTwister{rd()};

@@ -94,7 +94,6 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmmultiparttosinglepart.cpp
   processing/qgsalgorithmmultiringconstantbuffer.cpp
   processing/qgsalgorithmnearestneighbouranalysis.cpp
-  processing/qgsalgorithmnormalraster.cpp
   processing/qgsalgorithmoffsetlines.cpp
   processing/qgsalgorithmorderbyexpression.cpp
   processing/qgsalgorithmorientedminimumboundingbox.cpp
@@ -117,6 +116,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrandomgammaraster.cpp
   processing/qgsalgorithmrandomgeometricraster.cpp
   processing/qgsalgorithmrandomnegativebinomialraster.cpp
+  processing/qgsalgorithmrandomnormalraster.cpp
   processing/qgsalgorithmrandompointsextent.cpp
   processing/qgsalgorithmrandompointsonlines.cpp
   processing/qgsalgorithmrandompoissonraster.cpp

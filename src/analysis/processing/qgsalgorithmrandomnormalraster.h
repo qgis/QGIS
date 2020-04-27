@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmnormalraster.h
+                         qgsalgorithmrandomnormalraster.h
                          ---------------------
     begin                : April 2020
     copyright            : (C) 2020 by Clemens Raffler
@@ -15,15 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSNORMALRASTERALGORITHM_H
-#define QGSNORMALRASTERALGORITHM_H
+#ifndef QGSRANDOMNORMALRASTERALGORITHM_H
+#define QGSRANDOMNORMALRASTERALGORITHM_H
 
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
-#include "random"
 
 ///@cond PRIVATE
 
@@ -31,10 +30,10 @@
  * Algorithm for random normal distributed raster creation algorithms.
  */
 
-class QgsNormalRasterAlgorithm : public QgsProcessingAlgorithm
+class QgsRandomNormalRasterAlgorithm : public QgsProcessingAlgorithm
 {
   public:
-    QgsNormalRasterAlgorithm() = default;
+    QgsRandomNormalRasterAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) final;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmNormalRaster.svg" ) ); }
     QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmNormalRaster.svg" ) ); }
@@ -44,7 +43,7 @@ class QgsNormalRasterAlgorithm : public QgsProcessingAlgorithm
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
-    QgsNormalRasterAlgorithm *createInstance() const override SIP_FACTORY;
+    QgsRandomNormalRasterAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) final;
@@ -63,4 +62,4 @@ class QgsNormalRasterAlgorithm : public QgsProcessingAlgorithm
 
 ///@endcond PRIVATE
 
-#endif // QGSNORMALRASTERALGORITHM_H
+#endif // QGSRANDOMNORMALRASTERALGORITHM_H

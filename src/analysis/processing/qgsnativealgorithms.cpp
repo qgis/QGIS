@@ -89,7 +89,6 @@
 #include "qgsalgorithmmultiparttosinglepart.h"
 #include "qgsalgorithmmultiringconstantbuffer.h"
 #include "qgsalgorithmnearestneighbouranalysis.h"
-#include "qgsalgorithmnormalraster.h"
 #include "qgsalgorithmoffsetlines.h"
 #include "qgsalgorithmorderbyexpression.h"
 #include "qgsalgorithmorientedminimumboundingbox.h"
@@ -112,6 +111,7 @@
 #include "qgsalgorithmrandomgammaraster.h"
 #include "qgsalgorithmrandomgeometricraster.h"
 #include "qgsalgorithmrandomnegativebinomialraster.h"
+#include "qgsalgorithmrandomnormalraster.h"
 #include "qgsalgorithmrandompointsextent.h"
 #include "qgsalgorithmrandompointsonlines.h"
 #include "qgsalgorithmrandompoissonraster.h"
@@ -301,7 +301,6 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsMultipartToSinglepartAlgorithm() );
   addAlgorithm( new QgsMultiRingConstantBufferAlgorithm() );
   addAlgorithm( new QgsNearestNeighbourAnalysisAlgorithm() );
-  addAlgorithm( new QgsNormalRasterAlgorithm() );
   addAlgorithm( new QgsOffsetLinesAlgorithm() );
   addAlgorithm( new QgsOrderByExpressionAlgorithm() );
   addAlgorithm( new QgsOrientedMinimumBoundingBoxAlgorithm() );
@@ -325,6 +324,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRandomGeometricRasterAlgorithm() );
   addAlgorithm( new QgsRandomExponentialRasterAlgorithm() );
   addAlgorithm( new QgsRandomNegativeBinomialRasterAlgorithm() );
+  addAlgorithm( new QgsRandomNormalRasterAlgorithm() );
   addAlgorithm( new QgsRandomPointsExtentAlgorithm() );
   addAlgorithm( new QgsRandomPointsOnLinesAlgorithm() );
   addAlgorithm( new QgsRandomPoissonRasterAlgorithm() );
