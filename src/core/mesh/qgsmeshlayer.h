@@ -259,8 +259,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     /**
       * Interpolates the value on the given point from given dataset.
-      * For 3D datasets, it uses #dataset3dValue \n
-      * For 1D datasets, it uses #dataset1dValue with \a searchRadius
+      * For 3D datasets, it uses dataset3dValue(), \n
+      * For 1D datasets, it uses dataset1dValue() with \a searchRadius
       *
       * \note It uses previously cached and indexed triangular mesh
       * and so if the layer has not been rendered previously
