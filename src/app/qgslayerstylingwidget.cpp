@@ -473,6 +473,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             if ( !mMaskingWidget )
             {
               mMaskingWidget = new QgsMaskingWidget( mWidgetStack );
+              mMaskingWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
               connect( mMaskingWidget, &QgsMaskingWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
             }
             mMaskingWidget->setLayer( vlayer );
