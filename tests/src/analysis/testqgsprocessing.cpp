@@ -8596,6 +8596,9 @@ void TestQgsProcessing::modelerAlgorithm()
   lastParams.insert( QStringLiteral( "a" ), 2 );
   lastParams.insert( QStringLiteral( "b" ), 4 );
   alg.setDesignerParameterValues( lastParams );
+
+  // we expect the result to add in some custom parameters -- namely the verbose log switch
+  lastParams.insert( QStringLiteral( "VERBOSE_LOG" ), true );
   QCOMPARE( alg.designerParameterValues(), lastParams );
 
   // child algorithms
