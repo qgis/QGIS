@@ -430,6 +430,53 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertNotEqual(f[0]['pk'], NULL, f[0].attributes())
         vl.deleteFeatures([f[0].id()])
 
+    def testNonPkBigintField(self):
+        """Test if we can correctly insert, read and change attributes(fields) of type bigint and which are not PKs."""
+        vl = QgsVectorLayer('{} sslmode=disable srid=4326 key="pk" table="qgis_test".{} (geom)'.format(self.dbconn, 'bigint_pk'), "bigint_pk", "postgres")
+        self.assertTrue(vl.isValid())
+        flds = vl.fields()
+
+        # check if default values are correctly read back
+        f = next(vl.getFeatures(QgsFeatureRequest()))
+        bigint_with_default_idx = vl.fields().lookupField('bigint_attribute_def')
+        self.assertEqual(f.attributes()[bigint_with_default_idx], 42)
+
+        # check if we can overwrite a default value
+        vl.startEditing()
+        vl.changeAttributeValue(f.id(), bigint_with_default_idx, 43)
+
+        pkidx = vl.fields().lookupField('pk')
+        editedid = f.attributes()[pkidx]
+
+        self.assertTrue(vl.commitChanges())
+        vl2 = QgsVectorLayer('{} sslmode=disable srid=4326 key="pk" table="qgis_test".{} (geom)'.format(self.dbconn, 'bigint_pk'), "bigint_pk", "postgres")
+        flds = vl2.fields()
+        self.assertTrue(vl2.isValid())
+        f = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk = ' + str(editedid))))
+        bigint_with_default_idx = vl2.fields().lookupField('bigint_attribute_def')
+        self.assertEqual(f.attributes()[bigint_with_default_idx], 43)
+
+        # check if we can insert a new value
+        dp = vl2.dataProvider()
+        dp.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, 1)
+        pkidx = vl2.fields().lookupField('pk')
+        vl2.startEditing()
+        f = QgsFeature(vl2.fields())
+        f['pk'] = NULL
+        f['value'] = 'The answer.'
+        f['bigint_attribute'] = 84
+        f.setAttribute(pkidx, vl2.dataProvider().defaultValue(pkidx))
+        f.setAttribute(bigint_with_default_idx, vl2.dataProvider().defaultValue(bigint_with_default_idx))
+        r, f = vl2.dataProvider().addFeatures([f])
+        self.assertTrue(r)
+        vl2.commitChanges()
+        inserted_id = f[0]['pk']
+
+        f = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk = ' + str(inserted_id))))
+
+        self.assertEqual(f['bigint_attribute'], 84)
+        self.assertEqual(f['bigint_attribute_def'], 42)
+
     def testPktUpdateBigintPk(self):
         """Test if we can update objects with positive, zero and negative bigint PKs."""
         vl = QgsVectorLayer('{} sslmode=disable srid=4326 key="pk" table="qgis_test".{} (geom)'.format(self.dbconn, 'bigint_pk'), "bigint_pk", "postgres")

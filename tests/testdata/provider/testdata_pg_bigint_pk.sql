@@ -3,6 +3,8 @@ DROP TABLE IF EXISTS qgis_test.bigint_pk;
 CREATE TABLE qgis_test.bigint_pk (
   pk bigserial NOT NULL PRIMARY KEY,
   value varchar(16),
+  bigint_attribute bigint,
+  bigint_attribute_def bigint DEFAULT 42,
   geom geometry(Point, 4326)
 );
 
