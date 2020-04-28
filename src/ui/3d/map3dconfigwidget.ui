@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>555</width>
-    <height>661</height>
+    <height>675</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,6 +28,9 @@
    </property>
    <item>
     <widget class="QgsScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
@@ -36,8 +39,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>539</width>
-        <height>696</height>
+        <width>555</width>
+        <height>675</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
