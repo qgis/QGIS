@@ -100,6 +100,7 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   mTimeStepsComboBox->setCurrentIndex( mTimeStepsComboBox->findData( QgsUnitTypes::TemporalHours ) );
 
   mSpinBox->setMinimum( 0.0000001 );
+  mSpinBox->setMaximum( std::numeric_limits<int>::max() );
   mSpinBox->setSingleStep( 1 );
   mSpinBox->setValue( 1 );
 
