@@ -202,8 +202,8 @@ Returns (date) time in hours formatted to human readable form
     QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius = 0 ) const;
 %Docstring
 Interpolates the value on the given point from given dataset.
-For 3D datasets, it uses #dataset3dValue \n
-For 1D datasets, it uses #dataset1dValue with ``searchRadius``
+For 3D datasets, it uses dataset3dValue(), \n
+For 1D datasets, it uses dataset1dValue() with ``searchRadius``
 
 .. note::
 
