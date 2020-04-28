@@ -1078,7 +1078,7 @@ void QgsWmsCapabilities::parseDimension( const QDomElement &element, QgsWmsDimen
 void QgsWmsCapabilities::parseExtent( const QDomElement &element, QVector<QgsWmsDimensionProperty> &dimensionProperties )
 {
   const QString name = element.attribute( QStringLiteral( "name" ) );
-  // try to find correponsding dimension property -- i.e. we upgrade the WMS 1.1 split of Dimension and Extent to 1.3 style where Dimension holds the extent information
+  // try to find corresponding dimension property -- i.e. we upgrade the WMS 1.1 split of Dimension and Extent to 1.3 style where Dimension holds the extent information
   for ( auto it = dimensionProperties.begin(); it != dimensionProperties.end(); ++it )
   {
     if ( it->name == name )
