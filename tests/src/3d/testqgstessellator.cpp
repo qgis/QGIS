@@ -138,6 +138,11 @@ class TestQgsTessellator : public QObject
     void testCrashEmptyPolygon();
     void testBoundsScaling();
     void testNoZ();
+<<<<<<< HEAD
+=======
+    void testTriangulationDoesNotCrash();
+    void testCrash2DTriangle();
+>>>>>>> 7cc0d92aff... Added test for tessellator fix
 
   private:
 };
@@ -386,6 +391,27 @@ void TestQgsTessellator::testNoZ()
   QVERIFY( checkTriangleOutput( t.data(), false, tc ) );
 }
 
+<<<<<<< HEAD
+=======
+void TestQgsTessellator::testTriangulationDoesNotCrash()
+{
+  // a commit in poly2tri has caused a crashing regression - https://github.com/jhasse/poly2tri/issues/11
+  // this code only makes sure that the crash does not come back during another update of poly2tri
+  QgsPolygon polygon;
+  polygon.fromWkt( "Polygon((0 0, -5 -3e-10, -10 -2e-10, -10 -4, 0 -4))" );
+  QgsTessellator t( 0, 0, true );
+  t.addPolygon( polygon, 0 );
+}
+
+void TestQgsTessellator::testCrash2DTriangle()
+{
+  // test tessellation of a 2D triangle - https://github.com/qgis/QGIS/issues/36024
+  QgsPolygon polygon;
+  polygon.fromWkt( "Polygon((0 0, 42 0, 42 42, 0 0))" );
+  QgsTessellator t( 0, 0, true );
+  t.addPolygon( polygon, 0 ); // must not crash - that's all we test here
+}
+>>>>>>> 7cc0d92aff... Added test for tessellator fix
 
 QGSTEST_MAIN( TestQgsTessellator )
 #include "testqgstessellator.moc"
