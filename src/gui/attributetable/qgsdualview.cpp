@@ -671,7 +671,7 @@ void QgsDualView::copyCellContent() const
   if ( action && action->data().isValid() && action->data().canConvert<QModelIndex>() )
   {
     QModelIndex index = action->data().toModelIndex();
-    QVariant var = masterModel()->data( index, Qt::DisplayRole );
+    QVariant var = mMasterModel->data( index, Qt::DisplayRole );
     QApplication::clipboard()->setText( var.toString() );
   }
 }
@@ -695,10 +695,8 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
     return;
   }
 
-  QModelIndex sourceIndex = mFilterModel->mapToSource( atIndex );
-
   QAction *copyContentAction = new QAction( tr( "Copy Cell Content" ), this );
-  copyContentAction->setData( QVariant::fromValue<QModelIndex>( sourceIndex ) );
+  copyContentAction->setData( QVariant::fromValue<QModelIndex>( atIndex ) );
   menu->addAction( copyContentAction );
   connect( copyContentAction, &QAction::triggered, this, &QgsDualView::copyCellContent );
 
@@ -727,11 +725,11 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
       if ( vl && !vl->isEditable() && action.isEnabledOnlyWhenEditable() )
         continue;
 
-      QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), this, action.id(), sourceIndex );
+      QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), this, action.id(), atIndex );
       menu->addAction( action.name(), a, &QgsAttributeTableAction::execute );
     }
   }
-  QModelIndex rowSourceIndex = mFilterModel->fidToIndex( mFilterModel->rowToId( atIndex ) );
+  QModelIndex rowSourceIndex = mMasterModel->index( atIndex.row(), 0 );
   if ( ! rowSourceIndex.isValid() )
   {
     return;
@@ -753,7 +751,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
 
   // entries for multiple features layer actions
   // only show if the context menu is shown over a selected row
-  QgsFeatureId currentFid = masterModel()->rowToId( sourceIndex.row() );
+  QgsFeatureId currentFid = masterModel()->rowToId( atIndex.row() );
   if ( mLayer->selectedFeatureCount() > 1 && mLayer->selectedFeatureIds().contains( currentFid ) )
   {
     const QList<QgsMapLayerAction *> constRegisteredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::MultipleFeatures );
