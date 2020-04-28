@@ -11079,7 +11079,7 @@ void QgisApp::projectTemporalRangeChanged()
         QgsDateTimeRange range = QgsProject::instance()->timeSettings()->temporalRange();
         if ( range.begin().isValid() && range.end().isValid() )
         {
-          QString time = range.begin().toString( Qt::ISODateWithMs ) + "/" +
+          QString time = range.begin().toString( Qt::ISODateWithMs ) + '/' +
                          range.end().toString( Qt::ISODateWithMs );
 
           uri[ QStringLiteral( "time" ) ] = time;
