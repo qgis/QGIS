@@ -2071,14 +2071,7 @@ QVariant QgsPostgresProvider::defaultValue( int fieldId ) const
 
     if ( res.result() )
     {
-      if ( fld.type() == QVariant::LongLong )
-      {
-        return convertValue( fld.type(), fld.subType(), QString::number( connectionRO()->getBinaryInt( res, 0, 0 ) ), fld.typeName() );
-      }
-      else
-      {
-        return convertValue( fld.type(), fld.subType(), res.PQgetvalue( 0, 0 ), fld.typeName() );
-      }
+      return convertValue( fld.type(), fld.subType(), res.PQgetvalue( 0, 0 ), fld.typeName() );
     }
     else
     {
