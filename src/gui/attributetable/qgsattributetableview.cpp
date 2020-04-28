@@ -356,7 +356,7 @@ void QgsAttributeTableView::contextMenuEvent( QContextMenuEvent *event )
   delete mActionPopup;
   mActionPopup = nullptr;
 
-  QModelIndex idx = indexAt( event->pos() );
+  QModelIndex idx = mFilterModel->mapToMaster( indexAt( event->pos() ) );
   if ( !idx.isValid() )
   {
     return;
