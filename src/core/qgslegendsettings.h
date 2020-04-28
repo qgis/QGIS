@@ -347,22 +347,22 @@ class CORE_EXPORT QgsLegendSettings
      */
     void drawText( QPainter *p, const QRectF &rect, const QString &text, const QFont &font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap ) const;
 
-//! Returns a font where size is in pixel and font size is upscaled with FONT_WORKAROUND_SCALE
+    //! Returns a font where size is in pixel and font size is upscaled with FONT_WORKAROUND_SCALE
     QFont scaledFontPixelSize( const QFont &font ) const;
 
-//! Calculates font to from point size to pixel size
+    //! Calculates font to from point size to pixel size
     double pixelFontSize( double pointSize ) const;
 
-//! Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
+    //! Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
     double textWidthMillimeters( const QFont &font, const QString &text ) const;
 
-//! Returns the font height of a character in millimeters
+    //! Returns the font height of a character in millimeters
     double fontHeightCharacterMM( const QFont &font, QChar c ) const;
 
-//! Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
+    //! Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
     double fontAscentMillimeters( const QFont &font ) const;
 
-//! Returns the font descent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
+    //! Returns the font descent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
     double fontDescentMillimeters( const QFont &font ) const;
 
   private:
