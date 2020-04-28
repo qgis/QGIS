@@ -992,6 +992,7 @@ class QgsWmsCapabilities
     void parseCapability( const QDomElement &element, QgsWmsCapabilityProperty &capabilityProperty );
     void parseRequest( const QDomElement &element, QgsWmsRequestProperty &requestProperty );
     void parseDimension( const QDomElement &element, QgsWmsDimensionProperty &dimensionProperty );
+    void parseExtent( const QDomElement &element, QVector<QgsWmsDimensionProperty> &dimensionProperties );
     void parseLegendUrl( const QDomElement &element, QgsWmsLegendUrlProperty &legendUrlProperty );
     void parseMetadataUrl( const QDomElement &element, QgsWmsMetadataUrlProperty &metadataUrlProperty );
     void parseLayer( const QDomElement &element, QgsWmsLayerProperty &layerProperty, QgsWmsLayerProperty *parentProperty = nullptr );
@@ -1073,6 +1074,7 @@ class QgsWmsCapabilities
     QgsCoordinateTransformContext mCoordinateTransformContext;
 
     friend class QgsWmsProvider;
+    friend class TestQgsWmsCapabilities;
 };
 
 

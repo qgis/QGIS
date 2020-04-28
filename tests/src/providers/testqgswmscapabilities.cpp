@@ -156,6 +156,34 @@ class TestQgsWmsCapabilities: public QObject
       QCOMPARE( outOfBoundsClosest, outofBoundsExpected );
     }
 
+    void wmst11extent()
+    {
+      // test parsing WMS1.1 temporal extent
+      const QString layer = R"""(<Layer queryable="0" opaque="0" cascaded="0">
+                            <Name>danger_index</Name>
+                            <Title>danger_index</Title>
+                            <SRS>EPSG:4326</SRS>
+                            <LatLonBoundingBox minx="-180" miny="-90" maxx="180" maxy="90" />
+                            <BoundingBox SRS="EPSG:4326"
+                                        minx="-180" miny="-90" maxx="180" maxy="90" />
+                            <Dimension name="time" units="ISO8601"/>
+                            <Extent name="time" default="2019-01-01" nearestValue="0">2018-01-01/2019-12-31</Extent>
+                        </Layer>)""";
+
+      QDomDocument doc;
+      doc.setContent( layer );
+      QgsWmsCapabilities cap;
+      QgsWmsLayerProperty prop;
+      cap.parseLayer( doc.documentElement(), prop );
+
+      QCOMPARE( prop.name, QStringLiteral( "danger_index" ) );
+      QCOMPARE( prop.dimensions.size(), 1 );
+      QCOMPARE( prop.dimensions.at( 0 ).name, QStringLiteral( "time" ) );
+      QCOMPARE( prop.dimensions.at( 0 ).defaultValue, QStringLiteral( "2019-01-01" ) );
+      QCOMPARE( prop.dimensions.at( 0 ).extent, QStringLiteral( "2018-01-01/2019-12-31" ) );
+      QCOMPARE( prop.dimensions.at( 0 ).units, QStringLiteral( "ISO8601" ) );
+    }
+
 };
 
 QGSTEST_MAIN( TestQgsWmsCapabilities )
