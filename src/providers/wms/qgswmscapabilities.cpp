@@ -1049,8 +1049,6 @@ void QgsWmsCapabilities::parseLegendUrl( const QDomElement &element, QgsWmsLegen
 
 void QgsWmsCapabilities::parseDimension( const QDomElement &element, QgsWmsDimensionProperty &dimensionProperty )
 {
-
-  // TODO, check for the name value if it is time, implement WMS-T support
   dimensionProperty.name = element.attribute( QStringLiteral( "name" ) );
   dimensionProperty.units = element.attribute( QStringLiteral( "units" ) );
   dimensionProperty.unitSymbol = element.attribute( QStringLiteral( "unitSymbol" ) );
@@ -1075,6 +1073,39 @@ void QgsWmsCapabilities::parseDimension( const QDomElement &element, QgsWmsDimen
   }
 
   dimensionProperty.extent = element.text();
+}
+
+void QgsWmsCapabilities::parseExtent( const QDomElement &element, QVector<QgsWmsDimensionProperty> &dimensionProperties )
+{
+  const QString name = element.attribute( QStringLiteral( "name" ) );
+  // try to find correponsding dimension property -- i.e. we upgrade the WMS 1.1 split of Dimension and Extent to 1.3 style where Dimension holds the extent information
+  for ( auto it = dimensionProperties.begin(); it != dimensionProperties.end(); ++it )
+  {
+    if ( it->name == name )
+    {
+      it->extent = element.text();
+
+      it->defaultValue = element.attribute( QStringLiteral( "default" ) );
+
+      if ( !element.attribute( QStringLiteral( "multipleValues" ) ).isNull() )
+      {
+        QString multipleValuesAttribute = element.attribute( QStringLiteral( "multipleValues" ) );
+        it->multipleValues = ( multipleValuesAttribute == QLatin1String( "1" ) || multipleValuesAttribute == QLatin1String( "true" ) );
+      }
+
+      if ( !element.attribute( QStringLiteral( "nearestValue" ) ).isNull() )
+      {
+        QString nearestValueAttribute = element.attribute( QStringLiteral( "nearestValue" ) );
+        it->nearestValue = ( nearestValueAttribute == QLatin1String( "1" ) || nearestValueAttribute == QLatin1String( "true" ) );
+      }
+
+      if ( !element.attribute( QStringLiteral( "current" ) ).isNull() )
+      {
+        QString currentAttribute = element.attribute( QStringLiteral( "current" ) );
+        it->current = ( currentAttribute == QLatin1String( "1" ) || currentAttribute == QLatin1String( "true" ) );
+      }
+    }
+  }
 }
 
 void QgsWmsCapabilities::parseMetadataUrl( const QDomElement &element, QgsWmsMetadataUrlProperty &metadataUrlProperty )
@@ -1279,6 +1310,11 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
       {
         layerProperty.dimensions << QgsWmsDimensionProperty();
         parseDimension( nodeElement, layerProperty.dimensions.last() );
+      }
+      else if ( tagName == QLatin1String( "Extent" ) )
+      {
+        // upgrade WMS 1.1 style Extent/Dimension handling to WMS 1.3
+        parseExtent( nodeElement, layerProperty.dimensions );
       }
       else if ( tagName == QLatin1String( "Attribution" ) )
       {
