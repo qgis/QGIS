@@ -99,7 +99,8 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
                 ogr_data_path = 'path_to_data_file'
                 ogr_layer_name = 'layer_name'
         elif input_layer.dataProvider().name() == 'ogr':
-            if executing and isinstance(parameters[parameter_name], QgsProcessingFeatureSourceDefinition) and parameters[parameter_name].selectedFeaturesOnly:
+            if executing and (isinstance(parameters[parameter_name], QgsProcessingFeatureSourceDefinition) and parameters[parameter_name].selectedFeaturesOnly) \
+                    or input_layer.subsetString():
                 # parameter is a vector layer, with OGR data provider
                 # so extract selection if required
                 ogr_data_path = self.parameterAsCompatibleSourceLayerPath(parameters, parameter_name, context,

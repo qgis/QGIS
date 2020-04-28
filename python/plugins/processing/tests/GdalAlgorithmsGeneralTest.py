@@ -164,6 +164,18 @@ class TestGdalAlgorithms(unittest.TestCase):
         path, layer = alg.getOgrCompatibleSource('INPUT', parameters, context, feedback, False)
         self.assertEqual(path, source)
 
+        # with subset string
+        vl.setSubsetString('x')
+        path, layer = alg.getOgrCompatibleSource('INPUT', parameters, context, feedback, False)
+        self.assertEqual(path, source)
+        # subset of layer must be exported
+        path, layer = alg.getOgrCompatibleSource('INPUT', parameters, context, feedback, True)
+        self.assertNotEqual(path, source)
+        self.assertTrue(path)
+        self.assertTrue(path.endswith('.gpkg'))
+        self.assertTrue(os.path.exists(path))
+        self.assertTrue(layer)
+
         # geopackage with layer
         source = os.path.join(testDataPath, 'custom', 'circular_strings.gpkg')
         vl2 = QgsVectorLayer(source + '|layername=circular_strings')
