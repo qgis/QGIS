@@ -55,7 +55,12 @@ void QgsServiceAreaFromPointAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addCommonParams();
   addParameter( new QgsProcessingParameterPoint( QStringLiteral( "START_POINT" ), QObject::tr( "Start point" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TRAVEL_COST" ), QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ),
+
+  std::unique_ptr< QgsProcessingParameterNumber > travelCost = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "TRAVEL_COST" ), QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ), QgsProcessingParameterNumber::Double, 0, true, 0 );
+  travelCost->setFlags( travelCost->flags() | QgsProcessingParameterDefinition::FlagHidden );
+  addParameter( travelCost.release() );
+
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TRAVEL_COST2" ), QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ),
                 QgsProcessingParameterNumber::Double, 0, false, 0 ) );
 
   std::unique_ptr< QgsProcessingParameterBoolean > includeBounds = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "INCLUDE_BOUNDS" ), QObject::tr( "Include upper/lower bound points" ), false, true );
@@ -79,6 +84,8 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
 
   QgsPointXY startPoint = parameterAsPoint( parameters, QStringLiteral( "START_POINT" ), context, mNetwork->sourceCrs() );
   double travelCost = parameterAsDouble( parameters, QStringLiteral( "TRAVEL_COST" ), context );
+  if ( !travelCost )
+    travelCost = parameterAsDouble( parameters, QStringLiteral( "TRAVEL_COST2" ), context );
 
   int strategy = parameterAsInt( parameters, QStringLiteral( "STRATEGY" ), context );
   if ( strategy )
