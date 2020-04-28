@@ -26,12 +26,16 @@ QString QgsProjectServerValidator::displayValidationError( QgsProjectServerValid
 {
   switch ( error )
   {
-    case QgsProjectServerValidator::Encoding:
+    case QgsProjectServerValidator::LayerEncoding:
       return QObject::tr( "Encoding is not correctly set. A non 'System' encoding is required" );
-    case QgsProjectServerValidator::ShortNames:
+    case QgsProjectServerValidator::LayerShortName:
       return QObject::tr( "Layer short name is not valid. It must start with an unaccented alphabetical letter, followed by any alphanumeric letters, dot, dash or underscore" );
     case QgsProjectServerValidator::DuplicatedNames:
       return QObject::tr( "One or more layers or groups have the same name or short name. Both the 'name' and 'short name' for layers and groups must be unique" );
+    case QgsProjectServerValidator::ProjectShortName:
+      return QObject::tr( "The project root name (either the project short name or project title) is not valid. It must start with an unaccented alphabetical letter, followed by any alphanumeric letters, dot, dash or underscore" );
+    case QgsProjectServerValidator::ProjectRootNameConflict:
+      return QObject::tr( "The project root name (either the project short name or project title) is already used by a layer or a group" );
   }
   return QString();
 }
@@ -119,13 +123,34 @@ bool QgsProjectServerValidator::validate( QgsProject *project, QList<QgsProjectS
   if ( !regExpMessages.empty() )
   {
     result = false;
-    results << ValidationResult( QgsProjectServerValidator::ShortNames, regExpMessages.join( QStringLiteral( ", " ) ) );
+    results << ValidationResult( QgsProjectServerValidator::LayerShortName, regExpMessages.join( QStringLiteral( ", " ) ) );
   }
 
   if ( !encodingMessages.empty() )
   {
     result = false;
-    results << ValidationResult( QgsProjectServerValidator::Encoding, encodingMessages.join( QStringLiteral( ", " ) ) );
+    results << ValidationResult( QgsProjectServerValidator::LayerEncoding, encodingMessages.join( QStringLiteral( ", " ) ) );
+  }
+
+  // Determine the root layername
+  QString rootLayerName = project->readEntry( QStringLiteral( "WMSRootName" ), QStringLiteral( "/" ), "" );
+  if ( rootLayerName.isEmpty() && !project->title().isEmpty() )
+  {
+    rootLayerName = project->title();
+  }
+  if ( !rootLayerName.isEmpty() )
+  {
+    if ( owsNames.count( rootLayerName ) >= 1 )
+    {
+      result = false;
+      results << ValidationResult( QgsProjectServerValidator::ProjectRootNameConflict, rootLayerName );
+    }
+
+    if ( !snRegExp.exactMatch( rootLayerName ) )
+    {
+      result = false;
+      results << ValidationResult( QgsProjectServerValidator::ProjectShortName, rootLayerName );
+    }
   }
 
   return result;

@@ -31,8 +31,10 @@ Constructor for QgsProjectServerValidator.
     enum ValidationError
     {
       DuplicatedNames,
-      ShortNames,
-      Encoding
+      LayerShortName,
+      LayerEncoding,
+      ProjectShortName,
+      ProjectRootNameConflict,
     };
 
     static QString displayValidationError( QgsProjectServerValidator::ValidationError error );
