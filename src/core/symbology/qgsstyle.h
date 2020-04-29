@@ -1028,6 +1028,9 @@ class CORE_EXPORT QgsStyle : public QObject
     //! Convenience function to open the DB and return a sqlite3 object
     bool openDatabase( const QString &filename );
 
+    //! Imports the symbols and colorramps into the default style database from the given XML file
+    bool importXml( const QString &filename, int sinceVersion );
+
     /**
      * Convenience function that would run queries which don't generate return values
      *
@@ -1053,6 +1056,9 @@ class CORE_EXPORT QgsStyle : public QObject
     bool updateSymbol( StyleEntity type, const QString &name );
 
     void clearCachedTags( StyleEntity type, const QString &name );
+
+
+    void upgradeIfRequired();
 
     /**
      * Returns the table name for the specified entity \a type.
