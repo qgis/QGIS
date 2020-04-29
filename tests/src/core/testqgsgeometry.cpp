@@ -4888,6 +4888,98 @@ void TestQgsGeometry::lineString()
   interpolateResult.reset( interpolate.interpolatePoint( 1 ) );
   QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point (11 3)" ) );
 
+  // visit points
+  QgsLineString visitLine;
+  visitLine.visitPointsByRegularDistance( 1, [ = ]( double, double, double, double, double, double, double, double, double, double, double, double )->bool
+  {
+    return true;
+  } ); // no crash
+  visitLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) << QgsPoint( 11, 12, 13, 14, QgsWkbTypes::PointZM ) << QgsPoint( 111, 12, 23, 24, QgsWkbTypes::PointZM ) );
+  int visitCount = 0;
+  xx.clear();
+  yy.clear();
+  zz.clear();
+  mm.clear();
+  QVector<double> pX, pY, pZ, pM, nX, nY, nZ, nM;
+  auto visitor = [ & ]( double x, double y, double z, double m, double ppx, double ppy, double ppz, double ppm, double nnx, double nny, double nnz, double nnm )->bool
+  {
+    xx << x;
+    yy << y;
+    zz << z;
+    mm << m;
+    pX << ppx;
+    pY << ppy;
+    pZ << ppz;
+    pM << ppm;
+    nX << nnx;
+    nY << nny;
+    nZ << nnz;
+    nM << nnm;
+    visitCount++;
+    return true;
+  };
+  visitLine.visitPointsByRegularDistance( 0, visitor );
+  QCOMPARE( visitCount, 1 );
+  QCOMPARE( xx.at( 0 ), 11.0 );
+  QCOMPARE( yy.at( 0 ), 2.0 );
+  QCOMPARE( zz.at( 0 ), 3.0 );
+  QCOMPARE( mm.at( 0 ), 4.0 );
+  xx.clear();
+  yy.clear();
+  zz.clear();
+  mm.clear();
+  pX.clear();
+  pY.clear();
+  pZ.clear();
+  pM.clear();
+  nX.clear();
+  nY.clear();
+  nZ.clear();
+  nM.clear();
+  visitCount = 0;
+  visitLine.visitPointsByRegularDistance( -1, visitor );
+  QCOMPARE( visitCount, 0 );
+  visitLine.visitPointsByRegularDistance( 10000, visitor );
+  QCOMPARE( visitCount, 0 );
+  visitLine.visitPointsByRegularDistance( 30, visitor );
+  QCOMPARE( visitCount, 3 );
+  QCOMPARE( xx.at( 0 ), 31.0 );
+  QCOMPARE( yy.at( 0 ), 12.0 );
+  QCOMPARE( zz.at( 0 ), 15.0 );
+  QCOMPARE( mm.at( 0 ), 16.0 );
+  QCOMPARE( pX.at( 0 ), 11.0 );
+  QCOMPARE( pY.at( 0 ), 12.0 );
+  QCOMPARE( pZ.at( 0 ), 13.0 );
+  QCOMPARE( pM.at( 0 ), 14.0 );
+  QCOMPARE( nX.at( 0 ), 111.0 );
+  QCOMPARE( nY.at( 0 ), 12.0 );
+  QCOMPARE( nZ.at( 0 ), 23.0 );
+  QCOMPARE( nM.at( 0 ), 24.0 );
+  QCOMPARE( xx.at( 1 ), 61.0 );
+  QCOMPARE( yy.at( 1 ), 12.0 );
+  QCOMPARE( zz.at( 1 ), 18.0 );
+  QCOMPARE( mm.at( 1 ), 19.0 );
+  QCOMPARE( pX.at( 1 ), 11.0 );
+  QCOMPARE( pY.at( 1 ), 12.0 );
+  QCOMPARE( pZ.at( 1 ), 13.0 );
+  QCOMPARE( pM.at( 1 ), 14.0 );
+  QCOMPARE( nX.at( 1 ), 111.0 );
+  QCOMPARE( nY.at( 1 ), 12.0 );
+  QCOMPARE( nZ.at( 1 ), 23.0 );
+  QCOMPARE( nM.at( 1 ), 24.0 );
+  QCOMPARE( xx.at( 2 ), 91.0 );
+  QCOMPARE( yy.at( 2 ), 12.0 );
+  QCOMPARE( zz.at( 2 ), 21.0 );
+  QCOMPARE( mm.at( 2 ), 22.0 );
+  QCOMPARE( pX.at( 2 ), 11.0 );
+  QCOMPARE( pY.at( 2 ), 12.0 );
+  QCOMPARE( pZ.at( 2 ), 13.0 );
+  QCOMPARE( pM.at( 2 ), 14.0 );
+  QCOMPARE( nX.at( 2 ), 111.0 );
+  QCOMPARE( nY.at( 2 ), 12.0 );
+  QCOMPARE( nZ.at( 2 ), 23.0 );
+  QCOMPARE( nM.at( 2 ), 24.0 );
+
   // orientation
   QgsLineString orientation;
   ( void )orientation.orientation(); // no crash

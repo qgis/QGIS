@@ -401,6 +401,7 @@ segment in the line.
 %End
 
 
+
     virtual QString geometryType() const;
 
     virtual int dimension() const;
