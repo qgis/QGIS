@@ -86,12 +86,12 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
   if ( !startPoints )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "START_POINTS" ) ) );
 
-  double travelCost = parameterAsDouble( parameters, QStringLiteral( "TRAVEL_COST" ), context );
-  if ( !travelCost )
-    travelCost = parameterAsDouble( parameters, QStringLiteral( "TRAVEL_COST2" ), context );
+  // use older deprecated travel cost style if specified, to maintain old api
+  const bool useOldTravelCost = parameters.value( QStringLiteral( "TRAVEL_COST" ) ).isValid();
+  double travelCost = parameterAsDouble( parameters, useOldTravelCost ? QStringLiteral( "TRAVEL_COST" ) : QStringLiteral( "TRAVEL_COST2" ), context );
 
   int strategy = parameterAsInt( parameters, QStringLiteral( "STRATEGY" ), context );
-  if ( strategy )
+  if ( strategy && !useOldTravelCost )
     travelCost *= mMultiplier;
 
   bool includeBounds = true;  // default to true to maintain 3.0 API
