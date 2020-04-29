@@ -38,6 +38,7 @@ bool qVariantListCompare( const QVariantList &a, const QVariantList &b )
 QgsFeatureFilterModel::QgsFeatureFilterModel( QObject *parent )
   : QgsFeaturePickerModelBase( parent )
 {
+  setFetchGeometry( false );
   setExtraIdentifierValueUnguarded( QVariantList() );
 }
 

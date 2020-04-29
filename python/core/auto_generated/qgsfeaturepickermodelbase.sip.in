@@ -14,7 +14,7 @@ class QgsFeaturePickerModelBase : QAbstractItemModel /Abstract/
 Provides a list of features based on filter conditions.
 Features are fetched asynchronously.
 
-.. versionadded:: 3.0
+.. versionadded:: 3.14
 %End
 
 %TypeHeaderCode
@@ -108,8 +108,6 @@ Indicator if the model is currently performing any feature iteration in the back
 %Docstring
 Allows specifying one value that does not need to match the filter criteria but will
 still be available in the model as NULL value(s).
-
-.. versionadded:: 3.10
 %End
 
     int extraIdentifierValueIndex() const;
@@ -130,6 +128,16 @@ Add a NULL entry to the list.
     void setAllowNull( bool allowNull );
 %Docstring
 Add a NULL entry to the list.
+%End
+
+    bool fetchGeometry() const;
+%Docstring
+Returns if the geometry is fetched
+%End
+
+    void setFetchGeometry( bool fetchGeometry );
+%Docstring
+Defines if the geometry will be fetched
 %End
 
   signals:
@@ -200,6 +208,12 @@ Notification that the model change is finished. Will always be emitted in sync w
 %Docstring
 Add a NULL entry to the list.
 %End
+
+    void fetchGeometryChanged();
+%Docstring
+Emitted when the fetching of the geometry changes
+%End
+
 
   protected:
 

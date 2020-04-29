@@ -37,7 +37,7 @@ class QgsFilterLineEdit;
  * It will show up to 100 entries at a time. The entries can be chosen based on the displayExpression
  * and whenever text is typed into the combobox, the completer and popup will adjust to features matching the typed text.
  *
- * \since QGIS 3.0
+ * \since QGIS 3.14
  */
 class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
 {
@@ -91,16 +91,12 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
     /**
      * Returns the current index of the NULL value, or -1 if NULL values are
      * not allowed.
-     *
-     * \since QGIS 3.2
      */
     int nullIndex() const;
 
     /**
      * An additional expression to further restrict the available features.
      * This can be used to integrate additional spatial or other constraints.
-     *
-     * TODO!
      */
     void setFilterExpression( const QString &filterExpression );
 
@@ -127,8 +123,6 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
 
     /**
      * The underlying model has been updated.
-     *
-     * \since QGIS 3.2
      */
     void modelUpdated();
 

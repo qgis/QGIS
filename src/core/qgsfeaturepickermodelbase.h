@@ -25,7 +25,7 @@
  * Provides a list of features based on filter conditions.
  * Features are fetched asynchronously.
  *
- * \since QGIS 3.0
+ * \since QGIS 3.14
  */
 class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABSTRACT
 {
@@ -36,8 +36,7 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
     Q_PROPERTY( QString filterValue READ filterValue WRITE setFilterValue NOTIFY filterValueChanged )
     Q_PROPERTY( QString filterExpression READ filterExpression WRITE setFilterExpression NOTIFY filterExpressionChanged )
     Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull NOTIFY allowNullChanged )
-    Q_PROPERTY( bool isLoading READ isLoading NOTIFY isLoadingChanged )
-
+    Q_PROPERTY( bool fetchGeometry READ fetchGeometry WRITE setFetchGeometry NOTIFY fetchGeometryGeometry )
     Q_PROPERTY( int extraIdentifierValueIndex READ extraIdentifierValueIndex NOTIFY extraIdentifierValueIndexChanged )
 
   public:
@@ -130,7 +129,6 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
     /**
      * Allows specifying one value that does not need to match the filter criteria but will
      * still be available in the model as NULL value(s).
-     * \since QGIS 3.10
      */
     virtual void setExtraIdentifierValueToNull() = 0;
 
@@ -153,6 +151,16 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
      * Add a NULL entry to the list.
      */
     void setAllowNull( bool allowNull );
+
+    /**
+     * Returns if the geometry is fetched
+     */
+    bool fetchGeometry() const;
+
+    /**
+     * Defines if the geometry will be fetched
+     */
+    void setFetchGeometry( bool fetchGeometry );
 
   signals:
 
@@ -222,6 +230,12 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
      * Add a NULL entry to the list.
      */
     void allowNullChanged();
+
+    /**
+     * Emitted when the fetching of the geometry changes
+     */
+    void fetchGeometryChanged();
+
 
   private slots:
     void updateCompleter();
@@ -301,6 +315,7 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
     mutable QMap< QgsFeatureId, QgsConditionalStyle > mEntryStylesMap;
 
     QgsFeatureExpressionValuesGatherer *mGatherer = nullptr;
+    bool mFetchGeometry = true;
 
     QTimer mReloadTimer;
     bool mShouldReloadCurrentFeature = false;

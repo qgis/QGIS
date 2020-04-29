@@ -24,6 +24,7 @@
 QgsFeaturePickerModel::QgsFeaturePickerModel( QObject *parent )
   :  QgsFeaturePickerModelBase( parent )
 {
+  setFetchGeometry( true );
   setExtraIdentifierValueUnguarded( FID_NULL );
 
   connect( this, &QgsFeaturePickerModelBase::extraIdentifierValueIndexChanged, this, [ = ]() {emit featureChanged( mEntries.value( mExtraValueIndex ).feature );} );

@@ -407,7 +407,8 @@ void QgsFeaturePickerModelBase::scheduledReload()
     request.setSubsetOfAttributes( attributes, mSourceLayer->fields() );
   }
 
-  request.setFlags( QgsFeatureRequest::NoGeometry );
+  if ( !mFetchGeometry )
+    request.setFlags( QgsFeatureRequest::NoGeometry );
   request.setLimit( QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ).toInt() );
 
   mGatherer = createValuesGatherer( request );
@@ -548,6 +549,20 @@ void QgsFeaturePickerModelBase::setAllowNull( bool allowNull )
   mAllowNull = allowNull;
   emit allowNullChanged();
 
+  reload();
+}
+
+bool QgsFeaturePickerModelBase::fetchGeometry() const
+{
+  return mFetchGeometry;
+}
+
+void QgsFeaturePickerModelBase::setFetchGeometry( bool fetchGeometry )
+{
+  if ( mFetchGeometry == fetchGeometry )
+    return;
+
+  mFetchGeometry = fetchGeometry;
   reload();
 }
 
