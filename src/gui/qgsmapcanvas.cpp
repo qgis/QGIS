@@ -393,6 +393,7 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
   if ( !mSettings.visibleExtent().isEmpty() )
   {
     QgsCoordinateTransform transform( mSettings.destinationCrs(), crs, QgsProject::instance() );
+    transform.setBallparkTransformsAreAppropriate( true );
     try
     {
       rect = transform.transformBoundingBox( mSettings.visibleExtent() );
