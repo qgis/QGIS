@@ -41,6 +41,11 @@ still be available in the model as NULL value(s).
 Set the feature to the given feature id
 %End
 
+    QgsFeature feature() const;
+%Docstring
+Returns the current feature
+%End
+
   signals:
     void featureChanged( const QgsFeature &feature );
 

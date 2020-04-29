@@ -409,7 +409,7 @@ void QgsFeaturePickerModelBase::scheduledReload()
 
   if ( !mFetchGeometry )
     request.setFlags( QgsFeatureRequest::NoGeometry );
-  request.setLimit( QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ).toInt() );
+  request.setLimit( mFetchLimit );
 
   mGatherer = createValuesGatherer( request );
   mGatherer->setData( mShouldReloadCurrentFeature );
@@ -564,6 +564,20 @@ void QgsFeaturePickerModelBase::setFetchGeometry( bool fetchGeometry )
 
   mFetchGeometry = fetchGeometry;
   reload();
+}
+
+int QgsFeaturePickerModelBase::fetchLimit() const
+{
+  return mFetchLimit;
+}
+
+void QgsFeaturePickerModelBase::setFetchLimit( int fetchLimit )
+{
+  if ( fetchLimit == mFetchLimit )
+    return;
+
+  mFetchLimit = fetchLimit;
+  emit fetchLimitChanged();
 }
 
 

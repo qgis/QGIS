@@ -27,7 +27,7 @@ QgsFeaturePickerModel::QgsFeaturePickerModel( QObject *parent )
   setFetchGeometry( true );
   setExtraIdentifierValueUnguarded( FID_NULL );
 
-  connect( this, &QgsFeaturePickerModelBase::extraIdentifierValueIndexChanged, this, [ = ]() {emit featureChanged( mEntries.value( mExtraValueIndex ).feature );} );
+  connect( this, &QgsFeaturePickerModelBase::extraIdentifierValueIndexChanged, this, [ = ]() {emit featureChanged( feature() );} );
 }
 
 void QgsFeaturePickerModel::requestToReloadCurrentFeature( QgsFeatureRequest &request )
@@ -69,6 +69,11 @@ void QgsFeaturePickerModel::setExtraIdentifierValueToNull()
 void QgsFeaturePickerModel::setFeature( const QgsFeatureId &fid )
 {
   setExtraIdentifierValue( fid );
+}
+
+QgsFeature QgsFeaturePickerModel::feature() const
+{
+  return mEntries.value( mExtraValueIndex ).feature;
 }
 
 QgsFeatureExpressionValuesGatherer *QgsFeaturePickerModel::createValuesGatherer( const QgsFeatureRequest &request ) const

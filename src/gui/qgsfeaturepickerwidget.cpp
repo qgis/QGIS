@@ -41,6 +41,8 @@ QgsFeaturePickerWidget::QgsFeaturePickerWidget( QWidget *parent )
   connect( mModel, &QgsFeaturePickerModel::isLoadingChanged, this, &QgsFeaturePickerWidget::onLoadingChanged );
   connect( mModel, &QgsFeaturePickerModel::filterJobCompleted, this, &QgsFeaturePickerWidget::onFilterUpdateCompleted );
   connect( mModel, &QgsFeaturePickerModel::allowNullChanged, this, &QgsFeaturePickerWidget::allowNullChanged );
+  connect( mModel, &QgsFeaturePickerModel::fetchGeometryChanged, this, &QgsFeaturePickerWidget::fetchGeometryChanged );
+  connect( mModel, &QgsFeaturePickerModel::fetchLimitChanged, this, &QgsFeaturePickerWidget::fetchLimitChanged );
   connect( mModel, &QgsFeaturePickerModel::extraIdentifierValueIndexChanged, mComboBox, &QComboBox::setCurrentIndex );
   connect( mModel, &QgsFeaturePickerModel::featureChanged, this, &QgsFeaturePickerWidget::featureChanged );
   connect( mCompleter, static_cast<void( QCompleter::* )( const QModelIndex & )>( &QCompleter::highlighted ), this, &QgsFeaturePickerWidget::onItemSelected );
@@ -78,6 +80,11 @@ void QgsFeaturePickerWidget::setLayer( QgsVectorLayer *sourceLayer )
 void QgsFeaturePickerWidget::setFeature( QgsFeatureId featureId )
 {
   mModel->setFeature( featureId );
+}
+
+QgsFeature QgsFeaturePickerWidget::feature() const
+{
+  return mModel->feature();
 }
 
 QString QgsFeaturePickerWidget::displayExpression() const
@@ -228,7 +235,6 @@ void QgsFeaturePickerWidget::LineEditState::store( QLineEdit *lineEdit )
   selectionStart = lineEdit->selectionStart();
   selectionLength = lineEdit->selectedText().length();
   cursorPosition = lineEdit->cursorPosition();
-
 }
 
 void QgsFeaturePickerWidget::LineEditState::restore( QLineEdit *lineEdit ) const
@@ -237,4 +243,24 @@ void QgsFeaturePickerWidget::LineEditState::restore( QLineEdit *lineEdit ) const
   lineEdit->setCursorPosition( cursorPosition );
   if ( selectionStart > -1 )
     lineEdit->setSelection( selectionStart, selectionLength );
+}
+
+bool QgsFeaturePickerWidget::fetchGeometry() const
+{
+  return mModel->fetchGeometry();
+}
+
+void QgsFeaturePickerWidget::setFetchGeometry( bool fetchGeometry )
+{
+  mModel->setFetchGeometry( fetchGeometry );
+}
+
+int QgsFeaturePickerWidget::fetchLimit() const
+{
+  return mModel->fetchLimit();
+}
+
+void QgsFeaturePickerWidget::setFetchLimit( int fetchLimit )
+{
+  mModel->setFetchLimit( fetchLimit );
 }

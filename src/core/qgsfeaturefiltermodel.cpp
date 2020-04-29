@@ -39,6 +39,7 @@ QgsFeatureFilterModel::QgsFeatureFilterModel( QObject *parent )
   : QgsFeaturePickerModelBase( parent )
 {
   setFetchGeometry( false );
+  setFetchLimit( QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ).toInt() );
   setExtraIdentifierValueUnguarded( QVariantList() );
 }
 

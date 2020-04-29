@@ -36,7 +36,8 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
     Q_PROPERTY( QString filterValue READ filterValue WRITE setFilterValue NOTIFY filterValueChanged )
     Q_PROPERTY( QString filterExpression READ filterExpression WRITE setFilterExpression NOTIFY filterExpressionChanged )
     Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull NOTIFY allowNullChanged )
-    Q_PROPERTY( bool fetchGeometry READ fetchGeometry WRITE setFetchGeometry NOTIFY fetchGeometryGeometry )
+    Q_PROPERTY( bool fetchGeometry READ fetchGeometry WRITE setFetchGeometry NOTIFY fetchGeometryChanged )
+    Q_PROPERTY( int fetchLimit READ fetchLimit WRITE setFetchLimit NOTIFY fetchLimitChanged )
     Q_PROPERTY( int extraIdentifierValueIndex READ extraIdentifierValueIndex NOTIFY extraIdentifierValueIndexChanged )
 
   public:
@@ -162,6 +163,16 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
      */
     void setFetchGeometry( bool fetchGeometry );
 
+    /**
+     * Returns the feature request fetch limit
+     */
+    int fetchLimit() const;
+
+    /**
+     * Defines the feature request fetch limit
+     */
+    void setFetchLimit( int fetchLimit );
+
   signals:
 
     /**
@@ -235,6 +246,11 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
      * Emitted when the fetching of the geometry changes
      */
     void fetchGeometryChanged();
+
+    /**
+     * Emitted when the fetching limit for the feature request changes
+     */
+    void fetchLimitChanged();
 
 
   private slots:
@@ -316,6 +332,7 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
 
     QgsFeatureExpressionValuesGatherer *mGatherer = nullptr;
     bool mFetchGeometry = true;
+    int mFetchLimit = 100;
 
     QTimer mReloadTimer;
     bool mShouldReloadCurrentFeature = false;

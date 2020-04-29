@@ -140,6 +140,16 @@ Returns if the geometry is fetched
 Defines if the geometry will be fetched
 %End
 
+    int fetchLimit() const;
+%Docstring
+Returns the feature request fetch limit
+%End
+
+    void setFetchLimit( int fetchLimit );
+%Docstring
+Defines the feature request fetch limit
+%End
+
   signals:
 
     void sourceLayerChanged();
@@ -212,6 +222,11 @@ Add a NULL entry to the list.
     void fetchGeometryChanged();
 %Docstring
 Emitted when the fetching of the geometry changes
+%End
+
+    void fetchLimitChanged();
+%Docstring
+Emitted when the fetching limit for the feature request changes
 %End
 
 

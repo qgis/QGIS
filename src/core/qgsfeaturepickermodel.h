@@ -49,6 +49,11 @@ class CORE_EXPORT QgsFeaturePickerModel : public QgsFeaturePickerModelBase
     //! Set the feature to the given feature id
     void setFeature( const QgsFeatureId &fid );
 
+    /**
+     * Returns the current feature
+     */
+    QgsFeature feature() const;
+
   signals:
     void featureChanged( const QgsFeature &feature );
 

@@ -47,6 +47,8 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
     Q_PROPERTY( QString displayExpression READ displayExpression WRITE setDisplayExpression NOTIFY displayExpressionChanged )
     Q_PROPERTY( QString filterExpression READ filterExpression WRITE setFilterExpression NOTIFY filterExpressionChanged )
     Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull NOTIFY allowNullChanged )
+    Q_PROPERTY( bool fetchGeometry READ fetchGeometry WRITE setFetchGeometry NOTIFY fetchGeometryChanged )
+    Q_PROPERTY( int fetchLimit READ fetchLimit WRITE setFetchLimit NOTIFY fetchLimitChanged )
 
   public:
 
@@ -69,6 +71,11 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
      * Sets the current index by using the given feature
      */
     void setFeature( QgsFeatureId featureId );
+
+    /**
+     * Returns the current feature
+     */
+    QgsFeature feature() const;
 
     /**
      * The display expression will be used to display features as well as
@@ -111,6 +118,26 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
     void setAllowNull( bool allowNull );
 
     /**
+     * Returns if the geometry is fetched
+     */
+    bool fetchGeometry() const;
+
+    /**
+     * Defines if the geometry will be fetched
+     */
+    void setFetchGeometry( bool fetchGeometry );
+
+    /**
+     * Returns the feature request fetch limit
+     */
+    int fetchLimit() const;
+
+    /**
+     * Defines the feature request fetch limit
+     */
+    void setFetchLimit( int fetchLimit );
+
+    /**
      * The index of the currently selected item.
      */
     QModelIndex currentModelIndex() const;
@@ -143,13 +170,23 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
      */
     void filterExpressionChanged();
 
+    //! Sends the feature as soon as it is chosen
+    void featureChanged( const QgsFeature &feature );
+
     /**
      * Determines if a NULL value should be available in the list.
      */
     void allowNullChanged();
 
-    //! Sends the feature as soon as it is chosen
-    void featureChanged( const QgsFeature &feature );
+    /**
+     * Emitted when the fetching of the geometry changes
+     */
+    void fetchGeometryChanged();
+
+    /**
+     * Emitted when the fetching limit for the feature request changes
+     */
+    void fetchLimitChanged();
 
   private slots:
     void onCurrentTextChanged( const QString &text );
