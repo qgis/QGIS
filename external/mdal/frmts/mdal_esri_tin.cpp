@@ -61,7 +61,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, c
     inMsx.seekg( -4, std::ios::end );
     int32_t mskBegin;
     if ( ! readValue( mskBegin, inMsx, true ) )
-      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to find the beggining of data in msk file" );
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to find the beginning of data in msk file" );
 
     //read information in mskFile
     inMsk.seekg( -mskBegin * 2, std::ios::end );
@@ -80,7 +80,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, c
       //read mask file
       if ( c % 32 == 0 && c < maskBitsCount ) //first bit in the mask array have to be used-->read next maskInt
         if ( ! readValue( maskInt, inMsk, true ) )
-          throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to read information in mask file" );
+          throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to read information in msk file" );
 
       Face f;
       for ( int i = 0; i < 3; ++i )

@@ -723,7 +723,7 @@ std::unique_ptr< MDAL::Mesh > MDAL::DriverFlo2D::load( const std::string &result
 
   catch ( MDAL_Status error )
   {
-    MDAL::Log::error( error, name(), "error occured while loading file " + resultsFile );
+    MDAL::Log::error( error, name(), "error occurred while loading file " + resultsFile );
     mMesh.reset();
   }
   catch ( MDAL::Error err )
@@ -898,7 +898,7 @@ bool MDAL::DriverFlo2D::persist( DatasetGroup *group )
   }
   catch ( MDAL_Status error )
   {
-    MDAL::Log::error( error, name(), "error occured" );
+    MDAL::Log::error( error, name(), "error occurred" );
     return true;
   }
   catch ( MDAL::Error err )
