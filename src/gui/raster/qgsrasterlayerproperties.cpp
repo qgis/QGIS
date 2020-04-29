@@ -1279,13 +1279,13 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
 
     if ( mReferenceTime->isChecked() )
     {
-      QString reference_time = mReferenceDateTimeEdit->dateTime().toString( Qt::ISODateWithMs );
-      uri[ QStringLiteral( "reference_time" ) ] = reference_time;
+      QString referenceTime = mReferenceDateTimeEdit->dateTime().toString( Qt::ISODateWithMs );
+      uri[ QStringLiteral( "referenceTime" ) ] = referenceTime;
     }
     else
     {
-      if ( uri.contains( QStringLiteral( "reference_time" ) ) )
-        uri.remove( QStringLiteral( "reference_time" ) );
+      if ( uri.contains( QStringLiteral( "referenceTime" ) ) )
+        uri.remove( QStringLiteral( "referenceTime" ) );
     }
     bool enableTime = !mDisableTime->isChecked();
 
@@ -1347,7 +1347,7 @@ void QgsRasterLayerProperties::setSourceStaticTimeState()
                                      tr( "There is no reference time in the layer's capabilities." ) : QString();
     mReferenceTimeLabel->setText( referenceTimeLabelText );
 
-    const QString referenceTime = uri.value( QStringLiteral( "reference_time" ) ).toString();
+    const QString referenceTime = uri.value( QStringLiteral( "referenceTime" ) ).toString();
 
     mReferenceTime->setChecked( !referenceTime.isEmpty() );
 

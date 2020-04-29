@@ -1157,10 +1157,10 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
   }
 
   // If the data provider has bi-temporal properties and they are enabled
-  if ( uri.contains( QStringLiteral( "reference_time" ) ) &&
-       !uri.value( QStringLiteral( "reference_time" ) ).toString().isEmpty() )
+  if ( uri.contains( QStringLiteral( "referenceTime" ) ) &&
+       !uri.value( QStringLiteral( "referenceTime" ) ).toString().isEmpty() )
   {
-    QString time = uri.value( QStringLiteral( "reference_time" ) ).toString();
+    QString time = uri.value( QStringLiteral( "referenceTime" ) ).toString();
 
     QDateTime dateTime = QDateTime::fromString( time, Qt::ISODateWithMs );
 
