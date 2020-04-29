@@ -3404,7 +3404,7 @@ static QVariant fcnCloseLine( const QVariantList &values, const QgsExpressionCon
   if ( !line )
     return QVariant();
 
-  QgsLineString *closed_line = line->clone();
+  std::unique_ptr< QgsLineString > closedLine( line->clone() );
   closed_line->close();
 
   return QVariant::fromValue( QgsGeometry( closed_line ) );
