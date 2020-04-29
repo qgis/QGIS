@@ -94,7 +94,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         self.assertEqual(w.findChild(QComboBox).model().rowCount(), 20)
 
     def testLineEdit(self):
-        layer = createLayer()
+        layer = createLayer(True)
         w = QgsFeaturePickerWidget()
         w.setAllowNull(False)
         w.setFetchLimit(20)
