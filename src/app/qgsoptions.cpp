@@ -1153,8 +1153,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   {
     if ( checked )
     {
+      // Since this may crash and lock users out of the settings, let's disable opencl setting before entering
+      // and restore after available was successfully called
+      const bool openClStatus { QgsOpenClUtils::enabled() };
+      QgsOpenClUtils::setEnabled( false );
       if ( QgsOpenClUtils::available( ) )
       {
+        QgsOpenClUtils::setEnabled( openClStatus );
         mOpenClContainerWidget->setEnabled( true );
         mOpenClDevicesCombo->clear();
 
