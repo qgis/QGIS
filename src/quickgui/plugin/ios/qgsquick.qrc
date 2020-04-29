@@ -1,21 +1,21 @@
 <RCC>
     <qresource prefix="/QgsQuick">
         <file>qmldir</file>
-        <file>qgsquickeditorwidgetcombobox.qml</file>
-        <file>qgsquickcheckbox.qml</file>
-        <file>qgsquickdatetime.qml</file>
-        <file>qgsquickexternalresource.qml</file>
-        <file>qgsquicktextedit.qml</file>
-        <file>qgsquickrange.qml</file>
-        <file>qgsquickvaluemap.qml</file>
-        <file>qgsquickvaluerelation.qml</file>
-        <file>qgsquickfeatureform.qml</file>
-        <file>qgsquickfeatureformstyling.qml</file>
-        <file>qgsquickmapcanvas.qml</file>
-        <file>qgsquickmessagelog.qml</file>
-        <file>qgsquickphotopanel.qml</file>
-        <file>qgsquickpositionmarker.qml</file>
-        <file>qgsquickicontextitem.qml</file>
-        <file>qgsquickscalebar.qml</file>
+        <file>../editor/qgsquickeditorwidgetcombobox.qml</file>
+        <file>../editor/qgsquickcheckbox.qml</file>
+        <file>../editor/qgsquickdatetime.qml</file>
+        <file>../editor/qgsquickexternalresource.qml</file>
+        <file>../editor/qgsquicktextedit.qml</file>
+        <file>../editor/qgsquickrange.qml</file>
+        <file>../editor/qgsquickvaluemap.qml</file>
+        <file>../editor/qgsquickvaluerelation.qml</file>
+        <file>../qgsquickfeatureform.qml</file>
+        <file>../qgsquickfeatureformstyling.qml</file>
+        <file>../qgsquickmapcanvas.qml</file>
+        <file>../qgsquickmessagelog.qml</file>
+        <file>../qgsquickphotopanel.qml</file>
+        <file>../qgsquickpositionmarker.qml</file>
+        <file>../components/qgsquickicontextitem.qml</file>
+        <file>../qgsquickscalebar.qml</file>
     </qresource>
 </RCC>
