@@ -181,6 +181,23 @@ Class factory to return a pointer to a newly created QgsDataProvider object
 .. versionadded:: 3.10
 %End
 
+    static void setBoolParameter( QVariantMap &uri, const QString &parameter, const QVariant &value );
+%Docstring
+Sets the ``value`` into the ``uri`` ``parameter`` as a bool.
+eg. "yes" value will be saved as true, 0 will be saved as false
+
+.. versionadded:: 3.14
+%End
+
+    static bool boolParameter( const QVariantMap &uri, const QString &parameter, bool defaultValue = false );
+%Docstring
+Returns the ``parameter`` value in the ``uri`` as a bool.
+eg. "yes" value will be returned as true, 0 will be returned as false
+
+.. versionadded:: 3.14
+%End
+
+
 
     virtual QgsRasterDataProvider *createRasterDataProvider(
       const QString &uri,
