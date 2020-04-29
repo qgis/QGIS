@@ -76,6 +76,10 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mScalarDatasetComboBox</tabstop>
+  <tabstop>mVectorDatasetComboBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

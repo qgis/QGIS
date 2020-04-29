@@ -134,6 +134,14 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mValueMinimumLineEdit</tabstop>
+  <tabstop>mValueMaximumLineEdit</tabstop>
+  <tabstop>mDefaultMinMaxButton</tabstop>
+  <tabstop>mIgnoreOutOfRangecheckBox</tabstop>
+  <tabstop>mWidthMinimumSpinBox</tabstop>
+  <tabstop>mWidthMaximumSpinBox</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>
