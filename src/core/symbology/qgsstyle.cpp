@@ -126,7 +126,10 @@ QgsStyle *QgsStyle::defaultStyle() // static
     else
     {
       sDefaultStyle = new QgsStyle;
-      sDefaultStyle->load( styleFilename );
+      if ( sDefaultStyle->load( styleFilename ) )
+      {
+        sDefaultStyle->upgradeIfRequired();
+      }
     }
   }
   return sDefaultStyle;
@@ -2397,6 +2400,11 @@ bool QgsStyle::exportXml( const QString &filename )
 
 bool QgsStyle::importXml( const QString &filename )
 {
+  return importXml( filename, -1 );
+}
+
+bool QgsStyle::importXml( const QString &filename, int sinceVersion )
+{
   mErrorString = QString();
   QDomDocument doc( QStringLiteral( "style" ) );
   QFile f( filename );
@@ -2444,6 +2452,13 @@ bool QgsStyle::importXml( const QString &filename )
     // For the new style, load symbols individually
     while ( !e.isNull() )
     {
+      const int entityAddedVersion = e.attribute( QStringLiteral( "addedVersion" ) ).toInt();
+      if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
+      {
+        // skip the symbol, should already be present
+        continue;
+      }
+
       if ( e.tagName() == QLatin1String( "symbol" ) )
       {
         QString name = e.attribute( QStringLiteral( "name" ) );
@@ -2492,6 +2507,13 @@ bool QgsStyle::importXml( const QString &filename )
   e = rampsElement.firstChildElement();
   while ( !e.isNull() )
   {
+    const int entityAddedVersion = e.attribute( QStringLiteral( "addedVersion" ) ).toInt();
+    if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
+    {
+      // skip the ramp, should already be present
+      continue;
+    }
+
     if ( e.tagName() == QLatin1String( "colorramp" ) )
     {
       QString name = e.attribute( QStringLiteral( "name" ) );
@@ -2530,6 +2552,13 @@ bool QgsStyle::importXml( const QString &filename )
     e = textFormatElement.firstChildElement();
     while ( !e.isNull() )
     {
+      const int entityAddedVersion = e.attribute( QStringLiteral( "addedVersion" ) ).toInt();
+      if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
+      {
+        // skip the format, should already be present
+        continue;
+      }
+
       if ( e.tagName() == QLatin1String( "textformat" ) )
       {
         QString name = e.attribute( QStringLiteral( "name" ) );
@@ -2568,6 +2597,13 @@ bool QgsStyle::importXml( const QString &filename )
     e = labelSettingsElement.firstChildElement();
     while ( !e.isNull() )
     {
+      const int entityAddedVersion = e.attribute( QStringLiteral( "addedVersion" ) ).toInt();
+      if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
+      {
+        // skip the settings, should already be present
+        continue;
+      }
+
       if ( e.tagName() == QLatin1String( "labelsetting" ) )
       {
         QString name = e.attribute( QStringLiteral( "name" ) );
@@ -2606,6 +2642,13 @@ bool QgsStyle::importXml( const QString &filename )
     e = legendPatchShapesElement.firstChildElement();
     while ( !e.isNull() )
     {
+      const int entityAddedVersion = e.attribute( QStringLiteral( "addedVersion" ) ).toInt();
+      if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
+      {
+        // skip the shape, should already be present
+        continue;
+      }
+
       if ( e.tagName() == QLatin1String( "legendpatchshape" ) )
       {
         QString name = e.attribute( QStringLiteral( "name" ) );
@@ -2824,6 +2867,49 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
 void QgsStyle::clearCachedTags( QgsStyle::StyleEntity type, const QString &name )
 {
   mCachedTags[ type ].remove( name );
+}
+
+void QgsStyle::upgradeIfRequired()
+{
+  // make sure metadata table exists
+  auto query = QgsSqlite3Mprintf( "SELECT name FROM sqlite_master WHERE name='stylemetadata'" );
+  sqlite3_statement_unique_ptr statement;
+  int rc;
+  int dbVersion = 0;
+  statement = mCurrentDB.prepare( query, rc );
+
+  if ( rc != SQLITE_OK || sqlite3_step( statement.get() ) != SQLITE_ROW )
+  {
+    // no metadata table
+    query = QgsSqlite3Mprintf( "CREATE TABLE stylemetadata("\
+                               "id INTEGER PRIMARY KEY,"\
+                               "key TEXT UNIQUE,"\
+                               "value TEXT);" );
+    runEmptyQuery( query );
+    query = QgsSqlite3Mprintf( "INSERT INTO stylemetadata VALUES (NULL, '%q', '%q')", "version", "31200" );
+    runEmptyQuery( query );
+
+    dbVersion = 31200;
+  }
+  else
+  {
+    query = QgsSqlite3Mprintf( "SELECT value FROM stylemetadata WHERE key='version'" );
+    statement = mCurrentDB.prepare( query, rc );
+    if ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
+    {
+      dbVersion = statement.columnAsText( 0 ).toInt();
+    }
+  }
+
+  if ( dbVersion < Qgis::versionInt() )
+  {
+    // do upgrade
+    if ( importXml( QgsApplication::defaultStylePath(), dbVersion ) )
+    {
+      query = QgsSqlite3Mprintf( "UPDATE stylemetadata SET value='%q' WHERE key='version'", QString::number( Qgis::versionInt() ).toUtf8().constData() );
+      runEmptyQuery( query );
+    }
+  }
 }
 
 QString QgsStyle::entityTableName( QgsStyle::StyleEntity type )
