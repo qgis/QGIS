@@ -78,7 +78,7 @@ Draws the legend using a given render ``context``. The legend will occupy the ar
 .. versionadded:: 3.6
 %End
 
-    void exportLegendToJson( const QgsRenderContext &context, QJsonObject &json );
+    void exportLegendToJson( const QgsRenderContext &context, QJsonObject &json /Out/ );
 %Docstring
 Renders the legend in a ``json`` object.
 
