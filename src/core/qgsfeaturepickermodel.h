@@ -19,6 +19,7 @@
 
 #include "qgsconditionalstyle.h"
 #include "qgsfeatureexpressionvaluesgatherer.h"
+#include "qgsfeaturepickermodelbase.h"
 
 /**
  * \ingroup core
@@ -27,7 +28,7 @@
  *
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsFeaturePickerModel : public QgsFeaturePickerModelBase<QgsFeatureByIdExpressionValuesGatherer>
+class CORE_EXPORT QgsFeaturePickerModel : public QgsFeaturePickerModelBase
 {
     Q_OBJECT
 
@@ -37,7 +38,6 @@ class CORE_EXPORT QgsFeaturePickerModel : public QgsFeaturePickerModelBase<QgsFe
      * Create a new QgsFeaturePickerModel, optionally specifying a \a parent.
      */
     explicit QgsFeaturePickerModel( QObject *parent = nullptr );
-    ~QgsFeaturePickerModel() override;
 
     /**
      * Allows specifying one value that does not need to match the filter criteria but will
@@ -46,14 +46,27 @@ class CORE_EXPORT QgsFeaturePickerModel : public QgsFeaturePickerModelBase<QgsFe
      */
     void setExtraIdentifierValueToNull() override;
 
+    //! Set the feature to the given feature id
+    void setFeature( const QgsFeatureId &fid );
+
+  signals:
+    void featureChanged( const QgsFeature &feature );
+
 
   private:
+    QgsFeatureExpressionValuesGatherer *createValuesGatherer( const QgsFeatureRequest &request ) const override;
+
     void requestToReloadCurrentFeature( QgsFeatureRequest &request ) override;
 
-    void setCurrentFeatureUnguarded( const QgsFeatureId &featureId );
+    QVariant entryIdentifier( const QgsFeatureExpressionValuesGatherer::Entry &entry ) const override;
 
-    QgsFeatureId mFeatureFidToReload = FID_NULL;
+    QgsFeatureExpressionValuesGatherer::Entry createEntry( const QVariant &identifier ) const override;
 
+    bool compareEntries( const QgsFeatureExpressionValuesGatherer::Entry &a, const QgsFeatureExpressionValuesGatherer::Entry &b ) const override;
+
+    bool identifierIsNull( const QVariant &identifier ) const override;
+
+    QVariant nullIentifier() const override;
 };
 
 #endif // QGSFEATUREPICKERMODEL_H

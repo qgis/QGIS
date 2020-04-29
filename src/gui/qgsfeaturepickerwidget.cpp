@@ -41,8 +41,8 @@ QgsFeaturePickerWidget::QgsFeaturePickerWidget( QWidget *parent )
   connect( mModel, &QgsFeaturePickerModel::isLoadingChanged, this, &QgsFeaturePickerWidget::onLoadingChanged );
   connect( mModel, &QgsFeaturePickerModel::filterJobCompleted, this, &QgsFeaturePickerWidget::onFilterUpdateCompleted );
   connect( mModel, &QgsFeaturePickerModel::allowNullChanged, this, &QgsFeaturePickerWidget::allowNullChanged );
-  connect( mModel, &QgsFeaturePickerModel::currentIndexChanged, mComboBox, &QComboBox::setCurrentIndex );
-  connect( mModel, &QgsFeaturePickerModel::currentFeatureChanged, this, &QgsFeaturePickerWidget::currentFeatureChanged );
+  connect( mModel, &QgsFeaturePickerModel::extraIdentifierValueIndexChanged, mComboBox, &QComboBox::setCurrentIndex );
+  connect( mModel, &QgsFeaturePickerModel::featureChanged, this, &QgsFeaturePickerWidget::featureChanged );
   connect( mCompleter, static_cast<void( QCompleter::* )( const QModelIndex & )>( &QCompleter::highlighted ), this, &QgsFeaturePickerWidget::onItemSelected );
   connect( mCompleter, static_cast<void( QCompleter::* )( const QModelIndex & )>( &QCompleter::activated ), this, &QgsFeaturePickerWidget::onActivated );
   connect( mModel, &QgsFeaturePickerModel::beginUpdate, this, &QgsFeaturePickerWidget::storeLineEditState );
@@ -75,9 +75,9 @@ void QgsFeaturePickerWidget::setLayer( QgsVectorLayer *sourceLayer )
   mModel->setSourceLayer( sourceLayer );
 }
 
-void QgsFeaturePickerWidget::setCurrentFeature( QgsFeatureId featureId )
+void QgsFeaturePickerWidget::setFeature( QgsFeatureId featureId )
 {
-  mModel->setCurrentFeature( featureId );
+  mModel->setFeature( featureId );
 }
 
 QString QgsFeaturePickerWidget::displayExpression() const
@@ -119,8 +119,10 @@ void QgsFeaturePickerWidget::onCurrentIndexChanged( int i )
 {
   if ( !mHasStoredEditState )
     mIsCurrentlyEdited = false;
+  if ( i < 0 )
+    return;
   QModelIndex modelIndex = mModel->index( i, 0, QModelIndex() );
-  mModel->setCurrentFeature( mModel->data( modelIndex, QgsFeaturePickerModel::FeatureIdRole ).value<QgsFeatureId>() );
+  mModel->setFeature( mModel->data( modelIndex, QgsFeaturePickerModel::FeatureIdRole ).value<QgsFeatureId>() );
   mLineEdit->setText( mModel->data( modelIndex, QgsFeaturePickerModel::ValueRole ).toString() );
   mLineEdit->setFont( mModel->data( modelIndex, Qt::FontRole ).value<QFont>() );
   QPalette palette = mLineEdit->palette();
@@ -130,7 +132,7 @@ void QgsFeaturePickerWidget::onCurrentIndexChanged( int i )
 
 void QgsFeaturePickerWidget::onActivated( QModelIndex modelIndex )
 {
-  setCurrentFeature( mModel->data( modelIndex, QgsFeaturePickerModel::FeatureIdRole ).value<QgsFeatureId>() );
+  setFeature( mModel->data( modelIndex, QgsFeaturePickerModel::FeatureIdRole ).value<QgsFeatureId>() );
   mLineEdit->setText( mModel->data( modelIndex, QgsFeaturePickerModel::ValueRole ).toString() );
 }
 
@@ -169,7 +171,7 @@ void QgsFeaturePickerWidget::onDataChanged( const QModelIndex &topLeft, const QM
   Q_UNUSED( roles )
   if ( !mIsCurrentlyEdited )
   {
-    const int currentIndex = mModel->currentIndex();
+    const int currentIndex = mModel->extraIdentifierValueIndex();
     if ( currentIndex >= topLeft.row() && currentIndex <= bottomRight.row() )
     {
       QModelIndex modelIndex = mModel->index( currentIndex, 0, QModelIndex() );
@@ -180,7 +182,7 @@ void QgsFeaturePickerWidget::onDataChanged( const QModelIndex &topLeft, const QM
 
 QModelIndex QgsFeaturePickerWidget::currentModelIndex() const
 {
-  return mModel->index( mModel->currentIndex(), 0, QModelIndex() );
+  return mModel->index( mModel->extraIdentifierValueIndex(), 0, QModelIndex() );
 }
 
 void QgsFeaturePickerWidget::focusOutEvent( QFocusEvent *event )

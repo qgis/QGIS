@@ -28,7 +28,7 @@ QgsExpressionPreviewWidget::QgsExpressionPreviewWidget( QWidget *parent )
   setupUi( this );
   mPreviewLabel->clear();
 
-  connect( mFeatureChooserWidget, &QgsFeaturePickerWidget::currentFeatureChanged, this, &QgsExpressionPreviewWidget::setCurrentFeature );
+  connect( mFeatureChooserWidget, &QgsFeaturePickerWidget::featureChanged, this, &QgsExpressionPreviewWidget::setCurrentFeature );
   connect( mPreviewLabel, &QLabel::linkActivated, this, &QgsExpressionPreviewWidget::linkActivated );
 }
 

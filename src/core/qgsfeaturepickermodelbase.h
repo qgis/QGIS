@@ -27,12 +27,8 @@
  *
  * \since QGIS 3.0
  */
-template <class T>
-class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel
+class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABSTRACT
 {
-    using GathererType = T;
-    using IdentifierType = typename GathererType::IdentifierType;
-
     Q_OBJECT
 
     Q_PROPERTY( QgsVectorLayer *sourceLayer READ sourceLayer WRITE setSourceLayer NOTIFY sourceLayerChanged )
@@ -41,11 +37,6 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel
     Q_PROPERTY( QString filterExpression READ filterExpression WRITE setFilterExpression NOTIFY filterExpressionChanged )
     Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull NOTIFY allowNullChanged )
     Q_PROPERTY( bool isLoading READ isLoading NOTIFY isLoadingChanged )
-
-    /**
-     * The value that identifies the current feature.
-     */
-    Q_PROPERTY( IdentifierType extraIdentifierValue READ extraIdentifierValue WRITE setExtraIdentifierValue NOTIFY extraIdentifierValueChanged )
 
     Q_PROPERTY( int extraIdentifierValueIndex READ extraIdentifierValueIndex NOTIFY extraIdentifierValueIndexChanged )
 
@@ -135,18 +126,6 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel
      * Indicator if the model is currently performing any feature iteration in the background.
      */
     bool isLoading() const;
-
-    /**
-     * Allows specifying one value that does not need to match the filter criteria but will
-     * still be available in the model.
-     */
-    virtual IdentifierType extraIdentifierValue() const {return mExtraIdentifierValue;}
-
-    /**
-     * Allows specifying one value that does not need to match the filter criteria but will
-     * still be available in the model.
-     */
-    virtual void setExtraIdentifierValue( const IdentifierType &extraIdentifierValue ) = 0;
 
     /**
      * Allows specifying one value that does not need to match the filter criteria but will
@@ -249,8 +228,25 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel
     void scheduledReload();
 
   protected:
+
+    /**
+     * Allows specifying one value that does not need to match the filter criteria but will
+     * still be available in the model.
+     */
+    QVariant extraIdentifierValue() const;
+
+    /**
+     * Allows specifying one value that does not need to match the filter criteria but will
+     * still be available in the model.
+     */
+    void setExtraIdentifierValue( const QVariant &extraIdentifierValue );
+
     //! Update the request to match the current feature to be reloaded
     virtual void requestToReloadCurrentFeature( QgsFeatureRequest &request ) = 0;
+
+    void setExtraIdentifierValueUnguarded( const QVariant &identifierValue );
+
+#ifndef SIP_RUN
 
     /**
      * Returns the attributes to be fetched in the request.
@@ -258,17 +254,36 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel
      */
     virtual QSet<QString> requestedAttributes() const {return {};}
 
-    virtual T createValuesGatherer( const QgsFeatureRequest &request ) const;
+    virtual QgsFeatureExpressionValuesGatherer *createValuesGatherer( const QgsFeatureRequest &request ) const = 0;
 
-    void setExtraIdentifierValueUnguarded( const IdentifierType &identifierValue );
+    //! Creates an entry with just the identifier so the feature can be retrieved in a next iteration
+    virtual QgsFeatureExpressionValuesGatherer::Entry createEntry( const QVariant &identifer ) const = 0;
+
+    //! Returns the identifier of the given entry
+    virtual QVariant entryIdentifier( const QgsFeatureExpressionValuesGatherer::Entry &entry ) const = 0;
+
+    //! Returns TRUE if the 2 entries refers to the same feature
+    virtual bool compareEntries( const QgsFeatureExpressionValuesGatherer::Entry &a, const QgsFeatureExpressionValuesGatherer::Entry &b ) const = 0;
+
+    //! Returns a null identifier
+    virtual QVariant nullIentifier() const = 0;
+
+    /**
+     * Returns TRUE if the entry is null
+     * The identifier can be either the feature ID or the list of identifier fields
+     */
+    virtual bool identifierIsNull( const QVariant &identifier ) const = 0;
+
+    QVector<QgsFeatureExpressionValuesGatherer::Entry> mEntries;
+#endif
 
     //! The current identifier value
-    IdentifierType mExtraIdentifierValue;
+    QVariant mExtraIdentifierValue;
 
+    //! The current index
+    int mExtraValueIndex = -1;
 
   private:
-    using EntryType = typename GathererType::Entry;
-
     void setExtraIdentifierValueIndex( int index, bool force = false );
     void setExtraValueDoesNotExist( bool extraValueDoesNotExist );
     void reload();
@@ -285,19 +300,13 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel
     mutable QgsExpressionContext mExpressionContext;
     mutable QMap< QgsFeatureId, QgsConditionalStyle > mEntryStylesMap;
 
-    QVector<EntryType> mEntries;
-
-    T *mGatherer = nullptr;
+    QgsFeatureExpressionValuesGatherer *mGatherer = nullptr;
 
     QTimer mReloadTimer;
     bool mShouldReloadCurrentFeature = false;
     bool mExtraValueDoesNotExist = false;
     bool mAllowNull = false;
     bool mIsSettingExtraIdentifierValue = false;
-
-    //! The current index
-    int mExtraValueIndex = -1;
-
 };
 
 #endif // QGSFEATUREFILTERMODELBASE_H

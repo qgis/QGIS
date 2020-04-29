@@ -25,7 +25,7 @@
  *
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsFeatureFilterModel : public QgsFeaturePickerModelBase<QgsFeatureByIdentifierFieldsExpressionValuesGatherer>
+class CORE_EXPORT QgsFeatureFilterModel : public QgsFeaturePickerModelBase
 {
     Q_OBJECT
 
@@ -34,19 +34,14 @@ class CORE_EXPORT QgsFeatureFilterModel : public QgsFeaturePickerModelBase<QgsFe
      * Normally the primary key field.
      * Needs to match the identifierValue.
      */
-    Q_PROPERTY( QString identifierFields READ identifierFields WRITE setIdentifierFields NOTIFY identifierFieldChangeds )
-
-  public:
+    Q_PROPERTY( QStringList identifierFields READ identifierFields WRITE setIdentifierFields NOTIFY identifierFieldsChanged )
 
     /**
-     * Extra roles that can be used to fetch data from this model.
+     * The value that identifies the current feature.
      */
-    enum Role
-    {
-      IdentifierValueRole = Qt::UserRole, //!< \deprecated Use IdentifierValuesRole instead
-      IdentifierValuesRole, //!< Used to retrieve the identifierValues (primary keys) of a feature.
-      ValueRole //!< Used to retrieve the displayExpression of a feature.
-    };
+    Q_PROPERTY( QVariantList extraIdentifierValues READ extraIdentifierValues WRITE setExtraIdentifierValues NOTIFY extraIdentifierValuesChanged )
+
+  public:
 
     /**
      * Create a new QgsFeatureFilterModel, optionally specifying a \a parent.
@@ -83,7 +78,19 @@ class CORE_EXPORT QgsFeatureFilterModel : public QgsFeaturePickerModelBase<QgsFe
      */
     void setExtraIdentifierValueToNull() override;
 
-    QVariantList extraIdentifierValue() const override;
+    /**
+     * Allows specifying one value that does not need to match the filter criteria but will
+     * still be available in the model.
+     * \since QGIS 3.10
+     */
+    QVariantList extraIdentifierValues() const;
+
+    /**
+     * Allows specifying one value that does not need to match the filter criteria but will
+     * still be available in the model.
+     * \since QGIS 3.10
+     */
+    void setExtraIdentifierValues( const QVariantList &extraIdentifierValues );
 
 
   signals:
@@ -94,14 +101,28 @@ class CORE_EXPORT QgsFeatureFilterModel : public QgsFeaturePickerModelBase<QgsFe
      */
     void identifierFieldsChanged();
 
-  protected:
-    QgsFeatureByIdentifierFieldsExpressionValuesGatherer createValuesGatherer( const QgsFeatureRequest &request ) const override;
-
+    /**
+     * Allows specifying one value that does not need to match the filter criteria but will
+     * still be available in the model.
+     */
+    void extraIdentifierValuesChanged();
 
   private:
+    QgsFeatureExpressionValuesGatherer *createValuesGatherer( const QgsFeatureRequest &request ) const override;
+
     void requestToReloadCurrentFeature( QgsFeatureRequest &request ) override;
 
     QSet<QString> requestedAttributes() const override;
+
+    QVariant entryIdentifier( const QgsFeatureExpressionValuesGatherer::Entry &entry ) const override;
+
+    QgsFeatureExpressionValuesGatherer::Entry createEntry( const QVariant &identifier ) const override;
+
+    bool compareEntries( const QgsFeatureExpressionValuesGatherer::Entry &a, const QgsFeatureExpressionValuesGatherer::Entry &b ) const override;
+
+    bool identifierIsNull( const QVariant &identifier ) const override;
+
+    QVariant nullIentifier() const override;
 
     QStringList mIdentifierFields;
 };

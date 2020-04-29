@@ -33,7 +33,6 @@
  *
  * \since QGIS 3.0
  */
-template <class T>
 class QgsFeatureExpressionValuesGatherer: public QThread
 {
     Q_OBJECT
@@ -58,23 +57,35 @@ class QgsFeatureExpressionValuesGatherer: public QThread
     {
     }
 
-    //! The type to identify a feature (QgsFeatureId, QVariantList, …)
-    using IdentifierType = T;
-
     struct Entry
     {
-      Entry( const T &_identifier, const QString &_value, const QgsFeature &_feature )
-        : identifier( _identifier )
+      Entry() = default;
+
+      Entry( const QVariantList &_identifierFields, const QString &_value, const QgsFeature &_feature )
+        : identifierFields( _identifierFields )
+        , featureId( _feature.isValid() ? _feature.id() : FID_NULL )
         , value( _value )
         , feature( _feature )
       {}
 
-      T identifier;
+      Entry( const QgsFeatureId &_featureId, const QString &_value )
+        : featureId( _featureId )
+        , value( _value )
+        , feature( QgsFeature() )
+      {}
+
+      QVariantList identifierFields;
+      QgsFeatureId featureId;
       QString value;
       QgsFeature feature;
 
       bool operator()( const Entry &lhs, const Entry &rhs ) const;
     };
+
+    static Entry nullEntry()
+    {
+      return Entry( QVariantList(), QgsApplication::nullRepresentation(), QgsFeature() );
+    }
 
     void run() override
     {
@@ -84,39 +95,27 @@ class QgsFeatureExpressionValuesGatherer: public QThread
 
       mDisplayExpression.prepare( &mExpressionContext );
 
-      QgsFeature feat;
+      QgsFeature feature;
       QList<int> attributeIndexes;
       for ( const QString &fieldName : qgis::as_const( mIdentifierFields ) )
         attributeIndexes << mSource->fields().indexOf( fieldName );
 
-      while ( mIterator.nextFeature( feat ) )
+      while ( mIterator.nextFeature( feature ) )
       {
-        mExpressionContext.setFeature( feat );
+        mExpressionContext.setFeature( feature );
         QVariantList attributes;
         for ( const int idx : attributeIndexes )
-          attributes << feat.attribute( idx );
+          attributes << feature.attribute( idx );
 
         const QString expressionValue = mDisplayExpression.evaluate( &mExpressionContext ).toString();
 
-        addEntry( feat, attributes, expressionValue );
+        mEntries.append( Entry( attributes, expressionValue, feature ) );
 
         QMutexLocker locker( &mCancelMutex );
         if ( mWasCanceled )
           return;
       }
     }
-
-    //! Add an entry to the list
-    virtual void addEntry( const QgsFeature &feature, const QVariantList &attributes, const QString &expressionValue ) = 0;
-
-    //! Returns TRUE if the 2 entries refers to the same feature
-    virtual bool compareEntries( const Entry &a, const Entry &b ) {return a.identifier == b.identifier;}
-
-    //! Returns TRUE if the entry is null
-    virtual bool identifierIsNull( const T &identifier ) = 0;
-
-    //! Returns a human reading representation of the identifier
-    virtual QString identifierToString( const T &identifier ) = 0;
 
     //! Informs the gatherer to immediately stop collecting values
     void stop()
@@ -173,89 +172,6 @@ class QgsFeatureExpressionValuesGatherer: public QThread
     QVariant mData;
 };
 
-
-
-class QgsFeatureByIdExpressionValuesGatherer : public QgsFeatureExpressionValuesGatherer<QgsFeatureId>
-{
-  public:
-    QgsFeatureByIdExpressionValuesGatherer( QgsVectorLayer *layer,
-                                            const QString &displayExpression = QString(),
-                                            const QgsFeatureRequest &request = QgsFeatureRequest() )
-      : QgsFeatureExpressionValuesGatherer( layer, displayExpression, request )
-    {}
-
-    static Entry nullEntry()
-    {
-      return Entry( QgsFeatureId( FID_NULL ), QgsApplication::nullRepresentation(), QgsFeature() );
-    }
-
-    void addEntry( const QgsFeature &feature, const QVariantList &attributes, const QString &expressionValue ) override
-    {
-      Q_UNUSED( attributes )
-      mEntries.append( Entry( feature.id(), expressionValue, feature ) );
-    }
-
-    bool identifierIsNull( const QgsFeatureId &identifier ) override
-    {
-      return identifier == FID_NULL;
-    }
-
-    QString identifierToString( const QgsFeatureId &identifier ) override
-    {
-      return QStringLiteral( "(%1)" ).arg( identifier );
-    }
-};
-
-
-class QgsFeatureByIdentifierFieldsExpressionValuesGatherer : public QgsFeatureExpressionValuesGatherer<QVariantList>
-{
-  public:
-    QgsFeatureByIdentifierFieldsExpressionValuesGatherer( QgsVectorLayer *layer,
-        const QString &displayExpression = QString(),
-        const QgsFeatureRequest &request = QgsFeatureRequest(),
-        const QStringList &identifierFields = QStringList() )
-      : QgsFeatureExpressionValuesGatherer( layer, displayExpression, request, identifierFields )
-    {}
-
-    bool compareEntries( const Entry &a, const Entry &b ) override {return qVariantListCompare( a.identifier, b.identifier );}
-
-    static Entry nullEntry()
-    {
-      return Entry( QVariantList(), QgsApplication::nullRepresentation(), QgsFeature() );
-    }
-
-    void addEntry( const QgsFeature &feature, const QVariantList &attributes, const QString &expressionValue ) override
-    {
-      mEntries.append( Entry( attributes, expressionValue, feature ) );
-    }
-
-    bool identifierIsNull( const QList<QVariant> &identifier ) override
-    {
-      return identifier.isEmpty();
-    }
-
-    QString identifierToString( const QList<QVariant> &identifier ) override
-    {
-      QStringList values;
-      for ( const QVariant &v : qgis::as_const( identifier ) )
-        values << QStringLiteral( "(%1)" ).arg( v.toString() );
-      return values.join( QStringLiteral( " " ) );
-    }
-
-  private:
-    bool qVariantListCompare( const QVariantList &a, const QVariantList &b )
-    {
-      if ( a.size() != b.size() )
-        return false;
-
-      for ( int i = 0; i < a.size(); ++i )
-      {
-        if ( !qgsVariantEqual( a.at( i ), b.at( i ) ) )
-          return false;
-      }
-      return true;
-    }
-};
 ///@endcond
 
 

@@ -41,7 +41,7 @@ The layer from which features should be listed.
 The layer from which features should be listed.
 %End
 
-    void setCurrentFeature( QgsFeatureId featureId );
+    void setFeature( QgsFeatureId featureId );
 %Docstring
 Sets the current index by using the given feature
 %End
@@ -132,7 +132,7 @@ This can be used to integrate additional spatial or other constraints.
 Determines if a NULL value should be available in the list.
 %End
 
-    void currentFeatureChanged( const QgsFeature &feature );
+    void featureChanged( const QgsFeature &feature );
 %Docstring
 Sends the feature as soon as it is chosen
 %End

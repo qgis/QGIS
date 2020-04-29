@@ -21,6 +21,20 @@
 #include "qgssettings.h"
 
 
+bool qVariantListCompare( const QVariantList &a, const QVariantList &b )
+{
+  if ( a.size() != b.size() )
+    return false;
+
+  for ( int i = 0; i < a.size(); ++i )
+  {
+    if ( !qgsVariantEqual( a.at( i ), b.at( i ) ) )
+      return false;
+  }
+  return true;
+}
+
+
 QgsFeatureFilterModel::QgsFeatureFilterModel( QObject *parent )
   : QgsFeaturePickerModelBase( parent )
 {
@@ -37,13 +51,13 @@ void QgsFeatureFilterModel::requestToReloadCurrentFeature( QgsFeatureRequest &re
   QStringList conditions;
   for ( int i = 0; i < mIdentifierFields.count(); i++ )
   {
-    if ( i >= mExtraIdentifierValue.count() )
+    if ( i >= mExtraIdentifierValue.toList().count() )
     {
       conditions << QgsExpression::createFieldEqualityExpression( mIdentifierFields.at( i ), QVariant() );
     }
     else
     {
-      conditions << QgsExpression::createFieldEqualityExpression( mIdentifierFields.at( i ), mExtraIdentifierValue.at( i ) );
+      conditions << QgsExpression::createFieldEqualityExpression( mIdentifierFields.at( i ), mExtraIdentifierValue.toList().at( i ) );
     }
   }
   request.setFilterExpression( conditions.join( QStringLiteral( " AND " ) ) );
@@ -52,6 +66,45 @@ void QgsFeatureFilterModel::requestToReloadCurrentFeature( QgsFeatureRequest &re
 QSet<QString> QgsFeatureFilterModel::requestedAttributes() const
 {
   return QSet<QString>( mIdentifierFields.begin(), mIdentifierFields.end() );
+}
+
+QVariant QgsFeatureFilterModel::entryIdentifier( const QgsFeatureExpressionValuesGatherer::Entry &entry ) const
+{
+  return entry.featureId;
+}
+
+QgsFeatureExpressionValuesGatherer::Entry QgsFeatureFilterModel::createEntry( const QVariant &identifier ) const
+{
+  const QVariantList constValues = identifier.toList();
+
+  QStringList values;
+  for ( const QVariant &v : constValues )
+    values << QStringLiteral( "(%1)" ).arg( v.toString() );
+
+  return QgsFeatureExpressionValuesGatherer::Entry( constValues, values.join( QStringLiteral( " " ) ), QgsFeature() );
+}
+
+bool QgsFeatureFilterModel::compareEntries( const QgsFeatureExpressionValuesGatherer::Entry &a, const QgsFeatureExpressionValuesGatherer::Entry &b ) const
+{
+  return qVariantListCompare( a.identifierFields, b.identifierFields );
+}
+
+bool QgsFeatureFilterModel::identifierIsNull( const QVariant &identifier ) const
+{
+  const QVariantList values = identifier.toList();
+  for ( const QVariant &value : values )
+  {
+    if ( !value.isNull() )
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+QVariant QgsFeatureFilterModel::nullIentifier() const
+{
+  return QVariantList();
 }
 
 QStringList QgsFeatureFilterModel::identifierFields() const
@@ -70,17 +123,28 @@ void QgsFeatureFilterModel::setIdentifierFields( const QStringList &identifierFi
   setExtraIdentifierValueToNull();
 }
 
-
-QVariantList QgsFeatureFilterModel::extraIdentifierValue() const
+QgsFeatureExpressionValuesGatherer *QgsFeatureFilterModel::createValuesGatherer( const QgsFeatureRequest &request ) const
 {
-  if ( mExtraIdentifierValue.count() != mIdentifierFields.count() )
+  return new QgsFeatureExpressionValuesGatherer( sourceLayer(), displayExpression(), request, mIdentifierFields );
+}
+
+
+QVariantList QgsFeatureFilterModel::extraIdentifierValues() const
+{
+  QVariantList values = mExtraIdentifierValue.toList();
+  if ( values.count() != mIdentifierFields.count() )
   {
     QVariantList nullValues;
     for ( int i = 0; i < mIdentifierFields.count(); i++ )
       nullValues << QVariant( QVariant::Int );
     return nullValues;
   }
-  return mExtraIdentifierValue;
+  return values;
+}
+
+void QgsFeatureFilterModel::setExtraIdentifierValues( const QVariantList &extraIdentifierValues )
+{
+  setExtraIdentifierValue( extraIdentifierValues );
 }
 
 void QgsFeatureFilterModel::setExtraIdentifierValueToNull()
@@ -88,7 +152,3 @@ void QgsFeatureFilterModel::setExtraIdentifierValueToNull()
   setExtraIdentifierValue( QVariantList() );
 }
 
-QgsFeatureByIdentifierFieldsExpressionValuesGatherer QgsFeatureFilterModel::createValuesGatherer( const QgsFeatureRequest &request ) const
-{
-  new QgsFeatureByIdentifierFieldsExpressionValuesGatherer( mSourceLayer, mDisplayExpression, request, mIdentifierFields );
-}

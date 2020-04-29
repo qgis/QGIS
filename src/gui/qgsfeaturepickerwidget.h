@@ -68,7 +68,7 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
     /**
      * Sets the current index by using the given feature
      */
-    void setCurrentFeature( QgsFeatureId featureId );
+    void setFeature( QgsFeatureId featureId );
 
     /**
      * The display expression will be used to display features as well as
@@ -155,7 +155,7 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
     void allowNullChanged();
 
     //! Sends the feature as soon as it is chosen
-    void currentFeatureChanged( const QgsFeature &feature );
+    void featureChanged( const QgsFeature &feature );
 
   private slots:
     void onCurrentTextChanged( const QString &text );

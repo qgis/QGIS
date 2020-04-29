@@ -8,10 +8,7 @@
 
 
 
-
-typedef QgsFeaturePickerModelBase<QgsFeatureByIdentifierFieldsExpressionValuesGatherer> QgsFeaturePickerModelBaseQgsFeatureByIdentifierFieldsExpressionValuesGathererBase;
-
-class QgsFeatureFilterModel : QgsFeaturePickerModelBaseQgsFeatureByIdentifierFieldsExpressionValuesGathererBase
+class QgsFeatureFilterModel : QgsFeaturePickerModelBase
 {
 %Docstring
 Provides a list of features based on filter conditions.
@@ -22,17 +19,8 @@ Features are fetched asynchronously.
 
 %TypeHeaderCode
 #include "qgsfeaturefiltermodel.h"
-#include "qgsfeaturepickermodelbase.h"
-typedef QgsFeaturePickerModelBase<QgsFeatureByIdentifierFieldsExpressionValuesGatherer> QgsFeaturePickerModelBaseQgsFeatureByIdentifierFieldsExpressionValuesGathererBase;
 %End
   public:
-
-    enum Role
-    {
-      IdentifierValueRole,
-      IdentifierValuesRole,
-      ValueRole
-    };
 
     explicit QgsFeatureFilterModel( QObject *parent = 0 );
 %Docstring
@@ -78,8 +66,21 @@ still be available in the model as NULL value(s).
 .. versionadded:: 3.10
 %End
 
-    virtual QVariantList extraIdentifierValue() const;
+    QVariantList extraIdentifierValues() const;
+%Docstring
+Allows specifying one value that does not need to match the filter criteria but will
+still be available in the model.
 
+.. versionadded:: 3.10
+%End
+
+    void setExtraIdentifierValues( const QVariantList &extraIdentifierValues );
+%Docstring
+Allows specifying one value that does not need to match the filter criteria but will
+still be available in the model.
+
+.. versionadded:: 3.10
+%End
 
 
   signals:
@@ -90,10 +91,11 @@ The identifier field should be a unique field that can be used to identify indiv
 It is normally set to the primary key of the layer.
 %End
 
-  protected:
-    virtual QgsFeatureByIdentifierFieldsExpressionValuesGatherer createValuesGatherer( const QgsFeatureRequest &request ) const;
-
-
+    void extraIdentifierValuesChanged();
+%Docstring
+Allows specifying one value that does not need to match the filter criteria but will
+still be available in the model.
+%End
 
 };
 
