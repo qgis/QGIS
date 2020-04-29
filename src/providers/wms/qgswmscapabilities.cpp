@@ -335,6 +335,9 @@ QDateTime QgsWmsSettings::findLeastClosestDateTime( QDateTime dateTime, bool dat
       break;
 
     long long resolutionSeconds = pair.resolution.interval();
+
+    if ( resolutionSeconds <= 0 )
+      continue;
     long long step = std::floor( ( seconds - startSeconds ) / resolutionSeconds );
     long long resultSeconds = startSeconds + ( step * resolutionSeconds );
 
