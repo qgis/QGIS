@@ -350,7 +350,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     Match nearestArea( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
     /**
-     * Find edges within a specified recangle
+     * Find edges within a specified rectangle
      * Optional filter may discard unwanted matches.
      * This method is either blocking or non blocking according to \a relaxed parameter passed
      */
@@ -363,7 +363,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     MatchList edgesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
     /**
-     * Find vertices within a specified recangle
+     * Find vertices within a specified rectangle
      * This method is either blocking or non blocking according to \a relaxed parameter passed
      * Optional filter may discard unwanted matches.
      * \since QGIS 3.6
