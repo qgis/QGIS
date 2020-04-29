@@ -59,6 +59,7 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingMeshLayerWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingBandWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingMultipleLayerWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingVectorTileWriterLayersWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingFeatureSinkWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingVectorDestinationWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingRasterDestinationWidgetWrapper() );

@@ -6536,6 +6536,139 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingMultipleLayerWidget
   return new QgsProcessingMultipleLayerParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
+//
+// QgsProcessingVectorTileWriterLayersPanelWidget
+//
+
+
+QgsProcessingVectorTileWriterLayersPanelWidget::QgsProcessingVectorTileWriterLayersPanelWidget(QWidget *parent)
+  : QWidget( parent )
+{
+  QHBoxLayout *hl = new QHBoxLayout();
+  hl->setMargin( 0 );
+  hl->setContentsMargins( 0, 0, 0, 0 );
+
+  mLineEdit = new QLineEdit();
+  mLineEdit->setEnabled( false );
+  hl->addWidget( mLineEdit, 1 );
+
+  mToolButton = new QToolButton();
+  mToolButton->setText( QString( QChar( 0x2026 ) ) );
+  hl->addWidget( mToolButton );
+
+  setLayout( hl );
+
+  //if ( mParam )
+  {
+    mLineEdit->setText( tr( "%1 input vector layers" ).arg( 0 ) );
+  }
+
+  connect( mToolButton, &QToolButton::clicked, this, &QgsProcessingVectorTileWriterLayersPanelWidget::showDialog );
+}
+
+void QgsProcessingVectorTileWriterLayersPanelWidget::setProject( QgsProject *project )
+{
+  mProject = project;
+}
+
+void QgsProcessingVectorTileWriterLayersPanelWidget::showDialog()
+{
+#if 0  // TODO
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsProcessingMultipleInputPanelWidget *widget = new QgsProcessingMultipleInputPanelWidget( mParam, mValue, mModelSources, mModel );
+    widget->setPanelTitle( mParam->description() );
+    widget->setProject( mProject );
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [ = ]()
+    {
+      setValue( widget->selectedOptions() );
+    } );
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::acceptClicked, widget, &QgsPanelWidget::acceptPanel );
+    panel->openPanel( widget );
+  }
+  else
+  {
+    QgsProcessingMultipleInputDialog dlg( mParam, mValue, mModelSources, mModel, this, nullptr );
+    dlg.setProject( mProject );
+    if ( dlg.exec() )
+    {
+      setValue( dlg.selectedOptions() );
+    }
+  }
+#endif
+}
+
+//
+// QgsProcessingVectorTileWriterLayersWidgetWrapper
+//
+
+QgsProcessingVectorTileWriterLayersWidgetWrapper::QgsProcessingVectorTileWriterLayersWidgetWrapper(const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent)
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QString QgsProcessingVectorTileWriterLayersWidgetWrapper::parameterType() const
+{
+  //return QgsProcessingParameterMultipleLayers::typeName();
+  return QStringLiteral( "vectortilewriterlayers" );
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingVectorTileWriterLayersWidgetWrapper::createWidgetWrapper(const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type)
+{
+  return new QgsProcessingVectorTileWriterLayersWidgetWrapper( parameter, type );
+}
+
+QWidget *QgsProcessingVectorTileWriterLayersWidgetWrapper::createWidget()
+{
+  //const QgsProcessingParameterMultipleLayers *layerParam = dynamic_cast< const QgsProcessingParameterMultipleLayers *>( parameterDefinition() );
+
+  mPanel = new QgsProcessingVectorTileWriterLayersPanelWidget( nullptr ); //, layerParam );
+  //mPanel->setToolTip( parameterDefinition()->toolTip() );
+  mPanel->setProject( widgetContext().project() );
+  //mPanel->setModel( widgetContext().model(), widgetContext().modelChildAlgorithmId() );
+  connect( mPanel, &QgsProcessingVectorTileWriterLayersPanelWidget::changed, this, [ = ]
+  {
+    emit widgetValueHasChanged( this );
+  } );
+  return mPanel;
+}
+
+void QgsProcessingVectorTileWriterLayersWidgetWrapper::setWidgetContext(const QgsProcessingParameterWidgetContext &context)
+{
+  QgsAbstractProcessingParameterWidgetWrapper::setWidgetContext( context );
+  if ( mPanel )
+  {
+    mPanel->setProject( context.project() );
+    //mPanel->setModel( widgetContext().model(), widgetContext().modelChildAlgorithmId() );
+  }
+}
+
+void QgsProcessingVectorTileWriterLayersWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  // TODO
+}
+
+QVariant QgsProcessingVectorTileWriterLayersWidgetWrapper::widgetValue() const
+{
+  // TODO
+  return QVariant();
+}
+
+QStringList QgsProcessingVectorTileWriterLayersWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList();
+//         << QgsProcessingParameterBand::typeName()
+//         << QgsProcessingParameterNumber::typeName()
+//         << QgsProcessingOutputFolder::typeName();
+}
+
+QStringList QgsProcessingVectorTileWriterLayersWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList();
+  //       << QgsProcessingOutputNumber::typeName();
+}
 
 //
 // QgsProcessingOutputWidgetWrapper
