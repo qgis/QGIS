@@ -9318,7 +9318,12 @@ void QgisApp::modifyAttributesOfSelectedFeatures()
 
   QgsAttributeDialog *dialog = new QgsAttributeDialog( vl, &f, false, this, true, context );
   dialog->setMode( QgsAttributeEditorContext::MultiEditMode );
+<<<<<<< HEAD
   dialog->exec();
+=======
+  dialog->setAttribute( Qt::WA_DeleteOnClose );
+  dialog->show();
+>>>>>>> 752d0ad369... Allow map interactions when multiedit window is open
 }
 
 void QgisApp::mergeSelectedFeatures()
