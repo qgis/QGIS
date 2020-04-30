@@ -522,7 +522,7 @@ class CORE_EXPORT QgsLabelFeature
     double mOverrunSmoothDistance = 0;
 
     QgsLabeling::LinePlacementFlags mArrangementFlags = nullptr;
-    QgsLabeling::PolygonPlacementFlags mPolygonPlacementFlags = nullptr;
+    QgsLabeling::PolygonPlacementFlags mPolygonPlacementFlags = QgsLabeling::PolygonPlacementFlag::AllowPlacementInsideOfPolygon;
 
   private:
 
