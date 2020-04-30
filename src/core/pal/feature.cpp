@@ -424,6 +424,106 @@ std::unique_ptr<LabelPosition> FeaturePart::createCandidatePointOnSurface( Point
   return qgis::make_unique< LabelPosition >( 0, px, py, getLabelWidth(), getLabelHeight(), 0.0, 0.0, this );
 }
 
+void createCandidateAtOrderedPositionOverPoint( double &labelX, double &labelY, LabelPosition::Quadrant &quadrant, double x, double y, double labelWidth, double labelHeight, QgsPalLayerSettings::PredefinedPointPosition position, double distanceToLabel, const QgsMargins &visualMargin, double symbolWidthOffset, double symbolHeightOffset )
+{
+  double alpha = 0.0;
+  double deltaX = 0;
+  double deltaY = 0;
+  switch ( position )
+  {
+    case QgsPalLayerSettings::TopLeft:
+      quadrant = LabelPosition::QuadrantAboveLeft;
+      alpha = 3 * M_PI_4;
+      deltaX = -labelWidth + visualMargin.right() - symbolWidthOffset;
+      deltaY = -visualMargin.bottom() + symbolHeightOffset;
+      break;
+
+    case QgsPalLayerSettings::TopSlightlyLeft:
+      quadrant = LabelPosition::QuadrantAboveRight; //right quadrant, so labels are left-aligned
+      alpha = M_PI_2;
+      deltaX = -labelWidth / 4.0 - visualMargin.left();
+      deltaY = -visualMargin.bottom() + symbolHeightOffset;
+      break;
+
+    case QgsPalLayerSettings::TopMiddle:
+      quadrant = LabelPosition::QuadrantAbove;
+      alpha = M_PI_2;
+      deltaX = -labelWidth / 2.0;
+      deltaY = -visualMargin.bottom() + symbolHeightOffset;
+      break;
+
+    case QgsPalLayerSettings::TopSlightlyRight:
+      quadrant = LabelPosition::QuadrantAboveLeft; //left quadrant, so labels are right-aligned
+      alpha = M_PI_2;
+      deltaX = -labelWidth * 3.0 / 4.0 + visualMargin.right();
+      deltaY = -visualMargin.bottom() + symbolHeightOffset;
+      break;
+
+    case QgsPalLayerSettings::TopRight:
+      quadrant = LabelPosition::QuadrantAboveRight;
+      alpha = M_PI_4;
+      deltaX = - visualMargin.left() + symbolWidthOffset;
+      deltaY = -visualMargin.bottom() + symbolHeightOffset;
+      break;
+
+    case QgsPalLayerSettings::MiddleLeft:
+      quadrant = LabelPosition::QuadrantLeft;
+      alpha = M_PI;
+      deltaX = -labelWidth + visualMargin.right() - symbolWidthOffset;
+      deltaY = -labelHeight / 2.0;// TODO - should this be adjusted by visual margin??
+      break;
+
+    case QgsPalLayerSettings::MiddleRight:
+      quadrant = LabelPosition::QuadrantRight;
+      alpha = 0.0;
+      deltaX = -visualMargin.left() + symbolWidthOffset;
+      deltaY = -labelHeight / 2.0;// TODO - should this be adjusted by visual margin??
+      break;
+
+    case QgsPalLayerSettings::BottomLeft:
+      quadrant = LabelPosition::QuadrantBelowLeft;
+      alpha = 5 * M_PI_4;
+      deltaX = -labelWidth + visualMargin.right() - symbolWidthOffset;
+      deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
+      break;
+
+    case QgsPalLayerSettings::BottomSlightlyLeft:
+      quadrant = LabelPosition::QuadrantBelowRight; //right quadrant, so labels are left-aligned
+      alpha = 3 * M_PI_2;
+      deltaX = -labelWidth / 4.0 - visualMargin.left();
+      deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
+      break;
+
+    case QgsPalLayerSettings::BottomMiddle:
+      quadrant = LabelPosition::QuadrantBelow;
+      alpha = 3 * M_PI_2;
+      deltaX = -labelWidth / 2.0;
+      deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
+      break;
+
+    case QgsPalLayerSettings::BottomSlightlyRight:
+      quadrant = LabelPosition::QuadrantBelowLeft; //left quadrant, so labels are right-aligned
+      alpha = 3 * M_PI_2;
+      deltaX = -labelWidth * 3.0 / 4.0 + visualMargin.right();
+      deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
+      break;
+
+    case QgsPalLayerSettings::BottomRight:
+      quadrant = LabelPosition::QuadrantBelowRight;
+      alpha = 7 * M_PI_4;
+      deltaX = -visualMargin.left() + symbolWidthOffset;
+      deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
+      break;
+  }
+
+  //have bearing, distance - calculate reference point
+  double referenceX = std::cos( alpha ) * distanceToLabel + x;
+  double referenceY = std::sin( alpha ) * distanceToLabel + y;
+
+  labelX = referenceX + deltaX;
+  labelY = referenceY + deltaY;
+}
+
 std::size_t FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, double y, std::vector< std::unique_ptr< LabelPosition > > &lPos, double angle )
 {
   const QVector< QgsPalLayerSettings::PredefinedPointPosition > positions = mLF->predefinedPositionOrder();
@@ -436,121 +536,31 @@ std::size_t FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, 
   double symbolHeightOffset = ( mLF->offsetType() == QgsPalLayerSettings::FromSymbolBounds ? mLF->symbolSize().height() / 2.0 : 0.0 );
 
   double cost = 0.0001;
-  int i = 0;
+  std::size_t i = lPos.size();
 
   const std::size_t maxNumberCandidates = mLF->layer()->maximumPointLabelCandidates();
+  std::size_t created = 0;
   for ( QgsPalLayerSettings::PredefinedPointPosition position : positions )
   {
-    double alpha = 0.0;
-    double deltaX = 0;
-    double deltaY = 0;
     LabelPosition::Quadrant quadrant = LabelPosition::QuadrantAboveLeft;
-    switch ( position )
-    {
-      case QgsPalLayerSettings::TopLeft:
-        quadrant = LabelPosition::QuadrantAboveLeft;
-        alpha = 3 * M_PI_4;
-        deltaX = -labelWidth + visualMargin.right() - symbolWidthOffset;
-        deltaY = -visualMargin.bottom() + symbolHeightOffset;
-        break;
 
-      case QgsPalLayerSettings::TopSlightlyLeft:
-        quadrant = LabelPosition::QuadrantAboveRight; //right quadrant, so labels are left-aligned
-        alpha = M_PI_2;
-        deltaX = -labelWidth / 4.0 - visualMargin.left();
-        deltaY = -visualMargin.bottom() + symbolHeightOffset;
-        break;
-
-      case QgsPalLayerSettings::TopMiddle:
-        quadrant = LabelPosition::QuadrantAbove;
-        alpha = M_PI_2;
-        deltaX = -labelWidth / 2.0;
-        deltaY = -visualMargin.bottom() + symbolHeightOffset;
-        break;
-
-      case QgsPalLayerSettings::TopSlightlyRight:
-        quadrant = LabelPosition::QuadrantAboveLeft; //left quadrant, so labels are right-aligned
-        alpha = M_PI_2;
-        deltaX = -labelWidth * 3.0 / 4.0 + visualMargin.right();
-        deltaY = -visualMargin.bottom() + symbolHeightOffset;
-        break;
-
-      case QgsPalLayerSettings::TopRight:
-        quadrant = LabelPosition::QuadrantAboveRight;
-        alpha = M_PI_4;
-        deltaX = - visualMargin.left() + symbolWidthOffset;
-        deltaY = -visualMargin.bottom() + symbolHeightOffset;
-        break;
-
-      case QgsPalLayerSettings::MiddleLeft:
-        quadrant = LabelPosition::QuadrantLeft;
-        alpha = M_PI;
-        deltaX = -labelWidth + visualMargin.right() - symbolWidthOffset;
-        deltaY = -labelHeight / 2.0;// TODO - should this be adjusted by visual margin??
-        break;
-
-      case QgsPalLayerSettings::MiddleRight:
-        quadrant = LabelPosition::QuadrantRight;
-        alpha = 0.0;
-        deltaX = -visualMargin.left() + symbolWidthOffset;
-        deltaY = -labelHeight / 2.0;// TODO - should this be adjusted by visual margin??
-        break;
-
-      case QgsPalLayerSettings::BottomLeft:
-        quadrant = LabelPosition::QuadrantBelowLeft;
-        alpha = 5 * M_PI_4;
-        deltaX = -labelWidth + visualMargin.right() - symbolWidthOffset;
-        deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
-        break;
-
-      case QgsPalLayerSettings::BottomSlightlyLeft:
-        quadrant = LabelPosition::QuadrantBelowRight; //right quadrant, so labels are left-aligned
-        alpha = 3 * M_PI_2;
-        deltaX = -labelWidth / 4.0 - visualMargin.left();
-        deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
-        break;
-
-      case QgsPalLayerSettings::BottomMiddle:
-        quadrant = LabelPosition::QuadrantBelow;
-        alpha = 3 * M_PI_2;
-        deltaX = -labelWidth / 2.0;
-        deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
-        break;
-
-      case QgsPalLayerSettings::BottomSlightlyRight:
-        quadrant = LabelPosition::QuadrantBelowLeft; //left quadrant, so labels are right-aligned
-        alpha = 3 * M_PI_2;
-        deltaX = -labelWidth * 3.0 / 4.0 + visualMargin.right();
-        deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
-        break;
-
-      case QgsPalLayerSettings::BottomRight:
-        quadrant = LabelPosition::QuadrantBelowRight;
-        alpha = 7 * M_PI_4;
-        deltaX = -visualMargin.left() + symbolWidthOffset;
-        deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
-        break;
-    }
-
-    //have bearing, distance - calculate reference point
-    double referenceX = std::cos( alpha ) * distanceToLabel + x;
-    double referenceY = std::sin( alpha ) * distanceToLabel + y;
-
-    double labelX = referenceX + deltaX;
-    double labelY = referenceY + deltaY;
+    double labelX = 0;
+    double labelY = 0;
+    createCandidateAtOrderedPositionOverPoint( labelX, labelY, quadrant, x, y, labelWidth, labelHeight, position, distanceToLabel, visualMargin, symbolWidthOffset, symbolHeightOffset );
 
     if ( ! mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), labelX, labelY, labelWidth, labelHeight, angle ) )
     {
       lPos.emplace_back( qgis::make_unique< LabelPosition >( i, labelX, labelY, labelWidth, labelHeight, angle, cost, this, false, quadrant ) );
+      created++;
       //TODO - tweak
       cost += 0.001;
-      if ( maxNumberCandidates > 0 && lPos.size() >= maxNumberCandidates )
+      if ( maxNumberCandidates > 0 && created >= maxNumberCandidates )
         break;
     }
     ++i;
   }
 
-  return lPos.size();
+  return created;
 }
 
 std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::vector< std::unique_ptr< LabelPosition > > &lPos, double angle )
