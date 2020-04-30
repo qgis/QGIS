@@ -121,10 +121,10 @@ void QgsExpressionPreviewWidget::refreshPreview()
 
 void QgsExpressionPreviewWidget::linkActivated( const QString & )
 {
-  QgsMessageViewer *mv = new QgsMessageViewer( this );
-  mv->setWindowTitle( tr( "More Info on Expression Error" ) );
-  mv->setMessageAsHtml( mToolTip );
-  mv->exec();
+  QgsMessageViewer mv( this );
+  mv.setWindowTitle( tr( "More Info on Expression Error" ) );
+  mv.setMessageAsHtml( mToolTip );
+  mv.exec();
 }
 
 void QgsExpressionPreviewWidget::setExpressionToolTip( const QString &toolTip )
@@ -163,4 +163,3 @@ bool QgsExpressionPreviewWidget::evalError() const
 {
   return mEvalError;
 }
-

@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# This scripts renames the name of a class as well as its header and cpp file
+# (assuming they are the lowercase version of the class name).
+# 
+# Usage: ./scripts/rename_cpp.sh src/core QgsMyClassName QgsMyNewClassName
+
 set -e
 
 # GNU prefix command for mac os support (gsed, gsplit)

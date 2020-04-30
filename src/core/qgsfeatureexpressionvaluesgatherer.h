@@ -31,7 +31,7 @@
  * \class QgsFieldExpressionValuesGatherer
  * Gathers features with substring matching on an expression.
  *
- * \since QGIS 3.0
+ * \since QGIS 3.14
  */
 class QgsFeatureExpressionValuesGatherer: public QThread
 {

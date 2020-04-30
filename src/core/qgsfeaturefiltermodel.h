@@ -30,14 +30,14 @@ class CORE_EXPORT QgsFeatureFilterModel : public QgsFeaturePickerModelBase
     Q_OBJECT
 
     /**
-     * A field of sourceLayer that is unique and should be used to identify features.
+     * A set of fields of sourceLayer that is unique and should be used to identify features.
      * Normally the primary key field.
      * Needs to match the identifierValue.
      */
     Q_PROPERTY( QStringList identifierFields READ identifierFields WRITE setIdentifierFields NOTIFY identifierFieldsChanged )
 
     /**
-     * The value that identifies the current feature.
+     * The values that identifies the current feature.
      */
     Q_PROPERTY( QVariantList extraIdentifierValues READ extraIdentifierValues WRITE setExtraIdentifierValues NOTIFY extraIdentifierValuesChanged )
 
