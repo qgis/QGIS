@@ -442,6 +442,7 @@ class CORE_EXPORT QgsPalLayerSettings
       LinePlacementOptions = 99, //!< Line placement flags
       OverrunDistance = 102, //!< Distance which labels can extend past either end of linear features
       LabelAllParts = 103, //!< Whether all parts of multi-part features should be labeled
+      PolygonLabelOutside = 109, //!< Whether labels outside a polygon feature are permitted, or should be forced
 
       // rendering
       ScaleVisibility = 23,
@@ -1181,7 +1182,7 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsLabelObstacleSettings mObstacleSettings;
     QgsLabelThinningSettings mThinningSettings;
 
-    QgsLabeling::PolygonPlacementFlags mPolygonPlacementFlags = nullptr;
+    QgsLabeling::PolygonPlacementFlags mPolygonPlacementFlags = QgsLabeling::PolygonPlacementFlag::AllowPlacementInsideOfPolygon;
 
     QgsExpression mGeometryGeneratorExpression;
 

@@ -2031,44 +2031,53 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
         const double labelHeight = getLabelHeight();
 
         const bool allowOutside = mLF->polygonPlacementFlags() & QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon;
+        const bool allowInside =  mLF->polygonPlacementFlags() & QgsLabeling::PolygonPlacementFlag::AllowPlacementInsideOfPolygon;
         //check width/height of bbox is sufficient for label
 
-        if ( allowOutside && ( std::fabs( xmax - xmin ) < labelWidth ||
-                               std::fabs( ymax - ymin ) < labelHeight ) )
+        if ( allowOutside && !allowInside )
         {
-          //no way label can fit in this polygon -- label outside
+          // only allowed to place outside of polygon
+          createCandidatesOutsidePolygon( lPos, pal );
+        }
+        else if ( allowOutside && ( std::fabs( xmax - xmin ) < labelWidth ||
+                                    std::fabs( ymax - ymin ) < labelHeight ) )
+        {
+          //no way label can fit in this polygon -- shortcut and only place label outside
           createCandidatesOutsidePolygon( lPos, pal );
         }
         else
         {
           std::size_t created = 0;
-          switch ( mLF->layer()->arrangement() )
+          if ( allowInside )
           {
-            case QgsPalLayerSettings::AroundPoint:
+            switch ( mLF->layer()->arrangement() )
             {
-              double cx, cy;
-              getCentroid( cx, cy, mLF->layer()->centroidInside() );
-              if ( qgsDoubleNear( mLF->distLabel(), 0.0 ) )
-                created += createCandidateCenteredOverPoint( cx, cy, lPos, angle );
-              created += createCandidatesAroundPoint( cx, cy, lPos, angle );
-              break;
+              case QgsPalLayerSettings::AroundPoint:
+              {
+                double cx, cy;
+                getCentroid( cx, cy, mLF->layer()->centroidInside() );
+                if ( qgsDoubleNear( mLF->distLabel(), 0.0 ) )
+                  created += createCandidateCenteredOverPoint( cx, cy, lPos, angle );
+                created += createCandidatesAroundPoint( cx, cy, lPos, angle );
+                break;
+              }
+              case QgsPalLayerSettings::OverPoint:
+              {
+                double cx, cy;
+                getCentroid( cx, cy, mLF->layer()->centroidInside() );
+                created += createCandidatesOverPoint( cx, cy, lPos, angle );
+                break;
+              }
+              case QgsPalLayerSettings::Line:
+                created += createCandidatesAlongLine( lPos, this, false, pal );
+                break;
+              case QgsPalLayerSettings::PerimeterCurved:
+                created += createCurvedCandidatesAlongLine( lPos, this, false, pal );
+                break;
+              default:
+                created += createCandidatesForPolygon( lPos, this, pal );
+                break;
             }
-            case QgsPalLayerSettings::OverPoint:
-            {
-              double cx, cy;
-              getCentroid( cx, cy, mLF->layer()->centroidInside() );
-              created += createCandidatesOverPoint( cx, cy, lPos, angle );
-              break;
-            }
-            case QgsPalLayerSettings::Line:
-              created += createCandidatesAlongLine( lPos, this, false, pal );
-              break;
-            case QgsPalLayerSettings::PerimeterCurved:
-              created += createCurvedCandidatesAlongLine( lPos, this, false, pal );
-              break;
-            default:
-              created += createCandidatesForPolygon( lPos, this, pal );
-              break;
           }
 
           if ( allowOutside )
@@ -2076,10 +2085,10 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
             // add fallback for labels outside the polygon
             createCandidatesOutsidePolygon( lPos, pal );
 
-            // increase cost for these
             if ( created > 0 )
             {
-
+              // TODO (maybe) increase cost for outside placements (i.e. positions at indices >= created)?
+              // From my initial testing this doesn't seem necessary
             }
           }
         }

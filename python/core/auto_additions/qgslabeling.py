@@ -7,6 +7,7 @@ QgsLabeling.LinePlacementFlag.MapOrientation.__doc__ = "Signifies that the Above
 QgsLabeling.LinePlacementFlag.__doc__ = 'Line placement flags, which control how candidates are generated for a linear feature.\n\n' + '* ``OnLine``: ' + QgsLabeling.LinePlacementFlag.OnLine.__doc__ + '\n' + '* ``AboveLine``: ' + QgsLabeling.LinePlacementFlag.AboveLine.__doc__ + '\n' + '* ``BelowLine``: ' + QgsLabeling.LinePlacementFlag.BelowLine.__doc__ + '\n' + '* ``MapOrientation``: ' + QgsLabeling.LinePlacementFlag.MapOrientation.__doc__
 # --
 # monkey patching scoped based enum
-QgsLabeling.PolygonPlacementFlag.AllowPlacementOutsideOfPolygon.__doc__ = "Labels can be placed outside of a polygon feature if it was not possible to place them inside."
-QgsLabeling.PolygonPlacementFlag.__doc__ = 'Polygon placement flags, which control how candidates are generated for a polygon feature.\n\n.. versionadded:: 3.14\n\n' + '* ``AllowPlacementOutsideOfPolygon``: ' + QgsLabeling.PolygonPlacementFlag.AllowPlacementOutsideOfPolygon.__doc__
+QgsLabeling.PolygonPlacementFlag.AllowPlacementOutsideOfPolygon.__doc__ = "Labels can be placed outside of a polygon feature"
+QgsLabeling.PolygonPlacementFlag.AllowPlacementInsideOfPolygon.__doc__ = "Labels can be placed inside a polygon feature"
+QgsLabeling.PolygonPlacementFlag.__doc__ = 'Polygon placement flags, which control how candidates are generated for a polygon feature.\n\n.. versionadded:: 3.14\n\n' + '* ``AllowPlacementOutsideOfPolygon``: ' + QgsLabeling.PolygonPlacementFlag.AllowPlacementOutsideOfPolygon.__doc__ + '\n' + '* ``AllowPlacementInsideOfPolygon``: ' + QgsLabeling.PolygonPlacementFlag.AllowPlacementInsideOfPolygon.__doc__
 # --

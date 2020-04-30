@@ -51,12 +51,14 @@ class CORE_EXPORT QgsLabeling
      */
     enum class PolygonPlacementFlag : int
     {
-      AllowPlacementOutsideOfPolygon = 1 << 0, //!< Labels can be placed outside of a polygon feature if it was not possible to place them inside.
+      AllowPlacementOutsideOfPolygon = 1 << 0, //!< Labels can be placed outside of a polygon feature
+      AllowPlacementInsideOfPolygon = 1 << 1, //!< Labels can be placed inside a polygon feature
     };
     Q_DECLARE_FLAGS( PolygonPlacementFlags, PolygonPlacementFlag )
 
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLabeling::LinePlacementFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLabeling::PolygonPlacementFlags )
 
 #endif // QGSLABELING_H
