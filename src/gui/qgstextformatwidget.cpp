@@ -261,6 +261,8 @@ void QgsTextFormatWidget::initWidget()
   // post updatePlacementWidgets() connections
   connect( chkLineAbove, &QAbstractButton::toggled, this, &QgsTextFormatWidget::updatePlacementWidgets );
   connect( chkLineBelow, &QAbstractButton::toggled, this, &QgsTextFormatWidget::updatePlacementWidgets );
+  connect( mCheckAllowLabelsOutsidePolygons, &QAbstractButton::toggled, this, &QgsTextFormatWidget::updatePlacementWidgets );
+  connect( mAllowOutsidePolygonsDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::updatePlacementWidgets );
 
   // setup point placement button group
   mPlacePointBtnGrp = new QButtonGroup( this );
@@ -1325,6 +1327,10 @@ void QgsTextFormatWidget::updatePlacementWidgets()
     showMaxCharAngleFrame = isCurved;
     // TODO: enable mMultiLinesFrame when supported for curved labels
     enableMultiLinesFrame = !isCurved;
+  }
+  else if ( curWdgt == pagePolygon && ( radPolygonOutside->isChecked() || mCheckAllowLabelsOutsidePolygons->isChecked() || mAllowOutsidePolygonsDDBtn->isActive() ) )
+  {
+    showDistanceFrame = true;
   }
 
   mPlacementLineFrame->setVisible( showLineFrame );
