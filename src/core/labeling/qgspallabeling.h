@@ -44,6 +44,7 @@
 #include "qgspropertycollection.h"
 #include "qgslabelobstaclesettings.h"
 #include "qgslabelthinningsettings.h"
+#include "qgslabeling.h"
 
 namespace pal SIP_SKIP
 {
@@ -646,6 +647,20 @@ class CORE_EXPORT QgsPalLayerSettings
 #endif
 
     /**
+     * Returns the polygon placement flags, which dictate how polygon labels can be placed.
+     *
+     * \see setPolygonPlacementFlags()
+     */
+    QgsLabeling::PolygonPlacementFlags polygonPlacementFlags() const { return mPolygonPlacementFlags; }
+
+    /**
+     * Sets the polygon placement \a flags, which dictate how polygon labels can be placed.
+     *
+     * \see polygonPlacementFlags()
+     */
+    void setPolygonPlacementFlags( QgsLabeling::PolygonPlacementFlags flags ) { mPolygonPlacementFlags = flags; }
+
+    /**
      * TRUE if feature centroid should be calculated from the whole feature, or
      * FALSE if only the visible part of the feature should be considered.
      */
@@ -1165,6 +1180,8 @@ class CORE_EXPORT QgsPalLayerSettings
 
     QgsLabelObstacleSettings mObstacleSettings;
     QgsLabelThinningSettings mThinningSettings;
+
+    QgsLabeling::PolygonPlacementFlags mPolygonPlacementFlags = nullptr;
 
     QgsExpression mGeometryGeneratorExpression;
 

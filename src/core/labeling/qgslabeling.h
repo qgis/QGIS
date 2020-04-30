@@ -44,6 +44,17 @@ class CORE_EXPORT QgsLabeling
     };
     Q_DECLARE_FLAGS( LinePlacementFlags, LinePlacementFlag )
 
+    /**
+     * Polygon placement flags, which control how candidates are generated for a polygon feature.
+     *
+     * \since QGIS 3.14
+     */
+    enum class PolygonPlacementFlag : int
+    {
+      AllowPlacementOutsideOfPolygon = 1 << 0, //!< Labels can be placed outside of a polygon feature if it was not possible to place them inside.
+    };
+    Q_DECLARE_FLAGS( PolygonPlacementFlags, PolygonPlacementFlag )
+
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLabeling::LinePlacementFlags )

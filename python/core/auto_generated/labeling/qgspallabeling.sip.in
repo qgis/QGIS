@@ -401,6 +401,20 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
 
     unsigned int placementFlags;
 
+    QgsLabeling::PolygonPlacementFlags polygonPlacementFlags() const;
+%Docstring
+Returns the polygon placement flags, which dictate how polygon labels can be placed.
+
+.. seealso:: :py:func:`setPolygonPlacementFlags`
+%End
+
+    void setPolygonPlacementFlags( QgsLabeling::PolygonPlacementFlags flags );
+%Docstring
+Sets the polygon placement ``flags``, which dictate how polygon labels can be placed.
+
+.. seealso:: :py:func:`polygonPlacementFlags`
+%End
+
     bool centroidWhole;
 
     bool centroidInside;

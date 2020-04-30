@@ -472,7 +472,8 @@ void QgsTextFormatWidget::initWidget()
           << mEnableMaskChkBx
           << mMaskJoinStyleComboBox
           << mMaskBufferSizeSpinBox
-          << mMaskOpacityWidget;
+          << mMaskOpacityWidget
+          << mCheckAllowLabelsOutsidePolygons;
 
   connectValueChanged( widgets, SLOT( updatePreview() ) );
 
@@ -1273,6 +1274,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   bool showDistanceFrame = false;
   bool showRotationFrame = false;
   bool showMaxCharAngleFrame = false;
+  bool showPolygonPlacementOptions = ( curWdgt == pagePolygon && !radPolygonPerimeter->isChecked() && !radPolygonPerimeterCurved->isChecked() );
 
   bool enableMultiLinesFrame = true;
 
@@ -1323,6 +1325,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   }
 
   mPlacementLineFrame->setVisible( showLineFrame );
+  mPlacementPolygonFrame->setVisible( showPolygonPlacementOptions );
   mPlacementCentroidFrame->setVisible( showCentroidFrame );
   mPlacementQuadrantFrame->setVisible( showQuadrantFrame );
   mPlacementFixedQuadrantFrame->setVisible( showFixedQuadrantFrame );
