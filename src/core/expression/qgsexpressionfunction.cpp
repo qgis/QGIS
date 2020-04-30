@@ -3396,18 +3396,42 @@ static QVariant fcnCloseLine( const QVariantList &values, const QgsExpressionCon
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
 
-  if ( geom.isNull() || geom.isMultipart() )
+  if ( geom.isNull() )
     return QVariant();
 
-  const QgsLineString *line = qgsgeometry_cast< const QgsLineString * >( geom.constGet() );
+  QVariant result;
+  if ( !geom.isMultipart() )
+  {
+    const QgsLineString *line = qgsgeometry_cast<const QgsLineString * >( geom.constGet() );
 
-  if ( !line )
-    return QVariant();
+    if ( !line )
+      return QVariant();
 
-  std::unique_ptr< QgsLineString > closedLine( line->clone() );
-  closed_line->close();
+    std::unique_ptr< QgsLineString > closedLine( line->clone() );
+    closedLine->close();
 
-  return QVariant::fromValue( QgsGeometry( closed_line ) );
+    result = QVariant::fromValue( QgsGeometry( std::move( closedLine ) ) );
+  }
+  else
+  {
+    const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection *>( geom.constGet() );
+
+    std::unique_ptr< QgsGeometryCollection > closed( collection->createEmptyWithSameType() );
+
+    for ( int i = 0; i < collection->numGeometries(); ++i )
+    {
+      if ( const QgsLineString *line = qgsgeometry_cast<const QgsLineString * >( collection->geometryN( i ) ) )
+      {
+        std::unique_ptr< QgsLineString > closedLine( line->clone() );
+        closedLine->close();
+
+        closed->addGeometry( closedLine.release() );
+      }
+    }
+    result = QVariant::fromValue( QgsGeometry( std::move( closed ) ) );
+  }
+
+  return result;
 }
 
 static QVariant fcnIsEmpty( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )

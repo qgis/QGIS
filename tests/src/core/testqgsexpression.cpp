@@ -1009,7 +1009,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "close_line polygon" ) << "close_line(geom_from_wkt('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'))" << false << QVariant();
       QTest::newRow( "close_line not closed" ) << "geom_to_wkt(close_line(geom_from_wkt('LINESTRING(0 0, 1 0, 1 1)')))" << false << QVariant( "LineString (0 0, 1 0, 1 1, 0 0)" );
       QTest::newRow( "close_line closed" ) << "geom_to_wkt(close_line(geom_from_wkt('LINESTRING(0 0, 1 0, 1 1, 0 0)')))" << false << QVariant( "LineString (0 0, 1 0, 1 1, 0 0)" );
-      QTest::newRow( "close_line multiline" ) << "close_line(geom_from_wkt('MultiLineString ((0 0, 0 1, 1 1)(2 2, 3 3))'))" << false << QVariant();
+      QTest::newRow( "close_line multiline" ) << "geom_to_wkt(close_line(geom_from_wkt('MULTILINESTRING ((0 0, 1 1, 1 0),(2 2, 3 3, 3 2))')))" << false << QVariant( "MultiLineString ((0 0, 1 1, 1 0, 0 0),(2 2, 3 3, 3 2, 2 2))" );
       QTest::newRow( "is_empty not geom" ) << "is_empty('g')" << true << QVariant();
       QTest::newRow( "is_empty null" ) << "is_empty(NULL)" << false << QVariant();
       QTest::newRow( "is_empty point" ) << "is_empty(geom_from_wkt('POINT(1 2)'))" << false << QVariant( false );
