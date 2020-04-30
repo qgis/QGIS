@@ -2505,9 +2505,19 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
 
   // when using certain placement modes, we force a tiny minimum distance. This ensures that
   // candidates are created just offset from a border and avoids candidates being incorrectly flagged as colliding with neighbours
-  if ( placement == QgsPalLayerSettings::Line || placement == QgsPalLayerSettings::Curved || placement == QgsPalLayerSettings::PerimeterCurved )
+  if ( placement == QgsPalLayerSettings::Line
+       || placement == QgsPalLayerSettings::Curved
+       || placement == QgsPalLayerSettings::PerimeterCurved )
   {
     distance = ( distance < 0 ? -1 : 1 ) * std::max( std::fabs( distance ), 1.0 );
+  }
+  else if ( placement == QgsPalLayerSettings::OutsidePolygons
+            || ( ( placement == QgsPalLayerSettings::Horizontal
+                   || placement == QgsPalLayerSettings::AroundPoint
+                   || placement == QgsPalLayerSettings::OverPoint ||
+                   placement == QgsPalLayerSettings::Free ) && polygonPlacementFlags() & QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon ) )
+  {
+    distance = std::max( distance, 1.0 );
   }
 
   if ( !qgsDoubleNear( distance, 0.0 ) )
