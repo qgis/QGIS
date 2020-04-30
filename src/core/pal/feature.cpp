@@ -1854,8 +1854,13 @@ std::size_t FeaturePart::createCandidatesOutsidePolygon( std::vector<std::unique
   getCentroid( cx, cy, false );
 
   GEOSContextHandle_t ctxt = QgsGeos::getGEOSHandler();
-  geos::unique_ptr buffer( GEOSBuffer_r( ctxt, geos(), mLF->distLabel(), 1 ) );
+
+  // be a bit sneaky and only buffer out 50% here, and then do the remaining 50% when we make the label candidate itself.
+  // this avoids candidates being created immediately over the buffered ring and always intersecting with it...
+  geos::unique_ptr buffer( GEOSBuffer_r( ctxt, geos(), distanceToLabel * 0.5, 1 ) );
   std::unique_ptr< QgsAbstractGeometry> gg( QgsGeos::fromGeos( buffer.get() ) );
+
+  geos::prepared_unique_ptr preparedBuffer( GEOSPrepare_r( ctxt, buffer.get() ) );
 
   const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon * >( gg.get() );
   if ( !poly )
@@ -1891,12 +1896,14 @@ std::size_t FeaturePart::createCandidatesOutsidePolygon( std::vector<std::unique
     LabelPosition::Quadrant quadrant = LabelPosition::QuadrantAboveLeft;
 
     // Satisfy R2: Label should be placed entirely outside at some distance from the area feature.
-    createCandidateAtOrderedPositionOverPoint( labelX, labelY, quadrant, x, y, labelWidth, labelHeight, position, distanceToLabel, visualMargin, 0, 0 );
+    createCandidateAtOrderedPositionOverPoint( labelX, labelY, quadrant, x, y, labelWidth, labelHeight, position, distanceToLabel * 0.5, visualMargin, 0, 0 );
 
     std::unique_ptr< LabelPosition > candidate = qgis::make_unique< LabelPosition >( i, labelX, labelY, labelWidth, labelHeight, labelAngle, 0, this, false, quadrant );
-    if ( candidate->intersects( preparedGeom() ) )
+    if ( candidate->intersects( preparedBuffer.get() ) )
     {
       // satisfy R3. Name should not cross the boundary of its area feature.
+
+      // actually, we use the buffered geometry here, because a label shouldn't be closer to the polygon then the minimum distance value
       return;
     }
 
