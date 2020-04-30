@@ -393,6 +393,7 @@ SET(QGIS_GUI_SRCS
   qgsexpressionbuilderwidget.cpp
   qgsexpressionhighlighter.cpp
   qgsexpressionlineedit.cpp
+  qgsexpressionpreviewwidget.cpp
   qgsexpressionselectiondialog.cpp
   qgsexpressionstoredialog.cpp
   qgsexpressiontreeview.cpp
@@ -402,6 +403,7 @@ SET(QGIS_GUI_SRCS
   qgsfeatureselectiondlg.cpp
   qgsfieldcombobox.cpp
   qgsfieldexpressionwidget.cpp
+  qgsfeaturepickerwidget.cpp
   qgsfieldmappingwidget.cpp
   qgsfieldmappingmodel.cpp
   qgsfeaturelistcombobox.cpp
@@ -620,11 +622,13 @@ SET(QGIS_GUI_HDRS
   qgsexpressionbuilderwidget.h
   qgsexpressionhighlighter.h
   qgsexpressionlineedit.h
+  qgsexpressionpreviewwidget.h
   qgsexpressionselectiondialog.h
   qgsexpressiontreeview.h
   qgsextentgroupbox.h
   qgsextentwidget.h
   qgsexternalresourcewidget.h
+  qgsfeaturepickerwidget.h
   qgsfeaturelistcombobox.h
   qgsfeatureselectiondlg.h
   qgsfieldcombobox.h

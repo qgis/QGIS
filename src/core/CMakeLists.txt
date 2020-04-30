@@ -257,6 +257,8 @@ SET(QGIS_CORE_SRCS
   qgsexpressioncontext.cpp
   qgsexpressionfieldbuffer.cpp
   qgsfeature.cpp
+  qgsfeaturepickermodel.cpp
+  qgsfeaturepickermodelbase.cpp
   qgsfeatureiterator.cpp
   qgsfeaturerequest.cpp
   qgsfeaturesink.cpp
@@ -796,6 +798,9 @@ SET(QGIS_CORE_HDRS
   qgsexpressioncontextscopegenerator.h
   qgsexpressionfieldbuffer.h
   qgsfeature.h
+  qgsfeaturepickermodel.h
+  qgsfeaturepickermodelbase.h
+  qgsfeatureexpressionvaluesgatherer.h
   qgsfeaturefiltermodel.h
   qgsfeaturefilterprovider.h
   qgsfeatureid.h
@@ -1391,7 +1396,6 @@ SET(QGIS_CORE_PRIVATE_HDRS
   qgscoordinatetransformcontext_p.h
   qgscoordinatetransform_p.h
   qgseditformconfig_p.h
-  qgsfeaturefiltermodel_p.h
   qgsfeature_p.h
   qgsfield_p.h
   qgsfields_p.h

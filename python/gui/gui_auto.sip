@@ -74,11 +74,13 @@
 %Include auto_generated/qgsexpressionbuilderwidget.sip
 %Include auto_generated/qgsexpressionhighlighter.sip
 %Include auto_generated/qgsexpressionlineedit.sip
+%Include auto_generated/qgsexpressionpreviewwidget.sip
 %Include auto_generated/qgsexpressionselectiondialog.sip
 %Include auto_generated/qgsexpressiontreeview.sip
 %Include auto_generated/qgsextentgroupbox.sip
 %Include auto_generated/qgsextentwidget.sip
 %Include auto_generated/qgsexternalresourcewidget.sip
+%Include auto_generated/qgsfeaturepickerwidget.sip
 %Include auto_generated/qgsfeaturelistcombobox.sip
 %Include auto_generated/qgsfeatureselectiondlg.sip
 %Include auto_generated/qgsfieldcombobox.sip
