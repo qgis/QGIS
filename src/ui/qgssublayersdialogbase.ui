@@ -94,6 +94,9 @@
      <property name="toolTip">
       <string>Current file source</string>
      </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
      <property name="textInteractionFlags">
       <set>Qt::TextSelectableByMouse</set>
      </property>
