@@ -78,7 +78,8 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   setupUi( this );
 
   connect( btnRun, &QToolButton::pressed, this, &QgsExpressionBuilderWidget::btnRun_pressed );
-  connect( btnNewFile, &QToolButton::pressed, this, &QgsExpressionBuilderWidget::btnNewFile_pressed );
+  connect( btnNewFile, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::btnNewFile_pressed );
+  connect( btnRemoveFile, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::btnRemoveFile_pressed );
   connect( cmbFileNames, &QListWidget::currentItemChanged, this, &QgsExpressionBuilderWidget::cmbFileNames_currentItemChanged );
   connect( txtExpressionString, &QgsCodeEditorExpression::textChanged, this, &QgsExpressionBuilderWidget::txtExpressionString_textChanged );
   connect( txtPython, &QgsCodeEditorPython::textChanged, this, &QgsExpressionBuilderWidget::txtPython_textChanged );
@@ -150,7 +151,6 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
     mShowHelpButton->setEnabled( functionsplit->sizes().at( 1 ) == 0 );
   } );
 
-
   QgsSettings settings;
   splitter->restoreState( settings.value( QStringLiteral( "Windows/QgsExpressionBuilderWidget/splitter" ) ).toByteArray() );
   editorSplit->restoreState( settings.value( QStringLiteral( "Windows/QgsExpressionBuilderWidget/editorsplitter" ) ).toByteArray() );
@@ -163,6 +163,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   {
     QgsPythonRunner::eval( QStringLiteral( "qgis.user.expressionspath" ), mFunctionsPath );
     updateFunctionFileList( mFunctionsPath );
+    btnRemoveFile->setEnabled( cmbFileNames->count() > 0 );
   }
   else
   {
@@ -419,6 +420,39 @@ void QgsExpressionBuilderWidget::btnNewFile_pressed()
   if ( ok && !text.isEmpty() )
   {
     newFunctionFile( text );
+  }
+}
+
+void QgsExpressionBuilderWidget::btnRemoveFile_pressed()
+{
+  if ( QMessageBox::question( this, tr( "Remove File" ),
+                              tr( "Are you sure you want to remove current functions file?" ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::No )
+    return;
+
+  int currentRow = cmbFileNames->currentRow();
+  QString fileName = cmbFileNames->currentItem()->text();
+  if ( QFile::remove( mFunctionsPath + QDir::separator() + fileName.append( ".py" ) ) )
+  {
+    {
+      QListWidgetItem *itemToRemove = whileBlocking( cmbFileNames )->takeItem( currentRow );
+      delete itemToRemove;
+    }
+
+    if ( cmbFileNames->count() > 0 )
+    {
+      cmbFileNames->setCurrentRow( currentRow > 0 ? currentRow - 1 : 0 );
+      loadCodeFromFile( mFunctionsPath + QDir::separator() + cmbFileNames->currentItem()->text() );
+    }
+    else
+    {
+      btnRemoveFile->setEnabled( false );
+      txtPython->clear();
+    }
+  }
+  else
+  {
+    QMessageBox::warning( this, tr( "Remove file" ), tr( "Failed to remove function file '%1'." ).arg( fileName ) );
   }
 }
 
