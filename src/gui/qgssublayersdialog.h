@@ -147,7 +147,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
 
   private slots:
     void layersTable_selectionChanged( const QItemSelection &, const QItemSelection & );
-    void btnDeselectAll_pressed();
+    void mBtnDeselectAll_pressed();
 
   protected:
 
