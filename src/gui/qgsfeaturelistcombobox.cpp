@@ -242,7 +242,7 @@ void QgsFeatureListComboBox::setAllowNull( bool allowNull )
 QVariant QgsFeatureListComboBox::identifierValue() const
 {
   Q_NOWARN_DEPRECATED_PUSH
-  return mModel->extraIdentifierValues().at( 0 );
+  return mModel->extraIdentifierValues().value( 0 );
   Q_NOWARN_DEPRECATED_POP
 }
 
