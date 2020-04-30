@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>880</width>
+    <width>612</width>
     <height>589</height>
    </rect>
   </property>
@@ -172,7 +172,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>858</width>
+               <width>590</width>
                <height>300</height>
               </rect>
              </property>
@@ -723,8 +723,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>317</width>
-                       <height>260</height>
+                       <width>323</width>
+                       <height>292</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -1303,8 +1303,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>348</width>
-                       <height>624</height>
+                       <width>373</width>
+                       <height>708</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_42">
@@ -2187,8 +2187,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>284</width>
-                       <height>273</height>
+                       <width>299</width>
+                       <height>308</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2533,8 +2533,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>830</width>
-                       <height>376</height>
+                       <width>294</width>
+                       <height>291</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_121">
@@ -2811,8 +2811,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>816</width>
-                       <height>696</height>
+                       <width>440</width>
+                       <height>786</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -3572,8 +3572,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>816</width>
-                       <height>406</height>
+                       <width>324</width>
+                       <height>457</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -4000,8 +4000,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>830</width>
-                       <height>376</height>
+                       <width>833</width>
+                       <height>368</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_46">
@@ -4150,8 +4150,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>431</width>
-                       <height>1108</height>
+                       <width>562</width>
+                       <height>1266</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -4321,59 +4321,17 @@ font-style: italic;</string>
                            </widget>
                            <widget class="QWidget" name="pagePolygon">
                             <layout class="QGridLayout" name="gridLayout_18">
-                             <item row="0" column="0">
-                              <widget class="QRadioButton" name="radOverCentroid">
-                               <property name="sizePolicy">
-                                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                                 <horstretch>0</horstretch>
-                                 <verstretch>0</verstretch>
-                                </sizepolicy>
-                               </property>
-                               <property name="text">
-                                <string>Offset from centroid</string>
-                               </property>
-                               <property name="checked">
-                                <bool>true</bool>
-                               </property>
-                              </widget>
-                             </item>
-                             <item row="0" column="1">
-                              <widget class="QRadioButton" name="radPolygonHorizontal">
-                               <property name="text">
-                                <string>Horizontal</string>
-                               </property>
-                              </widget>
-                             </item>
-                             <item row="1" column="0">
-                              <widget class="QRadioButton" name="radAroundCentroid">
-                               <property name="sizePolicy">
-                                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                                 <horstretch>0</horstretch>
-                                 <verstretch>0</verstretch>
-                                </sizepolicy>
-                               </property>
-                               <property name="text">
-                                <string>Around centroid</string>
-                               </property>
-                              </widget>
-                             </item>
                              <item row="1" column="1">
                               <widget class="QRadioButton" name="radPolygonFree">
                                <property name="text">
-                                <string>Free</string>
+                                <string>Free (angled)</string>
                                </property>
                               </widget>
                              </item>
-                             <item row="2" column="0">
-                              <widget class="QRadioButton" name="radPolygonPerimeter">
-                               <property name="sizePolicy">
-                                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                                 <horstretch>0</horstretch>
-                                 <verstretch>0</verstretch>
-                                </sizepolicy>
-                               </property>
+                             <item row="0" column="2">
+                              <widget class="QRadioButton" name="radPolygonOutside">
                                <property name="text">
-                                <string>Using perimeter</string>
+                                <string>Outside polygons</string>
                                </property>
                               </widget>
                              </item>
@@ -4390,7 +4348,56 @@ font-style: italic;</string>
                                </property>
                               </widget>
                              </item>
-                             <item row="1" column="2">
+                             <item row="0" column="0">
+                              <widget class="QRadioButton" name="radOverCentroid">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="text">
+                                <string>Offset from centroid</string>
+                               </property>
+                               <property name="checked">
+                                <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                             <item row="1" column="0">
+                              <widget class="QRadioButton" name="radAroundCentroid">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="text">
+                                <string>Around centroid</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item row="2" column="0">
+                              <widget class="QRadioButton" name="radPolygonPerimeter">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="text">
+                                <string>Using perimeter</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item row="0" column="1">
+                              <widget class="QRadioButton" name="radPolygonHorizontal">
+                               <property name="text">
+                                <string>Horizontal</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item row="1" column="3">
                               <spacer name="horizontalSpacer_26">
                                <property name="orientation">
                                 <enum>Qt::Horizontal</enum>
@@ -6039,7 +6046,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>819</width>
+                       <width>430</width>
                        <height>708</height>
                       </rect>
                      </property>

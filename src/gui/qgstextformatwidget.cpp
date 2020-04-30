@@ -286,6 +286,7 @@ void QgsTextFormatWidget::initWidget()
   mPlacePolygonBtnGrp->addButton( radPolygonFree, static_cast<int>( QgsPalLayerSettings::Free ) );
   mPlacePolygonBtnGrp->addButton( radPolygonPerimeter, static_cast<int>( QgsPalLayerSettings::Line ) );
   mPlacePolygonBtnGrp->addButton( radPolygonPerimeterCurved, static_cast<int>( QgsPalLayerSettings::PerimeterCurved ) );
+  mPlacePolygonBtnGrp->addButton( radPolygonOutside, static_cast<int>( QgsPalLayerSettings::OutsidePolygons ) );
   mPlacePolygonBtnGrp->setExclusive( true );
   connect( mPlacePolygonBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePlacementWidgets );
 
@@ -459,6 +460,7 @@ void QgsTextFormatWidget::initWidget()
           << radPolygonHorizontal
           << radPolygonPerimeter
           << radPolygonPerimeterCurved
+          << radPolygonOutside
           << radPredefinedOrder
           << mFieldExpressionWidget
           << mCheckBoxSubstituteText
@@ -1275,7 +1277,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   bool showDistanceFrame = false;
   bool showRotationFrame = false;
   bool showMaxCharAngleFrame = false;
-  bool showPolygonPlacementOptions = ( curWdgt == pagePolygon && !radPolygonPerimeter->isChecked() && !radPolygonPerimeterCurved->isChecked() );
+  bool showPolygonPlacementOptions = ( curWdgt == pagePolygon && !radPolygonPerimeter->isChecked() && !radPolygonPerimeterCurved->isChecked() && !radPolygonOutside->isChecked() );
 
   bool enableMultiLinesFrame = true;
 

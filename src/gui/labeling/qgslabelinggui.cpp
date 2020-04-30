@@ -327,6 +327,9 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
     case QgsPalLayerSettings::PerimeterCurved:
       radPolygonPerimeterCurved->setChecked( true );
       break;
+    case QgsPalLayerSettings::OutsidePolygons:
+      radPolygonOutside->setChecked( true );
+      break;
   }
 
   // Label repeat distance
@@ -529,6 +532,10 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   else if ( radPolygonFree->isChecked() )
   {
     lyr.placement = QgsPalLayerSettings::Free;
+  }
+  else if ( radPolygonOutside->isChecked() )
+  {
+    lyr.placement = QgsPalLayerSettings::OutsidePolygons;
   }
   else
   {
