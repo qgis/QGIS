@@ -1875,7 +1875,7 @@ std::size_t FeaturePart::createCandidatesOutsidePolygon( std::vector<std::unique
   const double ringLength = ring->length();
   const double circleArea = std::pow( ringLength, 2 ) / ( 4 * M_PI );
   const std::size_t candidatesForArea = static_cast< std::size_t>( std::ceil( mLF->layer()->mPal->maximumPolygonCandidatesPerMapUnitSquared() * circleArea ) );
-  const std::size_t targetPolygonCandidates = std::max( static_cast< std::size_t >( 4 ), maxPolygonCandidates > 0 ? std::min( maxPolygonCandidates,  candidatesForArea ) : candidatesForArea );
+  const std::size_t targetPolygonCandidates = std::max( static_cast< std::size_t >( 16 ), maxPolygonCandidates > 0 ? std::min( maxPolygonCandidates,  candidatesForArea ) : candidatesForArea );
 
   // assume each position generates one candidate
   const double delta = ringLength / targetPolygonCandidates;
