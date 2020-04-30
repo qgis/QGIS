@@ -67,7 +67,11 @@ void QgsFeatureFilterModel::requestToReloadCurrentFeature( QgsFeatureRequest &re
 
 QSet<QString> QgsFeatureFilterModel::requestedAttributes() const
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+  return mIdentifierFields.toSet();
+#else
   return QSet<QString>( mIdentifierFields.begin(), mIdentifierFields.end() );
+#endif
 }
 
 QVariant QgsFeatureFilterModel::entryIdentifier( const QgsFeatureExpressionValuesGatherer::Entry &entry ) const
