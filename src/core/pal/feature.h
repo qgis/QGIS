@@ -275,15 +275,6 @@ namespace pal
        */
       bool hasSameLabelFeatureAs( FeaturePart *part ) const;
 
-#if 0
-
-      /**
-       * \brief Print feature information
-       * Print feature unique id, geometry type, points, and holes on screen
-       */
-      void print();
-#endif
-
       /**
        * Returns the width of the label, optionally taking an \a angle into account.
        * \returns the width of the label
