@@ -110,7 +110,10 @@ bool QgsFeatureFilterModel::identifierIsNull( const QVariant &identifier ) const
 
 QVariant QgsFeatureFilterModel::nullIentifier() const
 {
-  return QVariantList();
+  QVariantList nullValues;
+  for ( int i = 0; i < mIdentifierFields.count(); i++ )
+    nullValues << QVariant( QVariant::Int );
+  return nullValues;
 }
 
 QStringList QgsFeatureFilterModel::identifierFields() const
@@ -140,10 +143,7 @@ QVariantList QgsFeatureFilterModel::extraIdentifierValues() const
   QVariantList values = mExtraIdentifierValue.toList();
   if ( values.count() != mIdentifierFields.count() )
   {
-    QVariantList nullValues;
-    for ( int i = 0; i < mIdentifierFields.count(); i++ )
-      nullValues << QVariant( QVariant::Int );
-    return nullValues;
+    return nullIentifier().toList();
   }
   return values;
 }
