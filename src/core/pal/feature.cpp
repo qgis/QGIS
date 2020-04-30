@@ -2026,34 +2026,64 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
         break;
 
       case GEOS_POLYGON:
-        switch ( mLF->layer()->arrangement() )
+      {
+        const double labelWidth = getLabelWidth();
+        const double labelHeight = getLabelHeight();
+
+        const bool allowOutside = mLF->polygonPlacementFlags() & QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon;
+        //check width/height of bbox is sufficient for label
+
+        if ( allowOutside && ( std::fabs( xmax - xmin ) < labelWidth ||
+                               std::fabs( ymax - ymin ) < labelHeight ) )
         {
-          case QgsPalLayerSettings::AroundPoint:
-          {
-            double cx, cy;
-            getCentroid( cx, cy, mLF->layer()->centroidInside() );
-            if ( qgsDoubleNear( mLF->distLabel(), 0.0 ) )
-              createCandidateCenteredOverPoint( cx, cy, lPos, angle );
-            createCandidatesAroundPoint( cx, cy, lPos, angle );
-            break;
-          }
-          case QgsPalLayerSettings::OverPoint:
-          {
-            double cx, cy;
-            getCentroid( cx, cy, mLF->layer()->centroidInside() );
-            createCandidatesOverPoint( cx, cy, lPos, angle );
-            break;
-          }
-          case QgsPalLayerSettings::Line:
-            createCandidatesAlongLine( lPos, this, false, pal );
-            break;
-          case QgsPalLayerSettings::PerimeterCurved:
-            createCurvedCandidatesAlongLine( lPos, this, false, pal );
-            break;
-          default:
-            createCandidatesForPolygon( lPos, this, pal );
-            break;
+          //no way label can fit in this polygon -- label outside
+          createCandidatesOutsidePolygon( lPos, pal );
         }
+        else
+        {
+          std::size_t created = 0;
+          switch ( mLF->layer()->arrangement() )
+          {
+            case QgsPalLayerSettings::AroundPoint:
+            {
+              double cx, cy;
+              getCentroid( cx, cy, mLF->layer()->centroidInside() );
+              if ( qgsDoubleNear( mLF->distLabel(), 0.0 ) )
+                created += createCandidateCenteredOverPoint( cx, cy, lPos, angle );
+              created += createCandidatesAroundPoint( cx, cy, lPos, angle );
+              break;
+            }
+            case QgsPalLayerSettings::OverPoint:
+            {
+              double cx, cy;
+              getCentroid( cx, cy, mLF->layer()->centroidInside() );
+              created += createCandidatesOverPoint( cx, cy, lPos, angle );
+              break;
+            }
+            case QgsPalLayerSettings::Line:
+              created += createCandidatesAlongLine( lPos, this, false, pal );
+              break;
+            case QgsPalLayerSettings::PerimeterCurved:
+              created += createCurvedCandidatesAlongLine( lPos, this, false, pal );
+              break;
+            default:
+              created += createCandidatesForPolygon( lPos, this, pal );
+              break;
+          }
+
+          if ( allowOutside )
+          {
+            // add fallback for labels outside the polygon
+            createCandidatesOutsidePolygon( lPos, pal );
+
+            // increase cost for these
+            if ( created > 0 )
+            {
+
+            }
+          }
+        }
+      }
     }
   }
 

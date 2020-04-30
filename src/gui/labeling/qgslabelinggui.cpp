@@ -294,6 +294,8 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   chkLineOn->setChecked( mSettings.placementFlags & QgsPalLayerSettings::OnLine );
   chkLineOrientationDependent->setChecked( !( mSettings.placementFlags & QgsPalLayerSettings::MapOrientation ) );
 
+  mCheckAllowLabelsOutsidePolygons->setChecked( mSettings.polygonPlacementFlags() & QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon );
+
   switch ( mSettings.placement )
   {
     case QgsPalLayerSettings::AroundPoint:
@@ -461,6 +463,11 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
   lyr.dist = 0;
   lyr.placementFlags = 0;
+
+  QgsLabeling::PolygonPlacementFlags polygonPlacementFlags = nullptr;
+  if ( mCheckAllowLabelsOutsidePolygons->isChecked() )
+    polygonPlacementFlags |= QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon;
+  lyr.setPolygonPlacementFlags( polygonPlacementFlags );
 
   QWidget *curPlacementWdgt = stackedPlacement->currentWidget();
   lyr.centroidWhole = mCentroidRadioWhole->isChecked();

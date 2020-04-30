@@ -4511,6 +4511,70 @@ font-style: italic;</string>
                        </widget>
                       </item>
                       <item>
+                       <widget class="QFrame" name="mPlacementPolygonFrame">
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>0</height>
+                         </size>
+                        </property>
+                        <property name="toolTip">
+                         <string>Allowed label placement for lines. At least one position must be selected.</string>
+                        </property>
+                        <property name="frameShape">
+                         <enum>QFrame::NoFrame</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Raised</enum>
+                        </property>
+                        <layout class="QGridLayout" name="gridLayout_48">
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
+                          <number>0</number>
+                         </property>
+                         <item row="0" column="0">
+                          <widget class="QLabel" name="label_14">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="text">
+                            <string>Allowed positions</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="0" column="1">
+                          <layout class="QHBoxLayout" name="horizontalLayout_11">
+                           <item>
+                            <widget class="QCheckBox" name="mCheckAllowLabelsOutsidePolygons">
+                             <property name="text">
+                              <string>Allow placing labels outside of polygons</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QgsPropertyOverrideButton" name="mAllowOutsidePolygonsDDBtn">
+                             <property name="text">
+                              <string>…</string>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                      <item>
                        <widget class="QFrame" name="mPlacementCentroidFrame">
                         <property name="frameShape">
                          <enum>QFrame::NoFrame</enum>
@@ -4531,23 +4595,7 @@ font-style: italic;</string>
                          <property name="bottomMargin">
                           <number>0</number>
                          </property>
-                         <item row="0" column="0">
-                          <widget class="QLabel" name="mCentroidLabel">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>Centroid</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="0" column="1">
+                         <item row="1" column="1">
                           <widget class="QRadioButton" name="mCentroidRadioVisible">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -4563,7 +4611,14 @@ font-style: italic;</string>
                            </property>
                           </widget>
                          </item>
-                         <item row="0" column="2">
+                         <item row="1" column="3">
+                          <widget class="QgsPropertyOverrideButton" name="mCentroidDDBtn">
+                           <property name="text">
+                            <string>…</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="2">
                           <widget class="QRadioButton" name="mCentroidRadioWhole">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -4576,17 +4631,26 @@ font-style: italic;</string>
                            </property>
                           </widget>
                          </item>
-                         <item row="0" column="3">
-                          <widget class="QgsPropertyOverrideButton" name="mCentroidDDBtn">
-                           <property name="text">
-                            <string>…</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="1" colspan="3">
+                         <item row="2" column="1" colspan="3">
                           <widget class="QCheckBox" name="mCentroidInsideCheckBox">
                            <property name="text">
                             <string>Force point inside polygon</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="0">
+                          <widget class="QLabel" name="mCentroidLabel">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="text">
+                            <string>Centroid</string>
+                           </property>
+                           <property name="alignment">
+                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                            </property>
                           </widget>
                          </item>
@@ -5975,8 +6039,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>383</width>
-                       <height>624</height>
+                       <width>819</width>
+                       <height>708</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">
