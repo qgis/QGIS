@@ -127,6 +127,11 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
 
   setDataSource( uri, baseName, providerKey, providerOptions, options.loadDefaultStyle );
 
+  if ( mValid )
+  {
+    mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
+  }
+
 } // QgsRasterLayer ctor
 
 QgsRasterLayer::~QgsRasterLayer()
@@ -871,8 +876,6 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
 
   if ( mValid )
   {
-    mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
-
     // load default style
     bool defaultLoadedFlag = false;
     bool restoredStyle = false;

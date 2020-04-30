@@ -1053,7 +1053,6 @@ void QgsWMSSourceSelect::collectDimensions( QStringList &layers, QgsDataSourceUr
       if ( uri.param( QLatin1String( "type" ) ) == QLatin1String( "wmst" ) )
       {
         uri.setParam( QLatin1String( "temporalSource" ), QLatin1String( "provider" ) );
-        uri.setParam( QLatin1String( "enableTime" ), QLatin1String( "yes" ) );
       }
 
     }

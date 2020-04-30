@@ -1788,6 +1788,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! handle project crs changes
     void projectCrsChanged();
 
+    //! Updates the temporal range in layers that are using project temporal range.
+    void projectTemporalRangeChanged();
+
     void onActiveLayerChanged( QgsMapLayer *layer );
 
     /**

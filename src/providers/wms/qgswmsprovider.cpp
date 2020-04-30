@@ -49,6 +49,7 @@
 #include "qgsexception.h"
 #include "qgssettings.h"
 #include "qgsogrutils.h"
+#include "qgsproviderregistry.h"
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -1084,15 +1085,22 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
   QgsDateTimeRange range = temporalCapabilities()->requestedTemporalRange();
 
   QString format { QStringLiteral( "yyyy-MM-ddThh:mm:ssZ" ) };
-  QgsDataSourceUri uri { dataSourceUri() };
   bool dateOnly = false;
+
+  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( "wms" );
+
+  QVariantMap uri = metadata->decodeUri( dataSourceUri() );
+
+  // Skip fetching if updates are not allowed
+  if ( !uri.value( QStringLiteral( "allowTemporalUpdates" ), true ).toBool() )
+    return;
 
   if ( range.isInfinite() )
   {
-    if ( uri.hasParam( QStringLiteral( "time" ) ) &&
-         !uri.param( QStringLiteral( "time" ) ).isEmpty() )
+    if ( uri.contains( QStringLiteral( "time" ) ) &&
+         !uri.value( QStringLiteral( "time" ) ).toString().isEmpty() )
     {
-      QString time = uri.param( QStringLiteral( "time" ) );
+      QString time = uri.value( QStringLiteral( "time" ) ).toString();
       QStringList timeParts = time.split( '/' );
 
       QDateTime start = QDateTime::fromString( timeParts.at( 0 ), Qt::ISODateWithMs );
@@ -1102,7 +1110,7 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
     }
   }
 
-  if ( uri.param( QStringLiteral( "enableTime" ) ) == QLatin1String( "no" ) )
+  if ( !uri.value( QStringLiteral( "enableTime" ), true ).toBool() )
   {
     format = "yyyy-MM-dd";
     dateOnly = true;
@@ -1149,10 +1157,10 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
   }
 
   // If the data provider has bi-temporal properties and they are enabled
-  if ( uri.hasParam( QStringLiteral( "reference_time" ) ) &&
-       !uri.param( QStringLiteral( "reference_time" ) ).isEmpty() )
+  if ( uri.contains( QStringLiteral( "referenceTime" ) ) &&
+       !uri.value( QStringLiteral( "referenceTime" ) ).toString().isEmpty() )
   {
-    QString time = uri.param( QStringLiteral( "reference_time" ) );
+    QString time = uri.value( QStringLiteral( "referenceTime" ) ).toString();
 
     QDateTime dateTime = QDateTime::fromString( time, Qt::ISODateWithMs );
 
