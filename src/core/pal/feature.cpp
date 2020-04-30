@@ -41,6 +41,7 @@
 #include "costcalculator.h"
 #include "qgsgeometryutils.h"
 #include "qgslabeling.h"
+#include "qgspolygon.h"
 #include <QLinkedList>
 #include <cmath>
 #include <cfloat>
@@ -1795,6 +1796,202 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
   }
 
   return nbp;
+}
+
+std::size_t FeaturePart::createCandidatesOutsidePolygon( std::vector<std::unique_ptr<LabelPosition> > &lPos, Pal *pal )
+{
+  // calculate distance between horizontal lines
+  const std::size_t maxPolygonCandidates = mLF->layer()->maximumPolygonLabelCandidates();
+  std::size_t candidatesCreated = 0;
+
+  double labelWidth = getLabelWidth();
+  double labelHeight = getLabelHeight();
+  double distanceToLabel = getLabelDistance();
+  const QgsMargins &visualMargin = mLF->visualMargin();
+
+  /*
+   * From Rylov & Reimer (2016) "A practical algorithm for the external annotation of area features":
+   *
+   * The list of rules adapted to the
+   * needs of externally labelling areal features is as follows:
+   * R1. Labels should be placed horizontally.
+   * R2. Label should be placed entirely outside at some
+   * distance from the area feature.
+   * R3. Name should not cross the boundary of its area
+   * feature.
+   * R4. The name should be placed in way that takes into
+   * account the shape of the feature by achieving a
+   * balance between the feature and its name, emphasizing their relationship.
+   * R5. The lettering to the right and slightly above the
+   * symbol is prioritized.
+   *
+   * In the following subsections we utilize four of the five rules
+   * for two subtasks of label placement, namely, for candidate
+   * positions generation (R1, R2, and R3) and for measuring their
+   * ‘goodness’ (R4). The rule R5 is applicable only in the case when
+   * the area of a polygonal feature is small and the feature can be
+   * treated and labelled as a point-feature
+   */
+
+  /*
+   * QGIS approach (cite Dawson (2020) if you want ;) )
+   *
+   * We differ from the horizontal sweep line approach described by Rylov & Reimer and instead
+   * rely on just generating a set of points at regular intervals along the boundary of the polygon (exterior ring).
+   *
+   * In practice, this generates similar results as Rylov & Reimer, but has the additional benefits that:
+   * 1. It avoids the need to calculate intersections between the sweep line and the polygon
+   * 2. For horizontal or near horizontal segments, Rylov & Reimer propose generating evenly spaced points along
+   * these segments-- i.e. the same approach as we do for the whole polygon
+   * 3. It's easier to determine in advance exactly how many candidate positions we'll be generating, and accordingly
+   * we can easily pick the distance between points along the exterior ring so that the number of positions generated
+   * matches our target number (targetPolygonCandidates)
+   */
+
+  // TO consider -- for very small polygons (wrt label size), treat them just like a point feature?
+
+  double cx, cy;
+  getCentroid( cx, cy, false );
+
+  GEOSContextHandle_t ctxt = QgsGeos::getGEOSHandler();
+  geos::unique_ptr buffer( GEOSBuffer_r( ctxt, geos(), mLF->distLabel(), 1 ) );
+  std::unique_ptr< QgsAbstractGeometry> gg( QgsGeos::fromGeos( buffer.get() ) );
+
+  const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon * >( gg.get() );
+  if ( !poly )
+    return candidatesCreated;
+
+  const QgsLineString *ring = qgsgeometry_cast< const QgsLineString *>( poly->exteriorRing() );
+  if ( !ring )
+    return candidatesCreated;
+
+  // we cheat here -- we don't use the polygon area when calculating the number of candidates, and rather use the perimeter (because that's more relevant,
+  // i.e a loooooong skinny polygon with small area should still generate a large number of candidates)
+  const double ringLength = ring->length();
+  const double circleArea = std::pow( ringLength, 2 ) / ( 4 * M_PI );
+  const std::size_t candidatesForArea = static_cast< std::size_t>( std::ceil( mLF->layer()->mPal->maximumPolygonCandidatesPerMapUnitSquared() * circleArea ) );
+  const std::size_t targetPolygonCandidates = std::max( static_cast< std::size_t >( 4 ), maxPolygonCandidates > 0 ? std::min( maxPolygonCandidates,  candidatesForArea ) : candidatesForArea );
+
+  // assume each position generates one candidate
+  const double delta = ringLength / targetPolygonCandidates;
+  geos::unique_ptr geosPoint;
+
+  const double maxDistCentroidToLabelX = std::max( xmax - cx, cx - xmin ) + distanceToLabel;
+  const double maxDistCentroidToLabelY = std::max( ymax - cy, cy - ymin ) + distanceToLabel;
+  const double estimateOfMaxPossibleDistanceCentroidToLabel = std::sqrt( maxDistCentroidToLabelX * maxDistCentroidToLabelX + maxDistCentroidToLabelY * maxDistCentroidToLabelY );
+
+  // Satisfy R1: Labels should be placed horizontally.
+  const double labelAngle = 0;
+
+  std::size_t i = lPos.size();
+  auto addCandidate = [&]( double x, double y, QgsPalLayerSettings::PredefinedPointPosition position )
+  {
+    double labelX = 0;
+    double labelY = 0;
+    LabelPosition::Quadrant quadrant = LabelPosition::QuadrantAboveLeft;
+
+    // Satisfy R2: Label should be placed entirely outside at some distance from the area feature.
+    createCandidateAtOrderedPositionOverPoint( labelX, labelY, quadrant, x, y, labelWidth, labelHeight, position, distanceToLabel, visualMargin, 0, 0 );
+
+    std::unique_ptr< LabelPosition > candidate = qgis::make_unique< LabelPosition >( i, labelX, labelY, labelWidth, labelHeight, labelAngle, 0, this, false, quadrant );
+    if ( candidate->intersects( preparedGeom() ) )
+    {
+      // satisfy R3. Name should not cross the boundary of its area feature.
+      return;
+    }
+
+    // cost candidates by their distance to the feature's centroid (following Rylov & Reimer)
+
+    // Satisfy R4. The name should be placed in way that takes into
+    // account the shape of the feature by achieving a
+    // balance between the feature and its name, emphasizing their relationship.
+
+
+    // here we deviate a little from R&R, and instead of just calculating the centroid distance
+    // to centroid of label, we calculate the distance from the centroid to the nearest point on the label
+
+    const double centroidDistance = candidate->getDistanceToPoint( cx, cy );
+    const double centroidCost = centroidDistance / estimateOfMaxPossibleDistanceCentroidToLabel;
+    candidate->setCost( centroidCost );
+
+    lPos.emplace_back( std::move( candidate ) );
+    candidatesCreated++;
+    ++i;
+  };
+
+  ring->visitPointsByRegularDistance( delta, [&]( double x, double y, double, double,
+                                      double startSegmentX, double startSegmentY, double, double,
+                                      double endSegmentX, double endSegmentY, double, double )
+  {
+    // get normal angle for segment
+    float angle = atan2( static_cast< float >( endSegmentY - startSegmentY ), static_cast< float >( endSegmentX - startSegmentX ) ) * 180 / M_PI;
+    if ( angle < 0 )
+      angle += 360;
+
+    // adapted fom Rylov & Reimer figure 9
+    if ( angle >= 0 && angle <= 5 )
+    {
+      addCandidate( x, y, QgsPalLayerSettings::TopMiddle );
+      addCandidate( x, y, QgsPalLayerSettings::TopLeft );
+    }
+    else if ( angle <= 85 )
+    {
+      addCandidate( x, y, QgsPalLayerSettings::TopLeft );
+    }
+    else if ( angle <= 90 )
+    {
+      addCandidate( x, y, QgsPalLayerSettings::TopLeft );
+      addCandidate( x, y, QgsPalLayerSettings::MiddleLeft );
+    }
+
+    else if ( angle <= 95 )
+    {
+      addCandidate( x, y, QgsPalLayerSettings::MiddleLeft );
+      addCandidate( x, y, QgsPalLayerSettings::BottomLeft );
+    }
+    else if ( angle <= 175 )
+    {
+      addCandidate( x, y, QgsPalLayerSettings::BottomLeft );
+    }
+    else if ( angle <= 180 )
+    {
+      addCandidate( x, y, QgsPalLayerSettings::BottomLeft );
+      addCandidate( x, y, QgsPalLayerSettings::BottomMiddle );
+    }
+
+    else if ( angle <= 185 )
+    {
+      addCandidate( x, y, QgsPalLayerSettings::BottomMiddle );
+      addCandidate( x, y, QgsPalLayerSettings::BottomRight );
+    }
+    else if ( angle <= 265 )
+    {
+      addCandidate( x, y, QgsPalLayerSettings::BottomRight );
+    }
+    else if ( angle <= 270 )
+    {
+      addCandidate( x, y, QgsPalLayerSettings::BottomRight );
+      addCandidate( x, y, QgsPalLayerSettings::MiddleRight );
+    }
+    else if ( angle <= 275 )
+    {
+      addCandidate( x, y, QgsPalLayerSettings::MiddleRight );
+      addCandidate( x, y, QgsPalLayerSettings::TopRight );
+    }
+    else if ( angle <= 355 )
+    {
+      addCandidate( x, y, QgsPalLayerSettings::TopRight );
+    }
+    else
+    {
+      addCandidate( x, y, QgsPalLayerSettings::TopRight );
+      addCandidate( x, y, QgsPalLayerSettings::TopMiddle );
+    }
+
+    return !pal->isCanceled();
+  } );
+
+  return candidatesCreated;
 }
 
 std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( Pal *pal )
