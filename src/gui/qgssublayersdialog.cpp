@@ -88,14 +88,14 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType,
   QString filename = QFileInfo( fileFullPath ).fileName();
 
   setWindowTitle( filename.isEmpty() ? title : QStringLiteral( "%1 | %2" ).arg( title, filename ) );
-  txtFilePath->setText( QDir::toNativeSeparators( QFileInfo( fileFullPath ).canonicalFilePath() ) );
+  mLblFilePath->setText( QDir::toNativeSeparators( QFileInfo( fileFullPath ).canonicalFilePath() ) );
 
   if ( filename.isEmpty() )
-    txtFilePath->setVisible( false );
+    mLblFilePath->setVisible( false );
 
   // add a "Select All" button - would be nicer with an icon
-  connect( btnSelectAll, &QAbstractButton::pressed, layersTable, &QTreeView::selectAll );
-  connect( btnDeselectAll, &QAbstractButton::pressed, this, &QgsSublayersDialog::btnDeselectAll_pressed );
+  connect( mBtnSelectAll, &QAbstractButton::pressed, layersTable, &QTreeView::selectAll );
+  connect( mBtnDeselectAll, &QAbstractButton::pressed, this, &QgsSublayersDialog::mBtnDeselectAll_pressed );
   connect( layersTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsSublayersDialog::layersTable_selectionChanged );
 
   mCbxAddToGroup->setVisible( false );
@@ -238,7 +238,7 @@ void QgsSublayersDialog::layersTable_selectionChanged( const QItemSelection &, c
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( layersTable->selectedItems().length() > 0 );
 }
 
-void QgsSublayersDialog::btnDeselectAll_pressed()
+void QgsSublayersDialog::mBtnDeselectAll_pressed()
 {
   layersTable->selectionModel()->clear();
 }

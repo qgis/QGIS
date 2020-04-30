@@ -54,14 +54,14 @@
    <item row="2" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QPushButton" name="btnSelectAll">
+      <widget class="QPushButton" name="mBtnSelectAll">
        <property name="text">
         <string>Select All</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="btnDeselectAll">
+      <widget class="QPushButton" name="mBtnDeselectAll">
        <property name="text">
         <string>Deselect All</string>
        </property>
@@ -90,18 +90,12 @@
     </layout>
    </item>
    <item row="0" column="0">
-    <widget class="QLineEdit" name="txtFilePath">
+    <widget class="QLabel" name="mLblFilePath">
      <property name="toolTip">
       <string>Current file source</string>
      </property>
-     <property name="styleSheet">
-      <string notr="true">color: #505050;
-background-color: #F0F0F0;
-border: 1px solid #B0B0B0;
-border-radius: 2px;</string>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
+     <property name="textInteractionFlags">
+      <set>Qt::TextSelectableByMouse</set>
      </property>
     </widget>
    </item>
