@@ -287,6 +287,7 @@ class QgsPalLayerSettings
       LinePlacementOptions,
       OverrunDistance,
       LabelAllParts,
+      PolygonLabelOutside,
 
       // rendering
       ScaleVisibility,

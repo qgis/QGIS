@@ -228,6 +228,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
           + QStringLiteral( "[<b>OL</b>=On line|<b>AL</b>=Above line|<b>BL</b>=Below line|<br>"
                             "<b>LO</b>=Respect line orientation]" ), origin )
     },
+    { QgsPalLayerSettings::PolygonLabelOutside, QgsPropertyDefinition( "PolygonLabelOutside", QgsPropertyDefinition::DataTypeString, QObject::tr( "Label outside polygons" ),  QObject::tr( "string " ) + "[<b>yes</b> (allow placing outside)|<b>no</b> (never place outside)|<b>force</b> (always place outside)]", origin ) },
     { QgsPalLayerSettings::PositionX, QgsPropertyDefinition( "PositionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double, origin ) },
     { QgsPalLayerSettings::PositionY, QgsPropertyDefinition( "PositionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double, origin ) },
     { QgsPalLayerSettings::Hali, QgsPropertyDefinition( "Hali", QgsPropertyDefinition::DataTypeString, QObject::tr( "Horizontal alignment" ), QObject::tr( "string " ) + "[<b>Left</b>|<b>Center</b>|<b>Right</b>]", origin ) },
@@ -934,7 +935,7 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   QDomElement placementElem = elem.firstChildElement( QStringLiteral( "placement" ) );
   placement = static_cast< Placement >( placementElem.attribute( QStringLiteral( "placement" ) ).toInt() );
   placementFlags = placementElem.attribute( QStringLiteral( "placementFlags" ) ).toUInt();
-  mPolygonPlacementFlags = static_cast< QgsLabeling::PolygonPlacementFlags >( placementElem.attribute( QStringLiteral( "polygonPlacementFlags" ) ).toInt() );
+  mPolygonPlacementFlags = static_cast< QgsLabeling::PolygonPlacementFlags >( placementElem.attribute( QStringLiteral( "polygonPlacementFlags" ), QString::number( static_cast< int >( QgsLabeling::PolygonPlacementFlag::AllowPlacementInsideOfPolygon ) ) ).toInt() );
 
   centroidWhole = placementElem.attribute( QStringLiteral( "centroidWhole" ), QStringLiteral( "0" ) ).toInt();
   centroidInside = placementElem.attribute( QStringLiteral( "centroidInside" ), QStringLiteral( "0" ) ).toInt();
@@ -1972,16 +1973,45 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
 
 
   QgsLabeling::PolygonPlacementFlags polygonPlacement = mPolygonPlacementFlags;
-  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::LinePlacementOptions ) )
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::PolygonLabelOutside ) )
   {
-#if 0
-    context.expressionContext().setOriginalValueVariable( QgsLabelingUtils::encodeLinePlacementFlags( featureArrangementFlags ) );
-    const QString dataDefinedLineArrangement = mDataDefinedProperties.valueAsString( QgsPalLayerSettings::LinePlacementOptions, context.expressionContext() );
-    if ( !dataDefinedLineArrangement.isEmpty() )
+    const QVariant dataDefinedOutside = mDataDefinedProperties.value( QgsPalLayerSettings::PolygonLabelOutside, context.expressionContext() );
+    if ( dataDefinedOutside.isValid() )
     {
-      featureArrangementFlags = QgsLabelingUtils::decodeLinePlacementFlags( dataDefinedLineArrangement );
+      if ( dataDefinedOutside.type() == QVariant::String )
+      {
+        const QString value = dataDefinedOutside.toString().trimmed();
+        if ( value.compare( QLatin1String( "force" ), Qt::CaseInsensitive ) == 0 )
+        {
+          // forced outside placement -- remove inside flag, add outside flag
+          polygonPlacement &= ~static_cast< int >( QgsLabeling::PolygonPlacementFlag::AllowPlacementInsideOfPolygon );
+          polygonPlacement |= QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon;
+        }
+        else if ( value.compare( QLatin1String( "yes" ), Qt::CaseInsensitive ) == 0 )
+        {
+          // permit outside placement
+          polygonPlacement |= QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon;
+        }
+        else if ( value.compare( QLatin1String( "no" ), Qt::CaseInsensitive ) == 0 )
+        {
+          // block outside placement
+          polygonPlacement &= ~static_cast< int >( QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon );
+        }
+      }
+      else
+      {
+        if ( dataDefinedOutside.toBool() )
+        {
+          // permit outside placement
+          polygonPlacement |= QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon;
+        }
+        else
+        {
+          // block outside placement
+          polygonPlacement &= ~static_cast< int >( QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon );
+        }
+      }
     }
-#endif
   }
 
   // if using fitInPolygonOnly option, generate the permissible zone (must happen before geometry is modified - e.g.,
