@@ -99,6 +99,7 @@ class QgsPalLayerSettings
       Free,
       OrderedPositionsAroundPoint,
       PerimeterCurved,
+      OutsidePolygons,
     };
 
     enum PredefinedPointPosition

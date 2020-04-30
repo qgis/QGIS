@@ -2034,7 +2034,7 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
         const bool allowInside =  mLF->polygonPlacementFlags() & QgsLabeling::PolygonPlacementFlag::AllowPlacementInsideOfPolygon;
         //check width/height of bbox is sufficient for label
 
-        if ( allowOutside && !allowInside )
+        if ( ( allowOutside && !allowInside ) || ( mLF->layer()->arrangement() == QgsPalLayerSettings::OutsidePolygons ) )
         {
           // only allowed to place outside of polygon
           createCandidatesOutsidePolygon( lPos, pal );
