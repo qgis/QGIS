@@ -68,7 +68,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsFeaturePickerWidget" name="mFeatureChooserWidget"/>
+      <widget class="QgsFeaturePickerWidget" name="mFeaturePickerWidget"/>
      </item>
     </layout>
    </item>

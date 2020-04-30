@@ -24,6 +24,8 @@
 #include "qgsfeaturerequest.h"
 #include "qgis_gui.h"
 
+class QToolButton;
+
 class QgsVectorLayer;
 class QgsFeaturePickerModel;
 class QgsAnimatedIcon;
@@ -49,6 +51,7 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
     Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull NOTIFY allowNullChanged )
     Q_PROPERTY( bool fetchGeometry READ fetchGeometry WRITE setFetchGeometry NOTIFY fetchGeometryChanged )
     Q_PROPERTY( int fetchLimit READ fetchLimit WRITE setFetchLimit NOTIFY fetchLimitChanged )
+    Q_PROPERTY( bool showBrowserButtons READ showBrowserButtons WRITE setShowBrowserButtons NOTIFY showBrowserButtonsChanged )
 
   public:
 
@@ -138,6 +141,17 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
     void setFetchLimit( int fetchLimit );
 
     /**
+     * Returns if the browsing buttons are shown
+     */
+    bool showBrowserButtons() const;
+
+    /**
+     * Defines if the browsing buttons are shown
+     */
+    void setShowBrowserButtons( bool showBrowserButtons );
+
+
+    /**
      * The index of the currently selected item.
      */
     QModelIndex currentModelIndex() const;
@@ -188,6 +202,9 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
      */
     void fetchLimitChanged();
 
+    //! Emitted when showing the browser buttons changes
+    void showBrowserButtonsChanged();
+
   private slots:
     void onCurrentTextChanged( const QString &text );
     void onFilterUpdateCompleted();
@@ -198,6 +215,7 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
     void storeLineEditState();
     void restoreLineEditState();
     void onDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>() );
+    void browseFeatures( int direction );
 
   private:
     struct LineEditState
@@ -212,6 +230,8 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
     };
 
     QComboBox *mComboBox;
+    QToolButton *mPreviousButton;
+    QToolButton *mNextButton;
     QgsFeaturePickerModel *mModel = nullptr;
     QCompleter *mCompleter = nullptr;
     QgsFilterLineEdit *mLineEdit;
@@ -219,6 +239,7 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
     bool mIsCurrentlyEdited = false;
     bool mHasStoredEditState = false;
     LineEditState mLineEditState;
+    bool mShowBrowserButtons = false;
 
     friend class TestQgsFeaturePickerWidget;
 };

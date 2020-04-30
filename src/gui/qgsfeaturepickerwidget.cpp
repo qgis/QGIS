@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include <QHBoxLayout>
+#include <QToolButton>
 #include <QKeyEvent>
 
 #include "qgsfeaturepickerwidget.h"
@@ -29,6 +30,19 @@ QgsFeaturePickerWidget::QgsFeaturePickerWidget( QWidget *parent )
   mComboBox = new QComboBox( this );
   mComboBox->setEditable( true );
   layout->addWidget( mComboBox );
+
+  mPreviousButton = new QToolButton( this );
+  mPreviousButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowLeft.svg" ) ) );
+  mPreviousButton->setEnabled( false );
+  mPreviousButton->setVisible( mShowBrowserButtons );
+  layout->addWidget( mPreviousButton );
+
+  mNextButton = new QToolButton( this );
+  mNextButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowRight.svg" ) ) );
+  mNextButton->setEnabled( false );
+  mNextButton->setVisible( mShowBrowserButtons );
+  layout->addWidget( mNextButton );
+
   setLayout( layout );
 
   mCompleter->setCaseSensitivity( Qt::CaseInsensitive );
@@ -54,6 +68,9 @@ QgsFeaturePickerWidget::QgsFeaturePickerWidget( QWidget *parent )
 
   connect( mComboBox, static_cast<void( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsFeaturePickerWidget::onCurrentIndexChanged );
 
+  connect( mPreviousButton, &QToolButton::clicked, this, [ = ]() {browseFeatures( -1 );} );
+  connect( mNextButton, &QToolButton::clicked, this, [ = ]() {browseFeatures( 1 );} );
+
   mLineEdit = new QgsFilterLineEdit( nullptr, QgsApplication::nullRepresentation() );
   mLineEdit->setSelectOnFocus( true );
   mLineEdit->setShowClearButton( allowNull() );
@@ -64,7 +81,6 @@ QgsFeaturePickerWidget::QgsFeaturePickerWidget( QWidget *parent )
 
   connect( mLineEdit, &QgsFilterLineEdit::textEdited, this, &QgsFeaturePickerWidget::onCurrentTextChanged );
 
-  setToolTip( tr( "Just start typing what you are looking for." ) );
 }
 
 QgsVectorLayer *QgsFeaturePickerWidget::layer() const
@@ -126,8 +142,13 @@ void QgsFeaturePickerWidget::onCurrentIndexChanged( int i )
 {
   if ( !mHasStoredEditState )
     mIsCurrentlyEdited = false;
+
+  mPreviousButton->setEnabled( i > 0 );
+  mNextButton->setEnabled( i < mComboBox->model()->rowCount() - 1 );
+
   if ( i < 0 )
     return;
+
   QModelIndex modelIndex = mModel->index( i, 0, QModelIndex() );
   mModel->setFeature( mModel->data( modelIndex, QgsFeaturePickerModel::FeatureIdRole ).value<QgsFeatureId>() );
   mLineEdit->setText( mModel->data( modelIndex, QgsFeaturePickerModel::ValueRole ).toString() );
@@ -185,6 +206,12 @@ void QgsFeaturePickerWidget::onDataChanged( const QModelIndex &topLeft, const QM
       mLineEdit->setText( mModel->data( modelIndex, QgsFeaturePickerModel::ValueRole ).toString() );
     }
   }
+}
+
+void QgsFeaturePickerWidget::browseFeatures( int direction )
+{
+  int newIndex = std::min( std::max( 0, mComboBox->currentIndex() + direction ), mComboBox->model()->rowCount() - 1 );
+  mComboBox->setCurrentIndex( newIndex );
 }
 
 QModelIndex QgsFeaturePickerWidget::currentModelIndex() const
@@ -263,4 +290,20 @@ int QgsFeaturePickerWidget::fetchLimit() const
 void QgsFeaturePickerWidget::setFetchLimit( int fetchLimit )
 {
   mModel->setFetchLimit( fetchLimit );
+}
+
+bool QgsFeaturePickerWidget::showBrowserButtons() const
+{
+  return mShowBrowserButtons;
+}
+
+void QgsFeaturePickerWidget::setShowBrowserButtons( bool showBrowserButtons )
+{
+  if ( showBrowserButtons == mShowBrowserButtons )
+    return;
+
+  mShowBrowserButtons = showBrowserButtons;
+  mPreviousButton->setVisible( mShowBrowserButtons );
+  mNextButton->setVisible( mShowBrowserButtons );
+  emit showBrowserButtonsChanged();
 }

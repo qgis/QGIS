@@ -27,15 +27,16 @@ QgsExpressionPreviewWidget::QgsExpressionPreviewWidget( QWidget *parent )
 {
   setupUi( this );
   mPreviewLabel->clear();
+  mFeaturePickerWidget->setShowBrowserButtons( true );
 
-  connect( mFeatureChooserWidget, &QgsFeaturePickerWidget::featureChanged, this, &QgsExpressionPreviewWidget::setCurrentFeature );
+  connect( mFeaturePickerWidget, &QgsFeaturePickerWidget::featureChanged, this, &QgsExpressionPreviewWidget::setCurrentFeature );
   connect( mPreviewLabel, &QLabel::linkActivated, this, &QgsExpressionPreviewWidget::linkActivated );
 }
 
 void QgsExpressionPreviewWidget::setLayer( QgsVectorLayer *layer )
 {
   mLayer = layer;
-  mFeatureChooserWidget->setLayer( layer );
+  mFeaturePickerWidget->setLayer( layer );
 }
 
 void QgsExpressionPreviewWidget::setExpressionText( const QString &expression )

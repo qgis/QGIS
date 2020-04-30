@@ -10,6 +10,7 @@
 
 
 
+
 class QgsFeaturePickerWidget : QWidget
 {
 %Docstring
@@ -111,6 +112,17 @@ Returns the feature request fetch limit
 Defines the feature request fetch limit
 %End
 
+    bool showBrowserButtons() const;
+%Docstring
+Returns if the browsing buttons are shown
+%End
+
+    void setShowBrowserButtons( bool showBrowserButtons );
+%Docstring
+Defines if the browsing buttons are shown
+%End
+
+
     QModelIndex currentModelIndex() const;
 %Docstring
 The index of the currently selected item.
@@ -164,6 +176,11 @@ Emitted when the fetching of the geometry changes
     void fetchLimitChanged();
 %Docstring
 Emitted when the fetching limit for the feature request changes
+%End
+
+    void showBrowserButtonsChanged();
+%Docstring
+Emitted when showing the browser buttons changes
 %End
 
 };
