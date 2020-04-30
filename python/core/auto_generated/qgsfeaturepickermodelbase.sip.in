@@ -250,6 +250,9 @@ Update the request to match the current feature to be reloaded
 %End
 
     void setExtraIdentifierValueUnguarded( const QVariant &identifierValue );
+%Docstring
+This will set the identifier value to be set in the model even if it doesn't exist currently in the data
+%End
 
 
 

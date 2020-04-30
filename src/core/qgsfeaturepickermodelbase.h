@@ -274,6 +274,7 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
     //! Update the request to match the current feature to be reloaded
     virtual void requestToReloadCurrentFeature( QgsFeatureRequest &request ) = 0;
 
+    //! This will set the identifier value to be set in the model even if it doesn't exist currently in the data
     void setExtraIdentifierValueUnguarded( const QVariant &identifierValue );
 
 #ifndef SIP_RUN
@@ -284,10 +285,11 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
      */
     virtual QSet<QString> requestedAttributes() const {return {};}
 
+    //! Creates the value gatherer
     virtual QgsFeatureExpressionValuesGatherer *createValuesGatherer( const QgsFeatureRequest &request ) const = 0;
 
     //! Creates an entry with just the identifier so the feature can be retrieved in a next iteration
-    virtual QgsFeatureExpressionValuesGatherer::Entry createEntry( const QVariant &identifer ) const = 0;
+    virtual QgsFeatureExpressionValuesGatherer::Entry createEntry( const QVariant &identifier ) const = 0;
 
     //! Returns the identifier of the given entry
     virtual QVariant entryIdentifier( const QgsFeatureExpressionValuesGatherer::Entry &entry ) const = 0;

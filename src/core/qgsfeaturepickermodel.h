@@ -55,6 +55,7 @@ class CORE_EXPORT QgsFeaturePickerModel : public QgsFeaturePickerModelBase
     QgsFeature feature() const;
 
   signals:
+    //! Emitted when the current feature changes
     void featureChanged( const QgsFeature &feature );
 
 

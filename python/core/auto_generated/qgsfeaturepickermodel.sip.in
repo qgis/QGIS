@@ -48,6 +48,9 @@ Returns the current feature
 
   signals:
     void featureChanged( const QgsFeature &feature );
+%Docstring
+Emitted when the current feature changes
+%End
 
 
 };

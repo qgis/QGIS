@@ -102,7 +102,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         spy = QSignalSpy(w.featureChanged)
         spy.wait()
         w.findChild(QComboBox).lineEdit().clear()
-        QTest.keyClicks(w.findChild(QComboBox).lineEdit(), "test99");
+        QTest.keyClicks(w.findChild(QComboBox).lineEdit(), "test99")
         spy.wait()
         self.assertEqual(w.feature().id(), 99)
 
