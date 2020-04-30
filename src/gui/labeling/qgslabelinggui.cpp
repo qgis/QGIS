@@ -182,6 +182,10 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
     initCalloutWidgets();
   } );
 
+  mFontMultiLineAlignComboBox->addItem( tr( "Left" ), QgsPalLayerSettings::MultiLeft );
+  mFontMultiLineAlignComboBox->addItem( tr( "Center" ), QgsPalLayerSettings::MultiCenter );
+  mFontMultiLineAlignComboBox->addItem( tr( "Right" ), QgsPalLayerSettings::MultiRight );
+
   // connections for groupboxes with separate activation checkboxes (that need to honor data defined setting)
   connect( mBufferDrawChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mEnableMaskChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
@@ -362,9 +366,9 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mAutoWrapLengthSpinBox->setValue( mSettings.autoWrapLength );
   mAutoWrapTypeComboBox->setCurrentIndex( mSettings.useMaxLineLengthForAutoWrap ? 0 : 1 );
 
-  if ( ( int ) mSettings.multilineAlign < mFontMultiLineAlignComboBox->count() )
+  if ( mFontMultiLineAlignComboBox->findData( mSettings.multilineAlign ) != -1 )
   {
-    mFontMultiLineAlignComboBox->setCurrentIndex( mSettings.multilineAlign );
+    mFontMultiLineAlignComboBox->setCurrentIndex( mFontMultiLineAlignComboBox->findData( mSettings.multilineAlign ) );
   }
   else
   {
@@ -582,7 +586,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.wrapChar = wrapCharacterEdit->text();
   lyr.autoWrapLength = mAutoWrapLengthSpinBox->value();
   lyr.useMaxLineLengthForAutoWrap = mAutoWrapTypeComboBox->currentIndex() == 0;
-  lyr.multilineAlign = ( QgsPalLayerSettings::MultiLineAlign ) mFontMultiLineAlignComboBox->currentIndex();
+  lyr.multilineAlign = static_cast< QgsPalLayerSettings::MultiLineAlign >( mFontMultiLineAlignComboBox->currentData().toInt() );
   lyr.preserveRotation = chkPreserveRotation->isChecked();
   lyr.geometryGenerator = mGeometryGenerator->text();
   lyr.geometryGeneratorType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
@@ -793,15 +797,15 @@ void QgsLabelingGui::updateGeometryTypeBasedWidgets()
       qFatal( "unknown geometry type unexpected" );
   }
 
-  if ( geometryType == QgsWkbTypes::PointGeometry )
+  if ( geometryType == QgsWkbTypes::PointGeometry || geometryType == QgsWkbTypes::PolygonGeometry )
   {
-    // follow placement alignment is only valid for point layers
-    if ( mFontMultiLineAlignComboBox->findText( tr( "Follow label placement" ) ) == -1 )
-      mFontMultiLineAlignComboBox->addItem( tr( "Follow label placement" ) );
+    // follow placement alignment is only valid for point or polygon layers
+    if ( mFontMultiLineAlignComboBox->findData( QgsPalLayerSettings::MultiFollowPlacement ) == -1 )
+      mFontMultiLineAlignComboBox->addItem( tr( "Follow Label Placement" ), QgsPalLayerSettings::MultiFollowPlacement );
   }
   else
   {
-    int idx = mFontMultiLineAlignComboBox->findText( tr( "Follow label placement" ) );
+    int idx = mFontMultiLineAlignComboBox->findData( QgsPalLayerSettings::MultiFollowPlacement );
     if ( idx >= 0 )
       mFontMultiLineAlignComboBox->removeItem( idx );
   }
