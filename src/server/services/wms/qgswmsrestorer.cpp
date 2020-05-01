@@ -1,6 +1,6 @@
 /***************************************************************************
-                              qgslayerrestorer.cpp
-                              --------------------
+                              qgswmsrestorer.cpp
+                              ------------------
   begin                : April 24, 2017
   copyright            : (C) 2017 by Paul Blottiere
   email                : paul.blottiere@oslandia.com
@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslayerrestorer.h"
+#include "qgswmsrestorer.h"
 #include "qgsmessagelog.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
@@ -133,5 +133,12 @@ QgsLayerRestorer::~QgsLayerRestorer()
       case QgsMapLayerType::PluginLayer:
         break;
     }
+  }
+}
+
+namespace QgsWms {
+  QgsWmsRestorer::QgsWmsRestorer( const QgsWmsRenderContext &context )
+  {
+    mLayerRestorer.reset( new QgsLayerRestorer( context.layers()) );
   }
 }

@@ -1,6 +1,6 @@
 /***************************************************************************
-                              qgslayerrestorer.h
-                              -------------------
+                              qgswmsrestorer.h
+                              ----------------
   begin                : April 24, 2017
   copyright            : (C) 2017 by Paul Blottiere
   email                : paul.blottiere@oslandia.com
@@ -15,14 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSLAYERRESTORER_H
-#define QGSLAYERRESTORER_H
+#ifndef QGSWMSRESTORER_H
+#define QGSWMSRESTORER_H
 
 #include <QList>
 #include <QDomDocument>
 #include <QMap>
 
 #include "qgsfeatureid.h"
+#include "qgswmsrendercontext.h"
 
 class QgsMapLayer;
 
@@ -62,6 +63,19 @@ class QgsLayerRestorer
     };
 
     QMap<QgsMapLayer *, QgsLayerSettings> mLayerSettings;
+};
+
+namespace QgsWms {
+  class QgsWmsRestorer
+  {
+    public:
+
+      QgsWmsRestorer( const QgsWmsRenderContext &context );
+
+    private:
+
+      std::unique_ptr<QgsLayerRestorer> mLayerRestorer;
+  };
 };
 
 #endif

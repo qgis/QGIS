@@ -19,7 +19,7 @@ SET (WMS_SRCS
   qgsmediancut.cpp
   qgswmsrenderer.cpp
   qgswmsparameters.cpp
-  qgslayerrestorer.cpp
+  qgswmsrestorer.cpp
   qgswmsrendercontext.cpp
 )
 
