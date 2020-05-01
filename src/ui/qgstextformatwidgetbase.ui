@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>612</width>
-    <height>589</height>
+    <width>521</width>
+    <height>650</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -172,7 +172,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>590</width>
+               <width>499</width>
                <height>300</height>
               </rect>
              </property>
@@ -4000,8 +4000,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>833</width>
-                       <height>368</height>
+                       <width>159</width>
+                       <height>211</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_46">
@@ -4150,8 +4150,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>562</width>
-                       <height>1266</height>
+                       <width>471</width>
+                       <height>1297</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -4321,33 +4321,6 @@ font-style: italic;</string>
                            </widget>
                            <widget class="QWidget" name="pagePolygon">
                             <layout class="QGridLayout" name="gridLayout_18">
-                             <item row="1" column="1">
-                              <widget class="QRadioButton" name="radPolygonFree">
-                               <property name="text">
-                                <string>Free (angled)</string>
-                               </property>
-                              </widget>
-                             </item>
-                             <item row="0" column="2">
-                              <widget class="QRadioButton" name="radPolygonOutside">
-                               <property name="text">
-                                <string>Outside polygons</string>
-                               </property>
-                              </widget>
-                             </item>
-                             <item row="2" column="1">
-                              <widget class="QRadioButton" name="radPolygonPerimeterCurved">
-                               <property name="sizePolicy">
-                                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                                 <horstretch>0</horstretch>
-                                 <verstretch>0</verstretch>
-                                </sizepolicy>
-                               </property>
-                               <property name="text">
-                                <string>Using perimeter (curved)</string>
-                               </property>
-                              </widget>
-                             </item>
                              <item row="0" column="0">
                               <widget class="QRadioButton" name="radOverCentroid">
                                <property name="sizePolicy">
@@ -4361,6 +4334,20 @@ font-style: italic;</string>
                                </property>
                                <property name="checked">
                                 <bool>true</bool>
+                               </property>
+                              </widget>
+                             </item>
+                             <item row="0" column="1">
+                              <widget class="QRadioButton" name="radPolygonHorizontal">
+                               <property name="text">
+                                <string>Horizontal</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item row="1" column="1">
+                              <widget class="QRadioButton" name="radPolygonFree">
+                               <property name="text">
+                                <string>Free (angled)</string>
                                </property>
                               </widget>
                              </item>
@@ -4390,13 +4377,6 @@ font-style: italic;</string>
                                </property>
                               </widget>
                              </item>
-                             <item row="0" column="1">
-                              <widget class="QRadioButton" name="radPolygonHorizontal">
-                               <property name="text">
-                                <string>Horizontal</string>
-                               </property>
-                              </widget>
-                             </item>
                              <item row="1" column="3">
                               <spacer name="horizontalSpacer_26">
                                <property name="orientation">
@@ -4409,6 +4389,26 @@ font-style: italic;</string>
                                 </size>
                                </property>
                               </spacer>
+                             </item>
+                             <item row="2" column="1">
+                              <widget class="QRadioButton" name="radPolygonPerimeterCurved">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="text">
+                                <string>Using perimeter (curved)</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item row="3" column="0">
+                              <widget class="QRadioButton" name="radPolygonOutside">
+                               <property name="text">
+                                <string>Outside polygons</string>
+                               </property>
+                              </widget>
                              </item>
                             </layout>
                            </widget>
@@ -4548,19 +4548,6 @@ font-style: italic;</string>
                           <number>0</number>
                          </property>
                          <item row="0" column="0">
-                          <widget class="QLabel" name="label_14">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>Allowed positions</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="0" column="1">
                           <layout class="QHBoxLayout" name="horizontalLayout_11">
                            <item>
                             <widget class="QCheckBox" name="mCheckAllowLabelsOutsidePolygons">
@@ -7045,6 +7032,7 @@ font-style: italic;</string>
   <tabstop>radPolygonFree</tabstop>
   <tabstop>radPolygonPerimeter</tabstop>
   <tabstop>radPolygonPerimeterCurved</tabstop>
+  <tabstop>radPolygonOutside</tabstop>
   <tabstop>radPredefinedOrder</tabstop>
   <tabstop>radAroundPoint</tabstop>
   <tabstop>radOverPoint</tabstop>
@@ -7055,6 +7043,8 @@ font-style: italic;</string>
   <tabstop>chkLineOn</tabstop>
   <tabstop>chkLineBelow</tabstop>
   <tabstop>chkLineOrientationDependent</tabstop>
+  <tabstop>mCheckAllowLabelsOutsidePolygons</tabstop>
+  <tabstop>mAllowOutsidePolygonsDDBtn</tabstop>
   <tabstop>mLinePlacementFlagsDDBtn</tabstop>
   <tabstop>mCentroidRadioVisible</tabstop>
   <tabstop>mCentroidRadioWhole</tabstop>
@@ -7139,6 +7129,30 @@ font-style: italic;</string>
   <tabstop>mFontLetterSpacingDDBtn</tabstop>
   <tabstop>mCheckBoxSubstituteText</tabstop>
   <tabstop>mFontWordSpacingDDBtn</tabstop>
+  <tabstop>mTextOrientationComboBox</tabstop>
+  <tabstop>mTextOrientationDDBtn</tabstop>
+  <tabstop>mKerningCheckBox</tabstop>
+  <tabstop>mBufferDrawDDBtn</tabstop>
+  <tabstop>mBufferDrawChkBx</tabstop>
+  <tabstop>scrollArea_71</tabstop>
+  <tabstop>mMaskJoinStyleComboBox</tabstop>
+  <tabstop>mMaskOpacityDDBtn</tabstop>
+  <tabstop>mMaskBufferUnitWidget</tabstop>
+  <tabstop>mMaskJoinStyleDDBtn</tabstop>
+  <tabstop>mMaskBufferUnitsDDBtn</tabstop>
+  <tabstop>mMaskBufferSizeSpinBox</tabstop>
+  <tabstop>mMaskBufferSizeDDBtn</tabstop>
+  <tabstop>mMaskOpacityWidget</tabstop>
+  <tabstop>scrollArea_6</tabstop>
+  <tabstop>mCalloutsDrawCheckBox</tabstop>
+  <tabstop>mCalloutDrawDDBtn</tabstop>
+  <tabstop>mCalloutStyleComboBox</tabstop>
+  <tabstop>mOverrunDistanceSpinBox</tabstop>
+  <tabstop>mOverrunDistanceDDBtn</tabstop>
+  <tabstop>mOverrunDistanceUnitWidget</tabstop>
+  <tabstop>mChkNoObstacle</tabstop>
+  <tabstop>mIsObstacleDDBtn</tabstop>
+  <tabstop>mObstacleSettingsButton</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
