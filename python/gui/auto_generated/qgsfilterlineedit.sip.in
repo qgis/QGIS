@@ -212,7 +212,6 @@ Will select all text when this widget receives the focus.
 .. versionadded:: 3.0
 %End
 
-
     virtual bool event( QEvent *event );
 
 %Docstring
@@ -220,6 +219,13 @@ Reimplemented to enable/disable the clear action
 depending on read-only status
 
 .. versionadded:: 3.0.1
+%End
+
+    bool hasStateStored() const;
+%Docstring
+Returns if a state is already saved
+
+.. versionadded:: 3.14
 %End
 
   public slots:
@@ -231,6 +237,20 @@ Clears the widget and resets it to the null value.
 .. seealso:: :py:func:`nullValue`
 
 .. versionadded:: 3.0
+%End
+
+    void storeState();
+%Docstring
+Stores the current state of the line edit (selection and cursor position)
+
+.. versionadded:: 3.14
+%End
+
+    void restoreState();
+%Docstring
+Restores the current state of the line edit (selection and cursor position)
+
+.. versionadded:: 3.14
 %End
 
   signals:

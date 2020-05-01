@@ -214,6 +214,24 @@ bool QgsFilterLineEdit::event( QEvent *event )
   return QLineEdit::event( event );
 }
 
+void QgsFilterLineEdit::storeState()
+{
+  mLineEditState.text = text();
+  mLineEditState.selectionStart = selectionStart();
+  mLineEditState.selectionLength = selectedText().length();
+  mLineEditState.cursorPosition = cursorPosition();
+  mLineEditState.mHasStateStored = true;
+}
+
+void QgsFilterLineEdit::restoreState()
+{
+  setText( mLineEditState.text );
+  setCursorPosition( mLineEditState.cursorPosition );
+  if ( mLineEditState.selectionStart > -1 )
+    setSelection( mLineEditState.selectionStart, mLineEditState.selectionLength );
+  mLineEditState.mHasStateStored = false;
+}
+
 /// @cond PRIVATE
 void QgsSpinBoxLineEdit::focusInEvent( QFocusEvent *e )
 {
