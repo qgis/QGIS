@@ -322,6 +322,7 @@ class CORE_EXPORT QgsLabelFeature
      * Returns the polygon placement flags, which dictate how polygon labels can be placed.
      *
      * \see setPolygonPlacementFlags()
+     * \since QGIS 3.14
      */
     QgsLabeling::PolygonPlacementFlags polygonPlacementFlags() const { return mPolygonPlacementFlags; }
 
@@ -329,6 +330,7 @@ class CORE_EXPORT QgsLabelFeature
      * Sets the polygon placement \a flags, which dictate how polygon labels can be placed.
      *
      * \see polygonPlacementFlags()
+     * \since QGIS 3.14
      */
     void setPolygonPlacementFlags( QgsLabeling::PolygonPlacementFlags flags ) { mPolygonPlacementFlags = flags; }
 

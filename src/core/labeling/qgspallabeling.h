@@ -443,7 +443,7 @@ class CORE_EXPORT QgsPalLayerSettings
       LinePlacementOptions = 99, //!< Line placement flags
       OverrunDistance = 102, //!< Distance which labels can extend past either end of linear features
       LabelAllParts = 103, //!< Whether all parts of multi-part features should be labeled
-      PolygonLabelOutside = 109, //!< Whether labels outside a polygon feature are permitted, or should be forced
+      PolygonLabelOutside = 109, //!< Whether labels outside a polygon feature are permitted, or should be forced (since QGIS 3.14)
 
       // rendering
       ScaleVisibility = 23,
@@ -652,6 +652,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * Returns the polygon placement flags, which dictate how polygon labels can be placed.
      *
      * \see setPolygonPlacementFlags()
+     * \since QGIS 3.14
      */
     QgsLabeling::PolygonPlacementFlags polygonPlacementFlags() const { return mPolygonPlacementFlags; }
 
@@ -659,6 +660,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * Sets the polygon placement \a flags, which dictate how polygon labels can be placed.
      *
      * \see polygonPlacementFlags()
+     * \since QGIS 3.14
      */
     void setPolygonPlacementFlags( QgsLabeling::PolygonPlacementFlags flags ) { mPolygonPlacementFlags = flags; }
 
