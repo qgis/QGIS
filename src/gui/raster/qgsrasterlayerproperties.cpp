@@ -1248,7 +1248,7 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
                                     mRasterLayer->providerType() );
   QVariantMap uri = metadata->decodeUri( mRasterLayer->dataProvider()->dataSourceUri() );
 
-  if ( mWmstGroup->isVisible() )
+  if ( mWmstGroup->isVisibleTo( this ) )
     uri[ QStringLiteral( "allowTemporalUpdates" ) ] = mWmstGroup->isChecked();
 
   if ( mWmstGroup->isEnabled() &&
