@@ -1,39 +1,39 @@
 {
-        "name": "display_expression",
-	"type": "function",
-        "description": "Returns the display expression for a given feature in a layer. If called with no parameters, it evaluates the current feature. The expression is evaluated by default.",
-        "arguments": [
-                {
-                        "arg": "feature",
-                        "optional": true,
-                        "default": "current feature",
-                        "description": "The feature which should be evaluated."
-		},
-                {
-                        "arg": "layer",
-                        "optional": true,
-                        "default": "current layer",
-                        "description": "The layer (or its id or name)."
-                },
-		{
-			"arg": "evaluate",
-                        "description": "If the expression must be evaluated. If false, the expression will be returned as a string literal only (which could potentially be later evaluated using the 'eval' function).",
-			"optional": true,
-			"default": "true"
-		}
-	],
-        "examples": [
-                {
-                        "expression": "display_expression()",
-                        "returns": "The display expression of the current feature."
-                },
-                {
-                        "expression": "display_expression($currentfeature)",
-                        "returns": "The display expression for a given feature."
-		},
-		{
-                        "expression": "display_expression('a_layer_id', $currentfeature, 'False')",
-                        "returns": "The display expression of the current feature not evaluated."
-		}
-	]
+  "name": "display_expression",
+  "type": "function",
+  "description": "Returns the display expression for a given feature in a layer. If called with no parameters, it evaluates the current feature. The expression is evaluated by default.",
+  "arguments": [
+    {
+      "arg": "feature",
+      "optional": true,
+      "default": "current feature",
+      "description": "The feature which should be evaluated."
+    },
+    {
+      "arg": "layer",
+      "optional": true,
+      "default": "current layer",
+      "description": "The layer (or its id or name)."
+    },
+    {
+      "arg": "evaluate",
+      "description": "If the expression must be evaluated. If false, the expression will be returned as a string literal only (which could potentially be later evaluated using the 'eval' function).",
+      "optional": true,
+      "default": "true"
+    }
+  ],
+  "examples": [
+    {
+      "expression": "display_expression()",
+      "returns": "The display expression of the current feature."
+    },
+    {
+      "expression": "display_expression(get_feature_by_id('streets', 1), 'streets')",
+      "returns": "The display expression of the feature with the ID 1 on the layer 'streets'."
+    },
+    {
+      "expression": "display_expression('a_layer_id', $currentfeature, 'False')",
+      "returns": "The display expression of the given feature not evaluated."
+    }
+  ]
 }

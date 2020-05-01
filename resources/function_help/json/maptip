@@ -1,39 +1,39 @@
 {
-	"name": "maptip",
-	"type": "function",
-        "description": "Returns the maptip for a given feature in a layer. If called with no parameters, it evaluates the current feature. The maptip is evaluated by default.",
-        "arguments": [
-            {
-                    "arg": "feature",
-                    "optional": true,
-                    "default": "current feature",
-                    "description": "The feature which should be evaluated."
-            },
-            {
-                    "arg": "layer",
-                    "optional": true,
-                    "default": "current layer",
-                    "description": "The layer (or its id or name)."
-            },
-            {
-                    "arg": "evaluate",
-                    "description": "If the expression must be evaluated. If false, the expression will be returned as a string literal only (which could potentially be later evaluated using the 'eval_template' function).",
-                    "optional": true,
-                    "default": "true"
-            }
-	],
-        "examples": [
-                {
-                        "expression": "maptip()",
-                        "returns": "The maptip of the current feature."
-		},
-                {
-                        "expression": "maptip($currentFeature)",
-                        "returns": "The maptip of the current feature."
-                },
-		{
-			"expression": "maptip('a_layer_id', $currentFeature, 'False')",
-                        "returns": "The maptip of the current feature not evaluated."
-		}
-	]
+  "name": "maptip",
+  "type": "function",
+  "description": "Returns the maptip for a given feature in a layer. If called with no parameters, it evaluates the current feature. The maptip is evaluated by default.",
+  "arguments": [
+    {
+      "arg": "feature",
+      "optional": true,
+      "default": "current feature",
+      "description": "The feature which should be evaluated."
+    },
+    {
+      "arg": "layer",
+      "optional": true,
+      "default": "current layer",
+      "description": "The layer (or its id or name)."
+    },
+    {
+      "arg": "evaluate",
+      "description": "If the expression must be evaluated. If false, the expression will be returned as a string literal only (which could potentially be later evaluated using the 'eval_template' function).",
+      "optional": true,
+      "default": "true"
+    }
+  ],
+  "examples": [
+    {
+      "expression": "maptip()",
+      "returns": "The maptip of the current feature."
+    },
+    {
+      "expression": "maptip(get_feature('streets', 1), 'streets')",
+      "returns": "The maptip of the feature with the ID 1 on the layer 'streets'."
+    },
+    {
+      "expression": "maptip('a_layer_id', $currentfeature, 'False')",
+      "returns": "The maptip of the given feature not evaluated."
+    }
+  ]
 }
