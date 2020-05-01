@@ -318,25 +318,37 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
 {
   if ( filterMode != mFilterMode )
   {
-    if ( filterMode == ShowVisible )
+    // cleanup existing connections
+    switch ( mFilterMode )
     {
-      connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
-      connect( mTableModel, &QgsAttributeTableModel::dataChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
-      generateListOfVisibleFeatures();
-    }
-    else
-    {
-      disconnect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
-      disconnect( mTableModel, &QgsAttributeTableModel::dataChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
+      case ShowVisible:
+        disconnect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
+        disconnect( mTableModel, &QgsAttributeTableModel::dataChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
+        break;
+      case ShowAll:
+      case ShowEdited:
+      case ShowSelected:
+        break;
+      case ShowFilteredList:
+        disconnect( mTableModel, &QgsAttributeTableModel::dataChanged, this, &QgsAttributeTableFilterModel::filterFeatures );
+        break;
     }
 
-    if ( filterMode == ShowFilteredList )
+    // setup new connections
+    switch ( filterMode )
     {
-      connect( mTableModel, &QgsAttributeTableModel::dataChanged, this, &QgsAttributeTableFilterModel::filterFeatures );
-    }
-    else
-    {
-      disconnect( mTableModel, &QgsAttributeTableModel::dataChanged, this, &QgsAttributeTableFilterModel::filterFeatures );
+      case ShowVisible:
+        connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
+        connect( mTableModel, &QgsAttributeTableModel::dataChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
+        generateListOfVisibleFeatures();
+        break;
+      case ShowAll:
+      case ShowEdited:
+      case ShowSelected:
+        break;
+      case ShowFilteredList:
+        connect( mTableModel, &QgsAttributeTableModel::dataChanged, this, &QgsAttributeTableFilterModel::filterFeatures );
+        break;
     }
 
     mFilterMode = filterMode;
