@@ -35,7 +35,7 @@ import base64
 import subprocess
 
 from test_qgsserver import QgsServerTestBase
-from qgis.core import QgsProject, QgsRenderChecker
+from qgis.core import QgsProject, QgsRenderChecker, QgsMultiRenderChecker
 from qgis.server import QgsServerRequest
 from utilities import getExecutablePath, unitTestDataPath
 
@@ -105,13 +105,13 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
         temp_image = os.path.join(tempfile.gettempdir(), "%s_result.png" % control_image)
         self._pdf_to_png(temp_pdf, temp_image, dpi=dpi, page=1)
 
-        control = QgsRenderChecker()
+        control = QgsMultiRenderChecker()
         control.setControlPathPrefix("qgis_server")
         control.setControlName(control_image)
         control.setRenderedImage(temp_image)
         if max_size_diff.isValid():
             control.setSizeTolerance(max_size_diff.width(), max_size_diff.height())
-        return control.compareImages(control_image, max_diff), control.report()
+        return control.runTest(control_image, max_diff), control.report()
 
     def _pdf_diff_error(self, response, headers, image, max_diff=100, max_size_diff=QSize(), unittest_data_path='control_images', dpi=96):
 

@@ -40,7 +40,7 @@ import difflib
 
 from io import StringIO
 from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse
-from qgis.core import QgsRenderChecker, QgsApplication, QgsFontUtils
+from qgis.core import QgsRenderChecker, QgsApplication, QgsFontUtils, QgsMultiRenderChecker
 from qgis.testing import unittest
 from qgis.PyQt.QtCore import QSize
 from utilities import unitTestDataPath
@@ -188,13 +188,13 @@ class QgsServerTestBase(unittest.TestCase):
         if outputJpg:
             return (True, "QgsRenderChecker can't be used for JPG images")
 
-        control = QgsRenderChecker()
+        control = QgsMultiRenderChecker()
         control.setControlPathPrefix("qgis_server")
         control.setControlName(control_image)
         control.setRenderedImage(temp_image)
         if max_size_diff.isValid():
             control.setSizeTolerance(max_size_diff.width(), max_size_diff.height())
-        return control.compareImages(control_image, max_diff), control.report()
+        return control.runTest(control_image, max_diff), control.report()
 
     def _img_diff_error(self, response, headers, image, max_diff=100, max_size_diff=QSize(), unittest_data_path='control_images', outputJpg=False):
 
