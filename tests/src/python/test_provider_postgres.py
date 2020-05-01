@@ -441,6 +441,10 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         bigint_with_default_idx = vl.fields().lookupField('bigint_attribute_def')
         self.assertEqual(f.attributes()[bigint_with_default_idx], 42)
 
+        # check if NULL values are correctly read
+        bigint_def_null_idx = vl.fields().lookupField('bigint_attribute')
+        self.assertEqual(f.attributes()[bigint_def_null_idx], NULL)
+
         # check if we can overwrite a default value
         vl.startEditing()
         vl.changeAttributeValue(f.id(), bigint_with_default_idx, 43)
