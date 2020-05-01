@@ -504,6 +504,33 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertNotEqual(f[0]['pk'], NULL, f[0].attributes())
         vl.deleteFeatures([f[0].id()])
 
+    def testGeneratedFields(self):
+        cur = self.con.cursor()
+        cur.execute("SHOW server_version_num")
+        pgversion = int(cur.fetchone()[0])
+        if pgversion < 120000:
+            print("DEBUGUE: postgresql < 12. Skip.")
+            return
+
+        vl = QgsVectorLayer('{} table="qgis_test"."{}" (geom) srid=4326 type=POLYGON key="id" sql='.format(self.dbconn, "test_gen_col"), "test_gen_col", "postgres")
+        self.assertTrue(vl.isValid())
+
+        f = QgsFeature(vl.fields())
+        f.setGeometry(QgsGeometry.fromWkt('Polygon ((-67 -2, -67 0, -68 0, -70 -1, -67 -2))'))
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addFeatures([f]))
+        self.assertTrue(vl.commitChanges())
+
+        # reading back to see if we saved the centroid correctly.
+        vl2 = QgsVectorLayer('{} table="qgis_test"."{}" (cent) srid=4326 type=POINT key="id" sql='.format(self.dbconn, "test_gen_col"), "test_gen_col", "postgres")
+        # centroid must be 0101000020E6100000310CC3300C0351C03DCFF33CCFF3ECBF , or Point (-68.047619047619051 -0.90476190476190477)
+        f2 = next(vl2.getFeatures(QgsGetFeatureRequest()))
+        generated_geometry = f2.geometry().asWkt()
+        expected_geometry = 'Point (-68.047619047619051 -0.90476190476190477)'
+        print("DEBUGUE: versão 12 antes assert.")
+        assert compareWkt(generated_geometry, expected_geometry), "Geometry mismatch! Expected:\n{}\nGot:\n{}\n".format(expected_geometry, generated_geometry)
+        print("DEBUGUE: versão 12 após assert.")
+
     def testNonPkBigintField(self):
         """Test if we can correctly insert, read and change attributes(fields) of type bigint and which are not PKs."""
         vl = QgsVectorLayer(
