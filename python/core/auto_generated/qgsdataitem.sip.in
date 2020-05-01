@@ -479,7 +479,8 @@ Item that represents a layer that can be opened with one of the providers
       Database,
       Table,
       Plugin,
-      Mesh
+      Mesh,
+      VectorTile
     };
 
 
@@ -573,6 +574,10 @@ Use QgsDataItemGuiProvider.deleteLayer instead
     static QIcon iconMesh();
 %Docstring
 Returns icon for mesh layer type
+%End
+    static QIcon iconVectorTile();
+%Docstring
+Returns icon for vector tile layer
 %End
 
     virtual QString layerName() const;

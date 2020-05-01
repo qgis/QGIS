@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>743</width>
-    <height>658</height>
+    <width>611</width>
+    <height>413</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_5">
    <property name="spacing">
@@ -48,8 +48,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>743</width>
-        <height>658</height>
+        <width>611</width>
+        <height>413</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">
@@ -81,160 +81,21 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_7">
+          <item row="2" column="0" colspan="2">
+           <widget class="QRadioButton" name="mModeFixedRangeRadio">
             <property name="text">
-             <string>Fetch mode</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QComboBox" name="mFetchModeComboBox"/>
-          </item>
-          <item row="1" column="2">
-           <widget class="QCheckBox" name="mDisableTime">
-            <property name="text">
-             <string>Use date only</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QRadioButton" name="mLayerRadioButton">
-            <property name="text">
-             <string>Specify time range</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QRadioButton" name="mProjectRadioButton">
-            <property name="text">
-             <string>Use Project time</string>
+             <string>Fixed time range (only show this layer if animation time is within this range)</string>
             </property>
             <property name="checked">
              <bool>false</bool>
             </property>
            </widget>
           </item>
-          <item row="5" column="0" colspan="3">
-           <widget class="QFrame" name="frame">
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_5">
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_3">
-               <property name="text">
-                <string>If this option is checked, project time will be used to determine time range.</string>
-               </property>
-               <property name="wordWrap">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item row="6" column="0" colspan="3">
-           <widget class="QgsCollapsibleGroupBox" name="mAdvancedGroupBox">
-            <property name="title">
-             <string>Advanced</string>
-            </property>
-            <property name="collapsed" stdset="0">
+          <item row="3" column="0" colspan="2">
+           <widget class="QFrame" name="mFixedTimeRangeFrame">
+            <property name="enabled">
              <bool>false</bool>
             </property>
-            <layout class="QGridLayout" name="gridLayout_4">
-             <item row="2" column="1" rowspan="2" colspan="2">
-              <widget class="QgsDateTimeEdit" name="mStartReferenceDateTimeEdit">
-               <property name="displayFormat">
-                <string>M/d/yyyy h:mm AP</string>
-               </property>
-               <property name="calendarPopup">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QCheckBox" name="mReferenceCheckBox">
-               <property name="text">
-                <string>Use Reference time</string>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="1" colspan="2">
-              <widget class="QPushButton" name="mSetEndAsStartReferenceButton">
-               <property name="text">
-                <string>Set end same as start</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0" colspan="3">
-              <widget class="QLabel" name="label_9">
-               <property name="text">
-                <string>Filter layer temporal properties based on the time when product model ran. </string>
-               </property>
-               <property name="wordWrap">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="2">
-              <widget class="QWidget" name="widget_2" native="true"/>
-             </item>
-             <item row="4" column="0">
-              <widget class="QLabel" name="label_6">
-               <property name="text">
-                <string>End date</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="1" colspan="2">
-              <widget class="QgsDateTimeEdit" name="mEndReferenceDateTimeEdit">
-               <property name="displayFormat">
-                <string>M/d/yyyy h:mm AP</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0" rowspan="2">
-              <widget class="QLabel" name="label_5">
-               <property name="text">
-                <string>Start date</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item row="7" column="1">
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="0" colspan="3">
-           <widget class="QLabel" name="mLabel">
-            <property name="text">
-             <string/>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" colspan="3">
-           <widget class="QFrame" name="frame_2">
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
@@ -244,18 +105,17 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
             <property name="lineWidth">
              <number>0</number>
             </property>
-            <layout class="QGridLayout" name="gridLayout_2">
+            <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,2,0,2">
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
              <item row="0" column="0">
               <widget class="QLabel" name="label_2">
                <property name="text">
                 <string>Start date</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_4">
-               <property name="text">
-                <string>End date</string>
                </property>
               </widget>
              </item>
@@ -269,30 +129,6 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
                </property>
               </widget>
              </item>
-             <item row="2" column="1" colspan="2">
-              <widget class="QPushButton" name="mSetEndAsStartNormalButton">
-               <property name="text">
-                <string>Set end same as start</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1" colspan="2">
-              <widget class="QPushButton" name="mResetDatesButton">
-               <property name="text">
-                <string>Reset dates</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0" colspan="3">
-              <widget class="QLabel" name="label_8">
-               <property name="text">
-                <string>Note:  If the capabilities of this layer move out of this time range, the range will be reset to layer's advertised  default layer time range.</string>
-               </property>
-               <property name="wordWrap">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
              <item row="0" column="1" colspan="2">
               <widget class="QgsDateTimeEdit" name="mStartTemporalDateTimeEdit">
                <property name="displayFormat">
@@ -303,8 +139,54 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
                </property>
               </widget>
              </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_4">
+               <property name="text">
+                <string>End date</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
             </layout>
            </widget>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QRadioButton" name="mModeAutomaticRadio">
+            <property name="toolTip">
+             <string>Delegates temporal handling to the data provider</string>
+            </property>
+            <property name="text">
+             <string>Automatic</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
@@ -317,9 +199,9 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -327,27 +209,12 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
    <extends>QDateTimeEdit</extends>
    <header>qgsdatetimeedit.h</header>
   </customwidget>
-  <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
-  <tabstop>mFetchModeComboBox</tabstop>
-  <tabstop>mDisableTime</tabstop>
-  <tabstop>mLayerRadioButton</tabstop>
+  <tabstop>mModeFixedRangeRadio</tabstop>
   <tabstop>mStartTemporalDateTimeEdit</tabstop>
   <tabstop>mEndTemporalDateTimeEdit</tabstop>
-  <tabstop>mSetEndAsStartNormalButton</tabstop>
-  <tabstop>mProjectRadioButton</tabstop>
-  <tabstop>mAdvancedGroupBox</tabstop>
-  <tabstop>mReferenceCheckBox</tabstop>
-  <tabstop>mStartReferenceDateTimeEdit</tabstop>
-  <tabstop>mEndReferenceDateTimeEdit</tabstop>
-  <tabstop>mSetEndAsStartReferenceButton</tabstop>
   <tabstop>mTemporalGroupBox</tabstop>
  </tabstops>
  <resources/>

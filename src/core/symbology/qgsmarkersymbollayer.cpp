@@ -1459,7 +1459,7 @@ QRectF QgsSimpleMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext
   QRectF symbolBounds = QgsSimpleMarkerSymbolLayerBase::bounds( point, context );
 
   // need to account for stroke width
-  double penWidth = 0.0;
+  double penWidth = mStrokeWidth;
   bool ok = true;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) )
   {
@@ -1467,9 +1467,10 @@ QRectF QgsSimpleMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext
     double strokeWidth = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext(), mStrokeWidth, &ok );
     if ( ok )
     {
-      penWidth = context.renderContext().convertToPainterUnits( strokeWidth, mStrokeWidthUnit, mStrokeWidthMapUnitScale );
+      penWidth = strokeWidth;
     }
   }
+  penWidth = context.renderContext().convertToPainterUnits( penWidth, mStrokeWidthUnit, mStrokeWidthMapUnitScale );
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenStyle( mStrokeStyle ) );
@@ -1479,6 +1480,9 @@ QRectF QgsSimpleMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext
       penWidth = 0.0;
     }
   }
+  else if ( mStrokeStyle == Qt::NoPen )
+    penWidth = 0;
+
   //antialiasing, add 1 pixel
   penWidth += 1;
 
@@ -2684,24 +2688,49 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
   if ( !p )
     return;
 
-  bool hasDataDefinedSize = false;
-  double scaledSize = calculateSize( context, hasDataDefinedSize );
-  double width = context.renderContext().convertToPainterUnits( scaledSize, mSizeUnit, mSizeMapUnitScale );
-  bool hasDataDefinedAspectRatio = false;
-  double aspectRatio = calculateAspectRatio( context, scaledSize, hasDataDefinedAspectRatio );
-  double height = width * ( preservedAspectRatio() ? defaultAspectRatio() : aspectRatio );
-
-  //don't render symbols with size below one or above 10,000 pixels
-  if ( static_cast< int >( width ) < 1 || 10000.0 < width )
-  {
-    return;
-  }
-
   QString path = mPath;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyName ) )
   {
     context.setOriginalValueVariable( mPath );
     path = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyName, context.renderContext().expressionContext(), mPath );
+  }
+
+  if ( path.isEmpty() )
+    return;
+
+  double width = 0.0;
+  double height = 0.0;
+
+  bool hasDataDefinedSize = false;
+  double scaledSize = calculateSize( context, hasDataDefinedSize );
+
+  bool hasDataDefinedAspectRatio = false;
+  double aspectRatio = calculateAspectRatio( context, scaledSize, hasDataDefinedAspectRatio );
+
+  QPointF outputOffset;
+  double angle = 0.0;
+
+  // RenderPercentage Unit Type takes original image size
+  if ( mSizeUnit == QgsUnitTypes::RenderPercentage )
+  {
+    QSize size = QgsApplication::imageCache()->originalSize( path );
+    if ( size.isEmpty() )
+      return;
+
+    width = ( scaledSize * static_cast< double >( size.width() ) ) / 100.0;
+    height = ( scaledSize * static_cast< double >( size.height() ) ) / 100.0;
+
+    // don't render symbols with size below one or above 10,000 pixels
+    if ( static_cast< int >( width ) < 1 || 10000.0 < width || static_cast< int >( height ) < 1 || 10000.0 < height )
+      return;
+
+    calculateOffsetAndRotation( context, width, height, outputOffset, angle );
+  }
+  else
+  {
+    width = context.renderContext().convertToPainterUnits( scaledSize, mSizeUnit, mSizeMapUnitScale );
+    height = width * ( preservedAspectRatio() ? defaultAspectRatio() : aspectRatio );
+
     if ( preservedAspectRatio() && path != mPath )
     {
       QSize size = QgsApplication::imageCache()->originalSize( path );
@@ -2710,17 +2739,15 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
         height = width * ( static_cast< double >( size.height() ) / static_cast< double >( size.width() ) );
       }
     }
+
+    // don't render symbols with size below one or above 10,000 pixels
+    if ( static_cast< int >( width ) < 1 || 10000.0 < width )
+      return;
+
+    calculateOffsetAndRotation( context, scaledSize, scaledSize * ( height / width ), outputOffset, angle );
   }
 
-  if ( path.isEmpty() )
-    return;
-
   p->save();
-
-  QPointF outputOffset;
-  double angle = 0.0;
-  calculateOffsetAndRotation( context, scaledSize, scaledSize * ( height / width ), outputOffset, angle );
-
   p->translate( point + outputOffset );
 
   bool rotated = !qgsDoubleNear( angle, 0 );

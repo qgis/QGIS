@@ -53,7 +53,7 @@ class QgsAttributeTypeDialog;
 class QgsAttributeRelationEdit;
 class QgsAttributeWidgetEdit;
 
-class GUI_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAttributesFormProperties
+class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpressionContextGenerator, private Ui_QgsAttributesFormProperties
 {
     Q_OBJECT
 
@@ -146,7 +146,6 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         Type mType = Field;
         QString mName;
         QString mDisplayName;
-
         int mColumnCount = 1;
         bool mShowAsGroupBox = false;
         bool mShowLabel = true;
@@ -174,6 +173,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
       QString mEditorWidgetType;
       QMap<QString, QVariant> mEditorWidgetConfig;
       QString mAlias;
+      QgsPropertyCollection mDataDefinedProperties;
       QString mComment;
 
       operator QVariant();
@@ -214,6 +214,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     void initLayoutConfig();
     void initInitPython();
     void initSuppressCombo();
+
+    QgsExpressionContext createExpressionContext() const override;
 
   protected:
     void updateButtons();

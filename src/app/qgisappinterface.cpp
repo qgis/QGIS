@@ -162,6 +162,11 @@ QgsMeshLayer *QgisAppInterface::addMeshLayer( const QString &url, const QString 
   return qgis->addMeshLayer( url, baseName, providerKey );
 }
 
+QgsVectorTileLayer *QgisAppInterface::addVectorTileLayer( const QString &url, const QString &baseName )
+{
+  return qgis->addVectorTileLayer( url, baseName );
+}
+
 bool QgisAppInterface::addProject( const QString &projectName )
 {
   return qgis->addProject( projectName );
@@ -566,6 +571,16 @@ void QgisAppInterface::unregisterCustomDropHandler( QgsCustomDropHandler *handle
   qgis->unregisterCustomDropHandler( handler );
 }
 
+void QgisAppInterface::registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler )
+{
+  qgis->registerCustomProjectOpenHandler( handler );
+}
+
+void QgisAppInterface::unregisterCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler )
+{
+  qgis->unregisterCustomProjectOpenHandler( handler );
+}
+
 QMenu *QgisAppInterface::projectMenu() { return qgis->projectMenu(); }
 QMenu *QgisAppInterface::editMenu() { return qgis->editMenu(); }
 QMenu *QgisAppInterface::viewMenu() { return qgis->viewMenu(); }
@@ -669,6 +684,8 @@ QAction *QgisAppInterface::actionAddOgrLayer() { return qgis->actionAddOgrLayer(
 QAction *QgisAppInterface::actionAddRasterLayer() { return qgis->actionAddRasterLayer(); }
 QAction *QgisAppInterface::actionAddPgLayer() { return qgis->actionAddPgLayer(); }
 QAction *QgisAppInterface::actionAddWmsLayer() { return qgis->actionAddWmsLayer(); }
+QAction *QgisAppInterface::actionAddXyzLayer() { return qgis->actionAddXyzLayer(); }
+QAction *QgisAppInterface::actionAddVectorTileLayer() { return qgis->actionAddVectorTileLayer(); }
 QAction *QgisAppInterface::actionAddAfsLayer() { return qgis->actionAddAfsLayer(); }
 QAction *QgisAppInterface::actionAddAmsLayer() { return qgis->actionAddAmsLayer(); }
 QAction *QgisAppInterface::actionCopyLayerStyle() { return qgis->actionCopyLayerStyle(); }
@@ -694,6 +711,8 @@ QAction *QgisAppInterface::actionRemoveAllFromOverview() { return qgis->actionRe
 QAction *QgisAppInterface::actionHideAllLayers() { return qgis->actionHideAllLayers(); }
 QAction *QgisAppInterface::actionShowAllLayers() { return qgis->actionShowAllLayers(); }
 QAction *QgisAppInterface::actionHideSelectedLayers() { return qgis->actionHideSelectedLayers(); }
+QAction *QgisAppInterface::actionToggleSelectedLayers() { return qgis->actionToggleSelectedLayers(); }
+QAction *QgisAppInterface::actionToggleSelectedLayersIndependently() { return qgis->actionToggleSelectedLayersIndependently(); }
 QAction *QgisAppInterface::actionHideDeselectedLayers() { return qgis->actionHideDeselectedLayers(); }
 QAction *QgisAppInterface::actionShowSelectedLayers() { return qgis->actionShowSelectedLayers(); }
 

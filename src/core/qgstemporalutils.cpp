@@ -17,6 +17,7 @@
 #include "qgsproject.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsrasterlayer.h"
+#include "qgsmeshlayer.h"
 
 QgsDateTimeRange QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject *project )
 {
@@ -32,28 +33,43 @@ QgsDateTimeRange QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject 
 
     if ( !currentLayer->temporalProperties() || !currentLayer->temporalProperties()->isActive() )
       continue;
+    QgsDateTimeRange layerRange;
 
-    if ( currentLayer->type() == QgsMapLayerType::RasterLayer )
+    switch ( currentLayer->type() )
     {
-      QgsRasterLayer *rasterLayer  = qobject_cast<QgsRasterLayer *>( currentLayer );
-
-      QgsDateTimeRange layerRange;
-      switch ( rasterLayer->temporalProperties()->mode() )
+      case QgsMapLayerType::RasterLayer:
       {
-        case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
-          layerRange = rasterLayer->temporalProperties()->fixedTemporalRange();
-          break;
+        QgsRasterLayer *rasterLayer  = qobject_cast<QgsRasterLayer *>( currentLayer );
 
-        case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
-          layerRange = rasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange();
-          break;
+        switch ( rasterLayer->temporalProperties()->mode() )
+        {
+          case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
+            layerRange = rasterLayer->temporalProperties()->fixedTemporalRange();
+            break;
+
+          case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
+            layerRange = rasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange();
+            break;
+        }
       }
-
-      if ( !minDate.isValid() ||  layerRange.begin() < minDate )
-        minDate = layerRange.begin();
-      if ( !maxDate.isValid() ||  layerRange.end() > maxDate )
-        maxDate = layerRange.end();
+      break;
+      case QgsMapLayerType::MeshLayer:
+      {
+        QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( currentLayer );
+        layerRange = meshLayer->temporalProperties()->timeExtent();
+      }
+      break;
+      default:
+        break;
     }
+
+
+    if ( !minDate.isValid() ||  layerRange.begin() < minDate )
+      minDate = layerRange.begin();
+    if ( !maxDate.isValid() ||  layerRange.end() > maxDate )
+      maxDate = layerRange.end();
+
+
   }
 
   return QgsDateTimeRange( minDate, maxDate );

@@ -119,7 +119,7 @@ QVector<QgsVector> QgsMeshLayerUtils::griddedVectorValues( const QgsMeshLayer *m
     return vectors;
 
   // extract vector dataset
-  bool vectorDataOnVertices = meta.DataOnVertices;
+  bool vectorDataOnVertices = meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
   int datacount = vectorDataOnVertices ? nativeMesh->vertices.count() : nativeMesh->faces.count();
   const QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues( meshLayer, index, 0, datacount );
 
@@ -267,6 +267,12 @@ double QgsMeshLayerUtils::interpolateFromVerticesData( double fraction, double v
     return std::numeric_limits<double>::quiet_NaN();
   }
   return val1 + ( val2 - val1 ) * fraction;
+}
+
+QgsMeshDatasetValue QgsMeshLayerUtils::interpolateFromVerticesData( double fraction, const QgsMeshDatasetValue &val1, const QgsMeshDatasetValue &val2 )
+{
+  return QgsMeshDatasetValue( interpolateFromVerticesData( fraction, val1.x(), val2.x() ),
+                              interpolateFromVerticesData( fraction, val1.y(), val2.y() ) );
 }
 
 
@@ -452,29 +458,14 @@ QgsRectangle QgsMeshLayerUtils::triangleBoundingBox( const QgsPointXY &p1, const
   return bbox;
 }
 
-QString QgsMeshLayerUtils::formatTime( double hours, const QgsMeshTimeSettings &settings )
+QString QgsMeshLayerUtils::formatTime( double hours, const QDateTime &referenceTime, const QgsMeshTimeSettings &settings )
 {
   QString ret;
 
-  switch ( settings.providerTimeUnit() )
-  {
-    case QgsMeshTimeSettings::seconds:
-      hours = hours / 3600.0;
-      break;
-    case QgsMeshTimeSettings::minutes:
-      hours = hours / 60.0;
-      break;
-    case QgsMeshTimeSettings::hours:
-      break;
-    case QgsMeshTimeSettings::days:
-      hours = hours * 24.0;
-      break;
-  }
-
-  if ( settings.useAbsoluteTime() )
+  if ( referenceTime.isValid() )
   {
     QString format( settings.absoluteTimeFormat() );
-    QDateTime dateTime( settings.absoluteTimeReferenceTime() );
+    QDateTime dateTime( referenceTime );
     qint64 seconds = static_cast<qint64>( hours * 3600.0 );
     dateTime = dateTime.addSecs( seconds );
     ret = dateTime.toString( format );
@@ -485,7 +476,6 @@ QString QgsMeshLayerUtils::formatTime( double hours, const QgsMeshTimeSettings &
   {
     QString format( settings.relativeTimeFormat() );
     format = format.trimmed();
-    hours = hours + settings.relativeTimeOffsetHours();
     int totalHours = static_cast<int>( hours );
 
     if ( format == QStringLiteral( "hh:mm:ss.zzz" ) )
@@ -555,27 +545,6 @@ QString QgsMeshLayerUtils::formatTime( double hours, const QgsMeshTimeSettings &
     }
   }
   return ret;
-}
-
-QDateTime QgsMeshLayerUtils::firstReferenceTime( QgsMeshLayer *meshLayer )
-{
-  if ( !meshLayer )
-    return QDateTime();
-
-  QgsMeshDataProvider *provider = meshLayer->dataProvider();
-
-  if ( !provider )
-    return QDateTime();
-
-  // Searches for the first valid reference time in the dataset groups
-  for ( int i = 0; i < provider->datasetGroupCount(); ++i )
-  {
-    QgsMeshDatasetGroupMetadata meta = provider->datasetGroupMetadata( i );
-    if ( meta.referenceTime().isValid() )
-      return meta.referenceTime();
-  }
-
-  return QDateTime();
 }
 
 QVector<QVector3D> QgsMeshLayerUtils::calculateNormals( const QgsTriangularMesh &triangularMesh, const QVector<double> &verticalMagnitude, bool isRelative )

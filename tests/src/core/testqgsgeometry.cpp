@@ -1746,7 +1746,6 @@ void TestQgsGeometry::circularString()
   QVERIFY( !segmentized->isMeasure() );
   QCOMPARE( segmentized->wkbType(), QgsWkbTypes::LineString );
 
-
   //to/from WKB
   QgsCircularString l15;
   l15.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 )
@@ -4889,6 +4888,98 @@ void TestQgsGeometry::lineString()
   interpolateResult.reset( interpolate.interpolatePoint( 1 ) );
   QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point (11 3)" ) );
 
+  // visit points
+  QgsLineString visitLine;
+  visitLine.visitPointsByRegularDistance( 1, [ = ]( double, double, double, double, double, double, double, double, double, double, double, double )->bool
+  {
+    return true;
+  } ); // no crash
+  visitLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) << QgsPoint( 11, 12, 13, 14, QgsWkbTypes::PointZM ) << QgsPoint( 111, 12, 23, 24, QgsWkbTypes::PointZM ) );
+  int visitCount = 0;
+  xx.clear();
+  yy.clear();
+  zz.clear();
+  mm.clear();
+  QVector<double> pX, pY, pZ, pM, nX, nY, nZ, nM;
+  auto visitor = [ & ]( double x, double y, double z, double m, double ppx, double ppy, double ppz, double ppm, double nnx, double nny, double nnz, double nnm )->bool
+  {
+    xx << x;
+    yy << y;
+    zz << z;
+    mm << m;
+    pX << ppx;
+    pY << ppy;
+    pZ << ppz;
+    pM << ppm;
+    nX << nnx;
+    nY << nny;
+    nZ << nnz;
+    nM << nnm;
+    visitCount++;
+    return true;
+  };
+  visitLine.visitPointsByRegularDistance( 0, visitor );
+  QCOMPARE( visitCount, 1 );
+  QCOMPARE( xx.at( 0 ), 11.0 );
+  QCOMPARE( yy.at( 0 ), 2.0 );
+  QCOMPARE( zz.at( 0 ), 3.0 );
+  QCOMPARE( mm.at( 0 ), 4.0 );
+  xx.clear();
+  yy.clear();
+  zz.clear();
+  mm.clear();
+  pX.clear();
+  pY.clear();
+  pZ.clear();
+  pM.clear();
+  nX.clear();
+  nY.clear();
+  nZ.clear();
+  nM.clear();
+  visitCount = 0;
+  visitLine.visitPointsByRegularDistance( -1, visitor );
+  QCOMPARE( visitCount, 0 );
+  visitLine.visitPointsByRegularDistance( 10000, visitor );
+  QCOMPARE( visitCount, 0 );
+  visitLine.visitPointsByRegularDistance( 30, visitor );
+  QCOMPARE( visitCount, 3 );
+  QCOMPARE( xx.at( 0 ), 31.0 );
+  QCOMPARE( yy.at( 0 ), 12.0 );
+  QCOMPARE( zz.at( 0 ), 15.0 );
+  QCOMPARE( mm.at( 0 ), 16.0 );
+  QCOMPARE( pX.at( 0 ), 11.0 );
+  QCOMPARE( pY.at( 0 ), 12.0 );
+  QCOMPARE( pZ.at( 0 ), 13.0 );
+  QCOMPARE( pM.at( 0 ), 14.0 );
+  QCOMPARE( nX.at( 0 ), 111.0 );
+  QCOMPARE( nY.at( 0 ), 12.0 );
+  QCOMPARE( nZ.at( 0 ), 23.0 );
+  QCOMPARE( nM.at( 0 ), 24.0 );
+  QCOMPARE( xx.at( 1 ), 61.0 );
+  QCOMPARE( yy.at( 1 ), 12.0 );
+  QCOMPARE( zz.at( 1 ), 18.0 );
+  QCOMPARE( mm.at( 1 ), 19.0 );
+  QCOMPARE( pX.at( 1 ), 11.0 );
+  QCOMPARE( pY.at( 1 ), 12.0 );
+  QCOMPARE( pZ.at( 1 ), 13.0 );
+  QCOMPARE( pM.at( 1 ), 14.0 );
+  QCOMPARE( nX.at( 1 ), 111.0 );
+  QCOMPARE( nY.at( 1 ), 12.0 );
+  QCOMPARE( nZ.at( 1 ), 23.0 );
+  QCOMPARE( nM.at( 1 ), 24.0 );
+  QCOMPARE( xx.at( 2 ), 91.0 );
+  QCOMPARE( yy.at( 2 ), 12.0 );
+  QCOMPARE( zz.at( 2 ), 21.0 );
+  QCOMPARE( mm.at( 2 ), 22.0 );
+  QCOMPARE( pX.at( 2 ), 11.0 );
+  QCOMPARE( pY.at( 2 ), 12.0 );
+  QCOMPARE( pZ.at( 2 ), 13.0 );
+  QCOMPARE( pM.at( 2 ), 14.0 );
+  QCOMPARE( nX.at( 2 ), 111.0 );
+  QCOMPARE( nY.at( 2 ), 12.0 );
+  QCOMPARE( nZ.at( 2 ), 23.0 );
+  QCOMPARE( nM.at( 2 ), 24.0 );
+
   // orientation
   QgsLineString orientation;
   ( void )orientation.orientation(); // no crash
@@ -5179,6 +5270,12 @@ void TestQgsGeometry::polygon()
   QVERIFY( p6c.interiorRing( 2 )->is3D() );
   QVERIFY( !p6c.interiorRing( 2 )->isMeasure() );
   QCOMPARE( p6c.interiorRing( 2 )->wkbType(), QgsWkbTypes::LineString25D );
+
+  // alternate constructor
+  QgsPolygon pc6( new QgsLineString( QVector<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 ) << QgsPoint( 10, 0 ) << QgsPoint( 0, 0 ) ),
+                  QList< QgsLineString *>() << new QgsLineString( QVector< QgsPoint >() << QgsPoint( 1, 1 ) << QgsPoint( 2, 1 ) << QgsPoint( 2, 2 ) << QgsPoint( 1, 2 ) << QgsPoint( 1, 1 ) )
+                  << new QgsLineString( QVector< QgsPoint >() << QgsPoint( 3, 1 ) << QgsPoint( 4, 1 ) << QgsPoint( 4, 2 ) << QgsPoint( 3, 2 ) << QgsPoint( 3, 1 ) ) );
+  QCOMPARE( pc6.asWkt(), QStringLiteral( "Polygon ((0 0, 0 10, 10 10, 10 0, 0 0),(1 1, 2 1, 2 2, 1 2, 1 1),(3 1, 4 1, 4 2, 3 2, 3 1))" ) );
 
   //set interior rings
   QgsPolygon p7;
@@ -12263,6 +12360,21 @@ void TestQgsGeometry::multiPoint()
   pCast2.fromWkt( QStringLiteral( "MultiPointZM(PointZM(0 1 1 2))" ) );
   QVERIFY( QgsMultiPoint().cast( &pCast2 ) );
 
+  // bounding box
+  QgsMultiPoint boundingBox;
+  boundingBox.addGeometry( new QgsPoint( 0, 0 ) );
+  QCOMPARE( boundingBox.boundingBox(), QgsRectangle( 0, 0, 0, 0 ) );
+  boundingBox.addGeometry( new QgsPoint( 1, 2 ) );
+  QCOMPARE( boundingBox.boundingBox(), QgsRectangle( 0, 0, 1, 2 ) );
+  QgsMultiPoint boundingBox2;
+  QCOMPARE( boundingBox2.boundingBox(), QgsRectangle( 0, 0, 0, 0 ) );
+  boundingBox2.addGeometry( new QgsPoint( 1, 2 ) );
+  QCOMPARE( boundingBox2.boundingBox(), QgsRectangle( 1, 2, 1, 2 ) );
+  boundingBox2.addGeometry( new QgsPoint( 10, 3 ) );
+  QCOMPARE( boundingBox2.boundingBox(), QgsRectangle( 1, 2, 10, 3 ) );
+  boundingBox2.addGeometry( new QgsPoint( 0, 0 ) );
+  QCOMPARE( boundingBox2.boundingBox(), QgsRectangle( 0, 0, 10, 3 ) );
+
   //boundary
 
   //multipoints have no boundary defined
@@ -13584,6 +13696,20 @@ void TestQgsGeometry::multiCurve()
   QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 27, 53, 21, 52 ) );
   QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 43, 43, 11, 5 ) );
   QCOMPARE( ls->pointN( 2 ), QgsPoint( QgsWkbTypes::PointZM, 27, 37, 6, 2 ) );
+
+  // segmentize
+  QgsMultiCurve multiCurve2;
+  QgsCompoundCurve compoundCurve2;
+  QgsCircularString circularString2;
+  circularString2.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 10 ) << QgsPoint( 21, 2 ) );
+  compoundCurve2.addCurve( circularString2.clone() );
+  multiCurve2.addGeometry( compoundCurve2.clone() );
+  QgsMultiLineString *segmentized2 = static_cast<QgsMultiLineString *>( multiCurve2.segmentize() );
+  QCOMPARE( segmentized2->vertexCount(), 156 );
+  QCOMPARE( segmentized2->partCount(), 1 );
+  QVERIFY( !segmentized2->is3D() );
+  QVERIFY( !segmentized2->isMeasure() );
+  QCOMPARE( segmentized2->wkbType(),  QgsWkbTypes::Type::MultiLineString );
 }
 
 void TestQgsGeometry::multiSurface()

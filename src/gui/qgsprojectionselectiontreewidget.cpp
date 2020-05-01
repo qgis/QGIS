@@ -696,7 +696,7 @@ void QgsProjectionSelectionTreeWidget::loadUnknownCrs( const QgsCoordinateRefere
   }
 
   QTreeWidgetItem *newItem = new QTreeWidgetItem( mUnknownList, QStringList( QObject::tr( "Unknown CRS" ) ) );
-  newItem->setData( 0, RoleWkt, crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
+  newItem->setData( 0, RoleWkt, crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
   newItem->setData( 0, RoleProj, crs.toProj() );
 
   lstCoordinateSystems->setCurrentItem( newItem );
@@ -965,7 +965,7 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
   }
 
   const QString extentHtml = QStringLiteral( "<dt><b>%1</b></dt><dd>%2</dd>" ).arg( tr( "Extent" ), extentString );
-  const QString wktString = tr( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "WKT" ), currentCrs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, true ).replace( '\n', QStringLiteral( "<br>" ) ).replace( ' ', QStringLiteral( "&nbsp;" ) ) );
+  const QString wktString = tr( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "WKT" ), currentCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, true ).replace( '\n', QStringLiteral( "<br>" ) ).replace( ' ', QStringLiteral( "&nbsp;" ) ) );
   const QString proj4String = tr( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "Proj4" ), currentCrs.toProj() );
 
 #ifdef Q_OS_WIN

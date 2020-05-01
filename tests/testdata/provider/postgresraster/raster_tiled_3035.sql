@@ -1,6 +1,11 @@
 --
 -- in-db 1 band float 32 raster
 --
+
+DROP TABLE IF EXISTS "public"."raster_tiled_3035" CASCADE;
+DROP TABLE IF EXISTS "o_2_raster_tiled_3035" CASCADE;
+DROP TABLE IF EXISTS "o_4_raster_tiled_3035" CASCADE;
+
 CREATE TABLE "raster_tiled_3035" ("rid" serial PRIMARY KEY,"rast" raster,"filename" text);
 CREATE TABLE "o_2_raster_tiled_3035" ("rid" serial PRIMARY KEY,"rast" raster,"filename" text);
 CREATE TABLE "o_4_raster_tiled_3035" ("rid" serial PRIMARY KEY,"rast" raster,"filename" text);

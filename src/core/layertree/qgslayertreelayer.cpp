@@ -18,6 +18,7 @@
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
+#include "qgssymbollayerutils.h"
 
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
@@ -39,6 +40,8 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( const QgsLayerTreeLayer &other )
   : QgsLayerTreeNode( other )
   , mRef( other.mRef )
   , mLayerName( other.mLayerName )
+  , mPatchShape( other.mPatchShape )
+  , mPatchSize( other.mPatchSize )
 {
   attachToLayer();
 }
@@ -110,6 +113,7 @@ QgsLayerTreeLayer *QgsLayerTreeLayer::readXml( QDomElement &element, const QgsRe
 
   Qt::CheckState checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( QStringLiteral( "checked" ) ) );
   bool isExpanded = ( element.attribute( QStringLiteral( "expanded" ), QStringLiteral( "1" ) ) == QLatin1String( "1" ) );
+  QString labelExpression = element.attribute( QStringLiteral( "legend_exp" ) );
 
   // needs to have the layer reference resolved later
   QgsLayerTreeLayer *nodeLayer = new QgsLayerTreeLayer( layerID, layerName, source, providerKey );
@@ -118,6 +122,18 @@ QgsLayerTreeLayer *QgsLayerTreeLayer::readXml( QDomElement &element, const QgsRe
 
   nodeLayer->setItemVisibilityChecked( checked != Qt::Unchecked );
   nodeLayer->setExpanded( isExpanded );
+  nodeLayer->setLabelExpression( labelExpression );
+
+  const QDomElement patchElem = element.firstChildElement( QStringLiteral( "patch" ) );
+  if ( !patchElem.isNull() )
+  {
+    QgsLegendPatchShape patch;
+    patch.readXml( patchElem, context );
+    nodeLayer->setPatchShape( patch );
+  }
+
+  nodeLayer->setPatchSize( QgsSymbolLayerUtils::decodeSize( element.attribute( QStringLiteral( "patch_size" ) ) ) );
+
   return nodeLayer;
 }
 
@@ -144,6 +160,15 @@ void QgsLayerTreeLayer::writeXml( QDomElement &parentElement, const QgsReadWrite
 
   elem.setAttribute( QStringLiteral( "checked" ), mChecked ? QStringLiteral( "Qt::Checked" ) : QStringLiteral( "Qt::Unchecked" ) );
   elem.setAttribute( QStringLiteral( "expanded" ), mExpanded ? "1" : "0" );
+  elem.setAttribute( QStringLiteral( "legend_exp" ), mLabelExpression );
+
+  if ( !mPatchShape.isNull() )
+  {
+    QDomElement patchElem = doc.createElement( QStringLiteral( "patch" ) );
+    mPatchShape.writeXml( patchElem, doc, context );
+    elem.appendChild( patchElem );
+  }
+  elem.setAttribute( QStringLiteral( "patch_size" ), QgsSymbolLayerUtils::encodeSize( mPatchSize ) );
 
   writeCommonXml( elem );
 
@@ -192,5 +217,15 @@ void QgsLayerTreeLayer::layerNameChanged()
 void QgsLayerTreeLayer::setLabelExpression( const QString &expression )
 {
   mLabelExpression = expression;
+}
+
+QgsLegendPatchShape QgsLayerTreeLayer::patchShape() const
+{
+  return mPatchShape;
+}
+
+void QgsLayerTreeLayer::setPatchShape( const QgsLegendPatchShape &shape )
+{
+  mPatchShape = shape;
 }
 

@@ -44,6 +44,7 @@
 #include "qgsnative.h"
 #include "qgsmaptoolpan.h"
 #include "qgsvectorlayercache.h"
+#include "qgsvectortilelayer.h"
 #include "qgsattributetablemodel.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsapplication.h"
@@ -84,6 +85,7 @@ QgsBrowserPropertiesWidget::QgsBrowserPropertiesWidget( QWidget *parent )
 void QgsBrowserPropertiesWidget::setWidget( QWidget *paramWidget )
 {
   QVBoxLayout *layout = new QVBoxLayout( this );
+  layout->setContentsMargins( 0, 0, 0, 0 );
   paramWidget->setParent( this );
   layout->addWidget( paramWidget );
 }
@@ -98,7 +100,7 @@ QgsBrowserPropertiesWidget *QgsBrowserPropertiesWidget::createWidget( QgsDataIte
     propertiesWidget = new QgsBrowserDirectoryProperties( parent );
     propertiesWidget->setItem( item );
   }
-  else if ( item->type() == QgsDataItem::Layer )
+  else if ( item->type() == QgsDataItem::Layer || item->type() == QgsDataItem::Custom )
   {
     // try new infrastructure of creation of layer widgets
     QWidget *paramWidget = nullptr;
@@ -123,7 +125,7 @@ QgsBrowserPropertiesWidget *QgsBrowserPropertiesWidget::createWidget( QgsDataIte
       propertiesWidget = new QgsBrowserPropertiesWidget( parent );
       propertiesWidget->setWidget( paramWidget );
     }
-    else
+    else if ( item->type() == QgsDataItem::Layer )
     {
       propertiesWidget = new QgsBrowserLayerProperties( parent );
       propertiesWidget->setItem( item );
@@ -205,6 +207,13 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
       QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
       options.skipCrsValidation = true;
       mLayer = qgis::make_unique < QgsVectorLayer>( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
+      break;
+    }
+
+    case QgsMapLayerType::VectorTileLayer:
+    {
+      QgsDebugMsgLevel( QStringLiteral( "creating vector tile layer" ), 2 );
+      mLayer = qgis::make_unique< QgsVectorTileLayer >( layerItem->uri(), layerItem->name() );
       break;
     }
 

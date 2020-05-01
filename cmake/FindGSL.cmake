@@ -65,6 +65,7 @@ ELSE(WIN32)
       SET(GSL_CONFIG_PREFER_PATH "$ENV{GSL_HOME}/bin" CACHE STRING "preferred path to GSL (gsl-config)")
       FIND_PROGRAM(GSL_CONFIG gsl-config
           ${GSL_CONFIG_PREFER_PATH}
+          $ENV{LIB_DIR}/bin
           /usr/local/bin/
           /usr/bin/
           )

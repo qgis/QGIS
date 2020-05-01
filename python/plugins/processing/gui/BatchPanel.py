@@ -144,7 +144,8 @@ class BatchPanelFillWidget(QToolButton):
                                                  QgsProcessingParameterRasterLayer,
                                                  QgsProcessingParameterMeshLayer,
                                                  QgsProcessingParameterVectorLayer,
-                                                 QgsProcessingParameterFeatureSource)):
+                                                 QgsProcessingParameterFeatureSource,
+                                                 QgsProcessingParameterMultipleLayers)):
             self.menu.addSeparator()
             find_by_pattern_action = QAction(QCoreApplication.translate('BatchPanel', 'Add Files by Pattern…'),
                                              self.menu)
@@ -277,7 +278,7 @@ class BatchPanelFillWidget(QToolButton):
         if isinstance(self.parameterDefinition, QgsProcessingParameterRasterLayer):
             layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
         elif isinstance(self.parameterDefinition,
-                        QgsProcessingParameterMultipleLayers) and self.param.layerType() == QgsProcessing.TypeRaster:
+                        QgsProcessingParameterMultipleLayers) and self.parameterDefinition.layerType() == QgsProcessing.TypeRaster:
             layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
         elif isinstance(self.parameterDefinition, QgsProcessingParameterVectorLayer):
             layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())

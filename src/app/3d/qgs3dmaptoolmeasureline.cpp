@@ -57,6 +57,7 @@ Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   mDialog->setWindowFlags( mDialog->windowFlags() | Qt::Tool );
   mDialog->restorePosition();
 
+  // Update scale if the terrain vertical scale changed
   connect( canvas, &Qgs3DMapCanvas::mapSettingsChanged, this, &Qgs3DMapToolMeasureLine::onMapSettingsChanged );
 }
 
@@ -97,7 +98,6 @@ void Qgs3DMapToolMeasureLine::activate()
     updateSettings();
     mIsAlreadyActivated = true;
   }
-
   // Show dialog
   mDialog->updateSettings();
   mDialog->show();
@@ -124,6 +124,8 @@ QCursor Qgs3DMapToolMeasureLine::cursor() const
 
 void Qgs3DMapToolMeasureLine::onMapSettingsChanged()
 {
+  if ( !mIsAlreadyActivated )
+    return;
   connect( mCanvas->scene(), &Qgs3DMapScene::terrainEntityChanged, this, &Qgs3DMapToolMeasureLine::onTerrainEntityChanged );
 
   // Update scale if the terrain vertical scale changed
@@ -137,6 +139,8 @@ void Qgs3DMapToolMeasureLine::onTerrainPicked( Qt3DRender::QPickEvent *event )
 
 void Qgs3DMapToolMeasureLine::onTerrainEntityChanged()
 {
+  if ( !mIsAlreadyActivated )
+    return;
   // no need to disconnect from the previous entity: it has been destroyed
   // start listening to the new terrain entity
   if ( QgsTerrainEntity *terrainEntity = mCanvas->scene()->terrainEntity() )
@@ -175,6 +179,8 @@ void Qgs3DMapToolMeasureLine::handleClick( Qt3DRender::QPickEvent *event, const 
 
 void Qgs3DMapToolMeasureLine::updateMeasurementLayer()
 {
+  if ( !mMeasurementLayer )
+    return;
   double verticalScale = canvas()->map()->terrainVerticalScale();
   QgsLineString *line;
   if ( verticalScale != 1.0 )
@@ -205,6 +211,8 @@ void Qgs3DMapToolMeasureLine::updateMeasurementLayer()
 
 void Qgs3DMapToolMeasureLine::updateSettings()
 {
+  if ( !mMeasurementLayer )
+    return;
   // Line style
   QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
   lineSymbol->setRenderAsSimpleLines( true );

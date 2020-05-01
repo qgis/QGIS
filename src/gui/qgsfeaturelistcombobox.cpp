@@ -41,7 +41,7 @@ QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
   connect( mModel, &QgsFeatureFilterModel::allowNullChanged, this, &QgsFeatureListComboBox::allowNullChanged );
   connect( mModel, &QgsFeatureFilterModel::extraIdentifierValueChanged, this, &QgsFeatureListComboBox::identifierValueChanged );
   connect( mModel, &QgsFeatureFilterModel::extraIdentifierValueIndexChanged, this, &QgsFeatureListComboBox::setCurrentIndex );
-  connect( mModel, &QgsFeatureFilterModel::identifierFieldChanged, this, &QgsFeatureListComboBox::identifierFieldChanged );
+  connect( mModel, &QgsFeatureFilterModel::identifierFieldsChanged, this, &QgsFeatureListComboBox::identifierFieldChanged );
   connect( mCompleter, static_cast<void( QCompleter::* )( const QModelIndex & )>( &QCompleter::highlighted ), this, &QgsFeatureListComboBox::onItemSelected );
   connect( mCompleter, static_cast<void( QCompleter::* )( const QModelIndex & )>( &QCompleter::activated ), this, &QgsFeatureListComboBox::onActivated );
   connect( mModel, &QgsFeatureFilterModel::beginUpdate, this, &QgsFeatureListComboBox::storeLineEditState );
@@ -242,7 +242,7 @@ void QgsFeatureListComboBox::setAllowNull( bool allowNull )
 QVariant QgsFeatureListComboBox::identifierValue() const
 {
   Q_NOWARN_DEPRECATED_PUSH
-  return mModel->extraIdentifierValue();
+  return mModel->extraIdentifierValues().value( 0 );
   Q_NOWARN_DEPRECATED_POP
 }
 
@@ -263,7 +263,7 @@ void QgsFeatureListComboBox::setIdentifierValues( const QVariantList &identifier
 
 void QgsFeatureListComboBox::setIdentifierValuesToNull()
 {
-  mModel->setExtraIdentifierValuesToNull();
+  mModel->setExtraIdentifierValueToNull();
 }
 
 QgsFeatureRequest QgsFeatureListComboBox::currentFeatureRequest() const

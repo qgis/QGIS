@@ -204,11 +204,11 @@ QPicture QgsSvgCache::svgAsPicture( const QString &path, double size, const QCol
 }
 
 QByteArray QgsSvgCache::svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                    double widthScaleFactor, double fixedAspectRatio, bool blocking )
+                                    double widthScaleFactor, double fixedAspectRatio, bool blocking, bool *isMissingImage )
 {
   QMutexLocker locker( &mMutex );
 
-  QgsSvgCacheEntry *currentEntry = cacheEntry( path, size, fill, stroke, strokeWidth, widthScaleFactor, fixedAspectRatio, blocking );
+  QgsSvgCacheEntry *currentEntry = cacheEntry( path, size, fill, stroke, strokeWidth, widthScaleFactor, fixedAspectRatio, blocking, isMissingImage );
 
   return currentEntry->svgContent;
 }
@@ -289,8 +289,10 @@ void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry, bool blocki
     return;
   }
 
+  const QByteArray content = getContent( entry->path, mMissingSvg, mFetchingSvg, blocking ) ;
+  entry->isMissingImage = content == mMissingSvg;
   QDomDocument svgDoc;
-  if ( !svgDoc.setContent( getContent( entry->path, mMissingSvg, mFetchingSvg, blocking ) ) )
+  if ( !svgDoc.setContent( content ) )
   {
     return;
   }
@@ -304,6 +306,7 @@ void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry, bool blocki
   replaceElemParams( docElem, entry->fill, entry->stroke, entry->strokeWidth * sizeScaleFactor );
 
   entry->svgContent = svgDoc.toByteArray( 0 );
+
 
   // toByteArray screws up tspans inside text by adding new lines before and after each span... this should help, at the
   // risk of potentially breaking some svgs where the newline is desired
@@ -465,7 +468,7 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput 
 }
 
 QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-    double widthScaleFactor, double fixedAspectRatio, bool blocking )
+    double widthScaleFactor, double fixedAspectRatio, bool blocking, bool *isMissingImage )
 {
   QgsSvgCacheEntry *currentEntry = findExistingEntry( new QgsSvgCacheEntry( path, size, strokeWidth, widthScaleFactor, fill, stroke, fixedAspectRatio ) );
 
@@ -473,6 +476,9 @@ QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &path, double size, con
   {
     replaceParamsAndCacheSvg( currentEntry, blocking );
   }
+
+  if ( isMissingImage )
+    *isMissingImage = currentEntry->isMissingImage;
 
   return currentEntry;
 }

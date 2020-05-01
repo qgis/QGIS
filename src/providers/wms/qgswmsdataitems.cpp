@@ -267,14 +267,88 @@ bool QgsWMSConnectionItem::equal( const QgsDataItem *other )
 }
 
 // ---------------------------------------------------------------------------
-
-QgsWMSLayerCollectionItem::QgsWMSLayerCollectionItem( QgsDataItem *parent, QString name, QString path, const QgsWmsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceUri &dataSourceUri, const QgsWmsLayerProperty &layerProperty )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "WMS" ) )
-  , mCapabilitiesProperty( capabilitiesProperty )
+QgsWMSItemBase::QgsWMSItemBase( const QgsWmsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceUri &dataSourceUri, const QgsWmsLayerProperty &layerProperty )
+  : mCapabilitiesProperty( capabilitiesProperty )
   , mDataSourceUri( dataSourceUri )
   , mLayerProperty( layerProperty )
 {
+}
+
+QString QgsWMSItemBase::createUri()
+{
+  if ( mLayerProperty.name.isEmpty() )
+    return QString(); // layer collection
+
+  // Number of styles must match number of layers
+  mDataSourceUri.setParam( QStringLiteral( "layers" ), mLayerProperty.name );
+  QString style = !mLayerProperty.style.isEmpty() ? mLayerProperty.style.at( 0 ).name : QString();
+  mDataSourceUri.setParam( QStringLiteral( "styles" ), style );
+
+  // Check for layer dimensions
+  for ( const QgsWmsDimensionProperty &dimension : qgis::as_const( mLayerProperty.dimensions ) )
+  {
+    // add temporal dimensions only
+    if ( dimension.name == QLatin1String( "time" ) || dimension.name == QLatin1String( "reference_time" ) )
+    {
+      QString name = dimension.name == QLatin1String( "time" ) ? QString( "timeDimensionExtent" ) : QString( "referenceTimeDimensionExtent" );
+
+      if ( !( mDataSourceUri.param( QLatin1String( "type" ) ) == QLatin1String( "wmst" ) ) )
+        mDataSourceUri.setParam( QLatin1String( "type" ), QLatin1String( "wmst" ) );
+      mDataSourceUri.setParam( name, dimension.extent );
+    }
+  }
+
+  // WMS-T defaults settings
+  if ( mDataSourceUri.param( QLatin1String( "type" ) ) == QLatin1String( "wmst" ) )
+  {
+    mDataSourceUri.setParam( QLatin1String( "temporalSource" ), QLatin1String( "provider" ) );
+  }
+
+  QString format;
+  // get first supported by qt and server
+  QVector<QgsWmsSupportedFormat> formats( QgsWmsProvider::supportedFormats() );
+  const auto constFormats = formats;
+  for ( const QgsWmsSupportedFormat &f : constFormats )
+  {
+    if ( mCapabilitiesProperty.capability.request.getMap.format.indexOf( f.format ) >= 0 )
+    {
+      format = f.format;
+      break;
+    }
+  }
+  mDataSourceUri.setParam( QStringLiteral( "format" ), format );
+
+  QString crs;
+  // get first known if possible
+  QgsCoordinateReferenceSystem testCrs;
+  for ( const QString &c : qgis::as_const( mLayerProperty.crs ) )
+  {
+    testCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( c );
+    if ( testCrs.isValid() )
+    {
+      crs = c;
+      break;
+    }
+  }
+  if ( crs.isEmpty() && !mLayerProperty.crs.isEmpty() )
+  {
+    crs = mLayerProperty.crs[0];
+  }
+  mDataSourceUri.setParam( QStringLiteral( "crs" ), crs );
+  //uri = rasterLayerPath + "|layers=" + layers.join( "," ) + "|styles=" + styles.join( "," ) + "|format=" + format + "|crs=" + crs;
+
+  return mDataSourceUri.encodedUri();
+}
+
+
+// ---------------------------------------------------------------------------
+
+QgsWMSLayerCollectionItem::QgsWMSLayerCollectionItem( QgsDataItem *parent, QString name, QString path, const QgsWmsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceUri &dataSourceUri, const QgsWmsLayerProperty &layerProperty )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "wms" ) )
+  , QgsWMSItemBase( capabilitiesProperty, dataSourceUri, layerProperty )
+{
   mIconName = QStringLiteral( "mIconWms.svg" );
+  mUri = createUri();
 
   // Populate everything, it costs nothing, all info about layers is collected
   for ( const QgsWmsLayerProperty &layerProperty : qgis::as_const( mLayerProperty.layer ) )
@@ -334,17 +408,35 @@ bool QgsWMSLayerCollectionItem::equal( const QgsDataItem *other )
     }
   }
 
-
   return ( mPath == otherCollectionItem->mPath && mName == otherCollectionItem->mName );
+}
+
+bool QgsWMSLayerCollectionItem::hasDragEnabled() const
+{
+  if ( !mLayerProperty.name.isEmpty() )
+    return true;
+  return false;
+}
+
+QgsMimeDataUtils::Uri QgsWMSLayerCollectionItem::mimeUri() const
+{
+  QgsMimeDataUtils::Uri u;
+
+  u.layerType = QStringLiteral( "raster" );
+  u.providerKey = providerKey();
+  u.name = name();
+  u.uri = mUri;
+  u.supportedCrs = mLayerProperty.crs;
+  u.supportedFormats = mCapabilitiesProperty.capability.request.getMap.format;
+
+  return u;
 }
 
 // ---------------------------------------------------------------------------
 
 QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem *parent, QString name, QString path, const QgsWmsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceUri &dataSourceUri, const QgsWmsLayerProperty &layerProperty )
   : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, QStringLiteral( "wms" ) )
-  , mCapabilitiesProperty( capabilitiesProperty )
-  , mDataSourceUri( dataSourceUri )
-  , mLayerProperty( layerProperty )
+  ,  QgsWMSItemBase( capabilitiesProperty, dataSourceUri, layerProperty )
 {
   mSupportedCRS = mLayerProperty.crs;
   mSupportFormats = mCapabilitiesProperty.capability.request.getMap.format;
@@ -353,64 +445,6 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem *parent, QString name, QString pat
   mUri = createUri();
   mIconName = QStringLiteral( "mIconWms.svg" );
   setState( Populated );
-}
-
-QString QgsWMSLayerItem::createUri()
-{
-  if ( mLayerProperty.name.isEmpty() )
-    return QString(); // layer collection
-
-  // Number of styles must match number of layers
-  mDataSourceUri.setParam( QStringLiteral( "layers" ), mLayerProperty.name );
-  QString style = !mLayerProperty.style.isEmpty() ? mLayerProperty.style.at( 0 ).name : QString();
-  mDataSourceUri.setParam( QStringLiteral( "styles" ), style );
-
-  // Check for layer dimensions
-  for ( const QgsWmsDimensionProperty &dimension : qgis::as_const( mLayerProperty.dimensions ) )
-  {
-    // add temporal dimensions only
-    if ( dimension.name == QLatin1String( "time" ) || dimension.name == QLatin1String( "reference_time" ) )
-    {
-      if ( !( mDataSourceUri.param( QLatin1String( "type" ) ) == QLatin1String( "wmst" ) ) )
-        mDataSourceUri.setParam( QLatin1String( "type" ), QLatin1String( "wmst" ) );
-      mDataSourceUri.setParam( dimension.name, dimension.extent );
-    }
-  }
-
-  QString format;
-  // get first supported by qt and server
-  QVector<QgsWmsSupportedFormat> formats( QgsWmsProvider::supportedFormats() );
-  const auto constFormats = formats;
-  for ( const QgsWmsSupportedFormat &f : constFormats )
-  {
-    if ( mCapabilitiesProperty.capability.request.getMap.format.indexOf( f.format ) >= 0 )
-    {
-      format = f.format;
-      break;
-    }
-  }
-  mDataSourceUri.setParam( QStringLiteral( "format" ), format );
-
-  QString crs;
-  // get first known if possible
-  QgsCoordinateReferenceSystem testCrs;
-  for ( const QString &c : qgis::as_const( mLayerProperty.crs ) )
-  {
-    testCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( c );
-    if ( testCrs.isValid() )
-    {
-      crs = c;
-      break;
-    }
-  }
-  if ( crs.isEmpty() && !mLayerProperty.crs.isEmpty() )
-  {
-    crs = mLayerProperty.crs[0];
-  }
-  mDataSourceUri.setParam( QStringLiteral( "crs" ), crs );
-  //uri = rasterLayerPath + "|layers=" + layers.join( "," ) + "|styles=" + styles.join( "," ) + "|format=" + format + "|crs=" + crs;
-
-  return mDataSourceUri.encodedUri();
 }
 
 bool QgsWMSLayerItem::equal( const QgsDataItem *other )
@@ -427,7 +461,6 @@ bool QgsWMSLayerItem::equal( const QgsDataItem *other )
 
   if ( !mLayerProperty.equal( otherLayer->mLayerProperty ) )
     return false;
-
 
   return ( mPath == otherLayer->mPath && mName == otherLayer->mName );
 }
@@ -542,7 +575,7 @@ QgsXyzTileRootItem::QgsXyzTileRootItem( QgsDataItem *parent, QString name, QStri
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "WMS" ) )
 {
   mCapabilities |= Fast;
-  mIconName = QStringLiteral( "mIconWms.svg" );
+  mIconName = QStringLiteral( "mIconXyz.svg" );
   populate();
 }
 
@@ -566,6 +599,7 @@ QVector<QgsDataItem *> QgsXyzTileRootItem::createChildren()
 QgsXyzLayerItem::QgsXyzLayerItem( QgsDataItem *parent, QString name, QString path, const QString &encodedUri )
   : QgsLayerItem( parent, name, path, encodedUri, QgsLayerItem::Raster, QStringLiteral( "wms" ) )
 {
+  mIconName = QStringLiteral( "mIconXyz.svg" );
   setState( Populated );
 }
 

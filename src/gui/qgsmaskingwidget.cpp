@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include <QSet>
+#include <QCheckBox>
 
 #include "qgsmaskingwidget.h"
 #include "qgsmasksourceselectionwidget.h"
@@ -41,6 +42,14 @@ QgsMaskingWidget::QgsMaskingWidget( QWidget *parent ) :
   connect( mMaskSourcesWidget, &QgsMaskSourceSelectionWidget::changed, this, [&]()
   {
     emit widgetChanged();
+  } );
+
+  connect( mEditMaskSettingsGroup, &QGroupBox::toggled, this, [&]( bool on )
+  {
+    if ( on && mLayer )
+    {
+      populate();
+    }
   } );
 }
 
@@ -133,8 +142,16 @@ QList<QPair<QgsSymbolLayerId, QList<QgsSymbolLayerReference>>> symbolLayerMasks(
 void QgsMaskingWidget::setLayer( QgsVectorLayer *layer )
 {
   mLayer = layer;
+  if ( mEditMaskSettingsGroup->isChecked() )
+  {
+    populate();
+  }
+}
+
+void QgsMaskingWidget::populate()
+{
   mMaskSourcesWidget->update();
-  mMaskTargetsWidget->setLayer( layer );
+  mMaskTargetsWidget->setLayer( mLayer );
 
   // collect masks and filter on those which have the current layer as destination
   QSet<QgsSymbolLayerId> maskedSymbolLayers;

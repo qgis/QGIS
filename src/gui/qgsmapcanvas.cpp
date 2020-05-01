@@ -138,6 +138,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
            this, &QgsMapCanvas::writeProject );
 
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsMapCanvas::mapThemeChanged );
+  connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &QgsMapCanvas::mapThemeRenamed );
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemesChanged, this, &QgsMapCanvas::projectThemesChanged );
 
   mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
@@ -392,6 +393,7 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
   if ( !mSettings.visibleExtent().isEmpty() )
   {
     QgsCoordinateTransform transform( mSettings.destinationCrs(), crs, QgsProject::instance() );
+    transform.setBallparkTransformsAreAppropriate( true );
     try
     {
       rect = transform.transformBoundingBox( mSettings.visibleExtent() );
@@ -424,6 +426,11 @@ void QgsMapCanvas::setTemporalController( QgsTemporalController *controller )
 
   mController = controller;
   connect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
+}
+
+const QgsTemporalController *QgsMapCanvas::temporalController() const
+{
+  return mController;
 }
 
 void QgsMapCanvas::setMapSettingsFlags( QgsMapSettings::Flags flags )
@@ -608,6 +615,17 @@ void QgsMapCanvas::mapThemeChanged( const QString &theme )
     clearCache();
     refresh();
   }
+}
+
+void QgsMapCanvas::mapThemeRenamed( const QString &theme, const QString &newTheme )
+{
+  if ( mTheme.isEmpty() || theme != mTheme )
+  {
+    return;
+  }
+
+  setTheme( newTheme );
+  refresh();
 }
 
 void QgsMapCanvas::rendererJobFinished()

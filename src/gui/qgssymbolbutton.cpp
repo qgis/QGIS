@@ -120,7 +120,7 @@ void QgsSymbolButton::showSettingsDialog()
   }
   else
   {
-    QgsSymbolSelectorDialog dialog( newSymbol, QgsStyle::defaultStyle(), mLayer, nullptr );
+    QgsSymbolSelectorDialog dialog( newSymbol, QgsStyle::defaultStyle(), mLayer, this );
     dialog.setWindowTitle( mDialogTitle );
     dialog.setContext( symbolContext );
     if ( dialog.exec() )

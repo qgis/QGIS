@@ -83,6 +83,7 @@ class QgsMeshDataset3dGeometry: public  QgsMesh3dGeometry
   public:
     //! Constructs a mesh layer geometry from triangular mesh.
     explicit QgsMeshDataset3dGeometry( QgsMeshLayer *layer,
+                                       const QgsDateTimeRange &timeRange,
                                        const QgsVector3D &origin,
                                        const QgsMesh3DSymbol &symbol,
                                        QNode *parent );
@@ -96,6 +97,7 @@ class QgsMeshDataset3dGeometry: public  QgsMesh3dGeometry
 
     bool mIsVerticalMagnitudeRelative;
     int mVerticalGroupDatasetIndex;
+    QgsDateTimeRange mTimeRange;
 
 };
 

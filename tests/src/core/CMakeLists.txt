@@ -31,6 +31,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/classification
   ${CMAKE_SOURCE_DIR}/src/core/mesh
+  ${CMAKE_SOURCE_DIR}/src/core/vectortile
   ${CMAKE_SOURCE_DIR}/src/test
 
   ${CMAKE_BINARY_DIR}/src/core
@@ -198,12 +199,14 @@ SET(TESTS
  testqgsprojectstorage.cpp
  testqgsprojutils.cpp
  testqgsproperty.cpp
+ testqgsprovidermetadata.cpp
  testqgis.cpp
  testqgsrasterfilewriter.cpp
  testqgsrasterfill.cpp
  testqgsrastermarker.cpp
  testqgsrasteriterator.cpp
  testqgsrasterblock.cpp
+ testqgsrastercontourrenderer.cpp
  testqgsrasterdataprovidertemporalcapabilities.cpp
  testqgsrasterlayer.cpp
  testqgsrasterlayertemporalproperties.cpp
@@ -227,6 +230,7 @@ SET(TESTS
  testqgstaskmanager.cpp
  testqgstemporalproperty.cpp
  testqgstemporalrangeobject.cpp
+ testqgstemporalnavigationobject.cpp
  testqgstracer.cpp
  testqgstriangularmesh.cpp
  testqgsfontutils.cpp
@@ -237,6 +241,8 @@ SET(TESTS
  testqgsvectorlayerjoinbuffer.cpp
  testqgsvectorlayer.cpp
  testqgsvectorlayerutils.cpp
+ testqgsvectortilelayer.cpp
+ testqgsvectortilewriter.cpp
  testqgsziputils.cpp
  testziplayer.cpp
  testqgslayerdefinition.cpp

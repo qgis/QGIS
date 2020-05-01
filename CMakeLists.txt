@@ -2,6 +2,7 @@
 # CMake settings
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1.0)
 SET(CMAKE_COLOR_MAKEFILE ON)
+SET(CMAKE_AUTORCC ON)
 # set path to additional CMake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 # POLICIES
@@ -31,6 +32,20 @@ ENDIF (APPLE)
 MATH(EXPR QGIS_VERSION_INT "${CPACK_PACKAGE_VERSION_MAJOR}*10000+${CPACK_PACKAGE_VERSION_MINOR}*100+${CPACK_PACKAGE_VERSION_PATCH}")
 MESSAGE(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSION_INT})")
 
+#############################################################
+IF (APPLE)
+  # QGIS custom dependencies package from qgis/QGIS-Mac-Packager
+  # they can be downloaded from https://qgis.org/downloads/macos/qgis-deps
+  # and extracted to /opt/QGIS/qgis-deps-<deps-version>/stage
+  SET (QGIS_MAC_DEPS_DIR "" CACHE PATH "Path to QGIS Mac custom dependencies directory")
+
+  # Setup LIB_DIR and CMAKE_PREFIX_PATH to help CMake's
+  # find_packages to look for these libraries instead of system libraries
+  IF ( QGIS_MAC_DEPS_DIR )
+    SET(ENV{LIB_DIR} ${QGIS_MAC_DEPS_DIR})
+    LIST(APPEND CMAKE_PREFIX_PATH ${QGIS_MAC_DEPS_DIR})
+  ENDIF ( QGIS_MAC_DEPS_DIR )
+ENDIF (APPLE)
 
 #############################################################
 # Configure OpenCL if available
@@ -132,6 +147,8 @@ IF(WITH_CORE)
   SET (WITH_3D FALSE CACHE BOOL "Determines whether QGIS 3D library should be built")
 
   SET (WITH_QUICK FALSE CACHE BOOL "Determines whether QGIS Quick library should be built")
+
+  SET (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
 
   # try to configure and build python bindings by default
   SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
@@ -331,6 +348,14 @@ IF(WITH_CORE)
     MESSAGE (SEND_ERROR "sqlite3 dependency was not found!")
   ENDIF (NOT SQLITE3_FOUND)
 
+  FIND_PACKAGE(Protobuf REQUIRED)   # for decoding of vector tiles in MVT format
+  MESSAGE(STATUS "Found Protobuf: ${Protobuf_LIBRARIES}")
+  IF (NOT Protobuf_PROTOC_EXECUTABLE)
+    MESSAGE (SEND_ERROR "Protobuf library's 'protoc' tool was not found!")
+  ENDIF ()
+  FIND_PACKAGE(ZLIB REQUIRED)       # for decompression of vector tiles in MBTiles file
+  MESSAGE(STATUS "Found zlib: ${ZLIB_LIBRARIES}")
+
   # optional
   IF (WITH_POSTGRESQL)
     FIND_PACKAGE(Postgres) # PostgreSQL provider
@@ -464,7 +489,7 @@ ENDIF(WITH_CORE)
 SET(CMAKE_AUTOMOC ON)
 
 # build our version of astyle
-SET (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare-commit.sh (using 'our' astyle)")
+SET (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare_commit.sh (using 'our' astyle)")
 
 # QML
 SET(QML_IMPORT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" CACHE PATH "QML directory for QML autocomplete")
@@ -605,6 +630,8 @@ ELSE (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
 ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
 
 IF(MSVC)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8")
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8")
   SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
   SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
   # disable macros that offend std::numeric_limits<T>::min()/max()
@@ -675,8 +702,9 @@ IF (WITH_CORE)
       SET (QGIS_MACAPP_PREFIX ${CMAKE_INSTALL_PREFIX}/${QGIS_APP_NAME}.app/Contents)
       # common prefix for components, let cmake handle it
       SET (CMAKE_INSTALL_PREFIX ${QGIS_MACAPP_PREFIX}/MacOS)
-      # 4 bundling levels, each includes previous
-      #   0  nothing
+      # 5 bundling levels, each includes previous
+      #  -1  nothing
+      #   0  fixup the library paths for all QGIS libraries with @loader_path
       #   1  Qt frameworks
       #   2  non-system libraries, "standard"
       #   3  non-system frameworks, "standalone"
@@ -838,7 +866,7 @@ ENDIF (DISABLE_DEPRECATED)
 #############################################################
 # Python build dependency
 
-FIND_PACKAGE(PythonInterp 3 REQUIRED)
+FIND_PACKAGE(PythonLibrary REQUIRED)
 
 #############################################################
 # Python bindings

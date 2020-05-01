@@ -470,8 +470,8 @@ void QgsMeshDatasetGroupTreeView::setActiveGroupFromActiveDataset()
   if ( mMeshLayer )
   {
     const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
-    scalarGroup = rendererSettings.activeScalarDataset().group();
-    vectorGroup = rendererSettings.activeVectorDataset().group();
+    scalarGroup = rendererSettings.activeScalarDatasetGroup();
+    vectorGroup = rendererSettings.activeVectorDatasetGroup();
   }
 
   setActiveScalarGroup( scalarGroup );

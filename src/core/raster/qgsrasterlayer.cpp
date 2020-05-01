@@ -101,6 +101,7 @@ QgsRasterLayer::QgsRasterLayer()
   : QgsMapLayer( QgsMapLayerType::RasterLayer )
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
+  , mTemporalProperties( new QgsRasterLayerTemporalProperties( this ) )
 
 {
   init();
@@ -115,6 +116,7 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
     // Constant that signals property not used.
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
+  , mTemporalProperties( new QgsRasterLayerTemporalProperties( this ) )
 {
   mShouldValidateCrs = !options.skipCrsValidation;
 
@@ -124,6 +126,11 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
   QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
 
   setDataSource( uri, baseName, providerKey, providerOptions, options.loadDefaultStyle );
+
+  if ( mValid )
+  {
+    mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
+  }
 
 } // QgsRasterLayer ctor
 
@@ -576,8 +583,6 @@ void QgsRasterLayer::init()
   //Initialize the last view port structure, should really be a class
   mLastViewPort.mWidth = 0;
   mLastViewPort.mHeight = 0;
-
-  mTemporalProperties = new QgsRasterLayerTemporalProperties( this );
 }
 
 void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
@@ -648,7 +653,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   // Setup source CRS
   setCrs( QgsCoordinateReferenceSystem( mDataProvider->crs() ) );
 
-  QgsDebugMsgLevel( "using wkt:\n" + crs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ), 4 );
+  QgsDebugMsgLevel( "using wkt:\n" + crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ), 4 );
 
   //defaults - Needs to be set after the Contrast list has been build
   //Try to read the default contrast enhancement from the config file
@@ -866,10 +871,11 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
 
   setDataProvider( provider, options );
 
+  if ( mDataProvider )
+    mDataProvider->setDataSourceUri( mDataSource );
+
   if ( mValid )
   {
-    mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
-
     // load default style
     bool defaultLoadedFlag = false;
     bool restoredStyle = false;
@@ -1334,7 +1340,7 @@ bool QgsRasterLayer::defaultContrastEnhancementSettings(
 
   if ( key.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "No default contrast enhancement for this drawing style" ) );
+    QgsDebugMsgLevel( QStringLiteral( "No default contrast enhancement for this drawing style" ), 2 );
     myAlgorithm = QgsContrastEnhancement::contrastEnhancementAlgorithmFromString( QString() );
     myLimits = QgsRasterMinMaxOrigin::limitsFromString( QString() );
     return false;

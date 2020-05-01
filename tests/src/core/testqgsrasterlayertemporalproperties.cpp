@@ -40,7 +40,6 @@ class TestQgsRasterLayerTemporalProperties : public QObject
 
     void checkSettingTemporalRange();
     void testReadWrite();
-    void testChangedSignal();
     void testVisibleInTimeRange();
 
 };
@@ -131,21 +130,6 @@ void TestQgsRasterLayerTemporalProperties::testReadWrite()
   QCOMPARE( temporalProperties4.fixedTemporalRange(), QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
             QDateTime( QDate( 2020, 12, 31 ) ) ) );
 
-}
-
-void TestQgsRasterLayerTemporalProperties::testChangedSignal()
-{
-  QgsRasterLayerTemporalProperties temporalProperties;
-  QCOMPARE( temporalProperties.temporalSource(), QgsMapLayerTemporalProperties::TemporalSource::Layer );
-  QSignalSpy spy( &temporalProperties, &QgsRasterLayerTemporalProperties::changed );
-
-  temporalProperties.setTemporalSource( QgsMapLayerTemporalProperties::TemporalSource::Layer );
-  QCOMPARE( spy.count(), 0 );
-  temporalProperties.setTemporalSource( QgsMapLayerTemporalProperties::TemporalSource::Project );
-  QCOMPARE( spy.count(), 1 );
-
-  temporalProperties.setIsActive( true );
-  QCOMPARE( spy.count(), 2 );
 }
 
 void TestQgsRasterLayerTemporalProperties::testVisibleInTimeRange()

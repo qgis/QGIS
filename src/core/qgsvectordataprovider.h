@@ -198,7 +198,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * Returns a short comment for the data that this provider is
      * providing access to (e.g. the comment for postgres table).
      */
-    virtual QString dataComment() const;
+    virtual QString dataComment() const override;
 
     /**
      * Returns the minimum value of an attribute
@@ -618,6 +618,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual void handlePostCloneOperations( QgsVectorDataProvider *source );
 
     QgsVectorDataProviderTemporalCapabilities *temporalCapabilities() override;
+    const QgsVectorDataProviderTemporalCapabilities *temporalCapabilities() const override SIP_SKIP;
 
   signals:
 

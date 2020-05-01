@@ -86,6 +86,7 @@ QgsStyleItemsListWidget::QgsStyleItemsListWidget( QWidget *parent )
   double treeIconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 2;
 #endif
   mSymbolTreeView->setIconSize( QSize( static_cast< int >( treeIconSize ), static_cast< int >( treeIconSize ) ) );
+  mSymbolTreeView->setMinimumHeight( mSymbolTreeView->fontMetrics().height() * 6 );
 
   viewSymbols->setSelectionBehavior( QAbstractItemView::SelectRows );
   mSymbolTreeView->setSelectionMode( viewSymbols->selectionMode() );
@@ -194,6 +195,13 @@ void QgsStyleItemsListWidget::setEntityType( QgsStyle::StyleEntity type )
       btnSaveSymbol->setToolTip( tr( "Save label settings to styles" ) );
       if ( allGroup >= 0 )
         groupsCombo->setItemText( allGroup, tr( "All Label Settings" ) );
+      break;
+
+    case QgsStyle::LegendPatchShapeEntity:
+      btnSaveSymbol->setText( tr( "Save Legend Patch Shape…" ) );
+      btnSaveSymbol->setToolTip( tr( "Save legend patch shape to styles" ) );
+      if ( allGroup >= 0 )
+        groupsCombo->setItemText( allGroup, tr( "All Legend Patch Shapes" ) );
       break;
 
     case QgsStyle::TagEntity:
@@ -316,6 +324,10 @@ void QgsStyleItemsListWidget::populateGroups()
 
       case QgsStyle::LabelSettingsEntity:
         allText = tr( "All Label Settings" );
+        break;
+
+      case QgsStyle::LegendPatchShapeEntity:
+        allText = tr( "All Legend Patch Shapes" );
         break;
 
       case QgsStyle::TagEntity:

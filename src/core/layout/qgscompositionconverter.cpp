@@ -54,6 +54,7 @@
 #include "qgslayoutmultiframe.h"
 #include "qgslayoutframe.h"
 #include "qgslayoutguidecollection.h"
+#include "qgslayoutnortharrowhandler.h"
 
 QgsPropertiesDefinition QgsCompositionConverter::sPropertyDefinitions;
 
@@ -689,8 +690,8 @@ bool QgsCompositionConverter::readPictureXml( QgsLayoutItemPicture *layoutItem, 
   }
 
   //rotation map
-  layoutItem->mNorthMode = static_cast< QgsLayoutItemPicture::NorthMode >( itemElem.attribute( QStringLiteral( "northMode" ), QStringLiteral( "0" ) ).toInt() );
-  layoutItem->mNorthOffset = itemElem.attribute( QStringLiteral( "northOffset" ), QStringLiteral( "0" ) ).toDouble();
+  layoutItem->mNorthArrowHandler->setNorthMode( static_cast< QgsLayoutNorthArrowHandler::NorthMode >( itemElem.attribute( QStringLiteral( "northMode" ), QStringLiteral( "0" ) ).toInt() ) );
+  layoutItem->mNorthArrowHandler->setNorthOffset( itemElem.attribute( QStringLiteral( "northOffset" ), QStringLiteral( "0" ) ).toDouble() );
 
   QString rotationMapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) );
   if ( rotationMapId != QStringLiteral( "-1" ) )

@@ -35,6 +35,8 @@
 #include "qgsmaplayer.h"
 #include "qgsstyle.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectortilelayer.h"
+#include "qgsvectortilebasicrendererwidget.h"
 #include "qgsmeshlayer.h"
 #include "qgsproject.h"
 #include "qgsundowidget.h"
@@ -222,6 +224,16 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       symbol3DItem->setToolTip( tr( "3D View" ) );
       mOptionsListWidget->addItem( symbol3DItem );
 #endif
+      break;
+    }
+
+    case QgsMapLayerType::VectorTileLayer:
+    {
+      QListWidgetItem *symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ), QString() );
+      symbolItem->setData( Qt::UserRole, Symbology );
+      symbolItem->setToolTip( tr( "Symbology" ) );
+      mOptionsListWidget->addItem( symbolItem );
+
       break;
     }
 
@@ -461,6 +473,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             if ( !mMaskingWidget )
             {
               mMaskingWidget = new QgsMaskingWidget( mWidgetStack );
+              mMaskingWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
               connect( mMaskingWidget, &QgsMaskingWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
             }
             mMaskingWidget->setLayer( vlayer );
@@ -600,6 +613,25 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
         break;
       }
 
+      case QgsMapLayerType::VectorTileLayer:
+      {
+        QgsVectorTileLayer *vtLayer = qobject_cast<QgsVectorTileLayer *>( mCurrentLayer );
+        switch ( row )
+        {
+          case 0: // Style
+          {
+            mVectorTileStyleWidget = new QgsVectorTileBasicRendererWidget( vtLayer, mMapCanvas, mMessageBar, mWidgetStack );
+            mVectorTileStyleWidget->setDockMode( true );
+            connect( mVectorTileStyleWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            mWidgetStack->setMainPanel( mVectorTileStyleWidget );
+            break;
+          }
+          default:
+            break;
+        }
+        break;
+      }
+
       case QgsMapLayerType::PluginLayer:
       {
         mStackedWidget->setCurrentIndex( mNotSupportedPage );
@@ -723,6 +755,9 @@ bool QgsLayerStyleManagerWidgetFactory::supportsLayer( QgsMapLayer *layer ) cons
     case QgsMapLayerType::RasterLayer:
     case QgsMapLayerType::MeshLayer:
       return true;
+
+    case QgsMapLayerType::VectorTileLayer:
+      return false;  // TODO
 
     case QgsMapLayerType::PluginLayer:
       return false;

@@ -131,14 +131,19 @@ namespace QgsWms
     image.reset( createImage( size ) );
 
     // configure painter
-    std::unique_ptr<QPainter> painter;
-    painter.reset( new QPainter( image.get() ) );
-    painter->setRenderHint( QPainter::Antialiasing, true );
-    painter->scale( dpmm, dpmm );
+    QPainter painter( image.get() );
+    QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
+    context.setFlag( QgsRenderContext::Antialiasing, true );
+    QgsScopedRenderContextScaleToMm scaleContext( context );
+    // QGIS 4.0 -- take from real render context instead
+    Q_NOWARN_DEPRECATED_PUSH
+    context.setRendererScale( settings.mapScale() );
+    context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) );
+    Q_NOWARN_DEPRECATED_POP
 
     // rendering
-    renderer.drawLegend( painter.get() );
-    painter->end();
+    renderer.drawLegend( context );
+    painter.end();
 
     return image.release();
   }
@@ -611,15 +616,39 @@ namespace QgsWms
           QList<QgsMapLayer *> layerSet;
           for ( auto layer : cMapParams.mLayers )
           {
-            QgsMapLayer *mlayer = mContext.layer( layer.mNickname );
-
-            if ( ! mlayer )
+            if ( mContext.isValidGroup( layer.mNickname ) )
             {
-              continue;
-            }
+              QList<QgsMapLayer *> layersFromGroup;
 
-            setLayerStyle( mlayer, layer.mStyle );
-            layerSet << mlayer;
+              const QList<QgsMapLayer *> cLayersFromGroup = mContext.layersFromGroup( layer.mNickname );
+              for ( QgsMapLayer *layerFromGroup : cLayersFromGroup )
+              {
+
+                if ( ! layerFromGroup )
+                {
+                  continue;
+                }
+
+                layersFromGroup.push_front( layerFromGroup );
+              }
+
+              if ( !layersFromGroup.isEmpty() )
+              {
+                layerSet.append( layersFromGroup );
+              }
+            }
+            else
+            {
+              QgsMapLayer *mlayer = mContext.layer( layer.mNickname );
+
+              if ( ! mlayer )
+              {
+                continue;
+              }
+
+              setLayerStyle( mlayer, layer.mStyle );
+              layerSet << mlayer;
+            }
           }
 
           layerSet << externalLayers( cMapParams.mExternalLayers );
@@ -2725,6 +2754,7 @@ namespace QgsWms
         }
 
         case QgsMapLayerType::MeshLayer:
+        case QgsMapLayerType::VectorTileLayer:
         case QgsMapLayerType::PluginLayer:
           break;
       }
@@ -3169,13 +3199,19 @@ namespace QgsWms
       mapSettings.setFlag( QgsMapSettings::RenderBlocking );
       std::unique_ptr<QImage> tmp( createImage( mContext.mapSize( false ) ) );
       configureMapSettings( tmp.get(), mapSettings );
+      // QGIS 4.0 - require correct use of QgsRenderContext instead of these
+      Q_NOWARN_DEPRECATED_PUSH
       settings.setMapScale( mapSettings.scale() );
       settings.setMapUnitsPerPixel( mapSettings.mapUnitsPerPixel() );
+      Q_NOWARN_DEPRECATED_POP
     }
     else
     {
+      // QGIS 4.0 - require correct use of QgsRenderContext instead of these
+      Q_NOWARN_DEPRECATED_PUSH
       const double defaultMapUnitsPerPixel = QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( *mContext.project() ) / mContext.dotsPerMm();
       settings.setMapUnitsPerPixel( defaultMapUnitsPerPixel );
+      Q_NOWARN_DEPRECATED_POP
     }
 
     return settings;

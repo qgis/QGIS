@@ -27,6 +27,9 @@
 #include "qgsexpressioncontext.h"
 #include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
+#include "qgsmultipoint.h"
+#include "qgslegendpatchshape.h"
+#include "qgsstyle.h"
 
 #include <QSize>
 #include <QPainter>
@@ -449,15 +452,19 @@ void QgsMarkerSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSi
 {
   startRender( context );
   QgsPaintEffect *effect = paintEffect();
+
+  QPolygonF points = context.patchShape() ? context.patchShape()->toQPolygonF( QgsSymbol::Marker, size ).value( 0 ).value( 0 )
+                     : QgsStyle::defaultStyle()->defaultPatchAsQPolygonF( QgsSymbol::Marker, size ).value( 0 ).value( 0 );
+
+  std::unique_ptr< QgsEffectPainter > effectPainter;
   if ( effect && effect->enabled() )
-  {
-    QgsEffectPainter p( context.renderContext(), effect );
-    renderPoint( QPointF( size.width() / 2, size.height() / 2 ), context );
-  }
-  else
-  {
-    renderPoint( QPointF( size.width() / 2, size.height() / 2 ), context );
-  }
+    effectPainter = qgis::make_unique< QgsEffectPainter >( context.renderContext(), effect );
+
+  for ( QPointF point : qgis::as_const( points ) )
+    renderPoint( point, context );
+
+  effectPainter.reset();
+
   stopRender( context );
 }
 
@@ -633,22 +640,20 @@ QgsMapUnitScale QgsLineSymbolLayer::mapUnitScale() const
 
 void QgsLineSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize size )
 {
-  QPolygonF points;
-  // we're adding 0.5 to get rid of blurred preview:
-  // drawing antialiased lines of width 1 at (x,0)-(x,100) creates 2px line
-  points << QPointF( 0, int( size.height() / 2 ) + 0.5 ) << QPointF( size.width(), int( size.height() / 2 ) + 0.5 );
-
+  const QList< QList< QPolygonF > > points = context.patchShape() ? context.patchShape()->toQPolygonF( QgsSymbol::Line, size )
+      : QgsStyle::defaultStyle()->defaultPatchAsQPolygonF( QgsSymbol::Line, size );
   startRender( context );
   QgsPaintEffect *effect = paintEffect();
+
+  std::unique_ptr< QgsEffectPainter > effectPainter;
   if ( effect && effect->enabled() )
-  {
-    QgsEffectPainter p( context.renderContext(), effect );
-    renderPolyline( points, context );
-  }
-  else
-  {
-    renderPolyline( points, context );
-  }
+    effectPainter = qgis::make_unique< QgsEffectPainter >( context.renderContext(), effect );
+
+  for ( const QList< QPolygonF > &line : points )
+    renderPolyline( line.value( 0 ), context );
+
+  effectPainter.reset();
+
   stopRender( context );
 }
 
@@ -695,18 +700,26 @@ double QgsLineSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRenderConte
 
 void QgsFillSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize size )
 {
-  QPolygonF poly = QRectF( QPointF( 0, 0 ), QPointF( size.width(), size.height() ) );
+  const QList< QList< QPolygonF > > polys = context.patchShape() ? context.patchShape()->toQPolygonF( QgsSymbol::Fill, size )
+      : QgsStyle::defaultStyle()->defaultPatchAsQPolygonF( QgsSymbol::Fill, size );
+
   startRender( context );
   QgsPaintEffect *effect = paintEffect();
+
+  std::unique_ptr< QgsEffectPainter > effectPainter;
   if ( effect && effect->enabled() )
+    effectPainter = qgis::make_unique< QgsEffectPainter >( context.renderContext(), effect );
+
+  for ( const QList< QPolygonF > &poly : polys )
   {
-    QgsEffectPainter p( context.renderContext(), effect );
-    renderPolygon( poly, nullptr, context );
+    QList< QPolygonF > rings;
+    for ( int i = 1; i < poly.size(); ++i )
+      rings << poly.at( i );
+    renderPolygon( poly.value( 0 ), &rings, context );
   }
-  else
-  {
-    renderPolygon( poly, nullptr, context );
-  }
+
+  effectPainter.reset();
+
   stopRender( context );
 }
 

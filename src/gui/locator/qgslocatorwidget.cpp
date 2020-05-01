@@ -144,18 +144,19 @@ void QgsLocatorWidget::setMapCanvas( QgsMapCanvas *canvas )
 
 void QgsLocatorWidget::search( const QString &string )
 {
+  window()->activateWindow(); // window must also be active - otherwise floating docks can steal keystrokes
   if ( string.isEmpty() )
   {
+    mLineEdit->setFocus();
     mLineEdit->selectAll();
   }
   else
   {
+    scheduleDelayedPopup();
+    mLineEdit->setFocus();
     mLineEdit->setText( string );
+    performSearch();
   }
-  window()->activateWindow(); // window must also be active - otherwise floating docks can steal keystrokes
-  scheduleDelayedPopup();
-  mLineEdit->setFocus();
-  performSearch();
 }
 
 void QgsLocatorWidget::invalidateResults()

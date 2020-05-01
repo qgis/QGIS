@@ -44,14 +44,15 @@ from qgis.core import (
     QgsProject,
     QgsWkbTypes,
     QgsGeometry,
-    QgsProviderRegistry
+    QgsProviderRegistry,
+    QgsVectorDataProvider,
 )
 from qgis.gui import QgsGui, QgsAttributeForm
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QObject, QByteArray
 from qgis.PyQt.QtWidgets import QLabel
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtXml import QDomDocument
-from utilities import unitTestDataPath
+from utilities import unitTestDataPath, compareWkt
 from providertestbase import ProviderTestCase
 
 QGISAPP = start_app()
@@ -428,6 +429,135 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(r)
         self.assertNotEqual(f[0]['pk'], NULL, f[0].attributes())
         vl.deleteFeatures([f[0].id()])
+
+    def testNonPkBigintField(self):
+        """Test if we can correctly insert, read and change attributes(fields) of type bigint and which are not PKs."""
+        vl = QgsVectorLayer('{} sslmode=disable srid=4326 key="pk" table="qgis_test".{} (geom)'.format(self.dbconn, 'bigint_pk'), "bigint_pk", "postgres")
+        self.assertTrue(vl.isValid())
+        flds = vl.fields()
+
+        # check if default values are correctly read back
+        f = next(vl.getFeatures(QgsFeatureRequest()))
+        bigint_with_default_idx = vl.fields().lookupField('bigint_attribute_def')
+        self.assertEqual(f.attributes()[bigint_with_default_idx], 42)
+
+        # check if we can overwrite a default value
+        vl.startEditing()
+        vl.changeAttributeValue(f.id(), bigint_with_default_idx, 43)
+
+        pkidx = vl.fields().lookupField('pk')
+        editedid = f.attributes()[pkidx]
+
+        self.assertTrue(vl.commitChanges())
+        vl2 = QgsVectorLayer('{} sslmode=disable srid=4326 key="pk" table="qgis_test".{} (geom)'.format(self.dbconn, 'bigint_pk'), "bigint_pk", "postgres")
+        flds = vl2.fields()
+        self.assertTrue(vl2.isValid())
+        f = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk = ' + str(editedid))))
+        bigint_with_default_idx = vl2.fields().lookupField('bigint_attribute_def')
+        self.assertEqual(f.attributes()[bigint_with_default_idx], 43)
+
+        # check if we can insert a new value
+        dp = vl2.dataProvider()
+        dp.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, 1)
+        pkidx = vl2.fields().lookupField('pk')
+        vl2.startEditing()
+        f = QgsFeature(vl2.fields())
+        f['pk'] = NULL
+        f['value'] = 'The answer.'
+        f['bigint_attribute'] = 84
+        f.setAttribute(pkidx, vl2.dataProvider().defaultValue(pkidx))
+        f.setAttribute(bigint_with_default_idx, vl2.dataProvider().defaultValue(bigint_with_default_idx))
+        r, f = vl2.dataProvider().addFeatures([f])
+        self.assertTrue(r)
+        vl2.commitChanges()
+        inserted_id = f[0]['pk']
+
+        f = next(vl2.getFeatures(QgsFeatureRequest().setFilterExpression('pk = ' + str(inserted_id))))
+
+        self.assertEqual(f['bigint_attribute'], 84)
+        self.assertEqual(f['bigint_attribute_def'], 42)
+
+    def testPktUpdateBigintPk(self):
+        """Test if we can update objects with positive, zero and negative bigint PKs."""
+        vl = QgsVectorLayer('{} sslmode=disable srid=4326 key="pk" table="qgis_test".{} (geom)'.format(self.dbconn, 'bigint_pk'), "bigint_pk", "postgres")
+        flds = vl.fields()
+
+        self.assertTrue(vl.isValid())
+
+        vl.startEditing()
+
+        statuses = [-1, -1, -1, -1]
+        # changing values...
+        for ft in vl.getFeatures():
+            if ft['value'] == 'first value':
+                vl.changeAttributeValue(ft.id(), flds.indexOf('value'), '1st value')
+                statuses[0] = 0
+            elif ft['value'] == 'second value':
+                vl.changeAttributeValue(ft.id(), flds.indexOf('value'), '2nd value')
+                statuses[1] = 0
+            elif ft['value'] == 'zero value':
+                vl.changeAttributeValue(ft.id(), flds.indexOf('value'), '0th value')
+                statuses[2] = 0
+            elif ft['value'] == 'negative value':
+                vl.changeAttributeValue(ft.id(), flds.indexOf('value'), '-1th value')
+                statuses[3] = 0
+        self.assertTrue(vl.commitChanges())
+        self.assertTrue(all(x == 0 for x in statuses))
+
+        # now, let's see if the values were changed
+        vl2 = QgsVectorLayer('{} sslmode=disable srid=4326 key="pk" table="qgis_test".{} (geom)'.format(self.dbconn, 'bigint_pk'), "bigint_pk", "postgres")
+        self.assertTrue(vl2.isValid())
+        for ft in vl2.getFeatures():
+            if ft['value'] == '1st value':
+                statuses[0] = 1
+            elif ft['value'] == '2nd value':
+                statuses[1] = 1
+            elif ft['value'] == '0th value':
+                statuses[2] = 1
+            elif ft['value'] == '-1th value':
+                statuses[3] = 1
+        self.assertTrue(all(x == 1 for x in statuses))
+
+    def testPktUpdateBigintPkNonFirst(self):
+        """Test if we can update objects with positive, zero and negative bigint PKs in tables whose PK is not the first field"""
+        vl = QgsVectorLayer('{} sslmode=disable srid=4326 key="pk" table="qgis_test".{} (geom)'.format(self.dbconn, 'bigint_non_first_pk'), "bigint_non_first_pk", "postgres")
+        flds = vl.fields()
+
+        self.assertTrue(vl.isValid())
+
+        vl.startEditing()
+
+        statuses = [-1, -1, -1, -1]
+        # changing values...
+        for ft in vl.getFeatures():
+            if ft['value'] == 'first value':
+                vl.changeAttributeValue(ft.id(), flds.indexOf('value'), '1st value')
+                statuses[0] = 0
+            elif ft['value'] == 'second value':
+                vl.changeAttributeValue(ft.id(), flds.indexOf('value'), '2nd value')
+                statuses[1] = 0
+            elif ft['value'] == 'zero value':
+                vl.changeAttributeValue(ft.id(), flds.indexOf('value'), '0th value')
+                statuses[2] = 0
+            elif ft['value'] == 'negative value':
+                vl.changeAttributeValue(ft.id(), flds.indexOf('value'), '-1th value')
+                statuses[3] = 0
+        self.assertTrue(vl.commitChanges())
+        self.assertTrue(all(x == 0 for x in statuses))
+
+        # now, let's see if the values were changed
+        vl2 = QgsVectorLayer('{} sslmode=disable srid=4326 key="pk" table="qgis_test".{} (geom)'.format(self.dbconn, 'bigint_pk'), "bigint_pk_nonfirst", "postgres")
+        self.assertTrue(vl2.isValid())
+        for ft in vl2.getFeatures():
+            if ft['value'] == '1st value':
+                statuses[0] = 1
+            elif ft['value'] == '2nd value':
+                statuses[1] = 1
+            elif ft['value'] == '0th value':
+                statuses[2] = 1
+            elif ft['value'] == '-1th value':
+                statuses[3] = 1
+        self.assertTrue(all(x == 1 for x in statuses))
 
     def testPktMapInsert(self):
         vl = QgsVectorLayer('{} table="qgis_test"."{}" key="obj_id" sql='.format(self.dbconn, 'oid_serial_table'), "oid_serial", "postgres")
@@ -1597,6 +1727,261 @@ class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
             idx = self.vl.dataProvider().fieldNameIndex(key)
             self.assertTrue(idx >= 0)
             self.assertFalse(self.vl.dataProvider().fieldConstraints(idx) & QgsFieldConstraints.ConstraintUnique)
+
+
+class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        cls.dbconn = 'service=qgis_test'
+        if 'QGIS_PGTEST_DB' in os.environ:
+            cls.dbconn = os.environ['QGIS_PGTEST_DB']
+        # Create test layers
+        cls.vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'"pk"\' srid=4326 type=POINT table="qgis_test"."provider_bigint_single_pk" (geom) sql=', 'bigint_pk', 'postgres')
+        assert cls.vl.isValid()
+        cls.source = cls.vl.dataProvider()
+        cls.con = psycopg2.connect(cls.dbconn)
+
+    @classmethod
+    def tearDownClass(cls):
+        """Run after all tests"""
+
+    def getSource(self):
+        """ drops/recreates the test data anew, like TestPyQgsPostgresProvider::getSource above. """
+        self.execSqlCommand("DROP TABLE IF EXISTS qgis_test.provider_edit_bigint_single_pk")
+        self.execSqlCommand("CREATE TABLE qgis_test.provider_edit_bigint_single_pk ( pk bigserial PRIMARY KEY, cnt integer, name text DEFAULT 'qgis', name2 text DEFAULT 'qgis', num_char text, geom public.geometry(Point,4326), key1 integer, key2 integer)")
+        self.execSqlCommand("INSERT INTO qgis_test.provider_edit_bigint_single_pk  ( key1, key2, pk, cnt, name, name2, num_char, geom) VALUES"
+                            "(1, 1, 5, -200, NULL, 'NuLl', '5', '0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),"
+                            "(1, 2, 3,  300, 'Pear', 'PEaR', '3', NULL),"
+                            "(2, 1, 1,  100, 'Orange', 'oranGe', '1', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),"
+                            "(2, 2, 2,  200, 'Apple', 'Apple', '2', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),"
+                            "(2, 3, 4,  400, 'Honey', 'Honey', '4', '0101000020E610000014AE47E17A5450C03333333333935340')")
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'"pk"\' srid=4326 type=POINT table="qgis_test"."provider_edit_bigint_single_pk" (geom) sql=', 'edit_bigint_pk', 'postgres')
+        return vl
+
+    def getEditableLayer(self):
+        return self.getSource()
+
+    def execSqlCommand(self, sql):
+        self.assertTrue(self.con)
+        cur = self.con.cursor()
+        self.assertTrue(cur)
+        cur.execute(sql)
+        cur.close()
+        self.con.commit()
+
+    def enableCompiler(self):
+        QgsSettings().setValue('/qgis/compileExpressions', True)
+        return True
+
+    def disableCompiler(self):
+        QgsSettings().setValue('/qgis/compileExpressions', False)
+
+    def uncompiledFilters(self):
+        return set([])
+
+    def partiallyCompiledFilters(self):
+        return set([])
+
+    def testConstraints(self):
+        idx = self.vl.dataProvider().fieldNameIndex("pk")
+        self.assertTrue(idx >= 0)
+
+    def testGetFeaturesFidTests(self):
+        fids = [f.id() for f in self.source.getFeatures()]
+        assert len(fids) == 5, 'Expected 5 features, got {} instead'.format(len(fids))
+        for id in fids:
+            features = [f for f in self.source.getFeatures(QgsFeatureRequest().setFilterFid(id))]
+            self.assertEqual(len(features), 1)
+            feature = features[0]
+            self.assertTrue(feature.isValid())
+
+            result = [feature.id()]
+            expected = [id]
+            assert result == expected, 'Expected {} and got {} when testing for feature ID filter'.format(expected, result)
+
+            # test that results match QgsFeatureRequest.acceptFeature
+            request = QgsFeatureRequest().setFilterFid(id)
+            for f in self.source.getFeatures():
+                self.assertEqual(request.acceptFeature(f), f.id() == id)
+
+        # TODO: bad features are not tested because the PostgreSQL provider
+        # doesn't mark explicitly set invalid features as such.
+
+    def testGetFeatures(self, source=None, extra_features=[], skip_features=[], changed_attributes={}, changed_geometries={}):
+        """ Test that expected results are returned when fetching all features """
+
+        # IMPORTANT - we do not use `for f in source.getFeatures()` as we are also
+        # testing that existing attributes & geometry in f are overwritten correctly
+        # (for f in ... uses a new QgsFeature for every iteration)
+
+        if not source:
+            source = self.source
+
+        it = source.getFeatures()
+        f = QgsFeature()
+        attributes = {}
+        geometries = {}
+        while it.nextFeature(f):
+            # expect feature to be valid
+            self.assertTrue(f.isValid())
+            # some source test datasets will include additional attributes which we ignore,
+            # so cherry pick desired attributes
+            attrs = [f['pk'], f['cnt'], f['name'], f['name2'], f['num_char']]
+            # DON'T force the num_char attribute to be text - some sources (e.g., delimited text) will
+            # automatically detect that this attribute contains numbers and set it as a numeric
+            # field
+            # TODO: PostgreSQL 12 won't accept conversion from integer to text.
+            #attrs[4] = str(attrs[4])
+            attributes[f['pk']] = attrs
+            geometries[f['pk']] = f.hasGeometry() and f.geometry().asWkt()
+
+        expected_attributes = {5: [5, -200, NULL, 'NuLl', '5'],
+                               3: [3, 300, 'Pear', 'PEaR', '3'],
+                               1: [1, 100, 'Orange', 'oranGe', '1'],
+                               2: [2, 200, 'Apple', 'Apple', '2'],
+                               4: [4, 400, 'Honey', 'Honey', '4']}
+
+        expected_geometries = {1: 'Point (-70.332 66.33)',
+                               2: 'Point (-68.2 70.8)',
+                               3: None,
+                               4: 'Point(-65.32 78.3)',
+                               5: 'Point(-71.123 78.23)'}
+        for f in extra_features:
+            expected_attributes[f[0]] = f.attributes()
+            if f.hasGeometry():
+                expected_geometries[f[0]] = f.geometry().asWkt()
+            else:
+                expected_geometries[f[0]] = None
+
+        for i in skip_features:
+            del expected_attributes[i]
+            del expected_geometries[i]
+        for i, a in changed_attributes.items():
+            for attr_idx, v in a.items():
+                expected_attributes[i][attr_idx] = v
+        for i, g, in changed_geometries.items():
+            if g:
+                expected_geometries[i] = g.asWkt()
+            else:
+                expected_geometries[i] = None
+
+        self.assertEqual(attributes, expected_attributes, 'Expected {}, got {}'.format(expected_attributes, attributes))
+
+        self.assertEqual(len(expected_geometries), len(geometries))
+
+        for pk, geom in list(expected_geometries.items()):
+            if geom:
+                assert compareWkt(geom, geometries[pk]), "Geometry {} mismatch Expected:\n{}\nGot:\n{}\n".format(pk, geom, geometries[pk])
+            else:
+                self.assertFalse(geometries[pk], 'Expected null geometry for {}'.format(pk))
+
+    def testAddFeatureExtraAttributes(self):
+        if not getattr(self, 'getEditableLayer', None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        if not l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
+            return
+
+        # test that adding features with too many attributes drops these attributes
+        # we be more tricky and also add a valid feature to stress test the provider
+        f1 = QgsFeature()
+        f1.setAttributes([6, -220, 'qgis', 'String', '15'])
+        f2 = QgsFeature()
+        f2.setAttributes([7, -230, 'qgis', 'String', '15', 15, 16, 17])
+
+        result, added = l.dataProvider().addFeatures([f1, f2])
+        self.assertTrue(result,
+                        'Provider returned False to addFeatures with extra attributes. Providers should accept these features but truncate the extra attributes.')
+
+        # make sure feature was added correctly
+        added = [f for f in l.dataProvider().getFeatures() if f['pk'] == 7][0]
+        # TODO: The PostgreSQL provider doesn't truncate extra attributes!
+        self.assertNotEqual(added.attributes(), [7, -230, 'qgis', 'String', '15'], 'The PostgreSQL provider doesn\'t truncate extra attributes.')
+
+    def testAddFeatureMissingAttributes(self):
+        if not getattr(self, 'getEditableLayer', None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        if not l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
+            return
+
+        # test that adding features with missing attributes pads out these
+        # attributes with NULL values to the correct length.
+        # changed from ProviderTestBase.testAddFeatureMissingAttributes: we use
+        # 'qgis' instead of NULL below.
+        # TODO: Only unmentioned attributes get filled with the DEFAULT table
+        # value; if the attribute is present, the saved value will be NULL if
+        # that is indicated, or the value mentioned by the user; there is no
+        # implicit conversion of PyQGIS::NULL to PostgreSQL DEFAULT.
+        f1 = QgsFeature()
+        f1.setAttributes([6, -220, 'qgis', 'String'])
+        f2 = QgsFeature()
+        f2.setAttributes([7, 330])
+
+        result, added = l.dataProvider().addFeatures([f1, f2])
+        self.assertTrue(result,
+                        'Provider returned False to addFeatures with missing attributes. Providers should accept these features but add NULL attributes to the end of the existing attributes to the required field length.')
+        f1.setId(added[0].id())
+        f2.setId(added[1].id())
+
+        # check result - feature attributes MUST be padded out to required number of fields
+        f1.setAttributes([6, -220, 'qgis', 'String', NULL])
+        f2.setAttributes([7, 330, 'qgis', 'qgis', NULL])
+        self.testGetFeatures(l.dataProvider(), [f1, f2])
+
+    def testAddFeature(self):
+        if not getattr(self, 'getEditableLayer', None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        f1 = QgsFeature()
+        # changed from ProviderTestBase.testAddFeature: we use 'qgis' instead
+        # of NULL below.
+        # TODO: Only unmentioned attributes get filled with the DEFAULT table
+        # value; if the attribute is present, the saved value will be NULL if
+        # that is indicated, or the value mentioned by the user; there is no
+        # implicit conversion of PyQGIS::NULL to PostgreSQL DEFAULT.
+        f1.setAttributes([6, -220, 'qgis', 'String', '15'])
+        f1.setGeometry(QgsGeometry.fromWkt('Point (-72.345 71.987)'))
+
+        f2 = QgsFeature()
+        f2.setAttributes([7, 330, 'Coconut', 'CoCoNut', '13'])
+
+        if l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
+            # expect success
+            result, added = l.dataProvider().addFeatures([f1, f2])
+            self.assertTrue(result, 'Provider reported AddFeatures capability, but returned False to addFeatures')
+            f1.setId(added[0].id())
+            f2.setId(added[1].id())
+
+            # check result
+            self.testGetFeatures(l.dataProvider(), [f1, f2])
+
+            # add empty list, should return true for consistency
+            self.assertTrue(l.dataProvider().addFeatures([]))
+
+            # ensure that returned features have been given the correct id
+            f = next(l.getFeatures(QgsFeatureRequest().setFilterFid(added[0].id())))
+            self.assertTrue(f.isValid())
+            self.assertEqual(f['cnt'], -220)
+
+            f = next(l.getFeatures(QgsFeatureRequest().setFilterFid(added[1].id())))
+            self.assertTrue(f.isValid())
+            self.assertEqual(f['cnt'], 330)
+        else:
+            # expect fail
+            self.assertFalse(l.dataProvider().addFeatures([f1, f2]),
+                             'Provider reported no AddFeatures capability, but returned true to addFeatures')
 
 
 if __name__ == '__main__':

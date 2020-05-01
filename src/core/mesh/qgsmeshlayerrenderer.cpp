@@ -38,6 +38,7 @@
 #include "qgsfillsymbollayer.h"
 #include "qgssettings.h"
 #include "qgsstyle.h"
+#include "qgsmeshdataprovidertemporalcapabilities.h"
 
 QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   QgsMeshLayer *layer,
@@ -102,7 +103,11 @@ void QgsMeshLayerRenderer::calculateOutputSize()
 
 void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
 {
-  const QgsMeshDatasetIndex datasetIndex = mRendererSettings.activeScalarDataset();
+  QgsMeshDatasetIndex datasetIndex;
+  if ( renderContext()->isTemporal() )
+    datasetIndex = layer->activeScalarDatasetAtTime( renderContext()->temporalRange() );
+  else
+    datasetIndex = layer->staticScalarDatasetIndex();
 
   // Find out if we can use cache up to date. If yes, use it and return
   const int datasetGroupCount = layer->dataProvider()->datasetGroupCount();
@@ -125,7 +130,7 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
   // Cache is not up-to-date, gather data
   if ( datasetIndex.isValid() )
   {
-    const QgsMeshDatasetGroupMetadata metadata = layer->dataProvider()->datasetGroupMetadata( datasetIndex );
+    const QgsMeshDatasetGroupMetadata metadata = layer->dataProvider()->datasetGroupMetadata( datasetIndex.group() );
     mScalarDataType = QgsMeshLayerUtils::datasetValuesType( metadata.dataType() );
 
     // populate scalar values
@@ -200,7 +205,11 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
 
 void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
 {
-  const QgsMeshDatasetIndex datasetIndex = mRendererSettings.activeVectorDataset();
+  QgsMeshDatasetIndex datasetIndex;
+  if ( renderContext()->isTemporal() )
+    datasetIndex = layer->activeVectorDatasetAtTime( renderContext()->temporalRange() );
+  else
+    datasetIndex = layer->staticVectorDatasetIndex();
 
   // Find out if we can use cache up to date. If yes, use it and return
   const int datasetGroupCount = layer->dataProvider()->datasetGroupCount();
@@ -425,11 +434,11 @@ void QgsMeshLayerRenderer::renderScalarDataset()
   if ( std::isnan( mScalarDatasetMinimum ) || std::isnan( mScalarDatasetMaximum ) )
     return; // only NODATA values
 
-  QgsMeshDatasetIndex index = mRendererSettings.activeScalarDataset();
-  if ( !index.isValid() )
+  int groupIndex = mRendererSettings.activeScalarDatasetGroup();
+  if ( groupIndex < 0 )
     return; // no shader
 
-  const QgsMeshRendererScalarSettings scalarSettings = mRendererSettings.scalarSettings( index.group() );
+  const QgsMeshRendererScalarSettings scalarSettings = mRendererSettings.scalarSettings( groupIndex );
 
   if ( ( mTriangularMesh.contains( QgsMesh::ElementType::Face ) ) &&
        ( mScalarDataType != QgsMeshDatasetGroupMetadata::DataType::DataOnEdges ) )
@@ -447,29 +456,17 @@ void QgsMeshLayerRenderer::renderScalarDataset()
 void QgsMeshLayerRenderer::renderScalarDatasetOnEdges( const QgsMeshRendererScalarSettings &scalarSettings )
 {
   QgsRenderContext &context = *renderContext();
-  QPainter *painter = context.painter();
-  painter->save();
-  if ( context.flags() & QgsRenderContext::Antialiasing )
-    painter->setRenderHint( QPainter::Antialiasing, true );
-
-  QPen pen = painter->pen();
-  pen.setCapStyle( Qt::PenCapStyle::RoundCap );
-  pen.setJoinStyle( Qt::MiterJoin );
-
-  double lineWidth = scalarSettings.edgeWidth();
-  double penWidth = context.convertToPainterUnits( lineWidth,
-                    scalarSettings.edgeWidthUnit() );
-  pen.setWidthF( penWidth );
-  painter->setPen( pen );
-
   const QVector<QgsMeshEdge> edges = mTriangularMesh.edges();
   const QVector<QgsMeshVertex> vertices = mTriangularMesh.vertices();
   const QList<int> egdesInExtent = mTriangularMesh.edgeIndexesForRectangle( context.mapExtent() );
   const QSet<int> nativeEdgesInExtent = QgsMeshUtils::nativeEdgesFromEdges( egdesInExtent,
                                         mTriangularMesh.edgesToNativeEdges() );
-  std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( scalarSettings.colorRampShader() ) );
-  QList<QgsColorRampShader::ColorRampItem> colorRampItemList = shader->colorRampItemList();
-  const QgsColorRampShader::Type classificationType = shader->colorRampType();
+
+  QgsInterpolatedLineRenderer edgePlotter;
+  edgePlotter.setInterpolatedColor( QgsInterpolatedLineColor( scalarSettings.colorRampShader() ) );
+  edgePlotter.setInterpolatedWidth( QgsInterpolatedLineWidth( scalarSettings.edgeStrokeWidth() ) );
+  edgePlotter.setWidthUnit( scalarSettings.edgeStrokeWidthUnit() );
+  edgePlotter.setOpacity( scalarSettings.opacity() );
 
   for ( const int i : egdesInExtent )
   {
@@ -488,113 +485,16 @@ void QgsMeshLayerRenderer::renderScalarDatasetOnEdges( const QgsMeshRendererScal
 
     const QgsMeshVertex &startVertex = vertices[startVertexIndex];
     const QgsMeshVertex &endVertex = vertices[endVertexIndex];
-    const QgsPointXY lineStart = context.mapToPixel().transform( startVertex.x(), startVertex.y() );
-    const QgsPointXY lineEnd = context.mapToPixel().transform( endVertex.x(), endVertex.y() );
 
     if ( mScalarDataType == QgsMeshDatasetGroupMetadata::DataType::DataOnEdges )
     {
-      QColor edgeColor = colorAt( shader.get(),  mScalarDatasetValues[i] );
-      pen.setColor( edgeColor );
-      painter->setPen( pen );
-      painter->drawLine( lineStart.toQPointF(), lineEnd.toQPointF() );
+      edgePlotter.render( mScalarDatasetValues[i], mScalarDatasetValues[i], startVertex, endVertex, context );
     }
     else
     {
-      double valVertexStart = mScalarDatasetValues[startVertexIndex];
-      double valVertexEnd = mScalarDatasetValues[endVertexIndex];
-      if ( std::isnan( valVertexStart ) || std::isnan( valVertexEnd ) )
-        continue;
-      double valDiff = ( valVertexEnd - valVertexStart );
-
-      if ( qgsDoubleNear( valDiff, 0.0 ) )
-      {
-        QColor edgeColor = colorAt( shader.get(),  valVertexStart );
-        pen.setColor( edgeColor );
-        painter->setPen( pen );
-        painter->drawLine( lineStart.toQPointF(), lineEnd.toQPointF() );
-      }
-      else
-      {
-        if ( classificationType == QgsColorRampShader::Type::Exact )
-        {
-          Q_ASSERT( ! qgsDoubleNear( valDiff, 0.0 ) );
-          for ( int i = 0; i < colorRampItemList.size(); ++i )
-          {
-            const QgsColorRampShader::ColorRampItem &item = colorRampItemList.at( i );
-            if ( !std::isnan( item.value ) )
-            {
-              double fraction = ( item.value - valVertexStart ) / valDiff;
-              if ( ( fraction > 0.0 ) && ( fraction < 1.0 ) )
-              {
-                QgsPointXY point = fractionPoint( lineStart, lineEnd, fraction );
-                pen.setColor( item.color );
-                painter->setPen( pen );
-                painter->drawPoint( point.toQPointF() );
-              }
-            }
-          }
-        }
-        else if ( classificationType == QgsColorRampShader::Type::Discrete )
-        {
-          QgsPointXY startPoint = lineStart;
-          QColor color = colorAt( shader.get(), valVertexStart );
-          Q_ASSERT( ! qgsDoubleNear( valDiff, 0.0 ) );
-          for ( int i = 0; i < colorRampItemList.size() - 1; ++i )
-          {
-            const QgsColorRampShader::ColorRampItem &item = colorRampItemList.at( i );
-            if ( !std::isnan( item.value ) )
-            {
-              double fraction = ( item.value - valVertexStart ) / valDiff;
-              if ( ( fraction > 0.0 ) && ( fraction < 1.0 ) )
-              {
-                QgsPointXY endPoint = fractionPoint( lineStart, lineEnd, fraction );
-                pen.setColor( color );
-                painter->setPen( pen );
-                painter->drawLine( startPoint.toQPointF(), endPoint.toQPointF() );
-                color = item.color;
-                startPoint = endPoint;
-              }
-            }
-          }
-          pen.setColor( colorAt( shader.get(), valVertexEnd ) );
-          painter->setPen( pen );
-          painter->drawLine( startPoint.toQPointF(), lineEnd.toQPointF() );
-        }
-        else if ( classificationType == QgsColorRampShader::Type::Interpolated )
-        {
-          QLinearGradient gradient( lineStart.toQPointF(), lineEnd.toQPointF() );
-          gradient.setColorAt( 0.0, colorAt( shader.get(), valVertexStart ) );
-          gradient.setColorAt( 1.0, colorAt( shader.get(), valVertexEnd ) );
-          gradient.setSpread( gradient.ReflectSpread );
-
-          Q_ASSERT( ! qgsDoubleNear( valDiff, 0.0 ) );
-
-          for ( int i = 0; i < colorRampItemList.size(); ++i )
-          {
-            const QgsColorRampShader::ColorRampItem &item = colorRampItemList.at( i );
-            if ( !std::isnan( item.value ) )
-            {
-              double fraction = ( item.value - valVertexStart ) / valDiff;
-              if ( ( fraction > 0.0 ) && ( fraction < 1.0 ) )
-              {
-                gradient.setColorAt( fraction, colorAt( shader.get(), item.value ) );
-              }
-            }
-            QBrush brush( gradient );
-            pen.setBrush( brush );
-            painter->setPen( pen );
-            painter->drawLine( lineStart.toQPointF(), lineEnd.toQPointF() );
-          }
-        }
-        else
-        {
-          // no other option possible
-          Q_ASSERT( false );
-        }
-      }
+      edgePlotter.render( mScalarDatasetValues[startVertexIndex], mScalarDatasetValues[endVertexIndex], startVertex, endVertex, context );
     }
   }
-  painter->restore();
 }
 
 QColor QgsMeshLayerRenderer::colorAt( QgsColorRampShader *shader, double val ) const
@@ -641,8 +541,8 @@ void QgsMeshLayerRenderer::renderScalarDatasetOnFaces( const QgsMeshRendererScal
 
 void QgsMeshLayerRenderer::renderVectorDataset()
 {
-  QgsMeshDatasetIndex index = mRendererSettings.activeVectorDataset();
-  if ( !index.isValid() )
+  int groupIndex = mRendererSettings.activeVectorDatasetGroup();
+  if ( groupIndex < 0 )
     return;
 
   if ( !mVectorDatasetValues.isValid() )
@@ -659,7 +559,7 @@ void QgsMeshLayerRenderer::renderVectorDataset()
         mVectorDatasetMagMaximum,
         mVectorDatasetMagMinimum,
         mVectorDataType,
-        mRendererSettings.vectorSettings( index.group() ),
+        mRendererSettings.vectorSettings( groupIndex ),
         *renderContext(),
         mLayerExtent,
         mOutputSize ) );
@@ -667,3 +567,4 @@ void QgsMeshLayerRenderer::renderVectorDataset()
   if ( renderer )
     renderer->draw();
 }
+

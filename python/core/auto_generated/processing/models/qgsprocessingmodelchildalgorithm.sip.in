@@ -193,20 +193,18 @@ Sets whether the child algorithm is active.
 .. seealso:: :py:func:`isActive`
 %End
 
-    QStringList dependencies() const;
+    QList< QgsProcessingModelChildDependency > dependencies() const;
 %Docstring
 Returns the list of child algorithms from the parent model on which this
-algorithm is dependent. The returned list contains the id() of the
-dependent algorithms.
+algorithm is dependent.
 
 .. seealso:: :py:func:`setDependencies`
 %End
 
-    void setDependencies( const QStringList &dependencies );
+    void setDependencies( const QList< QgsProcessingModelChildDependency > &dependencies );
 %Docstring
 Sets the list of child algorithms from the parent model on which this
-algorithm is dependent. The list should contain the id() of the
-dependent algorithms.
+algorithm is dependent.
 
 .. seealso:: :py:func:`dependencies`
 %End

@@ -22,21 +22,7 @@ QgsMapLayerTemporalProperties::QgsMapLayerTemporalProperties( QObject *parent, b
 {
 }
 
-void QgsMapLayerTemporalProperties::setTemporalSource( QgsMapLayerTemporalProperties::TemporalSource source )
-{
-  if ( mSource != source )
-  {
-    mSource = source;
-    emit changed();
-  }
-}
-
 bool QgsMapLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTimeRange & ) const
 {
   return true;
-}
-
-QgsMapLayerTemporalProperties::TemporalSource QgsMapLayerTemporalProperties::temporalSource() const
-{
-  return mSource;
 }

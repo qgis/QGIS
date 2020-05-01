@@ -18,9 +18,15 @@ from qgis.core import (QgsXmlUtils,
                        QgsCoordinateReferenceSystem,
                        QgsProcessingOutputLayerDefinition,
                        QgsProcessingFeatureSourceDefinition,
+                       QgsRemappingSinkDefinition,
+                       QgsWkbTypes,
+                       QgsCoordinateTransform,
+                       QgsFields,
+                       QgsField,
+                       QgsProject,
                        NULL)
 
-from qgis.PyQt.QtCore import QDateTime, QDate, QTime
+from qgis.PyQt.QtCore import QDateTime, QDate, QTime, QVariant
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtGui import QColor
 
@@ -253,7 +259,7 @@ class TestQgsXmlUtils(unittest.TestCase):
         definition = QgsProcessingFeatureSourceDefinition(QgsProperty.fromValue('my source'))
         definition.selectedFeaturesOnly = True
         definition.featureLimit = 27
-        definition.flags = QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature
+        definition.flags = QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature
         definition.geometryCheck = QgsFeatureRequest.GeometrySkipInvalid
 
         elem = QgsXmlUtils.writeVariant(definition, doc)
@@ -261,8 +267,7 @@ class TestQgsXmlUtils(unittest.TestCase):
         self.assertEqual(c.source.staticValue(), 'my source')
         self.assertTrue(c.selectedFeaturesOnly)
         self.assertEqual(c.featureLimit, 27)
-        # Travis won't allow this -- maybe Python version related?
-        #self.assertEqual(c.flags, QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature)
+        self.assertEqual(c.flags, QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature)
         self.assertEqual(c.geometryCheck, QgsFeatureRequest.GeometrySkipInvalid)
 
     def test_output_layer_definition(self):
@@ -278,6 +283,32 @@ class TestQgsXmlUtils(unittest.TestCase):
         c = QgsXmlUtils.readVariant(elem)
         self.assertEqual(c.sink.staticValue(), 'my sink')
         self.assertEqual(c.createOptions, {'opt': 1, 'opt2': 2})
+
+    def testRemappingDefinition(self):
+        fields = QgsFields()
+        fields.append(QgsField('fldtxt', QVariant.String))
+        fields.append(QgsField('fldint', QVariant.Int))
+        fields.append(QgsField('fldtxt2', QVariant.String))
+
+        mapping_def = QgsRemappingSinkDefinition()
+        mapping_def.setDestinationWkbType(QgsWkbTypes.Point)
+        mapping_def.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        mapping_def.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        mapping_def.setDestinationFields(fields)
+        mapping_def.addMappedField('fldtxt2', QgsProperty.fromField('fld1'))
+        mapping_def.addMappedField('fldint', QgsProperty.fromExpression('@myval * fldint'))
+
+        doc = QDomDocument("properties")
+        elem = QgsXmlUtils.writeVariant(mapping_def, doc)
+        c = QgsXmlUtils.readVariant(elem)
+
+        self.assertEqual(c.destinationWkbType(), QgsWkbTypes.Point)
+        self.assertEqual(c.sourceCrs().authid(), 'EPSG:4326')
+        self.assertEqual(c.destinationCrs().authid(), 'EPSG:3857')
+        self.assertEqual(c.destinationFields()[0].name(), 'fldtxt')
+        self.assertEqual(c.destinationFields()[1].name(), 'fldint')
+        self.assertEqual(c.fieldMap()['fldtxt2'].field(), 'fld1')
+        self.assertEqual(c.fieldMap()['fldint'].expressionString(), '@myval * fldint')
 
 
 if __name__ == '__main__':

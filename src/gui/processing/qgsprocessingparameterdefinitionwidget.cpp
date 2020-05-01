@@ -22,6 +22,7 @@
 #include "qgsapplication.h"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingparametertype.h"
+#include "qgscolorbutton.h"
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -145,7 +146,18 @@ QgsProcessingParameterDefinitionDialog::QgsProcessingParameterDefinitionDialog( 
   QVBoxLayout *commentLayout = new QVBoxLayout();
   mCommentEdit = new QTextEdit();
   mCommentEdit->setAcceptRichText( false );
-  commentLayout->addWidget( mCommentEdit );
+  commentLayout->addWidget( mCommentEdit, 1 );
+
+  QHBoxLayout *hl = new QHBoxLayout();
+  hl->setContentsMargins( 0, 0, 0, 0 );
+  hl->addWidget( new QLabel( tr( "Color" ) ) );
+  mCommentColorButton = new QgsColorButton();
+  mCommentColorButton->setAllowOpacity( true );
+  mCommentColorButton->setWindowTitle( tr( "Comment Color" ) );
+  mCommentColorButton->setShowNull( true, tr( "Default" ) );
+  hl->addWidget( mCommentColorButton );
+  commentLayout->addLayout( hl );
+
   QWidget *w2 = new QWidget();
   w2->setLayout( commentLayout );
   mTabWidget->addTab( w2, tr( "Comments" ) );
@@ -176,6 +188,19 @@ void QgsProcessingParameterDefinitionDialog::setComments( const QString &comment
 QString QgsProcessingParameterDefinitionDialog::comments() const
 {
   return mCommentEdit->toPlainText();
+}
+
+void QgsProcessingParameterDefinitionDialog::setCommentColor( const QColor &color )
+{
+  if ( color.isValid() )
+    mCommentColorButton->setColor( color );
+  else
+    mCommentColorButton->setToNull();
+}
+
+QColor QgsProcessingParameterDefinitionDialog::commentColor() const
+{
+  return !mCommentColorButton->isNull() ? mCommentColorButton->color() : QColor();
 }
 
 void QgsProcessingParameterDefinitionDialog::switchToCommentTab()

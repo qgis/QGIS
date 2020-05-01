@@ -316,8 +316,9 @@ override_dh_auto_install:
 	# qgis binaries
 	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis/usr/bin
 	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis $(CURDIR)/debian/qgis/usr/bin/qgis.bin
+	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis_process $(CURDIR)/debian/qgis/usr/bin/qgis_process.bin
 
-	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis
+	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis $(CURDIR)/debian/tmp/usr/bin/qgis_process
 
 	# qgis binary wrappers
 	sed -r \
@@ -326,6 +327,7 @@ override_dh_auto_install:
 		$(CURDIR)/debian/qgis.sh.in >$(CURDIR)/debian/qgis.sh
 
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis
+	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis_process
 
 override_dh_missing:
 	dh_missing --fail-missing

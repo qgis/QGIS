@@ -29,7 +29,16 @@
 QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>( source, ownSource, request )
 {
-  mHandle = QgsSpatiaLiteConnPool::instance()->acquireConnection( mSource->mSqlitePath, request.timeout(), request.requestMayBeNested() );
+
+  mSqliteHandle = source->transactionHandle();
+  if ( ! mSqliteHandle )
+  {
+    mHandle = QgsSpatiaLiteConnPool::instance()->acquireConnection( mSource->mSqlitePath, request.timeout(), request.requestMayBeNested() );
+    if ( mHandle )
+    {
+      mSqliteHandle = mHandle->handle();
+    }
+  }
 
   mFetchGeometry = !mSource->mGeometryColumn.isNull() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
   mHasPrimaryKey = !mSource->mPrimaryKey.isEmpty();
@@ -290,9 +299,10 @@ bool QgsSpatiaLiteFeatureIterator::close()
 
   iteratorClosed();
 
-  if ( !mHandle )
+  mClosed = true;
+
+  if ( !mSqliteHandle )
   {
-    mClosed = true;
     return false;
   }
 
@@ -302,19 +312,24 @@ bool QgsSpatiaLiteFeatureIterator::close()
     sqliteStatement = nullptr;
   }
 
-  QgsSpatiaLiteConnPool::instance()->releaseConnection( mHandle );
-  mHandle = nullptr;
+  if ( mHandle )
+  {
+    QgsSpatiaLiteConnPool::instance()->releaseConnection( mHandle );
+    mHandle = nullptr;
+  }
 
+  mSqliteHandle = nullptr;
   mClosed = true;
   return true;
 }
+
 
 ////
 
 
 bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString &whereClause, long limit, const QString &orderBy )
 {
-  if ( !mHandle )
+  if ( !mSqliteHandle )
     return false;
 
   try
@@ -359,10 +374,10 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString &whereClause,
 
     QgsDebugMsgLevel( sql, 4 );
 
-    if ( sqlite3_prepare_v2( mHandle->handle(), sql.toUtf8().constData(), -1, &sqliteStatement, nullptr ) != SQLITE_OK )
+    if ( sqlite3_prepare_v2( mSqliteHandle, sql.toUtf8().constData(), -1, &sqliteStatement, nullptr ) != SQLITE_OK )
     {
       // some error occurred
-      QgsMessageLog::logMessage( QObject::tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( mHandle->handle() ) ), QObject::tr( "SpatiaLite" ) );
+      QgsMessageLog::logMessage( QObject::tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( mSqliteHandle ) ), QObject::tr( "SpatiaLite" ) );
       return false;
     }
   }
@@ -489,7 +504,7 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
   if ( ret != SQLITE_ROW )
   {
     // some unexpected error occurred
-    QgsMessageLog::logMessage( QObject::tr( "SQLite error getting feature: %1" ).arg( QString::fromUtf8( sqlite3_errmsg( mHandle->handle() ) ) ), QObject::tr( "SpatiaLite" ) );
+    QgsMessageLog::logMessage( QObject::tr( "SQLite error getting feature: %1" ).arg( QString::fromUtf8( sqlite3_errmsg( mSqliteHandle ) ) ), QObject::tr( "SpatiaLite" ) );
     return false;
   }
 
@@ -642,10 +657,16 @@ QgsSpatiaLiteFeatureSource::QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvi
   , mSpatialIndexMbrCache( p->mSpatialIndexMbrCache )
   , mSqlitePath( p->mSqlitePath )
   , mCrs( p->crs() )
+  , mTransactionHandle( p->transaction() ? p->sqliteHandle() : nullptr )
 {
 }
 
 QgsFeatureIterator QgsSpatiaLiteFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {
   return QgsFeatureIterator( new QgsSpatiaLiteFeatureIterator( this, false, request ) );
+}
+
+sqlite3 *QgsSpatiaLiteFeatureSource::transactionHandle()
+{
+  return mTransactionHandle;
 }

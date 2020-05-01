@@ -38,6 +38,7 @@ class TestQgsAppLocatorFilters : public QObject
     void testLayouts();
     void testSearchActiveLayer();
     void testSearchAllLayers();
+    void testSearchAllLayersPrioritizeExactMatch();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -217,6 +218,39 @@ void TestQgsAppLocatorFilters::testSearchAllLayers()
 
   results = gatherResults( &filter, QStringLiteral( "feature is 6789" ), context );
   QCOMPARE( results.count(), 1 );
+
+  QgsProject::instance()->removeAllMapLayers();
+}
+
+void TestQgsAppLocatorFilters::testSearchAllLayersPrioritizeExactMatch()
+{
+  QString layerDef = QStringLiteral( "Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_number:integer&key=pk" );
+  QgsVectorLayer *l1 = new QgsVectorLayer( layerDef, QStringLiteral( "Layer 1" ), QStringLiteral( "memory" ) );
+
+  QgsProject::instance()->addMapLayers( QList< QgsMapLayer *>() << l1 );
+
+  QgsFeature f1;
+  f1.setAttributes( QVector<QVariant>() << 100 << "A nice feature" << 100 );
+  f1.setGeometry( QgsGeometry::fromWkt( "Point (-71.123 78.23)" ) );
+  QgsFeature f2;
+  f2.setAttributes( QVector<QVariant>() << 101 << "Something crazy" << 3 );
+  f2.setGeometry( QgsGeometry::fromWkt( "Point (-72.123 78.23)" ) );
+  QgsFeature f3;
+  f3.setAttributes( QVector<QVariant>() << 102 << "Another feature" << 1 );
+  f3.setGeometry( QgsGeometry::fromWkt( "Point (-73.123 78.23)" ) );
+
+  l1->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 );
+
+  QgsAllLayersFeaturesLocatorFilter filter;
+  QgsLocatorContext context;
+  context.usingPrefix = true; // Searching for short strings is only available with prefix
+
+  l1->setDisplayExpression( QStringLiteral( "\"my_number\"" ) );
+
+  QList< QgsLocatorResult > results = gatherResults( &filter, QStringLiteral( "1" ), context );
+  QCOMPARE( results.count(), 2 );
+  QCOMPARE( results.first().displayString, QStringLiteral( "1" ) );
+  QCOMPARE( results.last().displayString, QStringLiteral( "100" ) );
 
   QgsProject::instance()->removeAllMapLayers();
 }

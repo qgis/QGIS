@@ -29,10 +29,12 @@
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerproperties.h"
+#include "qgsmeshstaticdatasetwidget.h"
 #include "qgsproject.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsrenderermeshpropertieswidget.h"
 #include "qgssettings.h"
+#include "qgsprojecttimesettings.h"
 #include "qgsproviderregistry.h"
 #ifdef HAVE_3D
 #include "qgsmeshlayer3drendererwidget.h"
@@ -51,6 +53,13 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   mRendererMeshPropertiesWidget = new QgsRendererMeshPropertiesWidget( mMeshLayer, canvas, this );
   mOptsPage_StyleContent->layout()->addWidget( mRendererMeshPropertiesWidget );
 
+  mStaticScalarWidget->setLayer( mMeshLayer );
+
+  mTemporalProviderTimeUnitComboBox->addItem( tr( "Seconds" ), QgsUnitTypes::TemporalSeconds );
+  mTemporalProviderTimeUnitComboBox->addItem( tr( "Minutes" ), QgsUnitTypes::TemporalMinutes );
+  mTemporalProviderTimeUnitComboBox->addItem( tr( "Hours" ), QgsUnitTypes::TemporalHours );
+  mTemporalProviderTimeUnitComboBox->addItem( tr( "Days" ), QgsUnitTypes::TemporalDays );
+
   connect( mLayerOrigNameLineEd, &QLineEdit::textEdited, this, &QgsMeshLayerProperties::updateLayerName );
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsMeshLayerProperties::changeCrs );
   connect( mAddDatasetButton, &QPushButton::clicked, this, &QgsMeshLayerProperties::addDataset );
@@ -68,11 +77,18 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   connect( mMeshLayer, &QgsMeshLayer::dataChanged, this, &QgsMeshLayerProperties::syncAndRepaint );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMeshLayerProperties::showHelp );
 
+  connect( mTemporalReloadButton, &QPushButton::clicked, this, &QgsMeshLayerProperties::reloadTemporalProperties );
+  connect( mTemporalDateTimeReference, &QDateTimeEdit::dateTimeChanged, this, &QgsMeshLayerProperties::onTimeReferenceChange );
+  connect( mTemporalStaticDatasetCheckBox, &QCheckBox::toggled, this, &QgsMeshLayerProperties::onStaticDatasetCheckBoxChanged );
+  connect( mMeshLayer, &QgsMeshLayer::activeScalarDatasetGroupChanged, mStaticScalarWidget, &QgsMeshStaticDatasetWidget::setScalarDatasetGroup );
+  connect( mMeshLayer, &QgsMeshLayer::activeVectorDatasetGroupChanged, mStaticScalarWidget, &QgsMeshStaticDatasetWidget::setVectorDatasetGroup );
+
 #ifdef HAVE_3D
   mMesh3DWidget = new QgsMeshLayer3DRendererWidget( mMeshLayer, canvas, mOptsPage_3DView );
 
   mOptsPage_3DView->setLayout( new QVBoxLayout( mOptsPage_3DView ) );
   mOptsPage_3DView->layout()->addWidget( mMesh3DWidget );
+  mOptsPage_3DView->layout()->setContentsMargins( 0, 0, 0, 0 );
   mOptsPage_3DView->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#d-view-properties" ) );
 #else
   delete mOptsPage_3DView;  // removes both the "3d view" list item and its page
@@ -177,6 +193,21 @@ void QgsMeshLayerProperties::syncToLayer()
   mSimplifyMeshGroupBox->setChecked( simplifySettings.isEnabled() );
   mSimplifyReductionFactorSpinBox->setValue( simplifySettings.reductionFactor() );
   mSimplifyMeshResolutionSpinBox->setValue( simplifySettings.meshResolution() );
+
+  QgsDebugMsgLevel( QStringLiteral( "populate temporal tab" ), 4 );
+  whileBlocking( mTemporalDateTimeReference )->setDateTime( mMeshLayer->temporalProperties()->referenceTime() );
+  const QgsDateTimeRange timeRange = mMeshLayer->temporalProperties()->timeExtent();
+  mTemporalDateTimeStart->setDateTime( timeRange.begin() );
+  mTemporalDateTimeEnd->setDateTime( timeRange.end() );
+  if ( mMeshLayer->dataProvider() )
+  {
+    mTemporalProviderTimeUnitComboBox->setCurrentIndex(
+      mTemporalProviderTimeUnitComboBox->findData( mMeshLayer->dataProvider()->temporalCapabilities()->temporalUnit() ) );
+  }
+
+  mStaticScalarWidget->syncToLayer();
+  mStaticScalarWidget->setVisible( !mMeshLayer->temporalProperties()->isActive() );
+  mTemporalStaticDatasetCheckBox->setChecked( !mMeshLayer->temporalProperties()->isActive() );
 }
 
 void QgsMeshLayerProperties::addDataset()
@@ -200,11 +231,27 @@ void QgsMeshLayerProperties::addDataset()
   settings.setValue( QStringLiteral( "lastMeshDatasetDir" ), openFileInfo.absolutePath(), QgsSettings::App );
   QFile datasetFile( openFileString );
 
+  bool isTemporalBefore = mMeshLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities();
   bool ok = mMeshLayer->dataProvider()->addDataset( openFileString );
   if ( ok )
   {
+    if ( !isTemporalBefore && mMeshLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
+    {
+      mMeshLayer->temporalProperties()->setDefaultsFromDataProviderTemporalCapabilities(
+        mMeshLayer->dataProvider()->temporalCapabilities() );
+
+      if ( ! mMeshLayer->temporalProperties()->referenceTime().isValid() )
+      {
+        QDateTime referenceTime = QgsProject::instance()->timeSettings()->temporalRange().begin();
+        if ( !referenceTime.isValid() ) // If project reference time is invalid, use current date
+          referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) );
+        mMeshLayer->temporalProperties()->setReferenceTime( referenceTime, mMeshLayer->dataProvider()->temporalCapabilities() );
+      }
+    }
+
     syncToLayer();
     QMessageBox::information( this, tr( "Load mesh datasets" ), tr( "Datasets successfully added to the mesh layer" ) );
+    emit mMeshLayer->dataSourceChanged();
   }
   else
   {
@@ -349,8 +396,25 @@ void QgsMeshLayerProperties::apply()
 
   mMeshLayer->setMeshSimplificationSettings( simplifySettings );
 
+  QgsDebugMsgLevel( QStringLiteral( "processing temporal tab" ), 4 );
+  /*
+   * Temporal Tab
+   */
+
+  mMeshLayer->setReferenceTime( mTemporalDateTimeReference->dateTime() );
+  if ( mMeshLayer->dataProvider() )
+    mMeshLayer->dataProvider()->setTemporalUnit(
+      static_cast<QgsUnitTypes::TemporalUnit>( mTemporalProviderTimeUnitComboBox->currentData().toInt() ) );
+
+  mStaticScalarWidget->apply();
+  bool needEmitRendererChanged = mMeshLayer->temporalProperties()->isActive() == mTemporalStaticDatasetCheckBox->isChecked();
+  mMeshLayer->temporalProperties()->setIsActive( !mTemporalStaticDatasetCheckBox->isChecked() );
+
   if ( needMeshUpdating )
     mMeshLayer->reload();
+
+  if ( needEmitRendererChanged )
+    emit mMeshLayer->rendererChanged();
 
   //make sure the layer is redrawn
   mMeshLayer->triggerRepaint();
@@ -398,4 +462,34 @@ void QgsMeshLayerProperties::aboutToShowStyleMenu()
   // re-add style manager actions!
   m->addSeparator();
   QgsMapLayerStyleGuiUtils::instance()->addStyleManagerActions( m, mMeshLayer );
+}
+
+void QgsMeshLayerProperties::reloadTemporalProperties()
+{
+  QgsMeshDataProviderTemporalCapabilities *temporalCapabalities = mMeshLayer->dataProvider()->temporalCapabilities();
+  QgsDateTimeRange timeExtent;
+  QDateTime referenceTime = temporalCapabalities->referenceTime();
+  if ( referenceTime.isValid() )
+  {
+    timeExtent = temporalCapabalities->timeExtent();
+    whileBlocking( mTemporalDateTimeReference )->setDateTime( referenceTime );
+  }
+  else
+    // The reference time already here is used again to define the time extent
+    timeExtent = temporalCapabalities->timeExtent( mTemporalDateTimeReference->dateTime() );
+
+  mTemporalDateTimeStart->setDateTime( timeExtent.begin() );
+  mTemporalDateTimeEnd->setDateTime( timeExtent.end() );
+}
+
+void QgsMeshLayerProperties::onTimeReferenceChange()
+{
+  const QgsDateTimeRange &timeExtent = mMeshLayer->dataProvider()->temporalCapabilities()->timeExtent( mTemporalDateTimeReference->dateTime() );
+  mTemporalDateTimeStart->setDateTime( timeExtent.begin() );
+  mTemporalDateTimeEnd->setDateTime( timeExtent.end() );
+}
+
+void QgsMeshLayerProperties::onStaticDatasetCheckBoxChanged()
+{
+  mStaticScalarWidget->setVisible( mTemporalStaticDatasetCheckBox->isChecked() );
 }

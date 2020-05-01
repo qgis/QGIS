@@ -483,6 +483,40 @@ bool QgsPalLayerSettings::prepare( QgsRenderContext &context, QSet<QString> &att
   return true;
 }
 
+QSet<QString> QgsPalLayerSettings::referencedFields( const QgsRenderContext &context ) const
+{
+  QSet<QString> referenced;
+  if ( drawLabels )
+  {
+    if ( isExpression )
+    {
+      referenced.unite( QgsExpression( fieldName ).referencedColumns() );
+    }
+    else
+    {
+      referenced.insert( fieldName );
+    }
+  }
+
+  // calling referencedFields() with ignoreContext=true because in our expression context
+  // we do not have valid QgsFields yet - because of that the field names from expressions
+  // wouldn't get reported
+  referenced.unite( mDataDefinedProperties.referencedFields( context.expressionContext(), true ) );
+
+  if ( geometryGeneratorEnabled )
+  {
+    QgsExpression geomGeneratorExpr( geometryGenerator );
+    referenced.unite( geomGeneratorExpr.referencedColumns() );
+  }
+
+  if ( mCallout )
+  {
+    referenced.unite( mCallout->referencedFields( context ) );
+  }
+
+  return referenced;
+}
+
 void QgsPalLayerSettings::startRender( QgsRenderContext &context )
 {
   if ( mRenderStarted )

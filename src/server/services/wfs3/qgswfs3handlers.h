@@ -111,7 +111,9 @@ class QgsWfs3StaticHandler: public QgsServerOgcApiHandler
 
 };
 
-
+/**
+ * The QgsWfs3LandingPageHandler is the landing page handler.
+ */
 class QgsWfs3LandingPageHandler: public QgsServerOgcApiHandler
 {
   public:
@@ -138,7 +140,9 @@ class QgsWfs3LandingPageHandler: public QgsServerOgcApiHandler
     json schema( const QgsServerApiContext &context ) const override;
 };
 
-
+/**
+ * The QgsWfs3ConformanceHandler class shows the conformance links.
+ */
 class QgsWfs3ConformanceHandler: public QgsServerOgcApiHandler
 {
   public:

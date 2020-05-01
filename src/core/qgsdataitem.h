@@ -506,7 +506,8 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
       Database,
       Table,
       Plugin,    //!< Added in 2.10
-      Mesh       //!< Added in 3.2
+      Mesh,      //!< Added in 3.2
+      VectorTile //!< Added in 3.14
     };
 
     Q_ENUM( LayerType )
@@ -595,6 +596,8 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static QIcon iconDefault();
     //! Returns icon for mesh layer type
     static QIcon iconMesh();
+    //! Returns icon for vector tile layer
+    static QIcon iconVectorTile();
 
     //! \returns the layer name
     virtual QString layerName() const { return name(); }

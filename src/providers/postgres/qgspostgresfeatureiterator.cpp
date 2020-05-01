@@ -611,6 +611,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString &whereClause, long
       break;
 
     case PktInt:
+    case PktInt64:
     case PktUint64:
       query += delim + QgsPostgresConn::quotedIdentifier( mSource->mFields.at( mSource->mPrimaryKeyAttrs.at( 0 ) ).name() );
       delim = ',';
@@ -662,7 +663,6 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString &whereClause, long
   mLastFetch = false;
   return true;
 }
-
 
 bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int row, QgsFeature &feature )
 {
@@ -744,20 +744,37 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
       break;
 
     case PktInt:
-    case PktUint64:
       fid = mConn->getBinaryInt( queryResult, row, col++ );
       if ( !subsetOfAttributes || fetchAttributes.contains( mSource->mPrimaryKeyAttrs.at( 0 ) ) )
       {
         feature.setAttribute( mSource->mPrimaryKeyAttrs[0], fid );
       }
-      if ( mSource->mPrimaryKeyType == PktInt )
-      {
-        // NOTE: this needs be done _after_ the setAttribute call
-        // above as we want the attribute value to be 1:1 with
-        // database value
-        fid = QgsPostgresUtils::int32pk_to_fid( fid );
-      }
+      // NOTE: this needs be done _after_ the setAttribute call
+      // above as we want the attribute value to be 1:1 with
+      // database value
+      fid = QgsPostgresUtils::int32pk_to_fid( fid );
       break;
+
+    case PktUint64:
+    case PktInt64:
+    {
+      QVariantList pkVal;
+
+      int idx = mSource->mPrimaryKeyAttrs.at( 0 );
+      QgsField fld = mSource->mFields.at( idx );
+
+      QVariant v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), QString::number( mConn->getBinaryInt( queryResult, row, col ) ), fld.typeName() );
+      pkVal << v;
+
+      if ( !subsetOfAttributes || fetchAttributes.contains( idx ) )
+      {
+        feature.setAttribute( idx, v );
+      }
+      col++;
+
+      fid = mSource->mShared->lookupFid( pkVal );
+    }
+    break;
 
     case PktFidMap:
     {
@@ -838,6 +855,11 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
         }
         ::PQfreemem( data );
       }
+      break;
+    }
+    case QVariant::LongLong:
+    {
+      v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), QString::number( mConn->getBinaryInt( queryResult, row, col ) ), fld.typeName() );
       break;
     }
     default:

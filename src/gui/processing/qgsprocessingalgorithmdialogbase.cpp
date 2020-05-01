@@ -35,33 +35,43 @@
 
 ///@cond NOT_STABLE
 
+QgsProcessingAlgorithmDialogFeedback::QgsProcessingAlgorithmDialogFeedback()
+  : QgsProcessingFeedback( false )
+{}
+
 void QgsProcessingAlgorithmDialogFeedback::setProgressText( const QString &text )
 {
+  QgsProcessingFeedback::setProgressText( text );
   emit progressTextChanged( text );
 }
 
 void QgsProcessingAlgorithmDialogFeedback::reportError( const QString &error, bool fatalError )
 {
+  QgsProcessingFeedback::reportError( error, fatalError );
   emit errorReported( error, fatalError );
 }
 
 void QgsProcessingAlgorithmDialogFeedback::pushInfo( const QString &info )
 {
+  QgsProcessingFeedback::pushInfo( info );
   emit infoPushed( info );
 }
 
 void QgsProcessingAlgorithmDialogFeedback::pushCommandInfo( const QString &info )
 {
+  QgsProcessingFeedback::pushCommandInfo( info );
   emit commandInfoPushed( info );
 }
 
 void QgsProcessingAlgorithmDialogFeedback::pushDebugInfo( const QString &info )
 {
+  QgsProcessingFeedback::pushDebugInfo( info );
   emit debugInfoPushed( info );
 }
 
 void QgsProcessingAlgorithmDialogFeedback::pushConsoleInfo( const QString &info )
 {
+  QgsProcessingFeedback::pushConsoleInfo( info );
   emit consoleInfoPushed( info );
 }
 
@@ -191,11 +201,6 @@ void QgsProcessingAlgorithmDialogBase::setMainWidget( QgsPanelWidget *widget )
 QWidget *QgsProcessingAlgorithmDialogBase::mainWidget()
 {
   return mMainWidget;
-}
-
-QVariantMap QgsProcessingAlgorithmDialogBase::getParameterValues() const
-{
-  return QVariantMap();
 }
 
 void QgsProcessingAlgorithmDialogBase::saveLogToFile( const QString &path, const LogFormat format )

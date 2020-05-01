@@ -621,6 +621,9 @@ QgsTaskManagerStatusBarWidget::QgsTaskManagerStatusBarWidget( QgsTaskManager *ma
   connect( manager, &QgsTaskManager::allTasksFinished, this, &QgsTaskManagerStatusBarWidget::allFinished );
   connect( manager, &QgsTaskManager::finalTaskProgressChanged, this, &QgsTaskManagerStatusBarWidget::overallProgressChanged );
   connect( manager, &QgsTaskManager::countActiveTasksChanged, this, &QgsTaskManagerStatusBarWidget::countActiveTasksChanged );
+
+  if ( manager->countActiveTasks() )
+    showButton();
 }
 
 QSize QgsTaskManagerStatusBarWidget::sizeHint() const

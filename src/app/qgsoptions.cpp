@@ -403,9 +403,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     mSettings->setValue( QStringLiteral( "clear_auth_cache_on_errors" ), checked, QgsSettings::Section::Auth );
   } );
 
-  //wms search server
-  leWmsSearch->setText( mSettings->value( QStringLiteral( "/qgis/WMSSearchUrl" ), "http://geopole.org/wms/search?search=%1&type=rss" ).toString() );
-
   // set the attribute table default filter
   cmbAttrTableBehavior->clear();
   cmbAttrTableBehavior->addItem( tr( "Show all features" ), QgsAttributeTableFilterModel::ShowAll );
@@ -1156,8 +1153,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   {
     if ( checked )
     {
+      // Since this may crash and lock users out of the settings, let's disable opencl setting before entering
+      // and restore after available was successfully called
+      const bool openClStatus { QgsOpenClUtils::enabled() };
+      QgsOpenClUtils::setEnabled( false );
       if ( QgsOpenClUtils::available( ) )
       {
+        QgsOpenClUtils::setEnabled( openClStatus );
         mOpenClContainerWidget->setEnabled( true );
         mOpenClDevicesCombo->clear();
 
@@ -1196,9 +1198,18 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
 #else
 
-  mOptionsListWidget->removeItemWidget( mOptionsListWidget->findItems( tr( "Acceleration" ), Qt::MatchExactly ).first() );
-  mOptionsStackedWidget->removeWidget( mOptionsPageAcceleration );
-
+  mGPUEnableCheckBox->setChecked( false );
+  for ( int idx = 0; idx < mOptionsPageAccelerationLayout->count(); ++idx )
+  {
+    QWidget *item = mOptionsPageAccelerationLayout->itemAt( idx )->widget();
+    if ( item )
+    {
+      item->setEnabled( false );
+    }
+  }
+  QLabel *noOpenCL = new QLabel( tr( "QGIS is compiled without OpenCL support. "
+                                     "GPU acceleration is not available." ), this );
+  mOptionsPageAccelerationLayout->insertWidget( 0, noOpenCL );
 
 #endif
 
@@ -1462,9 +1473,6 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "proxy/noProxyUrls" ), noProxyUrls );
 
   QgisApp::instance()->namUpdate();
-
-  //wms search url
-  mSettings->setValue( QStringLiteral( "/qgis/WMSSearchUrl" ), leWmsSearch->text() );
 
   //general settings
   mSettings->setValue( QStringLiteral( "/Map/searchRadiusMM" ), spinBoxIdentifyValue->value() );

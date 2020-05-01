@@ -34,6 +34,8 @@ class QgsSpatiaLiteFeatureSource final: public QgsAbstractFeatureSource
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
+    sqlite3 *transactionHandle();
+
   private:
     QString mGeometryColumn;
     QString mSubsetString;
@@ -49,6 +51,7 @@ class QgsSpatiaLiteFeatureSource final: public QgsAbstractFeatureSource
     bool mSpatialIndexMbrCache;
     QString mSqlitePath;
     QgsCoordinateReferenceSystem mCrs;
+    sqlite3 *mTransactionHandle = nullptr;
 
     friend class QgsSpatiaLiteFeatureIterator;
     friend class QgsSpatiaLiteExpressionCompiler;
@@ -81,8 +84,10 @@ class QgsSpatiaLiteFeatureIterator final: public QgsAbstractFeatureIteratorFromS
     QVariant getFeatureAttribute( sqlite3_stmt *stmt, int ic, QVariant::Type type, QVariant::Type subType );
     void getFeatureGeometry( sqlite3_stmt *stmt, int ic, QgsFeature &feature );
 
-    //! wrapper of the SQLite database connection
+    //! QGIS wrapper of the SQLite database connection
     QgsSqliteHandle *mHandle = nullptr;
+    //! The low level connection
+    sqlite3 *mSqliteHandle = nullptr;
 
     /**
       * SQLite statement handle

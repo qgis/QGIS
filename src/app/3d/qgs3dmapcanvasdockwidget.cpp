@@ -35,6 +35,7 @@
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsmapthemecollection.h"
+#include "qgstemporalcontroller.h"
 
 #include "qgs3danimationsettings.h"
 #include "qgs3danimationwidget.h"
@@ -103,6 +104,7 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   // Map Theme Menu
   mMapThemeMenu = new QMenu();
   connect( mMapThemeMenu, &QMenu::aboutToShow, this, &Qgs3DMapCanvasDockWidget::mapThemeMenuAboutToShow );
+  connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &Qgs3DMapCanvasDockWidget::currentMapThemeRenamed );
 
   mBtnMapThemes = new QToolButton();
   mBtnMapThemes->setAutoRaise( true );
@@ -343,4 +345,12 @@ void Qgs3DMapCanvasDockWidget::mapThemeMenuAboutToShow()
     mMapThemeMenuPresetActions.append( a );
   }
   mMapThemeMenu->addActions( mMapThemeMenuPresetActions );
+}
+
+void Qgs3DMapCanvasDockWidget::currentMapThemeRenamed( const QString &theme, const QString &newTheme )
+{
+  if ( theme == mCanvas->map()->terrainMapTheme() )
+  {
+    mCanvas->map()->setTerrainMapTheme( newTheme );
+  }
 }

@@ -48,6 +48,7 @@ Abstract base class for processing algorithms.
       FlagKnownIssues,
       FlagCustomException,
       FlagPruneModelBranchesBasedOnAlgorithmResults,
+      FlagSkipGenericModelLogging,
       FlagDeprecated,
     };
     typedef QFlags<QgsProcessingAlgorithm::Flag> Flags;
@@ -295,6 +296,43 @@ manner.
     bool hasHtmlOutputs() const;
 %Docstring
 Returns ``True`` if this algorithm generates HTML outputs.
+%End
+
+    enum PropertyAvailability
+    {
+      NotAvailable,
+      Available,
+    };
+
+    struct VectorProperties
+    {
+      QgsFields fields;
+
+      QgsWkbTypes::Type wkbType;
+
+      QgsCoordinateReferenceSystem crs;
+
+      QgsProcessingAlgorithm::PropertyAvailability availability;
+    };
+
+    virtual QgsProcessingAlgorithm::VectorProperties sinkProperties( const QString &sink,
+        const QVariantMap &parameters,
+        QgsProcessingContext &context,
+        const QMap< QString, QgsProcessingAlgorithm::VectorProperties > &sourceProperties ) const;
+%Docstring
+Returns the vector properties which will be used for the ``sink`` with matching name.
+
+The ``parameters`` argument specifies the values of all parameters which would be used to generate
+the sink. These can be used alongside the provided ``context`` in order to pre-evaluate inputs
+when required in order to determine the sink's properties.
+
+The ``sourceProperties`` map will contain the vector properties of the various sources used
+as inputs to the algorithm. These will only be available in certain circumstances (e.g. when the
+algorithm is used within a model), so implementations will need to be adaptable to circumstances
+when either ``sourceParameters`` is empty or ``parameters`` is empty, and use whatever information
+is passed in order to make a best guess determination of the output properties.
+
+.. versionadded:: 3.14
 %End
 
     QVariantMap run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok /Out/ = 0, const QVariantMap &configuration = QVariantMap() ) const;
@@ -1152,6 +1190,11 @@ Read the source from ``parameters`` and ``context`` and set it
 
 .. versionadded:: 3.4
 %End
+
+     virtual QgsProcessingAlgorithm::VectorProperties sinkProperties( const QString &sink,
+        const QVariantMap &parameters,
+        QgsProcessingContext &context,
+        const QMap< QString, QgsProcessingAlgorithm::VectorProperties > &sourceProperties ) const;
 
 };
 

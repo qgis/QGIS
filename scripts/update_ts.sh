@@ -126,7 +126,7 @@ if [ $action = push ]; then
 		exit 1
 	fi
 	cp i18n/qgis_en.ts /tmp/qgis_en.ts-downloaded
-	perl scripts/ts-clear.pl  # reset English translations
+	perl scripts/ts_clear.pl  # reset English translations
 elif [ $action = pull ]; then
 	rm -f i18n/qgis_*.ts
 

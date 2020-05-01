@@ -49,6 +49,10 @@ class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
     {
       sipType = sipType_QgsRasterLayerTemporalProperties;
     }
+    else if ( qobject_cast<QgsMeshLayerTemporalProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsMeshLayerTemporalProperties;
+    }
     else
     {
       sipType = 0;
@@ -80,29 +84,6 @@ class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
 
     /**
-     * Source of the temporal range of these properties.
-     */
-    enum TemporalSource
-    {
-      Layer = 0, //!< Layer's temporal range has been manually defined
-      Project = 1 //!< Layer should inherit its temporal range from the project's time settings
-    };
-
-    /**
-     * Returns the temporal properties temporal range source, can be layer or project.
-     *
-     *\see setTemporalSource()
-    **/
-    TemporalSource temporalSource() const;
-
-    /**
-     * Sets the temporal properties temporal range \a source.
-     *
-     *\see temporalSource()
-    **/
-    void setTemporalSource( TemporalSource source );
-
-    /**
      * Returns TRUE if the layer should be visible and rendered for the specified time \a range.
      */
     virtual bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const;
@@ -112,11 +93,6 @@ class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
      * a provider's temporal \a capabilities.
      */
     virtual void setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities ) = 0;
-
-  private:
-
-    //! Source of the properties temporal range
-    TemporalSource mSource = Layer;
 
 };
 

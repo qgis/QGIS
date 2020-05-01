@@ -26,6 +26,7 @@
 #include "qgsfeaturesource.h"
 #include "qgsprocessingutils.h"
 #include "qgsfilefiltergenerator.h"
+#include "qgsremappingproxyfeaturesink.h"
 #include <QMap>
 #include <limits>
 
@@ -59,7 +60,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      * Flags which control source behavior.
      * \since QGIS 3.14
      */
-    enum class Flag
+    enum Flag
     {
       FlagOverrideDefaultGeometryCheck = 1 << 0, //!< If set, the default geometry check method (as dictated by QgsProcessingContext) will be overridden for this source
       FlagCreateIndividualOutputPerInputFeature = 1 << 1, //!< If set, every feature processed from this source will be placed into its own individually created output destination. Support for this flag depends on how an algorithm is executed.
@@ -245,6 +246,35 @@ class CORE_EXPORT QgsProcessingOutputLayerDefinition
     QVariantMap createOptions;
 
     /**
+     * Returns TRUE if the output uses a remapping definition.
+     *
+     * \see remappingDefinition()
+     * \since QGIS 3.14
+     */
+    bool useRemapping() const { return mUseRemapping; }
+
+    /**
+     * Returns the output remapping definition, if useRemapping() is TRUE.
+     *
+     * \see useRemapping()
+     * \see setRemappingDefinition()
+     * \since QGIS 3.14
+     */
+    QgsRemappingSinkDefinition remappingDefinition() const { return mRemappingDefinition; }
+
+    /**
+     * Sets the remapping \a definition to use when adding features to the output layer.
+     *
+     * Calling this method will set useRemapping() to TRUE.
+     *
+     * \see remappingDefinition()
+     * \see useRemapping()
+     *
+     * \since QGIS 3.14
+     */
+    void setRemappingDefinition( const QgsRemappingSinkDefinition &definition );
+
+    /**
      * Saves this output layer definition to a QVariantMap, wrapped in a QVariant.
      * You can use QgsXmlUtils::writeVariant to save it to an XML document.
      * \see loadVariant()
@@ -267,6 +297,12 @@ class CORE_EXPORT QgsProcessingOutputLayerDefinition
     }
 
     bool operator==( const QgsProcessingOutputLayerDefinition &other ) const;
+    bool operator!=( const QgsProcessingOutputLayerDefinition &other ) const;
+
+  private:
+
+    bool mUseRemapping = false;
+    QgsRemappingSinkDefinition mRemappingDefinition;
 
 };
 
@@ -999,7 +1035,7 @@ class CORE_EXPORT QgsProcessingParameters
      * sources and stored temporarily in the \a context. In either case, callers do not
      * need to handle deletion of the returned layer.
      */
-    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint = QgsProcessingUtils::LayerHint::UnknownType );
 
     /**
      * Evaluates the parameter with matching \a definition and \a value to a map layer.
@@ -1010,7 +1046,7 @@ class CORE_EXPORT QgsProcessingParameters
      *
      * \since QGIS 3.4
      */
-    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint = QgsProcessingUtils::LayerHint::UnknownType );
 
     /**
      * Evaluates the parameter with matching \a definition to a raster layer.
@@ -2664,6 +2700,22 @@ class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParame
     virtual QString generateTemporaryDestination() const;
 
     /**
+     * Tests whether a \a value is a supported value for this parameter.
+     *
+     * Will return FALSE when a \a value with an unsupported file extension is specified. The default implementation
+     * calls QgsProcessingProvider::isSupportedOutputValue() to test compatibility.
+     *
+     * \param value value to test
+     * \param context Processing context
+     * \param error will be set to a descriptive error string
+     *
+     * \returns TRUE if \a value is supported.
+     *
+     * \since QGIS 3.14
+     */
+    virtual bool isSupportedOutputValue( const QVariant &value, QgsProcessingContext &context, QString &error SIP_OUT ) const;
+
+    /**
      * Returns TRUE if the destination should be created by default. For optional parameters,
      * a return value of FALSE indicates that the destination should not be created by default.
      * \see setCreateByDefault()
@@ -2727,7 +2779,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
      * output will not be created by default.
      */
     QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
-                                       bool optional = false, bool createByDefault = true );
+                                       bool optional = false, bool createByDefault = true, bool supportsAppend = false );
 
     /**
      * Returns the type name for the parameter class.
@@ -2768,6 +2820,26 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
      */
     void setDataType( QgsProcessing::SourceType type );
 
+    /**
+     * Returns TRUE if the sink supports appending features to an existing table.
+     *
+     * A sink only supports appending if the algorithm implements QgsProcessingAlgorithm::sinkProperties for the sink parameter.
+     *
+     * \see setSupportsAppend()
+     * \since QGIS 3.14
+     */
+    bool supportsAppend() const;
+
+    /**
+     * Sets whether the sink supports appending features to an existing table.
+     *
+     * \warning A sink only supports appending if the algorithm implements QgsProcessingAlgorithm::sinkProperties for the sink parameter.
+     *
+     * \see supportsAppend()
+     * \since QGIS 3.14
+     */
+    void setSupportsAppend( bool supportsAppend );
+
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
     QString generateTemporaryDestination() const override;
@@ -2780,6 +2852,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
   private:
 
     QgsProcessing::SourceType mDataType = QgsProcessing::TypeVectorAnyGeometry;
+    bool mSupportsAppend = false;
 };
 
 

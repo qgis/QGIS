@@ -90,7 +90,7 @@ void QgsRelationWidgetWrapper::widgetValueChanged( const QString &attribute, con
     if ( feature.attribute( attribute ) != newValue )
     {
       feature.setAttribute( attribute, newValue );
-      QgsAttributeEditorContext newContext { context() };
+      QgsAttributeEditorContext newContext { mWidget->editorContext() };
       newContext.setParentFormFeature( feature );
       mWidget->setEditorContext( newContext );
       mWidget->setFeature( feature, false );

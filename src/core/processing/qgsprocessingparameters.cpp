@@ -61,11 +61,23 @@ bool QgsProcessingFeatureSourceDefinition::loadVariant( const QVariantMap &map )
 }
 
 
+//
+// QgsProcessingOutputLayerDefinition
+//
+
+void QgsProcessingOutputLayerDefinition::setRemappingDefinition( const QgsRemappingSinkDefinition &definition )
+{
+  mUseRemapping = true;
+  mRemappingDefinition = definition;
+}
+
 QVariant QgsProcessingOutputLayerDefinition::toVariant() const
 {
   QVariantMap map;
   map.insert( QStringLiteral( "sink" ), sink.toVariant() );
   map.insert( QStringLiteral( "create_options" ), createOptions );
+  if ( mUseRemapping )
+    map.insert( QStringLiteral( "remapping" ), QVariant::fromValue( mRemappingDefinition ) );
   return map;
 }
 
@@ -73,12 +85,27 @@ bool QgsProcessingOutputLayerDefinition::loadVariant( const QVariantMap &map )
 {
   sink.loadVariant( map.value( QStringLiteral( "sink" ) ) );
   createOptions = map.value( QStringLiteral( "create_options" ) ).toMap();
+  if ( map.contains( QStringLiteral( "remapping" ) ) )
+  {
+    mUseRemapping = true;
+    mRemappingDefinition = map.value( QStringLiteral( "remapping" ) ).value< QgsRemappingSinkDefinition >();
+  }
+  else
+  {
+    mUseRemapping = false;
+  }
   return true;
 }
 
 bool QgsProcessingOutputLayerDefinition::operator==( const QgsProcessingOutputLayerDefinition &other ) const
 {
-  return sink == other.sink && destinationProject == other.destinationProject && destinationName == other.destinationName && createOptions == other.createOptions;
+  return sink == other.sink && destinationProject == other.destinationProject && destinationName == other.destinationName && createOptions == other.createOptions
+         && mUseRemapping == other.mUseRemapping && mRemappingDefinition == other.mRemappingDefinition;
+}
+
+bool QgsProcessingOutputLayerDefinition::operator!=( const QgsProcessingOutputLayerDefinition &other ) const
+{
+  return !( *this == other );
 }
 
 bool QgsProcessingParameters::isDynamic( const QVariantMap &parameters, const QString &name )
@@ -552,6 +579,8 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
   QgsProject *destinationProject = nullptr;
   QString destName;
   QVariantMap createOptions;
+  QgsRemappingSinkDefinition remapDefinition;
+  bool useRemapDefinition = false;
   if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
   {
     // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
@@ -561,6 +590,11 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
 
     val = fromVar.sink;
     destName = fromVar.destinationName;
+    if ( fromVar.useRemapping() )
+    {
+      useRemapDefinition = true;
+      remapDefinition = fromVar.remappingDefinition();
+    }
   }
 
   QString dest;
@@ -595,7 +629,7 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
   if ( dest.isEmpty() )
     return nullptr;
 
-  std::unique_ptr< QgsFeatureSink > sink( QgsProcessingUtils::createFeatureSink( dest, context, fields, geometryType, crs, createOptions, sinkFlags ) );
+  std::unique_ptr< QgsFeatureSink > sink( QgsProcessingUtils::createFeatureSink( dest, context, fields, geometryType, crs, createOptions, sinkFlags, useRemapDefinition ? &remapDefinition : nullptr ) );
   destinationIdentifier = dest;
 
   if ( destinationProject )
@@ -721,15 +755,15 @@ QString QgsProcessingParameters::parameterAsCompatibleSourceLayerPathAndLayerNam
 }
 
 
-QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint )
 {
   if ( !definition )
     return nullptr;
 
-  return parameterAsLayer( definition, parameters.value( definition->name() ), context );
+  return parameterAsLayer( definition, parameters.value( definition->name() ), context, layerHint );
 }
 
-QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
+QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint )
 {
   if ( !definition )
     return nullptr;
@@ -775,27 +809,27 @@ QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParam
   if ( layerRef.isEmpty() )
     return nullptr;
 
-  return QgsProcessingUtils::mapLayerFromString( layerRef, context );
+  return QgsProcessingUtils::mapLayerFromString( layerRef, context, true, layerHint );
 }
 
 QgsRasterLayer *QgsProcessingParameters::parameterAsRasterLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
-  return qobject_cast< QgsRasterLayer *>( parameterAsLayer( definition, parameters, context ) );
+  return qobject_cast< QgsRasterLayer *>( parameterAsLayer( definition, parameters, context, QgsProcessingUtils::LayerHint::Raster ) );
 }
 
 QgsRasterLayer *QgsProcessingParameters::parameterAsRasterLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
 {
-  return qobject_cast< QgsRasterLayer *>( parameterAsLayer( definition, value, context ) );
+  return qobject_cast< QgsRasterLayer *>( parameterAsLayer( definition, value, context, QgsProcessingUtils::LayerHint::Raster ) );
 }
 
 QgsMeshLayer *QgsProcessingParameters::parameterAsMeshLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
-  return qobject_cast< QgsMeshLayer *>( parameterAsLayer( definition, parameters, context ) );
+  return qobject_cast< QgsMeshLayer *>( parameterAsLayer( definition, parameters, context, QgsProcessingUtils::LayerHint::Mesh ) );
 }
 
 QgsMeshLayer *QgsProcessingParameters::parameterAsMeshLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
 {
-  return qobject_cast< QgsMeshLayer *>( parameterAsLayer( definition, value, context ) );
+  return qobject_cast< QgsMeshLayer *>( parameterAsLayer( definition, value, context, QgsProcessingUtils::LayerHint::Mesh ) );
 }
 
 QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
@@ -910,12 +944,12 @@ QString QgsProcessingParameters::parameterAsFileOutput( const QgsProcessingParam
 
 QgsVectorLayer *QgsProcessingParameters::parameterAsVectorLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
-  return qobject_cast< QgsVectorLayer *>( parameterAsLayer( definition, parameters, context ) );
+  return qobject_cast< QgsVectorLayer *>( parameterAsLayer( definition, parameters, context, QgsProcessingUtils::LayerHint::Vector ) );
 }
 
 QgsVectorLayer *QgsProcessingParameters::parameterAsVectorLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
 {
-  return qobject_cast< QgsVectorLayer *>( parameterAsLayer( definition, value, context ) );
+  return qobject_cast< QgsVectorLayer *>( parameterAsLayer( definition, value, context, QgsProcessingUtils::LayerHint::Vector ) );
 }
 
 QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
@@ -4689,13 +4723,11 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
     QStringList flags;
     QString flagString;
     if ( fromVar.flags & QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck )
-      flags << QStringLiteral( "QgsProcessingFeatureSourceDefinition.Flag.FlagOverrideDefaultGeometryCheck" );
+      flags << QStringLiteral( "QgsProcessingFeatureSourceDefinition.FlagOverrideDefaultGeometryCheck" );
     if ( fromVar.flags & QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature )
-      flags << QStringLiteral( "QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature" );
+      flags << QStringLiteral( "QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature" );
     if ( !flags.empty() )
       flagString = flags.join( QStringLiteral( " | " ) );
-    else
-      flagString = QStringLiteral( "None" );
 
     if ( fromVar.source.propertyType() == QgsProperty::StaticProperty )
     {
@@ -4706,10 +4738,10 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
 
       if ( fromVar.selectedFeaturesOnly || fromVar.featureLimit != -1 || fromVar.flags )
       {
-        return QStringLiteral( "QgsProcessingFeatureSourceDefinition('%1', selectedFeaturesOnly=%2, featureLimit=%3, flags=%4, geometryCheck=%5)" ).arg( layerString,
+        return QStringLiteral( "QgsProcessingFeatureSourceDefinition('%1', selectedFeaturesOnly=%2, featureLimit=%3%4, geometryCheck=%5)" ).arg( layerString,
                fromVar.selectedFeaturesOnly ? QStringLiteral( "True" ) : QStringLiteral( "False" ),
                QString::number( fromVar.featureLimit ),
-               flagString,
+               flagString.isEmpty() ? QString() : ( QStringLiteral( ", flags=%1" ).arg( flagString ) ),
                geometryCheckString );
       }
       else
@@ -4721,11 +4753,11 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
     {
       if ( fromVar.selectedFeaturesOnly || fromVar.featureLimit != -1 || fromVar.flags )
       {
-        return QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression('%1'), selectedFeaturesOnly=%2, featureLimit=%3, flags=%4, geometryCheck=%5)" )
+        return QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression('%1'), selectedFeaturesOnly=%2, featureLimit=%3%4, geometryCheck=%5)" )
                .arg( fromVar.source.asExpression(),
                      fromVar.selectedFeaturesOnly ? QStringLiteral( "True" ) : QStringLiteral( "False" ),
                      QString::number( fromVar.featureLimit ),
-                     flagString,
+                     flagString.isEmpty() ? QString() : ( QStringLiteral( ", flags=%1" ).arg( flagString ) ),
                      geometryCheckString );
       }
       else
@@ -4870,9 +4902,10 @@ QgsProcessingParameterFeatureSource *QgsProcessingParameterFeatureSource::fromSc
   return new QgsProcessingParameterFeatureSource( name, description, types, def, isOptional );
 }
 
-QgsProcessingParameterFeatureSink::QgsProcessingParameterFeatureSink( const QString &name, const QString &description, QgsProcessing::SourceType type, const QVariant &defaultValue, bool optional, bool createByDefault )
+QgsProcessingParameterFeatureSink::QgsProcessingParameterFeatureSink( const QString &name, const QString &description, QgsProcessing::SourceType type, const QVariant &defaultValue, bool optional, bool createByDefault, bool supportsAppend )
   : QgsProcessingDestinationParameter( name, description, defaultValue, optional, createByDefault )
   , mDataType( type )
+  , mSupportsAppend( supportsAppend )
 {
 }
 
@@ -5013,6 +5046,8 @@ QString QgsProcessingParameterFeatureSink::asPythonString( const QgsProcessing::
       code += QStringLiteral( ", type=QgsProcessing.%1" ).arg( QgsProcessing::sourceTypeToString( mDataType ) );
 
       code += QStringLiteral( ", createByDefault=%1" ).arg( createByDefault() ? QStringLiteral( "True" ) : QStringLiteral( "False" ) );
+      if ( mSupportsAppend )
+        code += QStringLiteral( ", supportsAppend=True" );
 
       QgsProcessingContext c;
       code += QStringLiteral( ", defaultValue=%1)" ).arg( valueAsPythonString( mDefault, c ) );
@@ -5090,6 +5125,7 @@ QVariantMap QgsProcessingParameterFeatureSink::toVariantMap() const
 {
   QVariantMap map = QgsProcessingDestinationParameter::toVariantMap();
   map.insert( QStringLiteral( "data_type" ), mDataType );
+  map.insert( QStringLiteral( "supports_append" ), mSupportsAppend );
   return map;
 }
 
@@ -5097,6 +5133,7 @@ bool QgsProcessingParameterFeatureSink::fromVariantMap( const QVariantMap &map )
 {
   QgsProcessingDestinationParameter::fromVariantMap( map );
   mDataType = static_cast< QgsProcessing::SourceType >( map.value( QStringLiteral( "data_type" ) ).toInt() );
+  mSupportsAppend = map.value( QStringLiteral( "supports_append" ), false ).toBool();
   return true;
 }
 
@@ -5134,6 +5171,16 @@ QgsProcessingParameterFeatureSink *QgsProcessingParameterFeatureSink::fromScript
   }
 
   return new QgsProcessingParameterFeatureSink( name, description, type, definition, isOptional );
+}
+
+bool QgsProcessingParameterFeatureSink::supportsAppend() const
+{
+  return mSupportsAppend;
+}
+
+void QgsProcessingParameterFeatureSink::setSupportsAppend( bool supportsAppend )
+{
+  mSupportsAppend = supportsAppend;
 }
 
 QgsProcessingParameterRasterDestination::QgsProcessingParameterRasterDestination( const QString &name, const QString &description, const QVariant &defaultValue, bool optional, bool createByDefault )
@@ -5529,6 +5576,16 @@ QString QgsProcessingDestinationParameter::generateTemporaryDestination() const
   {
     return QgsProcessingUtils::generateTempFilename( name() + '.' + defaultFileExtension() );
   }
+}
+
+bool QgsProcessingDestinationParameter::isSupportedOutputValue( const QVariant &value, QgsProcessingContext &context, QString &error ) const
+{
+  if ( originalProvider() )
+    return originalProvider()->isSupportedOutputValue( value, this, context, error );
+  else if ( provider() )
+    return provider()->isSupportedOutputValue( value, this, context, error );
+
+  return true;
 }
 
 bool QgsProcessingDestinationParameter::createByDefault() const

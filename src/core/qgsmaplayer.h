@@ -69,7 +69,8 @@ enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerT
   VectorLayer,
   RasterLayer,
   PluginLayer,
-  MeshLayer      //!< Added in 3.2
+  MeshLayer,      //!< Added in 3.2
+  VectorTileLayer //!< Added in 3.14
 };
 
 /**
@@ -107,6 +108,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
           break;
         case QgsMapLayerType::MeshLayer:
           sipType = sipType_QgsMeshLayer;
+          break;
+        case QgsMapLayerType::VectorTileLayer:
+          sipType = sipType_QgsVectorTileLayer;
           break;
         default:
           sipType = nullptr;

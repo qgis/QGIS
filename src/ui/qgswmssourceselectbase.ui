@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>773</width>
+    <width>744</width>
     <height>544</height>
    </rect>
   </property>
@@ -124,19 +124,6 @@
           </size>
          </property>
         </spacer>
-       </item>
-       <item row="1" column="11">
-        <widget class="QPushButton" name="btnAddDefault">
-         <property name="statusTip">
-          <string>Adds a few example WMS servers</string>
-         </property>
-         <property name="whatsThis">
-          <string comment="Adds several example WMS servers to the list"/>
-         </property>
-         <property name="text">
-          <string>Add Default Servers</string>
-         </property>
-        </widget>
        </item>
        <item row="2" column="0" colspan="12">
         <widget class="QTreeWidget" name="lstLayers">
@@ -418,64 +405,6 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabServerSearch">
-      <attribute name="title">
-       <string>Server Search</string>
-      </attribute>
-      <layout class="QGridLayout">
-       <item row="0" column="0">
-        <widget class="QLineEdit" name="leSearchTerm"/>
-       </item>
-       <item row="0" column="1">
-        <widget class="QPushButton" name="btnSearch">
-         <property name="text">
-          <string>Search</string>
-         </property>
-         <property name="default">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0" colspan="2">
-        <widget class="QTableWidget" name="tableWidgetWMSList">
-         <property name="selectionMode">
-          <enum>QAbstractItemView::SingleSelection</enum>
-         </property>
-         <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
-         </property>
-         <property name="cornerButtonEnabled">
-          <bool>false</bool>
-         </property>
-         <attribute name="verticalHeaderVisible">
-          <bool>false</bool>
-         </attribute>
-         <column>
-          <property name="text">
-           <string>Title</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Description</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>URL</string>
-          </property>
-         </column>
-        </widget>
-       </item>
-       <item row="2" column="0" colspan="2">
-        <widget class="QPushButton" name="btnAddWMS">
-         <property name="text">
-          <string>Add Selected Row to WMS List</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
     </widget>
    </item>
    <item row="1" column="0">
@@ -507,7 +436,6 @@
   <tabstop>btnDelete</tabstop>
   <tabstop>btnLoad</tabstop>
   <tabstop>btnSave</tabstop>
-  <tabstop>btnAddDefault</tabstop>
   <tabstop>lstLayers</tabstop>
   <tabstop>mTileWidth</tabstop>
   <tabstop>mTileHeight</tabstop>
@@ -518,10 +446,6 @@
   <tabstop>mContextualLegendCheckbox</tabstop>
   <tabstop>leLayerName</tabstop>
   <tabstop>lstTilesets</tabstop>
-  <tabstop>leSearchTerm</tabstop>
-  <tabstop>btnSearch</tabstop>
-  <tabstop>tableWidgetWMSList</tabstop>
-  <tabstop>btnAddWMS</tabstop>
   <tabstop>mLayerOrderTreeWidget</tabstop>
   <tabstop>mLayerDownButton</tabstop>
   <tabstop>mLayerUpButton</tabstop>

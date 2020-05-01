@@ -29,6 +29,7 @@ class QgsPluginLayer;
 class QgsRasterLayer;
 class QgsReadWriteContext;
 class QgsVectorLayer;
+class QgsLegendPatchShape;
 
 #include "qgis_core.h"
 
@@ -101,6 +102,44 @@ class CORE_EXPORT QgsMapLayerLegendUtils
     static void setLegendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QString &newLabel );
     static QString legendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex );
     static bool hasLegendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex );
+
+    /**
+     * Sets the legend patch \a shape for the legend node belonging to \a nodeLayer at the specified \a originalIndex.
+     *
+     * \see legendNodePatchShape()
+     * \since QGIS 3.14
+     */
+    static void setLegendNodePatchShape( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QgsLegendPatchShape &shape );
+
+    /**
+     * Returns the legend patch shape for the legend node belonging to \a nodeLayer at the specified \a originalIndex.
+     *
+     * \see setLegendNodePatchShape()
+     * \since QGIS 3.14
+     */
+    static QgsLegendPatchShape legendNodePatchShape( QgsLayerTreeLayer *nodeLayer, int originalIndex );
+
+    /**
+     * Sets the legend symbol \a size for the legend node belonging to \a nodeLayer at the specified \a originalIndex.
+     *
+     * If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+     * symbol width or height from QgsLegendSettings.
+     *
+     * \see legendNodeSymbolSize()
+     * \since QGIS 3.14
+     */
+    static void setLegendNodeSymbolSize( QgsLayerTreeLayer *nodeLayer, int originalIndex, QSizeF size );
+
+    /**
+     * Returns the legend node symbol size for the legend node belonging to \a nodeLayer at the specified \a originalIndex.
+     *
+     * If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+     * symbol width or height from QgsLegendSettings.
+     *
+     * \see setLegendNodeSymbolSize()
+     * \since QGIS 3.14
+     */
+    static QSizeF legendNodeSymbolSize( QgsLayerTreeLayer *nodeLayer, int originalIndex );
 
     //! update according to layer node's custom properties (order of items, user labels for items)
     static void applyLayerNodeProperties( QgsLayerTreeLayer *nodeLayer, QList<QgsLayerTreeModelLegendNode *> &nodes );

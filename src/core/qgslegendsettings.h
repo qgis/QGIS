@@ -40,7 +40,18 @@ class CORE_EXPORT QgsLegendSettings
   public:
     QgsLegendSettings();
 
+    /**
+     * Sets the title for the legend, which will be rendered above all legend items.
+     *
+     * \see title()
+     */
     void setTitle( const QString &t ) { mTitle = t; }
+
+    /**
+     * Returns the title for the legend, which will be rendered above all legend items.
+     *
+     * \see setTitle()
+     */
     QString title() const { return mTitle; }
 
     /**
@@ -56,19 +67,60 @@ class CORE_EXPORT QgsLegendSettings
     void setTitleAlignment( Qt::AlignmentFlag alignment ) { mTitleAlignment = alignment; }
 
     /**
-     * Returns reference to modifiable style
+     * Returns modifiable reference to the style for a legend component.
      *
      * \note Not available in Python bindings.
      */
     SIP_SKIP QgsLegendStyle &rstyle( QgsLegendStyle::Style s ) { return mStyleMap[s]; } SIP_SKIP
-    //! Returns style
+
+    /**
+     * Returns the style for a legend component.
+     *
+     * \see setStyle()
+     */
     QgsLegendStyle style( QgsLegendStyle::Style s ) const { return mStyleMap.value( s ); }
+
+    /**
+     * Sets the \a style for a legend component.
+     *
+     * \see style()
+     */
     void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle &style ) { mStyleMap[s] = style; }
 
+    /**
+     * Returns the legend box space (in millimeters), which is the empty margin around the inside of the legend's
+     * rectangle.
+     *
+     * \see setBoxSpace()
+     */
     double boxSpace() const {return mBoxSpace;}
+
+    /**
+     * Sets the legend box space (in millimeters), which is the empty margin around the inside of the legend's
+     * rectangle.
+     *
+     * \see boxSpace()
+     */
     void setBoxSpace( double s ) {mBoxSpace = s;}
 
+    /**
+     * Sets a string to use as a wrapping character.
+     *
+     * Whenever this string is encountered inside legend component text it will be automatically replaced with a new
+     * line character.
+     *
+     * \see wrapChar()
+     */
     void setWrapChar( const QString &t ) {mWrapChar = t;}
+
+    /**
+     * Returns the string used as a wrapping character.
+     *
+     * Whenever this string is encountered inside legend component text it will be automatically replaced with a new
+     * line character.
+     *
+     * \see setWrapChar()
+     */
     QString wrapChar() const {return mWrapChar;}
 
     double columnSpace() const {return mColumnSpace;}
@@ -194,44 +246,67 @@ class CORE_EXPORT QgsLegendSettings
     double lineSpacing() const { return mLineSpacing; }
     void setLineSpacing( double s ) { mLineSpacing = s; }
 
-    double mmPerMapUnit() const { return mMmPerMapUnit; }
-    void setMmPerMapUnit( double mmPerMapUnit ) { mMmPerMapUnit = mmPerMapUnit; }
+    /**
+     * \deprecated Use scale factor from render contexts instead.
+     */
+    Q_DECL_DEPRECATED double mmPerMapUnit() const SIP_DEPRECATED;
 
-    bool useAdvancedEffects() const { return mUseAdvancedEffects; }
-    void setUseAdvancedEffects( bool use ) { mUseAdvancedEffects = use; }
+    /**
+     * \deprecated Set scale factor on render contexts instead.
+     */
+    Q_DECL_DEPRECATED void setMmPerMapUnit( double mmPerMapUnit ) SIP_DEPRECATED;
+
+    /**
+     * \deprecated Use flags from render contexts instead.
+     */
+    Q_DECL_DEPRECATED bool useAdvancedEffects() const SIP_DEPRECATED;
+
+    /**
+     * \deprecated Set flag on render contexts instead.
+     */
+    Q_DECL_DEPRECATED void setUseAdvancedEffects( bool use ) SIP_DEPRECATED;
 
     /**
      * Returns the legend map scale.
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \see setMapScale()
+     * \deprecated take this property from the render context instead
      */
-    double mapScale() const { return mMapScale; }
+    Q_DECL_DEPRECATED double mapScale() const SIP_DEPRECATED;
 
     /**
      * Sets the legend map \a scale.
      * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \see mapScale()
+     * \deprecated set this property on the render context instead
      */
-    void setMapScale( double scale ) { mMapScale = scale; }
+    Q_DECL_DEPRECATED void setMapScale( double scale ) SIP_DEPRECATED;
 
     /**
      * Returns the factor of map units per pixel for symbols with size given in map units calculated by dpi and mmPerMapUnit
      * \see setMapUnitsPerPixel()
-     * \since QGIS 3.8
+     * \deprecated take these properties on render contexts instead
      */
-    double mapUnitsPerPixel() const;
+    Q_DECL_DEPRECATED double mapUnitsPerPixel() const SIP_DEPRECATED;
 
     /**
      * Sets the mmPerMapUnit calculated by \a mapUnitsPerPixel mostly taken from the map settings.
      * \see mapUnitsPerPixel()
-     * \since QGIS 3.8
+     * \deprecated set these properties on render contexts instead
      */
-    void setMapUnitsPerPixel( double mapUnitsPerPixel );
+    Q_DECL_DEPRECATED void setMapUnitsPerPixel( double mapUnitsPerPixel ) SIP_DEPRECATED;
 
-    int dpi() const { return mDpi; }
-    void setDpi( int dpi ) { mDpi = dpi; }
+    /**
+     * \deprecated Take dpi from render contexts instead.
+     */
+    Q_DECL_DEPRECATED int dpi() const SIP_DEPRECATED;
 
-    // utility functions
+    /**
+     * \deprecated Set dpi on render contexts instead.
+     */
+    Q_DECL_DEPRECATED void setDpi( int dpi ) SIP_DEPRECATED;
+
+// utility functions
 
     /**
      * Splits a string using the wrap char taking into account handling empty
@@ -294,35 +369,35 @@ class CORE_EXPORT QgsLegendSettings
 
     QString mTitle;
 
-    //! Title alignment, one of Qt::AlignLeft, Qt::AlignHCenter, Qt::AlignRight)
+//! Title alignment, one of Qt::AlignLeft, Qt::AlignHCenter, Qt::AlignRight)
     Qt::AlignmentFlag mTitleAlignment = Qt::AlignLeft;
 
     QString mWrapChar;
 
     QColor mFontColor;
 
-    //! Space between item box and contents
+//! Space between item box and contents
     qreal mBoxSpace = 2;
 
-    //! Width and height of symbol icon
+//! Width and height of symbol icon
     QSizeF mSymbolSize;
 
-    //! Width and height of WMS legendGraphic pixmap
+//! Width and height of WMS legendGraphic pixmap
     QSizeF mWmsLegendSize;
 
-    //! Spacing between lines when wrapped
+//! Spacing between lines when wrapped
     double mLineSpacing = 1;
 
-    //! Space between columns
+//! Space between columns
     double mColumnSpace = 2;
 
-    //! Number of legend columns
+//! Number of legend columns
     int mColumnCount = 1;
 
-    //! Allow splitting layers into multiple columns
+//! Allow splitting layers into multiple columns
     bool mSplitLayer = false;
 
-    //! Use the same width (maximum) for all columns
+//! Use the same width (maximum) for all columns
     bool mEqualColumnWidth = false;
 
     bool mRasterSymbolStroke = true;
@@ -331,22 +406,22 @@ class CORE_EXPORT QgsLegendSettings
 
     QMap<QgsLegendStyle::Style, QgsLegendStyle> mStyleMap;
 
-    //! Conversion ratio between millimeters and map units - for symbols with size given in map units
+//! Conversion ratio between millimeters and map units - for symbols with size given in map units
     double mMmPerMapUnit = 1;
 
-    //! Whether to use advanced effects like opacity for symbols - may require their rasterization
+//! Whether to use advanced effects like opacity for symbols - may require their rasterization
     bool mUseAdvancedEffects = true;
 
-    //! Denominator of map's scale
+//! Denominator of map's scale
     double mMapScale = 1;
 
-    //! DPI to be used when rendering legend
+//! DPI to be used when rendering legend
     int mDpi = 96;
 
-    //! Font color for layers, overrides font color
+//! Font color for layers, overrides font color
     QColor mLayerFontColor;
 
-    //! Symbol alignment
+//! Symbol alignment
     Qt::AlignmentFlag mSymbolAlignment = Qt::AlignLeft;
 };
 

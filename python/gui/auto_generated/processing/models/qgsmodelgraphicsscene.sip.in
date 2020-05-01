@@ -29,6 +29,7 @@ QGraphicsScene subclass representing the model designer.
 
     enum ZValues
     {
+      GroupBox,
       ArrowLink,
       ModelComponent,
       MouseHandles,
@@ -49,6 +50,10 @@ QGraphicsScene subclass representing the model designer.
 %Docstring
 Constructor for QgsModelGraphicsScene with the specified ``parent`` object.
 %End
+
+    QgsProcessingModelAlgorithm *model();
+
+    void setModel( QgsProcessingModelAlgorithm *model );
 
     void setFlags( QgsModelGraphicsScene::Flags flags );
 %Docstring
@@ -96,6 +101,11 @@ Returns list of selected component items.
 Returns the topmost component item at a specified ``position``.
 %End
 
+    QgsModelComponentGraphicItem *groupBoxItem( const QString &uuid );
+%Docstring
+Returns the graphic item corresponding to the specified group box ``uuid``.
+%End
+
     void selectAll();
 %Docstring
 Selects all the components in the scene.
@@ -112,6 +122,35 @@ not correctly emit signals to allow the scene's model to update.
     void setSelectedItem( QgsModelComponentGraphicItem *item );
 %Docstring
 Clears any selected items and sets ``item`` as the current selection.
+%End
+
+    void setChildAlgorithmResults( const QVariantMap &results );
+%Docstring
+Sets the results for child algorithms for the last model execution.
+%End
+
+    void setChildAlgorithmInputs( const QVariantMap &inputs );
+%Docstring
+Sets the inputs for child algorithms for the last model execution.
+%End
+
+    QgsMessageBar *messageBar() const;
+%Docstring
+Returns the message bar associated with the scene.
+
+.. seealso:: :py:func:`setMessageBar`
+%End
+
+    void setMessageBar( QgsMessageBar *bar );
+%Docstring
+Sets the message ``bar`` associated with the scene.
+
+.. seealso:: :py:func:`messageBar`
+%End
+
+    void showWarning( const QString &shortMessage, const QString &title, const QString &longMessage, Qgis::MessageLevel level = Qgis::Warning );
+%Docstring
+Shows a warning message, allowing users to click a button to see the full details (``longMessage``).
 %End
 
   signals:
@@ -147,7 +186,7 @@ If ``None``, no item is selected.
 Creates a new graphic item for a model parameter.
 %End
 
-    virtual QgsModelComponentGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const  /Factory/;
+    virtual QgsModelChildAlgorithmGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const  /Factory/;
 %Docstring
 Creates a new graphic item for a model child algorithm.
 %End
@@ -163,6 +202,10 @@ Creates a new graphic item for a model output.
 Creates a new graphic item for a model comment.
 %End
 
+    QgsModelComponentGraphicItem *createGroupBoxGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelGroupBox *box ) const /Factory/;
+%Docstring
+Creates a new graphic item for a model group box.
+%End
 
 };
 

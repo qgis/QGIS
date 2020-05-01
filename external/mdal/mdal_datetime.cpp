@@ -246,16 +246,16 @@ void MDAL::DateTime::setWithGregorianJulianCalendarDate( MDAL::DateTime::DateTim
 
 std::string MDAL::DateTime::toString( MDAL::DateTime::DateTimeValues values ) const
 {
-  int miliseconds = int( ( values.seconds - int( values.seconds ) ) * 1000 + 0.5 );
+  int milliseconds = int( ( values.seconds - int( values.seconds ) ) * 1000 + 0.5 );
   std::string msStr;
-  if ( miliseconds > 0 )
+  if ( milliseconds > 0 )
   {
-    if ( miliseconds < 10 )
-      msStr = prependZero( std::to_string( miliseconds ), 3 );
-    else if ( miliseconds < 100 )
-      msStr = prependZero( std::to_string( miliseconds ), 2 );
-    else if ( miliseconds < 1000 )
-      msStr = std::to_string( miliseconds );
+    if ( milliseconds < 10 )
+      msStr = prependZero( std::to_string( milliseconds ), 3 );
+    else if ( milliseconds < 100 )
+      msStr = prependZero( std::to_string( milliseconds ), 2 );
+    else if ( milliseconds < 1000 )
+      msStr = std::to_string( milliseconds );
 
     msStr = std::string( "," ).append( msStr );
   }

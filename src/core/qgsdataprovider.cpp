@@ -30,6 +30,11 @@ QgsDataProviderTemporalCapabilities *QgsDataProvider::temporalCapabilities()
   return nullptr;
 }
 
+const QgsDataProviderTemporalCapabilities *QgsDataProvider::temporalCapabilities() const
+{
+  return nullptr;
+}
+
 void QgsDataProvider::reloadData()
 {
   reloadProviderData();

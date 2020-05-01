@@ -664,8 +664,14 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
       WKT1_ESRI, //!< WKT1 as traditionally output by ESRI software, deriving from OGC 99-049.
       WKT2_2015, //!< Full WKT2 string, conforming to ISO 19162:2015(E) / OGC 12-063r5 with all possible nodes and new keyword names.
       WKT2_2015_SIMPLIFIED, //!< Same as WKT2_2015 with the following exceptions: UNIT keyword used. ID node only on top element. No ORDER element in AXIS element. PRIMEM node omitted if it is Greenwich.  ELLIPSOID.UNIT node omitted if it is UnitOfMeasure::METRE. PARAMETER.UNIT / PRIMEM.UNIT omitted if same as AXIS. AXIS.UNIT omitted and replaced by a common GEODCRS.UNIT if they are all the same on all axis.
-      WKT2_2018, //!< Full WKT2 string, conforming to ISO 19162:2018 / OGC 18-010, with all possible nodes and new keyword names. Non-normative list of differences: WKT2_2018 uses GEOGCRS / BASEGEOGCRS keywords for GeographicCRS.
-      WKT2_2018_SIMPLIFIED, //!< WKT2_2018 with the simplification rule of WKT2_SIMPLIFIED
+      WKT2_2018, //!< Alias for WKT2_2019
+      WKT2_2018_SIMPLIFIED, //!< Alias for WKT2_2019_SIMPLIFIED
+      WKT2_2019 = WKT2_2018, //!< Full WKT2 string, conforming to ISO 19162:2019 / OGC 18-010, with all possible nodes and new keyword names. Non-normative list of differences: WKT2_2019 uses GEOGCRS / BASEGEOGCRS keywords for GeographicCRS.
+      WKT2_2019_SIMPLIFIED = WKT2_2018_SIMPLIFIED, //!< WKT2_2019 with the simplification rule of WKT2_SIMPLIFIED
+
+      WKT_PREFERRED = WKT2_2019, //!< Preferred format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019, but may change in future versions.
+      WKT_PREFERRED_SIMPLIFIED = WKT2_2019_SIMPLIFIED, //!< Preferred simplified format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019_SIMPLIFIED, but may change in future versions.
+      WKT_PREFERRED_GDAL = WKT2_2019, //!< Preferred format for conversion of CRS to WKT for use with the GDAL library.
     };
 
     /**

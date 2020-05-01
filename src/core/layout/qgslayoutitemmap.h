@@ -25,6 +25,7 @@
 #include "qgslayoutitemmapgrid.h"
 #include "qgslayoutitemmapoverview.h"
 #include "qgsmaprendererstagedrenderjob.h"
+#include "qgstemporalrangeobject.h"
 
 class QgsAnnotation;
 class QgsRenderedFeatureHandlerInterface;
@@ -35,7 +36,7 @@ class QgsRenderedFeatureHandlerInterface;
  * \brief Layout graphical items for displaying a map.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
+class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRangeObject
 {
 
     Q_OBJECT
@@ -285,20 +286,24 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     /**
      * Sets whether the map should follow a map theme. See followVisibilityPreset() for more details.
      */
-    void setFollowVisibilityPreset( bool follow ) { mFollowVisibilityPreset = follow; }
+    void setFollowVisibilityPreset( bool follow );
 
     /**
      * Preset name that decides which layers and layer styles are used for map rendering. It is only
      * used when followVisibilityPreset() returns TRUE.
      * \see setFollowVisibilityPresetName()
+     *
+     * \see themeChanged()
      */
     QString followVisibilityPresetName() const { return mFollowVisibilityPresetName; }
 
     /**
      * Sets preset name for map rendering. See followVisibilityPresetName() for more details.
      * \see followVisibilityPresetName()
+     *
+     * \see themeChanged()
     */
-    void setFollowVisibilityPresetName( const QString &name ) { mFollowVisibilityPresetName = name; }
+    void setFollowVisibilityPresetName( const QString &name );
 
     void moveContent( double dx, double dy ) override;
     void setMoveContentPreviewOffset( double dx, double dy ) override;
@@ -602,6 +607,16 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      */
     void layerStyleOverridesChanged();
 
+    /**
+     * Emitted when the map's associated \a theme is changed.
+     *
+     * \note This signal is not emitted when the definition of the theme changes, only the map
+     * is linked to a different theme then it previously was.
+     *
+     * \since QGIS 3.14
+     */
+    void themeChanged( const QString &theme );
+
   public slots:
 
     void refresh() override;
@@ -621,6 +636,9 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     void shapeChanged();
 
     void mapThemeChanged( const QString &theme );
+
+    //! Renames the active map theme called \a theme to \a newTheme
+    void currentMapThemeRenamed( const QString &theme, const QString &newTheme );
 
     //! Create cache image
     void recreateCachedImageInBackground();
@@ -715,6 +733,9 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * Map theme name to be used for map's layers and styles in case mFollowVisibilityPreset
      *  is TRUE. May be overridden by data-defined expression. */
     QString mFollowVisibilityPresetName;
+
+    //! Name of the last data-defined evaluated theme name
+    QString mLastEvaluatedThemeName;
 
     /**
      * \brief Draw to paint device

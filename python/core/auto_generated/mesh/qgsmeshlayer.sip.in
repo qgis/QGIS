@@ -138,8 +138,11 @@ QgsMeshLayer cannot be copied.
 
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
+    virtual QgsMeshLayerTemporalProperties *temporalProperties();
 
     virtual void reload();
+
+    virtual QStringList subLayers() const;
 
 
     QString providerType() const;
@@ -155,6 +158,8 @@ Returns the provider type for this layer
 Gets native mesh and updates (creates if it doesn't exist) the base triangular mesh
 
 :param transform: Transformation from layer CRS to destination (e.g. map) CRS. With invalid transform, it keeps the native mesh CRS
+
+.. versionadded:: 3.14
 %End
 
 
@@ -194,9 +199,11 @@ Returns (date) time in hours formatted to human readable form
 .. versionadded:: 3.8
 %End
 
-    QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
+    QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius = 0 ) const;
 %Docstring
 Interpolates the value on the given point from given dataset.
+For 3D datasets, it uses dataset3dValue(), \n
+For 1D datasets, it uses dataset1dValue() with ``searchRadius``
 
 .. note::
 
@@ -204,8 +211,11 @@ Interpolates the value on the given point from given dataset.
    and so if the layer has not been rendered previously
    (e.g. when used in a script) it returns NaN value
 
+.. seealso:: :py:func:`updateTriangularMesh`
+
 :param index: dataset index specifying group and dataset to extract value from
 :param point: point to query in map coordinates
+:param searchRadius: the radius of the search area in map unit
 
 :return: interpolated value at the point. Returns NaN values for values
          outside the mesh layer, nodata values and in case triangular mesh was not
@@ -225,6 +235,8 @@ Returns the 3d values of stacked 3d mesh defined by the given point
    and so if the layer has not been rendered previously
    (e.g. when used in a script) it returns NaN value
 
+.. seealso:: :py:func:`updateTriangularMesh`
+
 :param index: dataset index specifying group and dataset to extract value from
 :param point: point to query in map coordinates
 
@@ -234,6 +246,78 @@ Returns the 3d values of stacked 3d mesh defined by the given point
 
 
 .. versionadded:: 3.12
+%End
+
+    QgsMeshDatasetValue dataset1dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius ) const;
+%Docstring
+Returns the value of 1D mesh dataset defined on edge that are in the search area defined by point ans searchRadius
+
+.. note::
+
+   It uses previously cached and indexed triangular mesh
+   and so if the layer has not been rendered previously
+   (e.g. when used in a script) it returns NaN value
+
+.. seealso:: :py:func:`updateTriangularMesh`
+
+:param index: dataset index specifying group and dataset to extract value from
+:param point: the center point of the search area
+:param searchRadius: the radius of the searc area in map unit
+
+:return: interpolated value at the projected point. Returns NaN values for values
+         outside the mesh layer and in case triangular mesh was not previously used for rendering
+
+
+.. versionadded:: 3.14
+%End
+
+    QgsMeshDatasetIndex activeScalarDatasetAtTime( const QgsDateTimeRange &timeRange ) const;
+%Docstring
+Returns dataset index from active scalar group depending on the time range.
+If the temporal properties is not active, return the static dataset
+
+:param timeRange: the time range
+
+:return: dataset index
+
+.. versionadded:: 3.14
+%End
+
+    QgsMeshDatasetIndex activeVectorDatasetAtTime( const QgsDateTimeRange &timeRange ) const;
+%Docstring
+Returns dataset index from active vector group depending on the time range
+If the temporal properties is not active, return the static dataset
+
+:param timeRange: the time range
+
+:return: dataset index
+
+.. versionadded:: 3.14
+%End
+
+
+
+    QgsMeshDatasetIndex staticScalarDatasetIndex() const;
+%Docstring
+Returns the static scalar dataset index that is rendered if the temporal properties is not active
+
+.. versionadded:: 3.14
+%End
+
+    QgsMeshDatasetIndex staticVectorDatasetIndex() const;
+%Docstring
+Returns the static vector dataset index that is rendered if the temporal properties is not active
+
+.. versionadded:: 3.14
+%End
+
+    void setReferenceTime( const QDateTime &referenceTime );
+%Docstring
+Sets the reference time of the layer
+
+:param referenceTime: the reference time
+
+.. versionadded:: 3.14
 %End
 
   public slots:
@@ -248,18 +332,18 @@ Sets the coordinate transform context to ``transformContext``.
 
   signals:
 
-    void activeScalarDatasetChanged( const QgsMeshDatasetIndex &index );
+    void activeScalarDatasetGroupChanged( int index );
 %Docstring
-Emitted when active scalar dataset is changed
+Emitted when active scalar group dataset is changed
 
-.. versionadded:: 3.4
+.. versionadded:: 3.14
 %End
 
-    void activeVectorDatasetChanged( const QgsMeshDatasetIndex &index );
+    void activeVectorDatasetGroupChanged( int index );
 %Docstring
-Emitted when active vector dataset is changed
+Emitted when active vector group dataset is changed
 
-.. versionadded:: 3.4
+.. versionadded:: 3.14
 %End
 
     void timeSettingsChanged( );

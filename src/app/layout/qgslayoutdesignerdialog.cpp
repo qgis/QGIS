@@ -91,6 +91,8 @@
 #include <QPageSetupDialog>
 #include <QWidgetAction>
 #include <QProgressBar>
+#include <QClipboard>
+
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
 #endif
@@ -3748,19 +3750,48 @@ void QgsLayoutDesignerDialog::populateLayoutsMenu()
 
 void QgsLayoutDesignerDialog::paste()
 {
-  QPointF pt = mView->mapFromGlobal( QCursor::pos() );
+  const QPoint viewPoint = mView->mapFromGlobal( QCursor::pos() );
   //TODO - use a better way of determining whether paste was triggered by keystroke
   //or menu item
-  QList< QgsLayoutItem * > items;
-  if ( ( pt.x() < 0 ) || ( pt.y() < 0 ) )
+  QPointF layoutPoint;
+  if ( ( viewPoint.x() < 0 ) || ( viewPoint.y() < 0 ) )
   {
     //action likely triggered by menu, paste items in center of screen
-    items = mView->pasteItems( QgsLayoutView::PasteModeCenter );
+    layoutPoint = mView->mapToScene( mView->viewport()->rect().center() );
   }
   else
   {
-    //action likely triggered by keystroke, paste items at cursor position
-    items = mView->pasteItems( QgsLayoutView::PasteModeCursor );
+    layoutPoint = mView->mapToScene( viewPoint );
+  }
+
+  QList< QgsLayoutItem * > items;
+
+  // give custom paste handlers first shot at processing this
+  QClipboard *clipboard = QApplication::clipboard();
+  const QMimeData *data = clipboard->mimeData();
+  const QVector<QPointer<QgsLayoutCustomDropHandler >> handlers = QgisApp::instance()->customLayoutDropHandlers();
+  bool handled = false;
+  for ( QgsLayoutCustomDropHandler *handler : handlers )
+  {
+    if ( handler && handler->handlePaste( iface(), layoutPoint, data, items ) )
+    {
+      handled = true;
+      break;
+    }
+  }
+
+  if ( !handled )
+  {
+    if ( ( viewPoint.x() < 0 ) || ( viewPoint.y() < 0 ) )
+    {
+      //action likely triggered by menu, paste items in center of screen
+      items = mView->pasteItems( QgsLayoutView::PasteModeCenter );
+    }
+    else
+    {
+      //action likely triggered by keystroke, paste items at cursor position
+      items = mView->pasteItems( QgsLayoutView::PasteModeCursor );
+    }
   }
 
   whileBlocking( currentLayout() )->deselectAll();

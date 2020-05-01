@@ -77,9 +77,9 @@ class QgsCheckableItemModel : public QStandardItemModel
   signals:
 
     /**
-     * Emitted whenever the items checkstate has changed.
+     * Emitted whenever the item's checkstate has changed.
      */
-    void itemCheckStateChanged();
+    void itemCheckStateChanged( const QModelIndex &index );
 };
 
 
@@ -168,6 +168,13 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
      * \see setCheckedItems()
      */
     QStringList checkedItems() const;
+
+    /**
+     * Returns userData (stored in the Qt::UserRole) associated with
+     * currently checked items.
+     * \see checkedItems()
+     */
+    QVariantList checkedItemsData() const;
 
     /**
      * Returns the checked state of the item identified by index

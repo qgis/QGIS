@@ -477,7 +477,7 @@ void QgsFeatureListView::setFeatureSelectionManager( QgsIFeatureSelectionManager
   if ( mFeatureSelectionModel )
     mFeatureSelectionModel->setFeatureSelectionManager( mFeatureSelectionManager );
 
-  // only delete the owner selection manager and not one created from outside
+  // only delete the owned selection manager and not one created from outside
   if ( mOwnedFeatureSelectionManager )
   {
     mOwnedFeatureSelectionManager->deleteLater();

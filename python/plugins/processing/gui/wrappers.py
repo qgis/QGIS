@@ -1715,6 +1715,14 @@ class BandWidgetWrapper(WidgetWrapper):
     NOT_SET = '[Not set]'
 
     def __init__(self, param, dialog, row=0, col=0, **kwargs):
+        """
+        .. deprecated:: 3.14
+        Do not use, will be removed in QGIS 4.0
+        """
+
+        from warnings import warn
+        warn("BandWidgetWrapper is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
+
         super().__init__(param, dialog, row, col, **kwargs)
         self.context = dataobjects.createContext()
 
@@ -1923,6 +1931,7 @@ class WidgetWrapperFactory:
             # deprecated, moved to c++
             wrapper = FeatureSourceWidgetWrapper
         elif param.type() == 'band':
+            # deprecated, moved to c++
             wrapper = BandWidgetWrapper
         elif param.type() == 'layer':
             # deprecated, moved to c++

@@ -200,6 +200,12 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     void setField( const QString &fieldName );
 
     /**
+     * Sets the fields used in the widget to \a fields, this allows the widget to work without a layer.
+     * \since QGIS 3.14
+     */
+    void setFields( const QgsFields &fields );
+
+    /**
      * Sets the current expression text and if applicable also the field.
      * Alias for setField.
      *
@@ -244,7 +250,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     QToolButton *mButton = nullptr;
     QgsFieldProxyModel *mFieldProxyModel = nullptr;
     QString mExpressionDialogTitle;
-    std::shared_ptr<const QgsDistanceArea> mDa;
+    std::shared_ptr<const QgsDistanceArea> mDistanceArea;
     QgsExpressionContext mExpressionContext;
     const QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
     QString mBackupExpression;

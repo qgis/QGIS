@@ -392,6 +392,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void updateConstraints( QgsEditorWidgetWrapper *w );
     void updateContainersVisibility();
     void updateConstraint( const QgsFeature &ft, QgsEditorWidgetWrapper *eww );
+    void updateLabels();
     bool currentFormFeature( QgsFeature &feature );
     bool currentFormValidConstraints( QStringList &invalidFields, QStringList &descriptions );
     QList<QgsEditorWidgetWrapper *> constraintDependencies( QgsEditorWidgetWrapper *w );
@@ -411,8 +412,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QList<QgsAttributeFormInterface *> mInterfaces;
     QMap< int, QgsAttributeFormEditorWidget * > mFormEditorWidgets;
     QList< QgsAttributeFormWidget *> mFormWidgets;
-    QgsExpressionContext mExpressionContext;
     QMap<const QgsVectorLayerJoinInfo *, QgsFeature> mJoinedFeatures;
+    QMap<QLabel *, QgsProperty> mLabelDataDefinedProperties;
     bool mValuesInitialized = false;
     bool mDirty = false;
     bool mIsSettingFeature = false;

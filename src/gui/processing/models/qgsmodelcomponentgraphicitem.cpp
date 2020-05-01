@@ -18,6 +18,7 @@
 #include "qgsprocessingmodelparameter.h"
 #include "qgsprocessingmodelchildalgorithm.h"
 #include "qgsprocessingmodeloutput.h"
+#include "qgsprocessingmodelgroupbox.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsapplication.h"
 #include "qgsmodelgraphicitem.h"
@@ -25,6 +26,7 @@
 #include "qgsmodelgraphicsview.h"
 #include "qgsmodelviewtool.h"
 #include "qgsmodelviewmouseevent.h"
+#include "qgsmodelgroupboxdefinitionwidget.h"
 
 #include <QSvgRenderer>
 #include <QPicture>
@@ -318,8 +320,33 @@ bool QgsModelComponentGraphicItem::contains( const QPointF &point ) const
 void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
 {
   const QRectF rect = itemRect();
-  QColor color = fillColor( state() );
-  QColor stroke = strokeColor( state() );
+  QColor color;
+  QColor stroke;
+  QColor foreColor;
+  if ( mComponent->color().isValid() )
+  {
+    color = mComponent->color();
+    switch ( state() )
+    {
+      case Selected:
+        color = color.darker( 110 );
+        break;
+      case Hover:
+        color = color.darker( 105 );
+        break;
+
+      case Normal:
+        break;
+    }
+    stroke = color.darker( 110 );
+    foreColor = color.lightness() > 150 ? QColor( 0, 0, 0 ) : QColor( 255, 255, 255 );
+  }
+  else
+  {
+    color = fillColor( state() );
+    stroke = strokeColor( state() );
+    foreColor = textColor( state() );
+  }
 
   QPen strokePen = QPen( stroke, 0 ) ; // 0 width "cosmetic" pen
   strokePen.setStyle( strokeStyle( state() ) );
@@ -327,7 +354,7 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
   painter->setBrush( QBrush( color, Qt::SolidPattern ) );
   painter->drawRect( rect );
   painter->setFont( font() );
-  painter->setPen( QPen( textColor( state() ) ) );
+  painter->setPen( QPen( foreColor ) );
 
   QString text;
 
@@ -341,7 +368,7 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
   {
     QRectF labelRect = QRectF( rect.left() + TEXT_MARGIN, rect.top() + TEXT_MARGIN, rect.width() - 2 * TEXT_MARGIN - mButtonSize.width() - BUTTON_MARGIN, rect.height() - 2 * TEXT_MARGIN );
     text = label();
-    painter->drawText( labelRect, Qt::TextWordWrap, text );
+    painter->drawText( labelRect, Qt::TextWordWrap | titleAlignment(), text );
   }
   else
   {
@@ -447,6 +474,11 @@ Qt::PenStyle QgsModelComponentGraphicItem::strokeStyle( QgsModelComponentGraphic
   return Qt::SolidLine;
 }
 
+Qt::Alignment QgsModelComponentGraphicItem::titleAlignment() const
+{
+  return Qt::AlignLeft;
+}
+
 QPicture QgsModelComponentGraphicItem::iconPicture() const
 {
   return QPicture();
@@ -466,12 +498,12 @@ void QgsModelComponentGraphicItem::updateButtonPositions()
 
   if ( mExpandTopButton )
   {
-    QPointF pt = linkPoint( Qt::TopEdge, -1 );
+    QPointF pt = linkPoint( Qt::TopEdge, -1, true );
     mExpandTopButton->setPosition( QPointF( 0, pt.y() ) );
   }
   if ( mExpandBottomButton )
   {
-    QPointF pt = linkPoint( Qt::BottomEdge, -1 );
+    QPointF pt = linkPoint( Qt::BottomEdge, -1, false );
     mExpandBottomButton->setPosition( QPointF( 0, pt.y() ) );
   }
 }
@@ -552,7 +584,7 @@ QString QgsModelComponentGraphicItem::linkPointText( Qt::Edge, int ) const
   return QString();
 }
 
-QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index ) const
+QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index, bool incoming ) const
 {
   switch ( edge )
   {
@@ -560,6 +592,11 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index ) cons
     {
       if ( linkPointCount( Qt::BottomEdge ) )
       {
+        double offsetX = 25;
+        if ( mComponent->linksCollapsed( Qt::BottomEdge ) )
+        {
+          offsetX = 17;
+        }
         const int pointIndex = !mComponent->linksCollapsed( Qt::BottomEdge ) ? index : -1;
         const QString text = truncatedTextForItem( linkPointText( Qt::BottomEdge, index ) );
         QFontMetricsF fm( mFont );
@@ -567,7 +604,9 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index ) cons
         const double h = fm.height() * 1.2 * ( pointIndex + 1 ) + fm.height() / 2.0;
         const double y = h + itemSize().height() / 2.0 + 5;
         const double x = !mComponent->linksCollapsed( Qt::BottomEdge ) ? ( -itemSize().width() / 2 + 33 + w + 5 ) : 10;
-        return QPointF( x, y );
+        return QPointF( incoming ? -itemSize().width() / 2 + offsetX
+                        :  x,
+                        y );
       }
       break;
     }
@@ -584,9 +623,13 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index ) cons
           offsetX = 17;
         }
         QFontMetricsF fm( mFont );
+        const QString text = truncatedTextForItem( linkPointText( Qt::TopEdge, index ) );
+        const double w = fm.boundingRect( text ).width();
         double h = -( fm.height() * 1.2 ) * ( paramIndex + 2 ) - fm.height() / 2.0 + 8;
         h = h - itemSize().height() / 2.0;
-        return QPointF( -itemSize().width() / 2 + offsetX, h );
+        return QPointF( incoming ? -itemSize().width() / 2 + offsetX
+                        : ( !mComponent->linksCollapsed( Qt::TopEdge ) ? ( -itemSize().width() / 2 + 33 + w + 5 ) : 10 ),
+                        h );
       }
       break;
     }
@@ -818,6 +861,9 @@ QgsModelChildAlgorithmGraphicItem::QgsModelChildAlgorithmGraphicItem( QgsProcess
   }
 
   setLabel( child->description() );
+
+  QStringList issues;
+  mIsValid = model->validateChildAlgorithm( child->childId(), issues );
 }
 
 void QgsModelChildAlgorithmGraphicItem::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
@@ -850,7 +896,13 @@ void QgsModelChildAlgorithmGraphicItem::contextMenuEvent( QGraphicsSceneContextM
 
 QColor QgsModelChildAlgorithmGraphicItem::fillColor( QgsModelComponentGraphicItem::State state ) const
 {
-  QColor c( 255, 255, 255 );
+  QColor c;
+
+  if ( mIsValid )
+    c = QColor( 255, 255, 255 );
+  else
+    c = QColor( 208, 0, 0 );
+
   switch ( state )
   {
     case Selected:
@@ -871,17 +923,17 @@ QColor QgsModelChildAlgorithmGraphicItem::strokeColor( QgsModelComponentGraphicI
   switch ( state )
   {
     case Selected:
-      return QColor( 50, 50, 50 );
+      return mIsValid ? QColor( 50, 50, 50 ) : QColor( 80, 0, 0 );
     case Hover:
     case Normal:
-      return Qt::gray;
+      return mIsValid ? Qt::gray : QColor( 134, 0, 0 );
   }
   return QColor();
 }
 
 QColor QgsModelChildAlgorithmGraphicItem::textColor( QgsModelComponentGraphicItem::State ) const
 {
-  return dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() )->isActive() ? Qt::black : Qt::gray;
+  return mIsValid ? ( dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() )->isActive() ? Qt::black : Qt::gray ) : QColor( 255, 255, 255 );
 }
 
 QPixmap QgsModelChildAlgorithmGraphicItem::iconPixmap() const
@@ -936,7 +988,15 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
     switch ( edge )
     {
       case Qt::BottomEdge:
-        return truncatedTextForItem( child->algorithm()->outputDefinitions().at( index )->description() );
+      {
+        const QgsProcessingOutputDefinition *output = child->algorithm()->outputDefinitions().at( index );
+        QString title = output->description();
+        if ( mResults.contains( output->name() ) )
+        {
+          title += QStringLiteral( ": %1" ).arg( mResults.value( output->name() ).toString() );
+        }
+        return truncatedTextForItem( title );
+      }
 
       case Qt::TopEdge:
       {
@@ -946,7 +1006,11 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
           return param->flags() & QgsProcessingParameterDefinition::FlagHidden || param->isDestination();
         } ), params.end() );
 
-        return truncatedTextForItem( params.at( index )->description() );
+
+        QString title = params.at( index )->description();
+        if ( !mInputs.value( params.at( index )->name() ).toString().isEmpty() )
+          title +=  QStringLiteral( ": %1" ).arg( mInputs.value( params.at( index )->name() ).toString() );
+        return truncatedTextForItem( title );
       }
 
       case Qt::LeftEdge:
@@ -973,6 +1037,26 @@ bool QgsModelChildAlgorithmGraphicItem::canDeleteComponent()
     return model()->dependentChildAlgorithms( child->childId() ).empty();
   }
   return false;
+}
+
+void QgsModelChildAlgorithmGraphicItem::setResults( const QVariantMap &results )
+{
+  if ( mResults == results )
+    return;
+
+  mResults = results;
+  update();
+  emit updateArrowPaths();
+}
+
+void QgsModelChildAlgorithmGraphicItem::setInputs( const QVariantMap &inputs )
+{
+  if ( mInputs == inputs )
+    return;
+
+  mInputs = inputs;
+  update();
+  emit updateArrowPaths();
 }
 
 void QgsModelChildAlgorithmGraphicItem::deleteComponent()
@@ -1103,7 +1187,129 @@ void QgsModelOutputGraphicItem::deleteComponent()
 }
 
 
+//
+// QgsModelGroupBoxGraphicItem
+//
 
+QgsModelGroupBoxGraphicItem::QgsModelGroupBoxGraphicItem( QgsProcessingModelGroupBox *box, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent )
+  : QgsModelComponentGraphicItem( box, model, parent )
+{
+  setZValue( QgsModelGraphicsScene::ZValues::GroupBox );
+  setLabel( box->description() );
+
+  QFont f = font();
+  f.setBold( true );
+  f.setPixelSize( 14 );
+  setFont( f );
+}
+
+void QgsModelGroupBoxGraphicItem::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
+{
+  QMenu *popupmenu = new QMenu( event->widget() );
+  QAction *removeAction = popupmenu->addAction( QObject::tr( "Remove" ) );
+  connect( removeAction, &QAction::triggered, this, &QgsModelGroupBoxGraphicItem::deleteComponent );
+  QAction *editAction = popupmenu->addAction( QObject::tr( "Edit…" ) );
+  connect( editAction, &QAction::triggered, this, &QgsModelGroupBoxGraphicItem::editComponent );
+  popupmenu->exec( event->screenPos() );
+}
+
+QgsModelGroupBoxGraphicItem::~QgsModelGroupBoxGraphicItem() = default;
+
+QColor QgsModelGroupBoxGraphicItem::fillColor( QgsModelComponentGraphicItem::State state ) const
+{
+  QColor c( 230, 230, 230 );
+  switch ( state )
+  {
+    case Selected:
+      c = c.darker( 110 );
+      break;
+    case Hover:
+      c = c.darker( 105 );
+      break;
+
+    case Normal:
+      break;
+  }
+  return c;
+}
+
+QColor QgsModelGroupBoxGraphicItem::strokeColor( QgsModelComponentGraphicItem::State state ) const
+{
+  switch ( state )
+  {
+    case Selected:
+      return QColor( 50, 50, 50 );
+    case Hover:
+    case Normal:
+      return QColor( 150, 150, 150 );
+  }
+  return QColor();
+}
+
+QColor QgsModelGroupBoxGraphicItem::textColor( QgsModelComponentGraphicItem::State ) const
+{
+  return QColor( 100, 100, 100 );
+}
+
+Qt::PenStyle QgsModelGroupBoxGraphicItem::strokeStyle( QgsModelComponentGraphicItem::State ) const
+{
+  return Qt::DotLine;
+}
+
+Qt::Alignment QgsModelGroupBoxGraphicItem::titleAlignment() const
+{
+  return Qt::AlignHCenter;
+}
+
+void QgsModelGroupBoxGraphicItem::updateStoredComponentPosition( const QPointF &pos, const QSizeF &size )
+{
+  if ( QgsProcessingModelGroupBox *box = dynamic_cast< QgsProcessingModelGroupBox * >( component() ) )
+  {
+    box->setPosition( pos );
+    box->setSize( size );
+    model()->addGroupBox( *box );
+  }
+}
+
+bool QgsModelGroupBoxGraphicItem::canDeleteComponent()
+{
+  if ( dynamic_cast< QgsProcessingModelGroupBox * >( component() ) )
+  {
+    return true;
+  }
+  return false;
+}
+
+void QgsModelGroupBoxGraphicItem::deleteComponent()
+{
+  if ( const QgsProcessingModelGroupBox *box = dynamic_cast< const QgsProcessingModelGroupBox * >( component() ) )
+  {
+    emit aboutToChange( tr( "Delete Group Box" ) );
+    model()->removeGroupBox( box->uuid() );
+    emit changed();
+    emit requestModelRepaint();
+  }
+}
+
+void QgsModelGroupBoxGraphicItem::editComponent()
+{
+  if ( const QgsProcessingModelGroupBox *box = dynamic_cast< const QgsProcessingModelGroupBox * >( component() ) )
+  {
+    QgsModelGroupBoxDefinitionDialog dlg( *box, this->scene()->views().at( 0 ) );
+
+    if ( dlg.exec() )
+    {
+      emit aboutToChange( tr( "Edit Group Box" ) );
+      model()->addGroupBox( dlg.groupBox() );
+      emit changed();
+      emit requestModelRepaint();
+    }
+  }
+}
+
+//
+// QgsModelCommentGraphicItem
+//
 
 QgsModelCommentGraphicItem::QgsModelCommentGraphicItem( QgsProcessingModelComment *comment, QgsModelComponentGraphicItem *parentItem, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent )
   : QgsModelComponentGraphicItem( comment, model, parent )
@@ -1222,6 +1428,11 @@ QgsProcessingModelComment *QgsModelCommentGraphicItem::modelComponent()
     return model()->childAlgorithm( output->childId() ).modelOutput( output->name() ).comment();
   }
   return nullptr;
+}
+
+QgsModelComponentGraphicItem *QgsModelCommentGraphicItem::parentComponentItem() const
+{
+  return mParentItem;
 }
 
 

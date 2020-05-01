@@ -556,7 +556,7 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
 
 QString QgsStringUtils::htmlToMarkdown( const QString &html )
 {
-
+  // Any changes in this function must be copied to qgscrashreport.cpp too
   QString converted = html;
   converted.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) );
   converted.replace( QLatin1String( "<b>" ), QLatin1String( "**" ) );
@@ -567,7 +567,7 @@ QString QgsStringUtils::htmlToMarkdown( const QString &html )
   while ( hrefRegEx.indexIn( converted, offset ) != -1 )
   {
     QString url = hrefRegEx.cap( 1 ).replace( QStringLiteral( "\"" ), QString() );
-    url.replace( QStringLiteral( "'" ), QString() );
+    url.replace( '\'', QString() );
     QString name = hrefRegEx.cap( 2 );
     QString anchor = QStringLiteral( "[%1](%2)" ).arg( name, url );
     converted.replace( hrefRegEx, anchor );

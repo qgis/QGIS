@@ -215,6 +215,11 @@ void QgsOgrSourceSelect::populateConnectionList()
     ++it;
   }
   settings.endGroup();
+
+  btnEdit->setDisabled( cmbConnections->count() == 0 );
+  btnDelete->setDisabled( cmbConnections->count() == 0 );
+  cmbConnections->setDisabled( cmbConnections->count() == 0 );
+
   setConnectionListPosition();
 }
 

@@ -23,6 +23,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 import sys
 import os
+import re
 
 from qgis.PyQt.QtCore import (
     QCoreApplication,
@@ -114,18 +115,35 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.endUndoCommand()
 
     def runModel(self):
-        if len(self.model().childAlgorithms()) == 0:
-            self.messageBar().pushMessage("", self.tr(
-                "Model doesn't contain any algorithm and/or parameter and can't be executed"), level=Qgis.Warning,
-                duration=5)
-            return
+        valid, errors = self.model().validate()
+        if not valid:
+            message_box = QMessageBox()
+            message_box.setWindowTitle(self.tr('Model is Invalid'))
+            message_box.setIcon(QMessageBox.Warning)
+            message_box.setText(self.tr('This model is not valid and contains one or more issues. Are you sure you want to run it in this state?'))
+            message_box.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
+            message_box.setDefaultButton(QMessageBox.Cancel)
+
+            error_string = ''
+            for e in errors:
+                e = re.sub(r'<[^>]*>', '', e)
+                error_string += '• {}\n'.format(e)
+
+            message_box.setDetailedText(error_string)
+            if message_box.exec_() == QMessageBox.Cancel:
+                return
+
+        def on_finished(successful, results):
+            self.setLastRunChildAlgorithmResults(dlg.results().get('CHILD_RESULTS', {}))
+            self.setLastRunChildAlgorithmInputs(dlg.results().get('CHILD_INPUTS', {}))
 
         dlg = AlgorithmDialog(self.model().create(), parent=self)
         dlg.setParameters(self.model().designerParameterValues())
+        dlg.algorithmFinished.connect(on_finished)
         dlg.exec_()
 
         if dlg.wasExecuted():
-            self.model().setDesignerParameterValues(dlg.getParameterValues())
+            self.model().setDesignerParameterValues(dlg.createProcessingParameters())
 
     def saveInProject(self):
         if not self.validateSave():
@@ -200,7 +218,7 @@ class ModelerDialog(QgsModelDesignerDialog):
 
         showComments = QgsSettings().value("/Processing/Modeler/ShowComments", True, bool)
         if not showComments:
-            self.scene.setFlag(QgsModelGraphicsScene.FlagHideComments)
+            scene.setFlag(QgsModelGraphicsScene.FlagHideComments)
 
         context = createContext()
         scene.createItems(self.model(), context)
@@ -312,9 +330,20 @@ class ModelerDialog(QgsModelDesignerDialog):
                 output_offset_y += 1.5 * alg.modelOutput(out).size().height()
 
             self.beginUndoCommand(self.tr('Add Algorithm'))
-            self.model().addChildAlgorithm(alg)
+            id = self.model().addChildAlgorithm(alg)
             self.repaintModel()
             self.endUndoCommand()
+
+            res, errors = self.model().validateChildAlgorithm(id)
+            if not res:
+                self.view().scene().showWarning(
+                    QCoreApplication.translate('ModelerDialog', 'Algorithm “{}” is invalid').format(alg.description()),
+                    self.tr('Algorithm is Invalid'),
+                    QCoreApplication.translate('ModelerDialog', "<p>The “{}” algorithm is invalid, because:</p><ul><li>{}</li></ul>").format(alg.description(), '</li><li>'.join(errors)),
+                    level=Qgis.Warning
+                )
+            else:
+                self.view().scene().messageBar().clearWidgets()
 
     def getPositionForAlgorithmItem(self):
         MARGIN = 20

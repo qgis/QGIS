@@ -924,6 +924,23 @@
           45.93943
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Jan Caha",
+        "Committer": "Yes",
+        "First Commit Message": "ascii expression",
+        "First Commit Date": "18-04-2020",
+        "GIT Nickname": "jancaha"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.98311,
+          49.281418
+        ]
+      }
     }
   ]
 }

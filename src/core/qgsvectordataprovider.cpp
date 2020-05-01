@@ -846,3 +846,8 @@ QgsVectorDataProviderTemporalCapabilities *QgsVectorDataProvider::temporalCapabi
 {
   return mTemporalCapabilities.get();
 }
+
+const QgsVectorDataProviderTemporalCapabilities *QgsVectorDataProvider::temporalCapabilities() const
+{
+  return mTemporalCapabilities.get();
+}

@@ -48,6 +48,13 @@ open within the main QGIS application.
       Qgs,
     };
 
+    enum class AvoidIntersectionsMode
+    {
+      AllowIntersections,
+      AvoidIntersectionsCurrentLayer,
+      AvoidIntersectionsLayers,
+    };
+
     static QgsProject *instance();
 %Docstring
 Returns the QgsProject singleton instance
@@ -740,9 +747,24 @@ A list of layers with which intersections should be avoided.
 
     void setAvoidIntersectionsLayers( const QList<QgsVectorLayer *> &layers );
 %Docstring
-A list of layers with which intersections should be avoided.
+Sets the list of layers with which intersections should be avoided.
+Only used if the avoid intersection mode is set to advanced.
 
 .. versionadded:: 3.0
+%End
+
+    void setAvoidIntersectionsMode( const AvoidIntersectionsMode mode );
+%Docstring
+Sets the avoid intersections mode.
+
+.. versionadded:: 3.14
+%End
+
+    AvoidIntersectionsMode avoidIntersectionsMode() const;
+%Docstring
+Returns the current avoid intersections mode.
+
+.. versionadded:: 3.14
 %End
 
     QVariantMap customVariables() const;
@@ -1369,6 +1391,13 @@ Emitted when the home path of the project changes.
     void snappingConfigChanged( const QgsSnappingConfig &config );
 %Docstring
 Emitted whenever the configuration for snapping has changed.
+%End
+
+    void avoidIntersectionsModeChanged();
+%Docstring
+Emitted whenever the avoid intersections mode has changed.
+
+.. versionadded:: 3.14
 %End
 
     void customVariablesChanged();

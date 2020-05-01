@@ -11,12 +11,9 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout">
-   <property name="spacing">
-    <number>6</number>
-   </property>
+  <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -29,7 +26,7 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item>
+   <item row="0" column="0">
     <widget class="QgsHighlightableLineEdit" name="leText">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -39,7 +36,7 @@
      </property>
     </widget>
    </item>
-   <item>
+   <item row="0" column="1">
     <widget class="QToolButton" name="mSelectButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">

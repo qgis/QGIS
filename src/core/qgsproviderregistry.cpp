@@ -30,6 +30,7 @@
 #include "qgsmessagelog.h"
 #include "qgsprovidermetadata.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectortileprovidermetadata.h"
 #include "qgsproject.h"
 #include "providers/memory/qgsmemoryprovider.h"
 #include "providers/gdal/qgsgdalprovider.h"
@@ -106,7 +107,6 @@ QgsProviderRegistry::QgsProviderRegistry( const QString &pluginPath )
   init();
 }
 
-
 void QgsProviderRegistry::init()
 {
   // add static providers
@@ -116,6 +116,8 @@ void QgsProviderRegistry::init()
   Q_NOWARN_DEPRECATED_POP
   mProviders[ QgsGdalProvider::providerKey() ] = new QgsGdalProviderMetadata();
   mProviders[ QgsOgrProvider::providerKey() ] = new QgsOgrProviderMetadata();
+  QgsProviderMetadata *vt = new QgsVectorTileProviderMetadata();
+  mProviders[ vt->key() ] = vt;
 #ifdef HAVE_STATIC_PROVIDERS
   mProviders[ QgsWmsProvider::providerKey() ] = new QgsWmsProviderMetadata();
   mProviders[ QgsPostgresProvider::providerKey() ] = new QgsPostgresProviderMetadata();
@@ -133,7 +135,7 @@ void QgsProviderRegistry::init()
 #if defined(Q_OS_WIN) || defined(__CYGWIN__)
   mLibraryDirectory.setNameFilters( QStringList( "*.dll" ) );
 #elif defined(ANDROID)
-  mLibraryDirectory.setNameFilters( QStringList( "*provider.so" ) );
+  mLibraryDirectory.setNameFilters( QStringList( "*provider*.so" ) );
 #else
   mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*.so" ) ) );
 #endif

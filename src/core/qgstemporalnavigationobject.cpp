@@ -71,25 +71,32 @@ void QgsTemporalNavigationObject::setLooping( bool loopAnimation )
 
 QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long long frame ) const
 {
-  QDateTime start = mTemporalExtents.begin();
+  const QDateTime start = mTemporalExtents.begin();
 
   if ( frame < 0 )
     frame = 0;
-  long long nextFrame = frame + 1;
 
-  QDateTime begin = start.addSecs( frame * mFrameDuration.seconds() );
-  QDateTime end = start.addSecs( nextFrame * mFrameDuration.seconds() );
+  const long long nextFrame = frame + 1;
+
+  const QDateTime begin = start.addSecs( frame * mFrameDuration.seconds() );
+  const QDateTime end = start.addSecs( nextFrame * mFrameDuration.seconds() );
 
   if ( end <= mTemporalExtents.end() )
-    return QgsDateTimeRange( begin, end );
+    return QgsDateTimeRange( begin, end, true, false );
 
-  return QgsDateTimeRange( begin, mTemporalExtents.end() );
+  return QgsDateTimeRange( begin, mTemporalExtents.end(), true, false );
 }
 
 void QgsTemporalNavigationObject::setTemporalExtents( const QgsDateTimeRange &temporalExtents )
 {
   mTemporalExtents = temporalExtents;
+  int currentFrameNmber = mCurrentFrameNumber;
   setCurrentFrameNumber( 0 );
+
+  //Force to emit signal if the current frame number doesn't change
+  if ( currentFrameNmber == mCurrentFrameNumber )
+    emit updateTemporalRange( dateTimeRangeForFrameNumber( 0 ) );
+
 }
 
 QgsDateTimeRange QgsTemporalNavigationObject::temporalExtents() const

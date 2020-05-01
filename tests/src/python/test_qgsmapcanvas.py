@@ -331,6 +331,24 @@ class TestQgsMapCanvas(unittest.TestCase):
         # should be different - we should now render project layers
         self.assertFalse(self.canvasImageCheck('theme4', 'theme4', canvas))
 
+        # set canvas to theme1
+        canvas.setTheme('theme1')
+        canvas.refresh()
+        canvas.waitWhileRendering()
+        self.assertEqual(canvas.theme(), 'theme1')
+        themeLayers = theme1.layerRecords()
+        # rename the active theme
+        QgsProject.instance().mapThemeCollection().renameMapTheme('theme1', 'theme5')
+        # canvas theme should now be set to theme5
+        canvas.refresh()
+        canvas.waitWhileRendering()
+        self.assertEqual(canvas.theme(), 'theme5')
+        # theme5 should render as theme1
+        theme5 = QgsProject.instance().mapThemeCollection().mapThemeState('theme5')
+        theme5Layers = theme5.layerRecords()
+        self.assertEqual(themeLayers, theme5Layers, 'themes are different')
+        #self.assertTrue(self.canvasImageCheck('theme5', 'theme5', canvas))
+
     def canvasImageCheck(self, name, reference_image, canvas):
         self.report += "<h2>Render {}</h2>\n".format(name)
         temp_dir = QDir.tempPath() + '/'

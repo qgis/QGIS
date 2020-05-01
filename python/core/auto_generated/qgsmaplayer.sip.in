@@ -19,7 +19,8 @@ enum class QgsMapLayerType
   VectorLayer,
   RasterLayer,
   PluginLayer,
-  MeshLayer
+  MeshLayer,
+  VectorTileLayer
 };
 
 class QgsMapLayer : QObject
@@ -52,6 +53,9 @@ This is the base class for all map layer types (vector, raster).
           break;
         case QgsMapLayerType::MeshLayer:
           sipType = sipType_QgsMeshLayer;
+          break;
+        case QgsMapLayerType::VectorTileLayer:
+          sipType = sipType_QgsVectorTileLayer;
           break;
         default:
           sipType = nullptr;

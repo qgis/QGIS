@@ -26,6 +26,7 @@
 #include "qgsmeshrenderersettings.h"
 #include "qgsmeshtimesettings.h"
 #include "qgsmeshsimplificationsettings.h"
+#include "qgsmeshlayertemporalproperties.h"
 
 class QgsMapLayerRenderer;
 struct QgsMeshLayerRendererCache;
@@ -164,8 +165,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const override;
     bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) override;
     bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
-
+    QgsMeshLayerTemporalProperties *temporalProperties() override;
     void reload() override;
+    QStringList subLayers() const override;
 
     //! Returns the provider type for this layer
     QString providerType() const;
@@ -202,6 +204,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * Gets native mesh and updates (creates if it doesn't exist) the base triangular mesh
      *
      * \param transform Transformation from layer CRS to destination (e.g. map) CRS. With invalid transform, it keeps the native mesh CRS
+     *
+     * \since QGIS 3.14
      */
     void updateTriangularMesh( const QgsCoordinateTransform &transform = QgsCoordinateTransform() );
 
@@ -255,20 +259,24 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     /**
       * Interpolates the value on the given point from given dataset.
+      * For 3D datasets, it uses dataset3dValue(), \n
+      * For 1D datasets, it uses dataset1dValue() with \a searchRadius
       *
       * \note It uses previously cached and indexed triangular mesh
       * and so if the layer has not been rendered previously
       * (e.g. when used in a script) it returns NaN value
+      * \see updateTriangularMesh
       *
       * \param index dataset index specifying group and dataset to extract value from
       * \param point point to query in map coordinates
+      * \param searchRadius the radius of the search area in map unit
       * \returns interpolated value at the point. Returns NaN values for values
       * outside the mesh layer, nodata values and in case triangular mesh was not
       * previously used for rendering
       *
       * \since QGIS 3.4
       */
-    QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
+    QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius = 0 ) const;
 
     /**
       * Returns the 3d values of stacked 3d mesh defined by the given point
@@ -276,6 +284,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       * \note It uses previously cached and indexed triangular mesh
       * and so if the layer has not been rendered previously
       * (e.g. when used in a script) it returns NaN value
+      * \see updateTriangularMesh
       *
       * \param index dataset index specifying group and dataset to extract value from
       * \param point point to query in map coordinates
@@ -286,6 +295,87 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       * \since QGIS 3.12
       */
     QgsMesh3dDataBlock dataset3dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
+
+    /**
+      * Returns the value of 1D mesh dataset defined on edge that are in the search area defined by point ans searchRadius
+      *
+      * \note It uses previously cached and indexed triangular mesh
+      * and so if the layer has not been rendered previously
+      * (e.g. when used in a script) it returns NaN value
+      * \see updateTriangularMesh
+      *
+      * \param index dataset index specifying group and dataset to extract value from
+      * \param point the center point of the search area
+      * \param searchRadius the radius of the searc area in map unit
+      * \returns interpolated value at the projected point. Returns NaN values for values
+      * outside the mesh layer and in case triangular mesh was not previously used for rendering
+      *
+      * \since QGIS 3.14
+      */
+    QgsMeshDatasetValue dataset1dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius ) const;
+
+    /**
+      * Returns dataset index from active scalar group depending on the time range.
+      * If the temporal properties is not active, return the static dataset
+      *
+      * \param timeRange the time range
+      * \returns dataset index
+      *
+      * \since QGIS 3.14
+      */
+    QgsMeshDatasetIndex activeScalarDatasetAtTime( const QgsDateTimeRange &timeRange ) const;
+
+    /**
+      * Returns dataset index from active vector group depending on the time range
+      * If the temporal properties is not active, return the static dataset
+      *
+      * \param timeRange the time range
+      * \returns dataset index
+      *
+      * \since QGIS 3.14
+      */
+    QgsMeshDatasetIndex activeVectorDatasetAtTime( const QgsDateTimeRange &timeRange ) const;
+
+    /**
+      * Sets the static scalar dataset index that is rendered if the temporal properties is not active
+      *
+      * \param staticScalarDatasetIndex the scalar data set index
+      *
+      * \since QGIS 3.14
+      */
+    void setStaticScalarDatasetIndex( const QgsMeshDatasetIndex &staticScalarDatasetIndex ) SIP_SKIP;
+
+    /**
+      * Sets the static vector dataset index that is rendered if the temporal properties is not active
+      *
+      * \param staticVectorDatasetIndex the vector data set index
+      *
+      * \since QGIS 3.14
+      */
+    void setStaticVectorDatasetIndex( const QgsMeshDatasetIndex &staticVectorDatasetIndex ) SIP_SKIP;
+
+    /**
+      * Returns the static scalar dataset index that is rendered if the temporal properties is not active
+      *
+      * \since QGIS 3.14
+      */
+    QgsMeshDatasetIndex staticScalarDatasetIndex() const;
+
+    /**
+      * Returns the static vector dataset index that is rendered if the temporal properties is not active
+      *
+      * \since QGIS 3.14
+      */
+    QgsMeshDatasetIndex staticVectorDatasetIndex() const;
+
+    /**
+      * Sets the reference time of the layer
+      *
+      * \param referenceTime the reference time
+      *
+      * \since QGIS 3.14
+      */
+    void setReferenceTime( const QDateTime &referenceTime );
 
   public slots:
 
@@ -299,18 +389,18 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
   signals:
 
     /**
-     * Emitted when active scalar dataset is changed
+     * Emitted when active scalar group dataset is changed
      *
-     * \since QGIS 3.4
+     * \since QGIS 3.14
      */
-    void activeScalarDatasetChanged( const QgsMeshDatasetIndex &index );
+    void activeScalarDatasetGroupChanged( int index );
 
     /**
-     * Emitted when active vector dataset is changed
+     * Emitted when active vector group dataset is changed
      *
-     * \since QGIS 3.4
+     * \since QGIS 3.14
      */
-    void activeVectorDatasetChanged( const QgsMeshDatasetIndex &index );
+    void activeVectorDatasetGroupChanged( int index );
 
     /**
      * Emitted when time format is changed
@@ -346,6 +436,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     bool hasSimplifiedMeshes() const;
 
+    QgsMeshDatasetIndex datasetIndexAtTime( const QgsDateTimeRange &timeRange, int datasetGroupIndex ) const;
+
   private slots:
     void onDatasetGroupsAdded( int count );
 
@@ -370,6 +462,11 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     //! Simplify mesh configuration
     QgsMeshSimplificationSettings mSimplificationSettings;
+
+    QgsMeshLayerTemporalProperties *mTemporalProperties;
+
+    QgsMeshDatasetIndex mStaticScalarDatasetIndex;
+    QgsMeshDatasetIndex mStaticVectorDatasetIndex;
 };
 
 #endif //QGSMESHLAYER_H

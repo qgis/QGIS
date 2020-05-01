@@ -54,6 +54,9 @@ RUN cmake \
  && SUCCESS=OK \
  && timeout ${BUILD_TIMEOUT}s ninja install || SUCCESS=TIMEOUT \
  && echo "$SUCCESS" > /QGIS/build_exit_value
+ 
+# Additional run-time dependencies
+RUN pip3 install jinja2 pygments
 
 ################################################################################
 ARG DELETE_CACHE=FALSE
@@ -76,7 +79,6 @@ COPY .docker/qgis_resources/supervisor/ /etc/supervisor
 # - built from git
 # needed to find PyQt wrapper provided by QGIS
 ENV PYTHONPATH=/usr/share/qgis/python/:/usr/share/qgis/python/plugins:/usr/lib/python3/dist-packages/qgis:/usr/share/qgis/python/qgis
-
 
 WORKDIR /
 

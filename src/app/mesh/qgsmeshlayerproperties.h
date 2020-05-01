@@ -29,6 +29,7 @@ class QgsMapCanvas;
 class QgsMeshLayer;
 class QgsRendererMeshPropertiesWidget;
 class QgsMeshLayer3DRendererWidget;
+class QgsMeshStaticDatasetWidget;
 
 /**
  * Property sheet for a mesh map layer.
@@ -68,8 +69,14 @@ class APP_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     void loadStyle();
     //! Saves a style when appriate button is pressed
     void saveStyleAs();
-
+    //! Prepares style menu
     void aboutToShowStyleMenu();
+    //! Reloads temporal properties from the provider
+    void reloadTemporalProperties();
+
+    void onTimeReferenceChange();
+
+    void onStaticDatasetCheckBoxChanged();
   private:
     //! Pointer to the mesh styling widget
     QgsRendererMeshPropertiesWidget *mRendererMeshPropertiesWidget = nullptr;

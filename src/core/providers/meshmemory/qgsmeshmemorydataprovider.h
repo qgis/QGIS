@@ -172,7 +172,8 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
 
     bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const override;
     QgsMeshDataBlock areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const override;
-    bool persistDatasetGroup( const QString &path,
+    bool persistDatasetGroup( const QString &outputFilePath,
+                              const QString &outputDriver,
                               const QgsMeshDatasetGroupMetadata &meta,
                               const QVector<QgsMeshDataBlock> &datasetValues,
                               const QVector<QgsMeshDataBlock> &datasetActive,
@@ -201,6 +202,8 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
     bool addDatasetValues( const QString &def, std::shared_ptr<QgsMeshMemoryDataset> &dataset, bool isScalar );
     bool checkDatasetValidity( std::shared_ptr<QgsMeshMemoryDataset> &dataset, QgsMeshDatasetGroupMetadata::DataType dataType );
     bool checkVertexId( int vertex_id );
+
+    void addGroupToTemporalCapabilities( int groupIndex, const QgsMeshMemoryDatasetGroup &group );
 
     QVector<QgsMeshVertex> mVertices;
     QVector<QgsMeshFace> mFaces;

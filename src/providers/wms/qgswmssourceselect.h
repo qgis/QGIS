@@ -78,8 +78,6 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
      */
     void btnConnect_clicked();
 
-    void searchFinished();
-
     //! Opens the Spatial Reference System dialog.
     void btnChangeSpatialRefSys_clicked();
 
@@ -95,9 +93,6 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     //! Stores the selected datasource whenerver it is changed
     void cmbConnections_activated( int );
 
-    //! Add some default wms servers to the list
-    void btnAddDefault_clicked();
-
   private:
     //! Populate the connection list combo box
     void populateConnectionList();
@@ -107,9 +102,6 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
 
     //! Sets the server connection combo box to that stored in the config file.
     void setConnectionListPosition();
-
-    //! Add a few example servers to the list.
-    void addDefaultServers();
 
     //! Selected CRS
     QString mCRS;
@@ -170,14 +162,18 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
 
     QMap<QString, QString> mCrsNames;
 
-    void addWMSListRow( const QDomElement &item, int row );
-    void addWMSListItem( const QDomElement &el, int row, int column );
-
     void applySelectionConstraints( QTreeWidgetItem *item );
     void collectNamedLayers( QTreeWidgetItem *item, QStringList &layers, QStringList &styles, QStringList &titles );
     void enableLayersForCrs( QTreeWidgetItem *item );
 
     void collectSelectedLayers( QStringList &layers, QStringList &styles, QStringList &titles );
+
+    /**
+     * Collects the available dimensions from the WMS layers and adds them
+     * to the passed \a uri.
+     */
+    void collectDimensions( QStringList &layers, QgsDataSourceUri &uri );
+
     QString selectedImageEncoding();
 
     QList<QTreeWidgetItem *> mCurrentSelection;
@@ -185,10 +181,10 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
 
     QList<QgsWmtsTileLayer> mTileLayers;
 
+    //! Stores all the layers properties from the service capabilities.
+    QVector<QgsWmsLayerProperty> mLayerProperties;
+
   private slots:
-    void btnSearch_clicked();
-    void btnAddWMS_clicked();
-    void tableWidgetWMSList_itemSelectionChanged();
     void lstTilesets_itemClicked( QTableWidgetItem *item );
     void mLayerUpButton_clicked();
     void mLayerDownButton_clicked();

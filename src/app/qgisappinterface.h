@@ -70,6 +70,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsRasterLayer *addRasterLayer( const QString &rasterLayerPath, const QString &baseName ) override;
     QgsRasterLayer *addRasterLayer( const QString &url, const QString &baseName, const QString &providerKey ) override;
     QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) override;
+    QgsVectorTileLayer *addVectorTileLayer( const QString &url, const QString &baseName ) override;
     bool addProject( const QString &projectName ) override;
     bool newProject( bool promptToSaveFlag = false ) override;
     void reloadConnections( ) override;
@@ -147,6 +148,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) override;
     void registerCustomDropHandler( QgsCustomDropHandler *handler ) override;
     void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) override;
+    void registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) override;
+    void unregisterCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) override;
     void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) override;
     void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) override;
     QMenu *projectMenu() override;
@@ -231,6 +234,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionAddRasterLayer() override;
     QAction *actionAddPgLayer() override;
     QAction *actionAddWmsLayer() override;
+    QAction *actionAddXyzLayer() override;
+    QAction *actionAddVectorTileLayer() override;
     QAction *actionAddAfsLayer() override;
     QAction *actionAddAmsLayer() override;
     QAction *actionCopyLayerStyle() override;
@@ -256,6 +261,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionHideAllLayers() override;
     QAction *actionShowAllLayers() override;
     QAction *actionHideSelectedLayers() override;
+    QAction *actionToggleSelectedLayers() override;
+    QAction *actionToggleSelectedLayersIndependently() override;
     QAction *actionHideDeselectedLayers() override;
     QAction *actionShowSelectedLayers() override;
     QAction *actionManagePlugins() override;

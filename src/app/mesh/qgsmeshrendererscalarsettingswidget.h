@@ -62,6 +62,7 @@ class APP_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
     void minMaxChanged();
     void minMaxEdited();
     void recalculateMinMaxButtonClicked();
+    void onEdgeStrokeWidthMethodChanged();
 
   private:
     double lineEditValue( const QLineEdit *lineEdit ) const;

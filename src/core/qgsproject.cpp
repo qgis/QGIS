@@ -60,6 +60,7 @@
 #include "qgsprojectviewsettings.h"
 #include "qgsprojectdisplaysettings.h"
 #include "qgsprojecttimesettings.h"
+#include "qgsvectortilelayer.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -773,6 +774,7 @@ void QgsProject::clear()
   mDisplaySettings->reset();
   mSnappingConfig.reset();
   emit snappingConfigChanged( mSnappingConfig );
+  emit avoidIntersectionsModeChanged();
   emit topologicalEditingChanged();
 
   mMapThemeCollection.reset( new QgsMapThemeCollection( this ) );
@@ -971,6 +973,15 @@ void QgsProject::setSnappingConfig( const QgsSnappingConfig &snappingConfig )
   emit snappingConfigChanged( mSnappingConfig );
 }
 
+void QgsProject::setAvoidIntersectionsMode( const AvoidIntersectionsMode mode )
+{
+  if ( mAvoidIntersectionsMode == mode )
+    return;
+
+  mAvoidIntersectionsMode = mode;
+  emit avoidIntersectionsModeChanged();
+}
+
 bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes, QgsProject::ReadFlags flags )
 {
   // Layer order is set by the restoring the legend settings from project file.
@@ -1061,6 +1072,10 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   else if ( type == QLatin1String( "mesh" ) )
   {
     mapLayer = qgis::make_unique<QgsMeshLayer>();
+  }
+  else if ( type == QLatin1String( "vector-tile" ) )
+  {
+    mapLayer = qgis::make_unique<QgsVectorTileLayer>();
   }
   else if ( type == QLatin1String( "plugin" ) )
   {
@@ -1524,6 +1539,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   }
 
   mSnappingConfig.readProject( *doc );
+  mAvoidIntersectionsMode = static_cast<AvoidIntersectionsMode>( readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/AvoidIntersectionsMode" ), static_cast<int>( AvoidIntersectionsMode::AvoidIntersectionsLayers ) ) );
 
   // restore older project scales settings
   mViewSettings->setUseProjectScales( readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) ) );
@@ -1564,6 +1580,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   emit readProject( *doc );
   emit readProjectWithContext( *doc, context );
   emit snappingConfigChanged( mSnappingConfig );
+  emit avoidIntersectionsModeChanged();
   emit topologicalEditingChanged();
   emit projectColorsChanged();
 
@@ -1776,7 +1793,7 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_acronym" ), projectCrs.projectionAcronym(), true ) );
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_ellipsoid" ), projectCrs.ellipsoidAcronym(), true ) );
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_proj4" ), projectCrs.toProj(), true ) );
-  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_wkt" ), projectCrs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ), true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_wkt" ), projectCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ), true ) );
 
   // metadata
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_author" ), metadata().author(), true, true ) );
@@ -2080,6 +2097,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
   delete clonedRoot;
 
   mSnappingConfig.writeProject( *doc );
+  writeEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/AvoidIntersectionsMode" ), static_cast<int>( mAvoidIntersectionsMode ) );
 
   // let map canvas and legend write their information
   emit writeProject( *doc );

@@ -53,6 +53,8 @@ class Qgs3DMapToolIdentify : public Qgs3DMapTool
   private:
     std::unique_ptr<Qgs3DMapToolIdentifyPickHandler> mPickHandler;
 
+    bool mIsActive = false;
+
     friend class Qgs3DMapToolIdentifyPickHandler;
 };
 

@@ -1,6 +1,8 @@
 
 CREATE SCHEMA IF NOT EXISTS idro;
 
+DROP TABLE IF EXISTS idro.cosmo_i5_snow CASCADE;
+
 --
 -- Name: cosmo_i5_snow; Type: TABLE; Schema: idro; Owner: -
 --

@@ -22,6 +22,7 @@
 #include "ui_qgsprocessingalgorithmprogressdialogbase.h"
 #include "processing/qgsprocessingcontext.h"
 #include "processing/qgsprocessingfeedback.h"
+#include "qgsprocessingwidgetwrapper.h"
 
 ///@cond NOT_STABLE
 
@@ -49,7 +50,7 @@ class QgsProcessingAlgorithmDialogFeedback : public QgsProcessingFeedback
     /**
      * Constructor for QgsProcessingAlgorithmDialogFeedback.
      */
-    QgsProcessingAlgorithmDialogFeedback() = default;
+    QgsProcessingAlgorithmDialogFeedback();
 
   signals:
 
@@ -78,7 +79,7 @@ class QgsProcessingAlgorithmDialogFeedback : public QgsProcessingFeedback
  * \note This is not considered stable API and may change in future QGIS versions.
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::QgsProcessingDialogBase
+class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsProcessingParametersGenerator, private Ui::QgsProcessingDialogBase
 {
     Q_OBJECT
 
@@ -151,11 +152,6 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      * slots in this dialog.
      */
     QgsProcessingFeedback *createFeedback() SIP_FACTORY;
-
-    /**
-     * Returns the parameter values for the algorithm to run in the dialog.
-     */
-    virtual QVariantMap getParameterValues() const;
 
     /**
      * Saves the log contents to a text file (specified by the file \a path), in
@@ -342,6 +338,15 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      * \since QGIS 3.0.1
      */
     static QString formatStringForLog( const QString &string );
+
+  signals:
+
+    /**
+     * Emitted whenever an algorithm has finished executing in the dialog.
+     *
+     * \since QGIS 3.14
+     */
+    void algorithmFinished( bool successful, const QVariantMap &result );
 
   protected slots:
 

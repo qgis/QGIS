@@ -48,7 +48,9 @@ class GUI_EXPORT QgsMaskingWidget: public QgsPanelWidget, private Ui::QgsMasking
     void widgetChanged();
 
   private:
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer *mLayer = nullptr;
+    //! Populate the mask source and target widgets
+    void populate();
 };
 
 #endif

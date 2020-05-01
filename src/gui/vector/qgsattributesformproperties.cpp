@@ -26,6 +26,7 @@
 #include "qgsapplication.h"
 #include "qgscolorbutton.h"
 #include "qgscodeeditorhtml.h"
+#include "qgsexpressioncontextutils.h"
 
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
@@ -183,9 +184,15 @@ void QgsAttributesFormProperties::initSuppressCombo()
   mFormSuppressCmbBx->addItem( tr( "Show form on add feature" ) );
 
   mFormSuppressCmbBx->setCurrentIndex( mLayer->editFormConfig().suppress() );
-
-
 }
+
+QgsExpressionContext QgsAttributesFormProperties::createExpressionContext() const
+{
+  QgsExpressionContext context;
+  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+  return context;
+}
+
 void QgsAttributesFormProperties::initLayoutConfig()
 {
   mEditorLayoutComboBox->setCurrentIndex( mEditorLayoutComboBox->findData( mLayer->editFormConfig().layout() ) );
@@ -243,6 +250,7 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
   QgsFieldConstraints constraints = cfg.mFieldConstraints;
 
   mAttributeTypeDialog->setAlias( cfg.mAlias );
+  mAttributeTypeDialog->setDataDefinedProperties( cfg.mDataDefinedProperties );
   mAttributeTypeDialog->setComment( cfg.mComment );
   mAttributeTypeDialog->setFieldEditable( cfg.mEditable );
   mAttributeTypeDialog->setLabelOnTop( cfg.mLabelOnTop );
@@ -289,6 +297,7 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
   cfg.mEditable = mAttributeTypeDialog->fieldEditable();
   cfg.mLabelOnTop = mAttributeTypeDialog->labelOnTop();
   cfg.mAlias = mAttributeTypeDialog->alias();
+  cfg.mDataDefinedProperties = mAttributeTypeDialog->dataDefinedProperties();
 
   QgsFieldConstraints constraints;
   if ( mAttributeTypeDialog->notNull() )
@@ -430,6 +439,7 @@ void QgsAttributesFormProperties::loadAttributeContainerEdit()
 
   QTreeWidgetItem *currentItem = mFormLayoutTree->selectedItems().at( 0 );
   mAttributeContainerEdit = new QgsAttributeFormContainerEdit( currentItem, this );
+  mAttributeContainerEdit->registerExpressionContextGenerator( this );
   mAttributeContainerEdit->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributeTypeFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributeTypeFrame->layout()->addWidget( mAttributeContainerEdit );
@@ -533,6 +543,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       break;
     }
   }
+
   return newWidget;
 }
 
@@ -658,7 +669,7 @@ void QgsAttributesFormProperties::addTabOrGroupButton()
       tabList.append( QgsAddTabOrGroup::TabPair( itemData.name(), *it ) );
     }
   }
-  QTreeWidgetItem *currentItem = mFormLayoutTree->selectedItems().at( 0 );
+  QTreeWidgetItem *currentItem = mFormLayoutTree->selectedItems().value( 0 );
   QgsAddTabOrGroup addTabOrGroup( mLayer, tabList, currentItem, this );
 
   if ( !addTabOrGroup.exec() )
@@ -837,7 +848,8 @@ void QgsAttributesFormProperties::apply()
     QTreeWidgetItem *fieldItem = fieldContainer->child( i );
     FieldConfig cfg = fieldItem->data( 0, FieldConfigRole ).value<FieldConfig>();
 
-    int idx = mLayer->fields().indexOf( fieldItem->data( 0, FieldNameRole ).toString() );
+    const QString fieldName { fieldItem->data( 0, FieldNameRole ).toString() };
+    int idx = mLayer->fields().indexOf( fieldName );
 
     //continue in case field does not exist anymore
     if ( idx < 0 )
@@ -845,6 +857,12 @@ void QgsAttributesFormProperties::apply()
 
     editFormConfig.setReadOnly( idx, !cfg.mEditable );
     editFormConfig.setLabelOnTop( idx, cfg.mLabelOnTop );
+
+    if ( cfg.mDataDefinedProperties.count() > 0 )
+    {
+      editFormConfig.setDataDefinedFieldProperties( fieldName, cfg.mDataDefinedProperties );
+    }
+
     mLayer->setEditorWidgetSetup( idx, QgsEditorWidgetSetup( cfg.mEditorWidgetType, cfg.mEditorWidgetConfig ) );
 
     QgsFieldConstraints constraints = cfg.mFieldConstraints;
@@ -882,8 +900,8 @@ void QgsAttributesFormProperties::apply()
   for ( int t = 0; t < mFormLayoutTree->invisibleRootItem()->childCount(); t++ )
   {
     QTreeWidgetItem *tabItem = mFormLayoutTree->invisibleRootItem()->child( t );
-
-    editFormConfig.addTab( createAttributeEditorWidget( tabItem, nullptr, false ) );
+    QgsAttributeEditorElement *editorElement { createAttributeEditorWidget( tabItem, nullptr, false ) };
+    editFormConfig.addTab( editorElement );
   }
 
   editFormConfig.setUiForm( mEditFormLineEdit->text() );
@@ -925,6 +943,7 @@ void QgsAttributesFormProperties::apply()
 QgsAttributesFormProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx )
 {
   mAlias = layer->fields().at( idx ).alias();
+  mDataDefinedProperties = layer->editFormConfig().dataDefinedFieldProperties( layer->fields().at( idx ).name() );
   mComment = layer->fields().at( idx ).comment();
   mEditable = !layer->editFormConfig().readOnly( idx );
   mEditableEnabled = layer->fields().fieldOrigin( idx ) != QgsFields::OriginJoin

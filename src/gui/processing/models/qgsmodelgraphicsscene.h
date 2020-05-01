@@ -28,6 +28,9 @@ class QgsProcessingModelChildAlgorithm;
 class QgsProcessingModelOutput;
 class QgsProcessingModelComponent;
 class QgsProcessingModelComment;
+class QgsModelChildAlgorithmGraphicItem;
+class QgsProcessingModelGroupBox;
+class QgsMessageBar;
 
 ///@cond NOT_STABLE
 
@@ -46,8 +49,9 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     //! Z values for scene items
     enum ZValues
     {
-      ArrowLink = 0, //!< An arrow linking model items
-      ModelComponent = 1, //!< Model components (e.g. algorithms, inputs and outputs)
+      GroupBox = 0, //!< A logical group box
+      ArrowLink = 1, //!< An arrow linking model items
+      ModelComponent = 2, //!< Model components (e.g. algorithms, inputs and outputs)
       MouseHandles = 99, //!< Mouse handles
       RubberBand = 100, //!< Rubber band item
       ZSnapIndicator = 101, //!< Z-value for snapping indicator
@@ -66,6 +70,10 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      * Constructor for QgsModelGraphicsScene with the specified \a parent object.
      */
     QgsModelGraphicsScene( QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    QgsProcessingModelAlgorithm *model();
+
+    void setModel( QgsProcessingModelAlgorithm *model );
 
     /**
      * Sets the combination of \a flags controlling how the scene is rendered and behaves.
@@ -107,6 +115,11 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QgsModelComponentGraphicItem *componentItemAt( QPointF position ) const;
 
     /**
+     * Returns the graphic item corresponding to the specified group box \a uuid.
+     */
+    QgsModelComponentGraphicItem *groupBoxItem( const QString &uuid );
+
+    /**
      * Selects all the components in the scene.
      */
     void selectAll();
@@ -123,6 +136,35 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      * Clears any selected items and sets \a item as the current selection.
     */
     void setSelectedItem( QgsModelComponentGraphicItem *item );
+
+    /**
+     * Sets the results for child algorithms for the last model execution.
+     */
+    void setChildAlgorithmResults( const QVariantMap &results );
+
+    /**
+     * Sets the inputs for child algorithms for the last model execution.
+     */
+    void setChildAlgorithmInputs( const QVariantMap &inputs );
+
+    /**
+     * Returns the message bar associated with the scene.
+     *
+     * \see setMessageBar()
+     */
+    QgsMessageBar *messageBar() const;
+
+    /**
+     * Sets the message \a bar associated with the scene.
+     *
+     * \see messageBar()
+     */
+    void setMessageBar( QgsMessageBar *bar );
+
+    /**
+     * Shows a warning message, allowing users to click a button to see the full details (\a longMessage).
+     */
+    void showWarning( const QString &shortMessage, const QString &title, const QString &longMessage, Qgis::MessageLevel level = Qgis::Warning );
 
   signals:
 
@@ -160,7 +202,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     /**
      * Creates a new graphic item for a model child algorithm.
      */
-    virtual QgsModelComponentGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const  SIP_FACTORY;
+    virtual QgsModelChildAlgorithmGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const  SIP_FACTORY;
 
     /**
      * Creates a new graphic item for a model output.
@@ -173,6 +215,10 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     virtual QgsModelComponentGraphicItem *createCommentGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelComment *comment,
         QgsModelComponentGraphicItem *parentItem ) const SIP_FACTORY;
 
+    /**
+     * Creates a new graphic item for a model group box.
+     */
+    QgsModelComponentGraphicItem *createGroupBoxGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelGroupBox *box ) const SIP_FACTORY;
 
   private:
 
@@ -188,9 +234,16 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
 
     Flags mFlags = nullptr;
 
+    QgsProcessingModelAlgorithm *mModel = nullptr;
+
     QMap< QString, QgsModelComponentGraphicItem * > mParameterItems;
-    QMap< QString, QgsModelComponentGraphicItem * > mChildAlgorithmItems;
+    QMap< QString, QgsModelChildAlgorithmGraphicItem * > mChildAlgorithmItems;
     QMap< QString, QMap< QString, QgsModelComponentGraphicItem * > > mOutputItems;
+    QMap< QString, QgsModelComponentGraphicItem * > mGroupBoxItems;
+    QVariantMap mChildResults;
+    QVariantMap mChildInputs;
+
+    QgsMessageBar *mMessageBar = nullptr;
 
 };
 

@@ -85,7 +85,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   if ( uri.param( QStringLiteral( "type" ) ) == QLatin1String( "wmst" ) )
   {
     mIsTemporal = true;
-    mTemporalExtent = uri.param( QStringLiteral( "time" ) );
+    mTemporalExtent = uri.param( QStringLiteral( "timeDimensionExtent" ) );
     mTimeDimensionExtent = parseTemporalExtent( mTemporalExtent );
 
     if ( mTimeDimensionExtent.datesResolutionList.first().dates.dateTimes.size() > 0 )
@@ -98,11 +98,9 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     else
       mFixedRange = QgsDateTimeRange();
 
-    mDateTimes = dateTimesFromExtent( mTimeDimensionExtent );
-
-    if ( uri.param( QStringLiteral( "reference_time" ) ) != QString() )
+    if ( uri.param( QStringLiteral( "referenceTimeDimensionExtent" ) ) != QString() )
     {
-      QString referenceExtent = uri.param( QStringLiteral( "reference_time" ) );
+      QString referenceExtent = uri.param( QStringLiteral( "referenceTimeDimensionExtent" ) );
 
       mReferenceTimeDimensionExtent = parseTemporalExtent( referenceExtent );
 
@@ -281,37 +279,14 @@ QgsWmstDimensionExtent QgsWmsSettings::parseTemporalExtent( QString extent )
   return dimensionExtent;
 }
 
-QList<QDateTime> QgsWmsSettings::dateTimesFromExtent( QgsWmstDimensionExtent dimensionExtent )
+void QgsWmsSettings::setTimeDimensionExtent( QgsWmstDimensionExtent timeDimensionExtent )
 {
-  QList<QDateTime> dates;
+  mTimeDimensionExtent = timeDimensionExtent;
+}
 
-  for ( QgsWmstExtentPair pair : dimensionExtent.datesResolutionList )
-  {
-    if ( !pair.dates.dateTimes.isEmpty() )
-    {
-      if ( pair.dates.dateTimes.size() < 2 )
-        dates.append( pair.dates.dateTimes.at( 0 ) );
-      else
-      {
-        QDateTime first = QDateTime( pair.dates.dateTimes.at( 0 ) );
-        QDateTime last = QDateTime( pair.dates.dateTimes.at( 1 ) );
-
-        while ( first < last )
-        {
-          if ( pair.resolution.active() )
-            first = addTime( first, pair.resolution );
-          else
-            break;
-
-          if ( first <= last )
-            dates.append( first );
-        }
-      }
-    }
-  }
-
-  return dates;
-
+QgsWmstDimensionExtent QgsWmsSettings::timeDimensionExtent() const
+{
+  return mTimeDimensionExtent;
 }
 
 QDateTime QgsWmsSettings::addTime( QDateTime dateTime, QgsWmstResolution resolution )
@@ -332,6 +307,44 @@ QDateTime QgsWmsSettings::addTime( QDateTime dateTime, QgsWmstResolution resolut
     resultDateTime = resultDateTime.addSecs( resolution.seconds );
 
   return resultDateTime;
+}
+
+QDateTime QgsWmsSettings::findLeastClosestDateTime( QDateTime dateTime, bool dateOnly ) const
+{
+  QDateTime closest = dateTime;
+
+  long long seconds;
+
+  if ( dateOnly )
+    seconds = QDateTime::fromString( closest.date().toString() ).toSecsSinceEpoch();
+  else
+    seconds = closest.toSecsSinceEpoch();
+
+  for ( QgsWmstExtentPair pair : mTimeDimensionExtent.datesResolutionList )
+  {
+    if ( pair.dates.dateTimes.size() < 2 )
+      continue;
+
+    long long startSeconds = pair.dates.dateTimes.at( 0 ).toSecsSinceEpoch();
+    long long endSeconds = pair.dates.dateTimes.at( 1 ).toSecsSinceEpoch();
+
+    // if out of bounds
+    if ( seconds < startSeconds || seconds > endSeconds )
+      continue;
+    if ( seconds == endSeconds )
+      break;
+
+    long long resolutionSeconds = pair.resolution.interval();
+
+    if ( resolutionSeconds <= 0 )
+      continue;
+    long long step = std::floor( ( seconds - startSeconds ) / resolutionSeconds );
+    long long resultSeconds = startSeconds + ( step * resolutionSeconds );
+
+    closest.setSecsSinceEpoch( resultSeconds );
+  }
+
+  return closest;
 }
 
 QgsWmstResolution QgsWmsSettings::parseWmstResolution( QString item )
@@ -416,10 +429,10 @@ QgsWmstResolution QgsWmsSettings::parseWmstResolution( QString item )
 
 QDateTime QgsWmsSettings::parseWmstDateTimes( QString item )
 {
-  // Standard item will have YYYY-MM-DDThh:mm:ss.SSSZ
+  // Standard item will have YYYY-MM-DDTHH:mm:ss.SSSZ
   //  format a Qt::ISODateWithMs
 
-  QString format = "YYYY-MM-DDThh:mm:ss.SSSZ";
+  QString format = "yyyy-MM-ddTHH:mm:ss.SSSZ";
 
   // Check if it does not have time part
   if ( !item.contains( 'T' ) )
@@ -1039,8 +1052,6 @@ void QgsWmsCapabilities::parseLegendUrl( const QDomElement &element, QgsWmsLegen
 
 void QgsWmsCapabilities::parseDimension( const QDomElement &element, QgsWmsDimensionProperty &dimensionProperty )
 {
-
-  // TODO, check for the name value if it is time, implement WMS-T support
   dimensionProperty.name = element.attribute( QStringLiteral( "name" ) );
   dimensionProperty.units = element.attribute( QStringLiteral( "units" ) );
   dimensionProperty.unitSymbol = element.attribute( QStringLiteral( "unitSymbol" ) );
@@ -1065,6 +1076,39 @@ void QgsWmsCapabilities::parseDimension( const QDomElement &element, QgsWmsDimen
   }
 
   dimensionProperty.extent = element.text();
+}
+
+void QgsWmsCapabilities::parseExtent( const QDomElement &element, QVector<QgsWmsDimensionProperty> &dimensionProperties )
+{
+  const QString name = element.attribute( QStringLiteral( "name" ) );
+  // try to find corresponding dimension property -- i.e. we upgrade the WMS 1.1 split of Dimension and Extent to 1.3 style where Dimension holds the extent information
+  for ( auto it = dimensionProperties.begin(); it != dimensionProperties.end(); ++it )
+  {
+    if ( it->name == name )
+    {
+      it->extent = element.text();
+
+      it->defaultValue = element.attribute( QStringLiteral( "default" ) );
+
+      if ( !element.attribute( QStringLiteral( "multipleValues" ) ).isNull() )
+      {
+        QString multipleValuesAttribute = element.attribute( QStringLiteral( "multipleValues" ) );
+        it->multipleValues = ( multipleValuesAttribute == QLatin1String( "1" ) || multipleValuesAttribute == QLatin1String( "true" ) );
+      }
+
+      if ( !element.attribute( QStringLiteral( "nearestValue" ) ).isNull() )
+      {
+        QString nearestValueAttribute = element.attribute( QStringLiteral( "nearestValue" ) );
+        it->nearestValue = ( nearestValueAttribute == QLatin1String( "1" ) || nearestValueAttribute == QLatin1String( "true" ) );
+      }
+
+      if ( !element.attribute( QStringLiteral( "current" ) ).isNull() )
+      {
+        QString currentAttribute = element.attribute( QStringLiteral( "current" ) );
+        it->current = ( currentAttribute == QLatin1String( "1" ) || currentAttribute == QLatin1String( "true" ) );
+      }
+    }
+  }
 }
 
 void QgsWmsCapabilities::parseMetadataUrl( const QDomElement &element, QgsWmsMetadataUrlProperty &metadataUrlProperty )
@@ -1269,6 +1313,11 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
       {
         layerProperty.dimensions << QgsWmsDimensionProperty();
         parseDimension( nodeElement, layerProperty.dimensions.last() );
+      }
+      else if ( tagName == QLatin1String( "Extent" ) )
+      {
+        // upgrade WMS 1.1 style Extent/Dimension handling to WMS 1.3
+        parseExtent( nodeElement, layerProperty.dimensions );
       }
       else if ( tagName == QLatin1String( "Attribution" ) )
       {

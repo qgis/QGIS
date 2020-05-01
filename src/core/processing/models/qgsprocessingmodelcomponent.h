@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include <QPointF>
 #include <QSizeF>
+#include <QColor>
 
 class QgsProcessingModelComment;
 
@@ -75,6 +76,25 @@ class CORE_EXPORT QgsProcessingModelComponent
      * \since QGIS 3.14
      */
     void setSize( QSizeF size );
+
+    /**
+     * Returns the color of the model component within the graphical modeler.
+     *
+     * An invalid color indicates that the default color for the component should be used.
+     *
+     * \see setColor()
+     * \since QGIS 3.14
+     */
+    QColor color() const;
+
+    /**
+     * Sets the \a color of the model component within the graphical modeler. An invalid \a color
+     * indicates that the default color for the component should be used.
+     *
+     * \see color()
+     * \since QGIS 3.14
+     */
+    void setColor( const QColor &color );
 
     /**
      * Returns TRUE if the link points for the specified \a edge should be shown collapsed or not.
@@ -158,6 +178,7 @@ class CORE_EXPORT QgsProcessingModelComponent
     QString mDescription;
 
     QSizeF mSize = QSizeF( DEFAULT_COMPONENT_WIDTH, DEFAULT_COMPONENT_HEIGHT );
+    QColor mColor;
 
     bool mTopEdgeLinksCollapsed = true;
     bool mBottomEdgeLinksCollapsed = true;

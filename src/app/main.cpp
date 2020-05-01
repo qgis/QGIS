@@ -896,10 +896,20 @@ int main( int argc, char *argv[] )
   // Set up the QgsSettings Global Settings:
   // - use the path specified with --globalsettingsfile path,
   // - use the environment if not found
+  // - use the AppDataLocation ($HOME/.local/share/QGIS/QGIS3 on Linux, roaming path on Windows)
   // - use a default location as a fallback
   if ( globalsettingsfile.isEmpty() )
   {
     globalsettingsfile = getenv( "QGIS_GLOBAL_SETTINGS_FILE" );
+  }
+
+  if ( globalsettingsfile.isEmpty() )
+  {
+    QStringList startupPaths = QStandardPaths::locateAll( QStandardPaths::AppDataLocation, QStringLiteral( "qgis_global_settings.ini" ) );
+    if ( !startupPaths.isEmpty() )
+    {
+      globalsettingsfile = startupPaths.at( 0 );
+    }
   }
 
   if ( globalsettingsfile.isEmpty() )

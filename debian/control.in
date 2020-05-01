@@ -71,6 +71,8 @@ Build-Depends:
  qtpositioning5-dev,
  qttools5-dev-tools,
  qttools5-dev,
+ libprotobuf-dev,
+ protobuf-compiler,
  saga,
  git,
  doxygen,

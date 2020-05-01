@@ -51,6 +51,13 @@ This is a container for configuration of the snapping of the project
     typedef QFlags<QgsSnappingConfig::SnappingTypes> SnappingTypeFlag;
 
 
+    enum ScaleDependencyMode
+    {
+      Disabled,
+      Global,
+      PerLayer
+    };
+
     static const QString snappingTypeFlagToString( SnappingTypeFlag type );
 %Docstring
 Convenient method to returns the translated name of the enum type
@@ -86,7 +93,7 @@ IndividualLayerSettings
    use the method with SnappingTypeFlag instead.
 %End
 
-        IndividualLayerSettings( bool enabled, SnappingTypeFlag type, double tolerance, QgsTolerance::UnitType units );
+        IndividualLayerSettings( bool enabled, SnappingTypeFlag type, double tolerance, QgsTolerance::UnitType units, double minScale = 0.0, double maxScale = 0.0 );
 %Docstring
 IndividualLayerSettings
 
@@ -94,6 +101,8 @@ IndividualLayerSettings
 :param type:
 :param tolerance:
 :param units:
+:param minScale: 0.0 disable scale limit
+:param maxScale: 0.0 disable scale limit
 
 .. versionadded:: 3.12
 %End
@@ -166,6 +175,34 @@ Returns the type of units
         void setUnits( QgsTolerance::UnitType units );
 %Docstring
 Sets the type of units
+%End
+
+        double minimumScale() const;
+%Docstring
+Returns minimum scale on which snapping is limited
+
+.. versionadded:: 3.14
+%End
+
+        void setMinimumScale( double minScale );
+%Docstring
+Sets the min scale value on which snapping is used, 0.0 disable scale limit
+
+.. versionadded:: 3.14
+%End
+
+        double maximumScale() const;
+%Docstring
+Returns max scale on which snapping is limited
+
+.. versionadded:: 3.14
+%End
+
+        void setMaximumScale( double maxScale );
+%Docstring
+Sets the max scale value on which snapping is used, 0.0 disable scale limit
+
+.. versionadded:: 3.14
 %End
 
         bool operator!= ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
@@ -244,6 +281,48 @@ Returns the tolerance
     void setTolerance( double tolerance );
 %Docstring
 Sets the tolerance
+%End
+
+    double minimumScale() const;
+%Docstring
+Returns the min scale (i.e. most \"zoomed out\" scale)
+
+.. versionadded:: 3.14
+%End
+
+    void setMinimumScale( double minScale );
+%Docstring
+Sets the min scale on which snapping is enabled, 0.0 disable scale limit
+
+.. versionadded:: 3.14
+%End
+
+    double maximumScale() const;
+%Docstring
+Returns the max scale (i.e. most \"zoomed in\" scale)
+
+.. versionadded:: 3.14
+%End
+
+    void setMaximumScale( double maxScale );
+%Docstring
+Set the max scale on which snapping is enabled, 0.0 disable scale limit
+
+.. versionadded:: 3.14
+%End
+
+    void setScaleDependencyMode( ScaleDependencyMode mode );
+%Docstring
+Set the scale dependency mode
+
+.. versionadded:: 3.14
+%End
+
+    ScaleDependencyMode scaleDependencyMode() const;
+%Docstring
+Returns the scale dependency mode
+
+.. versionadded:: 3.14
 %End
 
     QgsTolerance::UnitType units() const;

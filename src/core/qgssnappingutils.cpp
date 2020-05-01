@@ -292,10 +292,31 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
   else if ( mSnappingConfig.mode() == QgsSnappingConfig::AdvancedConfiguration )
   {
     QList<LayerAndAreaOfInterest> layers;
+    QList<LayerConfig> filteredConfigs;
+
+    //maximum scale is the one with smallest denominator
+    //minimum scale is the one with highest denominator
+    //So : maxscale < range on which snapping is enabled < minscale
+    bool inRangeGlobal = ( mSnappingConfig.minimumScale() <= 0.0 || mMapSettings.scale() <= mSnappingConfig.minimumScale() )
+                         && ( mSnappingConfig.maximumScale() <= 0.0 || mMapSettings.scale() >= mSnappingConfig.maximumScale() );
+
     for ( const LayerConfig &layerConfig : qgis::as_const( mLayers ) )
     {
-      double tolerance = QgsTolerance::toleranceInProjectUnits( layerConfig.tolerance, layerConfig.layer, mMapSettings, layerConfig.unit );
-      layers << qMakePair( layerConfig.layer, _areaOfInterest( pointMap, tolerance ) );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings = mSnappingConfig.individualLayerSettings( layerConfig.layer );
+
+      bool inRangeLayer = ( layerSettings.minimumScale() <= 0.0 || mMapSettings.scale() <= layerSettings.minimumScale() )
+                          && ( layerSettings.maximumScale() <= 0.0 || mMapSettings.scale() >= layerSettings.maximumScale() );
+
+      //If limit to scale is disabled, snapping activated on all layer
+      //If no per layer config is set use the global one, otherwise use the layer config
+      if ( mSnappingConfig.scaleDependencyMode() == QgsSnappingConfig::Disabled
+           || ( mSnappingConfig.scaleDependencyMode() == QgsSnappingConfig::Global && inRangeGlobal )
+           || ( mSnappingConfig.scaleDependencyMode() == QgsSnappingConfig::PerLayer  && inRangeLayer ) )
+      {
+        double tolerance = QgsTolerance::toleranceInProjectUnits( layerConfig.tolerance, layerConfig.layer, mMapSettings, layerConfig.unit );
+        layers << qMakePair( layerConfig.layer, _areaOfInterest( pointMap, tolerance ) );
+        filteredConfigs << layerConfig;
+      }
     }
     prepareIndex( layers, relaxed );
 
@@ -303,7 +324,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
     QgsPointLocator::MatchList edges; // for snap on intersection
     double maxSnapIntTolerance = 0;
 
-    for ( const LayerConfig &layerConfig : qgis::as_const( mLayers ) )
+    for ( const LayerConfig &layerConfig : qgis::as_const( filteredConfigs ) )
     {
       double tolerance = QgsTolerance::toleranceInProjectUnits( layerConfig.tolerance, layerConfig.layer, mMapSettings, layerConfig.unit );
       if ( QgsPointLocator *loc = locatorForLayerUsingStrategy( layerConfig.layer, pointMap, tolerance ) )

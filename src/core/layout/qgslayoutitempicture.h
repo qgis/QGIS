@@ -25,6 +25,7 @@ email                : nyall dot dawson at gmail dot com
 
 class QgsLayoutItemMap;
 class QgsExpression;
+class QgsLayoutNorthArrowHandler;
 
 /**
  * \ingroup core
@@ -134,7 +135,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * \see setNorthMode()
      * \see northOffset()
      */
-    NorthMode northMode() const { return mNorthMode; }
+    NorthMode northMode() const;
 
     /**
      * Sets the \a mode used to align the picture to a map's North.
@@ -148,7 +149,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * \see setNorthOffset()
      * \see northMode()
      */
-    double northOffset() const { return mNorthOffset; }
+    double northOffset() const;
 
     /**
      * Sets the \a offset added to the picture's rotation from a map's North.
@@ -324,13 +325,6 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     double mPictureRotation = 0;
 
     QString mRotationMapUuid;
-    //! Map that sets the rotation (or NULLPTR if this picture uses map independent rotation)
-    QPointer< QgsLayoutItemMap > mRotationMap;
-
-    //! Mode used to align to North
-    NorthMode mNorthMode = GridNorth;
-    //! Offset for north arrow
-    double mNorthOffset = 0.0;
 
     //! Width of the picture (in mm)
     double mPictureWidth = 0.0;
@@ -349,6 +343,8 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     bool mLoadingSvg = false;
     bool mIsMissingImage = false;
     QString mEvaluatedPath;
+
+    QgsLayoutNorthArrowHandler *mNorthArrowHandler = nullptr;
 
     //! Loads an image file into the picture item and redraws the item
     void loadPicture( const QVariant &data );
@@ -371,11 +367,9 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
 
     void loadPictureUsingCache( const QString &path );
 
-    void disconnectMap( QgsLayoutItemMap *map );
-
   private slots:
 
-    void updateMapRotation();
+    void updateNorthArrowRotation( double rotation );
 
     void shapeChanged();
 

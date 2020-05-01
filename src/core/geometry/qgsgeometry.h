@@ -1568,13 +1568,41 @@ class CORE_EXPORT QgsGeometry
     virtual json asJsonObject( int precision = 17 ) const SIP_SKIP;
 
     /**
+     * Attempts to coerce this geometry into the specified destination \a type.
+     *
+     * This method will do anything possible to force the current geometry into the specified type. E.g.
+     * - lines or polygons will be converted to points by return either a single multipoint geometry or multiple
+     * single point geometries.
+     * - polygons will be converted to lines by extracting their exterior and interior rings, returning
+     * either a multilinestring or multiple single line strings as dictated by \a type.
+     * - lines will be converted to polygon rings if \a type is a polygon type
+     * - curved geometries will be segmented if \a type is non-curved.
+     * - multi geometries will be converted to a list of single geometries
+     * - single geometries will be upgraded to multi geometries
+     * - z or m values will be added or dropped as required.
+     *
+     * \note This method is much stricter than convertToType(), as it considers the exact WKB type
+     * of geometries instead of the geometry family (point/line/polygon), and tries more exhaustively
+     * to coerce geometries to the desired \a type. It also correctly maintains curves and z/m values
+     * wherever appropriate.
+     *
+     * \since QGIS 3.14
+     */
+    QVector< QgsGeometry > coerceToType( QgsWkbTypes::Type type ) const;
+
+    /**
      * Try to convert the geometry to the requested type
      * \param destType the geometry type to be converted to
      * \param destMultipart determines if the output geometry will be multipart or not
      * \returns the converted geometry or NULLPTR if the conversion fails.
+     *
+     * \note The coerceToType() method applies much stricter and more exhaustive attempts to convert
+     * between geometry types, and is recommended instead of this method. This method force drops
+     * curves and any z or m values present in the geometry.
+     *
      * \since QGIS 2.2
      */
-    QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const SIP_FACTORY;
+    QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const;
 
     /* Accessor functions for getting geometry data */
 

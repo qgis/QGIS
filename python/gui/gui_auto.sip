@@ -54,6 +54,7 @@
 %Include auto_generated/qgscredentialdialog.sip
 %Include auto_generated/qgscurveeditorwidget.sip
 %Include auto_generated/qgscustomdrophandler.sip
+%Include auto_generated/qgscustomprojectopenhandler.sip
 %Include auto_generated/qgsdatabaseschemacombobox.sip
 %Include auto_generated/qgsdatabasetablecombobox.sip
 %Include auto_generated/qgsdataitemguiprovider.sip
@@ -73,15 +74,19 @@
 %Include auto_generated/qgsexpressionbuilderwidget.sip
 %Include auto_generated/qgsexpressionhighlighter.sip
 %Include auto_generated/qgsexpressionlineedit.sip
+%Include auto_generated/qgsexpressionpreviewwidget.sip
 %Include auto_generated/qgsexpressionselectiondialog.sip
 %Include auto_generated/qgsexpressiontreeview.sip
 %Include auto_generated/qgsextentgroupbox.sip
 %Include auto_generated/qgsextentwidget.sip
 %Include auto_generated/qgsexternalresourcewidget.sip
+%Include auto_generated/qgsfeaturepickerwidget.sip
 %Include auto_generated/qgsfeaturelistcombobox.sip
 %Include auto_generated/qgsfeatureselectiondlg.sip
 %Include auto_generated/qgsfieldcombobox.sip
 %Include auto_generated/qgsfieldexpressionwidget.sip
+%Include auto_generated/qgsfieldmappingwidget.sip
+%Include auto_generated/qgsfieldmappingmodel.sip
 %Include auto_generated/qgsfieldvalidator.sip
 %Include auto_generated/qgsfieldvalueslineedit.sip
 %Include auto_generated/qgsfilecontentsourcelineedit.sip
@@ -105,6 +110,8 @@
 %Include auto_generated/qgsidentifymenu.sip
 %Include auto_generated/qgskeyvaluewidget.sip
 %Include auto_generated/qgslegendfilterbutton.sip
+%Include auto_generated/qgslegendpatchshapebutton.sip
+%Include auto_generated/qgslegendpatchshapewidget.sip
 %Include auto_generated/qgslimitedrandomcolorrampdialog.sip
 %Include auto_generated/qgslistwidget.sip
 %Include auto_generated/qgslonglongvalidator.sip
@@ -332,6 +339,7 @@
 %Include auto_generated/raster/qgsmultibandcolorrendererwidget.sip
 %Include auto_generated/raster/qgspalettedrendererwidget.sip
 %Include auto_generated/raster/qgsrasterbandcombobox.sip
+%Include auto_generated/raster/qgsrastercontourrendererwidget.sip
 %Include auto_generated/raster/qgsrasterhistogramwidget.sip
 %Include auto_generated/raster/qgsrasterminmaxwidget.sip
 %Include auto_generated/raster/qgsrasterrendererwidget.sip

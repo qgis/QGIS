@@ -21,6 +21,7 @@
 #include "qgslayertreeview.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
+#include "qgsmeshlayer.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
 
@@ -96,7 +97,9 @@ void QgsLayerTreeViewIndicatorProvider::onLayerLoaded()
   if ( !layerNode )
     return;
 
-  if ( !( qobject_cast<QgsVectorLayer *>( layerNode->layer() ) || qobject_cast<QgsRasterLayer *>( layerNode->layer() ) ) )
+  if ( !( qobject_cast<QgsVectorLayer *>( layerNode->layer() ) ||
+          qobject_cast<QgsRasterLayer *>( layerNode->layer() ) ||
+          qobject_cast<QgsMeshLayer *>( layerNode->layer() ) ) )
     return;
 
   if ( QgsMapLayer *mapLayer = layerNode->layer() )

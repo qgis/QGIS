@@ -18,6 +18,7 @@
 #include "qgstaskmanager.h"
 #include "qgsproject.h"
 #include "qgsmaplayerlistutils.h"
+#include <mutex>
 #include <QtConcurrentRun>
 
 
@@ -390,8 +391,7 @@ QgsTaskManager::QgsTaskManager( QObject *parent )
   : QObject( parent )
   , mTaskMutex( new QMutex( QMutex::Recursive ) )
 {
-  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QList< QgsMapLayer * >& ) > ( &QgsProject::layersWillBeRemoved ),
-           this, &QgsTaskManager::layersWillBeRemoved );
+
 }
 
 QgsTaskManager::~QgsTaskManager()
@@ -431,6 +431,15 @@ long QgsTaskManager::addTaskPrivate( QgsTask *task, QgsTaskList dependencies, bo
 {
   if ( !task )
     return 0;
+
+  if ( !mInitialized )
+  {
+    mInitialized = true;
+    // defer connection to project until we actually need it -- we don't want to connect to the project instance in the constructor,
+    // cos that forces early creation of QgsProject
+    connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QList< QgsMapLayer * >& ) > ( &QgsProject::layersWillBeRemoved ),
+             this, &QgsTaskManager::layersWillBeRemoved );
+  }
 
   long taskId = mNextTaskId++;
 

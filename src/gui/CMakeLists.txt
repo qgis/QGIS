@@ -3,6 +3,7 @@ SET(QGIS_GUI_SRCS
   raster/qgsmultibandcolorrendererwidget.cpp
   raster/qgspalettedrendererwidget.cpp
   raster/qgsrasterbandcombobox.cpp
+  raster/qgsrastercontourrendererwidget.cpp
   raster/qgsrasterhistogramwidget.cpp
   raster/qgsrasterlayerproperties.cpp
   raster/qgsrasterlayertemporalpropertieswidget.cpp
@@ -222,6 +223,7 @@ SET(QGIS_GUI_SRCS
   layout/qgslayoutmanualtablewidget.cpp
   layout/qgslayoutmapgridwidget.cpp
   layout/qgslayoutmapwidget.cpp
+  layout/qgslayoutmarkerwidget.cpp
   layout/qgslayoutmousehandles.cpp
   layout/qgslayoutnewitempropertiesdialog.cpp
   layout/qgslayoutpagepropertieswidget.cpp
@@ -290,6 +292,8 @@ SET(QGIS_GUI_SRCS
   processing/models/qgsmodelgraphicitem.cpp
   processing/models/qgsmodelgraphicsscene.cpp
   processing/models/qgsmodelgraphicsview.cpp
+  processing/models/qgsmodelgroupboxdefinitionwidget.cpp
+  processing/models/qgsmodelinputreorderwidget.cpp
   processing/models/qgsmodelsnapper.cpp
   processing/models/qgsmodelundocommand.cpp
   processing/models/qgsmodelviewmouseevent.cpp
@@ -317,6 +321,12 @@ SET(QGIS_GUI_SRCS
   tableeditor/qgstableeditordialog.cpp
   tableeditor/qgstableeditorformattingwidget.cpp
   tableeditor/qgstableeditorwidget.cpp
+
+  vectortile/qgsvectortilebasicrendererwidget.cpp
+  vectortile/qgsvectortileconnectiondialog.cpp
+  vectortile/qgsvectortiledataitemguiprovider.cpp
+  vectortile/qgsvectortileproviderguimetadata.cpp
+  vectortile/qgsvectortilesourceselect.cpp
 
   qgisinterface.cpp
   qgsactionmenu.cpp
@@ -363,6 +373,7 @@ SET(QGIS_GUI_SRCS
   qgscoordinateoperationwidget.cpp
   qgscredentialdialog.cpp
   qgscustomdrophandler.cpp
+  qgscustomprojectopenhandler.cpp
   qgscurveeditorwidget.cpp
   qgsdatabaseschemacombobox.cpp
   qgsdatabasetablecombobox.cpp
@@ -370,7 +381,6 @@ SET(QGIS_GUI_SRCS
   qgsdataitemguiproviderregistry.cpp
   qgsdatumtransformdialog.cpp
   qgsdatasourceselectdialog.cpp
-  qgsnewdatabasetablenamewidget.cpp
   qgsdetaileditemdata.cpp
   qgsdetaileditemdelegate.cpp
   qgsdetaileditemwidget.cpp
@@ -383,6 +393,7 @@ SET(QGIS_GUI_SRCS
   qgsexpressionbuilderwidget.cpp
   qgsexpressionhighlighter.cpp
   qgsexpressionlineedit.cpp
+  qgsexpressionpreviewwidget.cpp
   qgsexpressionselectiondialog.cpp
   qgsexpressionstoredialog.cpp
   qgsexpressiontreeview.cpp
@@ -392,6 +403,9 @@ SET(QGIS_GUI_SRCS
   qgsfeatureselectiondlg.cpp
   qgsfieldcombobox.cpp
   qgsfieldexpressionwidget.cpp
+  qgsfeaturepickerwidget.cpp
+  qgsfieldmappingwidget.cpp
+  qgsfieldmappingmodel.cpp
   qgsfeaturelistcombobox.cpp
   qgsfieldvalidator.cpp
   qgsfieldvalueslineedit.cpp
@@ -420,6 +434,8 @@ SET(QGIS_GUI_SRCS
   qgskeyvaluewidget.cpp
   qgslistwidget.cpp
   qgslegendfilterbutton.cpp
+  qgslegendpatchshapebutton.cpp
+  qgslegendpatchshapewidget.cpp
   qgslimitedrandomcolorrampdialog.cpp
   qgsratiolockbutton.cpp
   qgsludialog.cpp
@@ -461,6 +477,7 @@ SET(QGIS_GUI_SRCS
   qgsmasksourceselectionwidget.cpp
   qgsnewauxiliarylayerdialog.cpp
   qgsnewauxiliaryfielddialog.cpp
+  qgsnewdatabasetablenamewidget.cpp
   qgsnewhttpconnection.cpp
   qgsnewmemorylayerdialog.cpp
   qgsnewnamedialog.cpp
@@ -583,6 +600,7 @@ SET(QGIS_GUI_HDRS
   qgscredentialdialog.h
   qgscurveeditorwidget.h
   qgscustomdrophandler.h
+  qgscustomprojectopenhandler.h
   qgsdatabaseschemacombobox.h
   qgsdatabasetablecombobox.h
   qgsdataitemguiprovider.h
@@ -604,15 +622,19 @@ SET(QGIS_GUI_HDRS
   qgsexpressionbuilderwidget.h
   qgsexpressionhighlighter.h
   qgsexpressionlineedit.h
+  qgsexpressionpreviewwidget.h
   qgsexpressionselectiondialog.h
   qgsexpressiontreeview.h
   qgsextentgroupbox.h
   qgsextentwidget.h
   qgsexternalresourcewidget.h
+  qgsfeaturepickerwidget.h
   qgsfeaturelistcombobox.h
   qgsfeatureselectiondlg.h
   qgsfieldcombobox.h
   qgsfieldexpressionwidget.h
+  qgsfieldmappingwidget.h
+  qgsfieldmappingmodel.h
   qgsfieldvalidator.h
   qgsfieldvalueslineedit.h
   qgsfilecontentsourcelineedit.h
@@ -640,6 +662,8 @@ SET(QGIS_GUI_HDRS
   qgsinstallgridshiftdialog.h
   qgskeyvaluewidget.h
   qgslegendfilterbutton.h
+  qgslegendpatchshapebutton.h
+  qgslegendpatchshapewidget.h
   qgslimitedrandomcolorrampdialog.h
   qgslistwidget.h
   qgslonglongvalidator.h
@@ -915,6 +939,7 @@ SET(QGIS_GUI_HDRS
   layout/qgslayoutmanualtablewidget.h
   layout/qgslayoutmapgridwidget.h
   layout/qgslayoutmapwidget.h
+  layout/qgslayoutmarkerwidget.h
   layout/qgslayoutmousehandles.h
   layout/qgslayoutnewitempropertiesdialog.h
   layout/qgslayoutpagepropertieswidget.h
@@ -983,6 +1008,8 @@ SET(QGIS_GUI_HDRS
   processing/models/qgsmodelgraphicitem.h
   processing/models/qgsmodelgraphicsscene.h
   processing/models/qgsmodelgraphicsview.h
+  processing/models/qgsmodelgroupboxdefinitionwidget.h
+  processing/models/qgsmodelinputreorderwidget.h
   processing/models/qgsmodelsnapper.h
   processing/models/qgsmodelundocommand.h
   processing/models/qgsmodelviewmouseevent.h
@@ -1011,6 +1038,7 @@ SET(QGIS_GUI_HDRS
   raster/qgsmultibandcolorrendererwidget.h
   raster/qgspalettedrendererwidget.h
   raster/qgsrasterbandcombobox.h
+  raster/qgsrastercontourrendererwidget.h
   raster/qgsrasterhistogramwidget.h
   raster/qgsrasterminmaxwidget.h
   raster/qgsrasterrendererwidget.h
@@ -1074,6 +1102,12 @@ SET(QGIS_GUI_HDRS
   tableeditor/qgstableeditordialog.h
   tableeditor/qgstableeditorformattingwidget.h
   tableeditor/qgstableeditorwidget.h
+
+  vectortile/qgsvectortilebasicrendererwidget.h
+  vectortile/qgsvectortileconnectiondialog.h
+  vectortile/qgsvectortiledataitemguiprovider.h
+  vectortile/qgsvectortileproviderguimetadata.h
+  vectortile/qgsvectortilesourceselect.h
 
   qgsbrowserdockwidget_p.h
 )
@@ -1190,6 +1224,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/gui/vector
+  ${CMAKE_SOURCE_DIR}/src/gui/vectortile
   ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
@@ -1218,6 +1253,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/validity
+  ${CMAKE_SOURCE_DIR}/src/core/vectortile
   ${CMAKE_SOURCE_DIR}/src/native
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
@@ -1237,6 +1273,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${SQLITE3_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
   ${SPATIALINDEX_INCLUDE_DIR}
+  ${Protobuf_INCLUDE_DIRS}
 )
 
 # disable deprecation warnings for classes re-exporting deprecated methods

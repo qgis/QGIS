@@ -159,7 +159,7 @@ Returns the number of link points associated with the component on the specified
 Returns the text to use for the link point with the specified ``index`` on the specified ``edge``.
 %End
 
-    QPointF linkPoint( Qt::Edge edge, int index ) const;
+    QPointF linkPoint( Qt::Edge edge, int index, bool incoming ) const;
 %Docstring
 Returns the location of the link point with the specified ``index`` on the specified ``edge``.
 %End
@@ -278,6 +278,11 @@ Returns the label text color for the item for the specified ``state``.
 Returns the stroke style to use while rendering the outline of the item.
 %End
 
+    virtual Qt::Alignment titleAlignment() const;
+%Docstring
+Returns the title alignment
+%End
+
     virtual QPicture iconPicture() const;
 %Docstring
 Returns a QPicture version of the item's icon, if available.
@@ -388,6 +393,16 @@ Ownership of ``child`` is transferred to the item.
 
     virtual bool canDeleteComponent();
 
+
+    void setResults( const QVariantMap &results );
+%Docstring
+Sets the results obtained for this child algorithm for the last model execution through the dialog.
+%End
+
+    void setInputs( const QVariantMap &inputs );
+%Docstring
+Sets the inputs used for this child algorithm for the last model execution through the dialog.
+%End
 
   protected:
 
@@ -505,6 +520,12 @@ Ownership of ``output`` is transferred to the item.
 
     virtual bool canDeleteComponent();
 
+
+    QgsModelComponentGraphicItem *parentComponentItem() const;
+%Docstring
+Returns the parent model component item.
+%End
+
   protected:
 
     virtual QColor fillColor( State state ) const;
@@ -525,6 +546,64 @@ Ownership of ``output`` is transferred to the item.
     virtual void editComponent();
 
 };
+
+
+class QgsModelGroupBoxGraphicItem : QgsModelComponentGraphicItem
+{
+%Docstring
+A graphic item representing a group box in the model designer.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodelcomponentgraphicitem.h"
+%End
+  public:
+
+    QgsModelGroupBoxGraphicItem( QgsProcessingModelGroupBox *box /Transfer/,
+                                 QgsProcessingModelAlgorithm *model,
+                                 QGraphicsItem *parent /TransferThis/ );
+%Docstring
+Constructor for QgsModelGroupBoxGraphicItem for the specified group ``box``, with the specified ``parent`` item.
+
+The ``model`` argument specifies the associated processing model. Ownership of ``model`` is not transferred, and
+it must exist for the lifetime of this object.
+
+Ownership of ``output`` is transferred to the item.
+%End
+    ~QgsModelGroupBoxGraphicItem();
+    virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
+
+    virtual bool canDeleteComponent();
+
+  protected:
+
+    virtual QColor fillColor( State state ) const;
+
+    virtual QColor strokeColor( State state ) const;
+
+    virtual QColor textColor( State state ) const;
+
+    virtual Qt::PenStyle strokeStyle( State state ) const;
+
+    virtual Qt::Alignment titleAlignment() const;
+
+    virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size );
+
+
+  protected slots:
+
+    virtual void deleteComponent();
+
+    virtual void editComponent();
+
+};
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

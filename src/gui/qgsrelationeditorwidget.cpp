@@ -376,6 +376,11 @@ void QgsRelationEditorWidget::setEditorContext( const QgsAttributeEditorContext 
   }
 }
 
+QgsAttributeEditorContext QgsRelationEditorWidget::editorContext() const
+{
+  return mEditorContext;
+}
+
 QgsIFeatureSelectionManager *QgsRelationEditorWidget::featureSelectionManager()
 {
   return mFeatureSelectionMgr;

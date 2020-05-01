@@ -138,6 +138,16 @@ class CORE_EXPORT QgsMeshLayerUtils
     );
 
     /**
+    * Interpolates value based on known values on the vertices of a edge
+    * \returns value on the point pt a or NaN
+    *
+    * \since QGIS 3.14
+    */
+    static QgsMeshDatasetValue interpolateFromVerticesData( double fraction,
+        const QgsMeshDatasetValue &val1, const QgsMeshDatasetValue &val2
+                                                          );
+
+    /**
     * Interpolates value based on known values on the vertices of a triangle
     * \param p1 first vertex of the triangle
     * \param p2 second vertex of the triangle
@@ -251,17 +261,14 @@ class CORE_EXPORT QgsMeshLayerUtils
     static QgsRectangle triangleBoundingBox( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 );
 
     /**
-     * Formats hours in human readable string based on settings
+     * Formats hours in human readable string based on settings and reference time
+     * If reference time is invalid, return relative time
+     * \param hours time in hours from reference time
+     * \param referenceTime the reference time
+     * \param settings the time settings
+     * \return the formatted time
      */
-    static QString formatTime( double hours, const QgsMeshTimeSettings &settings );
-
-    /**
-      * Searches and returns the first valid reference time in layer's dataset group
-      * \param meshLayer mesh layer to parse
-      *
-      * \since QGIS 3.12
-      */
-    static QDateTime firstReferenceTime( QgsMeshLayer *meshLayer );
+    static QString formatTime( double hours, const QDateTime &referenceTime, const QgsMeshTimeSettings &settings );
 
     /**
      * Calculates the normals on the vertices using vertical magnitudes instead Z value of vertices
@@ -275,8 +282,6 @@ class CORE_EXPORT QgsMeshLayerUtils
       const QgsTriangularMesh &triangularMesh,
       const QVector<double> &verticalMagnitude,
       bool isRelative );
-
-
 };
 
 ///@endcond

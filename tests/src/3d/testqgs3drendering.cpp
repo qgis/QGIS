@@ -128,11 +128,10 @@ void TestQgs3DRendering::initTestCase()
   mLayerMeshDataset->dataProvider()->addDataset( dataDir + "/mesh/quad_and_triangle_vertex_vector.dat" );
   QVERIFY( mLayerMeshDataset->isValid() );
   mLayerMeshDataset->setCrs( mLayerDtm->crs() ); // this testing mesh does not have any CRS defined originally
-  // disable rendering of scalar 2d datasets for now
-  QgsMeshRendererSettings settings = mLayerMeshDataset->rendererSettings();
-  settings.setActiveScalarDataset( QgsMeshDatasetIndex( 0, 0 ) );
-  settings.setActiveVectorDataset( QgsMeshDatasetIndex( 2, 0 ) );
-  mLayerMeshDataset->setRendererSettings( settings );
+  mLayerMeshDataset->temporalProperties()->setIsActive( false );
+  mLayerMeshDataset->setStaticScalarDatasetIndex( QgsMeshDatasetIndex( 0, 0 ) );
+  mLayerMeshDataset->setStaticVectorDatasetIndex( QgsMeshDatasetIndex( 2, 0 ) );
+  mProject->addMapLayer( mLayerMeshDataset );
   mProject->addMapLayer( mLayerMeshDataset );
 
   QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;

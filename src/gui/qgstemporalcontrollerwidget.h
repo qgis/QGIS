@@ -68,6 +68,8 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
 
     int mBlockSettingUpdates = 0;
 
+    bool mHasTemporalLayersLoaded = false;
+
   private slots:
 
     /**
@@ -107,6 +109,9 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
     void updateFrameDuration();
 
     void setWidgetStateFromProject();
+
+    void onLayersAdded();
+    void onProjectCleared();
 };
 
 #endif // QGSTEMPORALCONTROLLERWIDGET_H

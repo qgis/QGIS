@@ -23,9 +23,14 @@
 #include "qgsfileutils.h"
 #include "qgsdatasourceuri.h"
 #include "qgsencodingfiledialog.h"
+#include "qgsdatasourceselectdialog.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgsfieldmappingwidget.h"
 #include <QMenu>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QCheckBox>
 
 ///@cond NOT_STABLE
 
@@ -77,6 +82,7 @@ bool QgsProcessingLayerOutputDestinationWidget::outputIsSkipped() const
 void QgsProcessingLayerOutputDestinationWidget::setValue( const QVariant &value )
 {
   const bool prevSkip = outputIsSkipped();
+  mUseRemapping = false;
   if ( !value.isValid() || ( value.type() == QVariant::String && value.toString().isEmpty() ) )
   {
     if ( mParameter->flags() & QgsProcessingParameterDefinition::FlagOptional )
@@ -107,6 +113,8 @@ void QgsProcessingLayerOutputDestinationWidget::setValue( const QVariant &value 
         if ( prev != QgsProcessingLayerOutputDestinationWidget::value() )
           emit destinationChanged();
       }
+      mUseRemapping = def.useRemapping();
+      mRemapDefinition = def.remappingDefinition();
       mEncoding = def.createOptions.value( QStringLiteral( "fileEncoding" ) ).toString();
     }
     else
@@ -178,12 +186,44 @@ QVariant QgsProcessingLayerOutputDestinationWidget::value() const
 
   QgsProcessingOutputLayerDefinition value( key );
   value.createOptions.insert( QStringLiteral( "fileEncoding" ), mEncoding );
+  if ( mUseRemapping )
+    value.setRemappingDefinition( mRemapDefinition );
   return value;
 }
 
 void QgsProcessingLayerOutputDestinationWidget::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
 {
   mBrowserModel = context.browserModel();
+}
+
+void QgsProcessingLayerOutputDestinationWidget::setContext( QgsProcessingContext *context )
+{
+  mContext = context;
+}
+
+void QgsProcessingLayerOutputDestinationWidget::registerProcessingParametersGenerator( QgsProcessingParametersGenerator *generator )
+{
+  mParametersGenerator = generator;
+}
+
+void QgsProcessingLayerOutputDestinationWidget::addOpenAfterRunningOption()
+{
+  mOpenAfterRunningCheck = new QCheckBox( tr( "Open output file after running algorithm" ) );
+  mOpenAfterRunningCheck->setChecked( !outputIsSkipped() );
+  mOpenAfterRunningCheck->setEnabled( !outputIsSkipped() );
+  gridLayout->addWidget( mOpenAfterRunningCheck, 1, 0, 1, 2 );
+
+  connect( this, &QgsProcessingLayerOutputDestinationWidget::skipOutputChanged, this, [ = ]( bool skipped )
+  {
+    bool enabled = !skipped;
+    mOpenAfterRunningCheck->setEnabled( enabled );
+    mOpenAfterRunningCheck->setChecked( enabled );
+  } );
+}
+
+bool QgsProcessingLayerOutputDestinationWidget::openAfterRunning() const
+{
+  return mOpenAfterRunningCheck && mOpenAfterRunningCheck->isChecked();
 }
 
 void QgsProcessingLayerOutputDestinationWidget::menuAboutToShow()
@@ -240,10 +280,28 @@ void QgsProcessingLayerOutputDestinationWidget::menuAboutToShow()
     QAction *actionSaveToDatabase = new QAction( tr( "Save to Database Table…" ), this );
     connect( actionSaveToDatabase, &QAction::triggered, this, &QgsProcessingLayerOutputDestinationWidget::saveToDatabase );
     mMenu->addAction( actionSaveToDatabase );
+
+    if ( mParameter->algorithm() && dynamic_cast< const QgsProcessingParameterFeatureSink * >( mParameter )->supportsAppend() )
+    {
+      mMenu->addSeparator();
+      QAction *actionAppendToLayer = new QAction( tr( "Append to Layer…" ), this );
+      connect( actionAppendToLayer, &QAction::triggered, this, &QgsProcessingLayerOutputDestinationWidget::appendToLayer );
+      mMenu->addAction( actionAppendToLayer );
+      if ( mUseRemapping )
+      {
+        QAction *editMappingAction = new QAction( tr( "Edit Field Mapping…" ), this );
+        connect( editMappingAction, &QAction::triggered, this, [ = ]
+        {
+          setAppendDestination( value().value< QgsProcessingOutputLayerDefinition >().sink.staticValue().toString(), mRemapDefinition.destinationFields() );
+        } );
+        mMenu->addAction( editMappingAction );
+      }
+    }
   }
 
   if ( mParameter->type() == QgsProcessingParameterFeatureSink::typeName() )
   {
+    mMenu->addSeparator();
     QAction *actionSetEncoding = new QAction( tr( "Change File Encoding (%1)…" ).arg( mEncoding ), this );
     connect( actionSetEncoding, &QAction::triggered, this, &QgsProcessingLayerOutputDestinationWidget::selectEncoding );
     mMenu->addAction( actionSetEncoding );
@@ -255,6 +313,7 @@ void QgsProcessingLayerOutputDestinationWidget::skipOutput()
   leText->setPlaceholderText( tr( "[Skip output]" ) );
   leText->clear();
   mUseTemporary = false;
+  mUseRemapping = false;
 
   emit skipOutputChanged( true );
   emit destinationChanged();
@@ -282,6 +341,7 @@ void QgsProcessingLayerOutputDestinationWidget::saveToTemporary()
     return;
 
   mUseTemporary = true;
+  mUseRemapping = false;
   if ( prevSkip )
     emit skipOutputChanged( false );
   emit destinationChanged();
@@ -300,6 +360,7 @@ void QgsProcessingLayerOutputDestinationWidget::selectDirectory()
     leText->setText( QDir::toNativeSeparators( dirName ) );
     settings.setValue( QStringLiteral( "/Processing/LastOutputPath" ), dirName );
     mUseTemporary = false;
+    mUseRemapping = false;
     emit skipOutputChanged( false );
     emit destinationChanged();
   }
@@ -346,6 +407,7 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
   if ( !filename.isEmpty() )
   {
     mUseTemporary = false;
+    mUseRemapping = false;
     filename = QgsFileUtils::addExtensionFromFilter( filename, lastFilter );
 
     leText->setText( filename );
@@ -375,6 +437,7 @@ void QgsProcessingLayerOutputDestinationWidget::saveToGeopackage()
     return;
 
   mUseTemporary = false;
+  mUseRemapping = false;
 
   filename = QgsFileUtils::ensureFileNameHasExtension( filename, QStringList() << QStringLiteral( "gpkg" ) );
 
@@ -415,6 +478,7 @@ void QgsProcessingLayerOutputDestinationWidget::saveToDatabase()
     auto changed = [ = ]
     {
       mUseTemporary = false;
+      mUseRemapping = false;
 
       QString geomColumn;
       if ( const QgsProcessingParameterFeatureSink *sink = dynamic_cast< const QgsProcessingParameterFeatureSink * >( mParameter ) )
@@ -454,6 +518,72 @@ void QgsProcessingLayerOutputDestinationWidget::saveToDatabase()
   }
 }
 
+void QgsProcessingLayerOutputDestinationWidget::appendToLayer()
+{
+  if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this ) )
+  {
+    QgsDataSourceSelectWidget *widget = new QgsDataSourceSelectWidget( mBrowserModel, true, QgsMapLayerType::VectorLayer );
+    widget->setPanelTitle( tr( "Append \"%1\" to Layer" ).arg( mParameter->description() ) );
+
+    panel->openPanel( widget );
+
+    connect( widget, &QgsDataSourceSelectWidget::itemTriggered, this, [ = ]( const QgsMimeDataUtils::Uri & )
+    {
+      widget->acceptPanel();
+    } );
+    connect( widget, &QgsPanelWidget::panelAccepted, this, [ = ]()
+    {
+      if ( widget->uri().uri.isEmpty() )
+        setValue( QVariant() );
+      else
+      {
+        // get fields for destination
+        std::unique_ptr< QgsVectorLayer > dest = qgis::make_unique< QgsVectorLayer >( widget->uri().uri, QString(), widget->uri().providerKey );
+        if ( widget->uri().providerKey == QLatin1String( "ogr" ) )
+          setAppendDestination( widget->uri().uri, dest->fields() );
+        else
+          setAppendDestination( QgsProcessingUtils::encodeProviderKeyAndUri( widget->uri().providerKey, widget->uri().uri ), dest->fields() );
+      }
+    } );
+  }
+}
+
+
+void QgsProcessingLayerOutputDestinationWidget::setAppendDestination( const QString &uri, const QgsFields &destFields )
+{
+  const QgsProcessingAlgorithm *alg = mParameter->algorithm();
+  QVariantMap props;
+  if ( mParametersGenerator )
+    props = mParametersGenerator->createProcessingParameters();
+  props.insert( mParameter->name(), uri );
+
+  const QgsProcessingAlgorithm::VectorProperties outputProps = alg->sinkProperties( mParameter->name(), props, *mContext, QMap<QString, QgsProcessingAlgorithm::VectorProperties >() );
+  if ( outputProps.availability == QgsProcessingAlgorithm::Available )
+  {
+    if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this ) )
+    {
+      // get mapping from fields output by algorithm to destination fields
+      QgsFieldMappingWidget *widget = new QgsFieldMappingWidget( nullptr, outputProps.fields, destFields );
+      widget->setPanelTitle( tr( "Append \"%1\" to Layer" ).arg( mParameter->description() ) );
+      if ( !mRemapDefinition.fieldMap().isEmpty() )
+        widget->setFieldPropertyMap( mRemapDefinition.fieldMap() );
+
+      panel->openPanel( widget );
+
+      connect( widget, &QgsPanelWidget::panelAccepted, this, [ = ]()
+      {
+        QgsProcessingOutputLayerDefinition def( uri );
+        QgsRemappingSinkDefinition remap;
+        remap.setSourceCrs( outputProps.crs );
+        remap.setFieldMap( widget->fieldPropertyMap() );
+        remap.setDestinationFields( destFields );
+        def.setRemappingDefinition( remap );
+        setValue( def );
+      } );
+    }
+  }
+}
+
 void QgsProcessingLayerOutputDestinationWidget::selectEncoding()
 {
   QgsEncodingSelectionDialog dialog( this, tr( "File encoding" ), mEncoding );
@@ -469,8 +599,10 @@ void QgsProcessingLayerOutputDestinationWidget::selectEncoding()
 void QgsProcessingLayerOutputDestinationWidget::textChanged( const QString &text )
 {
   mUseTemporary = text.isEmpty();
+  mUseRemapping = false;
   emit destinationChanged();
 }
+
 
 QString QgsProcessingLayerOutputDestinationWidget::mimeDataToPath( const QMimeData *data )
 {

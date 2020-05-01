@@ -1838,6 +1838,7 @@ corespond:correspond
 coresponded:corresponded
 corespondence:correspondence
 coresponding:corresponding
+correponsding:corresponding
 coresponds:corresponds
 coridal:cordial
 cornmitted:committed
@@ -4233,7 +4234,7 @@ kwno:know
 labatory:laboratory
 labelling:labeling
 lable:label
-labled:labeled
+labled:labeled:*
 lables:labels:*
 labour:labor
 labratory:laboratory
@@ -5767,6 +5768,7 @@ rebulid:rebuild
 rebuliding:rebuilding
 rebulids:rebuilds
 rebulit:rebuilt
+recangle:rectangle
 reccomend:recommend
 reccomendations:recommendations
 reccomended:recommended

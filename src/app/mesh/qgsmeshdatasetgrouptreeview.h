@@ -200,7 +200,7 @@ class APP_EXPORT QgsMeshDatasetGroupTreeView : public QTreeView
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
 };
 
-class QgsMeshDatasetGroupListModel: public QAbstractListModel
+class APP_EXPORT QgsMeshDatasetGroupListModel: public QAbstractListModel
 {
   public:
     explicit QgsMeshDatasetGroupListModel( QObject *parent ): QAbstractListModel( parent )

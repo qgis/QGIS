@@ -18,10 +18,12 @@
 ///@cond PRIVATE
 #include "qgsgdalprovider.h"
 #include "qgslogger.h"
+#include "qgsmbtiles.h"
 #include "qgssettings.h"
 #include "qgsogrutils.h"
 #include "qgsproject.h"
 #include "qgsgdalutils.h"
+#include "qgsvectortiledataitems.h"
 #include "symbology/qgsstyle.h"
 
 #include <QFileInfo>
@@ -59,7 +61,7 @@ bool QgsGdalLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
   if ( !hDS )
     return false;
 
-  QString wkt = crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 );
+  QString wkt = crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
   if ( GDALSetProjection( hDS.get(), wkt.toLocal8Bit().data() ) != CE_None )
   {
     QgsDebugMsg( QStringLiteral( "Could not set CRS" ) );
@@ -263,14 +265,30 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
 
   if ( suffix == QStringLiteral( "mbtiles" ) )
   {
-    // handled by WMS provider
-    QUrlQuery uq;
-    uq.addQueryItem( "type", "mbtiles" );
-    uq.addQueryItem( "url", QUrl::fromLocalFile( path ).toString() );
-    QString encodedUri = uq.toString();
-    QgsLayerItem *item = new QgsLayerItem( parentItem, name, path, encodedUri, QgsLayerItem::Raster, QStringLiteral( "wms" ) );
-    item->setState( QgsDataItem::Populated );
-    return item;
+    QgsMbTiles reader( path );
+    if ( reader.open() )
+    {
+      if ( reader.metadataValue( "format" ) == QStringLiteral( "pbf" ) )
+      {
+        // these are vector tiles
+        QUrlQuery uq;
+        uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
+        uq.addQueryItem( QStringLiteral( "url" ), path );
+        QString encodedUri = uq.toString();
+        return new QgsVectorTileLayerItem( parentItem, name, path, encodedUri );
+      }
+      else
+      {
+        // handled by WMS provider
+        QUrlQuery uq;
+        uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
+        uq.addQueryItem( QStringLiteral( "url" ), QUrl::fromLocalFile( path ).toString() );
+        QString encodedUri = uq.toString();
+        QgsLayerItem *item = new QgsLayerItem( parentItem, name, path, encodedUri, QgsLayerItem::Raster, QStringLiteral( "wms" ) );
+        item->setState( QgsDataItem::Populated );
+        return item;
+      }
+    }
   }
 
   // Filters out the OGR/GDAL supported formats that can contain multiple layers

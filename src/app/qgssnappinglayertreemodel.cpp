@@ -27,6 +27,7 @@
 #include "qgssnappingconfig.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
+#include "qgsscalewidget.h"
 
 QgsSnappingLayerDelegate::QgsSnappingLayerDelegate( QgsMapCanvas *canvas, QObject *parent )
   : QItemDelegate( parent )
@@ -100,6 +101,20 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
     return w;
   }
 
+  if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn )
+  {
+    QgsScaleWidget *minLimitSp = new QgsScaleWidget( parent );
+    minLimitSp->setToolTip( tr( "Minimum scale from which snapping is enabled (i.e. most \"zoomed out\" scale)" ) );
+    return minLimitSp;
+  }
+
+  if ( index.column() == QgsSnappingLayerTreeModel::MaxScaleColumn )
+  {
+    QgsScaleWidget *maxLimitSp = new QgsScaleWidget( parent );
+    maxLimitSp->setToolTip( tr( "Maximum scale up to which snapping is enabled (i.e. most \"zoomed in\" scale)" ) );
+    return maxLimitSp;
+  }
+
   return nullptr;
 }
 
@@ -139,6 +154,22 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex
     if ( w )
     {
       w->setCurrentIndex( w->findData( units ) );
+    }
+  }
+  else if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn )
+  {
+    QgsScaleWidget *w = qobject_cast<QgsScaleWidget *>( editor );
+    if ( w )
+    {
+      w->setScale( val.toDouble() );
+    }
+  }
+  else if ( index.column() == QgsSnappingLayerTreeModel::MaxScaleColumn )
+  {
+    QgsScaleWidget *w = qobject_cast<QgsScaleWidget *>( editor );
+    if ( w )
+    {
+      w->setScale( val.toDouble() );
     }
   }
 }
@@ -183,6 +214,22 @@ void QgsSnappingLayerDelegate::setModelData( QWidget *editor, QAbstractItemModel
       model->setData( index, w->value(), Qt::EditRole );
     }
   }
+  else if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn )
+  {
+    QgsScaleWidget *w = qobject_cast<QgsScaleWidget *>( editor );
+    if ( w )
+    {
+      model->setData( index, w->scale(), Qt::EditRole );
+    }
+  }
+  else if ( index.column() == QgsSnappingLayerTreeModel::MaxScaleColumn )
+  {
+    QgsScaleWidget *w = qobject_cast<QgsScaleWidget *>( editor );
+    if ( w )
+    {
+      model->setData( index, w->scale(), Qt::EditRole );
+    }
+  }
 }
 
 
@@ -200,7 +247,7 @@ QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject *project, QgsMa
 int QgsSnappingLayerTreeModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
-  return 5;
+  return 7;
 }
 
 Qt::ItemFlags QgsSnappingLayerTreeModel::flags( const QModelIndex &idx ) const
@@ -229,6 +276,13 @@ Qt::ItemFlags QgsSnappingLayerTreeModel::flags( const QModelIndex &idx ) const
         else
         {
           return Qt::NoItemFlags;
+        }
+      }
+      else if ( idx.column() == MaxScaleColumn || idx.column() == MinScaleColumn )
+      {
+        if ( mProject->snappingConfig().scaleDependencyMode() == QgsSnappingConfig::PerLayer )
+        {
+          return Qt::ItemIsEnabled | Qt::ItemIsEditable;
         }
       }
       else
@@ -400,6 +454,10 @@ QVariant QgsSnappingLayerTreeModel::headerData( int section, Qt::Orientation ori
           return tr( "Units" );
         case 4:
           return tr( "Avoid overlap" );
+        case 5:
+          return tr( "Min Scale" );
+        case 6:
+          return tr( "Max Scale" );
         default:
           return QVariant();
       }
@@ -579,6 +637,46 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
         }
       }
     }
+
+    if ( idx.column() == MinScaleColumn )
+    {
+      if ( role == Qt::DisplayRole )
+      {
+        if ( ls.minimumScale() <= 0.0 )
+        {
+          return QString( tr( "not set" ) );
+        }
+        else
+        {
+          return QString::number( ls.minimumScale() );
+        }
+      }
+
+      if ( role == Qt::UserRole )
+      {
+        return ls.minimumScale();
+      }
+    }
+
+    if ( idx.column() == MaxScaleColumn )
+    {
+      if ( role == Qt::DisplayRole )
+      {
+        if ( ls.maximumScale() <= 0.0 )
+        {
+          return QString( tr( "not set" ) );
+        }
+        else
+        {
+          return QString::number( ls.maximumScale() );
+        }
+      }
+
+      if ( role == Qt::UserRole )
+      {
+        return ls.maximumScale();
+      }
+    }
   }
 
   return QVariant();
@@ -707,6 +805,48 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
         avoidIntersectionsList.removeAll( vl );
 
       mProject->setAvoidIntersectionsLayers( avoidIntersectionsList );
+      emit dataChanged( index, index );
+      return true;
+    }
+  }
+
+  if ( index.column() == MinScaleColumn && role == Qt::EditRole )
+  {
+    QgsVectorLayer *vl = vectorLayer( index );
+    if ( vl )
+    {
+      if ( !mIndividualLayerSettings.contains( vl ) )
+        return false;
+
+      QgsSnappingConfig::IndividualLayerSettings ls = mIndividualLayerSettings.value( vl );
+      if ( !ls.valid() )
+        return false;
+
+      ls.setMinimumScale( value.toDouble() );
+      QgsSnappingConfig config = mProject->snappingConfig();
+      config.setIndividualLayerSettings( vl, ls );
+      mProject->setSnappingConfig( config );
+      emit dataChanged( index, index );
+      return true;
+    }
+  }
+
+  if ( index.column() == MaxScaleColumn && role == Qt::EditRole )
+  {
+    QgsVectorLayer *vl = vectorLayer( index );
+    if ( vl )
+    {
+      if ( !mIndividualLayerSettings.contains( vl ) )
+        return false;
+
+      QgsSnappingConfig::IndividualLayerSettings ls = mIndividualLayerSettings.value( vl );
+      if ( !ls.valid() )
+        return false;
+
+      ls.setMaximumScale( value.toDouble() );
+      QgsSnappingConfig config = mProject->snappingConfig();
+      config.setIndividualLayerSettings( vl, ls );
+      mProject->setSnappingConfig( config );
       emit dataChanged( index, index );
       return true;
     }

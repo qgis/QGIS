@@ -1514,6 +1514,9 @@ void QgsGpsInformationWidget::timestampFormatChanged( int )
 
 void QgsGpsInformationWidget::cursorCoordinateChanged( const QgsPointXY &point )
 {
+  if ( !mNmea )
+    return;
+
   try
   {
     mLastCursorPosWgs84 = mCanvasToWgs84Transform.transform( point );

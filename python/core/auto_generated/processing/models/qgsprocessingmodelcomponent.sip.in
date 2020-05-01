@@ -72,6 +72,27 @@ Sets the ``size`` of the model component within the graphical modeler.
 .. versionadded:: 3.14
 %End
 
+    QColor color() const;
+%Docstring
+Returns the color of the model component within the graphical modeler.
+
+An invalid color indicates that the default color for the component should be used.
+
+.. seealso:: :py:func:`setColor`
+
+.. versionadded:: 3.14
+%End
+
+    void setColor( const QColor &color );
+%Docstring
+Sets the ``color`` of the model component within the graphical modeler. An invalid ``color``
+indicates that the default color for the component should be used.
+
+.. seealso:: :py:func:`color`
+
+.. versionadded:: 3.14
+%End
+
     bool linksCollapsed( Qt::Edge edge ) const;
 %Docstring
 Returns ``True`` if the link points for the specified ``edge`` should be shown collapsed or not.

@@ -92,6 +92,7 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
 
     //! Dialog
     Qgs3DMeasureDialog *mDialog = nullptr;
+
 };
 
 #endif // QGS3DMAPTOOLMEASURELINE_H

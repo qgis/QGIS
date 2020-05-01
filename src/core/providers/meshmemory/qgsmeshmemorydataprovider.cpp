@@ -17,6 +17,7 @@
 ///@cond PRIVATE
 
 #include "qgsmeshmemorydataprovider.h"
+#include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsmeshlayerutils.h"
 #include "qgstriangularmesh.h"
 #include <cstring>
@@ -54,6 +55,8 @@ QgsMeshMemoryDataProvider::QgsMeshMemoryDataProvider( const QString &uri, const 
     data = uri.split( "&uid=" )[0];
   }
   mIsValid = splitMeshSections( data );
+
+  temporalCapabilities()->setTemporalUnit( QgsUnitTypes::TemporalHours );
 }
 
 QString QgsMeshMemoryDataProvider::providerKey()
@@ -341,6 +344,21 @@ bool QgsMeshMemoryDataProvider::checkVertexId( int vertexIndex )
   return true;
 }
 
+void QgsMeshMemoryDataProvider::addGroupToTemporalCapabilities( int groupIndex, const QgsMeshMemoryDatasetGroup &group )
+{
+  QgsMeshDataProviderTemporalCapabilities *tempCap = temporalCapabilities();
+  if ( !tempCap )
+    return;
+
+  if ( group.datasetCount() > 1 ) //non temporal dataset groups (count=1) have no time in the capabilities
+  {
+    for ( int i = 0; i < group.datasets.count(); ++i )
+      if ( group.datasets.at( i ) )
+        tempCap->addDatasetTime( groupIndex, group.datasets.at( i )->time );
+  }
+
+}
+
 int QgsMeshMemoryDataProvider::vertexCount() const
 {
   return mVertices.size();
@@ -388,10 +406,12 @@ bool QgsMeshMemoryDataProvider::addDataset( const QString &uri )
 
   calculateMinMaxForDatasetGroup( group );
   mDatasetGroups.push_back( group );
+  addGroupToTemporalCapabilities( mDatasetGroups.count() - 1, group );
 
   if ( valid )
   {
     mExtraDatasetUris << uri;
+    temporalCapabilities()->setHasTemporalCapabilities( true );
     emit datasetGroupsAdded( 1 );
     emit dataChanged();
   }
@@ -439,6 +459,7 @@ QgsMeshDatasetGroupMetadata QgsMeshMemoryDatasetGroup::groupMetadata() const
            maximum,
            0,
            QDateTime(),
+           datasetCount() > 1,
            metadata
          );
 }
@@ -590,13 +611,10 @@ QgsMeshDataBlock QgsMeshMemoryDataset::areFacesActive( int faceIndex, int count 
   return ret;
 }
 
-bool QgsMeshMemoryDataProvider::persistDatasetGroup( const QString &path,
-    const QgsMeshDatasetGroupMetadata &meta,
-    const QVector<QgsMeshDataBlock> &datasetValues,
-    const QVector<QgsMeshDataBlock> &datasetActive,
-    const QVector<double> &times )
+bool QgsMeshMemoryDataProvider::persistDatasetGroup( const QString &outputFilePath, const QString &outputDriver, const QgsMeshDatasetGroupMetadata &meta, const QVector<QgsMeshDataBlock> &datasetValues, const QVector<QgsMeshDataBlock> &datasetActive, const QVector<double> &times )
 {
-  Q_UNUSED( path )
+  Q_UNUSED( outputFilePath )
+  Q_UNUSED( outputDriver )
   Q_UNUSED( meta )
   Q_UNUSED( datasetValues )
   Q_UNUSED( datasetActive )

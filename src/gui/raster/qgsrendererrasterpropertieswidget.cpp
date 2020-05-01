@@ -18,6 +18,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsbrightnesscontrastfilter.h"
 #include "qgshuesaturationfilter.h"
+#include "qgsrastercontourrendererwidget.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrendererwidget.h"
 #include "qgsrasterrendererregistry.h"
@@ -47,6 +48,7 @@ static void _initRendererWidgetFunctions()
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "singlebandpseudocolor" ), QgsSingleBandPseudoColorRendererWidget::create );
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "singlebandgray" ), QgsSingleBandGrayRendererWidget::create );
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "hillshade" ), QgsHillshadeRendererWidget::create );
+  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "contour" ), QgsRasterContourRendererWidget::create );
 
   sInitialized = true;
 }

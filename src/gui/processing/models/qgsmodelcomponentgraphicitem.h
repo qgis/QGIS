@@ -33,6 +33,7 @@ class QgsModelDesignerFlatButtonGraphicItem;
 class QgsModelDesignerFoldButtonGraphicItem;
 class QgsModelGraphicsView;
 class QgsModelViewMouseEvent;
+class QgsProcessingModelGroupBox;
 
 ///@cond NOT_STABLE
 
@@ -208,7 +209,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     /**
      * Returns the location of the link point with the specified \a index on the specified \a edge.
      */
-    QPointF linkPoint( Qt::Edge edge, int index ) const;
+    QPointF linkPoint( Qt::Edge edge, int index, bool incoming ) const;
 
     /**
      * Returns the best link point to use for a link originating at a specified \a other item.
@@ -322,6 +323,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * Returns the stroke style to use while rendering the outline of the item.
      */
     virtual Qt::PenStyle strokeStyle( State state ) const;
+
+    /**
+     * Returns the title alignment
+     */
+    virtual Qt::Alignment titleAlignment() const;
 
     /**
      * Returns a QPicture version of the item's icon, if available.
@@ -452,6 +458,16 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
     bool canDeleteComponent() override;
 
+    /**
+     * Sets the results obtained for this child algorithm for the last model execution through the dialog.
+     */
+    void setResults( const QVariantMap &results );
+
+    /**
+     * Sets the inputs used for this child algorithm for the last model execution through the dialog.
+     */
+    void setInputs( const QVariantMap &inputs );
+
   protected:
 
     QColor fillColor( State state ) const override;
@@ -475,6 +491,9 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
   private:
     QPicture mPicture;
     QPixmap mPixmap;
+    QVariantMap mResults;
+    QVariantMap mInputs;
+    bool mIsValid = true;
 };
 
 
@@ -550,6 +569,12 @@ class GUI_EXPORT QgsModelCommentGraphicItem : public QgsModelComponentGraphicIte
     ~QgsModelCommentGraphicItem() override;
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
     bool canDeleteComponent() override;
+
+    /**
+     * Returns the parent model component item.
+     */
+    QgsModelComponentGraphicItem *parentComponentItem() const;
+
   protected:
 
     QColor fillColor( State state ) const override;
@@ -571,6 +596,52 @@ class GUI_EXPORT QgsModelCommentGraphicItem : public QgsModelComponentGraphicIte
 
 
 };
+
+
+/**
+ * \ingroup gui
+ * \brief A graphic item representing a group box in the model designer.
+ * \warning Not stable API
+ * \since QGIS 3.14
+ */
+class GUI_EXPORT QgsModelGroupBoxGraphicItem : public QgsModelComponentGraphicItem
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsModelGroupBoxGraphicItem for the specified group \a box, with the specified \a parent item.
+     *
+     * The \a model argument specifies the associated processing model. Ownership of \a model is not transferred, and
+     * it must exist for the lifetime of this object.
+     *
+     * Ownership of \a output is transferred to the item.
+     */
+    QgsModelGroupBoxGraphicItem( QgsProcessingModelGroupBox *box SIP_TRANSFER,
+                                 QgsProcessingModelAlgorithm *model,
+                                 QGraphicsItem *parent SIP_TRANSFERTHIS );
+    ~QgsModelGroupBoxGraphicItem() override;
+    void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
+    bool canDeleteComponent() override;
+  protected:
+
+    QColor fillColor( State state ) const override;
+    QColor strokeColor( State state ) const override;
+    QColor textColor( State state ) const override;
+    Qt::PenStyle strokeStyle( State state ) const override;
+    Qt::Alignment titleAlignment() const override;
+    void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) override;
+
+  protected slots:
+
+    void deleteComponent() override;
+    void editComponent() override;
+  private:
+
+
+};
+
 ///@endcond
 
 #endif // QGSMODELCOMPONENTGRAPHICITEM_H

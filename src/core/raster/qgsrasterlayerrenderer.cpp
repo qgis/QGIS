@@ -224,6 +224,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
 
   // copy the whole raster pipe!
   mPipe = new QgsRasterPipe( *layer->pipe() );
+  QObject::connect( mPipe->provider(), &QgsRasterDataProvider::statusChanged, layer, &QgsRasterLayer::statusChanged );
   QgsRasterRenderer *rasterRenderer = mPipe->renderer();
   if ( rasterRenderer && !( rendererContext.flags() & QgsRenderContext::RenderPreviewJob ) )
     layer->refreshRendererIfNeeded( rasterRenderer, rendererContext.extent() );
@@ -240,11 +241,15 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
         if ( mPipe->provider()->temporalCapabilities() )
         {
           mPipe->provider()->temporalCapabilities()->setRequestedTemporalRange( rendererContext.temporalRange() );
-          mPipe->provider()->temporalCapabilities()->setRequestedReferenceTemporalRange( layer->temporalProperties()->referenceTemporalRange() );
           mPipe->provider()->temporalCapabilities()->setIntervalHandlingMethod( layer->temporalProperties()->intervalHandlingMethod() );
         }
         break;
     }
+  }
+  else if ( mPipe->provider()->temporalCapabilities() )
+  {
+    mPipe->provider()->temporalCapabilities()->setRequestedTemporalRange( QgsDateTimeRange() );
+    mPipe->provider()->temporalCapabilities()->setIntervalHandlingMethod( layer->temporalProperties()->intervalHandlingMethod() );
   }
 }
 

@@ -432,7 +432,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
   if ( srs.isValid() )
   {
-    QString srsWkt = srs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 );
+    QString srsWkt = srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
     QgsDebugMsg( "WKT to save as is " + srsWkt );
     mOgrRef = OSRNewSpatialReference( srsWkt.toLocal8Bit().constData() );
 #if GDAL_VERSION_MAJOR >= 3

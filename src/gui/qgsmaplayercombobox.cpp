@@ -29,6 +29,8 @@ QgsMapLayerComboBox::QgsMapLayerComboBox( QWidget *parent )
   connect( mProxyModel, &QAbstractItemModel::rowsInserted, this, &QgsMapLayerComboBox::rowsChanged );
   connect( mProxyModel, &QAbstractItemModel::rowsRemoved, this, &QgsMapLayerComboBox::rowsChanged );
 
+  setSizeAdjustPolicy( QComboBox::AdjustToMinimumContentsLengthWithIcon );
+
   setAcceptDrops( true );
 }
 

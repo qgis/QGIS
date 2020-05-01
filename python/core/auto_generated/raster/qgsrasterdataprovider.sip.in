@@ -117,6 +117,13 @@ It makes no sense to set input on provider */
 Returns data type for the band specified by number
 %End
 
+    virtual QgsFields fields() const;
+%Docstring
+Returns the fields of the raster layer for data providers that expose them,
+the default implementation returns an empty list.
+
+.. versionadded:: 3.14
+%End
     virtual Qgis::DataType sourceDataType( int bandNo ) const = 0;
 
 %Docstring

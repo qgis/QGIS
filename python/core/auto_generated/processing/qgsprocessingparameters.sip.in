@@ -25,7 +25,7 @@ Encapsulates settings relating to a feature source input to a processing algorit
 %End
   public:
 
-    enum class Flag
+    enum Flag
     {
       FlagOverrideDefaultGeometryCheck,
       FlagCreateIndividualOutputPerInputFeature,
@@ -143,6 +143,39 @@ to automatically load the resulting sink/layer after completing processing.
 
     QVariantMap createOptions;
 
+    bool useRemapping() const;
+%Docstring
+Returns ``True`` if the output uses a remapping definition.
+
+.. seealso:: :py:func:`remappingDefinition`
+
+.. versionadded:: 3.14
+%End
+
+    QgsRemappingSinkDefinition remappingDefinition() const;
+%Docstring
+Returns the output remapping definition, if useRemapping() is ``True``.
+
+.. seealso:: :py:func:`useRemapping`
+
+.. seealso:: :py:func:`setRemappingDefinition`
+
+.. versionadded:: 3.14
+%End
+
+    void setRemappingDefinition( const QgsRemappingSinkDefinition &definition );
+%Docstring
+Sets the remapping ``definition`` to use when adding features to the output layer.
+
+Calling this method will set useRemapping() to ``True``.
+
+.. seealso:: :py:func:`remappingDefinition`
+
+.. seealso:: :py:func:`useRemapping`
+
+.. versionadded:: 3.14
+%End
+
     QVariant toVariant() const;
 %Docstring
 Saves this output layer definition to a QVariantMap, wrapped in a QVariant.
@@ -166,6 +199,7 @@ You can use QgsXmlUtils.readVariant to load it from an XML document.
     operator QVariant() const;
 
     bool operator==( const QgsProcessingOutputLayerDefinition &other ) const;
+    bool operator!=( const QgsProcessingOutputLayerDefinition &other ) const;
 
 };
 
@@ -911,7 +945,7 @@ a conversion in this case and will return the target layer name in the ``layerNa
 .. versionadded:: 3.10
 %End
 
-    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint = QgsProcessingUtils::LayerHint::UnknownType );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a map layer.
 
@@ -920,7 +954,7 @@ sources and stored temporarily in the ``context``. In either case, callers do no
 need to handle deletion of the returned layer.
 %End
 
-    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint = QgsProcessingUtils::LayerHint::UnknownType );
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a map layer.
 
@@ -2787,6 +2821,23 @@ value will be a file path or QGIS data provider URI suitable for
 temporary storage of created layers and files.
 %End
 
+    virtual bool isSupportedOutputValue( const QVariant &value, QgsProcessingContext &context, QString &error /Out/ ) const;
+%Docstring
+Tests whether a ``value`` is a supported value for this parameter.
+
+Will return ``False`` when a ``value`` with an unsupported file extension is specified. The default implementation
+calls QgsProcessingProvider.isSupportedOutputValue() to test compatibility.
+
+:param value: value to test
+:param context: Processing context
+
+:return: - ``True`` if ``value`` is supported.
+         - error: will be set to a descriptive error string
+
+
+.. versionadded:: 3.14
+%End
+
     bool createByDefault() const;
 %Docstring
 Returns ``True`` if the destination should be created by default. For optional parameters,
@@ -2835,7 +2886,7 @@ A parameter which represents the destination feature sink for features created b
   public:
 
     QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
-                                       bool optional = false, bool createByDefault = true );
+                                       bool optional = false, bool createByDefault = true, bool supportsAppend = false );
 %Docstring
 Constructor for QgsProcessingParameterFeatureSink.
 
@@ -2892,6 +2943,30 @@ cannot be reliably determined in advance, this method will default to returning 
 Sets the layer ``type`` for the sinks associated with the parameter.
 
 .. seealso:: :py:func:`dataType`
+%End
+
+    bool supportsAppend() const;
+%Docstring
+Returns ``True`` if the sink supports appending features to an existing table.
+
+A sink only supports appending if the algorithm implements QgsProcessingAlgorithm.sinkProperties for the sink parameter.
+
+.. seealso:: :py:func:`setSupportsAppend`
+
+.. versionadded:: 3.14
+%End
+
+    void setSupportsAppend( bool supportsAppend );
+%Docstring
+Sets whether the sink supports appending features to an existing table.
+
+.. warning::
+
+   A sink only supports appending if the algorithm implements QgsProcessingAlgorithm.sinkProperties for the sink parameter.
+
+.. seealso:: :py:func:`supportsAppend`
+
+.. versionadded:: 3.14
 %End
 
     virtual QVariantMap toVariantMap() const;

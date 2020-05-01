@@ -129,7 +129,6 @@ void QgsDataSourceManagerDialog::reset()
     if ( dataSourceWidget )
       dataSourceWidget->reset();
   }
-
 }
 
 void QgsDataSourceManagerDialog::rasterLayerAdded( const QString &uri, const QString &baseName, const QString &providerKey )
@@ -146,7 +145,6 @@ void QgsDataSourceManagerDialog::vectorLayersAdded( const QStringList &layerQStr
 {
   emit addVectorLayers( layerQStringList, enc, dataSourceType );
 }
-
 
 void QgsDataSourceManagerDialog::addProviderDialog( QgsAbstractDataSourceWidget *dlg, const QString &providerKey, const QString &providerName, const QIcon &icon, const QString &toolTip )
 {
@@ -187,7 +185,8 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
            this, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ) );
   // Mesh
   connect( dlg, &QgsAbstractDataSourceWidget::addMeshLayer, this, &QgsDataSourceManagerDialog::addMeshLayer );
-
+  // Vector tile
+  connect( dlg, &QgsAbstractDataSourceWidget::addVectorTileLayer, this, &QgsDataSourceManagerDialog::addVectorTileLayer );
   // Virtual
   connect( dlg, SIGNAL( replaceVectorLayer( QString, QString, QString, QString ) ),
            this, SIGNAL( replaceSelectedVectorLayer( QString, QString, QString, QString ) ) );
@@ -202,4 +201,3 @@ void QgsDataSourceManagerDialog::showEvent( QShowEvent *e )
   QgsOptionsDialogBase::showEvent( e );
   resizeAlltabs( ui->mOptionsStackedWidget->currentIndex() );
 }
-
