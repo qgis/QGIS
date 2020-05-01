@@ -558,6 +558,7 @@ class TestQgsExpression: public QObject
       // literal evaluation
       QTest::newRow( "literal null" ) << "NULL" << false << QVariant();
       QTest::newRow( "literal int" ) << "123" << false << QVariant( 123 );
+      QTest::newRow( "literal int64" ) << "1234567890123456789" << false << QVariant( qlonglong( 1234567890123456789 ) );
       QTest::newRow( "literal double" ) << "1.2" << false << QVariant( 1.2 );
       QTest::newRow( "literal text" ) << "'hello'" << false << QVariant( "hello" );
       QTest::newRow( "literal double" ) << ".000001" << false << QVariant( 0.000001 );
