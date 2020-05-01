@@ -298,14 +298,6 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
       break;
   }
 
-  if ( requiresTableReload )
-  {
-    mMasterModel->setRequest( r );
-    whileBlocking( mLayerCache )->setCacheGeometry( needsGeometry );
-    mMasterModel->loadLayer();
-  }
-
-
   // disable the browsing auto pan/scale if the list only shows visible items
   switch ( filterMode )
   {
@@ -323,6 +315,14 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
 
   //update filter model
   mFilterModel->setFilterMode( filterMode );
+
+  if ( requiresTableReload )
+  {
+    mMasterModel->setRequest( r );
+    whileBlocking( mLayerCache )->setCacheGeometry( needsGeometry );
+    mMasterModel->loadLayer();
+  }
+
   emit filterChanged();
 }
 
