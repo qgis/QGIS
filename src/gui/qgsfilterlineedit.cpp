@@ -220,7 +220,7 @@ void QgsFilterLineEdit::storeState()
   mLineEditState.selectionStart = selectionStart();
   mLineEditState.selectionLength = selectedText().length();
   mLineEditState.cursorPosition = cursorPosition();
-  mLineEditState.mHasStateStored = true;
+  mLineEditState.hasStateStored = true;
 }
 
 void QgsFilterLineEdit::restoreState()
@@ -229,7 +229,7 @@ void QgsFilterLineEdit::restoreState()
   setCursorPosition( mLineEditState.cursorPosition );
   if ( mLineEditState.selectionStart > -1 )
     setSelection( mLineEditState.selectionStart, mLineEditState.selectionLength );
-  mLineEditState.mHasStateStored = false;
+  mLineEditState.hasStateStored = false;
 }
 
 /// @cond PRIVATE

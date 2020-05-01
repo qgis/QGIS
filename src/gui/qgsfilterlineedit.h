@@ -226,7 +226,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * Returns if a state is already saved
      * \since QGIS 3.14
      */
-    bool hasStateStored() const {return mLineEditState.mHasStateStored;}
+    bool hasStateStored() const {return mLineEditState.hasStateStored;}
 
   public slots:
 
@@ -292,8 +292,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
   private:
     struct LineEditState
     {
-      bool mHasStateStored = false;
-      bool active = false;
+      bool hasStateStored = false;
       QString text;
       int selectionStart;
       int selectionLength;
