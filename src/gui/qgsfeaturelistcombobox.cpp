@@ -122,7 +122,7 @@ void QgsFeatureListComboBox::onItemSelected( const QModelIndex &index )
 
 void QgsFeatureListComboBox::onCurrentIndexChanged( int i )
 {
-  if ( !mHasStoredEditState )
+  if ( !mLineEdit->hasStateStored() )
     mIsCurrentlyEdited = false;
   QModelIndex modelIndex = mModel->index( i, 0, QModelIndex() );
   mModel->setExtraIdentifierValues( mModel->data( modelIndex, QgsFeatureFilterModel::IdentifierValuesRole ).toList() );
@@ -143,8 +143,7 @@ void QgsFeatureListComboBox::storeLineEditState()
 {
   if ( mIsCurrentlyEdited )
   {
-    mHasStoredEditState = true;
-    mLineEditState.store( mLineEdit );
+    mLineEdit->storeState( );
   }
 }
 
@@ -152,8 +151,7 @@ void QgsFeatureListComboBox::restoreLineEditState()
 {
   if ( mIsCurrentlyEdited )
   {
-    mHasStoredEditState = false;
-    mLineEditState.restore( mLineEdit );
+    mLineEdit->restoreState( );
   }
 }
 
@@ -301,21 +299,4 @@ QString QgsFeatureListComboBox::filterExpression() const
 void QgsFeatureListComboBox::setFilterExpression( const QString &filterExpression )
 {
   mModel->setFilterExpression( filterExpression );
-}
-
-void QgsFeatureListComboBox::LineEditState::store( QLineEdit *lineEdit )
-{
-  text = lineEdit->text();
-  selectionStart = lineEdit->selectionStart();
-  selectionLength = lineEdit->selectedText().length();
-  cursorPosition = lineEdit->cursorPosition();
-
-}
-
-void QgsFeatureListComboBox::LineEditState::restore( QLineEdit *lineEdit ) const
-{
-  lineEdit->setText( text );
-  lineEdit->setCursorPosition( cursorPosition );
-  if ( selectionStart > -1 )
-    lineEdit->setSelection( selectionStart, selectionLength );
 }
