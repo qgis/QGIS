@@ -58,7 +58,7 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
 
     if ( i == uri.length() || uri[i] != '=' )
     {
-      QgsDebugMsg( QStringLiteral( "= expected after parameter name, skipping text '%1'" ).arg( pname ) );
+      // no "=", so likely not a parameter name
       continue;
     }
 
