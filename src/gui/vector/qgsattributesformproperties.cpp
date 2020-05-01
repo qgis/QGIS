@@ -1182,46 +1182,8 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
   {
     case QgsAttributesFormProperties::DnDTreeItemData::Container:
     case QgsAttributesFormProperties::DnDTreeItemData::WidgetType:
-      break;
-
     case  QgsAttributesFormProperties::DnDTreeItemData::Relation:
-    {
-      QDialog dlg;
-      dlg.setWindowTitle( tr( "Configure Relation Editor" ) );
-      QFormLayout *layout = new QFormLayout() ;
-      dlg.setLayout( layout );
-      layout->addWidget( baseWidget );
-
-      QCheckBox *showLinkButton = new QCheckBox( tr( "Show link button" ) );
-      showLinkButton->setChecked( itemData.relationEditorConfiguration().showLinkButton );
-      QCheckBox *showUnlinkButton = new QCheckBox( tr( "Show unlink button" ) );
-      showUnlinkButton->setChecked( itemData.relationEditorConfiguration().showUnlinkButton );
-      QCheckBox *showSaveChildEditsButton = new QCheckBox( tr( "Show save child layer edits button" ) );
-      showSaveChildEditsButton->setChecked( itemData.relationEditorConfiguration().showSaveChildEditsButton );
-      layout->addRow( showLinkButton );
-      layout->addRow( showUnlinkButton );
-      layout->addRow( showSaveChildEditsButton );
-
-      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
-
-      connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
-      connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-
-      dlg.layout()->addWidget( buttonBox );
-
-      if ( dlg.exec() )
-      {
-        QgsAttributesFormProperties::RelationEditorConfiguration relEdCfg;
-        relEdCfg.showLinkButton = showLinkButton->isChecked();
-        relEdCfg.showUnlinkButton = showUnlinkButton->isChecked();
-        relEdCfg.showSaveChildEditsButton = showSaveChildEditsButton->isChecked();
-        itemData.setShowLabel( showLabelCheckbox->isChecked() );
-        itemData.setRelationEditorConfiguration( relEdCfg );
-
-        item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
-      }
-    }
-    break;
+      break;
 
     case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
     {
