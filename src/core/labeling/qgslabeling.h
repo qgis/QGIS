@@ -49,7 +49,7 @@ class CORE_EXPORT QgsLabeling
      *
      * \since QGIS 3.14
      */
-    enum class PolygonPlacementFlag : int
+    enum PolygonPlacementFlag
     {
       AllowPlacementOutsideOfPolygon = 1 << 0, //!< Labels can be placed outside of a polygon feature
       AllowPlacementInsideOfPolygon = 1 << 1, //!< Labels can be placed inside a polygon feature

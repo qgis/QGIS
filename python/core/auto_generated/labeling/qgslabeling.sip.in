@@ -32,7 +32,7 @@ Contains constants and enums relating to labeling.
     typedef QFlags<QgsLabeling::LinePlacementFlag> LinePlacementFlags;
 
 
-    enum class PolygonPlacementFlag
+    enum PolygonPlacementFlag
     {
       AllowPlacementOutsideOfPolygon,
       AllowPlacementInsideOfPolygon,
