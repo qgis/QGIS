@@ -2515,7 +2515,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
             || ( ( placement == QgsPalLayerSettings::Horizontal
                    || placement == QgsPalLayerSettings::AroundPoint
                    || placement == QgsPalLayerSettings::OverPoint ||
-                   placement == QgsPalLayerSettings::Free ) && polygonPlacementFlags() & QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon ) )
+                   placement == QgsPalLayerSettings::Free ) && polygonPlacement & QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon ) )
   {
     distance = std::max( distance, 2.0 );
   }
