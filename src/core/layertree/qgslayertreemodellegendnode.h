@@ -109,6 +109,22 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      */
     virtual void setUserPatchSize( QSizeF size ) { mUserSize = size; }
 
+    /**
+     * Sets whether a forced column break should occur before the node.
+     *
+     * \see columnBreak()
+     * \since QGIS 3.14
+     */
+    virtual void setColumnBreak( bool breakBeforeNode ) { mColumnBreakBeforeNode = breakBeforeNode; }
+
+    /**
+     * Returns whether a forced column break should occur before the node.
+     *
+     * \see setColumnBreak()
+     * \since QGIS 3.14
+     */
+    virtual bool columnBreak() const { return mColumnBreakBeforeNode; }
+
     virtual bool isScaleOK( double scale ) const { Q_UNUSED( scale ) return true; }
 
     /**
@@ -261,6 +277,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     QString mUserLabel;
     QgsLegendPatchShape mPatchShape;
     QSizeF mUserSize;
+    bool mColumnBreakBeforeNode = false;
 };
 
 #include "qgslegendsymbolitem.h"

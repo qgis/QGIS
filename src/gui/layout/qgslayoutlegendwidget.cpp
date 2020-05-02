@@ -1427,6 +1427,7 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   if ( mLegendNode )
   {
     currentLabel = mLegendNode->data( Qt::EditRole ).toString();
+    mColumnBreakBeforeCheckBox->setChecked( mLegendNode->columnBreak() );
   }
   else if ( mLayer )
   {
@@ -1434,10 +1435,12 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
     QVariant v = mLayer->customProperty( QStringLiteral( "legend/title-label" ) );
     if ( !v.isNull() )
       currentLabel = v.toString();
+    mColumnBreakBeforeCheckBox->setChecked( mLayer->customProperty( QStringLiteral( "legend/column-break" ) ).toInt() );
   }
   else
   {
     currentLabel = QgsLayerTree::toGroup( mNode )->name();
+    mColumnBreakBeforeCheckBox->setChecked( mNode->customProperty( QStringLiteral( "legend/column-break" ) ).toInt() );
   }
 
   mWidthSpinBox->setClearValue( 0, tr( "Default" ) );
@@ -1542,6 +1545,8 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
 
   connect( mCustomSymbolCheckBox, &QGroupBox::toggled, this, &QgsLayoutLegendNodeWidget::customSymbolChanged );
   connect( mCustomSymbolButton, &QgsSymbolButton::changed, this, &QgsLayoutLegendNodeWidget::customSymbolChanged );
+
+  connect( mColumnBreakBeforeCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendNodeWidget::columnBreakToggled );
 }
 
 void QgsLayoutLegendNodeWidget::labelChanged()
@@ -1707,6 +1712,29 @@ void QgsLayoutLegendNodeWidget::customSymbolChanged()
       }
       mLegend->model()->refreshLayerLegend( mLayer );
     }
+  }
+
+  mLegend->adjustBoxSize();
+  mLegend->updateFilterByMap();
+  mLegend->endCommand();
+}
+
+void QgsLayoutLegendNodeWidget::columnBreakToggled( bool checked )
+{
+  mLegend->beginCommand( tr( "Edit Legend Columns" ) );
+
+  if ( mLegendNode )
+  {
+    QgsMapLayerLegendUtils::setLegendNodeColumnBreak( mLayer, mOriginalLegendNodeIndex, checked );
+    mLegend->model()->refreshLayerLegend( mLayer );
+  }
+  else if ( mLayer )
+  {
+    mLayer->setCustomProperty( QStringLiteral( "legend/column-break" ), QString( checked ? '1' : '0' ) );
+  }
+  else if ( mNode )
+  {
+    mNode->setCustomProperty( QStringLiteral( "legend/column-break" ), QString( checked ? '1' : '0' ) );
   }
 
   mLegend->adjustBoxSize();
