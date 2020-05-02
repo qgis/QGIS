@@ -212,6 +212,67 @@ void QgsVectorTileLayer::setTransformContext( const QgsCoordinateTransformContex
   Q_UNUSED( transformContext )
 }
 
+QString QgsVectorTileLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( source );
+
+  QString sourceType = dsUri.param( QStringLiteral( "type" ) );
+  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
+  if ( sourceType == QStringLiteral( "xyz" ) )
+  {
+    QUrl sourceUrl( sourcePath );
+    if ( sourceUrl.isLocalFile() )
+    {
+      // relative path will become "file:./x.txt"
+      QString relSrcUrl = context.pathResolver().writePath( sourceUrl.toLocalFile() );
+      dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+      dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( relSrcUrl ).toString() );
+      return dsUri.encodedUri();
+    }
+  }
+  else if ( sourceType == QStringLiteral( "mbtiles" ) )
+  {
+    sourcePath = context.pathResolver().writePath( sourcePath );
+    dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+    dsUri.setParam( QStringLiteral( "url" ), sourcePath );
+    return dsUri.encodedUri();
+  }
+
+  return source;
+}
+
+QString QgsVectorTileLayer::decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const
+{
+  Q_UNUSED( provider )
+
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( source );
+
+  QString sourceType = dsUri.param( QStringLiteral( "type" ) );
+  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
+  if ( sourceType == QStringLiteral( "xyz" ) )
+  {
+    QUrl sourceUrl( sourcePath );
+    if ( sourceUrl.isLocalFile() )  // file-based URL? convert to relative path
+    {
+      QString absSrcUrl = context.pathResolver().readPath( sourceUrl.toLocalFile() );
+      dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+      dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( absSrcUrl ).toString() );
+      return dsUri.encodedUri();
+    }
+  }
+  else if ( sourceType == QStringLiteral( "mbtiles" ) )
+  {
+    sourcePath = context.pathResolver().readPath( sourcePath );
+    dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+    dsUri.setParam( QStringLiteral( "url" ), sourcePath );
+    return dsUri.encodedUri();
+  }
+
+  return source;
+}
+
 QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
 {
   QgsTileRange tileRange( tileID.column(), tileID.column(), tileID.row(), tileID.row() );
