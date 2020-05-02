@@ -113,7 +113,7 @@ void TestQgsTemporalNavigationObject::animationState()
   QCOMPARE( navigationObject->currentFrameNumber(), 0 );
 
   navigationObject->skipToEnd();
-  QCOMPARE( navigationObject->currentFrameNumber(), 10 );
+  QCOMPARE( navigationObject->currentFrameNumber(), 9 );
 
   navigationObject->rewindToStart();
   QCOMPARE( navigationObject->currentFrameNumber(), 0 );
