@@ -56,16 +56,16 @@ bool QgsRandomRasterAlgorithmBase::prepareAlgorithm( const QVariantMap &paramete
   mExtent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, mCrs );
   mPixelSize = parameterAsDouble( parameters, QStringLiteral( "PIXEL_SIZE" ), context );
 
-  int typeId = parameterAsInt( parameters, QStringLiteral( "OUTPUT_TYPE" ), context );
-  //prepare specific parameters
-  mRasterDataType = getRasterDataType( typeId );
-  prepareRandomParameters( parameters, context );
-
   return true;
 }
 
 QVariantMap QgsRandomRasterAlgorithmBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  int typeId = parameterAsInt( parameters, QStringLiteral( "OUTPUT_TYPE" ), context );
+  //prepare specific parameters
+  mRasterDataType = getRasterDataType( typeId );
+  prepareRandomParameters( parameters, context );
+
   std::random_device rd {};
   std::mt19937 mersenneTwister{rd()};
 
