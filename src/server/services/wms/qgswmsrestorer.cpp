@@ -136,9 +136,10 @@ QgsLayerRestorer::~QgsLayerRestorer()
   }
 }
 
-namespace QgsWms {
+namespace QgsWms
+{
   QgsWmsRestorer::QgsWmsRestorer( const QgsWmsRenderContext &context )
+    : mLayerRestorer( context.layers() )
   {
-    mLayerRestorer.reset( new QgsLayerRestorer( context.layers()) );
   }
 }

@@ -67,6 +67,7 @@ class QgsLayerRestorer
 
 namespace QgsWms
 {
+
   /**
    * \ingroup server
    * RAII class to restore the rendering context configuration on destruction
@@ -89,7 +90,7 @@ namespace QgsWms
 
     private:
 
-      std::unique_ptr<QgsLayerRestorer> mLayerRestorer;
+      QgsLayerRestorer mLayerRestorer;
   };
 };
 
