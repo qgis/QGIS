@@ -191,7 +191,7 @@ void QgsTemporalNavigationObject::skipToEnd()
 long long QgsTemporalNavigationObject::totalFrameCount()
 {
   QgsInterval totalAnimationLength = mTemporalExtents.end() - mTemporalExtents.begin();
-  return std::ceil( totalAnimationLength.seconds() / mFrameDuration.seconds() ) + 1;
+  return std::floor( totalAnimationLength.seconds() / mFrameDuration.seconds() ) + 1;
 }
 
 void QgsTemporalNavigationObject::setAnimationState( AnimationState mode )
