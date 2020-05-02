@@ -76,6 +76,7 @@ ENDMACRO (ADD_QGIS_TEST)
 
 SET(TESTS
   test_qgsserver_wms_dxf.cpp
+  test_qgsserver_wms_restorer.cpp
   test_qgsserver_wms_exceptions.cpp
 )
 
