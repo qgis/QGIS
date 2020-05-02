@@ -284,11 +284,13 @@ namespace QgsWms
             legendNode->setUserLabel( QStringLiteral( " " ) );
           }
         }
-        else if ( !parameters.layerTitleAsBool() && model->layerLegendNodes( nodeLayer, true ).count() )
+        // rulelabel is not set or true
+        else if ( !parameters.layerTitleAsBool() )
         {
           for ( QgsLayerTreeModelLegendNode *legendNode : model->layerLegendNodes( nodeLayer ) )
           {
-            if ( legendNode->isEmbeddedInParent() )
+            //clearing label when rulelabel is not set and only for single symbol
+            if ( legendNode->isEmbeddedInParent() && parameters.ruleLabel().isEmpty() )
               legendNode->setEmbeddedInParent( false );
           }
         }
@@ -349,4 +351,3 @@ namespace QgsWms
     return nullptr;
   }
 } // namespace QgsWms
-
