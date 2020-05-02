@@ -71,18 +71,18 @@ void TestQgsServerWmsRestorer::restorer_layer()
   QgsVectorLayer *vl = nullptr;
   for ( QgsMapLayer *l : context.layers() )
   {
-    if ( l->name().compare(name) == 0 )
+    if ( l->name().compare( name ) == 0 )
       vl = qobject_cast<QgsVectorLayer *>( l );
   }
 
   QCOMPARE( vl->name(), name );
-  const int opacity = vl->opacity();
+  const double opacity = vl->opacity();
 
   // call restorer
   {
     // destructor is called once out of scope
     std::unique_ptr<QgsWms::QgsWmsRestorer> restorer;
-    restorer.reset( new QgsWms::QgsWmsRestorer(context) );
+    restorer.reset( new QgsWms::QgsWmsRestorer( context ) );
 
     const QString new_name = "new_name";
     vl->setName( new_name );
