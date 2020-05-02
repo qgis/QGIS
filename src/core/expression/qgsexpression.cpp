@@ -748,6 +748,9 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "item_top" ), QCoreApplication::translate( "variable_help", "Top position of layout item (in mm)." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "item_width" ), QCoreApplication::translate( "variable_help", "Width of layout item (in mm)." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "item_height" ), QCoreApplication::translate( "variable_help", "Height of layout item (in mm)." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "item_x" ), QCoreApplication::translate( "variable_help", "Horizontal position of reference point of layout item (in mm)." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "item_y" ), QCoreApplication::translate( "variable_help", "Vertical position of reference point of layout item (in mm)." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "item_reference_point" ), QCoreApplication::translate( "variable_help", "Reference point of layout item. 0: upper left; 1: upper center; 2: upper right; 3: middle left; 4: center; 5: middle right; 6: lower left; 7: lower center; 8: lower right" ) );
 
   //map settings item variables
   sVariableHelpTexts()->insert( QStringLiteral( "map_id" ), QCoreApplication::translate( "variable_help", "ID of current map destination. This will be 'canvas' for canvas renders, and the item ID for layout map renders." ) );
