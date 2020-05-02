@@ -82,11 +82,11 @@ class QgsRandomUniformRasterAlgorithm : public QgsRandomRasterAlgorithmBase
     QgsRandomUniformRasterAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    void addAlgorithmParams() override;
-    Qgis::DataType getRasterDataType( int typeId ) override;
-    bool prepareRandomParameters( const QVariantMap &parameters, QgsProcessingContext &context ) override;
-    long generateRandomLongValue( std::mt19937 &mersenneTwister ) override;
-    double generateRandomDoubleValue( std::mt19937 &mersenneTwister ) override;
+    void addAlgorithmParams() final;
+    Qgis::DataType getRasterDataType( int typeId ) final;
+    bool prepareRandomParameters( const QVariantMap &parameters, QgsProcessingContext &context ) final;
+    long generateRandomLongValue( std::mt19937 &mersenneTwister ) final;
+    double generateRandomDoubleValue( std::mt19937 &mersenneTwister ) final;
 
   private:
     double mRandomUpperBound;
@@ -108,11 +108,11 @@ class QgsRandomBinomialRasterAlgorithm : public QgsRandomRasterAlgorithmBase
     QgsRandomBinomialRasterAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    void addAlgorithmParams() override;
-    Qgis::DataType getRasterDataType( int typeId ) override;
-    bool prepareRandomParameters( const QVariantMap &parameters, QgsProcessingContext &context ) override;
-    long generateRandomLongValue( std::mt19937 &mersenneTwister ) override;
-    double generateRandomDoubleValue( std::mt19937 &mersenneTwister ) override;
+    void addAlgorithmParams() final;
+    Qgis::DataType getRasterDataType( int typeId ) final;
+    bool prepareRandomParameters( const QVariantMap &parameters, QgsProcessingContext &context ) final;
+    long generateRandomLongValue( std::mt19937 &mersenneTwister ) final;
+    double generateRandomDoubleValue( std::mt19937 &mersenneTwister ) final;
 
   private:
     std::binomial_distribution<long> mRandombinomialDistribution;
@@ -131,11 +131,11 @@ class QgsRandomExponentialRasterAlgorithm : public QgsRandomRasterAlgorithmBase
     QgsRandomExponentialRasterAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    void addAlgorithmParams() override;
-    Qgis::DataType getRasterDataType( int typeId ) override;
-    bool prepareRandomParameters( const QVariantMap &parameters, QgsProcessingContext &context ) override;
-    long generateRandomLongValue( std::mt19937 &mersenneTwister ) override;
-    double generateRandomDoubleValue( std::mt19937 &mersenneTwister ) override;
+    void addAlgorithmParams() final;
+    Qgis::DataType getRasterDataType( int typeId ) final;
+    bool prepareRandomParameters( const QVariantMap &parameters, QgsProcessingContext &context ) final;
+    long generateRandomLongValue( std::mt19937 &mersenneTwister ) final;
+    double generateRandomDoubleValue( std::mt19937 &mersenneTwister ) final;
 
   private:
     std::exponential_distribution<double> mRandomExponentialDistribution;
@@ -155,11 +155,11 @@ class QgsRandomGammaRasterAlgorithm : public QgsRandomRasterAlgorithmBase
     QgsRandomGammaRasterAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    void addAlgorithmParams() override;
-    Qgis::DataType getRasterDataType( int typeId ) override;
-    bool prepareRandomParameters( const QVariantMap &parameters, QgsProcessingContext &context ) override;
-    long generateRandomLongValue( std::mt19937 &mersenneTwister ) override;
-    double generateRandomDoubleValue( std::mt19937 &mersenneTwister ) override;
+    void addAlgorithmParams() final;
+    Qgis::DataType getRasterDataType( int typeId ) final;
+    bool prepareRandomParameters( const QVariantMap &parameters, QgsProcessingContext &context ) final;
+    long generateRandomLongValue( std::mt19937 &mersenneTwister ) final;
+    double generateRandomDoubleValue( std::mt19937 &mersenneTwister ) final;
 
   private:
     std::gamma_distribution<double> mRandomGammaDistribution;
@@ -202,11 +202,11 @@ class QgsRandomNegativeBinomialRasterAlgorithm : public QgsRandomRasterAlgorithm
     QgsRandomNegativeBinomialRasterAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    void addAlgorithmParams() override;
-    Qgis::DataType getRasterDataType( int typeId ) override;
-    bool prepareRandomParameters( const QVariantMap &parameters, QgsProcessingContext &context ) override;
-    long generateRandomLongValue( std::mt19937 &mersenneTwister ) override;
-    double generateRandomDoubleValue( std::mt19937 &mersenneTwister ) override;
+    void addAlgorithmParams() final;
+    Qgis::DataType getRasterDataType( int typeId ) final;
+    bool prepareRandomParameters( const QVariantMap &parameters, QgsProcessingContext &context ) final;
+    long generateRandomLongValue( std::mt19937 &mersenneTwister ) final;
+    double generateRandomDoubleValue( std::mt19937 &mersenneTwister ) final;
 
   private:
     std::negative_binomial_distribution<long> mRandomNegativeBinomialDistribution;
@@ -225,11 +225,11 @@ class QgsRandomNormalRasterAlgorithm : public QgsRandomRasterAlgorithmBase
     QgsRandomNormalRasterAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    void addAlgorithmParams() override;
-    Qgis::DataType getRasterDataType( int typeId ) override;
-    bool prepareRandomParameters( const QVariantMap &parameters, QgsProcessingContext &context ) override;
-    long generateRandomLongValue( std::mt19937 &mersenneTwister ) override;
-    double generateRandomDoubleValue( std::mt19937 &mersenneTwister ) override;
+    void addAlgorithmParams() final;
+    Qgis::DataType getRasterDataType( int typeId ) final;
+    bool prepareRandomParameters( const QVariantMap &parameters, QgsProcessingContext &context ) final;
+    long generateRandomLongValue( std::mt19937 &mersenneTwister ) final;
+    double generateRandomDoubleValue( std::mt19937 &mersenneTwister ) final;
 
   private:
     std::normal_distribution<double> mRandomNormalDistribution;
@@ -248,11 +248,11 @@ class QgsRandomPoissonRasterAlgorithm : public QgsRandomRasterAlgorithmBase
     QgsRandomPoissonRasterAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    void addAlgorithmParams() override;
-    Qgis::DataType getRasterDataType( int typeId ) override;
-    bool prepareRandomParameters( const QVariantMap &parameters, QgsProcessingContext &context ) override;
-    long generateRandomLongValue( std::mt19937 &mersenneTwister ) override;
-    double generateRandomDoubleValue( std::mt19937 &mersenneTwister ) override;
+    void addAlgorithmParams() final;
+    Qgis::DataType getRasterDataType( int typeId ) final;
+    bool prepareRandomParameters( const QVariantMap &parameters, QgsProcessingContext &context ) final;
+    long generateRandomLongValue( std::mt19937 &mersenneTwister ) final;
+    double generateRandomDoubleValue( std::mt19937 &mersenneTwister ) final;
 
   private:
     std::poisson_distribution<long> mRandomPoissonDistribution;
