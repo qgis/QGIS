@@ -114,7 +114,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 
   // Set icons for tool buttons
   btnSaveExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileSave.svg" ) ) );
-  btnEditExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionToggleEditing.svg" ) ) );
+  btnEditExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "symbologyEdit.svg" ) ) );
   btnRemoveExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionDeleteSelected.svg" ) ) );
   btnExportExpressions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionSharingExport.svg" ) ) );
   btnImportExpressions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionSharingImport.svg" ) ) );
