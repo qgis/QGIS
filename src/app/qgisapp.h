@@ -341,6 +341,22 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void removeDockWidget( QDockWidget *dockwidget );
 
     /**
+     * Add a dock widget to the given area and tabify it (if other dock widgets
+     * exist in the same \a area). The new tab will be below other tabs unless
+     * \a raiseTab is passed as true.
+     *
+     * \a tabifyWith is a list of dock widget object names, ordered by
+     * priority, with which the new dock widget should be tabified. Only the
+     * first matching object name will be picked. If none of the given object
+     * names is found in that \a area (or if \a tabifyWith is not given at
+     * all), the new dock widget will be created anyways, but its location
+     * within that \a area will be unpredictable.
+     *
+     * \since QGIS 3.14
+     */
+    void addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockWidget, const QStringList &tabifyWith = QStringList(), bool raiseTab = false );
+
+    /**
      * Add a toolbar to the main window. Overloaded from QMainWindow.
      * After adding the toolbar to the ui (by delegating to the QMainWindow
      * parent class, it will also add it to the View menu list of toolbars.*/
@@ -2146,7 +2162,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
 
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
-
 
     // actions for menus and toolbars -----------------
 
