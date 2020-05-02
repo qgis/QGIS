@@ -39,7 +39,6 @@ void QgsInterpolatedLineRenderer::render( double value1, double value2, QgsPoint
   painter->save();
   if ( context.flags() & QgsRenderContext::Antialiasing )
     painter->setRenderHint( QPainter::Antialiasing, true );
-  painter->setOpacity( mOpacity );
 
   const QgsMapToPixel &mapToPixel = context.mapToPixel();
 
@@ -225,12 +224,6 @@ void QgsInterpolatedLineRenderer::adjustLine( const double &value, const double 
     adjusting = fabs( ( value - mStrokeWidth.minimumValue() ) / ( value2 - value1 ) );
     width = mStrokeWidth.minimumWidth();
   }
-}
-
-
-void QgsInterpolatedLineRenderer::setOpacity( double opacity )
-{
-  mOpacity = opacity;
 }
 
 double QgsInterpolatedLineWidth::minimumValue() const

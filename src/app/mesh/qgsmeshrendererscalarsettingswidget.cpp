@@ -137,6 +137,8 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
     whileBlocking( mScalarEdgeStrokeWidthSpinBox )->setValue( edgeStrokeWidth.fixedStrokeWidth() );
     whileBlocking( mScalarEdgeStrokeWidthVariableRadioButton )->setChecked( edgeStrokeWidth.isVariableWidth() );
     whileBlocking( mScalarEdgeStrokeWidthUnitSelectionWidget )->setUnit( settings.edgeStrokeWidthUnit() );
+    if ( !hasFaces )
+      mOpacityContainerWidget->setVisible( false );
 
     const QgsMeshDatasetGroupMetadata metadata = mMeshLayer->dataProvider()->datasetGroupMetadata( mActiveDatasetGroup );
     double min = metadata.minimum();

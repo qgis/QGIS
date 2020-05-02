@@ -186,9 +186,6 @@ class CORE_EXPORT QgsInterpolatedLineRenderer
     //! Sets the stroke color used to plot
     void setInterpolatedColor( const QgsInterpolatedLineColor &strokeColoring );
 
-    //! Sets the opacity used to plot
-    void setOpacity( double opacity );
-
     /**
      * Render a line in the \a context between \a point1 and \a point2
      * with color and width that vary depending on \a value1 and \a value2
@@ -199,7 +196,6 @@ class CORE_EXPORT QgsInterpolatedLineRenderer
     QgsInterpolatedLineWidth mStrokeWidth;
     QgsInterpolatedLineColor mStrokeColoring;
     QgsUnitTypes::RenderUnit mStrokeWidthUnit = QgsUnitTypes::RenderMillimeters;
-    double mOpacity;
 
     QPolygonF varyingWidthLine( double value1, double value2, QPointF point1, QPointF point2, QgsRenderContext &context ) const;
     void adjustLine( const double &value, const double &value1, const double &value2, double &width, double &adjusting ) const;
