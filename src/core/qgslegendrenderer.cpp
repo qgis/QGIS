@@ -153,7 +153,7 @@ QSizeF QgsLegendRenderer::paintAndDetermineSize( QgsRenderContext &context )
 
   QList<LegendComponentGroup> componentGroups = createComponentGroupList( rootGroup, mSettings.splitLayer(), context );
 
-  setColumns( componentGroups );
+  const int columnCount = setColumns( componentGroups );
 
   QMap< int, double > maxColumnWidths;
   qreal maxEqualColumnWidth = 0;
@@ -171,7 +171,7 @@ QSizeF QgsLegendRenderer::paintAndDetermineSize( QgsRenderContext &context )
     maxColumnWidths[ group.column ] = std::max( actualSize.width(), maxColumnWidths.value( group.column, 0 ) );
   }
 
-  if ( mSettings.columnCount()  < 2 )
+  if ( columnCount == 1 )
   {
     // single column - use the full available width
     maxEqualColumnWidth = std::max( maxEqualColumnWidth, mLegendSize.width() - 2 * mSettings.boxSpace() );
@@ -297,11 +297,14 @@ QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponen
           subgroups[0].components.prepend( component );
           subgroups[0].size.rheight() += component.size.height();
           subgroups[0].size.rwidth() = std::max( component.size.width(), subgroups[0].size.width() );
+          if ( nodeGroup->customProperty( QStringLiteral( "legend/column-break" ) ).toInt() )
+            subgroups[0].placeColumnBreakBeforeGroup = true;
         }
         else
         {
           // no subitems, create new group
           LegendComponentGroup group;
+          group.placeColumnBreakBeforeGroup = nodeGroup->customProperty( QStringLiteral( "legend/column-break" ) ).toInt();
           group.components.append( component );
           group.size.rwidth() += component.size.width();
           group.size.rheight() += component.size.height();
@@ -321,6 +324,7 @@ QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponen
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
 
       LegendComponentGroup group;
+      group.placeColumnBreakBeforeGroup = nodeLayer->customProperty( QStringLiteral( "legend/column-break" ) ).toInt();
 
       if ( nodeLegendStyle( nodeLayer ) != QgsLegendStyle::Hidden )
       {
@@ -343,14 +347,30 @@ QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponen
       QList<LegendComponentGroup> layerGroups;
       layerGroups.reserve( legendNodes.count() );
 
+      bool groupIsLayerGroup = true;
+
       for ( int j = 0; j < legendNodes.count(); j++ )
       {
         QgsLayerTreeModelLegendNode *legendNode = legendNodes.at( j );
 
         LegendComponent symbolComponent = drawSymbolItem( legendNode, context, ColumnContext(), 0 );
 
+        const bool forceBreak = legendNode->columnBreak();
+
         if ( !mSettings.splitLayer() || j == 0 )
         {
+          if ( forceBreak )
+          {
+            if ( groupIsLayerGroup )
+              layerGroups.prepend( group );
+            else
+              layerGroups.append( group );
+
+            group = LegendComponentGroup();
+            group.placeColumnBreakBeforeGroup = true;
+            groupIsLayerGroup = false;
+          }
+
           // append to layer group
           // the width is not correct at this moment, we must align all symbol labels
           group.size.rwidth() = std::max( symbolComponent.size.width(), group.size.width() );
@@ -365,14 +385,30 @@ QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponen
         }
         else
         {
+          if ( group.size.height() > 0 )
+          {
+            if ( groupIsLayerGroup )
+              layerGroups.prepend( group );
+            else
+              layerGroups.append( group );
+            group = LegendComponentGroup();
+            groupIsLayerGroup = false;
+          }
           LegendComponentGroup symbolGroup;
+          symbolGroup.placeColumnBreakBeforeGroup = forceBreak;
           symbolGroup.components.append( symbolComponent );
           symbolGroup.size.rwidth() = symbolComponent.size.width();
           symbolGroup.size.rheight() = symbolComponent.size.height();
           layerGroups.append( symbolGroup );
         }
       }
-      layerGroups.prepend( group );
+      if ( group.size.height() > 0 )
+      {
+        if ( groupIsLayerGroup )
+          layerGroups.prepend( group );
+        else
+          layerGroups.append( group );
+      }
       componentGroups.append( layerGroups );
     }
   }
@@ -381,20 +417,31 @@ QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponen
 }
 
 
-void QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups )
+int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups )
 {
-  if ( mSettings.columnCount() == 0 )
-    return;
-
   // Divide groups to columns
   double totalHeight = 0;
   qreal maxGroupHeight = 0;
+  int forcedColumnBreaks = 0;
+  bool first = true;
   for ( const LegendComponentGroup &group : qgis::as_const( componentGroups ) )
   {
     totalHeight += spaceAboveGroup( group );
     totalHeight += group.size.height();
     maxGroupHeight = std::max( group.size.height(), maxGroupHeight );
+
+    if ( group.placeColumnBreakBeforeGroup )
+      forcedColumnBreaks++;
+
+    first = false;
   }
+
+  if ( mSettings.columnCount() == 0 && forcedColumnBreaks == 0 )
+    return 0;
+
+  // the target number of columns allowed is dictated by the number of forced column
+  // breaks OR the manually set column count (whichever is greater!)
+  const int targetNumberColumns = std::max( forcedColumnBreaks + 1, mSettings.columnCount() );
 
   // We know height of each group and we have to split them into columns
   // minimizing max column height. It is sort of bin packing problem, NP-hard.
@@ -410,7 +457,7 @@ void QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups
   for ( int i = 0; i < componentGroups.size(); i++ )
   {
     // Recalc average height for remaining columns including current
-    double avgColumnHeight = ( totalHeight - closedColumnsHeight ) / ( mSettings.columnCount() - currentColumn );
+    double avgColumnHeight = ( totalHeight - closedColumnsHeight ) / ( targetNumberColumns - currentColumn );
 
     LegendComponentGroup group = componentGroups.at( i );
     double currentHeight = currentColumnHeight;
@@ -419,16 +466,19 @@ void QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups
     currentHeight += group.size.height();
 
     bool canCreateNewColumn = ( currentColumnGroupCount > 0 )  // do not leave empty column
-                              && ( currentColumn < mSettings.columnCount() - 1 ); // must not exceed max number of columns
+                              && ( currentColumn < targetNumberColumns - 1 ); // must not exceed max number of columns
 
     bool shouldCreateNewColumn = ( currentHeight - avgColumnHeight ) > group.size.height() / 2  // center of current group is over average height
                                  && currentColumnGroupCount > 0 // do not leave empty column
                                  && currentHeight > maxGroupHeight  // no sense to make smaller columns than max group height
                                  && currentHeight > maxColumnHeight; // no sense to make smaller columns than max column already created
 
+    shouldCreateNewColumn |= group.placeColumnBreakBeforeGroup;
+    canCreateNewColumn |= group.placeColumnBreakBeforeGroup;
+
     // also should create a new column if the number of items left < number of columns left
     // in this case we should spread the remaining items out over the remaining columns
-    shouldCreateNewColumn |= ( componentGroups.size() - i < mSettings.columnCount() - currentColumn );
+    shouldCreateNewColumn |= ( componentGroups.size() - i < targetNumberColumns - currentColumn );
 
     if ( canCreateNewColumn && shouldCreateNewColumn )
     {
@@ -447,7 +497,7 @@ void QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups
     maxColumnHeight = std::max( currentColumnHeight, maxColumnHeight );
   }
 
-  // Align labels of symbols for each layr/column to the same labelXOffset
+  // Align labels of symbols for each layer/column to the same labelXOffset
   QMap<QString, qreal> maxSymbolWidth;
   for ( int i = 0; i < componentGroups.size(); i++ )
   {
@@ -477,6 +527,7 @@ void QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups
       }
     }
   }
+  return targetNumberColumns;
 }
 
 QSizeF QgsLegendRenderer::drawTitle( QgsRenderContext &context, double top, Qt::AlignmentFlag halignment, double legendWidth )

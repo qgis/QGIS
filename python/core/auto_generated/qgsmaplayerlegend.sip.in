@@ -164,6 +164,24 @@ Caller takes ownership of the returned symbol.
 .. versionadded:: 3.14
 %End
 
+    static void setLegendNodeColumnBreak( QgsLayerTreeLayer *nodeLayer, int originalIndex, bool columnBreakBeforeNode );
+%Docstring
+Sets whether a forced column break should occur before the node.
+
+.. seealso:: :py:func:`legendNodeColumnBreak`
+
+.. versionadded:: 3.14
+%End
+
+    static bool legendNodeColumnBreak( QgsLayerTreeLayer *nodeLayer, int originalIndex );
+%Docstring
+Returns whether a forced column break should occur before the node.
+
+.. seealso:: :py:func:`setLegendNodeColumnBreak`
+
+.. versionadded:: 3.14
+%End
+
     static void applyLayerNodeProperties( QgsLayerTreeLayer *nodeLayer, QList<QgsLayerTreeModelLegendNode *> &nodes );
 %Docstring
 update according to layer node's custom properties (order of items, user labels for items)
