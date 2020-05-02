@@ -65,12 +65,27 @@ class QgsLayerRestorer
     QMap<QgsMapLayer *, QgsLayerSettings> mLayerSettings;
 };
 
-namespace QgsWms {
+namespace QgsWms
+{
+  /**
+   * \ingroup server
+   * RAII class to restore the rendering context configuration on destruction
+   * \since QGIS 3.14
+   */
   class QgsWmsRestorer
   {
     public:
 
+      /**
+       * Constructor for QgsWmsRestorer.
+       * \param context The rendering context to restore in its initial state
+       */
       QgsWmsRestorer( const QgsWmsRenderContext &context );
+
+      /**
+       * Default destructor.
+       */
+      ~QgsWmsRestorer() = default;
 
     private:
 
