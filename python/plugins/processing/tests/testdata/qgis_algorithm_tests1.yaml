@@ -1785,6 +1785,22 @@ tests:
         name: expected/sum_line_length.gml
         type: vector
 
+  - algorithm: native:sumlinelengths
+    name: Sum line lengths (projected CRS)
+    params:
+      COUNT_FIELD: line_count
+      LEN_FIELD: line_len
+      LINES:
+        name: custom/sumlinelengths.gpkg|layername=roads
+        type: vector
+      POLYGONS:
+        name: custom/sumlinelengths.gpkg|layername=polygons
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/sum_line_length_projected_crs.gml
+        type: vector
+
   - algorithm: qgis:delaunaytriangulation
     name: Delaunay triangulation (multipoint data)
     params:
