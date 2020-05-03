@@ -22,7 +22,7 @@ Contains constants and enums relating to labeling.
 %End
   public:
 
-    enum class LinePlacementFlag
+    enum LinePlacementFlag
     {
       OnLine,
       AboveLine,

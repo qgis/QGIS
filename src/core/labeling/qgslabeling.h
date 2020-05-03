@@ -35,7 +35,7 @@ class CORE_EXPORT QgsLabeling
     /**
      * Line placement flags, which control how candidates are generated for a linear feature.
      */
-    enum class LinePlacementFlag : int
+    enum LinePlacementFlag
     {
       OnLine    = 1,      //!< Labels can be placed directly over a line feature.
       AboveLine = 2,      //!< Labels can be placed above a line feature. Unless MapOrientation is also specified this mode respects the direction of the line feature, so a line from right to left labels will have labels placed placed below the line feature.
