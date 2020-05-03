@@ -804,7 +804,7 @@ class TestPointPlacement(TestPlacementBase):
         self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
         self.lyr.placement = QgsPalLayerSettings.OverPoint
-        self.lyr.setPolygonPlacementFlags(QgsLabeling.PolygonPlacementFlags(QgsLabeling.PolygonPlacementFlag.AllowPlacementOutsideOfPolygon | QgsLabeling.PolygonPlacementFlag.AllowPlacementInsideOfPolygon))
+        self.lyr.setPolygonPlacementFlags(QgsLabeling.AllowPlacementOutsideOfPolygon | QgsLabeling.AllowPlacementInsideOfPolygon)
         self.checkTest()
         self.removeMapLayer(self.layer)
         self.layer = None
@@ -815,7 +815,7 @@ class TestPointPlacement(TestPlacementBase):
         self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
         self.lyr.placement = QgsPalLayerSettings.OverPoint
-        self.lyr.setPolygonPlacementFlags(QgsLabeling.PolygonPlacementFlags(QgsLabeling.PolygonPlacementFlag.AllowPlacementOutsideOfPolygon | QgsLabeling.PolygonPlacementFlag.AllowPlacementInsideOfPolygon))
+        self.lyr.setPolygonPlacementFlags(QgsLabeling.AllowPlacementOutsideOfPolygon | QgsLabeling.AllowPlacementInsideOfPolygon)
         f = self.lyr.format()
         f.setSize(8)
         self.lyr.setFormat(f)
@@ -829,7 +829,7 @@ class TestPointPlacement(TestPlacementBase):
         self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
         self.lyr.placement = QgsPalLayerSettings.OverPoint
-        self.lyr.setPolygonPlacementFlags(QgsLabeling.PolygonPlacementFlags(QgsLabeling.PolygonPlacementFlag.AllowPlacementOutsideOfPolygon))
+        self.lyr.setPolygonPlacementFlags(QgsLabeling.AllowPlacementOutsideOfPolygon)
         f = self.lyr.format()
         f.setSize(8)
         self.lyr.setFormat(f)
