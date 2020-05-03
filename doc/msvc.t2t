@@ -29,7 +29,7 @@ For the QGIS build you need to install following packages from cygwin:
 - git
 -
 
-and from OSGeo4W (select //Advanced Installation//):
+and from OSGeo4W (select //Advanced Install//):
 
 - qgis-dev-deps
 -
