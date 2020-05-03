@@ -94,7 +94,6 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmmultiparttosinglepart.cpp
   processing/qgsalgorithmmultiringconstantbuffer.cpp
   processing/qgsalgorithmnearestneighbouranalysis.cpp
-  processing/qgsalgorithmnormalraster.cpp
   processing/qgsalgorithmoffsetlines.cpp
   processing/qgsalgorithmorderbyexpression.cpp
   processing/qgsalgorithmorientedminimumboundingbox.cpp

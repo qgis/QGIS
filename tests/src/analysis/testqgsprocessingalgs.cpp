@@ -118,9 +118,10 @@ class TestQgsProcessingAlgs: public QObject
     void raiseException();
     void raiseWarning();
 
-    void normalRaster_data();
-    void normalRaster();
-
+    void randomFloatingPointDistributionRaster_data();
+    void randomFloatingPointDistributionRaster();
+    void randomIntegerDistributionRaster_data();
+    void randomIntegerDistributionRaster();
     void randomRaster_data();
     void randomRaster();
 
@@ -3030,15 +3031,13 @@ void TestQgsProcessingAlgs::raiseWarning()
   QCOMPARE( feedback.errors, QStringList() << QStringLiteral( "you mighta screwed up boy, but i aint so sure" ) );
 }
 
-void TestQgsProcessingAlgs::normalRaster_data()
+void TestQgsProcessingAlgs::randomFloatingPointDistributionRaster_data()
 {
   QTest::addColumn<QString>( "inputExtent" );
   QTest::addColumn<Qgis::DataType>( "expectedDataType" );
   QTest::addColumn<bool>( "succeeds" );
   QTest::addColumn<QString>( "crs" );
   QTest::addColumn<double>( "pixelSize" );
-  QTest::addColumn<double>( "mean" );
-  QTest::addColumn<double>( "stddev" );
   QTest::addColumn<int>( "typeId" );
 
   QTest::newRow( "testcase 1" )
@@ -3047,8 +3046,6 @@ void TestQgsProcessingAlgs::normalRaster_data()
       << true
       << "EPSG:4326"
       << 1.0
-      << 0.0
-      << 12.0
       << 0;
 
 
@@ -3058,12 +3055,10 @@ void TestQgsProcessingAlgs::normalRaster_data()
       << true
       << "EPSG:4326"
       << 1.0
-      << 0.0
-      << 1.0
       << 1;
 }
 
-void TestQgsProcessingAlgs::normalRaster()
+void TestQgsProcessingAlgs::randomFloatingPointDistributionRaster()
 {
   //this test only checks if the correct raster data type is chosen
   //value by value comparison is not effective for random rasters
@@ -3072,58 +3067,184 @@ void TestQgsProcessingAlgs::normalRaster()
   QFETCH( bool, succeeds );
   QFETCH( QString, crs );
   QFETCH( double, pixelSize );
-  QFETCH( double, mean );
-  QFETCH( double, stddev );
   QFETCH( int, typeId );
 
   //prepare input params
   QgsProject p;
-  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:createnormalrasterlayer" ) ) );
-
-  QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
-
   //set project crs and ellipsoid from input layer
   p.setCrs( QgsCoordinateReferenceSystem( crs ), true );
 
-  //set project after layer has been added so that transform context/ellipsoid from crs is also set
-  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
-  context->setProject( &p );
+  QStringList alglist = QStringList();
+  alglist << QStringLiteral( "native:createrandomnormalrasterlayer" )
+          << QStringLiteral( "native:createrandomexponentialrasterlayer" )
+          << QStringLiteral( "native:createrandomgammarasterlayer" );
 
-  QVariantMap parameters;
-
-  parameters.insert( QStringLiteral( "EXTENT" ), inputExtent );
-  parameters.insert( QStringLiteral( "TARGET_CRS" ), QgsCoordinateReferenceSystem( crs ) );
-  parameters.insert( QStringLiteral( "PIXEL_SIZE" ), pixelSize );
-  parameters.insert( QStringLiteral( "OUTPUT_TYPE" ), typeId );
-  parameters.insert( QStringLiteral( "MEAN" ), mean );
-  parameters.insert( QStringLiteral( "STDDEV" ), stddev );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-
-  bool ok = false;
-  QgsProcessingFeedback feedback;
-  QVariantMap results;
-
-  if ( !succeeds )
+  for ( int i = 0; i < alglist.length(); i++ )
   {
-    //verify if user feedback for unacceptable values are thrown
-    alg->run( parameters, *context, &feedback, &ok );
-    QCOMPARE( ok, succeeds );
+    QString algname = alglist[i];
+
+    std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( algname ) );
+    //set project after layer has been added so that transform context/ellipsoid from crs is also set
+    std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+    context->setProject( &p );
+
+    QVariantMap parameters;
+
+    parameters.insert( QStringLiteral( "EXTENT" ), inputExtent );
+    parameters.insert( QStringLiteral( "TARGET_CRS" ), QgsCoordinateReferenceSystem( crs ) );
+    parameters.insert( QStringLiteral( "PIXEL_SIZE" ), pixelSize );
+    parameters.insert( QStringLiteral( "OUTPUT_TYPE" ), typeId );
+    parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+    bool ok = false;
+    QgsProcessingFeedback feedback;
+    QVariantMap results;
+
+    if ( !succeeds )
+    {
+      //verify if user feedback for unacceptable values are thrown
+      alg->run( parameters, *context, &feedback, &ok );
+      QCOMPARE( ok, succeeds );
+    }
+    else
+    {
+      //run alg...
+      results = alg->run( parameters, *context, &feedback, &ok );
+      QVERIFY( ok );
+
+      //...and check results with expected datasets
+      std::unique_ptr<QgsRasterLayer> outputRaster = qgis::make_unique< QgsRasterLayer >( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+      std::unique_ptr< QgsRasterInterface > outputInterface( outputRaster->dataProvider()->clone() );
+
+      QCOMPARE( outputInterface->dataType( 1 ), expectedDataType );
+    }
   }
-  else
-  {
-    //run alg...
-    results = alg->run( parameters, *context, &feedback, &ok );
-    QVERIFY( ok );
-
-    //...and check results with expected datasets
-    std::unique_ptr<QgsRasterLayer> outputRaster = qgis::make_unique< QgsRasterLayer >( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
-    std::unique_ptr< QgsRasterInterface > outputInterface( outputRaster->dataProvider()->clone() );
-
-    QCOMPARE( outputInterface->dataType( 1 ), expectedDataType );
-  }
-
 }
 
+
+void TestQgsProcessingAlgs::randomIntegerDistributionRaster_data()
+{
+  QTest::addColumn<QString>( "inputExtent" );
+  QTest::addColumn<Qgis::DataType>( "expectedDataType" );
+  QTest::addColumn<bool>( "succeeds" );
+  QTest::addColumn<QString>( "crs" );
+  QTest::addColumn<double>( "pixelSize" );
+  QTest::addColumn<int>( "typeId" );
+
+  QTest::newRow( "testcase 1" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::Int16
+      << true
+      << "EPSG:4326"
+      << 1.0
+      << 0;
+
+  QTest::newRow( "testcase 2" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::UInt16
+      << true
+      << "EPSG:4326"
+      << 1.0
+      << 1;
+
+
+  QTest::newRow( "testcase 3" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::Int32
+      << true
+      << "EPSG:4326"
+      << 1.0
+      << 2;
+
+  QTest::newRow( "testcase 4" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::UInt32
+      << true
+      << "EPSG:4326"
+      << 1.0
+      << 3;
+
+  QTest::newRow( "testcase 5" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::Float32
+      << true
+      << "EPSG:4326"
+      << 1.0
+      << 4;
+
+  QTest::newRow( "testcase 6" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::Float64
+      << true
+      << "EPSG:4326"
+      << 1.0
+      << 5;
+}
+
+
+void TestQgsProcessingAlgs::randomIntegerDistributionRaster()
+{
+  //this test only checks if the correct raster data type is chosen
+  //value by value comparison is not effective for random rasters
+  QFETCH( QString, inputExtent );
+  QFETCH( Qgis::DataType, expectedDataType );
+  QFETCH( bool, succeeds );
+  QFETCH( QString, crs );
+  QFETCH( double, pixelSize );
+  QFETCH( int, typeId );
+
+  //prepare input params
+  QgsProject p;
+  //set project crs and ellipsoid from input layer
+  p.setCrs( QgsCoordinateReferenceSystem( crs ), true );
+
+  QStringList alglist = QStringList();
+  alglist << QStringLiteral( "native:createrandombinomialrasterlayer" )
+          << QStringLiteral( "native:createrandomgeometricrasterlayer" )
+          << QStringLiteral( "native:createrandomnegativebinomialrasterlayer" )
+          << QStringLiteral( "native:createrandompoissonrasterlayer" );
+
+  for ( int i = 0; i < alglist.length(); i++ )
+  {
+    QString algname = alglist[i];
+
+    std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( algname ) );
+    //set project after layer has been added so that transform context/ellipsoid from crs is also set
+    std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+    context->setProject( &p );
+
+    QVariantMap parameters;
+
+    parameters.insert( QStringLiteral( "EXTENT" ), inputExtent );
+    parameters.insert( QStringLiteral( "TARGET_CRS" ), QgsCoordinateReferenceSystem( crs ) );
+    parameters.insert( QStringLiteral( "PIXEL_SIZE" ), pixelSize );
+    parameters.insert( QStringLiteral( "OUTPUT_TYPE" ), typeId );
+    parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+    bool ok = false;
+    QgsProcessingFeedback feedback;
+    QVariantMap results;
+
+    if ( !succeeds )
+    {
+      //verify if user feedback for unacceptable values are thrown
+      alg->run( parameters, *context, &feedback, &ok );
+      QCOMPARE( ok, succeeds );
+    }
+    else
+    {
+      //run alg...
+      results = alg->run( parameters, *context, &feedback, &ok );
+      QVERIFY( ok );
+
+      //...and check results with expected datasets
+      std::unique_ptr<QgsRasterLayer> outputRaster = qgis::make_unique< QgsRasterLayer >( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+      std::unique_ptr< QgsRasterInterface > outputInterface( outputRaster->dataProvider()->clone() );
+
+      QCOMPARE( outputInterface->dataType( 1 ), expectedDataType );
+    }
+  }
+}
 
 void TestQgsProcessingAlgs::randomRaster_data()
 {
@@ -3369,7 +3490,7 @@ void TestQgsProcessingAlgs::randomRaster()
 
   //prepare input params
   QgsProject p;
-  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:createrandomrasterlayer" ) ) );
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:createrandomuniformrasterlayer" ) ) );
 
   QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
 
