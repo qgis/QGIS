@@ -140,7 +140,7 @@ void QgsFeaturePickerWidget::onItemSelected( const QModelIndex &index )
 
 void QgsFeaturePickerWidget::onCurrentIndexChanged( int i )
 {
-  if ( !mHasStoredEditState )
+  if ( !mLineEdit->hasStateStored() )
     mIsCurrentlyEdited = false;
 
   mPreviousButton->setEnabled( i > 0 );
@@ -168,8 +168,7 @@ void QgsFeaturePickerWidget::storeLineEditState()
 {
   if ( mIsCurrentlyEdited )
   {
-    mHasStoredEditState = true;
-    mLineEditState.store( mLineEdit );
+    mLineEdit->storeState( );
   }
 }
 
@@ -177,8 +176,7 @@ void QgsFeaturePickerWidget::restoreLineEditState()
 {
   if ( mIsCurrentlyEdited )
   {
-    mHasStoredEditState = false;
-    mLineEditState.restore( mLineEdit );
+    mLineEdit->restoreState( );
   }
 }
 
@@ -254,22 +252,6 @@ QString QgsFeaturePickerWidget::filterExpression() const
 void QgsFeaturePickerWidget::setFilterExpression( const QString &filterExpression )
 {
   mModel->setFilterExpression( filterExpression );
-}
-
-void QgsFeaturePickerWidget::LineEditState::store( QLineEdit *lineEdit )
-{
-  text = lineEdit->text();
-  selectionStart = lineEdit->selectionStart();
-  selectionLength = lineEdit->selectedText().length();
-  cursorPosition = lineEdit->cursorPosition();
-}
-
-void QgsFeaturePickerWidget::LineEditState::restore( QLineEdit *lineEdit ) const
-{
-  lineEdit->setText( text );
-  lineEdit->setCursorPosition( cursorPosition );
-  if ( selectionStart > -1 )
-    lineEdit->setSelection( selectionStart, selectionLength );
 }
 
 bool QgsFeaturePickerWidget::fetchGeometry() const

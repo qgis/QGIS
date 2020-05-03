@@ -16089,6 +16089,95 @@ void QgisApp::triggerCrashHandler()
 #endif
 }
 
+void QgisApp::addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockWidget, const QStringList &tabifyWith, bool raiseTab )
+{
+  QList< QDockWidget * > dockWidgetsInArea;
+  const auto dockWidgets = findChildren< QDockWidget * >();
+  for ( QDockWidget *w : dockWidgets )
+  {
+    if ( w->isVisible() && dockWidgetArea( w ) == area )
+    {
+      dockWidgetsInArea << w;
+    }
+  }
+
+  addDockWidget( area, dockWidget );  // First add the dock widget, then attempt to tabify
+  if ( dockWidgetsInArea.length() > 0 )
+  {
+    // Get the base dock widget that we'll use to tabify our new dockWidget
+    QDockWidget *tabifyWithDockWidget = nullptr;
+    if ( !tabifyWith.isEmpty() )
+    {
+      // Iterate the list of object names looking for a
+      // dock widget to tabify the new one on top of it
+      bool objectNameFound = false;
+      for ( int i = 0; i < tabifyWith.size(); i++ )
+      {
+        for ( QDockWidget *cw : dockWidgetsInArea )
+        {
+          if ( cw->objectName() == tabifyWith.at( i ) )
+          {
+            tabifyWithDockWidget = cw;
+            objectNameFound = true;  // Also exit the outer for loop
+            break;
+          }
+        }
+        if ( objectNameFound )
+        {
+          break;
+        }
+      }
+    }
+    if ( !tabifyWithDockWidget )
+    {
+      tabifyWithDockWidget = dockWidgetsInArea.at( 0 );  // Last resort
+    }
+
+    QTabBar *existentTabBar = nullptr;
+    int currentIndex = -1;
+    if ( !raiseTab && dockWidgetsInArea.length() > 1 )
+    {
+      // Chances are we've already got a tabBar, if so, get
+      // currentIndex to restore status after inserting our new tab
+      const QList<QTabBar *> tabBars = findChildren<QTabBar *>( QString(), Qt::FindDirectChildrenOnly );
+      bool tabBarFound = false;
+      for ( QTabBar *tabBar : tabBars )
+      {
+        for ( int i = 0; i < tabBar->count(); i++ )
+        {
+          if ( tabBar->tabText( i ) == tabifyWithDockWidget->windowTitle() )
+          {
+            existentTabBar = tabBar;
+            currentIndex = tabBar->currentIndex();
+            tabBarFound = true;
+            break;
+          }
+        }
+        if ( tabBarFound )
+        {
+          break;
+        }
+      }
+    }
+
+    // Now we can put the new dockWidget on top of tabifyWith
+    tabifyDockWidget( tabifyWithDockWidget, dockWidget );
+
+    // Should we restore dock widgets status?
+    if ( !raiseTab )
+    {
+      if ( existentTabBar )
+      {
+        existentTabBar->setCurrentIndex( currentIndex );
+      }
+      else
+      {
+        tabifyWithDockWidget->raise();  // Single base dock widget, we can just raise it
+      }
+    }
+  }
+}
+
 QgsAttributeEditorContext QgisApp::createAttributeEditorContext()
 {
   QgsAttributeEditorContext context;

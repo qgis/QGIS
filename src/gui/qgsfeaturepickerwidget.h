@@ -218,17 +218,6 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
     void browseFeatures( int direction );
 
   private:
-    struct LineEditState
-    {
-      void store( QLineEdit *lineEdit );
-      void restore( QLineEdit *lineEdit ) const;
-
-      QString text;
-      int selectionStart;
-      int selectionLength;
-      int cursorPosition;
-    };
-
     QComboBox *mComboBox;
     QToolButton *mPreviousButton;
     QToolButton *mNextButton;
@@ -238,10 +227,7 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
     bool mPopupRequested = false;
     bool mIsCurrentlyEdited = false;
     bool mHasStoredEditState = false;
-    LineEditState mLineEditState;
     bool mShowBrowserButtons = false;
-
-    friend class TestQgsFeaturePickerWidget;
 };
 
 

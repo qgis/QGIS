@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>880</width>
-    <height>589</height>
+    <width>521</width>
+    <height>650</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -172,7 +172,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>858</width>
+               <width>499</width>
                <height>300</height>
               </rect>
              </property>
@@ -694,7 +694,7 @@
               <item>
                <widget class="QStackedWidget" name="mLabelStackedWidget">
                 <property name="currentIndex">
-                 <number>6</number>
+                 <number>7</number>
                 </property>
                 <widget class="QWidget" name="mLabelPage_Text">
                  <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -723,8 +723,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>317</width>
-                       <height>260</height>
+                       <width>323</width>
+                       <height>292</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -1303,8 +1303,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>348</width>
-                       <height>624</height>
+                       <width>373</width>
+                       <height>708</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_42">
@@ -1969,21 +1969,6 @@ font-style: italic;</string>
                              <property name="layoutDirection">
                               <enum>Qt::LeftToRight</enum>
                              </property>
-                             <item>
-                              <property name="text">
-                               <string>Left</string>
-                              </property>
-                             </item>
-                             <item>
-                              <property name="text">
-                               <string>Center</string>
-                              </property>
-                             </item>
-                             <item>
-                              <property name="text">
-                               <string>Right</string>
-                              </property>
-                             </item>
                             </widget>
                            </item>
                            <item row="0" column="1">
@@ -2202,8 +2187,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>284</width>
-                       <height>273</height>
+                       <width>299</width>
+                       <height>308</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2548,8 +2533,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>830</width>
-                       <height>376</height>
+                       <width>294</width>
+                       <height>291</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_121">
@@ -2826,8 +2811,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>816</width>
-                       <height>696</height>
+                       <width>440</width>
+                       <height>786</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -3587,8 +3572,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>816</width>
-                       <height>406</height>
+                       <width>324</width>
+                       <height>457</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -4015,8 +4000,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>830</width>
-                       <height>376</height>
+                       <width>159</width>
+                       <height>211</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_46">
@@ -4165,8 +4150,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>431</width>
-                       <height>1108</height>
+                       <width>471</width>
+                       <height>1297</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -4359,6 +4344,13 @@ font-style: italic;</string>
                                </property>
                               </widget>
                              </item>
+                             <item row="1" column="1">
+                              <widget class="QRadioButton" name="radPolygonFree">
+                               <property name="text">
+                                <string>Free (angled)</string>
+                               </property>
+                              </widget>
+                             </item>
                              <item row="1" column="0">
                               <widget class="QRadioButton" name="radAroundCentroid">
                                <property name="sizePolicy">
@@ -4369,13 +4361,6 @@ font-style: italic;</string>
                                </property>
                                <property name="text">
                                 <string>Around centroid</string>
-                               </property>
-                              </widget>
-                             </item>
-                             <item row="1" column="1">
-                              <widget class="QRadioButton" name="radPolygonFree">
-                               <property name="text">
-                                <string>Free</string>
                                </property>
                               </widget>
                              </item>
@@ -4392,6 +4377,19 @@ font-style: italic;</string>
                                </property>
                               </widget>
                              </item>
+                             <item row="1" column="3">
+                              <spacer name="horizontalSpacer_26">
+                               <property name="orientation">
+                                <enum>Qt::Horizontal</enum>
+                               </property>
+                               <property name="sizeHint" stdset="0">
+                                <size>
+                                 <width>40</width>
+                                 <height>20</height>
+                                </size>
+                               </property>
+                              </spacer>
+                             </item>
                              <item row="2" column="1">
                               <widget class="QRadioButton" name="radPolygonPerimeterCurved">
                                <property name="sizePolicy">
@@ -4405,18 +4403,12 @@ font-style: italic;</string>
                                </property>
                               </widget>
                              </item>
-                             <item row="1" column="2">
-                              <spacer name="horizontalSpacer_26">
-                               <property name="orientation">
-                                <enum>Qt::Horizontal</enum>
+                             <item row="3" column="0">
+                              <widget class="QRadioButton" name="radPolygonOutside">
+                               <property name="text">
+                                <string>Outside polygons</string>
                                </property>
-                               <property name="sizeHint" stdset="0">
-                                <size>
-                                 <width>40</width>
-                                 <height>20</height>
-                                </size>
-                               </property>
-                              </spacer>
+                              </widget>
                              </item>
                             </layout>
                            </widget>
@@ -4526,6 +4518,57 @@ font-style: italic;</string>
                        </widget>
                       </item>
                       <item>
+                       <widget class="QFrame" name="mPlacementPolygonFrame">
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>0</height>
+                         </size>
+                        </property>
+                        <property name="toolTip">
+                         <string>Allowed label placement for lines. At least one position must be selected.</string>
+                        </property>
+                        <property name="frameShape">
+                         <enum>QFrame::NoFrame</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Raised</enum>
+                        </property>
+                        <layout class="QGridLayout" name="gridLayout_48">
+                         <property name="leftMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="topMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="rightMargin">
+                          <number>0</number>
+                         </property>
+                         <property name="bottomMargin">
+                          <number>0</number>
+                         </property>
+                         <item row="0" column="0">
+                          <layout class="QHBoxLayout" name="horizontalLayout_11">
+                           <item>
+                            <widget class="QCheckBox" name="mCheckAllowLabelsOutsidePolygons">
+                             <property name="text">
+                              <string>Allow placing labels outside of polygons</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QgsPropertyOverrideButton" name="mAllowOutsidePolygonsDDBtn">
+                             <property name="text">
+                              <string>…</string>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                      <item>
                        <widget class="QFrame" name="mPlacementCentroidFrame">
                         <property name="frameShape">
                          <enum>QFrame::NoFrame</enum>
@@ -4546,23 +4589,7 @@ font-style: italic;</string>
                          <property name="bottomMargin">
                           <number>0</number>
                          </property>
-                         <item row="0" column="0">
-                          <widget class="QLabel" name="mCentroidLabel">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>Centroid</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="0" column="1">
+                         <item row="1" column="1">
                           <widget class="QRadioButton" name="mCentroidRadioVisible">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -4578,7 +4605,14 @@ font-style: italic;</string>
                            </property>
                           </widget>
                          </item>
-                         <item row="0" column="2">
+                         <item row="1" column="3">
+                          <widget class="QgsPropertyOverrideButton" name="mCentroidDDBtn">
+                           <property name="text">
+                            <string>…</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="2">
                           <widget class="QRadioButton" name="mCentroidRadioWhole">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -4591,17 +4625,26 @@ font-style: italic;</string>
                            </property>
                           </widget>
                          </item>
-                         <item row="0" column="3">
-                          <widget class="QgsPropertyOverrideButton" name="mCentroidDDBtn">
-                           <property name="text">
-                            <string>…</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="1" colspan="3">
+                         <item row="2" column="1" colspan="3">
                           <widget class="QCheckBox" name="mCentroidInsideCheckBox">
                            <property name="text">
                             <string>Force point inside polygon</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="0">
+                          <widget class="QLabel" name="mCentroidLabel">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="text">
+                            <string>Centroid</string>
+                           </property>
+                           <property name="alignment">
+                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                            </property>
                           </widget>
                          </item>
@@ -5990,8 +6033,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>383</width>
-                       <height>624</height>
+                       <width>430</width>
+                       <height>708</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -6989,6 +7032,7 @@ font-style: italic;</string>
   <tabstop>radPolygonFree</tabstop>
   <tabstop>radPolygonPerimeter</tabstop>
   <tabstop>radPolygonPerimeterCurved</tabstop>
+  <tabstop>radPolygonOutside</tabstop>
   <tabstop>radPredefinedOrder</tabstop>
   <tabstop>radAroundPoint</tabstop>
   <tabstop>radOverPoint</tabstop>
@@ -6999,6 +7043,8 @@ font-style: italic;</string>
   <tabstop>chkLineOn</tabstop>
   <tabstop>chkLineBelow</tabstop>
   <tabstop>chkLineOrientationDependent</tabstop>
+  <tabstop>mCheckAllowLabelsOutsidePolygons</tabstop>
+  <tabstop>mAllowOutsidePolygonsDDBtn</tabstop>
   <tabstop>mLinePlacementFlagsDDBtn</tabstop>
   <tabstop>mCentroidRadioVisible</tabstop>
   <tabstop>mCentroidRadioWhole</tabstop>
@@ -7083,6 +7129,30 @@ font-style: italic;</string>
   <tabstop>mFontLetterSpacingDDBtn</tabstop>
   <tabstop>mCheckBoxSubstituteText</tabstop>
   <tabstop>mFontWordSpacingDDBtn</tabstop>
+  <tabstop>mTextOrientationComboBox</tabstop>
+  <tabstop>mTextOrientationDDBtn</tabstop>
+  <tabstop>mKerningCheckBox</tabstop>
+  <tabstop>mBufferDrawDDBtn</tabstop>
+  <tabstop>mBufferDrawChkBx</tabstop>
+  <tabstop>scrollArea_71</tabstop>
+  <tabstop>mMaskJoinStyleComboBox</tabstop>
+  <tabstop>mMaskOpacityDDBtn</tabstop>
+  <tabstop>mMaskBufferUnitWidget</tabstop>
+  <tabstop>mMaskJoinStyleDDBtn</tabstop>
+  <tabstop>mMaskBufferUnitsDDBtn</tabstop>
+  <tabstop>mMaskBufferSizeSpinBox</tabstop>
+  <tabstop>mMaskBufferSizeDDBtn</tabstop>
+  <tabstop>mMaskOpacityWidget</tabstop>
+  <tabstop>scrollArea_6</tabstop>
+  <tabstop>mCalloutsDrawCheckBox</tabstop>
+  <tabstop>mCalloutDrawDDBtn</tabstop>
+  <tabstop>mCalloutStyleComboBox</tabstop>
+  <tabstop>mOverrunDistanceSpinBox</tabstop>
+  <tabstop>mOverrunDistanceDDBtn</tabstop>
+  <tabstop>mOverrunDistanceUnitWidget</tabstop>
+  <tabstop>mChkNoObstacle</tabstop>
+  <tabstop>mIsObstacleDDBtn</tabstop>
+  <tabstop>mObstacleSettingsButton</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

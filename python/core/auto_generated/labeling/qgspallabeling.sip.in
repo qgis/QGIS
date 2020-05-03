@@ -99,6 +99,7 @@ class QgsPalLayerSettings
       Free,
       OrderedPositionsAroundPoint,
       PerimeterCurved,
+      OutsidePolygons,
     };
 
     enum PredefinedPointPosition
@@ -287,6 +288,7 @@ class QgsPalLayerSettings
       LinePlacementOptions,
       OverrunDistance,
       LabelAllParts,
+      PolygonLabelOutside,
 
       // rendering
       ScaleVisibility,
@@ -400,6 +402,24 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
     Placement placement;
 
     unsigned int placementFlags;
+
+    QgsLabeling::PolygonPlacementFlags polygonPlacementFlags() const;
+%Docstring
+Returns the polygon placement flags, which dictate how polygon labels can be placed.
+
+.. seealso:: :py:func:`setPolygonPlacementFlags`
+
+.. versionadded:: 3.14
+%End
+
+    void setPolygonPlacementFlags( QgsLabeling::PolygonPlacementFlags flags );
+%Docstring
+Sets the polygon placement ``flags``, which dictate how polygon labels can be placed.
+
+.. seealso:: :py:func:`polygonPlacementFlags`
+
+.. versionadded:: 3.14
+%End
 
     bool centroidWhole;
 

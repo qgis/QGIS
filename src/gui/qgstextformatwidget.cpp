@@ -261,6 +261,8 @@ void QgsTextFormatWidget::initWidget()
   // post updatePlacementWidgets() connections
   connect( chkLineAbove, &QAbstractButton::toggled, this, &QgsTextFormatWidget::updatePlacementWidgets );
   connect( chkLineBelow, &QAbstractButton::toggled, this, &QgsTextFormatWidget::updatePlacementWidgets );
+  connect( mCheckAllowLabelsOutsidePolygons, &QAbstractButton::toggled, this, &QgsTextFormatWidget::updatePlacementWidgets );
+  connect( mAllowOutsidePolygonsDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::updatePlacementWidgets );
 
   // setup point placement button group
   mPlacePointBtnGrp = new QButtonGroup( this );
@@ -286,6 +288,7 @@ void QgsTextFormatWidget::initWidget()
   mPlacePolygonBtnGrp->addButton( radPolygonFree, static_cast<int>( QgsPalLayerSettings::Free ) );
   mPlacePolygonBtnGrp->addButton( radPolygonPerimeter, static_cast<int>( QgsPalLayerSettings::Line ) );
   mPlacePolygonBtnGrp->addButton( radPolygonPerimeterCurved, static_cast<int>( QgsPalLayerSettings::PerimeterCurved ) );
+  mPlacePolygonBtnGrp->addButton( radPolygonOutside, static_cast<int>( QgsPalLayerSettings::OutsidePolygons ) );
   mPlacePolygonBtnGrp->setExclusive( true );
   connect( mPlacePolygonBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePlacementWidgets );
 
@@ -459,6 +462,7 @@ void QgsTextFormatWidget::initWidget()
           << radPolygonHorizontal
           << radPolygonPerimeter
           << radPolygonPerimeterCurved
+          << radPolygonOutside
           << radPredefinedOrder
           << mFieldExpressionWidget
           << mCheckBoxSubstituteText
@@ -472,7 +476,8 @@ void QgsTextFormatWidget::initWidget()
           << mEnableMaskChkBx
           << mMaskJoinStyleComboBox
           << mMaskBufferSizeSpinBox
-          << mMaskOpacityWidget;
+          << mMaskOpacityWidget
+          << mCheckAllowLabelsOutsidePolygons;
 
   connectValueChanged( widgets, SLOT( updatePreview() ) );
 
@@ -760,6 +765,7 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mLineDistanceDDBtn, QgsPalLayerSettings::LabelDistance );
   registerDataDefinedButton( mLineDistanceUnitDDBtn, QgsPalLayerSettings::DistanceUnits );
   registerDataDefinedButton( mPriorityDDBtn, QgsPalLayerSettings::Priority );
+  registerDataDefinedButton( mAllowOutsidePolygonsDDBtn, QgsPalLayerSettings::PolygonLabelOutside );
 
   // TODO: is this necessary? maybe just use the data defined-only rotation?
   //mPointAngleDDBtn, QgsPalLayerSettings::OffsetRotation,
@@ -1273,6 +1279,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   bool showDistanceFrame = false;
   bool showRotationFrame = false;
   bool showMaxCharAngleFrame = false;
+  bool showPolygonPlacementOptions = ( curWdgt == pagePolygon && !radPolygonPerimeter->isChecked() && !radPolygonPerimeterCurved->isChecked() && !radPolygonOutside->isChecked() );
 
   bool enableMultiLinesFrame = true;
 
@@ -1321,8 +1328,13 @@ void QgsTextFormatWidget::updatePlacementWidgets()
     // TODO: enable mMultiLinesFrame when supported for curved labels
     enableMultiLinesFrame = !isCurved;
   }
+  else if ( curWdgt == pagePolygon && ( radPolygonOutside->isChecked() || mCheckAllowLabelsOutsidePolygons->isChecked() || mAllowOutsidePolygonsDDBtn->isActive() ) )
+  {
+    showDistanceFrame = true;
+  }
 
   mPlacementLineFrame->setVisible( showLineFrame );
+  mPlacementPolygonFrame->setVisible( showPolygonPlacementOptions );
   mPlacementCentroidFrame->setVisible( showCentroidFrame );
   mPlacementQuadrantFrame->setVisible( showQuadrantFrame );
   mPlacementFixedQuadrantFrame->setVisible( showFixedQuadrantFrame );

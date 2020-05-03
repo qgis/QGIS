@@ -43,7 +43,7 @@ class QgsFeatureExpressionValuesGatherer: public QThread
        * Constructor
        * \param layer the vector layer
        * \param displayExpression if empty, the display expression is taken from the layer definition
-       * \param request the reqeust to perform
+       * \param request the request to perform
        * \param identifierFields an optional list of fields name to be save in a variant list for an easier reuse
        */
     QgsFeatureExpressionValuesGatherer( QgsVectorLayer *layer,

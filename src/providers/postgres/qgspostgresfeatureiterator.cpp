@@ -859,7 +859,14 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
     }
     case QVariant::LongLong:
     {
-      v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), QString::number( mConn->getBinaryInt( queryResult, row, col ) ), fld.typeName() );
+      if ( ::PQgetisnull( queryResult.result(), row, col ) )
+      {
+        v = QVariant( QVariant::LongLong );
+      }
+      else
+      {
+        v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), QString::number( mConn->getBinaryInt( queryResult, row, col ) ), fld.typeName() );
+      }
       break;
     }
     default:

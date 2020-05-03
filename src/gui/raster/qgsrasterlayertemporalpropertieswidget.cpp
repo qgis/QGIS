@@ -40,7 +40,6 @@ void QgsRasterLayerTemporalPropertiesWidget::init()
 
   mEndTemporalDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
 
-  mTemporalGroupBox->setChecked( mLayer->temporalProperties()->isActive() );
   switch ( mLayer->temporalProperties()->mode() )
   {
     case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
@@ -61,6 +60,7 @@ void QgsRasterLayerTemporalPropertiesWidget::init()
     mModeFixedRangeRadio->setChecked( true );
   }
 
+  mTemporalGroupBox->setChecked( mLayer->temporalProperties()->isActive() );
 }
 
 void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()

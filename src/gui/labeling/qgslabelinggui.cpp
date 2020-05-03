@@ -182,6 +182,10 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
     initCalloutWidgets();
   } );
 
+  mFontMultiLineAlignComboBox->addItem( tr( "Left" ), QgsPalLayerSettings::MultiLeft );
+  mFontMultiLineAlignComboBox->addItem( tr( "Center" ), QgsPalLayerSettings::MultiCenter );
+  mFontMultiLineAlignComboBox->addItem( tr( "Right" ), QgsPalLayerSettings::MultiRight );
+
   // connections for groupboxes with separate activation checkboxes (that need to honor data defined setting)
   connect( mBufferDrawChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mEnableMaskChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
@@ -290,6 +294,8 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   chkLineOn->setChecked( mSettings.placementFlags & QgsPalLayerSettings::OnLine );
   chkLineOrientationDependent->setChecked( !( mSettings.placementFlags & QgsPalLayerSettings::MapOrientation ) );
 
+  mCheckAllowLabelsOutsidePolygons->setChecked( mSettings.polygonPlacementFlags() & QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon );
+
   switch ( mSettings.placement )
   {
     case QgsPalLayerSettings::AroundPoint:
@@ -320,6 +326,9 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
       break;
     case QgsPalLayerSettings::PerimeterCurved:
       radPolygonPerimeterCurved->setChecked( true );
+      break;
+    case QgsPalLayerSettings::OutsidePolygons:
+      radPolygonOutside->setChecked( true );
       break;
   }
 
@@ -362,9 +371,9 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mAutoWrapLengthSpinBox->setValue( mSettings.autoWrapLength );
   mAutoWrapTypeComboBox->setCurrentIndex( mSettings.useMaxLineLengthForAutoWrap ? 0 : 1 );
 
-  if ( ( int ) mSettings.multilineAlign < mFontMultiLineAlignComboBox->count() )
+  if ( mFontMultiLineAlignComboBox->findData( mSettings.multilineAlign ) != -1 )
   {
-    mFontMultiLineAlignComboBox->setCurrentIndex( mSettings.multilineAlign );
+    mFontMultiLineAlignComboBox->setCurrentIndex( mFontMultiLineAlignComboBox->findData( mSettings.multilineAlign ) );
   }
   else
   {
@@ -458,6 +467,11 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.dist = 0;
   lyr.placementFlags = 0;
 
+  QgsLabeling::PolygonPlacementFlags polygonPlacementFlags = QgsLabeling::PolygonPlacementFlag::AllowPlacementInsideOfPolygon;
+  if ( mCheckAllowLabelsOutsidePolygons->isChecked() )
+    polygonPlacementFlags |= QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon;
+  lyr.setPolygonPlacementFlags( polygonPlacementFlags );
+
   QWidget *curPlacementWdgt = stackedPlacement->currentWidget();
   lyr.centroidWhole = mCentroidRadioWhole->isChecked();
   lyr.centroidInside = mCentroidInsideCheckBox->isChecked();
@@ -518,6 +532,10 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   else if ( radPolygonFree->isChecked() )
   {
     lyr.placement = QgsPalLayerSettings::Free;
+  }
+  else if ( radPolygonOutside->isChecked() )
+  {
+    lyr.placement = QgsPalLayerSettings::OutsidePolygons;
   }
   else
   {
@@ -582,7 +600,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.wrapChar = wrapCharacterEdit->text();
   lyr.autoWrapLength = mAutoWrapLengthSpinBox->value();
   lyr.useMaxLineLengthForAutoWrap = mAutoWrapTypeComboBox->currentIndex() == 0;
-  lyr.multilineAlign = ( QgsPalLayerSettings::MultiLineAlign ) mFontMultiLineAlignComboBox->currentIndex();
+  lyr.multilineAlign = static_cast< QgsPalLayerSettings::MultiLineAlign >( mFontMultiLineAlignComboBox->currentData().toInt() );
   lyr.preserveRotation = chkPreserveRotation->isChecked();
   lyr.geometryGenerator = mGeometryGenerator->text();
   lyr.geometryGeneratorType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
@@ -793,15 +811,15 @@ void QgsLabelingGui::updateGeometryTypeBasedWidgets()
       qFatal( "unknown geometry type unexpected" );
   }
 
-  if ( geometryType == QgsWkbTypes::PointGeometry )
+  if ( geometryType == QgsWkbTypes::PointGeometry || geometryType == QgsWkbTypes::PolygonGeometry )
   {
-    // follow placement alignment is only valid for point layers
-    if ( mFontMultiLineAlignComboBox->findText( tr( "Follow label placement" ) ) == -1 )
-      mFontMultiLineAlignComboBox->addItem( tr( "Follow label placement" ) );
+    // follow placement alignment is only valid for point or polygon layers
+    if ( mFontMultiLineAlignComboBox->findData( QgsPalLayerSettings::MultiFollowPlacement ) == -1 )
+      mFontMultiLineAlignComboBox->addItem( tr( "Follow Label Placement" ), QgsPalLayerSettings::MultiFollowPlacement );
   }
   else
   {
-    int idx = mFontMultiLineAlignComboBox->findText( tr( "Follow label placement" ) );
+    int idx = mFontMultiLineAlignComboBox->findData( QgsPalLayerSettings::MultiFollowPlacement );
     if ( idx >= 0 )
       mFontMultiLineAlignComboBox->removeItem( idx );
   }

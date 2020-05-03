@@ -248,24 +248,11 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     void onDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>() );
 
   private:
-    struct LineEditState
-    {
-      void store( QLineEdit *lineEdit );
-      void restore( QLineEdit *lineEdit ) const;
-
-      QString text;
-      int selectionStart;
-      int selectionLength;
-      int cursorPosition;
-    };
-
     QgsFeatureFilterModel *mModel = nullptr;
     QCompleter *mCompleter = nullptr;
     QgsFilterLineEdit *mLineEdit;
     bool mPopupRequested = false;
     bool mIsCurrentlyEdited = false;
-    bool mHasStoredEditState = false;
-    LineEditState mLineEditState;
 
     friend class TestQgsFeatureListComboBox;
 };

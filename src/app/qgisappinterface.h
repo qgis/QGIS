@@ -132,6 +132,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void insertAddLayerAction( QAction *action ) override;
     void removeAddLayerAction( QAction *action ) override;
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) override;
+    void addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget, const QStringList &tabifyWith = QStringList(), bool raiseTab = false ) override;
     void removeDockWidget( QDockWidget *dockwidget ) override;
     QgsAdvancedDigitizingDockWidget *cadDockWidget() override;
     void showLayerProperties( QgsMapLayer *l ) override;

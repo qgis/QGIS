@@ -889,9 +889,26 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Adds a \a dock widget to the main window, in the specified dock \a area.
      *
+     * \see addTabifiedDockWidget()
      * \see removeDockWidget()
      */
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) = 0;
+
+    /**
+     * Add a dock widget to the given area and tabify it (if other dock widgets
+     * exist in the same \a area). The new tab will be below other tabs unless
+     * \a raiseTab is passed as true.
+     *
+     * \a tabifyWith is a list of dock widget object names, ordered by
+     * priority, with which the new dock widget should be tabified. Only the
+     * first matching object name will be picked. If none of the given object
+     * names is found in that \a area (or if \a tabifyWith is not given at
+     * all), the new dock widget will be created anyways, but its location
+     * within that \a area will be unpredictable.
+     *
+     * \since QGIS 3.14
+     */
+    virtual void addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget, const QStringList &tabifyWith = QStringList(), bool raiseTab = false ) = 0;
 
     /**
      * Removes the specified \a dock widget from main window (without deleting it).

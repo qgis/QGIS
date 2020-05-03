@@ -217,7 +217,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
     mDock = new QgsAttributeTableDock( QString(), QgisApp::instance() );
     mDock->setWidget( this );
     connect( this, &QObject::destroyed, mDock, &QWidget::close );
-    QgisApp::instance()->addDockWidget( Qt::BottomDockWidgetArea, mDock );
+    QgisApp::instance()->addTabifiedDockWidget( Qt::BottomDockWidgetArea, mDock, QStringList(), true );
   }
   mActionDockUndock->setChecked( dockTable );
   connect( mActionDockUndock, &QAction::toggled, this, &QgsAttributeTableDialog::toggleDockMode );
@@ -893,7 +893,7 @@ void QgsAttributeTableDialog::toggleDockMode( bool docked )
     mDock = new QgsAttributeTableDock( QString(), QgisApp::instance() );
     mDock->setWidget( this );
     connect( this, &QObject::destroyed, mDock, &QWidget::close );
-    QgisApp::instance()->addDockWidget( Qt::BottomDockWidgetArea, mDock );
+    QgisApp::instance()->addTabifiedDockWidget( Qt::BottomDockWidgetArea, mDock, QStringList(), true );
     updateTitle();
 
     // To prevent "QAction::event: Ambiguous shortcut overload"

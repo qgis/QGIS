@@ -1057,7 +1057,25 @@ Remove action from the Web menu
 %Docstring
 Adds a ``dock`` widget to the main window, in the specified dock ``area``.
 
+.. seealso:: :py:func:`addTabifiedDockWidget`
+
 .. seealso:: :py:func:`removeDockWidget`
+%End
+
+    virtual void addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget, const QStringList &tabifyWith = QStringList(), bool raiseTab = false ) = 0;
+%Docstring
+Add a dock widget to the given area and tabify it (if other dock widgets
+exist in the same ``area``). The new tab will be below other tabs unless
+``raiseTab`` is passed as true.
+
+``tabifyWith`` is a list of dock widget object names, ordered by
+priority, with which the new dock widget should be tabified. Only the
+first matching object name will be picked. If none of the given object
+names is found in that ``area`` (or if ``tabifyWith`` is not given at
+all), the new dock widget will be created anyways, but its location
+within that ``area`` will be unpredictable.
+
+.. versionadded:: 3.14
 %End
 
     virtual void removeDockWidget( QDockWidget *dockwidget ) = 0;

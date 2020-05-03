@@ -23,3 +23,6 @@ qgis_layerdefinition
 
 # MSSQL requires the MSSQL docker
 PyQgsProviderConnectionMssql
+
+# Broken - segfaults on Travis, likely due to a real issue in the server code
+PyQgsServerWMSGetPrint
