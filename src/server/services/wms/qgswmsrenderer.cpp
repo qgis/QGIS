@@ -58,7 +58,7 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgsvectorlayerfeaturecounter.h"
 #include "qgspallabeling.h"
-#include "qgslayerrestorer.h"
+#include "qgswmsrestorer.h"
 #include "qgsdxfexport.h"
 #include "qgssymbollayerutils.h"
 #include "qgsserverexception.h"
@@ -112,8 +112,8 @@ namespace QgsWms
   QImage *QgsRenderer::getLegendGraphics( QgsLayerTreeModel &model )
   {
     // get layers
-    std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+    std::unique_ptr<QgsWmsRestorer> restorer;
+    restorer.reset( new QgsWmsRestorer( mContext ) );
 
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
@@ -151,8 +151,8 @@ namespace QgsWms
   QImage *QgsRenderer::getLegendGraphics( QgsLayerTreeModelLegendNode &nodeModel )
   {
     // get layers
-    std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+    std::unique_ptr<QgsWmsRestorer> restorer;
+    restorer.reset( new QgsWmsRestorer( mContext ) );
 
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
@@ -182,8 +182,8 @@ namespace QgsWms
   QJsonObject QgsRenderer::getLegendGraphicsAsJson( QgsLayerTreeModel &model )
   {
     // get layers
-    std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+    std::unique_ptr<QgsWmsRestorer> restorer;
+    restorer.reset( new QgsWmsRestorer( mContext ) );
 
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
@@ -259,8 +259,8 @@ namespace QgsWms
     }
 
     // init layer restorer before doing anything
-    std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+    std::unique_ptr<QgsWmsRestorer> restorer;
+    restorer.reset( new QgsWmsRestorer( mContext ) );
 
     // configure layers
     QgsMapSettings mapSettings;
@@ -288,8 +288,8 @@ namespace QgsWms
   QByteArray QgsRenderer::getPrint()
   {
     // init layer restorer before doing anything
-    std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+    std::unique_ptr<QgsWmsRestorer> restorer;
+    restorer.reset( new QgsWmsRestorer( mContext ) );
 
     // GetPrint request needs a template parameter
     const QString templateName = mWmsParameters.composerTemplate();
@@ -795,8 +795,8 @@ namespace QgsWms
     }
 
     // init layer restorer before doing anything
-    std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+    std::unique_ptr<QgsWmsRestorer> restorer;
+    restorer.reset( new QgsWmsRestorer( mContext ) );
 
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
@@ -836,8 +836,8 @@ namespace QgsWms
   std::unique_ptr<QgsDxfExport> QgsRenderer::getDxf()
   {
     // init layer restorer before doing anything
-    std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+    std::unique_ptr<QgsWmsRestorer> restorer;
+    restorer.reset( new QgsWmsRestorer( mContext ) );
 
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
@@ -949,8 +949,8 @@ namespace QgsWms
     std::unique_ptr<QImage> outputImage( createImage( mContext.mapSize() ) );
 
     // init layer restorer before doing anything
-    std::unique_ptr<QgsLayerRestorer> restorer;
-    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+    std::unique_ptr<QgsWmsRestorer> restorer;
+    restorer.reset( new QgsWmsRestorer( mContext ) );
 
     // The CRS parameter is considered as mandatory in configureMapSettings
     // but in the case of filter parameter, CRS parameter has not to be mandatory

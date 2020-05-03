@@ -1,6 +1,6 @@
 /***************************************************************************
-                              qgslayerrestorer.h
-                              -------------------
+                              qgswmsrestorer.h
+                              ----------------
   begin                : April 24, 2017
   copyright            : (C) 2017 by Paul Blottiere
   email                : paul.blottiere@oslandia.com
@@ -15,14 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSLAYERRESTORER_H
-#define QGSLAYERRESTORER_H
+#ifndef QGSWMSRESTORER_H
+#define QGSWMSRESTORER_H
 
 #include <QList>
 #include <QDomDocument>
 #include <QMap>
 
 #include "qgsfeatureid.h"
+#include "qgswmsrendercontext.h"
 
 class QgsMapLayer;
 
@@ -62,6 +63,35 @@ class QgsLayerRestorer
     };
 
     QMap<QgsMapLayer *, QgsLayerSettings> mLayerSettings;
+};
+
+namespace QgsWms
+{
+
+  /**
+   * \ingroup server
+   * RAII class to restore the rendering context configuration on destruction
+   * \since QGIS 3.14
+   */
+  class QgsWmsRestorer
+  {
+    public:
+
+      /**
+       * Constructor for QgsWmsRestorer.
+       * \param context The rendering context to restore in its initial state
+       */
+      QgsWmsRestorer( const QgsWmsRenderContext &context );
+
+      /**
+       * Default destructor.
+       */
+      ~QgsWmsRestorer() = default;
+
+    private:
+
+      QgsLayerRestorer mLayerRestorer;
+  };
 };
 
 #endif
