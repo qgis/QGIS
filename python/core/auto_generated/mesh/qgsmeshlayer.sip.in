@@ -320,6 +320,24 @@ Sets the reference time of the layer
 .. versionadded:: 3.14
 %End
 
+    QgsPointXY snapOnElement( QgsMesh::ElementType elementType, const QgsPointXY &point, double searchRadius );
+%Docstring
+Returns the position of the snapped point on the closest mesh element
+
+For vertex, the snapped position is the vertex position
+For edge, the snapped position is the projected point on the edge, extremity of edge if outside the edge
+For faces, the snapped position is the centroïd of the face
+The returned position is in map coordinates
+
+:param elementType: the type of element to snap
+:param point: the center of the search area in map coordinates
+:param searchRadius: the radius of the search area in map units
+
+:return: the position of the snapped point on the closest element, empty if no element of type ``elementType``
+
+.. versionadded:: 3.14
+%End
+
   public slots:
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );

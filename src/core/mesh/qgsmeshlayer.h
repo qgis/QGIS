@@ -377,6 +377,23 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       */
     void setReferenceTime( const QDateTime &referenceTime );
 
+    /**
+      * Returns the position of the snapped point on the closest mesh element
+      *
+      * For vertex, the snapped position is the vertex position
+      * For edge, the snapped position is the projected point on the edge, extremity of edge if outside the edge
+      * For faces, the snapped position is the centroïd of the face
+      * The returned position is in map coordinates
+      *
+      * \param elementType the type of element to snap
+      * \param point the center of the search area in map coordinates
+      * \param searchRadius the radius of the search area in map units
+      * \return the position of the snapped point on the closest element, empty if no element of type \a elementType
+      *
+      * \since QGIS 3.14
+      */
+    QgsPointXY snapOnElement( QgsMesh::ElementType elementType, const QgsPointXY &point, double searchRadius );
+
   public slots:
 
     /**
@@ -467,6 +484,17 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     QgsMeshDatasetIndex mStaticScalarDatasetIndex;
     QgsMeshDatasetIndex mStaticVectorDatasetIndex;
+
+    int closestEdge( const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint ) const;
+
+    //! Returns the exact position in map coordinates of the closest vertex in the search area
+    QgsPointXY snapOnVertex( const QgsPointXY &point, double searchRadius );
+
+    //!Returns the postion of the projected point on the closest edge in the search area
+    QgsPointXY snapOnEdge( const QgsPointXY &point, double searchRadius );
+
+    //!Returns the postion of the centroid point on the closest face in the search area
+    QgsPointXY snapOnFace( const QgsPointXY &point, double searchRadius );
 };
 
 #endif //QGSMESHLAYER_H
