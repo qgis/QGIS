@@ -356,41 +356,35 @@ QgsMeshDatasetValue QgsMeshLayer::dataset1dValue( const QgsMeshDatasetIndex &ind
   QgsMeshDatasetValue value;
   QgsPointXY projectedPoint;
   int selectedIndex = closestEdge( point, searchRadius, projectedPoint );
-  QgsRectangle searchRectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius );
   const QgsTriangularMesh *mesh = triangularMesh();
-  if ( mesh &&
-       mesh->contains( QgsMesh::Edge ) &&
-       mDataProvider->isValid() &&
-       index.isValid() )
+  if ( selectedIndex >= 0 )
   {
-    if ( selectedIndex >= 0 )
+    const QgsMeshDatasetGroupMetadata::DataType dataType = dataProvider()->datasetGroupMetadata( index ).dataType();
+    switch ( dataType )
     {
-      const QgsMeshDatasetGroupMetadata::DataType dataType = dataProvider()->datasetGroupMetadata( index ).dataType();
-      switch ( dataType )
+      case QgsMeshDatasetGroupMetadata::DataOnEdges:
       {
-        case QgsMeshDatasetGroupMetadata::DataOnEdges:
-        {
-          value = dataProvider()->datasetValue( index, selectedIndex );
-        }
-        break;
-
-        case QgsMeshDatasetGroupMetadata::DataOnVertices:
-        {
-          const QgsMeshEdge &edge = mesh->edges()[selectedIndex];
-          const int v1 = edge.first, v2 = edge.second;
-          const QgsPoint p1 = mesh->vertices()[v1], p2 = mesh->vertices()[v2];
-          const QgsMeshDatasetValue val1 = dataProvider()->datasetValue( index, v1 );
-          const QgsMeshDatasetValue val2 = dataProvider()->datasetValue( index, v2 );
-          double edgeLength = p1.distance( p2 );
-          double dist1 = p1.distance( projectedPoint.x(), projectedPoint.y() );
-          value = QgsMeshLayerUtils::interpolateFromVerticesData( dist1 / edgeLength, val1, val2 );
-        }
-        break;
-        default:
-          break;
+        value = dataProvider()->datasetValue( index, selectedIndex );
       }
+      break;
+
+      case QgsMeshDatasetGroupMetadata::DataOnVertices:
+      {
+        const QgsMeshEdge &edge = mesh->edges()[selectedIndex];
+        const int v1 = edge.first, v2 = edge.second;
+        const QgsPoint p1 = mesh->vertices()[v1], p2 = mesh->vertices()[v2];
+        const QgsMeshDatasetValue val1 = dataProvider()->datasetValue( index, v1 );
+        const QgsMeshDatasetValue val2 = dataProvider()->datasetValue( index, v2 );
+        double edgeLength = p1.distance( p2 );
+        double dist1 = p1.distance( projectedPoint.x(), projectedPoint.y() );
+        value = QgsMeshLayerUtils::interpolateFromVerticesData( dist1 / edgeLength, val1, val2 );
+      }
+      break;
+      default:
+        break;
     }
   }
+
 
   return value;
 }
@@ -505,44 +499,40 @@ QgsPointXY QgsMeshLayer::snapOnVertex( const QgsPointXY &point, double searchRad
     return exactPosition;
   QgsRectangle rectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius );
   double maxDistance = searchRadius;
-  if ( mesh )
+  //attempt to snap on edges's vertices
+  QList<int> edgeIndexes = mesh->edgeIndexesForRectangle( rectangle );
+  for ( const int edgeIndex : edgeIndexes )
   {
-    //attempt to snap on edges's vertices
-    QList<int> edgeIndexes = mesh->edgeIndexesForRectangle( rectangle );
-    for ( const int edgeIndex : edgeIndexes )
+    const QgsMeshEdge &edge = mesh->edges().at( edgeIndex );
+    const QgsMeshVertex &vertex1 = mesh->vertices()[edge.first];
+    const QgsMeshVertex &vertex2 = mesh->vertices()[edge.second];
+    double dist1 = point.distance( vertex1 );
+    double dist2 = point.distance( vertex2 );
+    if ( dist1 < maxDistance )
     {
-      const QgsMeshEdge &edge = mesh->edges().at( edgeIndex );
-      const QgsMeshVertex &vertex1 = mesh->vertices()[edge.first];
-      const QgsMeshVertex &vertex2 = mesh->vertices()[edge.second];
-      double dist1 = point.distance( vertex1 );
-      double dist2 = point.distance( vertex2 );
-      if ( dist1 < maxDistance )
-      {
-        maxDistance = dist1;
-        exactPosition = vertex1;
-      }
-      if ( dist2 < maxDistance )
-      {
-        maxDistance = dist2;
-        exactPosition = vertex2;
-      }
+      maxDistance = dist1;
+      exactPosition = vertex1;
     }
-
-
-    //attempt to snap on face's vertices
-    QList<int> faceIndexes = mesh->faceIndexesForRectangle( rectangle );
-    for ( const int faceIndex : faceIndexes )
+    if ( dist2 < maxDistance )
     {
-      const QgsMeshFace &face = mesh->triangles().at( faceIndex );
-      for ( int i = 0; i < 3; ++i )
+      maxDistance = dist2;
+      exactPosition = vertex2;
+    }
+  }
+
+  //attempt to snap on face's vertices
+  QList<int> faceIndexes = mesh->faceIndexesForRectangle( rectangle );
+  for ( const int faceIndex : faceIndexes )
+  {
+    const QgsMeshFace &face = mesh->triangles().at( faceIndex );
+    for ( int i = 0; i < 3; ++i )
+    {
+      const QgsMeshVertex &vertex = mesh->vertices()[face.at( i )];
+      double dist = point.distance( vertex );
+      if ( dist < maxDistance )
       {
-        const QgsMeshVertex &vertex = mesh->vertices()[face.at( i )];
-        double dist = point.distance( vertex );
-        if ( dist < maxDistance )
-        {
-          maxDistance = dist;
-          exactPosition = vertex;
-        }
+        maxDistance = dist;
+        exactPosition = vertex;
       }
     }
   }
