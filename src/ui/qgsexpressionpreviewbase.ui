@@ -74,6 +74,9 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="toolTip">
+        <string>Select the feature to use for the output preview</string>
+       </property>
        <property name="text">
         <string>Feature</string>
        </property>
