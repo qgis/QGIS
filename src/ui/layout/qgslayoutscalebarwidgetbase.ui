@@ -361,6 +361,23 @@
             </property>
            </widget>
           </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="mSubdivisionsHeightLabel">
+            <property name="text">
+             <string>Subdivisions height</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="2">
+           <widget class="QgsDoubleSpinBox" name="mSubdivisionsHeightSpinBox">
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+            <property name="maximum">
+             <double>999.990000000000009</double>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -597,6 +614,7 @@
   <tabstop>mMaxWidthSpinBox</tabstop>
   <tabstop>mHeightSpinBox</tabstop>
   <tabstop>mNumberOfSubdivisionsSpinBox</tabstop>
+  <tabstop>mSubdivisionsHeightSpinBox</tabstop>
   <tabstop>groupBox_5</tabstop>
   <tabstop>mBoxSizeSpinBox</tabstop>
   <tabstop>mLabelBarSpaceSpinBox</tabstop>

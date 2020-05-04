@@ -100,6 +100,7 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
   const double barTopPosition = scaledBoxContentSpace + ( settings.labelVerticalPlacement() == QgsScaleBarSettings::LabelAboveSegment ? fontMetrics.ascent() + scaledLabelBarSpace : 0 );
   const double middlePosition = barTopPosition + context.convertToPainterUnits( settings.height() / 2.0, QgsUnitTypes::RenderMillimeters );
   const double bottomPosition = barTopPosition + context.convertToPainterUnits( settings.height(), QgsUnitTypes::RenderMillimeters );
+  const double scaledSubdivisionsHeight = context.convertToPainterUnits( settings.subdivisionsHeight(), QgsUnitTypes::RenderMillimeters );
 
   const double xOffset = firstLabelXOffset( settings, context, scaleContext );
 
@@ -129,18 +130,18 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
     {
       case TicksDown:
         verticalPos = barTopPosition;
-        subTickPositionsY << barTopPosition;
-        subTickPositionsY << middlePosition;
+        subTickPositionsY << verticalPos;
+        subTickPositionsY << verticalPos + scaledSubdivisionsHeight;
         break;
       case TicksMiddle:
         verticalPos = middlePosition;
-        subTickPositionsY << ( barTopPosition + middlePosition ) / 2;
-        subTickPositionsY << ( bottomPosition + middlePosition ) / 2;
+        subTickPositionsY << verticalPos + scaledSubdivisionsHeight / 2.0;
+        subTickPositionsY << verticalPos - scaledSubdivisionsHeight / 2.0;
         break;
       case TicksUp:
         verticalPos = bottomPosition;
-        subTickPositionsY << bottomPosition;
-        subTickPositionsY << middlePosition;
+        subTickPositionsY << verticalPos;
+        subTickPositionsY << verticalPos - scaledSubdivisionsHeight;
         break;
     }
     // draw the vertical lines for right subdivisions

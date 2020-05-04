@@ -58,6 +58,7 @@ QgsScaleBarSettings::QgsScaleBarSettings( const QgsScaleBarSettings &other )
   : mNumSegments( other.mNumSegments )
   , mNumSegmentsLeft( other.mNumSegmentsLeft )
   , mNumSubdivisions( other.mNumSubdivisions )
+  , mSubdivisionsHeight( other.mSubdivisionsHeight )
   , mNumUnitsPerSegment( other.mNumUnitsPerSegment )
   , mNumMapUnitsPerScaleBarUnit( other.mNumMapUnitsPerScaleBarUnit )
   , mSegmentSizeMode( other.mSegmentSizeMode )
@@ -85,6 +86,7 @@ QgsScaleBarSettings &QgsScaleBarSettings::operator=( const QgsScaleBarSettings &
   mNumSegments = other.mNumSegments;
   mNumSegmentsLeft = other.mNumSegmentsLeft;
   mNumSubdivisions = other.mNumSubdivisions;
+  mSubdivisionsHeight = other.mSubdivisionsHeight;
   mNumUnitsPerSegment = other.mNumUnitsPerSegment;
   mNumMapUnitsPerScaleBarUnit = other.mNumMapUnitsPerScaleBarUnit;
   mSegmentSizeMode = other.mSegmentSizeMode;

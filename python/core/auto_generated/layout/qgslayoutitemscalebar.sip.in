@@ -94,6 +94,24 @@ Sets the number of ``subdivisions`` for segments included in the right part of t
 .. versionadded:: 3.14
 %End
 
+    double subdivisionsHeight() const;
+%Docstring
+Returns the scalebar subdivisions height (in millimeters) for segments included in the right part of the scalebar (only used for some scalebar types).
+
+.. seealso:: :py:func:`setSubdivisionsHeight`
+
+.. versionadded:: 3.14
+%End
+
+    void setSubdivisionsHeight( double height );
+%Docstring
+Sets the scalebar subdivisions ``height`` (in millimeters) for segments included in the right part of the scalebar (only used for some scalebar types).
+
+.. seealso:: :py:func:`subdivisionsHeight`
+
+.. versionadded:: 3.14
+%End
+
     double unitsPerSegment() const;
 %Docstring
 Returns the number of scalebar units per segment.

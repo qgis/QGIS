@@ -135,6 +135,20 @@ class CORE_EXPORT QgsScaleBarSettings
     void setNumberOfSubdivisions( int subdivisions ) { mNumSubdivisions = subdivisions; }
 
     /**
+     * Returns the scalebar subdivisions height (in millimeters) for segments included in the right part of the scalebar (only used for some scalebar types).
+     * \see setSubdivisionsHeight()
+     * \since QGIS 3.14
+     */
+    double subdivisionsHeight() const { return mSubdivisionsHeight; }
+
+    /**
+     * Sets the scalebar subdivisions \a height (in millimeters) for segments included in the right part of the scalebar (only used for some scalebar types).
+     * \see subdivisionsHeight()
+     * \since QGIS 3.14
+     */
+    void setSubdivisionsHeight( double height ) { mSubdivisionsHeight = height; }
+
+    /**
      * Returns the number of scalebar units per segment.
      * \see setUnitsPerSegment()
      */
@@ -601,6 +615,8 @@ class CORE_EXPORT QgsScaleBarSettings
     int mNumSegmentsLeft = 0;
     //! Number of subdivisions on right side
     int mNumSubdivisions = 0;
+    //! Height of subdivisions on right side
+    double mSubdivisionsHeight = 1.5;
     //! Size of a segment (in map units)
     double mNumUnitsPerSegment = 0;
     //! Number of map units per scale bar units (e.g. 1000 to have km for a map with m units)
