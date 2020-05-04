@@ -142,6 +142,7 @@ class TestQgsLegendRenderer : public QObject
     void testSpacing();
     void testEffects();
     void testBigMarker();
+    void testOverrideSymbol();
 
     void testRightAlignText();
     void testCenterAlignText();
@@ -484,6 +485,34 @@ void TestQgsLegendRenderer::testBigMarker()
 
   QgsLegendSettings settings;
   _setStandardTestFont( settings );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+}
+
+void TestQgsLegendRenderer::testOverrideSymbol()
+{
+  QString testName = QStringLiteral( "legend_override_symbol" );
+
+  QgsLayerTreeModel legendModel( mRoot );
+
+  QgsLayerTreeLayer *layer = legendModel.rootGroup()->findLayer( mVL2 );
+
+  std::unique_ptr< QgsFillSymbol > sym2 = qgis::make_unique< QgsFillSymbol >();
+  sym2->setColor( Qt::red );
+
+  QgsLayerTreeModelLegendNode *embeddedNode = legendModel.legendNodeEmbeddedInParent( layer );
+  dynamic_cast< QgsSymbolLegendNode * >( embeddedNode )->setCustomSymbol( sym2.release() );
+
+  std::unique_ptr< QgsMarkerSymbol > sym3 = qgis::make_unique< QgsMarkerSymbol >();
+  sym3->setColor( QColor( 0, 150, 0 ) );
+  sym3->setSize( 6 );
+
+  layer = legendModel.rootGroup()->findLayer( mVL3 );
+  QgsMapLayerLegendUtils::setLegendNodeCustomSymbol( layer, 1, sym3.get() );
+  legendModel.refreshLayerLegend( layer );
+
+  QgsLegendSettings settings;
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   _renderLegend( testName, &legendModel, settings );
   QVERIFY( _verifyImage( testName, mReport ) );
 }
