@@ -30,6 +30,7 @@ class QgsRasterLayer;
 class QgsReadWriteContext;
 class QgsVectorLayer;
 class QgsLegendPatchShape;
+class QgsSymbol;
 
 #include "qgis_core.h"
 
@@ -140,6 +141,30 @@ class CORE_EXPORT QgsMapLayerLegendUtils
      * \since QGIS 3.14
      */
     static QSizeF legendNodeSymbolSize( QgsLayerTreeLayer *nodeLayer, int originalIndex );
+
+    /**
+     * Sets a custom legend \a symbol size for the legend node belonging to \a nodeLayer at the specified \a originalIndex.
+     *
+     * If \a symbol is non-NULLPTR, it will be used in place of the default symbol when rendering
+     * the legend node.
+     *
+     * \see legendNodeCustomSymbol()
+     * \since QGIS 3.14
+     */
+    static void setLegendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QgsSymbol *symbol );
+
+    /**
+     * Returns the custom legend symbol for the legend node belonging to \a nodeLayer at the specified \a originalIndex.
+     *
+     * If the symbol is non-NULLPTR, it will be used in place of the default symbol when rendering
+     * the legend node.
+     *
+     * Caller takes ownership of the returned symbol.
+     *
+     * \see setLegendNodeCustomSymbol()
+     * \since QGIS 3.14
+     */
+    static QgsSymbol *legendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex ) SIP_FACTORY;
 
     //! update according to layer node's custom properties (order of items, user labels for items)
     static void applyLayerNodeProperties( QgsLayerTreeLayer *nodeLayer, QList<QgsLayerTreeModelLegendNode *> &nodes );

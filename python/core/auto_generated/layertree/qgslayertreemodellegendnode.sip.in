@@ -369,6 +369,32 @@ Sets the symbol patch ``shape`` to use when rendering the legend node symbol.
 .. versionadded:: 3.14
 %End
 
+    QgsSymbol *customSymbol() const;
+%Docstring
+Returns the node's custom symbol.
+
+If a non-``None`` value is returned, then this symbol will be used for rendering
+the legend node instead of the default symbol().
+
+.. seealso:: :py:func:`setCustomSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    void setCustomSymbol( QgsSymbol *symbol /Transfer/ );
+%Docstring
+Sets the node's custom ``symbol``.
+
+If a non-``None`` value is set, then this symbol will be used for rendering
+the legend node instead of the default symbol().
+
+Ownership of ``symbol`` is transferred.
+
+.. seealso:: :py:func:`customSymbol`
+
+.. versionadded:: 3.14
+%End
+
     QString evaluateLabel( const QgsExpressionContext &context = QgsExpressionContext(), const QString &label = QString() );
 %Docstring
 Evaluates  and returns the text label of the current node
