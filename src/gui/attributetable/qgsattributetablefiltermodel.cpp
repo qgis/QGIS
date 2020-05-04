@@ -323,14 +323,18 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
     {
       case ShowVisible:
         disconnect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
-        disconnect( mTableModel, &QgsAttributeTableModel::dataChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
+        disconnect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::reloadVisible );
+        disconnect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
+        disconnect( mTableModel, &QgsAttributeTableModel::finished, this, &QgsAttributeTableFilterModel::reloadVisible );
         break;
       case ShowAll:
       case ShowEdited:
       case ShowSelected:
         break;
       case ShowFilteredList:
-        disconnect( mTableModel, &QgsAttributeTableModel::dataChanged, this, &QgsAttributeTableFilterModel::filterFeatures );
+        disconnect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::filterFeatures );
+        disconnect( layer(), &QgsVectorLayer::attributeValueChanged, this, &QgsAttributeTableFilterModel::filterFeatures );
+        disconnect( mTableModel, &QgsAttributeTableModel::finished, this, &QgsAttributeTableFilterModel::filterFeatures );
         break;
     }
 
@@ -339,7 +343,9 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
     {
       case ShowVisible:
         connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
-        connect( mTableModel, &QgsAttributeTableModel::dataChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
+        connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::reloadVisible );
+        connect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
+        connect( mTableModel, &QgsAttributeTableModel::finished, this, &QgsAttributeTableFilterModel::reloadVisible );
         generateListOfVisibleFeatures();
         break;
       case ShowAll:
@@ -347,7 +353,9 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
       case ShowSelected:
         break;
       case ShowFilteredList:
-        connect( mTableModel, &QgsAttributeTableModel::dataChanged, this, &QgsAttributeTableFilterModel::filterFeatures );
+        connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::filterFeatures );
+        connect( layer(), &QgsVectorLayer::attributeValueChanged, this, &QgsAttributeTableFilterModel::filterFeatures );
+        connect( mTableModel, &QgsAttributeTableModel::finished, this, &QgsAttributeTableFilterModel::filterFeatures );
         break;
     }
 
