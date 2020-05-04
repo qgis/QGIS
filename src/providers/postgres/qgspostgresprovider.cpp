@@ -905,6 +905,13 @@ bool QgsPostgresProvider::loadFields()
         bool attNotNull = fmtFieldTypeResult.PQgetvalue( i, 6 ).toInt();
         bool uniqueConstraint = fmtFieldTypeResult.PQgetvalue( i, 7 ).toInt();
         QString attIdentity = connectionRO()->pgVersion() >= 100000 ? fmtFieldTypeResult.PQgetvalue( i, 8 ) : " ";
+
+        // On PostgreSQL 12, the field pg_attribute.attgenerated is always filled with "s" if the field is generated,
+        // with the possibility of other values in future releases. This indicates "STORED" generated fields.
+        // The documentation for version 12 indicates that there is a future possibility of supporting virtual
+        // generated values, which might make possible to have values other than "s" on pg_attribute.attgenerated,
+        // which should be unimportant for QGIS if the user still won't be able to overwrite the column value.
+        // See https://www.postgresql.org/docs/12/ddl-generated-columns.html
         QString attGenerated = connectionRO()->pgVersion() >= 120000 ? fmtFieldTypeResult.PQgetvalue( i, 9 ) : " ";
         fmtFieldTypeMap[attrelid][attnum] = formatType;
         descrMap[attrelid][attnum] = descr;
@@ -920,7 +927,7 @@ bool QgsPostgresProvider::loadFields()
         notNullMap[attrelid][attnum] = attNotNull;
         uniqueMap[attrelid][attnum] = uniqueConstraint;
         identityMap[attrelid][attnum] = attIdentity.isEmpty() ? " " : attIdentity;
-        generatedMap[attrelid][attnum] = attGenerated.isEmpty() ? " " : attGenerated;
+        generatedMap[attrelid][attnum] = attGenerated.isEmpty() ? QString() : attGenerated;
       }
     }
   }
@@ -1202,6 +1209,7 @@ bool QgsPostgresProvider::loadFields()
     }
 
     mDefaultValues.insert( mAttributeFields.size(), defValMap[tableoid][attnum] );
+    mGeneratedValues.insert( mAttributeFields.size(), generatedMap[tableoid][attnum] );
 
     QgsField newField = QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment, fieldSubType );
 
@@ -2076,6 +2084,15 @@ bool QgsPostgresProvider::isValid() const
 QString QgsPostgresProvider::defaultValueClause( int fieldId ) const
 {
   QString defVal = mDefaultValues.value( fieldId, QString() );
+  QString genVal = mGeneratedValues.value( fieldId, QString() );
+
+  // with generated columns (PostgreSQL 12+), the provider will ALWAYS evaluate the default values.
+  // The only acceptable value for such columns on INSERT or UPDATE clauses is the keyword "DEFAULT".
+  // See https://www.postgresql.org/docs/12/ddl-generated-columns.html
+  if ( !genVal.isEmpty() )
+  {
+    return "DEFAULT";
+  }
 
   if ( !providerProperty( EvaluateDefaultValues, false ).toBool() && !defVal.isEmpty() )
   {
@@ -2354,7 +2371,12 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       if ( i == flist.size() )
       {
-        if ( qgsVariantEqual( v, defVal ) )
+        // generated values override everything.
+        if ( !mGeneratedValues[idx].isEmpty() )
+        {
+          values += delim + defVal;
+        }
+        else if ( qgsVariantEqual( v, defVal ) )
         {
           if ( defVal.isNull() )
           {
