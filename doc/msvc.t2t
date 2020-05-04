@@ -7,11 +7,16 @@ This is currently also how the binary QGIS packages are made (earlier versions u
 This section describes the setup required to allow Visual Studio to be used to
 build QGIS.
 
-===Visual C++ Community Edition===
+===Visual Studio 2015 Community Edition===
 
 The free (as in free beer) Community installer is available under:
 
 	http://download.microsoft.com/download/D/2/3/D23F4D0F-BA2D-4600-8725-6CCECEA05196/vs_community_ENU.exe
+
+Select "Custom" install and add the following packages:
+- "Common Tools for Visual C++ 2015" under "Visual C++"
+- "Tools (1.4.1) and Windows 10 SDK (10.0.14393)" under "Universal Windows App Development Tools".
+-
 
 ===Other tools and dependencies===
 
