@@ -238,3 +238,14 @@ void QgsPgNewConnection::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#creating-a-stored-connection" ) );
 }
+<<<<<<< HEAD
+=======
+
+void QgsPgNewConnection::updateOkButtonState()
+{
+  bool enabled = !txtName->text().isEmpty() && (
+                   !txtService->text().isEmpty() ||
+                   ( !txtHost->text().isEmpty() && !txtPort->text().isEmpty() && !txtDatabase->text().isEmpty() ) );
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
+}
+>>>>>>> 8aa32f71c5... Merge pull request #36129 from jgrocha/postgis-dialogue-ux-improvement
