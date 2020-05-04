@@ -207,7 +207,7 @@ class TestQgsWmsCapabilities: public QObject
       QTest::newRow( "continuous" ) << R"""(<Dimension name="time" units="ISO8601">
                                      2020-01-01/2020-06-31
                                      </Dimension>)"""
-                                   << "2020-01-01/2020-06-31";
+                                    << "2020-01-01/2020-06-31";
 
       QTest::newRow( "interval with internal newline characters" )
           << R"""(<Dimension name="time" units="ISO8601">
