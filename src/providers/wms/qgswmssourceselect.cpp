@@ -1147,9 +1147,15 @@ void QgsWMSSourceSelect::filterLayers( const QString &searchText )
   {
     // hide all
     setChildrenVisible( lstLayers->invisibleRootItem(), false );
-    // find and show matching items
+    // find and show matching items in name and title columns
     QSet<QTreeWidgetItem *> items = lstLayers->findItems( searchText, Qt::MatchContains | Qt::MatchRecursive, 1 ).toSet();
     items.unite( lstLayers->findItems( searchText, Qt::MatchContains | Qt::MatchRecursive, 2 ).toSet() );
+
+    // if nothing found, search in abstract too
+    if ( items.isEmpty() )
+    {
+      items = lstLayers->findItems( searchText, Qt::MatchContains | Qt::MatchRecursive, 3 ).toSet();
+    }
 
     mTreeInitialExpand.clear();
     for ( QTreeWidgetItem *item : items )
