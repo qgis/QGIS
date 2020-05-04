@@ -326,7 +326,7 @@ Returns the position of the snapped point on the closest mesh element
 
 For vertex, the snapped position is the vertex position
 For edge, the snapped position is the projected point on the edge, extremity of edge if outside the edge
-For faces, the snapped position is the centroïd of the face
+For face, the snapped position is the centroïd of the face
 The returned position is in map coordinates
 
 :param elementType: the type of element to snap

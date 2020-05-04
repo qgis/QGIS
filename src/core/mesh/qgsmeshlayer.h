@@ -382,7 +382,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       *
       * For vertex, the snapped position is the vertex position
       * For edge, the snapped position is the projected point on the edge, extremity of edge if outside the edge
-      * For faces, the snapped position is the centroïd of the face
+      * For face, the snapped position is the centroïd of the face
       * The returned position is in map coordinates
       *
       * \param elementType the type of element to snap
@@ -490,10 +490,10 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     //! Returns the exact position in map coordinates of the closest vertex in the search area
     QgsPointXY snapOnVertex( const QgsPointXY &point, double searchRadius );
 
-    //!Returns the postion of the projected point on the closest edge in the search area
+    //!Returns the position of the projected point on the closest edge in the search area
     QgsPointXY snapOnEdge( const QgsPointXY &point, double searchRadius );
 
-    //!Returns the postion of the centroid point on the closest face in the search area
+    //!Returns the position of the centroid point on the closest face in the search area
     QgsPointXY snapOnFace( const QgsPointXY &point, double searchRadius );
 };
 
