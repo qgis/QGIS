@@ -282,6 +282,8 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     void selectionChanged();
     void onColumnsChanged();
     void reloadVisible();
+    void onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
+    void onGeometryChanged();
 
   private:
     QgsFeatureIds mFilteredFeatures;

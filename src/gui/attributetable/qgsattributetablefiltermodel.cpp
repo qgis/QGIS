@@ -333,7 +333,8 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
         break;
       case ShowFilteredList:
         disconnect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::filterFeatures );
-        disconnect( layer(), &QgsVectorLayer::attributeValueChanged, this, &QgsAttributeTableFilterModel::filterFeatures );
+        disconnect( layer(), &QgsVectorLayer::attributeValueChanged, this, &QgsAttributeTableFilterModel::onAttributeValueChanged );
+        disconnect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::onGeometryChanged );
         disconnect( mTableModel, &QgsAttributeTableModel::finished, this, &QgsAttributeTableFilterModel::filterFeatures );
         break;
     }
@@ -354,7 +355,8 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
         break;
       case ShowFilteredList:
         connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::filterFeatures );
-        connect( layer(), &QgsVectorLayer::attributeValueChanged, this, &QgsAttributeTableFilterModel::filterFeatures );
+        connect( layer(), &QgsVectorLayer::attributeValueChanged, this, &QgsAttributeTableFilterModel::onAttributeValueChanged );
+        connect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::onGeometryChanged );
         connect( mTableModel, &QgsAttributeTableModel::finished, this, &QgsAttributeTableFilterModel::filterFeatures );
         break;
     }
@@ -418,6 +420,25 @@ void QgsAttributeTableFilterModel::reloadVisible()
 {
   generateListOfVisibleFeatures();
   invalidateFilter();
+}
+
+void QgsAttributeTableFilterModel::onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
+{
+  Q_UNUSED( fid );
+  Q_UNUSED( value );
+
+  if ( mFilterExpression.referencedAttributeIndexes( layer()->fields() ).contains( idx ) )
+  {
+    filterFeatures();
+  }
+}
+
+void QgsAttributeTableFilterModel::onGeometryChanged()
+{
+  if ( mFilterExpression.needsGeometry() )
+  {
+    filterFeatures();
+  }
 }
 
 void QgsAttributeTableFilterModel::filterFeatures()
