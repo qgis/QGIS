@@ -31,7 +31,7 @@ Download and install following packages:
 For the QGIS build you need to install following packages from cygwin:
 - bison
 - flex
-- git
+- git (even if you already have Git for Windows installed)
 -
 
 and from OSGeo4W (select //Advanced Install//):
@@ -51,7 +51,37 @@ dependencies.  If you're interested in that, check the history of this page in t
 or the SVN repository.
 
 ninja:
-  copy ninja.exe to d:\OSGeo4W64\bin\
+  copy ninja.exe to C:\OSGeo4W64\bin\
+
+=== Clone the QGIS Source Code ===
+
+Chose a directory to store the QGIS source code.
+For example, to put it in the OSGeo4W64 install, navigate there:
+
+```
+cd C:\OSGeo4W64
+```
+
+This directory will be assumed for all instructions
+that follow.
+
+On the command prompt clone the QGIS source from
+git to the source directory ``QGIS``:
+
+```
+git clone git://github.com/qgis/QGIS.git
+```
+
+This requires Git. If you have Git for Windows on your PATH already,
+you can do this from a normal command prompt. If you do not, you can
+use the Git package that was installed as part of Cygwin by opening
+a Cygwin[64] Terminal
+
+And, to avoid Git in Windows reporting changes to files not actually modified:
+
+```
+git config core.filemode false
+```
 
 === Setting up the Visual Studio project with CMake ===
 
@@ -66,47 +96,36 @@ installed in the default locations):
 
 ```
 @echo off
-call X:\src\qgis\ms-windows\osgeo4w\msvc-env.bat x86_64
+call C:\OSGeo4W64\QGIS\ms-windows\osgeo4w\msvc-env.bat x86_64
 @cmd
 ```
 
-Save the batch file as ``d:\OSGeo4W64\OSGeo4W-dev.bat`` and run it.
-On the command prompt checkout the QGIS source from
-git to the source directory ``QGIS``:
-
-```
-git clone git://github.com/qgis/QGIS.git
-```
-
-And, to avoid Git in Windows reporting changes to files not actually modified:
-
-```
-git config core.filemode false
-```
+Save the batch file as ``C:\OSGeo4W64\OSGeo4W-dev.bat`` and run it.
 
 
 Using configonly.bat to create the MSVC solution file:
-  We will be using the file ms-windows/osgeo4w/configonly.bat to create an MSVC solution file.
+  We will be using the file ``ms-windows/osgeo4w/configonly.bat`` to create an MSVC solution file.
   There are a few options for a solution file, following are the options: ninja, native MSVC.
-  The advantage of using native MSVC solution is that you can find the root of build problems much easily.
+  The advantage of using native MSVC solution is that you can find the root of build problems much more easily.
   configonly.bat is meant to create a configured build directory with a MSVC solution file:
 
-  ```
-  configonly.bat
-  ```
+```
+cd C:\OSGeo4W64\QGIS\ms-windows\osgeo4w
+configonly.bat
+```
 
 Compiling QGIS with MSVC:
   We will need to run MSVC with all the environment variables set, thus we will run it as follows:
-  Run the batch file OSGeo4W-dev.bat you created before. On the command prompt run: ``devenv``
+  Run the batch file OSGeo4W-dev.bat you created before. On the command prompt run: ``devenv`` to open MSVC.
   From MSVC, open the solution file
-  ``d:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\qgis.sln``
+  ``C:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\qgis.sln``
   Try to build the solution (go grab a cup of tea, it may take a while).
   If it fails, run it again and again until there are (hopefully) no errors.
 
 
 Running QGIS from within MSVC:
   Edit the properties of the project ALL_BUILD:
-  Debugging -> Command -> D:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\output\bin\RelWithDebInfo\qgis.exe
+  Debugging -> Command -> ``C:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\output\bin\RelWithDebInfo\qgis.exe``
   Run.
   Ignore the "These projects are out of date" message, it appears even if no files were changed.
 
