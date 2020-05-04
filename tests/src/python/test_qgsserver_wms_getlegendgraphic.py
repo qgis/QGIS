@@ -260,6 +260,38 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_rulelabel_true", 250, QSize(15, 15))
 
+        # LAYERTITLE false and no set of RULELABEL means it is false for single symbol
+        parms = {
+            'MAP': self.testdata_path + "test_project.qgs",
+            'SERVICE': 'WMS',
+            'VERSION': '1.3.0',
+            'REQUEST': 'GetLegendGraphic',
+            'FORMAT': 'image/png',
+            'LAYER': u'testlayer%20èé',
+            'LAYERTITLE': 'FALSE'
+        }
+        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_rulelabel_notset0", 250, QSize(15, 15))
+
+        # LAYERTITLE false and no set of RULELABEL means it is true for legend other than single symbol
+        parms = {
+            'MAP': self.testdata_path + "test_project_legend_rule.qgs",
+            'SERVICE': 'WMS',
+            'VERSION': '1.3.0',
+            'REQUEST': 'GetLegendGraphic',
+            'FORMAT': 'image/png',
+            'LAYER': u'testlayer%20èé',
+            'ITEMFONTBOLD': 'TRUE',
+            'ITEMFONTSIZE': '20',
+            'LAYERFONTFAMILY': self.fontFamily,
+            'ITEMFONTFAMILY': self.fontFamily,
+            'LAYERTITLE': 'FALSE'
+        }
+        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_rulelabel_notset1", 250, QSize(15, 15))
+
     def test_wms_getLegendGraphics_rule(self):
         """Test that does not return an exception but an image"""
         parms = {
