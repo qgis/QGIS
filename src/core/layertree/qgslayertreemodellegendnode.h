@@ -392,6 +392,30 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     void setPatchShape( const QgsLegendPatchShape &shape );
 
     /**
+     * Returns the node's custom symbol.
+     *
+     * If a non-NULLPTR value is returned, then this symbol will be used for rendering
+     * the legend node instead of the default symbol().
+     *
+     * \see setCustomSymbol()
+     * \since QGIS 3.14
+     */
+    QgsSymbol *customSymbol() const;
+
+    /**
+     * Sets the node's custom \a symbol.
+     *
+     * If a non-NULLPTR value is set, then this symbol will be used for rendering
+     * the legend node instead of the default symbol().
+     *
+     * Ownership of \a symbol is transferred.
+     *
+     * \see customSymbol()
+     * \since QGIS 3.14
+     */
+    void setCustomSymbol( QgsSymbol *symbol SIP_TRANSFER );
+
+    /**
      * Evaluates  and returns the text label of the current node
      * \param context extra QgsExpressionContext to use for evaluating the expression
      * \param label text to evaluate instead of the layer layertree string
@@ -437,6 +461,8 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
     QString mTextOnSymbolLabel;
     QgsTextFormat mTextOnSymbolTextFormat;
+
+    std::unique_ptr< QgsSymbol > mCustomSymbol;
 
     // ident the symbol icon to make it look like a tree structure
     static const int INDENT_SIZE = 20;

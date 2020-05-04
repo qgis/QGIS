@@ -185,6 +185,37 @@ QSizeF QgsMapLayerLegendUtils::legendNodeSymbolSize( QgsLayerTreeLayer *nodeLaye
     return QgsSymbolLayerUtils::decodeSize( size );
 }
 
+void QgsMapLayerLegendUtils::setLegendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QgsSymbol *symbol )
+{
+  if ( symbol )
+  {
+    QDomDocument doc;
+    QgsReadWriteContext rwContext;
+    rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
+    QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "custom symbol" ), symbol, doc, rwContext );
+    doc.appendChild( elem );
+    nodeLayer->setCustomProperty( "legend/custom-symbol-" + QString::number( originalIndex ), doc.toString() );
+  }
+  else
+    nodeLayer->removeCustomProperty( "legend/custom-symbol-" + QString::number( originalIndex ) );
+}
+
+QgsSymbol *QgsMapLayerLegendUtils::legendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex )
+{
+  const QString symbolDef = nodeLayer->customProperty( "legend/custom-symbol-" + QString::number( originalIndex ) ).toString();
+  if ( symbolDef.isEmpty() )
+    return nullptr;
+
+  QDomDocument doc;
+  doc.setContent( symbolDef );
+  const QDomElement elem = doc.documentElement();
+
+  QgsReadWriteContext rwContext;
+  rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
+
+  return QgsSymbolLayerUtils::loadSymbol( elem, rwContext );
+}
+
 void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer *nodeLayer, QList<QgsLayerTreeModelLegendNode *> &nodes )
 {
   // handle user labels
@@ -200,6 +231,8 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer *nodeLa
     {
       const QgsLegendPatchShape shape = QgsMapLayerLegendUtils::legendNodePatchShape( nodeLayer, i );
       symbolNode->setPatchShape( shape );
+
+      symbolNode->setCustomSymbol( QgsMapLayerLegendUtils::legendNodeCustomSymbol( nodeLayer, i ) );
     }
 
     const QSizeF userSize = QgsMapLayerLegendUtils::legendNodeSymbolSize( nodeLayer, i );
