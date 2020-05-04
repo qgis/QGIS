@@ -345,6 +345,7 @@ void QgsPgSourceSelect::btnLoad_clicked()
 void QgsPgSourceSelect::btnEdit_clicked()
 {
   QgsPgNewConnection *nc = new QgsPgNewConnection( this, cmbConnections->currentText() );
+  nc->setWindowTitle( tr( "Edit PostGIS Connection" ) );
   if ( nc->exec() )
   {
     populateConnectionList();
