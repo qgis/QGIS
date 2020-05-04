@@ -57,6 +57,7 @@ class GUI_EXPORT QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public
     void mSegmentSizeSpinBox_valueChanged( double d );
     void mSegmentsLeftSpinBox_valueChanged( int i );
     void mNumberOfSegmentsSpinBox_valueChanged( int i );
+    void mNumberOfSubdivisionsSpinBox_valueChanged( int i );
     void mUnitLabelLineEdit_textChanged( const QString &text );
     void mMapUnitsPerBarUnitSpinBox_valueChanged( double d );
     void mStyleComboBox_currentIndexChanged( const QString &text );

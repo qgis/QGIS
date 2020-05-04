@@ -97,6 +97,24 @@ Sets the number of ``segments`` included in the left part of the scalebar.
 .. seealso:: :py:func:`setNumberOfSegments`
 %End
 
+    int numberOfSubdivisions() const;
+%Docstring
+Returns the number of subdivisions for segments included in the right part of the scalebar (only used for some scalebar types).
+
+.. seealso:: :py:func:`setNumberOfSubdivisions`
+
+.. versionadded:: 3.14
+%End
+
+    void setNumberOfSubdivisions( int subdivisions );
+%Docstring
+Sets the number of ``subdivisions`` for segments included in the right part of the scalebar (only used for some scalebar types).
+
+.. seealso:: :py:func:`numberOfSubdivisions`
+
+.. versionadded:: 3.14
+%End
+
     double unitsPerSegment() const;
 %Docstring
 Returns the number of scalebar units per segment.

@@ -78,7 +78,8 @@ QgsScaleBarRenderer::Flags QgsTicksScaleBarRenderer::flags() const
          Flag::FlagUsesSegments |
          Flag::FlagUsesLabelBarSpace |
          Flag::FlagUsesLabelVerticalPlacement |
-         Flag::FlagUsesLabelHorizontalPlacement;
+         Flag::FlagUsesLabelHorizontalPlacement |
+         Flag::FlagUsesSubdivisions;
 }
 
 QgsTicksScaleBarRenderer *QgsTicksScaleBarRenderer::clone() const
@@ -114,12 +115,43 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
   // we render the bar symbol-layer-by-symbol-layer, to avoid ugliness where the lines overlap in multi-layer symbols
   for ( int layer = 0; layer < symbol->symbolLayerCount(); ++ layer )
   {
-    // first draw the vertical lines
+    // first draw the vertical lines for segments
     for ( int i = 0; i < positions.size(); ++i )
     {
       const double thisX = context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset;
       symbol->renderPolyline( QPolygonF() << QPointF( thisX, barTopPosition )
                               << QPointF( thisX, bottomPosition ), nullptr, context, layer );
+    }
+    // vertical positions
+    double verticalPos = 0.0;
+    QList<double> subTickPositionsY;
+    switch ( mTickPosition )
+    {
+      case TicksDown:
+        verticalPos = barTopPosition;
+        subTickPositionsY << barTopPosition;
+        subTickPositionsY << middlePosition;
+        break;
+      case TicksMiddle:
+        verticalPos = middlePosition;
+        subTickPositionsY << ( barTopPosition + middlePosition ) / 2;
+        subTickPositionsY << ( bottomPosition + middlePosition ) / 2;
+        break;
+      case TicksUp:
+        verticalPos = bottomPosition;
+        subTickPositionsY << bottomPosition;
+        subTickPositionsY << middlePosition;
+        break;
+    }
+    // draw the vertical lines for right subdivisions
+    for ( int i = settings.numberOfSegmentsLeft(); i < positions.size(); ++i )
+    {
+      for ( int j = 1; j < settings.numberOfSubdivisions(); ++j )
+      {
+        const double thisSubX = context.convertToPainterUnits( positions.at( i ) + j * scaleContext.segmentWidth / settings.numberOfSubdivisions(), QgsUnitTypes::RenderMillimeters ) + xOffset;
+        symbol->renderPolyline( QPolygonF() << QPointF( thisSubX, subTickPositionsY.at( 0 ) )
+                                << QPointF( thisSubX, subTickPositionsY.at( 1 ) ), nullptr, context, layer );
+      }
     }
 
     //draw last tick and horizontal line
@@ -131,19 +163,7 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
       symbol->renderPolyline( QPolygonF() << QPointF( lastTickPositionX, barTopPosition )
                               << QPointF( lastTickPositionX, bottomPosition ),
                               nullptr, context, layer );
-      double verticalPos = 0.0;
-      switch ( mTickPosition )
-      {
-        case TicksDown:
-          verticalPos = barTopPosition;
-          break;
-        case TicksMiddle:
-          verticalPos = middlePosition;
-          break;
-        case TicksUp:
-          verticalPos = bottomPosition;
-          break;
-      }
+
       //horizontal line
       symbol->renderPolyline( QPolygonF() << QPointF( xOffset + context.convertToPainterUnits( positions.at( 0 ), QgsUnitTypes::RenderMillimeters ), verticalPos )
                               << QPointF( lastTickPositionX, verticalPos ), nullptr, context, layer );

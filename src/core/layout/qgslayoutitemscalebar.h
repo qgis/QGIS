@@ -83,6 +83,20 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     void setNumberOfSegmentsLeft( int segments );
 
     /**
+     * Returns the number of subdivisions for segments included in the right part of the scalebar (only used for some scalebar types).
+     * \see setNumberOfSubdivisions()
+     * \since QGIS 3.14
+     */
+    int numberOfSubdivisions()  const { return mSettings.numberOfSubdivisions(); }
+
+    /**
+     * Sets the number of \a subdivisions for segments included in the right part of the scalebar (only used for some scalebar types).
+     * \see numberOfSubdivisions()
+     * \since QGIS 3.14
+     */
+    void setNumberOfSubdivisions( int subdivisions ) { mSettings.setNumberOfSubdivisions( subdivisions ); }
+
+    /**
      * Returns the number of scalebar units per segment.
      * \see setUnitsPerSegment()
      */

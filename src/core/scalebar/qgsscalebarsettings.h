@@ -121,6 +121,20 @@ class CORE_EXPORT QgsScaleBarSettings
     void setNumberOfSegmentsLeft( int segments ) { mNumSegmentsLeft = segments; }
 
     /**
+     * Returns the number of subdivisions for segments included in the right part of the scalebar (only used for some scalebar types).
+     * \see setNumberOfSubdivisions()
+     * \since QGIS 3.14
+     */
+    int numberOfSubdivisions() const { return mNumSubdivisions; }
+
+    /**
+     * Sets the number of \a subdivisions for segments included in the right part of the scalebar (only used for some scalebar types).
+     * \see numberOfSubdivisions()
+     * \since QGIS 3.14
+     */
+    void setNumberOfSubdivisions( int subdivisions ) { mNumSubdivisions = subdivisions; }
+
+    /**
      * Returns the number of scalebar units per segment.
      * \see setUnitsPerSegment()
      */
@@ -585,6 +599,8 @@ class CORE_EXPORT QgsScaleBarSettings
     int mNumSegments = 2;
     //! Number of segments on left side
     int mNumSegmentsLeft = 0;
+    //! Number of subdivisions on right side
+    int mNumSubdivisions = 0;
     //! Size of a segment (in map units)
     double mNumUnitsPerSegment = 0;
     //! Number of map units per scale bar units (e.g. 1000 to have km for a map with m units)

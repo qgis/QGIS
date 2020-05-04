@@ -274,6 +274,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoScaleBarSegmentsLeft, //!< Scalebar segments left
       UndoScaleBarSegments, //!< Scalebar number of segments
       UndoScaleBarHeight, //!< Scalebar height
+      UndoScaleBarSubdivisions, //!< Scalebar number of subdivisions
       UndoScaleBarFontColor, //!< Scalebar font color
       UndoScaleBarFillColor, //!< Scalebar fill color
       UndoScaleBarFillColor2, //!< Scalebar secondary fill color
