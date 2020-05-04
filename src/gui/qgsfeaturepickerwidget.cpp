@@ -42,6 +42,7 @@ QgsFeaturePickerWidget::QgsFeaturePickerWidget( QWidget *parent )
   mNextButton->setEnabled( false );
   mNextButton->setVisible( mShowBrowserButtons );
   layout->addWidget( mNextButton );
+  layout->setContentsMargins( 0, 0, 0, 0 );
 
   setLayout( layout );
 
