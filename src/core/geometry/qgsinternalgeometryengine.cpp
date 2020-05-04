@@ -1041,7 +1041,7 @@ QgsGeometry QgsInternalGeometryEngine::variableWidthBufferByM( int segments ) co
 }
 
 QVector<QgsPointXY> QgsInternalGeometryEngine::randomPointsInPolygon( const QgsGeometry &polygon, int count,
-    const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed, QgsFeedback *feedback )
+    const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed, QgsFeedback *feedback, int maxTriesPerPoint )
 {
   if ( polygon.type() != QgsWkbTypes::PolygonGeometry || count == 0 )
     return QVector< QgsPointXY >();
@@ -1134,6 +1134,7 @@ QVector<QgsPointXY> QgsInternalGeometryEngine::randomPointsInPolygon( const QgsG
 
   QVector<QgsPointXY> result;
   result.reserve( count );
+  int tries = 0;
   for ( int i = 0; i < count; )
   {
     if ( feedback && feedback->isCanceled() )
@@ -1163,7 +1164,19 @@ QVector<QgsPointXY> QgsInternalGeometryEngine::randomPointsInPolygon( const QgsG
     {
       result << QgsPointXY( x, y );
       i++;
+      tries = 0;
     }
+    else if (maxTriesPerPoint != 0)
+    {
+      tries++;
+      // Skip this point if maximum tries is reached
+      if ( tries == maxTriesPerPoint )
+      {
+        tries = 0;
+        i++;
+      }
+    }
+    
   }
   return result;
 }

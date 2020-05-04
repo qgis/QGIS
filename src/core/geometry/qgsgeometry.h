@@ -1483,6 +1483,25 @@ class CORE_EXPORT QgsGeometry
      * The optional \a feedback argument can be used to provide cancellation support during
      * the point generation.
      *
+     * When \a acceptPoint is specified, \a maxTriesPerPoint
+     * defines how many attempts to make before giving up generating
+     * a point.
+     *
+     * \since QGIS 3.14
+     */
+    QVector< QgsPointXY > randomPointsInPolygon( int count, const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr, int maxTriesPerPoint ) const;
+
+    /**
+     * Returns a list of \a count random points generated inside a (multi)polygon geometry.
+     *
+     * Optionally, a specific random \a seed can be used when generating points. If \a seed
+     * is 0, then a completely random sequence of points will be generated.
+     *
+     * If the source geometry is not a (multi)polygon, an empty list will be returned.
+     *
+     * The optional \a feedback argument can be used to provide cancellation support during
+     * the point generation.
+     *
      * \since QGIS 3.10
      */
     QVector< QgsPointXY > randomPointsInPolygon( int count, unsigned long seed = 0, QgsFeedback *feedback = nullptr ) const;

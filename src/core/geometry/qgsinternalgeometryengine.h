@@ -161,10 +161,15 @@ class QgsInternalGeometryEngine
      * The optional \a feedback argument can be used to provide cancellation support during
      * the point generation.
      *
+     * When \a acceptPoint is specified, \a maxTriesPerPoint
+     * \since QGIS 3.14
+     * defines how many attempts to perform before giving up generating
+     * a point.
+     *
      * \since QGIS 3.10
      */
-    static QVector< QgsPointXY > randomPointsInPolygon( const QgsGeometry &polygon, int count,
-        const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr );
+    static QVector< QgsPointXY > randomPointsInPolygon( const QgsGeometry &polygon, int count
+        const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr, int maxTriesPerPoint );
 
   private:
     const QgsAbstractGeometry *mGeometry = nullptr;
