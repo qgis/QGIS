@@ -204,7 +204,7 @@ class TestQgsWmsCapabilities: public QObject
                                      </Dimension>)"""
                                   << "2020-01-01,2020-06-31,2020-12-31";
 
-      QTest::newRow( "continous" ) << R"""(<Dimension name="time" units="ISO8601">
+      QTest::newRow( "continuous" ) << R"""(<Dimension name="time" units="ISO8601">
                                      2020-01-01/2020-06-31
                                      </Dimension>)"""
                                    << "2020-01-01/2020-06-31";
