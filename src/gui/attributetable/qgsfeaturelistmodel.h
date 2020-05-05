@@ -80,8 +80,8 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
     /**
      * \brief If TRUE is specified, a NULL value will be injected
      * \param injectNull state of null value injection
-     * \since QGIS 2.9
      * \note If set to TRUE, the sort by display expression cannot be used
+     * \since QGIS 2.9
      */
     void setInjectNull( bool injectNull );
 

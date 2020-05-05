@@ -62,11 +62,11 @@ If ``True`` is specified, a NULL value will be injected
 
 :param injectNull: state of null value injection
 
-.. versionadded:: 2.9
-
 .. note::
 
    If set to ``True``, the sort by display expression cannot be used
+
+.. versionadded:: 2.9
 %End
 
     bool injectNull();
