@@ -377,6 +377,29 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       */
     void setReferenceTime( const QDateTime &referenceTime );
 
+    /**
+      * Returns the position of the snapped point on the mesh element closest to \a point intersecting with
+      * the searching area defined by \a point and \a searchRadius
+      *
+      * For vertex, the snapped position is the vertex position
+      * For edge, the snapped position is the projected point on the edge, extremity of edge if outside the edge
+      * For face, the snapped position is the centroid of the face
+      * The returned position is in map coordinates.
+      *
+      * \note It uses previously cached and indexed triangular mesh
+      * and so if the layer has not been rendered previously
+      * (e.g. when used in a script) it returns empty QgsPointXY
+      * \see updateTriangularMesh
+      *
+      * \param elementType the type of element to snap
+      * \param point the center of the search area in map coordinates
+      * \param searchRadius the radius of the search area in map units
+      * \return the position of the snapped point on the closest element, empty QgsPointXY if no element of type \a elementType
+      *
+      * \since QGIS 3.14
+      */
+    QgsPointXY snapOnElement( QgsMesh::ElementType elementType, const QgsPointXY &point, double searchRadius );
+
   public slots:
 
     /**
@@ -467,6 +490,17 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     QgsMeshDatasetIndex mStaticScalarDatasetIndex;
     QgsMeshDatasetIndex mStaticVectorDatasetIndex;
+
+    int closestEdge( const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint ) const;
+
+    //! Returns the exact position in map coordinates of the closest vertex in the search area
+    QgsPointXY snapOnVertex( const QgsPointXY &point, double searchRadius );
+
+    //!Returns the position of the projected point on the closest edge in the search area
+    QgsPointXY snapOnEdge( const QgsPointXY &point, double searchRadius );
+
+    //!Returns the position of the centroid point on the closest face in the search area
+    QgsPointXY snapOnFace( const QgsPointXY &point, double searchRadius );
 };
 
 #endif //QGSMESHLAYER_H
