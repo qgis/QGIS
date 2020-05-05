@@ -409,7 +409,8 @@ void QgsFeaturePickerModelBase::scheduledReload()
 
   if ( !mFetchGeometry )
     request.setFlags( QgsFeatureRequest::NoGeometry );
-  request.setLimit( mFetchLimit );
+  if ( mFetchLimit > 0 )
+    request.setLimit( mFetchLimit );
 
   mGatherer = createValuesGatherer( request );
   mGatherer->setData( mShouldReloadCurrentFeature );
