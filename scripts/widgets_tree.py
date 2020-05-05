@@ -116,8 +116,7 @@ class UiInspector:
                 widget = loadUi(p)
                 #print dir ( ui )
                 self.widgetXml(element, widget)
-            except Exception, e:
-                #except IOError, e:
+            except Exception as e:
                 self.printMsg(str(e))
 
         return self.doc.toString(2)
