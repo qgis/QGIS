@@ -22,6 +22,7 @@
 #include "qgscompoundcurve.h"
 #include "qgsgeometry.h"
 #include "qobjectuniqueptr.h"
+#include "qgssnappingutils.h"
 
 #include <QPoint>
 #include <QList>
@@ -132,6 +133,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
   private slots:
     void addError( const QgsGeometry::Error &error );
     void currentLayerChanged( QgsMapLayer *layer );
+    //! Update the extra snap layer, this should be called whenever the capturecurve changes
+    void updateExtraSnapLayer();
 
   protected:
 
@@ -311,6 +314,11 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     QgsGeometryValidator *mValidator = nullptr;
     QList< QgsGeometry::Error > mGeomErrors;
     QList< QgsVertexMarker * > mGeomErrorMarkers;
+
+    //! A layer containing the current capture curve to provide additionnal snapping
+    QgsVectorLayer *mExtraSnapLayer = nullptr;
+    //! The feature in that layer (for updating)
+    QgsFeatureId mExtraSnapFeatureId;
 
     bool mCaptureModeFromLayer = false;
 

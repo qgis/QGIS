@@ -287,6 +287,14 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   tracingMenu->addAction( widgetAction );
   mEnableTracingAction->setMenu( tracingMenu );
 
+  // self-snapping button
+  mSelfSnappingAction = new QAction( tr( "Self-snapping" ), this );
+  mSelfSnappingAction->setCheckable( true );
+  mSelfSnappingAction->setIcon( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingSelf.svg" ) ) );
+  mSelfSnappingAction->setToolTip( tr( "Enable Self-snapping" ) );
+  mSelfSnappingAction->setObjectName( QStringLiteral( "SelfSnappingAction" ) );
+  connect( mSelfSnappingAction, &QAction::toggled, this, &QgsSnappingWidget::enableSelfSnapping );
+
   // layout
   if ( mDisplayMode == ToolBar )
   {
@@ -316,6 +324,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     mAvoidIntersectionsModeAction = tb->addWidget( mAvoidIntersectionsModeButton );
     tb->addAction( mIntersectionSnappingAction );
     tb->addAction( mEnableTracingAction );
+    tb->addAction( mSelfSnappingAction );
   }
   else
   {
@@ -349,6 +358,12 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     interButton->setDefaultAction( mIntersectionSnappingAction );
     interButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
     layout->addWidget( interButton );
+
+    QToolButton *selfsnapButton = new QToolButton();
+    selfsnapButton->addAction( mSelfSnappingAction );
+    selfsnapButton->setDefaultAction( mSelfSnappingAction );
+    selfsnapButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+    layout->addWidget( selfsnapButton );
 
     layout->setContentsMargins( 0, 0, 0, 0 );
     layout->setAlignment( Qt::AlignRight );
@@ -488,6 +503,11 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
     mIntersectionSnappingAction->setChecked( config.intersectionSnapping() );
   }
 
+  if ( config.selfSnapping() != mSelfSnappingAction->isChecked() )
+  {
+    mSelfSnappingAction->setChecked( config.selfSnapping() );
+  }
+
   toggleSnappingWidgets( config.enabled() );
 
 }
@@ -552,6 +572,7 @@ void QgsSnappingWidget::toggleSnappingWidgets( bool enabled )
     mAdvancedConfigWidget->setEnabled( enabled );
   }
   mIntersectionSnappingAction->setEnabled( enabled );
+  mSelfSnappingAction->setEnabled( enabled );
   mEnableTracingAction->setEnabled( enabled );
 }
 
@@ -590,6 +611,12 @@ void QgsSnappingWidget::enableTopologicalEditing( bool enabled )
 void QgsSnappingWidget::enableIntersectionSnapping( bool enabled )
 {
   mConfig.setIntersectionSnapping( enabled );
+  mProject->setSnappingConfig( mConfig );
+}
+
+void QgsSnappingWidget::enableSelfSnapping( bool enabled )
+{
+  mConfig.setSelfSnapping( enabled );
   mProject->setSnappingConfig( mConfig );
 }
 

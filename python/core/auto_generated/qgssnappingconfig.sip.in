@@ -345,6 +345,20 @@ Returns if the snapping on intersection is enabled
 Sets if the snapping on intersection is enabled
 %End
 
+    bool selfSnapping() const;
+%Docstring
+Returns if self snapping (snapping to the currently digitised feature) is enabled
+
+.. versionadded:: 3.14
+%End
+
+    void setSelfSnapping( bool enabled );
+%Docstring
+Sets if self snapping (snapping to the currently digitised feature) is enabled
+
+.. versionadded:: 3.14
+%End
+
     SIP_PYDICT individualLayerSettings() const;
 %Docstring
 Returns individual snapping settings for all layers
