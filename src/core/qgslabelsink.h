@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsdxfpallabeling.h
+                         qgslabelsink.h
                          -------------------
     begin                : January 2014
     copyright            : (C) 2014 by Marco Hugentobler
@@ -15,18 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSDXFPALLABELING_H
-#define QGSDXFPALLABELING_H
+#ifndef QGSLABELSINK_H
+#define QGSLABELSINK_H
 
 #define SIP_NO_FILE
 
 #include "qgsvectorlayerlabelprovider.h"
 #include "qgsrulebasedlabeling.h"
 
-class QgsDxfExport;
 class QgsPalLayerSettings;
 class QgsRuleBasedLabeling;
 
+class QgsLabelSink
+{
+  public:
+    virtual ~QgsLabelSink() = default;
+
+    virtual void drawLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings ) = 0;
+};
 
 /**
  * \ingroup core
@@ -35,11 +41,11 @@ class QgsRuleBasedLabeling;
  * Internal class, not in public API. Added in QGIS 2.12
  * \note not available in Python bindings
  */
-class QgsDxfLabelProvider : public QgsVectorLayerLabelProvider
+class QgsLabelSinkProvider : public QgsVectorLayerLabelProvider
 {
   public:
     //! construct the provider
-    explicit QgsDxfLabelProvider( QgsVectorLayer *layer, const QString &providerId, QgsDxfExport *dxf, const QgsPalLayerSettings *settings );
+    explicit QgsLabelSinkProvider( QgsVectorLayer *layer, const QString &providerId, QgsLabelSink *dxf, const QgsPalLayerSettings *settings );
 
     /**
      * Re-implementation that writes to DXF file instead of drawing with QPainter
@@ -48,17 +54,9 @@ class QgsDxfLabelProvider : public QgsVectorLayerLabelProvider
      */
     void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
 
-    /**
-     * Registration method that keeps track of DXF layer names of individual features
-     * \param feature feature
-     * \param context render context
-     * \param dxfLayerName name of dxf layer
-     */
-    void registerDxfFeature( const QgsFeature &feature, QgsRenderContext &context, const QString &dxfLayerName );
-
-  protected:
+  private:
     //! pointer to parent DXF export where this instance is used
-    QgsDxfExport *mDxfExport = nullptr;
+    QgsLabelSink *mLabelSink = nullptr;
 };
 
 /**
@@ -69,14 +67,14 @@ class QgsDxfLabelProvider : public QgsVectorLayerLabelProvider
  * Internal class, not in public API. Added in QGIS 2.15
  * \note not available in Python bindings
  */
-class QgsDxfRuleBasedLabelProvider : public QgsRuleBasedLabelProvider
+class QgsRuleBasedLabelSinkProvider : public QgsRuleBasedLabelProvider
 {
   public:
     //! construct the provider
-    explicit QgsDxfRuleBasedLabelProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer *layer, QgsDxfExport *dxf );
+    explicit QgsRuleBasedLabelSinkProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer *layer, QgsLabelSink *destination );
 
     /**
-     * Reinitialize the subproviders with QgsDxfLabelProviders
+     * Reinitialize the subproviders with QgsLabelSinkProviders
      * \param layer layer
      * \deprecated since QGIS 3.12
      */
@@ -89,22 +87,14 @@ class QgsDxfRuleBasedLabelProvider : public QgsRuleBasedLabelProvider
      */
     void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
 
-    /**
-     * Registration method that keeps track of DXF layer names of individual features
-     * \param feature feature
-     * \param context render context
-     * \param dxfLayerName name of dxf layer
-     */
-    void registerDxfFeature( QgsFeature &feature, QgsRenderContext &context, const QString &dxfLayerName );
-
-    //! create QgsDxfLabelProvider
+    //! create QgsRuleBasedLabelSinkProvider
     QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings ) override;
 
-  protected:
+  private:
     //! pointer to parent DXF export where this instance is used
-    QgsDxfExport *mDxfExport = nullptr;
+    QgsLabelSink *mLabelSink = nullptr;
 };
 
 
 
-#endif // QGSDXFPALLABELING_H
+#endif // QGSLABELSINK_H

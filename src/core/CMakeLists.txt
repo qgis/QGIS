@@ -287,6 +287,7 @@ SET(QGIS_CORE_SRCS
   qgsimagecache.cpp
   qgsinterval.cpp
   qgsjsonutils.cpp
+  qgslabelsink.cpp
   qgslayerdefinition.cpp
   qgslegendrenderer.cpp
   qgslegendsettings.cpp
@@ -450,7 +451,6 @@ SET(QGIS_CORE_SRCS
   dxf/qgsdxfexport.cpp
   dxf/qgsdxfpaintdevice.cpp
   dxf/qgsdxfpaintengine.cpp
-  dxf/qgsdxfpallabeling.cpp
 
   layout/qgsabstractreportsection.cpp
   layout/qgslayout.cpp
