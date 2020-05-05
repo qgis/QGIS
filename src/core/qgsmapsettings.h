@@ -172,10 +172,11 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     /**
      * Set the magnification factor.
      * \param factor the factor of magnification
+     * \param center optional point to re-center the map
      * \see magnificationFactor()
      * \since QGIS 2.16
      */
-    void setMagnificationFactor( double factor );
+    void setMagnificationFactor( double factor, const QgsPointXY *center = nullptr );
 
     /**
      * Returns the magnification factor.

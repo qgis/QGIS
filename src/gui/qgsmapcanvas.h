@@ -817,9 +817,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * Sets the factor of magnification to apply to the map canvas. Indeed, we
      * increase/decrease the DPI of the map settings according to this factor
      * in order to render marker point, labels, ... bigger.
+     * \param factor The factor of magnification
+     * \param center Optional point to re-center the map
      * \since QGIS 2.16
      */
-    void setMagnificationFactor( double factor );
+    void setMagnificationFactor( double factor, const QgsPointXY *center = nullptr );
 
     /**
      * Lock the scale, so zooming can be performed using magnication

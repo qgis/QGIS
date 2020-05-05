@@ -270,7 +270,7 @@ QgsMapCanvas::~QgsMapCanvas()
   delete mLabelingResults;
 }
 
-void QgsMapCanvas::setMagnificationFactor( double factor )
+void QgsMapCanvas::setMagnificationFactor( double factor, const QgsPointXY *center )
 {
   // do not go higher or lower than min max magnification ratio
   double magnifierMin = QgsGuiUtils::CANVAS_MAGNIFICATION_MIN;
@@ -280,7 +280,7 @@ void QgsMapCanvas::setMagnificationFactor( double factor )
   // the magnifier widget is in integer percent
   if ( !qgsDoubleNear( factor, mSettings.magnificationFactor(), 0.01 ) )
   {
-    mSettings.setMagnificationFactor( factor );
+    mSettings.setMagnificationFactor( factor, center );
     refresh();
     emit magnificationChanged( factor );
   }
@@ -1919,14 +1919,15 @@ void QgsMapCanvas::zoomWithCenter( int x, int y, bool zoomIn )
 {
   double scaleFactor = ( zoomIn ? zoomInFactor() : zoomOutFactor() );
 
+  // transform the mouse pos to map coordinates
+  QgsPointXY center  = getCoordinateTransform()->toMapCoordinates( x, y );
+
   if ( mScaleLocked )
   {
-    setMagnificationFactor( mapSettings().magnificationFactor() / scaleFactor );
+    setMagnificationFactor( mapSettings().magnificationFactor() / scaleFactor, &center );
   }
   else
   {
-    // transform the mouse pos to map coordinates
-    QgsPointXY center  = getCoordinateTransform()->toMapCoordinates( x, y );
     QgsRectangle r = mapSettings().visibleExtent();
     r.scale( scaleFactor, &center );
     setExtent( r, true );
@@ -2496,7 +2497,7 @@ void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPointXY *center, b
   if ( mScaleLocked && !ignoreScaleLock )
   {
     // zoom map to mouse cursor by magnifying
-    setMagnificationFactor( mapSettings().magnificationFactor() / scaleFactor );
+    setMagnificationFactor( mapSettings().magnificationFactor() / scaleFactor, center );
   }
   else
   {
