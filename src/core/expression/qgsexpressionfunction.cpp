@@ -5624,6 +5624,25 @@ static QVariant fcnHashSha256( const QVariantList &values, const QgsExpressionCo
   return fcnHash( QgsExpressionUtils::getStringValue( values.at( 0 ), parent ), QCryptographicHash::Sha256 );
 }
 
+static QVariant fcnToBase64( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QString value = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+
+  const QByteArray input = value.toLocal8Bit();
+
+  return QVariant( QString( input.toBase64() ) );
+}
+
+static QVariant fcnFromBase64( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QString value = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+
+  const QByteArray base64 = value.toLocal8Bit();
+  const QByteArray decoded = QByteArray::fromBase64( base64 );
+
+  return QVariant( QString( decoded ) );
+}
+
 const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 {
   // The construction of the list isn't thread-safe, and without the mutex,
@@ -5952,6 +5971,12 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             fcnHashMd5, QStringLiteral( "Conversions" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "sha256" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ),
                                             fcnHashSha256, QStringLiteral( "Conversions" ) )
+
+        //base64
+        << new QgsStaticExpressionFunction( QStringLiteral( "to_base64" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ),
+                                            fcnToBase64, QStringLiteral( "Conversions" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "from_base64" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ),
+                                            fcnFromBase64, QStringLiteral( "Conversions" ) )
 
         // deprecated stuff - hidden from users
         << new QgsStaticExpressionFunction( QStringLiteral( "$scale" ), QgsExpressionFunction::ParameterList(), fcnMapScale, QStringLiteral( "deprecated" ) );
