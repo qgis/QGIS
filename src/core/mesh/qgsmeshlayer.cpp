@@ -581,14 +581,12 @@ QgsPointXY QgsMeshLayer::snapOnElement( QgsMesh::ElementType elementType, const 
   {
     case QgsMesh::Vertex:
       return snapOnVertex( point, searchRadius );
-      break;
     case QgsMesh::Edge:
       return snapOnEdge( point, searchRadius );
-      break;
     case QgsMesh::Face:
       return snapOnFace( point, searchRadius );
-      break;
   }
+  return QgsPointXY(); // avoid warnings
 }
 
 QgsMeshDatasetIndex QgsMeshLayer::staticScalarDatasetIndex() const

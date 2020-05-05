@@ -423,7 +423,6 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
   double totalHeight = 0;
   qreal maxGroupHeight = 0;
   int forcedColumnBreaks = 0;
-  bool first = true;
   for ( const LegendComponentGroup &group : qgis::as_const( componentGroups ) )
   {
     totalHeight += spaceAboveGroup( group );
@@ -432,8 +431,6 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
 
     if ( group.placeColumnBreakBeforeGroup )
       forcedColumnBreaks++;
-
-    first = false;
   }
 
   if ( mSettings.columnCount() == 0 && forcedColumnBreaks == 0 )
