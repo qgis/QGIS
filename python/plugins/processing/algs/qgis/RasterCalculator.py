@@ -197,7 +197,7 @@ class RasterCalculator(QgisAlgorithm):
         for i in list(model.inputs.values()):
             param = i.param
             if isinstance(param, QgsProcessingParameterRasterLayer) and "{}@".format(param.name) in expression:
-                values.append(ValueFromInput(param.name()))
+                values.append(ValueFromInput(param.name()))  # noqa TODO: how is that supposed to work??
 
         if algorithm.name:
             dependent = model.getDependentAlgorithms(algorithm.name)
@@ -208,7 +208,7 @@ class RasterCalculator(QgisAlgorithm):
                 for out in alg.algorithm.outputs:
                     if (isinstance(out, QgsProcessingOutputRasterLayer) and
                             "{}:{}@".format(alg.modeler_name, out.name) in expression):
-                        values.append(ValueFromOutput(alg.modeler_name, out.name))
+                        values.append(ValueFromOutput(alg.modeler_name, out.name))  # noqa TODO: how is that supposed to work??
 
         algorithm.params[self.LAYERS] = values
 

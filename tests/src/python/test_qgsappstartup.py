@@ -132,7 +132,7 @@ if __name__ == '__main__':
             # internal binary will match, minus the '.app'
             found = False
             for app_path in glob.glob(d + '/QGIS*.app'):
-                m = re.search('/(QGIS(_\d\.\d-dev)?)\.app', app_path)
+                m = re.search(r'/(QGIS(_\d\.\d-dev)?)\.app', app_path)
                 if m:
                     QGIS_BIN = app_path + '/Contents/MacOS/' + m.group(1)
                     found = True

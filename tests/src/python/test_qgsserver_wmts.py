@@ -35,8 +35,8 @@ from test_qgsserver import QgsServerTestBase
 from qgis.core import QgsProject
 
 # Strip path and content length because path may vary
-RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+|timeStamp="[^"]+"'
-RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
+RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+|timeStamp="[^"]+"'
+RE_ATTRIBUTES = br'[^>\s]+=[^>\s]+'
 
 
 class TestQgsServerWMTS(QgsServerTestBase):

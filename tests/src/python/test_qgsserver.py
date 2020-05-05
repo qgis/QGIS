@@ -51,9 +51,9 @@ import base64
 
 
 # Strip path and content length because path may vary
-RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+'
-RE_ELEMENT = b'</*([^>\[\s]+)[ >]'
-RE_ELEMENT_CONTENT = b'<[^>\[]+>(.+)</[^>\[\s]+>'
+RE_STRIP_UNCHECKABLE = rb'MAP=[^"]+|Content-Length: \d+'
+RE_ELEMENT = br'</*([^>\[\s]+)[ >]'
+RE_ELEMENT_CONTENT = br'<[^>\[]+>(.+)</[^>\[\s]+>'
 RE_ATTRIBUTES = rb'((?:(?!\s|=).)*)\s*?=\s*?["\']?((?:(?<=")(?:(?<=\\)"|[^"])*|(?<=\')(?:(?<=\\)\'|[^\'])*)|(?:(?!"|\')(?:(?!\/>|>|\s).)+))'
 
 
@@ -78,7 +78,7 @@ class QgsServerTestBase(unittest.TestCase):
         for expected_line in expected_lines:
             expected_line = expected_line.strip()
             response_line = response_lines[line_no - 1].strip()
-            response_line = response_line.replace(b'e+6', b'e+06')
+            response_line = response_line.replace(b'e+6', br'e+06')
             # Compare tag
             if re.match(RE_ELEMENT, expected_line):
                 expected_elements = re.findall(RE_ELEMENT, expected_line)
@@ -139,7 +139,7 @@ class QgsServerTestBase(unittest.TestCase):
 
     def strip_version_xmlns(self, text):
         """Order of attributes is random, strip version and xmlns"""
-        return text.replace(b'version="1.3.0"', b'').replace(b'xmlns="http://www.opengis.net/ogc"', b'')
+        return text.replace(br'version="1.3.0"', r'').replace(br'xmlns="http://www.opengis.net/ogc"', b'')
 
     def assert_headers(self, header, body):
         stream = StringIO()
