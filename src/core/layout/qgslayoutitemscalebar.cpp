@@ -577,7 +577,11 @@ void QgsLayoutItemScaleBar::update()
 void QgsLayoutItemScaleBar::updateScale()
 {
   refreshSegmentMillimeters();
-  resizeToMinimumWidth();
+  //Don't adjust box size for numeric scale bars:
+  if ( mStyle && mStyle->id() != QLatin1String( "Numeric" ) )
+  {
+    resizeToMinimumWidth();
+  }
   update();
 }
 
@@ -1062,6 +1066,9 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
 
   //style
   setStyle( itemElem.attribute( QStringLiteral( "style" ), QString() ) );
+
+  //call attemptResize after setStyle to ensure the appropriate size limitations are applied
+  attemptResize( QgsLayoutSize::decodeSize( itemElem.attribute( QStringLiteral( "size" ) ) ) );
 
   if ( itemElem.attribute( QStringLiteral( "unitType" ) ).isEmpty() )
   {
