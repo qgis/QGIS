@@ -42,7 +42,7 @@ from qgis.testing import start_app, unittest
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
-from processing.gui.wrappers import *
+from processing.gui.wrappers import *  # noqa
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.algs.otb.OtbAlgorithm import OtbAlgorithm
 from processing.algs.otb.OtbAlgorithmProvider import OtbAlgorithmProvider

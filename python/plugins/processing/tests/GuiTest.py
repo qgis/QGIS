@@ -41,7 +41,7 @@ from qgis.analysis import QgsNativeAlgorithms
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
-from processing.gui.wrappers import *
+from processing.gui.wrappers import *  # noqa
 
 start_app()
 QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
