@@ -321,22 +321,22 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
     if ( filterMode == ShowVisible )
     {
       connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
-      connect( mTableModel, &QgsAttributeTableModel::dataChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
+      connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::reloadVisible );
       generateListOfVisibleFeatures();
     }
     else
     {
       disconnect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
-      disconnect( mTableModel, &QgsAttributeTableModel::dataChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
+      disconnect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::reloadVisible );
     }
 
     if ( filterMode == ShowFilteredList )
     {
-      connect( mTableModel, &QgsAttributeTableModel::dataChanged, this, &QgsAttributeTableFilterModel::filterFeatures );
+      connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::filterFeatures );
     }
     else
     {
-      disconnect( mTableModel, &QgsAttributeTableModel::dataChanged, this, &QgsAttributeTableFilterModel::filterFeatures );
+      disconnect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::filterFeatures );
     }
 
     mFilterMode = filterMode;
