@@ -912,22 +912,15 @@ bool QgsPostgresProvider::loadFields()
         // generated values, which might make possible to have values other than "s" on pg_attribute.attgenerated,
         // which should be unimportant for QGIS if the user still won't be able to overwrite the column value.
         // See https://www.postgresql.org/docs/12/ddl-generated-columns.html
-        QString attGenerated = connectionRO()->pgVersion() >= 120000 ? fmtFieldTypeResult.PQgetvalue( i, 9 ) : " ";
+        QString attGenerated = connectionRO()->pgVersion() >= 120000 ? fmtFieldTypeResult.PQgetvalue( i, 9 ) : "";
         fmtFieldTypeMap[attrelid][attnum] = formatType;
         descrMap[attrelid][attnum] = descr;
-        if ( connectionRO()->pgVersion() >= 120000 )
-        {
-          defValMap[attrelid][attnum] = attGenerated.isEmpty() ? defVal : "DEFAULT";
-        }
-        else
-        {
-          defValMap[attrelid][attnum] = defVal;
-        }
+        defValMap[attrelid][attnum] = defVal;
         attTypeIdMap[attrelid][attnum] = attType;
         notNullMap[attrelid][attnum] = attNotNull;
         uniqueMap[attrelid][attnum] = uniqueConstraint;
         identityMap[attrelid][attnum] = attIdentity.isEmpty() ? " " : attIdentity;
-        generatedMap[attrelid][attnum] = attGenerated.isEmpty() ? QString() : attGenerated;
+        generatedMap[attrelid][attnum] = attGenerated;
       }
     }
   }
