@@ -45,4 +45,4 @@ if len(sys.argv) > 1:
     print(context_id)
 else:
     # if no class name was specified, give a bit of help
-    print "To generate a context sensitive help id, specify the QGIS class name on the command line"
+    print("To generate a context sensitive help id, specify the QGIS class name on the command line")

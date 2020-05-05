@@ -216,7 +216,7 @@ class QgsServerTestBase(unittest.TestCase):
         with open(os.path.join(tempfile.gettempdir(), image + "_result." + extFile), "rb") as rendered_file:
             encoded_rendered_file = base64.b64encode(rendered_file.read())
             if not os.environ.get('ENCODED_OUTPUT'):
-                message = "Image is wrong\: rendered file %s/%s_result.%s" % (tempfile.gettempdir(), image, extFile)
+                message = "Image is wrong: rendered file %s/%s_result.%s" % (tempfile.gettempdir(), image, extFile)
             else:
                 message = "Image is wrong\n%s\nImage:\necho '%s' | base64 -d >%s/%s_result.%s" % (
                     report, encoded_rendered_file.strip().decode('utf8'), tempfile.gettempdir(), image, extFile
@@ -226,7 +226,7 @@ class QgsServerTestBase(unittest.TestCase):
         if os.path.exists(os.path.join(tempfile.gettempdir(), image + "_result_diff." + extFile)):
             with open(os.path.join(tempfile.gettempdir(), image + "_result_diff." + extFile), "rb") as diff_file:
                 if not os.environ.get('ENCODED_OUTPUT'):
-                    message = "Image is wrong\: diff file %s/%s_result_diff.%s" % (tempfile.gettempdir(), image, extFile)
+                    message = "Image is wrong: diff file %s/%s_result_diff.%s" % (tempfile.gettempdir(), image, extFile)
                 else:
                     encoded_diff_file = base64.b64encode(diff_file.read())
                     message += "\nDiff:\necho '%s' | base64 -d > %s/%s_result_diff.%s" % (
