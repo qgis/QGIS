@@ -35,8 +35,8 @@ import osgeo.gdal  # NOQA
 from test_qgsserver import QgsServerTestBase
 
 # Strip path and content length because path may vary
-RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+|timeStamp="[^"]+"'
-RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
+RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+|timeStamp="[^"]+"'
+RE_ATTRIBUTES = br'[^>\s]+=[^>\s]+'
 
 
 class TestQgsServerWFS(QgsServerTestBase):
@@ -109,7 +109,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         header, body = self._execute_request(query_string)
 
         if requestid == 'hits':
-            body = re.sub(b'timeStamp="\d+-\d+-\d+T\d+:\d+:\d+"',
+            body = re.sub(br'timeStamp="\d+-\d+-\d+T\d+:\d+:\d+"',
                           b'timeStamp="****-**-**T**:**:**"', body)
 
         self.result_compare(

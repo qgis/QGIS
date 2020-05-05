@@ -105,7 +105,7 @@ class TestAuthManager(unittest.TestCase):
                                       env=os.environ, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         line = cls.server.stdout.readline()
-        cls.port = int(re.findall(b':(\d+)', line)[0])
+        cls.port = int(re.findall(br':(\d+)', line)[0])
         assert cls.port != 0
         # Wait for the server process to start
         assert waitServer('%s://%s:%s' % (cls.protocol, cls.hostname, cls.port)), "Server is not responding! %s://%s:%s" % (cls.protocol, cls.hostname, cls.port)
