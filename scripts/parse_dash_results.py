@@ -377,7 +377,7 @@ def main():
 
             If the resulting mask is too tolerant, consider adding a new control image next to the existing one.
             ''')
-    parser.add_argument('dash_url', help='URL to a dash result with images. E.g. https://cdash.orfeo-toolbox.org/testDetails.php?test=15052561&build=27712'))
+    parser.add_argument('dash_url', help='URL to a dash result with images. E.g. https://cdash.orfeo-toolbox.org/testDetails.php?test=15052561&build=27712')
     args=parser.parse_args()
 
     w=ResultHandler()
