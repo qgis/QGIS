@@ -287,6 +287,11 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     static int scaleIconSize( int standardSize );
 
   signals:
+
+    /**
+     * Emits a message than can be displayed to the user in a GUI class
+     * \since QGIS 3.14
+     */
     void messageEmitted( const QString &message );
 
   protected slots:

@@ -322,7 +322,13 @@ displays.
 %End
 
   signals:
+
     void messageEmitted( const QString &message );
+%Docstring
+Emits a message than can be displayed to the user in a GUI class
+
+.. versionadded:: 3.14
+%End
 
   protected slots:
     void nodeWillAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
