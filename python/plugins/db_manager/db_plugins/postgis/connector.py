@@ -78,7 +78,7 @@ class CursorAdapter():
         for rec in res:
             newrec = []
             for col in rec:
-                if type(col) == type(QVariant(None)):
+                if type(col) == type(QVariant(None)):  # noqa
                     if (str(col) == 'NULL'):
                         col = None
                     else:
