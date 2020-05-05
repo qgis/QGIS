@@ -16,6 +16,8 @@
 #ifndef QGSPROCESSINGVECTORTILEWRITERLAYERSWIDGETWRAPPER_H
 #define QGSPROCESSINGVECTORTILEWRITERLAYERSWIDGETWRAPPER_H
 
+#define SIP_NO_FILE
+
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgsvectortilewriter.h"
@@ -34,6 +36,8 @@ class QgsProcessingVectorTileWriteLayerDetailsWidget : public QgsPanelWidget, pr
     QgsProcessingVectorTileWriteLayerDetailsWidget( const QVariant &value, QgsProject *project );
 
     QVariant value() const;
+
+    QDialogButtonBox *buttonBox() { return mButtonBox; }
 
   private:
     QgsVectorLayer *mLayer = nullptr;

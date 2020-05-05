@@ -106,7 +106,7 @@ QgsProcessingAlgorithm *QgsWriteVectorTilesXyzAlgorithm::createInstance() const
 
 void QgsWriteVectorTilesXyzAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFolderDestination( QStringLiteral( "OUTPUT_DIR" ), QObject::tr( "Output directry" ) ) );
+  addParameter( new QgsProcessingParameterFolderDestination( QStringLiteral( "OUTPUT_DIR" ), QObject::tr( "Output directory" ) ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "XYZ_TEMPLATE" ), QObject::tr( "File template" ), QStringLiteral( "{z}/{x}/{y}.pbf" ) ) );
 
   addBaseParameters();

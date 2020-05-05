@@ -97,8 +97,6 @@ QString QgsProcessingParameterVectorTileWriterLayers::asPythonString( QgsProcess
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
       QString code = QStringLiteral( "QgsProcessingParameterVectorTileWriterLayers('%1', '%2'" ).arg( name(), description() );
-      //if ( mFlags & FlagOptional )
-      //  code += QStringLiteral( ", optional=True" );
       code += QStringLiteral( ")" );
       return code;
     }

@@ -47,16 +47,21 @@ QgsProcessingVectorTileWriteLayerDetailsWidget::QgsProcessingVectorTileWriteLaye
   if ( !mLayer )
     return;
 
+  mSpinMinZoom->setClearValue( -1, tr( "Not set" ) );
+  mSpinMaxZoom->setClearValue( -1, tr( "Not set" ) );
+  mEditFilterExpression->setMultiLine( true );
+  mEditFilterExpression->setLayer( mLayer );
+
   mSpinMinZoom->setValue( layer.minZoom() );
   mSpinMaxZoom->setValue( layer.maxZoom() );
   mEditLayerName->setText( layer.layerName() );
   mEditLayerName->setPlaceholderText( mLayer->name() );
-  mEditFilterExpression->setPlainText( layer.filterExpression() );
+  mEditFilterExpression->setExpression( layer.filterExpression() );
 
   connect( mSpinMinZoom, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( mSpinMaxZoom, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( mEditLayerName, &QLineEdit::textChanged, this, &QgsPanelWidget::widgetChanged );
-  // TODO?? connect( mEditFilterExpression, &QTextEdit::textChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mEditFilterExpression, &QgsExpressionLineEdit::expressionChanged, this, &QgsPanelWidget::widgetChanged );
 }
 
 QVariant QgsProcessingVectorTileWriteLayerDetailsWidget::value() const
@@ -65,7 +70,7 @@ QVariant QgsProcessingVectorTileWriteLayerDetailsWidget::value() const
   layer.setMinZoom( mSpinMinZoom->value() );
   layer.setMaxZoom( mSpinMaxZoom->value() );
   layer.setLayerName( mEditLayerName->text() );
-  layer.setFilterExpression( mEditFilterExpression->toPlainText() );
+  layer.setFilterExpression( mEditFilterExpression->expression() );
   return QgsProcessingParameterVectorTileWriterLayers::layerAsVariantMap( layer );
 }
 
@@ -121,9 +126,8 @@ QgsProcessingVectorTileWriterLayersPanelWidget::QgsProcessingVectorTileWriterLay
 
     QString title = layer->name();
 
-    addOption( vm, title, false ); //, true );
+    addOption( vm, title, false );
   }
-
 }
 
 
@@ -144,25 +148,28 @@ void QgsProcessingVectorTileWriterLayersPanelWidget::configureLayer()
   {
     QgsProcessingVectorTileWriteLayerDetailsWidget *widget = new QgsProcessingVectorTileWriteLayerDetailsWidget( value, mProject );
     widget->setPanelTitle( tr( "Configure Layer" ) );
+    widget->buttonBox()->hide();
 
     connect( widget, &QgsProcessingVectorTileWriteLayerDetailsWidget::widgetChanged, this, [ = ]()
     {
       setItemValue( item, widget->value() );
     } );
-//    connect( widget, &QgsProcessingVectorTileWriteLayerDetailsWidget::acceptClicked, widget, &QgsPanelWidget::acceptPanel );
     panel->openPanel( widget );
   }
   else
   {
-    // TODO
-#if 0
-    QgsProcessingMultipleInputDialog dlg( mParam, mValue, mModelSources, mModel, this, nullptr );
-    dlg.setProject( mProject );
+    QDialog dlg;
+    dlg.setWindowTitle( tr( "Configure Layer" ) );
+    QVBoxLayout *vLayout = new QVBoxLayout();
+    QgsProcessingVectorTileWriteLayerDetailsWidget *widget = new QgsProcessingVectorTileWriteLayerDetailsWidget( value, mProject );
+    vLayout->addWidget( widget );
+    connect( widget->buttonBox(), &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+    connect( widget->buttonBox(), &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+    dlg.setLayout( vLayout );
     if ( dlg.exec() )
     {
-      setValue( dlg.selectedOptions() );
+      setItemValue( item, widget->value() );
     }
-#endif
   }
 
 }
@@ -197,12 +204,17 @@ QString QgsProcessingVectorTileWriterLayersPanelWidget::titleForLayer( const Qgs
   QString title = layer.layer()->name();
 
   // add more details
-  if ( layer.minZoom() >= 0 || layer.maxZoom() >= 0 )
-    title += QString( " [zoom: %1 - %2]" ).arg( layer.minZoom() ).arg( layer.maxZoom() );
+  if ( layer.minZoom() >= 0 && layer.maxZoom() >= 0 )
+    title += tr( " [zoom %1...%2]" ).arg( layer.minZoom() ).arg( layer.maxZoom() );
+  else if ( layer.minZoom() >= 0 )
+    title += tr( " [zoom >= %1]" ).arg( layer.minZoom() );
+  else if ( layer.maxZoom() >= 0 )
+    title += tr( " [zoom <= %1]" ).arg( layer.maxZoom() );
+
   if ( !layer.layerName().isEmpty() )
-    title += QString( " [name: %1]" ).arg( layer.layerName() );
+    title += tr( " [name: %1]" ).arg( layer.layerName() );
   if ( !layer.filterExpression().isEmpty() )
-    title += QString( " [with filter]" );
+    title += tr( " [with filter]" );
 
   return title;
 }
@@ -267,15 +279,19 @@ void QgsProcessingVectorTileWriterLayersWidget::showDialog()
   }
   else
   {
-    // TODO
-#if 0
-    QgsProcessingMultipleInputDialog dlg( mParam, mValue, mModelSources, mModel, this, nullptr );
-    dlg.setProject( mProject );
+    QDialog dlg;
+    dlg.setWindowTitle( tr( "Input layers" ) );
+    QVBoxLayout *vLayout = new QVBoxLayout();
+    QgsProcessingVectorTileWriterLayersPanelWidget *widget = new QgsProcessingVectorTileWriterLayersPanelWidget( mValue, mProject );
+    vLayout->addWidget( widget );
+    widget->buttonBox()->addButton( QDialogButtonBox::Cancel );
+    connect( widget->buttonBox(), &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+    connect( widget->buttonBox(), &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+    dlg.setLayout( vLayout );
     if ( dlg.exec() )
     {
-      setValue( dlg.selectedOptions() );
+      setValue( widget->selectedOptions() );
     }
-#endif
   }
 }
 
@@ -306,7 +322,6 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingVectorTileWriterLayers
 QWidget *QgsProcessingVectorTileWriterLayersWidgetWrapper::createWidget()
 {
   mPanel = new QgsProcessingVectorTileWriterLayersWidget( nullptr );
-  //mPanel->setToolTip( parameterDefinition()->toolTip() );
   mPanel->setProject( widgetContext().project() );
   connect( mPanel, &QgsProcessingVectorTileWriterLayersWidget::changed, this, [ = ]
   {
@@ -326,6 +341,7 @@ void QgsProcessingVectorTileWriterLayersWidgetWrapper::setWidgetContext( const Q
 
 void QgsProcessingVectorTileWriterLayersWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
 {
+  Q_UNUSED( context )
   if ( mPanel )
   {
     mPanel->setValue( value );
@@ -335,22 +351,14 @@ void QgsProcessingVectorTileWriterLayersWidgetWrapper::setWidgetValue( const QVa
 QVariant QgsProcessingVectorTileWriterLayersWidgetWrapper::widgetValue() const
 {
   return mPanel ? mPanel->value() : QVariant();
-//  if ( mPanel )
-//    return !mPanel->value().toList().isEmpty() ? mPanel->value() : QVariant();
-//  else
-//    return QVariant();
 }
 
 QStringList QgsProcessingVectorTileWriterLayersWidgetWrapper::compatibleParameterTypes() const
 {
   return QStringList();
-//         << QgsProcessingParameterBand::typeName()
-//         << QgsProcessingParameterNumber::typeName()
-//         << QgsProcessingOutputFolder::typeName();
 }
 
 QStringList QgsProcessingVectorTileWriterLayersWidgetWrapper::compatibleOutputTypes() const
 {
   return QStringList();
-  //       << QgsProcessingOutputNumber::typeName();
 }
