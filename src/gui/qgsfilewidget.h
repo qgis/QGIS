@@ -200,12 +200,17 @@ class GUI_EXPORT QgsFileWidget : public QWidget
   private slots:
     void openFileDialog();
     void textEdited( const QString &path );
+    void editLink();
 
   private:
+    void updateLayout();
+
     QString mFilePath;
     bool mButtonVisible = true;
     bool mUseLink = false;
     bool mFullUrl = false;
+    bool mReadOnly = false;
+    bool mIsLinkEdited = false;
     QString mDialogTitle;
     QString mFilter;
     QString mSelectedFilter;
@@ -216,6 +221,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
 
     QLabel *mLinkLabel = nullptr;
     QgsFileDropEdit *mLineEdit = nullptr;
+    QToolButton *mLinkEditButton = nullptr;
     QToolButton *mFileWidgetButton = nullptr;
     QHBoxLayout *mLayout = nullptr;
 
