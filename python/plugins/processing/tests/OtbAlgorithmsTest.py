@@ -177,7 +177,7 @@ class TestOtbAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         alg_smoothing = OtbAlgorithm('Image Filtering', 'Smoothing', os.path.join(self.descrFolder, 'Smoothing.txt'))
         found = False
         for param in alg_smoothing.parameterDefinitions():
-            ## print (param.name(), param.type())
+            # print (param.name(), param.type())
             if param.type() == 'OTBParameterChoice':
                 found = True
                 break
