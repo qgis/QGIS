@@ -208,6 +208,10 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
     {
       isBroken = true;
 
+      // if the size parameter is not valid, skip drawing of missing image symbol
+      if ( !size.isValid() )
+        return im;
+
       // if image size is set to respect aspect ratio, correct for broken image aspect ratio
       if ( size.width() == 0 )
         size.setWidth( size.height() );
