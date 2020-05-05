@@ -286,6 +286,9 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      */
     static int scaleIconSize( int standardSize );
 
+  signals:
+    void messageEmitted( const QString &message );
+
   protected slots:
     void nodeWillAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
     void nodeAddedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );

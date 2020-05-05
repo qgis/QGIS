@@ -321,6 +321,9 @@ displays.
 .. versionadded:: 3.6
 %End
 
+  signals:
+    void messageEmitted( const QString &message );
+
   protected slots:
     void nodeWillAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
     void nodeAddedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
