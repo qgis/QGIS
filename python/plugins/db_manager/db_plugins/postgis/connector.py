@@ -34,6 +34,7 @@ from qgis.PyQt.QtCore import (
 )
 from qgis.core import (
     Qgis,
+    QgsCoordinateReferenceSystem,
     QgsCredentials,
     QgsVectorLayer,
     QgsDataSourceUri,

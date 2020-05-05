@@ -33,7 +33,7 @@ from processing.tools import dataobjects
 from qgis.PyQt.QtWidgets import QMessageBox, QVBoxLayout, QLabel, QLineEdit, QWidget
 from qgis.PyQt.QtGui import QPalette, QColor
 
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, Qgis
 from qgis.gui import QgsMessageBar
 
 

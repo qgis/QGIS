@@ -29,6 +29,7 @@ from qgis.PyQt.QtCore import QVariant
 
 from qgis.core import (NULL,
                        QgsApplication,
+                       QgsCsException,
                        QgsField,
                        QgsFeatureSink,
                        QgsRaster,
