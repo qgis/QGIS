@@ -148,6 +148,7 @@ Returns the feature request fetch limit
     void setFetchLimit( int fetchLimit );
 %Docstring
 Defines the feature request fetch limit
+If set to 0, no limit is applied when fetching
 %End
 
   signals:

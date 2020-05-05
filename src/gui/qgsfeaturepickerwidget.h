@@ -137,6 +137,7 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
 
     /**
      * Defines the feature request fetch limit
+     * If set to 0, no limit is applied when fetching
      */
     void setFetchLimit( int fetchLimit );
 
@@ -147,6 +148,7 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
 
     /**
      * Defines if the browsing buttons are shown
+     * \note Buttons are browsing the currently fetched features. If a limit is set, there might be more features to be fetched from the layer.
      */
     void setShowBrowserButtons( bool showBrowserButtons );
 
