@@ -13,10 +13,19 @@ TEST_NAME=$1
 TEST_RUNNER_PATH=${TEST_RUNNER_PATH:-/usr/bin/qgis_testrunner.py}
 QGIS_BUILD_PATH=${QGIS_BUILD_PATH:-qgis}
 
-echo "Running test $1 ..."
-OUTPUT=$(QGIS_TEST_MODULE=${TEST_NAME} unbuffer ${QGIS_BUILD_PATH} --version-migration --nologo --code ${TEST_RUNNER_PATH} "$TEST_NAME"  2>/dev/null | tee /dev/tty)
+LOGFILE=/tmp/qgis_testrunner_$$
 
+echo "Running test $1 ..."
+QGIS_TEST_MODULE=${TEST_NAME} unbuffer ${QGIS_BUILD_PATH} \
+  --version-migration --nologo --code \
+  ${TEST_RUNNER_PATH} "$TEST_NAME"  \
+  2>/dev/null | \
+  tee ${LOGFILE}
+
+# NOTE: EXIT_CODE will always be 0 if "tee" works,
+#       we could `set -o pipefail` to change this
 EXIT_CODE="$?"
+OUTPUT=$(cat $LOGFILE) # quick hack to avoid changing too many lines
 if [ -z "$OUTPUT" ]; then
     echo "ERROR: no output from the test runner! (exit code: ${EXIT_CODE})"
     exit 1
