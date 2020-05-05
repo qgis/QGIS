@@ -113,7 +113,7 @@ class AlgorithmsTest(object):
                 parameters[k] = p
 
         for r, p in list(defs['results'].items()):
-            if not 'in_place_result' in p or not p['in_place_result']:
+            if 'in_place_result' not in p or not p['in_place_result']:
                 parameters[r] = self.load_result_param(p)
 
         expectFailure = False

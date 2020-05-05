@@ -291,7 +291,7 @@ def execute_in_place(alg, parameters, context=None, feedback=None):
     if context is None:
         context = dataobjects.createContext(feedback)
 
-    if not 'INPUT' in parameters or not parameters['INPUT']:
+    if 'INPUT' not in parameters or not parameters['INPUT']:
         parameters['INPUT'] = iface.activeLayer()
     ok, results = execute_in_place_run(alg, parameters, context=context, feedback=feedback)
     if ok:
