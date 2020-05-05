@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-****************************3***********************************************
+***************************************************************************
     parse_dash_results.py
     ---------------------
     Date                 : October 2016
@@ -367,7 +367,7 @@ def main():
     app = QApplication(sys.argv)
 
     parser = argparse.ArgumentParser(
-            description='''A tool to automatically update test image masks based on results submitted to cdash.
+        description='''A tool to automatically update test image masks based on results submitted to cdash.
 
             It will take local control images from the QGIS source and rendered images from test results
             on cdash to create a mask.
@@ -377,10 +377,10 @@ def main():
 
             If the resulting mask is too tolerant, consider adding a new control image next to the existing one.
             ''')
-    parser.add_argument('dash_url', help='URL to a dash result with images. E.g. https://cdash.orfeo-toolbox.org/testDetails.php?test=15052561&build=27712'))
-    args=parser.parse_args()
+    parser.add_argument('dash_url', help='URL to a dash result with images. E.g. https://cdash.orfeo-toolbox.org/testDetails.php?test=15052561&build=27712')
+    args = parser.parse_args()
 
-    w=ResultHandler()
+    w = ResultHandler()
     w.parse_url(args.dash_url)
     w.exec_()
 
