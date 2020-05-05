@@ -80,6 +80,7 @@ a Cygwin[64] Terminal
 And, to avoid Git in Windows reporting changes to files not actually modified:
 
 ```
+cd QGIS
 git config core.filemode false
 ```
 
