@@ -367,20 +367,20 @@ def main():
     app = QApplication(sys.argv)
 
     parser = argparse.ArgumentParser(
-            description='''A tool to automatically update test image masks based on results submitted to cdash.
+        description='''A tool to automatically update test image masks based on results submitted to cdash.
 
-            It will take local control images from the QGIS source and rendered images from test results
-            on cdash to create a mask.
+        It will take local control images from the QGIS source and rendered images from test results
+        on cdash to create a mask.
 
-            When using it, carefully check, that the rendered images from the test results are acceptable and
-            that the new masks will only mask regions on the image that indeed allow for variation.
+        When using it, carefully check, that the rendered images from the test results are acceptable and
+        that the new masks will only mask regions on the image that indeed allow for variation.
 
-            If the resulting mask is too tolerant, consider adding a new control image next to the existing one.
-            ''')
+        If the resulting mask is too tolerant, consider adding a new control image next to the existing one.
+        ''')
     parser.add_argument('dash_url', help='URL to a dash result with images. E.g. https://cdash.orfeo-toolbox.org/testDetails.php?test=15052561&build=27712')
-    args=parser.parse_args()
+    args = parser.parse_args()
 
-    w=ResultHandler()
+    w = ResultHandler()
     w.parse_url(args.dash_url)
     w.exec_()
 
