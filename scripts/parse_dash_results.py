@@ -158,7 +158,7 @@ class ResultHandler(QDialog):
 
         images = {}
         for img in measurement_img:
-            m = re.search('Rendered Image (.*?)(\s|$)', img['role'])
+            m = re.search(r'Rendered Image (.*?)(\s|$)', img['role'])
             test_name = m.group(1)
             rendered_image = 'displayImage.php?imgid={}'.format(img['imgid'])
             images[test_name] = '{}/{}'.format(dash_url, rendered_image)
@@ -286,7 +286,7 @@ class ResultHandler(QDialog):
 
     def get_control_image_path(self, test_name):
         if os.path.isfile(test_name):
-            return path
+            return test_name
 
         # else try and find matching test image
         script_folder = os.path.dirname(os.path.realpath(sys.argv[0]))
