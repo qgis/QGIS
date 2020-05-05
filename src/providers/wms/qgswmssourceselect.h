@@ -93,6 +93,12 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     //! Stores the selected datasource whenerver it is changed
     void cmbConnections_activated( int );
 
+    //! filter the layers
+    void filterLayers( const QString &searchText );
+
+    //! Filters the tiles sets
+    void filterTiles( const QString &searchText );
+
   private:
     //! Populate the connection list combo box
     void populateConnectionList();
@@ -183,6 +189,9 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
 
     //! Stores all the layers properties from the service capabilities.
     QVector<QgsWmsLayerProperty> mLayerProperties;
+
+    // save the current status of the layer true
+    QMap<QTreeWidgetItem *, bool> mTreeInitialExpand = QMap<QTreeWidgetItem *, bool>();
 
   private slots:
     void lstTilesets_itemClicked( QTableWidgetItem *item );
