@@ -18,6 +18,7 @@
 #include "qgslayout.h"
 #include "qgslayoutview.h"
 #include "qgslayoutitempicture.h"
+
 #include <QImageReader>
 
 QgsLayoutImageDropHandler::QgsLayoutImageDropHandler( QObject *parent )
@@ -29,19 +30,27 @@ QgsLayoutImageDropHandler::QgsLayoutImageDropHandler( QObject *parent )
 bool QgsLayoutImageDropHandler::handleFileDrop( QgsLayoutDesignerInterface *iface, QPointF point, const QString &file )
 {
   QFileInfo fi( file );
-
   bool matched = false;
-  const QList<QByteArray> formats = QImageReader::supportedImageFormats();
-  for ( const QByteArray &format : formats )
+  bool svg = false;
+  if ( fi.suffix().compare( "svg", Qt::CaseInsensitive ) == 0 )
   {
-    if ( fi.suffix().compare( format, Qt::CaseInsensitive ) == 0 )
+    matched = true;
+    svg = true;
+  }
+  else
+  {
+    const QList<QByteArray> formats = QImageReader::supportedImageFormats();
+    for ( const QByteArray &format : formats )
     {
-      matched = true;
-      break;
+      if ( fi.suffix().compare( format, Qt::CaseInsensitive ) == 0 )
+      {
+        matched = true;
+        break;
+      }
     }
   }
-  if ( !matched )
 
+  if ( !matched )
     return false;
 
   if ( !iface->layout() )
@@ -51,7 +60,7 @@ bool QgsLayoutImageDropHandler::handleFileDrop( QgsLayoutDesignerInterface *ifac
 
   QgsLayoutPoint layoutPoint = iface->layout()->convertFromLayoutUnits( point, iface->layout()->units() );
 
-  item->setPicturePath( file, QgsLayoutItemPicture::FormatRaster );
+  item->setPicturePath( file, svg ? QgsLayoutItemPicture::FormatSVG : QgsLayoutItemPicture::FormatRaster );
 
   // force a resize to the image's actual size
   item->setResizeMode( QgsLayoutItemPicture::FrameToImageSize );
