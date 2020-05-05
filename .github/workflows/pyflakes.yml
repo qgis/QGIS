@@ -9,5 +9,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Run pyflakes
-      uses: lgeiger/pyflakes-action@master
+    - name: Flake8
+      uses: cclauss/GitHub-Action-for-Flake8@v0.5.0
