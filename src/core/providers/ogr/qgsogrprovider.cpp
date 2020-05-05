@@ -3492,9 +3492,10 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
   if ( driverName == QLatin1String( "ESRI Shapefile" ) )
   {
     if ( !uri.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) &&
-         !uri.endsWith( QLatin1String( ".shz" ), Qt::CaseInsensitive ) )
+         !uri.endsWith( QLatin1String( ".shz" ), Qt::CaseInsensitive ) &&
+         !uri.endsWith( QLatin1String( ".dbf" ), Qt::CaseInsensitive ) )
     {
-      errorMessage = QObject::tr( "URI %1 doesn't end with .shp" ).arg( uri );
+      errorMessage = QObject::tr( "URI %1 doesn't end with .shp or .dbf" ).arg( uri );
       QgsDebugMsg( errorMessage );
       return false;
     }
