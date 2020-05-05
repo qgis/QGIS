@@ -81,6 +81,7 @@ class CORE_EXPORT QgsScaleBarRenderer
       FlagUsesLabelVerticalPlacement = 1 << 8, //!< Renderer uses the QgsScaleBarSettings::labelVerticalPlacement() setting
       FlagUsesLabelHorizontalPlacement = 1 << 8, //!< Renderer uses the QgsScaleBarSettings::labelHorizontalPlacement() setting
       FlagUsesAlignment = 1 << 9, //!< Renderer uses the QgsScaleBarSettings::alignment() setting
+      FlagUsesSubdivisions = 1 << 10, //!< Renderer uses the scalebar subdivisions
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
