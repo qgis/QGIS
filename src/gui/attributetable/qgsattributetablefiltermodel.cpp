@@ -40,6 +40,11 @@ QgsAttributeTableFilterModel::QgsAttributeTableFilterModel( QgsMapCanvas *canvas
   setDynamicSortFilter( true );
   setSortRole( QgsAttributeTableModel::SortRole );
   connect( layer(), &QgsVectorLayer::selectionChanged, this, &QgsAttributeTableFilterModel::selectionChanged );
+
+  mReloadVisibleTimer.setSingleShot( true );
+  connect( &mReloadVisibleTimer, &QTimer::timeout, this, &QgsAttributeTableFilterModel::reloadVisible );
+  mFilterFeaturesTimer.setSingleShot( true );
+  connect( &mFilterFeaturesTimer, &QTimer::timeout, this, &QgsAttributeTableFilterModel::filterFeatures );
 }
 
 bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
@@ -322,20 +327,20 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
     switch ( mFilterMode )
     {
       case ShowVisible:
-        disconnect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
-        disconnect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::reloadVisible );
-        disconnect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
-        disconnect( mTableModel, &QgsAttributeTableModel::finished, this, &QgsAttributeTableFilterModel::reloadVisible );
+        disconnect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
+        disconnect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
+        disconnect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
+        disconnect( mTableModel, &QgsAttributeTableModel::finished, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
         break;
       case ShowAll:
       case ShowEdited:
       case ShowSelected:
         break;
       case ShowFilteredList:
-        disconnect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::filterFeatures );
+        disconnect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedFilterFeatures );
+        disconnect( mTableModel, &QgsAttributeTableModel::finished, this, &QgsAttributeTableFilterModel::startTimedFilterFeatures );
         disconnect( layer(), &QgsVectorLayer::attributeValueChanged, this, &QgsAttributeTableFilterModel::onAttributeValueChanged );
         disconnect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::onGeometryChanged );
-        disconnect( mTableModel, &QgsAttributeTableModel::finished, this, &QgsAttributeTableFilterModel::filterFeatures );
         break;
     }
 
@@ -343,10 +348,10 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
     switch ( filterMode )
     {
       case ShowVisible:
-        connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
-        connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::reloadVisible );
-        connect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
-        connect( mTableModel, &QgsAttributeTableModel::finished, this, &QgsAttributeTableFilterModel::reloadVisible );
+        connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
+        connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
+        connect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
+        connect( mTableModel, &QgsAttributeTableModel::finished, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
         generateListOfVisibleFeatures();
         break;
       case ShowAll:
@@ -354,10 +359,10 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
       case ShowSelected:
         break;
       case ShowFilteredList:
-        connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::filterFeatures );
+        connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedFilterFeatures );
+        connect( mTableModel, &QgsAttributeTableModel::finished, this, &QgsAttributeTableFilterModel::startTimedFilterFeatures );
         connect( layer(), &QgsVectorLayer::attributeValueChanged, this, &QgsAttributeTableFilterModel::onAttributeValueChanged );
         connect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::onGeometryChanged );
-        connect( mTableModel, &QgsAttributeTableModel::finished, this, &QgsAttributeTableFilterModel::filterFeatures );
         break;
     }
 
@@ -420,6 +425,7 @@ void QgsAttributeTableFilterModel::reloadVisible()
 {
   generateListOfVisibleFeatures();
   invalidateFilter();
+  emit visibleReloaded();
 }
 
 void QgsAttributeTableFilterModel::onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
@@ -429,7 +435,7 @@ void QgsAttributeTableFilterModel::onAttributeValueChanged( QgsFeatureId fid, in
 
   if ( mFilterExpression.referencedAttributeIndexes( layer()->fields() ).contains( idx ) )
   {
-    filterFeatures();
+    startTimedFilterFeatures();
   }
 }
 
@@ -437,8 +443,18 @@ void QgsAttributeTableFilterModel::onGeometryChanged()
 {
   if ( mFilterExpression.needsGeometry() )
   {
-    filterFeatures();
+    startTimedFilterFeatures();
   }
+}
+
+void QgsAttributeTableFilterModel::startTimedReloadVisible()
+{
+  mReloadVisibleTimer.start( 10 );
+}
+
+void QgsAttributeTableFilterModel::startTimedFilterFeatures()
+{
+  mFilterFeaturesTimer.start( 10 );
 }
 
 void QgsAttributeTableFilterModel::filterFeatures()
@@ -490,6 +506,8 @@ void QgsAttributeTableFilterModel::filterFeatures()
   setFilteredFeatures( filteredFeatures );
 
   QApplication::restoreOverrideCursor();
+
+  emit featuresFiltered();
 }
 
 

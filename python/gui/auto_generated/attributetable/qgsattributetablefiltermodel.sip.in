@@ -216,6 +216,16 @@ Emitted whenever the sort column is changed
 :param order: The sort order
 %End
 
+    void featuresFiltered();
+%Docstring
+Emitted when the filtering of the features has been done
+%End
+
+    void visibleReloaded();
+%Docstring
+Emitted when the the visible features on extend are reloaded (the list is created)
+%End
+
   protected:
 
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
