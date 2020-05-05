@@ -384,7 +384,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsUnionAlgorithm() );
   addAlgorithm( new QgsVariableWidthBufferByMAlgorithm() );
   addAlgorithm( new QgsWedgeBuffersAlgorithm() );
-  addAlgorithm( new QgsWriteVectorTilesAlgorithm() );
+  addAlgorithm( new QgsWriteVectorTilesXyzAlgorithm() );
+  addAlgorithm( new QgsWriteVectorTilesMbtilesAlgorithm() );
   addAlgorithm( new QgsZonalHistogramAlgorithm() );
   addAlgorithm( new QgsZonalStatisticsAlgorithm() );
   addAlgorithm( new QgsPolygonsToLinesAlgorithm() );

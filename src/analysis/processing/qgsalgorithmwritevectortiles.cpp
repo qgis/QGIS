@@ -15,181 +15,186 @@
 
 #include "qgsalgorithmwritevectortiles.h"
 
+#include "qgsprocessingparametervectortilewriterlayers.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectortilewriter.h"
 
 ///@cond PRIVATE
 
 
-class QgsProcessingParameterVectorTileWriterLayers : public QgsProcessingParameterDefinition
-{
-public:
-  QgsProcessingParameterVectorTileWriterLayers( const QString &name, const QString &description = QString() )
-    : QgsProcessingParameterDefinition( name, description, QVariant(), false ) {}
-
-  static QString typeName() { return QStringLiteral( "vectortilewriterlayers" ); }
-  QgsProcessingParameterDefinition *clone() const override
-  {
-    return new QgsProcessingParameterVectorTileWriterLayers( *this );
-  }
-  QString type() const override { return typeName(); }
-
-  bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const override
-  {
-    if ( !input.isValid() )
-      return mFlags & FlagOptional;
-
-    if ( input.type() != QVariant::List )
-      return false;
-
-    const QVariantList inputList = input.toList();
-    for ( const QVariant &inputItem : inputList )
-    {
-      if ( inputItem.type() != QVariant::Map )
-        return false;
-      QVariantMap inputItemMap = inputItem.toMap();
-
-      // "layer" is required - pointing to a vector layer
-      if ( !inputItemMap.contains( "layer" ) )
-        return false;
-
-      QVariant inputItemLayer = inputItemMap["layer"];
-
-      if ( qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( inputItemLayer ) ) )
-        continue;
-
-      if ( !QgsProcessingUtils::mapLayerFromString( inputItemLayer.toString(), *context ) )
-        return false;
-    }
-
-    return true;
-  }
-
-  // TODO: anything else?
-  // - valueAsPythonString()
-  // - asScriptCode()
-  // - asPythonString()
-
-  static QList<QgsVectorTileWriter::Layer> parameterAsLayers( const QVariant &layersVariant, QgsProcessingContext &context )
-  {
-    QList<QgsVectorTileWriter::Layer> layers;
-    const QVariantList layersVariantList = layersVariant.toList();
-    for ( const QVariant &layerItem : layersVariantList )
-    {
-      QVariantMap layerVariantMap = layerItem.toMap();
-      QVariant layerVariant = layerVariantMap["layer"];
-
-      QgsVectorLayer *inputLayer = nullptr;
-      if ( ( inputLayer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( layerVariant ) ) ) )
-      {
-        // good
-      }
-      else if ( ( inputLayer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerVariant.toString(), context ) ) ) )
-      {
-        // good
-      }
-      else
-      {
-        // bad
-        throw QgsProcessingException( "unknown input layer" );
-      }
-
-      QgsVectorTileWriter::Layer writerLayer( inputLayer );
-      if ( layerVariantMap.contains( "filterExpression" ) )
-        writerLayer.setFilterExpression( layerVariantMap["filterExpression"].toString() );
-      if ( layerVariantMap.contains( "minZoom" ) )
-        writerLayer.setMinZoom( layerVariantMap["minZoom"].toInt() );
-      if ( layerVariantMap.contains( "maxZoom" ) )
-        writerLayer.setMaxZoom( layerVariantMap["maxZoom"].toInt() );
-      if ( layerVariantMap.contains( "layerName" ) )
-        writerLayer.setLayerName( layerVariantMap["layerName"].toString() );
-      layers << writerLayer;
-    }
-    return layers;
-  }
-
-};
-
-QString QgsWriteVectorTilesAlgorithm::name() const
-{
-  return QStringLiteral( "writevectortiles" );
-}
-
-QString QgsWriteVectorTilesAlgorithm::displayName() const
-{
-  return QObject::tr( "Write Vector Tiles" );
-}
-
-QString QgsWriteVectorTilesAlgorithm::group() const
+QString QgsWriteVectorTilesBaseAlgorithm::group() const
 {
   return QObject::tr( "Vector tiles" );
 }
 
-QString QgsWriteVectorTilesAlgorithm::groupId() const
+QString QgsWriteVectorTilesBaseAlgorithm::groupId() const
 {
   return QStringLiteral( "vectortiles" );
 }
 
-QString QgsWriteVectorTilesAlgorithm::shortHelpString() const
+QString QgsWriteVectorTilesBaseAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "blah blah" );  // TODO
+  return QObject::tr( "This algorithm exports one or more vector layers to vector tiles - a data format optimized for fast map rendering and small data size." );
 }
 
-QgsProcessingAlgorithm *QgsWriteVectorTilesAlgorithm::createInstance() const
+void QgsWriteVectorTilesBaseAlgorithm::addBaseParameters()
 {
-  return new QgsWriteVectorTilesAlgorithm();
-}
+  addParameter( new QgsProcessingParameterVectorTileWriterLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ) ) );
 
-void QgsWriteVectorTilesAlgorithm::initAlgorithm( const QVariantMap & )
-{
-  addParameter( new QgsProcessingParameterVectorTileWriterLayers( "LAYERS", QObject::tr("Input layers") ) );
-
-  addParameter( new QgsProcessingParameterString( "XYZ_TEMPLATE", QObject::tr("File template"), "/home/qgis/{z}/{x}/{y}.pbf" ) );
-  // TODO maybe use this:
-  // addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Destination GeoPackage" ), QObject::tr( "GeoPackage files (*.gpkg)" ) ) );
-
-  addParameter( new QgsProcessingParameterNumber( "MIN_ZOOM", QObject::tr("Minimum zoom level"), QgsProcessingParameterNumber::Integer, 0, false, 0, 24 ) );
-  addParameter( new QgsProcessingParameterNumber( "MAX_ZOOM", QObject::tr("Maximum zoom level"), QgsProcessingParameterNumber::Integer, 3, false, 0, 24 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MIN_ZOOM" ), QObject::tr( "Minimum zoom level" ), QgsProcessingParameterNumber::Integer, 0, false, 0, 24 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_ZOOM" ), QObject::tr( "Maximum zoom level" ), QgsProcessingParameterNumber::Integer, 3, false, 0, 24 ) );
 
   // optional extent
-  addParameter( new QgsProcessingParameterExtent( "EXTENT", QObject::tr("Extent"), QVariant(), true ) );
-
-  // TODO: optional metadata (only for MBTiles? and with concrete values rather than single QVariantMap?)
+  addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ), QVariant(), true ) );
 }
 
-QVariantMap QgsWriteVectorTilesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsWriteVectorTilesBaseAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   int minZoom = parameterAsInt( parameters, QStringLiteral( "MIN_ZOOM" ), context );
   int maxZoom = parameterAsInt( parameters, QStringLiteral( "MAX_ZOOM" ), context );
 
-  // prepare output URI
-  QString xyzTemplate = parameterAsString( parameters, QStringLiteral( "XYZ_TEMPLATE" ), context );
-  QgsDataSourceUri dsUri;
-  dsUri.setParam( "type", "xyz" );
-  dsUri.setParam( "url", QUrl::fromLocalFile( xyzTemplate ).toString() );
-  QString uri = dsUri.encodedUri();
-
   QVariant layersVariant = parameters.value( parameterDefinition( QStringLiteral( "LAYERS" ) )->name() );
-  QList<QgsVectorTileWriter::Layer> layers = QgsProcessingParameterVectorTileWriterLayers::parameterAsLayers( layersVariant, context );
+  const QList<QgsVectorTileWriter::Layer> layers = QgsProcessingParameterVectorTileWriterLayers::parameterAsLayers( layersVariant, context );
+
+  for ( const QgsVectorTileWriter::Layer &layer : layers )
+  {
+    if ( !layer.layer() )
+      throw QgsProcessingException( QObject::tr( "Unknown input layer" ) );
+  }
 
   QgsVectorTileWriter writer;
-  writer.setDestinationUri( uri );
+  QVariantMap outputs;
+  prepareWriter( writer, parameters, context, outputs );
+
   writer.setMinZoom( minZoom );
   writer.setMaxZoom( maxZoom );
   writer.setLayers( layers );
   writer.setTransformContext( context.transformContext() );
 
-  if ( parameters.contains( "EXTENT" ) )
+  if ( parameters.contains( QStringLiteral( "EXTENT" ) ) )
   {
-    QgsRectangle extent = parameterAsExtent( parameters, "EXTENT", context, QgsCoordinateReferenceSystem( "EPSG:3857" ) );
+    QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, QgsCoordinateReferenceSystem( "EPSG:3857" ) );
     writer.setExtent( extent );
   }
 
   bool res = writer.writeTiles( feedback );
 
-  QVariantMap outputs;
-  outputs["RESULT"] = res;
+  if ( !res )
+    throw QgsProcessingException( QObject::tr( "Failed to write vector tiles: " ) + writer.errorMessage() );
+
   return outputs;
 }
+
+//
+// QgsWriteVectorTilesXyzAlgorithm
+//
+
+QString QgsWriteVectorTilesXyzAlgorithm::name() const
+{
+  return QStringLiteral( "writevectortiles_xyz" );
+}
+
+QString QgsWriteVectorTilesXyzAlgorithm::displayName() const
+{
+  return QObject::tr( "Write Vector Tiles (XYZ)" );
+}
+
+QgsProcessingAlgorithm *QgsWriteVectorTilesXyzAlgorithm::createInstance() const
+{
+  return new QgsWriteVectorTilesXyzAlgorithm();
+}
+
+void QgsWriteVectorTilesXyzAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterFolderDestination( QStringLiteral( "OUTPUT_DIR" ), QObject::tr( "Output directry" ) ) );
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "XYZ_TEMPLATE" ), QObject::tr( "File template" ), QStringLiteral( "{z}/{x}/{y}.pbf" ) ) );
+
+  addBaseParameters();
+}
+
+void QgsWriteVectorTilesXyzAlgorithm::prepareWriter( QgsVectorTileWriter &writer, const QVariantMap &parameters, QgsProcessingContext &context, QVariantMap &outputs )
+{
+  QString outputDir = parameterAsString( parameters, QStringLiteral( "OUTPUT_DIR" ), context );
+  QString xyzTemplate = parameterAsString( parameters, QStringLiteral( "XYZ_TEMPLATE" ), context );
+  QgsDataSourceUri dsUri;
+  dsUri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
+  dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( outputDir + "/" + xyzTemplate ).toString() );
+  QString uri = dsUri.encodedUri();
+
+  writer.setDestinationUri( uri );
+
+  outputs.insert( QStringLiteral( "OUTPUT_DIR" ), outputDir );
+}
+
+//
+// QgsWriteVectorTilesMbtilesAlgorithm
+//
+
+QString QgsWriteVectorTilesMbtilesAlgorithm::name() const
+{
+  return QStringLiteral( "writevectortiles_mbtiles" );
+}
+
+QString QgsWriteVectorTilesMbtilesAlgorithm::displayName() const
+{
+  return QObject::tr( "Write Vector Tiles (MBTiles)" );
+}
+
+QgsProcessingAlgorithm *QgsWriteVectorTilesMbtilesAlgorithm::createInstance() const
+{
+  return new QgsWriteVectorTilesMbtilesAlgorithm();
+}
+
+void QgsWriteVectorTilesMbtilesAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Destination MBTiles" ), QObject::tr( "MBTiles files (*.mbtiles)" ) ) );
+
+  addBaseParameters();
+
+  // optional metadata for MBTiles
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "META_NAME" ), QObject::tr( "Metadata: Name" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "META_DESCRIPTION" ), QObject::tr( "Metadata: Description" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "META_ATTRIBUTION" ), QObject::tr( "Metadata: Attribution" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "META_VERSION" ), QObject::tr( "Metadata: Version" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "META_TYPE" ), QObject::tr( "Metadata: Type" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "META_CENTER" ), QObject::tr( "Metadata: Center" ), QVariant(), false, true ) );
+}
+
+void QgsWriteVectorTilesMbtilesAlgorithm::prepareWriter( QgsVectorTileWriter &writer, const QVariantMap &parameters, QgsProcessingContext &context, QVariantMap &outputs )
+{
+  QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
+  QgsDataSourceUri dsUri;
+  dsUri.setParam( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
+  dsUri.setParam( QStringLiteral( "url" ), outputFile );
+  QString uri = dsUri.encodedUri();
+
+  writer.setDestinationUri( uri );
+
+  QString metaName = parameterAsString( parameters, QStringLiteral( "META_NAME" ), context );
+  QString metaDesciption = parameterAsString( parameters, QStringLiteral( "META_DESCRIPTION" ), context );
+  QString metaAttribution = parameterAsString( parameters, QStringLiteral( "META_ATTRIBUTION" ), context );
+  QString metaVersion = parameterAsString( parameters, QStringLiteral( "META_VERSION" ), context );
+  QString metaType = parameterAsString( parameters, QStringLiteral( "META_TYPE" ), context );
+  QString metaCenter = parameterAsString( parameters, QStringLiteral( "META_CENTER" ), context );
+
+  QVariantMap meta;
+  if ( !metaName.isEmpty() )
+    meta["name"] = metaName;
+  if ( !metaDesciption.isEmpty() )
+    meta["description"] = metaDesciption;
+  if ( !metaAttribution.isEmpty() )
+    meta["attribution"] = metaAttribution;
+  if ( !metaVersion.isEmpty() )
+    meta["version"] = metaVersion;
+  if ( !metaType.isEmpty() )
+    meta["type"] = metaType;
+  if ( !metaCenter.isEmpty() )
+    meta["center"] = metaCenter;
+
+  writer.setMetadata( meta );
+
+  outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
+}
+
 
 ///@endcond

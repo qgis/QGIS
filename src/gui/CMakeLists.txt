@@ -282,6 +282,7 @@ SET(QGIS_GUI_SRCS
   processing/qgsprocessingrecentalgorithmlog.cpp
   processing/qgsprocessingtoolboxmodel.cpp
   processing/qgsprocessingtoolboxtreeview.cpp
+  processing/qgsprocessingvectortilewriterlayerswidgetwrapper.cpp
   processing/qgsprocessingwidgetwrapper.cpp
   processing/qgsprocessingwidgetwrapperimpl.cpp
 
@@ -1000,6 +1001,7 @@ SET(QGIS_GUI_HDRS
   processing/qgsprocessingrecentalgorithmlog.h
   processing/qgsprocessingtoolboxmodel.h
   processing/qgsprocessingtoolboxtreeview.h
+  processing/qgsprocessingvectortilewriterlayerswidgetwrapper.h
   processing/qgsprocessingwidgetwrapper.h
   processing/qgsprocessingwidgetwrapperimpl.h
 

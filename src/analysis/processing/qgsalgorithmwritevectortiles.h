@@ -20,29 +20,59 @@
 #define SIP_NO_FILE
 
 #include "qgsprocessingalgorithm.h"
-//#include "qgsapplication.h"
 
 ///@cond PRIVATE
 
-class QgsWriteVectorTilesAlgorithm : public QgsProcessingAlgorithm
+class QgsVectorTileWriter;
+
+
+class QgsWriteVectorTilesBaseAlgorithm : public QgsProcessingAlgorithm
 {
   public:
-    QgsWriteVectorTilesAlgorithm() = default;
-    // TODO: icon?
-    //QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmUnion.svg" ) ); }
-    //QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmUnion.svg" ) ); }
-    QString name() const override;
-    QString displayName() const override;
+
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
 
   protected:
-    QgsProcessingAlgorithm *createInstance() const override;
-    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
+    void addBaseParameters();
+
+    virtual void prepareWriter( QgsVectorTileWriter &writer, const QVariantMap &parameters, QgsProcessingContext &context, QVariantMap &outputs ) = 0;
+
 };
+
+
+class QgsWriteVectorTilesXyzAlgorithm : public QgsWriteVectorTilesBaseAlgorithm
+{
+  public:
+
+    QString name() const override;
+    QString displayName() const override;
+
+  protected:
+    QgsProcessingAlgorithm *createInstance() const override;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+
+    void prepareWriter( QgsVectorTileWriter &writer, const QVariantMap &parameters, QgsProcessingContext &context, QVariantMap &outputs ) override;
+};
+
+
+class QgsWriteVectorTilesMbtilesAlgorithm : public QgsWriteVectorTilesBaseAlgorithm
+{
+  public:
+
+    QString name() const override;
+    QString displayName() const override;
+
+  protected:
+    QgsProcessingAlgorithm *createInstance() const override;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+
+    void prepareWriter( QgsVectorTileWriter &writer, const QVariantMap &parameters, QgsProcessingContext &context, QVariantMap &outputs ) override;
+};
+
 
 ///@endcond PRIVATE
 

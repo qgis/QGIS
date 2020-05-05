@@ -149,6 +149,7 @@ SET(QGIS_CORE_SRCS
   processing/qgsprocessingoutputs.cpp
   processing/qgsprocessingparameters.cpp
   processing/qgsprocessingparametertype.cpp
+  processing/qgsprocessingparametervectortilewriterlayers.cpp
   processing/qgsprocessingprovider.cpp
   processing/qgsprocessingregistry.cpp
   processing/qgsprocessingutils.cpp
@@ -1259,6 +1260,7 @@ SET(QGIS_CORE_HDRS
   processing/qgsprocessingparameters.h
   processing/qgsprocessingparametertype.h
   processing/qgsprocessingparametertypeimpl.h
+  processing/qgsprocessingparametervectortilewriterlayers.h
   processing/qgsprocessingprovider.h
   processing/qgsprocessingregistry.h
   processing/qgsprocessingutils.h

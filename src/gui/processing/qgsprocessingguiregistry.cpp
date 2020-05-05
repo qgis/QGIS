@@ -18,6 +18,7 @@
 #include "qgsprocessingguiregistry.h"
 #include "qgsprocessingalgorithmconfigurationwidget.h"
 #include "qgsprocessingconfigurationwidgets.h"
+#include "qgsprocessingvectortilewriterlayerswidgetwrapper.h"
 #include "qgsprocessingwidgetwrapperimpl.h"
 #include "qgsprocessingparameters.h"
 #include "qgis.h"
