@@ -1158,7 +1158,7 @@ void QgsWMSSourceSelect::filterLayers( const QString &searchText )
     }
 
     mTreeInitialExpand.clear();
-    for ( QTreeWidgetItem *item : items )
+    for ( QTreeWidgetItem *item : qgis::as_const( items ) )
     {
       setChildrenVisible( item, true );
 
