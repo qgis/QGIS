@@ -1598,6 +1598,10 @@ class TestQgsExpression: public QObject
       QTest::newRow( "hash('QGIS', 'keccak_384')" ) << QStringLiteral( "hash('QGIS', 'keccak_384')" ) << false << QVariant( "c57a3aed9d856fa04e5eeee9b62b6e027cca81ba574116d3cc1f0d48a1ef9e5886ff463ea8d0fac772ee473bf92f810d" );
       QTest::newRow( "hash('QGIS', 'keccak_512')" ) << QStringLiteral( "hash('QGIS', 'keccak_512')" ) << false << QVariant( "6f0f751776b505e317de222508fa5d3ed7099d8f07c74fed54ccee6e7cdc6b89b4a085e309f2ee5210c942bbeb142bdfe48f84f912e0f3f41bdbf47110c2d344" );
 #endif
+      QTest::newRow( "to_base64 NULL" ) << QStringLiteral( "to_base64(NULL)" ) << false << QVariant();
+      QTest::newRow( "to_base64" ) << QStringLiteral( "to_base64('QGIS')" ) << false << QVariant( "UUdJUw==" );
+      QTest::newRow( "from_base64 NULL" ) << QStringLiteral( "from_base64(NULL)" ) << false << QVariant();
+      QTest::newRow( "from_base64" ) << QStringLiteral( "from_base64('UUdJUw==')" ) << false << QVariant( "QGIS" );
     }
 
 
