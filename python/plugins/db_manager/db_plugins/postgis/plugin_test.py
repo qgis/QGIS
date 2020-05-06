@@ -45,7 +45,7 @@ class TestDBManagerPostgisPlugin(unittest.TestCase):
         self.old_pgdatabase_env = os.environ.get('PGDATABASE')
         # QGIS_PGTEST_DB contains the full connection string and not only the DB name!
         QGIS_PGTEST_DB = os.environ.get('QGIS_PGTEST_DB')
-        if not QGIS_PGTEST_DB is None:
+        if QGIS_PGTEST_DB is not None:
             test_uri = QgsDataSourceUri(QGIS_PGTEST_DB)
             self.testdb = test_uri.database()
         else:

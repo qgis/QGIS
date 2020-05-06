@@ -134,7 +134,7 @@ def register_function(function, arg_count, group, usesgeometry=False,
 
 
 def qgsfunction(args='auto', group='custom', **kwargs):
-    """
+    r"""
     Decorator function used to define a user expression function.
 
     :param args: Number of parameters, set to 'auto' to accept a variable length of parameters.

@@ -34,6 +34,7 @@ from qgis.PyQt.QtCore import (
 )
 from qgis.core import (
     Qgis,
+    QgsCoordinateReferenceSystem,
     QgsCredentials,
     QgsVectorLayer,
     QgsDataSourceUri,
@@ -69,7 +70,7 @@ class CursorAdapter():
         self.result = None
         self.cursor = 0
         self.closed = False
-        if (self.sql != None):
+        if (self.sql is not None):
             self._execute()
 
     def _toStrResultSet(self, res):
@@ -77,7 +78,7 @@ class CursorAdapter():
         for rec in res:
             newrec = []
             for col in rec:
-                if type(col) == type(QVariant(None)):
+                if type(col) == type(QVariant(None)):  # noqa
                     if (str(col) == 'NULL'):
                         col = None
                     else:
@@ -87,11 +88,11 @@ class CursorAdapter():
         return newres
 
     def _execute(self, sql=None):
-        if self.sql == sql and self.result != None:
+        if self.sql == sql and self.result is not None:
             return
-        if (sql != None):
+        if (sql is not None):
             self.sql = sql
-        if (self.sql == None):
+        if (self.sql is None):
             return
         self._debug("execute called with sql " + self.sql)
         try:
@@ -1155,7 +1156,7 @@ class PostGisDBConnector(DBConnector):
         return psycopg2.InterfaceError, psycopg2.OperationalError
 
     def _execute(self, cursor, sql):
-        if cursor != None:
+        if cursor is not None:
             cursor._execute(sql)
             return cursor
         return CursorAdapter(self.core_connection, sql)

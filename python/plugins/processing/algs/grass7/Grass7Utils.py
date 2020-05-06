@@ -189,7 +189,7 @@ class Grass7Utils:
 
         if command:
             Grass7Utils.command = command
-            if path is '':
+            if path == '':
                 Grass7Utils.path = os.path.dirname(command)
 
         return command

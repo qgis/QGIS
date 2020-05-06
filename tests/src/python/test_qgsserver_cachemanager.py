@@ -109,7 +109,7 @@ class PyServerCache(QgsServerCacheFilter):
         with open(os.path.join(self._tile_cache_dir, m.hexdigest() + ".png"), "rb") as f:
             statusOK = img.loadFromData(f.read())
             if not statusOK:
-                print("Could not read or find the contents document. Error at line %d, column %d:\n%s" % (errorLine, errorColumn, errorStr))
+                print("Could not read or find the contents document.")
                 return QByteArray()
 
         ba = QByteArray()

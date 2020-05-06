@@ -191,27 +191,6 @@ class RasterCalculator(QgisAlgorithm):
 
         return {self.OUTPUT: output}
 
-    def processBeforeAddingToModeler(self, algorithm, model):
-        values = []
-        expression = algorithm.params[self.EXPRESSION]
-        for i in list(model.inputs.values()):
-            param = i.param
-            if isinstance(param, QgsProcessingParameterRasterLayer) and "{}@".format(param.name) in expression:
-                values.append(ValueFromInput(param.name()))
-
-        if algorithm.name:
-            dependent = model.getDependentAlgorithms(algorithm.name)
-        else:
-            dependent = []
-        for alg in list(model.algs.values()):
-            if alg.modeler_name not in dependent:
-                for out in alg.algorithm.outputs:
-                    if (isinstance(out, QgsProcessingOutputRasterLayer) and
-                            "{}:{}@".format(alg.modeler_name, out.name) in expression):
-                        values.append(ValueFromOutput(alg.modeler_name, out.name))
-
-        algorithm.params[self.LAYERS] = values
-
     def mappedNameToLayer(self, lyr, expression, layersDict, context):
         '''Try to identify if a real layer is mapped in the expression with a symbolic name.'''
 

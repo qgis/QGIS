@@ -92,7 +92,7 @@ class TestWFST(unittest.TestCase):
         cls.server = subprocess.Popen([sys.executable, server_path],
                                       env=os.environ, stdout=subprocess.PIPE)
         line = cls.server.stdout.readline()
-        cls.port = int(re.findall(b':(\d+)', line)[0])
+        cls.port = int(re.findall(br':(\d+)', line)[0])
         assert cls.port != 0
         # Wait for the server process to start
         assert waitServer('http://127.0.0.1:%s' % cls.port), "Server is not responding!"

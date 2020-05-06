@@ -463,7 +463,7 @@ class DoxygenParser():
         """
         try:
             name = member_elem.find('name').text
-            if re.match('^operator\W.*', name):
+            if re.match(r'^operator\W.*', name):
                 return True
         except:
             pass

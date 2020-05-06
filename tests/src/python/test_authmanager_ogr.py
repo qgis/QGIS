@@ -41,7 +41,7 @@ TEST_URIS = {
     'IDB:"server=demo_on user=informix dbname=frames authcfg=\'%s\'"': 'IDB:"server=demo_on user=informix dbname=frames user=username pass=password"',
     '@driver=ingres,dbname=test,tables=usa/canada authcfg=\'%s\'': '@driver=ingres,dbname=test,tables=usa/canada,userid=username,password=password',
     'MySQL:westholland,port=3306,tables=bedrijven authcfg=\'%s\'': 'MySQL:westholland,port=3306,tables=bedrijven,user=username,password=password',
-    'MSSQL:server=.\MSSQLSERVER2008;database=dbname;trusted_connection=yes authcfg=\'%s\'': 'MSSQL:server=.\MSSQLSERVER2008;database=dbname;uid=username;pwd=password',
+    'MSSQL:server=.\\MSSQLSERVER2008;database=dbname;trusted_connection=yes authcfg=\'%s\'': 'MSSQL:server=.\\MSSQLSERVER2008;database=dbname;uid=username;pwd=password',
     'OCI:/@database_instance:table,table authcfg=\'%s\'': 'OCI:username/password@database_instance:table,table',
     'ODBC:database_instance authcfg=\'%s\'': 'ODBC:username/password@database_instance',
     'couchdb://myconnection authcfg=\'%s\'': 'couchdb://username:password@myconnection',

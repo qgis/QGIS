@@ -190,7 +190,7 @@ class ConfigDialog(BASE, WIDGET):
             emptyItem.setEditable(False)
 
             rootItem.insertRow(0, [groupItem, emptyItem])
-            if not group in settings:
+            if group not in settings:
                 continue
 
             # add menu item only if it has any search matches

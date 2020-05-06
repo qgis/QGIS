@@ -219,10 +219,10 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         job.renderSynchronously()
         painter.end()
 
-        ## For analysing metatiles (labels, etc.)
-        ## metatile_dir = os.path.join(output_dir, str(zoom))
-        ## os.makedirs(metatile_dir, exist_ok=True)
-        ## image.save(os.path.join(metatile_dir, 'metatile_%s.png' % i))
+        # For analysing metatiles (labels, etc.)
+        # metatile_dir = os.path.join(output_dir, str(zoom))
+        # os.makedirs(metatile_dir, exist_ok=True)
+        # image.save(os.path.join(metatile_dir, 'metatile_%s.png' % i))
 
         for r, c, tile in metatile.tiles:
             tileImage = image.copy(self.tile_width * r, self.tile_height * c, self.tile_width, self.tile_height)
@@ -270,7 +270,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
             if self.tile_format == 'PNG':
                 self.settingsDictionary[thread].setBackgroundColor(self.color)
 
-            ## disable partial labels (they would be cut at the edge of tiles)
+            # disable partial labels (they would be cut at the edge of tiles)
             labeling_engine_settings = self.settingsDictionary[thread].labelingEngineSettings()
             labeling_engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, False)
             self.settingsDictionary[thread].setLabelingEngineSettings(labeling_engine_settings)

@@ -30,6 +30,7 @@ import nose2
 import tempfile
 from qgis.core import (QgsProcessingParameterNumber,
                        QgsApplication,
+                       QgsCoordinateReferenceSystem,
                        QgsRasterLayer,
                        QgsMapLayer,
                        QgsProject,
@@ -42,7 +43,7 @@ from qgis.testing import start_app, unittest
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
-from processing.gui.wrappers import *
+from processing.gui.wrappers import WidgetWrapperFactory
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.algs.otb.OtbAlgorithm import OtbAlgorithm
 from processing.algs.otb.OtbAlgorithmProvider import OtbAlgorithmProvider
@@ -177,7 +178,7 @@ class TestOtbAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         alg_smoothing = OtbAlgorithm('Image Filtering', 'Smoothing', os.path.join(self.descrFolder, 'Smoothing.txt'))
         found = False
         for param in alg_smoothing.parameterDefinitions():
-            ## print (param.name(), param.type())
+            # print (param.name(), param.type())
             if param.type() == 'OTBParameterChoice':
                 found = True
                 break

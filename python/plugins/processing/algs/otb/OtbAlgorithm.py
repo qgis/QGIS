@@ -190,7 +190,7 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
             #- metadata with 'group_key' and 'group_key' is a valid parameter and it's value == metadata()['group_value']
             if 'group_key' in param.metadata() and not param.metadata()['group_key'] in parameters:
                 valid_params[k] = v
-            elif not 'group_key' in param.metadata() or parameters[param.metadata()['group_key']] == param.metadata()['group_value']:
+            elif 'group_key' not in param.metadata() or parameters[param.metadata()['group_key']] == param.metadata()['group_value']:
                 valid_params[k] = v
 
         return valid_params

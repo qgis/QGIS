@@ -89,7 +89,7 @@ class VectorSplit(QgisAlgorithm):
         directory = self.parameterAsString(parameters, self.OUTPUT, context)
 
         output_format = context.preferredVectorFormat()
-        if not output_format in QgsVectorFileWriter.supportedFormatExtensions():
+        if output_format not in QgsVectorFileWriter.supportedFormatExtensions():
             # fallback to gpkg if preferred format is not available
             output_format = 'gpkg'
 

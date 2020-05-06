@@ -35,13 +35,13 @@ import base64
 import subprocess
 
 from test_qgsserver import QgsServerTestBase
-from qgis.core import QgsProject, QgsRenderChecker, QgsMultiRenderChecker
+from qgis.core import QgsProject, QgsRenderChecker, QgsMultiRenderChecker, Qt
 from qgis.server import QgsServerRequest
 from utilities import getExecutablePath, unitTestDataPath
 
 # Strip path and content length because path may vary
-RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+'
-RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
+RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+'
+RE_ATTRIBUTES = br'[^>\s]+=[^>\s]+'
 
 
 class TestQgsServerWMSGetPrint(QgsServerTestBase):
@@ -126,16 +126,16 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
 
         with open(os.path.join(tempfile.gettempdir(), image + "_result.pdf"), "rb") as rendered_file:
             if not os.environ.get('ENCODED_OUTPUT'):
-                message = "PDF is wrong\: rendered file %s/%s_result.%s" % (tempfile.gettempdir(), image, 'pdf')
+                message = "PDF is wrong: rendered file %s/%s_result.%s" % (tempfile.gettempdir(), image, 'pdf')
             else:
                 encoded_rendered_file = base64.b64encode(rendered_file.read())
-                message = "PDF is wrong\n%s\File:\necho '%s' | base64 -d >%s/%s_result.%s" % (
+                message = "PDF is wrong\n%sFile:\necho '%s' | base64 -d >%s/%s_result.%s" % (
                     report, encoded_rendered_file.strip().decode('utf8'), tempfile.gettempdir(), image, 'pdf'
                 )
 
         with open(os.path.join(tempfile.gettempdir(), image + "_result.png"), "rb") as rendered_file:
             if not os.environ.get('ENCODED_OUTPUT'):
-                message = "Image is wrong\: rendered file %s/%s_result.%s" % (tempfile.gettempdir(), image, 'png')
+                message = "Image is wrong: rendered file %s/%s_result.%s" % (tempfile.gettempdir(), image, 'png')
             else:
                 encoded_rendered_file = base64.b64encode(rendered_file.read())
                 message = "Image is wrong\n%s\nImage:\necho '%s' | base64 -d >%s/%s_result.%s" % (
@@ -146,7 +146,7 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
         if os.path.exists(os.path.join(tempfile.gettempdir(), image + "_result_diff.png")):
             with open(os.path.join(tempfile.gettempdir(), image + "_result_diff.png"), "rb") as diff_file:
                 if not os.environ.get('ENCODED_OUTPUT'):
-                    message = "Image is wrong\: diff file %s/%s_result_diff.%s" % (tempfile.gettempdir(), image, 'png')
+                    message = "Image is wrong: diff file %s/%s_result_diff.%s" % (tempfile.gettempdir(), image, 'png')
                 else:
                     encoded_diff_file = base64.b64encode(diff_file.read())
                     message += "\nDiff:\necho '%s' | base64 -d > %s/%s_result_diff.%s" % (

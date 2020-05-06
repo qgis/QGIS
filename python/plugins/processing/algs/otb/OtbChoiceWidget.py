@@ -96,7 +96,7 @@ class OtbChoiceWidgetWrapper(WidgetWrapper):
 
     def updateAllParameters(self, current_value):
         for parameter in self.get_algorithm().parameterDefinitions():
-            if not 'group_key' in parameter.metadata() or parameter.metadata()['group_key'] != self.param.name():
+            if 'group_key' not in parameter.metadata() or parameter.metadata()['group_key'] != self.param.name():
                 continue
             name = parameter.name()
             choice_key = parameter.metadata()['group_key']
@@ -105,7 +105,7 @@ class OtbChoiceWidgetWrapper(WidgetWrapper):
                 if current_value is None:
                     current_value = choice_param.defaultValue()
                 pattern = "{}.{}.".format(choice_key, choice_param.getValueAsText(current_value))
-                if not pattern in name:
+                if pattern not in name:
                     flags = self.get_algorithm().parameterDefinition(name).flags()
                     if not flags & QgsProcessingParameterDefinition.FlagOptional:
                         self.flagsModified[name] = True
@@ -131,7 +131,7 @@ class OtbChoiceWidgetWrapper(WidgetWrapper):
         #     return
         self.updateAllParameters(current_value=None)
         for parameter in self.get_algorithm().parameterDefinitions():
-            if not 'group_key' in parameter.metadata() or parameter.metadata()['group_key'] != self.param.name():
+            if 'group_key' not in parameter.metadata() or parameter.metadata()['group_key'] != self.param.name():
                 continue
             for wrapper in wrappers:
                 if wrapper.param.name() == parameter.name():
@@ -162,7 +162,7 @@ class OtbParameterChoice(QgsProcessingParameterDefinition):
             self.value = self.default
 
     def getValueAsText(self, value):
-        if not value in self.options:
+        if value not in self.options:
             value = self.options[int(value)]
         return value
 

@@ -103,7 +103,7 @@ class ImportIntoSpatialite(QgisAlgorithm):
 
         databaseuri = database.dataProvider().dataSourceUri()
         uri = QgsDataSourceUri(databaseuri)
-        if uri.database() is '':
+        if uri.database() == '':
             if '|layername' in databaseuri:
                 databaseuri = databaseuri[:databaseuri.find('|layername')]
             elif '|layerid' in databaseuri:
