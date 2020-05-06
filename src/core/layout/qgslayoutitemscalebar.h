@@ -224,12 +224,15 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      */
     void setTextFormat( const QgsTextFormat &format );
 
+
     /**
      * Returns the line symbol used to render the scalebar (only used for some scalebar types).
      *
      * Ownership is not transferred.
      *
      * \see setLineSymbol()
+     * \see divisionLineSymbol()
+     * \see subdivisionLineSymbol()
      * \since QGIS 3.14
      */
     QgsLineSymbol *lineSymbol() const;
@@ -239,9 +242,57 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      * transferred to the scalebar.
      *
      * \see lineSymbol()
+     * \see setDivisionLineSymbol()
+     * \see setSubdivisionLineSymbol()
      * \since QGIS 3.14
      */
     void setLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the line symbol used to render the scalebar divisions (only used for some scalebar types).
+     *
+     * Ownership is not transferred.
+     *
+     * \see setDivisionLineSymbol()
+     * \see lineSymbol()
+     * \see subdivisionLineSymbol()
+     * \since QGIS 3.14
+     */
+    QgsLineSymbol *divisionLineSymbol() const;
+
+    /**
+     * Sets the line \a symbol used to render the scalebar divisions (only used for some scalebar types). Ownership of \a symbol is
+     * transferred to the scalebar.
+     *
+     * \see divisionLineSymbol()
+     * \see setLineSymbol()
+     * \see setSubdivisionLineSymbol()
+     * \since QGIS 3.14
+     */
+    void setDivisionLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the line symbol used to render the scalebar subdivisions (only used for some scalebar types).
+     *
+     * Ownership is not transferred.
+     *
+     * \see setSubdivisionLineSymbol()
+     * \see lineSymbol()
+     * \see divisionLineSymbol()
+     * \since QGIS 3.14
+     */
+    QgsLineSymbol *subdivisionLineSymbol() const;
+
+    /**
+     * Sets the line \a symbol used to render the scalebar subdivisions (only used for some scalebar types). Ownership of \a symbol is
+     * transferred to the scalebar.
+     *
+     * \see subdivisionLineSymbol()
+     * \see setLineSymbol()
+     * \see setDivisionLineSymbol()
+     * \since QGIS 3.14
+     */
+    void setSubdivisionLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
 
     /**
      * Returns the primary fill symbol used to render the scalebar (only used for some scalebar types).

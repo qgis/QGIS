@@ -50,6 +50,8 @@ custom labeling.
       FlagUsesLabelHorizontalPlacement,
       FlagUsesAlignment,
       FlagUsesSubdivisions,
+      FlagUsesDivisionSymbol,
+      FlagUsesSubdivisionSymbol,
     };
     typedef QFlags<QgsScaleBarRenderer::Flag> Flags;
 

@@ -580,7 +580,11 @@ void TestQgsLayoutScaleBar::tickLineSymbol()
   lineSymbolLayer->setColor( QColor( 255, 255, 0 ) );
   lineSymbol->appendSymbolLayer( lineSymbolLayer.release() );
 
-  scalebar->setLineSymbol( lineSymbol.release() );
+  scalebar->setLineSymbol( lineSymbol->clone() );
+
+  dynamic_cast< QgsLineSymbolLayer * >( lineSymbol->symbolLayer( 0 ) )->setWidth( 5 );
+  dynamic_cast< QgsLineSymbolLayer * >( lineSymbol->symbolLayer( 0 ) )->setColor( QColor( 0, 255, 0 ) );
+  scalebar->setDivisionLineSymbol( lineSymbol->clone() );
 
   dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
@@ -922,7 +926,15 @@ void TestQgsLayoutScaleBar::tickSubdivisions()
   lineSymbolLayer->setColor( QColor( 255, 255, 0 ) );
   lineSymbol->appendSymbolLayer( lineSymbolLayer.release() );
 
-  scalebar->setLineSymbol( lineSymbol.release() );
+  scalebar->setLineSymbol( lineSymbol->clone() );
+
+  dynamic_cast< QgsLineSymbolLayer * >( lineSymbol->symbolLayer( 0 ) )->setWidth( 5 );
+  dynamic_cast< QgsLineSymbolLayer * >( lineSymbol->symbolLayer( 0 ) )->setColor( QColor( 0, 255, 0 ) );
+  scalebar->setDivisionLineSymbol( lineSymbol->clone() );
+
+  dynamic_cast< QgsLineSymbolLayer * >( lineSymbol->symbolLayer( 0 ) )->setWidth( 6 );
+  dynamic_cast< QgsLineSymbolLayer * >( lineSymbol->symbolLayer( 0 ) )->setColor( QColor( 0, 0, 255 ) );
+  scalebar->setSubdivisionLineSymbol( lineSymbol->clone() );
 
   dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 

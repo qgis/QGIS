@@ -1118,6 +1118,8 @@ bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem
     lineSymbolLayer->setColor( QColor( itemElem.attribute( QStringLiteral( "penColor" ), QStringLiteral( "#000000" ) ) ) );
   }
   lineSymbol->changeSymbolLayer( 0, lineSymbolLayer.release() );
+  layoutItem->setDivisionLineSymbol( lineSymbol->clone() );
+  layoutItem->setSubdivisionLineSymbol( lineSymbol->clone() );
   layoutItem->setLineSymbol( lineSymbol.release() );
 
   //font color
