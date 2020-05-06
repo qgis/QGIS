@@ -2558,18 +2558,29 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds &ids )
   {
     conn->begin();
 
-    const QString sql = QStringLiteral( "DELETE FROM %1 WHERE %2" )
-                        .arg( mQuery, whereClause( ids ) );
-    QgsDebugMsgLevel( "delete sql: " + sql, 2 );
-
-    //send DELETE statement and do error handling
-    QgsPostgresResult result( conn->PQexec( sql ) );
-    if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
-      throw PGException( result );
-
+    QgsFeatureIds chunkIds;
+    const QgsFeatureIds::const_iterator lastId = --ids.end();
     for ( QgsFeatureIds::const_iterator it = ids.begin(); it != ids.end(); ++it )
     {
-      mShared->removeFid( *it );
+      // create chunks of fids to delete, the last chunk may be smaller
+      chunkIds.insert( *it );
+      if ( chunkIds.size() < 5000 && it != lastId )
+        continue;
+
+      const QString sql = QStringLiteral( "DELETE FROM %1 WHERE %2" )
+                          .arg( mQuery, whereClause( chunkIds ) );
+      QgsDebugMsgLevel( "delete sql: " + sql, 2 );
+
+      //send DELETE statement and do error handling
+      QgsPostgresResult result( conn->PQexec( sql ) );
+      if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
+        throw PGException( result );
+
+      for ( QgsFeatureIds::const_iterator chunkIt = chunkIds.begin(); chunkIt != chunkIds.end(); ++chunkIt )
+      {
+        mShared->removeFid( *chunkIt );
+      }
+      chunkIds.clear();
     }
 
     returnvalue &= conn->commit();
