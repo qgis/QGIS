@@ -27,7 +27,6 @@
 #include <QPair>
 
 class QgsLayoutTableColumn;
-class QgsLayoutTableColumn;
 
 /**
  * \ingroup core
