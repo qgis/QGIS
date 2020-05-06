@@ -1428,7 +1428,11 @@ bool QgsCompositionConverter::readTableXml( QgsLayoutItemAttributeTable *layoutI
   layoutItem->setWrapBehavior( static_cast<QgsLayoutTable::WrapBehavior>( itemElem.attribute( QStringLiteral( "wrapBehavior" ), QStringLiteral( "0" ) ).toInt() ) );
 
   //restore column specifications
+  qDeleteAll( layoutItem->mColumns );
   layoutItem->mColumns.clear();
+  qDeleteAll( layoutItem->mSortColumns );
+  layoutItem->mSortColumns.clear();
+
   QDomNodeList columnsList = itemElem.elementsByTagName( QStringLiteral( "displayColumns" ) );
   if ( !columnsList.isEmpty() )
   {
@@ -1464,12 +1468,10 @@ bool QgsCompositionConverter::readTableXml( QgsLayoutItemAttributeTable *layoutI
       layoutItem->mColumns.append( column );
 
       // sorting columns are now (QGIS 3.14+) handled in a dedicated list
-      QVector<QgsLayoutTableColumn *> sortColumns;
       Q_NOWARN_DEPRECATED_PUSH
-      std::copy_if( layoutItem->mColumns.begin(), layoutItem->mColumns.end(), std::back_inserter( sortColumns ), []( QgsLayoutTableColumn * col ) {return col->sortByRank() > 0;} );
-      std::sort( sortColumns.begin(), sortColumns.end(), []( QgsLayoutTableColumn * a, QgsLayoutTableColumn * b ) {return a->sortByRank() < b->sortByRank();} );
+      std::copy_if( layoutItem->mColumns.begin(), layoutItem->mColumns.end(), std::back_inserter( layoutItem->mSortColumns ), []( QgsLayoutTableColumn * col ) {return col->sortByRank() > 0;} );
+      std::sort( layoutItem->mSortColumns.begin(), layoutItem->mSortColumns.end(), []( QgsLayoutTableColumn * a, QgsLayoutTableColumn * b ) {return a->sortByRank() < b->sortByRank();} );
       Q_NOWARN_DEPRECATED_POP
-      // TODO remove comment: layoutItem->mSortColumns = sortColumns;
     }
   }
 

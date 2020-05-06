@@ -180,9 +180,9 @@ bool QgsLayoutTable::readPropertiesFromElement( const QDomElement &itemElem, con
   qDeleteAll( mSortColumns );
   mSortColumns.clear();
   QDomNodeList sortColumnsList = itemElem.elementsByTagName( QStringLiteral( "sortColumns" ) );
-  if ( !columnsList.isEmpty() )
+  if ( !sortColumnsList.isEmpty() )
   {
-    QDomElement columnsElem = columnsList.at( 0 ).toElement();
+    QDomElement columnsElem = sortColumnsList.at( 0 ).toElement();
     QDomNodeList columnEntryList = columnsElem.elementsByTagName( QStringLiteral( "column" ) );
     for ( int i = 0; i < columnEntryList.size(); ++i )
     {
@@ -195,12 +195,10 @@ bool QgsLayoutTable::readPropertiesFromElement( const QDomElement &itemElem, con
   else
   {
     // backward compatibility for QGIS < 3.14
-    QVector<QgsLayoutTableColumn *> sortColumns;
     Q_NOWARN_DEPRECATED_PUSH
-    std::copy_if( mColumns.begin(), mColumns.end(), std::back_inserter( sortColumns ), []( QgsLayoutTableColumn * col ) {return col->sortByRank() > 0;} );
-    std::sort( sortColumns.begin(), sortColumns.end(), []( QgsLayoutTableColumn * a, QgsLayoutTableColumn * b ) {return a->sortByRank() < b->sortByRank();} );
+    std::copy_if( mColumns.begin(), mColumns.end(), std::back_inserter( mSortColumns ), []( QgsLayoutTableColumn * col ) {return col->sortByRank() > 0;} );
+    std::sort( mSortColumns.begin(), mSortColumns.end(), []( QgsLayoutTableColumn * a, QgsLayoutTableColumn * b ) {return a->sortByRank() < b->sortByRank();} );
     Q_NOWARN_DEPRECATED_POP
-    // TODO remove comment: mSortColumns = sortColumns;
   }
 
   //restore cell styles
