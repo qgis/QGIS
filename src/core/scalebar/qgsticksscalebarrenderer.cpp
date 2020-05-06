@@ -100,9 +100,11 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
   const double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
   const QFontMetricsF fontMetrics = QgsTextRenderer::fontMetrics( context, settings.textFormat() );
   const double barTopPosition = scaledBoxContentSpace + ( settings.labelVerticalPlacement() == QgsScaleBarSettings::LabelAboveSegment ? fontMetrics.ascent() + scaledLabelBarSpace : 0 );
-  const double middlePosition = barTopPosition + context.convertToPainterUnits( settings.height() / 2.0, QgsUnitTypes::RenderMillimeters );
-  const double bottomPosition = barTopPosition + context.convertToPainterUnits( settings.height(), QgsUnitTypes::RenderMillimeters );
+  const double scaledHeight = context.convertToPainterUnits( settings.height(), QgsUnitTypes::RenderMillimeters );
   const double scaledSubdivisionsHeight = context.convertToPainterUnits( settings.subdivisionsHeight(), QgsUnitTypes::RenderMillimeters );
+  const double scaledMaxHeight = scaledHeight > scaledSubdivisionsHeight ? scaledHeight : scaledSubdivisionsHeight;
+  const double middlePosition = barTopPosition + scaledMaxHeight / 2.0;
+  const double bottomPosition = barTopPosition + scaledMaxHeight;
 
   const double xOffset = firstLabelXOffset( settings, context, scaleContext );
 
@@ -120,6 +122,35 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
   subdivisionSymbol->startRender( context );
 
   const QList<double> positions = segmentPositions( context, scaleContext, settings );
+  
+  // vertical positions
+  double verticalPos = 0.0;
+  QList<double> subTickPositionsY;
+  QList<double> tickPositionsY;
+  switch ( mTickPosition )
+  {
+    case TicksDown:
+      verticalPos = barTopPosition;
+      subTickPositionsY << verticalPos;
+      subTickPositionsY << verticalPos + scaledSubdivisionsHeight;
+      tickPositionsY << verticalPos;
+      tickPositionsY << verticalPos + scaledHeight;
+      break;
+    case TicksMiddle:
+      verticalPos = middlePosition;
+      subTickPositionsY << verticalPos + scaledSubdivisionsHeight / 2.0;
+      subTickPositionsY << verticalPos - scaledSubdivisionsHeight / 2.0;
+      tickPositionsY << verticalPos + scaledHeight / 2.0;
+      tickPositionsY << verticalPos - scaledHeight / 2.0;
+      break;
+    case TicksUp:
+      verticalPos = bottomPosition;
+      subTickPositionsY << verticalPos;
+      subTickPositionsY << verticalPos - scaledSubdivisionsHeight;
+      tickPositionsY << verticalPos;
+      tickPositionsY << verticalPos - scaledHeight;
+      break;
+  }
 
   int symbolLayerCount = symbol->symbolLayerCount();
   symbolLayerCount = std::max( symbolLayerCount, divisionSymbol->symbolLayerCount() );
@@ -138,32 +169,11 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
       for ( int i = 0; i < positions.size(); ++i )
       {
         const double thisX = context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset;
-        divisionSymbol->renderPolyline( QPolygonF() << QPointF( thisX, barTopPosition )
-                                        << QPointF( thisX, bottomPosition ), nullptr, context, layer );
+        divisionSymbol->renderPolyline( QPolygonF() << QPointF( thisX, tickPositionsY.at( 0 ) )
+                                        << QPointF( thisX, tickPositionsY.at( 1 ) ), nullptr, context, layer );
       }
     }
 
-    // vertical positions
-    double verticalPos = 0.0;
-    QList<double> subTickPositionsY;
-    switch ( mTickPosition )
-    {
-      case TicksDown:
-        verticalPos = barTopPosition;
-        subTickPositionsY << verticalPos;
-        subTickPositionsY << verticalPos + scaledSubdivisionsHeight;
-        break;
-      case TicksMiddle:
-        verticalPos = middlePosition;
-        subTickPositionsY << verticalPos + scaledSubdivisionsHeight / 2.0;
-        subTickPositionsY << verticalPos - scaledSubdivisionsHeight / 2.0;
-        break;
-      case TicksUp:
-        verticalPos = bottomPosition;
-        subTickPositionsY << verticalPos;
-        subTickPositionsY << verticalPos - scaledSubdivisionsHeight;
-        break;
-    }
     // draw the vertical lines for right subdivisions
     if ( drawSubdivisionsForThisSymbolLayer )
     {
@@ -186,8 +196,8 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
       //last vertical line
       if ( drawDivisionsForThisSymbolLayer )
       {
-        divisionSymbol->renderPolyline( QPolygonF() << QPointF( lastTickPositionX, barTopPosition )
-                                        << QPointF( lastTickPositionX, bottomPosition ),
+        divisionSymbol->renderPolyline( QPolygonF() << QPointF( lastTickPositionX, tickPositionsY.at( 0 ) )
+                                        << QPointF( lastTickPositionX, tickPositionsY.at( 1 ) ),
                                         nullptr, context, layer );
       }
 
