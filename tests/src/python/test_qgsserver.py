@@ -139,7 +139,7 @@ class QgsServerTestBase(unittest.TestCase):
 
     def strip_version_xmlns(self, text):
         """Order of attributes is random, strip version and xmlns"""
-        return text.replace(br'version="1.3.0"', r'').replace(br'xmlns="http://www.opengis.net/ogc"', b'')
+        return text.replace(b'version="1.3.0"', b'').replace(b'xmlns="http://www.opengis.net/ogc"', b'')
 
     def assert_headers(self, header, body):
         stream = StringIO()
