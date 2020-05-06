@@ -36,6 +36,7 @@ if not exist "%BUILDDIR%" mkdir %BUILDDIR%
 if not exist "%BUILDDIR%" (echo could not create build directory %BUILDDIR% & goto error)
 
 call msvc-env.bat %ARCH%
+call gdal-dev-env.bat
 
 set O4W_ROOT=%OSGEO4W_ROOT:\=/%
 set LIB_DIR=%O4W_ROOT%
