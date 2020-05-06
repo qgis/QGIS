@@ -367,16 +367,16 @@ void QgsLayoutItemAttributeTable::restoreFieldAliasMap( const QMap<int, QString>
     return;
   }
 
-  for ( QgsLayoutTableColumn &column : mColumns )
+  for ( int i = 0; i < mColumns.count(); i++ )
   {
-    int attrIdx = source->fields().lookupField( column.attribute() );
+    int attrIdx = source->fields().lookupField( mColumns[i].attribute() );
     if ( map.contains( attrIdx ) )
     {
-      column.setHeading( map.value( attrIdx ) );
+      mColumns[i].setHeading( map.value( attrIdx ) );
     }
     else
     {
-      column.setHeading( source->attributeDisplayName( attrIdx ) );
+      mColumns[i].setHeading( source->attributeDisplayName( attrIdx ) );
     }
   }
 }

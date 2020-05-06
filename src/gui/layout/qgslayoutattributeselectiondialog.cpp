@@ -231,38 +231,40 @@ bool QgsLayoutAttributeTableColumnModelBase::setData( const QModelIndex &index, 
   if ( index.column() > displayedColumns().count() )
     return false;
 
+  QgsLayoutTableColumn &colToUpdate = columns()[index.row()];
+
   Column col = displayedColumns()[index.column()];
   switch ( col )
   {
     case Attribute:
       // also update column's heading, if it hasn't been customized
-      if ( columns()[index.row()].heading().isEmpty() || ( columns()[index.row()].heading() == columns()[index.row()].attribute() ) )
+      if ( colToUpdate.heading().isEmpty() || ( colToUpdate.heading() == colToUpdate.attribute() ) )
       {
-        columns()[index.row()].setHeading( value.toString() );
+        colToUpdate.setHeading( value.toString() );
         emit dataChanged( createIndex( index.row(), 1 ), createIndex( index.row(), 1 ) );
       }
-      columns()[index.row()].setAttribute( value.toString() );
+      colToUpdate.setAttribute( value.toString() );
       emit dataChanged( index, index );
       return true;
 
     case Heading:
-      columns()[index.row()].setHeading( value.toString() );
+      colToUpdate.setHeading( value.toString() );
       emit dataChanged( index, index );
       return true;
 
     case Alignment:
-      columns()[index.row()].setHAlignment( Qt::AlignmentFlag( value.toInt() & Qt::AlignHorizontal_Mask ) );
-      columns()[index.row()].setVAlignment( Qt::AlignmentFlag( value.toInt() & Qt::AlignVertical_Mask ) );
+      colToUpdate.setHAlignment( Qt::AlignmentFlag( value.toInt() & Qt::AlignHorizontal_Mask ) );
+      colToUpdate.setVAlignment( Qt::AlignmentFlag( value.toInt() & Qt::AlignVertical_Mask ) );
       emit dataChanged( index, index );
       return true;
 
     case Width:
-      columns()[index.row()].setWidth( value.toDouble() );
+      colToUpdate.setWidth( value.toDouble() );
       emit dataChanged( index, index );
       return true;
 
     case SortOrder:
-      mTable->sortColumns()[index.row()].setSortOrder( static_cast< Qt::SortOrder >( value.toInt() ) );
+      colToUpdate.setSortOrder( static_cast< Qt::SortOrder >( value.toInt() ) );
       emit dataChanged( index, index );
       return true;
   }

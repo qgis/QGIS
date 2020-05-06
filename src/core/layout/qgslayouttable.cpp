@@ -190,10 +190,9 @@ bool QgsLayoutTable::readPropertiesFromElement( const QDomElement &itemElem, con
   else
   {
     // backward compatibility for QGIS < 3.14
+    // copy the display columns if sortByRank > 0 and then, sort them by rank
     Q_NOWARN_DEPRECATED_PUSH
-    for ( const QgsLayoutTableColumn &col : qgis::as_const( mColumns ) )
-      if ( col.sortByRank() > 0 )
-        mSortColumns.append( col );
+    std::copy_if( mColumns.begin(), mColumns.end(), std::back_inserter( mSortColumns ), []( const QgsLayoutTableColumn & col ) {return col.sortByRank() > 0;} );
     std::sort( mSortColumns.begin(), mSortColumns.end(), []( const QgsLayoutTableColumn & a, const QgsLayoutTableColumn & b ) {return a.sortByRank() < b.sortByRank();} );
     Q_NOWARN_DEPRECATED_POP
   }
@@ -792,17 +791,24 @@ void QgsLayoutTable::setWrapBehavior( QgsLayoutTable::WrapBehavior behavior )
 void QgsLayoutTable::setColumns( const QgsLayoutTableColumns &columns )
 {
   //remove existing columns
-  mColumns.clear();
+  mColumns = columns;
 
-  mColumns.append( columns );
+  // backward compatibility
+  // test if sorting is provided with the columns and call setSortColumns in such case
+  QgsLayoutTableSortColumns newSortColumns;
+  Q_NOWARN_DEPRECATED_PUSH
+  std::copy_if( mColumns.begin(), mColumns.end(), std::back_inserter( newSortColumns ), []( const QgsLayoutTableColumn & col ) {return col.sortByRank() > 0;} );
+  if ( !newSortColumns.isEmpty() )
+  {
+    std::sort( newSortColumns.begin(), newSortColumns.end(), []( const QgsLayoutTableColumn & a, const QgsLayoutTableColumn & b ) {return a.sortByRank() < b.sortByRank();} );
+    setSortColumns( newSortColumns );
+  }
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsLayoutTable::setSortColumns( const QgsLayoutTableSortColumns &sortColumns )
 {
-  //remove existing columns
-  mSortColumns.clear();
-
-  mSortColumns.append( sortColumns );
+  mSortColumns = sortColumns;
 }
 
 void QgsLayoutTable::setCellStyle( QgsLayoutTable::CellStyleGroup group, const QgsLayoutTableStyle &style )

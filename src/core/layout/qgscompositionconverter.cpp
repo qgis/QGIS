@@ -1466,10 +1466,9 @@ bool QgsCompositionConverter::readTableXml( QgsLayoutItemAttributeTable *layoutI
       layoutItem->mColumns.append( column );
 
       // sorting columns are now (QGIS 3.14+) handled in a dedicated list
+      // copy the display columns if sortByRank > 0 and then, sort them by rank
       Q_NOWARN_DEPRECATED_PUSH
-      for ( const QgsLayoutTableColumn &col : qgis::as_const( layoutItem->mColumns ) )
-        if ( col.sortByRank() > 0 )
-          layoutItem->mSortColumns.append( col );
+      std::copy_if( layoutItem->mColumns.begin(), layoutItem->mColumns.end(), std::back_inserter( layoutItem->mSortColumns ), []( const QgsLayoutTableColumn & col ) {return col.sortByRank() > 0;} );
       std::sort( layoutItem->mSortColumns.begin(), layoutItem->mSortColumns.end(), []( const QgsLayoutTableColumn & a, const QgsLayoutTableColumn & b ) {return a.sortByRank() < b.sortByRank();} );
       Q_NOWARN_DEPRECATED_POP
     }
