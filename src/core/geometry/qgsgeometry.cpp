@@ -2480,13 +2480,6 @@ QgsGeometry QgsGeometry::extrude( double x, double y )
 }
 
 ///@cond PRIVATE // avoid dox warning
-QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed, QgsFeedback *feedback ) const
-{
-  if ( type() != QgsWkbTypes::PolygonGeometry )
-    return QVector< QgsPointXY >();
-
-  return QgsInternalGeometryEngine::randomPointsInPolygon( *this, count, acceptPoint, seed, feedback, 0 );
-}
 
 QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed, QgsFeedback *feedback, int maxTriesPerPoint ) const
 {
@@ -2502,14 +2495,6 @@ QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, unsigned long
     return QVector< QgsPointXY >();
 
   return QgsInternalGeometryEngine::randomPointsInPolygon( *this, count, []( const QgsPointXY & ) { return true; }, seed, feedback, 0 );
-}
-
-QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, unsigned long seed, QgsFeedback *feedback, int maxTriesPerPoint ) const
-{
-  if ( type() != QgsWkbTypes::PolygonGeometry )
-    return QVector< QgsPointXY >();
-
-  return QgsInternalGeometryEngine::randomPointsInPolygon( *this, count, []( const QgsPointXY & ) { return true; }, seed, feedback, maxTriesPerPoint );
 }
 ///@endcond
 

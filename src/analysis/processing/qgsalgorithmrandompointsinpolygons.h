@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmrandompointsinpolygons.h
+                         qgsalgorithmrandompointsinpolygons2.h
                          ---------------------
     begin                : March 2020
     copyright            : (C) 2020 by Håvard Tveite
@@ -16,8 +16,8 @@
  ***************************************************************************/
 
 
-#ifndef QGSALGORITHMRANDOMPOINTSINPOLYGONS_H
-#define QGSALGORITHMRANDOMPOINTSINPOLYGONS_H
+#ifndef QGSALGORITHMRANDOMPOINTSINPOLYGONS2_H
+#define QGSALGORITHMRANDOMPOINTSINPOLYGONS2_H
 
 #define SIP_NO_FILE
 
@@ -30,11 +30,11 @@
 /**
  * Native random points in polygons creation algorithm.
  */
-class QgsRandomPointsInPolygonsAlgorithm : public QgsProcessingAlgorithm
+class QgsRandomPointsInPolygonsAlgorithm2 : public QgsProcessingAlgorithm
 {
   public:
 
-    QgsRandomPointsInPolygonsAlgorithm() = default;
+    QgsRandomPointsInPolygonsAlgorithm2() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomPointsInPolygons.svg" ) ); }
     QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomPointsInPolygons.svg" ) ); }
@@ -44,7 +44,7 @@ class QgsRandomPointsInPolygonsAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
-    QgsRandomPointsInPolygonsAlgorithm *createInstance() const override SIP_FACTORY;
+    QgsRandomPointsInPolygonsAlgorithm2 *createInstance() const override SIP_FACTORY;
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) override;
@@ -61,7 +61,8 @@ class QgsRandomPointsInPolygonsAlgorithm : public QgsProcessingAlgorithm
     double mMinDistance = 0;
     bool mDynamicMinDistance = false;
     QgsProperty mMinDistanceProperty;
-
+    
+    double minDistanceForThisFeature = 0;
     double mMinDistanceGlobal = 0;
 
     int mMaxAttempts = 10;
@@ -71,8 +72,11 @@ class QgsRandomPointsInPolygonsAlgorithm : public QgsProcessingAlgorithm
     bool mUseRandomSeed = false;
     int mRandSeed = 0;
     bool mIncludePolygonAttr = false;
+
+    int mIndexPoints = 0;
+    int mLocalIndexPoints = 0;
 };
 
 ///@endcond PRIVATE
 
-#endif // QGSALGORITHMRANDOMPOINTSINPOLYGONS_H
+#endif // QGSALGORITHMRANDOMPOINTSINPOLYGONS2_H
