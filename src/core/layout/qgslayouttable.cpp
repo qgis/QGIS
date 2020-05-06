@@ -69,6 +69,9 @@ QgsLayoutTable::~QgsLayoutTable()
   qDeleteAll( mColumns );
   mColumns.clear();
 
+  qDeleteAll( mSortColumns );
+  mSortColumns.clear();
+
   qDeleteAll( mCellStyles );
   mCellStyles.clear();
 }
@@ -93,7 +96,7 @@ bool QgsLayoutTable::writePropertiesToElement( QDomElement &elem, QDomDocument &
   elem.setAttribute( QStringLiteral( "backgroundColor" ), QgsSymbolLayerUtils::encodeColor( mBackgroundColor ) );
   elem.setAttribute( QStringLiteral( "wrapBehavior" ), QString::number( static_cast< int >( mWrapBehavior ) ) );
 
-  //columns
+  // display columns
   QDomElement displayColumnsElem = doc.createElement( QStringLiteral( "displayColumns" ) );
   for ( QgsLayoutTableColumn *column : qgis::as_const( mColumns ) )
   {
@@ -102,6 +105,16 @@ bool QgsLayoutTable::writePropertiesToElement( QDomElement &elem, QDomDocument &
     displayColumnsElem.appendChild( columnElem );
   }
   elem.appendChild( displayColumnsElem );
+  // sort columns
+  QDomElement sortColumnsElem = doc.createElement( QStringLiteral( "sortColumns" ) );
+  for ( QgsLayoutTableSortColumn *column : qgis::as_const( mSortColumns ) )
+  {
+    QDomElement columnElem = doc.createElement( QStringLiteral( "column" ) );
+    column->writeXml( columnElem, doc );
+    sortColumnsElem.appendChild( columnElem );
+  }
+  elem.appendChild( sortColumnsElem );
+
 
   //cell styles
   QDomElement stylesElem = doc.createElement( QStringLiteral( "cellStyles" ) );
@@ -147,7 +160,7 @@ bool QgsLayoutTable::readPropertiesFromElement( const QDomElement &itemElem, con
   mBackgroundColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "backgroundColor" ), QStringLiteral( "255,255,255,0" ) ) );
   mWrapBehavior = QgsLayoutTable::WrapBehavior( itemElem.attribute( QStringLiteral( "wrapBehavior" ), QStringLiteral( "0" ) ).toInt() );
 
-  //restore column specifications
+  //restore display column specifications
   qDeleteAll( mColumns );
   mColumns.clear();
   QDomNodeList columnsList = itemElem.elementsByTagName( QStringLiteral( "displayColumns" ) );
@@ -162,6 +175,32 @@ bool QgsLayoutTable::readPropertiesFromElement( const QDomElement &itemElem, con
       column->readXml( columnElem );
       mColumns.append( column );
     }
+  }
+  // sort columns
+  qDeleteAll( mSortColumns );
+  mSortColumns.clear();
+  QDomNodeList sortColumnsList = itemElem.elementsByTagName( QStringLiteral( "sortColumns" ) );
+  if ( !columnsList.isEmpty() )
+  {
+    QDomElement columnsElem = columnsList.at( 0 ).toElement();
+    QDomNodeList columnEntryList = columnsElem.elementsByTagName( QStringLiteral( "column" ) );
+    for ( int i = 0; i < columnEntryList.size(); ++i )
+    {
+      QDomElement columnElem = columnEntryList.at( i ).toElement();
+      QgsLayoutTableSortColumn *column = new QgsLayoutTableSortColumn;
+      column->readXml( columnElem );
+      mSortColumns.append( column );
+    }
+  }
+  else
+  {
+    // backward compatibility for QGIS < 3.14
+    QVector<QgsLayoutTableColumn *> sortColumns;
+    Q_NOWARN_DEPRECATED_PUSH
+    std::copy_if( mColumns.begin(), mColumns.end(), std::back_inserter( sortColumns ), []( QgsLayoutTableColumn * col ) {return col->sortByRank() > 0;} );
+    std::sort( sortColumns.begin(), sortColumns.end(), []( QgsLayoutTableColumn * a, QgsLayoutTableColumn * b ) {return a->sortByRank() < b->sortByRank();} );
+    Q_NOWARN_DEPRECATED_POP
+    // TODO remove comment: mSortColumns = sortColumns;
   }
 
   //restore cell styles
@@ -762,6 +801,15 @@ void QgsLayoutTable::setColumns( const QgsLayoutTableColumns &columns )
   mColumns.clear();
 
   mColumns.append( columns );
+}
+
+void QgsLayoutTable::setSortColumns( const QgsLayoutTableSortColumns &sortColumns )
+{
+  //remove existing columns
+  qDeleteAll( mSortColumns );
+  mSortColumns.clear();
+
+  mSortColumns.append( sortColumns );
 }
 
 void QgsLayoutTable::setCellStyle( QgsLayoutTable::CellStyleGroup group, const QgsLayoutTableStyle &style )

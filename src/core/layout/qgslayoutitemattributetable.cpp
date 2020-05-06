@@ -172,6 +172,8 @@ void QgsLayoutItemAttributeTable::resetColumns()
   //remove existing columns
   qDeleteAll( mColumns );
   mColumns.clear();
+  qDeleteAll( mSortColumns );
+  mSortColumns.clear();
 
   //rebuild columns list from vector layer fields
   int idx = 0;
@@ -480,10 +482,9 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     req.setFilterFid( atlasFeature.id() );
   }
 
-  QVector< QPair<int, bool> > sortColumns = sortAttributes();
-  for ( int i = sortColumns.size() - 1; i >= 0; --i )
+  for ( const QgsLayoutTableSortColumn *column : qgis::as_const( mSortColumns ) )
   {
-    req = req.addOrderBy( mColumns.at( sortColumns.at( i ).first )->attribute(), sortColumns.at( i ).second );
+    req = req.addOrderBy( column->attribute(), column->sortOrder() == Qt::AscendingOrder );
   }
 
   QgsFeature f;
@@ -720,39 +721,6 @@ void QgsLayoutItemAttributeTable::removeLayer( const QString &layerId )
       mColumns.clear();
     }
   }
-}
-
-static bool columnsBySortRank( QPair<int, QgsLayoutTableColumn * > a, QPair<int, QgsLayoutTableColumn * > b )
-{
-  return a.second->sortByRank() < b.second->sortByRank();
-}
-
-QVector<QPair<int, bool> > QgsLayoutItemAttributeTable::sortAttributes() const
-{
-  //generate list of all sorted columns
-  QVector< QPair<int, QgsLayoutTableColumn * > > sortedColumns;
-  int idx = 0;
-  for ( QgsLayoutTableColumn *column : mColumns )
-  {
-    if ( column->sortByRank() > 0 )
-    {
-      sortedColumns.append( qMakePair( idx, column ) );
-    }
-    idx++;
-  }
-
-  //sort columns by rank
-  std::sort( sortedColumns.begin(), sortedColumns.end(), columnsBySortRank );
-
-  //generate list of column index, bool for sort direction (to match 2.0 api)
-  QVector<QPair<int, bool> > attributesBySortRank;
-  attributesBySortRank.reserve( sortedColumns.size() );
-  for ( auto &column : qgis::as_const( sortedColumns ) )
-  {
-    attributesBySortRank.append( qMakePair( column.first,
-                                            column.second->sortOrder() == Qt::AscendingOrder ) );
-  }
-  return attributesBySortRank;
 }
 
 void QgsLayoutItemAttributeTable::setWrapString( const QString &wrapString )

@@ -99,7 +99,7 @@ QVariant QgsLayoutAttributeTableColumnModel::data( const QModelIndex &index, int
   if ( role == Qt::UserRole )
   {
     //user role stores reference in column object
-    return qVariantFromValue( column );
+    return QVariant::fromValue( column );
   }
 
   switch ( index.column() )
@@ -361,176 +361,73 @@ QModelIndex QgsLayoutAttributeTableColumnModel::indexFromColumn( QgsLayoutTableC
   return QModelIndex();
 }
 
-void QgsLayoutAttributeTableColumnModel::setColumnAsSorted( QgsLayoutTableColumn *column, Qt::SortOrder order )
+
+
+
+// QgsLayoutTableSortModel
+
+QgsLayoutTableSortModel::QgsLayoutTableSortModel( QgsLayoutItemAttributeTable *table, QObject *parent )
+  : QAbstractTableModel( parent )
+  , mTable( table )
 {
-  if ( !column || !mTable )
-  {
-    return;
-  }
-
-  //find current highest sort by rank
-  int highestRank = 0;
-  for ( auto columnIt = mTable->columns().constBegin(); columnIt != mTable->columns().constEnd(); ++columnIt )
-  {
-    highestRank = std::max( highestRank, ( *columnIt )->sortByRank() );
-  }
-
-  column->setSortByRank( highestRank + 1 );
-  column->setSortOrder( order );
-
-  QModelIndex idx = indexFromColumn( column );
-  emit dataChanged( idx, idx );
 }
 
-void QgsLayoutAttributeTableColumnModel::setColumnAsUnsorted( QgsLayoutTableColumn *column )
+QModelIndex QgsLayoutTableSortModel::index( int row, int column, const QModelIndex &parent ) const
 {
-  if ( !mTable || !column )
+  if ( hasIndex( row, column, parent ) )
   {
-    return;
-  }
-
-  column->setSortByRank( 0 );
-  QModelIndex idx = indexFromColumn( column );
-  emit dataChanged( idx, idx );
-}
-
-static bool columnsBySortRank( QgsLayoutTableColumn *a, QgsLayoutTableColumn *b )
-{
-  return a->sortByRank() < b->sortByRank();
-}
-
-bool QgsLayoutAttributeTableColumnModel::moveColumnInSortRank( QgsLayoutTableColumn *column, ShiftDirection direction )
-{
-  if ( !mTable || !column )
-  {
-    return false;
-  }
-  if ( ( direction == ShiftUp && column->sortByRank() <= 1 )
-       || ( direction == ShiftDown && column->sortByRank() <= 0 ) )
-  {
-    //already at start/end of list or not being used for sort
-    return false;
-  }
-
-  //find column before this one in sort order
-  QVector<QgsLayoutTableColumn *> sortedColumns;
-  const QgsLayoutTableColumns &columns = mTable->columns();
-  for ( QgsLayoutTableColumn *currentColumn : columns )
-  {
-    if ( currentColumn->sortByRank() > 0 )
+    if ( ( mTable->sortColumns() )[row] )
     {
-      sortedColumns.append( currentColumn );
+      return createIndex( row, column, ( mTable->sortColumns() )[row] );
     }
   }
-  std::stable_sort( sortedColumns.begin(), sortedColumns.end(), columnsBySortRank );
-  int columnPos = sortedColumns.indexOf( column );
-
-  if ( ( columnPos == 0 && direction == ShiftUp )
-       || ( ( columnPos == sortedColumns.length() - 1 ) && direction == ShiftDown ) )
-  {
-    //column already at start/end
-    return false;
-  }
-
-  QgsLayoutTableColumn *swapColumn = direction == ShiftUp ?
-                                     sortedColumns[ columnPos - 1]
-                                     : sortedColumns[ columnPos + 1];
-  QModelIndex idx = indexFromColumn( column );
-  QModelIndex idxSwap = indexFromColumn( swapColumn );
-
-  //now swap sort ranks
-  int oldSortRank = column->sortByRank();
-  column->setSortByRank( swapColumn->sortByRank() );
-  emit dataChanged( idx, idx );
-
-  swapColumn->setSortByRank( oldSortRank );
-  emit dataChanged( idxSwap, idxSwap );
-
-  return true;
+  return QModelIndex();
 }
 
-
-
-//QgsLayoutTableSortColumnsProxyModel
-
-QgsLayoutTableSortColumnsProxyModel::QgsLayoutTableSortColumnsProxyModel( QgsLayoutItemAttributeTable *table, ColumnFilterType filterType, QObject *parent )
-  : QSortFilterProxyModel( parent )
-  , mTable( table )
-  , mFilterType( filterType )
+QModelIndex QgsLayoutTableSortModel::parent( const QModelIndex &child ) const
 {
-  setDynamicSortFilter( true );
+  Q_UNUSED( child )
+  return QModelIndex();
 }
 
-bool QgsLayoutTableSortColumnsProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+int QgsLayoutTableSortModel::rowCount( const QModelIndex &parent ) const
 {
-  //get QgsComposerTableColumn corresponding to row
-  QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
-  QgsLayoutTableColumn *column = columnFromSourceIndex( index );
+  if ( parent.isValid() )
+    return 0;
 
-  if ( !column )
-  {
-    return false;
-  }
-
-  if ( ( column->sortByRank() > 0 && mFilterType == ShowSortedColumns )
-       || ( column->sortByRank() <= 0 && mFilterType == ShowUnsortedColumns ) )
-  {
-    //column matches filter type
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return mTable->sortColumns().length();
 }
 
-QgsLayoutTableColumn *QgsLayoutTableSortColumnsProxyModel::columnFromIndex( const QModelIndex &index ) const
-{
-  //get column corresponding to an index from the proxy
-  QModelIndex sourceIndex = mapToSource( index );
-  return columnFromSourceIndex( sourceIndex );
-}
-
-QgsLayoutTableColumn *QgsLayoutTableSortColumnsProxyModel::columnFromSourceIndex( const QModelIndex &sourceIndex ) const
-{
-  //get column corresponding to an index from the source model
-  QVariant columnAsVariant = sourceModel()->data( sourceIndex, Qt::UserRole );
-  QgsLayoutTableColumn *column = qobject_cast<QgsLayoutTableColumn *>( columnAsVariant.value<QObject *>() );
-  return column;
-}
-
-bool QgsLayoutTableSortColumnsProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
-{
-  QgsLayoutTableColumn *column1 = columnFromSourceIndex( left );
-  QgsLayoutTableColumn *column2 = columnFromSourceIndex( right );
-  if ( !column1 )
-  {
-    return false;
-  }
-  if ( !column2 )
-  {
-    return true;
-  }
-  return column1->sortByRank() < column2->sortByRank();
-}
-
-int QgsLayoutTableSortColumnsProxyModel::columnCount( const QModelIndex &parent ) const
+int QgsLayoutTableSortModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
   return 2;
 }
 
-QVariant QgsLayoutTableSortColumnsProxyModel::data( const QModelIndex &index, int role ) const
+QVariant QgsLayoutTableSortModel::data( const QModelIndex &index, int role ) const
 {
-  if ( ( role != Qt::DisplayRole && role != Qt::EditRole ) || !index.isValid() )
+  if ( !index.isValid() ||
+       ( role != Qt::DisplayRole && role != Qt::EditRole && role != Qt::UserRole ) )
   {
     return QVariant();
   }
 
-  QgsLayoutTableColumn *column = columnFromIndex( index );
+  if ( index.row() >= mTable->sortColumns().length() )
+  {
+    return QVariant();
+  }
+
+  //get column for index
+  QgsLayoutTableSortColumn *column = columnFromIndex( index );
   if ( !column )
   {
     return QVariant();
+  }
+
+  if ( role == Qt::UserRole )
+  {
+    //user role stores reference in column object
+    return QVariant::fromValue( column );
   }
 
   switch ( index.column() )
@@ -558,9 +455,10 @@ QVariant QgsLayoutTableSortColumnsProxyModel::data( const QModelIndex &index, in
     default:
       return QVariant();
   }
+
 }
 
-QVariant QgsLayoutTableSortColumnsProxyModel::headerData( int section, Qt::Orientation orientation, int role ) const
+QVariant QgsLayoutTableSortModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
   if ( !mTable )
   {
@@ -594,54 +492,132 @@ QVariant QgsLayoutTableSortColumnsProxyModel::headerData( int section, Qt::Orien
   }
 }
 
-Qt::ItemFlags QgsLayoutTableSortColumnsProxyModel::flags( const QModelIndex &index ) const
+bool QgsLayoutTableSortModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  Qt::ItemFlags flags = QSortFilterProxyModel::flags( index );
-
-  if ( index.column() == 1 )
+  if ( !index.isValid() || role != Qt::EditRole || !mTable )
   {
-    //only sort order is editable
-    flags |= Qt::ItemIsEditable;
-  }
-
-  return flags;
-}
-
-bool QgsLayoutTableSortColumnsProxyModel::setData( const QModelIndex &index, const QVariant &value, int role )
-{
-  if ( !index.isValid() || role != Qt::EditRole )
     return false;
-
-  if ( !mTable )
+  }
+  if ( index.row() >= mTable->sortColumns().length() )
   {
     return false;
   }
 
-  QgsLayoutTableColumn *column = columnFromIndex( index );
+  //get column for index
+  QgsLayoutTableSortColumn *column = columnFromIndex( index );
   if ( !column )
   {
     return false;
   }
 
-  if ( index.column() == 1 )
+  switch ( index.column() )
   {
-    column->setSortOrder( static_cast< Qt::SortOrder >( value.toInt() ) );
-    emit dataChanged( index, index );
-    return true;
+    case 0:
+      column->setAttribute( value.toString() );
+      emit dataChanged( index, index );
+      return true;
+    case 1:
+      column->setSortOrder( static_cast< Qt::SortOrder >( value.toInt() ) );
+      emit dataChanged( index, index );
+      return true;
+    default:
+      break;
   }
 
   return false;
 }
 
-QgsLayoutTableColumn *QgsLayoutTableSortColumnsProxyModel::columnFromRow( int row )
+Qt::ItemFlags QgsLayoutTableSortModel::flags( const QModelIndex &index ) const
 {
-  QModelIndex proxyIndex = index( row, 0 );
-  return columnFromIndex( proxyIndex );
+  Qt::ItemFlags flags = QAbstractTableModel::flags( index );
+
+  if ( index.isValid() )
+  {
+    return flags | Qt::ItemIsEditable;
+  }
+  else
+  {
+    return flags;
+  }
 }
 
-void QgsLayoutTableSortColumnsProxyModel::resetFilter()
+bool QgsLayoutTableSortModel::removeRows( int row, int count, const QModelIndex &parent )
 {
-  invalidate();
+  Q_UNUSED( parent )
+
+  int maxRow = std::min( row + count - 1, mTable->sortColumns().length() - 1 );
+  beginRemoveRows( QModelIndex(), row, maxRow );
+  //move backwards through rows, removing each corresponding QgsComposerTableColumn
+  for ( int i = maxRow; i >= row; --i )
+  {
+    delete ( mTable->sortColumns() )[i];
+    mTable->sortColumns().removeAt( i );
+  }
+  endRemoveRows();
+  return true;
+}
+
+bool QgsLayoutTableSortModel::insertRows( int row, int count, const QModelIndex &parent )
+{
+  Q_UNUSED( parent )
+  beginInsertRows( QModelIndex(), row, row + count - 1 );
+  //create new QgsComposerTableColumns for each inserted row
+  for ( int i = row; i < row + count; ++i )
+  {
+    QgsLayoutTableSortColumn *col = new QgsLayoutTableSortColumn;
+    mTable->sortColumns().insert( i, col );
+  }
+  endInsertRows();
+  return true;
+}
+
+bool QgsLayoutTableSortModel::moveRow( int row, ShiftDirection direction )
+{
+  if ( ( direction == ShiftUp && row <= 0 ) ||
+       ( direction == ShiftDown &&  row >= rowCount() - 1 ) )
+  {
+    //row is already at top/bottom
+    return false;
+  }
+
+  //we shift a row by removing the next row up/down, then reinserting it before/after the target row
+  int swapWithRow = direction == ShiftUp ? row - 1 : row + 1;
+
+  //remove row
+  beginRemoveRows( QModelIndex(), swapWithRow, swapWithRow );
+  QgsLayoutTableSortColumn *temp = mTable->sortColumns().takeAt( swapWithRow );
+  endRemoveRows();
+
+  //insert row
+  beginInsertRows( QModelIndex(), row, row );
+  mTable->sortColumns().insert( row, temp );
+  endInsertRows();
+
+  return true;
+}
+
+QgsLayoutTableSortColumn *QgsLayoutTableSortModel::columnFromIndex( const QModelIndex &index ) const
+{
+  QgsLayoutTableSortColumn *column = static_cast<QgsLayoutTableSortColumn *>( index.internalPointer() );
+  return column;
+}
+
+QModelIndex QgsLayoutTableSortModel::indexFromColumn( QgsLayoutTableSortColumn *column )
+{
+  if ( !mTable )
+  {
+    return QModelIndex();
+  }
+
+  int r = mTable->sortColumns().indexOf( column );
+
+  QModelIndex idx = index( r, 0, QModelIndex() );
+  if ( idx.isValid() )
+  {
+    return idx;
+  }
+
+  return QModelIndex();
 }
 
 
@@ -907,7 +883,6 @@ QgsLayoutAttributeSelectionDialog::QgsLayoutAttributeSelectionDialog( QgsLayoutI
     mColumnModel = new QgsLayoutAttributeTableColumnModel( mTable, mColumnsTableView );
     mColumnsTableView->setModel( mColumnModel );
     mColumnsTableView->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
-
     mColumnSourceDelegate = new QgsLayoutColumnSourceDelegate( vLayer, mColumnsTableView, mTable );
     mColumnsTableView->setItemDelegateForColumn( 0, mColumnSourceDelegate );
     mColumnAlignmentDelegate = new QgsLayoutColumnAlignmentDelegate( mColumnsTableView );
@@ -915,24 +890,14 @@ QgsLayoutAttributeSelectionDialog::QgsLayoutAttributeSelectionDialog( QgsLayoutI
     mColumnWidthDelegate = new QgsLayoutColumnWidthDelegate( mColumnsTableView );
     mColumnsTableView->setItemDelegateForColumn( 3, mColumnWidthDelegate );
 
-    mAvailableSortProxyModel = new QgsLayoutTableSortColumnsProxyModel( mTable, QgsLayoutTableSortColumnsProxyModel::ShowUnsortedColumns, mSortColumnComboBox );
-    mAvailableSortProxyModel->setSourceModel( mColumnModel );
-    mSortColumnComboBox->setModel( mAvailableSortProxyModel );
-    mSortColumnComboBox->setModelColumn( 0 );
-
-    mColumnSortOrderDelegate = new QgsLayoutColumnSortOrderDelegate( mSortColumnTableView );
-    mSortColumnTableView->setItemDelegateForColumn( 1, mColumnSortOrderDelegate );
-
-    mSortedProxyModel = new QgsLayoutTableSortColumnsProxyModel( mTable, QgsLayoutTableSortColumnsProxyModel::ShowSortedColumns, mSortColumnTableView );
-    mSortedProxyModel->setSourceModel( mColumnModel );
-    mSortedProxyModel->sort( 0, Qt::AscendingOrder );
-    mSortColumnTableView->setSortingEnabled( false );
-    mSortColumnTableView->setModel( mSortedProxyModel );
+    mSortColumnModel = new QgsLayoutTableSortModel( mTable, mSortColumnTableView );
+    mSortColumnTableView->setModel( mSortColumnModel );
     mSortColumnTableView->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
+    mSortColumnSourceDelegate = new QgsLayoutColumnSourceDelegate( vLayer, mSortColumnTableView, mTable );
+    mSortColumnTableView->setItemDelegateForColumn( 0, mSortColumnSourceDelegate );
+    mSortColumnOrderDelegate = new QgsLayoutColumnSortOrderDelegate( mSortColumnTableView );
+    mSortColumnTableView->setItemDelegateForColumn( 1, mSortColumnOrderDelegate );
   }
-
-  mOrderComboBox->insertItem( 0, tr( "Ascending" ) );
-  mOrderComboBox->insertItem( 1, tr( "Descending" ) );
 }
 
 void QgsLayoutAttributeSelectionDialog::mRemoveColumnPushButton_clicked()
@@ -977,55 +942,28 @@ void QgsLayoutAttributeSelectionDialog::mResetColumnsPushButton_clicked()
 {
   //reset columns to match vector layer's fields
   mColumnModel->resetToLayer();
-  mSortColumnComboBox->setCurrentIndex( 0 );
 }
 
 void QgsLayoutAttributeSelectionDialog::mClearColumnsPushButton_clicked()
 {
   //remove all columns
   mColumnModel->removeRows( 0, mColumnModel->rowCount() );
-  mSortColumnComboBox->setCurrentIndex( 0 );
 }
 
 void QgsLayoutAttributeSelectionDialog::mAddSortColumnPushButton_clicked()
 {
-  //add column to sort order widget
-  QgsLayoutTableColumn *column = mAvailableSortProxyModel->columnFromRow( mSortColumnComboBox->currentIndex() );
-  if ( ! column )
-  {
-    return;
-  }
-
-  mColumnModel->setColumnAsSorted( column, mOrderComboBox->currentIndex() == 0 ? Qt::AscendingOrder : Qt::DescendingOrder );
-
-  //required so that rows can be reordered if initially no rows were shown in the table view
-  mSortedProxyModel->resetFilter();
+  //add a new row to the model
+  mSortColumnModel->insertRow( mSortColumnModel->rowCount() );
 }
 
 void QgsLayoutAttributeSelectionDialog::mRemoveSortColumnPushButton_clicked()
 {
-  //remove selected rows from sort order widget
-  QItemSelection sortSelection( mSortColumnTableView->selectionModel()->selection() );
-  if ( sortSelection.length() < 1 )
-  {
-    return;
-  }
-  QModelIndex selectedIndex = sortSelection.indexes().at( 0 );
-  int rowToRemove = selectedIndex.row();
+  //remove selected rows from model
+  QModelIndexList indexes =  mSortColumnTableView->selectionModel()->selectedRows();
+  int count = indexes.count();
 
-  //find corresponding column
-  QgsLayoutTableColumn *column = nullptr;
-  column = mSortedProxyModel->columnFromIndex( selectedIndex );
-
-  if ( !column )
-  {
-    return;
-  }
-
-  //set column as unsorted
-  mColumnModel->setColumnAsUnsorted( column );
-  //set next row as selected
-  mSortColumnTableView->selectRow( rowToRemove );
+  for ( int i = count; i > 0; --i )
+    mSortColumnModel->removeRow( indexes.at( i - 1 ).row(), QModelIndex() );
 }
 
 void QgsLayoutAttributeSelectionDialog::showHelp()
@@ -1035,40 +973,21 @@ void QgsLayoutAttributeSelectionDialog::showHelp()
 
 void QgsLayoutAttributeSelectionDialog::mSortColumnUpPushButton_clicked()
 {
-  //find selected row
-  QItemSelection sortSelection( mSortColumnTableView->selectionModel()->selection() );
-  if ( sortSelection.length() < 1 )
-  {
-    return;
-  }
-  QModelIndex selectedIndex = sortSelection.indexes().at( 0 );
+  //move selected row down
+  QModelIndexList indexes =  mSortColumnTableView->selectionModel()->selectedRows();
+  int count = indexes.count();
 
-  QgsLayoutTableColumn *column = mSortedProxyModel->columnFromIndex( selectedIndex );
-
-  if ( !column )
-  {
-    return;
-  }
-  mColumnModel->moveColumnInSortRank( column, QgsLayoutAttributeTableColumnModel::ShiftUp );
+  for ( int i = count; i > 0; --i )
+    mSortColumnModel->moveRow( indexes.at( i - 1 ).row(), QgsLayoutTableSortModel::ShiftDown );
 }
 
 void QgsLayoutAttributeSelectionDialog::mSortColumnDownPushButton_clicked()
 {
-  //find selected row
-  QItemSelection sortSelection( mSortColumnTableView->selectionModel()->selection() );
-  if ( sortSelection.length() < 1 )
-  {
-    return;
-  }
+  //move selected row up
+  QModelIndexList indexes =  mSortColumnTableView->selectionModel()->selectedRows();
+  int count = indexes.count();
 
-  QModelIndex selectedIndex = sortSelection.indexes().at( 0 );
-
-  QgsLayoutTableColumn *column = mSortedProxyModel->columnFromIndex( selectedIndex );
-
-  if ( !column )
-  {
-    return;
-  }
-  mColumnModel->moveColumnInSortRank( column, QgsLayoutAttributeTableColumnModel::ShiftDown );
+  for ( int i = count; i > 0; --i )
+    mSortColumnModel->moveRow( indexes.at( i - 1 ).row(), QgsLayoutTableSortModel::ShiftUp );
 }
 

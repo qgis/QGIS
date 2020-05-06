@@ -28,9 +28,10 @@
 
 /**
  * \ingroup core
- * Stores properties of a column for a QgsLayoutTable. Some properties of aQgsLayoutTableColumn
- * are applicable only in certain contexts. For instance, the attribute and setAttribute methods only
- * have an effect for QgsLayoutItemAttributeTables, and have no effect for QgsLayoutItemTextTables.
+ * Stores properties of a column for a QgsLayoutTable.
+ * Some properties of a QgsLayoutTableColumn are applicable only in certain contexts.
+ * For instance, the attribute and setAttribute methods only have an effect
+ * for QgsLayoutItemAttributeTables, and have no effect for QgsLayoutItemTextTables.
  * \since QGIS 3.0
 */
 class CORE_EXPORT QgsLayoutTableColumn : public QObject
@@ -141,8 +142,9 @@ class CORE_EXPORT QgsLayoutTableColumn : public QObject
      * \note only applicable when used in a QgsLayoutItemAttributeTable
      * \see setSortOrder()
      * \see sortByRank()
+     * \deprecated since QGIS 3.14 the order is now hold in a distinct model
      */
-    Qt::SortOrder sortOrder() const { return mSortOrder; }
+    Q_DECL_DEPRECATED Qt::SortOrder sortOrder() const SIP_DEPRECATED { return mSortOrder; }
 
     /**
      * Sets the sort \a order for the column. This property is only used when the column
@@ -150,8 +152,9 @@ class CORE_EXPORT QgsLayoutTableColumn : public QObject
      * \note only applicable when used in a QgsLayoutItemAttributeTable
      * \see sortOrder()
      * \see setSortByRank()
+     * \deprecated since QGIS 3.14 the order is now hold in a distinct model
      */
-    void setSortOrder( Qt::SortOrder order ) { mSortOrder = order; }
+    Q_DECL_DEPRECATED void setSortOrder( Qt::SortOrder order ) SIP_DEPRECATED { mSortOrder = order; }
 
     /**
      * Returns the sort rank for the column. If the sort rank is > 0 then the column
@@ -165,8 +168,9 @@ class CORE_EXPORT QgsLayoutTableColumn : public QObject
      * \note only applicable when used in a QgsLayoutItemAttributeTable
      * \see setSortByRank()
      * \see sortOrder()
+     * \deprecated since QGIS 3.14 the order is now hold in a distinct model
      */
-    int sortByRank() const { return mSortByRank; }
+    Q_DECL_DEPRECATED int sortByRank() const SIP_DEPRECATED { return mSortByRank; }
 
     /**
      * Sets the sort \a rank for the column. If the sort rank is > 0 then the column
@@ -179,8 +183,9 @@ class CORE_EXPORT QgsLayoutTableColumn : public QObject
      * \note only applicable when used in a QgsLayoutItemAttributeTable
      * \see sortByRank()
      * \see setSortOrder()
+     * \deprecated since QGIS 3.14 the order is now hold in a distinct model
      */
-    void setSortByRank( int rank ) { mSortByRank = rank; }
+    Q_DECL_DEPRECATED void setSortByRank( int rank ) SIP_DEPRECATED { mSortByRank = rank; }
 
     /**
      * Creates a duplicate column which is a deep copy of this column.
@@ -201,6 +206,84 @@ class CORE_EXPORT QgsLayoutTableColumn : public QObject
 
     friend class QgsCompositionConverter;
 
+};
+
+/**
+ * \ingroup core
+ * Stores properties of a column for the sorting of a QgsLayoutTable.
+ * \since QGIS 3.14
+*/
+class CORE_EXPORT QgsLayoutTableSortColumn : public QObject
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsLayoutTableColumn.
+     * \param heading column heading
+     */
+    QgsLayoutTableSortColumn();
+
+    /**
+     * Writes the column's properties to xml for storage.
+     * \param columnElem an existing QDomElement in which to store the column's properties.
+     * \param doc QDomDocument for the destination xml.
+     * \see readXml()
+     */
+    bool writeXml( QDomElement &columnElem, QDomDocument &doc ) const;
+
+    /**
+     * Reads the column's properties from xml.
+     * \param columnElem a QDomElement holding the column's desired properties.
+     * \see writeXml()
+     */
+    bool readXml( const QDomElement &columnElem );
+
+    /**
+     * Returns the attribute name or expression used for the column's values. This property
+     * is only used when the column is part of a QgsLayoutItemAttributeTable.
+     * \note only applicable when used in a QgsLayoutItemAttributeTable
+     * \see setAttribute()
+     */
+    QString attribute() const { return mAttribute; }
+
+    /**
+     * Sets the \a attribute name or expression used for the column's values. This property
+     * is only used when the column is part of a QgsLayoutItemAttributeTable.
+     * \note only applicable when used in a QgsLayoutItemAttributeTable
+     * \see attribute()
+     */
+    void setAttribute( const QString &attribute ) { mAttribute = attribute; }
+
+    /**
+     * Returns the sort order for the column. This property is only used when the column
+     * is part of a QgsLayoutItemAttributeTable and when sortByRank is > 0.
+     * \note only applicable when used in a QgsLayoutItemAttributeTable
+     * \see setSortOrder()
+     * \see sortByRank()
+     */
+    Qt::SortOrder sortOrder() const { return mSortOrder; }
+
+    /**
+     * Sets the sort \a order for the column. This property is only used when the column
+     * is part of a QgsLayoutItemAttributeTable and when sortByRank() is > 0.
+     * \note only applicable when used in a QgsLayoutItemAttributeTable
+     * \see sortOrder()
+     * \see setSortByRank()
+     */
+    void setSortOrder( Qt::SortOrder order ) { mSortOrder = order; }
+
+    /**
+     * Creates a duplicate column which is a deep copy of this column.
+     * \returns a new QgsLayoutTableSortColumn with same properties as this column.
+     */
+    QgsLayoutTableSortColumn *clone() SIP_FACTORY;
+
+  private:
+
+    QString mAttribute;
+    Qt::SortOrder mSortOrder = Qt::AscendingOrder;
 };
 
 #endif //QGSLAYOUTTABLECOLUMN_H

@@ -234,6 +234,14 @@ void QgsLayoutAttributeTableWidget::mAttributesPushButton_clicked()
     currentColumns.append( copy );
   }
 
+  QVector<QgsLayoutTableSortColumn *> currentSortColumns;
+  auto sit = mTable->sortColumns().constBegin();
+  for ( ; sit != mTable->sortColumns().constEnd() ; ++sit )
+  {
+    QgsLayoutTableSortColumn *copy = ( *sit )->clone();
+    currentSortColumns.append( copy );
+  }
+
   mTable->beginCommand( tr( "Change Table Attributes" ) );
 
   //temporarily block updates for the window, to stop table trying to repaint under windows (#11462)
@@ -251,11 +259,14 @@ void QgsLayoutAttributeTableWidget::mAttributesPushButton_clicked()
     //clear currentColumns to free memory
     qDeleteAll( currentColumns );
     currentColumns.clear();
+    qDeleteAll( currentSortColumns );
+    currentSortColumns.clear();
   }
   else
   {
     //undo changes
     mTable->setColumns( currentColumns );
+    mTable->setSortColumns( currentSortColumns );
     window()->setUpdatesEnabled( true );
     mTable->cancelCommand();
   }

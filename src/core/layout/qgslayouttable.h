@@ -27,6 +27,7 @@
 #include <QPair>
 
 class QgsLayoutTableColumn;
+class QgsLayoutTableSortColumn;
 
 /**
  * \ingroup core
@@ -55,6 +56,14 @@ typedef QVector< QVector< QVariant > > QgsLayoutTableContents;
  * \since QGIS 3.0
 */
 typedef QVector< QgsLayoutTableColumn * > QgsLayoutTableColumns;
+
+/**
+ * \ingroup core
+ * List of column definitions for sorting a QgsLayoutTable
+ * \since QGIS 3.14
+*/
+typedef QVector< QgsLayoutTableSortColumn * > QgsLayoutTableSortColumns;
+
 
 
 /**
@@ -440,6 +449,21 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
     void setColumns( const QgsLayoutTableColumns &columns );
 
     /**
+     * Returns a reference to the list of QgsLayoutTableSortColumns shown in the table
+     * \see setSortColumns()
+     * \since QGIS 3.14
+     */
+    QgsLayoutTableSortColumns &sortColumns() { return mSortColumns; }
+
+    /**
+     * Replaces the sorting columns in the table with a specified list of QgsLayoutTableSortColumns.
+     * \param columns list of QgsLayoutTableColumns used to sort the table.
+     * \see sortColumns()
+     * \since QGIS 3.14
+     */
+    void setSortColumns( const QgsLayoutTableSortColumns &sortColumns );
+
+    /**
      * Sets the cell \a style for a cell \a group.
      * \see cellStyle()
      */
@@ -550,6 +574,9 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
 
     //! Columns to show in table
     QgsLayoutTableColumns mColumns;
+
+    //! Columns to sort the table
+    QgsLayoutTableSortColumns mSortColumns;
 
     //! Contents to show in table
     QgsLayoutTableContents mTableContents;

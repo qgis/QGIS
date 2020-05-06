@@ -37,10 +37,11 @@ class QgsVectorLayer;
 class QPushButton;
 class QgsLayoutItemAttributeTable;
 class QgsLayoutAttributeTableColumnModel;
-class QgsLayoutTableSortColumnsProxyModel;
+class QgsLayoutTableSortModel;
 class QgsLayoutTableAvailableSortProxyModel;
 class QgsLayoutObject;
 class QgsLayoutTableColumn;
+class QgsLayoutTableSortColumn;
 
 /**
  * \ingroup gui
@@ -109,26 +110,6 @@ class GUI_EXPORT QgsLayoutAttributeTableColumnModel: public QAbstractTableModel
      */
     QModelIndex indexFromColumn( QgsLayoutTableColumn *column );
 
-    /**
-     * Sets a specified column as a sorted column in the QgsLayoutItemAttributeTable. The column will be
-     * added to the end of the sort rank list, ie it will take the next largest available sort rank.
-     * \see moveColumnInSortRank()
-     */
-    void setColumnAsSorted( QgsLayoutTableColumn *column, Qt::SortOrder order );
-
-    /**
-     * Sets a specified column as an unsorted column in the QgsLayoutItemAttributeTable. The column will be
-     * removed from the sort rank list.
-     * \see setColumnAsSorted()
-     */
-    void setColumnAsUnsorted( QgsLayoutTableColumn *column );
-
-    /**
-     * Moves a column up or down in the sort rank for the QgsLayoutItemAttributeTable.
-     * \see setColumnAsSorted()
-     */
-    bool moveColumnInSortRank( QgsLayoutTableColumn *column, ShiftDirection direction );
-
   private:
     QgsLayoutItemAttributeTable *mTable = nullptr;
 
@@ -141,19 +122,19 @@ class GUI_EXPORT QgsLayoutAttributeTableColumnModel: public QAbstractTableModel
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutTableSortColumnsProxyModel: public QSortFilterProxyModel
+class GUI_EXPORT QgsLayoutTableSortModel: public QAbstractTableModel
 {
     Q_OBJECT
 
   public:
 
     /**
-     * Controls whether the proxy model shows sorted or unsorted columns
+     * Controls whether a row/column is shifted up or down
      */
-    enum ColumnFilterType
+    enum ShiftDirection
     {
-      ShowSortedColumns, //!< Show only sorted columns
-      ShowUnsortedColumns//!< Show only unsorted columns
+      ShiftUp, //!< Shift the row/column up
+      ShiftDown //!< Shift the row/column down
     };
 
     /**
@@ -162,53 +143,42 @@ class GUI_EXPORT QgsLayoutTableSortColumnsProxyModel: public QSortFilterProxyMod
      * \param filterType filter for columns, controls whether sorted or unsorted columns are shown
      * \param parent optional parent
      */
-    QgsLayoutTableSortColumnsProxyModel( QgsLayoutItemAttributeTable *table, ColumnFilterType filterType, QObject *parent SIP_TRANSFERTHIS = nullptr );
+    QgsLayoutTableSortModel( QgsLayoutItemAttributeTable *table, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
+    bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
+    QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
+    QModelIndex parent( const QModelIndex &child ) const override;
 
     /**
-     * Returns the QgsLayoutTableColumn corresponding to a row in the proxy model.
+     * Moves the specified row up or down in the model. Used for rearranging the attribute tables
+     * columns.
+     * \returns true if the move is allowed
+     * \param row row in model representing attribute table column to move
+     * \param direction direction to move the attribute table column
+     */
+    bool moveRow( int row, ShiftDirection direction );
+
+    /**
+     * Returns the QgsLayoutTableSortColumn corresponding to an index in the model.
+     * \see indexFromColumn()
+     */
+    QgsLayoutTableSortColumn *columnFromIndex( const QModelIndex &index ) const;
+
+    /**
+     * Returns a QModelIndex corresponding to a QgsLayoutTableSortColumn in the model.
      * \see columnFromIndex()
      */
-    QgsLayoutTableColumn *columnFromRow( int row );
-
-    /**
-     * Returns the QgsLayoutTableColumn corresponding to an index in the proxy model.
-     * \see columnFromRow()
-     * \see columnFromSourceIndex()
-     */
-    QgsLayoutTableColumn *columnFromIndex( const QModelIndex &index ) const;
-
-    /**
-     * Returns the QgsLayoutTableColumn corresponding to an index from the source
-     * QgsLayoutItemAttributeTableColumnModel model.
-     * \see columnFromRow()
-     * \see columnFromIndex()
-     */
-    QgsLayoutTableColumn *columnFromSourceIndex( const QModelIndex &sourceIndex ) const;
-
-    /**
-     * Invalidates the current filter used by the proxy model
-     */
-    void resetFilter();
-
-  protected:
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+    QModelIndex indexFromColumn( QgsLayoutTableSortColumn *column );
 
   private:
     QgsLayoutItemAttributeTable *mTable = nullptr;
-    ColumnFilterType mFilterType;
-
-    /**
-     * Returns a list of QgsLayoutTableColumn without a set sort rank
-     */
-    QList<QgsLayoutTableColumn *> columnsWithoutSortRank() const;
-
 };
 
 /**
@@ -334,15 +304,14 @@ class GUI_EXPORT QgsLayoutAttributeSelectionDialog: public QDialog, private Ui::
     const QgsVectorLayer *mVectorLayer = nullptr;
 
     QgsLayoutAttributeTableColumnModel *mColumnModel = nullptr;
-
-    QgsLayoutTableSortColumnsProxyModel *mSortedProxyModel = nullptr;
-
-    QgsLayoutTableSortColumnsProxyModel *mAvailableSortProxyModel = nullptr;
-
     QgsLayoutColumnAlignmentDelegate *mColumnAlignmentDelegate = nullptr;
     QgsLayoutColumnSourceDelegate *mColumnSourceDelegate = nullptr;
-    QgsLayoutColumnSortOrderDelegate *mColumnSortOrderDelegate = nullptr;
     QgsLayoutColumnWidthDelegate *mColumnWidthDelegate = nullptr;
+
+    QgsLayoutTableSortModel *mSortColumnModel = nullptr;
+    QgsLayoutColumnSourceDelegate *mSortColumnSourceDelegate = nullptr;
+    QgsLayoutColumnSortOrderDelegate *mSortColumnOrderDelegate = nullptr;
+
 
 };
 
