@@ -80,7 +80,10 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
   connect( model, &QAbstractItemModel::rowsRemoved, this, &QgsLayerTreeView::modelRowsRemoved );
 
   if ( mMessageBar )
-    connect( layerTreeModel(), &QgsLayerTreeModel::messageEmitted, [ = ]( const QString & message ) {mMessageBar->pushMessage( message );} );
+    connect( layerTreeModel(), &QgsLayerTreeModel::messageEmitted,
+             [ = ]( const QString & message, Qgis::MessageLevel level = Qgis::Info, int duration = 5 )
+  {mMessageBar->pushMessage( message, level, duration );}
+         );
 
   QTreeView::setModel( model );
 
@@ -503,7 +506,10 @@ void QgsLayerTreeView::setMessageBar( QgsMessageBar *messageBar )
   mMessageBar = messageBar;
 
   if ( mMessageBar )
-    connect( layerTreeModel(), &QgsLayerTreeModel::messageEmitted, [ = ]( const QString & message ) {mMessageBar->pushMessage( message );} );
+    connect( layerTreeModel(), &QgsLayerTreeModel::messageEmitted,
+             [ = ]( const QString & message, Qgis::MessageLevel level = Qgis::Info, int duration = 5 )
+  {mMessageBar->pushMessage( message, level, duration );}
+         );
 }
 
 void QgsLayerTreeView::mouseReleaseEvent( QMouseEvent *event )
