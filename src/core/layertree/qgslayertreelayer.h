@@ -181,6 +181,38 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
      */
     void setPatchSize( QSizeF size ) { mPatchSize = size; }
 
+    /**
+     * Legend node column split behavior.
+     *
+     * \since QGIS 3.14
+     */
+    enum LegendNodesSplitBehavior
+    {
+      UseDefaultLegendSetting, //!< Inherit default legend column splitting setting
+      AllowSplittingLegendNodesOverMultipleColumns, //!< Allow splitting node's legend nodes across multiple columns
+      PreventSplittingLegendNodesOverMultipleColumns, //!< Prevent splitting node's legend nodes across multiple columns
+    };
+
+    /**
+     * Returns the column split behavior for the node.
+     *
+     * This value controls how legend nodes belonging the to layer may be split over multiple columns in legends.
+     *
+     * \see setLegendSplitBehavior()
+     * \since QGIS 3.14
+     */
+    LegendNodesSplitBehavior legendSplitBehavior() const { return mSplitBehavior; }
+
+    /**
+     * Sets the column split \a behavior for the node.
+     *
+     * This value controls how legend nodes belonging the to layer may be split over multiple columns in legends.
+     *
+     * \see legendSplitBehavior()
+     * \since QGIS 3.14
+     */
+    void setLegendSplitBehavior( LegendNodesSplitBehavior behavior ) { mSplitBehavior = behavior; }
+
   signals:
 
     /**
@@ -233,6 +265,7 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
 
     QgsLegendPatchShape mPatchShape;
     QSizeF mPatchSize;
+    LegendNodesSplitBehavior mSplitBehavior = UseDefaultLegendSetting;
 };
 
 

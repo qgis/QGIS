@@ -1423,6 +1423,10 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   // auto close panel if layer removed
   connect( node, &QObject::destroyed, this, &QgsPanelWidget::acceptPanel );
 
+  mColumnSplitBehaviorComboBox->addItem( tr( "Follow Legend Default" ), QgsLayerTreeLayer::UseDefaultLegendSetting );
+  mColumnSplitBehaviorComboBox->addItem( tr( "Allow Splitting Over Columns" ), QgsLayerTreeLayer::AllowSplittingLegendNodesOverMultipleColumns );
+  mColumnSplitBehaviorComboBox->addItem( tr( "Prevent Splitting Over Columns" ), QgsLayerTreeLayer::PreventSplittingLegendNodesOverMultipleColumns );
+
   QString currentLabel;
   if ( mLegendNode )
   {
@@ -1436,6 +1440,8 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
     if ( !v.isNull() )
       currentLabel = v.toString();
     mColumnBreakBeforeCheckBox->setChecked( mLayer->customProperty( QStringLiteral( "legend/column-break" ) ).toInt() );
+
+    mColumnSplitBehaviorComboBox->setCurrentIndex( mColumnSplitBehaviorComboBox->findData( mLayer->legendSplitBehavior() ) );
   }
   else
   {
@@ -1447,9 +1453,12 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   mHeightSpinBox->setClearValue( 0, tr( "Default" ) );
   mWidthSpinBox->setVisible( mLegendNode || mLayer );
   mHeightSpinBox->setVisible( mLegendNode || mLayer );
+  mPatchGroup->setVisible( mLegendNode || mLayer );
   mPatchWidthLabel->setVisible( mLegendNode || mLayer );
   mPatchHeightLabel->setVisible( mLegendNode || mLayer );
   mCustomSymbolCheckBox->setVisible( mLegendNode || mLegend->model()->legendNodeEmbeddedInParent( mLayer ) );
+  mColumnSplitLabel->setVisible( mLayer && !mLegendNode );
+  mColumnSplitBehaviorComboBox->setVisible( mLayer && !mLegendNode );
   if ( mLegendNode )
   {
     mWidthSpinBox->setValue( mLegendNode->userPatchSize().width() );
@@ -1547,6 +1556,8 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   connect( mCustomSymbolButton, &QgsSymbolButton::changed, this, &QgsLayoutLegendNodeWidget::customSymbolChanged );
 
   connect( mColumnBreakBeforeCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendNodeWidget::columnBreakToggled );
+
+  connect( mColumnSplitBehaviorComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLayoutLegendNodeWidget::columnSplitChanged );
 }
 
 void QgsLayoutLegendNodeWidget::labelChanged()
@@ -1735,6 +1746,20 @@ void QgsLayoutLegendNodeWidget::columnBreakToggled( bool checked )
   else if ( mNode )
   {
     mNode->setCustomProperty( QStringLiteral( "legend/column-break" ), QString( checked ? '1' : '0' ) );
+  }
+
+  mLegend->adjustBoxSize();
+  mLegend->updateFilterByMap();
+  mLegend->endCommand();
+}
+
+void QgsLayoutLegendNodeWidget::columnSplitChanged()
+{
+  mLegend->beginCommand( tr( "Edit Legend Columns" ) );
+
+  if ( mLayer && !mLegendNode )
+  {
+    mLayer->setLegendSplitBehavior( static_cast< QgsLayerTreeLayer::LegendNodesSplitBehavior >( mColumnSplitBehaviorComboBox->currentData().toInt() ) );
   }
 
   mLegend->adjustBoxSize();
