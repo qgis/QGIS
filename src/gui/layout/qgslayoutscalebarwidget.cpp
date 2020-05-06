@@ -228,7 +228,6 @@ void QgsLayoutScaleBarWidget::setGuiElements()
   mHeightSpinBox->setValue( mScalebar->height() );
   mNumberOfSubdivisionsSpinBox->setValue( mScalebar->numberOfSubdivisions() );
   mSubdivisionsHeightSpinBox->setValue( mScalebar->subdivisionsHeight() );
-  mSubdivisionsHeightSpinBox->setMaximum( mScalebar->height() );
   mMapUnitsPerBarUnitSpinBox->setValue( mScalebar->mapUnitsPerScaleBarUnit() );
   mLabelBarSpaceSpinBox->setValue( mScalebar->labelBarSpace() );
   mBoxSizeSpinBox->setValue( mScalebar->boxContentSpace() );
@@ -347,7 +346,6 @@ void QgsLayoutScaleBarWidget::mHeightSpinBox_valueChanged( double d )
   disconnectUpdateSignal();
   mScalebar->setHeight( d );
   mScalebar->update();
-  mSubdivisionsHeightSpinBox->setMaximum( d );
   connectUpdateSignal();
   mScalebar->endCommand();
 }
