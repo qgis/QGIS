@@ -351,7 +351,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
       // Have to check for minimum distance
       unsigned long fseed = uniformIntDist( mt );
       QVector< QgsPointXY > newPoints = polyGeom.randomPointsInPolygon( numberPointsForThisFeature, pointOK, fseed, feedback, maxAttemptsForThisFeature );
-      for ( int i=0; i < newPoints.length(); i++ )
+      for ( int i = 0; i < newPoints.length(); i++ )
       {
         // add the point
         QgsPointXY pt = newPoints[i];
