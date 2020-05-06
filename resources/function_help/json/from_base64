@@ -3,7 +3,6 @@
   "name": "from_base64",
   "type": "function",
   "description": "Decodes a provided string in Base64 into readable string.",
-  "variableLenArguments": false,
   "arguments": [
     {"arg":"string", "description": "the string to decode"}],
     "examples": [ { "expression":"from_base64('UUdJUw==')", "returns":"'QGIS'"}
