@@ -1455,21 +1455,6 @@ class CORE_EXPORT QgsGeometry
 #ifndef SIP_RUN
 
     /**
-     * Returns a list of \a count random points generated inside a (multi)polygon geometry.
-     *
-     * Optionally, a specific random \a seed can be used when generating points. If \a seed
-     * is 0, then a completely random sequence of points will be generated.
-     *
-     * If the source geometry is not a (multi)polygon, an empty list will be returned.
-     *
-     * The optional \a feedback argument can be used to provide cancellation support during
-     * the point generation.
-     *
-     * \since QGIS 3.10
-     */
-    QVector< QgsPointXY > randomPointsInPolygon( int count, unsigned long seed = 0, QgsFeedback *feedback = nullptr ) const;
-
-    /**
      * Returns a list of \a count random points generated inside a (multi)polygon geometry
      * (if \a acceptPoint is specified, and restrictive, the number of points returned may
      * be less than \a count).
@@ -1491,6 +1476,21 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 3.10
      */
     QVector< QgsPointXY > randomPointsInPolygon( int count, const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr, int maxTriesPerPoint = 0 ) const;
+
+    /**
+     * Returns a list of \a count random points generated inside a (multi)polygon geometry.
+     *
+     * Optionally, a specific random \a seed can be used when generating points. If \a seed
+     * is 0, then a completely random sequence of points will be generated.
+     *
+     * If the source geometry is not a (multi)polygon, an empty list will be returned.
+     *
+     * The optional \a feedback argument can be used to provide cancellation support during
+     * the point generation.
+     *
+     * \since QGIS 3.10
+     */
+    QVector< QgsPointXY > randomPointsInPolygon( int count, unsigned long seed = 0, QgsFeedback *feedback = nullptr ) const;
     ///@cond PRIVATE
 #else
 
