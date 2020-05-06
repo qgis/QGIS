@@ -542,28 +542,86 @@ QgsPostgresRasterProviderMetadata::QgsPostgresRasterProviderMetadata()
 QVariantMap QgsPostgresRasterProviderMetadata::decodeUri( const QString &uri )
 {
   const QgsDataSourceUri dsUri { uri };
-  return
+  QVariantMap decoded;
+
+  if ( ! dsUri.database().isEmpty() )
   {
-    { QStringLiteral( "dbname" ), dsUri.database() },
-    { QStringLiteral( "host" ), dsUri.host() },
-    { QStringLiteral( "port" ), dsUri.port() },
-    { QStringLiteral( "service" ), dsUri.service() },
-    { QStringLiteral( "username" ), dsUri.username() },
-    { QStringLiteral( "password" ), dsUri.password() },
-    { QStringLiteral( "authcfg" ), dsUri.authConfigId() },
-    { QStringLiteral( "selectatid" ), dsUri.selectAtIdDisabled() },
-    { QStringLiteral( "table" ), dsUri.table() },
-    { QStringLiteral( "schema" ), dsUri.schema() },
-    { QStringLiteral( "key" ), dsUri.keyColumn() },
-    { QStringLiteral( "srid" ), dsUri.srid() },
-    { QStringLiteral( "estimatedmetadata" ), dsUri.useEstimatedMetadata() },
-    { QStringLiteral( "sslmode" ), dsUri.sslMode() },
-    { QStringLiteral( "sql" ), dsUri.sql() },
-    { QStringLiteral( "geometrycolumn" ), dsUri.geometryColumn() },
-    { QStringLiteral( "temporalFieldIndex" ), dsUri.param( QStringLiteral( "temporalFieldIndex" ) ) },
-    { QStringLiteral( "temporalDefaultTime" ), dsUri.param( QStringLiteral( "temporalDefaultTime" ) ) },
-    { QStringLiteral( "enableTime" ), dsUri.param( QStringLiteral( "enableTime" ) ) },
-  };
+    decoded[ QStringLiteral( "dbname" ) ] = dsUri.database();
+  }
+  if ( ! dsUri.host().isEmpty() )
+  {
+    decoded[ QStringLiteral( "host" ) ] = dsUri.host();
+  }
+  if ( ! dsUri.port().isEmpty() )
+  {
+    decoded[ QStringLiteral( "port" ) ] = dsUri.host();
+  }
+  if ( ! dsUri.service().isEmpty() )
+  {
+    decoded[ QStringLiteral( "service" ) ] = dsUri.service();
+  }
+  if ( ! dsUri.username().isEmpty() )
+  {
+    decoded[ QStringLiteral( "username" ) ] = dsUri.username();
+  }
+  if ( ! dsUri.password().isEmpty() )
+  {
+    decoded[ QStringLiteral( "password" ) ] = dsUri.password();
+  }
+  if ( ! dsUri.authConfigId().isEmpty() )
+  {
+    decoded[ QStringLiteral( "authcfg" ) ] = dsUri.authConfigId();
+  }
+  if ( ! dsUri.schema().isEmpty() )
+  {
+    decoded[ QStringLiteral( "schema" ) ] = dsUri.schema();
+  }
+  if ( ! dsUri.table().isEmpty() )
+  {
+    decoded[ QStringLiteral( "table" ) ] = dsUri.table();
+  }
+  if ( ! dsUri.keyColumn().isEmpty() )
+  {
+    decoded[ QStringLiteral( "key" ) ] = dsUri.keyColumn();
+  }
+  if ( ! dsUri.srid().isEmpty() )
+  {
+    decoded[ QStringLiteral( "srid" ) ] = dsUri.srid();
+  }
+  if ( uri.contains( QStringLiteral( "estimatedmetadata=" ), Qt::CaseSensitivity::CaseInsensitive ) )
+  {
+    decoded[ QStringLiteral( "estimatedmetadata" ) ] = dsUri.useEstimatedMetadata();
+  }
+  if ( uri.contains( QStringLiteral( "sslmode=" ), Qt::CaseSensitivity::CaseInsensitive ) )
+  {
+    decoded[ QStringLiteral( "sslmode" ) ] = dsUri.sslMode();
+  }
+  // Do not add sql if it's empty
+  if ( ! dsUri.sql().isEmpty() )
+  {
+    decoded[ QStringLiteral( "sql" ) ] = dsUri.sql();
+  }
+  if ( ! dsUri.geometryColumn().isEmpty() )
+  {
+    decoded[ QStringLiteral( "geometrycolumn" ) ] = dsUri.geometryColumn();
+  }
+
+  // Params
+  const static QStringList params {{
+      QStringLiteral( "temporalFieldIndex" ),
+      QStringLiteral( "temporalDefaultTime" ),
+      QStringLiteral( "enableTime" )
+    }};
+
+  for ( const QString &pname : qgis::as_const( params ) )
+  {
+    if ( dsUri.hasParam( pname ) )
+    {
+      decoded[ pname ] = dsUri.param( pname );
+    }
+  }
+
+  return decoded;
 }
 
 
@@ -608,7 +666,7 @@ QString QgsPostgresRasterProviderMetadata::encodeUri( const QVariantMap &parts )
     dsUri.setParam( QStringLiteral( "temporalDefaultTime" ), parts.value( QStringLiteral( "temporalDefaultTime" ) ).toString() );
   if ( parts.contains( QStringLiteral( "enableTime" ) ) )
     dsUri.setParam( QStringLiteral( "enableTime" ), parts.value( QStringLiteral( "enableTime" ) ).toString() );
-  return dsUri.uri();
+  return dsUri.uri( false );
 }
 
 QgsPostgresRasterProvider *QgsPostgresRasterProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )

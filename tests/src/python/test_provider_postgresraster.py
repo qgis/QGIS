@@ -34,6 +34,7 @@ from qgis.core import (
     QgsRaster,
     QgsProviderRegistry,
     QgsRasterBandStats,
+    QgsDataSourceUri,
 )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath, compareWkt
@@ -364,6 +365,54 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         self.assertEqual(rl.subsetString(), '')
 
         _test_block(rl, [136, 142, 161, 169], 169)
+
+    def testMetadataEncodeDecode(self):
+        """Round trip tests on URIs"""
+
+        def _round_trip(uri):
+            decoded = md.decodeUri(uri)
+            self.assertEqual(decoded, md.decodeUri(md.encodeUri(decoded)))
+
+        uri = self.dbconn + \
+            ' sslmode=disable key=\'rid\' srid=3035  table="public"."raster_tiled_3035" sql='
+        md = QgsProviderRegistry.instance().providerMetadata('postgresraster')
+        decoded = md.decodeUri(uri)
+        self.assertEqual(decoded, {
+            'key': 'rid',
+            'schema': 'public',
+            'service': 'qgis_test',
+            'srid': '3035',
+            'sslmode': QgsDataSourceUri.SslDisable,
+            'table': 'raster_tiled_3035',
+        })
+
+        _round_trip(uri)
+
+        uri = self.dbconn + \
+            ' sslmode=prefer key=\'rid\' srid=3035 temporalFieldIndex=2 temporalDefaultTime=2020-03-02 ' + \
+            'authcfg=afebeff username=\'my username\' password=\'my secret password=\' ' + \
+            'enableTime=true table="public"."raster_tiled_3035" (rast) sql="a_field" != 1223223'
+
+        _round_trip(uri)
+
+        decoded = md.decodeUri(uri)
+        self.assertEqual(decoded, {
+            'authcfg': 'afebeff',
+            'enableTime': 'true',
+            'geometrycolumn': 'rast',
+            'key': 'rid',
+            'password': 'my secret password=',
+            'schema': 'public',
+            'service': 'qgis_test',
+            'sql': '"a_field" != 1223223',
+            'srid': '3035',
+            'sslmode': QgsDataSourceUri.SslPrefer,
+            'table': 'raster_tiled_3035',
+            'temporalDefaultTime':
+            '2020-03-02',
+            'temporalFieldIndex': '2',
+            'username': 'my username',
+        })
 
 
 if __name__ == '__main__':
