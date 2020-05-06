@@ -60,9 +60,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-307</y>
-        <width>440</width>
-        <height>944</height>
+        <y>0</y>
+        <width>451</width>
+        <height>1012</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -358,6 +358,9 @@
             </property>
             <property name="prefix">
              <string/>
+            </property>
+            <property name="minimum">
+             <number>1</number>
             </property>
            </widget>
           </item>
