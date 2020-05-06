@@ -13,6 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QMimeData>
+#include <QTextStream>
+
 #include "qgslayertreemodel.h"
 
 #include "qgslayertree.h"
@@ -20,10 +23,6 @@
 #include "qgslayertreemodellegendnode.h"
 #include "qgsproject.h"
 #include "qgsapplication.h"
-
-#include <QMimeData>
-#include <QTextStream>
-
 #include "qgsdataitem.h"
 #include "qgsmaphittest.h"
 #include "qgsmaplayer.h"
@@ -34,6 +33,8 @@
 #include "qgsrenderer.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
+#include "qgslayerdefinition.h"
+
 
 QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QAbstractItemModel( parent )
@@ -1052,15 +1053,25 @@ QMimeData *QgsLayerTreeModel::mimeData( const QModelIndexList &indexes ) const
 
   QMimeData *mimeData = new QMimeData();
 
-  QDomDocument doc;
-  QDomElement rootElem = doc.createElement( QStringLiteral( "layer_tree_model_data" ) );
+  QDomDocument layerTreeDoc;
+  QDomElement rootLayerTreeElem = layerTreeDoc.createElement( QStringLiteral( "layer_tree_model_data" ) );
+
   for ( QgsLayerTreeNode *node : qgis::as_const( nodesFinal ) )
-    node->writeXml( rootElem, QgsReadWriteContext() );
-  doc.appendChild( rootElem );
-  QString txt = doc.toString();
+  {
+    node->writeXml( rootLayerTreeElem, QgsReadWriteContext() );
+  }
+  layerTreeDoc.appendChild( rootLayerTreeElem );
 
-  mimeData->setData( QStringLiteral( "application/qgis.layertreemodeldata" ), txt.toUtf8() );
+  QString errorMessage;
+  QgsReadWriteContext readWriteContext;
+  QDomDocument layerDefinitionsDoc( QStringLiteral( "qgis-layer-definition" ) );
+  QgsLayerDefinition::exportLayerDefinition( layerDefinitionsDoc, nodesFinal, errorMessage, QgsReadWriteContext() );
 
+  QString txt = layerDefinitionsDoc.toString();
+
+  mimeData->setData( QStringLiteral( "application/qgis.layertreemodeldata" ), layerTreeDoc.toString().toUtf8() );
+  mimeData->setData( QStringLiteral( "application/qgis.application.pid" ), QString::number( QCoreApplication::applicationPid() ).toUtf8() );
+  mimeData->setData( QStringLiteral( "application/qgis.layertree.layerdefinitions" ), txt.toUtf8() );
   mimeData->setData( QStringLiteral( "application/x-vnd.qgis.qgis.uri" ), QgsMimeDataUtils::layerTreeNodesToUriList( nodesFinal ) );
 
   return mimeData;
@@ -1081,36 +1092,54 @@ bool QgsLayerTreeModel::dropMimeData( const QMimeData *data, Qt::DropAction acti
   if ( !QgsLayerTree::isGroup( nodeParent ) )
     return false;
 
-  QByteArray encodedData = data->data( QStringLiteral( "application/qgis.layertreemodeldata" ) );
-
-  QDomDocument doc;
-  if ( !doc.setContent( QString::fromUtf8( encodedData ) ) )
-    return false;
-
-  QDomElement rootElem = doc.documentElement();
-  if ( rootElem.tagName() != QLatin1String( "layer_tree_model_data" ) )
-    return false;
-
-  QList<QgsLayerTreeNode *> nodes;
-
-  QDomElement elem = rootElem.firstChildElement();
-  while ( !elem.isNull() )
-  {
-    QgsLayerTreeNode *node = QgsLayerTreeNode::readXml( elem, QgsProject::instance() );
-    if ( node )
-      nodes << node;
-
-    elem = elem.nextSiblingElement();
-  }
-
-  if ( nodes.isEmpty() )
-    return false;
-
   if ( parent.isValid() && row == -1 )
     row = 0; // if dropped directly onto group item, insert at first position
 
-  QgsLayerTree::toGroup( nodeParent )->insertChildNodes( row, nodes );
+  // if we are coming from another QGIS instance, we need to add the layers too
+  bool ok = false;
+  // the application pid is only provided from QGIS 3.14, so do not check to OK before defaulting to moving in the legend
+  int qgisPid = data->data( QStringLiteral( "application/qgis.application.pid" ) ).toInt( &ok );
 
+  if ( ok && qgisPid != QString::number( QCoreApplication::applicationPid() ) )
+  {
+    QByteArray encodedLayerDefinitionData = data->data( QStringLiteral( "application/qgis.layertree.layerdefinitions" ) );
+    QDomDocument layerDefinitionDoc;
+    if ( !layerDefinitionDoc.setContent( QString::fromUtf8( encodedLayerDefinitionData ) ) )
+      return false;
+    QgsReadWriteContext context;
+    QString errorMessage;
+    QgsLayerDefinition::loadLayerDefinition( layerDefinitionDoc, QgsProject::instance(), QgsLayerTree::toGroup( nodeParent ), errorMessage, context );
+    emit messageEmitted( tr( "New layers added from another QGIS instance" ) );
+  }
+  else
+  {
+    QByteArray encodedLayerTreeData = data->data( QStringLiteral( "application/qgis.layertreemodeldata" ) );
+
+    QDomDocument layerTreeDoc;
+    if ( !layerTreeDoc.setContent( QString::fromUtf8( encodedLayerTreeData ) ) )
+      return false;
+
+    QDomElement rootLayerTreeElem = layerTreeDoc.documentElement();
+    if ( rootLayerTreeElem.tagName() != QLatin1String( "layer_tree_model_data" ) )
+      return false;
+
+    QList<QgsLayerTreeNode *> nodes;
+
+    QDomElement elem = rootLayerTreeElem.firstChildElement();
+    while ( !elem.isNull() )
+    {
+      QgsLayerTreeNode *node = QgsLayerTreeNode::readXml( elem, QgsProject::instance() );
+      if ( node )
+        nodes << node;
+
+      elem = elem.nextSiblingElement();
+    }
+
+    if ( nodes.isEmpty() )
+      return false;
+
+    QgsLayerTree::toGroup( nodeParent )->insertChildNodes( row, nodes );
+  }
   return true;
 }
 

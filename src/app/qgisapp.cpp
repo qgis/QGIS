@@ -1687,6 +1687,7 @@ QgisApp::QgisApp()
   mUndoWidget = new QgsUndoWidget( nullptr, mMapCanvas );
   mUserInputDockWidget = new QgsUserInputWidget( this );
   mInfoBar = new QgsMessageBar( centralWidget() );
+  mLayerTreeView->setMessageBar( mInfoBar );
   mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas, this );
   mPanelMenu = new QMenu( this );
   mProgressBar = new QProgressBar( this );
@@ -4590,6 +4591,8 @@ void QgisApp::initLayerTreeView()
   model->setAutoCollapseLegendNodes( 10 );
 
   mLayerTreeView->setModel( model );
+  mLayerTreeView->setMessageBar( mInfoBar );
+
   mLayerTreeView->setMenuProvider( new QgsAppLayerTreeViewMenuProvider( mLayerTreeView, mMapCanvas ) );
   new QgsLayerTreeViewFilterIndicatorProvider( mLayerTreeView );  // gets parented to the layer view
   new QgsLayerTreeViewEmbeddedIndicatorProvider( mLayerTreeView );  // gets parented to the layer view
