@@ -30,11 +30,11 @@
 /**
  * Native random points in polygons creation algorithm.
  */
-class QgsRandomPointsInPolygonsAlgorithm2 : public QgsProcessingAlgorithm
+class QgsRandomPointsInPolygonsAlgorithm : public QgsProcessingAlgorithm
 {
   public:
 
-    QgsRandomPointsInPolygonsAlgorithm2() = default;
+    QgsRandomPointsInPolygonsAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomPointsInPolygons.svg" ) ); }
     QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomPointsInPolygons.svg" ) ); }
@@ -44,7 +44,7 @@ class QgsRandomPointsInPolygonsAlgorithm2 : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
-    QgsRandomPointsInPolygonsAlgorithm2 *createInstance() const override SIP_FACTORY;
+    QgsRandomPointsInPolygonsAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) override;
