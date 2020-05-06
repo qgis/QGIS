@@ -819,6 +819,11 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
     double nx;
     double ny;
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+    unsigned int nPoints = 0;
+    GEOSCoordSeq_getSize_r( geosctxt, nearestCoord.get(), &nPoints );
+    if ( nPoints == 0 )
+      return 0;
+
     ( void )GEOSCoordSeq_getXY_r( geosctxt, nearestCoord.get(), 0, &nx, &ny );
 #else
     ( void )GEOSCoordSeq_getX_r( geosctxt, nearestCoord.get(), 0, &nx );
@@ -855,6 +860,10 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
     {
       const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, centroidGeom.get() );
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+      unsigned int nPoints = 0;
+      GEOSCoordSeq_getSize_r( geosctxt, coordSeq, &nPoints );
+      if ( nPoints == 0 )
+        return;
       GEOSCoordSeq_getXY_r( geosctxt, coordSeq, 0, &px, &py );
 #else
       GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
@@ -871,6 +880,11 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
       {
         const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, pointGeom.get() );
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+        unsigned int nPoints = 0;
+        GEOSCoordSeq_getSize_r( geosctxt, coordSeq, &nPoints );
+        if ( nPoints == 0 )
+          return;
+
         GEOSCoordSeq_getXY_r( geosctxt, coordSeq, 0, &px, &py );
 #else
         GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );

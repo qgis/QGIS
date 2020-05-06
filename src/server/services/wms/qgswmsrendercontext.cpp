@@ -287,6 +287,11 @@ bool QgsWmsRenderContext::isValidLayer( const QString &nickname ) const
   return layer( nickname ) != nullptr;
 }
 
+QList<QgsMapLayer *> QgsWmsRenderContext::layersFromGroup( const QString &nickname ) const
+{
+  return mLayerGroups.value( nickname );
+}
+
 bool QgsWmsRenderContext::isValidGroup( const QString &name ) const
 {
   return mLayerGroups.contains( name );

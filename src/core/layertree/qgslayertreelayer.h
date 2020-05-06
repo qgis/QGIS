@@ -159,6 +159,60 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
      */
     void setPatchShape( const QgsLegendPatchShape &shape );
 
+    /**
+     * Returns the user (overridden) size for the legend node.
+     *
+     * If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+     * symbol width or height from QgsLegendSettings.
+     *
+     * \see setPatchSize()
+     * \since QGIS 3.14
+     */
+    QSizeF patchSize() const { return mPatchSize; }
+
+    /**
+     * Sets the user (overridden) \a size for the legend node.
+     *
+     * If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+     * symbol width or height from QgsLegendSettings.
+     *
+     * \see patchSize()
+     * \since QGIS 3.14
+     */
+    void setPatchSize( QSizeF size ) { mPatchSize = size; }
+
+    /**
+     * Legend node column split behavior.
+     *
+     * \since QGIS 3.14
+     */
+    enum LegendNodesSplitBehavior
+    {
+      UseDefaultLegendSetting, //!< Inherit default legend column splitting setting
+      AllowSplittingLegendNodesOverMultipleColumns, //!< Allow splitting node's legend nodes across multiple columns
+      PreventSplittingLegendNodesOverMultipleColumns, //!< Prevent splitting node's legend nodes across multiple columns
+    };
+
+    /**
+     * Returns the column split behavior for the node.
+     *
+     * This value controls how legend nodes belonging the to layer may be split over multiple columns in legends.
+     *
+     * \see setLegendSplitBehavior()
+     * \since QGIS 3.14
+     */
+    LegendNodesSplitBehavior legendSplitBehavior() const { return mSplitBehavior; }
+
+    /**
+     * Sets the column split \a behavior for the node.
+     *
+     * This value controls how legend nodes belonging the to layer may be split over multiple columns in legends.
+     *
+     * \see legendSplitBehavior()
+     * \since QGIS 3.14
+     */
+    void setLegendSplitBehavior( LegendNodesSplitBehavior behavior ) { mSplitBehavior = behavior; }
+
   signals:
 
     /**
@@ -210,6 +264,8 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
 #endif
 
     QgsLegendPatchShape mPatchShape;
+    QSizeF mPatchSize;
+    LegendNodesSplitBehavior mSplitBehavior = UseDefaultLegendSetting;
 };
 
 

@@ -16,7 +16,9 @@
 #include "qgsvectortileconnectiondialog.h"
 #include "qgsvectortileconnection.h"
 #include "qgsgui.h"
+
 #include <QMessageBox>
+#include <QPushButton>
 
 ///@cond PRIVATE
 
@@ -29,6 +31,10 @@ QgsVectorTileConnectionDialog::QgsVectorTileConnectionDialog( QWidget *parent )
   // Behavior for min and max zoom checkbox
   connect( mCheckBoxZMin, &QCheckBox::toggled, mSpinZMin, &QSpinBox::setEnabled );
   connect( mCheckBoxZMax, &QCheckBox::toggled, mSpinZMax, &QSpinBox::setEnabled );
+
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
+  connect( mEditName, &QLineEdit::textChanged, this, &QgsVectorTileConnectionDialog::updateOkButtonState );
+  connect( mEditUrl, &QLineEdit::textChanged, this, &QgsVectorTileConnectionDialog::updateOkButtonState );
 }
 
 void QgsVectorTileConnectionDialog::setConnection( const QString &name, const QString &uri )
@@ -57,6 +63,12 @@ QString QgsVectorTileConnectionDialog::connectionUri() const
 QString QgsVectorTileConnectionDialog::connectionName() const
 {
   return mEditName->text();
+}
+
+void QgsVectorTileConnectionDialog::updateOkButtonState()
+{
+  bool enabled = !mEditName->text().isEmpty() && !mEditUrl->text().isEmpty();
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }
 
 void QgsVectorTileConnectionDialog::accept()

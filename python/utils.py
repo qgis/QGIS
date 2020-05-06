@@ -72,7 +72,7 @@ def showWarning(message, category, filename, lineno, file=None, line=None):
     )
 
 
-def showException(type, value, tb, msg, messagebar=False):
+def showException(type, value, tb, msg, messagebar=False, level=Qgis.Warning):
     if msg is None:
         msg = QCoreApplication.translate('Python', 'An error has occurred while executing Python code:')
 
@@ -81,7 +81,7 @@ def showException(type, value, tb, msg, messagebar=False):
         logmessage += s.decode('utf-8', 'replace') if hasattr(s, 'decode') else s
 
     title = QCoreApplication.translate('Python', 'Python error')
-    QgsMessageLog.logMessage(logmessage, title)
+    QgsMessageLog.logMessage(logmessage, title, level)
 
     try:
         blockingdialog = QApplication.instance().activeModalWidget()
@@ -313,7 +313,7 @@ def loadPlugin(packageName):
         return True
     except:
         msg = QCoreApplication.translate("Python", "Couldn't load plugin '{0}'").format(packageName)
-        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True, level=Qgis.Critical)
         return False
 
 
@@ -336,7 +336,7 @@ def _startPlugin(packageName):
         _unloadPluginModules(packageName)
         errMsg = QCoreApplication.translate("Python", "Couldn't load plugin '{0}'").format(packageName)
         msg = QCoreApplication.translate("Python", "{0} due to an error when calling its classFactory() method").format(errMsg)
-        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True, level=Qgis.Critical)
         return False
     return True
 
@@ -362,7 +362,7 @@ def startPlugin(packageName):
         _unloadPluginModules(packageName)
         errMsg = QCoreApplication.translate("Python", "Couldn't load plugin '{0}'").format(packageName)
         msg = QCoreApplication.translate("Python", "{0} due to an error when calling its initGui() method").format(errMsg)
-        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True, level=Qgis.Critical)
         return False
 
     end = time.process_time()
@@ -382,7 +382,7 @@ def startProcessingPlugin(packageName):
         del plugins[packageName]
         _unloadPluginModules(packageName)
         msg = QCoreApplication.translate("Python", "{0} - plugin has no initProcessing() method").format(errMsg)
-        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True, level=Qgis.Critical)
         return False
 
     # initProcessing
@@ -545,9 +545,8 @@ def reloadProjectMacros():
         return
 
     # create a new empty python module
-    import imp
-
-    mod = imp.new_module("proj_macros_mod")
+    import importlib
+    mod = importlib.util.module_from_spec(importlib.machinery.ModuleSpec("proj_macros_mod", None))
 
     # set the module code and store it sys.modules
     exec(str(code), mod.__dict__)

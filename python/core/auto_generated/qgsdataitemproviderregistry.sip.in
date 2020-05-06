@@ -11,7 +11,7 @@
 
 
 
-class QgsDataItemProviderRegistry
+class QgsDataItemProviderRegistry : QObject
 {
 %Docstring
 This class keeps a list of data item providers that may add items to the browser tree.
@@ -62,6 +62,22 @@ The provider object is automatically deleted.
 Returns the (possibly blank) data provider key for a given data item provider name.
 
 :param dataItemProviderName: name of the data item provider
+
+.. versionadded:: 3.14
+%End
+
+  signals:
+
+    void providerAdded( QgsDataItemProvider *provider );
+%Docstring
+Emitted when a new data item provider has been added.
+
+.. versionadded:: 3.14
+%End
+
+    void providerWillBeRemoved( QgsDataItemProvider *provider );
+%Docstring
+Emitted when a data item provider is about to be removed
 
 .. versionadded:: 3.14
 %End

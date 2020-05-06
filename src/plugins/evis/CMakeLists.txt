@@ -30,9 +30,7 @@ SET (evis_RCCS resources/evis.qrc)
 
 QT5_WRAP_UI (evis_UIS_H  ${evis_UIS})
 
-QT5_ADD_RESOURCES(evis_RCC_SRCS ${evis_RCCS})
-
-ADD_LIBRARY (evis MODULE ${evis_SRCS} ${evis_RCC_SRCS} ${evis_UIS_H})
+ADD_LIBRARY (evis MODULE ${evis_SRCS} ${evis_RCCS} ${evis_UIS_H})
 
 INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}

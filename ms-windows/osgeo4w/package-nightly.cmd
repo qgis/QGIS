@@ -31,7 +31,7 @@ if "%SITE%"=="" set SITE=qgis.org
 if "%TARGET%"=="" set TARGET=Nightly
 if "%BUILDNAME%"=="" set BUILDNAME=%PACKAGENAME%-%VERSION%%SHA%-%TARGET%-VC14-%ARCH%
 
-set BUILDDIR=%CD%\build-%PACKAGENAME%-%ARCH%
+if "%BUILDDIR%"=="" set BUILDDIR=%CD%\build-%PACKAGENAME%-%ARCH%
 if not exist "%BUILDDIR%" mkdir %BUILDDIR%
 if not exist "%BUILDDIR%" (echo could not create build directory %BUILDDIR% & goto error)
 
@@ -255,6 +255,9 @@ for %%g IN (%GRASS_VERSIONS%) do (
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' python.bat.tmpl >%OSGEO4W_ROOT%\bin\python-%PACKAGENAME%.bat.tmpl
 if errorlevel 1 (echo creation of python wrapper template failed & goto error)
 
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' process.bat.tmpl >%OSGEO4W_ROOT%\bin\qgis_process-%PACKAGENAME%.bat.tmpl
+if errorlevel 1 (echo creation of qgis process wrapper template failed & goto error)
+
 touch exclude
 if exist ..\skipbuild (echo skip build & goto skipbuild)
 
@@ -292,6 +295,7 @@ if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAG
 	%batches% ^
 	bin/%PACKAGENAME%-designer.bat.tmpl ^
 	bin/python-%PACKAGENAME%.bat.tmpl ^
+	bin/qgis_process-%PACKAGENAME%.bat.tmpl ^
 	etc/postinstall/%PACKAGENAME%.bat ^
 	etc/preremove/%PACKAGENAME%.bat
 if errorlevel 1 (echo tar failed & goto error)

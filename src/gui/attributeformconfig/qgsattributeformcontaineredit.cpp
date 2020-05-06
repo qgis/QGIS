@@ -48,6 +48,11 @@ QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *i
   connect( mShowAsGroupBoxCheckBox, &QCheckBox::stateChanged, mShowLabelCheckBox, &QCheckBox::setEnabled );
 }
 
+void QgsAttributeFormContainerEdit::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
+{
+  mVisibilityExpressionWidget->registerExpressionContextGenerator( generator );
+}
+
 void QgsAttributeFormContainerEdit::updateItemData()
 {
   QgsAttributesFormProperties::DnDTreeItemData itemData = mTreeItem->data( 0, QgsAttributesFormProperties::DnDTreeRole ).value<QgsAttributesFormProperties::DnDTreeItemData>();

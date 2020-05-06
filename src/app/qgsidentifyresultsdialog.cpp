@@ -71,6 +71,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectortilelayer.h"
 #include "qgswebview.h"
 #include "qgswebframe.h"
 #include "qgsstringutils.h"
@@ -500,7 +501,7 @@ void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyRes
       break;
 
     case QgsMapLayerType::VectorTileLayer:
-      // TODO
+      addFeature( qobject_cast<QgsVectorTileLayer *>( result.mLayer ), result.mLabel, result.mFields, result.mFeature, result.mDerivedAttributes );
       break;
 
     case QgsMapLayerType::PluginLayer:
@@ -1108,6 +1109,92 @@ void QgsIdentifyResultsDialog::addFeature( QgsMeshLayer *layer,
   }
 }
 
+void QgsIdentifyResultsDialog::addFeature( QgsVectorTileLayer *layer,
+    const QString &label,
+    const QgsFields &fields,
+    const QgsFeature &f,
+    const QMap< QString, QString > &derivedAttributes )
+{
+  QTreeWidgetItem *layItem = layerItem( layer );
+
+  if ( !layItem )
+  {
+    layItem = new QTreeWidgetItem( QStringList() << layer->name() );
+    layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( layer ) ) );
+    lstResults->addTopLevelItem( layItem );
+    QFont boldFont;
+    boldFont.setBold( true );
+    layItem->setFont( 0, boldFont );
+
+    connect( layer, &QObject::destroyed, this, &QgsIdentifyResultsDialog::layerDestroyed );
+    connect( layer, &QgsMapLayer::crsChanged, this, &QgsIdentifyResultsDialog::layerDestroyed );
+  }
+
+  QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( fields, f, layer->crs() );
+  featItem->setText( 0, label );
+  featItem->setToolTip( 0, label );
+
+  featItem->setData( 0, Qt::UserRole, FID_TO_STRING( f.id() ) );
+  layItem->addChild( featItem );
+  layItem->setFirstColumnSpanned( true );
+
+  QString countSuffix = layItem->childCount() > 1
+                        ? QStringLiteral( " [%1]" ).arg( layItem->childCount() )
+                        : QString();
+  layItem->setText( 0, QStringLiteral( "%1 %2" ).arg( layer->name(), countSuffix ) );
+
+  if ( derivedAttributes.size() >= 0 )
+  {
+    QgsTreeWidgetItem *derivedItem = new QgsTreeWidgetItem( QStringList() << tr( "(Derived)" ) );
+    derivedItem->setData( 0, Qt::UserRole, "derived" );
+    derivedItem->setAlwaysOnTopPriority( 0 );
+    featItem->addChild( derivedItem );
+
+    for ( QMap< QString, QString>::const_iterator it = derivedAttributes.begin(); it != derivedAttributes.end(); ++it )
+    {
+      derivedItem->addChild( new QTreeWidgetItem( QStringList() << it.key() << it.value() ) );
+    }
+  }
+
+  QgsAttributes attrs = f.attributes();
+  for ( int i = 0; i < attrs.count(); ++i )
+  {
+    if ( i >= fields.count() )
+      break;
+
+    if ( attrs.at( i ).isNull() || !attrs.at( i ).isValid() )
+      continue;  // skip attributes that are not present (there can be many of them)
+
+    QString value = fields.at( i ).displayString( attrs.at( i ) );
+    QgsTreeWidgetItem *attrItem = new QgsTreeWidgetItem( QStringList() << QString::number( i ) << value );
+    featItem->addChild( attrItem );
+
+    attrItem->setData( 0, Qt::DisplayRole, fields.at( i ).name() );
+    attrItem->setData( 0, Qt::UserRole, fields.at( i ).name() );
+    attrItem->setData( 0, Qt::UserRole + 1, i );
+
+    attrItem->setData( 1, Qt::UserRole, value );
+    attrItem->setSortData( 1, value );
+    attrItem->setToolTip( 1, value );
+    bool foundLinks = false;
+    QString links = QgsStringUtils::insertLinks( value, &foundLinks );
+    if ( foundLinks )
+    {
+      QLabel *valueLabel = new QLabel( links );
+      valueLabel->setOpenExternalLinks( true );
+      attrItem->setData( 1, Qt::DisplayRole, QString() );
+      attrItem->treeWidget()->setItemWidget( attrItem, 1, valueLabel );
+    }
+    else
+    {
+      attrItem->setData( 1, Qt::DisplayRole, value );
+      attrItem->treeWidget()->setItemWidget( attrItem, 1, nullptr );
+    }
+  }
+
+  highlightFeature( featItem );
+}
+
 void QgsIdentifyResultsDialog::editingToggled()
 {
   QTreeWidgetItem *layItem = layerItem( sender() );
@@ -1236,7 +1323,8 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
   QgsMapLayer *layer = vectorLayer( item );
   QgsVectorLayer *vlayer = vectorLayer( item );
   QgsRasterLayer *rlayer = rasterLayer( item );
-  if ( !vlayer && !rlayer )
+  QgsVectorTileLayer *vtlayer = vectorTileLayer( item );
+  if ( !vlayer && !rlayer && !vtlayer )
   {
     QgsDebugMsg( QStringLiteral( "Item does not belong to a layer." ) );
     return;
@@ -1262,7 +1350,10 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
     {
       mActionPopup->addAction( tr( "Zoom to Feature" ), this, &QgsIdentifyResultsDialog::zoomToFeature );
       mActionPopup->addAction( tr( "Copy Feature" ), this, &QgsIdentifyResultsDialog::copyFeature );
-      mActionPopup->addAction( tr( "Toggle Feature Selection" ), this, &QgsIdentifyResultsDialog::toggleFeatureSelection );
+      if ( vlayer )
+      {
+        mActionPopup->addAction( tr( "Toggle Feature Selection" ), this, &QgsIdentifyResultsDialog::toggleFeatureSelection );
+      }
     }
 
     mActionPopup->addAction( tr( "Copy Attribute Value" ), this, &QgsIdentifyResultsDialog::copyAttributeValue );
@@ -1596,6 +1687,14 @@ QgsMeshLayer *QgsIdentifyResultsDialog::meshLayer( QTreeWidgetItem *item )
   return qobject_cast<QgsMeshLayer *>( item->data( 0, Qt::UserRole ).value<QObject *>() );
 }
 
+QgsVectorTileLayer *QgsIdentifyResultsDialog::vectorTileLayer( QTreeWidgetItem *item )
+{
+  item = layerItem( item );
+  if ( !item )
+    return nullptr;
+  return qobject_cast<QgsVectorTileLayer *>( item->data( 0, Qt::UserRole ).value<QObject *>() );
+}
+
 QTreeWidgetItem *QgsIdentifyResultsDialog::retrieveAttributes( QTreeWidgetItem *item, QgsAttributeMap &attributes, int &idx )
 {
   QTreeWidgetItem *featItem = featureItem( item );
@@ -1824,8 +1923,10 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
   QgsMapLayer *layer = nullptr;
   QgsVectorLayer *vlayer = vectorLayer( item );
   QgsRasterLayer *rlayer = rasterLayer( item );
+  QgsVectorTileLayer *vtlayer = vectorTileLayer( item );
 
   layer = vlayer ? static_cast<QgsMapLayer *>( vlayer ) : static_cast<QgsMapLayer *>( rlayer );
+  layer = layer ? layer : vtlayer;
 
   if ( !layer ) return;
 
@@ -1861,14 +1962,17 @@ void QgsIdentifyResultsDialog::zoomToFeature()
 
   QgsVectorLayer *vlayer = vectorLayer( item );
   QgsRasterLayer *rlayer = rasterLayer( item );
-  if ( !vlayer && !rlayer )
+  QgsVectorTileLayer *vtlayer = vectorTileLayer( item );
+  if ( !vlayer && !rlayer && !vtlayer )
     return;
 
   QgsMapLayer *layer = nullptr;
   if ( vlayer )
     layer = vlayer;
-  else
+  else if ( rlayer )
     layer = rlayer;
+  else
+    layer = vtlayer;
 
   QgsIdentifyResultsFeatureItem *featItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( item ) );
   if ( !featItem )
@@ -2003,7 +2107,8 @@ void QgsIdentifyResultsDialog::copyFeatureAttributes()
 
   QgsVectorLayer *vlayer = vectorLayer( lstResults->currentItem() );
   QgsRasterLayer *rlayer = rasterLayer( lstResults->currentItem() );
-  if ( !vlayer && !rlayer )
+  QgsVectorTileLayer *vtlayer = vectorTileLayer( lstResults->currentItem() );
+  if ( !vlayer && !rlayer && !vtlayer )
   {
     return;
   }
@@ -2025,7 +2130,7 @@ void QgsIdentifyResultsDialog::copyFeatureAttributes()
       text += QStringLiteral( "%1: %2\n" ).arg( fields.at( attrIdx ).name(), it.value().toString() );
     }
   }
-  else if ( rlayer )
+  else if ( rlayer || vtlayer )
   {
     QTreeWidgetItem *featItem = featureItem( lstResults->currentItem() );
     if ( !featItem )

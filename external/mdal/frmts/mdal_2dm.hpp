@@ -91,7 +91,7 @@ namespace MDAL
       {return MAX_VERTICES_PER_FACE_2DM;}
 
       bool canReadMesh( const std::string &uri ) override;
-      std::unique_ptr< Mesh > load( const std::string &meshFile ) override;
+      std::unique_ptr< Mesh > load( const std::string &meshFile, const std::string &meshName = "" ) override;
       void save( const std::string &uri, Mesh *mesh ) override;
 
     private:

@@ -201,6 +201,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   connect( mLayer, &QgsVectorLayer::featuresDeleted, this, &QgsAttributeTableDialog::updateTitle );
   connect( mLayer, &QgsVectorLayer::editingStopped, this, &QgsAttributeTableDialog::updateTitle );
   connect( mLayer, &QgsVectorLayer::readOnlyChanged, this, &QgsAttributeTableDialog::editingToggled );
+  connect( mLayer, &QgsVectorLayer::layerModified, this, &QgsAttributeTableDialog::updateLayerModifiedActions );
 
   // connect table info to window
   connect( mMainView, &QgsDualView::filterChanged, this, &QgsAttributeTableDialog::updateTitle );
@@ -216,7 +217,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
     mDock = new QgsAttributeTableDock( QString(), QgisApp::instance() );
     mDock->setWidget( this );
     connect( this, &QObject::destroyed, mDock, &QWidget::close );
-    QgisApp::instance()->addDockWidget( Qt::BottomDockWidgetArea, mDock );
+    QgisApp::instance()->addTabifiedDockWidget( Qt::BottomDockWidgetArea, mDock, QStringList(), true );
   }
   mActionDockUndock->setChecked( dockTable );
   connect( mActionDockUndock, &QAction::toggled, this, &QgsAttributeTableDialog::toggleDockMode );
@@ -224,7 +225,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
 
   updateTitle();
 
-  mActionRemoveSelection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeselectAll.svg" ) ) );
+  mActionRemoveSelection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeselectActiveLayer.svg" ) ) );
   mActionSelectAll->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSelectAll.svg" ) ) );
   mActionSelectedToTop->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSelectedToTop.svg" ) ) );
   mActionCopySelectedRows->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCopy.svg" ) ) );
@@ -256,7 +257,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   mActionToggleEditing->setChecked( mLayer->isEditable() );
   mActionToggleEditing->blockSignals( false );
 
-  mActionSaveEdits->setEnabled( mActionToggleEditing->isEnabled() && mLayer->isEditable() );
+  mActionSaveEdits->setEnabled( mActionToggleEditing->isEnabled() && mLayer->isEditable() && mLayer->isModified() );
   mActionReload->setEnabled( ! mLayer->isEditable() );
   mActionAddAttribute->setEnabled( ( canChangeAttributes || canAddAttributes ) && mLayer->isEditable() );
   mActionRemoveAttribute->setEnabled( canDeleteAttributes && mLayer->isEditable() );
@@ -717,7 +718,7 @@ void QgsAttributeTableDialog::editingToggled()
 {
   mActionToggleEditing->blockSignals( true );
   mActionToggleEditing->setChecked( mLayer->isEditable() );
-  mActionSaveEdits->setEnabled( mLayer->isEditable() );
+  mActionSaveEdits->setEnabled( mLayer->isEditable() && mLayer->isModified() );
   mActionReload->setEnabled( ! mLayer->isEditable() );
   updateMultiEditButtonState();
   if ( mLayer->isEditable() )
@@ -892,7 +893,7 @@ void QgsAttributeTableDialog::toggleDockMode( bool docked )
     mDock = new QgsAttributeTableDock( QString(), QgisApp::instance() );
     mDock->setWidget( this );
     connect( this, &QObject::destroyed, mDock, &QWidget::close );
-    QgisApp::instance()->addDockWidget( Qt::BottomDockWidgetArea, mDock );
+    QgisApp::instance()->addTabifiedDockWidget( Qt::BottomDockWidgetArea, mDock, QStringList(), true );
     updateTitle();
 
     // To prevent "QAction::event: Ambiguous shortcut overload"
@@ -948,6 +949,11 @@ void QgsAttributeTableDialog::toggleDockMode( bool docked )
     mActionPanMapToSelectedRows->setShortcut( QStringLiteral( "Ctrl+P" ) );
     mActionSearchForm->setShortcut( QStringLiteral( "Ctrl+F" ) );
   }
+}
+
+void QgsAttributeTableDialog::updateLayerModifiedActions()
+{
+  mActionSaveEdits->setEnabled( mActionToggleEditing->isEnabled() && mLayer->isEditable() && mLayer->isModified() );
 }
 
 //

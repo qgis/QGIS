@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>847</width>
-     <height>23</height>
+     <height>20</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -186,11 +186,13 @@
      <addaction name="mActionAddOracleLayer"/>
      <addaction name="mActionAddVirtualLayer"/>
      <addaction name="mActionAddWmsLayer"/>
+     <addaction name="mActionAddXyzLayer"/>
      <addaction name="mActionAddAmsLayer"/>
      <addaction name="mActionAddLayerSeparator"/>
      <addaction name="mActionAddWcsLayer"/>
      <addaction name="mActionAddWfsLayer"/>
      <addaction name="mActionAddAfsLayer"/>
+     <addaction name="mActionAddVectorTileLayer"/>
     </widget>
     <addaction name="mActionDataSourceManager"/>
     <addaction name="mNewLayerMenu"/>
@@ -1211,7 +1213,7 @@
    <property name="text">
     <string>Deselect Features from All Layers</string>
    </property>
-    <property name="shortcut">
+   <property name="shortcut">
     <string>Ctrl+Alt+A</string>
    </property>
   </action>
@@ -3296,6 +3298,30 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="toolTip">
     <string>Temporal Controller Panel</string>
+   </property>
+  </action>
+  <action name="mActionAddXyzLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddXyzLayer.svg</normaloff>:/images/themes/default/mActionAddXyzLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add XYZ Layer…</string>
+   </property>
+   <property name="toolTip">
+    <string>Add XYZ Layer…</string>
+   </property>
+  </action>
+  <action name="mActionAddVectorTileLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddVectorTileLayer.svg</normaloff>:/images/themes/default/mActionAddVectorTileLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Vector Tile Layer…</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Vector Tile Layer…</string>
    </property>
   </action>
  </widget>

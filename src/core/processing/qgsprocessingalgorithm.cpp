@@ -328,6 +328,14 @@ void QgsProcessingAlgorithm::removeParameter( const QString &name )
   {
     delete def;
     mParameters.removeAll( def );
+
+    // remove output automatically created when adding parameter
+    const QgsProcessingOutputDefinition *outputDef = QgsProcessingAlgorithm::outputDefinition( name );
+    if ( outputDef && outputDef->autoCreated() )
+    {
+      delete outputDef;
+      mOutputs.removeAll( outputDef );
+    }
   }
 }
 
@@ -847,6 +855,7 @@ bool QgsProcessingAlgorithm::createAutoOutputForParameter( QgsProcessingParamete
   QgsProcessingOutputDefinition *output( dest->toOutputDefinition() );
   if ( !output )
     return true; // nothing created - but nothing went wrong - so return true
+  output->setAutoCreated( true );
 
   if ( !addOutput( output ) )
   {

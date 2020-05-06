@@ -439,7 +439,7 @@ class GdalUtils:
 
         if QgsProjUtils.projVersionMajor() >= 6:
             # use WKT
-            return crs.toWkt(QgsCoordinateReferenceSystem.WKT2_2018)
+            return crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL)
 
         # fallback to proj4 string, stripping out newline characters
         return crs.toProj().replace('\n', ' ').replace('\r', ' ')

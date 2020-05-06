@@ -37,6 +37,36 @@ QgsLegendSettings::QgsLegendSettings()
   rstyle( QgsLegendStyle::SymbolLabel ).rfont().setPointSizeF( 12.0 );
 }
 
+double QgsLegendSettings::mmPerMapUnit() const
+{
+  return mMmPerMapUnit;
+}
+
+void QgsLegendSettings::setMmPerMapUnit( double mmPerMapUnit )
+{
+  mMmPerMapUnit = mmPerMapUnit;
+}
+
+bool QgsLegendSettings::useAdvancedEffects() const
+{
+  return mUseAdvancedEffects;
+}
+
+void QgsLegendSettings::setUseAdvancedEffects( bool use )
+{
+  mUseAdvancedEffects = use;
+}
+
+double QgsLegendSettings::mapScale() const
+{
+  return mMapScale;
+}
+
+void QgsLegendSettings::setMapScale( double scale )
+{
+  mMapScale = scale;
+}
+
 double QgsLegendSettings::mapUnitsPerPixel() const
 {
   return 1 / ( mMmPerMapUnit * ( mDpi / 25.4 ) );
@@ -47,21 +77,36 @@ void QgsLegendSettings::setMapUnitsPerPixel( double mapUnitsPerPixel )
   mMmPerMapUnit = 1 / mapUnitsPerPixel / ( mDpi / 25.4 );
 }
 
+int QgsLegendSettings::dpi() const
+{
+  return mDpi;
+}
+
+void QgsLegendSettings::setDpi( int dpi )
+{
+  mDpi = dpi;
+}
+
 QStringList QgsLegendSettings::evaluateItemText( const QString &text, const QgsExpressionContext &context ) const
 {
   const QString textToRender = QgsExpression::replaceExpressionText( text, &context );
   return splitStringForWrapping( textToRender );
 }
 
-QStringList QgsLegendSettings::splitStringForWrapping( const QString &stringToSplt ) const
+QStringList QgsLegendSettings::splitStringForWrapping( const QString &stringToSplit ) const
 {
-  QStringList list;
+  const QStringList lines = stringToSplit.split( '\n' );
+
   // If the string contains nothing then just return the string without splitting.
-  if ( wrapChar().count() == 0 )
-    list << stringToSplt;
-  else
-    list = stringToSplt.split( wrapChar() );
-  return list;
+  if ( wrapChar().isEmpty() )
+    return lines;
+
+  QStringList res;
+  for ( const QString &line : lines )
+  {
+    res.append( line.split( wrapChar() ) );
+  }
+  return res;
 }
 
 #define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter

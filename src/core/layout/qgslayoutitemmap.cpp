@@ -649,6 +649,14 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &mapElem, QDomDocum
   }
   mapElem.appendChild( labelBlockingItemsElem );
 
+  //temporal settings
+  mapElem.setAttribute( QStringLiteral( "isTemporal" ), isTemporal() ? 1 : 0 );
+  if ( isTemporal() )
+  {
+    mapElem.setAttribute( QStringLiteral( "temporalRangeBegin" ), temporalRange().begin().toString( Qt::ISODate ) );
+    mapElem.setAttribute( QStringLiteral( "temporalRangeEnd" ), temporalRange().end().toString( Qt::ISODate ) );
+  }
+
   return true;
 }
 
@@ -804,6 +812,15 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
   }
 
   updateBoundingRect();
+
+  //temporal settings
+  setIsTemporal( itemElem.attribute( QStringLiteral( "isTemporal" ) ).toInt() );
+  if ( isTemporal() )
+  {
+    QDateTime begin = QDateTime::fromString( itemElem.attribute( QStringLiteral( "temporalRangeBegin" ) ), Qt::ISODate );
+    QDateTime end = QDateTime::fromString( itemElem.attribute( QStringLiteral( "temporalRangeBegin" ) ), Qt::ISODate );
+    setTemporalRange( QgsDateTimeRange( begin, end ) );
+  }
 
   mUpdatesEnabled = true;
   return true;
@@ -1455,6 +1472,9 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
     jobMapSettings.addRenderedFeatureHandler( handler );
   }
 
+  if ( isTemporal() )
+    jobMapSettings.setTemporalRange( temporalRange() );
+
   return jobMapSettings;
 }
 
@@ -1515,7 +1535,7 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_acronym" ), mapCrs.projectionAcronym(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_ellipsoid" ), mapCrs.ellipsoidAcronym(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_proj4" ), mapCrs.toProj(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_wkt" ), mapCrs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_wkt" ), mapCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ), true ) );
 
   QVariantList layersIds;
   QVariantList layers;
@@ -1805,6 +1825,14 @@ void QgsLayoutItemMap::mapThemeChanged( const QString &theme )
     mCachedLayerStyleOverridesPresetName.clear(); // force cache regeneration at next redraw
 }
 
+void QgsLayoutItemMap::currentMapThemeRenamed( const QString &theme, const QString &newTheme )
+{
+  if ( theme == mFollowVisibilityPresetName )
+  {
+    mFollowVisibilityPresetName = newTheme;
+  }
+}
+
 void QgsLayoutItemMap::connectUpdateSlot()
 {
   //connect signal from layer registry to update in case of new or deleted layers
@@ -1847,6 +1875,7 @@ void QgsLayoutItemMap::connectUpdateSlot()
   } );
 
   connect( project->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsLayoutItemMap::mapThemeChanged );
+  connect( project->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &QgsLayoutItemMap::currentMapThemeRenamed );
 }
 
 QTransform QgsLayoutItemMap::layoutToMapCoordsTransform() const

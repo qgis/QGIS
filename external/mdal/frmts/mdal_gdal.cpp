@@ -538,6 +538,9 @@ bool MDAL::DriverGdal::canReadMesh( const std::string &uri )
   {
     registerDriver();
     parseDatasetNames( uri );
+
+    if ( !MDAL::contains( filters(), MDAL::fileExtension( uri ) ) )
+      return false;
   }
   catch ( MDAL_Status )
   {
@@ -551,7 +554,7 @@ bool MDAL::DriverGdal::canReadMesh( const std::string &uri )
   return true;
 }
 
-std::unique_ptr<MDAL::Mesh> MDAL::DriverGdal::load( const std::string &fileName )
+std::unique_ptr<MDAL::Mesh> MDAL::DriverGdal::load( const std::string &fileName, const std::string & )
 {
   mFileName = fileName;
   MDAL::Log::resetLastStatus();
@@ -609,7 +612,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverGdal::load( const std::string &fileName 
   }
   catch ( MDAL_Status error )
   {
-    MDAL::Log::error( error, name(), "error occured while loading " + fileName );
+    MDAL::Log::error( error, name(), "error occurred while loading " + fileName );
     mMesh.reset();
   }
   catch ( MDAL::Error err )

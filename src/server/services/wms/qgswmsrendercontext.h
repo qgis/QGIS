@@ -179,6 +179,12 @@ namespace QgsWms
       bool isValidLayer( const QString &nickname ) const;
 
       /**
+       * Returns the group's layers list corresponding to the nickname, or
+       * an empty list if not found.
+       */
+      QList<QgsMapLayer *> layersFromGroup( const QString &nickname ) const;
+
+      /**
        * Returns true if \a name is a group.
        */
       bool isValidGroup( const QString &name ) const;

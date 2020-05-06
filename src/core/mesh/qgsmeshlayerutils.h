@@ -138,6 +138,16 @@ class CORE_EXPORT QgsMeshLayerUtils
     );
 
     /**
+    * Interpolates value based on known values on the vertices of a edge
+    * \returns value on the point pt a or NaN
+    *
+    * \since QGIS 3.14
+    */
+    static QgsMeshDatasetValue interpolateFromVerticesData( double fraction,
+        const QgsMeshDatasetValue &val1, const QgsMeshDatasetValue &val2
+                                                          );
+
+    /**
     * Interpolates value based on known values on the vertices of a triangle
     * \param p1 first vertex of the triangle
     * \param p2 second vertex of the triangle

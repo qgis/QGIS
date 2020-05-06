@@ -100,6 +100,7 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   mTimeStepsComboBox->setCurrentIndex( mTimeStepsComboBox->findData( QgsUnitTypes::TemporalHours ) );
 
   mSpinBox->setMinimum( 0.0000001 );
+  mSpinBox->setMaximum( std::numeric_limits<int>::max() );
   mSpinBox->setSingleStep( 1 );
   mSpinBox->setValue( 1 );
 
@@ -160,7 +161,22 @@ void QgsTemporalControllerWidget::onLayersAdded()
     for ( QgsMapLayer *layer : layers )
     {
       if ( layer->temporalProperties() )
+      {
         mHasTemporalLayersLoaded |= layer->temporalProperties()->isActive();
+
+        if ( !mHasTemporalLayersLoaded )
+        {
+          connect( layer, &QgsMapLayer::dataSourceChanged, this, [ this, layer ]
+          {
+            if ( layer->isValid() && layer->temporalProperties()->isActive() && !mHasTemporalLayersLoaded )
+            {
+              mHasTemporalLayersLoaded = true;
+              // if we are moving from zero temporal layers to non-zero temporal layers, let's set temporal extent
+              this->setDatesToProjectTime();
+            }
+          } );
+        }
+      }
     }
 
     if ( mHasTemporalLayersLoaded )

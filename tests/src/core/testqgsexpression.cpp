@@ -558,6 +558,7 @@ class TestQgsExpression: public QObject
       // literal evaluation
       QTest::newRow( "literal null" ) << "NULL" << false << QVariant();
       QTest::newRow( "literal int" ) << "123" << false << QVariant( 123 );
+      QTest::newRow( "literal int64" ) << "1234567890123456789" << false << QVariant( qlonglong( 1234567890123456789 ) );
       QTest::newRow( "literal double" ) << "1.2" << false << QVariant( 1.2 );
       QTest::newRow( "literal text" ) << "'hello'" << false << QVariant( "hello" );
       QTest::newRow( "literal double" ) << ".000001" << false << QVariant( 0.000001 );
@@ -1003,6 +1004,13 @@ class TestQgsExpression: public QObject
       QTest::newRow( "is_closed multiline" ) << "is_closed(geom_from_wkt('MultiLineString ((6501338.13976828 4850981.51459331, 6501343.09036573 4850984.01453377, 6501338.13976828 4850988.96491092, 6501335.63971657 4850984.01453377, 6501338.13976828 4850981.51459331))'))" << false << QVariant( true );
       QTest::newRow( "is_closed multiline" ) << "is_closed(geom_from_wkt('MultiLineString ((6501338.13976828 4850981.51459331, 6501343.09036573 4850984.01453377, 6501338.13976828 4850988.96491092, 6501335.63971657 4850984.01453377, 6501438.13976828 4850981.51459331))'))" << false << QVariant( false );
       QTest::newRow( "is_closed multiline" ) << "is_closed(geom_from_wkt('MultiLineString EMPTY'))" << false << QVariant();
+      QTest::newRow( "close_line not geom" ) << "close_line('g')" << true << QVariant();
+      QTest::newRow( "close_line null" ) << "close_line(NULL)" << false << QVariant();
+      QTest::newRow( "close_line point" ) << "close_line(geom_from_wkt('POINT(0 0)'))" << false << QVariant();
+      QTest::newRow( "close_line polygon" ) << "close_line(geom_from_wkt('POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'))" << false << QVariant();
+      QTest::newRow( "close_line not closed" ) << "geom_to_wkt(close_line(geom_from_wkt('LINESTRING(0 0, 1 0, 1 1)')))" << false << QVariant( "LineString (0 0, 1 0, 1 1, 0 0)" );
+      QTest::newRow( "close_line closed" ) << "geom_to_wkt(close_line(geom_from_wkt('LINESTRING(0 0, 1 0, 1 1, 0 0)')))" << false << QVariant( "LineString (0 0, 1 0, 1 1, 0 0)" );
+      QTest::newRow( "close_line multiline" ) << "geom_to_wkt(close_line(geom_from_wkt('MULTILINESTRING ((0 0, 1 1, 1 0),(2 2, 3 3, 3 2))')))" << false << QVariant( "MultiLineString ((0 0, 1 1, 1 0, 0 0),(2 2, 3 3, 3 2, 2 2))" );
       QTest::newRow( "is_empty not geom" ) << "is_empty('g')" << true << QVariant();
       QTest::newRow( "is_empty null" ) << "is_empty(NULL)" << false << QVariant();
       QTest::newRow( "is_empty point" ) << "is_empty(geom_from_wkt('POINT(1 2)'))" << false << QVariant( false );
@@ -1180,6 +1188,34 @@ class TestQgsExpression: public QObject
       QTest::newRow( "rotate line fixed multi point" ) << "geom_to_wkt(rotate(geom_from_wkt('LineString(0 0, 10 0, 10 10)'),90, geom_from_wkt('MULTIPOINT((-5 -3))')))" << false << QVariant( "LineString (-2 -8, -2 -18, 8 -18)" );
       QTest::newRow( "rotate line fixed multi point multiple" ) << "geom_to_wkt(rotate(geom_from_wkt('LineString(0 0, 10 0, 10 10)'),90, geom_from_wkt('MULTIPOINT(-5 -3,1 2)')))" << true << QVariant();
       QTest::newRow( "rotate polygon centroid" ) << "geom_to_wkt(rotate(geom_from_wkt('Polygon((0 0, 10 0, 10 10, 0 0))'),-90))" << false << QVariant( "Polygon ((10 0, 10 10, 0 10, 10 0))" );
+      QTest::newRow( "is_multipart true" ) << "is_multipart(geom_from_wkt('MULTIPOINT ((0 0),(1 1),(2 2))'))" << false << QVariant( true );
+      QTest::newRow( "is_multipart false" ) << "is_multipart(geom_from_wkt('POINT (0 0)'))" << false << QVariant( false );
+      QTest::newRow( "is_multipart false empty geometry" ) << "is_multipart(geom_from_wkt('POINT EMPTY'))" << false << QVariant( false );
+      QTest::newRow( "is_multipart null" ) << "is_multipart(NULL)" << false << QVariant();
+      QTest::newRow( "z_max no 3D" ) << "z_max(geom_from_wkt('POINT (0 0)'))" << false << QVariant();
+      QTest::newRow( "z_max NULL" ) << "z_max(geom_from_wkt(NULL))" << false << QVariant();
+      QTest::newRow( "z_max point Z NaN" ) << "z_max(geom_from_wkt('PointZ (1 1 nan)'))" << false << QVariant( QVariant::Double );
+      QTest::newRow( "z_max line Z NaN" ) << "z_max(make_line(geom_from_wkt('PointZ (0 0 nan)'),make_point(-1,-1,-2)))" << false << QVariant( -2.0 );
+      QTest::newRow( "z_max point" ) << "z_max(geom_from_wkt('POINT (0 0 1)'))" << false << QVariant( 1.0 );
+      QTest::newRow( "z_max line" ) << "z_max(make_line(make_point(0,0,0),make_point(-1,-1,-2)))" << false << QVariant( 0.0 );
+      QTest::newRow( "z_min no 3D" ) << "z_min(geom_from_wkt('POINT (0 0)'))" << false << QVariant();
+      QTest::newRow( "z_min NULL" ) << "z_min(geom_from_wkt(NULL))" << false << QVariant();
+      QTest::newRow( "z_min point Z NaN" ) << "z_min(geom_from_wkt('PointZ (1 1 nan)'))" << false << QVariant( QVariant::Double );
+      QTest::newRow( "z_min line Z NaN" ) << "z_min(make_line(geom_from_wkt('PointZ (0 0 nan)'),make_point(-1,-1,-2)))" << false << QVariant( -2.0 );
+      QTest::newRow( "z_min point" ) << "z_min(geom_from_wkt('POINT (0 0 1)'))" << false << QVariant( 1.0 );
+      QTest::newRow( "z_min line" ) << "z_min(make_line(make_point(0,0,0),make_point(-1,-1,-2)))" << false << QVariant( -2.0 );
+      QTest::newRow( "m_max no measure" ) << "m_max(geom_from_wkt('POINT (0 0)'))" << false << QVariant();
+      QTest::newRow( "m_max NULL" ) << "m_max(geom_from_wkt(NULL))" << false << QVariant();
+      QTest::newRow( "m_max point M NaN" ) << "m_max(geom_from_wkt('PointZM (0 0 0 nan)'))" << false << QVariant( QVariant::Double );
+      QTest::newRow( "m_max line M NaN" ) << "m_max(make_line(geom_from_wkt('PointZM (0 0 0 nan)'),geom_from_wkt('PointZM (1 1 1 2)')))" << false << QVariant( 2.0 );
+      QTest::newRow( "m_max point" ) << "m_max(make_point_m(0,0,1))" << false << QVariant( 1.0 );
+      QTest::newRow( "m_max line" ) << "m_max(make_line(make_point_m(0,0,1),make_point_m(-1,-1,2),make_point_m(-2,-2,0)))" << false << QVariant( 2.0 );
+      QTest::newRow( "m_min no measure" ) << "m_min(geom_from_wkt('POINT (0 0)'))" << false << QVariant();
+      QTest::newRow( "m_min NULL" ) << "m_min(geom_from_wkt(NULL))" << false << QVariant();
+      QTest::newRow( "m_min point M NaN" ) << "m_min(geom_from_wkt('PointZM (0 0 0 nan)'))" << false << QVariant( QVariant::Double );
+      QTest::newRow( "m_min line M NaN" ) << "m_min(make_line(geom_from_wkt('PointZM (0 0 0 nan)'),geom_from_wkt('PointZM (1 1 1 2)')))" << false << QVariant( 2.0 );
+      QTest::newRow( "m_min point" ) << "m_min(make_point_m(0,0,1))" << false << QVariant( 1.0 );
+      QTest::newRow( "m_min line" ) << "m_min(make_line(make_point_m(0,0,1),make_point_m(-1,-1,2),make_point_m(-2,-2,0)))" << false << QVariant( 0.0 );
 
       // string functions
       QTest::newRow( "format_number" ) << "format_number(1999.567,2)" << false << QVariant( "1,999.57" );
@@ -1231,6 +1267,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "trim" ) << "trim('   Test String ')" << false << QVariant( "Test String" );
       QTest::newRow( "trim empty string" ) << "trim('')" << false << QVariant( "" );
       QTest::newRow( "char" ) << "char(81)" << false << QVariant( "Q" );
+      QTest::newRow( "ascii single letter" ) << "ascii('Q')" << false << QVariant( 81 );
+      QTest::newRow( "ascii word" ) << "ascii('QGIS')" << false << QVariant( 81 );
+      QTest::newRow( "ascii empty" ) << "ascii('')" << false << QVariant();
       QTest::newRow( "wordwrap" ) << "wordwrap('university of qgis',13)" << false << QVariant( "university of\nqgis" );
       QTest::newRow( "wordwrap with custom delimiter" ) << "wordwrap('university of qgis',13,' ')" << false << QVariant( "university of\nqgis" );
       QTest::newRow( "wordwrap with negative length" ) << "wordwrap('university of qgis',-3)" << false << QVariant( "university\nof qgis" );

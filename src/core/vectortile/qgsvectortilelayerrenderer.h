@@ -22,6 +22,7 @@
 
 class QgsVectorTileLayer;
 class QgsVectorTileRawData;
+class QgsVectorTileLabelProvider;
 
 #include "qgsvectortilerenderer.h"
 
@@ -59,6 +60,12 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     int mSourceMaxZoom = -1;
     //! Tile renderer object to do rendering of individual tiles
     std::unique_ptr<QgsVectorTileRenderer> mRenderer;
+
+    /**
+     * Label provider that handles registration of labels.
+     * No need to delete: if exists it is owned by labeling engine.
+     */
+    QgsVectorTileLabelProvider *mLabelProvider = nullptr;
 
     //! Whether to draw boundaries of tiles (useful for debugging)
     bool mDrawTileBoundaries = false;

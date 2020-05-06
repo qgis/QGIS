@@ -549,7 +549,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
         const QSizeF targetSize = QSizeF( size.width() - 1, size.height() - 1 );
 
         const QList< QList< QPolygonF > > polys = patchShape ? patchShape->toQPolygonF( QgsSymbol::Fill, targetSize )
-            : QgsLegendPatchShape::defaultPatch( QgsSymbol::Fill, targetSize );
+            : QgsStyle::defaultStyle()->defaultPatchAsQPolygonF( QgsSymbol::Fill, targetSize );
 
         lsl->startRender( symbolContext );
         QgsPaintEffect *effect = lsl->paintEffect();

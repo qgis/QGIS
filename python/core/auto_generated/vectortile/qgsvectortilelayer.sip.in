@@ -92,6 +92,11 @@ Constructs a new vector tile layer
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
 
+    virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const ${SIP_FINAL};
+
+    virtual QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const ${SIP_FINAL};
+
+
 
     QString sourceType() const;
 %Docstring
@@ -123,6 +128,19 @@ Sets renderer for the map layer.
     QgsVectorTileRenderer *renderer() const;
 %Docstring
 Returns currently assigned renderer
+%End
+
+    void setLabeling( QgsVectorTileLabeling *labeling /Transfer/ );
+%Docstring
+Sets labeling for the map layer.
+
+.. note::
+
+   Takes ownership of the passed labeling
+%End
+    QgsVectorTileLabeling *labeling() const;
+%Docstring
+Returns currently assigned labeling
 %End
 
     void setTileBorderRenderingEnabled( bool enabled );

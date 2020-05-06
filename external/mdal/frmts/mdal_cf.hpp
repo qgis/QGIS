@@ -26,11 +26,10 @@ namespace MDAL
       enum Type
       {
         UnknownType = 0, //!< Unknown
-        Vertex1D, //!< Vertex in 1D mesh
-        Vertex2D, //!< Vertex in 2D mesh
-        Line1D, //!< Line joining 1D vertices
+        Vertex, //!< Mesh vertex ( node )
+        Edge, //!< Line joining 2 vertices ( edge )
         Face2DEdge, //!< Edge of 2D Face
-        Face2D, //!< 2D (Polygon) Face
+        Face, //!< 2D (Polygon) Face
         Volume3D, //!< 3D (stacked) volumes
         StackedFace3D, //! 3D (stacked) Faces
         Time, //!< Time steps
@@ -113,11 +112,11 @@ namespace MDAL
                 const int capabilities );
       virtual ~DriverCF() override;
       bool canReadMesh( const std::string &uri ) override;
-      std::unique_ptr< Mesh > load( const std::string &fileName ) override;
+      std::unique_ptr< Mesh > load( const std::string &fileName, const std::string &meshName = "" ) override;
 
     protected:
       virtual CFDimensions populateDimensions( ) = 0;
-      virtual void populateFacesAndVertices( Vertices &vertices, Faces &faces ) = 0;
+      virtual void populateElements( Vertices &vertices, Edges &edges, Faces &faces ) = 0;
       virtual void addBedElevation( MDAL::MemoryMesh *mesh ) = 0;
       virtual std::string getCoordinateSystemVariableName() = 0;
       virtual std::set<std::string> ignoreNetCDFVariables() = 0;
@@ -149,6 +148,7 @@ namespace MDAL
                              const cfdataset_info_map &dsinfo_map, const DateTime &referenceTime );
 
       std::string mFileName;
+      std::string mRequestedMeshName;
       std::shared_ptr<NetCDFFile> mNcFile;
       CFDimensions mDimensions;
   };

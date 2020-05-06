@@ -288,7 +288,7 @@ class CORE_EXPORT QgsSnappingConfig
     void setTolerance( double tolerance );
 
     /**
-     * Returns the min scale
+     * Returns the min scale (i.e. most \"zoomed out\" scale)
      * \since QGIS 3.14
      */
     double minimumScale() const;
@@ -300,7 +300,7 @@ class CORE_EXPORT QgsSnappingConfig
     void setMinimumScale( double minScale );
 
     /**
-     * Returns the max scale
+     * Returns the max scale (i.e. most \"zoomed in\" scale)
      * \since QGIS 3.14
      */
     double maximumScale() const;

@@ -82,6 +82,9 @@ class TestQgsMeshLayer : public QObject
     void test_reload_extra_dataset();
 
     void test_mesh_simplification();
+
+    void test_snap_on_mesh();
+    void test_dataset_value_from_layer();
 };
 
 QString TestQgsMeshLayer::readFile( const QString &fname ) const
@@ -124,10 +127,11 @@ void TestQgsMeshLayer::initTestCase()
   QString uri( mDataDir + "/quad_and_triangle.2dm" );
   mMdalLayer = new QgsMeshLayer( uri, "Triangle and Quad MDAL", "mdal" );
   QCOMPARE( mMdalLayer->dataProvider()->datasetGroupCount(), 1 ); //bed elevation is already in the 2dm
-  QVERIFY( mMdalLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
+  QVERIFY( !mMdalLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
   mMdalLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_vertex_scalar.dat" );
   mMdalLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_vertex_vector.dat" );
   QCOMPARE( mMdalLayer->dataProvider()->extraDatasets().count(), 2 );
+  QVERIFY( mMdalLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
 
   //The face dataset is recognized by "_els_" in the filename for this format
   mMdalLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_els_face_scalar.dat" );
@@ -161,13 +165,13 @@ void TestQgsMeshLayer::initTestCase()
   uri = QString( mDataDir + "/lines.2dm" );
   mMdal1DLayer = new QgsMeshLayer( uri, "Lines MDAL", "mdal" );
   QCOMPARE( mMdal1DLayer->dataProvider()->datasetGroupCount(), 1 ); //bed elevation is already in the 2dm
-  QVERIFY( mMemory1DLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
-  QVERIFY( mMemory1DLayer->temporalProperties()->isActive() );
+  QVERIFY( !mMdal1DLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
+  QVERIFY( !mMdal1DLayer->temporalProperties()->isActive() );
   mMdal1DLayer->dataProvider()->addDataset( mDataDir + "/lines_vertex_scalar.dat" );
   mMdal1DLayer->dataProvider()->addDataset( mDataDir + "/lines_vertex_vector.dat" );
   QCOMPARE( mMdal1DLayer->dataProvider()->extraDatasets().count(), 2 );
-  QVERIFY( mMemory1DLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
-  QVERIFY( mMemory1DLayer->temporalProperties()->isActive() );
+  QVERIFY( mMdal1DLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
+  QVERIFY( mMdal1DLayer->temporalProperties()->isActive() );
 
 
   //The face dataset is recognized by "_els_" in the filename for this format
@@ -906,6 +910,83 @@ void TestQgsMeshLayer::test_mesh_simplification()
   // Delete simplified meshes
   for ( QgsTriangularMesh *m : simplifiedMeshes )
     delete m;
+}
+
+void TestQgsMeshLayer::test_snap_on_mesh()
+{
+  //1D mesh
+  mMdal1DLayer->updateTriangularMesh();
+  double searchRadius = 10;
+
+  QgsPointXY snappedPoint;
+
+  //1D mesh
+  snappedPoint = mMdal1DLayer->snapOnElement( QgsMesh::Vertex, QgsPointXY(), searchRadius );
+  QCOMPARE( snappedPoint, QgsPointXY() );
+  snappedPoint = mMdal1DLayer->snapOnElement( QgsMesh::Vertex, QgsPointXY( 1002, 2005 ), searchRadius );
+  QCOMPARE( snappedPoint, QgsPointXY( 1000, 2000 ) );
+  snappedPoint = mMdal1DLayer->snapOnElement( QgsMesh::Edge, QgsPointXY( 1002, 2005 ), searchRadius );
+  QCOMPARE( snappedPoint, QgsPointXY( 1002, 2000 ) );
+  snappedPoint = mMdal1DLayer->snapOnElement( QgsMesh::Edge, QgsPointXY( 998, 2005 ), searchRadius );
+  QCOMPARE( snappedPoint, QgsPointXY( 1000, 2000 ) );
+  snappedPoint = mMdal1DLayer->snapOnElement( QgsMesh::Edge, QgsPointXY( 990, 2010 ), searchRadius );
+  QCOMPARE( snappedPoint, QgsPointXY() );
+  snappedPoint = mMdal1DLayer->snapOnElement( QgsMesh::Vertex, QgsPointXY( 2002, 2998 ), searchRadius );
+  QCOMPARE( snappedPoint, QgsPointXY( 2000, 3000 ) );
+
+
+  //2D mesh
+  mMdalLayer->updateTriangularMesh();
+  snappedPoint = mMdalLayer->snapOnElement( QgsMesh::Vertex, QgsPointXY(), searchRadius );
+  QCOMPARE( snappedPoint, QgsPointXY() );
+  snappedPoint = mMdalLayer->snapOnElement( QgsMesh::Vertex, QgsPointXY(), searchRadius );
+  QCOMPARE( snappedPoint, QgsPointXY() );
+  snappedPoint = mMdalLayer->snapOnElement( QgsMesh::Vertex, QgsPointXY( 1002, 2005 ), searchRadius );
+  QCOMPARE( snappedPoint, QgsPointXY( 1000, 2000 ) );
+  snappedPoint = mMdalLayer->snapOnElement( QgsMesh::Vertex, QgsPointXY( 2002, 2998 ), searchRadius );
+  QCOMPARE( snappedPoint, QgsPointXY( 2000, 3000 ) );
+  snappedPoint = mMdalLayer->snapOnElement( QgsMesh::Face, QgsPointXY( 998, 1998 ), searchRadius );
+  QCOMPARE( snappedPoint, QgsPointXY( 1500, 2500 ) );
+  snappedPoint = mMdalLayer->snapOnElement( QgsMesh::Face, QgsPointXY( 1002, 2001 ), searchRadius );
+  QCOMPARE( snappedPoint, QgsPointXY( 1500, 2500 ) );
+  snappedPoint = mMdalLayer->snapOnElement( QgsMesh::Face, QgsPointXY( 1998, 2998 ), searchRadius );
+  QCOMPARE( snappedPoint, QgsPointXY( 1500, 2500 ) );
+  snappedPoint = mMdalLayer->snapOnElement( QgsMesh::Face, QgsPointXY( 2002, 1998 ), searchRadius );
+  QCOMPARE( snappedPoint, QgsPointXY( 2333.33333333, 2333.333333333 ) );
+  snappedPoint = mMdalLayer->snapOnElement( QgsMesh::Face, QgsPointXY( 500, 500 ), searchRadius );
+  QCOMPARE( snappedPoint, QgsPointXY() );
+}
+
+void TestQgsMeshLayer::test_dataset_value_from_layer()
+{
+  QgsMeshDatasetValue value;
+
+  //1D mesh
+  mMdal1DLayer->updateTriangularMesh();
+  value = mMdal1DLayer->datasetValue( QgsMeshDatasetIndex( 0, 0 ), QgsPointXY( 1500, 2009 ), 10 );
+  QCOMPARE( QgsMeshDatasetValue( 25 ), value );
+  value = mMdal1DLayer->datasetValue( QgsMeshDatasetIndex( 1, 0 ), QgsPointXY( 2500, 1991 ), 10 );
+  QCOMPARE( QgsMeshDatasetValue( 2.5 ), value );
+  value = mMdal1DLayer->datasetValue( QgsMeshDatasetIndex( 2, 0 ), QgsPointXY( 2500, 2500 ), 10 );
+  QCOMPARE( QgsMeshDatasetValue( 2.5, 2 ), value );
+  value = mMdal1DLayer->datasetValue( QgsMeshDatasetIndex( 3, 1 ), QgsPointXY( 2495, 2000 ), 10 );
+  QCOMPARE( QgsMeshDatasetValue( 3 ), value );
+  value = mMdal1DLayer->datasetValue( QgsMeshDatasetIndex( 4, 1 ), QgsPointXY( 2500, 2495 ), 10 );
+  QCOMPARE( QgsMeshDatasetValue( 4, 4 ), value );
+
+  //2D mesh
+  mMdalLayer->updateTriangularMesh();
+  value = mMdalLayer->datasetValue( QgsMeshDatasetIndex( 0, 0 ), QgsPointXY( 1750, 2250 ) );
+  QCOMPARE( QgsMeshDatasetValue( 32.5 ), value );
+  value = mMdalLayer->datasetValue( QgsMeshDatasetIndex( 1, 0 ), QgsPointXY( 1750, 2250 ) );
+  QCOMPARE( QgsMeshDatasetValue( 1.75 ), value );
+  value = mMdalLayer->datasetValue( QgsMeshDatasetIndex( 2, 0 ), QgsPointXY( 1750, 2250 ) );
+  QCOMPARE( QgsMeshDatasetValue( 1.75, 1.25 ), value );
+  value = mMdalLayer->datasetValue( QgsMeshDatasetIndex( 3, 1 ), QgsPointXY( 1750, 2250 ) );
+  QCOMPARE( QgsMeshDatasetValue( 2 ), value );
+  value = mMdalLayer->datasetValue( QgsMeshDatasetIndex( 4, 1 ), QgsPointXY( 1750, 2250 ) );
+  QCOMPARE( QgsMeshDatasetValue( 2, 2 ), value );
+
 }
 
 void TestQgsMeshLayer::test_temporal()

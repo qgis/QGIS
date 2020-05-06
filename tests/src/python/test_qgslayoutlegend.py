@@ -37,6 +37,7 @@ from qgis.core import (QgsPrintLayout,
                        QgsMapThemeCollection,
                        QgsCategorizedSymbolRenderer,
                        QgsRendererCategory,
+                       QgsFillSymbol,
                        QgsApplication)
 from qgis.testing import (start_app,
                           unittest
@@ -166,6 +167,47 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         self.assertTrue(result, message)
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
+
+    def testResizeWithMapContentNoDoublePaint(self):
+        """Test test legend resizes to match map content"""
+        poly_path = os.path.join(TEST_DATA_DIR, 'polys.shp')
+        poly_layer = QgsVectorLayer(poly_path, 'polys', 'ogr')
+        p = QgsProject()
+        p.addMapLayers([poly_layer])
+
+        fill_symbol = QgsFillSymbol.createSimple({'color': '255,0,0,125', 'outline_style': 'no'})
+        poly_layer.setRenderer(QgsSingleSymbolRenderer(fill_symbol))
+
+        s = QgsMapSettings()
+        s.setLayers([poly_layer])
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(20, 20, 80, 80))
+        map.setFrameEnabled(True)
+        map.setLayers([poly_layer])
+        layout.addLayoutItem(map)
+        map.setExtent(poly_layer.extent())
+
+        legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
+        legend.attemptSetSceneRect(QRectF(120, 20, 80, 80))
+        legend.setFrameEnabled(True)
+        legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend.setBackgroundEnabled(False)
+        legend.setTitle('')
+        layout.addLayoutItem(legend)
+        legend.setLinkedMap(map)
+
+        map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
+
+        checker = QgsLayoutChecker(
+            'composer_legend_size_content_no_double_paint', layout)
+        checker.setControlPathPrefix("composer_legend")
+        result, message = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(result, message)
 
     def testResizeDisabled(self):
         """Test that test legend does not resize if auto size is disabled"""

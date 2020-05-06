@@ -22,6 +22,7 @@ __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Radoslaw Guzinski'
 
 import os
+import pathlib
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
@@ -30,6 +31,7 @@ from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessing,
                        QgsProcessingParameterDefinition,
                        QgsProperty,
+                       QgsProcessingParameters,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterBoolean,
@@ -71,14 +73,23 @@ class buildvrt(GdalAlgorithm):
                 copy = ParameterVrtDestination(self.name(), self.description())
                 return copy
 
-            def type(self):
-                return 'vrt_destination'
-
             def defaultFileExtension(self):
                 return 'vrt'
 
+            def createFileFilter(self):
+                return '{} (*.vrt *.VRT)'.format(QCoreApplication.translate("GdalAlgorithm", 'VRT files'))
+
+            def supportedOutputRasterLayerExtensions(self):
+                return ['vrt']
+
             def parameterAsOutputLayer(self, definition, value, context):
                 return super(QgsProcessingParameterRasterDestination, self).parameterAsOutputLayer(definition, value, context)
+
+            def isSupportedOutputValue(self, value, context):
+                output_path = QgsProcessingParameters.parameterAsOutputLayer(self, value, context)
+                if pathlib.Path(output_path).suffix.lower() != '.vrt':
+                    return False, QCoreApplication.translate("GdalAlgorithm", 'Output filename must use a .vrt extension')
+                return True, ''
 
         self.RESAMPLING_OPTIONS = ((self.tr('Nearest Neighbour'), 'nearest'),
                                    (self.tr('Bilinear'), 'bilinear'),

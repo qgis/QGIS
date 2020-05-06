@@ -19,6 +19,7 @@
 #include <qgsapplication.h>
 #include <qgsmultirenderchecker.h>
 #include <qgsrasterlayer.h>
+#include <qgsproviderregistry.h>
 
 /**
  * \ingroup UnitTests
@@ -117,6 +118,32 @@ class TestQgsWmsProvider: public QObject
       QVERIFY( layer.isValid() );
 
       QVERIFY( imageCheck( "mbtiles_1", &layer, layer.extent() ) );
+    }
+
+    void providerUriUpdates()
+    {
+      QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( "wms" );
+      QString uriString = QStringLiteral( "crs=EPSG:4326&dpiMode=7&"
+                                          "layers=testlayer&styles&"
+                                          "url=http://localhost:8380/mapserv&"
+                                          "testParam=true" );
+      QVariantMap parts = metadata->decodeUri( uriString );
+      QVariantMap expectedParts { { QString( "crs" ), QVariant( "EPSG:4326" ) },  { QString( "dpiMode" ), QVariant( "7" ) },
+        { QString( "testParam" ), QVariant( "true" ) },  { QString( "layers" ), QVariant( "testlayer" ) },
+        { QString( "styles" ), QString() },  { QString( "url" ), QVariant( "http://localhost:8380/mapserv" ) } };
+      QCOMPARE( parts, expectedParts );
+
+      parts["testParam"] = QVariant( "false" );
+
+      QCOMPARE( parts["testParam"], QVariant( "false" ) );
+
+      QString updatedUri = metadata->encodeUri( parts );
+      QString expectedUri = QStringLiteral( "crs=EPSG:4326&dpiMode=7&"
+                                            "layers=testlayer&styles&"
+                                            "testParam=false&"
+                                            "url=http://localhost:8380/mapserv" );
+      QCOMPARE( updatedUri, expectedUri );
+
     }
 
 

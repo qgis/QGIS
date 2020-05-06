@@ -90,7 +90,6 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 
 SET(QGIS_QUICK_GUI_IMAGE_RCCS ./images/images.qrc)
-QT5_ADD_RESOURCES(QGIS_QUICK_GUI_IMAGE_RCC_SRCS ${QGIS_QUICK_GUI_IMAGE_RCCS})
 
 ############################################################
 # qgis_quick shared library
@@ -102,7 +101,7 @@ ELSE(MSVC)
 ENDIF(MSVC)
 
 ADD_LIBRARY(qgis_quick ${LIBRARY_TYPE}
-    ${QGIS_QUICK_GUI_IMAGE_RCC_SRCS}
+    ${QGIS_QUICK_GUI_IMAGE_RCCS}
     ${QGIS_QUICK_GUI_SRC}
     ${QGIS_QUICK_GUI_MOC_HDRS}
     ${QGIS_QUICK_GUI_MOC_SRCS}

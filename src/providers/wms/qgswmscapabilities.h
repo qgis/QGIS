@@ -27,6 +27,7 @@
 #include "qgsrasteriterator.h"
 #include "qgsapplication.h"
 #include "qgsdataprovider.h"
+#include "qgsinterval.h"
 
 
 class QNetworkReply;
@@ -406,6 +407,26 @@ struct QgsWmstResolution
   int minutes = -1;
   int seconds = -1;
 
+  long long interval()
+  {
+    long long secs = 0.0;
+
+    if ( year != -1 )
+      secs += year * QgsInterval::YEARS ;
+    if ( month != -1 )
+      secs += month * QgsInterval::MONTHS;
+    if ( day != -1 )
+      secs += day * QgsInterval::DAY;
+    if ( hour != -1 )
+      secs += hour * QgsInterval::HOUR;
+    if ( minutes != -1 )
+      secs += minutes * QgsInterval::MINUTE;
+    if ( seconds != -1 )
+      secs += seconds;
+
+    return secs;
+  }
+
   bool active()
   {
     return year != -1 || month != -1 || day != -1 ||
@@ -768,6 +789,22 @@ class QgsWmsSettings
     QgsWmstDimensionExtent parseTemporalExtent( QString extent );
 
     /**
+     * Sets the dimension extent property
+     *
+     * \see timeDimensionExtent()
+     * \since 3.14
+     */
+    void setTimeDimensionExtent( QgsWmstDimensionExtent timeDimensionExtent );
+
+    /**
+     * Returns the dimension extent property.
+     *
+     * \see setTimeDimensionExtent()
+     * \since 3.14
+     */
+    QgsWmstDimensionExtent timeDimensionExtent() const;
+
+    /**
      * Parse the given string item into a resolution structure.
      *
      * \since 3.14
@@ -781,17 +818,22 @@ class QgsWmsSettings
      */
     QDateTime parseWmstDateTimes( QString item );
 
-    QList<QDateTime> dateTimesFromExtent( QgsWmstDimensionExtent dimensionExtent );
-
+    /**
+     * Returns the datetime with the sum of passed \a dateTime and the \a resolution time.
+     *
+     * \since 3.14
+     */
     QDateTime addTime( QDateTime dateTime, QgsWmstResolution resolution );
 
     /**
-     * Finds the least closest datetime from list of available datetimes
+     * Finds the least closest datetime from list of available dimension temporal ranges
      * with the given \a dateTime.
      *
-     * Returns the passed \a dateTime if it is found in the available datetimes.
+     * \note It works with wms-t capabilities that provide time dimension with temporal ranges only.
+     *
+     * \since 3.14
      */
-    QDateTime findLeastClosestDateTime( QDateTime dateTime ) const;
+    QDateTime findLeastClosestDateTime( QDateTime dateTime, bool dateOnly = false ) const;
 
   protected:
     QgsWmsParserSettings    mParserSettings;
@@ -815,9 +857,6 @@ class QgsWmsSettings
 
     //! Fixed reference temporal range for the data provider
     QgsDateTimeRange mFixedReferenceRange;
-
-    //! List of all available datetimes.
-    QList<QDateTime> mDateTimes;
 
     //! Stores WMS-T time dimension extent dates
     QgsWmstDimensionExtent mTimeDimensionExtent;
@@ -953,6 +992,7 @@ class QgsWmsCapabilities
     void parseCapability( const QDomElement &element, QgsWmsCapabilityProperty &capabilityProperty );
     void parseRequest( const QDomElement &element, QgsWmsRequestProperty &requestProperty );
     void parseDimension( const QDomElement &element, QgsWmsDimensionProperty &dimensionProperty );
+    void parseExtent( const QDomElement &element, QVector<QgsWmsDimensionProperty> &dimensionProperties );
     void parseLegendUrl( const QDomElement &element, QgsWmsLegendUrlProperty &legendUrlProperty );
     void parseMetadataUrl( const QDomElement &element, QgsWmsMetadataUrlProperty &metadataUrlProperty );
     void parseLayer( const QDomElement &element, QgsWmsLayerProperty &layerProperty, QgsWmsLayerProperty *parentProperty = nullptr );
@@ -1034,6 +1074,7 @@ class QgsWmsCapabilities
     QgsCoordinateTransformContext mCoordinateTransformContext;
 
     friend class QgsWmsProvider;
+    friend class TestQgsWmsCapabilities;
 };
 
 

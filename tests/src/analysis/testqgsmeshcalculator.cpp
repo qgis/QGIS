@@ -48,6 +48,9 @@ class TestQgsMeshCalculator : public QObject
     void calcWithVertexLayers();
     void calcWithFaceLayers();
     void calcWithMixedLayers();
+
+    void calcAndSave();
+
   private:
 
     QgsMeshLayer *mpMeshLayer = nullptr;
@@ -290,6 +293,27 @@ void TestQgsMeshCalculator::calcWithMixedLayers()
   QCOMPARE( newGroupCount, groupCount + 1 );
   const QgsMeshDatasetValue val = mpMeshLayer->dataProvider()->datasetValue( QgsMeshDatasetIndex( newGroupCount - 1, 0 ), 0 );
   QCOMPARE( val.scalar(), 2.0 );
+}
+
+void TestQgsMeshCalculator::calcAndSave()
+{
+  QgsRectangle extent( 1000.000, 1000.000, 3000.000, 3000.000 );
+
+  QString tempFilePath = QDir::tempPath() + '/' + "meshCalculatorResult.out";
+  QgsMeshCalculator rc( QStringLiteral( "\"VertexScalarDataset\" + \"FaceScalarDataset\"" ),
+                        QStringLiteral( "BINARY_DAT" ),
+                        "NewMixScalarDataset",
+                        tempFilePath,
+                        extent,
+                        0,
+                        3600,
+                        mpMeshLayer
+                      );
+
+  rc.processCalculation();
+
+  QFileInfo fileInfo( tempFilePath );
+  QVERIFY( fileInfo.exists() );
 }
 
 QGSTEST_MAIN( TestQgsMeshCalculator )

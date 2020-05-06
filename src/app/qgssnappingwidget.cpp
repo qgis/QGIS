@@ -195,12 +195,12 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   connect( mToleranceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSnappingWidget::changeTolerance );
 
   mMinScaleWidget = new QgsScaleWidget();
-  mMinScaleWidget->setToolTip( tr( "Minimum scale from which snapping is enabled" ) );
+  mMinScaleWidget->setToolTip( tr( "Minimum scale from which snapping is enabled (i.e. most \"zoomed out\" scale)" ) );
   mMinScaleWidget->setObjectName( QStringLiteral( "SnappingMinScaleSpinBox" ) );
   connect( mMinScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsSnappingWidget::changeMinScale );
 
   mMaxScaleWidget = new QgsScaleWidget();
-  mMaxScaleWidget->setToolTip( tr( "Maximum scale up to which snapping is enabled" ) );
+  mMaxScaleWidget->setToolTip( tr( "Maximum scale up to which snapping is enabled (i.e. most \"zoomed in\" scale)" ) );
   mMaxScaleWidget->setObjectName( QStringLiteral( "SnappingMaxScaleSpinBox" ) );
   connect( mMaxScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsSnappingWidget::changeMaxScale );
 
@@ -707,6 +707,8 @@ void QgsSnappingWidget::snappingScaleModeTriggered( QAction *action )
   mMaxScaleWidget->setEnabled( mode == QgsSnappingConfig::Global );
   mConfig.setScaleDependencyMode( mode );
   mProject->setSnappingConfig( mConfig );
+
+  mLayerTreeView->reset();
 }
 
 void QgsSnappingWidget::updateToleranceDecimals()

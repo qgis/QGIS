@@ -68,6 +68,7 @@ class TestQgsLayoutMap : public QObject
     void testRenderedFeatureHandler();
     void testLayeredExport();
     void testLayeredExportLabelsByLayer();
+    void testTemporal();
 
   private:
     QgsRasterLayer *mRasterLayer = nullptr;
@@ -1829,6 +1830,27 @@ void TestQgsLayoutMap::testLayeredExportLabelsByLayer()
   QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
   QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
   QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+}
+
+void TestQgsLayoutMap::testTemporal()
+{
+  QgsLayout l( QgsProject::instance( ) );
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  QDateTime begin( QDate( 2020, 01, 01 ), QTime( 10, 0, 0, Qt::UTC ) );
+  QDateTime end = begin.addSecs( 3600 );
+
+  QgsMapSettings settings = map->mapSettings( map->extent(), QSize( 512, 512 ), 72, false );
+  QgsRenderContext renderContext = QgsRenderContext::fromMapSettings( settings );
+
+  QVERIFY( !renderContext.isTemporal() );
+
+  map->setTemporalRange( QgsDateTimeRange( begin, end ) );
+  map->refresh();
+
+  settings = map->mapSettings( map->extent(), QSize( 512, 512 ), 72, false );
+  renderContext = QgsRenderContext::fromMapSettings( settings );
+  QVERIFY( renderContext.isTemporal() );
+  QCOMPARE( renderContext.temporalRange(), QgsDateTimeRange( begin, end ) );
 }
 
 QGSTEST_MAIN( TestQgsLayoutMap )

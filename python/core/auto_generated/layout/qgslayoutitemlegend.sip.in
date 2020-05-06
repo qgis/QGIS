@@ -40,6 +40,7 @@ Alternative constructor.
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
 
 
+
   signals:
 
     void refreshLegend();
@@ -537,6 +538,8 @@ Returns the legend's renderer settings object.
     virtual QgsExpressionContext createExpressionContext() const;
 
     virtual ExportLayerBehavior exportLayerBehavior() const;
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
   public slots:

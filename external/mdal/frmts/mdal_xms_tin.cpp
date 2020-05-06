@@ -54,7 +54,7 @@ bool MDAL::DriverXmsTin::canReadMesh( const std::string &uri )
   return true;
 }
 
-std::unique_ptr<MDAL::Mesh> MDAL::DriverXmsTin::load( const std::string &meshFile )
+std::unique_ptr<MDAL::Mesh> MDAL::DriverXmsTin::load( const std::string &meshFile, const std::string & )
 {
   MDAL::Log::resetLastStatus();
 
@@ -105,7 +105,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverXmsTin::load( const std::string &meshFil
   // Read triangles
   if ( !std::getline( in, line ) )
   {
-    MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, name(), meshFile + " does not contain valid triangle definition" );
+    MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, name(), meshFile + " does not contain valid triangle definitions" );
     return nullptr;
   }
   chunks = split( line,  ' ' );
@@ -127,7 +127,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverXmsTin::load( const std::string &meshFil
     if ( chunks.size() != 3 )
     {
       // should have 3 indexes
-      MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, name(), meshFile + " does not contain valid triangle defintion" );
+      MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, name(), meshFile + " does not contain valid triangle definitions" );
       return nullptr;
     }
 

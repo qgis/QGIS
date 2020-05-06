@@ -200,19 +200,21 @@ Returns the size scaled in pixels according to the uom attribute.
 
     static QPainter::CompositionMode decodeBlendMode( const QString &s );
 
-    static QIcon symbolPreviewIcon( const QgsSymbol *symbol, QSize size, int padding = 0 );
+    static QIcon symbolPreviewIcon( const QgsSymbol *symbol, QSize size, int padding = 0, QgsLegendPatchShape *shape = 0 );
 %Docstring
 Returns an icon preview for a color ramp.
 
 :param symbol: symbol
 :param size: target pixmap size
 :param padding: space between icon edge and symbol
+:param shape: optional legend patch shape to use for rendering the preview icon
 
 .. seealso:: :py:func:`symbolPreviewPixmap`
 %End
 
     static QPixmap symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = 0, bool selected = false,
-                                        const QgsExpressionContext *expressionContext = 0 );
+                                        const QgsExpressionContext *expressionContext = 0,
+                                        const QgsLegendPatchShape *shape = 0 );
 %Docstring
 Returns a pixmap preview for a color ramp.
 
@@ -222,6 +224,7 @@ Returns a pixmap preview for a color ramp.
 :param customContext: render context to use when rendering symbol
 :param selected: set to ``True`` to render the symbol in a selected state
 :param expressionContext: optional custom expression context
+:param shape: optional legend patch shape to use for rendering the preview icon
 
 .. note::
 
@@ -234,6 +237,10 @@ Returns a pixmap preview for a color ramp.
 .. note::
 
    Parameter expressionContext added in QGIS 3.10
+
+.. note::
+
+   Parameter shape added in QGIS 3.14
 
 .. seealso:: :py:func:`symbolPreviewIcon`
 %End

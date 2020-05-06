@@ -51,7 +51,9 @@ QPolygon QgsVectorTileUtils::tilePolygon( QgsTileXYZ id, const QgsCoordinateTran
 QgsFields QgsVectorTileUtils::makeQgisFields( QSet<QString> flds )
 {
   QgsFields fields;
-  for ( QString fieldName : flds )
+  QStringList fieldsSorted = flds.toList();
+  std::sort( fieldsSorted.begin(), fieldsSorted.end() );
+  for ( const QString &fieldName : qgis::as_const( fieldsSorted ) )
   {
     fields.append( QgsField( fieldName, QVariant::String ) );
   }

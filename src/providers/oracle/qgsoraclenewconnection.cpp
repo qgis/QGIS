@@ -36,6 +36,12 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOracleNewConnection::showHelp );
   connect( btnConnect, &QPushButton::clicked, this, &QgsOracleNewConnection::testConnection );
 
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
+  connect( txtName, &QLineEdit::textChanged, this, &QgsOracleNewConnection::updateOkButtonState );
+  connect( txtDatabase, &QLineEdit::textChanged, this, &QgsOracleNewConnection::updateOkButtonState );
+  connect( txtHost, &QLineEdit::textChanged, this, &QgsOracleNewConnection::updateOkButtonState );
+  connect( txtPort, &QLineEdit::textChanged, this, &QgsOracleNewConnection::updateOkButtonState );
+
   mAuthSettings->setDataprovider( QStringLiteral( "oracle" ) );
   mAuthSettings->showStoreCheckboxes( true );
 
@@ -185,4 +191,10 @@ void QgsOracleNewConnection::testConnection()
 void QgsOracleNewConnection::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#connecting-to-oracle-spatial" ) );
+}
+
+void QgsOracleNewConnection::updateOkButtonState()
+{
+  bool enabled = !txtName->text().isEmpty() && !txtHost->text().isEmpty() && !txtPort->text().isEmpty() && !txtDatabase->text().isEmpty();
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }

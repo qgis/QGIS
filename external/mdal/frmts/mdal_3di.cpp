@@ -29,12 +29,12 @@ MDAL::CFDimensions MDAL::Driver3Di::populateDimensions( )
 
   // 2D Mesh
   mNcFile->getDimension( "nMesh2D_nodes", &count, &ncid );
-  dims.setDimension( CFDimensions::Face2D, count, ncid );
+  dims.setDimension( CFDimensions::Face, count, ncid );
 
   mNcFile->getDimension( "nCorner_Nodes", &count, &ncid );
   dims.setDimension( CFDimensions::MaxVerticesInFace, count, ncid );
 
-  // Vertices count is populated later in populateFacesAndVertices
+  // Vertices count is populated later in populateElements
   // it is not known from the array dimensions
 
   // Time
@@ -44,10 +44,10 @@ MDAL::CFDimensions MDAL::Driver3Di::populateDimensions( )
   return dims;
 }
 
-void MDAL::Driver3Di::populateFacesAndVertices( Vertices &vertices, Faces &faces )
+void MDAL::Driver3Di::populateElements( Vertices &vertices, Edges &, Faces &faces )
 {
   assert( vertices.empty() );
-  size_t faceCount = mDimensions.size( CFDimensions::Face2D );
+  size_t faceCount = mDimensions.size( CFDimensions::Face );
   faces.resize( faceCount );
   size_t verticesInFace = mDimensions.size( CFDimensions::MaxVerticesInFace );
   size_t arrsize = faceCount * verticesInFace;
@@ -109,7 +109,7 @@ void MDAL::Driver3Di::populateFacesAndVertices( Vertices &vertices, Faces &faces
 
   // Only now we have number of vertices, since we identified vertices that
   // are used in multiple faces
-  mDimensions.setDimension( CFDimensions::Vertex2D, vertices.size() );
+  mDimensions.setDimension( CFDimensions::Vertex, vertices.size() );
 }
 
 void MDAL::Driver3Di::addBedElevation( MemoryMesh *mesh )

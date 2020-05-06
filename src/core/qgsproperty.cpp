@@ -88,7 +88,7 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case ColorWithAlpha:
       mTypes = DataTypeString;
-      mHelpText = QObject::tr( "string [<b>r,g,b,a</b>] as int 0-255 or #<b>AARRGGBB</b> as hex or <b>color</b> as color's name" );
+      mHelpText = QObject::tr( "string [<b>r,g,b,a</b>] as int 0-255 or #<b>RRGGBBAA</b> as hex or <b>color</b> as color's name" );
       break;
 
     case ColorNoAlpha:
@@ -392,7 +392,7 @@ bool QgsProperty::prepare( const QgsExpressionContext &context ) const
   return false;
 }
 
-QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext &context ) const
+QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext &context, bool ignoreContext ) const
 {
   if ( !d->active )
     return QSet<QString>();
@@ -413,6 +413,11 @@ QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext &context
 
     case ExpressionBasedProperty:
     {
+      if ( ignoreContext )
+      {
+        return d->expression.referencedColumns();
+      }
+
       if ( d->expressionIsInvalid )
         return QSet< QString >();
 

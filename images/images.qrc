@@ -110,12 +110,17 @@
         <file>themes/default/algorithms/mAlgorithmMergeLayers.svg</file>
         <file>themes/default/algorithms/mAlgorithmMultiToSingle.svg</file>
         <file>themes/default/algorithms/mAlgorithmNearestNeighbour.svg</file>
+        <file>themes/default/algorithms/mAlgorithmNormalRaster.svg</file>
         <file>themes/default/algorithms/mAlgorithmNetworkAnalysis.svg</file>
         <file>themes/default/algorithms/mAlgorithmPolygonToLine.svg</file>
+        <file>themes/default/algorithms/mAlgorithmRandomExponentialRaster.svg</file>
+        <file>themes/default/algorithms/mAlgorithmRandomGammaRaster.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomPointsInPolygons.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomPointsOnLines.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomPointsWithinPolygon.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomPointsWithinExtent.svg</file>
+        <file>themes/default/algorithms/mAlgorithmRandomPoissonRaster.svg</file>
+        <file>themes/default/algorithms/mAlgorithmRandomRaster.svg</file>
         <file>themes/default/algorithms/mAlgorithmRegularPoints.svg</file>
 	      <file>themes/default/algorithms/mAlgorithmRoundRastervalues.svg</file>
         <file>themes/default/algorithms/mAlgorithmSelectLocation.svg</file>
@@ -231,6 +236,8 @@
         <file>themes/default/mActionAddWcsLayer.svg</file>
         <file>themes/default/mActionAddWfsLayer.svg</file>
         <file>themes/default/mActionAddWmsLayer.svg</file>
+        <file>themes/default/mActionAddXyzLayer.svg</file>
+        <file>themes/default/mActionAddVectorTileLayer.svg</file>
         <file>themes/default/mActionAddGeonodeLayer.svg</file>
         <file>themes/default/mActionAddDelimitedTextLayer.svg</file>
         <file>themes/default/mActionAddVirtualLayer.svg</file>
@@ -525,6 +532,7 @@
         <file>themes/default/mIconWcs.svg</file>
         <file>themes/default/mIconWfs.svg</file>
         <file>themes/default/mIconWms.svg</file>
+        <file>themes/default/mIconXyz.svg</file>
         <file>themes/default/mIconZip.svg</file>
         <file>themes/default/mIconZoom.svg</file>
         <file>themes/default/mItemBookmark.svg</file>
@@ -668,6 +676,7 @@
         <file>themes/default/multieditSameValues.svg</file>
         <file>themes/default/locked_repeating.svg</file>
         <file>themes/default/sort.svg</file>
+        <file>themes/default/sort-reverse.svg</file>
         <file>themes/default/styleicons/multibandcolor.svg</file>
         <file>themes/default/styleicons/paletted.svg</file>
         <file>themes/default/styleicons/singlebandgray.svg</file>
@@ -846,6 +855,7 @@
         <file>themes/default/mIconNetworkLogger.svg</file>
         <file>themes/default/mActionAddMarker.svg</file>
         <file>themes/default/mLayoutItemMarker.svg</file>
+        <file>themes/default/algorithms/mAlgorithmConstantRaster.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

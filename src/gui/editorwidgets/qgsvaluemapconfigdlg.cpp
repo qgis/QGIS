@@ -179,6 +179,7 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
       setRow( row, pair.first, QString() );
     else
       setRow( row, pair.first, pair.second.toString() );
+    ++row;
   }
 }
 
@@ -295,7 +296,7 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
 {
   QgsSettings settings;
 
-  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Select a File" ), QDir::homePath() );
+  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Value Map from File" ), QDir::homePath() );
   if ( fileName.isNull() )
     return;
 
@@ -319,8 +320,6 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
   re1.setMinimal( true );
 
   QList<QPair<QString, QVariant>> map;
-
-  s.readLine();
 
   while ( !s.atEnd() )
   {

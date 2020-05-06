@@ -199,6 +199,7 @@ SET(TESTS
  testqgsprojectstorage.cpp
  testqgsprojutils.cpp
  testqgsproperty.cpp
+ testqgsprovidermetadata.cpp
  testqgis.cpp
  testqgsrasterfilewriter.cpp
  testqgsrasterfill.cpp
@@ -241,6 +242,7 @@ SET(TESTS
  testqgsvectorlayer.cpp
  testqgsvectorlayerutils.cpp
  testqgsvectortilelayer.cpp
+ testqgsvectortilewriter.cpp
  testqgsziputils.cpp
  testziplayer.cpp
  testqgslayerdefinition.cpp

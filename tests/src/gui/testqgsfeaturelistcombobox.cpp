@@ -26,6 +26,7 @@
 #include <memory>
 
 #include <QLineEdit>
+#include <QSignalSpy>
 
 class QgsFilterLineEdit;
 
@@ -121,27 +122,23 @@ void TestQgsFeatureListComboBox::testSetGetLayer()
 
 void TestQgsFeatureListComboBox::testSetGetForeignKey()
 {
-  std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
-
-  QgsFeatureFilterModel *model = qobject_cast<QgsFeatureFilterModel *>( cb->model() );
-  QEventLoop loop;
-  connect( model, &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
+  QgsFeatureListComboBox cb;
 
   Q_NOWARN_DEPRECATED_PUSH
-  QVERIFY( cb->identifierValue().isNull() );
+  QVERIFY( cb.identifierValue().isNull() );
 
-  cb->setSourceLayer( mLayer.get() );
-  cb->setDisplayExpression( "\"material\"" );
-  cb->lineEdit()->setText( "ro" );
-  emit cb->lineEdit()->textChanged( "ro" );
-  QVERIFY( cb->identifierValue().isNull() );
+  cb.setSourceLayer( mLayer.get() );
+  cb.setDisplayExpression( "\"material\"" );
+  cb.setIdentifierField( "material" );
 
-  loop.exec();
+  QSignalSpy spy( &cb, &QgsFeatureListComboBox::identifierValueChanged );
+  QTest::keyClicks( cb.lineEdit(), "ro" );
+  QTest::keyClick( cb.lineEdit(), Qt::Key_Enter );
 
-  QVERIFY( cb->identifierValue().isNull() );
+  spy.wait();
 
-  cb->setIdentifierValue( 20 );
-  QCOMPARE( cb->identifierValue(), QVariant( 20 ) );
+  QCOMPARE( cb.identifierValue().toString(), QStringLiteral( "iron" ) );
+
   Q_NOWARN_DEPRECATED_POP
 }
 

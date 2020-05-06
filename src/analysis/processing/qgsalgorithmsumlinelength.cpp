@@ -87,6 +87,7 @@ QgsProcessing::SourceType QgsSumLineLengthAlgorithm::outputLayerType() const
 QgsCoordinateReferenceSystem QgsSumLineLengthAlgorithm::outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const
 {
   mCrs = inputCrs;
+  mDa.setSourceCrs( mCrs, mTransformContext );
   return mCrs;
 }
 
@@ -131,7 +132,7 @@ bool QgsSumLineLengthAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
   {
     mDa.setEllipsoid( context.project()->ellipsoid() );
   }
-  mDa.setSourceCrs( mCrs, context.transformContext() );
+  mTransformContext = context.transformContext();
 
   return true;
 }

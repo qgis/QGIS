@@ -166,8 +166,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) override;
     bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     QgsMeshLayerTemporalProperties *temporalProperties() override;
-
     void reload() override;
+    QStringList subLayers() const override;
 
     //! Returns the provider type for this layer
     QString providerType() const;
@@ -204,6 +204,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * Gets native mesh and updates (creates if it doesn't exist) the base triangular mesh
      *
      * \param transform Transformation from layer CRS to destination (e.g. map) CRS. With invalid transform, it keeps the native mesh CRS
+     *
+     * \since QGIS 3.14
      */
     void updateTriangularMesh( const QgsCoordinateTransform &transform = QgsCoordinateTransform() );
 
@@ -257,20 +259,24 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     /**
       * Interpolates the value on the given point from given dataset.
+      * For 3D datasets, it uses dataset3dValue(), \n
+      * For 1D datasets, it uses dataset1dValue() with \a searchRadius
       *
       * \note It uses previously cached and indexed triangular mesh
       * and so if the layer has not been rendered previously
       * (e.g. when used in a script) it returns NaN value
+      * \see updateTriangularMesh
       *
       * \param index dataset index specifying group and dataset to extract value from
       * \param point point to query in map coordinates
+      * \param searchRadius the radius of the search area in map unit
       * \returns interpolated value at the point. Returns NaN values for values
       * outside the mesh layer, nodata values and in case triangular mesh was not
       * previously used for rendering
       *
       * \since QGIS 3.4
       */
-    QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
+    QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius = 0 ) const;
 
     /**
       * Returns the 3d values of stacked 3d mesh defined by the given point
@@ -278,6 +284,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       * \note It uses previously cached and indexed triangular mesh
       * and so if the layer has not been rendered previously
       * (e.g. when used in a script) it returns NaN value
+      * \see updateTriangularMesh
       *
       * \param index dataset index specifying group and dataset to extract value from
       * \param point point to query in map coordinates
@@ -288,6 +295,24 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       * \since QGIS 3.12
       */
     QgsMesh3dDataBlock dataset3dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
+
+    /**
+      * Returns the value of 1D mesh dataset defined on edge that are in the search area defined by point ans searchRadius
+      *
+      * \note It uses previously cached and indexed triangular mesh
+      * and so if the layer has not been rendered previously
+      * (e.g. when used in a script) it returns NaN value
+      * \see updateTriangularMesh
+      *
+      * \param index dataset index specifying group and dataset to extract value from
+      * \param point the center point of the search area
+      * \param searchRadius the radius of the searc area in map unit
+      * \returns interpolated value at the projected point. Returns NaN values for values
+      * outside the mesh layer and in case triangular mesh was not previously used for rendering
+      *
+      * \since QGIS 3.14
+      */
+    QgsMeshDatasetValue dataset1dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius ) const;
 
     /**
       * Returns dataset index from active scalar group depending on the time range.
@@ -351,6 +376,29 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       * \since QGIS 3.14
       */
     void setReferenceTime( const QDateTime &referenceTime );
+
+    /**
+      * Returns the position of the snapped point on the mesh element closest to \a point intersecting with
+      * the searching area defined by \a point and \a searchRadius
+      *
+      * For vertex, the snapped position is the vertex position
+      * For edge, the snapped position is the projected point on the edge, extremity of edge if outside the edge
+      * For face, the snapped position is the centroid of the face
+      * The returned position is in map coordinates.
+      *
+      * \note It uses previously cached and indexed triangular mesh
+      * and so if the layer has not been rendered previously
+      * (e.g. when used in a script) it returns empty QgsPointXY
+      * \see updateTriangularMesh
+      *
+      * \param elementType the type of element to snap
+      * \param point the center of the search area in map coordinates
+      * \param searchRadius the radius of the search area in map units
+      * \return the position of the snapped point on the closest element, empty QgsPointXY if no element of type \a elementType
+      *
+      * \since QGIS 3.14
+      */
+    QgsPointXY snapOnElement( QgsMesh::ElementType elementType, const QgsPointXY &point, double searchRadius );
 
   public slots:
 
@@ -442,6 +490,17 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     QgsMeshDatasetIndex mStaticScalarDatasetIndex;
     QgsMeshDatasetIndex mStaticVectorDatasetIndex;
+
+    int closestEdge( const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint ) const;
+
+    //! Returns the exact position in map coordinates of the closest vertex in the search area
+    QgsPointXY snapOnVertex( const QgsPointXY &point, double searchRadius );
+
+    //!Returns the position of the projected point on the closest edge in the search area
+    QgsPointXY snapOnEdge( const QgsPointXY &point, double searchRadius );
+
+    //!Returns the position of the centroid point on the closest face in the search area
+    QgsPointXY snapOnFace( const QgsPointXY &point, double searchRadius );
 };
 
 #endif //QGSMESHLAYER_H

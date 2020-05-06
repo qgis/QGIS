@@ -51,7 +51,7 @@ class APP_NO_EXPORT QgsMeshDatasetListModel: public QAbstractListModel
 /**
  * A widget for setup of the static dataset of a mesh layer.
  */
-class APP_EXPORT QgsMeshStaticDatasetWidget  : public QWidget, private Ui::QgsMeshStaticDatasetWidget
+class APP_NO_EXPORT QgsMeshStaticDatasetWidget  : public QWidget, private Ui::QgsMeshStaticDatasetWidget
 {
     Q_OBJECT
   public:

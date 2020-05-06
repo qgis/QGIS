@@ -51,6 +51,9 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
   mLinkLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
   mLinkLabel->setTextFormat( Qt::RichText );
   mLinkLabel->hide(); // do not show by default
+  mLinkEditButton = new QToolButton( this );
+  mLinkEditButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
+  connect( mLinkEditButton, &QToolButton::clicked, this, &QgsFileWidget::editLink );
 
   // otherwise, use the traditional QLineEdit subclass
   mLineEdit = new QgsFileDropEdit( this );
@@ -100,8 +103,12 @@ void QgsFileWidget::setFilePath( QString path )
 
 void QgsFileWidget::setReadOnly( bool readOnly )
 {
-  mFileWidgetButton->setEnabled( !readOnly );
-  mLineEdit->setEnabled( !readOnly );
+  if ( mReadOnly == readOnly )
+    return;
+
+  mReadOnly = readOnly;
+
+  updateLayout();
 }
 
 QString QgsFileWidget::dialogTitle() const
@@ -152,6 +159,15 @@ void QgsFileWidget::textEdited( const QString &path )
   emit fileChanged( mFilePath );
 }
 
+void QgsFileWidget::editLink()
+{
+  if ( !mUseLink || mReadOnly )
+    return;
+
+  mIsLinkEdited = !mIsLinkEdited;
+  updateLayout();
+}
+
 bool QgsFileWidget::useLink() const
 {
   return mUseLink;
@@ -159,19 +175,11 @@ bool QgsFileWidget::useLink() const
 
 void QgsFileWidget::setUseLink( bool useLink )
 {
+  if ( mUseLink == useLink )
+    return;
+
   mUseLink = useLink;
-  mLinkLabel->setVisible( mUseLink );
-  mLineEdit->setVisible( !mUseLink );
-  if ( mUseLink )
-  {
-    mLayout->removeWidget( mLineEdit );
-    mLayout->insertWidget( 0, mLinkLabel );
-  }
-  else
-  {
-    mLayout->removeWidget( mLinkLabel );
-    mLayout->insertWidget( 0, mLineEdit );
-  }
+  updateLayout();
 }
 
 bool QgsFileWidget::fullUrl() const
@@ -218,6 +226,43 @@ void QgsFileWidget::setRelativeStorage( QgsFileWidget::RelativeStorage relativeS
 QgsFilterLineEdit *QgsFileWidget::lineEdit()
 {
   return mLineEdit;
+}
+
+void QgsFileWidget::updateLayout()
+{
+  mLayout->removeWidget( mLineEdit );
+  mLayout->removeWidget( mLinkLabel );
+  mLayout->removeWidget( mLinkEditButton );
+
+  mLinkEditButton->setVisible( mUseLink && !mReadOnly );
+
+  mFileWidgetButton->setEnabled( !mReadOnly );
+  mLineEdit->setEnabled( !mReadOnly );
+
+  if ( mUseLink && !mIsLinkEdited )
+  {
+    mLayout->insertWidget( 0, mLinkLabel );
+    mLineEdit->setVisible( false );
+    mLinkLabel->setVisible( true );
+
+    if ( !mReadOnly )
+    {
+      mLayout->insertWidget( 1, mLinkEditButton );
+      mLinkEditButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
+    }
+  }
+  else
+  {
+    mLayout->insertWidget( 0, mLineEdit );
+    mLineEdit->setVisible( true );
+    mLinkLabel->setVisible( false );
+
+    if ( mIsLinkEdited )
+    {
+      mLayout->insertWidget( 1, mLinkEditButton );
+      mLinkEditButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveEdits.svg" ) ) );
+    }
+  }
 }
 
 void QgsFileWidget::openFileDialog()

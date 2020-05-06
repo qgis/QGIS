@@ -1881,6 +1881,54 @@ tests:
             start: skip
             end: skip
 
+  - algorithm: native:serviceareafrompoint
+    name: Service area from point (fastest, old parameter)
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 50.0
+      INCLUDE_BOUNDS: false
+      INPUT:
+        name: roads.gml|layername=roads
+        type: vector
+      START_POINT: 1002424.321122,6221845.996330 [EPSG:32733]
+      STRATEGY: 1
+      TOLERANCE: 0.0
+      TRAVEL_COST: 36
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/service_area_fastest_nodes.gml
+        type: vector
+      OUTPUT_LINES:
+        name: expected/service_area_fastests_lines.gml
+        type: vector
+
+  - algorithm: native:serviceareafrompoint
+    name: Service area from point (fastest, new parameter)
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 50.0
+      INCLUDE_BOUNDS: false
+      INPUT:
+        name: roads.gml|layername=roads
+        type: vector
+      START_POINT: 1002424.321122,6221845.996330 [EPSG:32733]
+      STRATEGY: 1
+      TOLERANCE: 0.0
+      TRAVEL_COST2: 0.01
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/service_area_fastest_nodes.gml
+        type: vector
+      OUTPUT_LINES:
+        name: expected/service_area_fastests_lines.gml
+        type: vector
+
   - algorithm: native:serviceareafromlayer
     name: Service area from layer (shortest, nodes)
     params:

@@ -17,8 +17,10 @@
 
 #include "qgslogger.h"
 #include "qgsvectortilelayerrenderer.h"
-#include "qgsmbtilesreader.h"
+#include "qgsmbtiles.h"
+#include "qgsvectortilebasiclabeling.h"
 #include "qgsvectortilebasicrenderer.h"
+#include "qgsvectortilelabeling.h"
 #include "qgsvectortileloader.h"
 
 #include "qgsdatasourceuri.h"
@@ -59,10 +61,17 @@ bool QgsVectorTileLayer::loadDataSource()
   }
   else if ( mSourceType == QStringLiteral( "mbtiles" ) )
   {
-    QgsMBTilesReader reader( mSourcePath );
+    QgsMbTiles reader( mSourcePath );
     if ( !reader.open() )
     {
       QgsDebugMsg( QStringLiteral( "failed to open MBTiles file: " ) + mSourcePath );
+      return false;
+    }
+
+    QString format = reader.metadataValue( QStringLiteral( "format" ) );
+    if ( format != QStringLiteral( "pbf" ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Cannot open MBTiles for vector tiles. Format = " ) + format );
       return false;
     }
 
@@ -148,6 +157,27 @@ bool QgsVectorTileLayer::readSymbology( const QDomNode &node, QString &errorMess
 
   r->readXml( elemRenderer, context );
   setRenderer( r );
+
+  setLabeling( nullptr );
+  QDomElement elemLabeling = elem.firstChildElement( QStringLiteral( "labeling" ) );
+  if ( !elemLabeling.isNull() )
+  {
+    QString labelingType = elemLabeling.attribute( QStringLiteral( "type" ) );
+    QgsVectorTileLabeling *labeling = nullptr;
+    if ( labelingType == QStringLiteral( "basic" ) )
+      labeling = new QgsVectorTileBasicLabeling;
+    else
+    {
+      errorMessage = tr( "Unknown labeling type: " ) + rendererType;
+    }
+
+    if ( labeling )
+    {
+      labeling->readXml( elemLabeling, context );
+      setLabeling( labeling );
+    }
+  }
+
   return true;
 }
 
@@ -165,12 +195,82 @@ bool QgsVectorTileLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
     mRenderer->writeXml( elemRenderer, context );
     elem.appendChild( elemRenderer );
   }
+
+  if ( mLabeling )
+  {
+    QDomElement elemLabeling = doc.createElement( QStringLiteral( "labeling" ) );
+    elemLabeling.setAttribute( QStringLiteral( "type" ), mLabeling->type() );
+    mLabeling->writeXml( elemLabeling, context );
+    elem.appendChild( elemLabeling );
+  }
+
   return true;
 }
 
 void QgsVectorTileLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
 {
   Q_UNUSED( transformContext )
+}
+
+QString QgsVectorTileLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( source );
+
+  QString sourceType = dsUri.param( QStringLiteral( "type" ) );
+  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
+  if ( sourceType == QStringLiteral( "xyz" ) )
+  {
+    QUrl sourceUrl( sourcePath );
+    if ( sourceUrl.isLocalFile() )
+    {
+      // relative path will become "file:./x.txt"
+      QString relSrcUrl = context.pathResolver().writePath( sourceUrl.toLocalFile() );
+      dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+      dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( relSrcUrl ).toString() );
+      return dsUri.encodedUri();
+    }
+  }
+  else if ( sourceType == QStringLiteral( "mbtiles" ) )
+  {
+    sourcePath = context.pathResolver().writePath( sourcePath );
+    dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+    dsUri.setParam( QStringLiteral( "url" ), sourcePath );
+    return dsUri.encodedUri();
+  }
+
+  return source;
+}
+
+QString QgsVectorTileLayer::decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const
+{
+  Q_UNUSED( provider )
+
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( source );
+
+  QString sourceType = dsUri.param( QStringLiteral( "type" ) );
+  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
+  if ( sourceType == QStringLiteral( "xyz" ) )
+  {
+    QUrl sourceUrl( sourcePath );
+    if ( sourceUrl.isLocalFile() )  // file-based URL? convert to relative path
+    {
+      QString absSrcUrl = context.pathResolver().readPath( sourceUrl.toLocalFile() );
+      dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+      dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( absSrcUrl ).toString() );
+      return dsUri.encodedUri();
+    }
+  }
+  else if ( sourceType == QStringLiteral( "mbtiles" ) )
+  {
+    sourcePath = context.pathResolver().readPath( sourcePath );
+    dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+    dsUri.setParam( QStringLiteral( "url" ), sourcePath );
+    return dsUri.encodedUri();
+  }
+
+  return source;
 }
 
 QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
@@ -190,4 +290,14 @@ void QgsVectorTileLayer::setRenderer( QgsVectorTileRenderer *r )
 QgsVectorTileRenderer *QgsVectorTileLayer::renderer() const
 {
   return mRenderer.get();
+}
+
+void QgsVectorTileLayer::setLabeling( QgsVectorTileLabeling *labeling )
+{
+  mLabeling.reset( labeling );
+}
+
+QgsVectorTileLabeling *QgsVectorTileLayer::labeling() const
+{
+  return mLabeling.get();
 }

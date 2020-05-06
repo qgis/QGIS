@@ -81,6 +81,8 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
 
         crs = QgsServerApiUtils.parseCrs('http://www.opengis.net/def/crs/OGC/1.3/CRS84')
         self.assertTrue(crs.isValid())
+
+        crs = QgsServerApiUtils.parseCrs('http://www.opengis.net/def/crs/EPSG/9.6.2/4326')
         self.assertEquals(crs.postgisSrid(), 4326)
 
         crs = QgsServerApiUtils.parseCrs('http://www.opengis.net/def/crs/EPSG/9.6.2/3857')

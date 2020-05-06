@@ -40,41 +40,54 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
                             const QString &providerKey,
                             const QgsMeshLayer::LayerOptions &options )
-  : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath )
+  : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath ),
+    mTemporalProperties( new QgsMeshLayerTemporalProperties( this ) )
 {
   mShouldValidateCrs = !options.skipCrsValidation;
 
   setProviderType( providerKey );
   // if we’re given a provider type, try to create and bind one to this layer
+  bool ok = false;
   if ( !meshLayerPath.isEmpty() && !providerKey.isEmpty() )
   {
     QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
-    setDataProvider( providerKey, providerOptions );
+    ok = setDataProvider( providerKey, providerOptions );
   }
 
-  setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
-  setDefaultRendererSettings();
+  if ( ok )
+  {
+    setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
+    setDefaultRendererSettings();
 
-  mTemporalProperties = new QgsMeshLayerTemporalProperties( this );
-  if ( mDataProvider )
-    mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
+    if ( mDataProvider )
+      mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
+  }
 }
 
 
 void QgsMeshLayer::setDefaultRendererSettings()
 {
+  QgsMeshRendererMeshSettings meshSettings;
   if ( mDataProvider && mDataProvider->datasetGroupCount() > 0 )
   {
-    // show data from the first dataset group
+    // Show data from the first dataset group
     mRendererSettings.setActiveScalarDatasetGroup( 0 );
+    // If the first dataset group has nan min/max, display the mesh to avoid nothing displayed
+    QgsMeshDatasetGroupMetadata meta = mDataProvider->datasetGroupMetadata( 0 );
+    if ( meta.maximum() == std::numeric_limits<double>::quiet_NaN() &&
+         meta.minimum() == std::numeric_limits<double>::quiet_NaN() )
+      meshSettings.setEnabled( true );
+
+    // If the mesh is non temporal, set the static scalar dataset
+    if ( !mDataProvider->temporalCapabilities()->hasTemporalCapabilities() )
+      setStaticScalarDatasetIndex( QgsMeshDatasetIndex( 0, 0 ) );
   }
   else
   {
     // show at least the mesh by default
-    QgsMeshRendererMeshSettings meshSettings;
     meshSettings.setEnabled( true );
-    mRendererSettings.setNativeMeshSettings( meshSettings );
   }
+  mRendererSettings.setNativeMeshSettings( meshSettings );
 
   // Sets default resample method for scalar dataset
   if ( !mDataProvider )
@@ -246,18 +259,17 @@ QString QgsMeshLayer::formatTime( double hours )
     return QgsMeshLayerUtils::formatTime( hours, QDateTime(), mTimeSettings );
 }
 
-QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const
+QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius ) const
 {
   QgsMeshDatasetValue value;
-
   const QgsTriangularMesh *mesh = triangularMesh();
 
   if ( mesh && dataProvider() && dataProvider()->isValid() && index.isValid() )
   {
     if ( dataProvider()->contains( QgsMesh::ElementType::Edge ) )
     {
-      // Identify for edges not implemented yet
-      return value;
+      QgsRectangle searchRectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius );
+      return dataset1dValue( index, point, searchRadius );
     }
     int faceIndex = mesh->faceIndexForPoint( point ) ;
     if ( faceIndex >= 0 )
@@ -339,6 +351,44 @@ QgsMesh3dDataBlock QgsMeshLayer::dataset3dValue( const QgsMeshDatasetIndex &inde
   return block3d;
 }
 
+QgsMeshDatasetValue QgsMeshLayer::dataset1dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius ) const
+{
+  QgsMeshDatasetValue value;
+  QgsPointXY projectedPoint;
+  int selectedIndex = closestEdge( point, searchRadius, projectedPoint );
+  const QgsTriangularMesh *mesh = triangularMesh();
+  if ( selectedIndex >= 0 )
+  {
+    const QgsMeshDatasetGroupMetadata::DataType dataType = dataProvider()->datasetGroupMetadata( index ).dataType();
+    switch ( dataType )
+    {
+      case QgsMeshDatasetGroupMetadata::DataOnEdges:
+      {
+        value = dataProvider()->datasetValue( index, selectedIndex );
+      }
+      break;
+
+      case QgsMeshDatasetGroupMetadata::DataOnVertices:
+      {
+        const QgsMeshEdge &edge = mesh->edges()[selectedIndex];
+        const int v1 = edge.first, v2 = edge.second;
+        const QgsPoint p1 = mesh->vertices()[v1], p2 = mesh->vertices()[v2];
+        const QgsMeshDatasetValue val1 = dataProvider()->datasetValue( index, v1 );
+        const QgsMeshDatasetValue val2 = dataProvider()->datasetValue( index, v2 );
+        double edgeLength = p1.distance( p2 );
+        double dist1 = p1.distance( projectedPoint.x(), projectedPoint.y() );
+        value = QgsMeshLayerUtils::interpolateFromVerticesData( dist1 / edgeLength, val1, val2 );
+      }
+      break;
+      default:
+        break;
+    }
+  }
+
+
+  return value;
+}
+
 void QgsMeshLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
 {
   if ( mDataProvider )
@@ -397,6 +447,37 @@ void QgsMeshLayer::onDatasetGroupsAdded( int count )
 
 }
 
+int QgsMeshLayer::closestEdge( const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint ) const
+{
+  QgsRectangle searchRectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius );
+  const QgsTriangularMesh *mesh = triangularMesh();
+  // search for the closest edge in search area from point
+  const QList<int> edgeIndexes = mesh->edgeIndexesForRectangle( searchRectangle );
+  int selectedIndex = -1;
+  if ( mesh &&
+       mesh->contains( QgsMesh::Edge ) &&
+       mDataProvider->isValid() )
+  {
+    double sqrMaxDistFromPoint = pow( searchRadius, 2 );
+    for ( const int edgeIndex : edgeIndexes )
+    {
+      const QgsMeshEdge &edge = mesh->edges().at( edgeIndex );
+      const QgsMeshVertex &vertex1 = mesh->vertices()[edge.first];
+      const QgsMeshVertex &vertex2 = mesh->vertices()[edge.second];
+      QgsPointXY projPoint;
+      double sqrDist = point.sqrDistToSegment( vertex1.x(), vertex1.y(), vertex2.x(), vertex2.y(), projPoint );
+      if ( sqrDist < sqrMaxDistFromPoint )
+      {
+        selectedIndex = edgeIndex;
+        projectedPoint = projPoint;
+        sqrMaxDistFromPoint = sqrDist;
+      }
+    }
+  }
+
+  return selectedIndex;
+}
+
 QgsMeshDatasetIndex QgsMeshLayer::staticVectorDatasetIndex() const
 {
   return mStaticVectorDatasetIndex;
@@ -408,6 +489,104 @@ void QgsMeshLayer::setReferenceTime( const QDateTime &referenceTime )
     temporalProperties()->setReferenceTime( referenceTime, dataProvider()->temporalCapabilities() );
   else
     temporalProperties()->setReferenceTime( referenceTime, nullptr );
+}
+
+QgsPointXY QgsMeshLayer::snapOnVertex( const QgsPointXY &point, double searchRadius )
+{
+  const QgsTriangularMesh *mesh = triangularMesh();
+  QgsPointXY exactPosition;
+  if ( !mesh )
+    return exactPosition;
+  QgsRectangle rectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius );
+  double maxDistance = searchRadius;
+  //attempt to snap on edges's vertices
+  QList<int> edgeIndexes = mesh->edgeIndexesForRectangle( rectangle );
+  for ( const int edgeIndex : edgeIndexes )
+  {
+    const QgsMeshEdge &edge = mesh->edges().at( edgeIndex );
+    const QgsMeshVertex &vertex1 = mesh->vertices()[edge.first];
+    const QgsMeshVertex &vertex2 = mesh->vertices()[edge.second];
+    double dist1 = point.distance( vertex1 );
+    double dist2 = point.distance( vertex2 );
+    if ( dist1 < maxDistance )
+    {
+      maxDistance = dist1;
+      exactPosition = vertex1;
+    }
+    if ( dist2 < maxDistance )
+    {
+      maxDistance = dist2;
+      exactPosition = vertex2;
+    }
+  }
+
+  //attempt to snap on face's vertices
+  QList<int> faceIndexes = mesh->faceIndexesForRectangle( rectangle );
+  for ( const int faceIndex : faceIndexes )
+  {
+    const QgsMeshFace &face = mesh->triangles().at( faceIndex );
+    for ( int i = 0; i < 3; ++i )
+    {
+      const QgsMeshVertex &vertex = mesh->vertices()[face.at( i )];
+      double dist = point.distance( vertex );
+      if ( dist < maxDistance )
+      {
+        maxDistance = dist;
+        exactPosition = vertex;
+      }
+    }
+  }
+
+  return exactPosition;
+}
+
+QgsPointXY QgsMeshLayer::snapOnEdge( const QgsPointXY &point, double searchRadius )
+{
+  QgsPointXY projectedPoint;
+  closestEdge( point, searchRadius, projectedPoint );
+
+  return projectedPoint;
+}
+
+QgsPointXY QgsMeshLayer::snapOnFace( const QgsPointXY &point, double searchRadius )
+{
+  const QgsTriangularMesh *mesh = triangularMesh();
+  QgsPointXY centroidPosition;
+  if ( !mesh )
+    return centroidPosition;
+  QgsRectangle rectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius );
+  double maxDistance = std::numeric_limits<double>::max();
+
+  QList<int> faceIndexes = mesh->faceIndexesForRectangle( rectangle );
+  for ( const int faceIndex : faceIndexes )
+  {
+    int nativefaceIndex = mesh->trianglesToNativeFaces().at( faceIndex );
+    if ( nativefaceIndex < 0 && nativefaceIndex >= mesh->faceCentroids().count() )
+      continue;
+    const QgsPointXY centroid = mesh->faceCentroids()[nativefaceIndex];
+    double dist = point.distance( centroid );
+    if ( dist < maxDistance )
+    {
+      maxDistance = dist;
+      centroidPosition = centroid;
+    }
+  }
+
+  return centroidPosition;
+}
+
+QgsPointXY QgsMeshLayer::snapOnElement( QgsMesh::ElementType elementType, const QgsPointXY &point, double searchRadius )
+{
+  switch ( elementType )
+  {
+    case QgsMesh::Vertex:
+      return snapOnVertex( point, searchRadius );
+    case QgsMesh::Edge:
+      return snapOnEdge( point, searchRadius );
+    case QgsMesh::Face:
+      return snapOnFace( point, searchRadius );
+  }
+  return QgsPointXY(); // avoid warnings
 }
 
 QgsMeshDatasetIndex QgsMeshLayer::staticScalarDatasetIndex() const
@@ -475,6 +654,12 @@ void QgsMeshLayer::assignDefaultStyleToDatasetGroup( int groupIndex )
   QgsMeshRendererScalarSettings scalarSettings;
   scalarSettings.setClassificationMinimumMaximum( groupMin, groupMax );
   scalarSettings.setColorRampShader( fcn );
+  QgsInterpolatedLineWidth edgeStrokeWidth;
+  edgeStrokeWidth.setMinimumValue( groupMin );
+  edgeStrokeWidth.setMaximumValue( groupMax );
+  QgsInterpolatedLineColor edgeStrokeColor( fcn );
+  QgsInterpolatedLineRenderer edgeStrokePen;
+  scalarSettings.setEdgeStrokeWidth( edgeStrokeWidth );
   mRendererSettings.setScalarSettings( groupIndex, scalarSettings );
 
   if ( metadata.isVector() )
@@ -728,6 +913,14 @@ void QgsMeshLayer::reload()
     //clear the rendererCache
     mRendererCache.reset( new QgsMeshLayerRendererCache() );
   }
+}
+
+QStringList QgsMeshLayer::subLayers() const
+{
+  if ( mDataProvider )
+    return mDataProvider->subLayers();
+  else
+    return QStringList();
 }
 
 bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )

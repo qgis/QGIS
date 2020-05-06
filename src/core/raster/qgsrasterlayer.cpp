@@ -127,6 +127,11 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
 
   setDataSource( uri, baseName, providerKey, providerOptions, options.loadDefaultStyle );
 
+  if ( mValid )
+  {
+    mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
+  }
+
 } // QgsRasterLayer ctor
 
 QgsRasterLayer::~QgsRasterLayer()
@@ -648,7 +653,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   // Setup source CRS
   setCrs( QgsCoordinateReferenceSystem( mDataProvider->crs() ) );
 
-  QgsDebugMsgLevel( "using wkt:\n" + crs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ), 4 );
+  QgsDebugMsgLevel( "using wkt:\n" + crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ), 4 );
 
   //defaults - Needs to be set after the Contrast list has been build
   //Try to read the default contrast enhancement from the config file
@@ -871,8 +876,6 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
 
   if ( mValid )
   {
-    mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
-
     // load default style
     bool defaultLoadedFlag = false;
     bool restoredStyle = false;

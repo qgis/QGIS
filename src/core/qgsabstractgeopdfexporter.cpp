@@ -394,7 +394,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
       }
       else
       {
-        srs.appendChild( doc.createTextNode( section.crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) ) );
+        srs.appendChild( doc.createTextNode( section.crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ) ) );
       }
       georeferencing.appendChild( srs );
     }

@@ -16,6 +16,7 @@
 #include "qgswmsprovidergui.h"
 #include "qgswmsprovider.h"
 #include "qgswmssourceselect.h"
+#include "qgsxyzsourceselect.h"
 #include "qgssourceselectprovider.h"
 #include "qgstilescalewidget.h"
 #include "qgsproviderguimetadata.h"
@@ -37,6 +38,20 @@ class QgsWmsSourceSelectProvider : public QgsSourceSelectProvider
     }
 };
 
+class QgsXyzSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    QString providerKey() const override { return QStringLiteral( "xyz" ); }
+    QString text() const override { return QStringLiteral( "XYZ" ); } // untranslatable string as acronym for this particular case. Use QObject::tr() otherwise
+    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 40; }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddXyzLayer.svg" ) ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsXyzSourceSelect( parent, fl, widgetMode );
+    }
+};
+
 QgsWmsProviderGuiMetadata::QgsWmsProviderGuiMetadata()
   : QgsProviderGuiMetadata( QgsWmsProvider::WMS_KEY )
 {
@@ -45,7 +60,7 @@ QgsWmsProviderGuiMetadata::QgsWmsProviderGuiMetadata()
 QList<QgsSourceSelectProvider *> QgsWmsProviderGuiMetadata::sourceSelectProviders()
 {
   QList<QgsSourceSelectProvider *> providers;
-  providers << new QgsWmsSourceSelectProvider;
+  providers << new QgsWmsSourceSelectProvider << new QgsXyzSourceSelectProvider;
   return providers;
 }
 

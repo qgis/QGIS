@@ -253,7 +253,9 @@ class QgsPostgresRasterProviderMetadata: public QgsProviderMetadata
     QgsPostgresRasterProviderMetadata();
     QVariantMap decodeUri( const QString &uri ) override;
     QgsPostgresRasterProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
-
+    QString encodeUri( const QVariantMap &parts ) override;
 };
+
+
 
 #endif // QGSPOSTGRESRASTERPROVIDER_H
