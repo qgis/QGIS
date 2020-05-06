@@ -123,7 +123,7 @@ void QgsExpressionPreviewWidget::refreshPreview()
 
 void QgsExpressionPreviewWidget::linkActivated( const QString & )
 {
-  QgsMessageViewer mv( this );
+  QgsMessageViewer mv( this, QgsGuiUtils::ModalDialogFlags, false );
   mv.setWindowTitle( tr( "More Info on Expression Error" ) );
   mv.setMessageAsHtml( mToolTip );
   mv.exec();

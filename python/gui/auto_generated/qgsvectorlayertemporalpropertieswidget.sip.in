@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/raster/qgsrasterlayerproperties.h                            *
+ * src/gui/qgsvectorlayertemporalpropertieswidget.h                     *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -10,39 +10,34 @@
 
 
 
-
-
-class QgsRasterLayerProperties : QgsOptionsDialogBase
+class QgsVectorLayerTemporalPropertiesWidget : QWidget
 {
 %Docstring
-Property sheet for a raster map layer
+A widget for configuring the temporal properties for a vector layer.
 
-.. versionadded:: 3.12
+.. versionadded:: 3.14
 %End
 
 %TypeHeaderCode
-#include "qgsrasterlayerproperties.h"
+#include "qgsvectorlayertemporalpropertieswidget.h"
 %End
   public:
 
-
-    QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = 0, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
+    QgsVectorLayerTemporalPropertiesWidget( QWidget *parent = 0, QgsVectorLayer *layer = 0 );
 %Docstring
-Constructor
-
-:param lyr: Map layer for which properties will be displayed
-:param canvas: the QgsMapCanvas instance
-:param parent: the parent of this widget
-:param fl: windows flag
+Constructor for QgsVectorLayerTemporalPropertiesWidget.
 %End
 
-  protected slots:
+    void saveTemporalProperties();
+%Docstring
+Save widget temporal properties inputs.
+%End
 
 };
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/raster/qgsrasterlayerproperties.h                            *
+ * src/gui/qgsvectorlayertemporalpropertieswidget.h                     *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

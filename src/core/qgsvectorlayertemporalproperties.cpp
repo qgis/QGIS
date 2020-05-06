@@ -1,0 +1,190 @@
+/***************************************************************************
+                         qgsvectorlayertemporalproperties.cpp
+                         ---------------
+    begin                : May 2020
+    copyright            : (C) 2020 by Nyall Dawson
+    email                : nyall dot dawson at gmail dot com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgsvectorlayertemporalproperties.h"
+#include "qgsvectordataprovidertemporalcapabilities.h"
+#include "qgsexpression.h"
+
+QgsVectorLayerTemporalProperties::QgsVectorLayerTemporalProperties( QObject *parent, bool enabled )
+  :  QgsMapLayerTemporalProperties( parent, enabled )
+{
+}
+
+bool QgsVectorLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTimeRange &range ) const
+{
+  if ( !isActive() )
+    return true;
+
+  switch ( mMode )
+  {
+    case ModeFixedTemporalRange:
+      return range.isInfinite() || mFixedRange.isInfinite() || mFixedRange.overlaps( range );
+
+    case ModeFeatureDateTimeInstantFromField:
+    case ModeFeatureDateTimeStartAndEndFromFields:
+      return true;
+  }
+  return true;
+}
+
+QgsVectorLayerTemporalProperties::TemporalMode QgsVectorLayerTemporalProperties::mode() const
+{
+  return mMode;
+}
+
+void QgsVectorLayerTemporalProperties::setMode( QgsVectorLayerTemporalProperties::TemporalMode mode )
+{
+  if ( mMode == mode )
+    return;
+  mMode = mode;
+}
+
+void  QgsVectorLayerTemporalProperties::setFixedTemporalRange( const QgsDateTimeRange &range )
+{
+  mFixedRange = range;
+}
+
+const QgsDateTimeRange &QgsVectorLayerTemporalProperties::fixedTemporalRange() const
+{
+  return mFixedRange;
+}
+
+bool QgsVectorLayerTemporalProperties::readXml( const QDomElement &element, const QgsReadWriteContext &context )
+{
+  Q_UNUSED( context )
+
+  QDomElement temporalNode = element.firstChildElement( QStringLiteral( "temporal" ) );
+
+  setIsActive( temporalNode.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt() );
+
+  mMode = static_cast< TemporalMode >( temporalNode.attribute( QStringLiteral( "mode" ), QStringLiteral( "0" ) ). toInt() );
+
+  mStartFieldName = temporalNode.attribute( QStringLiteral( "startField" ) );
+  mEndFieldName = temporalNode.attribute( QStringLiteral( "endField" ) );
+
+  QDomNode rangeElement = temporalNode.namedItem( QStringLiteral( "fixedRange" ) );
+
+  QDomNode begin = rangeElement.namedItem( QStringLiteral( "start" ) );
+  QDomNode end = rangeElement.namedItem( QStringLiteral( "end" ) );
+
+  QDateTime beginDate = QDateTime::fromString( begin.toElement().text(), Qt::ISODate );
+  QDateTime endDate = QDateTime::fromString( end.toElement().text(), Qt::ISODate );
+
+  QgsDateTimeRange range = QgsDateTimeRange( beginDate, endDate );
+  setFixedTemporalRange( range );
+
+  return true;
+}
+
+QDomElement QgsVectorLayerTemporalProperties::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context )
+{
+  Q_UNUSED( context )
+  if ( element.isNull() )
+    return QDomElement();
+
+  QDomElement temporalElement = document.createElement( QStringLiteral( "temporal" ) );
+  temporalElement.setAttribute( QStringLiteral( "enabled" ), isActive() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  temporalElement.setAttribute( QStringLiteral( "mode" ), QString::number( mMode ) );
+
+  temporalElement.setAttribute( QStringLiteral( "startField" ), mStartFieldName );
+  temporalElement.setAttribute( QStringLiteral( "endField" ), mEndFieldName );
+
+  QDomElement rangeElement = document.createElement( QStringLiteral( "fixedRange" ) );
+
+  QDomElement startElement = document.createElement( QStringLiteral( "start" ) );
+  QDomElement endElement = document.createElement( QStringLiteral( "end" ) );
+
+  QDomText startText = document.createTextNode( mFixedRange.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+  QDomText endText = document.createTextNode( mFixedRange.end().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+  startElement.appendChild( startText );
+  endElement.appendChild( endText );
+  rangeElement.appendChild( startElement );
+  rangeElement.appendChild( endElement );
+
+  temporalElement.appendChild( rangeElement );
+
+  element.appendChild( temporalElement );
+
+  return element;
+}
+
+void QgsVectorLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities )
+{
+  if ( const QgsVectorDataProviderTemporalCapabilities *vectorCaps = dynamic_cast< const QgsVectorDataProviderTemporalCapabilities *>( capabilities ) )
+  {
+    setIsActive( vectorCaps->hasTemporalCapabilities() );
+    setFixedTemporalRange( vectorCaps->availableTemporalRange() );
+  }
+}
+
+QString QgsVectorLayerTemporalProperties::startField() const
+{
+  return mStartFieldName;
+}
+
+void QgsVectorLayerTemporalProperties::setStartField( const QString &startFieldName )
+{
+  mStartFieldName = startFieldName;
+}
+
+QString QgsVectorLayerTemporalProperties::endField() const
+{
+  return mEndFieldName;
+}
+
+void QgsVectorLayerTemporalProperties::setEndField( const QString &field )
+{
+  mEndFieldName = field;
+}
+
+QString dateTimeExpressionLiteral( const QDateTime &datetime )
+{
+  // TODO - we should add a dedicated expression function for optimised datetime value creation
+  // which doesn't rely on string conversion!
+  // e.g. datetime(2012,5,4,12,15,0)
+
+  return QStringLiteral( "to_datetime('%1','yyyy-MM-ddTHH:mm:ss.zzz')" ).arg( datetime.toString( QStringLiteral( "yyyy-MM-ddTHH:mm:ss.zzz" ) ) );
+}
+
+QString QgsVectorLayerTemporalProperties::createFilterString( QgsVectorLayer *, const QgsDateTimeRange &range ) const
+{
+  if ( !isActive() )
+    return QString();
+
+  switch ( mMode )
+  {
+    case ModeFixedTemporalRange:
+      return QString();
+
+    case ModeFeatureDateTimeInstantFromField:
+      return QStringLiteral( "%1 %2 %3 AND %1 %4 %5" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
+             range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
+             dateTimeExpressionLiteral( range.begin() ),
+             range.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
+             dateTimeExpressionLiteral( range.end() ) );
+
+    case ModeFeatureDateTimeStartAndEndFromFields:
+      return QStringLiteral( "%1 %2 %3 AND %4 %5 %6" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
+             range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
+             dateTimeExpressionLiteral( range.begin() ),
+             QgsExpression::quotedColumnRef( mEndFieldName ),
+             range.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
+             dateTimeExpressionLiteral( range.end() ) );
+  }
+
+  return QString();
+}

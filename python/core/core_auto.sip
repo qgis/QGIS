@@ -236,6 +236,7 @@
 %Include auto_generated/qgsvectorlayerjoinbuffer.sip
 %Include auto_generated/qgsvectorlayerjoininfo.sip
 %Include auto_generated/qgsvectorlayerserverproperties.sip
+%Include auto_generated/qgsvectorlayertemporalproperties.sip
 %Include auto_generated/qgsvectorlayertools.sip
 %Include auto_generated/qgsvectorlayerundocommand.sip
 %Include auto_generated/qgsvectorlayerundopassthroughcommand.sip

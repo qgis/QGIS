@@ -215,6 +215,7 @@
 %Include auto_generated/qgsuserinputwidget.sip
 %Include auto_generated/qgsvaliditycheckresultswidget.sip
 %Include auto_generated/qgsvariableeditorwidget.sip
+%Include auto_generated/qgsvectorlayertemporalpropertieswidget.sip
 %Include auto_generated/qgsvertexmarker.sip
 %Include auto_generated/qgsvscrollarea.sip
 %Include auto_generated/qgswindowmanagerinterface.sip

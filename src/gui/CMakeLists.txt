@@ -542,6 +542,7 @@ SET(QGIS_GUI_SRCS
   qgsuserinputwidget.cpp
   qgsvaliditycheckresultswidget.cpp
   qgsvariableeditorwidget.cpp
+  qgsvectorlayertemporalpropertieswidget.cpp
   qgsvertexmarker.cpp
   qgsfiledownloaderdialog.cpp
   qgsvscrollarea.cpp
@@ -775,6 +776,7 @@ SET(QGIS_GUI_HDRS
   qgsuserinputwidget.h
   qgsvaliditycheckresultswidget.h
   qgsvariableeditorwidget.h
+  qgsvectorlayertemporalpropertieswidget.h
   qgsvertexmarker.h
   qgsvscrollarea.h
   qgswindowmanagerinterface.h
