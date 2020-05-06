@@ -752,6 +752,12 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
   config.setEnabled( true );
   config.setMode( QgsSnappingConfig::AdvancedConfiguration );
   config.setIntersectionSnapping( false );  // only snap to layers
+  config.setScaleDependencyMode( oldConfig.scaleDependencyMode() );
+  config.setMinimumScale( oldConfig.minimumScale() );
+  config.setMaximumScale( oldConfig.maximumScale() );
+
+  typedef QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> SettingsHashMap;
+  SettingsHashMap oldLayerSettings = oldConfig.individualLayerSettings();
   Q_ASSERT( config.individualLayerSettings().isEmpty() );
 
   // if there is a current layer, it should have priority over other layers
@@ -768,8 +774,20 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
         if ( !vlayer )
           continue;
 
-        config.setIndividualLayerSettings( vlayer, QgsSnappingConfig::IndividualLayerSettings(
-                                             vlayer == currentVlayer, static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag ), tol, QgsTolerance::ProjectUnits, 0.0, 0.0 ) );
+        QgsSnappingConfig::IndividualLayerSettings layerSettings;
+        SettingsHashMap::const_iterator existingSettings = oldLayerSettings.find( vlayer );
+        if ( existingSettings != oldLayerSettings.constEnd() )
+        {
+          layerSettings = existingSettings.value();
+          layerSettings.setEnabled( vlayer == currentVlayer );
+        }
+        else
+        {
+          layerSettings = QgsSnappingConfig::IndividualLayerSettings(
+                            vlayer == currentVlayer, static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag ), tol, QgsTolerance::ProjectUnits, 0.0, 0.0 );
+        }
+
+        config.setIndividualLayerSettings( vlayer, layerSettings );
       }
 
       snapUtils->setConfig( config );
@@ -795,8 +813,18 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
       if ( !vlayer )
         continue;
 
-      config.setIndividualLayerSettings( vlayer, QgsSnappingConfig::IndividualLayerSettings(
-                                           vlayer->isEditable(), static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag ), tol, QgsTolerance::ProjectUnits, 0.0, 0.0 ) );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings;
+      SettingsHashMap::const_iterator existingSettings = oldLayerSettings.find( vlayer );
+      if ( existingSettings != oldLayerSettings.constEnd() )
+      {
+        layerSettings = existingSettings.value();
+        layerSettings.setEnabled( vlayer->isEditable() );
+      }
+      else
+      {
+        config.setIndividualLayerSettings( vlayer, QgsSnappingConfig::IndividualLayerSettings(
+                                             vlayer->isEditable(), static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag ), tol, QgsTolerance::ProjectUnits, 0.0, 0.0 ) );
+      }
     }
 
     snapUtils->setConfig( config );

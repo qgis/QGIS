@@ -94,7 +94,7 @@ bool QgsSnappingUtils::isIndexPrepared( QgsPointLocator *loc, const QgsRectangle
   if ( mStrategy == IndexAlwaysFull && loc->hasIndex() )
     return true;
 
-  if ( mStrategy == IndexExtent && loc->hasIndex() && loc->extent()->intersects( areaOfInterest ) )
+  if ( mStrategy == IndexExtent && loc->hasIndex() && ( !loc->extent() || loc->extent()->intersects( areaOfInterest ) ) )
     return true;
 
   QgsRectangle aoi( areaOfInterest );
