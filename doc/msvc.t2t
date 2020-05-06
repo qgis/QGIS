@@ -55,7 +55,7 @@ ninja:
 
 === Clone the QGIS Source Code ===
 
-Chose a directory to store the QGIS source code.
+Choose a directory to store the QGIS source code.
 For example, to put it in the OSGeo4W64 install, navigate there:
 
 ```
