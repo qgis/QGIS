@@ -1,7 +1,7 @@
 version: '3'
 services:
   hana:
-    image: store/saplabs/hanaexpress:2.00.040.00.20190729.1
+    image: saphanaspatial/hana-express-for-qgis-tests:2.00.045.00.20200121.1
     container_name: hana
     hostname: hana
     sysctls:

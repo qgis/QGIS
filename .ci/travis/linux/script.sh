@@ -35,8 +35,6 @@ echo "travis_fold:end:docker_build_qgis"
 # running QGIS tests in committed image
 echo "travis_fold:start:docker_test_qgis"
 echo "${bold}Docker run tests${endbold}"
-# docker login is required by HANA
-echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 docker-compose -f ${TRAVIS_BUILD_DIR}/.ci/travis/linux/docker-compose.travis.yml run qgis-deps /root/QGIS/.ci/travis/linux/scripts/docker-qgis-test.sh
 echo "travis_fold:end:docker_test_qgis"
 
