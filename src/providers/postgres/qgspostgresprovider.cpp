@@ -2558,8 +2558,8 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds &ids )
   {
     conn->begin();
 
-    QString sql = QStringLiteral( "DELETE FROM %1 WHERE %2" )
-                  .arg( mQuery, whereClause( ids ) );
+    const QString sql = QStringLiteral( "DELETE FROM %1 WHERE %2" )
+                        .arg( mQuery, whereClause( ids ) );
     QgsDebugMsgLevel( "delete sql: " + sql, 2 );
 
     //send DELETE statement and do error handling
