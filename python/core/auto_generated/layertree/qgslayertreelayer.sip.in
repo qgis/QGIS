@@ -180,6 +180,35 @@ symbol width or height from :py:class:`QgsLegendSettings`.
 .. versionadded:: 3.14
 %End
 
+    enum LegendNodesSplitBehavior
+    {
+      UseDefaultLegendSetting,
+      AllowSplittingLegendNodesOverMultipleColumns,
+      PreventSplittingLegendNodesOverMultipleColumns,
+    };
+
+    LegendNodesSplitBehavior legendSplitBehavior() const;
+%Docstring
+Returns the column split behavior for the node.
+
+This value controls how legend nodes belonging the to layer may be split over multiple columns in legends.
+
+.. seealso:: :py:func:`setLegendSplitBehavior`
+
+.. versionadded:: 3.14
+%End
+
+    void setLegendSplitBehavior( LegendNodesSplitBehavior behavior );
+%Docstring
+Sets the column split ``behavior`` for the node.
+
+This value controls how legend nodes belonging the to layer may be split over multiple columns in legends.
+
+.. seealso:: :py:func:`legendSplitBehavior`
+
+.. versionadded:: 3.14
+%End
+
   signals:
 
     void layerLoaded();

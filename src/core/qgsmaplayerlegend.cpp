@@ -216,6 +216,19 @@ QgsSymbol *QgsMapLayerLegendUtils::legendNodeCustomSymbol( QgsLayerTreeLayer *no
   return QgsSymbolLayerUtils::loadSymbol( elem, rwContext );
 }
 
+void QgsMapLayerLegendUtils::setLegendNodeColumnBreak( QgsLayerTreeLayer *nodeLayer, int originalIndex, bool columnBreakBeforeNode )
+{
+  if ( columnBreakBeforeNode )
+    nodeLayer->setCustomProperty( "legend/column-break-" + QString::number( originalIndex ), QStringLiteral( "1" ) );
+  else
+    nodeLayer->removeCustomProperty( "legend/column-break-" + QString::number( originalIndex ) );
+}
+
+bool QgsMapLayerLegendUtils::legendNodeColumnBreak( QgsLayerTreeLayer *nodeLayer, int originalIndex )
+{
+  return nodeLayer->customProperty( "legend/column-break-" + QString::number( originalIndex ) ).toInt();
+}
+
 void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer *nodeLayer, QList<QgsLayerTreeModelLegendNode *> &nodes )
 {
   // handle user labels
@@ -240,6 +253,9 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer *nodeLa
     {
       legendNode->setUserPatchSize( userSize );
     }
+
+    if ( legendNodeColumnBreak( nodeLayer, i ) )
+      legendNode->setColumnBreak( true );
 
     i++;
   }

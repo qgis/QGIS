@@ -223,6 +223,8 @@ Base class for graphical items within a :py:class:`QgsLayout`.
       UndoScaleBarSegmentsLeft,
       UndoScaleBarSegments,
       UndoScaleBarHeight,
+      UndoScaleBarSubdivisions,
+      UndoScaleBarSubdivisionsHeight,
       UndoScaleBarFontColor,
       UndoScaleBarFillColor,
       UndoScaleBarFillColor2,

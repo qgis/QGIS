@@ -166,6 +166,22 @@ class CORE_EXPORT QgsMapLayerLegendUtils
      */
     static QgsSymbol *legendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex ) SIP_FACTORY;
 
+    /**
+     * Sets whether a forced column break should occur before the node.
+     *
+     * \see legendNodeColumnBreak()
+     * \since QGIS 3.14
+     */
+    static void setLegendNodeColumnBreak( QgsLayerTreeLayer *nodeLayer, int originalIndex, bool columnBreakBeforeNode );
+
+    /**
+     * Returns whether a forced column break should occur before the node.
+     *
+     * \see setLegendNodeColumnBreak()
+     * \since QGIS 3.14
+     */
+    static bool legendNodeColumnBreak( QgsLayerTreeLayer *nodeLayer, int originalIndex );
+
     //! update according to layer node's custom properties (order of items, user labels for items)
     static void applyLayerNodeProperties( QgsLayerTreeLayer *nodeLayer, QList<QgsLayerTreeModelLegendNode *> &nodes );
 };

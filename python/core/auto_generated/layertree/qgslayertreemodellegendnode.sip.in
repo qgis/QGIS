@@ -96,6 +96,24 @@ symbol width or height from :py:class:`QgsLegendSettings`.
 .. versionadded:: 3.14
 %End
 
+    virtual void setColumnBreak( bool breakBeforeNode );
+%Docstring
+Sets whether a forced column break should occur before the node.
+
+.. seealso:: :py:func:`columnBreak`
+
+.. versionadded:: 3.14
+%End
+
+    virtual bool columnBreak() const;
+%Docstring
+Returns whether a forced column break should occur before the node.
+
+.. seealso:: :py:func:`setColumnBreak`
+
+.. versionadded:: 3.14
+%End
+
     virtual bool isScaleOK( double scale ) const;
 
     virtual void invalidateMapBasedData();

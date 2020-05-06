@@ -185,6 +185,12 @@ class CORE_EXPORT QgsLegendRenderer
 
         //! Corresponding column index
         int column = 0;
+
+        /**
+         * TRUE if a forced column break should be placed just before the group
+         */
+        bool placeColumnBreakBeforeGroup = false;
+
     };
 
     /**
@@ -209,12 +215,14 @@ class CORE_EXPORT QgsLegendRenderer
      * Returns a list of component groups for the specified \a parentGroup, respecting the current layer's
      * splitting settings.
      */
-    QList<LegendComponentGroup> createComponentGroupList( QgsLayerTreeGroup *parentGroup, bool splitLayer, QgsRenderContext &context );
+    QList<LegendComponentGroup> createComponentGroupList( QgsLayerTreeGroup *parentGroup, QgsRenderContext &context );
 
     /**
      * Divides a list of component groups into columns, and sets the column index for each group in the list.
+     *
+     * Returns the calculated number of columns.
      */
-    void setColumns( QList<LegendComponentGroup> &groupList );
+    int setColumns( QList<LegendComponentGroup> &groupList );
 
     /**
      * Returns the calculated padding space required above the given component \a group.
