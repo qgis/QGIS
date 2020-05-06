@@ -1166,7 +1166,7 @@ QVector<QgsPointXY> QgsInternalGeometryEngine::randomPointsInPolygon( const QgsG
       i++;
       tries = 0;
     }
-    else if (maxTriesPerPoint != 0)
+    else if ( maxTriesPerPoint != 0 )
     {
       tries++;
       // Skip this point if maximum tries is reached
@@ -1176,7 +1176,6 @@ QVector<QgsPointXY> QgsInternalGeometryEngine::randomPointsInPolygon( const QgsG
         i++;
       }
     }
-    
   }
   return result;
 }
