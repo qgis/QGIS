@@ -55,7 +55,6 @@ if not exist "%OSGEO4W_ROOT%\bin\o4w_env.bat" (echo o4w_env.bat not found & goto
 call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
 call "%OSGEO4W_ROOT%\bin\py3_env.bat"
 call "%OSGEO4W_ROOT%\bin\qt5_env.bat"
-call "%OSGEO4W_ROOT%\bin\gdal-dev-env.bat"
 
 set VS140COMNTOOLS=%PF86%\Microsoft Visual Studio 14.0\Common7\Tools\
 call "%PF86%\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" %VCARCH%
