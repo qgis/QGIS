@@ -65,13 +65,16 @@ class GUI_EXPORT QgsLayoutAttributeTableColumnModelBase: public QAbstractTableMo
       ShiftDown //!< Shift the row/column down
     };
 
+    /**
+     * Available columns for the configuration table to be used by the model
+     */
     enum Column
     {
-      Attribute,
-      Heading,
-      Alignment,
-      Width,
-      SortOrder
+      Attribute, //!< Attribute for a field or an expression
+      Heading, //!< Defines the title of the column
+      Alignment, //!< Defines the alignment of the column
+      Width, //!< Defines the width of the column
+      SortOrder //!< Defines the sort order
     };
 
     /**

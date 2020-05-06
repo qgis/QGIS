@@ -456,7 +456,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
 
     /**
      * Replaces the sorting columns in the table with a specified list of QgsLayoutTableSortColumns.
-     * \param columns list of QgsLayoutTableColumns used to sort the table.
+     * \param sortColumns list of QgsLayoutTableColumns used to sort the table.
      * \see sortColumns()
      * \since QGIS 3.14
      */

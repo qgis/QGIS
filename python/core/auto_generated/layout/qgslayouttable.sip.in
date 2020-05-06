@@ -491,7 +491,7 @@ Returns a reference to the list of QgsLayoutTableSortColumns shown in the table
 %Docstring
 Replaces the sorting columns in the table with a specified list of QgsLayoutTableSortColumns.
 
-:param columns: list of QgsLayoutTableColumns used to sort the table.
+:param sortColumns: list of QgsLayoutTableColumns used to sort the table.
 
 .. seealso:: :py:func:`sortColumns`
 

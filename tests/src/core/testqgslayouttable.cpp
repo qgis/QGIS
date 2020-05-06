@@ -1594,7 +1594,7 @@ void TestQgsLayoutTable::testBaseSort()
   table->setDisplayOnlyVisibleFeatures( false );
   table->setMaximumNumberOfFeatures( 1 );
   QgsLayoutTableColumn col;
-  col.setAttribute(table->columns()[2].attribute());
+  col.setAttribute( table->columns()[2].attribute() );
   col.setSortOrder( Qt::DescendingOrder );
   table->sortColumns() = {col};
   table->refresh();
