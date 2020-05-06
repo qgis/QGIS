@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmrandompointsinpolygons2.h
+                         qgsalgorithmrandompointsinpolygons.h
                          ---------------------
     begin                : March 2020
     copyright            : (C) 2020 by Håvard Tveite
@@ -16,8 +16,8 @@
  ***************************************************************************/
 
 
-#ifndef QGSALGORITHMRANDOMPOINTSINPOLYGONS2_H
-#define QGSALGORITHMRANDOMPOINTSINPOLYGONS2_H
+#ifndef QGSALGORITHMRANDOMPOINTSINPOLYGONS_H
+#define QGSALGORITHMRANDOMPOINTSINPOLYGONS_H
 
 #define SIP_NO_FILE
 
@@ -61,7 +61,7 @@ class QgsRandomPointsInPolygonsAlgorithm2 : public QgsProcessingAlgorithm
     double mMinDistance = 0;
     bool mDynamicMinDistance = false;
     QgsProperty mMinDistanceProperty;
-    
+
     double minDistanceForThisFeature = 0;
     double mMinDistanceGlobal = 0;
 
@@ -79,4 +79,4 @@ class QgsRandomPointsInPolygonsAlgorithm2 : public QgsProcessingAlgorithm
 
 ///@endcond PRIVATE
 
-#endif // QGSALGORITHMRANDOMPOINTSINPOLYGONS2_H
+#endif // QGSALGORITHMRANDOMPOINTSINPOLYGONS_H
