@@ -29,8 +29,23 @@ from hashlib import md5
 import os
 
 from qgis.PyQt.QtCore import Qt, pyqtSignal, QDir
-from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QInputDialog, QStyledItemDelegate, QTableWidgetItem, QFileDialog
-from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardItemModel, QStandardItem
+from qgis.PyQt.QtWidgets import (QDialog,
+                                 QWidget,
+                                 QAction,
+                                 QApplication,
+                                 QInputDialog,
+                                 QStyledItemDelegate,
+                                 QTableWidgetItem,
+                                 QFileDialog,
+                                 QMessageBox
+                                 )
+from qgis.PyQt.QtGui import (QKeySequence,
+                             QCursor,
+                             QClipboard,
+                             QIcon,
+                             QStandardItemModel,
+                             QStandardItem
+                             )
 from qgis.PyQt.Qsci import QsciAPIs
 
 from qgis.core import (
@@ -94,6 +109,7 @@ def check_comments_in_sql(raw_sql_input):
 class DlgSqlWindow(QWidget, Ui_Dialog):
     nameChanged = pyqtSignal(str)
     QUERY_HISTORY_LIMIT = 20
+    hasChanged = False
 
     def __init__(self, iface, db, parent=None):
         QWidget.__init__(self, parent)
@@ -121,6 +137,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.editSql.setMarginVisible(True)
         self.initCompleter()
+        self.editSql.textChanged.connect(lambda: self.setHasChanged(True))
 
         settings = QgsSettings()
         self.history = settings.value('DB_Manager/queryHistory/' + self.dbType, {self.connectionName: []})
@@ -325,6 +342,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.editSql.clear()
         self.editSql.setFocus()
         self.filter = ""
+        self.setHasChanged(True)
 
     def updateUiWhileSqlExecution(self, status):
         if status:
@@ -387,7 +405,6 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                 self.geomCombo.clear()
 
     def executeSql(self):
-
         sql = self._getExecutableSqlQuery()
         if sql == "":
             return
@@ -664,3 +681,23 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if dlg.exec_():
             self.filter = dlg.sql()
         layer.deleteLater()
+
+    def setHasChanged(self, hasChanged):
+        self.hasChanged = hasChanged
+
+    def close(self):
+        if self.hasChanged:
+            ret = QMessageBox.question(
+                self, self.tr('Unsaved Changes?'),
+                self.tr('There are unsaved changes. Do you want to keep them?'),
+                QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard, QMessageBox.Cancel)
+
+            if ret == QMessageBox.Save:
+                self.saveAsFilePreset()
+                return True
+            elif ret == QMessageBox.Discard:
+                return True
+            else:
+                return False
+        else:
+            return True
