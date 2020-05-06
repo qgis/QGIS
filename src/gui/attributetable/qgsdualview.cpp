@@ -213,19 +213,19 @@ void QgsDualView::columnBoxInit()
   QAction *sortMenuAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "sort.svg" ) ), tr( "Sort…" ), this );
   sortMenuAction->setMenu( sortMenu );
 
-  QAction *sortByPreviewExpressionAsc = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "sort.svg" ) ), tr( "by preview expression (asc)" ), this );
+  QAction *sortByPreviewExpressionAsc = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "sort.svg" ) ), tr( "By Preview Expression (ascending)" ), this );
   connect( sortByPreviewExpressionAsc, &QAction::triggered, this, [ = ]()
   {
     mFeatureListModel->setSortByDisplayExpression( true, Qt::AscendingOrder );
   } );
   sortMenu->addAction( sortByPreviewExpressionAsc );
-  QAction *sortByPreviewExpressionDesc = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "sort-reverse.svg" ) ), tr( "by preview expression (desc)" ), this );
+  QAction *sortByPreviewExpressionDesc = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "sort-reverse.svg" ) ), tr( "By Preview Expression (descending)" ), this );
   connect( sortByPreviewExpressionDesc, &QAction::triggered, this, [ = ]()
   {
     mFeatureListModel->setSortByDisplayExpression( true, Qt::DescendingOrder );
   } );
   sortMenu->addAction( sortByPreviewExpressionDesc );
-  QAction *sortByPreviewExpressionCustom = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconExpressionPreview.svg" ) ), tr( "by custom expression" ), this );
+  QAction *sortByPreviewExpressionCustom = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconExpressionPreview.svg" ) ), tr( "By Custom Expression" ), this );
   connect( sortByPreviewExpressionCustom, &QAction::triggered, this, [ = ]()
   {
     if ( modifySort() )
