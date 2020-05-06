@@ -196,6 +196,7 @@ class GUI_EXPORT QgsLayoutLegendNodeWidget: public QgsPanelWidget, private Ui::Q
     void sizeChanged( double );
     void customSymbolChanged();
     void columnBreakToggled( bool checked );
+    void columnSplitChanged();
 
   private:
 

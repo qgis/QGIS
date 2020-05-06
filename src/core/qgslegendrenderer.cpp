@@ -151,7 +151,7 @@ QSizeF QgsLegendRenderer::paintAndDetermineSize( QgsRenderContext &context )
   // to send the full render context so that an expression context is available during the size calculation
   QgsScopedRenderContextPainterSwap noPainter( context, nullptr );
 
-  QList<LegendComponentGroup> componentGroups = createComponentGroupList( rootGroup, mSettings.splitLayer(), context );
+  QList<LegendComponentGroup> componentGroups = createComponentGroupList( rootGroup, context );
 
   const int columnCount = setColumns( componentGroups );
 
@@ -265,7 +265,7 @@ void QgsLegendRenderer::widthAndOffsetForTitleText( const Qt::AlignmentFlag hali
   }
 }
 
-QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponentGroupList( QgsLayerTreeGroup *parentGroup, bool splitLayer, QgsRenderContext &context )
+QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponentGroupList( QgsLayerTreeGroup *parentGroup, QgsRenderContext &context )
 {
   QList<LegendComponentGroup> componentGroups;
 
@@ -280,7 +280,7 @@ QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponen
       QgsLayerTreeGroup *nodeGroup = QgsLayerTree::toGroup( node );
 
       // Group subitems
-      QList<LegendComponentGroup> subgroups = createComponentGroupList( nodeGroup, splitLayer, context );
+      QList<LegendComponentGroup> subgroups = createComponentGroupList( nodeGroup, context );
       bool hasSubItems = !subgroups.empty();
 
       if ( nodeLegendStyle( nodeGroup ) != QgsLegendStyle::Hidden )
@@ -323,6 +323,20 @@ QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponen
     {
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
 
+      bool allowColumnSplit = false;
+      switch ( nodeLayer->legendSplitBehavior() )
+      {
+        case QgsLayerTreeLayer::UseDefaultLegendSetting:
+          allowColumnSplit = mSettings.splitLayer();
+          break;
+        case QgsLayerTreeLayer::AllowSplittingLegendNodesOverMultipleColumns:
+          allowColumnSplit = true;
+          break;
+        case QgsLayerTreeLayer::PreventSplittingLegendNodesOverMultipleColumns:
+          allowColumnSplit = false;
+          break;
+      }
+
       LegendComponentGroup group;
       group.placeColumnBreakBeforeGroup = nodeLayer->customProperty( QStringLiteral( "legend/column-break" ) ).toInt();
 
@@ -357,7 +371,7 @@ QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponen
 
         const bool forceBreak = legendNode->columnBreak();
 
-        if ( !mSettings.splitLayer() || j == 0 )
+        if ( !allowColumnSplit || j == 0 )
         {
           if ( forceBreak )
           {

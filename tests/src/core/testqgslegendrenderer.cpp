@@ -166,6 +166,8 @@ class TestQgsLegendRenderer : public QObject
     void testColumnBreaks3();
     void testColumnBreaks4();
     void testColumnBreaks5();
+    void testLayerColumnSplittingAlwaysAllow();
+    void testLayerColumnSplittingAlwaysPrevent();
     void testRasterStroke();
     void testFilterByPolygon();
     void testFilterByExpression();
@@ -1026,6 +1028,40 @@ void TestQgsLegendRenderer::testColumnBreaks5()
   QgsLegendSettings settings;
   settings.setColumnCount( 4 );
   settings.setSplitLayer( false );
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+}
+
+void TestQgsLegendRenderer::testLayerColumnSplittingAlwaysAllow()
+{
+  QString testName = QStringLiteral( "legend_layer_column_splitting_allow" );
+
+  QgsLayerTreeModel legendModel( mRoot );
+
+  QgsLayerTreeLayer *layer = legendModel.rootGroup()->findLayer( mVL3 );
+  layer->setLegendSplitBehavior( QgsLayerTreeLayer::AllowSplittingLegendNodesOverMultipleColumns );
+
+  QgsLegendSettings settings;
+  settings.setColumnCount( 4 );
+  settings.setSplitLayer( false );
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+}
+
+void TestQgsLegendRenderer::testLayerColumnSplittingAlwaysPrevent()
+{
+  QString testName = QStringLiteral( "legend_layer_column_splitting_prevent" );
+
+  QgsLayerTreeModel legendModel( mRoot );
+
+  QgsLayerTreeLayer *layer = legendModel.rootGroup()->findLayer( mVL3 );
+  layer->setLegendSplitBehavior( QgsLayerTreeLayer::PreventSplittingLegendNodesOverMultipleColumns );
+
+  QgsLegendSettings settings;
+  settings.setColumnCount( 4 );
+  settings.setSplitLayer( true );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   _renderLegend( testName, &legendModel, settings );
   QVERIFY( _verifyImage( testName, mReport ) );
