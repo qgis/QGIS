@@ -42,10 +42,10 @@ export QGIS_ORACLETEST_DB="host=${QGIS_ORACLETEST_DBNAME} port=1521 user='QGIS' 
 echo "Wait a moment while loading Oracle database."
 while ! echo exit | sqlplus -L SYSTEM/adminpass@$QGIS_ORACLETEST_DBNAME &> /dev/null
 do
-  printf "."
+  printf "🙏"
   sleep 1
 done
-echo " done"
+echo " done 👀"
 
 pushd /root/QGIS > /dev/null
 /root/QGIS/tests/testdata/provider/testdata_oracle.sh $ORACLE_HOST
