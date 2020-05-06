@@ -47,7 +47,7 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
 
   double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
   double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), QgsUnitTypes::RenderMillimeters );
-  double scaledHeight = context.convertToPainterUnits( settings.height(), QgsUnitTypes::RenderMillimeters );
+  double scaledHeight = context.convertToPainterUnits( settings.height() > settings.subdivisionsHeight() ? settings.height() : settings.subdivisionsHeight(), QgsUnitTypes::RenderMillimeters );
 
   double currentLabelNumber = 0.0;
 
@@ -263,7 +263,7 @@ QSizeF QgsScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const Q
   lineWidth /= context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
 
   double width = firstLabelWidth + totalBarLength + 2 * lineWidth + largestLabelWidth + 2 * settings.boxContentSpace();
-  double height = settings.height() + settings.labelBarSpace() + 2 * settings.boxContentSpace() + QgsLayoutUtils::fontAscentMM( font );
+  double height = ( settings.height() > settings.subdivisionsHeight() ? settings.height() : settings.subdivisionsHeight() ) + settings.labelBarSpace() + 2 * settings.boxContentSpace() + QgsLayoutUtils::fontAscentMM( font );
 
   return QSizeF( width, height );
 }
