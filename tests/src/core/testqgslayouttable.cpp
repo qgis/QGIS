@@ -1593,8 +1593,10 @@ void TestQgsLayoutTable::testBaseSort()
   table->setVectorLayer( mVectorLayer );
   table->setDisplayOnlyVisibleFeatures( false );
   table->setMaximumNumberOfFeatures( 1 );
-  table->columns()[2].setSortByRank( 1 );
-  table->columns()[2].setSortOrder( Qt::DescendingOrder );
+  QgsLayoutTableColumn col;
+  col.setAttribute(table->columns()[2].attribute());
+  col.setSortOrder( Qt::DescendingOrder );
+  table->sortColumns() = {col};
   table->refresh();
 
   QVector<QStringList> expectedRows;
@@ -1615,10 +1617,12 @@ void TestQgsLayoutTable::testExpressionSort()
   table->setVectorLayer( mVectorLayer );
   table->setDisplayOnlyVisibleFeatures( false );
   table->setMaximumNumberOfFeatures( 1 );
-  table->columns()[0].setAttribute( "Heading * -1" );
-  table->columns()[0].setHeading( "exp" );
-  table->columns()[0].setSortByRank( 1 );
-  table->columns()[0].setSortOrder( Qt::AscendingOrder );
+  QgsLayoutTableColumn col;
+  col.setAttribute( "Heading * -1" );
+  col.setHeading( "exp" );
+  col.setSortOrder( Qt::AscendingOrder );
+  table->sortColumns() = {col};
+  table->columns()[0] = col;
   table->refresh();
 
   QVector<QStringList> expectedRows;
