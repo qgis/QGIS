@@ -27,7 +27,7 @@
 #include <QPair>
 
 class QgsLayoutTableColumn;
-class QgsLayoutTableSortColumn;
+class QgsLayoutTableColumn;
 
 /**
  * \ingroup core
@@ -62,7 +62,7 @@ typedef QVector< QgsLayoutTableColumn * > QgsLayoutTableColumns;
  * List of column definitions for sorting a QgsLayoutTable
  * \since QGIS 3.14
 */
-typedef QVector< QgsLayoutTableSortColumn * > QgsLayoutTableSortColumns;
+typedef QVector< QgsLayoutTableColumn * > QgsLayoutTableSortColumns;
 
 
 

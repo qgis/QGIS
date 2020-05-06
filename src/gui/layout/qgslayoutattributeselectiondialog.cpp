@@ -418,7 +418,7 @@ QVariant QgsLayoutTableSortModel::data( const QModelIndex &index, int role ) con
   }
 
   //get column for index
-  QgsLayoutTableSortColumn *column = columnFromIndex( index );
+  QgsLayoutTableColumn *column = columnFromIndex( index );
   if ( !column )
   {
     return QVariant();
@@ -504,7 +504,7 @@ bool QgsLayoutTableSortModel::setData( const QModelIndex &index, const QVariant 
   }
 
   //get column for index
-  QgsLayoutTableSortColumn *column = columnFromIndex( index );
+  QgsLayoutTableColumn *column = columnFromIndex( index );
   if ( !column )
   {
     return false;
@@ -564,7 +564,7 @@ bool QgsLayoutTableSortModel::insertRows( int row, int count, const QModelIndex 
   //create new QgsComposerTableColumns for each inserted row
   for ( int i = row; i < row + count; ++i )
   {
-    QgsLayoutTableSortColumn *col = new QgsLayoutTableSortColumn;
+    QgsLayoutTableColumn *col = new QgsLayoutTableColumn;
     mTable->sortColumns().insert( i, col );
   }
   endInsertRows();
@@ -585,7 +585,7 @@ bool QgsLayoutTableSortModel::moveRow( int row, ShiftDirection direction )
 
   //remove row
   beginRemoveRows( QModelIndex(), swapWithRow, swapWithRow );
-  QgsLayoutTableSortColumn *temp = mTable->sortColumns().takeAt( swapWithRow );
+  QgsLayoutTableColumn *temp = mTable->sortColumns().takeAt( swapWithRow );
   endRemoveRows();
 
   //insert row
@@ -596,13 +596,13 @@ bool QgsLayoutTableSortModel::moveRow( int row, ShiftDirection direction )
   return true;
 }
 
-QgsLayoutTableSortColumn *QgsLayoutTableSortModel::columnFromIndex( const QModelIndex &index ) const
+QgsLayoutTableColumn *QgsLayoutTableSortModel::columnFromIndex( const QModelIndex &index ) const
 {
-  QgsLayoutTableSortColumn *column = static_cast<QgsLayoutTableSortColumn *>( index.internalPointer() );
+  QgsLayoutTableColumn *column = static_cast<QgsLayoutTableColumn *>( index.internalPointer() );
   return column;
 }
 
-QModelIndex QgsLayoutTableSortModel::indexFromColumn( QgsLayoutTableSortColumn *column )
+QModelIndex QgsLayoutTableSortModel::indexFromColumn( QgsLayoutTableColumn *column )
 {
   if ( !mTable )
   {

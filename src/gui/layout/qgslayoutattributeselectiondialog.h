@@ -41,7 +41,7 @@ class QgsLayoutTableSortModel;
 class QgsLayoutTableAvailableSortProxyModel;
 class QgsLayoutObject;
 class QgsLayoutTableColumn;
-class QgsLayoutTableSortColumn;
+class QgsLayoutTableColumn;
 
 /**
  * \ingroup gui
@@ -169,13 +169,13 @@ class GUI_EXPORT QgsLayoutTableSortModel: public QAbstractTableModel
      * Returns the QgsLayoutTableSortColumn corresponding to an index in the model.
      * \see indexFromColumn()
      */
-    QgsLayoutTableSortColumn *columnFromIndex( const QModelIndex &index ) const;
+    QgsLayoutTableColumn *columnFromIndex( const QModelIndex &index ) const;
 
     /**
      * Returns a QModelIndex corresponding to a QgsLayoutTableSortColumn in the model.
      * \see columnFromIndex()
      */
-    QModelIndex indexFromColumn( QgsLayoutTableSortColumn *column );
+    QModelIndex indexFromColumn( QgsLayoutTableColumn *column );
 
   private:
     QgsLayoutItemAttributeTable *mTable = nullptr;

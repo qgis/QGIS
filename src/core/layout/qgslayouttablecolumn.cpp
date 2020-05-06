@@ -85,35 +85,8 @@ QgsLayoutTableColumn *QgsLayoutTableColumn::clone()
   newColumn->setVAlignment( mVAlignment );
   Q_NOWARN_DEPRECATED_PUSH
   newColumn->setSortByRank( mSortByRank );
-  newColumn->setSortOrder( mSortOrder );
   Q_NOWARN_DEPRECATED_POP
-  newColumn->setWidth( mWidth );
-  return newColumn.release();
-}
-
-QgsLayoutTableSortColumn::QgsLayoutTableSortColumn()
-{}
-
-bool QgsLayoutTableSortColumn::writeXml( QDomElement &columnElem, QDomDocument &doc ) const
-{
-  //background color
-  QDomElement bgColorElem = doc.createElement( QStringLiteral( "backgroundColor" ) );
-  columnElem.setAttribute( QStringLiteral( "attribute" ), mAttribute );
-  columnElem.setAttribute( QStringLiteral( "sortOrder" ), QString::number( mSortOrder ) );
-  return true;
-}
-
-bool QgsLayoutTableSortColumn::readXml( const QDomElement &columnElem )
-{
-  mAttribute = columnElem.attribute( QStringLiteral( "attribute" ), QString() );
-  mSortOrder = static_cast< Qt::SortOrder >( columnElem.attribute( QStringLiteral( "sortOrder" ), QString::number( Qt::AscendingOrder ) ).toInt() );
-  return true;
-}
-
-QgsLayoutTableSortColumn *QgsLayoutTableSortColumn::clone()
-{
-  std::unique_ptr< QgsLayoutTableSortColumn > newColumn = qgis::make_unique< QgsLayoutTableSortColumn >();
-  newColumn->setAttribute( mAttribute );
   newColumn->setSortOrder( mSortOrder );
+  newColumn->setWidth( mWidth );
   return newColumn.release();
 }

@@ -482,7 +482,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     req.setFilterFid( atlasFeature.id() );
   }
 
-  for ( const QgsLayoutTableSortColumn *column : qgis::as_const( mSortColumns ) )
+  for ( const QgsLayoutTableColumn *column : qgis::as_const( mSortColumns ) )
   {
     req = req.addOrderBy( column->attribute(), column->sortOrder() == Qt::AscendingOrder );
   }

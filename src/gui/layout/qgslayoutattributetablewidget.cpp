@@ -234,11 +234,11 @@ void QgsLayoutAttributeTableWidget::mAttributesPushButton_clicked()
     currentColumns.append( copy );
   }
 
-  QVector<QgsLayoutTableSortColumn *> currentSortColumns;
+  QVector<QgsLayoutTableColumn *> currentSortColumns;
   auto sit = mTable->sortColumns().constBegin();
   for ( ; sit != mTable->sortColumns().constEnd() ; ++sit )
   {
-    QgsLayoutTableSortColumn *copy = ( *sit )->clone();
+    QgsLayoutTableColumn *copy = ( *sit )->clone();
     currentSortColumns.append( copy );
   }
 

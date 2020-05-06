@@ -107,7 +107,7 @@ bool QgsLayoutTable::writePropertiesToElement( QDomElement &elem, QDomDocument &
   elem.appendChild( displayColumnsElem );
   // sort columns
   QDomElement sortColumnsElem = doc.createElement( QStringLiteral( "sortColumns" ) );
-  for ( QgsLayoutTableSortColumn *column : qgis::as_const( mSortColumns ) )
+  for ( QgsLayoutTableColumn *column : qgis::as_const( mSortColumns ) )
   {
     QDomElement columnElem = doc.createElement( QStringLiteral( "column" ) );
     column->writeXml( columnElem, doc );
@@ -187,7 +187,7 @@ bool QgsLayoutTable::readPropertiesFromElement( const QDomElement &itemElem, con
     for ( int i = 0; i < columnEntryList.size(); ++i )
     {
       QDomElement columnElem = columnEntryList.at( i ).toElement();
-      QgsLayoutTableSortColumn *column = new QgsLayoutTableSortColumn;
+      QgsLayoutTableColumn *column = new QgsLayoutTableColumn;
       column->readXml( columnElem );
       mSortColumns.append( column );
     }
