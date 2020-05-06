@@ -170,9 +170,7 @@ void QgsLayoutItemAttributeTable::resetColumns()
   }
 
   //remove existing columns
-  qDeleteAll( mColumns );
   mColumns.clear();
-  qDeleteAll( mSortColumns );
   mSortColumns.clear();
 
   //rebuild columns list from vector layer fields
@@ -181,10 +179,10 @@ void QgsLayoutItemAttributeTable::resetColumns()
   for ( const auto &field : sourceFields )
   {
     QString currentAlias = source->attributeDisplayName( idx );
-    std::unique_ptr< QgsLayoutTableColumn > col = qgis::make_unique< QgsLayoutTableColumn >();
-    col->setAttribute( field.name() );
-    col->setHeading( currentAlias );
-    mColumns.append( col.release() );
+    QgsLayoutTableColumn col;
+    col.setAttribute( field.name() );
+    col.setHeading( currentAlias );
+    mColumns.append( col );
     idx++;
   }
 }
@@ -321,7 +319,6 @@ void QgsLayoutItemAttributeTable::setDisplayedFields( const QStringList &fields,
   }
 
   //rebuild columns list, taking only fields contained in supplied list
-  qDeleteAll( mColumns );
   mColumns.clear();
 
   const QgsFields layerFields = source->fields();
@@ -335,10 +332,10 @@ void QgsLayoutItemAttributeTable::setDisplayedFields( const QStringList &fields,
         continue;
 
       QString currentAlias = source->attributeDisplayName( attrIdx );
-      std::unique_ptr< QgsLayoutTableColumn > col = qgis::make_unique< QgsLayoutTableColumn >();
-      col->setAttribute( layerFields.at( attrIdx ).name() );
-      col->setHeading( currentAlias );
-      mColumns.append( col.release() );
+      QgsLayoutTableColumn col;
+      col.setAttribute( layerFields.at( attrIdx ).name() );
+      col.setHeading( currentAlias );
+      mColumns.append( col );
     }
   }
   else
@@ -348,10 +345,10 @@ void QgsLayoutItemAttributeTable::setDisplayedFields( const QStringList &fields,
     for ( const QgsField &field : layerFields )
     {
       QString currentAlias = source->attributeDisplayName( idx );
-      std::unique_ptr< QgsLayoutTableColumn > col = qgis::make_unique< QgsLayoutTableColumn >();
-      col->setAttribute( field.name() );
-      col->setHeading( currentAlias );
-      mColumns.append( col.release() );
+      QgsLayoutTableColumn col;
+      col.setAttribute( field.name() );
+      col.setHeading( currentAlias );
+      mColumns.append( col );
       idx++;
     }
   }
@@ -370,16 +367,16 @@ void QgsLayoutItemAttributeTable::restoreFieldAliasMap( const QMap<int, QString>
     return;
   }
 
-  for ( QgsLayoutTableColumn *column : qgis::as_const( mColumns ) )
+  for ( QgsLayoutTableColumn &column : mColumns )
   {
-    int attrIdx = source->fields().lookupField( column->attribute() );
+    int attrIdx = source->fields().lookupField( column.attribute() );
     if ( map.contains( attrIdx ) )
     {
-      column->setHeading( map.value( attrIdx ) );
+      column.setHeading( map.value( attrIdx ) );
     }
     else
     {
-      column->setHeading( source->attributeDisplayName( attrIdx ) );
+      column.setHeading( source->attributeDisplayName( attrIdx ) );
     }
   }
 }
@@ -482,9 +479,9 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     req.setFilterFid( atlasFeature.id() );
   }
 
-  for ( const QgsLayoutTableColumn *column : qgis::as_const( mSortColumns ) )
+  for ( const QgsLayoutTableColumn &column : qgis::as_const( mSortColumns ) )
   {
-    req = req.addOrderBy( column->attribute(), column->sortOrder() == Qt::AscendingOrder );
+    req = req.addOrderBy( column.attribute(), column.sortOrder() == Qt::AscendingOrder );
   }
 
   QgsFeature f;
@@ -550,9 +547,9 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     QgsLayoutTableRow rowContents;
     rowContents.reserve( mColumns.count() );
 
-    for ( QgsLayoutTableColumn *column : qgis::as_const( mColumns ) )
+    for ( const QgsLayoutTableColumn &column : qgis::as_const( mColumns ) )
     {
-      int idx = layer->fields().lookupField( column->attribute() );
+      int idx = layer->fields().lookupField( column.attribute() );
 
       QgsConditionalStyle style;
 
@@ -575,7 +572,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       else
       {
         // Lets assume it's an expression
-        std::unique_ptr< QgsExpression > expression = qgis::make_unique< QgsExpression >( column->attribute() );
+        std::unique_ptr< QgsExpression > expression = qgis::make_unique< QgsExpression >( column.attribute() );
         context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), counter + 1, true ) );
         expression->prepare( &context );
         QVariant value = expression->evaluate( &context );
@@ -717,7 +714,6 @@ void QgsLayoutItemAttributeTable::removeLayer( const QString &layerId )
     {
       mVectorLayer.setLayer( nullptr );
       //remove existing columns
-      qDeleteAll( mColumns );
       mColumns.clear();
     }
   }

@@ -55,14 +55,14 @@ typedef QVector< QVector< QVariant > > QgsLayoutTableContents;
  * List of column definitions for a QgsLayoutTable
  * \since QGIS 3.0
 */
-typedef QVector< QgsLayoutTableColumn * > QgsLayoutTableColumns;
+typedef QVector<QgsLayoutTableColumn> QgsLayoutTableColumns;
 
 /**
  * \ingroup core
  * List of column definitions for sorting a QgsLayoutTable
  * \since QGIS 3.14
 */
-typedef QVector< QgsLayoutTableColumn * > QgsLayoutTableSortColumns;
+typedef QVector<QgsLayoutTableColumn> QgsLayoutTableSortColumns;
 
 
 

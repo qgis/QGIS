@@ -15,9 +15,9 @@ typedef QVector< QVariant > QgsLayoutTableRow;
 typedef QVector< QVector< QVariant > > QgsLayoutTableContents;
 
 
-typedef QVector< QgsLayoutTableColumn * > QgsLayoutTableColumns;
+typedef QVector<QgsLayoutTableColumn> QgsLayoutTableColumns;
 
-typedef QVector< QgsLayoutTableColumn * > QgsLayoutTableSortColumns;
+typedef QVector<QgsLayoutTableColumn> QgsLayoutTableSortColumns;
 
 
 

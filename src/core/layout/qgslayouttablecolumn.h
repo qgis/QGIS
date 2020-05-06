@@ -18,7 +18,6 @@
 #ifndef QGSLAYOUTTABLECOLUMN_H
 #define QGSLAYOUTTABLECOLUMN_H
 
-#include <QObject>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QColor>
@@ -34,10 +33,8 @@
  * for QgsLayoutItemAttributeTables, and have no effect for QgsLayoutItemTextTables.
  * \since QGIS 3.0
 */
-class CORE_EXPORT QgsLayoutTableColumn : public QObject
+class CORE_EXPORT QgsLayoutTableColumn
 {
-    Q_OBJECT
-
   public:
 
     /**
@@ -188,19 +185,31 @@ class CORE_EXPORT QgsLayoutTableColumn : public QObject
     /**
      * Creates a duplicate column which is a deep copy of this column.
      * \returns a new QgsLayoutTableColumn with same properties as this column.
+     * \deprecated since QGIS 3.14 use a copy instead
      */
-    QgsLayoutTableColumn *clone() SIP_FACTORY;
+    Q_DECL_DEPRECATED QgsLayoutTableColumn *clone() SIP_DEPRECATED SIP_FACTORY {return new QgsLayoutTableColumn( *this );}
+
+    bool operator==( const QgsLayoutTableColumn &other )
+    {
+      return mHeading == other.mHeading
+             && mAttribute == other.mAttribute
+             && mSortByRank == other.mSortByRank
+             && mSortOrder == other.mSortOrder
+             && mWidth == other.mWidth
+             && mHAlignment == other.mHAlignment
+             && mVAlignment == other.mVAlignment;
+    }
 
   private:
 
-    QColor mBackgroundColor = Qt::transparent; //currently unused
-    Qt::AlignmentFlag mHAlignment = Qt::AlignLeft;
-    Qt::AlignmentFlag mVAlignment = Qt::AlignVCenter;
     QString mHeading;
     QString mAttribute;
     int mSortByRank = 0;
     Qt::SortOrder mSortOrder = Qt::AscendingOrder;
     double mWidth = 0.0;
+    QColor mBackgroundColor = Qt::transparent; //currently unused
+    Qt::AlignmentFlag mHAlignment = Qt::AlignLeft;
+    Qt::AlignmentFlag mVAlignment = Qt::AlignVCenter;
 
     friend class QgsCompositionConverter;
 

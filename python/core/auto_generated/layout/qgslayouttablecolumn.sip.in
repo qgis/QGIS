@@ -10,7 +10,7 @@
 
 
 
-class QgsLayoutTableColumn : QObject
+class QgsLayoutTableColumn
 {
 %Docstring
 Stores properties of a column for a QgsLayoutTable.
@@ -218,12 +218,17 @@ If the sort ``rank`` is <= 0 then the column is not being sorted.
    the order is now hold in a dedicated model
 %End
 
-    QgsLayoutTableColumn *clone() /Factory/;
+ QgsLayoutTableColumn *clone() /Deprecated,Factory/;
 %Docstring
 Creates a duplicate column which is a deep copy of this column.
 
 :return: a new QgsLayoutTableColumn with same properties as this column.
+
+.. deprecated:: QGIS 3.14
+   use a copy instead
 %End
+
+    bool operator==( const QgsLayoutTableColumn &other );
 
 };
 /************************************************************************

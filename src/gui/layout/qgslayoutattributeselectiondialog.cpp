@@ -46,13 +46,14 @@ QgsLayoutAttributeTableColumnModel::QgsLayoutAttributeTableColumnModel( QgsLayou
 
 QModelIndex QgsLayoutAttributeTableColumnModel::index( int row, int column, const QModelIndex &parent ) const
 {
-  if ( hasIndex( row, column, parent ) )
+  if ( !hasIndex( row, column, parent ) )
+    return QModelIndex();
+
+  if ( !parent.isValid() )
   {
-    if ( ( mTable->columns() )[row] )
-    {
-      return createIndex( row, column, ( mTable->columns() )[row] );
-    }
+    return createIndex( row, column );
   }
+
   return QModelIndex();
 }
 
@@ -90,32 +91,22 @@ QVariant QgsLayoutAttributeTableColumnModel::data( const QModelIndex &index, int
   }
 
   //get column for index
-  QgsLayoutTableColumn *column = columnFromIndex( index );
-  if ( !column )
-  {
-    return QVariant();
-  }
-
-  if ( role == Qt::UserRole )
-  {
-    //user role stores reference in column object
-    return QVariant::fromValue( column );
-  }
+  QgsLayoutTableColumn column = columnFromIndex( index );
 
   switch ( index.column() )
   {
     case 0:
-      return column->attribute();
+      return column.attribute();
     case 1:
-      return column->heading();
+      return column.heading();
     case 2:
     {
       if ( role == Qt::DisplayRole )
       {
-        switch ( column->hAlignment() )
+        switch ( column.hAlignment() )
         {
           case Qt::AlignHCenter:
-            switch ( column->vAlignment() )
+            switch ( column.vAlignment() )
             {
               case Qt::AlignTop:
                 return tr( "Top center" );
@@ -125,7 +116,7 @@ QVariant QgsLayoutAttributeTableColumnModel::data( const QModelIndex &index, int
                 return tr( "Middle center" );
             }
           case Qt::AlignRight:
-            switch ( column->vAlignment() )
+            switch ( column.vAlignment() )
             {
               case Qt::AlignTop:
                 return tr( "Top right" );
@@ -136,7 +127,7 @@ QVariant QgsLayoutAttributeTableColumnModel::data( const QModelIndex &index, int
             }
           case Qt::AlignLeft:
           default:
-            switch ( column->vAlignment() )
+            switch ( column.vAlignment() )
             {
               case Qt::AlignTop:
                 return tr( "Top left" );
@@ -150,19 +141,19 @@ QVariant QgsLayoutAttributeTableColumnModel::data( const QModelIndex &index, int
       else
       {
         //edit role
-        return int( column->hAlignment() | column->vAlignment() );
+        return int( column.hAlignment() | column.vAlignment() );
       }
     }
     case 3:
     {
       if ( role == Qt::DisplayRole )
       {
-        return column->width() <= 0 ? tr( "Automatic" ) : QString( tr( "%1 mm" ) ).arg( column->width(), 0, 'f', 2 );
+        return column.width() <= 0 ? tr( "Automatic" ) : QString( tr( "%1 mm" ) ).arg( column.width(), 0, 'f', 2 );
       }
       else
       {
         //edit role
-        return column->width();
+        return column.width();
       }
     }
     default:
@@ -222,36 +213,29 @@ bool QgsLayoutAttributeTableColumnModel::setData( const QModelIndex &index, cons
     return false;
   }
 
-  //get column for index
-  QgsLayoutTableColumn *column = columnFromIndex( index );
-  if ( !column )
-  {
-    return false;
-  }
-
   switch ( index.column() )
   {
     case 0:
       // also update column's heading, if it hasn't been customized
-      if ( column->heading().isEmpty() || ( column->heading() == column->attribute() ) )
+      if ( mTable->columns()[index.row()].heading().isEmpty() || ( mTable->columns()[index.row()].heading() == mTable->columns()[index.row()].attribute() ) )
       {
-        column->setHeading( value.toString() );
+        mTable->columns()[index.row()].setHeading( value.toString() );
         emit dataChanged( createIndex( index.row(), 1 ), createIndex( index.row(), 1 ) );
       }
-      column->setAttribute( value.toString() );
+      mTable->columns()[index.row()].setAttribute( value.toString() );
       emit dataChanged( index, index );
       return true;
     case 1:
-      column->setHeading( value.toString() );
+      mTable->columns()[index.row()].setHeading( value.toString() );
       emit dataChanged( index, index );
       return true;
     case 2:
-      column->setHAlignment( Qt::AlignmentFlag( value.toInt() & Qt::AlignHorizontal_Mask ) );
-      column->setVAlignment( Qt::AlignmentFlag( value.toInt() & Qt::AlignVertical_Mask ) );
+      mTable->columns()[index.row()].setHAlignment( Qt::AlignmentFlag( value.toInt() & Qt::AlignHorizontal_Mask ) );
+      mTable->columns()[index.row()].setVAlignment( Qt::AlignmentFlag( value.toInt() & Qt::AlignVertical_Mask ) );
       emit dataChanged( index, index );
       return true;
     case 3:
-      column->setWidth( value.toDouble() );
+      mTable->columns()[index.row()].setWidth( value.toDouble() );
       emit dataChanged( index, index );
       return true;
     default:
@@ -284,7 +268,6 @@ bool QgsLayoutAttributeTableColumnModel::removeRows( int row, int count, const Q
   //move backwards through rows, removing each corresponding QgsComposerTableColumn
   for ( int i = maxRow; i >= row; --i )
   {
-    delete ( mTable->columns() )[i];
     mTable->columns().removeAt( i );
   }
   endRemoveRows();
@@ -298,8 +281,7 @@ bool QgsLayoutAttributeTableColumnModel::insertRows( int row, int count, const Q
   //create new QgsComposerTableColumns for each inserted row
   for ( int i = row; i < row + count; ++i )
   {
-    QgsLayoutTableColumn *col = new QgsLayoutTableColumn;
-    mTable->columns().insert( i, col );
+    mTable->columns().insert( i, QgsLayoutTableColumn() );
   }
   endInsertRows();
   return true;
@@ -319,7 +301,7 @@ bool QgsLayoutAttributeTableColumnModel::moveRow( int row, ShiftDirection direct
 
   //remove row
   beginRemoveRows( QModelIndex(), swapWithRow, swapWithRow );
-  QgsLayoutTableColumn *temp = mTable->columns().takeAt( swapWithRow );
+  QgsLayoutTableColumn temp = mTable->columns().takeAt( swapWithRow );
   endRemoveRows();
 
   //insert row
@@ -337,31 +319,10 @@ void QgsLayoutAttributeTableColumnModel::resetToLayer()
   endResetModel();
 }
 
-QgsLayoutTableColumn *QgsLayoutAttributeTableColumnModel::columnFromIndex( const QModelIndex &index ) const
+QgsLayoutTableColumn QgsLayoutAttributeTableColumnModel::columnFromIndex( const QModelIndex &index ) const
 {
-  QgsLayoutTableColumn *column = static_cast<QgsLayoutTableColumn *>( index.internalPointer() );
-  return column;
+  return mTable->columns().value( index.row() );
 }
-
-QModelIndex QgsLayoutAttributeTableColumnModel::indexFromColumn( QgsLayoutTableColumn *column )
-{
-  if ( !mTable )
-  {
-    return QModelIndex();
-  }
-
-  int r = mTable->columns().indexOf( column );
-
-  QModelIndex idx = index( r, 0, QModelIndex() );
-  if ( idx.isValid() )
-  {
-    return idx;
-  }
-
-  return QModelIndex();
-}
-
-
 
 
 // QgsLayoutTableSortModel
@@ -374,13 +335,14 @@ QgsLayoutTableSortModel::QgsLayoutTableSortModel( QgsLayoutItemAttributeTable *t
 
 QModelIndex QgsLayoutTableSortModel::index( int row, int column, const QModelIndex &parent ) const
 {
-  if ( hasIndex( row, column, parent ) )
+  if ( !hasIndex( row, column, parent ) )
+    return QModelIndex();
+
+  if ( !parent.isValid() )
   {
-    if ( ( mTable->sortColumns() )[row] )
-    {
-      return createIndex( row, column, ( mTable->sortColumns() )[row] );
-    }
+    return createIndex( row, column );
   }
+
   return QModelIndex();
 }
 
@@ -418,26 +380,16 @@ QVariant QgsLayoutTableSortModel::data( const QModelIndex &index, int role ) con
   }
 
   //get column for index
-  QgsLayoutTableColumn *column = columnFromIndex( index );
-  if ( !column )
-  {
-    return QVariant();
-  }
-
-  if ( role == Qt::UserRole )
-  {
-    //user role stores reference in column object
-    return QVariant::fromValue( column );
-  }
+  QgsLayoutTableColumn column = columnFromIndex( index );
 
   switch ( index.column() )
   {
     case 0:
-      return column->attribute();
+      return column.attribute();
     case 1:
       if ( role == Qt::DisplayRole )
       {
-        switch ( column->sortOrder() )
+        switch ( column.sortOrder() )
         {
           case Qt::DescendingOrder:
             return tr( "Descending" );
@@ -449,7 +401,7 @@ QVariant QgsLayoutTableSortModel::data( const QModelIndex &index, int role ) con
       else
       {
         //edit role
-        return column->sortOrder();
+        return column.sortOrder();
       }
 
     default:
@@ -503,21 +455,14 @@ bool QgsLayoutTableSortModel::setData( const QModelIndex &index, const QVariant 
     return false;
   }
 
-  //get column for index
-  QgsLayoutTableColumn *column = columnFromIndex( index );
-  if ( !column )
-  {
-    return false;
-  }
-
   switch ( index.column() )
   {
     case 0:
-      column->setAttribute( value.toString() );
+      mTable->sortColumns()[index.row()].setAttribute( value.toString() );
       emit dataChanged( index, index );
       return true;
     case 1:
-      column->setSortOrder( static_cast< Qt::SortOrder >( value.toInt() ) );
+      mTable->sortColumns()[index.row()].setSortOrder( static_cast< Qt::SortOrder >( value.toInt() ) );
       emit dataChanged( index, index );
       return true;
     default:
@@ -550,7 +495,6 @@ bool QgsLayoutTableSortModel::removeRows( int row, int count, const QModelIndex 
   //move backwards through rows, removing each corresponding QgsComposerTableColumn
   for ( int i = maxRow; i >= row; --i )
   {
-    delete ( mTable->sortColumns() )[i];
     mTable->sortColumns().removeAt( i );
   }
   endRemoveRows();
@@ -564,8 +508,7 @@ bool QgsLayoutTableSortModel::insertRows( int row, int count, const QModelIndex 
   //create new QgsComposerTableColumns for each inserted row
   for ( int i = row; i < row + count; ++i )
   {
-    QgsLayoutTableColumn *col = new QgsLayoutTableColumn;
-    mTable->sortColumns().insert( i, col );
+    mTable->sortColumns().insert( i, QgsLayoutTableColumn() );
   }
   endInsertRows();
   return true;
@@ -585,7 +528,7 @@ bool QgsLayoutTableSortModel::moveRow( int row, ShiftDirection direction )
 
   //remove row
   beginRemoveRows( QModelIndex(), swapWithRow, swapWithRow );
-  QgsLayoutTableColumn *temp = mTable->sortColumns().takeAt( swapWithRow );
+  QgsLayoutTableColumn temp = mTable->sortColumns().takeAt( swapWithRow );
   endRemoveRows();
 
   //insert row
@@ -596,30 +539,10 @@ bool QgsLayoutTableSortModel::moveRow( int row, ShiftDirection direction )
   return true;
 }
 
-QgsLayoutTableColumn *QgsLayoutTableSortModel::columnFromIndex( const QModelIndex &index ) const
+QgsLayoutTableColumn QgsLayoutTableSortModel::columnFromIndex( const QModelIndex &index ) const
 {
-  QgsLayoutTableColumn *column = static_cast<QgsLayoutTableColumn *>( index.internalPointer() );
-  return column;
+  return mTable->sortColumns().value( index.row() );
 }
-
-QModelIndex QgsLayoutTableSortModel::indexFromColumn( QgsLayoutTableColumn *column )
-{
-  if ( !mTable )
-  {
-    return QModelIndex();
-  }
-
-  int r = mTable->sortColumns().indexOf( column );
-
-  QModelIndex idx = index( r, 0, QModelIndex() );
-  if ( idx.isValid() )
-  {
-    return idx;
-  }
-
-  return QModelIndex();
-}
-
 
 // QgsLayoutColumnAlignmentDelegate
 

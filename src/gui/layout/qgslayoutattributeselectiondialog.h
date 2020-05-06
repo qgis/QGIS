@@ -100,15 +100,8 @@ class GUI_EXPORT QgsLayoutAttributeTableColumnModel: public QAbstractTableModel
 
     /**
      * Returns the QgsLayoutTableColumn corresponding to an index in the model.
-     * \see indexFromColumn()
      */
-    QgsLayoutTableColumn *columnFromIndex( const QModelIndex &index ) const;
-
-    /**
-     * Returns a QModelIndex corresponding to a QgsLayoutTableColumn in the model.
-     * \see columnFromIndex()
-     */
-    QModelIndex indexFromColumn( QgsLayoutTableColumn *column );
+    QgsLayoutTableColumn columnFromIndex( const QModelIndex &index ) const;
 
   private:
     QgsLayoutItemAttributeTable *mTable = nullptr;
@@ -167,15 +160,8 @@ class GUI_EXPORT QgsLayoutTableSortModel: public QAbstractTableModel
 
     /**
      * Returns the QgsLayoutTableSortColumn corresponding to an index in the model.
-     * \see indexFromColumn()
      */
-    QgsLayoutTableColumn *columnFromIndex( const QModelIndex &index ) const;
-
-    /**
-     * Returns a QModelIndex corresponding to a QgsLayoutTableSortColumn in the model.
-     * \see columnFromIndex()
-     */
-    QModelIndex indexFromColumn( QgsLayoutTableColumn *column );
+    QgsLayoutTableColumn columnFromIndex( const QModelIndex &index ) const;
 
   private:
     QgsLayoutItemAttributeTable *mTable = nullptr;

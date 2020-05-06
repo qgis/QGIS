@@ -1428,9 +1428,7 @@ bool QgsCompositionConverter::readTableXml( QgsLayoutItemAttributeTable *layoutI
   layoutItem->setWrapBehavior( static_cast<QgsLayoutTable::WrapBehavior>( itemElem.attribute( QStringLiteral( "wrapBehavior" ), QStringLiteral( "0" ) ).toInt() ) );
 
   //restore column specifications
-  qDeleteAll( layoutItem->mColumns );
   layoutItem->mColumns.clear();
-  qDeleteAll( layoutItem->mSortColumns );
   layoutItem->mSortColumns.clear();
 
   QDomNodeList columnsList = itemElem.elementsByTagName( QStringLiteral( "displayColumns" ) );
@@ -1441,14 +1439,14 @@ bool QgsCompositionConverter::readTableXml( QgsLayoutItemAttributeTable *layoutI
     for ( int i = 0; i < columnEntryList.size(); ++i )
     {
       QDomElement columnElem = columnEntryList.at( i ).toElement();
-      QgsLayoutTableColumn *column = new QgsLayoutTableColumn;
-      column->mHAlignment = static_cast< Qt::AlignmentFlag >( columnElem.attribute( QStringLiteral( "hAlignment" ), QString::number( Qt::AlignLeft ) ).toInt() );
-      column->mVAlignment = static_cast< Qt::AlignmentFlag >( columnElem.attribute( QStringLiteral( "vAlignment" ), QString::number( Qt::AlignVCenter ) ).toInt() );
-      column->mHeading = columnElem.attribute( QStringLiteral( "heading" ), QString() );
-      column->mAttribute = columnElem.attribute( QStringLiteral( "attribute" ), QString() );
-      column->mSortByRank = columnElem.attribute( QStringLiteral( "sortByRank" ), QStringLiteral( "0" ) ).toInt();
-      column->mSortOrder = static_cast< Qt::SortOrder >( columnElem.attribute( QStringLiteral( "sortOrder" ), QString::number( Qt::AscendingOrder ) ).toInt() );
-      column->mWidth = columnElem.attribute( QStringLiteral( "width" ), QStringLiteral( "0.0" ) ).toDouble();
+      QgsLayoutTableColumn column;
+      column.mHAlignment = static_cast< Qt::AlignmentFlag >( columnElem.attribute( QStringLiteral( "hAlignment" ), QString::number( Qt::AlignLeft ) ).toInt() );
+      column.mVAlignment = static_cast< Qt::AlignmentFlag >( columnElem.attribute( QStringLiteral( "vAlignment" ), QString::number( Qt::AlignVCenter ) ).toInt() );
+      column.mHeading = columnElem.attribute( QStringLiteral( "heading" ), QString() );
+      column.mAttribute = columnElem.attribute( QStringLiteral( "attribute" ), QString() );
+      column.mSortByRank = columnElem.attribute( QStringLiteral( "sortByRank" ), QStringLiteral( "0" ) ).toInt();
+      column.mSortOrder = static_cast< Qt::SortOrder >( columnElem.attribute( QStringLiteral( "sortOrder" ), QString::number( Qt::AscendingOrder ) ).toInt() );
+      column.mWidth = columnElem.attribute( QStringLiteral( "width" ), QStringLiteral( "0.0" ) ).toDouble();
 
       QDomNodeList bgColorList = columnElem.elementsByTagName( QStringLiteral( "backgroundColor" ) );
       if ( !bgColorList.isEmpty() )
@@ -1462,17 +1460,17 @@ bool QgsCompositionConverter::readTableXml( QgsLayoutItemAttributeTable *layoutI
         bgAlpha = bgColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
         if ( redOk && greenOk && blueOk && alphaOk )
         {
-          column->mBackgroundColor = QColor( bgRed, bgGreen, bgBlue, bgAlpha );
+          column.mBackgroundColor = QColor( bgRed, bgGreen, bgBlue, bgAlpha );
         }
       }
       layoutItem->mColumns.append( column );
 
       // sorting columns are now (QGIS 3.14+) handled in a dedicated list
       Q_NOWARN_DEPRECATED_PUSH
-      for ( QgsLayoutTableColumn *col : qgis::as_const( layoutItem->mColumns ) )
-        if ( col->sortByRank() > 0 )
-          layoutItem->mSortColumns.append( col->clone() );
-      std::sort( layoutItem->mSortColumns.begin(), layoutItem->mSortColumns.end(), []( QgsLayoutTableColumn * a, QgsLayoutTableColumn * b ) {return a->sortByRank() < b->sortByRank();} );
+      for ( const QgsLayoutTableColumn &col : qgis::as_const( layoutItem->mColumns ) )
+        if ( col.sortByRank() > 0 )
+          layoutItem->mSortColumns.append( col );
+      std::sort( layoutItem->mSortColumns.begin(), layoutItem->mSortColumns.end(), []( const QgsLayoutTableColumn & a, const QgsLayoutTableColumn & b ) {return a.sortByRank() < b.sortByRank();} );
       Q_NOWARN_DEPRECATED_POP
     }
   }
