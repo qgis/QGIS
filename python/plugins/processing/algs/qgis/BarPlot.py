@@ -43,10 +43,10 @@ class BarPlot(QgisAlgorithm):
     VALUE_FIELD = 'VALUE_FIELD'
 
     def group(self):
-        return self.tr('Graphics')
+        return self.tr('Plots}')
 
     def groupId(self):
-        return 'graphics'
+        return 'plots'
 
     def __init__(self):
         super().__init__()
