@@ -1469,7 +1469,9 @@ bool QgsCompositionConverter::readTableXml( QgsLayoutItemAttributeTable *layoutI
 
       // sorting columns are now (QGIS 3.14+) handled in a dedicated list
       Q_NOWARN_DEPRECATED_PUSH
-      std::copy_if( layoutItem->mColumns.begin(), layoutItem->mColumns.end(), std::back_inserter( layoutItem->mSortColumns ), []( QgsLayoutTableColumn * col ) {return col->sortByRank() > 0;} );
+      for ( QgsLayoutTableColumn *col : qgis::as_const( layoutItem->mColumns ) )
+        if ( col->sortByRank() > 0 )
+          layoutItem->mSortColumns.append( col->clone() );
       std::sort( layoutItem->mSortColumns.begin(), layoutItem->mSortColumns.end(), []( QgsLayoutTableColumn * a, QgsLayoutTableColumn * b ) {return a->sortByRank() < b->sortByRank();} );
       Q_NOWARN_DEPRECATED_POP
     }

@@ -196,7 +196,9 @@ bool QgsLayoutTable::readPropertiesFromElement( const QDomElement &itemElem, con
   {
     // backward compatibility for QGIS < 3.14
     Q_NOWARN_DEPRECATED_PUSH
-    std::copy_if( mColumns.begin(), mColumns.end(), std::back_inserter( mSortColumns ), []( QgsLayoutTableColumn * col ) {return col->sortByRank() > 0;} );
+    for ( QgsLayoutTableColumn *col : qgis::as_const( mColumns ) )
+      if ( col->sortByRank() > 0 )
+        mSortColumns.append( col->clone() );
     std::sort( mSortColumns.begin(), mSortColumns.end(), []( QgsLayoutTableColumn * a, QgsLayoutTableColumn * b ) {return a->sortByRank() < b->sortByRank();} );
     Q_NOWARN_DEPRECATED_POP
   }
