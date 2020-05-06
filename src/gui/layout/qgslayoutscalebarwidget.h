@@ -51,6 +51,8 @@ class GUI_EXPORT QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public
 
   private slots:
     void lineSymbolChanged();
+    void divisionSymbolChanged();
+    void subdivisionSymbolChanged();
     void fillSymbol1Changed();
     void fillSymbol2Changed();
     void mHeightSpinBox_valueChanged( double d );

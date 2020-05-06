@@ -39,6 +39,8 @@ QgsScaleBarSettings::QgsScaleBarSettings()
     line->setPenCapStyle( Qt::SquareCap );
   }
   mLineSymbol->setOutputUnit( QgsUnitTypes::RenderMillimeters );
+  mDivisionLineSymbol.reset( mLineSymbol->clone() );
+  mSubdivisionLineSymbol.reset( mLineSymbol->clone() );
 
   mFillSymbol = qgis::make_unique< QgsFillSymbol >();
   mFillSymbol->setColor( QColor( 0, 0, 0 ) );
@@ -68,6 +70,8 @@ QgsScaleBarSettings::QgsScaleBarSettings( const QgsScaleBarSettings &other )
   , mTextFormat( other.mTextFormat )
   , mHeight( other.mHeight )
   , mLineSymbol( other.mLineSymbol->clone() )
+  , mDivisionLineSymbol( other.mDivisionLineSymbol->clone() )
+  , mSubdivisionLineSymbol( other.mSubdivisionLineSymbol->clone() )
   , mFillSymbol( other.mFillSymbol->clone() )
   , mAlternateFillSymbol( other.mAlternateFillSymbol->clone() )
   , mLabelBarSpace( other.mLabelBarSpace )
@@ -95,6 +99,8 @@ QgsScaleBarSettings &QgsScaleBarSettings::operator=( const QgsScaleBarSettings &
   mUnitLabeling = other.mUnitLabeling;
   mTextFormat = other.mTextFormat;
   mLineSymbol.reset( other.mLineSymbol->clone() );
+  mDivisionLineSymbol.reset( other.mDivisionLineSymbol->clone() );
+  mSubdivisionLineSymbol.reset( other.mSubdivisionLineSymbol->clone() );
   mFillSymbol.reset( other.mFillSymbol->clone() );
   mAlternateFillSymbol.reset( other.mAlternateFillSymbol->clone() );
   mHeight = other.mHeight;
@@ -135,7 +141,10 @@ QColor QgsScaleBarSettings::lineColor() const
 
 void QgsScaleBarSettings::setLineColor( const QColor &color )
 {
-  mLineSymbol->setColor( color );
+  for ( QgsLineSymbol *symbol : { mLineSymbol.get(), mDivisionLineSymbol.get(), mSubdivisionLineSymbol.get() } )
+  {
+    symbol->setColor( color );
+  }
 }
 
 double QgsScaleBarSettings::lineWidth() const
@@ -145,8 +154,11 @@ double QgsScaleBarSettings::lineWidth() const
 
 void QgsScaleBarSettings::setLineWidth( double width )
 {
-  mLineSymbol->setWidth( width );
-  mLineSymbol->setOutputUnit( QgsUnitTypes::RenderMillimeters );
+  for ( QgsLineSymbol *symbol : { mLineSymbol.get(), mDivisionLineSymbol.get(), mSubdivisionLineSymbol.get() } )
+  {
+    symbol->setWidth( width );
+    symbol->setOutputUnit( QgsUnitTypes::RenderMillimeters );
+  }
 }
 
 QPen QgsScaleBarSettings::pen() const
@@ -163,13 +175,16 @@ QPen QgsScaleBarSettings::pen() const
 
 void QgsScaleBarSettings::setPen( const QPen &pen )
 {
-  mLineSymbol->setColor( pen.color() );
-  mLineSymbol->setWidth( pen.widthF() );
-  mLineSymbol->setOutputUnit( QgsUnitTypes::RenderMillimeters );
-  if ( QgsSimpleLineSymbolLayer *line = dynamic_cast< QgsSimpleLineSymbolLayer * >( mLineSymbol->symbolLayer( 0 ) ) )
+  for ( QgsLineSymbol *symbol : { mLineSymbol.get(), mDivisionLineSymbol.get(), mSubdivisionLineSymbol.get() } )
   {
-    line->setPenJoinStyle( pen.joinStyle() );
-    line->setPenCapStyle( pen.capStyle() );
+    symbol->setColor( pen.color() );
+    symbol->setWidth( pen.widthF() );
+    symbol->setOutputUnit( QgsUnitTypes::RenderMillimeters );
+    if ( QgsSimpleLineSymbolLayer *line = dynamic_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) ) )
+    {
+      line->setPenJoinStyle( pen.joinStyle() );
+      line->setPenCapStyle( pen.capStyle() );
+    }
   }
 }
 
@@ -181,6 +196,26 @@ QgsLineSymbol *QgsScaleBarSettings::lineSymbol() const
 void QgsScaleBarSettings::setLineSymbol( QgsLineSymbol *symbol )
 {
   mLineSymbol.reset( symbol );
+}
+
+QgsLineSymbol *QgsScaleBarSettings::divisionLineSymbol() const
+{
+  return mDivisionLineSymbol.get();
+}
+
+void QgsScaleBarSettings::setDivisionLineSymbol( QgsLineSymbol *symbol )
+{
+  mDivisionLineSymbol.reset( symbol );
+}
+
+QgsLineSymbol *QgsScaleBarSettings::subdivisionLineSymbol() const
+{
+  return mSubdivisionLineSymbol.get();
+}
+
+void QgsScaleBarSettings::setSubdivisionLineSymbol( QgsLineSymbol *symbol )
+{
+  mSubdivisionLineSymbol.reset( symbol );
 }
 
 QgsFillSymbol *QgsScaleBarSettings::fillSymbol() const
@@ -256,9 +291,12 @@ Qt::PenJoinStyle QgsScaleBarSettings::lineJoinStyle() const
 
 void QgsScaleBarSettings::setLineJoinStyle( Qt::PenJoinStyle style )
 {
-  if ( QgsSimpleLineSymbolLayer *line = dynamic_cast< QgsSimpleLineSymbolLayer * >( mLineSymbol->symbolLayer( 0 ) ) )
+  for ( QgsLineSymbol *symbol : { mLineSymbol.get(), mDivisionLineSymbol.get(), mSubdivisionLineSymbol.get() } )
   {
-    line->setPenJoinStyle( style );
+    if ( QgsSimpleLineSymbolLayer *line = dynamic_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) ) )
+    {
+      line->setPenJoinStyle( style );
+    }
   }
 }
 
@@ -273,9 +311,12 @@ Qt::PenCapStyle QgsScaleBarSettings::lineCapStyle() const
 
 void QgsScaleBarSettings::setLineCapStyle( Qt::PenCapStyle style )
 {
-  if ( QgsSimpleLineSymbolLayer *line = dynamic_cast< QgsSimpleLineSymbolLayer * >( mLineSymbol->symbolLayer( 0 ) ) )
+  for ( QgsLineSymbol *symbol : { mLineSymbol.get(), mDivisionLineSymbol.get(), mSubdivisionLineSymbol.get() } )
   {
-    line->setPenCapStyle( style );
+    if ( QgsSimpleLineSymbolLayer *line = dynamic_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) ) )
+    {
+      line->setPenCapStyle( style );
+    }
   }
 }
 

@@ -256,6 +256,7 @@ Sets the text ``format`` used for drawing text in the scalebar.
 .. versionadded:: 3.2
 %End
 
+
     QgsLineSymbol *lineSymbol() const;
 %Docstring
 Returns the line symbol used to render the scalebar (only used for some scalebar types).
@@ -263,6 +264,10 @@ Returns the line symbol used to render the scalebar (only used for some scalebar
 Ownership is not transferred.
 
 .. seealso:: :py:func:`setLineSymbol`
+
+.. seealso:: :py:func:`divisionLineSymbol`
+
+.. seealso:: :py:func:`subdivisionLineSymbol`
 
 .. versionadded:: 3.14
 %End
@@ -273,6 +278,68 @@ Sets the line ``symbol`` used to render the scalebar (only used for some scaleba
 transferred to the scalebar.
 
 .. seealso:: :py:func:`lineSymbol`
+
+.. seealso:: :py:func:`setDivisionLineSymbol`
+
+.. seealso:: :py:func:`setSubdivisionLineSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    QgsLineSymbol *divisionLineSymbol() const;
+%Docstring
+Returns the line symbol used to render the scalebar divisions (only used for some scalebar types).
+
+Ownership is not transferred.
+
+.. seealso:: :py:func:`setDivisionLineSymbol`
+
+.. seealso:: :py:func:`lineSymbol`
+
+.. seealso:: :py:func:`subdivisionLineSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    void setDivisionLineSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the line ``symbol`` used to render the scalebar divisions (only used for some scalebar types). Ownership of ``symbol`` is
+transferred to the scalebar.
+
+.. seealso:: :py:func:`divisionLineSymbol`
+
+.. seealso:: :py:func:`setLineSymbol`
+
+.. seealso:: :py:func:`setSubdivisionLineSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    QgsLineSymbol *subdivisionLineSymbol() const;
+%Docstring
+Returns the line symbol used to render the scalebar subdivisions (only used for some scalebar types).
+
+Ownership is not transferred.
+
+.. seealso:: :py:func:`setSubdivisionLineSymbol`
+
+.. seealso:: :py:func:`lineSymbol`
+
+.. seealso:: :py:func:`divisionLineSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    void setSubdivisionLineSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the line ``symbol`` used to render the scalebar subdivisions (only used for some scalebar types). Ownership of ``symbol`` is
+transferred to the scalebar.
+
+.. seealso:: :py:func:`subdivisionLineSymbol`
+
+.. seealso:: :py:func:`setLineSymbol`
+
+.. seealso:: :py:func:`setDivisionLineSymbol`
 
 .. versionadded:: 3.14
 %End

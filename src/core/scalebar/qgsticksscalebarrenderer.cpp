@@ -72,6 +72,8 @@ int QgsTicksScaleBarRenderer::sortKey() const
 QgsScaleBarRenderer::Flags QgsTicksScaleBarRenderer::flags() const
 {
   return Flag::FlagUsesLineSymbol |
+         Flag::FlagUsesDivisionSymbol |
+         Flag::FlagUsesSubdivisionSymbol |
          Flag::FlagRespectsUnits |
          Flag::FlagRespectsMapUnitsPerScaleBarUnit |
          Flag::FlagUsesUnitLabel |
@@ -111,18 +113,36 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
   std::unique_ptr< QgsLineSymbol > symbol( settings.lineSymbol()->clone() );
   symbol->startRender( context );
 
+  std::unique_ptr< QgsLineSymbol > divisionSymbol( settings.divisionLineSymbol()->clone() );
+  divisionSymbol->startRender( context );
+
+  std::unique_ptr< QgsLineSymbol > subdivisionSymbol( settings.subdivisionLineSymbol()->clone() );
+  subdivisionSymbol->startRender( context );
+
   const QList<double> positions = segmentPositions( context, scaleContext, settings );
 
+  int symbolLayerCount = symbol->symbolLayerCount();
+  symbolLayerCount = std::max( symbolLayerCount, divisionSymbol->symbolLayerCount() );
+  symbolLayerCount = std::max( symbolLayerCount, subdivisionSymbol->symbolLayerCount() );
+
   // we render the bar symbol-layer-by-symbol-layer, to avoid ugliness where the lines overlap in multi-layer symbols
-  for ( int layer = 0; layer < symbol->symbolLayerCount(); ++ layer )
+  for ( int layer = 0; layer < symbolLayerCount; ++ layer )
   {
-    // first draw the vertical lines for segments
-    for ( int i = 0; i < positions.size(); ++i )
+    const bool drawDivisionsForThisSymbolLayer = layer < divisionSymbol->symbolLayerCount();
+    const bool drawSubdivisionsForThisSymbolLayer = layer < subdivisionSymbol->symbolLayerCount();
+    const bool drawLineForThisSymbolLayer = layer < symbol->symbolLayerCount();
+
+    if ( drawDivisionsForThisSymbolLayer )
     {
-      const double thisX = context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset;
-      symbol->renderPolyline( QPolygonF() << QPointF( thisX, barTopPosition )
-                              << QPointF( thisX, bottomPosition ), nullptr, context, layer );
+      // first draw the vertical lines for segments
+      for ( int i = 0; i < positions.size(); ++i )
+      {
+        const double thisX = context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset;
+        divisionSymbol->renderPolyline( QPolygonF() << QPointF( thisX, barTopPosition )
+                                        << QPointF( thisX, bottomPosition ), nullptr, context, layer );
+      }
     }
+
     // vertical positions
     double verticalPos = 0.0;
     QList<double> subTickPositionsY;
@@ -145,13 +165,16 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
         break;
     }
     // draw the vertical lines for right subdivisions
-    for ( int i = settings.numberOfSegmentsLeft(); i < positions.size(); ++i )
+    if ( drawSubdivisionsForThisSymbolLayer )
     {
-      for ( int j = 1; j < settings.numberOfSubdivisions(); ++j )
+      for ( int i = settings.numberOfSegmentsLeft(); i < positions.size(); ++i )
       {
-        const double thisSubX = context.convertToPainterUnits( positions.at( i ) + j * scaleContext.segmentWidth / settings.numberOfSubdivisions(), QgsUnitTypes::RenderMillimeters ) + xOffset;
-        symbol->renderPolyline( QPolygonF() << QPointF( thisSubX, subTickPositionsY.at( 0 ) )
-                                << QPointF( thisSubX, subTickPositionsY.at( 1 ) ), nullptr, context, layer );
+        for ( int j = 1; j < settings.numberOfSubdivisions(); ++j )
+        {
+          const double thisSubX = context.convertToPainterUnits( positions.at( i ) + j * scaleContext.segmentWidth / settings.numberOfSubdivisions(), QgsUnitTypes::RenderMillimeters ) + xOffset;
+          subdivisionSymbol->renderPolyline( QPolygonF() << QPointF( thisSubX, subTickPositionsY.at( 0 ) )
+                                             << QPointF( thisSubX, subTickPositionsY.at( 1 ) ), nullptr, context, layer );
+        }
       }
     }
 
@@ -161,17 +184,25 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
       double lastTickPositionX = context.convertToPainterUnits( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth, QgsUnitTypes::RenderMillimeters ) + xOffset;
 
       //last vertical line
-      symbol->renderPolyline( QPolygonF() << QPointF( lastTickPositionX, barTopPosition )
-                              << QPointF( lastTickPositionX, bottomPosition ),
-                              nullptr, context, layer );
+      if ( drawDivisionsForThisSymbolLayer )
+      {
+        divisionSymbol->renderPolyline( QPolygonF() << QPointF( lastTickPositionX, barTopPosition )
+                                        << QPointF( lastTickPositionX, bottomPosition ),
+                                        nullptr, context, layer );
+      }
 
       //horizontal line
-      symbol->renderPolyline( QPolygonF() << QPointF( xOffset + context.convertToPainterUnits( positions.at( 0 ), QgsUnitTypes::RenderMillimeters ), verticalPos )
-                              << QPointF( lastTickPositionX, verticalPos ), nullptr, context, layer );
+      if ( drawLineForThisSymbolLayer )
+      {
+        symbol->renderPolyline( QPolygonF() << QPointF( xOffset + context.convertToPainterUnits( positions.at( 0 ), QgsUnitTypes::RenderMillimeters ), verticalPos )
+                                << QPointF( lastTickPositionX, verticalPos ), nullptr, context, layer );
+      }
     }
   }
 
   symbol->stopRender( context );
+  divisionSymbol->stopRender( context );
+  subdivisionSymbol->stopRender( context );
 
   painter->restore();
 
