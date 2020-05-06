@@ -122,6 +122,10 @@ class CORE_EXPORT QgsScaleBarSettings
 
     /**
      * Returns the number of subdivisions for segments included in the right part of the scalebar (only used for some scalebar types).
+     *
+     * \note The number of subdivisions represents the number of subdivision segments, not the number of subdivision lines. E.g.
+     * if the number is 1 then NO subdivision lines will be shown.
+     *
      * \see setNumberOfSubdivisions()
      * \since QGIS 3.14
      */
@@ -129,6 +133,10 @@ class CORE_EXPORT QgsScaleBarSettings
 
     /**
      * Sets the number of \a subdivisions for segments included in the right part of the scalebar (only used for some scalebar types).
+     *
+     * \note The number of subdivisions represents the number of subdivision segments, not the number of subdivision lines. E.g.
+     * if the number is 1 then NO subdivision lines will be shown.
+     *
      * \see numberOfSubdivisions()
      * \since QGIS 3.14
      */
@@ -614,7 +622,7 @@ class CORE_EXPORT QgsScaleBarSettings
     //! Number of segments on left side
     int mNumSegmentsLeft = 0;
     //! Number of subdivisions on right side
-    int mNumSubdivisions = 0;
+    int mNumSubdivisions = 1;
     //! Height of subdivisions on right side
     double mSubdivisionsHeight = 1.5;
     //! Size of a segment (in map units)

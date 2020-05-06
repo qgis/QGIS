@@ -101,6 +101,11 @@ Sets the number of ``segments`` included in the left part of the scalebar.
 %Docstring
 Returns the number of subdivisions for segments included in the right part of the scalebar (only used for some scalebar types).
 
+.. note::
+
+   The number of subdivisions represents the number of subdivision segments, not the number of subdivision lines. E.g.
+   if the number is 1 then NO subdivision lines will be shown.
+
 .. seealso:: :py:func:`setNumberOfSubdivisions`
 
 .. versionadded:: 3.14
@@ -109,6 +114,11 @@ Returns the number of subdivisions for segments included in the right part of th
     void setNumberOfSubdivisions( int subdivisions );
 %Docstring
 Sets the number of ``subdivisions`` for segments included in the right part of the scalebar (only used for some scalebar types).
+
+.. note::
+
+   The number of subdivisions represents the number of subdivision segments, not the number of subdivision lines. E.g.
+   if the number is 1 then NO subdivision lines will be shown.
 
 .. seealso:: :py:func:`numberOfSubdivisions`
 
