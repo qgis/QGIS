@@ -45,12 +45,12 @@ class QgsLayoutTableColumn;
 
 /**
  * \ingroup gui
- * A model for displaying columns shown in a QgsLayoutAttributeTable
+ * A base model to hold the displaying or sortings columns used in a QgsLayoutAttributeTable
  *
  * \note This class is not a part of public API
- * \since QGIS 3.12
+ * \since QGIS 3.14
  */
-class GUI_EXPORT QgsLayoutAttributeTableColumnModel: public QAbstractTableModel
+class GUI_EXPORT QgsLayoutAttributeTableColumnModelBase: public QAbstractTableModel
 {
     Q_OBJECT
 
@@ -65,12 +65,27 @@ class GUI_EXPORT QgsLayoutAttributeTableColumnModel: public QAbstractTableModel
       ShiftDown //!< Shift the row/column down
     };
 
+    enum Column
+    {
+      Attribute,
+      Heading,
+      Alignment,
+      Width,
+      SortOrder
+    };
+
     /**
      * Constructor for QgsLayoutAttributeTableColumnModel.
      * \param table QgsLayoutItemAttributeTable the model is attached to
      * \param parent optional parent
      */
-    QgsLayoutAttributeTableColumnModel( QgsLayoutItemAttributeTable *table, QObject *parent SIP_TRANSFERTHIS = nullptr );
+    QgsLayoutAttributeTableColumnModelBase( QgsLayoutItemAttributeTable *table, QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    //! To be reimplemented to provide the display or the sort columns
+    virtual QVector<QgsLayoutTableColumn> &columns() const = 0;
+
+    //! To be reimplemented to choose which column should be used by the model
+    virtual QList<Column> displayedColumns() const = 0;
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -92,20 +107,45 @@ class GUI_EXPORT QgsLayoutAttributeTableColumnModel: public QAbstractTableModel
      */
     bool moveRow( int row, ShiftDirection direction );
 
+  protected:
+    QgsLayoutItemAttributeTable *mTable = nullptr;
+
+};
+
+/**
+ * \ingroup gui
+ * A model for displaying columns shown in a QgsLayoutAttributeTable
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
+class GUI_EXPORT QgsLayoutAttributeTableColumnModel: public QgsLayoutAttributeTableColumnModelBase
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsLayoutAttributeTableColumnModel.
+     * \param table QgsLayoutItemAttributeTable the model is attached to
+     * \param parent optional parent
+     */
+    QgsLayoutAttributeTableColumnModel( QgsLayoutItemAttributeTable *table, QObject *parent SIP_TRANSFERTHIS = nullptr )
+      : QgsLayoutAttributeTableColumnModelBase( table, parent )
+    {}
+
+    QVector<QgsLayoutTableColumn> &columns() const override;
+
+    QList<Column> displayedColumns() const override
+    {
+      return {Attribute, Heading, Alignment, Width};
+    }
+
     /**
      * Resets the attribute table's columns to match the source layer's fields. Remove all existing
      * attribute table columns and column customizations.
      */
     void resetToLayer();
-
-    /**
-     * Returns the QgsLayoutTableColumn corresponding to an index in the model.
-     */
-    QgsLayoutTableColumn columnFromIndex( const QModelIndex &index ) const;
-
-  private:
-    QgsLayoutItemAttributeTable *mTable = nullptr;
-
 };
 
 /**
@@ -115,56 +155,27 @@ class GUI_EXPORT QgsLayoutAttributeTableColumnModel: public QAbstractTableModel
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutTableSortModel: public QAbstractTableModel
+class GUI_EXPORT QgsLayoutTableSortModel: public QgsLayoutAttributeTableColumnModelBase
 {
     Q_OBJECT
 
   public:
 
     /**
-     * Controls whether a row/column is shifted up or down
-     */
-    enum ShiftDirection
-    {
-      ShiftUp, //!< Shift the row/column up
-      ShiftDown //!< Shift the row/column down
-    };
-
-    /**
      * Constructor for QgsLayoutTableSortColumnsProxyModel.
      * \param table QgsLayoutItemAttributeTable the model is attached to
-     * \param filterType filter for columns, controls whether sorted or unsorted columns are shown
      * \param parent optional parent
      */
-    QgsLayoutTableSortModel( QgsLayoutItemAttributeTable *table, QObject *parent SIP_TRANSFERTHIS = nullptr );
+    QgsLayoutTableSortModel( QgsLayoutItemAttributeTable *table, QObject *parent SIP_TRANSFERTHIS = nullptr )
+      : QgsLayoutAttributeTableColumnModelBase( table, parent )
+    {}
 
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
-    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
-    bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
-    QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
-    QModelIndex parent( const QModelIndex &child ) const override;
+    QVector<QgsLayoutTableColumn> &columns() const override;
 
-    /**
-     * Moves the specified row up or down in the model. Used for rearranging the attribute tables
-     * columns.
-     * \returns true if the move is allowed
-     * \param row row in model representing attribute table column to move
-     * \param direction direction to move the attribute table column
-     */
-    bool moveRow( int row, ShiftDirection direction );
-
-    /**
-     * Returns the QgsLayoutTableSortColumn corresponding to an index in the model.
-     */
-    QgsLayoutTableColumn columnFromIndex( const QModelIndex &index ) const;
-
-  private:
-    QgsLayoutItemAttributeTable *mTable = nullptr;
+    QList<Column> displayedColumns() const override
+    {
+      return {Attribute, SortOrder};
+    }
 };
 
 /**
@@ -185,7 +196,6 @@ class GUI_EXPORT QgsLayoutColumnAlignmentDelegate : public QItemDelegate
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
     void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-
 };
 
 /**
