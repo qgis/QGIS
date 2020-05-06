@@ -169,7 +169,8 @@ class QgsInternalGeometryEngine
      *
      * \since QGIS 3.10
      */
-    static QVector< QgsPointXY > randomPointsInPolygon( const QgsGeometry &polygon, int count, const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr, int maxTriesPerPoint = 0 );
+    static QVector< QgsPointXY > randomPointsInPolygon( const QgsGeometry &polygon, int count,
+        const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr, int maxTriesPerPoint = 0 );
 
   private:
     const QgsAbstractGeometry *mGeometry = nullptr;
