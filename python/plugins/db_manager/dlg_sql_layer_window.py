@@ -27,8 +27,20 @@ from builtins import str
 from hashlib import md5
 
 from qgis.PyQt.QtCore import Qt, pyqtSignal
-from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QStyledItemDelegate
-from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardItemModel, QStandardItem
+from qgis.PyQt.QtWidgets import (QDialog,
+                                 QWidget,
+                                 QAction,
+                                 QApplication,
+                                 QStyledItemDelegate,
+                                 QMessageBox
+                                 )
+from qgis.PyQt.QtGui import (QKeySequence,
+                             QCursor,
+                             QClipboard,
+                             QIcon,
+                             QStandardItemModel,
+                             QStandardItem
+                             )
 from qgis.PyQt.Qsci import QsciAPIs
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -61,6 +73,7 @@ import re
 
 class DlgSqlLayerWindow(QWidget, Ui_Dialog):
     nameChanged = pyqtSignal(str)
+    hasChanged = False
 
     def __init__(self, iface, layer, parent=None):
         QWidget.__init__(self, parent)
@@ -104,6 +117,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.editSql.setMarginVisible(True)
         self.initCompleter()
+        self.editSql.textChanged.connect(lambda: self.setHasChanged(True))
 
         # allow copying results
         copyAction = QAction("copy", self)
@@ -542,3 +556,23 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         if dlg.exec_():
             self.filter = dlg.sql()
         layer.deleteLater()
+
+    def setHasChanged(self, hasChanged):
+        self.hasChanged = hasChanged
+
+    def close(self):
+        if self.hasChanged:
+            ret = QMessageBox.question(
+                self, self.tr('Unsaved Changes?'),
+                self.tr('There are unsaved changes. Do you want to keep them?'),
+                QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard, QMessageBox.Cancel)
+
+            if ret == QMessageBox.Save:
+                self.saveAsFilePreset()
+                return True
+            elif ret == QMessageBox.Discard:
+                return True
+            else:
+                return False
+        else:
+            return True
