@@ -394,7 +394,7 @@ class CORE_EXPORT QgsScaleBarSettings
 
     /**
      * Sets the pen used for drawing outlines in the scalebar.
-     * \see pen()  mSubdivisionsHeightSpinBox->setMaximum( d );
+     * \see pen()
      * \deprecated use setLineSymbol() instead.
      */
     Q_DECL_DEPRECATED void setPen( const QPen &pen ) SIP_DEPRECATED;
