@@ -84,6 +84,10 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
 
     /**
      * Returns the number of subdivisions for segments included in the right part of the scalebar (only used for some scalebar types).
+     *
+     * \note The number of subdivisions represents the number of subdivision segments, not the number of subdivision lines. E.g.
+     * if the number is 1 then NO subdivision lines will be shown.
+     *
      * \see setNumberOfSubdivisions()
      * \since QGIS 3.14
      */
@@ -91,6 +95,10 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
 
     /**
      * Sets the number of \a subdivisions for segments included in the right part of the scalebar (only used for some scalebar types).
+     *
+     * \note The number of subdivisions represents the number of subdivision segments, not the number of subdivision lines. E.g.
+     * if the number is 1 then NO subdivision lines will be shown.
+     *
      * \see numberOfSubdivisions()
      * \since QGIS 3.14
      */
