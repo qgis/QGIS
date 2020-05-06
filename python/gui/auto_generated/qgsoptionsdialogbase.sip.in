@@ -80,6 +80,13 @@ Resizes all tabs when the dialog is resized
 Determine if the options list is in icon only mode
 %End
 
+    void setCurrentPage( const QString &page );
+%Docstring
+Sets the dialog ``page`` (by object name) to show.
+
+.. versionadded:: 3.14
+%End
+
   public slots:
 
     void searchText( const QString &text );

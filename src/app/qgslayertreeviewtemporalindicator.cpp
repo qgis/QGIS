@@ -51,12 +51,14 @@ void QgsLayerTreeViewTemporalIndicatorProvider::onIndicatorClicked( const QModel
   switch ( layer->type() )
   {
     case QgsMapLayerType::RasterLayer:
-      QgisApp::instance()->showLayerProperties( qobject_cast<QgsRasterLayer *>( layer ), QStringLiteral( "mOptsPage_Temporal" ) );
+      QgisApp::instance()->showLayerProperties( layer, QStringLiteral( "mOptsPage_Temporal" ) );
       break;
     case QgsMapLayerType::MeshLayer:
-      QgisApp::instance()->showLayerProperties( qobject_cast<QgsMeshLayer *>( layer ), QStringLiteral( "mOptsPage_Temporal" ) );
+      QgisApp::instance()->showLayerProperties( layer, QStringLiteral( "mOptsPage_Temporal" ) );
       break;
     case QgsMapLayerType::VectorLayer:
+      QgisApp::instance()->showLayerProperties( layer, QStringLiteral( "mOptsPage_Temporal" ) );
+      break;
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::VectorTileLayer:
       break;

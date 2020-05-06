@@ -18,6 +18,8 @@
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsrasterlayer.h"
 #include "qgsmeshlayer.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayertemporalproperties.h"
 
 QgsDateTimeRange QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject *project )
 {
@@ -51,15 +53,57 @@ QgsDateTimeRange QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject 
             layerRange = rasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange();
             break;
         }
+        break;
       }
-      break;
+
+      case QgsMapLayerType::VectorLayer:
+      {
+        QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( currentLayer );
+
+        QgsVectorLayerTemporalProperties *properties = static_cast< QgsVectorLayerTemporalProperties * >( vectorLayer->temporalProperties() );
+        switch ( properties->mode() )
+        {
+          case QgsVectorLayerTemporalProperties::ModeFixedTemporalRange:
+            layerRange = properties->fixedTemporalRange();
+            break;
+
+          case QgsVectorLayerTemporalProperties::ModeFeatureDateTimeInstantFromField:
+          {
+            const int fieldIndex = vectorLayer->fields().lookupField( properties->startField() );
+            if ( fieldIndex >= 0 )
+            {
+              layerRange = QgsDateTimeRange( vectorLayer->minimumValue( fieldIndex ).toDateTime(),
+                                             vectorLayer->maximumValue( fieldIndex ).toDateTime() );
+            }
+            break;
+          }
+
+          case QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromFields:
+          {
+            const int startFieldIndex = vectorLayer->fields().lookupField( properties->startField() );
+            const int endFieldIndex = vectorLayer->fields().lookupField( properties->endField() );
+            if ( startFieldIndex >= 0 && endFieldIndex >= 0 )
+            {
+              layerRange = QgsDateTimeRange( std::min( vectorLayer->minimumValue( startFieldIndex ).toDateTime(),
+                                             vectorLayer->minimumValue( endFieldIndex ).toDateTime() ),
+                                             std::max( vectorLayer->maximumValue( startFieldIndex ).toDateTime(),
+                                                 vectorLayer->maximumValue( endFieldIndex ).toDateTime() ) );
+            }
+            break;
+          }
+        }
+        break;
+      }
+
       case QgsMapLayerType::MeshLayer:
       {
         QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( currentLayer );
         layerRange = meshLayer->temporalProperties()->timeExtent();
+        break;
       }
-      break;
-      default:
+
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::VectorTileLayer:
         break;
     }
 

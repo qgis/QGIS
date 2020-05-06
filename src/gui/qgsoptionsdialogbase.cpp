@@ -229,6 +229,21 @@ void QgsOptionsDialogBase::resizeAlltabs( int index )
   mOptStackedWidget->adjustSize();
 }
 
+void QgsOptionsDialogBase::setCurrentPage( const QString &page )
+{
+  //find the page with a matching widget name
+  for ( int idx = 0; idx < mOptStackedWidget->count(); ++idx )
+  {
+    QWidget *currentPage = mOptStackedWidget->widget( idx );
+    if ( currentPage->objectName() == page )
+    {
+      //found the page, set it as current
+      mOptStackedWidget->setCurrentIndex( idx );
+      return;
+    }
+  }
+}
+
 void QgsOptionsDialogBase::searchText( const QString &text )
 {
   const int minimumTextLength = 3;

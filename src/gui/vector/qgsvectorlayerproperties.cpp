@@ -65,6 +65,7 @@
 #include "qgssymbolwidgetcontext.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsmaskingwidget.h"
+#include "qgsvectorlayertemporalpropertieswidget.h"
 
 #include "layertree/qgslayertreelayer.h"
 #include "qgslayertree.h"
@@ -239,6 +240,11 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mMetadataWidget->setMapCanvas( mCanvas );
   metadataLayout->addWidget( mMetadataWidget );
   metadataFrame->setLayout( metadataLayout );
+
+  QVBoxLayout *temporalLayout = new QVBoxLayout( temporalFrame );
+  temporalLayout->setContentsMargins( 0, 0, 0, 0 );
+  mTemporalWidget = new QgsVectorLayerTemporalPropertiesWidget( this, mLayer );
+  temporalLayout->addWidget( mTemporalWidget );
 
   syncToLayer();
 
@@ -665,6 +671,9 @@ void QgsVectorLayerProperties::apply()
 
   mAttributesFormPropertiesDialog->apply();
   mSourceFieldsPropertiesDialog->apply();
+
+  // Update temporal properties
+  mTemporalWidget->saveTemporalProperties();
 
   if ( mLayer->renderer() )
   {

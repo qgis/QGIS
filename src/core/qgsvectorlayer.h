@@ -79,6 +79,7 @@ class QgsAuxiliaryStorage;
 class QgsAuxiliaryLayer;
 class QgsGeometryOptions;
 class QgsStyleEntityVisitorInterface;
+class QgsVectorLayerTemporalProperties;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
@@ -581,6 +582,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     QgsVectorDataProvider *dataProvider() FINAL;
     const QgsVectorDataProvider *dataProvider() const FINAL SIP_SKIP;
+
+    /**
+     * Returns temporal properties associated with the vector layer.
+     */
+    QgsMapLayerTemporalProperties *temporalProperties() override;
 
     /**
      * Sets the text \a encoding of the data provider.
@@ -2700,6 +2706,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Pointer to data provider derived from the abastract base class QgsDataProvider
     QgsVectorDataProvider *mDataProvider = nullptr;
+
+    //! Pointer to temporal properties
+    QgsVectorLayerTemporalProperties *mTemporalProperties = nullptr;
 
     //! The preview expression used to generate a human readable preview string for features
     QString mDisplayExpression;

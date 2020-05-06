@@ -70,6 +70,7 @@
 #include "qgsweakrelation.h"
 #include "qgsrendercontext.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayertemporalproperties.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayereditpassthrough.h"
 #include "qgsvectorlayereditutils.h"
@@ -147,6 +148,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
                                 const QString &providerKey,
                                 const QgsVectorLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::VectorLayer, baseName, vectorLayerPath )
+  , mTemporalProperties( new QgsVectorLayerTemporalProperties( this ) )
   , mServerProperties( new QgsVectorLayerServerProperties( this ) )
   , mAuxiliaryLayer( nullptr )
   , mAuxiliaryLayerKey( QString() )
@@ -181,6 +183,11 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   for ( const QgsField &field : qgis::as_const( mFields ) )
   {
     mAttributeAliasMap.insert( field.name(), QString() );
+  }
+
+  if ( mValid )
+  {
+    mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
   }
 
   connect( this, &QgsVectorLayer::selectionChanged, this, [ = ] { triggerRepaint(); } );
@@ -619,6 +626,11 @@ QgsVectorDataProvider *QgsVectorLayer::dataProvider()
 const QgsVectorDataProvider *QgsVectorLayer::dataProvider() const
 {
   return mDataProvider;
+}
+
+QgsMapLayerTemporalProperties *QgsVectorLayer::temporalProperties()
+{
+  return mTemporalProperties;
 }
 
 void QgsVectorLayer::setProviderEncoding( const QString &encoding )
@@ -1543,6 +1555,8 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     return false;
   }
 
+  mTemporalProperties->readXml( layer_node.toElement(), context );
+
   readStyleManager( layer_node );
 
   QDomNode depsNode = layer_node.namedItem( QStringLiteral( "dataDependencies" ) );
@@ -1856,6 +1870,9 @@ bool QgsVectorLayer::writeXml( QDomNode &layer_node,
 
   // save expression fields
   mExpressionFieldBuffer->writeXml( layer_node, document );
+
+  // write temporal properties
+  mTemporalProperties->writeXml( mapLayerNode, document, context );
 
   writeStyleManager( layer_node, document );
 

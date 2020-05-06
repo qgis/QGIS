@@ -568,21 +568,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mOptsPage_Server->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#server-properties" ) );
 }
 
-void QgsRasterLayerProperties::setCurrentPage( const QString &page )
-{
-  //find the page with a matching widget name
-  for ( int idx = 0; idx < mOptionsStackedWidget->count(); ++idx )
-  {
-    QWidget *currentPage = mOptionsStackedWidget->widget( idx );
-    if ( currentPage->objectName() == page )
-    {
-      //found the page, set it as current
-      mOptionsStackedWidget->setCurrentIndex( idx );
-      return;
-    }
-  }
-}
-
 void QgsRasterLayerProperties::setupTransparencyTable( int nBands )
 {
   tableTransparency->clear();
