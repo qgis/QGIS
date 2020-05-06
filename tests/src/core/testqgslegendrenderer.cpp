@@ -164,6 +164,8 @@ class TestQgsLegendRenderer : public QObject
     void testColumnBreaks();
     void testColumnBreaks2();
     void testColumnBreaks3();
+    void testColumnBreaks4();
+    void testColumnBreaks5();
     void testRasterStroke();
     void testFilterByPolygon();
     void testFilterByExpression();
@@ -980,6 +982,50 @@ void TestQgsLegendRenderer::testColumnBreaks3()
   layer->setCustomProperty( QStringLiteral( "legend/column-break" ), true );
 
   QgsLegendSettings settings;
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+}
+
+void TestQgsLegendRenderer::testColumnBreaks4()
+{
+  QString testName = QStringLiteral( "legend_column_breaks4" );
+
+  QgsLayerTreeModel legendModel( mRoot );
+
+  QgsLayerTreeLayer *layer = legendModel.rootGroup()->findLayer( mVL3 );
+  QgsMapLayerLegendUtils::setLegendNodeColumnBreak( layer, 0, true );
+  legendModel.refreshLayerLegend( layer );
+
+  layer = legendModel.rootGroup()->findLayer( mRL );
+  QgsMapLayerLegendUtils::setLegendNodeColumnBreak( layer, 0, true );
+  legendModel.refreshLayerLegend( layer );
+
+  QgsLegendSettings settings;
+  settings.setColumnCount( 5 );
+  settings.setSplitLayer( true );
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+}
+
+void TestQgsLegendRenderer::testColumnBreaks5()
+{
+  QString testName = QStringLiteral( "legend_column_breaks5" );
+
+  QgsLayerTreeModel legendModel( mRoot );
+
+  QgsLayerTreeLayer *layer = legendModel.rootGroup()->findLayer( mVL3 );
+  QgsMapLayerLegendUtils::setLegendNodeColumnBreak( layer, 0, true );
+  legendModel.refreshLayerLegend( layer );
+
+  layer = legendModel.rootGroup()->findLayer( mRL );
+  QgsMapLayerLegendUtils::setLegendNodeColumnBreak( layer, 0, true );
+  legendModel.refreshLayerLegend( layer );
+
+  QgsLegendSettings settings;
+  settings.setColumnCount( 4 );
+  settings.setSplitLayer( false );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   _renderLegend( testName, &legendModel, settings );
   QVERIFY( _verifyImage( testName, mReport ) );

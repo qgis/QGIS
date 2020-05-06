@@ -439,6 +439,7 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
   // the target number of columns allowed is dictated by the number of forced column
   // breaks OR the manually set column count (whichever is greater!)
   const int targetNumberColumns = std::max( forcedColumnBreaks + 1, mSettings.columnCount() );
+  const int numberAutoPlacedBreaks = targetNumberColumns - forcedColumnBreaks - 1;
 
   // We know height of each group and we have to split them into columns
   // minimizing max column height. It is sort of bin packing problem, NP-hard.
@@ -450,11 +451,12 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
   int currentColumnGroupCount = 0; // number of groups in current column
   double currentColumnHeight = 0;
   double closedColumnsHeight = 0;
+  int autoPlacedBreaks = 0;
 
   for ( int i = 0; i < componentGroups.size(); i++ )
   {
     // Recalc average height for remaining columns including current
-    double avgColumnHeight = ( totalHeight - closedColumnsHeight ) / ( targetNumberColumns - currentColumn );
+    double avgColumnHeight = ( totalHeight - closedColumnsHeight ) / ( numberAutoPlacedBreaks + 1 - autoPlacedBreaks );
 
     LegendComponentGroup group = componentGroups.at( i );
     double currentHeight = currentColumnHeight;
@@ -463,7 +465,8 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
     currentHeight += group.size.height();
 
     bool canCreateNewColumn = ( currentColumnGroupCount > 0 )  // do not leave empty column
-                              && ( currentColumn < targetNumberColumns - 1 ); // must not exceed max number of columns
+                              && ( currentColumn < targetNumberColumns - 1 ) // must not exceed max number of columns
+                              && ( autoPlacedBreaks < numberAutoPlacedBreaks );
 
     bool shouldCreateNewColumn = ( currentHeight - avgColumnHeight ) > group.size.height() / 2  // center of current group is over average height
                                  && currentColumnGroupCount > 0 // do not leave empty column
@@ -481,6 +484,8 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
     {
       // New column
       currentColumn++;
+      if ( !group.placeColumnBreakBeforeGroup )
+        autoPlacedBreaks++;
       currentColumnGroupCount = 0;
       closedColumnsHeight += currentColumnHeight;
       currentColumnHeight = group.size.height();
