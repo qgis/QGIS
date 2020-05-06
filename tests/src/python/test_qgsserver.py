@@ -51,7 +51,7 @@ import base64
 
 
 # Strip path and content length because path may vary
-RE_STRIP_UNCHECKABLE = rb'MAP=[^"]+|Content-Length: \d+'
+RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+'
 RE_ELEMENT = br'</*([^>\[\s]+)[ >]'
 RE_ELEMENT_CONTENT = br'<[^>\[]+>(.+)</[^>\[\s]+>'
 RE_ATTRIBUTES = rb'((?:(?!\s|=).)*)\s*?=\s*?["\']?((?:(?<=")(?:(?<=\\)"|[^"])*|(?<=\')(?:(?<=\\)\'|[^\'])*)|(?:(?!"|\')(?:(?!\/>|>|\s).)+))'
