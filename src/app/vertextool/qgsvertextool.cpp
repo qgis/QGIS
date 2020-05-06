@@ -780,6 +780,9 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
         {
           layerSettings = existingSettings.value();
           layerSettings.setEnabled( vlayer == currentVlayer );
+          layerSettings.setTolerance( tol );
+          layerSettings.setTypeFlag( static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag ) );
+          layerSettings.setUnits( QgsTolerance::ProjectUnits );
         }
         else
         {
@@ -819,12 +822,15 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
       {
         layerSettings = existingSettings.value();
         layerSettings.setEnabled( vlayer->isEditable() );
+        layerSettings.setTolerance( tol );
+        layerSettings.setTypeFlag( static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag ) );
+        layerSettings.setUnits( QgsTolerance::ProjectUnits );
       }
       else
       {
-        config.setIndividualLayerSettings( vlayer, QgsSnappingConfig::IndividualLayerSettings(
-                                             vlayer->isEditable(), static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag ), tol, QgsTolerance::ProjectUnits, 0.0, 0.0 ) );
+        layerSettings = QgsSnappingConfig::IndividualLayerSettings( vlayer->isEditable(), static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag ), tol, QgsTolerance::ProjectUnits, 0.0, 0.0 );
       }
+      config.setIndividualLayerSettings( vlayer, layerSettings );
     }
 
     snapUtils->setConfig( config );
