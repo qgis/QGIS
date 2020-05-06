@@ -5209,9 +5209,15 @@ void QgisApp::about()
 
 void QgisApp::addLayerDefinition()
 {
-  QString path = QFileDialog::getOpenFileName( this, QStringLiteral( "Add Layer Definition File" ), QDir::home().path(), QStringLiteral( "*.qlr" ) );
+  QgsSettings settings;
+  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastQLRDir" ), QDir::homePath() ).toString();
+
+  QString path = QFileDialog::getOpenFileName( this, QStringLiteral( "Add Layer Definition File" ), lastUsedDir, QStringLiteral( "*.qlr" ) );
   if ( path.isEmpty() )
     return;
+
+  QFileInfo fi( path );
+  settings.setValue( QStringLiteral( "UI/lastQLRDir" ), fi.path() );
 
   openLayerDefinition( path );
 }
@@ -8680,7 +8686,10 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
 
 void QgisApp::saveAsLayerDefinition()
 {
-  QString path = QFileDialog::getSaveFileName( this, QStringLiteral( "Save as Layer Definition File" ), QDir::home().path(), QStringLiteral( "*.qlr" ) );
+  QgsSettings settings;
+  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastQLRDir" ), QDir::homePath() ).toString();
+
+  QString path = QFileDialog::getSaveFileName( this, QStringLiteral( "Save as Layer Definition File" ), lastUsedDir, QStringLiteral( "*.qlr" ) );
   QgsDebugMsg( path );
   if ( path.isEmpty() )
     return;
@@ -8691,6 +8700,9 @@ void QgisApp::saveAsLayerDefinition()
   {
     visibleMessageBar()->pushMessage( tr( "Error saving layer definition file" ), errorMessage, Qgis::Warning );
   }
+
+  QFileInfo fi( path );
+  settings.setValue( QStringLiteral( "UI/lastQLRDir" ), fi.path() );
 }
 
 void QgisApp::saveStyleFile( QgsMapLayer *layer )
