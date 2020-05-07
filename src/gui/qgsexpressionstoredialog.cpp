@@ -59,7 +59,7 @@ QgsExpressionStoreDialog::QgsExpressionStoreDialog( const QString &label, const 
   mLabel->setText( labelFixed );
 }
 
-QString QgsExpressionStoreDialog::helpText()
+QString QgsExpressionStoreDialog::helpText() const
 {
   // remove meta qrichtext instruction from html. It fails rendering
   // when mixing with other html content
