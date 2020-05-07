@@ -194,11 +194,11 @@ QString QgsVectorLayerTemporalProperties::createFilterString( QgsVectorLayer *, 
 
     case ModeFeatureDateTimeStartAndEndFromFields:
       return QStringLiteral( "%1 %2 %3 AND %4 %5 %6" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
-             range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
-             dateTimeExpressionLiteral( range.begin() ),
-             QgsExpression::quotedColumnRef( mEndFieldName ),
              range.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
-             dateTimeExpressionLiteral( range.end() ) );
+             dateTimeExpressionLiteral( range.end() ),
+             QgsExpression::quotedColumnRef( mEndFieldName ),
+             range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
+             dateTimeExpressionLiteral( range.begin() ) );
   }
 
   return QString();
