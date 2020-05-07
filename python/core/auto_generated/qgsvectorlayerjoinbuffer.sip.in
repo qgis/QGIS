@@ -207,7 +207,7 @@ created if its fields are not empty.
 .. versionadded:: 3.0
 %End
 
-    bool deleteFeature( QgsFeatureId fid ) const;
+    bool deleteFeature( QgsFeatureId fid, const bool cascade = false ) const;
 %Docstring
 Deletes a feature from joined layers. The feature id given in
 parameter is the one coming from the target layer.
@@ -220,7 +220,7 @@ parameter is the one coming from the target layer.
 .. versionadded:: 3.0
 %End
 
-    bool deleteFeatures( const QgsFeatureIds &fids ) const;
+    bool deleteFeatures( const QgsFeatureIds &fids, const bool cascade = false ) const;
 %Docstring
 Deletes a list of features from joined layers. Feature ids given
 in a parameter are those coming from the target layer.

@@ -1140,7 +1140,7 @@ QgsVectorLayer::EditResult QgsVectorLayer::deleteVertex( QgsFeatureId featureId,
 }
 
 
-bool QgsVectorLayer::deleteSelectedFeatures( int *deletedCount )
+bool QgsVectorLayer::deleteSelectedFeatures( int *deletedCount, const bool cascade )
 {
   if ( !mValid || !mDataProvider || !( mDataProvider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
   {
@@ -1159,7 +1159,7 @@ bool QgsVectorLayer::deleteSelectedFeatures( int *deletedCount )
   const auto constSelectedFeatures = selectedFeatures;
   for ( QgsFeatureId fid : constSelectedFeatures )
   {
-    deleted += deleteFeature( fid );  // removes from selection
+    deleted += deleteFeature( fid, cascade );  // removes from selection
   }
 
   triggerRepaint();
@@ -3164,25 +3164,51 @@ bool QgsVectorLayer::deleteAttributes( const QList<int> &attrs )
   return deleted;
 }
 
-bool QgsVectorLayer::deleteFeatureWithDependencies( QgsFeatureId fid )
+bool QgsVectorLayer::deleteFeatureWithDependencies( QgsFeatureId fid, const bool cascade )
 {
   if ( !mEditBuffer )
     return false;
 
+  if ( cascade )
+  {
+
+    const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( this );
+
+    for ( const QgsRelation &relation : relations )
+    {
+      //check if composition (and not association)
+      if ( relation.strength() == QgsRelation::Composition )
+      {
+        //get features connected over this relation
+        QgsFeatureIterator relatedFeaturesIt = relation.getRelatedFeatures( getFeature( fid ) );
+        QgsFeatureIds childFeatureIds;
+        QgsFeature childFeature;
+        while ( relatedFeaturesIt.nextFeature( childFeature ) )
+        {
+          childFeatureIds.insert( childFeature.id() );
+        }
+
+        //set childlayer editable
+        relation.referencingLayer()->startEditing();
+        relation.referencingLayer()->deleteFeatures( childFeatureIds );
+      }
+    }
+  }
+
   if ( mJoinBuffer->containsJoins() )
-    mJoinBuffer->deleteFeature( fid );
+    mJoinBuffer->deleteFeature( fid, cascade );
 
   bool res = mEditBuffer->deleteFeature( fid );
 
   return res;
 }
 
-bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
+bool QgsVectorLayer::deleteFeature( QgsFeatureId fid, const bool cascade )
 {
   if ( !mEditBuffer )
     return false;
 
-  bool res = deleteFeatureWithDependencies( fid );
+  bool res = deleteFeatureWithDependencies( fid, cascade );
 
   if ( res )
   {
@@ -3193,12 +3219,12 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
   return res;
 }
 
-bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids )
+bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids, const bool cascade )
 {
   bool res = true;
   const auto constFids = fids;
   for ( QgsFeatureId fid : constFids )
-    res = deleteFeatureWithDependencies( fid ) && res;
+    res = deleteFeatureWithDependencies( fid, cascade ) && res;
 
   if ( res )
   {

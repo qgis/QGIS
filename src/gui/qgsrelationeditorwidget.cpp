@@ -667,10 +667,8 @@ void QgsRelationEditorWidget::deleteFeatures( const QgsFeatureIds &featureids )
     // When deleting a linked feature within an N:M relation,
     // check if the feature is linked to more than just one feature.
     // In case it is linked more than just once, ask the user for confirmation
-    // as it is likely he was not aware of the implications and might either
-    // leave the dataset in a corrupted state (referential integrity) or if
-    // the fk constraint is ON CASCADE DELETE, there may be several linking
-    // entries deleted along.
+    // as it is likely he was not aware of the implications and might delete
+    // there may be several linking entries deleted along.
 
     QgsFeatureRequest deletedFeaturesRequest;
     deletedFeaturesRequest.setFilterFids( featureids );
@@ -732,7 +730,7 @@ void QgsRelationEditorWidget::deleteFeatures( const QgsFeatureIds &featureids )
 
   if ( deleteFeatures )
   {
-    layer->deleteFeatures( featureids );
+    layer->deleteFeatures( featureids, true );
     updateUi();
   }
 }
@@ -793,7 +791,7 @@ void QgsRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &featureids )
       QgsDebugMsgLevel( FID_TO_STRING( f.id() ), 4 );
     }
 
-    mRelation.referencingLayer()->deleteFeatures( fids );
+    mRelation.referencingLayer()->deleteFeatures( fids, false );
 
     updateUi();
   }

@@ -663,12 +663,12 @@ bool QgsVectorLayerJoinBuffer::changeAttributeValues( QgsFeatureId fid, const Qg
   return success;
 }
 
-bool QgsVectorLayerJoinBuffer::deleteFeature( QgsFeatureId fid ) const
+bool QgsVectorLayerJoinBuffer::deleteFeature( QgsFeatureId fid, const bool cascade ) const
 {
-  return deleteFeatures( QgsFeatureIds() << fid );
+  return deleteFeatures( QgsFeatureIds() << fid, cascade );
 }
 
-bool QgsVectorLayerJoinBuffer::deleteFeatures( const QgsFeatureIds &fids ) const
+bool QgsVectorLayerJoinBuffer::deleteFeatures( const QgsFeatureIds &fids, const bool cascade ) const
 {
   if ( !containsJoins() )
     return false;
@@ -683,7 +683,7 @@ bool QgsVectorLayerJoinBuffer::deleteFeatures( const QgsFeatureIds &fids ) const
       {
         const QgsFeature joinFeature = joinedFeatureOf( &info, mLayer->getFeature( fid ) );
         if ( joinFeature.isValid() )
-          info.joinLayer()->deleteFeature( joinFeature.id() );
+          info.joinLayer()->deleteFeature( joinFeature.id(), cascade );
       }
     }
   }
