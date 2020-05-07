@@ -15,7 +15,8 @@ import qgis  # NOQA
 from qgis.core import (QgsDateTimeRange,
                        QgsVectorLayerTemporalProperties,
                        QgsReadWriteContext,
-                       QgsVectorLayer)
+                       QgsVectorLayer,
+                       QgsVectorDataProviderTemporalCapabilities)
 from qgis.PyQt.QtCore import (QDateTime,
                               QDate,
                               QTime,
@@ -48,6 +49,38 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         self.assertEqual(props2.fixedTemporalRange(), props.fixedTemporalRange())
         self.assertEqual(props2.startField(), props.startField())
         self.assertEqual(props2.endField(), props.endField())
+
+    def testModeFromProvider(self):
+        caps = QgsVectorDataProviderTemporalCapabilities()
+        props = QgsVectorLayerTemporalProperties()
+        props.setDefaultsFromDataProviderTemporalCapabilities(caps)
+        self.assertFalse(props.isActive())
+
+        caps.setHasTemporalCapabilities(True)
+        caps.setAvailableTemporalRange(QgsDateTimeRange(QDateTime(2006, 3, 11, 0, 13, 20), QDateTime(2017, 2, 14, 1, 33, 20)))
+        props.setDefaultsFromDataProviderTemporalCapabilities(caps)
+        self.assertTrue(props.isActive())
+        self.assertFalse(props.startField())
+        self.assertFalse(props.endField())
+        self.assertEqual(props.mode(), QgsVectorLayerTemporalProperties.ModeFixedTemporalRange)
+        self.assertEqual(props.fixedTemporalRange().begin(), QDateTime(2006, 3, 11, 0, 13, 20))
+        self.assertEqual(props.fixedTemporalRange().end(), QDateTime(2017, 2, 14, 1, 33, 20))
+
+        caps.setStartField('start_field')
+        caps.setMode(QgsVectorDataProviderTemporalCapabilities.ProviderStoresFeatureDateTimeInstantInField)
+        props.setDefaultsFromDataProviderTemporalCapabilities(caps)
+        self.assertTrue(props.isActive())
+        self.assertEqual(props.startField(), 'start_field')
+        self.assertFalse(props.endField())
+        self.assertEqual(props.mode(), QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField)
+
+        caps.setEndField('end_field')
+        caps.setMode(QgsVectorDataProviderTemporalCapabilities.ProviderStoresFeatureDateTimeStartAndEndInSeparateFields)
+        props.setDefaultsFromDataProviderTemporalCapabilities(caps)
+        self.assertTrue(props.isActive())
+        self.assertEqual(props.startField(), 'start_field')
+        self.assertEqual(props.endField(), 'end_field')
+        self.assertEqual(props.mode(), QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromFields)
 
     def testFixedRangeMode(self):
         props = QgsVectorLayerTemporalProperties(enabled=True)
