@@ -275,6 +275,11 @@ QPushButton:pressed, QToolButton:pressed {
     background-color: @darkalternativegradient;
 }
 
+QPushButton:open {
+    background-color: @darkalternativegradient;
+    border: 1px solid @focus;
+}
+
 /* ==================================================================================== */
 /* COMBO BOX                                                                            */
 /* ==================================================================================== */
