@@ -62,6 +62,12 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
   {
     // remove the initial file:// scheme
     sourcePath = QUrl( sourcePath ).toLocalFile();
+
+    if ( !QgsVectorTileUtils::checkXYZUrlTemplate( sourcePath ) )
+    {
+      mErrorMessage = tr( "Invalid template for XYZ: " ) + sourcePath;
+      return false;
+    }
   }
   else if ( sourceType == QStringLiteral( "mbtiles" ) )
   {
