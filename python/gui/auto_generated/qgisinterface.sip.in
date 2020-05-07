@@ -302,6 +302,13 @@ Returns a reference to the main window "Shape Digitizing" toolbar.
 Returns a reference to the main window "Attributes" toolbar.
 %End
 
+    virtual QToolBar *selectionToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Selection" toolbar.
+
+.. versionadded:: 3.14
+%End
+
     virtual QToolBar *pluginToolBar() = 0;
 %Docstring
 Returns a reference to the main window "Plugin" toolbar.

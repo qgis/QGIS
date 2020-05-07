@@ -177,6 +177,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QToolBar *advancedDigitizeToolBar() override;
     QToolBar *shapeDigitizeToolBar() override;
     QToolBar *attributesToolBar() override;
+    QToolBar *selectionToolBar() override;
     QToolBar *pluginToolBar() override;
     QToolBar *helpToolBar() override;
     QToolBar *rasterToolBar() override;

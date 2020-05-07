@@ -705,6 +705,7 @@
    <addaction name="mActionNewMemoryLayer"/>
    <addaction name="separator"/>
    <addaction name="mActionNewVirtualLayer"/>
+   <addaction name="separator"/>
   </widget>
   <widget class="QToolBar" name="mShapeDigitizeToolBar">
    <property name="windowTitle">
@@ -712,6 +713,20 @@
    </property>
    <property name="toolTip">
     <string>Shape Digitizing Toolbar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QToolBar" name="mSelectionToolBar">
+   <property name="windowTitle">
+    <string>Selection Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Selection Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
