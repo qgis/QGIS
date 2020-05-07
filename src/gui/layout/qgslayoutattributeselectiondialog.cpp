@@ -214,10 +214,8 @@ QVariant QgsLayoutAttributeTableColumnModelBase::headerData( int section, Qt::Or
       }
     }
   }
-  else
-  {
-    return QVariant();
-  }
+
+  return QVariant();
 }
 
 bool QgsLayoutAttributeTableColumnModelBase::setData( const QModelIndex &index, const QVariant &value, int role )

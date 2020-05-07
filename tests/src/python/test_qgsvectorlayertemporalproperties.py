@@ -142,6 +142,25 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
         self.assertEqual(props.createFilterString(layer, range), '"start_field" < make_datetime(2020,5,6,8,9,10) AND "end_field" >= make_datetime(2019,3,4,11,12,13)')
 
+        props.setEndField('')
+        self.assertEqual(props.createFilterString(layer, range), '"start_field" <= make_datetime(2020,5,6,8,9,10)')
+
+        range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeBeginning=False)
+        self.assertEqual(props.createFilterString(layer, range), '"start_field" < make_datetime(2020,5,6,8,9,10)')
+
+        range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
+        self.assertEqual(props.createFilterString(layer, range), '"start_field" <= make_datetime(2020,5,6,8,9,10)')
+
+        props.setStartField('')
+        props.setEndField('end_field')
+        self.assertEqual(props.createFilterString(layer, range), '"end_field" >= make_datetime(2019,3,4,11,12,13)')
+
+        range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeBeginning=False)
+        self.assertEqual(props.createFilterString(layer, range), '"end_field" > make_datetime(2019,3,4,11,12,13)')
+
+        range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
+        self.assertEqual(props.createFilterString(layer, range), '"end_field" >= make_datetime(2019,3,4,11,12,13)')
+
 
 if __name__ == '__main__':
     unittest.main()
