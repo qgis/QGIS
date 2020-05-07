@@ -128,6 +128,20 @@ void QgsVectorLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabi
   {
     setIsActive( vectorCaps->hasTemporalCapabilities() );
     setFixedTemporalRange( vectorCaps->availableTemporalRange() );
+    setStartField( vectorCaps->startField() );
+    setEndField( vectorCaps->endField() );
+    switch ( vectorCaps->mode() )
+    {
+      case QgsVectorDataProviderTemporalCapabilities::ProviderHasFixedTemporalRange:
+        setMode( ModeFixedTemporalRange );
+        break;
+      case QgsVectorDataProviderTemporalCapabilities::ProviderStoresFeatureDateTimeInstantInField:
+        setMode( ModeFeatureDateTimeInstantFromField );
+        break;
+      case QgsVectorDataProviderTemporalCapabilities::ProviderStoresFeatureDateTimeStartAndEndInSeparateFields:
+        setMode( ModeFeatureDateTimeStartAndEndFromFields );
+        break;
+    }
   }
 }
 
