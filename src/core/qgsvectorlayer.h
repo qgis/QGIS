@@ -1283,7 +1283,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \returns TRUE in case of success and FALSE otherwise
      */
-    Q_INVOKABLE bool deleteSelectedFeatures( int *deletedCount = nullptr, const bool cascade = false );
+    Q_INVOKABLE bool deleteSelectedFeatures( int *deletedCount = nullptr, const bool cascade = false, QMap<QgsVectorLayer *, QgsFeatureIds> *handledFeatures = nullptr );
 
     /**
      * Adds a ring to polygon/multipolygon features
@@ -1823,7 +1823,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
      */
-    bool deleteFeature( QgsFeatureId fid, const bool cascade = false );
+    bool deleteFeature( QgsFeatureId fid, const bool cascade = false, QMap<QgsVectorLayer *, QgsFeatureIds> *handledFeatures = nullptr );
 
     /**
      * Deletes a set of features from the layer (but does not commit it)
@@ -1838,7 +1838,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
      */
-    bool deleteFeatures( const QgsFeatureIds &fids, const bool cascade = false );
+    bool deleteFeatures( const QgsFeatureIds &fids, const bool cascade = false, QMap<QgsVectorLayer *, QgsFeatureIds> *handledFeatures = nullptr );
 
     /**
      * Attempts to commit to the underlying data provider any buffered changes made since the
@@ -2695,7 +2695,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Read simple labeling from layer's custom properties (QGIS 2.x projects)
     QgsAbstractVectorLayerLabeling *readLabelingFromCustomProperties();
 
-    bool deleteFeatureWithDependencies( QgsFeatureId fid, const bool cascade = false );
+    bool deleteFeatureCascade( QgsFeatureId fid, const bool cascade = false, QMap<QgsVectorLayer *, QgsFeatureIds> *handledFeatures = nullptr );
 
 #ifdef SIP_RUN
     QgsVectorLayer( const QgsVectorLayer &rhs );
