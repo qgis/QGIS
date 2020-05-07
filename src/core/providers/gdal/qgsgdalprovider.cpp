@@ -2286,6 +2286,12 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
     extensions << QStringLiteral( "zip" ) << QStringLiteral( "gz" ) << QStringLiteral( "tar" ) << QStringLiteral( "tar.gz" ) << QStringLiteral( "tgz" );
   }
 
+  // can't forget the all supported case
+  QStringList exts;
+  for ( const QString &ext : qgis::as_const( extensions ) )
+    exts << QStringLiteral( "*.%1 *.%2" ).arg( ext, ext.toUpper() );
+  fileFiltersString.prepend( QObject::tr( "All supported files" ) + QStringLiteral( " (%1);;" ).arg( exts.join( QStringLiteral( " " ) ) ) );
+
   // can't forget the default case - first
   fileFiltersString.prepend( QObject::tr( "All files" ) + " (*);;" );
 
