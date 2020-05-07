@@ -16,7 +16,7 @@ import re
 import tempfile
 import shutil
 
-from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDate, QDateTime
+from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDate, QDateTime, QTime
 
 from qgis.core import (NULL,
                        QgsVectorLayer,
@@ -984,8 +984,8 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl.dataProvider().temporalCapabilities().startField(), 'date_start')
         self.assertFalse(vl.dataProvider().temporalCapabilities().endField())
         self.assertEqual(vl.dataProvider().temporalCapabilities().mode(), QgsVectorDataProviderTemporalCapabilities.ProviderStoresFeatureDateTimeInstantInField)
-        self.assertEqual(vl.dataProvider().temporalCapabilities().availableTemporalRange().begin(), QDateTime(2006, 3, 11, 0, 13, 20))
-        self.assertEqual(vl.dataProvider().temporalCapabilities().availableTemporalRange().end(), QDateTime(2017, 2, 14, 1, 33, 20))
+        self.assertEqual(vl.dataProvider().temporalCapabilities().availableTemporalRange().begin(), QDateTime(QDate(2006, 3, 10), QTime(14, 13, 20), Qt.UTC))
+        self.assertEqual(vl.dataProvider().temporalCapabilities().availableTemporalRange().end(), QDateTime(QDate(2017, 2, 13), QTime(15, 33, 20), Qt.UTC))
 
     def testTemporal2(self):
         """
@@ -1039,8 +1039,8 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl.dataProvider().temporalCapabilities().startField(), 'date_start')
         self.assertEqual(vl.dataProvider().temporalCapabilities().endField(), 'date_end')
         self.assertEqual(vl.dataProvider().temporalCapabilities().mode(), QgsVectorDataProviderTemporalCapabilities.ProviderStoresFeatureDateTimeStartAndEndInSeparateFields)
-        self.assertEqual(vl.dataProvider().temporalCapabilities().availableTemporalRange().begin(), QDateTime(2006, 3, 11, 0, 13, 20))
-        self.assertEqual(vl.dataProvider().temporalCapabilities().availableTemporalRange().end(), QDateTime(2017, 2, 14, 1, 33, 20))
+        self.assertEqual(vl.dataProvider().temporalCapabilities().availableTemporalRange().begin(), QDateTime(QDate(2006, 3, 10), QTime(14, 13, 20), Qt.UTC))
+        self.assertEqual(vl.dataProvider().temporalCapabilities().availableTemporalRange().end(), QDateTime(QDate(2017, 2, 13), QTime(15, 33, 20), Qt.UTC))
 
     def testImageServer(self):
         """
