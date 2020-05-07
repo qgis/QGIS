@@ -243,6 +243,9 @@ namespace QgsWfs
         case QgsWkbTypes::MultiLineString:
           geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiLineStringPropertyType" ) );
           break;
+        case QgsWkbTypes::MultiSurface:
+          geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiSurfaceType" ) );
+          break;
         case QgsWkbTypes::MultiPolygon25D:
         case QgsWkbTypes::MultiPolygon:
           geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiPolygonPropertyType" ) );
