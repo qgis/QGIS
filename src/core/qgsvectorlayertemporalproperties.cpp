@@ -153,11 +153,12 @@ void QgsVectorLayerTemporalProperties::setEndField( const QString &field )
 
 QString dateTimeExpressionLiteral( const QDateTime &datetime )
 {
-  // TODO - we should add a dedicated expression function for optimised datetime value creation
-  // which doesn't rely on string conversion!
-  // e.g. datetime(2012,5,4,12,15,0)
-
-  return QStringLiteral( "to_datetime('%1','yyyy-MM-ddTHH:mm:ss.zzz')" ).arg( datetime.toString( QStringLiteral( "yyyy-MM-ddTHH:mm:ss.zzz" ) ) );
+  return QStringLiteral( "make_datetime(%1,%2,%3,%4,%5,%6)" ).arg( datetime.date().year() )
+         .arg( datetime.date().month() )
+         .arg( datetime.date().day() )
+         .arg( datetime.time().hour() )
+         .arg( datetime.time().minute() )
+         .arg( datetime.time().second() + datetime.time().msec() / 1000.0 );
 }
 
 QString QgsVectorLayerTemporalProperties::createFilterString( QgsVectorLayer *, const QgsDateTimeRange &range ) const
