@@ -106,7 +106,7 @@ QgsProcessingAlgorithm *QgsWriteVectorTilesXyzAlgorithm::createInstance() const
 
 void QgsWriteVectorTilesXyzAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFolderDestination( QStringLiteral( "OUTPUT_DIR" ), QObject::tr( "Output directory" ) ) );
+  addParameter( new QgsProcessingParameterFolderDestination( QStringLiteral( "OUTPUT_DIRECTORY" ), QObject::tr( "Output directory" ) ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "XYZ_TEMPLATE" ), QObject::tr( "File template" ), QStringLiteral( "{z}/{x}/{y}.pbf" ) ) );
 
   addBaseParameters();
@@ -114,7 +114,7 @@ void QgsWriteVectorTilesXyzAlgorithm::initAlgorithm( const QVariantMap & )
 
 void QgsWriteVectorTilesXyzAlgorithm::prepareWriter( QgsVectorTileWriter &writer, const QVariantMap &parameters, QgsProcessingContext &context, QVariantMap &outputs )
 {
-  QString outputDir = parameterAsString( parameters, QStringLiteral( "OUTPUT_DIR" ), context );
+  QString outputDir = parameterAsString( parameters, QStringLiteral( "OUTPUT_DIRECTORY" ), context );
   QString xyzTemplate = parameterAsString( parameters, QStringLiteral( "XYZ_TEMPLATE" ), context );
   QgsDataSourceUri dsUri;
   dsUri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
@@ -123,7 +123,7 @@ void QgsWriteVectorTilesXyzAlgorithm::prepareWriter( QgsVectorTileWriter &writer
 
   writer.setDestinationUri( uri );
 
-  outputs.insert( QStringLiteral( "OUTPUT_DIR" ), outputDir );
+  outputs.insert( QStringLiteral( "OUTPUT_DIRECTORY" ), outputDir );
 }
 
 //
