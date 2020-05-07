@@ -239,7 +239,7 @@ if errorlevel 1 (echo creation of designer template failed & goto error)
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' qgis.reg.tmpl >%PKGDIR%\bin\qgis.reg.tmpl
 if errorlevel 1 (echo creation of registry template & goto error)
 
-sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e '/^call py3_env.bat/acall gdal-dev-env.bat' qgis.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%.bat.tmpl
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/^call py3_env.bat/call gdal-dev-py3-env.bat/' qgis.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%.bat.tmpl
 if errorlevel 1 (echo creation of desktop template failed & goto error)
 
 set batches=bin/%PACKAGENAME%.bat.tmpl
@@ -247,7 +247,7 @@ for %%g IN (%GRASS_VERSIONS%) do (
 	for /f "usebackq tokens=1" %%a in (`%%g --config version`) do set gv=%%a
 	for /F "delims=." %%i in ("!gv!") do set v=%%i
 
-	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grasspath@/%%g/g' -e 's/@grassversion@/!gv!/g' -e '/^call py3_env.bat/acall gdal-dev-env.bat' qgis-grass.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-g!v!.bat.tmpl
+	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grasspath@/%%g/g' -e 's/@grassversion@/!gv!/g' -e 's/^call py3_env.bat/call gdal-dev-py3-env.bat/' qgis-grass.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-g!v!.bat.tmpl
 	if errorlevel 1 (echo creation of desktop template failed & goto error)
 	set batches=!batches! bin/%PACKAGENAME%-g!v!.bat.tmpl
 )
