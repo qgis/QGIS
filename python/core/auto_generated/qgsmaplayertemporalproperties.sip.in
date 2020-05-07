@@ -35,6 +35,10 @@ how an individual QgsMapLayer behaves in a temporal context, e.g. while animatin
     {
       sipType = sipType_QgsMeshLayerTemporalProperties;
     }
+    else if ( qobject_cast<QgsVectorLayerTemporalProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsVectorLayerTemporalProperties;
+    }
     else
     {
       sipType = 0;
