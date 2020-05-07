@@ -1070,7 +1070,7 @@ QDateTime QgsArcGisRestUtils::parseDateTime( const QVariant &value )
   if ( value.isNull() )
     return QDateTime();
   bool ok = false;
-  QDateTime dt = QDateTime::fromMSecsSinceEpoch( value.toLongLong( &ok ) );
+  QDateTime dt = QDateTime::fromMSecsSinceEpoch( value.toLongLong( &ok ), Qt::UTC );
   if ( !ok )
   {
     QgsDebugMsg( QStringLiteral( "Invalid value %1 for datetime" ).arg( value.toString() ) );
