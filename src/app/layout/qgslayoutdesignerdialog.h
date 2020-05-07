@@ -555,6 +555,9 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     void setLastExportPath( const QString &path ) const;
 
     bool checkBeforeExport();
+
+    //! update default action of toolbutton
+    void toolButtonActionTriggered( QAction * );
 };
 
 #endif // QGSLAYOUTDESIGNERDIALOG_H
