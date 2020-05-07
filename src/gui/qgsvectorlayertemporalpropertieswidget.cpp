@@ -55,7 +55,9 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
   mEndFieldComboBox->setLayer( layer );
   mSingleFieldComboBox->setFilters( QgsFieldProxyModel::DateTime | QgsFieldProxyModel::Date );
   mStartFieldComboBox->setFilters( QgsFieldProxyModel::DateTime | QgsFieldProxyModel::Date );
+  mStartFieldComboBox->setAllowEmptyFieldName( true );
   mEndFieldComboBox->setFilters( QgsFieldProxyModel::DateTime | QgsFieldProxyModel::Date );
+  mEndFieldComboBox->setAllowEmptyFieldName( true );
 
   if ( !properties->startField().isEmpty() )
   {

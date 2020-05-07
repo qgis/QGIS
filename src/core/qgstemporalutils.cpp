@@ -89,6 +89,16 @@ QgsDateTimeRange QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject 
                                              std::max( vectorLayer->maximumValue( startFieldIndex ).toDateTime(),
                                                  vectorLayer->maximumValue( endFieldIndex ).toDateTime() ) );
             }
+            else if ( startFieldIndex >= 0 )
+            {
+              layerRange = QgsDateTimeRange( vectorLayer->minimumValue( startFieldIndex ).toDateTime(),
+                                             vectorLayer->maximumValue( startFieldIndex ).toDateTime() );
+            }
+            else if ( endFieldIndex >= 0 )
+            {
+              layerRange = QgsDateTimeRange( vectorLayer->minimumValue( endFieldIndex ).toDateTime(),
+                                             vectorLayer->maximumValue( endFieldIndex ).toDateTime() );
+            }
             break;
           }
         }

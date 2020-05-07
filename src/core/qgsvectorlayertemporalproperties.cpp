@@ -193,12 +193,30 @@ QString QgsVectorLayerTemporalProperties::createFilterString( QgsVectorLayer *, 
              dateTimeExpressionLiteral( range.end() ) );
 
     case ModeFeatureDateTimeStartAndEndFromFields:
-      return QStringLiteral( "%1 %2 %3 AND %4 %5 %6" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
-             range.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
-             dateTimeExpressionLiteral( range.end() ),
-             QgsExpression::quotedColumnRef( mEndFieldName ),
-             range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
-             dateTimeExpressionLiteral( range.begin() ) );
+    {
+      if ( !mStartFieldName.isEmpty() && !mEndFieldName.isEmpty() )
+      {
+        return QStringLiteral( "%1 %2 %3 AND %4 %5 %6" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
+               range.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
+               dateTimeExpressionLiteral( range.end() ),
+               QgsExpression::quotedColumnRef( mEndFieldName ),
+               range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
+               dateTimeExpressionLiteral( range.begin() ) );
+      }
+      else if ( !mStartFieldName.isEmpty() )
+      {
+        return QStringLiteral( "%1 %2 %3" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
+               range.includeBeginning() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
+               dateTimeExpressionLiteral( range.end() ) );
+      }
+      else if ( !mEndFieldName.isEmpty() )
+      {
+        return QStringLiteral( "%1 %2 %3" ).arg( QgsExpression::quotedColumnRef( mEndFieldName ),
+               range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
+               dateTimeExpressionLiteral( range.begin() ) );
+      }
+      break;
+    }
   }
 
   return QString();
