@@ -202,7 +202,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      *
      * \since QGIS 3.0
      */
-    bool deleteFeature( QgsFeatureId fid, const bool cascade = false ) const;
+    bool deleteFeature( QgsFeatureId fid, const bool cascade = false, QMap<QgsVectorLayer *, QgsFeatureIds> *handledFeatures = nullptr ) const;
 
     /**
      * Deletes a list of features from joined layers. Feature ids given
@@ -214,7 +214,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      *
      * \since QGIS 3.0
      */
-    bool deleteFeatures( const QgsFeatureIds &fids, const bool cascade = false ) const;
+    bool deleteFeatures( const QgsFeatureIds &fids, const bool cascade = false, QMap<QgsVectorLayer *, QgsFeatureIds> *handledFeatures = nullptr ) const;
 
   signals:
 

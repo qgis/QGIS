@@ -3215,7 +3215,7 @@ bool QgsVectorLayer::deleteFeatureCascade( QgsFeatureId fid, const bool cascade,
   }
 
   if ( mJoinBuffer->containsJoins() )
-    mJoinBuffer->deleteFeature( fid, cascade );
+    mJoinBuffer->deleteFeature( fid, cascade, handledFeatures );
 
   bool res = mEditBuffer->deleteFeature( fid );
 
