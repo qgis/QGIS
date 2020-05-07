@@ -69,7 +69,7 @@ class PyQgsTextFormatWidget(unittest.TestCase):
         s.setSizeUnit(QgsUnitTypes.RenderPixels)
         s.setSizeMapUnitScale(QgsMapUnitScale(1, 2))
         s.setOpacity(0.5)
-        s.setJoinStyle(Qt.RoundJoin)
+        s.setJoinStyle(Qt.BevelJoin)
         s.setPaintEffect(QgsBlurEffect.create({'blur_level': '2.0', 'blur_unit': QgsUnitTypes.encodeUnit(QgsUnitTypes.RenderMillimeters), 'enabled': '1'}))
         s.setMaskedSymbolLayers([QgsSymbolLayerReference("layerid1", QgsSymbolLayerId("symbol", 1)),
                                  QgsSymbolLayerReference("layerid2", QgsSymbolLayerId("symbol2", 2))])
@@ -82,7 +82,7 @@ class PyQgsTextFormatWidget(unittest.TestCase):
         self.assertEqual(s.sizeUnit(), QgsUnitTypes.RenderPixels)
         self.assertEqual(s.sizeMapUnitScale(), QgsMapUnitScale(1, 2))
         self.assertEqual(s.opacity(), 0.5)
-        self.assertEqual(s.joinStyle(), Qt.RoundJoin)
+        self.assertEqual(s.joinStyle(), Qt.BevelJoin)
         self.assertTrue(s.paintEffect())
         self.assertEqual(s.paintEffect().blurLevel(), 2.0)
         self.assertEqual(s.maskedSymbolLayers(), [QgsSymbolLayerReference("layerid1", QgsSymbolLayerId("symbol", 1)),
