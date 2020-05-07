@@ -3240,7 +3240,7 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid, QgsVectorLayer::DeleteCont
   return res;
 }
 
-bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids, QgsVectorLayer::DeleteContext *context )
+bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds fids, QgsVectorLayer::DeleteContext *context )
 {
   bool res = true;
   const auto constFids = fids;

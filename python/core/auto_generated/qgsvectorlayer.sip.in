@@ -1971,7 +1971,7 @@ Deletes a feature from the layer (but does not commit it).
    changes can be discarded by calling rollBack().
 %End
 
-    bool deleteFeatures( const QgsFeatureIds &fids, DeleteContext *context = 0 );
+    bool deleteFeatures( const QgsFeatureIds fids, DeleteContext *context = 0 );
 %Docstring
 Deletes a set of features from the layer (but does not commit it)
 

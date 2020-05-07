@@ -1854,7 +1854,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
      */
-    bool deleteFeatures( const QgsFeatureIds &fids, DeleteContext *context = nullptr );
+    bool deleteFeatures( const QgsFeatureIds fids, DeleteContext *context = nullptr );
 
     /**
      * Attempts to commit to the underlying data provider any buffered changes made since the
