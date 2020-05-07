@@ -1048,7 +1048,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   connect( QgsProject::instance(), &QgsProject::collectAttachedFiles, this, &QgisApp::generateProjectAttachedFiles );
   connect( mSnappingUtils, &QgsSnappingUtils::configChanged, QgsProject::instance(), &QgsProject::setSnappingConfig );
 
-
   endProfile();
 
   functionProfile( &QgisApp::createMenus, this, QStringLiteral( "Create menus" ) );
@@ -3127,6 +3126,7 @@ void QgisApp::createToolBars()
                       << mShapeDigitizeToolBar
                       << mMapNavToolBar
                       << mAttributesToolBar
+                      << mSelectionToolBar
                       << mPluginToolBar
                       << mHelpToolBar
                       << mRasterToolBar
@@ -3164,7 +3164,7 @@ void QgisApp::createToolBars()
   mToolbarMenu->addActions( toolbarMenuActions );
 
   // advanced selection tool button
-  QToolButton *bt = new QToolButton( mAttributesToolBar );
+  QToolButton *bt = new QToolButton( mSelectionToolBar );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionSelectByForm );
   bt->addAction( mActionSelectByExpression );
@@ -3188,13 +3188,12 @@ void QgisApp::createToolBars()
       break;
   }
   bt->setDefaultAction( defAdvancedSelectionAction );
-  QAction *advancedSelectionAction = mAttributesToolBar->insertWidget( mActionOpenTable, bt );
+  QAction *advancedSelectionAction = mSelectionToolBar->insertWidget( mActionOpenTable, bt );
   advancedSelectionAction->setObjectName( QStringLiteral( "ActionSelection" ) );
   connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
-
   // mouse select tool button
-  bt = new QToolButton( mAttributesToolBar );
+  bt = new QToolButton( mSelectionToolBar );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionSelectFeatures );
   bt->addAction( mActionSelectPolygon );
@@ -3218,13 +3217,12 @@ void QgisApp::createToolBars()
       break;
   }
   bt->setDefaultAction( defMouseSelectAction );
-  QAction *mouseSelectionAction = mAttributesToolBar->insertWidget( advancedSelectionAction, bt );
+  QAction *mouseSelectionAction = mSelectionToolBar->insertWidget( advancedSelectionAction, bt );
   mouseSelectionAction->setObjectName( QStringLiteral( "ActionSelect" ) );
   connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
-
   // deselection tool button
-  bt = new QToolButton( mAttributesToolBar );
+  bt = new QToolButton( mSelectionToolBar );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionDeselectAll );
   bt->addAction( mActionDeselectActiveLayer );
@@ -3240,13 +3238,11 @@ void QgisApp::createToolBars()
       break;
   }
   bt->setDefaultAction( defDeselectionAction );
-  QAction *deselectionAction = mAttributesToolBar->insertWidget( mActionOpenTable, bt );
+  QAction *deselectionAction = mSelectionToolBar->insertWidget( mActionOpenTable, bt );
   deselectionAction->setObjectName( QStringLiteral( "ActionDeselection" ) );
   connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
-
   // feature action tool button
-
   bt = new QToolButton( mAttributesToolBar );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->setDefaultAction( mActionFeatureAction );

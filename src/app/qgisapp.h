@@ -642,6 +642,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QToolBar *advancedDigitizeToolBar() { return mAdvancedDigitizeToolBar; }
     QToolBar *shapeDigitizeToolBar() { return mShapeDigitizeToolBar; }
     QToolBar *attributesToolBar() { return mAttributesToolBar; }
+
+    /**
+     * Returns selection toolbar
+     * \since QGIS 3.14
+     */
+    QToolBar *selectionToolBar() { return mSelectionToolBar; }
     QToolBar *pluginToolBar() { return mPluginToolBar; }
     QToolBar *helpToolBar() { return mHelpToolBar; }
     QToolBar *rasterToolBar() { return mRasterToolBar; }
