@@ -134,6 +134,13 @@ QString QgsVectorTileUtils::formatXYZUrlTemplate( const QString &url, QgsTileXYZ
   return turl;
 }
 
+bool QgsVectorTileUtils::checkXYZUrlTemplate( const QString &url )
+{
+  return url.contains( QStringLiteral( "{x}" ) ) &&
+         url.contains( QStringLiteral( "{y}" ) ) &&
+         url.contains( QStringLiteral( "{z}" ) );
+}
+
 //! a helper class for ordering tile requests according to the distance from view center
 struct LessThanTileRequest
 {

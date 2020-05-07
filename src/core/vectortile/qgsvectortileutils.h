@@ -61,6 +61,8 @@ class CORE_EXPORT QgsVectorTileUtils
     static QgsVectorLayer *makeVectorLayerForTile( QgsVectorTileLayer *mvt, QgsTileXYZ tileID, const QString &layerName );
     //! Returns formatted tile URL string replacing {x}, {y}, {z} placeholders
     static QString formatXYZUrlTemplate( const QString &url, QgsTileXYZ tile );
+    //! Checks whether the URL template string is correct (contains {x}, {y}, {z} placeholders)
+    static bool checkXYZUrlTemplate( const QString &url );
 };
 
 #endif // QGSVECTORTILEUTILS_H

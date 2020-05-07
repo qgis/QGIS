@@ -29,6 +29,7 @@
 
 #include "qgsprocessingparametervectortilewriterlayers.h"
 
+/// @cond private
 
 //
 // QgsProcessingVectorTileWriteLayerDetailsWidget
@@ -362,3 +363,5 @@ QStringList QgsProcessingVectorTileWriterLayersWidgetWrapper::compatibleOutputTy
 {
   return QStringList();
 }
+
+/// @endcond

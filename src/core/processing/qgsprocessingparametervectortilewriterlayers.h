@@ -16,8 +16,6 @@
 #ifndef QGSPROCESSINGPARAMETERVECTORTILEWRITERLAYERS_H
 #define QGSPROCESSINGPARAMETERVECTORTILEWRITERLAYERS_H
 
-#define SIP_NO_FILE
-
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingparametertype.h"
 #include "qgsvectortilewriter.h"
@@ -76,7 +74,7 @@ class CORE_EXPORT QgsProcessingParameterVectorTileWriterLayers : public QgsProce
  * \note This class is not a part of public API.
  * \since QGIS 3.14
  */
-class QgsProcessingParameterTypeVectorTileWriterLayers : public QgsProcessingParameterType
+class CORE_EXPORT QgsProcessingParameterTypeVectorTileWriterLayers : public QgsProcessingParameterType
 {
   public:
     QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
@@ -97,6 +95,21 @@ class QgsProcessingParameterTypeVectorTileWriterLayers : public QgsProcessingPar
     QString id() const override
     {
       return QgsProcessingParameterVectorTileWriterLayers::typeName();
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterVectorTileWriterLayers" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterVectorTileWriterLayers" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "list[dict]: list of input layers as dictionaries, see QgsProcessingParameterVectorTileWriterLayers docs" );
     }
 };
 

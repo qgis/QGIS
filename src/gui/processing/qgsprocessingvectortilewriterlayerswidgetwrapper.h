@@ -120,11 +120,6 @@ class QgsProcessingVectorTileWriterLayersWidgetWrapper : public QgsAbstractProce
     // QgsProcessingParameterWidgetFactoryInterface
     QString parameterType() const override;
     QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
-//    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
-//      QgsProcessingContext &context,
-//      const QgsProcessingParameterWidgetContext &widgetContext,
-//      const QgsProcessingParameterDefinition *definition = nullptr,
-//      const QgsProcessingAlgorithm *algorithm = nullptr ) override;
 
     // QgsProcessingParameterWidgetWrapper interface
     QWidget *createWidget() override SIP_FACTORY;
@@ -137,7 +132,6 @@ class QgsProcessingVectorTileWriterLayersWidgetWrapper : public QgsAbstractProce
 
     QStringList compatibleParameterTypes() const override;
     QStringList compatibleOutputTypes() const override;
-//    QString modelerExpressionFormatString() const override;
 
   private:
 
