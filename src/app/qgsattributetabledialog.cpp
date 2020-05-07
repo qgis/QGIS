@@ -864,7 +864,8 @@ void QgsAttributeTableDialog::setFilterExpression( const QString &filterString, 
 void QgsAttributeTableDialog::deleteFeature( const QgsFeatureId fid )
 {
   QgsDebugMsg( QStringLiteral( "Delete %1" ).arg( fid ) );
-  mLayer->deleteFeature( fid, true );
+  QgsVectorLayer::DeleteContext context { true };
+  mLayer->deleteFeature( fid, &context );
 }
 
 void QgsAttributeTableDialog::showContextMenu( QgsActionMenu *menu, const QgsFeatureId fid )

@@ -1140,7 +1140,7 @@ QgsVectorLayer::EditResult QgsVectorLayer::deleteVertex( QgsFeatureId featureId,
 }
 
 
-bool QgsVectorLayer::deleteSelectedFeatures( int *deletedCount, const bool cascade, QMap<QgsVectorLayer *, QgsFeatureIds> *handledFeatures )
+bool QgsVectorLayer::deleteSelectedFeatures( int *deletedCount, QgsVectorLayer::DeleteContext *context )
 {
   if ( !mValid || !mDataProvider || !( mDataProvider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
   {
@@ -1159,7 +1159,7 @@ bool QgsVectorLayer::deleteSelectedFeatures( int *deletedCount, const bool casca
   const auto constSelectedFeatures = selectedFeatures;
   for ( QgsFeatureId fid : constSelectedFeatures )
   {
-    deleted += deleteFeature( fid, cascade, handledFeatures );  // removes from selection
+    deleted += deleteFeature( fid, context );  // removes from selection
   }
 
   triggerRepaint();
@@ -3164,16 +3164,16 @@ bool QgsVectorLayer::deleteAttributes( const QList<int> &attrs )
   return deleted;
 }
 
-bool QgsVectorLayer::deleteFeatureCascade( QgsFeatureId fid, const bool cascade, QMap<QgsVectorLayer *, QgsFeatureIds> *handledFeatures )
+bool QgsVectorLayer::deleteFeatureCascade( QgsFeatureId fid, QgsVectorLayer::DeleteContext *context )
 {
   if ( !mEditBuffer )
     return false;
 
-  if ( cascade )
+  if ( context && context->cascade )
   {
-    if ( handledFeatures->contains( this ) )
+    if ( context->handledFeatures.contains( this ) )
     {
-      QgsFeatureIds handledFeatureIds = handledFeatures->value( this );
+      QgsFeatureIds handledFeatureIds = context->handledFeatures.value( this );
       if ( handledFeatureIds.contains( fid ) )
       {
         // break recursion
@@ -3183,13 +3183,13 @@ bool QgsVectorLayer::deleteFeatureCascade( QgsFeatureId fid, const bool cascade,
       {
         // add feature id
         handledFeatureIds << fid;
-        handledFeatures->insert( this, handledFeatureIds );
+        context->handledFeatures.insert( this, handledFeatureIds );
       }
     }
     else
     {
       // add layer and feature id
-      handledFeatures->insert( this, QgsFeatureIds() << fid );
+      context->handledFeatures.insert( this, QgsFeatureIds() << fid );
     }
 
     const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( this );
@@ -3209,25 +3209,25 @@ bool QgsVectorLayer::deleteFeatureCascade( QgsFeatureId fid, const bool cascade,
         }
 
         relation.referencingLayer()->startEditing();
-        relation.referencingLayer()->deleteFeatures( childFeatureIds, cascade, handledFeatures );
+        relation.referencingLayer()->deleteFeatures( childFeatureIds, context );
       }
     }
   }
 
   if ( mJoinBuffer->containsJoins() )
-    mJoinBuffer->deleteFeature( fid, cascade, handledFeatures );
+    mJoinBuffer->deleteFeature( fid, context );
 
   bool res = mEditBuffer->deleteFeature( fid );
 
   return res;
 }
 
-bool QgsVectorLayer::deleteFeature( QgsFeatureId fid, const bool cascade, QMap<QgsVectorLayer *, QgsFeatureIds> *handledFeatures )
+bool QgsVectorLayer::deleteFeature( QgsFeatureId fid, QgsVectorLayer::DeleteContext *context )
 {
   if ( !mEditBuffer )
     return false;
 
-  bool res = deleteFeatureCascade( fid, cascade, handledFeatures );
+  bool res = deleteFeatureCascade( fid, context );
 
   if ( res )
   {
@@ -3238,12 +3238,12 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid, const bool cascade, QMap<Q
   return res;
 }
 
-bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids, const bool cascade, QMap<QgsVectorLayer *, QgsFeatureIds> *handledFeatures )
+bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids, QgsVectorLayer::DeleteContext *context )
 {
   bool res = true;
   const auto constFids = fids;
   for ( QgsFeatureId fid : constFids )
-    res = deleteFeatureCascade( fid, cascade, handledFeatures ) && res;
+    res = deleteFeatureCascade( fid, context ) && res;
 
   if ( res )
   {

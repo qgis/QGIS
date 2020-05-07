@@ -730,7 +730,8 @@ void QgsRelationEditorWidget::deleteFeatures( const QgsFeatureIds &featureids )
 
   if ( deleteFeatures )
   {
-    layer->deleteFeatures( featureids, true );
+    QgsVectorLayer::DeleteContext context { true };
+    layer->deleteFeatures( featureids, &context );
     updateUi();
   }
 }
@@ -791,7 +792,7 @@ void QgsRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &featureids )
       QgsDebugMsgLevel( FID_TO_STRING( f.id() ), 4 );
     }
 
-    mRelation.referencingLayer()->deleteFeatures( fids, false );
+    mRelation.referencingLayer()->deleteFeatures( fids );
 
     updateUi();
   }
