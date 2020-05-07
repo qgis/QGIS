@@ -1037,7 +1037,7 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
   mask.setOpacity( mMaskOpacityWidget->opacity() );
   mask.setSizeUnit( mMaskBufferUnitWidget->unit() );
   mask.setSizeMapUnitScale( mMaskBufferUnitWidget->getMapUnitScale() );
-  mask.setJoinStyle( mBufferJoinStyleComboBox->penJoinStyle() );
+  mask.setJoinStyle( mMaskJoinStyleComboBox->penJoinStyle() );
   if ( mMaskEffect && !QgsPaintEffectRegistry::isDefaultStack( mMaskEffect.get() ) )
     mask.setPaintEffect( mMaskEffect->clone() );
   else
