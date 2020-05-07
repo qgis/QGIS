@@ -3164,7 +3164,7 @@ bool QgsVectorLayer::deleteAttributes( const QList<int> &attrs )
   return deleted;
 }
 
-bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
+bool QgsVectorLayer::deleteFeatureWithDependencies( QgsFeatureId fid )
 {
   if ( !mEditBuffer )
     return false;
@@ -3173,6 +3173,17 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
     mJoinBuffer->deleteFeature( fid );
 
   bool res = mEditBuffer->deleteFeature( fid );
+
+  return res;
+}
+
+bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
+{
+  if ( !mEditBuffer )
+    return false;
+
+  bool res = deleteFeatureWithDependencies( fid );
+
   if ( res )
   {
     mSelectedFeatureIds.remove( fid ); // remove it from selection
@@ -3184,16 +3195,10 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
 
 bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids )
 {
-  if ( !mEditBuffer )
-  {
-    QgsDebugMsgLevel( QStringLiteral( "Cannot delete features (mEditBuffer==NULL)" ), 1 );
-    return false;
-  }
-
-  if ( mJoinBuffer->containsJoins() )
-    mJoinBuffer->deleteFeatures( fids );
-
-  bool res = mEditBuffer->deleteFeatures( fids );
+  bool res = true;
+  const auto constFids = fids;
+  for ( QgsFeatureId fid : constFids )
+    res = deleteFeatureWithDependencies( fid ) && res;
 
   if ( res )
   {

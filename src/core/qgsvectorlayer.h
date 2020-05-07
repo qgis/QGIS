@@ -2689,6 +2689,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Read simple labeling from layer's custom properties (QGIS 2.x projects)
     QgsAbstractVectorLayerLabeling *readLabelingFromCustomProperties();
 
+    bool deleteFeatureWithDependencies( QgsFeatureId fid );
+
 #ifdef SIP_RUN
     QgsVectorLayer( const QgsVectorLayer &rhs );
 #endif
