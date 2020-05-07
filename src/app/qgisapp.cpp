@@ -9012,7 +9012,21 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *parent, bool checkFea
   }
   else
   {
-    showStatusMessage( tr( "%n feature(s) deleted.", "number of features deleted", numberOfSelectedFeatures ) );
+    //if it effected more than one layer, print feedback for all descendants
+    if ( context.handledFeatures.count() > 1 )
+    {
+      deletedCount = 0;
+      QString feedbackMessage;
+      QMap<QgsVectorLayer *, QgsFeatureIds>::const_iterator i;
+      for ( i = context.handledFeatures.begin(); i != context.handledFeatures.end(); ++i )
+      {
+        feedbackMessage += tr( " %1 on layer %2." ).arg( i.value().count() ).arg( i.key()->name() );
+        deletedCount += i.value().count();
+      }
+      visibleMessageBar()->pushMessage( tr( "%1 features deleted: %2" ).arg( deletedCount ).arg( feedbackMessage ), Qgis::Success );
+    }
+
+    showStatusMessage( tr( "%n feature(s) deleted.", "number of features deleted", deletedCount ) );
   }
 
   vlayer->endEditCommand();

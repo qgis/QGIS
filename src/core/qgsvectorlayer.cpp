@@ -3207,9 +3207,11 @@ bool QgsVectorLayer::deleteFeatureCascade( QgsFeatureId fid, QgsVectorLayer::Del
         {
           childFeatureIds.insert( childFeature.id() );
         }
-
-        relation.referencingLayer()->startEditing();
-        relation.referencingLayer()->deleteFeatures( childFeatureIds, context );
+        if ( childFeatureIds.count() > 0 )
+        {
+          relation.referencingLayer()->startEditing();
+          relation.referencingLayer()->deleteFeatures( childFeatureIds, context );
+        }
       }
     }
   }
