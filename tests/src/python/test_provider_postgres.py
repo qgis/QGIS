@@ -46,6 +46,7 @@ from qgis.core import (
     QgsGeometry,
     QgsProviderRegistry,
     QgsVectorDataProvider,
+    QgsDataSourceUri,
 )
 from qgis.gui import QgsGui, QgsAttributeForm
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QObject, QByteArray
@@ -1687,7 +1688,6 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                           'host': 'localhost',
                           'port': '5432',
                           'schema': 'public',
-                          'selectatid': False,
                           'srid': '3067',
                           'sslmode': 1,
                           'table': 'basic_map_tiled',
@@ -1701,7 +1701,6 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                           'key': 'id',
                           'port': '5432',
                           'schema': 'public',
-                          'selectatid': False,
                           'srid': '3763',
                           'sslmode': 1,
                           'table': 'copas1',
@@ -1715,12 +1714,11 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                                        'key': 'id',
                                        'port': '5432',
                                        'schema': 'public',
-                                       'selectatid': False,
                                        'srid': '3763',
                                        'sslmode': 1,
                                        'table': 'copas1',
                                        'type': 6,
-                                       'username': 'myuser'}), "dbname='qgis_tests' user='myuser' srid=3763 estimatedmetadata='true' host='localhost' key='id' port='5432' selectatid='false' sslmode='disable' type='MultiPolygon' table=\"public\".\"copas1\" (geom)")
+                                       'username': 'myuser'}), "dbname='qgis_tests' user='myuser' srid=3763 estimatedmetadata='true' host='localhost' key='id' port='5432' sslmode='disable' type='MultiPolygon' table=\"public\".\"copas1\" (geom)")
 
         self.assertEqual(md.encodeUri({'dbname': 'qgis_tests',
                                        'estimatedmetadata': True,
@@ -1728,11 +1726,50 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                                        'host': 'localhost',
                                        'port': '5432',
                                        'schema': 'public',
-                                       'selectatid': False,
                                        'srid': '3067',
                                        'sslmode': 1,
                                        'table': 'basic_map_tiled',
-                                       'username': 'myuser'}), "dbname='qgis_tests' user='myuser' srid=3067 estimatedmetadata='true' host='localhost' port='5432' selectatid='false' sslmode='disable' table=\"public\".\"basic_map_tiled\" (rast)")
+                                       'username': 'myuser'}), "dbname='qgis_tests' user='myuser' srid=3067 estimatedmetadata='true' host='localhost' port='5432' sslmode='disable' table=\"public\".\"basic_map_tiled\" (rast)")
+
+        def _round_trip(uri):
+            decoded = md.decodeUri(uri)
+            self.assertEqual(decoded, md.decodeUri(md.encodeUri(decoded)))
+
+        uri = self.dbconn + \
+            ' sslmode=disable key=\'gid\' srid=3035  table="public"."my_pg_vector" sql='
+        decoded = md.decodeUri(uri)
+        self.assertEqual(decoded, {
+            'key': 'gid',
+            'schema': 'public',
+            'service': 'qgis_test',
+            'srid': '3035',
+            'sslmode': QgsDataSourceUri.SslDisable,
+            'table': 'my_pg_vector',
+        })
+
+        _round_trip(uri)
+
+        uri = self.dbconn + \
+            ' sslmode=prefer key=\'gid\' srid=3035 temporalFieldIndex=2 ' + \
+            'authcfg=afebeff username=\'my username\' password=\'my secret password=\' ' + \
+            'table="public"."my_pg_vector" (the_geom) sql="a_field" != 1223223'
+
+        _round_trip(uri)
+
+        decoded = md.decodeUri(uri)
+        self.assertEqual(decoded, {
+            'authcfg': 'afebeff',
+            'geometrycolumn': 'the_geom',
+            'key': 'gid',
+            'password': 'my secret password=',
+            'schema': 'public',
+            'service': 'qgis_test',
+            'sql': '"a_field" != 1223223',
+            'srid': '3035',
+            'sslmode': QgsDataSourceUri.SslPrefer,
+            'table': 'my_pg_vector',
+            'username': 'my username',
+        })
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):

@@ -5452,7 +5452,8 @@ QVariantMap QgsPostgresProviderMetadata::decodeUri( const QString &uri )
   if ( dsUri.wkbType() != QgsWkbTypes::Type::Unknown )
     uriParts[ QStringLiteral( "type" ) ] = dsUri.wkbType();
 
-  uriParts[ QStringLiteral( "selectatid" ) ] = dsUri.selectAtIdDisabled();
+  if ( uri.contains( QStringLiteral( "selectatid=" ), Qt::CaseSensitivity::CaseInsensitive ) )
+    uriParts[ QStringLiteral( "selectatid" ) ] = ! dsUri.selectAtIdDisabled();
 
   if ( ! dsUri.table().isEmpty() )
     uriParts[ QStringLiteral( "table" ) ] = dsUri.table();
@@ -5463,8 +5464,11 @@ QVariantMap QgsPostgresProviderMetadata::decodeUri( const QString &uri )
   if ( ! dsUri.srid().isEmpty() )
     uriParts[ QStringLiteral( "srid" ) ] = dsUri.srid();
 
-  uriParts[ QStringLiteral( "estimatedmetadata" ) ] = dsUri.useEstimatedMetadata();
-  uriParts[ QStringLiteral( "sslmode" ) ] = dsUri.sslMode();
+  if ( uri.contains( QStringLiteral( "estimatedmetadata=" ), Qt::CaseSensitivity::CaseInsensitive ) )
+    uriParts[ QStringLiteral( "estimatedmetadata" ) ] = dsUri.useEstimatedMetadata();
+
+  if ( uri.contains( QStringLiteral( "sslmode=" ), Qt::CaseSensitivity::CaseInsensitive ) )
+    uriParts[ QStringLiteral( "sslmode" ) ] = dsUri.sslMode();
 
   if ( ! dsUri.sql().isEmpty() )
     uriParts[ QStringLiteral( "sql" ) ] = dsUri.sql();
@@ -5514,5 +5518,5 @@ QString QgsPostgresProviderMetadata::encodeUri( const QVariantMap &parts )
     dsUri.setParam( QStringLiteral( "checkPrimaryKeyUnicity" ), parts.value( QStringLiteral( "checkPrimaryKeyUnicity" ) ).toString() );
   if ( parts.contains( QStringLiteral( "geometrycolumn" ) ) )
     dsUri.setGeometryColumn( parts.value( QStringLiteral( "geometrycolumn" ) ).toString() );
-  return dsUri.uri();
+  return dsUri.uri( false );
 }
