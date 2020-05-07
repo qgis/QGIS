@@ -1334,6 +1334,17 @@ class TestQgsExpression: public QObject
       QTest::newRow( "try invalid without alternative" ) << "try(to_int('a'))" << false << QVariant();
 
       // Datetime functions
+      QTest::newRow( "make date" ) << "make_date(2012,6,28)" << false << QVariant( QDate( 2012, 6, 28 ) );
+      QTest::newRow( "make date invalid" ) << "make_date('a',6,28)" << true << QVariant();
+      QTest::newRow( "make date invalid 2" ) << "make_date(2012,16,28)" << true << QVariant();
+      QTest::newRow( "make time" ) << "make_time(13,6,28)" << false << QVariant( QTime( 13, 6, 28 ) );
+      QTest::newRow( "make time with ms" ) << "make_time(13,6,28.5)" << false << QVariant( QTime( 13, 6, 28, 500 ) );
+      QTest::newRow( "make time invalid" ) << "make_time('a',6,28)" << true << QVariant();
+      QTest::newRow( "make time invalid 2" ) << "make_time(2012,16,28)" << true << QVariant();
+      QTest::newRow( "make datetime" ) << "make_datetime(2012,7,8,13,6,28)" << false << QVariant( QDateTime( QDate( 2012, 7, 8 ), QTime( 13, 6, 28 ) ) );
+      QTest::newRow( "make datetime with ms" ) << "make_datetime(2012,7,8,13,6,28.5)" << false << QVariant( QDateTime( QDate( 2012, 7, 8 ), QTime( 13, 6, 28, 500 ) ) );
+      QTest::newRow( "make datetime invalid" ) << "make_datetime(2012,7,8,'a',6,28)" << true << QVariant();
+      QTest::newRow( "make datetime invalid 2" ) << "make_datetime(2012,7,8,2012,16,28)" << true << QVariant();
       QTest::newRow( "to date" ) << "todate('2012-06-28')" << false << QVariant( QDate( 2012, 6, 28 ) );
       QTest::newRow( "to interval" ) << "tointerval('1 Year 1 Month 1 Week 1 Hour 1 Minute')" << false << QVariant::fromValue( QgsInterval( 34758060 ) );
       QTest::newRow( "day with date" ) << "day('2012-06-28')" << false << QVariant( 28 );
