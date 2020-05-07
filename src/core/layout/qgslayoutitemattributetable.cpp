@@ -170,8 +170,8 @@ void QgsLayoutItemAttributeTable::resetColumns()
   }
 
   //remove existing columns
-  qDeleteAll( mColumns );
   mColumns.clear();
+  mSortColumns.clear();
 
   //rebuild columns list from vector layer fields
   int idx = 0;
@@ -179,10 +179,10 @@ void QgsLayoutItemAttributeTable::resetColumns()
   for ( const auto &field : sourceFields )
   {
     QString currentAlias = source->attributeDisplayName( idx );
-    std::unique_ptr< QgsLayoutTableColumn > col = qgis::make_unique< QgsLayoutTableColumn >();
-    col->setAttribute( field.name() );
-    col->setHeading( currentAlias );
-    mColumns.append( col.release() );
+    QgsLayoutTableColumn col;
+    col.setAttribute( field.name() );
+    col.setHeading( currentAlias );
+    mColumns.append( col );
     idx++;
   }
 }
@@ -319,7 +319,6 @@ void QgsLayoutItemAttributeTable::setDisplayedFields( const QStringList &fields,
   }
 
   //rebuild columns list, taking only fields contained in supplied list
-  qDeleteAll( mColumns );
   mColumns.clear();
 
   const QgsFields layerFields = source->fields();
@@ -333,10 +332,10 @@ void QgsLayoutItemAttributeTable::setDisplayedFields( const QStringList &fields,
         continue;
 
       QString currentAlias = source->attributeDisplayName( attrIdx );
-      std::unique_ptr< QgsLayoutTableColumn > col = qgis::make_unique< QgsLayoutTableColumn >();
-      col->setAttribute( layerFields.at( attrIdx ).name() );
-      col->setHeading( currentAlias );
-      mColumns.append( col.release() );
+      QgsLayoutTableColumn col;
+      col.setAttribute( layerFields.at( attrIdx ).name() );
+      col.setHeading( currentAlias );
+      mColumns.append( col );
     }
   }
   else
@@ -346,10 +345,10 @@ void QgsLayoutItemAttributeTable::setDisplayedFields( const QStringList &fields,
     for ( const QgsField &field : layerFields )
     {
       QString currentAlias = source->attributeDisplayName( idx );
-      std::unique_ptr< QgsLayoutTableColumn > col = qgis::make_unique< QgsLayoutTableColumn >();
-      col->setAttribute( field.name() );
-      col->setHeading( currentAlias );
-      mColumns.append( col.release() );
+      QgsLayoutTableColumn col;
+      col.setAttribute( field.name() );
+      col.setHeading( currentAlias );
+      mColumns.append( col );
       idx++;
     }
   }
@@ -368,16 +367,16 @@ void QgsLayoutItemAttributeTable::restoreFieldAliasMap( const QMap<int, QString>
     return;
   }
 
-  for ( QgsLayoutTableColumn *column : qgis::as_const( mColumns ) )
+  for ( int i = 0; i < mColumns.count(); i++ )
   {
-    int attrIdx = source->fields().lookupField( column->attribute() );
+    int attrIdx = source->fields().lookupField( mColumns[i].attribute() );
     if ( map.contains( attrIdx ) )
     {
-      column->setHeading( map.value( attrIdx ) );
+      mColumns[i].setHeading( map.value( attrIdx ) );
     }
     else
     {
-      column->setHeading( source->attributeDisplayName( attrIdx ) );
+      mColumns[i].setHeading( source->attributeDisplayName( attrIdx ) );
     }
   }
 }
@@ -480,10 +479,9 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     req.setFilterFid( atlasFeature.id() );
   }
 
-  QVector< QPair<int, bool> > sortColumns = sortAttributes();
-  for ( int i = sortColumns.size() - 1; i >= 0; --i )
+  for ( const QgsLayoutTableColumn &column : qgis::as_const( mSortColumns ) )
   {
-    req = req.addOrderBy( mColumns.at( sortColumns.at( i ).first )->attribute(), sortColumns.at( i ).second );
+    req = req.addOrderBy( column.attribute(), column.sortOrder() == Qt::AscendingOrder );
   }
 
   QgsFeature f;
@@ -549,9 +547,9 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     QgsLayoutTableRow rowContents;
     rowContents.reserve( mColumns.count() );
 
-    for ( QgsLayoutTableColumn *column : qgis::as_const( mColumns ) )
+    for ( const QgsLayoutTableColumn &column : qgis::as_const( mColumns ) )
     {
-      int idx = layer->fields().lookupField( column->attribute() );
+      int idx = layer->fields().lookupField( column.attribute() );
 
       QgsConditionalStyle style;
 
@@ -574,7 +572,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       else
       {
         // Lets assume it's an expression
-        std::unique_ptr< QgsExpression > expression = qgis::make_unique< QgsExpression >( column->attribute() );
+        std::unique_ptr< QgsExpression > expression = qgis::make_unique< QgsExpression >( column.attribute() );
         context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), counter + 1, true ) );
         expression->prepare( &context );
         QVariant value = expression->evaluate( &context );
@@ -716,43 +714,9 @@ void QgsLayoutItemAttributeTable::removeLayer( const QString &layerId )
     {
       mVectorLayer.setLayer( nullptr );
       //remove existing columns
-      qDeleteAll( mColumns );
       mColumns.clear();
     }
   }
-}
-
-static bool columnsBySortRank( QPair<int, QgsLayoutTableColumn * > a, QPair<int, QgsLayoutTableColumn * > b )
-{
-  return a.second->sortByRank() < b.second->sortByRank();
-}
-
-QVector<QPair<int, bool> > QgsLayoutItemAttributeTable::sortAttributes() const
-{
-  //generate list of all sorted columns
-  QVector< QPair<int, QgsLayoutTableColumn * > > sortedColumns;
-  int idx = 0;
-  for ( QgsLayoutTableColumn *column : mColumns )
-  {
-    if ( column->sortByRank() > 0 )
-    {
-      sortedColumns.append( qMakePair( idx, column ) );
-    }
-    idx++;
-  }
-
-  //sort columns by rank
-  std::sort( sortedColumns.begin(), sortedColumns.end(), columnsBySortRank );
-
-  //generate list of column index, bool for sort direction (to match 2.0 api)
-  QVector<QPair<int, bool> > attributesBySortRank;
-  attributesBySortRank.reserve( sortedColumns.size() );
-  for ( auto &column : qgis::as_const( sortedColumns ) )
-  {
-    attributesBySortRank.append( qMakePair( column.first,
-                                            column.second->sortOrder() == Qt::AscendingOrder ) );
-  }
-  return attributesBySortRank;
 }
 
 void QgsLayoutItemAttributeTable::setWrapString( const QString &wrapString )

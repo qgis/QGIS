@@ -270,7 +270,6 @@ Sets the attributes to display in the table.
                 to accommodate the new displayed feature attributes.
 %End
 
-
     void setWrapString( const QString &wrapString );
 %Docstring
 Sets a string to wrap the contents of the table cells by. Occurrences of this string will

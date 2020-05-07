@@ -226,13 +226,8 @@ void QgsLayoutAttributeTableWidget::mAttributesPushButton_clicked()
   }
 
   //make deep copy of current columns, so we can restore them in case of cancellation
-  QVector<QgsLayoutTableColumn *> currentColumns;
-  auto it = mTable->columns().constBegin();
-  for ( ; it != mTable->columns().constEnd() ; ++it )
-  {
-    QgsLayoutTableColumn *copy = ( *it )->clone();
-    currentColumns.append( copy );
-  }
+  QVector<QgsLayoutTableColumn> currentColumns = mTable->columns();
+  QVector<QgsLayoutTableColumn> currentSortColumns = mTable->sortColumns();
 
   mTable->beginCommand( tr( "Change Table Attributes" ) );
 
@@ -249,13 +244,14 @@ void QgsLayoutAttributeTableWidget::mAttributesPushButton_clicked()
     mTable->endCommand();
 
     //clear currentColumns to free memory
-    qDeleteAll( currentColumns );
     currentColumns.clear();
+    currentSortColumns.clear();
   }
   else
   {
     //undo changes
     mTable->setColumns( currentColumns );
+    mTable->setSortColumns( currentSortColumns );
     window()->setUpdatesEnabled( true );
     mTable->cancelCommand();
   }
