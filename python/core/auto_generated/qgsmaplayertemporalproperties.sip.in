@@ -25,6 +25,9 @@ how an individual QgsMapLayer behaves in a temporal context, e.g. while animatin
 
 %TypeHeaderCode
 #include "qgsmaplayertemporalproperties.h"
+#include "qgsrasterlayertemporalproperties.h"
+#include "qgsmeshlayertemporalproperties.h"
+#include "qgsvectorlayertemporalproperties.h"
 %End
 %ConvertToSubClassCode
     if ( qobject_cast<QgsRasterLayerTemporalProperties *>( sipCpp ) )

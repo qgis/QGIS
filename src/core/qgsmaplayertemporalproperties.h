@@ -41,6 +41,12 @@ class QgsDataProviderTemporalCapabilities;
  */
 class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
 {
+#ifdef SIP_RUN
+#include "qgsrasterlayertemporalproperties.h"
+#include "qgsmeshlayertemporalproperties.h"
+#include "qgsvectorlayertemporalproperties.h"
+#endif
+
     Q_OBJECT
 
 #ifdef SIP_RUN
