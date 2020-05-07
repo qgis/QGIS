@@ -451,6 +451,12 @@ Uses :py:class:`QgsExpression`
     virtual QgsVectorDataProvider *dataProvider() ${SIP_FINAL};
 
 
+    virtual QgsMapLayerTemporalProperties *temporalProperties();
+
+%Docstring
+Returns temporal properties associated with the vector layer.
+%End
+
     void setProviderEncoding( const QString &encoding );
 %Docstring
 Sets the text ``encoding`` of the data provider.
