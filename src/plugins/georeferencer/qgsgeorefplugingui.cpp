@@ -244,7 +244,7 @@ void QgsGeorefPluginGui::openRaster()
   QString filters = QgsProviderRegistry::instance()->fileRasterFilters();
   filters.prepend( otherFiles + ";;" );
   filters.chop( otherFiles.size() + 2 );
-  mRasterFileName = QFileDialog::getOpenFileName( this, tr( "Open Raster" ), dir, filters, &lastUsedFilter );
+  mRasterFileName = QFileDialog::getOpenFileName( this, tr( "Open Raster" ), dir, filters, &lastUsedFilter, QFileDialog::HideNameFilterDetails );
   mModifiedRasterFileName.clear();
 
   if ( mRasterFileName.isEmpty() )
