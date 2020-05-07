@@ -989,6 +989,24 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
     buffer.setPaintEffect( nullptr );
   format.setBuffer( buffer );
 
+<<<<<<< HEAD
+=======
+  // mask
+  QgsTextMaskSettings mask;
+  mask.setEnabled( mEnableMaskChkBx->isChecked() );
+  mask.setSize( mMaskBufferSizeSpinBox->value() );
+  mask.setOpacity( mMaskOpacityWidget->opacity() );
+  mask.setSizeUnit( mMaskBufferUnitWidget->unit() );
+  mask.setSizeMapUnitScale( mMaskBufferUnitWidget->getMapUnitScale() );
+  mask.setJoinStyle( mMaskJoinStyleComboBox->penJoinStyle() );
+  if ( mMaskEffect && !QgsPaintEffectRegistry::isDefaultStack( mMaskEffect.get() ) )
+    mask.setPaintEffect( mMaskEffect->clone() );
+  else
+    mask.setPaintEffect( nullptr );
+  mask.setMaskedSymbolLayers( mMaskedSymbolLayers );
+  format.setMask( mask );
+
+>>>>>>> 17006551e6... Fixes #34946 : save masking pen join style
   // shape background
   QgsTextBackgroundSettings background;
   background.setEnabled( mShapeDrawChkBx->isChecked() );
