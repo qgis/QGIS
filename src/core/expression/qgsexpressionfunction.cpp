@@ -1103,6 +1103,60 @@ static QVariant fcnToDateTime( const QVariantList &values, const QgsExpressionCo
   return QVariant( datetime );
 }
 
+static QVariant fcnMakeDate( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const int year = QgsExpressionUtils::getIntValue( values.at( 0 ), parent );
+  const int month = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
+  const int day = QgsExpressionUtils::getIntValue( values.at( 2 ), parent );
+
+  const QDate date( year, month, day );
+  if ( !date.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "'%1-%2-%3' is not a valid date" ).arg( year ).arg( month ).arg( day ) );
+    return QVariant();
+  }
+  return QVariant( date );
+}
+
+static QVariant fcnMakeTime( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const int hours = QgsExpressionUtils::getIntValue( values.at( 0 ), parent );
+  const int minutes = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
+  const double seconds = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+
+  const QTime time( hours, minutes, std::floor( seconds ), ( seconds - std::floor( seconds ) ) * 1000 );
+  if ( !time.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "'%1-%2-%3' is not a valid time" ).arg( hours ).arg( minutes ).arg( seconds ) );
+    return QVariant();
+  }
+  return QVariant( time );
+}
+
+static QVariant fcnMakeDateTime( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const int year = QgsExpressionUtils::getIntValue( values.at( 0 ), parent );
+  const int month = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
+  const int day = QgsExpressionUtils::getIntValue( values.at( 2 ), parent );
+  const int hours = QgsExpressionUtils::getIntValue( values.at( 3 ), parent );
+  const int minutes = QgsExpressionUtils::getIntValue( values.at( 4 ), parent );
+  const double seconds = QgsExpressionUtils::getDoubleValue( values.at( 5 ), parent );
+
+  const QDate date( year, month, day );
+  if ( !date.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "'%1-%2-%3' is not a valid date" ).arg( year ).arg( month ).arg( day ) );
+    return QVariant();
+  }
+  const QTime time( hours, minutes, std::floor( seconds ), ( seconds - std::floor( seconds ) ) * 1000 );
+  if ( !time.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "'%1-%2-%3' is not a valid time" ).arg( hours ).arg( minutes ).arg( seconds ) );
+    return QVariant();
+  }
+  return QVariant( QDateTime( date, time ) );
+}
+
 static QVariant fcnCoalesce( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
 {
   for ( const QVariant &value : values )
@@ -5738,6 +5792,21 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "epoch" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "date" ) ), fcnEpoch, QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "datetime_from_epoch" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "long" ) ), fcnDateTimeFromEpoch, QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "day_of_week" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "date" ) ), fcnDayOfWeek, QStringLiteral( "Date and Time" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "make_date" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "year" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "month" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "day" ) ),
+                                            fcnMakeDate, QStringLiteral( "Date and Time" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "make_time" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "hour" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "minute" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "second" ) ),
+                                            fcnMakeTime, QStringLiteral( "Date and Time" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "make_datetime" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "year" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "month" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "day" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "hour" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "minute" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "second" ) ),
+                                            fcnMakeDateTime, QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "lower" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnLower, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "upper" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnUpper, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "title" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnTitle, QStringLiteral( "String" ) )
