@@ -403,6 +403,30 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
             return TVL_Unknown;
         }
       }
+      else if ( ( vL.type() == QVariant::DateTime && vR.type() == QVariant::DateTime ) )
+      {
+        const QDateTime dL = QgsExpressionUtils::getDateTimeValue( vL, parent );
+        ENSURE_NO_EVAL_ERROR;
+        const QDateTime dR = QgsExpressionUtils::getDateTimeValue( vR, parent );
+        ENSURE_NO_EVAL_ERROR;
+        return compare( dR.msecsTo( dL ) ) ? TVL_True : TVL_False;
+      }
+      else if ( ( vL.type() == QVariant::Date && vR.type() == QVariant::Date ) )
+      {
+        const QDate dL = QgsExpressionUtils::getDateValue( vL, parent );
+        ENSURE_NO_EVAL_ERROR;
+        const QDate dR = QgsExpressionUtils::getDateValue( vR, parent );
+        ENSURE_NO_EVAL_ERROR;
+        return compare( dR.daysTo( dL ) ) ? TVL_True : TVL_False;
+      }
+      else if ( ( vL.type() == QVariant::Time && vR.type() == QVariant::Time ) )
+      {
+        const QTime dL = QgsExpressionUtils::getTimeValue( vL, parent );
+        ENSURE_NO_EVAL_ERROR;
+        const QTime dR = QgsExpressionUtils::getTimeValue( vR, parent );
+        ENSURE_NO_EVAL_ERROR;
+        return compare( dR.msecsTo( dL ) ) ? TVL_True : TVL_False;
+      }
       else if ( ( vL.type() != QVariant::String || vR.type() != QVariant::String ) &&
                 QgsExpressionUtils::isDoubleSafe( vL ) && QgsExpressionUtils::isDoubleSafe( vR ) )
       {
