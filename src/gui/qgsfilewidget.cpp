@@ -19,7 +19,6 @@
 #include <QLineEdit>
 #include <QToolButton>
 #include <QLabel>
-#include <QFileDialog>
 #include <QGridLayout>
 #include <QUrl>
 #include <QDropEvent>
@@ -130,6 +129,16 @@ void QgsFileWidget::setFilter( const QString &filters )
 {
   mFilter = filters;
   mLineEdit->setFilters( filters );
+}
+
+QFileDialog::Options QgsFileWidget::options() const
+{
+  return mOptions;
+}
+
+void QgsFileWidget::setOptions( QFileDialog::Options options )
+{
+  mOptions = options;
 }
 
 bool QgsFileWidget::fileWidgetButtonVisible() const
@@ -305,26 +314,26 @@ void QgsFileWidget::openFileDialog()
   {
     case GetFile:
       title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a file" );
-      fileName = QFileDialog::getOpenFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter );
+      fileName = QFileDialog::getOpenFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, mOptions );
       break;
     case GetMultipleFiles:
       title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select one or more files" );
-      fileNames = QFileDialog::getOpenFileNames( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter );
+      fileNames = QFileDialog::getOpenFileNames( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, mOptions );
       break;
     case GetDirectory:
       title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a directory" );
-      fileName = QFileDialog::getExistingDirectory( this, title, QFileInfo( oldPath ).absoluteFilePath(),  QFileDialog::ShowDirsOnly );
+      fileName = QFileDialog::getExistingDirectory( this, title, QFileInfo( oldPath ).absoluteFilePath(), mOptions | QFileDialog::ShowDirsOnly );
       break;
     case SaveFile:
     {
       title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Create or select a file" );
       if ( !confirmOverwrite() )
       {
-        fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, QFileDialog::DontConfirmOverwrite );
+        fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, mOptions | QFileDialog::DontConfirmOverwrite );
       }
       else
       {
-        fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter );
+        fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, mOptions );
       }
 
       // make sure filename ends with filter. This isn't automatically done by
