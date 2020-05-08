@@ -205,6 +205,7 @@ class PyQgsTextFormatWidget(unittest.TestCase):
         s.setLineHeight(5)
         s.setOrientation(QgsTextFormat.VerticalOrientation)
         s.setPreviewBackgroundColor(QColor(100, 150, 200))
+        s.setAllowHtmlFormatting(True)
         return s
 
     def checkTextFormat(self, s):
@@ -225,6 +226,7 @@ class PyQgsTextFormatWidget(unittest.TestCase):
         self.assertEqual(s.lineHeight(), 5)
         self.assertEqual(s.orientation(), QgsTextFormat.VerticalOrientation)
         self.assertEqual(s.previewBackgroundColor().name(), '#6496c8')
+        self.assertTrue(s.allowHtmlFormatting())
 
     def testSettings(self):
         # test that widget correctly sets and returns matching settings
