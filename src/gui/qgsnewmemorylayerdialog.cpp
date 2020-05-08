@@ -64,9 +64,11 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "MultiPoint" ), QgsWkbTypes::MultiPoint );
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "MultiLineString / MultiCurve" ), QgsWkbTypes::MultiLineString );
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "MultiPolygon / MultiSurface" ), QgsWkbTypes::MultiPolygon );
+  mGeometryTypeBox->setCurrentIndex( -1 );
 
   mGeometryWithZCheckBox->setEnabled( false );
   mGeometryWithMCheckBox->setEnabled( false );
+  mCrsSelector->setEnabled( false );
 
   mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ), tr( "Text" ), "string" );
   mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole number" ), "integer" );
@@ -79,13 +81,16 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   mWidth->setValidator( new QIntValidator( 1, 255, this ) );
   mPrecision->setValidator( new QIntValidator( 0, 15, this ) );
 
+  mOkButton = mButtonBox->button( QDialogButtonBox::Ok );
+  mOkButton->setEnabled( false );
+
   connect( mGeometryTypeBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewMemoryLayerDialog::geometryTypeChanged );
   connect( mFieldNameEdit, &QLineEdit::textChanged, this, &QgsNewMemoryLayerDialog::fieldNameChanged );
   connect( mAttributeView, &QTreeWidget::itemSelectionChanged, this, &QgsNewMemoryLayerDialog::selectionChanged );
   connect( mAddAttributeButton, &QToolButton::clicked, this, &QgsNewMemoryLayerDialog::mAddAttributeButton_clicked );
   connect( mRemoveAttributeButton, &QToolButton::clicked, this, &QgsNewMemoryLayerDialog::mRemoveAttributeButton_clicked );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsNewMemoryLayerDialog::showHelp );
-  geometryTypeChanged( mGeometryTypeBox->currentIndex() );
+  //geometryTypeChanged( mGeometryTypeBox->currentIndex() );
 }
 
 QgsWkbTypes::Type QgsNewMemoryLayerDialog::selectedType() const
@@ -114,6 +119,9 @@ void QgsNewMemoryLayerDialog::geometryTypeChanged( int )
   mGeometryWithZCheckBox->setEnabled( isSpatial );
   mGeometryWithMCheckBox->setEnabled( isSpatial );
   mCrsSelector->setEnabled( isSpatial );
+
+  bool ok = ( !mNameLineEdit->text().isEmpty() && mGeometryTypeBox->currentIndex() != -1 );
+  mOkButton->setEnabled( ok );
 }
 
 void QgsNewMemoryLayerDialog::setCrs( const QgsCoordinateReferenceSystem &crs )

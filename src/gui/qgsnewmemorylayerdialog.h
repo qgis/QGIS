@@ -77,6 +77,7 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
   private:
 
     QString mCrsId;
+    QPushButton *mOkButton = nullptr;
 
   private slots:
 
