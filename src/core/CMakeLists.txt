@@ -287,7 +287,6 @@ SET(QGIS_CORE_SRCS
   qgsimagecache.cpp
   qgsinterval.cpp
   qgsjsonutils.cpp
-  qgslabelsink.cpp
   qgslayerdefinition.cpp
   qgslegendrenderer.cpp
   qgslegendsettings.cpp
@@ -593,6 +592,7 @@ SET(QGIS_CORE_SRCS
   labeling/qgslabelingenginesettings.cpp
   labeling/qgslabelobstaclesettings.cpp
   labeling/qgslabelsearchtree.cpp
+  labeling/qgslabelsink.cpp
   labeling/qgslabelthinningsettings.cpp
   labeling/qgspallabeling.cpp
   labeling/qgsrulebasedlabeling.cpp

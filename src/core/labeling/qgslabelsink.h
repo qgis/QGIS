@@ -26,6 +26,14 @@
 class QgsPalLayerSettings;
 class QgsRuleBasedLabeling;
 
+/**
+ * \ingroup core
+ * Abstract base class that can be used to intercept rendered labels from
+ * a labeling / rendering job.
+ *
+ * Internal class, not in public API. Added in QGIS 3.14
+ * \note not available in Python bindings
+ */
 class QgsLabelSink
 {
   public:
@@ -36,7 +44,7 @@ class QgsLabelSink
 
 /**
  * \ingroup core
- * Implements a derived label provider internally used for DXF export
+ * Implements a derived label provider for use with QgsLabelSink.
  *
  * Internal class, not in public API. Added in QGIS 2.12
  * \note not available in Python bindings
@@ -44,25 +52,18 @@ class QgsLabelSink
 class QgsLabelSinkProvider : public QgsVectorLayerLabelProvider
 {
   public:
-    //! construct the provider
-    explicit QgsLabelSinkProvider( QgsVectorLayer *layer, const QString &providerId, QgsLabelSink *dxf, const QgsPalLayerSettings *settings );
+    //! Creates a rule based label sink provider which will draw/register labels in \a sink.
+    explicit QgsLabelSinkProvider( QgsVectorLayer *layer, const QString &providerId, QgsLabelSink *sink, const QgsPalLayerSettings *settings );
 
-    /**
-     * Re-implementation that writes to DXF file instead of drawing with QPainter
-     * \param context render context
-     * \param label label
-     */
     void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
 
   private:
-    //! pointer to parent DXF export where this instance is used
     QgsLabelSink *mLabelSink = nullptr;
 };
 
 /**
  * \ingroup core
- * Implements a derived label provider for rule based labels internally used
- * for DXF export
+ * Implements a derived label provider for rule based labels for use with QgsLabelSink.
  *
  * Internal class, not in public API. Added in QGIS 2.15
  * \note not available in Python bindings
@@ -70,8 +71,8 @@ class QgsLabelSinkProvider : public QgsVectorLayerLabelProvider
 class QgsRuleBasedLabelSinkProvider : public QgsRuleBasedLabelProvider
 {
   public:
-    //! construct the provider
-    explicit QgsRuleBasedLabelSinkProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer *layer, QgsLabelSink *destination );
+    //! Creates a rule based label sink provider which will draw/register labels in \a sink.
+    explicit QgsRuleBasedLabelSinkProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer *layer, QgsLabelSink *sink );
 
     /**
      * Reinitialize the subproviders with QgsLabelSinkProviders
@@ -80,18 +81,12 @@ class QgsRuleBasedLabelSinkProvider : public QgsRuleBasedLabelProvider
      */
     Q_DECL_DEPRECATED void reinit( QgsVectorLayer *layer );
 
-    /**
-     * Re-implementation that writes to DXF file instead of drawing with QPainter
-     * \param context render context
-     * \param label label
-     */
     void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
 
-    //! create QgsRuleBasedLabelSinkProvider
+    //! Creates a  QgsRuleBasedLabelSinkProvider
     QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings ) override;
 
   private:
-    //! pointer to parent DXF export where this instance is used
     QgsLabelSink *mLabelSink = nullptr;
 };
 
