@@ -271,13 +271,8 @@ QPushButton:hover, QToolButton:hover {
     background-color: @itemdarkbackground;
 }
 
-QPushButton:pressed, QToolButton:pressed {
+QPushButton:pressed, QPushButton:open, QToolButton:pressed {
     background-color: @darkalternativegradient;
-}
-
-QPushButton:open {
-    background-color: @darkalternativegradient;
-    border: 1px solid @focus;
 }
 
 /* ==================================================================================== */
