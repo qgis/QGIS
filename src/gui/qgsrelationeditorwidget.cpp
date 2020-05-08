@@ -731,9 +731,9 @@ void QgsRelationEditorWidget::deleteFeatures( const QgsFeatureIds &featureids )
   if ( QgsVectorLayerUtils::impactsCascadeFeatures( layer, QgsProject::instance() ) )
   {
     // for extra safety to make sure we know that the delete can have impact on children and joins
-    int res = QMessageBox::warning( this, tr( "Possible impact on descendants of layer \"%1\"" ).arg( layer->name() ),
-                                    tr( "A delete on this layer could have an impact on referencing or joined layers and their descendants. Would you still like to continue?" ),
-                                    QMessageBox::Yes | QMessageBox::No );
+    int res = QMessageBox::question( this, tr( "Possible impact on descendants of layer \"%1\"" ).arg( layer->name() ),
+                                     tr( "A delete on this layer could have an impact on referencing or joined layers and their descendants. Would you still like to continue?" ),
+                                     QMessageBox::Yes | QMessageBox::No );
     if ( res == QMessageBox::No )
       deleteFeatures = false;
   }
