@@ -186,7 +186,7 @@ QString QgsVectorLayerTemporalProperties::createFilterString( QgsVectorLayer *, 
       return QString();
 
     case ModeFeatureDateTimeInstantFromField:
-      return QStringLiteral( "%1 %2 %3 AND %1 %4 %5" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
+      return QStringLiteral( "(%1 %2 %3 AND %1 %4 %5) OR %1 IS NULL" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
              range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
              dateTimeExpressionLiteral( range.begin() ),
              range.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
@@ -196,7 +196,7 @@ QString QgsVectorLayerTemporalProperties::createFilterString( QgsVectorLayer *, 
     {
       if ( !mStartFieldName.isEmpty() && !mEndFieldName.isEmpty() )
       {
-        return QStringLiteral( "%1 %2 %3 AND %4 %5 %6" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
+        return QStringLiteral( "(%1 %2 %3 OR %1 IS NULL) AND (%4 %5 %6 OR %4 IS NULL)" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
                range.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
                dateTimeExpressionLiteral( range.end() ),
                QgsExpression::quotedColumnRef( mEndFieldName ),
@@ -205,13 +205,13 @@ QString QgsVectorLayerTemporalProperties::createFilterString( QgsVectorLayer *, 
       }
       else if ( !mStartFieldName.isEmpty() )
       {
-        return QStringLiteral( "%1 %2 %3" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
+        return QStringLiteral( "%1 %2 %3 OR %1 IS NULL" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
                range.includeBeginning() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
                dateTimeExpressionLiteral( range.end() ) );
       }
       else if ( !mEndFieldName.isEmpty() )
       {
-        return QStringLiteral( "%1 %2 %3" ).arg( QgsExpression::quotedColumnRef( mEndFieldName ),
+        return QStringLiteral( "%1 %2 %3 OR %1 IS NULL" ).arg( QgsExpression::quotedColumnRef( mEndFieldName ),
                range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
                dateTimeExpressionLiteral( range.begin() ) );
       }
