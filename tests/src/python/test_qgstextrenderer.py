@@ -61,6 +61,13 @@ class PyQgsTextRenderer(unittest.TestCase):
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
+    def testExtractBlocksFromHtml(self):
+        self.assertEqual(QgsTextRenderer.extractTextBlocksFromHtml(''), [])
+        self.assertEqual(QgsTextRenderer.extractTextBlocksFromHtml('abc'), ['abc'])
+        self.assertEqual(QgsTextRenderer.extractTextBlocksFromHtml('abc\ndef'), ['abc def'])
+        self.assertEqual(QgsTextRenderer.extractTextBlocksFromHtml('abc<b>def</b>'), ['abcdef'])
+        self.assertEqual(QgsTextRenderer.extractTextBlocksFromHtml('abc<div><b>def</b><div>ghi</div></div>'), ['abc', 'def', 'ghi'])
+
     def createBufferSettings(self):
         s = QgsTextBufferSettings()
         s.setEnabled(True)

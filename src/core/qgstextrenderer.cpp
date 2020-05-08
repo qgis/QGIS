@@ -29,6 +29,8 @@
 #include "qgspainterswapper.h"
 #include <QFontDatabase>
 #include <QDesktopWidget>
+#include <QTextDocument>
+#include <QTextBlock>
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 Q_GUI_EXPORT extern int qt_defaultDpiY();
@@ -2603,6 +2605,37 @@ QPixmap QgsTextFormat::textFormatPreviewPixmap( const QgsTextFormat &format, QSi
   return pixmap;
 }
 
+QStringList QgsTextRenderer::extractTextBlocksFromHtml( const QString &html )
+{
+  QStringList res;
+
+  QTextDocument doc;
+  doc.setHtml( html );
+
+  QTextBlock block = doc.firstBlock();
+  while ( true )
+  {
+    auto it = block.begin();
+    QString blockText;
+    while ( !it.atEnd() )
+    {
+      const QTextFragment fragment = it.fragment();
+      if ( fragment.isValid() )
+      {
+        blockText.append( fragment.text() );
+      }
+      it++;
+    }
+    if ( !blockText.isEmpty() )
+      res << blockText;
+
+    block = block.next();
+    if ( !block.isValid() )
+      break;
+  }
+
+  return res;
+}
 
 int QgsTextRenderer::sizeToPixel( double size, const QgsRenderContext &c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &mapUnitScale )
 {
