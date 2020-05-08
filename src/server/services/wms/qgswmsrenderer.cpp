@@ -194,11 +194,8 @@ namespace QgsWms
     QgsLegendRenderer renderer( &model, settings );
 
     // rendering
-    QJsonObject json;
     QgsRenderContext renderContext;
-    renderer.exportLegendToJson( renderContext, json );
-
-    return json;
+    return renderer.exportLegendToJson( renderContext );
   }
 
   void QgsRenderer::runHitTest( const QgsMapSettings &mapSettings, HitTest &hitTest ) const

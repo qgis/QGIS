@@ -68,14 +68,17 @@ void QgsLegendRenderer::drawLegend( QPainter *painter )
   paintAndDetermineSize( context );
 }
 
-void QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &context, QJsonObject &json )
+QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &context )
 {
+  QJsonObject json;
+
   QgsLayerTreeGroup *rootGroup = mLegendModel->rootGroup();
   if ( !rootGroup )
-    return;
+    return json;
 
   json[QStringLiteral( "title" )] = mSettings.title();
   exportLegendToJson( context, rootGroup, json );
+  return json;
 }
 
 void QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &context, QgsLayerTreeGroup *nodeGroup, QJsonObject &json )

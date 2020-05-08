@@ -100,7 +100,7 @@ class CORE_EXPORT QgsLegendRenderer
      *
      * \since QGIS 3.8
      */
-    void exportLegendToJson( const QgsRenderContext &context, QJsonObject &json );
+    QJsonObject exportLegendToJson( const QgsRenderContext &context );
 
     /**
      * Sets the \a style of a \a node.
