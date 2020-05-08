@@ -728,13 +728,23 @@ void QgsRelationEditorWidget::deleteFeatures( const QgsFeatureIds &featureids )
     layer = mRelation.referencingLayer();
   }
 
-  if ( QgsVectorLayerUtils::impactsCascadeFeatures( layer, QgsProject::instance() ) )
+  QgsVectorLayerUtils::QgsDuplicateFeatureContext infoContext;
+  if ( QgsVectorLayerUtils::impactsCascadeFeatures( layer, featureids, QgsProject::instance(), infoContext ) )
   {
+    QString childrenInfo;
+    int childrenCount = 0;
+    const auto infoContextLayers = infoContext.layers();
+    for ( QgsVectorLayer *chl : infoContextLayers )
+    {
+      childrenCount += infoContext.duplicatedFeatures( chl ).size();
+      childrenInfo += ( tr( "%1 feature(s) on layer \"%2\", " ).arg( infoContext.duplicatedFeatures( chl ).size() ).arg( chl->name() ) );
+    }
+
     // for extra safety to make sure we know that the delete can have impact on children and joins
-    int res = QMessageBox::question( this, tr( "Possible impact on descendants of layer \"%1\"" ).arg( layer->name() ),
-                                     tr( "A delete on this layer could have an impact on referencing or joined layers and their descendants. Would you still like to continue?" ),
+    int res = QMessageBox::question( this, tr( "Delete at least %3 feature(s) on other layer(s)" ).arg( childrenCount ),
+                                     tr( "Delete %1 feature(s) on layer \"%2\" and %3as well.\nAnd all the further descendants of them.\nDelete these features?" ).arg( featureids.count() ).arg( layer->name() ).arg( childrenInfo ),
                                      QMessageBox::Yes | QMessageBox::No );
-    if ( res == QMessageBox::No )
+    if ( res != QMessageBox::Yes )
       deleteFeatures = false;
   }
 

@@ -297,7 +297,7 @@ The following operations will be performed to convert the input features:
 .. versionadded:: 3.12
 %End
 
-    static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsProject *project );
+    static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context );
 %Docstring
 
 :return: true if the ``is`` connected as parent in at least one composition relation of the ``project``
