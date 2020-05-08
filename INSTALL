@@ -1205,6 +1205,7 @@ As minimum you require command line tools
 
 but installation of Xcode from the App Store is recommended too.
 
+
   5.2. Install CMake and other build tools
   ========================================
 
@@ -1290,6 +1291,7 @@ below assume you are building into a ${HOME}/Applications directory.
 
 In a Terminal cd to the qgis source folder previously downloaded, then:
 
+  cd ..
   mkdir build
   cd build
   
@@ -1303,7 +1305,7 @@ In a Terminal cd to the qgis source folder previously downloaded, then:
     -DCMAKE_PREFIX_PATH=/opt/Qt/${QT_VERSION}/clang_64 \
     ../QGIS
 
-Note: Don't forget the ../QGIS on the last line, which tells CMake to look for the source files.
+Note: Don't forget the `../QGIS` on the last line, which tells CMake to look for the source files.
 
 Note: Double check on the screen output that all libraries are picked from QGIS-Deps `/opt/QGIS`
 and not from system `/usr/lib` or Homebrew's `/usr/local/` or system Frameworks `/Library/Frameworks/`.
