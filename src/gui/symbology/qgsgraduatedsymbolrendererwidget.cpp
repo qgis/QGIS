@@ -51,7 +51,7 @@
 #include "qgsprocessingguiregistry.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingwidgetwrapper.h"
-
+#include "qgstemporalcontroller.h"
 
 
 
@@ -423,6 +423,10 @@ QgsExpressionContext QgsGraduatedSymbolRendererWidget::createExpressionContext()
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
                << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
+    if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast< const QgsExpressionContextScopeGenerator * >( mContext.mapCanvas()->temporalController() ) )
+    {
+      expContext << generator->createExpressionContextScope();
+    }
   }
   else
   {

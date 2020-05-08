@@ -12,7 +12,7 @@
 
 
 
-class QgsTemporalNavigationObject : QgsTemporalController
+class QgsTemporalNavigationObject : QgsTemporalController, QgsExpressionContextScopeGenerator
 {
 %Docstring
 Implements a temporal controller based on a frame by frame navigation and animation.
@@ -152,6 +152,9 @@ Sets whether the animation should ``loop`` after hitting the end or start frame.
 
 .. seealso:: :py:func:`isLooping`
 %End
+
+    virtual QgsExpressionContextScope *createExpressionContextScope() const /Factory/;
+
 
   signals:
 

@@ -776,6 +776,10 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "map_end_time" ), QCoreApplication::translate( "variable_help", "End of the map's temporal time range (as a datetime value)" ) );
   sVariableHelpTexts()->insert( QStringLiteral( "map_interval" ), QCoreApplication::translate( "variable_help", "Duration of the map's temporal time range (as an interval value)" ) );
 
+  sVariableHelpTexts()->insert( QStringLiteral( "frame_rate" ), QCoreApplication::translate( "variable_help", "Number of frames per second during animation playback" ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "frame_number" ), QCoreApplication::translate( "variable_help", "Current frame number during animation playback" ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "frame_duration" ), QCoreApplication::translate( "variable_help", "Temporal duration of each animation frame (as an interval value)" ) );
+
   // vector tile layer variables
   sVariableHelpTexts()->insert( QStringLiteral( "zoom_level" ), QCoreApplication::translate( "variable_help", "Zoom level of the tile that is being rendered (derived from the current map scale). Normally in interval [0, 20]." ) );
 

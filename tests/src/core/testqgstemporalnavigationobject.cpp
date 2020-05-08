@@ -41,6 +41,7 @@ class TestQgsTemporalNavigationObject : public QObject
     void animationState();
     void temporalExtents();
     void frameSettings();
+    void expressionContext();
 
   private:
     QgsTemporalNavigationObject *navigationObject = nullptr;
@@ -162,6 +163,24 @@ void TestQgsTemporalNavigationObject::frameSettings()
   navigationObject->setFramesPerSecond( 1 );
   QCOMPARE( navigationObject->framesPerSecond(), 1.0 );
 
+}
+
+void TestQgsTemporalNavigationObject::expressionContext()
+{
+  QgsTemporalNavigationObject object;
+  QgsDateTimeRange range = QgsDateTimeRange(
+                             QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 0, 0 ) ),
+                             QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) )
+                           );
+  object.setTemporalExtents( range );
+  object.setFrameDuration( QgsInterval( 1, QgsUnitTypes::TemporalHours ) );
+  object.setCurrentFrameNumber( 1 );
+  object.setFramesPerSecond( 30 );
+
+  std::unique_ptr< QgsExpressionContextScope > scope( object.createExpressionContextScope() );
+  QCOMPARE( scope->variable( QStringLiteral( "frame_rate" ) ).toDouble(), 30.0 );
+  QCOMPARE( scope->variable( QStringLiteral( "frame_duration" ) ).value< QgsInterval >().seconds(), 3600.0 );
+  QCOMPARE( scope->variable( QStringLiteral( "frame_number" ) ).toInt(), 1 );
 }
 
 QGSTEST_MAIN( TestQgsTemporalNavigationObject )
