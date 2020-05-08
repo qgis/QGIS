@@ -935,7 +935,7 @@ QString QgsVectorLayerUtils::getFeatureDisplayString( const QgsVectorLayer *laye
   return displayString;
 }
 
-bool QgsVectorLayerUtils::impactsCascadeFeatures(const QgsVectorLayer *layer, const QgsProject *project)
+bool QgsVectorLayerUtils::impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsProject *project )
 {
   if ( !layer )
     return false;

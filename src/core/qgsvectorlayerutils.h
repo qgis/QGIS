@@ -326,7 +326,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      *
      * \since QGIS 3.14
      */
-    static bool impactsCascadeFeatures(const QgsVectorLayer *layer, const QgsProject *project);
+    static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsProject *project );
 
 };
 

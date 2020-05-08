@@ -864,10 +864,10 @@ void QgsAttributeTableDialog::setFilterExpression( const QString &filterString, 
 void QgsAttributeTableDialog::deleteFeature( const QgsFeatureId fid )
 {
   QgsDebugMsg( QStringLiteral( "Delete %1" ).arg( fid ) );
-  if ( QgsVectorLayerUtils::impactsCascadeFeatures(mLayer, QgsProject::instance() ) )
+  if ( QgsVectorLayerUtils::impactsCascadeFeatures( mLayer, QgsProject::instance() ) )
   {
     // for extra safety to make sure we know that the delete can have impact on children and joins
-    int res = QMessageBox::warning( this, tr( "Possible impact on descendants of layer \"%1\"").arg( mLayer->name() ),
+    int res = QMessageBox::warning( this, tr( "Possible impact on descendants of layer \"%1\"" ).arg( mLayer->name() ),
                                     tr( "A delete on this layer could have an impact on referencing or joined layers and their descendants. Would you still like to continue?" ),
                                     QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
