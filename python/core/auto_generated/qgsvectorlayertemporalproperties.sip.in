@@ -56,6 +56,12 @@ Sets the temporal properties ``mode``.
 .. seealso:: :py:func:`mode`
 %End
 
+    virtual const QgsTemporalProperty::Flags flags() const;
+
+%Docstring
+Returns flags associated to the temporal property.
+%End
+
     void setFixedTemporalRange( const QgsDateTimeRange &range );
 %Docstring
 Sets a temporal ``range`` to apply to the whole layer. All features from

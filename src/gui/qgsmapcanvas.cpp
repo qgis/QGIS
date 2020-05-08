@@ -76,6 +76,8 @@ email                : sherman at mrcc.com
 #include "qgsreferencedgeometry.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsmaplayertemporalproperties.h"
+#include "qgsrasterlayertemporalproperties.h"
+#include "qgsvectorlayertemporalproperties.h"
 #include "qgstemporalcontroller.h"
 
 /**
@@ -780,7 +782,12 @@ void QgsMapCanvas::clearTemporalCache()
     for ( QgsMapLayer *layer : layerList )
     {
       if ( layer->temporalProperties() && layer->temporalProperties()->isActive() )
+      {
+        if ( layer->temporalProperties()->flags() & QgsTemporalProperty::FlagDontInvalidateCachedRendersWhenRangeChanges )
+          continue;
+
         mCache->invalidateCacheForLayer( layer );
+      }
     }
   }
 }

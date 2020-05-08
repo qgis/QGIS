@@ -72,6 +72,11 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     void setMode( TemporalMode mode );
 
     /**
+     * Returns flags associated to the temporal property.
+     */
+    const QgsTemporalProperty::Flags flags() const override;
+
+    /**
      * Returns the desired method to use when resolving a temporal interval to matching
      * layers or bands in the data provider.
      *
