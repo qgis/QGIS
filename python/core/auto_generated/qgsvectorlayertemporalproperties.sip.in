@@ -150,6 +150,12 @@ settings (such as startField()) when building the filter string.
    ModeFixedTemporalRange should ALL be filtered out.
 %End
 
+    void guessDefaultsFromFields( const QgsFields &fields );
+%Docstring
+Attempts to setup the temporal properties by scanning a set of ``fields``
+and looking for standard naming conventions (e.g. "begin_date").
+%End
+
     virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context );
 
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );

@@ -19,6 +19,7 @@
 #include "qgsvectordataprovidertemporalcapabilities.h"
 #include "qgsexpression.h"
 #include "qgsvectorlayer.h"
+#include "qgsfields.h"
 
 QgsVectorLayerTemporalProperties::QgsVectorLayerTemporalProperties( QObject *parent, bool enabled )
   :  QgsMapLayerTemporalProperties( parent, enabled )
@@ -281,4 +282,94 @@ QString QgsVectorLayerTemporalProperties::createFilterString( QgsVectorLayer *, 
   }
 
   return QString();
+}
+
+void QgsVectorLayerTemporalProperties::guessDefaultsFromFields( const QgsFields &fields )
+{
+
+  // Check the fields and keep the first one that matches.
+  // We assume that the user has organized the data with the
+  // more "interesting" field names first.
+  // This candidates list is a prioritized list of candidates ranked by "interestingness"!
+  // See discussion at https://github.com/qgis/QGIS/pull/30245 - this list must NOT be translated,
+  // but adding hardcoded localized variants of the strings is encouraged.
+  static QStringList sStartCandidates{ QStringLiteral( "start" ),
+                                       QStringLiteral( "begin" ),
+                                       QStringLiteral( "from" )};
+
+  static QStringList sEndCandidates{ QStringLiteral( "end" ),
+                                     QStringLiteral( "last" ),
+                                     QStringLiteral( "to" )};
+
+  static QStringList sSingleFieldCandidates{ QStringLiteral( "event" ) };
+
+
+  bool foundStart = false;
+  bool foundEnd = false;
+
+  for ( const QgsField &field : fields )
+  {
+    if ( field.type() != QVariant::Date && field.type() != QVariant::DateTime )
+      continue;
+
+    if ( !foundStart )
+    {
+      for ( const QString &candidate : sStartCandidates )
+      {
+        QString fldName = field.name();
+        if ( fldName.indexOf( candidate, 0, Qt::CaseInsensitive ) > -1 )
+        {
+          mStartFieldName = fldName;
+          foundStart = true;
+        }
+      }
+    }
+
+    if ( !foundEnd )
+    {
+      for ( const QString &candidate : sEndCandidates )
+      {
+        QString fldName = field.name();
+        if ( fldName.indexOf( candidate, 0, Qt::CaseInsensitive ) > -1 )
+        {
+          mEndFieldName = fldName;
+          foundEnd = true;
+        }
+      }
+    }
+
+    if ( foundStart && foundEnd )
+      break;
+  }
+
+  if ( !foundStart )
+  {
+    // loop again, looking for likely "single field" candidates
+    for ( const QgsField &field : fields )
+    {
+      if ( field.type() != QVariant::Date && field.type() != QVariant::DateTime )
+        continue;
+
+      for ( const QString &candidate : sSingleFieldCandidates )
+      {
+        QString fldName = field.name();
+        if ( fldName.indexOf( candidate, 0, Qt::CaseInsensitive ) > -1 )
+        {
+          mStartFieldName = fldName;
+          foundStart = true;
+        }
+      }
+
+      if ( foundStart )
+        break;
+    }
+  }
+
+  if ( foundStart && foundEnd )
+    mMode = ModeFeatureDateTimeStartAndEndFromFields;
+  else if ( foundStart )
+    mMode = ModeFeatureDateTimeInstantFromField;
+
+  // note -- NEVER auto enable temporal properties here! It's just a helper designed
+  // to shortcut the initial field selection
 }

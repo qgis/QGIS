@@ -188,6 +188,12 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   if ( mValid )
   {
     mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
+    if ( !mTemporalProperties->isActive() )
+    {
+      // didn't populate temporal properties from provider metadata, so at least try to setup some initially nice
+      // selections
+      mTemporalProperties->guessDefaultsFromFields( mFields );
+    }
   }
 
   connect( this, &QgsVectorLayer::selectionChanged, this, [ = ] { triggerRepaint(); } );

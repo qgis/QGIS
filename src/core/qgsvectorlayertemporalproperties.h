@@ -26,6 +26,7 @@
 #include "qgsrasterdataprovidertemporalcapabilities.h"
 
 class QgsVectorLayer;
+class QgsFields;
 
 /**
  * \class QgsVectorLayerTemporalProperties
@@ -157,6 +158,12 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      * ModeFixedTemporalRange should ALL be filtered out.
      */
     QString createFilterString( QgsVectorLayer *layer, const QgsDateTimeRange &range ) const;
+
+    /**
+     * Attempts to setup the temporal properties by scanning a set of \a fields
+     * and looking for standard naming conventions (e.g. "begin_date").
+     */
+    void guessDefaultsFromFields( const QgsFields &fields );
 
     QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
