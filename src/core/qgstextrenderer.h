@@ -1472,6 +1472,30 @@ class CORE_EXPORT QgsTextFormat
     void setOrientation( TextOrientation orientation );
 
     /**
+     * Returns TRUE if text should be treated as a HTML document and HTML tags should be used for formatting
+     * the rendered text.
+     *
+     * \warning Only a small subset of HTML formatting is supported. Currently this is restricted to:
+     * * text color formatting
+     *
+     * \see setAllowHtmlFormatting()
+     * \since QGIS 3.14
+     */
+    bool allowHtmlFormatting() const;
+
+    /**
+     * Sets whether text should be treated as a HTML document and HTML tags should be used for formatting
+     * the rendered text.
+     *
+     * \warning Only a small subset of HTML formatting is supported. Currently this is restricted to:
+     * * text color formatting
+     *
+     * \see allowHtmlFormatting()
+     * \since QGIS 3.14
+     */
+    void setAllowHtmlFormatting( bool allow );
+
+    /**
      * Returns the background color for text previews.
      * \see setPreviewBackgroundColor()
      * \since QGIS 3.10

@@ -351,6 +351,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         s.setBlendMode(QPainter.CompositionMode_DestinationAtop)
         s.setLineHeight(5)
         s.setPreviewBackgroundColor(QColor(100, 150, 200))
+        s.setOrientation(QgsTextFormat.VerticalOrientation)
+        s.setAllowHtmlFormatting(True)
         s.dataDefinedProperties().setProperty(QgsPalLayerSettings.Bold, QgsProperty.fromExpression('1>2'))
         return s
 
@@ -375,6 +377,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertEqual(s.blendMode(), QPainter.CompositionMode_DestinationAtop)
         self.assertEqual(s.lineHeight(), 5)
         self.assertEqual(s.previewBackgroundColor().name(), '#6496c8')
+        self.assertEqual(s.orientation(), QgsTextFormat.VerticalOrientation)
+        self.assertTrue(s.allowHtmlFormatting())
         self.assertEqual(s.dataDefinedProperties().property(QgsPalLayerSettings.Bold).expressionString(), '1>2')
 
     def testFormatGettersSetters(self):

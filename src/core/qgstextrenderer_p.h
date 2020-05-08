@@ -255,6 +255,7 @@ class QgsTextSettingsPrivate : public QSharedData
       , multilineHeight( other.multilineHeight )
       , orientation( other.orientation )
       , previewBackgroundColor( other.previewBackgroundColor )
+      , allowHtmlFormatting( other.allowHtmlFormatting )
       , mDataDefinedProperties( other.mDataDefinedProperties )
     {
     }
@@ -270,6 +271,8 @@ class QgsTextSettingsPrivate : public QSharedData
     double multilineHeight = 1.0 ; //0.0 to 10.0, leading between lines as multiplyer of line height
     QgsTextFormat::TextOrientation orientation = QgsTextFormat::HorizontalOrientation;
     QColor previewBackgroundColor = Qt::white;
+
+    bool allowHtmlFormatting = false;
 
     //! Property collection for data defined settings
     QgsPropertyCollection mDataDefinedProperties;

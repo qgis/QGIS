@@ -1919,6 +1919,16 @@ void QgsTextFormat::setOrientation( TextOrientation orientation )
   d->orientation = orientation;
 }
 
+bool QgsTextFormat::allowHtmlFormatting() const
+{
+  return d->allowHtmlFormatting;
+}
+
+void QgsTextFormat::setAllowHtmlFormatting( bool allow )
+{
+  d->allowHtmlFormatting = allow;
+}
+
 QColor QgsTextFormat::previewBackgroundColor() const
 {
   return d->previewBackgroundColor;
@@ -2106,6 +2116,8 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
     d->multilineHeight = textStyleElem.attribute( QStringLiteral( "multilineHeight" ), QStringLiteral( "1" ) ).toDouble();
   }
 
+  d->allowHtmlFormatting = textStyleElem.attribute( QStringLiteral( "allowHtml" ), QStringLiteral( "0" ) ).toInt();
+
   if ( textStyleElem.firstChildElement( QStringLiteral( "text-buffer" ) ).isNull() )
   {
     mBufferSettings.readXml( elem );
@@ -2177,6 +2189,7 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
   textStyleElem.setAttribute( QStringLiteral( "textOrientation" ), QgsTextRendererUtils::encodeTextOrientation( d->orientation ) );
   textStyleElem.setAttribute( QStringLiteral( "blendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
   textStyleElem.setAttribute( QStringLiteral( "multilineHeight" ), d->multilineHeight );
+  textStyleElem.setAttribute( QStringLiteral( "allowHtml" ), d->allowHtmlFormatting ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
   QDomElement ddElem = doc.createElement( QStringLiteral( "dd_properties" ) );
   d->mDataDefinedProperties.writeXml( ddElem, QgsPalLayerSettings::propertyDefinitions() );

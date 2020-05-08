@@ -1731,6 +1731,36 @@ Sets the ``orientation`` for the text.
 .. versionadded:: 3.10
 %End
 
+    bool allowHtmlFormatting() const;
+%Docstring
+Returns ``True`` if text should be treated as a HTML document and HTML tags should be used for formatting
+the rendered text.
+
+.. warning::
+
+   Only a small subset of HTML formatting is supported. Currently this is restricted to:
+   * text color formatting
+
+.. seealso:: :py:func:`setAllowHtmlFormatting`
+
+.. versionadded:: 3.14
+%End
+
+    void setAllowHtmlFormatting( bool allow );
+%Docstring
+Sets whether text should be treated as a HTML document and HTML tags should be used for formatting
+the rendered text.
+
+.. warning::
+
+   Only a small subset of HTML formatting is supported. Currently this is restricted to:
+   * text color formatting
+
+.. seealso:: :py:func:`allowHtmlFormatting`
+
+.. versionadded:: 3.14
+%End
+
     QColor previewBackgroundColor() const;
 %Docstring
 Returns the background color for text previews.
