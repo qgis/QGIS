@@ -57,6 +57,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
       ModeFixedTemporalRange = 0, //!< Mode when temporal properties have fixed start and end datetimes.
       ModeFeatureDateTimeInstantFromField, //!< Mode when features have a datetime instant taken from a single field
       ModeFeatureDateTimeStartAndEndFromFields, //!< Mode when features have separate fields for start and end times
+      ModeRedrawLayerOnly, //!< Redraw the layer when temporal range changes, but don't apply any filtering. Useful when symbology or rule based renderer expressions depend on the time range.
     };
 
     /**

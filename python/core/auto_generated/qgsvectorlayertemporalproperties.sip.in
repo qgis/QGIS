@@ -39,6 +39,7 @@ The ``enabled`` argument specifies whether the temporal properties are initially
       ModeFixedTemporalRange,
       ModeFeatureDateTimeInstantFromField,
       ModeFeatureDateTimeStartAndEndFromFields,
+      ModeRedrawLayerOnly,
     };
 
     TemporalMode mode() const;

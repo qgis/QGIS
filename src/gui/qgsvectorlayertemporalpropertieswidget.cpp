@@ -34,6 +34,7 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
   mModeComboBox->addItem( tr( "Fixed Time Range" ), QgsVectorLayerTemporalProperties::ModeFixedTemporalRange );
   mModeComboBox->addItem( tr( "Single Field with Date/Time" ), QgsVectorLayerTemporalProperties::ModeFeatureDateTimeInstantFromField );
   mModeComboBox->addItem( tr( "Separate Fields for Start and End Date/Time" ), QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromFields );
+  mModeComboBox->addItem( tr( "Redraw Layer Only" ), QgsVectorLayerTemporalProperties::ModeRedrawLayerOnly );
 
   const QgsVectorLayerTemporalProperties *properties = qobject_cast< QgsVectorLayerTemporalProperties * >( layer->temporalProperties() );
   mTemporalGroupBox->setChecked( properties->isActive() );
@@ -86,6 +87,7 @@ void QgsVectorLayerTemporalPropertiesWidget::saveTemporalProperties()
   {
     case QgsVectorLayerTemporalProperties::ModeFeatureDateTimeInstantFromField:
     case QgsVectorLayerTemporalProperties::ModeFixedTemporalRange:
+    case QgsVectorLayerTemporalProperties::ModeRedrawLayerOnly:
       properties->setStartField( mSingleFieldComboBox->currentField() );
       break;
 
