@@ -39,6 +39,11 @@ class QgsLabelSink
   public:
     virtual ~QgsLabelSink() = default;
 
+    /**
+     * The drawLabel method is called for each label that is being drawn.
+     * Every subclass must implement this method to draw the label or send the information from \a label
+     * to another desired location.
+     */
     virtual void drawLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings ) = 0;
 };
 
