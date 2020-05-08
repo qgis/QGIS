@@ -27,12 +27,12 @@
  *
  * A valid value for this parameter is a list (QVariantList), where each item is a map (QVariantMap) in this form:
  * {
- *   'layer':  <string> or <QgsMapLayer>,
+ *   'layer':  string or QgsMapLayer,
  *   // key-value pairs below are optional
- *   'layerName': <string>,
- *   'filterExpression': <string>,
- *   'minZoom': <int>,
- *   'maxZoom': <int>
+ *   'layerName': string,
+ *   'filterExpression': string,
+ *   'minZoom': int,
+ *   'maxZoom': int
  * }
  *
  * Static functions parametersAsLayers(), variantMapAsLayer(), layerAsVariantMap() provide conversion between
