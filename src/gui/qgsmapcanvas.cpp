@@ -692,8 +692,12 @@ void QgsMapCanvas::rendererJobFinished()
     {
       mLastLayerRenderTime.insert( it.key()->id(), it.value() );
     }
-    if ( mUsePreviewJobs )
+    if ( mUsePreviewJobs && !mTemporalRefreshAfterJob )
       startPreviewJobs();
+  }
+  else
+  {
+    mTemporalRefreshAfterJob = false;
   }
 
   // now we are in a slot called from mJob - do not delete it immediately
@@ -702,6 +706,13 @@ void QgsMapCanvas::rendererJobFinished()
   mJob = nullptr;
 
   emit mapCanvasRefreshed();
+
+  if ( mTemporalRefreshAfterJob )
+  {
+    mTemporalRefreshAfterJob = false;
+    clearTemporalCache();
+    refresh();
+  }
 }
 
 void QgsMapCanvas::previewJobFinished()
@@ -757,17 +768,10 @@ void QgsMapCanvas::setCustomDropHandlers( const QVector<QPointer<QgsCustomDropHa
   mDropHandlers = handlers;
 }
 
-void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
+void QgsMapCanvas::clearTemporalCache()
 {
-  if ( temporalRange() == dateTimeRange )
-    return;
-
-  mSettings.setTemporalRange( dateTimeRange );
-
   if ( mCache )
   {
-    // we need to discard any previously cached images which have temporal properties enabled, so that these will be updated when
-    // the canvas is redrawn
     const QList<QgsMapLayer *> layerList = mapSettings().layers();
     for ( QgsMapLayer *layer : layerList )
     {
@@ -775,10 +779,28 @@ void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
         mCache->invalidateCacheForLayer( layer );
     }
   }
+}
+
+void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
+{
+  if ( temporalRange() == dateTimeRange )
+    return;
+
+  mSettings.setTemporalRange( dateTimeRange );
 
   emit temporalRangeChanged();
 
-  autoRefreshTriggered();
+  if ( !mJob )
+  {
+    // we need to discard any previously cached images which have temporal properties enabled, so that these will be updated when
+    // the canvas is redrawn
+    clearTemporalCache();
+    autoRefreshTriggered();
+  }
+  else
+  {
+    mTemporalRefreshAfterJob = true;
+  }
 }
 
 const QgsDateTimeRange &QgsMapCanvas::temporalRange() const
