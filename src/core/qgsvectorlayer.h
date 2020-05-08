@@ -1295,7 +1295,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Deletes the selected features
      * \param deleteCount The number of successfully deleted features
-     * \param cascade If the decendants of the feature should be deleted as well
+     * \param context The chain of features who will be deleted for feedback and to avoid endless recursions
      *
      * \returns TRUE in case of success and FALSE otherwise
      */
@@ -1832,7 +1832,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Deletes a feature from the layer (but does not commit it).
      * \param fid The feature id to delete
-     * \param cascade If the decendants of the feature should be deleted as well
+     * \param context The chain of features who will be deleted for feedback and to avoid endless recursions
      *
      * \note Calls to deleteFeature() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
@@ -1844,7 +1844,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Deletes a set of features from the layer (but does not commit it)
      * \param fids The feature ids to delete
-     * \param cascade If the decendants of the feature should be deleted as well
+     * \param context The chain of features who will be deleted for feedback and to avoid endless recursions
      *
      * \returns FALSE if the layer is not in edit mode or does not support deleting
      *         in case of an active transaction depends on the provider implementation

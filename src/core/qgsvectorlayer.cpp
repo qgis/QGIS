@@ -3176,7 +3176,7 @@ bool QgsVectorLayer::deleteFeatureCascade( QgsFeatureId fid, QgsVectorLayer::Del
       QgsFeatureIds handledFeatureIds = context->handledFeatures.value( this );
       if ( handledFeatureIds.contains( fid ) )
       {
-        // break recursion
+        // avoid endless recursion
         return false;
       }
       else
