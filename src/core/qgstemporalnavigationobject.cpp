@@ -69,6 +69,15 @@ void QgsTemporalNavigationObject::setLooping( bool loopAnimation )
   mLoopAnimation = loopAnimation;
 }
 
+QgsExpressionContextScope *QgsTemporalNavigationObject::createExpressionContextScope() const
+{
+  std::unique_ptr< QgsExpressionContextScope > scope = qgis::make_unique< QgsExpressionContextScope >( QStringLiteral( "temporal" ) );
+  scope->setVariable( QStringLiteral( "frame_rate" ), mFramesPerSecond, true );
+  scope->setVariable( QStringLiteral( "frame_number" ), mCurrentFrameNumber, true );
+  scope->setVariable( QStringLiteral( "frame_duration" ), mFrameDuration, true );
+  return scope.release();
+}
+
 QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long long frame ) const
 {
   const QDateTime start = mTemporalExtents.begin();

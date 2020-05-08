@@ -23,6 +23,7 @@
 #include "qgsrange.h"
 #include "qgsinterval.h"
 #include "qgstemporalcontroller.h"
+#include "qgsexpressioncontextscopegenerator.h"
 
 #include <QList>
 #include <QTimer>
@@ -35,7 +36,7 @@ class QgsMapLayer;
  *
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController
+class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, public QgsExpressionContextScopeGenerator
 {
     Q_OBJECT
 
@@ -165,6 +166,8 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController
      * \see isLooping()
      */
     void setLooping( bool loop );
+
+    QgsExpressionContextScope *createExpressionContextScope() const override SIP_FACTORY;
 
   signals:
 
