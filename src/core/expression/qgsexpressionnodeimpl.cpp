@@ -405,10 +405,18 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
       }
       else if ( ( vL.type() == QVariant::DateTime && vR.type() == QVariant::DateTime ) )
       {
-        const QDateTime dL = QgsExpressionUtils::getDateTimeValue( vL, parent );
+        QDateTime dL = QgsExpressionUtils::getDateTimeValue( vL, parent );
         ENSURE_NO_EVAL_ERROR;
-        const QDateTime dR = QgsExpressionUtils::getDateTimeValue( vR, parent );
+        QDateTime dR = QgsExpressionUtils::getDateTimeValue( vR, parent );
         ENSURE_NO_EVAL_ERROR;
+
+        // while QDateTime has innate handling of timezones, we don't expose these ANYWHERE
+        // in QGIS. So to avoid confusion where seemingly equal datetime values give unexpected
+        // results (due to different hidden timezones), we force all datetime comparisons to treat
+        // all datetime values as having the same time zone
+        dL.setTimeSpec( Qt::UTC );
+        dR.setTimeSpec( Qt::UTC );
+
         return compare( dR.msecsTo( dL ) ) ? TVL_True : TVL_False;
       }
       else if ( ( vL.type() == QVariant::Date && vR.type() == QVariant::Date ) )
