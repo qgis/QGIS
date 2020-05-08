@@ -25,17 +25,6 @@ custom labeling.
 %End
   public:
 
-    struct ScaleBarContext
-    {
-
-      double segmentWidth;
-
-      QSizeF size;
-
-      double scale;
-
-    };
-
     enum class Flag
     {
       FlagUsesLineSymbol,
@@ -52,9 +41,23 @@ custom labeling.
       FlagUsesSubdivisions,
       FlagUsesDivisionSymbol,
       FlagUsesSubdivisionSymbol,
+      FlagUsesSubdivisionsHeight,
     };
     typedef QFlags<QgsScaleBarRenderer::Flag> Flags;
 
+
+    struct ScaleBarContext
+    {
+
+      double segmentWidth;
+
+      QSizeF size;
+
+      double scale;
+
+      Flags flags;
+
+    };
 
     QgsScaleBarRenderer();
 %Docstring

@@ -81,7 +81,8 @@ QgsScaleBarRenderer::Flags QgsTicksScaleBarRenderer::flags() const
          Flag::FlagUsesLabelBarSpace |
          Flag::FlagUsesLabelVerticalPlacement |
          Flag::FlagUsesLabelHorizontalPlacement |
-         Flag::FlagUsesSubdivisions;
+         Flag::FlagUsesSubdivisions |
+         Flag::FlagUsesSubdivisionsHeight;
 }
 
 QgsTicksScaleBarRenderer *QgsTicksScaleBarRenderer::clone() const
@@ -122,7 +123,7 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
   subdivisionSymbol->startRender( context );
 
   const QList<double> positions = segmentPositions( context, scaleContext, settings );
-  
+
   // vertical positions
   double verticalPos = 0.0;
   QList<double> subTickPositionsY;

@@ -40,6 +40,30 @@ class CORE_EXPORT QgsScaleBarRenderer
   public:
 
     /**
+     * Flags which control scalebar renderer behavior.
+     * \since QGIS 3.14
+     */
+    enum class Flag
+    {
+      FlagUsesLineSymbol = 1 << 0, //!< Renderer utilizes the scalebar line symbol (see QgsScaleBarSettings::lineSymbol() )
+      FlagUsesFillSymbol = 1 << 1, //!< Renderer utilizes the scalebar fill symbol (see QgsScaleBarSettings::fillSymbol() )
+      FlagUsesAlternateFillSymbol = 1 << 2, //!< Renderer utilizes the alternate scalebar fill symbol (see QgsScaleBarSettings::alternateFillSymbol() )
+      FlagRespectsUnits = 1 << 3, //!< Renderer respects the QgsScaleBarSettings::units() setting
+      FlagRespectsMapUnitsPerScaleBarUnit = 1 << 4, //!< Renderer respects the QgsScaleBarSettings::mapUnitsPerScaleBarUnit() setting
+      FlagUsesUnitLabel = 1 << 5, //!< Renderer uses the QgsScaleBarSettings::unitLabel() setting
+      FlagUsesSegments = 1 << 6, //!< Renderer uses the scalebar segments
+      FlagUsesLabelBarSpace = 1 << 7, //!< Renderer uses the QgsScaleBarSettings::labelBarSpace() setting
+      FlagUsesLabelVerticalPlacement = 1 << 8, //!< Renderer uses the QgsScaleBarSettings::labelVerticalPlacement() setting
+      FlagUsesLabelHorizontalPlacement = 1 << 8, //!< Renderer uses the QgsScaleBarSettings::labelHorizontalPlacement() setting
+      FlagUsesAlignment = 1 << 9, //!< Renderer uses the QgsScaleBarSettings::alignment() setting
+      FlagUsesSubdivisions = 1 << 10, //!< Renderer uses the scalebar subdivisions (see QgsScaleBarSettings::numberOfSubdivisions() )
+      FlagUsesDivisionSymbol = 1 << 11, //!< Renderer utilizes the scalebar division symbol (see QgsScaleBarSettings::divisionLineSymbol() )
+      FlagUsesSubdivisionSymbol = 1 << 12, //!< Renderer utilizes the scalebar subdivision symbol (see QgsScaleBarSettings::subdivisionLineSymbol() )
+      FlagUsesSubdivisionsHeight = 1 << 13, //!< Renderer uses the scalebar subdivisions height (see QgsScaleBarSettings::subdivisionsHeight() )
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
+    /**
      * Contains parameters regarding scalebar calculations.
      * \note The need to attribute the parameters vary depending on the targeted scalebar.
      */
@@ -62,30 +86,10 @@ class CORE_EXPORT QgsScaleBarRenderer
       //! Scale denominator
       double scale { 1.0 };
 
-    };
+      //! Scalebar renderer flags
+      Flags flags;
 
-    /**
-     * Flags which control scalebar renderer behavior.
-     * \since QGIS 3.14
-     */
-    enum class Flag
-    {
-      FlagUsesLineSymbol = 1 << 0, //!< Renderer utilizes the scalebar line symbol (see QgsScaleBarSettings::lineSymbol() )
-      FlagUsesFillSymbol = 1 << 1, //!< Renderer utilizes the scalebar fill symbol (see QgsScaleBarSettings::fillSymbol() )
-      FlagUsesAlternateFillSymbol = 1 << 2, //!< Renderer utilizes the alternate scalebar fill symbol (see QgsScaleBarSettings::alternateFillSymbol() )
-      FlagRespectsUnits = 1 << 3, //!< Renderer respects the QgsScaleBarSettings::units() setting
-      FlagRespectsMapUnitsPerScaleBarUnit = 1 << 4, //!< Renderer respects the QgsScaleBarSettings::mapUnitsPerScaleBarUnit() setting
-      FlagUsesUnitLabel = 1 << 5, //!< Renderer uses the QgsScaleBarSettings::unitLabel() setting
-      FlagUsesSegments = 1 << 6, //!< Renderer uses the scalebar segments
-      FlagUsesLabelBarSpace = 1 << 7, //!< Renderer uses the QgsScaleBarSettings::labelBarSpace() setting
-      FlagUsesLabelVerticalPlacement = 1 << 8, //!< Renderer uses the QgsScaleBarSettings::labelVerticalPlacement() setting
-      FlagUsesLabelHorizontalPlacement = 1 << 8, //!< Renderer uses the QgsScaleBarSettings::labelHorizontalPlacement() setting
-      FlagUsesAlignment = 1 << 9, //!< Renderer uses the QgsScaleBarSettings::alignment() setting
-      FlagUsesSubdivisions = 1 << 10, //!< Renderer uses the scalebar subdivisions
-      FlagUsesDivisionSymbol = 1 << 11, //!< Renderer utilizes the scalebar division symbol (see QgsScaleBarSettings::divisionLineSymbol() )
-      FlagUsesSubdivisionSymbol = 1 << 12, //!< Renderer utilizes the scalebar subdivision symbol (see QgsScaleBarSettings::subdivisionLineSymbol() )
     };
-    Q_DECLARE_FLAGS( Flags, Flag )
 
     /**
      * Constructor for QgsScaleBarRenderer.

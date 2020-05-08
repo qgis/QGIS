@@ -529,8 +529,8 @@ void QgsLayoutScaleBarWidget::toggleStyleSpecificControls( const QString &style 
   mUnitLabelLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesUnitLabel : true );
   mSubdivisionsLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesSubdivisions : true );
   mNumberOfSubdivisionsSpinBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesSubdivisions : true );
-  mSubdivisionsHeightLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesSubdivisions : true );
-  mSubdivisionsHeightSpinBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesSubdivisions : true );
+  mSubdivisionsHeightLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesSubdivisionsHeight : true );
+  mSubdivisionsHeightSpinBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesSubdivisionsHeight : true );
   mGroupBoxSegments->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesSegments : true );
   if ( !mGroupBoxUnits->isEnabled() )
     mGroupBoxSegments->setCollapsed( true );
