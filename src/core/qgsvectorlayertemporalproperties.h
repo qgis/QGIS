@@ -74,6 +74,11 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
     void setMode( TemporalMode mode );
 
     /**
+     * Returns flags associated to the temporal property.
+     */
+    const QgsTemporalProperty::Flags flags() const override;
+
+    /**
      * Sets a temporal \a range to apply to the whole layer. All features from
      * the layer will be rendered whenever the current datetime range of
      * a render context intersects the specified \a range.
