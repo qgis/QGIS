@@ -36,6 +36,7 @@ bool QgsVectorLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTi
 
     case ModeFeatureDateTimeInstantFromField:
     case ModeFeatureDateTimeStartAndEndFromFields:
+    case ModeRedrawLayerOnly:
       return true;
   }
   return true;
@@ -183,6 +184,7 @@ QString QgsVectorLayerTemporalProperties::createFilterString( QgsVectorLayer *, 
   switch ( mMode )
   {
     case ModeFixedTemporalRange:
+    case ModeRedrawLayerOnly:
       return QString();
 
     case ModeFeatureDateTimeInstantFromField:

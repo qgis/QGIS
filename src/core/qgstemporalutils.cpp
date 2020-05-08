@@ -101,6 +101,9 @@ QgsDateTimeRange QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject 
             }
             break;
           }
+
+          case QgsVectorLayerTemporalProperties::ModeRedrawLayerOnly:
+            break;
         }
         break;
       }
