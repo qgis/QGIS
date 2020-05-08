@@ -27,6 +27,7 @@
 #include <QPainter>
 #include <QPicture>
 #include <QDomElement>
+#include <QTextFragment>
 
 class QgsReadWriteContext;
 class QgsTextBufferSettingsPrivate;
@@ -1745,6 +1746,38 @@ class CORE_EXPORT QgsTextRenderer
                           QgsRenderContext &context, const QgsTextFormat &format,
                           TextPart part, bool drawAsOutlines = true );
 
+#ifndef SIP_RUN
+    struct CORE_EXPORT TextFragment
+    {
+      TextFragment( const QString &text, const QTextCharFormat &format = QTextCharFormat() )
+        : text( text )
+        , charFormat( format )
+      {}
+      QString text;
+      QTextCharFormat charFormat;
+    };
+
+    typedef QList< QgsTextRenderer::TextFragment > TextBlock;
+
+    /**
+     * Draws a single component of rendered text using the specified settings.
+     * \param rect destination rectangle for text
+     * \param rotation text rotation
+     * \param alignment horizontal alignment
+     * \param textLines list of lines of text to draw
+     * \param context render context
+     * \param format text format
+     * \param part component of text to draw. Note that Shadow parts cannot be drawn
+     * individually and instead are drawn with their associated part (e.g., drawn together
+     * with the text or background parts)
+     * \note Not available in Python bindings
+     * \since QGIS 3.14
+     */
+    static void drawPart( const QRectF &rect, double rotation, HAlignment alignment, const QList< QgsTextRenderer::TextBlock > &textLines,
+                          QgsRenderContext &context, const QgsTextFormat &format,
+                          TextPart part );
+#endif
+
     /**
      * Draws a single component of rendered text using the specified settings.
      * \param origin origin for start of text. Y coordinate will be used as baseline.
@@ -1764,6 +1797,27 @@ class CORE_EXPORT QgsTextRenderer
     static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
                           TextPart part, bool drawAsOutlines = true );
+
+#ifndef SIP_RUN
+
+    /**
+     * Draws a single component of rendered text using the specified settings.
+     * \param origin origin for start of text. Y coordinate will be used as baseline.
+     * \param rotation text rotation
+     * \param alignment horizontal alignment
+     * \param textLines list of lines of text to draw
+     * \param context render context
+     * \param format text format
+     * \param part component of text to draw. Note that Shadow parts cannot be drawn
+     * individually and instead are drawn with their associated part (e.g., drawn together
+     * with the text or background parts)
+     * \note Not available in Python bindings
+     * \since QGIS 3.14
+     */
+    static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QList< TextBlock > &textLines,
+                          QgsRenderContext &context, const QgsTextFormat &format,
+                          TextPart part );
+#endif
 
     /**
      * Returns the font metrics for the given text \a format, when rendered
@@ -1855,7 +1909,7 @@ class CORE_EXPORT QgsTextRenderer
                                   QgsRenderContext &context,
                                   const QgsTextFormat &format,
                                   const Component &component,
-                                  const QStringList &textLines,
+                                  const QList< TextBlock > &blocks,
                                   const QFontMetricsF *fontMetrics,
                                   HAlignment alignment,
                                   DrawMode mode = Rect );

@@ -2019,6 +2019,7 @@ Draws a single component of rendered text using the specified settings.
                        as of QGIS 3.4.3 and the text format should be set using QgsRenderContext.setTextRenderFormat() instead.
 %End
 
+
     static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
                           TextPart part, bool drawAsOutlines = true );
@@ -2039,6 +2040,7 @@ Draws a single component of rendered text using the specified settings.
                        rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
                        as of QGIS 3.4.3 and the text format should be set using QgsRenderContext.setTextRenderFormat() instead.
 %End
+
 
     static QFontMetricsF fontMetrics( QgsRenderContext &context, const QgsTextFormat &format );
 %Docstring

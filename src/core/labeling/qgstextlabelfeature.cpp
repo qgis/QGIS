@@ -19,7 +19,7 @@
 #include "qgspallabeling.h"
 #include "qgsmaptopixel.h"
 #include "pal/feature.h"
-
+#include <QTextDocument>
 
 QgsTextLabelFeature::QgsTextLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size )
   : QgsLabelFeature( id, std::move( geometry ), size )
@@ -42,8 +42,17 @@ QString QgsTextLabelFeature::text( int partId ) const
     return mClusters.at( partId );
 }
 
+QTextCharFormat QgsTextLabelFeature::characterFormat( int partId ) const
+{
+  return mCharacterFormats.value( partId );
+}
 
-void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF *fm, const QgsMapToPixel *xform, double maxinangle, double maxoutangle )
+bool QgsTextLabelFeature::hasCharacterFormat( int partId ) const
+{
+  return partId < mCharacterFormats.size();
+}
+
+void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF *fm, const QgsMapToPixel *xform, double maxinangle, double maxoutangle, bool allowHtmlTags )
 {
   if ( mInfo )
     return;
@@ -72,8 +81,41 @@ void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF *fm,
   qreal charWidth;
   qreal wordSpaceFix;
 
-  //split string by valid grapheme boundaries - required for certain scripts (see #6883)
-  mClusters = QgsPalLabeling::splitToGraphemes( mLabelText );
+
+  if ( allowHtmlTags && curvedLabeling )
+  {
+    QTextDocument doc;
+    doc.setHtml( mLabelText );
+
+    QTextBlock block = doc.firstBlock();
+    while ( true )
+    {
+      auto it = block.begin();
+      QString blockText;
+      while ( !it.atEnd() )
+      {
+        const QTextFragment fragment = it.fragment();
+        if ( fragment.isValid() )
+        {
+          const QStringList graphemes = QgsPalLabeling::splitToGraphemes( fragment.text() );
+          for ( const QString &grapheme : graphemes )
+          {
+            mClusters.append( grapheme );
+            mCharacterFormats.append( fragment.charFormat() );
+          }
+        }
+        it++;
+      }
+      block = block.next();
+      if ( !block.isValid() )
+        break;
+    }
+  }
+  else
+  {
+    //split string by valid grapheme boundaries - required for certain scripts (see #6883)
+    mClusters = QgsPalLabeling::splitToGraphemes( mLabelText );
+  }
 
   mInfo = new pal::LabelInfo( mClusters.count(), labelHeight, maxinangle, maxoutangle );
   for ( int i = 0; i < mClusters.count(); i++ )

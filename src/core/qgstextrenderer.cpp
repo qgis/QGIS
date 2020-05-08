@@ -2706,6 +2706,14 @@ QgsTextFormat QgsTextRenderer::updateShadowPosition( const QgsTextFormat &format
 void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, HAlignment alignment,
                                 const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part, bool )
 {
+  QList<TextBlock> blocks;
+  for ( const QString &line : textLines )
+    blocks << ( TextBlock() << TextFragment( line ) );
+  drawPart( rect, rotation, alignment, blocks, context, format, part );
+}
+
+void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, QgsTextRenderer::HAlignment alignment, const QList<TextBlock> &textLines, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part )
+{
   if ( !context.painter() )
   {
     return;
@@ -2743,7 +2751,18 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, HAlignment 
         component.center = rect.center();
       }
 
-      QgsTextRenderer::drawBackground( context, component, format, textLines, Rect );
+      QStringList lines;
+      for ( const TextBlock &block : textLines )
+      {
+        QString line;
+        for ( const TextFragment &fragment : block )
+        {
+          line.append( fragment.text );
+        }
+        lines << line;
+      }
+
+      QgsTextRenderer::drawBackground( context, component, format, lines, Rect );
 
       break;
     }
@@ -2769,6 +2788,14 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, HAlignment 
 
 void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part, bool )
 {
+  QList<TextBlock> blocks;
+  for ( const QString &line : textLines )
+    blocks << ( TextBlock() << TextFragment( line ) );
+  drawPart( origin, rotation, alignment, blocks, context, format, part );
+}
+
+void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer::HAlignment alignment, const QList<QgsTextRenderer::TextBlock> &textLines, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part )
+{
   if ( !context.painter() )
   {
     return;
@@ -2787,7 +2814,17 @@ void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer
       if ( !format.background().enabled() )
         return;
 
-      QgsTextRenderer::drawBackground( context, component, format, textLines, Point );
+      QStringList lines;
+      for ( const TextBlock &block : textLines )
+      {
+        QString line;
+        for ( const TextFragment &fragment : block )
+        {
+          line.append( fragment.text );
+        }
+        lines << line;
+      }
+      QgsTextRenderer::drawBackground( context, component, format, lines, Point );
       break;
     }
 
@@ -3614,7 +3651,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
                                         QgsRenderContext &context,
                                         const QgsTextFormat &format,
                                         const Component &component,
-                                        const QStringList &textLines,
+                                        const QList< TextBlock > &blocks,
                                         const QFontMetricsF *fontMetrics,
                                         HAlignment alignment, DrawMode mode )
 {
@@ -3644,6 +3681,17 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
     {
       orientation = QgsTextFormat::HorizontalOrientation;
     }
+  }
+
+  QStringList textLines;
+  for ( const TextBlock &block : blocks )
+  {
+    QString line;
+    for ( const TextFragment &fragment : block )
+    {
+      line.append( fragment.text );
+    }
+    textLines << line;
   }
 
   switch ( orientation )
@@ -3683,6 +3731,8 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
       const auto constTextLines = textLines;
       for ( const QString &line : constTextLines )
       {
+        const TextBlock block = blocks.at( i );
+
         context.painter()->save();
         if ( context.flags() & QgsRenderContext::Antialiasing )
         {
@@ -3774,25 +3824,37 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
         }
         else
         {
-          // draw text, QPainterPath method
-          QPainterPath path;
-          path.setFillRule( Qt::WindingFill );
-          path.addText( 0, 0, format.scaledFont( context ), subComponent.text );
-
           // store text's drawing in QPicture for drop shadow call
           QPicture textPict;
           QPainter textp;
           textp.begin( &textPict );
           textp.setPen( Qt::NoPen );
-          QColor textColor = format.color();
-          textColor.setAlphaF( format.opacity() );
-          textp.setBrush( textColor );
-          textp.drawPath( path );
-          // TODO: why are some font settings lost on drawPicture() when using drawText() inside QPicture?
-          //       e.g. some capitalization options, but not others
-          //textp.setFont( tmpLyr.textFont );
-          //textp.setPen( tmpLyr.textColor );
-          //textp.drawText( 0, 0, component.text() );
+          QFont font = format.scaledFont( context );
+
+          double xOffset = 0;
+          for ( const TextFragment &fragment : block )
+          {
+            // draw text, QPainterPath method
+            QPainterPath path;
+            path.setFillRule( Qt::WindingFill );
+            path.addText( xOffset, 0, font, fragment.text );
+
+            QColor textColor = fragment.charFormat.foreground().color();
+            textColor.setAlphaF( format.opacity() );
+            textp.setBrush( textColor );
+            textp.drawPath( path );
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+            xOffset += fontMetrics->width( fragment.text );
+#else
+            xOffset += fontMetrics->horizontalAdvance( fragment.text );
+#endif
+            // TODO: why are some font settings lost on drawPicture() when using drawText() inside QPicture?
+            //       e.g. some capitalization options, but not others
+            //textp.setFont( tmpLyr.textFont );
+            //textp.setPen( tmpLyr.textColor );
+            //textp.drawText( 0, 0, component.text() );
+          }
           textp.end();
 
           if ( format.shadow().enabled() && format.shadow().shadowPlacement() == QgsTextShadowSettings::ShadowText )

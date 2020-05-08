@@ -36,6 +36,8 @@
 #include "pal/layer.h"
 
 #include <QPicture>
+#include <QTextDocument>
+#include <QTextFragment>
 
 using namespace pal;
 
@@ -610,8 +612,6 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       }
     }
 
-    //QgsDebugMsgLevel( "drawLabel " + txt, 4 );
-    QStringList multiLineList = QgsPalLabeling::splitToLines( txt, tmpLyr.wrapChar, tmpLyr.autoWrapLength, tmpLyr.useMaxLineLengthForAutoWrap, tmpLyr.format().allowHtmlFormatting() );
 
     QgsTextRenderer::HAlignment hAlign = QgsTextRenderer::AlignLeft;
     if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiCenter )
@@ -623,7 +623,68 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     component.origin = outPt;
     component.rotation = label->getAlpha();
 
-    QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, multiLineList, labelfm,
+    QList< QgsTextRenderer::TextBlock > textBlocks;
+    if ( !tmpLyr.format().allowHtmlFormatting() || tmpLyr.placement == QgsPalLayerSettings::Curved )
+    {
+      QTextCharFormat c;
+      if ( lf->hasCharacterFormat( label->getPartId() ) )
+      {
+        c = lf->characterFormat( label->getPartId() );
+      }
+      else
+      {
+        QBrush b;
+        c = QTextCharFormat();
+        b.setColor( tmpLyr.format().color() );
+        c.setForeground( b );
+      }
+      const QStringList multiLineList = QgsPalLabeling::splitToLines( txt, tmpLyr.wrapChar, tmpLyr.autoWrapLength, tmpLyr.useMaxLineLengthForAutoWrap );
+      for ( const QString line : multiLineList )
+        textBlocks << ( QgsTextRenderer::TextBlock() << QgsTextRenderer::TextFragment( line, c ) );
+    }
+    else
+    {
+      QTextDocument doc;
+      doc.setHtml( QStringLiteral( "<span style=\"color: %1\">%2</span>" ).arg( tmpLyr.format().color().name(), txt ) );
+      QTextBlock block = doc.firstBlock();
+      while ( true )
+      {
+        QgsTextRenderer::TextBlock blockFragments;
+        auto it = block.begin();
+        while ( !it.atEnd() )
+        {
+          const QTextFragment fragment = it.fragment();
+          if ( fragment.isValid() )
+          {
+            const QStringList multiLineList = QgsPalLabeling::splitToLines( fragment.text(), tmpLyr.wrapChar, tmpLyr.autoWrapLength, tmpLyr.useMaxLineLengthForAutoWrap );
+            if ( multiLineList.size() > 1 )
+            {
+              // split this fragment over multiple blocks
+              blockFragments << QgsTextRenderer::TextFragment( multiLineList.at( 0 ), fragment.charFormat() );
+              for ( int lineIndex = 1; lineIndex < multiLineList.size(); ++ lineIndex )
+              {
+                textBlocks << blockFragments;
+                blockFragments.clear();
+                blockFragments << QgsTextRenderer::TextFragment( multiLineList.at( lineIndex ), fragment.charFormat() );
+              }
+            }
+            else
+            {
+              blockFragments << QgsTextRenderer::TextFragment( fragment.text(), fragment.charFormat() );
+            }
+          }
+          it++;
+        }
+
+        textBlocks << blockFragments;
+
+        block = block.next();
+        if ( !block.isValid() )
+          break;
+      }
+    }
+
+    QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, textBlocks, labelfm,
                                        hAlign, QgsTextRenderer::Label );
 
   }

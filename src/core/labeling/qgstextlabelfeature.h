@@ -42,8 +42,25 @@ class QgsTextLabelFeature : public QgsLabelFeature
      */
     QString text( int partId ) const;
 
+    /**
+     * Returns the character format corresponding to the specified label part
+     * \param partId Set to the required part index for labels which are broken into parts (curved labels)
+     *
+     * This only returns valid formats for curved label placements.
+     *
+     * \since QGIS 3.14
+     */
+    QTextCharFormat characterFormat( int partId ) const;
+
+    /**
+     * Returns TRUE if the feature contains specific character formatting for the part with matching ID.
+     *
+     * \since QGIS 3.14
+     */
+    bool hasCharacterFormat( int partId ) const;
+
     //! calculate data for info(). setDefinedFont() must have been called already.
-    void calculateInfo( bool curvedLabeling, QFontMetricsF *fm, const QgsMapToPixel *xform, double maxinangle, double maxoutangle );
+    void calculateInfo( bool curvedLabeling, QFontMetricsF *fm, const QgsMapToPixel *xform, double maxinangle, double maxoutangle, bool allowHtmlTags );
 
     //! Gets data-defined values
     const QMap< QgsPalLayerSettings::Property, QVariant > &dataDefinedValues() const { return mDataDefinedValues; }
@@ -61,6 +78,9 @@ class QgsTextLabelFeature : public QgsLabelFeature
   protected:
     //! List of graphemes (used for curved labels)
     QStringList mClusters;
+
+    QList< QTextCharFormat > mCharacterFormats;
+
     //! Font for rendering
     QFont mDefinedFont;
     //! Metrics of the font for rendering
