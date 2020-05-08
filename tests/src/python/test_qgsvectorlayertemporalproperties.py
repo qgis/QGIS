@@ -82,6 +82,41 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         self.assertEqual(props.endField(), 'end_field')
         self.assertEqual(props.mode(), QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromFields)
 
+    def testGuessDefaultsFromFields(self):
+        layer = QgsVectorLayer("Point?field=start_date:string&field=end_date:integer", "test", "memory")
+        self.assertTrue(layer.isValid())
+        # no date/datetime fields, should not guess anything
+        props = layer.temporalProperties()
+        self.assertFalse(props.isActive())
+        self.assertFalse(props.startField())
+        self.assertFalse(props.endField())
+
+        # datetime fields, but not expected names
+        layer = QgsVectorLayer("Point?field=date_created:date&field=date_modified:date", "test", "memory")
+        self.assertTrue(layer.isValid())
+        props = layer.temporalProperties()
+        self.assertFalse(props.isActive())
+        self.assertFalse(props.startField())
+        self.assertFalse(props.endField())
+
+        # sample table with likely single field
+        layer = QgsVectorLayer("Point?field=event_id:integer&field=event_date:date", "test", "memory")
+        self.assertTrue(layer.isValid())
+        props = layer.temporalProperties()
+        self.assertFalse(props.isActive())
+        self.assertEqual(props.startField(), 'event_date')
+        self.assertFalse(props.endField())
+        self.assertEqual(props.mode(), QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField)
+
+        # sample table with likely dual fields
+        layer = QgsVectorLayer("Point?field=event_id:integer&field=start_date:datetime&field=end_date:datetime", "test", "memory")
+        self.assertTrue(layer.isValid())
+        props = layer.temporalProperties()
+        self.assertFalse(props.isActive())
+        self.assertEqual(props.startField(), 'start_date')
+        self.assertEqual(props.endField(), 'end_date')
+        self.assertEqual(props.mode(), QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromFields)
+
     def testFixedRangeMode(self):
         props = QgsVectorLayerTemporalProperties(enabled=True)
         props.setMode(QgsVectorLayerTemporalProperties.ModeFixedTemporalRange)
