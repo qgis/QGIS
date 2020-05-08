@@ -33,7 +33,6 @@
 class QgsRandomPointsInPolygonsAlgorithm : public QgsProcessingAlgorithm
 {
   public:
-
     QgsRandomPointsInPolygonsAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomPointsInPolygons.svg" ) ); }
@@ -52,7 +51,6 @@ class QgsRandomPointsInPolygonsAlgorithm : public QgsProcessingAlgorithm
                                   QgsProcessingContext &context,
                                   QgsProcessingFeedback *feedback ) override;
 
-
   private:
     int mNumPoints;
     bool mDynamicNumPoints = false;
@@ -62,8 +60,7 @@ class QgsRandomPointsInPolygonsAlgorithm : public QgsProcessingAlgorithm
     bool mDynamicMinDistance = false;
     QgsProperty mMinDistanceProperty;
 
-    //double minDistanceForThisFeature = 0;
-    //double mMinDistanceGlobal = 0;
+    double mMinDistanceGlobal = 0;
 
     int mMaxAttempts = 10;
     bool mDynamicMaxAttempts = false;
@@ -72,9 +69,6 @@ class QgsRandomPointsInPolygonsAlgorithm : public QgsProcessingAlgorithm
     bool mUseRandomSeed = false;
     int mRandSeed = 0;
     bool mIncludePolygonAttr = false;
-
-    //int mIndexPoints = 0;
-    //int mLocalIndexPoints = 0;
 };
 
 ///@endcond PRIVATE

@@ -34,14 +34,7 @@ static const QString OUTPUT_POINTS = QStringLiteral( "OUTPUT_POINTS" );
 static const QString POINTS_MISSED = QStringLiteral( "POINTS_MISSED" );
 static const QString POLYGONS_WITH_MISSED_POINTS = QStringLiteral( "POLYGONS_WITH_MISSED_POINTS" );
 static const QString FEATURES_WITH_EMPTY_OR_NO_GEOMETRY = QStringLiteral( "FEATURES_WITH_EMPTY_OR_NO_GEOMETRY" );
-QgsSpatialIndex localIndex2;
-QgsSpatialIndex globalIndex2;
-double mMinDistanceGlobal = 99.0;
-double minDistanceForThisFeature = 88.0;
-int mIndexPoints = 0;
-int mLocalIndexPoints = 0;
-int mTotNPoints = 0;
-bool mIncludePolygonAttr = true;
+QgsSpatialIndex globalIndex;
 ///@cond PRIVATE
 
 QString QgsRandomPointsInPolygonsAlgorithm::name() const
@@ -112,50 +105,6 @@ void QgsRandomPointsInPolygonsAlgorithm::initAlgorithm( const QVariantMap & )
   addOutput( new QgsProcessingOutputNumber( FEATURES_WITH_EMPTY_OR_NO_GEOMETRY, QObject::tr( "Number of features with empty or no geometry" ) ) );
 }
 
-bool pointOK( const QgsPointXY &newPoint )
-{
-  // May have to check minimum distance to existing points
-  // The first point can always be added
-  // Global first
-  if ( ::mMinDistanceGlobal != 0 && ::mIndexPoints > 0 )
-  {
-    QList<QgsFeatureId> neighbors = ::globalIndex2.nearestNeighbor( newPoint, 1, ::mMinDistanceGlobal );
-    if ( ::mTotNPoints > 0 && !neighbors.empty() )
-    {
-      return false;
-    }
-  }
-  // Then local (if larger than global)
-  if ( ::minDistanceForThisFeature != 0 && ::mMinDistanceGlobal < ::minDistanceForThisFeature && ::mLocalIndexPoints > 0 )
-  {
-    QList<QgsFeatureId> neighbors = ::localIndex2.nearestNeighbor( newPoint, 1, ::minDistanceForThisFeature );
-    if ( ::mTotNPoints > 0 && !neighbors.empty() )
-    {
-      return false;
-    }
-  }
-  QgsFeature f = QgsFeature( ::mTotNPoints );
-  QgsAttributes pAttrs = QgsAttributes();
-  pAttrs.append( ::mTotNPoints );
-  f.setAttributes( pAttrs );
-  QgsGeometry newGeom = QgsGeometry::fromPointXY( newPoint );
-
-  f.setGeometry( newGeom );
-  ::mTotNPoints++;
-
-  if ( ::minDistanceForThisFeature != 0 )
-  {
-    ::localIndex2.addFeature( f );
-    ::mLocalIndexPoints++;
-  }
-  if ( ::mMinDistanceGlobal != 0 )
-  {
-    ::globalIndex2.addFeature( f );
-    ::mIndexPoints++;
-  }
-  return true;
-}
-
 QString QgsRandomPointsInPolygonsAlgorithm::shortHelpString() const
 {
   return QObject::tr( "<p>This algorithm creates a point layer, with points placed randomly "
@@ -168,13 +117,13 @@ QString QgsRandomPointsInPolygonsAlgorithm::shortHelpString() const
                       "this (Euclidean) distance from the generated location. "
                       "With <i>Minimum distance between points</i>, only points in the same "
                       "polygon feature are considered, while for <i>Global minimum distance "
-                      "between points</i> all previously generated points are considered."
-                      "If the <i>Global minimum distance between points</i> is set larger "
-                      "than the (local) <i>Minimum distance between points</i>, the latter "
-                      "has no effect.<br> "
+                      "between points</i> all previously generated points are considered. "
+                      "If the <i>Global minimum distance between points</i> is set equalt to "
+                      "or larger than the (local) <i>Minimum distance between points</i>, the "
+                      "latter has no effect.<br> "
                       "If the <i>Minimum distance between points</i> is too large, "
                       "it may not be possible to generate the specified <i>Number of points "
-                      "for each feature</i>.</li> "
+                      "for each feature</i>, but all the generated points are returned.</li> "
                       "<li>The <i><b>Maximum number of attempts per point</b></i> can be specified.</li> "
                       "<li>The seed for the random generator can be provided (<b><i>Random seed</i></b> "
                       "- integer, greater than 0).</li> "
@@ -184,14 +133,16 @@ QString QgsRandomPointsInPolygonsAlgorithm::shortHelpString() const
                       "The total number of points will be<br> <b>'number of input features'</b> * "
                       "<i><b>Number of points for each feature</b></i><br> if there are no misses. "
                       "The <i>Number of points for each feature</i>, <i>Minimum distance between points</i> "
-                      "and <i>Maximum number of attempts per point</i> can be data defined."
+                      "and <i>Maximum number of attempts per point</i> can be data defined. "
                       "<p>Output from the algorithm:</p> "
                       "<ul> "
                       "<li> A point layer containing the random points (<code>OUTPUT</code>).</li> "
                       "<li> The number of generated features (<code>POINTS_GENERATED</code>).</li> "
                       "<li> The number of missed points (<code>POINTS_MISSED</code>).</li> "
-                      "<li> The number of features with non-empty geometry and missing points (<code>POLYGONS_WITH_MISSED_POINTS</code>).</li> "
-                      "<li> The number of features with an empty or no geometry (<code>LINES_WITH_EMPTY_OR_NO_GEOMETRY</code>).</li> "
+                      "<li> The number of features with non-empty geometry and missing points "
+                      "(<code>POLYGONS_WITH_MISSED_POINTS</code>).</li> "
+                      "<li> The number of features with an empty or no geometry "
+                      "(<code>LINES_WITH_EMPTY_OR_NO_GEOMETRY</code>).</li> "
                       "</ul>"
                     );
 }
@@ -219,7 +170,7 @@ bool QgsRandomPointsInPolygonsAlgorithm::prepareAlgorithm( const QVariantMap &pa
   if ( mDynamicMaxAttempts )
     mMaxAttemptsProperty = parameters.value( MAX_TRIES_PER_POINT ).value< QgsProperty >();
 
-  ::mMinDistanceGlobal = parameterAsDouble( parameters, MIN_DISTANCE_GLOBAL, context );
+  mMinDistanceGlobal = parameterAsDouble( parameters, MIN_DISTANCE_GLOBAL, context );
 
   mUseRandomSeed = parameters.value( SEED ).isValid();
   mRandSeed = parameterAsInt( parameters, SEED, context );
@@ -230,7 +181,7 @@ bool QgsRandomPointsInPolygonsAlgorithm::prepareAlgorithm( const QVariantMap &pa
 QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariantMap &parameters,
     QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  ::mTotNPoints = 0;
+  //::mTotNPoints = 0;
   std::unique_ptr< QgsProcessingFeatureSource > polygonSource( parameterAsSource( parameters, INPUT, context ) );
   if ( !polygonSource )
     throw QgsProcessingException( invalidSourceError( parameters, INPUT ) );
@@ -255,10 +206,8 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
   std::uniform_int_distribution<> uniformIntDist( 1, 999999999 );
 
   // Index for finding global close points (mMinDistance != 0)
-  if ( ::mMinDistanceGlobal != 0 )
-  {
-    ::globalIndex2 = QgsSpatialIndex();
-  }
+  globalIndex = QgsSpatialIndex();
+  int indexPoints = 0;
 
   int totNPoints = 0;
   int missedPoints = 0;
@@ -303,11 +252,11 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
     {
       expressionContext.setFeature( polyFeat );
     }
-    // Initialize the local (per polygon) index
-    ::localIndex2 = QgsSpatialIndex();
-    ::mLocalIndexPoints = 0;
-    // double lineLength = polyGeom.length();
+    // (Re)initialize the local (per polygon) index
+    QgsSpatialIndex localIndex;
+    int localIndexPoints = 0;
     int pointsAddedForThisFeature = 0;
+    // Get data defined parameters
     int numberPointsForThisFeature = mNumPoints;
     if ( mDynamicNumPoints )
       numberPointsForThisFeature = mNumPointsProperty.valueAsInt( expressionContext, numberPointsForThisFeature );
@@ -315,14 +264,15 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
     int maxAttemptsForThisFeature = mMaxAttempts;
     if ( mDynamicMaxAttempts )
       maxAttemptsForThisFeature = mMaxAttemptsProperty.valueAsInt( expressionContext, maxAttemptsForThisFeature );
-    ::minDistanceForThisFeature = mMinDistance;
+    double minDistanceForThisFeature = mMinDistance;
     if ( mDynamicMinDistance )
-      ::minDistanceForThisFeature = mMinDistanceProperty.valueAsDouble( expressionContext, ::minDistanceForThisFeature );
+      minDistanceForThisFeature = mMinDistanceProperty.valueAsDouble( expressionContext, minDistanceForThisFeature );
     const double pointProgressIncrement = featureProgressStep / ( numberPointsForThisFeature * maxAttemptsForThisFeature );
     double pointProgress = 0.0;
-    if ( ( ::minDistanceForThisFeature == 0 ) && ( ::mMinDistanceGlobal == 0 ) )
+    unsigned long fseed = uniformIntDist( mt );
+    // Check if we can avoid using the acceptPoint function
+    if ( ( minDistanceForThisFeature == 0 ) && ( mMinDistanceGlobal == 0 ) )
     {
-      unsigned long fseed = uniformIntDist( mt );
       QVector< QgsPointXY > newPoints = polyGeom.randomPointsInPolygon( numberPointsForThisFeature, fseed );
       for ( int i = 0; i < newPoints.length(); i++ )
       {
@@ -348,12 +298,54 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
     }
     else
     {
-      // Have to check for minimum distance
-      unsigned long fseed = uniformIntDist( mt );
-      QVector< QgsPointXY > newPoints = polyGeom.randomPointsInPolygon( numberPointsForThisFeature, pointOK, fseed, feedback, maxAttemptsForThisFeature );
+      // Have to check for minimum distance, provide the acceptPoints function
+      QVector< QgsPointXY > newPoints = polyGeom.randomPointsInPolygon( numberPointsForThisFeature, [=]( const QgsPointXY &newPoint ) mutable -> bool {
+        // May have to check minimum distance to existing points
+        // The first point can always be added
+        // Global first
+        if ( mMinDistanceGlobal != 0.0 && indexPoints > 0 )
+        {
+          QList<QgsFeatureId> neighbors = globalIndex.nearestNeighbor( newPoint, 1, mMinDistanceGlobal );
+          if ( totNPoints > 0 && !neighbors.empty() )
+          {
+            return false;
+          }
+        }
+        // Then local (if larger than global)
+        if ( minDistanceForThisFeature != 0 && mMinDistanceGlobal < minDistanceForThisFeature && localIndexPoints > 0 )
+        {
+          QList<QgsFeatureId> neighbors = localIndex.nearestNeighbor( newPoint, 1, minDistanceForThisFeature );
+          if ( totNPoints > 0 && !neighbors.empty() )
+          {
+            return false;
+          }
+        }
+        // Point is accepted - add it to the indexes
+        QgsFeature f = QgsFeature( totNPoints );
+        QgsAttributes pAttrs = QgsAttributes();
+        pAttrs.append( totNPoints );
+        f.setAttributes( pAttrs );
+        QgsGeometry newGeom = QgsGeometry::fromPointXY( newPoint );
+
+        f.setGeometry( newGeom );
+        totNPoints++;
+
+        if ( minDistanceForThisFeature != 0 )
+        {
+          localIndex.addFeature( f );
+          localIndexPoints++;
+        }
+        if ( mMinDistanceGlobal != 0.0 )
+        {
+          globalIndex.addFeature( f );
+          indexPoints++;  // No effect globally
+        }
+        return true;
+      }, fseed, feedback, maxAttemptsForThisFeature );
+
+      // create and output features for the generated points
       for ( int i = 0; i < newPoints.length(); i++ )
       {
-        // add the point
         QgsPointXY pt = newPoints[i];
         QgsFeature f = QgsFeature( totNPoints );
         QgsAttributes pAttrs = QgsAttributes();
@@ -367,6 +359,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
         f.setGeometry( newGeom );
         sink->addFeature( f, QgsFeatureSink::FastInsert );
         totNPoints++;
+        indexPoints++;
         pointsAddedForThisFeature++;
         pointProgress += pointProgressIncrement * ( maxAttemptsForThisFeature );
       }
@@ -383,8 +376,10 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
   } // while features
   missedPoints = desiredNumberOfPoints - totNPoints;
   feedback->pushInfo( QObject::tr( "Total number of points generated: "
-                                   " %1\nNumber of missed points: %2\nPolygons with missing points: "
-                                   " %3\nFeatures with empty or missing geometries: %4"
+                                   "%1\nNumber of missed points: %2\n "
+                                   "Polygons with missing points: "
+                                   "%3\nFeatures with empty or missing "
+                                   "geometries: %4"
                                  ).arg( totNPoints ).arg( missedPoints ).arg( missedPolygons ).arg( emptyOrNullGeom ) );
   QVariantMap outputs;
   outputs.insert( OUTPUT, ldest );
