@@ -9001,6 +9001,16 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *parent, bool checkFea
     }
   }
 
+  if ( QgsVectorLayerUtils::impactsCascadeFeatures(vlayer, QgsProject::instance() ) )
+  {
+    // for extra safety to make sure we know that the delete can have impact on children and joins
+    int res = QMessageBox::warning( mMapCanvas, tr( "Possible impact on descendants of layer \"%1\"").arg( vlayer->name() ),
+                                    tr( "A delete on this layer could have an impact on referencing or joined layers and their descendants. Would you still like to continue?" ),
+                                    QMessageBox::Yes | QMessageBox::No );
+    if ( res != QMessageBox::Yes )
+      return;
+  }
+
   vlayer->beginEditCommand( tr( "Features deleted" ) );
   int deletedCount = 0;
   QgsVectorLayer::DeleteContext context { true };

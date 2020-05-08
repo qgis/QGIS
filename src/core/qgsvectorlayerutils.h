@@ -319,6 +319,15 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \since QGIS 3.12
      */
     static QString getFeatureDisplayString( const QgsVectorLayer *layer, const QgsFeature &feature );
+
+    /**
+     * \returns true if the \a is connected as parent in at least one composition relation of the \a project
+     * or contains joins, where cascade delete is set.
+     *
+     * \since QGIS 3.14
+     */
+    static bool impactsCascadeFeatures(const QgsVectorLayer *layer, const QgsProject *project);
+
 };
 
 

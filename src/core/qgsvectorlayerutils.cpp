@@ -934,3 +934,30 @@ QString QgsVectorLayerUtils::getFeatureDisplayString( const QgsVectorLayer *laye
 
   return displayString;
 }
+
+bool QgsVectorLayerUtils::impactsCascadeFeatures(const QgsVectorLayer *layer, const QgsProject *project)
+{
+  if ( !layer )
+    return false;
+
+  const QList<QgsRelation> relations = project->relationManager()->referencedRelations( layer );
+  for ( const QgsRelation &relation : relations )
+  {
+    if ( relation.strength() == QgsRelation::Composition )
+    {
+      return true;
+    }
+  }
+
+  layer->joinBuffer()->containsJoins();
+  const auto constVectorJoins = layer->joinBuffer()->vectorJoins();
+  for ( const QgsVectorLayerJoinInfo &info : constVectorJoins )
+  {
+    if ( info.isEditable() && info.hasCascadedDelete() )
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
