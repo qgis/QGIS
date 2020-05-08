@@ -1275,7 +1275,7 @@ Deletes a vertex from a feature.
 %Docstring
 Deletes the selected features
 
-:param deleteCount: The number of successfully deleted features
+:param deletedCount: The number of successfully deleted features
 :param context: The chain of features who will be deleted for feedback and to avoid endless recursions
 
 :return: ``True`` in case of success and ``False`` otherwise

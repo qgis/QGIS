@@ -1294,7 +1294,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Deletes the selected features
-     * \param deleteCount The number of successfully deleted features
+     * \param deletedCount The number of successfully deleted features
      * \param context The chain of features who will be deleted for feedback and to avoid endless recursions
      *
      * \returns TRUE in case of success and FALSE otherwise
