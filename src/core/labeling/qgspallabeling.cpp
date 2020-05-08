@@ -1393,6 +1393,8 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
   }
   QgsRenderContext *rc = context ? context : scopedRc.get();
 
+  const bool htmlFormatting = mFormat.allowHtmlFormatting();
+
   QString wrapchr = wrapChar;
   int evalAutoWrapLength = autoWrapLength;
   double multilineH = mFormat.lineHeight();
@@ -1531,7 +1533,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
 
   double w = 0.0, h = 0.0, rw = 0.0, rh = 0.0;
   double labelHeight = fm->ascent() + fm->descent(); // ignore +1 for baseline
-  const QStringList multiLineSplit = QgsPalLabeling::splitToLines( textCopy, wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
+  const QStringList multiLineSplit = QgsPalLabeling::splitToLines( textCopy, wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap, htmlFormatting );
   int lines = multiLineSplit.size();
 
   switch ( orientation )
@@ -3548,33 +3550,49 @@ bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry &geometry, Q
   return false;
 }
 
-QStringList QgsPalLabeling::splitToLines( const QString &text, const QString &wrapCharacter, const int autoWrapLength, const bool useMaxLineLengthWhenAutoWrapping )
+QStringList QgsPalLabeling::splitToLines( const QString &text, const QString &wrapCharacter, const int autoWrapLength, const bool useMaxLineLengthWhenAutoWrapping, const bool allowHtmlFormatting )
 {
   QStringList multiLineSplit;
-  if ( !wrapCharacter.isEmpty() && wrapCharacter != QLatin1String( "\n" ) )
+  auto splitLine = [ & ]( const QString & input )
   {
-    //wrap on both the wrapchr and new line characters
-    const QStringList lines = text.split( wrapCharacter );
-    for ( const QString &line : lines )
+    QStringList thisParts;
+    if ( !wrapCharacter.isEmpty() && wrapCharacter != QLatin1String( "\n" ) )
     {
-      multiLineSplit.append( line.split( '\n' ) );
+      //wrap on both the wrapchr and new line characters
+      const QStringList lines = input.split( wrapCharacter );
+      for ( const QString &line : lines )
+      {
+        thisParts.append( line.split( '\n' ) );
+      }
     }
+    else
+    {
+      thisParts = input.split( '\n' );
+    }
+
+    // apply auto wrapping to each manually created line
+    if ( autoWrapLength != 0 )
+    {
+      QStringList autoWrappedLines;
+      autoWrappedLines.reserve( thisParts.count() );
+      for ( const QString &line : qgis::as_const( thisParts ) )
+      {
+        autoWrappedLines.append( QgsStringUtils::wordWrap( line, autoWrapLength, useMaxLineLengthWhenAutoWrapping ).split( '\n' ) );
+      }
+      thisParts = autoWrappedLines;
+    }
+    multiLineSplit.append( thisParts );
+  };
+
+  if ( allowHtmlFormatting )
+  {
+    const QStringList htmlBlocks = QgsTextRenderer::extractTextBlocksFromHtml( text );
+    for ( const QString &block : htmlBlocks )
+      splitLine( block );
   }
   else
   {
-    multiLineSplit = text.split( '\n' );
-  }
-
-  // apply auto wrapping to each manually created line
-  if ( autoWrapLength != 0 )
-  {
-    QStringList autoWrappedLines;
-    autoWrappedLines.reserve( multiLineSplit.count() );
-    for ( const QString &line : qgis::as_const( multiLineSplit ) )
-    {
-      autoWrappedLines.append( QgsStringUtils::wordWrap( line, autoWrapLength, useMaxLineLengthWhenAutoWrapping ).split( '\n' ) );
-    }
-    multiLineSplit = autoWrappedLines;
+    splitLine( text );
   }
   return multiLineSplit;
 }

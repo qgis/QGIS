@@ -356,6 +356,16 @@ class TestQgsPalLabeling(unittest.TestCase):
         """Intended to be overridden in subclasses"""
         pass
 
+    def testSplitToLines(self):
+        self.assertEqual(QgsPalLabeling.splitToLines('', ''), [''])
+        self.assertEqual(QgsPalLabeling.splitToLines('abc def', ''), ['abc def'])
+        self.assertEqual(QgsPalLabeling.splitToLines('abc def', ' '), ['abc', 'def'])
+        self.assertEqual(QgsPalLabeling.splitToLines('abc\ndef', ' '), ['abc', 'def'])
+        self.assertEqual(QgsPalLabeling.splitToLines('abc def', ' ', allowHtmlFormatting=True), ['abc', 'def'])
+        self.assertEqual(QgsPalLabeling.splitToLines('<span style="color: red">R_ED</span> not <div>red</div>', ' ', allowHtmlFormatting=True), ['R_ED', 'not', '', 'red'])
+        self.assertEqual(QgsPalLabeling.splitToLines('<span style="color: red">R_ED</span> not <div>red</div>', '_',
+                                                     allowHtmlFormatting=True), ['R', 'ED not ', 'red'])
+
 
 class TestPALConfig(TestQgsPalLabeling):
 

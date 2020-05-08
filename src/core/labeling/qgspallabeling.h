@@ -1301,7 +1301,7 @@ class CORE_EXPORT QgsPalLabeling
      *
      * \since QGIS 2.9
      */
-    static QStringList splitToLines( const QString &text, const QString &wrapCharacter, int autoWrapLength = 0, bool useMaxLineLengthWhenAutoWrapping = true );
+    static QStringList splitToLines( const QString &text, const QString &wrapCharacter, int autoWrapLength = 0, bool useMaxLineLengthWhenAutoWrapping = true, bool allowHtmlFormatting = false );
 
     /**
      * Splits a text string to a list of graphemes, which are the smallest allowable character
