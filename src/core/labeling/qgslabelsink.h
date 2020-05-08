@@ -31,8 +31,8 @@ class QgsRuleBasedLabeling;
  * Abstract base class that can be used to intercept rendered labels from
  * a labeling / rendering job.
  *
- * Internal class, not in public API. Added in QGIS 3.14
  * \note not available in Python bindings
+ * \since QGIS 3.14
  */
 class QgsLabelSink
 {
@@ -46,8 +46,8 @@ class QgsLabelSink
  * \ingroup core
  * Implements a derived label provider for use with QgsLabelSink.
  *
- * Internal class, not in public API. Added in QGIS 2.12
  * \note not available in Python bindings
+ * \since QGIS 3.14
  */
 class QgsLabelSinkProvider : public QgsVectorLayerLabelProvider
 {
@@ -65,8 +65,8 @@ class QgsLabelSinkProvider : public QgsVectorLayerLabelProvider
  * \ingroup core
  * Implements a derived label provider for rule based labels for use with QgsLabelSink.
  *
- * Internal class, not in public API. Added in QGIS 2.15
  * \note not available in Python bindings
+ * \since QGIS 3.14
  */
 class QgsRuleBasedLabelSinkProvider : public QgsRuleBasedLabelProvider
 {
@@ -76,7 +76,6 @@ class QgsRuleBasedLabelSinkProvider : public QgsRuleBasedLabelProvider
 
     /**
      * Reinitialize the subproviders with QgsLabelSinkProviders
-     * \param layer layer
      * \deprecated since QGIS 3.12
      */
     Q_DECL_DEPRECATED void reinit( QgsVectorLayer *layer );
