@@ -452,7 +452,6 @@ SET(QGIS_CORE_SRCS
   dxf/qgsdxfexport.cpp
   dxf/qgsdxfpaintdevice.cpp
   dxf/qgsdxfpaintengine.cpp
-  dxf/qgsdxfpallabeling.cpp
 
   layout/qgsabstractreportsection.cpp
   layout/qgslayout.cpp
@@ -595,6 +594,7 @@ SET(QGIS_CORE_SRCS
   labeling/qgslabelingenginesettings.cpp
   labeling/qgslabelobstaclesettings.cpp
   labeling/qgslabelsearchtree.cpp
+  labeling/qgslabelsink.cpp
   labeling/qgslabelthinningsettings.cpp
   labeling/qgspallabeling.cpp
   labeling/qgsrulebasedlabeling.cpp
