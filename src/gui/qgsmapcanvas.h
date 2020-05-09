@@ -1063,8 +1063,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Flag that allows squashing multiple refresh() calls into just one delayed rendering job
     bool mRefreshScheduled = false;
 
-    //! Flag that triggers a refresh after an ongoing rendering job finishes and clear cache for temporal-enabled layers
-    bool mTemporalRefreshAfterJob = false;
+    //! Flag that triggers a refresh after an ongoing rendering job triggered by autoRefresh
+    bool mRefreshAfterJob = false;
 
     //! determines whether user has requested to suppress rendering
     bool mRenderFlag = true;
