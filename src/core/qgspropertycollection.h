@@ -120,19 +120,20 @@ class CORE_EXPORT QgsAbstractPropertyCollection
     virtual QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const = 0;
 
     /**
-     * Calculates the current value of the property with the specified key and interprets it as a string.
+     * Calculates the current value of the property with the specified key and interprets it as a datetime.
      * \param key integer key for property to return. The intended use case is that a context specific enum is cast to
      * int and used for the key value.
      * \param context QgsExpressionContext to evaluate the property for.
-     * \param defaultString default string to return if the property cannot be calculated as a string
+     * \param defaultDateTime default datetime to return if the property cannot be calculated as a datetime
      * \param ok if specified, will be set to TRUE if conversion was successful
-     * \returns value parsed to string
+     * \returns value parsed to datetime
      * \see value()
      * \see valueAsString()
      * \see valueAsColor()
      * \see valueAsDouble()
      * \see valueAsInt()
      * \see valueAsBool()
+     * \since QGIS 3.14
      */
     QDateTime valueAsDateTime( int key, const QgsExpressionContext &context, const QDateTime &defaultDateTime = QDateTime(), bool *ok SIP_OUT = nullptr ) const;
 

@@ -77,7 +77,7 @@ class CORE_EXPORT QgsPropertyDefinition
       VerticalAnchor, //!< Vertical anchor point
       SvgPath, //!< Path to an SVG file
       Offset, //!< 2D offset
-      DateTime, //!< 2D offset
+      DateTime, //!< DateTime value
       Custom = 3000, //!< Custom property types
     };
 
@@ -392,6 +392,7 @@ class CORE_EXPORT QgsProperty
      * \see valueAsDouble()
      * \see valueAsInt()
      * \see valueAsBool()
+     * \since QGIS 3.14
      */
     QDateTime valueAsDateTime( const QgsExpressionContext &context, const QDateTime &defaultDateTime = QDateTime(), bool *ok SIP_OUT = nullptr ) const;
 
