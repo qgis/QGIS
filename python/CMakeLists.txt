@@ -211,7 +211,11 @@ IF(UNIX AND NOT SIP_VERSION_NUM LESS 265984)
   ADD_DEFINITIONS(-Dprotected=public)
 ENDIF(UNIX AND NOT SIP_VERSION_NUM LESS 265984)
 
-SET(PY_MODULES core analysis)
+SET (PY_MODULES core)
+
+IF(WITH_ANALYSIS)
+  SET(PY_MODULES ${PY_MODULES} analysis)
+ENDIF(WITH_ANALYSIS)
 
 # gui module
 IF (WITH_GUI)
@@ -286,38 +290,40 @@ IF (WITH_SERVER AND WITH_SERVER_PLUGINS)
 ENDIF (WITH_SERVER AND WITH_SERVER_PLUGINS)
 
 # additional analysis includes
-INCLUDE_DIRECTORIES(BEFORE
-  ${CMAKE_SOURCE_DIR}/src/analysis
-  ${CMAKE_SOURCE_DIR}/src/analysis/processing
-  ${CMAKE_SOURCE_DIR}/src/analysis/vector
-  ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
-  ${CMAKE_SOURCE_DIR}/src/analysis/mesh
-  ${CMAKE_SOURCE_DIR}/src/analysis/raster
-  ${CMAKE_SOURCE_DIR}/src/analysis/network
-  ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
-  ${CMAKE_SOURCE_DIR}/src/analysis/openstreetmap
+IF(WITH_ANALYSIS)
+  INCLUDE_DIRECTORIES(BEFORE
+    ${CMAKE_SOURCE_DIR}/src/analysis
+    ${CMAKE_SOURCE_DIR}/src/analysis/processing
+    ${CMAKE_SOURCE_DIR}/src/analysis/vector
+    ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
+    ${CMAKE_SOURCE_DIR}/src/analysis/mesh
+    ${CMAKE_SOURCE_DIR}/src/analysis/raster
+    ${CMAKE_SOURCE_DIR}/src/analysis/network
+    ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
+    ${CMAKE_SOURCE_DIR}/src/analysis/openstreetmap
 
-  ${CMAKE_BINARY_DIR}/src/analysis/processing
-  ${CMAKE_BINARY_DIR}/src/analysis/vector
-  ${CMAKE_BINARY_DIR}/src/analysis/mesh
-  ${CMAKE_BINARY_DIR}/src/analysis/raster
-  ${CMAKE_BINARY_DIR}/src/analysis/network
-  ${CMAKE_BINARY_DIR}/src/analysis/interpolation
-  ${CMAKE_BINARY_DIR}/src/analysis/openstreetmap
-)
+    ${CMAKE_BINARY_DIR}/src/analysis/processing
+    ${CMAKE_BINARY_DIR}/src/analysis/vector
+    ${CMAKE_BINARY_DIR}/src/analysis/mesh
+    ${CMAKE_BINARY_DIR}/src/analysis/raster
+    ${CMAKE_BINARY_DIR}/src/analysis/network
+    ${CMAKE_BINARY_DIR}/src/analysis/interpolation
+    ${CMAKE_BINARY_DIR}/src/analysis/openstreetmap
+  )
 
-# analysis module
-FILE(GLOB_RECURSE sip_files_analysis analysis/*.sip analysis/*.sip.in)
-SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_analysis})
-SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.analysis.api)
-IF((${SIP_VERSION_STR} VERSION_EQUAL 4.19.11) OR (${SIP_VERSION_STR} VERSION_GREATER 4.19.11))
-  SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -n ${PYQT5_SIP_IMPORT})
-ENDIF((${SIP_VERSION_STR} VERSION_EQUAL 4.19.11) OR (${SIP_VERSION_STR} VERSION_GREATER 4.19.11))
-IF((${SIP_VERSION_STR} VERSION_EQUAL 4.18) OR (${SIP_VERSION_STR} VERSION_GREATER 4.18))
-  SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -y ${QGIS_PYTHON_OUTPUT_DIRECTORY}/_analysis.pyi)
-ENDIF((${SIP_VERSION_STR} VERSION_EQUAL 4.18) OR (${SIP_VERSION_STR} VERSION_GREATER 4.18))
-GENERATE_SIP_PYTHON_MODULE_CODE(qgis._analysis analysis/analysis.sip "${sip_files_analysis}" cpp_files)
-BUILD_SIP_PYTHON_MODULE(qgis._analysis analysis/analysis.sip ${cpp_files} "" qgis_core qgis_analysis)
+  # analysis module
+  FILE(GLOB_RECURSE sip_files_analysis analysis/*.sip analysis/*.sip.in)
+  SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_analysis})
+  SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.analysis.api)
+  IF((${SIP_VERSION_STR} VERSION_EQUAL 4.19.11) OR (${SIP_VERSION_STR} VERSION_GREATER 4.19.11))
+    SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -n ${PYQT5_SIP_IMPORT})
+  ENDIF((${SIP_VERSION_STR} VERSION_EQUAL 4.19.11) OR (${SIP_VERSION_STR} VERSION_GREATER 4.19.11))
+  IF((${SIP_VERSION_STR} VERSION_EQUAL 4.18) OR (${SIP_VERSION_STR} VERSION_GREATER 4.18))
+    SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -y ${QGIS_PYTHON_OUTPUT_DIRECTORY}/_analysis.pyi)
+  ENDIF((${SIP_VERSION_STR} VERSION_EQUAL 4.18) OR (${SIP_VERSION_STR} VERSION_GREATER 4.18))
+  GENERATE_SIP_PYTHON_MODULE_CODE(qgis._analysis analysis/analysis.sip "${sip_files_analysis}" cpp_files)
+  BUILD_SIP_PYTHON_MODULE(qgis._analysis analysis/analysis.sip ${cpp_files} "" qgis_core qgis_analysis)
+ENDIF(WITH_ANALYSIS)
 
 SET(QGIS_PYTHON_DIR ${PYTHON_SITE_PACKAGES_DIR}/qgis)
 
