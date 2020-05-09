@@ -24,6 +24,7 @@
 #include "qgsrange.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsrasterdataprovidertemporalcapabilities.h"
+#include "qgsunittypes.h"
 
 class QgsVectorLayer;
 class QgsFields;
@@ -59,6 +60,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
       ModeFixedTemporalRange = 0, //!< Mode when temporal properties have fixed start and end datetimes.
       ModeFeatureDateTimeInstantFromField, //!< Mode when features have a datetime instant taken from a single field
       ModeFeatureDateTimeStartAndEndFromFields, //!< Mode when features have separate fields for start and end times
+      ModeFeatureDateTimeStartAndDurationFromFields, //!< Mode when features have a field for start time and a field for event duration
       ModeRedrawLayerOnly, //!< Redraw the layer when temporal range changes, but don't apply any filtering. Useful when symbology or rule based renderer expressions depend on the time range.
     };
 
@@ -146,6 +148,42 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
     void setEndField( const QString &field );
 
     /**
+     * Returns the name of the duration field, which
+     * contains the duration of the event.
+     *
+     * Units are specified by durationUnits()
+     *
+     * \see setDurationField()
+     * \see durationUnits()
+     */
+    QString durationField() const;
+
+    /**
+     * Sets the name of the duration \a field, which
+     * contains the duration of the event.
+     *
+     * Units are specified by setDurationUnits()
+     *
+     * \see durationField()
+     * \see setDurationUnits()
+     */
+    void setDurationField( const QString &field );
+
+    /**
+     * Returns the units of the event's duration.
+     *
+     * \see setDurationUnits()
+     */
+    QgsUnitTypes::TemporalUnit durationUnits() const;
+
+    /**
+     * Sets the \a units of the event's duration.
+     *
+     * \see durationUnits()
+     */
+    void setDurationUnits( QgsUnitTypes::TemporalUnit units );
+
+    /**
      * Creates a QGIS expression filter string for filtering features from \a layer
      * to those within the specified time \a range.
      *
@@ -179,6 +217,8 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
 
     QString mStartFieldName;
     QString mEndFieldName;
+    QString mDurationFieldName;
+    QgsUnitTypes::TemporalUnit mDurationUnit = QgsUnitTypes::TemporalMinutes;
 
 };
 

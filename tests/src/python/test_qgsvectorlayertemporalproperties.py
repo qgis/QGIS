@@ -16,7 +16,8 @@ from qgis.core import (QgsDateTimeRange,
                        QgsVectorLayerTemporalProperties,
                        QgsReadWriteContext,
                        QgsVectorLayer,
-                       QgsVectorDataProviderTemporalCapabilities)
+                       QgsVectorDataProviderTemporalCapabilities,
+                       QgsUnitTypes)
 from qgis.PyQt.QtCore import (QDateTime,
                               QDate,
                               QTime,
@@ -35,6 +36,8 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         props.setFixedTemporalRange(QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10))))
         props.setStartField('start')
         props.setEndField('end')
+        props.setDurationField('duration')
+        props.setDurationUnits(QgsUnitTypes.TemporalWeeks)
 
         # save to xml
         doc = QDomDocument("testdoc")
@@ -49,6 +52,8 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         self.assertEqual(props2.fixedTemporalRange(), props.fixedTemporalRange())
         self.assertEqual(props2.startField(), props.startField())
         self.assertEqual(props2.endField(), props.endField())
+        self.assertEqual(props2.durationField(), props.durationField())
+        self.assertEqual(props2.durationUnits(), props.durationUnits())
 
     def testModeFromProvider(self):
         caps = QgsVectorDataProviderTemporalCapabilities()
@@ -195,6 +200,64 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
         self.assertEqual(props.createFilterString(layer, range), '"end_field" >= make_datetime(2019,3,4,11,12,13) OR "end_field" IS NULL')
+
+    def testStartAndDurationMode(self):
+        layer = QgsVectorLayer(
+            "Point?field=fldtxt:string&field=fldint:integer&field=start_field:datetime&field=duration:double",
+            "test", "memory")
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.fields()[2].type(), QVariant.DateTime)
+        self.assertEqual(layer.fields()[3].type(), QVariant.Double)
+
+        range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)),
+                                 QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)))
+
+        props = QgsVectorLayerTemporalProperties(enabled=False)
+        props.setMode(QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndDurationFromFields)
+        props.setStartField('start_field')
+        props.setDurationField('duration')
+        props.setDurationUnits(QgsUnitTypes.TemporalMilliseconds)
+        self.assertFalse(props.createFilterString(layer, range))
+
+        props.setIsActive(True)
+        self.assertEqual(props.createFilterString(layer, range),
+                         '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,0,0,0,0,0,"duration"/1000) >= make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
+
+        props.setDurationUnits(QgsUnitTypes.TemporalSeconds)
+        self.assertEqual(props.createFilterString(layer, range),
+                         '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,0,0,0,0,0,"duration") >= make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
+
+        props.setDurationUnits(QgsUnitTypes.TemporalMinutes)
+        self.assertEqual(props.createFilterString(layer, range),
+                         '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,0,0,0,0,"duration",0) >= make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
+
+        props.setDurationUnits(QgsUnitTypes.TemporalHours)
+        self.assertEqual(props.createFilterString(layer, range),
+                         '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,0,0,0,"duration",0,0) >= make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
+
+        props.setDurationUnits(QgsUnitTypes.TemporalDays)
+        self.assertEqual(props.createFilterString(layer, range),
+                         '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,0,0,"duration",0,0,0) >= make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
+
+        props.setDurationUnits(QgsUnitTypes.TemporalWeeks)
+        self.assertEqual(props.createFilterString(layer, range),
+                         '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,0,"duration",0,0,0,0) >= make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
+
+        props.setDurationUnits(QgsUnitTypes.TemporalMonths)
+        self.assertEqual(props.createFilterString(layer, range),
+                         '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,"duration",0,0,0,0,0) >= make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
+
+        props.setDurationUnits(QgsUnitTypes.TemporalYears)
+        self.assertEqual(props.createFilterString(layer, range),
+                         '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval("duration",0,0,0,0,0,0) >= make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
+
+        props.setDurationUnits(QgsUnitTypes.TemporalDecades)
+        self.assertEqual(props.createFilterString(layer, range),
+                         '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(10 * "duration",0,0,0,0,0,0) >= make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
+
+        props.setDurationUnits(QgsUnitTypes.TemporalCenturies)
+        self.assertEqual(props.createFilterString(layer, range),
+                         '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(100 * "duration",0,0,0,0,0,0) >= make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
 
 
 if __name__ == '__main__':
