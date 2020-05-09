@@ -34,7 +34,6 @@ static const QString OUTPUT_POINTS = QStringLiteral( "OUTPUT_POINTS" );
 static const QString POINTS_MISSED = QStringLiteral( "POINTS_MISSED" );
 static const QString POLYGONS_WITH_MISSED_POINTS = QStringLiteral( "POLYGONS_WITH_MISSED_POINTS" );
 static const QString FEATURES_WITH_EMPTY_OR_NO_GEOMETRY = QStringLiteral( "FEATURES_WITH_EMPTY_OR_NO_GEOMETRY" );
-QgsSpatialIndex globalIndex;
 ///@cond PRIVATE
 
 QString QgsRandomPointsInPolygonsAlgorithm::name() const
@@ -206,7 +205,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
   std::uniform_int_distribution<> uniformIntDist( 1, 999999999 );
 
   // Index for finding global close points (mMinDistance != 0)
-  globalIndex = QgsSpatialIndex();
+  QgsSpatialIndex globalIndex;
   int indexPoints = 0;
 
   int totNPoints = 0;
@@ -299,7 +298,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
     else
     {
       // Have to check for minimum distance, provide the acceptPoints function
-      QVector< QgsPointXY > newPoints = polyGeom.randomPointsInPolygon( numberPointsForThisFeature, [ = ]( const QgsPointXY & newPoint ) mutable -> bool
+      QVector< QgsPointXY > newPoints = polyGeom.randomPointsInPolygon( numberPointsForThisFeature, [ =, &globalIndex, &indexPoints ]( const QgsPointXY & newPoint ) mutable -> bool
       {
         // May have to check minimum distance to existing points
         // The first point can always be added
@@ -339,7 +338,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
         if ( mMinDistanceGlobal != 0.0 )
         {
           globalIndex.addFeature( f );
-          indexPoints++;  // No effect globally
+          indexPoints++;
         }
         return true;
       }, fseed, feedback, maxAttemptsForThisFeature );
@@ -360,7 +359,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
         f.setGeometry( newGeom );
         sink->addFeature( f, QgsFeatureSink::FastInsert );
         totNPoints++;
-        indexPoints++;
+        //indexPoints++;
         pointsAddedForThisFeature++;
         pointProgress += pointProgressIncrement * ( maxAttemptsForThisFeature );
       }
