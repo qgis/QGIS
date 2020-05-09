@@ -1159,12 +1159,12 @@ static QVariant fcnMakeDateTime( const QVariantList &values, const QgsExpression
 
 static QVariant fcnMakeInterval( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const int years = QgsExpressionUtils::getIntValue( values.at( 0 ), parent );
-  const int months = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
-  const int weeks = QgsExpressionUtils::getIntValue( values.at( 2 ), parent );
-  const int days = QgsExpressionUtils::getIntValue( values.at( 3 ), parent );
-  const int hours = QgsExpressionUtils::getIntValue( values.at( 4 ), parent );
-  const int minutes = QgsExpressionUtils::getIntValue( values.at( 5 ), parent );
+  const double years = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
+  const double months = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  const double weeks = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+  const double days = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
+  const double hours = QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent );
+  const double minutes = QgsExpressionUtils::getDoubleValue( values.at( 5 ), parent );
   const double seconds = QgsExpressionUtils::getDoubleValue( values.at( 6 ), parent );
 
   return QVariant::fromValue( QgsInterval( years, months, weeks, days, hours, minutes, seconds ) );

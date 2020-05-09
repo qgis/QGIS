@@ -34,6 +34,7 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
   mModeComboBox->addItem( tr( "Fixed Time Range" ), QgsVectorLayerTemporalProperties::ModeFixedTemporalRange );
   mModeComboBox->addItem( tr( "Single Field with Date/Time" ), QgsVectorLayerTemporalProperties::ModeFeatureDateTimeInstantFromField );
   mModeComboBox->addItem( tr( "Separate Fields for Start and End Date/Time" ), QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromFields );
+  mModeComboBox->addItem( tr( "Separate Fields for Start and Event Duration" ), QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndDurationFromFields );
   mModeComboBox->addItem( tr( "Redraw Layer Only" ), QgsVectorLayerTemporalProperties::ModeRedrawLayerOnly );
 
   const QgsVectorLayerTemporalProperties *properties = qobject_cast< QgsVectorLayerTemporalProperties * >( layer->temporalProperties() );
@@ -54,21 +55,45 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
   mSingleFieldComboBox->setLayer( layer );
   mStartFieldComboBox->setLayer( layer );
   mEndFieldComboBox->setLayer( layer );
+  mDurationStartFieldComboBox->setLayer( layer );
+  mDurationFieldComboBox->setLayer( layer );
   mSingleFieldComboBox->setFilters( QgsFieldProxyModel::DateTime | QgsFieldProxyModel::Date );
   mStartFieldComboBox->setFilters( QgsFieldProxyModel::DateTime | QgsFieldProxyModel::Date );
   mStartFieldComboBox->setAllowEmptyFieldName( true );
   mEndFieldComboBox->setFilters( QgsFieldProxyModel::DateTime | QgsFieldProxyModel::Date );
   mEndFieldComboBox->setAllowEmptyFieldName( true );
+  mDurationStartFieldComboBox->setFilters( QgsFieldProxyModel::DateTime | QgsFieldProxyModel::Date );
+  mDurationFieldComboBox->setFilters( QgsFieldProxyModel::Numeric );
+
+  for ( QgsUnitTypes::TemporalUnit u :
+        {
+          QgsUnitTypes::TemporalMilliseconds,
+          QgsUnitTypes::TemporalSeconds,
+          QgsUnitTypes::TemporalMinutes,
+          QgsUnitTypes::TemporalHours,
+          QgsUnitTypes::TemporalDays,
+          QgsUnitTypes::TemporalWeeks,
+          QgsUnitTypes::TemporalMonths,
+          QgsUnitTypes::TemporalYears,
+          QgsUnitTypes::TemporalDecades,
+          QgsUnitTypes::TemporalCenturies
+        } )
+  {
+    mDurationUnitsComboBox->addItem( QgsUnitTypes::toString( u ), u );
+  }
 
   if ( !properties->startField().isEmpty() )
   {
     mSingleFieldComboBox->setField( properties->startField() );
     mStartFieldComboBox->setField( properties->startField() );
+    mDurationStartFieldComboBox->setField( properties->startField() );
   }
   if ( !properties->endField().isEmpty() )
   {
     mEndFieldComboBox->setField( properties->endField() );
   }
+  mDurationFieldComboBox->setField( properties->durationField() );
+  mDurationUnitsComboBox->setCurrentIndex( mDurationUnitsComboBox->findData( properties->durationUnits() ) );
 }
 
 void QgsVectorLayerTemporalPropertiesWidget::saveTemporalProperties()
@@ -94,7 +119,13 @@ void QgsVectorLayerTemporalPropertiesWidget::saveTemporalProperties()
     case QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromFields:
       properties->setStartField( mStartFieldComboBox->currentField() );
       break;
+
+    case QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndDurationFromFields:
+      properties->setStartField( mDurationStartFieldComboBox->currentField() );
+      break;
   }
 
   properties->setEndField( mEndFieldComboBox->currentField() );
+  properties->setDurationField( mDurationFieldComboBox->currentField() );
+  properties->setDurationUnits( static_cast< QgsUnitTypes::TemporalUnit >( mDurationUnitsComboBox->currentData().toInt() ) );
 }

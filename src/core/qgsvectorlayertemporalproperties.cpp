@@ -39,6 +39,7 @@ bool QgsVectorLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTi
     case ModeFeatureDateTimeInstantFromField:
     case ModeFeatureDateTimeStartAndEndFromFields:
     case ModeRedrawLayerOnly:
+    case ModeFeatureDateTimeStartAndDurationFromFields:
       return true;
   }
   return true;
@@ -62,6 +63,38 @@ QgsDateTimeRange QgsVectorLayerTemporalProperties::calculateTemporalExtent( QgsM
       {
         return QgsDateTimeRange( vectorLayer->minimumValue( fieldIndex ).toDateTime(),
                                  vectorLayer->maximumValue( fieldIndex ).toDateTime() );
+      }
+      break;
+    }
+
+    case QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndDurationFromFields:
+    {
+      const int fieldIndex = vectorLayer->fields().lookupField( mStartFieldName );
+      const int durationFieldIndex = vectorLayer->fields().lookupField( mDurationFieldName );
+      if ( fieldIndex >= 0 && durationFieldIndex >= 0 )
+      {
+        const QDateTime minTime = vectorLayer->minimumValue( fieldIndex ).toDateTime();
+        // no choice here but to loop through all features to calculate max time :(
+
+        QgsFeature f;
+        QgsFeatureIterator it = vectorLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() << durationFieldIndex << fieldIndex ) );
+        QDateTime maxTime;
+        while ( it.nextFeature( f ) )
+        {
+          const QDateTime start = f.attribute( fieldIndex ).toDateTime();
+          if ( start.isValid() )
+          {
+            const QVariant durationValue = f.attribute( durationFieldIndex );
+            if ( durationValue.isValid() )
+            {
+              const double duration = durationValue.toDouble();
+              const QDateTime end = start.addMSecs( QgsInterval( duration, mDurationUnit ).seconds() * 1000.0 );
+              if ( end.isValid() )
+                maxTime = maxTime.isValid() ? std::max( maxTime, end ) : end;
+            }
+          }
+        }
+        return QgsDateTimeRange( minTime, maxTime );
       }
       break;
     }
@@ -136,6 +169,8 @@ bool QgsVectorLayerTemporalProperties::readXml( const QDomElement &element, cons
 
   mStartFieldName = temporalNode.attribute( QStringLiteral( "startField" ) );
   mEndFieldName = temporalNode.attribute( QStringLiteral( "endField" ) );
+  mDurationFieldName = temporalNode.attribute( QStringLiteral( "durationField" ) );
+  mDurationUnit = QgsUnitTypes::decodeTemporalUnit( temporalNode.attribute( QStringLiteral( "durationUnit" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::TemporalMinutes ) ) );
 
   QDomNode rangeElement = temporalNode.namedItem( QStringLiteral( "fixedRange" ) );
 
@@ -163,6 +198,8 @@ QDomElement QgsVectorLayerTemporalProperties::writeXml( QDomElement &element, QD
 
   temporalElement.setAttribute( QStringLiteral( "startField" ), mStartFieldName );
   temporalElement.setAttribute( QStringLiteral( "endField" ), mEndFieldName );
+  temporalElement.setAttribute( QStringLiteral( "durationField" ), mDurationFieldName );
+  temporalElement.setAttribute( QStringLiteral( "durationUnit" ), QgsUnitTypes::encodeUnit( mDurationUnit ) );
 
   QDomElement rangeElement = document.createElement( QStringLiteral( "fixedRange" ) );
 
@@ -226,6 +263,26 @@ void QgsVectorLayerTemporalProperties::setEndField( const QString &field )
   mEndFieldName = field;
 }
 
+QString QgsVectorLayerTemporalProperties::durationField() const
+{
+  return mDurationFieldName;
+}
+
+void QgsVectorLayerTemporalProperties::setDurationField( const QString &field )
+{
+  mDurationFieldName = field;
+}
+
+QgsUnitTypes::TemporalUnit QgsVectorLayerTemporalProperties::durationUnits() const
+{
+  return mDurationUnit;
+}
+
+void QgsVectorLayerTemporalProperties::setDurationUnits( QgsUnitTypes::TemporalUnit units )
+{
+  mDurationUnit = units;
+}
+
 QString dateTimeExpressionLiteral( const QDateTime &datetime )
 {
   return QStringLiteral( "make_datetime(%1,%2,%3,%4,%5,%6)" ).arg( datetime.date().year() )
@@ -253,6 +310,64 @@ QString QgsVectorLayerTemporalProperties::createFilterString( QgsVectorLayer *, 
              dateTimeExpressionLiteral( range.begin() ),
              range.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
              dateTimeExpressionLiteral( range.end() ) );
+
+    case ModeFeatureDateTimeStartAndDurationFromFields:
+    {
+      QString intervalExpression;
+      switch ( mDurationUnit )
+      {
+        case QgsUnitTypes::TemporalMilliseconds:
+          intervalExpression = QStringLiteral( "make_interval(0,0,0,0,0,0,%1/1000)" ).arg( QgsExpression::quotedColumnRef( mDurationFieldName ) );
+          break;
+
+        case QgsUnitTypes::TemporalSeconds:
+          intervalExpression = QStringLiteral( "make_interval(0,0,0,0,0,0,%1)" ).arg( QgsExpression::quotedColumnRef( mDurationFieldName ) );
+          break;
+
+        case QgsUnitTypes::TemporalMinutes:
+          intervalExpression = QStringLiteral( "make_interval(0,0,0,0,0,%1,0)" ).arg( QgsExpression::quotedColumnRef( mDurationFieldName ) );
+          break;
+
+        case QgsUnitTypes::TemporalHours:
+          intervalExpression = QStringLiteral( "make_interval(0,0,0,0,%1,0,0)" ).arg( QgsExpression::quotedColumnRef( mDurationFieldName ) );
+          break;
+
+        case QgsUnitTypes::TemporalDays:
+          intervalExpression = QStringLiteral( "make_interval(0,0,0,%1,0,0,0)" ).arg( QgsExpression::quotedColumnRef( mDurationFieldName ) );
+          break;
+
+        case QgsUnitTypes::TemporalWeeks:
+          intervalExpression = QStringLiteral( "make_interval(0,0,%1,0,0,0,0)" ).arg( QgsExpression::quotedColumnRef( mDurationFieldName ) );
+          break;
+
+        case QgsUnitTypes::TemporalMonths:
+          intervalExpression = QStringLiteral( "make_interval(0,%1,0,0,0,0,0)" ).arg( QgsExpression::quotedColumnRef( mDurationFieldName ) );
+          break;
+
+        case QgsUnitTypes::TemporalYears:
+          intervalExpression = QStringLiteral( "make_interval(%1,0,0,0,0,0,0)" ).arg( QgsExpression::quotedColumnRef( mDurationFieldName ) );
+          break;
+
+        case QgsUnitTypes::TemporalDecades:
+          intervalExpression = QStringLiteral( "make_interval(10 * %1,0,0,0,0,0,0)" ).arg( QgsExpression::quotedColumnRef( mDurationFieldName ) );
+          break;
+
+        case QgsUnitTypes::TemporalCenturies:
+          intervalExpression = QStringLiteral( "make_interval(100 * %1,0,0,0,0,0,0)" ).arg( QgsExpression::quotedColumnRef( mDurationFieldName ) );
+          break;
+
+        case QgsUnitTypes::TemporalUnknownUnit:
+          return QString();
+      }
+      return QStringLiteral( "(%1 %2 %3 OR %1 IS NULL) AND ((%1 + %4 %5 %6) OR %7 IS NULL)" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
+             range.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
+             dateTimeExpressionLiteral( range.end() ),
+             intervalExpression,
+             range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
+             dateTimeExpressionLiteral( range.begin() ),
+             QgsExpression::quotedColumnRef( mDurationFieldName ) );
+      break;
+    }
 
     case ModeFeatureDateTimeStartAndEndFromFields:
     {

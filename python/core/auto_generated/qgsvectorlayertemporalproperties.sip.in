@@ -39,6 +39,7 @@ The ``enabled`` argument specifies whether the temporal properties are initially
       ModeFixedTemporalRange,
       ModeFeatureDateTimeInstantFromField,
       ModeFeatureDateTimeStartAndEndFromFields,
+      ModeFeatureDateTimeStartAndDurationFromFields,
       ModeRedrawLayerOnly,
     };
 
@@ -132,6 +133,44 @@ contains the end time for the feature's time spans.
 .. seealso:: :py:func:`endField`
 
 .. seealso:: :py:func:`setStartField`
+%End
+
+    QString durationField() const;
+%Docstring
+Returns the name of the duration field, which
+contains the duration of the event.
+
+Units are specified by durationUnits()
+
+.. seealso:: :py:func:`setDurationField`
+
+.. seealso:: :py:func:`durationUnits`
+%End
+
+    void setDurationField( const QString &field );
+%Docstring
+Sets the name of the duration ``field``, which
+contains the duration of the event.
+
+Units are specified by setDurationUnits()
+
+.. seealso:: :py:func:`durationField`
+
+.. seealso:: :py:func:`setDurationUnits`
+%End
+
+    QgsUnitTypes::TemporalUnit durationUnits() const;
+%Docstring
+Returns the units of the event's duration.
+
+.. seealso:: :py:func:`setDurationUnits`
+%End
+
+    void setDurationUnits( QgsUnitTypes::TemporalUnit units );
+%Docstring
+Sets the ``units`` of the event's duration.
+
+.. seealso:: :py:func:`durationUnits`
 %End
 
     QString createFilterString( QgsVectorLayer *layer, const QgsDateTimeRange &range ) const;
