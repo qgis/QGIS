@@ -461,6 +461,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     QgsMeshDatasetIndex datasetIndexAtTime( const QgsDateTimeRange &timeRange, int datasetGroupIndex ) const;
 
+    //! Changes scalar settings for classified scalar value (information about is in the metadata
+    void applyClassificationOnScalarSettings( const QgsMeshDatasetGroupMetadata &meta, QgsMeshRendererScalarSettings &scalarSettings ) const;
+
   private slots:
     void onDatasetGroupsAdded( int count );
 

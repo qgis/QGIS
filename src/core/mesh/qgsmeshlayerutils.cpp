@@ -587,5 +587,4 @@ QVector<QVector3D> QgsMeshLayerUtils::calculateNormals( const QgsTriangularMesh 
   return normals;
 }
 
-
 ///@endcond
