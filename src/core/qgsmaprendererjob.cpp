@@ -703,6 +703,8 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings, const La
 {
   QImage image( settings.deviceOutputSize(), settings.outputImageFormat() );
   image.setDevicePixelRatio( settings.devicePixelRatio() );
+  image.setDotsPerMeterX( static_cast<int>( settings.outputDpi() * 39.37 ) );
+  image.setDotsPerMeterY( static_cast<int>( settings.outputDpi() * 39.37 ) );
   image.fill( settings.backgroundColor().rgba() );
 
   QPainter painter( &image );
