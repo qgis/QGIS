@@ -73,6 +73,17 @@ class CORE_EXPORT QgsInterval
     QgsInterval( double duration, QgsUnitTypes::TemporalUnit unit );
 
     /**
+     * Constructor for QgsInterval, using the specified \a years, \a months,
+     * \a weeks, \a days, \a hours, \a minutes and \a seconds.
+     *
+     * \note Month units assumes a 30 day month length.
+     * \note Year units assumes a 365.25 day year length.
+     *
+     * \since QGIS 3.14
+     */
+    QgsInterval( double years, double months, double weeks, double days, double hours, double minutes, double seconds );
+
+    /**
      * Returns the interval duration in years (based on an average year length)
      * \see setYears()
      */
