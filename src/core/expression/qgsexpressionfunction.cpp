@@ -1157,6 +1157,19 @@ static QVariant fcnMakeDateTime( const QVariantList &values, const QgsExpression
   return QVariant( QDateTime( date, time ) );
 }
 
+static QVariant fcnMakeInterval( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const int years = QgsExpressionUtils::getIntValue( values.at( 0 ), parent );
+  const int months = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
+  const int weeks = QgsExpressionUtils::getIntValue( values.at( 2 ), parent );
+  const int days = QgsExpressionUtils::getIntValue( values.at( 3 ), parent );
+  const int hours = QgsExpressionUtils::getIntValue( values.at( 4 ), parent );
+  const int minutes = QgsExpressionUtils::getIntValue( values.at( 5 ), parent );
+  const double seconds = QgsExpressionUtils::getDoubleValue( values.at( 6 ), parent );
+
+  return QVariant::fromValue( QgsInterval( years, months, weeks, days, hours, minutes, seconds ) );
+}
+
 static QVariant fcnCoalesce( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
 {
   for ( const QVariant &value : values )
@@ -5807,6 +5820,14 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "minute" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "second" ) ),
                                             fcnMakeDateTime, QStringLiteral( "Date and Time" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "make_interval" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "years" ), true, 0 )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "months" ), true, 0 )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "weeks" ), true, 0 )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "days" ), true, 0 )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "hours" ), true, 0 )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "minutes" ), true, 0 )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "seconds" ), true, 0 ),
+                                            fcnMakeInterval, QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "lower" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnLower, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "upper" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnUpper, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "title" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnTitle, QStringLiteral( "String" ) )
