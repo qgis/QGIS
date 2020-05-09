@@ -134,6 +134,20 @@ a playing animation will advance to the next frame.
 .. seealso:: :py:func:`setFramesPerSecond`
 %End
 
+    void setTemporalRangeCumulative( bool state );
+%Docstring
+Sets the animation temporal range as cumulative.
+
+.. seealso:: :py:func:`temporalRangeCumulative`
+%End
+
+    bool temporalRangeCumulative() const;
+%Docstring
+Returns the animation temporal range cumulative settings.
+
+.. seealso:: :py:func:`setTemporalRangeCumulative`
+%End
+
     long long totalFrameCount();
 %Docstring
 Returns the total number of frames for the navigation.

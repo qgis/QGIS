@@ -151,6 +151,7 @@ void QgsTemporalControllerWidget::setWidgetStateFromProject()
   updateFrameDuration();
 
   mNavigationObject->setFramesPerSecond( QgsProject::instance()->timeSettings()->framesPerSecond() );
+  mNavigationObject->setTemporalRangeCumulative( QgsProject::instance()->timeSettings()->isTemporalRangeCumulative() );
 }
 
 void QgsTemporalControllerWidget::onLayersAdded()
@@ -214,12 +215,20 @@ void QgsTemporalControllerWidget::settings_clicked()
 {
   QgsTemporalMapSettingsWidget *settingsWidget = new QgsTemporalMapSettingsWidget( this );
   settingsWidget->setFrameRateValue( mNavigationObject->framesPerSecond() );
+  settingsWidget->setIsTemporalRangeCumulative( mNavigationObject->temporalRangeCumulative() );
 
   connect( settingsWidget, &QgsTemporalMapSettingsWidget::frameRateChanged, this, [ = ]( double rate )
   {
     // save new settings into project
     QgsProject::instance()->timeSettings()->setFramesPerSecond( rate );
     mNavigationObject->setFramesPerSecond( rate );
+  } );
+
+  connect( settingsWidget, &QgsTemporalMapSettingsWidget::temporalRangeCumulativeChanged, this, [ = ]( bool state )
+  {
+    // save new settings into project
+    QgsProject::instance()->timeSettings()->setIsTemporalRangeCumulative( state );
+    mNavigationObject->setTemporalRangeCumulative( state );
   } );
   openPanel( settingsWidget );
 }
