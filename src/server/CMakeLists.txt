@@ -138,13 +138,16 @@ ENDIF (NOT ANDROID)
 
 TARGET_LINK_LIBRARIES(qgis_server
   qgis_core
-  qgis_analysis
   ${PROJ_LIBRARY}
   ${FCGI_LIBRARY}
   ${POSTGRES_LIBRARY}
   ${GDAL_LIBRARY}
   ${QCA_LIBRARY}
 )
+
+IF (WITH_ANALYSIS)
+  TARGET_LINK_LIBRARIES(qgis_server qgis_analysis)
+ENDIF(WITH_ANALYSIS)
 
 IF (WITH_BINDINGS)
   TARGET_LINK_LIBRARIES(qgis_server qgispython)
