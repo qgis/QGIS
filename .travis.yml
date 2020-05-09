@@ -49,47 +49,6 @@ matrix:
         # Label ID can be found here https://api.github.com/repos/qgis/QGIS/labels
         - RUN_FLAKY_TESTS=$(.ci/travis/scripts/pr_has_label.py $TRAVIS_PULL_REQUEST 1271248184)
 
-      ##########################################################
-      # CODE LAYOUT
-      ##########################################################
-    - os: linux
-      name: code layout 👗
-      if: type != cron
-      env:
-        - TRAVIS_CONFIG=code_layout
-      addons:
-        apt:
-          sources:
-          # - sourceline: 'ppa:jonathonf/backports'  # silversearcher-ag backport
-          packages:
-            - doxygen
-            - graphviz
-            - txt2tags
-            - pkg-config
-            - xvfb
-            - flip
-            # used for spell checks
-            - perl  # sipify, lookahead regex in spell check script
-            - silversearcher-ag
-            - expect-dev  # unbuffer
-            - coreutils
-            # dependencies for licensecheck
-            - cpanminus
-            - libyaml-tiny-perl
-            - libio-socket-ssl-perl
-            - libhttp-date-perl
-            - libgetopt-long-descriptive-perl
-            - libmoo-perl
-            - libnamespace-clean-perl
-            - libpath-tiny-perl
-            - libpod-constants-perl
-            - libscalar-list-utils-perl
-            - libsort-key-perl
-            - libstrictures-perl
-            - libstring-escape-perl
-            - libtry-tiny-perl
-
-
 
 ##########################################################
 #
