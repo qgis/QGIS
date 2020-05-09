@@ -103,7 +103,7 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
   const double barTopPosition = scaledBoxContentSpace + ( settings.labelVerticalPlacement() == QgsScaleBarSettings::LabelAboveSegment ? fontMetrics.ascent() + scaledLabelBarSpace : 0 );
   const double scaledHeight = context.convertToPainterUnits( settings.height(), QgsUnitTypes::RenderMillimeters );
   const double scaledSubdivisionsHeight = context.convertToPainterUnits( settings.subdivisionsHeight(), QgsUnitTypes::RenderMillimeters );
-  const double scaledMaxHeight = scaledHeight > scaledSubdivisionsHeight ? scaledHeight : scaledSubdivisionsHeight;
+  const double scaledMaxHeight = ( ( settings.numberOfSubdivisions() > 1 ) && ( scaledSubdivisionsHeight > scaledHeight ) ) ? scaledSubdivisionsHeight : scaledHeight;
   const double middlePosition = barTopPosition + scaledMaxHeight / 2.0;
   const double bottomPosition = barTopPosition + scaledMaxHeight;
 
