@@ -535,14 +535,23 @@ void QgsLayoutScaleBarWidget::toggleStyleSpecificControls( const QString &style 
   if ( !mGroupBoxUnits->isEnabled() )
     mGroupBoxSegments->setCollapsed( true );
   mLabelBarSpaceSpinBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelBarSpace : true );
+  mLabelBarSpaceLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelBarSpace : true );
   mLabelVerticalPlacementComboBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelVerticalPlacement : true );
+  mLabelVerticalPlacementLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelVerticalPlacement : true );
   mLabelHorizontalPlacementComboBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelHorizontalPlacement : true );
+  mLabelHorizontalPlacementLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelHorizontalPlacement : true );
   mAlignmentComboBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesAlignment : true );
+  mAlignmentLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesAlignment : true );
   mFillSymbol1Button->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesFillSymbol : true );
+  mFillSymbol1Label->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesFillSymbol : true );
   mFillSymbol2Button->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesAlternateFillSymbol : true );
+  mFillSymbol2Label->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesAlternateFillSymbol : true );
   mLineStyleButton->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLineSymbol : true );
+  mLineStyleLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLineSymbol : true );
   mDivisionStyleButton->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesDivisionSymbol : true );
+  mDivisionStyleLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesDivisionSymbol : true );
   mSubdivisionStyleButton->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesSubdivisionSymbol : true );
+  mSubdivisionStyleLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesSubdivisionSymbol : true );
 }
 
 void QgsLayoutScaleBarWidget::mLabelBarSpaceSpinBox_valueChanged( double d )
