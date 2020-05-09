@@ -61,11 +61,15 @@ namespace MDAL
     std::string name; //!< Dataset group name
     CFDimensions::Type outputType;
     bool is_vector;
+    bool is_polar;
     TimeLocation timeLocation;
     size_t nTimesteps;
     size_t nValues;
     int ncid_x; //!< NetCDF variable id
     int ncid_y; //!< NetCDF variable id
+    Metadata metadata;
+    Classification classification_x;
+    Classification classification_y;
   };
   typedef std::map<std::string, CFDatasetGroupInfo> cfdataset_info_map; // name -> DatasetInfo
 
@@ -77,6 +81,8 @@ namespace MDAL
                    double fill_val_y,
                    int ncid_x,
                    int ncid_y,
+                   Classification classification_x,
+                   Classification classification_y,
                    CFDatasetGroupInfo::TimeLocation timeLocation,
                    size_t timesteps,
                    size_t values,
@@ -93,6 +99,8 @@ namespace MDAL
       double mFillValY;
       int mNcidX; //!< NetCDF variable id
       int mNcidY; //!< NetCDF variable id
+      Classification mClassificationX; //!< Classification, void if not classified
+      Classification mClassificationY; //!< Classification, void if not classified
       CFDatasetGroupInfo::TimeLocation mTimeLocation;
       size_t mTimesteps;
       size_t mValues;
@@ -120,8 +128,13 @@ namespace MDAL
       virtual void addBedElevation( MDAL::MemoryMesh *mesh ) = 0;
       virtual std::string getCoordinateSystemVariableName() = 0;
       virtual std::set<std::string> ignoreNetCDFVariables() = 0;
-      virtual void parseNetCDFVariableMetadata( int varid, const std::string &variableName,
-          std::string &name, bool *is_vector, bool *is_x ) = 0;
+      virtual void parseNetCDFVariableMetadata( int varid,
+          std::string &variableName,
+          std::string &name,
+          bool *is_vector,
+          bool *isPolar,
+          bool *is_x ) = 0;
+      virtual std::vector<std::pair<double, double> > parseClassification( int varid ) const = 0;
       virtual std::string getTimeVariableName() const = 0;
       virtual std::shared_ptr<MDAL::Dataset> create2DDataset(
         std::shared_ptr<MDAL::DatasetGroup> group,
