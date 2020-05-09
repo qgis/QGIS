@@ -268,6 +268,10 @@ void TestQgsProperty::conversions()
   collection.property( 5 ).setStaticValue( dt2 ); //datetime in qvariant
   QCOMPARE( d1.valueAsDateTime( context, dt ), dt2 );
   QCOMPARE( collection.valueAsDateTime( 5, context,  dt ), dt2 );
+  d1.setStaticValue( "2010-01-01" ); //datetime as string
+  collection.property( 5 ).setStaticValue( "2010-01-01" ); //datetime as string
+  QCOMPARE( d1.valueAsDateTime( context, dt ), dt2 );
+  QCOMPARE( collection.valueAsDateTime( 5, context, dt ), dt2 );
   d1.setStaticValue( "i am not a datetime" ); //not a datetime, should return default value
   collection.property( 5 ).setStaticValue( "i am not a datetime" ); //not a double, should return default value
   QCOMPARE( d1.valueAsDateTime( context, dt ), dt );

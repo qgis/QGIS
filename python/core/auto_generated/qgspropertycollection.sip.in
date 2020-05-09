@@ -114,14 +114,14 @@ valueAs* variants) refer to the property() and :py:func:`QgsProperty.value()`
 
     QDateTime valueAsDateTime( int key, const QgsExpressionContext &context, const QDateTime &defaultDateTime = QDateTime(), bool *ok /Out/ = 0 ) const;
 %Docstring
-Calculates the current value of the property with the specified key and interprets it as a string.
+Calculates the current value of the property with the specified key and interprets it as a datetime.
 
 :param key: integer key for property to return. The intended use case is that a context specific enum is cast to
             int and used for the key value.
 :param context: QgsExpressionContext to evaluate the property for.
-:param defaultString: default string to return if the property cannot be calculated as a string
+:param defaultDateTime: default datetime to return if the property cannot be calculated as a datetime
 
-:return: - value parsed to string
+:return: - value parsed to datetime
          - ok: will be set to ``True`` if conversion was successful
 
 .. seealso:: :py:func:`value`
@@ -135,6 +135,8 @@ Calculates the current value of the property with the specified key and interpre
 .. seealso:: :py:func:`valueAsInt`
 
 .. seealso:: :py:func:`valueAsBool`
+
+.. versionadded:: 3.14
 %End
 
     QString valueAsString( int key, const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok /Out/ = 0 ) const;

@@ -981,6 +981,7 @@ void QgsLayoutMapWidget::blockAllSignals( bool b )
   mKeepLayerStylesCheckBox->blockSignals( b );
   mActionSetToCanvasExtent->blockSignals( b );
   mActionUpdatePreview->blockSignals( b );
+  mTemporalCheckBox->blockSignals( b );
   mStartDateTime->blockSignals( b );
   mEndDateTime->blockSignals( b );
 
