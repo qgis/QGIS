@@ -694,12 +694,12 @@ void QgsMapCanvas::rendererJobFinished()
     {
       mLastLayerRenderTime.insert( it.key()->id(), it.value() );
     }
-    if ( mUsePreviewJobs && !mTemporalRefreshAfterJob )
+    if ( mUsePreviewJobs && !mRefreshAfterJob )
       startPreviewJobs();
   }
   else
   {
-    mTemporalRefreshAfterJob = false;
+    mRefreshAfterJob = false;
   }
 
   // now we are in a slot called from mJob - do not delete it immediately
@@ -709,9 +709,9 @@ void QgsMapCanvas::rendererJobFinished()
 
   emit mapCanvasRefreshed();
 
-  if ( mTemporalRefreshAfterJob )
+  if ( mRefreshAfterJob )
   {
-    mTemporalRefreshAfterJob = false;
+    mRefreshAfterJob = false;
     clearTemporalCache();
     refresh();
   }
@@ -797,17 +797,12 @@ void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
 
   emit temporalRangeChanged();
 
+  // we need to discard any previously cached images which have temporal properties enabled, so that these will be updated when
+  // the canvas is redrawn
   if ( !mJob )
-  {
-    // we need to discard any previously cached images which have temporal properties enabled, so that these will be updated when
-    // the canvas is redrawn
     clearTemporalCache();
-    autoRefreshTriggered();
-  }
-  else
-  {
-    mTemporalRefreshAfterJob = true;
-  }
+
+  autoRefreshTriggered();
 }
 
 const QgsDateTimeRange &QgsMapCanvas::temporalRange() const
@@ -2055,9 +2050,9 @@ void QgsMapCanvas::autoRefreshTriggered()
 {
   if ( mJob )
   {
-    // canvas is currently being redrawn, so we skip this auto refresh
-    // otherwise we could get stuck in the situation where an auto refresh is triggered
-    // too often to allow the canvas to ever finish rendering
+    // canvas is currently being redrawn, so we defer the last requested
+    // auto refresh until current rendering job finishes
+    mRefreshAfterJob = true;
     return;
   }
 

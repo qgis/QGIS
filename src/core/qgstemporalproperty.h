@@ -37,10 +37,14 @@ class CORE_EXPORT QgsTemporalProperty : public QObject
     Q_OBJECT
 
   public:
+
+    /**
+     * Flags attached to the temporal property.
+     */
     enum Flag
     {
       NoFlags                                         = 0,
-      FlagDontInvalidateCachedRendersWhenRangeChanges = 1  //!< Any cached rendering will not be invalidated when temporal range context is modified
+      FlagDontInvalidateCachedRendersWhenRangeChanges = 1  //!< Any cached rendering will not be invalidated when temporal range context is modified.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
