@@ -90,6 +90,9 @@ QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long 
   const QDateTime begin = start.addSecs( frame * mFrameDuration.seconds() );
   const QDateTime end = start.addSecs( nextFrame * mFrameDuration.seconds() );
 
+  if ( mCumulativeTemporalRange )
+    return QgsDateTimeRange( start, begin, true, false );
+
   if ( end <= mTemporalExtents.end() )
     return QgsDateTimeRange( begin, end, true, false );
 
@@ -151,6 +154,16 @@ void QgsTemporalNavigationObject::setFramesPerSecond( double framesPerSeconds )
 double QgsTemporalNavigationObject::framesPerSecond() const
 {
   return mFramesPerSecond;
+}
+
+void QgsTemporalNavigationObject::setTemporalRangeCumulative( bool state )
+{
+  mCumulativeTemporalRange = state;
+}
+
+bool QgsTemporalNavigationObject::temporalRangeCumulative() const
+{
+  return mCumulativeTemporalRange;
 }
 
 void QgsTemporalNavigationObject::play()

@@ -149,6 +149,20 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     double framesPerSecond() const;
 
     /**
+     * Sets the animation temporal range as cumulative.
+     *
+     * \see temporalRangeCumulative()
+     */
+    void setTemporalRangeCumulative( bool state );
+
+    /**
+     * Returns the animation temporal range cumulative settings.
+     *
+     * \see setTemporalRangeCumulative()
+     */
+    bool temporalRangeCumulative() const;
+
+    /**
      * Returns the total number of frames for the navigation.
      */
     long long totalFrameCount();
@@ -257,6 +271,8 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     AnimationState mPlayBackMode = Idle;
 
     bool mLoopAnimation = false;
+
+    bool mCumulativeTemporalRange = false;
 
 };
 

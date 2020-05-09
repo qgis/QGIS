@@ -137,6 +137,20 @@ Returns the project's default animation frame rate, in frames per second.
 .. seealso:: :py:func:`setFramesPerSecond`
 %End
 
+    void setIsTemporalRangeCumulative( bool state );
+%Docstring
+Sets the project's temporal range as cumulative in animation settings.
+
+.. seealso:: :py:func:`isTemporalRangeCumulative`
+%End
+
+    bool isTemporalRangeCumulative() const;
+%Docstring
+Returns the value of cumulative temporal range in animation settings.
+
+.. seealso:: :py:func:`setIsTemporalRangeCumulative`
+%End
+
   signals:
 
     void temporalRangeChanged();

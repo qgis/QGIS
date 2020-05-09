@@ -145,8 +145,16 @@ void TestQgsTemporalNavigationObject::frameSettings()
 
   QgsDateTimeRange range = QgsDateTimeRange(
                              QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 0, 0 ) ),
-                             QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) )
+                             QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) ),
+                             true,
+                             false
                            );
+  QgsDateTimeRange lastRange = QgsDateTimeRange(
+                                 QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) ),
+                                 QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) ),
+                                 true,
+                                 false
+                               );
   navigationObject->setTemporalExtents( range );
   QCOMPARE( temporalRangeSignal.count(), 1 );
 
@@ -162,6 +170,11 @@ void TestQgsTemporalNavigationObject::frameSettings()
 
   navigationObject->setFramesPerSecond( 1 );
   QCOMPARE( navigationObject->framesPerSecond(), 1.0 );
+
+  QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 4 ), lastRange );
+
+  navigationObject->setTemporalRangeCumulative( true );
+  QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 4 ), range );
 
 }
 
