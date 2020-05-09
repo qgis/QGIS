@@ -53,7 +53,7 @@ Sets the temporal properties ``mode``.
 .. seealso:: :py:func:`mode`
 %End
 
-    virtual const QgsTemporalProperty::Flags flags() const;
+    virtual QgsTemporalProperty::Flags flags() const;
 
 %Docstring
 Returns flags associated to the temporal property.

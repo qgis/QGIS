@@ -131,13 +131,6 @@ Make sure to remove any rendered images from cache (does nothing if cache is not
 .. versionadded:: 2.4
 %End
 
-    void clearTemporalCache();
-%Docstring
-Make sure to remove any rendered images of temporal-enabled layers from cache (does nothing if cache is not enabled)
-
-.. versionadded:: 3.14
-%End
-
     void waitWhileRendering();
 %Docstring
 Blocks until the rendering job has finished.

@@ -74,7 +74,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     /**
      * Returns flags associated to the temporal property.
      */
-    const QgsTemporalProperty::Flags flags() const override;
+    QgsTemporalProperty::Flags flags() const override;
 
     /**
      * Returns the desired method to use when resolving a temporal interval to matching

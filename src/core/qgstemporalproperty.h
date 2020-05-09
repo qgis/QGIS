@@ -43,7 +43,6 @@ class CORE_EXPORT QgsTemporalProperty : public QObject
      */
     enum Flag
     {
-      NoFlags                                         = 0,
       FlagDontInvalidateCachedRendersWhenRangeChanges = 1  //!< Any cached rendering will not be invalidated when temporal range context is modified.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -72,7 +71,7 @@ class CORE_EXPORT QgsTemporalProperty : public QObject
     /**
      * Returns flags associated to the temporal property.
      */
-    virtual const QgsTemporalProperty::Flags flags() const { return QgsTemporalProperty::NoFlags; }
+    virtual QgsTemporalProperty::Flags flags() const { return nullptr; }
 
   signals:
 
