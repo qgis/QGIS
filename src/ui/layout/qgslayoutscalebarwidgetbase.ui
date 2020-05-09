@@ -400,7 +400,7 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0">
           <item row="7" column="0">
-           <widget class="QLabel" name="label_9">
+           <widget class="QLabel" name="mFillSymbol1Label">
             <property name="text">
              <string>Primary fill</string>
             </property>
@@ -423,7 +423,7 @@
            </widget>
           </item>
           <item row="14" column="0">
-           <widget class="QLabel" name="mAlignmentLabel_2">
+           <widget class="QLabel" name="mFontLabel">
             <property name="text">
              <string>Font</string>
             </property>
@@ -460,7 +460,7 @@
            </widget>
           </item>
           <item row="2" column="0">
-           <widget class="QLabel" name="label_21">
+           <widget class="QLabel" name="mLabelBarSpaceLabel">
             <property name="text">
              <string>Label margin</string>
             </property>
@@ -480,35 +480,35 @@
            </widget>
           </item>
           <item row="8" column="0">
-           <widget class="QLabel" name="label_11">
+           <widget class="QLabel" name="mFillSymbol2Label">
             <property name="text">
              <string>Secondary fill</string>
             </property>
            </widget>
           </item>
           <item row="11" column="0">
-           <widget class="QLabel" name="label_10">
+           <widget class="QLabel" name="mDivisionStyleLabel">
             <property name="text">
              <string>Division style</string>
             </property>
            </widget>
           </item>
           <item row="9" column="0">
-           <widget class="QLabel" name="label_8">
+           <widget class="QLabel" name="mLineStyleLabel">
             <property name="text">
              <string>Line style</string>
             </property>
            </widget>
           </item>
           <item row="3" column="0" colspan="3">
-           <widget class="QLabel" name="label_22">
+           <widget class="QLabel" name="mLabelVerticalPlacementLabel">
             <property name="text">
              <string>Vertical label placement</string>
             </property>
            </widget>
           </item>
           <item row="5" column="0" colspan="3">
-           <widget class="QLabel" name="label_2">
+           <widget class="QLabel" name="mLabelHorizontalPlacementLabel">
             <property name="text">
              <string>Horizontal label placement</string>
             </property>
@@ -534,7 +534,7 @@
            <widget class="QComboBox" name="mLabelHorizontalPlacementComboBox"/>
           </item>
           <item row="1" column="0">
-           <widget class="QLabel" name="label_4">
+           <widget class="QLabel" name="mBoxSizeLabel">
             <property name="text">
              <string>Box margin</string>
             </property>
@@ -551,7 +551,7 @@
            </widget>
           </item>
           <item row="12" column="0">
-           <widget class="QLabel" name="label_12">
+           <widget class="QLabel" name="mSubdivisionStyleLabel">
             <property name="text">
              <string>Subdivision style</string>
             </property>
