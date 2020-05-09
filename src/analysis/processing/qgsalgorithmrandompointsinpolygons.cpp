@@ -299,7 +299,8 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
     else
     {
       // Have to check for minimum distance, provide the acceptPoints function
-      QVector< QgsPointXY > newPoints = polyGeom.randomPointsInPolygon( numberPointsForThisFeature, [ = ]( const QgsPointXY & newPoint ) mutable -> bool {
+      QVector< QgsPointXY > newPoints = polyGeom.randomPointsInPolygon( numberPointsForThisFeature, [ = ]( const QgsPointXY & newPoint ) mutable -> bool
+      {
         // May have to check minimum distance to existing points
         // The first point can always be added
         // Global first
