@@ -76,7 +76,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
     /**
      * Returns flags associated to the temporal property.
      */
-    const QgsTemporalProperty::Flags flags() const override;
+    QgsTemporalProperty::Flags flags() const override;
 
     /**
      * Sets a temporal \a range to apply to the whole layer. All features from

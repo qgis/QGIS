@@ -178,12 +178,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void clearCache();
 
     /**
-     * Make sure to remove any rendered images of temporal-enabled layers from cache (does nothing if cache is not enabled)
-     * \since QGIS 3.14
-     */
-    void clearTemporalCache();
-
-    /**
      * Blocks until the rendering job has finished.
      *
      * In almost all cases you do NOT want to call this, as it will hang the UI
@@ -1205,6 +1199,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     int nextZoomLevel( const QList<double> &resolutions, bool zoomIn = true ) const;
     double zoomInFactor() const;
     double zoomOutFactor() const;
+
+    /**
+     * Make sure to remove any rendered images of temporal-enabled layers from cache (does nothing if cache is not enabled)
+     * \since QGIS 3.14
+     */
+    void clearTemporalCache();
 
     friend class TestQgsMapCanvas;
 

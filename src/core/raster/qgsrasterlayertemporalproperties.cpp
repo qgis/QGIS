@@ -51,9 +51,9 @@ void QgsRasterLayerTemporalProperties::setMode( QgsRasterLayerTemporalProperties
   mMode = mode;
 }
 
-const QgsTemporalProperty::Flags QgsRasterLayerTemporalProperties::flags() const
+QgsTemporalProperty::Flags QgsRasterLayerTemporalProperties::flags() const
 {
-  return mode() == ModeFixedTemporalRange ? QgsTemporalProperty::FlagDontInvalidateCachedRendersWhenRangeChanges : QgsTemporalProperty::NoFlags;
+  return mode() == ModeFixedTemporalRange ? QgsTemporalProperty::FlagDontInvalidateCachedRendersWhenRangeChanges : QgsTemporalProperty::Flags( nullptr );
 }
 
 QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod QgsRasterLayerTemporalProperties::intervalHandlingMethod() const

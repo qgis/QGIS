@@ -53,9 +53,9 @@ void QgsVectorLayerTemporalProperties::setMode( QgsVectorLayerTemporalProperties
   mMode = mode;
 }
 
-const QgsTemporalProperty::Flags QgsVectorLayerTemporalProperties::flags() const
+QgsTemporalProperty::Flags QgsVectorLayerTemporalProperties::flags() const
 {
-  return mode() == ModeFixedTemporalRange ? QgsTemporalProperty::FlagDontInvalidateCachedRendersWhenRangeChanges : QgsTemporalProperty::NoFlags;
+  return mode() == ModeFixedTemporalRange ? QgsTemporalProperty::FlagDontInvalidateCachedRendersWhenRangeChanges : QgsTemporalProperty::Flags( nullptr );
 }
 
 void  QgsVectorLayerTemporalProperties::setFixedTemporalRange( const QgsDateTimeRange &range )
