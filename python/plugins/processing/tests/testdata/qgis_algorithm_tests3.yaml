@@ -604,7 +604,7 @@ tests:
       OUTPUT:
         name: expected/randompointsinpolygons.gml
         type: vector
-  
+
   - algorithm: native:randompointsinpolygons
     name: Random points in polygons, 10 pts, global min distance 2.0, 10 tries, seed 1, attributes
     params:
@@ -621,7 +621,7 @@ tests:
       OUTPUT:
         name: expected/randompointsinpolygons_gmin2.gml
         type: vector
-  
+
   - algorithm: native:randompointsinpolygons
     name: Random points in polygons, 10 pts, min distance 2.0, 10 tries, seed 1, no attributes
     params:
@@ -655,7 +655,6 @@ tests:
       OUTPUT:
         name: expected/randompointsinpolygons_min2_gmin2.gml
         type: vector
-
 
   - algorithm: native:randompointsonlines
     name: Random points on lines, seed 1, multilines - one empty geom
