@@ -21,7 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'January 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
 
-
 import warnings
 
 from qgis.core import (QgsFeatureRequest,
@@ -36,7 +35,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 
 class BarPlot(QgisAlgorithm):
-
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     NAME_FIELD = 'NAME_FIELD'

@@ -180,7 +180,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
                                                        minValue=1,
                                                        maxValue=20,
                                                        defaultValue=4))
-        self.thread_nr_re = re.compile('[0-9]+$') # thread number regex
+        self.thread_nr_re = re.compile('[0-9]+$')  # thread number regex
 
     def prepareAlgorithm(self, parameters, context, feedback):
         project = context.project()
@@ -193,10 +193,10 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
             return
             # Haven't found a better way to break than to make all the new threads return instantly
 
-        if "Dummy" in threading.current_thread().name or len(self.settingsDictionary) == 1: # single thread testing
+        if "Dummy" in threading.current_thread().name or len(self.settingsDictionary) == 1:  # single thread testing
             threadSpecificSettings = list(self.settingsDictionary.values())[0]
         else:
-            thread_nr = self.thread_nr_re.search(threading.current_thread().name)[0] # terminating number only
+            thread_nr = self.thread_nr_re.search(threading.current_thread().name)[0]  # terminating number only
             threadSpecificSettings = self.settingsDictionary[thread_nr]
 
         size = QSize(self.tile_width * metatile.rows(), self.tile_height * metatile.columns())
@@ -204,7 +204,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         threadSpecificSettings.setExtent(self.wgs_to_dest.transformBoundingBox(extent))
         threadSpecificSettings.setOutputSize(size)
 
-        #Append MapSettings scope in order to update map variables (e.g @map_scale) with new extent data
+        # Append MapSettings scope in order to update map variables (e.g @map_scale) with new extent data
         exp_context = threadSpecificSettings.expressionContext()
         exp_context.appendScope(QgsExpressionContextUtils.mapSettingsScope(threadSpecificSettings))
         threadSpecificSettings.setExpressionContext(exp_context)

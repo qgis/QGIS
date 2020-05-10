@@ -10,7 +10,6 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-
 from qgis.core import (
     QgsApplication,
     QgsAuthManager,
@@ -24,11 +23,9 @@ from qgis.testing import (
     unittest,
 )
 
-
 __author__ = 'Alessandro Pasotti'
 __date__ = '14/11/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-
 
 qgis_app = start_app()
 

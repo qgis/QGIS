@@ -39,7 +39,6 @@ pluginPath = os.path.normpath(os.path.join(
 
 
 class Grass7AlgorithmProvider(QgsProcessingProvider):
-
     descriptionFolder = Grass7Utils.grassDescriptionPath()
     activateSetting = "ACTIVATE_GRASS7"
 

@@ -1,6 +1,6 @@
 [flake8]
 ignore =
-	E501, E402, N802, N806, F401, E261, E265, N803, F841, N801, N805, N815, N816, F811, N814, N804, W503, W291, N807, N813, W504, E741, E301,
+	E501, E402, N802, N806, F401, N803, F841, N801, N805, N815, N816, F811, N814, N804, W503, N807, N813, W504, E741,
 	# E722: Do not use bare excepts -- A candidate to remove from this list!
 	E722
 

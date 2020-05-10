@@ -35,12 +35,10 @@ from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.tools.system import isWindows
 from processing.algs.gdal.GdalUtils import GdalUtils
 
-
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class pct2rgb(GdalAlgorithm):
-
     INPUT = 'INPUT'
     BAND = 'BAND'
     RGBA = 'RGBA'

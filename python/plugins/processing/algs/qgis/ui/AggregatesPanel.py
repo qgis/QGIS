@@ -50,7 +50,6 @@ from processing.algs.qgis.ui.FieldsMappingPanel import (
     FieldTypeDelegate,
 )
 
-
 AGGREGATES = ['first_value']
 for function in QgsExpression.Functions():
     if function.name()[0] == '_':

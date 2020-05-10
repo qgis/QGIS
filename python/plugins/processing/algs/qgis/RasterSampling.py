@@ -21,7 +21,6 @@ __author__ = 'Matteo Ghetta'
 __date__ = 'July 2018'
 __copyright__ = '(C) 2018, Matteo Ghetta'
 
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -49,7 +48,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class RasterSampling(QgisAlgorithm):
-
     INPUT = 'INPUT'
     RASTERCOPY = 'RASTERCOPY'
     COLUMN_PREFIX = 'COLUMN_PREFIX'

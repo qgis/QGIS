@@ -150,8 +150,9 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         self.uniqueCombo.setModel(self.uniqueModel)
         if self.allowMultiColumnPk:
             self.uniqueCombo.setItemDelegate(QStyledItemDelegate())
-            self.uniqueModel.itemChanged.connect(self.uniqueChanged)                 # react to the (un)checking of an item
-            self.uniqueCombo.lineEdit().textChanged.connect(self.uniqueTextChanged)  # there are other events that change the displayed text and some of them can not be caught directly
+            self.uniqueModel.itemChanged.connect(self.uniqueChanged)  # react to the (un)checking of an item
+            self.uniqueCombo.lineEdit().textChanged.connect(
+                self.uniqueTextChanged)  # there are other events that change the displayed text and some of them can not be caught directly
 
         self.layerTypeWidget.hide()  # show if load as raster is supported
         # self.loadLayerBtn.clicked.connect(self.loadSqlLayer)

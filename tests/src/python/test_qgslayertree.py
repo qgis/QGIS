@@ -50,7 +50,7 @@ class TestQgsLayerTree(unittest.TestCase):
         prj.layerTreeRoot().setCustomLayerOrder([layer2, layer])
         self.assertEqual(len(layer_order_changed_spy), 1)
         prj.layerTreeRoot().setCustomLayerOrder([layer2, layer])
-        self.assertEqual(len(layer_order_changed_spy), 1) # no signal, order not changed
+        self.assertEqual(len(layer_order_changed_spy), 1)  # no signal, order not changed
 
         self.assertEqual(prj.layerTreeRoot().customLayerOrder(), [layer2, layer])
         prj.layerTreeRoot().setCustomLayerOrder([layer])

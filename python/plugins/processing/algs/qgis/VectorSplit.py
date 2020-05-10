@@ -42,7 +42,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class VectorSplit(QgisAlgorithm):
-
     INPUT = 'INPUT'
     FIELD = 'FIELD'
     OUTPUT = 'OUTPUT'

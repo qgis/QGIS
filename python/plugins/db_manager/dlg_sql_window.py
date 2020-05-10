@@ -120,8 +120,9 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.connectionName = db.connection().connectionName()
         self.filter = ""
         self.modelAsync = None
-        self.allowMultiColumnPk = isinstance(db, PGDatabase)  # at the moment only PostgreSQL allows a primary key to span multiple columns, SpatiaLite doesn't
-        self.aliasSubQuery = isinstance(db, PGDatabase)       # only PostgreSQL requires subqueries to be aliases
+        self.allowMultiColumnPk = isinstance(db,
+                                             PGDatabase)  # at the moment only PostgreSQL allows a primary key to span multiple columns, SpatiaLite doesn't
+        self.aliasSubQuery = isinstance(db, PGDatabase)  # only PostgreSQL requires subqueries to be aliases
         self.setupUi(self)
         self.setWindowTitle(
             self.tr(u"{0} - {1} [{2}]").format(self.windowTitle(), self.connectionName, self.dbType))
@@ -188,8 +189,9 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.uniqueCombo.setModel(self.uniqueModel)
         if self.allowMultiColumnPk:
             self.uniqueCombo.setItemDelegate(QStyledItemDelegate())
-            self.uniqueModel.itemChanged.connect(self.uniqueChanged)                 # react to the (un)checking of an item
-            self.uniqueCombo.lineEdit().textChanged.connect(self.uniqueTextChanged)  # there are other events that change the displayed text and some of them can not be caught directly
+            self.uniqueModel.itemChanged.connect(self.uniqueChanged)  # react to the (un)checking of an item
+            self.uniqueCombo.lineEdit().textChanged.connect(
+                self.uniqueTextChanged)  # there are other events that change the displayed text and some of them can not be caught directly
 
         # hide the load query as layer if feature is not supported
         self._loadAsLayerAvailable = self.db.connector.hasCustomQuerySupport()

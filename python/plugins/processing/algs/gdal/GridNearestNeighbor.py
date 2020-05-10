@@ -21,7 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'October 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -42,7 +41,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class GridNearestNeighbor(GdalAlgorithm):
-
     INPUT = 'INPUT'
     Z_FIELD = 'Z_FIELD'
     RADIUS_1 = 'RADIUS_1'

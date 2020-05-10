@@ -124,11 +124,12 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
         s3.symbolLayer(0).setSeed(1)
         s3.symbolLayer(0).setCountMethod(QgsRandomMarkerFillSymbolLayer.DensityBasedCount)
         s3.symbolLayer(0).setPointCount(5)
-        s3.symbolLayer(0).setDensityArea(250) # 250 square millimeter
+        s3.symbolLayer(0).setDensityArea(250)  # 250 square millimeter
         g = QgsGeometry.fromWkt(
             'Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
-        self.assertTrue(self.imageCheck('randommarkerfill_densitybasedcount', 'randommarkerfill_densitybasedcount', rendered_image))
+        self.assertTrue(
+            self.imageCheck('randommarkerfill_densitybasedcount', 'randommarkerfill_densitybasedcount', rendered_image))
 
     def testCreate(self):
         random_fill = QgsRandomMarkerFillSymbolLayer(10, seed=5)

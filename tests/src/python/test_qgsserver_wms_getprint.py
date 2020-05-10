@@ -113,7 +113,8 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
             control.setSizeTolerance(max_size_diff.width(), max_size_diff.height())
         return control.runTest(control_image, max_diff), control.report()
 
-    def _pdf_diff_error(self, response, headers, image, max_diff=100, max_size_diff=QSize(), unittest_data_path='control_images', dpi=96):
+    def _pdf_diff_error(self, response, headers, image, max_diff=100, max_size_diff=QSize(),
+                        unittest_data_path='control_images', dpi=96):
 
         reference_path = unitTestDataPath(unittest_data_path) + '/qgis_server/' + image + '/' + image + '.pdf'
         self.store_reference(reference_path, response)
@@ -400,7 +401,7 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
         #"""
 
         # This test is too strict, it can fail
-        #self.assertEqual(r_individual, r_group, 'Individual layers query and group layers query results should be identical')
+        # self.assertEqual(r_individual, r_group, 'Individual layers query and group layers query results should be identical')
 
     def test_wms_getprint_legend(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -640,31 +641,32 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
 
     def test_wms_getprint_atlas(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
-             "MAP": urllib.parse.quote(self.projectPath),
-             "SERVICE": "WMS",
-             "VERSION": "1.3.0",
-             "REQUEST": "GetPrint",
-             "TEMPLATE": "layoutA4",
-             "FORMAT": "png",
-             "CRS": "EPSG:3857",
-             "ATLAS_PK": "3",
-             "map0:LAYERS": "Country,Hello",
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "CRS": "EPSG:3857",
+            "ATLAS_PK": "3",
+            "map0:LAYERS": "Country,Hello",
         }.items())])
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_Atlas")
 
     def test_wms_getprint_atlas_getProjectSettings(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
-             "MAP": urllib.parse.quote(self.projectPath),
-             "SERVICE": "WMS",
-             "VERSION": "1.3.0",
-             "REQUEST": "GetProjectSettings",
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetProjectSettings",
         }.items())])
         r, h = self._result(self._execute_request(qs))
         self.assertTrue('atlasEnabled="1"' in str(r))
         self.assertTrue('<PrimaryKeyAttribute>' in str(r))
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Can\'t rely on external resources for continuous integration')
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
+                     'Can\'t rely on external resources for continuous integration')
     def test_wms_getprint_external(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),

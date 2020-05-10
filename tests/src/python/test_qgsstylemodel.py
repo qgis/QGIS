@@ -1593,7 +1593,7 @@ class TestQgsStyleModel(unittest.TestCase):
         model.setFilterString('mat b')
         self.assertEqual(model.rowCount(), 1)
         self.assertEqual(model.data(model.index(0, 0)), 'format BB')
-        model.setFilterString('ta ram') # match ta -> "tag 1", ram -> "ramp a"
+        model.setFilterString('ta ram')  # match ta -> "tag 1", ram -> "ramp a"
         self.assertEqual(model.rowCount(), 1)
         self.assertEqual(model.data(model.index(0, 0)), 'ramp a')
         model.setFilterString('ta ings')

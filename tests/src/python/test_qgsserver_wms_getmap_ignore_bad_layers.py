@@ -43,7 +43,7 @@ RE_ATTRIBUTES = br'[^>\s]+=[^>\s]+'
 class TestQgsServerWMSGetMapIgnoreBadLayers(QgsServerTestBase):
     """QGIS Server WMS Tests for GetMap request with QGIS_SERVER_IGNORE_BAD_LAYERS=true"""
 
-    #regenerate_reference = True
+    # regenerate_reference = True
 
     def setUp(self):
         os.environ['QGIS_SERVER_IGNORE_BAD_LAYERS'] = 'true'
@@ -53,7 +53,8 @@ class TestQgsServerWMSGetMapIgnoreBadLayers(QgsServerTestBase):
         """Must NOT throw a server exception if datasource if not available and QGIS_SERVER_IGNORE_BAD_LAYERS is set"""
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({
-            "MAP": urllib.parse.quote(os.path.join(self.testdata_path, 'test_project_wms_invalid_layers.qgs')),
+            "MAP": urllib.parse.quote(os.path.join(self.testdata_path,
+                                                   'test_project_wms_invalid_layers.qgs')),
             "SERVICE": "WMS",
             "VERSION": "1.3.0",
             "REQUEST": "GetMap",

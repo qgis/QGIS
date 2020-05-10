@@ -438,7 +438,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         Test fallback CRS and WKB types are used when layer path is invalid
         """
         vl = QgsVectorLayer('this is an outrage!!!')
-        self.assertFalse(vl.isValid()) # i'd certainly hope so...
+        self.assertFalse(vl.isValid())  # I'd certainly hope so...
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Unknown)
         self.assertFalse(vl.crs().isValid())
 
@@ -2132,7 +2132,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer.selectByIds([1, 3, 5, 7], QgsVectorLayer.SetSelection)
         self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5, 7])
 
-        layer.reselect() # no effect, selection has not been cleared
+        layer.reselect()  # no effect, selection has not been cleared
         self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5, 7])
 
         # clear selection
@@ -2141,7 +2141,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         # reselect should bring this back
         layer.reselect()
         self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5, 7])
-        layer.reselect() # no change
+        layer.reselect()  # no change
         self.assertCountEqual(layer.selectedFeatureIds(), [1, 3, 5, 7])
 
         # change an existing selection

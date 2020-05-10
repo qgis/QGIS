@@ -82,7 +82,6 @@ class LayerSelectionDialog(QDialog):
 
 
 class ExtentSelectionPanel(BASE, WIDGET):
-
     hasChanged = pyqtSignal()
 
     def __init__(self, dialog, param):

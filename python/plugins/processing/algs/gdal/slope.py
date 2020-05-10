@@ -21,7 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'October 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
-
 import os
 
 from qgis.core import (QgsRasterFileWriter,
@@ -40,7 +39,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class slope(GdalAlgorithm):
-
     INPUT = 'INPUT'
     BAND = 'BAND'
     AS_PERCENT = 'AS_PERCENT'

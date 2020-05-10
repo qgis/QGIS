@@ -32,7 +32,6 @@ LOG_SEPARATOR = '|~|'
 
 
 class ProcessingLog:
-
     DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
     @staticmethod

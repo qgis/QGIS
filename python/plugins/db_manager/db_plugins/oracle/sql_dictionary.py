@@ -267,7 +267,6 @@ operators = [
     ' CASE {column} WHEN {value} THEN {value} '
 ]
 
-
 # constants
 constants = ["null", "false", "true"]
 oracle_spatial_constants = []

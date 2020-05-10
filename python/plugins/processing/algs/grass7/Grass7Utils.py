@@ -40,7 +40,6 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 
 class Grass7Utils:
-
     GRASS_REGION_XMIN = 'GRASS7_REGION_XMIN'
     GRASS_REGION_YMIN = 'GRASS7_REGION_YMIN'
     GRASS_REGION_XMAX = 'GRASS7_REGION_XMAX'
@@ -130,6 +129,7 @@ class Grass7Utils:
         Find GRASS binary path on the operating system.
         Sets global variable Grass7Utils.command
         """
+
         def searchFolder(folder):
             """
             Inline function to search for grass binaries into a folder
@@ -470,7 +470,7 @@ class Grass7Utils:
     # the layers.
     @staticmethod
     def endGrassSession():
-        #shutil.rmtree(Grass7Utils.grassMapsetFolder(), True)
+        # shutil.rmtree(Grass7Utils.grassMapsetFolder(), True)
         Grass7Utils.sessionRunning = False
         Grass7Utils.sessionLayers = {}
         Grass7Utils.projectionSet = False

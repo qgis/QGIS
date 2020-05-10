@@ -55,7 +55,6 @@ try:
 except:
     QGIS_SERVER_ENDPOINT_PORT = '0'  # Auto
 
-
 QGIS_AUTH_DB_DIR_PATH = tempfile.mkdtemp()
 
 os.environ['QGIS_AUTH_DB_DIR_PATH'] = QGIS_AUTH_DB_DIR_PATH
@@ -160,7 +159,7 @@ class TestAuthManager(unittest.TestCase):
             'layers': urllib.parse.quote(layers.replace('_', ' ')),
             'styles': '',
             'version': 'auto',
-            #'sql': '',
+            # 'sql': '',
         }
         if authcfg is not None:
             parms.update({'authcfg': authcfg})
@@ -279,7 +278,7 @@ class TestAuthManager(unittest.TestCase):
             self.assertTrue(b'PNG' in f.read())  # is a PNG
 
     def _set_slot(self, *args, **kwargs):
-        #print('_set_slot(%s) called' % args[0])
+        # print('_set_slot(%s) called' % args[0])
         setattr(self, args[0] + '_was_called', True)
         setattr(self, args[0] + '_args', args)
 

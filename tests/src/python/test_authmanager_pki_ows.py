@@ -50,7 +50,6 @@ try:
 except:
     QGIS_SERVER_ENDPOINT_PORT = '0'  # Auto
 
-
 QGIS_AUTH_DB_DIR_PATH = tempfile.mkdtemp()
 
 os.environ['QGIS_AUTH_DB_DIR_PATH'] = QGIS_AUTH_DB_DIR_PATH

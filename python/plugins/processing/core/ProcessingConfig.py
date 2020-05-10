@@ -44,7 +44,6 @@ settingsWatcher = SettingsWatcher()
 
 
 class ProcessingConfig:
-
     OUTPUT_FOLDER = 'OUTPUTS_FOLDER'
     RASTER_STYLE = 'RASTER_STYLE'
     VECTOR_POINT_STYLE = 'VECTOR_POINT_STYLE'
@@ -142,8 +141,8 @@ class ProcessingConfig:
             valuetype=Setting.SELECTION,
             options=invalidFeaturesOptions))
 
-        threads = QgsApplication.maxThreads() # if user specified limit for rendering, lets keep that as default here, otherwise max
-        threads = cpu_count() if threads == -1 else threads # if unset, maxThreads() returns -1
+        threads = QgsApplication.maxThreads()  # if user specified limit for rendering, lets keep that as default here, otherwise max
+        threads = cpu_count() if threads == -1 else threads  # if unset, maxThreads() returns -1
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.MAX_THREADS,
@@ -248,7 +247,6 @@ class ProcessingConfig:
 
 
 class Setting:
-
     """A simple config parameter that will appear on the config dialog.
     """
     STRING = 0
@@ -283,6 +281,7 @@ class Setting:
                         float(v)
                     except ValueError:
                         raise ValueError(self.tr('Wrong parameter value:\n{0}').format(v))
+
                 validator = checkFloat
             elif self.valuetype == self.INT:
                 def checkInt(v):
@@ -290,11 +289,13 @@ class Setting:
                         int(v)
                     except ValueError:
                         raise ValueError(self.tr('Wrong parameter value:\n{0}').format(v))
+
                 validator = checkInt
             elif self.valuetype in [self.FILE, self.FOLDER]:
                 def checkFileOrFolder(v):
                     if v and not os.path.exists(v):
                         raise ValueError(self.tr('Specified path does not exist:\n{0}').format(v))
+
                 validator = checkFileOrFolder
             elif self.valuetype == self.MULTIPLE_FOLDERS:
                 def checkMultipleFolders(v):
@@ -302,6 +303,7 @@ class Setting:
                     for f in folders:
                         if f and not os.path.exists(f):
                             raise ValueError(self.tr('Specified path does not exist:\n{0}').format(f))
+
                 validator = checkMultipleFolders
             else:
                 def validator(x):

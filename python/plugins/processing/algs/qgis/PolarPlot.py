@@ -34,7 +34,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 
 class PolarPlot(QgisAlgorithm):
-
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     NAME_FIELD = 'NAME_FIELD'

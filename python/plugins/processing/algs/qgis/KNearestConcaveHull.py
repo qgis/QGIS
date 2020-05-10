@@ -113,7 +113,7 @@ class KNearestConcaveHull(QgisAlgorithm):
         if use_field:
             field_index = source.fields().lookupField(field_name)
             if field_index >= 0:
-                fields.append(source.fields()[field_index]) # Add a field with the name of the grouping field
+                fields.append(source.fields()[field_index])  # Add a field with the name of the grouping field
 
                 # Initialize writer
                 (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
@@ -173,7 +173,7 @@ class KNearestConcaveHull(QgisAlgorithm):
             points = []
             request = QgsFeatureRequest()
             request.setSubsetOfAttributes([])
-            features = source.getFeatures(request) # Get all features
+            features = source.getFeatures(request)  # Get all features
             total = 100.0 / source.featureCount() if source.featureCount() else 0
             for in_feature in features:
                 if feedback.isCanceled():
@@ -422,6 +422,7 @@ def sort_by_angle(list_of_points, last_point, last_angle):
     in a clockwise direction. Thus, the rightmost of the neighboring points is always selected. The first point of
     this list will be the next point of the envelope.
     """
+
     def getkey(item):
         return angle_difference(last_angle, angle(last_point, item))
 

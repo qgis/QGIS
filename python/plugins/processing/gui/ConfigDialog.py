@@ -56,7 +56,6 @@ from processing.core.Processing import Processing
 from processing.gui.DirectorySelectorDialog import DirectorySelectorDialog
 from processing.gui.menus import defaultMenuEntries, menusSettingsGroup
 
-
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)

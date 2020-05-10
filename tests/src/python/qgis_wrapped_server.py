@@ -131,7 +131,6 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '05/15/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-
 # Needed on Qt 5 so that the serialization of XML is consistent among all
 # executions
 os.environ['QT_HASH_SEED'] = '1'
@@ -198,10 +197,8 @@ QGIS_SERVER_OAUTH2_AUTH = (
 
 HTTPS_ENABLED = QGIS_SERVER_PKI_AUTH or QGIS_SERVER_OAUTH2_AUTH
 
-
 qgs_app = QgsApplication([], False)
 qgs_server = QgsServer()
-
 
 if QGIS_SERVER_HTTP_BASIC_AUTH:
     from qgis.server import QgsServerFilter
@@ -306,7 +303,7 @@ if QGIS_SERVER_OAUTH2_AUTH:
         def get_default_scopes(self, client_id, request, *args, **kwargs):
             # Scopes a client will authorize for if none are supplied in the
             # authorization request.
-            return ('my_scope', )
+            return ('my_scope',)
 
         def validate_scopes(self, client_id, scopes, client, request, *args, **kwargs):
             """Wide open"""
