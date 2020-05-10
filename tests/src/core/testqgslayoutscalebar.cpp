@@ -138,6 +138,7 @@ void TestQgsLayoutScaleBar::singleBox()
   scalebar->setNumberOfSegmentsLeft( 0 );
   scalebar->setNumberOfSegments( 2 );
   scalebar->setHeight( 5 );
+  scalebar->setSubdivisionsHeight( 25 ); //ensure subdivisionsHeight is non used in non tick-style scalebars
   Q_NOWARN_DEPRECATED_PUSH
   scalebar->setLineWidth( 1.0 );
   Q_NOWARN_DEPRECATED_POP
@@ -331,6 +332,7 @@ void TestQgsLayoutScaleBar::doubleBox()
   scalebar->setNumberOfSegmentsLeft( 0 );
   scalebar->setNumberOfSegments( 2 );
   scalebar->setHeight( 5 );
+  scalebar->setSubdivisionsHeight( 25 ); //ensure subdivisionsHeight is non used in non tick-style scalebars
   Q_NOWARN_DEPRECATED_PUSH
   scalebar->setLineWidth( 1.0 );
   scalebar->setFillColor( Qt::black );
@@ -495,6 +497,7 @@ void TestQgsLayoutScaleBar::numeric()
   scalebar->setNumberOfSegmentsLeft( 0 );
   scalebar->setNumberOfSegments( 2 );
   scalebar->setHeight( 5 );
+  scalebar->setSubdivisionsHeight( 25 ); //ensure subdivisionsHeight is non used in non tick-style scalebars
   Q_NOWARN_DEPRECATED_PUSH
   scalebar->setLineWidth( 1.0 );
   Q_NOWARN_DEPRECATED_POP
@@ -760,6 +763,7 @@ void TestQgsLayoutScaleBar::steppedLine()
   scalebar->setNumberOfSegmentsLeft( 2 );
   scalebar->setNumberOfSegments( 2 );
   scalebar->setHeight( 20 );
+  scalebar->setSubdivisionsHeight( 25 ); //ensure subdivisionsHeight is non used in non tick-style scalebars
 
   std::unique_ptr< QgsLineSymbol > lineSymbol = qgis::make_unique< QgsLineSymbol >();
   std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >();
@@ -804,6 +808,7 @@ void TestQgsLayoutScaleBar::hollow()
   scalebar->setNumberOfSegmentsLeft( 2 );
   scalebar->setNumberOfSegments( 2 );
   scalebar->setHeight( 20 );
+  scalebar->setSubdivisionsHeight( 25 ); //ensure subdivisionsHeight is non used in non tick-style scalebars
 
   std::unique_ptr< QgsLineSymbol > lineSymbol = qgis::make_unique< QgsLineSymbol >();
   std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >();

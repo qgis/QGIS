@@ -386,6 +386,7 @@ QgsScaleBarRenderer::ScaleBarContext QgsLayoutItemScaleBar::createScaleContext()
   scaleContext.size = rect().size();
   scaleContext.segmentWidth = mSegmentMillimeters;
   scaleContext.scale = mMap ? mMap->scale() : 1.0;
+  scaleContext.flags = mStyle->flags();
   return scaleContext;
 }
 
