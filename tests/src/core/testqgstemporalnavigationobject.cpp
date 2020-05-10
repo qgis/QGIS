@@ -181,6 +181,9 @@ void TestQgsTemporalNavigationObject::expressionContext()
   QCOMPARE( scope->variable( QStringLiteral( "frame_rate" ) ).toDouble(), 30.0 );
   QCOMPARE( scope->variable( QStringLiteral( "frame_duration" ) ).value< QgsInterval >().seconds(), 3600.0 );
   QCOMPARE( scope->variable( QStringLiteral( "frame_number" ) ).toInt(), 1 );
+  QCOMPARE( scope->variable( QStringLiteral( "animation_start_time" ) ).toDateTime(), range.begin() );
+  QCOMPARE( scope->variable( QStringLiteral( "animation_end_time" ) ).toDateTime(), range.end() );
+  QCOMPARE( scope->variable( QStringLiteral( "animation_interval" ) ).value< QgsInterval >(), range.end() - range.begin() );
 }
 
 QGSTEST_MAIN( TestQgsTemporalNavigationObject )

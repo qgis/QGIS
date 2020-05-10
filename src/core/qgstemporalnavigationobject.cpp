@@ -75,6 +75,9 @@ QgsExpressionContextScope *QgsTemporalNavigationObject::createExpressionContextS
   scope->setVariable( QStringLiteral( "frame_rate" ), mFramesPerSecond, true );
   scope->setVariable( QStringLiteral( "frame_number" ), mCurrentFrameNumber, true );
   scope->setVariable( QStringLiteral( "frame_duration" ), mFrameDuration, true );
+  scope->setVariable( QStringLiteral( "animation_start_time" ), mTemporalExtents.begin(), true );
+  scope->setVariable( QStringLiteral( "animation_end_time" ), mTemporalExtents.end(), true );
+  scope->setVariable( QStringLiteral( "animation_interval" ), mTemporalExtents.end() - mTemporalExtents.begin(), true );
   return scope.release();
 }
 
