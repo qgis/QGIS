@@ -285,7 +285,7 @@ namespace QgsWms
             legendNode->setUserLabel( QStringLiteral( " " ) );
           }
         }
-        else if (ruleLabel.compare( QStringLiteral( "AUTO" ), Qt::CaseInsensitive ) == 0)
+        else if ( ruleLabel.compare( QStringLiteral( "AUTO" ), Qt::CaseInsensitive ) == 0 )
         {
           for ( QgsLayerTreeModelLegendNode *legendNode : model->layerLegendNodes( nodeLayer ) )
           {
