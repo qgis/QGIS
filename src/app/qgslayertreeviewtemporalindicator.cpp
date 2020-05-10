@@ -23,6 +23,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
+#include "qgsmaplayertemporalproperties.h"
 #include "qgisapp.h"
 
 QgsLayerTreeViewTemporalIndicatorProvider::QgsLayerTreeViewTemporalIndicatorProvider( QgsLayerTreeView *view )

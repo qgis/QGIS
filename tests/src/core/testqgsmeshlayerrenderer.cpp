@@ -35,6 +35,7 @@
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmeshmemorydataprovider.h"
 #include "qgsmesh3daveraging.h"
+#include "qgsmeshlayertemporalproperties.h"
 
 //qgis test includes
 #include "qgsrenderchecker.h"

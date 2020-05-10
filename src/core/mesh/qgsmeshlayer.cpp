@@ -254,7 +254,7 @@ void QgsMeshLayer::setTimeSettings( const QgsMeshTimeSettings &settings )
 QString QgsMeshLayer::formatTime( double hours )
 {
   if ( dataProvider() && dataProvider()->temporalCapabilities()->hasReferenceTime() )
-    return QgsMeshLayerUtils::formatTime( hours, temporalProperties()->referenceTime(), mTimeSettings );
+    return QgsMeshLayerUtils::formatTime( hours, mTemporalProperties->referenceTime(), mTimeSettings );
   else
     return QgsMeshLayerUtils::formatTime( hours, QDateTime(), mTimeSettings );
 }
@@ -486,9 +486,9 @@ QgsMeshDatasetIndex QgsMeshLayer::staticVectorDatasetIndex() const
 void QgsMeshLayer::setReferenceTime( const QDateTime &referenceTime )
 {
   if ( dataProvider() )
-    temporalProperties()->setReferenceTime( referenceTime, dataProvider()->temporalCapabilities() );
+    mTemporalProperties->setReferenceTime( referenceTime, dataProvider()->temporalCapabilities() );
   else
-    temporalProperties()->setReferenceTime( referenceTime, nullptr );
+    mTemporalProperties->setReferenceTime( referenceTime, nullptr );
 }
 
 QgsPointXY QgsMeshLayer::snapOnVertex( const QgsPointXY &point, double searchRadius )
@@ -825,7 +825,7 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
 
   // read temporal
   temporalProperties()->readXml( layer_node.toElement(), context );
-  if ( !temporalProperties()->timeExtent().begin().isValid() )
+  if ( !mTemporalProperties->timeExtent().begin().isValid() )
     temporalProperties()->setDefaultsFromDataProviderTemporalCapabilities( dataProvider()->temporalCapabilities() );
 
 
@@ -964,7 +964,7 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
   return true;
 }
 
-QgsMeshLayerTemporalProperties *QgsMeshLayer::temporalProperties()
+QgsMapLayerTemporalProperties *QgsMeshLayer::temporalProperties()
 {
-  return  mTemporalProperties;
+  return mTemporalProperties;
 }

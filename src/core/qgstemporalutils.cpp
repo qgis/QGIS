@@ -20,6 +20,8 @@
 #include "qgsmeshlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayertemporalproperties.h"
+#include "qgsrasterlayertemporalproperties.h"
+#include "qgsmeshlayertemporalproperties.h"
 
 QgsDateTimeRange QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject *project )
 {
@@ -41,12 +43,13 @@ QgsDateTimeRange QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject 
     {
       case QgsMapLayerType::RasterLayer:
       {
-        QgsRasterLayer *rasterLayer  = qobject_cast<QgsRasterLayer *>( currentLayer );
+        QgsRasterLayer *rasterLayer = qobject_cast< QgsRasterLayer *>( currentLayer );
+        const QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< const QgsRasterLayerTemporalProperties * >( rasterLayer->temporalProperties() );
 
-        switch ( rasterLayer->temporalProperties()->mode() )
+        switch ( temporalProperties->mode() )
         {
           case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
-            layerRange = rasterLayer->temporalProperties()->fixedTemporalRange();
+            layerRange = temporalProperties->fixedTemporalRange();
             break;
 
           case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
@@ -111,7 +114,8 @@ QgsDateTimeRange QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject 
       case QgsMapLayerType::MeshLayer:
       {
         QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( currentLayer );
-        layerRange = meshLayer->temporalProperties()->timeExtent();
+        const QgsMeshLayerTemporalProperties *temporalProperties = qobject_cast< const QgsMeshLayerTemporalProperties * >( meshLayer->temporalProperties() );
+        layerRange = temporalProperties->timeExtent();
         break;
       }
 

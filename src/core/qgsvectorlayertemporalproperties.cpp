@@ -18,6 +18,7 @@
 #include "qgsvectorlayertemporalproperties.h"
 #include "qgsvectordataprovidertemporalcapabilities.h"
 #include "qgsexpression.h"
+#include "qgsvectorlayer.h"
 
 QgsVectorLayerTemporalProperties::QgsVectorLayerTemporalProperties( QObject *parent, bool enabled )
   :  QgsMapLayerTemporalProperties( parent, enabled )
