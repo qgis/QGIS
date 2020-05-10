@@ -257,11 +257,11 @@
            <string>Temporal</string>
           </property>
           <property name="toolTip">
-           <string>Temporal</string>
+           <string>Temporal Settings</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/mIndicatorTemporal.svg</normaloff>:/images/themes/default/mIndicatorTemporal.svg</iconset>
+            <normaloff>:/images/themes/default/propertyicons/temporal.svg</normaloff>:/images/themes/default/propertyicons/temporal.svg</iconset>
           </property>
          </item>
          <item>
