@@ -33,6 +33,7 @@
 #include "qgsproject.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsrenderermeshpropertieswidget.h"
+#include "qgsmeshlayertemporalproperties.h"
 #include "qgssettings.h"
 #include "qgsprojecttimesettings.h"
 #include "qgsproviderregistry.h"
@@ -195,8 +196,9 @@ void QgsMeshLayerProperties::syncToLayer()
   mSimplifyMeshResolutionSpinBox->setValue( simplifySettings.meshResolution() );
 
   QgsDebugMsgLevel( QStringLiteral( "populate temporal tab" ), 4 );
-  whileBlocking( mTemporalDateTimeReference )->setDateTime( mMeshLayer->temporalProperties()->referenceTime() );
-  const QgsDateTimeRange timeRange = mMeshLayer->temporalProperties()->timeExtent();
+  const QgsMeshLayerTemporalProperties *temporalProperties = qobject_cast< const QgsMeshLayerTemporalProperties * >( mMeshLayer->temporalProperties() );
+  whileBlocking( mTemporalDateTimeReference )->setDateTime( temporalProperties->referenceTime() );
+  const QgsDateTimeRange timeRange = temporalProperties->timeExtent();
   mTemporalDateTimeStart->setDateTime( timeRange.begin() );
   mTemporalDateTimeEnd->setDateTime( timeRange.end() );
   if ( mMeshLayer->dataProvider() )
@@ -235,17 +237,19 @@ void QgsMeshLayerProperties::addDataset()
   bool ok = mMeshLayer->dataProvider()->addDataset( openFileString );
   if ( ok )
   {
+    QgsMeshLayerTemporalProperties *temporalProperties = qobject_cast< QgsMeshLayerTemporalProperties * >( mMeshLayer->temporalProperties() );
+
     if ( !isTemporalBefore && mMeshLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
     {
-      mMeshLayer->temporalProperties()->setDefaultsFromDataProviderTemporalCapabilities(
+      temporalProperties->setDefaultsFromDataProviderTemporalCapabilities(
         mMeshLayer->dataProvider()->temporalCapabilities() );
 
-      if ( ! mMeshLayer->temporalProperties()->referenceTime().isValid() )
+      if ( ! temporalProperties->referenceTime().isValid() )
       {
         QDateTime referenceTime = QgsProject::instance()->timeSettings()->temporalRange().begin();
         if ( !referenceTime.isValid() ) // If project reference time is invalid, use current date
           referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) );
-        mMeshLayer->temporalProperties()->setReferenceTime( referenceTime, mMeshLayer->dataProvider()->temporalCapabilities() );
+        temporalProperties->setReferenceTime( referenceTime, mMeshLayer->dataProvider()->temporalCapabilities() );
       }
     }
 

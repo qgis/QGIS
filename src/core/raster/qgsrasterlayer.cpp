@@ -53,6 +53,7 @@ email                : tim at linfiniti.com
 #include "qgsgdalprovider.h"
 #include "qgsbilinearrasterresampler.h"
 #include "qgscubicrasterresampler.h"
+#include "qgsrasterlayertemporalproperties.h"
 
 #include <cmath>
 #include <cstdio>
@@ -961,7 +962,7 @@ bool QgsRasterLayer::ignoreExtents() const
   return mDataProvider ? mDataProvider->ignoreExtents() : false;
 }
 
-QgsRasterLayerTemporalProperties *QgsRasterLayer::temporalProperties()
+QgsMapLayerTemporalProperties *QgsRasterLayer::temporalProperties()
 {
   return mTemporalProperties;
 }

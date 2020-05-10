@@ -26,7 +26,6 @@
 #include "qgsmeshrenderersettings.h"
 #include "qgsmeshtimesettings.h"
 #include "qgsmeshsimplificationsettings.h"
-#include "qgsmeshlayertemporalproperties.h"
 
 class QgsMapLayerRenderer;
 struct QgsMeshLayerRendererCache;
@@ -35,6 +34,7 @@ class QgsTriangularMesh;
 class QgsRenderContext;
 struct QgsMesh;
 class QgsMesh3dAveragingMethod;
+class QgsMeshLayerTemporalProperties;
 
 /**
  * \ingroup core
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const override;
     bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) override;
     bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
-    QgsMeshLayerTemporalProperties *temporalProperties() override;
+    QgsMapLayerTemporalProperties *temporalProperties() override;
     void reload() override;
     QStringList subLayers() const override;
 

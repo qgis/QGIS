@@ -138,7 +138,7 @@ QgsMeshLayer cannot be copied.
 
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
-    virtual QgsMeshLayerTemporalProperties *temporalProperties();
+    virtual QgsMapLayerTemporalProperties *temporalProperties();
 
     virtual void reload();
 

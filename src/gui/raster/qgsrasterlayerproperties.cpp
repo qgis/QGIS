@@ -62,6 +62,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
+#include "qgsrasterlayertemporalproperties.h"
 
 #include "qgsrasterlayertemporalpropertieswidget.h"
 #include "qgsprojecttimesettings.h"
@@ -1277,7 +1278,7 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
     bool enableTime = !mDisableTime->isChecked();
 
     uri[ QStringLiteral( "enableTime" ) ] = enableTime;
-    mRasterLayer->temporalProperties()->setIntervalHandlingMethod( static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >(
+    qobject_cast< QgsRasterLayerTemporalProperties * >( mRasterLayer->temporalProperties() )->setIntervalHandlingMethod( static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >(
           mFetchModeComboBox->currentData().toInt() ) );
   }
   mRasterLayer->setDataSource( metadata->encodeUri( uri ), mRasterLayer->name(), mRasterLayer->providerType(), QgsDataProvider::ProviderOptions() );
@@ -1348,7 +1349,7 @@ void QgsRasterLayerProperties::setSourceStaticTimeState()
     mFetchModeComboBox->addItem( tr( "Match to End of Range" ), QgsRasterDataProviderTemporalCapabilities::MatchExactUsingEndOfRange );
     mFetchModeComboBox->addItem( tr( "Closest Match to Start of Range" ), QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToStartOfRange );
     mFetchModeComboBox->addItem( tr( "Closest Match to End of Range" ), QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToEndOfRange );
-    mFetchModeComboBox->setCurrentIndex( mFetchModeComboBox->findData( mRasterLayer->temporalProperties()->intervalHandlingMethod() ) );
+    mFetchModeComboBox->setCurrentIndex( mFetchModeComboBox->findData( qobject_cast< QgsRasterLayerTemporalProperties * >( mRasterLayer->temporalProperties() )->intervalHandlingMethod() ) );
 
     const QString temporalSource = uri.value( QStringLiteral( "temporalSource" ) ).toString();
     bool enableTime = uri.value( QStringLiteral( "enableTime" ), true ).toBool();

@@ -24,7 +24,7 @@
 #include "qgsrendercontext.h"
 #include "qgsproject.h"
 #include "qgsexception.h"
-
+#include "qgsrasterlayertemporalproperties.h"
 
 ///@cond PRIVATE
 
@@ -229,9 +229,10 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   if ( rasterRenderer && !( rendererContext.flags() & QgsRenderContext::RenderPreviewJob ) )
     layer->refreshRendererIfNeeded( rasterRenderer, rendererContext.extent() );
 
-  if ( layer->temporalProperties()->isActive() && renderContext()->isTemporal() )
+  const QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< const QgsRasterLayerTemporalProperties * >( layer->temporalProperties() );
+  if ( temporalProperties->isActive() && renderContext()->isTemporal() )
   {
-    switch ( layer->temporalProperties()->mode() )
+    switch ( temporalProperties->mode() )
     {
       case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
         break;
@@ -241,7 +242,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
         if ( mPipe->provider()->temporalCapabilities() )
         {
           mPipe->provider()->temporalCapabilities()->setRequestedTemporalRange( rendererContext.temporalRange() );
-          mPipe->provider()->temporalCapabilities()->setIntervalHandlingMethod( layer->temporalProperties()->intervalHandlingMethod() );
+          mPipe->provider()->temporalCapabilities()->setIntervalHandlingMethod( temporalProperties->intervalHandlingMethod() );
         }
         break;
     }
@@ -249,7 +250,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   else if ( mPipe->provider()->temporalCapabilities() )
   {
     mPipe->provider()->temporalCapabilities()->setRequestedTemporalRange( QgsDateTimeRange() );
-    mPipe->provider()->temporalCapabilities()->setIntervalHandlingMethod( layer->temporalProperties()->intervalHandlingMethod() );
+    mPipe->provider()->temporalCapabilities()->setIntervalHandlingMethod( temporalProperties->intervalHandlingMethod() );
   }
 }
 
