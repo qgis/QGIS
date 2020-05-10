@@ -266,6 +266,7 @@ namespace QgsWms
     if ( parameters.rule().isEmpty() )
     {
       QList<QgsLayerTreeNode *> children = tree.children();
+      QString ruleLabel = parameters.ruleLabel();
       for ( QgsLayerTreeNode *node : children )
       {
         if ( ! QgsLayerTree::isLayer( node ) )
@@ -284,13 +285,12 @@ namespace QgsWms
             legendNode->setUserLabel( QStringLiteral( " " ) );
           }
         }
-        // rulelabel is not set or true
-        else if ( !parameters.layerTitleAsBool() )
+        else if (ruleLabel.compare( QStringLiteral( "AUTO" ), Qt::CaseInsensitive ) == 0)
         {
           for ( QgsLayerTreeModelLegendNode *legendNode : model->layerLegendNodes( nodeLayer ) )
           {
-            //clearing label when rulelabel is not set and only for single symbol
-            if ( legendNode->isEmbeddedInParent() && parameters.ruleLabel().isEmpty() )
+            //clearing label for single symbol
+            if ( legendNode->isEmbeddedInParent() )
               legendNode->setEmbeddedInParent( false );
           }
         }
