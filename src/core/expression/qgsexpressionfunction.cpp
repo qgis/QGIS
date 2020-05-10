@@ -5626,21 +5626,16 @@ static QVariant fcnHashSha256( const QVariantList &values, const QgsExpressionCo
 
 static QVariant fcnToBase64( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QString value = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-
-  const QByteArray input = value.toLocal8Bit();
-
+  const QByteArray input = values.at( 0 ).toByteArray();
   return QVariant( QString( input.toBase64() ) );
 }
 
 static QVariant fcnFromBase64( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QString value = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-
+  const QString value = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   const QByteArray base64 = value.toLocal8Bit();
   const QByteArray decoded = QByteArray::fromBase64( base64 );
-
-  return QVariant( QString( decoded ) );
+  return QVariant( decoded );
 }
 
 const QList<QgsExpressionFunction *> &QgsExpression::Functions()
