@@ -63,7 +63,7 @@ bool QgsProjectTimeSettings::readXml( const QDomElement &element, const QgsReadW
   mTimeStepUnit = QgsUnitTypes::decodeTemporalUnit( element.attribute( QStringLiteral( "timeStepUnit" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::TemporalHours ) ) );
   mTimeStep = element.attribute( QStringLiteral( "timeStep" ), "1" ).toDouble();
   mFrameRate = element.attribute( QStringLiteral( "frameRate" ), "1" ).toDouble();
-  mCumulativeTemporalRange = element.attribute( QStringLiteral( "cumulativeTemporalRange" ), "0" ).toInt() == 1 ? true : false;
+  mCumulativeTemporalRange = element.attribute( QStringLiteral( "cumulativeTemporalRange" ), "0" ).toInt();
 
   return true;
 }
