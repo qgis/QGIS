@@ -47,7 +47,7 @@ from qgis.utils import OverrideCursor
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=ResourceWarning)
     warnings.filterwarnings("ignore", category=ImportWarning)
-    from owslib.csw import CatalogueServiceWeb # spellok
+    from owslib.csw import CatalogueServiceWeb  # spellok
 
 from owslib.fes import BBox, PropertyIsLike
 from owslib.ows import ExceptionReport
@@ -66,7 +66,6 @@ BASE_CLASS = get_ui_class('maindialog.ui')
 
 
 class MetaSearchDialog(QDialog, BASE_CLASS):
-
     """main dialogue"""
 
     def __init__(self, iface):
@@ -765,6 +764,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         elif service_type == 'OGC:WFS':
             def addVectorLayer(path, name):
                 self.iface.mainWindow().addVectorLayer(path, name, 'WFS')
+
             ows_provider.addVectorLayer.connect(addVectorLayer)
             conn_cmb = ows_provider.findChild(QWidget, 'cmbConnections')
             connect = 'connectToServer'
@@ -779,6 +779,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         elif service_type == 'ESRI:ArcGIS:FeatureServer':
             def addAfsLayer(path, name):
                 self.iface.mainWindow().addVectorLayer(path, name, 'afs')
+
             ows_provider.addVectorLayer.connect(addAfsLayer)
             conn_cmb = ows_provider.findChild(QComboBox)
             connect = 'connectToServer'
@@ -827,7 +828,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         try:
             with OverrideCursor(Qt.WaitCursor):
-                cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout, # spellok
+                cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout,  # spellok
                                           username=self.catalog_username,
                                           password=self.catalog_password)
                 cat.getrecordbyid(
@@ -902,12 +903,12 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.rubber_band.reset()
 
     def _get_csw(self):
-        """convenience function to init owslib.csw.CatalogueServiceWeb""" # spellok
+        """convenience function to init owslib.csw.CatalogueServiceWeb"""  # spellok
 
         # connect to the server
         with OverrideCursor(Qt.WaitCursor):
             try:
-                self.catalog = CatalogueServiceWeb(self.catalog_url, # spellok
+                self.catalog = CatalogueServiceWeb(self.catalog_url,  # spellok
                                                    timeout=self.timeout,
                                                    username=self.catalog_username,
                                                    password=self.catalog_password)

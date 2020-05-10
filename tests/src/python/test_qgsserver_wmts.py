@@ -40,14 +40,13 @@ RE_ATTRIBUTES = br'[^>\s]+=[^>\s]+'
 
 
 class TestQgsServerWMTS(QgsServerTestBase):
-
     """QGIS Server WMTS Tests"""
 
     # Set to True to re-generate reference files for this class
     regenerate_reference = False
 
     def wmts_request_compare(self, request, version='', extra_query_string='', reference_base_name=None):
-        #project = self.testdata_path + "test_project_wfs.qgs"
+        # project = self.testdata_path + "test_project_wfs.qgs"
         project = self.projectGroupsPath
         assert os.path.exists(project), "Project file not found: " + project
 
@@ -79,7 +78,8 @@ class TestQgsServerWMTS(QgsServerTestBase):
 
         self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s" % (query_string, request))
 
-    def wmts_request_compare_project(self, project, request, version='', extra_query_string='', reference_base_name=None):
+    def wmts_request_compare_project(self, project, request, version='', extra_query_string='',
+                                     reference_base_name=None):
         query_string = 'https://www.qgis.org/?SERVICE=WMTS&REQUEST=%s' % (request)
         if version:
             query_string += '&VERSION=%s' % version
@@ -116,7 +116,7 @@ class TestQgsServerWMTS(QgsServerTestBase):
         """Test some WMTS request"""
         for request in ('GetCapabilities',):
             self.wmts_request_compare(request)
-            #self.wmts_request_compare(request, '1.0.0')
+            # self.wmts_request_compare(request, '1.0.0')
 
     def test_wmts_gettile(self):
         # Testing project WMTS layer
@@ -327,9 +327,11 @@ class TestQgsServerWMTS(QgsServerTestBase):
         self.assertTrue(project.removeEntry('WMTSGrids', 'CRS'))
         self.wmts_request_compare_project(project, 'GetCapabilities', reference_base_name='wmts_getcapabilities_config')
 
-        self.assertTrue(project.writeEntry('WMTSGrids', 'Config', ('EPSG:3857,20037508.342789248,-20037508.342789248,559082264.0287179,20',)))
+        self.assertTrue(project.writeEntry('WMTSGrids', 'Config',
+                                           ('EPSG:3857,20037508.342789248,-20037508.342789248,559082264.0287179,20',)))
         self.assertTrue(project.writeEntry('WMTSGrids', 'CRS', ('EPSG:3857',)))
-        self.wmts_request_compare_project(project, 'GetCapabilities', reference_base_name='wmts_getcapabilities_config_3857')
+        self.wmts_request_compare_project(project, 'GetCapabilities',
+                                          reference_base_name='wmts_getcapabilities_config_3857')
 
 
 if __name__ == '__main__':

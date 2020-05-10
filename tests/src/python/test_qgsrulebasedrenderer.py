@@ -112,7 +112,7 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
 
     def testWillRenderFeature(self):
         vl = self.mapsettings.layers()[0]
-        ft = vl.getFeature(0) # 'id' = 1
+        ft = vl.getFeature(0)  # 'id' = 1
         renderer = vl.renderer()
 
         ctx = QgsRenderContext.fromMapSettings(self.mapsettings)
@@ -122,20 +122,20 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         renderer.rootRule().children()[1].setActive(True)
         renderer.rootRule().children()[2].setActive(True)
 
-        renderer.startRender(ctx, vl.fields()) # build mActiveChlidren
+        renderer.startRender(ctx, vl.fields())  # build mActiveChlidren
         rendered = renderer.willRenderFeature(ft, ctx)
         renderer.stopRender(ctx)
         renderer.rootRule().children()[0].setActive(True)
         self.assertFalse(rendered)
 
-        renderer.startRender(ctx, vl.fields()) # build mActiveChlidren
+        renderer.startRender(ctx, vl.fields())  # build mActiveChlidren
         rendered = renderer.willRenderFeature(ft, ctx)
         renderer.stopRender(ctx)
         self.assertTrue(rendered)
 
     def testWillRenderFeatureNestedElse(self):
         vl = self.mapsettings.layers()[0]
-        ft = vl.getFeature(0) # 'id' = 1
+        ft = vl.getFeature(0)  # 'id' = 1
 
         ctx = QgsRenderContext.fromMapSettings(self.mapsettings)
         ctx.expressionContext().setFeature(ft)
@@ -171,7 +171,7 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
 
     def testFeatureCount(self):
         vl = self.mapsettings.layers()[0]
-        ft = vl.getFeature(2) # 'id' = 3 => ELSE
+        ft = vl.getFeature(2)  # 'id' = 3 => ELSE
         renderer = vl.renderer()
 
         ctx = QgsRenderContext.fromMapSettings(self.mapsettings)
@@ -345,7 +345,7 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         """Regression #21287, also test rulesForFeature since there were no tests any where and I've found a couple of issues"""
 
         vl = self.mapsettings.layers()[0]
-        ft = vl.getFeature(0) # 'id' = 1
+        ft = vl.getFeature(0)  # 'id' = 1
 
         ctx = QgsRenderContext.fromMapSettings(self.mapsettings)
         ctx.expressionContext().setFeature(ft)
@@ -356,7 +356,7 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         sym4 = QgsFillSymbol.createSimple({'color': '#ff00ff', 'outline_color': 'black'})
 
         self.rx2 = QgsRuleBasedRenderer.Rule(sym2, 0, 0, '"id" = 200')
-        self.rx3 = QgsRuleBasedRenderer.Rule(sym3, 1000, 100000000, 'ELSE') # <<< - match this!
+        self.rx3 = QgsRuleBasedRenderer.Rule(sym3, 1000, 100000000, 'ELSE')  # <<< - match this!
         self.rx4 = QgsRuleBasedRenderer.Rule(sym4, 0.1, 999, 'ELSE')
 
         rootrule = QgsRuleBasedRenderer.Rule(None)

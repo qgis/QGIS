@@ -471,7 +471,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertEqual(f.buffer().blendMode(), QPainter.CompositionMode_ColorBurn)
 
         # join style
-        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.BufferJoinStyle, QgsProperty.fromExpression("'miter'"))
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.BufferJoinStyle,
+                                              QgsProperty.fromExpression("'miter'"))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.buffer().joinStyle(), Qt.MiterJoin)
 
@@ -576,13 +577,16 @@ class PyQgsTextRenderer(unittest.TestCase):
         f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeRotation, QgsProperty.fromExpression('67'))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.background().rotation(), 67)
-        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeRotationType, QgsProperty.fromExpression("'offset'"))
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeRotationType,
+                                              QgsProperty.fromExpression("'offset'"))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.background().rotationType(), QgsTextBackgroundSettings.RotationOffset)
-        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeRotationType, QgsProperty.fromExpression("'fixed'"))
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeRotationType,
+                                              QgsProperty.fromExpression("'fixed'"))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.background().rotationType(), QgsTextBackgroundSettings.RotationFixed)
-        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeRotationType, QgsProperty.fromExpression("'sync'"))
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeRotationType,
+                                              QgsProperty.fromExpression("'sync'"))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.background().rotationType(), QgsTextBackgroundSettings.RotationSync)
 
@@ -590,7 +594,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeOffset, QgsProperty.fromExpression("'7,9'"))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.background().offset(), QPointF(7, 9))
-        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeOffsetUnits, QgsProperty.fromExpression("'pixel'"))
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeOffsetUnits,
+                                              QgsProperty.fromExpression("'pixel'"))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.background().offsetUnit(), QgsUnitTypes.RenderPixels)
 
@@ -598,7 +603,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeRadii, QgsProperty.fromExpression("'18,19'"))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.background().radii(), QSizeF(18, 19))
-        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeRadiiUnits, QgsProperty.fromExpression("'pixel'"))
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeRadiiUnits,
+                                              QgsProperty.fromExpression("'pixel'"))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.background().radiiUnit(), QgsUnitTypes.RenderPixels)
 
@@ -608,10 +614,12 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertEqual(f.background().opacity(), 0.37)
 
         # color
-        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeFillColor, QgsProperty.fromExpression("'#ff0088'"))
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeFillColor,
+                                              QgsProperty.fromExpression("'#ff0088'"))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.background().fillColor().name(), '#ff0088')
-        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeStrokeColor, QgsProperty.fromExpression("'#8800ff'"))
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeStrokeColor,
+                                              QgsProperty.fromExpression("'#8800ff'"))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.background().strokeColor().name(), '#8800ff')
 
@@ -619,7 +627,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeStrokeWidth, QgsProperty.fromExpression('88'))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.background().strokeWidth(), 88)
-        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeStrokeWidthUnits, QgsProperty.fromExpression("'pixel'"))
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShapeStrokeWidthUnits,
+                                              QgsProperty.fromExpression("'pixel'"))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.background().strokeWidthUnit(), QgsUnitTypes.RenderPixels)
 
@@ -653,7 +662,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowUnder, QgsProperty.fromExpression("'buffer'"))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.shadow().shadowPlacement(), QgsTextShadowSettings.ShadowBuffer)
-        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowUnder, QgsProperty.fromExpression("'background'"))
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowUnder,
+                                              QgsProperty.fromExpression("'background'"))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.shadow().shadowPlacement(), QgsTextShadowSettings.ShadowShape)
         f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowUnder, QgsProperty.fromExpression("'svg'"))
@@ -670,7 +680,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowOffsetDist, QgsProperty.fromExpression('38'))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.shadow().offsetDistance(), 38)
-        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowOffsetUnits, QgsProperty.fromExpression("'pixel'"))
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowOffsetUnits,
+                                              QgsProperty.fromExpression("'pixel'"))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.shadow().offsetUnit(), QgsUnitTypes.RenderPixels)
 
@@ -678,7 +689,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowRadius, QgsProperty.fromExpression('58'))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.shadow().blurRadius(), 58)
-        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowRadiusUnits, QgsProperty.fromExpression("'pixel'"))
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.ShadowRadiusUnits,
+                                              QgsProperty.fromExpression("'pixel'"))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.shadow().blurRadiusUnit(), QgsUnitTypes.RenderPixels)
 
@@ -708,7 +720,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         context = QgsRenderContext()
 
         # family
-        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.Family, QgsProperty.fromExpression("'{}'".format(QgsFontUtils.getStandardTestFont().family())))
+        f.dataDefinedProperties().setProperty(QgsPalLayerSettings.Family, QgsProperty.fromExpression(
+            "'{}'".format(QgsFontUtils.getStandardTestFont().family())))
         f.updateDataDefinedProperties(context)
         self.assertEqual(f.font().family(), QgsFontUtils.getStandardTestFont().family())
 
@@ -914,7 +927,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         painter.setBrush(QBrush(QColor(182, 239, 255)))
         painter.setPen(Qt.NoPen)
         # to highlight rect on image
-        #painter.drawRect(rect)
+        # painter.drawRect(rect)
 
         if part is not None:
             QgsTextRenderer.drawPart(rect,
@@ -966,7 +979,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         painter.setBrush(QBrush(QColor(182, 239, 255)))
         painter.setPen(Qt.NoPen)
         # to highlight point on image
-        #painter.drawRect(QRectF(point.x() - 5, point.y() - 5, 10, 10))
+        # painter.drawRect(QRectF(point.x() - 5, point.y() - 5, 10, 10))
 
         if part is not None:
             QgsTextRenderer.drawPart(point,
@@ -987,7 +1000,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         painter.setFont(format.scaledFont(context))
         painter.setPen(QPen(QColor(255, 0, 255, 200)))
         # For comparison with QPainter's methods:
-        #painter.drawText(point, '\n'.join(text))
+        # painter.drawText(point, '\n'.join(text))
 
         painter.end()
         return self.imageCheck(name, name, image)
@@ -1350,7 +1363,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
         format.background().setEnabled(True)
-        format.background().setMarkerSymbol(QgsMarkerSymbol.createSimple({'color': '#ffffff', 'size': '3', 'outline_color': 'red', 'outline_width': '3'}))
+        format.background().setMarkerSymbol(QgsMarkerSymbol.createSimple(
+            {'color': '#ffffff', 'size': '3', 'outline_color': 'red', 'outline_width': '3'}))
         format.background().setType(QgsTextBackgroundSettings.ShapeMarkerSymbol)
         format.background().setSize(QSizeF(60, 80))
         format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
@@ -1361,7 +1375,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
         format.background().setEnabled(True)
-        format.background().setMarkerSymbol(QgsMarkerSymbol.createSimple({'color': '#ffffff', 'size': '3', 'outline_color': 'red', 'outline_width': '3'}))
+        format.background().setMarkerSymbol(QgsMarkerSymbol.createSimple(
+            {'color': '#ffffff', 'size': '3', 'outline_color': 'red', 'outline_width': '3'}))
         format.background().setType(QgsTextBackgroundSettings.ShapeMarkerSymbol)
         format.background().setSize(QSizeF(20, 20))
         format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
@@ -1372,7 +1387,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
         format.background().setEnabled(True)
-        format.background().setMarkerSymbol(QgsMarkerSymbol.createSimple({'color': '#ffffff', 'size': '3', 'outline_color': 'red', 'outline_width': '3'}))
+        format.background().setMarkerSymbol(QgsMarkerSymbol.createSimple(
+            {'color': '#ffffff', 'size': '3', 'outline_color': 'red', 'outline_width': '3'}))
         format.background().setType(QgsTextBackgroundSettings.ShapeMarkerSymbol)
         format.background().setSize(QSizeF(30, 30))
         format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
@@ -1383,7 +1399,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
         format.background().setEnabled(True)
-        format.background().setMarkerSymbol(QgsMarkerSymbol.createSimple({'color': '#ffffff', 'size': '3', 'outline_color': 'red', 'outline_width': '3'}))
+        format.background().setMarkerSymbol(QgsMarkerSymbol.createSimple(
+            {'color': '#ffffff', 'size': '3', 'outline_color': 'red', 'outline_width': '3'}))
         format.background().setType(QgsTextBackgroundSettings.ShapeMarkerSymbol)
         format.background().setSize(QSizeF(30, 30))
         format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
@@ -1395,7 +1412,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
         format.background().setEnabled(True)
-        format.background().setMarkerSymbol(QgsMarkerSymbol.createSimple({'color': '#ffffff', 'size': '3', 'outline_color': 'red', 'outline_width': '3'}))
+        format.background().setMarkerSymbol(QgsMarkerSymbol.createSimple(
+            {'color': '#ffffff', 'size': '3', 'outline_color': 'red', 'outline_width': '3'}))
         format.background().setType(QgsTextBackgroundSettings.ShapeMarkerSymbol)
         format.background().setSize(QSizeF(4, 4))
         format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
@@ -1407,7 +1425,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
         format.background().setEnabled(True)
-        format.background().setMarkerSymbol(QgsMarkerSymbol.createSimple({'color': '#ffffff', 'size': '3', 'outline_color': 'red', 'outline_width': '3'}))
+        format.background().setMarkerSymbol(QgsMarkerSymbol.createSimple(
+            {'color': '#ffffff', 'size': '3', 'outline_color': 'red', 'outline_width': '3'}))
         format.background().setType(QgsTextBackgroundSettings.ShapeMarkerSymbol)
         format.background().setSize(QSizeF(10, 10))
         format.background().setSizeType(QgsTextBackgroundSettings.SizeBuffer)
@@ -1614,7 +1633,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setFont(getTestFont('bold'))
         format.setSize(30)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
-        assert self.checkRenderPoint(format, 'text_point_multiline', QgsTextRenderer.Text, text=['test', 'multi', 'line'])
+        assert self.checkRenderPoint(format, 'text_point_multiline', QgsTextRenderer.Text,
+                                     text=['test', 'multi', 'line'])
 
     def testDrawLineHeightText(self):
         format = QgsTextFormat()
@@ -1934,7 +1954,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.buffer().setSize(4)
         format.buffer().setColor(QColor(100, 255, 100))
         format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
-        assert self.checkRender(format, 'text_with_buffer_and_background', text=['test'], rect=QRectF(100, 100, 200, 100))
+        assert self.checkRender(format, 'text_with_buffer_and_background', text=['test'],
+                                rect=QRectF(100, 100, 200, 100))
 
     def testDrawTextWithShadowAndBuffer(self):
         format = QgsTextFormat()
@@ -1969,7 +1990,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.buffer().setSize(4)
         format.buffer().setColor(QColor(100, 255, 100))
         format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
-        assert self.checkRender(format, 'text_with_shadow_below_text_and_buffer', text=['test'], rect=QRectF(100, 100, 200, 100))
+        assert self.checkRender(format, 'text_with_shadow_below_text_and_buffer', text=['test'],
+                                rect=QRectF(100, 100, 200, 100))
 
     def testDrawTextWithBackgroundAndShadow(self):
         format = QgsTextFormat()
@@ -1987,7 +2009,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.background().setSize(QSizeF(20, 10))
         format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
         format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
-        assert self.checkRender(format, 'text_with_shadow_and_background', text=['test'], rect=QRectF(100, 100, 200, 100))
+        assert self.checkRender(format, 'text_with_shadow_and_background', text=['test'],
+                                rect=QRectF(100, 100, 200, 100))
 
     def testDrawTextWithShadowBelowTextAndBackground(self):
         format = QgsTextFormat()
@@ -2006,7 +2029,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.background().setSize(QSizeF(20, 10))
         format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
         format.background().setSizeUnit(QgsUnitTypes.RenderMapUnits)
-        assert self.checkRender(format, 'text_with_shadow_below_text_and_background', text=['test'], rect=QRectF(100, 100, 200, 100))
+        assert self.checkRender(format, 'text_with_shadow_below_text_and_background', text=['test'],
+                                rect=QRectF(100, 100, 200, 100))
 
     def testDrawTextWithBackgroundBufferAndShadow(self):
         format = QgsTextFormat()
@@ -2028,7 +2052,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.buffer().setSize(4)
         format.buffer().setColor(QColor(100, 255, 100))
         format.buffer().setSizeUnit(QgsUnitTypes.RenderMillimeters)
-        assert self.checkRender(format, 'text_with_shadow_buffer_and_background', text=['test'], rect=QRectF(100, 100, 200, 100))
+        assert self.checkRender(format, 'text_with_shadow_buffer_and_background', text=['test'],
+                                rect=QRectF(100, 100, 200, 100))
 
     def testDrawTextWithBackgroundBufferAndShadowBelowText(self):
         format = QgsTextFormat()
@@ -2159,7 +2184,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.setColor(QColor(0, 255, 0))
         format.dataDefinedProperties().setProperty(QgsPalLayerSettings.Color, QgsProperty.fromExpression("'#bb00cc'"))
-        assert self.checkRender(format, 'text_dd_color_rect', None, text=['test'], alignment=QgsTextRenderer.AlignCenter, rect=QRectF(100, 100, 100, 100))
+        assert self.checkRender(format, 'text_dd_color_rect', None, text=['test'],
+                                alignment=QgsTextRenderer.AlignCenter, rect=QRectF(100, 100, 100, 100))
 
     def testDrawTextDataDefinedBufferColorPoint(self):
         format = QgsTextFormat()
@@ -2167,7 +2193,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.setColor(QColor(0, 255, 0))
-        format.dataDefinedProperties().setProperty(QgsPalLayerSettings.BufferColor, QgsProperty.fromExpression("'#bb00cc'"))
+        format.dataDefinedProperties().setProperty(QgsPalLayerSettings.BufferColor,
+                                                   QgsProperty.fromExpression("'#bb00cc'"))
         format.buffer().setEnabled(True)
         format.buffer().setSize(5)
         assert self.checkRenderPoint(format, 'text_dd_buffer_color', None, text=['test'], point=QPointF(50, 200))
@@ -2256,7 +2283,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.setOrientation(QgsTextFormat.VerticalOrientation)
-        assert self.checkRender(format, 'text_vertical_rect_mode', QgsTextRenderer.Text, text=['1234'], rect=QRectF(40, 20, 350, 350))
+        assert self.checkRender(format, 'text_vertical_rect_mode', QgsTextRenderer.Text, text=['1234'],
+                                rect=QRectF(40, 20, 350, 350))
 
     def testDrawTextVerticalRectModeCenterAligned(self):
         format = QgsTextFormat()
@@ -2264,7 +2292,9 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.setOrientation(QgsTextFormat.VerticalOrientation)
-        assert self.checkRender(format, 'text_vertical_rect_mode_center_aligned', QgsTextRenderer.Text, text=['1234', '5678'], rect=QRectF(40, 20, 350, 350), alignment=QgsTextRenderer.AlignCenter)
+        assert self.checkRender(format, 'text_vertical_rect_mode_center_aligned', QgsTextRenderer.Text,
+                                text=['1234', '5678'], rect=QRectF(40, 20, 350, 350),
+                                alignment=QgsTextRenderer.AlignCenter)
 
     def testDrawTextVerticalRectModeRightAligned(self):
         format = QgsTextFormat()
@@ -2272,7 +2302,9 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.setOrientation(QgsTextFormat.VerticalOrientation)
-        assert self.checkRender(format, 'text_vertical_rect_mode_right_aligned', QgsTextRenderer.Text, text=['1234', '5678'], rect=QRectF(40, 20, 350, 350), alignment=QgsTextRenderer.AlignRight)
+        assert self.checkRender(format, 'text_vertical_rect_mode_right_aligned', QgsTextRenderer.Text,
+                                text=['1234', '5678'], rect=QRectF(40, 20, 350, 350),
+                                alignment=QgsTextRenderer.AlignRight)
 
     def testDrawTextVerticalPointMode(self):
         format = QgsTextFormat()
@@ -2280,7 +2312,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setSize(60)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.setOrientation(QgsTextFormat.VerticalOrientation)
-        assert self.checkRenderPoint(format, 'text_vertical_point_mode', QgsTextRenderer.Text, text=['1234', '5678'], point=QPointF(40, 380))
+        assert self.checkRenderPoint(format, 'text_vertical_point_mode', QgsTextRenderer.Text, text=['1234', '5678'],
+                                     point=QPointF(40, 380))
 
 
 if __name__ == '__main__':

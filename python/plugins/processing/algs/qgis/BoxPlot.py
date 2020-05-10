@@ -36,7 +36,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 
 class BoxPlot(QgisAlgorithm):
-
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     NAME_FIELD = 'NAME_FIELD'

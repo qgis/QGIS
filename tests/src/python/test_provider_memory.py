@@ -95,15 +95,18 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
 
         f1 = QgsFeature()
         f1.setAttributes([1])
-        f1.setGeometry(QgsGeometry.fromWkt('Polygon ((-69.03664108 81.35818902, -69.09237722 80.24346619, -73.718477 80.1319939, -73.718477 76.28620011, -74.88893598 76.34193625, -74.83319983 81.35818902, -69.03664108 81.35818902))'))
+        f1.setGeometry(QgsGeometry.fromWkt(
+            'Polygon ((-69.03664108 81.35818902, -69.09237722 80.24346619, -73.718477 80.1319939, -73.718477 76.28620011, -74.88893598 76.34193625, -74.83319983 81.35818902, -69.03664108 81.35818902))'))
 
         f2 = QgsFeature()
         f2.setAttributes([2])
-        f2.setGeometry(QgsGeometry.fromWkt('Polygon ((-67.58750139 81.1909806, -66.30557012 81.24671674, -66.30557012 76.89929767, -67.58750139 76.89929767, -67.58750139 81.1909806))'))
+        f2.setGeometry(QgsGeometry.fromWkt(
+            'Polygon ((-67.58750139 81.1909806, -66.30557012 81.24671674, -66.30557012 76.89929767, -67.58750139 76.89929767, -67.58750139 81.1909806))'))
 
         f3 = QgsFeature()
         f3.setAttributes([3])
-        f3.setGeometry(QgsGeometry.fromWkt('Polygon ((-68.36780737 75.78457483, -67.53176524 72.60761475, -68.64648808 73.66660144, -70.20710006 72.9420316, -68.36780737 75.78457483))'))
+        f3.setGeometry(QgsGeometry.fromWkt(
+            'Polygon ((-68.36780737 75.78457483, -67.53176524 72.60761475, -68.64648808 73.66660144, -70.20710006 72.9420316, -68.36780737 75.78457483))'))
 
         f4 = QgsFeature()
         f4.setAttributes([4])
@@ -433,7 +436,8 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(layer.wkbType(), QgsWkbTypes.PolygonZM)
 
         # crs
-        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.PolygonZM, QgsCoordinateReferenceSystem.fromEpsgId(3111))
+        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.PolygonZM,
+                                                         QgsCoordinateReferenceSystem.fromEpsgId(3111))
         self.assertTrue(layer.isValid())
         self.assertEqual(layer.wkbType(), QgsWkbTypes.PolygonZM)
         self.assertTrue(layer.crs().isValid())
@@ -469,7 +473,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(layer.isValid())
         self.assertFalse(layer.fields().isEmpty())
         self.assertEqual(layer.fields()[0].name(), 'rect')
-        self.assertEqual(layer.fields()[0].type(), QVariant.String) # should be mapped to string
+        self.assertEqual(layer.fields()[0].type(), QVariant.String)  # should be mapped to string
 
         # field precision
         fields = QgsFields()
@@ -488,8 +492,9 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
             self.assertEqual(layer.fields()[i].precision(), fields[i].precision())
 
     def testThreadSafetyWithIndex(self):
-        layer = QgsVectorLayer('Point?crs=epsg:4326&index=yes&field=pk:integer&field=cnt:int8&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
-                               'test', 'memory')
+        layer = QgsVectorLayer(
+            'Point?crs=epsg:4326&index=yes&field=pk:integer&field=cnt:int8&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+            'test', 'memory')
 
         provider = layer.dataProvider()
         f = QgsFeature()
@@ -643,7 +648,8 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         f.setAttributes([2, NULL, True])
         self.assertTrue(dp.addFeature(f))
 
-        self.assertEqual([f.attributes() for f in dp.getFeatures()], [[1, True, NULL], [2, False, NULL], [3, NULL, NULL], [2, NULL, True]])
+        self.assertEqual([f.attributes() for f in dp.getFeatures()],
+                         [[1, True, NULL], [2, False, NULL], [3, NULL, NULL], [2, NULL, True]])
 
     def testSpatialIndex(self):
         vl = QgsVectorLayer(
@@ -666,22 +672,23 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
                                           QgsField("age", QVariant.Int),
                                           QgsField("size", QVariant.Double)]))
         vl2 = vl.clone()
-        self.assertTrue('memory?geometry=Point&crs=EPSG:4326&field=name:(0,0)&field=age:(0,0)&field=size:(0,0)' in vl2.publicSource())
+        self.assertTrue(
+            'memory?geometry=Point&crs=EPSG:4326&field=name:(0,0)&field=age:(0,0)&field=size:(0,0)' in vl2.publicSource())
         self.assertEqual(len(parse_qs(vl.publicSource())['uid']), 1)
         self.assertEqual(len(parse_qs(vl2.publicSource())['uid']), 1)
         self.assertNotEqual(parse_qs(vl2.publicSource())['uid'][0], parse_qs(vl.publicSource())['uid'][0])
 
 
 class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
-
     """Runs the provider test suite against an indexed memory layer"""
 
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         # Create test layer
-        cls.vl = QgsVectorLayer('Point?crs=epsg:4326&index=yes&field=pk:integer&field=cnt:int8&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
-                                'test', 'memory')
+        cls.vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&index=yes&field=pk:integer&field=cnt:int8&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+            'test', 'memory')
         assert (cls.vl.isValid())
         cls.source = cls.vl.dataProvider()
 
@@ -714,7 +721,8 @@ class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
 
         f1 = QgsFeature()
         f1.setAttributes([1])
-        f1.setGeometry(QgsGeometry.fromWkt('Polygon ((-69.0 81.4, -69.0 80.2, -73.7 80.2, -73.7 76.3, -74.9 76.3, -74.9 81.4, -69.0 81.4))'))
+        f1.setGeometry(QgsGeometry.fromWkt(
+            'Polygon ((-69.0 81.4, -69.0 80.2, -73.7 80.2, -73.7 76.3, -74.9 76.3, -74.9 81.4, -69.0 81.4))'))
 
         f2 = QgsFeature()
         f2.setAttributes([2])

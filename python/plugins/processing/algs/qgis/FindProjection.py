@@ -46,7 +46,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class FindProjection(QgisAlgorithm):
-
     INPUT = 'INPUT'
     TARGET_AREA = 'TARGET_AREA'
     TARGET_AREA_CRS = 'TARGET_AREA_CRS'

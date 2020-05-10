@@ -321,12 +321,12 @@ class TestQgsNumericFormat(unittest.TestCase):
         self.assertEqual(f.formatDouble(-5.5, context), '5.5°W')
         self.assertEqual(f.formatDouble(180, context), '180°')
         f.setShowTrailingZeros(True)
-        self.assertEqual(f.formatDouble(0, context), '0.000°E') # todo - fix and avoid E
+        self.assertEqual(f.formatDouble(0, context), '0.000°E')  # todo - fix and avoid E
         self.assertEqual(f.formatDouble(5, context), '5.000°E')
         self.assertEqual(f.formatDouble(-5, context), '5.000°W')
         self.assertEqual(f.formatDouble(5.5, context), '5.500°E')
         self.assertEqual(f.formatDouble(-5.5, context), '5.500°W')
-        self.assertEqual(f.formatDouble(180, context), '180.000°E') # todo fix and avoid E
+        self.assertEqual(f.formatDouble(180, context), '180.000°E')  # todo fix and avoid E
 
         f = QgsBearingNumericFormat()
         f.setDirectionFormat(QgsBearingNumericFormat.UseRangeNegative180ToPositive180)
@@ -645,18 +645,23 @@ class TestQgsNumericFormat(unittest.TestCase):
         self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-1.75), (True, 7, 4, -1))
         self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(0.3333333333333333333333), (True, 1, 3, 1))
         self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(0.333333333), (True, 333333355, 1000000066, 1))
-        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(0.333333333, 0.0000000001), (True, 333333355, 1000000066, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(0.333333333, 0.0000000001),
+                         (True, 333333355, 1000000066, 1))
         self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(0.333333333, 0.000000001), (True, 1, 3, 1))
         self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(0.333333333, 0.1), (True, 1, 3, 1))
         self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-0.3333333333333333333333), (True, 1, 3, -1))
-        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-0.333333333), (True, 333333355, 1000000066, -1))
-        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-0.333333333, 0.0000000001), (True, 333333355, 1000000066, -1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-0.333333333),
+                         (True, 333333355, 1000000066, -1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-0.333333333, 0.0000000001),
+                         (True, 333333355, 1000000066, -1))
         self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-0.333333333, 0.000000001), (True, 1, 3, -1))
         self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(-0.333333333, 0.1), (True, 1, 3, -1))
         self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(0.000000123123), (True, 1, 8121959, 1))
         self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(3.14159265358979), (True, 312689, 99532, 1))
-        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(3.14159265358979, 0.0000001), (True, 103993, 33102, 1))
-        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(3.14159265358979, 0.00001), (True, 355, 113, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(3.14159265358979, 0.0000001),
+                         (True, 103993, 33102, 1))
+        self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(3.14159265358979, 0.00001),
+                         (True, 355, 113, 1))
         self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(3.14159265358979, 0.001), (True, 333, 106, 1))
         self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(3.14159265358979, 0.1), (True, 22, 7, 1))
         self.assertEqual(QgsFractionNumericFormat.doubleToVulgarFraction(3.14159265358979, 1), (True, 3, 1, 1))

@@ -35,7 +35,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 
 class VectorLayerHistogram(QgisAlgorithm):
-
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'

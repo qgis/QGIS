@@ -52,6 +52,7 @@ from processing.algs.otb.OtbChoiceWidget import OtbParameterChoice, OtbChoiceWid
 import AlgorithmsTestBase
 
 import processing
+
 OTB_INSTALL_DIR = os.environ.get('OTB_INSTALL_DIR')
 
 

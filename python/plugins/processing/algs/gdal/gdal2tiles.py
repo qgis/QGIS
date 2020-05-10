@@ -21,7 +21,6 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-
 from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessingException,
                        QgsProcessingParameterDefinition,
@@ -38,7 +37,6 @@ from processing.tools.system import isWindows
 
 
 class gdal2tiles(GdalAlgorithm):
-
     INPUT = 'INPUT'
     PROFILE = 'PROFILE'
     RESAMPLING = 'RESAMPLING'

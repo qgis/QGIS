@@ -66,7 +66,9 @@ class TestQgsFileUtils(unittest.TestCase):
         self.assertEqual(QgsFileUtils.findClosestExistingPath('.'), '')
         self.assertEqual(QgsFileUtils.findClosestExistingPath('just_a_filename'), '')
         self.assertEqual(QgsFileUtils.findClosestExistingPath('just_a_filename.txt'), '')
-        self.assertEqual(QgsFileUtils.findClosestExistingPath('a_very_unlikely_path_to_really_exist/because/no_one_would_have_a_folder_called/MapInfo is the bestest/'), '')
+        self.assertEqual(QgsFileUtils.findClosestExistingPath(
+            'a_very_unlikely_path_to_really_exist/because/no_one_would_have_a_folder_called/MapInfo is the bestest/'),
+            '')
         # sorry anyone not on linux!
         self.assertEqual(QgsFileUtils.findClosestExistingPath('/usr/youve_been_hacked/by_the_l77t_krew'), '/usr')
 
@@ -75,9 +77,11 @@ class TestQgsFileUtils(unittest.TestCase):
         with open(file, 'wt') as f:
             f.write('\n')
 
-        self.assertEqual(QgsFileUtils.findClosestExistingPath(os.path.join(base_path, 'a file name.bmp')), base_path) # non-existent file
-        self.assertEqual(QgsFileUtils.findClosestExistingPath(file), base_path) # real file!
-        self.assertEqual(QgsFileUtils.findClosestExistingPath(os.path.join(base_path, 'non/existent/subfolder')), base_path)
+        self.assertEqual(QgsFileUtils.findClosestExistingPath(os.path.join(base_path, 'a file name.bmp')),
+                         base_path)  # non-existent file
+        self.assertEqual(QgsFileUtils.findClosestExistingPath(file), base_path)  # real file!
+        self.assertEqual(QgsFileUtils.findClosestExistingPath(os.path.join(base_path, 'non/existent/subfolder')),
+                         base_path)
 
         sub_folder1 = os.path.join(base_path, 'subfolder1')
         os.mkdir(sub_folder1)
@@ -104,36 +108,36 @@ class TestQgsFileUtils(unittest.TestCase):
         os.mkdir(side_nest)
         filename = "findme.txt"
 
-        #unexisting
+        # unexisting
         files = QgsFileUtils.findFile(filename, nest, 1, 4)
         self.assertEqual(len(files), 0)
-        #out of depth
+        # out of depth
         files = QgsFileUtils.findFile(filename, nest, 0, 4)
         self.assertEqual(len(files), 0)
-        #too close
+        # too close
         files = QgsFileUtils.findFile(filename, nest, 1, 13)
         self.assertEqual(len(files), 0)
-        #side nest
+        # side nest
         open(os.path.join(side_nest, filename), 'w+')
         files = QgsFileUtils.findFile(os.path.join(base_folder, filename))
         self.assertEqual(files[0], os.path.join(side_nest, filename).replace(os.sep, '/'))
-        #side + side nest  =  2
+        # side + side nest  =  2
         open(os.path.join(side_fold, filename), 'w+')
         files = QgsFileUtils.findFile(filename, base_folder, 3, 4)
         self.assertEqual(len(files), 2)
-        #up
+        # up
         open(os.path.join(temp_folder, filename), 'w+')
         files = QgsFileUtils.findFile(filename, base_folder, 3, 4)
         self.assertEqual(files[0], os.path.join(temp_folder, filename).replace(os.sep, '/'))
-        #nest
+        # nest
         open(os.path.join(nest, filename), 'w+')
         files = QgsFileUtils.findFile(os.path.join(base_folder, filename))
         self.assertEqual(files[0], os.path.join(nest, filename).replace(os.sep, '/'))
-        #base level
+        # base level
         open(os.path.join(base_folder, filename), 'w+')
         files = QgsFileUtils.findFile(filename, base_folder, 2, 4)
         self.assertEqual(files[0], os.path.join(base_folder, filename).replace(os.sep, '/'))
-        #invalid path, too deep
+        # invalid path, too deep
         files = QgsFileUtils.findFile(filename, os.path.join(nest, 'nest2'), 2, 4)
         self.assertEqual(files[0], os.path.join(nest, filename).replace(os.sep, '/'))
 

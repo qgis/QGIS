@@ -111,7 +111,8 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         self.assertEqual(len(errors), 1)
         print(errors)
         # checking only for provider constraints
-        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1, origin=QgsFieldConstraints.ConstraintOriginProvider)
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1,
+                                                            origin=QgsFieldConstraints.ConstraintOriginProvider)
         self.assertTrue(res)
         self.assertEqual(len(errors), 0)
 
@@ -137,7 +138,8 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         print(errors)
 
         # checking only for provider constraints
-        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1, origin=QgsFieldConstraints.ConstraintOriginProvider)
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1,
+                                                            origin=QgsFieldConstraints.ConstraintOriginProvider)
         self.assertTrue(res)
         self.assertEqual(len(errors), 0)
 
@@ -154,13 +156,15 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         print(errors)
 
         # checking only for provider constraints
-        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1, origin=QgsFieldConstraints.ConstraintOriginProvider)
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1,
+                                                            origin=QgsFieldConstraints.ConstraintOriginProvider)
         self.assertTrue(res)
         self.assertEqual(len(errors), 0)
 
         # checking only for soft constraints
         layer.setFieldConstraint(1, QgsFieldConstraints.ConstraintUnique, QgsFieldConstraints.ConstraintStrengthHard)
-        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1, strength=QgsFieldConstraints.ConstraintStrengthSoft)
+        res, errors = QgsVectorLayerUtils.validateAttribute(layer, f, 1,
+                                                            strength=QgsFieldConstraints.ConstraintStrengthSoft)
         self.assertTrue(res)
         self.assertEqual(len(errors), 0)
         # checking for hard constraints
@@ -270,7 +274,7 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         # layer with default value expression based on geometry
         layer.setDefaultValueDefinition(2, QgsDefaultValue('3*$x'))
         f = QgsVectorLayerUtils.createFeature(layer, g)
-        #adjusted so that input value and output feature are the same
+        # adjusted so that input value and output feature are the same
         self.assertEqual(f.attributes(), [NULL, NULL, 300.0])
         layer.setDefaultValueDefinition(2, QgsDefaultValue(None))
 
@@ -583,7 +587,8 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         features_data = []
         context = vl.createExpressionContext()
         for i in range(2):
-            features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 44)'), {0: 'test_%s' % i, 1: 123}))
+            features_data.append(
+                QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 44)'), {0: 'test_%s' % i, 1: 123}))
         features = QgsVectorLayerUtils.createFeatures(vl, features_data, context)
 
         self.assertEqual(features[0].attributes()[1], 124)
@@ -597,9 +602,12 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
 
         features_data = []
         context = vl.createExpressionContext()
-        features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 44)'), {0: 'test_1', 1: None}))
-        features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 45)'), {0: 'test_2', 1: QVariant()}))
-        features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'), {0: 'test_3', 1: QVariant(QVariant.Int)}))
+        features_data.append(
+            QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 44)'), {0: 'test_1', 1: None}))
+        features_data.append(
+            QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 45)'), {0: 'test_2', 1: QVariant()}))
+        features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'),
+                                                                {0: 'test_3', 1: QVariant(QVariant.Int)}))
         features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'), {0: 'test_4'}))
         features = QgsVectorLayerUtils.createFeatures(vl, features_data, context)
 
@@ -613,7 +621,8 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         context = vl.createExpressionContext()
         features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 44)'), {0: None}))
         features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 45)'), {0: QVariant()}))
-        features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'), {0: QVariant(QVariant.String)}))
+        features_data.append(
+            QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'), {0: QVariant(QVariant.String)}))
         features_data.append(QgsVectorLayerUtils.QgsFeatureData(QgsGeometry.fromWkt('Point (7 46)'), {}))
         features = QgsVectorLayerUtils.createFeatures(vl, features_data, context)
 
@@ -632,7 +641,8 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         it = vl.getFeatures()
         for _ in range(3):
             f = next(it)
-            features_data.append(QgsVectorLayerUtils.QgsFeatureData(f.geometry(), dict(zip(range(f.fields().count()), f.attributes()))))
+            features_data.append(
+                QgsVectorLayerUtils.QgsFeatureData(f.geometry(), dict(zip(range(f.fields().count()), f.attributes()))))
         # Set a filter
         vl.setSubsetString('"fid" in (4,5,6)')
         self.assertTrue(vl.isValid())

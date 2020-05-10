@@ -94,7 +94,7 @@ class TestQgsSymbol(unittest.TestCase):
         with self.assertRaises(IndexError):
             _ = markerSymbol.symbolLayer(1)
         with self.assertRaises(IndexError):
-            _ = markerSymbol.symbolLayer(-1) # negative index only supported by []
+            _ = markerSymbol.symbolLayer(-1)  # negative index only supported by []
 
         with self.assertRaises(IndexError):
             del markerSymbol[1]
@@ -136,7 +136,7 @@ class TestQgsSymbol(unittest.TestCase):
         with self.assertRaises(IndexError):
             _ = markerSymbol.symbolLayer(2)
         with self.assertRaises(IndexError):
-            _ = markerSymbol.symbolLayer(-1) # negative index only supported by []
+            _ = markerSymbol.symbolLayer(-1)  # negative index only supported by []
 
         with self.assertRaises(IndexError):
             del markerSymbol[2]
@@ -507,7 +507,8 @@ class TestQgsSymbol(unittest.TestCase):
 
         painter = QPainter()
         ms = QgsMapSettings()
-        crs = QgsCoordinateReferenceSystem.fromProj('+proj=ortho +lat_0=36.5 +lon_0=-118.8 +x_0=0 +y_0=0 +a=6371000 +b=6371000 +units=m +no_defs')
+        crs = QgsCoordinateReferenceSystem.fromProj(
+            '+proj=ortho +lat_0=36.5 +lon_0=-118.8 +x_0=0 +y_0=0 +a=6371000 +b=6371000 +units=m +no_defs')
         self.assertTrue(crs.isValid())
         ms.setDestinationCrs(crs)
         ms.setExtent(QgsRectangle(1374999.8, 3912610.7, 4724462.5, 6505499.6))
@@ -521,7 +522,8 @@ class TestQgsSymbol(unittest.TestCase):
         context.setCoordinateTransform(ct)
         context.setExtent(ct.transformBoundingBox(ms.extent(), QgsCoordinateTransform.ReverseTransform))
 
-        fill_symbol = QgsFillSymbol.createSimple({'color': '#ffffff', 'outline_color': '#ffffff', 'outline_width': '10'})
+        fill_symbol = QgsFillSymbol.createSimple(
+            {'color': '#ffffff', 'outline_color': '#ffffff', 'outline_width': '10'})
 
         painter.begin(image)
         try:
@@ -534,7 +536,7 @@ class TestQgsSymbol(unittest.TestCase):
 
         assert self.imageCheck('Reprojection errors polygon', 'reprojection_errors_polygon', image)
 
-        #also test linestring
+        # also test linestring
         linestring = QgsGeometry(geom.constGet().boundary())
         f.setGeometry(linestring)
         line_symbol = QgsLineSymbol.createSimple({'color': '#ffffff', 'outline_width': '10'})
@@ -837,7 +839,8 @@ class TestQgsFillSymbol(unittest.TestCase):
         marker_line.setSubSymbol(marker_symbol)
         s3.appendSymbolLayer(marker_line)
 
-        g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
+        g = QgsGeometry.fromWkt(
+            'Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
         assert self.imageCheck('force_rhr_off', 'polygon_forcerhr_off', rendered_image)
 

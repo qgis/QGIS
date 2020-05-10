@@ -75,7 +75,8 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         QgsProject.instance().clear()
         QgsProject.instance().addMapLayers([point_layer])
 
-        marker_symbol = QgsMarkerSymbol.createSimple({'color': '#ff0000', 'outline_style': 'no', 'size': '5', 'size_unit': 'MapUnit'})
+        marker_symbol = QgsMarkerSymbol.createSimple(
+            {'color': '#ff0000', 'outline_style': 'no', 'size': '5', 'size_unit': 'MapUnit'})
 
         point_layer.setRenderer(QgsSingleSymbolRenderer(marker_symbol))
 
@@ -402,10 +403,12 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
         group = legend.model().rootGroup().addGroup("Group [% 1 + 5 %] [% @layout_name %]")
         layer_tree_layer = group.addLayer(point_layer)
-        layer_tree_layer.setCustomProperty("legend/title-label", 'bbbb [% 1+2 %] xx [% @layout_name %] [% @layer_name %]')
+        layer_tree_layer.setCustomProperty("legend/title-label",
+                                           'bbbb [% 1+2 %] xx [% @layout_name %] [% @layer_name %]')
         QgsMapLayerLegendUtils.setLegendNodeUserLabel(layer_tree_layer, 0, 'xxxx')
         legend.model().refreshLayerLegend(layer_tree_layer)
-        legend.model().layerLegendNodes(layer_tree_layer)[0].setUserLabel('bbbb [% 1+2 %] xx [% @layout_name %] [% @layer_name %]')
+        legend.model().layerLegendNodes(layer_tree_layer)[0].setUserLabel(
+            'bbbb [% 1+2 %] xx [% @layout_name %] [% @layer_name %]')
 
         layout.addLayoutItem(legend)
         legend.setLinkedMap(map)
@@ -451,8 +454,8 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         label2 = legendnodes[1].evaluateLabel()
         label3 = legendnodes[2].evaluateLabel()
         self.assertEqual(label1, '0')
-        #self.assertEqual(label2, '5')
-        #self.assertEqual(label3, '12')
+        # self.assertEqual(label2, '5')
+        # self.assertEqual(label3, '12')
 
         legendlayer.setLabelExpression("Concat(@symbol_label, @symbol_id)")
 
@@ -461,8 +464,8 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         label3 = legendnodes[2].evaluateLabel()
 
         self.assertEqual(label1, ' @symbol_id 0')
-        #self.assertEqual(label2, '@symbol_count 1')
-        #self.assertEqual(label3, 'sum("Pilots") 2')
+        # self.assertEqual(label2, '@symbol_count 1')
+        # self.assertEqual(label3, 'sum("Pilots") 2')
 
         QgsProject.instance().clear()
 
@@ -505,7 +508,8 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         layer_tree_layer = group.addLayer(point_layer)
         counterTask = point_layer.countSymbolFeatures()
         counterTask.waitForFinished()
-        layer_tree_layer.setCustomProperty("legend/title-label", 'bbbb [% 1+2 %] xx [% @layout_name %] [% @layer_name %]')
+        layer_tree_layer.setCustomProperty("legend/title-label",
+                                           'bbbb [% 1+2 %] xx [% @layout_name %] [% @layer_name %]')
         QgsMapLayerLegendUtils.setLegendNodeUserLabel(layer_tree_layer, 0, 'xxxx')
         legend.model().refreshLayerLegend(layer_tree_layer)
         layer_tree_layer.setLabelExpression('Concat(@symbol_id, @symbol_label, count("Class"))')
@@ -591,11 +595,14 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         QgsProject.instance().mapThemeCollection().insert('red', red_record)
 
         marker_symbol1 = QgsMarkerSymbol.createSimple({'color': '#0000ff', 'outline_style': 'no', 'size': '5'})
-        marker_symbol2 = QgsMarkerSymbol.createSimple({'color': '#0000ff', 'name': 'diamond', 'outline_style': 'no', 'size': '5'})
-        marker_symbol3 = QgsMarkerSymbol.createSimple({'color': '#0000ff', 'name': 'rectangle', 'outline_style': 'no', 'size': '5'})
+        marker_symbol2 = QgsMarkerSymbol.createSimple(
+            {'color': '#0000ff', 'name': 'diamond', 'outline_style': 'no', 'size': '5'})
+        marker_symbol3 = QgsMarkerSymbol.createSimple(
+            {'color': '#0000ff', 'name': 'rectangle', 'outline_style': 'no', 'size': '5'})
 
         point_layer.setRenderer(QgsCategorizedSymbolRenderer('Class', [QgsRendererCategory('B52', marker_symbol1, ''),
-                                                                       QgsRendererCategory('Biplane', marker_symbol2, ''),
+                                                                       QgsRendererCategory('Biplane', marker_symbol2,
+                                                                                           ''),
                                                                        QgsRendererCategory('Jet', marker_symbol3, ''),
                                                                        ]))
         point_layer.styleManager().addStyleFromLayer("blue")

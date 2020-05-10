@@ -9,6 +9,7 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '17/01/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
+
 import qgis  # NOQA
 
 import os
@@ -31,14 +32,12 @@ from qgis.PyQt.QtGui import QColor, QPainter
 from qgis.PyQt.QtTest import QSignalSpy
 from utilities import unitTestDataPath
 
-
 TEST_DATA_DIR = unitTestDataPath()
 
 start_app()
 
 
 class LayoutItemTestCase(object):
-
     '''
         This is a collection of generic tests for QgsLayoutItem subclasses.
         To make use of it, subclass it and set self.item_class to a QgsLayoutItem subclass you want to test.
@@ -141,7 +140,7 @@ class TestQgsLayoutItem(unittest.TestCase):
         item.setFrameEnabled(False)
         self.assertEqual(item.estimatedFrameBleed(), 0)
         item.setFrameEnabled(True)
-        self.assertEqual(item.estimatedFrameBleed(), 5) # only half bleeds out!
+        self.assertEqual(item.estimatedFrameBleed(), 5)  # only half bleeds out!
 
         item.setFrameStrokeWidth(QgsLayoutMeasurement(10, QgsUnitTypes.LayoutCentimeters))
         self.assertEqual(item.estimatedFrameBleed(), 50)  # only half bleeds out!

@@ -23,7 +23,8 @@ import hashlib
 
 from qgis.testing import unittest
 from utilities import unitTestDataPath
-from qgis.server import QgsServer, QgsServerCacheFilter, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse
+from qgis.server import QgsServer, QgsServerCacheFilter, QgsServerRequest, QgsBufferServerRequest, \
+    QgsBufferServerResponse
 from qgis.core import QgsApplication, QgsFontUtils, QgsProject
 from qgis.PyQt.QtCore import QIODevice, QFile, QByteArray, QBuffer
 from qgis.PyQt.QtGui import QImage
@@ -33,7 +34,6 @@ from test_qgsserver import QgsServerTestBase
 
 
 class PyServerCache(QgsServerCacheFilter):
-
     """ Used to have restriction access """
 
     # Be able to deactivate the access control to have a reference point
@@ -63,7 +63,8 @@ class PyServerCache(QgsServerCacheFilter):
         with open(os.path.join(self._cache_dir, m.hexdigest() + ".xml"), "r") as f:
             statusOK, errorStr, errorLine, errorColumn = doc.setContent(f.read(), True)
             if not statusOK:
-                print("Could not read or find the contents document. Error at line %d, column %d:\n%s" % (errorLine, errorColumn, errorStr))
+                print("Could not read or find the contents document. Error at line %d, column %d:\n%s" % (
+                    errorLine, errorColumn, errorStr))
                 return QByteArray()
 
         return doc.toByteArray()
@@ -173,7 +174,7 @@ class TestQgsServerCacheManager(QgsServerTestBase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        #cls._servercache.deleteCachedDocuments(None)
+        # cls._servercache.deleteCachedDocuments(None)
         del cls._server
         cls._app.exitQgis
 
@@ -243,7 +244,8 @@ class TestQgsServerCacheManager(QgsServerTestBase):
         header, body = self._execute_request(query_string)
 
         # without cache
-        query_string = '?MAP=%s&SERVICE=WMTS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), 'GetCapabilities')
+        query_string = '?MAP=%s&SERVICE=WMTS&VERSION=1.0.0&REQUEST=%s' % (
+            urllib.parse.quote(project), 'GetCapabilities')
         header, body = self._execute_request(query_string)
         # with cache
         header, body = self._execute_request(query_string)
@@ -267,12 +269,14 @@ class TestQgsServerCacheManager(QgsServerTestBase):
         accessControls = self._server_iface.accessControls()
 
         cDoc = QDomDocument("wms_getcapabilities_130.xml")
-        self.assertFalse(cacheManager.getCachedDocument(cDoc, prj, request, accessControls), 'getCachedDocument is not None')
+        self.assertFalse(cacheManager.getCachedDocument(cDoc, prj, request, accessControls),
+                         'getCachedDocument is not None')
 
         self.assertTrue(cacheManager.setCachedDocument(doc, prj, request, accessControls), 'setCachedDocument false')
 
         self.assertTrue(cacheManager.getCachedDocument(cDoc, prj, request, accessControls), 'getCachedDocument is None')
-        self.assertEqual(doc.documentElement().tagName(), cDoc.documentElement().tagName(), 'cachedDocument not equal to provide document')
+        self.assertEqual(doc.documentElement().tagName(), cDoc.documentElement().tagName(),
+                         'cachedDocument not equal to provide document')
 
         self.assertTrue(cacheManager.deleteCachedDocuments(None), 'deleteCachedDocuments does not return True')
 

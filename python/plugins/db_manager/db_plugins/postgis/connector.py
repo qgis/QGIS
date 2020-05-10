@@ -48,6 +48,7 @@ from ..plugin import ConnectionError, DbError, Table
 import os
 import psycopg2
 import psycopg2.extensions
+
 # use unicode!
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
@@ -61,7 +62,7 @@ class CursorAdapter():
 
     def _debug(self, msg):
         pass
-        #print("XXX CursorAdapter[" + hex(id(self)) + "]: " + msg)
+        # print("XXX CursorAdapter[" + hex(id(self)) + "]: " + msg)
 
     def __init__(self, connection, sql=None):
         self._debug("Created with sql: " + str(sql))
@@ -82,7 +83,7 @@ class CursorAdapter():
                     if (str(col) == 'NULL'):
                         col = None
                     else:
-                        col = str(col) # force to string
+                        col = str(col)  # force to string
                 newrec.append(col)
             newres.append(newrec)
         return newres
@@ -102,7 +103,7 @@ class CursorAdapter():
         self._debug("execute returned " + str(len(self.result)) + " rows")
         self.cursor = 0
 
-        self._description = None # reset description
+        self._description = None  # reset description
 
     @property
     def description(self):
@@ -120,16 +121,16 @@ class CursorAdapter():
 
             fields = vl.fields()
             self._description = []
-            for i in range(1, len(fields)): # skip first field (__rid__)
+            for i in range(1, len(fields)):  # skip first field (__rid__)
                 f = fields[i]
                 self._description.append([
-                    f.name(),                         # name
-                    f.type(),                         # type_code
-                    f.length(),                       # display_size
-                    f.length(),                       # internal_size
-                    f.precision(),                    # precision
-                    None,                             # scale
-                    True                              # null_ok
+                    f.name(),  # name
+                    f.type(),  # type_code
+                    f.length(),  # display_size
+                    f.length(),  # internal_size
+                    f.precision(),  # precision
+                    None,  # scale
+                    True  # null_ok
                 ])
             self._debug("get_description returned " + str(len(self._description)) + " cols")
 
@@ -201,9 +202,9 @@ class PostGisDBConnector(DBConnector):
             self.dbname = uri.database() or os.environ.get('PGDATABASE') or username
             uri.setDatabase(self.dbname)
 
-        #self.connName = connName
-        #self.user = uri.username() or os.environ.get('USER')
-        #self.passwd = uri.password()
+        # self.connName = connName
+        # self.user = uri.username() or os.environ.get('USER')
+        # self.passwd = uri.password()
         self.host = uri.host()
 
         md = QgsProviderRegistry.instance().providerMetadata(connection.providerName())
@@ -348,7 +349,7 @@ class PostGisDBConnector(DBConnector):
             "real", "double precision", "numeric",  # floats
             "varchar", "varchar(255)", "char(20)", "text",  # strings
             "date", "time", "timestamp",  # date/time
-            "boolean" # bool
+            "boolean"  # bool
         ]
 
     def getDatabasePrivileges(self):
@@ -899,14 +900,14 @@ class PostGisDBConnector(DBConnector):
         sql_cpt = "Select count(*) from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tablename, field)
         # SQL Query that return the comment of the field
         sql = "Select pd.description from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tablename, field)
-        c = self._execute(None, sql_cpt) # Execute Check query
-        res = self._fetchone(c)[0] # Store result
+        c = self._execute(None, sql_cpt)  # Execute Check query
+        res = self._fetchone(c)[0]  # Store result
         if res == 1:
             # When a comment exists
-            c = self._execute(None, sql) # Execute query
-            res = self._fetchone(c)[0] # Store result
-            self._close_cursor(c) # Close cursor
-            return res # Return comment
+            c = self._execute(None, sql)  # Execute query
+            res = self._fetchone(c)[0]  # Store result
+            self._close_cursor(c)  # Close cursor
+            return res  # Return comment
         else:
             return ''
 
@@ -1049,7 +1050,7 @@ class PostGisDBConnector(DBConnector):
                 sql += u" %s %s," % (alter_col_str, a)
             self._execute(c, sql[:-1])
 
-        #Renames the column
+        # Renames the column
         if new_name is not None and new_name != column:
             sql = u"ALTER TABLE %s RENAME  %s TO %s" % (
                 self.quoteId(table), self.quoteId(column), self.quoteId(new_name))
@@ -1165,7 +1166,7 @@ class PostGisDBConnector(DBConnector):
         return self.core_connection.executeSql(sql)
 
     def _get_cursor(self, name=None):
-        #if name is not None:
+        # if name is not None:
         #   print("XXX _get_cursor called with a Name: " + name)
         return CursorAdapter(self.core_connection, name)
 

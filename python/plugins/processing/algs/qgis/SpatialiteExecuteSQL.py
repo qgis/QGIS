@@ -34,7 +34,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class SpatialiteExecuteSQL(QgisAlgorithm):
-
     DATABASE = 'DATABASE'
     SQL = 'SQL'
 

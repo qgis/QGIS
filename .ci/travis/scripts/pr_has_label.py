@@ -2,7 +2,7 @@
 
 import sys
 import json
-from urllib.request import urlopen # using urllib since it is a standard module (vs. requests)
+from urllib.request import urlopen  # using urllib since it is a standard module (vs. requests)
 from urllib.error import URLError
 import argparse
 

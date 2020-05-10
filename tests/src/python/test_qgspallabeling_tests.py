@@ -21,7 +21,8 @@ import os
 from qgis.PyQt.QtCore import Qt, QPointF, QSizeF
 from qgis.PyQt.QtGui import QFont
 
-from qgis.core import QgsLabelingEngineSettings, QgsPalLayerSettings, QgsUnitTypes, QgsTextBackgroundSettings, QgsProject, QgsExpressionContextUtils, QgsExpressionContext
+from qgis.core import QgsLabelingEngineSettings, QgsPalLayerSettings, QgsUnitTypes, QgsTextBackgroundSettings, \
+    QgsProject, QgsExpressionContextUtils, QgsExpressionContext
 from qgis.core import QgsCoordinateReferenceSystem
 
 from utilities import svgSymbolsPath
@@ -229,6 +230,7 @@ class TestPointBase(object):
         self.lyr.setFormat(format)
         self.checkTest()
 
+
 # noinspection PyPep8Naming
 
 
@@ -325,6 +327,7 @@ class TestLineBase(object):
         self.lyr.placementFlags = QgsPalLayerSettings.AboveLine | QgsPalLayerSettings.MapOrientation
         self.checkTest()
 
+
 # noinspection PyPep8Naming
 
 
@@ -345,7 +348,7 @@ def suiteTests():
         # 'test_partials_labels_disabled',
     ]
     sp_vs_suite = [
-        #'test_something_specific',
+        # 'test_something_specific',
     ]
     # extended separately for finer control of PAL_SUITE (comment-out undesired)
     sp_vs_suite.extend(sp_suite)

@@ -31,6 +31,7 @@ from processing.gui.wrappers import (WidgetWrapper,
                                      DIALOG_BATCH,
                                      DIALOG_MODELER)
 
+
 # TODO: QGIS 3.8 move this class to processing/gui/
 # OtbChoiceWidget is a crucial parameter type in otb provider
 # It is the one that can handles required parameters are run-time depending on user input!.
@@ -49,7 +50,7 @@ class OtbChoiceWidgetWrapper(WidgetWrapper):
     def createWidget(self):
         widget = QComboBox()
         widget.addItems(self.param.options)
-        if self.dialogType in(DIALOG_MODELER, DIALOG_STANDARD):
+        if self.dialogType in (DIALOG_MODELER, DIALOG_STANDARD):
             widget.currentIndexChanged.connect(self.updateAllParameters)
         return widget
 
@@ -68,7 +69,7 @@ class OtbChoiceWidgetWrapper(WidgetWrapper):
             if name in self.dialog.mainWidget().wrappers:
                 self.__setWrapperVisibility(self.dialog.mainWidget().wrappers[name], visible)
 
-        #Fur Qgis modeler
+        # Fur Qgis modeler
         else:
             try:
                 if name in self.dialog.widget.widget.wrappers:
@@ -174,5 +175,5 @@ class OtbParameterChoice(QgsProcessingParameterDefinition):
             return True
 
     def type(self):
-        #This value is written by otbQgisDescriptor.
+        # This value is written by otbQgisDescriptor.
         return 'OTBParameterChoice'

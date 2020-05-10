@@ -479,9 +479,9 @@ class DBManager(QMainWindow):
                                                      QApplication.translate("DBManager", "&Export to File…"),
                                                      self.exportActionSlot)
         self.menuTable.addSeparator()
-        #self.actionShowSystemTables = self.menuTable.addAction(self.tr("Show system tables/views"), self.showSystemTables)
-        #self.actionShowSystemTables.setCheckable(True)
-        #self.actionShowSystemTables.setChecked(True)
+        # self.actionShowSystemTables = self.menuTable.addAction(self.tr("Show system tables/views"), self.showSystemTables)
+        # self.actionShowSystemTables.setCheckable(True)
+        # self.actionShowSystemTables.setChecked(True)
         actionMenuTable.setVisible(False)
 
         # add actions to the toolbar

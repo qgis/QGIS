@@ -41,7 +41,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
     """QGIS Server WMS Tests for GetLegendGraphic request"""
 
     # Set to True to re-generate reference files for this class
-    #regenerate_reference = True
+    # regenerate_reference = True
 
     def test_getLegendGraphics(self):
         """Test that does not return an exception but an image"""
@@ -759,7 +759,8 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_DefaultMapUnitsPerMillimeter", max_size_diff=QSize(15, 15))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_DefaultMapUnitsPerMillimeter",
+                             max_size_diff=QSize(15, 15))
 
     def test_wms_GetLegendGraphic_ScaleSymbol_Scaled_2056(self):
         # 1:1000 scale on an EPSG:2056 calculating DPI that is around 96

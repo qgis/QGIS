@@ -37,7 +37,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class ExtractProjection(GdalAlgorithm):
-
     INPUT = 'INPUT'
     PRJ_FILE_CREATE = 'PRJ_FILE_CREATE'
     WORLD_FILE = 'WORLD_FILE'

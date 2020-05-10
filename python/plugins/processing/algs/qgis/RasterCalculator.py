@@ -43,7 +43,6 @@ from qgis.analysis import QgsRasterCalculator, QgsRasterCalculatorEntry
 
 
 class RasterCalculator(QgisAlgorithm):
-
     LAYERS = 'LAYERS'
     EXTENT = 'EXTENT'
     CELLSIZE = 'CELLSIZE'
@@ -135,11 +134,12 @@ class RasterCalculator(QgisAlgorithm):
                 transform = QgsCoordinateTransform(layer.crs(), crs, context.project())
                 ext = transform.transformBoundingBox(ext)
             return (ext.xMaximum() - ext.xMinimum()) / layer.width()
+
         if cellsize == 0:
             cellsize = min([_cellsize(lyr) for lyr in layersDict.values()])
 
         # check for layers available in the model
-        layersDictCopy = layersDict.copy() # need a shallow copy because next calls invalidate iterator
+        layersDictCopy = layersDict.copy()  # need a shallow copy because next calls invalidate iterator
         for lyr in layersDictCopy.values():
             expression = self.mappedNameToLayer(lyr, expression, layersDict, context)
 
@@ -244,7 +244,7 @@ class RasterCalculator(QgisAlgorithm):
                 # HAVE to use the same translated string as in
                 # https://github.com/qgis/QGIS/blob/master/src/core/processing/models/qgsprocessingmodelalgorithm.cpp#L516
                 translatedDesc = self.tr("Output '%1' from algorithm '%2'")
-                elementZero = translatedDesc.split(" ")[0] # For english the string result should be "Output"
+                elementZero = translatedDesc.split(" ")[0]  # For english the string result should be "Output"
 
                 elements = varDescription.split(" ")
                 if len(elements) > 1 and elements[0] == elementZero:

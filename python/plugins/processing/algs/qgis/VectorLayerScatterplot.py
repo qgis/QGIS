@@ -33,7 +33,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 
 class VectorLayerScatterplot(QgisAlgorithm):
-
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     XFIELD = 'XFIELD'
