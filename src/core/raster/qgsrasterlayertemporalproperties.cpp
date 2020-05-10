@@ -40,6 +40,24 @@ bool QgsRasterLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTi
   return true;
 }
 
+QgsDateTimeRange QgsRasterLayerTemporalProperties::calculateTemporalExtent( QgsMapLayer *layer ) const
+{
+  QgsRasterLayer *rasterLayer = qobject_cast< QgsRasterLayer *>( layer );
+  if ( !rasterLayer )
+    return QgsDateTimeRange();
+
+  switch ( mMode )
+  {
+    case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
+      return mFixedRange;
+
+    case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
+      return rasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange();
+  }
+
+  return QgsDateTimeRange();
+}
+
 QgsRasterLayerTemporalProperties::TemporalMode QgsRasterLayerTemporalProperties::mode() const
 {
   return mMode;
