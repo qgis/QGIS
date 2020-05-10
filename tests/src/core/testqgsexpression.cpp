@@ -1706,6 +1706,9 @@ class TestQgsExpression: public QObject
         case QVariant::List:
           QCOMPARE( result.toList(), expected.toList() );
           break;
+        case QVariant::ByteArray:
+          QCOMPARE( result.toByteArray(), expected.toByteArray() );
+          break;
         case QVariant::UserType:
         {
           if ( result.userType() == qMetaTypeId<QgsInterval>() )
