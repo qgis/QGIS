@@ -1674,7 +1674,8 @@ bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const &xml, QStr
       QgsDebugMsg( e.tagName() ); // the node really is an element.
 
       QString tagName = e.tagName();
-      if ( tagName.startsWith( QLatin1String( "wms:" ) ) )
+      if ( tagName.startsWith( QLatin1String( "wms:" ) ) ||
+           tagName.startsWith( QLatin1String( "ogc:" ) ) )
         tagName = tagName.mid( 4 );
 
       if ( tagName == QLatin1String( "ServiceException" ) )
@@ -1753,6 +1754,14 @@ void QgsWmsProvider::parseServiceException( QDomElement const &e, QString &error
   else if ( seCode == QLatin1String( "OperationNotSupported" ) )
   {
     errorText = tr( "Request is for an optional operation that is not supported by the server." );
+  }
+  else if ( seCode == QLatin1String( "NoMatch" ) )
+  {
+    QString locator = e.attribute( QStringLiteral( "locator" ) );
+    if ( locator == QLatin1String( "time" ) )
+      errorText = tr( "Request contains a time value that does not match any available layer in the server." );
+    else
+      errorText = tr( "Request contains some parameter value that does not match any available layer in the server" );
   }
   else if ( seCode.isEmpty() )
   {
