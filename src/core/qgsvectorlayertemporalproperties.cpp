@@ -43,6 +43,59 @@ bool QgsVectorLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTi
   return true;
 }
 
+QgsDateTimeRange QgsVectorLayerTemporalProperties::calculateTemporalExtent( QgsMapLayer *layer ) const
+{
+  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+  if ( !layer )
+    return QgsDateTimeRange();
+
+  switch ( mMode )
+  {
+    case QgsVectorLayerTemporalProperties::ModeFixedTemporalRange:
+      return mFixedRange;
+
+    case QgsVectorLayerTemporalProperties::ModeFeatureDateTimeInstantFromField:
+    {
+      const int fieldIndex = vectorLayer->fields().lookupField( mStartFieldName );
+      if ( fieldIndex >= 0 )
+      {
+        return QgsDateTimeRange( vectorLayer->minimumValue( fieldIndex ).toDateTime(),
+                                 vectorLayer->maximumValue( fieldIndex ).toDateTime() );
+      }
+      break;
+    }
+
+    case QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromFields:
+    {
+      const int startFieldIndex = vectorLayer->fields().lookupField( mStartFieldName );
+      const int endFieldIndex = vectorLayer->fields().lookupField( mEndFieldName );
+      if ( startFieldIndex >= 0 && endFieldIndex >= 0 )
+      {
+        return QgsDateTimeRange( std::min( vectorLayer->minimumValue( startFieldIndex ).toDateTime(),
+                                           vectorLayer->minimumValue( endFieldIndex ).toDateTime() ),
+                                 std::max( vectorLayer->maximumValue( startFieldIndex ).toDateTime(),
+                                           vectorLayer->maximumValue( endFieldIndex ).toDateTime() ) );
+      }
+      else if ( startFieldIndex >= 0 )
+      {
+        return QgsDateTimeRange( vectorLayer->minimumValue( startFieldIndex ).toDateTime(),
+                                 vectorLayer->maximumValue( startFieldIndex ).toDateTime() );
+      }
+      else if ( endFieldIndex >= 0 )
+      {
+        return QgsDateTimeRange( vectorLayer->minimumValue( endFieldIndex ).toDateTime(),
+                                 vectorLayer->maximumValue( endFieldIndex ).toDateTime() );
+      }
+      break;
+    }
+
+    case QgsVectorLayerTemporalProperties::ModeRedrawLayerOnly:
+      break;
+  }
+
+  return QgsDateTimeRange();
+}
+
 QgsVectorLayerTemporalProperties::TemporalMode QgsVectorLayerTemporalProperties::mode() const
 {
   return mMode;

@@ -48,6 +48,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
     QgsVectorLayerTemporalProperties( QObject *parent SIP_TRANSFERTHIS = nullptr, bool enabled = false );
 
     bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const override;
+    QgsDateTimeRange calculateTemporalExtent( QgsMapLayer *layer ) const override SIP_SKIP;
 
     /**
      * Mode of the vector temporal properties

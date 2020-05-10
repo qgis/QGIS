@@ -72,6 +72,11 @@ void QgsMeshLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabili
     mTimeExtent = temporalCapabilities->timeExtent();
 }
 
+QgsDateTimeRange QgsMeshLayerTemporalProperties::calculateTemporalExtent( QgsMapLayer * ) const
+{
+  return mTimeExtent;
+}
+
 QgsDateTimeRange QgsMeshLayerTemporalProperties::timeExtent() const
 {
   return mTimeExtent;
