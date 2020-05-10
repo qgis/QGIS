@@ -150,6 +150,9 @@
           <property name="text">
            <string>Temporal</string>
           </property>
+          <property name="toolTip">
+           <string>Temporal Settings</string>
+          </property>
           <property name="icon">
            <iconset resource="../../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/temporal.svg</normaloff>:/images/themes/default/propertyicons/temporal.svg</iconset>
