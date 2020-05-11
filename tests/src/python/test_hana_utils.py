@@ -8,7 +8,7 @@ the Free Software Foundation; either version 2 of the License, or
 
 """
 
-__author__ = 'Maksim Rylov'
+__author__ = 'Maxim Rylov'
 __date__ = '2019-11-21'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 

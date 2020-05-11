@@ -7,7 +7,7 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
 """
-__author__ = 'Maksim Rylov'
+__author__ = 'Maxim Rylov'
 __date__ = '02/04/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
