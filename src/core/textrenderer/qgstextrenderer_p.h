@@ -20,7 +20,9 @@
 #define SIP_NO_FILE
 
 #include "qgis_core.h"
-#include "qgstextrenderer.h"
+#include "qgstextshadowsettings.h"
+#include "qgstextbackgroundsettings.h"
+#include "qgstextformat.h"
 #include "qgsmapunitscale.h"
 #include "qgsunittypes.h"
 #include "qgsapplication.h"

@@ -18,6 +18,9 @@
 #define SIP_NO_FILE
 
 #include "qgslabelfeature.h"
+#include "qgstextdocument.h"
+
+class QgsTextCharacterFormat;
 
 /**
  * \ingroup core

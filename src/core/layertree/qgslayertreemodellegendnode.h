@@ -281,7 +281,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 };
 
 #include "qgslegendsymbolitem.h"
-#include "qgstextrenderer.h"
+#include "qgstextformat.h"
 
 /**
  * \ingroup core

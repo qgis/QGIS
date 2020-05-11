@@ -195,7 +195,17 @@ SET(QGIS_CORE_SRCS
   scalebar/qgssteppedlinescalebarrenderer.cpp
   scalebar/qgsticksscalebarrenderer.cpp
 
+  textrenderer/qgstextbackgroundsettings.cpp
+  textrenderer/qgstextblock.cpp
+  textrenderer/qgstextbuffersettings.cpp
+  textrenderer/qgstextcharacterformat.cpp
+  textrenderer/qgstextdocument.cpp
+  textrenderer/qgstextformat.cpp
+  textrenderer/qgstextfragment.cpp
+  textrenderer/qgstextmasksettings.cpp
   textrenderer/qgstextrenderer.cpp
+  textrenderer/qgstextrendererutils.cpp
+  textrenderer/qgstextshadowsettings.cpp
 
   qgis.cpp
   qgsabstractcontentcache.cpp
@@ -1374,7 +1384,17 @@ SET(QGIS_CORE_HDRS
   symbology/qgssymbollayerutils.h
   symbology/qgsvectorfieldsymbollayer.h
 
+  textrenderer/qgstextbackgroundsettings.h
+  textrenderer/qgstextblock.h
+  textrenderer/qgstextbuffersettings.h
+  textrenderer/qgstextcharacterformat.h
+  textrenderer/qgstextdocument.h
+  textrenderer/qgstextformat.h
+  textrenderer/qgstextfragment.h
+  textrenderer/qgstextmasksettings.h
   textrenderer/qgstextrenderer.h
+  textrenderer/qgstextrendererutils.h
+  textrenderer/qgstextshadowsettings.h
 
   validity/qgsabstractvaliditycheck.h
   validity/qgsvaliditycheckcontext.h

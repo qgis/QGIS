@@ -40,11 +40,13 @@
 #include "qgsmapunitscale.h"
 #include "qgsstringutils.h"
 #include "qgssymbol.h"
-#include "qgstextrenderer.h"
+#include "qgstextformat.h"
 #include "qgspropertycollection.h"
 #include "qgslabelobstaclesettings.h"
 #include "qgslabelthinningsettings.h"
 #include "qgslabeling.h"
+
+class QgsTextDocument;
 
 namespace pal SIP_SKIP
 {

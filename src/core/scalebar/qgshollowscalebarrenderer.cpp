@@ -19,6 +19,7 @@
 #include "qgslayoututils.h"
 #include "qgssymbol.h"
 #include "qgsfillsymbollayer.h"
+#include "qgstextrenderer.h"
 #include <QList>
 #include <QPainter>
 

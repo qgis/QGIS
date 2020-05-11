@@ -33,6 +33,7 @@
 #include "qgslayoutitem.h"
 #include "qgsvectorlayerfeaturecounter.h"
 #include "qgsexpression.h"
+#include "qgstextrenderer.h"
 
 
 QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent )

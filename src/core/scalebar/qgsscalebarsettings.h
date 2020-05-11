@@ -20,7 +20,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsunittypes.h"
-#include "qgstextrenderer.h"
+#include "qgstextformat.h"
 #include <QColor>
 #include <QFont>
 #include <QPen>
