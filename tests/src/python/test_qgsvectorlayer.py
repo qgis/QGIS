@@ -1883,6 +1883,28 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertTrue(layer.changeAttributeValue(f1_id, 1, 1001))
         self.assertEqual(layer.maximumValue(1), 1001)
 
+    def testMinMaxInVirtualField(self):
+        """
+        Test minimum and maximum values in a virtual field
+        """
+        layer = QgsVectorLayer("Point?field=fldstr:string", "layer", "memory")
+        pr = layer.dataProvider()
+
+        int_values = ['2010-01-01', None, '2020-01-01']
+        features = []
+        for i in int_values:
+            f = QgsFeature()
+            f.setFields(layer.fields())
+            f.setAttributes([i])
+            features.append(f)
+        assert pr.addFeatures(features)
+
+        field = QgsField('virtual', QVariant.Date)
+        layer.addExpressionField('to_date("fldstr")', field)
+        self.assertEqual(len(layer.getFeature(1).attributes()), 2)
+        self.assertEqual(layer.minimumValue(1), QDate(2010, 1, 1))
+        self.assertEqual(layer.maximumValue(1), QDate(2020, 1, 1))
+
     def test_InvalidOperations(self):
         layer = createLayerWithOnePoint()
 
