@@ -887,16 +887,17 @@ void QgsAttributeTableDialog::deleteFeature( const QgsFeatureId fid )
 
   QgsVectorLayer::DeleteContext context { true };
   mLayer->deleteFeature( fid, &context );
+
+  const auto contextLayers = context.handledLayers();
   //if it effected more than one layer, print feedback for all descendants
-  if ( context.mHandledFeatures.size() > 1 )
+  if ( contextLayers.size() > 1 )
   {
     int deletedCount = 0;
     QString feedbackMessage;
-    QMap<QgsVectorLayer *, QgsFeatureIds>::const_iterator i;
-    for ( i = context.mHandledFeatures.begin(); i != context.mHandledFeatures.end(); ++i )
+    for ( QgsVectorLayer *contextLayer : contextLayers )
     {
-      feedbackMessage += tr( " %1 on layer %2." ).arg( i.value().size() ).arg( i.key()->name() );
-      deletedCount += i.value().size();
+      feedbackMessage += tr( " %1 on layer %2." ).arg( context.handledFeatures( contextLayer ).size() ).arg( contextLayer->name() );
+      deletedCount += context.handledFeatures( contextLayer ).size();
     }
     QgisApp::instance()->messageBar()->pushMessage( tr( "%1 features deleted: %2" ).arg( deletedCount ).arg( feedbackMessage ), Qgis::Success );
   }
