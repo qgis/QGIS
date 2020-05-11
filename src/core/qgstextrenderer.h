@@ -1657,6 +1657,14 @@ class CORE_EXPORT QgsTextCharacterFormat
      */
     QgsTextCharacterFormat( const QTextCharFormat &format );
 
+    //! Status values for boolean format properties
+    enum class BooleanValue
+    {
+      NotSet, //!< Property is not set
+      True, //!< Property is set and TRUE
+      False, //!< Property is set and FALSE
+    };
+
     /**
      * Returns the character's text color, or an invalid color if no color override
      * is set and the default format color should be used.
@@ -1675,10 +1683,101 @@ class CORE_EXPORT QgsTextCharacterFormat
      */
     void setTextColor( const QColor &textColor );
 
+#if 0
+
+    /**
+     * Returns the font weight, or -1 if the font weight is not set
+     * and should be inherited.
+     *
+     * \see setFontWeight()
+     */
+    int fontWeight() const;
+
+    /**
+     * Sets the font \a weight.
+     *
+     * Set \a weight to -1 if the font weight is not set
+     * and should be inherited.
+     *
+     * \see fontWeight()
+     */
+    void setFontWeight( int fontWeight );
+
+    /**
+     * Returns whether the format has italic enabled.
+     *
+     * \see setItalic()
+     */
+    BooleanValue italic() const;
+
+    /**
+     * Sets whether the format has italic \a enabled.
+     *
+     * \see italic()
+     */
+    void setItalic( BooleanValue enabled );
+#endif
+
+    /**
+     * Returns whether the format has strikethrough enabled.
+     *
+     * \see setStrikeOut()
+     */
+    BooleanValue strikeOut() const;
+
+    /**
+     * Sets whether the format has strikethrough \a enabled.
+     *
+     * \see strikeOut()
+     */
+    void setStrikeOut( BooleanValue enabled );
+
+    /**
+     * Returns whether the format has underline enabled.
+     *
+     * \see setUnderline()
+     */
+    BooleanValue underline() const;
+
+    /**
+     * Sets whether the format has underline \a enabled.
+     *
+     * \see underline()
+     */
+    void setUnderline( BooleanValue enabled );
+
+    /**
+     * Returns whether the format has overline enabled.
+     *
+     * \see setUnderline()
+     */
+    BooleanValue overline() const;
+
+    /**
+     * Sets whether the format has overline \a enabled.
+     *
+     * \see overline()
+     */
+    void setOverline( BooleanValue enabled );
+
+    /**
+     * Updates the specified \a font in place, applying character formatting options which
+     * are applicable on a font level.
+     */
+    void updateFontForFormat( QFont &font ) const;
+
   private:
 
     QColor mTextColor;
 
+#if 0 // settings which affect font metrics are disabled for now
+    int mFontWeight = -1;
+    BooleanValue mItalic = BooleanValue::NotSet;
+#endif
+
+    BooleanValue mStrikethrough = BooleanValue::NotSet;
+    BooleanValue mUnderline = BooleanValue::NotSet;
+    BooleanValue mOverline = BooleanValue::NotSet;
 };
 
 /**
@@ -1696,6 +1795,11 @@ class CORE_EXPORT QgsTextFragment
      * Constructor for QgsTextFragment, with the specified \a text and optional character \a format.
      */
     explicit QgsTextFragment( const QString &text, const QgsTextCharacterFormat &format = QgsTextCharacterFormat() );
+
+    /**
+     * Constructor for QgsTextFragment, based on the specified QTextFragment \a fragment.
+     */
+    explicit QgsTextFragment( const QTextFragment &fragment );
 
     /**
      * Returns the text content of the fragment.
@@ -1779,7 +1883,12 @@ class CORE_EXPORT QgsTextDocument : public QVector< QgsTextBlock >
     /**
      * Constructor for QgsTextDocument consisting of a set of plain text \a lines.
      */
-    explicit QgsTextDocument( const QStringList &lines );
+    static QgsTextDocument fromPlainText( const QStringList &lines );
+
+    /**
+     * Constructor for QgsTextDocument consisting of a set of HTML formatted \a lines.
+     */
+    static QgsTextDocument fromHtml( const QStringList &lines );
 
     /**
      * Returns a list of plain text lines of text representing the document.
@@ -1896,31 +2005,12 @@ class CORE_EXPORT QgsTextRenderer
      * formats like SVG to maintain text as text objects, but at the cost of degraded
      * rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
      * as of QGIS 3.4.3 and the text format should be set using QgsRenderContext::setTextRenderFormat() instead.
+     *
+     * \deprecated Private API only, will be removed in 4.0
      */
-    static void drawPart( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
-                          QgsRenderContext &context, const QgsTextFormat &format,
-                          TextPart part, bool drawAsOutlines = true );
-
-#ifndef SIP_RUN
-
-    /**
-     * Draws a single component of rendered text using the specified settings.
-     * \param rect destination rectangle for text
-     * \param rotation text rotation
-     * \param alignment horizontal alignment
-     * \param document text document to draw
-     * \param context render context
-     * \param format text format
-     * \param part component of text to draw. Note that Shadow parts cannot be drawn
-     * individually and instead are drawn with their associated part (e.g., drawn together
-     * with the text or background parts)
-     * \note Not available in Python bindings
-     * \since QGIS 3.14
-     */
-    static void drawPart( const QRectF &rect, double rotation, HAlignment alignment, const QgsTextDocument &document,
-                          QgsRenderContext &context, const QgsTextFormat &format,
-                          TextPart part );
-#endif
+    Q_DECL_DEPRECATED static void drawPart( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
+                                            QgsRenderContext &context, const QgsTextFormat &format,
+                                            TextPart part, bool drawAsOutlines = true ) SIP_DEPRECATED;
 
     /**
      * Draws a single component of rendered text using the specified settings.
@@ -1937,31 +2027,12 @@ class CORE_EXPORT QgsTextRenderer
      * formats like SVG to maintain text as text objects, but at the cost of degraded
      * rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
      * as of QGIS 3.4.3 and the text format should be set using QgsRenderContext::setTextRenderFormat() instead.
+     *
+     * \deprecated Private API only, will be removed in 4.0
      */
-    static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QStringList &textLines,
-                          QgsRenderContext &context, const QgsTextFormat &format,
-                          TextPart part, bool drawAsOutlines = true );
-
-#ifndef SIP_RUN
-
-    /**
-     * Draws a single component of rendered text using the specified settings.
-     * \param origin origin for start of text. Y coordinate will be used as baseline.
-     * \param rotation text rotation
-     * \param alignment horizontal alignment
-     * \param document document to draw
-     * \param context render context
-     * \param format text format
-     * \param part component of text to draw. Note that Shadow parts cannot be drawn
-     * individually and instead are drawn with their associated part (e.g., drawn together
-     * with the text or background parts)
-     * \note Not available in Python bindings
-     * \since QGIS 3.14
-     */
-    static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QgsTextDocument &document,
-                          QgsRenderContext &context, const QgsTextFormat &format,
-                          TextPart part );
-#endif
+    Q_DECL_DEPRECATED static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QStringList &textLines,
+                                            QgsRenderContext &context, const QgsTextFormat &format,
+                                            TextPart part, bool drawAsOutlines = true ) SIP_DEPRECATED;
 
     /**
      * Returns the font metrics for the given text \a format, when rendered
@@ -2025,6 +2096,42 @@ class CORE_EXPORT QgsTextRenderer
       //! Horizontal alignment
       HAlignment hAlign = AlignLeft;
     };
+
+    /**
+     * Draws a single component of rendered text using the specified settings.
+     * \param rect destination rectangle for text
+     * \param rotation text rotation
+     * \param alignment horizontal alignment
+     * \param document text document to draw
+     * \param context render context
+     * \param format text format
+     * \param part component of text to draw. Note that Shadow parts cannot be drawn
+     * individually and instead are drawn with their associated part (e.g., drawn together
+     * with the text or background parts)
+     * \note Not available in Python bindings
+     * \since QGIS 3.14
+     */
+    static void drawPart( const QRectF &rect, double rotation, HAlignment alignment, const QgsTextDocument &document,
+                          QgsRenderContext &context, const QgsTextFormat &format,
+                          TextPart part );
+
+    /**
+     * Draws a single component of rendered text using the specified settings.
+     * \param origin origin for start of text. Y coordinate will be used as baseline.
+     * \param rotation text rotation
+     * \param alignment horizontal alignment
+     * \param document document to draw
+     * \param context render context
+     * \param format text format
+     * \param part component of text to draw. Note that Shadow parts cannot be drawn
+     * individually and instead are drawn with their associated part (e.g., drawn together
+     * with the text or background parts)
+     * \note Not available in Python bindings
+     * \since QGIS 3.14
+     */
+    static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QgsTextDocument &document,
+                          QgsRenderContext &context, const QgsTextFormat &format,
+                          TextPart part );
 
     static void drawBuffer( QgsRenderContext &context,
                             const Component &component,

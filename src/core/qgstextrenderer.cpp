@@ -2649,17 +2649,19 @@ void QgsTextRenderer::drawText( const QRectF &rect, double rotation, QgsTextRend
     tmpFormat.updateDataDefinedProperties( context );
   tmpFormat = updateShadowPosition( tmpFormat );
 
+  const QgsTextDocument document = format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
+
   if ( tmpFormat.background().enabled() )
   {
-    drawPart( rect, rotation, alignment, textLines, context, tmpFormat, Background );
+    drawPart( rect, rotation, alignment, document, context, tmpFormat, Background );
   }
 
   if ( tmpFormat.buffer().enabled() )
   {
-    drawPart( rect, rotation, alignment, textLines, context, tmpFormat, Buffer );
+    drawPart( rect, rotation, alignment, document, context, tmpFormat, Buffer );
   }
 
-  drawPart( rect, rotation, alignment, textLines, context, tmpFormat, Text );
+  drawPart( rect, rotation, alignment, document, context, tmpFormat, Text );
 }
 
 void QgsTextRenderer::drawText( QPointF point, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool )
@@ -2669,17 +2671,19 @@ void QgsTextRenderer::drawText( QPointF point, double rotation, QgsTextRenderer:
     tmpFormat.updateDataDefinedProperties( context );
   tmpFormat = updateShadowPosition( tmpFormat );
 
+  const QgsTextDocument document = format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
+
   if ( tmpFormat.background().enabled() )
   {
-    drawPart( point, rotation, alignment, textLines, context, tmpFormat, Background );
+    drawPart( point, rotation, alignment, document, context, tmpFormat, Background );
   }
 
   if ( tmpFormat.buffer().enabled() )
   {
-    drawPart( point, rotation, alignment, textLines, context, tmpFormat, Buffer );
+    drawPart( point, rotation, alignment, document, context, tmpFormat, Buffer );
   }
 
-  drawPart( point, rotation, alignment, textLines, context, tmpFormat, Text );
+  drawPart( point, rotation, alignment, document, context, tmpFormat, Text );
 }
 
 QgsTextFormat QgsTextRenderer::updateShadowPosition( const QgsTextFormat &format )
@@ -2706,7 +2710,9 @@ QgsTextFormat QgsTextRenderer::updateShadowPosition( const QgsTextFormat &format
 void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, HAlignment alignment,
                                 const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part, bool )
 {
-  drawPart( rect, rotation, alignment, QgsTextDocument( textLines ), context, format, part );
+  const QgsTextDocument document = format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
+
+  drawPart( rect, rotation, alignment, document, context, format, part );
 }
 
 void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, QgsTextRenderer::HAlignment alignment, const QgsTextDocument &document, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part )
@@ -2775,7 +2781,8 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, QgsTextRend
 
 void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part, bool )
 {
-  drawPart( origin, rotation, alignment, QgsTextDocument( textLines ), context, format, part );
+  const QgsTextDocument document = format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
+  drawPart( origin, rotation, alignment, document, context, format, part );
 }
 
 void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer::HAlignment alignment, const QgsTextDocument &document, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part )
@@ -3795,7 +3802,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
           QPainter textp;
           textp.begin( &textPict );
           textp.setPen( Qt::NoPen );
-          QFont font = format.scaledFont( context );
+          const QFont font = format.scaledFont( context );
 
           double xOffset = 0;
           for ( const QgsTextFragment &fragment : block )
@@ -3803,7 +3810,12 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
             // draw text, QPainterPath method
             QPainterPath path;
             path.setFillRule( Qt::WindingFill );
-            path.addText( xOffset, 0, font, fragment.text() );
+
+            QFont fragmentFont = font;
+            fragment.characterFormat().updateFontForFormat( fragmentFont );
+            QFontMetricsF fragmentMetrics = QFontMetricsF( fragmentFont );
+
+            path.addText( xOffset, 0, fragmentFont, fragment.text() );
 
             QColor textColor = fragment.characterFormat().textColor().isValid() ? fragment.characterFormat().textColor() : format.color();
             textColor.setAlphaF( format.opacity() );
@@ -3811,9 +3823,9 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
             textp.drawPath( path );
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-            xOffset += fontMetrics->width( fragment.text() );
+            xOffset += fragmentMetrics.width( fragment.text() );
 #else
-            xOffset += fontMetrics->horizontalAdvance( fragment.text() );
+            xOffset += fragmentMetrics.horizontalAdvance( fragment.text() );
 #endif
             // TODO: why are some font settings lost on drawPicture() when using drawText() inside QPicture?
             //       e.g. some capitalization options, but not others
@@ -4201,6 +4213,13 @@ QgsTextFormat::TextOrientation QgsTextRendererUtils::decodeTextOrientation( cons
 
 QgsTextCharacterFormat::QgsTextCharacterFormat( const QTextCharFormat &format )
   : mTextColor( format.hasProperty( QTextFormat::ForegroundBrush ) ? format.foreground().color() : QColor() )
+#if 0 // settings which affect font metrics are disabled for now
+  , mFontWeight( format.hasProperty( QTextFormat::FontWeight ) ? format.fontWeight() : -1 )
+  , mItalic( format.hasProperty( QTextFormat::FontItalic ) ? ( format.fontItalic() ? BooleanValue::True : BooleanValue::False ) : BooleanValue::NotSet )
+#endif
+  , mStrikethrough( format.hasProperty( QTextFormat::FontStrikeOut ) ? ( format.fontStrikeOut() ? BooleanValue::True : BooleanValue::False ) : BooleanValue::NotSet )
+  , mUnderline( format.hasProperty( QTextFormat::FontUnderline ) ? ( format.fontUnderline() ? BooleanValue::True : BooleanValue::False ) : BooleanValue::NotSet )
+  , mOverline( format.hasProperty( QTextFormat::FontOverline ) ? ( format.fontOverline() ? BooleanValue::True : BooleanValue::False ) : BooleanValue::NotSet )
 {
 
 }
@@ -4215,6 +4234,75 @@ void QgsTextCharacterFormat::setTextColor( const QColor &textColor )
   mTextColor = textColor;
 }
 
+QgsTextCharacterFormat::BooleanValue QgsTextCharacterFormat::strikeOut() const
+{
+  return mStrikethrough;
+}
+
+void QgsTextCharacterFormat::setStrikeOut( BooleanValue strikethrough )
+{
+  mStrikethrough = strikethrough;
+}
+
+QgsTextCharacterFormat::BooleanValue QgsTextCharacterFormat::underline() const
+{
+  return mUnderline;
+}
+
+void QgsTextCharacterFormat::setUnderline( BooleanValue underline )
+{
+  mUnderline = underline;
+}
+
+QgsTextCharacterFormat::BooleanValue QgsTextCharacterFormat::overline() const
+{
+  return mOverline;
+}
+
+void QgsTextCharacterFormat::setOverline( QgsTextCharacterFormat::BooleanValue enabled )
+{
+  mOverline = enabled;
+}
+
+void QgsTextCharacterFormat::updateFontForFormat( QFont &font ) const
+{
+  if ( mUnderline != BooleanValue::NotSet )
+    font.setUnderline( mUnderline == QgsTextCharacterFormat::BooleanValue::True );
+  if ( mOverline != BooleanValue::NotSet )
+    font.setOverline( mOverline == QgsTextCharacterFormat::BooleanValue::True );
+  if ( mStrikethrough != QgsTextCharacterFormat::BooleanValue::NotSet )
+    font.setStrikeOut( mStrikethrough == QgsTextCharacterFormat::BooleanValue::True );
+
+#if 0 // settings which affect font metrics are disabled for now
+  if ( mItalic != QgsTextCharacterFormat::BooleanValue::NotSet )
+    font.setItalic( mItalic == QgsTextCharacterFormat::BooleanValue::True );
+  if ( mFontWeight != -1 )
+    font.setWeight( mFontWeight );
+#endif
+}
+
+#if 0 // settings which affect font metrics are disabled for now
+QgsTextCharacterFormat::BooleanValue QgsTextCharacterFormat::italic() const
+{
+  return mItalic;
+}
+
+void QgsTextCharacterFormat::setItalic( QgsTextCharacterFormat::BooleanValue enabled )
+{
+  mItalic = enabled;
+}
+
+int QgsTextCharacterFormat::fontWeight() const
+{
+  return mFontWeight;
+}
+
+void QgsTextCharacterFormat::setFontWeight( int fontWeight )
+{
+  mFontWeight = fontWeight;
+}
+#endif
+
 //
 // QgsTextFragment
 //
@@ -4222,6 +4310,13 @@ QgsTextFragment::QgsTextFragment( const QString &text, const QgsTextCharacterFor
   : mText( text )
   , mCharFormat( format )
 {}
+
+QgsTextFragment::QgsTextFragment( const QTextFragment &fragment )
+  : mText( fragment.text() )
+  , mCharFormat( QgsTextCharacterFormat( fragment.charFormat() ) )
+{
+
+}
 
 QString QgsTextFragment::text() const
 {
@@ -4259,11 +4354,48 @@ QgsTextDocument::QgsTextDocument( const QgsTextFragment &fragment )
   append( QgsTextBlock( fragment ) );
 }
 
-QgsTextDocument::QgsTextDocument( const QStringList &lines )
+QgsTextDocument QgsTextDocument::fromPlainText( const QStringList &lines )
 {
-  reserve( lines.size() );
+  QgsTextDocument document;
+  document.reserve( lines.size() );
   for ( const QString &line : lines )
-    append( QgsTextBlock( QgsTextFragment( line ) ) );
+    document.append( QgsTextBlock( QgsTextFragment( line ) ) );
+  return document;
+}
+
+QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
+{
+  QgsTextDocument document;
+
+  document.reserve( lines.size() );
+  for ( const QString &line : lines )
+  {
+    QTextDocument sourceDoc;
+    sourceDoc.setHtml( line );
+
+    QTextBlock sourceBlock = sourceDoc.firstBlock();
+    while ( true )
+    {
+      auto it = sourceBlock.begin();
+      QgsTextBlock block;
+      while ( !it.atEnd() )
+      {
+        const QTextFragment fragment = it.fragment();
+        if ( fragment.isValid() )
+        {
+          block.append( QgsTextFragment( fragment ) );
+        }
+        it++;
+      }
+      if ( !block.isEmpty() )
+        document << block;
+
+      sourceBlock = sourceBlock.next();
+      if ( !sourceBlock.isValid() )
+        break;
+    }
+  }
+  return document;
 }
 
 QStringList QgsTextDocument::toPlainText() const

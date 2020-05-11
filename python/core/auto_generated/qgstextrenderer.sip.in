@@ -1998,9 +1998,9 @@ Draws text at a point origin using the specified settings.
                        as of QGIS 3.4.3 and the text format should be set using QgsRenderContext.setTextRenderFormat() instead.
 %End
 
-    static void drawPart( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
-                          QgsRenderContext &context, const QgsTextFormat &format,
-                          TextPart part, bool drawAsOutlines = true );
+ static void drawPart( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
+                                            QgsRenderContext &context, const QgsTextFormat &format,
+                                            TextPart part, bool drawAsOutlines = true ) /Deprecated/;
 %Docstring
 Draws a single component of rendered text using the specified settings.
 
@@ -2017,12 +2017,14 @@ Draws a single component of rendered text using the specified settings.
                        formats like SVG to maintain text as text objects, but at the cost of degraded
                        rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
                        as of QGIS 3.4.3 and the text format should be set using QgsRenderContext.setTextRenderFormat() instead.
+
+.. deprecated::
+   Private API only, will be removed in 4.0
 %End
 
-
-    static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QStringList &textLines,
-                          QgsRenderContext &context, const QgsTextFormat &format,
-                          TextPart part, bool drawAsOutlines = true );
+ static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QStringList &textLines,
+                                            QgsRenderContext &context, const QgsTextFormat &format,
+                                            TextPart part, bool drawAsOutlines = true ) /Deprecated/;
 %Docstring
 Draws a single component of rendered text using the specified settings.
 
@@ -2039,8 +2041,10 @@ Draws a single component of rendered text using the specified settings.
                        formats like SVG to maintain text as text objects, but at the cost of degraded
                        rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
                        as of QGIS 3.4.3 and the text format should be set using QgsRenderContext.setTextRenderFormat() instead.
-%End
 
+.. deprecated::
+   Private API only, will be removed in 4.0
+%End
 
     static QFontMetricsF fontMetrics( QgsRenderContext &context, const QgsTextFormat &format );
 %Docstring
