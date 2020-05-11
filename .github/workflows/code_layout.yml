@@ -100,10 +100,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
       - name: Indentation Test
-        run: ./scripts/verify_indentation.sh ${{ github.event.pull_request.head.sha }}..${{ github.event.pull_request.base.sha }}
+        run: ./scripts/verify_indentation.sh ${{ github.base_ref }}..${{ github.sha }}
     
   spell_check:
     runs-on: ubuntu-latest
