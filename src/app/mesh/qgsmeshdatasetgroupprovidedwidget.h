@@ -24,10 +24,10 @@ class APP_EXPORT QgsMeshDatasetGroupProvidedWidget: public QWidget, private Ui::
 {
     Q_OBJECT
   public:
-    //!Constructor
+    //! Constructor
     QgsMeshDatasetGroupProvidedWidget( QWidget *parent = nullptr );
 
-    //! Synchronize widgets state with associated mesh layer
+    //! Synchronizes widgets state with associated mesh layer
     void syncToLayer( QgsMeshLayer *meshLayer );
 
     //! Returns group states

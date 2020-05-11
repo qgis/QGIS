@@ -28,7 +28,7 @@ QgsMesh3dSymbolWidget::QgsMesh3dSymbolWidget( QgsMeshLayer *meshLayer, QWidget *
 
   mComboBoxTextureType->addItem( tr( "Single Color" ), QgsMesh3DSymbol::SingleColor );
 
-  mDatasetGroupListModel = new QgsMeshDatasetGroupProvidedListModel( this );
+  mDatasetGroupListModel = new QgsMeshDatasetGroupListModel( this );
   mComboBoxDatasetVertical->setModel( mDatasetGroupListModel );
   setLayer( meshLayer );
 

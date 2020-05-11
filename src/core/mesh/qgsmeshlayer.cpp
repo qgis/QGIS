@@ -561,7 +561,7 @@ void QgsMeshLayer::updateDatasetGroupStates()
     {
       // If not present, add a new state
       QgsMeshDatasetGroupState state;
-      state.used = true;
+      state.enabled = true;
       state.originalName = meta.name();
 
       mDatasetGroupsState[i] = state;
@@ -572,7 +572,7 @@ void QgsMeshLayer::updateDatasetGroupStates()
       QgsMeshDatasetGroupState &state = mDatasetGroupsState[i];
       if ( !( state.originalName == meta.name() ) )
       {
-        state.used = true;
+        state.enabled = true;
         state.originalName = meta.name();
         state.renaming = QString();
       }
@@ -988,7 +988,7 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
   {
     int groupIndex = elemState.attribute( QStringLiteral( "group" ) ).toInt();
     QgsMeshDatasetGroupState state;
-    state.used = elemState.attribute( QStringLiteral( "is-used" ) ).toInt();
+    state.enabled = elemState.attribute( QStringLiteral( "is-used" ) ).toInt();
     state.originalName = elemState.attribute( QStringLiteral( "original-name" ) );
     state.renaming = elemState.attribute( QStringLiteral( "renaming" ) );
     mDatasetGroupsState[groupIndex] = state;
@@ -1062,7 +1062,7 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
   {
     QDomElement elemState = document.createElement( QStringLiteral( "group-state" ) );
     elemState.setAttribute( QStringLiteral( "group" ), i );
-    elemState.setAttribute( QStringLiteral( "is-used" ), mDatasetGroupsState[i].used ? 1 : 0 );
+    elemState.setAttribute( QStringLiteral( "is-used" ), mDatasetGroupsState[i].enabled ? 1 : 0 );
     elemState.setAttribute( QStringLiteral( "original-name" ), mDatasetGroupsState[i].originalName );
     elemState.setAttribute( QStringLiteral( "renaming" ), mDatasetGroupsState[i].renaming );
     elemStates.appendChild( elemState );

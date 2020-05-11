@@ -35,8 +35,8 @@ QgsMeshDatasetGroupProvidedWidget::QgsMeshDatasetGroupProvidedWidget( QWidget *p
   connect( mAddDatasetButton, &QPushButton::clicked, this, &QgsMeshDatasetGroupProvidedWidget::addDataset );
   connect( mCollapseButton, &QPushButton::clicked, mDatasetGroupProvidedTreeView, &QTreeView::collapseAll );
   connect( mExpandButton, &QPushButton::clicked, mDatasetGroupProvidedTreeView, &QTreeView::expandAll );
-  connect( mCheckAllButton, &QPushButton::clicked, mDatasetGroupProvidedTreeView, &QgsMeshDatasetGroupProvidedTreeView::checkAll );
-  connect( mUnCheckAllButton, &QPushButton::clicked, mDatasetGroupProvidedTreeView, &QgsMeshDatasetGroupProvidedTreeView::uncheckAll );
+  connect( mCheckAllButton, &QPushButton::clicked, mDatasetGroupProvidedTreeView, &QgsMeshDatasetGroupProvidedTreeView::selectAllGroups );
+  connect( mUnCheckAllButton, &QPushButton::clicked, mDatasetGroupProvidedTreeView, &QgsMeshDatasetGroupProvidedTreeView::unselectAllGroups );
   connect( mResetDefaultButton, &QPushButton::clicked, this, [this]
   {
     this->mDatasetGroupProvidedTreeView->resetDefault( this->mMeshLayer );

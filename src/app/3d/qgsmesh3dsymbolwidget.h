@@ -21,7 +21,7 @@
 #include "qgsmesh3dsymbol.h"
 #include "ui_qgsmesh3dpropswidget.h"
 
-class QgsMeshDatasetGroupProvidedListModel;
+class QgsMeshDatasetGroupListModel;
 class QgsMesh3DSymbol;
 class QgsMeshLayer;
 
@@ -57,7 +57,7 @@ class QgsMesh3dSymbolWidget : public QWidget, private Ui::QgsMesh3dPropsWidget
     double lineEditValue( const QLineEdit *lineEdit ) const;
     void setColorRampMinMax( double min, double max );
     QgsMeshLayer *mLayer = nullptr;
-    QgsMeshDatasetGroupProvidedListModel *mDatasetGroupListModel = nullptr;
+    QgsMeshDatasetGroupListModel *mDatasetGroupListModel = nullptr;
     QgsMesh3DSymbol mSymbol;
 
 };

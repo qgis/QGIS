@@ -531,7 +531,7 @@ class CORE_EXPORT QgsMeshDatasetMetadata
   */
 struct CORE_EXPORT QgsMeshDatasetGroupState
 {
-  bool used;
+  bool enabled;
   QString originalName;
   QString renaming;
 };

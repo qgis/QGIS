@@ -102,7 +102,7 @@ void TestQgsMeshLayerPropertiesDialog::testDatasetGroupTree()
   tree.syncToLayer();
   QCOMPARE( tree.activeScalarGroup(), 1 );
   QMap<int, QgsMeshDatasetGroupState> groupStates = meshLayer.datasetGroupStates();
-  groupStates[1].used = false;
+  groupStates[1].enabled = false;
   meshLayer.updateDatasetGroupStates( groupStates );
   QCOMPARE( tree.activeScalarGroup(), 1 );
   tree.onActiveGroupChanged();
