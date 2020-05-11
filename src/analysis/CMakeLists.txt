@@ -50,6 +50,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmdrape.cpp
   processing/qgsalgorithmdropgeometry.cpp
   processing/qgsalgorithmdropmzvalues.cpp
+  processing/qgsalgorithmexecutepostgisquery.cpp
   processing/qgsalgorithmexplode.cpp
   processing/qgsalgorithmexplodehstore.cpp
   processing/qgsalgorithmextendlines.cpp

@@ -64,7 +64,6 @@ from .PointsFromLines import PointsFromLines
 from .PointsToPaths import PointsToPaths
 from .PolarPlot import PolarPlot
 from .Polygonize import Polygonize
-from .PostGISExecuteSQL import PostGISExecuteSQL
 from .PostGISExecuteAndLoadSQL import PostGISExecuteAndLoadSQL
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RandomPointsAlongLines import RandomPointsAlongLines
@@ -144,7 +143,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 PointsToPaths(),
                 PolarPlot(),
                 Polygonize(),
-                PostGISExecuteSQL(),
                 PostGISExecuteAndLoadSQL(),
                 RandomExtractWithinSubsets(),
                 RandomPointsAlongLines(),

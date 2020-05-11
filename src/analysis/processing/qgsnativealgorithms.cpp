@@ -45,6 +45,7 @@
 #include "qgsalgorithmdrape.h"
 #include "qgsalgorithmdropgeometry.h"
 #include "qgsalgorithmdropmzvalues.h"
+#include "qgsalgorithmexecutepostgisquery.h"
 #include "qgsalgorithmexplode.h"
 #include "qgsalgorithmexplodehstore.h"
 #include "qgsalgorithmextendlines.h"
@@ -243,6 +244,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsDrapeToZAlgorithm() );
   addAlgorithm( new QgsDropGeometryAlgorithm() );
   addAlgorithm( new QgsDropMZValuesAlgorithm() );
+  addAlgorithm( new QgsExecutePostgisQueryAlgorithm() );
   addAlgorithm( new QgsExplodeAlgorithm() );
   addAlgorithm( new QgsExplodeHstoreAlgorithm() );
   addAlgorithm( new QgsExtendLinesAlgorithm() );
