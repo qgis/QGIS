@@ -551,7 +551,7 @@ Returns maximum number of vertical levels for 3d stacked meshes
 
 struct QgsMeshDatasetGroupState
 {
-  bool used;
+  bool isEnabled;
   QString originalName;
   QString renaming;
 };

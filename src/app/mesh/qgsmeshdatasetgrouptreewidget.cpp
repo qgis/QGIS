@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmeshdatasetgroupprovidedwidget.cpp
+    qgsmeshdatasetgrouptreewidget.cpp
     -------------------------------
     begin                : May 2020
     copyright            : (C) 2020 by Vincent Cloarec
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmeshdatasetgroupprovidedwidget.h"
+#include "qgsmeshdatasetgrouptreewidget.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -27,35 +27,35 @@
 #include "qgssettings.h"
 
 
-QgsMeshDatasetGroupProvidedWidget::QgsMeshDatasetGroupProvidedWidget( QWidget *parent ):
+QgsMeshDatasetGroupTreeWidget::QgsMeshDatasetGroupTreeWidget( QWidget *parent ):
   QWidget( parent )
 {
   setupUi( this );
 
-  connect( mAddDatasetButton, &QPushButton::clicked, this, &QgsMeshDatasetGroupProvidedWidget::addDataset );
-  connect( mCollapseButton, &QPushButton::clicked, mDatasetGroupProvidedTreeView, &QTreeView::collapseAll );
-  connect( mExpandButton, &QPushButton::clicked, mDatasetGroupProvidedTreeView, &QTreeView::expandAll );
-  connect( mCheckAllButton, &QPushButton::clicked, mDatasetGroupProvidedTreeView, &QgsMeshDatasetGroupProvidedTreeView::selectAllGroups );
-  connect( mUnCheckAllButton, &QPushButton::clicked, mDatasetGroupProvidedTreeView, &QgsMeshDatasetGroupProvidedTreeView::unselectAllGroups );
+  connect( mAddDatasetButton, &QPushButton::clicked, this, &QgsMeshDatasetGroupTreeWidget::addDataset );
+  connect( mCollapseButton, &QPushButton::clicked, mDatasetGroupTreeView, &QTreeView::collapseAll );
+  connect( mExpandButton, &QPushButton::clicked, mDatasetGroupTreeView, &QTreeView::expandAll );
+  connect( mCheckAllButton, &QPushButton::clicked, mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::selectAllGroups );
+  connect( mUnCheckAllButton, &QPushButton::clicked, mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::deselectAllGroups );
   connect( mResetDefaultButton, &QPushButton::clicked, this, [this]
   {
-    this->mDatasetGroupProvidedTreeView->resetDefault( this->mMeshLayer );
+    this->mDatasetGroupTreeView->resetDefault( this->mMeshLayer );
   } );
 
 }
 
-void QgsMeshDatasetGroupProvidedWidget::syncToLayer( QgsMeshLayer *meshLayer )
+void QgsMeshDatasetGroupTreeWidget::syncToLayer( QgsMeshLayer *meshLayer )
 {
   mMeshLayer = meshLayer;
-  mDatasetGroupProvidedTreeView->syncToLayer( meshLayer );
+  mDatasetGroupTreeView->syncToLayer( meshLayer );
 }
 
-QMap<int, QgsMeshDatasetGroupState> QgsMeshDatasetGroupProvidedWidget::datasetGroupStates() const
+QMap<int, QgsMeshDatasetGroupState> QgsMeshDatasetGroupTreeWidget::datasetGroupStates() const
 {
-  return  mDatasetGroupProvidedTreeView->groupStates();
+  return  mDatasetGroupTreeView->groupStates();
 }
 
-void QgsMeshDatasetGroupProvidedWidget::addDataset()
+void QgsMeshDatasetGroupTreeWidget::addDataset()
 {
   if ( !mMeshLayer->dataProvider() )
     return;

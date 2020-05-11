@@ -339,7 +339,7 @@ border-radius: 2px;</string>
                 </layout>
                </item>
                <item>
-                <widget class="QgsMeshDatasetGroupProvidedWidget" name="mDatasetGroupProvidedWidget" native="true"/>
+                <widget class="QgsMeshDatasetGroupTreeWidget" name="mDatasetGroupTreeWidget" native="true"/>
                </item>
                <item>
                 <widget class="QCheckBox" name="mTemporalStaticDatasetCheckBox">
@@ -772,9 +772,9 @@ border-radius: 2px;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsMeshDatasetGroupProvidedWidget</class>
+   <class>QgsMeshDatasetGroupTreeWidget</class>
    <extends>QWidget</extends>
-   <header>qgsmeshdatasetgroupprovidedwidget.h</header>
+   <header>qgsmeshdatasetgrouptreewidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

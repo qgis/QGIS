@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmeshdatasetgroupprovidedwidget.h
+    qgsmeshdatasetgrouptreewidget.h
     -------------------------------
     begin                : May 2020
     copyright            : (C) 2020 by Vincent Cloarec
@@ -13,19 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMESHDATASETGROUPPROVIDEDWIDGET_H
-#define QGSMESHDATASETGROUPPROVIDEDWIDGET_H
+#ifndef QGSMESHDATASETGROUPTREEWIDGET_H
+#define QGSMESHDATASETGROUPTREEWIDGET_H
 
-#include "ui_qgsmeshdatasetgroupprovidedwidgetbase.h"
+#include "qgis_app.h"
+#include "ui_qgsmeshdatasetgrouptreewidgetbase.h"
+
+#include "qgsmeshdataset.h"
 
 class QgsMeshLayer;
 
-class APP_EXPORT QgsMeshDatasetGroupProvidedWidget: public QWidget, private Ui::QgsMeshDatasetGroupProvidedWidgetBase
+class APP_EXPORT QgsMeshDatasetGroupTreeWidget: public QWidget, private Ui::QgsMeshDatasetGroupTreeWidgetBase
 {
     Q_OBJECT
   public:
     //! Constructor
-    QgsMeshDatasetGroupProvidedWidget( QWidget *parent = nullptr );
+    QgsMeshDatasetGroupTreeWidget( QWidget *parent = nullptr );
 
     //! Synchronizes widgets state with associated mesh layer
     void syncToLayer( QgsMeshLayer *meshLayer );
@@ -43,4 +46,4 @@ class APP_EXPORT QgsMeshDatasetGroupProvidedWidget: public QWidget, private Ui::
     QgsMeshLayer *mMeshLayer;
 };
 
-#endif // QGSMESHDATASETGROUPPROVIDEDWIDGET_H
+#endif // QGSMESHDATASETGROUPTREEWIDGET_H

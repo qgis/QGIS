@@ -402,7 +402,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     /**
       * Returns the dataset group states for each dataset groups
-      * - whether the user as defined the group as used, that is can be access through ui
+      * - whether the user as defined the group as enabled, that is can be access through ui
       * - the original name of the group
       * - the displayed name choose by the user
       *
@@ -417,7 +417,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       *
       * Restores the original name from the data provider and clear renaming name if not different from original name.
       *
-      * \param datasetGroupStates group states used to ubdate the group states of the mesh
+      * \param datasetGroupStates group states used to update the group states of the mesh
       *
       * \since QGIS 3.14
       */

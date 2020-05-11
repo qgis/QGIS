@@ -523,7 +523,7 @@ class CORE_EXPORT QgsMeshDatasetMetadata
 
 /**
   * A dataset group state contains :
-  * - whether the user as defined the group as used, that is can be access through ui
+  * - whether the user as defined the group as enabled, that is can be access through ui
   * - the original name of the group
   * - the displayed name choose by the user
   *
@@ -531,7 +531,7 @@ class CORE_EXPORT QgsMeshDatasetMetadata
   */
 struct CORE_EXPORT QgsMeshDatasetGroupState
 {
-  bool enabled;
+  bool isEnabled;
   QString originalName;
   QString renaming;
 };

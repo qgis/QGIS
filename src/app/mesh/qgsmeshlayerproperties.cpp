@@ -63,7 +63,7 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
 
   connect( mLayerOrigNameLineEd, &QLineEdit::textEdited, this, &QgsMeshLayerProperties::updateLayerName );
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsMeshLayerProperties::changeCrs );
-  connect( mDatasetGroupProvidedWidget, &QgsMeshDatasetGroupProvidedWidget::datasetGroupAdded, this, &QgsMeshLayerProperties::syncToLayer );
+  connect( mDatasetGroupTreeWidget, &QgsMeshDatasetGroupTreeWidget::datasetGroupAdded, this, &QgsMeshLayerProperties::syncToLayer );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -176,7 +176,7 @@ void QgsMeshLayerProperties::syncToLayer()
   }
 
   if ( mMeshLayer )
-    mDatasetGroupProvidedWidget->syncToLayer( mMeshLayer );
+    mDatasetGroupTreeWidget->syncToLayer( mMeshLayer );
 
   QgsDebugMsgLevel( QStringLiteral( "populate styling tab" ), 4 );
   /*
@@ -381,7 +381,7 @@ void QgsMeshLayerProperties::apply()
   /*
    * Source Tab
    */
-  mMeshLayer->updateDatasetGroupStates( mDatasetGroupProvidedWidget->datasetGroupStates() );
+  mMeshLayer->updateDatasetGroupStates( mDatasetGroupTreeWidget->datasetGroupStates() );
   mRendererMeshPropertiesWidget->onDatasetGroupsChanged();
 
   QgsDebugMsgLevel( QStringLiteral( "processing style tab" ), 4 );

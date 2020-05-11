@@ -30,13 +30,13 @@ QgsMeshDatasetGroupTreeItem::QgsMeshDatasetGroupTreeItem( QgsMeshDatasetGroupTre
 QgsMeshDatasetGroupTreeItem::QgsMeshDatasetGroupTreeItem( const QString &name,
     bool isVector,
     int index,
-    bool isUsed,
+    bool isEnabled,
     QgsMeshDatasetGroupTreeItem *parent )
   : mParent( parent )
   , mName( name )
   , mIsVector( isVector )
   , mDatasetGroupIndex( index )
-  , mIsEnabled( isUsed )
+  , mIsEnabled( isEnabled )
 {
 }
 
@@ -96,9 +96,9 @@ bool QgsMeshDatasetGroupTreeItem::isEnabled() const
   return mIsEnabled;
 }
 
-void QgsMeshDatasetGroupTreeItem::setIsEnabled( bool used )
+void QgsMeshDatasetGroupTreeItem::setIsEnabled( bool enabled )
 {
-  mIsEnabled = used;
+  mIsEnabled = enabled;
 }
 
 void QgsMeshDatasetGroupTreeItem::setName( const QString &name )
@@ -262,7 +262,7 @@ void QgsMeshDatasetGroupTreeModel::syncToLayer( QgsMeshLayer *layer )
       {
         if ( name.isEmpty() )
           name = metaName;
-        addTreeItem( metaName, name, isVector, groupIndex, state.enabled, mRootItem.get() );
+        addTreeItem( metaName, name, isVector, groupIndex, state.isEnabled, mRootItem.get() );
       }
       else if ( subdatasets.size() == 2 )
       {
@@ -270,19 +270,19 @@ void QgsMeshDatasetGroupTreeModel::syncToLayer( QgsMeshLayer *layer )
         if ( i == mNameToItem.end() )
         {
           QgsDebugMsg( QStringLiteral( "Unable to find parent group for %1." ).arg( metaName ) );
-          addTreeItem( metaName, name, isVector, groupIndex, state.enabled, mRootItem.get() );
+          addTreeItem( metaName, name, isVector, groupIndex, state.isEnabled, mRootItem.get() );
         }
         else
         {
           if ( name.isEmpty() )
             name = subdatasets[1];
-          addTreeItem( metaName, name, isVector, groupIndex, state.enabled, i.value() );
+          addTreeItem( metaName, name, isVector, groupIndex, state.isEnabled, i.value() );
         }
       }
       else
       {
         QgsDebugMsg( QStringLiteral( "Ignoring too deep child group name %1." ).arg( name ) );
-        addTreeItem( metaName, name, isVector, groupIndex, state.enabled, mRootItem.get() );
+        addTreeItem( metaName, name, isVector, groupIndex, state.isEnabled, mRootItem.get() );
       }
     }
   }
@@ -306,7 +306,7 @@ QMap<int, QgsMeshDatasetGroupState> QgsMeshDatasetGroupTreeModel::groupStates() 
   for ( const QgsMeshDatasetGroupTreeItem *item : mDatasetGroupIndexToItem )
   {
     QgsMeshDatasetGroupState state;
-    state.enabled = item->isEnabled();
+    state.isEnabled = item->isEnabled();
     state.renaming = item->name();
 
     ret[item->datasetGroupIndex()] = state;
@@ -337,16 +337,16 @@ void QgsMeshDatasetGroupTreeModel::resetToDefaultState( QgsMeshLayer *meshLayer 
   dataChanged( index( 0, 0 ), index( mRootItem->childCount(), 0 ) );
 }
 
-void QgsMeshDatasetGroupTreeModel::setAllGroupsAsEnabled( bool isUsed )
+void QgsMeshDatasetGroupTreeModel::setAllGroupsAsEnabled( bool isEnabled )
 {
   for ( int i = 0; i < mRootItem->childCount(); ++i )
   {
     QgsMeshDatasetGroupTreeItem *item = mRootItem->child( i );
-    item->setIsEnabled( isUsed );
+    item->setIsEnabled( isEnabled );
     for ( int j = 0; j < item->childCount(); ++j )
     {
       QgsMeshDatasetGroupTreeItem *child = item->child( j );
-      child->setIsEnabled( isUsed );
+      child->setIsEnabled( isEnabled );
     }
   }
   dataChanged( index( 0, 0 ), index( mRootItem->childCount(), 0 ) );
@@ -356,11 +356,11 @@ void QgsMeshDatasetGroupTreeModel::addTreeItem( const QString &groupName,
     const QString &displayName,
     bool isVector,
     int groupIndex,
-    bool isUsed,
+    bool isEnabled,
     QgsMeshDatasetGroupTreeItem *parent )
 {
   Q_ASSERT( parent );
-  QgsMeshDatasetGroupTreeItem *item = new QgsMeshDatasetGroupTreeItem( displayName, isVector, groupIndex, isUsed, parent );
+  QgsMeshDatasetGroupTreeItem *item = new QgsMeshDatasetGroupTreeItem( displayName, isVector, groupIndex, isEnabled, parent );
   parent->appendChild( item );
 
   if ( mNameToItem.contains( groupName ) )
@@ -463,14 +463,14 @@ bool QgsMeshDatasetGroupProxyModel::filterAcceptsRow( int source_row, const QMod
 
 void QgsMeshDatasetGroupProxyModel::accordActiveGroupToEnabledGroup()
 {
-  //If the active group is not used anymore, change the active group : first used for scalar, inactive for vector
+  //If the active group is not enabled anymore, change the active group : first enabled for scalar, inactive for vector
 
   QMap<int, QgsMeshDatasetGroupState> groupStates = static_cast<QgsMeshDatasetGroupTreeModel *>( sourceModel() )->groupStates();
 
-  if ( !groupStates.contains( mActiveScalarGroupIndex ) || !groupStates[mActiveScalarGroupIndex].enabled )
+  if ( !groupStates.contains( mActiveScalarGroupIndex ) || !groupStates[mActiveScalarGroupIndex].isEnabled )
   {
     mActiveScalarGroupIndex = 0;
-    while ( groupStates.contains( mActiveScalarGroupIndex ) && !groupStates[mActiveScalarGroupIndex].enabled )
+    while ( groupStates.contains( mActiveScalarGroupIndex ) && !groupStates[mActiveScalarGroupIndex].isEnabled )
       mActiveScalarGroupIndex++;
 
     if ( !groupStates.contains( mActiveScalarGroupIndex ) )
@@ -479,7 +479,7 @@ void QgsMeshDatasetGroupProxyModel::accordActiveGroupToEnabledGroup()
     invalidate();
   }
 
-  if ( !groupStates.contains( mActiveVectorGroupIndex ) || !groupStates[mActiveVectorGroupIndex].enabled )
+  if ( !groupStates.contains( mActiveVectorGroupIndex ) || !groupStates[mActiveVectorGroupIndex].isEnabled )
   {
     mActiveVectorGroupIndex = -1;
     invalidate();
@@ -532,7 +532,7 @@ QSize QgsMeshDatasetGroupTreeItemDelagate::sizeHint( const QStyleOptionViewItem 
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-QgsMeshDatasetGroupTreeView::QgsMeshDatasetGroupTreeView( QWidget *parent )
+QgsMeshActiveDatasetGroupTreeView::QgsMeshActiveDatasetGroupTreeView( QWidget *parent )
   : QTreeView( parent ),
     mProxyModel( new QgsMeshDatasetGroupProxyModel( new QgsMeshDatasetGroupTreeModel( this ) ) )
 {
@@ -541,7 +541,7 @@ QgsMeshDatasetGroupTreeView::QgsMeshDatasetGroupTreeView( QWidget *parent )
   setSelectionMode( QAbstractItemView::SingleSelection );
 }
 
-void QgsMeshDatasetGroupTreeView::setLayer( QgsMeshLayer *layer )
+void QgsMeshActiveDatasetGroupTreeView::setLayer( QgsMeshLayer *layer )
 {
   if ( layer != mMeshLayer )
   {
@@ -549,12 +549,12 @@ void QgsMeshDatasetGroupTreeView::setLayer( QgsMeshLayer *layer )
   }
 }
 
-int QgsMeshDatasetGroupTreeView::activeScalarGroup() const
+int QgsMeshActiveDatasetGroupTreeView::activeScalarGroup() const
 {
   return mProxyModel->activeScalarGroup();
 }
 
-void QgsMeshDatasetGroupTreeView::setActiveScalarGroup( int group )
+void QgsMeshActiveDatasetGroupTreeView::setActiveScalarGroup( int group )
 {
   if ( mProxyModel->activeScalarGroup() != group )
   {
@@ -564,12 +564,12 @@ void QgsMeshDatasetGroupTreeView::setActiveScalarGroup( int group )
   }
 }
 
-int QgsMeshDatasetGroupTreeView::activeVectorGroup() const
+int QgsMeshActiveDatasetGroupTreeView::activeVectorGroup() const
 {
   return mProxyModel->activeVectorGroup();
 }
 
-void QgsMeshDatasetGroupTreeView::setActiveVectorGroup( int group )
+void QgsMeshActiveDatasetGroupTreeView::setActiveVectorGroup( int group )
 {
   if ( mProxyModel->activeVectorGroup() != group )
   {
@@ -579,13 +579,13 @@ void QgsMeshDatasetGroupTreeView::setActiveVectorGroup( int group )
   }
 }
 
-void QgsMeshDatasetGroupTreeView::syncToLayer()
+void QgsMeshActiveDatasetGroupTreeView::syncToLayer()
 {
   mProxyModel->syncToLayer( mMeshLayer );
   setActiveGroup();
 }
 
-void QgsMeshDatasetGroupTreeView::onActiveGroupChanged()
+void QgsMeshActiveDatasetGroupTreeView::onActiveGroupChanged()
 {
   int activeScalar = activeScalarGroup();
   int activeVector = activeVectorGroup();
@@ -598,7 +598,7 @@ void QgsMeshDatasetGroupTreeView::onActiveGroupChanged()
     emit activeVectorGroupChanged( activeVectorGroup() );
 }
 
-void QgsMeshDatasetGroupTreeView::mousePressEvent( QMouseEvent *event )
+void QgsMeshActiveDatasetGroupTreeView::mousePressEvent( QMouseEvent *event )
 {
   if ( !event )
     return;
@@ -629,7 +629,7 @@ void QgsMeshDatasetGroupTreeView::mousePressEvent( QMouseEvent *event )
     QTreeView::mousePressEvent( event );
 }
 
-void QgsMeshDatasetGroupTreeView::setActiveGroup()
+void QgsMeshActiveDatasetGroupTreeView::setActiveGroup()
 {
   int scalarGroup = -1;
   int vectorGroup = -1;
@@ -685,7 +685,7 @@ QVariant QgsMeshDatasetGroupListModel::data( const QModelIndex &index, int role 
   return QVariant();
 }
 
-QgsMeshDatasetGroupProvidedTreeView::QgsMeshDatasetGroupProvidedTreeView( QWidget *parent ):
+QgsMeshDatasetGroupTreeView::QgsMeshDatasetGroupTreeView( QWidget *parent ):
   QTreeView( parent )
   , mModel( new QgsMeshDatasetGroupTreeModel( this ) )
 {
@@ -693,33 +693,33 @@ QgsMeshDatasetGroupProvidedTreeView::QgsMeshDatasetGroupProvidedTreeView( QWidge
   setSelectionMode( QAbstractItemView::SingleSelection );
 }
 
-void QgsMeshDatasetGroupProvidedTreeView::syncToLayer( QgsMeshLayer *layer )
+void QgsMeshDatasetGroupTreeView::syncToLayer( QgsMeshLayer *layer )
 {
   if ( mModel )
     mModel->syncToLayer( layer );
 }
 
-QMap<int, QgsMeshDatasetGroupState> QgsMeshDatasetGroupProvidedTreeView::groupStates() const
+QMap<int, QgsMeshDatasetGroupState> QgsMeshDatasetGroupTreeView::groupStates() const
 {
   return mModel->groupStates();
 }
 
-void QgsMeshDatasetGroupProvidedTreeView::selectAllGroups()
+void QgsMeshDatasetGroupTreeView::selectAllGroups()
 {
   selectAllItem( true );
 }
 
-void QgsMeshDatasetGroupProvidedTreeView::unselectAllGroups()
+void QgsMeshDatasetGroupTreeView::deselectAllGroups()
 {
   selectAllItem( false );
 }
 
-void QgsMeshDatasetGroupProvidedTreeView::resetDefault( QgsMeshLayer *meshLayer )
+void QgsMeshDatasetGroupTreeView::resetDefault( QgsMeshLayer *meshLayer )
 {
   mModel->resetToDefaultState( meshLayer );
 }
 
-void QgsMeshDatasetGroupProvidedTreeView::selectAllItem( bool isChecked )
+void QgsMeshDatasetGroupTreeView::selectAllItem( bool isChecked )
 {
   mModel->setAllGroupsAsEnabled( isChecked );
 }

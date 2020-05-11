@@ -198,11 +198,11 @@ class APP_EXPORT QgsMeshDatasetGroupTreeItemDelagate: public QStyledItemDelegate
     const QPixmap mVectorDeselectedPixmap;
 };
 
-class APP_EXPORT QgsMeshDatasetGroupProvidedTreeView: public QTreeView
+class APP_EXPORT QgsMeshDatasetGroupTreeView: public QTreeView
 {
     Q_OBJECT
   public:
-    QgsMeshDatasetGroupProvidedTreeView( QWidget *parent = nullptr );
+    QgsMeshDatasetGroupTreeView( QWidget *parent = nullptr );
 
     void syncToLayer( QgsMeshLayer *layer );
     QMap<int, QgsMeshDatasetGroupState> groupStates() const;
@@ -210,7 +210,7 @@ class APP_EXPORT QgsMeshDatasetGroupProvidedTreeView: public QTreeView
 
   public slots:
     void selectAllGroups();
-    void unselectAllGroups();
+    void deselectAllGroups();
 
   private:
     QgsMeshDatasetGroupTreeModel *mModel;
@@ -222,12 +222,12 @@ class APP_EXPORT QgsMeshDatasetGroupProvidedTreeView: public QTreeView
  *
  * One dataset group is selected (active)
  */
-class APP_EXPORT QgsMeshDatasetGroupTreeView : public QTreeView
+class APP_EXPORT QgsMeshActiveDatasetGroupTreeView : public QTreeView
 {
     Q_OBJECT
 
   public:
-    QgsMeshDatasetGroupTreeView( QWidget *parent = nullptr );
+    QgsMeshActiveDatasetGroupTreeView( QWidget *parent = nullptr );
 
     //! Associates mesh layer with the widget
     void setLayer( QgsMeshLayer *layer );

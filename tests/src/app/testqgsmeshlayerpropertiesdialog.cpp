@@ -90,7 +90,7 @@ void TestQgsMeshLayerPropertiesDialog::testDatasetGroupTree()
   QString uri( testDataDir + "/trap_steady_05_3D.nc" );
   QgsMeshLayer meshLayer( uri, "", "mdal" );
 
-  QgsMeshDatasetGroupTreeView tree;
+  QgsMeshActiveDatasetGroupTreeView tree;
   tree.setLayer( &meshLayer );
   tree.syncToLayer();
 
@@ -102,7 +102,7 @@ void TestQgsMeshLayerPropertiesDialog::testDatasetGroupTree()
   tree.syncToLayer();
   QCOMPARE( tree.activeScalarGroup(), 1 );
   QMap<int, QgsMeshDatasetGroupState> groupStates = meshLayer.datasetGroupStates();
-  groupStates[1].enabled = false;
+  groupStates[1].isEnabled = false;
   meshLayer.updateDatasetGroupStates( groupStates );
   QCOMPARE( tree.activeScalarGroup(), 1 );
   tree.onActiveGroupChanged();
