@@ -241,7 +241,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      * \param json The json object to update
      * \since QGIS 3.8
      */
-    virtual void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const;
+    virtual QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const;
 
     /**
      * Draws label on the right side of the item
@@ -251,14 +251,6 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      * \returns Size of the label (may span multiple lines)
      */
     virtual QSizeF drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const;
-
-    /**
-     * Adds a label in a JSON object with the key "title".
-     * \param settings Legend layout configuration
-     * \param json The json object to update
-     * \since QGIS 3.8
-     */
-    void exportSymbolTextToJson( const QgsLegendSettings &settings, QJsonObject &json ) const;
 
   signals:
     //! Emitted on internal data change so the layer tree model can forward the signal to views
@@ -311,7 +303,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
 
-    void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const override;
+    QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const override;
 
     void setEmbeddedInParent( bool embedded ) override;
 
@@ -554,7 +546,7 @@ class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
 
-    void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const override;
+    QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const override;
 
   private:
     QImage mImage;
@@ -585,7 +577,7 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
 
-    void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const override;
+    QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const override;
 
   private:
     QColor mColor;
@@ -617,7 +609,7 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
 
-    void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const override;
+    QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const override;
 
     void invalidateMapBasedData() override;
 
