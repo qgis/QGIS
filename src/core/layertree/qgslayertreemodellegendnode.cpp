@@ -84,10 +84,12 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
   return im;
 }
 
-void QgsLayerTreeModelLegendNode::exportToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json )
+QJsonObject QgsLayerTreeModelLegendNode::exportToJson( const QgsLegendSettings &settings, const QgsRenderContext &context )
 {
+  QJsonObject json;
   exportSymbolToJson( settings, context, json );
   exportSymbolTextToJson( settings, json );
+  return json;
 }
 
 QSizeF QgsLayerTreeModelLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const

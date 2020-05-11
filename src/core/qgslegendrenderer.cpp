@@ -101,9 +101,6 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
     }
     else if ( QgsLayerTree::isLayer( node ) )
     {
-      QJsonObject group;
-      group[ QStringLiteral( "type" ) ] = QStringLiteral( "layer" );
-
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
 
       QString text;
@@ -120,21 +117,25 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
 
       if ( legendNodes.count() == 1 )
       {
-        legendNodes.at( 0 )->exportToJson( mSettings, context, group );
+        QJsonObject group = legendNodes.at( 0 )->exportToJson( mSettings, context );
+        group[ QStringLiteral( "type" ) ] = QStringLiteral( "layer" );
         nodes.append( group );
       }
       else if ( legendNodes.count() > 1 )
       {
+        QJsonObject group;
+        group[ QStringLiteral( "type" ) ] = QStringLiteral( "layer" );
+        group[ QStringLiteral( "title" ) ] = text;
+
         QJsonArray symbols;
         for ( int j = 0; j < legendNodes.count(); j++ )
         {
           QgsLayerTreeModelLegendNode *legendNode = legendNodes.at( j );
-          QJsonObject symbol;
-          legendNode->exportToJson( mSettings, context, symbol );
+          QJsonObject symbol = legendNode->exportToJson( mSettings, context );
           symbols.append( symbol );
         }
-        group[ QStringLiteral( "title" ) ] = text;
         group[ QStringLiteral( "symbols" ) ] = symbols;
+
         nodes.append( group );
       }
     }

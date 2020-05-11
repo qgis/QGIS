@@ -223,7 +223,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      * \param json The json object to update
      * \since QGIS 3.8
      */
-    void exportToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json );
+    QJsonObject exportToJson( const QgsLegendSettings &settings, const QgsRenderContext &context );
 
     /**
      * Draws symbol on the left side of the item
