@@ -293,7 +293,7 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
     case QgsAttributeTableFilterModel::ShowAll:
     case QgsAttributeTableFilterModel::ShowEdited:
     case QgsAttributeTableFilterModel::ShowFilteredList:
-      disconnect( mFilterModel, &QgsAttributeTableFilterModel::featuresFiltered, this, &QgsDualView::filterChanged );
+      connect( mFilterModel, &QgsAttributeTableFilterModel::featuresFiltered, this, &QgsDualView::filterChanged );
       break;
 
     case QgsAttributeTableFilterModel::ShowSelected:
@@ -317,16 +317,18 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
       break;
   }
 
-  //update filter model
-  mFilterModel->setFilterMode( filterMode );
-
   if ( requiresTableReload )
   {
+    //disconnect the connections of the current (old) filtermode before reload
+    mFilterModel->disconnectFilterModeConnections();
+
     mMasterModel->setRequest( r );
     whileBlocking( mLayerCache )->setCacheGeometry( needsGeometry );
     mMasterModel->loadLayer();
   }
 
+  //update filter model
+  mFilterModel->setFilterMode( filterMode );
   emit filterChanged();
 }
 

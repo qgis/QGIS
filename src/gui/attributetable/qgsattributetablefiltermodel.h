@@ -128,6 +128,16 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     void setFilterMode( FilterMode filterMode );
 
     /**
+     * Disconnect the connections set for the current filterMode
+     */
+    void disconnectFilterModeConnections();
+
+    /**
+     * Disconnect the connections set for the new \a filterMode
+     */
+    void connectFilterModeConnections( FilterMode filterMode );
+
+    /**
      * The current filterModel
      */
     FilterMode filterMode() { return mFilterMode; }

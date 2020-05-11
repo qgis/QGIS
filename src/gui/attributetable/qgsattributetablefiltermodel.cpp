@@ -323,51 +323,55 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
 {
   if ( filterMode != mFilterMode )
   {
-    // cleanup existing connections
-    switch ( mFilterMode )
-    {
-      case ShowVisible:
-        disconnect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
-        disconnect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
-        disconnect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
-        disconnect( mTableModel, &QgsAttributeTableModel::finished, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
-        break;
-      case ShowAll:
-      case ShowEdited:
-      case ShowSelected:
-        break;
-      case ShowFilteredList:
-        disconnect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedFilterFeatures );
-        disconnect( mTableModel, &QgsAttributeTableModel::finished, this, &QgsAttributeTableFilterModel::startTimedFilterFeatures );
-        disconnect( layer(), &QgsVectorLayer::attributeValueChanged, this, &QgsAttributeTableFilterModel::onAttributeValueChanged );
-        disconnect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::onGeometryChanged );
-        break;
-    }
-
-    // setup new connections
-    switch ( filterMode )
-    {
-      case ShowVisible:
-        connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
-        connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
-        connect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
-        connect( mTableModel, &QgsAttributeTableModel::finished, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
-        generateListOfVisibleFeatures();
-        break;
-      case ShowAll:
-      case ShowEdited:
-      case ShowSelected:
-        break;
-      case ShowFilteredList:
-        connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedFilterFeatures );
-        connect( mTableModel, &QgsAttributeTableModel::finished, this, &QgsAttributeTableFilterModel::startTimedFilterFeatures );
-        connect( layer(), &QgsVectorLayer::attributeValueChanged, this, &QgsAttributeTableFilterModel::onAttributeValueChanged );
-        connect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::onGeometryChanged );
-        break;
-    }
-
+    disconnectFilterModeConnections();
+    connectFilterModeConnections( filterMode );
     mFilterMode = filterMode;
     invalidateFilter();
+  }
+}
+
+void QgsAttributeTableFilterModel::disconnectFilterModeConnections()
+{
+  // cleanup existing connections
+  switch ( mFilterMode )
+  {
+    case ShowVisible:
+      disconnect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
+      disconnect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
+      disconnect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
+      break;
+    case ShowAll:
+    case ShowEdited:
+    case ShowSelected:
+      break;
+    case ShowFilteredList:
+      disconnect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedFilterFeatures );
+      disconnect( layer(), &QgsVectorLayer::attributeValueChanged, this, &QgsAttributeTableFilterModel::onAttributeValueChanged );
+      disconnect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::onGeometryChanged );
+      break;
+  }
+}
+
+void QgsAttributeTableFilterModel::connectFilterModeConnections( QgsAttributeTableFilterModel::FilterMode filterMode )
+{
+  // setup new connections
+  switch ( filterMode )
+  {
+    case ShowVisible:
+      connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
+      connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
+      connect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::startTimedReloadVisible );
+      generateListOfVisibleFeatures();
+      break;
+    case ShowAll:
+    case ShowEdited:
+    case ShowSelected:
+      break;
+    case ShowFilteredList:
+      connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::startTimedFilterFeatures );
+      connect( layer(), &QgsVectorLayer::attributeValueChanged, this, &QgsAttributeTableFilterModel::onAttributeValueChanged );
+      connect( layer(), &QgsVectorLayer::geometryChanged, this, &QgsAttributeTableFilterModel::onGeometryChanged );
+      break;
   }
 }
 
