@@ -1634,6 +1634,8 @@ class CORE_EXPORT QgsTextFormat
 
 };
 
+#ifndef SIP_RUN
+
 /**
  * \class QgsTextCharacterFormat
   * \ingroup core
@@ -1785,6 +1787,8 @@ class CORE_EXPORT QgsTextDocument : public QVector< QgsTextBlock >
     QStringList toPlainText() const;
 
 };
+
+#endif
 
 /**
  * \class QgsTextRenderer
