@@ -211,6 +211,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
   int emptyOrNullGeom = 0;
 
   long featureCount = 0;
+  long long attempts = 0; // used for unique feature IDs in the indexes
   long numberOfFeatures = polygonSource->featureCount();
   long long desiredNumberOfPoints = 0;
   const double featureProgressStep = 100.0 / ( numberOfFeatures > 0 ? numberOfFeatures : 1 );
@@ -297,6 +298,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
       // Have to check for minimum distance, provide the acceptPoints function
       QVector< QgsPointXY > newPoints = polyGeom.randomPointsInPolygon( numberPointsForThisFeature, [ & ]( const QgsPointXY & newPoint ) -> bool
       {
+        attempts++;
         // May have to check minimum distance to existing points
         // The first point can always be added
         // Local first (if larger than global)
@@ -320,9 +322,9 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
           }
         }
         // Point is accepted - add it to the indexes
-        QgsFeature f = QgsFeature( totNPoints + localIndexPoints + indexPoints);
+        QgsFeature f = QgsFeature( attempts );
         QgsAttributes pAttrs = QgsAttributes();
-        pAttrs.append( totNPoints + localIndexPoints + indexPoints );
+        pAttrs.append( attempts );
         f.setAttributes( pAttrs );
         QgsGeometry newGeom = QgsGeometry::fromPointXY( newPoint );
 
