@@ -548,8 +548,10 @@
 %Include auto_generated/textrenderer/qgstextbackgroundsettings.sip
 %Include auto_generated/textrenderer/qgstextblock.sip
 %Include auto_generated/textrenderer/qgstextbuffersettings.sip
+%Include auto_generated/textrenderer/qgstextcharacterformat.sip
 %Include auto_generated/textrenderer/qgstextdocument.sip
 %Include auto_generated/textrenderer/qgstextformat.sip
+%Include auto_generated/textrenderer/qgstextfragment.sip
 %Include auto_generated/textrenderer/qgstextmasksettings.sip
 %Include auto_generated/textrenderer/qgstextrenderer.sip
 %Include auto_generated/textrenderer/qgstextrendererutils.sip

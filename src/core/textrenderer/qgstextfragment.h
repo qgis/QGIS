@@ -22,12 +22,12 @@
 
 class QTextFragment;
 
-#define SIP_NO_FILE
-
 /**
  * \class QgsTextFragment
   * \ingroup core
   * Stores a fragment of text along with formatting overrides to be used when rendering the fragment.
+  *
+  * \warning This API is not considered stable and may change in future QGIS versions.
   *
   * \since QGIS 3.14
  */

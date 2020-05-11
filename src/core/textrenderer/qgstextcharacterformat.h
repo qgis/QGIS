@@ -24,8 +24,6 @@
 
 class QTextCharFormat;
 
-#define SIP_NO_FILE
-
 /**
  * \class QgsTextCharacterFormat
   * \ingroup core
@@ -33,6 +31,8 @@ class QTextCharFormat;
   *
   * These options encapsulate formatting options which override the default
   * settings from a QgsTextFormat for individual characters (or sets of characters).
+  *
+  * \warning This API is not considered stable and may change in future QGIS versions.
   *
   * \since QGIS 3.14
  */
