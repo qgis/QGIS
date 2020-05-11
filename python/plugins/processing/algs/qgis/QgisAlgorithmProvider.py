@@ -63,7 +63,6 @@ from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
 from .PointsToPaths import PointsToPaths
 from .PolarPlot import PolarPlot
-from .Polygonize import Polygonize
 from .PostGISExecuteAndLoadSQL import PostGISExecuteAndLoadSQL
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RandomPointsAlongLines import RandomPointsAlongLines
@@ -141,7 +140,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 PointsFromLines(),
                 PointsToPaths(),
                 PolarPlot(),
-                Polygonize(),
                 PostGISExecuteAndLoadSQL(),
                 RandomExtractWithinSubsets(),
                 RandomPointsAlongLines(),

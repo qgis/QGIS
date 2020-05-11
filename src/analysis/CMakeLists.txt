@@ -110,6 +110,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmpointsalonggeometry.cpp
   processing/qgsalgorithmpointslayerfromtable.cpp
   processing/qgsalgorithmpoleofinaccessibility.cpp
+  processing/qgsalgorithmpolygonize.cpp
   processing/qgsalgorithmprojectpointcartesian.cpp
   processing/qgsalgorithmpromotetomultipart.cpp
   processing/qgsalgorithmraiseexception.cpp
