@@ -51,7 +51,7 @@ bool QgsVectorTileLayer::loadDataSource()
   {
     if ( !QgsVectorTileUtils::checkXYZUrlTemplate( mSourcePath ) )
     {
-      QgsDebugMsg( QStringLiteral( "Invaid format of URL for XYZ source: " ) + mSourcePath );
+      QgsDebugMsg( QStringLiteral( "Invalid format of URL for XYZ source: " ) + mSourcePath );
       return false;
     }
 
