@@ -299,33 +299,35 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
       {
         // May have to check minimum distance to existing points
         // The first point can always be added
-        // Global first
-        if ( mMinDistanceGlobal != 0.0 && indexPoints > 0 )
+        // Local first (if larger than global)
+        if ( minDistanceForThisFeature != 0 && mMinDistanceGlobal < minDistanceForThisFeature && localIndexPoints > 0 )
         {
-          QList<QgsFeatureId> neighbors = globalIndex.nearestNeighbor( newPoint, 1, mMinDistanceGlobal );
-          if ( totNPoints > 0 && !neighbors.empty() )
+          QList<QgsFeatureId> neighbors = localIndex.nearestNeighbor( newPoint, 1, minDistanceForThisFeature );
+          //if ( totNPoints > 0 && !neighbors.empty() )
+          if ( !neighbors.empty() )
           {
             return false;
           }
         }
-        // Then local (if larger than global)
-        if ( minDistanceForThisFeature != 0 && mMinDistanceGlobal < minDistanceForThisFeature && localIndexPoints > 0 )
+        // The global
+        if ( mMinDistanceGlobal != 0.0 && indexPoints > 0 )
         {
-          QList<QgsFeatureId> neighbors = localIndex.nearestNeighbor( newPoint, 1, minDistanceForThisFeature );
-          if ( totNPoints > 0 && !neighbors.empty() )
+          QList<QgsFeatureId> neighbors = globalIndex.nearestNeighbor( newPoint, 1, mMinDistanceGlobal );
+          //if ( totNPoints > 0 && !neighbors.empty() )
+          if ( !neighbors.empty() )
           {
             return false;
           }
         }
         // Point is accepted - add it to the indexes
-        QgsFeature f = QgsFeature( totNPoints );
+        QgsFeature f = QgsFeature( totNPoints + localIndexPoints + indexPoints);
         QgsAttributes pAttrs = QgsAttributes();
-        pAttrs.append( totNPoints );
+        pAttrs.append( totNPoints + localIndexPoints + indexPoints );
         f.setAttributes( pAttrs );
         QgsGeometry newGeom = QgsGeometry::fromPointXY( newPoint );
 
         f.setGeometry( newGeom );
-        totNPoints++;
+        //totNPoints++;
 
         if ( minDistanceForThisFeature != 0 )
         {
@@ -356,7 +358,6 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
         f.setGeometry( newGeom );
         sink->addFeature( f, QgsFeatureSink::FastInsert );
         totNPoints++;
-        //indexPoints++;
         pointsAddedForThisFeature++;
         pointProgress += pointProgressIncrement * ( maxAttemptsForThisFeature );
       }
