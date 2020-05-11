@@ -27,12 +27,26 @@ class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
       CapturePolygon
     };
 
+    enum Capability
+    {
+      NoCapabilities,
+      SupportsCurves,
+    };
+
+    typedef QFlags<QgsMapToolCapture::Capability> Capabilities;
+
+
     QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
 %Docstring
 constructor
 %End
 
     ~QgsMapToolCapture();
+
+    virtual QgsMapToolCapture::Capabilities capabilities() const;
+%Docstring
+Returns flags containing the supported capabilities
+%End
 
     virtual void activate();
 
@@ -265,6 +279,9 @@ Stop capturing
 %End
 
 };
+
+QFlags<QgsMapToolCapture::Capability> operator|(QgsMapToolCapture::Capability f1, QFlags<QgsMapToolCapture::Capability> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *
