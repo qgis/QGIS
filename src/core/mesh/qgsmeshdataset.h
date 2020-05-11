@@ -521,4 +521,19 @@ class CORE_EXPORT QgsMeshDatasetMetadata
     int mMaximumVerticalLevelsCount = 0; // for 3d stacked meshes
 };
 
+/**
+  * A dataset group state contains
+  * - whether the user as defined the group as used, that is can be access through ui
+  * - the orignal name of the group
+  * - the displayed name choose by the user
+  *
+  * \since QGIS 3.14
+  */
+struct QgsMeshDatasetGroupState
+{
+  bool used;
+  QString originalName;
+  QString renaming;
+};
+
 #endif // QGSMESHDATASET_H

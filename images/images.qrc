@@ -400,6 +400,7 @@
         <file>themes/default/mActionSelectRadius.svg</file>
         <file>themes/default/mActionSelectRectangle.svg</file>
         <file>themes/default/mActionSelectAllTree.svg</file>
+        <file>themes/default/mActionDeselectAllTree.svg</file>
         <file>themes/default/mActionSetProjection.svg</file>
         <file>themes/default/mActionSetToCanvasExtent.svg</file>
         <file>themes/default/mActionSetToCanvasScale.svg</file>

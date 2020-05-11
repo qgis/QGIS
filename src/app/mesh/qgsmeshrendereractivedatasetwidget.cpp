@@ -204,17 +204,13 @@ void QgsMeshRendererActiveDatasetWidget::syncToLayer()
 
   whileBlocking( mDatasetGroupTreeView )->syncToLayer();
 
-  if ( mMeshLayer )
-  {
-    const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
-    mActiveScalarDatasetGroup = mDatasetGroupTreeView->activeScalarGroup();
-    mActiveVectorDatasetGroup = mDatasetGroupTreeView->activeVectorGroup();
-  }
-  else
-  {
-    mActiveScalarDatasetGroup = -1;
-    mActiveVectorDatasetGroup = -1;
-  }
+  mActiveScalarDatasetGroup = mDatasetGroupTreeView->activeScalarGroup();
+  mActiveVectorDatasetGroup = mDatasetGroupTreeView->activeVectorGroup();
 
   updateMetadata();
+}
+
+void QgsMeshRendererActiveDatasetWidget::onDatasetGroupsChanged()
+{
+  mDatasetGroupTreeView->onActiveGroupChanged();
 }

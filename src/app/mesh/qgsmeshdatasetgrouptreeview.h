@@ -26,7 +26,9 @@
 #include <QStandardItemModel>
 #include <QStyledItemDelegate>
 #include <QList>
+#include <QSortFilterProxyModel>
 #include <memory>
+#include "qgsmeshdataset.h"
 
 class QgsMeshLayer;
 
@@ -52,6 +54,7 @@ class APP_NO_EXPORT QgsMeshDatasetGroupTreeItem
     QgsMeshDatasetGroupTreeItem( const QString &name,
                                  bool isVector,
                                  int index,
+                                 bool isUsed,
                                  QgsMeshDatasetGroupTreeItem *parent = nullptr );
     ~QgsMeshDatasetGroupTreeItem();
 
@@ -61,8 +64,12 @@ class APP_NO_EXPORT QgsMeshDatasetGroupTreeItem
     QgsMeshDatasetGroupTreeItem *parentItem() const;
     int row() const;
     QString name() const;
+    void setName( const QString &name );
     bool isVector() const;
     int datasetGroupIndex() const;
+
+    bool isUsed() const;
+    void setIsUsed( bool isUsed );
 
   private:
     QgsMeshDatasetGroupTreeItem *mParent = nullptr;
@@ -72,12 +79,13 @@ class APP_NO_EXPORT QgsMeshDatasetGroupTreeItem
     QString mName;
     bool mIsVector = false;
     int mDatasetGroupIndex = -1;
+    bool mIsUsed = true;
 };
 
 /**
  * Item Model for QgsMeshDatasetGroupTreeItem
  */
-class APP_NO_EXPORT QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
+class APP_NO_EXPORT QgsMeshDatasetGroupProvidedTreeModel : public QAbstractItemModel
 {
     Q_OBJECT
   public:
@@ -90,9 +98,10 @@ class APP_NO_EXPORT QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
       DatasetGroupIndex
     };
 
-    explicit QgsMeshDatasetGroupTreeModel( QObject *parent = nullptr );
+    explicit QgsMeshDatasetGroupProvidedTreeModel( QObject *parent = nullptr );
 
     QVariant data( const QModelIndex &index, int role ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role );
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant headerData( int section, Qt::Orientation orientation,
                          int role = Qt::DisplayRole ) const override;
@@ -101,6 +110,43 @@ class APP_NO_EXPORT QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
     QModelIndex parent( const QModelIndex &index ) const override;
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+
+    //! Add groups to the model from mesh layer
+    void syncToLayer( QgsMeshLayer *layer );
+
+    //!Returns if the dataset groups related to the QModelIndex is set as used
+    bool isUsed( const QModelIndex &index ) const;
+
+    //! return the group states as defined in the model for all groups, orignal name are not provided
+    QMap<int, QgsMeshDatasetGroupState> groupStates() const;
+
+    //! Resets all groups with default state from the mesh layer
+    void resetToDefaultState( QgsMeshLayer *meshLayer );
+
+    //! Sets all groups as used
+    void setAllGroupsAsUsed( bool isUsed );
+
+  private:
+    void addTreeItem( const QString &groupName,
+                      const QString &displayName,
+                      bool isVector,
+                      int groupIndex,
+                      bool isUsed,
+                      QgsMeshDatasetGroupTreeItem *parent );
+
+    std::unique_ptr<QgsMeshDatasetGroupTreeItem> mRootItem;
+    QMap<QString, QgsMeshDatasetGroupTreeItem *> mNameToItem;
+    QMap<int, QgsMeshDatasetGroupTreeItem *> mDatasetGroupIndexToItem;
+};
+
+
+class APP_NO_EXPORT QgsMeshDatasetGroupFilterUsedModel: public QSortFilterProxyModel
+{
+  public:
+    QgsMeshDatasetGroupFilterUsedModel( QAbstractItemModel *sourceModel );
+
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
 
     //! Returns index of active group for contours
     int activeScalarGroup() const;
@@ -117,15 +163,14 @@ class APP_NO_EXPORT QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
     //! Add groups to the model from mesh layer
     void syncToLayer( QgsMeshLayer *layer );
 
-  private:
-    void addTreeItem( const QString &groupName, const QString &displayName, bool isVector, int groupIndex, QgsMeshDatasetGroupTreeItem *parent );
-    QModelIndex groupIndexToModelIndex( int groupIndex );
+  protected:
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
-    std::unique_ptr<QgsMeshDatasetGroupTreeItem> mRootItem;
-    QMap<QString, QgsMeshDatasetGroupTreeItem *> mNameToItem;
-    QMap<int, QgsMeshDatasetGroupTreeItem *> mDatasetGroupIndexToItem;
+  private:
     int mActiveScalarGroupIndex = -1;
     int mActiveVectorGroupIndex = -1;
+
+    void accordActiveGroupToUsedGroup();
 };
 
 /**
@@ -151,6 +196,25 @@ class APP_EXPORT QgsMeshDatasetGroupTreeItemDelagate: public QStyledItemDelegate
     const QPixmap mScalarDeselectedPixmap;
     const QPixmap mVectorSelectedPixmap;
     const QPixmap mVectorDeselectedPixmap;
+};
+
+class APP_EXPORT QgsMeshDatasetGroupProvidedTreeView: public QTreeView
+{
+    Q_OBJECT
+  public:
+    QgsMeshDatasetGroupProvidedTreeView( QWidget *parent = nullptr );
+
+    void syncToLayer( QgsMeshLayer *layer );
+    QMap<int, QgsMeshDatasetGroupState> groupStates() const;
+    void resetDefault( QgsMeshLayer *meshLayer );
+
+  public slots:
+    void checkAll();
+    void uncheckAll();
+
+  private:
+    QgsMeshDatasetGroupProvidedTreeModel *mModel;
+    void checkAllItem( bool isChecked );
 };
 
 /**
@@ -183,6 +247,9 @@ class APP_EXPORT QgsMeshDatasetGroupTreeView : public QTreeView
     //! Synchronize widgets state with associated mesh layer
     void syncToLayer();
 
+    //! Called when active group has changed
+    void onActiveGroupChanged();
+
     void mousePressEvent( QMouseEvent *event ) override;
 
   signals:
@@ -193,17 +260,17 @@ class APP_EXPORT QgsMeshDatasetGroupTreeView : public QTreeView
     void activeVectorGroupChanged( int groupIndex );
 
   private:
-    void setActiveGroupFromActiveDataset();
+    void setActiveGroup();
 
-    QgsMeshDatasetGroupTreeModel mModel;
+    QgsMeshDatasetGroupFilterUsedModel *mUsedModel;
     QgsMeshDatasetGroupTreeItemDelagate mDelegate;
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
 };
 
-class APP_EXPORT QgsMeshDatasetGroupListModel: public QAbstractListModel
+class APP_EXPORT QgsMeshDatasetGroupProvidedListModel: public QAbstractListModel
 {
   public:
-    explicit QgsMeshDatasetGroupListModel( QObject *parent ): QAbstractListModel( parent )
+    explicit QgsMeshDatasetGroupProvidedListModel( QObject *parent ): QAbstractListModel( parent )
     {}
 
     //! Add groups to the model from mesh layer

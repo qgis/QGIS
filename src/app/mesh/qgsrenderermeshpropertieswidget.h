@@ -45,6 +45,13 @@ class APP_EXPORT QgsRendererMeshPropertiesWidget : public QgsMapLayerConfigWidge
      */
     QgsRendererMeshPropertiesWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
+    /**
+     * Updates widget depending on dataset groups
+     *
+     * \since QGIS 3.14
+     */
+    void onDatasetGroupsChanged();
+
   public slots:
     //! Applies the settings made in the dialog
     void apply() override;

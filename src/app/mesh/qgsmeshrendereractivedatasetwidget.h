@@ -58,6 +58,13 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
     //! Synchronizes widgets state with associated mesh layer
     void syncToLayer();
 
+    /**
+     * Updates widget depending on dataset groups
+     *
+     * \since QGIS 3.14
+     */
+    void onDatasetGroupsChanged();
+
   signals:
 
     //! Emitted when the current scalar group gets changed

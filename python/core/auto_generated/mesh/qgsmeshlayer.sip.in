@@ -348,6 +348,30 @@ The returned position is in map coordinates.
 .. versionadded:: 3.14
 %End
 
+    QMap<int, QgsMeshDatasetGroupState> datasetGroupStates() const;
+%Docstring
+Returns the dataset group states for each dataset groups
+- whether the user as defined the group as used, that is can be access through ui
+- the orignal name of the group
+- the displayed name choose by the user
+
+.. versionadded:: 3.14
+%End
+
+
+    void updateDatasetGroupStates( const QMap<int, QgsMeshDatasetGroupState> &datasetGroupStates );
+%Docstring
+Updates the dataset group states of the layer based on the provided states.
+
+.. seealso:: :py:func:`datasetGroupStates`
+
+Restores the original name from the data provider and clear renaming name if not different from original name.
+
+:param datasetGroupStates: group states used to ubdate the group states of the mesh
+
+.. versionadded:: 3.14
+%End
+
   public slots:
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );

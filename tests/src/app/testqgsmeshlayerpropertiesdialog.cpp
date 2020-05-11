@@ -41,6 +41,7 @@ class TestQgsMeshLayerPropertiesDialog : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void testCrs();
+    void testDatasetGroupTree();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -81,6 +82,32 @@ void TestQgsMeshLayerPropertiesDialog::testCrs()
   QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromEpsgId( 27700 );
   dialog->mCrsSelector->setCrs( crs );
   QCOMPARE( crs, mpMeshLayer->crs() );
+}
+
+void TestQgsMeshLayerPropertiesDialog::testDatasetGroupTree()
+{
+  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/" );
+  QString uri( testDataDir + "/trap_steady_05_3D.nc" );
+  QgsMeshLayer meshLayer( uri, "", "mdal" );
+
+  QgsMeshDatasetGroupTreeView tree;
+  tree.setLayer( &meshLayer );
+  tree.syncToLayer();
+
+  QCOMPARE( tree.model()->rowCount(), 5 );
+  QgsMeshRendererSettings rendererSettings = meshLayer.rendererSettings();
+  rendererSettings.setActiveScalarDatasetGroup( 1 );
+  meshLayer.setRendererSettings( rendererSettings );
+  QCOMPARE( meshLayer.rendererSettings().activeScalarDatasetGroup(), 1 );
+  tree.syncToLayer();
+  QCOMPARE( tree.activeScalarGroup(), 1 );
+  QMap<int, QgsMeshDatasetGroupState> groupStates = meshLayer.datasetGroupStates();
+  groupStates[1].used = false;
+  meshLayer.updateDatasetGroupStates( groupStates );
+  QCOMPARE( tree.activeScalarGroup(), 1 );
+  tree.onActiveGroupChanged();
+  QCOMPARE( tree.activeScalarGroup(), 0 );
+  QCOMPARE( tree.model()->rowCount(), 4 );
 }
 
 QGSTEST_MAIN( TestQgsMeshLayerPropertiesDialog )
