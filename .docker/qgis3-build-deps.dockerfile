@@ -148,8 +148,8 @@ ENV LD_LIBRARY_PATH="/instantclient_19_3:${LD_LIBRARY_PATH}"
 
 # HANA: client side
 # Install hdbsql tool
-RUN curl -v -j -k -L -H "Cookie: eula_3_1_agreed=tools.hana.ondemand.com/developer-license-3_1.txt" http://tools.hana.ondemand.com/additional/hanaclient-2.4.182-linux-x64.tar.gz --output hanaclient-2.4.182-linux-x64.tar.gz \
-  && tar -xvf hanaclient-2.4.182-linux-x64.tar.gz \
+RUN curl -v -j -k -L -H "Cookie: eula_3_1_agreed=tools.hana.ondemand.com/developer-license-3_1.txt" http://tools.hana.ondemand.com/additional/hanaclient-2.4.194-linux-x64.tar.gz --output hanaclient-2.4.194-linux-x64.tar.gz \
+  && tar -xvf hanaclient-2.4.194-linux-x64.tar.gz \
   && mkdir /usr/sap \
   && ./client/hdbinst -a client --sapmnt=/usr/sap \
   && rm -rf client \
