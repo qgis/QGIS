@@ -13,8 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "ogr_srs_api.h"
-
 #include "qgsmaptoolcapture.h"
 #include "qgsexception.h"
 #include "qgsfeatureiterator.h"
@@ -295,17 +293,9 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   if ( vlayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::CircularGeometries ) )
   {
-    // We convert the capture curve to OGR geometry
-    QByteArray wkb = mCaptureCurve.asWkb();
-    OGRGeometryH ogrCaptureCurve;
-    OGR_G_CreateFromWkb( ( unsigned char *) wkb.constData(), nullptr, &ogrCaptureCurve, wkb.size() );
-
-    // We de-approximate the curves using OGR (the geometry must be forced to linear first, as a mCaptureCurve is a CompoundCurve)
-    OGRGeometryH ogrLinestring = OGR_G_GetLinearGeometry( ogrCaptureCurve, 0, nullptr );
-    OGRGeometryH ogrRecurved = OGR_G_GetCurveGeometry( ogrLinestring, nullptr );
-
-    // We save back to mCaptureCurve
-    mCaptureCurve = *qgsgeometry_cast<QgsCompoundCurve *>( QgsOgrUtils::ogrGeometryToQgsGeometry( ogrRecurved ).constGet() );
+    QgsGeometry linear = QgsGeometry( mCaptureCurve.segmentize() );
+    QgsGeometry curved = linear.convertToCurves();
+    mCaptureCurve = *qgsgeometry_cast<QgsCompoundCurve *>( curved.constGet() );
   }
 
   tracer->reportError( QgsTracer::ErrNone, true ); // clear messagebar if there was any error
