@@ -121,8 +121,24 @@ void QgsRubberBand::addPoint( const QgsPointXY &p, bool doUpdate /* = true */, i
 
   if ( geometryIndex == mPoints.size() )
   {
+    // since we're adding a geometry, ringIndex must be 0 or negative for last ring
+    if ( ringIndex > 0 )
+      return;
     mPoints.append( QgsPolygonXY() );
   }
+
+  // negative ringIndex means last ring
+  if ( ringIndex < 0 )
+  {
+    if ( mPoints.at( geometryIndex ).isEmpty() )
+      ringIndex = 0;
+    else
+      ringIndex = mPoints.at( geometryIndex ).size() - 1;
+  }
+
+  if ( ringIndex > mPoints.at( geometryIndex ).size() )
+    return;
+
   if ( ringIndex == mPoints.at( geometryIndex ).size() )
   {
     mPoints[geometryIndex].append( QgsPolylineXY() );
@@ -150,14 +166,17 @@ void QgsRubberBand::addPoint( const QgsPointXY &p, bool doUpdate /* = true */, i
 
 void QgsRubberBand::closePoints( bool doUpdate, int geometryIndex, int ringIndex )
 {
-  if ( geometryIndex < 0 || geometryIndex >= mPoints.size() )
+  if ( geometryIndex < 0 || ringIndex < 0 ||
+       mPoints.size() <= geometryIndex ||
+       mPoints.at( geometryIndex ).size() <= ringIndex ||
+       mPoints.at( geometryIndex ).at( ringIndex ).isEmpty() )
   {
     return;
   }
 
-  if ( mPoints.at( geometryIndex ).at( ringIndex ).at( 0 ) != mPoints.at( geometryIndex ).at( ringIndex ).at( mPoints.at( geometryIndex ).at( ringIndex ).size() - 1 ) )
+  if ( mPoints.at( geometryIndex ).at( ringIndex ).constFirst() != mPoints.at( geometryIndex ).at( ringIndex ).constLast() )
   {
-    mPoints[geometryIndex][ringIndex].append( mPoints.at( geometryIndex ).at( ringIndex ).at( 0 ) );
+    mPoints[geometryIndex][ringIndex].append( mPoints.at( geometryIndex ).at( ringIndex ).constFirst() );
   }
 
   if ( doUpdate )
@@ -172,21 +191,22 @@ void QgsRubberBand::closePoints( bool doUpdate, int geometryIndex, int ringIndex
 void QgsRubberBand::removePoint( int index, bool doUpdate/* = true*/, int geometryIndex/* = 0*/, int ringIndex/* = 0*/ )
 {
 
-  if ( mPoints.size() < geometryIndex + 1 )
+  if ( geometryIndex < 0 || ringIndex < 0 ||
+       mPoints.size() <= geometryIndex ||
+       mPoints.at( geometryIndex ).size() <= ringIndex ||
+       mPoints.at( geometryIndex ).at( ringIndex ).size() <= index ||
+       mPoints.at( geometryIndex ).at( ringIndex ).size() < -index ||
+       mPoints.at( geometryIndex ).at( ringIndex ).isEmpty() )
   {
     return;
   }
 
-
-  if ( !mPoints.at( geometryIndex ).at( ringIndex ).isEmpty() )
+  // negative index removes from end, e.g., -1 removes last one
+  if ( index < 0 )
   {
-    // negative index removes from end, e.g., -1 removes last one
-    if ( index < 0 )
-    {
-      index = mPoints.at( geometryIndex ).at( ringIndex ).size() + index;
-    }
-    mPoints[geometryIndex][ringIndex].removeAt( index );
+    index = mPoints.at( geometryIndex ).at( ringIndex ).size() + index;
   }
+  mPoints[geometryIndex][ringIndex].removeAt( index );
 
   if ( doUpdate )
   {
@@ -202,12 +222,10 @@ void QgsRubberBand::removeLastPoint( int geometryIndex, bool doUpdate/* = true*/
 
 void QgsRubberBand::movePoint( const QgsPointXY &p, int geometryIndex, int ringIndex )
 {
-  if ( mPoints.size() < geometryIndex + 1 )
-  {
-    return;
-  }
-
-  if ( mPoints.at( geometryIndex ).at( ringIndex ).isEmpty() )
+  if ( geometryIndex < 0 || ringIndex < 0 ||
+       mPoints.size() <= geometryIndex ||
+       mPoints.at( geometryIndex ).size() <= ringIndex ||
+       mPoints.at( geometryIndex ).at( ringIndex ).isEmpty() )
   {
     return;
   }
@@ -220,12 +238,10 @@ void QgsRubberBand::movePoint( const QgsPointXY &p, int geometryIndex, int ringI
 
 void QgsRubberBand::movePoint( int index, const QgsPointXY &p, int geometryIndex, int ringIndex )
 {
-  if ( mPoints.size() < geometryIndex + 1 )
-  {
-    return;
-  }
-
-  if ( mPoints.at( geometryIndex ).at( ringIndex ).size() < index )
+  if ( geometryIndex < 0 || ringIndex < 0 || index < 0 ||
+       mPoints.size() <= geometryIndex ||
+       mPoints.at( geometryIndex ).size() <= ringIndex ||
+       mPoints.at( geometryIndex ).at( ringIndex ).size() <= index )
   {
     return;
   }
@@ -634,7 +650,10 @@ int QgsRubberBand::size() const
 
 int QgsRubberBand::partSize( int geometryIndex ) const
 {
-  if ( geometryIndex < 0 || geometryIndex >= mPoints.size() ) return 0;
+  if ( geometryIndex < 0 ||
+       geometryIndex >= mPoints.size() ||
+       mPoints.at( geometryIndex ).isEmpty() )
+    return 0;
   return mPoints.at( geometryIndex ).at( 0 ).size();
 }
 
@@ -653,12 +672,13 @@ int QgsRubberBand::numberOfVertices() const
 
 const QgsPointXY *QgsRubberBand::getPoint( int i, int j, int ringIndex ) const
 {
-  if ( i < mPoints.size() &&
-       ringIndex < mPoints.at( i ).size() &&
-       j < mPoints.at( i ).at( ringIndex ).size() )
-    return &mPoints[i][ringIndex][j];
-  else
+  if ( i < 0 || ringIndex < 0 || j < 0 ||
+       mPoints.size() <= i ||
+       mPoints.at( i ).size() <= ringIndex ||
+       mPoints.at( i ).at( ringIndex ).size() <= j )
     return nullptr;
+  else
+    return &mPoints[i][ringIndex][j];
 }
 
 QgsGeometry QgsRubberBand::asGeometry() const
@@ -679,6 +699,8 @@ QgsGeometry QgsRubberBand::asGeometry() const
 
       for ( const QgsPolygonXY &poly : qgis::as_const( mPoints ) )
       {
+        if ( poly.isEmpty() )
+          continue;
         multiPoint.append( poly.at( 0 ) );
       }
       geom = QgsGeometry::fromMultiPointXY( multiPoint );
@@ -695,13 +717,18 @@ QgsGeometry QgsRubberBand::asGeometry() const
           QgsMultiPolylineXY multiPolyline;
           for ( const QgsPolygonXY &poly : qgis::as_const( mPoints ) )
           {
+            if ( poly.isEmpty() )
+              continue;
             multiPolyline.append( poly.at( 0 ) );
           }
           geom = QgsGeometry::fromMultiPolylineXY( multiPolyline );
         }
         else
         {
-          geom = QgsGeometry::fromPolylineXY( mPoints.at( 0 ).at( 0 ) );
+          if ( !mPoints.at( 0 ).isEmpty() )
+            geom = QgsGeometry::fromPolylineXY( mPoints.at( 0 ).at( 0 ) );
+          else
+            geom = QgsGeometry::fromPolylineXY( QgsPolylineXY() );
         }
       }
       break;
