@@ -66,6 +66,11 @@ QgsMapToolCapture::~QgsMapToolCapture()
   }
 }
 
+QgsMapToolCapture::Capabilities QgsMapToolCapture::capabilities() const
+{
+  return QgsMapToolCapture::NoCapabilities;
+}
+
 void QgsMapToolCapture::activate()
 {
   if ( mTempRubberBand )
@@ -289,14 +294,18 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
     mSnappingMatches.append( QgsPointLocator::Match() );
   }
 
-  // If the layer supports curves, we de-approximate curves
+  // Curves de-approximation
   QgsSettings settings;
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
-  if ( vlayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::CircularGeometries ) && settings.value( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false ).toBool() )
+  if ( settings.value( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false ).toBool() )
   {
-    QgsGeometry linear = QgsGeometry( mCaptureCurve.segmentize() );
-    QgsGeometry curved = linear.convertToCurves();
-    mCaptureCurve = *qgsgeometry_cast<QgsCompoundCurve *>( curved.constGet() );
+    // If the tool and the layer support curves
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+    if ( capabilities().testFlag( QgsMapToolCapture::Capability::SupportsCurves ) && vlayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::CircularGeometries ) )
+    {
+      QgsGeometry linear = QgsGeometry( mCaptureCurve.segmentize() );
+      QgsGeometry curved = linear.convertToCurves();
+      mCaptureCurve = *qgsgeometry_cast<QgsCompoundCurve *>( curved.constGet() );
+    }
   }
 
   tracer->reportError( QgsTracer::ErrNone, true ); // clear messagebar if there was any error
