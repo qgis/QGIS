@@ -16,7 +16,7 @@ import os
 import tempfile
 import shutil
 
-from qgis.PyQt.QtCore import QVariant, Qt
+from qgis.PyQt.QtCore import QDate, QDateTime, QVariant, Qt
 from qgis.PyQt.QtGui import QPainter, QColor
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -137,20 +137,20 @@ def createLayerWithFivePoints():
 
 def createJoinLayer():
     joinLayer = QgsVectorLayer(
-        "Point?field=x:string&field=y:integer&field=z:integer",
+        "Point?field=x:string&field=y:integer&field=z:integer&field=date:datetime",
         "joinlayer", "memory")
     pr = joinLayer.dataProvider()
     f1 = QgsFeature()
-    f1.setAttributes(["foo", 123, 321])
+    f1.setAttributes(["foo", 123, 321, QDateTime(QDate(2010, 1, 1))])
     f1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 1)))
     f2 = QgsFeature()
-    f2.setAttributes(["bar", 456, 654])
+    f2.setAttributes(["bar", 456, 654, QDateTime(QDate(2020, 1, 1))])
     f2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(2, 2)))
     f3 = QgsFeature()
-    f3.setAttributes(["qar", 457, 111])
+    f3.setAttributes(["qar", 457, 111, None])
     f3.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(2, 2)))
     f4 = QgsFeature()
-    f4.setAttributes(["a", 458, 19])
+    f4.setAttributes(["a", 458, 19, QDateTime(QDate(2012, 1, 1))])
     f4.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(2, 2)))
     assert pr.addFeatures([f1, f2, f3, f4])
     assert joinLayer.featureCount() == 4
@@ -1611,11 +1611,11 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer.addJoin(join2)
 
         flds = layer.fields()
-        self.assertEqual(len(flds), 6)
+        self.assertEqual(len(flds), 8)
         self.assertEqual(flds[2].name(), "joinlayer_x")
         self.assertEqual(flds[3].name(), "joinlayer_z")
-        self.assertEqual(flds[4].name(), "custom-prefix_x")
-        self.assertEqual(flds[5].name(), "custom-prefix_z")
+        self.assertEqual(flds[5].name(), "custom-prefix_x")
+        self.assertEqual(flds[6].name(), "custom-prefix_z")
         self.assertEqual(flds.fieldOrigin(0), QgsFields.OriginProvider)
         self.assertEqual(flds.fieldOrigin(2), QgsFields.OriginJoin)
         self.assertEqual(flds.fieldOrigin(3), QgsFields.OriginJoin)
@@ -1627,7 +1627,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         fi = layer.getFeatures()
         self.assertTrue(fi.nextFeature(f))
         attrs = f.attributes()
-        self.assertEqual(len(attrs), 6)
+        self.assertEqual(len(attrs), 8)
         self.assertEqual(attrs[0], "test")
         self.assertEqual(attrs[1], 123)
         self.assertEqual(attrs[2], "foo")
@@ -1635,7 +1635,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertFalse(fi.nextFeature(f))
 
         f2 = next(layer.getFeatures(QgsFeatureRequest(f.id())))
-        self.assertEqual(len(f2.attributes()), 6)
+        self.assertEqual(len(f2.attributes()), 8)
         self.assertEqual(f2[2], "foo")
         self.assertEqual(f2[3], 321)
 
@@ -1653,8 +1653,19 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer.addJoin(join)
 
         # stats on joined fields should only include values present by join
+
+        # strings
+        self.assertEqual(layer.minimumValue(2), "foo")
+        self.assertEqual(layer.maximumValue(2), "qar")
+
+        # numbers
         self.assertEqual(layer.minimumValue(3), 111)
         self.assertEqual(layer.maximumValue(3), 321)
+
+        # dates (maximumValue also tests we properly handle null values by skipping those)
+        self.assertEqual(layer.minimumValue(4), QDateTime(QDate(2010, 1, 1)))
+        self.assertEqual(layer.maximumValue(4), QDateTime(QDate(2010, 1, 1)))
+
         self.assertEqual(set(layer.uniqueValues(3)), set([111, 321]))
 
     def test_valid_join_when_opening_project(self):
