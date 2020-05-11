@@ -160,7 +160,7 @@ Default implementation calls drawSymbol() and drawSymbolText() methods.
 If ctx is ``None``, this is just first stage when preparing layout - without actual rendering.
 %End
 
-    void exportToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json );
+    QJsonObject exportToJson( const QgsLegendSettings &settings, const QgsRenderContext &context );
 %Docstring
 Entry point called from QgsLegendRenderer to do the rendering in a
 JSON object.
