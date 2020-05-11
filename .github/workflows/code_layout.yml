@@ -95,12 +95,15 @@ jobs:
         run: ./tests/code_layout/test_doxygen_layout.sh
     
   indentation_check:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Indentation Test
-        run: ./scripts/verify_indentation.sh
+        run: ./scripts/verify_indentation.sh ${{ github.event.pull_request.head.sha }}..${{ github.event.pull_request.base.sha }}
     
   spell_check:
     runs-on: ubuntu-latest
