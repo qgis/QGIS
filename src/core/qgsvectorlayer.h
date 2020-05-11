@@ -516,10 +516,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
        */
       explicit DeleteContext( bool cascade = false ): cascade( cascade ) {}
 
-      /**
-       * Returns all the layers on which features have been deleted
-       */
-      QMap<QgsVectorLayer *, QgsFeatureIds> handledFeatures() { return mHandledFeatures; }
+      QList<QgsVectorLayer *> handledLayers() const;
+      QgsFeatureIds handledFeatures( QgsVectorLayer *layer ) const;
 
       QMap<QgsVectorLayer *, QgsFeatureIds> mHandledFeatures SIP_SKIP;
       bool cascade;

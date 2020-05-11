@@ -9033,12 +9033,12 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *parent, bool checkFea
   else
   {
     //if it effected more than one layer, print feedback for all descendants
-    if ( context.handledFeatures().size() > 1 )
+    if ( context.mHandledFeatures.size() > 1 )
     {
       deletedCount = 0;
       QString feedbackMessage;
       QMap<QgsVectorLayer *, QgsFeatureIds>::const_iterator i;
-      for ( i = context.handledFeatures().begin(); i != context.handledFeatures().end(); ++i )
+      for ( i = context.mHandledFeatures.begin(); i != context.mHandledFeatures.end(); ++i )
       {
         feedbackMessage += tr( " %1 on layer %2." ).arg( i.value().size() ).arg( i.key()->name() );
         deletedCount += i.value().size();

@@ -382,10 +382,8 @@ Constructor for LayerOptions.
 Constructor for DeleteContext.
 %End
 
-      QMap<QgsVectorLayer *, QgsFeatureIds> handledFeatures();
-%Docstring
-Returns all the layers on which features have been deleted
-%End
+      QList<QgsVectorLayer *> handledLayers() const;
+      QgsFeatureIds handledFeatures( QgsVectorLayer *layer ) const;
 
       bool cascade;
     };

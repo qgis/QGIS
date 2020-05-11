@@ -5529,3 +5529,17 @@ void QgsVectorLayer::onDirtyTransaction( const QString &sql, const QString &name
     qobject_cast<QgsVectorLayerEditPassthrough *>( mEditBuffer )->update( tr, sql, name );
   }
 }
+
+QList<QgsVectorLayer *> QgsVectorLayer::DeleteContext::handledLayers() const
+{
+  QList<QgsVectorLayer *> layers;
+  QMap<QgsVectorLayer *, QgsFeatureIds>::const_iterator i;
+  for ( i = mHandledFeatures.begin(); i != mHandledFeatures.end(); ++i )
+    layers.append( i.key() );
+  return layers;
+}
+
+QgsFeatureIds QgsVectorLayer::DeleteContext::handledFeatures( QgsVectorLayer *layer ) const
+{
+  return mHandledFeatures[layer];
+}
