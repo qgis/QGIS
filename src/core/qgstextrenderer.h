@@ -1635,13 +1635,164 @@ class CORE_EXPORT QgsTextFormat
 };
 
 /**
+ * \class QgsTextCharacterFormat
+  * \ingroup core
+  * Stores information relating to individual character formatting.
+  *
+  * These options encapsulate formatting options which override the default
+  * settings from a QgsTextFormat for individual characters (or sets of characters).
+  *
+  * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsTextCharacterFormat
+{
+  public:
+
+    QgsTextCharacterFormat() = default;
+
+    /**
+     * Constructor for QgsTextCharacterFormat, based on the specified QTextCharFormat \a format.
+     */
+    QgsTextCharacterFormat( const QTextCharFormat &format );
+
+    /**
+     * Returns the character's text color, or an invalid color if no color override
+     * is set and the default format color should be used.
+     *
+     * \see setTextColor()
+     */
+    QColor textColor() const;
+
+    /**
+     * Sets the character's text \a color.
+     *
+     * Set \a color to an invalid color if no color override
+     * is desired and the default format color should be used.
+     *
+     * \see textColor()
+     */
+    void setTextColor( const QColor &textColor );
+
+  private:
+
+    QColor mTextColor;
+
+};
+
+/**
+ * \class QgsTextFragment
+  * \ingroup core
+  * Stores a fragment of text along with formatting overrides to be used when rendering the fragment.
+  *
+  * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsTextFragment
+{
+  public:
+
+    /**
+     * Constructor for QgsTextFragment, with the specified \a text and optional character \a format.
+     */
+    explicit QgsTextFragment( const QString &text, const QgsTextCharacterFormat &format = QgsTextCharacterFormat() );
+
+    /**
+     * Returns the text content of the fragment.
+     *
+     * \see setText()
+     */
+    QString text() const;
+
+    /**
+     * Sets the \a text content of the fragment.
+     *
+     * \see text()
+     */
+    void setText( const QString &text );
+
+    /**
+     * Returns the character formatting for the fragment.
+     *
+     * \see setCharacterFormat()
+     */
+    const QgsTextCharacterFormat &characterFormat() const { return mCharFormat; }
+
+    /**
+     * Sets the character \a format for the fragment.
+     *
+     * \see characterFormat()
+     */
+    void setCharacterFormat( const QgsTextCharacterFormat &format );
+
+  private:
+
+    QString mText;
+    QgsTextCharacterFormat mCharFormat;
+};
+
+/**
+ * \class QgsTextBlock
+ *
+ * Represents a block of text consisting of one or more QgsTextFragment objects.
+ *
+ * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsTextBlock : public QVector< QgsTextFragment >
+{
+
+  public:
+
+    QgsTextBlock() = default;
+
+    /**
+     * Constructor for a QgsTextBlock consisting of a single text \a fragment.
+     */
+    explicit QgsTextBlock( const QgsTextFragment &fragment );
+
+};
+
+/**
+ * \class QgsTextDocument
+ *
+ * Represents a document consisting of one or more QgsTextBlock objects.
+ *
+ * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsTextDocument : public QVector< QgsTextBlock >
+{
+
+  public:
+
+    QgsTextDocument() = default;
+
+    /**
+     * Constructor for a QgsTextDocument consisting of a single text \a block.
+     */
+    explicit QgsTextDocument( const QgsTextBlock &block );
+
+    /**
+     * Constructor for a QgsTextDocument consisting of a single text \a fragment.
+     */
+    explicit QgsTextDocument( const QgsTextFragment &fragment );
+
+    /**
+     * Constructor for QgsTextDocument consisting of a set of plain text \a lines.
+     */
+    explicit QgsTextDocument( const QStringList &lines );
+
+    /**
+     * Returns a list of plain text lines of text representing the document.
+     */
+    QStringList toPlainText() const;
+
+};
+
+/**
  * \class QgsTextRenderer
   * \ingroup core
   * Handles rendering text using rich formatting options, including drop shadows, buffers
   * and background shapes.
   * \since QGIS 3.0
  */
-
 class CORE_EXPORT QgsTextRenderer
 {
   public:
@@ -1747,24 +1898,13 @@ class CORE_EXPORT QgsTextRenderer
                           TextPart part, bool drawAsOutlines = true );
 
 #ifndef SIP_RUN
-    struct CORE_EXPORT TextFragment
-    {
-      TextFragment( const QString &text, const QTextCharFormat &format = QTextCharFormat() )
-        : text( text )
-        , charFormat( format )
-      {}
-      QString text;
-      QTextCharFormat charFormat;
-    };
-
-    typedef QList< QgsTextRenderer::TextFragment > TextBlock;
 
     /**
      * Draws a single component of rendered text using the specified settings.
      * \param rect destination rectangle for text
      * \param rotation text rotation
      * \param alignment horizontal alignment
-     * \param textLines list of lines of text to draw
+     * \param document text document to draw
      * \param context render context
      * \param format text format
      * \param part component of text to draw. Note that Shadow parts cannot be drawn
@@ -1773,7 +1913,7 @@ class CORE_EXPORT QgsTextRenderer
      * \note Not available in Python bindings
      * \since QGIS 3.14
      */
-    static void drawPart( const QRectF &rect, double rotation, HAlignment alignment, const QList< QgsTextRenderer::TextBlock > &textLines,
+    static void drawPart( const QRectF &rect, double rotation, HAlignment alignment, const QgsTextDocument &document,
                           QgsRenderContext &context, const QgsTextFormat &format,
                           TextPart part );
 #endif
@@ -1805,7 +1945,7 @@ class CORE_EXPORT QgsTextRenderer
      * \param origin origin for start of text. Y coordinate will be used as baseline.
      * \param rotation text rotation
      * \param alignment horizontal alignment
-     * \param textLines list of lines of text to draw
+     * \param document document to draw
      * \param context render context
      * \param format text format
      * \param part component of text to draw. Note that Shadow parts cannot be drawn
@@ -1814,7 +1954,7 @@ class CORE_EXPORT QgsTextRenderer
      * \note Not available in Python bindings
      * \since QGIS 3.14
      */
-    static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QList< TextBlock > &textLines,
+    static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QgsTextDocument &document,
                           QgsRenderContext &context, const QgsTextFormat &format,
                           TextPart part );
 #endif
@@ -1909,7 +2049,7 @@ class CORE_EXPORT QgsTextRenderer
                                   QgsRenderContext &context,
                                   const QgsTextFormat &format,
                                   const Component &component,
-                                  const QList< TextBlock > &blocks,
+                                  const QgsTextDocument &document,
                                   const QFontMetricsF *fontMetrics,
                                   HAlignment alignment,
                                   DrawMode mode = Rect );

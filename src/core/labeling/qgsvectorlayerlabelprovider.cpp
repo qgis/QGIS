@@ -623,33 +623,23 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     component.origin = outPt;
     component.rotation = label->getAlpha();
 
-    QList< QgsTextRenderer::TextBlock > textBlocks;
+    QgsTextDocument document;
     if ( !tmpLyr.format().allowHtmlFormatting() || tmpLyr.placement == QgsPalLayerSettings::Curved )
     {
-      QTextCharFormat c;
-      if ( lf->hasCharacterFormat( label->getPartId() ) )
-      {
-        c = lf->characterFormat( label->getPartId() );
-      }
-      else
-      {
-        QBrush b;
-        c = QTextCharFormat();
-        b.setColor( tmpLyr.format().color() );
-        c.setForeground( b );
-      }
+      const QgsTextCharacterFormat c = lf->characterFormat( label->getPartId() );
       const QStringList multiLineList = QgsPalLabeling::splitToLines( txt, tmpLyr.wrapChar, tmpLyr.autoWrapLength, tmpLyr.useMaxLineLengthForAutoWrap );
       for ( const QString line : multiLineList )
-        textBlocks << ( QgsTextRenderer::TextBlock() << QgsTextRenderer::TextFragment( line, c ) );
+        document << QgsTextBlock( QgsTextFragment( line, c ) );
     }
     else
     {
       QTextDocument doc;
-      doc.setHtml( QStringLiteral( "<span style=\"color: %1\">%2</span>" ).arg( tmpLyr.format().color().name(), txt ) );
+      doc.setHtml( txt );
+//      doc.setHtml( QStringLiteral( "<span style=\"color: %1\">%2</span>" ).arg( tmpLyr.format().color().name(), txt ) );
       QTextBlock block = doc.firstBlock();
       while ( true )
       {
-        QgsTextRenderer::TextBlock blockFragments;
+        QgsTextBlock destDocumentBlock;
         auto it = block.begin();
         while ( !it.atEnd() )
         {
@@ -660,23 +650,23 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
             if ( multiLineList.size() > 1 )
             {
               // split this fragment over multiple blocks
-              blockFragments << QgsTextRenderer::TextFragment( multiLineList.at( 0 ), fragment.charFormat() );
+              destDocumentBlock << QgsTextFragment( multiLineList.at( 0 ), fragment.charFormat() );
               for ( int lineIndex = 1; lineIndex < multiLineList.size(); ++ lineIndex )
               {
-                textBlocks << blockFragments;
-                blockFragments.clear();
-                blockFragments << QgsTextRenderer::TextFragment( multiLineList.at( lineIndex ), fragment.charFormat() );
+                document << destDocumentBlock;
+                destDocumentBlock.clear();
+                destDocumentBlock << QgsTextFragment( multiLineList.at( lineIndex ), fragment.charFormat() );
               }
             }
             else
             {
-              blockFragments << QgsTextRenderer::TextFragment( fragment.text(), fragment.charFormat() );
+              destDocumentBlock << QgsTextFragment( fragment.text(), fragment.charFormat() );
             }
           }
           it++;
         }
 
-        textBlocks << blockFragments;
+        document << destDocumentBlock;
 
         block = block.next();
         if ( !block.isValid() )
@@ -684,7 +674,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       }
     }
 
-    QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, textBlocks, labelfm,
+    QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, document, labelfm,
                                        hAlign, QgsTextRenderer::Label );
 
   }

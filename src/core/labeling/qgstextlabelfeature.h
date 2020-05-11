@@ -50,7 +50,7 @@ class QgsTextLabelFeature : public QgsLabelFeature
      *
      * \since QGIS 3.14
      */
-    QTextCharFormat characterFormat( int partId ) const;
+    QgsTextCharacterFormat characterFormat( int partId ) const;
 
     /**
      * Returns TRUE if the feature contains specific character formatting for the part with matching ID.
@@ -79,7 +79,7 @@ class QgsTextLabelFeature : public QgsLabelFeature
     //! List of graphemes (used for curved labels)
     QStringList mClusters;
 
-    QList< QTextCharFormat > mCharacterFormats;
+    QList< QgsTextCharacterFormat > mCharacterFormats;
 
     //! Font for rendering
     QFont mDefinedFont;

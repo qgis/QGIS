@@ -42,7 +42,7 @@ QString QgsTextLabelFeature::text( int partId ) const
     return mClusters.at( partId );
 }
 
-QTextCharFormat QgsTextLabelFeature::characterFormat( int partId ) const
+QgsTextCharacterFormat QgsTextLabelFeature::characterFormat( int partId ) const
 {
   return mCharacterFormats.value( partId );
 }

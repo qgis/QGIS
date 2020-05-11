@@ -2706,13 +2706,10 @@ QgsTextFormat QgsTextRenderer::updateShadowPosition( const QgsTextFormat &format
 void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, HAlignment alignment,
                                 const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part, bool )
 {
-  QList<TextBlock> blocks;
-  for ( const QString &line : textLines )
-    blocks << ( TextBlock() << TextFragment( line ) );
-  drawPart( rect, rotation, alignment, blocks, context, format, part );
+  drawPart( rect, rotation, alignment, QgsTextDocument( textLines ), context, format, part );
 }
 
-void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, QgsTextRenderer::HAlignment alignment, const QList<TextBlock> &textLines, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part )
+void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, QgsTextRenderer::HAlignment alignment, const QgsTextDocument &document, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part )
 {
   if ( !context.painter() )
   {
@@ -2751,17 +2748,7 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, QgsTextRend
         component.center = rect.center();
       }
 
-      QStringList lines;
-      for ( const TextBlock &block : textLines )
-      {
-        QString line;
-        for ( const TextFragment &fragment : block )
-        {
-          line.append( fragment.text );
-        }
-        lines << line;
-      }
-
+      const QStringList lines = document.toPlainText();
       QgsTextRenderer::drawBackground( context, component, format, lines, Rect );
 
       break;
@@ -2778,7 +2765,7 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, QgsTextRend
     {
       QFontMetricsF fm( format.scaledFont( context ) );
       drawTextInternal( part, context, format, component,
-                        textLines,
+                        document,
                         &fm,
                         alignment );
       break;
@@ -2788,13 +2775,10 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, QgsTextRend
 
 void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part, bool )
 {
-  QList<TextBlock> blocks;
-  for ( const QString &line : textLines )
-    blocks << ( TextBlock() << TextFragment( line ) );
-  drawPart( origin, rotation, alignment, blocks, context, format, part );
+  drawPart( origin, rotation, alignment, QgsTextDocument( textLines ), context, format, part );
 }
 
-void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer::HAlignment alignment, const QList<QgsTextRenderer::TextBlock> &textLines, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part )
+void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer::HAlignment alignment, const QgsTextDocument &document, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part )
 {
   if ( !context.painter() )
   {
@@ -2814,16 +2798,7 @@ void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer
       if ( !format.background().enabled() )
         return;
 
-      QStringList lines;
-      for ( const TextBlock &block : textLines )
-      {
-        QString line;
-        for ( const TextFragment &fragment : block )
-        {
-          line.append( fragment.text );
-        }
-        lines << line;
-      }
+      const QStringList lines = document.toPlainText();
       QgsTextRenderer::drawBackground( context, component, format, lines, Point );
       break;
     }
@@ -2839,7 +2814,7 @@ void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer
     {
       QFontMetricsF fm( format.scaledFont( context ) );
       drawTextInternal( part, context, format, component,
-                        textLines,
+                        document,
                         &fm,
                         alignment,
                         Point );
@@ -3651,7 +3626,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
                                         QgsRenderContext &context,
                                         const QgsTextFormat &format,
                                         const Component &component,
-                                        const QList< TextBlock > &blocks,
+                                        const QgsTextDocument &document,
                                         const QFontMetricsF *fontMetrics,
                                         HAlignment alignment, DrawMode mode )
 {
@@ -3683,16 +3658,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
     }
   }
 
-  QStringList textLines;
-  for ( const TextBlock &block : blocks )
-  {
-    QString line;
-    for ( const TextFragment &fragment : block )
-    {
-      line.append( fragment.text );
-    }
-    textLines << line;
-  }
+  const QStringList textLines = document.toPlainText();
 
   switch ( orientation )
   {
@@ -3731,7 +3697,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
       const auto constTextLines = textLines;
       for ( const QString &line : constTextLines )
       {
-        const TextBlock block = blocks.at( i );
+        const QgsTextBlock block = document.at( i );
 
         context.painter()->save();
         if ( context.flags() & QgsRenderContext::Antialiasing )
@@ -3832,22 +3798,22 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
           QFont font = format.scaledFont( context );
 
           double xOffset = 0;
-          for ( const TextFragment &fragment : block )
+          for ( const QgsTextFragment &fragment : block )
           {
             // draw text, QPainterPath method
             QPainterPath path;
             path.setFillRule( Qt::WindingFill );
-            path.addText( xOffset, 0, font, fragment.text );
+            path.addText( xOffset, 0, font, fragment.text() );
 
-            QColor textColor = fragment.charFormat.foreground().color();
+            QColor textColor = fragment.characterFormat().textColor().isValid() ? fragment.characterFormat().textColor() : format.color();
             textColor.setAlphaF( format.opacity() );
             textp.setBrush( textColor );
             textp.drawPath( path );
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-            xOffset += fontMetrics->width( fragment.text );
+            xOffset += fontMetrics->width( fragment.text() );
 #else
-            xOffset += fontMetrics->horizontalAdvance( fragment.text );
+            xOffset += fontMetrics->horizontalAdvance( fragment.text() );
 #endif
             // TODO: why are some font settings lost on drawPicture() when using drawText() inside QPicture?
             //       e.g. some capitalization options, but not others
@@ -4226,4 +4192,92 @@ QgsTextFormat::TextOrientation QgsTextRendererUtils::decodeTextOrientation( cons
   if ( ok )
     *ok = false;
   return QgsTextFormat::HorizontalOrientation;
+}
+
+
+//
+// QgsTextCharacterFormat
+//
+
+QgsTextCharacterFormat::QgsTextCharacterFormat( const QTextCharFormat &format )
+  : mTextColor( format.hasProperty( QTextFormat::ForegroundBrush ) ? format.foreground().color() : QColor() )
+{
+
+}
+
+QColor QgsTextCharacterFormat::textColor() const
+{
+  return mTextColor;
+}
+
+void QgsTextCharacterFormat::setTextColor( const QColor &textColor )
+{
+  mTextColor = textColor;
+}
+
+//
+// QgsTextFragment
+//
+QgsTextFragment::QgsTextFragment( const QString &text, const QgsTextCharacterFormat &format )
+  : mText( text )
+  , mCharFormat( format )
+{}
+
+QString QgsTextFragment::text() const
+{
+  return mText;
+}
+
+void QgsTextFragment::setText( const QString &text )
+{
+  mText = text;
+}
+
+void QgsTextFragment::setCharacterFormat( const QgsTextCharacterFormat &charFormat )
+{
+  mCharFormat = charFormat;
+}
+
+//
+// QgsTextBlock
+//
+QgsTextBlock::QgsTextBlock( const QgsTextFragment &fragment )
+{
+  append( fragment );
+}
+
+//
+// QgsTextDocument
+//
+QgsTextDocument::QgsTextDocument( const QgsTextBlock &block )
+{
+  append( block );
+}
+
+QgsTextDocument::QgsTextDocument( const QgsTextFragment &fragment )
+{
+  append( QgsTextBlock( fragment ) );
+}
+
+QgsTextDocument::QgsTextDocument( const QStringList &lines )
+{
+  reserve( lines.size() );
+  for ( const QString &line : lines )
+    append( QgsTextBlock( QgsTextFragment( line ) ) );
+}
+
+QStringList QgsTextDocument::toPlainText() const
+{
+  QStringList textLines;
+  textLines.reserve( size() );
+  for ( const QgsTextBlock &block : *this )
+  {
+    QString line;
+    for ( const QgsTextFragment &fragment : block )
+    {
+      line.append( fragment.text() );
+    }
+    textLines << line;
+  }
+  return textLines;
 }
