@@ -1374,7 +1374,7 @@ bool QgsPalLayerSettings::checkMinimumSizeMM( const QgsRenderContext &ct, const 
   return QgsPalLabeling::checkMinimumSizeMM( ct, geom, minSize );
 }
 
-void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f, QgsRenderContext *context, double *rotatedLabelX, double *rotatedLabelY )
+void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f, QgsRenderContext *context, double *rotatedLabelX, double *rotatedLabelY, QgsTextDocument *document )
 {
   if ( !fm || !f )
   {
@@ -1392,8 +1392,6 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
       scopedRc->expressionContext().setFeature( *f );
   }
   QgsRenderContext *rc = context ? context : scopedRc.get();
-
-  const bool htmlFormatting = mFormat.allowHtmlFormatting();
 
   QString wrapchr = wrapChar;
   int evalAutoWrapLength = autoWrapLength;
@@ -1533,7 +1531,19 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
 
   double w = 0.0, h = 0.0, rw = 0.0, rh = 0.0;
   double labelHeight = fm->ascent() + fm->descent(); // ignore +1 for baseline
-  const QStringList multiLineSplit = QgsPalLabeling::splitToLines( textCopy, wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap, htmlFormatting );
+
+  QStringList multiLineSplit;
+
+  if ( document )
+  {
+    document->splitLines( wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
+    multiLineSplit = document->toPlainText();
+  }
+  else
+  {
+    multiLineSplit = QgsPalLabeling::splitToLines( textCopy, wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
+  }
+
   int lines = multiLineSplit.size();
 
   switch ( orientation )
@@ -1889,8 +1899,13 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   // NOTE: this should come AFTER any option that affects font metrics
   std::unique_ptr<QFontMetricsF> labelFontMetrics( new QFontMetricsF( labelFont ) );
   double labelX, labelY, rotatedLabelX, rotatedLabelY; // will receive label size
-  calculateLabelSize( labelFontMetrics.get(), labelText, labelX, labelY, mCurFeat, &context, &rotatedLabelX, &rotatedLabelY );
 
+  QgsTextDocument doc;
+  if ( format().allowHtmlFormatting() )
+    doc = QgsTextDocument::fromHtml( QStringList() << labelText );
+
+  // also applies the line split to doc!
+  calculateLabelSize( labelFontMetrics.get(), labelText, labelX, labelY, mCurFeat, &context, &rotatedLabelX, &rotatedLabelY, format().allowHtmlFormatting() ? &doc : nullptr );
 
   // maximum angle between curved label characters (hardcoded defaults used in QGIS <2.0)
   //
@@ -2428,6 +2443,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   lf->setAnchorPosition( anchorPosition );
   lf->setFeature( feature );
   lf->setSymbol( symbol );
+  lf->setDocument( doc );
   if ( !qgsDoubleNear( rotatedLabelX, 0.0 ) && !qgsDoubleNear( rotatedLabelY, 0.0 ) )
     lf->setRotatedSize( QSizeF( rotatedLabelX, rotatedLabelY ) );
   mFeatsRegPal++;
@@ -2470,7 +2486,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   // TODO: only for placement which needs character info
   // account for any data defined font metrics adjustments
   lf->calculateInfo( placement == QgsPalLayerSettings::Curved || placement == QgsPalLayerSettings::PerimeterCurved,
-                     labelFontMetrics.get(), xform, maxcharanglein, maxcharangleout, format().allowHtmlFormatting() );
+                     labelFontMetrics.get(), xform, maxcharanglein, maxcharangleout, format().allowHtmlFormatting() ? &doc : nullptr );
   // for labelFeature the LabelInfo is passed to feat when it is registered
 
   // TODO: allow layer-wide feature dist in PAL...?
@@ -3550,49 +3566,33 @@ bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry &geometry, Q
   return false;
 }
 
-QStringList QgsPalLabeling::splitToLines( const QString &text, const QString &wrapCharacter, const int autoWrapLength, const bool useMaxLineLengthWhenAutoWrapping, const bool allowHtmlFormatting )
+QStringList QgsPalLabeling::splitToLines( const QString &text, const QString &wrapCharacter, const int autoWrapLength, const bool useMaxLineLengthWhenAutoWrapping )
 {
   QStringList multiLineSplit;
-  auto splitLine = [ & ]( const QString & input )
+  if ( !wrapCharacter.isEmpty() && wrapCharacter != QLatin1String( "\n" ) )
   {
-    QStringList thisParts;
-    if ( !wrapCharacter.isEmpty() && wrapCharacter != QLatin1String( "\n" ) )
+    //wrap on both the wrapchr and new line characters
+    const QStringList lines = text.split( wrapCharacter );
+    for ( const QString &line : lines )
     {
-      //wrap on both the wrapchr and new line characters
-      const QStringList lines = input.split( wrapCharacter );
-      for ( const QString &line : lines )
-      {
-        thisParts.append( line.split( '\n' ) );
-      }
+      multiLineSplit.append( line.split( '\n' ) );
     }
-    else
-    {
-      thisParts = input.split( '\n' );
-    }
-
-    // apply auto wrapping to each manually created line
-    if ( autoWrapLength != 0 )
-    {
-      QStringList autoWrappedLines;
-      autoWrappedLines.reserve( thisParts.count() );
-      for ( const QString &line : qgis::as_const( thisParts ) )
-      {
-        autoWrappedLines.append( QgsStringUtils::wordWrap( line, autoWrapLength, useMaxLineLengthWhenAutoWrapping ).split( '\n' ) );
-      }
-      thisParts = autoWrappedLines;
-    }
-    multiLineSplit.append( thisParts );
-  };
-
-  if ( allowHtmlFormatting )
-  {
-    const QStringList htmlBlocks = QgsTextRenderer::extractTextBlocksFromHtml( text );
-    for ( const QString &block : htmlBlocks )
-      splitLine( block );
   }
   else
   {
-    splitLine( text );
+    multiLineSplit = text.split( '\n' );
+  }
+
+  // apply auto wrapping to each manually created line
+  if ( autoWrapLength != 0 )
+  {
+    QStringList autoWrappedLines;
+    autoWrappedLines.reserve( multiLineSplit.count() );
+    for ( const QString &line : qgis::as_const( multiLineSplit ) )
+    {
+      autoWrappedLines.append( QgsStringUtils::wordWrap( line, autoWrapLength, useMaxLineLengthWhenAutoWrapping ).split( '\n' ) );
+    }
+    multiLineSplit = autoWrappedLines;
   }
   return multiLineSplit;
 }

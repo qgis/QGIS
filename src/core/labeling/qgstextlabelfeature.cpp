@@ -52,7 +52,7 @@ bool QgsTextLabelFeature::hasCharacterFormat( int partId ) const
   return partId < mCharacterFormats.size();
 }
 
-void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF *fm, const QgsMapToPixel *xform, double maxinangle, double maxoutangle, bool allowHtmlTags )
+void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF *fm, const QgsMapToPixel *xform, double maxinangle, double maxoutangle, QgsTextDocument *document )
 {
   if ( mInfo )
     return;
@@ -81,34 +81,19 @@ void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF *fm,
   qreal charWidth;
   qreal wordSpaceFix;
 
-
-  if ( allowHtmlTags && curvedLabeling )
+  if ( document && curvedLabeling )
   {
-    QTextDocument doc;
-    doc.setHtml( mLabelText );
-
-    QTextBlock block = doc.firstBlock();
-    while ( true )
+    for ( const QgsTextBlock &block : qgis::as_const( *document ) )
     {
-      auto it = block.begin();
-      QString blockText;
-      while ( !it.atEnd() )
+      for ( const QgsTextFragment &fragment : block )
       {
-        const QTextFragment fragment = it.fragment();
-        if ( fragment.isValid() )
+        const QStringList graphemes = QgsPalLabeling::splitToGraphemes( fragment.text() );
+        for ( const QString &grapheme : graphemes )
         {
-          const QStringList graphemes = QgsPalLabeling::splitToGraphemes( fragment.text() );
-          for ( const QString &grapheme : graphemes )
-          {
-            mClusters.append( grapheme );
-            mCharacterFormats.append( fragment.charFormat() );
-          }
+          mClusters.append( grapheme );
+          mCharacterFormats.append( fragment.characterFormat() );
         }
-        it++;
       }
-      block = block.next();
-      if ( !block.isValid() )
-        break;
     }
   }
   else
@@ -147,4 +132,14 @@ void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF *fm,
     double labelWidth = mapScale * charWidth;
     mInfo->char_info[i].width = labelWidth;
   }
+}
+
+QgsTextDocument QgsTextLabelFeature::document() const
+{
+  return mDocument;
+}
+
+void QgsTextLabelFeature::setDocument( const QgsTextDocument &document )
+{
+  mDocument = document;
 }

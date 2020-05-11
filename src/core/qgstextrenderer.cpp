@@ -2605,38 +2605,6 @@ QPixmap QgsTextFormat::textFormatPreviewPixmap( const QgsTextFormat &format, QSi
   return pixmap;
 }
 
-QStringList QgsTextRenderer::extractTextBlocksFromHtml( const QString &html )
-{
-  QStringList res;
-
-  QTextDocument doc;
-  doc.setHtml( html );
-
-  QTextBlock block = doc.firstBlock();
-  while ( true )
-  {
-    auto it = block.begin();
-    QString blockText;
-    while ( !it.atEnd() )
-    {
-      const QTextFragment fragment = it.fragment();
-      if ( fragment.isValid() )
-      {
-        blockText.append( fragment.text() );
-      }
-      it++;
-    }
-    if ( !blockText.isEmpty() )
-      res << blockText;
-
-    block = block.next();
-    if ( !block.isValid() )
-      break;
-  }
-
-  return res;
-}
-
 int QgsTextRenderer::sizeToPixel( double size, const QgsRenderContext &c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &mapUnitScale )
 {
   return static_cast< int >( c.convertToPainterUnits( size, unit, mapUnitScale ) + 0.5 ); //NOLINT
@@ -4475,6 +4443,9 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
   document.reserve( lines.size() );
   for ( const QString &line : lines )
   {
+    // QTextDocument is a very heavy way of parsing HTML + css (it's heavily geared toward an editable text document,
+    // and includes a LOT of calculations we don't need, when all we're after is a HTML + CSS style parser).
+    // TODO - try to find an alternative library we can use here
     QTextDocument sourceDoc;
     sourceDoc.setHtml( line );
 

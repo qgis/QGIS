@@ -60,7 +60,7 @@ class QgsTextLabelFeature : public QgsLabelFeature
     bool hasCharacterFormat( int partId ) const;
 
     //! calculate data for info(). setDefinedFont() must have been called already.
-    void calculateInfo( bool curvedLabeling, QFontMetricsF *fm, const QgsMapToPixel *xform, double maxinangle, double maxoutangle, bool allowHtmlTags );
+    void calculateInfo( bool curvedLabeling, QFontMetricsF *fm, const QgsMapToPixel *xform, double maxinangle, double maxoutangle, QgsTextDocument *document = nullptr );
 
     //! Gets data-defined values
     const QMap< QgsPalLayerSettings::Property, QVariant > &dataDefinedValues() const { return mDataDefinedValues; }
@@ -75,6 +75,20 @@ class QgsTextLabelFeature : public QgsLabelFeature
     //! Metrics of the font for rendering
     QFontMetricsF *labelFontMetrics() { return mFontMetrics; }
 
+    /**
+     * Returns the document for the label.
+     * \see setDocument()
+     * \since QGIS 3.14
+     */
+    QgsTextDocument document() const;
+
+    /**
+     * Sets the \a document for the label.
+     * \see document()
+     * \since QGIS 3.14
+     */
+    void setDocument( const QgsTextDocument &document );
+
   protected:
     //! List of graphemes (used for curved labels)
     QStringList mClusters;
@@ -87,6 +101,8 @@ class QgsTextLabelFeature : public QgsLabelFeature
     QFontMetricsF *mFontMetrics = nullptr;
     //! Stores attribute values for data defined properties
     QMap< QgsPalLayerSettings::Property, QVariant > mDataDefinedValues;
+
+    QgsTextDocument mDocument;
 
 };
 

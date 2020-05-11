@@ -633,8 +633,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     }
     else
     {
-      document = QgsTextDocument::fromHtml( QStringList() << txt );
-      document.splitLines( tmpLyr.wrapChar, tmpLyr.autoWrapLength, tmpLyr.useMaxLineLengthForAutoWrap );
+      document = lf->document();
     }
 
     QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, document, labelfm,

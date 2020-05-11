@@ -1940,15 +1940,6 @@ and background shapes.
       AlignRight,
     };
 
-    static QStringList extractTextBlocksFromHtml( const QString &html );
-%Docstring
-Extracts text blocks from a ``html`` string.
-
-This removes formatting tags, and outputs lines of text which represent the text content of HTML blocks.
-
-.. versionadded:: 3.14
-%End
-
     static int sizeToPixel( double size, const QgsRenderContext &c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 %Docstring
 Calculates pixel size (considering output size should be in pixel or map units, scale factors and optionally oversampling)

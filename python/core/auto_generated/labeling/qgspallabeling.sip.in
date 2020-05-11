@@ -783,7 +783,7 @@ Checks whether a geometry requires preparation before registration with PAL
 .. versionadded:: 2.9
 %End
 
-    static QStringList splitToLines( const QString &text, const QString &wrapCharacter, int autoWrapLength = 0, bool useMaxLineLengthWhenAutoWrapping = true, bool allowHtmlFormatting = false );
+    static QStringList splitToLines( const QString &text, const QString &wrapCharacter, int autoWrapLength = 0, bool useMaxLineLengthWhenAutoWrapping = true );
 %Docstring
 Splits a ``text`` string to a list of separate lines, using a specified wrap character (``wrapCharacter``).
 The text string will be split on either newline characters or the wrap character.

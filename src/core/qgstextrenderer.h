@@ -1956,15 +1956,6 @@ class CORE_EXPORT QgsTextRenderer
     };
 
     /**
-     * Extracts text blocks from a \a html string.
-     *
-     * This removes formatting tags, and outputs lines of text which represent the text content of HTML blocks.
-     *
-     * \since QGIS 3.14
-     */
-    static QStringList extractTextBlocksFromHtml( const QString &html );
-
-    /**
      * Calculates pixel size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
      * \param size size to convert
      * \param c rendercontext
