@@ -522,14 +522,14 @@ class CORE_EXPORT QgsMeshDatasetMetadata
 };
 
 /**
-  * A dataset group state contains
+  * A dataset group state contains :
   * - whether the user as defined the group as used, that is can be access through ui
-  * - the orignal name of the group
+  * - the original name of the group
   * - the displayed name choose by the user
   *
   * \since QGIS 3.14
   */
-struct QgsMeshDatasetGroupState
+struct CORE_EXPORT QgsMeshDatasetGroupState
 {
   bool used;
   QString originalName;

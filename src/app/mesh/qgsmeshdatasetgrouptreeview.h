@@ -117,13 +117,13 @@ class APP_NO_EXPORT QgsMeshDatasetGroupProvidedTreeModel : public QAbstractItemM
     //!Returns if the dataset groups related to the QModelIndex is set as used
     bool isUsed( const QModelIndex &index ) const;
 
-    //! return the group states as defined in the model for all groups, orignal name are not provided
+    //!Return the group states as defined in the model for all groups, original name are not provided
     QMap<int, QgsMeshDatasetGroupState> groupStates() const;
 
-    //! Resets all groups with default state from the mesh layer
+    //!Resets all groups with default state from the mesh layer
     void resetToDefaultState( QgsMeshLayer *meshLayer );
 
-    //! Sets all groups as used
+    //!Sets all groups as used
     void setAllGroupsAsUsed( bool isUsed );
 
   private:
