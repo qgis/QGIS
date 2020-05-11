@@ -1829,6 +1829,15 @@ class CORE_EXPORT QgsTextFragment
      */
     void setCharacterFormat( const QgsTextCharacterFormat &format );
 
+    /**
+     * Returns the horizontal advance associated with this fragment, when rendered using
+     * the specified base \a font.
+     *
+     * Set \a fontHasBeenUpdatedForFragment to TRUE if \a font already represents the character
+     * format for this fragment.
+     */
+    double horizontalAdvance( const QFont &font, bool fontHasBeenUpdatedForFragment = false ) const;
+
   private:
 
     QString mText;
@@ -1894,6 +1903,17 @@ class CORE_EXPORT QgsTextDocument : public QVector< QgsTextBlock >
      * Returns a list of plain text lines of text representing the document.
      */
     QStringList toPlainText() const;
+
+    /**
+     * Splits lines of text in the document to separate lines, using a specified wrap character (\a wrapCharacter) or newline characters.
+     *
+     * The \a autoWrapLength argument can be used to specify an ideal length of line to automatically
+     * wrap text to (automatic wrapping is disabled if \a autoWrapLength is 0). This automatic wrapping is performed
+     * after processing wrapping using \a wrapCharacter. When auto wrapping is enabled, the \a useMaxLineLengthWhenAutoWrapping
+     * argument controls whether the lines should be wrapped to an ideal maximum of \a autoWrapLength characters, or
+     * if FALSE then the lines are wrapped to an ideal minimum length of \a autoWrapLength characters.
+     */
+    void splitLines( const QString &wrapCharacter, int autoWrapLength = 0, bool useMaxLineLengthWhenAutoWrapping = true );
 
 };
 
@@ -2067,8 +2087,8 @@ class CORE_EXPORT QgsTextRenderer
 
     struct Component
     {
-      //! Component text
-      QString text;
+      //! Block to render
+      QgsTextBlock block;
       //! Current origin point for painting (generally current painter rotation point)
       QPointF origin;
       //! Whether to translate the painter to supplied origin
@@ -2133,10 +2153,9 @@ class CORE_EXPORT QgsTextRenderer
                           QgsRenderContext &context, const QgsTextFormat &format,
                           TextPart part );
 
-    static void drawBuffer( QgsRenderContext &context,
-                            const Component &component,
-                            const QgsTextFormat &format,
-                            const QFontMetricsF *fontMetrics );
+    static double drawBuffer( QgsRenderContext &context,
+                              const Component &component,
+                              const QgsTextFormat &format );
 
     static void drawBackground( QgsRenderContext &context,
                                 Component component,

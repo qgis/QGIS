@@ -633,53 +633,14 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     }
     else
     {
-      QTextDocument doc;
-      doc.setHtml( txt );
-//      doc.setHtml( QStringLiteral( "<span style=\"color: %1\">%2</span>" ).arg( tmpLyr.format().color().name(), txt ) );
-      QTextBlock block = doc.firstBlock();
-      while ( true )
-      {
-        QgsTextBlock destDocumentBlock;
-        auto it = block.begin();
-        while ( !it.atEnd() )
-        {
-          const QTextFragment fragment = it.fragment();
-          if ( fragment.isValid() )
-          {
-            const QStringList multiLineList = QgsPalLabeling::splitToLines( fragment.text(), tmpLyr.wrapChar, tmpLyr.autoWrapLength, tmpLyr.useMaxLineLengthForAutoWrap );
-            if ( multiLineList.size() > 1 )
-            {
-              // split this fragment over multiple blocks
-              destDocumentBlock << QgsTextFragment( multiLineList.at( 0 ), fragment.charFormat() );
-              for ( int lineIndex = 1; lineIndex < multiLineList.size(); ++ lineIndex )
-              {
-                document << destDocumentBlock;
-                destDocumentBlock.clear();
-                destDocumentBlock << QgsTextFragment( multiLineList.at( lineIndex ), fragment.charFormat() );
-              }
-            }
-            else
-            {
-              destDocumentBlock << QgsTextFragment( fragment.text(), fragment.charFormat() );
-            }
-          }
-          it++;
-        }
-
-        document << destDocumentBlock;
-
-        block = block.next();
-        if ( !block.isValid() )
-          break;
-      }
+      document = QgsTextDocument::fromHtml( QStringList() << txt );
+      document.splitLines( tmpLyr.wrapChar, tmpLyr.autoWrapLength, tmpLyr.useMaxLineLengthForAutoWrap );
     }
 
     QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, document, labelfm,
                                        hAlign, QgsTextRenderer::Label );
 
   }
-
-  // NOTE: this used to be within above multi-line loop block, at end. (a mistake since 2010? [LS])
   if ( label->nextPart() )
     drawLabelPrivate( label->nextPart(), context, tmpLyr, drawType, dpiRatio );
 }
