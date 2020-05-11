@@ -752,15 +752,15 @@ void QgsRelationEditorWidget::deleteFeatures( const QgsFeatureIds &featureids )
   {
     QgsVectorLayer::DeleteContext context { true };
     layer->deleteFeatures( featureids, &context );
-    if ( context.handledFeatures.count() > 1 )
+    if ( context.handledFeatures().size() > 1 )
     {
       int deletedCount = 0;
       QString feedbackMessage;
       QMap<QgsVectorLayer *, QgsFeatureIds>::const_iterator i;
-      for ( i = context.handledFeatures.begin(); i != context.handledFeatures.end(); ++i )
+      for ( i = context.handledFeatures().begin(); i != context.handledFeatures().end(); ++i )
       {
-        feedbackMessage += tr( " %1 on layer %2." ).arg( i.value().count() ).arg( i.key()->name() );
-        deletedCount += i.value().count();
+        feedbackMessage += tr( " %1 on layer %2." ).arg( i.value().size() ).arg( i.key()->name() );
+        deletedCount += i.value().size();
       }
       mEditorContext.mainMessageBar()->pushMessage( tr( "%1 features deleted: %2" ).arg( deletedCount ).arg( feedbackMessage ), Qgis::Success );
     }
