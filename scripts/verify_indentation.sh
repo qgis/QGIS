@@ -29,7 +29,7 @@ for f in $FILES; do
 		continue
 	fi
 
-	echo "Checking $f"
+	# echo "Checking $f"
 	case "$f" in
 	*.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.sip|*.py)
 		;;
@@ -45,7 +45,7 @@ for f in $FILES; do
 	if diff -u "$m" "$f" >>$ASTYLEDIFF; then
 		rm "$m"
 	else
-		echo "File $f needs indentation"
+		echo "File $f is not styled properly."
 	fi
 done
 
@@ -57,9 +57,9 @@ if [ -s "$ASTYLEDIFF" ]; then
 	cat <<EOF
 
 Tips to prevent and resolve:
-* Enable WITH_ASTYLE in your cmake configuration to format C++ code
+* Install astyle to format C++ code
 * Install autopep8 (>= 1.2.1) to format python code
-* Use "scripts/astyle.sh file" to fix the now badly indented files
+* Use "scripts/astyle.sh file" to fix the now incorrectly formatted files
 * Consider using scripts/prepare_commit.sh as pre-commit hook to avoid this
   in the future (ln -s ../../scripts/prepare_commit.sh .git/hooks/pre-commit) or
   run it manually before each commit.
