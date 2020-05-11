@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSALGORITHMSEGMENTIZE_H
-#define QGSALGORITHMSEGMENTIZE_H
+#ifndef QGSALGORITHMCONVERTTOCURVES_H
+#define QGSALGORITHMCONVERTTOCURVES_H
 
 #define SIP_NO_FILE
 
@@ -65,6 +65,6 @@ class QgsConvertToCurvesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
 ///@endcond PRIVATE
 
-#endif // QGSALGORITHMSEGMENTIZE_H
+#endif // QGSALGORITHMCONVERTTOCURVES_H
 
 

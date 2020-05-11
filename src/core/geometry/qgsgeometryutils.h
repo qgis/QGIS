@@ -383,7 +383,7 @@ class CORE_EXPORT QgsGeometryUtils
      * on the candidate arc. The \a pointSpacingAngleTolerance parameter specifies the maximum
      * angular deviation (in radians) allowed when testing for regular point spacing.
      *
-     * \since QGIS 3.2
+     * \since QGIS 3.14
      */
     static bool pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2, const QgsPoint &a3, const QgsPoint &b, double distanceTolerance,
                                    double pointSpacingAngleTolerance );
