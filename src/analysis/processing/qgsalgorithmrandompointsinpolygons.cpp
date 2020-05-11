@@ -17,9 +17,7 @@
 
 
 #include "qgsalgorithmrandompointsinpolygons.h"
-#include "random"
-#include <iostream>
-using namespace std;
+#include <random>
 
 // The algorithm parameter names:
 static const QString INPUT = QStringLiteral( "INPUT" );
@@ -180,7 +178,6 @@ bool QgsRandomPointsInPolygonsAlgorithm::prepareAlgorithm( const QVariantMap &pa
 QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariantMap &parameters,
     QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  //::mTotNPoints = 0;
   std::unique_ptr< QgsProcessingFeatureSource > polygonSource( parameterAsSource( parameters, INPUT, context ) );
   if ( !polygonSource )
     throw QgsProcessingException( invalidSourceError( parameters, INPUT ) );
@@ -298,7 +295,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
     else
     {
       // Have to check for minimum distance, provide the acceptPoints function
-      QVector< QgsPointXY > newPoints = polyGeom.randomPointsInPolygon( numberPointsForThisFeature, [ =, &globalIndex, &indexPoints ]( const QgsPointXY & newPoint ) mutable -> bool
+      QVector< QgsPointXY > newPoints = polyGeom.randomPointsInPolygon( numberPointsForThisFeature, [ & ]( const QgsPointXY & newPoint ) -> bool
       {
         // May have to check minimum distance to existing points
         // The first point can always be added
