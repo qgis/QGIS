@@ -3991,21 +3991,32 @@ QVariant QgsVectorLayer::minimumOrMaximumValue( int index, bool minimum ) const
                                             .setSubsetOfAttributes( attList ) );
 
       QgsFeature f;
-      double value = minimum ? std::numeric_limits<double>::max() : -std::numeric_limits<double>::max();
-      double currentValue = 0;
+      QVariant value;
+      QVariant currentValue;
+      bool firstValue = true;
       while ( fit.nextFeature( f ) )
       {
-        currentValue = f.attribute( index ).toDouble();
-        if ( ( minimum && currentValue < value ) || ( !minimum && currentValue > value ) )
+        currentValue = f.attribute( index );
+        if ( currentValue.isNull() )
+          continue;
+        if ( firstValue )
         {
           value = currentValue;
+          firstValue = false;
+        }
+        else
+        {
+          if ( ( minimum && qgsVariantLessThan( currentValue, value ) ) || ( !minimum && qgsVariantGreaterThan( currentValue, value ) ) )
+          {
+            value = currentValue;
+          }
         }
       }
-      return QVariant( value );
+      return value;
     }
   }
 
-  Q_ASSERT_X( false, "QgsVectorLayer::minOrMax()", "Unknown source of the field!" );
+  Q_ASSERT_X( false, "QgsVectorLayer::minimumOrMaximum()", "Unknown source of the field!" );
   return QVariant();
 }
 
