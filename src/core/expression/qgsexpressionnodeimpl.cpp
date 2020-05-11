@@ -248,7 +248,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         ENSURE_NO_EVAL_ERROR;
         QTime time = QgsExpressionUtils::getTimeValue( vR.type() == QVariant::Time ? vR : vL, parent );
         ENSURE_NO_EVAL_ERROR;
-        QDateTime dt = QDateTime( date, time );
+        QDateTime dt = QDateTime( date, time, Qt::UTC );
         return QVariant( dt );
       }
       else if ( mOp == boMinus && vL.type() == QVariant::Date && vR.type() == QVariant::Date )

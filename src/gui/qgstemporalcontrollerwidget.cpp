@@ -188,7 +188,7 @@ void QgsTemporalControllerWidget::onLayersAdded()
 void QgsTemporalControllerWidget::onProjectCleared()
 {
   mHasTemporalLayersLoaded = false;
-  mStartDateTime->setDateTime( QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) ) );
+  mStartDateTime->setDateTime( QDateTime( QDate::currentDate(), QTime( 0, 0, 0 ), Qt::UTC ) );
   mEndDateTime->setDateTime( mStartDateTime->dateTime() );
   updateTemporalExtent();
 }

@@ -252,6 +252,7 @@ class QgsExpressionUtils
       QDateTime d = value.toDateTime();
       if ( d.isValid() )
       {
+        d.setTimeSpec( Qt::UTC );
         return d;
       }
       else
@@ -259,7 +260,7 @@ class QgsExpressionUtils
         QTime t = value.toTime();
         if ( t.isValid() )
         {
-          return QDateTime( QDate( 1, 1, 1 ), t );
+          return QDateTime( QDate( 1, 1, 1 ), t, Qt::UTC );
         }
 
         parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to DateTime" ).arg( value.toString() ) );

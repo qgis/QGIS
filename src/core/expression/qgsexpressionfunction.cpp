@@ -1100,6 +1100,7 @@ static QVariant fcnToDateTime( const QVariantList &values, const QgsExpressionCo
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to DateTime" ).arg( datetimestring ) );
     datetime = QDateTime();
   }
+  datetime.setTimeSpec( Qt::UTC );
   return QVariant( datetime );
 }
 
@@ -1154,7 +1155,7 @@ static QVariant fcnMakeDateTime( const QVariantList &values, const QgsExpression
     parent->setEvalErrorString( QObject::tr( "'%1-%2-%3' is not a valid time" ).arg( hours ).arg( minutes ).arg( seconds ) );
     return QVariant();
   }
-  return QVariant( QDateTime( date, time ) );
+  return QVariant( QDateTime( date, time, Qt::UTC ) );
 }
 
 static QVariant fcnMakeInterval( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
