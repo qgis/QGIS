@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgstextrenderer.h                                           *
+ * src/core/textrenderer/qgstextrenderer.h                              *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -2130,7 +2130,7 @@ Attempts to decode a string representation of a text orientation.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgstextrenderer.h                                           *
+ * src/core/textrenderer/qgstextrenderer.h                              *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

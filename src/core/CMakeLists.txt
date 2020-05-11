@@ -195,6 +195,8 @@ SET(QGIS_CORE_SRCS
   scalebar/qgssteppedlinescalebarrenderer.cpp
   scalebar/qgsticksscalebarrenderer.cpp
 
+  textrenderer/qgstextrenderer.cpp
+
   qgis.cpp
   qgsabstractcontentcache.cpp
   qgsabstractgeopdfexporter.cpp
@@ -404,7 +406,6 @@ SET(QGIS_CORE_SRCS
   qgstemporalrangeobject.cpp
   qgstemporalutils.cpp
   qgstessellator.cpp
-  qgstextrenderer.cpp
   qgstilecache.cpp
   qgstiles.cpp
   qgstolerance.cpp
@@ -964,7 +965,6 @@ SET(QGIS_CORE_HDRS
   qgstemporalutils.h
   qgstessellator.h
   qgstestutils.h
-  qgstextrenderer.h
   qgsthreadingutils.h
   qgstilecache.h
   qgstiles.h
@@ -1374,6 +1374,8 @@ SET(QGIS_CORE_HDRS
   symbology/qgssymbollayerutils.h
   symbology/qgsvectorfieldsymbollayer.h
 
+  textrenderer/qgstextrenderer.h
+
   validity/qgsabstractvaliditycheck.h
   validity/qgsvaliditycheckcontext.h
   validity/qgsvaliditycheckregistry.h
@@ -1406,7 +1408,8 @@ SET(QGIS_CORE_PRIVATE_HDRS
   qgsproperty_p.h
   qgsrelation_p.h
   qgsspatialindexkdbush_p.h
-  qgstextrenderer_p.h
+
+  textrenderer/qgstextrenderer_p.h
 )
 
 IF (NOT WITH_QTWEBKIT)
@@ -1477,6 +1480,7 @@ INCLUDE_DIRECTORIES(
   layertree
   layout
   locator
+  mesh
   metadata
   numericformats
   pal
@@ -1491,7 +1495,7 @@ INCLUDE_DIRECTORIES(
   renderer
   scalebar
   symbology
-  mesh
+  textrenderer
   validity
   vectortile
   ${CMAKE_SOURCE_DIR}/external
