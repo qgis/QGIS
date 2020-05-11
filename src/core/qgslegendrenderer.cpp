@@ -76,13 +76,14 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
   if ( !rootGroup )
     return json;
 
+  json = exportLegendToJson( context, rootGroup );
   json[QStringLiteral( "title" )] = mSettings.title();
-  exportLegendToJson( context, rootGroup, json );
   return json;
 }
 
-void QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &context, QgsLayerTreeGroup *nodeGroup, QJsonObject &json )
+QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &context, QgsLayerTreeGroup *nodeGroup )
 {
+  QJsonObject json;
   QJsonArray nodes;
   const QList<QgsLayerTreeNode *> childNodes = nodeGroup->children();
   for ( QgsLayerTreeNode *node : childNodes )
@@ -93,10 +94,9 @@ void QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &context, Qgs
       const QModelIndex idx = mLegendModel->node2index( nodeGroup );
       const QString text = mLegendModel->data( idx, Qt::DisplayRole ).toString();
 
-      QJsonObject group;
+      QJsonObject group = exportLegendToJson( context, nodeGroup );
       group[ QStringLiteral( "type" ) ] = QStringLiteral( "group" );
       group[ QStringLiteral( "title" ) ] = text;
-      exportLegendToJson( context, nodeGroup, group );
       nodes.append( group );
     }
     else if ( QgsLayerTree::isLayer( node ) )
@@ -141,6 +141,7 @@ void QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &context, Qgs
   }
 
   json[QStringLiteral( "nodes" )] = nodes;
+  return json;
 }
 
 QSizeF QgsLegendRenderer::paintAndDetermineSize( QgsRenderContext &context )
