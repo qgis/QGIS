@@ -321,8 +321,9 @@ class CORE_EXPORT QgsVectorLayerUtils
     static QString getFeatureDisplayString( const QgsVectorLayer *layer, const QgsFeature &feature );
 
     /**
-     * \returns true if the \a is connected as parent in at least one composition relation of the \a project
-     * or contains joins, where cascade delete is set.
+     * \returns true if at least one feature of the \a fids on \a layer is connected as parent in at
+     * least one composition relation of the \a project or contains joins, where cascade delete is set.
+     * The \a context is used to get more details.
      *
      * \since QGIS 3.14
      */
