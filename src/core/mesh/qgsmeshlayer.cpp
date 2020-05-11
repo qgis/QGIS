@@ -108,6 +108,10 @@ void QgsMeshLayer::setDefaultRendererSettings()
       case QgsMeshDatasetGroupMetadata::DataOnEdges:
         break;
     }
+
+    //override color ramp if the values in the dataset group are classified
+    applyClassificationOnScalarSettings( meta, scalarSettings );
+
     mRendererSettings.setScalarSettings( i, scalarSettings );
   }
 
@@ -405,6 +409,94 @@ QgsMeshDatasetIndex QgsMeshLayer::datasetIndexAtTime( const QgsDateTimeRange &ti
     return dataProvider()->temporalCapabilities()->datasetIndexFromRelativeTimeRange( datasetGroupIndex, startTime, endTime );
   else
     return QgsMeshDatasetIndex();
+}
+
+void QgsMeshLayer::applyClassificationOnScalarSettings( const QgsMeshDatasetGroupMetadata &meta, QgsMeshRendererScalarSettings &scalarSettings ) const
+{
+  if ( meta.extraOptions().contains( QStringLiteral( "classification" ) ) )
+  {
+    QgsColorRampShader colorRampShader = scalarSettings.colorRampShader();
+    QgsColorRamp *colorRamp = colorRampShader.sourceColorRamp();
+    QStringList classes = meta.extraOptions()[QStringLiteral( "classification" )].split( QStringLiteral( ";;" ) );
+
+    QString units;
+    if ( meta.extraOptions().contains( QStringLiteral( "units" ) ) )
+      units = meta.extraOptions()[ QStringLiteral( "units" )];
+
+    QVector<QVector<double>> bounds;
+    for ( const QString classe : classes )
+    {
+      QStringList boundsStr = classe.split( ',' );
+      QVector<double> bound;
+      for ( const QString boundStr : boundsStr )
+        bound.append( boundStr.toDouble() );
+      bounds.append( bound );
+    }
+
+    if ( ( bounds.count() == 1  && bounds.first().count() > 2 ) || // at least a class with two value
+         ( bounds.count() > 1 ) ) // or at least two classes
+    {
+      const QVector<double> firstClass = bounds.first();
+      const QVector<double> lastClass = bounds.last();
+      double minValue = firstClass.count() > 1 ? ( firstClass.first() + firstClass.last() ) / 2 : firstClass.first();
+      double maxValue = lastClass.count() > 1 ? ( lastClass.first() + lastClass.last() ) / 2 : lastClass.first();
+      double diff = maxValue - minValue;
+      QList<QgsColorRampShader::ColorRampItem> colorRampItemlist;
+      for ( int i = 0; i < bounds.count(); ++i )
+      {
+        const QVector<double> &boundClass = bounds.at( i );
+        QgsColorRampShader::ColorRampItem item;
+        item.value = i + 1;
+        if ( !boundClass.isEmpty() )
+        {
+          double scalarValue = ( boundClass.first() + boundClass.last() ) / 2;
+          item.color = colorRamp->color( ( scalarValue - minValue ) / diff );
+          if ( i != 0 && i < bounds.count() - 1 ) //The first and last labels are treated after
+          {
+            item.label = QString( ( "%1 - %2 %3" ) ).
+                         arg( QString::number( boundClass.first() ) ).
+                         arg( QString::number( boundClass.last() ) ).
+                         arg( units );
+          }
+        }
+        colorRampItemlist.append( item );
+      }
+      //treat first and last labels
+      if ( firstClass.count() == 1 )
+        colorRampItemlist.first().label = QObject::tr( "below %1 %2" ).
+                                          arg( QString::number( firstClass.first() ) ).
+                                          arg( units );
+      else
+      {
+        colorRampItemlist.first().label = QString( ( "%1 - %2 %3" ) ).
+                                          arg( QString::number( firstClass.first() ) ).
+                                          arg( QString::number( firstClass.last() ) ).
+                                          arg( units );
+      }
+
+      if ( lastClass.count() == 1 )
+        colorRampItemlist.last().label = QObject::tr( "above %1 %2" ).
+                                         arg( QString::number( lastClass.first() ) ).
+                                         arg( units );
+      else
+      {
+        colorRampItemlist.last().label = QString( ( "%1 - %2 %3" ) ).
+                                         arg( QString::number( lastClass.first() ) ).
+                                         arg( QString::number( lastClass.last() ) ).
+                                         arg( units );
+      }
+
+      colorRampShader.setMinimumValue( 0 );
+      colorRampShader.setMaximumValue( colorRampItemlist.count() - 1 );
+      scalarSettings.setClassificationMinimumMaximum( 0, colorRampItemlist.count() - 1 );
+      colorRampShader.setColorRampItemList( colorRampItemlist );
+      colorRampShader.setColorRampType( QgsColorRampShader::Exact );
+      colorRampShader.setClassificationMode( QgsColorRampShader::EqualInterval );
+    }
+
+    scalarSettings.setColorRampShader( colorRampShader );
+    scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::None );
+  }
 }
 
 QgsMeshDatasetIndex QgsMeshLayer::activeScalarDatasetAtTime( const QgsDateTimeRange &timeRange ) const

@@ -112,7 +112,6 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
   const double min = settings.classificationMinimum();
   const double max = settings.classificationMaximum();
 
-
   whileBlocking( mScalarMinLineEdit )->setText( QString::number( min ) );
   whileBlocking( mScalarMaxLineEdit )->setText( QString::number( max ) );
   whileBlocking( mScalarColorRampShaderWidget )->setFromShader( shader );

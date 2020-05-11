@@ -94,6 +94,7 @@ class TestQgsMeshRenderer : public QObject
     void test_vertex_vector_traces_colorRamp();
     void test_stacked_3d_mesh_single_level_averaging();
     void test_simplified_triangular_mesh_rendering();
+    void test_classified_values();
 
     void test_signals();
 };
@@ -681,7 +682,19 @@ void TestQgsMeshRenderer::test_simplified_triangular_mesh_rendering()
   QVERIFY( imageCheck( "simplified_triangular_mesh", mMdal3DLayer ) );
 }
 
-// TODO test edge mesh rendering!
+void TestQgsMeshRenderer::test_classified_values()
+{
+  QgsMeshLayer classifiedMesh( mDataDir + "/simplebox_clm.nc", "Mesh with classified values", "mdal" );
+  QVERIFY( classifiedMesh.isValid() );
+
+  QgsProject::instance()->addMapLayer( &classifiedMesh );
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << &classifiedMesh );
+
+  classifiedMesh.temporalProperties()->setIsActive( false );
+  classifiedMesh.setStaticScalarDatasetIndex( QgsMeshDatasetIndex( 3, 4 ) );
+
+  QVERIFY( imageCheck( "classified_values", &classifiedMesh ) );
+}
 
 QGSTEST_MAIN( TestQgsMeshRenderer )
 #include "testqgsmeshlayerrenderer.moc"

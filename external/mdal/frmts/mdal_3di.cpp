@@ -194,10 +194,16 @@ std::set<std::string> MDAL::Driver3Di::ignoreNetCDFVariables()
   return ignore_variables;
 }
 
-void MDAL::Driver3Di::parseNetCDFVariableMetadata( int varid, const std::string &variableName, std::string &name, bool *is_vector, bool *is_x )
+void MDAL::Driver3Di::parseNetCDFVariableMetadata( int varid,
+    std::string &variableName,
+    std::string &name,
+    bool *is_vector,
+    bool *isPolar,
+    bool *is_x )
 {
   *is_vector = false;
   *is_x = true;
+  *isPolar = false;
 
   std::string long_name = mNcFile->getAttrStr( "long_name", varid );
   if ( long_name.empty() )
@@ -209,6 +215,7 @@ void MDAL::Driver3Di::parseNetCDFVariableMetadata( int varid, const std::string 
     }
     else
     {
+      variableName = standard_name;
       if ( MDAL::contains( standard_name, "_x_" ) )
       {
         *is_vector = true;
@@ -228,6 +235,7 @@ void MDAL::Driver3Di::parseNetCDFVariableMetadata( int varid, const std::string 
   }
   else
   {
+    variableName = long_name;
     if ( MDAL::contains( long_name, " in x direction" ) )
     {
       *is_vector = true;
@@ -244,4 +252,10 @@ void MDAL::Driver3Di::parseNetCDFVariableMetadata( int varid, const std::string 
       name = long_name;
     }
   }
+}
+
+std::vector<std::pair<double, double>> MDAL::Driver3Di::parseClassification( int varid ) const
+{
+  MDAL_UNUSED( varid );
+  return std::vector<std::pair<double, double>>();
 }

@@ -185,6 +185,11 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
   const auto options = gmeta.extraOptions();
   for ( auto it = options.constBegin(); it != options.constEnd(); ++it )
   {
+    if ( it.key() == QStringLiteral( "classification" ) )
+    {
+      msg += QStringLiteral( "<tr><td>%1</td></tr>" ).arg( tr( "Classified values" ) );
+      continue;
+    }
     msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" ).arg( it.key() ).arg( it.value() );
   }
 
