@@ -1110,6 +1110,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mOffsetQuadSegSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt() );
   mCurveOffsetMiterLimitComboBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble() );
 
+  mTracingConvertToCurveCheckBox->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false ).toBool() );
+
   // load gdal driver list only when gdal tab is first opened
   mLoadedGdalDriverList = false;
 
@@ -1712,6 +1714,8 @@ void QgsOptions::saveOptions()
   mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ), mOffsetJoinStyleComboBox->currentData().value<QgsGeometry::JoinStyle>() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), mOffsetQuadSegSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), mCurveOffsetMiterLimitComboBox->value() );
+
+  mSettings->setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), mTracingConvertToCurveCheckBox->isChecked() );
 
   // default scale list
   QString myPaths;

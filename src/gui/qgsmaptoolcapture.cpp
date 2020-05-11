@@ -290,8 +290,9 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
   }
 
   // If the layer supports curves, we de-approximate curves
+  QgsSettings settings;
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
-  if ( vlayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::CircularGeometries ) )
+  if ( vlayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::CircularGeometries ) && settings.value( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false ).toBool() )
   {
     QgsGeometry linear = QgsGeometry( mCaptureCurve.segmentize() );
     QgsGeometry curved = linear.convertToCurves();
