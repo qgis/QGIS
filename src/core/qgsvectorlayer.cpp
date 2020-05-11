@@ -3171,9 +3171,9 @@ bool QgsVectorLayer::deleteFeatureCascade( QgsFeatureId fid, QgsVectorLayer::Del
 
   if ( context && context->cascade )
   {
-    if ( context->handledFeatures.contains( this ) )
+    if ( context->mHandledFeatures.contains( this ) )
     {
-      QgsFeatureIds handledFeatureIds = context->handledFeatures.value( this );
+      QgsFeatureIds handledFeatureIds = context->mHandledFeatures.value( this );
       if ( handledFeatureIds.contains( fid ) )
       {
         // avoid endless recursion
@@ -3183,13 +3183,13 @@ bool QgsVectorLayer::deleteFeatureCascade( QgsFeatureId fid, QgsVectorLayer::Del
       {
         // add feature id
         handledFeatureIds << fid;
-        context->handledFeatures.insert( this, handledFeatureIds );
+        context->mHandledFeatures.insert( this, handledFeatureIds );
       }
     }
     else
     {
       // add layer and feature id
-      context->handledFeatures.insert( this, QgsFeatureIds() << fid );
+      context->mHandledFeatures.insert( this, QgsFeatureIds() << fid );
     }
 
     const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( this );

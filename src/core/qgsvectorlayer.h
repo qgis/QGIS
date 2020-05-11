@@ -508,7 +508,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Context for deleting features
      * \since QGIS 3.14
      */
-    struct DeleteContext
+    struct  DeleteContext
     {
 
       /**
@@ -516,8 +516,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
        */
       explicit DeleteContext( bool cascade = false ): cascade( cascade ) {}
 
-      QMap<QgsVectorLayer *, QgsFeatureIds> handledFeatures;
-      bool cascade ;
+      /**
+       * Returns all the layers on which features have been deleted
+       */
+      QMap<QgsVectorLayer *, QgsFeatureIds> handledFeatures() { return mHandledFeatures; }
+
+      QMap<QgsVectorLayer *, QgsFeatureIds> mHandledFeatures SIP_SKIP;
+      bool cascade;
     };
 
     /**

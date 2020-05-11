@@ -374,7 +374,7 @@ Constructor for LayerOptions.
 
     };
 
-    struct DeleteContext
+    struct  DeleteContext
     {
 
       explicit DeleteContext( bool cascade = false );
@@ -382,7 +382,11 @@ Constructor for LayerOptions.
 Constructor for DeleteContext.
 %End
 
-      QMap<QgsVectorLayer *, QgsFeatureIds> handledFeatures;
+      QMap<QgsVectorLayer *, QgsFeatureIds> handledFeatures();
+%Docstring
+Returns all the layers on which features have been deleted
+%End
+
       bool cascade;
     };
 
