@@ -100,6 +100,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
       - name: Indentation Test
         run: ./scripts/verify_indentation.sh HEAD~1
     
