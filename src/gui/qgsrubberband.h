@@ -359,13 +359,16 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      */
     int numberOfVertices() const;
 
+    // TODO QGIS 4: rename i to geometryIndex, j to vertexIndex
+    // TODO QGIS 4: reorder parameters to geom, ring, ring
+
     /**
      * Returns a vertex
      *  \param i   The geometry index
-     *  \param k   The vertex index within ring j
-     *  \param j   The ring index within geometry i
+     *  \param j   The vertex index within ring ringIndex
+     *  \param ringIndex   The ring index within geometry i
      */
-    const QgsPointXY *getPoint( int i, int k = 0, int j = 0 ) const;
+    const QgsPointXY *getPoint( int i, int j = 0, int ringIndex = 0 ) const;
 
     /**
      * Returns the rubberband as a Geometry
