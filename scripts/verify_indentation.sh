@@ -29,7 +29,7 @@ for f in $FILES; do
 		continue
 	fi
 
-	echo "Checking $f" >>/tmp/ctest-important.log
+	echo "Checking $f"
 	case "$f" in
 	*.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.sip|*.py)
 		;;

@@ -101,7 +101,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Indentation Test
-        run: ./scripts/verify_indentation.sh ${{ github.base_ref }}..${{ github.sha }}
+        run: ./scripts/verify_indentation.sh HEAD~1
     
   spell_check:
     runs-on: ubuntu-latest
