@@ -20,7 +20,7 @@ ASTYLEDIFF=/tmp/astyle.diff
 true > $ASTYLEDIFF
 
 
-echo "Commit range: $1"
+# echo "Commit range: $1"
 FILES=$(git diff --diff-filter=AM --name-only $1 | tr '\n' ' ' )
 
 for f in $FILES; do
