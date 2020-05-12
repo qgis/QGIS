@@ -29,7 +29,7 @@
 
 
 /*
- * http://docs.huihoo.com/pyqt/sip4/annotations.html?highlight=keepreference#function-annotation-Transfer
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=keepreference#function-annotation-Transfer
  *
  * Example QgsVectorLayer::setDiagramRenderer
  */
@@ -43,80 +43,80 @@
 #define SIP_GETWRAPPER
 
 /*
- * http://docs.huihoo.com/pyqt/sip4/annotations.html?highlight=keepreference#function-annotation-TransferBack
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=keepreference#function-annotation-TransferBack
  */
 #define SIP_TRANSFERBACK
 
 /*
- * http://docs.huihoo.com/pyqt/sip4/annotations.html?highlight=keepreference#function-annotation-TransferThis
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=keepreference#function-annotation-TransferThis
  */
 #define SIP_TRANSFERTHIS
 
 /*
- * http://docs.huihoo.com/pyqt/sip4/annotations.html#argument-annotation-Out
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-Out
  */
 #define SIP_OUT
 
 /*
- * http://docs.huihoo.com/pyqt/sip4/annotations.html#argument-annotation-In
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-In
  */
 #define SIP_IN
 
 /*
  * Combination of
- * http://docs.huihoo.com/pyqt/sip4/annotations.html#argument-annotation-In
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-In
  * and
- * http://docs.huihoo.com/pyqt/sip4/annotations.html#argument-annotation-Out
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-Out
  */
 #define SIP_INOUT
 
 /*
- * http://docs.huihoo.com/pyqt/sip4/annotations.html#function-annotation-Factory
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#function-annotation-Factory
  */
 #define SIP_FACTORY
 
 /*
- * http://docs.huihoo.com/pyqt/sip4/annotations.html#class-annotation-PyName
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#class-annotation-PyName
  */
 #define SIP_PYNAME(name)
 
 /*
- * http://docs.huihoo.com/pyqt/sip4/annotations.html#argument-annotation-KeepReference
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-KeepReference
  */
 #define SIP_KEEPREFERENCE
 
 /*
- * http://docs.huihoo.com/pyqt/sip4/annotations.html#argument-annotation-Array
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-Array
  */
 #define SIP_ARRAY
 
 /*
- * http://docs.huihoo.com/pyqt/sip4/annotations.html#argument-annotation-ArraySize
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-ArraySize
  */
 #define SIP_ARRAYSIZE
 
 /*
- * http://docs.huihoo.com/pyqt/sip4/annotations.html#class-annotation-NoDefaultCtors
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#class-annotation-NoDefaultCtors
  */
 #define SIP_NODEFAULTCTORS
 
 /*
- * http://docs.huihoo.com/pyqt/sip4/annotations.html?highlight=deprecated#function-annotation-Deprecated
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=deprecated#function-annotation-Deprecated
  */
 #define SIP_DEPRECATED
 
 /*
- * http://docs.huihoo.com/pyqt/sip4/annotations.html?highlight=constrained#argument-annotation-Constrained
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=constrained#argument-annotation-Constrained
  */
 #define SIP_CONSTRAINED
 
 /*
- * http://docs.huihoo.com/pyqt/sip4/annotations.html?highlight=external#class-annotation-External
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=external#class-annotation-External
  */
 #define SIP_EXTERNAL
 
 /*
- * http://docs.huihoo.com/pyqt/sip4/annotations.html?highlight=allownone
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=allownone
  */
 #define SIP_ALLOWNONE
 
@@ -147,7 +147,7 @@
 
 
 /*
- * http://docs.huihoo.com/pyqt/sip4/annotations.html?highlight=keepreference#function-annotation-ReleaseGIL
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=keepreference#function-annotation-ReleaseGIL
  */
 #define SIP_RELEASEGIL
 
