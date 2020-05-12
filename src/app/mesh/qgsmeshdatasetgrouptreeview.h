@@ -62,25 +62,23 @@ class APP_NO_EXPORT QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
 
-    //! Adds groups to the model from mesh layer
+    //! Synchronizes groups to the model from mesh layer
     void syncToLayer( QgsMeshLayer *layer );
 
+    //! Returns the dataset group root tree item, keeps ownership
     QgsMeshDatasetGroupTreeItem *datasetGroupTreeRootItem();
 
     //! Returns whether the dataset groups related to the QModelIndex is set as enabled
     bool isEnabled( const QModelIndex &index ) const;
 
     //! Resets all groups with default state from the mesh layer
-    void resetToDefaultState( QgsMeshLayer *meshLayer );
+    void resetDefault( QgsMeshLayer *meshLayer );
 
     //! Sets all groups as enabled
     void setAllGroupsAsEnabled( bool isEnabled );
 
   private:
     std::unique_ptr<QgsMeshDatasetGroupTreeItem> mRootItem;
-    QMap<int, QgsMeshDatasetGroupTreeItem *> mDatasetGroupIndexToItem;
-
-    void mapDatasetGroupIndexToItem();
 };
 
 class APP_NO_EXPORT QgsMeshDatasetGroupProxyModel: public QSortFilterProxyModel

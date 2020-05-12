@@ -400,9 +400,34 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       */
     QgsPointXY snapOnElement( QgsMesh::ElementType elementType, const QgsPointXY &point, double searchRadius );
 
+    /**
+      * Returns the root items of the dataset group tree item
+      *
+      * \return the root item
+      *
+      * \since QGIS 3.14
+      */
     QgsMeshDatasetGroupTreeItem *datasetGroupTreeRootItem() const;
+
+    /**
+      * Sets the root items of the dataset group tree item.
+      * Changes active dataset groups if those one are not enabled anymore :
+      * - new active scalar dataset group is the first root item enabled child
+      * - new active vector dataset group is none
+      *
+      * Doesn't take ownership of the pointed item, the root item is cloned.
+      *
+      * \param rootItem the new root item
+      *
+      * \since QGIS 3.14
+      */
     void setDatasetGroupTreeRootItem( QgsMeshDatasetGroupTreeItem *rootItem );
-    //! Reset the dataset group tree item to default from provider
+
+    /**
+     * Reset the dataset group tree item to default from provider
+     *
+     * \since QGIS 3.14
+     */
     void resetDatasetGroupTreeItem();
 
   public slots:

@@ -23,8 +23,6 @@
 #include <QMouseEvent>
 
 
-/////////////////////////////////////////////////////////////////////////////////////////
-
 QgsMeshDatasetGroupTreeModel::QgsMeshDatasetGroupTreeModel( QObject *parent )
   : QAbstractItemModel( parent )
   ,  mRootItem( new QgsMeshDatasetGroupTreeItem() )
@@ -162,7 +160,6 @@ void QgsMeshDatasetGroupTreeModel::syncToLayer( QgsMeshLayer *layer )
   else
     mRootItem.reset();
   endResetModel();
-  mapDatasetGroupIndexToItem();
 }
 
 QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeModel::datasetGroupTreeRootItem()
@@ -180,15 +177,15 @@ bool QgsMeshDatasetGroupTreeModel::isEnabled( const QModelIndex &index ) const
   return checked != QVariant() && checked.toInt() == Qt::Checked;
 }
 
-void QgsMeshDatasetGroupTreeModel::resetToDefaultState( QgsMeshLayer *meshLayer )
+void QgsMeshDatasetGroupTreeModel::resetDefault( QgsMeshLayer *meshLayer )
 {
   if ( !meshLayer && !mRootItem )
     return;
 
+  beginResetModel();
   meshLayer->resetDatasetGroupTreeItem();
   mRootItem.reset( meshLayer->datasetGroupTreeRootItem()->clone() );
-
-  dataChanged( index( 0, 0 ), index( mRootItem->childCount(), 0 ) );
+  endResetModel();
 }
 
 void QgsMeshDatasetGroupTreeModel::setAllGroupsAsEnabled( bool isEnabled )
@@ -207,23 +204,6 @@ void QgsMeshDatasetGroupTreeModel::setAllGroupsAsEnabled( bool isEnabled )
     }
   }
   dataChanged( index( 0, 0 ), index( mRootItem->childCount(), 0 ) );
-}
-
-void QgsMeshDatasetGroupTreeModel::mapDatasetGroupIndexToItem()
-{
-  mDatasetGroupIndexToItem.clear();
-  if ( !mRootItem )
-    return;
-  for ( int i = 0; i < mRootItem->childCount(); ++i )
-  {
-    QgsMeshDatasetGroupTreeItem *item = mRootItem->child( i );
-    mDatasetGroupIndexToItem[item->datasetGroupIndex()] = item;
-    for ( int j = 0; j < item->childCount(); ++j )
-    {
-      QgsMeshDatasetGroupTreeItem *child = item->child( j );
-      mDatasetGroupIndexToItem[child->datasetGroupIndex()] = child;
-    }
-  }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -520,7 +500,7 @@ void QgsMeshDatasetGroupTreeView::deselectAllGroups()
 
 void QgsMeshDatasetGroupTreeView::resetDefault( QgsMeshLayer *meshLayer )
 {
-  mModel->resetToDefaultState( meshLayer );
+  mModel->resetDefault( meshLayer );
 }
 
 QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeView::datasetGroupTreeRootItem()

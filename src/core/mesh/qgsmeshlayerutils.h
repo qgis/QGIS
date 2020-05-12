@@ -318,7 +318,7 @@ class CORE_EXPORT QgsMeshLayerUtils
         else if ( subdatasets.size() != 1 )
           QgsDebugMsg( QStringLiteral( "Ignoring too deep child group name %1." ).arg( name ) );
 
-        QgsMeshDatasetGroupTreeItem *item = new QgsMeshDatasetGroupTreeItem( displayName, meta.isVector(), groupIndex, true );
+        QgsMeshDatasetGroupTreeItem *item = new QgsMeshDatasetGroupTreeItem( displayName, meta.isVector(), groupIndex );
         parent->appendChild( item );
         if ( mNameToItem.contains( name ) )
           QgsDebugMsg( QStringLiteral( "Group %1 is not unique" ).arg( displayName ) );

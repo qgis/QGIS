@@ -437,21 +437,19 @@ void QgsMesh3dDataBlock::setValid( bool valid )
 
 QgsMeshDatasetGroupTreeItem::QgsMeshDatasetGroupTreeItem() = default;
 
-QgsMeshDatasetGroupTreeItem::QgsMeshDatasetGroupTreeItem( const QString &name,
+QgsMeshDatasetGroupTreeItem::QgsMeshDatasetGroupTreeItem( const QString &defaultName,
     bool isVector,
-    int index,
-    bool isEnabled )
-  : mProviderName( name )
+    int index )
+  : mProviderName( defaultName )
   , mIsVector( isVector )
   , mDatasetGroupIndex( index )
-  , mIsEnabled( isEnabled )
 {
 }
 
 QgsMeshDatasetGroupTreeItem::QgsMeshDatasetGroupTreeItem( const QDomElement &itemElement, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context );
-  mDisplayName = itemElement.attribute( QStringLiteral( "display-name" ), mDisplayName );
+  mUserName = itemElement.attribute( QStringLiteral( "display-name" ), mUserName );
   mProviderName = itemElement.attribute( QStringLiteral( "provider-name" ), mProviderName );
   mIsVector = itemElement.attribute( QStringLiteral( "is-vector" ) ).toInt();
   mDatasetGroupIndex = itemElement.attribute( QStringLiteral( "dataset-index" ) ).toInt();
@@ -473,8 +471,9 @@ QgsMeshDatasetGroupTreeItem::~QgsMeshDatasetGroupTreeItem()
 
 QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeItem::clone() const
 {
-  QgsMeshDatasetGroupTreeItem *other = new QgsMeshDatasetGroupTreeItem( mProviderName, mIsVector, mDatasetGroupIndex, mIsEnabled );
-  other->mDisplayName = mDisplayName;
+  QgsMeshDatasetGroupTreeItem *other = new QgsMeshDatasetGroupTreeItem( mProviderName, mIsVector, mDatasetGroupIndex );
+  other->mUserName = mUserName;
+  other->mIsEnabled = mIsEnabled;
 
   if ( !mChildren.empty() )
     for ( int i = 0; i < mChildren.count(); ++i )
@@ -483,11 +482,11 @@ QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeItem::clone() const
   return other;
 }
 
-void QgsMeshDatasetGroupTreeItem::appendChild( QgsMeshDatasetGroupTreeItem *node )
+void QgsMeshDatasetGroupTreeItem::appendChild( QgsMeshDatasetGroupTreeItem *item )
 {
-  mChildren.append( node );
-  node->mParent = this;
-  mDatasetGroupIndexToChild[node->datasetGroupIndex()] = node;
+  mChildren.append( item );
+  item->mParent = this;
+  mDatasetGroupIndexToChild[item->datasetGroupIndex()] = item;
 }
 
 QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeItem::child( int row ) const
@@ -551,10 +550,10 @@ int QgsMeshDatasetGroupTreeItem::row() const
 
 QString QgsMeshDatasetGroupTreeItem::name() const
 {
-  if ( mDisplayName.isEmpty() )
+  if ( mUserName.isEmpty() )
     return mProviderName;
   else
-    return mDisplayName;
+    return mUserName;
 }
 
 bool QgsMeshDatasetGroupTreeItem::isVector() const
@@ -577,7 +576,7 @@ void QgsMeshDatasetGroupTreeItem::setIsEnabled( bool enabled )
   mIsEnabled = enabled;
 }
 
-QString QgsMeshDatasetGroupTreeItem::providerName() const
+QString QgsMeshDatasetGroupTreeItem::defaultName() const
 {
   return mProviderName;
 }
@@ -587,7 +586,7 @@ QDomElement QgsMeshDatasetGroupTreeItem::writeXml( QDomDocument &doc, const QgsR
   Q_UNUSED( context );
 
   QDomElement itemElement = doc.createElement( QStringLiteral( "mesh-dataset-group_tree-item" ) );
-  itemElement.setAttribute( QStringLiteral( "display-name" ), mDisplayName );
+  itemElement.setAttribute( QStringLiteral( "display-name" ), mUserName );
   itemElement.setAttribute( QStringLiteral( "provider-name" ), mProviderName );
   itemElement.setAttribute( QStringLiteral( "is-vector" ), mIsVector ? true : false );
   itemElement.setAttribute( QStringLiteral( "dataset-index" ), mDatasetGroupIndex );
@@ -601,6 +600,6 @@ QDomElement QgsMeshDatasetGroupTreeItem::writeXml( QDomDocument &doc, const QgsR
 
 void QgsMeshDatasetGroupTreeItem::setName( const QString &name )
 {
-  mDisplayName = name;
+  mUserName = name;
 }
 

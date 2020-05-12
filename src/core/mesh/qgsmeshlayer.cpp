@@ -695,10 +695,12 @@ QgsPointXY QgsMeshLayer::snapOnFace( const QgsPointXY &point, double searchRadiu
 
 void QgsMeshLayer::resetDatasetGroupTreeItem()
 {
+  mDatasetGroupTreeRootItem.reset( new QgsMeshDatasetGroupTreeItem );
   QList<QgsMeshDatasetGroupMetadata> metadataList;
   for ( int i = 0; i < mDataProvider->datasetGroupCount(); ++i )
     metadataList.append( mDataProvider->datasetGroupMetadata( i ) );
   QgsMeshLayerUtils::createDatasetGroupTreeItems( metadataList, mDatasetGroupTreeRootItem.get(), 0 );
+  controlActiveDatasetGroupWithDisabledGroup();
 }
 
 void QgsMeshLayer::controlActiveDatasetGroupWithDisabledGroup()
@@ -710,28 +712,33 @@ void QgsMeshLayer::controlActiveDatasetGroupWithDisabledGroup()
   int oldActiveScalar = settings.activeScalarDatasetGroup();
   int oldActiveVector = settings.activeVectorDatasetGroup();
 
-  QgsMeshDatasetGroupTreeItem *activeScalarIndex =
+  QgsMeshDatasetGroupTreeItem *activeScalarItem =
     mDatasetGroupTreeRootItem->childFromDatasetGroupIndex( oldActiveScalar );
 
-  if ( activeScalarIndex && !activeScalarIndex->isEnabled() )
+  if ( !activeScalarItem && mDatasetGroupTreeRootItem->childCount() > 0 )
+    activeScalarItem = mDatasetGroupTreeRootItem->child( 0 );
+
+  if ( activeScalarItem && !activeScalarItem->isEnabled() )
   {
     for ( int i = 0; i < mDatasetGroupTreeRootItem->childCount(); ++i )
     {
-      activeScalarIndex = mDatasetGroupTreeRootItem->child( i );
-      if ( activeScalarIndex->isEnabled() )
+      activeScalarItem = mDatasetGroupTreeRootItem->child( i );
+      if ( activeScalarItem->isEnabled() )
         break;
+      else
+        activeScalarItem = nullptr;
     }
   }
 
-  if ( activeScalarIndex )
-    settings.setActiveScalarDatasetGroup( activeScalarIndex->datasetGroupIndex() );
+  if ( activeScalarItem )
+    settings.setActiveScalarDatasetGroup( activeScalarItem->datasetGroupIndex() );
   else
     settings.setActiveScalarDatasetGroup( -1 );
 
-  QgsMeshDatasetGroupTreeItem *activeVectorIndex =
+  QgsMeshDatasetGroupTreeItem *activeVectorItem =
     mDatasetGroupTreeRootItem->childFromDatasetGroupIndex( oldActiveVector );
 
-  if ( !( activeVectorIndex && activeVectorIndex->isEnabled() ) )
+  if ( !( activeVectorItem && activeVectorItem->isEnabled() ) )
     settings.setActiveVectorDatasetGroup( -1 );
 
   setRendererSettings( settings );
