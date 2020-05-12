@@ -748,17 +748,14 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
   QgsPointXY mapPoint = toMapCoordinates( e->pos() );
   double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
 
-  QgsSnappingConfig config;
+  QgsSnappingConfig config = oldConfig;
   config.setEnabled( true );
   config.setMode( QgsSnappingConfig::AdvancedConfiguration );
   config.setIntersectionSnapping( false );  // only snap to layers
-  config.setScaleDependencyMode( oldConfig.scaleDependencyMode() );
-  config.setMinimumScale( oldConfig.minimumScale() );
-  config.setMaximumScale( oldConfig.maximumScale() );
+  config.individualLayerSettings().clear();
 
   typedef QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> SettingsHashMap;
   SettingsHashMap oldLayerSettings = oldConfig.individualLayerSettings();
-  Q_ASSERT( config.individualLayerSettings().isEmpty() );
 
   // if there is a current layer, it should have priority over other layers
   // because sometimes there may be match from multiple layers at one location
