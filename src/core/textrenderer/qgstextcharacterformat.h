@@ -163,6 +163,8 @@ class CORE_EXPORT QgsTextCharacterFormat
 #if 0 // settings which affect font metrics are disabled for now
     int mFontWeight = -1;
     BooleanValue mItalic = BooleanValue::NotSet;
+    double mFontPointSize = -1;
+    QString mFontFamily;
 #endif
 
     BooleanValue mStrikethrough = BooleanValue::NotSet;

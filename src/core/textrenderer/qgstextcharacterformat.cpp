@@ -22,6 +22,8 @@ QgsTextCharacterFormat::QgsTextCharacterFormat( const QTextCharFormat &format )
 #if 0 // settings which affect font metrics are disabled for now
   , mFontWeight( format.hasProperty( QTextFormat::FontWeight ) ? format.fontWeight() : -1 )
   , mItalic( format.hasProperty( QTextFormat::FontItalic ) ? ( format.fontItalic() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
+  , mFontPointSize( format.hasProperty( QTextFormat::FontPointSize ) ? format.fontPointSize() : - 1 )
+  , mFontFamily( format.hasProperty( QTextFormat::FontFamily ) ? format.fontFamily() : QString() )
 #endif
   , mStrikethrough( format.hasProperty( QTextFormat::FontStrikeOut ) ? ( format.fontStrikeOut() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
   , mUnderline( format.hasProperty( QTextFormat::FontUnderline ) ? ( format.fontUnderline() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
@@ -72,19 +74,23 @@ void QgsTextCharacterFormat::setOverline( QgsTextCharacterFormat::BooleanValue e
 
 void QgsTextCharacterFormat::updateFontForFormat( QFont &font ) const
 {
+#if 0 // settings which affect font metrics are disabled for now
+  if ( mItalic != QgsTextCharacterFormat::BooleanValue::NotSet )
+    font.setItalic( mItalic == QgsTextCharacterFormat::BooleanValue::SetTrue );
+  if ( mFontWeight != -1 )
+    font.setWeight( mFontWeight );
+  if ( !mFontFamily.isEmpty() )
+    font.setFamily( mFontFamily );
+  if ( mFontPointSize != -1 )
+    font.setPointSizeF( mFontPointSize );
+#endif
+
   if ( mUnderline != BooleanValue::NotSet )
     font.setUnderline( mUnderline == QgsTextCharacterFormat::BooleanValue::SetTrue );
   if ( mOverline != BooleanValue::NotSet )
     font.setOverline( mOverline == QgsTextCharacterFormat::BooleanValue::SetTrue );
   if ( mStrikethrough != QgsTextCharacterFormat::BooleanValue::NotSet )
     font.setStrikeOut( mStrikethrough == QgsTextCharacterFormat::BooleanValue::SetTrue );
-
-#if 0 // settings which affect font metrics are disabled for now
-  if ( mItalic != QgsTextCharacterFormat::BooleanValue::NotSet )
-    font.setItalic( mItalic == QgsTextCharacterFormat::BooleanValue::SetTrue );
-  if ( mFontWeight != -1 )
-    font.setWeight( mFontWeight );
-#endif
 }
 
 #if 0 // settings which affect font metrics are disabled for now
