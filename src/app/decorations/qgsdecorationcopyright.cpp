@@ -33,6 +33,7 @@ email                : tim@linfiniti.com
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
+#include "qgstextrenderer.h"
 
 #include <QPainter>
 #include <QMenu>
