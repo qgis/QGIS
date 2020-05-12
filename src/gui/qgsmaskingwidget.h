@@ -23,6 +23,8 @@
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 
+class QgsMessageBarItem;
+
 /**
  * \ingroup gui
  * Main widget for the configuration of mask sources and targets.
@@ -47,10 +49,21 @@ class GUI_EXPORT QgsMaskingWidget: public QgsPanelWidget, private Ui::QgsMasking
     //! Emitted when a change is performed
     void widgetChanged();
 
+  protected:
+
+    void showEvent( QShowEvent * ) override;
+
+  protected slots:
+
+    void onSelectionChanged();
+
   private:
     QgsVectorLayer *mLayer = nullptr;
     //! Populate the mask source and target widgets
     void populate();
+
+    QgsMessageBarItem *mMessageBarItem = nullptr;
+    bool _mustPopulate = false;
 };
 
 #endif
