@@ -47,7 +47,7 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType,
                                         const QString &name,
                                         QWidget *parent,
                                         Qt::WindowFlags fl,
-                                        const QString &providerSource )
+                                        const QString &dataSourceUri )
   : QDialog( parent, fl )
   , mName( name )
 {
@@ -80,18 +80,14 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType,
       mShowType = true;
   }
 
-  QString fileFullPath = providerType == QgsSublayersDialog::Vsifile
-                         ? providerSource
-                         : QgsProviderRegistry::instance()->decodeUri( name, providerSource )
-                         .value( QStringLiteral( "path" ) )
-                         .toString();
-  QString filename = QFileInfo( fileFullPath ).fileName();
+  const QVariantMap dataSourceUriParsed = QgsProviderRegistry::instance()->decodeUri( name, dataSourceUri );
+  const QString dataSourceFilePath = dataSourceUriParsed.value( QStringLiteral( "path" ) ).toString();
+  const QString filePath = dataSourceFilePath.isEmpty() ? dataSourceUri : dataSourceFilePath;
+  const QString fileName = QFileInfo( filePath ).fileName();
 
-  setWindowTitle( filename.isEmpty() ? title : QStringLiteral( "%1 | %2" ).arg( title, filename ) );
-  mLblFilePath->setText( QDir::toNativeSeparators( QFileInfo( fileFullPath ).canonicalFilePath() ) );
-
-  if ( filename.isEmpty() )
-    mLblFilePath->setVisible( false );
+  setWindowTitle( fileName.isEmpty() ? title : QStringLiteral( "%1 | %2" ).arg( title, fileName ) );
+  mLblFilePath->setText( QDir::toNativeSeparators( QFileInfo( filePath ).canonicalFilePath() ) );
+  mLblFilePath->setVisible( ! fileName.isEmpty() );
 
   // add a "Select All" button - would be nicer with an icon
   connect( mBtnSelectAll, &QAbstractButton::pressed, layersTable, &QTreeView::selectAll );
