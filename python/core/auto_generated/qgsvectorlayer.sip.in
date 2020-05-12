@@ -374,7 +374,7 @@ Constructor for LayerOptions.
 
     };
 
-    struct  DeleteContext
+    struct DeleteContext
     {
 
       explicit DeleteContext( bool cascade = false );

@@ -210,7 +210,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      * in a parameter are those coming from the target layer.
      *
      * \param fids Feature ids from the target layer to delete
-     * \param context The chain of features who will be deleted for feedback and to avoid endless recursions
+     * \param context The chain of features who will be deleted for feedback and to avoid infinite recursions. Can be NULLPTR.
      *
      * \returns FALSE if an error happened, TRUE otherwise
      *
