@@ -47,7 +47,11 @@ QString QgsSplitVectorLayerAlgorithm::groupId() const
 
 QString QgsSplitVectorLayerAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Splits input vector layer into multiple layers by specified unique ID field." );
+  return QObject::tr( "Splits input vector layer into multiple layers by specified unique ID field."
+                      "Each of the layers created in the output folder contains all features from "
+                      "the input layer with the same value for the specified attribute. The number "
+                      ":of files generated is equal to the number of different values found for the "
+                      "specified attribute." );
 }
 
 QgsSplitVectorLayerAlgorithm *QgsSplitVectorLayerAlgorithm::createInstance() const
