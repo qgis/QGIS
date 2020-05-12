@@ -145,7 +145,7 @@ QJsonObject QgsLayerTreeModelLegendNode::exportSymbolToJson( const QgsLegendSett
   const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
 
   QJsonObject json;
-  json[ "icon" ] = base64;
+  json[ QStringLiteral( "icon" ) ] = base64;
   return json;
 }
 
@@ -705,7 +705,7 @@ QJsonObject QgsSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &se
   const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
 
   QJsonObject json;
-  json[ "icon" ] = base64;
+  json[ QStringLiteral( "icon" ) ] = base64;
   return json;
 }
 
@@ -872,7 +872,7 @@ QJsonObject QgsImageLegendNode::exportSymbolToJson( const QgsLegendSettings &, c
   const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
 
   QJsonObject json;
-  json[ "icon" ] = base64;
+  json[ QStringLiteral( "icon" ) ] = base64;
   return json;
 }
 
@@ -996,7 +996,7 @@ QJsonObject QgsRasterSymbolLegendNode::exportSymbolToJson( const QgsLegendSettin
   const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
 
   QJsonObject json;
-  json[ "icon" ] = base64;
+  json[ QStringLiteral( "icon" ) ] = base64;
   return json;
 }
 
@@ -1094,7 +1094,7 @@ QJsonObject QgsWmsLegendNode::exportSymbolToJson( const QgsLegendSettings &, con
   const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
 
   QJsonObject json;
-  json[ "icon" ] = base64;
+  json[ QStringLiteral( "icon" ) ] = base64;
   return json;
 }
 
