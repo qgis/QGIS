@@ -59,3 +59,13 @@ QgsExpressionStoreDialog::QgsExpressionStoreDialog( const QString &label, const 
   mLabel->setText( labelFixed );
 }
 
+<<<<<<< HEAD
+=======
+QString QgsExpressionStoreDialog::helpText() const
+{
+  // remove meta qrichtext instruction from html. It fails rendering
+  // when mixing with other html content
+  // see issue https://github.com/qgis/QGIS/issues/36191
+  return mHelpText->toHtml().replace( "<meta name=\"qrichtext\" content=\"1\" />", QString() );
+}
+>>>>>>> 0fa4718cff... make helpText const

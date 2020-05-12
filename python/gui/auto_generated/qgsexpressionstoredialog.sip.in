@@ -44,7 +44,7 @@ Returns the expression text
 Returns the label text
 %End
 
-    QString helpText();
+    QString helpText() const;
 %Docstring
 Returns the help text
 %End
