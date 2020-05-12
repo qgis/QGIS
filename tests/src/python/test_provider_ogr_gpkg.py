@@ -311,7 +311,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         testdata_path = unitTestDataPath('provider')
         shutil.copy(os.path.join(testdata_path, 'bug_19826.gpkg'), tmpfile)
-        vl = QgsVectorLayer('{}|layerid=0'.format(tmpfile, 'test', 'ogr'))
+        vl = QgsVectorLayer('{}|layerid=0'.format(tmpfile), 'test', 'ogr')
         vl.setSubsetString("name = 'two'")
         got = [feat for feat in vl.getFeatures()]
         self.assertEqual(len(got), 1)
@@ -1327,7 +1327,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         testdata_path = unitTestDataPath('provider')
         shutil.copy(os.path.join(unitTestDataPath('provider'), 'test_json.gpkg'), tmpfile)
 
-        vl = QgsVectorLayer('{}|layerid=0'.format(tmpfile, 'foo', 'ogr'))
+        vl = QgsVectorLayer('{}|layerid=0'.format(tmpfile), 'foo', 'ogr')
         self.assertTrue(vl.isValid())
 
         fields = vl.dataProvider().fields()
