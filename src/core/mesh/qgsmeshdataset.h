@@ -547,6 +547,7 @@ class CORE_EXPORT QgsMeshDatasetMetadata
 class CORE_EXPORT QgsMeshDatasetGroupTreeItem
 {
   public:
+
     /**
      * Constructor for an empty dataset group tree item
      */

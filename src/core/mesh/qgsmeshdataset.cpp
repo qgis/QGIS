@@ -449,11 +449,20 @@ QgsMeshDatasetGroupTreeItem::QgsMeshDatasetGroupTreeItem( const QString &default
 QgsMeshDatasetGroupTreeItem::QgsMeshDatasetGroupTreeItem( const QDomElement &itemElement, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context );
-  mUserName = itemElement.attribute( QStringLiteral( "display-name" ), mUserName );
-  mProviderName = itemElement.attribute( QStringLiteral( "provider-name" ), mProviderName );
-  mIsVector = itemElement.attribute( QStringLiteral( "is-vector" ) ).toInt();
-  mDatasetGroupIndex = itemElement.attribute( QStringLiteral( "dataset-index" ) ).toInt();
-  mIsEnabled = itemElement.attribute( QStringLiteral( "is-enabled" ) ).toInt();
+  if ( itemElement.hasAttribute( QStringLiteral( "display-name" ) ) )
+    mUserName = itemElement.attribute( QStringLiteral( "display-name" ), mUserName );
+
+  if ( itemElement.hasAttribute( QStringLiteral( "provider-name" ) ) )
+    mProviderName = itemElement.attribute( QStringLiteral( "provider-name" ), mProviderName );
+
+  if ( itemElement.hasAttribute( QStringLiteral( "is-vector" ) ) )
+    mIsVector = itemElement.attribute( QStringLiteral( "is-vector" ) ).toInt();
+
+  if ( itemElement.hasAttribute( QStringLiteral( "dataset-index" ) ) )
+    mDatasetGroupIndex = itemElement.attribute( QStringLiteral( "dataset-index" ) ).toInt();
+
+  if ( itemElement.hasAttribute( QStringLiteral( "is-enabled" ) ) )
+    mIsEnabled = itemElement.attribute( QStringLiteral( "is-enabled" ) ).toInt();
 
   QDomElement childElement = itemElement.firstChildElement( QStringLiteral( "mesh-dataset-group_tree-item" ) );
   while ( !childElement.isNull() )
