@@ -187,6 +187,7 @@ void QgsTextDocument::splitLines( const QString &wrapCharacter, int autoWrapLeng
   }
 }
 
+///@cond PRIVATE
 QVector< QgsTextBlock >::const_iterator QgsTextDocument::begin() const
 {
   return mBlocks.begin();
@@ -196,3 +197,4 @@ QVector< QgsTextBlock >::const_iterator QgsTextDocument::end() const
 {
   return mBlocks.end();
 }
+///@endcond

@@ -56,6 +56,7 @@ QgsTextFragment &QgsTextBlock::operator[]( int index )
   return mFragments[ index ];
 }
 
+///@cond PRIVATE
 QVector< QgsTextFragment >::const_iterator QgsTextBlock::begin() const
 {
   return mFragments.begin();
@@ -65,3 +66,4 @@ QVector< QgsTextFragment >::const_iterator QgsTextBlock::end() const
 {
   return mFragments.end();
 }
+///@endcond
