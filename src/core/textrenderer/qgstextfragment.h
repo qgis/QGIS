@@ -38,7 +38,7 @@ class CORE_EXPORT QgsTextFragment
     /**
      * Constructor for QgsTextFragment, with the specified \a text and optional character \a format.
      */
-    explicit QgsTextFragment( const QString &text, const QgsTextCharacterFormat &format = QgsTextCharacterFormat() );
+    explicit QgsTextFragment( const QString &text = QString(), const QgsTextCharacterFormat &format = QgsTextCharacterFormat() );
 
     /**
      * Constructor for QgsTextFragment, based on the specified QTextFragment \a fragment.

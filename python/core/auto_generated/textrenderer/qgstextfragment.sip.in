@@ -26,7 +26,7 @@ Stores a fragment of text along with formatting overrides to be used when render
 %End
   public:
 
-    explicit QgsTextFragment( const QString &text, const QgsTextCharacterFormat &format = QgsTextCharacterFormat() );
+    explicit QgsTextFragment( const QString &text = QString(), const QgsTextCharacterFormat &format = QgsTextCharacterFormat() );
 %Docstring
 Constructor for QgsTextFragment, with the specified ``text`` and optional character ``format``.
 %End
