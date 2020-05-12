@@ -18,24 +18,28 @@
 
 #include "qgis_sip.h"
 #include "qgis_core.h"
-#include "qgstextfragment.h"
 
 #include <QVector>
 
-#ifndef SIP_RUN
+class QgsTextFragment;
 
 /**
  * \class QgsTextBlock
  *
  * Represents a block of text consisting of one or more QgsTextFragment objects.
  *
+ * \warning This API is not considered stable and may change in future QGIS versions.
+ *
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsTextBlock : public QVector< QgsTextFragment >
+class CORE_EXPORT QgsTextBlock
 {
 
   public:
 
+    /**
+     * Constructor for an empty text block.
+     */
     QgsTextBlock() = default;
 
     /**
@@ -43,7 +47,37 @@ class CORE_EXPORT QgsTextBlock : public QVector< QgsTextFragment >
      */
     explicit QgsTextBlock( const QgsTextFragment &fragment );
 
-};
+    /**
+     * Appends a \a fragment to the block.
+     */
+    void append( const QgsTextFragment &fragment );
+
+    /**
+     * Appends a \a fragment to the block.
+     */
+    void append( QgsTextFragment &&fragment ) SIP_SKIP;
+
+    /**
+     * Clears the block, removing all its contents.
+     */
+    void clear();
+
+    /**
+     * Returns TRUE if the block is empty.
+     */
+    bool empty() const;
+
+#ifndef SIP_RUN
+    ///@cond PRIVATE
+    QVector< QgsTextFragment >::const_iterator begin() const;
+    QVector< QgsTextFragment >::const_iterator end() const;
+    ///@endcond
 #endif
+
+  private:
+
+    QVector< QgsTextFragment > mFragments;
+
+};
 
 #endif // QGSTEXTBLOCK_H

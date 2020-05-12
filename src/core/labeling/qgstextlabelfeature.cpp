@@ -19,7 +19,9 @@
 #include "qgspallabeling.h"
 #include "qgsmaptopixel.h"
 #include "pal/feature.h"
-#include <QTextDocument>
+#include "qgstextcharacterformat.h"
+#include "qgstextfragment.h"
+#include "qgstextblock.h"
 
 QgsTextLabelFeature::QgsTextLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size )
   : QgsLabelFeature( id, std::move( geometry ), size )

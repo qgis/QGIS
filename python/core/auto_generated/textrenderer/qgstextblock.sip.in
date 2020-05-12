@@ -10,6 +10,53 @@
 
 
 
+class QgsTextBlock
+{
+%Docstring
+
+Represents a block of text consisting of one or more QgsTextFragment objects.
+
+.. warning::
+
+   This API is not considered stable and may change in future QGIS versions.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgstextblock.h"
+%End
+  public:
+
+    QgsTextBlock();
+%Docstring
+Constructor for an empty text block.
+%End
+
+    explicit QgsTextBlock( const QgsTextFragment &fragment );
+%Docstring
+Constructor for a QgsTextBlock consisting of a single text ``fragment``.
+%End
+
+    void append( const QgsTextFragment &fragment );
+%Docstring
+Appends a ``fragment`` to the block.
+%End
+
+
+    void clear();
+%Docstring
+Clears the block, removing all its contents.
+%End
+
+    bool empty() const;
+%Docstring
+Returns ``True`` if the block is empty.
+%End
+
+
+};
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

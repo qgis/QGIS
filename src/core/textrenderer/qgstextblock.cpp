@@ -14,9 +14,39 @@
  ***************************************************************************/
 
 #include "qgstextblock.h"
-
+#include "qgstextfragment.h"
 
 QgsTextBlock::QgsTextBlock( const QgsTextFragment &fragment )
 {
-  append( fragment );
+  mFragments.append( fragment );
+}
+
+void QgsTextBlock::append( const QgsTextFragment &fragment )
+{
+  mFragments.append( fragment );
+}
+
+void QgsTextBlock::append( QgsTextFragment &&fragment )
+{
+  mFragments.push_back( fragment );
+}
+
+void QgsTextBlock::clear()
+{
+  mFragments.clear();
+}
+
+bool QgsTextBlock::empty() const
+{
+  return mFragments.empty();
+}
+
+QVector< QgsTextFragment >::const_iterator QgsTextBlock::begin() const
+{
+  return mFragments.begin();
+}
+
+QVector< QgsTextFragment >::const_iterator QgsTextBlock::end() const
+{
+  return mFragments.end();
 }

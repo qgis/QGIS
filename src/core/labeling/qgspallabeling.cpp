@@ -48,6 +48,7 @@
 #include "qgslabelingengine.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgstextrendererutils.h"
+#include "qgstextfragment.h"
 
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"

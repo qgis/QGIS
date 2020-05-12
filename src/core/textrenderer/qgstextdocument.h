@@ -18,26 +18,28 @@
 
 #include "qgis_sip.h"
 #include "qgis_core.h"
-#include "qgstextblock.h"
 
 #include <QVector>
 
-
-#ifndef SIP_RUN
+class QgsTextBlock;
+class QgsTextFragment;
 
 /**
  * \class QgsTextDocument
  *
  * Represents a document consisting of one or more QgsTextBlock objects.
  *
+ * \warning This API is not considered stable and may change in future QGIS versions.
+ *
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsTextDocument : public QVector< QgsTextBlock >
+class CORE_EXPORT QgsTextDocument
 {
 
   public:
 
-    QgsTextDocument() = default;
+    QgsTextDocument();
+    ~QgsTextDocument();
 
     /**
      * Constructor for a QgsTextDocument consisting of a single text \a block.
@@ -60,6 +62,26 @@ class CORE_EXPORT QgsTextDocument : public QVector< QgsTextBlock >
     static QgsTextDocument fromHtml( const QStringList &lines );
 
     /**
+     * Appends a \a block to the document.
+     */
+    void append( const QgsTextBlock &block );
+
+    /**
+     * Appends a \a block to the document.
+     */
+    void append( QgsTextBlock &&block ) SIP_SKIP;
+
+    /**
+     * Reserves the specified \a count of blocks for optimised block appending.
+     */
+    void reserve( int count );
+
+    /**
+     * Returns the block at the specified \a index.
+     */
+    const QgsTextBlock &at( int index ) const;
+
+    /**
      * Returns a list of plain text lines of text representing the document.
      */
     QStringList toPlainText() const;
@@ -75,9 +97,17 @@ class CORE_EXPORT QgsTextDocument : public QVector< QgsTextBlock >
      */
     void splitLines( const QString &wrapCharacter, int autoWrapLength = 0, bool useMaxLineLengthWhenAutoWrapping = true );
 
-};
-
+#ifndef SIP_RUN
+    ///@cond PRIVATE
+    QVector< QgsTextBlock >::const_iterator begin() const;
+    QVector< QgsTextBlock >::const_iterator end() const;
+    ///@endcond
 #endif
 
+  private:
+
+    QVector< QgsTextBlock > mBlocks;
+
+};
 
 #endif // QGSTEXTDOCUMENT_H

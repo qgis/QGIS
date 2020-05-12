@@ -16,17 +16,23 @@
 #include "qgstextdocument.h"
 #include "qgis.h"
 #include "qgsstringutils.h"
+#include "qgstextblock.h"
+#include "qgstextfragment.h"
 #include <QTextDocument>
 #include <QTextBlock>
 
+QgsTextDocument::~QgsTextDocument() = default;
+
+QgsTextDocument::QgsTextDocument() = default;
+
 QgsTextDocument::QgsTextDocument( const QgsTextBlock &block )
 {
-  append( block );
+  mBlocks.append( block );
 }
 
 QgsTextDocument::QgsTextDocument( const QgsTextFragment &fragment )
 {
-  append( QgsTextBlock( fragment ) );
+  mBlocks.append( QgsTextBlock( fragment ) );
 }
 
 QgsTextDocument QgsTextDocument::fromPlainText( const QStringList &lines )
@@ -65,8 +71,8 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
         }
         it++;
       }
-      if ( !block.isEmpty() )
-        document << block;
+      if ( !block.empty() )
+        document.append( block );
 
       sourceBlock = sourceBlock.next();
       if ( !sourceBlock.isValid() )
@@ -76,11 +82,31 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
   return document;
 }
 
+void QgsTextDocument::append( const QgsTextBlock &block )
+{
+  mBlocks.append( block );
+}
+
+void QgsTextDocument::append( QgsTextBlock &&block )
+{
+  mBlocks.push_back( block );
+}
+
+void QgsTextDocument::reserve( int count )
+{
+  mBlocks.reserve( count );
+}
+
+const QgsTextBlock &QgsTextDocument::at( int i ) const
+{
+  return mBlocks.at( i );
+}
+
 QStringList QgsTextDocument::toPlainText() const
 {
   QStringList textLines;
-  textLines.reserve( size() );
-  for ( const QgsTextBlock &block : *this )
+  textLines.reserve( mBlocks.size() );
+  for ( const QgsTextBlock &block : mBlocks )
   {
     QString line;
     for ( const QgsTextFragment &fragment : block )
@@ -94,9 +120,9 @@ QStringList QgsTextDocument::toPlainText() const
 
 void QgsTextDocument::splitLines( const QString &wrapCharacter, int autoWrapLength, bool useMaxLineLengthWhenAutoWrapping )
 {
-  const QVector< QgsTextBlock > prevBlocks = *this;
-  clear();
-  reserve( prevBlocks.size() );
+  const QVector< QgsTextBlock > prevBlocks = mBlocks;
+  mBlocks.clear();
+  mBlocks.reserve( prevBlocks.size() );
   for ( const QgsTextBlock &block : prevBlocks )
   {
     QgsTextBlock destinationBlock;
@@ -132,19 +158,29 @@ void QgsTextDocument::splitLines( const QString &wrapCharacter, int autoWrapLeng
       if ( thisParts.empty() )
         continue;
       else if ( thisParts.size() == 1 )
-        destinationBlock << fragment;
+        destinationBlock.append( fragment );
       else
       {
-        destinationBlock << QgsTextFragment( thisParts.at( 0 ), fragment.characterFormat() );
+        destinationBlock.append( QgsTextFragment( thisParts.at( 0 ), fragment.characterFormat() ) );
         append( destinationBlock );
         destinationBlock.clear();
         for ( int i = 1 ; i < thisParts.size() - 1; ++i )
         {
           append( QgsTextBlock( QgsTextFragment( thisParts.at( i ), fragment.characterFormat() ) ) );
         }
-        destinationBlock << QgsTextFragment( thisParts.at( thisParts.size() - 1 ), fragment.characterFormat() );
+        destinationBlock.append( QgsTextFragment( thisParts.at( thisParts.size() - 1 ), fragment.characterFormat() ) );
       }
     }
     append( destinationBlock );
   }
+}
+
+QVector< QgsTextBlock >::const_iterator QgsTextDocument::begin() const
+{
+  return mBlocks.begin();
+}
+
+QVector< QgsTextBlock >::const_iterator QgsTextDocument::end() const
+{
+  return mBlocks.end();
 }

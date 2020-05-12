@@ -17,6 +17,7 @@
 #include "qgsvectorlayer.h"
 #include "qgstextformat.h"
 #include "qgstextdocument.h"
+#include "qgstextfragment.h"
 #include "qgspallabeling.h"
 #include "qgspainteffect.h"
 #include "qgspainterswapper.h"
