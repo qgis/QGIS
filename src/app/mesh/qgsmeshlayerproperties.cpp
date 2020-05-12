@@ -381,8 +381,8 @@ void QgsMeshLayerProperties::apply()
   /*
    * Source Tab
    */
-  mMeshLayer->updateDatasetGroupStates( mDatasetGroupTreeWidget->datasetGroupStates() );
-  mRendererMeshPropertiesWidget->onDatasetGroupsChanged();
+  mDatasetGroupTreeWidget->apply();
+  //mRendererMeshPropertiesWidget->onDatasetGroupsChanged();
 
   QgsDebugMsgLevel( QStringLiteral( "processing style tab" ), 4 );
   /*

@@ -32,55 +32,6 @@
 
 class QgsMeshLayer;
 
-/**
- * Tree item for display of the mesh dataset groups.
- * Dataset group is set of datasets with the same name,
- * but different control variable (e.g. time)
- *
- * Support for multiple levels, because groups can have
- * subgroups, for example
- *
- * Groups:
- *   Depth
- *     - Maximum
- *   Velocity
- *   Wind speed
- *     - Maximum
- */
-class APP_NO_EXPORT QgsMeshDatasetGroupTreeItem
-{
-  public:
-    QgsMeshDatasetGroupTreeItem( QgsMeshDatasetGroupTreeItem *parent = nullptr );
-    QgsMeshDatasetGroupTreeItem( const QString &name,
-                                 bool isVector,
-                                 int index,
-                                 bool isEnabled,
-                                 QgsMeshDatasetGroupTreeItem *parent = nullptr );
-    ~QgsMeshDatasetGroupTreeItem();
-
-    void appendChild( QgsMeshDatasetGroupTreeItem *node );
-    QgsMeshDatasetGroupTreeItem *child( int row ) const;
-    int childCount() const;
-    QgsMeshDatasetGroupTreeItem *parentItem() const;
-    int row() const;
-    QString name() const;
-    void setName( const QString &name );
-    bool isVector() const;
-    int datasetGroupIndex() const;
-
-    bool isEnabled() const;
-    void setIsEnabled( bool isEnabled );
-
-  private:
-    QgsMeshDatasetGroupTreeItem *mParent = nullptr;
-    QList< QgsMeshDatasetGroupTreeItem * > mChildren;
-
-    // Data
-    QString mName;
-    bool mIsVector = false;
-    int mDatasetGroupIndex = -1;
-    bool mIsEnabled = true;
-};
 
 /**
  * Item Model for QgsMeshDatasetGroupTreeItem
@@ -114,11 +65,10 @@ class APP_NO_EXPORT QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
     //! Adds groups to the model from mesh layer
     void syncToLayer( QgsMeshLayer *layer );
 
+    QgsMeshDatasetGroupTreeItem *datasetGroupTreeRootItem();
+
     //! Returns whether the dataset groups related to the QModelIndex is set as enabled
     bool isEnabled( const QModelIndex &index ) const;
-
-    //! Return the group states as defined in the model for all groups, original name are not provided
-    QMap<int, QgsMeshDatasetGroupState> groupStates() const;
 
     //! Resets all groups with default state from the mesh layer
     void resetToDefaultState( QgsMeshLayer *meshLayer );
@@ -127,18 +77,11 @@ class APP_NO_EXPORT QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
     void setAllGroupsAsEnabled( bool isEnabled );
 
   private:
-    void addTreeItem( const QString &groupName,
-                      const QString &displayName,
-                      bool isVector,
-                      int groupIndex,
-                      bool isEnabled,
-                      QgsMeshDatasetGroupTreeItem *parent );
-
     std::unique_ptr<QgsMeshDatasetGroupTreeItem> mRootItem;
-    QMap<QString, QgsMeshDatasetGroupTreeItem *> mNameToItem;
     QMap<int, QgsMeshDatasetGroupTreeItem *> mDatasetGroupIndexToItem;
-};
 
+    void mapDatasetGroupIndexToItem();
+};
 
 class APP_NO_EXPORT QgsMeshDatasetGroupProxyModel: public QSortFilterProxyModel
 {
@@ -169,8 +112,6 @@ class APP_NO_EXPORT QgsMeshDatasetGroupProxyModel: public QSortFilterProxyModel
   private:
     int mActiveScalarGroupIndex = -1;
     int mActiveVectorGroupIndex = -1;
-
-    void accordActiveGroupToEnabledGroup();
 };
 
 /**
@@ -205,8 +146,9 @@ class APP_EXPORT QgsMeshDatasetGroupTreeView: public QTreeView
     QgsMeshDatasetGroupTreeView( QWidget *parent = nullptr );
 
     void syncToLayer( QgsMeshLayer *layer );
-    QMap<int, QgsMeshDatasetGroupState> groupStates() const;
     void resetDefault( QgsMeshLayer *meshLayer );
+
+    QgsMeshDatasetGroupTreeItem *datasetGroupTreeRootItem();
 
   public slots:
     void selectAllGroups();
@@ -235,22 +177,20 @@ class APP_EXPORT QgsMeshActiveDatasetGroupTreeView : public QTreeView
     //! Returns index of active group for contours
     int activeScalarGroup() const;
 
-    //! Sets active group for contours
-    void setActiveScalarGroup( int group );
-
     //! Returns index of active group for vectors
     int activeVectorGroup() const;
-
-    //! Sets active vector group
-    void setActiveVectorGroup( int group );
 
     //! Synchronize widgets state with associated mesh layer
     void syncToLayer();
 
-    //! Called when active group has changed
-    void onActiveGroupChanged();
-
     void mousePressEvent( QMouseEvent *event ) override;
+
+  public slots:
+    //! Sets active group for contours
+    void setActiveScalarGroup( int group );
+
+    //! Sets active vector group
+    void setActiveVectorGroup( int group );
 
   signals:
     //! Selected dataset group for contours changed. -1 for invalid group
@@ -280,7 +220,7 @@ class APP_EXPORT QgsMeshDatasetGroupListModel: public QAbstractListModel
     QVariant data( const QModelIndex &index, int role ) const override;
 
   private:
-    QgsMeshLayer *mLayer = nullptr;
+    QgsMeshDatasetGroupTreeItem *mRootItem = nullptr;
 };
 
 #endif // QGSMESHDATASETGROUPTREE_H

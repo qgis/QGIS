@@ -52,9 +52,6 @@ class APP_EXPORT QgsRendererMeshPropertiesWidget : public QgsMapLayerConfigWidge
     //! Synchronize widgets state with associated mesh layer
     void syncToLayer();
 
-    //! Updates widget depending on dataset groups
-    void onDatasetGroupsChanged();
-
   private slots:
     void onActiveScalarGroupChanged( int groupIndex );
     void onActiveVectorGroupChanged( int groupIndex );

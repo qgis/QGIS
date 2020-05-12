@@ -33,8 +33,8 @@ class APP_EXPORT QgsMeshDatasetGroupTreeWidget: public QWidget, private Ui::QgsM
     //! Synchronizes widgets state with associated mesh layer
     void syncToLayer( QgsMeshLayer *meshLayer );
 
-    //! Returns group states
-    QMap<int, QgsMeshDatasetGroupState> datasetGroupStates() const;
+    //! Apply the dataset group tree item to the layer
+    void apply();
 
   signals:
     void datasetGroupAdded();

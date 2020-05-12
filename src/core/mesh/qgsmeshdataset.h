@@ -522,18 +522,63 @@ class CORE_EXPORT QgsMeshDatasetMetadata
 };
 
 /**
-  * A dataset group state contains :
-  * - whether the user as defined the group as enabled, that is can be access through ui
-  * - the original name of the group
-  * - the displayed name choose by the user
-  *
-  * \since QGIS 3.14
-  */
-struct CORE_EXPORT QgsMeshDatasetGroupState
+ * Tree item for display of the mesh dataset groups.
+ * Dataset group is set of datasets with the same name,
+ * but different control variable (e.g. time)
+ *
+ * Support for multiple levels, because groups can have
+ * subgroups, for example
+ *
+ * Groups:
+ *   Depth
+ *     - Maximum
+ *   Velocity
+ *   Wind speed
+ *     - Maximum
+ */
+class CORE_EXPORT QgsMeshDatasetGroupTreeItem
 {
-  bool isEnabled;
-  QString originalName;
-  QString renaming;
+  public:
+    QgsMeshDatasetGroupTreeItem();
+    QgsMeshDatasetGroupTreeItem( const QString &name,
+                                 bool isVector,
+                                 int index,
+                                 bool isEnabled );
+    QgsMeshDatasetGroupTreeItem( const QDomElement &itemElement, const QgsReadWriteContext &context );
+    ~QgsMeshDatasetGroupTreeItem();
+
+    QgsMeshDatasetGroupTreeItem *clone() const;
+
+    void appendChild( QgsMeshDatasetGroupTreeItem *node );
+    QgsMeshDatasetGroupTreeItem *child( int row ) const;
+    QgsMeshDatasetGroupTreeItem *childFromDatasetGroupIndex( int datasetGroupIdndex );
+    int childCount() const;
+    int totalChildCount() const;
+    QgsMeshDatasetGroupTreeItem *parentItem() const;
+    int row() const;
+    QString name() const;
+    void setName( const QString &name );
+    bool isVector() const;
+    int datasetGroupIndex() const;
+
+    bool isEnabled() const;
+    void setIsEnabled( bool isEnabled );
+
+    QString providerName() const;
+
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context );
+
+  private:
+    QgsMeshDatasetGroupTreeItem *mParent = nullptr;
+    QList< QgsMeshDatasetGroupTreeItem * > mChildren;
+    QMap<int, QgsMeshDatasetGroupTreeItem *> mDatasetGroupIndexToChild;
+
+    // Data
+    QString mDisplayName;
+    QString mProviderName;
+    bool mIsVector = false;
+    int mDatasetGroupIndex = -1;
+    bool mIsEnabled = true;
 };
 
 #endif // QGSMESHDATASET_H

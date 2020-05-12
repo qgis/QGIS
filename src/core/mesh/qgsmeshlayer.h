@@ -400,28 +400,10 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       */
     QgsPointXY snapOnElement( QgsMesh::ElementType elementType, const QgsPointXY &point, double searchRadius );
 
-    /**
-      * Returns the dataset group states for each dataset groups
-      * - whether the user as defined the group as enabled, that is can be access through ui
-      * - the original name of the group
-      * - the displayed name choose by the user
-      *
-      * \since QGIS 3.14
-      */
-    QMap<int, QgsMeshDatasetGroupState> datasetGroupStates() const;
-
-
-    /**
-      * Updates the dataset group states of the layer based on the provided states.
-      * \see datasetGroupStates()
-      *
-      * Restores the original name from the data provider and clear renaming name if not different from original name.
-      *
-      * \param datasetGroupStates group states used to update the group states of the mesh
-      *
-      * \since QGIS 3.14
-      */
-    void updateDatasetGroupStates( const QMap<int, QgsMeshDatasetGroupState> &datasetGroupStates );
+    QgsMeshDatasetGroupTreeItem *datasetGroupTreeRootItem() const;
+    void setDatasetGroupTreeRootItem( QgsMeshDatasetGroupTreeItem *rootItem );
+    //! Reset the dataset group tree item to default from provider
+    void resetDatasetGroupTreeItem();
 
   public slots:
 
@@ -517,7 +499,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsMeshDatasetIndex mStaticScalarDatasetIndex;
     QgsMeshDatasetIndex mStaticVectorDatasetIndex;
 
-    QMap<int, QgsMeshDatasetGroupState> mDatasetGroupsState;
+    std::unique_ptr<QgsMeshDatasetGroupTreeItem> mDatasetGroupTreeRootItem;
 
     int closestEdge( const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint ) const;
 
@@ -530,9 +512,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     //!Returns the position of the centroid point on the closest face in the search area
     QgsPointXY snapOnFace( const QgsPointXY &point, double searchRadius );
 
-    //! Updates the dataset group states from provider
-    void updateDatasetGroupStates();
-
+    void controlActiveDatasetGroupWithDisabledGroup();
 };
 
 #endif //QGSMESHLAYER_H

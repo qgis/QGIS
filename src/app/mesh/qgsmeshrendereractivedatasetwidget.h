@@ -69,10 +69,6 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
     //! Emitted when any settings related to rendering changed
     void widgetChanged();
 
-  public slots:
-    //! Updates widget depending on dataset groups
-    void onDatasetGroupsChanged();
-
   private slots:
     void onActiveScalarGroupChanged( int groupIndex );
     void onActiveVectorGroupChanged( int groupIndex );

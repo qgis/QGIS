@@ -18,6 +18,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshlayerproperties.h"
+#include "qgsmeshrendereractivedatasetwidget.h"
 #include "qgsfeedback.h"
 #include "qgis.h"
 #include "qgsmapcanvas.h"
@@ -90,24 +91,23 @@ void TestQgsMeshLayerPropertiesDialog::testDatasetGroupTree()
   QString uri( testDataDir + "/trap_steady_05_3D.nc" );
   QgsMeshLayer meshLayer( uri, "", "mdal" );
 
-  QgsMeshActiveDatasetGroupTreeView tree;
-  tree.setLayer( &meshLayer );
-  tree.syncToLayer();
-
-  QCOMPARE( tree.model()->rowCount(), 5 );
   QgsMeshRendererSettings rendererSettings = meshLayer.rendererSettings();
   rendererSettings.setActiveScalarDatasetGroup( 1 );
   meshLayer.setRendererSettings( rendererSettings );
   QCOMPARE( meshLayer.rendererSettings().activeScalarDatasetGroup(), 1 );
-  tree.syncToLayer();
-  QCOMPARE( tree.activeScalarGroup(), 1 );
-  QMap<int, QgsMeshDatasetGroupState> groupStates = meshLayer.datasetGroupStates();
-  groupStates[1].isEnabled = false;
-  meshLayer.updateDatasetGroupStates( groupStates );
-  QCOMPARE( tree.activeScalarGroup(), 1 );
-  tree.onActiveGroupChanged();
-  QCOMPARE( tree.activeScalarGroup(), 0 );
-  QCOMPARE( tree.model()->rowCount(), 4 );
+
+  QgsMeshRendererActiveDatasetWidget activeDatasetWidget;
+  activeDatasetWidget.setLayer( &meshLayer );
+  activeDatasetWidget.syncToLayer();
+
+  QCOMPARE( activeDatasetWidget.activeScalarDatasetGroup(), 1 );
+
+  std::unique_ptr<QgsMeshDatasetGroupTreeItem> rootItem( meshLayer.datasetGroupTreeRootItem()->clone() );
+  rootItem->child( 1 )->setIsEnabled( false );
+  meshLayer.setDatasetGroupTreeRootItem( rootItem.get() );
+
+  QCOMPARE( activeDatasetWidget.activeScalarDatasetGroup(), 0 );
+
 }
 
 QGSTEST_MAIN( TestQgsMeshLayerPropertiesDialog )

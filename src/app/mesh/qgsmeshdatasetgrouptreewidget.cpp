@@ -50,9 +50,10 @@ void QgsMeshDatasetGroupTreeWidget::syncToLayer( QgsMeshLayer *meshLayer )
   mDatasetGroupTreeView->syncToLayer( meshLayer );
 }
 
-QMap<int, QgsMeshDatasetGroupState> QgsMeshDatasetGroupTreeWidget::datasetGroupStates() const
+void QgsMeshDatasetGroupTreeWidget::apply()
 {
-  return  mDatasetGroupTreeView->groupStates();
+  if ( mMeshLayer )
+    mMeshLayer->setDatasetGroupTreeRootItem( mDatasetGroupTreeView->datasetGroupTreeRootItem() );
 }
 
 void QgsMeshDatasetGroupTreeWidget::addDataset()

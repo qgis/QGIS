@@ -41,7 +41,8 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &providerKey,
                             const QgsMeshLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath ),
-    mTemporalProperties( new QgsMeshLayerTemporalProperties( this ) )
+    mTemporalProperties( new QgsMeshLayerTemporalProperties( this ) ),
+    mDatasetGroupTreeRootItem( new QgsMeshDatasetGroupTreeItem )
 {
   mShouldValidateCrs = !options.skipCrsValidation;
 
@@ -60,9 +61,10 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
     setDefaultRendererSettings();
 
     if ( mDataProvider )
+    {
       mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
-
-    updateDatasetGroupStates();
+      resetDatasetGroupTreeItem();
+    }
   }
 }
 
@@ -531,73 +533,36 @@ void QgsMeshLayer::fillNativeMesh()
 
 void QgsMeshLayer::onDatasetGroupsAdded( int count )
 {
-  updateDatasetGroupStates();
   // assign default style to new dataset groups
   int newDatasetGroupCount = mDataProvider->datasetGroupCount();
   for ( int i = newDatasetGroupCount - count; i < newDatasetGroupCount; ++i )
     assignDefaultStyleToDatasetGroup( i );
 
   if ( mDataProvider )
+  {
     temporalProperties()->setIsActive( mDataProvider->temporalCapabilities()->hasTemporalCapabilities() );
-}
 
-QMap<int, QgsMeshDatasetGroupState> QgsMeshLayer::datasetGroupStates() const
-{
-  return mDatasetGroupsState;
-}
-
-
-void QgsMeshLayer::updateDatasetGroupStates()
-{
-  if ( !mDataProvider )
-    return;
-
-  int groupCount = mDataProvider->datasetGroupCount();
-
-  for ( int i = 0; i < groupCount; ++i )
-  {
-    QgsMeshDatasetGroupMetadata meta = mDataProvider->datasetGroupMetadata( i );
-    if ( !mDatasetGroupsState.contains( i ) )
-    {
-      // If not present, add a new state
-      QgsMeshDatasetGroupState state;
-      state.isEnabled = true;
-      state.originalName = meta.name();
-
-      mDatasetGroupsState[i] = state;
-    }
-    else
-    {
-      // If present, check if the original name is the same, if not, replace by default value of the group
-      QgsMeshDatasetGroupState &state = mDatasetGroupsState[i];
-      if ( !( state.originalName == meta.name() ) )
-      {
-        state.isEnabled = true;
-        state.originalName = meta.name();
-        state.renaming = QString();
-      }
-    }
+    QList<QgsMeshDatasetGroupMetadata> metadataList;
+    int totalCount = mDataProvider->datasetGroupCount();
+    for ( int i = totalCount - count; i < totalCount; ++i )
+      metadataList.append( mDataProvider->datasetGroupMetadata( i ) );
+    QgsMeshLayerUtils::createDatasetGroupTreeItems( metadataList, mDatasetGroupTreeRootItem.get(), totalCount - count );
   }
 }
 
-void QgsMeshLayer::updateDatasetGroupStates( const QMap<int, QgsMeshDatasetGroupState> &datasetGroupStates )
+QgsMeshDatasetGroupTreeItem *QgsMeshLayer::datasetGroupTreeRootItem() const
 {
-  if ( !mDataProvider )
-    return;
-  int groupCount = mDataProvider->datasetGroupCount();
-  //update with the dataset group states in parameter
-  for ( int i = 0; i < groupCount; ++i )
-  {
-    QgsMeshDatasetGroupMetadata meta = mDataProvider->datasetGroupMetadata( i );
-    if ( datasetGroupStates.contains( i ) )
-    {
-      QgsMeshDatasetGroupState sourceState = datasetGroupStates[i];
-      if ( sourceState.renaming == meta.name() )
-        sourceState.renaming = QString();
-      sourceState.originalName = meta.name();
-      mDatasetGroupsState[i] = sourceState;
-    }
-  }
+  return mDatasetGroupTreeRootItem.get();
+}
+
+void QgsMeshLayer::setDatasetGroupTreeRootItem( QgsMeshDatasetGroupTreeItem *rootItem )
+{
+  if ( rootItem )
+    mDatasetGroupTreeRootItem.reset( rootItem->clone() );
+  else
+    mDatasetGroupTreeRootItem.reset();
+
+  controlActiveDatasetGroupWithDisabledGroup();
 }
 
 int QgsMeshLayer::closestEdge( const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint ) const
@@ -726,6 +691,55 @@ QgsPointXY QgsMeshLayer::snapOnFace( const QgsPointXY &point, double searchRadiu
   }
 
   return centroidPosition;
+}
+
+void QgsMeshLayer::resetDatasetGroupTreeItem()
+{
+  QList<QgsMeshDatasetGroupMetadata> metadataList;
+  for ( int i = 0; i < mDataProvider->datasetGroupCount(); ++i )
+    metadataList.append( mDataProvider->datasetGroupMetadata( i ) );
+  QgsMeshLayerUtils::createDatasetGroupTreeItems( metadataList, mDatasetGroupTreeRootItem.get(), 0 );
+}
+
+void QgsMeshLayer::controlActiveDatasetGroupWithDisabledGroup()
+{
+  if ( !mDatasetGroupTreeRootItem )
+    return;
+
+  QgsMeshRendererSettings settings = rendererSettings();
+  int oldActiveScalar = settings.activeScalarDatasetGroup();
+  int oldActiveVector = settings.activeVectorDatasetGroup();
+
+  QgsMeshDatasetGroupTreeItem *activeScalarIndex =
+    mDatasetGroupTreeRootItem->childFromDatasetGroupIndex( oldActiveScalar );
+
+  if ( activeScalarIndex && !activeScalarIndex->isEnabled() )
+  {
+    for ( int i = 0; i < mDatasetGroupTreeRootItem->childCount(); ++i )
+    {
+      activeScalarIndex = mDatasetGroupTreeRootItem->child( i );
+      if ( activeScalarIndex->isEnabled() )
+        break;
+    }
+  }
+
+  if ( activeScalarIndex )
+    settings.setActiveScalarDatasetGroup( activeScalarIndex->datasetGroupIndex() );
+  else
+    settings.setActiveScalarDatasetGroup( -1 );
+
+  QgsMeshDatasetGroupTreeItem *activeVectorIndex =
+    mDatasetGroupTreeRootItem->childFromDatasetGroupIndex( oldActiveVector );
+
+  if ( !( activeVectorIndex && activeVectorIndex->isEnabled() ) )
+    settings.setActiveVectorDatasetGroup( -1 );
+
+  setRendererSettings( settings );
+
+  if ( oldActiveScalar != settings.activeScalarDatasetGroup() )
+    emit activeScalarDatasetGroupChanged( settings.activeScalarDatasetGroup() );
+  if ( oldActiveVector != settings.activeVectorDatasetGroup() )
+    emit activeVectorDatasetGroupChanged( settings.activeVectorDatasetGroup() );
 }
 
 QgsPointXY QgsMeshLayer::snapOnElement( QgsMesh::ElementType elementType, const QgsPointXY &point, double searchRadius )
@@ -973,6 +987,14 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
     mDataProvider->setTemporalUnit(
       static_cast<QgsUnitTypes::TemporalUnit>( pkeyNode.toElement().attribute( QStringLiteral( "time-unit" ) ).toInt() ) );
 
+  // read dataset group tree items
+  QDomElement elemDatasetGroupTree = layer_node.firstChildElement( QStringLiteral( "dataset-groups-tree" ) );
+  QDomElement rootItemElement = elemDatasetGroupTree.firstChildElement( QStringLiteral( "mesh-dataset-group_tree-item" ) );
+  if ( rootItemElement.isNull() )
+    resetDatasetGroupTreeItem();
+  else
+    mDatasetGroupTreeRootItem.reset( new QgsMeshDatasetGroupTreeItem( rootItemElement, context ) );
+
   QString errorMsg;
   readSymbology( layer_node, errorMsg, context );
 
@@ -980,20 +1002,6 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
   temporalProperties()->readXml( layer_node.toElement(), context );
   if ( !mTemporalProperties->timeExtent().begin().isValid() )
     temporalProperties()->setDefaultsFromDataProviderTemporalCapabilities( dataProvider()->temporalCapabilities() );
-
-  //read group states
-  QDomElement elemStates = layer_node.firstChildElement( QStringLiteral( "group-states" ) );
-  QDomElement elemState = elemStates.firstChildElement( QStringLiteral( "group-state" ) );
-  while ( !elemState.isNull() )
-  {
-    int groupIndex = elemState.attribute( QStringLiteral( "group" ) ).toInt();
-    QgsMeshDatasetGroupState state;
-    state.isEnabled = elemState.attribute( QStringLiteral( "is-enabled" ) ).toInt();
-    state.originalName = elemState.attribute( QStringLiteral( "original-name" ) );
-    state.renaming = elemState.attribute( QStringLiteral( "renaming" ) );
-    mDatasetGroupsState[groupIndex] = state;
-    elemState = elemState.nextSiblingElement( QStringLiteral( "group-state" ) );
-  }
 
   // read static dataset
   QDomElement elemStaticDataset = layer_node.firstChildElement( QStringLiteral( "static-active-dataset" ) );
@@ -1056,18 +1064,10 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
     elemStaticDataset.setAttribute( QStringLiteral( "vector" ), QStringLiteral( "%1,%2" ).arg( mStaticVectorDatasetIndex.group() ).arg( mStaticVectorDatasetIndex.dataset() ) );
   layer_node.appendChild( elemStaticDataset );
 
-  //write group states
-  QDomElement elemStates = document.createElement( QStringLiteral( "group-states" ) );
-  for ( int i : mDatasetGroupsState.keys() )
-  {
-    QDomElement elemState = document.createElement( QStringLiteral( "group-state" ) );
-    elemState.setAttribute( QStringLiteral( "group" ), i );
-    elemState.setAttribute( QStringLiteral( "is-enabled" ), mDatasetGroupsState[i].isEnabled ? 1 : 0 );
-    elemState.setAttribute( QStringLiteral( "original-name" ), mDatasetGroupsState[i].originalName );
-    elemState.setAttribute( QStringLiteral( "renaming" ), mDatasetGroupsState[i].renaming );
-    elemStates.appendChild( elemState );
-  }
-  mapLayerNode.appendChild( elemStates );
+  // write dataset group tree items
+  QDomElement elemDatasetTree = document.createElement( QStringLiteral( "dataset-groups-tree" ) );
+  elemDatasetTree.appendChild( mDatasetGroupTreeRootItem->writeXml( document, context ) );
+  layer_node.appendChild( elemDatasetTree );
 
   // renderer specific settings
   QString errorMsg;

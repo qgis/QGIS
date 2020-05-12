@@ -73,11 +73,6 @@ QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *
   connect( m3dAveragingSettingsWidget, &QgsMeshRenderer3dAveragingWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
 }
 
-void QgsRendererMeshPropertiesWidget::onDatasetGroupsChanged()
-{
-  mMeshRendererActiveDatasetWidget->onDatasetGroupsChanged();
-}
-
 void QgsRendererMeshPropertiesWidget::apply()
 {
   if ( !mMeshLayer )
