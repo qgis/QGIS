@@ -163,7 +163,7 @@ Returns the width of a text based on a given format.
 :param fontMetrics: font metrics
 %End
 
-    static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode,
+    static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode = Point,
                               QFontMetricsF *fontMetrics = 0 );
 %Docstring
 Returns the height of a text based on a given format.

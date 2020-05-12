@@ -178,7 +178,7 @@ class CORE_EXPORT QgsTextRenderer
      * \param mode draw mode
      * \param fontMetrics font metrics
      */
-    static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode,
+    static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode = Point,
                               QFontMetricsF *fontMetrics = nullptr );
 
   private:
@@ -216,7 +216,7 @@ class CORE_EXPORT QgsTextRenderer
     };
 
     static double textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document );
-    static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document, DrawMode mode );
+    static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document, DrawMode mode = Point );
 
     /**
      * Draws a single component of rendered text using the specified settings.

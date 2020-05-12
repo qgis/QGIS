@@ -222,10 +222,10 @@ QSizeF QgsScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &setting
 
 QSizeF QgsScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const
 {
-  QFont font = settings.textFormat().toQFont();
-
+  const double painterToMm = 1.0 / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
   //consider centered first label
-  double firstLabelWidth = QgsLayoutUtils::textWidthMM( font, firstLabelString( settings ) );
+  double firstLabelWidth = QgsTextRenderer::textWidth( context, settings.textFormat(), QStringList() << firstLabelString( settings ) ) * painterToMm;
+
   if ( settings.labelHorizontalPlacement() == QgsScaleBarSettings::LabelCenteredSegment )
   {
     if ( firstLabelWidth > scaleContext.segmentWidth )
@@ -249,7 +249,8 @@ QSizeF QgsScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const Q
   double largestLabelWidth;
   if ( settings.labelHorizontalPlacement() == QgsScaleBarSettings::LabelCenteredSegment )
   {
-    largestLabelWidth = QgsLayoutUtils::textWidthMM( font, largestLabel );
+    largestLabelWidth = QgsTextRenderer::textWidth( context, settings.textFormat(), QStringList() << largestLabel ) * painterToMm;
+
     if ( largestLabelWidth > scaleContext.segmentWidth )
     {
       largestLabelWidth = ( largestLabelWidth - scaleContext.segmentWidth ) / 2;
@@ -261,7 +262,8 @@ QSizeF QgsScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const Q
   }
   else
   {
-    largestLabelWidth = QgsLayoutUtils::textWidthMM( font, largestLabel ) - QgsLayoutUtils::textWidthMM( font, largestNumberLabel ) / 2;
+    largestLabelWidth =  QgsTextRenderer::textWidth( context, settings.textFormat(), QStringList() << largestLabel ) * painterToMm
+                         -  QgsTextRenderer::textWidth( context, settings.textFormat(), QStringList() << largestNumberLabel ) * painterToMm / 2;
   }
 
   double totalBarLength = scaleContext.segmentWidth * ( settings.numberOfSegments() + ( settings.numberOfSegmentsLeft() > 0 ? 1 : 0 ) );
@@ -280,7 +282,9 @@ QSizeF QgsScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const Q
   {
     height = settings.height();
   }
-  height += settings.labelBarSpace() + 2 * settings.boxContentSpace() + QgsLayoutUtils::fontAscentMM( font );
+
+  // TODO -- we technically should check the height of ALL labels here and take the maximum
+  height += settings.labelBarSpace() + 2 * settings.boxContentSpace() + QgsTextRenderer::textHeight( context, settings.textFormat(), QStringList() << largestLabel ) * painterToMm;
 
   return QSizeF( width, height );
 }
