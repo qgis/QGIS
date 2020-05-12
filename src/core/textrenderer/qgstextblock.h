@@ -67,6 +67,50 @@ class CORE_EXPORT QgsTextBlock
      */
     bool empty() const;
 
+    /**
+     * Returns the number of fragments in the block.
+     */
+    int size() const;
+
+#ifdef SIP_RUN
+    int __len__() const;
+    % MethodCode
+    sipRes = sipCpp->size();
+    % End
+#endif
+
+    /**
+     * Returns the fragment at the specified \a index.
+     */
+    const QgsTextFragment &at( int index ) const SIP_FACTORY;
+#ifdef SIP_RUN
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->size() )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipRes = new QgsTextFragment( sipCpp->at( a0 ) );
+    }
+    % End
+#endif
+
+    /**
+     * Returns the fragment at the specified index.
+     */
+    QgsTextFragment &operator[]( int index ) SIP_FACTORY;
+#ifdef SIP_RUN
+    % MethodCode
+    SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
+    if ( idx < 0 )
+      sipIsErr = 1;
+    else
+      sipRes = new QgsTextFragment( sipCpp->operator[]( idx ) );
+    % End
+#endif
+
 #ifndef SIP_RUN
     ///@cond PRIVATE
     QVector< QgsTextFragment >::const_iterator begin() const;

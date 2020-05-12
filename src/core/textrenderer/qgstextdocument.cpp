@@ -102,6 +102,16 @@ const QgsTextBlock &QgsTextDocument::at( int i ) const
   return mBlocks.at( i );
 }
 
+QgsTextBlock &QgsTextDocument::operator[]( int i )
+{
+  return mBlocks[i];
+}
+
+int QgsTextDocument::size() const
+{
+  return mBlocks.size();
+}
+
 QStringList QgsTextDocument::toPlainText() const
 {
   QStringList textLines;
@@ -161,7 +171,9 @@ void QgsTextDocument::splitLines( const QString &wrapCharacter, int autoWrapLeng
         destinationBlock.append( fragment );
       else
       {
-        destinationBlock.append( QgsTextFragment( thisParts.at( 0 ), fragment.characterFormat() ) );
+        if ( !thisParts.at( 0 ).isEmpty() )
+          destinationBlock.append( QgsTextFragment( thisParts.at( 0 ), fragment.characterFormat() ) );
+
         append( destinationBlock );
         destinationBlock.clear();
         for ( int i = 1 ; i < thisParts.size() - 1; ++i )

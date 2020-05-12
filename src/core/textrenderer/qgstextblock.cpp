@@ -41,6 +41,21 @@ bool QgsTextBlock::empty() const
   return mFragments.empty();
 }
 
+int QgsTextBlock::size() const
+{
+  return mFragments.size();
+}
+
+const QgsTextFragment &QgsTextBlock::at( int index ) const
+{
+  return mFragments.at( index );
+}
+
+QgsTextFragment &QgsTextBlock::operator[]( int index )
+{
+  return mFragments[ index ];
+}
+
 QVector< QgsTextFragment >::const_iterator QgsTextBlock::begin() const
 {
   return mFragments.begin();

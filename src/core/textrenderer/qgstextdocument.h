@@ -79,7 +79,46 @@ class CORE_EXPORT QgsTextDocument
     /**
      * Returns the block at the specified \a index.
      */
-    const QgsTextBlock &at( int index ) const;
+    const QgsTextBlock &at( int index ) const SIP_FACTORY;
+#ifdef SIP_RUN
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->size() )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipRes = new QgsTextBlock( sipCpp->at( a0 ) );
+    }
+    % End
+#endif
+
+    /**
+     * Returns the block at the specified index.
+     */
+    QgsTextBlock &operator[]( int index ) SIP_FACTORY;
+#ifdef SIP_RUN
+    % MethodCode
+    SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
+    if ( idx < 0 )
+      sipIsErr = 1;
+    else
+      sipRes = new QgsTextBlock( sipCpp->operator[]( idx ) );
+    % End
+#endif
+
+    /**
+     * Returns the number of blocks in the document.
+     */
+    int size() const;
+
+#ifdef SIP_RUN
+    int __len__() const;
+    % MethodCode
+    sipRes = sipCpp->size();
+    % End
+#endif
 
     /**
      * Returns a list of plain text lines of text representing the document.
