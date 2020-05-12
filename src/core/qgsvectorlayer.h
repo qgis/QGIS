@@ -508,7 +508,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Context for deleting features
      * \since QGIS 3.14
      */
-    struct  DeleteContext
+    struct CORE_EXPORT DeleteContext
     {
 
       /**
