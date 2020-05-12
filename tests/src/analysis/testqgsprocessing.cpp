@@ -1653,7 +1653,7 @@ void TestQgsProcessing::generateTemporaryDestination()
   // check that temporary destination starts with tempFolder
   QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
   // check that extension with QFileInfo::completeSuffix is "gpkg"
-  QFileInfo f = QFileInfo(def->generateTemporaryDestination());
+  QFileInfo f = QFileInfo( def->generateTemporaryDestination() );
   QCOMPARE( f.completeSuffix(), QString( "gpkg" ) );
 
   // destination raster with "." in it's name
@@ -1664,7 +1664,7 @@ void TestQgsProcessing::generateTemporaryDestination()
   // check that temporary destination starts with tempFolder
   QVERIFY( def2->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
   // check that extension with QFileInfo::completeSuffix is "tif"
-  f = QFileInfo(def2->generateTemporaryDestination());
+  f = QFileInfo( def2->generateTemporaryDestination() );
   QCOMPARE( f.completeSuffix(), QString( "tif" ) );
 
   // destination vector without "." in it's name
@@ -1675,7 +1675,7 @@ void TestQgsProcessing::generateTemporaryDestination()
   // check that temporary destination starts with tempFolder
   QVERIFY( def3->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
   // check that extension with QFileInfo::completeSuffix is "gpkg"
-  f = QFileInfo(def3->generateTemporaryDestination());
+  f = QFileInfo( def3->generateTemporaryDestination() );
   QCOMPARE( f.completeSuffix(), QString( "gpkg" ) );
 
 }
