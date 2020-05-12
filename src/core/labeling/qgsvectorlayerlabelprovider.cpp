@@ -520,8 +520,6 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
   component.origin = outPt;
   component.rotation = label->getAlpha();
 
-
-
   if ( drawType == QgsTextRenderer::Background )
   {
     // get rotated label's center point
@@ -547,7 +545,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
 
     component.size = QSizeF( labelWidthPx, labelHeightPx );
 
-    QgsTextRenderer::drawBackground( context, component, tmpLyr.format(), QStringList(), QgsTextRenderer::Label );
+    QgsTextRenderer::drawBackground( context, component, tmpLyr.format(), QgsTextDocument(), QgsTextRenderer::Label );
   }
 
   else if ( drawType == QgsTextRenderer::Buffer

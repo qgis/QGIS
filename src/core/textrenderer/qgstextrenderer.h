@@ -215,6 +215,9 @@ class CORE_EXPORT QgsTextRenderer
       HAlignment hAlign = AlignLeft;
     };
 
+    static double textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document );
+    static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document, DrawMode mode );
+
     /**
      * Draws a single component of rendered text using the specified settings.
      * \param rect destination rectangle for text
@@ -258,7 +261,7 @@ class CORE_EXPORT QgsTextRenderer
     static void drawBackground( QgsRenderContext &context,
                                 Component component,
                                 const QgsTextFormat &format,
-                                const QStringList &textLines,
+                                const QgsTextDocument &document,
                                 DrawMode mode = Rect );
 
     static void drawShadow( QgsRenderContext &context,

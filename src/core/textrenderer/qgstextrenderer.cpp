@@ -154,8 +154,7 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, QgsTextRend
         component.center = rect.center();
       }
 
-      const QStringList lines = document.toPlainText();
-      QgsTextRenderer::drawBackground( context, component, format, lines, Rect );
+      QgsTextRenderer::drawBackground( context, component, format, document, Rect );
 
       break;
     }
@@ -205,8 +204,7 @@ void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer
       if ( !format.background().enabled() )
         return;
 
-      const QStringList lines = document.toPlainText();
-      QgsTextRenderer::drawBackground( context, component, format, lines, Point );
+      QgsTextRenderer::drawBackground( context, component, format, document, Point );
       break;
     }
 
@@ -447,15 +445,22 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
   p->restore();
 }
 
-double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, QFontMetricsF *fontMetrics )
+double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, QFontMetricsF * )
+{
+  if ( !format.allowHtmlFormatting() )
+  {
+    return textWidth( context, format, QgsTextDocument::fromPlainText( textLines ) );
+  }
+  else
+  {
+    return textWidth( context, format, QgsTextDocument::fromHtml( textLines ) );
+  }
+}
+
+double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document )
 {
   //calculate max width of text lines
-  std::unique_ptr< QFontMetricsF > newFm;
-  if ( !fontMetrics )
-  {
-    newFm.reset( new QFontMetricsF( format.scaledFont( context ) ) );
-    fontMetrics = newFm.get();
-  }
+  const QFont baseFont = format.scaledFont( context );
 
   double width = 0;
   switch ( format.orientation() )
@@ -463,10 +468,14 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
     case QgsTextFormat::HorizontalOrientation:
     {
       double maxLineWidth = 0;
-      const auto constTextLines = textLines;
-      for ( const QString &line : constTextLines )
+      for ( const QgsTextBlock &block : document )
       {
-        maxLineWidth = std::max( maxLineWidth, fontMetrics->width( line ) );
+        double blockWidth = 0;
+        for ( const QgsTextFragment &fragment : block )
+        {
+          blockWidth += fragment.horizontalAdvance( baseFont );
+        }
+        maxLineWidth = std::max( maxLineWidth, blockWidth );
       }
       width = maxLineWidth;
       break;
@@ -474,8 +483,22 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
 
     case QgsTextFormat::VerticalOrientation:
     {
-      double labelWidth = fontMetrics->maxWidth();
-      width = labelWidth + ( textLines.size() - 1 ) * labelWidth * format.lineHeight();
+      double totalLineWidth = 0;
+      int blockIndex = 0;
+      for ( const QgsTextBlock &block : document )
+      {
+        double blockWidth = 0;
+        for ( const QgsTextFragment &fragment : block )
+        {
+          QFont fragmentFont = baseFont;
+          fragment.characterFormat().updateFontForFormat( fragmentFont );
+          blockWidth = std::max( QFontMetricsF( fragmentFont ).maxWidth(), blockWidth );
+        }
+
+        totalLineWidth += blockIndex == 0 ? blockWidth : blockWidth * format.lineHeight();
+        blockIndex++;
+      }
+      width = totalLineWidth;
       break;
     }
 
@@ -489,49 +512,92 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
   return width;
 }
 
-double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode, QFontMetricsF *fontMetrics )
+double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode, QFontMetricsF * )
 {
-  //calculate max width of text lines
-  std::unique_ptr< QFontMetricsF > newFm;
-  if ( !fontMetrics )
+  if ( !format.allowHtmlFormatting() )
   {
-    newFm.reset( new QFontMetricsF( format.scaledFont( context ) ) );
-    fontMetrics = newFm.get();
+    return textHeight( context, format, QgsTextDocument::fromPlainText( textLines ), mode );
   }
+  else
+  {
+    return textHeight( context, format, QgsTextDocument::fromHtml( textLines ), mode );
+  }
+}
+
+double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document, DrawMode mode )
+{
+  //calculate max height of text lines
+
+  const QFont baseFont = format.scaledFont( context );
 
   switch ( format.orientation() )
   {
     case QgsTextFormat::HorizontalOrientation:
     {
-      double labelHeight = fontMetrics->ascent() + fontMetrics->descent(); // ignore +1 for baseline
-      switch ( mode )
+      int blockIndex = 0;
+      double totalHeight = 0;
+      for ( const QgsTextBlock &block : document )
       {
-        case Label:
-          // rendering labels needs special handling - in this case text should be
-          // drawn with the bottom left corner coinciding with origin, vs top left
-          // for standard text rendering. Line height is also slightly different.
-          return labelHeight + ( textLines.size() - 1 ) * labelHeight * format.lineHeight();
+        double maxBlockHeight = 0;
+        double maxBlockLineSpacing = 0;
+        for ( const QgsTextFragment &fragment : block )
+        {
+          QFont fragmentFont = baseFont;
+          fragment.characterFormat().updateFontForFormat( fragmentFont );
+          const QFontMetricsF fm( fragmentFont );
 
-        case Rect:
-        case Point:
-          // standard rendering - designed to exactly replicate QPainter's drawText method
-          return labelHeight + ( textLines.size() - 1 ) * fontMetrics->lineSpacing() * format.lineHeight();
+          const double fragmentHeight = fm.ascent() + fm.descent(); // ignore +1 for baseline
+
+          maxBlockHeight = std::max( maxBlockHeight, fragmentHeight );
+          maxBlockLineSpacing = std::max( maxBlockLineSpacing, fm.lineSpacing() );
+        }
+
+        switch ( mode )
+        {
+          case Label:
+            // rendering labels needs special handling - in this case text should be
+            // drawn with the bottom left corner coinciding with origin, vs top left
+            // for standard text rendering. Line height is also slightly different.
+            totalHeight += blockIndex == 0 ? maxBlockHeight : maxBlockHeight * format.lineHeight();
+            break;
+
+          case Rect:
+          case Point:
+            // standard rendering - designed to exactly replicate QPainter's drawText method
+            totalHeight += blockIndex == 0 ? maxBlockHeight : maxBlockLineSpacing * format.lineHeight();
+            break;
+        }
+
+        blockIndex++;
       }
-      break;
+
+      return totalHeight;
     }
 
     case QgsTextFormat::VerticalOrientation:
     {
-      double labelHeight = fontMetrics->ascent();
-      double letterSpacing = format.scaledFont( context ).letterSpacing();
-      int maxLineLength = 0;
-      for ( const auto &line : textLines )
+      double maxBlockHeight = 0;
+      for ( const QgsTextBlock &block : document )
       {
-        if ( line.length() > maxLineLength )
-          maxLineLength = line.length();
+        double blockHeight = 0;
+        int fragmentIndex = 0;
+        for ( const QgsTextFragment &fragment : block )
+        {
+          QFont fragmentFont = baseFont;
+          fragment.characterFormat().updateFontForFormat( fragmentFont );
+          const QFontMetricsF fm( fragmentFont );
+
+          const double labelHeight = fm.ascent();
+          const double letterSpacing = fragmentFont.letterSpacing();
+
+          blockHeight += fragmentIndex = 0 ? labelHeight * fragment.text().size() + ( fragment.text().size() - 1 ) * letterSpacing
+                                         : fragment.text().size() * ( labelHeight + letterSpacing );
+          fragmentIndex++;
+        }
+        maxBlockHeight = std::max( maxBlockHeight, blockHeight );
       }
-      return labelHeight * maxLineLength + ( maxLineLength - 1 ) * letterSpacing;
-      break;
+
+      return maxBlockHeight;
     }
 
     case QgsTextFormat::RotationBasedOrientation:
@@ -544,8 +610,7 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
   return 0;
 }
 
-void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer::Component component, const QgsTextFormat &format,
-                                      const QStringList &textLines, DrawMode mode )
+void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer::Component component, const QgsTextFormat &format, const QgsTextDocument &document, QgsTextRenderer::DrawMode mode )
 {
   QgsTextBackgroundSettings background = format.background();
 
@@ -578,8 +643,8 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
   {
     // need to calculate size of text
     QFontMetricsF fm( format.scaledFont( context ) );
-    double width = textWidth( context, format, textLines, &fm );
-    double height = textHeight( context, format, textLines, mode, &fm );
+    double width = textWidth( context, format, document );
+    double height = textHeight( context, format, document, mode );
 
     switch ( mode )
     {

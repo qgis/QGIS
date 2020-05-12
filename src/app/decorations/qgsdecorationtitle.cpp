@@ -110,11 +110,10 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
   QString displayString = QgsExpression::replaceExpressionText( mLabelText, &context.expressionContext() );
   QStringList displayStringList = displayString.split( '\n' );
 
-  QFontMetricsF fm( mTextFormat.scaledFont( context ) );
   QFontMetricsF textMetrics = QgsTextRenderer::fontMetrics( context, mTextFormat );
   double textDescent = textMetrics.descent();
-  double textWidth = QgsTextRenderer::textWidth( context, mTextFormat, displayStringList, &fm );
-  double textHeight = QgsTextRenderer::textHeight( context, mTextFormat, displayStringList, QgsTextRenderer::Point, &fm );
+  double textWidth = QgsTextRenderer::textWidth( context, mTextFormat, displayStringList );
+  double textHeight = QgsTextRenderer::textHeight( context, mTextFormat, displayStringList, QgsTextRenderer::Point );
 
   QPaintDevice *device = context.painter()->device();
   int deviceHeight = device->height() / device->devicePixelRatioF();
