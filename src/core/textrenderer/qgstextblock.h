@@ -18,10 +18,8 @@
 
 #include "qgis_sip.h"
 #include "qgis_core.h"
-
+#include "qgstextfragment.h"
 #include <QVector>
-
-class QgsTextFragment;
 
 /**
  * \class QgsTextBlock
