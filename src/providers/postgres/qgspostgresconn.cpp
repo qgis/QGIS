@@ -1216,6 +1216,9 @@ QString QgsPostgresConn::quotedValue( const QVariant &value )
     case QVariant::Double:
       return value.toString();
 
+    case QVariant::DateTime:
+      return quotedString( value.toDateTime().toString( Qt::ISODateWithMs ) );
+
     case QVariant::Bool:
       return value.toBool() ? "TRUE" : "FALSE";
 
