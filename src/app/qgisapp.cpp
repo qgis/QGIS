@@ -9040,7 +9040,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *parent, bool checkFea
       QString feedbackMessage;
       for ( QgsVectorLayer *contextLayer : contextLayers )
       {
-        feedbackMessage += tr( " %1 on layer %2." ).arg( context.handledFeatures( contextLayer ).size() ).arg( contextLayer->name() );
+        feedbackMessage += tr( "%1 on layer %2. " ).arg( context.handledFeatures( contextLayer ).size() ).arg( contextLayer->name() );
         deletedCount += context.handledFeatures( contextLayer ).size();
       }
       visibleMessageBar()->pushMessage( tr( "%1 features deleted: %2" ).arg( deletedCount ).arg( feedbackMessage ), Qgis::Success );

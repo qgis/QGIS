@@ -741,7 +741,7 @@ void QgsRelationEditorWidget::deleteFeatures( const QgsFeatureIds &featureids )
     }
 
     // for extra safety to make sure we know that the delete can have impact on children and joins
-    int res = QMessageBox::question( this, tr( "Delete at least %3 feature(s) on other layer(s)" ).arg( childrenCount ),
+    int res = QMessageBox::question( this, tr( "Delete at least %1 feature(s) on other layer(s)" ).arg( childrenCount ),
                                      tr( "Delete %1 feature(s) on layer \"%2\" and %3as well.\nAnd all the further descendants of them.\nDelete these features?" ).arg( featureids.count() ).arg( layer->name() ).arg( childrenInfo ),
                                      QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
@@ -759,10 +759,10 @@ void QgsRelationEditorWidget::deleteFeatures( const QgsFeatureIds &featureids )
       QString feedbackMessage;
       for ( QgsVectorLayer *contextLayer : contextLayers )
       {
-        feedbackMessage += tr( " %1 on layer %2." ).arg( context.handledFeatures( contextLayer ).size() ).arg( contextLayer->name() );
+        feedbackMessage += tr( "%1 on layer %2. " ).arg( context.handledFeatures( contextLayer ).size() ).arg( contextLayer->name() );
         deletedCount += context.handledFeatures( contextLayer ).size();
       }
-      mEditorContext.mainMessageBar()->pushMessage( tr( "%1 features deleted:%2" ).arg( deletedCount ).arg( feedbackMessage ), Qgis::Success );
+      mEditorContext.mainMessageBar()->pushMessage( tr( "%1 features deleted: %2" ).arg( deletedCount ).arg( feedbackMessage ), Qgis::Success );
     }
 
     updateUi();
