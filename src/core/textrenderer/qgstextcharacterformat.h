@@ -51,8 +51,8 @@ class CORE_EXPORT QgsTextCharacterFormat
     enum class BooleanValue
     {
       NotSet, //!< Property is not set
-      True, //!< Property is set and TRUE
-      False, //!< Property is set and FALSE
+      SetTrue, //!< Property is set and TRUE
+      SetFalse, //!< Property is set and FALSE
     };
 
     /**

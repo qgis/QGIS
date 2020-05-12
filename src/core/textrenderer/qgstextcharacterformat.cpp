@@ -21,11 +21,11 @@ QgsTextCharacterFormat::QgsTextCharacterFormat( const QTextCharFormat &format )
   : mTextColor( format.hasProperty( QTextFormat::ForegroundBrush ) ? format.foreground().color() : QColor() )
 #if 0 // settings which affect font metrics are disabled for now
   , mFontWeight( format.hasProperty( QTextFormat::FontWeight ) ? format.fontWeight() : -1 )
-  , mItalic( format.hasProperty( QTextFormat::FontItalic ) ? ( format.fontItalic() ? BooleanValue::True : BooleanValue::False ) : BooleanValue::NotSet )
+  , mItalic( format.hasProperty( QTextFormat::FontItalic ) ? ( format.fontItalic() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
 #endif
-  , mStrikethrough( format.hasProperty( QTextFormat::FontStrikeOut ) ? ( format.fontStrikeOut() ? BooleanValue::True : BooleanValue::False ) : BooleanValue::NotSet )
-  , mUnderline( format.hasProperty( QTextFormat::FontUnderline ) ? ( format.fontUnderline() ? BooleanValue::True : BooleanValue::False ) : BooleanValue::NotSet )
-  , mOverline( format.hasProperty( QTextFormat::FontOverline ) ? ( format.fontOverline() ? BooleanValue::True : BooleanValue::False ) : BooleanValue::NotSet )
+  , mStrikethrough( format.hasProperty( QTextFormat::FontStrikeOut ) ? ( format.fontStrikeOut() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
+  , mUnderline( format.hasProperty( QTextFormat::FontUnderline ) ? ( format.fontUnderline() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
+  , mOverline( format.hasProperty( QTextFormat::FontOverline ) ? ( format.fontOverline() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
 {
 
 }
@@ -73,15 +73,15 @@ void QgsTextCharacterFormat::setOverline( QgsTextCharacterFormat::BooleanValue e
 void QgsTextCharacterFormat::updateFontForFormat( QFont &font ) const
 {
   if ( mUnderline != BooleanValue::NotSet )
-    font.setUnderline( mUnderline == QgsTextCharacterFormat::BooleanValue::True );
+    font.setUnderline( mUnderline == QgsTextCharacterFormat::BooleanValue::SetTrue );
   if ( mOverline != BooleanValue::NotSet )
-    font.setOverline( mOverline == QgsTextCharacterFormat::BooleanValue::True );
+    font.setOverline( mOverline == QgsTextCharacterFormat::BooleanValue::SetTrue );
   if ( mStrikethrough != QgsTextCharacterFormat::BooleanValue::NotSet )
-    font.setStrikeOut( mStrikethrough == QgsTextCharacterFormat::BooleanValue::True );
+    font.setStrikeOut( mStrikethrough == QgsTextCharacterFormat::BooleanValue::SetTrue );
 
 #if 0 // settings which affect font metrics are disabled for now
   if ( mItalic != QgsTextCharacterFormat::BooleanValue::NotSet )
-    font.setItalic( mItalic == QgsTextCharacterFormat::BooleanValue::True );
+    font.setItalic( mItalic == QgsTextCharacterFormat::BooleanValue::SetTrue );
   if ( mFontWeight != -1 )
     font.setWeight( mFontWeight );
 #endif

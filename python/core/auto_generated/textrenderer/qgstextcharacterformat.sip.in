@@ -40,8 +40,8 @@ Constructor for QgsTextCharacterFormat, based on the specified QTextCharFormat `
     enum class BooleanValue
     {
       NotSet,
-      True,
-      False,
+      SetTrue,
+      SetFalse,
     };
 
     QColor textColor() const;
