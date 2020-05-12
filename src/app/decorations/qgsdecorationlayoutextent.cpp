@@ -33,6 +33,7 @@
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h"
 #include "qgsreadwritecontext.h"
+#include "qgstextrenderer.h"
 
 #include <QPainter>
 

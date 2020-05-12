@@ -209,7 +209,6 @@
 %Include auto_generated/qgstemporalutils.sip
 %Include auto_generated/qgstessellator.sip
 %Include auto_generated/qgstestutils.sip
-%Include auto_generated/qgstextrenderer.sip
 %Include auto_generated/qgstiles.sip
 %Include auto_generated/qgstolerance.sip
 %Include auto_generated/qgstracer.sip
@@ -546,6 +545,17 @@
 %Include auto_generated/symbology/qgssymbollayerregistry.sip
 %Include auto_generated/symbology/qgssymbollayerutils.sip
 %Include auto_generated/symbology/qgsvectorfieldsymbollayer.sip
+%Include auto_generated/textrenderer/qgstextbackgroundsettings.sip
+%Include auto_generated/textrenderer/qgstextblock.sip
+%Include auto_generated/textrenderer/qgstextbuffersettings.sip
+%Include auto_generated/textrenderer/qgstextcharacterformat.sip
+%Include auto_generated/textrenderer/qgstextdocument.sip
+%Include auto_generated/textrenderer/qgstextformat.sip
+%Include auto_generated/textrenderer/qgstextfragment.sip
+%Include auto_generated/textrenderer/qgstextmasksettings.sip
+%Include auto_generated/textrenderer/qgstextrenderer.sip
+%Include auto_generated/textrenderer/qgstextrendererutils.sip
+%Include auto_generated/textrenderer/qgstextshadowsettings.sip
 %Include auto_generated/validity/qgsabstractvaliditycheck.sip
 %Include auto_generated/validity/qgsvaliditycheckcontext.sip
 %Include auto_generated/validity/qgsvaliditycheckregistry.sip

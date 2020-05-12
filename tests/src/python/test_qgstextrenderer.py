@@ -351,6 +351,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         s.setBlendMode(QPainter.CompositionMode_DestinationAtop)
         s.setLineHeight(5)
         s.setPreviewBackgroundColor(QColor(100, 150, 200))
+        s.setOrientation(QgsTextFormat.VerticalOrientation)
+        s.setAllowHtmlFormatting(True)
         s.dataDefinedProperties().setProperty(QgsPalLayerSettings.Bold, QgsProperty.fromExpression('1>2'))
         return s
 
@@ -375,6 +377,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertEqual(s.blendMode(), QPainter.CompositionMode_DestinationAtop)
         self.assertEqual(s.lineHeight(), 5)
         self.assertEqual(s.previewBackgroundColor().name(), '#6496c8')
+        self.assertEqual(s.orientation(), QgsTextFormat.VerticalOrientation)
+        self.assertTrue(s.allowHtmlFormatting())
         self.assertEqual(s.dataDefinedProperties().property(QgsPalLayerSettings.Bold).expressionString(), '1>2')
 
     def testFormatGettersSetters(self):
@@ -2198,6 +2202,79 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.buffer().setEnabled(True)
         format.buffer().setSize(5)
         assert self.checkRenderPoint(format, 'text_dd_buffer_color', None, text=['test'], point=QPointF(50, 200))
+
+    def testHtmlFormatting(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        assert self.checkRenderPoint(format, 'text_html_formatting', None, text=['<s>t</s><span style="text-decoration: overline">e</span><span style="color: red">s<span style="text-decoration: underline">t</span></span>'], point=QPointF(50, 200))
+
+    def testHtmlFormattingBuffer(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(5)
+        format.buffer().setColor(QColor(50, 150, 200))
+        assert self.checkRenderPoint(format, 'text_html_formatting_buffer', None, text=['<s>t</s><span style="text-decoration: overline">e</span><span style="color: red">s<span style="text-decoration: underline">t</span></span>'], point=QPointF(50, 200))
+
+    def testHtmlFormattingShadow(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.shadow().setEnabled(True)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setColor(QColor(50, 150, 200))
+        assert self.checkRenderPoint(format, 'text_html_formatting_shadow', None, text=['<s>t</s><span style="text-decoration: overline">e</span><span style="color: red">s<span style="text-decoration: underline">t</span></span>'], point=QPointF(50, 200))
+
+    def testHtmlFormattingBufferShadow(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(5)
+        format.buffer().setColor(QColor(200, 50, 150))
+        format.shadow().setEnabled(True)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setColor(QColor(50, 150, 200))
+        assert self.checkRenderPoint(format, 'text_html_formatting_buffer_shadow', None, text=['<s>t</s><span style="text-decoration: overline">e</span><span style="color: red">s<span style="text-decoration: underline">t</span></span>'], point=QPointF(50, 200))
+
+    def testHtmlFormattingVertical(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.setOrientation(QgsTextFormat.VerticalOrientation)
+        assert self.checkRenderPoint(format, 'text_html_formatting_vertical', None, text=['<s>t</s><span style="text-decoration: overline">e</span><span style="color: red">s<span style="text-decoration: underline">t</span></span>'], point=QPointF(50, 200))
+
+    def testHtmlFormattingBufferVertical(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(5)
+        format.buffer().setColor(QColor(50, 150, 200))
+        format.setOrientation(QgsTextFormat.VerticalOrientation)
+        assert self.checkRenderPoint(format, 'text_html_formatting_buffer_vertical', None, text=['<s>t</s><span style="text-decoration: overline">e</span><span style="color: red">s<span style="text-decoration: underline">t</span></span>'], point=QPointF(50, 200))
 
     def testTextRenderFormat(self):
         format = QgsTextFormat()

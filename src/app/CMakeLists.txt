@@ -481,6 +481,7 @@ INCLUDE_DIRECTORIES(
   ../core/mesh
   ../core/scalebar
   ../core/symbology
+  ../core/textrenderer
   ../gui
   ../gui/symbology
   ../gui/attributetable

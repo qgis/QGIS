@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgslabelingengine.h"
 #include "qgsrenderer.h"
+#include "qgstextrenderer.h"
 
 class QgsAbstractFeatureSource;
 class QgsFeatureRenderer;

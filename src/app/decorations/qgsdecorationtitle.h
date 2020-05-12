@@ -18,7 +18,7 @@
 
 #include "qgis_app.h"
 #include "qgsdecorationitem.h"
-#include "qgstextrenderer.h"
+#include "qgstextformat.h"
 
 #include <QColor>
 #include <QFont>

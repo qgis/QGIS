@@ -18,6 +18,7 @@
 #include "qgsscalebarsettings.h"
 #include "qgslayoututils.h"
 #include "qgssymbol.h"
+#include "qgstextrenderer.h"
 #include <QPainter>
 
 QgsTicksScaleBarRenderer::QgsTicksScaleBarRenderer( QgsTicksScaleBarRenderer::TickPosition position )

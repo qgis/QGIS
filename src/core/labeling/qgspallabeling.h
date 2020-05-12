@@ -40,11 +40,13 @@
 #include "qgsmapunitscale.h"
 #include "qgsstringutils.h"
 #include "qgssymbol.h"
-#include "qgstextrenderer.h"
+#include "qgstextformat.h"
 #include "qgspropertycollection.h"
 #include "qgslabelobstaclesettings.h"
 #include "qgslabelthinningsettings.h"
 #include "qgslabeling.h"
+
+class QgsTextDocument;
 
 namespace pal SIP_SKIP
 {
@@ -943,7 +945,12 @@ class CORE_EXPORT QgsPalLayerSettings
      * If the text orientation is set to rotation-based, the spaced taken to render
      * vertically oriented text will be written to \a rotatedLabelX and \a rotatedLabelY .
      */
+#ifndef SIP_RUN
+    void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = nullptr, QgsRenderContext *context = nullptr, double *rotatedLabelX SIP_OUT = nullptr, double *rotatedLabelY SIP_OUT = nullptr,
+                             QgsTextDocument *document = nullptr );
+#else
     void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = nullptr, QgsRenderContext *context = nullptr, double *rotatedLabelX SIP_OUT = nullptr, double *rotatedLabelY SIP_OUT = nullptr );
+#endif
 
     /**
      * Register a feature for labeling.

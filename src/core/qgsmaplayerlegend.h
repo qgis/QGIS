@@ -189,7 +189,7 @@ class CORE_EXPORT QgsMapLayerLegendUtils
 
 #include <QHash>
 
-#include "qgstextrenderer.h"
+#include "qgstextformat.h"
 
 /**
  * \ingroup core
