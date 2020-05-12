@@ -309,6 +309,17 @@ class TestLineBase(object):
         self.lyr.placementFlags = QgsPalLayerSettings.BelowLine | QgsPalLayerSettings.MapOrientation
         self.checkTest()
 
+    def test_curved_placement_online_html(self):
+        # Curved placement, on line
+        self.lyr.placement = QgsPalLayerSettings.Curved
+        self.lyr.placementFlags = QgsPalLayerSettings.OnLine
+        format = self.lyr.format()
+        format.setAllowHtmlFormatting(True)
+        self.lyr.setFormat(format)
+        self.lyr.fieldName = "'<span style=\"color: red\">aaa</span><s>aa</s><span style=\"text-decoration: overline\">a</span>'"
+        self.lyr.isExpression = True
+        self.checkTest()
+
     def test_length_expression(self):
         # compare length using the ellipsoid in kms and the planimetric distance in meters
         self.lyr.fieldName = "round($length,5) || ' - ' || round(length($geometry),2)"
