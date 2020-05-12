@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -9,35 +7,36 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="48"
-   height="48"
-   version="1.1"
-   viewBox="0 0 12.7 12.7"
-   id="svg3906"
+   inkscape:version="1.0rc1 (09960d6f05, 2020-04-09)"
    sodipodi:docname="rewindToStart.svg"
-   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+   id="svg3906"
+   viewBox="0 0 12.7 12.7"
+   version="1.1"
+   height="48"
+   width="48">
   <defs
      id="defs3910" />
   <sodipodi:namedview
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1"
-     objecttolerance="10"
-     gridtolerance="10"
-     guidetolerance="10"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:window-width="640"
-     inkscape:window-height="480"
-     id="namedview3908"
-     showgrid="false"
-     inkscape:zoom="0.61458333"
-     inkscape:cx="142.91308"
-     inkscape:cy="-81.552337"
-     inkscape:window-x="0"
-     inkscape:window-y="27"
+     inkscape:document-rotation="0"
+     inkscape:current-layer="svg3906"
      inkscape:window-maximized="0"
-     inkscape:current-layer="svg3906" />
+     inkscape:window-y="23"
+     inkscape:window-x="26"
+     inkscape:cy="24.794279"
+     inkscape:cx="6.327374"
+     inkscape:zoom="13.906433"
+     showgrid="false"
+     id="namedview3908"
+     inkscape:window-height="1053"
+     inkscape:window-width="2203"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     guidetolerance="10"
+     gridtolerance="10"
+     objecttolerance="10"
+     borderopacity="1"
+     bordercolor="#666666"
+     pagecolor="#ffffff" />
   <metadata
      id="metadata3882">
     <rdf:RDF>
@@ -51,11 +50,22 @@
     </rdf:RDF>
   </metadata>
   <path
-     d="m6.5921 2.3087 0.030566 3.9058-0.0047923 3.9062-3.1659-1.9001-3.1483-1.9332 3.1353-2.0057z"
+     inkscape:connector-curvature="0"
+     id="path3902"
      stroke-width=".017249"
-     id="path3902" />
+     d="m 6.5921,2.444 0.030566,3.9058 -0.00479,3.9062 -3.1659,-1.9001 -3.1483,-1.9332 3.1353,-2.0057 z" />
   <path
-     d="m11.971 2.3087 0.03057 3.9058-0.0048 3.9062-3.1659-1.9001-3.1483-1.9332 3.1353-2.0057z"
+     inkscape:connector-curvature="0"
+     id="path3904"
      stroke-width=".017249"
-     id="path3904" />
+     d="M 11.971,2.444 12.00157,6.3498 11.99677,10.256 8.83087,8.3559 5.68257,6.4227 8.81787,4.417 Z" />
+  <rect
+     style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.0902229;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="rect845"
+     width="0.93101496"
+     height="8.2597761"
+     x="-1.0490991"
+     y="-10.478112"
+     ry="0.21896651"
+     transform="rotate(-179.82261)" />
 </svg>
