@@ -167,7 +167,6 @@ JSON object.
 
 :param settings: Legend layout configuration
 :param context: Rendering context
-:param json: The json object to update
 
 .. versionadded:: 3.8
 %End
@@ -189,7 +188,6 @@ Adds a symbol in base64 string within a JSON object with the key "icon".
 
 :param settings: Legend layout configuration
 :param context: Rendering context
-:param json: The json object to update
 
 .. versionadded:: 3.8
 %End

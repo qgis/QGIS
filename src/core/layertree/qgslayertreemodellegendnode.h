@@ -220,7 +220,6 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      * JSON object.
      * \param settings Legend layout configuration
      * \param context Rendering context
-     * \param json The json object to update
      * \since QGIS 3.8
      */
     QJsonObject exportToJson( const QgsLegendSettings &settings, const QgsRenderContext &context );
@@ -238,7 +237,6 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      * Adds a symbol in base64 string within a JSON object with the key "icon".
      * \param settings Legend layout configuration
      * \param context Rendering context
-     * \param json The json object to update
      * \since QGIS 3.8
      */
     virtual QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const;
