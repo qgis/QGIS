@@ -349,10 +349,33 @@ The returned position is in map coordinates.
 %End
 
     QgsMeshDatasetGroupTreeItem *datasetGroupTreeRootItem() const;
+%Docstring
+Returns the root items of the dataset group tree item
+
+:return: the root item
+
+.. versionadded:: 3.14
+%End
+
     void setDatasetGroupTreeRootItem( QgsMeshDatasetGroupTreeItem *rootItem );
+%Docstring
+Sets the root items of the dataset group tree item.
+Changes active dataset groups if those one are not enabled anymore :
+- new active scalar dataset group is the first root item enabled child
+- new active vector dataset group is none
+
+Doesn't take ownership of the pointed item, the root item is cloned.
+
+:param rootItem: the new root item
+
+.. versionadded:: 3.14
+%End
+
     void resetDatasetGroupTreeItem();
 %Docstring
 Reset the dataset group tree item to default from provider
+
+.. versionadded:: 3.14
 %End
 
   public slots:

@@ -556,7 +556,6 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
      * \param defaultName the name that will be used to display the item if iot not overrides (\see setName())
      * \param isVector whether the dataset group is a vector dataset group
      * \param index index of the dataset group
-     * \param isEnabled
      */
     QgsMeshDatasetGroupTreeItem( const QString &defaultName,
                                  bool isVector,
