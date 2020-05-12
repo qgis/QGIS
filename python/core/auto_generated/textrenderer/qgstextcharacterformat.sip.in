@@ -31,6 +31,9 @@ settings from a QgsTextFormat for individual characters (or sets of characters).
   public:
 
     QgsTextCharacterFormat();
+%Docstring
+Constructor for QgsTextCharacterFormat.
+%End
 
     QgsTextCharacterFormat( const QTextCharFormat &format );
 %Docstring

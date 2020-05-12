@@ -23,6 +23,7 @@
 
 /**
  * \class QgsTextBlock
+ * \ingroup core
  *
  * Represents a block of text consisting of one or more QgsTextFragment objects.
  *

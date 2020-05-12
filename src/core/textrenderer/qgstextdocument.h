@@ -26,6 +26,7 @@ class QgsTextFragment;
 
 /**
  * \class QgsTextDocument
+ * \ingroup core
  *
  * Represents a document consisting of one or more QgsTextBlock objects.
  *
