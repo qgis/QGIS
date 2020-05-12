@@ -153,6 +153,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsinglesidedbuffer.cpp
   processing/qgsalgorithmslope.cpp
   processing/qgsalgorithmsmooth.cpp
+  processing/qgsalgorithmsnapgeometries.cpp
   processing/qgsalgorithmsnaptogrid.cpp
   processing/qgsalgorithmspatialindex.cpp
   processing/qgsalgorithmsplitfeaturesbyattributecharacter.cpp

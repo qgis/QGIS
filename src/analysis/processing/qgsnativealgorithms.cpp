@@ -147,6 +147,7 @@
 #include "qgsalgorithmsinglesidedbuffer.h"
 #include "qgsalgorithmslope.h"
 #include "qgsalgorithmsmooth.h"
+#include "qgsalgorithmsnapgeometries.h"
 #include "qgsalgorithmsnaptogrid.h"
 #include "qgsalgorithmspatialindex.h"
 #include "qgsalgorithmsplitfeaturesbyattributecharacter.h"
@@ -371,6 +372,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSingleSidedBufferAlgorithm() );
   addAlgorithm( new QgsSlopeAlgorithm() );
   addAlgorithm( new QgsSmoothAlgorithm() );
+  addAlgorithm( new QgsSnapGeometriesAlgorithm() );
   addAlgorithm( new QgsSnapToGridAlgorithm() );
   addAlgorithm( new QgsSpatialIndexAlgorithm() );
   addAlgorithm( new QgsSplitFeaturesByAttributeCharacterAlgorithm() );

@@ -80,7 +80,6 @@ from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
 from .SetRasterStyle import SetRasterStyle
 from .SetVectorStyle import SetVectorStyle
-from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialJoinSummary import SpatialJoinSummary
 from .StatisticsByCategories import StatisticsByCategories
 from .TextToFloat import TextToFloat
@@ -157,7 +156,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 SelectByExpression(),
                 SetRasterStyle(),
                 SetVectorStyle(),
-                SnapGeometriesToLayer(),
                 SpatialJoinSummary(),
                 StatisticsByCategories(),
                 TextToFloat(),
