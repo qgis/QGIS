@@ -2666,9 +2666,18 @@ void QgsGdalProvider::initBaseDataset()
   {
     QgsLogger::warning( QStringLiteral( "Creating Warped VRT." ) );
 
-    mGdalDataset =
-      GDALAutoCreateWarpedVRT( mGdalBaseDataset, nullptr, nullptr,
-                               GRA_NearestNeighbour, 0.2, nullptr );
+    if ( GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
+    {
+      mGdalDataset =
+        QgsGdalUtils::rpcAwareAutoCreateWarpedVrt( mGdalBaseDataset, nullptr, nullptr,
+            GRA_NearestNeighbour, 0.2, nullptr );
+    }
+    else
+    {
+      mGdalDataset =
+        GDALAutoCreateWarpedVRT( mGdalBaseDataset, nullptr, nullptr,
+                                 GRA_NearestNeighbour, 0.2, nullptr );
+    }
 
     if ( !mGdalDataset )
     {

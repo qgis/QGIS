@@ -18,6 +18,7 @@
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include "gdal.h"
+#include "gdalwarper.h"
 #include "cpl_string.h"
 
 #include <QString>
@@ -276,4 +277,209 @@ QString QgsGdalUtils::validateCreationOptionsFormat( const QStringList &createOp
   if ( !ok )
     return QStringLiteral( "Failed GDALValidateCreationOptions() test" );
   return QString();
+}
+
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,3,0)
+// GDAL < 2.3 does not come with GDALWarpInitDefaultBandMapping and GDALWarpInitNoDataReal
+// in the public API so we define them here for rpcAwareAutoCreateWarpedVrt()
+
+static void GDALWarpInitDefaultBandMapping( GDALWarpOptions *psOptionsIn, int nBandCount )
+{
+  if ( psOptionsIn->nBandCount != 0 ) { return; }
+
+  psOptionsIn->nBandCount = nBandCount;
+
+  psOptionsIn->panSrcBands = static_cast<int *>(
+                               CPLMalloc( sizeof( int ) * psOptionsIn->nBandCount ) );
+  psOptionsIn->panDstBands = static_cast<int *>(
+                               CPLMalloc( sizeof( int ) * psOptionsIn->nBandCount ) );
+
+  for ( int i = 0; i < psOptionsIn->nBandCount; i++ )
+  {
+    psOptionsIn->panSrcBands[i] = i + 1;
+    psOptionsIn->panDstBands[i] = i + 1;
+  }
+}
+
+static void InitNoData( int nBandCount, double **ppdNoDataReal, double dDataReal )
+{
+  if ( nBandCount <= 0 ) { return; }
+  if ( *ppdNoDataReal != nullptr ) { return; }
+
+  *ppdNoDataReal = static_cast<double *>(
+                     CPLMalloc( sizeof( double ) * nBandCount ) );
+
+  for ( int i = 0; i < nBandCount; ++i )
+  {
+    ( *ppdNoDataReal )[i] = dDataReal;
+  }
+}
+
+static void GDALWarpInitNoDataReal( GDALWarpOptions *psOptionsIn, double  dNoDataReal )
+{
+  InitNoData( psOptionsIn->nBandCount, &psOptionsIn->padfDstNoDataReal, dNoDataReal );
+  InitNoData( psOptionsIn->nBandCount, &psOptionsIn->padfSrcNoDataReal, dNoDataReal );
+  // older GDAL also requires imaginary values to be set
+  InitNoData( psOptionsIn->nBandCount, &psOptionsIn->padfDstNoDataImag, 0 );
+  InitNoData( psOptionsIn->nBandCount, &psOptionsIn->padfSrcNoDataImag, 0 );
+}
+#endif
+
+GDALDatasetH QgsGdalUtils::rpcAwareAutoCreateWarpedVrt(
+  GDALDatasetH hSrcDS,
+  const char *pszSrcWKT,
+  const char *pszDstWKT,
+  GDALResampleAlg eResampleAlg,
+  double dfMaxError,
+  const GDALWarpOptions *psOptionsIn )
+{
+  VALIDATE_POINTER1( hSrcDS, "GDALAutoCreateWarpedVRT", nullptr );
+
+  /* -------------------------------------------------------------------- */
+  /*      Populate the warp options.                                      */
+  /* -------------------------------------------------------------------- */
+  GDALWarpOptions *psWO = nullptr;
+  if ( psOptionsIn != nullptr )
+    psWO = GDALCloneWarpOptions( psOptionsIn );
+  else
+    psWO = GDALCreateWarpOptions();
+
+  psWO->eResampleAlg = eResampleAlg;
+
+  psWO->hSrcDS = hSrcDS;
+
+  GDALWarpInitDefaultBandMapping( psWO, GDALGetRasterCount( hSrcDS ) );
+
+  /* -------------------------------------------------------------------- */
+  /*      Setup no data values                                            */
+  /* -------------------------------------------------------------------- */
+  for ( int i = 0; i < psWO->nBandCount; i++ )
+  {
+    GDALRasterBandH rasterBand = GDALGetRasterBand( psWO->hSrcDS, psWO->panSrcBands[i] );
+
+    int hasNoDataValue;
+    double noDataValue = GDALGetRasterNoDataValue( rasterBand, &hasNoDataValue );
+
+    if ( hasNoDataValue )
+    {
+      // Check if the nodata value is out of range
+      int bClamped = FALSE;
+      int bRounded = FALSE;
+      CPL_IGNORE_RET_VAL(
+        GDALAdjustValueToDataType( GDALGetRasterDataType( rasterBand ),
+                                   noDataValue, &bClamped, &bRounded ) );
+
+      if ( !bClamped )
+      {
+        GDALWarpInitNoDataReal( psWO, -1e10 );
+
+        psWO->padfSrcNoDataReal[i] = noDataValue;
+        psWO->padfDstNoDataReal[i] = noDataValue;
+      }
+    }
+  }
+
+  if ( psWO->padfDstNoDataReal != nullptr )
+  {
+    if ( CSLFetchNameValue( psWO->papszWarpOptions, "INIT_DEST" ) == nullptr )
+    {
+      psWO->papszWarpOptions =
+        CSLSetNameValue( psWO->papszWarpOptions, "INIT_DEST", "NO_DATA" );
+    }
+  }
+
+  /* -------------------------------------------------------------------- */
+  /*      Create the transformer.                                         */
+  /* -------------------------------------------------------------------- */
+  psWO->pfnTransformer = GDALGenImgProjTransform;
+
+  // The original code to create transform:
+  // psWO->pTransformerArg =
+  //    GDALCreateGenImgProjTransformer( psWO->hSrcDS, pszSrcWKT,
+  //                                     nullptr, pszDstWKT,
+  //                                     TRUE, 1.0, 0 );
+
+  // Modified code to create transform that takes into account RPC georeferencing information.
+  // By default GDAL would assume that the imagery has zero elevation - if that is not the case,
+  // the image would not be shown in the correct location. Fortunately we can pass RPC_HEIGHT
+  // to GDAL to use given value as the fixed elevation for the whole image.
+  // We try to use HEIGHT_OFF coefficient ("Geodetic Height Offset") as an estimate for elevation
+  // (it seems that ENVI software does that as well). In the future we may want to use also
+  // RPC_DEM for an even more precise georeferencing.
+  // https://gdal.org/development/rfc/rfc22_rpc.html
+  char **opts = nullptr;
+  if ( GDALGetMetadata( hSrcDS, "RPC" ) )
+  {
+    // well-behaved RPC should have height offset a good value for RPC_HEIGHT
+    const char *heightOffStr = GDALGetMetadataItem( hSrcDS, "HEIGHT_OFF", "RPC" );
+    if ( heightOffStr )
+      opts = CSLAddNameValue( opts, "RPC_HEIGHT", heightOffStr );
+  }
+  opts = CSLSetNameValue( opts, "SRC_SRS", pszSrcWKT );
+  psWO->pTransformerArg = GDALCreateGenImgProjTransformer2( psWO->hSrcDS, nullptr, opts );
+  CSLDestroy( opts );
+
+  if ( psWO->pTransformerArg == nullptr )
+  {
+    GDALDestroyWarpOptions( psWO );
+    return nullptr;
+  }
+
+  /* -------------------------------------------------------------------- */
+  /*      Figure out the desired output bounds and resolution.            */
+  /* -------------------------------------------------------------------- */
+  double adfDstGeoTransform[6] = { 0.0 };
+  int nDstPixels = 0;
+  int nDstLines = 0;
+  CPLErr eErr =
+    GDALSuggestedWarpOutput( hSrcDS, psWO->pfnTransformer,
+                             psWO->pTransformerArg,
+                             adfDstGeoTransform, &nDstPixels, &nDstLines );
+  if ( eErr != CE_None )
+  {
+    GDALDestroyTransformer( psWO->pTransformerArg );
+    GDALDestroyWarpOptions( psWO );
+    return nullptr;
+  }
+
+  /* -------------------------------------------------------------------- */
+  /*      Update the transformer to include an output geotransform        */
+  /*      back to pixel/line coordinates.                                 */
+  /*                                                                      */
+  /* -------------------------------------------------------------------- */
+  GDALSetGenImgProjTransformerDstGeoTransform(
+    psWO->pTransformerArg, adfDstGeoTransform );
+
+  /* -------------------------------------------------------------------- */
+  /*      Do we want to apply an approximating transformation?            */
+  /* -------------------------------------------------------------------- */
+  if ( dfMaxError > 0.0 )
+  {
+    psWO->pTransformerArg =
+      GDALCreateApproxTransformer( psWO->pfnTransformer,
+                                   psWO->pTransformerArg,
+                                   dfMaxError );
+    psWO->pfnTransformer = GDALApproxTransform;
+    GDALApproxTransformerOwnsSubtransformer( psWO->pTransformerArg, TRUE );
+  }
+
+  /* -------------------------------------------------------------------- */
+  /*      Create the VRT file.                                            */
+  /* -------------------------------------------------------------------- */
+  GDALDatasetH hDstDS
+    = GDALCreateWarpedVRT( hSrcDS, nDstPixels, nDstLines,
+                           adfDstGeoTransform, psWO );
+
+  GDALDestroyWarpOptions( psWO );
+
+  if ( pszDstWKT != nullptr )
+    GDALSetProjection( hDstDS, pszDstWKT );
+  else if ( pszSrcWKT != nullptr )
+    GDALSetProjection( hDstDS, pszSrcWKT );
+  else if ( GDALGetGCPCount( hSrcDS ) > 0 )
+    GDALSetProjection( hDstDS, GDALGetGCPProjection( hSrcDS ) );
+  else
+    GDALSetProjection( hDstDS, GDALGetProjectionRef( hSrcDS ) );
+
+  return hDstDS;
 }
