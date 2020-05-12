@@ -112,12 +112,14 @@ void TestQgsMeshLayer::initTestCase()
   QCOMPARE( mMemoryLayer->dataProvider()->extraDatasets().count(), 0 );
   QVERIFY( !mMemoryLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
   QVERIFY( !mMemoryLayer->temporalProperties()->isActive() );
+  QCOMPARE( mMemoryLayer->datasetGroupTreeRootItem()->childCount(), 0 );
   mMemoryLayer->dataProvider()->addDataset( readFile( "/quad_and_triangle_bed_elevation.txt" ) );
   mMemoryLayer->dataProvider()->addDataset( readFile( "/quad_and_triangle_vertex_scalar.txt" ) );
   mMemoryLayer->dataProvider()->addDataset( readFile( "/quad_and_triangle_vertex_vector.txt" ) );
   mMemoryLayer->dataProvider()->addDataset( readFile( "/quad_and_triangle_face_scalar.txt" ) );
   mMemoryLayer->dataProvider()->addDataset( readFile( "/quad_and_triangle_face_vector.txt" ) );
   QCOMPARE( mMemoryLayer->dataProvider()->extraDatasets().count(), 5 );
+  QCOMPARE( mMemoryLayer->datasetGroupTreeRootItem()->childCount(), 5 );
   QVERIFY( mMemoryLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
   QVERIFY( mMemoryLayer->temporalProperties()->isActive() );
   QgsProject::instance()->addMapLayers(
@@ -127,15 +129,18 @@ void TestQgsMeshLayer::initTestCase()
   QString uri( mDataDir + "/quad_and_triangle.2dm" );
   mMdalLayer = new QgsMeshLayer( uri, "Triangle and Quad MDAL", "mdal" );
   QCOMPARE( mMdalLayer->dataProvider()->datasetGroupCount(), 1 ); //bed elevation is already in the 2dm
+  QCOMPARE( mMdalLayer->datasetGroupTreeRootItem()->childCount(), 1 );
   QVERIFY( !mMdalLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
   mMdalLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_vertex_scalar.dat" );
   mMdalLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_vertex_vector.dat" );
   QCOMPARE( mMdalLayer->dataProvider()->extraDatasets().count(), 2 );
+  QCOMPARE( mMdalLayer->datasetGroupTreeRootItem()->childCount(), 3 );
   QVERIFY( mMdalLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
 
   //The face dataset is recognized by "_els_" in the filename for this format
   mMdalLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_els_face_scalar.dat" );
   mMdalLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_els_face_vector.dat" );
+  QCOMPARE( mMdalLayer->datasetGroupTreeRootItem()->childCount(), 5 );
 
   QVERIFY( mMdalLayer->isValid() );
   QVERIFY( mMemoryLayer->temporalProperties()->isActive() );
@@ -149,12 +154,14 @@ void TestQgsMeshLayer::initTestCase()
   QCOMPARE( mMemory1DLayer->dataProvider()->extraDatasets().count(), 0 );
   QVERIFY( !mMemory1DLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
   QVERIFY( !mMemory1DLayer->temporalProperties()->isActive() );
+  QCOMPARE( mMemory1DLayer->datasetGroupTreeRootItem()->childCount(), 0 );
   mMemory1DLayer->dataProvider()->addDataset( readFile( "/lines_bed_elevation.txt" ) );
   mMemory1DLayer->dataProvider()->addDataset( readFile( "/lines_vertex_scalar.txt" ) );
   mMemory1DLayer->dataProvider()->addDataset( readFile( "/lines_vertex_vector.txt" ) );
   mMemory1DLayer->dataProvider()->addDataset( readFile( "/lines_els_scalar.txt" ) );
   mMemory1DLayer->dataProvider()->addDataset( readFile( "/lines_els_vector.txt" ) );
   QCOMPARE( mMemory1DLayer->dataProvider()->extraDatasets().count(), 5 );
+  QCOMPARE( mMemory1DLayer->datasetGroupTreeRootItem()->childCount(), 5 );
   QVERIFY( mMemory1DLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
   QVERIFY( mMemory1DLayer->temporalProperties()->isActive() );
 
@@ -165,11 +172,13 @@ void TestQgsMeshLayer::initTestCase()
   uri = QString( mDataDir + "/lines.2dm" );
   mMdal1DLayer = new QgsMeshLayer( uri, "Lines MDAL", "mdal" );
   QCOMPARE( mMdal1DLayer->dataProvider()->datasetGroupCount(), 1 ); //bed elevation is already in the 2dm
+  QCOMPARE( mMdal1DLayer->datasetGroupTreeRootItem()->childCount(), 1 );
   QVERIFY( !mMdal1DLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
   QVERIFY( !mMdal1DLayer->temporalProperties()->isActive() );
   mMdal1DLayer->dataProvider()->addDataset( mDataDir + "/lines_vertex_scalar.dat" );
   mMdal1DLayer->dataProvider()->addDataset( mDataDir + "/lines_vertex_vector.dat" );
   QCOMPARE( mMdal1DLayer->dataProvider()->extraDatasets().count(), 2 );
+  QCOMPARE( mMdal1DLayer->datasetGroupTreeRootItem()->childCount(), 3 );
   QVERIFY( mMdal1DLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
   QVERIFY( mMdal1DLayer->temporalProperties()->isActive() );
 
@@ -177,6 +186,7 @@ void TestQgsMeshLayer::initTestCase()
   //The face dataset is recognized by "_els_" in the filename for this format
   mMdal1DLayer->dataProvider()->addDataset( mDataDir + "/lines_els_scalar.dat" );
   mMdal1DLayer->dataProvider()->addDataset( mDataDir + "/lines_els_vector.dat" );
+  QCOMPARE( mMdal1DLayer->datasetGroupTreeRootItem()->childCount(), 5 );
 
   QVERIFY( mMdal1DLayer->isValid() );
   QgsProject::instance()->addMapLayers(
@@ -749,11 +759,11 @@ void TestQgsMeshLayer::test_reload()
 
   //create layer with temporary file
   QgsMeshLayer layer( testFile.fileName(), "Test", "mdal" );
-  QgsRenderContext rendererContext;
-  layer.createMapRenderer( rendererContext ); //to active the lazy loading of mesh data
+  layer.updateTriangularMesh(); //to active the lazy loading of mesh data
 
   //Test if the layer matches with quad and triangle
   QCOMPARE( layer.dataProvider()->datasetGroupCount(), 1 );
+  QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 1 );
   QCOMPARE( 5, layer.nativeMesh()->vertexCount() );
   QCOMPARE( 2, layer.nativeMesh()->faceCount() );
 
@@ -773,6 +783,7 @@ void TestQgsMeshLayer::test_reload()
 
   //Test if the layer matches with quad flower
   QCOMPARE( layer.dataProvider()->datasetGroupCount(), 1 );
+  QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 1 );
   QCOMPARE( 8, layer.nativeMesh()->vertexCount() );
   QCOMPARE( 5, layer.nativeMesh()->faceCount() );
 
@@ -794,6 +805,7 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
 
   QCOMPARE( layer.dataProvider()->extraDatasets().count(), 0 );
   QCOMPARE( layer.dataProvider()->datasetGroupCount(), 1 );
+  QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 1 );
 
   QString datasetUri_1( mDataDir + "/quad_and_triangle_vertex_scalar.dat" );
   QFile dataSetFile_1( datasetUri_1 );
@@ -831,6 +843,7 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
   QVERIFY( layer.dataProvider()->addDataset( testFileDataSet.fileName() ) );
   QCOMPARE( layer.dataProvider()->extraDatasets().count(), 1 );
   QCOMPARE( layer.dataProvider()->datasetGroupCount(), 2 );
+  QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 2 );
 
   //copy the qad_and_triangle_vertex_scalar_incompatible_mesh.dat to the temporary testFile
   copyToTemporaryFile( dataSetFile_2, testFileDataSet );
@@ -840,6 +853,7 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
   //test if dataset presence
   QCOMPARE( layer.dataProvider()->extraDatasets().count(), 1 );
   QCOMPARE( layer.dataProvider()->datasetGroupCount(), 1 );
+  QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 2 ); //dataset group tree item still have all dataset group
 
   //copy again the qad_and_triangle_vertex_scalar.dat to the temporary testFile
   copyToTemporaryFile( dataSetFile_1, testFileDataSet );
@@ -850,6 +864,7 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
   QVERIFY( layer.dataProvider()->addDataset( testFileDataSet.fileName() ) );
   QCOMPARE( layer.dataProvider()->extraDatasets().count(), 2 );
   QCOMPARE( layer.dataProvider()->datasetGroupCount(), 3 );
+  QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 3 );
 
   //copy a invalid file to the temporary testFile
   QVERIFY( testFileDataSet.open() );
@@ -862,6 +877,7 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
   //test dataset presence
   QCOMPARE( layer.dataProvider()->extraDatasets().count(), 2 );
   QCOMPARE( layer.dataProvider()->datasetGroupCount(), 1 );
+  QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 3 );
 
   //copy again the qad_and_triangle_vertex_scalar.dat to the temporary testFile
   copyToTemporaryFile( dataSetFile_1, testFileDataSet );
@@ -871,6 +887,7 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
   //test dataset presence
   QCOMPARE( layer.dataProvider()->extraDatasets().count(), 2 );
   QCOMPARE( layer.dataProvider()->datasetGroupCount(), 3 );
+  QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 3 ); //dataset group tree item still have all dataset groups
 
   //copy the qad_and_triangle_vertex_vector.dat to the temporary testFile
   copyToTemporaryFile( dataSetFile_3, testFileDataSet );

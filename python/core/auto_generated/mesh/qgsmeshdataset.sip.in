@@ -563,10 +563,12 @@ subgroups, for example
 
 Groups:
 Depth
-- Maximum
+Minimum
+Maximum
 Velocity
 Wind speed
-- Maximum
+Minimum
+Maximum
 
 .. versionadded:: 3.14
 %End
@@ -589,7 +591,6 @@ Constructor
 :param defaultName: the name that will be used to display the item if iot not overrides (:py:func:`setName`)
 :param isVector: whether the dataset group is a vector dataset group
 :param index: index of the dataset group
-:param isEnabled:
 %End
 
     QgsMeshDatasetGroupTreeItem( const QDomElement &itemElement, const QgsReadWriteContext &context );

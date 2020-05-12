@@ -533,10 +533,12 @@ class CORE_EXPORT QgsMeshDatasetMetadata
  *
  * Groups:
  *   Depth
- *     - Maximum
+ *     Minimum
+ *     Maximum
  *   Velocity
  *   Wind speed
- *     - Maximum
+ *     Minimum
+ *     Maximum
  *
  * *
  * \since QGIS 3.14 in core API
