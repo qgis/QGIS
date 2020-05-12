@@ -1072,7 +1072,7 @@ QgsGeometry QgsGeometry::minimalEnclosingCircle( QgsPointXY &center, double &rad
   center = QgsPointXY();
   radius = 0;
 
-  if ( !d->geometry )
+  if ( isEmpty() )
   {
     return QgsGeometry();
   }
