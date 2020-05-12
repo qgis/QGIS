@@ -41,7 +41,7 @@ jobs:
          cmake -DWITH_SERVER=ON -DUSE_CCACHE=OFF -DWITH_CORE=OFF -DWITH_APIDOC=ON -DWITH_ASTYLE=ON -DENABLE_TESTS=ON -DWITH_DOT=NO ..
           make -j3
       - name: Run Tests
-        run: cd build && ctest -R doc
+        run: cd build && ctest -R PyQgsDocCoverage
 
   license_check:
     runs-on: ubuntu-latest
@@ -91,6 +91,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Install Requirements
+        run: |
+          sudo apt install -y \
+              expect
       - name: Doxygen Layout Test
         run: ./tests/code_layout/test_doxygen_layout.sh
     
