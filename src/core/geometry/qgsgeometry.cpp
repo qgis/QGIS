@@ -606,10 +606,6 @@ double QgsGeometry::sqrDistToVertexAt( QgsPointXY &point, int atVertex ) const
 
 QgsGeometry QgsGeometry::nearestPoint( const QgsGeometry &other ) const
 {
-  if ( isEmpty() )
-  {
-    return QgsGeometry();
-  }
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
   QgsGeometry result = geos.closestPoint( other );
