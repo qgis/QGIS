@@ -498,6 +498,7 @@ tests:
   - algorithm: native:snapgeometries
     name: Snap lines to lines
     params:
+      BEHAVIOR: '0'
       INPUT:
         name: snap_lines.gml
         type: vector
@@ -513,6 +514,7 @@ tests:
   - algorithm: native:snapgeometries
     name: Snap polygons to polygons
     params:
+      BEHAVIOR: '0'
       INPUT:
         name: snap_polys.gml
         type: vector
@@ -528,6 +530,7 @@ tests:
   - algorithm: native:snapgeometries
     name: Snap points to points
     params:
+      BEHAVIOR: '0'
       INPUT:
         name: snap_points.gml
         type: vector
