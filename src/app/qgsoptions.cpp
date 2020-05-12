@@ -422,9 +422,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   cmbPromptSublayers->clear();
   cmbPromptSublayers->addItem( tr( "Always" ), QgsSublayersDialog::PromptAlways );
-  cmbPromptSublayers->addItem( tr( "If needed" ), QgsSublayersDialog::PromptIfNeeded ); //this means, prompt if there are sublayers but no band in the main dataset
+  cmbPromptSublayers->addItem( tr( "If Needed" ), QgsSublayersDialog::PromptIfNeeded ); //this means, prompt if there are sublayers but no band in the main dataset
   cmbPromptSublayers->addItem( tr( "Never" ), QgsSublayersDialog::PromptNever );
-  cmbPromptSublayers->addItem( tr( "Load all" ), QgsSublayersDialog::PromptLoadAll ); // check if this is true
+  cmbPromptSublayers->addItem( tr( "Load All" ), QgsSublayersDialog::PromptLoadAll ); // check if this is true
   cmbPromptSublayers->setCurrentIndex( cmbPromptSublayers->findData( mSettings->enumValue( QStringLiteral( "/qgis/promptForSublayers" ), QgsSublayersDialog::PromptAlways ) ) );
 
   // Scan for valid items in the browser dock

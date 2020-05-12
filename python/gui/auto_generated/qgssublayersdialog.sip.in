@@ -52,15 +52,15 @@ class QgsSublayersDialog : QDialog
                         const QString &name,
                         QWidget *parent /TransferThis/ = 0,
                         Qt::WindowFlags fl = 0,
-                        const QString &providerSource = QString() );
+                        const QString &dataSourceUri = QString() );
 %Docstring
-Construct a new QgsSublayersDialog object - a dialog to select which sub layers to be imported from a file (e.g. from geopackage or zipfile)
+Construct a new QgsSublayersDialog object - a dialog to select which sub layers to be imported from a data source (e.g. from geopackage or zipfile)
 
-@param providerType provider type
-@param name provider type name
-@param parent parent widget of the dialog
-@param fl window flags
-@param providerSource full file name
+:param providerType: provider type
+:param name: provider type name
+:param parent: parent widget of the dialog
+:param fl: window flags
+:param dataSourceUri: data source URI
 %End
 
     ~QgsSublayersDialog();

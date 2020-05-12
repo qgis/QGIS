@@ -90,19 +90,19 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     //! Constructor for QgsSublayersDialog
 
     /**
-     * Construct a new QgsSublayersDialog object - a dialog to select which sub layers to be imported from a file (e.g. from geopackage or zipfile)
+     * Construct a new QgsSublayersDialog object - a dialog to select which sub layers to be imported from a data source (e.g. from geopackage or zipfile)
      *
-     * @param providerType provider type
-     * @param name provider type name
-     * @param parent parent widget of the dialog
-     * @param fl window flags
-     * @param providerSource full file name
+     * \param providerType provider type
+     * \param name provider type name
+     * \param parent parent widget of the dialog
+     * \param fl window flags
+     * \param dataSourceUri data source URI
      */
     QgsSublayersDialog( ProviderType providerType,
                         const QString &name,
                         QWidget *parent SIP_TRANSFERTHIS = nullptr,
                         Qt::WindowFlags fl = nullptr,
-                        const QString &providerSource = QString() );
+                        const QString &dataSourceUri = QString() );
 
     ~QgsSublayersDialog() override;
 
