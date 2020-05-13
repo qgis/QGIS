@@ -19,6 +19,7 @@
 #include "qgslogger.h"
 #include "qgis.h"
 #include "qgsmessagelog.h"
+#include "qgsxmlutils.h"
 
 #include <QDomDocument>
 #include <QStringList>
@@ -87,8 +88,9 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
       return false;
 
     case QVariant::Map:
-      QgsDebugMsg( QStringLiteral( "no support for QVariant::Map" ) );
-      return false;
+      //it's a property
+      mValue = QgsXmlUtils::readVariant( subkeyElement.firstChild().toElement() ).toMap();
+      break;
 
     case QVariant::List:
       QgsDebugMsg( QStringLiteral( "no support for QVariant::List" ) );
@@ -218,7 +220,6 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
       value_ = QVariant( subkeyElement.text() ).toULongLong();
       break;
 #endif
-
     default :
       QgsDebugMsg( QStringLiteral( "unsupported value type %1 .. not properly translated to QVariant" ).arg( typeString ) );
   }
@@ -257,6 +258,11 @@ bool QgsProjectPropertyValue::writeXml( QString const &nodeName,
 
       valueElement.appendChild( stringListElement );
     }
+  }
+  else if ( QVariant::Map == mValue.type() )
+  {
+    QDomElement element = QgsXmlUtils::writeVariant( mValue, document );
+    valueElement.appendChild( element );
   }
   else                    // we just plop the value in as plain ole text
   {
