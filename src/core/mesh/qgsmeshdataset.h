@@ -583,7 +583,7 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
      *
      * \return the cloned item
      */
-    QgsMeshDatasetGroupTreeItem *clone() const;
+    QgsMeshDatasetGroupTreeItem *clone() const SIP_FACTORY;
 
     /**
      * Appends a item child

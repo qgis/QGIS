@@ -577,6 +577,7 @@ Maximum
 #include "qgsmeshdataset.h"
 %End
   public:
+
     QgsMeshDatasetGroupTreeItem();
 %Docstring
 Constructor for an empty dataset group tree item
@@ -603,7 +604,7 @@ Constructor from a DOM element, contruct also the children
 
     ~QgsMeshDatasetGroupTreeItem();
 
-    QgsMeshDatasetGroupTreeItem *clone() const;
+    QgsMeshDatasetGroupTreeItem *clone() const /Factory/;
 %Docstring
 Clones the item
 

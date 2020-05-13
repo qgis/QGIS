@@ -138,7 +138,6 @@ QgsMeshDatasetGroupMetadata::QgsMeshDatasetGroupMetadata( const QString &name,
   , mMaximumVerticalLevelsCount( maximumVerticalLevels )
   , mReferenceTime( referenceTime )
   , mIsTemporal( isTemporal )
-
 {
 }
 
