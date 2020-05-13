@@ -63,6 +63,7 @@ Sets the ``font`` used for rendering this legend component.
    use setTextFormat() instead
 %End
 
+
     QgsTextFormat &textFormat();
 %Docstring
 Returns the text format used for rendering this legend component.

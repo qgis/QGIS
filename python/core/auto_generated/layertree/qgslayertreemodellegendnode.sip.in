@@ -144,6 +144,8 @@ Default implementation does nothing. *
       QgsLegendPatchShape patchShape;
 
       QSizeF patchSize;
+
+      QgsTextFormat *textFormat;
     };
 
     struct ItemMetrics

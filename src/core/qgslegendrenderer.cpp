@@ -24,6 +24,7 @@
 #include "qgsrendercontext.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgstextrenderer.h"
 
 #include <QJsonObject>
 #include <QPainter>
