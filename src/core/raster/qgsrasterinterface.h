@@ -192,6 +192,7 @@ class CORE_EXPORT QgsRasterInterface
       IdentifyText     = 1 << 7, // WMS text
       IdentifyHtml     = 1 << 8, // WMS HTML
       IdentifyFeature  = 1 << 9, // WMS GML -> feature
+      Prefetch         = 1 << 10, // allow prefetching of out-of-view images
     };
 
     QgsRasterInterface( QgsRasterInterface *input = nullptr );
@@ -208,7 +209,7 @@ class CORE_EXPORT QgsRasterInterface
     }
 
     /**
-     *  Returns the above in friendly format.
+     *  Returns the raster interface capabilities in friendly format.
      */
     QString capabilitiesString() const;
 
