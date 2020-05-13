@@ -205,6 +205,12 @@ class TestQgsVectorLayerShapefile(unittest.TestCase, FeatureSourceTestCase):
         # Create test layer for FeatureSourceTestCase
         cls.source = cls.getSource()
 
+    def enable_datetime_checks(self):
+        return False
+
+    def enable_time_checks(self):
+        return False
+
 
 class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
