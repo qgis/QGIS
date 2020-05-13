@@ -100,7 +100,7 @@ class CORE_EXPORT QgsLegendRenderer
      *
      * \since QGIS 3.8
      */
-    void exportLegendToJson( const QgsRenderContext &context, QJsonObject &json );
+    QJsonObject exportLegendToJson( const QgsRenderContext &context );
 
     /**
      * Sets the \a style of a \a node.
@@ -234,7 +234,7 @@ class CORE_EXPORT QgsLegendRenderer
      *
      * \since QGIS 3.8
      */
-    void exportLegendToJson( const QgsRenderContext &context, QgsLayerTreeGroup *nodeGroup, QJsonObject &json );
+    QJsonObject exportLegendToJson( const QgsRenderContext &context, QgsLayerTreeGroup *nodeGroup );
 
     /**
      * Draws the legend using the specified render \a context, and returns the actual size of the legend.

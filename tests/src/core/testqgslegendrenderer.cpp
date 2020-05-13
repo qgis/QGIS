@@ -101,10 +101,8 @@ static QJsonObject _renderJsonLegend( QgsLayerTreeModel *legendModel, const QgsL
 {
   QgsLegendRenderer legendRenderer( legendModel, settings );
 
-  QJsonObject json;
   QgsRenderContext context;
-  legendRenderer.exportLegendToJson( context, json );
-  return json;
+  return legendRenderer.exportLegendToJson( context );
 }
 
 static bool _verifyImage( const QString &testName, QString &report, int diff = 30 )
