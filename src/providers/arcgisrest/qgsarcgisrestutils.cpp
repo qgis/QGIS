@@ -54,7 +54,7 @@ QVariant::Type QgsArcGisRestUtils::mapEsriFieldType( const QString &esriFieldTyp
   if ( esriFieldType == QLatin1String( "esriFieldTypeString" ) )
     return QVariant::String;
   if ( esriFieldType == QLatin1String( "esriFieldTypeDate" ) )
-    return QVariant::Date;
+    return QVariant::DateTime;
   if ( esriFieldType == QLatin1String( "esriFieldTypeGeometry" ) )
     return QVariant::Invalid; // Geometry column should not appear as field
   if ( esriFieldType == QLatin1String( "esriFieldTypeOID" ) )
@@ -1070,7 +1070,7 @@ QDateTime QgsArcGisRestUtils::parseDateTime( const QVariant &value )
   if ( value.isNull() )
     return QDateTime();
   bool ok = false;
-  QDateTime dt = QDateTime::fromMSecsSinceEpoch( value.toLongLong( &ok ), Qt::UTC );
+  QDateTime dt = QDateTime::fromMSecsSinceEpoch( value.toLongLong( &ok ) );
   if ( !ok )
   {
     QgsDebugMsg( QStringLiteral( "Invalid value %1 for datetime" ).arg( value.toString() ) );
