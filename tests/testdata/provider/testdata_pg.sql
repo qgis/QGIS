@@ -54,6 +54,9 @@ CREATE TABLE qgis_test."someData" (
     name text DEFAULT 'qgis',
     name2 text DEFAULT 'qgis',
     num_char text,
+    dt timestamp without time zone,
+    "date" date,
+    "time" time without time zone,
     geom public.geometry(Point,4326)
 );
 
@@ -76,11 +79,11 @@ CREATE OR REPLACE VIEW qgis_test.some_poly_data_view
 --
 
 INSERT INTO qgis_test."someData" (pk, cnt, name, name2, num_char, geom) VALUES
-(5, -200, NULL, 'NuLl', '5', '0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),
-(3,  300, 'Pear', 'PEaR', '3', NULL),
-(1,  100, 'Orange', 'oranGe', '1', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),
-(2,  200, 'Apple', 'Apple', '2', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),
-(4,  400, 'Honey', 'Honey', '4', '0101000020E610000014AE47E17A5450C03333333333935340')
+(5, -200, NULL, 'NuLl', '5', TIMESTAMP '2020-05-04 12:13:14', '2020-05-02', '12:13:01', 0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),
+(3,  300, 'Pear', 'PEaR', '3', NULL, NULL, NULL, NULL),
+(1,  100, 'Orange', 'oranGe', '1', TIMESTAMP '2020-05-03 12:13:14', '2020-05-03', '12:13:14', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),
+(2,  200, 'Apple', 'Apple', '2', TIMESTAMP '2020-05-04 12:14:14', '2020-05-04', '12:14:14', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),
+(4,  400, 'Honey', 'Honey', '4', TIMESTAMP '2021-05-04 13:13:14', '2021-05-04', '13:13:14', '0101000020E610000014AE47E17A5450C03333333333935340')
 ;
 
 INSERT INTO qgis_test."some_poly_data" (pk, geom) VALUES
