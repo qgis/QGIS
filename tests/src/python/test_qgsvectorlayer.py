@@ -350,20 +350,19 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertEqual(layer.renderer(), r)
 
         # layer with different type
-        lines_path = os.path.join(unitTestDataPath(), 'lines.shp')
+        lines_path = os.path.join(unitTestDataPath(), 'rectangles.shp')
         layer.setDataSource(lines_path, 'new name2', 'ogr', options)
 
         self.assertTrue(layer.isValid())
         self.assertEqual(layer.name(), 'new name2')
-        self.assertEqual(layer.wkbType(), QgsWkbTypes.MultiLineString)
-        # depending on proj version, the projection for this layer is either 4326 or 4030
-        self.assertIn(layer.crs().authid(), ('EPSG:4326', 'EPSG:4030'))
+        self.assertEqual(layer.wkbType(), QgsWkbTypes.MultiPolygon)
+        self.assertEqual(layer.crs().authid(), 'EPSG:4326')
         self.assertIn(lines_path, layer.dataProvider().dataSourceUri())
         self.assertEqual(len(spy), 2)
 
         # should have reset renderer!
         self.assertNotEqual(layer.renderer(), r)
-        self.assertEqual(layer.renderer().symbol().type(), QgsSymbol.Line)
+        self.assertEqual(layer.renderer().symbol().type(), QgsSymbol.Fill)
 
     def testSetDataSourceInvalidToValid(self):
         """
