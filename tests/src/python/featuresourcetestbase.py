@@ -298,10 +298,17 @@ class FeatureSourceTestCase(object):
         if self.enable_datetime_checks():
             self.assert_query(source, '"dt" <= make_datetime(2020, 5, 4, 12, 13, 14)', [1, 5])
             self.assert_query(source, '"dt" < make_date(2020, 5, 4)', [1])
+            self.assert_query(source, '"dt" = to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\')', [5])
+
         self.assert_query(source, '"date" <= make_datetime(2020, 5, 4, 12, 13, 14)', [1, 2, 5])
         self.assert_query(source, '"date" >= make_date(2020, 5, 4)', [2, 4])
+        self.assert_query(source,
+                          '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
+                          [2])
         if self.enable_time_checks():
             self.assert_query(source, '"time" >= make_time(12, 14, 14)', [2, 4])
+            self.assert_query(source, '"time" = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')', [1])
+
         if self.enable_datetime_checks():
             self.assert_query(source, '"dt" + make_interval(days:=1) <= make_datetime(2020, 5, 4, 12, 13, 14)', [1])
             self.assert_query(source, '"dt" + make_interval(days:=0.01) <= make_datetime(2020, 5, 4, 12, 13, 14)', [1, 5])
