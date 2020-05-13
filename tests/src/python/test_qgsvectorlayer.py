@@ -16,7 +16,7 @@ import os
 import tempfile
 import shutil
 
-from qgis.PyQt.QtCore import QDate, QDateTime, QVariant, Qt
+from qgis.PyQt.QtCore import QDate, QDateTime, QVariant, Qt, QDateTime, QDate, QTime
 from qgis.PyQt.QtGui import QPainter, QColor
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -211,27 +211,27 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
     @classmethod
     def getSource(cls):
         vl = QgsVectorLayer(
-            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk',
             'test', 'memory')
         assert (vl.isValid())
 
         f1 = QgsFeature()
-        f1.setAttributes([5, -200, NULL, 'NuLl', '5'])
+        f1.setAttributes([5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)), QDate(2020, 5, 2), QTime(12, 13, 1)])
         f1.setGeometry(QgsGeometry.fromWkt('Point (-71.123 78.23)'))
 
         f2 = QgsFeature()
-        f2.setAttributes([3, 300, 'Pear', 'PEaR', '3'])
+        f2.setAttributes([3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL])
 
         f3 = QgsFeature()
-        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1'])
+        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1', QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)), QDate(2020, 5, 3), QTime(12, 13, 14)])
         f3.setGeometry(QgsGeometry.fromWkt('Point (-70.332 66.33)'))
 
         f4 = QgsFeature()
-        f4.setAttributes([2, 200, 'Apple', 'Apple', '2'])
+        f4.setAttributes([2, 200, 'Apple', 'Apple', '2', QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)), QDate(2020, 5, 4), QTime(12, 14, 14)])
         f4.setGeometry(QgsGeometry.fromWkt('Point (-68.2 70.8)'))
 
         f5 = QgsFeature()
-        f5.setAttributes([4, 400, 'Honey', 'Honey', '4'])
+        f5.setAttributes([4, 400, 'Honey', 'Honey', '4', QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)), QDate(2021, 5, 4), QTime(13, 13, 14)])
         f5.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
 
         vl.dataProvider().addFeatures([f1, f2, f3, f4, f5])
@@ -3058,27 +3058,27 @@ class TestQgsVectorLayerSourceAddedFeaturesInBuffer(unittest.TestCase, FeatureSo
     @classmethod
     def getSource(cls):
         vl = QgsVectorLayer(
-            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk',
             'test', 'memory')
         assert (vl.isValid())
 
         f1 = QgsFeature()
-        f1.setAttributes([5, -200, NULL, 'NuLl', '5'])
+        f1.setAttributes([5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)), QDate(2020, 5, 2), QTime(12, 13, 1)])
         f1.setGeometry(QgsGeometry.fromWkt('Point (-71.123 78.23)'))
 
         f2 = QgsFeature()
-        f2.setAttributes([3, 300, 'Pear', 'PEaR', '3'])
+        f2.setAttributes([3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL])
 
         f3 = QgsFeature()
-        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1'])
+        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1', QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)), QDate(2020, 5, 3), QTime(12, 13, 14)])
         f3.setGeometry(QgsGeometry.fromWkt('Point (-70.332 66.33)'))
 
         f4 = QgsFeature()
-        f4.setAttributes([2, 200, 'Apple', 'Apple', '2'])
+        f4.setAttributes([2, 200, 'Apple', 'Apple', '2', QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)), QDate(2020, 5, 4), QTime(12, 14, 14)])
         f4.setGeometry(QgsGeometry.fromWkt('Point (-68.2 70.8)'))
 
         f5 = QgsFeature()
-        f5.setAttributes([4, 400, 'Honey', 'Honey', '4'])
+        f5.setAttributes([4, 400, 'Honey', 'Honey', '4', QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)), QDate(2021, 5, 4), QTime(13, 13, 14)])
         f5.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
 
         # create a layer with features only in the added features buffer - not the provider
@@ -3122,25 +3122,25 @@ class TestQgsVectorLayerSourceChangedGeometriesInBuffer(unittest.TestCase, Featu
     @classmethod
     def getSource(cls):
         vl = QgsVectorLayer(
-            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk',
             'test', 'memory')
         assert (vl.isValid())
 
         f1 = QgsFeature()
-        f1.setAttributes([5, -200, NULL, 'NuLl', '5'])
+        f1.setAttributes([5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)), QDate(2020, 5, 2), QTime(12, 13, 1)])
 
         f2 = QgsFeature()
-        f2.setAttributes([3, 300, 'Pear', 'PEaR', '3'])
+        f2.setAttributes([3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL])
         f2.setGeometry(QgsGeometry.fromWkt('Point (-70.5 65.2)'))
 
         f3 = QgsFeature()
-        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1'])
+        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1', QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)), QDate(2020, 5, 3), QTime(12, 13, 14)])
 
         f4 = QgsFeature()
-        f4.setAttributes([2, 200, 'Apple', 'Apple', '2'])
+        f4.setAttributes([2, 200, 'Apple', 'Apple', '2', QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)), QDate(2020, 5, 4), QTime(12, 14, 14)])
 
         f5 = QgsFeature()
-        f5.setAttributes([4, 400, 'Honey', 'Honey', '4'])
+        f5.setAttributes([4, 400, 'Honey', 'Honey', '4', QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)), QDate(2021, 5, 4), QTime(13, 13, 14)])
 
         vl.dataProvider().addFeatures([f1, f2, f3, f4, f5])
 
@@ -3186,27 +3186,27 @@ class TestQgsVectorLayerSourceChangedAttributesInBuffer(unittest.TestCase, Featu
     @classmethod
     def getSource(cls):
         vl = QgsVectorLayer(
-            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk',
             'test', 'memory')
         assert (vl.isValid())
 
         f1 = QgsFeature()
-        f1.setAttributes([5, 200, 'a', 'b', 'c'])
+        f1.setAttributes([5, 200, 'a', 'b', 'c', QDateTime(2020, 4, 5, 1, 2, 3), QDate(2020, 4, 5), QTime(1, 2, 3)])
         f1.setGeometry(QgsGeometry.fromWkt('Point (-71.123 78.23)'))
 
         f2 = QgsFeature()
-        f2.setAttributes([3, -200, 'd', 'e', 'f'])
+        f2.setAttributes([3, -200, 'd', 'e', 'f', QDateTime(2020, 4, 5, 1, 2, 3), QDate(2020, 4, 5), QTime(1, 2, 3)])
 
         f3 = QgsFeature()
-        f3.setAttributes([1, -100, 'g', 'h', 'i'])
+        f3.setAttributes([1, -100, 'g', 'h', 'i', QDateTime(2020, 4, 5, 1, 2, 3), QDate(2020, 4, 5), QTime(1, 2, 3)])
         f3.setGeometry(QgsGeometry.fromWkt('Point (-70.332 66.33)'))
 
         f4 = QgsFeature()
-        f4.setAttributes([2, -200, 'j', 'k', 'l'])
+        f4.setAttributes([2, -200, 'j', 'k', 'l', QDateTime(2020, 4, 5, 1, 2, 3), QDate(2020, 4, 5), QTime(1, 2, 3)])
         f4.setGeometry(QgsGeometry.fromWkt('Point (-68.2 70.8)'))
 
         f5 = QgsFeature()
-        f5.setAttributes([4, 400, 'm', 'n', 'o'])
+        f5.setAttributes([4, 400, 'm', 'n', 'o', QDateTime(2020, 4, 5, 1, 2, 3), QDate(2020, 4, 5), QTime(1, 2, 3)])
         f5.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
 
         vl.dataProvider().addFeatures([f1, f2, f3, f4, f5])
@@ -3219,26 +3219,41 @@ class TestQgsVectorLayerSourceChangedAttributesInBuffer(unittest.TestCase, Featu
         vl.changeAttributeValue(ids[5], 2, NULL)
         vl.changeAttributeValue(ids[5], 3, 'NuLl')
         vl.changeAttributeValue(ids[5], 4, '5')
+        vl.changeAttributeValue(ids[5], 5, QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)))
+        vl.changeAttributeValue(ids[5], 6, QDate(2020, 5, 2))
+        vl.changeAttributeValue(ids[5], 7, QTime(12, 13, 1))
 
         vl.changeAttributeValue(ids[3], 1, 300)
         vl.changeAttributeValue(ids[3], 2, 'Pear')
         vl.changeAttributeValue(ids[3], 3, 'PEaR')
         vl.changeAttributeValue(ids[3], 4, '3')
+        vl.changeAttributeValue(ids[3], 5, NULL)
+        vl.changeAttributeValue(ids[3], 6, NULL)
+        vl.changeAttributeValue(ids[3], 7, NULL)
 
         vl.changeAttributeValue(ids[1], 1, 100)
         vl.changeAttributeValue(ids[1], 2, 'Orange')
         vl.changeAttributeValue(ids[1], 3, 'oranGe')
         vl.changeAttributeValue(ids[1], 4, '1')
+        vl.changeAttributeValue(ids[1], 5, QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)))
+        vl.changeAttributeValue(ids[1], 6, QDate(2020, 5, 3))
+        vl.changeAttributeValue(ids[1], 7, QTime(12, 13, 14))
 
         vl.changeAttributeValue(ids[2], 1, 200)
         vl.changeAttributeValue(ids[2], 2, 'Apple')
         vl.changeAttributeValue(ids[2], 3, 'Apple')
         vl.changeAttributeValue(ids[2], 4, '2')
+        vl.changeAttributeValue(ids[2], 5, QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)))
+        vl.changeAttributeValue(ids[2], 6, QDate(2020, 5, 4))
+        vl.changeAttributeValue(ids[2], 7, QTime(12, 14, 14))
 
         vl.changeAttributeValue(ids[4], 1, 400)
         vl.changeAttributeValue(ids[4], 2, 'Honey')
         vl.changeAttributeValue(ids[4], 3, 'Honey')
         vl.changeAttributeValue(ids[4], 4, '4')
+        vl.changeAttributeValue(ids[4], 5, QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)))
+        vl.changeAttributeValue(ids[4], 6, QDate(2021, 5, 4))
+        vl.changeAttributeValue(ids[4], 7, QTime(13, 13, 14))
 
         return vl
 
@@ -3287,28 +3302,28 @@ class TestQgsVectorLayerSourceDeletedFeaturesInBuffer(unittest.TestCase, Feature
     @classmethod
     def getSource(cls):
         vl = QgsVectorLayer(
-            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&&key=pk',
             'test', 'memory')
         assert (vl.isValid())
 
         # add a bunch of similar features to the provider
         b1 = QgsFeature()
-        b1.setAttributes([5, -300, 'Apple', 'PEaR', '1'])
+        b1.setAttributes([5, -300, 'Apple', 'PEaR', '1', QDateTime(QDate(2020, 5, 5), QTime(12, 11, 14)), QDate(2020, 5, 1), QTime(10, 13, 1)])
         b1.setGeometry(QgsGeometry.fromWkt('Point (-70.332 66.33)'))
 
         b2 = QgsFeature()
-        b2.setAttributes([3, 100, 'Orange', 'NuLl', '2'])
+        b2.setAttributes([3, 100, 'Orange', 'NuLl', '2', QDateTime(QDate(2020, 5, 1), QTime(12, 13, 14)), QDate(2020, 5, 9), QTime(9, 13, 1)])
         b2.setGeometry(QgsGeometry.fromWkt('Point (-71.123 78.23)'))
 
         b3 = QgsFeature()
-        b3.setAttributes([1, -200, 'Honey', 'oranGe', '5'])
+        b3.setAttributes([1, -200, 'Honey', 'oranGe', '5', QDateTime(QDate(2020, 5, 1), QTime(12, 13, 14)), QDate(2020, 5, 19), QTime(2, 13, 1)])
 
         b4 = QgsFeature()
-        b4.setAttributes([2, 400, 'Pear', 'Honey', '3'])
+        b4.setAttributes([2, 400, 'Pear', 'Honey', '3', QDateTime(QDate(2020, 4, 4), QTime(12, 13, 14)), QDate(2020, 4, 2), QTime(4, 13, 1)])
         b4.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
 
         b5 = QgsFeature()
-        b5.setAttributes([4, 200, NULL, 'oranGe', '3'])
+        b5.setAttributes([4, 200, NULL, 'oranGe', '3', QDateTime(QDate(2019, 5, 4), QTime(12, 13, 14)), QDate(2019, 5, 2), QTime(1, 13, 1)])
         b5.setGeometry(QgsGeometry.fromWkt('Point (-68.2 70.8)'))
 
         vl.dataProvider().addFeatures([b1, b2, b3, b4, b5])
@@ -3317,22 +3332,22 @@ class TestQgsVectorLayerSourceDeletedFeaturesInBuffer(unittest.TestCase, Feature
 
         # here's our good features
         f1 = QgsFeature()
-        f1.setAttributes([5, -200, NULL, 'NuLl', '5'])
+        f1.setAttributes([5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)), QDate(2020, 5, 2), QTime(12, 13, 1)])
         f1.setGeometry(QgsGeometry.fromWkt('Point (-71.123 78.23)'))
 
         f2 = QgsFeature()
-        f2.setAttributes([3, 300, 'Pear', 'PEaR', '3'])
+        f2.setAttributes([3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL])
 
         f3 = QgsFeature()
-        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1'])
+        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1', QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)), QDate(2020, 5, 3), QTime(12, 13, 14)])
         f3.setGeometry(QgsGeometry.fromWkt('Point (-70.332 66.33)'))
 
         f4 = QgsFeature()
-        f4.setAttributes([2, 200, 'Apple', 'Apple', '2'])
+        f4.setAttributes([2, 200, 'Apple', 'Apple', '2', QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)), QDate(2020, 5, 4), QTime(12, 14, 14)])
         f4.setGeometry(QgsGeometry.fromWkt('Point (-68.2 70.8)'))
 
         f5 = QgsFeature()
-        f5.setAttributes([4, 400, 'Honey', 'Honey', '4'])
+        f5.setAttributes([4, 400, 'Honey', 'Honey', '4', QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)), QDate(2021, 5, 4), QTime(13, 13, 14)])
         f5.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
 
         vl.dataProvider().addFeatures([f1, f2, f3, f4, f5])
