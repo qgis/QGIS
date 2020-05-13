@@ -2861,3 +2861,16 @@ void QgsVertexTool::cleanEditor( QgsFeatureId id )
     cleanupVertexEditor();
   };
 }
+
+void QgsVertexTool::clean()
+{
+  if ( mDraggingVertex || mDraggingEdge )
+  {
+    stopDragging();
+  }
+  if ( mSelectionRubberBand )
+  {
+    stopSelectionRubberBand();
+    mSelectionRubberBandStartPos.reset();
+  }
+}
