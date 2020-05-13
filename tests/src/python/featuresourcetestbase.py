@@ -45,6 +45,12 @@ class FeatureSourceTestCase(object):
     def treat_date_as_datetime(self):
         return False
 
+    def treat_datetime_as_string(self):
+        return False
+
+    def treat_date_as_string(self):
+        return False
+
     def treat_time_as_string(self):
         return False
 
@@ -91,11 +97,11 @@ class FeatureSourceTestCase(object):
             attributes[f['pk']] = attrs
             geometries[f['pk']] = f.hasGeometry() and f.geometry().asWkt()
 
-        expected_attributes = {5: [5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)), QDate(2020, 5, 2) if not self.treat_date_as_datetime() else QDateTime(2020, 5, 2, 0, 0, 0), QTime(12, 13, 1) if not self.treat_time_as_string() else '12:13:01'],
+        expected_attributes = {5: [5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)) if not self.treat_datetime_as_string() else '2020-05-04 12:13:14', QDate(2020, 5, 2) if not self.treat_date_as_datetime() and not self.treat_date_as_string() else QDateTime(2020, 5, 2, 0, 0, 0) if not self.treat_date_as_string() else '2020-05-02', QTime(12, 13, 1) if not self.treat_time_as_string() else '12:13:01'],
                                3: [3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL],
-                               1: [1, 100, 'Orange', 'oranGe', '1', QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)), QDate(2020, 5, 3) if not self.treat_date_as_datetime() else QDateTime(2020, 5, 3, 0, 0, 0), QTime(12, 13, 14) if not self.treat_time_as_string() else '12:13:14'],
-                               2: [2, 200, 'Apple', 'Apple', '2', QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)), QDate(2020, 5, 4) if not self.treat_date_as_datetime() else QDateTime(2020, 5, 4, 0, 0, 0), QTime(12, 14, 14) if not self.treat_time_as_string() else '12:14:14'],
-                               4: [4, 400, 'Honey', 'Honey', '4', QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)), QDate(2021, 5, 4) if not self.treat_date_as_datetime() else QDateTime(2021, 5, 4, 0, 0, 0), QTime(13, 13, 14) if not self.treat_time_as_string() else '13:13:14']}
+                               1: [1, 100, 'Orange', 'oranGe', '1', QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)) if not self.treat_datetime_as_string() else '2020-05-03 12:13:14', QDate(2020, 5, 3) if not self.treat_date_as_datetime() and not self.treat_date_as_string() else QDateTime(2020, 5, 3, 0, 0, 0) if not self.treat_date_as_string() else '2020-05-03', QTime(12, 13, 14) if not self.treat_time_as_string() else '12:13:14'],
+                               2: [2, 200, 'Apple', 'Apple', '2', QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)) if not self.treat_datetime_as_string() else '2020-05-04 12:14:14', QDate(2020, 5, 4) if not self.treat_date_as_datetime() and not self.treat_date_as_string() else QDateTime(2020, 5, 4, 0, 0, 0) if not self.treat_date_as_string() else '2020-05-04', QTime(12, 14, 14) if not self.treat_time_as_string() else '12:14:14'],
+                               4: [4, 400, 'Honey', 'Honey', '4', QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)) if not self.treat_datetime_as_string() else '2021-05-04 13:13:14', QDate(2021, 5, 4) if not self.treat_date_as_datetime() and not self.treat_date_as_string() else QDateTime(2021, 5, 4, 0, 0, 0) if not self.treat_date_as_string() else '2021-05-04', QTime(13, 13, 14) if not self.treat_time_as_string() else '13:13:14']}
 
         expected_geometries = {1: 'Point (-70.332 66.33)',
                                2: 'Point (-68.2 70.8)',
@@ -295,9 +301,14 @@ class FeatureSourceTestCase(object):
                           [1, 2])
 
         # datetime
-        self.assert_query(source, '"dt" <= make_datetime(2020, 5, 4, 12, 13, 14)', [1, 5])
-        self.assert_query(source, '"dt" < make_date(2020, 5, 4)', [1])
-        self.assert_query(source, '"dt" = to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\')', [5])
+        if self.treat_datetime_as_string():
+            self.assert_query(source, '"dt" <= format_date(make_datetime(2020, 5, 4, 12, 13, 14), \'yyyy-MM-dd hh:mm:ss\')', [1, 5])
+            self.assert_query(source, '"dt" < format_date(make_date(2020, 5, 4), \'yyyy-MM-dd hh:mm:ss\')', [1])
+            self.assert_query(source, '"dt" = format_date(to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\'),\'yyyy-MM-dd hh:mm:ss\')', [5])
+        else:
+            self.assert_query(source, '"dt" <= make_datetime(2020, 5, 4, 12, 13, 14)', [1, 5])
+            self.assert_query(source, '"dt" < make_date(2020, 5, 4)', [1])
+            self.assert_query(source, '"dt" = to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\')', [5])
 
         self.assert_query(source, '"date" <= make_datetime(2020, 5, 4, 12, 13, 14)', [1, 2, 5])
         self.assert_query(source, '"date" >= make_date(2020, 5, 4)', [2, 4])
@@ -317,8 +328,12 @@ class FeatureSourceTestCase(object):
             self.assert_query(source, 'to_time("time") >= make_time(12, 14, 14)', [2, 4])
             self.assert_query(source, 'to_time("time") = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')', [1])
 
-        self.assert_query(source, '"dt" + make_interval(days:=1) <= make_datetime(2020, 5, 4, 12, 13, 14)', [1])
-        self.assert_query(source, '"dt" + make_interval(days:=0.01) <= make_datetime(2020, 5, 4, 12, 13, 14)', [1, 5])
+        if self.treat_datetime_as_string():
+            self.assert_query(source, 'to_datetime("dt", \'yyyy-MM-dd hh:mm:ss\') + make_interval(days:=1) <= make_datetime(2020, 5, 4, 12, 13, 14)', [1])
+            self.assert_query(source, 'to_datetime("dt", \'yyyy-MM-dd hh:mm:ss\') + make_interval(days:=0.01) <= make_datetime(2020, 5, 4, 12, 13, 14)', [1, 5])
+        else:
+            self.assert_query(source, '"dt" + make_interval(days:=1) <= make_datetime(2020, 5, 4, 12, 13, 14)', [1])
+            self.assert_query(source, '"dt" + make_interval(days:=0.01) <= make_datetime(2020, 5, 4, 12, 13, 14)', [1, 5])
 
         # combination of an uncompilable expression and limit
 
@@ -743,11 +758,15 @@ class FeatureSourceTestCase(object):
                  'cnt': set([-200, 300, 100, 200, 400]),
                  'name': set(['Pear', 'Orange', 'Apple', 'Honey', NULL]),
                  'name2': set(['NuLl', 'PEaR', 'oranGe', 'Apple', 'Honey']),
-                 'dt': set([NULL, QDateTime(2021, 5, 4, 13, 13, 14), QDateTime(2020, 5, 4, 12, 14, 14), QDateTime(2020, 5, 4, 12, 13, 14), QDateTime(2020, 5, 3, 12, 13, 14)]),
-                 'date': set([NULL, QDate(2020, 5, 2) if not self.treat_date_as_datetime() else QDateTime(2020, 5, 2, 0, 0, 0),
-                              QDate(2020, 5, 3) if not self.treat_date_as_datetime() else QDateTime(2020, 5, 3, 0, 0, 0),
-                              QDate(2020, 5, 4) if not self.treat_date_as_datetime() else QDateTime(2020, 5, 4, 0, 0, 0),
-                              QDate(2021, 5, 4) if not self.treat_date_as_datetime() else QDateTime(2021, 5, 4, 0, 0, 0)]),
+                 'dt': set([NULL, '2021-05-04 13:13:14' if self.treat_datetime_as_string() else QDateTime(2021, 5, 4, 13, 13, 14) if not self.treat_datetime_as_string() else '2021-05-04 13:13:14',
+                            '2020-05-04 12:14:14' if self.treat_datetime_as_string() else QDateTime(2020, 5, 4, 12, 14, 14) if not self.treat_datetime_as_string() else '2020-05-04 12:14:14',
+                            '2020-05-04 12:13:14' if self.treat_datetime_as_string() else QDateTime(2020, 5, 4, 12, 13, 14) if not self.treat_datetime_as_string() else '2020-05-04 12:13:14',
+                            '2020-05-03 12:13:14' if self.treat_datetime_as_string() else QDateTime(2020, 5, 3, 12, 13, 14) if not self.treat_datetime_as_string() else '2020-05-03 12:13:14']),
+                 'date': set([NULL,
+                              '2020-05-02' if self.treat_date_as_string() else QDate(2020, 5, 2) if not self.treat_date_as_datetime() else QDateTime(2020, 5, 2, 0, 0, 0),
+                              '2020-05-03' if self.treat_date_as_string() else QDate(2020, 5, 3) if not self.treat_date_as_datetime() else QDateTime(2020, 5, 3, 0, 0, 0),
+                              '2020-05-04' if self.treat_date_as_string() else QDate(2020, 5, 4) if not self.treat_date_as_datetime() else QDateTime(2020, 5, 4, 0, 0, 0),
+                              '2021-05-04' if self.treat_date_as_string() else QDate(2021, 5, 4) if not self.treat_date_as_datetime() else QDateTime(2021, 5, 4, 0, 0, 0)]),
                  'time': set([QTime(12, 13, 1) if not self.treat_time_as_string() else '12:13:01',
                               QTime(12, 14, 14) if not self.treat_time_as_string() else '12:14:14',
                               QTime(12, 13, 14) if not self.treat_time_as_string() else '12:13:14',
@@ -799,10 +818,17 @@ class FeatureSourceTestCase(object):
             self.source.uniqueValues(self.source.fields().lookupField('name'))), 'Got {}'.format(
             set(self.source.uniqueValues(self.source.fields().lookupField('name'))))
 
-        self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
-                         set([QDateTime(2021, 5, 4, 13, 13, 14), QDateTime(2020, 5, 4, 12, 14, 14), QDateTime(2020, 5, 4, 12, 13, 14), QDateTime(2020, 5, 3, 12, 13, 14), NULL]))
+        if self.treat_datetime_as_string():
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
+                             set(['2021-05-04 13:13:14', '2020-05-04 12:14:14', '2020-05-04 12:13:14', '2020-05-03 12:13:14', NULL]))
+        else:
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
+                             set([QDateTime(2021, 5, 4, 13, 13, 14), QDateTime(2020, 5, 4, 12, 14, 14), QDateTime(2020, 5, 4, 12, 13, 14), QDateTime(2020, 5, 3, 12, 13, 14), NULL]))
 
-        if self.treat_date_as_datetime():
+        if self.treat_date_as_string():
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
+                             set(['2020-05-03', '2020-05-04', '2021-05-04', '2020-05-02', NULL]))
+        elif self.treat_date_as_datetime():
             self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
                              set([QDateTime(2020, 5, 3, 0, 0, 0), QDateTime(2020, 5, 4, 0, 0, 0), QDateTime(2021, 5, 4, 0, 0, 0), QDateTime(2020, 5, 2, 0, 0, 0), NULL]))
         else:
@@ -818,9 +844,15 @@ class FeatureSourceTestCase(object):
     def testMinimumValue(self):
         self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('cnt')), -200)
         self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('name')), 'Apple')
-        self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('dt')), QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)))
 
-        if not self.treat_date_as_datetime():
+        if self.treat_datetime_as_string():
+            self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('dt')), '2020-05-03 12:13:14')
+        else:
+            self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('dt')), QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)))
+
+        if self.treat_date_as_string():
+            self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('date')), '2020-05-02')
+        elif not self.treat_date_as_datetime():
             self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('date')), QDate(2020, 5, 2))
         else:
             self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('date')), QDateTime(2020, 5, 2, 0, 0, 0))
@@ -833,9 +865,15 @@ class FeatureSourceTestCase(object):
     def testMaximumValue(self):
         self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('cnt')), 400)
         self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('name')), 'Pear')
-        self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('dt')), QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)))
 
-        if not self.treat_date_as_datetime():
+        if not self.treat_datetime_as_string():
+            self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('dt')), QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)))
+        else:
+            self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('dt')), '2021-05-04 13:13:14')
+
+        if self.treat_date_as_string():
+            self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('date')), '2021-05-04')
+        elif not self.treat_date_as_datetime():
             self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('date')), QDate(2021, 5, 4))
         else:
             self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('date')), QDateTime(2021, 5, 4, 0, 0, 0))

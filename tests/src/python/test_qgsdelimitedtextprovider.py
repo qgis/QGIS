@@ -155,6 +155,15 @@ class TestQgsDelimitedTextProviderXY(unittest.TestCase, ProviderTestCase):
     def tearDownClass(cls):
         """Run after all tests"""
 
+    def treat_time_as_string(self):
+        return True
+
+    def treat_date_as_string(self):
+        return True
+
+    def treat_datetime_as_string(self):
+        return True
+
 
 class TestQgsDelimitedTextProviderWKT(unittest.TestCase, ProviderTestCase):
 
@@ -194,6 +203,15 @@ class TestQgsDelimitedTextProviderWKT(unittest.TestCase, ProviderTestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
+
+    def treat_time_as_string(self):
+        return True
+
+    def treat_date_as_string(self):
+        return True
+
+    def treat_datetime_as_string(self):
+        return True
 
 
 class TestQgsDelimitedTextProviderOther(unittest.TestCase):
