@@ -84,7 +84,7 @@ void TestQgsArcGisRestUtils::testMapEsriFieldType()
   QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeDouble" ) ), QVariant::Double );
   QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeSingle" ) ), QVariant::Double );
   QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeString" ) ), QVariant::String );
-  QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeDate" ) ), QVariant::Date );
+  QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeDate" ) ), QVariant::DateTime );
   QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeOID" ) ), QVariant::LongLong );
   QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeBlob" ) ), QVariant::ByteArray );
   QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeGlobalID" ) ), QVariant::String );
