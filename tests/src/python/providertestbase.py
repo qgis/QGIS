@@ -77,7 +77,7 @@ class ProviderTestCase(FeatureSourceTestCase):
             elif expression in self.partiallyCompiledFilters():
                 self.assertEqual(it.compileStatus(), QgsAbstractFeatureIterator.PartiallyCompiled)
             else:
-                self.assertEqual(it.compileStatus(), QgsAbstractFeatureIterator.Compiled)
+                self.assertEqual(it.compileStatus(), QgsAbstractFeatureIterator.Compiled, expression)
 
     def runGetFeatureTests(self, source):
         FeatureSourceTestCase.runGetFeatureTests(self, source)
@@ -583,11 +583,15 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertTrue(l.isValid())
 
         f1 = QgsFeature()
-        f1.setAttributes([6, -220, NULL, 'String', '15', QDateTime(2019, 1, 2, 3, 4, 5), QDate(2019, 1, 2), QTime(3, 4, 5)])
+        f1.setAttributes([6, -220, NULL, 'String', '15', '2019-01-02 03:04:05' if self.treat_datetime_as_string() else QDateTime(2019, 1, 2, 3, 4, 5),
+                          '2019-01-02' if self.treat_date_as_string() else QDate(2019, 1, 2),
+                          '03:04:05' if self.treat_time_as_string() else QTime(3, 4, 5)])
         f1.setGeometry(QgsGeometry.fromWkt('Point (-72.345 71.987)'))
 
         f2 = QgsFeature()
-        f2.setAttributes([7, 330, 'Coconut', 'CoCoNut', '13', QDateTime(2018, 5, 6, 7, 8, 9), QDate(2018, 5, 6), QTime(7, 8, 9)])
+        f2.setAttributes([7, 330, 'Coconut', 'CoCoNut', '13', '2018-05-06 07:08:09' if self.treat_datetime_as_string() else QDateTime(2018, 5, 6, 7, 8, 9),
+                          '2018-05-06' if self.treat_date_as_string() else QDate(2018, 5, 6),
+                          '07:08:09' if self.treat_time_as_string() else QTime(7, 8, 9)])
 
         if l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
             # expect success
@@ -676,9 +680,13 @@ class ProviderTestCase(FeatureSourceTestCase):
         # test that adding features with too many attributes drops these attributes
         # we be more tricky and also add a valid feature to stress test the provider
         f1 = QgsFeature()
-        f1.setAttributes([6, -220, NULL, 'String', '15', QDateTime(2019, 1, 2, 3, 4, 5), QDate(2019, 1, 2), QTime(3, 4, 5)])
+        f1.setAttributes([6, -220, NULL, 'String', '15', '2019-01-02 03:04:05' if self.treat_datetime_as_string() else QDateTime(2019, 1, 2, 3, 4, 5),
+                          '2019-01-02' if self.treat_date_as_string() else QDate(2019, 1, 2),
+                          '03:04:05' if self.treat_time_as_string() else QTime(3, 4, 5)])
         f2 = QgsFeature()
-        f2.setAttributes([7, -230, NULL, 'String', '15', QDateTime(2019, 1, 2, 3, 4, 5), QDate(2019, 1, 2), QTime(3, 4, 5), 15, 16, 17])
+        f2.setAttributes([7, -230, NULL, 'String', '15', '2019-01-02 03:04:05' if self.treat_datetime_as_string() else QDateTime(2019, 1, 2, 3, 4, 5),
+                          '2019-01-02' if self.treat_date_as_string() else QDate(2019, 1, 2),
+                          '03:04:05' if self.treat_time_as_string() else QTime(3, 4, 5), 15, 16, 17])
 
         result, added = l.dataProvider().addFeatures([f1, f2])
         self.assertTrue(result,
@@ -686,7 +694,11 @@ class ProviderTestCase(FeatureSourceTestCase):
 
         # make sure feature was added correctly
         added = [f for f in l.dataProvider().getFeatures() if f['pk'] == 7][0]
-        self.assertEqual(added.attributes(), [7, -230, NULL, 'String', '15', QDateTime(2019, 1, 2, 3, 4, 5), QDate(2019, 1, 2), QTime(3, 4, 5)])
+        self.assertEqual(added.attributes(), [7, -230, NULL, 'String', '15',
+                                              '2019-01-02 03:04:05' if self.treat_datetime_as_string() else QDateTime(
+                                                  2019, 1, 2, 3, 4, 5),
+                                              '2019-01-02' if self.treat_date_as_string() else QDate(2019, 1, 2),
+                                              '03:04:05' if self.treat_time_as_string() else QTime(3, 4, 5)])
 
     def testAddFeatureWrongGeomType(self):
         if not getattr(self, 'getEditableLayer', None):
