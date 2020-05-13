@@ -119,6 +119,10 @@ class CORE_EXPORT QgsVectorTileBasicLabeling : public QgsVectorTileLabeling
     void setStyles( const QList<QgsVectorTileBasicLabelingStyle> &styles ) { mStyles = styles; }
     //! Returns list of styles of the renderer
     QList<QgsVectorTileBasicLabelingStyle> styles() const { return mStyles; }
+    //! Updates style definition at the paricular index of the list (the index must be in interval [0,N-1] otherwise this function does nothing)
+    void setStyle( int index, const QgsVectorTileBasicLabelingStyle &style ) { mStyles[index] = style; }
+    //! Returns style definition at the particular index
+    QgsVectorTileBasicLabelingStyle style( int index ) const { return mStyles[index]; }
 
   private:
     //! List of rendering styles

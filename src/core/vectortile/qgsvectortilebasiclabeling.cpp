@@ -16,6 +16,7 @@
 #include "qgsvectortilebasiclabeling.h"
 
 #include "qgsexpressioncontextutils.h"
+#include "qgslogger.h"
 #include "qgsvectortilelayer.h"
 #include "qgsvectortilerenderer.h"
 #include "qgsvectortileutils.h"
@@ -151,7 +152,10 @@ QList<QgsAbstractLabelProvider *> QgsVectorTileBasicLabelProvider::subProviders(
 {
   QList<QgsAbstractLabelProvider *> lst;
   for ( QgsVectorLayerLabelProvider *subprovider : qgis::as_const( mSubProviders ) )
-    lst << subprovider;
+  {
+    if ( subprovider )  // sub-providers that failed to initialize are set to null
+      lst << subprovider;
+  }
   return lst;
 }
 
@@ -170,7 +174,11 @@ bool QgsVectorTileBasicLabelProvider::prepare( QgsRenderContext &context, QSet<Q
     QgsExpressionContextScopePopper popper( context.expressionContext(), scope );
 
     mSubProviders[i]->setFields( fields );
-    mSubProviders[i]->prepare( context, attributeNames );
+    if ( !mSubProviders[i]->prepare( context, attributeNames ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Failed to prepare labeling for style index" ) + QString::number( i ) );
+      mSubProviders[i] = nullptr;
+    }
   }
   return true;
 }
@@ -196,6 +204,8 @@ void QgsVectorTileBasicLabelProvider::registerTileFeatures( const QgsVectorTileR
     filterExpression.prepare( &context.expressionContext() );
 
     QgsVectorLayerLabelProvider *subProvider = mSubProviders[i];
+    if ( !subProvider )
+      continue;  // sub-providers that failed to initialize are set to null
 
     if ( layerStyle.layerName().isEmpty() )
     {

@@ -45,6 +45,7 @@ class QgsVectorLayer3DRendererWidget;
 class QgsMeshLayer3DRendererWidget;
 class QgsMessageBar;
 class QgsVectorTileBasicRendererWidget;
+class QgsVectorTileBasicLabelingWidget;
 
 class APP_EXPORT QgsLayerStyleManagerWidgetFactory : public QgsMapLayerConfigWidgetFactory
 {
@@ -151,6 +152,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     QgsRendererRasterPropertiesWidget *mRasterStyleWidget = nullptr;
     QgsRendererMeshPropertiesWidget *mMeshStyleWidget = nullptr;
     QgsVectorTileBasicRendererWidget *mVectorTileStyleWidget = nullptr;
+    QgsVectorTileBasicLabelingWidget *mVectorTileLabelingWidget = nullptr;
     QList<QgsMapLayerConfigWidgetFactory *> mPageFactories;
     QMap<int, QgsMapLayerConfigWidgetFactory *> mUserPages;
     QgsLayerStyleManagerWidgetFactory *mStyleManagerFactory = nullptr;
