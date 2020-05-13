@@ -52,10 +52,11 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
       CapturePolygon  //!< Capture polygons
     };
 
+    //! Specific capbilities of the tool
     enum Capability
     {
-      NoCapabilities = 0,       //!< Tool has no capabilities
-      SupportsCurves = 1,       //!< Supports curved geometries input;
+      NoCapabilities = 0,       //!< No specific capabilities
+      SupportsCurves = 1,       //!< Supports curved geometries input
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )
