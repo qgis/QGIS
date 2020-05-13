@@ -40,6 +40,7 @@ The ``enabled`` argument specifies whether the temporal properties are initially
       ModeFeatureDateTimeInstantFromField,
       ModeFeatureDateTimeStartAndEndFromFields,
       ModeFeatureDateTimeStartAndDurationFromFields,
+      ModeFeatureDateTimeStartAndEndFromExpressions,
       ModeRedrawLayerOnly,
     };
 
@@ -133,6 +134,62 @@ contains the end time for the feature's time spans.
 .. seealso:: :py:func:`endField`
 
 .. seealso:: :py:func:`setStartField`
+%End
+
+    QString startExpression() const;
+%Docstring
+Returns the expression for the start time for the feature's time spans.
+
+.. warning::
+
+   This setting is only effective when mode() is
+   QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromExpressions
+
+.. seealso:: :py:func:`setStartExpression`
+
+.. seealso:: :py:func:`endExpression`
+%End
+
+    void setStartExpression( const QString &expression );
+%Docstring
+Sets the ``expression`` to use for the start time for the feature's time spans.
+
+.. warning::
+
+   This setting is only effective when mode() is
+   QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromExpressions
+
+.. seealso:: :py:func:`startExpression`
+
+.. seealso:: :py:func:`setEndExpression`
+%End
+
+    QString endExpression() const;
+%Docstring
+Returns the expression for the end time for the feature's time spans.
+
+.. warning::
+
+   This setting is only effective when mode() is
+   QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromExpressions
+
+.. seealso:: :py:func:`setEndExpression`
+
+.. seealso:: :py:func:`startExpression`
+%End
+
+    void setEndExpression( const QString &endExpression );
+%Docstring
+Sets the ``expression`` to use for the end time for the feature's time spans.
+
+.. warning::
+
+   This setting is only effective when mode() is
+   QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromExpressions
+
+.. seealso:: :py:func:`endExpression`
+
+.. seealso:: :py:func:`setStartExpression`
 %End
 
     QString durationField() const;

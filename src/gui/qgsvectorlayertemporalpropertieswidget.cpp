@@ -23,6 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayertemporalproperties.h"
 #include "qgsstringutils.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( QWidget *parent, QgsVectorLayer *layer )
   : QWidget( parent )
@@ -35,6 +36,7 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
   mModeComboBox->addItem( tr( "Single Field with Date/Time" ), QgsVectorLayerTemporalProperties::ModeFeatureDateTimeInstantFromField );
   mModeComboBox->addItem( tr( "Separate Fields for Start and End Date/Time" ), QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromFields );
   mModeComboBox->addItem( tr( "Separate Fields for Start and Event Duration" ), QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndDurationFromFields );
+  mModeComboBox->addItem( tr( "Start and End Date/Time from Expressions" ), QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromExpressions );
   mModeComboBox->addItem( tr( "Redraw Layer Only" ), QgsVectorLayerTemporalProperties::ModeRedrawLayerOnly );
 
   const QgsVectorLayerTemporalProperties *properties = qobject_cast< QgsVectorLayerTemporalProperties * >( layer->temporalProperties() );
@@ -111,6 +113,16 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
     mFixedDurationUnitsComboBox->setEnabled( !checked );
     mFixedDurationSpinBox->setEnabled( !checked );
   } );
+
+  mStartExpressionWidget->setAllowEmptyFieldName( true );
+  mEndExpressionWidget->setAllowEmptyFieldName( true );
+  mStartExpressionWidget->setLayer( layer );
+  mEndExpressionWidget->setLayer( layer );
+  mStartExpressionWidget->registerExpressionContextGenerator( this );
+  mEndExpressionWidget->registerExpressionContextGenerator( this );
+
+  mStartExpressionWidget->setField( properties->startExpression() );
+  mEndExpressionWidget->setField( properties->endExpression() );
 }
 
 void QgsVectorLayerTemporalPropertiesWidget::saveTemporalProperties()
@@ -130,6 +142,7 @@ void QgsVectorLayerTemporalPropertiesWidget::saveTemporalProperties()
     case QgsVectorLayerTemporalProperties::ModeFeatureDateTimeInstantFromField:
     case QgsVectorLayerTemporalProperties::ModeFixedTemporalRange:
     case QgsVectorLayerTemporalProperties::ModeRedrawLayerOnly:
+    case QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromExpressions:
       properties->setStartField( mSingleFieldComboBox->currentField() );
       properties->setDurationUnits( static_cast< QgsUnitTypes::TemporalUnit >( mFixedDurationUnitsComboBox->currentData().toInt() ) );
       break;
@@ -149,4 +162,13 @@ void QgsVectorLayerTemporalPropertiesWidget::saveTemporalProperties()
   properties->setDurationField( mDurationFieldComboBox->currentField() );
   properties->setFixedDuration( mFixedDurationSpinBox->value() );
   properties->setAccumulateFeatures( mAccumulateCheckBox->isChecked() );
+  properties->setStartExpression( mStartExpressionWidget->currentField() );
+  properties->setEndExpression( mEndExpressionWidget->currentField() );
+}
+
+QgsExpressionContext QgsVectorLayerTemporalPropertiesWidget::createExpressionContext() const
+{
+  QgsExpressionContext context;
+  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+  return context;
 }
