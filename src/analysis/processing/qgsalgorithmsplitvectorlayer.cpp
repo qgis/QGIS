@@ -65,6 +65,12 @@ void QgsSplitVectorLayerAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Unique ID field" ),
                 QVariant(), QStringLiteral( "INPUT" ) ) );
+
+  QStringList options = QgsVectorFileWriter::supportedFormatExtensions();
+  auto fileTypeParam = qgis::make_unique < QgsProcessingParameterEnum >( QStringLiteral( "FILE_TYPE" ), QObject::tr( "Output file type" ), options, false, QVariantList() << 0, true );
+  fileTypeParam->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( fileTypeParam.release() );
+
   addParameter( new QgsProcessingParameterFolderDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output directory" ) ) );
   addOutput( new QgsProcessingOutputMultipleLayers( QStringLiteral( "OUTPUT_LAYERS" ), QObject::tr( "Output layers" ) ) );
 }
@@ -77,6 +83,18 @@ QVariantMap QgsSplitVectorLayerAlgorithm::processAlgorithm( const QVariantMap &p
 
   QString fieldName = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
   QString outputDir = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
+  QString outputFormat;
+  if ( parameters.value( QStringLiteral( "FILE_TYPE" ) ).isValid() )
+  {
+    int idx = parameterAsEnum( parameters, QStringLiteral( "FILE_TYPE" ), context );
+    outputFormat = QgsVectorFileWriter::supportedFormatExtensions().at( idx );
+  }
+  else
+  {
+    outputFormat = context.preferredVectorFormat();
+    if ( !QgsVectorFileWriter::supportedFormatExtensions().contains( outputFormat, Qt::CaseInsensitive ) )
+      outputFormat = QStringLiteral( "gpkg" );
+  }
 
   if ( !QDir().mkpath( outputDir ) )
     throw QgsProcessingException( QStringLiteral( "Failed to create output directory." ) );
@@ -87,9 +105,6 @@ QVariantMap QgsSplitVectorLayerAlgorithm::processAlgorithm( const QVariantMap &p
   int fieldIndex = fields.lookupField( fieldName );
   QSet< QVariant > uniqueValues = source->uniqueValues( fieldIndex );
   QString baseName = outputDir + QDir::separator() + fieldName;
-  QString outputFormat = context.preferredVectorFormat();
-  if ( !QgsVectorFileWriter::supportedFormatExtensions().contains( outputFormat, Qt::CaseInsensitive ) )
-    outputFormat = QStringLiteral( "gpkg" );
 
   int current = 0;
   double step = uniqueValues.size() > 0 ? 100.0 / uniqueValues.size() : 1;
