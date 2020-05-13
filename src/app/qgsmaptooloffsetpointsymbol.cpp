@@ -33,7 +33,9 @@ QgsMapToolOffsetPointSymbol::QgsMapToolOffsetPointSymbol( QgsMapCanvas *canvas )
   : QgsMapToolPointSymbol( canvas )
   , mOffsetting( false )
   , mSymbolRotation( 0.0 )
-{}
+{
+  mToolName = tr( "Map tool offset point symbol" );
+}
 
 QgsMapToolOffsetPointSymbol::~QgsMapToolOffsetPointSymbol()
 {
