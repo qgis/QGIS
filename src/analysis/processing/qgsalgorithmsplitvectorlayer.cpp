@@ -47,11 +47,12 @@ QString QgsSplitVectorLayerAlgorithm::groupId() const
 
 QString QgsSplitVectorLayerAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Splits input vector layer into multiple layers by specified unique ID field."
-                      "Each of the layers created in the output folder contains all features from "
-                      "the input layer with the same value for the specified attribute. The number "
-                      ":of files generated is equal to the number of different values found for the "
-                      "specified attribute." );
+  return QObject::tr( "Splits input vector layer into multiple layers by specified unique ID field." )
+         + QStringLiteral( "\n\n" )
+         + QObject::tr( "Each of the layers created in the output folder contains all features from "
+                        "the input layer with the same value for the specified attribute. The number "
+                        "of files generated is equal to the number of different values found for the "
+                        "specified attribute." );
 }
 
 QgsSplitVectorLayerAlgorithm *QgsSplitVectorLayerAlgorithm::createInstance() const
@@ -107,7 +108,7 @@ QVariantMap QgsSplitVectorLayerAlgorithm::processAlgorithm( const QVariantMap &p
     feedback->pushInfo( QObject::tr( "Creating layer: %1" ).arg( fileName ) );
 
     sink.reset( QgsProcessingUtils::createFeatureSink( fileName, context, fields, geometryType, crs ) );
-    QString expr = QStringLiteral( "%1 = %2" ).arg( QgsExpression::quotedColumnRef( fieldName ), QgsExpression::quotedValue( *it ) );
+    QString expr = QgsExpression::createFieldEqualityExpression( fieldName, *it );
     QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setFilterExpression( expr ) );
     while ( features.nextFeature( feat ) )
     {
