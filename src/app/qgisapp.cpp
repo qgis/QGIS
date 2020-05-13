@@ -16012,10 +16012,6 @@ void QgisApp::populateProjectStorageMenu( QMenu *menu, const bool saving )
         {
           saveProjectToProjectStorage( uri );
         }
-        else
-        {
-          messageBar()->pushCritical( tr( "Project save failed" ), tr( "The project could not be saved because the project storage URI is empty." ) );
-        }
       } );
     }
     else
