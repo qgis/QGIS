@@ -31,6 +31,7 @@ from qgis.core import (
     QgsFeatureSource,
     NULL
 )
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime
 from qgis.PyQt.QtTest import QSignalSpy
 
 from utilities import compareWkt
@@ -347,6 +348,10 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('cnt')), -200)
         self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('name')), 'Apple')
 
+        self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('dt')), QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)))
+        self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('date')), QDate(2020, 5, 3))
+        self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('time')), QTime(12, 13, 14))
+
         if self.source.supportsSubsetString():
             subset = self.getSubsetString()
             self.source.setSubsetString(subset)
@@ -359,6 +364,10 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertFalse(self.source.maximumValue(1000))
         self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('cnt')), 400)
         self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('name')), 'Pear')
+
+        self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('dt')), QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)))
+        self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('date')), QDate(2021, 5, 4))
+        self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('time')), QTime(13, 13, 14))
 
         if self.source.supportsSubsetString():
             subset = self.getSubsetString2()
