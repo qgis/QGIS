@@ -250,6 +250,6 @@ void QgsPgNewConnection::updateOkButtonState()
 {
   bool enabled = !txtName->text().isEmpty() && (
                    !txtService->text().isEmpty() ||
-                   ( !txtHost->text().isEmpty() && !txtPort->text().isEmpty() && !txtDatabase->text().isEmpty() ) );
+                   !txtDatabase->text().isEmpty() );
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }
