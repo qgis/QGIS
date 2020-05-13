@@ -406,6 +406,18 @@ a hierarchy of keys and corresponding values
    The key string must be valid xml tag names in order to be saved to the file.
 %End
 
+    bool writeEntry( const QString &scope, const QString &key, const QgsProperty &value );
+%Docstring
+Write a QgsProperty entry to the project file.
+
+Keys are '/'-delimited entries, implying
+a hierarchy of keys and corresponding values
+
+.. note::
+
+   The key string must be valid xml tag names in order to be saved to the file.
+%End
+
     QStringList readListEntry( const QString &scope, const QString &key, const QStringList &def = QStringList(), bool *ok = 0 ) const;
 %Docstring
 Key value accessors
@@ -418,6 +430,7 @@ implying a hierarchy of keys and corresponding values
     int readNumEntry( const QString &scope, const QString &key, int def = 0, bool *ok = 0 ) const;
     double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok = 0 ) const;
     bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok = 0 ) const;
+    QgsProperty readPropertyEntry( const QString &scope, const QString &key, QgsProperty def = QgsProperty(), bool *ok = 0 ) const;
 
 
     bool removeEntry( const QString &scope, const QString &key );

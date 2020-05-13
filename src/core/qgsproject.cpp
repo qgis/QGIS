@@ -2359,6 +2359,17 @@ bool QgsProject::writeEntry( const QString &scope, const QString &key, const QSt
   return success;
 }
 
+bool QgsProject::writeEntry( const QString &scope, const QString &key, const QgsProperty &value )
+{
+  bool propertiesModified;
+  bool success = addKey_( scope, key, &mProperties, value.toVariant(), propertiesModified );
+
+  if ( propertiesModified )
+    setDirty( true );
+
+  return success;
+}
+
 QStringList QgsProject::readListEntry( const QString &scope,
                                        const QString &key,
                                        const QStringList &def,
@@ -2472,6 +2483,25 @@ bool QgsProject::readBoolEntry( const QString &scope, const QString &key, bool d
 
     if ( valid )
       return value.toBool();
+  }
+
+  return def;
+}
+
+QgsProperty QgsProject::readPropertyEntry( const QString &scope, const QString &key, QgsProperty def, bool *ok ) const
+{
+  QgsProjectProperty *property = findKey_( scope, key, mProperties );
+
+  if ( property )
+  {
+    QgsProperty qgsproperty;
+    QVariant value = property->value();
+    bool loaded = qgsproperty.loadVariant( value );
+    if ( ok )
+      *ok = loaded;
+
+    if ( loaded )
+      return qgsproperty;
   }
 
   return def;

@@ -424,6 +424,16 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool writeEntry( const QString &scope, const QString &key, const QStringList &value );
 
     /**
+     * Write a QgsProperty entry to the project file.
+     *
+     * Keys are '/'-delimited entries, implying
+     * a hierarchy of keys and corresponding values
+     *
+     * \note The key string must be valid xml tag names in order to be saved to the file.
+     */
+    bool writeEntry( const QString &scope, const QString &key, const QgsProperty &value );
+
+    /**
      * Key value accessors
      *
      * keys would be the familiar QgsSettings-like '/' delimited entries,
@@ -435,6 +445,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     int readNumEntry( const QString &scope, const QString &key, int def = 0, bool *ok = nullptr ) const;
     double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok = nullptr ) const;
     bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok = nullptr ) const;
+    QgsProperty readPropertyEntry( const QString &scope, const QString &key, QgsProperty def = QgsProperty(), bool *ok = nullptr ) const;
 
 
     //! Remove the given key
