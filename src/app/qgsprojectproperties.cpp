@@ -446,6 +446,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mWMSUrlLineEdit->setText( QgsProject::instance()->readEntry( QStringLiteral( "WMSUrl" ), QStringLiteral( "/" ), QString() ) );
   mWMSKeywordList->setText( QgsProject::instance()->readListEntry( QStringLiteral( "WMSKeywordList" ), QStringLiteral( "/" ) ).join( QStringLiteral( ", " ) ) );
 
+  mWMSOnlineResourceExpressionButton->registerExpressionContextGenerator( this );
+
   // WMS Name validator
   QValidator *shortNameValidator = new QRegExpValidator( QgsApplication::shortNameRegExp(), this );
   mWMSName->setValidator( shortNameValidator );
@@ -993,6 +995,16 @@ void QgsProjectProperties::setSelectedCrs( const QgsCoordinateReferenceSystem &c
   projectionSelector->setCrs( crs );
   mBlockCrsUpdates = false;
   crsChanged( projectionSelector->crs() );
+}
+
+QgsExpressionContext QgsProjectProperties::createExpressionContext() const
+{
+  QgsExpressionContext context;
+  context
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+
+  return context;
 }
 
 void QgsProjectProperties::apply()
