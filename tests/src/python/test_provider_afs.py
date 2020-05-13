@@ -244,6 +244,9 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
 {"name":"name","type":"esriFieldTypeString","alias":"name","length":100,"domain":null},
 {"name":"name2","type":"esriFieldTypeString","alias":"name2","length":100,"domain":null},
 {"name":"num_char","type":"esriFieldTypeString","alias":"num_char","length":100,"domain":null},
+{"name":"dt","type":"esriFieldTypeDate","alias":"num_char","length":100,"domain":null},
+{"name":"date","type":"esriFieldTypeDate","alias":"num_char","length":100,"domain":null},
+{"name":"time","type":"esriFieldTypeDate","alias":"num_char","length":100,"domain":null},
 {"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null}],
  "features": [
   {
@@ -336,6 +339,9 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         {"name":"name","type":"esriFieldTypeString","alias":"name","length":100,"domain":null},
         {"name":"name2","type":"esriFieldTypeString","alias":"name2","length":100,"domain":null},
         {"name":"num_char","type":"esriFieldTypeString","alias":"num_char","length":100,"domain":null},
+        {"name":"dt","type":"esriFieldTypeDate","alias":"num_char","length":100,"domain":null},
+        {"name":"date","type":"esriFieldTypeDate","alias":"num_char","length":100,"domain":null},
+        {"name":"time","type":"esriFieldTypeDate","alias":"num_char","length":100,"domain":null},
         {"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null}],
          "features": [
           {
@@ -607,7 +613,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
 
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 2)
-        self.assertEqual([f['dt'] for f in features], [QDate(2017, 5, 3), NULL])
+        self.assertEqual([f['dt'] for f in features], [QDateTime(2017, 5, 3, 0, 0, 0, 0, Qt.UTC).toLocalTime(), NULL])
 
     def testMetadata(self):
         """ Test that metadata is correctly acquired from provider """
