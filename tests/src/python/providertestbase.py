@@ -419,6 +419,13 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.source.uniqueValues(self.source.fields().lookupField('name'))), 'Got {}'.format(
             set(self.source.uniqueValues(self.source.fields().lookupField('name'))))
 
+        self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
+                         set([QDateTime(2021, 5, 4, 13, 13, 14), QDateTime(2020, 5, 4, 12, 14, 14), QDateTime(2020, 5, 4, 12, 13, 14), QDateTime(2020, 5, 3, 12, 13, 14), NULL]))
+        self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
+                         set([QDate(2020, 5, 3), QDate(2020, 5, 4), QDate(2021, 5, 4), NULL]))
+        self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('time'))),
+                         set([QTime(12, 14, 14), QTime(13, 13, 14), QTime(12, 13, 14), NULL]))
+
         if self.source.supportsSubsetString():
             subset = self.getSubsetString2()
             self.source.setSubsetString(subset)
