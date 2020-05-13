@@ -99,13 +99,13 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # create temporary table for edit tests
         self.execSQLCommand('DROP TABLE IF EXISTS qgis_test."editData" CASCADE')
         self.execSQLCommand(
-            'CREATE TABLE qgis_test."editData" ( pk SERIAL NOT NULL PRIMARY KEY, cnt integer, name text, name2 text, num_char text, geom public.geometry(Point, 4326))')
-        self.execSQLCommand("INSERT INTO qgis_test.\"editData\" (pk, cnt, name, name2, num_char, geom) VALUES "
-                            "(5, -200, NULL, 'NuLl', '5', '0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),"
-                            "(3, 300, 'Pear', 'PEaR', '3', NULL),"
-                            "(1, 100, 'Orange', 'oranGe', '1', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),"
-                            "(2, 200, 'Apple', 'Apple', '2', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),"
-                            "(4, 400, 'Honey', 'Honey', '4', '0101000020E610000014AE47E17A5450C03333333333935340')")
+            'CREATE TABLE qgis_test."editData" ( pk SERIAL NOT NULL PRIMARY KEY, cnt integer, name text, name2 text, num_char text, dt timestamp without time zone, "date" date,  "time" time without time zone, geom public.geometry(Point, 4326))')
+        self.execSQLCommand("INSERT INTO qgis_test.\"editData\" (pk, cnt, name, name2, num_char, dt, \"date\", \"time\", geom) VALUES "
+                            "(5, -200, NULL, 'NuLl', '5', TIMESTAMP '2020-05-04 12:13:14', '2020-05-02', '12:13:01', '0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),"
+                            "(3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL, NULL),"
+                            "(1, 100, 'Orange', 'oranGe', '1', TIMESTAMP '2020-05-03 12:13:14', '2020-05-03', '12:13:14', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),"
+                            "(2, 200, 'Apple', 'Apple', '2', TIMESTAMP '2020-05-04 12:14:14', '2020-05-04', '12:14:14', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),"
+                            "(4, 400, 'Honey', 'Honey', '4', TIMESTAMP '2021-05-04 13:13:14', '2021-05-04', '13:13:14', '0101000020E610000014AE47E17A5450C03333333333935340')")
         vl = QgsVectorLayer(
             self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."editData" (geom) sql=',
             'test', 'postgres')
@@ -122,7 +122,14 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         QgsSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
-        return set([])
+        return set(['"dt" <= make_datetime(2020, 5, 4, 12, 13, 14)',
+                    '"dt" < make_date(2020, 5, 4)',
+                    '"dt" = to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\')',
+                    '"date" <= make_datetime(2020, 5, 4, 12, 13, 14)',
+                    '"date" >= make_date(2020, 5, 4)',
+                    '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
+                    '"time" >= make_time(12, 14, 14)',
+                    '"time" = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')'])
 
     def partiallyCompiledFilters(self):
         return set([])
@@ -1126,16 +1133,16 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # See https://github.com/qgis/QGIS/issues/27758
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 5, 3: 'map'})
         # changed so that createFeature respects user choice
-        self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", 'map', None, None])
+        self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", 'map', None, None, None, None, None])
 
         vl.setDefaultValueDefinition(3, QgsDefaultValue("'mappy'"))
         # test ignore vector layer default value expression overrides postgres provider default clause,
         # due to user's choice
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 5, 3: 'map'})
-        self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", 'map', None, None])
+        self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", 'map', None, None, None, None, None])
         # Since user did not enter a default for field 3, test must return the default value chosen
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 5})
-        self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", 'mappy', None, None])
+        self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", 'mappy', None, None, None, None, None])
 
     # See https://github.com/qgis/QGIS/issues/23127
     def testNumericPrecision(self):
@@ -1909,7 +1916,14 @@ class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
         QgsSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
-        return set([])
+        return set(['"dt" <= make_datetime(2020, 5, 4, 12, 13, 14)',
+                    '"dt" < make_date(2020, 5, 4)',
+                    '"dt" = to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\')',
+                    '"date" <= make_datetime(2020, 5, 4, 12, 13, 14)',
+                    '"date" >= make_date(2020, 5, 4)',
+                    '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
+                    '"time" >= make_time(12, 14, 14)',
+                    '"time" = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')'])
 
     def partiallyCompiledFilters(self):
         return set([])
@@ -1945,14 +1959,14 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         """ drops/recreates the test data anew, like TestPyQgsPostgresProvider::getSource above. """
         self.execSqlCommand("DROP TABLE IF EXISTS qgis_test.provider_edit_bigint_single_pk")
         self.execSqlCommand(
-            "CREATE TABLE qgis_test.provider_edit_bigint_single_pk ( pk bigserial PRIMARY KEY, cnt integer, name text DEFAULT 'qgis', name2 text DEFAULT 'qgis', num_char text, geom public.geometry(Point,4326), key1 integer, key2 integer)")
+            "CREATE TABLE qgis_test.provider_edit_bigint_single_pk ( pk bigserial PRIMARY KEY, cnt integer, name text DEFAULT 'qgis', name2 text DEFAULT 'qgis', num_char text, dt timestamp without time zone, \"date\" date, \"time\" time without time zone, geom public.geometry(Point,4326), key1 integer, key2 integer)")
         self.execSqlCommand(
-            "INSERT INTO qgis_test.provider_edit_bigint_single_pk  ( key1, key2, pk, cnt, name, name2, num_char, geom) VALUES"
-            "(1, 1, 5, -200, NULL, 'NuLl', '5', '0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),"
-            "(1, 2, 3,  300, 'Pear', 'PEaR', '3', NULL),"
-            "(2, 1, 1,  100, 'Orange', 'oranGe', '1', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),"
-            "(2, 2, 2,  200, 'Apple', 'Apple', '2', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),"
-            "(2, 3, 4,  400, 'Honey', 'Honey', '4', '0101000020E610000014AE47E17A5450C03333333333935340')")
+            "INSERT INTO qgis_test.provider_edit_bigint_single_pk  ( key1, key2, pk, cnt, name, name2, num_char, dt, \"date\", \"time\", geom) VALUES"
+            "(1, 1, 5, -200, NULL, 'NuLl', '5', TIMESTAMP '2020-05-04 12:13:14', '2020-05-02', '12:13:01', '0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),"
+            "(1, 2, 3,  300, 'Pear', 'PEaR', '3', NULL, NULL, NULL, NULL),"
+            "(2, 1, 1,  100, 'Orange', 'oranGe', '1', TIMESTAMP '2020-05-03 12:13:14', '2020-05-03', '12:13:14', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),"
+            "(2, 2, 2,  200, 'Apple', 'Apple', '2', TIMESTAMP '2020-05-04 12:14:14', '2020-05-04', '12:14:14', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),"
+            "(2, 3, 4,  400, 'Honey', 'Honey', '4', TIMESTAMP '2021-05-04 13:13:14', '2021-05-04', '13:13:14', '0101000020E610000014AE47E17A5450C03333333333935340')")
         vl = QgsVectorLayer(
             self.dbconn + ' sslmode=disable key=\'"pk"\' srid=4326 type=POINT table="qgis_test"."provider_edit_bigint_single_pk" (geom) sql=',
             'edit_bigint_pk', 'postgres')
@@ -1977,7 +1991,14 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         QgsSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
-        return set([])
+        return set(['"dt" <= make_datetime(2020, 5, 4, 12, 13, 14)',
+                    '"dt" < make_date(2020, 5, 4)',
+                    '"dt" = to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\')',
+                    '"date" <= make_datetime(2020, 5, 4, 12, 13, 14)',
+                    '"date" >= make_date(2020, 5, 4)',
+                    '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
+                    '"time" >= make_time(12, 14, 14)',
+                    '"time" = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')'])
 
     def partiallyCompiledFilters(self):
         return set([])

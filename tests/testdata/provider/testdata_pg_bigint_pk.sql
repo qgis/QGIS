@@ -61,18 +61,21 @@ CREATE TABLE qgis_test.provider_bigint_single_pk (
     name text DEFAULT 'qgis',
     name2 text DEFAULT 'qgis',
     num_char text,
+    dt timestamp without time zone,
+    "date" date,
+    "time" time without time zone,
     geom public.geometry(Point,4326),
     key1 integer,
     key2 integer,
     PRIMARY KEY(pk)
 );
 
-INSERT INTO qgis_test.provider_bigint_single_pk  ( key1, key2, pk, cnt, name, name2, num_char, geom) VALUES
-(1, 1, 5, -200, NULL, 'NuLl', '5', '0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),
-(1, 2, 3,  300, 'Pear', 'PEaR', '3', NULL),
-(2, 1, 1,  100, 'Orange', 'oranGe', '1', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),
-(2, 2, 2,  200, 'Apple', 'Apple', '2', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),
-(2, 3, 4,  400, 'Honey', 'Honey', '4', '0101000020E610000014AE47E17A5450C03333333333935340')
+INSERT INTO qgis_test.provider_bigint_single_pk  ( key1, key2, pk, cnt, name, name2, num_char, dt, "date", "time", geom) VALUES
+(1, 1, 5, -200, NULL, 'NuLl', '5', TIMESTAMP '2020-05-04 12:13:14', '2020-05-02', '12:13:01', '0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),
+(1, 2, 3,  300, 'Pear', 'PEaR', '3', NULL, NULL, NULL, NULL),
+(2, 1, 1,  100, 'Orange', 'oranGe', '1', TIMESTAMP '2020-05-03 12:13:14', '2020-05-03', '12:13:14', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),
+(2, 2, 2,  200, 'Apple', 'Apple', '2', TIMESTAMP '2020-05-04 12:14:14', '2020-05-04', '12:14:14', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),
+(2, 3, 4,  400, 'Honey', 'Honey', '4', TIMESTAMP '2021-05-04 13:13:14', '2021-05-04', '13:13:14', '0101000020E610000014AE47E17A5450C03333333333935340')
 ;
 
 DROP TABLE IF EXISTS qgis_test.provider_bigint_nonfirst_pk;
@@ -84,18 +87,21 @@ CREATE TABLE qgis_test.provider_bigint_nonfirst_pk (
     name text DEFAULT 'qgis',
     name2 text DEFAULT 'qgis',
     num_char text,
+    dt timestamp without time zone,
+    "date" date,
+    "time" time without time zone,
     geom public.geometry(Point,4326),
     key1 integer,
     key2 integer,
     PRIMARY KEY(primkey)
 );
 
-INSERT INTO qgis_test.provider_bigint_nonfirst_pk  (zeroth_field, key1, key2, primkey, cnt, name, name2, num_char, geom) VALUES
-(-3, 1, 1, 5, -200, NULL, 'NuLl', '5', '0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),
-(-2, 1, 2, 3,  300, 'Pear', 'PEaR', '3', NULL),
-(-1, 2, 1, 1,  100, 'Orange', 'oranGe', '1', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),
-(0, 2, 2, 2,  200, 'Apple', 'Apple', '2', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),
-(1, 2, 3, 4,  400, 'Honey', 'Honey', '4', '0101000020E610000014AE47E17A5450C03333333333935340')
+INSERT INTO qgis_test.provider_bigint_nonfirst_pk  (zeroth_field, key1, key2, primkey, cnt, name, name2, num_char, dt, "date", "time", geom) VALUES
+(-3, 1, 1, 5, -200, NULL, 'NuLl', '5', TIMESTAMP '2020-05-04 12:13:14', '2020-05-02', '12:13:01', '0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),
+(-2, 1, 2, 3,  300, 'Pear', 'PEaR', '3', NULL, NULL, NULL, NULL),
+(-1, 2, 1, 1,  100, 'Orange', 'oranGe', '1', TIMESTAMP '2020-05-03 12:13:14', '2020-05-03', '12:13:14', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),
+(0, 2, 2, 2,  200, 'Apple', 'Apple', '2', TIMESTAMP '2020-05-04 12:14:14', '2020-05-04', '12:14:14', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),
+(1, 2, 3, 4,  400, 'Honey', 'Honey', '4', TIMESTAMP '2021-05-04 13:13:14', '2021-05-04', '13:13:14', '0101000020E610000014AE47E17A5450C03333333333935340')
 ;
 
 /* -- PostgreSQL 12 or later
