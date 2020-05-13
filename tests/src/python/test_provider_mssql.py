@@ -95,7 +95,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         # create temporary table for edit tests
         self.execSQLCommand('DROP TABLE IF EXISTS qgis_test.edit_data')
         self.execSQLCommand(
-            """CREATE TABLE qgis_test.edit_data (pk INTEGER PRIMARY KEY,cnt integer, name nvarchar(max), name2 nvarchar(max), num_char nvarchar(max), geom geometry)""")
+            """CREATE TABLE qgis_test.edit_data (pk INTEGER PRIMARY KEY,cnt integer, name nvarchar(max), name2 nvarchar(max), num_char nvarchar(max), dt datetime, [date] date, [time] time, geom geometry)""")
 
         vl = QgsVectorLayer(
             self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."edit_data" (geom) sql=',
@@ -104,22 +104,22 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid(), vl.dataProvider().error().message())
 
         f1 = QgsFeature()
-        f1.setAttributes([5, -200, NULL, 'NuLl', '5'])
+        f1.setAttributes([5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)), QDate(2020, 5, 2), QTime(12, 13, 1)])
         f1.setGeometry(QgsGeometry.fromWkt('Point (-71.123 78.23)'))
 
         f2 = QgsFeature()
-        f2.setAttributes([3, 300, 'Pear', 'PEaR', '3'])
+        f2.setAttributes([3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL])
 
         f3 = QgsFeature()
-        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1'])
+        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1', QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)), QDate(2020, 5, 3), QTime(12, 13, 14)])
         f3.setGeometry(QgsGeometry.fromWkt('Point (-70.332 66.33)'))
 
         f4 = QgsFeature()
-        f4.setAttributes([2, 200, 'Apple', 'Apple', '2'])
+        f4.setAttributes([2, 200, 'Apple', 'Apple', '2', QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)), QDate(2020, 5, 4), QTime(12, 14, 14)])
         f4.setGeometry(QgsGeometry.fromWkt('Point (-68.2 70.8)'))
 
         f5 = QgsFeature()
-        f5.setAttributes([4, 400, 'Honey', 'Honey', '4'])
+        f5.setAttributes([4, 400, 'Honey', 'Honey', '4', QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)), QDate(2021, 5, 4), QTime(13, 13, 14)])
         f5.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
 
         self.assertTrue(vl.dataProvider().addFeatures([f1, f2, f3, f4, f5]))
@@ -144,6 +144,8 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
             'name LIKE \'Apple\'',
             'name LIKE \'aPple\'',
             'name ILIKE \'aPple\'',
+            'name LIKE \'Ap_le\'',
+            'name LIKE \'Ap\_le\'',
             'name ILIKE \'%pp%\'',
             '"name" || \' \' || "name" = \'Orange Orange\'',
             '"name" || \' \' || "cnt" = \'Orange 100\'',
@@ -212,7 +214,15 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
             'overlaps(translate($geometry,-1,-1),geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
             'overlaps(buffer($geometry,1),geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
             'intersects(centroid($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))',
-            'intersects(point_on_surface($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))'
+            'intersects(point_on_surface($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))',
+            '"dt" <= make_datetime(2020, 5, 4, 12, 13, 14)',
+            '"dt" < make_date(2020, 5, 4)',
+            '"dt" = to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\')',
+            '"date" <= make_datetime(2020, 5, 4, 12, 13, 14)',
+            '"date" >= make_date(2020, 5, 4)',
+            '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
+            '"time" >= make_time(12, 14, 14)',
+            '"time" = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')'
         ])
         return filters
 
