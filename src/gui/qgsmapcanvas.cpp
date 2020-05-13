@@ -2444,10 +2444,6 @@ void QgsMapCanvas::startPreviewJob( int number )
   jobSettings.setFlag( QgsMapSettings::DrawLabeling, false );
   jobSettings.setFlag( QgsMapSettings::RenderPreviewJob, true );
 
-  // Tell the renderer that this image is out of current view extent
-  if ( number != 4 )
-    jobSettings.setFlag( QgsMapSettings::Flag::Prefetch );
-
   // truncate preview layers to fast layers
   const QList<QgsMapLayer *> layers = jobSettings.layers();
   QList< QgsMapLayer * > previewLayers;
