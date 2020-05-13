@@ -288,6 +288,15 @@ class FeatureSourceTestCase(object):
                           'intersects($geometry,geom_from_gml( \'<gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-72.2,66.1 -65.2,66.1 -65.2,72.0 -72.2,72.0 -72.2,66.1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>\'))',
                           [1, 2])
 
+        # datetime
+        self.assert_query(source, '"dt" <= make_datetime(2020, 5, 4, 12, 13, 14)', [1, 5])
+        self.assert_query(source, '"dt" < make_date(2020, 5, 4)', [1])
+        self.assert_query(source, '"date" <= make_datetime(2020, 5, 4, 12, 13, 14)', [1, 2, 5])
+        self.assert_query(source, '"date" >= make_date(2020, 5, 4)', [2, 4])
+        self.assert_query(source, '"time" >= make_time(12, 14, 14)', [2, 4])
+        self.assert_query(source, '"dt" + make_interval(days:=1) <= make_datetime(2020, 5, 4, 12, 13, 14)', [1])
+        self.assert_query(source, '"dt" + make_interval(days:=0.01) <= make_datetime(2020, 5, 4, 12, 13, 14)', [1, 5])
+
         # combination of an uncompilable expression and limit
 
         # TODO - move this test to FeatureSourceTestCase
