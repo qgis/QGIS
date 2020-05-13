@@ -28,6 +28,7 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     NULL
 )
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime
 
 from utilities import compareWkt
 
@@ -76,7 +77,7 @@ class FeatureSourceTestCase(object):
             self.assertTrue(f.isValid())
             # some source test datasets will include additional attributes which we ignore,
             # so cherry pick desired attributes
-            attrs = [f['pk'], f['cnt'], f['name'], f['name2'], f['num_char']]
+            attrs = [f['pk'], f['cnt'], f['name'], f['name2'], f['num_char'], f['dt'], f['date'], f['time']]
             # force the num_char attribute to be text - some sources (e.g., delimited text) will
             # automatically detect that this attribute contains numbers and set it as a numeric
             # field
@@ -84,11 +85,11 @@ class FeatureSourceTestCase(object):
             attributes[f['pk']] = attrs
             geometries[f['pk']] = f.hasGeometry() and f.geometry().asWkt()
 
-        expected_attributes = {5: [5, -200, NULL, 'NuLl', '5'],
-                               3: [3, 300, 'Pear', 'PEaR', '3'],
-                               1: [1, 100, 'Orange', 'oranGe', '1'],
-                               2: [2, 200, 'Apple', 'Apple', '2'],
-                               4: [4, 400, 'Honey', 'Honey', '4']}
+        expected_attributes = {5: [5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)), QDate(2020, 5, 4), QTime(12, 13, 14)],
+                               3: [3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL],
+                               1: [1, 100, 'Orange', 'oranGe', '1', QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)), QDate(2020, 5, 3), QTime(12, 13, 14)],
+                               2: [2, 200, 'Apple', 'Apple', '2', QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)), QDate(2020, 5, 4), QTime(12, 14, 14)],
+                               4: [4, 400, 'Honey', 'Honey', '4', QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)), QDate(2021, 5, 4), QTime(13, 13, 14)]}
 
         expected_geometries = {1: 'Point (-70.332 66.33)',
                                2: 'Point (-68.2 70.8)',

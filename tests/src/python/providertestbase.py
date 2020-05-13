@@ -541,11 +541,11 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertTrue(l.isValid())
 
         f1 = QgsFeature()
-        f1.setAttributes([6, -220, NULL, 'String', '15'])
+        f1.setAttributes([6, -220, NULL, 'String', '15', QDateTime(2019, 1, 2, 3, 4, 5), QDate(2019, 1, 2), QTime(3, 4, 5)])
         f1.setGeometry(QgsGeometry.fromWkt('Point (-72.345 71.987)'))
 
         f2 = QgsFeature()
-        f2.setAttributes([7, 330, 'Coconut', 'CoCoNut', '13'])
+        f2.setAttributes([7, 330, 'Coconut', 'CoCoNut', '13', QDateTime(2018, 5, 6, 7, 8, 9), QDate(2018, 5, 6), QTime(7, 8, 9)])
 
         if l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
             # expect success
@@ -581,11 +581,11 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertTrue(l.isValid())
 
         f1 = QgsFeature()
-        f1.setAttributes([6, -220, NULL, 'String', '15'])
+        f1.setAttributes([6, -220, NULL, 'String', '15', QDateTime(2019, 1, 2, 3, 4, 5), QDate(2019, 1, 2), QTime(3, 4, 5)])
         f1.setGeometry(QgsGeometry.fromWkt('Point (-72.345 71.987)'))
 
         f2 = QgsFeature()
-        f2.setAttributes([7, 330, 'Coconut', 'CoCoNut', '13'])
+        f2.setAttributes([7, 330, 'Coconut', 'CoCoNut', '13', NULL, NULL, NULL])
 
         if l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
             # expect success
@@ -617,8 +617,8 @@ class ProviderTestCase(FeatureSourceTestCase):
         f2.setId(added[1].id())
 
         # check result - feature attributes MUST be padded out to required number of fields
-        f1.setAttributes([6, -220, NULL, 'String', 'NULL'])
-        f2.setAttributes([7, 330, NULL, NULL, 'NULL'])
+        f1.setAttributes([6, -220, NULL, 'String', 'NULL', NULL, NULL, NULL])
+        f2.setAttributes([7, 330, NULL, NULL, 'NULL', NULL, NULL, NULL])
         self.testGetFeatures(l.dataProvider(), [f1, f2])
 
     def testAddFeatureExtraAttributes(self):
@@ -634,9 +634,9 @@ class ProviderTestCase(FeatureSourceTestCase):
         # test that adding features with too many attributes drops these attributes
         # we be more tricky and also add a valid feature to stress test the provider
         f1 = QgsFeature()
-        f1.setAttributes([6, -220, NULL, 'String', '15'])
+        f1.setAttributes([6, -220, NULL, 'String', '15', QDateTime(2019, 1, 2, 3, 4, 5), QDate(2019, 1, 2), QTime(3, 4, 5)])
         f2 = QgsFeature()
-        f2.setAttributes([7, -230, NULL, 'String', '15', 15, 16, 17])
+        f2.setAttributes([7, -230, NULL, 'String', '15', QDateTime(2019, 1, 2, 3, 4, 5), QDate(2019, 1, 2), QTime(3, 4, 5), 15, 16, 17])
 
         result, added = l.dataProvider().addFeatures([f1, f2])
         self.assertTrue(result,
@@ -644,7 +644,7 @@ class ProviderTestCase(FeatureSourceTestCase):
 
         # make sure feature was added correctly
         added = [f for f in l.dataProvider().getFeatures() if f['pk'] == 7][0]
-        self.assertEqual(added.attributes(), [7, -230, NULL, 'String', '15'])
+        self.assertEqual(added.attributes(), [7, -230, NULL, 'String', '15', QDateTime(2019, 1, 2, 3, 4, 5), QDate(2019, 1, 2), QTime(3, 4, 5)])
 
     def testAddFeatureWrongGeomType(self):
         if not getattr(self, 'getEditableLayer', None):
