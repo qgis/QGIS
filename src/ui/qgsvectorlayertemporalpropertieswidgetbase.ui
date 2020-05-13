@@ -219,6 +219,16 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
                 </property>
                </widget>
               </item>
+              <item row="4" column="0" colspan="3">
+               <widget class="QCheckBox" name="mAccumulateCheckBox">
+                <property name="toolTip">
+                 <string>If checked, then features will be shown whenever their defined temporal value falls within or before the map's temporal range</string>
+                </property>
+                <property name="text">
+                 <string>Accumulate features over time</string>
+                </property>
+               </widget>
+              </item>
              </layout>
             </widget>
             <widget class="QWidget" name="page_2">

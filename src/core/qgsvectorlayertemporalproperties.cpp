@@ -174,6 +174,7 @@ bool QgsVectorLayerTemporalProperties::readXml( const QDomElement &element, cons
   mDurationFieldName = temporalNode.attribute( QStringLiteral( "durationField" ) );
   mDurationUnit = QgsUnitTypes::decodeTemporalUnit( temporalNode.attribute( QStringLiteral( "durationUnit" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::TemporalMinutes ) ) );
   mFixedDuration = temporalNode.attribute( QStringLiteral( "fixedDuration" ) ).toDouble();
+  mAccumulateFeatures = temporalNode.attribute( QStringLiteral( "accumulate" ), QStringLiteral( "0" ) ).toInt();
 
   QDomNode rangeElement = temporalNode.namedItem( QStringLiteral( "fixedRange" ) );
 
@@ -204,6 +205,7 @@ QDomElement QgsVectorLayerTemporalProperties::writeXml( QDomElement &element, QD
   temporalElement.setAttribute( QStringLiteral( "durationField" ), mDurationFieldName );
   temporalElement.setAttribute( QStringLiteral( "durationUnit" ), QgsUnitTypes::encodeUnit( mDurationUnit ) );
   temporalElement.setAttribute( QStringLiteral( "fixedDuration" ), qgsDoubleToString( mFixedDuration ) );
+  temporalElement.setAttribute( QStringLiteral( "accumulate" ), mAccumulateFeatures ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
   QDomElement rangeElement = document.createElement( QStringLiteral( "fixedRange" ) );
 
@@ -245,6 +247,16 @@ void QgsVectorLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabi
         break;
     }
   }
+}
+
+bool QgsVectorLayerTemporalProperties::accumulateFeatures() const
+{
+  return mAccumulateFeatures;
+}
+
+void QgsVectorLayerTemporalProperties::setAccumulateFeatures( bool accumulateFeatures )
+{
+  mAccumulateFeatures = accumulateFeatures;
 }
 
 double QgsVectorLayerTemporalProperties::fixedDuration() const
@@ -320,7 +332,13 @@ QString QgsVectorLayerTemporalProperties::createFilterString( QgsVectorLayer *, 
 
     case ModeFeatureDateTimeInstantFromField:
     {
-      if ( qgsDoubleNear( mFixedDuration, 0.0 ) )
+      if ( mAccumulateFeatures )
+      {
+        return QStringLiteral( "(%1 %2 %3) OR %1 IS NULL" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
+               range.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
+               dateTimeExpressionLiteral( range.end() ) );
+      }
+      else if ( qgsDoubleNear( mFixedDuration, 0.0 ) )
       {
         return QStringLiteral( "(%1 %2 %3 AND %1 %4 %5) OR %1 IS NULL" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
                range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),

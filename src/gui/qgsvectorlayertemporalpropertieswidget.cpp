@@ -102,6 +102,15 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
   mDurationFieldComboBox->setField( properties->durationField() );
   mDurationUnitsComboBox->setCurrentIndex( mDurationUnitsComboBox->findData( properties->durationUnits() ) );
   mFixedDurationUnitsComboBox->setCurrentIndex( mDurationUnitsComboBox->findData( properties->durationUnits() ) );
+
+  mAccumulateCheckBox->setChecked( properties->accumulateFeatures() );
+  mFixedDurationUnitsComboBox->setEnabled( !mAccumulateCheckBox->isChecked() );
+  mFixedDurationSpinBox->setEnabled( !mAccumulateCheckBox->isChecked() );
+  connect( mAccumulateCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
+    mFixedDurationUnitsComboBox->setEnabled( !checked );
+    mFixedDurationSpinBox->setEnabled( !checked );
+  } );
 }
 
 void QgsVectorLayerTemporalPropertiesWidget::saveTemporalProperties()
@@ -139,4 +148,5 @@ void QgsVectorLayerTemporalPropertiesWidget::saveTemporalProperties()
   properties->setEndField( mEndFieldComboBox->currentField() );
   properties->setDurationField( mDurationFieldComboBox->currentField() );
   properties->setFixedDuration( mFixedDurationSpinBox->value() );
+  properties->setAccumulateFeatures( mAccumulateCheckBox->isChecked() );
 }
