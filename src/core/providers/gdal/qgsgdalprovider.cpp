@@ -1233,7 +1233,8 @@ int QgsGdalProvider::capabilities() const
                    | QgsRasterDataProvider::Size
                    | QgsRasterDataProvider::BuildPyramids
                    | QgsRasterDataProvider::Create
-                   | QgsRasterDataProvider::Remove;
+                   | QgsRasterDataProvider::Remove
+                   | QgsRasterDataProvider::Prefetch;
   if ( mDriverName != QLatin1String( "WMS" ) )
   {
     capability |= QgsRasterDataProvider::Size;
