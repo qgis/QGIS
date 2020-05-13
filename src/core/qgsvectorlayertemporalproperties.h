@@ -153,6 +153,9 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      *
      * Units are specified by durationUnits()
      *
+     * \warning This setting is only effective when mode() is
+     * QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndDurationFromFields
+     *
      * \see setDurationField()
      * \see durationUnits()
      */
@@ -163,6 +166,9 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      * contains the duration of the event.
      *
      * Units are specified by setDurationUnits()
+     *
+     * \warning This setting is only effective when mode() is
+     * QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndDurationFromFields
      *
      * \see durationField()
      * \see setDurationUnits()
@@ -182,6 +188,32 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      * \see durationUnits()
      */
     void setDurationUnits( QgsUnitTypes::TemporalUnit units );
+
+    /**
+     * Returns the fixed duration length, which contains the duration of the event.
+     *
+     * Units are specified by durationUnits()
+     *
+     * \warning This setting is only effective when mode() is
+     * QgsVectorLayerTemporalProperties::ModeFeatureDateTimeInstantFromField
+     *
+     * \see setFixedDuration()
+     * \see durationUnits()
+     */
+    double fixedDuration() const;
+
+    /**
+     * Sets the fixed event \a duration, which contains the duration of the event.
+     *
+     * Units are specified by setDurationUnits()
+     *
+     * \warning This setting is only effective when mode() is
+     * QgsVectorLayerTemporalProperties::ModeFeatureDateTimeInstantFromField
+     *
+     * \see fixedDuration()
+     * \see setDurationUnits()
+     */
+    void setFixedDuration( double duration );
 
     /**
      * Creates a QGIS expression filter string for filtering features from \a layer
@@ -219,6 +251,8 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
     QString mEndFieldName;
     QString mDurationFieldName;
     QgsUnitTypes::TemporalUnit mDurationUnit = QgsUnitTypes::TemporalMinutes;
+
+    double mFixedDuration = 0;
 
 };
 

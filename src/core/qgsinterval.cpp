@@ -141,7 +141,7 @@ QgsInterval operator-( const QDateTime &dt1, const QDateTime &dt2 )
   return QgsInterval( mSeconds / 1000.0 );
 }
 
-QDateTime operator+( const QDateTime &start, QgsInterval interval )
+QDateTime operator+( const QDateTime &start, const QgsInterval &interval )
 {
   return start.addMSecs( static_cast<qint64>( interval.seconds() * 1000.0 ) );
 }

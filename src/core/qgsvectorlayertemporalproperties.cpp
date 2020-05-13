@@ -61,8 +61,10 @@ QgsDateTimeRange QgsVectorLayerTemporalProperties::calculateTemporalExtent( QgsM
       const int fieldIndex = vectorLayer->fields().lookupField( mStartFieldName );
       if ( fieldIndex >= 0 )
       {
-        return QgsDateTimeRange( vectorLayer->minimumValue( fieldIndex ).toDateTime(),
-                                 vectorLayer->maximumValue( fieldIndex ).toDateTime() );
+        const QDateTime min = vectorLayer->minimumValue( fieldIndex ).toDateTime();
+        const QDateTime maxStartTime = vectorLayer->maximumValue( fieldIndex ).toDateTime();
+        const QgsInterval eventDuration = QgsInterval( mFixedDuration, mDurationUnit );
+        return QgsDateTimeRange( min, maxStartTime + eventDuration );
       }
       break;
     }
@@ -171,6 +173,7 @@ bool QgsVectorLayerTemporalProperties::readXml( const QDomElement &element, cons
   mEndFieldName = temporalNode.attribute( QStringLiteral( "endField" ) );
   mDurationFieldName = temporalNode.attribute( QStringLiteral( "durationField" ) );
   mDurationUnit = QgsUnitTypes::decodeTemporalUnit( temporalNode.attribute( QStringLiteral( "durationUnit" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::TemporalMinutes ) ) );
+  mFixedDuration = temporalNode.attribute( QStringLiteral( "fixedDuration" ) ).toDouble();
 
   QDomNode rangeElement = temporalNode.namedItem( QStringLiteral( "fixedRange" ) );
 
@@ -200,6 +203,7 @@ QDomElement QgsVectorLayerTemporalProperties::writeXml( QDomElement &element, QD
   temporalElement.setAttribute( QStringLiteral( "endField" ), mEndFieldName );
   temporalElement.setAttribute( QStringLiteral( "durationField" ), mDurationFieldName );
   temporalElement.setAttribute( QStringLiteral( "durationUnit" ), QgsUnitTypes::encodeUnit( mDurationUnit ) );
+  temporalElement.setAttribute( QStringLiteral( "fixedDuration" ), qgsDoubleToString( mFixedDuration ) );
 
   QDomElement rangeElement = document.createElement( QStringLiteral( "fixedRange" ) );
 
@@ -241,6 +245,16 @@ void QgsVectorLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabi
         break;
     }
   }
+}
+
+double QgsVectorLayerTemporalProperties::fixedDuration() const
+{
+  return mFixedDuration;
+}
+
+void QgsVectorLayerTemporalProperties::setFixedDuration( double fixedDuration )
+{
+  mFixedDuration = fixedDuration;
 }
 
 QString QgsVectorLayerTemporalProperties::startField() const
@@ -305,11 +319,24 @@ QString QgsVectorLayerTemporalProperties::createFilterString( QgsVectorLayer *, 
       return QString();
 
     case ModeFeatureDateTimeInstantFromField:
-      return QStringLiteral( "(%1 %2 %3 AND %1 %4 %5) OR %1 IS NULL" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
-             range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
-             dateTimeExpressionLiteral( range.begin() ),
-             range.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
-             dateTimeExpressionLiteral( range.end() ) );
+    {
+      if ( qgsDoubleNear( mFixedDuration, 0.0 ) )
+      {
+        return QStringLiteral( "(%1 %2 %3 AND %1 %4 %5) OR %1 IS NULL" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
+               range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
+               dateTimeExpressionLiteral( range.begin() ),
+               range.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
+               dateTimeExpressionLiteral( range.end() ) );
+      }
+      else
+      {
+        return QStringLiteral( "(%1 %2 %3 AND %1 %4 %5) OR %1 IS NULL" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
+               range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
+               dateTimeExpressionLiteral( range.begin() + QgsInterval( -mFixedDuration, mDurationUnit ) ),
+               range.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
+               dateTimeExpressionLiteral( range.end() ) );
+      }
+    }
 
     case ModeFeatureDateTimeStartAndDurationFromFields:
     {

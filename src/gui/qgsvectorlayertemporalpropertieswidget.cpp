@@ -22,7 +22,7 @@
 #include "qgsvectordataprovidertemporalcapabilities.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayertemporalproperties.h"
-
+#include "qgsstringutils.h"
 
 QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( QWidget *parent, QgsVectorLayer *layer )
   : QWidget( parent )
@@ -65,6 +65,10 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
   mDurationStartFieldComboBox->setFilters( QgsFieldProxyModel::DateTime | QgsFieldProxyModel::Date );
   mDurationFieldComboBox->setFilters( QgsFieldProxyModel::Numeric );
 
+  mFixedDurationSpinBox->setMinimum( 0 );
+  mFixedDurationSpinBox->setClearValue( 0 );
+  mFixedDurationSpinBox->setValue( properties->fixedDuration() );
+
   for ( QgsUnitTypes::TemporalUnit u :
         {
           QgsUnitTypes::TemporalMilliseconds,
@@ -79,7 +83,10 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
           QgsUnitTypes::TemporalCenturies
         } )
   {
-    mDurationUnitsComboBox->addItem( QgsUnitTypes::toString( u ), u );
+    const QString title = ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) ? QgsStringUtils::capitalize( QgsUnitTypes::toString( u ), QgsStringUtils::TitleCase )
+                          : QgsUnitTypes::toString( u );
+    mDurationUnitsComboBox->addItem( title, u );
+    mFixedDurationUnitsComboBox->addItem( title, u );
   }
 
   if ( !properties->startField().isEmpty() )
@@ -94,6 +101,7 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
   }
   mDurationFieldComboBox->setField( properties->durationField() );
   mDurationUnitsComboBox->setCurrentIndex( mDurationUnitsComboBox->findData( properties->durationUnits() ) );
+  mFixedDurationUnitsComboBox->setCurrentIndex( mDurationUnitsComboBox->findData( properties->durationUnits() ) );
 }
 
 void QgsVectorLayerTemporalPropertiesWidget::saveTemporalProperties()
@@ -114,18 +122,21 @@ void QgsVectorLayerTemporalPropertiesWidget::saveTemporalProperties()
     case QgsVectorLayerTemporalProperties::ModeFixedTemporalRange:
     case QgsVectorLayerTemporalProperties::ModeRedrawLayerOnly:
       properties->setStartField( mSingleFieldComboBox->currentField() );
+      properties->setDurationUnits( static_cast< QgsUnitTypes::TemporalUnit >( mFixedDurationUnitsComboBox->currentData().toInt() ) );
       break;
 
     case QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromFields:
       properties->setStartField( mStartFieldComboBox->currentField() );
+      properties->setDurationUnits( static_cast< QgsUnitTypes::TemporalUnit >( mFixedDurationUnitsComboBox->currentData().toInt() ) );
       break;
 
     case QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndDurationFromFields:
       properties->setStartField( mDurationStartFieldComboBox->currentField() );
+      properties->setDurationUnits( static_cast< QgsUnitTypes::TemporalUnit >( mDurationUnitsComboBox->currentData().toInt() ) );
       break;
   }
 
   properties->setEndField( mEndFieldComboBox->currentField() );
   properties->setDurationField( mDurationFieldComboBox->currentField() );
-  properties->setDurationUnits( static_cast< QgsUnitTypes::TemporalUnit >( mDurationUnitsComboBox->currentData().toInt() ) );
+  properties->setFixedDuration( mFixedDurationSpinBox->value() );
 }

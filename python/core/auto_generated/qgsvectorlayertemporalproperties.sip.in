@@ -142,6 +142,11 @@ contains the duration of the event.
 
 Units are specified by durationUnits()
 
+.. warning::
+
+   This setting is only effective when mode() is
+   QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndDurationFromFields
+
 .. seealso:: :py:func:`setDurationField`
 
 .. seealso:: :py:func:`durationUnits`
@@ -153,6 +158,11 @@ Sets the name of the duration ``field``, which
 contains the duration of the event.
 
 Units are specified by setDurationUnits()
+
+.. warning::
+
+   This setting is only effective when mode() is
+   QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndDurationFromFields
 
 .. seealso:: :py:func:`durationField`
 
@@ -171,6 +181,38 @@ Returns the units of the event's duration.
 Sets the ``units`` of the event's duration.
 
 .. seealso:: :py:func:`durationUnits`
+%End
+
+    double fixedDuration() const;
+%Docstring
+Returns the fixed duration length, which contains the duration of the event.
+
+Units are specified by durationUnits()
+
+.. warning::
+
+   This setting is only effective when mode() is
+   QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField
+
+.. seealso:: :py:func:`setFixedDuration`
+
+.. seealso:: :py:func:`durationUnits`
+%End
+
+    void setFixedDuration( double duration );
+%Docstring
+Sets the fixed event ``duration``, which contains the duration of the event.
+
+Units are specified by setDurationUnits()
+
+.. warning::
+
+   This setting is only effective when mode() is
+   QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField
+
+.. seealso:: :py:func:`fixedDuration`
+
+.. seealso:: :py:func:`setDurationUnits`
 %End
 
     QString createFilterString( QgsVectorLayer *layer, const QgsDateTimeRange &range ) const;
