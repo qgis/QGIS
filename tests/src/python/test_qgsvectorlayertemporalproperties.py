@@ -40,6 +40,8 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         props.setDurationUnits(QgsUnitTypes.TemporalWeeks)
         props.setFixedDuration(5.6)
         props.setAccumulateFeatures(True)
+        props.setStartExpression('start exp')
+        props.setEndExpression('end exp')
 
         # save to xml
         doc = QDomDocument("testdoc")
@@ -58,6 +60,8 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         self.assertEqual(props2.durationUnits(), props.durationUnits())
         self.assertEqual(props2.fixedDuration(), props.fixedDuration())
         self.assertEqual(props2.accumulateFeatures(), props.accumulateFeatures())
+        self.assertEqual(props2.startExpression(), props.startExpression())
+        self.assertEqual(props2.endExpression(), props.endExpression())
 
     def testModeFromProvider(self):
         caps = QgsVectorDataProviderTemporalCapabilities()
@@ -290,6 +294,48 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         props.setDurationUnits(QgsUnitTypes.TemporalCenturies)
         self.assertEqual(props.createFilterString(layer, range),
                          '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(100 * "duration",0,0,0,0,0,0) >= make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
+
+    def testExpressionMode(self):
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer&field=start_field:datetime&field=end_field:datetime", "test", "memory")
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.fields()[2].type(), QVariant.DateTime)
+        self.assertEqual(layer.fields()[3].type(), QVariant.DateTime)
+
+        range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)))
+
+        props = QgsVectorLayerTemporalProperties(enabled=False)
+        props.setMode(QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromExpressions)
+        props.setStartExpression('to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')"')
+        props.setEndExpression('to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')"')
+        self.assertFalse(props.createFilterString(layer, range))
+
+        props.setIsActive(True)
+        self.assertEqual(props.createFilterString(layer, range), '((to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')") <= make_datetime(2020,5,6,8,9,10)) AND ((to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") >= make_datetime(2019,3,4,11,12,13))')
+
+        range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeBeginning=False)
+        self.assertEqual(props.createFilterString(layer, range), '((to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')") <= make_datetime(2020,5,6,8,9,10)) AND ((to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") > make_datetime(2019,3,4,11,12,13))')
+
+        range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
+        self.assertEqual(props.createFilterString(layer, range), '((to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')") < make_datetime(2020,5,6,8,9,10)) AND ((to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") >= make_datetime(2019,3,4,11,12,13))')
+
+        props.setEndExpression('')
+        self.assertEqual(props.createFilterString(layer, range), '(to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')") <= make_datetime(2020,5,6,8,9,10)')
+
+        range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeBeginning=False)
+        self.assertEqual(props.createFilterString(layer, range), '(to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')") < make_datetime(2020,5,6,8,9,10)')
+
+        range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
+        self.assertEqual(props.createFilterString(layer, range), '(to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')") <= make_datetime(2020,5,6,8,9,10)')
+
+        props.setStartExpression('')
+        props.setEndExpression('to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')"')
+        self.assertEqual(props.createFilterString(layer, range), '(to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") >= make_datetime(2019,3,4,11,12,13)')
+
+        range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeBeginning=False)
+        self.assertEqual(props.createFilterString(layer, range), '(to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") > make_datetime(2019,3,4,11,12,13)')
+
+        range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
+        self.assertEqual(props.createFilterString(layer, range), '(to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") >= make_datetime(2019,3,4,11,12,13)')
 
 
 if __name__ == '__main__':

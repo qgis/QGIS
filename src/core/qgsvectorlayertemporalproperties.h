@@ -61,6 +61,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
       ModeFeatureDateTimeInstantFromField, //!< Mode when features have a datetime instant taken from a single field
       ModeFeatureDateTimeStartAndEndFromFields, //!< Mode when features have separate fields for start and end times
       ModeFeatureDateTimeStartAndDurationFromFields, //!< Mode when features have a field for start time and a field for event duration
+      ModeFeatureDateTimeStartAndEndFromExpressions, //!< Mode when features use expressions for start and end times
       ModeRedrawLayerOnly, //!< Redraw the layer when temporal range changes, but don't apply any filtering. Useful when symbology or rule based renderer expressions depend on the time range.
     };
 
@@ -146,6 +147,50 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      * \see setStartField()
      */
     void setEndField( const QString &field );
+
+    /**
+     * Returns the expression for the start time for the feature's time spans.
+     *
+     * \warning This setting is only effective when mode() is
+     * QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromExpressions
+     *
+     * \see setStartExpression()
+     * \see endExpression()
+     */
+    QString startExpression() const;
+
+    /**
+     * Sets the \a expression to use for the start time for the feature's time spans.
+     *
+     * \warning This setting is only effective when mode() is
+     * QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromExpressions
+     *
+     * \see startExpression()
+     * \see setEndExpression()
+     */
+    void setStartExpression( const QString &expression );
+
+    /**
+     * Returns the expression for the end time for the feature's time spans.
+     *
+     * \warning This setting is only effective when mode() is
+     * QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromExpressions
+     *
+     * \see setEndExpression()
+     * \see startExpression()
+     */
+    QString endExpression() const;
+
+    /**
+     * Sets the \a expression to use for the end time for the feature's time spans.
+     *
+     * \warning This setting is only effective when mode() is
+     * QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromExpressions
+     *
+     * \see endExpression()
+     * \see setStartExpression()
+     */
+    void setEndExpression( const QString &endExpression );
 
     /**
      * Returns the name of the duration field, which
@@ -277,6 +322,9 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
     double mFixedDuration = 0;
 
     bool mAccumulateFeatures = false;
+
+    QString mStartExpression;
+    QString mEndExpression;
 
 };
 

@@ -10,7 +10,7 @@
 
 
 
-class QgsVectorLayerTemporalPropertiesWidget : QWidget
+class QgsVectorLayerTemporalPropertiesWidget : QWidget, QgsExpressionContextGenerator
 {
 %Docstring
 A widget for configuring the temporal properties for a vector layer.
@@ -32,6 +32,9 @@ Constructor for QgsVectorLayerTemporalPropertiesWidget.
 %Docstring
 Save widget temporal properties inputs.
 %End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
 
 };
 /************************************************************************

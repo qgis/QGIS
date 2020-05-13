@@ -20,6 +20,7 @@
 #include "qgsexpression.h"
 #include "qgsvectorlayer.h"
 #include "qgsfields.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsVectorLayerTemporalProperties::QgsVectorLayerTemporalProperties( QObject *parent, bool enabled )
   :  QgsMapLayerTemporalProperties( parent, enabled )
@@ -40,6 +41,7 @@ bool QgsVectorLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTi
     case ModeFeatureDateTimeStartAndEndFromFields:
     case ModeRedrawLayerOnly:
     case ModeFeatureDateTimeStartAndDurationFromFields:
+    case ModeFeatureDateTimeStartAndEndFromExpressions:
       return true;
   }
   return true;
@@ -125,6 +127,46 @@ QgsDateTimeRange QgsVectorLayerTemporalProperties::calculateTemporalExtent( QgsM
       break;
     }
 
+    case QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromExpressions:
+    {
+      QDateTime minTime;
+      QDateTime maxTime;
+
+      // no choice here but to loop through all features
+      QgsExpressionContext context;
+      context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( vectorLayer ) );
+
+      QgsExpression startExpression( mStartExpression );
+      QgsExpression endExpression( mEndExpression );
+      startExpression.prepare( &context );
+      endExpression.prepare( &context );
+
+      QSet< QString > fields = startExpression.referencedColumns();
+      fields.unite( endExpression.referencedColumns() );
+      const bool needsGeom = startExpression.needsGeometry() || endExpression.needsGeometry();
+
+      QgsFeatureRequest req;
+      if ( !needsGeom )
+        req.setFlags( QgsFeatureRequest::NoGeometry );
+
+      req.setSubsetOfAttributes( fields, vectorLayer->fields() );
+
+      QgsFeature f;
+      QgsFeatureIterator it = vectorLayer->getFeatures( req );
+      while ( it.nextFeature( f ) )
+      {
+        context.setFeature( f );
+        const QDateTime start = startExpression.evaluate( &context ).toDateTime();
+        const QDateTime end = endExpression.evaluate( &context ).toDateTime();
+
+        if ( start.isValid() )
+          minTime = minTime.isValid() ? std::min( minTime, start ) : start;
+        if ( end.isValid() )
+          maxTime = maxTime.isValid() ? std::max( maxTime, end ) : end;
+      }
+      return QgsDateTimeRange( minTime, maxTime );
+    }
+
     case QgsVectorLayerTemporalProperties::ModeRedrawLayerOnly:
       break;
   }
@@ -171,6 +213,8 @@ bool QgsVectorLayerTemporalProperties::readXml( const QDomElement &element, cons
 
   mStartFieldName = temporalNode.attribute( QStringLiteral( "startField" ) );
   mEndFieldName = temporalNode.attribute( QStringLiteral( "endField" ) );
+  mStartExpression = temporalNode.attribute( QStringLiteral( "startExpression" ) );
+  mEndExpression = temporalNode.attribute( QStringLiteral( "endExpression" ) );
   mDurationFieldName = temporalNode.attribute( QStringLiteral( "durationField" ) );
   mDurationUnit = QgsUnitTypes::decodeTemporalUnit( temporalNode.attribute( QStringLiteral( "durationUnit" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::TemporalMinutes ) ) );
   mFixedDuration = temporalNode.attribute( QStringLiteral( "fixedDuration" ) ).toDouble();
@@ -202,6 +246,8 @@ QDomElement QgsVectorLayerTemporalProperties::writeXml( QDomElement &element, QD
 
   temporalElement.setAttribute( QStringLiteral( "startField" ), mStartFieldName );
   temporalElement.setAttribute( QStringLiteral( "endField" ), mEndFieldName );
+  temporalElement.setAttribute( QStringLiteral( "startExpression" ), mStartExpression );
+  temporalElement.setAttribute( QStringLiteral( "endExpression" ), mEndExpression );
   temporalElement.setAttribute( QStringLiteral( "durationField" ), mDurationFieldName );
   temporalElement.setAttribute( QStringLiteral( "durationUnit" ), QgsUnitTypes::encodeUnit( mDurationUnit ) );
   temporalElement.setAttribute( QStringLiteral( "fixedDuration" ), qgsDoubleToString( mFixedDuration ) );
@@ -247,6 +293,26 @@ void QgsVectorLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabi
         break;
     }
   }
+}
+
+QString QgsVectorLayerTemporalProperties::startExpression() const
+{
+  return mStartExpression;
+}
+
+void QgsVectorLayerTemporalProperties::setStartExpression( const QString &startExpression )
+{
+  mStartExpression = startExpression;
+}
+
+QString QgsVectorLayerTemporalProperties::endExpression() const
+{
+  return mEndExpression;
+}
+
+void QgsVectorLayerTemporalProperties::setEndExpression( const QString &endExpression )
+{
+  mEndExpression = endExpression;
 }
 
 bool QgsVectorLayerTemporalProperties::accumulateFeatures() const
@@ -434,6 +500,32 @@ QString QgsVectorLayerTemporalProperties::createFilterString( QgsVectorLayer *, 
       else if ( !mEndFieldName.isEmpty() )
       {
         return QStringLiteral( "%1 %2 %3 OR %1 IS NULL" ).arg( QgsExpression::quotedColumnRef( mEndFieldName ),
+               range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
+               dateTimeExpressionLiteral( range.begin() ) );
+      }
+      break;
+    }
+
+    case ModeFeatureDateTimeStartAndEndFromExpressions:
+    {
+      if ( !mStartExpression.isEmpty() && !mEndExpression.isEmpty() )
+      {
+        return QStringLiteral( "((%1) %2 %3) AND ((%4) %5 %6)" ).arg( mStartExpression,
+               range.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
+               dateTimeExpressionLiteral( range.end() ),
+               mEndExpression,
+               range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
+               dateTimeExpressionLiteral( range.begin() ) );
+      }
+      else if ( !mStartExpression.isEmpty() )
+      {
+        return QStringLiteral( "(%1) %2 %3" ).arg( mStartExpression,
+               range.includeBeginning() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
+               dateTimeExpressionLiteral( range.end() ) );
+      }
+      else if ( !mEndExpression.isEmpty() )
+      {
+        return QStringLiteral( "(%1) %2 %3" ).arg( mEndExpression,
                range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
                dateTimeExpressionLiteral( range.begin() ) );
       }

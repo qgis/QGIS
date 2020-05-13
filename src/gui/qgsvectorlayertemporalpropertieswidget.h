@@ -19,6 +19,7 @@
 #define QGSVECTORLAYERTEMPORALPROPERTIESWIDGET_H
 
 #include "ui_qgsvectorlayertemporalpropertieswidgetbase.h"
+#include "qgsexpressioncontextgenerator.h"
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
@@ -30,7 +31,7 @@ class QgsVectorLayer;
  *
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsVectorLayerTemporalPropertiesWidget : public QWidget, private Ui::QgsVectorLayerTemporalPropertiesWidgetBase
+class GUI_EXPORT QgsVectorLayerTemporalPropertiesWidget : public QWidget, public QgsExpressionContextGenerator, private Ui::QgsVectorLayerTemporalPropertiesWidgetBase
 {
     Q_OBJECT
   public:
@@ -44,6 +45,8 @@ class GUI_EXPORT QgsVectorLayerTemporalPropertiesWidget : public QWidget, privat
      * Save widget temporal properties inputs.
      */
     void saveTemporalProperties();
+
+    QgsExpressionContext createExpressionContext() const override;
 
   private:
 
