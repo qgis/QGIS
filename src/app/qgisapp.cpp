@@ -14967,10 +14967,6 @@ void QgisApp::populateProjectStorageMenu( QMenu *menu, const bool saving )
         {
           addProject( uri );
         }
-        else
-        {
-          messageBar()->pushCritical( tr( "Project load failed" ), tr( "The project could not be loaded because the project storage URI is empty." ) );
-        }
       } );
     }
   }
