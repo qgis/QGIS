@@ -27,7 +27,7 @@
     <number>0</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout1">
      <item>
       <widget class="QLabel" name="mCurrentRangeLabel">
        <property name="sizePolicy">
