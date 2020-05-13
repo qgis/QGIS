@@ -9033,7 +9033,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *parent, bool checkFea
   else
   {
     const auto contextLayers = context.handledLayers();
-    //if it effected more than one layer, print feedback for all descendants
+    // if it affects more than one layer, print feedback for all descendants
     if ( contextLayers.size() > 1 )
     {
       deletedCount = 0;
