@@ -85,7 +85,7 @@ class FeatureSourceTestCase(object):
             attributes[f['pk']] = attrs
             geometries[f['pk']] = f.hasGeometry() and f.geometry().asWkt()
 
-        expected_attributes = {5: [5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)), QDate(2020, 5, 4), QTime(12, 13, 14)],
+        expected_attributes = {5: [5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)), QDate(2020, 5, 2), QTime(12, 13, 1)],
                                3: [3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL],
                                1: [1, 100, 'Orange', 'oranGe', '1', QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)), QDate(2020, 5, 3), QTime(12, 13, 14)],
                                2: [2, 200, 'Apple', 'Apple', '2', QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)), QDate(2020, 5, 4), QTime(12, 14, 14)],
@@ -340,6 +340,18 @@ class FeatureSourceTestCase(object):
         request = QgsFeatureRequest().addOrderBy('num_char', False)
         values = [f['pk'] for f in self.source.getFeatures(request)]
         self.assertEqual(values, [5, 4, 3, 2, 1])
+
+        request = QgsFeatureRequest().addOrderBy('dt', False)
+        values = [f['pk'] for f in self.source.getFeatures(request)]
+        self.assertEqual(values, [3, 4, 2, 5, 1])
+
+        request = QgsFeatureRequest().addOrderBy('date', False)
+        values = [f['pk'] for f in self.source.getFeatures(request)]
+        self.assertEqual(values, [3, 4, 2, 1, 5])
+
+        request = QgsFeatureRequest().addOrderBy('time', False)
+        values = [f['pk'] for f in self.source.getFeatures(request)]
+        self.assertEqual(values, [3, 4, 2, 1, 5])
 
         # Case sensitivity
         request = QgsFeatureRequest().addOrderBy('name2')
@@ -698,7 +710,10 @@ class FeatureSourceTestCase(object):
         tests = {'pk': set([1, 2, 3, 4, 5]),
                  'cnt': set([-200, 300, 100, 200, 400]),
                  'name': set(['Pear', 'Orange', 'Apple', 'Honey', NULL]),
-                 'name2': set(['NuLl', 'PEaR', 'oranGe', 'Apple', 'Honey'])}
+                 'name2': set(['NuLl', 'PEaR', 'oranGe', 'Apple', 'Honey']),
+                 'dt': set([NULL, QDateTime(2021, 5, 4, 13, 13, 14), QDateTime(2020, 5, 4, 12, 14, 14), QDateTime(2020, 5, 4, 12, 13, 14), QDateTime(2020, 5, 3, 12, 13, 14)]),
+                 'date': set([NULL, QDate(2020, 5, 2), QDate(2020, 5, 3), QDate(2020, 5, 4), QDate(2021, 5, 4)]),
+                 'time': set([QTime(12, 13, 1), QTime(12, 14, 14), QTime(12, 13, 14), QTime(13, 13, 14), NULL])}
         for field, expected in list(tests.items()):
             request = QgsFeatureRequest().setSubsetOfAttributes([field], self.source.fields())
             result = set([f[field] for f in self.source.getFeatures(request)])
@@ -709,7 +724,7 @@ class FeatureSourceTestCase(object):
     def testGetFeaturesSubsetAttributes2(self):
         """ Test that other fields are NULL when fetching subsets of attributes """
 
-        for field_to_fetch in ['pk', 'cnt', 'name', 'name2']:
+        for field_to_fetch in ['pk', 'cnt', 'name', 'name2', 'dt', 'date', 'time']:
             for f in self.source.getFeatures(
                     QgsFeatureRequest().setSubsetOfAttributes([field_to_fetch], self.source.fields())):
                 # Check that all other fields are NULL and force name to lower-case
@@ -745,14 +760,26 @@ class FeatureSourceTestCase(object):
         assert set(['Apple', 'Honey', 'Orange', 'Pear', NULL]) == set(
             self.source.uniqueValues(self.source.fields().lookupField('name'))), 'Got {}'.format(
             set(self.source.uniqueValues(self.source.fields().lookupField('name'))))
+        self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
+                         set([QDateTime(2021, 5, 4, 13, 13, 14), QDateTime(2020, 5, 4, 12, 14, 14), QDateTime(2020, 5, 4, 12, 13, 14), QDateTime(2020, 5, 3, 12, 13, 14), NULL]))
+        self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
+                         set([QDate(2020, 5, 3), QDate(2020, 5, 4), QDate(2021, 5, 4), QDate(2020, 5, 2), NULL]))
+        self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('time'))),
+                         set([QTime(12, 14, 14), QTime(13, 13, 14), QTime(12, 13, 14), QTime(12, 13, 1), NULL]))
 
     def testMinimumValue(self):
         self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('cnt')), -200)
         self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('name')), 'Apple')
+        self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('dt')), QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)))
+        self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('date')), QDate(2020, 5, 2))
+        self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('time')), QTime(12, 13, 1))
 
     def testMaximumValue(self):
         self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('cnt')), 400)
         self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('name')), 'Pear')
+        self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('dt')), QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)))
+        self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('date')), QDate(2021, 5, 4))
+        self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('time')), QTime(13, 13, 14))
 
     def testAllFeatureIds(self):
         ids = set([f.id() for f in self.source.getFeatures()])
