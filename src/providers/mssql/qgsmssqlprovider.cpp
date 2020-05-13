@@ -506,6 +506,27 @@ QString QgsMssqlProvider::storageType() const
   return QStringLiteral( "MSSQL spatial database" );
 }
 
+QVariant convertTimeValue( const QVariant &value )
+{
+  if ( value.isValid() && value.type() == QVariant::ByteArray )
+  {
+    // time fields can be returned as byte arrays... woot
+    const QByteArray ba = value.toByteArray();
+    if ( ba.length() >= 5 )
+    {
+      const int hours = ba.at( 0 );
+      const int mins = ba.at( 2 );
+      const int seconds = ba.at( 4 );
+      QVariant t = QTime( hours, mins, seconds );
+      if ( !t.isValid() ) // can't handle it
+        t = QVariant( QVariant::Time );
+      return t;
+    }
+    return QVariant( QVariant::Time );
+  }
+  return value;
+}
+
 // Returns the minimum value of an attribute
 QVariant QgsMssqlProvider::minimumValue( int index ) const
 {
@@ -537,6 +558,9 @@ QVariant QgsMssqlProvider::minimumValue( int index ) const
 
   if ( query.isActive() && query.next() )
   {
+    if ( fld.type() == QVariant::Time )
+      return convertTimeValue( query.value( 0 ) );
+
     return query.value( 0 );
   }
 
@@ -573,6 +597,9 @@ QVariant QgsMssqlProvider::maximumValue( int index ) const
 
   if ( query.isActive() && query.next() )
   {
+    if ( fld.type() == QVariant::Time )
+      return convertTimeValue( query.value( 0 ) );
+
     return query.value( 0 );
   }
 
@@ -620,7 +647,10 @@ QSet<QVariant> QgsMssqlProvider::uniqueValues( int index, int limit ) const
     // read all features
     while ( query.next() )
     {
-      uniqueValues.insert( query.value( 0 ) );
+      if ( fld.type() == QVariant::Time )
+        uniqueValues.insert( convertTimeValue( query.value( 0 ) ) );
+      else
+        uniqueValues.insert( query.value( 0 ) );
     }
   }
   return uniqueValues;
