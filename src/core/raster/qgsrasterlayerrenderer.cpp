@@ -241,7 +241,7 @@ QgsRasterLayerRenderer::~QgsRasterLayerRenderer()
 bool QgsRasterLayerRenderer::render()
 {
   // Skip rendering of out of view tiles (xyz)
-  if ( !mRasterViewPort || ( mLayer && renderContext()->testFlag( QgsRenderContext::Flag::Prefetch ) &&
+  if ( !mRasterViewPort || ( mLayer && renderContext()->testFlag( QgsRenderContext::Flag::RenderPreviewJob ) &&
                              mLayer->dataProvider() &&
                              !( mLayer->dataProvider()->capabilities() &
                                 QgsRasterInterface::Capability::Prefetch ) ) )
