@@ -3192,7 +3192,7 @@ bool QgsVectorLayer::deleteFeatureCascade( QgsFeatureId fid, QgsVectorLayer::Del
       context->mHandledFeatures.insert( this, QgsFeatureIds() << fid );
     }
 
-    const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( this );
+    const QList<QgsRelation> relations = context->project->relationManager()->referencedRelations( this );
 
     for ( const QgsRelation &relation : relations )
     {

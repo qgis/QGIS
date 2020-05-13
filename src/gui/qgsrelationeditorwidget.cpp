@@ -750,7 +750,7 @@ void QgsRelationEditorWidget::deleteFeatures( const QgsFeatureIds &featureids )
 
   if ( deleteFeatures )
   {
-    QgsVectorLayer::DeleteContext context { true };
+    QgsVectorLayer::DeleteContext context( true, QgsProject::instance() );
     layer->deleteFeatures( featureids, &context );
     const auto contextLayers = context.handledLayers();
     if ( contextLayers.size() > 1 )

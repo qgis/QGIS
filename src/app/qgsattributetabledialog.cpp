@@ -885,9 +885,8 @@ void QgsAttributeTableDialog::deleteFeature( const QgsFeatureId fid )
       return;
   }
 
-  QgsVectorLayer::DeleteContext context { true };
+  QgsVectorLayer::DeleteContext context( true, QgsProject::instance() );
   mLayer->deleteFeature( fid, &context );
-
   const auto contextLayers = context.handledLayers();
   //if it effected more than one layer, print feedback for all descendants
   if ( contextLayers.size() > 1 )

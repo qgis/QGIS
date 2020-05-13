@@ -514,13 +514,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
       /**
        * Constructor for DeleteContext.
        */
-      explicit DeleteContext( bool cascade = false ): cascade( cascade ) {}
+      explicit DeleteContext( bool cascade = false, QgsProject *project = nullptr ): cascade( cascade ), project( project ) {}
 
       QList<QgsVectorLayer *> handledLayers() const;
       QgsFeatureIds handledFeatures( QgsVectorLayer *layer ) const;
 
       QMap<QgsVectorLayer *, QgsFeatureIds> mHandledFeatures SIP_SKIP;
       bool cascade;
+      QgsProject *project;
     };
 
     /**

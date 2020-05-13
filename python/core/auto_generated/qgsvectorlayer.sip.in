@@ -377,7 +377,7 @@ Constructor for LayerOptions.
     struct DeleteContext
     {
 
-      explicit DeleteContext( bool cascade = false );
+      explicit DeleteContext( bool cascade = false, QgsProject *project = 0 );
 %Docstring
 Constructor for DeleteContext.
 %End
@@ -386,6 +386,7 @@ Constructor for DeleteContext.
       QgsFeatureIds handledFeatures( QgsVectorLayer *layer ) const;
 
       bool cascade;
+      QgsProject *project;
     };
 
     explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),

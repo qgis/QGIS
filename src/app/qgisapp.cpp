@@ -9023,7 +9023,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *parent, bool checkFea
 
   vlayer->beginEditCommand( tr( "Features deleted" ) );
   int deletedCount = 0;
-  QgsVectorLayer::DeleteContext context { true };
+  QgsVectorLayer::DeleteContext context( true, QgsProject::instance() );
   if ( !vlayer->deleteSelectedFeatures( &deletedCount, &context ) )
   {
     visibleMessageBar()->pushMessage( tr( "Problem deleting features" ),
