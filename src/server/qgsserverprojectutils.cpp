@@ -65,7 +65,16 @@ QStringList QgsServerProjectUtils::owsServiceKeywords( const QgsProject &project
 
 QString QgsServerProjectUtils::owsServiceOnlineResource( const QgsProject &project )
 {
-  return project.readEntry( QStringLiteral( "WMSOnlineResource" ), QStringLiteral( "/" ) );
+  QString wmsOnlineResource = project.readEntry( QStringLiteral( "WMSOnlineResource" ), QStringLiteral( "/" ) );
+
+  QgsProperty wmsOnlineResourceExpression = project.readPropertyEntry( QStringLiteral( "WMSOnlineResource" ), QStringLiteral( "/" ) );
+  if ( wmsOnlineResourceExpression.isActive() && ! wmsOnlineResourceExpression.expressionString().isEmpty() )
+  {
+    QgsExpressionContext context;
+    return wmsOnlineResourceExpression.valueAsString( context, wmsOnlineResource );
+  }
+
+  return wmsOnlineResource;
 }
 
 QString QgsServerProjectUtils::owsServiceContactOrganization( const QgsProject &project )
