@@ -36,6 +36,7 @@
 #include "qgsstyle.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectortilelayer.h"
+#include "qgsvectortilebasiclabelingwidget.h"
 #include "qgsvectortilebasicrendererwidget.h"
 #include "qgsmeshlayer.h"
 #include "qgsproject.h"
@@ -233,7 +234,10 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       symbolItem->setData( Qt::UserRole, Symbology );
       symbolItem->setToolTip( tr( "Symbology" ) );
       mOptionsListWidget->addItem( symbolItem );
-
+      QListWidgetItem *labelItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), QString() );
+      labelItem->setData( Qt::UserRole, VectorLabeling );
+      labelItem->setToolTip( tr( "Labels" ) );
+      mOptionsListWidget->addItem( labelItem );
       break;
     }
 
@@ -624,6 +628,14 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             mVectorTileStyleWidget->setDockMode( true );
             connect( mVectorTileStyleWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
             mWidgetStack->setMainPanel( mVectorTileStyleWidget );
+            break;
+          }
+          case 1: // Labeling
+          {
+            mVectorTileLabelingWidget = new QgsVectorTileBasicLabelingWidget( vtLayer, mMapCanvas, mMessageBar, mWidgetStack );
+            mVectorTileLabelingWidget->setDockMode( true );
+            connect( mVectorTileLabelingWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            mWidgetStack->setMainPanel( mVectorTileLabelingWidget );
             break;
           }
           default:
