@@ -52,6 +52,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmdropmzvalues.cpp
   processing/qgsalgorithmexecutepostgisquery.cpp
   processing/qgsalgorithmexecutespatialitequery.cpp
+  processing/qgsalgorithmexecutespatialitequeryregistered.cpp
   processing/qgsalgorithmexplode.cpp
   processing/qgsalgorithmexplodehstore.cpp
   processing/qgsalgorithmextendlines.cpp

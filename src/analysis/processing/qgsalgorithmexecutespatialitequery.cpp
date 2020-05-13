@@ -59,25 +59,36 @@ QgsExecuteSpatialiteQueryAlgorithm *QgsExecuteSpatialiteQueryAlgorithm::createIn
 
 void QgsExecuteSpatialiteQueryAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterProviderConnection( QStringLiteral( "DATABASE" ), QObject::tr( "Database (connection name)" ), QStringLiteral( "spatialite" ) ) );
+  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "DATABASE" ), QObject::tr( "Database (connection name)" ), QList< int >() << QgsProcessing::TypeVector ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "SQL" ), QObject::tr( "SQL query" ), QVariant(), true ) );
 }
 
 QVariantMap QgsExecuteSpatialiteQueryAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  Q_UNUSED( feedback );
+  //Q_UNUSED( feedback );
+  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "DATABASE" ), context );
+  QString databaseUri = layer->dataProvider()->dataSourceUri();
+  QgsDataSourceUri uri( databaseUri );
+  if ( uri.database().isEmpty() )
+  {
+    if ( databaseUri.contains( QStringLiteral( "|layername" ), Qt::CaseInsensitive ) )
+      databaseUri = databaseUri.left( databaseUri.indexOf( QStringLiteral( "|layername" ) ) );
+    else if ( databaseUri.contains( QStringLiteral( "|layerid" ), Qt::CaseInsensitive ) )
+      databaseUri = databaseUri.left( databaseUri.indexOf( QStringLiteral( "|layerid" ) ) );
 
-  QString connName = parameterAsConnectionName( parameters, QStringLiteral( "DATABASE" ), context );
+    uri = QgsDataSourceUri( QStringLiteral( "dbname='%1'" ).arg( databaseUri ) );
+  }
 
+  feedback->pushInfo( databaseUri );
   std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn;
   try
   {
     std::unique_ptr<QgsProviderMetadata> md( QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) ) );
-    conn.reset( static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connName ) ) );
+    conn.reset( static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( uri.uri(), QVariantMap() ) ) );
   }
   catch ( QgsProviderConnectionException & )
   {
-    throw QgsProcessingException( QObject::tr( "Could not retrieve connection details for %1" ).arg( connName ) );
+    throw QgsProcessingException( QObject::tr( "Could not connect to %1" ).arg( uri.uri() ) );
   }
 
   QString sql = parameterAsString( parameters, QStringLiteral( "SQL" ), context ).replace( '\n', ' ' );
