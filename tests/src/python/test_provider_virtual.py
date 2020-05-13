@@ -72,6 +72,15 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         """Run after all tests"""
         pass
 
+    def treat_datetime_as_string(self):
+        return True
+
+    def treat_date_as_string(self):
+        return True
+
+    def treat_time_as_string(self):
+        return True
+
     def setUp(self):
         """Run before each test."""
         self.testDataDir = unitTestDataPath()
