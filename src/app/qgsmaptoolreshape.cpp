@@ -27,6 +27,7 @@
 QgsMapToolReshape::QgsMapToolReshape( QgsMapCanvas *canvas )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine )
 {
+  mToolName = tr( "Reshape features" );
 }
 
 void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent *e )

@@ -25,6 +25,7 @@ QgsMapToolRegularPolygon2Points::QgsMapToolRegularPolygon2Points( QgsMapToolCapt
     QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolAddRegularPolygon( parentTool, canvas, mode )
 {
+  mToolName = tr( "Add regular polygon from 2 points" );
 }
 
 QgsMapToolRegularPolygon2Points::~QgsMapToolRegularPolygon2Points()

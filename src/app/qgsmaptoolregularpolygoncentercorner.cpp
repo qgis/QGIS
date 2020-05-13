@@ -26,6 +26,7 @@ QgsMapToolRegularPolygonCenterCorner::QgsMapToolRegularPolygonCenterCorner( QgsM
     QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolAddRegularPolygon( parentTool, canvas, mode )
 {
+  mToolName = tr( "Add regular polygon from center and a corner" );
 }
 
 QgsMapToolRegularPolygonCenterCorner::~QgsMapToolRegularPolygonCenterCorner()

@@ -33,7 +33,7 @@ QgsMapToolCircularStringRadius::QgsMapToolCircularStringRadius( QgsMapToolCaptur
   , mRadius( 0.0 )
 
 {
-
+  mToolName = tr( "Add circular string by radius" );
 }
 
 void QgsMapToolCircularStringRadius::deactivate()
