@@ -77,6 +77,12 @@ class MessageLogger(QObject):
 
 class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
 
+    def treat_date_as_datetime(self):
+        return True
+
+    def treat_time_as_string(self):
+        return True
+
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -107,6 +113,9 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
 {"name":"name","type":"esriFieldTypeString","alias":"name","length":100,"domain":null},
 {"name":"name2","type":"esriFieldTypeString","alias":"name2","length":100,"domain":null},
 {"name":"num_char","type":"esriFieldTypeString","alias":"num_char","length":100,"domain":null},
+{"name":"dt","type":"esriFieldTypeDate","alias":"num_char","length":100,"domain":null},
+{"name":"date","type":"esriFieldTypeDate","alias":"num_char","length":100,"domain":null},
+{"name":"time","type":"esriFieldTypeString","alias":"num_char","length":100,"domain":null},
 {"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null}],
 "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
 "capabilities":"Map,Query,Data","maxRecordCount":1000,"supportsStatistics":true,
@@ -135,7 +144,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         with open(sanitize(endpoint,
                            '/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false'),
                   'wb') as f:
-            f.write("""
+            f.write(("""
         {
          "displayFieldName": "name",
          "fieldAliases": {
@@ -152,6 +161,9 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         {"name":"name","type":"esriFieldTypeString","alias":"name","length":100,"domain":null},
         {"name":"name2","type":"esriFieldTypeString","alias":"name2","length":100,"domain":null},
         {"name":"num_char","type":"esriFieldTypeString","alias":"num_char","length":100,"domain":null},
+        {"name":"dt","type":"esriFieldTypeDate","alias":"num_char","length":100,"domain":null},
+        {"name":"date","type":"esriFieldTypeDate","alias":"num_char","length":100,"domain":null},
+        {"name":"time","type":"esriFieldTypeString","alias":"num_char","length":100,"domain":null},
         {"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null}],
          "features": [
           {
@@ -161,7 +173,10 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
             "cnt": -200,
             "name": null,
             "name2":"NuLl",
-            "num_char":"5"
+            "num_char":"5",
+            "dt": """ + str(QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)).toMSecsSinceEpoch()) + """,
+            "date": """ + str(QDateTime(QDate(2020, 5, 2), QTime(0, 0, 0)).toMSecsSinceEpoch()) + """,
+            "time": "12:13:01"
            },
            "geometry": {
             "x": -71.123,
@@ -175,7 +190,10 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
             "cnt": 300,
             "name": "Pear",
             "name2":"PEaR",
-            "num_char":"3"
+            "num_char":"3",
+            "dt": null,
+            "date": null,
+            "time": null
            },
            "geometry": null
           },
@@ -186,7 +204,10 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
             "cnt": 100,
             "name": "Orange",
             "name2":"oranGe",
-            "num_char":"1"
+            "num_char":"1",
+            "dt": """ + str(QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)).toMSecsSinceEpoch()) + """,
+            "date": """ + str(QDateTime(QDate(2020, 5, 3), QTime(0, 0, 0)).toMSecsSinceEpoch()) + """,
+            "time": "12:13:14"
            },
            "geometry": {
             "x": -70.332,
@@ -200,7 +221,10 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
             "cnt": 200,
             "name": "Apple",
             "name2":"Apple",
-            "num_char":"2"
+            "num_char":"2",
+            "dt": """ + str(QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)).toMSecsSinceEpoch()) + """,
+            "date": """ + str(QDateTime(QDate(2020, 5, 4), QTime(0, 0, 0)).toMSecsSinceEpoch()) + """,
+            "time": "12:14:14"
            },
            "geometry": {
             "x": -68.2,
@@ -214,7 +238,10 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
             "cnt": 400,
             "name": "Honey",
             "name2":"Honey",
-            "num_char":"4"
+            "num_char":"4",
+            "dt": """ + str(QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)).toMSecsSinceEpoch()) + """,
+            "date": """ + str(QDateTime(QDate(2021, 5, 4), QTime(0, 0, 0)).toMSecsSinceEpoch()) + """,
+            "time": "13:13:14"
            },
            "geometry": {
             "x": -65.32,
@@ -222,7 +249,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
            }
           }
          ]
-        }""".encode('UTF-8'))
+        }""").encode('UTF-8'))
 
         with open(sanitize(endpoint,
                            '/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false&geometry=-71.123000,66.330000,-65.320000,78.300000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'),
@@ -246,7 +273,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
 {"name":"num_char","type":"esriFieldTypeString","alias":"num_char","length":100,"domain":null},
 {"name":"dt","type":"esriFieldTypeDate","alias":"num_char","length":100,"domain":null},
 {"name":"date","type":"esriFieldTypeDate","alias":"num_char","length":100,"domain":null},
-{"name":"time","type":"esriFieldTypeDate","alias":"num_char","length":100,"domain":null},
+{"name":"time","type":"esriFieldTypeString","alias":"num_char","length":100,"domain":null},
 {"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null}],
  "features": [
   {

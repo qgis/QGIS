@@ -349,8 +349,15 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('name')), 'Apple')
 
         self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('dt')), QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)))
-        self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('date')), QDate(2020, 5, 2))
-        self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('time')), QTime(12, 13, 1))
+        if not self.treat_date_as_datetime():
+            self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('date')), QDate(2020, 5, 2))
+        else:
+            self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('date')), QDateTime(2020, 5, 2, 0, 0, 0))
+
+        if not self.treat_time_as_string():
+            self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('time')), QTime(12, 13, 1))
+        else:
+            self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('time')), '12:13:01')
 
         if self.source.supportsSubsetString():
             subset = self.getSubsetString()
@@ -366,8 +373,18 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('name')), 'Pear')
 
         self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('dt')), QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)))
-        self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('date')), QDate(2021, 5, 4))
-        self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('time')), QTime(13, 13, 14))
+        if self.treat_date_as_datetime():
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
+                             set([QDateTime(2020, 5, 3, 0, 0, 0), QDateTime(2020, 5, 4, 0, 0, 0), QDateTime(2021, 5, 4, 0, 0, 0), QDateTime(2020, 5, 2, 0, 0, 0), NULL]))
+        else:
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
+                             set([QDate(2020, 5, 3), QDate(2020, 5, 4), QDate(2021, 5, 4), QDate(2020, 5, 2), NULL]))
+        if self.treat_time_as_string():
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('time'))),
+                             set(['12:14:14', '13:13:14', '12:13:14', '12:13:01', NULL]))
+        else:
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('time'))),
+                             set([QTime(12, 14, 14), QTime(13, 13, 14), QTime(12, 13, 14), QTime(12, 13, 1), NULL]))
 
         if self.source.supportsSubsetString():
             subset = self.getSubsetString2()
@@ -421,10 +438,19 @@ class ProviderTestCase(FeatureSourceTestCase):
 
         self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
                          set([QDateTime(2021, 5, 4, 13, 13, 14), QDateTime(2020, 5, 4, 12, 14, 14), QDateTime(2020, 5, 4, 12, 13, 14), QDateTime(2020, 5, 3, 12, 13, 14), NULL]))
-        self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
-                         set([QDate(2020, 5, 3), QDate(2020, 5, 4), QDate(2021, 5, 4), QDate(2020, 5, 2), NULL]))
-        self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('time'))),
-                         set([QTime(12, 14, 14), QTime(13, 13, 14), QTime(12, 13, 14), QTime(12, 13, 1), NULL]))
+
+        if self.treat_date_as_datetime():
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
+                             set([QDateTime(2020, 5, 3, 0, 0, 0), QDateTime(2020, 5, 4, 0, 0, 0), QDateTime(2021, 5, 4, 0, 0, 0), QDateTime(2020, 5, 2, 0, 0, 0), NULL]))
+        else:
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
+                             set([QDate(2020, 5, 3), QDate(2020, 5, 4), QDate(2021, 5, 4), QDate(2020, 5, 2), NULL]))
+        if self.treat_time_as_string():
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('time'))),
+                             set(['12:14:14', '13:13:14', '12:13:14', '12:13:01', NULL]))
+        else:
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('time'))),
+                             set([QTime(12, 14, 14), QTime(13, 13, 14), QTime(12, 13, 14), QTime(12, 13, 1), NULL]))
 
         if self.source.supportsSubsetString():
             subset = self.getSubsetString2()
