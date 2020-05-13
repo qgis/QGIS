@@ -55,6 +55,9 @@ class GUI_EXPORT QgsMaskingWidget: public QgsPanelWidget, private Ui::QgsMasking
 
   protected slots:
 
+    /**
+     * Called whenever mask sources or targets selection has changed
+     */
     void onSelectionChanged();
 
   private:
