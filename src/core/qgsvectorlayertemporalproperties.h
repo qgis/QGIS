@@ -216,6 +216,28 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
     void setFixedDuration( double duration );
 
     /**
+     * Returns TRUE if features will be accumulated over time (i.e. all features which
+     * occur before or within the map's temporal range should be rendered).
+     *
+     * \warning This setting is only effective when mode() is
+     * QgsVectorLayerTemporalProperties::ModeFeatureDateTimeInstantFromField
+     *
+     * \see setAccumulateFeatures()
+     */
+    bool accumulateFeatures() const;
+
+    /**
+     * Sets whether features will be accumulated over time (i.e. all features which
+     * occur before or within the map's temporal range should be rendered).
+     *
+     * \warning This setting is only effective when mode() is
+     * QgsVectorLayerTemporalProperties::ModeFeatureDateTimeInstantFromField
+     *
+     * \see accumulateFeatures()
+     */
+    void setAccumulateFeatures( bool accumulate );
+
+    /**
      * Creates a QGIS expression filter string for filtering features from \a layer
      * to those within the specified time \a range.
      *
@@ -253,6 +275,8 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
     QgsUnitTypes::TemporalUnit mDurationUnit = QgsUnitTypes::TemporalMinutes;
 
     double mFixedDuration = 0;
+
+    bool mAccumulateFeatures = false;
 
 };
 
