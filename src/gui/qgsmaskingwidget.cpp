@@ -51,7 +51,7 @@ void QgsMaskingWidget::onSelectionChanged()
   }
   else if ( !mMessageBarItem && printMessage )
   {
-    mMessageBarItem = new QgsMessageBarItem( tr( "You need to select both mask sources and masked symbol layers. If not, all configuration will be lost" ), Qgis::Warning, 0, this );
+    mMessageBarItem = new QgsMessageBarItem( tr( "Select both sources and symbol layers or your configuration will be lost" ), Qgis::Warning, 0, this );
     mMessageBar->pushItem( mMessageBarItem );
   }
 
@@ -63,12 +63,12 @@ void QgsMaskingWidget::showEvent( QShowEvent *event )
   Q_UNUSED( event );
 
   // populate is quite long, so we delay it when the widget is first shown
-  if ( _mustPopulate )
+  if ( mMustPopulate )
   {
     disconnect( mMaskTargetsWidget, &QgsSymbolLayerSelectionWidget::changed, this, &QgsMaskingWidget::onSelectionChanged );
     disconnect( mMaskSourcesWidget, &QgsMaskSourceSelectionWidget::changed, this, &QgsMaskingWidget::onSelectionChanged );
 
-    _mustPopulate = false;
+    mMustPopulate = false;
     populate();
 
     connect( mMaskTargetsWidget, &QgsSymbolLayerSelectionWidget::changed, this, &QgsMaskingWidget::onSelectionChanged );
@@ -169,7 +169,7 @@ void QgsMaskingWidget::setLayer( QgsVectorLayer *layer )
   if ( mLayer != layer )
   {
     mLayer = layer;
-    _mustPopulate = true;
+    mMustPopulate = true;
   }
 }
 
