@@ -652,7 +652,8 @@ void QgsRelationEditorWidget::deleteFeature( const QgsFeatureId featureid )
 
 void QgsRelationEditorWidget::deleteSelectedFeatures()
 {
-  deleteFeatures( mFeatureSelectionMgr->selectedFeatureIds() );
+  QgsFeatureIds selectedFids = mFeatureSelectionMgr->selectedFeatureIds();
+  deleteFeatures( selectedFids );
 }
 
 void QgsRelationEditorWidget::deleteFeatures( const QgsFeatureIds &featureids )
