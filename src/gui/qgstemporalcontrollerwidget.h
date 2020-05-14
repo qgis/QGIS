@@ -131,6 +131,7 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
     void onProjectCleared();
 
     void startEndDateTime_changed();
+    void fixedRangeStartEndDateTime_changed();
     void mSetToProjectTimeButton_clicked();
 };
 
