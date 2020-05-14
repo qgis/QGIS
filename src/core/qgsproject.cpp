@@ -2488,20 +2488,20 @@ bool QgsProject::readBoolEntry( const QString &scope, const QString &key, bool d
   return def;
 }
 
-QgsProperty QgsProject::readPropertyEntry( const QString &scope, const QString &key, QgsProperty def, bool *ok ) const
+QgsProperty QgsProject::readPropertyEntry( const QString &scope, const QString &key, const QgsProperty &def, bool *ok ) const
 {
   QgsProjectProperty *property = findKey_( scope, key, mProperties );
 
   if ( property )
   {
-    QgsProperty qgsproperty;
+    QgsProperty propertyValue;
     QVariant value = property->value();
-    bool loaded = qgsproperty.loadVariant( value );
+    bool loaded = propertyValue.loadVariant( value );
     if ( ok )
       *ok = loaded;
 
     if ( loaded )
-      return qgsproperty;
+      return propertyValue;
   }
 
   return def;

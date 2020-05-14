@@ -430,7 +430,7 @@ implying a hierarchy of keys and corresponding values
     int readNumEntry( const QString &scope, const QString &key, int def = 0, bool *ok = 0 ) const;
     double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok = 0 ) const;
     bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok = 0 ) const;
-    QgsProperty readPropertyEntry( const QString &scope, const QString &key, QgsProperty def = QgsProperty(), bool *ok = 0 ) const;
+    QgsProperty readPropertyEntry( const QString &scope, const QString &key, const QgsProperty &def = QgsProperty(), bool *ok = 0 ) const;
 
 
     bool removeEntry( const QString &scope, const QString &key );

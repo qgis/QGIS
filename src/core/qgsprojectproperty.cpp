@@ -88,7 +88,6 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
       return false;
 
     case QVariant::Map:
-      //it's a property
       mValue = QgsXmlUtils::readVariant( subkeyElement.firstChild().toElement() ).toMap();
       break;
 

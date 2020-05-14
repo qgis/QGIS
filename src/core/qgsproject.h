@@ -445,7 +445,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     int readNumEntry( const QString &scope, const QString &key, int def = 0, bool *ok = nullptr ) const;
     double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok = nullptr ) const;
     bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok = nullptr ) const;
-    QgsProperty readPropertyEntry( const QString &scope, const QString &key, QgsProperty def = QgsProperty(), bool *ok = nullptr ) const;
+    QgsProperty readPropertyEntry( const QString &scope, const QString &key, const QgsProperty &def = QgsProperty(), bool *ok = nullptr ) const;
 
 
     //! Remove the given key
