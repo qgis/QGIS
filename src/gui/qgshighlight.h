@@ -53,8 +53,14 @@ class QgsSymbol;
  *   highlight.show()
  * \endcode
  */
+#ifndef SIP_RUN
 class GUI_EXPORT QgsHighlight: public QObject, public QgsMapCanvasItem
 {
+#else
+class GUI_EXPORT QgsHighlight : public QgsMapCanvasItem
+{
+#endif
+
     Q_OBJECT
 
 #ifdef SIP_RUN
