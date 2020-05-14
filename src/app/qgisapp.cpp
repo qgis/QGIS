@@ -9389,10 +9389,10 @@ void QgisApp::setupAtlasMapLayerAction( QgsPrintLayout *layout, bool enableActio
   }
 }
 
-void QgisApp::setLayoutAtlasFeature( QgsPrintLayout *layout, QgsMapLayer *layer, const QgsFeature &feat )
+void QgisApp::setLayoutAtlasFeature( QgsPrintLayout *layout, const QgsFeature &feat )
 {
   QgsLayoutDesignerDialog *designer = openLayoutDesignerDialog( layout );
-  designer->setAtlasFeature( layer, feat );
+  designer->setAtlasFeature( feat );
 }
 
 void QgisApp::layoutsMenuAboutToShow()

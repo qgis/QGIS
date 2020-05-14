@@ -134,6 +134,7 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
 
     /**
      * Sets the specified feature as the current atlas feature
+     * \warning it is the caller's responsibility to ensure that \a feature is a feature from the layout's current atlas coverage layer.
      * \since QGIS 3.14
      */
     virtual void setAtlasFeature( const QgsFeature &feature ) = 0;

@@ -115,6 +115,10 @@ Returns whether the atlas preview mode is enabled in the designer.
 %Docstring
 Sets the specified feature as the current atlas feature
 
+.. warning::
+
+   it is the caller's responsibility to ensure that ``feature`` is a feature from the layout's current atlas coverage layer.
+
 .. versionadded:: 3.14
 %End
 
