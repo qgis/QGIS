@@ -136,7 +136,7 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
      * Sets the specified feature as the current atlas feature
      * \since QGIS 3.14
      */
-    void setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feature ) = 0;
+    virtual void setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feature ) = 0;
 
     /**
      * Shows the configuration widget for the specified layout \a item.
