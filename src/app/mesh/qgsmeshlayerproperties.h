@@ -59,8 +59,6 @@ class APP_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     void syncAndRepaint();
     //! Changes layer coordinate reference system
     void changeCrs( const QgsCoordinateReferenceSystem &crs );
-    //! Associates dataset to the mesh layer
-    void addDataset();
     //! Loads the default style when appropriate button is pressed
     void loadDefaultStyle();
     //! Saves the default style when appropriate button is pressed

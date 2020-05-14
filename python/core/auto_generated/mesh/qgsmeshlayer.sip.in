@@ -150,6 +150,18 @@ QgsMeshLayer cannot be copied.
 Returns the provider type for this layer
 %End
 
+    bool addDatasets( const QString &path, const QDateTime &defaultReferenceTime = QDateTime() );
+%Docstring
+Add datasets to the mesh from file with ``path``. Use the the time ``defaultReferenceTime`` as reference time is not provided in the file
+
+:param path: the path to the atasets file
+:param defaultReferenceTime: reference time used if not provided in the file
+
+:return: whether the dataset is added
+
+.. versionadded:: 3.14
+%End
+
 
 
 
@@ -344,6 +356,36 @@ The returned position is in map coordinates.
 
 :return: the position of the snapped point on the closest element, empty QgsPointXY if no element of type ``elementType``
 
+
+.. versionadded:: 3.14
+%End
+
+    QgsMeshDatasetGroupTreeItem *datasetGroupTreeRootItem() const;
+%Docstring
+Returns the root items of the dataset group tree item
+
+:return: the root item
+
+.. versionadded:: 3.14
+%End
+
+    void setDatasetGroupTreeRootItem( QgsMeshDatasetGroupTreeItem *rootItem );
+%Docstring
+Sets the root items of the dataset group tree item.
+Changes active dataset groups if those one are not enabled anymore :
+- new active scalar dataset group is the first root item enabled child
+- new active vector dataset group is none
+
+Doesn't take ownership of the pointed item, the root item is cloned.
+
+:param rootItem: the new root item
+
+.. versionadded:: 3.14
+%End
+
+    void resetDatasetGroupTreeItem();
+%Docstring
+Reset the dataset group tree item to default from provider
 
 .. versionadded:: 3.14
 %End

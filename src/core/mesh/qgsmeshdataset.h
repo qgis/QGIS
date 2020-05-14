@@ -521,4 +521,178 @@ class CORE_EXPORT QgsMeshDatasetMetadata
     int mMaximumVerticalLevelsCount = 0; // for 3d stacked meshes
 };
 
+/**
+ * \ingroup core
+ *
+ * Tree item for display of the mesh dataset groups.
+ * Dataset group is set of datasets with the same name,
+ * but different control variable (e.g. time)
+ *
+ * Support for multiple levels, because groups can have
+ * subgroups, for example
+ *
+ * Groups:
+ *   Depth
+ *     Minimum
+ *     Maximum
+ *   Velocity
+ *   Wind speed
+ *     Minimum
+ *     Maximum
+ *
+ * *
+ * \since QGIS 3.14 in core API
+ */
+
+class CORE_EXPORT QgsMeshDatasetGroupTreeItem
+{
+  public:
+
+    /**
+     * Constructor for an empty dataset group tree item
+     */
+    QgsMeshDatasetGroupTreeItem();
+
+    /**
+     * Constructor
+     *
+     * \param defaultName the name that will be used to display the item if iot not overrides (\see setName())
+     * \param isVector whether the dataset group is a vector dataset group
+     * \param index index of the dataset group
+     */
+    QgsMeshDatasetGroupTreeItem( const QString &defaultName,
+                                 bool isVector,
+                                 int index );
+
+    /**
+     * Constructor from a DOM element, contruct also the children
+     *
+     * \param itemElement the DOM element
+     * \param context writing context (e.g. for conversion between relative and absolute paths)
+     */
+    QgsMeshDatasetGroupTreeItem( const QDomElement &itemElement, const QgsReadWriteContext &context );
+
+    /**
+     * Destructor, destructs also the chilren
+     *
+    */
+    ~QgsMeshDatasetGroupTreeItem();
+
+    /**
+     * Clones the item
+     *
+     * \return the cloned item
+     */
+    QgsMeshDatasetGroupTreeItem *clone() const SIP_FACTORY;
+
+    /**
+     * Appends a item child
+     * \param item the item to append
+     *
+     * \note takes ownership of item
+     */
+    void appendChild( QgsMeshDatasetGroupTreeItem *item SIP_TRANSFER );
+
+    /**
+     * Returns a child
+     * \param row the position of the child
+     * \return the item at the positon \a row
+     */
+    QgsMeshDatasetGroupTreeItem *child( int row ) const;
+
+    /**
+     * Returns the child with dataset group \a index
+     * Searches as depper as needed on the child hierarchy
+     *
+     * \param index the index of the dataset group index
+     * \return the item with index as dataset group index, nullptr if no item is found
+     */
+    QgsMeshDatasetGroupTreeItem *childFromDatasetGroupIndex( int index );
+
+    /**
+     * Returns the count of children
+     * \return the children's count
+     */
+    int childCount() const;
+
+    /**
+     * Returns the total count of children, that is included deeper children
+     * \return
+     */
+    int totalChildCount() const;
+
+    /**
+     * Returns the parent item, nullptr if it is root item
+     * \return the parent item
+     */
+    QgsMeshDatasetGroupTreeItem *parentItem() const;
+
+    /**
+     * Returns the position of the item in the parent
+     * \return tow position of the item
+     */
+    int row() const;
+
+    /**
+     * Returns the name of the item
+     * This mame is the default name if the name has not been overrided (\see setName())
+     * \return the name to display
+     */
+    QString name() const;
+
+    /**
+     * Overrides the default name with the name to display.
+     * The default name is still stored in the item
+     * but will not be displayed anymore except if the empty string is setted.
+     * \param name to display
+     */
+    void setName( const QString &name );
+
+    /**
+     * \return whether the dataset group is vector
+     */
+    bool isVector() const;
+
+    /**
+     * \return the dataset group index
+     */
+    int datasetGroupIndex() const;
+
+    /**
+     * \return whether the item is enabled, that is if it is displayed in view
+     */
+    bool isEnabled() const;
+
+    /**
+     * Sets whether the item is enabled, that is if it is displayed in view
+     * \param isEnabled whether the item is enabled
+     */
+    void setIsEnabled( bool isEnabled );
+
+    /**
+     * \return the default name
+     */
+    QString defaultName() const;
+
+    /**
+     * Write the item and its children in a DOM document
+     * \param doc the DOM document
+     * \param context writing context (e.g. for conversion between relative and absolute paths)
+     * \return the dom element where the item is written
+     */
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context );
+
+  private:
+    QgsMeshDatasetGroupTreeItem *mParent = nullptr;
+    QList< QgsMeshDatasetGroupTreeItem * > mChildren;
+    QMap<int, QgsMeshDatasetGroupTreeItem *> mDatasetGroupIndexToChild;
+
+    // Data
+    QString mUserName;
+    QString mProviderName;
+    bool mIsVector = false;
+    int mDatasetGroupIndex = -1;
+    bool mIsEnabled = true;
+};
+
 #endif // QGSMESHDATASET_H

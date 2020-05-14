@@ -63,7 +63,7 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
 
   connect( mLayerOrigNameLineEd, &QLineEdit::textEdited, this, &QgsMeshLayerProperties::updateLayerName );
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsMeshLayerProperties::changeCrs );
-  connect( mAddDatasetButton, &QPushButton::clicked, this, &QgsMeshLayerProperties::addDataset );
+  connect( mDatasetGroupTreeWidget, &QgsMeshDatasetGroupTreeWidget::datasetGroupAdded, this, &QgsMeshLayerProperties::syncToLayer );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -175,6 +175,9 @@ void QgsMeshLayerProperties::syncToLayer()
     mUriLabel->setText( tr( "Not assigned" ) );
   }
 
+  if ( mMeshLayer )
+    mDatasetGroupTreeWidget->syncToLayer( mMeshLayer );
+
   QgsDebugMsgLevel( QStringLiteral( "populate styling tab" ), 4 );
   /*
    * Styling Tab
@@ -210,57 +213,6 @@ void QgsMeshLayerProperties::syncToLayer()
   mStaticScalarWidget->syncToLayer();
   mStaticScalarWidget->setVisible( !mMeshLayer->temporalProperties()->isActive() );
   mTemporalStaticDatasetCheckBox->setChecked( !mMeshLayer->temporalProperties()->isActive() );
-}
-
-void QgsMeshLayerProperties::addDataset()
-{
-  if ( !mMeshLayer->dataProvider() )
-    return;
-
-  QgsSettings settings;
-  QString openFileDir = settings.value( QStringLiteral( "lastMeshDatasetDir" ), QDir::homePath(), QgsSettings::App ).toString();
-  QString openFileString = QFileDialog::getOpenFileName( nullptr,
-                           tr( "Load mesh datasets" ),
-                           openFileDir,
-                           QgsProviderRegistry::instance()->fileMeshDatasetFilters() );
-
-  if ( openFileString.isEmpty() )
-  {
-    return; // canceled by the user
-  }
-
-  QFileInfo openFileInfo( openFileString );
-  settings.setValue( QStringLiteral( "lastMeshDatasetDir" ), openFileInfo.absolutePath(), QgsSettings::App );
-  QFile datasetFile( openFileString );
-
-  bool isTemporalBefore = mMeshLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities();
-  bool ok = mMeshLayer->dataProvider()->addDataset( openFileString );
-  if ( ok )
-  {
-    QgsMeshLayerTemporalProperties *temporalProperties = qobject_cast< QgsMeshLayerTemporalProperties * >( mMeshLayer->temporalProperties() );
-
-    if ( !isTemporalBefore && mMeshLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
-    {
-      temporalProperties->setDefaultsFromDataProviderTemporalCapabilities(
-        mMeshLayer->dataProvider()->temporalCapabilities() );
-
-      if ( ! temporalProperties->referenceTime().isValid() )
-      {
-        QDateTime referenceTime = QgsProject::instance()->timeSettings()->temporalRange().begin();
-        if ( !referenceTime.isValid() ) // If project reference time is invalid, use current date
-          referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) );
-        temporalProperties->setReferenceTime( referenceTime, mMeshLayer->dataProvider()->temporalCapabilities() );
-      }
-    }
-
-    syncToLayer();
-    QMessageBox::information( this, tr( "Load mesh datasets" ), tr( "Datasets successfully added to the mesh layer" ) );
-    emit mMeshLayer->dataSourceChanged();
-  }
-  else
-  {
-    QMessageBox::warning( this, tr( "Load mesh datasets" ), tr( "Could not read mesh dataset." ) );
-  }
 }
 
 void QgsMeshLayerProperties::loadDefaultStyle()
@@ -373,6 +325,12 @@ void QgsMeshLayerProperties::apply()
    * General Tab
    */
   mMeshLayer->setName( mLayerOrigNameLineEd->text() );
+
+  QgsDebugMsgLevel( QStringLiteral( "processing source tab" ), 4 );
+  /*
+   * Source Tab
+   */
+  mDatasetGroupTreeWidget->apply();
 
   QgsDebugMsgLevel( QStringLiteral( "processing style tab" ), 4 );
   /*
