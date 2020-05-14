@@ -19,6 +19,7 @@
 #define SIP_NO_FILE
 
 #include "qgsmaplayerrenderer.h"
+#include "qgsrasterdataprovider.h"
 
 class QPainter;
 
@@ -80,7 +81,7 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
 
     QgsRasterPipe *mPipe = nullptr;
 
-    QgsRasterLayer *mLayer;
+    QgsRasterDataProvider::Capability mProviderCapabilities;
 
     //! feedback class for cancellation and preview generation
     QgsRasterLayerRendererFeedback *mFeedback = nullptr;

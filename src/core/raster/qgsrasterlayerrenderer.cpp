@@ -64,7 +64,7 @@ void QgsRasterLayerRendererFeedback::onNewData()
 ///
 QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRenderContext &rendererContext )
   : QgsMapLayerRenderer( layer->id(), &rendererContext )
-  , mLayer( layer )
+  , mProviderCapabilities( static_cast<QgsRasterDataProvider::Capability>( layer->dataProvider()->capabilities() ) )
   , mFeedback( new QgsRasterLayerRendererFeedback( this ) )
 {
   QgsMapToPixel mapToPixel = rendererContext.mapToPixel();
@@ -266,9 +266,8 @@ QgsRasterLayerRenderer::~QgsRasterLayerRenderer()
 bool QgsRasterLayerRenderer::render()
 {
   // Skip rendering of out of view tiles (xyz)
-  if ( !mRasterViewPort || ( mLayer && renderContext()->testFlag( QgsRenderContext::Flag::RenderPreviewJob ) &&
-                             mLayer->dataProvider() &&
-                             !( mLayer->dataProvider()->capabilities() &
+  if ( !mRasterViewPort || ( renderContext()->testFlag( QgsRenderContext::Flag::RenderPreviewJob ) &&
+                             !( mProviderCapabilities &
                                 QgsRasterInterface::Capability::Prefetch ) ) )
     return true;
 
