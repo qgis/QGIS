@@ -99,6 +99,9 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
     def treat_time_as_string(self):
         return True
 
+    def treat_date_as_datetime(self):
+        return True
+
     def getEditableLayer(self):
         return self.getSource()
 
@@ -190,15 +193,15 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
 
         fields = vl.dataProvider().fields()
         self.assertEqual(fields.at(fields.indexFromName(
-            'date_field')).type(), QVariant.Date)
+            'date_field')).type(), QVariant.DateTime)
         self.assertEqual(fields.at(fields.indexFromName(
             'datetime_field')).type(), QVariant.DateTime)
 
         f = next(vl.getFeatures(QgsFeatureRequest()))
 
         date_idx = vl.fields().lookupField('date_field')
-        self.assertIsInstance(f.attributes()[date_idx], QDate)
-        self.assertEqual(f.attributes()[date_idx], QDate(2004, 3, 4))
+        self.assertIsInstance(f.attributes()[date_idx], QDateTime)
+        self.assertEqual(f.attributes()[date_idx], QDateTime(2004, 3, 4, 0, 0, 0))
         datetime_idx = vl.fields().lookupField('datetime_field')
         self.assertIsInstance(f.attributes()[datetime_idx], QDateTime)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(

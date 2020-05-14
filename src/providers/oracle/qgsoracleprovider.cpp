@@ -756,13 +756,6 @@ bool QgsOracleProvider::loadFields()
       continue;
 
     QVariant::Type type = field.type();
-
-    if ( types.value( field.name() ) == "DATE" )
-    {
-      // date types are incorrectly detected as datetime
-      type = QVariant::Date;
-    }
-
     QgsField newField( field.name(), type, types.value( field.name() ), field.length(), field.precision(), comments.value( field.name() ) );
 
     QgsFieldConstraints constraints;
