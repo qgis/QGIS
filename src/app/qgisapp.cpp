@@ -9014,9 +9014,30 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *parent, bool checkFea
     }
   }
 
+  QgsVectorLayerUtils::QgsDuplicateFeatureContext infoContext;
+  if ( QgsVectorLayerUtils::impactsCascadeFeatures( vlayer, vlayer->selectedFeatureIds(), QgsProject::instance(), infoContext ) )
+  {
+    QString childrenInfo;
+    int childrenCount = 0;
+    const auto infoContextLayers = infoContext.layers();
+    for ( QgsVectorLayer *chl : infoContextLayers )
+    {
+      childrenCount += infoContext.duplicatedFeatures( chl ).size();
+      childrenInfo += ( tr( "%1 feature(s) on layer \"%2\", " ).arg( infoContext.duplicatedFeatures( chl ).size() ).arg( chl->name() ) );
+    }
+
+    // for extra safety to make sure we know that the delete can have impact on children and joins
+    int res = QMessageBox::question( mMapCanvas, tr( "Delete at least %3 feature(s) on other layer(s)" ).arg( childrenCount ),
+                                     tr( "Delete %1 feature(s) on layer \"%2\" and %3as well.\nAnd all the further descendants of them.\nDelete these features?" ).arg( numberOfSelectedFeatures ).arg( vlayer->name() ).arg( childrenInfo ),
+                                     QMessageBox::Yes | QMessageBox::No );
+    if ( res != QMessageBox::Yes )
+      return;
+  }
+
   vlayer->beginEditCommand( tr( "Features deleted" ) );
   int deletedCount = 0;
-  if ( !vlayer->deleteSelectedFeatures( &deletedCount ) )
+  QgsVectorLayer::DeleteContext context( true, QgsProject::instance() );
+  if ( !vlayer->deleteSelectedFeatures( &deletedCount, &context ) )
   {
     visibleMessageBar()->pushMessage( tr( "Problem deleting features" ),
                                       tr( "A problem occurred during deletion from layer \"%1\". %n feature(s) not deleted.", nullptr, numberOfSelectedFeatures - deletedCount ).arg( vlayer->name() ),
@@ -9024,7 +9045,21 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *parent, bool checkFea
   }
   else
   {
-    showStatusMessage( tr( "%n feature(s) deleted.", "number of features deleted", numberOfSelectedFeatures ) );
+    const auto contextLayers = context.handledLayers();
+    // if it affects more than one layer, print feedback for all descendants
+    if ( contextLayers.size() > 1 )
+    {
+      deletedCount = 0;
+      QString feedbackMessage;
+      for ( QgsVectorLayer *contextLayer : contextLayers )
+      {
+        feedbackMessage += tr( "%1 on layer %2. " ).arg( context.handledFeatures( contextLayer ).size() ).arg( contextLayer->name() );
+        deletedCount += context.handledFeatures( contextLayer ).size();
+      }
+      visibleMessageBar()->pushMessage( tr( "%1 features deleted: %2" ).arg( deletedCount ).arg( feedbackMessage ), Qgis::Success );
+    }
+
+    showStatusMessage( tr( "%n feature(s) deleted.", "number of features deleted", deletedCount ) );
   }
 
   vlayer->endEditCommand();

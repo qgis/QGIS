@@ -934,3 +934,83 @@ QString QgsVectorLayerUtils::getFeatureDisplayString( const QgsVectorLayer *laye
 
   return displayString;
 }
+
+bool QgsVectorLayerUtils::impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context )
+{
+  if ( !layer )
+    return false;
+
+  const QList<QgsRelation> relations = project->relationManager()->referencedRelations( layer );
+  for ( const QgsRelation &relation : relations )
+  {
+    if ( relation.strength() == QgsRelation::Composition )
+    {
+      QgsFeatureIds childFeatureIds;
+
+      const auto constFids = fids;
+      for ( const QgsFeatureId fid : constFids )
+      {
+        //get features connected over this relation
+        QgsFeatureIterator relatedFeaturesIt = relation.getRelatedFeatures( layer->getFeature( fid ) );
+        QgsFeature childFeature;
+        while ( relatedFeaturesIt.nextFeature( childFeature ) )
+        {
+          childFeatureIds.insert( childFeature.id() );
+        }
+      }
+
+      if ( childFeatureIds.count() > 0 )
+      {
+        if ( context.layers().contains( relation.referencingLayer() ) )
+        {
+          QgsFeatureIds handledFeatureIds = context.duplicatedFeatures( relation.referencingLayer() );
+          // add feature ids
+          handledFeatureIds.unite( childFeatureIds );
+          context.setDuplicatedFeatures( relation.referencingLayer(), handledFeatureIds );
+        }
+        else
+        {
+          // add layer and feature id
+          context.setDuplicatedFeatures( relation.referencingLayer(), childFeatureIds );
+        }
+      }
+    }
+  }
+
+  if ( layer->joinBuffer()->containsJoins() )
+  {
+    const auto constVectorJoins = layer->joinBuffer()->vectorJoins();
+    for ( const QgsVectorLayerJoinInfo &info : constVectorJoins )
+    {
+      if ( info.isEditable() && info.hasCascadedDelete() )
+      {
+        QgsFeatureIds joinFeatureIds;
+        const auto constFids = fids;
+        for ( const QgsFeatureId &fid : constFids )
+        {
+          const QgsFeature joinFeature = layer->joinBuffer()->joinedFeatureOf( &info, layer->getFeature( fid ) );
+          if ( joinFeature.isValid() )
+            joinFeatureIds.insert( joinFeature.id() );
+        }
+
+        if ( joinFeatureIds.count() > 0 )
+        {
+          if ( context.layers().contains( info.joinLayer() ) )
+          {
+            QgsFeatureIds handledFeatureIds = context.duplicatedFeatures( info.joinLayer() );
+            // add feature ids
+            handledFeatureIds.unite( joinFeatureIds );
+            context.setDuplicatedFeatures( info.joinLayer(), handledFeatureIds );
+          }
+          else
+          {
+            // add layer and feature id
+            context.setDuplicatedFeatures( info.joinLayer(), joinFeatureIds );
+          }
+        }
+      }
+    }
+  }
+
+  return context.layers().count();
+}

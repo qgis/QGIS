@@ -1158,7 +1158,7 @@ QgsVectorLayer::EditResult QgsVectorLayer::deleteVertex( QgsFeatureId featureId,
 }
 
 
-bool QgsVectorLayer::deleteSelectedFeatures( int *deletedCount )
+bool QgsVectorLayer::deleteSelectedFeatures( int *deletedCount, QgsVectorLayer::DeleteContext *context )
 {
   if ( !mValid || !mDataProvider || !( mDataProvider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
   {
@@ -1177,7 +1177,7 @@ bool QgsVectorLayer::deleteSelectedFeatures( int *deletedCount )
   const auto constSelectedFeatures = selectedFeatures;
   for ( QgsFeatureId fid : constSelectedFeatures )
   {
-    deleted += deleteFeature( fid );  // removes from selection
+    deleted += deleteFeature( fid, context );  // removes from selection
   }
 
   triggerRepaint();
@@ -3187,15 +3187,73 @@ bool QgsVectorLayer::deleteAttributes( const QList<int> &attrs )
   return deleted;
 }
 
-bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
+bool QgsVectorLayer::deleteFeatureCascade( QgsFeatureId fid, QgsVectorLayer::DeleteContext *context )
 {
   if ( !mEditBuffer )
     return false;
 
+  if ( context && context->cascade )
+  {
+    if ( context->mHandledFeatures.contains( this ) )
+    {
+      QgsFeatureIds handledFeatureIds = context->mHandledFeatures.value( this );
+      if ( handledFeatureIds.contains( fid ) )
+      {
+        // avoid endless recursion
+        return false;
+      }
+      else
+      {
+        // add feature id
+        handledFeatureIds << fid;
+        context->mHandledFeatures.insert( this, handledFeatureIds );
+      }
+    }
+    else
+    {
+      // add layer and feature id
+      context->mHandledFeatures.insert( this, QgsFeatureIds() << fid );
+    }
+
+    const QList<QgsRelation> relations = context->project->relationManager()->referencedRelations( this );
+
+    for ( const QgsRelation &relation : relations )
+    {
+      //check if composition (and not association)
+      if ( relation.strength() == QgsRelation::Composition )
+      {
+        //get features connected over this relation
+        QgsFeatureIterator relatedFeaturesIt = relation.getRelatedFeatures( getFeature( fid ) );
+        QgsFeatureIds childFeatureIds;
+        QgsFeature childFeature;
+        while ( relatedFeaturesIt.nextFeature( childFeature ) )
+        {
+          childFeatureIds.insert( childFeature.id() );
+        }
+        if ( childFeatureIds.count() > 0 )
+        {
+          relation.referencingLayer()->startEditing();
+          relation.referencingLayer()->deleteFeatures( childFeatureIds, context );
+        }
+      }
+    }
+  }
+
   if ( mJoinBuffer->containsJoins() )
-    mJoinBuffer->deleteFeature( fid );
+    mJoinBuffer->deleteFeature( fid, context );
 
   bool res = mEditBuffer->deleteFeature( fid );
+
+  return res;
+}
+
+bool QgsVectorLayer::deleteFeature( QgsFeatureId fid, QgsVectorLayer::DeleteContext *context )
+{
+  if ( !mEditBuffer )
+    return false;
+
+  bool res = deleteFeatureCascade( fid, context );
+
   if ( res )
   {
     mSelectedFeatureIds.remove( fid ); // remove it from selection
@@ -3205,18 +3263,12 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
   return res;
 }
 
-bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids )
+bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids, QgsVectorLayer::DeleteContext *context )
 {
-  if ( !mEditBuffer )
-  {
-    QgsDebugMsgLevel( QStringLiteral( "Cannot delete features (mEditBuffer==NULL)" ), 1 );
-    return false;
-  }
-
-  if ( mJoinBuffer->containsJoins() )
-    mJoinBuffer->deleteFeatures( fids );
-
-  bool res = mEditBuffer->deleteFeatures( fids );
+  bool res = true;
+  const auto constFids = fids;
+  for ( QgsFeatureId fid : constFids )
+    res = deleteFeatureCascade( fid, context ) && res;
 
   if ( res )
   {
@@ -5510,4 +5562,18 @@ void QgsVectorLayer::onDirtyTransaction( const QString &sql, const QString &name
   {
     qobject_cast<QgsVectorLayerEditPassthrough *>( mEditBuffer )->update( tr, sql, name );
   }
+}
+
+QList<QgsVectorLayer *> QgsVectorLayer::DeleteContext::handledLayers() const
+{
+  QList<QgsVectorLayer *> layers;
+  QMap<QgsVectorLayer *, QgsFeatureIds>::const_iterator i;
+  for ( i = mHandledFeatures.begin(); i != mHandledFeatures.end(); ++i )
+    layers.append( i.key() );
+  return layers;
+}
+
+QgsFeatureIds QgsVectorLayer::DeleteContext::handledFeatures( QgsVectorLayer *layer ) const
+{
+  return mHandledFeatures[layer];
 }

@@ -374,6 +374,21 @@ Constructor for LayerOptions.
 
     };
 
+    struct DeleteContext
+    {
+
+      explicit DeleteContext( bool cascade = false, QgsProject *project = 0 );
+%Docstring
+Constructor for DeleteContext.
+%End
+
+      QList<QgsVectorLayer *> handledLayers() const;
+      QgsFeatureIds handledFeatures( QgsVectorLayer *layer ) const;
+
+      bool cascade;
+      QgsProject *project;
+    };
+
     explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
                              const QString &providerLib = "ogr", const QgsVectorLayer::LayerOptions &options = QgsVectorLayer::LayerOptions() );
 %Docstring
@@ -1265,9 +1280,12 @@ Deletes a vertex from a feature.
 .. versionadded:: 2.14
 %End
 
-    bool deleteSelectedFeatures( int *deletedCount = 0 );
+    bool deleteSelectedFeatures( int *deletedCount = 0, DeleteContext *context = 0 );
 %Docstring
 Deletes the selected features
+
+:param deletedCount: The number of successfully deleted features
+:param context: The chain of features who will be deleted for feedback and to avoid endless recursions
 
 :return: ``True`` in case of success and ``False`` otherwise
 %End
@@ -1947,9 +1965,12 @@ Deletes a list of attribute fields (but does not commit it)
     virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) ${SIP_FINAL};
 
 
-    bool deleteFeature( QgsFeatureId fid );
+    bool deleteFeature( QgsFeatureId fid, DeleteContext *context = 0 );
 %Docstring
 Deletes a feature from the layer (but does not commit it).
+
+:param fid: The feature id to delete
+:param context: The chain of features who will be deleted for feedback and to avoid endless recursions
 
 .. note::
 
@@ -1959,11 +1980,12 @@ Deletes a feature from the layer (but does not commit it).
    changes can be discarded by calling rollBack().
 %End
 
-    bool deleteFeatures( const QgsFeatureIds &fids );
+    bool deleteFeatures( const QgsFeatureIds &fids, DeleteContext *context = 0 );
 %Docstring
 Deletes a set of features from the layer (but does not commit it)
 
 :param fids: The feature ids to delete
+:param context: The chain of features who will be deleted for feedback and to avoid endless recursions
 
 :return: ``False`` if the layer is not in edit mode or does not support deleting
          in case of an active transaction depends on the provider implementation

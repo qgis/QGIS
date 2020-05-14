@@ -506,6 +506,26 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     };
 
     /**
+     * Context for cascade delete features
+     * \since QGIS 3.14
+     */
+    struct CORE_EXPORT DeleteContext
+    {
+
+      /**
+       * Constructor for DeleteContext.
+       */
+      explicit DeleteContext( bool cascade = false, QgsProject *project = nullptr ): cascade( cascade ), project( project ) {}
+
+      QList<QgsVectorLayer *> handledLayers() const;
+      QgsFeatureIds handledFeatures( QgsVectorLayer *layer ) const;
+
+      QMap<QgsVectorLayer *, QgsFeatureIds> mHandledFeatures SIP_SKIP;
+      bool cascade;
+      QgsProject *project;
+    };
+
+    /**
      * Constructor - creates a vector layer
      *
      * The QgsVectorLayer is constructed by instantiating a data provider.  The provider
@@ -1284,9 +1304,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Deletes the selected features
-     *  \returns TRUE in case of success and FALSE otherwise
+     * \param deletedCount The number of successfully deleted features
+     * \param context The chain of features who will be deleted for feedback and to avoid endless recursions
+     *
+     * \returns TRUE in case of success and FALSE otherwise
      */
-    Q_INVOKABLE bool deleteSelectedFeatures( int *deletedCount = nullptr );
+    Q_INVOKABLE bool deleteSelectedFeatures( int *deletedCount = nullptr, DeleteContext *context = nullptr );
 
     /**
      * Adds a ring to polygon/multipolygon features
@@ -1818,17 +1841,20 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Deletes a feature from the layer (but does not commit it).
+     * \param fid The feature id to delete
+     * \param context The chain of features who will be deleted for feedback and to avoid endless recursions
      *
      * \note Calls to deleteFeature() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
      */
-    bool deleteFeature( QgsFeatureId fid );
+    bool deleteFeature( QgsFeatureId fid, DeleteContext *context = nullptr );
 
     /**
      * Deletes a set of features from the layer (but does not commit it)
      * \param fids The feature ids to delete
+     * \param context The chain of features who will be deleted for feedback and to avoid endless recursions
      *
      * \returns FALSE if the layer is not in edit mode or does not support deleting
      *         in case of an active transaction depends on the provider implementation
@@ -1838,7 +1864,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
      */
-    bool deleteFeatures( const QgsFeatureIds &fids );
+    bool deleteFeatures( const QgsFeatureIds &fids, DeleteContext *context = nullptr );
 
     /**
      * Attempts to commit to the underlying data provider any buffered changes made since the
@@ -2694,6 +2720,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Read simple labeling from layer's custom properties (QGIS 2.x projects)
     QgsAbstractVectorLayerLabeling *readLabelingFromCustomProperties();
+
+    bool deleteFeatureCascade( QgsFeatureId fid, DeleteContext *context = nullptr );
 
 #ifdef SIP_RUN
     QgsVectorLayer( const QgsVectorLayer &rhs );

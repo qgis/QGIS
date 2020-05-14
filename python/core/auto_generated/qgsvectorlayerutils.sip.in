@@ -296,6 +296,17 @@ The following operations will be performed to convert the input features:
 
 .. versionadded:: 3.12
 %End
+
+    static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context /Out/ );
+%Docstring
+
+:return: ``True`` if at least one feature of the ``fids`` on ``layer`` is connected as parent in at
+         least one composition relation of the ``project`` or contains joins, where cascade delete is set.
+         Details about cascading effects will be written to ``context``.
+
+.. versionadded:: 3.14
+%End
+
 };
 
 
