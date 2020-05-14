@@ -130,7 +130,7 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
         layer.serverProperties().removeWmsDimension('time')
         self.assertTrue(layer.serverProperties().addWmsDimension(
             QgsVectorLayerServerProperties.WmsDimensionInfo('time', 'updated')))
-        self.assertEqual(QgsServerApiUtils.temporalExtent(layer), [['2010-01-01T01:01:01Z', '2022-01-01T01:01:01Z']])
+        self.assertEqual(QgsServerApiUtils.temporalExtent(layer), [['2010-01-01T01:01:01', '2022-01-01T01:01:01']])
 
         layer.serverProperties().removeWmsDimension('date')
         layer.serverProperties().removeWmsDimension('time')
