@@ -50,6 +50,7 @@ class TestQgsBasemapPathRegistry(unittest.TestCase):
 
     def testOrderOfPreference(self):
         temp_dir = gettempdir()
+        os.mkdir('{}/data'.format(temp_dir))
         alt_dir = '{}/{}'.format(temp_dir, MAP_PATH)
         Path(alt_dir).touch()
         QgsApplication.basemapPathRegistry().registerPath(temp_dir, 0)
