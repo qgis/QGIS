@@ -302,7 +302,6 @@ void TestQgsMapToolAddFeatureLine::testTracing()
   mEnableTracingAction->setChecked( false );
 }
 
-
 void TestQgsMapToolAddFeatureLine::testTracingWithOffset()
 {
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
@@ -381,7 +380,6 @@ void TestQgsMapToolAddFeatureLine::testTracingWithOffset()
   mEnableTracingAction->setChecked( false );
 }
 
-
 void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurves()
 {
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
@@ -403,8 +401,8 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurves()
   QgsFeatureId newFid1 = utils.newFeatureId( oldFids );
 
   const QgsAbstractGeometry *g = mLayerLineCurved->getFeature( newFid1 ).geometry().constGet();
-  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPointXY( 6, 1 ) );
-  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, g->vertexCount() - 1 ) ), QgsPointXY( 7, 1 ) );
+  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( 6, 1 ) );
+  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, g->vertexCount() - 1 ) ), QgsPoint( 7, 1 ) );
   QVERIFY( g->vertexCount() > 3 );  // a segmentized arc has (much) more than 3 points
 
   mLayerLineCurved->undoStack()->undo();
@@ -420,8 +418,8 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurves()
   QgsFeatureId newFid2 = utils.newFeatureId( oldFids );
 
   g = mLayerLineCurved->getFeature( newFid2 ).geometry().constGet();
-  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPointXY( 6, 1 ) );
-  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, g->vertexCount() - 1 ) ), QgsPointXY( 7, 1 ) );
+  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( 6, 1 ) );
+  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, g->vertexCount() - 1 ) ), QgsPoint( 7, 1 ) );
   QVERIFY( g->vertexCount() == 3 );  // a true arc is composed of 3 vertices
 
   mLayerLineCurved->undoStack()->undo();
@@ -431,7 +429,6 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurves()
 
   mEnableTracingAction->setChecked( false );
 }
-
 
 void TestQgsMapToolAddFeatureLine::testZ()
 {

@@ -23,7 +23,6 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvastracer.h"
 #include "qgsmapmouseevent.h"
-#include "qgsogrutils.h"
 #include "qgspolygon.h"
 #include "qgsrubberband.h"
 #include "qgssnapindicator.h"
