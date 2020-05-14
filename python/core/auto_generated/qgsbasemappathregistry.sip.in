@@ -1,0 +1,66 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsbasemappathregistry.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsBasemapPathRegistry
+{
+%Docstring
+A registry class to hold paths of basemaps
+Paths are meant to be absolute paths and are stored by order of preference.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsbasemappathregistry.h"
+%End
+  public:
+    QgsBasemapPathRegistry();
+
+    ~QgsBasemapPathRegistry();
+
+    QString fullPath( const QString &relativePath ) const;
+%Docstring
+Returns the full path if the file has been found in one of the paths, an empty string otherwise
+%End
+
+    QString relativePath( const QString &fullPath ) const;
+%Docstring
+Returns the relative path if the file has been found in one of the path, an emptry string otherwise
+%End
+
+    QStringList paths() const;
+%Docstring
+Returns a list of registered basemap paths
+%End
+
+
+    void registerPath( const QString &path, int position = -1 );
+%Docstring
+Registers a basemap path
+If ``place`` is given, the path is inserted at the given position in the list
+%End
+
+    void unregisterPath( const QString &path );
+%Docstring
+Unregisters a basemap path
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsbasemappathregistry.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

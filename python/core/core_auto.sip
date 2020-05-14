@@ -15,6 +15,7 @@
 %Include auto_generated/qgsattributes.sip
 %Include auto_generated/qgsattributetableconfig.sip
 %Include auto_generated/qgsauxiliarystorage.sip
+%Include auto_generated/qgsbasemappathregistry.sip
 %Include auto_generated/qgsbearingutils.sip
 %Include auto_generated/qgsblockingnetworkrequest.sip
 %Include auto_generated/qgsbookmarkmanager.sip

@@ -224,6 +224,7 @@ SET(QGIS_CORE_SRCS
   qgsattributetableconfig.cpp
   qgsattributeeditorelement.cpp
   qgsauxiliarystorage.cpp
+  qgsbasemappathregistry.cpp
   qgsbearingutils.cpp
   qgsblockingnetworkrequest.cpp
   qgsbookmarkmanager.cpp
@@ -761,6 +762,7 @@ SET(QGIS_CORE_HDRS
   qgsattributes.h
   qgsattributetableconfig.h
   qgsauxiliarystorage.h
+  qgsbasemappathregistry.h
   qgsbearingutils.h
   qgsblockingnetworkrequest.h
   qgsbookmarkmanager.h
