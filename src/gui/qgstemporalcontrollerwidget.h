@@ -112,6 +112,9 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
 
     void onLayersAdded();
     void onProjectCleared();
+
+    void startEndDateTime_changed();
+    void mSetToProjectTimeButton_clicked();
 };
 
 #endif // QGSTEMPORALCONTROLLERWIDGET_H
