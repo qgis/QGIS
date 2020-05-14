@@ -129,6 +129,11 @@ QgsDateTimeRange QgsVectorLayerTemporalProperties::calculateTemporalExtent( QgsM
 
     case QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromExpressions:
     {
+      bool hasStartExpression = !mStartExpression.isEmpty();
+      bool hasEndExpression = !mEndExpression.isEmpty();
+      if ( !hasStartExpression && !hasEndExpression )
+        return QgsDateTimeRange();
+
       QDateTime minTime;
       QDateTime maxTime;
 
@@ -136,13 +141,26 @@ QgsDateTimeRange QgsVectorLayerTemporalProperties::calculateTemporalExtent( QgsM
       QgsExpressionContext context;
       context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( vectorLayer ) );
 
-      QgsExpression startExpression( mStartExpression );
-      QgsExpression endExpression( mEndExpression );
-      startExpression.prepare( &context );
-      endExpression.prepare( &context );
+      QgsExpression startExpression;
+      if ( hasStartExpression )
+      {
+        startExpression.setExpression( mStartExpression );
+        startExpression.prepare( &context );
+      }
 
-      QSet< QString > fields = startExpression.referencedColumns();
-      fields.unite( endExpression.referencedColumns() );
+      QgsExpression endExpression;
+      if ( hasEndExpression )
+      {
+        endExpression.setExpression( mEndExpression );
+        endExpression.prepare( &context );
+      }
+
+      QSet< QString > fields;
+      if ( hasStartExpression )
+        fields.unite( startExpression.referencedColumns() );
+      if ( hasEndExpression )
+        fields.unite( endExpression.referencedColumns() );
+
       const bool needsGeom = startExpression.needsGeometry() || endExpression.needsGeometry();
 
       QgsFeatureRequest req;
@@ -156,13 +174,21 @@ QgsDateTimeRange QgsVectorLayerTemporalProperties::calculateTemporalExtent( QgsM
       while ( it.nextFeature( f ) )
       {
         context.setFeature( f );
-        const QDateTime start = startExpression.evaluate( &context ).toDateTime();
-        const QDateTime end = endExpression.evaluate( &context ).toDateTime();
+        const QDateTime start = hasStartExpression ? startExpression.evaluate( &context ).toDateTime() : QDateTime();
+        const QDateTime end = hasEndExpression ? endExpression.evaluate( &context ).toDateTime() : QDateTime();
 
         if ( start.isValid() )
+        {
           minTime = minTime.isValid() ? std::min( minTime, start ) : start;
+          if ( !hasEndExpression )
+            maxTime = maxTime.isValid() ? std::max( maxTime, start ) : start;
+        }
         if ( end.isValid() )
+        {
           maxTime = maxTime.isValid() ? std::max( maxTime, end ) : end;
+          if ( !hasStartExpression )
+            minTime = minTime.isValid() ? std::min( minTime, end ) : end;
+        }
       }
       return QgsDateTimeRange( minTime, maxTime );
     }
