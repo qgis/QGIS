@@ -25,6 +25,7 @@
 #include "qgis_sip.h"
 
 /**
+ * \ingroup core
  * A registry class to hold paths of basemaps
  * Paths are meant to be absolute paths and are stored by order of preference.
  *
