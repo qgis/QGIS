@@ -15,6 +15,7 @@
 
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
+#include "qgsbasemappathregistry.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgsexception.h"
 #include "qgsgeometry.h"
@@ -2235,6 +2236,11 @@ QgsProjectStorageRegistry *QgsApplication::projectStorageRegistry()
   return members()->mProjectStorageRegistry;
 }
 
+QgsBasemapPathRegistry *QgsApplication::basemapPathRegistry()
+{
+  return members()->mBasemapPathRegistry;
+}
+
 QgsApplication::ApplicationMembers::ApplicationMembers()
 {
   // don't use initializer lists or scoped pointers - as more objects are added here we
@@ -2369,6 +2375,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     mScaleBarRendererRegistry = new QgsScaleBarRendererRegistry();
     mProfiler->end();
   }
+  mBasemapPathRegistry = new QgsBasemapPathRegistry();
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
@@ -2402,6 +2409,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mNumericFormatRegistry;
   delete mBookmarkManager;
   delete mConnectionRegistry;
+  delete mBasemapPathRegistry;
 }
 
 QgsApplication::ApplicationMembers *QgsApplication::members()

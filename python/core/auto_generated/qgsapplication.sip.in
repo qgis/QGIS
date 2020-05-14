@@ -859,6 +859,13 @@ Returns registry of available project storage implementations.
 .. versionadded:: 3.2
 %End
 
+    static QgsBasemapPathRegistry *basemapPathRegistry() /KeepReference/;
+%Docstring
+Returns the registry of basemaps paths
+
+.. versionadded:: 3.14
+%End
+
     static QString nullRepresentation();
 %Docstring
 This string is used to represent the value `NULL` throughout QGIS.
