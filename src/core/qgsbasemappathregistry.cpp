@@ -70,7 +70,7 @@ void QgsBasemapPathRegistry::registerPath( const QString &path, int position )
   if ( mPaths.contains( dir ) )
     return;
 
-  if ( position > 0 && position < mPaths.count() )
+  if ( position >= 0 && position < mPaths.count() )
     mPaths.insert( position, dir );
   else
     mPaths.append( dir );
