@@ -693,24 +693,24 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
       return image;
     }
 
-    QgsDebugMsg( QStringLiteral( "layer extent: %1,%2,%3,%4 %5x%6" )
-                 .arg( qgsDoubleToString( mLayerExtent.xMinimum() ),
-                       qgsDoubleToString( mLayerExtent.yMinimum() ) )
-                 .arg( qgsDoubleToString( mLayerExtent.xMaximum() ),
-                       qgsDoubleToString( mLayerExtent.yMaximum() ) )
-                 .arg( mLayerExtent.width() )
-                 .arg( mLayerExtent.height() )
-               );
+    QgsDebugMsgLevel( QStringLiteral( "layer extent: %1,%2,%3,%4 %5x%6" )
+                      .arg( qgsDoubleToString( mLayerExtent.xMinimum() ),
+                            qgsDoubleToString( mLayerExtent.yMinimum() ) )
+                      .arg( qgsDoubleToString( mLayerExtent.xMaximum() ),
+                            qgsDoubleToString( mLayerExtent.yMaximum() ) )
+                      .arg( mLayerExtent.width() )
+                      .arg( mLayerExtent.height() ), 3
+                    );
 
-    QgsDebugMsg( QStringLiteral( "view extent: %1,%2,%3,%4 %5x%6  res:%7" )
-                 .arg( qgsDoubleToString( viewExtent.xMinimum() ),
-                       qgsDoubleToString( viewExtent.yMinimum() ) )
-                 .arg( qgsDoubleToString( viewExtent.xMaximum() ),
-                       qgsDoubleToString( viewExtent.yMaximum() ) )
-                 .arg( viewExtent.width() )
-                 .arg( viewExtent.height() )
-                 .arg( vres, 0, 'f' )
-               );
+    QgsDebugMsgLevel( QStringLiteral( "view extent: %1,%2,%3,%4 %5x%6  res:%7" )
+                      .arg( qgsDoubleToString( viewExtent.xMinimum() ),
+                            qgsDoubleToString( viewExtent.yMinimum() ) )
+                      .arg( qgsDoubleToString( viewExtent.xMaximum() ),
+                            qgsDoubleToString( viewExtent.yMaximum() ) )
+                      .arg( viewExtent.width() )
+                      .arg( viewExtent.height() )
+                      .arg( vres, 0, 'f' ), 3
+                    );
 
     QgsDebugMsgLevel( QStringLiteral( "tile matrix %1,%2 res:%3 tilesize:%4x%5 matrixsize:%6x%7 id:%8" )
                       .arg( tm->topLeft.x() ).arg( tm->topLeft.y() ).arg( tm->tres )
