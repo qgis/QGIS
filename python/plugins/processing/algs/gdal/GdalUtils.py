@@ -36,6 +36,7 @@ with warnings.catch_warnings():
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsVectorFileWriter,
+                       QgsProcessingException,
                        QgsProcessingFeedback,
                        QgsProcessingUtils,
                        QgsMessageLog,
@@ -108,6 +109,11 @@ class GdalUtils:
                     for line in proc.stdout:
                         feedback.pushConsoleInfo(line)
                         loglines.append(line)
+                    proc.wait()
+                    if proc.returncode != 0:
+                        raise QgsProcessingException(
+                            u'\nThe command exited with exit code {}. Please check the log output for more details.'.format(proc.returncode)
+                        )
                     success = True
             except IOError as e:
                 if retry_count < 5:
