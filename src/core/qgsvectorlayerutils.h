@@ -324,7 +324,6 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \returns TRUE if at least one feature of the \a fids on \a layer is connected as parent in at
      * least one composition relation of the \a project or contains joins, where cascade delete is set.
      * Details about cascading effects will be written to \a context.
-     *
      * \since QGIS 3.14
      */
     static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context SIP_OUT );
