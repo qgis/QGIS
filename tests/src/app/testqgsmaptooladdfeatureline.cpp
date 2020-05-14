@@ -378,6 +378,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithOffset()
 
 
   mEnableTracingAction->setChecked( false );
+  mTracer->setOffset( 0 );
 }
 
 void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurves()
