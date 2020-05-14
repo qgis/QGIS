@@ -381,7 +381,7 @@ QString QgsRandomBinomialRasterAlgorithm::shortHelpString() const
 {
   return QObject::tr( "Generates a raster layer for given extent and cell size "
                       "filled with binomially distributed random values.\n"
-                      "By default, the values will be chosen given an N of 10 and a probability of 0.5."
+                      "By default, the values will be chosen given an N of 10 and a probability of 0.5. "
                       "This can be overridden by using the advanced parameter for N and probability. "
                       "The raster data type is set to Integer types (Integer16 by default). "
                       "The binomial distribution random values are defined as positive integer numbers. "
@@ -561,7 +561,7 @@ QString QgsRandomGammaRasterAlgorithm::shortHelpString() const
                       "By default, the values will be chosen given an alpha and beta value of 1.0. "
                       "This can be overridden by using the advanced parameter for alpha and beta. "
                       "The raster data type is set to Float32 by default as "
-                      "the exponential distribution random values are floating point numbers." );
+                      "the gamma distribution random values are floating point numbers." );
 }
 
 QgsRandomGammaRasterAlgorithm *QgsRandomGammaRasterAlgorithm::createInstance() const
@@ -642,7 +642,7 @@ QString QgsRandomGeometricRasterAlgorithm::shortHelpString() const
 {
   return QObject::tr( "Generates a raster layer for given extent and cell size "
                       "filled with geometrically distributed random values.\n"
-                      "By default, the values will be chosen given a probability of 0.5."
+                      "By default, the values will be chosen given a probability of 0.5. "
                       "This can be overridden by using the advanced parameter for mean "
                       "value. The raster data type is set to Integer types (Integer16 by default). "
                       "The geometric distribution random values are defined as positive integer numbers. "
@@ -736,7 +736,7 @@ QString QgsRandomNegativeBinomialRasterAlgorithm::shortHelpString() const
   return QObject::tr( "Generates a raster layer for given extent and cell size "
                       "filled with negative binomially distributed random values.\n"
                       "By default, the values will be chosen given a distribution parameter k of 10.0 "
-                      "and a probability of 0.5."
+                      "and a probability of 0.5. "
                       "This can be overridden by using the advanced parameters for k and probability. "
                       "The raster data type is set to Integer types (Integer 16 by default). "
                       "The negative binomial distribution random values are defined as positive integer numbers. "
@@ -918,7 +918,7 @@ QString QgsRandomPoissonRasterAlgorithm::shortHelpString() const
 {
   return QObject::tr( "Generates a raster layer for given extent and cell size "
                       "filled with poisson distributed random values.\n"
-                      "By default, the values will be chosen given a mean of 1.0."
+                      "By default, the values will be chosen given a mean of 1.0. "
                       "This can be overridden by using the advanced parameter for mean "
                       "value. The raster data type is set to Integer types (Integer16 by default). "
                       "The poisson distribution random values are positive integer numbers. "
