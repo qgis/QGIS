@@ -712,6 +712,9 @@
         <file>themes/default/mTaskRunning.svg</file>
         <file>themes/default/mTaskTerminated.svg</file>
         <file>themes/default/mTaskCancel.svg</file>
+        <file>themes/default/mTemporalNavigationOff.svg</file>
+        <file>themes/default/mTemporalNavigationFixedRange.svg</file>
+        <file>themes/default/mTemporalNavigationAnimated.svg</file>
         <file>themes/default/providerGdal.svg</file>
         <file>themes/default/providerGrass.svg</file>
         <file>themes/default/providerQgis.svg</file>

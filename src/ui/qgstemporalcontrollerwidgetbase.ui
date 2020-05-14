@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>gsDockWidget</string>
+   <string>QgsDockWidget</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="leftMargin">
@@ -28,6 +28,66 @@
    </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout1">
+     <item>
+      <widget class="QToolButton" name="mNavigationOff">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="toolTip">
+        <string>Turn off temporal navigation</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mTemporalNavigationOff.svg</normaloff>:/images/themes/default/mTemporalNavigationOff.svg</iconset>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="autoRaise">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mNavigationFixedRange">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="toolTip">
+        <string>Fixed range temporal navigation</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mTemporalNavigationFixedRange.svg</normaloff>:/images/themes/default/mTemporalNavigationFixedRange.svg</iconset>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="autoRaise">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mNavigationAnimated">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="toolTip">
+        <string>Animated temporal navigation</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mTemporalNavigationAnimated.svg</normaloff>:/images/themes/default/mTemporalNavigationAnimated.svg</iconset>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="autoRaise">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QLabel" name="mCurrentRangeLabel">
        <property name="sizePolicy">
@@ -176,7 +236,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
-      <widget class="QLabel" name="label_4">
+      <widget class="QLabel" name="mRangeLabel">
        <property name="text">
         <string>Range</string>
        </property>
@@ -199,7 +259,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_5">
+      <widget class="QLabel" name="mRangeToLabel">
        <property name="text">
         <string>to </string>
        </property>
@@ -236,14 +296,14 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_2">
+      <widget class="QLabel" name="mStepLabel">
        <property name="text">
         <string>Step</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QgsDoubleSpinBox" name="mSpinBox">
+      <widget class="QgsDoubleSpinBox" name="mStepSpinBox">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
          <horstretch>0</horstretch>
