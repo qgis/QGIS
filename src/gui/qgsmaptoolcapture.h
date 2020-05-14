@@ -52,7 +52,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
       CapturePolygon  //!< Capture polygons
     };
 
-    //! Specific capbilities of the tool
+    //! Specific capabilities of the tool
     enum Capability
     {
       NoCapabilities = 0,       //!< No specific capabilities
