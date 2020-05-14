@@ -238,3 +238,14 @@ void QgsPgNewConnection::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#creating-a-stored-connection" ) );
 }
+<<<<<<< HEAD
+=======
+
+void QgsPgNewConnection::updateOkButtonState()
+{
+  bool enabled = !txtName->text().isEmpty() && (
+                   !txtService->text().isEmpty() ||
+                   !txtDatabase->text().isEmpty() );
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
+}
+>>>>>>> cfc202a4fc... Re-allow creation of postgres connections with ONLY a database name
