@@ -642,12 +642,16 @@ class ProviderTestCase(FeatureSourceTestCase):
         f1 = QgsFeature()
         f1.setAttributes(
             [6, -220, NULL, 'String', '15',
-             '2019-01-02 03:04:05' if self.treat_datetime_as_string() else QDateTime(2019, 1, 2, 3, 4, 5), '2019-01-02' if self.treat_date_as_string() else QDateTime(2019, 1, 2, 0, 0, 0) if self.treat_date_as_datetime() else QDate(2019, 1, 2),
+             '2019-01-02 03:04:05' if self.treat_datetime_as_string() else QDateTime(2019, 1, 2, 3, 4, 5),
+             '2019-01-02' if self.treat_date_as_string() else QDateTime(2019, 1, 2, 0, 0, 0) if self.treat_date_as_datetime() else QDate(2019, 1, 2),
              '03:04:05' if self.treat_time_as_string() else QTime(3, 4, 5)])
         f1.setGeometry(QgsGeometry.fromWkt('Point (-72.345 71.987)'))
 
         f2 = QgsFeature()
-        f2.setAttributes([7, 330, 'Coconut', 'CoCoNut', '13', NULL, NULL, NULL])
+        f2.setAttributes([7, 330, 'Coconut', 'CoCoNut', '13',
+                          '2019-01-02 03:04:05' if self.treat_datetime_as_string() else QDateTime(2019, 1, 2, 3, 4, 5),
+                          '2019-01-02' if self.treat_date_as_string() else QDateTime(2019, 1, 2, 0, 0, 0) if self.treat_date_as_datetime() else QDate(2019, 1, 2),
+                          '03:04:05' if self.treat_time_as_string() else QTime(3, 4, 5)])
 
         if l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
             # expect success
