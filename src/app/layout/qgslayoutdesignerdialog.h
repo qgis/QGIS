@@ -64,6 +64,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
     QgsMessageBar *messageBar() override;
     void selectItems( const QList< QgsLayoutItem * > &items ) override;
     void setAtlasPreviewEnabled( bool enabled ) override;
+    void setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feature ) override;
     bool atlasPreviewEnabled() const override;
     void showItemOptions( QgsLayoutItem *item, bool bringPanelToFront = true ) override;
     QMenu *layoutMenu() override;

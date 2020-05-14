@@ -146,6 +146,11 @@ void QgsAppLayoutDesignerInterface::setAtlasPreviewEnabled( bool enabled )
   mDesigner->setAtlasPreviewEnabled( enabled );
 }
 
+void QgsAppLayoutDesignerInterface::setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feature )
+{
+  mDesigner->setAtlasFeature( layer, feature )
+}
+
 bool QgsAppLayoutDesignerInterface::atlasPreviewEnabled() const
 {
   return mDesigner->atlasPreviewEnabled();
