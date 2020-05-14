@@ -46,6 +46,8 @@ class GUI_EXPORT QgsVectorTileBasicRendererWidget : public QgsMapLayerConfigWidg
     QgsVectorTileBasicRendererWidget( QgsVectorTileLayer *layer, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = nullptr );
     ~QgsVectorTileBasicRendererWidget() override;
 
+    void setLayer( QgsVectorTileLayer *layer );
+
   public slots:
     //! Applies the settings made in the dialog
     void apply() override;
