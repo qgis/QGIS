@@ -282,24 +282,11 @@ bool QgsVectorTileBasicLabelingListModel::dropMimeData( const QMimeData *data,
 
 QgsVectorTileBasicLabelingWidget::QgsVectorTileBasicLabelingWidget( QgsVectorTileLayer *layer, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
-  , mVTLayer( layer )
   , mMessageBar( messageBar )
 {
 
   setupUi( this );
   layout()->setContentsMargins( 0, 0, 0, 0 );
-
-  if ( layer->labeling() && layer->labeling()->type() == QStringLiteral( "basic" ) )
-  {
-    mLabeling.reset( static_cast<QgsVectorTileBasicLabeling *>( layer->labeling()->clone() ) );
-  }
-  else
-  {
-    mLabeling.reset( new QgsVectorTileBasicLabeling() );
-  }
-
-  mModel = new QgsVectorTileBasicLabelingListModel( mLabeling.get(), viewStyles );
-  viewStyles->setModel( mModel );
 
   QMenu *menuAddRule = new QMenu( btnAddRule );
   menuAddRule->addAction( tr( "Marker" ), this, [this] { addStyle( QgsWkbTypes::PointGeometry ); } );
@@ -312,6 +299,25 @@ QgsVectorTileBasicLabelingWidget::QgsVectorTileBasicLabelingWidget( QgsVectorTil
   connect( btnRemoveRule, &QAbstractButton::clicked, this, &QgsVectorTileBasicLabelingWidget::removeStyle );
 
   connect( viewStyles, &QAbstractItemView::doubleClicked, this, &QgsVectorTileBasicLabelingWidget::editStyleAtIndex );
+
+  setLayer( layer );
+}
+
+void QgsVectorTileBasicLabelingWidget::setLayer( QgsVectorTileLayer *layer )
+{
+  mVTLayer = layer;
+
+  if ( layer && layer->labeling() && layer->labeling()->type() == QStringLiteral( "basic" ) )
+  {
+    mLabeling.reset( static_cast<QgsVectorTileBasicLabeling *>( layer->labeling()->clone() ) );
+  }
+  else
+  {
+    mLabeling.reset( new QgsVectorTileBasicLabeling() );
+  }
+
+  mModel = new QgsVectorTileBasicLabelingListModel( mLabeling.get(), viewStyles );
+  viewStyles->setModel( mModel );
 
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsPanelWidget::widgetChanged );

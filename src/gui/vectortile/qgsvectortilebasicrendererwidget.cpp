@@ -297,23 +297,10 @@ bool QgsVectorTileBasicRendererListModel::dropMimeData( const QMimeData *data,
 
 QgsVectorTileBasicRendererWidget::QgsVectorTileBasicRendererWidget( QgsVectorTileLayer *layer, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
-  , mVTLayer( layer )
   , mMessageBar( messageBar )
 {
   setupUi( this );
   layout()->setContentsMargins( 0, 0, 0, 0 );
-
-  if ( layer->renderer() && layer->renderer()->type() == QStringLiteral( "basic" ) )
-  {
-    mRenderer.reset( static_cast<QgsVectorTileBasicRenderer *>( layer->renderer()->clone() ) );
-  }
-  else
-  {
-    mRenderer.reset( new QgsVectorTileBasicRenderer() );
-  }
-
-  mModel = new QgsVectorTileBasicRendererListModel( mRenderer.get(), viewStyles );
-  viewStyles->setModel( mModel );
 
   QMenu *menuAddRule = new QMenu( btnAddRule );
   menuAddRule->addAction( tr( "Marker" ), this, [this] { addStyle( QgsWkbTypes::PointGeometry ); } );
@@ -325,6 +312,25 @@ QgsVectorTileBasicRendererWidget::QgsVectorTileBasicRendererWidget( QgsVectorTil
   connect( btnRemoveRule, &QAbstractButton::clicked, this, &QgsVectorTileBasicRendererWidget::removeStyle );
 
   connect( viewStyles, &QAbstractItemView::doubleClicked, this, &QgsVectorTileBasicRendererWidget::editStyleAtIndex );
+
+  setLayer( layer );
+}
+
+void QgsVectorTileBasicRendererWidget::setLayer( QgsVectorTileLayer *layer )
+{
+  mVTLayer = layer;
+
+  if ( layer && layer->renderer() && layer->renderer()->type() == QStringLiteral( "basic" ) )
+  {
+    mRenderer.reset( static_cast<QgsVectorTileBasicRenderer *>( layer->renderer()->clone() ) );
+  }
+  else
+  {
+    mRenderer.reset( new QgsVectorTileBasicRenderer() );
+  }
+
+  mModel = new QgsVectorTileBasicRendererListModel( mRenderer.get(), viewStyles );
+  viewStyles->setModel( mModel );
 
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsPanelWidget::widgetChanged );

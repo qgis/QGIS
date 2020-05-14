@@ -342,6 +342,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsvectorlayerproperties.h"
 #include "qgsvectorlayerdigitizingproperties.h"
 #include "qgsvectortilelayer.h"
+#include "qgsvectortilelayerproperties.h"
 #include "qgsmapthemes.h"
 #include "qgsmessagelogviewer.h"
 #include "qgsdataitem.h"
@@ -15452,7 +15453,17 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
 
     case QgsMapLayerType::VectorTileLayer:
     {
-      // TODO
+      QgsVectorTileLayerProperties vectorTileLayerPropertiesDialog( qobject_cast<QgsVectorTileLayer *>( mapLayer ), mMapCanvas, visibleMessageBar(), this );
+      if ( !page.isEmpty() )
+        vectorTileLayerPropertiesDialog.setCurrentPage( page );
+
+      mMapStyleWidget->blockUpdates( true );
+      if ( vectorTileLayerPropertiesDialog.exec() )
+      {
+        activateDeactivateLayerRelatedActions( mapLayer );
+        mMapStyleWidget->updateCurrentWidgetLayer();
+      }
+      mMapStyleWidget->blockUpdates( false ); // delete since dialog cannot be reused without updating code
       break;
     }
 
