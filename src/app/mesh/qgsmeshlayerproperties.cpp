@@ -215,57 +215,6 @@ void QgsMeshLayerProperties::syncToLayer()
   mTemporalStaticDatasetCheckBox->setChecked( !mMeshLayer->temporalProperties()->isActive() );
 }
 
-void QgsMeshLayerProperties::addDataset()
-{
-  if ( !mMeshLayer->dataProvider() )
-    return;
-
-  QgsSettings settings;
-  QString openFileDir = settings.value( QStringLiteral( "lastMeshDatasetDir" ), QDir::homePath(), QgsSettings::App ).toString();
-  QString openFileString = QFileDialog::getOpenFileName( nullptr,
-                           tr( "Load mesh datasets" ),
-                           openFileDir,
-                           QgsProviderRegistry::instance()->fileMeshDatasetFilters() );
-
-  if ( openFileString.isEmpty() )
-  {
-    return; // canceled by the user
-  }
-
-  QFileInfo openFileInfo( openFileString );
-  settings.setValue( QStringLiteral( "lastMeshDatasetDir" ), openFileInfo.absolutePath(), QgsSettings::App );
-  QFile datasetFile( openFileString );
-
-  bool isTemporalBefore = mMeshLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities();
-  bool ok = mMeshLayer->dataProvider()->addDataset( openFileString );
-  if ( ok )
-  {
-    QgsMeshLayerTemporalProperties *temporalProperties = qobject_cast< QgsMeshLayerTemporalProperties * >( mMeshLayer->temporalProperties() );
-
-    if ( !isTemporalBefore && mMeshLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
-    {
-      temporalProperties->setDefaultsFromDataProviderTemporalCapabilities(
-        mMeshLayer->dataProvider()->temporalCapabilities() );
-
-      if ( ! temporalProperties->referenceTime().isValid() )
-      {
-        QDateTime referenceTime = QgsProject::instance()->timeSettings()->temporalRange().begin();
-        if ( !referenceTime.isValid() ) // If project reference time is invalid, use current date
-          referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) );
-        temporalProperties->setReferenceTime( referenceTime, mMeshLayer->dataProvider()->temporalCapabilities() );
-      }
-    }
-
-    syncToLayer();
-    QMessageBox::information( this, tr( "Load mesh datasets" ), tr( "Datasets successfully added to the mesh layer" ) );
-    emit mMeshLayer->dataSourceChanged();
-  }
-  else
-  {
-    QMessageBox::warning( this, tr( "Load mesh datasets" ), tr( "Could not read mesh dataset." ) );
-  }
-}
-
 void QgsMeshLayerProperties::loadDefaultStyle()
 {
   bool defaultLoadedFlag = false;

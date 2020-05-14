@@ -611,11 +611,15 @@ Clones the item
 :return: the cloned item
 %End
 
-    void appendChild( QgsMeshDatasetGroupTreeItem *item );
+    void appendChild( QgsMeshDatasetGroupTreeItem *item /Transfer/ );
 %Docstring
 Appends a item child
 
 :param item: the item to append
+
+.. note::
+
+   takes ownership of item
 %End
 
     QgsMeshDatasetGroupTreeItem *child( int row ) const;

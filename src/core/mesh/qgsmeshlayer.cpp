@@ -187,6 +187,34 @@ QString QgsMeshLayer::providerType() const
   return mProviderKey;
 }
 
+bool QgsMeshLayer::addDatasets( const QString &path, const QDateTime &defaultReferenceTime )
+{
+  bool isTemporalBefore = dataProvider()->temporalCapabilities()->hasTemporalCapabilities();
+  bool ok = dataProvider()->addDataset( path );
+  if ( ok )
+  {
+    QgsMeshLayerTemporalProperties *temporalProperties = qobject_cast< QgsMeshLayerTemporalProperties * >( mTemporalProperties );
+    if ( !isTemporalBefore && dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
+    {
+      mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities(
+        dataProvider()->temporalCapabilities() );
+
+      if ( ! temporalProperties->referenceTime().isValid() )
+      {
+        QDateTime referenceTime = defaultReferenceTime;
+        if ( !defaultReferenceTime.isValid() ) // If project reference time is invalid, use current date
+          referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) );
+        temporalProperties->setReferenceTime( referenceTime, dataProvider()->temporalCapabilities() );
+      }
+
+      mTemporalProperties->setIsActive( true );
+    }
+    emit dataSourceChanged();
+  }
+
+  return ok;
+}
+
 QgsMesh *QgsMeshLayer::nativeMesh()
 {
   return mNativeMesh.get();
@@ -562,7 +590,7 @@ void QgsMeshLayer::setDatasetGroupTreeRootItem( QgsMeshDatasetGroupTreeItem *roo
   else
     mDatasetGroupTreeRootItem.reset();
 
-  controlActiveDatasetGroupWithDisabledGroup();
+  updateActiveDatasetGroups();
 }
 
 int QgsMeshLayer::closestEdge( const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint ) const
@@ -700,10 +728,10 @@ void QgsMeshLayer::resetDatasetGroupTreeItem()
   for ( int i = 0; i < mDataProvider->datasetGroupCount(); ++i )
     metadataList.append( mDataProvider->datasetGroupMetadata( i ) );
   QgsMeshLayerUtils::createDatasetGroupTreeItems( metadataList, mDatasetGroupTreeRootItem.get(), 0 );
-  controlActiveDatasetGroupWithDisabledGroup();
+  updateActiveDatasetGroups();
 }
 
-void QgsMeshLayer::controlActiveDatasetGroupWithDisabledGroup()
+void QgsMeshLayer::updateActiveDatasetGroups()
 {
   if ( !mDatasetGroupTreeRootItem )
     return;

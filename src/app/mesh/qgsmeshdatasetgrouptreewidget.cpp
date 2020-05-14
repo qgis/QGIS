@@ -77,28 +77,9 @@ void QgsMeshDatasetGroupTreeWidget::addDataset()
   settings.setValue( QStringLiteral( "lastMeshDatasetDir" ), openFileInfo.absolutePath(), QgsSettings::App );
   QFile datasetFile( openFileString );
 
-  bool isTemporalBefore = mMeshLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities();
-  bool ok = mMeshLayer->dataProvider()->addDataset( openFileString );
-  if ( ok )
+  if ( mMeshLayer->addDatasets( openFileString, QgsProject::instance()->timeSettings()->temporalRange().begin() ) )
   {
-    QgsMeshLayerTemporalProperties *temporalProperties = qobject_cast< QgsMeshLayerTemporalProperties * >( mMeshLayer->temporalProperties() );
-    if ( !isTemporalBefore && mMeshLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
-    {
-      mMeshLayer->temporalProperties()->setDefaultsFromDataProviderTemporalCapabilities(
-        mMeshLayer->dataProvider()->temporalCapabilities() );
-
-      if ( ! temporalProperties->referenceTime().isValid() )
-      {
-        QDateTime referenceTime = QgsProject::instance()->timeSettings()->temporalRange().begin();
-        if ( !referenceTime.isValid() ) // If project reference time is invalid, use current date
-          referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) );
-        temporalProperties->setReferenceTime( referenceTime, mMeshLayer->dataProvider()->temporalCapabilities() );
-      }
-
-      mMeshLayer->temporalProperties()->setIsActive( true );
-    }
     QMessageBox::information( this, tr( "Load mesh datasets" ), tr( "Datasets successfully added to the mesh layer" ) );
-    emit mMeshLayer->dataSourceChanged();
     emit datasetGroupAdded();
   }
   else

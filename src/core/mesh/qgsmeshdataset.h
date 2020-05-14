@@ -588,8 +588,10 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
     /**
      * Appends a item child
      * \param item the item to append
+     *
+     * \note takes ownership of item
      */
-    void appendChild( QgsMeshDatasetGroupTreeItem *item );
+    void appendChild( QgsMeshDatasetGroupTreeItem *item SIP_TRANSFER );
 
     /**
      * Returns a child

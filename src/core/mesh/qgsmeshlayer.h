@@ -173,6 +173,17 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QString providerType() const;
 
     /**
+     * Add datasets to the mesh from file with \a path. Use the the time \a defaultReferenceTime as reference time is not provided in the file
+     *
+     * \param path the path to the atasets file
+     * \param defaultReferenceTime reference time used if not provided in the file
+     * \return whether the dataset is added
+     *
+     * \since QGIS 3.14
+     */
+    bool addDatasets( const QString &path, const QDateTime &defaultReferenceTime = QDateTime() );
+
+    /**
      * Returns native mesh (NULLPTR before rendering or calling to updateMesh)
      *
      * \note Not available in Python bindings
@@ -537,7 +548,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     //!Returns the position of the centroid point on the closest face in the search area
     QgsPointXY snapOnFace( const QgsPointXY &point, double searchRadius );
 
-    void controlActiveDatasetGroupWithDisabledGroup();
+    void updateActiveDatasetGroups();
 };
 
 #endif //QGSMESHLAYER_H

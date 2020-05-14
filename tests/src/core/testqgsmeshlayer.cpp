@@ -85,6 +85,8 @@ class TestQgsMeshLayer : public QObject
 
     void test_snap_on_mesh();
     void test_dataset_value_from_layer();
+
+    void test_dataset_group_item_tree_item();
 };
 
 QString TestQgsMeshLayer::readFile( const QString &fname ) const
@@ -1004,6 +1006,117 @@ void TestQgsMeshLayer::test_dataset_value_from_layer()
   value = mMdalLayer->datasetValue( QgsMeshDatasetIndex( 4, 1 ), QgsPointXY( 1750, 2250 ) );
   QCOMPARE( QgsMeshDatasetValue( 2, 2 ), value );
 
+}
+
+void TestQgsMeshLayer::test_dataset_group_item_tree_item()
+{
+  QgsMeshDatasetGroupTreeItem *rootItem = mMdal3DLayer->datasetGroupTreeRootItem();
+
+  QCOMPARE( rootItem->childCount(), 5 );
+  QCOMPARE( rootItem->totalChildCount(), 21 );
+  for ( int i = 0; i < rootItem->totalChildCount(); ++i )
+    QVERIFY( rootItem->childFromDatasetGroupIndex( i )->isEnabled() );
+
+  QStringList names;
+  names << "Bed Elevation" <<
+        "temperature" << "Maximums" << "Minimums" << "Time at Maximums" << "Time at Minimums" <<
+        "velocity" << "Maximums" << "Minimums" << "Time at Maximums" << "Time at Minimums" <<
+        "water depth" << "Maximums" << "Minimums" << "Time at Maximums" << "Time at Minimums" <<
+        "water surface elevation" << "Maximums" << "Minimums" << "Time at Maximums" << "Time at Minimums";
+
+  for ( int i = 0; i < rootItem->totalChildCount(); ++i )
+    QCOMPARE( rootItem->childFromDatasetGroupIndex( i )->name(), names.at( i ) );
+
+  QCOMPARE( rootItem->child( 0 )->child( 0 ), nullptr );
+
+  rootItem->child( 0 )->appendChild( new QgsMeshDatasetGroupTreeItem( "added item", true, 21 ) );
+  names << "added item";
+  QCOMPARE( rootItem->childFromDatasetGroupIndex( 21 ), rootItem->child( 0 )->child( 0 ) );
+
+
+  QCOMPARE( rootItem->childFromDatasetGroupIndex( 1 ), rootItem->child( 1 ) );
+  QCOMPARE( rootItem->childFromDatasetGroupIndex( 2 ), rootItem->child( 1 )->child( 0 ) );
+  QCOMPARE( rootItem->childFromDatasetGroupIndex( 3 ), rootItem->child( 1 )->child( 1 ) );
+  QCOMPARE( rootItem->childFromDatasetGroupIndex( 4 ), rootItem->child( 1 )->child( 2 ) );
+  QCOMPARE( rootItem->childFromDatasetGroupIndex( 5 ), rootItem->child( 1 )->child( 3 ) );
+  QCOMPARE( rootItem->childFromDatasetGroupIndex( 6 ), rootItem->child( 2 ) );
+  QCOMPARE( rootItem->childFromDatasetGroupIndex( 7 ), rootItem->child( 2 )->child( 0 ) );
+  QCOMPARE( rootItem->childFromDatasetGroupIndex( 8 ), rootItem->child( 2 )->child( 1 ) );
+  QCOMPARE( rootItem->childFromDatasetGroupIndex( 9 ), rootItem->child( 2 )->child( 2 ) );
+  QCOMPARE( rootItem->childFromDatasetGroupIndex( 10 ), rootItem->child( 2 )->child( 3 ) );
+  QCOMPARE( rootItem->childFromDatasetGroupIndex( 11 ), rootItem->child( 3 ) );
+  QCOMPARE( rootItem->childFromDatasetGroupIndex( 12 ), rootItem->child( 3 )->child( 0 ) );
+  QCOMPARE( rootItem->childFromDatasetGroupIndex( 13 ), rootItem->child( 3 )->child( 1 ) );
+  QCOMPARE( rootItem->childFromDatasetGroupIndex( 14 ), rootItem->child( 3 )->child( 2 ) );
+  QCOMPARE( rootItem->childFromDatasetGroupIndex( 15 ), rootItem->child( 3 )->child( 3 ) );
+  QCOMPARE( rootItem->childFromDatasetGroupIndex( 16 ), rootItem->child( 4 ) );
+  QCOMPARE( rootItem->childFromDatasetGroupIndex( 17 ), rootItem->child( 4 )->child( 0 ) );
+  QCOMPARE( rootItem->childFromDatasetGroupIndex( 18 ), rootItem->child( 4 )->child( 1 ) );
+  QCOMPARE( rootItem->childFromDatasetGroupIndex( 19 ), rootItem->child( 4 )->child( 2 ) );
+  QCOMPARE( rootItem->childFromDatasetGroupIndex( 20 ), rootItem->child( 4 )->child( 3 ) );
+
+  //Rename some items
+  names.replace( 7, "Other name 1" );
+  names.replace( 12, "Other name 2" );
+  names.replace( 18, "Other name 3" );
+  rootItem->childFromDatasetGroupIndex( 7 )->setName( "Other name 1" );
+  rootItem->childFromDatasetGroupIndex( 12 )->setName( "Other name 2" );
+  rootItem->childFromDatasetGroupIndex( 18 )->setName( "Other name 3" );
+  for ( int i = 0; i < rootItem->totalChildCount(); ++i )
+    QCOMPARE( rootItem->childFromDatasetGroupIndex( i )->name(), names.at( i ) );
+
+  // Disable some items
+  rootItem->childFromDatasetGroupIndex( 7 )->setIsEnabled( false );
+  rootItem->childFromDatasetGroupIndex( 10 )->setIsEnabled( false );
+  rootItem->childFromDatasetGroupIndex( 15 )->setIsEnabled( false );
+
+  QDomDocument doc;
+  QgsReadWriteContext context;
+  QDomElement rootElement = rootItem->writeXml( doc, context );
+
+  std::unique_ptr<QgsMeshDatasetGroupTreeItem> otherRoot( new QgsMeshDatasetGroupTreeItem( rootElement, context ) );
+
+  for ( int i = 0; i < rootItem->totalChildCount(); ++i )
+    QCOMPARE( otherRoot->childFromDatasetGroupIndex( i )->name(), names.at( i ) );
+
+  for ( int i = 0; i < 21; ++i )
+  {
+    QVERIFY( otherRoot->childFromDatasetGroupIndex( i ) );
+    QCOMPARE( rootItem->childFromDatasetGroupIndex( i )->row(), otherRoot->childFromDatasetGroupIndex( i )->row() );
+    QCOMPARE( rootItem->childFromDatasetGroupIndex( i )->name(), otherRoot->childFromDatasetGroupIndex( i )->name() );
+    QCOMPARE( rootItem->childFromDatasetGroupIndex( i )->isVector(), otherRoot->childFromDatasetGroupIndex( i )->isVector() );
+    QCOMPARE( rootItem->childFromDatasetGroupIndex( i )->isEnabled(), otherRoot->childFromDatasetGroupIndex( i )->isEnabled() );
+    QCOMPARE( rootItem->childFromDatasetGroupIndex( i )->childCount(), otherRoot->childFromDatasetGroupIndex( i )->childCount() );
+    QCOMPARE( rootItem->childFromDatasetGroupIndex( i )->totalChildCount(), otherRoot->childFromDatasetGroupIndex( i )->totalChildCount() );
+  }
+
+  QVERIFY( !otherRoot->childFromDatasetGroupIndex( 7 )->isEnabled() );
+  QVERIFY( !otherRoot->childFromDatasetGroupIndex( 10 )->isEnabled() );
+  QVERIFY( !otherRoot->childFromDatasetGroupIndex( 15 )->isEnabled() );
+
+  QCOMPARE( otherRoot->child( 0 )->child( 0 ), otherRoot->child( 0 )->child( 0 ) );
+
+  QCOMPARE( otherRoot->childFromDatasetGroupIndex( 1 ), otherRoot->child( 1 ) );
+  QCOMPARE( otherRoot->childFromDatasetGroupIndex( 2 ), otherRoot->child( 1 )->child( 0 ) );
+  QCOMPARE( otherRoot->childFromDatasetGroupIndex( 3 ), otherRoot->child( 1 )->child( 1 ) );
+  QCOMPARE( otherRoot->childFromDatasetGroupIndex( 4 ), otherRoot->child( 1 )->child( 2 ) );
+  QCOMPARE( otherRoot->childFromDatasetGroupIndex( 5 ), otherRoot->child( 1 )->child( 3 ) );
+  QCOMPARE( otherRoot->childFromDatasetGroupIndex( 6 ), otherRoot->child( 2 ) );
+  QCOMPARE( otherRoot->childFromDatasetGroupIndex( 7 ), otherRoot->child( 2 )->child( 0 ) );
+  QCOMPARE( otherRoot->childFromDatasetGroupIndex( 8 ), otherRoot->child( 2 )->child( 1 ) );
+  QCOMPARE( otherRoot->childFromDatasetGroupIndex( 9 ), otherRoot->child( 2 )->child( 2 ) );
+  QCOMPARE( otherRoot->childFromDatasetGroupIndex( 10 ), otherRoot->child( 2 )->child( 3 ) );
+  QCOMPARE( otherRoot->childFromDatasetGroupIndex( 11 ), otherRoot->child( 3 ) );
+  QCOMPARE( otherRoot->childFromDatasetGroupIndex( 12 ), otherRoot->child( 3 )->child( 0 ) );
+  QCOMPARE( otherRoot->childFromDatasetGroupIndex( 13 ), otherRoot->child( 3 )->child( 1 ) );
+  QCOMPARE( otherRoot->childFromDatasetGroupIndex( 14 ), otherRoot->child( 3 )->child( 2 ) );
+  QCOMPARE( otherRoot->childFromDatasetGroupIndex( 15 ), otherRoot->child( 3 )->child( 3 ) );
+  QCOMPARE( otherRoot->childFromDatasetGroupIndex( 16 ), otherRoot->child( 4 ) );
+  QCOMPARE( otherRoot->childFromDatasetGroupIndex( 17 ), otherRoot->child( 4 )->child( 0 ) );
+  QCOMPARE( otherRoot->childFromDatasetGroupIndex( 18 ), otherRoot->child( 4 )->child( 1 ) );
+  QCOMPARE( otherRoot->childFromDatasetGroupIndex( 19 ), otherRoot->child( 4 )->child( 2 ) );
+  QCOMPARE( otherRoot->childFromDatasetGroupIndex( 20 ), otherRoot->child( 4 )->child( 3 ) );
+  QCOMPARE( otherRoot->childFromDatasetGroupIndex( 21 ), otherRoot->child( 0 )->child( 0 ) );
 }
 
 void TestQgsMeshLayer::test_temporal()

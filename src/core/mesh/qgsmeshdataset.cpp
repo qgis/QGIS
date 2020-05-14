@@ -463,11 +463,11 @@ QgsMeshDatasetGroupTreeItem::QgsMeshDatasetGroupTreeItem( const QDomElement &ite
   if ( itemElement.hasAttribute( QStringLiteral( "is-enabled" ) ) )
     mIsEnabled = itemElement.attribute( QStringLiteral( "is-enabled" ) ).toInt();
 
-  QDomElement childElement = itemElement.firstChildElement( QStringLiteral( "mesh-dataset-group_tree-item" ) );
+  QDomElement childElement = itemElement.firstChildElement( QStringLiteral( "mesh-dataset-group-tree-item" ) );
   while ( !childElement.isNull() )
   {
     appendChild( new QgsMeshDatasetGroupTreeItem( childElement, context ) );
-    childElement = childElement.nextSiblingElement( QStringLiteral( "mesh-dataset-group_tree-item" ) );
+    childElement = childElement.nextSiblingElement( QStringLiteral( "mesh-dataset-group-tree-item" ) );
   }
 
 }
@@ -593,7 +593,7 @@ QDomElement QgsMeshDatasetGroupTreeItem::writeXml( QDomDocument &doc, const QgsR
 {
   Q_UNUSED( context );
 
-  QDomElement itemElement = doc.createElement( QStringLiteral( "mesh-dataset-group_tree-item" ) );
+  QDomElement itemElement = doc.createElement( QStringLiteral( "mesh-dataset-group-tree-item" ) );
   itemElement.setAttribute( QStringLiteral( "display-name" ), mUserName );
   itemElement.setAttribute( QStringLiteral( "provider-name" ), mProviderName );
   itemElement.setAttribute( QStringLiteral( "is-vector" ), mIsVector ? true : false );
