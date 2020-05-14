@@ -110,7 +110,7 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
 
     void setWidgetStateFromProject();
 
-    void onLayersAdded();
+    void onLayersAdded( const QList<QgsMapLayer *> &layers );
     void onProjectCleared();
 
     void startEndDateTime_changed();

@@ -167,11 +167,10 @@ void QgsTemporalControllerWidget::setWidgetStateFromProject()
   mNavigationObject->setTemporalRangeCumulative( QgsProject::instance()->timeSettings()->isTemporalRangeCumulative() );
 }
 
-void QgsTemporalControllerWidget::onLayersAdded()
+void QgsTemporalControllerWidget::onLayersAdded( const QList<QgsMapLayer *> &layers )
 {
   if ( !mHasTemporalLayersLoaded )
   {
-    QVector<QgsMapLayer *> layers = QgsProject::instance()->layers<QgsMapLayer *>();
     for ( QgsMapLayer *layer : layers )
     {
       if ( layer->temporalProperties() )
