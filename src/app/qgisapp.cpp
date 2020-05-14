@@ -9383,7 +9383,7 @@ void QgisApp::setupAtlasMapLayerAction( QgsPrintLayout *layout, bool enableActio
     QgsGui::mapLayerActionRegistry()->addMapLayerAction( action );
     connect( action, &QgsMapLayerAction::triggeredForFeature, this, [this, layout]( QgsMapLayer * layer, const QgsFeature & feat )
     {
-      setLayoutAtlasFeature( layout, layer, feat );
+      setLayoutAtlasFeature( layout, feat );
     }
            );
   }
