@@ -47,6 +47,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
       */
     QgsTemporalNavigationObject( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
+    //! Represents the current temporal navigation mode.
     enum NavigationMode
     {
       NavigationOff, //!< Temporal navigation is disabled
@@ -281,7 +282,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     //! The controller temporal navigation extent range.
     QgsDateTimeRange mTemporalExtents;
 
-    NavigationMode mNavigationMode = Animated;
+    NavigationMode mNavigationMode = NavigationOff;
 
     //! The current set frame value
     long long mCurrentFrameNumber = 0;

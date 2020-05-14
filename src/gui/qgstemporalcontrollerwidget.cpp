@@ -54,6 +54,8 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
 
   connect( mStartDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalControllerWidget::startEndDateTime_changed );
   connect( mEndDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalControllerWidget::startEndDateTime_changed );
+  connect( mFixedRangeStartDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalControllerWidget::fixedRangeStartEndDateTime_changed );
+  connect( mFixedRangeEndDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalControllerWidget::fixedRangeStartEndDateTime_changed );
   connect( mStepSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsTemporalControllerWidget::updateFrameDuration );
   connect( mTimeStepsComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsTemporalControllerWidget::updateFrameDuration );
   connect( mSlider, &QSlider::valueChanged, this, &QgsTemporalControllerWidget::timeSlider_valueChanged );
@@ -64,6 +66,7 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
 
   connect( mSettings, &QPushButton::clicked, this, &QgsTemporalControllerWidget::settings_clicked );
   connect( mSetToProjectTimeButton, &QPushButton::clicked, this, &QgsTemporalControllerWidget::mSetToProjectTimeButton_clicked );
+  connect( mFixedRangeSetToProjectTimeButton, &QPushButton::clicked, this, &QgsTemporalControllerWidget::mSetToProjectTimeButton_clicked );
 
   connect( mExportAnimationButton, &QPushButton::clicked, this, &QgsTemporalControllerWidget::exportAnimation );
 
@@ -74,11 +77,15 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
 
   mStartDateTime->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
   mEndDateTime->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
+  mFixedRangeStartDateTime->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
+  mFixedRangeEndDateTime->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
 
   if ( range.begin().isValid() && range.end().isValid() )
   {
-    mStartDateTime->setDateTime( range.begin() );
-    mEndDateTime->setDateTime( range.end() );
+    whileBlocking( mStartDateTime )->setDateTime( range.begin() );
+    whileBlocking( mEndDateTime )->setDateTime( range.end() );
+    whileBlocking( mFixedRangeStartDateTime )->setDateTime( range.begin() );
+    whileBlocking( mFixedRangeEndDateTime )->setDateTime( range.end() );
   }
 
   mSetToProjectTimeButton->setToolTip( tr( "Match time range to project. \n"
@@ -168,6 +175,8 @@ void QgsTemporalControllerWidget::setWidgetStateFromProject()
   {
     whileBlocking( mStartDateTime )->setDateTime( QDateTime::fromString( startString, Qt::ISODate ) );
     whileBlocking( mEndDateTime )->setDateTime( QDateTime::fromString( endString, Qt::ISODate ) );
+    whileBlocking( mFixedRangeStartDateTime )->setDateTime( QDateTime::fromString( startString, Qt::ISODate ) );
+    whileBlocking( mFixedRangeEndDateTime )->setDateTime( QDateTime::fromString( endString, Qt::ISODate ) );
   }
   else
   {
@@ -213,23 +222,18 @@ void QgsTemporalControllerWidget::setWidgetStateFromNavigationMode( const QgsTem
   mNavigationFixedRange->setChecked( mode  == QgsTemporalNavigationObject::FixedRange );
   mNavigationAnimated->setChecked( mode  == QgsTemporalNavigationObject::Animated );
 
-  mRewindButton->setVisible( mode == QgsTemporalNavigationObject::Animated );
-  mPreviousButton->setVisible( mode == QgsTemporalNavigationObject::Animated );
-  mBackButton->setVisible( mode == QgsTemporalNavigationObject::Animated );
-  mStopButton->setVisible( mode == QgsTemporalNavigationObject::Animated );
-  mForwardButton->setVisible( mode == QgsTemporalNavigationObject::Animated );
-  mNextButton->setVisible( mode == QgsTemporalNavigationObject::Animated );
-  mFastForwardButton->setVisible( mode == QgsTemporalNavigationObject::Animated );
-  mSlider->setVisible( mode == QgsTemporalNavigationObject::Animated );
-  mLoopingCheckBox->setVisible( mode == QgsTemporalNavigationObject::Animated );
-  mStepLabel->setVisible( mode == QgsTemporalNavigationObject::Animated );
-  mStepSpinBox->setVisible( mode == QgsTemporalNavigationObject::Animated );
-  mTimeStepsComboBox->setVisible( mode == QgsTemporalNavigationObject::Animated );
-  mRangeLabel->setVisible( mode == QgsTemporalNavigationObject::FixedRange || mode == QgsTemporalNavigationObject::Animated );
-  mStartDateTime->setVisible( mode == QgsTemporalNavigationObject::FixedRange || mode == QgsTemporalNavigationObject::Animated );
-  mRangeToLabel->setVisible( mode == QgsTemporalNavigationObject::FixedRange || mode == QgsTemporalNavigationObject::Animated );
-  mEndDateTime->setVisible( mode == QgsTemporalNavigationObject::FixedRange || mode == QgsTemporalNavigationObject::Animated );
-  mSetToProjectTimeButton->setVisible( mode == QgsTemporalNavigationObject::FixedRange || mode == QgsTemporalNavigationObject::Animated );
+  switch ( mode )
+  {
+    case QgsTemporalNavigationObject::NavigationOff:
+      mNavigationModeStackedWidget->setCurrentIndex( 0 );
+      break;
+    case QgsTemporalNavigationObject::FixedRange:
+      mNavigationModeStackedWidget->setCurrentIndex( 1 );
+      break;
+    case QgsTemporalNavigationObject::Animated:
+      mNavigationModeStackedWidget->setCurrentIndex( 2 );
+      break;
+  }
 }
 
 void QgsTemporalControllerWidget::onLayersAdded( const QList<QgsMapLayer *> &layers )
@@ -265,8 +269,10 @@ void QgsTemporalControllerWidget::onLayersAdded( const QList<QgsMapLayer *> &lay
 void QgsTemporalControllerWidget::onProjectCleared()
 {
   mHasTemporalLayersLoaded = false;
-  mStartDateTime->setDateTime( QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) ) );
-  mEndDateTime->setDateTime( mStartDateTime->dateTime() );
+  whileBlocking( mStartDateTime )->setDateTime( QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) ) );
+  whileBlocking( mEndDateTime )->setDateTime( mStartDateTime->dateTime() );
+  whileBlocking( mFixedRangeStartDateTime )->setDateTime( QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) ) );
+  whileBlocking( mFixedRangeEndDateTime )->setDateTime( mStartDateTime->dateTime() );
   updateTemporalExtent();
 }
 
@@ -330,6 +336,22 @@ void QgsTemporalControllerWidget::timeSlider_valueChanged( int value )
 
 void QgsTemporalControllerWidget::startEndDateTime_changed()
 {
+  whileBlocking( mFixedRangeStartDateTime )->setDateTime( mStartDateTime->dateTime() );
+  whileBlocking( mFixedRangeEndDateTime )->setDateTime( mEndDateTime->dateTime() );
+
+  updateTemporalExtent();
+
+  QgsProject::instance()->writeEntry( QStringLiteral( "TemporalControllerWidget" ),
+                                      QStringLiteral( "/StartDateTime" ), mStartDateTime->dateTime().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+  QgsProject::instance()->writeEntry( QStringLiteral( "TemporalControllerWidget" ),
+                                      QStringLiteral( "/EndDateTime" ), mEndDateTime->dateTime().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+}
+
+void QgsTemporalControllerWidget::fixedRangeStartEndDateTime_changed()
+{
+  whileBlocking( mStartDateTime )->setDateTime( mFixedRangeStartDateTime->dateTime() );
+  whileBlocking( mEndDateTime )->setDateTime( mFixedRangeEndDateTime->dateTime() );
+
   updateTemporalExtent();
 
   QgsProject::instance()->writeEntry( QStringLiteral( "TemporalControllerWidget" ),
@@ -366,6 +388,8 @@ void QgsTemporalControllerWidget::setDatesToProjectTime()
   {
     whileBlocking( mStartDateTime )->setDateTime( range.begin() );
     whileBlocking( mEndDateTime )->setDateTime( range.end() );
+    whileBlocking( mFixedRangeStartDateTime )->setDateTime( range.begin() );
+    whileBlocking( mFixedRangeEndDateTime )->setDateTime( range.end() );
     updateTemporalExtent();
   }
 }
