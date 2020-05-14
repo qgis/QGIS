@@ -82,6 +82,12 @@ class MessageLogger(QObject):
 
 class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
+    def treat_date_as_datetime(self):
+        return True
+
+    def treat_time_as_string(self):
+        return True
+
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -130,6 +136,9 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
           <xsd:element maxOccurs="1" minOccurs="0" name="name" nillable="true" type="xsd:string"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="name2" nillable="true" type="xsd:string"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="num_char" nillable="true" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="dt" nillable="true" type="xsd:datetime"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="date" nillable="true" type="xsd:datetime"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="time" nillable="true" type="xsd:string"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="geometryProperty" nillable="true" type="gml:PointPropertyType"/>
           <!-- check that an element with ref without name doesn't confuse the DescribeFeatureType analyzer -->
           <xsd:element maxOccurs="0" minOccurs="0" ref="my:somethingElseType"/>
@@ -165,6 +174,9 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
       <my:name>Orange</my:name>
       <my:name2>oranGe</my:name2>
       <my:num_char>1</my:num_char>
+      <my:dt>2020-05-03 12:13:14</my:dt>
+      <my:date>2020-05-03</my:date>
+      <my:time>12:13:14</my:time>
     </my:typename>
   </wfs:member>
   <wfs:member>
@@ -176,6 +188,9 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
       <my:name>Apple</my:name>
       <my:name2>Apple</my:name2>
       <my:num_char>2</my:num_char>
+      <my:dt>2020-05-04 12:14:14</my:dt>
+      <my:date>2020-05-04</my:date>
+      <my:time>12:14:14</my:time>
     </my:typename>
   </wfs:member>
   <wfs:member>
@@ -187,6 +202,9 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
       <my:name>Honey</my:name>
       <my:name2>Honey</my:name2>
       <my:num_char>4</my:num_char>
+      <my:dt>2021-05-04 13:13:14</my:dt>
+      <my:date>2021-05-04</my:date>
+      <my:time>13:13:14</my:time>
     </my:typename>
   </wfs:member>
   <wfs:member>
@@ -206,6 +224,9 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
       <my:cnt>-200</my:cnt>
       <my:name2>NuLl</my:name2>
       <my:num_char>5</my:num_char>
+      <my:dt>2020-05-04 12:13:14</my:dt>
+      <my:date>2020-05-02</my:date>
+      <my:time>12:13:01</my:time>
     </my:typename>
   </wfs:member>
 </wfs:FeatureCollection>""".encode('UTF-8'))
