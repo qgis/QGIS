@@ -18,6 +18,8 @@
 #include "qgsbasemappathregistry.h"
 #include "qgssettings.h"
 #include "qgis.h"
+#include "qgsreadwritelocker.h"
+
 
 QgsBasemapPathRegistry::QgsBasemapPathRegistry()
 {
@@ -26,6 +28,8 @@ QgsBasemapPathRegistry::QgsBasemapPathRegistry()
 
 QString QgsBasemapPathRegistry::fullPath( const QString &relativePath ) const
 {
+  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
+
   for ( const QDir &basePath : qgis::as_const( mPaths ) )
     if ( basePath.exists( relativePath ) )
       return basePath.absoluteFilePath( relativePath );
@@ -35,6 +39,8 @@ QString QgsBasemapPathRegistry::fullPath( const QString &relativePath ) const
 
 QString QgsBasemapPathRegistry::relativePath( const QString &fullPath ) const
 {
+  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
+
   for ( const QDir &basePath : qgis::as_const( mPaths ) )
     if ( fullPath.startsWith( basePath.absolutePath() ) )
       return basePath.relativeFilePath( fullPath );
@@ -45,6 +51,8 @@ QString QgsBasemapPathRegistry::relativePath( const QString &fullPath ) const
 
 QStringList QgsBasemapPathRegistry::paths() const
 {
+  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
+
   QStringList paths;
   for ( const QDir &dir : mPaths )
     paths << dir.absolutePath();
@@ -53,6 +61,8 @@ QStringList QgsBasemapPathRegistry::paths() const
 
 void QgsBasemapPathRegistry::setPaths( const QStringList &paths )
 {
+  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Write );
+
   mPaths.clear();
   for ( const QString &path : paths )
   {
@@ -70,6 +80,8 @@ void QgsBasemapPathRegistry::registerPath( const QString &path, int position )
   if ( mPaths.contains( dir ) )
     return;
 
+  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Write );
+
   if ( position >= 0 && position < mPaths.count() )
     mPaths.insert( position, dir );
   else
@@ -80,6 +92,8 @@ void QgsBasemapPathRegistry::registerPath( const QString &path, int position )
 
 void QgsBasemapPathRegistry::unregisterPath( const QString &path )
 {
+  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Write );
+
   mPaths.removeAll( QDir( path ) );
   writeToSettings();
 }

@@ -2245,6 +2245,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
 {
   // don't use initializer lists or scoped pointers - as more objects are added here we
   // will need to be careful with the order of creation/destruction
+  mBasemapPathRegistry = new QgsBasemapPathRegistry();
   mMessageLog = new QgsMessageLog();
   mProfiler = new QgsRuntimeProfiler();
 
@@ -2329,6 +2330,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     mProfiler->end();
   }
   mPageSizeRegistry = new QgsPageSizeRegistry();
+<<<<<<< HEAD
   {
     mProfiler->start( tr( "Setup layout item registry" ) );
     mLayoutItemRegistry = new QgsLayoutItemRegistry();
@@ -2376,6 +2378,18 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     mProfiler->end();
   }
   mBasemapPathRegistry = new QgsBasemapPathRegistry();
+=======
+  mLayoutItemRegistry = new QgsLayoutItemRegistry();
+  mLayoutItemRegistry->populate();
+  mAnnotationRegistry = new QgsAnnotationRegistry();
+  m3DRendererRegistry = new Qgs3DRendererRegistry();
+  mProjectStorageRegistry = new QgsProjectStorageRegistry();
+  mNetworkContentFetcherRegistry = new QgsNetworkContentFetcherRegistry();
+  mValidityCheckRegistry = new QgsValidityCheckRegistry();
+  mClassificationMethodRegistry = new QgsClassificationMethodRegistry();
+  mBookmarkManager = new QgsBookmarkManager( nullptr );
+  mScaleBarRendererRegistry = new QgsScaleBarRendererRegistry();
+>>>>>>> address review
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()

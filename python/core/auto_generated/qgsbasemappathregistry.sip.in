@@ -17,6 +17,12 @@ class QgsBasemapPathRegistry
 A registry class to hold paths of basemaps
 Paths are meant to be absolute paths and are stored by order of preference.
 
+If a layer from one of the paths is loaded, it will be saved as basemap in the project file.
+For instance, if you have C:\my_maps in your basemap paths,
+C:\my_maps\my_country\ortho.tif will be save in your project as basemap:my_country\ortho.tif
+
+The resolving of the file paths happens in QgsPathResolver.
+
 .. versionadded:: 3.14
 %End
 
@@ -35,7 +41,7 @@ Returns the full path if the file has been found in one of the paths, an empty s
 
     QString relativePath( const QString &fullPath ) const;
 %Docstring
-Returns the relative path if the file has been found in one of the path, an emptry string otherwise
+Returns the relative path if the file has been found in one of the path, an empty string otherwise
 %End
 
     QStringList paths() const;
@@ -47,7 +53,8 @@ Returns a list of registered basemap paths
     void registerPath( const QString &path, int position = -1 );
 %Docstring
 Registers a basemap path
-If ``place`` is given, the path is inserted at the given position in the list
+If ``position`` is given, the path is inserted at the given position in the list
+Since the paths are stored by order of preference, lower positions in the list take precedence.
 %End
 
     void unregisterPath( const QString &path );
@@ -55,6 +62,8 @@ If ``place`` is given, the path is inserted at the given position in the list
 Unregisters a basemap path
 %End
 
+  private:
+    QgsBasemapPathRegistry( const QgsBasemapPathRegistry &other );
 };
 
 /************************************************************************

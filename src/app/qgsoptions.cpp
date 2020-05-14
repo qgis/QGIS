@@ -2559,8 +2559,8 @@ void QgsOptions::addBasemapPath()
 {
   QString myDir = QFileDialog::getExistingDirectory(
                     this,
-                    tr( "Choose a directory" ),
-                    QDir::toNativeSeparators( QDir::homePath() ),
+                    tr( "Choose a Directory" ),
+                    QDir::homePath(),
                     QFileDialog::ShowDirsOnly
                   );
 
