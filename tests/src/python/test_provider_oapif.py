@@ -130,19 +130,19 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
             "type": "FeatureCollection",
             "features": [
                 {"type": "Feature", "id": "feat.1",
-                 "properties": {"pk": 1, "cnt": 100, "name": "Orange", "name2": "oranGe", "num_char": "1"},
+                 "properties": {"pk": 1, "cnt": 100, "name": "Orange", "name2": "oranGe", "num_char": "1", "dt": "2020-05-03 12:13:14", "date": "2020-05-03", "time": "12:13:14"},
                  "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}},
                 {"type": "Feature", "id": "feat.2",
-                 "properties": {"pk": 2, "cnt": 200, "name": "Apple", "name2": "Apple", "num_char": "2"},
+                 "properties": {"pk": 2, "cnt": 200, "name": "Apple", "name2": "Apple", "num_char": "2", "dt": "2020-05-04 12:14:14", "date": "2020-05-04", "time": "12:14:14"},
                  "geometry": {"type": "Point", "coordinates": [-68.2, 70.8]}},
                 {"type": "Feature", "id": "feat.3",
-                 "properties": {"pk": 4, "cnt": 400, "name": "Honey", "name2": "Honey", "num_char": "4"},
+                 "properties": {"pk": 4, "cnt": 400, "name": "Honey", "name2": "Honey", "num_char": "4", "dt": "2021-05-04 13:13:14", "date": "2021-05-04", "time": "13:13:14"},
                  "geometry": {"type": "Point", "coordinates": [-65.32, 78.3]}},
                 {"type": "Feature", "id": "feat.4",
                  "properties": {"pk": 3, "cnt": 300, "name": "Pear", "name2": "PEaR", "num_char": "3"},
                  "geometry": None},
                 {"type": "Feature", "id": "feat.5",
-                 "properties": {"pk": 5, "cnt": -200, "name": None, "name2": "NuLl", "num_char": "5"},
+                 "properties": {"pk": 5, "cnt": -200, "name": None, "name2": "NuLl", "num_char": "5", "dt": "2020-05-04 12:13:14", "date": "2020-05-02", "time": "12:13:01"},
                  "geometry": {"type": "Point", "coordinates": [-71.123, 78.23]}}
             ]
         }
