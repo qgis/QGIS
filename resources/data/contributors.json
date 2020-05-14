@@ -941,6 +941,23 @@
           49.281418
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Samweli Mwakisambwe",
+        "Committer": "Yes",
+        "First Commit Message": "Deselecting tables after addition in Data Source Manager",
+        "First Commit Date": "10-12-2019",
+        "GIT Nickname": "Samweli"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          39.220558,
+          -6.784386
+        ]
+      }
     }
   ]
 }
