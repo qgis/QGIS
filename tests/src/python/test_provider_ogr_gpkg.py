@@ -1540,8 +1540,8 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(vl.fields().at(3).type(), QVariant.DateTime)
         self.assertEqual(vl.dataProvider().minimumValue(2), QDate(2010, 1, 1))
         self.assertEqual(vl.dataProvider().maximumValue(2), QDate(2019, 1, 1))
-        self.assertEqual(vl.dataProvider().minimumValue(3), QDateTime(2010, 1, 1, 1, 1, 1, 0, Qt.TimeSpec(1)))
-        self.assertEqual(vl.dataProvider().maximumValue(3), QDateTime(2022, 1, 1, 1, 1, 1, 0, Qt.TimeSpec(1)))
+        self.assertEqual(vl.dataProvider().minimumValue(3), QDateTime(2010, 1, 1, 1, 1, 1, 0))
+        self.assertEqual(vl.dataProvider().maximumValue(3), QDateTime(2022, 1, 1, 1, 1, 1, 0))
         self.assertEqual(vl.dataProvider().uniqueValues(2),
                          {QDate(2017, 1, 1), NULL, QDate(2018, 1, 1), QDate(2019, 1, 1), QDate(2010, 1, 1)})
         self.assertEqual(vl.dataProvider().uniqueValues(3),
