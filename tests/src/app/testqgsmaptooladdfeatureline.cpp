@@ -65,8 +65,8 @@ class TestQgsMapToolAddFeatureLine : public QObject
 
     void testNoTracing();
     void testTracing();
-    void testTracingWithConvertToCurves();
     void testTracingWithOffset();
+    void testTracingWithConvertToCurves();
     void testZ();
     void testZMSnapping();
     void testTopologicalEditingZ();
@@ -303,57 +303,6 @@ void TestQgsMapToolAddFeatureLine::testTracing()
 }
 
 
-void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurves()
-{
-  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
-
-  mCanvas->setCurrentLayer( mLayerLineCurved );
-
-  // enable snapping and tracing
-  mEnableTracingAction->setChecked( true );
-
-  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
-
-  // tracing enabled - without converting to curves
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false );
-
-  utils.mouseClick( 6, 1, Qt::LeftButton );
-  utils.mouseClick( 7, 1, Qt::LeftButton );
-  utils.mouseClick( 7, 1, Qt::RightButton );
-
-  QgsFeatureId newFid1 = utils.newFeatureId( oldFids );
-
-  const QgsAbstractGeometry *g = mLayerLineCurved->getFeature( newFid1 ).geometry().constGet();
-  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( 6, 1 ) );
-  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, g->vertexCount() - 1 ) ), QgsPoint( 7, 1 ) );
-  QVERIFY( g->vertexCount() > 3 );  // a segmentized arc has (much) more than 3 points
-
-  mLayerLineCurved->undoStack()->undo();
-
-  // we redo the same with convert to curves enabled
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), true );
-
-  // tracing enabled - without converting to curves
-  utils.mouseClick( 6, 1, Qt::LeftButton );
-  utils.mouseClick( 7, 1, Qt::LeftButton );
-  utils.mouseClick( 7, 1, Qt::RightButton );
-
-  QgsFeatureId newFid2 = utils.newFeatureId( oldFids );
-
-  g = mLayerLineCurved->getFeature( newFid2 ).geometry().constGet();
-  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( 6, 1 ) );
-  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, g->vertexCount() - 1 ) ), QgsPoint( 7, 1 ) );
-  QVERIFY( g->vertexCount() == 3 );  // a true arc is composed of 3 vertices
-
-  mLayerLineCurved->undoStack()->undo();
-
-  // no other unexpected changes happened
-  QCOMPARE( mLayerLineCurved->undoStack()->index(), 1 );
-
-  mEnableTracingAction->setChecked( false );
-}
-
-
 void TestQgsMapToolAddFeatureLine::testTracingWithOffset()
 {
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
@@ -431,6 +380,58 @@ void TestQgsMapToolAddFeatureLine::testTracingWithOffset()
 
   mEnableTracingAction->setChecked( false );
 }
+
+
+void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurves()
+{
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  mCanvas->setCurrentLayer( mLayerLineCurved );
+
+  // enable snapping and tracing
+  mEnableTracingAction->setChecked( true );
+
+  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+
+  // tracing enabled - without converting to curves
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false );
+
+  utils.mouseClick( 6, 1, Qt::LeftButton );
+  utils.mouseClick( 7, 1, Qt::LeftButton );
+  utils.mouseClick( 7, 1, Qt::RightButton );
+
+  QgsFeatureId newFid1 = utils.newFeatureId( oldFids );
+
+  const QgsAbstractGeometry *g = mLayerLineCurved->getFeature( newFid1 ).geometry().constGet();
+  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPointXY( 6, 1 ) );
+  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, g->vertexCount() - 1 ) ), QgsPointXY( 7, 1 ) );
+  QVERIFY( g->vertexCount() > 3 );  // a segmentized arc has (much) more than 3 points
+
+  mLayerLineCurved->undoStack()->undo();
+
+  // we redo the same with convert to curves enabled
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), true );
+
+  // tracing enabled - without converting to curves
+  utils.mouseClick( 6, 1, Qt::LeftButton );
+  utils.mouseClick( 7, 1, Qt::LeftButton );
+  utils.mouseClick( 7, 1, Qt::RightButton );
+
+  QgsFeatureId newFid2 = utils.newFeatureId( oldFids );
+
+  g = mLayerLineCurved->getFeature( newFid2 ).geometry().constGet();
+  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPointXY( 6, 1 ) );
+  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, g->vertexCount() - 1 ) ), QgsPointXY( 7, 1 ) );
+  QVERIFY( g->vertexCount() == 3 );  // a true arc is composed of 3 vertices
+
+  mLayerLineCurved->undoStack()->undo();
+
+  // no other unexpected changes happened
+  QCOMPARE( mLayerLineCurved->undoStack()->index(), 1 );
+
+  mEnableTracingAction->setChecked( false );
+}
+
 
 void TestQgsMapToolAddFeatureLine::testZ()
 {
