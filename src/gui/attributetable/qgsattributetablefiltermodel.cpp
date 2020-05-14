@@ -322,6 +322,7 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
     {
       connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
       connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::reloadVisible );
+      //featureDeleted is handled over selectionChanged
       generateListOfVisibleFeatures();
     }
     else
@@ -333,6 +334,7 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
     if ( filterMode == ShowFilteredList )
     {
       connect( layer(), &QgsVectorLayer::featureAdded, this, &QgsAttributeTableFilterModel::filterFeatures );
+      //featureDeleted is handled over selectionChanged
     }
     else
     {
