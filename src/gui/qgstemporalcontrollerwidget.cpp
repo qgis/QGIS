@@ -167,7 +167,15 @@ void QgsTemporalControllerWidget::setWidgetStateFromProject()
   QgsTemporalNavigationObject::NavigationMode mode = static_cast< QgsTemporalNavigationObject::NavigationMode>( QgsProject::instance()->readNumEntry( QStringLiteral( "TemporalControllerWidget" ),
       QStringLiteral( "/NavigationMode" ), 0, &ok ) );
   if ( ok )
+  {
     mNavigationObject->setNavigationMode( mode );
+    setWidgetStateFromNavigationMode( mode );
+  }
+  else
+  {
+    mNavigationObject->setNavigationMode( QgsTemporalNavigationObject::NavigationOff );
+    setWidgetStateFromNavigationMode( QgsTemporalNavigationObject::NavigationOff );
+  }
 
   const QString startString = QgsProject::instance()->readEntry( QStringLiteral( "TemporalControllerWidget" ), QStringLiteral( "/StartDateTime" ) );
   const QString endString = QgsProject::instance()->readEntry( QStringLiteral( "TemporalControllerWidget" ), QStringLiteral( "/EndDateTime" ) );
@@ -269,6 +277,10 @@ void QgsTemporalControllerWidget::onLayersAdded( const QList<QgsMapLayer *> &lay
 void QgsTemporalControllerWidget::onProjectCleared()
 {
   mHasTemporalLayersLoaded = false;
+
+  mNavigationObject->setNavigationMode( QgsTemporalNavigationObject::NavigationOff );
+  setWidgetStateFromNavigationMode( QgsTemporalNavigationObject::NavigationOff );
+
   whileBlocking( mStartDateTime )->setDateTime( QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) ) );
   whileBlocking( mEndDateTime )->setDateTime( mStartDateTime->dateTime() );
   whileBlocking( mFixedRangeStartDateTime )->setDateTime( QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) ) );
