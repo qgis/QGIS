@@ -784,7 +784,7 @@ class QgsWmsSettings
      * Parse the given string extent into a well defined dates and resolution structures.
      * The string extent comes from WMS-T dimension capabilities.
      *
-     * \since 3.14
+     * \since QGIS 3.14
      */
     QgsWmstDimensionExtent parseTemporalExtent( QString extent );
 
@@ -792,7 +792,7 @@ class QgsWmsSettings
      * Sets the dimension extent property
      *
      * \see timeDimensionExtent()
-     * \since 3.14
+     * \since QGIS 3.14
      */
     void setTimeDimensionExtent( QgsWmstDimensionExtent timeDimensionExtent );
 
@@ -800,28 +800,28 @@ class QgsWmsSettings
      * Returns the dimension extent property.
      *
      * \see setTimeDimensionExtent()
-     * \since 3.14
+     * \since QGIS 3.14
      */
     QgsWmstDimensionExtent timeDimensionExtent() const;
 
     /**
      * Parse the given string item into a resolution structure.
      *
-     * \since 3.14
+     * \since QGIS 3.14
      */
     QgsWmstResolution parseWmstResolution( QString item );
 
     /**
      * Parse the given string item into QDateTime instant.
      *
-     * \since 3.14
+     * \since QGIS 3.14
      */
     QDateTime parseWmstDateTimes( QString item );
 
     /**
      * Returns the datetime with the sum of passed \a dateTime and the \a resolution time.
      *
-     * \since 3.14
+     * \since QGIS 3.14
      */
     QDateTime addTime( QDateTime dateTime, QgsWmstResolution resolution );
 
@@ -831,7 +831,7 @@ class QgsWmsSettings
      *
      * \note It works with wms-t capabilities that provide time dimension with temporal ranges only.
      *
-     * \since 3.14
+     * \since QGIS 3.14
      */
     QDateTime findLeastClosestDateTime( QDateTime dateTime, bool dateOnly = false ) const;
 
