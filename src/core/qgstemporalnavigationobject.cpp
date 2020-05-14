@@ -104,16 +104,50 @@ QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long 
   return QgsDateTimeRange( frameStart, mTemporalExtents.end(), true, false );
 }
 
+void QgsTemporalNavigationObject::setNavigationMode( const NavigationMode mode )
+{
+  if ( mNavigationMode == mode )
+    return;
+
+  mNavigationMode = mode;
+  emit navigationModeChanged( mode );
+
+  switch ( mNavigationMode )
+  {
+    case Animated:
+      emit updateTemporalRange( dateTimeRangeForFrameNumber( mCurrentFrameNumber ) );
+      break;
+    case FixedRange:
+      emit updateTemporalRange( mTemporalExtents );
+      break;
+    case NavigationOff:
+      emit updateTemporalRange( QgsDateTimeRange() );
+      break;
+  }
+}
+
 void QgsTemporalNavigationObject::setTemporalExtents( const QgsDateTimeRange &temporalExtents )
 {
   mTemporalExtents = temporalExtents;
-  int currentFrameNmber = mCurrentFrameNumber;
-  setCurrentFrameNumber( 0 );
 
-  //Force to emit signal if the current frame number doesn't change
-  if ( currentFrameNmber == mCurrentFrameNumber )
-    emit updateTemporalRange( dateTimeRangeForFrameNumber( 0 ) );
+  switch ( mNavigationMode )
+  {
+    case Animated:
+    {
+      int currentFrameNmber = mCurrentFrameNumber;
+      setCurrentFrameNumber( 0 );
 
+      //Force to emit signal if the current frame number doesn't change
+      if ( currentFrameNmber == mCurrentFrameNumber )
+        emit updateTemporalRange( dateTimeRangeForFrameNumber( 0 ) );
+      break;
+    }
+    case FixedRange:
+      emit updateTemporalRange( mTemporalExtents );
+      break;
+    case NavigationOff:
+      break;
+  }
 }
 
 QgsDateTimeRange QgsTemporalNavigationObject::temporalExtents() const

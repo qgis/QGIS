@@ -30,6 +30,13 @@ Implements a temporal controller based on a frame by frame navigation and animat
 Constructor for QgsTemporalNavigationObject, with the specified ``parent`` object.
 %End
 
+    enum NavigationMode
+    {
+      NavigationOff,
+      Animated,
+      FixedRange,
+    };
+
     enum AnimationState
     {
       Forward,
@@ -49,6 +56,20 @@ Sets the current animation ``state``.
 Returns the current animation state.
 
 .. seealso:: :py:func:`setAnimationState`
+%End
+
+    void setNavigationMode( const NavigationMode mode );
+%Docstring
+Sets the temporal navigation ``mode``.
+
+.. seealso:: :py:func:`navigationMode`
+%End
+
+    NavigationMode navigationMode() const;
+%Docstring
+Returns the currenttemporal navigation mode.
+
+.. seealso:: :py:func:`setNavigationMode`
 %End
 
     void setTemporalExtents( const QgsDateTimeRange &extents );
@@ -175,6 +196,11 @@ Sets whether the animation should ``loop`` after hitting the end or start frame.
     void stateChanged( AnimationState state );
 %Docstring
 Emitted whenever the animation ``state`` changes.
+%End
+
+    void navigationModeChanged( NavigationMode mode );
+%Docstring
+Emitted whenever the navigation ``mode`` changes.
 %End
 
   public slots:

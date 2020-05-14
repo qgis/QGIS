@@ -22,6 +22,7 @@
 
 #include "qgis_gui.h"
 #include "qgsrange.h"
+#include "qgstemporalnavigationobject.h"
 
 class QgsMapLayer;
 class QgsTemporalNavigationObject;
@@ -120,6 +121,11 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
     void updateFrameDuration();
 
     void setWidgetStateFromProject();
+
+    void mNavigationOff_clicked();
+    void mNavigationFixedRange_clicked();
+    void mNavigationAnimated_clicked();
+    void setWidgetStateFromNavigationMode( const QgsTemporalNavigationObject::NavigationMode mode );
 
     void onLayersAdded( const QList<QgsMapLayer *> &layers );
     void onProjectCleared();

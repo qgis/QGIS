@@ -798,6 +798,7 @@ void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
     return;
 
   mSettings.setTemporalRange( dateTimeRange );
+  mSettings.setIsTemporal( dateTimeRange.begin().isValid() || dateTimeRange.end().isValid() );
 
   emit temporalRangeChanged();
 
