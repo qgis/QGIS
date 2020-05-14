@@ -63,7 +63,7 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString &pluginPath )
   mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*authmethod.so" ) ) );
 #endif
 
-  QgsDebugMsg( QStringLiteral( "Checking for auth method plugins in: %1" ).arg( mLibraryDirectory.path() ) );
+  QgsDebugMsgLevel( QStringLiteral( "Checking for auth method plugins in: %1" ).arg( mLibraryDirectory.path() ), 2 );
 
   if ( mLibraryDirectory.count() == 0 )
   {
@@ -286,7 +286,7 @@ std::unique_ptr<QgsAuthMethod> QgsAuthMethodRegistry::authMethod( const QString 
   // load the auth method
   QLibrary myLib( lib );
 
-  QgsDebugMsg( "Auth method library name is " + myLib.fileName() );
+  QgsDebugMsgLevel( "Auth method library name is " + myLib.fileName(), 2 );
   if ( !myLib.load() )
   {
     QgsMessageLog::logMessage( QObject::tr( "Failed to load %1: %2" ).arg( lib, myLib.errorString() ) );
@@ -308,7 +308,7 @@ std::unique_ptr<QgsAuthMethod> QgsAuthMethodRegistry::authMethod( const QString 
     return nullptr;
   }
 
-  QgsDebugMsg( QStringLiteral( "Instantiated the auth method plugin: %1" ).arg( authMethod->key() ) );
+  QgsDebugMsgLevel( QStringLiteral( "Instantiated the auth method plugin: %1" ).arg( authMethod->key() ), 2 );
   return authMethod;
 }
 

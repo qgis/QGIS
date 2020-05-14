@@ -173,17 +173,17 @@ bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabas
     return true;
   mAuthInit = true;
 
-  QgsDebugMsg( QStringLiteral( "Initializing QCA..." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Initializing QCA..." ), 2 );
   mQcaInitializer = qgis::make_unique<QCA::Initializer>( QCA::Practical, 256 );
 
-  QgsDebugMsg( QStringLiteral( "QCA initialized." ) );
+  QgsDebugMsgLevel( QStringLiteral( "QCA initialized." ), 2 );
   QCA::scanForPlugins();
 
-  QgsDebugMsg( QStringLiteral( "QCA Plugin Diagnostics Context: %1" ).arg( QCA::pluginDiagnosticText() ) );
+  QgsDebugMsgLevel( QStringLiteral( "QCA Plugin Diagnostics Context: %1" ).arg( QCA::pluginDiagnosticText() ), 2 );
   QStringList capabilities;
 
   capabilities = QCA::supportedFeatures();
-  QgsDebugMsg( QStringLiteral( "QCA supports: %1" ).arg( capabilities.join( "," ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "QCA supports: %1" ).arg( capabilities.join( "," ) ), 2 );
 
   // do run-time check for qca-ossl plugin
   if ( !QCA::isSupported( "cert", QStringLiteral( "qca-ossl" ) ) )
@@ -193,7 +193,7 @@ bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabas
     return isDisabled();
   }
 
-  QgsDebugMsg( QStringLiteral( "Prioritizing qca-ossl over all other QCA providers..." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Prioritizing qca-ossl over all other QCA providers..." ), 2 );
   const QCA::ProviderList provds = QCA::providers();
   QStringList prlist;
   for ( QCA::Provider *p : provds )
@@ -207,14 +207,14 @@ bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabas
     QCA::setProviderPriority( pn, pr );
     prlist << QStringLiteral( "%1:%2" ).arg( pn ).arg( QCA::providerPriority( pn ) );
   }
-  QgsDebugMsg( QStringLiteral( "QCA provider priorities: %1" ).arg( prlist.join( ", " ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "QCA provider priorities: %1" ).arg( prlist.join( ", " ) ), 2 );
 
-  QgsDebugMsg( QStringLiteral( "Populating auth method registry" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Populating auth method registry" ), 3 );
   QgsAuthMethodRegistry *authreg = QgsAuthMethodRegistry::instance( pluginPath );
 
   QStringList methods = authreg->authMethodList();
 
-  QgsDebugMsg( QStringLiteral( "Authentication methods found: %1" ).arg( methods.join( ", " ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "Authentication methods found: %1" ).arg( methods.join( ", " ) ), 2 );
 
   if ( methods.isEmpty() )
   {
@@ -231,15 +231,15 @@ bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabas
   }
 
   mAuthDbPath = QDir::cleanPath( authDatabasePath );
-  QgsDebugMsg( QStringLiteral( "Auth database path: %1" ).arg( authenticationDatabasePath() ) );
+  QgsDebugMsgLevel( QStringLiteral( "Auth database path: %1" ).arg( authenticationDatabasePath() ), 2 );
 
   QFileInfo dbinfo( authenticationDatabasePath() );
   QFileInfo dbdirinfo( dbinfo.path() );
-  QgsDebugMsg( QStringLiteral( "Auth db directory path: %1" ).arg( dbdirinfo.filePath() ) );
+  QgsDebugMsgLevel( QStringLiteral( "Auth db directory path: %1" ).arg( dbdirinfo.filePath() ), 2 );
 
   if ( !dbdirinfo.exists() )
   {
-    QgsDebugMsg( QStringLiteral( "Auth db directory path does not exist, making path: %1" ).arg( dbdirinfo.filePath() ) );
+    QgsDebugMsgLevel( QStringLiteral( "Auth db directory path does not exist, making path: %1" ).arg( dbdirinfo.filePath() ), 2 );
     if ( !QDir().mkpath( dbdirinfo.filePath() ) )
     {
       const char *err = QT_TR_NOOP( "Auth db directory path could not be created" );
@@ -260,7 +260,7 @@ bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabas
     }
     if ( dbinfo.size() > 0 )
     {
-      QgsDebugMsg( QStringLiteral( "Auth db exists and has data" ) );
+      QgsDebugMsgLevel( QStringLiteral( "Auth db exists and has data" ), 2 );
 
       if ( !createCertTables() )
         return false;
@@ -299,7 +299,7 @@ bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabas
         {
           if ( setMasterPassword( masterpass, true ) )
           {
-            QgsDebugMsg( QStringLiteral( "Authentication master password set from QGIS_AUTH_PASSWORD_FILE" ) );
+            QgsDebugMsgLevel( QStringLiteral( "Authentication master password set from QGIS_AUTH_PASSWORD_FILE" ), 2 );
           }
           else
           {
@@ -319,7 +319,7 @@ bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabas
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Auth db does not exist: creating through QSqlDatabase initial connection" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Auth db does not exist: creating through QSqlDatabase initial connection" ), 2 );
 
     if ( !createConfigTables() )
       return false;
@@ -392,7 +392,7 @@ bool QgsAuthManager::createCertTables()
 {
   QMutexLocker locker( mMutex.get() );
   // NOTE: these tables were added later, so IF NOT EXISTS is used
-  QgsDebugMsg( QStringLiteral( "Creating cert tables in auth db" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Creating cert tables in auth db" ), 2 );
 
   QSqlQuery query( authDatabaseConnection() );
 
@@ -1699,7 +1699,8 @@ bool QgsAuthManager::initSslCaches()
   mCustomConfigByHostCache.clear();
   mHasCheckedIfCustomConfigByHostExists = false;
 
-  QgsDebugMsg( QStringLiteral( "Init of SSL caches %1" ).arg( res ? "SUCCEEDED" : "FAILED" ) );
+  if ( !res )
+    QgsDebugMsg( QStringLiteral( "Init of SSL caches FAILED" ) );
   return res;
 }
 
@@ -1743,7 +1744,7 @@ bool QgsAuthManager::storeCertIdentity( const QSslCertificate &cert, const QSslK
   if ( !authDbCommit() )
     return false;
 
-  QgsDebugMsg( QStringLiteral( "Store certificate identity SUCCESS for id: %1" ).arg( id ) );
+  QgsDebugMsgLevel( QStringLiteral( "Store certificate identity SUCCESS for id: %1" ).arg( id ), 2 );
   return true;
 }
 
@@ -2240,7 +2241,7 @@ void QgsAuthManager::dumpIgnoredSslErrorsCache_()
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Ignored SSL errors cache EMPTY" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Ignored SSL errors cache EMPTY" ), 2 );
   }
 }
 
@@ -2368,12 +2369,12 @@ bool QgsAuthManager::rebuildIgnoredSslErrorCache()
   {
     mIgnoredSslErrorsCache.clear();
     mIgnoredSslErrorsCache = nextcache;
-    QgsDebugMsg( QStringLiteral( "Rebuild of ignored SSL errors cache SUCCEEDED" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Rebuild of ignored SSL errors cache SUCCEEDED" ), 2 );
     dumpIgnoredSslErrorsCache_();
     return true;
   }
 
-  QgsDebugMsg( QStringLiteral( "Rebuild of ignored SSL errors cache SAME AS BEFORE" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Rebuild of ignored SSL errors cache SAME AS BEFORE" ), 2 );
   dumpIgnoredSslErrorsCache_();
   return true;
 }
@@ -2614,7 +2615,8 @@ bool QgsAuthManager::rebuildCaCertsCache()
   insertCaCertInCache( QgsAuthCertUtils::InDatabase, databaseCAs() );
 
   bool res = !mCaCertsCache.isEmpty(); // should at least contain system root CAs
-  QgsDebugMsg( QStringLiteral( "Rebuild of CA certs cache %1" ).arg( res ? "SUCCEEDED" : "FAILED" ) );
+  if ( !res )
+    QgsDebugMsg( QStringLiteral( "Rebuild of CA certs cache FAILED" ) );
   return res;
 }
 
@@ -2819,7 +2821,7 @@ bool QgsAuthManager::rebuildCertTrustCache()
     }
   }
 
-  QgsDebugMsg( QStringLiteral( "Rebuild of cert trust policy cache SUCCEEDED" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Rebuild of cert trust policy cache SUCCEEDED" ), 2 );
   return true;
 }
 
@@ -2887,7 +2889,7 @@ bool QgsAuthManager::rebuildTrustedCaCertsCache()
 {
   QMutexLocker locker( mMutex.get() );
   mTrustedCaCertsCache = trustedCaCerts();
-  QgsDebugMsg( QStringLiteral( "Rebuilt trusted cert authorities cache" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Rebuilt trusted cert authorities cache" ), 2 );
   // TODO: add some error trapping for the operation
   return true;
 }
