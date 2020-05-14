@@ -64,6 +64,10 @@ void QgsRasterLayerRendererFeedback::onNewData()
 ///
 QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRenderContext &rendererContext )
   : QgsMapLayerRenderer( layer->id(), &rendererContext )
+<<<<<<< HEAD
+=======
+  , mProviderCapabilities( static_cast<QgsRasterDataProvider::Capability>( layer->dataProvider()->capabilities() ) )
+>>>>>>> 97cbb3e1a1... Merge pull request #36422 from elpaso/bugfix-gh34813-osm-tiles-followup
   , mFeedback( new QgsRasterLayerRendererFeedback( this ) )
 {
   QgsMapToPixel mapToPixel = rendererContext.mapToPixel();
@@ -239,12 +243,22 @@ QgsRasterLayerRenderer::~QgsRasterLayerRenderer()
 
 bool QgsRasterLayerRenderer::render()
 {
+<<<<<<< HEAD
   if ( !mRasterViewPort )
     return true; // outside of layer extent - nothing to do
 
   //R->draw( mPainter, mRasterViewPort, &mMapToPixel );
 
   QTime time;
+=======
+  // Skip rendering of out of view tiles (xyz)
+  if ( !mRasterViewPort || ( renderContext()->testFlag( QgsRenderContext::Flag::RenderPreviewJob ) &&
+                             !( mProviderCapabilities &
+                                QgsRasterInterface::Capability::Prefetch ) ) )
+    return true;
+
+  QElapsedTimer time;
+>>>>>>> 97cbb3e1a1... Merge pull request #36422 from elpaso/bugfix-gh34813-osm-tiles-followup
   time.start();
   //
   //

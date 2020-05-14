@@ -19,6 +19,7 @@
 #define SIP_NO_FILE
 
 #include "qgsmaplayerrenderer.h"
+#include "qgsrasterdataprovider.h"
 
 class QPainter;
 
@@ -80,6 +81,11 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
 
     QgsRasterPipe *mPipe = nullptr;
 
+<<<<<<< HEAD
+=======
+    QgsRasterDataProvider::Capability mProviderCapabilities;
+
+>>>>>>> 97cbb3e1a1... Merge pull request #36422 from elpaso/bugfix-gh34813-osm-tiles-followup
     //! feedback class for cancellation and preview generation
     QgsRasterLayerRendererFeedback *mFeedback = nullptr;
 

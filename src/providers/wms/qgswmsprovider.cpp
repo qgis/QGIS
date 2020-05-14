@@ -693,16 +693,32 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
       return image;
     }
 
+<<<<<<< HEAD
     QgsDebugMsgLevel( QStringLiteral( "layer extent: %1,%2 %3x%4" )
                       .arg( qgsDoubleToString( mLayerExtent.xMinimum() ),
                             qgsDoubleToString( mLayerExtent.yMinimum() ) )
+=======
+    QgsDebugMsgLevel( QStringLiteral( "layer extent: %1,%2,%3,%4 %5x%6" )
+                      .arg( qgsDoubleToString( mLayerExtent.xMinimum() ),
+                            qgsDoubleToString( mLayerExtent.yMinimum() ) )
+                      .arg( qgsDoubleToString( mLayerExtent.xMaximum() ),
+                            qgsDoubleToString( mLayerExtent.yMaximum() ) )
+>>>>>>> 97cbb3e1a1... Merge pull request #36422 from elpaso/bugfix-gh34813-osm-tiles-followup
                       .arg( mLayerExtent.width() )
                       .arg( mLayerExtent.height() ), 3
                     );
 
+<<<<<<< HEAD
     QgsDebugMsgLevel( QStringLiteral( "view extent: %1,%2 %3x%4  res:%5" )
                       .arg( qgsDoubleToString( viewExtent.xMinimum() ),
                             qgsDoubleToString( viewExtent.yMinimum() ) )
+=======
+    QgsDebugMsgLevel( QStringLiteral( "view extent: %1,%2,%3,%4 %5x%6  res:%7" )
+                      .arg( qgsDoubleToString( viewExtent.xMinimum() ),
+                            qgsDoubleToString( viewExtent.yMinimum() ) )
+                      .arg( qgsDoubleToString( viewExtent.xMaximum() ),
+                            qgsDoubleToString( viewExtent.yMaximum() ) )
+>>>>>>> 97cbb3e1a1... Merge pull request #36422 from elpaso/bugfix-gh34813-osm-tiles-followup
                       .arg( viewExtent.width() )
                       .arg( viewExtent.height() )
                       .arg( vres, 0, 'f' ), 3
