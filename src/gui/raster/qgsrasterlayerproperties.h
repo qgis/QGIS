@@ -223,19 +223,16 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void updateInformationContent();
 
     /**
-     * Updates the temporal properties for temporal based raster layers.
-     */
-    void updateTemporalProperties();
-
-    /**
      * Updates the layers date source URI with the new time.
      *
+     * \since QGIS 3.14
      */
     void updateSourceStaticTime();
 
     /**
-     * Initialiaze the layers static time inputs state.
+     * Initializes the layers static time inputs state.
      *
+     * \since QGIS 3.14
      */
     void setSourceStaticTimeState();
 
