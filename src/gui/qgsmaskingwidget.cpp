@@ -39,15 +39,12 @@ QgsMaskingWidget::QgsMaskingWidget( QWidget *parent ) :
 void QgsMaskingWidget::onSelectionChanged()
 {
   // display message if configuration is not consistent
-  bool printMessage =
-    ( mMaskTargetsWidget->selection().empty() && !mMaskSourcesWidget->selection().empty() )
-    || ( !mMaskTargetsWidget->selection().empty() && mMaskSourcesWidget->selection().empty() );
+  bool printMessage = mMaskTargetsWidget->selection().empty() != mMaskSourcesWidget->selection().empty();
 
   if ( mMessageBarItem && !printMessage )
   {
     mMessageBar->popWidget( mMessageBarItem );
     delete mMessageBarItem;
-    mMessageBarItem = nullptr;
   }
   else if ( !mMessageBarItem && printMessage )
   {
