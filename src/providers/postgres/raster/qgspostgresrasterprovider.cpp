@@ -667,7 +667,8 @@ int QgsPostgresRasterProvider::capabilities() const
                          | QgsRasterDataProvider::Size
                          // TODO:| QgsRasterDataProvider::BuildPyramids
                          | QgsRasterDataProvider::Create
-                         | QgsRasterDataProvider::Remove;
+                         | QgsRasterDataProvider::Remove
+                         | QgsRasterDataProvider::Prefetch;
   return capability;
 }
 
