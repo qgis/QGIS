@@ -24,7 +24,7 @@ class QgsLayout;
 class QgsLayoutView;
 class QgsLayoutItem;
 class QgsMessageBar;
-class QgsMapLayer;
+class QgsFeature;
 class QgsMasterLayoutInterface;
 class QMenu;
 class QDockWidget;
@@ -136,7 +136,7 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
      * Sets the specified feature as the current atlas feature
      * \since QGIS 3.14
      */
-    virtual void setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feature ) = 0;
+    virtual void setAtlasFeature( const QgsFeature &feature ) = 0;
 
     /**
      * Shows the configuration widget for the specified layout \a item.

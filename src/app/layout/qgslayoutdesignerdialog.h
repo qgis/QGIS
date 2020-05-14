@@ -64,7 +64,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
     QgsMessageBar *messageBar() override;
     void selectItems( const QList< QgsLayoutItem * > &items ) override;
     void setAtlasPreviewEnabled( bool enabled ) override;
-    void setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feature ) override;
+    void setAtlasFeature( const QgsFeature &feature ) override;
     bool atlasPreviewEnabled() const override;
     void showItemOptions( QgsLayoutItem *item, bool bringPanelToFront = true ) override;
     QMenu *layoutMenu() override;
@@ -178,8 +178,15 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
 
     /**
      * Sets the specified feature as the current atlas feature
+     * \deprecated since QGIS 3.14 use setAltasFeature without the layer argument
      */
-    void setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feat );
+    Q_DECL_DEPRECATED void setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feat ) SIP_DEPRECATED;
+
+    /**
+     * Sets the specified feature as the current atlas feature
+     * \since QGIS 3.14
+     */
+    void setAtlasFeature( const QgsFeature &feature );
 
     /**
      * Sets a section \a title, to use to update the dialog title to display
