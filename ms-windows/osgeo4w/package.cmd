@@ -106,8 +106,9 @@ echo CMAKE: %DATE% %TIME%
 if errorlevel 1 goto error
 
 if "%CMAKEGEN%"=="" set CMAKEGEN=-G Ninja
-if "%CC%"=="" set CC=cl.exe
-if "%CXX%"=="" set CXX=cl.exe
+if not defined CC set CC=cl.exe
+if not defined CXX CXX=cl.exe
+
 if "%OSGEO4W_CXXFLAGS%"=="" set OSGEO4W_CXXFLAGS=/MD /Z7 /MP /O2 /Ob2 /D NDEBUG
 
 for %%i in (%PYTHONHOME%) do set PYVER=%%~ni
