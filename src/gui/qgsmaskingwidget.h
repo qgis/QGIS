@@ -18,6 +18,8 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
+#include <QPointer>
+
 #include "qgspanelwidget.h"
 #include "ui_qgsmaskingwidgetbase.h"
 #include "qgis_sip.h"
@@ -53,7 +55,7 @@ class GUI_EXPORT QgsMaskingWidget: public QgsPanelWidget, private Ui::QgsMasking
 
     void showEvent( QShowEvent * ) override;
 
-  protected slots:
+  private slots:
 
     /**
      * Called whenever mask sources or targets selection has changed
@@ -65,7 +67,7 @@ class GUI_EXPORT QgsMaskingWidget: public QgsPanelWidget, private Ui::QgsMasking
     //! Populate the mask source and target widgets
     void populate();
 
-    QgsMessageBarItem *mMessageBarItem = nullptr;
+    QPointer<QgsMessageBarItem> mMessageBarItem;
     bool mMustPopulate = false;
 };
 
