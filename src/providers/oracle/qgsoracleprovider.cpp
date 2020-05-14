@@ -73,6 +73,10 @@ QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions 
   mSqlWhereClause = mUri.sql();
   mSrid = mUri.srid().toInt();
   mRequestedGeomType = mUri.wkbType();
+  if ( QgsWkbTypes::isSingleType( mRequestedGeomType ) && QgsWkbTypes::geometryType( mRequestedGeomType ) != QgsWkbTypes::PointGeometry )
+  {
+    mRequestedGeomType = QgsWkbTypes::multiType( mRequestedGeomType );
+  }
   mUseEstimatedMetadata = mUri.useEstimatedMetadata();
   mIncludeGeoAttributes = mUri.hasParam( "includegeoattributes" ) ? mUri.param( "includegeoattributes" ) == "true" : false;
 
