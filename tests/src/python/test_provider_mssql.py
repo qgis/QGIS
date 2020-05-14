@@ -145,7 +145,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
             'name LIKE \'aPple\'',
             'name ILIKE \'aPple\'',
             'name LIKE \'Ap_le\'',
-            'name LIKE \'Ap\_le\'',
+            'name LIKE \'Ap\\_le\'',
             'name ILIKE \'%pp%\'',
             '"name" || \' \' || "name" = \'Orange Orange\'',
             '"name" || \' \' || "cnt" = \'Orange 100\'',
