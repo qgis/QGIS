@@ -367,6 +367,10 @@ This method only consider a segments as continuing an arc if the points are all 
 on the candidate arc. The ``pointSpacingAngleTolerance`` parameter specifies the maximum
 angular deviation (in radians) allowed when testing for regular point spacing.
 
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
 .. versionadded:: 3.14
 %End
 

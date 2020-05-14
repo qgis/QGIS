@@ -4515,7 +4515,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                   <item row="0" column="0" colspan="3">
                    <widget class="QCheckBox" name="mTracingConvertToCurveCheckBox">
                     <property name="text">
-                     <string>Convert tracing to curve</string>
+                     <string>Convert tracing to curve (this feature is experimental)</string>
                     </property>
                    </widget>
                   </item>

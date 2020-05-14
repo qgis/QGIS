@@ -177,6 +177,8 @@ class QgsInternalGeometryEngine
      * regularly spaced on the candidate arc. The \a pointSpacingAngleTolerance parameter specifies the maximum
      * angular deviation (in radians) allowed when testing for regular point spacing.
      *
+     * \note The API is considered EXPERIMENTAL and can be changed without a notice
+     *
      * \since QGIS 3.14
      */
     QgsGeometry convertToCurves( double distanceTolerance, double angleTolerance ) const;
