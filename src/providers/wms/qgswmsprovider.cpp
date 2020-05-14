@@ -1765,7 +1765,7 @@ void QgsWmsProvider::parseServiceException( QDomElement const &e, QString &error
     if ( locator == QLatin1String( "time" ) )
       errorText = tr( "Request contains a time value that does not match any available layer in the server." );
     else
-      errorText = tr( "Request contains some parameter value that does not match any available layer in the server" );
+      errorText = tr( "Request contains some parameter values that does not match any available layer in the server" );
   }
   else if ( seCode.isEmpty() )
   {
