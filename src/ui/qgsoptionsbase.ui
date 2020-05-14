@@ -332,7 +332,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>13</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -361,8 +361,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>843</width>
-                <height>917</height>
+                <width>848</width>
+                <height>1003</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1118,8 +1118,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>541</width>
-                <height>1072</height>
+                <width>848</width>
+                <height>1114</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1645,8 +1645,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>552</width>
-                <height>509</height>
+                <width>848</width>
+                <height>664</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -1858,8 +1858,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>499</width>
-                <height>615</height>
+                <width>848</width>
+                <height>816</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2059,11 +2059,120 @@
                 </widget>
                </item>
                <item>
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_30">
+                 <property name="title">
+                  <string>Basemap paths</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_34">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_9">
+                    <property name="text">
+                     <string>Paths in order of preference for basemaps</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <spacer name="horizontalSpacer_19">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="2">
+                   <widget class="QToolButton" name="mBasemapPathAddButton">
+                    <property name="toolTip">
+                     <string>Add URL to exclude</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="3">
+                   <widget class="QToolButton" name="mBasemapPathRemoveButton">
+                    <property name="toolTip">
+                     <string>Remove selected URL</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="4">
+                   <widget class="QToolButton" name="mBasemapPathUpButton">
+                    <property name="toolTip">
+                     <string>Raise selected path priority</string>
+                    </property>
+                    <property name="text">
+                     <string>…</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/mActionArrowUp.svg</normaloff>:/images/themes/default/mActionArrowUp.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="5">
+                   <widget class="QToolButton" name="mBasemapPathDownButton">
+                    <property name="toolTip">
+                     <string>Lower selected path priority</string>
+                    </property>
+                    <property name="text">
+                     <string>…</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/mActionArrowDown.svg</normaloff>:/images/themes/default/mActionArrowDown.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0" colspan="6">
+                   <widget class="QListWidget" name="mBasemapPathListWidget">
+                    <property name="selectionMode">
+                     <enum>QAbstractItemView::MultiSelection</enum>
+                    </property>
+                    <property name="selectionBehavior">
+                     <enum>QAbstractItemView::SelectRows</enum>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_28">
                  <property name="title">
                   <string>Hidden browser paths</string>
                  </property>
                  <layout class="QGridLayout" name="_15">
+                  <item row="0" column="2">
+                   <widget class="QToolButton" name="mBtnRemoveHiddenPath">
+                    <property name="toolTip">
+                     <string>Remove path</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="0" column="0">
                    <widget class="QLabel" name="mSVGLabel_4">
                     <property name="text">
@@ -2091,20 +2200,6 @@
                       <width>0</width>
                       <height>120</height>
                      </size>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="2">
-                   <widget class="QToolButton" name="mBtnRemoveHiddenPath">
-                    <property name="toolTip">
-                     <string>Remove path</string>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../../images/images.qrc">
-                      <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
                   </item>
@@ -2160,8 +2255,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>674</width>
-                <height>1057</height>
+                <width>848</width>
+                <height>1139</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2946,8 +3041,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>501</width>
-                <height>293</height>
+                <width>848</width>
+                <height>664</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3257,8 +3352,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>604</width>
-                <height>671</height>
+                <width>848</width>
+                <height>741</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3762,8 +3857,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>157</width>
-                <height>265</height>
+                <width>848</width>
+                <height>664</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -3930,8 +4025,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>543</width>
-                <height>801</height>
+                <width>848</width>
+                <height>827</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4555,8 +4650,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>480</width>
-                <height>538</height>
+                <width>848</width>
+                <height>664</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -4824,8 +4919,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>412</width>
-                <height>372</height>
+                <width>848</width>
+                <height>664</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4993,8 +5088,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>682</height>
+                <width>848</width>
+                <height>720</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5481,7 +5576,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Noto Sans'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
@@ -5599,15 +5694,15 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsProjectionSelectionWidget</class>
@@ -5883,7 +5978,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>mGPUInfoTextBrowser</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

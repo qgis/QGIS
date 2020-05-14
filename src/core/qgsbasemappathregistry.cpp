@@ -16,12 +16,12 @@
 #include <QDir>
 
 #include "qgsbasemappathregistry.h"
-
+#include "qgssettings.h"
 #include "qgis.h"
 
 QgsBasemapPathRegistry::QgsBasemapPathRegistry()
 {
-
+  readFromSettings();
 }
 
 QString QgsBasemapPathRegistry::fullPath( const QString &relativePath ) const
@@ -60,6 +60,8 @@ void QgsBasemapPathRegistry::setPaths( const QStringList &paths )
     if ( !mPaths.contains( dir ) )
       mPaths << dir;
   }
+
+  writeToSettings();
 }
 
 void QgsBasemapPathRegistry::registerPath( const QString &path, int position )
@@ -72,9 +74,22 @@ void QgsBasemapPathRegistry::registerPath( const QString &path, int position )
     mPaths.insert( position, dir );
   else
     mPaths.append( dir );
+
+  writeToSettings();
 }
 
 void QgsBasemapPathRegistry::unregisterPath( const QString &path )
 {
   mPaths.removeAll( QDir( path ) );
+  writeToSettings();
+}
+
+void QgsBasemapPathRegistry::readFromSettings()
+{
+  setPaths( QgsSettings().value( QStringLiteral( "/qgis/basemap_paths" ) ).toStringList() );
+}
+
+void QgsBasemapPathRegistry::writeToSettings()
+{
+  QgsSettings().setValue( QStringLiteral( "/qgis/basemap_paths" ), paths() );
 }

@@ -60,6 +60,9 @@ class CORE_EXPORT QgsBasemapPathRegistry
     void unregisterPath( const QString &path );
 
   private:
+    void readFromSettings();
+    void writeToSettings();
+
     QList<QDir> mPaths;
 };
 

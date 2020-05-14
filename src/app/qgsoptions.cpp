@@ -40,6 +40,7 @@
 #include "qgsnumericformatwidget.h"
 
 #include "qgsattributetablefiltermodel.h"
+#include "qgsbasemappathregistry.h"
 #include "qgsrasterformatsaveoptionswidget.h"
 #include "qgsrasterpyramidsoptionswidget.h"
 #include "qgsdatumtransformtablewidget.h"
@@ -307,6 +308,22 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
   connect( mBtnAddTemplatePath, &QAbstractButton::clicked, this, &QgsOptions::addTemplatePath );
   connect( mBtnRemoveTemplatePath, &QAbstractButton::clicked, this, &QgsOptions::removeTemplatePath );
+
+  // basemap paths
+  connect( mBasemapPathAddButton, &QAbstractButton::clicked, this, &QgsOptions::addBasemapPath );
+  connect( mBasemapPathRemoveButton, &QAbstractButton::clicked, this, &QgsOptions::removeBasemapPath );
+  connect( mBasemapPathUpButton, &QAbstractButton::clicked, this, &QgsOptions::moveBasemapPathUp );
+  connect( mBasemapPathDownButton, &QAbstractButton::clicked, this, &QgsOptions::moveBasemapPathDown );
+
+  // basemap paths
+  const QStringList basemapPaths = QgsApplication::basemapPathRegistry()->paths();
+  for ( const QString &path : basemapPaths )
+  {
+    QListWidgetItem *newItem = new QListWidgetItem( mBasemapPathListWidget );
+    newItem->setText( path );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mBasemapPathListWidget->addItem( newItem );
+  }
 
   //paths hidden from browser
   const QStringList hiddenPathList = mSettings->value( QStringLiteral( "/browser/hiddenPaths" ) ).toStringList();
@@ -1408,6 +1425,11 @@ void QgsOptions::saveOptions()
     pathsList << mListComposerTemplatePaths->item( i )->text();
   }
   mSettings->setValue( QStringLiteral( "Layout/searchPathsForTemplates" ), pathsList, QgsSettings::Core );
+
+  pathsList.clear();
+  for ( int r = 0; r < mBasemapPathListWidget->count(); r++ )
+    pathsList << mBasemapPathListWidget->item( r )->text();
+  QgsApplication::basemapPathRegistry()->setPaths( pathsList );
 
   pathsList.clear();
   for ( int i = 0; i < mListHiddenBrowserPaths->count(); ++i )
@@ -2527,6 +2549,55 @@ void QgsOptions::addColor()
 
   mTreeCustomColors->addColor( newColor, QgsSymbolLayerUtils::colorToName( newColor ) );
 }
+
+void QgsOptions::removeBasemapPath()
+{
+  qDeleteAll( mBasemapPathListWidget->selectedItems() );
+}
+
+void QgsOptions::addBasemapPath()
+{
+  QString myDir = QFileDialog::getExistingDirectory(
+                    this,
+                    tr( "Choose a directory" ),
+                    QDir::toNativeSeparators( QDir::homePath() ),
+                    QFileDialog::ShowDirsOnly
+                  );
+
+  if ( ! myDir.isEmpty() )
+  {
+    QListWidgetItem *newItem = new QListWidgetItem( mBasemapPathListWidget );
+    newItem->setText( myDir );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mBasemapPathListWidget->addItem( newItem );
+    mBasemapPathListWidget->setCurrentItem( newItem );
+  }
+}
+
+void QgsOptions::moveBasemapPathUp()
+{
+  QList<QListWidgetItem *> selectedItems = mBasemapPathListWidget->selectedItems();
+  QList<QListWidgetItem *>::iterator itemIt = selectedItems.begin();
+  for ( ; itemIt != selectedItems.end(); ++itemIt )
+  {
+    int row = mBasemapPathListWidget->row( *itemIt );
+    mBasemapPathListWidget->takeItem( row );
+    mBasemapPathListWidget->insertItem( row - 1, *itemIt );
+  }
+}
+
+void QgsOptions::moveBasemapPathDown()
+{
+  QList<QListWidgetItem *> selectedItems = mBasemapPathListWidget->selectedItems();
+  QList<QListWidgetItem *>::iterator itemIt = selectedItems.begin();
+  for ( ; itemIt != selectedItems.end(); ++itemIt )
+  {
+    int row = mBasemapPathListWidget->row( *itemIt );
+    mBasemapPathListWidget->takeItem( row );
+    mBasemapPathListWidget->insertItem( row + 1, *itemIt );
+  }
+}
+
 
 QListWidgetItem *QgsOptions::addScaleToScaleList( const QString &newScale )
 {

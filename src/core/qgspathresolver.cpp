@@ -52,7 +52,7 @@ QString QgsPathResolver::readPath( const QString &f ) const
 
   if ( src.startsWith( QLatin1String( "basemap:" ) ) )
   {
-    // strip away "inbuilt:" prefix, replace with actual  inbuilt data folder path
+    // strip away "basemap:" prefix, replace with actual  inbuilt data folder path
     return QgsApplication::basemapPathRegistry()->fullPath( src.mid( 8 ) ) ;
   }
 
