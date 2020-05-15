@@ -76,6 +76,8 @@ void QgsLocalizedDataPathRegistry::setPaths( const QStringList &paths )
 
 void QgsLocalizedDataPathRegistry::registerPath( const QString &path, int position )
 {
+  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
+
   QDir dir( path );
   if ( mPaths.contains( dir ) )
     return;
