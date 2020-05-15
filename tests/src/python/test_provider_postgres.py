@@ -122,13 +122,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         QgsSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
-        return set(['"dt" <= make_datetime(2020, 5, 4, 12, 13, 14)',
-                    '"dt" < make_date(2020, 5, 4)',
-                    '"dt" = to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\')',
-                    '"date" <= make_datetime(2020, 5, 4, 12, 13, 14)',
-                    '"date" >= make_date(2020, 5, 4)',
+        return set(['"dt" = to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\')',
                     '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
-                    '"time" >= make_time(12, 14, 14)',
                     '"time" = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')'])
 
     def partiallyCompiledFilters(self):
@@ -1986,13 +1981,8 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         QgsSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
-        return set(['"dt" <= make_datetime(2020, 5, 4, 12, 13, 14)',
-                    '"dt" < make_date(2020, 5, 4)',
-                    '"dt" = to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\')',
-                    '"date" <= make_datetime(2020, 5, 4, 12, 13, 14)',
-                    '"date" >= make_date(2020, 5, 4)',
+        return set(['"dt" = to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\')',
                     '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
-                    '"time" >= make_time(12, 14, 14)',
                     '"time" = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')'])
 
     def partiallyCompiledFilters(self):
