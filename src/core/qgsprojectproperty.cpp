@@ -19,7 +19,6 @@
 #include "qgslogger.h"
 #include "qgis.h"
 #include "qgsmessagelog.h"
-#include "qgsxmlutils.h"
 
 #include <QDomDocument>
 #include <QStringList>
