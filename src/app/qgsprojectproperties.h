@@ -42,7 +42,7 @@ class QgsBearingNumericFormat;
   \note actual state is stored in QgsProject singleton instance
 
  */
-class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui::QgsProjectPropertiesBase
+class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui::QgsProjectPropertiesBase, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -65,6 +65,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      */
     void setSelectedCrs( const QgsCoordinateReferenceSystem &crs );
 
+    QgsExpressionContext createExpressionContext() const override;
   public slots:
 
     /**

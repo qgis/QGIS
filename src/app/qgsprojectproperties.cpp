@@ -445,6 +445,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mWMSUrlLineEdit->setText( QgsProject::instance()->readEntry( QStringLiteral( "WMSUrl" ), QStringLiteral( "/" ), QString() ) );
   mWMSKeywordList->setText( QgsProject::instance()->readListEntry( QStringLiteral( "WMSKeywordList" ), QStringLiteral( "/" ) ).join( QStringLiteral( ", " ) ) );
 
+  mWMSOnlineResourceExpressionButton->registerExpressionContextGenerator( this );
+  mWMSOnlineResourceExpressionButton->setToProperty( QgsProject::instance()->dataDefinedServerProperties().property( QgsProject::DataDefinedServerProperty::WMSOnlineResource ) );
+
   // WMS Name validator
   QValidator *shortNameValidator = new QRegExpValidator( QgsApplication::shortNameRegExp(), this );
   mWMSName->setValidator( shortNameValidator );
@@ -994,6 +997,16 @@ void QgsProjectProperties::setSelectedCrs( const QgsCoordinateReferenceSystem &c
   crsChanged( projectionSelector->crs() );
 }
 
+QgsExpressionContext QgsProjectProperties::createExpressionContext() const
+{
+  QgsExpressionContext context;
+  context
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+
+  return context;
+}
+
 void QgsProjectProperties::apply()
 {
   mMapCanvas->enableMapTileRendering( mMapTileRenderingCheckBox->isChecked() );
@@ -1171,6 +1184,10 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSServiceAbstract" ), QStringLiteral( "/" ), mWMSAbstract->toPlainText() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSOnlineResource" ), QStringLiteral( "/" ), mWMSOnlineResourceLineEdit->text() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSUrl" ), QStringLiteral( "/" ), mWMSUrlLineEdit->text() );
+
+  QgsPropertyCollection propertyCollection = QgsProject::instance()->dataDefinedServerProperties();
+  propertyCollection.setProperty( QgsProject::DataDefinedServerProperty::WMSOnlineResource, mWMSOnlineResourceExpressionButton->toProperty() );
+  QgsProject::instance()->setDataDefinedServerProperties( propertyCollection );
 
   // WMS Contact Position
   int contactPositionIndex = mWMSContactPositionCb->currentIndex();
