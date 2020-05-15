@@ -41,6 +41,7 @@ class TestQgsTemporalNavigationObject : public QObject
     void animationState();
     void temporalExtents();
     void frameSettings();
+    void navigationMode();
     void expressionContext();
 
   private:
@@ -65,6 +66,7 @@ void TestQgsTemporalNavigationObject::init()
   //create a temporal object that will be used in all tests...
 
   navigationObject = new QgsTemporalNavigationObject();
+  navigationObject->setNavigationMode( QgsTemporalNavigationObject::Animated );
 }
 
 void TestQgsTemporalNavigationObject::cleanup()
@@ -138,6 +140,41 @@ void TestQgsTemporalNavigationObject::temporalExtents()
   QCOMPARE( navigationObject->temporalExtents(), QgsDateTimeRange() );
 }
 
+void TestQgsTemporalNavigationObject::navigationMode()
+{
+  QgsDateTimeRange range = QgsDateTimeRange(
+                             QDateTime( QDate( 2010, 1, 1 ) ),
+                             QDateTime( QDate( 2020, 1, 1 ) ) );
+
+  QgsDateTimeRange range2 = QgsDateTimeRange(
+                              QDateTime( QDate( 2015, 1, 1 ) ),
+                              QDateTime( QDate( 2020, 1, 1 ) ) );
+
+  QgsDateTimeRange check;
+  auto checkUpdateTemporalRange = [&check]( const QgsDateTimeRange range )
+  {
+    QCOMPARE( range, check );
+  };
+  QObject *context = new QObject( this );
+  connect( navigationObject, &QgsTemporalNavigationObject::updateTemporalRange, context, checkUpdateTemporalRange );
+
+  // Changing navigation mode emits an updateTemporalRange, in this case it should be an empty range
+  navigationObject->setNavigationMode( QgsTemporalNavigationObject::NavigationOff );
+  // Setting temporal extents also triggers an updateTemporalRange with an empty range
+  navigationObject->setTemporalExtents( range );
+
+  // Changing navigation mode emits an updateTemporalRange, in this case it should be the last range
+  // we used in setTemporalExtents.
+  check = range;
+  navigationObject->setNavigationMode( QgsTemporalNavigationObject::FixedRange );
+  check = range2;
+  navigationObject->setTemporalExtents( range2 );
+
+  // Delete context to disconnect the signal to the lambda function
+  delete context;
+  navigationObject->setNavigationMode( QgsTemporalNavigationObject::Animated );
+}
+
 void TestQgsTemporalNavigationObject::frameSettings()
 {
   qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
@@ -175,7 +212,6 @@ void TestQgsTemporalNavigationObject::frameSettings()
 
   navigationObject->setTemporalRangeCumulative( true );
   QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 4 ), range );
-
 }
 
 void TestQgsTemporalNavigationObject::expressionContext()
