@@ -178,13 +178,6 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
 
     /**
      * Sets the specified feature as the current atlas feature
-     * \deprecated since QGIS 3.14 use setAltasFeature without the layer argument
-     */
-    Q_DECL_DEPRECATED void setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feat ) SIP_DEPRECATED;
-
-    /**
-     * Sets the specified feature as the current atlas feature
-     * \since QGIS 3.14
      */
     void setAtlasFeature( const QgsFeature &feature );
 

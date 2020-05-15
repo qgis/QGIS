@@ -4776,13 +4776,6 @@ bool QgsLayoutDesignerDialog::atlasPreviewEnabled() const
   return mActionAtlasPreview->isChecked();
 }
 
-void QgsLayoutDesignerDialog::setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feat )
-{
-  if ( layer != atlas()->coverageLayer() )
-    return;
-  setAtlasFeature( feat );
-}
-
 void QgsLayoutDesignerDialog::setAtlasFeature( const QgsFeature &feature )
 {
   QgsLayoutAtlas *layoutAtlas = atlas();
