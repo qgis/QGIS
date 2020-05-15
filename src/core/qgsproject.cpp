@@ -894,41 +894,24 @@ void _getProperties( const QDomDocument &doc, QgsProjectPropertyKey &project_pro
 }
 
 /**
-
-Restore the data defined server properties collection found in "doc" to "dataDefinedServerProperties".
-
-\code{.xml}
-<dataDefinedServerProperties>
-  <Option type="Map">
-    <Option name="name" type="QString" value=""></Option>
-    <Option name="properties" type="Map">
-      <Option name="WMSOnlineResource" type="Map">
-        <Option name="active" type="bool" value="true"></Option>
-        <Option name="expression" type="QString" value="'www.mayasbees.ch/'||@project_basename"></Option>
-        <Option name="type" type="int" value="3"></Option>
-      </Option>
-    </Option>
-    <Option name="type" type="QString" value="collection"></Option>
-  </Option>
-</dataDefinedServerProperties>
-\endcode
-
-\param doc xml document
-\param dataDefinedServerProperties property collection of the server overrides
-
-*/
-void _getDataDefinedServerProperties( const QDomDocument &doc, QgsPropertyCollection &dataDefinedServerProperties, const QgsPropertiesDefinition &dataDefinedServerPropertyDefinitions )
+  Returns the data defined server properties collection found in "doc" to "dataDefinedServerProperties".
+  \param doc xml document
+  \param dataDefinedServerProperties property collection of the server overrides
+  \since QGIS 3.14
+**/
+QgsPropertyCollection getDataDefinedServerProperties( const QDomDocument &doc, const QgsPropertiesDefinition &dataDefinedServerPropertyDefinitions )
 {
+  QgsPropertyCollection ddServerProperties;
   // Read data defined server properties
-  dataDefinedServerProperties.clear();
   QDomElement ddElem = doc.documentElement().firstChildElement( QStringLiteral( "dataDefinedServerProperties" ) );
   if ( !ddElem.isNull() )
   {
-    if ( !dataDefinedServerProperties.readXml( ddElem, dataDefinedServerPropertyDefinitions ) )
+    if ( !ddServerProperties.readXml( ddElem, dataDefinedServerPropertyDefinitions ) )
     {
       QgsDebugMsg( QStringLiteral( "dataDefinedServerProperties.readXml() failed" ) );
     }
   }
+  return ddServerProperties;
 }
 
 /**
@@ -1326,7 +1309,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   _getProperties( *doc, mProperties );
 
   // now get the data defined server properties
-  _getDataDefinedServerProperties( *doc, mDataDefinedServerProperties, dataDefinedServerPropertyDefinitions() );
+  mDataDefinedServerProperties = getDataDefinedServerProperties( *doc, dataDefinedServerPropertyDefinitions() );
 
   QgsDebugMsgLevel( QString::number( mProperties.count() ) + " properties read", 2 );
 
