@@ -1153,6 +1153,8 @@ void QgsRasterLayerProperties::apply()
   // Update temporal properties
   mTemporalWidget->saveTemporalProperties();
 
+  mRasterLayer->setCrs( mCrsSelector->crs() );
+
   //get the thumbnail for the layer
   QPixmap thumbnail = QPixmap::fromImage( mRasterLayer->previewAsImage( pixmapThumbnail->size() ) );
   pixmapThumbnail->setPixmap( thumbnail );
