@@ -26,7 +26,7 @@ QgsLocalizedDataPathRegistry::QgsLocalizedDataPathRegistry()
   readFromSettings();
 }
 
-QString QgsLocalizedDataPathRegistry::fullPath( const QString &relativePath ) const
+QString QgsLocalizedDataPathRegistry::globalPath( const QString &relativePath ) const
 {
   QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
 
@@ -37,7 +37,7 @@ QString QgsLocalizedDataPathRegistry::fullPath( const QString &relativePath ) co
   return QString();
 }
 
-QString QgsLocalizedDataPathRegistry::relativePath( const QString &fullPath ) const
+QString QgsLocalizedDataPathRegistry::localizedPath( const QString &fullPath ) const
 {
   QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
 

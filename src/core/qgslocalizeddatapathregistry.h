@@ -45,11 +45,11 @@ class CORE_EXPORT QgsLocalizedDataPathRegistry
 
     ~QgsLocalizedDataPathRegistry() = default;
 
-    //! Returns the full path if the file has been found in one of the paths, an empty string otherwise
-    QString fullPath( const QString &relativePath ) const;
+    //! Returns the global path if the file has been found in one of the paths, an empty string otherwise
+    QString globalPath( const QString &localizedPath ) const;
 
-    //! Returns the relative path if the file has been found in one of the path, an empty string otherwise
-    QString relativePath( const QString &fullPath ) const;
+    //! Returns the localized path if the file has been found in one of the path, an empty string otherwise
+    QString localizedPath( const QString &globalPath ) const;
 
     //! Returns a list of registered localized paths
     QStringList paths() const;

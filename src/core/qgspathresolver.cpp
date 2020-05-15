@@ -53,7 +53,7 @@ QString QgsPathResolver::readPath( const QString &f ) const
   if ( src.startsWith( QLatin1String( "localized:" ) ) )
   {
     // strip away "localized:" prefix, replace with actual  inbuilt data folder path
-    return QgsApplication::localizedDataPathRegistry()->fullPath( src.mid( 10 ) ) ;
+    return QgsApplication::localizedDataPathRegistry()->globalPath( src.mid( 10 ) ) ;
   }
 
   if ( mBaseFileName.isNull() )
@@ -191,9 +191,9 @@ QString QgsPathResolver::writePath( const QString &src ) const
     return src;
   }
 
-  QString basemapPath = QgsApplication::localizedDataPathRegistry()->relativePath( src );
-  if ( !basemapPath.isEmpty() )
-    return QStringLiteral( "localized:" ) + basemapPath;
+  QString localizedPath = QgsApplication::localizedDataPathRegistry()->localizedPath( src );
+  if ( !localizedPath.isEmpty() )
+    return QStringLiteral( "localized:" ) + localizedPath;
 
   if ( src.startsWith( QgsApplication::pkgDataPath() + QStringLiteral( "/resources" ) ) )
   {

@@ -34,14 +34,14 @@ The resolving of the file paths happens in QgsPathResolver.
 
     ~QgsLocalizedDataPathRegistry();
 
-    QString fullPath( const QString &relativePath ) const;
+    QString globalPath( const QString &localizedPath ) const;
 %Docstring
-Returns the full path if the file has been found in one of the paths, an empty string otherwise
+Returns the global path if the file has been found in one of the paths, an empty string otherwise
 %End
 
-    QString relativePath( const QString &fullPath ) const;
+    QString localizedPath( const QString &globalPath ) const;
 %Docstring
-Returns the relative path if the file has been found in one of the path, an empty string otherwise
+Returns the localized path if the file has been found in one of the path, an empty string otherwise
 %End
 
     QStringList paths() const;
