@@ -144,6 +144,21 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     };
     Q_ENUM( AvoidIntersectionsMode )
 
+    /**
+     * Data defined properties.
+     * Overrides of user defined server parameters are stored in a
+     * property collection and they can be retrieved using the
+     * indexes specified in this enum.
+     *
+     * \since QGIS 3.14
+     */
+    enum DataDefinedServerProperty
+    {
+      NoProperty = 0, //!< No property
+      AllProperties = 1, //!< All properties for item
+      WMSOnlineResource = 2, //!< Alias
+    };
+
     //! Returns the QgsProject singleton instance
     static QgsProject *instance();
 
@@ -424,16 +439,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool writeEntry( const QString &scope, const QString &key, const QStringList &value );
 
     /**
-     * Write a QgsProperty entry to the project file.
-     *
-     * Keys are '/'-delimited entries, implying
-     * a hierarchy of keys and corresponding values
-     *
-     * \note The key string must be valid xml tag names in order to be saved to the file.
-     */
-    bool writeEntry( const QString &scope, const QString &key, const QgsProperty &value );
-
-    /**
      * Key value accessors
      *
      * keys would be the familiar QgsSettings-like '/' delimited entries,
@@ -445,8 +450,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     int readNumEntry( const QString &scope, const QString &key, int def = 0, bool *ok = nullptr ) const;
     double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok = nullptr ) const;
     bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok = nullptr ) const;
-    QgsProperty readPropertyEntry( const QString &scope, const QString &key, const QgsProperty &def = QgsProperty(), bool *ok = nullptr ) const;
-
 
     //! Remove the given key
     bool removeEntry( const QString &scope, const QString &key );
@@ -1753,6 +1756,22 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     */
     void registerTranslatableObjects( QgsTranslationContext *translationContext );
 
+    /**
+     * Sets the data defined properties used for overrides in user defined server
+     * parameters to \a properties
+     *
+     * \since QGIS 3.14
+     */
+    void setDataDefinedServerProperties( const QgsPropertyCollection &properties );
+
+    /**
+     * Returns the data defined properties used for overrides in user defined server
+     * parameters
+     *
+     * \since QGIS 3.14
+     */
+    QgsPropertyCollection dataDefinedServerProperties() const;
+
   private slots:
     void onMapLayersAdded( const QList<QgsMapLayer *> &layers );
     void onMapLayersRemoved( const QList<QgsMapLayer *> &layers );
@@ -1831,6 +1850,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! Save auxiliary storage to database
     bool saveAuxiliaryStorage( const QString &filename = QString() );
 
+    //! Returns the property definition used for a data defined server property
+    static QgsPropertiesDefinition &dataDefinedServerPropertyDefinitions();
+
     std::unique_ptr< QgsMapLayerStore > mLayerStore;
 
     QString mErrorMessage;
@@ -1899,6 +1921,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool mDirty = false;                 // project has been modified since it has been read or saved
     int mDirtyBlockCount = 0;
     bool mTrustLayerMetadata = false;
+
+    QgsPropertyCollection mDataDefinedServerProperties;
 
     QgsCoordinateTransformContext mTransformContext;
 

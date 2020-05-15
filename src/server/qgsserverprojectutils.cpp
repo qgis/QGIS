@@ -67,11 +67,11 @@ QString QgsServerProjectUtils::owsServiceOnlineResource( const QgsProject &proje
 {
   QString wmsOnlineResource = project.readEntry( QStringLiteral( "WMSOnlineResource" ), QStringLiteral( "/" ) );
 
-  QgsProperty wmsOnlineResourceExpression = project.readPropertyEntry( QStringLiteral( "WMSOnlineResourceExpression" ), QStringLiteral( "/" ) );
-  if ( wmsOnlineResourceExpression.isActive() && ! wmsOnlineResourceExpression.expressionString().isEmpty() )
+  QgsProperty wmsOnlineResourceProperty = project.dataDefinedServerProperties().property( QgsProject::DataDefinedServerProperty::WMSOnlineResource );
+  if ( wmsOnlineResourceProperty.isActive() && ! wmsOnlineResourceProperty.expressionString().isEmpty() )
   {
     QgsExpressionContext context = project.createExpressionContext();
-    return wmsOnlineResourceExpression.valueAsString( context, wmsOnlineResource );
+    return wmsOnlineResourceProperty.valueAsString( context, wmsOnlineResource );
   }
 
   return wmsOnlineResource;

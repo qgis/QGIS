@@ -88,8 +88,8 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
       return false;
 
     case QVariant::Map:
-      mValue = QgsXmlUtils::readVariant( subkeyElement.firstChild().toElement() ).toMap();
-      break;
+      QgsDebugMsg( QStringLiteral( "no support for QVariant::Map" ) );
+      return false;
 
     case QVariant::List:
       QgsDebugMsg( QStringLiteral( "no support for QVariant::List" ) );
@@ -257,11 +257,6 @@ bool QgsProjectPropertyValue::writeXml( QString const &nodeName,
 
       valueElement.appendChild( stringListElement );
     }
-  }
-  else if ( QVariant::Map == mValue.type() )
-  {
-    QDomElement element = QgsXmlUtils::writeVariant( mValue, document );
-    valueElement.appendChild( element );
   }
   else                    // we just plop the value in as plain ole text
   {

@@ -593,6 +593,16 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
   }
 }
 
+void QgsProject::setDataDefinedServerProperties( const QgsPropertyCollection &properties )
+{
+  mDataDefinedServerProperties = properties;
+}
+
+QgsPropertyCollection QgsProject::dataDefinedServerProperties() const
+{
+  return mDataDefinedServerProperties;
+}
+
 void QgsProject::setFileName( const QString &name )
 {
   if ( name == mFile.fileName() )
@@ -883,6 +893,45 @@ void _getProperties( const QDomDocument &doc, QgsProjectPropertyKey &project_pro
   }
 }
 
+/**
+
+Restore the data defined server properties collection found in "doc" to "dataDefinedServerProperties".
+
+\code{.xml}
+<dataDefinedServerProperties>
+  <Option type="Map">
+    <Option name="name" type="QString" value=""></Option>
+    <Option name="properties" type="Map">
+      <Option name="WMSOnlineResource" type="Map">
+        <Option name="active" type="bool" value="true"></Option>
+        <Option name="expression" type="QString" value="'www.mayasbees.ch/'||@project_basename"></Option>
+        <Option name="type" type="int" value="3"></Option>
+      </Option>
+    </Option>
+    <Option name="type" type="QString" value="collection"></Option>
+  </Option>
+</dataDefinedServerProperties>
+\endcode
+
+\param doc xml document
+\param dataDefinedServerProperties property collection of the server overrides
+
+*/
+void _getDataDefinedServerProperties( const QDomDocument &doc, QgsPropertyCollection &dataDefinedServerProperties, const QgsPropertiesDefinition &dataDefinedServerPropertyDefinitions )
+{
+  // Read data defined server properties
+  QDomElement ddElem = doc.documentElement().firstChildElement( QStringLiteral( "dataDefinedServerProperties" ) );
+
+  if ( ddElem.isNull() )  // no properties found, so we're done
+  {
+    return;
+  }
+
+  if ( ! dataDefinedServerProperties.readXml( ddElem, dataDefinedServerPropertyDefinitions ) )
+  {
+    QgsDebugMsg( QStringLiteral( "dataDefinedServerProperties.readXml() failed" ) );
+  }
+}
 
 /**
    Get the project title
@@ -1277,6 +1326,9 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 
   // now get any properties
   _getProperties( *doc, mProperties );
+
+  // now get the data defined server properties
+  _getDataDefinedServerProperties( *doc, mDataDefinedServerProperties, dataDefinedServerPropertyDefinitions() );
 
   QgsDebugMsgLevel( QString::number( mProperties.count() ) + " properties read", 2 );
 
@@ -2198,6 +2250,10 @@ bool QgsProject::writeProjectFile( const QString &filename )
     mProperties.writeXml( QStringLiteral( "properties" ), qgisNode, *doc );
   }
 
+  QDomElement ddElem = doc->createElement( QStringLiteral( "dataDefinedServerProperties" ) );
+  mDataDefinedServerProperties.writeXml( ddElem, dataDefinedServerPropertyDefinitions() );
+  qgisNode.appendChild( ddElem );
+
   mMapThemeCollection->writeXml( *doc );
 
   mTransformContext.writeXml( qgisNode, context );
@@ -2359,17 +2415,6 @@ bool QgsProject::writeEntry( const QString &scope, const QString &key, const QSt
   return success;
 }
 
-bool QgsProject::writeEntry( const QString &scope, const QString &key, const QgsProperty &value )
-{
-  bool propertiesModified;
-  bool success = addKey_( scope, key, &mProperties, value.toVariant(), propertiesModified );
-
-  if ( propertiesModified )
-    setDirty( true );
-
-  return success;
-}
-
 QStringList QgsProject::readListEntry( const QString &scope,
                                        const QString &key,
                                        const QStringList &def,
@@ -2487,26 +2532,6 @@ bool QgsProject::readBoolEntry( const QString &scope, const QString &key, bool d
 
   return def;
 }
-
-QgsProperty QgsProject::readPropertyEntry( const QString &scope, const QString &key, const QgsProperty &def, bool *ok ) const
-{
-  QgsProjectProperty *property = findKey_( scope, key, mProperties );
-
-  if ( property )
-  {
-    QgsProperty propertyValue;
-    QVariant value = property->value();
-    bool loaded = propertyValue.loadVariant( value );
-    if ( ok )
-      *ok = loaded;
-
-    if ( loaded )
-      return propertyValue;
-  }
-
-  return def;
-}
-
 
 bool QgsProject::removeEntry( const QString &scope, const QString &key )
 {
@@ -3393,6 +3418,18 @@ bool QgsProject::saveAuxiliaryStorage( const QString &filename )
   {
     return mAuxiliaryStorage->saveAs( *this );
   }
+}
+
+QgsPropertiesDefinition &QgsProject::dataDefinedServerPropertyDefinitions()
+{
+  static QgsPropertiesDefinition sPropertyDefinitions
+  {
+    {
+      QgsProject::DataDefinedServerProperty::WMSOnlineResource,
+      QgsPropertyDefinition( "WMSOnlineResource", QObject::tr( "WMS Online Resource" ), QgsPropertyDefinition::String )
+    },
+  };
+  return sPropertyDefinitions;
 }
 
 const QgsAuxiliaryStorage *QgsProject::auxiliaryStorage() const
