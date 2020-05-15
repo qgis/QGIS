@@ -1292,7 +1292,17 @@ void QgsExpressionBuilderWidget::storeCurrentUserExpression()
   QgsExpressionStoreDialog dlg { expression, expression, QString( ), mUserExpressionLabels };
   if ( dlg.exec() == QDialog::DialogCode::Accepted )
   {
+<<<<<<< HEAD
     saveToUserExpressions( dlg.label(), dlg.expression(), dlg.helpText() );
+=======
+    // label has changed removed the old one before adding the new one
+    if ( dlg.label() != item->text() )
+    {
+      mExpressionTreeView->removeFromUserExpressions( item->text() );
+    }
+
+    mExpressionTreeView->saveToUserExpressions( dlg.label(), dlg.expression(), dlg.helpText() );
+>>>>>>> c13b677e57... Merge pull request #36349 from troopa81/fix_rename_user_expr
   }
 }
 
