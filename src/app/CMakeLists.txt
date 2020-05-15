@@ -18,6 +18,7 @@ SET(QGIS_APP_SRCS
   qgsapplayertreeviewmenuprovider.cpp
   qgsappwindowmanager.cpp
   qgsappscreenshots.cpp
+  qgsanimationexportdialog.cpp
   qgsannotationwidget.cpp
   qgsappsslerrorhandler.cpp
   qgsattributetabledialog.cpp
