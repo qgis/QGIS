@@ -82,7 +82,7 @@ void QgsLocalizedDataPathRegistry::registerPath( const QString &path, int positi
   if ( mPaths.contains( dir ) )
     return;
 
-  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Write );
+  locker.changeMode( QgsReadWriteLocker::Write );
 
   if ( position >= 0 && position < mPaths.count() )
     mPaths.insert( position, dir );
