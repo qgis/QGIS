@@ -871,6 +871,66 @@ double QgsGeometryUtils::circleTangentDirection( const QgsPoint &tangentPoint, c
   return angle;
 }
 
+// Ported from PostGIS' pt_continues_arc
+bool QgsGeometryUtils::pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2, const QgsPoint &a3, const QgsPoint &b, double distanceTolerance, double pointSpacingAngleTolerance )
+{
+  double centerX = 0;
+  double centerY = 0;
+  double radius = 0;
+  circleCenterRadius( a1, a2, a3, radius, centerX, centerY );
+
+  // Co-linear a1/a2/a3
+  if ( radius < 0.0 )
+    return false;
+
+  // distance of candidate point to center of arc a1-a2-a3
+  double bDistance = std::sqrt( ( b.x() - centerX ) * ( b.x() - centerX ) +
+                                ( b.y() - centerY ) * ( b.y() - centerY ) );
+
+  double diff = std::fabs( radius - bDistance );
+
+  auto arcAngle = []( const QgsPoint & a, const QgsPoint & b, const QgsPoint & c )->double
+  {
+    double abX = b.x() - a.x();
+    double abY = b.y() - a.y();
+
+    double cbX = b.x() - c.x();
+    double cbY = b.y() - c.y();
+
+    double dot = ( abX * cbX + abY * cbY ); /* dot product */
+    double cross = ( abX * cbY - abY * cbX ); /* cross product */
+
+    double alpha = std::atan2( cross, dot );
+
+    return alpha;
+  };
+
+  // Is the point b on the circle?
+  if ( diff < distanceTolerance )
+  {
+    double angle1 = arcAngle( a1, a2, a3 );
+    double angle2 = arcAngle( a2, a3, b );
+
+    // Is the sweep angle similar to the previous one?
+    // We only consider a segment replacable by an arc if the points within
+    // it are regularly spaced
+    diff = std::fabs( angle1 - angle2 );
+    if ( diff > pointSpacingAngleTolerance )
+    {
+      return false;
+    }
+
+    int a2Side = leftOfLine( a2.x(), a2.y(), a1.x(), a1.y(), a3.x(), a3.y() );
+    int bSide  = leftOfLine( b.x(), b.y(), a1.x(), a1.y(), a3.x(), a3.y() );
+
+    // Is the point b on the same side of a1/a3 as the mid-point a2 is?
+    // If not, it's in the unbounded part of the circle, so it continues the arc, return true.
+    if ( bSide != a2Side )
+      return true;
+  }
+  return false;
+}
+
 void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, QgsPointSequence &points, double tolerance, QgsAbstractGeometry::SegmentationToleranceType toleranceType, bool hasZ, bool hasM )
 {
   bool reversed = false;

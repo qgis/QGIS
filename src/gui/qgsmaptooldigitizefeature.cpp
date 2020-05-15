@@ -43,6 +43,11 @@ QgsMapToolDigitizeFeature::QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, QgsA
   connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsMapToolDigitizeFeature::stopCapturing );
 }
 
+QgsMapToolCapture::Capabilities QgsMapToolDigitizeFeature::capabilities() const
+{
+  return QgsMapToolCapture::SupportsCurves;
+}
+
 void QgsMapToolDigitizeFeature::digitized( const QgsFeature &f )
 {
   emit digitizingCompleted( f );
