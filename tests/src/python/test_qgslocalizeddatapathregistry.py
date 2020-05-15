@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for QgsBasemapPathRegistry.
+"""QGIS Unit tests for QgsLocalizedDataPathRegistry.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@ from pathlib import Path
 import os
 import gc
 from qgis.core import (
-    QgsBasemapPathRegistry,
+    QgsLocalizedDataPathRegistry,
     QgsApplication,
     QgsPathResolver,
     QgsProject,
@@ -33,33 +33,33 @@ BASE_PATH = QgsApplication.pkgDataPath() + '/resources'
 ABSOLUTE_PATH = '{}/{}'.format(BASE_PATH, MAP_PATH)
 
 
-class TestQgsBasemapPathRegistry(unittest.TestCase):
+class TestQgsLocalizedDataPathRegistry(unittest.TestCase):
     """
-    Test resolving and saving basemap data paths
+    Test resolving and saving localized data paths
     """
 
     def setUp(self):
-        QgsApplication.basemapPathRegistry().registerPath(BASE_PATH)
+        QgsApplication.localizedDataPathRegistry().registerPath(BASE_PATH)
 
     def tearDown(self):
-        QgsApplication.basemapPathRegistry().unregisterPath(BASE_PATH)
+        QgsApplication.localizedDataPathRegistry().unregisterPath(BASE_PATH)
 
-    def testQgsBasemapPathRegistry(self):
-        self.assertEqual(QgsApplication.basemapPathRegistry().relativePath(ABSOLUTE_PATH), MAP_PATH)
-        self.assertEqual(QgsApplication.basemapPathRegistry().fullPath(MAP_PATH), ABSOLUTE_PATH)
+    def testQgsLocalizedDataPathRegistry(self):
+        self.assertEqual(QgsApplication.localizedDataPathRegistry().relativePath(ABSOLUTE_PATH), MAP_PATH)
+        self.assertEqual(QgsApplication.localizedDataPathRegistry().fullPath(MAP_PATH), ABSOLUTE_PATH)
 
     def testOrderOfPreference(self):
         temp_dir = gettempdir()
         os.mkdir('{}/data'.format(temp_dir))
         alt_dir = '{}/{}'.format(temp_dir, MAP_PATH)
         Path(alt_dir).touch()
-        QgsApplication.basemapPathRegistry().registerPath(temp_dir, 0)
-        self.assertEqual(QgsApplication.basemapPathRegistry().fullPath(MAP_PATH), alt_dir)
-        QgsApplication.basemapPathRegistry().unregisterPath(temp_dir)
+        QgsApplication.localizedDataPathRegistry().registerPath(temp_dir, 0)
+        self.assertEqual(QgsApplication.localizedDataPathRegistry().fullPath(MAP_PATH), alt_dir)
+        QgsApplication.localizedDataPathRegistry().unregisterPath(temp_dir)
 
     def testWithResolver(self):
-        self.assertEqual(QgsPathResolver().readPath('basemap:' + MAP_PATH), ABSOLUTE_PATH)
-        self.assertEqual(QgsPathResolver().writePath(ABSOLUTE_PATH), 'basemap:' + MAP_PATH)
+        self.assertEqual(QgsPathResolver().readPath('localized:' + MAP_PATH), ABSOLUTE_PATH)
+        self.assertEqual(QgsPathResolver().writePath(ABSOLUTE_PATH), 'localized:' + MAP_PATH)
 
     def testProject(self):
         layer = QgsVectorLayer('{}|layername=countries'.format(ABSOLUTE_PATH), 'Test', 'ogr')
@@ -73,7 +73,7 @@ class TestQgsBasemapPathRegistry(unittest.TestCase):
         found = False
         with open(fh.name) as fh:
             for line in fh:
-                if '<datasource>basemap:data/world_map.gpkg|layername=countries</datasource>' in line:
+                if '<datasource>localized:data/world_map.gpkg|layername=countries</datasource>' in line:
                     found = True
                     break
         self.assertTrue(found)

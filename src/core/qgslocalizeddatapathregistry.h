@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsbasemappathregistry.h
+  qgslocalizeddatapathregistry.h
   --------------------------------------
   Date                 : May 2020
   Copyright            : (C) 2020 by Denis Rouzaud
@@ -14,8 +14,8 @@
  ***************************************************************************/
 
 
-#ifndef QGSBASEMAPPATHREGISTRY_H
-#define QGSBASEMAPPATHREGISTRY_H
+#ifndef QGSLOCALIZEDDATAPATHREGISTRY_H
+#define QGSLOCALIZEDDATAPATHREGISTRY_H
 
 
 #include <QDir>
@@ -27,23 +27,23 @@
 
 /**
  * \ingroup core
- * A registry class to hold paths of basemaps
+ * A registry class to hold localized data paths which can be used for basemaps, logos, etc.
  * Paths are meant to be absolute paths and are stored by order of preference.
  *
- * If a layer from one of the paths is loaded, it will be saved as basemap in the project file.
- * For instance, if you have C:\my_maps in your basemap paths,
- * C:\my_maps\my_country\ortho.tif will be save in your project as basemap:my_country\ortho.tif
+ * If a layer from one of the paths is loaded, it will be saved as localized in the project file.
+ * For instance, if you have C:\my_maps in your localized paths,
+ * C:\my_maps\my_country\ortho.tif will be save in your project as localized:my_country\ortho.tif
  *
  * The resolving of the file paths happens in QgsPathResolver.
  *
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsBasemapPathRegistry
+class CORE_EXPORT QgsLocalizedDataPathRegistry
 {
   public:
-    QgsBasemapPathRegistry();
+    QgsLocalizedDataPathRegistry();
 
-    ~QgsBasemapPathRegistry() = default;
+    ~QgsLocalizedDataPathRegistry() = default;
 
     //! Returns the full path if the file has been found in one of the paths, an empty string otherwise
     QString fullPath( const QString &relativePath ) const;
@@ -51,25 +51,25 @@ class CORE_EXPORT QgsBasemapPathRegistry
     //! Returns the relative path if the file has been found in one of the path, an empty string otherwise
     QString relativePath( const QString &fullPath ) const;
 
-    //! Returns a list of registered basemap paths
+    //! Returns a list of registered localized paths
     QStringList paths() const;
 
-    //! Sets the complete list of basemap path
+    //! Sets the complete list of localized path
     void setPaths( const QStringList &paths ) SIP_SKIP;
 
     /**
-     * Registers a basemap path
+     * Registers a localized path
      * If \a position is given, the path is inserted at the given position in the list
      * Since the paths are stored by order of preference, lower positions in the list take precedence.
      */
     void registerPath( const QString &path, int position = -1 );
 
-    //! Unregisters a basemap path
+    //! Unregisters a localized path
     void unregisterPath( const QString &path );
 
   private:
 #ifdef SIP_RUN
-    QgsBasemapPathRegistry( const QgsBasemapPathRegistry &other )
+    QgsLocalizedDataPathRegistry( const QgsLocalizedDataPathRegistry &other )
     {}
 #endif
 
@@ -80,4 +80,4 @@ class CORE_EXPORT QgsBasemapPathRegistry
     mutable QReadWriteLock mLock;
 };
 
-#endif // QGSBASEMAPPATHREGISTRY_H
+#endif // QGSLOCALIZEDDATAPATHREGISTRY_H

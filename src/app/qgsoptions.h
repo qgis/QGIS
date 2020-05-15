@@ -242,10 +242,10 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void addColor();
 
   private slots:
-    void removeBasemapPath();
-    void addBasemapPath();
-    void moveBasemapPathUp();
-    void moveBasemapPathDown();
+    void removeLocalizedDataPath();
+    void addLocalizedDataPath();
+    void moveLocalizedDataPathUp();
+    void moveLocalizedDataPathDown();
 
   private:
     QgsSettings *mSettings = nullptr;

@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsbasemappathregistry.h                                    *
+ * src/core/qgslocalizeddatapathregistry.h                              *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -11,15 +11,15 @@
 
 
 
-class QgsBasemapPathRegistry
+class QgsLocalizedDataPathRegistry
 {
 %Docstring
-A registry class to hold paths of basemaps
+A registry class to hold localized data paths which can be used for basemaps, logos, etc.
 Paths are meant to be absolute paths and are stored by order of preference.
 
-If a layer from one of the paths is loaded, it will be saved as basemap in the project file.
-For instance, if you have C:\my_maps in your basemap paths,
-C:\my_maps\my_country\ortho.tif will be save in your project as basemap:my_country\ortho.tif
+If a layer from one of the paths is loaded, it will be saved as localized in the project file.
+For instance, if you have C:\my_maps in your localized paths,
+C:\my_maps\my_country\ortho.tif will be save in your project as localized:my_country\ortho.tif
 
 The resolving of the file paths happens in QgsPathResolver.
 
@@ -27,12 +27,12 @@ The resolving of the file paths happens in QgsPathResolver.
 %End
 
 %TypeHeaderCode
-#include "qgsbasemappathregistry.h"
+#include "qgslocalizeddatapathregistry.h"
 %End
   public:
-    QgsBasemapPathRegistry();
+    QgsLocalizedDataPathRegistry();
 
-    ~QgsBasemapPathRegistry();
+    ~QgsLocalizedDataPathRegistry();
 
     QString fullPath( const QString &relativePath ) const;
 %Docstring
@@ -46,30 +46,30 @@ Returns the relative path if the file has been found in one of the path, an empt
 
     QStringList paths() const;
 %Docstring
-Returns a list of registered basemap paths
+Returns a list of registered localized paths
 %End
 
 
     void registerPath( const QString &path, int position = -1 );
 %Docstring
-Registers a basemap path
+Registers a localized path
 If ``position`` is given, the path is inserted at the given position in the list
 Since the paths are stored by order of preference, lower positions in the list take precedence.
 %End
 
     void unregisterPath( const QString &path );
 %Docstring
-Unregisters a basemap path
+Unregisters a localized path
 %End
 
   private:
-    QgsBasemapPathRegistry( const QgsBasemapPathRegistry &other );
+    QgsLocalizedDataPathRegistry( const QgsLocalizedDataPathRegistry &other );
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsbasemappathregistry.h                                    *
+ * src/core/qgslocalizeddatapathregistry.h                              *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

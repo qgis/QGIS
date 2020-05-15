@@ -15,7 +15,6 @@
 %Include auto_generated/qgsattributes.sip
 %Include auto_generated/qgsattributetableconfig.sip
 %Include auto_generated/qgsauxiliarystorage.sip
-%Include auto_generated/qgsbasemappathregistry.sip
 %Include auto_generated/qgsbearingutils.sip
 %Include auto_generated/qgsblockingnetworkrequest.sip
 %Include auto_generated/qgsbookmarkmanager.sip
@@ -100,6 +99,7 @@
 %Include auto_generated/qgslegendsettings.sip
 %Include auto_generated/qgslegendstyle.sip
 %Include auto_generated/qgslocaldefaultsettings.sip
+%Include auto_generated/qgslocalizeddatapathregistry.sip
 %Include auto_generated/qgslogger.sip
 %Include auto_generated/qgsmapdecoration.sip
 %Include auto_generated/qgsmaphittest.sip

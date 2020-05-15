@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgspathresolver.h"
-#include "qgsbasemappathregistry.h"
+#include "qgslocalizeddatapathregistry.h"
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -50,10 +50,10 @@ QString QgsPathResolver::readPath( const QString &f ) const
     return QgsApplication::pkgDataPath() + QStringLiteral( "/resources" ) + src.mid( 8 );
   }
 
-  if ( src.startsWith( QLatin1String( "basemap:" ) ) )
+  if ( src.startsWith( QLatin1String( "localized:" ) ) )
   {
-    // strip away "basemap:" prefix, replace with actual  inbuilt data folder path
-    return QgsApplication::basemapPathRegistry()->fullPath( src.mid( 8 ) ) ;
+    // strip away "localized:" prefix, replace with actual  inbuilt data folder path
+    return QgsApplication::localizedDataPathRegistry()->fullPath( src.mid( 10 ) ) ;
   }
 
   if ( mBaseFileName.isNull() )
@@ -191,9 +191,9 @@ QString QgsPathResolver::writePath( const QString &src ) const
     return src;
   }
 
-  QString basemapPath = QgsApplication::basemapPathRegistry()->relativePath( src );
+  QString basemapPath = QgsApplication::localizedDataPathRegistry()->relativePath( src );
   if ( !basemapPath.isEmpty() )
-    return QStringLiteral( "basemap:" ) + basemapPath;
+    return QStringLiteral( "localized:" ) + basemapPath;
 
   if ( src.startsWith( QgsApplication::pkgDataPath() + QStringLiteral( "/resources" ) ) )
   {

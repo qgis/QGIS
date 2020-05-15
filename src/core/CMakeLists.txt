@@ -224,7 +224,6 @@ SET(QGIS_CORE_SRCS
   qgsattributetableconfig.cpp
   qgsattributeeditorelement.cpp
   qgsauxiliarystorage.cpp
-  qgsbasemappathregistry.cpp
   qgsbearingutils.cpp
   qgsblockingnetworkrequest.cpp
   qgsbookmarkmanager.cpp
@@ -307,6 +306,7 @@ SET(QGIS_CORE_SRCS
   qgslegendstyle.cpp
   qgslocaldefaultsettings.cpp
   qgslocalec.cpp
+  qgslocalizeddatapathregistry.cpp
   qgslogger.cpp
   qgsmapdecoration.cpp
   qgsmaphittest.cpp
@@ -762,7 +762,6 @@ SET(QGIS_CORE_HDRS
   qgsattributes.h
   qgsattributetableconfig.h
   qgsauxiliarystorage.h
-  qgsbasemappathregistry.h
   qgsbearingutils.h
   qgsblockingnetworkrequest.h
   qgsbookmarkmanager.h
@@ -856,6 +855,7 @@ SET(QGIS_CORE_HDRS
   qgslegendstyle.h
   qgslocaldefaultsettings.h
   qgslocalec.h
+  qgslocalizeddatapathregistry.h
   qgslogger.h
   qgsmapdecoration.h
   qgsmaphittest.h

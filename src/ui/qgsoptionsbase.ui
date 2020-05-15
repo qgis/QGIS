@@ -332,7 +332,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -361,7 +361,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>848</width>
+                <width>645</width>
                 <height>1003</height>
                </rect>
               </property>
@@ -1118,7 +1118,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>848</width>
+                <width>539</width>
                 <height>1114</height>
                </rect>
               </property>
@@ -1645,8 +1645,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>848</width>
-                <height>664</height>
+                <width>555</width>
+                <height>501</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -2061,13 +2061,13 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_30">
                  <property name="title">
-                  <string>Basemap paths</string>
+                  <string>Localized data paths</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_34">
                   <item row="0" column="0">
                    <widget class="QLabel" name="label_9">
                     <property name="text">
-                     <string>Paths in order of preference for basemaps</string>
+                     <string>Localized data paths for basemaps, logos, etc. (in order of preference) </string>
                     </property>
                    </widget>
                   </item>
@@ -2085,9 +2085,9 @@
                    </spacer>
                   </item>
                   <item row="0" column="2">
-                   <widget class="QToolButton" name="mBasemapPathAddButton">
+                   <widget class="QToolButton" name="mLocalizedDataPathAddButton">
                     <property name="toolTip">
-                     <string>Add URL to exclude</string>
+                     <string>Add localized data path</string>
                     </property>
                     <property name="text">
                      <string/>
@@ -2099,9 +2099,9 @@
                    </widget>
                   </item>
                   <item row="0" column="3">
-                   <widget class="QToolButton" name="mBasemapPathRemoveButton">
+                   <widget class="QToolButton" name="mLocalizedDataPathRemoveButton">
                     <property name="toolTip">
-                     <string>Remove selected URL</string>
+                     <string>Remove localized data path</string>
                     </property>
                     <property name="text">
                      <string/>
@@ -2113,9 +2113,9 @@
                    </widget>
                   </item>
                   <item row="0" column="4">
-                   <widget class="QToolButton" name="mBasemapPathUpButton">
+                   <widget class="QToolButton" name="mLocalizedDataPathUpButton">
                     <property name="toolTip">
-                     <string>Raise selected path priority</string>
+                     <string>Raise selected localized data path priority</string>
                     </property>
                     <property name="text">
                      <string>…</string>
@@ -2127,9 +2127,9 @@
                    </widget>
                   </item>
                   <item row="0" column="5">
-                   <widget class="QToolButton" name="mBasemapPathDownButton">
+                   <widget class="QToolButton" name="mLocalizedDataPathDownButton">
                     <property name="toolTip">
-                     <string>Lower selected path priority</string>
+                     <string>Lower selected localized data path priority</string>
                     </property>
                     <property name="text">
                      <string>…</string>
@@ -2141,7 +2141,7 @@
                    </widget>
                   </item>
                   <item row="1" column="0" colspan="6">
-                   <widget class="QListWidget" name="mBasemapPathListWidget">
+                   <widget class="QListWidget" name="mLocalizedDataPathListWidget">
                     <property name="selectionMode">
                      <enum>QAbstractItemView::MultiSelection</enum>
                     </property>
@@ -2255,7 +2255,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>848</width>
+                <width>695</width>
                 <height>1139</height>
                </rect>
               </property>
@@ -3041,8 +3041,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>848</width>
-                <height>664</height>
+                <width>529</width>
+                <height>309</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3352,7 +3352,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>848</width>
+                <width>606</width>
                 <height>741</height>
                </rect>
               </property>
@@ -3857,8 +3857,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>848</width>
-                <height>664</height>
+                <width>181</width>
+                <height>318</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -4025,7 +4025,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>848</width>
+                <width>570</width>
                 <height>827</height>
                </rect>
               </property>
@@ -4650,8 +4650,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>848</width>
-                <height>664</height>
+                <width>469</width>
+                <height>572</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -4919,8 +4919,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>848</width>
-                <height>664</height>
+                <width>506</width>
+                <height>367</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -5088,7 +5088,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>848</width>
+                <width>633</width>
                 <height>720</height>
                </rect>
               </property>

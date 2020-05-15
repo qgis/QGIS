@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsbasemappathregistry.cpp
+  qgslocalizeddatapathregistry.cpp
   --------------------------------------
   Date                 : May 2020
   Copyright            : (C) 2020 by Denis Rouzaud
@@ -15,18 +15,18 @@
 
 #include <QDir>
 
-#include "qgsbasemappathregistry.h"
+#include "qgslocalizeddatapathregistry.h"
 #include "qgssettings.h"
 #include "qgis.h"
 #include "qgsreadwritelocker.h"
 
 
-QgsBasemapPathRegistry::QgsBasemapPathRegistry()
+QgsLocalizedDataPathRegistry::QgsLocalizedDataPathRegistry()
 {
   readFromSettings();
 }
 
-QString QgsBasemapPathRegistry::fullPath( const QString &relativePath ) const
+QString QgsLocalizedDataPathRegistry::fullPath( const QString &relativePath ) const
 {
   QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
 
@@ -37,7 +37,7 @@ QString QgsBasemapPathRegistry::fullPath( const QString &relativePath ) const
   return QString();
 }
 
-QString QgsBasemapPathRegistry::relativePath( const QString &fullPath ) const
+QString QgsLocalizedDataPathRegistry::relativePath( const QString &fullPath ) const
 {
   QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
 
@@ -49,7 +49,7 @@ QString QgsBasemapPathRegistry::relativePath( const QString &fullPath ) const
 
 }
 
-QStringList QgsBasemapPathRegistry::paths() const
+QStringList QgsLocalizedDataPathRegistry::paths() const
 {
   QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
 
@@ -59,7 +59,7 @@ QStringList QgsBasemapPathRegistry::paths() const
   return paths;
 }
 
-void QgsBasemapPathRegistry::setPaths( const QStringList &paths )
+void QgsLocalizedDataPathRegistry::setPaths( const QStringList &paths )
 {
   QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Write );
 
@@ -74,7 +74,7 @@ void QgsBasemapPathRegistry::setPaths( const QStringList &paths )
   writeToSettings();
 }
 
-void QgsBasemapPathRegistry::registerPath( const QString &path, int position )
+void QgsLocalizedDataPathRegistry::registerPath( const QString &path, int position )
 {
   QDir dir( path );
   if ( mPaths.contains( dir ) )
@@ -90,7 +90,7 @@ void QgsBasemapPathRegistry::registerPath( const QString &path, int position )
   writeToSettings();
 }
 
-void QgsBasemapPathRegistry::unregisterPath( const QString &path )
+void QgsLocalizedDataPathRegistry::unregisterPath( const QString &path )
 {
   QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Write );
 
@@ -98,12 +98,12 @@ void QgsBasemapPathRegistry::unregisterPath( const QString &path )
   writeToSettings();
 }
 
-void QgsBasemapPathRegistry::readFromSettings()
+void QgsLocalizedDataPathRegistry::readFromSettings()
 {
-  setPaths( QgsSettings().value( QStringLiteral( "/qgis/basemap_paths" ) ).toStringList() );
+  setPaths( QgsSettings().value( QStringLiteral( "/qgis/localized_data_paths" ) ).toStringList() );
 }
 
-void QgsBasemapPathRegistry::writeToSettings()
+void QgsLocalizedDataPathRegistry::writeToSettings()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/basemap_paths" ), paths() );
+  QgsSettings().setValue( QStringLiteral( "/qgis/localized_data_paths" ), paths() );
 }
