@@ -9028,7 +9028,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *parent, bool checkFea
 
     // for extra safety to make sure we know that the delete can have impact on children and joins
     int res = QMessageBox::question( mMapCanvas, tr( "Delete at least %3 feature(s) on other layer(s)" ).arg( childrenCount ),
-                                     tr( "Delete %1 feature(s) on layer \"%2\" and %3as well.\nAnd all the further descendants of them.\nDelete these features?" ).arg( numberOfSelectedFeatures ).arg( vlayer->name() ).arg( childrenInfo ),
+                                     tr( "Delete %1 feature(s) on layer \"%2\" and %3 as well.\nAnd all the further descendants of them.\nDelete these features?" ).arg( numberOfSelectedFeatures ).arg( vlayer->name() ).arg( childrenInfo ),
                                      QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
       return;
