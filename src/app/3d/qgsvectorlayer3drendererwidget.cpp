@@ -100,6 +100,8 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *lay
   connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
   connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::showPanel, this, &QgsPanelWidget::openPanel );
   connect( widgetBaseProperties, &QgsVectorLayer3DPropertiesWidget::changed, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
+
+  syncToLayer( layer );
 }
 
 
