@@ -920,16 +920,14 @@ Restore the data defined server properties collection found in "doc" to "dataDef
 void _getDataDefinedServerProperties( const QDomDocument &doc, QgsPropertyCollection &dataDefinedServerProperties, const QgsPropertiesDefinition &dataDefinedServerPropertyDefinitions )
 {
   // Read data defined server properties
+  dataDefinedServerProperties.clear();
   QDomElement ddElem = doc.documentElement().firstChildElement( QStringLiteral( "dataDefinedServerProperties" ) );
-
-  if ( ddElem.isNull() )  // no properties found, so we're done
+  if ( !ddElem.isNull() )
   {
-    return;
-  }
-
-  if ( ! dataDefinedServerProperties.readXml( ddElem, dataDefinedServerPropertyDefinitions ) )
-  {
-    QgsDebugMsg( QStringLiteral( "dataDefinedServerProperties.readXml() failed" ) );
+    if ( !dataDefinedServerProperties.readXml( ddElem, dataDefinedServerPropertyDefinitions ) )
+    {
+      QgsDebugMsg( QStringLiteral( "dataDefinedServerProperties.readXml() failed" ) );
+    }
   }
 }
 
