@@ -435,16 +435,30 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   resizeToolButton->setDefaultAction( mActionResizeNarrowest );
   mActionsToolbar->addWidget( resizeToolButton );
 
-  QToolButton *atlasExportToolButton = new QToolButton( mAtlasToolbar );
-  atlasExportToolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionExport.svg" ) ) );
-  atlasExportToolButton->setPopupMode( QToolButton::InstantPopup );
-  atlasExportToolButton->setAutoRaise( true );
-  atlasExportToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
-  atlasExportToolButton->addAction( mActionExportAtlasAsImage );
-  atlasExportToolButton->addAction( mActionExportAtlasAsSVG );
-  atlasExportToolButton->addAction( mActionExportAtlasAsPDF );
-  atlasExportToolButton->setToolTip( tr( "Export Atlas" ) );
-  mAtlasToolbar->insertWidget( mActionAtlasSettings, atlasExportToolButton );
+  QToolButton *bt = new QToolButton( mAtlasToolbar );
+  bt->setPopupMode( QToolButton::MenuButtonPopup );
+  bt->addAction( mActionExportAtlasAsImage );
+  bt->addAction( mActionExportAtlasAsSVG );
+  bt->addAction( mActionExportAtlasAsPDF );
+
+  QAction *defAtlasExportAction = mActionExportAtlasAsImage;
+  switch ( settings.value( QStringLiteral( "LayoutDesigner/atlasExportAction" ), 0 ).toInt() )
+  {
+    case 0:
+      defAtlasExportAction = mActionExportAtlasAsImage;
+      break;
+    case 1:
+      defAtlasExportAction = mActionExportAtlasAsSVG;
+      break;
+    case 2:
+      defAtlasExportAction = mActionExportAtlasAsPDF;
+      break;
+  }
+  bt->setDefaultAction( defAtlasExportAction );
+  QAction *atlasExportAction = mAtlasToolbar->insertWidget( mActionAtlasSettings, bt );
+  atlasExportAction->setObjectName( QStringLiteral( "AtlasExport" ) );
+  connect( bt, &QToolButton::triggered, this, &QgsLayoutDesignerDialog::toolButtonActionTriggered );
+
   mAtlasPageComboBox = new QComboBox();
   mAtlasPageComboBox->setEditable( true );
   mAtlasPageComboBox->addItem( QString::number( 1 ) );
@@ -4787,4 +4801,19 @@ void QgsLayoutDesignerDialog::setSectionTitle( const QString &title )
   mView->setSectionLabel( title );
 }
 
+void QgsLayoutDesignerDialog::toolButtonActionTriggered( QAction *action )
+{
+  QToolButton *bt = qobject_cast<QToolButton *>( sender() );
+  if ( !bt )
+    return;
 
+  QgsSettings settings;
+  if ( action == mActionExportAtlasAsImage )
+    settings.setValue( QStringLiteral( "LayoutDesigner/atlasExportAction" ), 0 );
+  else if ( action == mActionExportAtlasAsSVG )
+    settings.setValue( QStringLiteral( "LayoutDesigner/atlasExportAction" ), 2 );
+  else if ( action == mActionExportAtlasAsPDF )
+    settings.setValue( QStringLiteral( "LayoutDesigner/atlasExportAction" ), 3 );
+
+  bt->setDefaultAction( action );
+}

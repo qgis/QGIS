@@ -90,6 +90,8 @@
 #include "qgsprovidermetadata.h"
 #include "qgsfixattributedialog.h"
 #include "qgsprojecttimesettings.h"
+#include "qgsmaplayertemporalproperties.h"
+#include "qgsmeshlayertemporalproperties.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
@@ -1048,7 +1050,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   connect( QgsProject::instance(), &QgsProject::collectAttachedFiles, this, &QgisApp::generateProjectAttachedFiles );
   connect( mSnappingUtils, &QgsSnappingUtils::configChanged, QgsProject::instance(), &QgsProject::setSnappingConfig );
 
-
   endProfile();
 
   functionProfile( &QgisApp::createMenus, this, QStringLiteral( "Create menus" ) );
@@ -1183,7 +1184,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   mTemporalControllerWidget = new QgsTemporalControllerDockWidget( tr( "Temporal Controller" ), this );
   mTemporalControllerWidget->setObjectName( QStringLiteral( "Temporal Controller" ) );
-  addDockWidget( Qt::BottomDockWidgetArea, mTemporalControllerWidget );
+  addDockWidget( Qt::TopDockWidgetArea, mTemporalControllerWidget );
   mTemporalControllerWidget->hide();
   mTemporalControllerWidget->setToggleVisibilityAction( mActionTemporalController );
 
@@ -1687,6 +1688,7 @@ QgisApp::QgisApp()
   mUndoWidget = new QgsUndoWidget( nullptr, mMapCanvas );
   mUserInputDockWidget = new QgsUserInputWidget( this );
   mInfoBar = new QgsMessageBar( centralWidget() );
+  mLayerTreeView->setMessageBar( mInfoBar );
   mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas, this );
   mPanelMenu = new QMenu( this );
   mProgressBar = new QProgressBar( this );
@@ -3126,6 +3128,7 @@ void QgisApp::createToolBars()
                       << mShapeDigitizeToolBar
                       << mMapNavToolBar
                       << mAttributesToolBar
+                      << mSelectionToolBar
                       << mPluginToolBar
                       << mHelpToolBar
                       << mRasterToolBar
@@ -3163,7 +3166,7 @@ void QgisApp::createToolBars()
   mToolbarMenu->addActions( toolbarMenuActions );
 
   // advanced selection tool button
-  QToolButton *bt = new QToolButton( mAttributesToolBar );
+  QToolButton *bt = new QToolButton( mSelectionToolBar );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionSelectByForm );
   bt->addAction( mActionSelectByExpression );
@@ -3187,13 +3190,12 @@ void QgisApp::createToolBars()
       break;
   }
   bt->setDefaultAction( defAdvancedSelectionAction );
-  QAction *advancedSelectionAction = mAttributesToolBar->insertWidget( mActionOpenTable, bt );
+  QAction *advancedSelectionAction = mSelectionToolBar->insertWidget( mActionOpenTable, bt );
   advancedSelectionAction->setObjectName( QStringLiteral( "ActionSelection" ) );
   connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
-
   // mouse select tool button
-  bt = new QToolButton( mAttributesToolBar );
+  bt = new QToolButton( mSelectionToolBar );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionSelectFeatures );
   bt->addAction( mActionSelectPolygon );
@@ -3217,13 +3219,12 @@ void QgisApp::createToolBars()
       break;
   }
   bt->setDefaultAction( defMouseSelectAction );
-  QAction *mouseSelectionAction = mAttributesToolBar->insertWidget( advancedSelectionAction, bt );
+  QAction *mouseSelectionAction = mSelectionToolBar->insertWidget( advancedSelectionAction, bt );
   mouseSelectionAction->setObjectName( QStringLiteral( "ActionSelect" ) );
   connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
-
   // deselection tool button
-  bt = new QToolButton( mAttributesToolBar );
+  bt = new QToolButton( mSelectionToolBar );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionDeselectAll );
   bt->addAction( mActionDeselectActiveLayer );
@@ -3239,13 +3240,11 @@ void QgisApp::createToolBars()
       break;
   }
   bt->setDefaultAction( defDeselectionAction );
-  QAction *deselectionAction = mAttributesToolBar->insertWidget( mActionOpenTable, bt );
+  QAction *deselectionAction = mSelectionToolBar->insertWidget( mActionOpenTable, bt );
   deselectionAction->setObjectName( QStringLiteral( "ActionDeselection" ) );
   connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
-
   // feature action tool button
-
   bt = new QToolButton( mAttributesToolBar );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->setDefaultAction( mActionFeatureAction );
@@ -4590,6 +4589,8 @@ void QgisApp::initLayerTreeView()
   model->setAutoCollapseLegendNodes( 10 );
 
   mLayerTreeView->setModel( model );
+  mLayerTreeView->setMessageBar( mInfoBar );
+
   mLayerTreeView->setMenuProvider( new QgsAppLayerTreeViewMenuProvider( mLayerTreeView, mMapCanvas ) );
   new QgsLayerTreeViewFilterIndicatorProvider( mLayerTreeView );  // gets parented to the layer view
   new QgsLayerTreeViewEmbeddedIndicatorProvider( mLayerTreeView );  // gets parented to the layer view
@@ -5209,9 +5210,15 @@ void QgisApp::about()
 
 void QgisApp::addLayerDefinition()
 {
-  QString path = QFileDialog::getOpenFileName( this, QStringLiteral( "Add Layer Definition File" ), QDir::home().path(), QStringLiteral( "*.qlr" ) );
+  QgsSettings settings;
+  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastQLRDir" ), QDir::homePath() ).toString();
+
+  QString path = QFileDialog::getOpenFileName( this, QStringLiteral( "Add Layer Definition File" ), lastUsedDir, QStringLiteral( "*.qlr" ) );
   if ( path.isEmpty() )
     return;
+
+  QFileInfo fi( path );
+  settings.setValue( QStringLiteral( "UI/lastQLRDir" ), fi.path() );
 
   openLayerDefinition( path );
 }
@@ -5521,8 +5528,8 @@ QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &b
       {
         askUserForDatumTransform( newLayer->crs(), QgsProject::instance()->crs(), newLayer );
         QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( newLayer );
-        if ( ! meshLayer->temporalProperties()->referenceTime().isValid() )
-          meshLayer->temporalProperties()->setReferenceTime( referenceTime, layer->dataProvider()->temporalCapabilities() );
+        if ( ! qobject_cast< QgsMeshLayerTemporalProperties * >( meshLayer->temporalProperties() )->referenceTime().isValid() )
+          qobject_cast< QgsMeshLayerTemporalProperties * >( meshLayer->temporalProperties() )->setReferenceTime( referenceTime, layer->dataProvider()->temporalCapabilities() );
         bool ok;
         newLayer->loadDefaultStyle( ok );
         newLayer->loadDefaultMetadata( ok );
@@ -5534,8 +5541,8 @@ QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &b
   }
   else
   {
-    if ( ! layer->temporalProperties()->referenceTime().isValid() )
-      layer->temporalProperties()->setReferenceTime( referenceTime, layer->dataProvider()->temporalCapabilities() );
+    if ( ! qobject_cast< QgsMeshLayerTemporalProperties * >( layer->temporalProperties() )->referenceTime().isValid() )
+      qobject_cast< QgsMeshLayerTemporalProperties * >( layer->temporalProperties() )->setReferenceTime( referenceTime, layer->dataProvider()->temporalCapabilities() );
     QgsProject::instance()->addMapLayer( layer.get() );
     askUserForDatumTransform( layer->crs(), QgsProject::instance()->crs(), layer.get() );
 
@@ -8680,7 +8687,10 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
 
 void QgisApp::saveAsLayerDefinition()
 {
-  QString path = QFileDialog::getSaveFileName( this, QStringLiteral( "Save as Layer Definition File" ), QDir::home().path(), QStringLiteral( "*.qlr" ) );
+  QgsSettings settings;
+  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastQLRDir" ), QDir::homePath() ).toString();
+
+  QString path = QFileDialog::getSaveFileName( this, QStringLiteral( "Save as Layer Definition File" ), lastUsedDir, QStringLiteral( "*.qlr" ) );
   QgsDebugMsg( path );
   if ( path.isEmpty() )
     return;
@@ -8691,6 +8701,9 @@ void QgisApp::saveAsLayerDefinition()
   {
     visibleMessageBar()->pushMessage( tr( "Error saving layer definition file" ), errorMessage, Qgis::Warning );
   }
+
+  QFileInfo fi( path );
+  settings.setValue( QStringLiteral( "UI/lastQLRDir" ), fi.path() );
 }
 
 void QgisApp::saveStyleFile( QgsMapLayer *layer )
@@ -9001,9 +9014,30 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *parent, bool checkFea
     }
   }
 
+  QgsVectorLayerUtils::QgsDuplicateFeatureContext infoContext;
+  if ( QgsVectorLayerUtils::impactsCascadeFeatures( vlayer, vlayer->selectedFeatureIds(), QgsProject::instance(), infoContext ) )
+  {
+    QString childrenInfo;
+    int childrenCount = 0;
+    const auto infoContextLayers = infoContext.layers();
+    for ( QgsVectorLayer *chl : infoContextLayers )
+    {
+      childrenCount += infoContext.duplicatedFeatures( chl ).size();
+      childrenInfo += ( tr( "%1 feature(s) on layer \"%2\", " ).arg( infoContext.duplicatedFeatures( chl ).size() ).arg( chl->name() ) );
+    }
+
+    // for extra safety to make sure we know that the delete can have impact on children and joins
+    int res = QMessageBox::question( mMapCanvas, tr( "Delete at least %3 feature(s) on other layer(s)" ).arg( childrenCount ),
+                                     tr( "Delete %1 feature(s) on layer \"%2\" and %3as well.\nAnd all the further descendants of them.\nDelete these features?" ).arg( numberOfSelectedFeatures ).arg( vlayer->name() ).arg( childrenInfo ),
+                                     QMessageBox::Yes | QMessageBox::No );
+    if ( res != QMessageBox::Yes )
+      return;
+  }
+
   vlayer->beginEditCommand( tr( "Features deleted" ) );
   int deletedCount = 0;
-  if ( !vlayer->deleteSelectedFeatures( &deletedCount ) )
+  QgsVectorLayer::DeleteContext context( true, QgsProject::instance() );
+  if ( !vlayer->deleteSelectedFeatures( &deletedCount, &context ) )
   {
     visibleMessageBar()->pushMessage( tr( "Problem deleting features" ),
                                       tr( "A problem occurred during deletion from layer \"%1\". %n feature(s) not deleted.", nullptr, numberOfSelectedFeatures - deletedCount ).arg( vlayer->name() ),
@@ -9011,7 +9045,21 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *parent, bool checkFea
   }
   else
   {
-    showStatusMessage( tr( "%n feature(s) deleted.", "number of features deleted", numberOfSelectedFeatures ) );
+    const auto contextLayers = context.handledLayers();
+    // if it affects more than one layer, print feedback for all descendants
+    if ( contextLayers.size() > 1 )
+    {
+      deletedCount = 0;
+      QString feedbackMessage;
+      for ( QgsVectorLayer *contextLayer : contextLayers )
+      {
+        feedbackMessage += tr( "%1 on layer %2. " ).arg( context.handledFeatures( contextLayer ).size() ).arg( contextLayer->name() );
+        deletedCount += context.handledFeatures( contextLayer ).size();
+      }
+      visibleMessageBar()->pushMessage( tr( "%1 features deleted: %2" ).arg( deletedCount ).arg( feedbackMessage ), Qgis::Success );
+    }
+
+    showStatusMessage( tr( "%n feature(s) deleted.", "number of features deleted", deletedCount ) );
   }
 
   vlayer->endEditCommand();
@@ -15351,6 +15399,9 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
     case QgsMapLayerType::MeshLayer:
     {
       QgsMeshLayerProperties meshLayerPropertiesDialog( mapLayer, mMapCanvas, this );
+      if ( !page.isEmpty() )
+        meshLayerPropertiesDialog.setCurrentPage( page );
+
       mMapStyleWidget->blockUpdates( true );
       if ( meshLayerPropertiesDialog.exec() )
       {
@@ -15384,6 +15435,9 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       {
         vectorLayerPropertiesDialog->addPropertiesPageFactory( factory );
       }
+
+      if ( !page.isEmpty() )
+        vectorLayerPropertiesDialog->setCurrentPage( page );
 
       mMapStyleWidget->blockUpdates( true );
       if ( vectorLayerPropertiesDialog->exec() )
@@ -15993,10 +16047,6 @@ void QgisApp::populateProjectStorageMenu( QMenu *menu, const bool saving )
         {
           saveProjectToProjectStorage( uri );
         }
-        else
-        {
-          messageBar()->pushCritical( tr( "Project save failed" ), tr( "The project could not be saved because the project storage URI is empty." ) );
-        }
       } );
     }
     else
@@ -16007,10 +16057,6 @@ void QgisApp::populateProjectStorageMenu( QMenu *menu, const bool saving )
         if ( !uri.isEmpty() )
         {
           addProject( uri );
-        }
-        else
-        {
-          messageBar()->pushCritical( tr( "Project load failed" ), tr( "The project could not be loaded because the project storage URI is empty." ) );
         }
       } );
     }

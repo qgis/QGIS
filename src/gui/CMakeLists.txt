@@ -282,6 +282,7 @@ SET(QGIS_GUI_SRCS
   processing/qgsprocessingrecentalgorithmlog.cpp
   processing/qgsprocessingtoolboxmodel.cpp
   processing/qgsprocessingtoolboxtreeview.cpp
+  processing/qgsprocessingvectortilewriterlayerswidgetwrapper.cpp
   processing/qgsprocessingwidgetwrapper.cpp
   processing/qgsprocessingwidgetwrapperimpl.cpp
 
@@ -322,6 +323,7 @@ SET(QGIS_GUI_SRCS
   tableeditor/qgstableeditorformattingwidget.cpp
   tableeditor/qgstableeditorwidget.cpp
 
+  vectortile/qgsvectortilebasiclabelingwidget.cpp
   vectortile/qgsvectortilebasicrendererwidget.cpp
   vectortile/qgsvectortileconnectiondialog.cpp
   vectortile/qgsvectortiledataitemguiprovider.cpp
@@ -542,6 +544,7 @@ SET(QGIS_GUI_SRCS
   qgsuserinputwidget.cpp
   qgsvaliditycheckresultswidget.cpp
   qgsvariableeditorwidget.cpp
+  qgsvectorlayertemporalpropertieswidget.cpp
   qgsvertexmarker.cpp
   qgsfiledownloaderdialog.cpp
   qgsvscrollarea.cpp
@@ -775,6 +778,7 @@ SET(QGIS_GUI_HDRS
   qgsuserinputwidget.h
   qgsvaliditycheckresultswidget.h
   qgsvariableeditorwidget.h
+  qgsvectorlayertemporalpropertieswidget.h
   qgsvertexmarker.h
   qgsvscrollarea.h
   qgswindowmanagerinterface.h
@@ -998,6 +1002,7 @@ SET(QGIS_GUI_HDRS
   processing/qgsprocessingrecentalgorithmlog.h
   processing/qgsprocessingtoolboxmodel.h
   processing/qgsprocessingtoolboxtreeview.h
+  processing/qgsprocessingvectortilewriterlayerswidgetwrapper.h
   processing/qgsprocessingwidgetwrapper.h
   processing/qgsprocessingwidgetwrapperimpl.h
 
@@ -1103,6 +1108,7 @@ SET(QGIS_GUI_HDRS
   tableeditor/qgstableeditorformattingwidget.h
   tableeditor/qgstableeditorwidget.h
 
+  vectortile/qgsvectortilebasiclabelingwidget.h
   vectortile/qgsvectortilebasicrendererwidget.h
   vectortile/qgsvectortileconnectiondialog.h
   vectortile/qgsvectortiledataitemguiprovider.h
@@ -1252,6 +1258,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/core/validity
   ${CMAKE_SOURCE_DIR}/src/core/vectortile
   ${CMAKE_SOURCE_DIR}/src/native

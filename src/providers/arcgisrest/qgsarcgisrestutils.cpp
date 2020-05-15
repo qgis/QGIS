@@ -54,7 +54,7 @@ QVariant::Type QgsArcGisRestUtils::mapEsriFieldType( const QString &esriFieldTyp
   if ( esriFieldType == QLatin1String( "esriFieldTypeString" ) )
     return QVariant::String;
   if ( esriFieldType == QLatin1String( "esriFieldTypeDate" ) )
-    return QVariant::Date;
+    return QVariant::DateTime;
   if ( esriFieldType == QLatin1String( "esriFieldTypeGeometry" ) )
     return QVariant::Invalid; // Geometry column should not appear as field
   if ( esriFieldType == QLatin1String( "esriFieldTypeOID" ) )

@@ -3284,7 +3284,7 @@ QString createFilters( const QString &type )
         {
           // NOP, we don't know anything about the current driver
           // with regards to a proper file filter string
-          QgsDebugMsg( QStringLiteral( "Unknown driver %1 for file filters." ).arg( driverName ) );
+          QgsDebugMsgLevel( QStringLiteral( "Unknown driver %1 for file filters." ).arg( driverName ), 2 );
         }
       }
 
@@ -3306,11 +3306,17 @@ QString createFilters( const QString &type )
     {
       sFileFilters.prepend( createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), QStringLiteral( "*.zip *.gz *.tar *.tar.gz *.tgz" ) ) );
       sExtensions << QStringLiteral( "zip" ) << QStringLiteral( "gz" ) << QStringLiteral( "tar" ) << QStringLiteral( "tar.gz" ) << QStringLiteral( "tgz" );
-
     }
+
+    // can't forget the all supported case
+    QStringList exts;
+    for ( const QString &ext : qgis::as_const( sExtensions ) )
+      exts << QStringLiteral( "*.%1 *.%2" ).arg( ext, ext.toUpper() );
+    sFileFilters.prepend( QObject::tr( "All supported files" ) + QStringLiteral( " (%1);;" ).arg( exts.join( QStringLiteral( " " ) ) ) );
 
     // can't forget the default case - first
     sFileFilters.prepend( QObject::tr( "All files" ) + " (*);;" );
+
 
     // cleanup
     if ( sFileFilters.endsWith( QLatin1String( ";;" ) ) ) sFileFilters.chop( 2 );
@@ -3492,9 +3498,10 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
   if ( driverName == QLatin1String( "ESRI Shapefile" ) )
   {
     if ( !uri.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) &&
-         !uri.endsWith( QLatin1String( ".shz" ), Qt::CaseInsensitive ) )
+         !uri.endsWith( QLatin1String( ".shz" ), Qt::CaseInsensitive ) &&
+         !uri.endsWith( QLatin1String( ".dbf" ), Qt::CaseInsensitive ) )
     {
-      errorMessage = QObject::tr( "URI %1 doesn't end with .shp" ).arg( uri );
+      errorMessage = QObject::tr( "URI %1 doesn't end with .shp or .dbf" ).arg( uri );
       QgsDebugMsg( errorMessage );
       return false;
     }
@@ -3901,6 +3908,14 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
   if ( res.type() != originalField.type() )
     res = convertValue( originalField.type(), res.toString() );
 
+  if ( originalField.type() == QVariant::DateTime )
+  {
+    // ensure that we treat times as local time, to match behaviour when iterating features
+    QDateTime temp = res.toDateTime();
+    temp.setTimeSpec( Qt::LocalTime );
+    res = temp;
+  }
+
   return res;
 }
 
@@ -3948,6 +3963,14 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
 
   if ( res.type() != originalField.type() )
     res = convertValue( originalField.type(), res.toString() );
+
+  if ( originalField.type() == QVariant::DateTime )
+  {
+    // ensure that we treat times as local time, to match behaviour when iterating features
+    QDateTime temp = res.toDateTime();
+    temp.setTimeSpec( Qt::LocalTime );
+    res = temp;
+  }
 
   return res;
 }

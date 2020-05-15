@@ -32,7 +32,6 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 
 class ClipVectorByMask(GdalAlgorithm):
-
     INPUT = 'INPUT'
     MASK = 'MASK'
     OPTIONS = 'OPTIONS'
@@ -42,7 +41,7 @@ class ClipVectorByMask(GdalAlgorithm):
         super().__init__()
 
     def flags(self):
-        return QgsProcessingAlgorithm.FlagSupportsBatch | QgsProcessingAlgorithm.FlagRequiresMatchingCrs # cannot cancel!
+        return QgsProcessingAlgorithm.FlagSupportsBatch | QgsProcessingAlgorithm.FlagRequiresMatchingCrs  # cannot cancel!
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,

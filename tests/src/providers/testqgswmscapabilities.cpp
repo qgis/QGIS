@@ -184,6 +184,54 @@ class TestQgsWmsCapabilities: public QObject
       QCOMPARE( prop.dimensions.at( 0 ).units, QStringLiteral( "ISO8601" ) );
     }
 
+    void wmsTemporalDimension_data()
+    {
+      QTest::addColumn<QString>( "dimension" );
+      QTest::addColumn<QString>( "extent" );
+
+      QTest::newRow( "single instant" ) << R"""(<Dimension name="time" units="ISO8601">
+                                           2020-01-01
+                                           </Dimension>)"""
+                                        << "2020-01-01";
+
+      QTest::newRow( "interval" ) << R"""(<Dimension name="time" units="ISO8601">
+                                     2020-01-01/2020-12-31/P1M
+                                     </Dimension>)"""
+                                  << "2020-01-01/2020-12-31/P1M";
+
+      QTest::newRow( "list" )     << R"""(<Dimension name="time" units="ISO8601">
+                                     2020-01-01,2020-06-31,2020-12-31
+                                     </Dimension>)"""
+                                  << "2020-01-01,2020-06-31,2020-12-31";
+
+      QTest::newRow( "continuous" ) << R"""(<Dimension name="time" units="ISO8601">
+                                     2020-01-01/2020-06-31
+                                     </Dimension>)"""
+                                    << "2020-01-01/2020-06-31";
+
+      QTest::newRow( "interval with internal newline characters" )
+          << R"""(<Dimension name="time" units="ISO8601">
+             2020-01-01/2020-06-31/P1M,
+             2020-07-01/2020-12-31/P1D
+             </Dimension>)"""
+          << "2020-01-01/2020-06-31/P1M, 2020-07-01/2020-12-31/P1D";
+    }
+
+    void wmsTemporalDimension()
+    {
+      QFETCH( QString, dimension );
+      QFETCH( QString, extent );
+
+      QDomDocument doc;
+      doc.setContent( dimension );
+      QgsWmsCapabilities cap;
+      QgsWmsDimensionProperty dimensionProperty;
+
+      cap.parseDimension( doc.documentElement(), dimensionProperty );
+
+      QCOMPARE( dimensionProperty.extent, extent );
+    }
+
 };
 
 QGSTEST_MAIN( TestQgsWmsCapabilities )

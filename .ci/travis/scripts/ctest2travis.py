@@ -77,13 +77,14 @@ for line in p.stdout:
     updated_line = line.decode('utf-8')
     if re.match('Run dashboard with model Experimental', updated_line):
         start_fold('build')
-        updated_line = '{title}\n{line}'.format(title=colored('Running tests...', 'yellow', attrs=['bold']), line=updated_line)
+        updated_line = '{title}\n{line}'.format(title=colored('Running tests...', 'yellow', attrs=['bold']),
+                                                line=updated_line)
 
     elif re.match('Test project /home/travis/build/qgis/QGIS/build', updated_line):
-        end_fold() # tag=build
+        end_fold()  # tag=build
         start_test_fold()
 
-    if re.search('\*\*\*Failed', updated_line) or re.search('\*\*\*Timeout', updated_line):
+    if re.search(r'\*\*\*Failed', updated_line) or re.search(r'\*\*\*Timeout', updated_line):
         end_fold()
         updated_line = colored(updated_line, 'red')
         in_failing_test = True
@@ -97,14 +98,14 @@ for line in p.stdout:
                 in_failure = False
             else:
                 updated_line = colored(updated_line, 'yellow')
-        elif re.search('\*\*\* Segmentation fault', updated_line):
+        elif re.search(r'\*\*\* Segmentation fault', updated_line):
             start_fold('segfault')
             updated_line = colored(updated_line, 'magenta')
         elif re.match('  Test failed: Segmentation fault', updated_line):
             end_fold()
 
         else:
-            if re.match('(FAIL|ERROR)[:\!].*', updated_line):
+            if re.match(r'(FAIL|ERROR)[:\!].*', updated_line):
                 updated_line = colored(updated_line, 'yellow')
                 in_failure = True
 

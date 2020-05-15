@@ -43,7 +43,7 @@ class DeleteModelAction(ContextAction):
     def execute(self):
         model = self.itemData
         if model is None:
-            return # shouldn't happen, but let's be safe
+            return  # shouldn't happen, but let's be safe
 
         project_provider = model.provider().id() == PROJECT_PROVIDER_ID
 

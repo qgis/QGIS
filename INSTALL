@@ -1,6 +1,6 @@
 QGIS
 Building QGIS from source - step by step
-2020-04-22
+2020-05-08
 
 
 ------------------------------------------------------------------------
@@ -46,8 +46,8 @@ Building QGIS from source - step by step
 ------------------------------------------------------------------------
 
 
-Last Updated: 2020-04-22
-Last Change : 2020-04-22
+Last Updated: 2020-05-08
+Last Change : 2020-05-08
 
 
   1. Introduction
@@ -478,12 +478,17 @@ This section describes the setup required to allow Visual Studio to be used to
 build QGIS.
 
 
-    4.1.1. Visual C++ Community Edition
-    ===================================
+    4.1.1. Visual Studio 2015 Community Edition
+    ===========================================
 
 The free (as in free beer) Community installer is available under:
 
   http://download.microsoft.com/download/D/2/3/D23F4D0F-BA2D-4600-8725-6CCECEA05196/vs_community_ENU.exe
+
+Select "Custom" install and add the following packages:
+
+- "Common Tools for Visual C++ 2015" under "Visual C++"
+- "Tools (1.4.1) and Windows 10 SDK (10.0.14393)" under "Universal Windows App Development Tools".
 
 
     4.1.2. Other tools and dependencies
@@ -501,9 +506,9 @@ For the QGIS build you need to install following packages from cygwin:
 
 - bison
 - flex
-- git
+- git (even if you already have Git for Windows installed)
 
-and from OSGeo4W (select Advanced Installation):
+and from OSGeo4W (select Advanced Install):
 
 - qgis-dev-deps
 
@@ -519,10 +524,37 @@ dependencies.  If you're interested in that, check the history of this page in t
 or the SVN repository.
 
 ninja:
-  copy ninja.exe to d:\OSGeo4W64\bin\
+  copy ninja.exe to C:\OSGeo4W64\bin\
 
 
-    4.1.3. Setting up the Visual Studio project with CMake
+    4.1.3. Clone the QGIS Source Code
+    =================================
+
+Choose a directory to store the QGIS source code.
+For example, to put it in the OSGeo4W64 install, navigate there:
+
+  cd C:\OSGeo4W64
+
+This directory will be assumed for all instructions
+that follow.
+
+On the command prompt clone the QGIS source from
+git to the source directory QGIS:
+
+  git clone git://github.com/qgis/QGIS.git
+
+This requires Git. If you have Git for Windows on your PATH already,
+you can do this from a normal command prompt. If you do not, you can
+use the Git package that was installed as part of Cygwin by opening
+a Cygwin[64] Terminal
+
+And, to avoid Git in Windows reporting changes to files not actually modified:
+
+  cd QGIS
+  git config core.filemode false
+
+
+    4.1.4. Setting up the Visual Studio project with CMake
     ======================================================
 
 /!\ Consider this section as example.  It tends to outdate, when OSGeo4W and
@@ -535,41 +567,34 @@ variables create the following batch file (assuming the above packages were
 installed in the default locations):
 
   @echo off
-  call X:\src\qgis\ms-windows\osgeo4w\msvc-env.bat x86_64
+  call C:\OSGeo4W64\QGIS\ms-windows\osgeo4w\msvc-env.bat x86_64
   @cmd
 
-Save the batch file as d:\OSGeo4W64\OSGeo4W-dev.bat and run it.
-On the command prompt checkout the QGIS source from
-git to the source directory QGIS:
-
-  git clone git://github.com/qgis/QGIS.git
-
-And, to avoid Git in Windows reporting changes to files not actually modified:
-
-  git config core.filemode false
+Save the batch file as C:\OSGeo4W64\OSGeo4W-dev.bat and run it.
 
 Using configonly.bat to create the MSVC solution file:
   We will be using the file ms-windows/osgeo4w/configonly.bat to create an MSVC solution file.
-  There are a few options for a solution file, following are the options: ninja, native MSVC.
-  The advantage of using native MSVC solution is that you can find the root of build problems much easily.
+  There are two supported CMake generators for creating a solution file: Ninja, and native MSVC.
+  The advantage of using native MSVC solution is that you can find the root of build problems much more easily.
   configonly.bat is meant to create a configured build directory with a MSVC solution file:
 
-  ```
+  cd C:\OSGeo4W64\QGIS\ms-windows\osgeo4w
   configonly.bat
-  ```
 
 Compiling QGIS with MSVC:
   We will need to run MSVC with all the environment variables set, thus we will run it as follows:
-  Run the batch file OSGeo4W-dev.bat you created before. On the command prompt run: devenv
+  Run the batch file OSGeo4W-dev.bat you created before.
+  On the command prompt run call gdal-dev-env.bat to add the release gdal and proj libraries to your PATH.
+  On the command prompt run devenv to open MSVC.
   From MSVC, open the solution file
-  d:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\qgis.sln
-  Try to build the solution go grab a cup of tea, it may take a (while).
-  If it fails, run it again and again until there are [hopefully] no errors.
+  C:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\qgis.sln
+  Try to build the solution (go grab a cup of tea, it may take a while).
+  If it fails, run it again and again until there are (hopefully) no errors.
 
 Running QGIS from within MSVC:
   Edit the properties of the project ALL_BUILD:
-  Debugging -> Command -> D:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\output\bin\RelWithDebInfo\qgis.exe
-  Run.
+  Debugging -> Command -> C:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\output\bin\RelWithDebInfo\qgis.exe
+  Run: Debug -> Start Debugging (F5) or Start Without Debugging (Ctrl+F5)
   Ignore the "These projects are out of date" message, it appears even if no files were changed.
 
 Old alternative method that might still work using cmake-gui:
@@ -613,7 +638,7 @@ Old alternative method that might still work using cmake-gui:
   directory or add their respective directories to your PATH.
 
 
-    4.1.4. Packaging
+    4.1.5. Packaging
     ================
 
 To create a standalone installer there is a perl script named 'creatensis.pl'
@@ -634,7 +659,7 @@ and 'bzip2') is available at:
   http://cygwin.com
 
 
-    4.1.5. Packaging your own build of QGIS
+    4.1.6. Packaging your own build of QGIS
     =======================================
 
 Assuming you have completed the above packaging step, if you want to include
@@ -654,7 +679,7 @@ After this you should now have a nsis installer containing your own build
 of QGIS and all dependencies needed to run it on a windows machine.
 
 
-    4.1.6. Osgeo4w packaging
+    4.1.7. Osgeo4w packaging
     ========================
 
 The actual packaging process is currently not documented, for now please take a
@@ -1180,6 +1205,7 @@ As minimum you require command line tools
 
 but installation of Xcode from the App Store is recommended too.
 
+
   5.2. Install CMake and other build tools
   ========================================
 
@@ -1265,6 +1291,7 @@ below assume you are building into a ${HOME}/Applications directory.
 
 In a Terminal cd to the qgis source folder previously downloaded, then:
 
+  cd ..
   mkdir build
   cd build
   
@@ -1278,7 +1305,7 @@ In a Terminal cd to the qgis source folder previously downloaded, then:
     -DCMAKE_PREFIX_PATH=/opt/Qt/${QT_VERSION}/clang_64 \
     ../QGIS
 
-Note: Don't forget the ../QGIS on the last line, which tells CMake to look for the source files.
+Note: Don't forget the `../QGIS` on the last line, which tells CMake to look for the source files.
 
 Note: Double check on the screen output that all libraries are picked from QGIS-Deps `/opt/QGIS`
 and not from system `/usr/lib` or Homebrew's `/usr/local/` or system Frameworks `/Library/Frameworks/`.

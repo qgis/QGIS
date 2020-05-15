@@ -20,7 +20,6 @@ import unittest
 from qgis.PyQt.QtCore import QCoreApplication
 from pyplugin_installer.plugindependencies import find_dependencies
 
-
 from qgis.testing import (
     start_app,
     unittest,

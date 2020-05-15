@@ -44,7 +44,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class Aggregate(QgisAlgorithm):
-
     INPUT = 'INPUT'
     GROUP_BY = 'GROUP_BY'
     AGGREGATES = 'AGGREGATES'

@@ -67,6 +67,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/expression
@@ -89,6 +90,8 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
 
+SET(QGIS_QUICK_GUI_IMAGE_RCCS ./images/images.qrc)
+
 ############################################################
 # qgis_quick shared library
 QT5_WRAP_CPP(QGIS_QUICK_GUI_MOC_SRCS ${QGIS_QUICK_GUI_MOC_HDRS})
@@ -99,6 +102,7 @@ ELSE(MSVC)
 ENDIF(MSVC)
 
 ADD_LIBRARY(qgis_quick ${LIBRARY_TYPE}
+    ${QGIS_QUICK_GUI_IMAGE_RCCS}
     ${QGIS_QUICK_GUI_SRC}
     ${QGIS_QUICK_GUI_MOC_HDRS}
     ${QGIS_QUICK_GUI_MOC_SRCS}

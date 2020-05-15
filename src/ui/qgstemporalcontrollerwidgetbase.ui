@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>747</width>
-    <height>93</height>
+    <height>100</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,119 +27,19 @@
     <number>0</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,0,0,0,0,0,0,2,0,4,0">
+    <layout class="QHBoxLayout" name="horizontalLayout1">
      <item>
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Range</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QDateTimeEdit" name="mStartDateTime">
-       <property name="displayFormat">
-        <string>M/d/yyyy h:mm AP</string>
-       </property>
-       <property name="timeSpec">
-        <enum>Qt::UTC</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>to </string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QDateTimeEdit" name="mEndDateTime">
-       <property name="displayFormat">
-        <string>M/d/yyyy h:mm AP</string>
-       </property>
-       <property name="timeSpec">
-        <enum>Qt::UTC</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mSetToProjectTimeButton">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Maximum</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Step</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsDoubleSpinBox" name="mSpinBox">
+      <widget class="QLabel" name="mCurrentRangeLabel">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="maximumSize">
-        <size>
-         <width>130</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="decimals">
-        <number>3</number>
+       <property name="text">
+        <string>Current frame feedback</string>
        </property>
       </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="mTimeStepsComboBox">
-       <property name="editable">
-        <bool>false</bool>
-       </property>
-       <property name="currentText">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
      </item>
      <item>
       <widget class="QToolButton" name="mSettings">
@@ -159,6 +59,9 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>2</number>
+     </property>
      <item>
       <widget class="QPushButton" name="mRewindButton">
        <property name="text">
@@ -246,16 +149,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="mLoopingCheckBox">
-       <property name="toolTip">
-        <string>Automatically reset and repeat the animation endlessly</string>
-       </property>
-       <property name="text">
-        <string>Loop</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QSlider" name="mSlider">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -268,14 +161,147 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QCheckBox" name="mLoopingCheckBox">
+       <property name="toolTip">
+        <string>Automatically reset and repeat the animation endlessly</string>
+       </property>
+       <property name="text">
+        <string>Loop</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
-    <widget class="QLabel" name="mCurrentRangeLabel">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Range</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDateTimeEdit" name="mStartDateTime">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="displayFormat">
+        <string>M/d/yyyy h:mm AP</string>
+       </property>
+       <property name="timeSpec">
+        <enum>Qt::UTC</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>to </string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDateTimeEdit" name="mEndDateTime">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="displayFormat">
+        <string>M/d/yyyy h:mm AP</string>
+       </property>
+       <property name="timeSpec">
+        <enum>Qt::UTC</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mSetToProjectTimeButton">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Step</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsDoubleSpinBox" name="mSpinBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>130</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="decimals">
+        <number>3</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mTimeStepsComboBox">
+       <property name="editable">
+        <bool>false</bool>
+       </property>
+       <property name="currentText">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mExportAnimationButton">
+       <property name="toolTip">
+        <string>Export Animation</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <spacer name="verticalSpacer">
@@ -306,8 +332,6 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

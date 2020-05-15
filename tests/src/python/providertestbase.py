@@ -31,6 +31,7 @@ from qgis.core import (
     QgsFeatureSource,
     NULL
 )
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime
 from qgis.PyQt.QtTest import QSignalSpy
 
 from utilities import compareWkt
@@ -76,7 +77,7 @@ class ProviderTestCase(FeatureSourceTestCase):
             elif expression in self.partiallyCompiledFilters():
                 self.assertEqual(it.compileStatus(), QgsAbstractFeatureIterator.PartiallyCompiled)
             else:
-                self.assertEqual(it.compileStatus(), QgsAbstractFeatureIterator.Compiled)
+                self.assertEqual(it.compileStatus(), QgsAbstractFeatureIterator.Compiled, expression)
 
     def runGetFeatureTests(self, source):
         FeatureSourceTestCase.runGetFeatureTests(self, source)
@@ -347,6 +348,25 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('cnt')), -200)
         self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('name')), 'Apple')
 
+        if self.treat_datetime_as_string():
+            self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('dt')), '2020-05-03 12:13:14')
+        else:
+            self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('dt')),
+                             QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)))
+
+        if self.treat_date_as_string():
+            self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('date')), '2020-05-02')
+        elif not self.treat_date_as_datetime():
+            self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('date')), QDate(2020, 5, 2))
+        else:
+            self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('date')),
+                             QDateTime(2020, 5, 2, 0, 0, 0))
+
+        if not self.treat_time_as_string():
+            self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('time')), QTime(12, 13, 1))
+        else:
+            self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('time')), '12:13:01')
+
         if self.source.supportsSubsetString():
             subset = self.getSubsetString()
             self.source.setSubsetString(subset)
@@ -359,6 +379,25 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertFalse(self.source.maximumValue(1000))
         self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('cnt')), 400)
         self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('name')), 'Pear')
+
+        if not self.treat_datetime_as_string():
+            self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('dt')),
+                             QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)))
+        else:
+            self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('dt')), '2021-05-04 13:13:14')
+
+        if self.treat_date_as_string():
+            self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('date')), '2021-05-04')
+        elif not self.treat_date_as_datetime():
+            self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('date')), QDate(2021, 5, 4))
+        else:
+            self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('date')),
+                             QDateTime(2021, 5, 4, 0, 0, 0))
+
+        if not self.treat_time_as_string():
+            self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('time')), QTime(13, 13, 14))
+        else:
+            self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('time')), '13:13:14')
 
         if self.source.supportsSubsetString():
             subset = self.getSubsetString2()
@@ -409,6 +448,32 @@ class ProviderTestCase(FeatureSourceTestCase):
         assert set(['Apple', 'Honey', 'Orange', 'Pear', NULL]) == set(
             self.source.uniqueValues(self.source.fields().lookupField('name'))), 'Got {}'.format(
             set(self.source.uniqueValues(self.source.fields().lookupField('name'))))
+
+        if self.treat_datetime_as_string():
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
+                             set(['2021-05-04 13:13:14', '2020-05-04 12:14:14', '2020-05-04 12:13:14',
+                                  '2020-05-03 12:13:14', NULL]))
+        else:
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('dt'))),
+                             set([QDateTime(2021, 5, 4, 13, 13, 14), QDateTime(2020, 5, 4, 12, 14, 14),
+                                  QDateTime(2020, 5, 4, 12, 13, 14), QDateTime(2020, 5, 3, 12, 13, 14), NULL]))
+
+        if self.treat_date_as_string():
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
+                             set(['2020-05-03', '2020-05-04', '2021-05-04', '2020-05-02', NULL]))
+        elif self.treat_date_as_datetime():
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
+                             set([QDateTime(2020, 5, 3, 0, 0, 0), QDateTime(2020, 5, 4, 0, 0, 0),
+                                  QDateTime(2021, 5, 4, 0, 0, 0), QDateTime(2020, 5, 2, 0, 0, 0), NULL]))
+        else:
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('date'))),
+                             set([QDate(2020, 5, 3), QDate(2020, 5, 4), QDate(2021, 5, 4), QDate(2020, 5, 2), NULL]))
+        if self.treat_time_as_string():
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('time'))),
+                             set(['12:14:14', '13:13:14', '12:13:14', '12:13:01', NULL]))
+        else:
+            self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('time'))),
+                             set([QTime(12, 14, 14), QTime(13, 13, 14), QTime(12, 13, 14), QTime(12, 13, 1), NULL]))
 
         if self.source.supportsSubsetString():
             subset = self.getSubsetString2()
@@ -525,11 +590,21 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertTrue(l.isValid())
 
         f1 = QgsFeature()
-        f1.setAttributes([6, -220, NULL, 'String', '15'])
+        f1.setAttributes([6, -220, NULL, 'String', '15',
+                          '2019-01-02 03:04:05' if self.treat_datetime_as_string() else QDateTime(2019, 1, 2, 3, 4, 5),
+                          '2019-01-02' if self.treat_date_as_string() else QDateTime(2019, 1, 2, 0, 0,
+                                                                                     0) if self.treat_date_as_datetime() else QDate(
+                              2019, 1, 2),
+                          '03:04:05' if self.treat_time_as_string() else QTime(3, 4, 5)])
         f1.setGeometry(QgsGeometry.fromWkt('Point (-72.345 71.987)'))
 
         f2 = QgsFeature()
-        f2.setAttributes([7, 330, 'Coconut', 'CoCoNut', '13'])
+        f2.setAttributes([7, 330, 'Coconut', 'CoCoNut', '13',
+                          '2018-05-06 07:08:09' if self.treat_datetime_as_string() else QDateTime(2018, 5, 6, 7, 8, 9),
+                          '2018-05-06' if self.treat_date_as_string() else QDateTime(2018, 5, 6, 0, 0,
+                                                                                     0) if self.treat_date_as_datetime() else QDate(
+                              2018, 5, 6),
+                          '07:08:09' if self.treat_time_as_string() else QTime(7, 8, 9)])
 
         if l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
             # expect success
@@ -565,11 +640,18 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertTrue(l.isValid())
 
         f1 = QgsFeature()
-        f1.setAttributes([6, -220, NULL, 'String', '15'])
+        f1.setAttributes(
+            [6, -220, NULL, 'String', '15',
+             '2019-01-02 03:04:05' if self.treat_datetime_as_string() else QDateTime(2019, 1, 2, 3, 4, 5),
+             '2019-01-02' if self.treat_date_as_string() else QDateTime(2019, 1, 2, 0, 0, 0) if self.treat_date_as_datetime() else QDate(2019, 1, 2),
+             '03:04:05' if self.treat_time_as_string() else QTime(3, 4, 5)])
         f1.setGeometry(QgsGeometry.fromWkt('Point (-72.345 71.987)'))
 
         f2 = QgsFeature()
-        f2.setAttributes([7, 330, 'Coconut', 'CoCoNut', '13'])
+        f2.setAttributes([7, 330, 'Coconut', 'CoCoNut', '13',
+                          '2019-01-02 03:04:05' if self.treat_datetime_as_string() else QDateTime(2019, 1, 2, 3, 4, 5),
+                          '2019-01-02' if self.treat_date_as_string() else QDateTime(2019, 1, 2, 0, 0, 0) if self.treat_date_as_datetime() else QDate(2019, 1, 2),
+                          '03:04:05' if self.treat_time_as_string() else QTime(3, 4, 5)])
 
         if l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
             # expect success
@@ -601,8 +683,8 @@ class ProviderTestCase(FeatureSourceTestCase):
         f2.setId(added[1].id())
 
         # check result - feature attributes MUST be padded out to required number of fields
-        f1.setAttributes([6, -220, NULL, 'String', 'NULL'])
-        f2.setAttributes([7, 330, NULL, NULL, 'NULL'])
+        f1.setAttributes([6, -220, NULL, 'String', 'NULL', NULL, NULL, NULL])
+        f2.setAttributes([7, 330, NULL, NULL, 'NULL', NULL, NULL, NULL])
         self.testGetFeatures(l.dataProvider(), [f1, f2])
 
     def testAddFeatureExtraAttributes(self):
@@ -618,9 +700,15 @@ class ProviderTestCase(FeatureSourceTestCase):
         # test that adding features with too many attributes drops these attributes
         # we be more tricky and also add a valid feature to stress test the provider
         f1 = QgsFeature()
-        f1.setAttributes([6, -220, NULL, 'String', '15'])
+        f1.setAttributes([6, -220, NULL, 'String', '15',
+                          '2019-01-02 03:04:05' if self.treat_datetime_as_string() else QDateTime(2019, 1, 2, 3, 4, 5),
+                          '2019-01-02' if self.treat_date_as_string() else QDateTime(2019, 1, 2, 0, 0, 0) if self.treat_date_as_datetime() else QDate(2019, 1, 2),
+                          '03:04:05' if self.treat_time_as_string() else QTime(3, 4, 5)])
         f2 = QgsFeature()
-        f2.setAttributes([7, -230, NULL, 'String', '15', 15, 16, 17])
+        f2.setAttributes([7, -230, NULL, 'String', '15',
+                          '2019-01-02 03:04:05' if self.treat_datetime_as_string() else QDateTime(2019, 1, 2, 3, 4, 5),
+                          '2019-01-02' if self.treat_date_as_string() else QDateTime(2019, 1, 2, 0, 0, 0) if self.treat_date_as_datetime() else QDate(2019, 1, 2),
+                          '03:04:05' if self.treat_time_as_string() else QTime(3, 4, 5), 15, 16, 17])
 
         result, added = l.dataProvider().addFeatures([f1, f2])
         self.assertTrue(result,
@@ -628,7 +716,11 @@ class ProviderTestCase(FeatureSourceTestCase):
 
         # make sure feature was added correctly
         added = [f for f in l.dataProvider().getFeatures() if f['pk'] == 7][0]
-        self.assertEqual(added.attributes(), [7, -230, NULL, 'String', '15'])
+        self.assertEqual(added.attributes(), [7, -230, NULL, 'String', '15',
+                                              '2019-01-02 03:04:05' if self.treat_datetime_as_string() else QDateTime(
+                                                  2019, 1, 2, 3, 4, 5),
+                                              '2019-01-02' if self.treat_date_as_string() else QDateTime(2019, 1, 2, 0, 0, 0) if self.treat_date_as_datetime() else QDate(2019, 1, 2),
+                                              '03:04:05' if self.treat_time_as_string() else QTime(3, 4, 5)])
 
     def testAddFeatureWrongGeomType(self):
         if not getattr(self, 'getEditableLayer', None):

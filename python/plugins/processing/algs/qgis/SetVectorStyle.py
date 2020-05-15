@@ -29,7 +29,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class SetVectorStyle(QgisAlgorithm):
-
     INPUT = 'INPUT'
     STYLE = 'STYLE'
     OUTPUT = 'OUTPUT'

@@ -37,7 +37,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class Polygonize(QgisAlgorithm):
-
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     KEEP_FIELDS = 'KEEP_FIELDS'

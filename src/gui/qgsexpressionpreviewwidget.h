@@ -123,6 +123,7 @@ class GUI_EXPORT QgsExpressionPreviewWidget : public QWidget, private Ui::QgsExp
     QgsVectorLayer *mLayer = nullptr;
     QgsExpressionContext mExpressionContext;
     QgsDistanceArea mDa;
+    bool mUseGeomCalculator = false;
     QString mToolTip;
     bool mEvalError = true;
     bool mParserError = true;

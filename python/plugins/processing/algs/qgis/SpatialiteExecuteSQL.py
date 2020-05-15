@@ -34,7 +34,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class SpatialiteExecuteSQL(QgisAlgorithm):
-
     DATABASE = 'DATABASE'
     SQL = 'SQL'
 
@@ -67,7 +66,7 @@ class SpatialiteExecuteSQL(QgisAlgorithm):
         database = self.parameterAsVectorLayer(parameters, self.DATABASE, context)
         databaseuri = database.dataProvider().dataSourceUri()
         uri = QgsDataSourceUri(databaseuri)
-        if uri.database() is '':
+        if uri.database() == '':
             if '|layername' in databaseuri:
                 databaseuri = databaseuri[:databaseuri.find('|layername')]
             elif '|layerid' in databaseuri:

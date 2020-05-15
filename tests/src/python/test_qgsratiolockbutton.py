@@ -124,7 +124,7 @@ class TestQgsRatioLockButton(unittest.TestCase):
         spin_width.blockSignals(True)
         spin_width.setValue(2000)
         spin_width.blockSignals(False)
-        w.resetRatio() # since signals were blocked, we need to manually reset ratio
+        w.resetRatio()  # since signals were blocked, we need to manually reset ratio
         spin_height.setValue(1000)
         self.assertEqual(spin_width.value(), 1000)
 

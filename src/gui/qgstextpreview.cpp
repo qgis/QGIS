@@ -15,6 +15,7 @@
 
 #include "qgstextpreview.h"
 #include "qgsapplication.h"
+#include "qgstextrenderer.h"
 #include <QDesktopWidget>
 #include <QPainter>
 

@@ -40,6 +40,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsmasksymbollayerwidget.h"
+#include "qgstemporalcontroller.h"
 
 static bool _initWidgetFunction( const QString &name, QgsSymbolLayerWidgetFunc f )
 {
@@ -238,6 +239,10 @@ QgsExpressionContext QgsLayerPropertiesWidget::createExpressionContext() const
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
                << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
+    if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast< const QgsExpressionContextScopeGenerator * >( mContext.mapCanvas()->temporalController() ) )
+    {
+      expContext << generator->createExpressionContextScope();
+    }
   }
   else
   {

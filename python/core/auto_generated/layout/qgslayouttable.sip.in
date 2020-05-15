@@ -15,7 +15,10 @@ typedef QVector< QVariant > QgsLayoutTableRow;
 typedef QVector< QVector< QVariant > > QgsLayoutTableContents;
 
 
-typedef QVector< QgsLayoutTableColumn * > QgsLayoutTableColumns;
+typedef QVector<QgsLayoutTableColumn> QgsLayoutTableColumns;
+
+typedef QVector<QgsLayoutTableColumn> QgsLayoutTableSortColumns;
+
 
 
 
@@ -475,6 +478,26 @@ Replaces the columns in the table with a specified list of QgsLayoutTableColumns
 .. seealso:: :py:func:`columns`
 %End
 
+    QgsLayoutTableSortColumns &sortColumns();
+%Docstring
+Returns a reference to the list of QgsLayoutTableSortColumns shown in the table
+
+.. seealso:: :py:func:`setSortColumns`
+
+.. versionadded:: 3.14
+%End
+
+    void setSortColumns( const QgsLayoutTableSortColumns &sortColumns );
+%Docstring
+Replaces the sorting columns in the table with a specified list of QgsLayoutTableSortColumns.
+
+:param sortColumns: list of QgsLayoutTableColumns used to sort the table.
+
+.. seealso:: :py:func:`sortColumns`
+
+.. versionadded:: 3.14
+%End
+
     void setCellStyle( CellStyleGroup group, const QgsLayoutTableStyle &style );
 %Docstring
 Sets the cell ``style`` for a cell ``group``.
@@ -541,6 +564,7 @@ new data.
 
 
   protected:
+
 
 
 

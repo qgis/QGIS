@@ -28,7 +28,6 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '27/09/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
-
 QGIS_AUTH_DB_DIR_PATH = tempfile.mkdtemp()
 
 os.environ['QGIS_AUTH_DB_DIR_PATH'] = QGIS_AUTH_DB_DIR_PATH

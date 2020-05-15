@@ -40,7 +40,6 @@ start_app()
 
 
 class TestQgsSymbolLayerCreateSld(unittest.TestCase):
-
     """
      This class tests the creation of SLD from QGis layers
      """
@@ -97,7 +96,8 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         # print("Svg marker mm: " + dom.toString())
 
         self.assertExternalGraphic(root, 0,
-                                   'symbols/star.svg?fill=%230000ff&fill-opacity=1&outline=%23ff0000&outline-opacity=1&outline-width=4', 'image/svg+xml')
+                                   'symbols/star.svg?fill=%230000ff&fill-opacity=1&outline=%23ff0000&outline-opacity=1&outline-width=4',
+                                   'image/svg+xml')
         self.assertExternalGraphic(root, 1,
                                    'symbols/star.svg', 'image/svg+xml')
         self.assertWellKnownMark(root, 0, 'square', '#0000ff', '#ff0000', 4)
@@ -121,7 +121,8 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         # print("Svg marker unit px: " + dom.toString())
 
         self.assertExternalGraphic(root, 0,
-                                   'symbols/star.svg?fill=%230000ff&fill-opacity=1&outline=%23ff0000&outline-opacity=1&outline-width=1', 'image/svg+xml')
+                                   'symbols/star.svg?fill=%230000ff&fill-opacity=1&outline=%23ff0000&outline-opacity=1&outline-width=1',
+                                   'image/svg+xml')
         self.assertExternalGraphic(root, 1,
                                    'symbols/star.svg', 'image/svg+xml')
         self.assertWellKnownMark(root, 0, 'square', '#0000ff', '#ff0000', 1)
@@ -298,7 +299,8 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         # print ("Svg fill mm: \n" + dom.toString())
 
         self.assertExternalGraphic(root, 0,
-                                   'test/star.svg?fill=%230000ff&fill-opacity=1&outline=%23ffff00&outline-opacity=1&outline-width=11', 'image/svg+xml')
+                                   'test/star.svg?fill=%230000ff&fill-opacity=1&outline=%23ffff00&outline-opacity=1&outline-width=11',
+                                   'image/svg+xml')
         self.assertExternalGraphic(root, 1,
                                    'test/star.svg', 'image/svg+xml')
         self.assertWellKnownMark(root, 0, 'square', '#0000ff', '#ffff00', 11)
@@ -321,7 +323,8 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         # print ("Svg fill px: \n" + dom.toString())
 
         self.assertExternalGraphic(root, 0,
-                                   'test/star.svg?fill=%230000ff&fill-opacity=1&outline=%23000000&outline-opacity=1&outline-width=3', 'image/svg+xml')
+                                   'test/star.svg?fill=%230000ff&fill-opacity=1&outline=%23000000&outline-opacity=1&outline-width=3',
+                                   'image/svg+xml')
         self.assertExternalGraphic(root, 1,
                                    'test/star.svg', 'image/svg+xml')
         self.assertWellKnownMark(root, 0, 'square', '#0000ff', '#000000', 3)
@@ -439,18 +442,18 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         for i in range(0, ruleCount):
             self.assertScaleDenominator(root, None, None, i)
 
-#    def testRuleBasedNoRootScaleDependencies(self):
-#        layer = QgsVectorLayer("Polygon", "addfeat", "memory")
-#
-#        mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "ruleBased"))
-#        status = layer.loadNamedStyle(mFilePath)  # NOQA
-#
-#        dom, root = self.layerToSld(layer)
-#        print(("Rule based, no root scale deps:" + dom.toString()))
-#
-#        ruleCount = root.elementsByTagName('se:Rule').size()  # NOQA
-#        self.assertScaleDenominator(root, '1000', '40000000', 0)
-#        self.assertScaleDenominator(root, None, None, 1)
+    #    def testRuleBasedNoRootScaleDependencies(self):
+    #        layer = QgsVectorLayer("Polygon", "addfeat", "memory")
+    #
+    #        mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "ruleBased"))
+    #        status = layer.loadNamedStyle(mFilePath)  # NOQA
+    #
+    #        dom, root = self.layerToSld(layer)
+    #        print(("Rule based, no root scale deps:" + dom.toString()))
+    #
+    #        ruleCount = root.elementsByTagName('se:Rule').size()  # NOQA
+    #        self.assertScaleDenominator(root, '1000', '40000000', 0)
+    #        self.assertScaleDenominator(root, None, None, 1)
 
     def testRuleBasedNoRootScaleDependencies(self):
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
@@ -471,7 +474,8 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
     def testCategorizedFunctionConflict(self):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
 
-        mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "categorizedFunctionConflict"))
+        mFilePath = QDir.toNativeSeparators(
+            '%s/symbol_layer/%s.qml' % (unitTestDataPath(), "categorizedFunctionConflict"))
         status = layer.loadNamedStyle(mFilePath)  # NOQA
 
         dom, root = self.layerToSld(layer)
@@ -544,7 +548,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         self.updateLayerLabelingUnit(layer, QgsUnitTypes.RenderMillimeters)
 
         dom, root = self.layerToSld(layer)
-        #print("Label sized in mm " + dom.toString())
+        # print("Label sized in mm " + dom.toString())
 
         ts = self.getTextSymbolizer(root, 1, 0)
         font = self.assertElement(ts, 'se:Font', 0)
@@ -1058,7 +1062,8 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         xml2 = dom.toString()
         self.assertEqual(xml1, xml2)
 
-    def updateLinePlacementProperties(self, layer, linePlacement, distance, repeat, maxAngleInternal=25, maxAngleExternal=-25):
+    def updateLinePlacementProperties(self, layer, linePlacement, distance, repeat, maxAngleInternal=25,
+                                      maxAngleExternal=-25):
         settings = layer.labeling().settings()
         settings.placement = linePlacement
         settings.dist = distance
@@ -1158,7 +1163,8 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
             if allowMissing:
                 return None
             else:
-                self.fail('Expected to find at least ' + str(index + 1) + ' ' + elementName + ' in ' + container.nodeName() + ' but found ' + str(list.size()))
+                self.fail('Expected to find at least ' + str(
+                    index + 1) + ' ' + elementName + ' in ' + container.nodeName() + ' but found ' + str(list.size()))
 
         node = list.item(index)
         self.assertTrue(node.isElement(), 'Found node but it''s not an element')

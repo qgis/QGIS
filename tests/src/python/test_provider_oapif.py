@@ -47,10 +47,13 @@ from providertestbase import ProviderTestCase
 def sanitize(endpoint, x):
     if len(endpoint + x) > 256:
         ret = endpoint + hashlib.md5(x.replace('/', '_').encode()).hexdigest()
-        #print('Before: ' + endpoint + x)
-        #print('After:  ' + ret)
+        # print('Before: ' + endpoint + x)
+        # print('After:  ' + ret)
         return ret
-    ret = endpoint + x.replace('?', '_').replace('&', '_').replace('<', '_').replace('>', '_').replace('"', '_').replace("'", '_').replace(' ', '_').replace(':', '_').replace('/', '_').replace('\n', '_')
+    ret = endpoint + x.replace('?', '_').replace('&', '_').replace('<', '_').replace('>', '_').replace('"',
+                                                                                                       '_').replace("'",
+                                                                                                                    '_').replace(
+        ' ', '_').replace(':', '_').replace('/', '_').replace('\n', '_')
     return ret
 
 
@@ -65,7 +68,6 @@ ACCEPT_ITEMS = 'Accept=application/geo+json, application/json'
 
 
 def create_landing_page_api_collection(endpoint):
-
     # Landing page
     with open(sanitize(endpoint, '?' + ACCEPT_LANDING), 'wb') as f:
         f.write(json.dumps({
@@ -127,11 +129,21 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         items = {
             "type": "FeatureCollection",
             "features": [
-                {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100, "name": "Orange", "name2": "oranGe", "num_char": "1"}, "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}},
-                {"type": "Feature", "id": "feat.2", "properties": {"pk": 2, "cnt": 200, "name": "Apple", "name2": "Apple", "num_char": "2"}, "geometry": {"type": "Point", "coordinates": [-68.2, 70.8]}},
-                {"type": "Feature", "id": "feat.3", "properties": {"pk": 4, "cnt": 400, "name": "Honey", "name2": "Honey", "num_char": "4"}, "geometry": {"type": "Point", "coordinates": [-65.32, 78.3]}},
-                {"type": "Feature", "id": "feat.4", "properties": {"pk": 3, "cnt": 300, "name": "Pear", "name2": "PEaR", "num_char": "3"}, "geometry": None},
-                {"type": "Feature", "id": "feat.5", "properties": {"pk": 5, "cnt": -200, "name": None, "name2": "NuLl", "num_char": "5"}, "geometry": {"type": "Point", "coordinates": [-71.123, 78.23]}}
+                {"type": "Feature", "id": "feat.1",
+                 "properties": {"pk": 1, "cnt": 100, "name": "Orange", "name2": "oranGe", "num_char": "1", "dt": "2020-05-03 12:13:14", "date": "2020-05-03", "time": "12:13:14"},
+                 "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}},
+                {"type": "Feature", "id": "feat.2",
+                 "properties": {"pk": 2, "cnt": 200, "name": "Apple", "name2": "Apple", "num_char": "2", "dt": "2020-05-04 12:14:14", "date": "2020-05-04", "time": "12:14:14"},
+                 "geometry": {"type": "Point", "coordinates": [-68.2, 70.8]}},
+                {"type": "Feature", "id": "feat.3",
+                 "properties": {"pk": 4, "cnt": 400, "name": "Honey", "name2": "Honey", "num_char": "4", "dt": "2021-05-04 13:13:14", "date": "2021-05-04", "time": "13:13:14"},
+                 "geometry": {"type": "Point", "coordinates": [-65.32, 78.3]}},
+                {"type": "Feature", "id": "feat.4",
+                 "properties": {"pk": 3, "cnt": 300, "name": "Pear", "name2": "PEaR", "num_char": "3"},
+                 "geometry": None},
+                {"type": "Feature", "id": "feat.5",
+                 "properties": {"pk": 5, "cnt": -200, "name": None, "name2": "NuLl", "num_char": "5", "dt": "2020-05-04 12:13:14", "date": "2020-05-02", "time": "12:13:01"},
+                 "geometry": {"type": "Point", "coordinates": [-71.123, 78.23]}}
             ]
         }
 
@@ -169,7 +181,8 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         first_items = {
             "type": "FeatureCollection",
             "features": [
-                {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100}, "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}}
+                {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100},
+                 "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}}
             ]
         }
         with open(sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS), 'wb') as f:
@@ -182,8 +195,10 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         first_page = {
             "type": "FeatureCollection",
             "features": [
-                {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100}, "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}},
-                {"type": "Feature", "id": "feat.2", "properties": {"pk": 2, "cnt": 200}, "geometry": {"type": "Point", "coordinates": [-68.2, 70.8]}}
+                {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100},
+                 "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}},
+                {"type": "Feature", "id": "feat.2", "properties": {"pk": 2, "cnt": 200},
+                 "geometry": {"type": "Point", "coordinates": [-68.2, 70.8]}}
             ],
             "links": [
                 # Test multiple media types for next
@@ -200,7 +215,8 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
             "type": "FeatureCollection",
             "features": [
                 # Also add a non expected property
-                {"type": "Feature", "id": "feat.3", "properties": {"a_non_expected": "foo", "pk": 4, "cnt": 400}, "geometry": {"type": "Point", "coordinates": [-65.32, 78.3]}}
+                {"type": "Feature", "id": "feat.3", "properties": {"a_non_expected": "foo", "pk": 4, "cnt": 400},
+                 "geometry": {"type": "Point", "coordinates": [-65.32, 78.3]}}
             ],
             "links": [
                 {"href": "http://" + endpoint + "/third_page", "rel": "next"}
@@ -214,7 +230,7 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
             "type": "FeatureCollection",
             "features": [],
             "links": [
-                {"href": "http://" + endpoint + "/third_page", "rel": "next"} # dummy link to ourselves
+                {"href": "http://" + endpoint + "/third_page", "rel": "next"}  # dummy link to ourselves
             ]
         }
         with open(sanitize(endpoint, '/third_page?' + ACCEPT_ITEMS), 'wb') as f:
@@ -235,23 +251,28 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         first_items = {
             "type": "FeatureCollection",
             "features": [
-                {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100}, "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}}
+                {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100},
+                 "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}}
             ]
         }
         with open(sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS), 'wb') as f:
             f.write(json.dumps(first_items).encode('UTF-8'))
 
-        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test', 'OAPIF')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test',
+                            'OAPIF')
         self.assertTrue(vl.isValid())
 
         items = {
             "type": "FeatureCollection",
             "features": [
-                {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100}, "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}},
-                {"type": "Feature", "id": "feat.2", "properties": {"pk": 2, "cnt": 200}, "geometry": {"type": "Point", "coordinates": [-68.2, 70.8]}}
+                {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100},
+                 "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}},
+                {"type": "Feature", "id": "feat.2", "properties": {"pk": 2, "cnt": 200},
+                 "geometry": {"type": "Point", "coordinates": [-68.2, 70.8]}}
             ]
         }
-        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&bbox=-71,65.5,-65,78&' + ACCEPT_ITEMS), 'wb') as f:
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&bbox=-71,65.5,-65,78&' + ACCEPT_ITEMS),
+                  'wb') as f:
             f.write(json.dumps(items).encode('UTF-8'))
 
         extent = QgsRectangle(-71, 65.5, -65, 78)
@@ -267,7 +288,9 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, [1, 2])
 
         # Test clamping of bbox
-        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&bbox=-180,64.5,-65,78&' + ACCEPT_ITEMS), 'wb') as f:
+        with open(
+                sanitize(endpoint, '/collections/mycollection/items?limit=1000&bbox=-180,64.5,-65,78&' + ACCEPT_ITEMS),
+                'wb') as f:
             f.write(json.dumps(items).encode('UTF-8'))
 
         extent = QgsRectangle(-190, 64.5, -65, 78)
@@ -285,9 +308,12 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         items = {
             "type": "FeatureCollection",
             "features": [
-                {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100}, "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}},
-                {"type": "Feature", "id": "feat.2", "properties": {"pk": 2, "cnt": 200}, "geometry": {"type": "Point", "coordinates": [-68.2, 70.8]}},
-                {"type": "Feature", "id": "feat.3", "properties": {"pk": 4, "cnt": 400}, "geometry": {"type": "Point", "coordinates": [-65.32, 78.3]}}
+                {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100},
+                 "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}},
+                {"type": "Feature", "id": "feat.2", "properties": {"pk": 2, "cnt": 200},
+                 "geometry": {"type": "Point", "coordinates": [-68.2, 70.8]}},
+                {"type": "Feature", "id": "feat.3", "properties": {"pk": 4, "cnt": 400},
+                 "geometry": {"type": "Point", "coordinates": [-65.32, 78.3]}}
             ]
         }
         with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&' + ACCEPT_ITEMS), 'wb') as f:
@@ -307,7 +333,8 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         first_items = {
             "type": "FeatureCollection",
             "features": [
-                {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100}, "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}}
+                {"type": "Feature", "id": "feat.1", "properties": {"pk": 1, "cnt": 100},
+                 "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}}
             ]
         }
         with open(sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS), 'wb') as f:
@@ -327,13 +354,13 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
                     }
                 },
                 "info":
-                {
-                    "contact":
                     {
-                        "name": "contact_name",
-                        "email": "contact_email",
-                        "url": "contact_url"
-                    }
+                        "contact":
+                            {
+                                "name": "contact_name",
+                                "email": "contact_email",
+                                "url": "contact_url"
+                            }
                 }
             }).encode('UTF-8'))
 
@@ -345,17 +372,17 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
             "extent": {
                 "spatial": {
                     "bbox": [
-                            [-71.123, 66.33, -65.32, 78.3],
-                        None, # invalid
-                            [1, 2, 3], # invalid
-                            ["invalid", 1, 2, 3], # invalid
-                            [2, 49, -100, 3, 50, 100]
+                        [-71.123, 66.33, -65.32, 78.3],
+                        None,  # invalid
+                        [1, 2, 3],  # invalid
+                        ["invalid", 1, 2, 3],  # invalid
+                        [2, 49, -100, 3, 50, 100]
                     ]
                 },
                 "temporal":
                     {
                         "interval": [
-                            [None, None], # invalid
+                            [None, None],  # invalid
                             ["invalid", "invalid"],
                             "another_invalid",
                             ["1980-01-01T12:34:56.789Z", "2020-01-01T00:00:00Z"],
@@ -366,12 +393,12 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
             },
             "links": [
                 {"href": "href_self", "rel": "self", "type": "application/json", "title": "my self link"},
-                    {"href": "href_parent", "rel": "parent", "title": "my parent link"},
-                    {"href": "http://download.example.org/buildings.gpkg",
-                     "rel": "enclosure",
-                     "type": "application/geopackage+sqlite3",
-                     "title": "Bulk download (GeoPackage)",
-                     "length": 123456789012345}
+                {"href": "href_parent", "rel": "parent", "title": "my parent link"},
+                {"href": "http://download.example.org/buildings.gpkg",
+                 "rel": "enclosure",
+                 "type": "application/geopackage+sqlite3",
+                 "title": "Bulk download (GeoPackage)",
+                 "length": 123456789012345}
             ],
             # STAC specific
             "keywords": ["keyword_a", "keyword_b"]
@@ -394,7 +421,8 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         with open(sanitize(endpoint, '/collections/mycollection?' + ACCEPT_COLLECTION), 'wb') as f:
             f.write(json.dumps(collection).encode('UTF-8'))
 
-        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test', 'OAPIF')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test',
+                            'OAPIF')
         self.assertTrue(vl.isValid())
 
         md = vl.metadata()
@@ -444,8 +472,10 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
 
         temporalExtents = extent.temporalExtents()
         assert len(temporalExtents) == 3
-        assert temporalExtents[0].begin() == QDateTime.fromString("1980-01-01T12:34:56.789Z", Qt.ISODateWithMs), temporalExtents[0].begin()
-        assert temporalExtents[0].end() == QDateTime.fromString("2020-01-01T00:00:00Z", Qt.ISODateWithMs), temporalExtents[0].end()
+        assert temporalExtents[0].begin() == QDateTime.fromString("1980-01-01T12:34:56.789Z", Qt.ISODateWithMs), \
+            temporalExtents[0].begin()
+        assert temporalExtents[0].end() == QDateTime.fromString("2020-01-01T00:00:00Z", Qt.ISODateWithMs), \
+            temporalExtents[0].end()
         assert temporalExtents[1].begin().isValid()
         assert not temporalExtents[1].end().isValid()
         assert not temporalExtents[2].begin().isValid()
@@ -457,7 +487,8 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         with open(sanitize(endpoint, '/collections/mycollection?' + ACCEPT_COLLECTION), 'wb') as f:
             f.write(json.dumps(collection).encode('UTF-8'))
 
-        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test', 'OAPIF')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test',
+                            'OAPIF')
         self.assertTrue(vl.isValid())
 
         md = vl.metadata()
@@ -474,7 +505,8 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         with open(sanitize(endpoint, '/collections/mycollection?' + ACCEPT_COLLECTION), 'wb') as f:
             f.write(json.dumps(collection).encode('UTF-8'))
 
-        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test', 'OAPIF')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test',
+                            'OAPIF')
         self.assertTrue(vl.isValid())
 
         md = vl.metadata()
@@ -491,7 +523,8 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         with open(sanitize(endpoint, '/collections/mycollection?' + ACCEPT_COLLECTION), 'wb') as f:
             f.write(json.dumps(collection).encode('UTF-8'))
 
-        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test', 'OAPIF')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test',
+                            'OAPIF')
         self.assertTrue(vl.isValid())
 
         md = vl.metadata()
@@ -504,7 +537,8 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         with open(sanitize(endpoint, '/collections/mycollection?' + ACCEPT_COLLECTION), 'wb') as f:
             f.write(json.dumps(collection).encode('UTF-8'))
 
-        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test', 'OAPIF')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' restrictToRequestBBOX=1", 'test',
+                            'OAPIF')
         self.assertTrue(vl.isValid())
 
         md = vl.metadata()
@@ -519,7 +553,8 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         items = {
             "type": "FeatureCollection",
             "features": [
-                {"type": "Feature", "id": "feat.1", "properties": {"my_dt_field": "2019-10-15T00:34:00Z", "foo": "bar"}, "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}}
+                {"type": "Feature", "id": "feat.1", "properties": {"my_dt_field": "2019-10-15T00:34:00Z", "foo": "bar"},
+                 "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}}
             ]
         }
 
@@ -533,11 +568,14 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         with open(filename, 'wb') as f:
             f.write(json.dumps(items).encode('UTF-8'))
 
-        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection' filter='\"my_dt_field\" >= \\'2019-05-15T00:00:00Z\\''", 'test', 'OAPIF')
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' typename='mycollection' filter='\"my_dt_field\" >= \\'2019-05-15T00:00:00Z\\''",
+            'test', 'OAPIF')
         self.assertTrue(vl.isValid())
         os.unlink(filename)
 
-        filename = sanitize(endpoint, '/collections/mycollection/items?limit=1000&datetime=2019-05-15T00:00:00Z/9999-12-31T00:00:00Z&' + ACCEPT_ITEMS)
+        filename = sanitize(endpoint,
+                            '/collections/mycollection/items?limit=1000&datetime=2019-05-15T00:00:00Z/9999-12-31T00:00:00Z&' + ACCEPT_ITEMS)
         with open(filename, 'wb') as f:
             f.write(json.dumps(items).encode('UTF-8'))
         values = [f['id'] for f in vl.getFeatures()]
@@ -546,7 +584,8 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
 
         assert vl.setSubsetString(""""my_dt_field" < '2019-01-01T00:34:00Z'""")
 
-        filename = sanitize(endpoint, '/collections/mycollection/items?limit=1000&datetime=0000-01-01T00:00:00Z/2019-01-01T00:34:00Z&' + ACCEPT_ITEMS)
+        filename = sanitize(endpoint,
+                            '/collections/mycollection/items?limit=1000&datetime=0000-01-01T00:00:00Z/2019-01-01T00:34:00Z&' + ACCEPT_ITEMS)
         with open(filename, 'wb') as f:
             f.write(json.dumps(no_items).encode('UTF-8'))
         values = [f['id'] for f in vl.getFeatures()]
@@ -555,16 +594,19 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
 
         assert vl.setSubsetString(""""my_dt_field" = '2019-10-15T00:34:00Z'""")
 
-        filename = sanitize(endpoint, '/collections/mycollection/items?limit=1000&datetime=2019-10-15T00:34:00Z&' + ACCEPT_ITEMS)
+        filename = sanitize(endpoint,
+                            '/collections/mycollection/items?limit=1000&datetime=2019-10-15T00:34:00Z&' + ACCEPT_ITEMS)
         with open(filename, 'wb') as f:
             f.write(json.dumps(items).encode('UTF-8'))
         values = [f['id'] for f in vl.getFeatures()]
         os.unlink(filename)
         self.assertEqual(values, ['feat.1'])
 
-        assert vl.setSubsetString("""("my_dt_field" >= '2019-01-01T00:34:00Z') AND ("my_dt_field" <= '2019-12-31T00:00:00Z')""")
+        assert vl.setSubsetString(
+            """("my_dt_field" >= '2019-01-01T00:34:00Z') AND ("my_dt_field" <= '2019-12-31T00:00:00Z')""")
 
-        filename = sanitize(endpoint, '/collections/mycollection/items?limit=1000&datetime=2019-01-01T00:34:00Z/2019-12-31T00:00:00Z&' + ACCEPT_ITEMS)
+        filename = sanitize(endpoint,
+                            '/collections/mycollection/items?limit=1000&datetime=2019-01-01T00:34:00Z/2019-12-31T00:00:00Z&' + ACCEPT_ITEMS)
         with open(filename, 'wb') as f:
             f.write(json.dumps(items).encode('UTF-8'))
         values = [f['id'] for f in vl.getFeatures()]
@@ -574,7 +616,8 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         # Partial on client side
         assert vl.setSubsetString("""("my_dt_field" >= '2019-01-01T00:34:00Z') AND ("foo" = 'bar')""")
 
-        filename = sanitize(endpoint, '/collections/mycollection/items?limit=1000&datetime=2019-01-01T00:34:00Z/9999-12-31T00:00:00Z&' + ACCEPT_ITEMS)
+        filename = sanitize(endpoint,
+                            '/collections/mycollection/items?limit=1000&datetime=2019-01-01T00:34:00Z/9999-12-31T00:00:00Z&' + ACCEPT_ITEMS)
         with open(filename, 'wb') as f:
             f.write(json.dumps(items).encode('UTF-8'))
         values = [f['id'] for f in vl.getFeatures()]
@@ -584,7 +627,8 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         # Same but with non-matching client-side part
         assert vl.setSubsetString("""("my_dt_field" >= '2019-01-01T00:34:00Z') AND ("foo" != 'bar')""")
 
-        filename = sanitize(endpoint, '/collections/mycollection/items?limit=1000&datetime=2019-01-01T00:34:00Z/9999-12-31T00:00:00Z&' + ACCEPT_ITEMS)
+        filename = sanitize(endpoint,
+                            '/collections/mycollection/items?limit=1000&datetime=2019-01-01T00:34:00Z/9999-12-31T00:00:00Z&' + ACCEPT_ITEMS)
         with open(filename, 'wb') as f:
             f.write(json.dumps(items).encode('UTF-8'))
         values = [f['id'] for f in vl.getFeatures()]
@@ -594,7 +638,8 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         # Switch order
         assert vl.setSubsetString("""("foo" = 'bar') AND ("my_dt_field" >= '2019-01-01T00:34:00Z')""")
 
-        filename = sanitize(endpoint, '/collections/mycollection/items?limit=1000&datetime=2019-01-01T00:34:00Z/9999-12-31T00:00:00Z&' + ACCEPT_ITEMS)
+        filename = sanitize(endpoint,
+                            '/collections/mycollection/items?limit=1000&datetime=2019-01-01T00:34:00Z/9999-12-31T00:00:00Z&' + ACCEPT_ITEMS)
         with open(filename, 'wb') as f:
             f.write(json.dumps(items).encode('UTF-8'))
         values = [f['id'] for f in vl.getFeatures()]
@@ -609,7 +654,8 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         items = {
             "type": "FeatureCollection",
             "features": [
-                {"type": "Feature", "id": "feat.1", "properties": {"my_stringlist_field": ["a", "b"]}, "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}}
+                {"type": "Feature", "id": "feat.1", "properties": {"my_stringlist_field": ["a", "b"]},
+                 "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}}
             ]
         }
 

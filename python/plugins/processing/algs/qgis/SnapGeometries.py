@@ -38,7 +38,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class SnapGeometriesToLayer(QgisAlgorithm):
-
     INPUT = 'INPUT'
     REFERENCE_LAYER = 'REFERENCE_LAYER'
     TOLERANCE = 'TOLERANCE'

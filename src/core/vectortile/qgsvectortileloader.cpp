@@ -23,7 +23,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsvectortileutils.h"
 
-QgsVectorTileLoader::QgsVectorTileLoader( const QString &uri, int zoomLevel, const QgsTileRange &range, const QPointF &viewCenter, QgsFeedback *feedback )
+QgsVectorTileLoader::QgsVectorTileLoader( const QString &uri, const QgsTileMatrix &tileMatrix, const QgsTileRange &range, const QPointF &viewCenter, QgsFeedback *feedback )
   : mEventLoop( new QEventLoop )
   , mFeedback( feedback )
 {
@@ -38,11 +38,11 @@ QgsVectorTileLoader::QgsVectorTileLoader( const QString &uri, int zoomLevel, con
   }
 
   QgsDebugMsgLevel( QStringLiteral( "Starting network loader" ), 2 );
-  QVector<QgsTileXYZ> tiles = QgsVectorTileUtils::tilesInRange( range, zoomLevel );
+  QVector<QgsTileXYZ> tiles = QgsVectorTileUtils::tilesInRange( range, tileMatrix.zoomLevel() );
   QgsVectorTileUtils::sortTilesByDistanceFromCenter( tiles, viewCenter );
   for ( QgsTileXYZ id : qgis::as_const( tiles ) )
   {
-    loadFromNetworkAsync( id, uri );
+    loadFromNetworkAsync( id, tileMatrix, uri );
   }
 }
 
@@ -75,9 +75,9 @@ void QgsVectorTileLoader::downloadBlocking()
   Q_ASSERT( mReplies.isEmpty() );
 }
 
-void QgsVectorTileLoader::loadFromNetworkAsync( const QgsTileXYZ &id, const QString &requestUrl )
+void QgsVectorTileLoader::loadFromNetworkAsync( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl )
 {
-  QString url = QgsVectorTileUtils::formatXYZUrlTemplate( requestUrl, id );
+  QString url = QgsVectorTileUtils::formatXYZUrlTemplate( requestUrl, id, tileMatrix );
   QNetworkRequest request( url );
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLoader" ) );
   QgsSetRequestInitiatorId( request, id.toString() );
@@ -143,7 +143,7 @@ void QgsVectorTileLoader::canceled()
 
 //////
 
-QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const QString &sourceType, const QString &sourcePath, int zoomLevel, const QPointF &viewCenter, const QgsTileRange &range )
+QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const QString &sourceType, const QString &sourcePath, const QgsTileMatrix &tileMatrix, const QPointF &viewCenter, const QgsTileRange &range )
 {
   QList<QgsVectorTileRawData> rawTiles;
 
@@ -155,11 +155,11 @@ QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const
     Q_ASSERT( res );
   }
 
-  QVector<QgsTileXYZ> tiles = QgsVectorTileUtils::tilesInRange( range, zoomLevel );
+  QVector<QgsTileXYZ> tiles = QgsVectorTileUtils::tilesInRange( range, tileMatrix.zoomLevel() );
   QgsVectorTileUtils::sortTilesByDistanceFromCenter( tiles, viewCenter );
   for ( QgsTileXYZ id : qgis::as_const( tiles ) )
   {
-    QByteArray rawData = isUrl ? loadFromNetwork( id, sourcePath ) : loadFromMBTiles( id, mbReader );
+    QByteArray rawData = isUrl ? loadFromNetwork( id, tileMatrix, sourcePath ) : loadFromMBTiles( id, mbReader );
     if ( !rawData.isEmpty() )
     {
       rawTiles.append( QgsVectorTileRawData( id, rawData ) );
@@ -168,9 +168,9 @@ QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const
   return rawTiles;
 }
 
-QByteArray QgsVectorTileLoader::loadFromNetwork( const QgsTileXYZ &id, const QString &requestUrl )
+QByteArray QgsVectorTileLoader::loadFromNetwork( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl )
 {
-  QString url = QgsVectorTileUtils::formatXYZUrlTemplate( requestUrl, id );
+  QString url = QgsVectorTileUtils::formatXYZUrlTemplate( requestUrl, id, tileMatrix );
   QNetworkRequest nr;
   nr.setUrl( QUrl( url ) );
   QgsBlockingNetworkRequest req;

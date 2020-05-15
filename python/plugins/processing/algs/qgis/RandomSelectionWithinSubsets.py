@@ -44,7 +44,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class RandomSelectionWithinSubsets(QgisAlgorithm):
-
     INPUT = 'INPUT'
     METHOD = 'METHOD'
     NUMBER = 'NUMBER'

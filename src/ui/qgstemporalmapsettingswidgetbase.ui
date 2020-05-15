@@ -7,25 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>409</width>
-    <height>63</height>
+    <height>82</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
-   </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -40,6 +28,30 @@
      </item>
      <item>
       <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QCheckBox" name="mCumulativeTemporalRange">
+       <property name="text">
+        <string>Cumulative range</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_3">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -78,6 +90,7 @@
    <class>QgsPanelWidget</class>
    <extends>QWidget</extends>
    <header>qgspanelwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

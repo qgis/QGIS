@@ -65,6 +65,7 @@ from qgis.core import (Qgis,
 from qgis.utils import iface
 
 import warnings
+
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     from osgeo import ogr
@@ -82,7 +83,6 @@ pluginPath = os.path.normpath(os.path.join(
 
 
 class Grass7Algorithm(QgsProcessingAlgorithm):
-
     GRASS_OUTPUT_TYPE_PARAMETER = 'GRASS_OUTPUT_TYPE_PARAMETER'
     GRASS_MIN_AREA_PARAMETER = 'GRASS_MIN_AREA_PARAMETER'
     GRASS_SNAP_TOLERANCE_PARAMETER = 'GRASS_SNAP_TOLERANCE_PARAMETER'

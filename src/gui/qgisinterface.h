@@ -333,6 +333,12 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QToolBar *attributesToolBar() = 0;
 
     /**
+     * Returns a reference to the main window "Selection" toolbar.
+     * \since QGIS 3.14
+     */
+    virtual QToolBar *selectionToolBar() = 0;
+
+    /**
      * Returns a reference to the main window "Plugin" toolbar.
      */
     virtual QToolBar *pluginToolBar() = 0;

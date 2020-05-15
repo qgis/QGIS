@@ -244,7 +244,7 @@ void QgsGeorefPluginGui::openRaster()
   QString filters = QgsProviderRegistry::instance()->fileRasterFilters();
   filters.prepend( otherFiles + ";;" );
   filters.chop( otherFiles.size() + 2 );
-  mRasterFileName = QFileDialog::getOpenFileName( this, tr( "Open Raster" ), dir, filters, &lastUsedFilter );
+  mRasterFileName = QFileDialog::getOpenFileName( this, tr( "Open Raster" ), dir, filters, &lastUsedFilter, QFileDialog::HideNameFilterDetails );
   mModifiedRasterFileName.clear();
 
   if ( mRasterFileName.isEmpty() )
@@ -1687,12 +1687,12 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString &fileName, const QgsG
     parameterTable->setContentFont( tableContentFont );
 
     QgsLayoutTableColumns columns;
-    columns << new QgsLayoutTableColumn( tr( "Translation x" ) )
-            << new QgsLayoutTableColumn( tr( "Translation y" ) )
-            << new QgsLayoutTableColumn( tr( "Scale x" ) )
-            << new QgsLayoutTableColumn( tr( "Scale y" ) )
-            << new QgsLayoutTableColumn( tr( "Rotation [degrees]" ) )
-            << new QgsLayoutTableColumn( tr( "Mean error [%1]" ).arg( residualUnits ) );
+    columns << QgsLayoutTableColumn( tr( "Translation x" ) )
+            << QgsLayoutTableColumn( tr( "Translation y" ) )
+            << QgsLayoutTableColumn( tr( "Scale x" ) )
+            << QgsLayoutTableColumn( tr( "Scale y" ) )
+            << QgsLayoutTableColumn( tr( "Rotation [degrees]" ) )
+            << QgsLayoutTableColumn( tr( "Mean error [%1]" ).arg( residualUnits ) );
 
     parameterTable->setColumns( columns );
     QStringList row;
@@ -1730,15 +1730,15 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString &fileName, const QgsG
   gcpTable->setContentFont( tableContentFont );
   gcpTable->setHeaderMode( QgsLayoutTable::AllFrames );
   QgsLayoutTableColumns columns;
-  columns << new QgsLayoutTableColumn( tr( "ID" ) )
-          << new QgsLayoutTableColumn( tr( "Enabled" ) )
-          << new QgsLayoutTableColumn( tr( "Pixel X" ) )
-          << new QgsLayoutTableColumn( tr( "Pixel Y" ) )
-          << new QgsLayoutTableColumn( tr( "Map X" ) )
-          << new QgsLayoutTableColumn( tr( "Map Y" ) )
-          << new QgsLayoutTableColumn( tr( "Res X (%1)" ).arg( residualUnits ) )
-          << new QgsLayoutTableColumn( tr( "Res Y (%1)" ).arg( residualUnits ) )
-          << new QgsLayoutTableColumn( tr( "Res Total (%1)" ).arg( residualUnits ) );
+  columns << QgsLayoutTableColumn( tr( "ID" ) )
+          << QgsLayoutTableColumn( tr( "Enabled" ) )
+          << QgsLayoutTableColumn( tr( "Pixel X" ) )
+          << QgsLayoutTableColumn( tr( "Pixel Y" ) )
+          << QgsLayoutTableColumn( tr( "Map X" ) )
+          << QgsLayoutTableColumn( tr( "Map Y" ) )
+          << QgsLayoutTableColumn( tr( "Res X (%1)" ).arg( residualUnits ) )
+          << QgsLayoutTableColumn( tr( "Res Y (%1)" ).arg( residualUnits ) )
+          << QgsLayoutTableColumn( tr( "Res Total (%1)" ).arg( residualUnits ) );
 
   gcpTable->setColumns( columns );
 

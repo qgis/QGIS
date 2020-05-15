@@ -27,6 +27,7 @@
 #include <QObject>
 #include <QtTest/QSignalSpy>
 #include <QList>
+#include <QFileInfo>
 #include "qgis.h"
 #include "qgstest.h"
 #include "qgsrasterlayer.h"
@@ -551,6 +552,7 @@ class TestQgsProcessing: public QObject
     void features();
     void uniqueValues();
     void createIndex();
+    void generateTemporaryDestination();
     void parseDestinationString();
     void createFeatureSink();
     void source();
@@ -1633,6 +1635,49 @@ void TestQgsProcessing::createIndex()
   index = QgsSpatialIndex( *source );
   ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
   QCOMPARE( ids, QList<QgsFeatureId>() << 2 );
+}
+
+void TestQgsProcessing::generateTemporaryDestination()
+{
+  // setup a context
+  QgsProject p;
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 28353 ) );
+  QgsProcessingContext context;
+  context.setProject( &p );
+
+  // destination vector with "." in it's name
+  std::unique_ptr< QgsProcessingParameterVectorDestination > def( new QgsProcessingParameterVectorDestination( "with.inside", QString(), QgsProcessing::TypeVectorAnyGeometry, QString(), false ) );
+
+  // check that temporary destination does not have dot at the end when there is no extension
+  QVERIFY( !def->generateTemporaryDestination().endsWith( QLatin1String( "." ) ) );
+  // check that temporary destination starts with tempFolder
+  QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
+  // check that extension with QFileInfo::completeSuffix is "gpkg"
+  QFileInfo f = QFileInfo( def->generateTemporaryDestination() );
+  QCOMPARE( f.completeSuffix(), QString( "gpkg" ) );
+
+  // destination raster with "." in it's name
+  std::unique_ptr< QgsProcessingParameterRasterDestination > def2( new QgsProcessingParameterRasterDestination( "with.inside", QString(), QString(), false ) );
+
+  // check that temporary destination does not have dot at the end when there is no extension
+  QVERIFY( !def2->generateTemporaryDestination().endsWith( QLatin1String( "." ) ) );
+  // check that temporary destination starts with tempFolder
+  QVERIFY( def2->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
+  // check that extension with QFileInfo::completeSuffix is "tif"
+  f = QFileInfo( def2->generateTemporaryDestination() );
+  QCOMPARE( f.completeSuffix(), QString( "tif" ) );
+
+  // destination vector without "." in it's name
+  std::unique_ptr< QgsProcessingParameterVectorDestination > def3( new QgsProcessingParameterVectorDestination( "without_inside", QString(), QgsProcessing::TypeVectorAnyGeometry, QString(), false ) );
+
+  // check that temporary destination does not have dot at the end when there is no extension
+  QVERIFY( !def3->generateTemporaryDestination().endsWith( QLatin1String( "." ) ) );
+  // check that temporary destination starts with tempFolder
+  QVERIFY( def3->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
+  // check that extension with QFileInfo::completeSuffix is "gpkg"
+  f = QFileInfo( def3->generateTemporaryDestination() );
+  QCOMPARE( f.completeSuffix(), QString( "gpkg" ) );
+
 }
 
 void TestQgsProcessing::parseDestinationString()

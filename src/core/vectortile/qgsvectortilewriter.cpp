@@ -62,6 +62,12 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
   {
     // remove the initial file:// scheme
     sourcePath = QUrl( sourcePath ).toLocalFile();
+
+    if ( !QgsVectorTileUtils::checkXYZUrlTemplate( sourcePath ) )
+    {
+      mErrorMessage = tr( "Invalid template for XYZ: " ) + sourcePath;
+      return false;
+    }
   }
   else if ( sourceType == QStringLiteral( "mbtiles" ) )
   {
@@ -190,7 +196,7 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
 
         if ( sourceType == QStringLiteral( "xyz" ) )
         {
-          if ( !writeTileFileXYZ( sourcePath, tileID, tileData ) )
+          if ( !writeTileFileXYZ( sourcePath, tileID, tileMatrix, tileData ) )
             return false;  // error message already set
         }
         else  // mbtiles
@@ -229,9 +235,9 @@ QgsRectangle QgsVectorTileWriter::fullExtent() const
   return extent;
 }
 
-bool QgsVectorTileWriter::writeTileFileXYZ( const QString &sourcePath, QgsTileXYZ tileID, const QByteArray &tileData )
+bool QgsVectorTileWriter::writeTileFileXYZ( const QString &sourcePath, QgsTileXYZ tileID, const QgsTileMatrix &tileMatrix, const QByteArray &tileData )
 {
-  QString filePath = QgsVectorTileUtils::formatXYZUrlTemplate( sourcePath, tileID );
+  QString filePath = QgsVectorTileUtils::formatXYZUrlTemplate( sourcePath, tileID, tileMatrix );
 
   // make dirs if needed
   QFileInfo fi( filePath );

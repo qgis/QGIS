@@ -150,6 +150,9 @@
           <property name="text">
            <string>Temporal</string>
           </property>
+          <property name="toolTip">
+           <string>Temporal Settings</string>
+          </property>
           <property name="icon">
            <iconset resource="../../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/temporal.svg</normaloff>:/images/themes/default/propertyicons/temporal.svg</iconset>
@@ -246,7 +249,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>661</width>
-                <height>508</height>
+                <height>507</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -336,11 +339,7 @@ border-radius: 2px;</string>
                 </layout>
                </item>
                <item>
-                <widget class="QPushButton" name="mAddDatasetButton">
-                 <property name="text">
-                  <string>Assign Extra Dataset to Mesh</string>
-                 </property>
-                </widget>
+                <widget class="QgsMeshDatasetGroupTreeWidget" name="mDatasetGroupTreeWidget" native="true"/>
                </item>
                <item>
                 <widget class="QCheckBox" name="mTemporalStaticDatasetCheckBox">
@@ -405,8 +404,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>661</width>
-                <height>728</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -770,6 +769,12 @@ border-radius: 2px;</string>
    <class>QgsMeshStaticDatasetWidget</class>
    <extends>QWidget</extends>
    <header>qgsmeshstaticdatasetwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMeshDatasetGroupTreeWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsmeshdatasetgrouptreewidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

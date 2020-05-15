@@ -7,7 +7,6 @@ version=2.12.99
 qgisMinimumVersion=3.0
 
 author=Victor Olaya
-email=volayaf@gmail.com
 
 icon=:/images/themes/default/processingAlgorithm.svg
 

@@ -56,10 +56,12 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   mWidth->setValidator( new QIntValidator( 1, 255, this ) );
   mPrecision->setValidator( new QIntValidator( 0, 15, this ) );
 
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) ), tr( "No Geometry" ), QgsWkbTypes::NoGeometry );
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "Point" ), QgsWkbTypes::Point );
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "MultiPoint" ), QgsWkbTypes::MultiPoint );
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "Line" ), QgsWkbTypes::LineString );
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "Polygon" ), QgsWkbTypes::Polygon );
+  mGeometryTypeBox->setCurrentIndex( -1 );
 
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
   mOkButton->setEnabled( false );
@@ -98,6 +100,23 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << QStringLiteral( "id" ) << QStringLiteral( "Integer" ) << QStringLiteral( "10" ) << QString() ) );
   connect( mNameEdit, &QLineEdit::textChanged, this, &QgsNewVectorLayerDialog::nameChanged );
   connect( mAttributeView, &QTreeWidget::itemSelectionChanged, this, &QgsNewVectorLayerDialog::selectionChanged );
+  connect( mGeometryTypeBox, static_cast<void( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int index )
+  {
+    QString fileName = mFileName->filePath();
+    if ( !fileName.isEmpty() )
+    {
+      if ( index == 0 )
+      {
+        fileName = fileName.replace( fileName.lastIndexOf( QLatin1String( ".shp" ), -1, Qt::CaseInsensitive ), 4, QLatin1String( ".dbf" ) );
+      }
+      else
+      {
+        fileName = fileName.replace( fileName.lastIndexOf( QLatin1String( ".dbf" ), -1, Qt::CaseInsensitive ), 4, QLatin1String( ".shp" ) );
+      }
+      mFileName->setFilePath( fileName );
+    }
+    checkOk();
+  } );
 
   mAddAttributeButton->setEnabled( false );
   mRemoveAttributeButton->setEnabled( false );
@@ -248,7 +267,7 @@ void QgsNewVectorLayerDialog::setFilename( const QString &filename )
 
 void QgsNewVectorLayerDialog::checkOk()
 {
-  bool ok = ( !mFileName->filePath().isEmpty() && mAttributeView->topLevelItemCount() > 0 );
+  bool ok = ( !mFileName->filePath().isEmpty() && mAttributeView->topLevelItemCount() > 0 && mGeometryTypeBox->currentIndex() != -1 );
   mOkButton->setEnabled( ok );
 }
 
@@ -288,8 +307,15 @@ QString QgsNewVectorLayerDialog::execAndCreateLayer( QString &errorMessage, QWid
 
   QgsSettings settings;
   QString fileName = geomDialog.filename();
-  if ( fileformat == QLatin1String( "ESRI Shapefile" ) && !fileName.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
+  if ( fileformat == QLatin1String( "ESRI Shapefile" ) && ( geometrytype != QgsWkbTypes::NoGeometry && !fileName.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) ) )
     fileName += QLatin1String( ".shp" );
+  else if ( fileformat == QLatin1String( "ESRI Shapefile" ) && ( geometrytype == QgsWkbTypes::NoGeometry && !fileName.endsWith( QLatin1String( ".dbf" ), Qt::CaseInsensitive ) ) )
+  {
+    if ( fileName.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
+      fileName = fileName.replace( fileName.lastIndexOf( QLatin1String( ".shp" ), -1, Qt::CaseInsensitive ), 4, QLatin1String( ".dbf" ) );
+    else
+      fileName += QLatin1String( ".dbf" );
+  }
 
   settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), QFileInfo( fileName ).absolutePath() );
   settings.setValue( QStringLiteral( "UI/encoding" ), enc );

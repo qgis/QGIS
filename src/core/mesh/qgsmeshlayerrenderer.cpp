@@ -466,7 +466,6 @@ void QgsMeshLayerRenderer::renderScalarDatasetOnEdges( const QgsMeshRendererScal
   edgePlotter.setInterpolatedColor( QgsInterpolatedLineColor( scalarSettings.colorRampShader() ) );
   edgePlotter.setInterpolatedWidth( QgsInterpolatedLineWidth( scalarSettings.edgeStrokeWidth() ) );
   edgePlotter.setWidthUnit( scalarSettings.edgeStrokeWidthUnit() );
-  edgePlotter.setOpacity( scalarSettings.opacity() );
 
   for ( const int i : egdesInExtent )
   {

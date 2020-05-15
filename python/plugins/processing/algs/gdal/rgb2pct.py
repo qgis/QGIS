@@ -38,7 +38,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class rgb2pct(GdalAlgorithm):
-
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     NCOLORS = 'NCOLORS'

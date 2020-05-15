@@ -261,7 +261,7 @@ QPushButton:hover, QToolButton:hover {
     background-color: @lightalternativegradient;
 }
 
-QPushButton:pressed, QToolButton:pressed, QTabWidget::top-bar QToolButton:pressed {
+QPushButton:pressed, QPushButton:open, QToolButton:pressed, QTabWidget::top-bar QToolButton:pressed {
     background-color: @darkalternativegradient;
 }
 

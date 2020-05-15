@@ -32,7 +32,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class PostGISExecuteSQL(QgisAlgorithm):
-
     DATABASE = 'DATABASE'
     SQL = 'SQL'
 

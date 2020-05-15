@@ -35,13 +35,13 @@ import base64
 import subprocess
 
 from test_qgsserver import QgsServerTestBase
-from qgis.core import QgsProject, QgsRenderChecker, QgsMultiRenderChecker
+from qgis.core import QgsProject, QgsRenderChecker, QgsMultiRenderChecker, Qt
 from qgis.server import QgsServerRequest
 from utilities import getExecutablePath, unitTestDataPath
 
 # Strip path and content length because path may vary
-RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+'
-RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
+RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+'
+RE_ATTRIBUTES = br'[^>\s]+=[^>\s]+'
 
 
 class TestQgsServerWMSGetPrint(QgsServerTestBase):
@@ -113,7 +113,8 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
             control.setSizeTolerance(max_size_diff.width(), max_size_diff.height())
         return control.runTest(control_image, max_diff), control.report()
 
-    def _pdf_diff_error(self, response, headers, image, max_diff=100, max_size_diff=QSize(), unittest_data_path='control_images', dpi=96):
+    def _pdf_diff_error(self, response, headers, image, max_diff=100, max_size_diff=QSize(),
+                        unittest_data_path='control_images', dpi=96):
 
         reference_path = unitTestDataPath(unittest_data_path) + '/qgis_server/' + image + '/' + image + '.pdf'
         self.store_reference(reference_path, response)
@@ -126,16 +127,16 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
 
         with open(os.path.join(tempfile.gettempdir(), image + "_result.pdf"), "rb") as rendered_file:
             if not os.environ.get('ENCODED_OUTPUT'):
-                message = "PDF is wrong\: rendered file %s/%s_result.%s" % (tempfile.gettempdir(), image, 'pdf')
+                message = "PDF is wrong: rendered file %s/%s_result.%s" % (tempfile.gettempdir(), image, 'pdf')
             else:
                 encoded_rendered_file = base64.b64encode(rendered_file.read())
-                message = "PDF is wrong\n%s\File:\necho '%s' | base64 -d >%s/%s_result.%s" % (
+                message = "PDF is wrong\n%sFile:\necho '%s' | base64 -d >%s/%s_result.%s" % (
                     report, encoded_rendered_file.strip().decode('utf8'), tempfile.gettempdir(), image, 'pdf'
                 )
 
         with open(os.path.join(tempfile.gettempdir(), image + "_result.png"), "rb") as rendered_file:
             if not os.environ.get('ENCODED_OUTPUT'):
-                message = "Image is wrong\: rendered file %s/%s_result.%s" % (tempfile.gettempdir(), image, 'png')
+                message = "Image is wrong: rendered file %s/%s_result.%s" % (tempfile.gettempdir(), image, 'png')
             else:
                 encoded_rendered_file = base64.b64encode(rendered_file.read())
                 message = "Image is wrong\n%s\nImage:\necho '%s' | base64 -d >%s/%s_result.%s" % (
@@ -146,7 +147,7 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
         if os.path.exists(os.path.join(tempfile.gettempdir(), image + "_result_diff.png")):
             with open(os.path.join(tempfile.gettempdir(), image + "_result_diff.png"), "rb") as diff_file:
                 if not os.environ.get('ENCODED_OUTPUT'):
-                    message = "Image is wrong\: diff file %s/%s_result_diff.%s" % (tempfile.gettempdir(), image, 'png')
+                    message = "Image is wrong: diff file %s/%s_result_diff.%s" % (tempfile.gettempdir(), image, 'png')
                 else:
                     encoded_diff_file = base64.b64encode(diff_file.read())
                     message += "\nDiff:\necho '%s' | base64 -d > %s/%s_result_diff.%s" % (
@@ -400,7 +401,7 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
         #"""
 
         # This test is too strict, it can fail
-        #self.assertEqual(r_individual, r_group, 'Individual layers query and group layers query results should be identical')
+        # self.assertEqual(r_individual, r_group, 'Individual layers query and group layers query results should be identical')
 
     def test_wms_getprint_legend(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -640,31 +641,32 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
 
     def test_wms_getprint_atlas(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
-             "MAP": urllib.parse.quote(self.projectPath),
-             "SERVICE": "WMS",
-             "VERSION": "1.3.0",
-             "REQUEST": "GetPrint",
-             "TEMPLATE": "layoutA4",
-             "FORMAT": "png",
-             "CRS": "EPSG:3857",
-             "ATLAS_PK": "3",
-             "map0:LAYERS": "Country,Hello",
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "CRS": "EPSG:3857",
+            "ATLAS_PK": "3",
+            "map0:LAYERS": "Country,Hello",
         }.items())])
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_Atlas")
 
     def test_wms_getprint_atlas_getProjectSettings(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
-             "MAP": urllib.parse.quote(self.projectPath),
-             "SERVICE": "WMS",
-             "VERSION": "1.3.0",
-             "REQUEST": "GetProjectSettings",
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetProjectSettings",
         }.items())])
         r, h = self._result(self._execute_request(qs))
         self.assertTrue('atlasEnabled="1"' in str(r))
         self.assertTrue('<PrimaryKeyAttribute>' in str(r))
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Can\'t rely on external resources for continuous integration')
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
+                     'Can\'t rely on external resources for continuous integration')
     def test_wms_getprint_external(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),

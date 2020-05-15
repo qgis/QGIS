@@ -29,9 +29,9 @@ QgsMeshRendererActiveDatasetWidget::QgsMeshRendererActiveDatasetWidget( QWidget 
 {
   setupUi( this );
 
-  connect( mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::activeScalarGroupChanged,
+  connect( mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::activeScalarGroupChanged,
            this, &QgsMeshRendererActiveDatasetWidget::onActiveScalarGroupChanged );
-  connect( mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::activeVectorGroupChanged,
+  connect( mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::activeVectorGroupChanged,
            this, &QgsMeshRendererActiveDatasetWidget::onActiveVectorGroupChanged );
 }
 
@@ -40,8 +40,21 @@ QgsMeshRendererActiveDatasetWidget::~QgsMeshRendererActiveDatasetWidget() = defa
 
 void QgsMeshRendererActiveDatasetWidget::setLayer( QgsMeshLayer *layer )
 {
+  if ( mMeshLayer )
+  {
+    disconnect( mMeshLayer, &QgsMeshLayer::activeScalarDatasetGroupChanged,
+                mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveScalarGroup );
+    disconnect( mMeshLayer, &QgsMeshLayer::activeVectorDatasetGroupChanged,
+                mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveVectorGroup );
+  }
+
   mMeshLayer = layer;
+
   mDatasetGroupTreeView->setLayer( layer );
+  connect( layer, &QgsMeshLayer::activeScalarDatasetGroupChanged,
+           mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveScalarGroup );
+  connect( layer, &QgsMeshLayer::activeVectorDatasetGroupChanged,
+           mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveVectorGroup );
 }
 
 int QgsMeshRendererActiveDatasetWidget::activeScalarDatasetGroup() const
@@ -185,6 +198,11 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
   const auto options = gmeta.extraOptions();
   for ( auto it = options.constBegin(); it != options.constEnd(); ++it )
   {
+    if ( it.key() == QStringLiteral( "classification" ) )
+    {
+      msg += QStringLiteral( "<tr><td>%1</td></tr>" ).arg( tr( "Classified values" ) );
+      continue;
+    }
     msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" ).arg( it.key() ).arg( it.value() );
   }
 
@@ -199,17 +217,8 @@ void QgsMeshRendererActiveDatasetWidget::syncToLayer()
 
   whileBlocking( mDatasetGroupTreeView )->syncToLayer();
 
-  if ( mMeshLayer )
-  {
-    const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
-    mActiveScalarDatasetGroup = mDatasetGroupTreeView->activeScalarGroup();
-    mActiveVectorDatasetGroup = mDatasetGroupTreeView->activeVectorGroup();
-  }
-  else
-  {
-    mActiveScalarDatasetGroup = -1;
-    mActiveVectorDatasetGroup = -1;
-  }
+  mActiveScalarDatasetGroup = mDatasetGroupTreeView->activeScalarGroup();
+  mActiveVectorDatasetGroup = mDatasetGroupTreeView->activeVectorGroup();
 
   updateMetadata();
 }

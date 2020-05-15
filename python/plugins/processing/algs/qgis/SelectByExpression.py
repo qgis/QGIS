@@ -33,7 +33,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class SelectByExpression(QgisAlgorithm):
-
     INPUT = 'INPUT'
     EXPRESSION = 'EXPRESSION'
     OUTPUT = 'OUTPUT'

@@ -12,7 +12,7 @@
 
 
 
-class QgsTemporalNavigationObject : QgsTemporalController
+class QgsTemporalNavigationObject : QgsTemporalController, QgsExpressionContextScopeGenerator
 {
 %Docstring
 Implements a temporal controller based on a frame by frame navigation and animation.
@@ -134,6 +134,20 @@ a playing animation will advance to the next frame.
 .. seealso:: :py:func:`setFramesPerSecond`
 %End
 
+    void setTemporalRangeCumulative( bool state );
+%Docstring
+Sets the animation temporal range as cumulative.
+
+.. seealso:: :py:func:`temporalRangeCumulative`
+%End
+
+    bool temporalRangeCumulative() const;
+%Docstring
+Returns the animation temporal range cumulative settings.
+
+.. seealso:: :py:func:`setTemporalRangeCumulative`
+%End
+
     long long totalFrameCount();
 %Docstring
 Returns the total number of frames for the navigation.
@@ -152,6 +166,9 @@ Sets whether the animation should ``loop`` after hitting the end or start frame.
 
 .. seealso:: :py:func:`isLooping`
 %End
+
+    virtual QgsExpressionContextScope *createExpressionContextScope() const /Factory/;
+
 
   signals:
 

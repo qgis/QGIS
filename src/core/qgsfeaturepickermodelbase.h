@@ -170,6 +170,7 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
 
     /**
      * Defines the feature request fetch limit
+     * If set to 0, no limit is applied when fetching
      */
     void setFetchLimit( int fetchLimit );
 

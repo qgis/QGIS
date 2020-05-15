@@ -88,7 +88,7 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case ColorWithAlpha:
       mTypes = DataTypeString;
-      mHelpText = QObject::tr( "string [<b>r,g,b,a</b>] as int 0-255 or #<b>AARRGGBB</b> as hex or <b>color</b> as color's name" );
+      mHelpText = QObject::tr( "string [<b>r,g,b,a</b>] as int 0-255 or #<b>RRGGBBAA</b> as hex or <b>color</b> as color's name" );
       break;
 
     case ColorNoAlpha:
@@ -165,6 +165,11 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
     case Offset:
       mTypes = DataTypeString;
       mHelpText = QObject::tr( "string of doubles '<b>x,y</b>' or array of doubles <b>[x, y]</b>" );
+      break;
+
+    case DateTime:
+      mTypes = DataTypeString;
+      mHelpText = QObject::tr( "DateTime or string representation of a DateTime" );
       break;
 
     case Custom:
@@ -532,6 +537,34 @@ QVariant QgsProperty::value( const QgsExpressionContext &context, const QVariant
     *ok = true;
 
   return val;
+}
+
+QDateTime QgsProperty::valueAsDateTime( const QgsExpressionContext &context, const QDateTime &defaultDateTime, bool *ok ) const
+{
+  bool valOk = false;
+  QVariant val = value( context, defaultDateTime, &valOk );
+
+  if ( !valOk || !val.isValid() )
+    return defaultDateTime;
+
+  QDateTime dateTime;
+  if ( val.type() == QVariant::DateTime )
+  {
+    dateTime = val.value<QDateTime>();
+  }
+  else
+  {
+    dateTime = val.toDateTime();
+  }
+
+  if ( !dateTime.isValid() )
+    return defaultDateTime;
+  else
+  {
+    if ( ok )
+      *ok = true;
+    return dateTime;
+  }
 }
 
 QString QgsProperty::valueAsString( const QgsExpressionContext &context, const QString &defaultString, bool *ok ) const

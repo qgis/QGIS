@@ -25,7 +25,7 @@
 #include <QObject>
 #include "qgis_app.h"
 #include "qgssymbol.h"
-#include "qgstextrenderer.h"
+#include "qgstextformat.h"
 #include <memory>
 
 class QgsDecorationLayoutExtentDialog;

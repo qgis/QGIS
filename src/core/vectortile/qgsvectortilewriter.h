@@ -21,6 +21,7 @@
 #include "qgscoordinatetransformcontext.h"
 
 class QgsFeedback;
+class QgsTileMatrix;
 class QgsTileXYZ;
 class QgsVectorLayer;
 
@@ -163,7 +164,7 @@ class CORE_EXPORT QgsVectorTileWriter
     QgsRectangle fullExtent() const;
 
   private:
-    bool writeTileFileXYZ( const QString &sourcePath, QgsTileXYZ tileID, const QByteArray &tileData );
+    bool writeTileFileXYZ( const QString &sourcePath, QgsTileXYZ tileID, const QgsTileMatrix &tileMatrix, const QByteArray &tileData );
     QString mbtilesJsonSchema();
 
   private:

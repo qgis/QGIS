@@ -3,8 +3,9 @@ cd $(git rev-parse --show-toplevel)
 
 export PATH=$PATH:$PWD/scripts
 
-if [ -z "$TRAVIS_COMMIT_RANGE" ]; then
-	echo "No commit range given"
+if [ -z "$1" ]; then
+	echo "No commit range given. "
+	echo "  Usage: ./scripts/verify_indentation [HEAD_REF]..[BASE_REF]"
 	exit 0
 fi
 
@@ -19,14 +20,8 @@ ASTYLEDIFF=/tmp/astyle.diff
 true > $ASTYLEDIFF
 
 
-if [[ -n  $TRAVIS_PULL_REQUEST_BRANCH  ]]; then
-  # if on a PR, just analyze the changed files
-  echo "TRAVIS PR BRANCH: $TRAVIS_PULL_REQUEST_BRANCH"
-  FILES=$(git diff --diff-filter=AM --name-only $(git merge-base HEAD ${TRAVIS_BRANCH}) | tr '\n' ' ' )
-elif [[ -n  $TRAVIS_COMMIT_RANGE  ]]; then
-  echo "TRAVIS COMMIT RANGE: $TRAVIS_COMMIT_RANGE"
-  FILES=$(git diff --diff-filter=AM --name-only ${TRAVIS_COMMIT_RANGE/.../..} | tr '\n' ' ' )
-fi
+# echo "Commit range: $1"
+FILES=$(git diff --diff-filter=AM --name-only $1 | tr '\n' ' ' )
 
 for f in $FILES; do
 	if ! [ -f "$f" ]; then
@@ -34,7 +29,7 @@ for f in $FILES; do
 		continue
 	fi
 
-	echo "Checking $f" >>/tmp/ctest-important.log
+	# echo "Checking $f"
 	case "$f" in
 	*.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.sip|*.py)
 		;;
@@ -50,7 +45,7 @@ for f in $FILES; do
 	if diff -u "$m" "$f" >>$ASTYLEDIFF; then
 		rm "$m"
 	else
-		echo "File $f needs indentation"
+		echo "File $f is not styled properly."
 	fi
 done
 
@@ -62,9 +57,9 @@ if [ -s "$ASTYLEDIFF" ]; then
 	cat <<EOF
 
 Tips to prevent and resolve:
-* Enable WITH_ASTYLE in your cmake configuration to format C++ code
+* Install astyle to format C++ code
 * Install autopep8 (>= 1.2.1) to format python code
-* Use "scripts/astyle.sh file" to fix the now badly indented files
+* Use "scripts/astyle.sh file" to fix the now incorrectly formatted files
 * Consider using scripts/prepare_commit.sh as pre-commit hook to avoid this
   in the future (ln -s ../../scripts/prepare_commit.sh .git/hooks/pre-commit) or
   run it manually before each commit.

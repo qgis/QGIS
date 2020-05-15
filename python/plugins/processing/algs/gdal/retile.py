@@ -37,7 +37,6 @@ from processing.tools.system import isWindows
 
 
 class retile(GdalAlgorithm):
-
     INPUT = 'INPUT'
     TILE_SIZE_X = 'TILE_SIZE_X'
     TILE_SIZE_Y = 'TILE_SIZE_Y'

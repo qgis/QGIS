@@ -138,7 +138,7 @@ QgsMeshLayer cannot be copied.
 
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
-    virtual QgsMeshLayerTemporalProperties *temporalProperties();
+    virtual QgsMapLayerTemporalProperties *temporalProperties();
 
     virtual void reload();
 
@@ -148,6 +148,18 @@ QgsMeshLayer cannot be copied.
     QString providerType() const;
 %Docstring
 Returns the provider type for this layer
+%End
+
+    bool addDatasets( const QString &path, const QDateTime &defaultReferenceTime = QDateTime() );
+%Docstring
+Add datasets to the mesh from file with ``path``. Use the the time ``defaultReferenceTime`` as reference time is not provided in the file
+
+:param path: the path to the atasets file
+:param defaultReferenceTime: reference time used if not provided in the file
+
+:return: whether the dataset is added
+
+.. versionadded:: 3.14
 %End
 
 
@@ -316,6 +328,64 @@ Returns the static vector dataset index that is rendered if the temporal propert
 Sets the reference time of the layer
 
 :param referenceTime: the reference time
+
+.. versionadded:: 3.14
+%End
+
+    QgsPointXY snapOnElement( QgsMesh::ElementType elementType, const QgsPointXY &point, double searchRadius );
+%Docstring
+Returns the position of the snapped point on the mesh element closest to ``point`` intersecting with
+the searching area defined by ``point`` and ``searchRadius``
+
+For vertex, the snapped position is the vertex position
+For edge, the snapped position is the projected point on the edge, extremity of edge if outside the edge
+For face, the snapped position is the centroid of the face
+The returned position is in map coordinates.
+
+.. note::
+
+   It uses previously cached and indexed triangular mesh
+   and so if the layer has not been rendered previously
+   (e.g. when used in a script) it returns empty :py:class:`QgsPointXY`
+
+.. seealso:: :py:func:`updateTriangularMesh`
+
+:param elementType: the type of element to snap
+:param point: the center of the search area in map coordinates
+:param searchRadius: the radius of the search area in map units
+
+:return: the position of the snapped point on the closest element, empty QgsPointXY if no element of type ``elementType``
+
+
+.. versionadded:: 3.14
+%End
+
+    QgsMeshDatasetGroupTreeItem *datasetGroupTreeRootItem() const;
+%Docstring
+Returns the root items of the dataset group tree item
+
+:return: the root item
+
+.. versionadded:: 3.14
+%End
+
+    void setDatasetGroupTreeRootItem( QgsMeshDatasetGroupTreeItem *rootItem );
+%Docstring
+Sets the root items of the dataset group tree item.
+Changes active dataset groups if those one are not enabled anymore :
+- new active scalar dataset group is the first root item enabled child
+- new active vector dataset group is none
+
+Doesn't take ownership of the pointed item, the root item is cloned.
+
+:param rootItem: the new root item
+
+.. versionadded:: 3.14
+%End
+
+    void resetDatasetGroupTreeItem();
+%Docstring
+Reset the dataset group tree item to default from provider
 
 .. versionadded:: 3.14
 %End

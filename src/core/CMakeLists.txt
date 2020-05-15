@@ -149,6 +149,7 @@ SET(QGIS_CORE_SRCS
   processing/qgsprocessingoutputs.cpp
   processing/qgsprocessingparameters.cpp
   processing/qgsprocessingparametertype.cpp
+  processing/qgsprocessingparametervectortilewriterlayers.cpp
   processing/qgsprocessingprovider.cpp
   processing/qgsprocessingregistry.cpp
   processing/qgsprocessingutils.cpp
@@ -193,6 +194,18 @@ SET(QGIS_CORE_SRCS
   scalebar/qgssingleboxscalebarrenderer.cpp
   scalebar/qgssteppedlinescalebarrenderer.cpp
   scalebar/qgsticksscalebarrenderer.cpp
+
+  textrenderer/qgstextbackgroundsettings.cpp
+  textrenderer/qgstextblock.cpp
+  textrenderer/qgstextbuffersettings.cpp
+  textrenderer/qgstextcharacterformat.cpp
+  textrenderer/qgstextdocument.cpp
+  textrenderer/qgstextformat.cpp
+  textrenderer/qgstextfragment.cpp
+  textrenderer/qgstextmasksettings.cpp
+  textrenderer/qgstextrenderer.cpp
+  textrenderer/qgstextrendererutils.cpp
+  textrenderer/qgstextshadowsettings.cpp
 
   qgis.cpp
   qgsabstractcontentcache.cpp
@@ -403,7 +416,6 @@ SET(QGIS_CORE_SRCS
   qgstemporalrangeobject.cpp
   qgstemporalutils.cpp
   qgstessellator.cpp
-  qgstextrenderer.cpp
   qgstilecache.cpp
   qgstiles.cpp
   qgstolerance.cpp
@@ -432,6 +444,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerjoinbuffer.cpp
   qgsvectorlayerjoininfo.cpp
   qgsvectorlayerrenderer.cpp
+  qgsvectorlayertemporalproperties.cpp
   qgsvectorlayertools.cpp
   qgsvectorlayerundocommand.cpp
   qgsvectorlayerundopassthroughcommand.cpp
@@ -450,7 +463,6 @@ SET(QGIS_CORE_SRCS
   dxf/qgsdxfexport.cpp
   dxf/qgsdxfpaintdevice.cpp
   dxf/qgsdxfpaintengine.cpp
-  dxf/qgsdxfpallabeling.cpp
 
   layout/qgsabstractreportsection.cpp
   layout/qgslayout.cpp
@@ -593,6 +605,7 @@ SET(QGIS_CORE_SRCS
   labeling/qgslabelingenginesettings.cpp
   labeling/qgslabelobstaclesettings.cpp
   labeling/qgslabelsearchtree.cpp
+  labeling/qgslabelsink.cpp
   labeling/qgslabelthinningsettings.cpp
   labeling/qgspallabeling.cpp
   labeling/qgsrulebasedlabeling.cpp
@@ -962,7 +975,6 @@ SET(QGIS_CORE_HDRS
   qgstemporalutils.h
   qgstessellator.h
   qgstestutils.h
-  qgstextrenderer.h
   qgsthreadingutils.h
   qgstilecache.h
   qgstiles.h
@@ -994,6 +1006,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerjoininfo.h
   qgsvectorlayerrenderer.h
   qgsvectorlayerserverproperties.h
+  qgsvectorlayertemporalproperties.h
   qgsvectorlayertools.h
   qgsvectorlayerundocommand.h
   qgsvectorlayerundopassthroughcommand.h
@@ -1257,6 +1270,7 @@ SET(QGIS_CORE_HDRS
   processing/qgsprocessingparameters.h
   processing/qgsprocessingparametertype.h
   processing/qgsprocessingparametertypeimpl.h
+  processing/qgsprocessingparametervectortilewriterlayers.h
   processing/qgsprocessingprovider.h
   processing/qgsprocessingregistry.h
   processing/qgsprocessingutils.h
@@ -1370,6 +1384,18 @@ SET(QGIS_CORE_HDRS
   symbology/qgssymbollayerutils.h
   symbology/qgsvectorfieldsymbollayer.h
 
+  textrenderer/qgstextbackgroundsettings.h
+  textrenderer/qgstextblock.h
+  textrenderer/qgstextbuffersettings.h
+  textrenderer/qgstextcharacterformat.h
+  textrenderer/qgstextdocument.h
+  textrenderer/qgstextformat.h
+  textrenderer/qgstextfragment.h
+  textrenderer/qgstextmasksettings.h
+  textrenderer/qgstextrenderer.h
+  textrenderer/qgstextrendererutils.h
+  textrenderer/qgstextshadowsettings.h
+
   validity/qgsabstractvaliditycheck.h
   validity/qgsvaliditycheckcontext.h
   validity/qgsvaliditycheckregistry.h
@@ -1402,7 +1428,8 @@ SET(QGIS_CORE_PRIVATE_HDRS
   qgsproperty_p.h
   qgsrelation_p.h
   qgsspatialindexkdbush_p.h
-  qgstextrenderer_p.h
+
+  textrenderer/qgstextrenderer_p.h
 )
 
 IF (NOT WITH_QTWEBKIT)
@@ -1473,6 +1500,7 @@ INCLUDE_DIRECTORIES(
   layertree
   layout
   locator
+  mesh
   metadata
   numericformats
   pal
@@ -1487,7 +1515,7 @@ INCLUDE_DIRECTORIES(
   renderer
   scalebar
   symbology
-  mesh
+  textrenderer
   validity
   vectortile
   ${CMAKE_SOURCE_DIR}/external

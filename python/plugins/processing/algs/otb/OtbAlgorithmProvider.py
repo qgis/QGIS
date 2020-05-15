@@ -40,7 +40,7 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
     def __init__(self):
         super().__init__()
         self.algs = []
-        #!hack for 6.6!#
+        # !hack for 6.6!#
         self.version = '6.6.0'
 
     def load(self):
@@ -110,7 +110,7 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
                     group, name = str(data[0]), str(data[1])
                     if name not in alg_names:
                         algs.append(OtbAlgorithm(group, name, descriptionFile))
-                        #avoid duplicate algorithms from algs.txt file (possible but rare)
+                        # avoid duplicate algorithms from algs.txt file (possible but rare)
                         alg_names.append(name)
                     line = lines.readline().strip('\n').strip()
         except Exception as e:
@@ -172,7 +172,7 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
             self.setActive(False)
             raise ValueError(self.tr("'{}' does not exist. OTB provider will be disabled".format(v)))
 
-        #isValid is True if there is at least one valid otb application is given path
+        # isValid is True if there is at least one valid otb application is given path
         isValid = False
         descr_folder = self.descrFolder(folder)
         for app_dir in otb_app_dirs:
@@ -221,7 +221,7 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
         return os.path.join(self.descrFolder(d), 'algs.txt')
 
     def descrFolder(self, d):
-        #!hack for 6.6!#
+        # !hack for 6.6!#
         if os.path.exists(os.path.join(d, 'description')):
             return os.path.join(d, 'description')
         else:

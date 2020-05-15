@@ -23,7 +23,7 @@
    <item row="4" column="0">
     <widget class="QLabel" name="mHeightLabel">
      <property name="text">
-      <string>Output Height</string>
+      <string>Output height</string>
      </property>
      <property name="buddy">
       <cstring>mHeightSpinBox</cstring>
@@ -33,7 +33,7 @@
    <item row="2" column="0">
     <widget class="QLabel" name="mFpsLabel">
      <property name="text">
-      <string>Frames Per Second</string>
+      <string>Frames per second</string>
      </property>
     </widget>
    </item>
@@ -47,7 +47,7 @@
    <item row="1" column="0">
     <widget class="QLabel" name="mOutputDirLabel">
      <property name="text">
-      <string>Output Directory</string>
+      <string>Output directory</string>
      </property>
     </widget>
    </item>
@@ -74,7 +74,7 @@
    <item row="3" column="0">
     <widget class="QLabel" name="mWidthLabel">
      <property name="text">
-      <string>Output Width</string>
+      <string>Output width</string>
      </property>
      <property name="buddy">
       <cstring>mWidthSpinBox</cstring>

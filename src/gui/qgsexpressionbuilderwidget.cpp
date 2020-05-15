@@ -114,7 +114,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 
   // Set icons for tool buttons
   btnSaveExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileSave.svg" ) ) );
-  btnEditExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionToggleEditing.svg" ) ) );
+  btnEditExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "symbologyEdit.svg" ) ) );
   btnRemoveExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionDeleteSelected.svg" ) ) );
   btnExportExpressions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionSharingExport.svg" ) ) );
   btnImportExpressions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionSharingImport.svg" ) ) );
@@ -927,6 +927,12 @@ void QgsExpressionBuilderWidget::editSelectedUserExpression()
 
   if ( dlg.exec() == QDialog::DialogCode::Accepted )
   {
+    // label has changed removed the old one before adding the new one
+    if ( dlg.label() != item->text() )
+    {
+      mExpressionTreeView->removeFromUserExpressions( item->text() );
+    }
+
     mExpressionTreeView->saveToUserExpressions( dlg.label(), dlg.expression(), dlg.helpText() );
   }
 }

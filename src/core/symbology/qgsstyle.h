@@ -26,7 +26,7 @@
 
 #include "qgssqliteutils.h"
 #include "qgssymbollayerutils.h" // QgsStringMap
-#include "qgstextrenderer.h"
+#include "qgstextformat.h"
 #include "qgspallabeling.h"
 #include "layertree/qgslegendpatchshape.h"
 

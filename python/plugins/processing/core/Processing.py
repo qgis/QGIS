@@ -57,11 +57,11 @@ from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # 
 from processing.algs.otb.OtbAlgorithmProvider import OtbAlgorithmProvider  # NOQA
 from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # NOQA
 from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
-#from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider  # NOQA
+# from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider  # NOQA
 
 # should be loaded last - ensures that all dependent algorithms are available when loading models
 from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider  # NOQA
-from processing.modeler.ProjectProvider import ProjectProvider # NOQA
+from processing.modeler.ProjectProvider import ProjectProvider  # NOQA
 
 
 class Processing(object):
@@ -156,16 +156,16 @@ class Processing(object):
                     if isinstance(out, (QgsProcessingOutputVectorLayer, QgsProcessingOutputRasterLayer, QgsProcessingOutputMapLayer)):
                         result = results[out.name()]
                         if not isinstance(result, QgsMapLayer):
-                            layer = context.takeResultLayer(result) # transfer layer ownership out of context
+                            layer = context.takeResultLayer(result)  # transfer layer ownership out of context
                             if layer:
-                                results[out.name()] = layer # replace layer string ref with actual layer (+ownership)
+                                results[out.name()] = layer  # replace layer string ref with actual layer (+ownership)
                     elif isinstance(out, QgsProcessingOutputMultipleLayers):
                         result = results[out.name()]
                         if result:
                             layers_result = []
                             for l in result:
                                 if not isinstance(result, QgsMapLayer):
-                                    layer = context.takeResultLayer(l) # transfer layer ownership out of context
+                                    layer = context.takeResultLayer(l)  # transfer layer ownership out of context
                                     if layer:
                                         layers_result.append(layer)
                                     else:
@@ -173,7 +173,8 @@ class Processing(object):
                                 else:
                                     layers_result.append(l)
 
-                            results[out.name()] = layers_result # replace layers strings ref with actual layers (+ownership)
+                            results[
+                                out.name()] = layers_result  # replace layers strings ref with actual layers (+ownership)
 
         else:
             msg = Processing.tr("There were errors executing the algorithm.")

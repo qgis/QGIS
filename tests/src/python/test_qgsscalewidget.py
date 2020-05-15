@@ -49,7 +49,7 @@ class TestQgsScaleWidget(unittest.TestCase):
 
         w.setScale(50)
         self.assertFalse(w.allowNull())
-        w.setNull() # no effect
+        w.setNull()  # no effect
         self.assertEqual(w.scale(), 50.0)
         self.assertFalse(w.isNull())
 

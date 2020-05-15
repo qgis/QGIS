@@ -477,7 +477,8 @@ void QgsTextFormatWidget::initWidget()
           << mMaskJoinStyleComboBox
           << mMaskBufferSizeSpinBox
           << mMaskOpacityWidget
-          << mCheckAllowLabelsOutsidePolygons;
+          << mCheckAllowLabelsOutsidePolygons
+          << mHtmlFormattingCheckBox;
 
   connectValueChanged( widgets, SLOT( updatePreview() ) );
 
@@ -887,6 +888,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mTextOpacityWidget->setOpacity( format.opacity() );
   comboBlendMode->setBlendMode( format.blendMode() );
   mTextOrientationComboBox->setCurrentIndex( mTextOrientationComboBox->findData( format.orientation() ) );
+  mHtmlFormattingCheckBox->setChecked( format.allowHtmlFormatting() );
 
   mFontWordSpacingSpinBox->setValue( format.font().wordSpacing() );
   mFontLetterSpacingSpinBox->setValue( format.font().letterSpacing() );
@@ -1012,6 +1014,7 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
   format.setLineHeight( mFontLineHeightSpinBox->value() );
   format.setPreviewBackgroundColor( mPreviewBackgroundColor );
   format.setOrientation( static_cast< QgsTextFormat::TextOrientation >( mTextOrientationComboBox->currentData().toInt() ) );
+  format.setAllowHtmlFormatting( mHtmlFormattingCheckBox->isChecked( ) );
 
   // buffer
   QgsTextBufferSettings buffer;
@@ -1037,7 +1040,7 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
   mask.setOpacity( mMaskOpacityWidget->opacity() );
   mask.setSizeUnit( mMaskBufferUnitWidget->unit() );
   mask.setSizeMapUnitScale( mMaskBufferUnitWidget->getMapUnitScale() );
-  mask.setJoinStyle( mBufferJoinStyleComboBox->penJoinStyle() );
+  mask.setJoinStyle( mMaskJoinStyleComboBox->penJoinStyle() );
   if ( mMaskEffect && !QgsPaintEffectRegistry::isDefaultStack( mMaskEffect.get() ) )
     mask.setPaintEffect( mMaskEffect->clone() );
   else

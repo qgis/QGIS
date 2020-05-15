@@ -123,19 +123,84 @@ class CORE_EXPORT QgsLegendSettings
      */
     QString wrapChar() const {return mWrapChar;}
 
+    /**
+     * Returns the margin space between adjacent columns (in millimeters).
+     *
+     * \see setColumnSpace()
+     */
     double columnSpace() const {return mColumnSpace;}
+
+    /**
+     * Sets the margin space between adjacent columns (in millimeters).
+     *
+     * \see columnSpace()
+     */
     void setColumnSpace( double s ) { mColumnSpace = s;}
 
+    /**
+     * Returns the desired minimum number of columns to show in the legend.
+     *
+     * If legend components have forced column breaks then the actual number of columns in the rendered
+     * legend may be larger than this value.
+     *
+     * \see setColumnCount()
+     */
     int columnCount() const { return mColumnCount; }
+
+    /**
+     * Sets the desired minimum number of columns to show in the legend.
+     *
+     * If legend components have forced column breaks then the actual number of columns in the rendered
+     * legend may be larger than this value.
+     *
+     * \see columnCount()
+     */
     void setColumnCount( int c ) { mColumnCount = c;}
 
+    /**
+     * Returns TRUE if layer components can be split over multiple columns.
+     *
+     * \see setSplitLayer()
+     */
     bool splitLayer() const { return mSplitLayer; }
+
+    /**
+     * Sets whether layer components can be split over multiple columns.
+     *
+     * \see splitLayer()
+     */
     void setSplitLayer( bool s ) { mSplitLayer = s;}
 
+    /**
+     * Returns TRUE if all columns should have equal widths.
+     *
+     * If FALSE is returned then columns will be individually resized to their minimum possible width.
+     *
+     * \see setEqualColumnWidth()
+     */
     bool equalColumnWidth() const { return mEqualColumnWidth; }
+
+    /**
+     * Sets whether all columns should have equal widths.
+     *
+     * If FALSE, then then columns will be individually resized to their minimum possible width.
+     *
+     * \see equalColumnWidth()
+     */
     void setEqualColumnWidth( bool s ) { mEqualColumnWidth = s;}
 
+    /**
+     * Returns the font color used for legend items.
+     *
+     * \see setFontColor()
+     */
     QColor fontColor() const {return mFontColor;}
+
+    /**
+     * Sets the font color used for legend items.
+     *
+     * \see fontColor()
+     */
     void setFontColor( const QColor &c ) {mFontColor = c;}
 
     /**
@@ -155,8 +220,18 @@ class CORE_EXPORT QgsLegendSettings
      */
     void setLayerFontColor( const QColor &fontColor ) {mLayerFontColor = fontColor;}
 
-
+    /**
+     * Returns the default symbol size (in millimeters) used for legend items.
+     *
+     * \see setSymbolSize()
+     */
     QSizeF symbolSize() const {return mSymbolSize;}
+
+    /**
+     * Sets the default symbol size (in millimeters) used for legend items.
+     *
+     * \see symbolSize()
+     */
     void setSymbolSize( QSizeF s ) {mSymbolSize = s;}
 
     /**
@@ -240,10 +315,32 @@ class CORE_EXPORT QgsLegendSettings
      */
     void setRasterStrokeWidth( double width ) { mRasterStrokeWidth = width; }
 
+    /**
+     * Returns the size (in millimeters) of WMS legend graphics shown in the legend.
+     *
+     * \see setWmsLegendSize()
+     */
     QSizeF wmsLegendSize() const {return mWmsLegendSize;}
+
+    /**
+     * Sets the desired size (in millimeters) of WMS legend graphics shown in the legend.
+     *
+     * \see wmsLegendSize()
+     */
     void setWmsLegendSize( QSizeF s ) {mWmsLegendSize = s;}
 
+    /**
+     * Returns the line spacing to use between lines of legend text.
+     *
+     * \see setLineSpacing()
+     */
     double lineSpacing() const { return mLineSpacing; }
+
+    /**
+     * Sets the line spacing to use between lines of legend text.
+     *
+     * \see lineSpacing()
+     */
     void setLineSpacing( double s ) { mLineSpacing = s; }
 
     /**

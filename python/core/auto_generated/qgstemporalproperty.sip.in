@@ -25,6 +25,13 @@ Base class for temporal property.
 %End
   public:
 
+    enum Flag
+    {
+      FlagDontInvalidateCachedRendersWhenRangeChanges
+    };
+    typedef QFlags<QgsTemporalProperty::Flag> Flags;
+
+
     QgsTemporalProperty( QObject *parent /TransferThis/ = 0, bool enabled = false );
 %Docstring
 Constructor for QgsTemporalProperty, with the specified ``parent`` object.
@@ -44,6 +51,11 @@ Sets whether the temporal property is ``active``.
 Returns ``True`` if the temporal property is active.
 
 .. seealso:: :py:func:`setIsActive`
+%End
+
+    virtual QgsTemporalProperty::Flags flags() const;
+%Docstring
+Returns flags associated to the temporal property.
 %End
 
   signals:

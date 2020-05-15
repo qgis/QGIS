@@ -18,6 +18,7 @@ SET(QGIS_APP_SRCS
   qgsapplayertreeviewmenuprovider.cpp
   qgsappwindowmanager.cpp
   qgsappscreenshots.cpp
+  qgsanimationexportdialog.cpp
   qgsannotationwidget.cpp
   qgsappsslerrorhandler.cpp
   qgsattributetabledialog.cpp
@@ -212,6 +213,7 @@ SET(QGIS_APP_SRCS
 
   mesh/qgsmeshlayerproperties.cpp
   mesh/qgsrenderermeshpropertieswidget.cpp
+  mesh/qgsmeshdatasetgrouptreewidget.cpp
   mesh/qgsmeshrenderer3daveragingwidget.cpp
   mesh/qgsmeshrenderermeshsettingswidget.cpp
   mesh/qgsmeshrendererscalarsettingswidget.cpp
@@ -481,6 +483,7 @@ INCLUDE_DIRECTORIES(
   ../core/mesh
   ../core/scalebar
   ../core/symbology
+  ../core/textrenderer
   ../gui
   ../gui/symbology
   ../gui/attributetable

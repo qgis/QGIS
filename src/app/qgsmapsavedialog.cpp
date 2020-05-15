@@ -347,6 +347,9 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
   mapSettings.setLabelingEngineSettings( mMapCanvas->mapSettings().labelingEngineSettings() );
   mapSettings.setTransformContext( QgsProject::instance()->transformContext() );
   mapSettings.setPathResolver( QgsProject::instance()->pathResolver() );
+  mapSettings.setTemporalRange( mMapCanvas->mapSettings().temporalRange() );
+  mapSettings.setIsTemporal( mMapCanvas->mapSettings().isTemporal() );
+
 
   //build the expression context
   QgsExpressionContext expressionContext;

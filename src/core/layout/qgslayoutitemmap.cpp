@@ -818,7 +818,7 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
   if ( isTemporal() )
   {
     QDateTime begin = QDateTime::fromString( itemElem.attribute( QStringLiteral( "temporalRangeBegin" ) ), Qt::ISODate );
-    QDateTime end = QDateTime::fromString( itemElem.attribute( QStringLiteral( "temporalRangeBegin" ) ), Qt::ISODate );
+    QDateTime end = QDateTime::fromString( itemElem.attribute( QStringLiteral( "temporalRangeEnd" ) ), Qt::ISODate );
     setTemporalRange( QgsDateTimeRange( begin, end ) );
   }
 
@@ -1561,10 +1561,9 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
 
   scope->addFunction( QStringLiteral( "is_layer_visible" ), new QgsExpressionContextUtils::GetLayerVisibility( layersInMap, scale() ) );
 
-  // maybe one day we'll populate these with real values!
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_start_time" ), QVariant(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_end_time" ), QVariant(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_interval" ), QVariant(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_start_time" ), isTemporal() ? temporalRange().begin() : QVariant(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_end_time" ), isTemporal() ? temporalRange().end() : QVariant(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_interval" ), isTemporal() ? ( temporalRange().end() - temporalRange().begin() ) : QVariant(), true ) );
 
   return context;
 }
@@ -1764,6 +1763,19 @@ void QgsLayoutItemMap::refreshDataDefinedProperty( const QgsLayoutObject::DataDe
     mLastEvaluatedThemeName = mDataDefinedProperties.valueAsString( QgsLayoutObject::MapStylePreset, context, mFollowVisibilityPresetName );
     if ( mLastEvaluatedThemeName != previousTheme )
       emit themeChanged( mLastEvaluatedThemeName );
+  }
+
+  if ( isTemporal() && ( property == QgsLayoutObject::StartDateTime || property == QgsLayoutObject::EndDateTime || property == QgsLayoutObject::AllProperties ) )
+  {
+    QDateTime begin = temporalRange().begin();
+    QDateTime end = temporalRange().end();
+
+    if ( property == QgsLayoutObject::StartDateTime || property == QgsLayoutObject::AllProperties )
+      begin = mDataDefinedProperties.valueAsDateTime( QgsLayoutObject::StartDateTime, context, temporalRange().begin() );
+    if ( property == QgsLayoutObject::EndDateTime || property == QgsLayoutObject::AllProperties )
+      end = mDataDefinedProperties.valueAsDateTime( QgsLayoutObject::EndDateTime, context, temporalRange().end() );
+
+    setTemporalRange( QgsDateTimeRange( begin, end ) );
   }
 
   //force redraw

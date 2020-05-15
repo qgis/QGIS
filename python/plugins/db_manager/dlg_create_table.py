@@ -38,7 +38,6 @@ from .ui.ui_DlgCreateTable import Ui_DbManagerDlgCreateTable as Ui_Dialog
 
 
 class TableFieldsDelegate(QItemDelegate):
-
     """ delegate with some special item editors """
 
     columnNameChanged = pyqtSignal()

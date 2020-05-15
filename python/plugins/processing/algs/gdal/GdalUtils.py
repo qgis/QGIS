@@ -298,7 +298,7 @@ class GdalUtils:
             ogrstr = "PG:%s" % dsUri.connectionInfo()
             format = 'PostgreSQL'
         elif provider == 'mssql':
-            #'dbname=\'db_name\' host=myHost estimatedmetadata=true
+            # 'dbname=\'db_name\' host=myHost estimatedmetadata=true
             # srid=27700 type=MultiPolygon table="dbo"."my_table"
             # #(Shape) sql='
             dsUri = layer.dataProvider().uri()

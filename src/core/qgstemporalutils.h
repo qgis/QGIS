@@ -18,8 +18,11 @@
 
 #include "qgis_core.h"
 #include "qgsrange.h"
+#include "qgsinterval.h"
 
 class QgsProject;
+class QgsMapSettings;
+class QgsFeedback;
 
 /**
  * \ingroup core
@@ -41,6 +44,28 @@ class CORE_EXPORT QgsTemporalUtils
      */
     static QgsDateTimeRange calculateTemporalRangeForProject( QgsProject *project );
 
+    /**
+     * Exports animation frames by rendering the map to multiple destination images.
+     *
+     * The \a mapSettings argument dictates the overall map settings such as extent
+     * and size.
+     *
+     * The \a animationRange argument specifies the overall temporal range of the animation.
+     * Temporal duration of individual frames is given by \a frameDuration.
+     *
+     * An \a outputDirectory must be set, which controls where the created image files are
+     * stored. \a fileNameTemplate gives the template for exporting the frames.
+     * This must be in format prefix####.format, where number of
+     * # represents how many 0 should be left-padded to the frame number
+     * e.g. my###.jpg will create frames my001.jpg, my002.jpg, etc
+     */
+    static bool exportAnimation( const QgsMapSettings &mapSettings,
+                                 const QgsDateTimeRange &animationRange,
+                                 QgsInterval frameDuration,
+                                 const QString &outputDirectory,
+                                 const QString &fileNameTemplate,
+                                 QString &error SIP_OUT,
+                                 QgsFeedback *feedback );
 };
 
 

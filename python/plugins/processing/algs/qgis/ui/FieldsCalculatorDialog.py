@@ -56,7 +56,6 @@ with warnings.catch_warnings():
 
 
 class FieldCalculatorFeedback(QgsProcessingFeedback):
-
     """
     Directs algorithm feedback to an algorithm dialog
     """

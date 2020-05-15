@@ -30,7 +30,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QgsMeshDatasetGroupTreeView" name="mDatasetGroupTreeView">
+    <widget class="QgsMeshActiveDatasetGroupTreeView" name="mDatasetGroupTreeView">
      <property name="minimumSize">
       <size>
        <width>0</width>
@@ -75,9 +75,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsMeshDatasetGroupTreeView</class>
+   <class>QgsMeshActiveDatasetGroupTreeView</class>
    <extends>QTreeView</extends>
-   <header>mesh/qgsmeshdatasetgrouptreeview.h</header>
+   <header>qgsmeshdatasetgrouptreeview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

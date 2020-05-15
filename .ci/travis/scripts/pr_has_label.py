@@ -2,7 +2,7 @@
 
 import sys
 import json
-from urllib.request import urlopen # using urllib since it is a standard module (vs. requests)
+from urllib.request import urlopen  # using urllib since it is a standard module (vs. requests)
 from urllib.error import URLError
 import argparse
 
@@ -23,7 +23,7 @@ url = "https://api.github.com/repos/qgis/QGIS/pulls/{}".format(args.pull_request
 try:
     data = urlopen(url).read().decode('utf-8')
 except URLError as err:
-    print("URLError: ".format(err.reason))
+    print("URLError: {}".format(err.reason))
     sys.exit(1)
 
 obj = json.loads(data)

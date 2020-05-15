@@ -69,6 +69,18 @@ void QgsTemporalNavigationObject::setLooping( bool loopAnimation )
   mLoopAnimation = loopAnimation;
 }
 
+QgsExpressionContextScope *QgsTemporalNavigationObject::createExpressionContextScope() const
+{
+  std::unique_ptr< QgsExpressionContextScope > scope = qgis::make_unique< QgsExpressionContextScope >( QStringLiteral( "temporal" ) );
+  scope->setVariable( QStringLiteral( "frame_rate" ), mFramesPerSecond, true );
+  scope->setVariable( QStringLiteral( "frame_number" ), mCurrentFrameNumber, true );
+  scope->setVariable( QStringLiteral( "frame_duration" ), mFrameDuration, true );
+  scope->setVariable( QStringLiteral( "animation_start_time" ), mTemporalExtents.begin(), true );
+  scope->setVariable( QStringLiteral( "animation_end_time" ), mTemporalExtents.end(), true );
+  scope->setVariable( QStringLiteral( "animation_interval" ), mTemporalExtents.end() - mTemporalExtents.begin(), true );
+  return scope.release();
+}
+
 QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long long frame ) const
 {
   const QDateTime start = mTemporalExtents.begin();
@@ -81,10 +93,15 @@ QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long 
   const QDateTime begin = start.addSecs( frame * mFrameDuration.seconds() );
   const QDateTime end = start.addSecs( nextFrame * mFrameDuration.seconds() );
 
-  if ( end <= mTemporalExtents.end() )
-    return QgsDateTimeRange( begin, end, true, false );
+  QDateTime frameStart = begin;
 
-  return QgsDateTimeRange( begin, mTemporalExtents.end(), true, false );
+  if ( mCumulativeTemporalRange )
+    frameStart = start;
+
+  if ( end <= mTemporalExtents.end() )
+    return QgsDateTimeRange( frameStart, end, true, false );
+
+  return QgsDateTimeRange( frameStart, mTemporalExtents.end(), true, false );
 }
 
 void QgsTemporalNavigationObject::setTemporalExtents( const QgsDateTimeRange &temporalExtents )
@@ -142,6 +159,16 @@ void QgsTemporalNavigationObject::setFramesPerSecond( double framesPerSeconds )
 double QgsTemporalNavigationObject::framesPerSecond() const
 {
   return mFramesPerSecond;
+}
+
+void QgsTemporalNavigationObject::setTemporalRangeCumulative( bool state )
+{
+  mCumulativeTemporalRange = state;
+}
+
+bool QgsTemporalNavigationObject::temporalRangeCumulative() const
+{
+  return mCumulativeTemporalRange;
 }
 
 void QgsTemporalNavigationObject::play()

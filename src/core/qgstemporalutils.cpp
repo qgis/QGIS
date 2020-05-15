@@ -18,6 +18,14 @@
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsrasterlayer.h"
 #include "qgsmeshlayer.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayertemporalproperties.h"
+#include "qgsrasterlayertemporalproperties.h"
+#include "qgsmeshlayertemporalproperties.h"
+#include "qgstemporalnavigationobject.h"
+#include "qgsmapsettings.h"
+#include "qgsmaprenderercustompainterjob.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsDateTimeRange QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject *project )
 {
@@ -33,44 +41,87 @@ QgsDateTimeRange QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject 
 
     if ( !currentLayer->temporalProperties() || !currentLayer->temporalProperties()->isActive() )
       continue;
-    QgsDateTimeRange layerRange;
+    QgsDateTimeRange layerRange = currentLayer->temporalProperties()->calculateTemporalExtent( currentLayer );
 
-    switch ( currentLayer->type() )
-    {
-      case QgsMapLayerType::RasterLayer:
-      {
-        QgsRasterLayer *rasterLayer  = qobject_cast<QgsRasterLayer *>( currentLayer );
-
-        switch ( rasterLayer->temporalProperties()->mode() )
-        {
-          case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
-            layerRange = rasterLayer->temporalProperties()->fixedTemporalRange();
-            break;
-
-          case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
-            layerRange = rasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange();
-            break;
-        }
-      }
-      break;
-      case QgsMapLayerType::MeshLayer:
-      {
-        QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( currentLayer );
-        layerRange = meshLayer->temporalProperties()->timeExtent();
-      }
-      break;
-      default:
-        break;
-    }
-
-
-    if ( !minDate.isValid() ||  layerRange.begin() < minDate )
+    if ( layerRange.begin().isValid() && ( !minDate.isValid() ||  layerRange.begin() < minDate ) )
       minDate = layerRange.begin();
-    if ( !maxDate.isValid() ||  layerRange.end() > maxDate )
+    if ( layerRange.end().isValid() && ( !maxDate.isValid() ||  layerRange.end() > maxDate ) )
       maxDate = layerRange.end();
-
-
   }
 
   return QgsDateTimeRange( minDate, maxDate );
+}
+
+bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const QgsDateTimeRange &animationRange, QgsInterval frameDuration, const QString &outputDirectory, const QString &fileNameTemplate, QString &error, QgsFeedback *feedback )
+{
+  if ( fileNameTemplate.isEmpty() )
+  {
+    error = QObject::tr( "Filename template is empty" );
+    return false;
+  }
+  int numberOfDigits = fileNameTemplate.count( QLatin1Char( '#' ) );
+  if ( numberOfDigits < 0 )
+  {
+    error = QObject::tr( "Wrong filename template format (must contain #)" );
+    return false;
+  }
+  const QString token( numberOfDigits, QLatin1Char( '#' ) );
+  if ( !fileNameTemplate.contains( token ) )
+  {
+    error = QObject::tr( "Filename template must contain all # placeholders in one continuous group." );
+    return false;
+  }
+
+  QgsTemporalNavigationObject navigator;
+  navigator.setTemporalExtents( animationRange );
+  navigator.setFrameDuration( frameDuration );
+  QgsMapSettings settings = mapSettings;
+  const QgsExpressionContext context = settings.expressionContext();
+
+  const long long totalFrames = navigator.totalFrameCount();
+  long long currentFrame = 0;
+
+  while ( currentFrame < totalFrames )
+  {
+    if ( feedback )
+    {
+      if ( feedback->isCanceled() )
+      {
+        error = QObject::tr( "Export canceled" );
+        return false;
+      }
+      feedback->setProgress( currentFrame / static_cast<double>( totalFrames ) * 100 );
+    }
+    ++currentFrame;
+
+    navigator.setCurrentFrameNumber( currentFrame );
+
+    settings.setIsTemporal( true );
+    settings.setTemporalRange( navigator.dateTimeRangeForFrameNumber( currentFrame ) );
+
+    QgsExpressionContext frameContext = context;
+    frameContext.appendScope( navigator.createExpressionContextScope() );
+    frameContext.appendScope( QgsExpressionContextUtils::mapSettingsScope( settings ) );
+    settings.setExpressionContext( frameContext );
+
+    QString fileName( fileNameTemplate );
+    const QString frameNoPaddedLeft( QStringLiteral( "%1" ).arg( currentFrame, numberOfDigits, 10, QChar( '0' ) ) ); // e.g. 0001
+    fileName.replace( token, frameNoPaddedLeft );
+    const QString path = QDir( outputDirectory ).filePath( fileName );
+
+    QImage img = QImage( settings.outputSize(), settings.outputImageFormat() );
+    img.setDotsPerMeterX( 1000 * settings.outputDpi() / 25.4 );
+    img.setDotsPerMeterY( 1000 * settings.outputDpi() / 25.4 );
+    img.fill( settings.backgroundColor().rgb() );
+
+    QPainter p( &img );
+    QgsMapRendererCustomPainterJob job( settings, &p );
+    job.start();
+    job.waitForFinished();
+    p.end();
+
+    img.save( path );
+  }
+
+  return true;
 }

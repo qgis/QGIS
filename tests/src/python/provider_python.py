@@ -13,7 +13,6 @@ __author__ = 'Alessandro Pasotti'
 __date__ = '2018-03-18'
 __copyright__ = 'Copyright 2018, The QGIS Project'
 
-
 from qgis.core import (
     QgsField,
     QgsFields,
@@ -84,7 +83,7 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
 
     def fetchFeature(self, f):
         """fetch next feature, return true on success"""
-        #virtual bool nextFeature( QgsFeature &f );
+        # virtual bool nextFeature( QgsFeature &f );
         if self._index < 0:
             f.setValid(False)
             return False
@@ -147,7 +146,7 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
 
     def rewind(self):
         """reset the iterator to the starting position"""
-        #virtual bool rewind() = 0;
+        # virtual bool rewind() = 0;
         if self._index < 0:
             return False
         self._index = 0
@@ -155,7 +154,7 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
 
     def close(self):
         """end of iterating: free the resources / lock"""
-        #virtual bool close() = 0;
+        # virtual bool close() = 0;
         self._index = -1
         return True
 
@@ -216,7 +215,7 @@ class PyProvider(QgsVectorDataProvider):
         self._crs = mlayer.crs()
         self._spatialindex = None
         self._provider_options = providerOptions
-        if 'index=yes'in self._uri:
+        if 'index=yes' in self._uri:
             self.createSpatialIndex()
 
     def featureSource(self):
@@ -324,7 +323,7 @@ class PyProvider(QgsVectorDataProvider):
                 result = False
                 continue
             if self._fields.indexFromName(new_name) >= 0:
-                #field name already in use
+                # field name already in use
                 result = False
                 continue
             new_fields[fieldIndex].setName(new_name)
@@ -342,7 +341,7 @@ class PyProvider(QgsVectorDataProvider):
             self._fields.remove(idx)
             for f in self._features.values():
                 attr = f.attributes()
-                del(attr[idx])
+                del (attr[idx])
                 f.setAttributes(attr)
         self.clearMinMaxCache()
         return True
@@ -396,7 +395,7 @@ class PyProvider(QgsVectorDataProvider):
     def capabilities(self):
         return QgsVectorDataProvider.AddFeatures | QgsVectorDataProvider.DeleteFeatures | QgsVectorDataProvider.CreateSpatialIndex | QgsVectorDataProvider.ChangeGeometries | QgsVectorDataProvider.ChangeAttributeValues | QgsVectorDataProvider.AddAttributes | QgsVectorDataProvider.DeleteAttributes | QgsVectorDataProvider.RenameAttributes | QgsVectorDataProvider.SelectAtId | QgsVectorDataProvider. CircularGeometries
 
-    #/* Implementation of functions from QgsDataProvider */
+    # /* Implementation of functions from QgsDataProvider */
 
     def name(self):
         return self.providerKey()

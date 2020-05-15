@@ -75,6 +75,9 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   connect( mLayerDownButton, &QPushButton::clicked, this, &QgsWMSSourceSelect::mLayerDownButton_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsWMSSourceSelect::showHelp );
 
+  connect( mLayersFilterLineEdit, &QgsFilterLineEdit::textChanged, this, &QgsWMSSourceSelect::filterLayers );
+  connect( mTilesetsFilterLineEdit, &QgsFilterLineEdit::textChanged, this, &QgsWMSSourceSelect::filterTiles );
+
   // Creates and connects standard ok/apply buttons
   setupButtons( buttonBox );
 
@@ -1118,6 +1121,77 @@ void QgsWMSSourceSelect::cmbConnections_activated( int )
 {
   // Remember which server was selected.
   QgsWMSConnection::setSelectedConnection( cmbConnections->currentText() );
+}
+
+void QgsWMSSourceSelect::filterLayers( const QString &searchText )
+{
+  std::function< void( QTreeWidgetItem *, bool ) > setChildrenVisible;
+  setChildrenVisible = [&setChildrenVisible]( QTreeWidgetItem * item, bool visible )
+  {
+    for ( int i = 0; i < item->childCount(); ++i )
+      setChildrenVisible( item->child( i ), visible );
+    item->setHidden( !visible );
+  };
+
+
+  if ( searchText.isEmpty() )
+  {
+    // show everything and reset tree nesting
+    setChildrenVisible( lstLayers->invisibleRootItem(), true );
+    for ( QTreeWidgetItem *item : mTreeInitialExpand.keys() )
+      if ( item )
+        item->setExpanded( mTreeInitialExpand.value( item ) );
+    mTreeInitialExpand.clear();
+  }
+  else
+  {
+    // hide all
+    setChildrenVisible( lstLayers->invisibleRootItem(), false );
+    // find and show matching items in name and title columns
+    QSet<QTreeWidgetItem *> items = lstLayers->findItems( searchText, Qt::MatchContains | Qt::MatchRecursive, 1 ).toSet();
+    items.unite( lstLayers->findItems( searchText, Qt::MatchContains | Qt::MatchRecursive, 2 ).toSet() );
+
+    // if nothing found, search in abstract too
+    if ( items.isEmpty() )
+    {
+      items = lstLayers->findItems( searchText, Qt::MatchContains | Qt::MatchRecursive, 3 ).toSet();
+    }
+
+    mTreeInitialExpand.clear();
+    for ( QTreeWidgetItem *item : qgis::as_const( items ) )
+    {
+      setChildrenVisible( item, true );
+
+      QTreeWidgetItem *parent = item;
+      while ( parent )
+      {
+        if ( mTreeInitialExpand.contains( parent ) )
+          break;
+        mTreeInitialExpand.insert( parent, parent->isExpanded() );
+        parent->setExpanded( true );
+        parent->setHidden( false );
+        parent = parent->parent();
+      }
+    }
+  }
+}
+
+void QgsWMSSourceSelect::filterTiles( const QString &searchText )
+{
+  QList<int> rowsShown;
+  if ( !searchText.isEmpty() )
+  {
+    const QList<QTableWidgetItem *> items = lstTilesets->findItems( searchText, Qt::MatchContains );
+    for ( const QTableWidgetItem *item : items )
+    {
+      rowsShown << item->row();
+    }
+  }
+  for ( int r = 0; r < lstTilesets->rowCount(); r++ )
+  {
+    bool visible = rowsShown.isEmpty() || rowsShown.contains( r );
+    lstTilesets->setRowHidden( r, !visible );
+  }
 }
 
 QString QgsWMSSourceSelect::descriptionForAuthId( const QString &authId )

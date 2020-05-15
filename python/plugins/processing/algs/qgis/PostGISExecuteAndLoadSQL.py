@@ -38,7 +38,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class PostGISExecuteAndLoadSQL(QgisAlgorithm):
-
     DATABASE = 'DATABASE'
     SQL = 'SQL'
     OUTPUT = 'OUTPUT'

@@ -47,6 +47,8 @@
 #include "qgsexpression.h"
 #include "qgslabelingengine.h"
 #include "qgsvectorlayerlabeling.h"
+#include "qgstextrendererutils.h"
+#include "qgstextfragment.h"
 
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
@@ -1374,7 +1376,7 @@ bool QgsPalLayerSettings::checkMinimumSizeMM( const QgsRenderContext &ct, const 
   return QgsPalLabeling::checkMinimumSizeMM( ct, geom, minSize );
 }
 
-void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f, QgsRenderContext *context, double *rotatedLabelX, double *rotatedLabelY )
+void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f, QgsRenderContext *context, double *rotatedLabelX, double *rotatedLabelY, QgsTextDocument *document )
 {
   if ( !fm || !f )
   {
@@ -1531,7 +1533,19 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
 
   double w = 0.0, h = 0.0, rw = 0.0, rh = 0.0;
   double labelHeight = fm->ascent() + fm->descent(); // ignore +1 for baseline
-  const QStringList multiLineSplit = QgsPalLabeling::splitToLines( textCopy, wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
+
+  QStringList multiLineSplit;
+
+  if ( document )
+  {
+    document->splitLines( wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
+    multiLineSplit = document->toPlainText();
+  }
+  else
+  {
+    multiLineSplit = QgsPalLabeling::splitToLines( textCopy, wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
+  }
+
   int lines = multiLineSplit.size();
 
   switch ( orientation )
@@ -1887,8 +1901,13 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   // NOTE: this should come AFTER any option that affects font metrics
   std::unique_ptr<QFontMetricsF> labelFontMetrics( new QFontMetricsF( labelFont ) );
   double labelX, labelY, rotatedLabelX, rotatedLabelY; // will receive label size
-  calculateLabelSize( labelFontMetrics.get(), labelText, labelX, labelY, mCurFeat, &context, &rotatedLabelX, &rotatedLabelY );
 
+  QgsTextDocument doc;
+  if ( format().allowHtmlFormatting() )
+    doc = QgsTextDocument::fromHtml( QStringList() << labelText );
+
+  // also applies the line split to doc!
+  calculateLabelSize( labelFontMetrics.get(), labelText, labelX, labelY, mCurFeat, &context, &rotatedLabelX, &rotatedLabelY, format().allowHtmlFormatting() ? &doc : nullptr );
 
   // maximum angle between curved label characters (hardcoded defaults used in QGIS <2.0)
   //
@@ -2426,6 +2445,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   lf->setAnchorPosition( anchorPosition );
   lf->setFeature( feature );
   lf->setSymbol( symbol );
+  lf->setDocument( doc );
   if ( !qgsDoubleNear( rotatedLabelX, 0.0 ) && !qgsDoubleNear( rotatedLabelY, 0.0 ) )
     lf->setRotatedSize( QSizeF( rotatedLabelX, rotatedLabelY ) );
   mFeatsRegPal++;
@@ -2468,7 +2488,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   // TODO: only for placement which needs character info
   // account for any data defined font metrics adjustments
   lf->calculateInfo( placement == QgsPalLayerSettings::Curved || placement == QgsPalLayerSettings::PerimeterCurved,
-                     labelFontMetrics.get(), xform, maxcharanglein, maxcharangleout );
+                     labelFontMetrics.get(), xform, maxcharanglein, maxcharangleout, format().allowHtmlFormatting() ? &doc : nullptr );
   // for labelFeature the LabelInfo is passed to feat when it is registered
 
   // TODO: allow layer-wide feature dist in PAL...?

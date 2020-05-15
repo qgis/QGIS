@@ -74,8 +74,8 @@ class TestQgsSymbolButton(unittest.TestCase):
         fill_symbol = QgsFillSymbol.createSimple({})
         fill_symbol.setColor(QColor(0, 0, 255))
         button2.setSymbol(fill_symbol)
-        button.copySymbol() # copied a marker symbol
-        button2.pasteSymbol() # should have no effect
+        button.copySymbol()  # copied a marker symbol
+        button2.pasteSymbol()  # should have no effect
         self.assertEqual(button2.symbol(), fill_symbol)
 
     def testSetGetSymbol(self):

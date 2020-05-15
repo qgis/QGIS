@@ -404,9 +404,9 @@ void TestQgsLayoutManualTable::headers()
   table->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << QgsTableCell( QStringLiteral( "Helicopter" ) ) << QgsTableCell( QStringLiteral( "Plane" ) ) )
                            << ( QgsTableRow() << QgsTableCell( QStringLiteral( "A" ) ) << QgsTableCell( QStringLiteral( "B" ) ) << QgsTableCell( QStringLiteral( "C" ) ) ) );
   table->setIncludeTableHeader( true );
-  table->setHeaders( QgsLayoutTableColumns() << new QgsLayoutTableColumn( QStringLiteral( "header1" ) )
-                     << new QgsLayoutTableColumn( QStringLiteral( "h2" ) )
-                     << new QgsLayoutTableColumn( QStringLiteral( "header 3" ) ) );
+  table->setHeaders( QgsLayoutTableColumns() << QgsLayoutTableColumn( QStringLiteral( "header1" ) )
+                     << QgsLayoutTableColumn( QStringLiteral( "h2" ) )
+                     << QgsLayoutTableColumn( QStringLiteral( "header 3" ) ) );
 
   QgsLayoutChecker checker( QStringLiteral( "manualtable_headers" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "layout_manual_table" ) );

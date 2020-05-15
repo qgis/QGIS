@@ -39,6 +39,15 @@ class CORE_EXPORT QgsTemporalProperty : public QObject
   public:
 
     /**
+     * Flags attached to the temporal property.
+     */
+    enum Flag
+    {
+      FlagDontInvalidateCachedRendersWhenRangeChanges = 1  //!< Any cached rendering will not be invalidated when temporal range context is modified.
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
+    /**
      * Constructor for QgsTemporalProperty, with the specified \a parent object.
      *
      * The \a active argument specifies whether the property is initially active (see isActive()).
@@ -58,6 +67,11 @@ class CORE_EXPORT QgsTemporalProperty : public QObject
      * \see setIsActive()
     */
     bool isActive() const;
+
+    /**
+     * Returns flags associated to the temporal property.
+     */
+    virtual QgsTemporalProperty::Flags flags() const { return nullptr; }
 
   signals:
 

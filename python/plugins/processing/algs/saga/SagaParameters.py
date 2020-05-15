@@ -17,7 +17,6 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Nyall Dawson'
 __date__ = 'December 2018'
 __copyright__ = '(C) 2018, Nyall Dawson'
@@ -33,7 +32,6 @@ from processing.core.parameters import getParameterFromString
 
 
 class SagaImageOutputParam(QgsProcessingParameterRasterDestination):
-
     """
     Custom raster destination parameter for SAGA algorithms which create a raster image
     output, instead of SAGA's usual 'sdat' raster grid outputs.

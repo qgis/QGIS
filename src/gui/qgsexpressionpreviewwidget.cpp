@@ -55,6 +55,7 @@ void QgsExpressionPreviewWidget::setCurrentFeature( const QgsFeature &feature )
 void QgsExpressionPreviewWidget::setGeomCalculator( const QgsDistanceArea &da )
 {
   mDa = da;
+  mUseGeomCalculator = true;
 }
 
 void QgsExpressionPreviewWidget::setExpressionContext( const QgsExpressionContext &context )
@@ -78,10 +79,10 @@ void QgsExpressionPreviewWidget::refreshPreview()
   {
     mExpression = QgsExpression( mExpressionText );
 
-    if ( mLayer )
+    if ( mUseGeomCalculator )
     {
-      // TODO: is this OK?
-      // Only set calculator if we have layer, else use default.
+      // only set an explicit geometry calculator if a call to setGeomCalculator was made. If not,
+      // let the expression context handle this correctly
       mExpression.setGeomCalculator( &mDa );
     }
 
@@ -122,7 +123,7 @@ void QgsExpressionPreviewWidget::refreshPreview()
 
 void QgsExpressionPreviewWidget::linkActivated( const QString & )
 {
-  QgsMessageViewer mv( this );
+  QgsMessageViewer mv( this, QgsGuiUtils::ModalDialogFlags, false );
   mv.setWindowTitle( tr( "More Info on Expression Error" ) );
   mv.setMessageAsHtml( mToolTip );
   mv.exec();

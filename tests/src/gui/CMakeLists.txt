@@ -32,6 +32,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/classification
   ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
+  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_SOURCE_DIR}/src/native
   ${CMAKE_SOURCE_DIR}/external

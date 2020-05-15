@@ -128,6 +128,16 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     void setFilterMode( FilterMode filterMode );
 
     /**
+     * Disconnect the connections set for the current filterMode
+     */
+    void disconnectFilterModeConnections();
+
+    /**
+     * Disconnect the connections set for the new \a filterMode
+     */
+    void connectFilterModeConnections( FilterMode filterMode );
+
+    /**
      * The current filterModel
      */
     FilterMode filterMode() { return mFilterMode; }
@@ -238,6 +248,16 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     void sortColumnChanged( int column, Qt::SortOrder order );
 
+    /**
+     * Emitted when the filtering of the features has been done
+     */
+    void featuresFiltered();
+
+    /**
+     * Emitted when the the visible features on extend are reloaded (the list is created)
+     */
+    void visibleReloaded();
+
   protected:
 
     /**
@@ -282,6 +302,8 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     void selectionChanged();
     void onColumnsChanged();
     void reloadVisible();
+    void onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
+    void onGeometryChanged();
 
   private:
     QgsFeatureIds mFilteredFeatures;
@@ -298,6 +320,10 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     int mapColumnToSource( int column ) const;
     int mapColumnFromSource( int column ) const;
 
+    QTimer mReloadVisibleTimer;
+    QTimer mFilterFeaturesTimer;
+    void startTimedReloadVisible();
+    void startTimedFilterFeatures();
 };
 
 #endif

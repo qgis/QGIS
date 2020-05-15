@@ -178,12 +178,17 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
 {
   mPythonUtils = pythonUtils;
 
+  // get the QgsSettings group from the installer
+  QString settingsGroup;
+  QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
+  QgsSettings settings;
+
   // Now enable Python support:
   // Show and preset widgets only suitable when Python support active
   mOptionsListWidget->item( PLUGMAN_TAB_INSTALL_FROM_ZIP )->setHidden( false );
   buttonUpgradeAll->show();
   buttonInstall->show();
-  buttonInstallExperimental->show();
+  buttonInstallExperimental->setVisible( settings.value( settingsGroup + "/allowExperimental", false ).toBool() );
   buttonUninstall->show();
   frameSettings->setHidden( false );
   labelNoPython->setHidden( true );
@@ -226,11 +231,6 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   connect( actionSortByStatus, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByStatus );
   connect( actionSortByDateCreated, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByDateCreated );
   connect( actionSortByDateUpdated, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByDateUpdated );
-
-  // get the QgsSettings group from the installer
-  QString settingsGroup;
-  QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
-  QgsSettings settings;
 
   // Initialize the "Install from ZIP" tab widgets
   mZipFileWidget->setDefaultRoot( settings.value( settingsGroup + "/lastZipDirectory", "." ).toString() );
@@ -854,7 +854,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
                      "</table>" ).arg( tr( "Installed version of this plugin is higher than any version found in repository" ) );
   }
 
-  if ( metadata->value( QStringLiteral( "experimental" ) ) == QLatin1String( "true" ) )
+  if ( ! metadata->value( QStringLiteral( "version_available_experimental" ) ).isEmpty() )
   {
     html += QString( "<table bgcolor=\"#EEEEBB\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
                      "  <tr><td width=\"100%\" style=\"color:#660000\">"
@@ -1125,18 +1125,20 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     buttonInstallExperimental->setText( tr( "Reinstall Experimental Plugin" ) );
   }
 
-  // DEBUG TODO REMOVE
-  // buttonInstall->setText( buttonInstall->text() + QStringLiteral(" | ") + metadata->value( QStringLiteral( "status" ) ) );
-  // buttonInstallExperimental->setText( buttonInstallExperimental->text() + QStringLiteral(" | ") + metadata->value( QStringLiteral( "status_exp" ) ) );
-
   // Enable/disable buttons
+
+  QgsSettings settings;
+  QString settingsGroup;
+  QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
+  bool expAllowed = settings.value( settingsGroup + "/allowExperimental", false ).toBool();
 
   bool installEnabled = metadata->value( QStringLiteral( "pythonic" ) ).toUpper() == QLatin1String( "TRUE" ) && metadata->value( QStringLiteral( "status" ) ) != QLatin1String( "orphan" ) && metadata->value( QStringLiteral( "status" ) ) != QLatin1String( "none available" );
   bool installExpEnabled = metadata->value( QStringLiteral( "pythonic" ) ).toUpper() == QLatin1String( "TRUE" ) && metadata->value( QStringLiteral( "status_exp" ) ) != QLatin1String( "orphan" ) && metadata->value( QStringLiteral( "status_exp" ) ) != QLatin1String( "none available" );
+
   buttonInstall->setEnabled( installEnabled );
   buttonInstall->setVisible( installEnabled || !installExpEnabled );
-  buttonInstallExperimental->setEnabled( installExpEnabled );
-  buttonInstallExperimental->setVisible( installExpEnabled || !installEnabled );
+  buttonInstallExperimental->setEnabled( expAllowed && installExpEnabled );
+  buttonInstallExperimental->setVisible( expAllowed && installExpEnabled );
 
   buttonUninstall->setEnabled( metadata->value( QStringLiteral( "pythonic" ) ).toUpper() == QLatin1String( "TRUE" ) && metadata->value( QStringLiteral( "readonly" ) ) != QLatin1String( "true" ) && ! metadata->value( QStringLiteral( "version_installed" ) ).isEmpty() );
 

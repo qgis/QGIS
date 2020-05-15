@@ -51,6 +51,17 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
      */
     QgsTemporalController *temporalController();
 
+#ifndef SIP_RUN
+
+  signals:
+
+    /**
+     * Triggered when an animation should be exported
+     */
+    void exportAnimation();
+
+#endif
+
   private:
 
     /**
@@ -110,8 +121,11 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
 
     void setWidgetStateFromProject();
 
-    void onLayersAdded();
+    void onLayersAdded( const QList<QgsMapLayer *> &layers );
     void onProjectCleared();
+
+    void startEndDateTime_changed();
+    void mSetToProjectTimeButton_clicked();
 };
 
 #endif // QGSTEMPORALCONTROLLERWIDGET_H

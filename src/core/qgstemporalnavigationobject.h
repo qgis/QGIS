@@ -23,6 +23,7 @@
 #include "qgsrange.h"
 #include "qgsinterval.h"
 #include "qgstemporalcontroller.h"
+#include "qgsexpressioncontextscopegenerator.h"
 
 #include <QList>
 #include <QTimer>
@@ -35,7 +36,7 @@ class QgsMapLayer;
  *
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController
+class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, public QgsExpressionContextScopeGenerator
 {
     Q_OBJECT
 
@@ -148,6 +149,20 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController
     double framesPerSecond() const;
 
     /**
+     * Sets the animation temporal range as cumulative.
+     *
+     * \see temporalRangeCumulative()
+     */
+    void setTemporalRangeCumulative( bool state );
+
+    /**
+     * Returns the animation temporal range cumulative settings.
+     *
+     * \see setTemporalRangeCumulative()
+     */
+    bool temporalRangeCumulative() const;
+
+    /**
      * Returns the total number of frames for the navigation.
      */
     long long totalFrameCount();
@@ -165,6 +180,8 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController
      * \see isLooping()
      */
     void setLooping( bool loop );
+
+    QgsExpressionContextScope *createExpressionContextScope() const override SIP_FACTORY;
 
   signals:
 
@@ -254,6 +271,8 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController
     AnimationState mPlayBackMode = Idle;
 
     bool mLoopAnimation = false;
+
+    bool mCumulativeTemporalRange = false;
 
 };
 

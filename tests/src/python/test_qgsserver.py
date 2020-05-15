@@ -51,9 +51,9 @@ import base64
 
 
 # Strip path and content length because path may vary
-RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+'
-RE_ELEMENT = b'</*([^>\[\s]+)[ >]'
-RE_ELEMENT_CONTENT = b'<[^>\[]+>(.+)</[^>\[\s]+>'
+RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+'
+RE_ELEMENT = br'</*([^>\[\s]+)[ >]'
+RE_ELEMENT_CONTENT = br'<[^>\[]+>(.+)</[^>\[\s]+>'
 RE_ATTRIBUTES = rb'((?:(?!\s|=).)*)\s*?=\s*?["\']?((?:(?<=")(?:(?<=\\)"|[^"])*|(?<=\')(?:(?<=\\)\'|[^\'])*)|(?:(?!"|\')(?:(?!\/>|>|\s).)+))'
 
 
@@ -78,7 +78,7 @@ class QgsServerTestBase(unittest.TestCase):
         for expected_line in expected_lines:
             expected_line = expected_line.strip()
             response_line = response_lines[line_no - 1].strip()
-            response_line = response_line.replace(b'e+6', b'e+06')
+            response_line = response_line.replace(b'e+6', br'e+06')
             # Compare tag
             if re.match(RE_ELEMENT, expected_line):
                 expected_elements = re.findall(RE_ELEMENT, expected_line)
@@ -216,7 +216,7 @@ class QgsServerTestBase(unittest.TestCase):
         with open(os.path.join(tempfile.gettempdir(), image + "_result." + extFile), "rb") as rendered_file:
             encoded_rendered_file = base64.b64encode(rendered_file.read())
             if not os.environ.get('ENCODED_OUTPUT'):
-                message = "Image is wrong\: rendered file %s/%s_result.%s" % (tempfile.gettempdir(), image, extFile)
+                message = "Image is wrong: rendered file %s/%s_result.%s" % (tempfile.gettempdir(), image, extFile)
             else:
                 message = "Image is wrong\n%s\nImage:\necho '%s' | base64 -d >%s/%s_result.%s" % (
                     report, encoded_rendered_file.strip().decode('utf8'), tempfile.gettempdir(), image, extFile
@@ -226,7 +226,7 @@ class QgsServerTestBase(unittest.TestCase):
         if os.path.exists(os.path.join(tempfile.gettempdir(), image + "_result_diff." + extFile)):
             with open(os.path.join(tempfile.gettempdir(), image + "_result_diff." + extFile), "rb") as diff_file:
                 if not os.environ.get('ENCODED_OUTPUT'):
-                    message = "Image is wrong\: diff file %s/%s_result_diff.%s" % (tempfile.gettempdir(), image, extFile)
+                    message = "Image is wrong: diff file %s/%s_result_diff.%s" % (tempfile.gettempdir(), image, extFile)
                 else:
                     encoded_diff_file = base64.b64encode(diff_file.read())
                     message += "\nDiff:\necho '%s' | base64 -d > %s/%s_result_diff.%s" % (

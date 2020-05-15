@@ -46,6 +46,7 @@
 #include "qgspoint3dsymbol.h"
 #include "qgssymbollayer.h"
 #include "qgsmarkersymbollayer.h"
+#include "qgsmaplayertemporalproperties.h"
 
 #include <QFileInfo>
 #include <QDir>

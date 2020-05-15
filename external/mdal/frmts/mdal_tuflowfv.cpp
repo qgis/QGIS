@@ -54,6 +54,8 @@ MDAL::TuflowFVDataset2D::TuflowFVDataset2D(
   double fillValY,
   int ncidX,
   int ncidY,
+  Classification classificationX,
+  Classification classificationY,
   int ncidActive,
   CFDatasetGroupInfo::TimeLocation timeLocation,
   size_t timesteps,
@@ -67,6 +69,8 @@ MDAL::TuflowFVDataset2D::TuflowFVDataset2D(
       fillValY,
       ncidX,
       ncidY,
+      classificationX,
+      classificationY,
       timeLocation,
       timesteps,
       values,
@@ -456,10 +460,16 @@ std::set<std::string> MDAL::DriverTuflowFV::ignoreNetCDFVariables()
   return ignore_variables;
 }
 
-void MDAL::DriverTuflowFV::parseNetCDFVariableMetadata( int varid, const std::string &variableName, std::string &name, bool *is_vector, bool *is_x )
+void MDAL::DriverTuflowFV::parseNetCDFVariableMetadata( int varid,
+    std::string &variableName,
+    std::string &name,
+    bool *is_vector,
+    bool *isPolar,
+    bool *is_x )
 {
   *is_vector = false;
   *is_x = true;
+  *isPolar = false;
 
   std::string long_name = mNcFile->getAttrStr( "long_name", varid );
   if ( long_name.empty() || ( long_name == "??????" ) )
@@ -479,6 +489,8 @@ void MDAL::DriverTuflowFV::parseNetCDFVariableMetadata( int varid, const std::st
 
     if ( MDAL::startsWith( long_name, "time at minimum value of " ) )
       long_name = MDAL::replace( long_name, "time at minimum value of ", "" ) + "/Time at Minimums";
+
+    variableName = long_name;
 
     if ( MDAL::startsWith( long_name, "x_" ) )
     {
@@ -515,6 +527,8 @@ std::shared_ptr<MDAL::Dataset> MDAL::DriverTuflowFV::create2DDataset(
         fill_val_y,
         dsi.ncid_x,
         dsi.ncid_y,
+        dsi.classification_x,
+        dsi.classification_y,
         mNcFile->arrId( "stat" ),
         dsi.timeLocation,
         dsi.nTimesteps,
@@ -550,4 +564,10 @@ std::shared_ptr<MDAL::Dataset> MDAL::DriverTuflowFV::create3DDataset( std::share
 
   dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
   return std::move( dataset );
+}
+
+std::vector<std::pair<double, double>> MDAL::DriverTuflowFV::parseClassification( int varid ) const
+{
+  MDAL_UNUSED( varid );
+  return std::vector<std::pair<double, double>>();
 }

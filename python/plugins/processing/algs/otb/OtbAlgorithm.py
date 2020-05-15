@@ -97,7 +97,7 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
     def initAlgorithm(self, config=None):
         pass
 
-    #TODO: show version which is same as OtbAlgorithm rather than always latest.
+    # TODO: show version which is same as OtbAlgorithm rather than always latest.
     def helpUrl(self):
         return "https://www.orfeo-toolbox.org/CookBook/Applications/app_" + self.name() + ".html"
 
@@ -111,7 +111,7 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
                 line = lines.readline().strip('\n').strip()
                 self.doc = line
                 self.i18n_doc = QCoreApplication.translate("OtbAlgorithm", self.doc)
-                #self._name = self._name #+ " - " + self.doc
+                # self._name = self._name #+ " - " + self.doc
                 self._display_name = self.tr(self._name)
                 self.i18n_name = QCoreApplication.translate("OtbAlgorithm", self._name)
 
@@ -133,7 +133,7 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
                     else:
                         param = getParameterFromString(line, 'OtbAlgorithm')
 
-                    #if parameter is None, then move to next line and continue
+                    # if parameter is None, then move to next line and continue
                     if param is None:
                         line = lines.readline().strip('\n').strip()
                         continue
@@ -148,11 +148,11 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
                         metadata['group_value'] = group_value
                         param.setMetadata(metadata)
 
-                    #'elev.dem.path', 'elev.dem', 'elev.dem.geoid', 'elev.geoid' are special!
-                    #Even though it is not typical for OTB to fix on parameter keys,
-                    #we current use below !hack! to set SRTM path and GEOID files
-                    #Future releases of OTB must follow this rule keep
-                    #compatibility or update this checklist.
+                    # 'elev.dem.path', 'elev.dem', 'elev.dem.geoid', 'elev.geoid' are special!
+                    # Even though it is not typical for OTB to fix on parameter keys,
+                    # we current use below !hack! to set SRTM path and GEOID files
+                    # Future releases of OTB must follow this rule keep
+                    # compatibility or update this checklist.
                     if name in ["elev.dem.path", "elev.dem"]:
                         param.setDefaultValue(OtbUtils.srtmFolder())
                     if name in ["elev.dem.geoid", "elev.geoid"]:
@@ -165,7 +165,7 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
                         param.setDefaultValue(self.pixelTypes.index('float'))
 
                     self.addParameter(param)
-                    #parameter is added now and we must move to next line
+                    # parameter is added now and we must move to next line
                     line = lines.readline().strip('\n').strip()
 
         except BaseException as e:
@@ -178,19 +178,20 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
         valid_params = {}
         for k, v in parameters.items():
             param = self.parameterDefinition(k)
-            #If parameterDefinition(k) return None, this is considered a invalid parameter.
-            #just continue for loop
+            # If parameterDefinition(k) return None, this is considered a invalid parameter.
+            # just continue for loop
             if param is None:
                 continue
 
             # Any other valid parameters have:
-            #- empty or no metadata
-            #- metadata without a 'group_key'
-            #- metadata with 'group_key' and 'group_key' is not in list of parameters. see ParameterGroup in OTB
-            #- metadata with 'group_key' and 'group_key' is a valid parameter and it's value == metadata()['group_value']
+            # - empty or no metadata
+            # - metadata without a 'group_key'
+            # - metadata with 'group_key' and 'group_key' is not in list of parameters. see ParameterGroup in OTB
+            # - metadata with 'group_key' and 'group_key' is a valid parameter and it's value == metadata()['group_value']
             if 'group_key' in param.metadata() and not param.metadata()['group_key'] in parameters:
                 valid_params[k] = v
-            elif not 'group_key' in param.metadata() or parameters[param.metadata()['group_key']] == param.metadata()['group_value']:
+            elif 'group_key' not in param.metadata() or parameters[param.metadata()['group_key']] == param.metadata()[
+                    'group_value']:
                 valid_params[k] = v
 
         return valid_params
@@ -271,7 +272,7 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
 
     def getLayerSource(self, name, layer):
         providerName = layer.dataProvider().name()
-        #TODO: add other provider support in OTB, eg: memory
+        # TODO: add other provider support in OTB, eg: memory
         if providerName in ['ogr', 'gdal']:
             return layer.source()
         else:

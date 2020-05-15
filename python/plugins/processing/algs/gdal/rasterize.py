@@ -43,7 +43,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class rasterize(GdalAlgorithm):
-
     INPUT = 'INPUT'
     FIELD = 'FIELD'
     BURN = 'BURN'

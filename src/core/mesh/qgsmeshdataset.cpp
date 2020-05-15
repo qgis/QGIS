@@ -138,7 +138,6 @@ QgsMeshDatasetGroupMetadata::QgsMeshDatasetGroupMetadata( const QString &name,
   , mMaximumVerticalLevelsCount( maximumVerticalLevels )
   , mReferenceTime( referenceTime )
   , mIsTemporal( isTemporal )
-
 {
 }
 
@@ -433,5 +432,182 @@ void QgsMesh3dDataBlock::setValues( const QVector<double> &doubleBuffer )
 void QgsMesh3dDataBlock::setValid( bool valid )
 {
   mIsValid = valid;
+}
+
+QgsMeshDatasetGroupTreeItem::QgsMeshDatasetGroupTreeItem() = default;
+
+QgsMeshDatasetGroupTreeItem::QgsMeshDatasetGroupTreeItem( const QString &defaultName,
+    bool isVector,
+    int index )
+  : mProviderName( defaultName )
+  , mIsVector( isVector )
+  , mDatasetGroupIndex( index )
+{
+}
+
+QgsMeshDatasetGroupTreeItem::QgsMeshDatasetGroupTreeItem( const QDomElement &itemElement, const QgsReadWriteContext &context )
+{
+  Q_UNUSED( context );
+  if ( itemElement.hasAttribute( QStringLiteral( "display-name" ) ) )
+    mUserName = itemElement.attribute( QStringLiteral( "display-name" ), mUserName );
+
+  if ( itemElement.hasAttribute( QStringLiteral( "provider-name" ) ) )
+    mProviderName = itemElement.attribute( QStringLiteral( "provider-name" ), mProviderName );
+
+  if ( itemElement.hasAttribute( QStringLiteral( "is-vector" ) ) )
+    mIsVector = itemElement.attribute( QStringLiteral( "is-vector" ) ).toInt();
+
+  if ( itemElement.hasAttribute( QStringLiteral( "dataset-index" ) ) )
+    mDatasetGroupIndex = itemElement.attribute( QStringLiteral( "dataset-index" ) ).toInt();
+
+  if ( itemElement.hasAttribute( QStringLiteral( "is-enabled" ) ) )
+    mIsEnabled = itemElement.attribute( QStringLiteral( "is-enabled" ) ).toInt();
+
+  QDomElement childElement = itemElement.firstChildElement( QStringLiteral( "mesh-dataset-group-tree-item" ) );
+  while ( !childElement.isNull() )
+  {
+    appendChild( new QgsMeshDatasetGroupTreeItem( childElement, context ) );
+    childElement = childElement.nextSiblingElement( QStringLiteral( "mesh-dataset-group-tree-item" ) );
+  }
+
+}
+
+QgsMeshDatasetGroupTreeItem::~QgsMeshDatasetGroupTreeItem()
+{
+  qDeleteAll( mChildren );
+}
+
+QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeItem::clone() const
+{
+  QgsMeshDatasetGroupTreeItem *other = new QgsMeshDatasetGroupTreeItem( mProviderName, mIsVector, mDatasetGroupIndex );
+  other->mUserName = mUserName;
+  other->mIsEnabled = mIsEnabled;
+
+  if ( !mChildren.empty() )
+    for ( int i = 0; i < mChildren.count(); ++i )
+      other->appendChild( mChildren.at( i )->clone() );
+
+  return other;
+}
+
+void QgsMeshDatasetGroupTreeItem::appendChild( QgsMeshDatasetGroupTreeItem *item )
+{
+  mChildren.append( item );
+  item->mParent = this;
+  mDatasetGroupIndexToChild[item->datasetGroupIndex()] = item;
+}
+
+QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeItem::child( int row ) const
+{
+  if ( row < mChildren.count() )
+    return mChildren.at( row );
+  else
+    return nullptr;
+}
+
+QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeItem::childFromDatasetGroupIndex( int index )
+{
+  if ( mDatasetGroupIndexToChild.empty() )
+    return nullptr;
+
+  QMap<int, QgsMeshDatasetGroupTreeItem *>::iterator it = mDatasetGroupIndexToChild.find( index );
+
+  if ( it != mDatasetGroupIndexToChild.end() )
+    return it.value();
+  else
+  {
+    QgsMeshDatasetGroupTreeItem *item = nullptr;
+    for ( int i = 0; i < mChildren.count(); ++i )
+    {
+      item = mChildren.at( i )->childFromDatasetGroupIndex( index );
+      if ( item )
+        break;
+    }
+    return item;
+  }
+}
+
+int QgsMeshDatasetGroupTreeItem::childCount() const
+{
+  return mChildren.count();
+}
+
+int QgsMeshDatasetGroupTreeItem::totalChildCount() const
+{
+  int count = 0;
+  for ( int i = 0; i < mChildren.count(); ++i )
+  {
+    count++;
+    count += mChildren.at( i )->totalChildCount();
+  }
+  return count;
+}
+
+QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeItem::parentItem() const
+{
+  return mParent;
+}
+
+int QgsMeshDatasetGroupTreeItem::row() const
+{
+  if ( mParent )
+    return mParent->mChildren.indexOf( const_cast<QgsMeshDatasetGroupTreeItem *>( this ) );
+
+  return 0;
+}
+
+QString QgsMeshDatasetGroupTreeItem::name() const
+{
+  if ( mUserName.isEmpty() )
+    return mProviderName;
+  else
+    return mUserName;
+}
+
+bool QgsMeshDatasetGroupTreeItem::isVector() const
+{
+  return mIsVector;
+}
+
+int QgsMeshDatasetGroupTreeItem::datasetGroupIndex() const
+{
+  return mDatasetGroupIndex;
+}
+
+bool QgsMeshDatasetGroupTreeItem::isEnabled() const
+{
+  return mIsEnabled;
+}
+
+void QgsMeshDatasetGroupTreeItem::setIsEnabled( bool enabled )
+{
+  mIsEnabled = enabled;
+}
+
+QString QgsMeshDatasetGroupTreeItem::defaultName() const
+{
+  return mProviderName;
+}
+
+QDomElement QgsMeshDatasetGroupTreeItem::writeXml( QDomDocument &doc, const QgsReadWriteContext &context )
+{
+  Q_UNUSED( context );
+
+  QDomElement itemElement = doc.createElement( QStringLiteral( "mesh-dataset-group-tree-item" ) );
+  itemElement.setAttribute( QStringLiteral( "display-name" ), mUserName );
+  itemElement.setAttribute( QStringLiteral( "provider-name" ), mProviderName );
+  itemElement.setAttribute( QStringLiteral( "is-vector" ), mIsVector ? true : false );
+  itemElement.setAttribute( QStringLiteral( "dataset-index" ), mDatasetGroupIndex );
+  itemElement.setAttribute( QStringLiteral( "is-enabled" ), mIsEnabled ? true : false );
+
+  for ( int i = 0; i < mChildren.count(); ++i )
+    itemElement.appendChild( mChildren.at( i )->writeXml( doc, context ) );
+
+  return itemElement;
+}
+
+void QgsMeshDatasetGroupTreeItem::setName( const QString &name )
+{
+  mUserName = name;
 }
 

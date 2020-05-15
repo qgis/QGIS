@@ -71,7 +71,6 @@ from processing.algs.gdal.rasterize_over import rasterize_over
 from processing.algs.gdal.rasterize_over_fixed_value import rasterize_over_fixed_value
 from processing.algs.gdal.viewshed import viewshed
 
-
 testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 
@@ -596,7 +595,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             output = outdir + '/check.jpg'
 
             # default execution
-            formula = 'A*2' # default formula
+            formula = 'A*2'  # default formula
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT_A': source,
                                         'BAND_A': 1,

@@ -49,6 +49,7 @@ Constructor for QgsMeshLayerTemporalProperties
 %End
 
   public:
+
     virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context );
 
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );

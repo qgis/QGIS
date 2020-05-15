@@ -23,17 +23,12 @@
 #include <QMap>
 #include "qgis_sip.h"
 #include <QString>
-#include <QPair>
-#include <QColor>
 
 #include "qgis_server.h"
 
 class QgsServerException;
 class QgsServerRequest;
 class QgsServerResponse;
-
-typedef QList< QPair<QRgb, int> > QgsColorBox; //Color / number of pixels
-typedef QMultiMap< int, QgsColorBox > QgsColorBoxMap; // sum of pixels / color box
 
 /**
  * \ingroup server

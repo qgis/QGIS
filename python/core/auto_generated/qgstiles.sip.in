@@ -113,6 +113,11 @@ Please note that we follow the XYZ convention of X/Y axes, i.e. top-left tile ha
 Returns a tile matrix for the usual web mercator
 %End
 
+    int zoomLevel() const;
+%Docstring
+Returns zoom level of the tile matrix
+%End
+
     int matrixWidth() const;
 %Docstring
 Returns number of columns of the tile matrix
@@ -121,6 +126,16 @@ Returns number of columns of the tile matrix
     int matrixHeight() const;
 %Docstring
 Returns number of rows of the tile matrix
+%End
+
+    QgsRectangle extent() const;
+%Docstring
+Returns extent of the tile matrix
+%End
+
+    double scale() const;
+%Docstring
+Returns scale denominator of the tile matrix
 %End
 
     QgsRectangle tileExtent( QgsTileXYZ id ) const;

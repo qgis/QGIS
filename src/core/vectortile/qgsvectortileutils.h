@@ -59,8 +59,10 @@ class CORE_EXPORT QgsVectorTileUtils
     static int scaleToZoomLevel( double mapScale, int sourceMinZoom, int sourceMaxZoom );
     //! Returns a temporary vector layer for given sub-layer of tile in vector tile layer
     static QgsVectorLayer *makeVectorLayerForTile( QgsVectorTileLayer *mvt, QgsTileXYZ tileID, const QString &layerName );
-    //! Returns formatted tile URL string replacing {x}, {y}, {z} placeholders
-    static QString formatXYZUrlTemplate( const QString &url, QgsTileXYZ tile );
+    //! Returns formatted tile URL string replacing {x}, {y}, {z} placeholders (or {-y} instead of {y} for TMS convention)
+    static QString formatXYZUrlTemplate( const QString &url, QgsTileXYZ tile, const QgsTileMatrix &tileMatrix );
+    //! Checks whether the URL template string is correct (contains {x}, {y} / {-y}, {z} placeholders)
+    static bool checkXYZUrlTemplate( const QString &url );
 };
 
 #endif // QGSVECTORTILEUTILS_H

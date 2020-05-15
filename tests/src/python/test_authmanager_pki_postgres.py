@@ -52,7 +52,6 @@ from qgis.testing import (
     unittest,
 )
 
-
 __author__ = 'Alessandro Pasotti'
 __date__ = '25/10/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
@@ -239,6 +238,7 @@ class TestAuthManager(unittest.TestCase):
         Check that no temporary cert remain after connection with
         postgres provider
         """
+
         def cleanTempPki():
             pkies = glob.glob(os.path.join(tempfile.gettempdir(), 'tmp*_{*}.pem'))
             for fn in pkies:

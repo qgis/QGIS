@@ -209,11 +209,6 @@ Sets the unit of the stroke width
 Sets the stroke color used to plot
 %End
 
-    void setOpacity( double opacity );
-%Docstring
-Sets the opacity used to plot
-%End
-
     void render( double value1, double value2, QgsPointXY point1, QgsPointXY point2, QgsRenderContext &context ) const;
 %Docstring
 Render a line in the ``context`` between ``point1`` and ``point2``

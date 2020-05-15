@@ -43,6 +43,7 @@
 #include "qgsfontutils.h"
 #include "qgsrasterlayer.h"
 #include "qgssinglesymbolrenderer.h"
+#include "qgsrasterlayertemporalproperties.h"
 
 //qgs unit test utility class
 #include "qgsmultirenderchecker.h"
@@ -909,9 +910,10 @@ void TestQgsMapRendererJob::temporalRender()
   QVERIFY( imageCheck( QStringLiteral( "temporal_render_visible" ), img ) );
 
   // set temporal properties for layer
-  rasterLayer->temporalProperties()->setIsActive( true );
-  rasterLayer->temporalProperties()->setMode( QgsRasterLayerTemporalProperties::ModeFixedTemporalRange );
-  rasterLayer->temporalProperties()->setFixedTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
+  QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< QgsRasterLayerTemporalProperties * >( rasterLayer->temporalProperties() );
+  temporalProperties->setIsActive( true );
+  temporalProperties->setMode( QgsRasterLayerTemporalProperties::ModeFixedTemporalRange );
+  temporalProperties->setFixedTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
       QDateTime( QDate( 2020, 1, 5 ) ) ) );
 
   // should still be visible -- map render job isn't temporal
@@ -925,17 +927,17 @@ void TestQgsMapRendererJob::temporalRender()
   mapSettings.setIsTemporal( true );
   mapSettings.setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2021, 1, 1 ) ),
                                 QDateTime( QDate( 2021, 1, 5 ) ) ) );
-// should no longer be visible
+  // should no longer be visible
   QgsMapRendererSequentialJob renderJob3( mapSettings );
   renderJob3.start();
   renderJob3.waitForFinished();
   img = renderJob3.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "temporal_render_invisible" ), img ) );
 
-// temporal range ok for layer
+  // temporal range ok for layer
   mapSettings.setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 2 ) ),
                                 QDateTime( QDate( 2020, 1, 3 ) ) ) );
-// should be visible
+  // should be visible
   QgsMapRendererSequentialJob renderJob4( mapSettings );
   renderJob4.start();
   renderJob4.waitForFinished();

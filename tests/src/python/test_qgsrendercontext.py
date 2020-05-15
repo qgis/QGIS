@@ -78,7 +78,8 @@ class TestQgsRenderContext(unittest.TestCase):
         c2 = QgsRenderContext(c1)
 
         self.assertEqual(c2.isTemporal(), True)
-        self.assertEqual(c2.temporalRange(), QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0), QDateTime(2010, 12, 31, 23, 59)))
+        self.assertEqual(c2.temporalRange(),
+                         QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0), QDateTime(2010, 12, 31, 23, 59)))
 
     def testFromQPainter(self):
         """ test QgsRenderContext.fromQPainter """
@@ -132,7 +133,8 @@ class TestQgsRenderContext(unittest.TestCase):
 
         ms.setTemporalRange(QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0), QDateTime(2010, 12, 31, 23, 59)))
         rc = QgsRenderContext.fromMapSettings(ms)
-        self.assertEqual(rc.temporalRange(), QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0), QDateTime(2010, 12, 31, 23, 59)))
+        self.assertEqual(rc.temporalRange(),
+                         QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0), QDateTime(2010, 12, 31, 23, 59)))
 
     def testVectorSimplification(self):
         """
@@ -182,7 +184,6 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertTrue(rc2.hasRenderedFeatureHandlers())
 
     def testRenderMetersInMapUnits(self):
-
         crs_wsg84 = QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4326')
         rt_extent = QgsRectangle(13.37768985634235, 52.51625705830762, 13.37771931686235, 52.51628651882762)
         point_berlin_wsg84 = QgsPointXY(13.37770458660236, 52.51627178856762)
@@ -204,14 +205,17 @@ class TestQgsRenderContext(unittest.TestCase):
         c = QgsMapUnitScale()
         r.setDistanceArea(da_wsg84)
         result_test_painterunits = r.convertToPainterUnits(meters_test, QgsUnitTypes.RenderMetersInMapUnits, c)
-        self.assertEqual(QgsDistanceArea.formatDistance(result_test_painterunits, 7, QgsUnitTypes.DistanceUnknownUnit, True), QgsDistanceArea.formatDistance(meters_test_mapunits, 7, QgsUnitTypes.DistanceUnknownUnit, True))
+        self.assertEqual(
+            QgsDistanceArea.formatDistance(result_test_painterunits, 7, QgsUnitTypes.DistanceUnknownUnit, True),
+            QgsDistanceArea.formatDistance(meters_test_mapunits, 7, QgsUnitTypes.DistanceUnknownUnit, True))
         result_test_mapunits = r.convertToMapUnits(meters_test, QgsUnitTypes.RenderMetersInMapUnits, c)
-        self.assertEqual(QgsDistanceArea.formatDistance(result_test_mapunits, 7, QgsUnitTypes.DistanceDegrees, True), QgsDistanceArea.formatDistance(meters_test_mapunits, 7, QgsUnitTypes.DistanceDegrees, True))
+        self.assertEqual(QgsDistanceArea.formatDistance(result_test_mapunits, 7, QgsUnitTypes.DistanceDegrees, True),
+                         QgsDistanceArea.formatDistance(meters_test_mapunits, 7, QgsUnitTypes.DistanceDegrees, True))
         result_test_meters = r.convertFromMapUnits(meters_test_mapunits, QgsUnitTypes.RenderMetersInMapUnits)
-        self.assertEqual(QgsDistanceArea.formatDistance(result_test_meters, 1, QgsUnitTypes.DistanceMeters, True), QgsDistanceArea.formatDistance(meters_test, 1, QgsUnitTypes.DistanceMeters, True))
+        self.assertEqual(QgsDistanceArea.formatDistance(result_test_meters, 1, QgsUnitTypes.DistanceMeters, True),
+                         QgsDistanceArea.formatDistance(meters_test, 1, QgsUnitTypes.DistanceMeters, True))
 
     def testConvertSingleUnit(self):
-
         ms = QgsMapSettings()
         ms.setExtent(QgsRectangle(0, 0, 100, 100))
         ms.setOutputSize(QSize(100, 50))
@@ -222,7 +226,7 @@ class TestQgsRenderContext(unittest.TestCase):
 
         # start with no min/max scale
         c = QgsMapUnitScale()
-        #self.assertEqual(r.scaleFactor(),666)
+        # self.assertEqual(r.scaleFactor(),666)
 
         sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderMapUnits, c)
         self.assertAlmostEqual(sf, 0.5, places=5)
@@ -265,7 +269,6 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertAlmostEqual(sf, 1.0, places=5)
 
     def testConvertToPainterUnits(self):
-
         ms = QgsMapSettings()
         ms.setExtent(QgsRectangle(0, 0, 100, 100))
         ms.setOutputSize(QSize(100, 50))
@@ -405,7 +408,6 @@ class TestQgsRenderContext(unittest.TestCase):
         c.maxScale = 0
 
     def testPixelSizeScaleFactor(self):
-
         ms = QgsMapSettings()
         ms.setExtent(QgsRectangle(0, 0, 100, 100))
         ms.setOutputSize(QSize(100, 50))
