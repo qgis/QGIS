@@ -121,6 +121,7 @@ SET(TESTS
  testqgsfields.cpp
  testqgsfield.cpp
  testqgsfilledmarker.cpp
+ testqgsgdalprovider.cpp
  testqgsgdalutils.cpp
  testqgsvectorfilewriter.cpp
  testqgsfontmarker.cpp
@@ -188,6 +189,7 @@ SET(TESTS
  testqgsnetworkcontentfetcher.cpp
  testqgsnewsfeedparser.cpp
  testqgsogcutils.cpp
+ testqgsogrprovider.cpp
  testqgsogrutils.cpp
  testqgspagesizeregistry.cpp
  testqgspainteffectregistry.cpp
