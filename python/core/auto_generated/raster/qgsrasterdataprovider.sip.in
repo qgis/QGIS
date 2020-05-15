@@ -497,6 +497,26 @@ and it's possible that there is renderable content outside of these extents.
 .. versionadded:: 3.10.0
 %End
 
+    enum TransformType
+    {
+      TransformImageToLayer,
+      TransformLayerToImage,
+    };
+
+    virtual QgsPoint transformCoordinates( const QgsPoint &point, TransformType type );
+%Docstring
+Transforms coordinates between source image coordinate space [0..width]x[0..height] and
+layer coordinate space (georeferenced coordinates). Often this transformation is a simple
+2D affine transformation (offset and scaling), but rasters with different georeferencing
+methods like GCPs (ground control points) or RPCs (rational polynomial coefficients) may
+require a more complex transform.
+
+If the transform fails (input coordinates are outside of the valid range or data provider
+does not support this functionality), an empty point is returned.
+
+.. versionadded:: 3.14
+%End
+
   signals:
 
     void statusChanged( const QString & ) const;
