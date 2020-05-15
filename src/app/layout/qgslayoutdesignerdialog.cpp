@@ -146,6 +146,11 @@ void QgsAppLayoutDesignerInterface::setAtlasPreviewEnabled( bool enabled )
   mDesigner->setAtlasPreviewEnabled( enabled );
 }
 
+void QgsAppLayoutDesignerInterface::setAtlasFeature( const QgsFeature &feature )
+{
+  mDesigner->setAtlasFeature( feature );
+}
+
 bool QgsAppLayoutDesignerInterface::atlasPreviewEnabled() const
 {
   return mDesigner->atlasPreviewEnabled();
@@ -4771,12 +4776,11 @@ bool QgsLayoutDesignerDialog::atlasPreviewEnabled() const
   return mActionAtlasPreview->isChecked();
 }
 
-void QgsLayoutDesignerDialog::setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feat )
+void QgsLayoutDesignerDialog::setAtlasFeature( const QgsFeature &feature )
 {
   QgsLayoutAtlas *layoutAtlas = atlas();
-  if ( !layoutAtlas || !layoutAtlas->enabled() || layoutAtlas->coverageLayer() != layer )
+  if ( !layoutAtlas || !layoutAtlas->enabled() )
   {
-    //either atlas isn't enabled, or layer doesn't match
     return;
   }
 
@@ -4788,7 +4792,7 @@ void QgsLayoutDesignerDialog::setAtlasFeature( QgsMapLayer *layer, const QgsFeat
   }
 
   //set current preview feature id
-  layoutAtlas->seekTo( feat );
+  layoutAtlas->seekTo( feature );
 
   //bring layout window to foreground
   activate();
