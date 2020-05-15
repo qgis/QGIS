@@ -51,6 +51,17 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
      */
     QgsTemporalController *temporalController();
 
+#ifndef SIP_RUN
+
+  signals:
+
+    /**
+     * Triggered when an animation should be exported
+     */
+    void exportAnimation();
+
+#endif
+
   private:
 
     /**

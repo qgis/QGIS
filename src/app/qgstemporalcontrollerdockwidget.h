@@ -47,6 +47,10 @@ class APP_EXPORT QgsTemporalControllerDockWidget : public QgsDockWidget
      */
     QgsTemporalController *temporalController();
 
+  private slots:
+
+    void exportAnimation();
+
   private:
 
     QgsTemporalControllerWidget *mControllerWidget = nullptr;

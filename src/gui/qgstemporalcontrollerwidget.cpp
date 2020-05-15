@@ -60,6 +60,8 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   connect( mSettings, &QPushButton::clicked, this, &QgsTemporalControllerWidget::settings_clicked );
   connect( mSetToProjectTimeButton, &QPushButton::clicked, this, &QgsTemporalControllerWidget::mSetToProjectTimeButton_clicked );
 
+  connect( mExportAnimationButton, &QPushButton::clicked, this, &QgsTemporalControllerWidget::exportAnimation );
+
   QgsDateTimeRange range;
 
   if ( QgsProject::instance()->timeSettings() )
