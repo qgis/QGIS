@@ -907,8 +907,6 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
     {
       setDefaultContrastEnhancement();
     }
-
-    emit statusChanged( tr( "QgsRasterLayer created" ) );
   }
   emit dataSourceChanged();
   emit dataChanged();
