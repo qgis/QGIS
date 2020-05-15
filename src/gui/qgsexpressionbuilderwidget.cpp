@@ -927,6 +927,12 @@ void QgsExpressionBuilderWidget::editSelectedUserExpression()
 
   if ( dlg.exec() == QDialog::DialogCode::Accepted )
   {
+    // label has changed removed the old one before adding the new one
+    if ( dlg.label() != item->text() )
+    {
+      mExpressionTreeView->removeFromUserExpressions( item->text() );
+    }
+
     mExpressionTreeView->saveToUserExpressions( dlg.label(), dlg.expression(), dlg.helpText() );
   }
 }
