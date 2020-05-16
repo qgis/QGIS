@@ -24,6 +24,8 @@
 #include "qgstiles.h"
 #include "qgsvectortilebasicrenderer.h"
 #include "qgsvectortilelayer.h"
+#include "qgsvectortilebasiclabeling.h"
+#include "qgsfontutils.h"
 
 /**
  * \ingroup UnitTests
@@ -52,6 +54,8 @@ class TestQgsVectorTileLayer : public QObject
 
     void test_basic();
     void test_render();
+    void test_labeling();
+    void test_relativePaths();
 };
 
 
@@ -131,6 +135,86 @@ bool TestQgsVectorTileLayer::imageCheck( const QString &testType, QgsVectorTileL
 void TestQgsVectorTileLayer::test_render()
 {
   QVERIFY( imageCheck( "render_test_basic", mLayer, mLayer->extent() ) );
+}
+
+void TestQgsVectorTileLayer::test_labeling()
+{
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+
+  QgsPalLayerSettings labelSettings;
+  labelSettings.drawLabels = true;
+  labelSettings.fieldName = "name:en";
+  labelSettings.placement = QgsPalLayerSettings::OverPoint;
+  labelSettings.setFormat( format );
+
+  QgsVectorTileBasicLabelingStyle st;
+  st.setStyleName( "st1" );
+  st.setLayerName( "place" );
+  st.setFilterExpression( "rank = 1 AND class = 'country'" );
+  st.setGeometryType( QgsWkbTypes::PointGeometry );
+  st.setLabelSettings( labelSettings );
+
+  QgsVectorTileBasicLabeling *labeling = new QgsVectorTileBasicLabeling;
+  QList<QgsVectorTileBasicLabelingStyle> lst;
+  lst << st;
+  labeling->setStyles( lst );
+
+  mLayer->setLabeling( labeling );
+
+  QgsVectorTileRenderer *oldRenderer = mLayer->renderer()->clone();
+
+  // use a different renderer to make the labels stand out more
+  QgsVectorTileBasicRenderer *rend = new QgsVectorTileBasicRenderer;
+  rend->setStyles( QgsVectorTileBasicRenderer::simpleStyle(
+                     Qt::transparent, Qt::white, DEFAULT_LINE_WIDTH * 2,
+                     Qt::transparent, 0,
+                     Qt::transparent, Qt::transparent, 0 ) );
+  mLayer->setRenderer( rend );  // takes ownership
+
+  bool res = imageCheck( "render_test_labeling", mLayer, mLayer->extent() );
+
+  mLayer->setRenderer( oldRenderer );
+
+  QVERIFY( res );
+}
+
+void TestQgsVectorTileLayer::test_relativePaths()
+{
+  QgsReadWriteContext contextRel;
+  contextRel.setPathResolver( QgsPathResolver( "/home/qgis/project.qgs" ) );
+  QgsReadWriteContext contextAbs;
+
+  QString srcXyzLocal = "type=xyz&url=file:///home/qgis/%7Bz%7D/%7Bx%7D/%7By%7D.pbf";
+  QString srcXyzRemote = "type=xyz&url=http://www.example.com/%7Bz%7D/%7Bx%7D/%7By%7D.pbf";
+  QString srcMbtiles = "type=mbtiles&url=/home/qgis/test/map.mbtiles";
+
+  QgsVectorTileLayer layer;
+
+  // encode source: converting absolute paths to relative
+  QString srcXyzLocalRel = layer.encodedSource( srcXyzLocal, contextRel );
+  QCOMPARE( srcXyzLocalRel, QStringLiteral( "type=xyz&url=file:./%7Bz%7D/%7Bx%7D/%7By%7D.pbf" ) );
+  QString srcMbtilesRel = layer.encodedSource( srcMbtiles, contextRel );
+  QCOMPARE( srcMbtilesRel, QStringLiteral( "type=mbtiles&url=./test/map.mbtiles" ) );
+  QCOMPARE( layer.encodedSource( srcXyzRemote, contextRel ), srcXyzRemote );
+
+  // encode source: keeping absolute paths
+  QCOMPARE( layer.encodedSource( srcXyzLocal, contextAbs ), srcXyzLocal );
+  QCOMPARE( layer.encodedSource( srcXyzRemote, contextAbs ), srcXyzRemote );
+  QCOMPARE( layer.encodedSource( srcMbtiles, contextAbs ), srcMbtiles );
+
+  // decode source: converting relative paths to absolute
+  QCOMPARE( layer.decodedSource( srcXyzLocalRel, QString(), contextRel ), srcXyzLocal );
+  QCOMPARE( layer.decodedSource( srcMbtilesRel, QString(), contextRel ), srcMbtiles );
+  QCOMPARE( layer.decodedSource( srcXyzRemote, QString(), contextRel ), srcXyzRemote );
+
+  // decode source: keeping absolute paths
+  QCOMPARE( layer.decodedSource( srcXyzLocal, QString(), contextAbs ), srcXyzLocal );
+  QCOMPARE( layer.decodedSource( srcXyzRemote, QString(), contextAbs ), srcXyzRemote );
+  QCOMPARE( layer.decodedSource( srcMbtiles, QString(), contextAbs ), srcMbtiles );
 }
 
 

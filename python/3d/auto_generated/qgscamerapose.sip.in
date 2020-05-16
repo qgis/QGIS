@@ -1,0 +1,89 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgscamerapose.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsCameraPose
+{
+%Docstring
+Class that encapsulates camera pose in a 3D scene. The pose is defined with the following parameters:
+- center point - towards which point the camera is looking
+- distance from the center point - how far is the camera from the point towards which it is looking
+- pitch angle - vertical rotation of the camera (0 degrees = camera looking down, 90 degrees = camera looking from the side)
+- yaw angle - horizontal rotation of the camera
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgscamerapose.h"
+%End
+  public:
+
+    QgsVector3D centerPoint() const;
+%Docstring
+Returns center point (towards which point the camera is looking)
+%End
+    void setCenterPoint( const QgsVector3D &point );
+%Docstring
+Sets center point (towards which point the camera is looking)
+%End
+
+    float distanceFromCenterPoint() const;
+%Docstring
+Returns distance of the camera from the center point
+%End
+    void setDistanceFromCenterPoint( float distance );
+%Docstring
+Sets distance of the camera from the center point
+%End
+
+    float pitchAngle() const;
+%Docstring
+Returns pitch angle in degrees
+%End
+    void setPitchAngle( float pitch );
+%Docstring
+Sets pitch angle in degrees
+%End
+
+    float headingAngle() const;
+%Docstring
+Returns heading (yaw) angle in degrees
+%End
+    void setHeadingAngle( float heading );
+%Docstring
+Sets heading (yaw) angle in degrees
+%End
+
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element and returns it
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from a DOM element previously written using writeXml()
+%End
+
+    bool operator==( const QgsCameraPose &other ) const;
+    bool operator!=( const QgsCameraPose &other ) const;
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgscamerapose.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

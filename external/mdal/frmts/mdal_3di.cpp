@@ -29,12 +29,12 @@ MDAL::CFDimensions MDAL::Driver3Di::populateDimensions( )
 
   // 2D Mesh
   mNcFile->getDimension( "nMesh2D_nodes", &count, &ncid );
-  dims.setDimension( CFDimensions::Face2D, count, ncid );
+  dims.setDimension( CFDimensions::Face, count, ncid );
 
   mNcFile->getDimension( "nCorner_Nodes", &count, &ncid );
   dims.setDimension( CFDimensions::MaxVerticesInFace, count, ncid );
 
-  // Vertices count is populated later in populateFacesAndVertices
+  // Vertices count is populated later in populateElements
   // it is not known from the array dimensions
 
   // Time
@@ -44,10 +44,10 @@ MDAL::CFDimensions MDAL::Driver3Di::populateDimensions( )
   return dims;
 }
 
-void MDAL::Driver3Di::populateFacesAndVertices( Vertices &vertices, Faces &faces )
+void MDAL::Driver3Di::populateElements( Vertices &vertices, Edges &, Faces &faces )
 {
   assert( vertices.empty() );
-  size_t faceCount = mDimensions.size( CFDimensions::Face2D );
+  size_t faceCount = mDimensions.size( CFDimensions::Face );
   faces.resize( faceCount );
   size_t verticesInFace = mDimensions.size( CFDimensions::MaxVerticesInFace );
   size_t arrsize = faceCount * verticesInFace;
@@ -109,7 +109,7 @@ void MDAL::Driver3Di::populateFacesAndVertices( Vertices &vertices, Faces &faces
 
   // Only now we have number of vertices, since we identified vertices that
   // are used in multiple faces
-  mDimensions.setDimension( CFDimensions::Vertex2D, vertices.size() );
+  mDimensions.setDimension( CFDimensions::Vertex, vertices.size() );
 }
 
 void MDAL::Driver3Di::addBedElevation( MemoryMesh *mesh )
@@ -194,10 +194,16 @@ std::set<std::string> MDAL::Driver3Di::ignoreNetCDFVariables()
   return ignore_variables;
 }
 
-void MDAL::Driver3Di::parseNetCDFVariableMetadata( int varid, const std::string &variableName, std::string &name, bool *is_vector, bool *is_x )
+void MDAL::Driver3Di::parseNetCDFVariableMetadata( int varid,
+    std::string &variableName,
+    std::string &name,
+    bool *is_vector,
+    bool *isPolar,
+    bool *is_x )
 {
   *is_vector = false;
   *is_x = true;
+  *isPolar = false;
 
   std::string long_name = mNcFile->getAttrStr( "long_name", varid );
   if ( long_name.empty() )
@@ -209,6 +215,7 @@ void MDAL::Driver3Di::parseNetCDFVariableMetadata( int varid, const std::string 
     }
     else
     {
+      variableName = standard_name;
       if ( MDAL::contains( standard_name, "_x_" ) )
       {
         *is_vector = true;
@@ -228,6 +235,7 @@ void MDAL::Driver3Di::parseNetCDFVariableMetadata( int varid, const std::string 
   }
   else
   {
+    variableName = long_name;
     if ( MDAL::contains( long_name, " in x direction" ) )
     {
       *is_vector = true;
@@ -244,4 +252,10 @@ void MDAL::Driver3Di::parseNetCDFVariableMetadata( int varid, const std::string 
       name = long_name;
     }
   }
+}
+
+std::vector<std::pair<double, double>> MDAL::Driver3Di::parseClassification( int varid ) const
+{
+  MDAL_UNUSED( varid );
+  return std::vector<std::pair<double, double>>();
 }

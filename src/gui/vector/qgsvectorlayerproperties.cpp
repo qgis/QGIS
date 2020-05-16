@@ -65,6 +65,7 @@
 #include "qgssymbolwidgetcontext.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsmaskingwidget.h"
+#include "qgsvectorlayertemporalpropertieswidget.h"
 
 #include "layertree/qgslayertreelayer.h"
 #include "qgslayertree.h"
@@ -185,19 +186,19 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   {
     // Create the Labeling dialog tab
     layout = new QVBoxLayout( labelingFrame );
-    layout->setMargin( 0 );
+    layout->setContentsMargins( 0, 0, 0, 0 );
     labelingDialog = new QgsLabelingWidget( mLayer, mCanvas, labelingFrame );
-    labelingDialog->layout()->setContentsMargins( -1, 0, -1, 0 );
+    labelingDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
     connect( labelingDialog, &QgsLabelingWidget::auxiliaryFieldCreated, this, [ = ] { updateAuxiliaryStoragePage(); } );
     layout->addWidget( labelingDialog );
     labelingFrame->setLayout( layout );
 
     // Create the masking dialog tab
     layout = new QVBoxLayout( mMaskingFrame );
-    layout->setMargin( 0 );
+    layout->setContentsMargins( 0, 0, 0, 0 );
     mMaskingWidget = new QgsMaskingWidget( mMaskingFrame );
     mMaskingWidget->setLayer( mLayer );
-    mMaskingWidget->layout()->setContentsMargins( -1, 0, -1, 0 );
+    mMaskingWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
     layout->addWidget( mMaskingWidget );
     mMaskingFrame->setLayout( layout );
   }
@@ -212,33 +213,38 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   // Create the Actions dialog tab
   QVBoxLayout *actionLayout = new QVBoxLayout( actionOptionsFrame );
-  actionLayout->setMargin( 0 );
+  actionLayout->setContentsMargins( 0, 0, 0, 0 );
   mActionDialog = new QgsAttributeActionDialog( *mLayer->actions(), actionOptionsFrame );
-  mActionDialog->layout()->setMargin( 0 );
+  mActionDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
   actionLayout->addWidget( mActionDialog );
 
   mSourceFieldsPropertiesDialog = new QgsSourceFieldsProperties( mLayer, mSourceFieldsFrame );
-  mSourceFieldsPropertiesDialog->layout()->setMargin( 0 );
+  mSourceFieldsPropertiesDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
   mSourceFieldsFrame->setLayout( new QVBoxLayout( mSourceFieldsFrame ) );
-  mSourceFieldsFrame->layout()->setMargin( 0 );
+  mSourceFieldsFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
   mSourceFieldsFrame->layout()->addWidget( mSourceFieldsPropertiesDialog );
 
   connect( mSourceFieldsPropertiesDialog, &QgsSourceFieldsProperties::toggleEditing, this, static_cast<void ( QgsVectorLayerProperties::* )()>( &QgsVectorLayerProperties::toggleEditing ) );
 
   mAttributesFormPropertiesDialog = new QgsAttributesFormProperties( mLayer, mAttributesFormFrame );
-  mAttributesFormPropertiesDialog->layout()->setMargin( 0 );
+  mAttributesFormPropertiesDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributesFormFrame->setLayout( new QVBoxLayout( mAttributesFormFrame ) );
-  mAttributesFormFrame->layout()->setMargin( 0 );
+  mAttributesFormFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributesFormFrame->layout()->addWidget( mAttributesFormPropertiesDialog );
 
   // Metadata tab, before the syncToLayer
   QVBoxLayout *metadataLayout = new QVBoxLayout( metadataFrame );
-  metadataLayout->setMargin( 0 );
+  metadataLayout->setContentsMargins( 0, 0, 0, 0 );
   mMetadataWidget = new QgsMetadataWidget( this, mLayer );
-  mMetadataWidget->layout()->setContentsMargins( -1, 0, -1, 0 );
+  mMetadataWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
   mMetadataWidget->setMapCanvas( mCanvas );
   metadataLayout->addWidget( mMetadataWidget );
   metadataFrame->setLayout( metadataLayout );
+
+  QVBoxLayout *temporalLayout = new QVBoxLayout( temporalFrame );
+  temporalLayout->setContentsMargins( 0, 0, 0, 0 );
+  mTemporalWidget = new QgsVectorLayerTemporalPropertiesWidget( this, mLayer );
+  temporalLayout->addWidget( mTemporalWidget );
 
   syncToLayer();
 
@@ -294,9 +300,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mOldJoins = mLayer->vectorJoins();
 
   QVBoxLayout *diagLayout = new QVBoxLayout( mDiagramFrame );
-  diagLayout->setMargin( 0 );
+  diagLayout->setContentsMargins( 0, 0, 0, 0 );
   diagramPropertiesDialog = new QgsDiagramProperties( mLayer, mDiagramFrame, mCanvas );
-  diagramPropertiesDialog->layout()->setContentsMargins( -1, 0, -1, 0 );
+  diagramPropertiesDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
   connect( diagramPropertiesDialog, &QgsDiagramProperties::auxiliaryFieldCreated, this, [ = ] { updateAuxiliaryStoragePage(); } );
   diagLayout->addWidget( diagramPropertiesDialog );
   mDiagramFrame->setLayout( diagLayout );
@@ -665,6 +671,9 @@ void QgsVectorLayerProperties::apply()
 
   mAttributesFormPropertiesDialog->apply();
   mSourceFieldsPropertiesDialog->apply();
+
+  // Update temporal properties
+  mTemporalWidget->saveTemporalProperties();
 
   if ( mLayer->renderer() )
   {

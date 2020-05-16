@@ -25,6 +25,8 @@
 
 #include "qgsdataitem.h"
 
+class QgsDataItemProvider;
+
 /**
  * \ingroup core
  * \class QgsBrowserWatcher
@@ -252,6 +254,10 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     QgsFavoritesItem *mFavorites = nullptr;
     QgsDirectoryItem *mProjectHome = nullptr;
 
+  private slots:
+    void dataItemProviderAdded( QgsDataItemProvider *provider );
+    void dataItemProviderWillBeRemoved( QgsDataItemProvider *provider );
+
   private:
     bool mInitialized = false;
     QMap< QString, QgsDirectoryItem * > mDriveItems;
@@ -259,6 +265,8 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void setupItemConnections( QgsDataItem *item );
 
     void removeRootItem( QgsDataItem *item );
+
+    QgsDataItem *addProviderRootItem( QgsDataItemProvider *provider );
 
     friend class TestQgsBrowserModel;
     friend class TestQgsBrowserProxyModel;

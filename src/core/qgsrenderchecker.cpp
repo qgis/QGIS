@@ -287,10 +287,6 @@ bool QgsRenderChecker::compareImages( const QString &testName,
   maskImagePath += QLatin1String( "_mask.png" );
   const QImage maskImage( maskImagePath );
   const bool hasMask = !maskImage.isNull();
-  if ( hasMask )
-  {
-    qDebug( "QgsRenderChecker using mask image" );
-  }
 
   //
   // Set pixel count score and target
@@ -358,10 +354,13 @@ bool QgsRenderChecker::compareImages( const QString &testName,
   // Put the same info to debug too
   //
 
-  qDebug( "Expected size: %dw x %dh", myExpectedImage.width(), myExpectedImage.height() );
-  qDebug( "Actual   size: %dw x %dh", myResultImage.width(), myResultImage.height() );
-  if ( hasMask )
-    qDebug( "Mask size: %dw x %dh", maskImage.width(), maskImage.height() );
+  if ( myExpectedImage.width() != myResultImage.width() || myExpectedImage.height() != myResultImage.height() )
+  {
+    qDebug( "Expected size: %dw x %dh", myExpectedImage.width(), myExpectedImage.height() );
+    qDebug( "Actual   size: %dw x %dh", myResultImage.width(), myResultImage.height() );
+    if ( hasMask )
+      qDebug( "Mask size: %dw x %dh", maskImage.width(), maskImage.height() );
+  }
 
   if ( mMatchTarget != myPixelCount )
   {
@@ -464,7 +463,10 @@ bool QgsRenderChecker::compareImages( const QString &testName,
   //
   // Send match result to debug
   //
-  qDebug( "%d/%d pixels mismatched (%d allowed)", mMismatchCount, mMatchTarget, mismatchCount );
+  if ( mMismatchCount > mismatchCount )
+  {
+    qDebug( "%d/%d pixels mismatched (%d allowed)", mMismatchCount, mMatchTarget, mismatchCount );
+  }
 
   //
   // Send match result to report

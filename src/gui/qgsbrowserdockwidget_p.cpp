@@ -85,6 +85,7 @@ QgsBrowserPropertiesWidget::QgsBrowserPropertiesWidget( QWidget *parent )
 void QgsBrowserPropertiesWidget::setWidget( QWidget *paramWidget )
 {
   QVBoxLayout *layout = new QVBoxLayout( this );
+  layout->setContentsMargins( 0, 0, 0, 0 );
   paramWidget->setParent( this );
   layout->addWidget( paramWidget );
 }
@@ -99,7 +100,7 @@ QgsBrowserPropertiesWidget *QgsBrowserPropertiesWidget::createWidget( QgsDataIte
     propertiesWidget = new QgsBrowserDirectoryProperties( parent );
     propertiesWidget->setItem( item );
   }
-  else if ( item->type() == QgsDataItem::Layer )
+  else if ( item->type() == QgsDataItem::Layer || item->type() == QgsDataItem::Custom )
   {
     // try new infrastructure of creation of layer widgets
     QWidget *paramWidget = nullptr;
@@ -124,7 +125,7 @@ QgsBrowserPropertiesWidget *QgsBrowserPropertiesWidget::createWidget( QgsDataIte
       propertiesWidget = new QgsBrowserPropertiesWidget( parent );
       propertiesWidget->setWidget( paramWidget );
     }
-    else
+    else if ( item->type() == QgsDataItem::Layer )
     {
       propertiesWidget = new QgsBrowserLayerProperties( parent );
       propertiesWidget->setItem( item );

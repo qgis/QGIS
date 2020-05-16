@@ -20,7 +20,7 @@
 #define QGSCOPYRIGHTLABELPLUGIN
 
 #include "qgsdecorationitem.h"
-#include "qgstextrenderer.h"
+#include "qgstextformat.h"
 
 #include <QColor>
 #include <QFont>

@@ -54,7 +54,7 @@ class CrashingProcessingAlgorithm(QgsProcessingAlgorithm):
 
     def createInstance(self):
         """Wrong!"""
-        return ExampleProcessingAlgorithm()
+        return ExampleProcessingAlgorithm()  # noqa
 
     def name(self):
         return 'mycrashingscript'

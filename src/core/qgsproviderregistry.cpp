@@ -135,7 +135,7 @@ void QgsProviderRegistry::init()
 #if defined(Q_OS_WIN) || defined(__CYGWIN__)
   mLibraryDirectory.setNameFilters( QStringList( "*.dll" ) );
 #elif defined(ANDROID)
-  mLibraryDirectory.setNameFilters( QStringList( "*provider.so" ) );
+  mLibraryDirectory.setNameFilters( QStringList( "*provider*.so" ) );
 #else
   mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*.so" ) ) );
 #endif
@@ -200,7 +200,7 @@ void QgsProviderRegistry::init()
       factory_function *function = reinterpret_cast< factory_function * >( cast_to_fptr( func ) );
       if ( !function )
       {
-        QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (no providerMetadataFactory method)" ).arg( myLib.fileName() ) );
+        QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...invalid (no providerMetadataFactory method)" ).arg( myLib.fileName() ), 2 );
         continue;
       }
 

@@ -53,6 +53,7 @@ email                : tim at linfiniti.com
 #include "qgsgdalprovider.h"
 #include "qgsbilinearrasterresampler.h"
 #include "qgscubicrasterresampler.h"
+#include "qgsrasterlayertemporalproperties.h"
 
 #include <cmath>
 #include <cstdio>
@@ -126,6 +127,11 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
   QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
 
   setDataSource( uri, baseName, providerKey, providerOptions, options.loadDefaultStyle );
+
+  if ( mValid )
+  {
+    mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
+  }
 
 } // QgsRasterLayer ctor
 
@@ -648,7 +654,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   // Setup source CRS
   setCrs( QgsCoordinateReferenceSystem( mDataProvider->crs() ) );
 
-  QgsDebugMsgLevel( "using wkt:\n" + crs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ), 4 );
+  QgsDebugMsgLevel( "using wkt:\n" + crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ), 4 );
 
   //defaults - Needs to be set after the Contrast list has been build
   //Try to read the default contrast enhancement from the config file
@@ -871,8 +877,6 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
 
   if ( mValid )
   {
-    mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
-
     // load default style
     bool defaultLoadedFlag = false;
     bool restoredStyle = false;
@@ -958,7 +962,7 @@ bool QgsRasterLayer::ignoreExtents() const
   return mDataProvider ? mDataProvider->ignoreExtents() : false;
 }
 
-QgsRasterLayerTemporalProperties *QgsRasterLayer::temporalProperties()
+QgsMapLayerTemporalProperties *QgsRasterLayer::temporalProperties()
 {
   return mTemporalProperties;
 }

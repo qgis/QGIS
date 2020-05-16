@@ -55,6 +55,16 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
+    /**
+     * Returns filtered list of active legend nodes attached to a particular layer node
+     * (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is true)
+     * \note Parameter skipNodeEmbeddedInParent added in QGIS 2.18
+     * \note Not available in Python bindings
+     * \see layerOriginalLegendNodes()
+     * \since QGIS 3.10
+     */
+    QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false ) const SIP_SKIP;
+
   signals:
 
     /**
@@ -72,15 +82,6 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
     void forceRefresh();
 
   private:
-
-    /**
-     * Returns filtered list of active legend nodes attached to a particular layer node
-     * (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is true)
-     * \note Parameter skipNodeEmbeddedInParent added in QGIS 2.18
-     * \see layerOriginalLegendNodes()
-     * \since QGIS 3.10
-     */
-    QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false ) const;
 
     /**
      * Pointer to the QgsLayoutItemLegend class that made the model.
@@ -506,6 +507,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     QgsExpressionContext createExpressionContext() const override;
     ExportLayerBehavior exportLayerBehavior() const override;
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
   public slots:
 

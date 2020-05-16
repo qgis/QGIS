@@ -38,6 +38,7 @@
 #include "qgssettings.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsrenderedfeaturehandlerinterface.h"
+#include "qgsvectorlayertemporalproperties.h"
 
 #include <QPicture>
 
@@ -59,6 +60,11 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   mGeometryType = layer->geometryType();
 
   mFeatureBlendMode = layer->featureBlendMode();
+
+  if ( context.isTemporal() )
+  {
+    mTemporalFilter = qobject_cast< const QgsVectorLayerTemporalProperties * >( layer->temporalProperties() )->createFilterString( layer, context.temporalRange() );
+  }
 
   // if there's already a simplification method specified via the context, we respect that. Otherwise, we fall back
   // to the layer's individual setting
@@ -192,6 +198,10 @@ bool QgsVectorLayerRenderer::render()
   if ( !rendererFilter.isEmpty() && rendererFilter != QLatin1String( "TRUE" ) )
   {
     featureRequest.combineFilterExpression( rendererFilter );
+  }
+  if ( !mTemporalFilter.isEmpty() )
+  {
+    featureRequest.combineFilterExpression( mTemporalFilter );
   }
 
   // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.

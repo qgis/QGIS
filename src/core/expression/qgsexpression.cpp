@@ -272,15 +272,11 @@ void QgsExpression::initGeomCalculator( const QgsExpressionContext *context )
   // Set the geometry calculator from the context if it has not been set by setGeomCalculator()
   if ( context && ! d->mCalc )
   {
-    QString ellipsoid = context->variable( QStringLiteral( "project_ellipsoid" ) ).toString();
-    QgsCoordinateReferenceSystem crs = context->variable( QStringLiteral( "_layer_crs" ) ).value<QgsCoordinateReferenceSystem>();
-    QgsCoordinateTransformContext tContext = context->variable( QStringLiteral( "_project_transform_context" ) ).value<QgsCoordinateTransformContext>();
-    if ( crs.isValid() )
-    {
-      d->mCalc = std::shared_ptr<QgsDistanceArea>( new QgsDistanceArea() );
-      d->mCalc->setEllipsoid( ellipsoid.isEmpty() ? geoNone() : ellipsoid );
-      d->mCalc->setSourceCrs( crs, tContext );
-    }
+    // actually don't do it right away, cos it's expensive to create and only a very small number of expression
+    // functions actually require it. Let's lazily construct it when needed
+    d->mDaEllipsoid = context->variable( QStringLiteral( "project_ellipsoid" ) ).toString();
+    d->mDaCrs = context->variable( QStringLiteral( "_layer_crs" ) ).value<QgsCoordinateReferenceSystem>();
+    d->mDaTransformContext = context->variable( QStringLiteral( "_project_transform_context" ) ).value<QgsCoordinateTransformContext>();
   }
 
   // Set the distance units from the context if it has not been set by setDistanceUnits()
@@ -397,6 +393,14 @@ QString QgsExpression::dump() const
 
 QgsDistanceArea *QgsExpression::geomCalculator()
 {
+  if ( !d->mCalc && d->mDaCrs.isValid() )
+  {
+    // calculator IS required, so initialize it now...
+    d->mCalc = std::shared_ptr<QgsDistanceArea>( new QgsDistanceArea() );
+    d->mCalc->setEllipsoid( d->mDaEllipsoid.isEmpty() ? geoNone() : d->mDaEllipsoid );
+    d->mCalc->setSourceCrs( d->mDaCrs, d->mDaTransformContext );
+  }
+
   return d->mCalc.get();
 }
 
@@ -771,6 +775,16 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "map_start_time" ), QCoreApplication::translate( "variable_help", "Start of the map's temporal time range (as a datetime value)" ) );
   sVariableHelpTexts()->insert( QStringLiteral( "map_end_time" ), QCoreApplication::translate( "variable_help", "End of the map's temporal time range (as a datetime value)" ) );
   sVariableHelpTexts()->insert( QStringLiteral( "map_interval" ), QCoreApplication::translate( "variable_help", "Duration of the map's temporal time range (as an interval value)" ) );
+
+  sVariableHelpTexts()->insert( QStringLiteral( "frame_rate" ), QCoreApplication::translate( "variable_help", "Number of frames per second during animation playback" ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "frame_number" ), QCoreApplication::translate( "variable_help", "Current frame number during animation playback" ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "frame_duration" ), QCoreApplication::translate( "variable_help", "Temporal duration of each animation frame (as an interval value)" ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "animation_start_time" ), QCoreApplication::translate( "variable_help", "Start of the animation's overall temporal time range (as a datetime value)" ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "animation_end_time" ), QCoreApplication::translate( "variable_help", "End of the animation's overall temporal time range (as a datetime value)" ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "animation_interval" ), QCoreApplication::translate( "variable_help", "Duration of the animation's overall temporal time range (as an interval value)" ) );
+
+  // vector tile layer variables
+  sVariableHelpTexts()->insert( QStringLiteral( "zoom_level" ), QCoreApplication::translate( "variable_help", "Zoom level of the tile that is being rendered (derived from the current map scale). Normally in interval [0, 20]." ) );
 
   sVariableHelpTexts()->insert( QStringLiteral( "row_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current row." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "grid_number" ), QCoreApplication::translate( "variable_help", "Current grid annotation value." ) );

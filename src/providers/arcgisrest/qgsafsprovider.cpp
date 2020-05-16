@@ -191,6 +191,29 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   }
   mSharedData->mGeometryType = QgsWkbTypes::zmType( mSharedData->mGeometryType, hasZ, hasM );
 
+  // read temporal properties
+  if ( layerData.contains( QStringLiteral( "timeInfo" ) ) )
+  {
+    const QVariantMap timeInfo = layerData.value( QStringLiteral( "timeInfo" ) ).toMap();
+
+    temporalCapabilities()->setHasTemporalCapabilities( true );
+    temporalCapabilities()->setStartField( timeInfo.value( QStringLiteral( "startTimeField" ) ).toString() );
+    temporalCapabilities()->setEndField( timeInfo.value( QStringLiteral( "endTimeField" ) ).toString() );
+    if ( !temporalCapabilities()->endField().isEmpty() )
+      temporalCapabilities()->setMode( QgsVectorDataProviderTemporalCapabilities::ProviderStoresFeatureDateTimeStartAndEndInSeparateFields );
+    else if ( !temporalCapabilities()->startField().isEmpty() )
+      temporalCapabilities()->setMode( QgsVectorDataProviderTemporalCapabilities::ProviderStoresFeatureDateTimeInstantInField );
+    else
+      temporalCapabilities()->setMode( QgsVectorDataProviderTemporalCapabilities::ProviderHasFixedTemporalRange );
+
+    const QVariantList extent = timeInfo.value( QStringLiteral( "timeExtent" ) ).toList();
+    if ( extent.size() == 2 )
+    {
+      temporalCapabilities()->setAvailableTemporalRange( QgsDateTimeRange( QgsArcGisRestUtils::parseDateTime( extent.at( 0 ) ),
+          QgsArcGisRestUtils::parseDateTime( extent.at( 1 ) ) ) );
+    }
+  }
+
   // Read OBJECTIDs of all features: these may not be a continuous sequence,
   // and we need to store these to iterate through the features. This query
   // also returns the name of the ObjectID field.

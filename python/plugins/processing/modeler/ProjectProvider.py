@@ -41,7 +41,7 @@ class ProjectProvider(QgsProcessingProvider):
         else:
             self.project = project
 
-        self.model_definitions = {} # dict of models in project
+        self.model_definitions = {}  # dict of models in project
         self.is_loading = False
 
         # must reload models if providers list is changed - previously unavailable algorithms

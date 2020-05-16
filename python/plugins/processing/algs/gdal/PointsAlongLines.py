@@ -36,7 +36,6 @@ from processing.tools.system import isWindows
 
 
 class PointsAlongLines(GdalAlgorithm):
-
     INPUT = 'INPUT'
     GEOMETRY = 'GEOMETRY'
     DISTANCE = 'DISTANCE'

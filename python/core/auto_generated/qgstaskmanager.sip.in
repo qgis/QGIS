@@ -47,6 +47,7 @@ clean up and terminate at the earliest possible convenience.
     enum Flag
     {
       CanCancel,
+      CancelWithoutPrompt,
       AllFlags,
     };
     typedef QFlags<QgsTask::Flag> Flags;

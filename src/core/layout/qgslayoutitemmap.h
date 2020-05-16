@@ -25,6 +25,7 @@
 #include "qgslayoutitemmapgrid.h"
 #include "qgslayoutitemmapoverview.h"
 #include "qgsmaprendererstagedrenderjob.h"
+#include "qgstemporalrangeobject.h"
 
 class QgsAnnotation;
 class QgsRenderedFeatureHandlerInterface;
@@ -35,7 +36,7 @@ class QgsRenderedFeatureHandlerInterface;
  * \brief Layout graphical items for displaying a map.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
+class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRangeObject
 {
 
     Q_OBJECT
@@ -635,6 +636,9 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     void shapeChanged();
 
     void mapThemeChanged( const QString &theme );
+
+    //! Renames the active map theme called \a theme to \a newTheme
+    void currentMapThemeRenamed( const QString &theme, const QString &newTheme );
 
     //! Create cache image
     void recreateCachedImageInBackground();

@@ -33,7 +33,9 @@
 #include "qgsproject.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsrenderermeshpropertieswidget.h"
+#include "qgsmeshlayertemporalproperties.h"
 #include "qgssettings.h"
+#include "qgsprojecttimesettings.h"
 #include "qgsproviderregistry.h"
 #ifdef HAVE_3D
 #include "qgsmeshlayer3drendererwidget.h"
@@ -61,7 +63,7 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
 
   connect( mLayerOrigNameLineEd, &QLineEdit::textEdited, this, &QgsMeshLayerProperties::updateLayerName );
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsMeshLayerProperties::changeCrs );
-  connect( mAddDatasetButton, &QPushButton::clicked, this, &QgsMeshLayerProperties::addDataset );
+  connect( mDatasetGroupTreeWidget, &QgsMeshDatasetGroupTreeWidget::datasetGroupAdded, this, &QgsMeshLayerProperties::syncToLayer );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -87,6 +89,7 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
 
   mOptsPage_3DView->setLayout( new QVBoxLayout( mOptsPage_3DView ) );
   mOptsPage_3DView->layout()->addWidget( mMesh3DWidget );
+  mOptsPage_3DView->layout()->setContentsMargins( 0, 0, 0, 0 );
   mOptsPage_3DView->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#d-view-properties" ) );
 #else
   delete mOptsPage_3DView;  // removes both the "3d view" list item and its page
@@ -172,6 +175,9 @@ void QgsMeshLayerProperties::syncToLayer()
     mUriLabel->setText( tr( "Not assigned" ) );
   }
 
+  if ( mMeshLayer )
+    mDatasetGroupTreeWidget->syncToLayer( mMeshLayer );
+
   QgsDebugMsgLevel( QStringLiteral( "populate styling tab" ), 4 );
   /*
    * Styling Tab
@@ -193,8 +199,9 @@ void QgsMeshLayerProperties::syncToLayer()
   mSimplifyMeshResolutionSpinBox->setValue( simplifySettings.meshResolution() );
 
   QgsDebugMsgLevel( QStringLiteral( "populate temporal tab" ), 4 );
-  whileBlocking( mTemporalDateTimeReference )->setDateTime( mMeshLayer->temporalProperties()->referenceTime() );
-  const QgsDateTimeRange timeRange = mMeshLayer->temporalProperties()->timeExtent();
+  const QgsMeshLayerTemporalProperties *temporalProperties = qobject_cast< const QgsMeshLayerTemporalProperties * >( mMeshLayer->temporalProperties() );
+  whileBlocking( mTemporalDateTimeReference )->setDateTime( temporalProperties->referenceTime() );
+  const QgsDateTimeRange timeRange = temporalProperties->timeExtent();
   mTemporalDateTimeStart->setDateTime( timeRange.begin() );
   mTemporalDateTimeEnd->setDateTime( timeRange.end() );
   if ( mMeshLayer->dataProvider() )
@@ -206,39 +213,6 @@ void QgsMeshLayerProperties::syncToLayer()
   mStaticScalarWidget->syncToLayer();
   mStaticScalarWidget->setVisible( !mMeshLayer->temporalProperties()->isActive() );
   mTemporalStaticDatasetCheckBox->setChecked( !mMeshLayer->temporalProperties()->isActive() );
-}
-
-void QgsMeshLayerProperties::addDataset()
-{
-  if ( !mMeshLayer->dataProvider() )
-    return;
-
-  QgsSettings settings;
-  QString openFileDir = settings.value( QStringLiteral( "lastMeshDatasetDir" ), QDir::homePath(), QgsSettings::App ).toString();
-  QString openFileString = QFileDialog::getOpenFileName( nullptr,
-                           tr( "Load mesh datasets" ),
-                           openFileDir,
-                           QgsProviderRegistry::instance()->fileMeshDatasetFilters() );
-
-  if ( openFileString.isEmpty() )
-  {
-    return; // canceled by the user
-  }
-
-  QFileInfo openFileInfo( openFileString );
-  settings.setValue( QStringLiteral( "lastMeshDatasetDir" ), openFileInfo.absolutePath(), QgsSettings::App );
-  QFile datasetFile( openFileString );
-
-  bool ok = mMeshLayer->dataProvider()->addDataset( openFileString );
-  if ( ok )
-  {
-    syncToLayer();
-    QMessageBox::information( this, tr( "Load mesh datasets" ), tr( "Datasets successfully added to the mesh layer" ) );
-  }
-  else
-  {
-    QMessageBox::warning( this, tr( "Load mesh datasets" ), tr( "Could not read mesh dataset." ) );
-  }
 }
 
 void QgsMeshLayerProperties::loadDefaultStyle()
@@ -351,6 +325,12 @@ void QgsMeshLayerProperties::apply()
    * General Tab
    */
   mMeshLayer->setName( mLayerOrigNameLineEd->text() );
+
+  QgsDebugMsgLevel( QStringLiteral( "processing source tab" ), 4 );
+  /*
+   * Source Tab
+   */
+  mDatasetGroupTreeWidget->apply();
 
   QgsDebugMsgLevel( QStringLiteral( "processing style tab" ), 4 );
   /*

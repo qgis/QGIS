@@ -835,6 +835,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void refreshMap();
 
     void mapThemeChanged( const QString &theme );
+    //! Renames the active map theme called \a theme to \a newTheme
+    void mapThemeRenamed( const QString &theme, const QString &newTheme );
 
   signals:
 
@@ -1055,6 +1057,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Flag that allows squashing multiple refresh() calls into just one delayed rendering job
     bool mRefreshScheduled = false;
 
+    //! Flag that triggers a refresh after an ongoing rendering job triggered by autoRefresh
+    bool mRefreshAfterJob = false;
+
     //! determines whether user has requested to suppress rendering
     bool mRenderFlag = true;
 
@@ -1194,6 +1199,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     int nextZoomLevel( const QList<double> &resolutions, bool zoomIn = true ) const;
     double zoomInFactor() const;
     double zoomOutFactor() const;
+
+    /**
+     * Make sure to remove any rendered images of temporal-enabled layers from cache (does nothing if cache is not enabled)
+     * \since QGIS 3.14
+     */
+    void clearTemporalCache();
 
     friend class TestQgsMapCanvas;
 

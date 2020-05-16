@@ -93,7 +93,6 @@ def sagaDescriptionPath():
 
 
 def createSagaBatchJobFileFromSagaCommands(commands):
-
     with open(sagaBatchJobFilename(), 'w', encoding="utf8") as fout:
         if isWindows():
             fout.write('set SAGA=' + sagaPath() + '\n')

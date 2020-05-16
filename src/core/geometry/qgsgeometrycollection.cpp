@@ -477,8 +477,28 @@ QgsRectangle QgsGeometryCollection::calculateBoundingBox() const
   QgsRectangle bbox = mGeometries.at( 0 )->boundingBox();
   for ( int i = 1; i < mGeometries.size(); ++i )
   {
+    if ( mGeometries.at( i )->isEmpty() )
+      continue;
+
     QgsRectangle geomBox = mGeometries.at( i )->boundingBox();
-    bbox.combineExtentWith( geomBox );
+    if ( bbox.isNull() )
+    {
+      // workaround treatment of a QgsRectangle(0,0,0,0) as a "null"/invalid rectangle
+      // if bbox is null, then the first geometry must have returned a bounding box of (0,0,0,0)
+      // so just manually include that as a point... ew.
+      geomBox.combineExtentWith( QPointF( 0, 0 ) );
+      bbox = geomBox;
+    }
+    else if ( geomBox.isNull() )
+    {
+      // ...as above... this part must have a bounding box of (0,0,0,0).
+      // if we try to combine the extent with this "null" box it will just be ignored.
+      bbox.combineExtentWith( QPointF( 0, 0 ) );
+    }
+    else
+    {
+      bbox.combineExtentWith( geomBox );
+    }
   }
   return bbox;
 }
@@ -728,7 +748,7 @@ bool QgsGeometryCollection::hasCurvedSegments() const
 
 QgsAbstractGeometry *QgsGeometryCollection::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
-  std::unique_ptr< QgsAbstractGeometry > geom( QgsGeometryFactory::geomFromWkbType( mWkbType ) );
+  std::unique_ptr< QgsAbstractGeometry > geom( QgsGeometryFactory::geomFromWkbType( QgsWkbTypes::linearType( mWkbType ) ) );
   QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( geom.get() );
   if ( !geomCollection )
   {

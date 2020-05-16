@@ -98,6 +98,18 @@ void QgsVectorTileProviderConnection::addConnection( const QString &name, QgsVec
   settings.setValue( QStringLiteral( "zmax" ), conn.zMax );
 }
 
+QString QgsVectorTileProviderConnection::selectedConnection()
+{
+  QgsSettings settings;
+  return settings.value( QStringLiteral( "qgis/connections-vector-tile/selected" ) ).toString();
+}
+
+void QgsVectorTileProviderConnection::setSelectedConnection( const QString &name )
+{
+  QgsSettings settings;
+  return settings.setValue( QStringLiteral( "qgis/connections-vector-tile/selected" ), name );
+}
+
 //
 
 QgsVectorTileProviderConnection::QgsVectorTileProviderConnection( const QString &name )

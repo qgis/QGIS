@@ -50,6 +50,7 @@ class QgsCurve;
 class QgsPolygon;
 class QgsExpressionContext;
 class QgsPoint;
+class QgsLegendPatchShape;
 
 typedef QList<QgsSymbolLayer *> QgsSymbolLayerList;
 
@@ -336,13 +337,15 @@ class CORE_EXPORT QgsSymbol
      * \param customContext the context in which the rendering happens
      * \param selected set to TRUE to render the symbol in a selected state
      * \param expressionContext optional custom expression context
+     * \param patchShape optional patch shape to use for symbol preview. If not specified a default shape will be used instead.
      *
      * \see exportImage()
      * \see asImage()
      * \note Parameter selected added in QGIS 3.10
      * \since QGIS 2.6
      */
-    void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = nullptr, bool selected = false, const QgsExpressionContext *expressionContext = nullptr );
+    void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = nullptr, bool selected = false, const QgsExpressionContext *expressionContext = nullptr,
+                          const QgsLegendPatchShape *patchShape = nullptr );
 
     /**
      * Export the symbol as an image format, to the specified \a path and with the given \a size.
@@ -694,6 +697,8 @@ class CORE_EXPORT QgsSymbolRenderContext
      */
     QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal opacity = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = nullptr, const QgsFeature *f = nullptr, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 
+    ~QgsSymbolRenderContext();
+
     //! QgsSymbolRenderContext cannot be copied.
     QgsSymbolRenderContext( const QgsSymbolRenderContext &rh ) = delete;
 
@@ -861,6 +866,22 @@ class CORE_EXPORT QgsSymbolRenderContext
      */
     void setExpressionContextScope( QgsExpressionContextScope *contextScope SIP_TRANSFER );
 
+    /**
+     * Returns the symbol patch shape, to use if rendering symbol preview icons.
+     *
+     * \see setPatchShape()
+     * \since QGIS 3.14
+     */
+    const QgsLegendPatchShape *patchShape() const;
+
+    /**
+     * Sets the symbol patch \a shape, to use if rendering symbol preview icons.
+     *
+     * \see patchShape()
+     * \since QGIS 3.14
+     */
+    void setPatchShape( const QgsLegendPatchShape &shape );
+
   private:
 
 #ifdef SIP_RUN
@@ -879,6 +900,7 @@ class CORE_EXPORT QgsSymbolRenderContext
     int mGeometryPartCount;
     int mGeometryPartNum;
     QgsWkbTypes::GeometryType mOriginalGeometryType = QgsWkbTypes::UnknownGeometry;
+    std::unique_ptr< QgsLegendPatchShape > mPatchShape;
 };
 
 

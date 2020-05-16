@@ -75,13 +75,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      */
     QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
-    /**
-     * Sets the dialog \a page (by object name) to show.
-     *
-     * \since QGIS 3.14
-     */
-    void setCurrentPage( const QString &page );
-
   protected slots:
     //! \brief auto slot executed when the active page in the main widget stack is changed
     void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
@@ -230,19 +223,16 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void updateInformationContent();
 
     /**
-     * Updates the temporal properties for temporal based raster layers.
-     */
-    void updateTemporalProperties();
-
-    /**
      * Updates the layers date source URI with the new time.
      *
+     * \since QGIS 3.14
      */
     void updateSourceStaticTime();
 
     /**
-     * Initialiaze the layers static time inputs state.
+     * Initializes the layers static time inputs state.
      *
+     * \since QGIS 3.14
      */
     void setSourceStaticTimeState();
 

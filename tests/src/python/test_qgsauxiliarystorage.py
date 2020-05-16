@@ -29,6 +29,7 @@ from qgis.core import (QgsAuxiliaryStorage,
                        NULL)
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath, writeShape
+
 start_app()
 
 
@@ -43,7 +44,8 @@ def tmpPath():
 
 def createLayer():
     vl = QgsVectorLayer(
-        'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk', 'test', 'memory')
+        'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+        'test', 'memory')
     assert (vl.isValid())
 
     f1 = QgsFeature()
@@ -241,7 +243,7 @@ class TestQgsAuxiliaryStorage(unittest.TestCase):
                 vl.getFeatures(req).nextFeature(f)
                 self.assertTrue(f.isValid())
                 self.assertEqual(f.attributes()[index0], 333.0)
-            else: # num_char
+            else:  # num_char
                 self.assertEqual(al.featureCount(), 2)
                 self.assertEqual(afPropDef.name(), 'propname1')
 

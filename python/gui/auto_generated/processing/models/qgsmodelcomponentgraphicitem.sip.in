@@ -520,6 +520,12 @@ Ownership of ``output`` is transferred to the item.
 
     virtual bool canDeleteComponent();
 
+
+    QgsModelComponentGraphicItem *parentComponentItem() const;
+%Docstring
+Returns the parent model component item.
+%End
+
   protected:
 
     virtual QColor fillColor( State state ) const;

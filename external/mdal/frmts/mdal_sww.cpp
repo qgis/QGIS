@@ -428,7 +428,8 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverSWW::readVectorGroup(
 }
 
 std::unique_ptr<MDAL::Mesh> MDAL::DriverSWW::load(
-  const std::string &resultsFile )
+  const std::string &resultsFile,
+  const std::string & )
 {
   mFileName = resultsFile;
   MDAL::Log::resetLastStatus();

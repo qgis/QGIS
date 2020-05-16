@@ -100,13 +100,18 @@ int QgsMeshDatasetListModel::rowCount( const QModelIndex &parent ) const
 
 QVariant QgsMeshDatasetListModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid() || !mLayer || !mLayer->dataProvider() || mDatasetGroup < 0 )
+  if ( !index.isValid() )
     return QVariant();
 
   if ( role == Qt::DisplayRole )
   {
-    if ( index.row() == 0 )
+    if ( !mLayer || !mLayer->dataProvider() || mDatasetGroup < 0 || index.row() == 0 )
       return tr( "none" );
+
+    else if ( index.row() == 1 && mLayer->dataProvider()->datasetCount( mDatasetGroup ) == 1 )
+    {
+      return tr( "Display dataset" );
+    }
     else
     {
       qint64 time = mLayer->dataProvider()->temporalCapabilities()->datasetTime( QgsMeshDatasetIndex( mDatasetGroup, index.row() - 1 ) );

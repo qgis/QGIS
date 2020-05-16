@@ -48,11 +48,28 @@ QgsCoordinateReferenceSystem QgsMdalProvider::crs() const
   return mCrs;
 }
 
+QStringList QgsMdalProvider::subLayers() const
+{
+  return mSubLayersUris;
+}
+
 QgsMdalProvider::QgsMdalProvider( const QString &uri, const ProviderOptions &options )
   : QgsMeshDataProvider( uri, options )
 {
   temporalCapabilities()->setTemporalUnit( QgsUnitTypes::TemporalHours );
-  loadData();
+  QByteArray curi = dataSourceUri().toUtf8();
+
+  if ( uri.contains( "\":" ) ) //contains a mesh name, so can be directly loaded;
+    loadData();
+  else
+  {
+    QStringList meshNames = QString( MDAL_MeshNames( curi ) ).split( QStringLiteral( ";;" ) );
+
+    if ( meshNames.count() == 1 ) //only one uri is present, can be directly loaded
+      loadData();
+    else
+      mSubLayersUris = meshNames; //several meshes are present, the layer is invalid and has sublayers
+  }
 }
 
 QgsMdalProvider::~QgsMdalProvider()
@@ -100,7 +117,7 @@ QVector<QgsMeshVertex> QgsMdalProvider::vertices( ) const
   const int bufferSize = std::min( vertexCount(), 1000 );
   QVector<QgsMeshVertex> ret( vertexCount() );
   QVector<double> buffer( bufferSize * 3 );
-  MeshVertexIteratorH it = MDAL_M_vertexIterator( mMeshH );
+  MDAL_MeshVertexIteratorH it = MDAL_M_vertexIterator( mMeshH );
   int vertexIndex = 0;
   while ( vertexIndex < vertexCount() )
   {
@@ -129,7 +146,7 @@ QVector<QgsMeshEdge> QgsMdalProvider::edges( ) const
   QVector<QgsMeshEdge> ret( edgesCount );
   QVector<int> startBuffer( bufferSize );
   QVector<int> endBuffer( bufferSize );
-  MeshEdgeIteratorH it = MDAL_M_edgeIterator( mMeshH );
+  MDAL_MeshEdgeIteratorH it = MDAL_M_edgeIterator( mMeshH );
   int edgeIndex = 0;
   while ( edgeIndex < edgesCount )
   {
@@ -160,7 +177,7 @@ QVector<QgsMeshFace> QgsMdalProvider::faces( ) const
   QVector<int> faceOffsetsBuffer( faceOffsetsBufferLen );
   QVector<int> vertexIndicesBuffer( vertexIndicesBufferLen );
 
-  MeshFaceIteratorH it = MDAL_M_faceIterator( mMeshH );
+  MDAL_MeshFaceIteratorH it = MDAL_M_faceIterator( mMeshH );
   int faceIndex = 0;
   while ( faceIndex < facesCount )
   {
@@ -201,12 +218,14 @@ QgsRectangle QgsMdalProvider::extent() const
   return ret;
 }
 
-bool QgsMdalProvider::persistDatasetGroup( const QString &path,
-    const QgsMeshDatasetGroupMetadata &meta,
-    const QVector<QgsMeshDataBlock> &datasetValues,
-    const QVector<QgsMeshDataBlock> &datasetActive,
-    const QVector<double> &times
-                                         )
+bool QgsMdalProvider::persistDatasetGroup(
+  const QString &outputFilePath,
+  const QString &outputDriver,
+  const QgsMeshDatasetGroupMetadata &meta,
+  const QVector<QgsMeshDataBlock> &datasetValues,
+  const QVector<QgsMeshDataBlock> &datasetActive,
+  const QVector<double> &times
+)
 {
   if ( !mMeshH )
     return true;
@@ -229,22 +248,10 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &path,
       return true;
   }
 
-  if ( path.isEmpty() )
+  if ( outputFilePath.isEmpty() )
     return true;
 
-  // Form DRIVER:filename
-  QString filename = path;
-  // ASCII dat supports face, edge and vertex datasets
-  QString driverName = QStringLiteral( "DAT" );
-  QStringList parts = path.split( ':' );
-  if ( parts.size() > 1 )
-  {
-    driverName = parts[0];
-    parts.removeFirst();
-    filename = parts.join( QString() );
-  }
-
-  DriverH driver = MDAL_driverFromName( driverName.toStdString().c_str() );
+  MDAL_DriverH driver = MDAL_driverFromName( outputDriver.toStdString().c_str() );
   if ( !driver )
     return true;
 
@@ -265,14 +272,14 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &path,
       break;
   }
 
-  DatasetGroupH g = MDAL_M_addDatasetGroup(
-                      mMeshH,
-                      meta.name().toStdString().c_str(),
-                      location,
-                      meta.isScalar(),
-                      driver,
-                      path.toStdString().c_str()
-                    );
+  MDAL_DatasetGroupH g = MDAL_M_addDatasetGroup(
+                           mMeshH,
+                           meta.name().toStdString().c_str(),
+                           location,
+                           meta.isScalar(),
+                           driver,
+                           outputFilePath.toStdString().c_str()
+                         );
   if ( !g )
     return true;
 
@@ -329,8 +336,6 @@ void QgsMdalProvider::addGroupToTemporalCapabilities( int indexGroup )
   if ( !mMeshH )
     return;
   QgsMeshDataProviderTemporalCapabilities *tempCap = temporalCapabilities();
-  tempCap->setHasTemporalCapabilities( true );
-  tempCap->setHasTemporalCapabilities( true );
   QgsMeshDatasetGroupMetadata dsgMetadata = datasetGroupMetadata( indexGroup );
   QDateTime refTime = dsgMetadata.referenceTime();
   refTime.setTimeSpec( Qt::UTC ); //For now provider don't support time zone and return always in local time, force UTC
@@ -339,6 +344,7 @@ void QgsMdalProvider::addGroupToTemporalCapabilities( int indexGroup )
 
   if ( dsgMetadata.isTemporal() )
   {
+    tempCap->setHasTemporalCapabilities( true );
     for ( int dsi = 0; dsi < dsCount; ++dsi )
     {
       QgsMeshDatasetMetadata dsMeta = datasetMetadata( QgsMeshDatasetIndex( indexGroup, dsi ) );
@@ -371,7 +377,7 @@ void QgsMdalProvider::reloadProviderData()
 
 void QgsMdalProvider::fileMeshFilters( QString &fileMeshFiltersString, QString &fileMeshDatasetFiltersString )
 {
-  DriverH mdalDriver;
+  MDAL_DriverH mdalDriver;
 
   // Grind through all the drivers and their respective metadata.
   // We'll add a file filter for those drivers that have a file
@@ -442,7 +448,7 @@ void QgsMdalProvider::fileMeshFilters( QString &fileMeshFiltersString, QString &
 void QgsMdalProvider::fileMeshExtensions( QStringList &fileMeshExtensions,
     QStringList &fileMeshDatasetExtensions )
 {
-  DriverH mdalDriver;
+  MDAL_DriverH mdalDriver;
 
   // Grind through all the drivers and their respective metadata.
   // We'll add a file extension for those drivers that have a file
@@ -529,7 +535,7 @@ int QgsMdalProvider::datasetGroupCount() const
 
 int QgsMdalProvider::datasetCount( int groupIndex ) const
 {
-  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, groupIndex );
+  MDAL_DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, groupIndex );
   if ( !group )
     return 0;
   return MDAL_G_datasetCount( group );
@@ -537,7 +543,7 @@ int QgsMdalProvider::datasetCount( int groupIndex ) const
 
 QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupIndex ) const
 {
-  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, groupIndex );
+  MDAL_DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, groupIndex );
   if ( !group )
     return QgsMeshDatasetGroupMetadata();
 
@@ -600,11 +606,11 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
 
 QgsMeshDatasetMetadata QgsMdalProvider::datasetMetadata( QgsMeshDatasetIndex index ) const
 {
-  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, index.group() );
+  MDAL_DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, index.group() );
   if ( !group )
     return QgsMeshDatasetMetadata();
 
-  DatasetH dataset = MDAL_G_dataset( group, index.dataset() );
+  MDAL_DatasetH dataset = MDAL_G_dataset( group, index.dataset() );
   if ( !dataset )
     return QgsMeshDatasetMetadata();
 
@@ -634,11 +640,11 @@ QgsMeshDatasetValue QgsMdalProvider::datasetValue( QgsMeshDatasetIndex index, in
 
 QgsMeshDataBlock QgsMdalProvider::datasetValues( QgsMeshDatasetIndex index, int valueIndex, int count ) const
 {
-  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, index.group() );
+  MDAL_DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, index.group() );
   if ( !group )
     return QgsMeshDataBlock();
 
-  DatasetH dataset = MDAL_G_dataset( group, index.dataset() );
+  MDAL_DatasetH dataset = MDAL_G_dataset( group, index.dataset() );
   if ( !dataset )
     return QgsMeshDataBlock();
 
@@ -660,11 +666,11 @@ QgsMeshDataBlock QgsMdalProvider::datasetValues( QgsMeshDatasetIndex index, int 
 
 QgsMesh3dDataBlock QgsMdalProvider::dataset3dValues( QgsMeshDatasetIndex index, int faceIndex, int count ) const
 {
-  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, index.group() );
+  MDAL_DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, index.group() );
   if ( !group )
     return QgsMesh3dDataBlock();
 
-  DatasetH dataset = MDAL_G_dataset( group, index.dataset() );
+  MDAL_DatasetH dataset = MDAL_G_dataset( group, index.dataset() );
   if ( !dataset )
     return QgsMesh3dDataBlock();
 
@@ -744,11 +750,11 @@ bool QgsMdalProvider::isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) c
 
 QgsMeshDataBlock QgsMdalProvider::areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const
 {
-  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, index.group() );
+  MDAL_DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, index.group() );
   if ( !group )
     return QgsMeshDataBlock();
 
-  DatasetH dataset = MDAL_G_dataset( group, index.dataset() );
+  MDAL_DatasetH dataset = MDAL_G_dataset( group, index.dataset() );
   if ( !dataset )
     return QgsMeshDataBlock();
 
@@ -808,7 +814,7 @@ QString QgsMdalProviderMetadata::filters( FilterType type )
 
 QList<QgsMeshDriverMetadata> QgsMdalProviderMetadata::meshDriversMetadata()
 {
-  DriverH mdalDriver;
+  MDAL_DriverH mdalDriver;
   QList<QgsMeshDriverMetadata> ret;
 
   int driverCount = MDAL_driverCount();

@@ -67,7 +67,7 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
   mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
 
-  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) ), tr( "No geometry" ), wkbNone );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) ), tr( "No Geometry" ), wkbNone );
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "Point" ), wkbPoint );
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "Line" ), wkbLineString );
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "Polygon" ), wkbPolygon );
@@ -83,6 +83,7 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "CurvePolygon" ), wkbCurvePolygon );
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "MultiCurve" ), wkbMultiCurve );
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "MultiSurface" ), wkbMultiSurface );
+  mGeometryTypeBox->setCurrentIndex( -1 );
 
   mGeometryWithZCheckBox->setEnabled( false );
   mGeometryWithMCheckBox->setEnabled( false );
@@ -107,6 +108,7 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   connect( mFieldNameEdit, &QLineEdit::textChanged, this, &QgsNewGeoPackageLayerDialog::fieldNameChanged );
   connect( mAttributeView, &QTreeWidget::itemSelectionChanged, this, &QgsNewGeoPackageLayerDialog::selectionChanged );
   connect( mTableNameEdit, &QLineEdit::textChanged, this, &QgsNewGeoPackageLayerDialog::checkOk );
+  connect( mGeometryTypeBox, static_cast<void( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this,  &QgsNewGeoPackageLayerDialog::checkOk );
 
   mAddAttributeButton->setEnabled( false );
   mRemoveAttributeButton->setEnabled( false );
@@ -197,7 +199,9 @@ void QgsNewGeoPackageLayerDialog::mLayerIdentifierEdit_textEdited( const QString
 void QgsNewGeoPackageLayerDialog::checkOk()
 {
   bool ok = !mDatabase->filePath().isEmpty() &&
-            !mTableNameEdit->text().isEmpty();
+            !mTableNameEdit->text().isEmpty() &&
+            mGeometryTypeBox->currentIndex() != -1;
+
   mOkButton->setEnabled( ok );
 }
 
@@ -399,7 +403,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   QgsCoordinateReferenceSystem srs = mCrsSelector->crs();
   if ( wkbType != wkbNone && srs.isValid() )
   {
-    QString srsWkt = srs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 );
+    QString srsWkt = srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
     hSRS = OSRNewSpatialReference( srsWkt.toLocal8Bit().data() );
   }
 

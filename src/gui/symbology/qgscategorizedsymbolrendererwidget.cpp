@@ -27,6 +27,7 @@
 #include "qgsstyle.h"
 #include "qgslogger.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgstemporalcontroller.h"
 
 #include "qgssymbolselectordialog.h"
 #include "qgsexpressionbuilderdialog.h"
@@ -1211,6 +1212,10 @@ QgsExpressionContext QgsCategorizedSymbolRendererWidget::createExpressionContext
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
                << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
+    if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast< const QgsExpressionContextScopeGenerator * >( mContext.mapCanvas()->temporalController() ) )
+    {
+      expContext << generator->createExpressionContextScope();
+    }
   }
   else
   {

@@ -48,6 +48,7 @@ class QgsVectorLayer3DRendererWidget;
 class QgsMapLayerComboBox;
 class QgsDoubleSpinBox;
 class QgsMaskingWidget;
+class QgsVectorLayerTemporalPropertiesWidget;
 
 class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase, private QgsExpressionContextGenerator
 {
@@ -241,6 +242,8 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QAction *mAuxiliaryLayerActionAddField = nullptr;
 
     QgsVectorLayer3DRendererWidget *mVector3DWidget = nullptr;
+
+    QgsVectorLayerTemporalPropertiesWidget *mTemporalWidget = nullptr;
 
   private slots:
     void openPanel( QgsPanelWidget *panel );

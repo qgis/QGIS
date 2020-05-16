@@ -1072,7 +1072,7 @@ QgsGeometry QgsGeometry::minimalEnclosingCircle( QgsPointXY &center, double &rad
   center = QgsPointXY();
   radius = 0;
 
-  if ( !d->geometry )
+  if ( isEmpty() )
   {
     return QgsGeometry();
   }
@@ -2127,6 +2127,13 @@ QgsGeometry QgsGeometry::densifyByDistance( double distance ) const
   QgsInternalGeometryEngine engine( *this );
 
   return engine.densifyByDistance( distance );
+}
+
+QgsGeometry QgsGeometry::convertToCurves( double distanceTolerance, double angleTolerance ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+
+  return engine.convertToCurves( distanceTolerance, angleTolerance );
 }
 
 QgsGeometry QgsGeometry::centroid() const

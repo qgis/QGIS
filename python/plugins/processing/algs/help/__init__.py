@@ -24,6 +24,7 @@ __copyright__ = '(C) 2016, Victor Olaya'
 import os
 import codecs
 import warnings
+
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     import yaml

@@ -31,6 +31,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/classification
   ${CMAKE_SOURCE_DIR}/src/core/mesh
+  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/core/vectortile
   ${CMAKE_SOURCE_DIR}/src/test
 
@@ -199,6 +200,7 @@ SET(TESTS
  testqgsprojectstorage.cpp
  testqgsprojutils.cpp
  testqgsproperty.cpp
+ testqgsprovidermetadata.cpp
  testqgis.cpp
  testqgsrasterfilewriter.cpp
  testqgsrasterfill.cpp
@@ -241,6 +243,7 @@ SET(TESTS
  testqgsvectorlayer.cpp
  testqgsvectorlayerutils.cpp
  testqgsvectortilelayer.cpp
+ testqgsvectortilewriter.cpp
  testqgsziputils.cpp
  testziplayer.cpp
  testqgslayerdefinition.cpp

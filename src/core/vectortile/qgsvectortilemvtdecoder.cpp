@@ -18,6 +18,7 @@
 #include "qgsvectortilemvtdecoder.h"
 
 #include "qgsvectortilelayerrenderer.h"
+#include "qgsvectortilemvtutils.h"
 #include "qgsvectortileutils.h"
 
 #include "qgslogger.h"
@@ -28,25 +29,9 @@
 #include "qgspolygon.h"
 
 
-inline bool _isExteriorRing( const QVector<QgsPoint> &pts )
-{
-  // Exterior rings have POSITIVE area while interior rings have NEGATIVE area
-  // when calculated with https://en.wikipedia.org/wiki/Shoelace_formula
-  // The orientation of axes is that X grows to the right and Y grows to the bottom.
-  // the input data are expected to form a closed ring, i.e. first pt == last pt.
+QgsVectorTileMVTDecoder::QgsVectorTileMVTDecoder() = default;
 
-  double total = 0.0;
-  const QgsPoint *ptsPtr = pts.constData();
-  int count = pts.count();
-  for ( int i = 0; i < count - 1; i++ )
-  {
-    double val = ( pts[i + 1].x() - ptsPtr[i].x() ) * ( ptsPtr[i + 1].y() + pts[i].y() );
-    //double val = ptsPtr[i].x() * (-ptsPtr[i+1].y()) - ptsPtr[i+1].x() * (-ptsPtr[i].y());  // gives the same result
-    total += val;
-  }
-  return total >= 0;
-}
-
+QgsVectorTileMVTDecoder::~QgsVectorTileMVTDecoder() = default;
 
 bool QgsVectorTileMVTDecoder::decode( QgsTileXYZ tileID, const QByteArray &rawTileData )
 {
@@ -250,26 +235,27 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
           {
             tmpPoints.append( tmpPoints.first() );  // close the ring
 
-            if ( _isExteriorRing( tmpPoints ) )
+            std::unique_ptr<QgsLineString> ring( new QgsLineString( tmpPoints ) );
+            tmpPoints.clear();
+
+            if ( QgsVectorTileMVTUtils::isExteriorRing( ring.get() ) )
             {
               // start a new polygon
               QgsPolygon *p = new QgsPolygon;
-              p->setExteriorRing( new QgsLineString( tmpPoints ) );
+              p->setExteriorRing( ring.release() );
               outputPolygons.append( p );
-              tmpPoints.clear();
             }
             else
             {
               // interior ring (hole)
               if ( outputPolygons.count() != 0 )
               {
-                outputPolygons[outputPolygons.count() - 1]->addInteriorRing( new QgsLineString( tmpPoints ) );
+                outputPolygons[outputPolygons.count() - 1]->addInteriorRing( ring.release() );
               }
               else
               {
                 QgsDebugMsg( QStringLiteral( "Malformed geometry: first ring of a polygon is interior ring" ) );
               }
-              tmpPoints.clear();
             }
           }
 

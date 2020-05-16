@@ -51,8 +51,8 @@ void QgsAttributeFormLegacyInterface::featureChanged()
   {
     // If the init function did not call disconnect, we do it here before reconnecting
     // If it did call disconnect, then the call will just do nothing
-    QObject::disconnect( buttonBox, SIGNAL( accepted() ), form(), SLOT( accept() ) );
-    QObject::connect( buttonBox, SIGNAL( accepted() ), form(), SLOT( accept() ) );
+    QObject::disconnect( buttonBox, &QDialogButtonBox::accepted, form(), &QgsAttributeForm::save );
+    QObject::connect( buttonBox, &QDialogButtonBox::accepted, form(), &QgsAttributeForm::save );
   }
 
   // Generate the unique ID of this feature. We used to use feature ID but some providers

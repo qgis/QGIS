@@ -63,8 +63,6 @@ from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
 from .PointsToPaths import PointsToPaths
 from .PolarPlot import PolarPlot
-from .Polygonize import Polygonize
-from .PostGISExecuteSQL import PostGISExecuteSQL
 from .PostGISExecuteAndLoadSQL import PostGISExecuteAndLoadSQL
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RandomPointsAlongLines import RandomPointsAlongLines
@@ -82,8 +80,6 @@ from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
 from .SetRasterStyle import SetRasterStyle
 from .SetVectorStyle import SetVectorStyle
-from .SnapGeometries import SnapGeometriesToLayer
-from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SpatialJoinSummary import SpatialJoinSummary
 from .StatisticsByCategories import StatisticsByCategories
 from .TextToFloat import TextToFloat
@@ -95,7 +91,6 @@ from .VariableDistanceBuffer import VariableDistanceBuffer
 from .VectorLayerHistogram import VectorLayerHistogram
 from .VectorLayerScatterplot import VectorLayerScatterplot
 from .VectorLayerScatterplot3D import VectorLayerScatterplot3D
-from .VectorSplit import VectorSplit
 from .VoronoiPolygons import VoronoiPolygons
 
 
@@ -144,8 +139,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 PointsFromLines(),
                 PointsToPaths(),
                 PolarPlot(),
-                Polygonize(),
-                PostGISExecuteSQL(),
                 PostGISExecuteAndLoadSQL(),
                 RandomExtractWithinSubsets(),
                 RandomPointsAlongLines(),
@@ -163,8 +156,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 SelectByExpression(),
                 SetRasterStyle(),
                 SetVectorStyle(),
-                SnapGeometriesToLayer(),
-                SpatialiteExecuteSQL(),
                 SpatialJoinSummary(),
                 StatisticsByCategories(),
                 TextToFloat(),
@@ -177,7 +168,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 VectorLayerHistogram(),
                 VectorLayerScatterplot(),
                 VectorLayerScatterplot3D(),
-                VectorSplit(),
                 VoronoiPolygons(),
                 ]
 

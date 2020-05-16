@@ -49,7 +49,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class UniqueValues(QgisAlgorithm):
-
     INPUT = 'INPUT'
     FIELDS = 'FIELDS'
     TOTAL_VALUES = 'TOTAL_VALUES'

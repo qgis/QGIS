@@ -39,7 +39,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class ConcaveHull(QgisAlgorithm):
-
     INPUT = 'INPUT'
     ALPHA = 'ALPHA'
     HOLES = 'HOLES'

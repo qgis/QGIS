@@ -69,6 +69,18 @@ void QgsTemporalNavigationObject::setLooping( bool loopAnimation )
   mLoopAnimation = loopAnimation;
 }
 
+QgsExpressionContextScope *QgsTemporalNavigationObject::createExpressionContextScope() const
+{
+  std::unique_ptr< QgsExpressionContextScope > scope = qgis::make_unique< QgsExpressionContextScope >( QStringLiteral( "temporal" ) );
+  scope->setVariable( QStringLiteral( "frame_rate" ), mFramesPerSecond, true );
+  scope->setVariable( QStringLiteral( "frame_number" ), mCurrentFrameNumber, true );
+  scope->setVariable( QStringLiteral( "frame_duration" ), mFrameDuration, true );
+  scope->setVariable( QStringLiteral( "animation_start_time" ), mTemporalExtents.begin(), true );
+  scope->setVariable( QStringLiteral( "animation_end_time" ), mTemporalExtents.end(), true );
+  scope->setVariable( QStringLiteral( "animation_interval" ), mTemporalExtents.end() - mTemporalExtents.begin(), true );
+  return scope.release();
+}
+
 QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long long frame ) const
 {
   const QDateTime start = mTemporalExtents.begin();
@@ -81,22 +93,61 @@ QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long 
   const QDateTime begin = start.addSecs( frame * mFrameDuration.seconds() );
   const QDateTime end = start.addSecs( nextFrame * mFrameDuration.seconds() );
 
-  if ( end <= mTemporalExtents.end() )
-    return QgsDateTimeRange( begin, end, true, false );
+  QDateTime frameStart = begin;
 
-  return QgsDateTimeRange( begin, mTemporalExtents.end(), true, false );
+  if ( mCumulativeTemporalRange )
+    frameStart = start;
+
+  if ( end <= mTemporalExtents.end() )
+    return QgsDateTimeRange( frameStart, end, true, false );
+
+  return QgsDateTimeRange( frameStart, mTemporalExtents.end(), true, false );
+}
+
+void QgsTemporalNavigationObject::setNavigationMode( const NavigationMode mode )
+{
+  if ( mNavigationMode == mode )
+    return;
+
+  mNavigationMode = mode;
+  emit navigationModeChanged( mode );
+
+  switch ( mNavigationMode )
+  {
+    case Animated:
+      emit updateTemporalRange( dateTimeRangeForFrameNumber( mCurrentFrameNumber ) );
+      break;
+    case FixedRange:
+      emit updateTemporalRange( mTemporalExtents );
+      break;
+    case NavigationOff:
+      emit updateTemporalRange( QgsDateTimeRange() );
+      break;
+  }
 }
 
 void QgsTemporalNavigationObject::setTemporalExtents( const QgsDateTimeRange &temporalExtents )
 {
   mTemporalExtents = temporalExtents;
-  int currentFrameNmber = mCurrentFrameNumber;
-  setCurrentFrameNumber( 0 );
 
-  //Force to emit signal if the current frame number doesn't change
-  if ( currentFrameNmber == mCurrentFrameNumber )
-    emit updateTemporalRange( dateTimeRangeForFrameNumber( 0 ) );
+  switch ( mNavigationMode )
+  {
+    case Animated:
+    {
+      int currentFrameNmber = mCurrentFrameNumber;
+      setCurrentFrameNumber( 0 );
 
+      //Force to emit signal if the current frame number doesn't change
+      if ( currentFrameNmber == mCurrentFrameNumber )
+        emit updateTemporalRange( dateTimeRangeForFrameNumber( 0 ) );
+      break;
+    }
+    case FixedRange:
+      emit updateTemporalRange( mTemporalExtents );
+      break;
+    case NavigationOff:
+      break;
+  }
 }
 
 QgsDateTimeRange QgsTemporalNavigationObject::temporalExtents() const
@@ -142,6 +193,16 @@ void QgsTemporalNavigationObject::setFramesPerSecond( double framesPerSeconds )
 double QgsTemporalNavigationObject::framesPerSecond() const
 {
   return mFramesPerSecond;
+}
+
+void QgsTemporalNavigationObject::setTemporalRangeCumulative( bool state )
+{
+  mCumulativeTemporalRange = state;
+}
+
+bool QgsTemporalNavigationObject::temporalRangeCumulative() const
+{
+  return mCumulativeTemporalRange;
 }
 
 void QgsTemporalNavigationObject::play()
@@ -191,7 +252,7 @@ void QgsTemporalNavigationObject::skipToEnd()
 long long QgsTemporalNavigationObject::totalFrameCount()
 {
   QgsInterval totalAnimationLength = mTemporalExtents.end() - mTemporalExtents.begin();
-  return std::ceil( totalAnimationLength.seconds() / mFrameDuration.seconds() ) + 1;
+  return std::floor( totalAnimationLength.seconds() / mFrameDuration.seconds() ) + 1;
 }
 
 void QgsTemporalNavigationObject::setAnimationState( AnimationState mode )

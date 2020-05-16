@@ -55,7 +55,6 @@ with warnings.catch_warnings():
 
 
 class ModelerNumberInputPanel(BASE, WIDGET):
-
     """
     Number input panel for use inside the modeler - this input panel
     is based off the base input panel and includes a text based line input
@@ -127,7 +126,6 @@ class ModelerNumberInputPanel(BASE, WIDGET):
 
 
 class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
-
     """
     Number input panel for use outside the modeler - this input panel
     contains a user friendly spin box for entering values.
@@ -254,7 +252,6 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
 
 
 class DistanceInputPanel(NumberInputPanel):
-
     """
     Distance input panel for use outside the modeler - this input panel
     contains a label showing the distance unit.

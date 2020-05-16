@@ -209,9 +209,31 @@ void QgsDualView::columnBoxInit()
     }
   }
 
-  QAction *sortByPreviewExpression = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "sort.svg" ) ), tr( "Sort by preview expression" ), this );
-  connect( sortByPreviewExpression, &QAction::triggered, this, &QgsDualView::sortByPreviewExpression );
-  mFeatureListPreviewButton->addAction( sortByPreviewExpression );
+  QMenu *sortMenu = new QMenu( this );
+  QAction *sortMenuAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "sort.svg" ) ), tr( "Sort…" ), this );
+  sortMenuAction->setMenu( sortMenu );
+
+  QAction *sortByPreviewExpressionAsc = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "sort.svg" ) ), tr( "By Preview Expression (ascending)" ), this );
+  connect( sortByPreviewExpressionAsc, &QAction::triggered, this, [ = ]()
+  {
+    mFeatureListModel->setSortByDisplayExpression( true, Qt::AscendingOrder );
+  } );
+  sortMenu->addAction( sortByPreviewExpressionAsc );
+  QAction *sortByPreviewExpressionDesc = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "sort-reverse.svg" ) ), tr( "By Preview Expression (descending)" ), this );
+  connect( sortByPreviewExpressionDesc, &QAction::triggered, this, [ = ]()
+  {
+    mFeatureListModel->setSortByDisplayExpression( true, Qt::DescendingOrder );
+  } );
+  sortMenu->addAction( sortByPreviewExpressionDesc );
+  QAction *sortByPreviewExpressionCustom = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconExpressionPreview.svg" ) ), tr( "By Custom Expression" ), this );
+  connect( sortByPreviewExpressionCustom, &QAction::triggered, this, [ = ]()
+  {
+    if ( modifySort() )
+      mFeatureListModel->setSortByDisplayExpression( false );
+  } );
+  sortMenu->addAction( sortByPreviewExpressionCustom );
+
+  mFeatureListPreviewButton->addAction( sortMenuAction );
 
   QAction *separator = new QAction( mFeatureListPreviewButton );
   separator->setSeparator( true );
@@ -248,11 +270,13 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
   {
     case QgsAttributeTableFilterModel::ShowVisible:
       disconnect( mFilterModel->mapCanvas(), &QgsMapCanvas::extentsChanged, this, &QgsDualView::extentChanged );
+      disconnect( mFilterModel, &QgsAttributeTableFilterModel::visibleReloaded, this, &QgsDualView::filterChanged );
       break;
 
     case QgsAttributeTableFilterModel::ShowAll:
     case QgsAttributeTableFilterModel::ShowEdited:
     case QgsAttributeTableFilterModel::ShowFilteredList:
+      disconnect( mFilterModel, &QgsAttributeTableFilterModel::featuresFiltered, this, &QgsDualView::filterChanged );
       break;
 
     case QgsAttributeTableFilterModel::ShowSelected:
@@ -285,11 +309,13 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
         QgsRectangle rect = mFilterModel->mapCanvas()->mapSettings().mapToLayerCoordinates( mLayer, mFilterModel->mapCanvas()->extent() );
         r.setFilterRect( rect );
       }
+      connect( mFilterModel, &QgsAttributeTableFilterModel::visibleReloaded, this, &QgsDualView::filterChanged );
       break;
 
     case QgsAttributeTableFilterModel::ShowAll:
     case QgsAttributeTableFilterModel::ShowEdited:
     case QgsAttributeTableFilterModel::ShowFilteredList:
+      connect( mFilterModel, &QgsAttributeTableFilterModel::featuresFiltered, this, &QgsDualView::filterChanged );
       break;
 
     case QgsAttributeTableFilterModel::ShowSelected:
@@ -297,14 +323,6 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
       r.setFilterFids( masterModel()->layer()->selectedFeatureIds() );
       break;
   }
-
-  if ( requiresTableReload )
-  {
-    mMasterModel->setRequest( r );
-    whileBlocking( mLayerCache )->setCacheGeometry( needsGeometry );
-    mMasterModel->loadLayer();
-  }
-
 
   // disable the browsing auto pan/scale if the list only shows visible items
   switch ( filterMode )
@@ -319,6 +337,16 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
     case QgsAttributeTableFilterModel::ShowSelected:
       setBrowsingAutoPanScaleAllowed( true );
       break;
+  }
+
+  if ( requiresTableReload )
+  {
+    //disconnect the connections of the current (old) filtermode before reload
+    mFilterModel->disconnectFilterModeConnections();
+
+    mMasterModel->setRequest( r );
+    whileBlocking( mLayerCache )->setCacheGeometry( needsGeometry );
+    mMasterModel->loadLayer();
   }
 
   //update filter model
@@ -820,7 +848,7 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   connect( organize, &QAction::triggered, this, &QgsDualView::organizeColumns );
   mHorizontalHeaderMenu->addAction( organize );
   QAction *sort = new QAction( tr( "&Sort…" ), mHorizontalHeaderMenu );
-  connect( sort, &QAction::triggered, this, &QgsDualView::modifySort );
+  connect( sort, &QAction::triggered, this, [ = ]() {modifySort();} );
   mHorizontalHeaderMenu->addAction( sort );
 
   mHorizontalHeaderMenu->popup( mTableView->horizontalHeader()->mapToGlobal( point ) );
@@ -895,10 +923,10 @@ void QgsDualView::autosizeColumn()
   mTableView->resizeColumnToContents( col );
 }
 
-void QgsDualView::modifySort()
+bool QgsDualView::modifySort()
 {
   if ( !mLayer )
-    return;
+    return false;
 
   QgsAttributeTableConfig config = mConfig;
 
@@ -946,7 +974,13 @@ void QgsDualView::modifySort()
     }
 
     setAttributeTableConfig( config );
+    return true;
   }
+  else
+  {
+    return false;
+  }
+
 }
 
 void QgsDualView::zoomToCurrentFeature()
@@ -1023,16 +1057,6 @@ void QgsDualView::onSortColumnChanged()
     cfg.setSortOrder( mFilterModel->sortOrder() );
     setAttributeTableConfig( cfg );
   }
-}
-
-void QgsDualView::sortByPreviewExpression()
-{
-  Qt::SortOrder sortOrder = Qt::AscendingOrder;
-  if ( mFeatureListView->displayExpression() == sortExpression() )
-  {
-    sortOrder = mConfig.sortOrder() == Qt::AscendingOrder ? Qt::DescendingOrder : Qt::AscendingOrder;
-  }
-  setSortExpression( mFeatureListView->displayExpression(), sortOrder );
 }
 
 void QgsDualView::updateSelectedFeatures()

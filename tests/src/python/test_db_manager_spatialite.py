@@ -256,8 +256,8 @@ class TestPyQgsDBManagerSpatialite(unittest.TestCase):
 
         self.assertEqual(len(table.fields()), field_before_count + 1)
 
-# not supported in spatialite
-#        self.assertTrue(field.update('real_field2', new_type_str='TEXT (30)', new_not_null=True, new_default_str='foo'))
+        # not supported in spatialite
+        #        self.assertTrue(field.update('real_field2', new_type_str='TEXT (30)', new_not_null=True, new_default_str='foo'))
 
         field = table.fields()[field_before_count]
         self.assertEqual(field.name, 'real_field')
@@ -265,9 +265,9 @@ class TestPyQgsDBManagerSpatialite(unittest.TestCase):
         # self.assertEqual(field.notNull, 1)
         # self.assertEqual(field.default, "'foo'")
 
-#        self.assertTrue(table.deleteField(field))
+        #        self.assertTrue(table.deleteField(field))
 
-#        self.assertEqual(len(table.fields()), field_before_count)
+        #        self.assertEqual(len(table.fields()), field_before_count)
 
         connection.remove()
 

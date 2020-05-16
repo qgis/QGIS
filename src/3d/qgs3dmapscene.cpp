@@ -53,6 +53,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgspoint3dbillboardmaterial.h"
+#include "qgsmaplayertemporalproperties.h"
 
 #include "qgslinematerial_p.h"
 

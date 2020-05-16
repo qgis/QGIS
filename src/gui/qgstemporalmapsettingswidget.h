@@ -47,12 +47,28 @@ class GUI_EXPORT QgsTemporalMapSettingsWidget : public QgsPanelWidget, private U
      */
     void setFrameRateValue( double value );
 
+    /**
+     * Returns the cumulative range option state from vcr widget.
+     *
+     * \see setIsTemporalRangeCumulative()
+     */
+    bool isTemporalRangeCumulative();
+
+    /**
+     * Sets the cumulative range option state from vcr widget.
+     *
+     * \see isTemporalRangeCumulative(
+     */
+    void setIsTemporalRangeCumulative( bool state );
+
   signals:
 
     /**
      * Emitted when frame \a rate value on the spin box has changed.
      */
     void frameRateChanged( double rate );
+
+    void temporalRangeCumulativeChanged( bool state );
 
 
 };

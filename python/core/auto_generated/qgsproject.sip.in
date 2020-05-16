@@ -48,6 +48,20 @@ open within the main QGIS application.
       Qgs,
     };
 
+    enum class AvoidIntersectionsMode
+    {
+      AllowIntersections,
+      AvoidIntersectionsCurrentLayer,
+      AvoidIntersectionsLayers,
+    };
+
+    enum DataDefinedServerProperty
+    {
+      NoProperty,
+      AllProperties,
+      WMSOnlineResource,
+    };
+
     static QgsProject *instance();
 %Docstring
 Returns the QgsProject singleton instance
@@ -412,7 +426,6 @@ implying a hierarchy of keys and corresponding values
     double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok = 0 ) const;
     bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok = 0 ) const;
 
-
     bool removeEntry( const QString &scope, const QString &key );
 %Docstring
 Remove the given key
@@ -740,9 +753,24 @@ A list of layers with which intersections should be avoided.
 
     void setAvoidIntersectionsLayers( const QList<QgsVectorLayer *> &layers );
 %Docstring
-A list of layers with which intersections should be avoided.
+Sets the list of layers with which intersections should be avoided.
+Only used if the avoid intersection mode is set to advanced.
 
 .. versionadded:: 3.0
+%End
+
+    void setAvoidIntersectionsMode( const AvoidIntersectionsMode mode );
+%Docstring
+Sets the avoid intersections mode.
+
+.. versionadded:: 3.14
+%End
+
+    AvoidIntersectionsMode avoidIntersectionsMode() const;
+%Docstring
+Returns the current avoid intersections mode.
+
+.. versionadded:: 3.14
 %End
 
     QVariantMap customVariables() const;
@@ -1371,6 +1399,13 @@ Emitted when the home path of the project changes.
 Emitted whenever the configuration for snapping has changed.
 %End
 
+    void avoidIntersectionsModeChanged();
+%Docstring
+Emitted whenever the avoid intersections mode has changed.
+
+.. versionadded:: 3.14
+%End
+
     void customVariablesChanged();
 %Docstring
 Emitted whenever the expression variables stored in the project have been changed.
@@ -1687,6 +1722,22 @@ Registers the objects that require translation into the ``translationContext``.
 So there can be created a ts file with these values.
 
 .. versionadded:: 3.4
+%End
+
+    void setDataDefinedServerProperties( const QgsPropertyCollection &properties );
+%Docstring
+Sets the data defined properties used for overrides in user defined server
+parameters to ``properties``
+
+.. versionadded:: 3.14
+%End
+
+    QgsPropertyCollection dataDefinedServerProperties() const;
+%Docstring
+Returns the data defined properties used for overrides in user defined server
+parameters
+
+.. versionadded:: 3.14
 %End
 
 };

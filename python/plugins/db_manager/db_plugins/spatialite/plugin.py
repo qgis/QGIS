@@ -266,8 +266,8 @@ class SLRasterTable(SLTable, RasterTable):
         self.geomType = 'RASTER'
 
         # def info(self):
-        #from .info_model import SLRasterTableInfo
-        #return SLRasterTableInfo(self)
+        # from .info_model import SLRasterTableInfo
+        # return SLRasterTableInfo(self)
 
     def rasterliteGdalUri(self):
         gdalUri = u'RASTERLITE:%s,table=%s' % (self.uri().database(), self.prefixName)

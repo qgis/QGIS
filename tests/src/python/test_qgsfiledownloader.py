@@ -15,19 +15,17 @@ import os
 import tempfile
 from functools import partial
 from qgis.PyQt.QtCore import QEventLoop, QUrl
-from qgis.core import (QgsFileDownloader,)
+from qgis.core import (QgsFileDownloader, )
 from qgis.testing import start_app, unittest
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '08/11/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-
 start_app()
 
 
 class TestQgsFileDownloader(unittest.TestCase):
-
     """
     This class tests the QgsFileDownloader class
     """
@@ -55,7 +53,8 @@ class TestQgsFileDownloader(unittest.TestCase):
 
         loop.exec_()
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Test with http://www.qgis.org unstable. Needs local server.')
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
+                     'Test with http://www.qgis.org unstable. Needs local server.')
     def test_validDownload(self):
         """Tests a valid download"""
         destination = tempfile.mktemp()
@@ -80,7 +79,8 @@ class TestQgsFileDownloader(unittest.TestCase):
         self.assertEqual(self.error_args[1], [u'Download failed: Host www.doesnotexistofthatimsure.qgis not found'])
         self.assertFalse(os.path.isfile(destination))
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Test with http://www.github.com unstable. Needs local server.')
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
+                     'Test with http://www.github.com unstable. Needs local server.')
     def test_dowloadCanceled(self):
         """Tests user canceled download"""
         destination = tempfile.mktemp()
@@ -101,7 +101,8 @@ class TestQgsFileDownloader(unittest.TestCase):
         self.assertFalse(os.path.isfile(destination))
         self.assertEqual(self.error_args[1], [u"Download failed: Protocol \"xyz\" is unknown"])
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Test with http://www.github.com unstable. Needs local server.')
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
+                     'Test with http://www.github.com unstable. Needs local server.')
     def test_InvalidFile(self):
         self._make_download('https://github.com/qgis/QGIS/archive/master.zip', "")
         self.assertTrue(self.exited_was_called)
@@ -136,11 +137,13 @@ class TestQgsFileDownloader(unittest.TestCase):
     @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Test with badssl.com unstable. Needs local server.')
     def test_sslExpired(self):
         self.ssl_compare("expired", "https://expired.badssl.com/", "SSL Errors: ;The certificate has expired")
-        self.ssl_compare("self-signed", "https://self-signed.badssl.com/", "SSL Errors: ;The certificate is self-signed, and untrusted")
-        self.ssl_compare("untrusted-root", "https://untrusted-root.badssl.com/", "No certificates could be verified;SSL Errors: ;The issuer certificate of a locally looked up certificate could not be found")
+        self.ssl_compare("self-signed", "https://self-signed.badssl.com/",
+                         "SSL Errors: ;The certificate is self-signed, and untrusted")
+        self.ssl_compare("untrusted-root", "https://untrusted-root.badssl.com/",
+                         "No certificates could be verified;SSL Errors: ;The issuer certificate of a locally looked up certificate could not be found")
 
     def _set_slot(self, *args, **kwargs):
-        #print('_set_slot(%s) called' % args[0])
+        # print('_set_slot(%s) called' % args[0])
         setattr(self, args[0] + '_was_called', True)
         setattr(self, args[0] + '_args', args)
 

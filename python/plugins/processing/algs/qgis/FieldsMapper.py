@@ -38,7 +38,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
 class FieldsMapper(QgisFeatureBasedAlgorithm):
-
     INPUT_LAYER = 'INPUT_LAYER'
     FIELDS_MAPPING = 'FIELDS_MAPPING'
     OUTPUT_LAYER = 'OUTPUT_LAYER'

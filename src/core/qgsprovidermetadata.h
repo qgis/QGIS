@@ -232,6 +232,23 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      */
     virtual QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) SIP_FACTORY;
 
+    /**
+     * Sets the \a value into the \a uri \a parameter as a bool.
+     * eg. "yes" value will be saved as true, 0 will be saved as false
+     *
+     * \since QGIS 3.14
+     */
+    static void setBoolParameter( QVariantMap &uri, const QString &parameter, const QVariant &value );
+
+    /**
+     * Returns the \a parameter value in the \a uri as a bool.
+     * eg. "yes" value will be returned as true, 0 will be returned as false
+     *
+     * \since QGIS 3.14
+     */
+    static bool boolParameter( const QVariantMap &uri, const QString &parameter, bool defaultValue = false );
+
+
 #ifndef SIP_RUN
 
     /**

@@ -45,13 +45,18 @@ namespace MDAL
 
     private:
       CFDimensions populateDimensions( ) override;
-      void populateFacesAndVertices( Vertices &vertices, Faces &faces ) override;
+      void populateElements( Vertices &vertices, Edges &edges, Faces &faces ) override;
       void addBedElevation( MemoryMesh *mesh ) override;
       std::string getCoordinateSystemVariableName() override;
       std::string getTimeVariableName() const override;
       std::set<std::string> ignoreNetCDFVariables() override;
-      void parseNetCDFVariableMetadata( int varid, const std::string &variableName,
-                                        std::string &name, bool *is_vector, bool *is_x ) override;
+      void parseNetCDFVariableMetadata( int varid,
+                                        std::string &variableName,
+                                        std::string &name,
+                                        bool *is_vector,
+                                        bool *isPolar,
+                                        bool *is_x ) override;
+      std::vector<std::pair<double, double>> parseClassification( int varid ) const override;
 
       //! Returns number of vertices
       size_t parse2DMesh();

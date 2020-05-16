@@ -38,11 +38,11 @@
 #include "qgsrasterviewport.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgscontrastenhancement.h"
-#include "qgsrasterlayertemporalproperties.h"
 
 class QgsMapToPixel;
 class QgsRasterRenderer;
 class QgsRectangle;
+class QgsRasterLayerTemporalProperties;
 
 class QImage;
 class QPixmap;
@@ -446,10 +446,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     bool ignoreExtents() const;
 
-    /**
-     * Returns temporal properties associated with the raster layer.
-     */
-    QgsRasterLayerTemporalProperties *temporalProperties() override;
+    QgsMapLayerTemporalProperties *temporalProperties() override;
 
   public slots:
     void showStatusMessage( const QString &message );

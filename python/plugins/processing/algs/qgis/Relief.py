@@ -79,7 +79,6 @@ class ParameterReliefColors(QgsProcessingParameterDefinition):
 
 
 class Relief(QgisAlgorithm):
-
     INPUT = 'INPUT'
     Z_FACTOR = 'Z_FACTOR'
     AUTO_COLORS = 'AUTO_COLORS'

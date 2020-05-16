@@ -48,8 +48,11 @@ class ParametersPanel(QgsProcessingParametersWidget):
     def __init__(self, parent, alg, in_place=False):
         super().__init__(alg, parent)
         self.in_place = in_place
+        self.active_layer = None
 
         self.wrappers = {}
+
+        self.extra_parameters = {}
 
         self.processing_context = createContext()
 
@@ -188,6 +191,8 @@ class ParametersPanel(QgsProcessingParametersWidget):
 
     def createProcessingParameters(self):
         parameters = {}
+        for p, v in self.extra_parameters.items():
+            parameters[p] = v
 
         for param in self.algorithm().parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
@@ -241,17 +246,20 @@ class ParametersPanel(QgsProcessingParametersWidget):
                     value.destinationProject = dest_project
                 if value:
                     parameters[param.name()] = value
-                    if param.isDestination():
-                        context = createContext()
-                        ok, error = self.algorithm().provider().isSupportedOutputValue(value, param, context)
-                        if not ok:
-                            raise AlgorithmDialogBase.InvalidOutputExtension(widget, error)
+
+                    context = createContext()
+                    ok, error = param.isSupportedOutputValue(value, context)
+                    if not ok:
+                        raise AlgorithmDialogBase.InvalidOutputExtension(widget, error)
 
         return self.algorithm().preprocessParameters(parameters)
 
     def setParameters(self, parameters):
+        self.extra_parameters = {}
         for param in self.algorithm().parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                if param.name() in parameters:
+                    self.extra_parameters[param.name()] = parameters[param.name()]
                 continue
 
             if not param.name() in parameters:

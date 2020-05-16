@@ -104,14 +104,14 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
   if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn )
   {
     QgsScaleWidget *minLimitSp = new QgsScaleWidget( parent );
-    minLimitSp->setToolTip( tr( "Min Scale" ) );
+    minLimitSp->setToolTip( tr( "Minimum scale from which snapping is enabled (i.e. most \"zoomed out\" scale)" ) );
     return minLimitSp;
   }
 
   if ( index.column() == QgsSnappingLayerTreeModel::MaxScaleColumn )
   {
     QgsScaleWidget *maxLimitSp = new QgsScaleWidget( parent );
-    maxLimitSp->setToolTip( tr( "Max Scale" ) );
+    maxLimitSp->setToolTip( tr( "Maximum scale up to which snapping is enabled (i.e. most \"zoomed in\" scale)" ) );
     return maxLimitSp;
   }
 
@@ -238,7 +238,6 @@ QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject *project, QgsMa
   , mProject( project )
   , mCanvas( canvas )
   , mIndividualLayerSettings( project->snappingConfig().individualLayerSettings() )
-  , mEnableMinMaxColumn( project->snappingConfig().scaleDependencyMode() == QgsSnappingConfig::PerLayer )
 
 {
   connect( project, &QgsProject::snappingConfigChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
@@ -281,7 +280,7 @@ Qt::ItemFlags QgsSnappingLayerTreeModel::flags( const QModelIndex &idx ) const
       }
       else if ( idx.column() == MaxScaleColumn || idx.column() == MinScaleColumn )
       {
-        if ( mEnableMinMaxColumn )
+        if ( mProject->snappingConfig().scaleDependencyMode() == QgsSnappingConfig::PerLayer )
         {
           return Qt::ItemIsEnabled | Qt::ItemIsEditable;
         }
@@ -345,7 +344,6 @@ void QgsSnappingLayerTreeModel::setFilterText( const QString &filterText )
 void QgsSnappingLayerTreeModel::onSnappingSettingsChanged()
 {
   const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> oldSettings = mIndividualLayerSettings;
-  bool wasMinMaxEnabled = mEnableMinMaxColumn;
 
   for ( auto it = oldSettings.constBegin(); it != oldSettings.constEnd(); ++it )
   {
@@ -369,18 +367,17 @@ void QgsSnappingLayerTreeModel::onSnappingSettingsChanged()
     }
   }
 
-  mEnableMinMaxColumn = ( mProject->snappingConfig().scaleDependencyMode() == QgsSnappingConfig::PerLayer );
-  hasRowchanged( mLayerTreeModel->rootGroup(), oldSettings, wasMinMaxEnabled != mEnableMinMaxColumn );
+  hasRowchanged( mLayerTreeModel->rootGroup(), oldSettings );
 }
 
-void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode *node, const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &oldSettings, bool forceRefresh )
+void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode *node, const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &oldSettings )
 {
   if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
   {
     const auto constChildren = node->children();
     for ( QgsLayerTreeNode *child : constChildren )
     {
-      hasRowchanged( child, oldSettings, forceRefresh );
+      hasRowchanged( child, oldSettings );
     }
   }
   else
@@ -391,7 +388,7 @@ void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode *node, const QHa
     {
       emit dataChanged( QModelIndex(), idx );
     }
-    if ( oldSettings.value( vl ) != mProject->snappingConfig().individualLayerSettings().value( vl ) || forceRefresh )
+    if ( oldSettings.value( vl ) != mProject->snappingConfig().individualLayerSettings().value( vl ) )
     {
       mIndividualLayerSettings.insert( vl, mProject->snappingConfig().individualLayerSettings().value( vl ) );
       emit dataChanged( idx, index( idx.row(), columnCount( idx ) - 1 ) );

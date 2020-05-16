@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include <QColor>
+#include <QPainter>
 #include <memory>
 
 #include "qgscoordinatetransform.h"
@@ -881,5 +882,151 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRenderContext::Flags )
+
+#ifndef SIP_RUN
+
+/**
+ * \ingroup core
+ *
+ * Scoped object for temporary replacement of a QgsRenderContext destination painter.
+ *
+ * Temporarily swaps out the destination QPainter object for a QgsRenderContext for the lifetime of the object,
+ * before replacing it to the original painter on destruction.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 3.14
+ */
+class QgsScopedRenderContextPainterSwap
+{
+  public:
+
+    /**
+     * Constructor for QgsScopedRenderContextPainterSwap.
+     *
+     * Swaps the destination painter for \a context (set QgsRenderContext::setPainter() ) to
+     * \a temporaryPainter.
+     */
+    QgsScopedRenderContextPainterSwap( QgsRenderContext &context, QPainter *temporaryPainter )
+      : mContext( context )
+      , mPreviousPainter( context.painter() )
+    {
+      mContext.setPainter( temporaryPainter );
+    }
+
+    /**
+     * Resets the destination painter for the context back to the original QPainter object.
+     */
+    void reset()
+    {
+      if ( !mReleased )
+      {
+        mContext.setPainter( mPreviousPainter );
+        mReleased = true;
+      }
+    }
+
+    /**
+     * Returns the destination painter for the context back to the original QPainter object.
+     */
+    ~QgsScopedRenderContextPainterSwap()
+    {
+      reset();
+    }
+
+  private:
+
+    QgsRenderContext &mContext;
+    QPainter *mPreviousPainter = nullptr;
+    bool mReleased = false;
+};
+
+
+/**
+ * \ingroup core
+ *
+ * Scoped object for temporary scaling of a QgsRenderContext for millimeter based rendering.
+ *
+ * Temporarily scales the destination QPainter for a QgsRenderContext to use millimeter based units for the lifetime of the object,
+ * before returning it to pixel based units on destruction.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 3.14
+ */
+class QgsScopedRenderContextScaleToMm
+{
+  public:
+
+    /**
+     * Constructor for QgsScopedRenderContextScaleToMm.
+     *
+     * Rescales the destination painter (see QgsRenderContext::painter() ) to use millimeter based units.
+     *
+     * \warning It is the caller's responsibility to ensure that \a context is initially scaled to use pixel based units!
+     */
+    QgsScopedRenderContextScaleToMm( QgsRenderContext &context )
+      : mContext( context )
+    {
+      if ( mContext.painter() )
+        mContext.painter()->scale( mContext.scaleFactor(), mContext.scaleFactor() );
+    }
+
+    /**
+     * Returns the destination painter back to pixel based units.
+     */
+    ~QgsScopedRenderContextScaleToMm()
+    {
+      if ( mContext.painter() )
+        mContext.painter()->scale( 1.0 / mContext.scaleFactor(), 1.0 / mContext.scaleFactor() );
+    }
+
+  private:
+
+    QgsRenderContext &mContext;
+};
+
+
+/**
+ * \ingroup core
+ *
+ * Scoped object for temporary scaling of a QgsRenderContext for pixel based rendering.
+ *
+ * Temporarily scales the destination QPainter for a QgsRenderContext to use pixel based units for the lifetime of the object,
+ * before returning it to millimeter based units on destruction.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 3.14
+ */
+class QgsScopedRenderContextScaleToPixels
+{
+  public:
+
+    /**
+     * Constructor for QgsScopedRenderContextScaleToPixels.
+     *
+     * Rescales the destination painter (see QgsRenderContext::painter() ) to use pixel based units.
+     *
+     * \warning It is the caller's responsibility to ensure that \a context is initially scaled to use millimeter based units!
+     */
+    QgsScopedRenderContextScaleToPixels( QgsRenderContext &context )
+      : mContext( context )
+    {
+      if ( mContext.painter() )
+        mContext.painter()->scale( 1.0 / mContext.scaleFactor(), 1.0 / mContext.scaleFactor() );
+    }
+
+    /**
+     * Returns the destination painter back to millimeter based units.
+     */
+    ~QgsScopedRenderContextScaleToPixels()
+    {
+      if ( mContext.painter() )
+        mContext.painter()->scale( mContext.scaleFactor(), mContext.scaleFactor() );
+    }
+
+  private:
+
+    QgsRenderContext &mContext;
+};
+#endif
 
 #endif

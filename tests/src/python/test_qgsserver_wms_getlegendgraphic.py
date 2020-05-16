@@ -33,15 +33,15 @@ from test_qgsserver_wms import TestQgsServerWMSTestBase
 from qgis.core import QgsProject
 
 # Strip path and content length because path may vary
-RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+'
-RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
+RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+'
+RE_ATTRIBUTES = br'[^>\s]+=[^>\s]+'
 
 
 class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
     """QGIS Server WMS Tests for GetLegendGraphic request"""
 
     # Set to True to re-generate reference files for this class
-    #regenerate_reference = True
+    # regenerate_reference = True
 
     def test_getLegendGraphics(self):
         """Test that does not return an exception but an image"""
@@ -278,7 +278,22 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }
         qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_rulelabel_true", 250, QSize(15, 15))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_rulelabel_notset", 250, QSize(15, 15))
+
+        # RULELABEL AUTO for single symbol means it is removed
+        parms = {
+            'MAP': self.testdata_path + "test_project.qgs",
+            'SERVICE': 'WMS',
+            'VERSION': '1.3.0',
+            'REQUEST': 'GetLegendGraphic',
+            'FORMAT': 'image/png',
+            'LAYER': u'testlayer%20èé',
+            'LAYERTITLE': 'FALSE',
+            'RULELABEL': 'AUTO'
+        }
+        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_rulelabel_auto", 250, QSize(15, 15))
 
     def test_wms_getLegendGraphics_rule(self):
         """Test that does not return an exception but an image"""
@@ -759,7 +774,8 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_DefaultMapUnitsPerMillimeter", max_size_diff=QSize(15, 15))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ScaleSymbol_DefaultMapUnitsPerMillimeter",
+                             max_size_diff=QSize(15, 15))
 
     def test_wms_GetLegendGraphic_ScaleSymbol_Scaled_2056(self):
         # 1:1000 scale on an EPSG:2056 calculating DPI that is around 96

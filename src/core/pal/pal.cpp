@@ -312,7 +312,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
           break;
 
         case GEOS_POLYGON:
-          maxCandidates = feat->feature->maximumPolygonCandidates();
+          maxCandidates = std::max( static_cast< std::size_t >( 16 ), feat->feature->maximumPolygonCandidates() );
           break;
       }
 

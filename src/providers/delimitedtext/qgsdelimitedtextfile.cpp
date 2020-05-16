@@ -79,7 +79,7 @@ bool QgsDelimitedTextFile::open()
     mFile = new QFile( mFileName );
     if ( ! mFile->open( QIODevice::ReadOnly ) )
     {
-      QgsDebugMsg( "Data file " + mFileName + " could not be opened" );
+      QgsDebugMsgLevel( "Data file " + mFileName + " could not be opened", 2 );
       delete mFile;
       mFile = nullptr;
     }
@@ -211,17 +211,17 @@ bool QgsDelimitedTextFile::setFromUrl( const QUrl &url )
     mMaxFields = query.queryItemValue( QStringLiteral( "maxFields" ) ).toInt();
   }
 
-  QgsDebugMsg( "Delimited text file is: " + mFileName );
-  QgsDebugMsg( "Encoding is: " + mEncoding );
-  QgsDebugMsg( "Delimited file type is: " + type );
-  QgsDebugMsg( "Delimiter is: [" + delimiter + ']' );
-  QgsDebugMsg( "Quote character is: [" + quote + ']' );
-  QgsDebugMsg( "Escape character is: [" + escape + ']' );
-  QgsDebugMsg( "Skip lines: " + QString::number( mSkipLines ) );
-  QgsDebugMsg( "Maximum number of fields in record: " + QString::number( mMaxFields ) );
-  QgsDebugMsg( "Use headers: " + QString( mUseHeader ? "Yes" : "No" ) );
-  QgsDebugMsg( "Discard empty fields: " + QString( mDiscardEmptyFields ? "Yes" : "No" ) );
-  QgsDebugMsg( "Trim fields: " + QString( mTrimFields ? "Yes" : "No" ) );
+  QgsDebugMsgLevel( "Delimited text file is: " + mFileName, 2 );
+  QgsDebugMsgLevel( "Encoding is: " + mEncoding, 2 );
+  QgsDebugMsgLevel( "Delimited file type is: " + type, 2 );
+  QgsDebugMsgLevel( "Delimiter is: [" + delimiter + ']', 2 );
+  QgsDebugMsgLevel( "Quote character is: [" + quote + ']', 2 );
+  QgsDebugMsgLevel( "Escape character is: [" + escape + ']', 2 );
+  QgsDebugMsgLevel( "Skip lines: " + QString::number( mSkipLines ), 2 );
+  QgsDebugMsgLevel( "Maximum number of fields in record: " + QString::number( mMaxFields ), 2 );
+  QgsDebugMsgLevel( "Use headers: " + QString( mUseHeader ? "Yes" : "No" ), 2 );
+  QgsDebugMsgLevel( "Discard empty fields: " + QString( mDiscardEmptyFields ? "Yes" : "No" ), 2 );
+  QgsDebugMsgLevel( "Trim fields: " + QString( mTrimFields ? "Yes" : "No" ), 2 );
 
   // Support for previous version of plain characters
   if ( type == QLatin1String( "csv" ) || type == QLatin1String( "plain" ) )
@@ -335,12 +335,12 @@ void QgsDelimitedTextFile::setTypeRegexp( const QString &regexp )
   mDefinitionValid = !regexp.isEmpty() && mDelimRegexp.isValid();
   if ( ! mDefinitionValid )
   {
-    QgsDebugMsg( "Invalid regular expression in delimited text file delimiter: " + regexp );
+    QgsDebugMsgLevel( "Invalid regular expression in delimited text file delimiter: " + regexp, 2 );
   }
   else if ( mAnchoredRegexp && mDelimRegexp.captureCount() == 0 )
   {
     mDefinitionValid = false;
-    QgsDebugMsg( "Invalid anchored regular expression - must have capture groups: " + regexp );
+    QgsDebugMsgLevel( "Invalid anchored regular expression - must have capture groups: " + regexp, 2 );
   }
 }
 
@@ -367,7 +367,7 @@ void QgsDelimitedTextFile::setTypeCSV( const QString &delim, const QString &quot
   mDefinitionValid = !mDelimChars.isEmpty();
   if ( ! mDefinitionValid )
   {
-    QgsDebugMsg( QStringLiteral( "Invalid empty delimiter defined for text file delimiter" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Invalid empty delimiter defined for text file delimiter" ), 2 );
   }
 }
 

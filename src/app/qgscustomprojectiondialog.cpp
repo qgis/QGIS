@@ -132,8 +132,8 @@ void QgsCustomProjectionDialog::populateList()
         crs.createFromProj( parameters );
 
       mExistingCRSnames[id] = name;
-      const QString actualWkt = crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, false );
-      const QString actualWktFormatted = crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, true );
+      const QString actualWkt = crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false );
+      const QString actualWktFormatted = crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, true );
       const QString actualProj = crs.toProj();
       mExistingCRSwkt[id] = wkt.isEmpty() ? QString() : actualWkt;
       mExistingCRSproj[id] = wkt.isEmpty() ? actualProj : QString();
@@ -273,7 +273,7 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem crs, const
           + ",ellipsoid_acronym=" + ( !ellipsoidAcronym.isEmpty() ? QgsSqliteUtils::quotedString( ellipsoidAcronym ) : QStringLiteral( "''" ) )
           + ",parameters=" + ( !crs.toProj().isEmpty() ? QgsSqliteUtils::quotedString( crs.toProj() ) : QStringLiteral( "''" ) )
           + ",is_geo=0" // <--shamelessly hard coded for now
-          + ",wkt=" + ( format == QgsCoordinateReferenceSystem::FormatWkt ? QgsSqliteUtils::quotedString( crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, false ) ) : QStringLiteral( "''" ) )
+          + ",wkt=" + ( format == QgsCoordinateReferenceSystem::FormatWkt ? QgsSqliteUtils::quotedString( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false ) ) : QStringLiteral( "''" ) )
           + " where srs_id=" + QgsSqliteUtils::quotedString( id )
           ;
     QgsDebugMsgLevel( sql, 4 );
@@ -298,7 +298,7 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem crs, const
     if ( result != SQLITE_OK )
       return false;
   }
-  mExistingCRSwkt[id] = format == QgsCoordinateReferenceSystem::FormatWkt ? crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, false ) : QString();
+  mExistingCRSwkt[id] = format == QgsCoordinateReferenceSystem::FormatWkt ? crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false ) : QString();
   mExistingCRSproj[id] = format == QgsCoordinateReferenceSystem::FormatProj ? crs.toProj() : QString();
   mExistingCRSnames[id] = name;
 
@@ -426,12 +426,12 @@ void QgsCustomProjectionDialog::pbnCopyCRS_clicked()
     }
 
     whileBlocking( mFormatComboBox )->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( QgsCoordinateReferenceSystem::FormatWkt ) ) );
-    teParameters->setPlainText( srs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, true ) );
-    mDefinitions[leNameList->currentIndex().row()].wkt = srs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, false );
+    teParameters->setPlainText( srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, true ) );
+    mDefinitions[leNameList->currentIndex().row()].wkt = srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false );
     mDefinitions[leNameList->currentIndex().row()].proj.clear();
 
-    leNameList->currentItem()->setText( QgisCrsParametersColumn, srs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, false ) );
-    leNameList->currentItem()->setData( 0, FormattedWktRole, srs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, true ) );
+    leNameList->currentItem()->setText( QgisCrsParametersColumn, srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, false ) );
+    leNameList->currentItem()->setData( 0, FormattedWktRole, srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, true ) );
   }
 }
 
@@ -491,7 +491,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
         {
           ref = QStringLiteral( "ID[\"%1\",%2]" ).arg( authparts.at( 0 ), authparts.at( 1 ) );
         }
-        if ( !ref.isEmpty() && crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ).contains( ref ) )
+        if ( !ref.isEmpty() && crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ).contains( ref ) )
         {
           QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
                                 tr( "Cannot save '%1' — the definition is equivalent to %2.\n\n(Try removing \"%3\" from the WKT definition.)" ).arg( def.name, crs.authid(), ref ) );
@@ -727,7 +727,7 @@ void QgsCustomProjectionDialog::formatChanged()
         {
           const QByteArray multiLineOption = QStringLiteral( "MULTILINE=YES" ).toLocal8Bit();
           const char *const options[] = {multiLineOption.constData(), nullptr};
-          newFormatString = QString( proj_as_wkt( pjContext, crs.get(), PJ_WKT2_2018, options ) );
+          newFormatString = QString( proj_as_wkt( pjContext, crs.get(), PJ_WKT2_2019, options ) );
         }
       }
 #else

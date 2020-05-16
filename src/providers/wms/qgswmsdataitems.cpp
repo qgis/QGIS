@@ -302,7 +302,6 @@ QString QgsWMSItemBase::createUri()
   if ( mDataSourceUri.param( QLatin1String( "type" ) ) == QLatin1String( "wmst" ) )
   {
     mDataSourceUri.setParam( QLatin1String( "temporalSource" ), QLatin1String( "provider" ) );
-    mDataSourceUri.setParam( QLatin1String( "enableTime" ), QLatin1String( "yes" ) );
   }
 
   QString format;
@@ -576,7 +575,7 @@ QgsXyzTileRootItem::QgsXyzTileRootItem( QgsDataItem *parent, QString name, QStri
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "WMS" ) )
 {
   mCapabilities |= Fast;
-  mIconName = QStringLiteral( "mIconWms.svg" );
+  mIconName = QStringLiteral( "mIconXyz.svg" );
   populate();
 }
 
@@ -600,6 +599,7 @@ QVector<QgsDataItem *> QgsXyzTileRootItem::createChildren()
 QgsXyzLayerItem::QgsXyzLayerItem( QgsDataItem *parent, QString name, QString path, const QString &encodedUri )
   : QgsLayerItem( parent, name, path, encodedUri, QgsLayerItem::Raster, QStringLiteral( "wms" ) )
 {
+  mIconName = QStringLiteral( "mIconXyz.svg" );
   setState( Populated );
 }
 

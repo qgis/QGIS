@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgsrelation.h"
 #include "qgsoptionalexpression.h"
+#include "qgspropertycollection.h"
 #include <QColor>
 
 class QgsRelationManager;
@@ -28,7 +29,7 @@ class QgsRelationManager;
  * This is an abstract base class for any elements of a drag and drop form.
  *
  * This can either be a container which will be represented on the screen
- * as a tab widget or ca collapsible group box. Or it can be a field which will
+ * as a tab widget or a collapsible group box. Or it can be a field which will
  * then be represented based on the QgsEditorWidget type and configuration.
  * Or it can be a relation and embed the form of several children of another
  * layer.
@@ -129,7 +130,6 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
 
     /**
      * Controls if this element should be labeled with a title (field, relation or groupname).
-     *
      * \since QGIS 2.18
      */
     void setShowLabel( bool showLabel );
@@ -158,6 +158,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      * \since QGIS 2.18
      */
     virtual QString typeIdentifier() const = 0;
+
 };
 
 

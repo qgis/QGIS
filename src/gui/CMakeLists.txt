@@ -282,6 +282,7 @@ SET(QGIS_GUI_SRCS
   processing/qgsprocessingrecentalgorithmlog.cpp
   processing/qgsprocessingtoolboxmodel.cpp
   processing/qgsprocessingtoolboxtreeview.cpp
+  processing/qgsprocessingvectortilewriterlayerswidgetwrapper.cpp
   processing/qgsprocessingwidgetwrapper.cpp
   processing/qgsprocessingwidgetwrapperimpl.cpp
 
@@ -293,6 +294,7 @@ SET(QGIS_GUI_SRCS
   processing/models/qgsmodelgraphicsscene.cpp
   processing/models/qgsmodelgraphicsview.cpp
   processing/models/qgsmodelgroupboxdefinitionwidget.cpp
+  processing/models/qgsmodelinputreorderwidget.cpp
   processing/models/qgsmodelsnapper.cpp
   processing/models/qgsmodelundocommand.cpp
   processing/models/qgsmodelviewmouseevent.cpp
@@ -321,10 +323,12 @@ SET(QGIS_GUI_SRCS
   tableeditor/qgstableeditorformattingwidget.cpp
   tableeditor/qgstableeditorwidget.cpp
 
+  vectortile/qgsvectortilebasiclabelingwidget.cpp
   vectortile/qgsvectortilebasicrendererwidget.cpp
   vectortile/qgsvectortileconnectiondialog.cpp
   vectortile/qgsvectortiledataitemguiprovider.cpp
   vectortile/qgsvectortileproviderguimetadata.cpp
+  vectortile/qgsvectortilesourceselect.cpp
 
   qgisinterface.cpp
   qgsactionmenu.cpp
@@ -391,6 +395,7 @@ SET(QGIS_GUI_SRCS
   qgsexpressionbuilderwidget.cpp
   qgsexpressionhighlighter.cpp
   qgsexpressionlineedit.cpp
+  qgsexpressionpreviewwidget.cpp
   qgsexpressionselectiondialog.cpp
   qgsexpressionstoredialog.cpp
   qgsexpressiontreeview.cpp
@@ -400,6 +405,7 @@ SET(QGIS_GUI_SRCS
   qgsfeatureselectiondlg.cpp
   qgsfieldcombobox.cpp
   qgsfieldexpressionwidget.cpp
+  qgsfeaturepickerwidget.cpp
   qgsfieldmappingwidget.cpp
   qgsfieldmappingmodel.cpp
   qgsfeaturelistcombobox.cpp
@@ -430,6 +436,8 @@ SET(QGIS_GUI_SRCS
   qgskeyvaluewidget.cpp
   qgslistwidget.cpp
   qgslegendfilterbutton.cpp
+  qgslegendpatchshapebutton.cpp
+  qgslegendpatchshapewidget.cpp
   qgslimitedrandomcolorrampdialog.cpp
   qgsratiolockbutton.cpp
   qgsludialog.cpp
@@ -536,6 +544,7 @@ SET(QGIS_GUI_SRCS
   qgsuserinputwidget.cpp
   qgsvaliditycheckresultswidget.cpp
   qgsvariableeditorwidget.cpp
+  qgsvectorlayertemporalpropertieswidget.cpp
   qgsvertexmarker.cpp
   qgsfiledownloaderdialog.cpp
   qgsvscrollarea.cpp
@@ -616,11 +625,13 @@ SET(QGIS_GUI_HDRS
   qgsexpressionbuilderwidget.h
   qgsexpressionhighlighter.h
   qgsexpressionlineedit.h
+  qgsexpressionpreviewwidget.h
   qgsexpressionselectiondialog.h
   qgsexpressiontreeview.h
   qgsextentgroupbox.h
   qgsextentwidget.h
   qgsexternalresourcewidget.h
+  qgsfeaturepickerwidget.h
   qgsfeaturelistcombobox.h
   qgsfeatureselectiondlg.h
   qgsfieldcombobox.h
@@ -654,6 +665,8 @@ SET(QGIS_GUI_HDRS
   qgsinstallgridshiftdialog.h
   qgskeyvaluewidget.h
   qgslegendfilterbutton.h
+  qgslegendpatchshapebutton.h
+  qgslegendpatchshapewidget.h
   qgslimitedrandomcolorrampdialog.h
   qgslistwidget.h
   qgslonglongvalidator.h
@@ -765,6 +778,7 @@ SET(QGIS_GUI_HDRS
   qgsuserinputwidget.h
   qgsvaliditycheckresultswidget.h
   qgsvariableeditorwidget.h
+  qgsvectorlayertemporalpropertieswidget.h
   qgsvertexmarker.h
   qgsvscrollarea.h
   qgswindowmanagerinterface.h
@@ -988,6 +1002,7 @@ SET(QGIS_GUI_HDRS
   processing/qgsprocessingrecentalgorithmlog.h
   processing/qgsprocessingtoolboxmodel.h
   processing/qgsprocessingtoolboxtreeview.h
+  processing/qgsprocessingvectortilewriterlayerswidgetwrapper.h
   processing/qgsprocessingwidgetwrapper.h
   processing/qgsprocessingwidgetwrapperimpl.h
 
@@ -999,6 +1014,7 @@ SET(QGIS_GUI_HDRS
   processing/models/qgsmodelgraphicsscene.h
   processing/models/qgsmodelgraphicsview.h
   processing/models/qgsmodelgroupboxdefinitionwidget.h
+  processing/models/qgsmodelinputreorderwidget.h
   processing/models/qgsmodelsnapper.h
   processing/models/qgsmodelundocommand.h
   processing/models/qgsmodelviewmouseevent.h
@@ -1092,10 +1108,12 @@ SET(QGIS_GUI_HDRS
   tableeditor/qgstableeditorformattingwidget.h
   tableeditor/qgstableeditorwidget.h
 
+  vectortile/qgsvectortilebasiclabelingwidget.h
   vectortile/qgsvectortilebasicrendererwidget.h
   vectortile/qgsvectortileconnectiondialog.h
   vectortile/qgsvectortiledataitemguiprovider.h
   vectortile/qgsvectortileproviderguimetadata.h
+  vectortile/qgsvectortilesourceselect.h
 
   qgsbrowserdockwidget_p.h
 )
@@ -1240,6 +1258,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/core/validity
   ${CMAKE_SOURCE_DIR}/src/core/vectortile
   ${CMAKE_SOURCE_DIR}/src/native
@@ -1261,6 +1280,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${SQLITE3_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
   ${SPATIALINDEX_INCLUDE_DIR}
+  ${Protobuf_INCLUDE_DIRS}
 )
 
 # disable deprecation warnings for classes re-exporting deprecated methods

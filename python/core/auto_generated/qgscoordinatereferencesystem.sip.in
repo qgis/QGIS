@@ -718,6 +718,12 @@ Returns the ellipsoid acronym for the ellipsoid used by the CRS.
       WKT2_2015_SIMPLIFIED,
       WKT2_2018,
       WKT2_2018_SIMPLIFIED,
+      WKT2_2019,
+      WKT2_2019_SIMPLIFIED,
+
+      WKT_PREFERRED,
+      WKT_PREFERRED_SIMPLIFIED,
+      WKT_PREFERRED_GDAL,
     };
 
     QString toWkt( WktVariant variant = WKT1_GDAL, bool multiline = false, int indentationWidth = 4 ) const;

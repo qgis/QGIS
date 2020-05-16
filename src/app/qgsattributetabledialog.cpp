@@ -201,6 +201,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   connect( mLayer, &QgsVectorLayer::featuresDeleted, this, &QgsAttributeTableDialog::updateTitle );
   connect( mLayer, &QgsVectorLayer::editingStopped, this, &QgsAttributeTableDialog::updateTitle );
   connect( mLayer, &QgsVectorLayer::readOnlyChanged, this, &QgsAttributeTableDialog::editingToggled );
+  connect( mLayer, &QgsVectorLayer::layerModified, this, &QgsAttributeTableDialog::updateLayerModifiedActions );
 
   // connect table info to window
   connect( mMainView, &QgsDualView::filterChanged, this, &QgsAttributeTableDialog::updateTitle );
@@ -216,7 +217,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
     mDock = new QgsAttributeTableDock( QString(), QgisApp::instance() );
     mDock->setWidget( this );
     connect( this, &QObject::destroyed, mDock, &QWidget::close );
-    QgisApp::instance()->addDockWidget( Qt::BottomDockWidgetArea, mDock );
+    QgisApp::instance()->addTabifiedDockWidget( Qt::BottomDockWidgetArea, mDock, QStringList(), true );
   }
   mActionDockUndock->setChecked( dockTable );
   connect( mActionDockUndock, &QAction::toggled, this, &QgsAttributeTableDialog::toggleDockMode );
@@ -224,7 +225,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
 
   updateTitle();
 
-  mActionRemoveSelection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeselectAll.svg" ) ) );
+  mActionRemoveSelection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeselectActiveLayer.svg" ) ) );
   mActionSelectAll->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSelectAll.svg" ) ) );
   mActionSelectedToTop->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSelectedToTop.svg" ) ) );
   mActionCopySelectedRows->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCopy.svg" ) ) );
@@ -256,7 +257,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   mActionToggleEditing->setChecked( mLayer->isEditable() );
   mActionToggleEditing->blockSignals( false );
 
-  mActionSaveEdits->setEnabled( mActionToggleEditing->isEnabled() && mLayer->isEditable() );
+  mActionSaveEdits->setEnabled( mActionToggleEditing->isEnabled() && mLayer->isEditable() && mLayer->isModified() );
   mActionReload->setEnabled( ! mLayer->isEditable() );
   mActionAddAttribute->setEnabled( ( canChangeAttributes || canAddAttributes ) && mLayer->isEditable() );
   mActionRemoveAttribute->setEnabled( canDeleteAttributes && mLayer->isEditable() );
@@ -717,7 +718,7 @@ void QgsAttributeTableDialog::editingToggled()
 {
   mActionToggleEditing->blockSignals( true );
   mActionToggleEditing->setChecked( mLayer->isEditable() );
-  mActionSaveEdits->setEnabled( mLayer->isEditable() );
+  mActionSaveEdits->setEnabled( mLayer->isEditable() && mLayer->isModified() );
   mActionReload->setEnabled( ! mLayer->isEditable() );
   updateMultiEditButtonState();
   if ( mLayer->isEditable() )
@@ -863,7 +864,42 @@ void QgsAttributeTableDialog::setFilterExpression( const QString &filterString, 
 void QgsAttributeTableDialog::deleteFeature( const QgsFeatureId fid )
 {
   QgsDebugMsg( QStringLiteral( "Delete %1" ).arg( fid ) );
-  mLayer->deleteFeature( fid );
+
+  QgsVectorLayerUtils::QgsDuplicateFeatureContext infoContext;
+  if ( QgsVectorLayerUtils::impactsCascadeFeatures( mLayer, QgsFeatureIds() << fid, QgsProject::instance(), infoContext ) )
+  {
+    QString childrenInfo;
+    int childrenCount = 0;
+    const auto infoContextLayers = infoContext.layers();
+    for ( QgsVectorLayer *chl : infoContextLayers )
+    {
+      childrenCount += infoContext.duplicatedFeatures( chl ).size();
+      childrenInfo += ( tr( "%1 feature(s) on layer \"%2\", " ).arg( infoContext.duplicatedFeatures( chl ).size() ).arg( chl->name() ) );
+    }
+
+    // for extra safety to make sure we know that the delete can have impact on children and joins
+    int res = QMessageBox::question( this, tr( "Delete at least %1 feature(s) on other layer(s)" ).arg( childrenCount ),
+                                     tr( "Delete of feature on layer \"%1\", %2 as well\nand all of its other descendants.\nDelete these features?" ).arg( mLayer->name() ).arg( childrenInfo ),
+                                     QMessageBox::Yes | QMessageBox::No );
+    if ( res != QMessageBox::Yes )
+      return;
+  }
+
+  QgsVectorLayer::DeleteContext context( true, QgsProject::instance() );
+  mLayer->deleteFeature( fid, &context );
+  const auto contextLayers = context.handledLayers();
+  //if it effected more than one layer, print feedback for all descendants
+  if ( contextLayers.size() > 1 )
+  {
+    int deletedCount = 0;
+    QString feedbackMessage;
+    for ( QgsVectorLayer *contextLayer : contextLayers )
+    {
+      feedbackMessage += tr( "%1 on layer %2. " ).arg( context.handledFeatures( contextLayer ).size() ).arg( contextLayer->name() );
+      deletedCount += context.handledFeatures( contextLayer ).size();
+    }
+    QgisApp::instance()->messageBar()->pushMessage( tr( "%1 features deleted: %2" ).arg( deletedCount ).arg( feedbackMessage ), Qgis::Success );
+  }
 }
 
 void QgsAttributeTableDialog::showContextMenu( QgsActionMenu *menu, const QgsFeatureId fid )
@@ -892,7 +928,7 @@ void QgsAttributeTableDialog::toggleDockMode( bool docked )
     mDock = new QgsAttributeTableDock( QString(), QgisApp::instance() );
     mDock->setWidget( this );
     connect( this, &QObject::destroyed, mDock, &QWidget::close );
-    QgisApp::instance()->addDockWidget( Qt::BottomDockWidgetArea, mDock );
+    QgisApp::instance()->addTabifiedDockWidget( Qt::BottomDockWidgetArea, mDock, QStringList(), true );
     updateTitle();
 
     // To prevent "QAction::event: Ambiguous shortcut overload"
@@ -948,6 +984,11 @@ void QgsAttributeTableDialog::toggleDockMode( bool docked )
     mActionPanMapToSelectedRows->setShortcut( QStringLiteral( "Ctrl+P" ) );
     mActionSearchForm->setShortcut( QStringLiteral( "Ctrl+F" ) );
   }
+}
+
+void QgsAttributeTableDialog::updateLayerModifiedActions()
+{
+  mActionSaveEdits->setEnabled( mActionToggleEditing->isEnabled() && mLayer->isEditable() && mLayer->isModified() );
 }
 
 //

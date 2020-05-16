@@ -375,7 +375,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
         QString configFilePath = configPath( *sConfigFilePath, params.map() );
 
         // load the project if needed and not empty
-        project = mConfigCache->project( configFilePath );
+        project = mConfigCache->project( configFilePath, sServerInterface->serverSettings() );
       }
 
       if ( project )
@@ -397,7 +397,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
         // Project is mandatory for OWS at this point
         if ( ! project )
         {
-          throw QgsServerException( QStringLiteral( "Project file error" ) );
+          throw QgsServerException( QStringLiteral( "Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file" ) );
         }
 
         if ( ! params.fileName().isEmpty() )
@@ -415,7 +415,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
         else
         {
           throw QgsOgcServiceException( QStringLiteral( "Service configuration error" ),
-                                        QStringLiteral( "Service unknown or unsupported" ) );
+                                        QStringLiteral( "Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint" ) );
         }
       }
     }

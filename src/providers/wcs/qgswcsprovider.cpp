@@ -1220,6 +1220,7 @@ int QgsWcsProvider::capabilities() const
   int capability = NoCapabilities;
   capability |= QgsRasterDataProvider::Identify;
   capability |= QgsRasterDataProvider::IdentifyValue;
+  capability |= QgsRasterDataProvider::Prefetch;
 
   if ( mHasSize )
   {

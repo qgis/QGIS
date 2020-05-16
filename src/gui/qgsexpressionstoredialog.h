@@ -55,7 +55,7 @@ class GUI_EXPORT QgsExpressionStoreDialog : public QDialog, private Ui::QgsExpre
     /**
      * Returns the help text
      */
-    QString helpText() { return  mHelpText->toHtml(); }
+    QString helpText() const;
 
   private:
 

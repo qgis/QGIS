@@ -2,8 +2,8 @@
                          qgsmeshlayertemporalproperties.h
                          -----------------------
     begin                : March 2020
-    copyright            : (C) 2020 by Vincent
-    email                : zilolv at gmail dot com
+    copyright            : (C) 2020 by Vincent Cloarec
+    email                : vcloarec at gmail dot com
  ***************************************************************************/
 
 /***************************************************************************
@@ -32,6 +32,7 @@
  * - each dataset is associated with a relative times
  * - time extent is defined by the first time and the last time of all dataset
  *
+ * \code{.unparsed}
  * Reference time :          AT
  * Dataset 1 time            o-----RT------RT-----RT-----------RT
  * Dataset 2 time            o---------RT------RT--------RT
@@ -40,6 +41,7 @@
  *
  * AT : absolute time (QDateTime)
  * RT : relative time (qint64)
+ *  \endcode
  *
  * \since QGIS 3.14
  */
@@ -59,9 +61,11 @@ class CORE_EXPORT QgsMeshLayerTemporalProperties : public QgsMapLayerTemporalPro
     QgsMeshLayerTemporalProperties( QObject *parent SIP_TRANSFERTHIS = nullptr, bool enabled = true );
 
   public:
+
     QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     void setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities ) override;
+    QgsDateTimeRange calculateTemporalExtent( QgsMapLayer *layer ) const override SIP_SKIP;
 
     /**
      * Returns the time extent

@@ -43,7 +43,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class gdaltindex(GdalAlgorithm):
-
     LAYERS = 'LAYERS'
     PATH_FIELD_NAME = 'PATH_FIELD_NAME'
     ABSOLUTE_PATH = 'ABSOLUTE_PATH'

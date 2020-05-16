@@ -20,10 +20,12 @@
 
 #include "qgsvector3d.h"
 
+#ifndef SIP_RUN
 namespace Qt3DRender
 {
   class QCamera;
 }
+#endif
 
 class QDomDocument;
 class QDomElement;
@@ -63,7 +65,7 @@ class _3D_EXPORT QgsCameraPose
     void setHeadingAngle( float heading ) { mHeadingAngle = heading; }
 
     //! Update Qt3D camera view matrix based on the pose
-    void updateCamera( Qt3DRender::QCamera *camera );
+    void updateCamera( Qt3DRender::QCamera *camera ) SIP_SKIP;
 
     //! Writes configuration to a new DOM element and returns it
     QDomElement writeXml( QDomDocument &doc ) const;

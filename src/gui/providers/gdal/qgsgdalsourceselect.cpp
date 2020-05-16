@@ -70,6 +70,7 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   mFileWidget->setDialogTitle( tr( "Open GDAL Supported Raster Dataset(s)" ) );
   mFileWidget->setFilter( QgsProviderRegistry::instance()->fileRasterFilters() );
   mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
+  mFileWidget->setOptions( QFileDialog::HideNameFilterDetails );
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
   {
     mRasterPath = path;

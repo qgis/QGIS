@@ -2,6 +2,7 @@
 # CMake settings
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1.0)
 SET(CMAKE_COLOR_MAKEFILE ON)
+SET(CMAKE_AUTORCC ON)
 # set path to additional CMake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 # POLICIES
@@ -147,6 +148,8 @@ IF(WITH_CORE)
 
   SET (WITH_QUICK FALSE CACHE BOOL "Determines whether QGIS Quick library should be built")
 
+  SET (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
+
   # try to configure and build python bindings by default
   SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
   IF (WITH_BINDINGS)
@@ -199,6 +202,10 @@ IF(WITH_CORE)
 
   IF ( WITH_DESKTOP AND NOT WITH_ANALYSIS )
     MESSAGE(FATAL_ERROR "Desktop cannot be built without analysis")
+  ENDIF()
+
+  IF ( WITH_QGIS_PROCESS AND NOT WITH_ANALYSIS )
+    MESSAGE(FATAL_ERROR "Process tool cannot be built without analysis")
   ENDIF()
 
   IF ( WITH_DESKTOP )
@@ -486,7 +493,7 @@ ENDIF(WITH_CORE)
 SET(CMAKE_AUTOMOC ON)
 
 # build our version of astyle
-SET (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare-commit.sh (using 'our' astyle)")
+SET (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare_commit.sh (using 'our' astyle)")
 
 # QML
 SET(QML_IMPORT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" CACHE PATH "QML directory for QML autocomplete")
@@ -627,6 +634,8 @@ ELSE (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
 ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
 
 IF(MSVC)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8")
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8")
   SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
   SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
   # disable macros that offend std::numeric_limits<T>::min()/max()

@@ -17,15 +17,13 @@
 
 #include <QEventLoop>
 
-#include <zlib.h>
-
 #include "qgsblockingnetworkrequest.h"
 #include "qgslogger.h"
-#include "qgsmbtilesreader.h"
+#include "qgsmbtiles.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsvectortileutils.h"
 
-QgsVectorTileLoader::QgsVectorTileLoader( const QString &uri, int zoomLevel, const QgsTileRange &range, const QPointF &viewCenter, QgsFeedback *feedback )
+QgsVectorTileLoader::QgsVectorTileLoader( const QString &uri, const QgsTileMatrix &tileMatrix, const QgsTileRange &range, const QPointF &viewCenter, QgsFeedback *feedback )
   : mEventLoop( new QEventLoop )
   , mFeedback( feedback )
 {
@@ -40,11 +38,11 @@ QgsVectorTileLoader::QgsVectorTileLoader( const QString &uri, int zoomLevel, con
   }
 
   QgsDebugMsgLevel( QStringLiteral( "Starting network loader" ), 2 );
-  QVector<QgsTileXYZ> tiles = QgsVectorTileUtils::tilesInRange( range, zoomLevel );
+  QVector<QgsTileXYZ> tiles = QgsVectorTileUtils::tilesInRange( range, tileMatrix.zoomLevel() );
   QgsVectorTileUtils::sortTilesByDistanceFromCenter( tiles, viewCenter );
   for ( QgsTileXYZ id : qgis::as_const( tiles ) )
   {
-    loadFromNetworkAsync( id, uri );
+    loadFromNetworkAsync( id, tileMatrix, uri );
   }
 }
 
@@ -77,9 +75,9 @@ void QgsVectorTileLoader::downloadBlocking()
   Q_ASSERT( mReplies.isEmpty() );
 }
 
-void QgsVectorTileLoader::loadFromNetworkAsync( const QgsTileXYZ &id, const QString &requestUrl )
+void QgsVectorTileLoader::loadFromNetworkAsync( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl )
 {
-  QString url = QgsVectorTileUtils::formatXYZUrlTemplate( requestUrl, id );
+  QString url = QgsVectorTileUtils::formatXYZUrlTemplate( requestUrl, id, tileMatrix );
   QNetworkRequest request( url );
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLoader" ) );
   QgsSetRequestInitiatorId( request, id.toString() );
@@ -145,11 +143,11 @@ void QgsVectorTileLoader::canceled()
 
 //////
 
-QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const QString &sourceType, const QString &sourcePath, int zoomLevel, const QPointF &viewCenter, const QgsTileRange &range )
+QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const QString &sourceType, const QString &sourcePath, const QgsTileMatrix &tileMatrix, const QPointF &viewCenter, const QgsTileRange &range )
 {
   QList<QgsVectorTileRawData> rawTiles;
 
-  QgsMBTilesReader mbReader( sourcePath );
+  QgsMbTiles mbReader( sourcePath );
   bool isUrl = ( sourceType == QStringLiteral( "xyz" ) );
   if ( !isUrl )
   {
@@ -157,11 +155,11 @@ QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const
     Q_ASSERT( res );
   }
 
-  QVector<QgsTileXYZ> tiles = QgsVectorTileUtils::tilesInRange( range, zoomLevel );
+  QVector<QgsTileXYZ> tiles = QgsVectorTileUtils::tilesInRange( range, tileMatrix.zoomLevel() );
   QgsVectorTileUtils::sortTilesByDistanceFromCenter( tiles, viewCenter );
   for ( QgsTileXYZ id : qgis::as_const( tiles ) )
   {
-    QByteArray rawData = isUrl ? loadFromNetwork( id, sourcePath ) : loadFromMBTiles( id, mbReader );
+    QByteArray rawData = isUrl ? loadFromNetwork( id, tileMatrix, sourcePath ) : loadFromMBTiles( id, mbReader );
     if ( !rawData.isEmpty() )
     {
       rawTiles.append( QgsVectorTileRawData( id, rawData ) );
@@ -170,9 +168,9 @@ QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const
   return rawTiles;
 }
 
-QByteArray QgsVectorTileLoader::loadFromNetwork( const QgsTileXYZ &id, const QString &requestUrl )
+QByteArray QgsVectorTileLoader::loadFromNetwork( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl )
 {
-  QString url = QgsVectorTileUtils::formatXYZUrlTemplate( requestUrl, id );
+  QString url = QgsVectorTileUtils::formatXYZUrlTemplate( requestUrl, id, tileMatrix );
   QNetworkRequest nr;
   nr.setUrl( QUrl( url ) );
   QgsBlockingNetworkRequest req;
@@ -189,7 +187,7 @@ QByteArray QgsVectorTileLoader::loadFromNetwork( const QgsTileXYZ &id, const QSt
 }
 
 
-QByteArray QgsVectorTileLoader::loadFromMBTiles( const QgsTileXYZ &id, QgsMBTilesReader &mbTileReader )
+QByteArray QgsVectorTileLoader::loadFromMBTiles( const QgsTileXYZ &id, QgsMbTiles &mbTileReader )
 {
   // MBTiles uses TMS specs with Y starting at the bottom while XYZ uses Y starting at the top
   int rowTMS = pow( 2, id.zoomLevel() ) - id.row() - 1;
@@ -200,10 +198,8 @@ QByteArray QgsVectorTileLoader::loadFromMBTiles( const QgsTileXYZ &id, QgsMBTile
     return QByteArray();
   }
 
-  // TODO: check format is "pbf"
-
   QByteArray data;
-  if ( !decodeGzip( gzippedTileData, data ) )
+  if ( !QgsMbTiles::decodeGzip( gzippedTileData, data ) )
   {
     QgsDebugMsg( QStringLiteral( "Failed to decompress tile " ) + id.toString() );
     return QByteArray();
@@ -211,60 +207,4 @@ QByteArray QgsVectorTileLoader::loadFromMBTiles( const QgsTileXYZ &id, QgsMBTile
 
   QgsDebugMsgLevel( QStringLiteral( "Tile blob size %1 -> uncompressed size %2" ).arg( gzippedTileData.size() ).arg( data.size() ), 2 );
   return data;
-}
-
-
-bool QgsVectorTileLoader::decodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut )
-{
-  unsigned char *bytesInPtr = reinterpret_cast<unsigned char *>( const_cast<char *>( bytesIn.constData() ) );
-  uint bytesInLeft = static_cast<uint>( bytesIn.count() );
-
-  const uint CHUNK = 16384;
-  unsigned char out[CHUNK];
-  const int DEC_MAGIC_NUM_FOR_GZIP = 16;
-
-  // allocate inflate state
-  z_stream strm;
-  strm.zalloc = Z_NULL;
-  strm.zfree = Z_NULL;
-  strm.opaque = Z_NULL;
-  strm.avail_in = 0;
-  strm.next_in = Z_NULL;
-
-  int ret = inflateInit2( &strm, MAX_WBITS + DEC_MAGIC_NUM_FOR_GZIP );
-  if ( ret != Z_OK )
-    return false;
-
-  while ( ret != Z_STREAM_END ) // done when inflate() says it's done
-  {
-    // prepare next chunk
-    uint bytesToProcess = std::min( CHUNK, bytesInLeft );
-    strm.next_in = bytesInPtr;
-    strm.avail_in = bytesToProcess;
-    bytesInPtr += bytesToProcess;
-    bytesInLeft -= bytesToProcess;
-
-    if ( bytesToProcess == 0 )
-      break;  // we end with an error - no more data but inflate() wants more data
-
-    // run inflate() on input until output buffer not full
-    do
-    {
-      strm.avail_out = CHUNK;
-      strm.next_out = out;
-      ret = inflate( &strm, Z_NO_FLUSH );
-      Q_ASSERT( ret != Z_STREAM_ERROR ); // state not clobbered
-      if ( ret == Z_NEED_DICT || ret == Z_DATA_ERROR || ret == Z_MEM_ERROR )
-      {
-        inflateEnd( &strm );
-        return false;
-      }
-      unsigned have = CHUNK - strm.avail_out;
-      bytesOut.append( QByteArray::fromRawData( reinterpret_cast<const char *>( out ), static_cast<int>( have ) ) );
-    }
-    while ( strm.avail_out == 0 );
-  }
-
-  inflateEnd( &strm );
-  return ret == Z_STREAM_END;
 }

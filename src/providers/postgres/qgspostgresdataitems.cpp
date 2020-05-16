@@ -59,7 +59,7 @@ bool QgsPostgresUtils::deleteLayer( const QString &uri, QString &errCause )
   QString type = resViewCheck.PQgetvalue( 0, 0 );
   if ( type == QLatin1String( "v" ) || type == QLatin1String( "m" ) )
   {
-    QString sql = QString( "DROP VIEW %1" ).arg( schemaTableName );
+    QString sql = QStringLiteral( "DROP %1VIEW %2" ).arg( type == QLatin1String( "m" ) ? QStringLiteral( "MATERIALIZED " ) : QString(), schemaTableName );
     QgsPostgresResult result( conn->PQexec( sql ) );
     if ( result.PQresultStatus() != PGRES_COMMAND_OK )
     {

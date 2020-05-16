@@ -78,6 +78,7 @@ struct CORE_NO_EXPORT QgsMeshLayerRendererCache
   std::unique_ptr<QgsMesh3dAveragingMethod> mVectorAveragingMethod;
 };
 
+
 ///@endcond
 
 /**

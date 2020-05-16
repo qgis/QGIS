@@ -9,7 +9,7 @@
 
 
 
-class QgsLayoutItemMap : QgsLayoutItem
+class QgsLayoutItemMap : QgsLayoutItem, QgsTemporalRangeObject
 {
 %Docstring
 Layout graphical items for displaying a map.

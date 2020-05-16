@@ -1838,6 +1838,7 @@ corespond:correspond
 coresponded:corresponded
 corespondence:correspondence
 coresponding:corresponding
+correponsding:corresponding
 coresponds:corresponds
 coridal:cordial
 cornmitted:committed
@@ -3255,7 +3256,7 @@ geneologies:genealogies
 geneology:genealogy
 generaates:generates
 generaly:generally
-generater:generator
+generater:generator:*
 generaters:generators
 generatting:generating
 genereate:generate
@@ -5767,6 +5768,7 @@ rebulid:rebuild
 rebuliding:rebuilding
 rebulids:rebuilds
 rebulit:rebuilt
+recangle:rectangle
 reccomend:recommend
 reccomendations:recommendations
 reccomended:recommended

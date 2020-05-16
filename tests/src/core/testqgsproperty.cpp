@@ -94,6 +94,7 @@ class TestQgsProperty : public QObject
     void curveTransform();
     void asVariant();
     void isProjectColor();
+    void referencedFieldsIgnoreContext();
 
   private:
 
@@ -255,6 +256,26 @@ void TestQgsProperty::conversions()
   collection.property( 4 ).setStaticValue( "s" );
   QCOMPARE( s1.valueAsString( context, "n" ), QStringLiteral( "s" ) );
   QCOMPARE( collection.valueAsString( 4, context, "y" ), QStringLiteral( "s" ) );
+
+  // test datetime conversions
+  QDateTime dt = QDateTime( QDate( 2020, 1, 1 ) );
+  QDateTime dt2 = QDateTime( QDate( 2010, 1, 1 ) );
+  QgsProperty dt1 = QgsProperty::fromValue( QVariant(), true );
+  collection.setProperty( 5, dt1 );
+  QCOMPARE( d1.valueAsDateTime( context, dt ), dt );
+  QCOMPARE( collection.valueAsDateTime( 5, context, dt ), dt );
+  d1.setStaticValue( dt2 ); //datetime in qvariant
+  collection.property( 5 ).setStaticValue( dt2 ); //datetime in qvariant
+  QCOMPARE( d1.valueAsDateTime( context, dt ), dt2 );
+  QCOMPARE( collection.valueAsDateTime( 5, context,  dt ), dt2 );
+  d1.setStaticValue( "2010-01-01" ); //datetime as string
+  collection.property( 5 ).setStaticValue( "2010-01-01" ); //datetime as string
+  QCOMPARE( d1.valueAsDateTime( context, dt ), dt2 );
+  QCOMPARE( collection.valueAsDateTime( 5, context, dt ), dt2 );
+  d1.setStaticValue( "i am not a datetime" ); //not a datetime, should return default value
+  collection.property( 5 ).setStaticValue( "i am not a datetime" ); //not a double, should return default value
+  QCOMPARE( d1.valueAsDateTime( context, dt ), dt );
+  QCOMPARE( collection.valueAsDateTime( 5, context, dt ), dt );
 }
 
 void TestQgsProperty::invalid()
@@ -1801,6 +1822,29 @@ void TestQgsProperty::isProjectColor()
   QVERIFY( p.isProjectColor() );
   p.setActive( false );
   QVERIFY( p.isProjectColor() );
+}
+
+void TestQgsProperty::referencedFieldsIgnoreContext()
+{
+  // Currently QgsProperty::referencedFields() for an expression will return field names
+  // only if those field names are present in the context's fields. The ignoreContext
+  // argument is a workaround for the case when we don't have fields yet.
+
+  QgsProperty p = QgsProperty::fromExpression( QStringLiteral( "foo + bar" ) );
+  QCOMPARE( p.referencedFields( QgsExpressionContext() ), QSet<QString>() );
+  QCOMPARE( p.referencedFields( QgsExpressionContext(), true ), QSet<QString>() << QStringLiteral( "foo" ) << QStringLiteral( "bar" ) );
+
+  // if the property is from a field, the ignoreContext does not make a difference
+  QgsProperty p2 = QgsProperty::fromField( QStringLiteral( "boo" ) );
+  QCOMPARE( p2.referencedFields( QgsExpressionContext() ), QSet<QString>() << QStringLiteral( "boo" ) );
+  QCOMPARE( p2.referencedFields( QgsExpressionContext(), true ), QSet<QString>() << QStringLiteral( "boo" ) );
+
+  QgsPropertyCollection collection;
+  collection.setProperty( 0, p );
+  collection.setProperty( 1, p2 );
+
+  QCOMPARE( collection.referencedFields( QgsExpressionContext() ), QSet<QString>() << QStringLiteral( "boo" ) );
+  QCOMPARE( collection.referencedFields( QgsExpressionContext(), true ), QSet<QString>() << QStringLiteral( "boo" ) << QStringLiteral( "foo" ) << QStringLiteral( "bar" ) );
 }
 
 void TestQgsProperty::checkCurveResult( const QList<QgsPointXY> &controlPoints, const QVector<double> &x, const QVector<double> &y )

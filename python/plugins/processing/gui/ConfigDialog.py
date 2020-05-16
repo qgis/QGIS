@@ -56,7 +56,6 @@ from processing.core.Processing import Processing
 from processing.gui.DirectorySelectorDialog import DirectorySelectorDialog
 from processing.gui.menus import defaultMenuEntries, menusSettingsGroup
 
-
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -190,7 +189,7 @@ class ConfigDialog(BASE, WIDGET):
             emptyItem.setEditable(False)
 
             rootItem.insertRow(0, [groupItem, emptyItem])
-            if not group in settings:
+            if group not in settings:
                 continue
 
             # add menu item only if it has any search matches

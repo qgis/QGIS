@@ -261,7 +261,7 @@ QPushButton:hover, QToolButton:hover {
     background-color: @lightalternativegradient;
 }
 
-QPushButton:pressed, QToolButton:pressed, QTabWidget::top-bar QToolButton:pressed {
+QPushButton:pressed, QPushButton:open, QToolButton:pressed, QTabWidget::top-bar QToolButton:pressed {
     background-color: @darkalternativegradient;
 }
 
@@ -561,11 +561,15 @@ QTabBar::tab:selected
     margin-bottom: 0px;
 }
 
-QTabBar::tab:!selected:hover
+QTabBar::tab:bottom:!selected
 {
-    /*border-top: 2px solid @selection;
-    padding-bottom: 3px;*/
-    /*background-color: QLinearGradient(x1:0, y1:0, x2:0, y2:1, stop:1 #212121, stop:0.4 #343434, stop:0.2 #343434, stop:0.1 #ffaa00);*/
+    margin-top: 0;
+    margin-bottom: 0.3em;
+}
+
+QTabBar::tab:bottom:selected
+{
+    margin-top: 0px;
 }
 
 QGroupBox::indicator:hover,

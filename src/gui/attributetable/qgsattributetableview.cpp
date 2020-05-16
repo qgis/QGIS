@@ -56,6 +56,8 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   setSortingEnabled( true ); // At this point no data is in the model yet, so actually nothing is sorted.
   horizontalHeader()->setSortIndicatorShown( false ); // So hide the indicator to avoid confusion.
 
+  setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+
   verticalHeader()->viewport()->installEventFilter( this );
 
   connect( verticalHeader(), &QHeaderView::sectionPressed, this, [ = ]( int row ) { selectRow( row, true ); } );

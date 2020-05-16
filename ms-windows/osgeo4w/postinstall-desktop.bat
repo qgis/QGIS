@@ -1,6 +1,7 @@
 textreplace -std -t bin\@package@.bat
 textreplace -std -t bin\@package@-designer.bat
 textreplace -std -t bin\python-@package@.bat
+textreplace -std -t bin\qgis_process-@package@.bat
 
 REM get short path without blanks
 for %%i in ("%OSGEO4W_ROOT%") do set O4W_ROOT=%%~fsi

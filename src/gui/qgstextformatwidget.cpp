@@ -261,6 +261,8 @@ void QgsTextFormatWidget::initWidget()
   // post updatePlacementWidgets() connections
   connect( chkLineAbove, &QAbstractButton::toggled, this, &QgsTextFormatWidget::updatePlacementWidgets );
   connect( chkLineBelow, &QAbstractButton::toggled, this, &QgsTextFormatWidget::updatePlacementWidgets );
+  connect( mCheckAllowLabelsOutsidePolygons, &QAbstractButton::toggled, this, &QgsTextFormatWidget::updatePlacementWidgets );
+  connect( mAllowOutsidePolygonsDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::updatePlacementWidgets );
 
   // setup point placement button group
   mPlacePointBtnGrp = new QButtonGroup( this );
@@ -286,6 +288,7 @@ void QgsTextFormatWidget::initWidget()
   mPlacePolygonBtnGrp->addButton( radPolygonFree, static_cast<int>( QgsPalLayerSettings::Free ) );
   mPlacePolygonBtnGrp->addButton( radPolygonPerimeter, static_cast<int>( QgsPalLayerSettings::Line ) );
   mPlacePolygonBtnGrp->addButton( radPolygonPerimeterCurved, static_cast<int>( QgsPalLayerSettings::PerimeterCurved ) );
+  mPlacePolygonBtnGrp->addButton( radPolygonOutside, static_cast<int>( QgsPalLayerSettings::OutsidePolygons ) );
   mPlacePolygonBtnGrp->setExclusive( true );
   connect( mPlacePolygonBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePlacementWidgets );
 
@@ -459,6 +462,7 @@ void QgsTextFormatWidget::initWidget()
           << radPolygonHorizontal
           << radPolygonPerimeter
           << radPolygonPerimeterCurved
+          << radPolygonOutside
           << radPredefinedOrder
           << mFieldExpressionWidget
           << mCheckBoxSubstituteText
@@ -472,7 +476,9 @@ void QgsTextFormatWidget::initWidget()
           << mEnableMaskChkBx
           << mMaskJoinStyleComboBox
           << mMaskBufferSizeSpinBox
-          << mMaskOpacityWidget;
+          << mMaskOpacityWidget
+          << mCheckAllowLabelsOutsidePolygons
+          << mHtmlFormattingCheckBox;
 
   connectValueChanged( widgets, SLOT( updatePreview() ) );
 
@@ -760,6 +766,7 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mLineDistanceDDBtn, QgsPalLayerSettings::LabelDistance );
   registerDataDefinedButton( mLineDistanceUnitDDBtn, QgsPalLayerSettings::DistanceUnits );
   registerDataDefinedButton( mPriorityDDBtn, QgsPalLayerSettings::Priority );
+  registerDataDefinedButton( mAllowOutsidePolygonsDDBtn, QgsPalLayerSettings::PolygonLabelOutside );
 
   // TODO: is this necessary? maybe just use the data defined-only rotation?
   //mPointAngleDDBtn, QgsPalLayerSettings::OffsetRotation,
@@ -881,6 +888,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mTextOpacityWidget->setOpacity( format.opacity() );
   comboBlendMode->setBlendMode( format.blendMode() );
   mTextOrientationComboBox->setCurrentIndex( mTextOrientationComboBox->findData( format.orientation() ) );
+  mHtmlFormattingCheckBox->setChecked( format.allowHtmlFormatting() );
 
   mFontWordSpacingSpinBox->setValue( format.font().wordSpacing() );
   mFontLetterSpacingSpinBox->setValue( format.font().letterSpacing() );
@@ -1006,6 +1014,7 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
   format.setLineHeight( mFontLineHeightSpinBox->value() );
   format.setPreviewBackgroundColor( mPreviewBackgroundColor );
   format.setOrientation( static_cast< QgsTextFormat::TextOrientation >( mTextOrientationComboBox->currentData().toInt() ) );
+  format.setAllowHtmlFormatting( mHtmlFormattingCheckBox->isChecked( ) );
 
   // buffer
   QgsTextBufferSettings buffer;
@@ -1031,7 +1040,7 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
   mask.setOpacity( mMaskOpacityWidget->opacity() );
   mask.setSizeUnit( mMaskBufferUnitWidget->unit() );
   mask.setSizeMapUnitScale( mMaskBufferUnitWidget->getMapUnitScale() );
-  mask.setJoinStyle( mBufferJoinStyleComboBox->penJoinStyle() );
+  mask.setJoinStyle( mMaskJoinStyleComboBox->penJoinStyle() );
   if ( mMaskEffect && !QgsPaintEffectRegistry::isDefaultStack( mMaskEffect.get() ) )
     mask.setPaintEffect( mMaskEffect->clone() );
   else
@@ -1273,6 +1282,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   bool showDistanceFrame = false;
   bool showRotationFrame = false;
   bool showMaxCharAngleFrame = false;
+  bool showPolygonPlacementOptions = ( curWdgt == pagePolygon && !radPolygonPerimeter->isChecked() && !radPolygonPerimeterCurved->isChecked() && !radPolygonOutside->isChecked() );
 
   bool enableMultiLinesFrame = true;
 
@@ -1321,8 +1331,13 @@ void QgsTextFormatWidget::updatePlacementWidgets()
     // TODO: enable mMultiLinesFrame when supported for curved labels
     enableMultiLinesFrame = !isCurved;
   }
+  else if ( curWdgt == pagePolygon && ( radPolygonOutside->isChecked() || mCheckAllowLabelsOutsidePolygons->isChecked() || mAllowOutsidePolygonsDDBtn->isActive() ) )
+  {
+    showDistanceFrame = true;
+  }
 
   mPlacementLineFrame->setVisible( showLineFrame );
+  mPlacementPolygonFrame->setVisible( showPolygonPlacementOptions );
   mPlacementCentroidFrame->setVisible( showCentroidFrame );
   mPlacementQuadrantFrame->setVisible( showQuadrantFrame );
   mPlacementFixedQuadrantFrame->setVisible( showFixedQuadrantFrame );
@@ -1754,6 +1769,7 @@ void QgsTextFormatWidget::setFormatFromStyle( const QString &name, QgsStyle::Sty
     case QgsStyle::ColorrampEntity:
     case QgsStyle::TagEntity:
     case QgsStyle::SmartgroupEntity:
+    case QgsStyle::LegendPatchShapeEntity:
       return;
 
     case QgsStyle::TextFormatEntity:
@@ -1784,7 +1800,7 @@ void QgsTextFormatWidget::saveFormat()
   if ( !style )
     return;
 
-  QgsStyleSaveDialog saveDlg( this );
+  QgsStyleSaveDialog saveDlg( this, QgsStyle::TextFormatEntity );
   saveDlg.setDefaultTags( mTextFormatsListWidget->currentTagFilter() );
   if ( !saveDlg.exec() )
     return;

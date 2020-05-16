@@ -178,12 +178,17 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
 {
   mPythonUtils = pythonUtils;
 
+  // get the QgsSettings group from the installer
+  QString settingsGroup;
+  QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
+  QgsSettings settings;
+
   // Now enable Python support:
   // Show and preset widgets only suitable when Python support active
   mOptionsListWidget->item( PLUGMAN_TAB_INSTALL_FROM_ZIP )->setHidden( false );
   buttonUpgradeAll->show();
   buttonInstall->show();
-  buttonInstallExperimental->show();
+  buttonInstallExperimental->setVisible( settings.value( settingsGroup + "/allowExperimental", false ).toBool() );
   buttonUninstall->show();
   frameSettings->setHidden( false );
   labelNoPython->setHidden( true );
@@ -196,30 +201,36 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   QAction *actionSortByDownloads = new QAction( tr( "Sort by Downloads" ), vwPlugins );
   QAction *actionSortByVote = new QAction( tr( "Sort by Vote" ), vwPlugins );
   QAction *actionSortByStatus = new QAction( tr( "Sort by Status" ), vwPlugins );
+  QAction *actionSortByDateCreated = new QAction( tr( "Sort by Date Created" ), vwPlugins );
+  QAction *actionSortByDateUpdated = new QAction( tr( "Sort by Date Updated" ), vwPlugins );
   actionSortByName->setCheckable( true );
   actionSortByDownloads->setCheckable( true );
   actionSortByVote->setCheckable( true );
   actionSortByStatus->setCheckable( true );
+  actionSortByDateCreated->setCheckable( true );
+  actionSortByDateUpdated->setCheckable( true );
   QActionGroup *group = new QActionGroup( vwPlugins );
   actionSortByName->setActionGroup( group );
   actionSortByDownloads->setActionGroup( group );
   actionSortByVote->setActionGroup( group );
   actionSortByStatus->setActionGroup( group );
+  actionSortByDateCreated->setActionGroup( group );
+  actionSortByDateUpdated->setActionGroup( group );
   actionSortByName->setChecked( true );
   vwPlugins->addAction( actionSortByName );
   vwPlugins->addAction( actionSortByDownloads );
   vwPlugins->addAction( actionSortByVote );
   vwPlugins->addAction( actionSortByStatus );
+  // TODO "create_date" and "update_date" are actually both representing "update_date" from the server side. Blocked by https://github.com/qgis/QGIS-Django/issues/69
+  // vwPlugins->addAction( actionSortByDateCreated );
+  vwPlugins->addAction( actionSortByDateUpdated );
   vwPlugins->setContextMenuPolicy( Qt::ActionsContextMenu );
   connect( actionSortByName, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByName );
   connect( actionSortByDownloads, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByDownloads );
   connect( actionSortByVote, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByVote );
   connect( actionSortByStatus, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByStatus );
-
-  // get the QgsSettings group from the installer
-  QString settingsGroup;
-  QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
-  QgsSettings settings;
+  connect( actionSortByDateCreated, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByDateCreated );
+  connect( actionSortByDateUpdated, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByDateUpdated );
 
   // Initialize the "Install from ZIP" tab widgets
   mZipFileWidget->setDefaultRoot( settings.value( settingsGroup + "/lastZipDirectory", "." ).toString() );
@@ -422,6 +433,8 @@ void QgsPluginManager::getCppPluginsMetadata()
       version_t *pVersion = ( version_t * ) cast_to_fptr( myLib->resolve( "version" ) );
       icon_t *pIcon = ( icon_t * ) cast_to_fptr( myLib->resolve( "icon" ) );
       experimental_t *pExperimental = ( experimental_t * ) cast_to_fptr( myLib->resolve( "experimental" ) );
+      create_date_t *pCreateDate = ( create_date_t * ) cast_to_fptr( myLib->resolve( "create_date" ) );
+      update_date_t *pUpdateDate = ( update_date_t * ) cast_to_fptr( myLib->resolve( "update_date" ) );
 
       // show the values (or lack of) for each function
       if ( pName )
@@ -460,6 +473,26 @@ void QgsPluginManager::getCppPluginsMetadata()
       {
         QgsDebugMsg( "Plugin icon: " + pIcon() );
       }
+      else
+      {
+        QgsDebugMsg( QStringLiteral( "Plugin icon not returned when queried" ) );
+      }
+      if ( pCreateDate )
+      {
+        QgsDebugMsg( "Plugin create date: " + pCreateDate() );
+      }
+      else
+      {
+        QgsDebugMsg( QStringLiteral( "Plugin create date not returned when queried" ) );
+      }
+      if ( pUpdateDate )
+      {
+        QgsDebugMsg( "Plugin update date: " + pUpdateDate() );
+      }
+      else
+      {
+        QgsDebugMsg( QStringLiteral( "Plugin update date not returned when queried" ) );
+      }
 
       if ( !pName || !pDesc || !pVersion )
       {
@@ -484,6 +517,8 @@ void QgsPluginManager::getCppPluginsMetadata()
       metadata[QStringLiteral( "readonly" )] = QStringLiteral( "true" );
       metadata[QStringLiteral( "status" )] = QStringLiteral( "orphan" );
       metadata[QStringLiteral( "experimental" )] = ( pExperimental ? pExperimental() : QString() );
+      metadata[QStringLiteral( "create_date" )] = ( pCreateDate ? pCreateDate() : QString() );
+      metadata[QStringLiteral( "update_date" )] = ( pUpdateDate ? pUpdateDate() : QString() );
       mPlugins.insert( baseName, metadata );
 
       delete myLib;
@@ -530,6 +565,8 @@ void QgsPluginManager::reloadModelData()
       QString pluginName = it->value( QStringLiteral( "name" ) );
       QString description = it->value( QStringLiteral( "description" ) );
       QString author = it->value( QStringLiteral( "author_name" ) );
+      QString createDate = it->value( QStringLiteral( "create_date" ) );
+      QString updateDate = it->value( QStringLiteral( "update_date" ) );
       QString iconPath = it->value( QStringLiteral( "icon" ) );
       QString status = it->value( QStringLiteral( "status" ) );
       QString status_exp = it->value( QStringLiteral( "status_exp" ) );
@@ -543,6 +580,8 @@ void QgsPluginManager::reloadModelData()
       mypDetailItem->setData( error, PLUGIN_ERROR_ROLE );
       mypDetailItem->setData( description, PLUGIN_DESCRIPTION_ROLE );
       mypDetailItem->setData( author, PLUGIN_AUTHOR_ROLE );
+      mypDetailItem->setData( createDate, PLUGIN_CREATE_DATE );
+      mypDetailItem->setData( updateDate, PLUGIN_UPDATE_DATE );
       mypDetailItem->setData( it->value( QStringLiteral( "tags" ) ), PLUGIN_TAGS_ROLE );
       mypDetailItem->setData( it->value( QStringLiteral( "downloads" ) ).rightJustified( 10, '0' ), PLUGIN_DOWNLOADS_ROLE );
       mypDetailItem->setData( it->value( QStringLiteral( "average_vote" ) ), PLUGIN_VOTE_ROLE );
@@ -815,7 +854,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
                      "</table>" ).arg( tr( "Installed version of this plugin is higher than any version found in repository" ) );
   }
 
-  if ( metadata->value( QStringLiteral( "experimental" ) ) == QLatin1String( "true" ) )
+  if ( ! metadata->value( QStringLiteral( "version_available_experimental" ) ).isEmpty() )
   {
     html += QString( "<table bgcolor=\"#EEEEBB\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
                      "  <tr><td width=\"100%\" style=\"color:#660000\">"
@@ -986,10 +1025,19 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
       downloadUrl = downloadUrl.replace( QStringLiteral( "download/" ), QString() );
     }
 
-    html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%2'>%3</a></td></tr>"
+    QString dateUpdatedStr;
+    if ( ! metadata->value( QStringLiteral( "update_date" ) ).isEmpty() )
+    {
+      const QDateTime dateUpdated = QDateTime::fromString( metadata->value( QStringLiteral( "update_date_stable" ) ).trimmed(), Qt::ISODate );
+      if ( dateUpdated.isValid() )
+        dateUpdatedStr += QStringLiteral( "%1 %2" ).arg( tr( "updated at" ), dateUpdated.toString() );
+    }
+
+    html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%2'>%3</a> %4</td></tr>"
                           ).arg( tr( "Available version (stable)" ),
                                  downloadUrl,
-                                 metadata->value( QStringLiteral( "version_available_stable" ) ) );
+                                 metadata->value( QStringLiteral( "version_available_stable" ) ),
+                                 dateUpdatedStr );
   }
 
   if ( ! metadata->value( QStringLiteral( "version_available_experimental" ) ).isEmpty() )
@@ -1001,10 +1049,19 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
       downloadUrl = downloadUrl.replace( QStringLiteral( "download/" ), QString() );
     }
 
-    html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%2'>%3</a></td></tr>"
+    QString dateUpdatedStr;
+    if ( !metadata->value( QStringLiteral( "update_date_experimental" ) ).isEmpty() )
+    {
+      const QDateTime dateUpdated = QDateTime::fromString( metadata->value( QStringLiteral( "update_date_experimental" ) ).trimmed(), Qt::ISODate );
+      if ( dateUpdated.isValid() )
+        dateUpdatedStr += QStringLiteral( "%1 %2" ).arg( tr( "updated at" ), dateUpdated.toString() );
+    }
+
+    html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%2'>%3</a> %4</td></tr>"
                           ).arg( tr( "Available version (experimental)" ),
                                  downloadUrl,
-                                 metadata->value( QStringLiteral( "version_available_experimental" ) ) );
+                                 metadata->value( QStringLiteral( "version_available_experimental" ) ),
+                                 dateUpdatedStr );
   }
 
   if ( ! metadata->value( QStringLiteral( "changelog" ) ).isEmpty() )
@@ -1068,18 +1125,20 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     buttonInstallExperimental->setText( tr( "Reinstall Experimental Plugin" ) );
   }
 
-  // DEBUG TODO REMOVE
-  // buttonInstall->setText( buttonInstall->text() + QStringLiteral(" | ") + metadata->value( QStringLiteral( "status" ) ) );
-  // buttonInstallExperimental->setText( buttonInstallExperimental->text() + QStringLiteral(" | ") + metadata->value( QStringLiteral( "status_exp" ) ) );
-
   // Enable/disable buttons
+
+  QgsSettings settings;
+  QString settingsGroup;
+  QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
+  bool expAllowed = settings.value( settingsGroup + "/allowExperimental", false ).toBool();
 
   bool installEnabled = metadata->value( QStringLiteral( "pythonic" ) ).toUpper() == QLatin1String( "TRUE" ) && metadata->value( QStringLiteral( "status" ) ) != QLatin1String( "orphan" ) && metadata->value( QStringLiteral( "status" ) ) != QLatin1String( "none available" );
   bool installExpEnabled = metadata->value( QStringLiteral( "pythonic" ) ).toUpper() == QLatin1String( "TRUE" ) && metadata->value( QStringLiteral( "status_exp" ) ) != QLatin1String( "orphan" ) && metadata->value( QStringLiteral( "status_exp" ) ) != QLatin1String( "none available" );
+
   buttonInstall->setEnabled( installEnabled );
   buttonInstall->setVisible( installEnabled || !installExpEnabled );
-  buttonInstallExperimental->setEnabled( installExpEnabled );
-  buttonInstallExperimental->setVisible( installExpEnabled || !installEnabled );
+  buttonInstallExperimental->setEnabled( expAllowed && installExpEnabled );
+  buttonInstallExperimental->setVisible( expAllowed && installExpEnabled );
 
   buttonUninstall->setEnabled( metadata->value( QStringLiteral( "pythonic" ) ).toUpper() == QLatin1String( "TRUE" ) && metadata->value( QStringLiteral( "readonly" ) ) != QLatin1String( "true" ) && ! metadata->value( QStringLiteral( "version_installed" ) ).isEmpty() );
 

@@ -105,6 +105,9 @@ class GUI_EXPORT QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui:
     void setOverviewItems( QgsLayoutItemMapOverview *overview );
     void blockOverviewItemsSignals( bool block );
 
+    void mTemporalCheckBox_toggled( bool checked );
+    void updateTemporalExtent();
+
   protected:
     bool setNewItem( QgsLayoutItem *item ) override;
 

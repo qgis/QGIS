@@ -40,7 +40,7 @@ from qgis.core import QgsProject
 class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
     """QGIS Server WMS Tests for GetFeatureInfo request"""
 
-    #regenerate_reference = True
+    # regenerate_reference = True
 
     def testGetFeatureInfo(self):
         # Test getfeatureinfo response xml
@@ -752,7 +752,8 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'test_project_wms_grouped_nested_layers.qgs',
                                  normalizeJson=True)
 
-        @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', "This test cannot run in TRAVIS because it relies on cascading external services")
+        @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
+                         "This test cannot run in TRAVIS because it relies on cascading external services")
         def testGetFeatureInfoCascadingLayers(self):
             """Test that we can get feature info on cascading WMS layers"""
 

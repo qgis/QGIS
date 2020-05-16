@@ -4723,13 +4723,11 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
     QStringList flags;
     QString flagString;
     if ( fromVar.flags & QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck )
-      flags << QStringLiteral( "QgsProcessingFeatureSourceDefinition.Flag.FlagOverrideDefaultGeometryCheck" );
+      flags << QStringLiteral( "QgsProcessingFeatureSourceDefinition.FlagOverrideDefaultGeometryCheck" );
     if ( fromVar.flags & QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature )
-      flags << QStringLiteral( "QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature" );
+      flags << QStringLiteral( "QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature" );
     if ( !flags.empty() )
       flagString = flags.join( QStringLiteral( " | " ) );
-    else
-      flagString = QStringLiteral( "None" );
 
     if ( fromVar.source.propertyType() == QgsProperty::StaticProperty )
     {
@@ -4740,10 +4738,10 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
 
       if ( fromVar.selectedFeaturesOnly || fromVar.featureLimit != -1 || fromVar.flags )
       {
-        return QStringLiteral( "QgsProcessingFeatureSourceDefinition('%1', selectedFeaturesOnly=%2, featureLimit=%3, flags=%4, geometryCheck=%5)" ).arg( layerString,
+        return QStringLiteral( "QgsProcessingFeatureSourceDefinition('%1', selectedFeaturesOnly=%2, featureLimit=%3%4, geometryCheck=%5)" ).arg( layerString,
                fromVar.selectedFeaturesOnly ? QStringLiteral( "True" ) : QStringLiteral( "False" ),
                QString::number( fromVar.featureLimit ),
-               flagString,
+               flagString.isEmpty() ? QString() : ( QStringLiteral( ", flags=%1" ).arg( flagString ) ),
                geometryCheckString );
       }
       else
@@ -4755,11 +4753,11 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
     {
       if ( fromVar.selectedFeaturesOnly || fromVar.featureLimit != -1 || fromVar.flags )
       {
-        return QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression('%1'), selectedFeaturesOnly=%2, featureLimit=%3, flags=%4, geometryCheck=%5)" )
+        return QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression('%1'), selectedFeaturesOnly=%2, featureLimit=%3%4, geometryCheck=%5)" )
                .arg( fromVar.source.asExpression(),
                      fromVar.selectedFeaturesOnly ? QStringLiteral( "True" ) : QStringLiteral( "False" ),
                      QString::number( fromVar.featureLimit ),
-                     flagString,
+                     flagString.isEmpty() ? QString() : ( QStringLiteral( ", flags=%1" ).arg( flagString ) ),
                      geometryCheckString );
       }
       else
@@ -5570,14 +5568,30 @@ QString QgsProcessingDestinationParameter::createFileFilter() const
 
 QString QgsProcessingDestinationParameter::generateTemporaryDestination() const
 {
+  // sanitize name to avoid multiple . in the filename. E.g. when name() contain
+  // backend command name having a "." inside as in case of grass commands
+  QRegularExpression rx( QStringLiteral( "[.]" ) );
+  QString sanitizedName = name();
+  sanitizedName.replace( rx, QStringLiteral( "_" ) );
+
   if ( defaultFileExtension().isEmpty() )
   {
-    return QgsProcessingUtils::generateTempFilename( name() );
+    return QgsProcessingUtils::generateTempFilename( sanitizedName );
   }
   else
   {
-    return QgsProcessingUtils::generateTempFilename( name() + '.' + defaultFileExtension() );
+    return QgsProcessingUtils::generateTempFilename( sanitizedName + '.' + defaultFileExtension() );
   }
+}
+
+bool QgsProcessingDestinationParameter::isSupportedOutputValue( const QVariant &value, QgsProcessingContext &context, QString &error ) const
+{
+  if ( originalProvider() )
+    return originalProvider()->isSupportedOutputValue( value, this, context, error );
+  else if ( provider() )
+    return provider()->isSupportedOutputValue( value, this, context, error );
+
+  return true;
 }
 
 bool QgsProcessingDestinationParameter::createByDefault() const

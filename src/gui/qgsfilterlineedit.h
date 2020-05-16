@@ -214,7 +214,6 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      */
     void setSelectOnFocus( bool selectOnFocus );
 
-
     /**
      * Reimplemented to enable/disable the clear action
      * depending on read-only status
@@ -222,6 +221,12 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * \since QGIS 3.0.1
      */
     bool event( QEvent *event ) override;
+
+    /**
+     * Returns if a state is already saved
+     * \since QGIS 3.14
+     */
+    bool hasStateStored() const {return mLineEditState.hasStateStored;}
 
   public slots:
 
@@ -231,6 +236,18 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * \since QGIS 3.0
      */
     virtual void clearValue();
+
+    /**
+     * Stores the current state of the line edit (selection and cursor position)
+     * \since QGIS 3.14
+     */
+    void storeState();
+
+    /**
+     * Restores the current state of the line edit (selection and cursor position)
+     * \since QGIS 3.14
+     */
+    void restoreState();
 
   signals:
 
@@ -273,6 +290,15 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     void updateClearIcon();
 
   private:
+    struct LineEditState
+    {
+      bool hasStateStored = false;
+      QString text;
+      int selectionStart;
+      int selectionLength;
+      int cursorPosition;
+    };
+
     QIcon mClearIcon;
     QAction *mClearAction = nullptr;
     QAction *mSearchAction = nullptr;
@@ -288,6 +314,8 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     QString mStyleSheet;
     bool mWaitingForMouseRelease = false;
     bool mSelectOnFocus = false;
+
+    LineEditState mLineEditState;
 
     QgsAnimatedIcon *mBusySpinnerAnimatedIcon = nullptr;
 

@@ -2,8 +2,8 @@
                          qgsmeshlayertemporalproperties.cpp
                          -----------------------
     begin                : March 2020
-    copyright            : (C) 2020 by Vincent
-    email                : zilolv at gmail dot com
+    copyright            : (C) 2020 by Vincent Cloarec
+    email                : vcloarec at gmail dot com
  ***************************************************************************/
 
 /***************************************************************************
@@ -70,6 +70,11 @@ void QgsMeshLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabili
 
   if ( mReferenceTime.isValid() )
     mTimeExtent = temporalCapabilities->timeExtent();
+}
+
+QgsDateTimeRange QgsMeshLayerTemporalProperties::calculateTemporalExtent( QgsMapLayer * ) const
+{
+  return mTimeExtent;
 }
 
 QgsDateTimeRange QgsMeshLayerTemporalProperties::timeExtent() const

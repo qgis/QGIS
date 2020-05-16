@@ -66,6 +66,7 @@
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
 #include "processing/models/qgsprocessingmodelchildparametersource.h"
+#include "processing/models/qgsprocessingmodelchilddependency.h"
 
 #include "layout/qgspagesizeregistry.h"
 
@@ -161,7 +162,7 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "loading of qgis translation failed %1/qgis_%2" ).arg( i18nPath(), *sTranslation() ) );
+      QgsDebugMsgLevel( QStringLiteral( "loading of qgis translation failed %1/qgis_%2" ).arg( i18nPath(), *sTranslation() ), 2 );
     }
 
     /* Translation file for Qt.
@@ -176,7 +177,7 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "loading of qt translation failed %1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ), *sTranslation() ) );
+      QgsDebugMsgLevel( QStringLiteral( "loading of qt translation failed %1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ), *sTranslation() ), 2 );
     }
   }
 
@@ -232,6 +233,8 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
   qRegisterMetaTypeStreamOperators<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
   qRegisterMetaType<QgsRemappingSinkDefinition>( "QgsRemappingSinkDefinition" );
+  qRegisterMetaType<QgsProcessingModelChildDependency>( "QgsProcessingModelChildDependency" );
+  QMetaType::registerComparators<QgsProcessingModelChildDependency>();
 
   ( void ) resolvePkgPath();
 
@@ -1690,8 +1693,8 @@ void QgsApplication::applyGdalSkippedDrivers()
       realDisabledDriverList << driverName;
   }
   QString myDriverList = realDisabledDriverList.join( ' ' );
-  QgsDebugMsgLevel( QStringLiteral( "Gdal Skipped driver list set to:" ), 1 );
-  QgsDebugMsgLevel( myDriverList, 1 );
+  QgsDebugMsgLevel( QStringLiteral( "Gdal Skipped driver list set to:" ), 2 );
+  QgsDebugMsgLevel( myDriverList, 2 );
   CPLSetConfigOption( "GDAL_SKIP", myDriverList.toUtf8() );
   GDALAllRegister(); //to update driver list and skip missing ones
 }
