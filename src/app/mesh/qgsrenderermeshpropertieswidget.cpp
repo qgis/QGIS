@@ -174,7 +174,8 @@ void QgsRendererMeshPropertiesWidget::onActiveScalarGroupChanged( int groupIndex
 
 void QgsRendererMeshPropertiesWidget::onActiveVectorGroupChanged( int groupIndex )
 {
-  if ( groupIndex >= 0 && !mMeshLayer->dataProvider()->datasetGroupMetadata( groupIndex ).isVector() )
+  if ( !mMeshLayer->dataProvider() ||
+       ( groupIndex >= 0 && !mMeshLayer->dataProvider()->datasetGroupMetadata( groupIndex ).isVector() ) )
     groupIndex = -1;
   mMeshRendererVectorSettingsWidget->setActiveDatasetGroup( groupIndex );
   mMeshRendererVectorSettingsWidget->syncToLayer();

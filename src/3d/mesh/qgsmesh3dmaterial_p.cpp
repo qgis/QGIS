@@ -316,7 +316,7 @@ void QgsMesh3dMaterial::configure()
 
 void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeRange &timeRange )
 {
-  if ( !layer )
+  if ( !layer || !layer->dataProvider() )
     return;
 
   QgsMeshDatasetIndex datasetIndex = layer->activeVectorDatasetAtTime( timeRange );

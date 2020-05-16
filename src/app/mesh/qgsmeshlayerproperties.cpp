@@ -428,6 +428,8 @@ void QgsMeshLayerProperties::aboutToShowStyleMenu()
 
 void QgsMeshLayerProperties::reloadTemporalProperties()
 {
+  if ( !mMeshLayer->dataProvider() )
+    return;
   QgsMeshDataProviderTemporalCapabilities *temporalCapabalities = mMeshLayer->dataProvider()->temporalCapabilities();
   QgsDateTimeRange timeExtent;
   QDateTime referenceTime = temporalCapabalities->referenceTime();
@@ -446,6 +448,8 @@ void QgsMeshLayerProperties::reloadTemporalProperties()
 
 void QgsMeshLayerProperties::onTimeReferenceChange()
 {
+  if ( !mMeshLayer->dataProvider() )
+    return;
   const QgsDateTimeRange &timeExtent = mMeshLayer->dataProvider()->temporalCapabilities()->timeExtent( mTemporalDateTimeReference->dateTime() );
   mTemporalDateTimeStart->setDateTime( timeExtent.begin() );
   mTemporalDateTimeEnd->setDateTime( timeExtent.end() );
