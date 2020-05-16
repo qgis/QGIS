@@ -394,7 +394,7 @@ int QgsMeshDataset3dGeometry::extractDataset( QVector<double> &verticalMagnitude
 {
   QgsMeshLayer *layer = meshLayer();
 
-  if ( !layer )
+  if ( !layer || !layer->dataProvider() )
     return 0;
 
   QgsMeshDatasetIndex scalarDatasetIndex = layer->activeScalarDatasetAtTime( mTimeRange );
