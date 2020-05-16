@@ -125,6 +125,7 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
     void mNavigationOff_clicked();
     void mNavigationFixedRange_clicked();
     void mNavigationAnimated_clicked();
+    void setNavigationMode( const QgsTemporalNavigationObject::NavigationMode mode, bool writeEntry = false );
     void setWidgetStateFromNavigationMode( const QgsTemporalNavigationObject::NavigationMode mode );
 
     void onLayersAdded( const QList<QgsMapLayer *> &layers );

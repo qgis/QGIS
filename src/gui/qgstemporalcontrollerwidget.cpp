@@ -167,15 +167,10 @@ void QgsTemporalControllerWidget::setWidgetStateFromProject()
   QgsTemporalNavigationObject::NavigationMode mode = static_cast< QgsTemporalNavigationObject::NavigationMode>( QgsProject::instance()->readNumEntry( QStringLiteral( "TemporalControllerWidget" ),
       QStringLiteral( "/NavigationMode" ), 0, &ok ) );
   if ( ok )
-  {
-    mNavigationObject->setNavigationMode( mode );
-    setWidgetStateFromNavigationMode( mode );
-  }
+    setNavigationMode( mode );
   else
-  {
-    mNavigationObject->setNavigationMode( QgsTemporalNavigationObject::NavigationOff );
-    setWidgetStateFromNavigationMode( QgsTemporalNavigationObject::NavigationOff );
-  }
+    setNavigationMode( QgsTemporalNavigationObject::NavigationOff );
+
 
   const QString startString = QgsProject::instance()->readEntry( QStringLiteral( "TemporalControllerWidget" ), QStringLiteral( "/StartDateTime" ) );
   const QString endString = QgsProject::instance()->readEntry( QStringLiteral( "TemporalControllerWidget" ), QStringLiteral( "/EndDateTime" ) );
@@ -199,29 +194,29 @@ void QgsTemporalControllerWidget::setWidgetStateFromProject()
 
 void QgsTemporalControllerWidget::mNavigationOff_clicked()
 {
-  QgsProject::instance()->writeEntry( QStringLiteral( "TemporalControllerWidget" ), QStringLiteral( "/NavigationMode" ),
-                                      static_cast<int>( QgsTemporalNavigationObject::NavigationOff ) );
-
-  mNavigationObject->setNavigationMode( QgsTemporalNavigationObject::NavigationOff );
-  setWidgetStateFromNavigationMode( QgsTemporalNavigationObject::NavigationOff );
+  setNavigationMode( QgsTemporalNavigationObject::NavigationOff, true );
 }
 
 void QgsTemporalControllerWidget::mNavigationFixedRange_clicked()
 {
-  QgsProject::instance()->writeEntry( QStringLiteral( "TemporalControllerWidget" ), QStringLiteral( "/NavigationMode" ),
-                                      static_cast<int>( QgsTemporalNavigationObject::FixedRange ) );
-
-  mNavigationObject->setNavigationMode( QgsTemporalNavigationObject::FixedRange );
-  setWidgetStateFromNavigationMode( QgsTemporalNavigationObject::FixedRange );
+  setNavigationMode( QgsTemporalNavigationObject::FixedRange, true );
 }
 
 void QgsTemporalControllerWidget::mNavigationAnimated_clicked()
 {
-  QgsProject::instance()->writeEntry( QStringLiteral( "TemporalControllerWidget" ), QStringLiteral( "/NavigationMode" ),
-                                      static_cast<int>( QgsTemporalNavigationObject::Animated ) );
+  setNavigationMode( QgsTemporalNavigationObject::Animated, true );
+}
 
-  mNavigationObject->setNavigationMode( QgsTemporalNavigationObject::Animated );
-  setWidgetStateFromNavigationMode( QgsTemporalNavigationObject::Animated );
+void QgsTemporalControllerWidget::setNavigationMode( const QgsTemporalNavigationObject::NavigationMode mode, bool writeEntry )
+{
+  if ( writeEntry )
+  {
+    QgsProject::instance()->writeEntry( QStringLiteral( "TemporalControllerWidget" ), QStringLiteral( "/NavigationMode" ),
+                                        static_cast<int>( mode ) );
+  }
+
+  mNavigationObject->setNavigationMode( mode );
+  setWidgetStateFromNavigationMode( mode );
 }
 
 void QgsTemporalControllerWidget::setWidgetStateFromNavigationMode( const QgsTemporalNavigationObject::NavigationMode mode )
@@ -248,11 +243,13 @@ void QgsTemporalControllerWidget::onLayersAdded( const QList<QgsMapLayer *> &lay
 {
   if ( !mHasTemporalLayersLoaded )
   {
+    bool temporalMeshLayerPresent = false;
     for ( QgsMapLayer *layer : layers )
     {
       if ( layer->temporalProperties() )
       {
         mHasTemporalLayersLoaded |= layer->temporalProperties()->isActive();
+        temporalMeshLayerPresent = mHasTemporalLayersLoaded && layer->type() == QgsMapLayerType::MeshLayer;
 
         if ( !mHasTemporalLayersLoaded )
         {
@@ -263,6 +260,8 @@ void QgsTemporalControllerWidget::onLayersAdded( const QList<QgsMapLayer *> &lay
               mHasTemporalLayersLoaded = true;
               // if we are moving from zero temporal layers to non-zero temporal layers, let's set temporal extent
               this->setDatesToProjectTime();
+              if ( layer->type() == QgsMapLayerType::MeshLayer )
+                setNavigationMode( QgsTemporalNavigationObject::Animated );
             }
           } );
         }
@@ -270,7 +269,11 @@ void QgsTemporalControllerWidget::onLayersAdded( const QList<QgsMapLayer *> &lay
     }
 
     if ( mHasTemporalLayersLoaded )
+    {
       setDatesToProjectTime();
+      if ( temporalMeshLayerPresent )
+        setNavigationMode( QgsTemporalNavigationObject::Animated );
+    }
   }
 }
 
@@ -278,8 +281,7 @@ void QgsTemporalControllerWidget::onProjectCleared()
 {
   mHasTemporalLayersLoaded = false;
 
-  mNavigationObject->setNavigationMode( QgsTemporalNavigationObject::NavigationOff );
-  setWidgetStateFromNavigationMode( QgsTemporalNavigationObject::NavigationOff );
+  setNavigationMode( QgsTemporalNavigationObject::NavigationOff );
 
   whileBlocking( mStartDateTime )->setDateTime( QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) ) );
   whileBlocking( mEndDateTime )->setDateTime( mStartDateTime->dateTime() );
