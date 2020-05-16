@@ -886,7 +886,10 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
     {
       setDefaultContrastEnhancement();
     }
+<<<<<<< HEAD
     emit statusChanged( tr( "QgsRasterLayer created" ) );
+=======
+>>>>>>> c4546ae6e4... Don't show 'QgsRasterLayer created' messages in status bar
   }
   emit dataSourceChanged();
   emit dataChanged();
