@@ -325,7 +325,7 @@ bool QgsGeorefTransform::gdal_transform( const QgsPointXY &src, QgsPointXY &dst,
   double x = src.x();
   double y = src.y();
   double z = 0.0;
-  int success;
+  int success = 0;
 
   // Call GDAL transform function
   ( *t )( GDALTransformerArgs(), dstToSrc, 1,  &x, &y, &z, &success );

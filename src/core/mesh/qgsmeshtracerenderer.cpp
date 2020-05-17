@@ -956,6 +956,7 @@ QgsMeshParticleTracesField::QgsMeshParticleTracesField( const QgsTriangularMesh 
 QgsMeshParticleTracesField::QgsMeshParticleTracesField( const QgsMeshParticleTracesField &other ):
   QgsMeshStreamField( other ),
   mTimeField( other.mTimeField ),
+  mMagnitudeField( other.mMagnitudeField ),
   mDirectionField( other.mDirectionField ),
   mParticles( other.mParticles ),
   mStumpImage( other.mStumpImage ),
