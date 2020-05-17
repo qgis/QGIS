@@ -44,27 +44,26 @@ class CORE_EXPORT QgsTemporalUtils
      */
     static QgsDateTimeRange calculateTemporalRangeForProject( QgsProject *project );
 
-    class AnimationExportSettings
+    //! Contains settings relating to exporting animations
+    struct AnimationExportSettings
     {
-      public:
+      //! Dictates the overall temporal range of the animation.
+      QgsDateTimeRange animationRange;
 
-        //! Dictates the overall temporal range of the animation.
-        QgsDateTimeRange animationRange;
+      //! Duration of individual export frames
+      QgsInterval frameDuration;
 
-        //! Duration of individual export frames
-        QgsInterval frameDuration;
+      //! Destination directory for created image files.
+      QString outputDirectory;
 
-        //! Destination directory for created image files.
-        QString outputDirectory;
-
-        /**
-         * The filename template for exporting the frames.
-         *
-         * This must be in format prefix####.format, where number of
-         * \a # characters represents how many 0's should be left-padded to the frame number
-         * e.g. my###.jpg will create frames my001.jpg, my002.jpg, etc
-         */
-        QString fileNameTemplate;
+      /**
+       * The filename template for exporting the frames.
+       *
+       * This must be in format prefix####.format, where number of
+       * \a # characters represents how many 0's should be left-padded to the frame number
+       * e.g. my###.jpg will create frames my001.jpg, my002.jpg, etc
+       */
+      QString fileNameTemplate;
 
     };
 
