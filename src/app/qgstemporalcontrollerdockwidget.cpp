@@ -24,6 +24,7 @@
 #include "qgstemporalutils.h"
 #include "qgstaskmanager.h"
 #include "qgsproxyprogresstask.h"
+#include "qgsmessagebar.h"
 
 #include <QProgressDialog>
 #include <QMessageBox>
@@ -96,7 +97,13 @@ void QgsTemporalControllerDockWidget::exportAnimation()
     progressDialog.hide();
     if ( !success )
     {
-      QMessageBox::warning( this, tr( "Export Animation" ), error );
+      QgisApp::instance()->messageBar()->pushMessage( tr( "Export Animation" ), error, Qgis::Critical );
+    }
+    else
+    {
+      QgisApp::instance()->messageBar()->pushMessage( tr( "Export Animation" ),
+          tr( "Successfully exported animation to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputDir ).toString(), QDir::toNativeSeparators( outputDir ) ),
+          Qgis::Success, 0 );
     }
   } );
   dlg->setAttribute( Qt::WA_DeleteOnClose );
