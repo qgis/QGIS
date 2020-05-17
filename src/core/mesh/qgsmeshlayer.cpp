@@ -82,9 +82,7 @@ void QgsMeshLayer::setDefaultRendererSettings()
          meta.minimum() == std::numeric_limits<double>::quiet_NaN() )
       meshSettings.setEnabled( true );
 
-    // If the mesh is non temporal, set the static scalar dataset
-    if ( !mDataProvider->temporalCapabilities()->hasTemporalCapabilities() )
-      setStaticScalarDatasetIndex( QgsMeshDatasetIndex( 0, 0 ) );
+    setStaticScalarDatasetIndex( QgsMeshDatasetIndex( 0, 0 ) );
   }
   else
   {

@@ -243,13 +243,11 @@ void QgsTemporalControllerWidget::onLayersAdded( const QList<QgsMapLayer *> &lay
 {
   if ( !mHasTemporalLayersLoaded )
   {
-    bool temporalMeshLayerPresent = false;
     for ( QgsMapLayer *layer : layers )
     {
       if ( layer->temporalProperties() )
       {
         mHasTemporalLayersLoaded |= layer->temporalProperties()->isActive();
-        temporalMeshLayerPresent = mHasTemporalLayersLoaded && layer->type() == QgsMapLayerType::MeshLayer;
 
         if ( !mHasTemporalLayersLoaded )
         {
@@ -260,8 +258,6 @@ void QgsTemporalControllerWidget::onLayersAdded( const QList<QgsMapLayer *> &lay
               mHasTemporalLayersLoaded = true;
               // if we are moving from zero temporal layers to non-zero temporal layers, let's set temporal extent
               this->setDatesToProjectTime();
-              if ( layer->type() == QgsMapLayerType::MeshLayer )
-                setNavigationMode( QgsTemporalNavigationObject::Animated );
             }
           } );
         }
@@ -269,11 +265,7 @@ void QgsTemporalControllerWidget::onLayersAdded( const QList<QgsMapLayer *> &lay
     }
 
     if ( mHasTemporalLayersLoaded )
-    {
       setDatesToProjectTime();
-      if ( temporalMeshLayerPresent )
-        setNavigationMode( QgsTemporalNavigationObject::Animated );
-    }
   }
 }
 
