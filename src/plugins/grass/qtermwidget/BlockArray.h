@@ -33,11 +33,8 @@
 namespace Konsole {
 
 struct Block {
-    Block() {
-        size = 0;
-    }
-    unsigned char data[ENTRIES];
-    size_t size;
+    unsigned char data[ENTRIES] = {};
+    size_t size = 0;
 };
 
 // ///////////////////////////////////////////////////////
