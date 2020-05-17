@@ -31,27 +31,41 @@ This method considers the temporal range available from layers contained within 
 returns the maximal combined temporal extent of these layers.
 %End
 
-    static bool exportAnimation( const QgsMapSettings &mapSettings,
-                                 const QgsDateTimeRange &animationRange,
-                                 QgsInterval frameDuration,
-                                 const QString &outputDirectory,
-                                 const QString &fileNameTemplate,
-                                 QString &error /Out/,
-                                 QgsFeedback *feedback );
+    class AnimationExportSettings
+{
+
+%TypeHeaderCode
+#include "qgstemporalutils.h"
+%End
+      public:
+
+        QgsDateTimeRange animationRange;
+
+        QgsInterval frameDuration;
+
+        QString outputDirectory;
+
+        QString fileNameTemplate;
+
+    };
+
+    static bool exportAnimation( const QgsMapSettings &mapSettings, const AnimationExportSettings &settings, QString &error /Out/, QgsFeedback *feedback = 0 );
 %Docstring
 Exports animation frames by rendering the map to multiple destination images.
 
 The ``mapSettings`` argument dictates the overall map settings such as extent
-and size.
+and size, while animation and export specific settings are specified via the ``settings``
+argument.
 
-The ``animationRange`` argument specifies the overall temporal range of the animation.
-Temporal duration of individual frames is given by ``frameDuration``.
+An optional ``feedback`` argument can be used to provide progress reports and cancelation
+support.
 
-An ``outputDirectory`` must be set, which controls where the created image files are
-stored. ``fileNameTemplate`` gives the template for exporting the frames.
-This must be in format prefix####.format, where number of
-# represents how many 0 should be left-padded to the frame number
-e.g. my###.jpg will create frames my001.jpg, my002.jpg, etc
+:param mapSettings: settings controlling the map render
+:param settings: animation and export settings
+:param feedback: optional feedback object for progress reports and cancelation checks
+
+:return: - ``True`` if the export was successful.
+         - error: will be set to a descriptive error message if the export fails
 %End
 };
 

@@ -52,31 +52,31 @@ QgsDateTimeRange QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject 
   return QgsDateTimeRange( minDate, maxDate );
 }
 
-bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const QgsDateTimeRange &animationRange, QgsInterval frameDuration, const QString &outputDirectory, const QString &fileNameTemplate, QString &error, QgsFeedback *feedback )
+bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const QgsTemporalUtils::AnimationExportSettings &settings, QString &error, QgsFeedback *feedback )
 {
-  if ( fileNameTemplate.isEmpty() )
+  if ( settings.fileNameTemplate.isEmpty() )
   {
     error = QObject::tr( "Filename template is empty" );
     return false;
   }
-  int numberOfDigits = fileNameTemplate.count( QLatin1Char( '#' ) );
+  int numberOfDigits = settings.fileNameTemplate.count( QLatin1Char( '#' ) );
   if ( numberOfDigits < 0 )
   {
     error = QObject::tr( "Wrong filename template format (must contain #)" );
     return false;
   }
   const QString token( numberOfDigits, QLatin1Char( '#' ) );
-  if ( !fileNameTemplate.contains( token ) )
+  if ( !settings.fileNameTemplate.contains( token ) )
   {
     error = QObject::tr( "Filename template must contain all # placeholders in one continuous group." );
     return false;
   }
 
   QgsTemporalNavigationObject navigator;
-  navigator.setTemporalExtents( animationRange );
-  navigator.setFrameDuration( frameDuration );
-  QgsMapSettings settings = mapSettings;
-  const QgsExpressionContext context = settings.expressionContext();
+  navigator.setTemporalExtents( settings.animationRange );
+  navigator.setFrameDuration( settings.frameDuration );
+  QgsMapSettings ms = mapSettings;
+  const QgsExpressionContext context = ms.expressionContext();
 
   const long long totalFrames = navigator.totalFrameCount();
   long long currentFrame = 0;
@@ -96,26 +96,26 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
 
     navigator.setCurrentFrameNumber( currentFrame );
 
-    settings.setIsTemporal( true );
-    settings.setTemporalRange( navigator.dateTimeRangeForFrameNumber( currentFrame ) );
+    ms.setIsTemporal( true );
+    ms.setTemporalRange( navigator.dateTimeRangeForFrameNumber( currentFrame ) );
 
     QgsExpressionContext frameContext = context;
     frameContext.appendScope( navigator.createExpressionContextScope() );
-    frameContext.appendScope( QgsExpressionContextUtils::mapSettingsScope( settings ) );
-    settings.setExpressionContext( frameContext );
+    frameContext.appendScope( QgsExpressionContextUtils::mapSettingsScope( ms ) );
+    ms.setExpressionContext( frameContext );
 
-    QString fileName( fileNameTemplate );
+    QString fileName( settings.fileNameTemplate );
     const QString frameNoPaddedLeft( QStringLiteral( "%1" ).arg( currentFrame, numberOfDigits, 10, QChar( '0' ) ) ); // e.g. 0001
     fileName.replace( token, frameNoPaddedLeft );
-    const QString path = QDir( outputDirectory ).filePath( fileName );
+    const QString path = QDir( settings.outputDirectory ).filePath( fileName );
 
-    QImage img = QImage( settings.outputSize(), settings.outputImageFormat() );
-    img.setDotsPerMeterX( 1000 * settings.outputDpi() / 25.4 );
-    img.setDotsPerMeterY( 1000 * settings.outputDpi() / 25.4 );
-    img.fill( settings.backgroundColor().rgb() );
+    QImage img = QImage( ms.outputSize(), ms.outputImageFormat() );
+    img.setDotsPerMeterX( 1000 * ms.outputDpi() / 25.4 );
+    img.setDotsPerMeterY( 1000 * ms.outputDpi() / 25.4 );
+    img.fill( ms.backgroundColor().rgb() );
 
     QPainter p( &img );
-    QgsMapRendererCustomPainterJob job( settings, &p );
+    QgsMapRendererCustomPainterJob job( ms, &p );
     job.start();
     job.waitForFinished();
     p.end();
