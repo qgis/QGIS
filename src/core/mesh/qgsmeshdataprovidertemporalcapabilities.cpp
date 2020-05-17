@@ -33,7 +33,10 @@ QgsMeshDatasetIndex QgsMeshDataProviderTemporalCapabilities::datasetIndexFromRel
   const qint64 endTimeSinceGroupReference =
     endTimeSinceGlobalReference - mGlobalReferenceDateTime.msecsTo( groupReference );
 
-  if ( startTimeSinceGroupReference >= datasetTimes.last() )
+  if ( startTimeSinceGroupReference > datasetTimes.last() )
+    return QgsMeshDatasetIndex();
+
+  if ( endTimeSinceGroupReference < datasetTimes.first() )
     return QgsMeshDatasetIndex();
 
   for ( int i = 0; i < datasetTimes.count(); ++i )
@@ -41,10 +44,10 @@ QgsMeshDatasetIndex QgsMeshDataProviderTemporalCapabilities::datasetIndexFromRel
     qint64 time = datasetTimes.at( i );
     if ( startTimeSinceGroupReference <= time )
     {
-      if ( endTimeSinceGroupReference <= time )
-        return QgsMeshDatasetIndex( group, i - 1 ); // invalid if i=0
+      if ( endTimeSinceGroupReference < time ) // Start and end of range are before the current time step
+        return QgsMeshDatasetIndex( group, i - 1 ); // --> return the previous time step, invalid if i=0
       else
-        return QgsMeshDatasetIndex( group, i );
+        return QgsMeshDatasetIndex( group, i ); // current time step are included in [start,end] --> return current
     }
   }
 
