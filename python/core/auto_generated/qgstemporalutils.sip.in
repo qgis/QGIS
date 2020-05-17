@@ -31,21 +31,15 @@ This method considers the temporal range available from layers contained within 
 returns the maximal combined temporal extent of these layers.
 %End
 
-    class AnimationExportSettings
-{
+    struct AnimationExportSettings
+    {
+      QgsDateTimeRange animationRange;
 
-%TypeHeaderCode
-#include "qgstemporalutils.h"
-%End
-      public:
+      QgsInterval frameDuration;
 
-        QgsDateTimeRange animationRange;
+      QString outputDirectory;
 
-        QgsInterval frameDuration;
-
-        QString outputDirectory;
-
-        QString fileNameTemplate;
+      QString fileNameTemplate;
 
     };
 
