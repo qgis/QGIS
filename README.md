@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/qgis/QGIS.svg?branch=master)](https://travis-ci.org/qgis/QGIS)
 [![Docker Status](https://img.shields.io/docker/automated/qgis/qgis.svg)](https://cloud.docker.com/app/qgis/repository/docker/qgis/qgis/general)
 [![Build Status](https://dev.azure.com/qgis/QGIS/_apis/build/status/qgis.QGIS?branchName=master)](https://dev.azure.com/qgis/QGIS/_build/latest?definitionId=1&branchName=master)
+[![Build status](https://github.com/qgis/QGIS/workflows/Windows%20build%20with%20Visual%20C++/badge.svg)[https://github.com/qgis/QGIS/actions?query=workflow%3A%22Windows+build+with+Visual+C%2B%2B%22]
 ![Windows cross build with MXE](https://github.com/qgis/QGIS/workflows/Windows%20cross%20build%20with%20MXE/badge.svg)
 
 QGIS is an Open Source Geographic Information System. The project was born in

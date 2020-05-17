@@ -439,16 +439,13 @@ This is currently also how the binary QGIS packages are made (earlier versions u
 This section describes the setup required to allow Visual Studio to be used to
 build QGIS.
 
-### 4.1.1. Visual Studio 2015 Community Edition
+### 4.1.1. Visual Studio 2019 Community Edition
 
 The free (as in free beer) Community installer is available under:
 
-> http://download.microsoft.com/download/D/2/3/D23F4D0F-BA2D-4600-8725-6CCECEA05196/vs_community_ENU.exe
+> https://download.visualstudio.microsoft.com/download/pr/68d6b204-9df0-4fcc-abcc-08ee0eff9cb2/b029547488a9383b0c8d8a9c813e246feb3ec19e0fe55020d4878fde5f0983fe/vs_Community.exe
 
-Select "Custom" install and add the following packages:
-
-* "Common Tools for Visual C++ 2015" under "Visual C++"
-* "Tools (1.4.1) and Windows 10 SDK (10.0.14393)" under "Universal Windows App Development Tools".
+Select "Desktop Development with C++"
 
 ### 4.1.2. Other tools and dependencies
 
@@ -459,7 +456,7 @@ Download and install following packages:
 |CMake |https://cmake.org/files/v3.12/cmake-3.12.3-win64-x64.msi|
 |GNU flex, GNU bison and GIT |http://cygwin.com/setup-x86.exe (32bit) or http://cygwin.com/setup-x86_64.exe (64bit)|
 |OSGeo4W |http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86.exe (32bit) or http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe (64bit)|
-|ninja |https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-win.zip|
+|ninja |https://github.com/ninja-build/ninja/releases/download/v1.10.0/ninja-win.zip|
 
 For the QGIS build you need to install following packages from cygwin:
 

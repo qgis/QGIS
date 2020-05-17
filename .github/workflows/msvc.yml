@@ -1,0 +1,179 @@
+name: Windows build with Visual C++
+
+on:
+  push:
+    branches:
+    - master
+    - release-3_10
+    - release-3_12
+    - workflows-msvc
+
+jobs:
+  build:
+    name: OSGeo4W
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        OSGEO4W_ARCH: [x86, x86_64]
+
+        include:
+        - OSGEO4W_ARCH: x86
+          OSGEO4W_ROOT: C:\OSGeo4W
+
+        - OSGEO4W_ARCH: x86_64
+          OSGEO4W_ROOT: C:\OSGeo4W64
+
+    env:
+      LTR: release-3_10
+      LR: release-3_12
+      OSGEO4W_ARCH: ${{ matrix.OSGEO4W_ARCH }}
+      OSGEO4W_ROOT: ${{ matrix.OSGEO4W_ROOT }}
+
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        fetch-depth: 120
+
+    - name : 'Setup build variables'
+      shell: bash
+      run: |
+        echo "GITHUB_REF: ${GITHUB_REF}"
+        echo "GITHUB_BASE_REF: ${GITHUB_BASE_REF}"
+
+        case "${GITHUB_REF}" in
+        refs/pull/*/merge)
+            pr=${GITHUB_REF#refs/pull/}
+            pr=${pr%/merge}
+            branch=${GITHUB_BASE_REF##*/}
+            ;;
+        *)
+            branch=${GITHUB_REF##*/}
+            pr=$(curl -s -H "Accept: application/vnd.github.groot-preview+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" | jq -r '.[].number' 2>/dev/null)
+            ;;
+        esac
+
+        echo "BRANCH: ${branch}"
+        [ -n "$pr" ] && echo "PR: ${pr}"
+        echo "LR: ${LR}"
+        echo "LTR: ${LTR}"
+
+        case "${branch}" in
+        "${LTR}")
+          OSGEO4W_PKG=qgis-ltr-dev
+          OSGEO4W_DEPS=qgis-ltr-dev-deps
+          ;;
+        "${LR}")
+          OSGEO4W_PKG=qgis-rel-dev
+          OSGEO4W_DEPS=qgis-rel-dev-deps
+          ;;
+        *)
+          OSGEO4W_PKG=qgis-dev
+          OSGEO4W_DEPS=qgis-dev-deps
+          ;;
+        esac
+
+        target=Experimental
+        major=$(sed -ne 's/^SET(CPACK_PACKAGE_VERSION_MAJOR "\([0-9]*\)")\s*$/\1/p' CMakeLists.txt)
+        minor=$(sed -ne 's/^SET(CPACK_PACKAGE_VERSION_MINOR "\([0-9]*\)")\s*$/\1/p' CMakeLists.txt)
+        patch=$(sed -ne 's/^SET(CPACK_PACKAGE_VERSION_PATCH "\([0-9]*\)")\s*$/\1/p' CMakeLists.txt)
+        version=$major.$minor.$patch
+        sha="${GITHUB_SHA:0:10}"
+
+        if [ -z "$pr" ]; then
+          binary=$(curl -s --location-trusted http://download.osgeo.org/osgeo4w/$OSGEO4W_ARCH/release/qgis/$OSGEO4W_PKG/LATEST.sha | sed -e "s/:.*$//")
+          (( binary++ )) || true
+          buildname="$OSGEO4W_PKG-$version-$sha-$target-VC16-$OSGEO4W_ARCH"
+        else
+          OSGEO4W_PKG="${OSGEO4W_PKG}-${pr}"
+          buildname="PR $pr / $branch ($GITHUB_JOB) ($sha) ($OSGEO4W_PKG $target $OSGEO4W_ARCH)"   # no colons allowed here
+          binary=${GITHUB_RUN_NUMBER}
+        fi
+
+        if [ "$GITHUB_REPOSITORY" != "qgis/QGIS" ]; then
+          buildname="${GITHUB_REPOSITORY}: $buildname"
+        fi
+
+        url=$buildname
+        url=${url//(/%28}
+        url=${url//)/%29}
+        url=${url// /+}
+        url="https://cdash.orfeo-toolbox.org/index.php?project=QGIS&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercombine=and&filtercount=4&showfilters=0&filtercombine=and&field1=buildname&compare1=61&value1=$url&field2=site&compare2=65&value2=azure-pipelines&field3=buildstarttime&compare3=83&value3=$(date +%Y-%m-%d --date=yesterday)&field4=buildstarttime&compare4=84&value4=$(date +%Y-%m-%d --date=tomorrow)"
+        url=$(curl -s --data-urlencode "url=$url" -s http://tinyurl.com/api-create.php)
+
+        echo "::set-env name=TARGET::$target"
+        echo "::set-env name=OSGEO4W_PKG::$OSGEO4W_PKG"
+        echo "::set-env name=OSGEO4W_DEPS::$OSGEO4W_DEPS"
+        echo "::set-env name=MAJOR::$major"
+        echo "::set-env name=MINOR::$minor"
+        echo "::set-env name=PATCH::$patch"
+        echo "::set-env name=BINARY::$binary"
+        echo "::set-env name=VERSION::$version"
+        echo "::set-env name=BUILDNAME::$buildname"
+        echo "::set-env name=DASHURL::$url"
+        echo "::set-env name=CTEST_CUSTOM_TESTS_IGNORE::$(sed -r '/^(#.*?)?$/d' .ci/windows-blacklist.txt | paste -sd ';' -)"
+
+    # WDF kills MSVC batch's own detection of SDKs…
+    - name: Clean WDF
+      shell: cmd
+      run: |
+        rmdir /s /q "%ProgramFiles(x86)%\Windows Kits\10\lib\wdf"
+        rmdir /s /q "%ProgramFiles(x86)%\Windows Kits\10\include\wdf"
+        rmdir /s /q "%ProgramFiles(x86)%\Windows Kits\10\redist\wdf"
+        rmdir /s /q "%ProgramFiles(x86)%\Windows Kits\10\Tools"
+
+    - name: 'Download OSGeo4W Installer'
+      shell: cmd
+      run: curl --output c:\osgeo4w-setup.exe http://ftp.osuosl.org/pub/osgeo/download/osgeo4w/osgeo4w-setup-%OSGEO4W_ARCH%.exe
+
+    - name: 'Installing OSGeo4W'
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%
+        powershell .\ms-windows\osgeo4w\runasadmin.ps1 c:\osgeo4w-setup.exe --autoaccept --advanced --arch $env:OSGEO4W_ARCH --quiet-mode --upgrade-also --root $env:OSGEO4W_ROOT --only-site -s http://ftp.osuosl.org/pub/osgeo/download/osgeo4w -l c:\temp\osgeo4w -P $env:OSGEO4W_DEPS
+
+    - name: 'Download cygwin Installer'
+      shell: cmd
+      run: curl --output c:\setup-x86.exe https://cygwin.com/setup-x86.exe
+
+    - name: 'Installing cygwin'
+      shell: cmd
+      run: c:\setup-x86.exe -qnNdO -R C:/cygwin -s http://cygwin.mirror.constant.com -l C:/temp/cygwin -P "bison,flex,poppler,doxygen,git,unzip"
+
+    - name: 'Download Ninja'
+      shell: cmd
+      run: curl --location-trusted --output c:\ninja.zip https://github.com/ninja-build/ninja/releases/download/v1.10.0/ninja-win.zip
+
+    - name: 'Extracting Ninja'
+      shell: cmd
+      run: c:\cygwin\bin\unzip -o c:\ninja.zip -d %OSGEO4W_ROOT%\bin
+
+    - name: 'Clear package caches'
+      shell: cmd
+      run: |
+        rmdir /s /q c:\temp\cygwin
+        rmdir /s /q c:\temp\osgeo4w
+
+    - name: 'Link to test results'
+      shell: bash
+      run: |
+        echo "$BUILDNAME results available at $DASHURL"
+
+    - name: 'Building QGIS'
+      shell: cmd
+      run: |
+        echo on
+        cd %GITHUB_WORKSPACE%
+        PATH c:\cygwin\bin;%OSGEO4W_ROOT%\bin;%PATH%
+        cd ms-windows\osgeo4w
+        set OSGEO4W_CXXFLAGS=/MD /MP /Od /D NDEBUG
+        call package-nightly.cmd %VERSION% %BINARY% %OSGEO4W_PKG% %OSGEO4W_ARCH% %GITHUB_SHA:~0,10% gh-action-msvc
+        if not errorlevel 1 if exist testfailure exit /b 1
+
+    - name: 'Upload package'
+      uses: actions/upload-artifact@v1
+      with:
+        name: ${{ env.OSGEO4W_ARCH }}-${{ env.OSGEO4W_PKG }}-${{ env.VERSION }}-${{ env.BINARY }}
+        path: ${{ github.workspace }}/ms-windows/osgeo4w/${{ env.OSGEO4W_ARCH }}
+
+# vim: set nowrap :

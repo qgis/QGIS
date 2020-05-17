@@ -29,7 +29,7 @@ if "%ARCH%"=="" goto usage
 if not "%SHA%"=="" set SHA=-%SHA%
 if "%SITE%"=="" set SITE=qgis.org
 if "%TARGET%"=="" set TARGET=Nightly
-if "%BUILDNAME%"=="" set BUILDNAME=%PACKAGENAME%-%VERSION%%SHA%-%TARGET%-VC14-%ARCH%
+if "%BUILDNAME%"=="" set BUILDNAME=%PACKAGENAME%-%VERSION%%SHA%-%TARGET%-VC16-%ARCH%
 
 if "%BUILDDIR%"=="" set BUILDDIR=%CD%\build-%PACKAGENAME%-%ARCH%
 if not exist "%BUILDDIR%" mkdir %BUILDDIR%
@@ -106,15 +106,17 @@ touch %SRCDIR%\CMakeLists.txt
 
 echo CMAKE: %DATE% %TIME%
 
-if "%CMAKEGEN%"=="" set CMAKEGEN=Ninja
+if "%CMAKEGEN%"=="" set CMAKEGEN=-G Ninja
+if "%CC%"=="" set CC=cl.exe
+if "%CXX%"=="" set CXX=cl.exe
 if "%OSGEO4W_CXXFLAGS%"=="" set OSGEO4W_CXXFLAGS=/MD /Z7 /MP /Od /D NDEBUG
 
 for %%i in (%PYTHONHOME%) do set PYVER=%%~ni
 
-cmake -G "%CMAKEGEN%" ^
+cmake %CMAKEGEN% ^
 	-D CMAKE_CXX_COMPILER="%CXX:\=/%" ^
 	-D CMAKE_C_COMPILER="%CC:\=/%" ^
-	-D CMAKE_LINKER="%CMAKE_COMPILER_PATH:\=/%/link.exe" ^
+	-D CMAKE_LINKER=link.exe ^
 	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="%OSGEO4W_CXXFLAGS%" ^
 	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELWITHDEBINFO=%BUILDDIR%\apps\%PACKAGENAME%\pdb ^
 	-D BUILDNAME="%BUILDNAME%" ^
@@ -200,8 +202,9 @@ for %%g IN (%GRASS_VERSIONS%) do (
 PATH %path%;%BUILDDIR%\output\plugins
 set QT_PLUGIN_PATH=%BUILDDIR%\output\plugins;%OSGEO4W_ROOT%\apps\qt5\plugins
 
+if exist ..\testfailure del ..\testfailure
 cmake --build %BUILDDIR% --target %TARGET%Test --config %BUILDCONF%
-if errorlevel 1 echo TESTS WERE NOT SUCCESSFUL.
+if errorlevel 1 (echo TESTS WERE NOT SUCCESSFUL. & echo %errorlevel% >..\testfailure)
 
 set TEMP=%oldtemp%
 set TMP=%oldtmp%
