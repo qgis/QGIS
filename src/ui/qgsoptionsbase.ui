@@ -4507,7 +4507,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                  <property name="title">
                   <string>Tracing</string>
                  </property>
-                 <layout class="QGridLayout" name="gridLayout">
+                 <layout class="QGridLayout" name="gridLayout1">
                   <item row="0" column="0" colspan="3">
                    <widget class="QCheckBox" name="mTracingConvertToCurveCheckBox">
                     <property name="text">

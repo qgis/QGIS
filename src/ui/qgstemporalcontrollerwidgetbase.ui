@@ -241,7 +241,7 @@
      <widget class="QWidget" name="p3">
       <layout class="QVBoxLayout" name="verticalLayoutP3">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
+        <layout class="QHBoxLayout" name="horizontalLayout1">
          <property name="spacing">
           <number>2</number>
          </property>
@@ -357,7 +357,7 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
          <item>
           <widget class="QLabel" name="mRangeLabel">
            <property name="text">
