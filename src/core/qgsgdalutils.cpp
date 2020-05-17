@@ -325,13 +325,10 @@ static void GDALWarpInitNoDataReal( GDALWarpOptions *psOptionsIn, double  dNoDat
 }
 #endif
 
-GDALDatasetH QgsGdalUtils::rpcAwareAutoCreateWarpedVrt(
-  GDALDatasetH hSrcDS,
-  const char *pszSrcWKT,
-  const char *pszDstWKT,
-  GDALResampleAlg eResampleAlg,
-  double dfMaxError,
-  const GDALWarpOptions *psOptionsIn )
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,2,0)
+
+GDALDatasetH GDALAutoCreateWarpedVRTEx( GDALDatasetH hSrcDS, const char *pszSrcWKT, const char *pszDstWKT, GDALResampleAlg eResampleAlg,
+                                        double dfMaxError, const GDALWarpOptions *psOptionsIn, char **papszTransformerOptions )
 {
   VALIDATE_POINTER1( hSrcDS, "GDALAutoCreateWarpedVRT", nullptr );
 
@@ -368,7 +365,6 @@ GDALDatasetH QgsGdalUtils::rpcAwareAutoCreateWarpedVrt(
       CPL_IGNORE_RET_VAL(
         GDALAdjustValueToDataType( GDALGetRasterDataType( rasterBand ),
                                    noDataValue, &bClamped, &bRounded ) );
-
       if ( !bClamped )
       {
         GDALWarpInitNoDataReal( psWO, -1e10 );
@@ -393,31 +389,16 @@ GDALDatasetH QgsGdalUtils::rpcAwareAutoCreateWarpedVrt(
   /* -------------------------------------------------------------------- */
   psWO->pfnTransformer = GDALGenImgProjTransform;
 
-  // The original code to create transform:
-  // psWO->pTransformerArg =
-  //    GDALCreateGenImgProjTransformer( psWO->hSrcDS, pszSrcWKT,
-  //                                     nullptr, pszDstWKT,
-  //                                     TRUE, 1.0, 0 );
-
-  // Modified code to create transform that takes into account RPC georeferencing information.
-  // By default GDAL would assume that the imagery has zero elevation - if that is not the case,
-  // the image would not be shown in the correct location. Fortunately we can pass RPC_HEIGHT
-  // to GDAL to use given value as the fixed elevation for the whole image.
-  // We try to use HEIGHT_OFF coefficient ("Geodetic Height Offset") as an estimate for elevation
-  // (it seems that ENVI software does that as well). In the future we may want to use also
-  // RPC_DEM for an even more precise georeferencing.
-  // https://gdal.org/development/rfc/rfc22_rpc.html
-  char **opts = nullptr;
-  if ( GDALGetMetadata( hSrcDS, "RPC" ) )
-  {
-    // well-behaved RPC should have height offset a good value for RPC_HEIGHT
-    const char *heightOffStr = GDALGetMetadataItem( hSrcDS, "HEIGHT_OFF", "RPC" );
-    if ( heightOffStr )
-      opts = CSLAddNameValue( opts, "RPC_HEIGHT", heightOffStr );
-  }
-  opts = CSLSetNameValue( opts, "SRC_SRS", pszSrcWKT );
-  psWO->pTransformerArg = GDALCreateGenImgProjTransformer2( psWO->hSrcDS, nullptr, opts );
-  CSLDestroy( opts );
+  char **papszOptions = nullptr;
+  if ( pszSrcWKT != nullptr )
+    papszOptions = CSLSetNameValue( papszOptions, "SRC_SRS", pszSrcWKT );
+  if ( pszDstWKT != nullptr )
+    papszOptions = CSLSetNameValue( papszOptions, "DST_SRS", pszDstWKT );
+  papszOptions = CSLMerge( papszOptions, papszTransformerOptions );
+  psWO->pTransformerArg =
+    GDALCreateGenImgProjTransformer2( psWO->hSrcDS, nullptr,
+                                      papszOptions );
+  CSLDestroy( papszOptions );
 
   if ( psWO->pTransformerArg == nullptr )
   {
@@ -482,4 +463,26 @@ GDALDatasetH QgsGdalUtils::rpcAwareAutoCreateWarpedVrt(
     GDALSetProjection( hDstDS, GDALGetProjectionRef( hSrcDS ) );
 
   return hDstDS;
+}
+#endif
+
+
+GDALDatasetH QgsGdalUtils::rpcAwareAutoCreateWarpedVrt(
+  GDALDatasetH hSrcDS,
+  const char *pszSrcWKT,
+  const char *pszDstWKT,
+  GDALResampleAlg eResampleAlg,
+  double dfMaxError,
+  const GDALWarpOptions *psOptionsIn )
+{
+  char **opts = nullptr;
+  if ( GDALGetMetadata( hSrcDS, "RPC" ) )
+  {
+    // well-behaved RPC should have height offset a good value for RPC_HEIGHT
+    const char *heightOffStr = GDALGetMetadataItem( hSrcDS, "HEIGHT_OFF", "RPC" );
+    if ( heightOffStr )
+      opts = CSLAddNameValue( opts, "RPC_HEIGHT", heightOffStr );
+  }
+
+  return GDALAutoCreateWarpedVRTEx( hSrcDS, pszSrcWKT, pszDstWKT, eResampleAlg, dfMaxError, psOptionsIn, opts );
 }
