@@ -81,12 +81,15 @@ void QgsTemporalControllerDockWidget::exportAnimation()
 
     connect( &progressDialog, &QProgressDialog::canceled, &progressFeedback, &QgsFeedback::cancel );
 
+    QgsTemporalUtils::AnimationExportSettings animationSettings;
+    animationSettings.frameDuration = frameDuration;
+    animationSettings.animationRange = animationRange;
+    animationSettings.outputDirectory = outputDir;
+    animationSettings.fileNameTemplate = fileNameExpression;
+
     bool success = QgsTemporalUtils::exportAnimation(
       s,
-      animationRange,
-      frameDuration,
-      outputDir,
-      fileNameExpression,
+      animationSettings,
       error,
       &progressFeedback );
 
