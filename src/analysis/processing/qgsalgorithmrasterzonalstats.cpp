@@ -225,8 +225,6 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
         break;
 
       zonesRasterBlock.reset( mZonesInterface->block( mZonesBand, blockExtent, iterCols, iterRows ) );
-      if ( !zonesRasterBlock )
-        continue;
     }
     else
     {
@@ -234,9 +232,9 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
         break;
 
       rasterBlock.reset( mSourceInterface->block( mBand, blockExtent, iterCols, iterRows ) );
-      if ( !rasterBlock )
-        continue;
     }
+    if ( !zonesRasterBlock || !rasterBlock )
+      continue;
 
     feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
     if ( !rasterBlock->isValid() || rasterBlock->isEmpty() || !zonesRasterBlock->isValid() || zonesRasterBlock->isEmpty() )
