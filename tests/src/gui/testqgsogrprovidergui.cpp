@@ -98,6 +98,8 @@ void TestQgsOgrProviderGui::testGpkgDataItemRename()
   }
   QVERIFY( itemLayer1 );
 
+  QSignalSpy spyDataChanged( &gpkgItem, &QgsDataItem::dataChanged );
+
   // try to rename
   const QList<QgsDataItemGuiProvider *> providers = QgsGui::dataItemGuiProviderRegistry()->providers();
   bool success = false;
@@ -111,6 +113,13 @@ void TestQgsOgrProviderGui::testGpkgDataItemRename()
     }
   }
   QVERIFY( success );
+
+  // gpkg item gets refreshed in the background and there will be multiple dataChanged signals
+  // emitted unfortunately, so let's just wait until no more data changes signals are coming.
+  // Animation of "loading" icon also triggers dataChanged() signals, making even the number
+  // of signals unpredictable...
+  while ( spyDataChanged.wait( 500 ) )
+    ;
 
   // Check that the style is still available
   QgsVectorLayer metadataLayer( QStringLiteral( "/%1|layername=layer_styles" ).arg( fileName ) );
