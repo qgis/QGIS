@@ -21,6 +21,7 @@
 #include <QCollator>
 #include "qgsprojutils.h"
 #include "qgsreadwritelocker.h"
+#include "qgsruntimeprofiler.h"
 
 #if PROJ_VERSION_MAJOR>=6
 #include <proj.h>
@@ -175,6 +176,7 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
   static std::once_flag initialized;
   std::call_once( initialized, [ = ]
   {
+    QgsScopedRuntimeProfile profile( QObject::tr( "Initialize ellipsoids" ) );
     ( void )definitions();
   } );
 
