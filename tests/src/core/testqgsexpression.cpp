@@ -3624,6 +3624,31 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression::replaceExpressionText( input, &context ), expected );
     }
 
+    void testConcatNULLAttributeValue()
+    {
+      // Test that null integer values coming from provider are not transformed as 0
+      // https://github.com/qgis/QGIS/issues/36112
+
+      QgsFields fields;
+      fields.append( QgsField( QStringLiteral( "foo" ), QVariant::Int ) );
+
+      QgsFeature f;
+      f.initAttributes( 1 );
+      f.setAttribute( 0, QVariant( QVariant::Int ) );
+
+      QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, fields );
+      QgsExpression exp( QStringLiteral( "concat('test', foo)" ) );
+      QVariant res = exp.evaluate( &context );
+      QCOMPARE( res.type(), QVariant::String );
+      QCOMPARE( res.toString(), QStringLiteral( "test" ) );
+
+      f.setAttribute( 0, QVariant() );
+      context = QgsExpressionContextUtils::createFeatureBasedContext( f, fields );
+      res = exp.evaluate( &context );
+      QCOMPARE( res.type(), QVariant::String );
+      QCOMPARE( res.toString(), QStringLiteral( "test" ) );
+    }
+
 };
 
 QGSTEST_MAIN( TestQgsExpression )
