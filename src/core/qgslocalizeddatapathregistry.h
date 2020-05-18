@@ -43,8 +43,6 @@ class CORE_EXPORT QgsLocalizedDataPathRegistry
   public:
     QgsLocalizedDataPathRegistry();
 
-    ~QgsLocalizedDataPathRegistry() = default;
-
     //! Returns the global path if the file has been found in one of the paths, an empty string otherwise
     QString globalPath( const QString &localizedPath ) const;
 
