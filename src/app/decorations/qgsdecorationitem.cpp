@@ -69,11 +69,11 @@ void QgsDecorationItem::saveToProject()
   QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginUnit" ), QgsUnitTypes::encodeUnit( mMarginUnit ) );
 }
 
-void QgsDecorationItem::setName( const char *name )
+void QgsDecorationItem::setName( const QString &name )
 {
-  mName = name;
+  QgsMapDecoration::setName( name );
+
   mNameConfig = name;
   mNameConfig.remove( ' ' );
-  mNameTranslated = tr( name );
-  QgsDebugMsgLevel( QStringLiteral( "name=%1 nameconfig=%2 nametrans=%3" ).arg( mName, mNameConfig, mNameTranslated ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "name=%1 nameconfig=%2" ).arg( name, mNameConfig ), 3 );
 }

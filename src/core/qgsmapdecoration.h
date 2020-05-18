@@ -46,6 +46,16 @@ class CORE_EXPORT QgsMapDecoration
      */
     virtual void render( const QgsMapSettings &mapSettings, QgsRenderContext &context ) = 0;
 
+    QString name() const { return mName; }
+
+  protected:
+
+    virtual void setName( const QString &name ) { mName = name; }
+
+  private:
+
+    QString mName;
+
 };
 
 #endif //QGSMAPDECORATION_H

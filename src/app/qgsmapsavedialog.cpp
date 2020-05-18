@@ -48,10 +48,11 @@
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
-QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QList<QgsDecorationItem *> &decorations, const QList< QgsAnnotation *> &annotations, DialogType type )
+QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QList<QgsMapDecoration *> &decorations, const QList< QgsAnnotation *> &annotations, DialogType type )
   : QDialog( parent )
   , mDialogType( type )
   , mMapCanvas( mapCanvas )
+  , mDecorations( decorations )
   , mAnnotations( annotations )
 {
   setupUi( this );
@@ -75,10 +76,9 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   mScaleWidget->setShowCurrentScaleButton( true );
 
   QString activeDecorations;
-  const auto constDecorations = decorations;
-  for ( QgsDecorationItem *decoration : constDecorations )
+  const auto constDecorations = mDecorations;
+  for ( QgsMapDecoration *decoration : constDecorations )
   {
-    mDecorations << decoration;
     if ( activeDecorations.isEmpty() )
       activeDecorations = decoration->name().toLower();
     else

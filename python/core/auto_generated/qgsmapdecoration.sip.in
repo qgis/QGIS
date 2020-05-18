@@ -34,6 +34,12 @@ Constructor for QgsMapDecoration.
 Renders a map decoration.
 %End
 
+    QString name() const;
+
+  protected:
+
+    virtual void setName( const QString &name );
+
 };
 
 /************************************************************************
