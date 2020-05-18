@@ -168,7 +168,7 @@ void QgsNewVectorLayerDialog::mTypeBox_currentIndexChanged( int index )
       if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 20 )
         mWidth->setText( QStringLiteral( "20" ) );
       if ( mPrecision->text().toInt() < 1 || mPrecision->text().toInt() > 15 )
-        mPrecision->setText( QStringLiteral( "6" ) )
+        mPrecision->setText( QStringLiteral( "6" ) );
 
       mPrecision->setEnabled( true );
       mWidth->setValidator( new QIntValidator( 1, 20, this ) );
