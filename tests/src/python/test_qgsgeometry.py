@@ -1193,6 +1193,9 @@ class TestQgsGeometry(unittest.TestCase):
         assert abs(dist - exp) < 0.00001, "Expected: %f; Got:%f" % (exp, dist)
         self.assertEqual(leftOf, -1)
 
+        (point, atVertex, beforeVertex, afterVertex, dist) = QgsGeometry().closestVertex(QgsPointXY(42, 42))
+        self.assertTrue(point.isEmpty())
+
     def testAdjacentVertex(self):
         # 2-+-+-+-+-3
         # |         |
