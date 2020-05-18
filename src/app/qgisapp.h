@@ -123,6 +123,7 @@ class QgsStatisticalSummaryDockWidget;
 class QgsMapCanvasTracer;
 class QgsTemporalControllerDockWidget;
 
+class QgsMapDecoration;
 class QgsDecorationItem;
 class QgsMessageLogViewer;
 class QgsMessageBar;
@@ -695,8 +696,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void emitCustomCrsValidation( QgsCoordinateReferenceSystem &crs );
 
-    QList<QgsDecorationItem *> activeDecorationItems();
+    /**
+     * Returns a list of active map decorations
+     * \since QGIS 3.14
+     */
+    QList<QgsMapDecoration *> activeDecorations();
+
+    //! Returns a list of registered map decoration items
     QList<QgsDecorationItem *> decorationItems() { return mDecorationItems; }
+
+    //! A a map decoration \a item
     void addDecorationItem( QgsDecorationItem *item ) { mDecorationItems.append( item ); }
 
     //! \since QGIS 2.1
