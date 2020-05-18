@@ -171,12 +171,13 @@ std::unique_ptr< QgsCompoundCurve > QgsArcGisRestUtils::parseCompoundCurve( cons
       if ( compoundCurve->curveAt( compoundCurve->nCurves() - 1 )->nCoordinates() < 2 )
         compoundCurve->removeCurve( compoundCurve->nCurves() - 1 );
 
+      const QgsPoint endPointCircularString = circularString->endPoint();
       compoundCurve->addCurve( circularString.release() );
 
       // Prepare a new line string
       lineString = new QgsLineString;
       compoundCurve->addCurve( lineString );
-      lineString->addVertex( circularString->endPoint() );
+      lineString->addVertex( endPointCircularString );
     }
   }
   return compoundCurve;
