@@ -407,13 +407,19 @@ void QgsMeshActiveDatasetGroupTreeView::mousePressEvent( QMouseEvent *event )
       bool isVector = idx.data( QgsMeshDatasetGroupTreeModel::IsVector ).toBool();
       if ( isVector )
       {
-        setActiveVectorGroup( idx.data( QgsMeshDatasetGroupTreeModel::DatasetGroupIndex ).toInt() );
+        int datasetIndex = idx.data( QgsMeshDatasetGroupTreeModel::DatasetGroupIndex ).toInt();
+        if ( datasetIndex == activeVectorGroup() )
+          datasetIndex = -1;
+        setActiveVectorGroup( datasetIndex );
         processed = true;
       }
     }
     else if ( mDelegate.iconRect( vr, false ).contains( event->pos() ) )
     {
-      setActiveScalarGroup( idx.data( QgsMeshDatasetGroupTreeModel::DatasetGroupIndex ).toInt() );
+      int datasetIndex = idx.data( QgsMeshDatasetGroupTreeModel::DatasetGroupIndex ).toInt();
+      if ( datasetIndex == activeScalarGroup() )
+        datasetIndex = -1;
+      setActiveScalarGroup( datasetIndex );
       processed = true;
     }
   }
