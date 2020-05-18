@@ -128,7 +128,7 @@ QTreeWidgetItem *QgsCustomizationDialog::item( const QString &path, QTreeWidgetI
       }
     }
   }
-  QgsDebugMsg( QStringLiteral( "not found" ) );
+  QgsDebugMsgLevel( QStringLiteral( "not found" ), 2 );
   return nullptr;
 }
 
@@ -174,7 +174,7 @@ bool QgsCustomizationDialog::filterItems( const QString &text )
 
 bool QgsCustomizationDialog::itemChecked( const QString &path )
 {
-  QgsDebugMsg( QStringLiteral( "thePath = %1" ).arg( path ) );
+  QgsDebugMsgLevel( QStringLiteral( "thePath = %1" ).arg( path ), 3 );
   QTreeWidgetItem *myItem = item( path );
   if ( !myItem )
     return true;
@@ -183,7 +183,7 @@ bool QgsCustomizationDialog::itemChecked( const QString &path )
 
 void QgsCustomizationDialog::setItemChecked( const QString &path, bool on )
 {
-  QgsDebugMsg( QStringLiteral( "thePath = %1 on = %2" ).arg( path ).arg( on ) );
+  QgsDebugMsgLevel( QStringLiteral( "thePath = %1 on = %2" ).arg( path ).arg( on ), 2 );
   QTreeWidgetItem *myItem = item( path );
   if ( !myItem )
     return;
@@ -263,7 +263,7 @@ void QgsCustomizationDialog::ok()
 }
 void QgsCustomizationDialog::apply()
 {
-  QgsDebugMsg( QStringLiteral( "columnCount = %1" ).arg( treeWidget->columnCount() ) );
+  QgsDebugMsgLevel( QStringLiteral( "columnCount = %1" ).arg( treeWidget->columnCount() ), 3 );
   treeToSettings( mSettings );
   mSettings->setValue( QgsCustomization::instance()->statusPath(), QgsCustomization::User );
   mSettings->sync();
@@ -418,7 +418,7 @@ QTreeWidgetItem *QgsCustomizationDialog::readWidgetsXmlNode( const QDomNode &nod
   // There are 47 png files, total 196K in qt/tools/designer/src/components/formeditor/images/
   QString iconName = myElement.attribute( QStringLiteral( "class" ), QString() ).toLower().mid( 1 ) + ".png";
   QString iconPath = QgsApplication::iconPath( "/customization/" + iconName );
-  QgsDebugMsg( "iconPath = " + iconPath );
+  QgsDebugMsgLevel( "iconPath = " + iconPath, 3 );
   if ( QFile::exists( iconPath ) )
   {
     myItem->setIcon( 0, QIcon( iconPath ) );
@@ -447,7 +447,7 @@ bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
     return false;
 
   QString path = widgetPath( widget );
-  QgsDebugMsg( "path = " + path );
+  QgsDebugMsgLevel( "path = " + path, 3 );
 
   if ( path.contains( QLatin1String( "/QgsCustomizationDialogBase" ) ) )
   {
@@ -484,10 +484,10 @@ bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
     path = "/Widgets" + path;
   }
 
-  QgsDebugMsg( "path final = " + path );
+  QgsDebugMsgLevel( "path final = " + path, 3 );
   bool on = !itemChecked( path );
 
-  QgsDebugMsg( QStringLiteral( "on = %1" ).arg( on ) );
+  QgsDebugMsgLevel( QStringLiteral( "on = %1" ).arg( on ), 3 );
 
   setItemChecked( path, on );
   QTreeWidgetItem *myItem = item( path );
@@ -937,9 +937,9 @@ void QgsCustomization::customizeWidget( QWidget *widget, QEvent *event, QSetting
   if ( !widget->inherits( "QDialog" ) )
     return;
 
-  QgsDebugMsg( QStringLiteral( "objectName = %1 event type = %2" ).arg( widget->objectName() ).arg( event->type() ) );
+  QgsDebugMsgLevel( QStringLiteral( "objectName = %1 event type = %2" ).arg( widget->objectName() ).arg( event->type() ), 3 );
 
-  QgsDebugMsg( QStringLiteral( "%1 x %2" ).arg( widget->metaObject()->className(), QDialog::staticMetaObject.className() ) );
+  QgsDebugMsgLevel( QStringLiteral( "%1 x %2" ).arg( widget->metaObject()->className(), QDialog::staticMetaObject.className() ), 3 );
   QString path = QStringLiteral( "/Customization/Widgets/" );
 
   QgsCustomization::customizeWidget( path, widget, settings );
@@ -980,13 +980,13 @@ void QgsCustomization::customizeWidget( const QString &path, QWidget *widget, QS
       QLayout *l = widget->layout();
       if ( l )
       {
-        QgsDebugMsg( QStringLiteral( "remove" ) );
+        QgsDebugMsgLevel( QStringLiteral( "remove" ), 3 );
         QgsCustomization::removeFromLayout( l, w );
         w->hide();
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "hide" ) );
+        QgsDebugMsgLevel( QStringLiteral( "hide" ), 3 );
         w->hide();
       }
     }
@@ -1108,14 +1108,14 @@ void QgsCustomization::loadDefault()
   QString path = QgsApplication::pkgDataPath() +  "/resources/customization.ini";
   if ( ! QFile::exists( path ) )
   {
-    QgsDebugMsg( "Default customization not found in " + path );
+    QgsDebugMsgLevel( "Default customization not found in " + path, 2 );
     return;
   }
-  QgsDebugMsg( "Loading default customization from " + path );
+  QgsDebugMsgLevel( "Loading default customization from " + path, 2 );
 
   QSettings fileSettings( path );
   QStringList keys = fileSettings.allKeys();
-  QgsDebugMsg( QStringLiteral( "size = %1" ).arg( keys.size() ) );
+  QgsDebugMsgLevel( QStringLiteral( "size = %1" ).arg( keys.size() ), 2 );
   QStringList::const_iterator i;
   for ( i = keys.constBegin(); i != keys.constEnd(); ++i )
   {

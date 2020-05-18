@@ -375,25 +375,25 @@ void QgsPluginRegistry::loadCppPlugin( const QString &fullPathName )
           QObject *o = dynamic_cast<QObject *>( pl );
           if ( o )
           {
-            QgsDebugMsg( QStringLiteral( "plugin object name: %1" ).arg( o->objectName() ) );
+            QgsDebugMsgLevel( QStringLiteral( "plugin object name: %1" ).arg( o->objectName() ), 2 );
             if ( o->objectName().isEmpty() )
             {
 #ifndef Q_OS_WIN
               baseName = baseName.mid( 3 );
 #endif
-              QgsDebugMsg( QStringLiteral( "object name to %1" ).arg( baseName ) );
+              QgsDebugMsgLevel( QStringLiteral( "object name to %1" ).arg( baseName ), 2 );
               o->setObjectName( QStringLiteral( "qgis_plugin_%1" ).arg( baseName ) );
-              QgsDebugMsg( QStringLiteral( "plugin object name now: %1" ).arg( o->objectName() ) );
+              QgsDebugMsgLevel( QStringLiteral( "plugin object name now: %1" ).arg( o->objectName() ), 2 );
             }
 
             if ( !o->parent() )
             {
-              QgsDebugMsg( QStringLiteral( "setting plugin parent" ) );
+              QgsDebugMsgLevel( QStringLiteral( "setting plugin parent" ), 2 );
               o->setParent( QgisApp::instance() );
             }
             else
             {
-              QgsDebugMsg( QStringLiteral( "plugin parent already set" ) );
+              QgsDebugMsgLevel( QStringLiteral( "plugin parent already set" ), 2 );
             }
           }
 
@@ -520,7 +520,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
   {
     // check for python plugins system-wide
     QStringList pluginList = mPythonUtils->pluginList();
-    QgsDebugMsg( QStringLiteral( "Loading python plugins" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Loading python plugins" ), 2 );
 
     QStringList corePlugins = QStringList();
     corePlugins << QStringLiteral( "GdalTools" );
@@ -583,7 +583,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
   }
 #endif
 
-  QgsDebugMsg( QStringLiteral( "Plugin loading completed" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Plugin loading completed" ), 2 );
 }
 
 
@@ -605,7 +605,7 @@ bool QgsPluginRegistry::checkCppPlugin( const QString &pluginFullPath )
   if ( myName && myDescription && myVersion  && myCategory )
     return true;
 
-  QgsDebugMsg( "Failed to get name, description, category or type for " + myLib.fileName() );
+  QgsDebugMsgLevel( "Failed to get name, description, category or type for " + myLib.fileName(), 2 );
   return false;
 }
 
