@@ -40,11 +40,8 @@ QgsProfilerPanelWidget::QgsProfilerPanelWidget( QgsRuntimeProfiler *profiler, QW
     {
       double profileTime = mProfiler->profileTime( topLevel.isEmpty() ? child : topLevel + '/' + child );
       QTreeWidgetItem *item = new QTreeWidgetItem( QStringList() << child << QString::number( profileTime ) );
-      if ( !topLevel.isEmpty() )
-      {
-        item->setData( 1, Qt::UserRole + 1, parentCost * 1000 );
-        item->setData( 1, Qt::InitialSortOrderRole, profileTime * 1000 );
-      }
+      item->setData( 1, Qt::UserRole + 1, parentCost * 1000 );
+      item->setData( 1, Qt::InitialSortOrderRole, profileTime * 1000 );
       if ( !parentItem )
         mTreeWidget->addTopLevelItem( item );
       else
@@ -53,7 +50,8 @@ QgsProfilerPanelWidget::QgsProfilerPanelWidget( QgsRuntimeProfiler *profiler, QW
       addGroup( topLevel.isEmpty() ? child : topLevel + '/' + child, item, profileTime );
     }
   };
-  addGroup( QString(), nullptr, 0 );
+  const double totalTime = mProfiler->profileTime( QString() );
+  addGroup( QString(), nullptr, totalTime );
 
   mTreeWidget->resizeColumnToContents( 0 );
   mTreeWidget->resizeColumnToContents( 1 );

@@ -80,12 +80,26 @@ void QgsRuntimeProfiler::end()
 
 double QgsRuntimeProfiler::profileTime( const QString &name ) const
 {
-  for ( auto it = mProfileTimes.constBegin(); it != mProfileTimes.constEnd(); ++it )
+  if ( !name.isEmpty() )
   {
-    if ( it->first == name )
-      return it->second;
+    for ( auto it = mProfileTimes.constBegin(); it != mProfileTimes.constEnd(); ++it )
+    {
+      if ( it->first == name )
+        return it->second;
+    }
+    return -1;
   }
-  return -1;
+  else
+  {
+    // collect total time for top level items
+    double totalTime = 0;
+    for ( auto it = mProfileTimes.constBegin(); it != mProfileTimes.constEnd(); ++it )
+    {
+      if ( it->first.count( '/' ) == 0 )
+        totalTime += it->second;
+    }
+    return totalTime;
+  }
 }
 
 void QgsRuntimeProfiler::clear()
