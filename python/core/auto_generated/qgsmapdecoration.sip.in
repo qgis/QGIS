@@ -35,10 +35,20 @@ Renders a map decoration.
 %End
 
     QString name() const;
+%Docstring
+Returns the map decoration name.
+
+.. versionadded:: 3.14
+%End
 
   protected:
 
     virtual void setName( const QString &name );
+%Docstring
+Sets the map decoration ``name``.
+
+.. versionadded:: 3.14
+%End
 
 };
 

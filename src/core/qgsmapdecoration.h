@@ -46,10 +46,18 @@ class CORE_EXPORT QgsMapDecoration
      */
     virtual void render( const QgsMapSettings &mapSettings, QgsRenderContext &context ) = 0;
 
+    /**
+     * Returns the map decoration name.
+     * \since QGIS 3.14
+     */
     QString name() const { return mName; }
 
   protected:
 
+    /**
+     * Sets the map decoration \a name.
+     * \since QGIS 3.14
+     */
     virtual void setName( const QString &name ) { mName = name; }
 
   private:
