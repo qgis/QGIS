@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsnativealgorithms.h"
+#include "qgsruntimeprofiler.h"
 #include "qgsalgorithmaddincrementalfield.h"
 #include "qgsalgorithmaddtablefield.h"
 #include "qgsalgorithmaddxyfields.h"
@@ -217,6 +218,7 @@ bool QgsNativeAlgorithms::supportsNonFileBasedOutput() const
 
 void QgsNativeAlgorithms::loadAlgorithms()
 {
+  QgsScopedRuntimeProfile profile( QObject::tr( "QGIS native provider" ) );
   addAlgorithm( new QgsAddIncrementalFieldAlgorithm() );
   addAlgorithm( new QgsAddTableFieldAlgorithm() );
   addAlgorithm( new QgsAddXYFieldsAlgorithm() );

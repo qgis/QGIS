@@ -24,7 +24,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 import os
 
 from qgis.core import (QgsApplication,
-                       QgsProcessingProvider)
+                       QgsProcessingProvider,
+                       QgsRuntimeProfiler)
 
 from PyQt5.QtCore import QCoreApplication
 
@@ -196,11 +197,12 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             self.addAlgorithm(a)
 
     def load(self):
-        success = super().load()
+        with QgsRuntimeProfiler.profile('QGIS Python Provider'):
+            success = super().load()
 
-        if success:
-            self.parameterTypeFieldsMapping = FieldsMapper.ParameterFieldsMappingType()
-            QgsApplication.instance().processingRegistry().addParameterType(self.parameterTypeFieldsMapping)
+            if success:
+                self.parameterTypeFieldsMapping = FieldsMapper.ParameterFieldsMappingType()
+                QgsApplication.instance().processingRegistry().addParameterType(self.parameterTypeFieldsMapping)
 
         return success
 
