@@ -615,7 +615,8 @@ void QgsVectorLayerProperties::apply()
   mMetadataFilled = false;
 
   // save masking settings
-  mMaskingWidget->apply();
+  if ( mMaskingWidget )
+    mMaskingWidget->apply();
 
   //
   // Set up sql subset query if applicable
