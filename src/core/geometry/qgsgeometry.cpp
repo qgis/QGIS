@@ -385,7 +385,7 @@ QgsPointXY QgsGeometry::closestVertex( const QgsPointXY &point, int &atVertex, i
   if ( !d->geometry )
   {
     sqrDist = -1;
-    return QgsPointXY( 0, 0 );
+    return QgsPointXY();
   }
 
   QgsPoint pt( point.x(), point.y() );
@@ -395,7 +395,7 @@ QgsPointXY QgsGeometry::closestVertex( const QgsPointXY &point, int &atVertex, i
   if ( !id.isValid() )
   {
     sqrDist = -1;
-    return QgsPointXY( 0, 0 );
+    return QgsPointXY();
   }
   sqrDist = QgsGeometryUtils::sqrDistance2D( pt, vp );
 
