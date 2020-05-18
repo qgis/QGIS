@@ -96,10 +96,24 @@ void QgsRuntimeProfiler::clear()
 double QgsRuntimeProfiler::totalTime()
 {
   double total = 0;
-  QList<QPair<QString, double> >::const_iterator it = mProfileTimes.constBegin();
-  for ( ; it != mProfileTimes.constEnd(); ++it )
+  for ( auto it = mProfileTimes.constBegin(); it != mProfileTimes.constEnd(); ++it )
   {
-    total += ( *it ).second;
+    total += it->second;
   }
   return total;
+}
+
+
+//
+// QgsScopedRuntimeProfile
+//
+
+QgsScopedRuntimeProfile::QgsScopedRuntimeProfile( const QString &name )
+{
+  QgsApplication::profiler()->start( name );
+}
+
+QgsScopedRuntimeProfile::~QgsScopedRuntimeProfile()
+{
+  QgsApplication::profiler()->end();
 }

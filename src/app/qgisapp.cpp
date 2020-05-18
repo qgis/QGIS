@@ -14979,9 +14979,8 @@ void QgisApp::endProfile()
 
 void QgisApp::functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, const QString &name )
 {
-  startProfile( name );
+  QgsScopedRuntimeProfile profile( name );
   ( instance->*fnc )();
-  endProfile();
 }
 
 void QgisApp::mapCanvas_keyPressed( QKeyEvent *e )
