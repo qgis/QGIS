@@ -2519,6 +2519,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsNetworkLogger *mNetworkLogger = nullptr;
     QgsScopedDevToolWidgetFactory mNetworkLoggerWidgetFactory;
+    QgsScopedDevToolWidgetFactory mStartupProfilerWidgetFactory;
 
     class QgsCanvasRefreshBlocker
     {
