@@ -30,6 +30,7 @@ QgsProfilerPanelWidget::QgsProfilerPanelWidget( QgsRuntimeProfiler *profiler, QW
 
   mTreeWidget->setColumnCount( 2 );
   mTreeWidget->setHeaderLabels( QStringList() << tr( "Task" ) << tr( "Time (seconds)" ) );
+  mTreeWidget->setSortingEnabled( true );
 
   std::function< void( const QString &topLevel, QTreeWidgetItem *parentItem, double parentCost ) > addGroup;
   addGroup = [&]( const QString & topLevel, QTreeWidgetItem * parentItem, double parentCost )
