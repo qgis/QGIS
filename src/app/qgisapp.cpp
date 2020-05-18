@@ -833,7 +833,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   sInstance = this;
   QgsRuntimeProfiler *profiler = QgsApplication::profiler();
 
-  startProfile( tr( "User profile manager" ) );
+  startProfile( tr( "Create user profile manager" ) );
   mUserProfileManager = new QgsUserProfileManager( QString(), this );
   mUserProfileManager->setRootLocation( rootProfileLocation );
   mUserProfileManager->setActiveUserProfile( activeProfile );
@@ -842,7 +842,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   endProfile();
 
   // start the network logger early, we want all requests logged!
-  startProfile( tr( "Network logger" ) );
+  startProfile( tr( "Create network logger" ) );
   mNetworkLogger = new QgsNetworkLogger( QgsNetworkAccessManager::instance(), this );
   endProfile();
 

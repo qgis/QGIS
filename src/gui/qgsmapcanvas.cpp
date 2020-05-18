@@ -79,6 +79,7 @@ email                : sherman at mrcc.com
 #include "qgsrasterlayertemporalproperties.h"
 #include "qgsvectorlayertemporalproperties.h"
 #include "qgstemporalcontroller.h"
+#include "qgsruntimeprofiler.h"
 
 /**
  * \ingroup gui
@@ -143,24 +144,27 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &QgsMapCanvas::mapThemeRenamed );
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemesChanged, this, &QgsMapCanvas::projectThemesChanged );
 
-  mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
-  mSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
-  mSettings.setFlag( QgsMapSettings::RenderPartialOutput );
-  mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
-  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged,
-           this, [ = ]
   {
+    QgsScopedRuntimeProfile profile( "Map settings initialization" );
+    mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
+    mSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
+    mSettings.setFlag( QgsMapSettings::RenderPartialOutput );
     mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
-    refresh();
-  } );
-  mSettings.setTransformContext( QgsProject::instance()->transformContext() );
-  connect( QgsProject::instance(), &QgsProject::transformContextChanged,
-           this, [ = ]
-  {
+    connect( QgsProject::instance(), &QgsProject::ellipsoidChanged,
+             this, [ = ]
+    {
+      mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
+      refresh();
+    } );
     mSettings.setTransformContext( QgsProject::instance()->transformContext() );
-    emit transformContextChanged();
-    refresh();
-  } );
+    connect( QgsProject::instance(), &QgsProject::transformContextChanged,
+             this, [ = ]
+    {
+      mSettings.setTransformContext( QgsProject::instance()->transformContext() );
+      emit transformContextChanged();
+      refresh();
+    } );
+  }
 
   // refresh canvas when a remote svg/image has finished downloading
   connect( QgsApplication::svgCache(), &QgsSvgCache::remoteSvgFetched, this, &QgsMapCanvas::redrawAllLayers );
@@ -221,8 +225,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   setTemporalRange( mSettings.temporalRange() );
 
   refresh();
-
-} // QgsMapCanvas ctor
+}
 
 
 QgsMapCanvas::~QgsMapCanvas()
