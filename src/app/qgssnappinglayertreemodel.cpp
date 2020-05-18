@@ -573,7 +573,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
               }
               if ( activeTypes > 0 )
                 modes.append( tr( ", " ) );
-              modes.append( QgsSnappingConfig::snappingTypeFlagToString( ls.typeFlag() ) );
+              modes.append( QgsSnappingConfig::snappingTypeFlagToString( ls.typeFlag() & snappingTypeEnum.value( i ) ) );
               activeTypes++;
             }
           }
