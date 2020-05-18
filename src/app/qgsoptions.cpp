@@ -254,8 +254,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     for ( int i = 0; i < varStrItms.size(); ++i )
     {
       QTableWidgetItem *varNameItm = new QTableWidgetItem( varStrItms.at( i ) );
-      varNameItm->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable
-                            | Qt::ItemIsEditable | Qt::ItemIsDragEnabled );
+      varNameItm->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
       fItm = varNameItm->font();
       if ( !sysVarVal.isEmpty() )
       {
