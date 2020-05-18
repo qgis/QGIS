@@ -53,7 +53,7 @@ QgsTemporalController *QgsTemporalControllerDockWidget::temporalController()
 
 void QgsTemporalControllerDockWidget::exportAnimation()
 {
-  QgsAnimationExportDialog *dlg = new QgsAnimationExportDialog( this, QgisApp::instance()->mapCanvas(), QgisApp::instance()->activeDecorationItems() );
+  QgsAnimationExportDialog *dlg = new QgsAnimationExportDialog( this, QgisApp::instance()->mapCanvas(), QgisApp::instance()->activeDecorations() );
   connect( dlg, &QgsAnimationExportDialog::startExport, this, [ = ]
   {
     QgsMapSettings s = QgisApp::instance()->mapCanvas()->mapSettings();
@@ -86,13 +86,7 @@ void QgsTemporalControllerDockWidget::exportAnimation()
 
     QList<QgsMapDecoration *> decorations;
     if ( dlg->drawDecorations() )
-    {
-      const QList<QgsDecorationItem *> decorationItems = QgisApp::instance()->activeDecorationItems();
-      for ( QgsMapDecoration *decoration : decorationItems )
-      {
-        decorations << decoration;
-      }
-    }
+      decorations = QgisApp::instance()->activeDecorations();
 
     QgsTemporalUtils::AnimationExportSettings animationSettings;
     animationSettings.frameDuration = frameDuration;

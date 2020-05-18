@@ -25,7 +25,7 @@
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
-QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QList< QgsDecorationItem * > &decorations )
+QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QList< QgsMapDecoration * > &decorations )
   : QDialog( parent )
   , mMapCanvas( mapCanvas )
 {
@@ -47,12 +47,12 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
 
   QString activeDecorations;
   const auto constDecorations = decorations;
-  for ( QgsDecorationItem *decoration : constDecorations )
+  for ( QgsMapDecoration *decoration : constDecorations )
   {
     if ( activeDecorations.isEmpty() )
-      activeDecorations = decoration->name().toLower();
+      activeDecorations = decoration->displayName().toLower();
     else
-      activeDecorations += QStringLiteral( ", %1" ).arg( decoration->name().toLower() );
+      activeDecorations += QStringLiteral( ", %1" ).arg( decoration->displayName().toLower() );
   }
   mDrawDecorations->setText( tr( "Draw active decorations: %1" ).arg( !activeDecorations.isEmpty() ? activeDecorations : tr( "none" ) ) );
 

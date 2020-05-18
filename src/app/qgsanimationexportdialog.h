@@ -46,7 +46,7 @@ class APP_EXPORT QgsAnimationExportDialog: public QDialog, private Ui::QgsAnimat
      */
     QgsAnimationExportDialog( QWidget *parent = nullptr,
                               QgsMapCanvas *mapCanvas = nullptr,
-                              const QList< QgsDecorationItem * > &decorations = QList< QgsDecorationItem * >() );
+                              const QList< QgsMapDecoration * > &decorations = QList< QgsMapDecoration * >() );
 
     //! Returns extent rectangle
     QgsRectangle extent() const;
