@@ -101,11 +101,7 @@ void QgsTemporalControllerDockWidget::exportAnimation()
     animationSettings.fileNameTemplate = fileNameExpression;
     animationSettings.decorations = decorations;
 
-    bool success = QgsTemporalUtils::exportAnimation(
-      s,
-      animationSettings,
-      error,
-      &progressFeedback );
+    bool success = QgsTemporalUtils::exportAnimation( s, animationSettings, error, &progressFeedback );
 
     progressDialog.hide();
     if ( !success )
