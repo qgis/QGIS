@@ -121,7 +121,7 @@
         <file>themes/default/algorithms/mAlgorithmRandomPoissonRaster.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomRaster.svg</file>
         <file>themes/default/algorithms/mAlgorithmRegularPoints.svg</file>
-	      <file>themes/default/algorithms/mAlgorithmRoundRastervalues.svg</file>
+        <file>themes/default/algorithms/mAlgorithmRoundRastervalues.svg</file>
         <file>themes/default/algorithms/mAlgorithmSelectLocation.svg</file>
         <file>themes/default/algorithms/mAlgorithmSelectRandom.svg</file>
         <file>themes/default/algorithms/mAlgorithmSimplify.svg</file>
@@ -859,6 +859,7 @@
         <file>themes/default/mActionAddMarker.svg</file>
         <file>themes/default/mLayoutItemMarker.svg</file>
         <file>themes/default/algorithms/mAlgorithmConstantRaster.svg</file>
+        <file>themes/default/mIconStopwatch.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
