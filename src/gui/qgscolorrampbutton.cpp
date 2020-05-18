@@ -467,20 +467,17 @@ void QgsColorRampButton::resizeEvent( QResizeEvent *event )
 
 void QgsColorRampButton::setColorRamp( QgsColorRamp *colorramp )
 {
-  QgsColorRamp *oldColorRamp = mColorRamp;
-  mColorRamp = colorramp->clone();
+  if ( colorramp == mColorRamp )
+    return;
 
-  // handle when initially set color is same as default (Qt::black); consider it a color change
-  if ( ( oldColorRamp != mColorRamp ) || !mColorRampSet )
+  delete mColorRamp;
+  mColorRamp = colorramp ? colorramp->clone() : nullptr;
+
+  setButtonBackground();
+  if ( isEnabled() )
   {
-    setButtonBackground();
-    if ( isEnabled() )
-    {
-      emit colorRampChanged();
-    }
+    emit colorRampChanged();
   }
-  delete oldColorRamp;
-  mColorRampSet = true;
 }
 
 void QgsColorRampButton::setColorRampFromName( const QString &name )
