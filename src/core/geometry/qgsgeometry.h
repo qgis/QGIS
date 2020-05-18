@@ -632,7 +632,7 @@ class CORE_EXPORT QgsGeometry
      * \param afterVertex will be set to the vertex index of the next vertex after the closest one. Will be set to -1 if
      * not present.
      * \param sqrDist will be set to the square distance between the closest vertex and the specified point
-     * \returns closest point in geometry. If not found (empty geometry), returns null point nad sqrDist is negative.
+     * \returns closest point in geometry. If not found (empty geometry), returns null point and sqrDist is negative.
      */
     QgsPointXY closestVertex( const QgsPointXY &point, int &atVertex SIP_OUT, int &beforeVertex SIP_OUT, int &afterVertex SIP_OUT, double &sqrDist SIP_OUT ) const;
 
@@ -731,7 +731,7 @@ class CORE_EXPORT QgsGeometry
     /**
      * Returns coordinates of a vertex.
      * \param atVertex index of the vertex
-     * \returns Coordinates of the vertex or QgsPoint(0,0) on error
+     * \returns Coordinates of the vertex or empty QgsPoint() on error
      */
     QgsPoint vertexAt( int atVertex ) const;
 
@@ -1630,7 +1630,7 @@ class CORE_EXPORT QgsGeometry
      *
      * Any z or m values present in the geometry will be discarded.
      *
-     * \warning If the geometry is not a single-point type, a QgsPoint( 0, 0 ) will be returned.
+     * \warning If the geometry is not a single-point type, an empty QgsPointXY() will be returned.
      */
     QgsPointXY asPoint() const;
 #else
