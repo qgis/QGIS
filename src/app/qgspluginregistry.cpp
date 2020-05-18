@@ -32,6 +32,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsmessagebar.h"
+#include "qgsruntimeprofiler.h"
 
 #ifdef WITH_BINDINGS
 #include "qgspythonutils.h"

@@ -81,6 +81,43 @@ The current total time collected in the profiler.
 
 };
 
+
+class QgsScopedRuntimeProfile
+{
+%Docstring
+
+Scoped object for logging of the runtime for a single operation or group of operations.
+
+This class automatically takes care of registering an operation in the :py:func:`QgsApplication.profiler()`
+registry upon construction, and recording of the elapsed runtime upon destruction.
+
+Python scripts should not use QgsScopedRuntimeProfile directly. Instead, use :py:func:`QgsRuntimeProfiler.profile()`
+.. code-block:: python
+
+       with QgsRuntimeProfiler.profile('My operation'):
+         # do something
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsruntimeprofiler.h"
+%End
+  public:
+
+    QgsScopedRuntimeProfile( const QString &name );
+%Docstring
+Constructor for QgsScopedRuntimeProfile.
+
+Automatically registers the operation in the QgsApplication.profiler() instance
+and starts recording the run time of the operation.
+%End
+
+    ~QgsScopedRuntimeProfile();
+
+};
+
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

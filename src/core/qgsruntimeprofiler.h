@@ -95,4 +95,41 @@ class CORE_EXPORT QgsRuntimeProfiler
     QList< QPair< QString, double > > mProfileTimes;
 };
 
+
+/**
+ * \ingroup core
+ *
+ * Scoped object for logging of the runtime for a single operation or group of operations.
+ *
+ * This class automatically takes care of registering an operation in the QgsApplication::profiler()
+ * registry upon construction, and recording of the elapsed runtime upon destruction.
+ *
+ * Python scripts should not use QgsScopedRuntimeProfile directly. Instead, use QgsRuntimeProfiler.profile()
+ * \code{.py}
+ *   with QgsRuntimeProfiler.profile('My operation'):
+ *     # do something
+ * \endcode
+ *
+ * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsScopedRuntimeProfile
+{
+  public:
+
+    /**
+     * Constructor for QgsScopedRuntimeProfile.
+     *
+     * Automatically registers the operation in the QgsApplication::profiler() instance
+     * and starts recording the run time of the operation.
+     */
+    QgsScopedRuntimeProfile( const QString &name );
+
+    /**
+     * Records the final runtime of the operation in the profiler instance.
+     */
+    ~QgsScopedRuntimeProfile();
+
+};
+
+
 #endif // QGSRUNTIMEPROFILER_H
