@@ -19,7 +19,9 @@
 #include "qgstemporalcontrollerwidget.h"
 #include "qgspanelwidgetstack.h"
 #include "qgsanimationexportdialog.h"
+#include "qgsdecorationitem.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapdecoration.h"
 
 #include "qgstemporalutils.h"
 #include "qgstaskmanager.h"
@@ -51,7 +53,7 @@ QgsTemporalController *QgsTemporalControllerDockWidget::temporalController()
 
 void QgsTemporalControllerDockWidget::exportAnimation()
 {
-  QgsAnimationExportDialog *dlg = new QgsAnimationExportDialog( this, QgisApp::instance()->mapCanvas() );
+  QgsAnimationExportDialog *dlg = new QgsAnimationExportDialog( this, QgisApp::instance()->mapCanvas(), QgisApp::instance()->activeDecorationItems() );
   connect( dlg, &QgsAnimationExportDialog::startExport, this, [ = ]
   {
     QgsMapSettings s = QgisApp::instance()->mapCanvas()->mapSettings();
@@ -82,11 +84,22 @@ void QgsTemporalControllerDockWidget::exportAnimation()
 
     connect( &progressDialog, &QProgressDialog::canceled, &progressFeedback, &QgsFeedback::cancel );
 
+    QList<QgsMapDecoration *> decorations;
+    if ( dlg->drawDecorations() )
+    {
+      const QList<QgsDecorationItem *> decorationItems = QgisApp::instance()->activeDecorationItems();
+      for ( QgsMapDecoration *decoration : decorationItems )
+      {
+        decorations << decoration;
+      }
+    }
+
     QgsTemporalUtils::AnimationExportSettings animationSettings;
     animationSettings.frameDuration = frameDuration;
     animationSettings.animationRange = animationRange;
     animationSettings.outputDirectory = outputDir;
     animationSettings.fileNameTemplate = fileNameExpression;
+    animationSettings.decorations = decorations;
 
     bool success = QgsTemporalUtils::exportAnimation(
       s,

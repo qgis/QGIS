@@ -7524,7 +7524,7 @@ void QgisApp::updateFilterLegend()
   }
 }
 
-void QgisApp::saveMapAsImage()
+QList< QgsDecorationItem * > QgisApp::activeDecorationItems()
 {
   QList< QgsDecorationItem * > decorations;
   const auto constMDecorationItems = mDecorationItems;
@@ -7535,25 +7535,18 @@ void QgisApp::saveMapAsImage()
       decorations << decoration;
     }
   }
-
-  QgsMapSaveDialog *dlg = new QgsMapSaveDialog( this, mMapCanvas, decorations, QgsProject::instance()->annotationManager()->annotations() );
+  return decorations; 
+}
+void QgisApp::saveMapAsImage()
+{
+  QgsMapSaveDialog *dlg = new QgsMapSaveDialog( this, mMapCanvas, activeDecorationItems(), QgsProject::instance()->annotationManager()->annotations() );
   dlg->setAttribute( Qt::WA_DeleteOnClose );
   dlg->show();
 } // saveMapAsImage
 
 void QgisApp::saveMapAsPdf()
 {
-  QList< QgsDecorationItem * > decorations;
-  const auto constMDecorationItems = mDecorationItems;
-  for ( QgsDecorationItem *decoration : constMDecorationItems )
-  {
-    if ( decoration->enabled() )
-    {
-      decorations << decoration;
-    }
-  }
-
-  QgsMapSaveDialog *dlg = new QgsMapSaveDialog( this, mMapCanvas, decorations, QgsProject::instance()->annotationManager()->annotations(), QgsMapSaveDialog::Pdf );
+  QgsMapSaveDialog *dlg = new QgsMapSaveDialog( this, mMapCanvas, activeDecorationItems(), QgsProject::instance()->annotationManager()->annotations(), QgsMapSaveDialog::Pdf );
   dlg->setAttribute( Qt::WA_DeleteOnClose );
   dlg->show();
 } // saveMapAsPdf

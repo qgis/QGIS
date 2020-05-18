@@ -23,6 +23,7 @@
 #include "qgsrasterlayertemporalproperties.h"
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgstemporalnavigationobject.h"
+#include "qgsmapdecoration.h"
 #include "qgsmapsettings.h"
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgsexpressioncontextutils.h"
@@ -118,6 +119,16 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
     QgsMapRendererCustomPainterJob job( ms, &p );
     job.start();
     job.waitForFinished();
+    
+    QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
+    context.setPainter( &p );
+
+    const auto constMDecorations = settings.decorations;
+    for ( QgsMapDecoration *decoration : constMDecorations )
+    {
+      decoration->render( ms, context );
+    }
+
     p.end();
 
     img.save( path );

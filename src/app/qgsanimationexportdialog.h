@@ -44,7 +44,9 @@ class APP_EXPORT QgsAnimationExportDialog: public QDialog, private Ui::QgsAnimat
     /**
      * Constructor for QgsAnimationExportDialog
      */
-    QgsAnimationExportDialog( QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr );
+    QgsAnimationExportDialog( QWidget *parent = nullptr, 
+                              QgsMapCanvas *mapCanvas = nullptr,
+                              const QList< QgsDecorationItem * > &decorations = QList< QgsDecorationItem * >() );
 
     //! Returns extent rectangle
     QgsRectangle extent() const;
@@ -66,6 +68,9 @@ class APP_EXPORT QgsAnimationExportDialog: public QDialog, private Ui::QgsAnimat
 
     //! configure a map settings object
     void applyMapSettings( QgsMapSettings &mapSettings );
+
+    //! returns whether the draw decorations element is checked
+    bool drawDecorations() const;
 
   signals:
 

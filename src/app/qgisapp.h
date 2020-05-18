@@ -695,6 +695,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void emitCustomCrsValidation( QgsCoordinateReferenceSystem &crs );
 
+    QList<QgsDecorationItem *> activeDecorationItems();
     QList<QgsDecorationItem *> decorationItems() { return mDecorationItems; }
     void addDecorationItem( QgsDecorationItem *item ) { mDecorationItems.append( item ); }
 
