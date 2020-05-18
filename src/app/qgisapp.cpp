@@ -377,6 +377,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
 #include "qgsnetworkloggerwidgetfactory.h"
+#include "devtools/profiler/qgsprofilerwidgetfactory.h"
 
 #include "browser/qgsinbuiltdataitemproviders.h"
 
@@ -1628,20 +1629,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 #ifdef ANDROID
   toggleFullScreen();
 #endif
-  profiler->endGroup();
+  profiler->end();
 
-  QgsDebugMsg( QStringLiteral( "PROFILE TIMES" ) );
-  QgsDebugMsg( QStringLiteral( "PROFILE TIMES TOTAL - %1 " ).arg( profiler->totalTime() ) );
-#ifdef QGISDEBUG
-  QList<QPair<QString, double> > profileTimes = profiler->profileTimes();
-  QList<QPair<QString, double> >::const_iterator it = profileTimes.constBegin();
-  for ( ; it != profileTimes.constEnd(); ++it )
-  {
-    QString name = ( *it ).first;
-    double time = ( *it ).second;
-    QgsDebugMsg( QStringLiteral( " - %1 - %2" ).arg( name ).arg( time ) );
-  }
-#endif
+  mStartupProfilerWidgetFactory.reset( qgis::make_unique< QgsProfilerWidgetFactory >( profiler ) );
 
   auto toggleRevert = [ = ]
   {

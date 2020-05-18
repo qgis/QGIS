@@ -172,6 +172,8 @@ SET(QGIS_APP_SRCS
   devtools/networklogger/qgsnetworkloggernode.cpp
   devtools/networklogger/qgsnetworkloggerpanelwidget.cpp
   devtools/networklogger/qgsnetworkloggerwidgetfactory.cpp
+  devtools/profiler/qgsprofilerpanelwidget.cpp
+  devtools/profiler/qgsprofilerwidgetfactory.cpp
 
   labeling/qgslabelpropertydialog.cpp
   labeling/qgsmaptoolchangelabelproperties.cpp
