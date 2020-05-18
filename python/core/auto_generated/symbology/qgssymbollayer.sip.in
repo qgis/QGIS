@@ -979,7 +979,7 @@ Renders the line symbol layer along the line joining ``points``, using the given
 .. seealso:: :py:func:`renderPolygonStroke`
 %End
 
-    virtual void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    virtual void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 %Docstring
 Renders the line symbol layer along the outline of polygon, using the given render ``context``.
 
@@ -1167,9 +1167,11 @@ class QgsFillSymbolLayer : QgsSymbolLayer
 
 
 
-    virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) = 0;
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) = 0;
 %Docstring
-QgsFillSymbolLayer cannot be copied
+Renders the fill symbol layer for the polygon whose outer ring is defined by ``points``, using the given render ``context``.
+
+The ``rings`` argument optionally specifies a list of polygon rings to render as holes.
 %End
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
@@ -1180,7 +1182,7 @@ QgsFillSymbolLayer cannot be copied
 
   protected:
     QgsFillSymbolLayer( bool locked = false );
-    void _renderPolygon( QPainter *p, const QPolygonF &points, const QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    void _renderPolygon( QPainter *p, const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 %Docstring
 Default method to render polygon
 %End
