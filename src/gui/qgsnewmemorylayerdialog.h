@@ -83,6 +83,7 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
 
     void geometryTypeChanged( int index );
     void fieldNameChanged( const QString & );
+    void mTypeBox_currentIndexChanged( int index );
     void mAddAttributeButton_clicked();
     void mRemoveAttributeButton_clicked();
     void selectionChanged();
