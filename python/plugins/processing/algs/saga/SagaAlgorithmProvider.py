@@ -28,7 +28,8 @@ from qgis.core import (Qgis,
                        QgsProcessingProvider,
                        QgsProcessingUtils,
                        QgsApplication,
-                       QgsMessageLog)
+                       QgsMessageLog,
+                       QgsRuntimeProfiler)
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.tools.system import isWindows, isMac
 
@@ -50,20 +51,22 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
         self.algs = []
 
     def load(self):
-        ProcessingConfig.settingIcons[self.name()] = self.icon()
-        ProcessingConfig.addSetting(Setting("SAGA", 'ACTIVATE_SAGA',
-                                            self.tr('Activate'), True))
-        ProcessingConfig.addSetting(Setting("SAGA",
-                                            SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION,
-                                            self.tr('Enable SAGA Import/Export optimizations'), False))
-        ProcessingConfig.addSetting(Setting("SAGA",
-                                            SagaUtils.SAGA_LOG_COMMANDS,
-                                            self.tr('Log execution commands'), True))
-        ProcessingConfig.addSetting(Setting("SAGA",
-                                            SagaUtils.SAGA_LOG_CONSOLE,
-                                            self.tr('Log console output'), True))
-        ProcessingConfig.readSettings()
-        self.refreshAlgorithms()
+        with QgsRuntimeProfiler.profile('SAGA Provider'):
+            ProcessingConfig.settingIcons[self.name()] = self.icon()
+            ProcessingConfig.addSetting(Setting("SAGA", 'ACTIVATE_SAGA',
+                                                self.tr('Activate'), True))
+            ProcessingConfig.addSetting(Setting("SAGA",
+                                                SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION,
+                                                self.tr('Enable SAGA Import/Export optimizations'), False))
+            ProcessingConfig.addSetting(Setting("SAGA",
+                                                SagaUtils.SAGA_LOG_COMMANDS,
+                                                self.tr('Log execution commands'), True))
+            ProcessingConfig.addSetting(Setting("SAGA",
+                                                SagaUtils.SAGA_LOG_CONSOLE,
+                                                self.tr('Log console output'), True))
+            ProcessingConfig.readSettings()
+            self.refreshAlgorithms()
+
         return True
 
     def unload(self):
