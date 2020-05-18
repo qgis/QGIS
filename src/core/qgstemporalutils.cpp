@@ -119,7 +119,7 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
     QgsMapRendererCustomPainterJob job( ms, &p );
     job.start();
     job.waitForFinished();
-    
+
     QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
     context.setPainter( &p );
 

@@ -41,6 +41,8 @@ returns the maximal combined temporal extent of these layers.
 
       QString fileNameTemplate;
 
+      QList<QgsMapDecoration *> decorations;
+
     };
 
     static bool exportAnimation( const QgsMapSettings &mapSettings, const AnimationExportSettings &settings, QString &error /Out/, QgsFeedback *feedback = 0 );

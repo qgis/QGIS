@@ -44,7 +44,7 @@ class APP_EXPORT QgsAnimationExportDialog: public QDialog, private Ui::QgsAnimat
     /**
      * Constructor for QgsAnimationExportDialog
      */
-    QgsAnimationExportDialog( QWidget *parent = nullptr, 
+    QgsAnimationExportDialog( QWidget *parent = nullptr,
                               QgsMapCanvas *mapCanvas = nullptr,
                               const QList< QgsDecorationItem * > &decorations = QList< QgsDecorationItem * >() );
 

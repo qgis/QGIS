@@ -65,7 +65,7 @@ class CORE_EXPORT QgsTemporalUtils
        * e.g. my###.jpg will create frames my001.jpg, my002.jpg, etc
        */
       QString fileNameTemplate;
-      
+
       //! List of decorations to draw onto exported frames.
       QList<QgsMapDecoration *> decorations;
 
