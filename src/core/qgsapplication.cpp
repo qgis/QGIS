@@ -2330,7 +2330,6 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     mProfiler->end();
   }
   mPageSizeRegistry = new QgsPageSizeRegistry();
-<<<<<<< HEAD
   {
     mProfiler->start( tr( "Setup layout item registry" ) );
     mLayoutItemRegistry = new QgsLayoutItemRegistry();
@@ -2378,7 +2377,6 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     mProfiler->end();
   }
   mBasemapPathRegistry = new QgsBasemapPathRegistry();
-=======
   mLayoutItemRegistry = new QgsLayoutItemRegistry();
   mLayoutItemRegistry->populate();
   mAnnotationRegistry = new QgsAnnotationRegistry();
@@ -2389,7 +2387,6 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mClassificationMethodRegistry = new QgsClassificationMethodRegistry();
   mBookmarkManager = new QgsBookmarkManager( nullptr );
   mScaleBarRendererRegistry = new QgsScaleBarRendererRegistry();
->>>>>>> address review
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
