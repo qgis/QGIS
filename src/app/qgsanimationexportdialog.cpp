@@ -17,6 +17,7 @@
 
 #include "qgsanimationexportdialog.h"
 #include "qgsmapcanvas.h"
+#include "qgsdecorationitem.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgstemporalnavigationobject.h"
 #include "qgsprojecttimesettings.h"
@@ -24,7 +25,7 @@
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
-QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanvas *mapCanvas )
+QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QList< QgsDecorationItem * > &decorations )
   : QDialog( parent )
   , mMapCanvas( mapCanvas )
 {
@@ -43,6 +44,17 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
 
   mStartDateTime->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
   mEndDateTime->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
+
+  QString activeDecorations;
+  const auto constDecorations = decorations;
+  for ( QgsDecorationItem *decoration : constDecorations )
+  {
+    if ( activeDecorations.isEmpty() )
+      activeDecorations = decoration->name().toLower();
+    else
+      activeDecorations += QStringLiteral( ", %1" ).arg( decoration->name().toLower() );
+  }
+  mDrawDecorations->setText( tr( "Draw active decorations: %1" ).arg( !activeDecorations.isEmpty() ? activeDecorations : tr( "none" ) ) );
 
   QgsSettings settings;
 
@@ -274,4 +286,9 @@ void QgsAnimationExportDialog::lockChanged( const bool locked )
   {
     mExtentGroupBox->setRatio( QSize( 0, 0 ) );
   }
+}
+
+bool QgsAnimationExportDialog::drawDecorations() const
+{
+  return mDrawDecorations->isChecked();
 }
