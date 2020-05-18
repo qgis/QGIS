@@ -388,7 +388,7 @@ QgsPointXY QgsGeometry::closestVertex( const QgsPointXY &point, int &atVertex, i
     return QgsPointXY();
   }
 
-  QgsPoint pt( point.x(), point.y() );
+  QgsPoint pt( point );
   QgsVertexId id;
 
   QgsPoint vp = QgsGeometryUtils::closestVertex( *( d->geometry ), pt, id );
@@ -630,7 +630,7 @@ double QgsGeometry::closestVertexWithContext( const QgsPointXY &point, int &atVe
   }
 
   QgsVertexId vId;
-  QgsPoint pt( point.x(), point.y() );
+  QgsPoint pt( point );
   QgsPoint closestPoint = QgsGeometryUtils::closestVertex( *( d->geometry ), pt, vId );
   if ( !vId.isValid() )
     return -1;

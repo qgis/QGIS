@@ -71,6 +71,9 @@ QgsPoint QgsGeometryUtils::closestVertex( const QgsAbstractGeometry &geom, const
   QgsPoint minDistPoint;
   id = QgsVertexId(); // set as invalid
 
+  if ( geom.isEmpty() || pt.isEmpty() )
+    return minDistPoint;
+
   QgsVertexId vertexId;
   QgsPoint vertex;
   while ( geom.nextVertex( vertexId, vertex ) )
