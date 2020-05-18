@@ -1923,7 +1923,8 @@ static QVariant fcnConcat( const QVariantList &values, const QgsExpressionContex
   QString concat;
   for ( const QVariant &value : values )
   {
-    concat += QgsExpressionUtils::getStringValue( value, parent );
+    if ( !value.isNull() )
+      concat += QgsExpressionUtils::getStringValue( value, parent );
   }
   return concat;
 }
