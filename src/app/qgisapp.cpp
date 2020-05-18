@@ -831,7 +831,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   sInstance = this;
   QgsRuntimeProfiler *profiler = QgsApplication::profiler();
 
-  startProfile( QStringLiteral( "User profile manager" ) );
+  startProfile( tr( "User profile manager" ) );
   mUserProfileManager = new QgsUserProfileManager( QString(), this );
   mUserProfileManager->setRootLocation( rootProfileLocation );
   mUserProfileManager->setActiveUserProfile( activeProfile );
@@ -840,14 +840,13 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   endProfile();
 
   // start the network logger early, we want all requests logged!
-  startProfile( QStringLiteral( "Network logger" ) );
+  startProfile( tr( "Network logger" ) );
   mNetworkLogger = new QgsNetworkLogger( QgsNetworkAccessManager::instance(), this );
   endProfile();
 
   // load GUI: actions, menus, toolbars
-  profiler->beginGroup( QStringLiteral( "qgisapp" ) );
-  profiler->beginGroup( QStringLiteral( "startup" ) );
-  startProfile( QStringLiteral( "Setting up UI" ) );
+  profiler->start( tr( "Application startup" ) );
+  startProfile( tr( "Setting up UI" ) );
   setupUi( this );
   // because mActionToggleMapOnly can hide the menu (thereby disabling menu actions),
   //  we attach the following actions to the MainWindow too (to be able to come back)
@@ -860,7 +859,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   //////////
 
-  startProfile( QStringLiteral( "Checking database" ) );
+  startProfile( tr( "Checking database" ) );
   mSplash->showMessage( tr( "Checking database" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
   // Do this early on before anyone else opens it and prevents us copying it
@@ -872,7 +871,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   endProfile();
 
   // Create the themes folder for the user
-  startProfile( QStringLiteral( "Creating theme folder" ) );
+  startProfile( tr( "Creating theme folder" ) );
   QgsApplication::createThemeFolder();
   endProfile();
 
@@ -892,7 +891,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QgsSettings settings;
 
 
-  startProfile( QStringLiteral( "Building style sheet" ) );
+  startProfile( tr( "Building style sheet" ) );
   // set up stylesheet builder and apply saved or default style options
   mStyleSheetBuilder = new QgisAppStyleSheet( this );
   connect( mStyleSheetBuilder, &QgisAppStyleSheet::appStyleSheetChanged,
@@ -905,7 +904,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   centralLayout->setContentsMargins( 0, 0, 0, 0 );
 
   // "theMapCanvas" used to find this canonical instance later
-  startProfile( QStringLiteral( "Creating map canvas" ) );
+  startProfile( tr( "Creating map canvas" ) );
   mMapCanvas = new QgsMapCanvas( centralWidget );
   mMapCanvas->setObjectName( QStringLiteral( "theMapCanvas" ) );
 
@@ -932,13 +931,13 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mProjOpen = settings.value( QStringLiteral( "qgis/projOpenAtLaunch" ), 0 ).toInt();
 
   // a bar to warn the user with non-blocking messages
-  startProfile( QStringLiteral( "Message bar" ) );
+  startProfile( tr( "Message bar" ) );
   mInfoBar = new QgsMessageBar( centralWidget );
   mInfoBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
   centralLayout->addWidget( mInfoBar, 0, 0, 1, 1 );
   endProfile();
 
-  startProfile( QStringLiteral( "Welcome page" ) );
+  startProfile( tr( "Welcome page" ) );
   mWelcomePage = new QgsWelcomePage( skipVersionCheck );
   connect( mWelcomePage, &QgsWelcomePage::projectRemoved, this, [ this ]( int row )
   {
@@ -971,7 +970,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   mCentralContainer->setCurrentIndex( mProjOpen ? 0 : 1 );
 
-  startProfile( QStringLiteral( "User input dock" ) );
+  startProfile( tr( "User input dock" ) );
   // User Input Dock Widget
   mUserInputDockWidget = new QgsUserInputWidget( mMapCanvas );
   mUserInputDockWidget->setObjectName( QStringLiteral( "UserInputDockWidget" ) );
@@ -984,13 +983,13 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   //set the focus to the map canvas
   mMapCanvas->setFocus();
 
-  startProfile( QStringLiteral( "Layer tree" ) );
+  startProfile( tr( "Layer tree" ) );
   mLayerTreeView = new QgsLayerTreeView( this );
   mLayerTreeView->setObjectName( QStringLiteral( "theLayerTreeView" ) ); // "theLayerTreeView" used to find this canonical instance later
   endProfile();
 
   // create undo widget
-  startProfile( QStringLiteral( "Undo dock" ) );
+  startProfile( tr( "Undo dock" ) );
   mUndoDock = new QgsDockWidget( tr( "Undo/Redo" ), this );
   QShortcut *showUndoDock = new QShortcut( QKeySequence( tr( "Ctrl+5" ) ), this );
   connect( showUndoDock, &QShortcut::activated, mUndoDock, &QgsDockWidget::toggleUserVisible );
@@ -1004,7 +1003,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   endProfile();
 
   // Advanced Digitizing dock
-  startProfile( QStringLiteral( "Advanced digitize panel" ) );
+  startProfile( tr( "Advanced digitize panel" ) );
   mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas, this );
   mAdvancedDigitizingDockWidget->setWindowTitle( tr( "Advanced Digitizing" ) );
   mAdvancedDigitizingDockWidget->setObjectName( QStringLiteral( "AdvancedDigitizingTools" ) );
@@ -1017,7 +1016,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   endProfile();
 
   // Statistical Summary dock
-  startProfile( QStringLiteral( "Stats dock" ) );
+  startProfile( tr( "Statistics dock" ) );
   mStatisticalSummaryDockWidget = new QgsStatisticalSummaryDockWidget( this );
   mStatisticalSummaryDockWidget->setObjectName( QStringLiteral( "StatisticalSummaryDockWidget" ) );
 
@@ -1029,7 +1028,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   endProfile();
 
   // Bookmarks dock
-  startProfile( QStringLiteral( "Bookmarks widget" ) );
+  startProfile( tr( "Bookmarks widget" ) );
   mBookMarksDockWidget = new QgsBookmarks( this );
   mBookMarksDockWidget->setObjectName( QStringLiteral( "BookmarksDockWidget" ) );
 
@@ -1043,7 +1042,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   endProfile();
 
-  startProfile( QStringLiteral( "Snapping utils" ) );
+  startProfile( tr( "Snapping utilities" ) );
   mSnappingUtils = new QgsMapCanvasSnappingUtils( mMapCanvas, this );
   mMapCanvas->setSnappingUtils( mSnappingUtils );
   connect( QgsProject::instance(), &QgsProject::snappingConfigChanged, mSnappingUtils, &QgsSnappingUtils::setConfig );
@@ -1061,7 +1060,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   applyDefaultSettingsToCanvas( mMapCanvas );
 
-  functionProfile( &QgisApp::initLayerTreeView, this, QStringLiteral( "Init Layer tree view" ) );
+  functionProfile( &QgisApp::initLayerTreeView, this, QStringLiteral( "Initialize layer tree view" ) );
   functionProfile( &QgisApp::createOverview, this, QStringLiteral( "Create overview" ) );
   functionProfile( &QgisApp::createMapTips, this, QStringLiteral( "Create map tips" ) );
   functionProfile( &QgisApp::createDecorations, this, QStringLiteral( "Create decorations" ) );
@@ -1072,7 +1071,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   functionProfile( &QgisApp::initNativeProcessing, this, QStringLiteral( "Initialize native processing" ) );
   functionProfile( &QgisApp::initLayouts, this, QStringLiteral( "Initialize layouts support" ) );
 
-  startProfile( QStringLiteral( "Geometry validation" ) );
+  startProfile( tr( "Geometry validation" ) );
 
   mGeometryValidationService = qgis::make_unique<QgsGeometryValidationService>( QgsProject::instance() );
   mGeometryValidationService->setMessageBar( mInfoBar );
@@ -1108,14 +1107,14 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
 
   // initialize the plugin manager
-  startProfile( QStringLiteral( "Plugin manager" ) );
+  startProfile( tr( "Plugin manager" ) );
   mPluginManager = new QgsPluginManager( this, restorePlugins );
   endProfile();
 
   addDockWidget( Qt::LeftDockWidgetArea, mUndoDock );
   mUndoDock->hide();
 
-  startProfile( QStringLiteral( "Layer Style dock" ) );
+  startProfile( tr( "Layer style dock" ) );
   mMapStylingDock = new QgsDockWidget( this );
   mMapStylingDock->setWindowTitle( tr( "Layer Styling" ) );
   mMapStylingDock->setObjectName( QStringLiteral( "LayerStyling" ) );
@@ -1133,7 +1132,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mMapStylingDock->hide();
   endProfile();
 
-  startProfile( QStringLiteral( "Dev Tools dock" ) );
+  startProfile( tr( "Developer tools dock" ) );
   mDevToolsDock = new QgsDockWidget( this );
   mDevToolsDock->setWindowTitle( tr( "Debugging/Development Tools" ) );
   mDevToolsDock->setObjectName( QStringLiteral( "DevTools" ) );
@@ -1150,7 +1149,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mDevToolsDock->hide();
   endProfile();
 
-  startProfile( QStringLiteral( "Snapping dialog" ) );
+  startProfile( tr( "Snapping dialog" ) );
   mSnappingDialog = new QgsSnappingWidget( QgsProject::instance(), mMapCanvas, this );
   connect( mSnappingDialog, &QgsSnappingWidget::snappingConfigChanged, QgsProject::instance(), [ = ] { QgsProject::instance()->setSnappingConfig( mSnappingDialog->config() ); } );
   QString mainSnappingWidgetMode = QgsSettings().value( QStringLiteral( "/qgis/mainSnappingWidgetMode" ), "dialog" ).toString();
@@ -1380,7 +1379,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 #ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
-    startProfile( QStringLiteral( "initPluginInstaller" ) );
+    startProfile( tr( "Plugin installer" ) );
     // initialize the plugin installer to start fetching repositories in background
     QgsPythonRunner::run( QStringLiteral( "import pyplugin_installer" ) );
     QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.initPluginInstaller()" ) );
@@ -1398,7 +1397,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
 
   // Update recent project list (as possible custom project storages are now registered by plugins)
-  startProfile( QStringLiteral( "Update recent project paths" ) );
+  startProfile( tr( "Update recent project paths" ) );
   updateRecentProjectPaths();
   mWelcomePage->setRecentProjects( mRecentProjects );
   endProfile();
@@ -1451,17 +1450,17 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   //
   mSplash->showMessage( tr( "Restoring window state" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
-  startProfile( QStringLiteral( "Restore window state" ) );
+  startProfile( tr( "Restore window state" ) );
   restoreWindowState();
   endProfile();
 
   // do main window customization - after window state has been restored, before the window is shown
-  startProfile( QStringLiteral( "Update customization on main window" ) );
+  startProfile( tr( "Update customization on main window" ) );
   QgsCustomization::instance()->updateMainWindow( mToolbarMenu );
   endProfile();
 
   mSplash->showMessage( tr( "Populate saved styles" ), Qt::AlignHCenter | Qt::AlignBottom );
-  startProfile( QStringLiteral( "Populate saved styles" ) );
+  startProfile( tr( "Populate saved styles" ) );
   QgsStyle::defaultStyle();
   endProfile();
 
@@ -1485,7 +1484,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   mFullScreenMode = false;
   mPrevScreenModeMaximized = false;
-  startProfile( QStringLiteral( "Show main window" ) );
+  startProfile( tr( "Show main window" ) );
   show();
   qApp->processEvents();
   endProfile();
@@ -1616,7 +1615,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   // notify user if authentication system is disabled
   ( void )QgsAuthGuiUtils::isDisabled( messageBar() );
 
-  startProfile( QStringLiteral( "New project" ) );
+  startProfile( tr( "New project" ) );
   fileNewBlank(); // prepare empty project, also skips any default templates from loading
   updateCrsStatusBar();
   endProfile();
