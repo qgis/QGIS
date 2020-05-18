@@ -548,7 +548,7 @@ If ``correctRingOrientation`` is ``True`` then the ring will be oriented to matc
 clockwise for exterior rings and counter-clockwise for interior rings.
 %End
 
-    static void _getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygon &polygon, bool clipToExtent = true, bool correctRingOrientation = false );
+    static void _getPolygon( QPolygonF &pts, QVector<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygon &polygon, bool clipToExtent = true, bool correctRingOrientation = false );
 %Docstring
 Creates a polygon in screen coordinates from a QgsPolygonXYin map coordinates
 
@@ -1206,7 +1206,7 @@ Ownership of the ``layers`` are transferred to the symbol.
 %End
     void setAngle( double angle );
 
-    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
 %Docstring
 Renders the symbol using the given render ``context``.
 

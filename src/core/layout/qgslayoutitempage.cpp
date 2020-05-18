@@ -280,7 +280,7 @@ void QgsLayoutItemPage::draw( QgsLayoutItemRenderContext &context )
     // round up
     QPolygonF pagePolygon = QPolygonF( QRectF( maxBleedPixels, maxBleedPixels,
                                        std::ceil( rect().width() * scale ) - 2 * maxBleedPixels, std::ceil( rect().height() * scale ) - 2 * maxBleedPixels ) );
-    QList<QPolygonF> rings; //empty list
+    QVector<QPolygonF> rings; //empty list
 
     symbol->renderPolygon( pagePolygon, &rings, nullptr, context.renderContext() );
     symbol->stopRender( context.renderContext() );

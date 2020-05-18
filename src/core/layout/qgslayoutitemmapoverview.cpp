@@ -127,7 +127,7 @@ void QgsLayoutItemMapOverview::draw( QPainter *painter )
   QPolygonF intersectPolygon;
   intersectPolygon = mapTransform.map( intersectExtent );
 
-  QList<QPolygonF> rings; //empty list
+  QVector<QPolygonF> rings; //empty list
   if ( !mInverted )
   {
     //Render the intersecting map extent
