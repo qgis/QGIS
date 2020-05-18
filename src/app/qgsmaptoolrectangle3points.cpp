@@ -86,8 +86,8 @@ void QgsMapToolRectangle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         line->addVertex( mPoints.at( 0 ) );
         line->addVertex( point );
         mTempRubberBand->setGeometry( line.release() );
-        break;
       }
+      break;
       case 2:
       {
         if ( !point.is3D() )
@@ -103,8 +103,10 @@ void QgsMapToolRectangle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         }
 
         mTempRubberBand->setGeometry( mRectangle.toPolygon() );
-        break;
       }
+      break;
+      default:
+        break;
     }
   }
 }
