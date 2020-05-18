@@ -957,7 +957,7 @@ void QgsAuthManager::updateConfigAuthMethods()
 
   if ( query.isActive() )
   {
-    QgsDebugMsg( QStringLiteral( "Syncing existing auth config and their auth methods" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Syncing existing auth config and their auth methods" ), 2 );
     mConfigAuthMethods.clear();
     QStringList cfgmethods;
     while ( query.next() )
@@ -966,7 +966,7 @@ void QgsAuthManager::updateConfigAuthMethods()
                                  query.value( 1 ).toString() );
       cfgmethods << QStringLiteral( "%1=%2" ).arg( query.value( 0 ).toString(), query.value( 1 ).toString() );
     }
-    QgsDebugMsg( QStringLiteral( "Stored auth config/methods:\n%1" ).arg( cfgmethods.join( ", " ) ) );
+    QgsDebugMsgLevel( QStringLiteral( "Stored auth config/methods:\n%1" ).arg( cfgmethods.join( ", " ) ), 2 );
   }
 }
 

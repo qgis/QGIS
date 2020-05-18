@@ -140,7 +140,7 @@ void QgsProviderRegistry::init()
   mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*.so" ) ) );
 #endif
 
-  QgsDebugMsg( QStringLiteral( "Checking %1 for provider plugins" ).arg( mLibraryDirectory.path() ) );
+  QgsDebugMsgLevel( QStringLiteral( "Checking %1 for provider plugins" ).arg( mLibraryDirectory.path() ), 2 );
 
   if ( mLibraryDirectory.count() == 0 )
   {

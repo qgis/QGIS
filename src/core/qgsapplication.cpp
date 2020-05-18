@@ -2054,7 +2054,7 @@ bool QgsApplication::createDatabase( QString *errorMessage )
 
 void QgsApplication::setMaxThreads( int maxThreads )
 {
-  QgsDebugMsgLevel( QStringLiteral( "maxThreads: %1" ).arg( maxThreads ), 1 );
+  QgsDebugMsgLevel( QStringLiteral( "maxThreads: %1" ).arg( maxThreads ), 2 );
 
   // make sure value is between 1 and #cores, if not set to -1 (use #cores)
   // 0 could be used to disable any parallel processing
@@ -2070,7 +2070,7 @@ void QgsApplication::setMaxThreads( int maxThreads )
 
   // set max thread count in QThreadPool
   QThreadPool::globalInstance()->setMaxThreadCount( maxThreads );
-  QgsDebugMsgLevel( QStringLiteral( "set QThreadPool max thread count to %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ), 1 );
+  QgsDebugMsgLevel( QStringLiteral( "set QThreadPool max thread count to %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ), 2 );
 }
 
 QgsTaskManager *QgsApplication::taskManager()
