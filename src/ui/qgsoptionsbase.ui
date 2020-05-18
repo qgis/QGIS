@@ -1437,15 +1437,6 @@
                          <height>120</height>
                         </size>
                        </property>
-                       <property name="editTriggers">
-                        <set>QAbstractItemView::AllEditTriggers</set>
-                       </property>
-                       <property name="dragEnabled">
-                        <bool>true</bool>
-                       </property>
-                       <property name="dragDropMode">
-                        <enum>QAbstractItemView::DragOnly</enum>
-                       </property>
                        <property name="selectionMode">
                         <enum>QAbstractItemView::SingleSelection</enum>
                        </property>
