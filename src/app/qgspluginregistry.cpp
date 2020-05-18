@@ -304,6 +304,7 @@ void QgsPluginRegistry::loadPythonPlugin( const QString &packageName )
       return;
     }
 
+    QgsScopedRuntimeProfile profile( packageName );
     mPythonUtils->loadPlugin( packageName );
     mPythonUtils->startPlugin( packageName );
 
@@ -336,6 +337,8 @@ void QgsPluginRegistry::loadCppPlugin( const QString &fullPathName )
     // QMessageBox::warning(this, "Loading Plugins", description + " is already loaded");
     return;
   }
+
+  QgsScopedRuntimeProfile profile( baseName );
 
   QLibrary myLib( fullPathName );
 
@@ -482,6 +485,8 @@ void QgsPluginRegistry::restoreSessionPlugins( const QStringList &pluginDirList 
 void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
 {
   QgsSettings mySettings;
+
+  QgsScopedRuntimeProfile profile( QObject::tr( "Load plugins" ) );
 
 #if defined(Q_OS_WIN) || defined(__CYGWIN__)
   QString pluginExt = "*.dll";
