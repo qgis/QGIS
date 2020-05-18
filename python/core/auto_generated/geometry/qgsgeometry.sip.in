@@ -556,7 +556,7 @@ and the indices of the vertices before and after the closest vertex.
                     not present.
 :param sqrDist: will be set to the square distance between the closest vertex and the specified point
 
-:return: - closest point in geometry. If not found (empty geometry), returns null point nad sqrDist is negative.
+:return: - closest point in geometry. If not found (empty geometry), returns null point and sqrDist is negative.
          - atVertex: will be set to the vertex index of the closest found vertex
 %End
 
@@ -669,7 +669,7 @@ Returns coordinates of a vertex.
 
 :param atVertex: index of the vertex
 
-:return: Coordinates of the vertex or QgsPoint(0,0) on error
+:return: Coordinates of the vertex or empty :py:class:`QgsPoint`() on error
 %End
 
     double sqrDistToVertexAt( QgsPointXY &point /In/, int atVertex ) const;
