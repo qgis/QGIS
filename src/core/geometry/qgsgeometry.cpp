@@ -829,6 +829,8 @@ QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QgsPointSequence 
 
   QVector<QgsGeometry > newGeoms;
   QgsLineString splitLineString( splitLine );
+  splitLineString.dropZValue();
+  splitLineString.dropMValue();
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
