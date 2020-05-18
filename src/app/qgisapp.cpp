@@ -846,7 +846,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   endProfile();
 
   // load GUI: actions, menus, toolbars
-  profiler->start( tr( "Application startup" ) );
   startProfile( tr( "Setting up UI" ) );
   setupUi( this );
   // because mActionToggleMapOnly can hide the menu (thereby disabling menu actions),
@@ -860,7 +859,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   //////////
 
-  startProfile( tr( "Checking database" ) );
+  startProfile( tr( "Checking user database" ) );
   mSplash->showMessage( tr( "Checking database" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
   // Do this early on before anyone else opens it and prevents us copying it
@@ -1628,7 +1627,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 #ifdef ANDROID
   toggleFullScreen();
 #endif
-  profiler->end();
 
   mStartupProfilerWidgetFactory.reset( qgis::make_unique< QgsProfilerWidgetFactory >( profiler ) );
 
@@ -2109,8 +2107,8 @@ const QList<QgsVectorLayerRef> QgisApp::findBrokenLayerDependencies( QgsVectorLa
                ! dependency.layerId.isEmpty() )
           {
             const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly(
-                QgsProject::instance(),
-                QgsVectorLayerRef::MatchType::Name ) };
+                                            QgsProject::instance(),
+                                            QgsVectorLayerRef::MatchType::Name ) };
             if ( ! depVl || ! depVl->isValid() )
             {
               brokenDependencies.append( dependency );
@@ -2260,8 +2258,8 @@ void QgisApp::resolveVectorLayerDependencies( QgsVectorLayer *vl, QgsMapLayer::S
       if ( ! loaded )
       {
         const QString msg { tr( "layer '%1' requires layer '%2' to be loaded but '%2' could not be found, please load it manually if possible." )
-          .arg( vl->name() )
-          .arg( dependency.name ) };
+                            .arg( vl->name() )
+                            .arg( dependency.name ) };
         messageBar()->pushWarning( tr( "Missing layer form dependency" ), msg );
       }
       else
