@@ -1033,8 +1033,6 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
   QString errorMsg;
   readSymbology( layer_node, errorMsg, context );
 
-  // read temporal
-  temporalProperties()->readXml( layer_node.toElement(), context );
   if ( !mTemporalProperties->timeExtent().begin().isValid() )
     temporalProperties()->setDefaultsFromDataProviderTemporalCapabilities( dataProvider()->temporalCapabilities() );
 
@@ -1089,8 +1087,6 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
     }
     layer_node.appendChild( elemExtraDatasets );
   }
-  // write temporal
-  mTemporalProperties->writeXml( mapLayerNode, document, context );
 
   QDomElement elemStaticDataset = document.createElement( QStringLiteral( "static-active-dataset" ) );
   if ( mStaticScalarDatasetIndex.isValid() )

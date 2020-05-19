@@ -96,6 +96,7 @@ This is the base class for all map layer types (vector, raster).
       CustomProperties,
       GeometryOptions,
       Relations,
+      Temporal,
       AllStyleCategories
     };
     typedef QFlags<QgsMapLayer::StyleCategory> StyleCategories;
