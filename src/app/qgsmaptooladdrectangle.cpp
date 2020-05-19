@@ -100,7 +100,7 @@ void QgsMapToolAddRectangle::deactivate( )
     is3D = QgsWkbTypes::hasZ(vLayer->wkbType());
 
   // keep z value from the first snapped point
-  std::unique_ptr<QgsLineString> lineString( mRectangle.toLineString( not is3D ) );
+  std::unique_ptr<QgsLineString> lineString( mRectangle.toLineString( ! is3D ) );
   if ( is3D )
   {
     for ( const QgsPoint &point : qgis::as_const( mPoints ) )
