@@ -2,7 +2,7 @@
 {
   "name": "from_base64",
   "type": "function",
-  "description": "Decodes a provided string in Base64 into readable string.",
+  "description": "Decodes a string in the Base64 encoding into a binary value.",
   "arguments": [
     {"arg":"string", "description": "the string to decode"}],
     "examples": [ { "expression":"from_base64('UUdJUw==')", "returns":"'QGIS'"}
