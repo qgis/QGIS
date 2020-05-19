@@ -302,6 +302,7 @@ QString QgsWMSItemBase::createUri()
   if ( mDataSourceUri.param( QLatin1String( "type" ) ) == QLatin1String( "wmst" ) )
   {
     mDataSourceUri.setParam( QLatin1String( "temporalSource" ), QLatin1String( "provider" ) );
+    mDataSourceUri.setParam( QLatin1String( "allowTemporalUpdates" ), QLatin1String( "true" ) );
   }
 
   QString format;
