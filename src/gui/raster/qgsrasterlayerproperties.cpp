@@ -938,18 +938,11 @@ void QgsRasterLayerProperties::sync()
   QVariant wmsBackgroundLayer = mRasterLayer->customProperty( QStringLiteral( "WMSBackgroundLayer" ), false );
   mBackgroundLayerCheckBox->setChecked( wmsBackgroundLayer.toBool() );
 
-  /*
-   * Legend Tab
-   */
   mLegendConfigEmbeddedWidget->setLayer( mRasterLayer );
 
-} // QgsRasterLayerProperties::sync()
+  mTemporalWidget->syncToLayer();
+}
 
-/*
- *
- * PUBLIC AND PRIVATE SLOTS
- *
- */
 void QgsRasterLayerProperties::apply()
 {
 

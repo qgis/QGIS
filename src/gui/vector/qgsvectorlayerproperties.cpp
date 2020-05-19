@@ -597,6 +597,8 @@ void QgsVectorLayerProperties::syncToLayer()
 
   mMetadataWidget->setMetadata( &mLayer->metadata() );
 
+  mTemporalWidget->syncToLayer();
+
 } // syncToLayer()
 
 void QgsVectorLayerProperties::apply()

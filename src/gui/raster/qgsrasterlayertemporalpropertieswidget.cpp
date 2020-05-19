@@ -31,28 +31,9 @@ QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( 
   setupUi( this );
 
   connect( mModeFixedRangeRadio, &QRadioButton::toggled, mFixedTimeRangeFrame, &QWidget::setEnabled );
-  init();
-}
 
-void QgsRasterLayerTemporalPropertiesWidget::init()
-{
   mStartTemporalDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
-
   mEndTemporalDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
-
-  const QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< const QgsRasterLayerTemporalProperties * >( mLayer->temporalProperties() );
-  switch ( temporalProperties->mode() )
-  {
-    case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
-      mModeAutomaticRadio->setChecked( true );
-      break;
-    case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
-      mModeFixedRangeRadio->setChecked( true );
-      break;
-  }
-
-  mStartTemporalDateTimeEdit->setDateTime( temporalProperties->fixedTemporalRange().begin() );
-  mEndTemporalDateTimeEdit->setDateTime( temporalProperties->fixedTemporalRange().end() );
 
   if ( !mLayer->dataProvider() || !mLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
   {
@@ -61,7 +42,7 @@ void QgsRasterLayerTemporalPropertiesWidget::init()
     mModeFixedRangeRadio->setChecked( true );
   }
 
-  mTemporalGroupBox->setChecked( temporalProperties->isActive() );
+  syncToLayer();
 }
 
 void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
@@ -78,4 +59,23 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
   else if ( mModeFixedRangeRadio->isChecked() )
     temporalProperties->setMode( QgsRasterLayerTemporalProperties::ModeFixedTemporalRange );
   temporalProperties->setFixedTemporalRange( normalRange );
+}
+
+void QgsRasterLayerTemporalPropertiesWidget::syncToLayer()
+{
+  const QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< const QgsRasterLayerTemporalProperties * >( mLayer->temporalProperties() );
+  switch ( temporalProperties->mode() )
+  {
+    case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
+      mModeAutomaticRadio->setChecked( true );
+      break;
+    case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
+      mModeFixedRangeRadio->setChecked( true );
+      break;
+  }
+
+  mStartTemporalDateTimeEdit->setDateTime( temporalProperties->fixedTemporalRange().begin() );
+  mEndTemporalDateTimeEdit->setDateTime( temporalProperties->fixedTemporalRange().end() );
+
+  mTemporalGroupBox->setChecked( temporalProperties->isActive() );
 }

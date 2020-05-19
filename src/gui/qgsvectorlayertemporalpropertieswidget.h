@@ -48,6 +48,11 @@ class GUI_EXPORT QgsVectorLayerTemporalPropertiesWidget : public QWidget, public
 
     QgsExpressionContext createExpressionContext() const override;
 
+    /**
+     * Updates the widget state to match the current layer state.
+     */
+    void syncToLayer();
+
   private:
 
     /**
