@@ -40,6 +40,7 @@
 #include "qgsnumericformatwidget.h"
 
 #include "qgsattributetablefiltermodel.h"
+#include "qgslocalizeddatapathregistry.h"
 #include "qgsrasterformatsaveoptionswidget.h"
 #include "qgsrasterpyramidsoptionswidget.h"
 #include "qgsdatumtransformtablewidget.h"
@@ -307,6 +308,21 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
   connect( mBtnAddTemplatePath, &QAbstractButton::clicked, this, &QgsOptions::addTemplatePath );
   connect( mBtnRemoveTemplatePath, &QAbstractButton::clicked, this, &QgsOptions::removeTemplatePath );
+
+  // localized data paths
+  connect( mLocalizedDataPathAddButton, &QAbstractButton::clicked, this, &QgsOptions::addLocalizedDataPath );
+  connect( mLocalizedDataPathRemoveButton, &QAbstractButton::clicked, this, &QgsOptions::removeLocalizedDataPath );
+  connect( mLocalizedDataPathUpButton, &QAbstractButton::clicked, this, &QgsOptions::moveLocalizedDataPathUp );
+  connect( mLocalizedDataPathDownButton, &QAbstractButton::clicked, this, &QgsOptions::moveLocalizedDataPathDown );
+
+  const QStringList localizedPaths = QgsApplication::localizedDataPathRegistry()->paths();
+  for ( const QString &path : localizedPaths )
+  {
+    QListWidgetItem *newItem = new QListWidgetItem( mLocalizedDataPathListWidget );
+    newItem->setText( path );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mLocalizedDataPathListWidget->addItem( newItem );
+  }
 
   //paths hidden from browser
   const QStringList hiddenPathList = mSettings->value( QStringLiteral( "/browser/hiddenPaths" ) ).toStringList();
@@ -1408,6 +1424,11 @@ void QgsOptions::saveOptions()
     pathsList << mListComposerTemplatePaths->item( i )->text();
   }
   mSettings->setValue( QStringLiteral( "Layout/searchPathsForTemplates" ), pathsList, QgsSettings::Core );
+
+  pathsList.clear();
+  for ( int r = 0; r < mLocalizedDataPathListWidget->count(); r++ )
+    pathsList << mLocalizedDataPathListWidget->item( r )->text();
+  QgsApplication::localizedDataPathRegistry()->setPaths( pathsList );
 
   pathsList.clear();
   for ( int i = 0; i < mListHiddenBrowserPaths->count(); ++i )
@@ -2527,6 +2548,55 @@ void QgsOptions::addColor()
 
   mTreeCustomColors->addColor( newColor, QgsSymbolLayerUtils::colorToName( newColor ) );
 }
+
+void QgsOptions::removeLocalizedDataPath()
+{
+  qDeleteAll( mLocalizedDataPathListWidget->selectedItems() );
+}
+
+void QgsOptions::addLocalizedDataPath()
+{
+  QString myDir = QFileDialog::getExistingDirectory(
+                    this,
+                    tr( "Choose a Directory" ),
+                    QDir::homePath(),
+                    QFileDialog::ShowDirsOnly
+                  );
+
+  if ( ! myDir.isEmpty() )
+  {
+    QListWidgetItem *newItem = new QListWidgetItem( mLocalizedDataPathListWidget );
+    newItem->setText( myDir );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mLocalizedDataPathListWidget->addItem( newItem );
+    mLocalizedDataPathListWidget->setCurrentItem( newItem );
+  }
+}
+
+void QgsOptions::moveLocalizedDataPathUp()
+{
+  QList<QListWidgetItem *> selectedItems = mLocalizedDataPathListWidget->selectedItems();
+  QList<QListWidgetItem *>::iterator itemIt = selectedItems.begin();
+  for ( ; itemIt != selectedItems.end(); ++itemIt )
+  {
+    int row = mLocalizedDataPathListWidget->row( *itemIt );
+    mLocalizedDataPathListWidget->takeItem( row );
+    mLocalizedDataPathListWidget->insertItem( row - 1, *itemIt );
+  }
+}
+
+void QgsOptions::moveLocalizedDataPathDown()
+{
+  QList<QListWidgetItem *> selectedItems = mLocalizedDataPathListWidget->selectedItems();
+  QList<QListWidgetItem *>::iterator itemIt = selectedItems.begin();
+  for ( ; itemIt != selectedItems.end(); ++itemIt )
+  {
+    int row = mLocalizedDataPathListWidget->row( *itemIt );
+    mLocalizedDataPathListWidget->takeItem( row );
+    mLocalizedDataPathListWidget->insertItem( row + 1, *itemIt );
+  }
+}
+
 
 QListWidgetItem *QgsOptions::addScaleToScaleList( const QString &newScale )
 {

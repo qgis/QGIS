@@ -15,6 +15,7 @@
 
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
+#include "qgslocalizeddatapathregistry.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgsexception.h"
 #include "qgsgeometry.h"
@@ -2235,10 +2236,16 @@ QgsProjectStorageRegistry *QgsApplication::projectStorageRegistry()
   return members()->mProjectStorageRegistry;
 }
 
+QgsLocalizedDataPathRegistry *QgsApplication::localizedDataPathRegistry()
+{
+  return members()->mLocalizedDataPathRegistry;
+}
+
 QgsApplication::ApplicationMembers::ApplicationMembers()
 {
   // don't use initializer lists or scoped pointers - as more objects are added here we
   // will need to be careful with the order of creation/destruction
+  mLocalizedDataPathRegistry = new QgsLocalizedDataPathRegistry();
   mMessageLog = new QgsMessageLog();
   mProfiler = new QgsRuntimeProfiler();
 
@@ -2402,6 +2409,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mNumericFormatRegistry;
   delete mBookmarkManager;
   delete mConnectionRegistry;
+  delete mLocalizedDataPathRegistry;
 }
 
 QgsApplication::ApplicationMembers *QgsApplication::members()

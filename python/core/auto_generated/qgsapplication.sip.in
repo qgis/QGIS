@@ -859,6 +859,17 @@ Returns registry of available project storage implementations.
 .. versionadded:: 3.2
 %End
 
+    static QgsLocalizedDataPathRegistry *localizedDataPathRegistry() /KeepReference/;
+%Docstring
+Returns the registry of data repositories
+These are used as paths for basemaps, logos, etc. which can be referenced
+differently across work stations.
+
+.. seealso:: :py:class:`QgsLocalizedDataPathRegistry`
+
+.. versionadded:: 3.14
+%End
+
     static QString nullRepresentation();
 %Docstring
 This string is used to represent the value `NULL` throughout QGIS.
