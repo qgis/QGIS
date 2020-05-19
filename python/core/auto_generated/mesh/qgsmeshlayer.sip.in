@@ -292,6 +292,11 @@ If the temporal properties is not active, return the static dataset
 
 :return: dataset index
 
+.. note::
+
+   the returned dataset index depends on the matching method, see setTemporalMatchingMethod()
+
+
 .. versionadded:: 3.14
 %End
 
@@ -303,6 +308,11 @@ If the temporal properties is not active, return the static dataset
 :param timeRange: the time range
 
 :return: dataset index
+
+.. note::
+
+   the returned dataset index depends on the matching method, see setTemporalMatchingMethod()
+
 
 .. versionadded:: 3.14
 %End
@@ -328,6 +338,15 @@ Returns the static vector dataset index that is rendered if the temporal propert
 Sets the reference time of the layer
 
 :param referenceTime: the reference time
+
+.. versionadded:: 3.14
+%End
+
+    void setTemporalMatchingMethod( const QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod &matchingMethod );
+%Docstring
+Sets the method used to match the temporal dataset from a requested time, see activeVectorDatasetAtTime()
+
+:param matchingMethod: the matching method
 
 .. versionadded:: 3.14
 %End

@@ -95,6 +95,11 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   delete mOptsPage_3DView;  // removes both the "3d view" list item and its page
 #endif
 
+  mComboBoxTemporalDatasetMatchingMethod->addItem( tr( "Find closest dataset before requested time" ),
+      QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetBeforeStartRangeTime );
+  mComboBoxTemporalDatasetMatchingMethod->addItem( tr( "Find closest dataset from requested time (after or before)" ),
+      QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetFromStartRangeTime );
+
   // update based on lyr's current state
   syncToLayer();
 
@@ -209,6 +214,8 @@ void QgsMeshLayerProperties::syncToLayer()
     mTemporalProviderTimeUnitComboBox->setCurrentIndex(
       mTemporalProviderTimeUnitComboBox->findData( mMeshLayer->dataProvider()->temporalCapabilities()->temporalUnit() ) );
   }
+  mComboBoxTemporalDatasetMatchingMethod->setCurrentIndex(
+    mComboBoxTemporalDatasetMatchingMethod->findData( temporalProperties->matchingMethod() ) );
 
   mStaticScalarWidget->syncToLayer();
   mStaticScalarWidget->setVisible( !mMeshLayer->temporalProperties()->isActive() );
@@ -371,6 +378,8 @@ void QgsMeshLayerProperties::apply()
   mStaticScalarWidget->apply();
   bool needEmitRendererChanged = mMeshLayer->temporalProperties()->isActive() == mTemporalStaticDatasetCheckBox->isChecked();
   mMeshLayer->temporalProperties()->setIsActive( !mTemporalStaticDatasetCheckBox->isChecked() );
+  mMeshLayer->setTemporalMatchingMethod( static_cast<QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod>(
+      mComboBoxTemporalDatasetMatchingMethod->currentData().toInt() ) );
 
   if ( needMeshUpdating )
     mMeshLayer->reload();

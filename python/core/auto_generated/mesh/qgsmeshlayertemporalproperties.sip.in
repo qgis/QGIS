@@ -76,6 +76,18 @@ if the temporal capabilities is null, set a void time extent (reference time to 
 :param capabilities: the temporal capabilities of the data provider
 %End
 
+    QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod matchingMethod() const;
+%Docstring
+Returns the method used to match dataset from temporal capabilities
+%End
+
+    void setMatchingMethod( const QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod &matchingMethod );
+%Docstring
+Sets the method used to match dataset from temporal capabilities
+
+:param matchingMethod: the matching method
+%End
+
 };
 
 /************************************************************************
