@@ -1144,7 +1144,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
             mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1, true ) );
 
           context.setGeometry( geomCollection.geometryN( i ) );
-          static_cast<QgsLineSymbol *>( this )->renderPolyline( linesToRender.at( 0 ), &feature, context, symbolLayerIndex, selected );
+          static_cast<QgsLineSymbol *>( this )->renderPolyline( linesToRender.at( i ), &feature, context, symbolLayerIndex, selected );
         }
         break;
       }
