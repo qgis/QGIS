@@ -82,9 +82,7 @@ void QgsMeshLayer::setDefaultRendererSettings()
          meta.minimum() == std::numeric_limits<double>::quiet_NaN() )
       meshSettings.setEnabled( true );
 
-    // If the mesh is non temporal, set the static scalar dataset
-    if ( !mDataProvider->temporalCapabilities()->hasTemporalCapabilities() )
-      setStaticScalarDatasetIndex( QgsMeshDatasetIndex( 0, 0 ) );
+    setStaticScalarDatasetIndex( QgsMeshDatasetIndex( 0, 0 ) );
   }
   else
   {
@@ -435,12 +433,17 @@ QgsMeshDatasetIndex QgsMeshLayer::datasetIndexAtTime( const QgsDateTimeRange &ti
 {
   const QDateTime layerReferenceTime = mTemporalProperties->referenceTime();
   qint64 startTime = layerReferenceTime.msecsTo( timeRange.begin() );
-  qint64 endTime = layerReferenceTime.msecsTo( timeRange.end() );
 
   if ( dataProvider() )
-    return dataProvider()->temporalCapabilities()->datasetIndexFromRelativeTimeRange( datasetGroupIndex, startTime, endTime );
-  else
-    return QgsMeshDatasetIndex();
+    switch ( mTemporalProperties->matchingMethod() )
+    {
+      case QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetBeforeStartRangeTime:
+        return dataProvider()->temporalCapabilities()->datasetIndexClosestBeforeRelativeTime( datasetGroupIndex, startTime );
+      case QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetFromStartRangeTime:
+        return dataProvider()->temporalCapabilities()->datasetIndexClosestFromRelativeTime( datasetGroupIndex, startTime );
+    }
+
+  return QgsMeshDatasetIndex();
 }
 
 void QgsMeshLayer::applyClassificationOnScalarSettings( const QgsMeshDatasetGroupMetadata &meta, QgsMeshRendererScalarSettings &scalarSettings ) const
@@ -635,6 +638,11 @@ void QgsMeshLayer::setReferenceTime( const QDateTime &referenceTime )
     mTemporalProperties->setReferenceTime( referenceTime, dataProvider()->temporalCapabilities() );
   else
     mTemporalProperties->setReferenceTime( referenceTime, nullptr );
+}
+
+void QgsMeshLayer::setTemporalMatchingMethod( const QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod &matchingMethod )
+{
+  mTemporalProperties->setMatchingMethod( matchingMethod );
 }
 
 QgsPointXY QgsMeshLayer::snapOnVertex( const QgsPointXY &point, double searchRadius )

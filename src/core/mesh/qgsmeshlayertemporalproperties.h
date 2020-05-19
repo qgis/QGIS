@@ -19,6 +19,7 @@
 #define QGSMESHLAYERTEMPORALPROPERTIES_H
 
 #include "qgsmaplayertemporalproperties.h"
+#include "qgsmeshdataprovidertemporalcapabilities.h"
 
 
 /**
@@ -86,9 +87,23 @@ class CORE_EXPORT QgsMeshLayerTemporalProperties : public QgsMapLayerTemporalPro
      */
     void setReferenceTime( const QDateTime &referenceTime, const QgsDataProviderTemporalCapabilities *capabilities );
 
+    /**
+     * Returns the method used to match dataset from temporal capabilities
+     */
+    QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod matchingMethod() const;
+
+    /**
+     * Sets the method used to match dataset from temporal capabilities
+     *
+     * \param matchingMethod the matching method
+     */
+    void setMatchingMethod( const QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod &matchingMethod );
+
   private:
     QDateTime mReferenceTime;
     QgsDateTimeRange mTimeExtent;
+    QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod mMatchingMethod =
+      QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetBeforeStartRangeTime;
 };
 
 #endif // QGSMESHLAYERTEMPORALPROPERTIES_H

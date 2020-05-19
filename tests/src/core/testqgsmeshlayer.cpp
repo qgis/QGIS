@@ -1123,40 +1123,50 @@ void TestQgsMeshLayer::test_temporal()
 {
   qint64 relativeTime_0 = -1000;
   qint64 relativeTime_1 = 0;
-  qint64 relativeTime_2 = 1000 * 60 * 60 * 0.3;
-  qint64 relativeTime_3 = 1000 * 60 * 60 * 0.5;
-  qint64 relativeTime_4 = 1000 * 60 * 60 * 1.5;
-  qint64 relativeTime_5 = 1000 * 60 * 60 * 2;
+  qint64 relativeTime_2 = 1000 * 60 * 60 * 0.6;
+  qint64 relativeTime_3 = 1000 * 60 * 60 * 1;
+  qint64 relativeTime_4 = 1000 * 60 * 60 * 2;
   // Mesh memory provider
   QgsMeshDataProviderTemporalCapabilities *tempCap = mMemoryLayer->dataProvider()->temporalCapabilities();
   // Static dataset
-  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 0, relativeTime_0, relativeTime_1 ).dataset(), 0 );
-  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 0, relativeTime_1, relativeTime_2 ).dataset(), 0 );
-  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 0, relativeTime_2, relativeTime_3 ).dataset(), 0 );
-  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 0, relativeTime_3, relativeTime_4 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexClosestBeforeRelativeTime( 0, relativeTime_0 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexClosestBeforeRelativeTime( 0, relativeTime_1 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexClosestBeforeRelativeTime( 0, relativeTime_2 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexClosestBeforeRelativeTime( 0, relativeTime_3 ).dataset(), 0 );
   // Temporal dataset
-  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 1, relativeTime_0, relativeTime_1 ).dataset(), -1 );
-  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 1, relativeTime_1, relativeTime_2 ).dataset(), 0 );
-  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 1, relativeTime_2, relativeTime_3 ).dataset(), 0 );
-  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 1, relativeTime_3, relativeTime_4 ).dataset(), 1 );
-  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 1, relativeTime_4, relativeTime_5 ).dataset(), -1 );
+  QCOMPARE( tempCap->datasetIndexClosestBeforeRelativeTime( 1, relativeTime_0 ).dataset(), -1 );
+  QCOMPARE( tempCap->datasetIndexClosestBeforeRelativeTime( 1, relativeTime_1 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexClosestBeforeRelativeTime( 1, relativeTime_2 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexClosestBeforeRelativeTime( 1, relativeTime_3 ).dataset(), 1 );
+  QCOMPARE( tempCap->datasetIndexClosestBeforeRelativeTime( 1, relativeTime_4 ).dataset(), -1 );
+  QCOMPARE( tempCap->datasetIndexClosestFromRelativeTime( 1, relativeTime_0 ).dataset(), -1 );
+  QCOMPARE( tempCap->datasetIndexClosestFromRelativeTime( 1, relativeTime_1 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexClosestFromRelativeTime( 1, relativeTime_2 ).dataset(), 1 );
+  QCOMPARE( tempCap->datasetIndexClosestFromRelativeTime( 1, relativeTime_3 ).dataset(), 1 );
+  QCOMPARE( tempCap->datasetIndexClosestFromRelativeTime( 1, relativeTime_4 ).dataset(), -1 );
+
 
   // Mesh MDAL provider with internal dataset
   tempCap = mMdalLayer->dataProvider()->temporalCapabilities();
   // Static dataset
-  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 0, relativeTime_0, relativeTime_1 ).dataset(), 0 );
-  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 0, relativeTime_1, relativeTime_2 ).dataset(), 0 );
-  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 0, relativeTime_2, relativeTime_3 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexClosestBeforeRelativeTime( 0, relativeTime_0 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexClosestBeforeRelativeTime( 0, relativeTime_1 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexClosestBeforeRelativeTime( 0, relativeTime_2 ).dataset(), 0 );
   // Temporal dataset
-  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 1, relativeTime_0, relativeTime_1 ).dataset(), -1 );
-  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 1, relativeTime_1, relativeTime_2 ).dataset(), 0 );
-  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 1, relativeTime_2, relativeTime_3 ).dataset(), 0 );
-  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 1, relativeTime_3, relativeTime_4 ).dataset(), 1 );
-  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 1, relativeTime_4, relativeTime_5 ).dataset(), -1 );
+  QCOMPARE( tempCap->datasetIndexClosestBeforeRelativeTime( 1, relativeTime_0 ).dataset(), -1 );
+  QCOMPARE( tempCap->datasetIndexClosestBeforeRelativeTime( 1, relativeTime_1 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexClosestBeforeRelativeTime( 1, relativeTime_2 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexClosestBeforeRelativeTime( 1, relativeTime_3 ).dataset(), 1 );
+  QCOMPARE( tempCap->datasetIndexClosestBeforeRelativeTime( 1, relativeTime_4 ).dataset(), -1 );
+  QCOMPARE( tempCap->datasetIndexClosestFromRelativeTime( 1, relativeTime_0 ).dataset(), -1 );
+  QCOMPARE( tempCap->datasetIndexClosestFromRelativeTime( 1, relativeTime_1 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexClosestFromRelativeTime( 1, relativeTime_2 ).dataset(), 1 );
+  QCOMPARE( tempCap->datasetIndexClosestFromRelativeTime( 1, relativeTime_3 ).dataset(), 1 );
+  QCOMPARE( tempCap->datasetIndexClosestFromRelativeTime( 1, relativeTime_4 ).dataset(), -1 );
 
   //Mesh MDAL provider with reference time
   tempCap = mMdal3DLayer->dataProvider()->temporalCapabilities();
-  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 0, relativeTime_0, relativeTime_1 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexClosestBeforeRelativeTime( 0, relativeTime_0 ).dataset(), 0 );
   QDateTime begin = QDateTime( QDate( 1990, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC );
   QDateTime end = QDateTime( QDate( 1990, 1, 1 ), QTime( 6, 0, 1, 938 ), Qt::UTC );
   QCOMPARE( tempCap->timeExtent(), QgsDateTimeRange( begin, end ) );
@@ -1174,10 +1184,15 @@ void TestQgsMeshLayer::test_temporal()
   // Temporal dataset
   settings.setActiveScalarDatasetGroup( 1 );
   mMdal3DLayer->setRendererSettings( settings );
+  mMdal3DLayer->setTemporalMatchingMethod( QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetBeforeStartRangeTime );
+  QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), 17 );
+  mMdal3DLayer->setTemporalMatchingMethod( QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetFromStartRangeTime );
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), 18 );
   // Next dataset
+  mMdal3DLayer->setTemporalMatchingMethod( QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetBeforeStartRangeTime );
+  QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1.addSecs( 400 ), time_2.addSecs( 400 ) ) ).dataset(), 18 );
+  mMdal3DLayer->setTemporalMatchingMethod( QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetFromStartRangeTime );
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1.addSecs( 400 ), time_2.addSecs( 400 ) ) ).dataset(), 19 );
-
   mMdal3DLayer->temporalProperties();
 }
 

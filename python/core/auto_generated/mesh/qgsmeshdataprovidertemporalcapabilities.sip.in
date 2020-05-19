@@ -23,22 +23,37 @@ Class for handling properties relating to a mesh data provider's temporal capabi
 %End
   public:
 
+    enum MatchingTemporalDatasetMethod
+    {
+      FindClosestDatasetBeforeStartRangeTime,
+      FindClosestDatasetFromStartRangeTime
+    };
+
     QgsMeshDataProviderTemporalCapabilities();
 %Docstring
 Constructor for QgsMeshDataProviderTemporalCapabilities
 %End
 
-    QgsMeshDatasetIndex datasetIndexFromRelativeTimeRange( int group, qint64 startTimeSinceGlobalReference, qint64 endTimeSinceGlobalReference ) const;
+    QgsMeshDatasetIndex datasetIndexClosestBeforeRelativeTime( int group, qint64 timeSinceGlobalReference ) const;
 %Docstring
-Returns the first dataset that are include in the range [``startTimeSinceGlobalReference``,``endTimeSinceGlobalReference``[ (in milliseconds)
-from the dataset ``group``. If no dataset is present in this range return the last dataset before this range if it not the last one
-of whole the dataset group
+Returns the last dataset whith time less than or equal to ``timeSinceGlobalReference``
 
-Returns invalid dataset index if there is no data set in the range
+Returns invalid dataset index if ``timeSinceGlobalReference`` is outside the time extent of the dataset group
 
 .. note::
 
-   for non temporal dataset group, the range is not used and the unique dataset is returned
+   for non temporal dataset group, ``timeSinceGlobalReference`` is not used and the unique dataset is returned
+%End
+
+    QgsMeshDatasetIndex datasetIndexClosestFromRelativeTime( int group, qint64 timeSinceGlobalReference ) const;
+%Docstring
+Returns the closest dataset index from the ``timeSinceGlobalReference``
+
+Returns invalid dataset index if ``timeSinceGlobalReference`` is outside the time extent of the dataset group
+
+.. note::
+
+   for non temporal dataset group, ``timeSinceGlobalReference`` is not used and the unique dataset is returned
 %End
 
 
