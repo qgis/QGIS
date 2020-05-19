@@ -156,3 +156,11 @@ ADD_QGIS_TEST(rasterlayersaveasdialog testqgsrasterlayersaveasdialog.cpp)
 ADD_QGIS_TEST(valuerelationwidgetwrapper testqgsvaluerelationwidgetwrapper.cpp)
 ADD_QGIS_TEST(relationreferencewidget testqgsrelationreferencewidget.cpp)
 ADD_QGIS_TEST(featurelistcombobox testqgsfeaturelistcombobox.cpp)
+<<<<<<< HEAD
+=======
+ADD_QGIS_TEST(texteditwrapper testqgstexteditwrapper.cpp)
+ADD_QGIS_TEST(tableeditorwidget testqgstableeditor.cpp)
+ADD_QGIS_TEST(newdatabasetablewidget testqgsnewdatabasetablewidget.cpp)
+ADD_QGIS_TEST(ogrproviderguitest testqgsogrprovidergui.cpp)
+ADD_QGIS_TEST(singlebandpseudocolorrendererwidget testqgssinglebandpseudocolorrendererwidget.cpp)
+>>>>>>> 8499e09e28... Don't refresh single pseudo color band classication when min/max hasn't really changed
