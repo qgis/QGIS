@@ -94,24 +94,16 @@ void QgsMapToolAddRectangle::deactivate( )
 
   mParentTool->clearCurve( );
 
-  QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
-  bool is3D = false;
-  if ( vLayer )
-    is3D = QgsWkbTypes::hasZ(vLayer->wkbType());
-
   // keep z value from the first snapped point
-  std::unique_ptr<QgsLineString> lineString( mRectangle.toLineString( ! is3D ) );
-  if ( is3D )
+  std::unique_ptr<QgsLineString> lineString( mRectangle.toLineString() );
+  for ( const QgsPoint &point : qgis::as_const( mPoints ) )
   {
-    for ( const QgsPoint &point : qgis::as_const( mPoints ) )
+    if ( QgsWkbTypes::hasZ( point.wkbType() ) &&
+         point.z() != defaultZValue() )
     {
-      if ( QgsWkbTypes::hasZ( point.wkbType() ) &&
-           point.z() != defaultZValue() )
-      {
-        lineString->dropZValue();
-        lineString->addZValue( point.z() );
-        break;
-      }
+      lineString->dropZValue();
+      lineString->addZValue( point.z() );
+      break;
     }
   }
 
