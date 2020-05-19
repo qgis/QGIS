@@ -630,7 +630,12 @@ void QgsDualView::openConditionalStyles()
 void QgsDualView::setMultiEditEnabled( bool enabled )
 {
   if ( enabled )
+  {
+    mPreviousView = view();
     setView( AttributeEditor );
+  }
+  else
+    setView( mPreviousView );
 
   mAttributeForm->setMode( enabled ? QgsAttributeEditorContext::MultiEditMode : QgsAttributeEditorContext::SingleEditMode );
 }
