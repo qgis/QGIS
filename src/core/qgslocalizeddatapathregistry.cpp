@@ -28,8 +28,6 @@ QgsLocalizedDataPathRegistry::QgsLocalizedDataPathRegistry()
 
 QString QgsLocalizedDataPathRegistry::globalPath( const QString &relativePath ) const
 {
-  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
-
   for ( const QDir &basePath : qgis::as_const( mPaths ) )
     if ( basePath.exists( relativePath ) )
       return basePath.absoluteFilePath( relativePath );
@@ -39,8 +37,6 @@ QString QgsLocalizedDataPathRegistry::globalPath( const QString &relativePath ) 
 
 QString QgsLocalizedDataPathRegistry::localizedPath( const QString &fullPath ) const
 {
-  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
-
   for ( const QDir &basePath : qgis::as_const( mPaths ) )
     if ( fullPath.startsWith( basePath.absolutePath() ) )
       return basePath.relativeFilePath( fullPath );
@@ -51,8 +47,6 @@ QString QgsLocalizedDataPathRegistry::localizedPath( const QString &fullPath ) c
 
 QStringList QgsLocalizedDataPathRegistry::paths() const
 {
-  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
-
   QStringList paths;
   for ( const QDir &dir : mPaths )
     paths << dir.absolutePath();
@@ -61,8 +55,6 @@ QStringList QgsLocalizedDataPathRegistry::paths() const
 
 void QgsLocalizedDataPathRegistry::setPaths( const QStringList &paths )
 {
-  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Write );
-
   mPaths.clear();
   for ( const QString &path : paths )
   {
@@ -76,13 +68,9 @@ void QgsLocalizedDataPathRegistry::setPaths( const QStringList &paths )
 
 void QgsLocalizedDataPathRegistry::registerPath( const QString &path, int position )
 {
-  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
-
   QDir dir( path );
   if ( mPaths.contains( dir ) )
     return;
-
-  locker.changeMode( QgsReadWriteLocker::Write );
 
   if ( position >= 0 && position < mPaths.count() )
     mPaths.insert( position, dir );
@@ -94,8 +82,6 @@ void QgsLocalizedDataPathRegistry::registerPath( const QString &path, int positi
 
 void QgsLocalizedDataPathRegistry::unregisterPath( const QString &path )
 {
-  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Write );
-
   mPaths.removeAll( QDir( path ) );
   writeToSettings();
 }

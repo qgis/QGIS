@@ -20,7 +20,6 @@
 
 #include <QDir>
 #include <QList>
-#include <QReadWriteLock>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -70,7 +69,6 @@ class CORE_EXPORT QgsLocalizedDataPathRegistry
     void writeToSettings();
 
     QList<QDir> mPaths;
-    mutable QReadWriteLock mLock;
 };
 
 #endif // QGSLOCALIZEDDATAPATHREGISTRY_H
