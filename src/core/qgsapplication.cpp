@@ -2376,17 +2376,6 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     mScaleBarRendererRegistry = new QgsScaleBarRendererRegistry();
     mProfiler->end();
   }
-  mBasemapPathRegistry = new QgsBasemapPathRegistry();
-  mLayoutItemRegistry = new QgsLayoutItemRegistry();
-  mLayoutItemRegistry->populate();
-  mAnnotationRegistry = new QgsAnnotationRegistry();
-  m3DRendererRegistry = new Qgs3DRendererRegistry();
-  mProjectStorageRegistry = new QgsProjectStorageRegistry();
-  mNetworkContentFetcherRegistry = new QgsNetworkContentFetcherRegistry();
-  mValidityCheckRegistry = new QgsValidityCheckRegistry();
-  mClassificationMethodRegistry = new QgsClassificationMethodRegistry();
-  mBookmarkManager = new QgsBookmarkManager( nullptr );
-  mScaleBarRendererRegistry = new QgsScaleBarRendererRegistry();
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
