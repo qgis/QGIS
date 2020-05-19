@@ -53,6 +53,7 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
   mLinkEditButton = new QToolButton( this );
   mLinkEditButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
   connect( mLinkEditButton, &QToolButton::clicked, this, &QgsFileWidget::editLink );
+  mLinkEditButton->hide(); // do not show by default
 
   // otherwise, use the traditional QLineEdit subclass
   mLineEdit = new QgsFileDropEdit( this );
