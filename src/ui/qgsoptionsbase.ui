@@ -2059,7 +2059,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="groupBox_30">
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_301">
                  <property name="title">
                   <string>Localized data paths</string>
                  </property>
