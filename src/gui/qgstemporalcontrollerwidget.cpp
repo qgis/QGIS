@@ -88,10 +88,13 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
     whileBlocking( mFixedRangeEndDateTime )->setDateTime( range.end() );
   }
 
-  mSetToProjectTimeButton->setToolTip( tr( "Match time range to project. \n"
-                                       "If a project has no explicit time range set, \n"
-                                       "then the range will be calculated based on the \n"
-                                       "minimum and maximum dates from any temporal-enabled layers." ) );
+  QString setToProjectTimeButtonToolTip = tr( "Match time range to project. \n"
+                                          "If a project has no explicit time range set, \n"
+                                          "then the range will be calculated based on the \n"
+                                          "minimum and maximum dates from any temporal-enabled layers." );
+
+  mSetToProjectTimeButton->setToolTip( setToProjectTimeButtonToolTip );
+  mFixedRangeSetToProjectTimeButton->setToolTip( setToProjectTimeButtonToolTip );
 
   for ( QgsUnitTypes::TemporalUnit u :
         {
