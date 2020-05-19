@@ -34,7 +34,6 @@
 #include <QMenu>
 #include <QPainter>
 #include <QPushButton>
-#include <QWidget>
 
 QgsColorRampButton::QgsColorRampButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
@@ -57,11 +56,7 @@ QgsColorRampButton::QgsColorRampButton( QWidget *parent, const QString &dialogTi
   mStyle = QgsStyle::defaultStyle();
 }
 
-QgsColorRampButton::~QgsColorRampButton()
-{
-  delete mColorRamp;
-  delete mDefaultColorRamp;
-}
+QgsColorRampButton::~QgsColorRampButton() = default;
 
 QSize QgsColorRampButton::sizeHint() const
 {
@@ -177,7 +172,7 @@ void QgsColorRampButton::setToDefaultColorRamp()
     return;
   }
 
-  setColorRamp( mDefaultColorRamp );
+  setColorRamp( mDefaultColorRamp.get() );
 }
 
 void QgsColorRampButton::setToNull()
@@ -249,7 +244,7 @@ void QgsColorRampButton::prepareMenu()
   if ( mDefaultColorRamp )
   {
     QAction *defaultColorRampAction = new QAction( tr( "Default Color Ramp" ), this );
-    defaultColorRampAction->setIcon( createMenuIcon( mDefaultColorRamp ) );
+    defaultColorRampAction->setIcon( createMenuIcon( mDefaultColorRamp.get() ) );
     mMenu->addAction( defaultColorRampAction );
     connect( defaultColorRampAction, &QAction::triggered, this, &QgsColorRampButton::setToDefaultColorRamp );
   }
@@ -262,7 +257,7 @@ void QgsColorRampButton::prepareMenu()
     mMenu->addAction( randomColorRampAction );
     connect( randomColorRampAction, &QAction::triggered, this, &QgsColorRampButton::setRandomColorRamp );
 
-    if ( isRandomColorRamp() || dynamic_cast<QgsLimitedRandomColorRamp *>( mColorRamp ) )
+    if ( isRandomColorRamp() || dynamic_cast<QgsLimitedRandomColorRamp *>( mColorRamp.get() ) )
     {
       QAction *shuffleRandomColorRampAction = new QAction( tr( "Shuffle Random Colors" ), this );
       mMenu->addAction( shuffleRandomColorRampAction );
@@ -462,16 +457,15 @@ void QgsColorRampButton::resizeEvent( QResizeEvent *event )
   QToolButton::resizeEvent( event );
   //recalculate icon size and redraw icon
   mIconSize = QSize();
-  setButtonBackground( mColorRamp );
+  setButtonBackground( mColorRamp.get() );
 }
 
 void QgsColorRampButton::setColorRamp( QgsColorRamp *colorramp )
 {
-  if ( colorramp == mColorRamp )
+  if ( colorramp == mColorRamp.get() )
     return;
 
-  delete mColorRamp;
-  mColorRamp = colorramp ? colorramp->clone() : nullptr;
+  mColorRamp.reset( colorramp ? colorramp->clone() : nullptr );
 
   setButtonBackground();
   if ( isEnabled() )
@@ -506,7 +500,7 @@ void QgsColorRampButton::setButtonBackground( QgsColorRamp *colorramp )
   QgsColorRamp *backgroundColorRamp = colorramp;
   if ( !colorramp )
   {
-    backgroundColorRamp = mColorRamp;
+    backgroundColorRamp = mColorRamp.get();
   }
 
   QSize currentIconSize;
@@ -593,18 +587,27 @@ void QgsColorRampButton::setShowMenu( const bool showMenu )
   setPopupMode( showMenu ? QToolButton::MenuButtonPopup : QToolButton::DelayedPopup );
   //force recalculation of icon size
   mIconSize = QSize();
-  setButtonBackground( mColorRamp );
+  setButtonBackground( mColorRamp.get() );
+}
+
+bool QgsColorRampButton::showMenu() const
+{
+  return menu() ? true : false;
 }
 
 void QgsColorRampButton::setDefaultColorRamp( QgsColorRamp *colorramp )
 {
-  delete mDefaultColorRamp;
-  mDefaultColorRamp = colorramp->clone();
+  mDefaultColorRamp.reset( colorramp ? colorramp->clone() : nullptr );
+}
+
+QgsColorRamp *QgsColorRampButton::defaultColorRamp() const
+{
+  return mDefaultColorRamp ? mDefaultColorRamp->clone() : nullptr;
 }
 
 bool QgsColorRampButton::isRandomColorRamp() const
 {
-  return dynamic_cast<QgsRandomColorRamp *>( mColorRamp );
+  return dynamic_cast<QgsRandomColorRamp *>( mColorRamp.get() );
 }
 
 void QgsColorRampButton::setShowNull( bool showNull )

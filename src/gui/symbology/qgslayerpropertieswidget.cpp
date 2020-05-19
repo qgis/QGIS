@@ -41,6 +41,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsmasksymbollayerwidget.h"
 #include "qgstemporalcontroller.h"
+#include "qgssymbollayerutils.h"
 
 static bool _initWidgetFunction( const QString &name, QgsSymbolLayerWidgetFunc f )
 {
