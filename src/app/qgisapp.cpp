@@ -11708,6 +11708,8 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
 
 void QgisApp::loadPythonSupport()
 {
+  QgsScopedRuntimeProfile profile( tr( "Loading Python support" ) );
+
   QString pythonlibName( QStringLiteral( "qgispython" ) );
 #if defined(Q_OS_UNIX)
   pythonlibName.prepend( QgsApplication::libraryPath() );

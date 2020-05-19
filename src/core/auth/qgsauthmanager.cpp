@@ -52,6 +52,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#include "qgsruntimeprofiler.h"
 
 QgsAuthManager *QgsAuthManager::sInstance = nullptr;
 
@@ -172,6 +173,8 @@ bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabas
   if ( mAuthInit )
     return true;
   mAuthInit = true;
+
+  QgsScopedRuntimeProfile profile( tr( "Initializing authentication manager" ) );
 
   QgsDebugMsgLevel( QStringLiteral( "Initializing QCA..." ), 2 );
   mQcaInitializer = qgis::make_unique<QCA::Initializer>( QCA::Practical, 256 );
@@ -1690,6 +1693,8 @@ bool QgsAuthManager::removeAuthSetting( const QString &key )
 
 bool QgsAuthManager::initSslCaches()
 {
+  QgsScopedRuntimeProfile profile( "Initialize SSL cache" );
+
   QMutexLocker locker( mMutex.get() );
   bool res = true;
   res = res && rebuildCaCertsCache();
