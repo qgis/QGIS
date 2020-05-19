@@ -17,6 +17,7 @@
 #include "qgsruntimeprofiler.h"
 #include "qgslogger.h"
 #include <QPainter>
+#include <cmath>
 
 //
 // QgsProfilerPanelWidget
