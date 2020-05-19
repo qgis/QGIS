@@ -70,16 +70,22 @@ class QgsHanaProviderUtils:
                      '"name" NVARCHAR(32) DEFAULT \'qgis\',' \
                      '"name2" NVARCHAR(32) DEFAULT \'qgis\',' \
                      '"num_char" NVARCHAR(1),' \
+                     '"dt" TIMESTAMP,' \
+                     '"date" DATE,' \
+                     '"time" TIME,' \
                      '"geom" ST_GEOMETRY(4326))'
-        insert_sql = 'INSERT INTO "qgis_test"."some_data" ("pk", "cnt", "name", "name2", "num_char", "geom") VALUES (' \
-                     '?, ?, ?, ?, ?, ST_GeomFromEWKB(?)) '
+        insert_sql = 'INSERT INTO "qgis_test"."some_data" ("pk", "cnt", "name", "name2", "num_char", "dt", "date", ' \
+                     '"time", "geom") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ST_GeomFromEWKB(?)) '
         insert_args = [
-            [5, -200, None, 'NuLl', '5', bytes.fromhex('0101000020E61000001D5A643BDFC751C01F85EB51B88E5340')],
-            [3, 300, 'Pear', 'PEaR', '3', None],
-            [1, 100, 'Orange', 'oranGe', '1',
+            [5, -200, None, 'NuLl', '5', '2020-05-04 12:13:14', '2020-05-02', '12:13:01',
+             bytes.fromhex('0101000020E61000001D5A643BDFC751C01F85EB51B88E5340')],
+            [3, 300, 'Pear', 'PEaR', '3', None, None, None, None],
+            [1, 100, 'Orange', 'oranGe', '1', '2020-05-03 12:13:14', '2020-05-03', '12:13:14',
              bytes.fromhex('0101000020E61000006891ED7C3F9551C085EB51B81E955040')],
-            [2, 200, 'Apple', 'Apple', '2', bytes.fromhex('0101000020E6100000CDCCCCCCCC0C51C03333333333B35140')],
-            [4, 400, 'Honey', 'Honey', '4', bytes.fromhex('0101000020E610000014AE47E17A5450C03333333333935340')]]
+            [2, 200, 'Apple', 'Apple', '2', '2020-05-04 12:14:14', '2020-05-04', '12:14:14',
+             bytes.fromhex('0101000020E6100000CDCCCCCCCC0C51C03333333333B35140')],
+            [4, 400, 'Honey', 'Honey', '4', '2021-05-04 13:13:14', '2021-05-04', '13:13:14',
+             bytes.fromhex('0101000020E610000014AE47E17A5450C03333333333935340')]]
         QgsHanaProviderUtils.createAndFillTable(conn, create_sql, insert_sql, insert_args)
         QgsHanaProviderUtils.executeSQL(conn, 'COMMENT ON TABLE "qgis_test"."some_data" IS \'QGIS Test Table\'')
 

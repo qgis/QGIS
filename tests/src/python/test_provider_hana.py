@@ -90,15 +90,22 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
                      '"name" NVARCHAR(100), ' \
                      '"name2" NVARCHAR(100), ' \
                      '"num_char" NVARCHAR(100),' \
+                     '"dt" TIMESTAMP,' \
+                     '"date" DATE,' \
+                     '"time" TIME,' \
                      '"geom" ST_POINT(4326))'
-        insert_sql = 'INSERT INTO "qgis_test"."edit_data" ("pk", "cnt", "name", "name2", "num_char", "geom") VALUES (' \
-                     '?, ?, ?, ?, ?, ST_GeomFromEWKB(?)) '
+        insert_sql = 'INSERT INTO "qgis_test"."edit_data" ("pk", "cnt", "name", "name2", "num_char", "dt", "date", ' \
+                     '"time", "geom") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ST_GeomFromEWKB(?)) '
         insert_args = [
-            [5, -200, None, 'NuLl', '5', bytes.fromhex('0101000020E61000001D5A643BDFC751C01F85EB51B88E5340')],
-            [3, 300, 'Pear', 'PEaR', '3', None],
-            [1, 100, 'Orange', 'oranGe', '1', bytes.fromhex('0101000020E61000006891ED7C3F9551C085EB51B81E955040')],
-            [2, 200, 'Apple', 'Apple', '2', bytes.fromhex('0101000020E6100000CDCCCCCCCC0C51C03333333333B35140')],
-            [4, 400, 'Honey', 'Honey', '4', bytes.fromhex('0101000020E610000014AE47E17A5450C03333333333935340')]]
+            [5, -200, None, 'NuLl', '5', '2020-05-04 12:13:14', '2020-05-02', '12:13:01',
+             bytes.fromhex('0101000020E61000001D5A643BDFC751C01F85EB51B88E5340')],
+            [3, 300, 'Pear', 'PEaR', '3', None, None, None, None],
+            [1, 100, 'Orange', 'oranGe', '1', '2020-05-03 12:13:14', '2020-05-03', '12:13:14',
+             bytes.fromhex('0101000020E61000006891ED7C3F9551C085EB51B81E955040')],
+            [2, 200, 'Apple', 'Apple', '2', '2020-05-04 12:14:14', '2020-05-04', '12:14:14',
+             bytes.fromhex('0101000020E6100000CDCCCCCCCC0C51C03333333333B35140')],
+            [4, 400, 'Honey', 'Honey', '4', '2021-05-04 13:13:14', '2021-05-04', '13:13:14',
+             bytes.fromhex('0101000020E610000014AE47E17A5450C03333333333935340')]]
         self.prepareTestTable('edit_data', create_sql, insert_sql, insert_args)
 
         return self.createVectorLayer('key=\'pk\' srid=4326 type=POINT table="qgis_test"."edit_data" (geom) sql=',
@@ -160,7 +167,15 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
             'overlaps(translate($geometry,-1,-1),geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
             'overlaps(buffer($geometry,1),geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
             'intersects(centroid($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))',
-            'intersects(point_on_surface($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))'
+            'intersects(point_on_surface($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))',
+            '"dt" <= make_datetime(2020, 5, 4, 12, 13, 14)',
+            '"dt" < make_date(2020, 5, 4)',
+            '"dt" = to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\')',
+            '"date" <= make_datetime(2020, 5, 4, 12, 13, 14)',
+            '"date" >= make_date(2020, 5, 4)',
+            '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')',
+            '"time" >= make_time(12, 14, 14)',
+            '"time" = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')'
         ])
         return filters
 
