@@ -474,6 +474,9 @@ We try to match the Proj string to internal QGIS CRS ID using the following logi
 - if none of the above match, use the Proj string to create the CRS and do not associated an internal CRS ID to it.
 
 :param projString: A Proj format string
+:param identify: if ``False``, no attempts will be made to match the proj string against known CRS authorities. This is much
+                 faster, but should only ever be used when it is known in advance that the definition does not correspond to a known or user CRS. This
+                 argument is not available in Python.
 
 :return: ``True`` on success else ``False``
 
