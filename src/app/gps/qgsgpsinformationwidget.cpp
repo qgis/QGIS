@@ -1166,9 +1166,14 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
       QgsFeature f;
       QgsGeometry g;
 
+      std::unique_ptr<QgsLineString> ring( new QgsLineString( mCaptureList ) );
+      if ( ! is3D )
+        ring->dropZValue();
+
       if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
       {
-        g = QgsGeometry( new QgsLineString( mCaptureList ) );
+
+        g = QgsGeometry( ring.release() );
         try
         {
           g.transform( t );
@@ -1184,7 +1189,6 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
       }
       else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
       {
-        std::unique_ptr<QgsLineString> ring( new QgsLineString( mCaptureList ) );
         ring->close();
         std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
         polygon->setExteriorRing( ring.release() );
