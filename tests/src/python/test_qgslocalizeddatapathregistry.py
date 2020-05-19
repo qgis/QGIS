@@ -45,8 +45,8 @@ class TestQgsLocalizedDataPathRegistry(unittest.TestCase):
         QgsApplication.localizedDataPathRegistry().unregisterPath(BASE_PATH)
 
     def testQgsLocalizedDataPathRegistry(self):
-        self.assertEqual(QgsApplication.localizedDataPathRegistry().relativePath(ABSOLUTE_PATH), MAP_PATH)
-        self.assertEqual(QgsApplication.localizedDataPathRegistry().fullPath(MAP_PATH), ABSOLUTE_PATH)
+        self.assertEqual(QgsApplication.localizedDataPathRegistry().localizedPath(ABSOLUTE_PATH), MAP_PATH)
+        self.assertEqual(QgsApplication.localizedDataPathRegistry().globalPath(MAP_PATH), ABSOLUTE_PATH)
 
     def testOrderOfPreference(self):
         temp_dir = gettempdir()
@@ -54,7 +54,7 @@ class TestQgsLocalizedDataPathRegistry(unittest.TestCase):
         alt_dir = '{}/{}'.format(temp_dir, MAP_PATH)
         Path(alt_dir).touch()
         QgsApplication.localizedDataPathRegistry().registerPath(temp_dir, 0)
-        self.assertEqual(QgsApplication.localizedDataPathRegistry().fullPath(MAP_PATH), alt_dir)
+        self.assertEqual(QgsApplication.localizedDataPathRegistry().globalPath(MAP_PATH), alt_dir)
         QgsApplication.localizedDataPathRegistry().unregisterPath(temp_dir)
 
     def testWithResolver(self):
