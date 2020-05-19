@@ -59,7 +59,9 @@ void QgsRuntimeProfiler::start( const QString &name )
 {
   mProfileTime.push( QElapsedTimer() );
   mProfileTime.top().restart();
-  mCurrentName.push( name );
+  QString cleanedName = name;
+  cleanedName.replace( '/', '_' );
+  mCurrentName.push( cleanedName );
 }
 
 void QgsRuntimeProfiler::end()
