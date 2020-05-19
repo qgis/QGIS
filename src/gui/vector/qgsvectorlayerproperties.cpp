@@ -232,6 +232,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mAttributesFormFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributesFormFrame->layout()->addWidget( mAttributesFormPropertiesDialog );
 
+  connect( mLayer, &QgsVectorLayer::updatedFields, mAttributesFormPropertiesDialog, &QgsAttributesFormProperties::init );
+
   // Metadata tab, before the syncToLayer
   QVBoxLayout *metadataLayout = new QVBoxLayout( metadataFrame );
   metadataLayout->setContentsMargins( 0, 0, 0, 0 );
