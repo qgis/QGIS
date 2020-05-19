@@ -230,6 +230,16 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      */
     void copyLogToClipboard();
 
+<<<<<<< HEAD
+=======
+    /**
+     * Switches the dialog to the parameters page.
+     */
+    void showParameters();
+
+    void reject() override;
+
+>>>>>>> 8a7feeddbb... [processing] Destroy widgets from an algorithm dialog as soon as it is rejected
   protected:
 
     void closeEvent( QCloseEvent *e ) override;
