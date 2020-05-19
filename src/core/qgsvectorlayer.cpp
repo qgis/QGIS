@@ -1561,8 +1561,6 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     return false;
   }
 
-  mTemporalProperties->readXml( layer_node.toElement(), context );
-
   readStyleManager( layer_node );
 
   QDomNode depsNode = layer_node.namedItem( QStringLiteral( "dataDependencies" ) );
@@ -1876,9 +1874,6 @@ bool QgsVectorLayer::writeXml( QDomNode &layer_node,
 
   // save expression fields
   mExpressionFieldBuffer->writeXml( layer_node, document );
-
-  // write temporal properties
-  mTemporalProperties->writeXml( mapLayerNode, document, context );
 
   writeStyleManager( layer_node, document );
 
