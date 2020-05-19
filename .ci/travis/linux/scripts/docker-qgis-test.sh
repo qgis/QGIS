@@ -62,6 +62,9 @@ echo "travis_fold:end:oracle"
 ##################################
 # Prepare HANA database connection
 ##################################
+echo "travis_fold:start:hana"
+echo "${bold}Load HANA database...${endbold}"
+
 HANA_DRIVER=/usr/sap/hdbclient/libodbcHDB.so
 HANA_HOST=hana
 HANA_PORT=39041
@@ -77,6 +80,8 @@ do
   sleep 1
 done
 echo " done"
+
+echo "travis_fold:end:hana"
 
 # this is proving very flaky:
 
