@@ -586,18 +586,19 @@ bool QgsStyle::load( const QString &filename )
     while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
     {
       QDomDocument doc;
-      QString symbol_name = statement.columnAsText( SymbolName );
+      QString symbolName = statement.columnAsText( SymbolName );
+      QgsScopedRuntimeProfile profile( symbolName );
       QString xmlstring = statement.columnAsText( SymbolXML );
       if ( !doc.setContent( xmlstring ) )
       {
-        QgsDebugMsg( "Cannot open symbol " + symbol_name );
+        QgsDebugMsg( "Cannot open symbol " + symbolName );
         continue;
       }
 
       QDomElement symElement = doc.documentElement();
       QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol( symElement, QgsReadWriteContext() );
       if ( symbol )
-        mSymbols.insert( symbol_name, symbol );
+        mSymbols.insert( symbolName, symbol );
     }
   }
 
@@ -608,17 +609,18 @@ bool QgsStyle::load( const QString &filename )
     while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
     {
       QDomDocument doc;
-      QString ramp_name = statement.columnAsText( ColorrampName );
+      const QString rampName = statement.columnAsText( ColorrampName );
+      QgsScopedRuntimeProfile profile( rampName );
       QString xmlstring = statement.columnAsText( ColorrampXML );
       if ( !doc.setContent( xmlstring ) )
       {
-        QgsDebugMsg( "Cannot open symbol " + ramp_name );
+        QgsDebugMsg( "Cannot open symbol " + rampName );
         continue;
       }
       QDomElement rampElement = doc.documentElement();
       QgsColorRamp *ramp = QgsSymbolLayerUtils::loadColorRamp( rampElement );
       if ( ramp )
-        mColorRamps.insert( ramp_name, ramp );
+        mColorRamps.insert( rampName, ramp );
     }
   }
 
@@ -630,6 +632,7 @@ bool QgsStyle::load( const QString &filename )
     {
       QDomDocument doc;
       const QString formatName = statement.columnAsText( TextFormatName );
+      QgsScopedRuntimeProfile profile( formatName );
       const QString xmlstring = statement.columnAsText( TextFormatXML );
       if ( !doc.setContent( xmlstring ) )
       {
@@ -651,6 +654,7 @@ bool QgsStyle::load( const QString &filename )
     {
       QDomDocument doc;
       const QString settingsName = statement.columnAsText( LabelSettingsName );
+      QgsScopedRuntimeProfile profile( settingsName );
       const QString xmlstring = statement.columnAsText( LabelSettingsXML );
       if ( !doc.setContent( xmlstring ) )
       {
@@ -672,6 +676,7 @@ bool QgsStyle::load( const QString &filename )
     {
       QDomDocument doc;
       const QString settingsName = statement.columnAsText( LegendPatchTableName );
+      QgsScopedRuntimeProfile profile( settingsName );
       const QString xmlstring = statement.columnAsText( LegendPatchTableXML );
       if ( !doc.setContent( xmlstring ) )
       {
