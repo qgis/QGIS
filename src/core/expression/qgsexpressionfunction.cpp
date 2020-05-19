@@ -5624,7 +5624,7 @@ static QVariant fcnHashSha256( const QVariantList &values, const QgsExpressionCo
   return fcnHash( QgsExpressionUtils::getStringValue( values.at( 0 ), parent ), QCryptographicHash::Sha256 );
 }
 
-static QVariant fcnToBase64( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnToBase64( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
 {
   const QByteArray input = values.at( 0 ).toByteArray();
   return QVariant( QString( input.toBase64() ) );
@@ -5968,7 +5968,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             fcnHashSha256, QStringLiteral( "Conversions" ) )
 
         //base64
-        << new QgsStaticExpressionFunction( QStringLiteral( "to_base64" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ),
+        << new QgsStaticExpressionFunction( QStringLiteral( "to_base64" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ),
                                             fcnToBase64, QStringLiteral( "Conversions" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "from_base64" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ),
                                             fcnFromBase64, QStringLiteral( "Conversions" ) )

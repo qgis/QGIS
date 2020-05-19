@@ -2,9 +2,9 @@
 {
   "name": "to_base64",
   "type": "function",
-  "description": "Encodes a provided string using Base64.",
+  "description": "Encodes a binary value into a string, using the Base64 encoding.",
   "arguments": [
-    {"arg":"string", "description": "the string to encode"}],
+    {"arg":"value", "description": "the binary value to encode"}],
     "examples": [ { "expression":"to_base64('QGIS')", "returns":"'UUdJUw=='"}
     ]
 }
