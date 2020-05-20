@@ -3863,6 +3863,16 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString &sub
   return results;
 }
 
+QgsFeatureSource::SpatialIndexPresence QgsOgrProvider::hasSpatialIndex() const
+{
+  if ( mOgrLayer && mOgrLayer->TestCapability( OLCFastSpatialFilter ) )
+    return QgsFeatureSource::SpatialIndexPresent;
+  else if ( mOgrLayer )
+    return QgsFeatureSource::SpatialIndexNotPresent;
+  else
+    return QgsFeatureSource::SpatialIndexUnknown;
+}
+
 QVariant QgsOgrProvider::minimumValue( int index ) const
 {
   if ( !mValid || index < 0 || index >= mAttributeFields.count() )
