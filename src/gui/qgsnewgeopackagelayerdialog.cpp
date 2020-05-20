@@ -93,12 +93,12 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mCheckBoxCreateSpatialIndex->setEnabled( false );
   mCrsSelector->setEnabled( false );
 
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ), tr( "Text data" ), "text" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole number (integer)" ), "integer" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole number (integer 64 bit)" ), "integer64" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), tr( "Decimal number (real)" ), "real" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ), tr( "Text Data" ), "text" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number (integer)" ), "integer" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number (integer 64 bit)" ), "integer64" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), tr( "Decimal Number (real)" ), "real" );
   mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) ), tr( "Date" ), "date" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) ), tr( "Date & time" ), "datetime" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) ), tr( "Date and Time" ), "datetime" );
   mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBool.svg" ) ), tr( "Boolean" ), "bool" );
   mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBinary.svg" ) ), tr( "Binary (BLOB)" ), "binary" );
 

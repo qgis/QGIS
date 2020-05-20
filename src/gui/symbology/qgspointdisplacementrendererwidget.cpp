@@ -80,7 +80,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   blockAllSignals( true );
 
   mPlacementComboBox->addItem( tr( "Ring" ), QgsPointDisplacementRenderer::Ring );
-  mPlacementComboBox->addItem( tr( "Concentric rings" ), QgsPointDisplacementRenderer::ConcentricRings );
+  mPlacementComboBox->addItem( tr( "Concentric Rings" ), QgsPointDisplacementRenderer::ConcentricRings );
   mPlacementComboBox->addItem( tr( "Grid" ), QgsPointDisplacementRenderer::Grid );
 
   //insert attributes into combo box

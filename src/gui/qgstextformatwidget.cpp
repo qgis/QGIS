@@ -1356,13 +1356,13 @@ void QgsTextFormatWidget::updatePlacementWidgets()
 
 void QgsTextFormatWidget::populateFontCapitalsComboBox()
 {
-  mFontCapitalsComboBox->addItem( tr( "No change" ), QVariant( 0 ) );
-  mFontCapitalsComboBox->addItem( tr( "All uppercase" ), QVariant( 1 ) );
-  mFontCapitalsComboBox->addItem( tr( "All lowercase" ), QVariant( 2 ) );
+  mFontCapitalsComboBox->addItem( tr( "No Change" ), QVariant( 0 ) );
+  mFontCapitalsComboBox->addItem( tr( "All Uppercase" ), QVariant( 1 ) );
+  mFontCapitalsComboBox->addItem( tr( "All Lowercase" ), QVariant( 2 ) );
   // Small caps doesn't work right with QPainterPath::addText()
   // https://bugreports.qt.io/browse/QTBUG-13965
-//  mFontCapitalsComboBox->addItem( tr( "Small caps" ), QVariant( 3 ) );
-  mFontCapitalsComboBox->addItem( tr( "Capitalize first letter" ), QVariant( 4 ) );
+//  mFontCapitalsComboBox->addItem( tr( "Small Caps" ), QVariant( 3 ) );
+  mFontCapitalsComboBox->addItem( tr( "Capitalize First Letter" ), QVariant( 4 ) );
 }
 
 void QgsTextFormatWidget::populateFontStyleComboBox()
@@ -1685,7 +1685,7 @@ void QgsTextFormatWidget::updateAvailableShadowPositions()
     QgsTextShadowSettings::ShadowPlacement currentPlacement = static_cast< QgsTextShadowSettings::ShadowPlacement >( mShadowUnderCmbBx->currentData().toInt() );
     mShadowUnderCmbBx->clear();
 
-    mShadowUnderCmbBx->addItem( tr( "Lowest label component" ), QgsTextShadowSettings::ShadowLowest );
+    mShadowUnderCmbBx->addItem( tr( "Lowest Label Component" ), QgsTextShadowSettings::ShadowLowest );
     mShadowUnderCmbBx->addItem( tr( "Text" ), QgsTextShadowSettings::ShadowText );
     mShadowUnderCmbBx->addItem( tr( "Buffer" ), QgsTextShadowSettings::ShadowBuffer );
     if ( mShapeTypeCmbBx->currentData().toInt() != QgsTextBackgroundSettings::ShapeMarkerSymbol )

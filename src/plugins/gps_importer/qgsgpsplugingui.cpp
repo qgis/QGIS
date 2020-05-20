@@ -353,10 +353,10 @@ void QgsGpsPluginGui::populatePortComboBoxes()
 
 void QgsGpsPluginGui::populateCONVDialog()
 {
-  cmbCONVType->addItem( tr( "Waypoints from a route" ), QVariant( int( 0 ) ) );
-  cmbCONVType->addItem( tr( "Waypoints from a track" ), QVariant( int( 3 ) ) );
-  cmbCONVType->addItem( tr( "Route from waypoints" ), QVariant( int( 1 ) ) );
-  cmbCONVType->addItem( tr( "Track from waypoints" ), QVariant( int( 2 ) ) );
+  cmbCONVType->addItem( tr( "Waypoints from a Route" ), QVariant( int( 0 ) ) );
+  cmbCONVType->addItem( tr( "Waypoints from a Track" ), QVariant( int( 3 ) ) );
+  cmbCONVType->addItem( tr( "Route from Waypoints" ), QVariant( int( 1 ) ) );
+  cmbCONVType->addItem( tr( "Track from Waypoints" ), QVariant( int( 2 ) ) );
 }
 
 void QgsGpsPluginGui::populateULLayerComboBox()

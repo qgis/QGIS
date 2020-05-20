@@ -57,7 +57,7 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
 
   mNameLineEdit->setText( tr( "New scratch layer" ) );
 
-  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) ), tr( "No geometry" ), QgsWkbTypes::NoGeometry );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) ), tr( "No Geometry" ), QgsWkbTypes::NoGeometry );
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "Point" ), QgsWkbTypes::Point );
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "LineString / CompoundCurve" ), QgsWkbTypes::LineString );
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "Polygon / CurvePolygon" ), QgsWkbTypes::Polygon );
@@ -71,12 +71,12 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   mCrsSelector->setEnabled( false );
 
   mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ), tr( "Text" ), "string" );
-  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole number" ), "integer" );
-  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), tr( "Decimal number" ), "double" );
+  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number" ), "integer" );
+  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), tr( "Decimal Number" ), "double" );
   mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBool.svg" ) ), tr( "Boolean" ), "bool" );
   mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) ), tr( "Date" ), "date" );
   mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldTime.svg" ) ), tr( "Time" ), "time" );
-  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) ), tr( "Date & time" ), "datetime" );
+  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) ), tr( "Date and Time" ), "datetime" );
   mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBinary.svg" ) ), tr( "Binary (BLOB)" ), "binary" );
   mTypeBox_currentIndexChanged( 1 );
 

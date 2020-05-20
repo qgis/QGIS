@@ -159,9 +159,9 @@ void QgsVectorLayerSaveAsDialog::setup()
   mFormatComboBox_currentIndexChanged( mFormatComboBox->currentIndex() );
 
   //symbology export combo box
-  mSymbologyExportComboBox->addItem( tr( "No symbology" ), QgsVectorFileWriter::NoSymbology );
-  mSymbologyExportComboBox->addItem( tr( "Feature symbology" ), QgsVectorFileWriter::FeatureSymbology );
-  mSymbologyExportComboBox->addItem( tr( "Symbol layer symbology" ), QgsVectorFileWriter::SymbolLayerSymbology );
+  mSymbologyExportComboBox->addItem( tr( "No Symbology" ), QgsVectorFileWriter::NoSymbology );
+  mSymbologyExportComboBox->addItem( tr( "Feature Symbology" ), QgsVectorFileWriter::FeatureSymbology );
+  mSymbologyExportComboBox->addItem( tr( "Symbol Layer Symbology" ), QgsVectorFileWriter::SymbolLayerSymbology );
   mSymbologyExportComboBox_currentIndexChanged( mSymbologyExportComboBox->currentText() );
 
   // extent group box
