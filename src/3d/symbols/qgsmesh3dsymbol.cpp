@@ -32,6 +32,7 @@ void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
   elemDataProperties.setAttribute( QStringLiteral( "alt-clamping" ), Qgs3DUtils::altClampingToString( mAltClamping ) );
   elemDataProperties.setAttribute( QStringLiteral( "height" ), mHeight );
   elemDataProperties.setAttribute( QStringLiteral( "add-back-faces" ), mAddBackFaces ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  elemDataProperties.setAttribute( QStringLiteral( "renderer-3d-enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elem.appendChild( elemDataProperties );
 
   QDomElement elemMaterial = doc.createElement( QStringLiteral( "material" ) );
@@ -51,6 +52,7 @@ void QgsMesh3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
   mAltClamping = Qgs3DUtils::altClampingFromString( elemDataProperties.attribute( QStringLiteral( "alt-clamping" ) ) );
   mHeight = elemDataProperties.attribute( QStringLiteral( "height" ) ).toFloat();
   mAddBackFaces = elemDataProperties.attribute( QStringLiteral( "add-back-faces" ) ).toInt();
+  mEnabled = elemDataProperties.attribute( QStringLiteral( "renderer-3d-enabled" ) ).toInt();
 
   QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
   mMaterial.readXml( elemMaterial );
@@ -59,3 +61,14 @@ void QgsMesh3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
   if ( !elemDDP.isNull() )
     mDataDefinedProperties.readXml( elemDDP, propertyDefinitions() );
 }
+
+bool QgsMesh3DSymbol::isEnabled() const
+{
+  return mEnabled;
+}
+
+void QgsMesh3DSymbol::setEnabled( bool enabled )
+{
+  mEnabled = enabled;
+}
+
