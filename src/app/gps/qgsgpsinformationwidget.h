@@ -115,7 +115,8 @@ class APP_EXPORT QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInfo
 // not used    QPointF gpsToPixelPosition( const QgsPoint& point );
     QgsRubberBand *mRubberBand = nullptr;
     QgsPointXY mLastGpsPosition;
-    QVector<QgsPointXY> mCaptureList;
+    QVector<QgsPoint> mCaptureList;
+    double mLastElevation = 0.0;
     FixStatus mLastFixStatus;
     QString mDateTimeFormat; // user specified format string in registry (no UI presented)
     QPointer< QgsVectorLayer > mLastLayer;

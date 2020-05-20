@@ -40,6 +40,16 @@
 #include "gmath.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
+<<<<<<< HEAD
+=======
+#include "qgsbearingutils.h"
+#include "qgsgpsbearingitem.h"
+#include "qgssymbollayerutils.h"
+#include "qgslocaldefaultsettings.h"
+#include "qgsprojectdisplaysettings.h"
+#include "qgsbearingnumericformat.h"
+#include "qgspolygon.h"
+>>>>>>> 600f93aa56... [GPS] Fix error when vector layer has Z
 
 // QWT Charting widget
 
@@ -742,17 +752,20 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
   QgsPointXY myNewCenter;
   nmeaPOS newNmeaPosition;
   nmeaTIME newNmeaTime;
+  double newAlt = 0.0;
   if ( validFlag )
   {
     myNewCenter = QgsPointXY( info.longitude, info.latitude );
     newNmeaPosition.lat = nmea_degree2radian( info.latitude );
     newNmeaPosition.lon = nmea_degree2radian( info.longitude );
+    newAlt = info.elevation;
     nmea_time_now( &newNmeaTime );
   }
   else
   {
     myNewCenter = mLastGpsPosition;
     newNmeaPosition = mLastNmeaPosition;
+    newAlt = mLastElevation;
   }
   if ( !mAcquisitionEnabled || ( nmea_distance( &newNmeaPosition, &mLastNmeaPosition ) < mDistanceThreshold ) )
   {
@@ -834,6 +847,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     mLastGpsPosition = myNewCenter;
     mLastNmeaPosition = newNmeaPosition;
     mLastNmeaTime = newNmeaTime;
+    mLastElevation = newAlt;
     // Pan based on user specified behavior
     if ( radRecenterMap->isChecked() || radRecenterWhenNeeded->isChecked() )
     {
@@ -904,7 +918,9 @@ void QgsGpsInformationWidget::addVertex()
 
   // we store the capture list in wgs84 and then transform to layer crs when
   // calling close feature
-  mCaptureList.push_back( mLastGpsPosition );
+  QgsPoint point = QgsPoint( mLastGpsPosition.x(), mLastGpsPosition.y(), mLastElevation );
+  mCaptureList.push_back( point );
+
 
   // we store the rubber band points in map canvas CRS so transform to map crs
   // potential problem with transform errors and wrong coordinates if map CRS is changed after points are stored - SLM
@@ -963,6 +979,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
   }
 
   QgsCoordinateTransform t( mWgs84CRS, vlayer->crs(), QgsProject::instance() );
+  bool is3D = QgsWkbTypes::hasZ( vlayer->wkbType() );
   switch ( vlayer->geometryType() )
   {
     case QgsWkbTypes::PointGeometry:
@@ -970,7 +987,14 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
       QgsFeature f;
       try
       {
-        QgsGeometry g = QgsGeometry::fromPointXY( t.transform( mLastGpsPosition ) );
+        QgsPointXY pointXY = t.transform( mLastGpsPosition );
+
+        QgsGeometry g;
+        if ( is3D )
+          g = QgsGeometry( new QgsPoint( pointXY.x(), pointXY.y(), mLastElevation ) );
+        else
+          g = QgsGeometry::fromPointXY( pointXY );
+
         if ( QgsWkbTypes::isMultiType( vlayer->wkbType() ) )
           g.convertToMultiType();
 
@@ -1014,9 +1038,14 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
       QgsFeature f;
       QgsGeometry g;
 
+      std::unique_ptr<QgsLineString> ring( new QgsLineString( mCaptureList ) );
+      if ( ! is3D )
+        ring->dropZValue();
+
       if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
       {
-        g = QgsGeometry::fromPolylineXY( mCaptureList );
+
+        g = QgsGeometry( ring.release() );
         try
         {
           g.transform( t );
@@ -1032,13 +1061,11 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
       }
       else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
       {
-        QVector< QgsPointXY > line = mCaptureList;
+        ring->close();
+        std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
+        polygon->setExteriorRing( ring.release() );
 
-        // close ring if required
-        if ( line.constFirst() != line.constLast() )
-          line << line.constFirst();
-
-        g = QgsGeometry::fromPolygonXY( QVector< QgsPolylineXY > () << line );
+        g = QgsGeometry( polygon.release() );
         try
         {
           g.transform( t );
