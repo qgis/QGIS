@@ -200,7 +200,7 @@
           <enum>QFrame::Plain</enum>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -567,6 +567,9 @@ border-radius: 2px;</string>
            </item>
            <item row="0" column="3">
             <widget class="QDateTimeEdit" name="mTemporalDateTimeReference">
+             <property name="toolTip">
+              <string>Reference time used to render mesh dataset when using temporal range or temporal animation</string>
+             </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
              </property>
@@ -623,7 +626,7 @@ border-radius: 2px;</string>
               <item row="1" column="0">
                <widget class="QLabel" name="label_12">
                 <property name="text">
-                 <string>Time unit</string>
+                 <string>Time Unit</string>
                 </property>
                </widget>
               </item>
@@ -641,7 +644,11 @@ border-radius: 2px;</string>
                </spacer>
               </item>
               <item row="1" column="1">
-               <widget class="QComboBox" name="mTemporalProviderTimeUnitComboBox"/>
+               <widget class="QComboBox" name="mTemporalProviderTimeUnitComboBox">
+                <property name="toolTip">
+                 <string>Default time unit of mesh data provider is hour, change to override the time unit</string>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>
@@ -680,7 +687,7 @@ border-radius: 2px;</string>
            <item row="0" column="2">
             <widget class="QLabel" name="label_3">
              <property name="text">
-              <string>Layer Time Reference</string>
+              <string>Layer Reference Time</string>
              </property>
             </widget>
            </item>
@@ -694,12 +701,16 @@ border-radius: 2px;</string>
            <item row="2" column="2">
             <widget class="QLabel" name="label_10">
              <property name="text">
-              <string>Matching dataset Method</string>
+              <string>Dataset Matching Method</string>
              </property>
             </widget>
            </item>
-           <item row="2" column="3" colspan="3">
-            <widget class="QComboBox" name="mComboBoxTemporalDatasetMatchingMethod"/>
+           <item row="2" column="3" colspan="4">
+            <widget class="QComboBox" name="mComboBoxTemporalDatasetMatchingMethod">
+             <property name="toolTip">
+              <string>Method for selection of temporal mesh dataset from a range time</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>

@@ -95,9 +95,9 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   delete mOptsPage_3DView;  // removes both the "3d view" list item and its page
 #endif
 
-  mComboBoxTemporalDatasetMatchingMethod->addItem( tr( "Find closest dataset before requested time" ),
+  mComboBoxTemporalDatasetMatchingMethod->addItem( tr( "Find Closest Dataset Before Requested Time" ),
       QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetBeforeStartRangeTime );
-  mComboBoxTemporalDatasetMatchingMethod->addItem( tr( "Find closest dataset from requested time (after or before)" ),
+  mComboBoxTemporalDatasetMatchingMethod->addItem( tr( "Find Closest Dataset From Requested Time (After or Before)" ),
       QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetFromStartRangeTime );
 
   // update based on lyr's current state
