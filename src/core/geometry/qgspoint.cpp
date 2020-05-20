@@ -172,6 +172,9 @@ bool QgsPoint::fromWkt( const QString &wkt )
   if ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 )
     return true;
 
+  if ( parts.second.compare( QLatin1String( "NULL" ), Qt::CaseInsensitive ) == 0 )
+    return false;
+
   QRegularExpression rx( QStringLiteral( "\\s" ) );
   QStringList coordinates = parts.second.split( rx, QString::SkipEmptyParts );
   if ( coordinates.size() < 2 )

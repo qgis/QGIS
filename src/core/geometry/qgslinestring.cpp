@@ -434,8 +434,11 @@ bool QgsLineString::fromWkt( const QString &wkt )
     return false;
   mWkbType = parts.first;
 
-  if ( parts.second == "EMPTY" )
+  if ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 )
     return true;
+
+  if ( parts.second.compare( QLatin1String( "NULL" ), Qt::CaseInsensitive ) == 0 )
+    return false;
 
   setPoints( QgsGeometryUtils::pointsFromWKT( parts.second, is3D(), isMeasure() ) );
   return true;
