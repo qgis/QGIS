@@ -78,6 +78,9 @@ Qt3DCore::QEntity *QgsMeshLayer3DRenderer::createEntity( const Qgs3DMapSettings 
   if ( !mSymbol || !vl )
     return nullptr;
 
+  if ( !mSymbol->isEnabled() )
+    return nullptr;
+
   return new QgsMesh3DSymbolEntity( map, vl, *static_cast<QgsMesh3DSymbol *>( mSymbol.get() ) );
 }
 
