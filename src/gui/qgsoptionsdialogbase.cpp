@@ -166,11 +166,13 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
   if ( !title.isEmpty() )
   {
     mDialogTitle = title;
-    updateWindowTitle();
   }
-
-  // re-save original dialog title in case it was changed after dialog initialization
-  mDialogTitle = windowTitle();
+  else
+  {
+    // re-save original dialog title in case it was changed after dialog initialization
+    mDialogTitle = windowTitle();
+  }
+  updateWindowTitle();
 
   restoreGeometry( mSettings->value( QStringLiteral( "/Windows/%1/geometry" ).arg( mOptsKey ) ).toByteArray() );
   // mOptListWidget width is fixed to take up less space in QtDesigner
