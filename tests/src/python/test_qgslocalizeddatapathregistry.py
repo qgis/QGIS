@@ -12,19 +12,19 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import qgis  # NOQA
 
-from tempfile import NamedTemporaryFile, gettempdir
+from tempfile import NamedTemporaryFile
+import tempfile
 from pathlib import Path
 import os
-import gc
+import shutil
 from qgis.core import (
-    QgsLocalizedDataPathRegistry,
     QgsApplication,
     QgsPathResolver,
     QgsProject,
     QgsVectorLayer
 )
+from qgis.PyQt.QtCore import QDir
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 
 start_app()
 
@@ -38,6 +38,14 @@ class TestQgsLocalizedDataPathRegistry(unittest.TestCase):
     Test resolving and saving localized data paths
     """
 
+    @classmethod
+    def setUpClass(cls):
+        cls.temp_path = tempfile.mkdtemp()
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.temp_path)
+
     def setUp(self):
         QgsApplication.localizedDataPathRegistry().registerPath(BASE_PATH)
 
@@ -49,13 +57,12 @@ class TestQgsLocalizedDataPathRegistry(unittest.TestCase):
         self.assertEqual(QgsApplication.localizedDataPathRegistry().globalPath(MAP_PATH), ABSOLUTE_PATH)
 
     def testOrderOfPreference(self):
-        temp_dir = gettempdir()
-        os.mkdir('{}/data'.format(temp_dir))
-        alt_dir = '{}/{}'.format(temp_dir, MAP_PATH)
+        os.mkdir('{}/data'.format(self.temp_path))
+        alt_dir = '{}/{}'.format(self.temp_path, MAP_PATH)
         Path(alt_dir).touch()
-        QgsApplication.localizedDataPathRegistry().registerPath(temp_dir, 0)
-        self.assertEqual(QgsApplication.localizedDataPathRegistry().globalPath(MAP_PATH), alt_dir)
-        QgsApplication.localizedDataPathRegistry().unregisterPath(temp_dir)
+        QgsApplication.localizedDataPathRegistry().registerPath(self.temp_path, 0)
+        self.assertEqual(QDir.toNativeSeparators(QgsApplication.localizedDataPathRegistry().globalPath(MAP_PATH)), QDir.toNativeSeparators(alt_dir))
+        QgsApplication.localizedDataPathRegistry().unregisterPath(self.temp_path)
 
     def testWithResolver(self):
         self.assertEqual(QgsPathResolver().readPath('localized:' + MAP_PATH), ABSOLUTE_PATH)
