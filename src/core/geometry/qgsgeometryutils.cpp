@@ -1300,7 +1300,9 @@ QPair<QgsWkbTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString 
 {
   QString wktParsed = wkt;
   QString contents;
-  if ( wkt.contains( QString( "EMPTY" ), Qt::CaseInsensitive ) )
+  if ( wktParsed.count( '(' ) != wktParsed.count( ')' ) ) // if unbalanced parenthesis will returns false
+      contents = QStringLiteral("NULL");
+  else if ( wkt.contains( QString( "EMPTY" ), Qt::CaseInsensitive ) )
   {
     QRegularExpression wktRegEx( QStringLiteral( "^\\s*(\\w+)\\s+(\\w+)\\s*$" ) );
     wktRegEx.setPatternOptions( QRegularExpression::DotMatchesEverythingOption );
