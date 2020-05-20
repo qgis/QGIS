@@ -18008,20 +18008,20 @@ void TestQgsGeometry::testRandomPointsInPolygon()
 void TestQgsGeometry::wktParser()
 {
   // unbalanced parenthesis
-  QVERIFY(! QgsPoint().fromWkt("POINT((0, 1)"));
-  QVERIFY(! QgsPoint().fromWkt("POINT(0, 1) )"));
-  QVERIFY(! QgsPoint().fromWkt("POINT ((0, 1)"));
-  QVERIFY(! QgsPoint().fromWkt("POINT (0, 1) )"));
-  QVERIFY(! QgsLineString().fromWkt("LineString(0, 1) )"));
-  QVERIFY(! QgsLineString().fromWkt("LineString(0 1, 1 2) )"));
-  QVERIFY(! QgsLineString().fromWkt("LineString (0, 1) )"));
-  QVERIFY(! QgsLineString().fromWkt("LineString (0 1, 1 2) )"));
-  QVERIFY(! QgsMultiLineString().fromWkt("MULTILINESTRING ((((1 2, 2 4, 4 5))"));
-  QVERIFY(! QgsMultiLineString().fromWkt("MULTILINESTRING((((1 2, 2 4, 4 5))"));
-  QVERIFY(! QgsLineString().fromWkt("Triangle(0 1, 1 2, 3 3) )"));
-  QVERIFY(! QgsLineString().fromWkt("Triangle (0 1, 1 2, 3 3) )"));
-  QVERIFY(! QgsLineString().fromWkt("Triangle( (0 1, 1 2, 3 3) )) "));
-  QVERIFY(! QgsLineString().fromWkt("Triangle ( (0 1, 1 2, 3 3) )) "));
+  QVERIFY( ! QgsPoint().fromWkt( "POINT((0, 1)" ) );
+  QVERIFY( ! QgsPoint().fromWkt( "POINT(0, 1) )" ) );
+  QVERIFY( ! QgsPoint().fromWkt( "POINT ((0, 1)" ) );
+  QVERIFY( ! QgsPoint().fromWkt( "POINT (0, 1) )" ) );
+  QVERIFY( ! QgsLineString().fromWkt( "LineString(0, 1) )" ) );
+  QVERIFY( ! QgsLineString().fromWkt( "LineString(0 1, 1 2) )" ) );
+  QVERIFY( ! QgsLineString().fromWkt( "LineString (0, 1) )" ) );
+  QVERIFY( ! QgsLineString().fromWkt( "LineString (0 1, 1 2) )" ) );
+  QVERIFY( ! QgsMultiLineString().fromWkt( "MULTILINESTRING ((((1 2, 2 4, 4 5))" ) );
+  QVERIFY( ! QgsMultiLineString().fromWkt( "MULTILINESTRING((((1 2, 2 4, 4 5))" ) );
+  QVERIFY( ! QgsLineString().fromWkt( "Triangle(0 1, 1 2, 3 3) )" ) );
+  QVERIFY( ! QgsLineString().fromWkt( "Triangle (0 1, 1 2, 3 3) )" ) );
+  QVERIFY( ! QgsLineString().fromWkt( "Triangle( (0 1, 1 2, 3 3) )) " ) );
+  QVERIFY( ! QgsLineString().fromWkt( "Triangle ( (0 1, 1 2, 3 3) )) " ) );
 }
 QGSTEST_MAIN( TestQgsGeometry )
 #include "testqgsgeometry.moc"
