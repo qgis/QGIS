@@ -453,7 +453,14 @@ void QgsDateTimeEditConfig::displayFormatChanged( int idx )
   }
   if ( !custom )
   {
-    mDisplayFormatEdit->setText( mFieldFormatEdit->text() );
+    if ( mFieldFormatComboBox->currentData() == QgsDateTimeFieldFormatter::QT_ISO_FORMAT )
+    {
+      mDisplayFormatEdit->setText( QgsDateTimeFieldFormatter::DISPLAY_FOR_ISO_FORMAT );
+    }
+    else
+    {
+      mDisplayFormatEdit->setText( mFieldFormatEdit->text() );
+    }
   }
 }
 
