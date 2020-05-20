@@ -30,6 +30,8 @@
 #include "qgsmapmouseevent.h"
 #include "testqgsmaptoolutils.h"
 
+#include <QDebug>
+
 bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )
 {
   if ( g1.isNull() && g2.isNull() )
@@ -194,7 +196,7 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
 
   mLayerTopoZ->startEditing();
   QgsFeature topoFeat;
-  topoFeat.setGeometry( QgsGeometry::fromWkt( "MultiLineStringZ ((7.25 6 0, 7.25 7 0, 7.5 7 0, 7.5 6 0, 7.25 6 0),(6 6 0, 6 7 10, 7 7 0, 7 6 0, 6 6 0),(6.25 6.25 0, 6.75 6.25 0, 6.75 6.75 0, 6.25 6.75 0, 6.25 6.25 0)));" ) );
+  topoFeat.setGeometry( QgsGeometry::fromWkt( "MultiLineStringZ ((7.25 6 0, 7.25 7 0, 7.5 7 0, 7.5 6 0, 7.25 6 0),(6 6 0, 6 7 10, 7 7 0, 7 6 0, 6 6 0),(6.25 6.25 0, 6.75 6.25 0, 6.75 6.75 0, 6.25 6.75 0, 6.25 6.25 0))" ) );
 
   mLayerTopoZ->addFeature( topoFeat );
   QCOMPARE( mLayerTopoZ->featureCount(), ( long ) 1 );
