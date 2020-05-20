@@ -1247,7 +1247,7 @@ void QgsVertexTool::keyPressEvent( QKeyEvent *e )
     return;
   }
 
-  if ( !mDraggingVertex && mSelectedVertices.count() == 0 )
+  if ( !mDraggingVertex && !mDraggingEdge && mSelectedVertices.count() == 0 )
     return;
 
   if ( e->key() == Qt::Key_Delete || e->key() == Qt::Key_Backspace )
@@ -1257,7 +1257,7 @@ void QgsVertexTool::keyPressEvent( QKeyEvent *e )
   }
   else if ( e->key() == Qt::Key_Escape )
   {
-    if ( mDraggingVertex )
+    if ( mDraggingVertex || mDraggingEdge )
       stopDragging();
   }
   else if ( e->key() == Qt::Key_Less || e->key() == Qt::Key_Comma )
