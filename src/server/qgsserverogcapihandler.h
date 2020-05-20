@@ -38,6 +38,7 @@ class QgsServerApiContext;
  * the core functionality in handleRequest() method.
  *
  * The following methods MUST be implemented:
+ *
  * - path
  * - operationId
  * - summary  (shorter text)
@@ -47,6 +48,7 @@ class QgsServerApiContext;
  * - schema
  *
  * Optionally, override:
+ *
  * - tags
  * - parameters
  * - contentTypes
@@ -208,6 +210,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * See: https://github.com/pantor/inja#tutorial
      *
      * Available custom template functions:
+     *
      * - path_append( path ): appends a directory path to the current url
      * - path_chomp( n ):removes the specified number "n" of directory components from the current url path
      * - json_dump( ): prints current JSON data passed to the template
@@ -295,6 +298,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * See: https://github.com/pantor/inja#tutorial
      *
      * Available custom template functions:
+     *
      * - path_append( path ): appends a directory path to the current url
      * - path_chomp( n ): removes the specified number "n" of directory components from the current url path
      * - json_dump(): prints current JSON data passed to the template
