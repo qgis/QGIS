@@ -38,6 +38,29 @@ void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
   mMaterial.writeXml( elemMaterial );
   elem.appendChild( elemMaterial );
 
+<<<<<<< HEAD
+=======
+  //Advanced symbol
+  QDomElement elemAdvancedSettings = doc.createElement( QStringLiteral( "advanced-settings" ) );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "renderer-3d-enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "smoothed-triangle" ), mSmoothedTriangles ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "wireframe-enabled" ), mWireframeEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "wireframe-line-width" ), mWireframeLineWidth );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "wireframe-line-color" ), QgsSymbolLayerUtils::encodeColor( mWireframeLineColor ) );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "vertical-scale" ), mVerticalScale );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "vertical-group-index" ), mVerticalDatasetGroupIndex );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "vertical-relative" ), mIsVerticalMagnitudeRelative ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "texture-type" ), mRenderingStyle );
+  elemAdvancedSettings.appendChild( mColorRampShader.writeXml( doc ) );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "min-color-ramp-shader" ), mColorRampShader.minimumValue() );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "max-color-ramp-shader" ), mColorRampShader.maximumValue() );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "texture-single-color" ), QgsSymbolLayerUtils::encodeColor( mSingleColor ) );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "arrows-enabled" ), mArrowsEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "arrows-spacing" ), mArrowsSpacing );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "arrows-fixed-size" ), mArrowsFixedSize ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  elem.appendChild( elemAdvancedSettings );
+
+>>>>>>> e6fa6c8cb5... [BUG][MESH][3D] fix enable/disable mesh 3D rendering (#34999)
   QDomElement elemDDP = doc.createElement( QStringLiteral( "data-defined-properties" ) );
   mDataDefinedProperties.writeXml( elemDDP, propertyDefinitions() );
   elem.appendChild( elemDDP );
@@ -55,7 +78,181 @@ void QgsMesh3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
   QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
   mMaterial.readXml( elemMaterial );
 
+<<<<<<< HEAD
+=======
+  //Advanced symbol
+  QDomElement elemAdvancedSettings = elem.firstChildElement( QStringLiteral( "advanced-settings" ) );
+  mEnabled = elemAdvancedSettings.attribute( QStringLiteral( "renderer-3d-enabled" ) ).toInt();
+  mSmoothedTriangles = elemAdvancedSettings.attribute( QStringLiteral( "smoothed-triangle" ) ).toInt();
+  mWireframeEnabled = elemAdvancedSettings.attribute( QStringLiteral( "wireframe-enabled" ) ).toInt();
+  mWireframeLineWidth = elemAdvancedSettings.attribute( QStringLiteral( "wireframe-line-width" ) ).toDouble();
+  mWireframeLineColor = QgsSymbolLayerUtils::decodeColor( elemAdvancedSettings.attribute( QStringLiteral( "wireframe-line-color" ) ) );
+  mVerticalScale = elemAdvancedSettings.attribute( "vertical-scale" ).toDouble();
+  mVerticalDatasetGroupIndex = elemAdvancedSettings.attribute( "vertical-group-index" ).toInt();
+  mIsVerticalMagnitudeRelative = elemAdvancedSettings.attribute( "vertical-relative" ).toInt();
+  mRenderingStyle = static_cast<QgsMesh3DSymbol::RenderingStyle>( elemAdvancedSettings.attribute( QStringLiteral( "texture-type" ) ).toInt() );
+  mColorRampShader.readXml( elemAdvancedSettings.firstChildElement( "colorrampshader" ) );
+  mColorRampShader.setMinimumValue( elemAdvancedSettings.attribute( QStringLiteral( "min-color-ramp-shader" ) ).toDouble() );
+  mColorRampShader.setMaximumValue( elemAdvancedSettings.attribute( QStringLiteral( "max-color-ramp-shader" ) ).toDouble() );
+  mSingleColor = QgsSymbolLayerUtils::decodeColor( elemAdvancedSettings.attribute( QStringLiteral( "texture-single-color" ) ) );
+  mArrowsEnabled = elemAdvancedSettings.attribute( QStringLiteral( "arrows-enabled" ) ).toInt();
+  mArrowsSpacing = elemAdvancedSettings.attribute( QStringLiteral( "arrows-spacing" ) ).toDouble();
+  mArrowsFixedSize = elemAdvancedSettings.attribute( QStringLiteral( "arrows-fixed-size" ) ).toInt();
+>>>>>>> e6fa6c8cb5... [BUG][MESH][3D] fix enable/disable mesh 3D rendering (#34999)
   QDomElement elemDDP = elem.firstChildElement( QStringLiteral( "data-defined-properties" ) );
   if ( !elemDDP.isNull() )
     mDataDefinedProperties.readXml( elemDDP, propertyDefinitions() );
 }
+<<<<<<< HEAD
+=======
+
+bool QgsMesh3DSymbol::smoothedTriangles() const
+{
+  return mSmoothedTriangles;
+}
+
+void QgsMesh3DSymbol::setSmoothedTriangles( bool smoothTriangles )
+{
+  mSmoothedTriangles = smoothTriangles;
+}
+
+bool QgsMesh3DSymbol::wireframeEnabled() const
+{
+  return mWireframeEnabled;
+}
+
+void QgsMesh3DSymbol::setWireframeEnabled( bool wireframeEnabled )
+{
+  mWireframeEnabled = wireframeEnabled;
+}
+
+double QgsMesh3DSymbol::wireframeLineWidth() const
+{
+  return mWireframeLineWidth;
+}
+
+void QgsMesh3DSymbol::setWireframeLineWidth( double wireframeLineWidth )
+{
+  mWireframeLineWidth = wireframeLineWidth;
+}
+
+QColor QgsMesh3DSymbol::wireframeLineColor() const
+{
+  return mWireframeLineColor;
+}
+
+void QgsMesh3DSymbol::setWireframeLineColor( const QColor &wireframeLineColor )
+{
+  mWireframeLineColor = wireframeLineColor;
+}
+
+double QgsMesh3DSymbol::verticalScale() const
+{
+  return mVerticalScale;
+}
+
+void QgsMesh3DSymbol::setVerticalScale( double verticalScale )
+{
+  mVerticalScale = verticalScale;
+}
+
+QgsColorRampShader QgsMesh3DSymbol::colorRampShader() const
+{
+  return mColorRampShader;
+}
+
+void QgsMesh3DSymbol::setColorRampShader( const QgsColorRampShader &colorRampShader )
+{
+  mColorRampShader = colorRampShader;
+}
+
+QColor QgsMesh3DSymbol::singleMeshColor() const
+{
+  return mSingleColor;
+}
+
+void QgsMesh3DSymbol::setSingleMeshColor( const QColor &color )
+{
+  mSingleColor = color;
+}
+
+QgsMesh3DSymbol::RenderingStyle QgsMesh3DSymbol::renderingStyle() const
+{
+  return mRenderingStyle;
+}
+
+void QgsMesh3DSymbol::setRenderingStyle( const QgsMesh3DSymbol::RenderingStyle &coloringType )
+{
+  mRenderingStyle = coloringType;
+}
+
+int QgsMesh3DSymbol::verticalDatasetGroupIndex() const
+{
+  return mVerticalDatasetGroupIndex;
+}
+
+void QgsMesh3DSymbol::setVerticalDatasetGroupIndex( int verticalDatasetGroupIndex )
+{
+  mVerticalDatasetGroupIndex = verticalDatasetGroupIndex;
+}
+
+bool QgsMesh3DSymbol::isVerticalMagnitudeRelative() const
+{
+  return mIsVerticalMagnitudeRelative;
+}
+
+void QgsMesh3DSymbol::setIsVerticalMagnitudeRelative( bool isVerticalScaleIsRelative )
+{
+  mIsVerticalMagnitudeRelative = isVerticalScaleIsRelative;
+}
+
+bool QgsMesh3DSymbol::arrowsEnabled() const
+{
+  return mArrowsEnabled;
+}
+
+void QgsMesh3DSymbol::setArrowsEnabled( bool vectorEnabled )
+{
+  mArrowsEnabled = vectorEnabled;
+}
+
+double QgsMesh3DSymbol::arrowsSpacing() const
+{
+  return mArrowsSpacing;
+}
+
+void QgsMesh3DSymbol::setArrowsSpacing( double arrowsSpacing )
+{
+  mArrowsSpacing = arrowsSpacing;
+}
+
+int QgsMesh3DSymbol::maximumTextureSize() const
+{
+  return mMaximumTextureSize;
+}
+
+void QgsMesh3DSymbol::setMaximumTextureSize( int maximumTextureSize )
+{
+  mMaximumTextureSize = maximumTextureSize;
+}
+
+bool QgsMesh3DSymbol::arrowsFixedSize() const
+{
+  return mArrowsFixedSize;
+}
+
+void QgsMesh3DSymbol::setArrowsFixedSize( bool arrowsFixeSize )
+{
+  mArrowsFixedSize = arrowsFixeSize;
+}
+
+bool QgsMesh3DSymbol::isEnabled() const
+{
+  return mEnabled;
+}
+
+void QgsMesh3DSymbol::setEnabled( bool enabled )
+{
+  mEnabled = enabled;
+}
+>>>>>>> e6fa6c8cb5... [BUG][MESH][3D] fix enable/disable mesh 3D rendering (#34999)

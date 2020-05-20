@@ -49,8 +49,13 @@ class QgsMeshLayer3DRendererWidget : public QgsMapLayerConfigWidget
     void onEnabledClicked();
 
   private:
+<<<<<<< HEAD
     QCheckBox *chkEnabled = nullptr;
     QgsMesh3DSymbolWidget *widgetMesh = nullptr;
+=======
+    QCheckBox *mChkEnabled = nullptr;
+    QgsMesh3dSymbolWidget *mWidgetMesh = nullptr;
+>>>>>>> e6fa6c8cb5... [BUG][MESH][3D] fix enable/disable mesh 3D rendering (#34999)
     std::unique_ptr<QgsMeshLayer3DRenderer> mRenderer;
 };
 

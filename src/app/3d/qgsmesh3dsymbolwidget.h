@@ -18,7 +18,12 @@
 
 #include <QWidget>
 
+<<<<<<< HEAD
 #include "ui_mesh3dsymbolwidget.h"
+=======
+#include "qgsmesh3dsymbol.h"
+#include "ui_qgsmesh3dpropswidget.h"
+>>>>>>> e6fa6c8cb5... [BUG][MESH][3D] fix enable/disable mesh 3D rendering (#34999)
 
 class QgsMesh3DSymbol;
 class QgsMeshLayer;
@@ -36,7 +41,22 @@ class QgsMesh3DSymbolWidget : public QWidget, private Ui::Mesh3DSymbolWidget
   signals:
     void changed();
 
+<<<<<<< HEAD
   public slots:
+=======
+  private slots:
+
+    void onColorRampShaderMinMaxChanged();
+    void onColoringTypeChanged();
+
+  private:
+    double lineEditValue( const QLineEdit *lineEdit ) const;
+    void setColorRampMinMax( double min, double max );
+    QgsMeshLayer *mLayer = nullptr;
+    QgsMeshDatasetGroupListModel *mDatasetGroupListModel = nullptr;
+    QgsMesh3DSymbol mSymbol;
+
+>>>>>>> e6fa6c8cb5... [BUG][MESH][3D] fix enable/disable mesh 3D rendering (#34999)
 };
 
 #endif // QGSMESH3DSYMBOLWIDGET_H

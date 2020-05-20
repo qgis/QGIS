@@ -75,7 +75,17 @@ Qt3DCore::QEntity *QgsMeshLayer3DRenderer::createEntity( const Qgs3DMapSettings 
 {
   QgsMeshLayer *vl = layer();
 
+<<<<<<< HEAD
   if ( !mSymbol || !vl )
+=======
+  if ( !meshLayer || !meshLayer->dataProvider() )
+    return nullptr;
+
+  if ( meshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) ||
+       !mSymbol->isEnabled() )
+  {
+    // 3D not implemented for 1D meshes
+>>>>>>> e6fa6c8cb5... [BUG][MESH][3D] fix enable/disable mesh 3D rendering (#34999)
     return nullptr;
 
   return new QgsMesh3DSymbolEntity( map, vl, *static_cast<QgsMesh3DSymbol *>( mSymbol.get() ) );

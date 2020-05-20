@@ -45,6 +45,20 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
+    /**
+     * Returns if the 3d rendering is enabled
+     *
+     * \since QGIS 3.14
+     */
+    bool isEnabled() const;
+
+    /**
+     * Sets if the 3d rendering is enabled
+     *
+     * \since QGIS 3.14
+     */
+    void setEnabled( bool enabled );
+
     //! Returns method that determines altitude (whether to clamp to feature to terrain)
     Qgs3DTypes::AltitudeClamping altitudeClamping() const { return mAltClamping; }
     //! Sets method that determines altitude (whether to clamp to feature to terrain)
@@ -76,6 +90,34 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     float mHeight = 0.0f;           //!< Base height of triangles
     QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
     bool mAddBackFaces = false;
+<<<<<<< HEAD
+=======
+
+    bool mEnabled = true;
+
+    //! Triangles settings
+    bool mSmoothedTriangles = false;
+    bool mWireframeEnabled = false;
+    double mWireframeLineWidth = 1.0;
+    QColor mWireframeLineColor = Qt::darkGray;
+
+    //! Verticals settings
+    double mVerticalScale = 1.0;
+    int mVerticalDatasetGroupIndex = -1;
+    bool mIsVerticalMagnitudeRelative = false;
+
+    //! Color rendering settings
+    QgsMesh3DSymbol::RenderingStyle mRenderingStyle = QgsMesh3DSymbol::SingleColor;
+    QgsColorRampShader mColorRampShader;
+    QColor mSingleColor = Qt::darkGreen;
+
+    //! Arrows rendering
+    bool mArrowsEnabled = false;
+    double mArrowsSpacing = 25;
+    bool mArrowsFixedSize = false;
+    QColor mArrowsColor = Qt::yellow;
+    int mMaximumTextureSize = 1024;
+>>>>>>> e6fa6c8cb5... [BUG][MESH][3D] fix enable/disable mesh 3D rendering (#34999)
 };
 
 

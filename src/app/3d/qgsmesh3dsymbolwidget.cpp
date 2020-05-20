@@ -35,7 +35,21 @@ QgsMesh3DSymbolWidget::QgsMesh3DSymbolWidget( QWidget *parent )
 
 void QgsMesh3DSymbolWidget::setSymbol( const QgsMesh3DSymbol &symbol, QgsMeshLayer *layer )
 {
+<<<<<<< HEAD
   Q_UNUSED( layer )
+=======
+  mSymbol = symbol;
+  mChkSmoothTriangles->setChecked( symbol.smoothedTriangles() );
+  mChkWireframe->setChecked( symbol.wireframeEnabled() );
+  mColorButtonWireframe->setColor( symbol.wireframeLineColor() );
+  mSpinBoxWireframeLineWidth->setValue( symbol.wireframeLineWidth() );
+  mSpinBoxVerticaleScale->setValue( symbol.verticalScale() );
+  mComboBoxTextureType->setCurrentIndex( mComboBoxTextureType->findData( symbol.renderingStyle() ) );
+  mMeshSingleColorButton->setColor( symbol.singleMeshColor() );
+  mColorRampShaderWidget->setFromShader( symbol.colorRampShader() );
+  mColorRampShaderWidget->setMinimumMaximumAndClassify( symbol.colorRampShader().minimumValue(),
+      symbol.colorRampShader().maximumValue() );
+>>>>>>> e6fa6c8cb5... [BUG][MESH][3D] fix enable/disable mesh 3D rendering (#34999)
 
   spinHeight->setValue( symbol.height() );
   cboAltClamping->setCurrentIndex( static_cast<int>( symbol.altitudeClamping() ) );
@@ -47,11 +61,15 @@ void QgsMesh3DSymbolWidget::setSymbol( const QgsMesh3DSymbol &symbol, QgsMeshLay
 
 QgsMesh3DSymbol QgsMesh3DSymbolWidget::symbol() const
 {
+<<<<<<< HEAD
   QgsMesh3DSymbol sym;
   sym.setHeight( spinHeight->value() );
   sym.setAltitudeClamping( static_cast<Qgs3DTypes::AltitudeClamping>( cboAltClamping->currentIndex() ) );
   sym.setAddBackFaces( chkAddBackFaces->isChecked() );
   sym.setMaterial( widgetMaterial->material() );
+=======
+  QgsMesh3DSymbol sym = mSymbol;
+>>>>>>> e6fa6c8cb5... [BUG][MESH][3D] fix enable/disable mesh 3D rendering (#34999)
 
   QgsPropertyCollection ddp;
   ddp.setProperty( QgsAbstract3DSymbol::PropertyHeight, btnHeightDD->toProperty() );
