@@ -164,6 +164,8 @@ class TestQgsGeometry : public QObject
 
     void testRandomPointsInPolygon();
 
+    void wktParser();
+
   private:
     //! Must be called before each render test
     void initPainterTest();
@@ -18097,5 +18099,23 @@ void TestQgsGeometry::testRandomPointsInPolygon()
   QVERIFY( foundp2Point );
 }
 
+void TestQgsGeometry::wktParser()
+{
+  // unbalanced parenthesis
+  QVERIFY(! QgsPoint().fromWkt("POINT((0, 1)"));
+  QVERIFY(! QgsPoint().fromWkt("POINT(0, 1) )"));
+  QVERIFY(! QgsPoint().fromWkt("POINT ((0, 1)"));
+  QVERIFY(! QgsPoint().fromWkt("POINT (0, 1) )"));
+  QVERIFY(! QgsLineString().fromWkt("LineString(0, 1) )"));
+  QVERIFY(! QgsLineString().fromWkt("LineString(0 1, 1 2) )"));
+  QVERIFY(! QgsLineString().fromWkt("LineString (0, 1) )"));
+  QVERIFY(! QgsLineString().fromWkt("LineString (0 1, 1 2) )"));
+  QVERIFY(! QgsMultiLineString().fromWkt("MULTILINESTRING ((((1 2, 2 4, 4 5))"));
+  QVERIFY(! QgsMultiLineString().fromWkt("MULTILINESTRING((((1 2, 2 4, 4 5))"));
+  QVERIFY(! QgsLineString().fromWkt("Triangle(0 1, 1 2, 3 3) )"));
+  QVERIFY(! QgsLineString().fromWkt("Triangle (0 1, 1 2, 3 3) )"));
+  QVERIFY(! QgsLineString().fromWkt("Triangle( (0 1, 1 2, 3 3) )) "));
+  QVERIFY(! QgsLineString().fromWkt("Triangle ( (0 1, 1 2, 3 3) )) "));
+}
 QGSTEST_MAIN( TestQgsGeometry )
 #include "testqgsgeometry.moc"
