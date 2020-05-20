@@ -232,7 +232,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mAttributesFormFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributesFormFrame->layout()->addWidget( mAttributesFormPropertiesDialog );
 
-  connect( mLayer, &QgsVectorLayer::updatedFields, mAttributesFormPropertiesDialog, &QgsAttributesFormProperties::init );
+  connect( mLayer, &QgsVectorLayer::updatedFields, mAttributesFormPropertiesDialog, &QgsAttributesFormProperties::initAvailableWidgetsTree );
 
   // Metadata tab, before the syncToLayer
   QVBoxLayout *metadataLayout = new QVBoxLayout( metadataFrame );
