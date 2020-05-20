@@ -1227,7 +1227,9 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
 {
   QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata(
                                     mRasterLayer->providerType() );
-  QVariantMap uri = metadata->decodeUri( mRasterLayer->dataProvider()->dataSourceUri() );
+  const QVariantMap currentUri = metadata->decodeUri( mRasterLayer->dataProvider()->dataSourceUri() );
+
+  QVariantMap uri = currentUri;
 
   if ( mWmstGroup->isVisibleTo( this ) )
     uri[ QStringLiteral( "allowTemporalUpdates" ) ] = mWmstGroup->isChecked();
@@ -1276,8 +1278,9 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
     qobject_cast< QgsRasterLayerTemporalProperties * >( mRasterLayer->temporalProperties() )->setIntervalHandlingMethod( static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >(
           mFetchModeComboBox->currentData().toInt() ) );
   }
-  mRasterLayer->setDataSource( metadata->encodeUri( uri ), mRasterLayer->name(), mRasterLayer->providerType(), QgsDataProvider::ProviderOptions() );
 
+  if ( currentUri != uri )
+    mRasterLayer->setDataSource( metadata->encodeUri( uri ), mRasterLayer->name(), mRasterLayer->providerType(), QgsDataProvider::ProviderOptions() );
 }
 
 void QgsRasterLayerProperties::setSourceStaticTimeState()
