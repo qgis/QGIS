@@ -5141,7 +5141,7 @@ class TestQgsGeometry(unittest.TestCase):
                  ["LINESTRING (10 10, 10 10)", "POINT (10 10)"],  # zero length line
                  ["MULTILINESTRING ((10 10, 10 10), (20 20, 20 20))", "POINT (15 15)"],  # zero length multiline
                  ["LINESTRING (60 180, 120 100, 180 180)", "POINT (120 140)"],
-                 ["LINESTRING (80 0, 80 120, 120 120, 120 0))", "POINT (100 68.57142857142857)"],
+                 ["LINESTRING (80 0, 80 120, 120 120, 120 0)", "POINT (100 68.57142857142857)"],
                  ["MULTILINESTRING ((0 0, 0 100), (100 0, 100 100))", "POINT (50 50)"],
                  [" MULTILINESTRING ((0 0, 0 200, 200 200, 200 0, 0 0),(60 180, 20 180, 20 140, 60 140, 60 180))",
                   "POINT (90 110)"],
@@ -5744,12 +5744,12 @@ class TestQgsGeometry(unittest.TestCase):
                          ['LineStringM (0 1 1, 2 2 2, 3 3 3, 1 1 0)'])
 
         # Adding Z back
-        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.LineStringZ),
-                         ['LineStringZ (1 1 0, 2 2 0, 3 3 0, 1 0 0)'])
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.LineStringZ),
+                         ['LineStringZ (1 1 0, 2 2 0, 3 3 0, 1 1 0)'])
 
         # Adding M back
-        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.LineStringM),
-                         ['LineStringM (1 1 0, 2 2 0, 3 3 0, 1 0 0)'])
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.LineStringM),
+                         ['LineStringM (1 1 0, 2 2 0, 3 3 0, 1 1 0)'])
 
         self.assertEqual(coerce_to_wkt('LineString(1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.MultiLineString),
                          ['MultiLineString ((1 1, 2 2, 3 3, 1 1))'])
