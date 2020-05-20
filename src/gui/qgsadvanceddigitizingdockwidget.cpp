@@ -648,10 +648,10 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   bool res = output.valid;
   QgsPointXY point = output.finalMapPoint;
   mSnappedSegment.clear();
-  if ( output.edgeMatch.hasEdge() )
+  if ( output.snapMatch.hasEdge() )
   {
     QgsPointXY edgePt0, edgePt1;
-    output.edgeMatch.edgePoints( edgePt0, edgePt1 );
+    output.snapMatch.edgePoints( edgePt0, edgePt1 );
     mSnappedSegment << edgePt0 << edgePt1;
   }
   if ( mAngleConstraint->lockMode() != CadConstraint::HardLock )

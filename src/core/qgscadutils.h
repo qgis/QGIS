@@ -92,7 +92,13 @@ class CORE_EXPORT QgsCadUtils
       //! map point aligned according to the constraints
       QgsPointXY finalMapPoint;
 
-      //! Snapped segment - only valid if actually used for something
+      //! Snapped point - only valid if actually used for something
+      QgsPointLocator::Match snapMatch;
+
+      /**
+       * Snapped segment - only valid if actually used for something
+       * \deprecated will be removed in QGIS 4.0 - use snapMatch instead
+       */
       QgsPointLocator::Match edgeMatch;
 
       //! Angle (in degrees) to which we have soft-locked ourselves (if not set it is -1)
