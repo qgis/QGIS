@@ -226,7 +226,7 @@ class FieldsMappingWidgetWrapper(WidgetWrapper):
                 layout.removeItem(spacer)
 
     def parentLayerChanged(self, layer=None):
-        self.setLayer(self.sender().value())
+        self.setLayer(self.sender().widgetValue())
 
     def setLayer(self, layer):
         context = dataobjects.createContext()
