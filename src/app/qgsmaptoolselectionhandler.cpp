@@ -220,10 +220,9 @@ void QgsMapToolSelectionHandler::selectFeaturesReleaseEvent( QgsMapMouseEvent *e
   }
 
   if ( mSelectionRubberBand && mSelectionActive )
-  {
     setSelectedGeometry( mSelectionRubberBand->asGeometry(), e->modifiers() );
+  if ( mSelectionRubberBand )
     mSelectionRubberBand.reset();
-  }
 
   mSelectionActive = false;
 }
