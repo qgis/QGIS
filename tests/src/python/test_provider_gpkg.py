@@ -65,10 +65,13 @@ class TestPyQgsGpkgProvider(unittest.TestCase, ProviderTestCase):
 
         srcpath = os.path.join(TEST_DATA_DIR, 'provider')
         shutil.copy(os.path.join(srcpath, 'geopackage.gpkg'), cls.basetestpath)
-        shutil.copy(os.path.join(srcpath, 'geopackage_poly.gpkg'), cls.basetestpath)
+        shutil.copy(os.path.join(srcpath, 'geopackage_poly.gpkg'),
+                    cls.basetestpath)
         cls.basetestfile = os.path.join(cls.basetestpath, 'geopackage.gpkg')
-        cls.basetestpolyfile = os.path.join(cls.basetestpath, 'geopackage_poly.gpkg')
-        cls.vl = QgsVectorLayer(cls.basetestfile, 'test', 'ogr')
+        cls.basetestpolyfile = os.path.join(
+            cls.basetestpath, 'geopackage_poly.gpkg')
+        cls.vl = QgsVectorLayer(
+            cls.basetestfile + '|layername=geopackage', 'test', 'ogr')
         assert(cls.vl.isValid())
         cls.source = cls.vl.dataProvider()
         cls.vl_poly = QgsVectorLayer(cls.basetestpolyfile, 'test', 'ogr')
@@ -76,6 +79,10 @@ class TestPyQgsGpkgProvider(unittest.TestCase, ProviderTestCase):
         cls.poly_provider = cls.vl_poly.dataProvider()
 
         cls.dirs_to_cleanup = [cls.basetestpath, cls.repackfilepath]
+
+        # Create the other layer for constraints check
+        cls.check_constraint = QgsVectorLayer(
+            cls.basetestfile + '|layername=check_constraint', 'check_constraint', 'ogr')
 
     @classmethod
     def tearDownClass(cls):
@@ -91,7 +98,13 @@ class TestPyQgsGpkgProvider(unittest.TestCase, ProviderTestCase):
         datasource = os.path.join(tmpdir, 'geopackage.gpkg')
 
         vl = QgsVectorLayer(datasource, 'test', 'ogr')
+
         return vl
+
+    def getEditableLayerWithCheckConstraint(self):
+        """Returns the layer for attribute change CHECK constraint violation"""
+
+        return self.check_constraint
 
     def enableCompiler(self):
         QgsSettings().setValue('/qgis/compileExpressions', True)

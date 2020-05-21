@@ -879,6 +879,37 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.assertFalse(l.dataProvider().changeAttributeValues(changes),
                              'Provider reported no ChangeAttributeValues capability, but returned true to changeAttributeValues')
 
+
+    def testChangeAttributesConstraintViolation(self):
+            """Checks that changing attributes violating a DB-level CHECK constraint returns false
+            the provider test case must provide an editable layer with a text field
+            "i_will_fail_on_no_name" having a CHECK constraint that will fail when value is "no name".
+            The layer must contain at least 2 features, that will be used to test the attibute change.
+            """
+
+            if not getattr(self, 'getEditableLayerWithCheckConstraint', None):
+                return
+
+            l = self.getEditableLayerWithCheckConstraint()
+            self.assertTrue(l.isValid())
+
+            assert l.dataProvider().capabilities() & QgsVectorDataProvider.ChangeAttributeValues
+
+            # find the featurea to change
+            feature0 = [f for f in l.dataProvider().getFeatures()][0]
+            feature1 = [f for f in l.dataProvider().getFeatures()][1]
+            field_idx = l.fields().indexFromName('i_will_fail_on_no_name')
+            self.assertTrue(field_idx >= 0)
+            # changes by feature id, for changeAttributeValues call
+            changes = {
+                feature0.id(): {field_idx: 'no name'},
+                feature1.id(): {field_idx: 'I have a valid name'}
+            }
+            # expect failure
+            result = l.dataProvider().changeAttributeValues(changes)
+            self.assertFalse(
+                result, 'Provider reported success when changing an attribute value that violates a DB level CHECK constraint')
+
     def testChangeGeometries(self):
         if not getattr(self, 'getEditableLayer', None):
             return
