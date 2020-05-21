@@ -1,9 +1,0 @@
-<RCC>
-    <qresource prefix="/evis/" >
-        <file>eVisDatabaseConnection.png</file>
-        <file>eVisEventIdTool.png</file>
-        <file>eVisEventBrowser.png</file>
-        <file>eVisPointerSymbol.png</file>
-        <file>eVisHighlightSymbol.png</file>
-    </qresource>
-</RCC>
