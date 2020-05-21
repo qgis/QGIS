@@ -38,6 +38,10 @@
 #include <QDomDocument>
 #include <QDomElement>
 
+#ifndef QT_NO_PRINTER
+#include <QPrinter>
+#endif
+
 QgsSimpleFillSymbolLayer::QgsSimpleFillSymbolLayer( const QColor &color, Qt::BrushStyle style, const QColor &strokeColor, Qt::PenStyle strokeStyle, double strokeWidth,
     Qt::PenJoinStyle penJoinStyle )
   : mBrushStyle( style )
@@ -270,9 +274,6 @@ void QgsSimpleFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPo
 
   applyDataDefinedSymbology( context, mBrush, mPen, mSelPen );
 
-  p->setBrush( context.selected() ? mSelBrush : mBrush );
-  p->setPen( context.selected() ? mSelPen : mPen );
-
   QPointF offset;
   if ( !mOffset.isNull() )
   {
@@ -281,7 +282,29 @@ void QgsSimpleFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPo
     p->translate( offset );
   }
 
-  _renderPolygon( p, points, rings, context );
+#ifndef QT_NO_PRINTER
+  if ( mBrush.style() == Qt::SolidPattern || mBrush.style() == Qt::NoBrush || !dynamic_cast<QPrinter *>( p->device() ) )
+#endif
+  {
+    p->setPen( context.selected() ? mSelPen : mPen );
+    p->setBrush( context.selected() ? mSelBrush : mBrush );
+    _renderPolygon( p, points, rings, context );
+  }
+#ifndef QT_NO_PRINTER
+  else
+  {
+    // workaround upstream issue https://github.com/qgis/QGIS/issues/36580
+    // when a non-solid brush is set with opacity, the opacity incorrectly applies to the pen
+    // when exporting to PDF/print devices
+    p->setBrush( context.selected() ? mSelBrush : mBrush );
+    p->setPen( Qt::NoPen );
+    _renderPolygon( p, points, rings, context );
+
+    p->setPen( context.selected() ? mSelPen : mPen );
+    p->setBrush( Qt::NoBrush );
+    _renderPolygon( p, points, rings, context );
+  }
+#endif
 
   if ( !mOffset.isNull() )
   {
