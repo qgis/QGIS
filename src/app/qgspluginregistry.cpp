@@ -32,6 +32,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
 #include "qgsruntimeprofiler.h"
 
 #ifdef WITH_BINDINGS
@@ -509,7 +510,40 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
       QString baseName = QFileInfo( myFullPath ).baseName();
       if ( mySettings.value( QStringLiteral( "Plugins/watchDog/%1" ).arg( baseName ) ).isValid() )
       {
-        mQgisInterface->messageBar()->pushWarning( QObject::tr( "Plugin %1" ).arg( baseName ), QObject::tr( "The plugin will be disabled because it crashed QGIS during last startup. Please report an issue and re-enable the plugin when the problem has been solved." ) );
+        QToolButton *btnEnablePlugin = new QToolButton();
+        btnEnablePlugin ->setText( QObject::tr( "Enable Plugin" ) );
+        btnEnablePlugin ->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+
+        QToolButton *btnIgnore = new QToolButton();
+        btnIgnore->setText( QObject::tr( "Ignore" ) );
+        btnIgnore->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+
+        QgsMessageBarItem *watchdogMsg = new QgsMessageBarItem(
+          QObject::tr( "Plugin %1" ).arg( baseName ),
+          QObject::tr( "This plugin is disabled because it previously crashed QGIS." ),
+          btnEnablePlugin,
+          Qgis::Warning,
+          0,
+          mQgisInterface->messageBar() );
+        watchdogMsg->layout()->addWidget( btnIgnore );
+
+        QObject::connect( btnEnablePlugin, &QToolButton::clicked, mQgisInterface->messageBar(), [ = ]()
+        {
+          QgsSettings settings;
+          settings.setValue( "/Plugins/" + baseName, true );
+          loadCppPlugin( myFullPath );
+          settings.remove( QStringLiteral( "/Plugins/watchDog/%1" ).arg( baseName ) );
+          mQgisInterface->messageBar()->popWidget( watchdogMsg );
+        } );
+        QObject::connect( btnIgnore, &QToolButton::clicked, mQgisInterface->messageBar(), [ = ]()
+        {
+          QgsSettings settings;
+          settings.setValue( "/Plugins/" + baseName, false );
+          settings.remove( "/Plugins/watchDog/" + baseName );
+          mQgisInterface->messageBar()->popWidget( watchdogMsg );
+        } );
+
+        mQgisInterface->messageBar()->pushItem( watchdogMsg );
         mySettings.setValue( "/Plugins/" + baseName, false );
       }
       if ( mySettings.value( "/Plugins/" + baseName ).toBool() )
@@ -565,7 +599,46 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
 
       if ( mySettings.value( "/PythonPlugins/watchDog/" + packageName ).isValid() )
       {
-        mQgisInterface->messageBar()->pushWarning( QObject::tr( "Plugin %1" ).arg( packageName ), QObject::tr( "The plugin will be disabled because it crashed QGIS during last startup. Please report an issue and re-enable the plugin when the problem has been solved." ) );
+        QToolButton *btnEnablePlugin = new QToolButton();
+        btnEnablePlugin->setText( QObject::tr( "Enable Plugin" ) );
+        btnEnablePlugin->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+
+        QToolButton *btnIgnore = new QToolButton();
+        btnIgnore->setText( QObject::tr( "Ignore" ) );
+        btnIgnore->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+
+        QgsMessageBarItem *watchdogMsg = new QgsMessageBarItem(
+          QObject::tr( "Plugin %1" ).arg( packageName ),
+          QObject::tr( "This plugin is disabled because it previously crashed QGIS." ),
+          btnEnablePlugin,
+          Qgis::Warning,
+          0,
+          mQgisInterface->messageBar() );
+        watchdogMsg->layout()->addWidget( btnIgnore );
+
+        QObject::connect( btnEnablePlugin, &QToolButton::clicked, mQgisInterface->messageBar(), [ = ]()
+        {
+          QgsSettings settings;
+          settings.setValue( "/PythonPlugins/" + packageName, true );
+          if ( checkPythonPlugin( packageName ) )
+          {
+            loadPythonPlugin( packageName );
+          }
+          settings.remove( "/PythonPlugins/watchDog/" + packageName );
+
+          mQgisInterface->messageBar()->popWidget( watchdogMsg );
+        } );
+
+        QObject::connect( btnIgnore, &QToolButton::clicked, mQgisInterface->messageBar(), [ = ]()
+        {
+          QgsSettings settings;
+          settings.setValue( "/PythonPlugins/" + packageName, false );
+          settings.remove( "/PythonPlugins/watchDog/" + packageName );
+          mQgisInterface->messageBar()->popWidget( watchdogMsg );
+        } );
+
+        mQgisInterface->messageBar()->pushItem( watchdogMsg );
+
         mySettings.setValue( "/PythonPlugins/" + packageName, false );
       }
       // check if the plugin was active on last session
