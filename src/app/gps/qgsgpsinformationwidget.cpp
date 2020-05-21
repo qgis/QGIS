@@ -427,6 +427,8 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
            this, &QgsGpsInformationWidget::cboAcquisitionIntervalEdited );
   connect( mCboDistanceThreshold, qgis::overload< const QString & >::of( &QComboBox::currentTextChanged ),
            this, &QgsGpsInformationWidget::cboDistanceThresholdEdited );
+
+  mMapCanvas->installInteractionBlocker( this );
 }
 
 QgsGpsInformationWidget::~QgsGpsInformationWidget()
@@ -502,6 +504,26 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
   QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "Symbol" ), mBearingLineStyleButton->symbol(), doc, QgsReadWriteContext() );
   doc.appendChild( elem );
   mySettings.setValue( QStringLiteral( "gps/bearingLineSymbol" ), doc.toString() );
+
+  if ( mMapCanvas )
+    mMapCanvas->removeInteractionBlocker( this );
+}
+
+bool QgsGpsInformationWidget::blockCanvasInteraction( QgsMapCanvasInteractionBlocker::Interaction interaction ) const
+{
+  switch ( interaction )
+  {
+    case QgsMapCanvasInteractionBlocker::Interaction::MapPanOnSingleClick:
+      // if we're connected and set to follow the GPS location, block the single click navigation mode
+      // to avoid accidental map canvas pans away from the GPS location.
+      // (for now, we don't block click-and-drag pans, as they are less likely to be accidentally triggered)
+      if ( mNmea && ( radRecenterMap->isChecked() || radRecenterWhenNeeded->isChecked() ) )
+        return true;
+
+      break;
+  }
+
+  return false;
 }
 
 void QgsGpsInformationWidget::mSpinTrackWidth_valueChanged( int value )
