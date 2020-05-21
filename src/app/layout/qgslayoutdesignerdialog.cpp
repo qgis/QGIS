@@ -4374,7 +4374,24 @@ void QgsLayoutDesignerDialog::atlasFeatureChanged( const QgsFeature &feature )
   mapCanvas->stopRendering();
   mapCanvas->redrawAllLayers();
 
-  mView->setSectionLabel( atlas->nameForPage( atlas->currentFeatureNumber() ) );
+  const QString atlasFeatureName = atlas->nameForPage( atlas->currentFeatureNumber() );
+  mView->setSectionLabel( atlasFeatureName );
+
+  if ( !feature.hasGeometry() || feature.geometry().isEmpty() )
+  {
+    // a little sanity check -- if there's any maps in this layout which are set to be atlas controlled,
+    // and we hit a feature with no geometry attached, then warn the user
+    QList< QgsLayoutItemMap * > maps;
+    mLayout->layoutItems( maps );
+    for ( const QgsLayoutItemMap *map : qgis::as_const( maps ) )
+    {
+      if ( map->atlasDriven() )
+      {
+        mMessageBar->pushWarning( QString(), tr( "Atlas feature %1 has no geometry — linked map extents cannot be updated" ).arg( atlasFeatureName ) );
+        break;
+      }
+    }
+  }
 }
 
 void QgsLayoutDesignerDialog::loadPredefinedScalesFromProject()
