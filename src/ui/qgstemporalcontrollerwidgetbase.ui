@@ -100,7 +100,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string></string>
+        <string>Temporal navigation disabled</string>
        </property>
       </widget>
      </item>
