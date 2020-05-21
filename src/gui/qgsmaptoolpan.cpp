@@ -86,16 +86,19 @@ void QgsMapToolPan::canvasReleaseEvent( QgsMapMouseEvent *e )
       }
       else // add pan to mouse cursor
       {
-        // transform the mouse pos to map coordinates
-        const QgsPointXY prevCenter = mCanvas->center();
-        QgsPointXY center = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
-        mCanvas->setCenter( center );
-        mCanvas->refresh();
+        if ( mCanvas->allowInteraction( QgsMapCanvasInteractionBlocker::Interaction::MapPanOnSingleClick ) )
+        {
+          // transform the mouse pos to map coordinates
+          const QgsPointXY prevCenter = mCanvas->center();
+          QgsPointXY center = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
+          mCanvas->setCenter( center );
+          mCanvas->refresh();
 
-        QgsDistanceArea da;
-        da.setEllipsoid( QgsProject::instance()->ellipsoid() );
-        da.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
-        emit panDistanceBearingChanged( da.measureLine( center, prevCenter ), da.lengthUnits(), da.bearing( center, prevCenter ) * 180 / M_PI );
+          QgsDistanceArea da;
+          da.setEllipsoid( QgsProject::instance()->ellipsoid() );
+          da.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
+          emit panDistanceBearingChanged( da.measureLine( center, prevCenter ), da.lengthUnits(), da.bearing( center, prevCenter ) * 180 / M_PI );
+        }
       }
     }
   }

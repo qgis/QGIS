@@ -674,6 +674,7 @@ SET(QGIS_GUI_HDRS
   qgsmanageconnectionsdialog.h
   qgsmapcanvas.h
   qgsmapcanvasannotationitem.h
+  qgsmapcanvasinteractionblocker.h
   qgsmapcanvasitem.h
   qgsmapcanvasmap.h
   qgsmapcanvassnappingutils.h

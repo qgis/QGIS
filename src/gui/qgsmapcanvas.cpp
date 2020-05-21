@@ -818,6 +818,26 @@ const QgsDateTimeRange &QgsMapCanvas::temporalRange() const
   return mSettings.temporalRange();
 }
 
+void QgsMapCanvas::installInteractionBlocker( QgsMapCanvasInteractionBlocker *blocker )
+{
+  mInteractionBlockers.append( blocker );
+}
+
+void QgsMapCanvas::removeInteractionBlocker( QgsMapCanvasInteractionBlocker *blocker )
+{
+  mInteractionBlockers.removeAll( blocker );
+}
+
+bool QgsMapCanvas::allowInteraction( QgsMapCanvasInteractionBlocker::Interaction interaction ) const
+{
+  for ( const QgsMapCanvasInteractionBlocker *block : mInteractionBlockers )
+  {
+    if ( block->blockCanvasInteraction( interaction ) )
+      return false;
+  }
+  return true;
+}
+
 void QgsMapCanvas::mapUpdateTimeout()
 {
   if ( mJob )
