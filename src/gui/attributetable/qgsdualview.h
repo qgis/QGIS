@@ -422,6 +422,10 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QgsFeature mTempAttributeFormFeature;
     QgsFeatureIds mLastFeatureSet;
     bool mBrowsingAutoPanScaleAllowed = true;
+<<<<<<< HEAD
+=======
+    ViewMode mPreviousView = AttributeTable;
+>>>>>>> 255113ee09... init member variable
 
     friend class TestQgsDualView;
     friend class TestQgsAttributeTable;
