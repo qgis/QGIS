@@ -30,6 +30,9 @@ class GUI_EXPORT QgsMapCanvasInteractionBlocker
 {
   public:
 
+    /**
+     * Available interactions to block.
+     */
     enum class Interaction : int
     {
       MapPanOnSingleClick = 1 << 0, //!< A map pan interaction caused by a single click and release on the map canvas
