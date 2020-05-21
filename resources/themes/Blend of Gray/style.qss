@@ -681,31 +681,49 @@ QCheckBox::indicator:checked:disabled {
 
 QSlider::groove:horizontal {
     border: 1px solid @itemdarkbackground;
+    border-radius: 0.15em;
     height: 0.4em; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
     background-color: @itemdarkbackground;
-    margin: 2px 0;
+    margin: 0.15em 1px;
 }
 
 QSlider::groove:vertical  {
     border: 1px solid @itemdarkbackground;
+    border-radius: 0.15em;
     width: 0.4em; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
     background-color: @itemdarkbackground;
-    margin: 2px 0;
+    margin: 1px 0.15em;
 }
 
 QSlider::handle:horizontal {
     background: @gradient;
     border: 1px solid @itemdarkbackground;
     width: 1.3em;
-    margin: -2px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
+    margin: -0.15em -1px; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
     border-radius: 0.15em;
 }
 QSlider::handle:vertical {
     background: @gradient;
     border: 1px solid @itemdarkbackground;
     height: 1.3em;
-    margin: 0 -2px; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
+    margin: -1px -0.15em; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
     border-radius: 0.15em;
+}
+
+QSlider::sub-page:horizontal {
+    border: 1px solid @itemdarkbackground;
+    border-radius: 0.15em;
+    height: 0.4em; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
+    background-color: @itembackground;
+    margin: 0.15em 1px;
+}
+
+QSlider::sub-page:vertical {
+    border: 1px solid @itemdarkbackground;
+    border-radius: 0.15em;
+    height: 0.4em; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
+    background-color: @itembackground;
+    margin: 1px 0.15em;
 }
 
 /* ==================================================================================== */
