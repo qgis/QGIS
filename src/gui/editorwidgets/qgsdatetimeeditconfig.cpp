@@ -415,6 +415,10 @@ void QgsDateTimeEditConfig::updateFieldFormat( int idx )
   {
     mFieldFormatEdit->setText( format );
   }
+  else if ( mFieldFormatEdit->text() == QgsDateTimeFieldFormatter::QT_ISO_FORMAT )
+  {
+    mFieldFormatEdit->setText( QgsDateTimeFieldFormatter::DISPLAY_FOR_ISO_FORMAT );
+  }
 
   mFieldFormatEdit->setEnabled( custom );
   mFieldHelpToolButton->setVisible( custom );
