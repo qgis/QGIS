@@ -379,7 +379,6 @@ if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAG
 	"apps/%PACKAGENAME%/icons/" ^
 	"apps/%PACKAGENAME%/images/" ^
 	"apps/%PACKAGENAME%/plugins/coordinatecaptureplugin.dll" ^
-	"apps/%PACKAGENAME%/plugins/evis.dll" ^
 	"apps/%PACKAGENAME%/plugins/georefplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/gpsimporterplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/offlineeditingplugin.dll" ^
