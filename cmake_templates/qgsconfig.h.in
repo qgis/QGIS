@@ -43,7 +43,6 @@
 #endif
 
 #define QT_PLUGINS_DIR "${QT_PLUGINS_DIR}"
-#define OSG_PLUGINS_PATH "${OSG_PLUGINS_PATH}"
 
 #cmakedefine USING_NMAKE
 
@@ -54,8 +53,6 @@
 #cmakedefine HAVE_POSTGRESQL
 
 #cmakedefine HAVE_ORACLE
-
-#cmakedefine HAVE_OSGEARTHQT
 
 #cmakedefine SERVER_SKIP_ECW
 
