@@ -28,6 +28,9 @@
    </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>2</number>
+     </property>
      <item>
       <widget class="QToolButton" name="mNavigationOff">
        <property name="toolTip">
@@ -130,6 +133,9 @@
      </property>
      <widget class="QWidget" name="p1">
       <layout class="QVBoxLayout" name="verticalLayoutP1">
+       <property name="spacing">
+        <number>2</number>
+       </property>
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -146,6 +152,21 @@
      </widget>
      <widget class="QWidget" name="p2">
       <layout class="QVBoxLayout" name="verticalLayoutP2">
+       <property name="spacing">
+        <number>2</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_5">
          <item>
@@ -240,6 +261,21 @@
      </widget>
      <widget class="QWidget" name="p3">
       <layout class="QVBoxLayout" name="verticalLayoutP3">
+       <property name="spacing">
+        <number>2</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout1">
          <property name="spacing">
