@@ -1236,38 +1236,52 @@ void QgsVertexTool::updateFeatureBand( const QgsPointLocator::Match &m )
 
 void QgsVertexTool::keyPressEvent( QKeyEvent *e )
 {
-  if ( !mDraggingVertex && !mDraggingEdge && e->key() == Qt::Key_R && e->modifiers() & Qt::ShiftModifier )
+  switch ( e->key() )
   {
-    startRangeVertexSelection();
-    return;
+    case Qt::Key_Escape:
+    {
+      if ( mSelectionMethod == SelectionRange )
+        stopRangeVertexSelection();
+      if ( mDraggingVertex || mDraggingEdge )
+        stopDragging();
+      break;
+    }
+    case Qt::Key_Delete:
+    case Qt::Key_Backspace:
+    {
+      if ( mDraggingVertex || ( !mDraggingEdge && !mSelectedVertices.isEmpty() ) )
+      {
+        e->ignore();  // Override default shortcut management
+        deleteVertex();
+      }
+      break;
+    }
+    case Qt::Key_R:
+    {
+      if ( e->modifiers() & Qt::ShiftModifier && !mDraggingVertex && !mDraggingEdge )
+        startRangeVertexSelection();
+      break;
+    }
+    case Qt::Key_Less:
+    case Qt::Key_Comma:
+    {
+      if ( !mDraggingVertex && !mDraggingEdge )
+        highlightAdjacentVertex( -1 );
+      break;
+    }
+    case Qt::Key_Greater:
+    case Qt::Key_Period:
+    {
+      if ( !mDraggingVertex && !mDraggingEdge )
+        highlightAdjacentVertex( + 1 );
+      break;
+    }
+    default:
+    {
+      return;
+    }
   }
-  if ( mSelectionMethod == SelectionRange && e->key() == Qt::Key_Escape )
-  {
-    stopRangeVertexSelection();
-    return;
-  }
-
-  if ( !mDraggingVertex && !mDraggingEdge && mSelectedVertices.count() == 0 )
-    return;
-
-  if ( e->key() == Qt::Key_Delete || e->key() == Qt::Key_Backspace )
-  {
-    e->ignore();  // Override default shortcut management
-    deleteVertex();
-  }
-  else if ( e->key() == Qt::Key_Escape )
-  {
-    if ( mDraggingVertex || mDraggingEdge )
-      stopDragging();
-  }
-  else if ( e->key() == Qt::Key_Less || e->key() == Qt::Key_Comma )
-  {
-    highlightAdjacentVertex( -1 );
-  }
-  else if ( e->key() == Qt::Key_Greater || e->key() == Qt::Key_Period )
-  {
-    highlightAdjacentVertex( + 1 );
-  }
+  return;
 }
 
 QgsGeometry QgsVertexTool::cachedGeometry( const QgsVectorLayer *layer, QgsFeatureId fid )
