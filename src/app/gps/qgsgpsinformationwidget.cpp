@@ -319,6 +319,17 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   mRotateMapCheckBox->setChecked( mySettings.value( QStringLiteral( "gps/rotateMap" ), false ).toBool() );
   mSpinMapRotateInterval->setValue( mySettings.value( QStringLiteral( "gps/rotateMapInterval" ), 0 ).toInt() );
   mShowBearingLineCheck->setChecked( mySettings.value( QStringLiteral( "gps/showBearingLine" ), false ).toBool() );
+  connect( mShowBearingLineCheck, &QgsCollapsibleGroupBox::toggled, this, [ = ]( bool checked )
+  {
+    if ( !checked )
+    {
+      if ( mMapBearingItem )
+      {
+        delete mMapBearingItem;
+        mMapBearingItem = nullptr;
+      }
+    }
+  } );
 
   mBtnDebug->setVisible( mySettings.value( QStringLiteral( "gps/showDebug" ), "false" ).toBool() );  // use a registry setting to control - power users/devs could set it
 
@@ -984,7 +995,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
       mLastRotateTimer.restart();
     }
 
-    if ( mShowBearingLineCheck )
+    if ( mShowBearingLineCheck->isChecked() )
     {
       if ( ! mMapBearingItem )
       {
