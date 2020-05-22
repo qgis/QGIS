@@ -741,8 +741,10 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
       return;
     }
   }
-
-  QgsDebugMsg( query.lastError().text() );
+  else
+  {
+    QgsDebugMsg( query.lastError().text() );
+  }
 
   // If we can't find the extents in the spatial index table just do what we normally do.
   bool readAllGeography = false;
@@ -2317,7 +2319,7 @@ QString QgsMssqlProviderMetadata::loadStyle( const QString &uri, QString &errCau
 
   if ( !query.exec( selectQmlQuery ) )
   {
-    QgsDebugMsg( QStringLiteral( "Load of style failed" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Load of style failed" ), 2 );
     QString msg = query.lastError().text();
     errCause = msg;
     QgsDebugMsg( msg );
