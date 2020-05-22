@@ -21,7 +21,8 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 
 from qgis.PyQt.QtCore import Qt, QByteArray, QCoreApplication, QFile, QSize
 from qgis.PyQt.QtWidgets import QDialog, QMenu, QShortcut, QApplication
-from qgis.PyQt.QtGui import QColor, QKeySequence, QFont, QFontMetrics, QStandardItemModel, QStandardItem, QClipboard, QFontDatabase
+from qgis.PyQt.QtGui import QColor, QKeySequence, QFont, QFontMetrics, QStandardItemModel, QStandardItem, QClipboard, \
+    QFontDatabase
 from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
 
 import sys
@@ -34,14 +35,15 @@ import traceback
 from qgis.core import QgsApplication, QgsSettings, Qgis
 from .ui_console_history_dlg import Ui_HistoryDialogPythonConsole
 
-_init_commands = ["import sys", "import os", "import re", "import math", "from qgis.core import *", "from qgis.gui import *", "from qgis.analysis import *", "import processing", "import qgis.utils",
-                  "from qgis.utils import iface", "from qgis.PyQt.QtCore import *", "from qgis.PyQt.QtGui import *", "from qgis.PyQt.QtWidgets import *",
+_init_commands = ["import sys", "import os", "import re", "import math", "from qgis.core import *",
+                  "from qgis.gui import *", "from qgis.analysis import *", "import processing", "import qgis.utils",
+                  "from qgis.utils import iface", "from qgis.PyQt.QtCore import *", "from qgis.PyQt.QtGui import *",
+                  "from qgis.PyQt.QtWidgets import *",
                   "from qgis.PyQt.QtNetwork import *", "from qgis.PyQt.QtXml import *"]
 _historyFile = os.path.join(QgsApplication.qgisSettingsDirPath(), "console_history.txt")
 
 
 class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
-
     DEFAULT_COLOR = "#4d4d4c"
     KEYWORD_COLOR = "#8959a8"
     CLASS_COLOR = "#4271ae"
@@ -160,10 +162,14 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
         cursorColor = self.settings.value("pythonConsole/cursorColor", QColor(self.CURSOR_COLOR))
         self.setCaretForegroundColor(cursorColor)
-        self.setSelectionForegroundColor(QColor(self.settings.value("pythonConsole/selectionForegroundColor", QColor(self.SELECTION_FOREGROUND_COLOR))))
-        self.setSelectionBackgroundColor(QColor(self.settings.value("pythonConsole/selectionBackgroundColor", QColor(self.SELECTION_BACKGROUND_COLOR))))
-        self.setMatchedBraceBackgroundColor(QColor(self.settings.value("pythonConsole/matchedBraceBackgroundColor", QColor(self.MATCHED_BRACE_BACKGROUND_COLOR))))
-        self.setMatchedBraceForegroundColor(QColor(self.settings.value("pythonConsole/matchedBraceForegroundColor", QColor(self.MATCHED_BRACE_FOREGROUND_COLOR))))
+        self.setSelectionForegroundColor(QColor(
+            self.settings.value("pythonConsole/selectionForegroundColor", QColor(self.SELECTION_FOREGROUND_COLOR))))
+        self.setSelectionBackgroundColor(QColor(
+            self.settings.value("pythonConsole/selectionBackgroundColor", QColor(self.SELECTION_BACKGROUND_COLOR))))
+        self.setMatchedBraceBackgroundColor(QColor(self.settings.value("pythonConsole/matchedBraceBackgroundColor",
+                                                                       QColor(self.MATCHED_BRACE_BACKGROUND_COLOR))))
+        self.setMatchedBraceForegroundColor(QColor(self.settings.value("pythonConsole/matchedBraceForegroundColor",
+                                                                       QColor(self.MATCHED_BRACE_FOREGROUND_COLOR))))
 
         # Sets minimum height for input area based of font metric
         self._setMinimumHeight()
@@ -211,26 +217,37 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             font.setPointSize(fontSize)
 
         self.lexer.setDefaultFont(font)
-        self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColor", QColor(self.DEFAULT_COLOR))))
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColor", QColor(self.COMMENT_COLOR))), 1)
+        self.lexer.setDefaultColor(
+            QColor(self.settings.value("pythonConsole/defaultFontColor", QColor(self.DEFAULT_COLOR))))
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColor", QColor(self.COMMENT_COLOR))),
+                            1)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/numberFontColor", QColor(self.NUMBER_COLOR))), 2)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/keywordFontColor", QColor(self.KEYWORD_COLOR))), 5)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/keywordFontColor", QColor(self.KEYWORD_COLOR))),
+                            5)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/classFontColor", QColor(self.CLASS_COLOR))), 8)
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/methodFontColor", QColor(self.METHOD_COLOR))), 9)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/decorFontColor", QColor(self.DECORATION_COLOR))), 15)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentBlockFontColor", QColor(self.COMMENT_BLOCK_COLOR))), 12)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/singleQuoteFontColor", QColor(self.SINGLE_QUOTE_COLOR))), 4)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/doubleQuoteFontColor", QColor(self.DOUBLE_QUOTE_COLOR))), 3)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleSingleQuoteFontColor", QColor(self.TRIPLE_SINGLE_QUOTE_COLOR))), 6)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleDoubleQuoteFontColor", QColor(self.TRIPLE_DOUBLE_QUOTE_COLOR))), 7)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/defaultFontColorEditor", QColor(self.DEFAULT_COLOR))), 13)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/decorFontColor", QColor(self.DECORATION_COLOR))),
+                            15)
+        self.lexer.setColor(
+            QColor(self.settings.value("pythonConsole/commentBlockFontColor", QColor(self.COMMENT_BLOCK_COLOR))), 12)
+        self.lexer.setColor(
+            QColor(self.settings.value("pythonConsole/singleQuoteFontColor", QColor(self.SINGLE_QUOTE_COLOR))), 4)
+        self.lexer.setColor(
+            QColor(self.settings.value("pythonConsole/doubleQuoteFontColor", QColor(self.DOUBLE_QUOTE_COLOR))), 3)
+        self.lexer.setColor(QColor(
+            self.settings.value("pythonConsole/tripleSingleQuoteFontColor", QColor(self.TRIPLE_SINGLE_QUOTE_COLOR))), 6)
+        self.lexer.setColor(QColor(
+            self.settings.value("pythonConsole/tripleDoubleQuoteFontColor", QColor(self.TRIPLE_DOUBLE_QUOTE_COLOR))), 7)
+        self.lexer.setColor(
+            QColor(self.settings.value("pythonConsole/defaultFontColorEditor", QColor(self.DEFAULT_COLOR))), 13)
         self.lexer.setFont(font, 1)
         self.lexer.setFont(font, 3)
         self.lexer.setFont(font, 4)
         self.lexer.setFont(font, QsciLexerPython.UnclosedString)
 
         for style in range(0, 33):
-            paperColor = QColor(self.settings.value("pythonConsole/paperBackgroundColor", QColor(self.BACKGROUND_COLOR)))
+            paperColor = QColor(
+                self.settings.value("pythonConsole/paperBackgroundColor", QColor(self.BACKGROUND_COLOR)))
             self.lexer.setPaper(paperColor, style)
 
         self.api = QsciAPIs(self.lexer)
@@ -317,7 +334,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                 self.history.append(line)
         elif not command == "":
             if len(self.history) <= 0 or \
-               command != self.history[-1]:
+                    command != self.history[-1]:
                 self.history.append(command)
         self.historyIndex = len(self.history)
 
@@ -382,7 +399,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             else:
                 self.insert(self.history[self.historyIndex])
             self.move_cursor_to_end()
-            #self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
+            # self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
 
     def showNext(self):
         if self.historyIndex > 0 and self.history:
@@ -396,7 +413,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             else:
                 self.insert(self.history[self.historyIndex])
             self.move_cursor_to_end()
-            #self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
+            # self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
 
     def keyPressEvent(self, e):
         startLine, startPos, endLine, endPos = self.getSelection()
@@ -423,7 +440,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             # all other keystrokes get sent to the input line
             self.move_cursor_to_end()
 
-        if e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier) and e.key() == Qt.Key_C and not self.hasSelectedText():
+        if e.modifiers() & (
+                Qt.ControlModifier | Qt.MetaModifier) and e.key() == Qt.Key_C and not self.hasSelectedText():
             # keyboard interrupt
             sys.stdout.fire_keyboard_interrupt = True
             return
@@ -457,7 +475,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             self.recolor()
 
         elif (e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier) and e.key() == Qt.Key_V) or \
-             (e.modifiers() & Qt.ShiftModifier and e.key() == Qt.Key_Insert):
+                (e.modifiers() & Qt.ShiftModifier and e.key() == Qt.Key_Insert):
             self.paste()
             e.accept()
 
@@ -480,8 +498,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                     self.insert(self.opening[i] + selText + self.closing[i])
                     self.setCursorPosition(endLine, endPos + 2)
                     return
-                elif t == '(' and (re.match(r'^[ \t]*def \w+$', txt) or
-                                   re.match(r'^[ \t]*class \w+$', txt)):
+                elif t == '(' and (re.match(r'^[ \t]*def \w+$', txt)
+                                   or re.match(r'^[ \t]*class \w+$', txt)):
                     self.insert('):')
                 else:
                     self.insert(self.closing[i])

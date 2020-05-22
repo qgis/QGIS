@@ -66,7 +66,6 @@ from ..db_plugins import createDbPlugin
 
 
 class BaseError(Exception):
-
     """Base class for exceptions in the plugin."""
 
     def __init__(self, e):
@@ -532,6 +531,7 @@ class Database(DbItemObject):
 
     def prepareMenuMoveTableToSchemaActionSlot(self, item, menu, mainWindow):
         """ populate menu with schemas """
+
         def slot(x):
             return lambda: mainWindow.invokeCallback(self.moveTableToSchemaActionSlot, x)
 
@@ -1277,7 +1277,6 @@ class TableField(TableSubItemObject):
 
 
 class TableConstraint(TableSubItemObject):
-
     """ class that represents a constraint of a table (relation) """
 
     TypeCheck, TypeForeignKey, TypePrimaryKey, TypeUnique, TypeExclusion, TypeUnknown = list(range(6))
@@ -1346,7 +1345,6 @@ class TableIndex(TableSubItemObject):
 
 
 class TableTrigger(TableSubItemObject):
-
     """ class that represents a trigger """
 
     # Bits within tgtype (pg_trigger.h)

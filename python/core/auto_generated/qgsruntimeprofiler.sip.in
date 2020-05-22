@@ -21,17 +21,30 @@ class QgsRuntimeProfiler
 Constructor to create a new runtime profiler.
 %End
 
-    void beginGroup( const QString &name );
+ void beginGroup( const QString &name ) /Deprecated/;
 %Docstring
 Begin the group for the profiler. Groups will append {GroupName}/ to the
 front of the profile tag set using start.
 
 :param name: The name of the group.
+
+.. deprecated::
+   use start() instead
 %End
 
-    void endGroup();
+ void endGroup() /Deprecated/;
 %Docstring
 End the current active group.
+
+.. deprecated::
+   use end() instead
+%End
+
+    QStringList childGroups( const QString &parent = QString() ) const;
+%Docstring
+Returns a list of all child groups with the specified ``parent``.
+
+.. versionadded:: 3.14
 %End
 
     void start( const QString &name );
@@ -47,6 +60,12 @@ Start a profile event with the given name.
 End the current profile event.
 %End
 
+    double profileTime( const QString &name ) const;
+%Docstring
+Returns the profile time for the specified ``name``.
+
+.. versionadded:: 3.14
+%End
 
     void clear();
 %Docstring
@@ -61,6 +80,43 @@ The current total time collected in the profiler.
 %End
 
 };
+
+
+class QgsScopedRuntimeProfile
+{
+%Docstring
+
+Scoped object for logging of the runtime for a single operation or group of operations.
+
+This class automatically takes care of registering an operation in the :py:func:`QgsApplication.profiler()`
+registry upon construction, and recording of the elapsed runtime upon destruction.
+
+Python scripts should not use QgsScopedRuntimeProfile directly. Instead, use :py:func:`QgsRuntimeProfiler.profile()`
+.. code-block:: python
+
+       with QgsRuntimeProfiler.profile('My operation'):
+         # do something
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsruntimeprofiler.h"
+%End
+  public:
+
+    QgsScopedRuntimeProfile( const QString &name );
+%Docstring
+Constructor for QgsScopedRuntimeProfile.
+
+Automatically registers the operation in the QgsApplication.profiler() instance
+and starts recording the run time of the operation.
+%End
+
+    ~QgsScopedRuntimeProfile();
+
+};
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -25,6 +25,7 @@
 #include "qgsprocessingmodelparameter.h"
 #include "qgsprocessingmodelchildparametersource.h"
 #include "qgsprocessingmodelgroupbox.h"
+#include "qgsprocessingmodelchilddependency.h"
 
 ///@cond NOT_STABLE
 
@@ -158,9 +159,14 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     /**
      * Returns a list of the child algorithm IDs depending on the child
      * algorithm with the specified \a childId.
+     *
+     * Optionally, a specific conditional branch which is created by the child algorithm
+     * can be specified in order to restrict the returned list to algorithms which depend
+     * on this specific branch.
+     *
      * \see dependsOnChildAlgorithms()
      */
-    QSet< QString > dependentChildAlgorithms( const QString &childId ) const;
+    QSet< QString > dependentChildAlgorithms( const QString &childId, const QString &conditionalBranch = QString() ) const;
 
     /**
      * Returns a list of the child algorithm IDs on which the child
@@ -168,6 +174,13 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * \see dependentChildAlgorithms()
      */
     QSet< QString > dependsOnChildAlgorithms( const QString &childId ) const;
+
+    /**
+     * Returns details of available dependencies for the child algorithm with matching id.
+     *
+     * \since QGIS 3.14
+     */
+    QList< QgsProcessingModelChildDependency > availableDependenciesForChildAlgorithm( const QString &childId ) const;
 
     /**
      * Validates the child algorithm with matching ID, returning TRUE if
@@ -476,7 +489,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      *
      * \since QGIS 3.14
      */
-    QVariantMap designerParameterValues() const { return mDesignerParameterValues; }
+    QVariantMap designerParameterValues() const;
 
     /**
      * Sets the parameter \a values to use as default values when running this model through the
@@ -524,7 +537,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QStringList mParameterOrder;
 
     void dependsOnChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
-    void dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
+    void dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends, const QString &branch ) const;
 
     QVariantMap parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext ) const;
 

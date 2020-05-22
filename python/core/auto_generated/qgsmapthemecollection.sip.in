@@ -186,14 +186,22 @@ Updates a map theme within the collection.
 
     void removeMapTheme( const QString &name );
 %Docstring
-Remove an existing map theme from collection.
+Removes an existing map theme from collection.
 
 .. versionadded:: 3.0
 %End
 
+    bool renameMapTheme( const QString &name, const QString &newName );
+%Docstring
+Renames the existing map theme called ``name`` to ``newName``.
+Returns ``True`` if the rename was successful, or ``False`` if it failed (e.g. due to a duplicate name for ``newName``).
+
+.. versionadded:: 3.14
+%End
+
     void clear();
 %Docstring
-Remove all map themes from the collection.
+Removes all map themes from the collection.
 %End
 
     QStringList mapThemes() const;
@@ -324,6 +332,13 @@ Emitted when map themes within the collection are changed.
 Emitted when a map theme changes definition.
 
 .. versionadded:: 3.0
+%End
+
+    void mapThemeRenamed( const QString &name, const QString &newName );
+%Docstring
+Emitted when a map theme within the collection is renamed.
+
+.. versionadded:: 3.14
 %End
 
     void projectChanged();

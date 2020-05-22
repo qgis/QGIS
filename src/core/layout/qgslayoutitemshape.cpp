@@ -217,7 +217,7 @@ void QgsLayoutItemShape::draw( QgsLayoutItemRenderContext &context )
     }
   }
 
-  QList<QPolygonF> rings; //empty list
+  QVector<QPolygonF> rings; //empty list
 
   symbol()->startRender( context.renderContext() );
   symbol()->renderPolygon( shapePolygon, &rings, nullptr, context.renderContext() );

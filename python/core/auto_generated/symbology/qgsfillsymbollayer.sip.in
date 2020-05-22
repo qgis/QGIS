@@ -45,7 +45,7 @@ Caller takes ownership of the returned symbol layer.
     virtual void stopRender( QgsSymbolRenderContext &context );
 
 
-    virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
 
     virtual QgsStringMap properties() const;
@@ -214,7 +214,7 @@ Caller takes ownership of the returned symbol layer.
     virtual void stopRender( QgsSymbolRenderContext &context );
 
 
-    virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
 
     virtual QgsStringMap properties() const;
@@ -374,7 +374,7 @@ Caller takes ownership of the returned symbol layer.
     virtual void stopRender( QgsSymbolRenderContext &context );
 
 
-    virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
 
     virtual QgsStringMap properties() const;
@@ -686,7 +686,7 @@ Base class for polygon renderers generating texture images*
   public:
 
     QgsImageFillSymbolLayer();
-    virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
 
     virtual QgsSymbol *subSymbol();
@@ -806,7 +806,7 @@ Used internally when reading/writing symbols.
 
     virtual QString layerType() const;
 
-    virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     virtual void startRender( QgsSymbolRenderContext &context );
 
@@ -1952,7 +1952,7 @@ Caller takes ownership of the returned symbol layer.
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
-    virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     virtual QgsStringMap properties() const;
 
@@ -2139,7 +2139,7 @@ Caller takes ownership of the returned symbol layer.
     virtual void stopRender( QgsSymbolRenderContext &context );
 
 
-    virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
 
     virtual QgsStringMap properties() const;

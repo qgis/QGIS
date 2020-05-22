@@ -84,10 +84,9 @@ eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile *> *t
   cboxPredefinedQueryList->insertItem( 0, tr( "No predefined queries loaded" ) );
 
   //set icons
-  QString myThemePath = QgsApplication::activeThemePath();
-  pbtnOpenFile->setIcon( QIcon( QPixmap( myThemePath + "/mActionFolder.svg" ) ) );
+  pbtnOpenFile->setIcon( QIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFolder.svg" ) ) ) );
   pbtnOpenFile->setToolTip( tr( "Open File" ) );
-  pbtnLoadPredefinedQueries->setIcon( QIcon( QPixmap( myThemePath + "/mActionFolder.svg" ) ) );
+  pbtnLoadPredefinedQueries->setIcon( QIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFolder.svg" ) ) ) );
   pbtnLoadPredefinedQueries->setToolTip( tr( "Open File" ) );
 }
 

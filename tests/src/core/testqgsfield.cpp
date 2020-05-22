@@ -550,6 +550,16 @@ void TestQgsField::convertCompatible()
   QVERIFY( intField.convertCompatible( smallLonglong ) );
   QCOMPARE( smallLonglong.type(), QVariant::Int );
   QCOMPARE( smallLonglong, QVariant( 99 ) );
+  // negative longlong to int
+  QVariant negativeLonglong( -99999999999999999LL );
+  QVERIFY( !intField.convertCompatible( negativeLonglong ) );
+  QCOMPARE( negativeLonglong.type(), QVariant::Int );
+  QVERIFY( negativeLonglong.isNull() );
+  // small negative longlong to int
+  QVariant smallNegativeLonglong( -99LL );
+  QVERIFY( intField.convertCompatible( smallNegativeLonglong ) );
+  QCOMPARE( smallNegativeLonglong.type(), QVariant::Int );
+  QCOMPARE( smallNegativeLonglong, QVariant( -99 ) );
 
   //string representation of an int
   QVariant stringInt( "123456" );

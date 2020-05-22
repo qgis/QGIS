@@ -728,7 +728,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverHec2D::load( const std::string &resultsF
   }
   catch ( MDAL_Status error )
   {
-    MDAL::Log::error( error, name(), "Error occured while loading file " + resultsFile );
+    MDAL::Log::error( error, name(), "Error occurred while loading file " + resultsFile );
     mMesh.reset();
   }
   catch ( MDAL::Error err )

@@ -74,7 +74,7 @@ namespace QgsWcs
         if ( req.isEmpty() )
         {
           throw QgsServiceException( QStringLiteral( "OperationNotSupported" ),
-                                     QStringLiteral( "Please check the value of the REQUEST parameter" ), 501 );
+                                     QStringLiteral( "Please add or check the value of the REQUEST parameter" ), 501 );
         }
 
         if ( QSTR_COMPARE( req, "GetCapabilities" ) )

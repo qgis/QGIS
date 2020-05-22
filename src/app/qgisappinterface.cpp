@@ -162,6 +162,11 @@ QgsMeshLayer *QgisAppInterface::addMeshLayer( const QString &url, const QString 
   return qgis->addMeshLayer( url, baseName, providerKey );
 }
 
+QgsVectorTileLayer *QgisAppInterface::addVectorTileLayer( const QString &url, const QString &baseName )
+{
+  return qgis->addVectorTileLayer( url, baseName );
+}
+
 bool QgisAppInterface::addProject( const QString &projectName )
 {
   return qgis->addProject( projectName );
@@ -465,6 +470,11 @@ void QgisAppInterface::addDockWidget( Qt::DockWidgetArea area, QDockWidget *dock
   qgis->addDockWidget( area, dockwidget );
 }
 
+void QgisAppInterface::addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget, const QStringList &tabifyWith, bool raiseTab )
+{
+  qgis->addTabifiedDockWidget( area, dockwidget, tabifyWith, raiseTab );
+}
+
 void QgisAppInterface::removeDockWidget( QDockWidget *dockwidget )
 {
   qgis->removeDockWidget( dockwidget );
@@ -601,6 +611,7 @@ QToolBar *QgisAppInterface::digitizeToolBar() { return qgis->digitizeToolBar(); 
 QToolBar *QgisAppInterface::advancedDigitizeToolBar() { return qgis->advancedDigitizeToolBar(); }
 QToolBar *QgisAppInterface::shapeDigitizeToolBar() { return qgis->shapeDigitizeToolBar(); }
 QToolBar *QgisAppInterface::attributesToolBar() { return qgis->attributesToolBar(); }
+QToolBar *QgisAppInterface::selectionToolBar() { return qgis->selectionToolBar(); }
 QToolBar *QgisAppInterface::pluginToolBar() { return qgis->pluginToolBar(); }
 QToolBar *QgisAppInterface::helpToolBar() { return qgis->helpToolBar(); }
 QToolBar *QgisAppInterface::rasterToolBar() { return qgis->rasterToolBar(); }
@@ -680,6 +691,7 @@ QAction *QgisAppInterface::actionAddRasterLayer() { return qgis->actionAddRaster
 QAction *QgisAppInterface::actionAddPgLayer() { return qgis->actionAddPgLayer(); }
 QAction *QgisAppInterface::actionAddWmsLayer() { return qgis->actionAddWmsLayer(); }
 QAction *QgisAppInterface::actionAddXyzLayer() { return qgis->actionAddXyzLayer(); }
+QAction *QgisAppInterface::actionAddVectorTileLayer() { return qgis->actionAddVectorTileLayer(); }
 QAction *QgisAppInterface::actionAddAfsLayer() { return qgis->actionAddAfsLayer(); }
 QAction *QgisAppInterface::actionAddAmsLayer() { return qgis->actionAddAmsLayer(); }
 QAction *QgisAppInterface::actionCopyLayerStyle() { return qgis->actionCopyLayerStyle(); }

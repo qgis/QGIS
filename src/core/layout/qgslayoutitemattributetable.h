@@ -257,15 +257,6 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     void setDisplayedFields( const QStringList &fields, bool refresh = true );
 
     /**
-     * Returns the attributes used to sort the table's features.
-     * \returns a QList of integer/bool pairs, where the integer refers to the attribute index and
-     * the bool to the sort order for the attribute. If TRUE the attribute is sorted ascending,
-     * if FALSE, the attribute is sorted in descending order.
-     * \note not available in Python bindings
-     */
-    QVector< QPair<int, bool> > sortAttributes() const SIP_SKIP;
-
-    /**
      * Sets a string to wrap the contents of the table cells by. Occurrences of this string will
      * be replaced by a line break.
      * \param wrapString string to replace with line break

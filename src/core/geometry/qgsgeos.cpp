@@ -1097,7 +1097,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
       const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosinit()->ctxt, geos );
       unsigned int nPoints = 0;
       GEOSCoordSeq_getSize_r( geosinit()->ctxt, cs, &nPoints );
-      return nPoints > 0 ? std::unique_ptr<QgsAbstractGeometry>( coordSeqPoint( cs, 0, hasZ, hasM ).clone() ) : nullptr;
+      return  nPoints > 0 ? std::unique_ptr<QgsAbstractGeometry>( coordSeqPoint( cs, 0, hasZ, hasM ).clone() ) : qgis::make_unique< QgsPoint >();
     }
     case GEOS_LINESTRING:
     {
@@ -2213,7 +2213,7 @@ QgsGeometry QgsGeos::mergeLines( QString *errorMsg ) const
 
 QgsGeometry QgsGeos::closestPoint( const QgsGeometry &other, QString *errorMsg ) const
 {
-  if ( !mGeos || other.isNull() )
+  if ( !mGeos || isEmpty() || other.isNull() )
   {
     return QgsGeometry();
   }

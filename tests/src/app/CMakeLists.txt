@@ -18,6 +18,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/effects
+  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/core/validity
   ${CMAKE_SOURCE_DIR}/src/core/vectortile
   ${CMAKE_SOURCE_DIR}/src/ui
@@ -114,6 +115,7 @@ ENDIF ()
 ADD_QGIS_TEST(qgisapp testqgisapp.cpp)
 ADD_QGIS_TEST(appbrowserproviders testqgsappbrowserproviders.cpp)
 ADD_QGIS_TEST(qgisappclipboard testqgisappclipboard.cpp)
+ADD_QGIS_TEST(appdockwidgets testqgisappdockwidgets.cpp)
 ADD_QGIS_TEST(attributetabletest testqgsattributetable.cpp)
 ADD_QGIS_TEST(applocatorfilters testqgsapplocatorfilters.cpp)
 ADD_QGIS_TEST(fieldcalculatortest testqgsfieldcalculator.cpp)

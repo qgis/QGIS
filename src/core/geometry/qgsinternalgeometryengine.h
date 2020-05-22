@@ -166,6 +166,23 @@ class QgsInternalGeometryEngine
     static QVector< QgsPointXY > randomPointsInPolygon( const QgsGeometry &polygon, int count,
         const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr );
 
+    /**
+     * Attempts to convert a non-curved geometry into a curved geometry type (e.g.
+     * LineString to CompoundCurve, Polygon to CurvePolygon).
+     *
+     * The \a distanceTolerance specifies the maximum deviation allowed between the original location
+     * of vertices and where they would fall on the candidate curved geometry.
+     *
+     * This method only consider a segments as suitable for replacing with an arc if the points are all
+     * regularly spaced on the candidate arc. The \a pointSpacingAngleTolerance parameter specifies the maximum
+     * angular deviation (in radians) allowed when testing for regular point spacing.
+     *
+     * \note The API is considered EXPERIMENTAL and can be changed without a notice
+     *
+     * \since QGIS 3.14
+     */
+    QgsGeometry convertToCurves( double distanceTolerance, double angleTolerance ) const;
+
   private:
     const QgsAbstractGeometry *mGeometry = nullptr;
 };

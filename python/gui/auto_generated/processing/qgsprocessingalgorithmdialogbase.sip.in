@@ -182,6 +182,9 @@ Copies the current log contents to the clipboard.
 Switches the dialog to the parameters page.
 %End
 
+    virtual void reject();
+
+
   protected:
 
     virtual void closeEvent( QCloseEvent *e );

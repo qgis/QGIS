@@ -385,17 +385,17 @@ QgsPointXY QgsGeometry::closestVertex( const QgsPointXY &point, int &atVertex, i
   if ( !d->geometry )
   {
     sqrDist = -1;
-    return QgsPointXY( 0, 0 );
+    return QgsPointXY();
   }
 
-  QgsPoint pt( point.x(), point.y() );
+  QgsPoint pt( point );
   QgsVertexId id;
 
   QgsPoint vp = QgsGeometryUtils::closestVertex( *( d->geometry ), pt, id );
   if ( !id.isValid() )
   {
     sqrDist = -1;
-    return QgsPointXY( 0, 0 );
+    return QgsPointXY();
   }
   sqrDist = QgsGeometryUtils::sqrDistance2D( pt, vp );
 
@@ -630,7 +630,7 @@ double QgsGeometry::closestVertexWithContext( const QgsPointXY &point, int &atVe
   }
 
   QgsVertexId vId;
-  QgsPoint pt( point.x(), point.y() );
+  QgsPoint pt( point );
   QgsPoint closestPoint = QgsGeometryUtils::closestVertex( *( d->geometry ), pt, vId );
   if ( !vId.isValid() )
     return -1;
@@ -1072,7 +1072,7 @@ QgsGeometry QgsGeometry::minimalEnclosingCircle( QgsPointXY &center, double &rad
   center = QgsPointXY();
   radius = 0;
 
-  if ( !d->geometry )
+  if ( isEmpty() )
   {
     return QgsGeometry();
   }
@@ -2127,6 +2127,13 @@ QgsGeometry QgsGeometry::densifyByDistance( double distance ) const
   QgsInternalGeometryEngine engine( *this );
 
   return engine.densifyByDistance( distance );
+}
+
+QgsGeometry QgsGeometry::convertToCurves( double distanceTolerance, double angleTolerance ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+
+  return engine.convertToCurves( distanceTolerance, angleTolerance );
 }
 
 QgsGeometry QgsGeometry::centroid() const

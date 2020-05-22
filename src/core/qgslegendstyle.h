@@ -26,6 +26,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsreadwritecontext.h"
 
 /**
  * \ingroup core
@@ -124,13 +125,13 @@ class CORE_EXPORT QgsLegendStyle
      * Writes the component's style definition to an XML element.
      * \see readXml()
      */
-    void writeXml( const QString &name, QDomElement &elem, QDomDocument &doc ) const;
+    void writeXml( const QString &name, QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
 
     /**
      * Reads the component's style definition from an XML element.
      * \see writeXml()
      */
-    void readXml( const QDomElement &elem, const QDomDocument &doc );
+    void readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() );
 
     /**
      * Returns the name for a style component as a string.

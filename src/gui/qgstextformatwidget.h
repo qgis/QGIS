@@ -19,7 +19,7 @@
 
 #include "ui_qgstextformatwidgetbase.h"
 #include "qgis_sip.h"
-#include "qgstextrenderer.h"
+#include "qgstextformat.h"
 #include "qgsstringutils.h"
 #include "qgsguiutils.h"
 #include "qgssymbolwidgetcontext.h"

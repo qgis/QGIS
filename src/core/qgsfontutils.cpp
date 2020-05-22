@@ -246,7 +246,7 @@ bool QgsFontUtils::loadStandardTestFonts( const QStringList &loadstyles )
 
     if ( fontFamilyHasStyle( fontFamily, fontstyle ) )
     {
-      QgsDebugMsg( QStringLiteral( "Test font '%1 %2' already available" ).arg( fontFamily, fontstyle ) );
+      QgsDebugMsgLevel( QStringLiteral( "Test font '%1 %2' already available" ).arg( fontFamily, fontstyle ), 2 );
     }
     else
     {
@@ -261,10 +261,10 @@ bool QgsFontUtils::loadStandardTestFonts( const QStringList &loadstyles )
         int fontID = QFontDatabase::addApplicationFont( fontPath );
         loaded = ( fontID != -1 );
         fontsLoaded = ( fontsLoaded || loaded );
-        QgsDebugMsg( QStringLiteral( "Test font '%1 %2' %3 from filesystem [%4]" )
-                     .arg( fontFamily, fontstyle, loaded ? "loaded" : "FAILED to load", fontPath ) );
+        QgsDebugMsgLevel( QStringLiteral( "Test font '%1 %2' %3 from filesystem [%4]" )
+                          .arg( fontFamily, fontstyle, loaded ? "loaded" : "FAILED to load", fontPath ), 2 );
         QFontDatabase db;
-        QgsDebugMsg( QStringLiteral( "font families in %1: %2" ).arg( fontID ).arg( db.applicationFontFamilies( fontID ).join( "," ) ) );
+        QgsDebugMsgLevel( QStringLiteral( "font families in %1: %2" ).arg( fontID ).arg( db.applicationFontFamilies( fontID ).join( "," ) ), 2 );
       }
       else
       {
@@ -275,8 +275,8 @@ bool QgsFontUtils::loadStandardTestFonts( const QStringList &loadstyles )
           loaded = ( fontID != -1 );
           fontsLoaded = ( fontsLoaded || loaded );
         }
-        QgsDebugMsg( QStringLiteral( "Test font '%1' (%2) %3 from testdata.qrc" )
-                     .arg( fontFamily, fontstyle, loaded ? "loaded" : "FAILED to load" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Test font '%1' (%2) %3 from testdata.qrc" )
+                          .arg( fontFamily, fontstyle, loaded ? "loaded" : "FAILED to load" ), 2 );
       }
     }
   }
@@ -451,7 +451,7 @@ QString QgsFontUtils::untranslateNamedStyle( const QString &namedStyle )
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Warning: style map does not contain %1" ).arg( words[i] ) );
+      QgsDebugMsgLevel( QStringLiteral( "Warning: style map does not contain %1" ).arg( words[i] ), 2 );
     }
   }
   return words.join( QStringLiteral( " " ) );

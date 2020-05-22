@@ -54,6 +54,9 @@ CREATE TABLE qgis_test."someData" (
     name text DEFAULT 'qgis',
     name2 text DEFAULT 'qgis',
     num_char text,
+    dt timestamp without time zone,
+    "date" date,
+    "time" time without time zone,
     geom public.geometry(Point,4326)
 );
 
@@ -75,12 +78,12 @@ CREATE OR REPLACE VIEW qgis_test.some_poly_data_view
 -- Data for Name: someData; Type: TABLE DATA; Schema: qgis_test; Owner: postgres
 --
 
-INSERT INTO qgis_test."someData" (pk, cnt, name, name2, num_char, geom) VALUES
-(5, -200, NULL, 'NuLl', '5', '0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),
-(3,  300, 'Pear', 'PEaR', '3', NULL),
-(1,  100, 'Orange', 'oranGe', '1', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),
-(2,  200, 'Apple', 'Apple', '2', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),
-(4,  400, 'Honey', 'Honey', '4', '0101000020E610000014AE47E17A5450C03333333333935340')
+INSERT INTO qgis_test."someData" (pk, cnt, name, name2, num_char, dt, "date", "time", geom) VALUES
+(5, -200, NULL, 'NuLl', '5', TIMESTAMP '2020-05-04 12:13:14', '2020-05-02', '12:13:01', '0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),
+(3,  300, 'Pear', 'PEaR', '3', NULL, NULL, NULL, NULL),
+(1,  100, 'Orange', 'oranGe', '1', TIMESTAMP '2020-05-03 12:13:14', '2020-05-03', '12:13:14', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),
+(2,  200, 'Apple', 'Apple', '2', TIMESTAMP '2020-05-04 12:14:14', '2020-05-04', '12:14:14', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),
+(4,  400, 'Honey', 'Honey', '4', TIMESTAMP '2021-05-04 13:13:14', '2021-05-04', '13:13:14', '0101000020E610000014AE47E17A5450C03333333333935340')
 ;
 
 INSERT INTO qgis_test."some_poly_data" (pk, geom) VALUES
@@ -106,18 +109,21 @@ CREATE TABLE qgis_test."someDataCompound" (
     name text DEFAULT 'qgis',
     name2 text DEFAULT 'qgis',
     num_char text,
+    dt timestamp without time zone,
+    "date" date,
+    "time" time without time zone,
     geom public.geometry(Point,4326),
     key1 integer,
     key2 integer,
     PRIMARY KEY(key1, key2)
 );
 
-INSERT INTO qgis_test."someDataCompound" ( key1, key2, pk, cnt, name, name2, num_char, geom) VALUES
-(1, 1, 5, -200, NULL, 'NuLl', '5', '0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),
-(1, 2, 3,  300, 'Pear', 'PEaR', '3', NULL),
-(2, 1, 1,  100, 'Orange', 'oranGe', '1', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),
-(2, 2, 2,  200, 'Apple', 'Apple', '2', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),
-(2, 3, 4,  400, 'Honey', 'Honey', '4', '0101000020E610000014AE47E17A5450C03333333333935340')
+INSERT INTO qgis_test."someDataCompound" ( key1, key2, pk, cnt, name, name2, num_char, dt, "date", "time", geom) VALUES
+(1, 1, 5, -200, NULL, 'NuLl', '5', TIMESTAMP '2020-05-04 12:13:14', '2020-05-02', '12:13:01', '0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),
+(1, 2, 3,  300, 'Pear', 'PEaR', '3', NULL, NULL, NULL, NULL),
+(2, 1, 1,  100, 'Orange', 'oranGe', '1', TIMESTAMP '2020-05-03 12:13:14', '2020-05-03', '12:13:14', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),
+(2, 2, 2,  200, 'Apple', 'Apple', '2', TIMESTAMP '2020-05-04 12:14:14', '2020-05-04', '12:14:14', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),
+(2, 3, 4,  400, 'Honey', 'Honey', '4', TIMESTAMP '2021-05-04 13:13:14', '2021-05-04', '13:13:14', '0101000020E610000014AE47E17A5450C03333333333935340')
 ;
 
 --
@@ -699,5 +705,19 @@ CREATE TABLE test_table_default_values (
     created_at_02 text DEFAULT CURRENT_TIMESTAMP,
     anumber INTEGER DEFAULT 123,
     atext TEXT default 'My default'
-)
+);
+
+---------------------------------------------
+--
+-- Point table with check constraint on a field
+--
+
+CREATE TABLE IF NOT EXISTS "test_check_constraint" (
+    "id" SERIAL PRIMARY KEY,
+    "geom" geometry(POINT),
+    "i_will_fail_on_no_name" TEXT CHECK ("i_will_fail_on_no_name" != 'no name')
+);
+
+INSERT INTO test_check_constraint (geom, i_will_fail_on_no_name)
+VALUES ('POINT(9 45)'::geometry, 'I have a name'), ('POINT(10 46)'::geometry, 'I have a name too');
 

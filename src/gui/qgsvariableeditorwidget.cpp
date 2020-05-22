@@ -28,7 +28,7 @@
 #include <QPushButton>
 #include <QHeaderView>
 #include <QMessageBox>
-
+#include <QClipboard>
 
 //
 // QgsVariableEditorWidget
@@ -627,6 +627,25 @@ void QgsVariableEditorTree::keyPressEvent( QKeyEvent *event )
     default:
       break;
   }
+
+  if ( event == QKeySequence::Copy )
+  {
+    QList<QTreeWidgetItem *> selected = selectedItems();
+    if ( selected.size() > 0 )
+    {
+      QString text = selected.at( 0 )->text( 0 );
+      QString varName = variableNameFromItem( selected.at( 0 ) );
+      QgsExpressionContextScope *scope = scopeFromItem( selected.at( 0 ) );
+      if ( !varName.isEmpty() && scope )
+        text = scope->variable( varName ).toString();
+
+      QClipboard *clipboard = QApplication::clipboard();
+      clipboard->setText( text );
+      event->accept();
+      return;
+    }
+  }
+
   QTreeWidget::keyPressEvent( event );
 }
 

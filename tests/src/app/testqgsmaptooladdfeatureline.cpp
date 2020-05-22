@@ -26,6 +26,7 @@
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
+#include "qgswkbtypes.h"
 #include "qgsmapmouseevent.h"
 #include "testqgsmaptoolutils.h"
 
@@ -65,6 +66,7 @@ class TestQgsMapToolAddFeatureLine : public QObject
     void testNoTracing();
     void testTracing();
     void testTracingWithOffset();
+    void testTracingWithConvertToCurves();
     void testZ();
     void testZMSnapping();
     void testTopologicalEditingZ();
@@ -77,12 +79,14 @@ class TestQgsMapToolAddFeatureLine : public QObject
     QAction *mEnableTracingAction = nullptr;
     QgsMapToolAddFeature *mCaptureTool = nullptr;
     QgsVectorLayer *mLayerLine = nullptr;
+    QgsVectorLayer *mLayerLineCurved = nullptr;
     QgsVectorLayer *mLayerLineZ = nullptr;
     QgsVectorLayer *mLayerPointZM = nullptr;
     QgsVectorLayer *mLayerTopoZ = nullptr;
     QgsVectorLayer *mLayerLine2D = nullptr;
     QgsVectorLayer *mLayerCloseLine = nullptr;
     QgsFeatureId mFidLineF1 = 0;
+    QgsFeatureId mFidCurvedF1 = 0;
 };
 
 TestQgsMapToolAddFeatureLine::TestQgsMapToolAddFeatureLine() = default;
@@ -124,6 +128,22 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
 
   // just one added feature
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
+
+  // make testing layers
+  mLayerLineCurved = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "curved layer line" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerLineCurved->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLineCurved );
+
+  QgsFeature curveF1;
+  curveF1.setGeometry( QgsGeometry::fromWkt( "CIRCULARSTRING(6 1, 6.5 1.5, 7 1)" ) );
+
+  mLayerLineCurved->startEditing();
+  mLayerLineCurved->addFeature( curveF1 );
+  mFidCurvedF1 = curveF1.id();
+  QCOMPARE( mLayerLineCurved->featureCount(), ( long )1 );
+
+  // just one added feature
+  QCOMPARE( mLayerLineCurved->undoStack()->index(), 1 );
 
   // make testing layers
   mLayerLineZ = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:27700" ), QStringLiteral( "layer line Z" ), QStringLiteral( "memory" ) );
@@ -188,7 +208,7 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
 
   mLayerLine2D->addFeature( lineString2DF );
   QCOMPARE( mLayerLine2D->featureCount(), ( long )1 );
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineZ << mLayerPointZM << mLayerTopoZ << mLayerLine2D );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineCurved << mLayerLineZ << mLayerPointZM << mLayerTopoZ << mLayerLine2D );
 
   mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
 
@@ -356,6 +376,57 @@ void TestQgsMapToolAddFeatureLine::testTracingWithOffset()
   // no other unexpected changes happened
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
 
+
+  mEnableTracingAction->setChecked( false );
+  mTracer->setOffset( 0 );
+}
+
+void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurves()
+{
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  mCanvas->setCurrentLayer( mLayerLineCurved );
+
+  // enable snapping and tracing
+  mEnableTracingAction->setChecked( true );
+
+  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+
+  // tracing enabled - without converting to curves
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false );
+
+  utils.mouseClick( 6, 1, Qt::LeftButton );
+  utils.mouseClick( 7, 1, Qt::LeftButton );
+  utils.mouseClick( 7, 1, Qt::RightButton );
+
+  QgsFeatureId newFid1 = utils.newFeatureId( oldFids );
+
+  const QgsAbstractGeometry *g = mLayerLineCurved->getFeature( newFid1 ).geometry().constGet();
+  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( 6, 1 ) );
+  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, g->vertexCount() - 1 ) ), QgsPoint( 7, 1 ) );
+  QVERIFY( g->vertexCount() > 3 );  // a segmentized arc has (much) more than 3 points
+
+  mLayerLineCurved->undoStack()->undo();
+
+  // we redo the same with convert to curves enabled
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), true );
+
+  // tracing enabled - without converting to curves
+  utils.mouseClick( 6, 1, Qt::LeftButton );
+  utils.mouseClick( 7, 1, Qt::LeftButton );
+  utils.mouseClick( 7, 1, Qt::RightButton );
+
+  QgsFeatureId newFid2 = utils.newFeatureId( oldFids );
+
+  g = mLayerLineCurved->getFeature( newFid2 ).geometry().constGet();
+  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( 6, 1 ) );
+  QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, g->vertexCount() - 1 ) ), QgsPoint( 7, 1 ) );
+  QVERIFY( g->vertexCount() == 3 );  // a true arc is composed of 3 vertices
+
+  mLayerLineCurved->undoStack()->undo();
+
+  // no other unexpected changes happened
+  QCOMPARE( mLayerLineCurved->undoStack()->index(), 1 );
 
   mEnableTracingAction->setChecked( false );
 }

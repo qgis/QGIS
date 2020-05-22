@@ -27,6 +27,7 @@
 #include <QObject>
 #include <QtTest/QSignalSpy>
 #include <QList>
+#include <QFileInfo>
 #include "qgis.h"
 #include "qgstest.h"
 #include "qgsrasterlayer.h"
@@ -164,6 +165,23 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QVERIFY( addParameter( p1C ) );
       QCOMPARE( parameterDefinitions().count(), 8 );
 
+      // remove parameter and auto created output
+      QgsProcessingParameterVectorDestination *p9 = new QgsProcessingParameterVectorDestination( "p9", "output" );
+      QVERIFY( addParameter( p9 ) );
+      QVERIFY( outputDefinition( "p9" ) );
+      QCOMPARE( outputDefinition( "p9" )->name(), QStringLiteral( "p9" ) );
+      QCOMPARE( outputDefinition( "p9" )->type(), QStringLiteral( "outputVector" ) );
+      removeParameter( "p9" );
+      QVERIFY( !outputDefinition( "p9" ) );
+
+      // remove parameter and check manually added output isn't removed
+      QVERIFY( addParameter( new QgsProcessingParameterVectorDestination( "p10", "output" ), false ) );
+      QVERIFY( addOutput( new QgsProcessingOutputVectorLayer( "p10" ) ) );
+      QCOMPARE( outputDefinition( "p10" )->name(), QStringLiteral( "p10" ) );
+      QCOMPARE( outputDefinition( "p10" )->type(), QStringLiteral( "outputVector" ) );
+      removeParameter( "p10" );
+      QVERIFY( outputDefinition( "p10" ) );
+
       // parameterDefinition should be case insensitive, but prioritize correct case matches
       QCOMPARE( parameterDefinition( "p1" ), parameterDefinitions().at( 0 ) );
       QCOMPARE( parameterDefinition( "P1" ), parameterDefinitions().at( 7 ) );
@@ -194,6 +212,10 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QVERIFY( addOutput( new QgsProcessingOutputVectorLayer( "p1" ) ) );
       QCOMPARE( outputDefinitions().count(), 1 );
       QCOMPARE( outputDefinitions().at( 0 )->name(), QString( "p1" ) );
+
+      // make sure manually added outputs are not deleted by calling removeParameter
+      removeParameter( "p1" );
+      QCOMPARE( outputDefinitions().count(), 1 );
 
       QVERIFY( !addOutput( nullptr ) );
       QCOMPARE( outputDefinitions().count(), 1 );
@@ -530,6 +552,7 @@ class TestQgsProcessing: public QObject
     void features();
     void uniqueValues();
     void createIndex();
+    void generateTemporaryDestination();
     void parseDestinationString();
     void createFeatureSink();
     void source();
@@ -585,11 +608,13 @@ class TestQgsProcessing: public QObject
     void modelerAlgorithm();
     void modelExecution();
     void modelBranchPruning();
+    void modelBranchPruningConditional();
     void modelWithProviderWithLimitedTypes();
     void modelVectorOutputIsCompatibleType();
     void modelAcceptableValues();
     void modelValidate();
     void modelInputs();
+    void modelDependencies();
     void tempUtils();
     void convertCompatible();
     void create();
@@ -1610,6 +1635,49 @@ void TestQgsProcessing::createIndex()
   index = QgsSpatialIndex( *source );
   ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
   QCOMPARE( ids, QList<QgsFeatureId>() << 2 );
+}
+
+void TestQgsProcessing::generateTemporaryDestination()
+{
+  // setup a context
+  QgsProject p;
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 28353 ) );
+  QgsProcessingContext context;
+  context.setProject( &p );
+
+  // destination vector with "." in it's name
+  std::unique_ptr< QgsProcessingParameterVectorDestination > def( new QgsProcessingParameterVectorDestination( "with.inside", QString(), QgsProcessing::TypeVectorAnyGeometry, QString(), false ) );
+
+  // check that temporary destination does not have dot at the end when there is no extension
+  QVERIFY( !def->generateTemporaryDestination().endsWith( QLatin1String( "." ) ) );
+  // check that temporary destination starts with tempFolder
+  QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
+  // check that extension with QFileInfo::completeSuffix is "gpkg"
+  QFileInfo f = QFileInfo( def->generateTemporaryDestination() );
+  QCOMPARE( f.completeSuffix(), QString( "gpkg" ) );
+
+  // destination raster with "." in it's name
+  std::unique_ptr< QgsProcessingParameterRasterDestination > def2( new QgsProcessingParameterRasterDestination( "with.inside", QString(), QString(), false ) );
+
+  // check that temporary destination does not have dot at the end when there is no extension
+  QVERIFY( !def2->generateTemporaryDestination().endsWith( QLatin1String( "." ) ) );
+  // check that temporary destination starts with tempFolder
+  QVERIFY( def2->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
+  // check that extension with QFileInfo::completeSuffix is "tif"
+  f = QFileInfo( def2->generateTemporaryDestination() );
+  QCOMPARE( f.completeSuffix(), QString( "tif" ) );
+
+  // destination vector without "." in it's name
+  std::unique_ptr< QgsProcessingParameterVectorDestination > def3( new QgsProcessingParameterVectorDestination( "without_inside", QString(), QgsProcessing::TypeVectorAnyGeometry, QString(), false ) );
+
+  // check that temporary destination does not have dot at the end when there is no extension
+  QVERIFY( !def3->generateTemporaryDestination().endsWith( QLatin1String( "." ) ) );
+  // check that temporary destination starts with tempFolder
+  QVERIFY( def3->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
+  // check that extension with QFileInfo::completeSuffix is "gpkg"
+  f = QFileInfo( def3->generateTemporaryDestination() );
+  QCOMPARE( f.completeSuffix(), QString( "gpkg" ) );
+
 }
 
 void TestQgsProcessing::parseDestinationString()
@@ -8455,8 +8523,8 @@ void TestQgsProcessing::modelerAlgorithm()
   child.setChildId( QStringLiteral( "my_id" ) );
   QCOMPARE( child.childId(), QStringLiteral( "my_id" ) );
 
-  child.setDependencies( QStringList() << "a" << "b" );
-  QCOMPARE( child.dependencies(), QStringList() << "a" << "b" );
+  child.setDependencies( QList< QgsProcessingModelChildDependency >() << QgsProcessingModelChildDependency( "a" ) << QgsProcessingModelChildDependency( "b" ) );
+  QCOMPARE( child.dependencies(), QList< QgsProcessingModelChildDependency >() << QgsProcessingModelChildDependency( "a" ) << QgsProcessingModelChildDependency( "b" ) );
 
   QMap< QString, QgsProcessingModelChildParameterSources > sources;
   sources.insert( QStringLiteral( "a" ), QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromStaticValue( 5 ) );
@@ -8573,6 +8641,9 @@ void TestQgsProcessing::modelerAlgorithm()
   lastParams.insert( QStringLiteral( "a" ), 2 );
   lastParams.insert( QStringLiteral( "b" ), 4 );
   alg.setDesignerParameterValues( lastParams );
+
+  // we expect the result to add in some custom parameters -- namely the verbose log switch
+  lastParams.insert( QStringLiteral( "VERBOSE_LOG" ), true );
   QCOMPARE( alg.designerParameterValues(), lastParams );
 
   // child algorithms
@@ -8749,6 +8820,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelAlgorithm alg3( "test", "testGroup" );
   QVERIFY( alg3.dependentChildAlgorithms( "notvalid" ).isEmpty() );
   QVERIFY( alg3.dependsOnChildAlgorithms( "notvalid" ).isEmpty() );
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "notvalid" ) ).isEmpty() );
 
   // add a child
   QgsProcessingModelChildAlgorithm c7;
@@ -8756,11 +8828,12 @@ void TestQgsProcessing::modelerAlgorithm()
   alg3.addChildAlgorithm( c7 );
   QVERIFY( alg3.dependentChildAlgorithms( "c7" ).isEmpty() );
   QVERIFY( alg3.dependsOnChildAlgorithms( "c7" ).isEmpty() );
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c7" ) ).isEmpty() );
 
   // direct dependency
   QgsProcessingModelChildAlgorithm c8;
   c8.setChildId( "c8" );
-  c8.setDependencies( QStringList() << "c7" );
+  c8.setDependencies( QList< QgsProcessingModelChildDependency >() << QgsProcessingModelChildDependency( "c7" ) );
   alg3.addChildAlgorithm( c8 );
   QVERIFY( alg3.dependentChildAlgorithms( "c8" ).isEmpty() );
   QVERIFY( alg3.dependsOnChildAlgorithms( "c7" ).isEmpty() );
@@ -8768,6 +8841,9 @@ void TestQgsProcessing::modelerAlgorithm()
   QVERIFY( alg3.dependentChildAlgorithms( "c7" ).contains( "c8" ) );
   QCOMPARE( alg3.dependsOnChildAlgorithms( "c8" ).count(), 1 );
   QVERIFY( alg3.dependsOnChildAlgorithms( "c8" ).contains( "c7" ) );
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c7" ) ).isEmpty() );
+  QCOMPARE( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c8" ) ).size(), 1 );
+  QCOMPARE( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c8" ) ).at( 0 ).childId, QStringLiteral( "c7" ) );
 
   // dependency via parameter source
   QgsProcessingModelChildAlgorithm c9;
@@ -8787,6 +8863,13 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg3.dependsOnChildAlgorithms( "c9" ).count(), 2 );
   QVERIFY( alg3.dependsOnChildAlgorithms( "c9" ).contains( "c7" ) );
   QVERIFY( alg3.dependsOnChildAlgorithms( "c9" ).contains( "c8" ) );
+
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c7" ) ).isEmpty() );
+  QCOMPARE( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c8" ) ).size(), 1 );
+  QCOMPARE( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c8" ) ).at( 0 ).childId, QStringLiteral( "c7" ) );
+  QCOMPARE( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c9" ) ).size(), 2 );
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c9" ) ).contains( QgsProcessingModelChildDependency( QStringLiteral( "c7" ) ) ) );
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c9" ) ).contains( QgsProcessingModelChildDependency( QStringLiteral( "c8" ) ) ) );
 
   QgsProcessingModelChildAlgorithm c9b;
   c9b.setChildId( "c9b" );
@@ -8812,6 +8895,17 @@ void TestQgsProcessing::modelerAlgorithm()
   QVERIFY( alg3.dependsOnChildAlgorithms( "c9b" ).contains( "c7" ) );
   QVERIFY( alg3.dependsOnChildAlgorithms( "c9b" ).contains( "c8" ) );
   QVERIFY( alg3.dependsOnChildAlgorithms( "c9b" ).contains( "c9" ) );
+
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c7" ) ).isEmpty() );
+  QCOMPARE( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c8" ) ).size(), 1 );
+  QCOMPARE( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c8" ) ).at( 0 ).childId, QStringLiteral( "c7" ) );
+  QCOMPARE( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c9" ) ).size(), 2 );
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c9" ) ).contains( QgsProcessingModelChildDependency( QStringLiteral( "c7" ) ) ) );
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c9" ) ).contains( QgsProcessingModelChildDependency( QStringLiteral( "c8" ) ) ) );
+  QCOMPARE( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c9b" ) ).size(), 3 );
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c9b" ) ).contains( QgsProcessingModelChildDependency( QStringLiteral( "c7" ) ) ) );
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c9b" ) ).contains( QgsProcessingModelChildDependency( QStringLiteral( "c8" ) ) ) );
+  QVERIFY( alg3.availableDependenciesForChildAlgorithm( QStringLiteral( "c9b" ) ).contains( QgsProcessingModelChildDependency( QStringLiteral( "c9" ) ) ) );
 
   alg3.removeChildAlgorithm( "c9b" );
 
@@ -8942,10 +9036,11 @@ void TestQgsProcessing::modelerAlgorithm()
 
   QgsProcessingModelChildAlgorithm alg5c2;
   alg5c2.setChildId( "cx2" );
+  alg5c2.setAlgorithmId( QStringLiteral( "native:centroids" ) );
   alg5c2.setActive( false );
   alg5c2.setLinksCollapsed( Qt::BottomEdge, false );
   alg5c2.setLinksCollapsed( Qt::TopEdge, false );
-  alg5c2.setDependencies( QStringList() << "a" << "b" );
+  alg5c2.setDependencies( QList< QgsProcessingModelChildDependency >() << QgsProcessingModelChildDependency( "a" ) << QgsProcessingModelChildDependency( "b" ) );
   alg5.addChildAlgorithm( alg5c2 );
 
   QgsProcessingModelParameter alg5pc1;
@@ -9022,7 +9117,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QVERIFY( !alg6c2.isActive() );
   QVERIFY( !alg6c2.linksCollapsed( Qt::BottomEdge ) );
   QVERIFY( !alg6c2.linksCollapsed( Qt::TopEdge ) );
-  QCOMPARE( alg6c2.dependencies(), QStringList() << "a" << "b" );
+  QCOMPARE( alg6c2.dependencies(), QList< QgsProcessingModelChildDependency >() << QgsProcessingModelChildDependency( "a" ) << QgsProcessingModelChildDependency( "b" ) );
 
   QCOMPARE( alg6.parameterComponents().count(), 1 );
   QCOMPARE( alg6.parameterComponents().value( QStringLiteral( "my_param" ) ).parameterName(), QStringLiteral( "my_param" ) );
@@ -9278,7 +9373,7 @@ void TestQgsProcessing::modelExecution()
   alg2c3.addParameterSources( "INPUT", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromChildOutput( "cx1", "OUTPUT" ) );
   alg2c3.addParameterSources( "EXPRESSION", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromStaticValue( "true" ) );
   alg2c3.addParameterSources( "OUTPUT", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromModelParameter( "MY_OUT" ) );
-  alg2c3.setDependencies( QStringList() << "cx2" );
+  alg2c3.setDependencies( QList< QgsProcessingModelChildDependency >() << QgsProcessingModelChildDependency( "cx2" ) );
   QMap<QString, QgsProcessingModelOutput> outputs3;
   QgsProcessingModelOutput out2( "MY_OUT" );
   out2.setChildOutputName( "OUTPUT" );
@@ -9580,6 +9675,62 @@ void TestQgsProcessing::modelBranchPruning()
   QVERIFY( !results.contains( QStringLiteral( "buffer3:BUFFER3_OUTPUT" ) ) );
 }
 
+void TestQgsProcessing::modelBranchPruningConditional()
+{
+  QgsProcessingContext context;
+
+  context.expressionContext().appendScope( new QgsExpressionContextScope() );
+  context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "var1" ), 1 );
+  context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "var2" ), 0 );
+
+  // test that model branches are trimmed for algorithms which depend on conditional branches
+  QgsProcessingModelAlgorithm model1;
+
+  // first add the filter by layer type alg
+  QgsProcessingModelChildAlgorithm algc1;
+  algc1.setChildId( "branch" );
+  algc1.setAlgorithmId( "native:condition" );
+  QVariantMap config;
+  QVariantList conditions;
+  QVariantMap cond1;
+  cond1.insert( QStringLiteral( "name" ), QStringLiteral( "name1" ) );
+  cond1.insert( QStringLiteral( "expression" ), QStringLiteral( "@var1" ) );
+  conditions << cond1;
+  QVariantMap cond2;
+  cond2.insert( QStringLiteral( "name" ), QStringLiteral( "name2" ) );
+  cond2.insert( QStringLiteral( "expression" ), QStringLiteral( "@var2" ) );
+  conditions << cond2;
+  config.insert( QStringLiteral( "conditions" ), conditions );
+  algc1.setConfiguration( config );
+  model1.addChildAlgorithm( algc1 );
+
+  //then create some branches which come off this
+  QgsProcessingModelChildAlgorithm algc2;
+  algc2.setChildId( "exception" );
+  algc2.setAlgorithmId( "native:raiseexception" );
+  algc2.setDependencies( QList< QgsProcessingModelChildDependency >() << QgsProcessingModelChildDependency( QStringLiteral( "branch" ), QStringLiteral( "name1" ) ) );
+  model1.addChildAlgorithm( algc2 );
+
+  QgsProcessingModelChildAlgorithm algc3;
+  algc2.setChildId( "exception" );
+  algc3.setAlgorithmId( "native:raisewarning" );
+  algc3.setDependencies( QList< QgsProcessingModelChildDependency >() << QgsProcessingModelChildDependency( QStringLiteral( "branch" ), QStringLiteral( "name2" ) ) );
+  model1.addChildAlgorithm( algc3 );
+
+  QgsProcessingFeedback feedback;
+  QVariantMap params;
+  bool ok = false;
+  QVariantMap results = model1.run( params, context, &feedback, &ok );
+  QVERIFY( !ok ); // the branch with the exception should be hit
+
+  // flip the condition results
+  context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "var1" ), 0 );
+  context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "var2" ), 1 );
+
+  results = model1.run( params, context, &feedback, &ok );
+  QVERIFY( ok ); // the branch with the exception should NOT be hit
+}
+
 void TestQgsProcessing::modelWithProviderWithLimitedTypes()
 {
   QgsApplication::processingRegistry()->addProvider( new DummyProvider4() );
@@ -9767,7 +9918,7 @@ void TestQgsProcessing::modelAcceptableValues()
   QgsProcessingModelChildAlgorithm alg2c2;
   alg2c2.setChildId( "cx2" );
   alg2c2.setAlgorithmId( "native:centroids" );
-  alg2c2.setDependencies( QStringList() << "cx1" );
+  alg2c2.setDependencies( QList< QgsProcessingModelChildDependency >() << QgsProcessingModelChildDependency( "cx1" ) );
   m.addChildAlgorithm( alg2c2 );
   sources = m.availableSourcesForChild( QString(), QStringList(), QStringList() << "string" << "outputVector" );
   QCOMPARE( sources.count(), 2 );
@@ -9995,6 +10146,35 @@ void TestQgsProcessing::modelInputs()
   QCOMPARE( m2.parameterDefinitions().at( 0 )->name(), QStringLiteral( "cc string" ) );
   QCOMPARE( m2.parameterDefinitions().at( 1 )->name(), QStringLiteral( "a string" ) );
   QCOMPARE( m2.parameterDefinitions().at( 2 )->name(), QStringLiteral( "string" ) );
+}
+
+void TestQgsProcessing::modelDependencies()
+{
+  QgsProcessingModelChildDependency dep( QStringLiteral( "childId" ), QStringLiteral( "branch" ) );
+
+  QCOMPARE( dep.childId, QStringLiteral( "childId" ) );
+  QCOMPARE( dep.conditionalBranch, QStringLiteral( "branch" ) );
+
+  QVariant v = dep.toVariant();
+  QgsProcessingModelChildDependency dep2;
+  QVERIFY( dep2.loadVariant( v.toMap() ) );
+
+  QCOMPARE( dep2.childId, QStringLiteral( "childId" ) );
+  QCOMPARE( dep2.conditionalBranch, QStringLiteral( "branch" ) );
+
+  QVERIFY( dep == dep2 );
+  QVERIFY( !( dep != dep2 ) );
+  dep2.conditionalBranch = QStringLiteral( "b" );
+
+  QVERIFY( !( dep == dep2 ) );
+  QVERIFY( dep != dep2 );
+  dep2.conditionalBranch = QStringLiteral( "branch" );
+  dep2.childId = QStringLiteral( "c" );
+  QVERIFY( !( dep == dep2 ) );
+  QVERIFY( dep != dep2 );
+  dep2.childId = QStringLiteral( "childId" );
+  QVERIFY( dep == dep2 );
+  QVERIFY( !( dep != dep2 ) );
 }
 
 void TestQgsProcessing::tempUtils()

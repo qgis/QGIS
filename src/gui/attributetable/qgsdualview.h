@@ -346,13 +346,9 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void autosizeColumn();
 
-    void modifySort();
-
     void previewExpressionChanged( const QString &expression );
 
     void onSortColumnChanged();
-
-    void sortByPreviewExpression();
 
     void updateSelectedFeatures();
 
@@ -409,6 +405,10 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     //! disable/enable the buttons of the browsing toolbar (feature list view)
     void setBrowsingAutoPanScaleAllowed( bool allowed );
 
+    //! Returns TRUE if the expression dialog has been accepted
+    bool modifySort();
+
+
     QgsFieldConditionalFormatWidget *mConditionalFormatWidget = nullptr;
     QgsAttributeEditorContext mEditorContext;
     QgsAttributeTableModel *mMasterModel = nullptr;
@@ -431,6 +431,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QgsFeature mTempAttributeFormFeature;
     QgsFeatureIds mLastFeatureSet;
     bool mBrowsingAutoPanScaleAllowed = true;
+    ViewMode mPreviousView = AttributeTable;
 
     friend class TestQgsDualView;
     friend class TestQgsAttributeTable;

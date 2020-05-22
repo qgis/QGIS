@@ -21,35 +21,58 @@
 QgsMeshDataProviderTemporalCapabilities::QgsMeshDataProviderTemporalCapabilities(): QgsDataProviderTemporalCapabilities()
 {}
 
-QgsMeshDatasetIndex QgsMeshDataProviderTemporalCapabilities::datasetIndexFromRelativeTimeRange( int group, qint64 startTimeSinceGlobalReference, qint64 endTimeSinceGlobalReference ) const
+QgsMeshDatasetIndex QgsMeshDataProviderTemporalCapabilities::datasetIndexClosestFromRelativeTime( int group, qint64 timeSinceGlobalReference ) const
 {
   // No time --> non temporal dataset, so return the dataset that has to be the only one
   const QList<qint64> &datasetTimes = mDatasetTimeSinceGroupReference[group];
   if ( datasetTimes.isEmpty() )
     return QgsMeshDatasetIndex( group, 0 );
   const QDateTime groupReference = mGroupsReferenceDateTime[group];
-  const qint64 startTimeSinceGroupReference =
-    startTimeSinceGlobalReference - mGlobalReferenceDateTime.msecsTo( groupReference );
-  const qint64 endTimeSinceGroupReference =
-    endTimeSinceGlobalReference - mGlobalReferenceDateTime.msecsTo( groupReference );
+  const qint64 timeSinceGroupReference =
+    timeSinceGlobalReference - mGlobalReferenceDateTime.msecsTo( groupReference );
 
-  if ( startTimeSinceGroupReference >= datasetTimes.last() )
+  if ( timeSinceGroupReference > datasetTimes.last() // after last time
+       || timeSinceGroupReference < datasetTimes.first() ) // before first time
     return QgsMeshDatasetIndex();
 
-  for ( int i = 0; i < datasetTimes.count(); ++i )
+  for ( int i = 1 ; i < datasetTimes.count(); ++i )
   {
-    qint64 time = datasetTimes.at( i );
-    if ( startTimeSinceGroupReference <= time )
+    qint64 time1 = datasetTimes.at( i - 1 );
+    qint64 time2 = datasetTimes.at( i );
+    if ( time1 <= timeSinceGroupReference && timeSinceGroupReference <= time2 )
     {
-      if ( endTimeSinceGroupReference <= time )
-        return QgsMeshDatasetIndex( group, i - 1 ); // invalid if i=0
-      else
+      if ( abs( timeSinceGroupReference - time2 ) < abs( timeSinceGroupReference - time1 ) )
         return QgsMeshDatasetIndex( group, i );
+      else
+        return QgsMeshDatasetIndex( group, i - 1 );
     }
   }
 
-  // if we are here (normally, this could no happen), return invalid dataset index
-  return QgsMeshDatasetIndex();
+  return QgsMeshDatasetIndex( QgsMeshDatasetIndex( group, datasetTimes.count() - 1 ) );
+}
+
+QgsMeshDatasetIndex QgsMeshDataProviderTemporalCapabilities::datasetIndexClosestBeforeRelativeTime( int group, qint64 timeSinceGlobalReference ) const
+{
+  // No time --> non temporal dataset, so return the dataset that has to be the only one
+  const QList<qint64> &datasetTimes = mDatasetTimeSinceGroupReference[group];
+  if ( datasetTimes.isEmpty() )
+    return QgsMeshDatasetIndex( group, 0 );
+  const QDateTime groupReference = mGroupsReferenceDateTime[group];
+  const qint64 timeSinceGroupReference =
+    timeSinceGlobalReference - mGlobalReferenceDateTime.msecsTo( groupReference );
+
+  if ( timeSinceGroupReference > datasetTimes.last() // after last time
+       || timeSinceGroupReference < datasetTimes.first() ) // before first time
+    return QgsMeshDatasetIndex();
+
+  for ( int i = 1; i < datasetTimes.count(); ++i )
+  {
+    qint64 time = datasetTimes.at( i );
+    if ( timeSinceGroupReference < time )
+      return QgsMeshDatasetIndex( group, i - 1 );
+  }
+
+  return QgsMeshDatasetIndex( QgsMeshDatasetIndex( group, datasetTimes.count() - 1 ) );
 }
 
 void QgsMeshDataProviderTemporalCapabilities::addGroupReferenceDateTime( int group, const QDateTime &reference )

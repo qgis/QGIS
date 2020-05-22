@@ -98,6 +98,7 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/raster
       ${CMAKE_SOURCE_DIR}/src/core/scalebar
       ${CMAKE_SOURCE_DIR}/src/core/symbology
+      ${CMAKE_SOURCE_DIR}/src/core/textrenderer
       ${CMAKE_SOURCE_DIR}/src/core/validity
       ${CMAKE_SOURCE_DIR}/src/core/vectortile
       ${CMAKE_SOURCE_DIR}/src/gui
@@ -180,6 +181,8 @@ IF(WITH_APIDOC)
     IF(GENERATE_QHP)
       INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/api/qch/qgis.qch DESTINATION ${QGIS_DATA_DIR}/doc/api)
     ENDIF(GENERATE_QHP)
+    SET(WITH_DOT YES CACHE STRING "Determines if the dot application should be used to generate class diagrams for the documentation")
+    MARK_AS_ADVANCED(WITH_DOT)
   ELSE(DOXYGEN_FOUND)
     MESSAGE(STATUS "QGIS api documentation not built - Doxygen not found")
   ENDIF(DOXYGEN_FOUND)

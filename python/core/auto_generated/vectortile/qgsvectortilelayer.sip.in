@@ -92,6 +92,11 @@ Constructs a new vector tile layer
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
 
+    virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const ${SIP_FINAL};
+
+    virtual QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const ${SIP_FINAL};
+
+
 
     QString sourceType() const;
 %Docstring

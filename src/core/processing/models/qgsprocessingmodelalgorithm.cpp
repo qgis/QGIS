@@ -42,6 +42,9 @@ QgsProcessingModelAlgorithm::QgsProcessingModelAlgorithm( const QString &name, c
 
 void QgsProcessingModelAlgorithm::initAlgorithm( const QVariantMap & )
 {
+  std::unique_ptr< QgsProcessingParameterBoolean > verboseLog = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "VERBOSE_LOG" ), QObject::tr( "Verbose logging" ), false, true );
+  verboseLog->setFlags( verboseLog->flags() | QgsProcessingParameterDefinition::FlagHidden );
+  addParameter( verboseLog.release() );
 }
 
 QString QgsProcessingModelAlgorithm::name() const
@@ -276,6 +279,8 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   QVariantMap childResults;
   QVariantMap childInputs;
 
+  const bool verboseLog = parameterAsBool( parameters, QStringLiteral( "VERBOSE_LOG" ), context );
+
   QVariantMap finalResults;
   QSet< QString > executed;
   bool executedAlg = true;
@@ -309,7 +314,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       const QgsProcessingModelChildAlgorithm &child = mChildAlgorithms[ childId ];
       std::unique_ptr< QgsProcessingAlgorithm > childAlg( child.algorithm()->create( child.configuration() ) );
 
-      const bool skipGenericLogging = childAlg->flags() & QgsProcessingAlgorithm::FlagSkipGenericModelLogging;
+      const bool skipGenericLogging = !verboseLog || childAlg->flags() & QgsProcessingAlgorithm::FlagSkipGenericModelLogging;
       if ( feedback && !skipGenericLogging )
         feedback->pushDebugInfo( QObject::tr( "Prepare algorithm: %1" ).arg( childId ) );
 
@@ -359,19 +364,29 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 
       executed.insert( childId );
 
-      std::function< void( const QString & )> pruneAlgorithmBranchRecursive;
-      pruneAlgorithmBranchRecursive = [&]( const QString & id )
+      std::function< void( const QString &, const QString & )> pruneAlgorithmBranchRecursive;
+      pruneAlgorithmBranchRecursive = [&]( const QString & id, const QString &branch = QString() )
       {
-        const QSet<QString> toPrune = dependentChildAlgorithms( id );
+        const QSet<QString> toPrune = dependentChildAlgorithms( id, branch );
         for ( const QString &targetId : toPrune )
         {
           if ( executed.contains( targetId ) )
             continue;
 
           executed.insert( targetId );
-          pruneAlgorithmBranchRecursive( targetId );
+          pruneAlgorithmBranchRecursive( targetId, branch );
         }
       };
+
+      // prune remaining algorithms if they are dependent on a branch from this child which didn't eventuate
+      const QgsProcessingOutputDefinitions outputDefs = childAlg->outputDefinitions();
+      for ( const QgsProcessingOutputDefinition *outputDef : outputDefs )
+      {
+        if ( outputDef->type() == QgsProcessingOutputConditionalBranch::typeName() && !results.value( outputDef->name() ).toBool() )
+        {
+          pruneAlgorithmBranchRecursive( childId, outputDef->name() );
+        }
+      }
 
       if ( childAlg->flags() & QgsProcessingAlgorithm::FlagPruneModelBranchesBasedOnAlgorithmResults )
       {
@@ -402,7 +417,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
                   // skip the dependent alg..
                   executed.insert( candidateId );
                   //... and everything which depends on it
-                  pruneAlgorithmBranchRecursive( candidateId );
+                  pruneAlgorithmBranchRecursive( candidateId, QString() );
                   break;
                 }
               }
@@ -1606,7 +1621,7 @@ QMap<QString, QgsProcessingModelParameter> QgsProcessingModelAlgorithm::paramete
   return mParameterComponents;
 }
 
-void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const
+void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends, const QString &branch ) const
 {
   QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
   for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
@@ -1615,10 +1630,21 @@ void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QStri
       continue;
 
     // does alg have a direct dependency on this child?
-    if ( childIt->dependencies().contains( childId ) )
+    const QList< QgsProcessingModelChildDependency > constDependencies = childIt->dependencies();
+    bool hasDependency = false;
+    for ( const QgsProcessingModelChildDependency &dep : constDependencies )
+    {
+      if ( dep.childId == childId && ( branch.isEmpty() || dep.conditionalBranch == branch ) )
+      {
+        hasDependency = true;
+        break;
+      }
+    }
+
+    if ( hasDependency )
     {
       depends.insert( childIt->childId() );
-      dependentChildAlgorithmsRecursive( childIt->childId(), depends );
+      dependentChildAlgorithmsRecursive( childIt->childId(), depends, branch );
       continue;
     }
 
@@ -1634,7 +1660,7 @@ void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QStri
              && source.outputChildId() == childId )
         {
           depends.insert( childIt->childId() );
-          dependentChildAlgorithmsRecursive( childIt->childId(), depends );
+          dependentChildAlgorithmsRecursive( childIt->childId(), depends, branch );
           break;
         }
       }
@@ -1642,7 +1668,7 @@ void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QStri
   }
 }
 
-QSet<QString> QgsProcessingModelAlgorithm::dependentChildAlgorithms( const QString &childId ) const
+QSet<QString> QgsProcessingModelAlgorithm::dependentChildAlgorithms( const QString &childId, const QString &conditionalBranch ) const
 {
   QSet< QString > algs;
 
@@ -1650,7 +1676,7 @@ QSet<QString> QgsProcessingModelAlgorithm::dependentChildAlgorithms( const QStri
   // unnecessarily recursion though it
   algs.insert( childId );
 
-  dependentChildAlgorithmsRecursive( childId, algs );
+  dependentChildAlgorithmsRecursive( childId, algs, conditionalBranch );
 
   // remove temporary target alg
   algs.remove( childId );
@@ -1664,13 +1690,13 @@ void QgsProcessingModelAlgorithm::dependsOnChildAlgorithmsRecursive( const QStri
   const QgsProcessingModelChildAlgorithm &alg = mChildAlgorithms.value( childId );
 
   // add direct dependencies
-  const auto constDependencies = alg.dependencies();
-  for ( const QString &c : constDependencies )
+  const QList< QgsProcessingModelChildDependency > constDependencies = alg.dependencies();
+  for ( const QgsProcessingModelChildDependency &val : constDependencies )
   {
-    if ( !depends.contains( c ) )
+    if ( !depends.contains( val.childId ) )
     {
-      depends.insert( c );
-      dependsOnChildAlgorithmsRecursive( c, depends );
+      depends.insert( val.childId );
+      dependsOnChildAlgorithmsRecursive( val.childId, depends );
     }
   }
 
@@ -1705,6 +1731,49 @@ QSet< QString > QgsProcessingModelAlgorithm::dependsOnChildAlgorithms( const QSt
   algs.remove( childId );
 
   return algs;
+}
+
+QList<QgsProcessingModelChildDependency> QgsProcessingModelAlgorithm::availableDependenciesForChildAlgorithm( const QString &childId ) const
+{
+  QSet< QString > dependent;
+  if ( !childId.isEmpty() )
+  {
+    dependent.unite( dependentChildAlgorithms( childId ) );
+    dependent.insert( childId );
+  }
+
+  QList<QgsProcessingModelChildDependency> res;
+  for ( auto it = mChildAlgorithms.constBegin(); it != mChildAlgorithms.constEnd(); ++it )
+  {
+    if ( !dependent.contains( it->childId() ) )
+    {
+      // check first if algorithm provides output branches
+      bool hasBranches = false;
+      if ( it->algorithm() )
+      {
+        const QgsProcessingOutputDefinitions defs = it->algorithm()->outputDefinitions();
+        for ( const QgsProcessingOutputDefinition *def : defs )
+        {
+          if ( def->type() == QgsProcessingOutputConditionalBranch::typeName() )
+          {
+            hasBranches = true;
+            QgsProcessingModelChildDependency alg;
+            alg.childId = it->childId();
+            alg.conditionalBranch = def->name();
+            res << alg;
+          }
+        }
+      }
+
+      if ( !hasBranches )
+      {
+        QgsProcessingModelChildDependency alg;
+        alg.childId = it->childId();
+        res << alg;
+      }
+    }
+  }
+  return res;
 }
 
 bool QgsProcessingModelAlgorithm::validateChildAlgorithm( const QString &childId, QStringList &issues ) const
@@ -1838,6 +1907,14 @@ QVariantMap QgsProcessingModelAlgorithm::variables() const
 void QgsProcessingModelAlgorithm::setVariables( const QVariantMap &variables )
 {
   mVariables = variables;
+}
+
+QVariantMap QgsProcessingModelAlgorithm::designerParameterValues() const
+{
+  QVariantMap res = mDesignerParameterValues;
+  // when running through the designer, we show a detailed verbose log to aid in model debugging
+  res.insert( QStringLiteral( "VERBOSE_LOG" ), true );
+  return res;
 }
 
 ///@endcond

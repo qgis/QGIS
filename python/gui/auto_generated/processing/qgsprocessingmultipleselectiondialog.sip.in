@@ -98,6 +98,11 @@ Emitted when the selection changes in the widget.
 Adds a new option to the widget.
 %End
 
+    QListView *listView() const;
+%Docstring
+Returns pointer to the list view
+%End
+
 };
 
 

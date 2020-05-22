@@ -252,17 +252,8 @@ qgis:polygoncentroids: >
 
   NOTE: This algorithm is deprecated and the generic "centroids" algorithm (which works for line and multi geometry layers) should be used instead.
 
-qgis:polygonize:  >
-  This algorithm takes a lines layer and creates a polygon layer, with polygons generated from the lines in the input layer.
-
 qgis:polygonstolines: >
   This algorithm takes a polygon layer and creates a line layer, with lines representing the rings of the polygons in the input layer.
-
-qgis:spatialiteexecutesql: >
-  This algorithm performs a SQL database query on a SpatiaLite database.
-
-qgis:postgisexecutesql: >
-  This algorithm performs a SQL database query on a PostgreSQL database connected to QGIS.
 
 qgis:postgisexecuteandloadsql: >
   This algorithm performs a SQL database query on a PostGIS database connected to QGIS and loads the query results as a new layer.
@@ -360,24 +351,10 @@ qgis:setstyleforrasterlayer: >
 qgis:setstyleforvectorlayer: >
   This algorithm sets the style of a vector layer. The style must be defined in a QML file.
 
-qgis:snapgeometries: >
-  This algorithm snaps the geometries in a layer. Snapping can be done either to the geometries from another layer, or to geometries within the same layer.
-
-  A tolerance is specified in layer units to control how close vertices need to be to the reference layer geometries before they are snapped.
-
-  Snapping occurs to both nodes and edges. Depending on the snapping behavior, either nodes or edges will be preferred.
-
-  Vertices will be inserted or removed as required to make the geometries match the reference geometries.
-
 qgis:splitwithlines: >
   This algorithm splits the lines or polygons in one layer using the lines in another layer to define the breaking points. Intersection between geometries in both layers are considered as split points.
 
   Output will contain multi geometries for split features.
-
-qgis:splitvectorlayer: >
-  This algorithm takes a vector layer and an attribute and generates a set of vector layers in an output folder. Each of the layers created in that folder contains all features from the input layer with the same value for the specified attribute.
-
-  The number of files generated is equal to the number of different values found for the specified attribute.
 
 qgis:statisticsbycategories: >
   This algorithm calculates statistics of fields depending on a parent class.

@@ -38,6 +38,7 @@ namespace MDAL
   } Statistics;
 
   typedef std::vector< std::pair< std::string, std::string > > Metadata;
+  typedef std::vector<std::pair<double, double>> Classification;
 
   class Dataset
   {
@@ -150,6 +151,7 @@ namespace MDAL
 
       std::string getMetadata( const std::string &key );
       void setMetadata( const std::string &key, const std::string &val );
+      void setMetadata( const Metadata &metadata );
 
       std::string name();
       void setName( const std::string &name );
@@ -179,12 +181,20 @@ namespace MDAL
       void startEditing();
       void stopEditing();
 
+      //! First value is the angle for full rotation and second value is the start angle
+      void setReferenceAngles( const std::pair<double, double> &referenceAngle );
+      std::pair<double, double> referenceAngles() const;
+
+      bool isPolar() const;
+      void setIsPolar( bool isPolar );
     private:
       bool mInEditMode = false;
 
       const std::string mDriverName;
       Mesh *mParent = nullptr;
       bool mIsScalar = true;
+      bool mIsPolar = true;
+      std::pair<double, double> mReferenceAngles = {360, 0};
       MDAL_DataLocation mDataLocation = MDAL_DataLocation::DataOnVertices;
       std::string mUri; // file/uri from where it came
       Statistics mStatistics;

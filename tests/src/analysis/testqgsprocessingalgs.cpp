@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "limits"
 
 #include "qgstest.h"
 #include "qgsprocessingregistry.h"
@@ -117,7 +118,15 @@ class TestQgsProcessingAlgs: public QObject
     void raiseException();
     void raiseWarning();
 
+    void randomFloatingPointDistributionRaster_data();
+    void randomFloatingPointDistributionRaster();
+    void randomIntegerDistributionRaster_data();
+    void randomIntegerDistributionRaster();
+    void randomRaster_data();
+    void randomRaster();
+
     void filterByLayerType();
+    void conditionalBranch();
 
     void saveLog();
 
@@ -3022,6 +3031,532 @@ void TestQgsProcessingAlgs::raiseWarning()
   QCOMPARE( feedback.errors, QStringList() << QStringLiteral( "you mighta screwed up boy, but i aint so sure" ) );
 }
 
+void TestQgsProcessingAlgs::randomFloatingPointDistributionRaster_data()
+{
+  QTest::addColumn<QString>( "inputExtent" );
+  QTest::addColumn<Qgis::DataType>( "expectedDataType" );
+  QTest::addColumn<bool>( "succeeds" );
+  QTest::addColumn<QString>( "crs" );
+  QTest::addColumn<double>( "pixelSize" );
+  QTest::addColumn<int>( "typeId" );
+
+  QTest::newRow( "testcase 1" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::Float32
+      << true
+      << "EPSG:4326"
+      << 1.0
+      << 0;
+
+
+  QTest::newRow( "testcase 2" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::Float64
+      << true
+      << "EPSG:4326"
+      << 1.0
+      << 1;
+}
+
+void TestQgsProcessingAlgs::randomFloatingPointDistributionRaster()
+{
+  //this test only checks if the correct raster data type is chosen
+  //value by value comparison is not effective for random rasters
+  QFETCH( QString, inputExtent );
+  QFETCH( Qgis::DataType, expectedDataType );
+  QFETCH( bool, succeeds );
+  QFETCH( QString, crs );
+  QFETCH( double, pixelSize );
+  QFETCH( int, typeId );
+
+  //prepare input params
+  QgsProject p;
+  //set project crs and ellipsoid from input layer
+  p.setCrs( QgsCoordinateReferenceSystem( crs ), true );
+
+  QStringList alglist = QStringList();
+  alglist << QStringLiteral( "native:createrandomnormalrasterlayer" )
+          << QStringLiteral( "native:createrandomexponentialrasterlayer" )
+          << QStringLiteral( "native:createrandomgammarasterlayer" );
+
+  for ( int i = 0; i < alglist.length(); i++ )
+  {
+    QString algname = alglist[i];
+
+    std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( algname ) );
+    //set project after layer has been added so that transform context/ellipsoid from crs is also set
+    std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+    context->setProject( &p );
+
+    QVariantMap parameters;
+
+    parameters.insert( QStringLiteral( "EXTENT" ), inputExtent );
+    parameters.insert( QStringLiteral( "TARGET_CRS" ), QgsCoordinateReferenceSystem( crs ) );
+    parameters.insert( QStringLiteral( "PIXEL_SIZE" ), pixelSize );
+    parameters.insert( QStringLiteral( "OUTPUT_TYPE" ), typeId );
+    parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+    bool ok = false;
+    QgsProcessingFeedback feedback;
+    QVariantMap results;
+
+    if ( !succeeds )
+    {
+      //verify if user feedback for unacceptable values are thrown
+      alg->run( parameters, *context, &feedback, &ok );
+      QCOMPARE( ok, succeeds );
+    }
+    else
+    {
+      //run alg...
+      results = alg->run( parameters, *context, &feedback, &ok );
+      QVERIFY( ok );
+
+      //...and check results with expected datasets
+      std::unique_ptr<QgsRasterLayer> outputRaster = qgis::make_unique< QgsRasterLayer >( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+      std::unique_ptr< QgsRasterInterface > outputInterface( outputRaster->dataProvider()->clone() );
+
+      QCOMPARE( outputInterface->dataType( 1 ), expectedDataType );
+    }
+  }
+}
+
+
+void TestQgsProcessingAlgs::randomIntegerDistributionRaster_data()
+{
+  QTest::addColumn<QString>( "inputExtent" );
+  QTest::addColumn<Qgis::DataType>( "expectedDataType" );
+  QTest::addColumn<bool>( "succeeds" );
+  QTest::addColumn<QString>( "crs" );
+  QTest::addColumn<double>( "pixelSize" );
+  QTest::addColumn<int>( "typeId" );
+
+  QTest::newRow( "testcase 1" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::Int16
+      << true
+      << "EPSG:4326"
+      << 1.0
+      << 0;
+
+  QTest::newRow( "testcase 2" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::UInt16
+      << true
+      << "EPSG:4326"
+      << 1.0
+      << 1;
+
+
+  QTest::newRow( "testcase 3" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::Int32
+      << true
+      << "EPSG:4326"
+      << 1.0
+      << 2;
+
+  QTest::newRow( "testcase 4" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::UInt32
+      << true
+      << "EPSG:4326"
+      << 1.0
+      << 3;
+
+  QTest::newRow( "testcase 5" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::Float32
+      << true
+      << "EPSG:4326"
+      << 1.0
+      << 4;
+
+  QTest::newRow( "testcase 6" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::Float64
+      << true
+      << "EPSG:4326"
+      << 1.0
+      << 5;
+}
+
+
+void TestQgsProcessingAlgs::randomIntegerDistributionRaster()
+{
+  //this test only checks if the correct raster data type is chosen
+  //value by value comparison is not effective for random rasters
+  QFETCH( QString, inputExtent );
+  QFETCH( Qgis::DataType, expectedDataType );
+  QFETCH( bool, succeeds );
+  QFETCH( QString, crs );
+  QFETCH( double, pixelSize );
+  QFETCH( int, typeId );
+
+  //prepare input params
+  QgsProject p;
+  //set project crs and ellipsoid from input layer
+  p.setCrs( QgsCoordinateReferenceSystem( crs ), true );
+
+  QStringList alglist = QStringList();
+  alglist << QStringLiteral( "native:createrandombinomialrasterlayer" )
+          << QStringLiteral( "native:createrandomgeometricrasterlayer" )
+          << QStringLiteral( "native:createrandomnegativebinomialrasterlayer" )
+          << QStringLiteral( "native:createrandompoissonrasterlayer" );
+
+  for ( int i = 0; i < alglist.length(); i++ )
+  {
+    QString algname = alglist[i];
+
+    std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( algname ) );
+    //set project after layer has been added so that transform context/ellipsoid from crs is also set
+    std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+    context->setProject( &p );
+
+    QVariantMap parameters;
+
+    parameters.insert( QStringLiteral( "EXTENT" ), inputExtent );
+    parameters.insert( QStringLiteral( "TARGET_CRS" ), QgsCoordinateReferenceSystem( crs ) );
+    parameters.insert( QStringLiteral( "PIXEL_SIZE" ), pixelSize );
+    parameters.insert( QStringLiteral( "OUTPUT_TYPE" ), typeId );
+    parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+    bool ok = false;
+    QgsProcessingFeedback feedback;
+    QVariantMap results;
+
+    if ( !succeeds )
+    {
+      //verify if user feedback for unacceptable values are thrown
+      alg->run( parameters, *context, &feedback, &ok );
+      QCOMPARE( ok, succeeds );
+    }
+    else
+    {
+      //run alg...
+      results = alg->run( parameters, *context, &feedback, &ok );
+      QVERIFY( ok );
+
+      //...and check results with expected datasets
+      std::unique_ptr<QgsRasterLayer> outputRaster = qgis::make_unique< QgsRasterLayer >( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+      std::unique_ptr< QgsRasterInterface > outputInterface( outputRaster->dataProvider()->clone() );
+
+      QCOMPARE( outputInterface->dataType( 1 ), expectedDataType );
+    }
+  }
+}
+
+void TestQgsProcessingAlgs::randomRaster_data()
+{
+  QTest::addColumn<QString>( "inputExtent" );
+  QTest::addColumn<Qgis::DataType>( "expectedDataType" );
+  QTest::addColumn<bool>( "succeeds" );
+  QTest::addColumn<QString>( "crs" );
+  QTest::addColumn<double>( "pixelSize" );
+  QTest::addColumn<double>( "lowerBound" );
+  QTest::addColumn<double>( "upperBound" );
+  QTest::addColumn<int>( "typeId" );
+
+
+  QTest::newRow( "testcase 1" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::Byte
+      << true
+      << "EPSG:4326"
+      << 1.0
+      << 1.0
+      << 1.0 //should be min max
+      << 0;
+
+  QTest::newRow( "testcase 2" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::Byte
+      << false
+      << "EPSG:4326"
+      << 1.0
+      << -1.0 //fails --> value too small for byte
+      << 10.0 //fails --> value too large
+      << 0;
+
+  QTest::newRow( "testcase 3" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::Byte
+      << false
+      << "EPSG:4326"
+      << 1.0
+      << 1.0
+      << 256.0 //fails --> value too big for byte
+      << 0;
+
+  QTest::newRow( "testcase 4" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::Int16
+      << true
+      << "EPSG:4326"
+      << 1.0
+      << 1.0
+      << 10.0
+      << 1;
+
+  QTest::newRow( "testcase 5" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::Int16
+      << false
+      << "EPSG:4326"
+      << 1.0
+      << -32769.0
+      << -10.0
+      << 1;
+
+  QTest::newRow( "testcase 6" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::Int16
+      << false
+      << "EPSG:4326"
+      << 1.0
+      << 1.0
+      << 32769.0
+      << 1;
+
+  QTest::newRow( "testcase 7" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::UInt16
+      << false
+      << "EPSG:4326"
+      << 1.0
+      << -1.0
+      << 12.0
+      << 2;
+
+  QTest::newRow( "testcase 8" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::UInt16
+      << false
+      << "EPSG:4326"
+      << 1.0
+      << 100.0
+      << -1.0
+      << 2;
+
+  QTest::newRow( "testcase 9" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::UInt16
+      << false
+      << "EPSG:4326"
+      << 1.0
+      << 0.0
+      << 65536.0
+      << 2;
+
+  QTest::newRow( "testcase 10" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::Int32
+      << true
+      << "EPSG:4326"
+      << 1.0
+      << 1.0
+      << 12.0
+      << 3;
+
+  QTest::newRow( "testcase 10" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::Int32
+      << false
+      << "EPSG:4326"
+      << 1.0
+      << 15.0
+      << 12.0
+      << 3;
+
+  QTest::newRow( "testcase 11" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::Int32
+      << false
+      << "EPSG:4326"
+      << 1.0
+      << -2147483649.0
+      << 1.0
+      << 3;
+
+  QTest::newRow( "testcase 12" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::Int32
+      << false
+      << "EPSG:4326"
+      << 1.0
+      << 1.0
+      << 2147483649.0
+      << 3;
+
+  QTest::newRow( "testcase 13" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::UInt32
+      << true
+      << "EPSG:4326"
+      << 1.0
+      << 1.0
+      << 12.0
+      << 4;
+
+  QTest::newRow( "testcase 14" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::UInt32
+      << false
+      << "EPSG:4326"
+      << 1.0
+      << 1.0
+      << 4294967296.0
+      << 4;
+
+  QTest::newRow( "testcase 14" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::UInt32
+      << false
+      << "EPSG:4326"
+      << 1.0
+      << -10.0
+      << -1.0
+      << 4;
+
+  QTest::newRow( "testcase 16" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::Float32
+      << true
+      << "EPSG:4326"
+      << 1.0
+      << 0.0
+      << 12.12
+      << 5;
+
+  QTest::newRow( "testcase 17" )
+      << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
+      << Qgis::Float64
+      << true
+      << "EPSG:4326"
+      << 1.0
+      << -15.0
+      << 12.125789212532487
+      << 6;
+
+
+}
+
+void TestQgsProcessingAlgs::randomRaster()
+{
+  QFETCH( QString, inputExtent );
+  QFETCH( Qgis::DataType, expectedDataType );
+  QFETCH( bool, succeeds );
+  QFETCH( QString, crs );
+  QFETCH( double, pixelSize );
+  QFETCH( double, lowerBound );
+  QFETCH( double, upperBound );
+  QFETCH( int, typeId );
+
+  if ( qgsDoubleNear( lowerBound, upperBound ) )
+  {
+    //if bounds are the same, use numeric min and max as bounds
+    switch ( typeId )
+    {
+      case 0:
+        lowerBound = std::numeric_limits<quint8>::min();
+        upperBound = std::numeric_limits<quint8>::max();
+        break;
+      case 1:
+        lowerBound = std::numeric_limits<qint16>::min();
+        upperBound = std::numeric_limits<qint16>::max();
+        break;
+      case 2:
+        lowerBound = std::numeric_limits<quint16>::min();
+        upperBound = std::numeric_limits<quint16>::max();
+        break;
+      case 3:
+        lowerBound = std::numeric_limits<qint32>::min();
+        upperBound = std::numeric_limits<qint32>::max();
+        break;
+      case 4:
+        lowerBound = std::numeric_limits<quint32>::min();
+        upperBound = std::numeric_limits<quint32>::max();
+        break;
+      case 5:
+        lowerBound = std::numeric_limits<float>::min();
+        upperBound = std::numeric_limits<float>::max();
+        break;
+      case 6:
+        lowerBound = std::numeric_limits<double>::min();
+        upperBound = std::numeric_limits<double>::max();
+        break;
+    }
+  }
+
+  //prepare input params
+  QgsProject p;
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:createrandomuniformrasterlayer" ) ) );
+
+  QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
+
+  //set project crs and ellipsoid from input layer
+  p.setCrs( QgsCoordinateReferenceSystem( crs ), true );
+
+  //set project after layer has been added so that transform context/ellipsoid from crs is also set
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( &p );
+
+  QVariantMap parameters;
+
+  parameters.insert( QStringLiteral( "EXTENT" ), inputExtent );
+  parameters.insert( QStringLiteral( "TARGET_CRS" ), QgsCoordinateReferenceSystem( crs ) );
+  parameters.insert( QStringLiteral( "PIXEL_SIZE" ), pixelSize );
+  parameters.insert( QStringLiteral( "OUTPUT_TYPE" ), typeId );
+  parameters.insert( QStringLiteral( "LOWER_BOUND" ), lowerBound );
+  parameters.insert( QStringLiteral( "UPPER_BOUND" ), upperBound );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+
+  if ( !succeeds )
+  {
+    //verify if user feedback for unacceptable values are thrown
+    alg->run( parameters, *context, &feedback, &ok );
+    QCOMPARE( ok, succeeds );
+  }
+  else
+  {
+    //run alg...
+    results = alg->run( parameters, *context, &feedback, &ok );
+    QVERIFY( ok );
+
+    //...and check results with expected datasets
+    std::unique_ptr<QgsRasterLayer> outputRaster = qgis::make_unique< QgsRasterLayer >( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+    std::unique_ptr< QgsRasterInterface > outputInterface( outputRaster->dataProvider()->clone() );
+
+    QCOMPARE( outputInterface->dataType( 1 ), expectedDataType );
+
+    QgsRasterIterator outputIter( outputInterface.get() );
+    outputIter.startRasterRead( 1, outputRaster->width(), outputRaster->height(), outputInterface->extent() );
+    int outputIterLeft = 0;
+    int outputIterTop = 0;
+    int outputIterCols = 0;
+    int outputIterRows = 0;
+
+    std::unique_ptr< QgsRasterBlock > outputRasterBlock;
+
+    while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop ) )
+    {
+      for ( int row = 0; row < outputIterRows; row++ )
+      {
+        for ( int column = 0; column < outputIterCols; column++ )
+        {
+          double outputValue = outputRasterBlock->value( row, column );
+          //check if random values are in range
+          QVERIFY( outputValue >= lowerBound && outputValue <= upperBound );
+        }
+      }
+    }
+  }
+}
+
 void TestQgsProcessingAlgs::filterByLayerType()
 {
   QgsProject p;
@@ -3058,6 +3593,41 @@ void TestQgsProcessingAlgs::filterByLayerType()
   QVERIFY( ok );
   QVERIFY( !results.value( QStringLiteral( "RASTER" ) ).toString().isEmpty() );
   QVERIFY( !results.contains( QStringLiteral( "VECTOR" ) ) );
+}
+
+void TestQgsProcessingAlgs::conditionalBranch()
+{
+  QVariantMap config;
+  QVariantList conditions;
+  QVariantMap cond1;
+  cond1.insert( QStringLiteral( "name" ), QStringLiteral( "name1" ) );
+  cond1.insert( QStringLiteral( "expression" ), QStringLiteral( "1 * 1" ) );
+  conditions << cond1;
+  QVariantMap cond2;
+  cond2.insert( QStringLiteral( "name" ), QStringLiteral( "name2" ) );
+  cond2.insert( QStringLiteral( "expression" ), QStringLiteral( "1 * 0" ) );
+  conditions << cond2;
+  config.insert( QStringLiteral( "conditions" ), conditions );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:condition" ), config ) );
+  QVERIFY( alg != nullptr );
+
+  QCOMPARE( alg->outputDefinitions().size(), 2 );
+  QCOMPARE( alg->outputDefinitions().at( 0 )->name(), QStringLiteral( "name1" ) );
+  QCOMPARE( alg->outputDefinitions().at( 1 )->name(), QStringLiteral( "name2" ) );
+
+  QVariantMap parameters;
+  // vector input
+  parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( "vl" ) );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok, config );
+  QVERIFY( ok );
+  QCOMPARE( results.value( QStringLiteral( "name1" ) ).toInt(), 1 );
+  QCOMPARE( results.value( QStringLiteral( "name2" ) ).toInt(), 0 );
 }
 
 void TestQgsProcessingAlgs::saveLog()

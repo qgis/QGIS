@@ -48,6 +48,7 @@ class TestQgsSvgCache : public QObject
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
     void fillCache();
+    void broken();
     void threadSafePicture();
     void threadSafeImage();
     void changeImage(); //check that cache is updated if svg source file changes
@@ -100,6 +101,18 @@ void TestQgsSvgCache::fillCache()
     if ( !fitInCache )
       uncached++;
   }
+}
+
+void TestQgsSvgCache::broken()
+{
+  QgsSvgCache cache;
+  bool missingImage = false;
+  QByteArray content = cache.svgContent( QStringLiteral( "bbbbbbb" ), 14, QColor( 0, 0, 0 ), QColor( 255, 255, 255 ), 1, 1, 0, false, &missingImage );
+  QVERIFY( missingImage );
+  content = cache.svgContent( QStringLiteral( "bbbbbbb" ), 14, QColor( 0, 0, 0 ), QColor( 255, 255, 255 ), 1, 1, 0, false, &missingImage );
+  QVERIFY( missingImage );
+  content = cache.svgContent( TEST_DATA_DIR + QStringLiteral( "/sample_svg.svg" ), 14, QColor( 0, 0, 0 ), QColor( 255, 255, 255 ), 1, 1, 0, false, &missingImage );
+  QVERIFY( !missingImage );
 }
 
 struct RenderPictureWrapper

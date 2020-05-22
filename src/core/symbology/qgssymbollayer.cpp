@@ -29,6 +29,7 @@
 #include "qgsapplication.h"
 #include "qgsmultipoint.h"
 #include "qgslegendpatchshape.h"
+#include "qgsstyle.h"
 
 #include <QSize>
 #include <QPainter>
@@ -453,7 +454,7 @@ void QgsMarkerSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSi
   QgsPaintEffect *effect = paintEffect();
 
   QPolygonF points = context.patchShape() ? context.patchShape()->toQPolygonF( QgsSymbol::Marker, size ).value( 0 ).value( 0 )
-                     : QgsLegendPatchShape::defaultPatch( QgsSymbol::Marker, size ).value( 0 ).value( 0 );
+                     : QgsStyle::defaultStyle()->defaultPatchAsQPolygonF( QgsSymbol::Marker, size ).value( 0 ).value( 0 );
 
   std::unique_ptr< QgsEffectPainter > effectPainter;
   if ( effect && effect->enabled() )
@@ -640,7 +641,7 @@ QgsMapUnitScale QgsLineSymbolLayer::mapUnitScale() const
 void QgsLineSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize size )
 {
   const QList< QList< QPolygonF > > points = context.patchShape() ? context.patchShape()->toQPolygonF( QgsSymbol::Line, size )
-      : QgsLegendPatchShape::defaultPatch( QgsSymbol::Line, size );
+      : QgsStyle::defaultStyle()->defaultPatchAsQPolygonF( QgsSymbol::Line, size );
   startRender( context );
   QgsPaintEffect *effect = paintEffect();
 
@@ -656,7 +657,7 @@ void QgsLineSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize
   stopRender( context );
 }
 
-void QgsLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
+void QgsLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
   switch ( mRingFilter )
   {
@@ -700,7 +701,7 @@ double QgsLineSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRenderConte
 void QgsFillSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize size )
 {
   const QList< QList< QPolygonF > > polys = context.patchShape() ? context.patchShape()->toQPolygonF( QgsSymbol::Fill, size )
-      : QgsLegendPatchShape::defaultPatch( QgsSymbol::Fill, size );
+      : QgsStyle::defaultStyle()->defaultPatchAsQPolygonF( QgsSymbol::Fill, size );
 
   startRender( context );
   QgsPaintEffect *effect = paintEffect();
@@ -711,7 +712,7 @@ void QgsFillSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize
 
   for ( const QList< QPolygonF > &poly : polys )
   {
-    QList< QPolygonF > rings;
+    QVector< QPolygonF > rings;
     for ( int i = 1; i < poly.size(); ++i )
       rings << poly.at( i );
     renderPolygon( poly.value( 0 ), &rings, context );
@@ -722,7 +723,7 @@ void QgsFillSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize
   stopRender( context );
 }
 
-void QgsFillSymbolLayer::_renderPolygon( QPainter *p, const QPolygonF &points, const QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
+void QgsFillSymbolLayer::_renderPolygon( QPainter *p, const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
   if ( !p )
   {
@@ -756,8 +757,7 @@ void QgsFillSymbolLayer::_renderPolygon( QPainter *p, const QPolygonF &points, c
 
     if ( rings )
     {
-      QList<QPolygonF>::const_iterator it = rings->constBegin();
-      for ( ; it != rings->constEnd(); ++it )
+      for ( auto it = rings->constBegin(); it != rings->constEnd(); ++it )
       {
         QPolygonF ring = *it;
         path.addPolygon( ring );

@@ -163,15 +163,17 @@ class FieldsMappingPanel(BASE, WIDGET):
     def on_resetButton_clicked(self, checked=False):
         """Load fields from layer"""
         if self.layer:
-            self.fieldsView.setDestinationFields(self.layer.fields())
             self.fieldsView.setSourceFields(self.layer.fields())
+            self.fieldsView.setDestinationFields(self.layer.fields())
 
     @pyqtSlot(bool, name='on_loadLayerFieldsButton_clicked')
     def on_loadLayerFieldsButton_clicked(self, checked=False):
         layer = self.layerCombo.currentLayer()
         if layer is None:
             return
+
         self.fieldsView.setSourceFields(layer.fields())
+        self.fieldsView.setDestinationFields(layer.fields())
 
 
 class FieldsMappingWidgetWrapper(WidgetWrapper):
@@ -226,7 +228,7 @@ class FieldsMappingWidgetWrapper(WidgetWrapper):
                 layout.removeItem(spacer)
 
     def parentLayerChanged(self, layer=None):
-        self.setLayer(self.sender().value())
+        self.setLayer(self.sender().widgetValue())
 
     def setLayer(self, layer):
         context = dataobjects.createContext()

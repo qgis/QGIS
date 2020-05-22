@@ -26,6 +26,7 @@
 #include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgssymbollayerutils.h"
+#include "qgstemporalcontroller.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
@@ -410,6 +411,11 @@ QgsExpressionContext QgsDataDefinedValueDialog::createExpressionContext() const
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
                << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
+
+    if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast< const QgsExpressionContextScopeGenerator * >( mContext.mapCanvas()->temporalController() ) )
+    {
+      expContext << generator->createExpressionContextScope();
+    }
   }
   else
   {

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsmaptoolcapture.h"
-
 #include "qgsexception.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometryvalidator.h"
@@ -64,6 +63,11 @@ QgsMapToolCapture::~QgsMapToolCapture()
     mValidator->deleteLater();
     mValidator = nullptr;
   }
+}
+
+QgsMapToolCapture::Capabilities QgsMapToolCapture::capabilities() const
+{
+  return QgsMapToolCapture::NoCapabilities;
 }
 
 void QgsMapToolCapture::activate()
@@ -289,9 +293,24 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
     mSnappingMatches.append( QgsPointLocator::Match() );
   }
 
+  // Curves de-approximation
+  QgsSettings settings;
+  if ( settings.value( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false ).toBool() )
+  {
+    // If the tool and the layer support curves
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+    if ( capabilities().testFlag( QgsMapToolCapture::Capability::SupportsCurves ) && vlayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::CircularGeometries ) )
+    {
+      QgsGeometry linear = QgsGeometry( mCaptureCurve.segmentize() );
+      QgsGeometry curved = linear.convertToCurves();
+      mCaptureCurve = *qgsgeometry_cast<QgsCompoundCurve *>( curved.constGet() );
+    }
+  }
+
   tracer->reportError( QgsTracer::ErrNone, true ); // clear messagebar if there was any error
   return true;
 }
+
 
 QgsRubberBand *QgsMapToolCapture::takeRubberBand()
 {

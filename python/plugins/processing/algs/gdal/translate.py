@@ -42,7 +42,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class translate(GdalAlgorithm):
-
     INPUT = 'INPUT'
     TARGET_CRS = 'TARGET_CRS'
     NODATA = 'NODATA'

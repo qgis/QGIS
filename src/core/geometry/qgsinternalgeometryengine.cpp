@@ -20,6 +20,7 @@
 #include "qgsmultipolygon.h"
 #include "qgspolygon.h"
 #include "qgsmulticurve.h"
+#include "qgscircularstring.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryutils.h"
 #include "qgslinesegment.h"
@@ -1166,4 +1167,257 @@ QVector<QgsPointXY> QgsInternalGeometryEngine::randomPointsInPolygon( const QgsG
     }
   }
   return result;
+}
+
+// ported from PostGIS' lwgeom pta_unstroke
+
+std::unique_ptr< QgsCompoundCurve > lineToCurve( const QgsLineString *lineString, double distanceTolerance,
+    double pointSpacingAngleTolerance )
+{
+  std::unique_ptr< QgsCompoundCurve > out = qgis::make_unique< QgsCompoundCurve >();
+
+  /* Minimum number of edges, per quadrant, required to define an arc */
+  const unsigned int minQuadEdges = 2;
+
+  /* Die on null input */
+  if ( !lineString )
+    return nullptr;
+
+  /* Null on empty input? */
+  if ( lineString->nCoordinates() == 0 )
+    return nullptr;
+
+  /* We can't desegmentize anything shorter than four points */
+  if ( lineString->nCoordinates() < 4 )
+  {
+    out->addCurve( lineString->clone() );
+    return out;
+  }
+
+  /* Allocate our result array of vertices that are part of arcs */
+  int numEdges = lineString->nCoordinates() - 1;
+  QVector< int > edgesInArcs( numEdges + 1, 0 );
+
+  auto arcAngle = []( const QgsPoint & a, const QgsPoint & b, const QgsPoint & c )->double
+  {
+    double abX = b.x() - a.x();
+    double abY = b.y() - a.y();
+
+    double cbX = b.x() - c.x();
+    double cbY = b.y() - c.y();
+
+    double dot = ( abX * cbX + abY * cbY ); /* dot product */
+    double cross = ( abX * cbY - abY * cbX ); /* cross product */
+
+    double alpha = std::atan2( cross, dot );
+
+    return alpha;
+  };
+
+  /* We make a candidate arc of the first two edges, */
+  /* And then see if the next edge follows it */
+  int i = 0;
+  int j = 0;
+  int k = 0;
+  int currentArc = 1;
+  QgsPoint a1;
+  QgsPoint a2;
+  QgsPoint a3;
+  QgsPoint b;
+  double centerX = 0.0;
+  double centerY = 0.0;
+  double radius = 0;
+
+  while ( i < numEdges - 2 )
+  {
+    unsigned int arcEdges = 0;
+    double numQuadrants = 0;
+    double angle;
+
+    bool foundArc = false;
+    /* Make candidate arc */
+    a1 = lineString->pointN( i );
+    a2 = lineString->pointN( i + 1 );
+    a3 = lineString->pointN( i + 2 );
+    QgsPoint first = a1;
+
+    for ( j = i + 3; j < numEdges + 1; j++ )
+    {
+      b = lineString->pointN( j );
+
+      /* Does this point fall on our candidate arc? */
+      if ( QgsGeometryUtils::pointContinuesArc( a1, a2, a3, b, distanceTolerance, pointSpacingAngleTolerance ) )
+      {
+        /* Yes. Mark this edge and the two preceding it as arc components */
+        foundArc = true;
+        for ( k = j - 1; k > j - 4; k-- )
+          edgesInArcs[k] = currentArc;
+      }
+      else
+      {
+        /* No. So we're done with this candidate arc */
+        currentArc++;
+        break;
+      }
+
+      a1 = a2;
+      a2 = a3;
+      a3 = b;
+    }
+    /* Jump past all the edges that were added to the arc */
+    if ( foundArc )
+    {
+      /* Check if an arc was composed by enough edges to be
+       * really considered an arc
+       * See http://trac.osgeo.org/postgis/ticket/2420
+       */
+      arcEdges = j - 1 - i;
+      if ( first.x() == b.x() && first.y() == b.y() )
+      {
+        numQuadrants = 4;
+      }
+      else
+      {
+        QgsGeometryUtils::circleCenterRadius( first, b, a1, radius, centerX, centerY );
+
+        angle = arcAngle( first, QgsPoint( centerX, centerY ), b );
+        int p2Side = QgsGeometryUtils::leftOfLine( b.x(), b.y(), first.x(), first.y(), a1.x(), a1.y() );
+        if ( p2Side >= 0 )
+          angle = -angle;
+
+        if ( angle < 0 )
+          angle = 2 * M_PI + angle;
+        numQuadrants = ( 4 * angle ) / ( 2 * M_PI );
+      }
+      /* a1 is first point, b is last point */
+      if ( arcEdges < minQuadEdges * numQuadrants )
+      {
+        // LWDEBUGF( 4, "Not enough edges for a %g quadrants arc, %g needed", num_quadrants, min_quad_edges * num_quadrants );
+        for ( k = j - 1; k >= i; k-- )
+          edgesInArcs[k] = 0;
+      }
+
+      i = j - 1;
+    }
+    else
+    {
+      /* Mark this edge as a linear edge */
+      edgesInArcs[i] = 0;
+      i = i + 1;
+    }
+  }
+
+  int start = 0;
+  int end = 0;
+  /* non-zero if edge is part of an arc */
+  int edgeType = edgesInArcs[0];
+
+  auto addPointsToCurve = [ lineString, &out ]( int start, int end, int type )
+  {
+    if ( type == 0 )
+    {
+      // straight segment
+      QVector< QgsPoint > points;
+      for ( int j = start; j < end + 2; ++ j )
+      {
+        points.append( lineString->pointN( j ) );
+      }
+      std::unique_ptr< QgsCurve > straightSegment = qgis::make_unique< QgsLineString >( points );
+      out->addCurve( straightSegment.release() );
+    }
+    else
+    {
+      // curved segment
+      QVector< QgsPoint > points;
+      points.append( lineString->pointN( start ) );
+      points.append( lineString->pointN( ( start + end + 1 ) / 2 ) );
+      points.append( lineString->pointN( end + 1 ) );
+      std::unique_ptr< QgsCircularString > curvedSegment = qgis::make_unique< QgsCircularString >();
+      curvedSegment->setPoints( points );
+      out->addCurve( curvedSegment.release() );
+    }
+  };
+
+  for ( int i = 1; i < numEdges; i++ )
+  {
+    if ( edgeType != edgesInArcs[i] )
+    {
+      end = i - 1;
+      addPointsToCurve( start, end, edgeType );
+      start = i;
+      edgeType = edgesInArcs[i];
+    }
+  }
+
+  /* Roll out last item */
+  end = numEdges - 1;
+  addPointsToCurve( start, end, edgeType );
+
+  return out;
+}
+
+std::unique_ptr< QgsAbstractGeometry > convertGeometryToCurves( const QgsAbstractGeometry *geom, double distanceTolerance, double angleTolerance )
+{
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  {
+    return lineToCurve( static_cast< const QgsLineString * >( geom ), distanceTolerance, angleTolerance );
+  }
+  else
+  {
+    // polygon
+    const QgsPolygon *polygon = static_cast< const QgsPolygon * >( geom );
+    std::unique_ptr< QgsCurvePolygon > result = qgis::make_unique< QgsCurvePolygon>();
+
+    result->setExteriorRing( lineToCurve( static_cast< const QgsLineString * >( polygon->exteriorRing() ),
+                                          distanceTolerance, angleTolerance ).release() );
+    for ( int i = 0; i < polygon->numInteriorRings(); ++i )
+    {
+      result->addInteriorRing( lineToCurve( static_cast< const QgsLineString * >( polygon->interiorRing( i ) ),
+                                            distanceTolerance, angleTolerance ).release() );
+    }
+
+    return result;
+  }
+}
+
+QgsGeometry QgsInternalGeometryEngine::convertToCurves( double distanceTolerance, double angleTolerance ) const
+{
+  if ( !mGeometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  {
+    return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
+  }
+
+  if ( QgsWkbTypes::isCurvedType( mGeometry->wkbType() ) )
+  {
+    // already curved. In future we may want to allow this, and convert additional candidate segments
+    // in an already curved geometry to curves
+    return QgsGeometry( mGeometry->clone() );
+  }
+
+  if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
+  {
+    int numGeom = gc->numGeometries();
+    QVector< QgsAbstractGeometry * > geometryList;
+    geometryList.reserve( numGeom );
+    for ( int i = 0; i < numGeom; ++i )
+    {
+      geometryList << convertGeometryToCurves( gc->geometryN( i ), distanceTolerance, angleTolerance ).release();
+    }
+
+    QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
+    for ( QgsAbstractGeometry *g : qgis::as_const( geometryList ) )
+    {
+      first.addPart( g );
+    }
+    return first;
+  }
+  else
+  {
+    return QgsGeometry( convertGeometryToCurves( mGeometry, distanceTolerance, angleTolerance ) );
+  }
 }

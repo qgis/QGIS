@@ -54,7 +54,7 @@ QVariant::Type QgsArcGisRestUtils::mapEsriFieldType( const QString &esriFieldTyp
   if ( esriFieldType == QLatin1String( "esriFieldTypeString" ) )
     return QVariant::String;
   if ( esriFieldType == QLatin1String( "esriFieldTypeDate" ) )
-    return QVariant::Date;
+    return QVariant::DateTime;
   if ( esriFieldType == QLatin1String( "esriFieldTypeGeometry" ) )
     return QVariant::Invalid; // Geometry column should not appear as field
   if ( esriFieldType == QLatin1String( "esriFieldTypeOID" ) )
@@ -171,12 +171,13 @@ std::unique_ptr< QgsCompoundCurve > QgsArcGisRestUtils::parseCompoundCurve( cons
       if ( compoundCurve->curveAt( compoundCurve->nCurves() - 1 )->nCoordinates() < 2 )
         compoundCurve->removeCurve( compoundCurve->nCurves() - 1 );
 
+      const QgsPoint endPointCircularString = circularString->endPoint();
       compoundCurve->addCurve( circularString.release() );
 
       // Prepare a new line string
       lineString = new QgsLineString;
       compoundCurve->addCurve( lineString );
-      lineString->addVertex( circularString->endPoint() );
+      lineString->addVertex( endPointCircularString );
     }
   }
   return compoundCurve;

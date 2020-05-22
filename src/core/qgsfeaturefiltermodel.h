@@ -15,11 +15,8 @@
 #ifndef QGSFEATUREFILTERMODEL_H
 #define QGSFEATUREFILTERMODEL_H
 
-#include <QAbstractItemModel>
 
-#include "qgsconditionalstyle.h"
-
-class QgsFieldExpressionValuesGatherer;
+#include "qgsfeaturepickermodelbase.h"
 
 /**
  * \ingroup core
@@ -28,111 +25,28 @@ class QgsFieldExpressionValuesGatherer;
  *
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
+class CORE_EXPORT QgsFeatureFilterModel : public QgsFeaturePickerModelBase
 {
     Q_OBJECT
 
-    Q_PROPERTY( QgsVectorLayer *sourceLayer READ sourceLayer WRITE setSourceLayer NOTIFY sourceLayerChanged )
-    Q_PROPERTY( QString displayExpression READ displayExpression WRITE setDisplayExpression NOTIFY displayExpressionChanged )
-    Q_PROPERTY( QString filterValue READ filterValue WRITE setFilterValue NOTIFY filterValueChanged )
-    Q_PROPERTY( QString filterExpression READ filterExpression WRITE setFilterExpression NOTIFY filterExpressionChanged )
-    Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull NOTIFY allowNullChanged )
-    Q_PROPERTY( bool isLoading READ isLoading NOTIFY isLoadingChanged )
-
     /**
-     * A field of sourceLayer that is unique and should be used to identify features.
+     * A set of fields of sourceLayer that is unique and should be used to identify features.
      * Normally the primary key field.
      * Needs to match the identifierValue.
      */
-    Q_PROPERTY( QString identifierField READ identifierField WRITE setIdentifierField NOTIFY identifierFieldChanged )
+    Q_PROPERTY( QStringList identifierFields READ identifierFields WRITE setIdentifierFields NOTIFY identifierFieldsChanged )
 
     /**
-     * The value that identifies the current feature.
+     * The values that identifies the current feature.
      */
-    Q_PROPERTY( QVariant extraIdentifierValue READ extraIdentifierValue WRITE setExtraIdentifierValue NOTIFY extraIdentifierValueChanged )
-
-    Q_PROPERTY( int extraIdentifierValueIndex READ extraIdentifierValueIndex NOTIFY extraIdentifierValueIndexChanged )
+    Q_PROPERTY( QVariantList extraIdentifierValues READ extraIdentifierValues WRITE setExtraIdentifierValues NOTIFY extraIdentifierValuesChanged )
 
   public:
-
-    /**
-     * Extra roles that can be used to fetch data from this model.
-     */
-    enum Role
-    {
-      IdentifierValueRole = Qt::UserRole, //!< \deprecated Use IdentifierValuesRole instead
-      IdentifierValuesRole, //!< Used to retrieve the identifierValues (primary keys) of a feature.
-      ValueRole //!< Used to retrieve the displayExpression of a feature.
-    };
 
     /**
      * Create a new QgsFeatureFilterModel, optionally specifying a \a parent.
      */
     explicit QgsFeatureFilterModel( QObject *parent = nullptr );
-    ~QgsFeatureFilterModel() override;
-
-    /**
-     * The source layer from which features will be fetched.
-     */
-    QgsVectorLayer *sourceLayer() const;
-
-    /**
-     * The source layer from which features will be fetched.
-     */
-    void setSourceLayer( QgsVectorLayer *sourceLayer );
-
-    /**
-     * The display expression will be used for
-     *
-     *  - displaying values in the combobox
-     *  - filtering based on filterValue
-     */
-    QString displayExpression() const;
-
-    /**
-     * The display expression will be used for
-     *
-     *  - displaying values in the combobox
-     *  - filtering based on filterValue
-     */
-    void setDisplayExpression( const QString &displayExpression );
-
-    /**
-     * This value will be used to filter the features available from
-     * this model. Whenever a substring of the displayExpression of a feature
-     * matches the filter value, it will be accessible by this model.
-     */
-    QString filterValue() const;
-
-    /**
-     * This value will be used to filter the features available from
-     * this model. Whenever a substring of the displayExpression of a feature
-     * matches the filter value, it will be accessible by this model.
-     */
-    void setFilterValue( const QString &filterValue );
-
-    QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
-    QModelIndex parent( const QModelIndex &child ) const override;
-    int rowCount( const QModelIndex &parent ) const override;
-    int columnCount( const QModelIndex &parent ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
-
-    /**
-     * An additional filter expression to apply, next to the filterValue.
-     * Can be used for spatial filtering etc.
-     */
-    QString filterExpression() const;
-
-    /**
-     * An additional filter expression to apply, next to the filterValue.
-     * Can be used for spatial filtering etc.
-     */
-    void setFilterExpression( const QString &filterExpression );
-
-    /**
-     * Indicator if the model is currently performing any feature iteration in the background.
-     */
-    bool isLoading() const;
 
     /**
      * The identifier field should be a unique field that can be used to identify individual features.
@@ -152,13 +66,6 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
     /**
      * The identifier field should be a unique field that can be used to identify individual features.
      * It is normally set to the primary key of the layer.
-     * \deprecated since QGIS 3.10
-     */
-    Q_DECL_DEPRECATED void setIdentifierField( const QString &identifierField );
-
-    /**
-     * The identifier field should be a unique field that can be used to identify individual features.
-     * It is normally set to the primary key of the layer.
      * \note This will also reset identifier fields to NULL
      * \since QGIS 3.10
      */
@@ -166,10 +73,10 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
 
     /**
      * Allows specifying one value that does not need to match the filter criteria but will
-     * still be available in the model.
-     * \deprecated since QGIS 3.10
+     * still be available in the model as NULL value(s).
+     * \since QGIS 3.10
      */
-    Q_DECL_DEPRECATED QVariant extraIdentifierValue() const;
+    void setExtraIdentifierValueToNull() override;
 
     /**
      * Allows specifying one value that does not need to match the filter criteria but will
@@ -181,171 +88,43 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
     /**
      * Allows specifying one value that does not need to match the filter criteria but will
      * still be available in the model.
-     * \deprecated since QGIS 3.10
-     */
-    Q_DECL_DEPRECATED void setExtraIdentifierValue( const QVariant &extraIdentifierValue );
-
-    /**
-     * Allows specifying one value that does not need to match the filter criteria but will
-     * still be available in the model.
      * \since QGIS 3.10
      */
     void setExtraIdentifierValues( const QVariantList &extraIdentifierValues );
 
-    /**
-     * Allows specifying one value that does not need to match the filter criteria but will
-     * still be available in the model as NULL value(s).
-     * \since QGIS 3.10
-     */
-    void setExtraIdentifierValuesToNull();
-
-    /**
-     * The index at which the extra identifier value is available within the model.
-     */
-    int extraIdentifierValueIndex() const;
-
-    /**
-     * Flag indicating that the extraIdentifierValue does not exist in the data.
-     */
-    bool extraValueDoesNotExist() const;
-
-    /**
-     * Add a NULL entry to the list.
-     */
-    bool allowNull() const;
-
-    /**
-     * Add a NULL entry to the list.
-     */
-    void setAllowNull( bool allowNull );
 
   signals:
-
-    /**
-     * The source layer from which features will be fetched.
-     */
-    void sourceLayerChanged();
-
-    /**
-     * The display expression will be used for
-     *
-     *  - displaying values in the combobox
-     *  - filtering based on filterValue
-     */
-    void displayExpressionChanged();
-
-    /**
-     * This value will be used to filter the features available from
-     * this model. Whenever a substring of the displayExpression of a feature
-     * matches the filter value, it will be accessible by this model.
-     */
-    void filterValueChanged();
-
-    /**
-     * An additional filter expression to apply, next to the filterValue.
-     * Can be used for spatial filtering etc.
-     */
-    void filterExpressionChanged();
-
-    /**
-     * Indicator if the model is currently performing any feature iteration in the background.
-     */
-    void isLoadingChanged();
 
     /**
      * The identifier field should be a unique field that can be used to identify individual features.
      * It is normally set to the primary key of the layer.
      */
-    void identifierFieldChanged();
-
-    /**
-     * Indicates that a filter job has been completed and new data may be available.
-     */
-    void filterJobCompleted();
+    void identifierFieldsChanged();
 
     /**
      * Allows specifying one value that does not need to match the filter criteria but will
      * still be available in the model.
      */
-    void extraIdentifierValueChanged();
-
-    /**
-     * The index at which the extra identifier value is available within the model.
-     */
-    void extraIdentifierValueIndexChanged( int index );
-
-    /**
-     * Flag indicating that the extraIdentifierValue does not exist in the data.
-     */
-    void extraValueDoesNotExistChanged();
-
-    /**
-     * Notification that the model is about to be changed because a job was completed.
-     */
-    void beginUpdate();
-
-    /**
-     * Notification that the model change is finished. Will always be emitted in sync with beginUpdate.
-     */
-    void endUpdate();
-
-    /**
-     * Add a NULL entry to the list.
-     */
-    void allowNullChanged();
-
-  private slots:
-    void updateCompleter();
-    void scheduledReload();
+    void extraIdentifierValuesChanged();
 
   private:
-    QSet<QString> requestedAttributes() const;
-    void setExtraIdentifierValuesIndex( int index, bool force = false );
-    void setExtraValueDoesNotExist( bool extraValueDoesNotExist );
-    void reload();
-    void reloadCurrentFeature();
-    void setExtraIdentifierValuesUnguarded( const QVariantList &extraIdentifierValues );
-    struct Entry
-    {
-      Entry() = default;
+    QgsFeatureExpressionValuesGatherer *createValuesGatherer( const QgsFeatureRequest &request ) const override;
 
-      Entry( const QVariantList &_identifierValues, const QString &_value, const QgsFeature &_feature )
-        : identifierValues( _identifierValues )
-        , value( _value )
-        , feature( _feature )
-      {}
+    void requestToReloadCurrentFeature( QgsFeatureRequest &request ) override;
 
-      QVariantList identifierValues;
-      QString value;
-      QgsFeature feature;
+    QSet<QString> requestedAttributes() const override;
 
-      bool operator()( const Entry &lhs, const Entry &rhs ) const;
-    };
-    Entry nullEntry();
+    QVariant entryIdentifier( const QgsFeatureExpressionValuesGatherer::Entry &entry ) const override;
 
-    QgsConditionalStyle featureStyle( const QgsFeature &feature ) const;
+    QgsFeatureExpressionValuesGatherer::Entry createEntry( const QVariant &identifier ) const override;
 
-    QgsVectorLayer *mSourceLayer = nullptr;
-    QgsExpression mDisplayExpression;
-    QString mFilterValue;
-    QString mFilterExpression;
+    bool compareEntries( const QgsFeatureExpressionValuesGatherer::Entry &a, const QgsFeatureExpressionValuesGatherer::Entry &b ) const override;
 
-    mutable QgsExpressionContext mExpressionContext;
-    mutable QMap< QgsFeatureId, QgsConditionalStyle > mEntryStylesMap;
-    QVector<Entry> mEntries;
-    QgsFieldExpressionValuesGatherer *mGatherer = nullptr;
-    QTimer mReloadTimer;
-    bool mShouldReloadCurrentFeature = false;
-    bool mExtraValueDoesNotExist = false;
-    bool mAllowNull = false;
-    bool mIsSettingExtraIdentifierValue = false;
+    bool identifierIsNull( const QVariant &identifier ) const override;
+
+    QVariant nullIentifier() const override;
 
     QStringList mIdentifierFields;
-    QVariantList mExtraIdentifierValues;
-
-    int mExtraIdentifierValueIndex = -1;
-
-    friend class QgsFieldExpressionValuesGatherer;
 };
 
 #endif // QGSFEATUREFILTERMODEL_H

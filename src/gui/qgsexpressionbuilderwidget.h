@@ -24,7 +24,6 @@
 
 #include "qgis_sip.h"
 #include "qgis_gui.h"
-#include "qgsdistancearea.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpression.h"
 #include "qgsexpressiontreeview.h"
@@ -335,11 +334,12 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
   private slots:
     void indicatorClicked( int line, int index, Qt::KeyboardModifiers state );
-    void setExpressionState( bool state );
+    void onExpressionParsed( bool state );
     void expressionTreeItemChanged( QgsExpressionItem *item );
     void operatorButtonClicked();
     void btnRun_pressed();
     void btnNewFile_pressed();
+    void btnRemoveFile_pressed();
 
     /**
      * Display a file dialog to choose where to store the exported expressions JSON file
@@ -358,7 +358,6 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void insertExpressionText( const QString &text );
     void txtExpressionString_textChanged();
     void txtSearchEditValues_textChanged();
-    void lblPreview_linkActivated( const QString &link );
     void mValuesListView_doubleClicked( const QModelIndex &index );
     void txtPython_textChanged();
 
@@ -417,22 +416,6 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QString loadFunctionHelp( QgsExpressionItem *functionName );
     QString helpStylesheet() const;
 
-    /**
-     * Will be set to TRUE if the current expression text reported an eval error
-     * with the context.
-     *
-     * \since QGIS 3.0
-     */
-    void setEvalError( bool evalError );
-
-    /**
-     * Will be set to TRUE if the current expression text reports a parser error
-     * with the context.
-     *
-     * \since QGIS 3.0
-     */
-    void setParserError( bool parserError );
-
     // Will hold items with
     // * a display string that matches the represented field values
     // * custom data in Qt::UserRole + 1 that contains a ready to use expression literal ('quoted string' or NULL or a plain number )
@@ -446,11 +429,9 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QgsVectorLayer *mLayer = nullptr;
     QgsExpressionHighlighter *highlighter = nullptr;
     bool mExpressionValid = false;
-    QgsDistanceArea mDa;
     QgsExpressionContext mExpressionContext;
     QPointer< QgsProject > mProject;
-    bool mEvalError = true;
-    bool mParserError = true;
+
     // Translated name of the user expressions group
     QString mUserExpressionsGroupName;
 };

@@ -495,9 +495,10 @@ tests:
         name: expected/geometry_by_expression_line.gml
         type: vector
 
-  - algorithm: qgis:snapgeometries
+  - algorithm: native:snapgeometries
     name: Snap lines to lines
     params:
+      BEHAVIOR: '0'
       INPUT:
         name: snap_lines.gml
         type: vector
@@ -510,9 +511,10 @@ tests:
         name: expected/snap_lines_to_lines.gml
         type: vector
 
-  - algorithm: qgis:snapgeometries
+  - algorithm: native:snapgeometries
     name: Snap polygons to polygons
     params:
+      BEHAVIOR: '0'
       INPUT:
         name: snap_polys.gml
         type: vector
@@ -525,9 +527,10 @@ tests:
         name: expected/snap_polys_to_polys.gml
         type: vector
 
-  - algorithm: qgis:snapgeometries
+  - algorithm: native:snapgeometries
     name: Snap points to points
     params:
+      BEHAVIOR: '0'
       INPUT:
         name: snap_points.gml
         type: vector
@@ -540,7 +543,7 @@ tests:
         name: expected/snap_points_to_points.gml
         type: vector
 
-  - algorithm: qgis:snapgeometries
+  - algorithm: native:snapgeometries
     name: Snap points to lines (prefer nodes)
     params:
       BEHAVIOR: '0'
@@ -556,7 +559,7 @@ tests:
         name: expected/snap_point_to_lines_prefer_nodes.gml
         type: vector
 
-  - algorithm: qgis:snapgeometries
+  - algorithm: native:snapgeometries
     name: Snap points to lines (prefer closest)
     params:
       BEHAVIOR: '1'
@@ -572,7 +575,7 @@ tests:
         name: expected/snap_point_to_lines_prefer_closest.gml
         type: vector
 
-  - algorithm: qgis:snapgeometries
+  - algorithm: native:snapgeometries
     name: Snap internal
     params:
       BEHAVIOR: '0'
@@ -588,7 +591,7 @@ tests:
         name: expected/snap_internal.gml
         type: vector
 
-  - algorithm: qgis:snapgeometries
+  - algorithm: native:snapgeometries
     name: Test Snap Geometries (to each other)
     params:
       BEHAVIOR: '7'
@@ -1880,6 +1883,54 @@ tests:
               precision: 2
             start: skip
             end: skip
+
+  - algorithm: native:serviceareafrompoint
+    name: Service area from point (fastest, old parameter)
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 50.0
+      INCLUDE_BOUNDS: false
+      INPUT:
+        name: roads.gml|layername=roads
+        type: vector
+      START_POINT: 1002424.321122,6221845.996330 [EPSG:32733]
+      STRATEGY: 1
+      TOLERANCE: 0.0
+      TRAVEL_COST: 36
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/service_area_fastest_nodes.gml
+        type: vector
+      OUTPUT_LINES:
+        name: expected/service_area_fastests_lines.gml
+        type: vector
+
+  - algorithm: native:serviceareafrompoint
+    name: Service area from point (fastest, new parameter)
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 50.0
+      INCLUDE_BOUNDS: false
+      INPUT:
+        name: roads.gml|layername=roads
+        type: vector
+      START_POINT: 1002424.321122,6221845.996330 [EPSG:32733]
+      STRATEGY: 1
+      TOLERANCE: 0.0
+      TRAVEL_COST2: 0.01
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/service_area_fastest_nodes.gml
+        type: vector
+      OUTPUT_LINES:
+        name: expected/service_area_fastests_lines.gml
+        type: vector
 
   - algorithm: native:serviceareafromlayer
     name: Service area from layer (shortest, nodes)

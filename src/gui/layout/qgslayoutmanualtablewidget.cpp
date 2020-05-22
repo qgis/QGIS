@@ -188,7 +188,7 @@ void QgsLayoutManualTableWidget::setTableContents()
     for ( double width : columnWidths )
     {
       mEditorDialog->setTableColumnWidth( col, width );
-      headers << ( mTable->headers().size() > col ? mTable->headers().value( col )->heading() : QVariant() );
+      headers << ( col < mTable->headers().count() ? mTable->headers().value( col ).heading() : QVariant() );
       col++;
     }
     mEditorDialog->setTableHeaders( headers );
@@ -206,7 +206,7 @@ void QgsLayoutManualTableWidget::setTableContents()
           QgsLayoutTableColumns headers;
           for ( const QVariant &h : headerText )
           {
-            headers << new QgsLayoutTableColumn( h.toString() );
+            headers << QgsLayoutTableColumn( h.toString() );
           }
           mTable->setHeaders( headers );
         }

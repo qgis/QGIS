@@ -2,6 +2,7 @@
 # CMake settings
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1.0)
 SET(CMAKE_COLOR_MAKEFILE ON)
+SET(CMAKE_AUTORCC ON)
 # set path to additional CMake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 # POLICIES
@@ -201,6 +202,10 @@ IF(WITH_CORE)
 
   IF ( WITH_DESKTOP AND NOT WITH_ANALYSIS )
     MESSAGE(FATAL_ERROR "Desktop cannot be built without analysis")
+  ENDIF()
+
+  IF ( WITH_QGIS_PROCESS AND NOT WITH_ANALYSIS )
+    MESSAGE(FATAL_ERROR "Process tool cannot be built without analysis")
   ENDIF()
 
   IF ( WITH_DESKTOP )
@@ -488,7 +493,7 @@ ENDIF(WITH_CORE)
 SET(CMAKE_AUTOMOC ON)
 
 # build our version of astyle
-SET (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare-commit.sh (using 'our' astyle)")
+SET (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare_commit.sh (using 'our' astyle)")
 
 # QML
 SET(QML_IMPORT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" CACHE PATH "QML directory for QML autocomplete")

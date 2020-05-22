@@ -178,12 +178,17 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
 {
   mPythonUtils = pythonUtils;
 
+  // get the QgsSettings group from the installer
+  QString settingsGroup;
+  QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
+  QgsSettings settings;
+
   // Now enable Python support:
   // Show and preset widgets only suitable when Python support active
   mOptionsListWidget->item( PLUGMAN_TAB_INSTALL_FROM_ZIP )->setHidden( false );
   buttonUpgradeAll->show();
   buttonInstall->show();
-  buttonInstallExperimental->show();
+  buttonInstallExperimental->setVisible( settings.value( settingsGroup + "/allowExperimental", false ).toBool() );
   buttonUninstall->show();
   frameSettings->setHidden( false );
   labelNoPython->setHidden( true );
@@ -226,11 +231,6 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   connect( actionSortByStatus, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByStatus );
   connect( actionSortByDateCreated, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByDateCreated );
   connect( actionSortByDateUpdated, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByDateUpdated );
-
-  // get the QgsSettings group from the installer
-  QString settingsGroup;
-  QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
-  QgsSettings settings;
 
   // Initialize the "Install from ZIP" tab widgets
   mZipFileWidget->setDefaultRoot( settings.value( settingsGroup + "/lastZipDirectory", "." ).toString() );
@@ -289,7 +289,7 @@ void QgsPluginManager::loadPlugin( const QString &id )
     pRegistry->loadCppPlugin( library );
   }
 
-  QgsDebugMsg( "Plugin loaded: " + library );
+  QgsDebugMsgLevel( "Plugin loaded: " + library, 2 );
   QApplication::restoreOverrideCursor();
 }
 
@@ -310,12 +310,12 @@ void QgsPluginManager::unloadPlugin( const QString &id )
   if ( plugin->value( QStringLiteral( "pythonic" ) ) == QLatin1String( "true" ) )
   {
     library = plugin->value( QStringLiteral( "id" ) );
-    QgsDebugMsg( "Unloading Python plugin: " + library );
+    QgsDebugMsgLevel( "Unloading Python plugin: " + library, 2 );
     pRegistry->unloadPythonPlugin( library );
   }
   else // C++ plugin
   {
-    QgsDebugMsg( "Unloading C++ plugin: " + library );
+    QgsDebugMsgLevel( "Unloading C++ plugin: " + library, 2 );
     pRegistry->unloadCppPlugin( library );
   }
 }
@@ -408,17 +408,17 @@ void QgsPluginManager::getCppPluginsMetadata()
 #endif //#ifndef Q_OS_WIN && Q_OS_MACX
 #endif //#ifdef TESTLIB
 
-      QgsDebugMsg( "Examining: " + lib );
+      QgsDebugMsgLevel( "Examining: " + lib, 2 );
       QLibrary *myLib = new QLibrary( lib );
       bool loaded = myLib->load();
       if ( !loaded )
       {
-        QgsDebugMsg( QStringLiteral( "Failed to load: %1 (%2)" ).arg( myLib->fileName(), myLib->errorString() ) );
+        QgsDebugMsgLevel( QStringLiteral( "Failed to load: %1 (%2)" ).arg( myLib->fileName(), myLib->errorString() ), 2 );
         delete myLib;
         continue;
       }
 
-      QgsDebugMsg( "Loaded library: " + myLib->fileName() );
+      QgsDebugMsgLevel( "Loaded library: " + myLib->fileName(), 2 );
       //Type is only used in non-provider plugins, so data providers are not picked
       if ( !myLib->resolve( "type" ) )
       {
@@ -439,64 +439,64 @@ void QgsPluginManager::getCppPluginsMetadata()
       // show the values (or lack of) for each function
       if ( pName )
       {
-        QgsDebugMsg( "Plugin name: " + pName() );
+        QgsDebugMsgLevel( "Plugin name: " + pName(), 2 );
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Plugin name not returned when queried" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Plugin name not returned when queried" ), 2 );
       }
       if ( pDesc )
       {
-        QgsDebugMsg( "Plugin description: " + pDesc() );
+        QgsDebugMsgLevel( "Plugin description: " + pDesc(), 2 );
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Plugin description not returned when queried" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Plugin description not returned when queried" ), 2 );
       }
       if ( pCat )
       {
-        QgsDebugMsg( "Plugin category: " + pCat() );
+        QgsDebugMsgLevel( "Plugin category: " + pCat(), 2 );
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Plugin category not returned when queried" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Plugin category not returned when queried" ), 2 );
       }
       if ( pVersion )
       {
-        QgsDebugMsg( "Plugin version: " + pVersion() );
+        QgsDebugMsgLevel( "Plugin version: " + pVersion(), 2 );
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Plugin version not returned when queried" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Plugin version not returned when queried" ), 2 );
       }
       if ( pIcon )
       {
-        QgsDebugMsg( "Plugin icon: " + pIcon() );
+        QgsDebugMsgLevel( "Plugin icon: " + pIcon(), 2 );
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Plugin icon not returned when queried" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Plugin icon not returned when queried" ), 2 );
       }
       if ( pCreateDate )
       {
-        QgsDebugMsg( "Plugin create date: " + pCreateDate() );
+        QgsDebugMsgLevel( "Plugin create date: " + pCreateDate(), 2 );
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Plugin create date not returned when queried" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Plugin create date not returned when queried" ), 2 );
       }
       if ( pUpdateDate )
       {
-        QgsDebugMsg( "Plugin update date: " + pUpdateDate() );
+        QgsDebugMsgLevel( "Plugin update date: " + pUpdateDate(), 2 );
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Plugin update date not returned when queried" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Plugin update date not returned when queried" ), 2 );
       }
 
       if ( !pName || !pDesc || !pVersion )
       {
-        QgsDebugMsg( "Failed to get name, description, or type for " + myLib->fileName() );
+        QgsDebugMsgLevel( "Failed to get name, description, or type for " + myLib->fileName(), 2 );
         delete myLib;
         continue;
       }
@@ -854,7 +854,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
                      "</table>" ).arg( tr( "Installed version of this plugin is higher than any version found in repository" ) );
   }
 
-  if ( metadata->value( QStringLiteral( "experimental" ) ) == QLatin1String( "true" ) )
+  if ( ! metadata->value( QStringLiteral( "version_available_experimental" ) ).isEmpty() )
   {
     html += QString( "<table bgcolor=\"#EEEEBB\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
                      "  <tr><td width=\"100%\" style=\"color:#660000\">"
@@ -1125,18 +1125,20 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     buttonInstallExperimental->setText( tr( "Reinstall Experimental Plugin" ) );
   }
 
-  // DEBUG TODO REMOVE
-  // buttonInstall->setText( buttonInstall->text() + QStringLiteral(" | ") + metadata->value( QStringLiteral( "status" ) ) );
-  // buttonInstallExperimental->setText( buttonInstallExperimental->text() + QStringLiteral(" | ") + metadata->value( QStringLiteral( "status_exp" ) ) );
-
   // Enable/disable buttons
+
+  QgsSettings settings;
+  QString settingsGroup;
+  QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
+  bool expAllowed = settings.value( settingsGroup + "/allowExperimental", false ).toBool();
 
   bool installEnabled = metadata->value( QStringLiteral( "pythonic" ) ).toUpper() == QLatin1String( "TRUE" ) && metadata->value( QStringLiteral( "status" ) ) != QLatin1String( "orphan" ) && metadata->value( QStringLiteral( "status" ) ) != QLatin1String( "none available" );
   bool installExpEnabled = metadata->value( QStringLiteral( "pythonic" ) ).toUpper() == QLatin1String( "TRUE" ) && metadata->value( QStringLiteral( "status_exp" ) ) != QLatin1String( "orphan" ) && metadata->value( QStringLiteral( "status_exp" ) ) != QLatin1String( "none available" );
+
   buttonInstall->setEnabled( installEnabled );
   buttonInstall->setVisible( installEnabled || !installExpEnabled );
-  buttonInstallExperimental->setEnabled( installExpEnabled );
-  buttonInstallExperimental->setVisible( installExpEnabled || !installEnabled );
+  buttonInstallExperimental->setEnabled( expAllowed && installExpEnabled );
+  buttonInstallExperimental->setVisible( expAllowed && installExpEnabled );
 
   buttonUninstall->setEnabled( metadata->value( QStringLiteral( "pythonic" ) ).toUpper() == QLatin1String( "TRUE" ) && metadata->value( QStringLiteral( "readonly" ) ) != QLatin1String( "true" ) && ! metadata->value( QStringLiteral( "version_installed" ) ).isEmpty() );
 

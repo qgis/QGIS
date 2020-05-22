@@ -10,6 +10,9 @@ set -e
 ############################
 # Restore postgres test data
 ############################
+echo "travis_fold:start:postgres"
+echo "${bold}Load Postgres database...🐘${endbold}"
+
 printf "[qgis_test]\nhost=postgres\nport=5432\ndbname=qgis_test\nuser=docker\npassword=docker" > ~/.pg_service.conf
 export PGUSER=docker
 export PGHOST=postgres
@@ -30,10 +33,14 @@ echo "Restoring postgres test data ..."
 /root/QGIS/tests/testdata/provider/testdata_pg.sh
 echo "Postgres test data restored ..."
 popd > /dev/null # /root/QGIS
+echo "travis_fold:end:postgres"
 
 ##############################
 # Restore Oracle test data
 ##############################
+
+echo "travis_fold:start:oracle"
+echo "${bold}Load Oracle database...🙏${endbold}"
 
 export ORACLE_HOST="oracle"
 export QGIS_ORACLETEST_DBNAME="${ORACLE_HOST}/XEPDB1"
@@ -42,14 +49,15 @@ export QGIS_ORACLETEST_DB="host=${QGIS_ORACLETEST_DBNAME} port=1521 user='QGIS' 
 echo "Wait a moment while loading Oracle database."
 while ! echo exit | sqlplus -L SYSTEM/adminpass@$QGIS_ORACLETEST_DBNAME &> /dev/null
 do
-  printf "."
+  printf "🙏"
   sleep 1
 done
-echo " done"
+echo " done 👀"
 
 pushd /root/QGIS > /dev/null
 /root/QGIS/tests/testdata/provider/testdata_oracle.sh $ORACLE_HOST
 popd > /dev/null # /root/QGIS
+echo "travis_fold:end:oracle"
 
 # this is proving very flaky:
 

@@ -414,14 +414,14 @@ class PGTableField(TableField):
         sql_cpt = "Select count(*) from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tab.name, self.name)
         # SQL Query that return the comment of the field
         sql = "Select pd.description from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tab.name, self.name)
-        c = tab.database().connector._execute(None, sql_cpt) # Execute Check query
-        res = tab.database().connector._fetchone(c)[0] # Store result
+        c = tab.database().connector._execute(None, sql_cpt)  # Execute Check query
+        res = tab.database().connector._fetchone(c)[0]  # Store result
         if res == 1:
             # When a comment exists
-            c = tab.database().connector._execute(None, sql) # Execute query
-            res = tab.database().connector._fetchone(c)[0] # Store result
-            tab.database().connector._close_cursor(c) # Close cursor
-            return res # Return comment
+            c = tab.database().connector._execute(None, sql)  # Execute query
+            res = tab.database().connector._fetchone(c)[0]  # Store result
+            tab.database().connector._close_cursor(c)  # Close cursor
+            return res  # Return comment
         else:
             return ''
 

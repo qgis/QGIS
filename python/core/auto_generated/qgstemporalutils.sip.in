@@ -31,6 +31,38 @@ This method considers the temporal range available from layers contained within 
 returns the maximal combined temporal extent of these layers.
 %End
 
+    struct AnimationExportSettings
+    {
+      QgsDateTimeRange animationRange;
+
+      QgsInterval frameDuration;
+
+      QString outputDirectory;
+
+      QString fileNameTemplate;
+
+      QList<QgsMapDecoration *> decorations;
+
+    };
+
+    static bool exportAnimation( const QgsMapSettings &mapSettings, const AnimationExportSettings &settings, QString &error /Out/, QgsFeedback *feedback = 0 );
+%Docstring
+Exports animation frames by rendering the map to multiple destination images.
+
+The ``mapSettings`` argument dictates the overall map settings such as extent
+and size, while animation and export specific settings are specified via the ``settings``
+argument.
+
+An optional ``feedback`` argument can be used to provide progress reports and cancelation
+support.
+
+:param mapSettings: settings controlling the map render
+:param settings: animation and export settings
+:param feedback: optional feedback object for progress reports and cancelation checks
+
+:return: - ``True`` if the export was successful.
+         - error: will be set to a descriptive error message if the export fails
+%End
 };
 
 

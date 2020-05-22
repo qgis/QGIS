@@ -689,7 +689,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       }
 
       OGRSFDriverH hDriver = nullptr;
-      OGRSpatialReferenceH hSRS = OSRNewSpatialReference( layer->crs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ).toLocal8Bit().data() );
+      OGRSpatialReferenceH hSRS = OSRNewSpatialReference( layer->crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toLocal8Bit().data() );
       gdal::ogr_datasource_unique_ptr hDS( OGROpen( offlineDbPath.toUtf8().constData(), true, &hDriver ) );
       OGRLayerH hLayer = OGR_DS_CreateLayer( hDS.get(), tableName.toUtf8().constData(), hSRS, static_cast<OGRwkbGeometryType>( layer->wkbType() ), options );
       CSLDestroy( options );

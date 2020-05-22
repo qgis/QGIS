@@ -336,8 +336,12 @@ class ModelerDialog(QgsModelDesignerDialog):
 
             res, errors = self.model().validateChildAlgorithm(id)
             if not res:
-                self.view().scene().showWarning(self.tr('Algorithm “{}” is invalid').format(alg.description()), self.tr('Algorithm is Invalid'), self.tr(
-                    "<p>The “{}” algorithm is invalid, because:</p><ul><li>{}</li></ul>").format(alg.description(), '</li><li>'.join(errors)), level=Qgis.Warning)
+                self.view().scene().showWarning(
+                    QCoreApplication.translate('ModelerDialog', 'Algorithm “{}” is invalid').format(alg.description()),
+                    self.tr('Algorithm is Invalid'),
+                    QCoreApplication.translate('ModelerDialog', "<p>The “{}” algorithm is invalid, because:</p><ul><li>{}</li></ul>").format(alg.description(), '</li><li>'.join(errors)),
+                    level=Qgis.Warning
+                )
             else:
                 self.view().scene().messageBar().clearWidgets()
 

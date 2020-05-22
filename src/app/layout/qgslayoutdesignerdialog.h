@@ -64,6 +64,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
     QgsMessageBar *messageBar() override;
     void selectItems( const QList< QgsLayoutItem * > &items ) override;
     void setAtlasPreviewEnabled( bool enabled ) override;
+    void setAtlasFeature( const QgsFeature &feature ) override;
     bool atlasPreviewEnabled() const override;
     void showItemOptions( QgsLayoutItem *item, bool bringPanelToFront = true ) override;
     QMenu *layoutMenu() override;
@@ -178,7 +179,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     /**
      * Sets the specified feature as the current atlas feature
      */
-    void setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feat );
+    void setAtlasFeature( const QgsFeature &feature );
 
     /**
      * Sets a section \a title, to use to update the dialog title to display
@@ -555,6 +556,9 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     void setLastExportPath( const QString &path ) const;
 
     bool checkBeforeExport();
+
+    //! update default action of toolbutton
+    void toolButtonActionTriggered( QAction * );
 };
 
 #endif // QGSLAYOUTDESIGNERDIALOG_H

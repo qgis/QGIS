@@ -59,6 +59,10 @@ class CORE_EXPORT QgsVectorTileProviderConnection : public QgsAbstractProviderCo
     static void deleteConnection( const QString &name );
     //! Adds a new connection to the list
     static void addConnection( const QString &name, Data conn );
+    //! Returns last used connection
+    static QString selectedConnection();
+    //! Saves name of the last used connection
+    static void setSelectedConnection( const QString &connName );
 };
 
 ///@endcond

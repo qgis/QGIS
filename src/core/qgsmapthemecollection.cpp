@@ -281,6 +281,19 @@ void QgsMapThemeCollection::update( const QString &name, const MapThemeRecord &s
   emit mapThemesChanged();
 }
 
+bool QgsMapThemeCollection::renameMapTheme( const QString &name,  const QString &newName )
+{
+  if ( !mMapThemes.contains( name ) || mMapThemes.contains( newName ) )
+    return false;
+
+  const MapThemeRecord state = mMapThemes[name];
+  const MapThemeRecord newState = state;
+  insert( newName, newState );
+  emit mapThemeRenamed( name, newName );
+  removeMapTheme( name );
+  return true;
+}
+
 void QgsMapThemeCollection::removeMapTheme( const QString &name )
 {
   if ( !mMapThemes.contains( name ) )

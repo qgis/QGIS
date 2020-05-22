@@ -111,6 +111,7 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   mFileWidget->setDialogTitle( tr( "Open OGR Supported Vector Dataset(s)" ) );
   mFileWidget->setFilter( mVectorFileFilter );
   mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
+  mFileWidget->setOptions( QFileDialog::HideNameFilterDetails );
 
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
   {
@@ -215,6 +216,11 @@ void QgsOgrSourceSelect::populateConnectionList()
     ++it;
   }
   settings.endGroup();
+
+  btnEdit->setDisabled( cmbConnections->count() == 0 );
+  btnDelete->setDisabled( cmbConnections->count() == 0 );
+  cmbConnections->setDisabled( cmbConnections->count() == 0 );
+
   setConnectionListPosition();
 }
 

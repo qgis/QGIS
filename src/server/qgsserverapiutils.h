@@ -203,8 +203,8 @@ class SERVER_EXPORT QgsServerApiUtils
 
 
     /**
-     * Sanitizes the input \a value by removing URL encoding and checking for malicious content.
-     * In case of failure returns an empty string.
+     * Sanitizes the input \a value by removing URL encoding.
+     * \note the returned value is meant to become part of a QgsExpression filter
      */
     static QString sanitizedFieldValue( const QString &value );
 

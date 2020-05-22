@@ -306,7 +306,6 @@ void QgsAttributeForm::setFeature( const QgsFeature &feature )
     }
   }
   mIsSettingFeature = false;
-  mExpressionContext.setFeature( feature );
 }
 
 bool QgsAttributeForm::saveEdits()
@@ -357,7 +356,7 @@ bool QgsAttributeForm::saveEdits()
         for ( int i = 0; i < dstVars.count(); i++ )
         {
 
-          if ( !qgsVariantEqual( dstVars[i], srcVars[i] ) && srcVars[i].isValid() && fieldIsEditable( fieldIndexes[i] ) )
+          if ( !qgsVariantEqual( dstVars[i], srcVars[i] ) && srcVars[i].isValid() )
           {
             dst[fieldIndexes[i]] = srcVars[i];
 
@@ -951,28 +950,32 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
     // sync OK button status
     synchronizeEnabledState();
 
-    mExpressionContext.setFeature( ft );
-
-    mExpressionContext << QgsExpressionContextUtils::formScope( ft, mContext.attributeFormModeString() );
+    QgsExpressionContext context;
+    context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+    context.appendScope( QgsExpressionContextUtils::formScope( ft, mContext.attributeFormModeString() ) );
+    context.setFeature( ft );
 
     // Recheck visibility for all containers which are controlled by this value
     const QVector<ContainerInformation *> infos = mContainerInformationDependency.value( eww->field().name() );
     for ( ContainerInformation *info : infos )
     {
-      info->apply( &mExpressionContext );
+      info->apply( &context );
     }
   }
 }
 
 void QgsAttributeForm::updateContainersVisibility()
 {
-  mExpressionContext << QgsExpressionContextUtils::formScope( QgsFeature( mFeature ), mContext.attributeFormModeString() );
+  QgsExpressionContext context;
+  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+  context.appendScope( QgsExpressionContextUtils::formScope( mFeature, mContext.attributeFormModeString() ) );
+  context.setFeature( mFeature );
 
   const QVector<ContainerInformation *> infos = mContainerVisibilityInformation;
 
   for ( ContainerInformation *info : infos )
   {
-    info->apply( &mExpressionContext );
+    info->apply( &context );
   }
 
   //and update the constraints
@@ -1014,13 +1017,16 @@ void QgsAttributeForm::updateLabels()
     QgsFeature currentFeature;
     if ( currentFormFeature( currentFeature ) )
     {
-      mExpressionContext << QgsExpressionContextUtils::formScope( currentFeature, mContext.attributeFormModeString() );
-      mExpressionContext.setFields( mLayer->fields() );
+      QgsExpressionContext context;
+      context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+      context.appendScope( QgsExpressionContextUtils::formScope( currentFeature, mContext.attributeFormModeString() ) );
+      context.setFeature( currentFeature );
+
       for ( auto it = mLabelDataDefinedProperties.constBegin() ; it != mLabelDataDefinedProperties.constEnd(); ++it )
       {
         QLabel *label { it.key() };
         bool ok;
-        const QString value { it->valueAsString( mExpressionContext, QString(), &ok ) };
+        const QString value { it->valueAsString( context, QString(), &ok ) };
         if ( ok && ! value.isEmpty() )
         {
           label->setText( value );

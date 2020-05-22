@@ -27,6 +27,18 @@ QgsAbstractPropertyCollection::QgsAbstractPropertyCollection( const QString &nam
 
 }
 
+QDateTime QgsAbstractPropertyCollection::valueAsDateTime( int key, const QgsExpressionContext &context, const QDateTime &defaultDateTime, bool *ok ) const
+{
+  if ( ok )
+    *ok = false;
+
+  QgsProperty prop = property( key );
+  if ( !prop || !prop.isActive() )
+    return defaultDateTime;
+
+  return prop.valueAsDateTime( context, defaultDateTime, ok );
+}
+
 QString QgsAbstractPropertyCollection::valueAsString( int key, const QgsExpressionContext &context, const QString &defaultString, bool *ok ) const
 {
   if ( ok )

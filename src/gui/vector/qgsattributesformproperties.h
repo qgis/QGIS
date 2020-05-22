@@ -53,7 +53,7 @@ class QgsAttributeTypeDialog;
 class QgsAttributeRelationEdit;
 class QgsAttributeWidgetEdit;
 
-class GUI_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAttributesFormProperties
+class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpressionContextGenerator, private Ui_QgsAttributesFormProperties
 {
     Q_OBJECT
 
@@ -214,6 +214,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     void initLayoutConfig();
     void initInitPython();
     void initSuppressCombo();
+
+    QgsExpressionContext createExpressionContext() const override;
 
   protected:
     void updateButtons();

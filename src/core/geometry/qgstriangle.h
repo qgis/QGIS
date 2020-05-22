@@ -101,7 +101,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
     /**
      *  Returns coordinates of a vertex.
      *  \param atVertex index of the vertex
-     *  \returns Coordinates of the vertex or QgsPoint(0,0) on error (\a atVertex < 0 or > 3).
+     *  \returns Coordinates of the vertex or empty QgsPoint() on error (\a atVertex < 0 or > 3).
      */
     QgsPoint vertexAt( int atVertex ) const;
 

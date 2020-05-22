@@ -46,7 +46,6 @@ def classFactory():
 
 
 class OracleDBConnector(DBConnector):
-
     ORGeomTypes = {
         2001: QgsWkbTypes.Point,
         2002: QgsWkbTypes.LineString,

@@ -7,6 +7,7 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 from builtins import str
+
 __author__ = 'Tim Sutton'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
@@ -26,7 +27,6 @@ from qgis.PyQt.QtGui import (
     QResizeEvent
 )
 from qgis.PyQt.QtXml import QDomDocument
-
 
 from qgis.core import (QgsRaster,
                        QgsRasterLayer,
@@ -82,8 +82,8 @@ class TestQgsRasterLayer(unittest.TestCase):
         assert myRasterLayer.isValid(), myMessage
         myPoint = QgsPointXY(786690, 3345803)
         # print 'Extents: %s' % myRasterLayer.extent().toString()
-        #myResult, myRasterValues = myRasterLayer.identify(myPoint)
-        #assert myResult
+        # myResult, myRasterValues = myRasterLayer.identify(myPoint)
+        # assert myResult
         myRasterValues = myRasterLayer.dataProvider().identify(myPoint, QgsRaster.IdentifyFormatValue).results()
 
         assert len(myRasterValues) > 0
@@ -93,7 +93,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         # myExpectedName = 'Band 1
         myExpectedBand = 1
         myMessage = 'Expected "%s" got "%s" for first raster band name' % (
-                    myExpectedBand, myBand)
+            myExpectedBand, myBand)
         assert myExpectedBand == myBand, myMessage
 
         # Convert each band value to a list of ints then to a string
@@ -135,8 +135,8 @@ class TestQgsRasterLayer(unittest.TestCase):
         # We set the same values as C++.
         myContrastEnhancement.setMinimumValue(-3.3319999287625854e+38)
         myContrastEnhancement.setMaximumValue(3.3999999521443642e+38)
-        #myType = myRasterLayer.dataProvider().dataType(1);
-        #myEnhancement = QgsContrastEnhancement(myType);
+        # myType = myRasterLayer.dataProvider().dataType(1);
+        # myEnhancement = QgsContrastEnhancement(myType);
 
         myTransparentSingleValuePixelList = []
         rasterTransparency = QgsRasterTransparency()
@@ -626,7 +626,8 @@ class TestQgsRasterLayer(unittest.TestCase):
     def testPalettedClassDataToString(self):
         classes = [QgsPalettedRasterRenderer.Class(1, QColor(0, 255, 0), 'class 2'),
                    QgsPalettedRasterRenderer.Class(3, QColor(255, 0, 0), 'class 1')]
-        self.assertEqual(QgsPalettedRasterRenderer.classDataToString(classes), '1 0 255 0 255 class 2\n3 255 0 0 255 class 1')
+        self.assertEqual(QgsPalettedRasterRenderer.classDataToString(classes),
+                         '1 0 255 0 255 class 2\n3 255 0 0 255 class 1')
         # must be sorted by value to work OK in ArcMap
         classes = [QgsPalettedRasterRenderer.Class(4, QColor(0, 255, 0), 'class 2'),
                    QgsPalettedRasterRenderer.Class(3, QColor(255, 0, 0), 'class 1')]
@@ -693,7 +694,8 @@ class TestQgsRasterLayer(unittest.TestCase):
         layer10 = QgsRasterLayer(path, base_name)
         classes = QgsPalettedRasterRenderer.classDataFromRaster(layer10.dataProvider(), 1)
         self.assertEqual(len(classes), 30)
-        expected = [11, 21, 22, 24, 31, 82, 2002, 2004, 2014, 2019, 2027, 2029, 2030, 2080, 2081, 2082, 2088, 2092, 2097, 2098, 2099, 2105, 2108, 2110, 2114, 2118, 2126, 2152, 2184, 2220]
+        expected = [11, 21, 22, 24, 31, 82, 2002, 2004, 2014, 2019, 2027, 2029, 2030, 2080, 2081, 2082, 2088, 2092,
+                    2097, 2098, 2099, 2105, 2108, 2110, 2114, 2118, 2126, 2152, 2184, 2220]
         self.assertEqual([c.value for c in classes], expected)
 
         # bad layer
@@ -787,7 +789,9 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertFalse(image.isNull())
         self.assertTrue(image.save(os.path.join(temp_dir.path(), 'actual.png'), "PNG"))
 
-        self.assertTrue(filecmp.cmp(os.path.join(temp_dir.path(), 'actual.png'), os.path.join(temp_dir.path(), 'expected.png')), False)
+        self.assertTrue(
+            filecmp.cmp(os.path.join(temp_dir.path(), 'actual.png'), os.path.join(temp_dir.path(), 'expected.png')),
+            False)
 
     def testWriteSld(self):
         """Test SLD generation for the XMLS fields geneerated at RasterLayer level and not to the deeper renderer level."""
@@ -1211,7 +1215,8 @@ class TestQgsRasterLayerTransformContext(unittest.TestCase):
         """Prepare tc"""
         super(TestQgsRasterLayerTransformContext, self).setUp()
         self.ctx = QgsCoordinateTransformContext()
-        self.ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), 1234, 1235)
+        self.ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(4326),
+                                                    QgsCoordinateReferenceSystem(3857), 1234, 1235)
         self.ctx.addCoordinateOperation(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), 'test')
         self.rpath = os.path.join(unitTestDataPath(), 'landsat.tif')
 
@@ -1219,48 +1224,62 @@ class TestQgsRasterLayerTransformContext(unittest.TestCase):
         """Test transform context can be set from ctor"""
 
         rl = QgsRasterLayer(self.rpath, 'raster')
-        self.assertFalse(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertFalse(
+            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
 
         options = QgsRasterLayer.LayerOptions(transformContext=self.ctx)
         rl = QgsRasterLayer(self.rpath, 'raster', 'gdal', options)
-        self.assertTrue(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertTrue(
+            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
 
     def testTransformContextInheritsFromProject(self):
         """Test that when a layer is added to a project it inherits its context"""
 
         rl = QgsRasterLayer(self.rpath, 'raster')
-        self.assertFalse(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertFalse(
+            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
 
         p = QgsProject()
-        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertFalse(
+            p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
         p.setTransformContext(self.ctx)
-        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertTrue(
+            p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
 
         p.addMapLayers([rl])
-        self.assertTrue(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertTrue(
+            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
 
     def testTransformContextIsSyncedFromProject(self):
         """Test that when a layer is synced when project context changes"""
 
         rl = QgsRasterLayer(self.rpath, 'raster')
-        self.assertFalse(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertFalse(
+            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
 
         p = QgsProject()
-        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertFalse(
+            p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
         p.setTransformContext(self.ctx)
-        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertTrue(
+            p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
 
         p.addMapLayers([rl])
-        self.assertTrue(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertTrue(
+            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
 
         # Now change the project context
         tc2 = QgsCoordinateTransformContext()
         p.setTransformContext(tc2)
-        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
-        self.assertFalse(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertFalse(
+            p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertFalse(
+            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
         p.setTransformContext(self.ctx)
-        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
-        self.assertTrue(rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertTrue(
+            p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertTrue(
+            rl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
 
 
 if __name__ == '__main__':

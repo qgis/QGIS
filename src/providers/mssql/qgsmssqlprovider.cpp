@@ -506,6 +506,27 @@ QString QgsMssqlProvider::storageType() const
   return QStringLiteral( "MSSQL spatial database" );
 }
 
+QVariant convertTimeValue( const QVariant &value )
+{
+  if ( value.isValid() && value.type() == QVariant::ByteArray )
+  {
+    // time fields can be returned as byte arrays... woot
+    const QByteArray ba = value.toByteArray();
+    if ( ba.length() >= 5 )
+    {
+      const int hours = ba.at( 0 );
+      const int mins = ba.at( 2 );
+      const int seconds = ba.at( 4 );
+      QVariant t = QTime( hours, mins, seconds );
+      if ( !t.isValid() ) // can't handle it
+        t = QVariant( QVariant::Time );
+      return t;
+    }
+    return QVariant( QVariant::Time );
+  }
+  return value;
+}
+
 // Returns the minimum value of an attribute
 QVariant QgsMssqlProvider::minimumValue( int index ) const
 {
@@ -537,6 +558,9 @@ QVariant QgsMssqlProvider::minimumValue( int index ) const
 
   if ( query.isActive() && query.next() )
   {
+    if ( fld.type() == QVariant::Time )
+      return convertTimeValue( query.value( 0 ) );
+
     return query.value( 0 );
   }
 
@@ -573,6 +597,9 @@ QVariant QgsMssqlProvider::maximumValue( int index ) const
 
   if ( query.isActive() && query.next() )
   {
+    if ( fld.type() == QVariant::Time )
+      return convertTimeValue( query.value( 0 ) );
+
     return query.value( 0 );
   }
 
@@ -620,7 +647,10 @@ QSet<QVariant> QgsMssqlProvider::uniqueValues( int index, int limit ) const
     // read all features
     while ( query.next() )
     {
-      uniqueValues.insert( query.value( 0 ) );
+      if ( fld.type() == QVariant::Time )
+        uniqueValues.insert( convertTimeValue( query.value( 0 ) ) );
+      else
+        uniqueValues.insert( query.value( 0 ) );
     }
   }
   return uniqueValues;
@@ -703,7 +733,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
                            !query.value( 2 ).isNull() ||
                            !query.value( 3 ).isNull() ) )
     {
-      QgsDebugMsg( QStringLiteral( "Found extents in spatial index" ) );
+      QgsDebugMsgLevel( QStringLiteral( "Found extents in spatial index" ), 2 );
       mExtent.setXMinimum( query.value( 0 ).toDouble() );
       mExtent.setYMinimum( query.value( 1 ).toDouble() );
       mExtent.setXMaximum( query.value( 2 ).toDouble() );
@@ -711,8 +741,10 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
       return;
     }
   }
-
-  QgsDebugMsg( query.lastError().text() );
+  else
+  {
+    QgsDebugMsg( query.lastError().text() );
+  }
 
   // If we can't find the extents in the spatial index table just do what we normally do.
   bool readAllGeography = false;
@@ -2121,7 +2153,7 @@ bool QgsMssqlProviderMetadata::saveStyle( const QString &uri, const QString &qml
   }
   if ( query.isActive() && query.next() && query.value( 0 ).toInt() == 0 )
   {
-    QgsDebugMsg( QStringLiteral( "Need to create styles table" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Need to create styles table" ), 2 );
     bool execOk = query.exec( QString( "CREATE TABLE [dbo].[layer_styles]("
                                        "[id] int IDENTITY(1,1) PRIMARY KEY,"
                                        "[f_table_catalog] [varchar](1024) NULL,"
@@ -2153,7 +2185,7 @@ bool QgsMssqlProviderMetadata::saveStyle( const QString &uri, const QString &qml
     uiFileColumn = QStringLiteral( ",ui" );
     uiFileValue = QStringLiteral( ",XMLPARSE(DOCUMENT %1)" ).arg( uiFileContent );
   }
-  QgsDebugMsg( QStringLiteral( "Ready to insert new style" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Ready to insert new style" ), 2 );
   // Note: in the construction of the INSERT and UPDATE strings the qmlStyle and sldStyle values
   // can contain user entered strings, which may themselves include %## values that would be
   // replaced by the QString.arg function.  To ensure that the final SQL string is not corrupt these
@@ -2208,7 +2240,7 @@ bool QgsMssqlProviderMetadata::saveStyle( const QString &uri, const QString &qml
       return false;
     }
 
-    QgsDebugMsg( QStringLiteral( "Updating styles" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Updating styles" ), 2 );
     sql = QString( "UPDATE layer_styles "
                    " SET useAsDefault=%1"
                    ",styleQML=%2"
@@ -2246,8 +2278,8 @@ bool QgsMssqlProviderMetadata::saveStyle( const QString &uri, const QString &qml
     sql = QStringLiteral( "%1; %2;" ).arg( removeDefaultSql, sql );
   }
 
-  QgsDebugMsg( QStringLiteral( "Inserting styles" ) );
-  QgsDebugMsg( sql );
+  QgsDebugMsgLevel( QStringLiteral( "Inserting styles" ), 2 );
+  QgsDebugMsgLevel( sql, 2 );
   bool execOk = query.exec( sql );
 
   if ( !execOk )
@@ -2287,7 +2319,7 @@ QString QgsMssqlProviderMetadata::loadStyle( const QString &uri, QString &errCau
 
   if ( !query.exec( selectQmlQuery ) )
   {
-    QgsDebugMsg( QStringLiteral( "Load of style failed" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Load of style failed" ), 2 );
     QString msg = query.lastError().text();
     errCause = msg;
     QgsDebugMsg( msg );
@@ -2352,7 +2384,7 @@ int QgsMssqlProviderMetadata::listStyles( const QString &uri, QStringList &ids, 
   int numberOfRelatedStyles = 0;
   while ( query.isActive() && query.next() )
   {
-    QgsDebugMsg( query.value( 1 ).toString() );
+    QgsDebugMsgLevel( query.value( 1 ).toString(), 2 );
     ids.append( query.value( 0 ).toString() );
     names.append( query.value( 1 ).toString() );
     descriptions.append( query.value( 2 ).toString() );
@@ -2366,14 +2398,14 @@ int QgsMssqlProviderMetadata::listStyles( const QString &uri, QStringList &ids, 
                               .arg( QgsMssqlProvider::quotedValue( dsUri.schema() ) )
                               .arg( QgsMssqlProvider::quotedValue( dsUri.table() ) )
                               .arg( QgsMssqlProvider::quotedValue( dsUri.geometryColumn() ) );
-  QgsDebugMsg( selectOthersQuery );
+  QgsDebugMsgLevel( selectOthersQuery, 2 );
   queryOk = query.exec( selectOthersQuery );
   if ( !queryOk )
   {
     QgsDebugMsg( query.lastError().text() );
     return -1;
   }
-  QgsDebugMsg( query.isActive() && query.size() );
+  QgsDebugMsgLevel( query.isActive() && query.size(), 2 );
   while ( query.next() )
   {
     ids.append( query.value( 0 ).toString() );

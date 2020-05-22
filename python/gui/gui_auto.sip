@@ -74,11 +74,13 @@
 %Include auto_generated/qgsexpressionbuilderwidget.sip
 %Include auto_generated/qgsexpressionhighlighter.sip
 %Include auto_generated/qgsexpressionlineedit.sip
+%Include auto_generated/qgsexpressionpreviewwidget.sip
 %Include auto_generated/qgsexpressionselectiondialog.sip
 %Include auto_generated/qgsexpressiontreeview.sip
 %Include auto_generated/qgsextentgroupbox.sip
 %Include auto_generated/qgsextentwidget.sip
 %Include auto_generated/qgsexternalresourcewidget.sip
+%Include auto_generated/qgsfeaturepickerwidget.sip
 %Include auto_generated/qgsfeaturelistcombobox.sip
 %Include auto_generated/qgsfeatureselectiondlg.sip
 %Include auto_generated/qgsfieldcombobox.sip
@@ -108,6 +110,8 @@
 %Include auto_generated/qgsidentifymenu.sip
 %Include auto_generated/qgskeyvaluewidget.sip
 %Include auto_generated/qgslegendfilterbutton.sip
+%Include auto_generated/qgslegendpatchshapebutton.sip
+%Include auto_generated/qgslegendpatchshapewidget.sip
 %Include auto_generated/qgslimitedrandomcolorrampdialog.sip
 %Include auto_generated/qgslistwidget.sip
 %Include auto_generated/qgslonglongvalidator.sip
@@ -115,6 +119,7 @@
 %Include auto_generated/qgsmanageconnectionsdialog.sip
 %Include auto_generated/qgsmapcanvas.sip
 %Include auto_generated/qgsmapcanvasannotationitem.sip
+%Include auto_generated/qgsmapcanvasinteractionblocker.sip
 %Include auto_generated/qgsmapcanvasitem.sip
 %Include auto_generated/qgsmapcanvassnappingutils.sip
 %Include auto_generated/qgsmapcanvastracer.sip
@@ -211,6 +216,7 @@
 %Include auto_generated/qgsuserinputwidget.sip
 %Include auto_generated/qgsvaliditycheckresultswidget.sip
 %Include auto_generated/qgsvariableeditorwidget.sip
+%Include auto_generated/qgsvectorlayertemporalpropertieswidget.sip
 %Include auto_generated/qgsvertexmarker.sip
 %Include auto_generated/qgsvscrollarea.sip
 %Include auto_generated/qgswindowmanagerinterface.sip

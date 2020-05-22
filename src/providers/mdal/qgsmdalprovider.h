@@ -78,7 +78,8 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QgsMeshDataBlock areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const override;
     QgsRectangle extent() const override;
 
-    bool persistDatasetGroup( const QString &path,
+    bool persistDatasetGroup( const QString &outputFilePath,
+                              const QString &outputDriver,
                               const QgsMeshDatasetGroupMetadata &meta,
                               const QVector<QgsMeshDataBlock> &datasetValues,
                               const QVector<QgsMeshDataBlock> &datasetActive,

@@ -321,7 +321,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     mOrderByClause = QStringLiteral( " ORDER BY %1" ).arg( orderByParts.join( QStringLiteral( "," ) ) );
   }
 
-  QgsDebugMsg( mStatement + " " + mOrderByClause );
+  QgsDebugMsgLevel( mStatement + " " + mOrderByClause, 2 );
 #if 0
   if ( fieldCount == 0 )
   {

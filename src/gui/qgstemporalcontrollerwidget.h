@@ -22,6 +22,7 @@
 
 #include "qgis_gui.h"
 #include "qgsrange.h"
+#include "qgstemporalnavigationobject.h"
 
 class QgsMapLayer;
 class QgsTemporalNavigationObject;
@@ -50,6 +51,17 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
      * The dock widget retains ownership of the returned object.
      */
     QgsTemporalController *temporalController();
+
+#ifndef SIP_RUN
+
+  signals:
+
+    /**
+     * Triggered when an animation should be exported
+     */
+    void exportAnimation();
+
+#endif
 
   private:
 
@@ -110,8 +122,17 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
 
     void setWidgetStateFromProject();
 
-    void onLayersAdded();
+    void mNavigationOff_clicked();
+    void mNavigationFixedRange_clicked();
+    void mNavigationAnimated_clicked();
+    void setWidgetStateFromNavigationMode( const QgsTemporalNavigationObject::NavigationMode mode );
+
+    void onLayersAdded( const QList<QgsMapLayer *> &layers );
     void onProjectCleared();
+
+    void startEndDateTime_changed();
+    void fixedRangeStartEndDateTime_changed();
+    void mSetToProjectTimeButton_clicked();
 };
 
 #endif // QGSTEMPORALCONTROLLERWIDGET_H

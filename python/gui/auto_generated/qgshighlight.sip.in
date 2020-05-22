@@ -13,7 +13,7 @@
 #include <qgshighlight.h>
 %End
 
-class QgsHighlight: QObject, QgsMapCanvasItem
+class QgsHighlight : QgsMapCanvasItem
 {
 %Docstring
 A class for highlight features on the map.

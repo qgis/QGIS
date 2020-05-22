@@ -28,7 +28,8 @@ from qgis.core import (QgsLegendPatchShape,
                        QgsMarkerSymbol,
                        QgsRenderChecker,
                        QgsReadWriteContext,
-                       QgsRenderContext
+                       QgsRenderContext,
+                       QgsStyle
                        )
 from qgis.PyQt.QtXml import QDomDocument, QDomElement
 
@@ -83,28 +84,28 @@ class TestQgsLegendPatchShape(unittest.TestCase):
         self.assertTrue(shape.isNull())
 
     def testDefault(self):
-        self.assertEqual(QgsLegendPatchShape.defaultPatch(QgsSymbol.Hybrid, QSizeF(1, 1)), [])
-        self.assertEqual(QgsLegendPatchShape.defaultPatch(QgsSymbol.Hybrid, QSizeF(10, 10)), [])
+        self.assertEqual(QgsStyle.defaultStyle().defaultPatchAsQPolygonF(QgsSymbol.Hybrid, QSizeF(1, 1)), [])
+        self.assertEqual(QgsStyle.defaultStyle().defaultPatchAsQPolygonF(QgsSymbol.Hybrid, QSizeF(10, 10)), [])
 
         # markers
-        self.assertEqual(self.polys_to_list(QgsLegendPatchShape.defaultPatch(QgsSymbol.Marker, QSizeF(1, 1))), [[[[0.0, 0.0]]]])
-        self.assertEqual(self.polys_to_list(QgsLegendPatchShape.defaultPatch(QgsSymbol.Marker, QSizeF(2, 2))),
+        self.assertEqual(self.polys_to_list(QgsStyle.defaultStyle().defaultPatchAsQPolygonF(QgsSymbol.Marker, QSizeF(1, 1))), [[[[0.0, 0.0]]]])
+        self.assertEqual(self.polys_to_list(QgsStyle.defaultStyle().defaultPatchAsQPolygonF(QgsSymbol.Marker, QSizeF(2, 2))),
                          [[[[1.0, 1.0]]]])
-        self.assertEqual(self.polys_to_list(QgsLegendPatchShape.defaultPatch(QgsSymbol.Marker, QSizeF(10, 2))), [[[[5.0, 1.0]]]])
+        self.assertEqual(self.polys_to_list(QgsStyle.defaultStyle().defaultPatchAsQPolygonF(QgsSymbol.Marker, QSizeF(10, 2))), [[[[5.0, 1.0]]]])
 
         # lines
-        self.assertEqual(self.polys_to_list(QgsLegendPatchShape.defaultPatch(QgsSymbol.Line, QSizeF(1, 1))), [[[[0.0, 0.5], [1.0, 0.5]]]])
-        self.assertEqual(self.polys_to_list(QgsLegendPatchShape.defaultPatch(QgsSymbol.Line, QSizeF(10, 2))), [[[[0.0, 1.5], [10.0, 1.5]]]])
-        self.assertEqual(self.polys_to_list(QgsLegendPatchShape.defaultPatch(QgsSymbol.Line, QSizeF(9, 3))), [[[[0.0, 1.5], [9.0, 1.5]]]])
+        self.assertEqual(self.polys_to_list(QgsStyle.defaultStyle().defaultPatchAsQPolygonF(QgsSymbol.Line, QSizeF(1, 1))), [[[[0.0, 0.5], [1.0, 0.5]]]])
+        self.assertEqual(self.polys_to_list(QgsStyle.defaultStyle().defaultPatchAsQPolygonF(QgsSymbol.Line, QSizeF(10, 2))), [[[[0.0, 1.0], [10.0, 1.0]]]])
+        self.assertEqual(self.polys_to_list(QgsStyle.defaultStyle().defaultPatchAsQPolygonF(QgsSymbol.Line, QSizeF(9, 3))), [[[[0.0, 1.5], [9.0, 1.5]]]])
 
         # fills
-        self.assertEqual(self.polys_to_list(QgsLegendPatchShape.defaultPatch(QgsSymbol.Fill, QSizeF(1, 1))), [[[[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0], [0.0, 0.0]]]])
-        self.assertEqual(self.polys_to_list(QgsLegendPatchShape.defaultPatch(QgsSymbol.Fill, QSizeF(10, 2))), [[[[0.0, 0.0], [10.0, 0.0], [10.0, 2.0], [0.0, 2.0], [0.0, 0.0]]]])
+        self.assertEqual(self.polys_to_list(QgsStyle.defaultStyle().defaultPatchAsQPolygonF(QgsSymbol.Fill, QSizeF(1, 1))), [[[[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0], [0.0, 0.0]]]])
+        self.assertEqual(self.polys_to_list(QgsStyle.defaultStyle().defaultPatchAsQPolygonF(QgsSymbol.Fill, QSizeF(10, 2))), [[[[0.0, 0.0], [10.0, 0.0], [10.0, 2.0], [0.0, 2.0], [0.0, 0.0]]]])
 
     def testMarkers(self):
         # shouldn't matter what a point geometry is, it will always be rendered in center of symbol patch
         shape = QgsLegendPatchShape(QgsSymbol.Marker, QgsGeometry.fromWkt('Point( 5 5 )'), False)
-        self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.Marker, QSizeF(1, 1))), [[[[0.5, 0.5]]]])
+        self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.Marker, QSizeF(1, 1))), [[[[0, 0]]]])
         self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.Marker, QSizeF(10, 2))), [[[[5.0, 1.0]]]])
 
         # requesting different symbol type, should return default
@@ -136,6 +137,14 @@ class TestQgsLegendPatchShape(unittest.TestCase):
         shape = QgsLegendPatchShape(QgsSymbol.Line, QgsGeometry.fromWkt('LineString(5 5, 1 2)'), False)
         self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.Line, QSizeF(1, 1))), [[[[1.0, 0.0], [0.0, 1.0]]]])
         self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.Line, QSizeF(10, 2))), [[[[10.0, 0.0], [0.0, 2.0]]]])
+
+        shape = QgsLegendPatchShape(QgsSymbol.Line, QgsGeometry.fromWkt('LineString(1 5, 6 5)'), False)
+        self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.Line, QSizeF(1, 1))), [[[[0.0, 0.5], [1.0, 0.5]]]])
+        self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.Line, QSizeF(10, 2))), [[[[0.0, 1], [10.0, 1.0]]]])
+
+        shape = QgsLegendPatchShape(QgsSymbol.Line, QgsGeometry.fromWkt('LineString(1 5, 1 10)'), False)
+        self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.Line, QSizeF(1, 1))), [[[[0.5, 0.0], [0.5, 1.0]]]])
+        self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.Line, QSizeF(10, 2))), [[[[5, 0.0], [5, 2.0]]]])
 
         # requesting different symbol type, should return default
         self.assertEqual(self.polys_to_list(shape.toQPolygonF(QgsSymbol.Fill, QSizeF(1, 1))), [[[[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0], [0.0, 0.0]]]])

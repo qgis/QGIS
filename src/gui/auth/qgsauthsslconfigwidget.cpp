@@ -140,9 +140,9 @@ void QgsAuthSslConfigWidget::setUpSslConfigTree()
 
   mVerifyModeItem = addRootItem( tr( "Peer verification" ) );
   mVerifyPeerCmbBx = new QComboBox( treeSslConfig );
-  mVerifyPeerCmbBx->addItem( tr( "Verify peer certs" ),
+  mVerifyPeerCmbBx->addItem( tr( "Verify Peer Certs" ),
                              static_cast<int>( QSslSocket::VerifyPeer ) );
-  mVerifyPeerCmbBx->addItem( tr( "Do not verify peer certs" ),
+  mVerifyPeerCmbBx->addItem( tr( "Do Not Verify Peer Certs" ),
                              static_cast<int>( QSslSocket::VerifyNone ) );
   mVerifyPeerCmbBx->setMaximumWidth( 300 );
   mVerifyPeerCmbBx->setCurrentIndex( 0 );

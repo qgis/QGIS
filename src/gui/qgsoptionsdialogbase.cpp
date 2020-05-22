@@ -166,11 +166,13 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
   if ( !title.isEmpty() )
   {
     mDialogTitle = title;
-    updateWindowTitle();
   }
-
-  // re-save original dialog title in case it was changed after dialog initialization
-  mDialogTitle = windowTitle();
+  else
+  {
+    // re-save original dialog title in case it was changed after dialog initialization
+    mDialogTitle = windowTitle();
+  }
+  updateWindowTitle();
 
   restoreGeometry( mSettings->value( QStringLiteral( "/Windows/%1/geometry" ).arg( mOptsKey ) ).toByteArray() );
   // mOptListWidget width is fixed to take up less space in QtDesigner
@@ -227,6 +229,21 @@ void QgsOptionsDialogBase::resizeAlltabs( int index )
     }
   }
   mOptStackedWidget->adjustSize();
+}
+
+void QgsOptionsDialogBase::setCurrentPage( const QString &page )
+{
+  //find the page with a matching widget name
+  for ( int idx = 0; idx < mOptStackedWidget->count(); ++idx )
+  {
+    QWidget *currentPage = mOptStackedWidget->widget( idx );
+    if ( currentPage->objectName() == page )
+    {
+      //found the page, set it as current
+      mOptStackedWidget->setCurrentIndex( idx );
+      return;
+    }
+  }
 }
 
 void QgsOptionsDialogBase::searchText( const QString &text )

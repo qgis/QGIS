@@ -98,7 +98,8 @@ class TestQgsServerSecurity(QgsServerTestBase):
 
         # third step, check the time of response for a valid version
         # maximum: several seconds
-        injection_sql = ") and (select case sqlite_version() when '{0}' then substr(upper(hex(randomblob(99999999))),0,1) end)--".format(sqlite_version)
+        injection_sql = ") and (select case sqlite_version() when '{0}' then substr(upper(hex(randomblob(99999999))),0,1) end)--".format(
+            sqlite_version)
 
         query = "{0} {1}".format(filter_sql, injection_sql)
         start = time.time()
@@ -238,9 +239,9 @@ class TestQgsServerSecurity(QgsServerTestBase):
         self.assertTrue(self.check_service_exception_report(d))
 
         # comments
-        #filter_sql = "point:\"name\" = 'a' #"
-        #d, h = self.handle_request_wms_getfeatureinfo(filter_sql)
-        #self.assertTrue(self.check_service_exception_report(d))
+        # filter_sql = "point:\"name\" = 'a' #"
+        # d, h = self.handle_request_wms_getfeatureinfo(filter_sql)
+        # self.assertTrue(self.check_service_exception_report(d))
 
         filter_sql = "point:\"name\" = 'a' -"
         d, h = self.handle_request_wms_getfeatureinfo(filter_sql)
@@ -265,19 +266,22 @@ class TestQgsServerSecurity(QgsServerTestBase):
 
         # ogc:Literal / ogc:PropertyIsEqualTo
         literal = "4')); drop table point --"
-        filter_xml = "<ogc:Filter%20xmlns:ogc=\"http://www.opengis.net/ogc\"><ogc:PropertyIsEqualTo><ogc:PropertyName>pkuid</ogc:PropertyName><ogc:Literal>{0}</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Filter>".format(literal)
+        filter_xml = "<ogc:Filter%20xmlns:ogc=\"http://www.opengis.net/ogc\"><ogc:PropertyIsEqualTo><ogc:PropertyName>pkuid</ogc:PropertyName><ogc:Literal>{0}</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Filter>".format(
+            literal)
         self.handle_request_wfs_getfeature_filter(filter_xml)
         self.assertTrue(self.is_point_table_still_exist())
 
         # ogc:Literal / ogc:PropertyIsLike
         literal = "4')); drop table point --"
-        filter_xml = "<ogc:Filter%20xmlns:ogc=\"http://www.opengis.net/ogc\"><ogc:PropertyIsLike><ogc:PropertyName>pkuid</ogc:PropertyName><ogc:Literal>{0}</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>".format(literal)
+        filter_xml = "<ogc:Filter%20xmlns:ogc=\"http://www.opengis.net/ogc\"><ogc:PropertyIsLike><ogc:PropertyName>pkuid</ogc:PropertyName><ogc:Literal>{0}</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>".format(
+            literal)
         self.handle_request_wfs_getfeature_filter(filter_xml)
         self.assertTrue(self.is_point_table_still_exist())
 
         # ogc:PropertyName / ogc:PropertyIsLike
         propname = "name = 'a')); drop table point --"
-        filter_xml = "<ogc:Filter%20xmlns:ogc=\"http://www.opengis.net/ogc\"><ogc:PropertyIsLike><ogc:PropertyName>{0}</ogc:PropertyName><ogc:Literal>4</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>".format(propname)
+        filter_xml = "<ogc:Filter%20xmlns:ogc=\"http://www.opengis.net/ogc\"><ogc:PropertyIsLike><ogc:PropertyName>{0}</ogc:PropertyName><ogc:Literal>4</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>".format(
+            propname)
         self.handle_request_wfs_getfeature_filter(filter_xml)
         self.assertTrue(self.is_point_table_still_exist())
 
@@ -296,19 +300,22 @@ class TestQgsServerSecurity(QgsServerTestBase):
 
         # ogc:Literal / ogc:PropertyIsEqualTo
         literal = "4')); drop table point --"
-        filter_xml = "<ogc:Filter%20xmlns:ogc=\"http://www.opengis.net/ogc\"><ogc:PropertyIsEqualTo><ogc:PropertyName>pkuid</ogc:PropertyName><ogc:Literal>{0}</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Filter>".format(literal)
+        filter_xml = "<ogc:Filter%20xmlns:ogc=\"http://www.opengis.net/ogc\"><ogc:PropertyIsEqualTo><ogc:PropertyName>pkuid</ogc:PropertyName><ogc:Literal>{0}</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Filter>".format(
+            literal)
         self.handle_request_wms_getmap(filter=filter_xml)
         self.assertTrue(self.is_point_table_still_exist())
 
         # ogc:Literal / ogc:PropertyIsLike
         literal = "4')); drop table point --"
-        filter_xml = "<ogc:Filter%20xmlns:ogc=\"http://www.opengis.net/ogc\"><ogc:PropertyIsLike><ogc:PropertyName>pkuid</ogc:PropertyName><ogc:Literal>{0}</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>".format(literal)
+        filter_xml = "<ogc:Filter%20xmlns:ogc=\"http://www.opengis.net/ogc\"><ogc:PropertyIsLike><ogc:PropertyName>pkuid</ogc:PropertyName><ogc:Literal>{0}</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>".format(
+            literal)
         self.handle_request_wms_getmap(filter=filter_xml)
         self.assertTrue(self.is_point_table_still_exist())
 
         # ogc:PropertyName / ogc:PropertyIsLike
         propname = "name = 'a')); drop table point --"
-        filter_xml = "<ogc:Filter%20xmlns:ogc=\"http://www.opengis.net/ogc\"><ogc:PropertyIsLike><ogc:PropertyName>{0}</ogc:PropertyName><ogc:Literal>4</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>".format(propname)
+        filter_xml = "<ogc:Filter%20xmlns:ogc=\"http://www.opengis.net/ogc\"><ogc:PropertyIsLike><ogc:PropertyName>{0}</ogc:PropertyName><ogc:Literal>4</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>".format(
+            propname)
         self.handle_request_wms_getmap(filter=filter_xml)
         self.assertTrue(self.is_point_table_still_exist())
 
@@ -325,7 +332,8 @@ class TestQgsServerSecurity(QgsServerTestBase):
         """
 
         literal = "4')); drop table point --"
-        sld = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><StyledLayerDescriptor xmlns=\"http://www.opengis.net/sld\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ogc=\"http://www.opengis.net/ogc\" xsi:schemaLocation=\"http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd\" version=\"1.1.0\" xmlns:se=\"http://www.opengis.net/se\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <NamedLayer> <se:Name>point</se:Name> <UserStyle> <se:Name>point</se:Name> <se:FeatureTypeStyle> <se:Rule> <se:Name>Single symbol</se:Name> <ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\"> <ogc:PropertyIsEqualTo> <ogc:PropertyName>pkuid</ogc:PropertyName> <ogc:Literal>{0}</ogc:Literal> </ogc:PropertyIsEqualTo> </ogc:Filter> <se:PointSymbolizer> <se:Graphic> <se:Mark> <se:WellKnownName>circle</se:WellKnownName> <se:Fill><se:SvgParameter name=\"fill\">5e86a1</se:SvgParameter></se:Fill><se:Stroke><se:SvgParameter name=\"stroke\">000000</se:SvgParameter></se:Stroke></se:Mark><se:Size>7</se:Size></se:Graphic></se:PointSymbolizer></se:Rule></se:FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>".format(literal)
+        sld = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><StyledLayerDescriptor xmlns=\"http://www.opengis.net/sld\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ogc=\"http://www.opengis.net/ogc\" xsi:schemaLocation=\"http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd\" version=\"1.1.0\" xmlns:se=\"http://www.opengis.net/se\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <NamedLayer> <se:Name>point</se:Name> <UserStyle> <se:Name>point</se:Name> <se:FeatureTypeStyle> <se:Rule> <se:Name>Single symbol</se:Name> <ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\"> <ogc:PropertyIsEqualTo> <ogc:PropertyName>pkuid</ogc:PropertyName> <ogc:Literal>{0}</ogc:Literal> </ogc:PropertyIsEqualTo> </ogc:Filter> <se:PointSymbolizer> <se:Graphic> <se:Mark> <se:WellKnownName>circle</se:WellKnownName> <se:Fill><se:SvgParameter name=\"fill\">5e86a1</se:SvgParameter></se:Fill><se:Stroke><se:SvgParameter name=\"stroke\">000000</se:SvgParameter></se:Stroke></se:Mark><se:Size>7</se:Size></se:Graphic></se:PointSymbolizer></se:Rule></se:FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>".format(
+            literal)
         self.handle_request_wms_getmap(sld=sld)
         self.assertTrue(self.is_point_table_still_exist())
 

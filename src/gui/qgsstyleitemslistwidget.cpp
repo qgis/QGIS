@@ -197,6 +197,13 @@ void QgsStyleItemsListWidget::setEntityType( QgsStyle::StyleEntity type )
         groupsCombo->setItemText( allGroup, tr( "All Label Settings" ) );
       break;
 
+    case QgsStyle::LegendPatchShapeEntity:
+      btnSaveSymbol->setText( tr( "Save Legend Patch Shape…" ) );
+      btnSaveSymbol->setToolTip( tr( "Save legend patch shape to styles" ) );
+      if ( allGroup >= 0 )
+        groupsCombo->setItemText( allGroup, tr( "All Legend Patch Shapes" ) );
+      break;
+
     case QgsStyle::TagEntity:
     case QgsStyle::SmartgroupEntity:
       break;
@@ -317,6 +324,10 @@ void QgsStyleItemsListWidget::populateGroups()
 
       case QgsStyle::LabelSettingsEntity:
         allText = tr( "All Label Settings" );
+        break;
+
+      case QgsStyle::LegendPatchShapeEntity:
+        allText = tr( "All Legend Patch Shapes" );
         break;
 
       case QgsStyle::TagEntity:

@@ -35,6 +35,7 @@
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmeshmemorydataprovider.h"
 #include "qgsmesh3daveraging.h"
+#include "qgsmeshlayertemporalproperties.h"
 
 //qgis test includes
 #include "qgsrenderchecker.h"
@@ -74,8 +75,8 @@ class TestQgsMeshRenderer : public QObject
 
     void test_1d_vertex_scalar_dataset_rendering();
     void test_1d_vertex_vector_dataset_rendering();
-    void test_1d_face_scalar_dataset_rendering();
-    void test_1d_face_vector_dataset_rendering();
+    void test_1d_edge_scalar_dataset_rendering();
+    void test_1d_edge_vector_dataset_rendering();
 
     void test_vertex_scalar_dataset_rendering();
     void test_vertex_vector_dataset_rendering();
@@ -93,6 +94,7 @@ class TestQgsMeshRenderer : public QObject
     void test_vertex_vector_traces_colorRamp();
     void test_stacked_3d_mesh_single_level_averaging();
     void test_simplified_triangular_mesh_rendering();
+    void test_classified_values();
 
     void test_signals();
 };
@@ -283,6 +285,13 @@ void TestQgsMeshRenderer::test_1d_vertex_scalar_dataset_rendering()
   QVERIFY( metadata.name() == "VertexScalarDataset" );
 
   QgsMeshRendererSettings rendererSettings = mMemory1DLayer->rendererSettings();
+  QgsMeshRendererScalarSettings scalarSettings = rendererSettings.scalarSettings( 0 );
+  QgsInterpolatedLineWidth strokeWidth = scalarSettings.edgeStrokeWidth();
+  strokeWidth.setMaximumValue( 3 );
+  strokeWidth.setMaximumWidth( 2 );
+  strokeWidth.setIsVariableWidth( true );
+  scalarSettings.setEdgeStrokeWidth( strokeWidth );
+  rendererSettings.setScalarSettings( 0, scalarSettings );
   mMemory1DLayer->setRendererSettings( rendererSettings );
   mMemory1DLayer->setStaticScalarDatasetIndex( ds );
 
@@ -307,20 +316,27 @@ void TestQgsMeshRenderer::test_1d_vertex_vector_dataset_rendering()
   QVERIFY( imageCheck( "lines_vertex_vector_dataset", mMemory1DLayer ) );
 }
 
-void TestQgsMeshRenderer::test_1d_face_scalar_dataset_rendering()
+void TestQgsMeshRenderer::test_1d_edge_scalar_dataset_rendering()
 {
   QgsMeshDatasetIndex ds( 2, 0 );
   const QgsMeshDatasetGroupMetadata metadata = mMemory1DLayer->dataProvider()->datasetGroupMetadata( ds );
   QVERIFY( metadata.name() == "EdgeScalarDataset" );
 
   QgsMeshRendererSettings rendererSettings = mMemory1DLayer->rendererSettings();
+  QgsMeshRendererScalarSettings scalarSettings = rendererSettings.scalarSettings( 2 );
+  QgsInterpolatedLineWidth strokeWidth = scalarSettings.edgeStrokeWidth();
+  strokeWidth.setMaximumValue( 3 );
+  strokeWidth.setMaximumWidth( 2 );
+  strokeWidth.setIsVariableWidth( true );
+  scalarSettings.setEdgeStrokeWidth( strokeWidth );
+  rendererSettings.setScalarSettings( 2, scalarSettings );
   mMemory1DLayer->setRendererSettings( rendererSettings );
   mMemory1DLayer->setStaticScalarDatasetIndex( ds );
 
   QVERIFY( imageCheck( "lines_edge_scalar_dataset", mMemory1DLayer ) );
 }
 
-void TestQgsMeshRenderer::test_1d_face_vector_dataset_rendering()
+void TestQgsMeshRenderer::test_1d_edge_vector_dataset_rendering()
 {
   QgsMeshDatasetIndex ds( 3, 0 );
   const QgsMeshDatasetGroupMetadata metadata = mMemory1DLayer->dataProvider()->datasetGroupMetadata( ds );
@@ -375,7 +391,7 @@ void TestQgsMeshRenderer::test_vertex_vector_dataset_colorRamp_rendering()
   QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( ds.group() );
   QgsMeshRendererVectorArrowSettings arrowSettings = settings.arrowSettings();
   arrowSettings.setMinShaftLength( 15 );
-  settings.setColoringMethod( QgsMeshRendererVectorSettings::ColorRamp );
+  settings.setColoringMethod( QgsInterpolatedLineColor::ColorRamp );
   settings.setArrowsSettings( arrowSettings );
   rendererSettings.setVectorSettings( ds.group(), settings );
   mMemoryLayer->setRendererSettings( rendererSettings );
@@ -492,7 +508,7 @@ void TestQgsMeshRenderer::test_vertex_vector_on_user_grid()
   settings.setUserGridCellHeight( 40 );
   settings.setLineWidth( 0.9 );
   settings.setSymbology( QgsMeshRendererVectorSettings::Arrows );
-  settings.setColoringMethod( QgsMeshRendererVectorSettings::SingleColor );
+  settings.setColoringMethod( QgsInterpolatedLineColor::SingleColor );
   rendererSettings.setVectorSettings( ds.group(), settings );
   mMemoryLayer->setRendererSettings( rendererSettings );
   mMemoryLayer->setStaticVectorDatasetIndex( ds );
@@ -512,7 +528,7 @@ void TestQgsMeshRenderer::test_vertex_vector_on_user_grid_streamlines()
   settings.setUserGridCellWidth( 60 );
   settings.setUserGridCellHeight( 40 );
   settings.setLineWidth( 0.9 );
-  settings.setColoringMethod( QgsMeshRendererVectorSettings::SingleColor );
+  settings.setColoringMethod( QgsInterpolatedLineColor::SingleColor );
   settings.setSymbology( QgsMeshRendererVectorSettings::Streamlines );
   rendererSettings.setVectorSettings( ds.group(), settings );
   mMemoryLayer->setRendererSettings( rendererSettings );
@@ -533,7 +549,7 @@ void TestQgsMeshRenderer::test_vertex_vector_on_user_grid_streamlines_colorRamp(
   settings.setUserGridCellWidth( 60 );
   settings.setUserGridCellHeight( 40 );
   settings.setLineWidth( 0.9 );
-  settings.setColoringMethod( QgsMeshRendererVectorSettings::ColorRamp );
+  settings.setColoringMethod( QgsInterpolatedLineColor::ColorRamp );
   settings.setSymbology( QgsMeshRendererVectorSettings::Streamlines );
   rendererSettings.setVectorSettings( ds.group(), settings );
   mMemoryLayer->setRendererSettings( rendererSettings );
@@ -554,7 +570,7 @@ void TestQgsMeshRenderer::test_vertex_vector_traces()
   settings.setUserGridCellWidth( 60 );
   settings.setUserGridCellHeight( 40 );
   settings.setLineWidth( 1 );
-  settings.setColoringMethod( QgsMeshRendererVectorSettings::SingleColor );
+  settings.setColoringMethod( QgsInterpolatedLineColor::SingleColor );
 
   settings.setSymbology( QgsMeshRendererVectorSettings::Traces );
   QgsMeshRendererVectorTracesSettings tracesSetting = settings.tracesSettings();
@@ -581,7 +597,7 @@ void TestQgsMeshRenderer::test_vertex_vector_traces_colorRamp()
   settings.setUserGridCellWidth( 60 );
   settings.setUserGridCellHeight( 40 );
   settings.setLineWidth( 1 );
-  settings.setColoringMethod( QgsMeshRendererVectorSettings::ColorRamp );
+  settings.setColoringMethod( QgsInterpolatedLineColor::ColorRamp );
 
   settings.setSymbology( QgsMeshRendererVectorSettings::Traces );
   QgsMeshRendererVectorTracesSettings tracesSetting = settings.tracesSettings();
@@ -666,7 +682,19 @@ void TestQgsMeshRenderer::test_simplified_triangular_mesh_rendering()
   QVERIFY( imageCheck( "simplified_triangular_mesh", mMdal3DLayer ) );
 }
 
-// TODO test edge mesh rendering!
+void TestQgsMeshRenderer::test_classified_values()
+{
+  QgsMeshLayer classifiedMesh( mDataDir + "/simplebox_clm.nc", "Mesh with classified values", "mdal" );
+  QVERIFY( classifiedMesh.isValid() );
+
+  QgsProject::instance()->addMapLayer( &classifiedMesh );
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << &classifiedMesh );
+
+  classifiedMesh.temporalProperties()->setIsActive( false );
+  classifiedMesh.setStaticScalarDatasetIndex( QgsMeshDatasetIndex( 3, 4 ) );
+
+  QVERIFY( imageCheck( "classified_values", &classifiedMesh ) );
+}
 
 QGSTEST_MAIN( TestQgsMeshRenderer )
 #include "testqgsmeshlayerrenderer.moc"

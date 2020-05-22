@@ -30,7 +30,7 @@ QString QgsRaiseExceptionAlgorithm::name() const
 
 QgsProcessingAlgorithm::Flags QgsRaiseExceptionAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | FlagHideFromToolbox | FlagCustomException;
+  return QgsProcessingAlgorithm::flags() | FlagHideFromToolbox | FlagCustomException | FlagSkipGenericModelLogging;
 }
 
 QString QgsRaiseExceptionAlgorithm::displayName() const
@@ -109,7 +109,7 @@ QString QgsRaiseWarningAlgorithm::name() const
 
 QgsProcessingAlgorithm::Flags QgsRaiseWarningAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | FlagHideFromToolbox;
+  return QgsProcessingAlgorithm::flags() | FlagHideFromToolbox | FlagSkipGenericModelLogging;
 }
 
 QString QgsRaiseWarningAlgorithm::displayName() const

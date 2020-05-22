@@ -26,3 +26,8 @@ bool QgsMapLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTimeR
 {
   return true;
 }
+
+QgsDateTimeRange QgsMapLayerTemporalProperties::calculateTemporalExtent( QgsMapLayer * ) const
+{
+  return QgsDateTimeRange();
+}

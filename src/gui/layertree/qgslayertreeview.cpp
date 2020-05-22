@@ -22,6 +22,8 @@
 #include "qgslayertreeutils.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmaplayer.h"
+#include "qgsmessagebar.h"
+
 #include "qgsgui.h"
 
 #include <QMenu>
@@ -76,6 +78,12 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
 
   connect( model, &QAbstractItemModel::rowsInserted, this, &QgsLayerTreeView::modelRowsInserted );
   connect( model, &QAbstractItemModel::rowsRemoved, this, &QgsLayerTreeView::modelRowsRemoved );
+
+  if ( mMessageBar )
+    connect( layerTreeModel(), &QgsLayerTreeModel::messageEmitted,
+             [ = ]( const QString & message, Qgis::MessageLevel level = Qgis::Info, int duration = 5 )
+  {mMessageBar->pushMessage( message, level, duration );}
+         );
 
   QTreeView::setModel( model );
 
@@ -488,6 +496,20 @@ void QgsLayerTreeView::collapseAllNodes()
   // unfortunately collapseAll() does not emit collapsed() signals
   _expandAllNodes( layerTreeModel()->rootGroup(), false, layerTreeModel() );
   collapseAll();
+}
+
+void QgsLayerTreeView::setMessageBar( QgsMessageBar *messageBar )
+{
+  if ( mMessageBar == messageBar )
+    return;
+
+  mMessageBar = messageBar;
+
+  if ( mMessageBar )
+    connect( layerTreeModel(), &QgsLayerTreeModel::messageEmitted,
+             [ = ]( const QString & message, Qgis::MessageLevel level = Qgis::Info, int duration = 5 )
+  {mMessageBar->pushMessage( message, level, duration );}
+         );
 }
 
 void QgsLayerTreeView::mouseReleaseEvent( QMouseEvent *event )

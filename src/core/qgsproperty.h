@@ -28,6 +28,7 @@
 #include <QDomElement>
 #include <QDomDocument>
 #include <QColor>
+#include <QDateTime>
 
 class QgsPropertyTransformer;
 class QgsPropertyPrivate;
@@ -76,6 +77,7 @@ class CORE_EXPORT QgsPropertyDefinition
       VerticalAnchor, //!< Vertical anchor point
       SvgPath, //!< Path to an SVG file
       Offset, //!< 2D offset
+      DateTime, //!< DateTime value
       Custom = 3000, //!< Custom property types
     };
 
@@ -379,12 +381,29 @@ class CORE_EXPORT QgsProperty
     QVariant value( const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok SIP_OUT = nullptr ) const;
 
     /**
+     * Calculates the current value of the property and interprets it as a datetime.
+     * \param context QgsExpressionContext to evaluate the property for.
+     * \param defaultDateTime default datetime to return if the property cannot be calculated as a datetime
+     * \param ok if specified, will be set to TRUE if conversion was successful
+     * \returns value parsed to datetime
+     * \see value()
+     * \see valueAsString()
+     * \see valueAsColor()
+     * \see valueAsDouble()
+     * \see valueAsInt()
+     * \see valueAsBool()
+     * \since QGIS 3.14
+     */
+    QDateTime valueAsDateTime( const QgsExpressionContext &context, const QDateTime &defaultDateTime = QDateTime(), bool *ok SIP_OUT = nullptr ) const;
+
+    /**
      * Calculates the current value of the property and interprets it as a string.
      * \param context QgsExpressionContext to evaluate the property for.
      * \param defaultString default string to return if the property cannot be calculated as a string
      * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to string
      * \see value()
+     * \see valueAsDateTime()
      * \see valueAsColor()
      * \see valueAsDouble()
      * \see valueAsInt()
@@ -399,6 +418,7 @@ class CORE_EXPORT QgsProperty
      * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to color
      * \see value()
+     * \see valueAsDateTime()
      * \see valueAsString()
      * \see valueAsDouble()
      * \see valueAsInt()
@@ -413,6 +433,7 @@ class CORE_EXPORT QgsProperty
      * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to double
      * \see value()
+     * \see valueAsDateTime()
      * \see valueAsString()
      * \see valueAsColor()
      * \see valueAsInt()
@@ -427,6 +448,7 @@ class CORE_EXPORT QgsProperty
      * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to integer
      * \see value()
+     * \see valueAsDateTime()
      * \see valueAsString()
      * \see valueAsColor()
      * \see valueAsDouble()
@@ -441,6 +463,7 @@ class CORE_EXPORT QgsProperty
      * \param ok if specified, will be set to TRUE if conversion was successful
      * \returns value parsed to boolean
      * \see value()
+     * \see valueAsDateTime()
      * \see valueAsString()
      * \see valueAsColor()
      * \see valueAsDouble()

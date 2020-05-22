@@ -793,6 +793,7 @@ Clears the specified custom rendering flag.
 QFlags<QgsRenderContext::Flag> operator|(QgsRenderContext::Flag f1, QFlags<QgsRenderContext::Flag> f2);
 
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

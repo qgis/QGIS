@@ -29,32 +29,6 @@
 
 ///@cond PRIVATE
 
-class QgsVectorTileBasicRendererListModel : public QAbstractListModel
-{
-  public:
-    QgsVectorTileBasicRendererListModel( QgsVectorTileBasicRenderer *r, QObject *parent = nullptr );
-
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
-
-    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
-
-    void insertStyle( int row, const QgsVectorTileBasicRendererStyle &style );
-
-    // drag'n'drop support
-    Qt::DropActions supportedDropActions() const override;
-    QStringList mimeTypes() const override;
-    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
-    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
-
-  private:
-    QgsVectorTileBasicRenderer *mRenderer = nullptr;
-};
-
 
 QgsVectorTileBasicRendererListModel::QgsVectorTileBasicRendererListModel( QgsVectorTileBasicRenderer *r, QObject *parent )
   : QAbstractListModel( parent )
@@ -323,23 +297,10 @@ bool QgsVectorTileBasicRendererListModel::dropMimeData( const QMimeData *data,
 
 QgsVectorTileBasicRendererWidget::QgsVectorTileBasicRendererWidget( QgsVectorTileLayer *layer, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
-  , mVTLayer( layer )
   , mMessageBar( messageBar )
 {
   setupUi( this );
   layout()->setContentsMargins( 0, 0, 0, 0 );
-
-  if ( layer->renderer() && layer->renderer()->type() == QStringLiteral( "basic" ) )
-  {
-    mRenderer.reset( static_cast<QgsVectorTileBasicRenderer *>( layer->renderer()->clone() ) );
-  }
-  else
-  {
-    mRenderer.reset( new QgsVectorTileBasicRenderer() );
-  }
-
-  mModel = new QgsVectorTileBasicRendererListModel( mRenderer.get(), viewStyles );
-  viewStyles->setModel( mModel );
 
   QMenu *menuAddRule = new QMenu( btnAddRule );
   menuAddRule->addAction( tr( "Marker" ), this, [this] { addStyle( QgsWkbTypes::PointGeometry ); } );
@@ -351,6 +312,25 @@ QgsVectorTileBasicRendererWidget::QgsVectorTileBasicRendererWidget( QgsVectorTil
   connect( btnRemoveRule, &QAbstractButton::clicked, this, &QgsVectorTileBasicRendererWidget::removeStyle );
 
   connect( viewStyles, &QAbstractItemView::doubleClicked, this, &QgsVectorTileBasicRendererWidget::editStyleAtIndex );
+
+  setLayer( layer );
+}
+
+void QgsVectorTileBasicRendererWidget::setLayer( QgsVectorTileLayer *layer )
+{
+  mVTLayer = layer;
+
+  if ( layer && layer->renderer() && layer->renderer()->type() == QStringLiteral( "basic" ) )
+  {
+    mRenderer.reset( static_cast<QgsVectorTileBasicRenderer *>( layer->renderer()->clone() ) );
+  }
+  else
+  {
+    mRenderer.reset( new QgsVectorTileBasicRenderer() );
+  }
+
+  mModel = new QgsVectorTileBasicRendererListModel( mRenderer.get(), viewStyles );
+  viewStyles->setModel( mModel );
 
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsPanelWidget::widgetChanged );

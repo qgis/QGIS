@@ -23,6 +23,10 @@
 #define MDAL_UNUSED(x) (void)x;
 #define MDAL_NAN std::numeric_limits<double>::quiet_NaN()
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846264338327
+#endif
+
 namespace MDAL
 {
   // endianness

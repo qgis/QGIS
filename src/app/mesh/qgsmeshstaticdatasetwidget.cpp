@@ -61,14 +61,16 @@ void QgsMeshStaticDatasetWidget::setScalarDatasetGroup( int index )
 {
   mScalarDatasetGroup = index;
   mDatasetScalarModel->setDatasetGroup( index );
-  mScalarName->setText( mLayer->dataProvider()->datasetGroupMetadata( index ).name() );
+  if ( mLayer && mLayer->dataProvider() )
+    mScalarName->setText( mLayer->dataProvider()->datasetGroupMetadata( index ).name() );
 }
 
 void QgsMeshStaticDatasetWidget::setVectorDatasetGroup( int index )
 {
   mVectorDatasetGroup = index;
   mDatasetVectorModel->setDatasetGroup( index );
-  mVectorName->setText( mLayer->dataProvider()->datasetGroupMetadata( index ).name() );
+  if ( mLayer && mLayer->dataProvider() )
+    mVectorName->setText( mLayer->dataProvider()->datasetGroupMetadata( index ).name() );
 }
 
 QgsMeshDatasetListModel::QgsMeshDatasetListModel( QObject *parent ): QAbstractListModel( parent )
@@ -100,13 +102,18 @@ int QgsMeshDatasetListModel::rowCount( const QModelIndex &parent ) const
 
 QVariant QgsMeshDatasetListModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid() || !mLayer || !mLayer->dataProvider() || mDatasetGroup < 0 )
+  if ( !index.isValid() )
     return QVariant();
 
   if ( role == Qt::DisplayRole )
   {
-    if ( index.row() == 0 )
+    if ( !mLayer || !mLayer->dataProvider() || mDatasetGroup < 0 || index.row() == 0 )
       return tr( "none" );
+
+    else if ( index.row() == 1 && mLayer->dataProvider()->datasetCount( mDatasetGroup ) == 1 )
+    {
+      return tr( "Display dataset" );
+    }
     else
     {
       qint64 time = mLayer->dataProvider()->temporalCapabilities()->datasetTime( QgsMeshDatasetIndex( mDatasetGroup, index.row() - 1 ) );

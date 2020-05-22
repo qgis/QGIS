@@ -2700,6 +2700,22 @@ class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParame
     virtual QString generateTemporaryDestination() const;
 
     /**
+     * Tests whether a \a value is a supported value for this parameter.
+     *
+     * Will return FALSE when a \a value with an unsupported file extension is specified. The default implementation
+     * calls QgsProcessingProvider::isSupportedOutputValue() to test compatibility.
+     *
+     * \param value value to test
+     * \param context Processing context
+     * \param error will be set to a descriptive error string
+     *
+     * \returns TRUE if \a value is supported.
+     *
+     * \since QGIS 3.14
+     */
+    virtual bool isSupportedOutputValue( const QVariant &value, QgsProcessingContext &context, QString &error SIP_OUT ) const;
+
+    /**
      * Returns TRUE if the destination should be created by default. For optional parameters,
      * a return value of FALSE indicates that the destination should not be created by default.
      * \see setCreateByDefault()

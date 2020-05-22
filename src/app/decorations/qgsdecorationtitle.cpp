@@ -25,6 +25,7 @@
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
+#include "qgstextrenderer.h"
 
 #include <QPainter>
 #include <QMenu>
@@ -43,8 +44,9 @@ QgsDecorationTitle::QgsDecorationTitle( QObject *parent )
   mPlacement = TopCenter;
   mMarginUnit = QgsUnitTypes::RenderMillimeters;
 
-  setName( "Title Label" );
-  // initialize default values in the gui
+  setDisplayName( tr( "Title Label" ) );
+  mConfigurationName = QStringLiteral( "TitleLabel" );
+
   projectRead();
 }
 
@@ -52,15 +54,15 @@ void QgsDecorationTitle::projectRead()
 {
   QgsDecorationItem::projectRead();
 
-  mLabelText = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Label" ), QString() );
-  mBackgroundColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/BackgroundColor" ), QStringLiteral( "0,0,0,99" ) ) );
+  mLabelText = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Label" ), QString() );
+  mBackgroundColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/BackgroundColor" ), QStringLiteral( "0,0,0,99" ) ) );
 
-  mMarginHorizontal = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginH" ), 0 );
-  mMarginVertical = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginV" ), 0 );
+  mMarginHorizontal = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MarginH" ), 0 );
+  mMarginVertical = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MarginV" ), 0 );
 
   QDomDocument doc;
   QDomElement elem;
-  QString textXml = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Font" ) );
+  QString textXml = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Font" ) );
   if ( !textXml.isEmpty() )
   {
     doc.setContent( textXml );
@@ -75,18 +77,18 @@ void QgsDecorationTitle::saveToProject()
 {
   QgsDecorationItem::saveToProject();
 
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Label" ), mLabelText );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/BackgroundColor" ), QgsSymbolLayerUtils::encodeColor( mBackgroundColor ) );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Label" ), mLabelText );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/BackgroundColor" ), QgsSymbolLayerUtils::encodeColor( mBackgroundColor ) );
 
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginH" ), mMarginHorizontal );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginV" ), mMarginVertical );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarginH" ), mMarginHorizontal );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarginV" ), mMarginVertical );
 
   QDomDocument textDoc;
   QgsReadWriteContext rwContext;
   rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
   QDomElement textElem = mTextFormat.writeXml( textDoc, rwContext );
   textDoc.appendChild( textElem );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Font" ), textDoc.toString() );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Font" ), textDoc.toString() );
 }
 
 // Slot called when the buffer menu item is activated
@@ -109,11 +111,10 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
   QString displayString = QgsExpression::replaceExpressionText( mLabelText, &context.expressionContext() );
   QStringList displayStringList = displayString.split( '\n' );
 
-  QFontMetricsF fm( mTextFormat.scaledFont( context ) );
   QFontMetricsF textMetrics = QgsTextRenderer::fontMetrics( context, mTextFormat );
   double textDescent = textMetrics.descent();
-  double textWidth = QgsTextRenderer::textWidth( context, mTextFormat, displayStringList, &fm );
-  double textHeight = QgsTextRenderer::textHeight( context, mTextFormat, displayStringList, QgsTextRenderer::Point, &fm );
+  double textWidth = QgsTextRenderer::textWidth( context, mTextFormat, displayStringList );
+  double textHeight = QgsTextRenderer::textHeight( context, mTextFormat, displayStringList, QgsTextRenderer::Point );
 
   QPaintDevice *device = context.painter()->device();
   int deviceHeight = device->height() / device->devicePixelRatioF();

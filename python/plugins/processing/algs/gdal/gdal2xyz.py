@@ -34,7 +34,6 @@ from processing.tools.system import isWindows
 
 
 class gdal2xyz(GdalAlgorithm):
-
     INPUT = 'INPUT'
     BAND = 'BAND'
     CSV = 'CSV'

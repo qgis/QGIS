@@ -35,7 +35,6 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
 
   //fill data types into the combo box
   const QList< QgsVectorDataProvider::NativeType > &typelist = vlayer->dataProvider()->nativeTypes();
-
   for ( int i = 0; i < typelist.size(); i++ )
   {
     QgsDebugMsg( QStringLiteral( "name:%1 type:%2 typeName:%3 length:%4-%5 prec:%6-%7" )
@@ -45,7 +44,7 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
                  .arg( typelist[i].mMinLen ).arg( typelist[i].mMaxLen )
                  .arg( typelist[i].mMinPrec ).arg( typelist[i].mMaxPrec ) );
 
-    mTypeBox->addItem( typelist[i].mTypeDesc );
+    whileBlocking( mTypeBox )->addItem( typelist[i].mTypeDesc );
     mTypeBox->setItemData( i, static_cast<int>( typelist[i].mType ), Qt::UserRole );
     mTypeBox->setItemData( i, typelist[i].mTypeName, Qt::UserRole + 1 );
     mTypeBox->setItemData( i, typelist[i].mMinLen, Qt::UserRole + 2 );
@@ -54,6 +53,9 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
     mTypeBox->setItemData( i, typelist[i].mMaxPrec, Qt::UserRole + 5 );
   }
 
+  //default values for field width and precision
+  mLength->setValue( 10 );
+  mPrec->setValue( 3 );
   mTypeBox_currentIndexChanged( 0 );
 
   if ( mIsShapeFile )
@@ -87,10 +89,18 @@ void QgsAddAttrDialog::setPrecisionMinMax()
   int idx = mTypeBox->currentIndex();
   int minPrecType = mTypeBox->itemData( idx, Qt::UserRole + 4 ).toInt();
   int maxPrecType = mTypeBox->itemData( idx, Qt::UserRole + 5 ).toInt();
-  mPrec->setVisible( minPrecType < maxPrecType );
-  mPrecLabel->setVisible( minPrecType < maxPrecType );
-  mPrec->setMinimum( minPrecType );
-  mPrec->setMaximum( std::max( minPrecType, std::min( maxPrecType, mLength->value() ) ) );
+  bool precisionIsEnabled = minPrecType < maxPrecType;
+  mPrec->setVisible( precisionIsEnabled );
+  mPrecLabel->setVisible( precisionIsEnabled );
+
+  // Do not set min/max if it's disabled or we'll loose the default value,
+  // see https://github.com/qgis/QGIS/issues/26880 - QGIS saves integer field when
+  // I create a new real field through field calculator (Update field works as intended)
+  if ( precisionIsEnabled )
+  {
+    mPrec->setMinimum( minPrecType );
+    mPrec->setMaximum( std::max( minPrecType, std::min( maxPrecType, mLength->value() ) ) );
+  }
 }
 
 void QgsAddAttrDialog::accept()

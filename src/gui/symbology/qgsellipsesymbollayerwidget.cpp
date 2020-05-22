@@ -15,6 +15,7 @@
 #include "qgsellipsesymbollayerwidget.h"
 #include "qgsellipsesymbollayer.h"
 #include "qgsvectorlayer.h"
+#include "qgssymbollayerutils.h"
 #include <QColorDialog>
 
 QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )

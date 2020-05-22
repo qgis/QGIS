@@ -315,6 +315,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     /**
      * Changes attribute values of existing features. This should
      * succeed if the provider reports the ChangeAttributeValues capability.
+     * The method returns FALSE if the provider does not have ChangeAttributeValues
+     * capability or if any of the changes could not be successfully applied.
      * \param attr_map a map containing changed attributes
      * \returns TRUE in case of success and FALSE in case of failure
      */

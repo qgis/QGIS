@@ -55,6 +55,13 @@ open within the main QGIS application.
       AvoidIntersectionsLayers,
     };
 
+    enum DataDefinedServerProperty
+    {
+      NoProperty,
+      AllProperties,
+      WMSOnlineResource,
+    };
+
     static QgsProject *instance();
 %Docstring
 Returns the QgsProject singleton instance
@@ -418,7 +425,6 @@ implying a hierarchy of keys and corresponding values
     int readNumEntry( const QString &scope, const QString &key, int def = 0, bool *ok = 0 ) const;
     double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok = 0 ) const;
     bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok = 0 ) const;
-
 
     bool removeEntry( const QString &scope, const QString &key );
 %Docstring
@@ -1716,6 +1722,22 @@ Registers the objects that require translation into the ``translationContext``.
 So there can be created a ts file with these values.
 
 .. versionadded:: 3.4
+%End
+
+    void setDataDefinedServerProperties( const QgsPropertyCollection &properties );
+%Docstring
+Sets the data defined properties used for overrides in user defined server
+parameters to ``properties``
+
+.. versionadded:: 3.14
+%End
+
+    QgsPropertyCollection dataDefinedServerProperties() const;
+%Docstring
+Returns the data defined properties used for overrides in user defined server
+parameters
+
+.. versionadded:: 3.14
 %End
 
 };
