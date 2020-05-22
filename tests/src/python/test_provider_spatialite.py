@@ -361,8 +361,6 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
                     '"dt" <= format_date(make_datetime(2020, 5, 4, 12, 13, 14), \'yyyy-MM-dd hh:mm:ss\')',
                     '"dt" < format_date(make_date(2020, 5, 4), \'yyyy-MM-dd hh:mm:ss\')',
                     '"dt" = format_date(to_datetime(\'000www14ww13ww12www4ww5ww2020\',\'zzzwwwsswwmmwwhhwwwdwwMwwyyyy\'),\'yyyy-MM-dd hh:mm:ss\')',
-                    '"date" <= make_datetime(2020, 5, 4, 12, 13, 14)',
-                    '"date" >= make_date(2020, 5, 4)',
                     'to_time("time") >= make_time(12, 14, 14)',
                     'to_time("time") = to_time(\'000www14ww13ww12www\',\'zzzwwwsswwmmwwhhwww\')',
                     '"date" = to_date(\'www4ww5ww2020\',\'wwwdwwMwwyyyy\')'
