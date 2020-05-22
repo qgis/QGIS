@@ -216,7 +216,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QToolButton" name="mFixedRangeSetToProjectTimeButton">
+          <widget class="QToolButton" name="mFixedRangeSetRangeButton">
            <property name="text">
             <string/>
            </property>
@@ -441,7 +441,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QToolButton" name="mSetToProjectTimeButton">
+          <widget class="QToolButton" name="mSetRangeButton">
            <property name="text">
             <string/>
            </property>
