@@ -116,6 +116,11 @@ class CORE_EXPORT QgsGdalUtils
       double dfMaxError,
       const GDALWarpOptions *psOptionsIn );
 
+#ifndef QT_NO_NETWORKPROXY
+    //! Sets the gdal proxy variables
+    static void setupProxy();
+#endif
+
     friend class TestQgsGdalUtils;
 };
 

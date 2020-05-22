@@ -15,12 +15,15 @@
 
 #include "qgsgdalutils.h"
 #include "qgslogger.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgssettings.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include "gdal.h"
 #include "gdalwarper.h"
 #include "cpl_string.h"
 
+#include <QNetworkProxy>
 #include <QString>
 #include <QImage>
 
@@ -486,3 +489,53 @@ GDALDatasetH QgsGdalUtils::rpcAwareAutoCreateWarpedVrt(
 
   return GDALAutoCreateWarpedVRTEx( hSrcDS, pszSrcWKT, pszDstWKT, eResampleAlg, dfMaxError, psOptionsIn, opts );
 }
+
+#ifndef QT_NO_NETWORKPROXY
+void QgsGdalUtils::setupProxy()
+{
+  // Check proxy configuration, they are application level but
+  // instead of adding an API and complex signal/slot connections
+  // given the limited cost of checking them on every provider instantiation
+  // we can do it here so that new settings are applied whenever a new layer
+  // is created.
+  QgsSettings settings;
+  // Check that proxy is enabled
+  if ( settings.value( QStringLiteral( "proxy/proxyEnabled" ), false ).toBool() )
+  {
+    // Get the first configured proxy
+    QList<QNetworkProxy> proxyes( QgsNetworkAccessManager::instance()->proxyFactory()->queryProxy( ) );
+    if ( ! proxyes.isEmpty() )
+    {
+      QNetworkProxy proxy( proxyes.first() );
+      // TODO/FIXME: check excludes (the GDAL config options are global, we need a per-connection config option)
+      //QStringList excludes;
+      //excludes = settings.value( QStringLiteral( "proxy/proxyExcludedUrls" ), "" ).toStringList();
+
+      QString proxyHost( proxy.hostName() );
+      qint16 proxyPort( proxy.port() );
+
+      QString proxyUser( proxy.user() );
+      QString proxyPassword( proxy.password() );
+
+      if ( ! proxyHost.isEmpty() )
+      {
+        QString connection( proxyHost );
+        if ( proxyPort )
+        {
+          connection += ':' +  QString::number( proxyPort );
+        }
+        CPLSetConfigOption( "GDAL_HTTP_PROXY", connection.toUtf8() );
+        if ( !  proxyUser.isEmpty( ) )
+        {
+          QString credentials( proxyUser );
+          if ( !  proxyPassword.isEmpty( ) )
+          {
+            credentials += ':' + proxyPassword;
+          }
+          CPLSetConfigOption( "GDAL_HTTP_PROXYUSERPWD", credentials.toUtf8() );
+        }
+      }
+    }
+  }
+}
+#endif
