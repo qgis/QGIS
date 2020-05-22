@@ -63,6 +63,10 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
 
 #endif
 
+  protected:
+
+    void keyPressEvent( QKeyEvent *e ) override;
+
   private:
 
     /**
@@ -81,6 +85,11 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
     int mBlockSettingUpdates = 0;
 
     bool mHasTemporalLayersLoaded = false;
+
+    void togglePlayForward();
+    void togglePlayBackward();
+    void togglePause();
+    bool mPlayingForward = true;
 
   private slots:
 
