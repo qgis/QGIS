@@ -48,6 +48,7 @@ Constructor for QgsDataSourceUri which parses an input ``uri`` string.
     QString connectionInfo( bool expandAuthConfig = true ) const;
 %Docstring
 Returns the connection part of the URI.
+This may be a file path in case of a filesystem-based DB (spatialite or GPKG).
 %End
 
     QString uri( bool expandAuthConfig = true ) const;
