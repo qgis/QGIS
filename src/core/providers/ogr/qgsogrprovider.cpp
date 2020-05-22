@@ -2191,6 +2191,8 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   if ( attr_map.isEmpty() )
     return true;
 
+  bool returnValue = true;
+
   clearMinMaxCache();
 
   setRelevantFields( true, attributeIndexes() );
@@ -2351,6 +2353,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     if ( mOgrLayer->SetFeature( of.get() ) != OGRERR_NONE )
     {
       pushError( tr( "OGR error setting feature %1: %2" ).arg( fid ).arg( CPLGetLastErrorMsg() ) );
+      returnValue = false;
     }
   }
 
@@ -2367,7 +2370,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     pushError( tr( "OGR error syncing to disk: %1" ).arg( CPLGetLastErrorMsg() ) );
   }
   QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
-  return true;
+  return returnValue;
 }
 
 bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
