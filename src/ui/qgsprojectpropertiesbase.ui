@@ -245,7 +245,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>8</number>
+          <number>4</number>
          </property>
          <widget class="QWidget" name="mProjOptsGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -274,8 +274,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>590</width>
-                <height>828</height>
+                <width>537</width>
+                <height>855</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout">
@@ -897,8 +897,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>603</width>
-                <height>161</height>
+                <width>546</width>
+                <height>164</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -972,8 +972,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>290</width>
-                <height>543</height>
+                <width>269</width>
+                <height>553</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1392,7 +1392,7 @@
            <item row="0" column="0" colspan="2">
             <widget class="QCheckBox" name="mAutoTransaction">
              <property name="toolTip">
-              <string>When enabled, layers from the same database connection will be put into a transaction group. Their edit state will be synchronized and changes to these layers will be sent to the provider immediately. Only supported on postgres provider.</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When enabled, layers from the same database connection will be put into a transaction group. &lt;/p&gt;&lt;p&gt;Their edit state will be synchronized and changes to these layers will be sent to the provider immediately. &lt;/p&gt;&lt;p&gt;Only supported on:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Postgres&lt;/li&gt;&lt;li&gt;Spatialite&lt;/li&gt;&lt;li&gt; GeoPackage&lt;/li&gt;&lt;li&gt;Oracle&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="text">
               <string>Automatically create transaction groups where possible</string>
@@ -1548,8 +1548,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>178</width>
-                <height>54</height>
+                <width>167</width>
+                <height>55</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1611,7 +1611,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>671</width>
-                <height>3090</height>
+                <height>3139</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
