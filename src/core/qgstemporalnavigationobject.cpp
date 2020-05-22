@@ -218,12 +218,24 @@ void QgsTemporalNavigationObject::pause()
 
 void QgsTemporalNavigationObject::playForward()
 {
+  if ( mPlayBackMode == Idle &&  mCurrentFrameNumber >= totalFrameCount() - 1 )
+  {
+    // if we are paused at the end of the video, and the user hits play, we automatically rewind and play again
+    rewindToStart();
+  }
+
   setAnimationState( AnimationState::Forward );
   play();
 }
 
 void QgsTemporalNavigationObject::playBackward()
 {
+  if ( mPlayBackMode == Idle &&  mCurrentFrameNumber <= 0 )
+  {
+    // if we are paused at the start of the video, and the user hits play, we automatically skip to end and play in reverse again
+    skipToEnd();
+  }
+
   setAnimationState( AnimationState::Reverse );
   play();
 }
