@@ -72,7 +72,7 @@ QVariantMap QgsExecuteRegisteredSpatialiteQueryAlgorithm::processAlgorithm( cons
   std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn;
   try
   {
-    std::unique_ptr<QgsProviderMetadata> md( QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) ) );
+    QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) );
     conn.reset( static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connName ) ) );
   }
   catch ( QgsProviderConnectionException & )
