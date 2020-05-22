@@ -445,6 +445,9 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             outName = out.name()
             if outName in parameters:
                 if outName in self.fileOutputs:
+                    print('ADD', outName)
+                    print('VAL', parameters[outName])
+                    print('VAL 2', self.fileOutputs[outName])
                     outputs[outName] = self.fileOutputs[outName]
                 else:
                     outputs[outName] = parameters[outName]
