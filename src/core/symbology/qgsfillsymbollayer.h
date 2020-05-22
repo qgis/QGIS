@@ -2035,7 +2035,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
     struct Part
     {
       QPolygonF exterior;
-      QList<QPolygonF> rings;
+      QVector<QPolygonF> rings;
     };
 
     void render( QgsRenderContext &context, const QVector<Part> &parts, const QgsFeature &feature, bool selected );
