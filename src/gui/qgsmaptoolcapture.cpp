@@ -526,7 +526,6 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
     // ordinary digitizing
     mRubberBand->addPoint( point );
     mCaptureCurve.addVertex( layerPoint );
-    updateExtraSnapLayer();
     mSnappingMatches.append( match );
   }
 
@@ -542,6 +541,7 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
     mTempRubberBand->addPoint( point );
   }
 
+  updateExtraSnapLayer();
   validateGeometry();
 
   return 0;
@@ -892,11 +892,16 @@ QgsPoint QgsMapToolCapture::mapPoint( const QgsMapMouseEvent &e ) const
 
 void QgsMapToolCapture::updateExtraSnapLayer()
 {
-  if ( canvas()->snappingUtils()->config().selfSnapping() && mCanvas->currentLayer() )
+  if ( canvas()->snappingUtils()->config().selfSnapping() && mCanvas->currentLayer() && mCaptureCurve.numPoints() >= 2 )
   {
     // the current layer may have changed
     mExtraSnapLayer->setCrs( mCanvas->currentLayer()->crs() );
     QgsGeometry geom = QgsGeometry( mCaptureCurve.clone() );
+    // we close the curve to allow snapping on last segment
+    if ( mCaptureMode == CapturePolygon && mCaptureCurve.numPoints() >= 3 )
+    {
+      qgsgeometry_cast<QgsCompoundCurve *>( geom.get() )->close();
+    }
     mExtraSnapLayer->changeGeometry( mExtraSnapFeatureId, geom );
   }
   else
