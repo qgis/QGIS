@@ -72,7 +72,7 @@ QVariantMap QgsExecutePostgisQueryAlgorithm::processAlgorithm( const QVariantMap
   std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn;
   try
   {
-    std::unique_ptr<QgsProviderMetadata> md( QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) ) );
+    QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) );
     conn.reset( static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connName ) ) );
   }
   catch ( QgsProviderConnectionException & )
