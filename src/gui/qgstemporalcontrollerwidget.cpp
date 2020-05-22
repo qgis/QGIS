@@ -142,6 +142,7 @@ void QgsTemporalControllerWidget::keyPressEvent( QKeyEvent *e )
   {
     togglePause();
   }
+  QWidget::keyPressEvent( e );
 }
 
 void QgsTemporalControllerWidget::togglePlayForward()
