@@ -1063,6 +1063,15 @@ struct CORE_EXPORT QgsVertexId
   int ring;
   int vertex;
   VertexType type;
+
+#ifdef SIP_RUN
+  SIP_PYOBJECT __repr__();
+  % MethodCode
+  QString str = QStringLiteral( "<QgsVertexId: %1,%2,%3%4>" ).arg( sipCpp->part ).arg( sipCpp->ring ).arg( sipCpp->vertex ).arg( sipCpp->type == QgsVertexId::CurveVertex ? QStringLiteral( " CurveVertex" ) : QString() );
+  sipRes = PyUnicode_FromString( str.toUtf8().data() );
+  % End
+#endif
+
 };
 
 #ifndef SIP_RUN
