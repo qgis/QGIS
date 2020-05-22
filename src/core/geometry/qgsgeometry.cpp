@@ -976,12 +976,12 @@ QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle
   // get first point
   hull.constGet()->nextVertex( vertexId, pt0 );
   pt1 = pt0;
-  double prevAngle = 0.0;
+  double totalRotation = 0;
   while ( hull.constGet()->nextVertex( vertexId, pt2 ) )
   {
     double currentAngle = QgsGeometryUtils::lineAngle( pt1.x(), pt1.y(), pt2.x(), pt2.y() );
-    double rotateAngle = 180.0 / M_PI * ( currentAngle - prevAngle );
-    prevAngle = currentAngle;
+    double rotateAngle = 180.0 / M_PI * currentAngle;
+    totalRotation += rotateAngle;
 
     QTransform t = QTransform::fromTranslate( pt0.x(), pt0.y() );
     t.rotate( rotateAngle );
@@ -995,12 +995,12 @@ QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle
     {
       minRect = bounds;
       area = currentArea;
-      angle = 180.0 / M_PI * currentAngle;
+      angle = totalRotation;
       width = bounds.width();
       height = bounds.height();
     }
 
-    pt1 = pt2;
+    pt1 = hull.constGet()->vertexAt( vertexId );
   }
 
   QgsGeometry minBounds = QgsGeometry::fromRect( minRect );
