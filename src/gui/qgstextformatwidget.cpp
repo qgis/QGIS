@@ -96,9 +96,13 @@ void QgsTextFormatWidget::initWidget()
 
   const int iconSize = QgsGuiUtils::scaleIconSize( 20 );
   mOptionsTab->setIconSize( QSize( iconSize, iconSize ) );
+  mLabelingOptionsListWidget->setIconSize( QSize( iconSize, iconSize ) ) ;
   const int iconSize32 = QgsGuiUtils::scaleIconSize( 32 );
   const int iconSize24 = QgsGuiUtils::scaleIconSize( 24 );
   const int iconSize18 = QgsGuiUtils::scaleIconSize( 18 );
+  const int iconSize16 = QgsGuiUtils::scaleIconSize( 16 );
+
+  mPreviewTextBtn->setIconSize( QSize( iconSize16, iconSize16 ) );
   mPointOffsetAboveLeft->setIconSize( QSize( iconSize32, iconSize18 ) );
   mPointOffsetAbove->setIconSize( QSize( iconSize32, iconSize18 ) );
   mPointOffsetAboveRight->setIconSize( QSize( iconSize32, iconSize18 ) );

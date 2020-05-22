@@ -268,12 +268,6 @@
             </item>
             <item>
              <widget class="QToolButton" name="mPreviewTextBtn">
-              <property name="maximumSize">
-               <size>
-                <width>24</width>
-                <height>22</height>
-               </size>
-              </property>
               <property name="toolTip">
                <string>Reset sample text</string>
               </property>
@@ -723,8 +717,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>323</width>
-                       <height>292</height>
+                       <width>485</width>
+                       <height>429</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -1313,7 +1307,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>373</width>
+                       <width>370</width>
                        <height>708</height>
                       </rect>
                      </property>
