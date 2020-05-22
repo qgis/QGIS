@@ -33,6 +33,7 @@ QgsDataSourceUri::QgsDataSourceUri()
 }
 
 QgsDataSourceUri::QgsDataSourceUri( const QString &u )
+  : mRawUri( u )
 {
   QString uri = u;
   int i = 0;
@@ -529,6 +530,17 @@ QString QgsDataSourceUri::connectionInfo( bool expandAuthConfig ) const
     else
     {
       connectionItems << "authcfg=" + mAuthConfigId;
+    }
+  }
+
+  // Is this an OGR file-based DB?
+  if ( connectionItems.isEmpty() )
+  {
+    // Handles OGR geopackages, gets the raw uri and remove what is after the '|'
+    const QStringList parts{ mRawUri.split( '|' ) };
+    if ( ! parts.isEmpty() )
+    {
+      connectionItems.push_back( parts.at( 0 ) );
     }
   }
 

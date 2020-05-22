@@ -66,6 +66,7 @@ class CORE_EXPORT QgsDataSourceUri
 
     /**
      * Returns the connection part of the URI.
+     * This may be a file path in case of a filesystem-based DB (spatialite or GPKG).
      */
     QString connectionInfo( bool expandAuthConfig = true ) const;
 
@@ -307,6 +308,9 @@ class CORE_EXPORT QgsDataSourceUri
     QString escape( const QString &uri, QChar delim ) const;
 
     /* data */
+
+    //! The original unmodified/unparsed uri string
+    QString mRawUri;
 
     //! host name
     QString mHost;
