@@ -37,6 +37,7 @@ def processCommand(alg, parameters, context, feedback):
 
     # Re-add signature files
     parameters['signaturefile'] = signatureFile
+    alg.fileOutputs['signaturefile'] = signatureFile
 
     # Export signature file
     exportSigFile(alg, group, subgroup, signatureFile)
