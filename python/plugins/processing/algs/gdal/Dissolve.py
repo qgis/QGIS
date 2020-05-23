@@ -33,7 +33,6 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 
 class Dissolve(GdalAlgorithm):
-
     INPUT = 'INPUT'
     FIELD = 'FIELD'
     GEOMETRY = 'GEOMETRY'

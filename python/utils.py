@@ -448,7 +448,7 @@ def _unloadPluginModules(packageName):
     mods = _plugin_modules[packageName]
 
     for mod in mods:
-        if not mod in sys.modules:
+        if mod not in sys.modules:
             continue
 
         # if it looks like a Qt resource file, try to do a cleanup

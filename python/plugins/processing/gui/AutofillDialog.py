@@ -36,7 +36,6 @@ with warnings.catch_warnings():
 
 
 class AutofillDialog(BASE, WIDGET):
-
     DO_NOT_AUTOFILL = 0
     FILL_WITH_NUMBERS = 1
     FILL_WITH_PARAMETER = 2

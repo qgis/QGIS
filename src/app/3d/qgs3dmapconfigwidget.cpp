@@ -53,8 +53,8 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   cboTerrainLayer->setAllowEmptyLayer( true );
   cboTerrainLayer->setFilters( QgsMapLayerProxyModel::RasterLayer );
 
-  cboTerrainType->addItem( tr( "Flat terrain" ), QgsTerrainGenerator::Flat );
-  cboTerrainType->addItem( tr( "DEM (Raster layer)" ), QgsTerrainGenerator::Dem );
+  cboTerrainType->addItem( tr( "Flat Terrain" ), QgsTerrainGenerator::Flat );
+  cboTerrainType->addItem( tr( "DEM (Raster Layer)" ), QgsTerrainGenerator::Dem );
   cboTerrainType->addItem( tr( "Online" ), QgsTerrainGenerator::Online );
   cboTerrainType->addItem( tr( "Mesh" ), QgsTerrainGenerator::Mesh );
 

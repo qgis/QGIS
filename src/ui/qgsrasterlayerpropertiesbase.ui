@@ -301,9 +301,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-188</y>
+                <y>0</y>
                 <width>629</width>
-                <height>914</height>
+                <height>814</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -377,13 +377,6 @@ border-radius: 2px;</string>
                   <bool>true</bool>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_15">
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_16">
-                    <property name="text">
-                     <string>Time slice mode</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="6" column="0" colspan="3">
                    <widget class="QLabel" name="label_10">
                     <property name="text">
@@ -446,18 +439,11 @@ border-radius: 2px;</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="3" column="1" colspan="2">
-                      <widget class="QCheckBox" name="mDisableTime">
-                       <property name="text">
-                        <string>Use dates only</string>
-                       </property>
-                      </widget>
-                     </item>
                      <item row="0" column="1" colspan="2">
                       <widget class="QgsDateTimeEdit" name="mStartStaticDateTimeEdit">
                        <property name="dateTime">
                         <datetime>
-                         <hour>2</hour>
+                         <hour>0</hour>
                          <minute>3</minute>
                          <second>57</second>
                          <year>2020</year>
@@ -482,7 +468,14 @@ border-radius: 2px;</string>
                     </layout>
                    </widget>
                   </item>
-                  <item row="9" column="0">
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_16">
+                    <property name="text">
+                     <string>Time slice mode</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="10" column="0">
                    <widget class="QFrame" name="mWmstReferenceTimeFrame">
                     <property name="enabled">
                      <bool>false</bool>
@@ -501,7 +494,7 @@ border-radius: 2px;</string>
                       <widget class="QgsDateTimeEdit" name="mReferenceDateTimeEdit">
                        <property name="dateTime">
                         <datetime>
-                         <hour>16</hour>
+                         <hour>15</hour>
                          <minute>20</minute>
                          <second>36</second>
                          <year>2020</year>
@@ -570,10 +563,17 @@ border-radius: 2px;</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="8" column="0" colspan="3">
+                  <item row="9" column="0" colspan="3">
                    <widget class="QCheckBox" name="mReferenceTime">
                     <property name="text">
                      <string>Reference time</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="8" column="0">
+                   <widget class="QCheckBox" name="mDisableTime">
+                    <property name="text">
+                     <string>Use dates only</string>
                     </property>
                    </widget>
                   </item>
@@ -688,8 +688,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>470</width>
-                <height>514</height>
+                <width>494</width>
+                <height>484</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1288,8 +1288,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>332</width>
-                <height>477</height>
+                <width>330</width>
+                <height>446</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1641,8 +1641,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>98</width>
-                <height>45</height>
+                <width>86</width>
+                <height>42</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1859,8 +1859,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>531</width>
-                <height>205</height>
+                <width>535</width>
+                <height>193</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1929,8 +1929,8 @@ border-radius: 2px;</string>
                        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Cantarell'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Cantarell';&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Cantarell'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
@@ -2089,8 +2089,8 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>325</width>
-                <height>667</height>
+                <width>306</width>
+                <height>616</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_12">
@@ -2678,8 +2678,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>mBackgroundLayerCheckBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

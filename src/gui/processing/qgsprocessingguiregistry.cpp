@@ -18,6 +18,7 @@
 #include "qgsprocessingguiregistry.h"
 #include "qgsprocessingalgorithmconfigurationwidget.h"
 #include "qgsprocessingconfigurationwidgets.h"
+#include "qgsprocessingvectortilewriterlayerswidgetwrapper.h"
 #include "qgsprocessingwidgetwrapperimpl.h"
 #include "qgsprocessingparameters.h"
 #include "qgis.h"
@@ -59,6 +60,7 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingMeshLayerWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingBandWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingMultipleLayerWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingVectorTileWriterLayersWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingFeatureSinkWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingVectorDestinationWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingRasterDestinationWidgetWrapper() );

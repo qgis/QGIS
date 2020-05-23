@@ -106,11 +106,20 @@ class CORE_EXPORT QgsTileMatrix
     //! Returns a tile matrix for the usual web mercator
     static QgsTileMatrix fromWebMercator( int mZoomLevel );
 
+    //! Returns zoom level of the tile matrix
+    int zoomLevel() const { return mZoomLevel; }
+
     //! Returns number of columns of the tile matrix
     int matrixWidth() const { return mMatrixWidth; }
 
     //! Returns number of rows of the tile matrix
     int matrixHeight() const { return mMatrixHeight; }
+
+    //! Returns extent of the tile matrix
+    QgsRectangle extent() const { return mExtent; }
+
+    //! Returns scale denominator of the tile matrix
+    double scale() const { return mScaleDenom; }
 
     //! Returns extent of the given tile in this matrix
     QgsRectangle tileExtent( QgsTileXYZ id ) const;

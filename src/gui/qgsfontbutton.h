@@ -17,7 +17,7 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgstextrenderer.h"
+#include "qgstextformat.h"
 
 #include <QToolButton>
 

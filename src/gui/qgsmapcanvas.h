@@ -27,6 +27,7 @@
 #include "qgsgeometry.h"
 #include "qgscustomdrophandler.h"
 #include "qgstemporalrangeobject.h"
+#include "qgsmapcanvasinteractionblocker.h"
 
 #include <QDomDocument>
 #include <QGraphicsView>
@@ -69,6 +70,7 @@ class QgsMapCanvasAnnotationItem;
 class QgsReferencedRectangle;
 
 class QgsTemporalController;
+
 
 /**
  * \ingroup gui
@@ -126,7 +128,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     const QgsMapSettings &mapSettings() const SIP_KEEPREFERENCE;
 
     /**
-     * Sets the temporal controller, this controller will be used to
+     * Sets the temporal controller, tQgsMapCanvasInteractionBlockerhis controller will be used to
      * update the canvas temporal range.
      *
      * \since QGIS 3.14
@@ -723,6 +725,35 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     */
     const QgsDateTimeRange &temporalRange() const;
 
+    /**
+     * Installs an interaction \a blocker onto the canvas, which may prevent certain map canvas
+     * interactions from occurring.
+     *
+     * The caller retains ownership of \a blocker, and must correctly call removeInteractionBlocker()
+     * before deleting the object.
+     *
+     * \see allowInteraction()
+     * \see removeInteractionBlocker()
+     * \since QGIS 3.14
+     */
+    void installInteractionBlocker( QgsMapCanvasInteractionBlocker *blocker );
+
+    /**
+     * Removes an interaction \a blocker from the canvas.
+     *
+     * \see allowInteraction()
+     * \see installInteractionBlocker()
+     * \since QGIS 3.14
+     */
+    void removeInteractionBlocker( QgsMapCanvasInteractionBlocker *blocker );
+
+    /**
+     * Returns TRUE if the specified \a interaction is currently permitted on the canvas.
+     *
+     * \since QGIS 3.14
+     */
+    bool allowInteraction( QgsMapCanvasInteractionBlocker::Interaction interaction ) const;
+
   public slots:
 
     //! Repaints the canvas map
@@ -1057,6 +1088,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Flag that allows squashing multiple refresh() calls into just one delayed rendering job
     bool mRefreshScheduled = false;
 
+    //! Flag that triggers a refresh after an ongoing rendering job triggered by autoRefresh
+    bool mRefreshAfterJob = false;
+
     //! determines whether user has requested to suppress rendering
     bool mRenderFlag = true;
 
@@ -1147,6 +1181,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsDistanceArea mDa;
     QList<double> mZoomResolutions;
 
+    QList< QgsMapCanvasInteractionBlocker * > mInteractionBlockers;
+
     /**
      * Returns the last cursor position on the canvas in geographical coordinates
      * \since QGIS 3.4
@@ -1196,6 +1232,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     int nextZoomLevel( const QList<double> &resolutions, bool zoomIn = true ) const;
     double zoomInFactor() const;
     double zoomOutFactor() const;
+
+    /**
+     * Make sure to remove any rendered images of temporal-enabled layers from cache (does nothing if cache is not enabled)
+     * \since QGIS 3.14
+     */
+    void clearTemporalCache();
 
     friend class TestQgsMapCanvas;
 

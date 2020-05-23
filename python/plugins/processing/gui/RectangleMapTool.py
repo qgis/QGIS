@@ -28,7 +28,6 @@ from qgis.gui import QgsMapTool, QgsMapToolEmitPoint, QgsRubberBand
 
 
 class RectangleMapTool(QgsMapToolEmitPoint):
-
     rectangleCreated = pyqtSignal()
     deactivated = pyqtSignal()
 

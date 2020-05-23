@@ -19,6 +19,7 @@
 #include "qgsfontutils.h"
 #include "qgssettings.h"
 #include "qgis.h"
+#include "qgsreadwritecontext.h"
 
 #include <QFont>
 #include <QMap>
@@ -39,7 +40,7 @@ void QgsLegendStyle::setMargin( double margin )
   mMarginMap[Right] = margin;
 }
 
-void QgsLegendStyle::writeXml( const QString &name, QDomElement &elem, QDomDocument &doc ) const
+void QgsLegendStyle::writeXml( const QString &name, QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext & ) const
 {
   if ( elem.isNull() )
     return;
@@ -63,7 +64,7 @@ void QgsLegendStyle::writeXml( const QString &name, QDomElement &elem, QDomDocum
   elem.appendChild( styleElem );
 }
 
-void QgsLegendStyle::readXml( const QDomElement &elem, const QDomDocument &doc )
+void QgsLegendStyle::readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext & )
 {
   Q_UNUSED( doc )
   if ( elem.isNull() ) return;

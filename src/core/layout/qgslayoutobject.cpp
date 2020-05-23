@@ -91,6 +91,8 @@ void QgsLayoutObject::initPropertyDefinitions()
     { QgsLayoutObject::ScalebarLineWidth, QgsPropertyDefinition( "dataDefinedScalebarLineWidth", QObject::tr( "Line width" ), QgsPropertyDefinition::StrokeWidth ) },
     { QgsLayoutObject::AttributeTableSourceLayer, QgsPropertyDefinition( "dataDefinedAttributeTableSourceLayer", QObject::tr( "Table source layer" ), QgsPropertyDefinition::String ) },
     { QgsLayoutObject::MapCrs, QgsPropertyDefinition( "dataDefinedCrs", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map CRS" ), QObject::tr( "string representing a CRS, either an authority/id pair (e.g. \"EPSG:4326\"), a proj string prefixes by \"PROJ:\" (e.g. \"PROJ: +proj=...\") or a WKT string prefixed by \"WKT:\" (e.g. \"WKT:GEOGCS[\"WGS 84\"...)" ) ) },
+    { QgsLayoutObject::StartDateTime, QgsPropertyDefinition( "dataDefinedStartDateTime", QObject::tr( "Temporal range start date / time" ), QgsPropertyDefinition::DateTime ) },
+    { QgsLayoutObject::EndDateTime, QgsPropertyDefinition( "dataDefinedEndDateTime", QObject::tr( "Temporal range end date / time" ), QgsPropertyDefinition::DateTime ) },
   };
 }
 

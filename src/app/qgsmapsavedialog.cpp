@@ -48,10 +48,11 @@
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
-QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QList<QgsDecorationItem *> &decorations, const QList< QgsAnnotation *> &annotations, DialogType type )
+QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QList<QgsMapDecoration *> &decorations, const QList< QgsAnnotation *> &annotations, DialogType type )
   : QDialog( parent )
   , mDialogType( type )
   , mMapCanvas( mapCanvas )
+  , mDecorations( decorations )
   , mAnnotations( annotations )
 {
   setupUi( this );
@@ -75,14 +76,13 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   mScaleWidget->setShowCurrentScaleButton( true );
 
   QString activeDecorations;
-  const auto constDecorations = decorations;
-  for ( QgsDecorationItem *decoration : constDecorations )
+  const auto constDecorations = mDecorations;
+  for ( QgsMapDecoration *decoration : constDecorations )
   {
-    mDecorations << decoration;
     if ( activeDecorations.isEmpty() )
-      activeDecorations = decoration->name().toLower();
+      activeDecorations = decoration->displayName().toLower();
     else
-      activeDecorations += QStringLiteral( ", %1" ).arg( decoration->name().toLower() );
+      activeDecorations += QStringLiteral( ", %1" ).arg( decoration->displayName().toLower() );
   }
   mDrawDecorations->setText( tr( "Draw active decorations: %1" ).arg( !activeDecorations.isEmpty() ? activeDecorations : tr( "none" ) ) );
 
@@ -347,6 +347,9 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
   mapSettings.setLabelingEngineSettings( mMapCanvas->mapSettings().labelingEngineSettings() );
   mapSettings.setTransformContext( QgsProject::instance()->transformContext() );
   mapSettings.setPathResolver( QgsProject::instance()->pathResolver() );
+  mapSettings.setTemporalRange( mMapCanvas->mapSettings().temporalRange() );
+  mapSettings.setIsTemporal( mMapCanvas->mapSettings().isTemporal() );
+
 
   //build the expression context
   QgsExpressionContext expressionContext;

@@ -404,11 +404,8 @@ to be drawn outside the data extent.
 .. versionadded:: 3.10
 %End
 
-    virtual QgsRasterLayerTemporalProperties *temporalProperties();
+    virtual QgsMapLayerTemporalProperties *temporalProperties();
 
-%Docstring
-Returns temporal properties associated with the raster layer.
-%End
 
   public slots:
     void showStatusMessage( const QString &message );

@@ -67,6 +67,10 @@ class QgsExpressionPrivate
 
     QString mExp;
 
+    QString mDaEllipsoid;
+    QgsCoordinateReferenceSystem mDaCrs;
+    QgsCoordinateTransformContext mDaTransformContext;
+
     std::shared_ptr<QgsDistanceArea> mCalc;
     QgsUnitTypes::DistanceUnit mDistanceUnit = QgsUnitTypes::DistanceUnknownUnit;
     QgsUnitTypes::AreaUnit mAreaUnit = QgsUnitTypes::AreaUnknownUnit;

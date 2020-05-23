@@ -70,6 +70,12 @@ static bool tableExists( QgsPostgresConn &conn, const QString &name )
   return res.PQgetvalue( 0, 0 ).startsWith( 't' );
 }
 
+static bool columnExists( QgsPostgresConn &conn, const QString &table, const QString &column )
+{
+  QgsPostgresResult res( conn.PQexec( "SELECT COUNT(*) FROM information_schema.columns WHERE table_name=" + QgsPostgresConn::quotedValue( table ) + " and column_name=" + QgsPostgresConn::quotedValue( column ) ) );
+  return res.PQgetvalue( 0, 0 ).toInt() > 0;
+}
+
 QgsPostgresPrimaryKeyType
 QgsPostgresProvider::pkType( const QgsField &f ) const
 {
@@ -2070,7 +2076,9 @@ QVariant QgsPostgresProvider::defaultValue( int fieldId ) const
     QgsPostgresResult res( connectionRO()->PQexec( QStringLiteral( "SELECT %1" ).arg( defVal ) ) );
 
     if ( res.result() )
+    {
       return convertValue( fld.type(), fld.subType(), res.PQgetvalue( 0, 0 ), fld.typeName() );
+    }
     else
     {
       pushError( tr( "Could not execute query" ) );
@@ -4875,26 +4883,43 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
     return false;
   }
 
-  QgsPostgresResult res( conn->PQexec( "CREATE TABLE IF NOT EXISTS layer_styles("
-                                       "id SERIAL PRIMARY KEY"
-                                       ",f_table_catalog varchar"
-                                       ",f_table_schema varchar"
-                                       ",f_table_name varchar"
-                                       ",f_geometry_column varchar"
-                                       ",styleName text"
-                                       ",styleQML xml"
-                                       ",styleSLD xml"
-                                       ",useAsDefault boolean"
-                                       ",description text"
-                                       ",owner varchar(63) DEFAULT CURRENT_USER"
-                                       ",ui xml"
-                                       ",update_time timestamp DEFAULT CURRENT_TIMESTAMP"
-                                       ")" ) );
-  if ( res.PQresultStatus() != PGRES_COMMAND_OK )
+  if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
   {
-    errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
-    conn->unref();
-    return false;
+    QgsPostgresResult res( conn->PQexec( "CREATE TABLE layer_styles("
+                                         "id SERIAL PRIMARY KEY"
+                                         ",f_table_catalog varchar"
+                                         ",f_table_schema varchar"
+                                         ",f_table_name varchar"
+                                         ",f_geometry_column varchar"
+                                         ",styleName text"
+                                         ",styleQML xml"
+                                         ",styleSLD xml"
+                                         ",useAsDefault boolean"
+                                         ",description text"
+                                         ",owner varchar(63) DEFAULT CURRENT_USER"
+                                         ",ui xml"
+                                         ",update_time timestamp DEFAULT CURRENT_TIMESTAMP"
+                                         ",type varchar"
+                                         ")" ) );
+    if ( res.PQresultStatus() != PGRES_COMMAND_OK )
+    {
+      errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
+      conn->unref();
+      return false;
+    }
+  }
+  else
+  {
+    if ( !columnExists( *conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
+    {
+      QgsPostgresResult res( conn->PQexec( "ALTER TABLE layer_styles ADD COLUMN type varchar NULL" ) );
+      if ( res.PQresultStatus() != PGRES_COMMAND_OK )
+      {
+        errCause = QObject::tr( "Unable to add column type to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
+        conn->unref();
+        return false;
+      }
+    }
   }
 
   if ( dsUri.database().isEmpty() ) // typically when a service file is used
@@ -4910,15 +4935,17 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
     uiFileValue = QStringLiteral( ",XMLPARSE(DOCUMENT %1)" ).arg( QgsPostgresConn::quotedValue( uiFileContent ) );
   }
 
+  const QString wkbTypeString = QgsPostgresConn::quotedValue( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( dsUri.wkbType() ) ) );
+
   // Note: in the construction of the INSERT and UPDATE strings the qmlStyle and sldStyle values
   // can contain user entered strings, which may themselves include %## values that would be
   // replaced by the QString.arg function.  To ensure that the final SQL string is not corrupt these
   // two values are both replaced in the final .arg call of the string construction.
 
   QString sql = QString( "INSERT INTO layer_styles("
-                         "f_table_catalog,f_table_schema,f_table_name,f_geometry_column,styleName,styleQML,styleSLD,useAsDefault,description,owner%11"
+                         "f_table_catalog,f_table_schema,f_table_name,f_geometry_column,styleName,styleQML,styleSLD,useAsDefault,description,owner,type%12"
                          ") VALUES ("
-                         "%1,%2,%3,%4,%5,XMLPARSE(DOCUMENT %16),XMLPARSE(DOCUMENT %17),%8,%9,%10%12"
+                         "%1,%2,%3,%4,%5,XMLPARSE(DOCUMENT %16),XMLPARSE(DOCUMENT %17),%8,%9,%10,%11%13"
                          ")" )
                 .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                 .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
@@ -4930,6 +4957,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
                 .arg( "CURRENT_USER" )
                 .arg( uiFileColumn )
                 .arg( uiFileValue )
+                .arg( wkbTypeString )
                 // Must be the final .arg replacement - see above
                 .arg( QgsPostgresConn::quotedValue( qmlStyle ),
                       QgsPostgresConn::quotedValue( sldStyle ) );
@@ -4940,14 +4968,16 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
                                 " AND f_table_schema=%2"
                                 " AND f_table_name=%3"
                                 " AND f_geometry_column=%4"
-                                " AND styleName=%5" )
+                                " AND type=%5"
+                                " AND styleName=%6" )
                        .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                        .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                        .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
                        .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
+                       .arg( wkbTypeString )
                        .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) );
 
-  res = conn->PQexec( checkQuery );
+  QgsPostgresResult res( conn->PQexec( checkQuery ) );
   if ( res.PQntuples() > 0 )
   {
     if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
@@ -4970,8 +5000,10 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
                    " AND f_table_schema=%7"
                    " AND f_table_name=%8"
                    " AND f_geometry_column=%9"
-                   " AND styleName=%10" )
+                   " AND styleName=%10"
+                   " AND type=%2" )
           .arg( useAsDefault ? "true" : "false" )
+          .arg( wkbTypeString )
           .arg( QgsPostgresConn::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
           .arg( "CURRENT_USER" )
           .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
@@ -4991,11 +5023,14 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
                                         " WHERE f_table_catalog=%1"
                                         " AND f_table_schema=%2"
                                         " AND f_table_name=%3"
-                                        " AND f_geometry_column=%4" )
+                                        " AND f_geometry_column=%4"
+                                        " AND type=%5" )
                                .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                                .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                                .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
-                               .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
+                               .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
+                               .arg( wkbTypeString );
+
     sql = QStringLiteral( "BEGIN; %1; %2; COMMIT;" ).arg( removeDefaultSql, sql );
   }
 
@@ -5043,18 +5078,22 @@ QString QgsPostgresProviderMetadata::loadStyle( const QString &uri, QString &err
     geomColumnExpr = QStringLiteral( "=" ) + QgsPostgresConn::quotedValue( dsUri.geometryColumn() );
   }
 
+  QString wkbTypeString = QgsPostgresConn::quotedValue( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( dsUri.wkbType() ) ) );
+
   QString selectQmlQuery = QString( "SELECT styleQML"
                                     " FROM layer_styles"
                                     " WHERE f_table_catalog=%1"
                                     " AND f_table_schema=%2"
                                     " AND f_table_name=%3"
                                     " AND f_geometry_column %4"
+                                    " AND type=%5"
                                     " ORDER BY CASE WHEN useAsDefault THEN 1 ELSE 2 END"
                                     ",update_time DESC LIMIT 1" )
                            .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                            .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                            .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
-                           .arg( geomColumnExpr );
+                           .arg( geomColumnExpr )
+                           .arg( wkbTypeString );
 
   QgsPostgresResult result( conn->PQexec( selectQmlQuery ) );
 
@@ -5081,17 +5120,21 @@ int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &id
     dsUri.setDatabase( conn->currentDatabase() );
   }
 
+  QString wkbTypeString = QgsPostgresConn::quotedValue( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( dsUri.wkbType() ) ) );
+
   QString selectRelatedQuery = QString( "SELECT id,styleName,description"
                                         " FROM layer_styles"
                                         " WHERE f_table_catalog=%1"
                                         " AND f_table_schema=%2"
                                         " AND f_table_name=%3"
                                         " AND f_geometry_column=%4"
+                                        " AND type=%5"
                                         " ORDER BY useasdefault DESC, update_time DESC" )
                                .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                                .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                                .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
-                               .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
+                               .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
+                               .arg( wkbTypeString );
 
   QgsPostgresResult result( conn->PQexec( selectRelatedQuery ) );
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
@@ -5112,12 +5155,13 @@ int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &id
 
   QString selectOthersQuery = QString( "SELECT id,styleName,description"
                                        " FROM layer_styles"
-                                       " WHERE NOT (f_table_catalog=%1 AND f_table_schema=%2 AND f_table_name=%3 AND f_geometry_column=%4)"
+                                       " WHERE NOT (f_table_catalog=%1 AND f_table_schema=%2 AND f_table_name=%3 AND f_geometry_column=%4 AND type=%5)"
                                        " ORDER BY update_time DESC" )
                               .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                               .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                               .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
-                              .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
+                              .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
+                              .arg( wkbTypeString );
 
   result = conn->PQexec( selectOthersQuery );
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
@@ -5408,7 +5452,8 @@ QVariantMap QgsPostgresProviderMetadata::decodeUri( const QString &uri )
   if ( dsUri.wkbType() != QgsWkbTypes::Type::Unknown )
     uriParts[ QStringLiteral( "type" ) ] = dsUri.wkbType();
 
-  uriParts[ QStringLiteral( "selectatid" ) ] = dsUri.selectAtIdDisabled();
+  if ( uri.contains( QStringLiteral( "selectatid=" ), Qt::CaseSensitivity::CaseInsensitive ) )
+    uriParts[ QStringLiteral( "selectatid" ) ] = ! dsUri.selectAtIdDisabled();
 
   if ( ! dsUri.table().isEmpty() )
     uriParts[ QStringLiteral( "table" ) ] = dsUri.table();
@@ -5419,8 +5464,11 @@ QVariantMap QgsPostgresProviderMetadata::decodeUri( const QString &uri )
   if ( ! dsUri.srid().isEmpty() )
     uriParts[ QStringLiteral( "srid" ) ] = dsUri.srid();
 
-  uriParts[ QStringLiteral( "estimatedmetadata" ) ] = dsUri.useEstimatedMetadata();
-  uriParts[ QStringLiteral( "sslmode" ) ] = dsUri.sslMode();
+  if ( uri.contains( QStringLiteral( "estimatedmetadata=" ), Qt::CaseSensitivity::CaseInsensitive ) )
+    uriParts[ QStringLiteral( "estimatedmetadata" ) ] = dsUri.useEstimatedMetadata();
+
+  if ( uri.contains( QStringLiteral( "sslmode=" ), Qt::CaseSensitivity::CaseInsensitive ) )
+    uriParts[ QStringLiteral( "sslmode" ) ] = dsUri.sslMode();
 
   if ( ! dsUri.sql().isEmpty() )
     uriParts[ QStringLiteral( "sql" ) ] = dsUri.sql();
@@ -5470,5 +5518,5 @@ QString QgsPostgresProviderMetadata::encodeUri( const QVariantMap &parts )
     dsUri.setParam( QStringLiteral( "checkPrimaryKeyUnicity" ), parts.value( QStringLiteral( "checkPrimaryKeyUnicity" ) ).toString() );
   if ( parts.contains( QStringLiteral( "geometrycolumn" ) ) )
     dsUri.setGeometryColumn( parts.value( QStringLiteral( "geometrycolumn" ) ).toString() );
-  return dsUri.uri();
+  return dsUri.uri( false );
 }

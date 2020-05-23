@@ -242,7 +242,7 @@ Project the point on a segment
 
     static int leftOfLine( const double x, const double y, const double x1, const double y1, const double x2, const double y2 );
 %Docstring
-Returns a value < 0 if the point (``x``, ``y``) is left of the line from (``x1``, ``y1``) -> ( ``x2``, ``y2``).
+Returns a value < 0 if the point (``x``, ``y``) is left of the line from (``x1``, ``y1``) -> (``x2``, ``y2``).
 A positive return value indicates the point is to the right of the line.
 
 If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
@@ -352,6 +352,26 @@ Calculates the direction angle of a circle tangent (clockwise from north in radi
 Convert circular arc defined by p1, p2, p3 (p1/p3 being start resp. end point, p2 lies on the arc) into a sequence of points.
 
 .. versionadded:: 3.0
+%End
+
+    static bool pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2, const QgsPoint &a3, const QgsPoint &b, double distanceTolerance,
+                                   double pointSpacingAngleTolerance );
+%Docstring
+Returns true if point ``b`` is on the arc formed by points ``a1``, ``a2``, and ``a3``, but not within
+that arc portion already described by ``a1``, ``a2`` and ``a3``.
+
+The ``distanceTolerance`` specifies the maximum deviation allowed between the original location
+of point \b and where it would fall on the candidate arc.
+
+This method only consider a segments as continuing an arc if the points are all regularly spaced
+on the candidate arc. The ``pointSpacingAngleTolerance`` parameter specifies the maximum
+angular deviation (in radians) allowed when testing for regular point spacing.
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.14
 %End
 
     static int segmentSide( const QgsPoint &pt1, const QgsPoint &pt3, const QgsPoint &pt2 );

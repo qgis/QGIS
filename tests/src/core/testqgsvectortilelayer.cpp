@@ -55,6 +55,7 @@ class TestQgsVectorTileLayer : public QObject
     void test_basic();
     void test_render();
     void test_labeling();
+    void test_relativePaths();
 };
 
 
@@ -179,6 +180,41 @@ void TestQgsVectorTileLayer::test_labeling()
   mLayer->setRenderer( oldRenderer );
 
   QVERIFY( res );
+}
+
+void TestQgsVectorTileLayer::test_relativePaths()
+{
+  QgsReadWriteContext contextRel;
+  contextRel.setPathResolver( QgsPathResolver( "/home/qgis/project.qgs" ) );
+  QgsReadWriteContext contextAbs;
+
+  QString srcXyzLocal = "type=xyz&url=file:///home/qgis/%7Bz%7D/%7Bx%7D/%7By%7D.pbf";
+  QString srcXyzRemote = "type=xyz&url=http://www.example.com/%7Bz%7D/%7Bx%7D/%7By%7D.pbf";
+  QString srcMbtiles = "type=mbtiles&url=/home/qgis/test/map.mbtiles";
+
+  QgsVectorTileLayer layer;
+
+  // encode source: converting absolute paths to relative
+  QString srcXyzLocalRel = layer.encodedSource( srcXyzLocal, contextRel );
+  QCOMPARE( srcXyzLocalRel, QStringLiteral( "type=xyz&url=file:./%7Bz%7D/%7Bx%7D/%7By%7D.pbf" ) );
+  QString srcMbtilesRel = layer.encodedSource( srcMbtiles, contextRel );
+  QCOMPARE( srcMbtilesRel, QStringLiteral( "type=mbtiles&url=./test/map.mbtiles" ) );
+  QCOMPARE( layer.encodedSource( srcXyzRemote, contextRel ), srcXyzRemote );
+
+  // encode source: keeping absolute paths
+  QCOMPARE( layer.encodedSource( srcXyzLocal, contextAbs ), srcXyzLocal );
+  QCOMPARE( layer.encodedSource( srcXyzRemote, contextAbs ), srcXyzRemote );
+  QCOMPARE( layer.encodedSource( srcMbtiles, contextAbs ), srcMbtiles );
+
+  // decode source: converting relative paths to absolute
+  QCOMPARE( layer.decodedSource( srcXyzLocalRel, QString(), contextRel ), srcXyzLocal );
+  QCOMPARE( layer.decodedSource( srcMbtilesRel, QString(), contextRel ), srcMbtiles );
+  QCOMPARE( layer.decodedSource( srcXyzRemote, QString(), contextRel ), srcXyzRemote );
+
+  // decode source: keeping absolute paths
+  QCOMPARE( layer.decodedSource( srcXyzLocal, QString(), contextAbs ), srcXyzLocal );
+  QCOMPARE( layer.decodedSource( srcXyzRemote, QString(), contextAbs ), srcXyzRemote );
+  QCOMPARE( layer.decodedSource( srcMbtiles, QString(), contextAbs ), srcMbtiles );
 }
 
 

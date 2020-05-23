@@ -41,13 +41,23 @@ class CORE_EXPORT QgsRuntimeProfiler
      * \brief Begin the group for the profiler. Groups will append {GroupName}/ to the
      * front of the profile tag set using start.
      * \param name The name of the group.
+     *
+     * \deprecated use start() instead
      */
-    void beginGroup( const QString &name );
+    Q_DECL_DEPRECATED void beginGroup( const QString &name ) SIP_DEPRECATED;
 
     /**
      * \brief End the current active group.
+     *
+     * \deprecated use end() instead
      */
-    void endGroup();
+    Q_DECL_DEPRECATED void endGroup() SIP_DEPRECATED;
+
+    /**
+     * Returns a list of all child groups with the specified \a parent.
+     * \since QGIS 3.14
+     */
+    QStringList childGroups( const QString &parent = QString() ) const;
 
     /**
      * \brief Start a profile event with the given name.
@@ -62,11 +72,10 @@ class CORE_EXPORT QgsRuntimeProfiler
     void end();
 
     /**
-     * Returns all the current profile times.
-     * \returns A list of profile event names and times.
-     * \note not available in Python bindings
+     * Returns the profile time for the specified \a name.
+     * \since QGIS 3.14
      */
-    const QList<QPair<QString, double > > profileTimes() const { return mProfileTimes; } SIP_SKIP
+    double profileTime( const QString &name ) const;
 
     /**
      * \brief clear Clear all profile data.
@@ -80,11 +89,47 @@ class CORE_EXPORT QgsRuntimeProfiler
     double totalTime();
 
   private:
-    QString mGroupPrefix;
-    QStack<QString> mGroupStack;
-    QElapsedTimer mProfileTime;
-    QString mCurrentName;
-    QList<QPair<QString, double > > mProfileTimes;
+
+    QStack< QElapsedTimer > mProfileTime;
+    QStack< QString > mCurrentName;
+    QList< QPair< QString, double > > mProfileTimes;
 };
+
+
+/**
+ * \ingroup core
+ *
+ * Scoped object for logging of the runtime for a single operation or group of operations.
+ *
+ * This class automatically takes care of registering an operation in the QgsApplication::profiler()
+ * registry upon construction, and recording of the elapsed runtime upon destruction.
+ *
+ * Python scripts should not use QgsScopedRuntimeProfile directly. Instead, use QgsRuntimeProfiler.profile()
+ * \code{.py}
+ *   with QgsRuntimeProfiler.profile('My operation'):
+ *     # do something
+ * \endcode
+ *
+ * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsScopedRuntimeProfile
+{
+  public:
+
+    /**
+     * Constructor for QgsScopedRuntimeProfile.
+     *
+     * Automatically registers the operation in the QgsApplication::profiler() instance
+     * and starts recording the run time of the operation.
+     */
+    QgsScopedRuntimeProfile( const QString &name );
+
+    /**
+     * Records the final runtime of the operation in the profiler instance.
+     */
+    ~QgsScopedRuntimeProfile();
+
+};
+
 
 #endif // QGSRUNTIMEPROFILER_H

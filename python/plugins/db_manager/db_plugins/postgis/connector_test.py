@@ -35,7 +35,7 @@ from db_manager.db_plugins.postgis.connector import PostGisDBConnector
 
 class TestDBManagerPostgisConnector(unittest.TestCase):
 
-    #def setUpClass():
+    # def setUpClass():
 
     def _getUser(self, connector):
         r = connector._execute(None, "SELECT USER")
@@ -52,8 +52,7 @@ class TestDBManagerPostgisConnector(unittest.TestCase):
     # See https://github.com/qgis/QGIS/issues/24525
     # and https://github.com/qgis/QGIS/issues/19005
     def test_dbnameLessURI(self):
-
-        obj = QObject() # needs to be kept alive
+        obj = QObject()  # needs to be kept alive
         obj.connectionName = lambda: 'fake'
         obj.providerName = lambda: 'postgres'
 

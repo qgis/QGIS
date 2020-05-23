@@ -470,6 +470,11 @@ void QgisAppInterface::addDockWidget( Qt::DockWidgetArea area, QDockWidget *dock
   qgis->addDockWidget( area, dockwidget );
 }
 
+void QgisAppInterface::addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget, const QStringList &tabifyWith, bool raiseTab )
+{
+  qgis->addTabifiedDockWidget( area, dockwidget, tabifyWith, raiseTab );
+}
+
 void QgisAppInterface::removeDockWidget( QDockWidget *dockwidget )
 {
   qgis->removeDockWidget( dockwidget );
@@ -606,6 +611,7 @@ QToolBar *QgisAppInterface::digitizeToolBar() { return qgis->digitizeToolBar(); 
 QToolBar *QgisAppInterface::advancedDigitizeToolBar() { return qgis->advancedDigitizeToolBar(); }
 QToolBar *QgisAppInterface::shapeDigitizeToolBar() { return qgis->shapeDigitizeToolBar(); }
 QToolBar *QgisAppInterface::attributesToolBar() { return qgis->attributesToolBar(); }
+QToolBar *QgisAppInterface::selectionToolBar() { return qgis->selectionToolBar(); }
 QToolBar *QgisAppInterface::pluginToolBar() { return qgis->pluginToolBar(); }
 QToolBar *QgisAppInterface::helpToolBar() { return qgis->helpToolBar(); }
 QToolBar *QgisAppInterface::rasterToolBar() { return qgis->rasterToolBar(); }

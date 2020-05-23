@@ -63,7 +63,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         m = TableIndexesModel(self)
         self.viewIndexes.setModel(m)
 
-        #Display comment in line edit
+        # Display comment in line edit
         m = self.table.comment
         self.viewComment.setText(m)
 
@@ -79,9 +79,9 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         self.btnAddSpatialIndex.clicked.connect(self.createSpatialIndex)
         self.btnDeleteIndex.clicked.connect(self.deleteIndex)
 
-        #Connect button add Comment to function
+        # Connect button add Comment to function
         self.btnAddComment.clicked.connect(self.createComment)
-        #Connect button delete Comment to function
+        # Connect button delete Comment to function
         self.btnDeleteComment.clicked.connect(self.deleteComment)
 
         self.refresh()
@@ -346,7 +346,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
             DlgDbError.showError(e, self)
             return
         self.refresh()
-        #Display successful message
+        # Display successful message
         QMessageBox.information(self, self.tr("Add comment"), self.tr("Table successfully commented"))
 
     def deleteComment(self):
@@ -359,7 +359,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
             DlgDbError.showError(e, self)
             return
         self.refresh()
-        #Refresh line edit, put a void comment
+        # Refresh line edit, put a void comment
         self.viewComment.setText('')
-        #Display successful message
+        # Display successful message
         QMessageBox.information(self, self.tr("Delete comment"), self.tr("Comment deleted"))

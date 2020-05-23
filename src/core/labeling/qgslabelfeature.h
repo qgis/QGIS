@@ -318,6 +318,21 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setArrangementFlags( QgsLabeling::LinePlacementFlags flags ) { mArrangementFlags = flags; }
 
+    /**
+     * Returns the polygon placement flags, which dictate how polygon labels can be placed.
+     *
+     * \see setPolygonPlacementFlags()
+     * \since QGIS 3.14
+     */
+    QgsLabeling::PolygonPlacementFlags polygonPlacementFlags() const { return mPolygonPlacementFlags; }
+
+    /**
+     * Sets the polygon placement \a flags, which dictate how polygon labels can be placed.
+     *
+     * \see polygonPlacementFlags()
+     * \since QGIS 3.14
+     */
+    void setPolygonPlacementFlags( QgsLabeling::PolygonPlacementFlags flags ) { mPolygonPlacementFlags = flags; }
 
     /**
      * Text of the label
@@ -509,6 +524,7 @@ class CORE_EXPORT QgsLabelFeature
     double mOverrunSmoothDistance = 0;
 
     QgsLabeling::LinePlacementFlags mArrangementFlags = nullptr;
+    QgsLabeling::PolygonPlacementFlags mPolygonPlacementFlags = QgsLabeling::PolygonPlacementFlag::AllowPlacementInsideOfPolygon;
 
   private:
 

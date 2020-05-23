@@ -181,16 +181,20 @@ QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() co
 
 void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
 {
-  if ( !mMeshLayer )
+  if ( !mMeshLayer && !mMeshLayer->dataProvider() )
     return;
 
   if ( mActiveDatasetGroup < 0 )
     return;
 
+  bool hasFaces = ( mMeshLayer->dataProvider() &&
+                    mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Face ) );
+
   const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
   const QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( mActiveDatasetGroup );
 
-  mSymbologyVectorComboBox->setCurrentIndex( settings.symbology() );
+  mSymbologyGroupBox->setVisible( hasFaces );
+  mSymbologyVectorComboBox->setCurrentIndex( hasFaces ? settings.symbology() : 0 );
 
   // Arrow settings
   const QgsMeshRendererVectorArrowSettings arrowSettings = settings.arrowSettings();
@@ -218,7 +222,8 @@ void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
   mHeadLengthLineEdit->setText( QString::number( arrowSettings.arrowHeadLengthRatio() * 100.0 ) );
 
   // user grid
-  mDisplayVectorsOnGridGroupBox->setChecked( settings.isOnUserDefinedGrid() );
+  mDisplayVectorsOnGridGroupBox->setVisible( hasFaces );
+  mDisplayVectorsOnGridGroupBox->setChecked( settings.isOnUserDefinedGrid() && hasFaces );
   mXSpacingSpinBox->setValue( settings.userGridCellWidth() );
   mYSpacingSpinBox->setValue( settings.userGridCellHeight() );
 

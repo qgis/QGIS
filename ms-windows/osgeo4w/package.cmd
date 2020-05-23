@@ -28,7 +28,7 @@ if "%PACKAGENAME%"=="" goto usage
 if "%ARCH%"=="" goto usage
 if not "%SHA%"=="" set SHA=-%SHA%
 if "%SITE%"=="" set SITE=qgis.org
-if "%BUILDNAME%=="" set BUILDNAME=%PACKAGENAME%-%VERSION%%SHA%-Release-VC14-%ARCH%
+if "%BUILDNAME%"=="" set BUILDNAME=%PACKAGENAME%-%VERSION%%SHA%-Release-VC14-%ARCH%
 
 set BUILDDIR=%CD%\build-%PACKAGENAME%-%ARCH%
 if not exist "%BUILDDIR%" mkdir %BUILDDIR%

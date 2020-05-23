@@ -37,7 +37,7 @@ Item {
 
   QgsQuick.EditorWidgetComboBox {
 
-    property var currentValue: value
+    property var currentEditorValue: value
 
     comboStyle: customStyle.fields
     textRole: 'display'
@@ -58,7 +58,7 @@ Item {
     }
 
     // Called when the same form is used for a different feature
-    onCurrentValueChanged: {
+    onCurrentEditorValueChanged: {
         currentIndex = vrModel.rowForKey(value);
     }
 

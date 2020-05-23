@@ -36,14 +36,14 @@ QgsSimplifyUserInputWidget::QgsSimplifyUserInputWidget( QWidget *parent )
 {
   setupUi( this );
 
-  mMethodComboBox->addItem( tr( "Simplify by distance" ), QgsMapToolSimplify::SimplifyDistance );
-  mMethodComboBox->addItem( tr( "Simplify by snapping to grid" ), QgsMapToolSimplify::SimplifySnapToGrid );
-  mMethodComboBox->addItem( tr( "Simplify by area (Visvalingam)" ), QgsMapToolSimplify::SimplifyVisvalingam );
+  mMethodComboBox->addItem( tr( "Simplify by Distance" ), QgsMapToolSimplify::SimplifyDistance );
+  mMethodComboBox->addItem( tr( "Simplify by Snapping to Grid" ), QgsMapToolSimplify::SimplifySnapToGrid );
+  mMethodComboBox->addItem( tr( "Simplify by Area (Visvalingam)" ), QgsMapToolSimplify::SimplifyVisvalingam );
   mMethodComboBox->addItem( tr( "Smooth" ), QgsMapToolSimplify::Smooth );
 
-  mToleranceUnitsComboBox->addItem( tr( "Layer units" ), QgsTolerance::LayerUnits );
+  mToleranceUnitsComboBox->addItem( tr( "Layer Units" ), QgsTolerance::LayerUnits );
   mToleranceUnitsComboBox->addItem( tr( "Pixels" ), QgsTolerance::Pixels );
-  mToleranceUnitsComboBox->addItem( tr( "Map units" ), QgsTolerance::ProjectUnits );
+  mToleranceUnitsComboBox->addItem( tr( "Map Units" ), QgsTolerance::ProjectUnits );
 
   mToleranceSpinBox->setShowClearButton( false );
 

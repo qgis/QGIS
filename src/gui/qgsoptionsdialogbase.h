@@ -103,6 +103,13 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      */
     bool iconOnly() {return mIconOnly;}
 
+    /**
+     * Sets the dialog \a page (by object name) to show.
+     *
+     * \since QGIS 3.14
+     */
+    void setCurrentPage( const QString &page );
+
   public slots:
 
     /**

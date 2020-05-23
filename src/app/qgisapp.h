@@ -123,6 +123,7 @@ class QgsStatisticalSummaryDockWidget;
 class QgsMapCanvasTracer;
 class QgsTemporalControllerDockWidget;
 
+class QgsMapDecoration;
 class QgsDecorationItem;
 class QgsMessageLogViewer;
 class QgsMessageBar;
@@ -339,6 +340,22 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * parent class, it will also add it to the View menu list of docks.*/
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget );
     void removeDockWidget( QDockWidget *dockwidget );
+
+    /**
+     * Add a dock widget to the given area and tabify it (if other dock widgets
+     * exist in the same \a area). The new tab will be below other tabs unless
+     * \a raiseTab is passed as true.
+     *
+     * \a tabifyWith is a list of dock widget object names, ordered by
+     * priority, with which the new dock widget should be tabified. Only the
+     * first matching object name will be picked. If none of the given object
+     * names is found in that \a area (or if \a tabifyWith is not given at
+     * all), the new dock widget will be created anyways, but its location
+     * within that \a area will be unpredictable.
+     *
+     * \since QGIS 3.14
+     */
+    void addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockWidget, const QStringList &tabifyWith = QStringList(), bool raiseTab = false );
 
     /**
      * Add a toolbar to the main window. Overloaded from QMainWindow.
@@ -626,6 +643,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QToolBar *advancedDigitizeToolBar() { return mAdvancedDigitizeToolBar; }
     QToolBar *shapeDigitizeToolBar() { return mShapeDigitizeToolBar; }
     QToolBar *attributesToolBar() { return mAttributesToolBar; }
+
+    /**
+     * Returns selection toolbar
+     * \since QGIS 3.14
+     */
+    QToolBar *selectionToolBar() { return mSelectionToolBar; }
     QToolBar *pluginToolBar() { return mPluginToolBar; }
     QToolBar *helpToolBar() { return mHelpToolBar; }
     QToolBar *rasterToolBar() { return mRasterToolBar; }
@@ -673,7 +696,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void emitCustomCrsValidation( QgsCoordinateReferenceSystem &crs );
 
+    /**
+     * Returns a list of active map decorations
+     * \since QGIS 3.14
+     */
+    QList<QgsMapDecoration *> activeDecorations();
+
+    //! Returns a list of registered map decoration items
     QList<QgsDecorationItem *> decorationItems() { return mDecorationItems; }
+
+    //! A a map decoration \a item
     void addDecorationItem( QgsDecorationItem *item ) { mDecorationItems.append( item ); }
 
     //! \since QGIS 2.1
@@ -1788,6 +1820,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! handle project crs changes
     void projectCrsChanged();
 
+    //! Updates the temporal range in layers that are using project temporal range.
+    void projectTemporalRangeChanged();
+
     void onActiveLayerChanged( QgsMapLayer *layer );
 
     /**
@@ -1998,7 +2033,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void setupAtlasMapLayerAction( QgsPrintLayout *layout, bool enableAction );
 
-    void setLayoutAtlasFeature( QgsPrintLayout *layout, QgsMapLayer *layer, const QgsFeature &feat );
+    void setLayoutAtlasFeature( QgsPrintLayout *layout, const QgsFeature &feat );
 
     QString saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true, bool onlySelected = false, bool defaultToAddToMap = true );
 
@@ -2146,7 +2181,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
 
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
-
 
     // actions for menus and toolbars -----------------
 
@@ -2495,6 +2529,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsNetworkLogger *mNetworkLogger = nullptr;
     QgsScopedDevToolWidgetFactory mNetworkLoggerWidgetFactory;
+    QgsScopedDevToolWidgetFactory mStartupProfilerWidgetFactory;
 
     class QgsCanvasRefreshBlocker
     {

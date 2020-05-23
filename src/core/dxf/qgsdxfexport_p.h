@@ -22,7 +22,7 @@
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsrenderer.h"
 #include "qgsvectorlayerlabeling.h"
-#include "qgsdxfpallabeling.h"
+#include "qgslabelsink.h"
 
 /**
  * Holds information about each layer in a DXF job.
@@ -62,7 +62,7 @@ struct DxfLayerJob
       QgsLabelingEngine *labelingEngine = renderContext.labelingEngine();
       if ( const QgsRuleBasedLabeling *rbl = dynamic_cast<const QgsRuleBasedLabeling *>( labeling.get() ) )
       {
-        ruleBasedLabelProvider = new QgsDxfRuleBasedLabelProvider( *rbl, vl, dxfExport );
+        ruleBasedLabelProvider = new QgsRuleBasedLabelSinkProvider( *rbl, vl, dxfExport );
         labelingEngine->addProvider( ruleBasedLabelProvider );
 
         if ( !ruleBasedLabelProvider->prepare( renderContext, attributes ) )
@@ -74,7 +74,7 @@ struct DxfLayerJob
       else
       {
         QgsPalLayerSettings settings = labeling->settings();
-        labelProvider = new QgsDxfLabelProvider( vl, QString(), dxfExport, &settings );
+        labelProvider = new QgsLabelSinkProvider( vl, QString(), dxfExport, &settings );
         labelingEngine->addProvider( labelProvider );
 
         if ( !labelProvider->prepare( renderContext, attributes ) )
@@ -98,8 +98,8 @@ struct DxfLayerJob
   QgsDxfExport *dxfExport = nullptr;
   QgsCoordinateReferenceSystem crs;
   QString layerName;
-  QgsDxfLabelProvider *labelProvider = nullptr;
-  QgsDxfRuleBasedLabelProvider *ruleBasedLabelProvider = nullptr;
+  QgsLabelSinkProvider *labelProvider = nullptr;
+  QgsRuleBasedLabelSinkProvider *ruleBasedLabelProvider = nullptr;
   QString splitLayerAttribute;
   QString layerTitle;
   QSet<QString> attributes;

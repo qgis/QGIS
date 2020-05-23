@@ -27,6 +27,7 @@
 #include <QObject>
 #include <QtTest/QSignalSpy>
 #include <QList>
+#include <QFileInfo>
 #include "qgis.h"
 #include "qgstest.h"
 #include "qgsrasterlayer.h"
@@ -164,6 +165,23 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QVERIFY( addParameter( p1C ) );
       QCOMPARE( parameterDefinitions().count(), 8 );
 
+      // remove parameter and auto created output
+      QgsProcessingParameterVectorDestination *p9 = new QgsProcessingParameterVectorDestination( "p9", "output" );
+      QVERIFY( addParameter( p9 ) );
+      QVERIFY( outputDefinition( "p9" ) );
+      QCOMPARE( outputDefinition( "p9" )->name(), QStringLiteral( "p9" ) );
+      QCOMPARE( outputDefinition( "p9" )->type(), QStringLiteral( "outputVector" ) );
+      removeParameter( "p9" );
+      QVERIFY( !outputDefinition( "p9" ) );
+
+      // remove parameter and check manually added output isn't removed
+      QVERIFY( addParameter( new QgsProcessingParameterVectorDestination( "p10", "output" ), false ) );
+      QVERIFY( addOutput( new QgsProcessingOutputVectorLayer( "p10" ) ) );
+      QCOMPARE( outputDefinition( "p10" )->name(), QStringLiteral( "p10" ) );
+      QCOMPARE( outputDefinition( "p10" )->type(), QStringLiteral( "outputVector" ) );
+      removeParameter( "p10" );
+      QVERIFY( outputDefinition( "p10" ) );
+
       // parameterDefinition should be case insensitive, but prioritize correct case matches
       QCOMPARE( parameterDefinition( "p1" ), parameterDefinitions().at( 0 ) );
       QCOMPARE( parameterDefinition( "P1" ), parameterDefinitions().at( 7 ) );
@@ -194,6 +212,10 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QVERIFY( addOutput( new QgsProcessingOutputVectorLayer( "p1" ) ) );
       QCOMPARE( outputDefinitions().count(), 1 );
       QCOMPARE( outputDefinitions().at( 0 )->name(), QString( "p1" ) );
+
+      // make sure manually added outputs are not deleted by calling removeParameter
+      removeParameter( "p1" );
+      QCOMPARE( outputDefinitions().count(), 1 );
 
       QVERIFY( !addOutput( nullptr ) );
       QCOMPARE( outputDefinitions().count(), 1 );
@@ -530,6 +552,7 @@ class TestQgsProcessing: public QObject
     void features();
     void uniqueValues();
     void createIndex();
+    void generateTemporaryDestination();
     void parseDestinationString();
     void createFeatureSink();
     void source();
@@ -1612,6 +1635,49 @@ void TestQgsProcessing::createIndex()
   index = QgsSpatialIndex( *source );
   ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
   QCOMPARE( ids, QList<QgsFeatureId>() << 2 );
+}
+
+void TestQgsProcessing::generateTemporaryDestination()
+{
+  // setup a context
+  QgsProject p;
+  p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 28353 ) );
+  QgsProcessingContext context;
+  context.setProject( &p );
+
+  // destination vector with "." in it's name
+  std::unique_ptr< QgsProcessingParameterVectorDestination > def( new QgsProcessingParameterVectorDestination( "with.inside", QString(), QgsProcessing::TypeVectorAnyGeometry, QString(), false ) );
+
+  // check that temporary destination does not have dot at the end when there is no extension
+  QVERIFY( !def->generateTemporaryDestination().endsWith( QLatin1String( "." ) ) );
+  // check that temporary destination starts with tempFolder
+  QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
+  // check that extension with QFileInfo::completeSuffix is "gpkg"
+  QFileInfo f = QFileInfo( def->generateTemporaryDestination() );
+  QCOMPARE( f.completeSuffix(), QString( "gpkg" ) );
+
+  // destination raster with "." in it's name
+  std::unique_ptr< QgsProcessingParameterRasterDestination > def2( new QgsProcessingParameterRasterDestination( "with.inside", QString(), QString(), false ) );
+
+  // check that temporary destination does not have dot at the end when there is no extension
+  QVERIFY( !def2->generateTemporaryDestination().endsWith( QLatin1String( "." ) ) );
+  // check that temporary destination starts with tempFolder
+  QVERIFY( def2->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
+  // check that extension with QFileInfo::completeSuffix is "tif"
+  f = QFileInfo( def2->generateTemporaryDestination() );
+  QCOMPARE( f.completeSuffix(), QString( "tif" ) );
+
+  // destination vector without "." in it's name
+  std::unique_ptr< QgsProcessingParameterVectorDestination > def3( new QgsProcessingParameterVectorDestination( "without_inside", QString(), QgsProcessing::TypeVectorAnyGeometry, QString(), false ) );
+
+  // check that temporary destination does not have dot at the end when there is no extension
+  QVERIFY( !def3->generateTemporaryDestination().endsWith( QLatin1String( "." ) ) );
+  // check that temporary destination starts with tempFolder
+  QVERIFY( def3->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
+  // check that extension with QFileInfo::completeSuffix is "gpkg"
+  f = QFileInfo( def3->generateTemporaryDestination() );
+  QCOMPARE( f.completeSuffix(), QString( "gpkg" ) );
+
 }
 
 void TestQgsProcessing::parseDestinationString()
@@ -8575,6 +8641,9 @@ void TestQgsProcessing::modelerAlgorithm()
   lastParams.insert( QStringLiteral( "a" ), 2 );
   lastParams.insert( QStringLiteral( "b" ), 4 );
   alg.setDesignerParameterValues( lastParams );
+
+  // we expect the result to add in some custom parameters -- namely the verbose log switch
+  lastParams.insert( QStringLiteral( "VERBOSE_LOG" ), true );
   QCOMPARE( alg.designerParameterValues(), lastParams );
 
   // child algorithms

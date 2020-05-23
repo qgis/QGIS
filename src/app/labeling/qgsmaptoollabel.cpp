@@ -29,6 +29,8 @@
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsauxiliarystorage.h"
 #include "qgsgui.h"
+#include "qgstextrenderer.h"
+
 
 #include <QMouseEvent>
 

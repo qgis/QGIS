@@ -178,7 +178,7 @@ tests:
         name: expected/poly_ring_self_intersection_valid_ignore_self.gml
         type: vector
 
-  - algorithm: qgis:polygonize
+  - algorithm: native:polygonize
     name: Polygonize
     params:
       KEEP_FIELDS: false

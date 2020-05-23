@@ -586,7 +586,7 @@ void QgsLabelPropertyDialog::populateFontStyleComboBox()
 
 void QgsLabelPropertyDialog::fillMultiLineAlignComboBox()
 {
-  mMultiLineAlignComboBox->addItem( tr( "Layer default" ), "" );
+  mMultiLineAlignComboBox->addItem( tr( "Layer Default" ), "" );
   mMultiLineAlignComboBox->addItem( tr( "Left" ), "Left" );
   mMultiLineAlignComboBox->addItem( tr( "Center" ), "Center" );
   mMultiLineAlignComboBox->addItem( tr( "Right" ), "Right" );

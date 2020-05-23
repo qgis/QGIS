@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>282</height>
+    <width>351</width>
+    <height>587</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,17 +26,90 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="0" column="1">
-    <widget class="QPlainTextEdit" name="mLabelEdit">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>150</height>
-      </size>
+   <item row="3" column="0" colspan="2">
+    <widget class="QGroupBox" name="mCustomSymbolCheckBox">
+     <property name="title">
+      <string>Custom Symbol</string>
      </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QgsSymbolButton" name="mCustomSymbolButton">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="3" column="1">
+   <item row="2" column="0" colspan="2">
+    <widget class="QGroupBox" name="mPatchGroup">
+     <property name="title">
+      <string>Patch</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
+      <item row="0" column="0">
+       <widget class="QLabel" name="mPatchShapeLabel">
+        <property name="text">
+         <string>Shape</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QgsLegendPatchShapeButton" name="mPatchShapeButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Customize</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="mPatchWidthLabel">
+        <property name="text">
+         <string>Width (mm)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QgsDoubleSpinBox" name="mWidthSpinBox"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="mPatchHeightLabel">
+        <property name="text">
+         <string>Height (mm)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QgsDoubleSpinBox" name="mHeightSpinBox"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="5" column="1">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -49,43 +122,71 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="1">
-    <widget class="QPushButton" name="mInsertExpressionButton">
-     <property name="text">
-      <string>Insert an Expression…</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QgsLegendPatchShapeButton" name="mPatchShapeButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Customize</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="mPatchShapeLabel">
-     <property name="text">
-      <string>Patch shape</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
+   <item row="0" column="0" colspan="2">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
       <string>Label</string>
      </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QPlainTextEdit" name="mLabelEdit">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>150</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QPushButton" name="mInsertExpressionButton">
+        <property name="text">
+         <string>Insert an Expression…</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Columns</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0">
+      <item row="1" column="1">
+       <widget class="QComboBox" name="mColumnSplitBehaviorComboBox"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="mColumnSplitLabel">
+        <property name="text">
+         <string>Column spanning</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="2">
+       <widget class="QCheckBox" name="mColumnBreakBeforeCheckBox">
+        <property name="text">
+         <string>Start a new column before this item</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsPanelWidget</class>
    <extends>QWidget</extends>
@@ -98,6 +199,13 @@
    <header>qgslegendpatchshapebutton.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mLabelEdit</tabstop>
+  <tabstop>mInsertExpressionButton</tabstop>
+  <tabstop>mPatchShapeButton</tabstop>
+  <tabstop>mWidthSpinBox</tabstop>
+  <tabstop>mHeightSpinBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

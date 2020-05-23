@@ -2170,6 +2170,21 @@ tests:
         type: directory
         name: expected/xyztiles
 
+  - algorithm: native:writevectortiles_xyz
+    name: Generate vector tiles (Directory)
+    params:
+      LAYERS:
+      - layer: ../../../../../tests/testdata/lines.shp
+      - layer: ../../../../../tests/testdata/points.shp
+      - layer: ../../../../../tests/testdata/polys.shp
+      MAX_ZOOM: 3
+      MIN_ZOOM: 1
+      XYZ_TEMPLATE: '{z}/{x}/{y}.pbf'
+    results:
+      OUTPUT_DIRECTORY:
+        type: directory
+        name: expected/xyztiles_vector
+
   - algorithm: native:calculatevectoroverlaps
     name: Overlap analysis 1
     ellipsoid: GRS80

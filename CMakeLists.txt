@@ -204,6 +204,10 @@ IF(WITH_CORE)
     MESSAGE(FATAL_ERROR "Desktop cannot be built without analysis")
   ENDIF()
 
+  IF ( WITH_QGIS_PROCESS AND NOT WITH_ANALYSIS )
+    MESSAGE(FATAL_ERROR "Process tool cannot be built without analysis")
+  ENDIF()
+
   IF ( WITH_DESKTOP )
     # The qgis_desktop target is meant to build a minimal but complete running QGIS during development
     # This should help to reduce compile time while still having a "complete enough" QGIS for most of the development
@@ -489,7 +493,7 @@ ENDIF(WITH_CORE)
 SET(CMAKE_AUTOMOC ON)
 
 # build our version of astyle
-SET (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare-commit.sh (using 'our' astyle)")
+SET (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare_commit.sh (using 'our' astyle)")
 
 # QML
 SET(QML_IMPORT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" CACHE PATH "QML directory for QML autocomplete")

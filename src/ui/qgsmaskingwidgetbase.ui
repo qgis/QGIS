@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>863</width>
-    <height>461</height>
+    <width>812</width>
+    <height>538</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,46 +15,34 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <widget class="QGroupBox" name="mEditMaskSettingsGroup">
-     <property name="title">
-      <string>Edit mask settings</string>
+    <widget class="QgsMessageBar" name="mMessageBar">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
      </property>
-     <property name="checkable">
-      <bool>true</bool>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
      </property>
-     <property name="checked">
-      <bool>false</bool>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <property name="leftMargin">
-       <number>9</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Masked symbol layers</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QgsSymbolLayerSelectionWidget" name="mMaskTargetsWidget" native="true"/>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Mask sources</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QgsMaskSourceSelectionWidget" name="mMaskSourcesWidget" native="true">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
     </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Masked symbol layers</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsSymbolLayerSelectionWidget" name="mMaskTargetsWidget" native="true"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Mask sources</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsMaskSourceSelectionWidget" name="mMaskSourcesWidget" native="true"/>
    </item>
   </layout>
  </widget>
@@ -69,6 +57,12 @@
    <class>QgsSymbolLayerSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgssymbollayerselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMessageBar</class>
+   <extends>QFrame</extends>
+   <header>qgsmessagebar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

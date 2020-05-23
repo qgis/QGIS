@@ -33,6 +33,8 @@
 #include "qgsrenderedfeaturehandlerinterface.h"
 #include "qgspallabeling.h"
 #include "qgsvectorlayerlabeling.h"
+#include "qgstemporalrangeobject.h"
+
 #include <QObject>
 #include "qgstest.h"
 
@@ -57,6 +59,7 @@ class TestQgsLayoutMap : public QObject
     void dataDefinedLayers(); //test data defined layer string
     void dataDefinedStyles(); //test data defined styles
     void dataDefinedCrs(); //test data defined crs
+    void dataDefinedTemporalRange(); //test data defined temporal range's start and end values
     void rasterized();
     void layersToRender();
     void mapRotation();
@@ -484,6 +487,32 @@ void TestQgsLayoutMap::dataDefinedCrs()
   map->refreshDataDefinedProperty( QgsLayoutObject::MapCrs );
   QCOMPARE( map->crs().toProj(), QStringLiteral( "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs" ) );
 
+}
+
+void TestQgsLayoutMap::dataDefinedTemporalRange()
+{
+  QList<QgsMapLayer *> layers = QList<QgsMapLayer *>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer;
+
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptMove( QgsLayoutPoint( 20, 20 ) );
+  map->attemptResize( QgsLayoutSize( 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setLayers( layers );
+  l.addLayoutItem( map );
+
+  QDateTime dt1 = QDateTime( QDate( 2010, 1, 1 ) );
+  QDateTime dt2 = QDateTime( QDate( 2020, 1, 1 ) );
+  map->setIsTemporal( true );
+  map->dataDefinedProperties().setProperty( QgsLayoutObject::StartDateTime, QgsProperty::fromValue( dt1 ) );
+  map->dataDefinedProperties().setProperty( QgsLayoutObject::EndDateTime, QgsProperty::fromValue( dt2 ) );
+  map->refreshDataDefinedProperty( QgsLayoutObject::StartDateTime );
+  map->refreshDataDefinedProperty( QgsLayoutObject::EndDateTime );
+  QCOMPARE( map->temporalRange(), QgsDateTimeRange( dt1, dt2 ) );
+  QgsMapSettings ms = map->mapSettings( map->extent(), map->rect().size(), 300, false );
+  QCOMPARE( ms.temporalRange(), QgsDateTimeRange( dt1, dt2 ) );
 }
 
 void TestQgsLayoutMap::rasterized()

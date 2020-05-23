@@ -164,14 +164,19 @@ void TestQgsDualView::testFilterSelected()
 
 void TestQgsDualView::testSelectAll()
 {
+
+  QEventLoop loop;
+  connect( qobject_cast<QgsAttributeTableFilterModel *>( mDualView->mFilterModel ), &QgsAttributeTableFilterModel::visibleReloaded, &loop, &QEventLoop::quit );
   mDualView->setFilterMode( QgsAttributeTableFilterModel::ShowVisible );
   // Only show parts of the canvas, so only one selected feature is visible
   mCanvas->setExtent( QgsRectangle( -139, 23, -100, 48 ) );
+  loop.exec();
   mDualView->mTableView->selectAll();
   QCOMPARE( mPointsLayer->selectedFeatureCount(), 10 );
 
   mPointsLayer->selectByIds( QgsFeatureIds() );
   mCanvas->setExtent( QgsRectangle( -110, 40, -100, 48 ) );
+  loop.exec();
   mDualView->mTableView->selectAll();
   QCOMPARE( mPointsLayer->selectedFeatureCount(), 1 );
 }

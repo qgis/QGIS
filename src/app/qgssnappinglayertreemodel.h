@@ -95,9 +95,8 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
     QString mFilterText;
     QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> mIndividualLayerSettings;
     QgsLayerTreeModel *mLayerTreeModel = nullptr;
-    bool mEnableMinMaxColumn = true;
 
-    void hasRowchanged( QgsLayerTreeNode *node, const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &oldSettings, bool forceRefresh );
+    void hasRowchanged( QgsLayerTreeNode *node, const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &oldSettings );
 };
 
 #endif // QGSSNAPPINGLAYERTREEVIEW_H

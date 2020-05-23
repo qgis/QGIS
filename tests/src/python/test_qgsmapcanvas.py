@@ -347,7 +347,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         theme5 = QgsProject.instance().mapThemeCollection().mapThemeState('theme5')
         theme5Layers = theme5.layerRecords()
         self.assertEqual(themeLayers, theme5Layers, 'themes are different')
-        #self.assertTrue(self.canvasImageCheck('theme5', 'theme5', canvas))
+        # self.assertTrue(self.canvasImageCheck('theme5', 'theme5', canvas))
 
     def canvasImageCheck(self, name, reference_image, canvas):
         self.report += "<h2>Render {}</h2>\n".format(name)

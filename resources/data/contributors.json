@@ -924,6 +924,40 @@
           45.93943
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Jan Caha",
+        "Committer": "Yes",
+        "First Commit Message": "ascii expression",
+        "First Commit Date": "18-04-2020",
+        "GIT Nickname": "jancaha"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.98311,
+          49.281418
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Samweli Mwakisambwe",
+        "Committer": "Yes",
+        "First Commit Message": "Deselecting tables after addition in Data Source Manager",
+        "First Commit Date": "10-12-2019",
+        "GIT Nickname": "Samweli"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          39.220558,
+          -6.784386
+        ]
+      }
     }
   ]
 }

@@ -252,7 +252,7 @@ This method is either blocking or non blocking according to ``relaxed`` paramete
 
     MatchList edgesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
 %Docstring
-Find edges within a specified recangle
+Find edges within a specified rectangle
 Optional filter may discard unwanted matches.
 This method is either blocking or non blocking according to ``relaxed`` parameter passed
 %End
@@ -265,7 +265,7 @@ This method is either blocking or non blocking according to ``relaxed`` paramete
 
     MatchList verticesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
 %Docstring
-Find vertices within a specified recangle
+Find vertices within a specified rectangle
 This method is either blocking or non blocking according to ``relaxed`` parameter passed
 Optional filter may discard unwanted matches.
 

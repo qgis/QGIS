@@ -1,0 +1,51 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsvectorlayertemporalpropertieswidget.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsVectorLayerTemporalPropertiesWidget : QWidget, QgsExpressionContextGenerator
+{
+%Docstring
+A widget for configuring the temporal properties for a vector layer.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayertemporalpropertieswidget.h"
+%End
+  public:
+
+    QgsVectorLayerTemporalPropertiesWidget( QWidget *parent = 0, QgsVectorLayer *layer = 0 );
+%Docstring
+Constructor for QgsVectorLayerTemporalPropertiesWidget.
+%End
+
+    void saveTemporalProperties();
+%Docstring
+Save widget temporal properties inputs.
+%End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
+
+    void syncToLayer();
+%Docstring
+Updates the widget state to match the current layer state.
+%End
+
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsvectorlayertemporalpropertieswidget.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

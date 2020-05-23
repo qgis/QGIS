@@ -5568,13 +5568,19 @@ QString QgsProcessingDestinationParameter::createFileFilter() const
 
 QString QgsProcessingDestinationParameter::generateTemporaryDestination() const
 {
+  // sanitize name to avoid multiple . in the filename. E.g. when name() contain
+  // backend command name having a "." inside as in case of grass commands
+  QRegularExpression rx( QStringLiteral( "[.]" ) );
+  QString sanitizedName = name();
+  sanitizedName.replace( rx, QStringLiteral( "_" ) );
+
   if ( defaultFileExtension().isEmpty() )
   {
-    return QgsProcessingUtils::generateTempFilename( name() );
+    return QgsProcessingUtils::generateTempFilename( sanitizedName );
   }
   else
   {
-    return QgsProcessingUtils::generateTempFilename( name() + '.' + defaultFileExtension() );
+    return QgsProcessingUtils::generateTempFilename( sanitizedName + '.' + defaultFileExtension() );
   }
 }
 

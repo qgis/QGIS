@@ -282,6 +282,7 @@ SET(QGIS_GUI_SRCS
   processing/qgsprocessingrecentalgorithmlog.cpp
   processing/qgsprocessingtoolboxmodel.cpp
   processing/qgsprocessingtoolboxtreeview.cpp
+  processing/qgsprocessingvectortilewriterlayerswidgetwrapper.cpp
   processing/qgsprocessingwidgetwrapper.cpp
   processing/qgsprocessingwidgetwrapperimpl.cpp
 
@@ -322,6 +323,7 @@ SET(QGIS_GUI_SRCS
   tableeditor/qgstableeditorformattingwidget.cpp
   tableeditor/qgstableeditorwidget.cpp
 
+  vectortile/qgsvectortilebasiclabelingwidget.cpp
   vectortile/qgsvectortilebasicrendererwidget.cpp
   vectortile/qgsvectortileconnectiondialog.cpp
   vectortile/qgsvectortiledataitemguiprovider.cpp
@@ -393,6 +395,7 @@ SET(QGIS_GUI_SRCS
   qgsexpressionbuilderwidget.cpp
   qgsexpressionhighlighter.cpp
   qgsexpressionlineedit.cpp
+  qgsexpressionpreviewwidget.cpp
   qgsexpressionselectiondialog.cpp
   qgsexpressionstoredialog.cpp
   qgsexpressiontreeview.cpp
@@ -402,6 +405,7 @@ SET(QGIS_GUI_SRCS
   qgsfeatureselectiondlg.cpp
   qgsfieldcombobox.cpp
   qgsfieldexpressionwidget.cpp
+  qgsfeaturepickerwidget.cpp
   qgsfieldmappingwidget.cpp
   qgsfieldmappingmodel.cpp
   qgsfeaturelistcombobox.cpp
@@ -540,6 +544,7 @@ SET(QGIS_GUI_SRCS
   qgsuserinputwidget.cpp
   qgsvaliditycheckresultswidget.cpp
   qgsvariableeditorwidget.cpp
+  qgsvectorlayertemporalpropertieswidget.cpp
   qgsvertexmarker.cpp
   qgsfiledownloaderdialog.cpp
   qgsvscrollarea.cpp
@@ -620,11 +625,13 @@ SET(QGIS_GUI_HDRS
   qgsexpressionbuilderwidget.h
   qgsexpressionhighlighter.h
   qgsexpressionlineedit.h
+  qgsexpressionpreviewwidget.h
   qgsexpressionselectiondialog.h
   qgsexpressiontreeview.h
   qgsextentgroupbox.h
   qgsextentwidget.h
   qgsexternalresourcewidget.h
+  qgsfeaturepickerwidget.h
   qgsfeaturelistcombobox.h
   qgsfeatureselectiondlg.h
   qgsfieldcombobox.h
@@ -667,6 +674,7 @@ SET(QGIS_GUI_HDRS
   qgsmanageconnectionsdialog.h
   qgsmapcanvas.h
   qgsmapcanvasannotationitem.h
+  qgsmapcanvasinteractionblocker.h
   qgsmapcanvasitem.h
   qgsmapcanvasmap.h
   qgsmapcanvassnappingutils.h
@@ -771,6 +779,7 @@ SET(QGIS_GUI_HDRS
   qgsuserinputwidget.h
   qgsvaliditycheckresultswidget.h
   qgsvariableeditorwidget.h
+  qgsvectorlayertemporalpropertieswidget.h
   qgsvertexmarker.h
   qgsvscrollarea.h
   qgswindowmanagerinterface.h
@@ -994,6 +1003,7 @@ SET(QGIS_GUI_HDRS
   processing/qgsprocessingrecentalgorithmlog.h
   processing/qgsprocessingtoolboxmodel.h
   processing/qgsprocessingtoolboxtreeview.h
+  processing/qgsprocessingvectortilewriterlayerswidgetwrapper.h
   processing/qgsprocessingwidgetwrapper.h
   processing/qgsprocessingwidgetwrapperimpl.h
 
@@ -1099,6 +1109,7 @@ SET(QGIS_GUI_HDRS
   tableeditor/qgstableeditorformattingwidget.h
   tableeditor/qgstableeditorwidget.h
 
+  vectortile/qgsvectortilebasiclabelingwidget.h
   vectortile/qgsvectortilebasicrendererwidget.h
   vectortile/qgsvectortileconnectiondialog.h
   vectortile/qgsvectortiledataitemguiprovider.h
@@ -1248,6 +1259,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/core/validity
   ${CMAKE_SOURCE_DIR}/src/core/vectortile
   ${CMAKE_SOURCE_DIR}/src/native

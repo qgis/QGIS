@@ -18,7 +18,7 @@
 #include "qgsmapsettings.h"
 #include "qgsmapsettingsutils.h"
 #include "qgspallabeling.h"
-#include "qgstextrenderer.h"
+#include "qgstextformat.h"
 #include "qgsvectorlayer.h"
 
 #include <QString>

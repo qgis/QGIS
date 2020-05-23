@@ -39,7 +39,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class gdaladdo(GdalAlgorithm):
-
     INPUT = 'INPUT'
     LEVELS = 'LEVELS'
     CLEAN = 'CLEAN'

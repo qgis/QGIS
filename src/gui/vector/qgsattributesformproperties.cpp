@@ -39,7 +39,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   setupUi( this );
 
   mEditorLayoutComboBox->addItem( tr( "Autogenerate" ), QgsEditFormConfig::EditorLayout::GeneratedLayout );
-  mEditorLayoutComboBox->addItem( tr( "Drag and drop designer" ), QgsEditFormConfig::EditorLayout::TabLayout );
+  mEditorLayoutComboBox->addItem( tr( "Drag and Drop Designer" ), QgsEditFormConfig::EditorLayout::TabLayout );
   mEditorLayoutComboBox->addItem( tr( "Provide ui-file" ), QgsEditFormConfig::EditorLayout::UiFileLayout );
 
   // available widgets tree
@@ -174,14 +174,14 @@ void QgsAttributesFormProperties::initSuppressCombo()
 
   if ( settings.value( QStringLiteral( "qgis/digitizing/disable_enter_attribute_values_dialog" ), false ).toBool() )
   {
-    mFormSuppressCmbBx->addItem( tr( "Hide form on add feature (global settings)" ) );
+    mFormSuppressCmbBx->addItem( tr( "Hide Form on Add Feature (global settings)" ) );
   }
   else
   {
-    mFormSuppressCmbBx->addItem( tr( "Show form on add feature (global settings)" ) );
+    mFormSuppressCmbBx->addItem( tr( "Show Form on Add Feature (global settings)" ) );
   }
-  mFormSuppressCmbBx->addItem( tr( "Hide form on add feature" ) );
-  mFormSuppressCmbBx->addItem( tr( "Show form on add feature" ) );
+  mFormSuppressCmbBx->addItem( tr( "Hide Form on Add Feature" ) );
+  mFormSuppressCmbBx->addItem( tr( "Show Form on Add Feature" ) );
 
   mFormSuppressCmbBx->setCurrentIndex( mLayer->editFormConfig().suppress() );
 }
@@ -1182,46 +1182,8 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
   {
     case QgsAttributesFormProperties::DnDTreeItemData::Container:
     case QgsAttributesFormProperties::DnDTreeItemData::WidgetType:
-      break;
-
     case  QgsAttributesFormProperties::DnDTreeItemData::Relation:
-    {
-      QDialog dlg;
-      dlg.setWindowTitle( tr( "Configure Relation Editor" ) );
-      QFormLayout *layout = new QFormLayout() ;
-      dlg.setLayout( layout );
-      layout->addWidget( baseWidget );
-
-      QCheckBox *showLinkButton = new QCheckBox( tr( "Show link button" ) );
-      showLinkButton->setChecked( itemData.relationEditorConfiguration().showLinkButton );
-      QCheckBox *showUnlinkButton = new QCheckBox( tr( "Show unlink button" ) );
-      showUnlinkButton->setChecked( itemData.relationEditorConfiguration().showUnlinkButton );
-      QCheckBox *showSaveChildEditsButton = new QCheckBox( tr( "Show save child layer edits button" ) );
-      showSaveChildEditsButton->setChecked( itemData.relationEditorConfiguration().showSaveChildEditsButton );
-      layout->addRow( showLinkButton );
-      layout->addRow( showUnlinkButton );
-      layout->addRow( showSaveChildEditsButton );
-
-      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
-
-      connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
-      connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-
-      dlg.layout()->addWidget( buttonBox );
-
-      if ( dlg.exec() )
-      {
-        QgsAttributesFormProperties::RelationEditorConfiguration relEdCfg;
-        relEdCfg.showLinkButton = showLinkButton->isChecked();
-        relEdCfg.showUnlinkButton = showUnlinkButton->isChecked();
-        relEdCfg.showSaveChildEditsButton = showSaveChildEditsButton->isChecked();
-        itemData.setShowLabel( showLabelCheckbox->isChecked() );
-        itemData.setRelationEditorConfiguration( relEdCfg );
-
-        item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
-      }
-    }
-    break;
+      break;
 
     case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
     {
@@ -1256,10 +1218,10 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
 
       //templates
       QComboBox *qmlObjectTemplate = new QComboBox();
-      qmlObjectTemplate->addItem( tr( "Free text…" ) );
+      qmlObjectTemplate->addItem( tr( "Free Text…" ) );
       qmlObjectTemplate->addItem( tr( "Rectangle" ) );
-      qmlObjectTemplate->addItem( tr( "Pie chart" ) );
-      qmlObjectTemplate->addItem( tr( "Bar chart" ) );
+      qmlObjectTemplate->addItem( tr( "Pie Chart" ) );
+      qmlObjectTemplate->addItem( tr( "Bar Chart" ) );
       connect( qmlObjectTemplate, qgis::overload<int>::of( &QComboBox::activated ), qmlCode, [ = ]( int index )
       {
         qmlCode->clear();

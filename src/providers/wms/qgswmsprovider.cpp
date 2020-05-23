@@ -49,6 +49,7 @@
 #include "qgsexception.h"
 #include "qgssettings.h"
 #include "qgsogrutils.h"
+#include "qgsproviderregistry.h"
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -742,16 +743,20 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
       return image;
     }
 
-    QgsDebugMsgLevel( QStringLiteral( "layer extent: %1,%2 %3x%4" )
+    QgsDebugMsgLevel( QStringLiteral( "layer extent: %1,%2,%3,%4 %5x%6" )
                       .arg( qgsDoubleToString( mLayerExtent.xMinimum() ),
                             qgsDoubleToString( mLayerExtent.yMinimum() ) )
+                      .arg( qgsDoubleToString( mLayerExtent.xMaximum() ),
+                            qgsDoubleToString( mLayerExtent.yMaximum() ) )
                       .arg( mLayerExtent.width() )
                       .arg( mLayerExtent.height() ), 3
                     );
 
-    QgsDebugMsgLevel( QStringLiteral( "view extent: %1,%2 %3x%4  res:%5" )
+    QgsDebugMsgLevel( QStringLiteral( "view extent: %1,%2,%3,%4 %5x%6  res:%7" )
                       .arg( qgsDoubleToString( viewExtent.xMinimum() ),
                             qgsDoubleToString( viewExtent.yMinimum() ) )
+                      .arg( qgsDoubleToString( viewExtent.xMaximum() ),
+                            qgsDoubleToString( viewExtent.yMaximum() ) )
                       .arg( viewExtent.width() )
                       .arg( viewExtent.height() )
                       .arg( vres, 0, 'f' ), 3
@@ -884,7 +889,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
       p.setRenderHint( QPainter::SmoothPixmapTransform, false );  // let's not waste time with bilinear filtering
 
       QList<TileImage> lowerResTiles, lowerResTiles2, higherResTiles;
-      // first we check lower resolution tiles: one level back, then two levels back (if there is still some are not covered),
+      // first we check lower resolution tiles: one level back, then two levels back (if there is still some area not covered),
       // finally (in the worst case we use one level higher resolution tiles). This heuristic should give
       // good overviews while not spending too much time drawing cached tiles from resolutions far away.
       fetchOtherResTiles( tileMode, viewExtent, image->width(), missing, tm->tres, 1, lowerResTiles );
@@ -1082,15 +1087,24 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
 void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
 {
   QgsDateTimeRange range = temporalCapabilities()->requestedTemporalRange();
+
   QString format { QStringLiteral( "yyyy-MM-ddThh:mm:ssZ" ) };
-  QgsDataSourceUri uri { dataSourceUri() };
+  bool dateOnly = false;
+
+  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( "wms" );
+
+  QVariantMap uri = metadata->decodeUri( dataSourceUri() );
+
+  // Skip fetching if updates are not allowed
+  if ( !uri.value( QStringLiteral( "allowTemporalUpdates" ), true ).toBool() )
+    return;
 
   if ( range.isInfinite() )
   {
-    if ( uri.hasParam( QStringLiteral( "time" ) ) &&
-         !uri.param( QStringLiteral( "time" ) ).isEmpty() )
+    if ( uri.contains( QStringLiteral( "time" ) ) &&
+         !uri.value( QStringLiteral( "time" ) ).toString().isEmpty() )
     {
-      QString time = uri.param( QStringLiteral( "time" ) );
+      QString time = uri.value( QStringLiteral( "time" ) ).toString();
       QStringList timeParts = time.split( '/' );
 
       QDateTime start = QDateTime::fromString( timeParts.at( 0 ), Qt::ISODateWithMs );
@@ -1100,8 +1114,11 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
     }
   }
 
-  if ( uri.param( QStringLiteral( "enableTime" ) ) == QLatin1String( "no" ) )
+  if ( !uri.value( QStringLiteral( "enableTime" ), true ).toBool() )
+  {
     format = "yyyy-MM-dd";
+    dateOnly = true;
+  }
 
   if ( range.begin().isValid() && range.end().isValid() )
   {
@@ -1117,14 +1134,14 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
         break;
       case QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToStartOfRange:
       {
-        QDateTime dateTimeStart = mSettings.findLeastClosestDateTime( range.begin() );
+        QDateTime dateTimeStart = mSettings.findLeastClosestDateTime( range.begin(), dateOnly );
         range = QgsDateTimeRange( dateTimeStart, dateTimeStart );
         break;
       }
 
       case QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToEndOfRange:
       {
-        QDateTime dateTimeEnd = mSettings.findLeastClosestDateTime( range.end() );
+        QDateTime dateTimeEnd = mSettings.findLeastClosestDateTime( range.end(), dateOnly );
         range = QgsDateTimeRange( dateTimeEnd, dateTimeEnd );
         break;
       }
@@ -1144,10 +1161,10 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
   }
 
   // If the data provider has bi-temporal properties and they are enabled
-  if ( uri.hasParam( QStringLiteral( "reference_time" ) ) &&
-       !uri.param( QStringLiteral( "reference_time" ) ).isEmpty() )
+  if ( uri.contains( QStringLiteral( "referenceTime" ) ) &&
+       !uri.value( QStringLiteral( "referenceTime" ) ).toString().isEmpty() )
   {
-    QString time = uri.param( QStringLiteral( "reference_time" ) );
+    QString time = uri.value( QStringLiteral( "referenceTime" ) ).toString();
 
     QDateTime dateTime = QDateTime::fromString( time, Qt::ISODateWithMs );
 
@@ -1661,7 +1678,8 @@ bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const &xml, QStr
       QgsDebugMsg( e.tagName() ); // the node really is an element.
 
       QString tagName = e.tagName();
-      if ( tagName.startsWith( QLatin1String( "wms:" ) ) )
+      if ( tagName.startsWith( QLatin1String( "wms:" ) ) ||
+           tagName.startsWith( QLatin1String( "ogc:" ) ) )
         tagName = tagName.mid( 4 );
 
       if ( tagName == QLatin1String( "ServiceException" ) )
@@ -1740,6 +1758,14 @@ void QgsWmsProvider::parseServiceException( QDomElement const &e, QString &error
   else if ( seCode == QLatin1String( "OperationNotSupported" ) )
   {
     errorText = tr( "Request is for an optional operation that is not supported by the server." );
+  }
+  else if ( seCode == QLatin1String( "NoMatch" ) )
+  {
+    QString locator = e.attribute( QStringLiteral( "locator" ) );
+    if ( locator == QLatin1String( "time" ) )
+      errorText = tr( "Request contains a time value that does not match any available layer in the server." );
+    else
+      errorText = tr( "Request contains some parameter values that do not match any available layer in the server" );
   }
   else if ( seCode.isEmpty() )
   {
@@ -1896,7 +1922,6 @@ int QgsWmsProvider::capabilities() const
   int capability = NoCapabilities;
   bool canIdentify = false;
 
-
   if ( mSettings.mTiled && mTileLayer )
   {
     QgsDebugMsgLevel( QStringLiteral( "Tiled." ), 2 );
@@ -1928,8 +1953,15 @@ int QgsWmsProvider::capabilities() const
     capability = mCaps.identifyCapabilities();
     if ( capability )
     {
-      capability |= Identify;
+      capability |= Capability::Identify;
     }
+  }
+
+  // Prevent prefetch of XYZ openstreetmap images
+  // See: https://github.com/qgis/QGIS/issues/34813
+  if ( !( mSettings.mTiled && mSettings.mXyz && dataSourceUri().contains( QStringLiteral( "openstreetmap.org" ) ) ) )
+  {
+    capability |= Capability::Prefetch;
   }
 
   QgsDebugMsgLevel( QStringLiteral( "capability = %1" ).arg( capability ), 2 );
@@ -2920,16 +2952,20 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
     tres = it.key();
     tm = &it.value();
 
-    QgsDebugMsg( QStringLiteral( "layer extent: %1,%2 %3x%4" )
+    QgsDebugMsg( QStringLiteral( "layer extent: %1,%2,%3,%4 %5x%6" )
                  .arg( qgsDoubleToString( mLayerExtent.xMinimum() ),
                        qgsDoubleToString( mLayerExtent.yMinimum() ) )
+                 .arg( qgsDoubleToString( mLayerExtent.xMaximum() ),
+                       qgsDoubleToString( mLayerExtent.yMaximum() ) )
                  .arg( mLayerExtent.width() )
                  .arg( mLayerExtent.height() )
                );
 
-    QgsDebugMsg( QStringLiteral( "view extent: %1,%2 %3x%4  res:%5" )
+    QgsDebugMsg( QStringLiteral( "view extent: %1,%2,%3,%4 %5x%6  res:%7" )
                  .arg( qgsDoubleToString( boundingBox.xMinimum() ),
                        qgsDoubleToString( boundingBox.yMinimum() ) )
+                 .arg( qgsDoubleToString( boundingBox.xMaximum() ),
+                       qgsDoubleToString( boundingBox.yMaximum() ) )
                  .arg( boundingBox.width() )
                  .arg( boundingBox.height() )
                  .arg( vres, 0, 'f' )

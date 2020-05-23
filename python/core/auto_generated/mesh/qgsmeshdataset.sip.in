@@ -549,6 +549,186 @@ Returns maximum number of vertical levels for 3d stacked meshes
 
 };
 
+
+class QgsMeshDatasetGroupTreeItem
+{
+%Docstring
+
+Tree item for display of the mesh dataset groups.
+Dataset group is set of datasets with the same name,
+but different control variable (e.g. time)
+
+Support for multiple levels, because groups can have
+subgroups, for example
+
+Groups:
+Depth
+Minimum
+Maximum
+Velocity
+Wind speed
+Minimum
+Maximum
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmeshdataset.h"
+%End
+  public:
+
+    QgsMeshDatasetGroupTreeItem();
+%Docstring
+Constructor for an empty dataset group tree item
+%End
+
+    QgsMeshDatasetGroupTreeItem( const QString &defaultName,
+                                 bool isVector,
+                                 int index );
+%Docstring
+Constructor
+
+:param defaultName: the name that will be used to display the item if iot not overrides (:py:func:`setName`)
+:param isVector: whether the dataset group is a vector dataset group
+:param index: index of the dataset group
+%End
+
+    QgsMeshDatasetGroupTreeItem( const QDomElement &itemElement, const QgsReadWriteContext &context );
+%Docstring
+Constructor from a DOM element, contruct also the children
+
+:param itemElement: the DOM element
+:param context: writing context (e.g. for conversion between relative and absolute paths)
+%End
+
+    ~QgsMeshDatasetGroupTreeItem();
+
+    QgsMeshDatasetGroupTreeItem *clone() const /Factory/;
+%Docstring
+Clones the item
+
+:return: the cloned item
+%End
+
+    void appendChild( QgsMeshDatasetGroupTreeItem *item /Transfer/ );
+%Docstring
+Appends a item child
+
+:param item: the item to append
+
+.. note::
+
+   takes ownership of item
+%End
+
+    QgsMeshDatasetGroupTreeItem *child( int row ) const;
+%Docstring
+Returns a child
+
+:param row: the position of the child
+
+:return: the item at the positon ``row``
+%End
+
+    QgsMeshDatasetGroupTreeItem *childFromDatasetGroupIndex( int index );
+%Docstring
+Returns the child with dataset group ``index``
+Searches as depper as needed on the child hierarchy
+
+:param index: the index of the dataset group index
+
+:return: the item with index as dataset group index, None if no item is found
+%End
+
+    int childCount() const;
+%Docstring
+Returns the count of children
+
+:return: the children's count
+%End
+
+    int totalChildCount() const;
+%Docstring
+Returns the total count of children, that is included deeper children
+
+:return:
+%End
+
+    QgsMeshDatasetGroupTreeItem *parentItem() const;
+%Docstring
+Returns the parent item, None if it is root item
+
+:return: the parent item
+%End
+
+    int row() const;
+%Docstring
+Returns the position of the item in the parent
+
+:return: tow position of the item
+%End
+
+    QString name() const;
+%Docstring
+Returns the name of the item
+This mame is the default name if the name has not been overrided (:py:func:`setName`)
+
+:return: the name to display
+%End
+
+    void setName( const QString &name );
+%Docstring
+Overrides the default name with the name to display.
+The default name is still stored in the item
+but will not be displayed anymore except if the empty string is setted.
+
+:param name: to display
+%End
+
+    bool isVector() const;
+%Docstring
+
+:return: whether the dataset group is vector
+%End
+
+    int datasetGroupIndex() const;
+%Docstring
+
+:return: the dataset group index
+%End
+
+    bool isEnabled() const;
+%Docstring
+
+:return: whether the item is enabled, that is if it is displayed in view
+%End
+
+    void setIsEnabled( bool isEnabled );
+%Docstring
+Sets whether the item is enabled, that is if it is displayed in view
+
+:param isEnabled: whether the item is enabled
+%End
+
+    QString defaultName() const;
+%Docstring
+
+:return: the default name
+%End
+
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context );
+%Docstring
+Write the item and its children in a DOM document
+
+:param doc: the DOM document
+:param context: writing context (e.g. for conversion between relative and absolute paths)
+
+:return: the dom element where the item is written
+%End
+
+};
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

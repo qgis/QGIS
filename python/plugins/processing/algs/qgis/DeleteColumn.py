@@ -31,7 +31,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
 class DeleteColumn(QgisFeatureBasedAlgorithm):
-
     COLUMNS = 'COLUMN'
 
     def flags(self):

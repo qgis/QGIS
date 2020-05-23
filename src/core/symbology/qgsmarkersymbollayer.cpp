@@ -818,7 +818,7 @@ void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 
   QColor selBrushColor = context.renderContext().selectionColor();
   QColor selPenColor = selBrushColor == mColor ? selBrushColor : mStrokeColor;
-  if ( context.opacity() < 1 )
+  if ( context.opacity() < 1  && !SELECTION_IS_OPAQUE )
   {
     selBrushColor.setAlphaF( context.opacity() );
     selPenColor.setAlphaF( context.opacity() );
@@ -3208,7 +3208,10 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
     brushColor = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), brushColor );
   }
   brushColor = context.selected() ? context.renderContext().selectionColor() : brushColor;
-  brushColor.setAlphaF( brushColor.alphaF() * context.opacity() );
+  if ( !SELECTION_IS_OPAQUE )
+  {
+    brushColor.setAlphaF( brushColor.alphaF() * context.opacity() );
+  }
   mBrush.setColor( brushColor );
 
   QColor penColor = mStrokeColor;

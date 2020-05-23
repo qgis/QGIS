@@ -513,8 +513,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.DistanceUnknownUnit)
                 self.assertAlmostEqual(res,
                                        1.0,
-                                       msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, expected_factor,
-                                                                                                                      QgsUnitTypes.toString(from_unit)))
+                                       msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, QgsUnitTypes.toString(from_unit)))
 
     def testAreaFromUnitToUnitFactor(self):
         """Test calculation of conversion factor between areal units"""
@@ -689,8 +688,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.AreaUnknownUnit)
                 self.assertAlmostEqual(res,
                                        1.0,
-                                       msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, expected_factor,
-                                                                                                                      QgsUnitTypes.toString(from_unit)))
+                                       msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, QgsUnitTypes.toString(from_unit)))
 
     def testDistanceToAreaUnit(self):
         """Test distanceToAreaUnit conversion"""
@@ -1145,8 +1143,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.AngleUnknownUnit)
                 self.assertAlmostEqual(res,
                                        1.0,
-                                       msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, expected_factor,
-                                                                                                                      QgsUnitTypes.toString(from_unit)))
+                                       msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, QgsUnitTypes.toString(from_unit)))
 
     def testFormatAngle(self):
         """Test formatting angles"""

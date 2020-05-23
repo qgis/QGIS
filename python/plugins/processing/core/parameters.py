@@ -153,7 +153,7 @@ def getParameterFromString(s, context=''):
                     params[3] = True if params[3].lower() == 'true' else False
                 if len(params) > 4:
                     # For multiple values; default value is a list of int
-                    if params[3] == True:
+                    if params[3] is True:
                         params[4] = [int(v) for v in params[4].split(',')] if params[4] is not None else None
                     else:
                         params[4] = int(params[4]) if params[4] is not None else None

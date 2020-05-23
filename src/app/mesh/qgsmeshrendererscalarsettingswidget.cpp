@@ -112,7 +112,6 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
   const double min = settings.classificationMinimum();
   const double max = settings.classificationMaximum();
 
-
   whileBlocking( mScalarMinLineEdit )->setText( QString::number( min ) );
   whileBlocking( mScalarMaxLineEdit )->setText( QString::number( max ) );
   whileBlocking( mScalarColorRampShaderWidget )->setFromShader( shader );
@@ -137,6 +136,8 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
     whileBlocking( mScalarEdgeStrokeWidthSpinBox )->setValue( edgeStrokeWidth.fixedStrokeWidth() );
     whileBlocking( mScalarEdgeStrokeWidthVariableRadioButton )->setChecked( edgeStrokeWidth.isVariableWidth() );
     whileBlocking( mScalarEdgeStrokeWidthUnitSelectionWidget )->setUnit( settings.edgeStrokeWidthUnit() );
+    if ( !hasFaces )
+      mOpacityContainerWidget->setVisible( false );
 
     const QgsMeshDatasetGroupMetadata metadata = mMeshLayer->dataProvider()->datasetGroupMetadata( mActiveDatasetGroup );
     double min = metadata.minimum();

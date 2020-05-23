@@ -1,0 +1,9 @@
+{
+  "name": "z_min",
+  "type": "function",
+  "description": "Returns the minimum z coordinate of a geometry.",
+  "arguments": [ {"arg":"geometry","description":"a geometry with z coordinate"}],
+  "examples": [ { "expression":"z_min( geom_from_wkt( 'POINT ( 0 0 1 )' ) )", "returns":"1"},
+                { "expression":"z_min( make_line( make_point( 0,0,0 ), make_point( -1,-1,-2 ) ) )", "returns":"-2"}
+  ]
+}

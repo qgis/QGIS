@@ -18,6 +18,7 @@ SET(QGIS_APP_SRCS
   qgsapplayertreeviewmenuprovider.cpp
   qgsappwindowmanager.cpp
   qgsappscreenshots.cpp
+  qgsanimationexportdialog.cpp
   qgsannotationwidget.cpp
   qgsappsslerrorhandler.cpp
   qgsattributetabledialog.cpp
@@ -114,6 +115,8 @@ SET(QGIS_APP_SRCS
   decorations/qgsdecorationgrid.cpp
   decorations/qgsdecorationgriddialog.cpp
 
+  vectortile/qgsvectortilelayerproperties.cpp
+
   vertextool/qgslockedfeature.cpp
   vertextool/qgsvertexeditor.cpp
   vertextool/qgsvertextool.cpp
@@ -169,6 +172,8 @@ SET(QGIS_APP_SRCS
   devtools/networklogger/qgsnetworkloggernode.cpp
   devtools/networklogger/qgsnetworkloggerpanelwidget.cpp
   devtools/networklogger/qgsnetworkloggerwidgetfactory.cpp
+  devtools/profiler/qgsprofilerpanelwidget.cpp
+  devtools/profiler/qgsprofilerwidgetfactory.cpp
 
   labeling/qgslabelpropertydialog.cpp
   labeling/qgsmaptoolchangelabelproperties.cpp
@@ -212,6 +217,7 @@ SET(QGIS_APP_SRCS
 
   mesh/qgsmeshlayerproperties.cpp
   mesh/qgsrenderermeshpropertieswidget.cpp
+  mesh/qgsmeshdatasetgrouptreewidget.cpp
   mesh/qgsmeshrenderer3daveragingwidget.cpp
   mesh/qgsmeshrenderermeshsettingswidget.cpp
   mesh/qgsmeshrendererscalarsettingswidget.cpp
@@ -382,6 +388,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/app/dwg
   ${CMAKE_SOURCE_DIR}/src/app/mesh
   ${CMAKE_SOURCE_DIR}/src/app/locator
+  ${CMAKE_SOURCE_DIR}/src/app/vectortile
   ${CMAKE_SOURCE_DIR}/src/analysis
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
   ${CMAKE_SOURCE_DIR}/src/analysis/mesh
@@ -481,6 +488,7 @@ INCLUDE_DIRECTORIES(
   ../core/mesh
   ../core/scalebar
   ../core/symbology
+  ../core/textrenderer
   ../gui
   ../gui/symbology
   ../gui/attributetable

@@ -403,6 +403,38 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
             return TVL_Unknown;
         }
       }
+      else if ( ( vL.type() == QVariant::DateTime && vR.type() == QVariant::DateTime ) )
+      {
+        QDateTime dL = QgsExpressionUtils::getDateTimeValue( vL, parent );
+        ENSURE_NO_EVAL_ERROR;
+        QDateTime dR = QgsExpressionUtils::getDateTimeValue( vR, parent );
+        ENSURE_NO_EVAL_ERROR;
+
+        // while QDateTime has innate handling of timezones, we don't expose these ANYWHERE
+        // in QGIS. So to avoid confusion where seemingly equal datetime values give unexpected
+        // results (due to different hidden timezones), we force all datetime comparisons to treat
+        // all datetime values as having the same time zone
+        dL.setTimeSpec( Qt::UTC );
+        dR.setTimeSpec( Qt::UTC );
+
+        return compare( dR.msecsTo( dL ) ) ? TVL_True : TVL_False;
+      }
+      else if ( ( vL.type() == QVariant::Date && vR.type() == QVariant::Date ) )
+      {
+        const QDate dL = QgsExpressionUtils::getDateValue( vL, parent );
+        ENSURE_NO_EVAL_ERROR;
+        const QDate dR = QgsExpressionUtils::getDateValue( vR, parent );
+        ENSURE_NO_EVAL_ERROR;
+        return compare( dR.daysTo( dL ) ) ? TVL_True : TVL_False;
+      }
+      else if ( ( vL.type() == QVariant::Time && vR.type() == QVariant::Time ) )
+      {
+        const QTime dL = QgsExpressionUtils::getTimeValue( vL, parent );
+        ENSURE_NO_EVAL_ERROR;
+        const QTime dR = QgsExpressionUtils::getTimeValue( vR, parent );
+        ENSURE_NO_EVAL_ERROR;
+        return compare( dR.msecsTo( dL ) ) ? TVL_True : TVL_False;
+      }
       else if ( ( vL.type() != QVariant::String || vR.type() != QVariant::String ) &&
                 QgsExpressionUtils::isDoubleSafe( vL ) && QgsExpressionUtils::isDoubleSafe( vR ) )
       {
@@ -1276,7 +1308,7 @@ QVariant QgsExpressionNodeColumnRef::evalNode( QgsExpression *parent, const QgsE
         return feature.attribute( mName );
     }
   }
-  parent->setEvalErrorString( QStringLiteral( "Column '%1' not found" ).arg( mName ) );
+  parent->setEvalErrorString( tr( "Column '%1' not found" ).arg( mName ) );
   return QVariant();
 }
 

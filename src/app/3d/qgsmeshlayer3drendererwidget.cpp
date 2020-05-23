@@ -57,6 +57,7 @@ void QgsMeshLayer3DRendererWidget::setLayer( QgsMeshLayer *layer )
   else
   {
     setRenderer( nullptr );
+    mWidgetMesh->setEnabled( false );
   }
 }
 

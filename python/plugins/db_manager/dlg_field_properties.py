@@ -62,7 +62,7 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
         tab = self.table.name
         field = fld.name
         res = self.db.connector.getComment(tab, field)
-        self.editCom.setText(res) # Set comment value
+        self.editCom.setText(res)  # Set comment value
 
     def getField(self, newCopy=False):
         fld = TableField(self.table) if not self.fld or newCopy else self.fld

@@ -47,7 +47,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class PointsToPaths(QgisAlgorithm):
-
     INPUT = 'INPUT'
     GROUP_FIELD = 'GROUP_FIELD'
     ORDER_FIELD = 'ORDER_FIELD'

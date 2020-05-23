@@ -76,7 +76,10 @@ email                : sherman at mrcc.com
 #include "qgsreferencedgeometry.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsmaplayertemporalproperties.h"
+#include "qgsrasterlayertemporalproperties.h"
+#include "qgsvectorlayertemporalproperties.h"
 #include "qgstemporalcontroller.h"
+#include "qgsruntimeprofiler.h"
 
 /**
  * \ingroup gui
@@ -141,24 +144,27 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &QgsMapCanvas::mapThemeRenamed );
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemesChanged, this, &QgsMapCanvas::projectThemesChanged );
 
-  mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
-  mSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
-  mSettings.setFlag( QgsMapSettings::RenderPartialOutput );
-  mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
-  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged,
-           this, [ = ]
   {
+    QgsScopedRuntimeProfile profile( "Map settings initialization" );
+    mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
+    mSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
+    mSettings.setFlag( QgsMapSettings::RenderPartialOutput );
     mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
-    refresh();
-  } );
-  mSettings.setTransformContext( QgsProject::instance()->transformContext() );
-  connect( QgsProject::instance(), &QgsProject::transformContextChanged,
-           this, [ = ]
-  {
+    connect( QgsProject::instance(), &QgsProject::ellipsoidChanged,
+             this, [ = ]
+    {
+      mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
+      refresh();
+    } );
     mSettings.setTransformContext( QgsProject::instance()->transformContext() );
-    emit transformContextChanged();
-    refresh();
-  } );
+    connect( QgsProject::instance(), &QgsProject::transformContextChanged,
+             this, [ = ]
+    {
+      mSettings.setTransformContext( QgsProject::instance()->transformContext() );
+      emit transformContextChanged();
+      refresh();
+    } );
+  }
 
   // refresh canvas when a remote svg/image has finished downloading
   connect( QgsApplication::svgCache(), &QgsSvgCache::remoteSvgFetched, this, &QgsMapCanvas::redrawAllLayers );
@@ -219,8 +225,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   setTemporalRange( mSettings.temporalRange() );
 
   refresh();
-
-} // QgsMapCanvas ctor
+}
 
 
 QgsMapCanvas::~QgsMapCanvas()
@@ -393,6 +398,7 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
   if ( !mSettings.visibleExtent().isEmpty() )
   {
     QgsCoordinateTransform transform( mSettings.destinationCrs(), crs, QgsProject::instance() );
+    transform.setBallparkTransformsAreAppropriate( true );
     try
     {
       rect = transform.transformBoundingBox( mSettings.visibleExtent() );
@@ -553,8 +559,12 @@ void QgsMapCanvas::refreshMap()
   expressionContext << QgsExpressionContextUtils::globalScope()
                     << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
                     << QgsExpressionContextUtils::atlasScope( nullptr )
-                    << QgsExpressionContextUtils::mapSettingsScope( mSettings )
-                    << defaultExpressionContextScope()
+                    << QgsExpressionContextUtils::mapSettingsScope( mSettings );
+  if ( QgsExpressionContextScopeGenerator *generator = dynamic_cast< QgsExpressionContextScopeGenerator * >( mController ) )
+  {
+    expressionContext << generator->createExpressionContextScope();
+  }
+  expressionContext << defaultExpressionContextScope()
                     << new QgsExpressionContextScope( mExpressionContextScope );
 
   mSettings.setExpressionContext( expressionContext );
@@ -691,8 +701,12 @@ void QgsMapCanvas::rendererJobFinished()
     {
       mLastLayerRenderTime.insert( it.key()->id(), it.value() );
     }
-    if ( mUsePreviewJobs )
+    if ( mUsePreviewJobs && !mRefreshAfterJob )
       startPreviewJobs();
+  }
+  else
+  {
+    mRefreshAfterJob = false;
   }
 
   // now we are in a slot called from mJob - do not delete it immediately
@@ -701,6 +715,13 @@ void QgsMapCanvas::rendererJobFinished()
   mJob = nullptr;
 
   emit mapCanvasRefreshed();
+
+  if ( mRefreshAfterJob )
+  {
+    mRefreshAfterJob = false;
+    clearTemporalCache();
+    refresh();
+  }
 }
 
 void QgsMapCanvas::previewJobFinished()
@@ -756,26 +777,38 @@ void QgsMapCanvas::setCustomDropHandlers( const QVector<QPointer<QgsCustomDropHa
   mDropHandlers = handlers;
 }
 
+void QgsMapCanvas::clearTemporalCache()
+{
+  if ( mCache )
+  {
+    const QList<QgsMapLayer *> layerList = mapSettings().layers();
+    for ( QgsMapLayer *layer : layerList )
+    {
+      if ( layer->temporalProperties() && layer->temporalProperties()->isActive() )
+      {
+        if ( layer->temporalProperties()->flags() & QgsTemporalProperty::FlagDontInvalidateCachedRendersWhenRangeChanges )
+          continue;
+
+        mCache->invalidateCacheForLayer( layer );
+      }
+    }
+  }
+}
+
 void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
   if ( temporalRange() == dateTimeRange )
     return;
 
   mSettings.setTemporalRange( dateTimeRange );
-
-  if ( mCache )
-  {
-    // we need to discard any previously cached images which have temporal properties enabled, so that these will be updated when
-    // the canvas is redrawn
-    const QList<QgsMapLayer *> layerList = mapSettings().layers();
-    for ( QgsMapLayer *layer : layerList )
-    {
-      if ( layer->temporalProperties() && layer->temporalProperties()->isActive() )
-        mCache->invalidateCacheForLayer( layer );
-    }
-  }
+  mSettings.setIsTemporal( dateTimeRange.begin().isValid() || dateTimeRange.end().isValid() );
 
   emit temporalRangeChanged();
+
+  // we need to discard any previously cached images which have temporal properties enabled, so that these will be updated when
+  // the canvas is redrawn
+  if ( !mJob )
+    clearTemporalCache();
 
   autoRefreshTriggered();
 }
@@ -783,6 +816,26 @@ void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
 const QgsDateTimeRange &QgsMapCanvas::temporalRange() const
 {
   return mSettings.temporalRange();
+}
+
+void QgsMapCanvas::installInteractionBlocker( QgsMapCanvasInteractionBlocker *blocker )
+{
+  mInteractionBlockers.append( blocker );
+}
+
+void QgsMapCanvas::removeInteractionBlocker( QgsMapCanvasInteractionBlocker *blocker )
+{
+  mInteractionBlockers.removeAll( blocker );
+}
+
+bool QgsMapCanvas::allowInteraction( QgsMapCanvasInteractionBlocker::Interaction interaction ) const
+{
+  for ( const QgsMapCanvasInteractionBlocker *block : mInteractionBlockers )
+  {
+    if ( block->blockCanvasInteraction( interaction ) )
+      return false;
+  }
+  return true;
 }
 
 void QgsMapCanvas::mapUpdateTimeout()
@@ -2025,9 +2078,9 @@ void QgsMapCanvas::autoRefreshTriggered()
 {
   if ( mJob )
   {
-    // canvas is currently being redrawn, so we skip this auto refresh
-    // otherwise we could get stuck in the situation where an auto refresh is triggered
-    // too often to allow the canvas to ever finish rendering
+    // canvas is currently being redrawn, so we defer the last requested
+    // auto refresh until current rendering job finishes
+    mRefreshAfterJob = true;
     return;
   }
 

@@ -492,8 +492,8 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( m1.hasVertex() );
 
       snappingConfig.setScaleDependencyMode( QgsSnappingConfig::Global );
-      snappingConfig.setMinimumScale( 1000.0 );
-      snappingConfig.setMaximumScale( 10000.0 );
+      snappingConfig.setMinimumScale( 10000.0 );// 1/10000 scale
+      snappingConfig.setMaximumScale( 1000.0 );// 1/1000 scale
       u.setConfig( snappingConfig );
 
       //Global settings for scale limit, but scale outside min max range -> no snapping
@@ -502,8 +502,8 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( m2.hasVertex() == false );
 
       snappingConfig.setScaleDependencyMode( QgsSnappingConfig::Global );
-      snappingConfig.setMinimumScale( 1000.0 );
-      snappingConfig.setMaximumScale( 100000.0 );
+      snappingConfig.setMinimumScale( 100000.0 );
+      snappingConfig.setMaximumScale( 1000.0 );
       u.setConfig( snappingConfig );
 
       //Global settings for scale limit, scale inside min max range -> snapping enabled
@@ -512,7 +512,7 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( m3.hasVertex() );
 
       snappingConfig.setScaleDependencyMode( QgsSnappingConfig::PerLayer );
-      snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::VertexFlag, 10, QgsTolerance::Pixels, 1000.0, 10000.0 ) );
+      snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::VertexFlag, 10, QgsTolerance::Pixels, 10000.0, 1000.0 ) );
       u.setConfig( snappingConfig );
 
       //Per layer settings, but scale outside min max range of layer -> no snapping
@@ -521,7 +521,7 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( m4.hasVertex() == false );
 
       snappingConfig.setScaleDependencyMode( QgsSnappingConfig::PerLayer );
-      snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::VertexFlag, 10, QgsTolerance::Pixels, 1000.0, 100000.0 ) );
+      snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::VertexFlag, 10, QgsTolerance::Pixels, 100000.0, 1000.0 ) );
       u.setConfig( snappingConfig );
 
       //Per layer settings, scale inside min max range of layer -> snapping enabled

@@ -52,7 +52,7 @@ Creates a new QgsSimpleLineSymbolLayer from an SLD XML DOM ``element``.
 
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
 
-    virtual void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    virtual void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     virtual QgsStringMap properties() const;
 
@@ -506,7 +506,7 @@ calculating individual symbol angles.
 
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) ${SIP_FINAL};
 
-    virtual void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) ${SIP_FINAL};
+    virtual void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) ${SIP_FINAL};
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const ${SIP_FINAL};
 

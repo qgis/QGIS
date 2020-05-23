@@ -857,6 +857,18 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
       }
       break;
     }
+    case QVariant::LongLong:
+    {
+      if ( ::PQgetisnull( queryResult.result(), row, col ) )
+      {
+        v = QVariant( QVariant::LongLong );
+      }
+      else
+      {
+        v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), QString::number( mConn->getBinaryInt( queryResult, row, col ) ), fld.typeName() );
+      }
+      break;
+    }
     default:
     {
       v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), queryResult.PQgetvalue( row, col ), fld.typeName() );

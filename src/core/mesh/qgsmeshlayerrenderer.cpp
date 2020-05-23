@@ -466,7 +466,6 @@ void QgsMeshLayerRenderer::renderScalarDatasetOnEdges( const QgsMeshRendererScal
   edgePlotter.setInterpolatedColor( QgsInterpolatedLineColor( scalarSettings.colorRampShader() ) );
   edgePlotter.setInterpolatedWidth( QgsInterpolatedLineWidth( scalarSettings.edgeStrokeWidth() ) );
   edgePlotter.setWidthUnit( scalarSettings.edgeStrokeWidthUnit() );
-  edgePlotter.setOpacity( scalarSettings.opacity() );
 
   for ( const int i : egdesInExtent )
   {
@@ -550,6 +549,9 @@ void QgsMeshLayerRenderer::renderVectorDataset()
 
   if ( std::isnan( mVectorDatasetMagMinimum ) || std::isnan( mVectorDatasetMagMaximum ) )
     return; // only NODATA values
+
+  if ( !( mVectorDatasetMagMaximum > 0 ) )
+    return; //all vector are null vector
 
   std::unique_ptr<QgsMeshVectorRenderer> renderer( QgsMeshVectorRenderer::makeVectorRenderer(
         mTriangularMesh,

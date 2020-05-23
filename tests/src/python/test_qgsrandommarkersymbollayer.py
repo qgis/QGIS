@@ -124,11 +124,12 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
         s3.symbolLayer(0).setSeed(1)
         s3.symbolLayer(0).setCountMethod(QgsRandomMarkerFillSymbolLayer.DensityBasedCount)
         s3.symbolLayer(0).setPointCount(5)
-        s3.symbolLayer(0).setDensityArea(250) # 250 square millimeter
+        s3.symbolLayer(0).setDensityArea(250)  # 250 square millimeter
         g = QgsGeometry.fromWkt(
             'Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
-        self.assertTrue(self.imageCheck('randommarkerfill_densitybasedcount', 'randommarkerfill_densitybasedcount', rendered_image))
+        self.assertTrue(
+            self.imageCheck('randommarkerfill_densitybasedcount', 'randommarkerfill_densitybasedcount', rendered_image))
 
     def testCreate(self):
         random_fill = QgsRandomMarkerFillSymbolLayer(10, seed=5)
@@ -169,6 +170,34 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
             'MultiPolygon(((0 0, 5 0, 5 10, 0 10, 0 0),(1 1, 1 9, 4 9, 4 1, 1 1)), ((6 0, 10 0, 10 5, 6 5, 6 0)), ((8 6, 10 6, 10 10, 8 10, 8 6)))')
         rendered_image = self.renderGeometry(s, g)
         self.assertTrue(self.imageCheck('randommarkerfill_multipoly', 'randommarkerfill_multipoly', rendered_image))
+
+    def testMultiLayer(self):
+        """
+        Test rendering a multi-layer symbol including a random marker fill symbol
+        """
+        s = QgsFillSymbol()
+        s.deleteSymbolLayer(0)
+
+        simple_fill = QgsSimpleFillSymbolLayer(color=QColor(255, 255, 255))
+        s.appendSymbolLayer(simple_fill.clone())
+
+        random_fill = QgsRandomMarkerFillSymbolLayer(12, seed=481523)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        random_fill.setSubSymbol(marker_symbol)
+
+        s.appendSymbolLayer(random_fill.clone())
+
+        simple_fill = QgsSimpleFillSymbolLayer(color=QColor(100, 150, 200, 150))
+        s.appendSymbolLayer(simple_fill.clone())
+
+        g = QgsGeometry.fromWkt(
+            'MultiPolygon(((0 0, 5 0, 5 10, 0 10, 0 0),(1 1, 1 9, 4 9, 4 1, 1 1)), ((6 0, 10 0, 10 5, 6 5, 6 0)), ((8 6, 10 6, 10 10, 8 10, 8 6)))')
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(self.imageCheck('randommarkerfill_multilayer', 'randommarkerfill_multilayer', rendered_image))
 
     def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()

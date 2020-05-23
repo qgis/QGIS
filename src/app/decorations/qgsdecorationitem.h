@@ -63,8 +63,6 @@ class APP_EXPORT QgsDecorationItem : public QObject, public QgsMapDecoration
      */
     void setPlacement( Placement placement ) { mPlacement = placement; }
 
-    QString name() const { return mName; }
-
   signals:
     void toggled( bool t );
 
@@ -82,8 +80,6 @@ class APP_EXPORT QgsDecorationItem : public QObject, public QgsMapDecoration
 
   protected:
 
-    void setName( const char *name );
-
     //! True if decoration item has to be displayed
     bool mEnabled = false;
 
@@ -92,9 +88,7 @@ class APP_EXPORT QgsDecorationItem : public QObject, public QgsMapDecoration
     //! Units used for the decoration placement margin
     QgsUnitTypes::RenderUnit mMarginUnit = QgsUnitTypes::RenderMillimeters;
 
-    QString mName;
-    QString mNameConfig;
-    QString mNameTranslated;
+    QString mConfigurationName;
 };
 
 #endif

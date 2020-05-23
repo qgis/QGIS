@@ -52,6 +52,8 @@ class ParametersPanel(QgsProcessingParametersWidget):
 
         self.wrappers = {}
 
+        self.extra_parameters = {}
+
         self.processing_context = createContext()
 
         class ContextGenerator(QgsProcessingContextGenerator):
@@ -189,6 +191,8 @@ class ParametersPanel(QgsProcessingParametersWidget):
 
     def createProcessingParameters(self):
         parameters = {}
+        for p, v in self.extra_parameters.items():
+            parameters[p] = v
 
         for param in self.algorithm().parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
@@ -251,8 +255,11 @@ class ParametersPanel(QgsProcessingParametersWidget):
         return self.algorithm().preprocessParameters(parameters)
 
     def setParameters(self, parameters):
+        self.extra_parameters = {}
         for param in self.algorithm().parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                if param.name() in parameters:
+                    self.extra_parameters[param.name()] = parameters[param.name()]
                 continue
 
             if not param.name() in parameters:

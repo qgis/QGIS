@@ -37,6 +37,36 @@ QgsLegendSettings::QgsLegendSettings()
   rstyle( QgsLegendStyle::SymbolLabel ).rfont().setPointSizeF( 12.0 );
 }
 
+double QgsLegendSettings::mmPerMapUnit() const
+{
+  return mMmPerMapUnit;
+}
+
+void QgsLegendSettings::setMmPerMapUnit( double mmPerMapUnit )
+{
+  mMmPerMapUnit = mmPerMapUnit;
+}
+
+bool QgsLegendSettings::useAdvancedEffects() const
+{
+  return mUseAdvancedEffects;
+}
+
+void QgsLegendSettings::setUseAdvancedEffects( bool use )
+{
+  mUseAdvancedEffects = use;
+}
+
+double QgsLegendSettings::mapScale() const
+{
+  return mMapScale;
+}
+
+void QgsLegendSettings::setMapScale( double scale )
+{
+  mMapScale = scale;
+}
+
 double QgsLegendSettings::mapUnitsPerPixel() const
 {
   return 1 / ( mMmPerMapUnit * ( mDpi / 25.4 ) );
@@ -45,6 +75,16 @@ double QgsLegendSettings::mapUnitsPerPixel() const
 void QgsLegendSettings::setMapUnitsPerPixel( double mapUnitsPerPixel )
 {
   mMmPerMapUnit = 1 / mapUnitsPerPixel / ( mDpi / 25.4 );
+}
+
+int QgsLegendSettings::dpi() const
+{
+  return mDpi;
+}
+
+void QgsLegendSettings::setDpi( int dpi )
+{
+  mDpi = dpi;
 }
 
 QStringList QgsLegendSettings::evaluateItemText( const QString &text, const QgsExpressionContext &context ) const

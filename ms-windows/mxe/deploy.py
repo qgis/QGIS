@@ -67,7 +67,7 @@ def library_install_exe(out=''):
     out = run_check().splitlines()
     for line in out:
         # err = re.search('(err:module:import_dll (Library |Loading library)) (.*?\.dll) ', line)
-        err = re.search('([^ ]+\.dll) \(which', line)
+        err = re.search(r'([^ ]+\.dll) \(which', line)
         if err is not None:
 
             dll = err.group(1)
@@ -98,7 +98,7 @@ def library_install_objdump(path, level):
 
     done.append(path)
 
-    command = objdump_path + " -p " + lib + " | grep -o ': .*\.dll$'"
+    command = objdump_path + " -p " + lib + " | grep -o ': .*\\.dll$'"
     res = subprocess.getstatusoutput(command)
     if (res[0] > 0):
         print("Error: objdump failed with " + lib)

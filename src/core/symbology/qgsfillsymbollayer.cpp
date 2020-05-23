@@ -41,6 +41,10 @@
 #include <QDomElement>
 #include <random>
 
+#ifndef QT_NO_PRINTER
+#include <QPrinter>
+#endif
+
 QgsSimpleFillSymbolLayer::QgsSimpleFillSymbolLayer( const QColor &color, Qt::BrushStyle style, const QColor &strokeColor, Qt::PenStyle strokeStyle, double strokeWidth,
     Qt::PenJoinStyle penJoinStyle )
   : mBrushStyle( style )
@@ -242,7 +246,8 @@ void QgsSimpleFillSymbolLayer::startRender( QgsSymbolRenderContext &context )
 
   QColor selColor = context.renderContext().selectionColor();
   QColor selPenColor = selColor == mColor ? selColor : mStrokeColor;
-  if ( ! SELECTION_IS_OPAQUE ) selColor.setAlphaF( context.opacity() );
+  if ( ! SELECTION_IS_OPAQUE )
+    selColor.setAlphaF( context.opacity() );
   mSelBrush = QBrush( selColor );
   // N.B. unless a "selection line color" is implemented in addition to the "selection color" option
   // this would mean symbols with "no fill" look the same whether or not they are selected
@@ -263,7 +268,7 @@ void QgsSimpleFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )
   Q_UNUSED( context )
 }
 
-void QgsSimpleFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
+void QgsSimpleFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
   QPainter *p = context.renderContext().painter();
   if ( !p )
@@ -273,9 +278,6 @@ void QgsSimpleFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPo
 
   applyDataDefinedSymbology( context, mBrush, mPen, mSelPen );
 
-  p->setBrush( context.selected() ? mSelBrush : mBrush );
-  p->setPen( context.selected() ? mSelPen : mPen );
-
   QPointF offset;
   if ( !mOffset.isNull() )
   {
@@ -284,7 +286,29 @@ void QgsSimpleFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPo
     p->translate( offset );
   }
 
-  _renderPolygon( p, points, rings, context );
+#ifndef QT_NO_PRINTER
+  if ( mBrush.style() == Qt::SolidPattern || mBrush.style() == Qt::NoBrush || !dynamic_cast<QPrinter *>( p->device() ) )
+#endif
+  {
+    p->setPen( context.selected() ? mSelPen : mPen );
+    p->setBrush( context.selected() ? mSelBrush : mBrush );
+    _renderPolygon( p, points, rings, context );
+  }
+#ifndef QT_NO_PRINTER
+  else
+  {
+    // workaround upstream issue https://github.com/qgis/QGIS/issues/36580
+    // when a non-solid brush is set with opacity, the opacity incorrectly applies to the pen
+    // when exporting to PDF/print devices
+    p->setBrush( context.selected() ? mSelBrush : mBrush );
+    p->setPen( Qt::NoPen );
+    _renderPolygon( p, points, rings, context );
+
+    p->setPen( context.selected() ? mSelPen : mPen );
+    p->setBrush( Qt::NoBrush );
+    _renderPolygon( p, points, rings, context );
+  }
+#endif
 
   if ( !mOffset.isNull() )
   {
@@ -842,7 +866,7 @@ void QgsGradientFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )
   Q_UNUSED( context )
 }
 
-void QgsGradientFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
+void QgsGradientFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
   QPainter *p = context.renderContext().painter();
   if ( !p )
@@ -1129,7 +1153,7 @@ void QgsShapeburstFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )
   Q_UNUSED( context )
 }
 
-void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
+void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
   QPainter *p = context.renderContext().painter();
   if ( !p )
@@ -1560,7 +1584,7 @@ QgsImageFillSymbolLayer::QgsImageFillSymbolLayer()
   setSubSymbol( new QgsLineSymbol() );
 }
 
-void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
+void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
   QPainter *p = context.renderContext().painter();
   if ( !p )
@@ -1586,9 +1610,6 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPol
   if ( context.selected() )
   {
     QColor selColor = context.renderContext().selectionColor();
-    // Alister - this doesn't seem to work here
-    //if ( ! selectionIsOpaque )
-    //  selColor.setAlphaF( context.alpha() );
     p->setBrush( QBrush( selColor ) );
     _renderPolygon( p, points, rings, context );
   }
@@ -1606,8 +1627,7 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPol
     mStroke->renderPolyline( points, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && context.selected() );
     if ( rings )
     {
-      QList<QPolygonF>::const_iterator ringIt = rings->constBegin();
-      for ( ; ringIt != rings->constEnd(); ++ringIt )
+      for ( auto ringIt = rings->constBegin(); ringIt != rings->constEnd(); ++ringIt )
       {
         mStroke->renderPolyline( *ringIt, context.feature(), context.renderContext(), -1, SELECT_FILL_BORDER && context.selected() );
       }
@@ -3507,7 +3527,7 @@ void QgsCentroidFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )
   mMarker->stopRender( context.renderContext() );
 }
 
-void QgsCentroidFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
+void QgsCentroidFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
   if ( !mPointOnAllParts )
   {
@@ -3758,7 +3778,7 @@ QString QgsRasterFillSymbolLayer::layerType() const
   return QStringLiteral( "RasterFill" );
 }
 
-void QgsRasterFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
+void QgsRasterFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
   QPainter *p = context.renderContext().painter();
   if ( !p )
@@ -4009,7 +4029,7 @@ void QgsRandomMarkerFillSymbolLayer::stopRender( QgsSymbolRenderContext &context
   mMarker->stopRender( context.renderContext() );
 }
 
-void QgsRandomMarkerFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
+void QgsRandomMarkerFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
   Part part;
   part.exterior = points;

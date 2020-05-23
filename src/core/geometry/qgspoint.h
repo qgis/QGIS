@@ -51,6 +51,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * If \a wkbType is set to `QgsWkbTypes::Point`, `QgsWkbTypes::PointZ`, `QgsWkbTypes::PointM` or `QgsWkbTypes::PointZM`
      * the type will be set accordingly. If it is left to the default `QgsWkbTypes::Unknown`, the type will be set
      * based on the following rules:
+     *
      * - If only x and y are specified, the type will be a 2D point.
      * - If any or both of the Z and M are specified, the appropriate type will be created.
      *
@@ -387,7 +388,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     double distance3D( const QgsPoint &other ) const;
 
     /**
-     * Returns the Cartesian 3D squared distance between this point a specified x, y, z coordinate. Calling
+     * Returns the Cartesian 3D squared distance between this point and a specified x, y, z coordinate. Calling
      * this is faster than calling distance(), and may be useful in use cases such as comparing
      * distances where the extra expense of calling distance() is not required.
      * \see distance()
@@ -396,7 +397,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     double distanceSquared3D( double x, double y, double z ) const;
 
     /**
-     * Returns the Cartesian 3D squared distance between this point another point. Calling
+     * Returns the Cartesian 3D squared distance between this point and another point. Calling
      * this is faster than calling distance(), and may be useful in use cases such as comparing
      * distances where the extra expense of calling distance() is not required.
      * \see distance()

@@ -28,6 +28,7 @@
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsvectorlayer.h"
+#include "qgstextrenderer.h"
 #include <QMenu>
 #include <QClipboard>
 #include <QDrag>

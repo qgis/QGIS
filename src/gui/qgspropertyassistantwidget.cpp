@@ -23,6 +23,7 @@
 #include "qgslayertreelayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsstyle.h"
 
 QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent,
     const QgsPropertyDefinition &definition, const QgsProperty &initialState,

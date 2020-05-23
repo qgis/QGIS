@@ -657,7 +657,7 @@ void QgsLineSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize
   stopRender( context );
 }
 
-void QgsLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
+void QgsLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
   switch ( mRingFilter )
   {
@@ -712,7 +712,7 @@ void QgsFillSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize
 
   for ( const QList< QPolygonF > &poly : polys )
   {
-    QList< QPolygonF > rings;
+    QVector< QPolygonF > rings;
     for ( int i = 1; i < poly.size(); ++i )
       rings << poly.at( i );
     renderPolygon( poly.value( 0 ), &rings, context );
@@ -723,7 +723,7 @@ void QgsFillSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize
   stopRender( context );
 }
 
-void QgsFillSymbolLayer::_renderPolygon( QPainter *p, const QPolygonF &points, const QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
+void QgsFillSymbolLayer::_renderPolygon( QPainter *p, const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
   if ( !p )
   {
@@ -757,8 +757,7 @@ void QgsFillSymbolLayer::_renderPolygon( QPainter *p, const QPolygonF &points, c
 
     if ( rings )
     {
-      QList<QPolygonF>::const_iterator it = rings->constBegin();
-      for ( ; it != rings->constEnd(); ++it )
+      for ( auto it = rings->constBegin(); it != rings->constEnd(); ++it )
       {
         QPolygonF ring = *it;
         path.addPolygon( ring );

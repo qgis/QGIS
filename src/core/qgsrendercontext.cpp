@@ -98,7 +98,8 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mHasRenderedFeatureHandlers = rh.mHasRenderedFeatureHandlers;
   mCustomRenderingFlags = rh.mCustomRenderingFlags;
   setIsTemporal( rh.isTemporal() );
-  setTemporalRange( rh.temporalRange() );
+  if ( isTemporal() )
+    setTemporalRange( rh.temporalRange() );
 #ifdef QGISDEBUG
   mHasTransformContext = rh.mHasTransformContext;
 #endif

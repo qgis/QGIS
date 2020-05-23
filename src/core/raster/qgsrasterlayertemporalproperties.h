@@ -46,6 +46,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     QgsRasterLayerTemporalProperties( QObject *parent SIP_TRANSFERTHIS = nullptr, bool enabled = false );
 
     bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const override;
+    QgsDateTimeRange calculateTemporalExtent( QgsMapLayer *layer ) const override SIP_SKIP;
 
     /**
      * Mode of the raster temporal properties
@@ -69,6 +70,11 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      *\see mode()
     **/
     void setMode( TemporalMode mode );
+
+    /**
+     * Returns flags associated to the temporal property.
+     */
+    QgsTemporalProperty::Flags flags() const override;
 
     /**
      * Returns the desired method to use when resolving a temporal interval to matching

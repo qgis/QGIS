@@ -19,6 +19,7 @@
 
 //qgis includes...
 #include "qgsapplication.h"
+#include "qgsmbtiles.h"
 #include "qgsproject.h"
 #include "qgstiles.h"
 #include "qgsvectorlayer.h"
@@ -51,6 +52,8 @@ class TestQgsVectorTileWriter : public QObject
 
     void test_basic();
     void test_mbtiles();
+    void test_mbtiles_metadata();
+    void test_filtering();
 };
 
 
@@ -208,6 +211,108 @@ void TestQgsVectorTileWriter::test_mbtiles()
   QVERIFY( attrNamePolys0_0 == "Dam" || attrNamePolys0_0 == "Lake" );
 
   delete vtLayer;
+}
+
+void TestQgsVectorTileWriter::test_mbtiles_metadata()
+{
+  // here we test that the metadata we pass to the writer get stored properly
+
+  QString fileName = QDir::tempPath() + "/test_qgsvectortilewriter_metadata.mbtiles";
+  if ( QFile::exists( fileName ) )
+    QFile::remove( fileName );
+
+  QgsDataSourceUri ds;
+  ds.setParam( "type", "mbtiles" );
+  ds.setParam( "url", fileName );
+
+  QgsVectorLayer *vlPoints = new QgsVectorLayer( mDataDir + "/points.shp", "points", "ogr" );
+
+  QVariantMap meta;
+  meta["name"] = "QGIS rocks!";
+  meta["attribution"] = "QGIS sample data";
+
+  QgsVectorTileWriter writer;
+  writer.setDestinationUri( ds.encodedUri() );
+  writer.setMaxZoom( 1 );
+  writer.setLayers( QList<QgsVectorTileWriter::Layer>() << QgsVectorTileWriter::Layer( vlPoints ) );
+  writer.setMetadata( meta );
+
+  bool res = writer.writeTiles();
+  QVERIFY( res );
+  QVERIFY( writer.errorMessage().isEmpty() );
+
+  delete vlPoints;
+
+  // do some checks on the output
+
+  QgsMbTiles reader( fileName );
+  QVERIFY( reader.open() );
+  QCOMPARE( reader.metadataValue( "name" ), QStringLiteral( "QGIS rocks!" ) );
+  QCOMPARE( reader.metadataValue( "attribution" ), QStringLiteral( "QGIS sample data" ) );
+  QCOMPARE( reader.metadataValue( "description" ), QString() );  // was not specified
+  QCOMPARE( reader.metadataValue( "minzoom" ).toInt(), 0 );
+  QCOMPARE( reader.metadataValue( "maxzoom" ).toInt(), 1 );
+}
+
+void TestQgsVectorTileWriter::test_filtering()
+{
+  // test filtering of layers by expression and by min/max zoom level
+
+  QString fileName = QDir::tempPath() + "/test_qgsvectortilewriter_filtering.mbtiles";
+  if ( QFile::exists( fileName ) )
+    QFile::remove( fileName );
+
+  QgsDataSourceUri ds;
+  ds.setParam( "type", "mbtiles" );
+  ds.setParam( "url", fileName );
+
+  QgsVectorLayer *vlPoints = new QgsVectorLayer( mDataDir + "/points.shp", "points", "ogr" );
+  QgsVectorLayer *vlLines = new QgsVectorLayer( mDataDir + "/lines.shp", "lines", "ogr" );
+  QgsVectorLayer *vlPolys = new QgsVectorLayer( mDataDir + "/polys.shp", "polys", "ogr" );
+
+  QList<QgsVectorTileWriter::Layer> layers;
+  layers << QgsVectorTileWriter::Layer( vlPoints );
+  layers << QgsVectorTileWriter::Layer( vlLines );
+  layers << QgsVectorTileWriter::Layer( vlPolys );
+
+  layers[0].setLayerName( "b52" );
+  layers[0].setFilterExpression( "Class = 'B52'" );
+  layers[1].setMaxZoom( 1 ); // lines only [0,1]
+  layers[2].setMinZoom( 1 ); // polys only [1,2,3]
+
+  QgsVectorTileWriter writer;
+  writer.setDestinationUri( ds.encodedUri() );
+  writer.setMaxZoom( 3 );
+  writer.setLayers( layers );
+
+  bool res = writer.writeTiles();
+  QVERIFY( res );
+  QVERIFY( writer.errorMessage().isEmpty() );
+
+  delete vlPoints;
+  delete vlLines;
+  delete vlPolys;
+
+  // do some checks on the output
+
+  QgsVectorTileLayer *vtLayer = new QgsVectorTileLayer( ds.encodedUri(), "output" );
+
+  QByteArray tile0 = vtLayer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
+  QgsVectorTileMVTDecoder decoder;
+  bool resDecode0 = decoder.decode( QgsTileXYZ( 0, 0, 0 ), tile0 );
+  QVERIFY( resDecode0 );
+  QStringList layerNames = decoder.layers();
+  QCOMPARE( layerNames, QStringList() << "b52" << "lines" );
+
+  QMap<QString, QgsFields> perLayerFields;
+  perLayerFields["polys"] = QgsFields();
+  perLayerFields["lines"] = QgsFields();
+  perLayerFields["b52"] = QgsFields();
+
+  QgsVectorTileFeatures features0 = decoder.layerFeatures( perLayerFields, QgsCoordinateTransform() );
+  QCOMPARE( features0["b52"].count(), 4 );
+  QCOMPARE( features0["lines"].count(), 6 );
+  QCOMPARE( features0["polys"].count(), 0 );
 }
 
 

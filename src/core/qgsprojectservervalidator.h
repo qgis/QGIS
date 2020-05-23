@@ -45,9 +45,11 @@ class CORE_EXPORT QgsProjectServerValidator
      */
     enum ValidationError
     {
-      DuplicatedNames = 0, //!< Error related to a duplicated layer name in the layer tree.
-      ShortNames = 1, //!< Layer short name is well formatted.
-      Encoding = 2  //!< Encoding is not set correctly.
+      DuplicatedNames = 0, //!< A duplicated layer/group name in the layer tree.
+      LayerShortName = 1, //!< Layer/group short name is not valid.
+      LayerEncoding = 2,  //!< Encoding is not correctly set on a vector layer.
+      ProjectShortName = 3,  //!< The project short name is not valid.
+      ProjectRootNameConflict = 4,  //!< The project root name is already used by a layer or a group.
     };
 
     /**

@@ -97,6 +97,52 @@ Sets the number of ``segments`` included in the left part of the scalebar.
 .. seealso:: :py:func:`setNumberOfSegments`
 %End
 
+    int numberOfSubdivisions() const;
+%Docstring
+Returns the number of subdivisions for segments included in the right part of the scalebar (only used for some scalebar types).
+
+.. note::
+
+   The number of subdivisions represents the number of subdivision segments, not the number of subdivision lines. E.g.
+   if the number is 1 then NO subdivision lines will be shown.
+
+.. seealso:: :py:func:`setNumberOfSubdivisions`
+
+.. versionadded:: 3.14
+%End
+
+    void setNumberOfSubdivisions( int subdivisions );
+%Docstring
+Sets the number of ``subdivisions`` for segments included in the right part of the scalebar (only used for some scalebar types).
+
+.. note::
+
+   The number of subdivisions represents the number of subdivision segments, not the number of subdivision lines. E.g.
+   if the number is 1 then NO subdivision lines will be shown.
+
+.. seealso:: :py:func:`numberOfSubdivisions`
+
+.. versionadded:: 3.14
+%End
+
+    double subdivisionsHeight() const;
+%Docstring
+Returns the scalebar subdivisions height (in millimeters) for segments included in the right part of the scalebar (only used for some scalebar types).
+
+.. seealso:: :py:func:`setSubdivisionsHeight`
+
+.. versionadded:: 3.14
+%End
+
+    void setSubdivisionsHeight( double height );
+%Docstring
+Sets the scalebar subdivisions ``height`` (in millimeters) for segments included in the right part of the scalebar (only used for some scalebar types).
+
+.. seealso:: :py:func:`subdivisionsHeight`
+
+.. versionadded:: 3.14
+%End
+
     double unitsPerSegment() const;
 %Docstring
 Returns the number of scalebar units per segment.
@@ -408,6 +454,10 @@ Ownership is not transferred.
 
 .. seealso:: :py:func:`setLineSymbol`
 
+.. seealso:: :py:func:`divisionLineSymbol`
+
+.. seealso:: :py:func:`subdivisionLineSymbol`
+
 .. versionadded:: 3.14
 %End
 
@@ -417,6 +467,68 @@ Sets the line ``symbol`` used to render the scalebar (only used for some scaleba
 transferred to the scalebar.
 
 .. seealso:: :py:func:`lineSymbol`
+
+.. seealso:: :py:func:`setDivisionLineSymbol`
+
+.. seealso:: :py:func:`setSubdivisionLineSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    QgsLineSymbol *divisionLineSymbol() const;
+%Docstring
+Returns the line symbol used to render the scalebar divisions (only used for some scalebar types).
+
+Ownership is not transferred.
+
+.. seealso:: :py:func:`setDivisionLineSymbol`
+
+.. seealso:: :py:func:`lineSymbol`
+
+.. seealso:: :py:func:`subdivisionLineSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    void setDivisionLineSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the line ``symbol`` used to render the scalebar divisions (only used for some scalebar types). Ownership of ``symbol`` is
+transferred to the scalebar.
+
+.. seealso:: :py:func:`divisionLineSymbol`
+
+.. seealso:: :py:func:`setLineSymbol`
+
+.. seealso:: :py:func:`setSubdivisionLineSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    QgsLineSymbol *subdivisionLineSymbol() const;
+%Docstring
+Returns the line symbol used to render the scalebar subdivisions (only used for some scalebar types).
+
+Ownership is not transferred.
+
+.. seealso:: :py:func:`setSubdivisionLineSymbol`
+
+.. seealso:: :py:func:`lineSymbol`
+
+.. seealso:: :py:func:`divisionLineSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    void setSubdivisionLineSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the line ``symbol`` used to render the scalebar subdivisions (only used for some scalebar types). Ownership of ``symbol`` is
+transferred to the scalebar.
+
+.. seealso:: :py:func:`subdivisionLineSymbol`
+
+.. seealso:: :py:func:`setLineSymbol`
+
+.. seealso:: :py:func:`setDivisionLineSymbol`
 
 .. versionadded:: 3.14
 %End

@@ -43,7 +43,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class IdwInterpolation(QgisAlgorithm):
-
     INTERPOLATION_DATA = 'INTERPOLATION_DATA'
     DISTANCE_COEFFICIENT = 'DISTANCE_COEFFICIENT'
     PIXEL_SIZE = 'PIXEL_SIZE'

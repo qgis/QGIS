@@ -28,6 +28,7 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgslinesymbollayer.h"
 #include "qgsfillsymbollayer.h"
+#include "qgsruntimeprofiler.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -111,6 +112,7 @@ QgsStyle *QgsStyle::defaultStyle() // static
 {
   if ( !sDefaultStyle )
   {
+    QgsScopedRuntimeProfile profile( tr( "Load default style database" ) );
     QString styleFilename = QgsApplication::userStylePath();
 
     // copy default style if user style doesn't exist
@@ -126,7 +128,10 @@ QgsStyle *QgsStyle::defaultStyle() // static
     else
     {
       sDefaultStyle = new QgsStyle;
-      sDefaultStyle->load( styleFilename );
+      if ( sDefaultStyle->load( styleFilename ) )
+      {
+        sDefaultStyle->upgradeIfRequired();
+      }
     }
   }
   return sDefaultStyle;
@@ -572,97 +577,117 @@ bool QgsStyle::load( const QString &filename )
                            );
   runEmptyQuery( query );
 
-  // First create all the main symbols
-  query = QgsSqlite3Mprintf( "SELECT * FROM symbol" );
-  statement = mCurrentDB.prepare( query, rc );
-
-  while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    QDomDocument doc;
-    QString symbol_name = statement.columnAsText( SymbolName );
-    QString xmlstring = statement.columnAsText( SymbolXML );
-    if ( !doc.setContent( xmlstring ) )
-    {
-      QgsDebugMsg( "Cannot open symbol " + symbol_name );
-      continue;
-    }
+    QgsScopedRuntimeProfile profile( tr( "Load symbols" ) );
+    // First create all the main symbols
+    query = QgsSqlite3Mprintf( "SELECT * FROM symbol" );
+    statement = mCurrentDB.prepare( query, rc );
 
-    QDomElement symElement = doc.documentElement();
-    QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol( symElement, QgsReadWriteContext() );
-    if ( symbol )
-      mSymbols.insert( symbol_name, symbol );
+    while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
+    {
+      QDomDocument doc;
+      QString symbolName = statement.columnAsText( SymbolName );
+      QgsScopedRuntimeProfile profile( symbolName );
+      QString xmlstring = statement.columnAsText( SymbolXML );
+      if ( !doc.setContent( xmlstring ) )
+      {
+        QgsDebugMsg( "Cannot open symbol " + symbolName );
+        continue;
+      }
+
+      QDomElement symElement = doc.documentElement();
+      QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol( symElement, QgsReadWriteContext() );
+      if ( symbol )
+        mSymbols.insert( symbolName, symbol );
+    }
   }
 
-  query = QgsSqlite3Mprintf( "SELECT * FROM colorramp" );
-  statement = mCurrentDB.prepare( query, rc );
-  while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    QDomDocument doc;
-    QString ramp_name = statement.columnAsText( ColorrampName );
-    QString xmlstring = statement.columnAsText( ColorrampXML );
-    if ( !doc.setContent( xmlstring ) )
+    QgsScopedRuntimeProfile profile( tr( "Load color ramps" ) );
+    query = QgsSqlite3Mprintf( "SELECT * FROM colorramp" );
+    statement = mCurrentDB.prepare( query, rc );
+    while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
     {
-      QgsDebugMsg( "Cannot open symbol " + ramp_name );
-      continue;
+      QDomDocument doc;
+      const QString rampName = statement.columnAsText( ColorrampName );
+      QgsScopedRuntimeProfile profile( rampName );
+      QString xmlstring = statement.columnAsText( ColorrampXML );
+      if ( !doc.setContent( xmlstring ) )
+      {
+        QgsDebugMsg( "Cannot open symbol " + rampName );
+        continue;
+      }
+      QDomElement rampElement = doc.documentElement();
+      QgsColorRamp *ramp = QgsSymbolLayerUtils::loadColorRamp( rampElement );
+      if ( ramp )
+        mColorRamps.insert( rampName, ramp );
     }
-    QDomElement rampElement = doc.documentElement();
-    QgsColorRamp *ramp = QgsSymbolLayerUtils::loadColorRamp( rampElement );
-    if ( ramp )
-      mColorRamps.insert( ramp_name, ramp );
   }
 
-  query = QgsSqlite3Mprintf( "SELECT * FROM textformat" );
-  statement = mCurrentDB.prepare( query, rc );
-  while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    QDomDocument doc;
-    const QString formatName = statement.columnAsText( TextFormatName );
-    const QString xmlstring = statement.columnAsText( TextFormatXML );
-    if ( !doc.setContent( xmlstring ) )
+    QgsScopedRuntimeProfile profile( tr( "Load text formats" ) );
+    query = QgsSqlite3Mprintf( "SELECT * FROM textformat" );
+    statement = mCurrentDB.prepare( query, rc );
+    while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
     {
-      QgsDebugMsg( "Cannot open text format " + formatName );
-      continue;
+      QDomDocument doc;
+      const QString formatName = statement.columnAsText( TextFormatName );
+      QgsScopedRuntimeProfile profile( formatName );
+      const QString xmlstring = statement.columnAsText( TextFormatXML );
+      if ( !doc.setContent( xmlstring ) )
+      {
+        QgsDebugMsg( "Cannot open text format " + formatName );
+        continue;
+      }
+      QDomElement formatElement = doc.documentElement();
+      QgsTextFormat format;
+      format.readXml( formatElement, QgsReadWriteContext() );
+      mTextFormats.insert( formatName, format );
     }
-    QDomElement formatElement = doc.documentElement();
-    QgsTextFormat format;
-    format.readXml( formatElement, QgsReadWriteContext() );
-    mTextFormats.insert( formatName, format );
   }
 
-  query = QgsSqlite3Mprintf( "SELECT * FROM labelsettings" );
-  statement = mCurrentDB.prepare( query, rc );
-  while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    QDomDocument doc;
-    const QString settingsName = statement.columnAsText( LabelSettingsName );
-    const QString xmlstring = statement.columnAsText( LabelSettingsXML );
-    if ( !doc.setContent( xmlstring ) )
+    QgsScopedRuntimeProfile profile( tr( "Load label settings" ) );
+    query = QgsSqlite3Mprintf( "SELECT * FROM labelsettings" );
+    statement = mCurrentDB.prepare( query, rc );
+    while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
     {
-      QgsDebugMsg( "Cannot open label settings " + settingsName );
-      continue;
+      QDomDocument doc;
+      const QString settingsName = statement.columnAsText( LabelSettingsName );
+      QgsScopedRuntimeProfile profile( settingsName );
+      const QString xmlstring = statement.columnAsText( LabelSettingsXML );
+      if ( !doc.setContent( xmlstring ) )
+      {
+        QgsDebugMsg( "Cannot open label settings " + settingsName );
+        continue;
+      }
+      QDomElement settingsElement = doc.documentElement();
+      QgsPalLayerSettings settings;
+      settings.readXml( settingsElement, QgsReadWriteContext() );
+      mLabelSettings.insert( settingsName, settings );
     }
-    QDomElement settingsElement = doc.documentElement();
-    QgsPalLayerSettings settings;
-    settings.readXml( settingsElement, QgsReadWriteContext() );
-    mLabelSettings.insert( settingsName, settings );
   }
 
-  query = QgsSqlite3Mprintf( "SELECT * FROM legendpatchshapes" );
-  statement = mCurrentDB.prepare( query, rc );
-  while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    QDomDocument doc;
-    const QString settingsName = statement.columnAsText( LegendPatchTableName );
-    const QString xmlstring = statement.columnAsText( LegendPatchTableXML );
-    if ( !doc.setContent( xmlstring ) )
+    QgsScopedRuntimeProfile profile( tr( "Load legend patch shapes" ) );
+    query = QgsSqlite3Mprintf( "SELECT * FROM legendpatchshapes" );
+    statement = mCurrentDB.prepare( query, rc );
+    while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
     {
-      QgsDebugMsg( "Cannot open legend patch shape " + settingsName );
-      continue;
+      QDomDocument doc;
+      const QString settingsName = statement.columnAsText( LegendPatchTableName );
+      QgsScopedRuntimeProfile profile( settingsName );
+      const QString xmlstring = statement.columnAsText( LegendPatchTableXML );
+      if ( !doc.setContent( xmlstring ) )
+      {
+        QgsDebugMsg( "Cannot open legend patch shape " + settingsName );
+        continue;
+      }
+      QDomElement settingsElement = doc.documentElement();
+      QgsLegendPatchShape shape;
+      shape.readXml( settingsElement, QgsReadWriteContext() );
+      mLegendPatchShapes.insert( settingsName, shape );
     }
-    QDomElement settingsElement = doc.documentElement();
-    QgsLegendPatchShape shape;
-    shape.readXml( settingsElement, QgsReadWriteContext() );
-    mLegendPatchShapes.insert( settingsName, shape );
   }
 
   mFileName = filename;
@@ -2397,6 +2422,11 @@ bool QgsStyle::exportXml( const QString &filename )
 
 bool QgsStyle::importXml( const QString &filename )
 {
+  return importXml( filename, -1 );
+}
+
+bool QgsStyle::importXml( const QString &filename, int sinceVersion )
+{
   mErrorString = QString();
   QDomDocument doc( QStringLiteral( "style" ) );
   QFile f( filename );
@@ -2444,6 +2474,13 @@ bool QgsStyle::importXml( const QString &filename )
     // For the new style, load symbols individually
     while ( !e.isNull() )
     {
+      const int entityAddedVersion = e.attribute( QStringLiteral( "addedVersion" ) ).toInt();
+      if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
+      {
+        // skip the symbol, should already be present
+        continue;
+      }
+
       if ( e.tagName() == QLatin1String( "symbol" ) )
       {
         QString name = e.attribute( QStringLiteral( "name" ) );
@@ -2492,6 +2529,13 @@ bool QgsStyle::importXml( const QString &filename )
   e = rampsElement.firstChildElement();
   while ( !e.isNull() )
   {
+    const int entityAddedVersion = e.attribute( QStringLiteral( "addedVersion" ) ).toInt();
+    if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
+    {
+      // skip the ramp, should already be present
+      continue;
+    }
+
     if ( e.tagName() == QLatin1String( "colorramp" ) )
     {
       QString name = e.attribute( QStringLiteral( "name" ) );
@@ -2530,6 +2574,13 @@ bool QgsStyle::importXml( const QString &filename )
     e = textFormatElement.firstChildElement();
     while ( !e.isNull() )
     {
+      const int entityAddedVersion = e.attribute( QStringLiteral( "addedVersion" ) ).toInt();
+      if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
+      {
+        // skip the format, should already be present
+        continue;
+      }
+
       if ( e.tagName() == QLatin1String( "textformat" ) )
       {
         QString name = e.attribute( QStringLiteral( "name" ) );
@@ -2568,6 +2619,13 @@ bool QgsStyle::importXml( const QString &filename )
     e = labelSettingsElement.firstChildElement();
     while ( !e.isNull() )
     {
+      const int entityAddedVersion = e.attribute( QStringLiteral( "addedVersion" ) ).toInt();
+      if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
+      {
+        // skip the settings, should already be present
+        continue;
+      }
+
       if ( e.tagName() == QLatin1String( "labelsetting" ) )
       {
         QString name = e.attribute( QStringLiteral( "name" ) );
@@ -2606,6 +2664,13 @@ bool QgsStyle::importXml( const QString &filename )
     e = legendPatchShapesElement.firstChildElement();
     while ( !e.isNull() )
     {
+      const int entityAddedVersion = e.attribute( QStringLiteral( "addedVersion" ) ).toInt();
+      if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
+      {
+        // skip the shape, should already be present
+        continue;
+      }
+
       if ( e.tagName() == QLatin1String( "legendpatchshape" ) )
       {
         QString name = e.attribute( QStringLiteral( "name" ) );
@@ -2824,6 +2889,49 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
 void QgsStyle::clearCachedTags( QgsStyle::StyleEntity type, const QString &name )
 {
   mCachedTags[ type ].remove( name );
+}
+
+void QgsStyle::upgradeIfRequired()
+{
+  // make sure metadata table exists
+  auto query = QgsSqlite3Mprintf( "SELECT name FROM sqlite_master WHERE name='stylemetadata'" );
+  sqlite3_statement_unique_ptr statement;
+  int rc;
+  int dbVersion = 0;
+  statement = mCurrentDB.prepare( query, rc );
+
+  if ( rc != SQLITE_OK || sqlite3_step( statement.get() ) != SQLITE_ROW )
+  {
+    // no metadata table
+    query = QgsSqlite3Mprintf( "CREATE TABLE stylemetadata("\
+                               "id INTEGER PRIMARY KEY,"\
+                               "key TEXT UNIQUE,"\
+                               "value TEXT);" );
+    runEmptyQuery( query );
+    query = QgsSqlite3Mprintf( "INSERT INTO stylemetadata VALUES (NULL, '%q', '%q')", "version", "31200" );
+    runEmptyQuery( query );
+
+    dbVersion = 31200;
+  }
+  else
+  {
+    query = QgsSqlite3Mprintf( "SELECT value FROM stylemetadata WHERE key='version'" );
+    statement = mCurrentDB.prepare( query, rc );
+    if ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
+    {
+      dbVersion = statement.columnAsText( 0 ).toInt();
+    }
+  }
+
+  if ( dbVersion < Qgis::versionInt() )
+  {
+    // do upgrade
+    if ( importXml( QgsApplication::defaultStylePath(), dbVersion ) )
+    {
+      query = QgsSqlite3Mprintf( "UPDATE stylemetadata SET value='%q' WHERE key='version'", QString::number( Qgis::versionInt() ).toUtf8().constData() );
+      runEmptyQuery( query );
+    }
+  }
 }
 
 QString QgsStyle::entityTableName( QgsStyle::StyleEntity type )

@@ -8,6 +8,7 @@ the Free Software Foundation; either version 2 of the License, or
 """
 from builtins import chr
 from builtins import range
+
 __author__ = 'Sebastian Dietrich'
 __date__ = '19/11/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
@@ -418,7 +419,7 @@ class TestQgsProject(unittest.TestCase):
         self.assertEqual(p.mapLayersByName('test'), [l1])
         self.assertEqual(p.mapLayersByName('test2'), [l2])
 
-        #duplicate name
+        # duplicate name
         l3 = createLayer('test')
         p.addMapLayer(l3)
         self.assertEqual(set(p.mapLayersByName('test')), set([l1, l3]))
@@ -452,7 +453,7 @@ class TestQgsProject(unittest.TestCase):
         QgsProject.instance().addMapLayers([l1, l2, l3])
         self.assertEqual(QgsProject.instance().count(), 3)
 
-        #remove bad layers
+        # remove bad layers
         QgsProject.instance().removeMapLayers(['bad'])
         self.assertEqual(QgsProject.instance().count(), 3)
         QgsProject.instance().removeMapLayers([None])
@@ -496,7 +497,7 @@ class TestQgsProject(unittest.TestCase):
         QgsProject.instance().addMapLayers([l1, l2, l3])
         self.assertEqual(QgsProject.instance().count(), 3)
 
-        #remove bad layers
+        # remove bad layers
         QgsProject.instance().removeMapLayers([None])
         self.assertEqual(QgsProject.instance().count(), 3)
 
@@ -527,7 +528,7 @@ class TestQgsProject(unittest.TestCase):
         QgsProject.instance().addMapLayers([l1, l2])
         self.assertEqual(QgsProject.instance().count(), 2)
 
-        #remove bad layers
+        # remove bad layers
         QgsProject.instance().removeMapLayer('bad')
         self.assertEqual(QgsProject.instance().count(), 2)
         QgsProject.instance().removeMapLayer(None)
@@ -568,7 +569,7 @@ class TestQgsProject(unittest.TestCase):
         QgsProject.instance().addMapLayers([l1, l2])
         self.assertEqual(QgsProject.instance().count(), 2)
 
-        #remove bad layers
+        # remove bad layers
         QgsProject.instance().removeMapLayer(None)
         self.assertEqual(QgsProject.instance().count(), 2)
         l3 = createLayer('test3')
@@ -653,7 +654,7 @@ class TestQgsProject(unittest.TestCase):
         self.assertEqual(len(layer_removed_spy), 4)
         self.assertEqual(len(remove_all_spy), 1)
 
-        #remove some layers which aren't in the registry
+        # remove some layers which aren't in the registry
         QgsProject.instance().removeMapLayers(['asdasd'])
         self.assertEqual(len(layers_will_be_removed_spy), 3)
         self.assertEqual(len(layer_will_be_removed_spy_str), 4)
@@ -681,7 +682,7 @@ class TestQgsProject(unittest.TestCase):
 
         # check also that the removal of an unexistent layer does not insert a null layer
         for k, layer in list(reg.mapLayers().items()):
-            assert(layer is not None)
+            assert (layer is not None)
 
     def testTakeLayer(self):
         # test taking ownership of a layer from the project
@@ -702,7 +703,7 @@ class TestQgsProject(unittest.TestCase):
 
         # take layer from project
         self.assertEqual(p.takeMapLayer(l1), l1)
-        self.assertFalse(p.mapLayers()) # no layers left
+        self.assertFalse(p.mapLayers())  # no layers left
         # but l1 should still exist
         self.assertTrue(l1.isValid())
         # layer should have no parent now
@@ -859,7 +860,8 @@ class TestQgsProject(unittest.TestCase):
             zip_content = BytesIO(codecs.decode(f.GetFieldAsBinary(2), 'hex'))
             z = ZipFile(zip_content)
             qgs = z.read(z.filelist[0])
-            self.assertEqual(re.findall(b'<datasource>(.*)?</datasource>', qgs)[0], b'./relative_paths_gh30387.gpkg|layername=some_data')
+            self.assertEqual(re.findall(b'<datasource>(.*)?</datasource>', qgs)[0],
+                             b'./relative_paths_gh30387.gpkg|layername=some_data')
 
         with TemporaryDirectory() as d:
             path = os.path.join(d, 'relative_paths_gh30387.gpkg')
@@ -1037,7 +1039,7 @@ class TestQgsProject(unittest.TestCase):
         self.assertTrue(p.isDirty())
         self.assertEqual(len(dirty_spy), 1)
         self.assertEqual(dirty_spy[-1], [True])
-        p.setDirty(True) # already dirty
+        p.setDirty(True)  # already dirty
         self.assertTrue(p.isDirty())
         self.assertEqual(len(dirty_spy), 1)
         p.setDirty(False)
@@ -1279,7 +1281,8 @@ class TestQgsProject(unittest.TestCase):
         p.setProjectColors([[QColor(255, 0, 0), 'red'], [QColor(0, 255, 0), 'green']])
         self.assertEqual(len(spy), 1)
         scheme = [s for s in QgsApplication.colorSchemeRegistry().schemes() if isinstance(s, QgsProjectColorScheme)][0]
-        self.assertEqual([[c[0].name(), c[1]] for c in scheme.fetchColors()], [['#ff0000', 'red'], ['#00ff00', 'green']])
+        self.assertEqual([[c[0].name(), c[1]] for c in scheme.fetchColors()],
+                         [['#ff0000', 'red'], ['#00ff00', 'green']])
         # except color changed signal when clearing project
         p.clear()
         self.assertEqual(len(spy), 2)
@@ -1298,7 +1301,8 @@ class TestQgsProject(unittest.TestCase):
         p = QgsProject()
         spy = QSignalSpy(p.transformContextChanged)
         ctx = QgsCoordinateTransformContext()
-        ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), 1234, 1235)
+        ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857),
+                                               1234, 1235)
         ctx.addCoordinateOperation(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), 'x')
         p.setTransformContext(ctx)
         self.assertEqual(len(spy), 1)

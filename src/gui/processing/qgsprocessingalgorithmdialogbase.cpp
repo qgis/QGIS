@@ -662,6 +662,15 @@ void QgsProcessingAlgorithmDialogBase::setInfo( const QString &message, bool isE
   processEvents();
 }
 
+void QgsProcessingAlgorithmDialogBase::reject()
+{
+  if ( !mAlgorithmTask )
+  {
+    setAttribute( Qt::WA_DeleteOnClose );
+  }
+  QDialog::reject();
+}
+
 //
 // QgsProcessingAlgorithmProgressDialog
 //

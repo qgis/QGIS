@@ -47,7 +47,6 @@ from processing.tools import dataobjects
 
 
 class BatchInputSelectionPanel(QWidget):
-
     valueChanged = pyqtSignal()
 
     def __init__(self, param, row, col, dialog):

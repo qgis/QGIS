@@ -589,7 +589,7 @@ class CORE_EXPORT QgsSymbol
      * clockwise for exterior rings and counter-clockwise for interior rings.
      *
      */
-    static void _getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygon &polygon, bool clipToExtent = true, bool correctRingOrientation = false );
+    static void _getPolygon( QPolygonF &pts, QVector<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygon &polygon, bool clipToExtent = true, bool correctRingOrientation = false );
 
     /**
      * Retrieve a cloned list of all layers that make up this symbol.
@@ -1242,17 +1242,17 @@ class CORE_EXPORT QgsFillSymbol : public QgsSymbol
      * If \a selected is true then the symbol will be drawn using the "selected feature"
      * style and colors instead of the symbol's normal style.
      */
-    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
 
     QgsFillSymbol *clone() const override SIP_FACTORY;
 
   private:
 
-    void renderPolygonUsingLayer( QgsSymbolLayer *layer, const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    void renderPolygonUsingLayer( QgsSymbolLayer *layer, const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
     //! Calculates the bounds of a polygon including rings
-    QRectF polygonBounds( const QPolygonF &points, const QList<QPolygonF> *rings ) const;
+    QRectF polygonBounds( const QPolygonF &points, const QVector<QPolygonF> *rings ) const;
     //! Translates the rings in a polygon by a set distance
-    QList<QPolygonF> *translateRings( const QList<QPolygonF> *rings, double dx, double dy ) const;
+    QVector<QPolygonF> *translateRings( const QVector<QPolygonF> *rings, double dx, double dy ) const;
 };
 
 #endif

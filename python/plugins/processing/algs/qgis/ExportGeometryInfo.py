@@ -49,7 +49,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class ExportGeometryInfo(QgisAlgorithm):
-
     INPUT = 'INPUT'
     METHOD = 'CALC_METHOD'
     OUTPUT = 'OUTPUT'

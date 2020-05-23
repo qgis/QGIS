@@ -52,10 +52,24 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
       CapturePolygon  //!< Capture polygons
     };
 
+    //! Specific capabilities of the tool
+    enum Capability
+    {
+      NoCapabilities = 0,       //!< No specific capabilities
+      SupportsCurves = 1,       //!< Supports curved geometries input
+    };
+
+    Q_DECLARE_FLAGS( Capabilities, Capability )
+
     //! constructor
     QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
 
     ~QgsMapToolCapture() override;
+
+    /**
+     * Returns flags containing the supported capabilities
+     */
+    virtual QgsMapToolCapture::Capabilities capabilities() const;
 
     void activate() override;
     void deactivate() override;
@@ -313,5 +327,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     friend class TestQgsMapToolReshape;
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapToolCapture::Capabilities )
 
 #endif

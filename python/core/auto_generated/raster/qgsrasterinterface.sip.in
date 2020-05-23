@@ -161,6 +161,7 @@ Base class for processing filters like renderers, reprojector, resampler etc.
       IdentifyText,
       IdentifyHtml,
       IdentifyFeature,
+      Prefetch,
     };
 
     QgsRasterInterface( QgsRasterInterface *input = 0 );
@@ -179,7 +180,7 @@ Returns a bitmask containing the supported capabilities
 
     QString capabilitiesString() const;
 %Docstring
-Returns the above in friendly format.
+Returns the raster interface capabilities in friendly format.
 %End
 
     virtual Qgis::DataType dataType( int bandNo ) const = 0;

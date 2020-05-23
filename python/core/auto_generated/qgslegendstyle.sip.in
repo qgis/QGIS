@@ -105,14 +105,14 @@ Sets the alignment for the legend component.
 .. versionadded:: 3.10
 %End
 
-    void writeXml( const QString &name, QDomElement &elem, QDomDocument &doc ) const;
+    void writeXml( const QString &name, QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
 %Docstring
 Writes the component's style definition to an XML element.
 
 .. seealso:: :py:func:`readXml`
 %End
 
-    void readXml( const QDomElement &elem, const QDomDocument &doc );
+    void readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() );
 %Docstring
 Reads the component's style definition from an XML element.
 

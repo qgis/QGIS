@@ -131,34 +131,34 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
   initOptionsBase( false );
 
-  mCoordinateDisplayComboBox->addItem( tr( "Map units" ), MapUnits );
-  mCoordinateDisplayComboBox->addItem( tr( "Decimal degrees" ), DecimalDegrees );
-  mCoordinateDisplayComboBox->addItem( tr( "Degrees, minutes" ), DegreesMinutes );
-  mCoordinateDisplayComboBox->addItem( tr( "Degrees, minutes, seconds" ), DegreesMinutesSeconds );
+  mCoordinateDisplayComboBox->addItem( tr( "Map Units" ), MapUnits );
+  mCoordinateDisplayComboBox->addItem( tr( "Decimal Degrees" ), DecimalDegrees );
+  mCoordinateDisplayComboBox->addItem( tr( "Degrees, Minutes" ), DegreesMinutes );
+  mCoordinateDisplayComboBox->addItem( tr( "Degrees, Minutes, Seconds" ), DegreesMinutesSeconds );
 
   mDistanceUnitsCombo->addItem( tr( "Meters" ), QgsUnitTypes::DistanceMeters );
   mDistanceUnitsCombo->addItem( tr( "Kilometers" ), QgsUnitTypes::DistanceKilometers );
   mDistanceUnitsCombo->addItem( tr( "Feet" ), QgsUnitTypes::DistanceFeet );
   mDistanceUnitsCombo->addItem( tr( "Yards" ), QgsUnitTypes::DistanceYards );
   mDistanceUnitsCombo->addItem( tr( "Miles" ), QgsUnitTypes::DistanceMiles );
-  mDistanceUnitsCombo->addItem( tr( "Nautical miles" ), QgsUnitTypes::DistanceNauticalMiles );
+  mDistanceUnitsCombo->addItem( tr( "Nautical Miles" ), QgsUnitTypes::DistanceNauticalMiles );
   mDistanceUnitsCombo->addItem( tr( "Centimeters" ), QgsUnitTypes::DistanceCentimeters );
   mDistanceUnitsCombo->addItem( tr( "Millimeters" ), QgsUnitTypes::DistanceMillimeters );
   mDistanceUnitsCombo->addItem( tr( "Degrees" ), QgsUnitTypes::DistanceDegrees );
-  mDistanceUnitsCombo->addItem( tr( "Map units" ), QgsUnitTypes::DistanceUnknownUnit );
+  mDistanceUnitsCombo->addItem( tr( "Map Units" ), QgsUnitTypes::DistanceUnknownUnit );
 
-  mAreaUnitsCombo->addItem( tr( "Square meters" ), QgsUnitTypes::AreaSquareMeters );
-  mAreaUnitsCombo->addItem( tr( "Square kilometers" ), QgsUnitTypes::AreaSquareKilometers );
-  mAreaUnitsCombo->addItem( tr( "Square feet" ), QgsUnitTypes::AreaSquareFeet );
-  mAreaUnitsCombo->addItem( tr( "Square yards" ), QgsUnitTypes::AreaSquareYards );
-  mAreaUnitsCombo->addItem( tr( "Square miles" ), QgsUnitTypes::AreaSquareMiles );
+  mAreaUnitsCombo->addItem( tr( "Square Meters" ), QgsUnitTypes::AreaSquareMeters );
+  mAreaUnitsCombo->addItem( tr( "Square Kilometers" ), QgsUnitTypes::AreaSquareKilometers );
+  mAreaUnitsCombo->addItem( tr( "Square Feet" ), QgsUnitTypes::AreaSquareFeet );
+  mAreaUnitsCombo->addItem( tr( "Square Yards" ), QgsUnitTypes::AreaSquareYards );
+  mAreaUnitsCombo->addItem( tr( "Square Miles" ), QgsUnitTypes::AreaSquareMiles );
   mAreaUnitsCombo->addItem( tr( "Hectares" ), QgsUnitTypes::AreaHectares );
   mAreaUnitsCombo->addItem( tr( "Acres" ), QgsUnitTypes::AreaAcres );
-  mAreaUnitsCombo->addItem( tr( "Square nautical miles" ), QgsUnitTypes::AreaSquareNauticalMiles );
-  mAreaUnitsCombo->addItem( tr( "Square centimeters" ), QgsUnitTypes::AreaSquareCentimeters );
-  mAreaUnitsCombo->addItem( tr( "Square millimeters" ), QgsUnitTypes::AreaSquareMillimeters );
-  mAreaUnitsCombo->addItem( tr( "Square degrees" ), QgsUnitTypes::AreaSquareDegrees );
-  mAreaUnitsCombo->addItem( tr( "Map units" ), QgsUnitTypes::AreaUnknownUnit );
+  mAreaUnitsCombo->addItem( tr( "Square Nautical Miles" ), QgsUnitTypes::AreaSquareNauticalMiles );
+  mAreaUnitsCombo->addItem( tr( "Square Centimeters" ), QgsUnitTypes::AreaSquareCentimeters );
+  mAreaUnitsCombo->addItem( tr( "Square Millimeters" ), QgsUnitTypes::AreaSquareMillimeters );
+  mAreaUnitsCombo->addItem( tr( "Square Degrees" ), QgsUnitTypes::AreaSquareDegrees );
+  mAreaUnitsCombo->addItem( tr( "Map Units" ), QgsUnitTypes::AreaUnknownUnit );
 
   projectionSelector->setShowNoProjection( true );
 
@@ -445,6 +445,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mWMSUrlLineEdit->setText( QgsProject::instance()->readEntry( QStringLiteral( "WMSUrl" ), QStringLiteral( "/" ), QString() ) );
   mWMSKeywordList->setText( QgsProject::instance()->readListEntry( QStringLiteral( "WMSKeywordList" ), QStringLiteral( "/" ) ).join( QStringLiteral( ", " ) ) );
 
+  mWMSOnlineResourceExpressionButton->registerExpressionContextGenerator( this );
+  mWMSOnlineResourceExpressionButton->setToProperty( QgsProject::instance()->dataDefinedServerProperties().property( QgsProject::DataDefinedServerProperty::WMSOnlineResource ) );
+
   // WMS Name validator
   QValidator *shortNameValidator = new QRegExpValidator( QgsApplication::shortNameRegExp(), this );
   mWMSName->setValidator( shortNameValidator );
@@ -457,8 +460,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mWMSContactPositionCb->addItem( tr( "User" ), "user" );
   mWMSContactPositionCb->addItem( tr( "Distributor" ), "distributor" );
   mWMSContactPositionCb->addItem( tr( "Originator" ), "originator" );
-  mWMSContactPositionCb->addItem( tr( "Point of contact" ), "pointOfContact" );
-  mWMSContactPositionCb->addItem( tr( "Principal investigator" ), "principalInvestigator" );
+  mWMSContactPositionCb->addItem( tr( "Point of Contact" ), "pointOfContact" );
+  mWMSContactPositionCb->addItem( tr( "Principal Investigator" ), "principalInvestigator" );
   mWMSContactPositionCb->addItem( tr( "Processor" ), "processor" );
   mWMSContactPositionCb->addItem( tr( "Publisher" ), "publisher" );
   mWMSContactPositionCb->addItem( tr( "Author" ), "author" );
@@ -474,8 +477,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   // WMS Fees
   QString feesText = QgsProject::instance()->readEntry( QStringLiteral( "WMSFees" ), QStringLiteral( "/" ), QString() );
-  mWMSFeesCb->addItem( tr( "Conditions unknown" ), "conditions unknown" );
-  mWMSFeesCb->addItem( tr( "No conditions apply" ), "no conditions apply" );
+  mWMSFeesCb->addItem( tr( "Conditions Unknown" ), "conditions unknown" );
+  mWMSFeesCb->addItem( tr( "No Conditions Apply" ), "no conditions apply" );
   int feesIndex = mWMSFeesCb->findData( feesText );
   if ( feesIndex > -1 )
   {
@@ -491,12 +494,12 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mWMSAccessConstraintsCb->addItem( tr( "None" ), "None" );
   mWMSAccessConstraintsCb->addItem( tr( "Copyright" ), "copyright" );
   mWMSAccessConstraintsCb->addItem( tr( "Patent" ), "patent" );
-  mWMSAccessConstraintsCb->addItem( tr( "Patent pending" ), "patentPending" );
+  mWMSAccessConstraintsCb->addItem( tr( "Patent Pending" ), "patentPending" );
   mWMSAccessConstraintsCb->addItem( tr( "Trademark" ), "trademark" );
   mWMSAccessConstraintsCb->addItem( tr( "License" ), "license" );
-  mWMSAccessConstraintsCb->addItem( tr( "Intellectual property rights" ), "intellectualPropertyRights" );
+  mWMSAccessConstraintsCb->addItem( tr( "Intellectual Property Rights" ), "intellectualPropertyRights" );
   mWMSAccessConstraintsCb->addItem( tr( "Restricted" ), "restricted" );
-  mWMSAccessConstraintsCb->addItem( tr( "Other restrictions" ), "otherRestrictions" );
+  mWMSAccessConstraintsCb->addItem( tr( "Other Restrictions" ), "otherRestrictions" );
   int accessConstraintsIndex = mWMSAccessConstraintsCb->findData( accessConstraintsText );
   if ( accessConstraintsIndex > -1 )
   {
@@ -994,6 +997,16 @@ void QgsProjectProperties::setSelectedCrs( const QgsCoordinateReferenceSystem &c
   crsChanged( projectionSelector->crs() );
 }
 
+QgsExpressionContext QgsProjectProperties::createExpressionContext() const
+{
+  QgsExpressionContext context;
+  context
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+
+  return context;
+}
+
 void QgsProjectProperties::apply()
 {
   mMapCanvas->enableMapTileRendering( mMapTileRenderingCheckBox->isChecked() );
@@ -1171,6 +1184,10 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSServiceAbstract" ), QStringLiteral( "/" ), mWMSAbstract->toPlainText() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSOnlineResource" ), QStringLiteral( "/" ), mWMSOnlineResourceLineEdit->text() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSUrl" ), QStringLiteral( "/" ), mWMSUrlLineEdit->text() );
+
+  QgsPropertyCollection propertyCollection = QgsProject::instance()->dataDefinedServerProperties();
+  propertyCollection.setProperty( QgsProject::DataDefinedServerProperty::WMSOnlineResource, mWMSOnlineResourceExpressionButton->toProperty() );
+  QgsProject::instance()->setDataDefinedServerProperties( propertyCollection );
 
   // WMS Contact Position
   int contactPositionIndex = mWMSContactPositionCb->currentIndex();

@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLayerTreeView : QTreeView
 {
 %Docstring
@@ -211,6 +212,13 @@ Set width of contextual menu mark, at right of layer node items.
 .. seealso:: :py:func:`layerMarkWidth`
 
 .. versionadded:: 3.8
+%End
+
+    void setMessageBar( QgsMessageBar *messageBar );
+%Docstring
+Set the message bar to display messages from the layer tree
+
+.. versionadded:: 3.14
 %End
 
   signals:

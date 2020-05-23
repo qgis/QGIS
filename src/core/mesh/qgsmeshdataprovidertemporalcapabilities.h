@@ -35,20 +35,36 @@ class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities: public QgsDataProvide
   public:
 
     /**
+     * Method for selection of temporal mesh dataset from a range time
+     **/
+    enum MatchingTemporalDatasetMethod
+    {
+      FindClosestDatasetBeforeStartRangeTime, //! Finds the closest dataset which have its time before the requested start range time
+      FindClosestDatasetFromStartRangeTime //! Finds the closest dataset before or after the requested start range time
+    };
+
+    /**
      * Constructor for QgsMeshDataProviderTemporalCapabilities
      */
     QgsMeshDataProviderTemporalCapabilities();
 
     /**
-     * Returns the first dataset that are include in the range [\a startTimeSinceGlobalReference,\a endTimeSinceGlobalReference[ (in milliseconds)
-     * from the dataset \a group. If no dataset is present in this range return the last dataset before this range if it not the last one
-     * of whole the dataset group
+     * Returns the last dataset whith time less than or equal to \a timeSinceGlobalReference
      *
-     * Returns invalid dataset index if there is no data set in the range
+     * Returns invalid dataset index if \a timeSinceGlobalReference is outside the time extent of the dataset group
      *
-     * \note for non temporal dataset group, the range is not used and the unique dataset is returned
+     * \note for non temporal dataset group, \a timeSinceGlobalReference is not used and the unique dataset is returned
      */
-    QgsMeshDatasetIndex datasetIndexFromRelativeTimeRange( int group, qint64 startTimeSinceGlobalReference, qint64 endTimeSinceGlobalReference ) const;
+    QgsMeshDatasetIndex datasetIndexClosestBeforeRelativeTime( int group, qint64 timeSinceGlobalReference ) const;
+
+    /**
+     * Returns the closest dataset index from the \a timeSinceGlobalReference
+     *
+     *Returns invalid dataset index if \a timeSinceGlobalReference is outside the time extent of the dataset group
+     *
+     * \note for non temporal dataset group, \a timeSinceGlobalReference is not used and the unique dataset is returned
+     */
+    QgsMeshDatasetIndex datasetIndexClosestFromRelativeTime( int group, qint64 timeSinceGlobalReference ) const;
 
     /**
      * Adds a \a reference date/time from a dataset \a group
