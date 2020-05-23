@@ -1463,6 +1463,102 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f = next(features)
         self.assertEqual(f.geometry().asWkt().upper(), 'POINT (1 1)')
 
+<<<<<<< HEAD
+=======
+    def testMinMaxDateField(self):
+        """
+        Test that provider min/max calls work with date fields
+        :return:
+        """
+        tmpfile = os.path.join(self.basetestpath, 'test_min_max_date_field.gpkg')
+        shutil.copy(TEST_DATA_DIR + '/' + 'qgis_server/test_project_api_timefilters.gpkg', tmpfile)
+
+        vl = QgsVectorLayer(tmpfile, 'subset_test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.fields().at(2).type(), QVariant.Date)
+        self.assertEqual(vl.fields().at(3).type(), QVariant.DateTime)
+        self.assertEqual(vl.dataProvider().minimumValue(2), QDate(2010, 1, 1))
+        self.assertEqual(vl.dataProvider().maximumValue(2), QDate(2019, 1, 1))
+        self.assertEqual(vl.dataProvider().minimumValue(3), QDateTime(2010, 1, 1, 1, 1, 1, 0))
+        self.assertEqual(vl.dataProvider().maximumValue(3), QDateTime(2022, 1, 1, 1, 1, 1, 0))
+        self.assertEqual(vl.dataProvider().uniqueValues(2),
+                         {QDate(2017, 1, 1), NULL, QDate(2018, 1, 1), QDate(2019, 1, 1), QDate(2010, 1, 1)})
+        self.assertEqual(vl.dataProvider().uniqueValues(3),
+                         {QDateTime(2022, 1, 1, 1, 1, 1), NULL, QDateTime(2019, 1, 1, 1, 1, 1),
+                          QDateTime(2021, 1, 1, 1, 1, 1), QDateTime(2010, 1, 1, 1, 1, 1)})
+
+    def testExporterWithFIDColumn(self):
+        """Test issue GH #34333, a memory layer with FID is not exported correctly to GPKG"""
+
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=FID:integer(0)&field=name:string(20)',
+            'test',
+            'memory')
+
+        self.assertTrue(vl.isValid(), 'Provider not initialized')
+
+        ft = QgsFeature(vl.fields())
+        ft.setAttributes([123, 'text1'])
+        ft.setGeometry(QgsGeometry.fromWkt('Point(2 49)'))
+        myResult, myFeatures = vl.dataProvider().addFeatures([ft])
+        self.assertTrue(myResult)
+        self.assertTrue(myFeatures)
+
+        dest_file_name = tempfile.mktemp('.gpkg')
+        err = QgsVectorLayerExporter.exportLayer(vl, dest_file_name, "ogr", vl.crs(), False)
+        self.assertEqual(err[0], QgsVectorLayerExporter.NoError,
+                         'unexpected import error {0}'.format(err))
+
+        # Open result and check
+        created_layer = QgsVectorLayer(dest_file_name, 'test', 'ogr')
+        self.assertTrue(created_layer.isValid())
+        f = next(created_layer.getFeatures())
+        self.assertEqual(f.geometry().asWkt(), 'Point (2 49)')
+        self.assertEqual(f.attributes(), [123, 'text1'])
+        self.assertEqual(f.id(), 123)
+
+    def testTransactionGroup(self):
+        """Issue https://github.com/qgis/QGIS/issues/36525"""
+
+        project = QgsProject()
+        project.setAutoTransaction(True)
+        tmpfile1 = os.path.join(self.basetestpath, 'tempGeoPackageTransactionGroup1.gpkg')
+        tmpfile2 = os.path.join(self.basetestpath, 'tempGeoPackageTransactionGroup2.gpkg')
+        for tmpfile in (tmpfile1, tmpfile2):
+            ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+            for i in range(2):
+                lyr = ds.CreateLayer('test%s' % i, geom_type=ogr.wkbPoint)
+                lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+                f = ogr.Feature(lyr.GetLayerDefn())
+                f.SetGeometry(ogr.CreateGeometryFromWkt('POINT (1 1)'))
+                f.SetField('str_field', 'one')
+                lyr.CreateFeature(f)
+
+        vl1_1 = QgsVectorLayer(tmpfile1, 'test1_1', 'ogr')
+        self.assertTrue(vl1_1.isValid())
+        vl1_2 = QgsVectorLayer(tmpfile1, 'test1_2', 'ogr')
+        self.assertTrue(vl1_2.isValid())
+        vl2_1 = QgsVectorLayer(tmpfile2, 'test2_1', 'ogr')
+        self.assertTrue(vl2_1.isValid())
+        vl2_2 = QgsVectorLayer(tmpfile2, 'test2_2', 'ogr')
+        self.assertTrue(vl2_2.isValid())
+        project.addMapLayers([vl1_1, vl1_2, vl2_1, vl2_2])
+
+        self.assertTrue(vl1_1.startEditing())
+        self.assertTrue(vl1_2.isEditable())
+        self.assertFalse(vl2_1.isEditable())
+        self.assertFalse(vl2_2.isEditable())
+
+        self.assertTrue(vl1_1.rollBack())
+        self.assertFalse(vl1_1.isEditable())
+        self.assertFalse(vl1_2.isEditable())
+
+        self.assertTrue(vl2_1.startEditing())
+        self.assertTrue(vl2_2.isEditable())
+        self.assertFalse(vl1_1.isEditable())
+        self.assertFalse(vl1_2.isEditable())
+
+>>>>>>> f13b739903... Merge pull request #36677 from elpaso/bugfix-36525-auto-transactions
 
 if __name__ == '__main__':
     unittest.main()
