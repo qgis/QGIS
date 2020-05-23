@@ -30,11 +30,11 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
 
   mNavigationObject = new QgsTemporalNavigationObject( this );
 
-  connect( mForwardButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::playForward );
-  connect( mBackButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::playBackward );
+  connect( mForwardButton, &QPushButton::clicked, this, &QgsTemporalControllerWidget::togglePlayForward );
+  connect( mBackButton, &QPushButton::clicked, this, &QgsTemporalControllerWidget::togglePlayBackward );
+  connect( mStopButton, &QPushButton::clicked, this, &QgsTemporalControllerWidget::togglePause );
   connect( mNextButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::next );
   connect( mPreviousButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::previous );
-  connect( mStopButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::pause );
   connect( mFastForwardButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::skipToEnd );
   connect( mRewindButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::rewindToStart );
   connect( mLoopingCheckBox, &QCheckBox::toggled, this, [ = ]( bool state ) { mNavigationObject->setLooping( state ); } );
@@ -134,6 +134,77 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsTemporalControllerWidget::setWidgetStateFromProject );
   connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgsTemporalControllerWidget::onLayersAdded );
   connect( QgsProject::instance(), &QgsProject::cleared, this, &QgsTemporalControllerWidget::onProjectCleared );
+}
+
+void QgsTemporalControllerWidget::keyPressEvent( QKeyEvent *e )
+{
+  if ( mSlider->hasFocus() && e->key() == Qt::Key_Space )
+  {
+    togglePause();
+  }
+  QWidget::keyPressEvent( e );
+}
+
+void QgsTemporalControllerWidget::togglePlayForward()
+{
+  mPlayingForward = true;
+
+  if ( mNavigationObject->animationState() != QgsTemporalNavigationObject::Forward )
+  {
+    mStopButton->setChecked( false );
+    mBackButton->setChecked( false );
+    mForwardButton->setChecked( true );
+    mNavigationObject->playForward();
+  }
+  else
+  {
+    mBackButton->setChecked( true );
+    mForwardButton->setChecked( false );
+    mNavigationObject->pause();
+  }
+}
+
+void QgsTemporalControllerWidget::togglePlayBackward()
+{
+  mPlayingForward = false;
+
+  if ( mNavigationObject->animationState() != QgsTemporalNavigationObject::Reverse )
+  {
+    mStopButton->setChecked( false );
+    mBackButton->setChecked( true );
+    mForwardButton->setChecked( false );
+    mNavigationObject->playBackward();
+  }
+  else
+  {
+    mBackButton->setChecked( true );
+    mBackButton->setChecked( false );
+    mNavigationObject->pause();
+  }
+}
+
+void QgsTemporalControllerWidget::togglePause()
+{
+  if ( mNavigationObject->animationState() != QgsTemporalNavigationObject::Idle )
+  {
+    mStopButton->setChecked( true );
+    mBackButton->setChecked( false );
+    mForwardButton->setChecked( false );
+    mNavigationObject->pause();
+  }
+  else
+  {
+    mBackButton->setChecked( mPlayingForward ? false : true );
+    mForwardButton->setChecked( mPlayingForward ? false : true );
+    if ( mPlayingForward )
+    {
+      mNavigationObject->playForward();
+    }
+    else
+    {
+      mNavigationObject->playBackward();
+    }
+  }
 }
 
 void QgsTemporalControllerWidget::updateTemporalExtent()
