@@ -101,6 +101,7 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsSt
   mRadiusUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mWeightExpressionWidget->registerExpressionContextGenerator( this );
+  mWeightExpressionWidget->setAllowEmptyFieldName( true );
 
   if ( renderer )
   {
