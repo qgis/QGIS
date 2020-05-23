@@ -1463,6 +1463,47 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f = next(features)
         self.assertEqual(f.geometry().asWkt().upper(), 'POINT (1 1)')
 
+    def testTransactionGroup(self):
+        """Issue https://github.com/qgis/QGIS/issues/36525"""
+
+        project = QgsProject()
+        project.setAutoTransaction(True)
+        tmpfile1 = os.path.join(self.basetestpath, 'tempGeoPackageTransactionGroup1.gpkg')
+        tmpfile2 = os.path.join(self.basetestpath, 'tempGeoPackageTransactionGroup2.gpkg')
+        for tmpfile in (tmpfile1, tmpfile2):
+            ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+            for i in range(2):
+                lyr = ds.CreateLayer('test%s' % i, geom_type=ogr.wkbPoint)
+                lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+                f = ogr.Feature(lyr.GetLayerDefn())
+                f.SetGeometry(ogr.CreateGeometryFromWkt('POINT (1 1)'))
+                f.SetField('str_field', 'one')
+                lyr.CreateFeature(f)
+
+        vl1_1 = QgsVectorLayer(tmpfile1, 'test1_1', 'ogr')
+        self.assertTrue(vl1_1.isValid())
+        vl1_2 = QgsVectorLayer(tmpfile1, 'test1_2', 'ogr')
+        self.assertTrue(vl1_2.isValid())
+        vl2_1 = QgsVectorLayer(tmpfile2, 'test2_1', 'ogr')
+        self.assertTrue(vl2_1.isValid())
+        vl2_2 = QgsVectorLayer(tmpfile2, 'test2_2', 'ogr')
+        self.assertTrue(vl2_2.isValid())
+        project.addMapLayers([vl1_1, vl1_2, vl2_1, vl2_2])
+
+        self.assertTrue(vl1_1.startEditing())
+        self.assertTrue(vl1_2.isEditable())
+        self.assertFalse(vl2_1.isEditable())
+        self.assertFalse(vl2_2.isEditable())
+
+        self.assertTrue(vl1_1.rollBack())
+        self.assertFalse(vl1_1.isEditable())
+        self.assertFalse(vl1_2.isEditable())
+
+        self.assertTrue(vl2_1.startEditing())
+        self.assertTrue(vl2_2.isEditable())
+        self.assertFalse(vl1_1.isEditable())
+        self.assertFalse(vl1_2.isEditable())
+
 
 if __name__ == '__main__':
     unittest.main()
