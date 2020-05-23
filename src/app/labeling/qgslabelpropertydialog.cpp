@@ -28,6 +28,7 @@
 #include "qgssettings.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 
 #include <QColorDialog>
 #include <QFontDatabase>
@@ -46,6 +47,7 @@ QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QS
   mLabelAllPartsCheckBox->setChecked( layerSettings.labelPerPart );
 
   connect( buttonBox, &QDialogButtonBox::clicked, this, &QgsLabelPropertyDialog::buttonBox_clicked );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLabelPropertyDialog::showHelp );
   connect( mShowLabelChkbx, &QCheckBox::toggled, this, &QgsLabelPropertyDialog::mShowLabelChkbx_toggled );
   connect( mAlwaysShowChkbx, &QCheckBox::toggled, this, &QgsLabelPropertyDialog::mAlwaysShowChkbx_toggled );
   connect( mShowCalloutChkbx, &QCheckBox::toggled, this, &QgsLabelPropertyDialog::showCalloutToggled );
@@ -817,4 +819,9 @@ void QgsLabelPropertyDialog::enableWidgetsForPinnedLabels()
     mHaliComboBox->setToolTip( QString() );
     mValiComboBox->setToolTip( QString() );
   }
+}
+
+void QgsLabelPropertyDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#the-label-toolbar" ) );
 }
