@@ -1754,8 +1754,8 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
         {
           if ( QgsTransaction::supportsTransaction( vlayer ) )
           {
-            QString connString = QgsDataSourceUri( vlayer->source() ).connectionInfo();
-            QString key = vlayer->providerType();
+            const QString connString = QgsTransaction::connectionString( vlayer->source() );
+            const QString key = vlayer->providerType();
 
             QgsTransactionGroup *tg = mTransactionGroups.value( qMakePair( key, connString ) );
 
