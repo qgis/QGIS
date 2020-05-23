@@ -188,19 +188,17 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     void resetBeforeChange( int delta );
 
     /**
-     * Set the lowest Date that can be displayed with the Qt::ISODate format
-     *  - uses QDateTimeEdit::setMinimumDateTime (since Qt 4.4)
+     * Set the lowest Date that can be stored in a Shapefile or Geopackage Date field
+     *  - uses QDateTimeEdit::setDateTimeRange (since Qt 4.4)
      * \note
      *  - QDate and QDateTime does not support minus years for the Qt::ISODate format
      *  -> returns empty (toString) or invalid (fromString) values
-     *  - QDateTimeEdit::setMinimumDateTime does not support dates < '0100-01-01'
-     *  -> it is not for us to wonder why [defined in qdatetimeparser_p.h]
     * \note not available in Python bindings
     * \since QGIS 3.0
     */
     void setMinimumEditDateTime()
     {
-      setMinimumDateTime( QDateTime::fromString( QStringLiteral( "0100-01-01" ), Qt::ISODate ) );
+      setDateTimeRange( QDateTime( QDate( 1, 1, 1 ) ), maximumDateTime() );
     }
 
     friend class TestQgsDateTimeEdit;
