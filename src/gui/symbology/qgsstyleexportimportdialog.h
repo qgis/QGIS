@@ -30,7 +30,7 @@
 class QgsStyle;
 class QgsStyleGroupSelectionDialog;
 class QgsTemporaryCursorOverride;
-class QgsStyleModel;
+class QgsStyleProxyModel;
 class QTemporaryFile;
 
 /**
@@ -148,7 +148,7 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     QString mFileName;
     Mode mDialogMode;
 
-    QgsStyleModel *mModel = nullptr;
+    QgsStyleProxyModel *mModel = nullptr;
 
     QgsStyle *mStyle = nullptr;
     std::unique_ptr< QgsStyle > mTempStyle;
