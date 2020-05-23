@@ -550,6 +550,9 @@ void QgsMeshLayerRenderer::renderVectorDataset()
   if ( std::isnan( mVectorDatasetMagMinimum ) || std::isnan( mVectorDatasetMagMaximum ) )
     return; // only NODATA values
 
+  if ( !( mVectorDatasetMagMaximum > 0 ) )
+    return; //all vector are null vector
+
   std::unique_ptr<QgsMeshVectorRenderer> renderer( QgsMeshVectorRenderer::makeVectorRenderer(
         mTriangularMesh,
         mVectorDatasetValues,
