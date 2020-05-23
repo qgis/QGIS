@@ -66,6 +66,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
   mGroupSelectionDlg = nullptr;
   mTempFile = nullptr;
 
+  QgsStyle *dialogStyle = nullptr;
   if ( mDialogMode == Import )
   {
     setWindowTitle( tr( "Import Item(s)" ) );
@@ -91,8 +92,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
     label->setText( tr( "Select items to import" ) );
     buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Import" ) );
 
-    mModel = new QgsStyleModel( mTempStyle.get(), this );
-    listItems->setModel( mModel );
+    dialogStyle = mTempStyle.get();
   }
   else
   {
@@ -115,13 +115,16 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
 
     buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Export" ) );
 
-    mModel = new QgsStyleModel( mStyle, this );
+    dialogStyle = mStyle;
   }
 
   double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 10;
   listItems->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );  // ~100, 90 on low dpi
 
+  mModel = new QgsStyleProxyModel( dialogStyle, this );
+
   mModel->addDesiredIconSize( listItems->iconSize() );
+
   listItems->setModel( mModel );
 
   connect( listItems->selectionModel(), &QItemSelectionModel::selectionChanged,
