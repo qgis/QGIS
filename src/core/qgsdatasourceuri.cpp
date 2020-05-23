@@ -551,6 +551,12 @@ QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
 {
   QString uri = connectionInfo( expandAuthConfig );
 
+  // Filsystem based?
+  if ( uri.compare( mRawUri, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+  {
+    return uri;
+  }
+
   if ( !mKeyColumn.isEmpty() )
   {
     uri += QStringLiteral( " key='%1'" ).arg( escape( mKeyColumn ) );
@@ -584,8 +590,15 @@ QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
       QgsDebugMsg( QStringLiteral( "invalid uri parameter %1 skipped" ).arg( it.key() ) );
       continue;
     }
-
-    uri += ' ' + it.key() + "='" + escape( it.value() ) + '\'';
+    // filesystem based
+    if ( it.key() + '=' + it.value() == uri || it.key().contains( uri ) )
+    {
+      return mRawUri;
+    }
+    else
+    {
+      uri += ' ' + it.key() + "='" + escape( it.value() ) + '\'';
+    }
   }
 
   QString columnName( mGeometryColumn );

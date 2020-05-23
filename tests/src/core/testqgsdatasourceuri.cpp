@@ -243,30 +243,52 @@ void TestQgsDataSourceUri::checkConnectionInfo_data()
 {
   QTest::addColumn<QString>( "uri" );
   QTest::addColumn<QString>( "connectionInfo" );
+  QTest::addColumn<QString>( "roundtrip" );
+
+  // Test roundtrip
+  QTest::newRow( "gpx" ) << "testdata/layers.gpx?type=track"
+                         << "testdata/layers.gpx?type=track"
+                         << "testdata/layers.gpx?type=track";
+  QTest::newRow( "shapefile" ) << R"(/my/path/to\ my/hapefile.shp)"
+                               << R"(/my/path/to\ my/hapefile.shp)"
+                               << R"(/my/path/to\ my/hapefile.shp)";
+  // Real DBs
   QTest::newRow( "PG" ) << "dbname='mydb' host='myhost' user='91divoc' password='quarantine' port='5432' mode='2' schema=myschema table=my_table (geom)"
-                        << "dbname='mydb' host=myhost port=5432 user='91divoc' password='quarantine'";
-  QTest::newRow( "PG Service" ) << "service=my_service schema=myschema table=my_table"
-                                << "service='my_service'";
+                        << "dbname='mydb' host=myhost port=5432 user='91divoc' password='quarantine'"
+                        << "dbname='mydb' host=myhost port=5432 user='91divoc' password='quarantine' mode='2' table=\"myschema\".\"my_table\" (geom)";
+  QTest::newRow( "PG service" ) << "service=my_service schema=myschema table=my_table"
+                                << "service='my_service'"
+                                << "service='my_service' table=\"myschema\".\"my_table\"";
   QTest::newRow( "spatialite" ) << R"(dbname='/home/qgis/dev/QGIS/tests/testdata/provider/spatialite.db' table="somedata" (geom))"
-                                << R"(dbname='/home/qgis/dev/QGIS/tests/testdata/provider/spatialite.db')";
+                                << R"(dbname='/home/qgis/dev/QGIS/tests/testdata/provider/spatialite.db')"
+                                << R"(dbname='/home/qgis/dev/QGIS/tests/testdata/provider/spatialite.db' table="somedata" (geom))";
   // This fail because the data source uri parsed adds another back slash, it is probably not an issue
   //QTest::newRow( "spatialite on windows" ) << R"(dbname='C:\my fancy path\qgis\spatialite.db' table="somedata" (geom))"
   //                              << R"(dbname='C:\my fancy path\qgis\spatialite.db')";
   QTest::newRow( "geopackage" ) << "/home/qgis/dev/QGIS/tests/testdata/provider/geopackage.gpkg|layername=my_layer"
-                                << "/home/qgis/dev/QGIS/tests/testdata/provider/geopackage.gpkg";
+                                << "/home/qgis/dev/QGIS/tests/testdata/provider/geopackage.gpkg"
+                                << "/home/qgis/dev/QGIS/tests/testdata/provider/geopackage.gpkg|layername=my_layer";
+  QTest::newRow( "geopackage layerid" ) << "/home/qgis/dev/QGIS/tests/testdata/provider/geopackage.gpkg|layerId=my_layer"
+                                        << "/home/qgis/dev/QGIS/tests/testdata/provider/geopackage.gpkg"
+                                        << "/home/qgis/dev/QGIS/tests/testdata/provider/geopackage.gpkg|layerId=my_layer";
   QTest::newRow( "geopackage camel case" ) << "/home/qgis/dev/QGIS/tests/testdata/provider/geopackage.gpkg|layerName=my_layer"
-      << "/home/qgis/dev/QGIS/tests/testdata/provider/geopackage.gpkg";
+      << "/home/qgis/dev/QGIS/tests/testdata/provider/geopackage.gpkg"
+      << "/home/qgis/dev/QGIS/tests/testdata/provider/geopackage.gpkg|layerName=my_layer";
   QTest::newRow( "geopackage no layername" ) << "/home/qgis/dev/QGIS/tests/testdata/provider/geopackage.gpkg"
+      << "/home/qgis/dev/QGIS/tests/testdata/provider/geopackage.gpkg"
       << "/home/qgis/dev/QGIS/tests/testdata/provider/geopackage.gpkg";
   QTest::newRow( "geopackage no path" ) << "geopackage.gpkg|layername=my_layer"
-                                        << "geopackage.gpkg";
+                                        << "geopackage.gpkg"
+                                        << "geopackage.gpkg|layername=my_layer";
 }
 
 void TestQgsDataSourceUri::checkConnectionInfo()
 {
   QFETCH( QString, uri );
   QFETCH( QString, connectionInfo );
+  QFETCH( QString, roundtrip );
   QCOMPARE( QgsDataSourceUri( uri ).connectionInfo( false ), connectionInfo );
+  QCOMPARE( QgsDataSourceUri( uri ).uri( ), roundtrip );
 }
 
 void TestQgsDataSourceUri::checkAuthParams()
