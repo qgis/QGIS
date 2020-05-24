@@ -839,7 +839,7 @@ void QgsGeoreferencerMainWindow::createActions()
   mActionOpenRaster->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ) );
   connect( mActionOpenRaster, &QAction::triggered, this, &QgsGeoreferencerMainWindow::openRaster );
 
-  mActionStartGeoref->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/georeferencer/mActionStartGeoref.png" ) ) );
+  mActionStartGeoref->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionStart.svg" ) ) );
   connect( mActionStartGeoref, &QAction::triggered, this, &QgsGeoreferencerMainWindow::doGeoreference );
 
   mActionGDALScript->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/georeferencer/mActionGDALScript.png" ) ) );
@@ -909,7 +909,6 @@ void QgsGeoreferencerMainWindow::createActions()
   mActionHelp = new QAction( tr( "Help" ), this );
   connect( mActionHelp, &QAction::triggered, this, &QgsGeoreferencerMainWindow::showHelp );
 
-  mActionQuit->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionQuit.png" ) ) );
   mActionQuit->setShortcuts( QList<QKeySequence>() << QKeySequence( Qt::CTRL + Qt::Key_Q )
                              << QKeySequence( Qt::Key_Escape ) );
   connect( mActionQuit, &QAction::triggered, this, &QWidget::close );
