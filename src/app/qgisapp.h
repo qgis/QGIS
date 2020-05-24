@@ -146,7 +146,6 @@ class QgsDevToolsPanelWidget;
 class QgsDevToolWidgetFactory;
 class QgsNetworkLogger;
 class QgsNetworkLoggerWidgetFactory;
-
 #include <QMainWindow>
 #include <QToolBar>
 #include <QAbstractSocket>
@@ -182,6 +181,10 @@ class QgsNetworkLoggerWidgetFactory;
 #endif
 
 class QgsLegendFilterButton;
+
+#ifdef HAVE_GEOREFERENCER
+class QgsGeoreferencerMainWindow;
+#endif
 
 /**
  * \class QgisApp
@@ -1835,6 +1838,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Enable or disable event tracing (for debugging)
     void toggleEventTracing();
 
+#ifdef HAVE_GEOREFERENCER
+    void showGeoreferencer();
+#endif
+
   signals:
 
     /**
@@ -2469,6 +2476,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsLegendFilterButton *mLegendExpressionFilterButton = nullptr;
 
     QgsSnappingUtils *mSnappingUtils = nullptr;
+
+#ifdef HAVE_GEOREFERENCER
+    QgsGeoreferencerMainWindow *mGeoreferencer = nullptr;
+#endif
 
     QList<QgsMapLayerConfigWidgetFactory *> mMapLayerPanelFactories;
     QList<QPointer<QgsOptionsWidgetFactory>> mOptionsWidgetFactories;

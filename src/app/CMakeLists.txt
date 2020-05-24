@@ -175,27 +175,6 @@ SET(QGIS_APP_SRCS
   devtools/profiler/qgsprofilerpanelwidget.cpp
   devtools/profiler/qgsprofilerwidgetfactory.cpp
 
-  georeferencer/qgsgcpcanvasitem.cpp
-  georeferencer/qgsgeorefconfigdialog.cpp
-  georeferencer/qgsgeorefdatapoint.cpp
-  georeferencer/qgsgeorefdelegates.cpp
-  georeferencer/qgsgeorefdescriptiondialog.cpp
-  georeferencer/qgsgeorefplugin.cpp
-  georeferencer/qgsgeorefplugingui.cpp
-  georeferencer/qgsgeoreftooladdpoint.cpp
-  georeferencer/qgsgeoreftooldeletepoint.cpp
-  georeferencer/qgsgeoreftoolmovepoint.cpp
-  georeferencer/qgsgeorefvalidators.cpp
-  georeferencer/qgsleastsquares.cpp
-  georeferencer/qgsmapcoordsdialog.cpp
-  georeferencer/qgsresidualplotitem.cpp
-  georeferencer/qgstransformsettingsdialog.cpp
-  georeferencer/qgsgcplist.cpp
-  georeferencer/qgsgcplistmodel.cpp
-  georeferencer/qgsimagewarper.cpp
-  georeferencer/qgsgeoreftransform.cpp
-  georeferencer/qgsgcplistwidget.cpp
-  georeferencer/qgsrasterchangecoords.cpp
   georeferencer/qgsvalidateddoublespinbox.cpp
 
   labeling/qgslabelpropertydialog.cpp
@@ -251,6 +230,32 @@ SET(QGIS_APP_SRCS
   mesh/qgsmeshstaticdatasetwidget.cpp
   mesh/qgsmeshvariablestrokewidthwidget.cpp
 )
+
+IF (WITH_GEOREFERENCER)
+  SET(QGIS_APP_SRCS
+    ${QGIS_APP_SRCS}
+    georeferencer/qgsgcpcanvasitem.cpp
+    georeferencer/qgsgeorefconfigdialog.cpp
+    georeferencer/qgsgeorefdatapoint.cpp
+    georeferencer/qgsgeorefdelegates.cpp
+    georeferencer/qgsgeorefdescriptiondialog.cpp
+    georeferencer/qgsgeorefplugingui.cpp
+    georeferencer/qgsgeoreftooladdpoint.cpp
+    georeferencer/qgsgeoreftooldeletepoint.cpp
+    georeferencer/qgsgeoreftoolmovepoint.cpp
+    georeferencer/qgsgeorefvalidators.cpp
+    georeferencer/qgsleastsquares.cpp
+    georeferencer/qgsmapcoordsdialog.cpp
+    georeferencer/qgsresidualplotitem.cpp
+    georeferencer/qgstransformsettingsdialog.cpp
+    georeferencer/qgsgcplist.cpp
+    georeferencer/qgsgcplistmodel.cpp
+    georeferencer/qgsimagewarper.cpp
+    georeferencer/qgsgeoreftransform.cpp
+    georeferencer/qgsgcplistwidget.cpp
+    georeferencer/qgsrasterchangecoords.cpp
+  )
+ENDIF (WITH_GEOREFERENCER)
 
 IF (WITH_3D)
   SET(QGIS_APP_SRCS
