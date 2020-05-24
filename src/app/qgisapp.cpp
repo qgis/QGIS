@@ -117,6 +117,10 @@
 #include "qgsvectorlayer3drendererwidget.h"
 #endif
 
+#ifdef HAVE_GEOREFERENCER
+#include "georeferencer/qgsgeorefplugingui.h"
+#endif
+
 #include "qgsgui.h"
 #include "qgsnative.h"
 #include "qgsdatasourceselectdialog.h"
@@ -739,6 +743,16 @@ void QgisApp::toggleEventTracing()
       QgsEventTracing::writeTrace( fileName );
   }
 }
+
+#ifdef HAVE_GEOREFERENCER
+void QgisApp::showGeoreferencer()
+{
+  if ( !mGeoreferencer )
+    mGeoreferencer = new QgsGeoreferencerMainWindow( this );
+  mGeoreferencer->show();
+  mGeoreferencer->setFocus();
+}
+#endif
 
 /*
  * This function contains forced validation of CRS used in QGIS.
@@ -2752,6 +2766,13 @@ void QgisApp::createActions()
   connect( mActionDecreaseBrightness, &QAction::triggered, this, &QgisApp::decreaseBrightness );
   connect( mActionIncreaseContrast, &QAction::triggered, this, &QgisApp::increaseContrast );
   connect( mActionDecreaseContrast, &QAction::triggered, this, &QgisApp::decreaseContrast );
+
+#ifdef HAVE_GEOREFERENCER
+  connect( mActionShowGeoreferencer, &QAction::triggered, this, &QgisApp::showGeoreferencer );
+#else
+  delete mActionShowGeoreferencer;
+  mActionShowGeoreferencer = nullptr;
+#endif
 
   // Help Menu Items
 

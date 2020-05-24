@@ -51,13 +51,13 @@ class QgsGeorefDockWidget : public QgsDockWidget
     QgsGeorefDockWidget( const QString &title, QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
 };
 
-class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBase
+class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPluginGuiBase
 {
     Q_OBJECT
 
   public:
-    QgsGeorefPluginGui( QgisInterface *qgisInterface, QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
-    ~QgsGeorefPluginGui() override;
+    QgsGeoreferencerMainWindow( QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
+    ~QgsGeoreferencerMainWindow() override;
 
   protected:
     void closeEvent( QCloseEvent * ) override;
@@ -156,7 +156,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     // gcp points
     bool loadGCPs( /*bool verbose = true*/ );
     void saveGCPs();
-    QgsGeorefPluginGui::SaveGCPs checkNeedGCPSave();
+    QgsGeoreferencerMainWindow::SaveGCPs checkNeedGCPSave();
 
     // georeference
     bool georeference();
@@ -232,8 +232,6 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     QgsImageWarper::ResamplingMethod mResamplingMethod;
     QgsGeorefTransform mGeorefTransform;
     QString mCompressionMethod;
-
-    QgisInterface *mIface = nullptr;
 
     QgsGCPList mPoints;
     QgsGCPList mInitialPoints;
