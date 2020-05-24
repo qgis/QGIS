@@ -2121,9 +2121,7 @@ const QList<QgsVectorLayerRef> QgisApp::findBrokenLayerDependencies( QgsVectorLa
                ! dependency.source.isEmpty() ||
                ! dependency.layerId.isEmpty() )
           {
-            const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly(
-                                            QgsProject::instance(),
-                                            QgsVectorLayerRef::MatchType::Name ) };
+            const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) };
             if ( ! depVl || ! depVl->isValid() )
             {
               brokenDependencies.append( dependency );
@@ -2272,9 +2270,7 @@ void QgisApp::resolveVectorLayerDependencies( QgsVectorLayer *vl, QgsMapLayer::S
       }
       if ( ! loaded )
       {
-        const QString msg { tr( "layer '%1' requires layer '%2' to be loaded but '%2' could not be found, please load it manually if possible." )
-                            .arg( vl->name() )
-                            .arg( dependency.name ) };
+        const QString msg { tr( "layer '%1' requires layer '%2' to be loaded but '%2' could not be found, please load it manually if possible." ).arg( vl->name(), dependency.name ) };
         messageBar()->pushWarning( tr( "Missing layer form dependency" ), msg );
       }
       else
