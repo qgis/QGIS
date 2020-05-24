@@ -837,7 +837,7 @@ void QgsGeorefPluginGui::createActions()
   // File actions
   connect( mActionReset, &QAction::triggered, this, &QgsGeorefPluginGui::reset );
 
-  mActionOpenRaster->setIcon( getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ) );
+  mActionOpenRaster->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ) );
   connect( mActionOpenRaster, &QAction::triggered, this, &QgsGeorefPluginGui::openRaster );
 
   mActionStartGeoref->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/georeferencer/mActionStartGeoref.png" ) ) );
@@ -866,22 +866,22 @@ void QgsGeorefPluginGui::createActions()
   connect( mActionMoveGCPPoint, &QAction::triggered, this, &QgsGeorefPluginGui::setMovePointTool );
 
   // View actions
-  mActionPan->setIcon( getThemeIcon( QStringLiteral( "/mActionPan.svg" ) ) );
+  mActionPan->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPan.svg" ) ) );
   connect( mActionPan, &QAction::triggered, this, &QgsGeorefPluginGui::setPanTool );
 
-  mActionZoomIn->setIcon( getThemeIcon( QStringLiteral( "/mActionZoomIn.svg" ) ) );
+  mActionZoomIn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomIn.svg" ) ) );
   connect( mActionZoomIn, &QAction::triggered, this, &QgsGeorefPluginGui::setZoomInTool );
 
-  mActionZoomOut->setIcon( getThemeIcon( QStringLiteral( "/mActionZoomOut.svg" ) ) );
+  mActionZoomOut->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomOut.svg" ) ) );
   connect( mActionZoomOut, &QAction::triggered, this, &QgsGeorefPluginGui::setZoomOutTool );
 
-  mActionZoomToLayer->setIcon( getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ) );
+  mActionZoomToLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ) );
   connect( mActionZoomToLayer, &QAction::triggered, this, &QgsGeorefPluginGui::zoomToLayerTool );
 
-  mActionZoomLast->setIcon( getThemeIcon( QStringLiteral( "/mActionZoomLast.svg" ) ) );
+  mActionZoomLast->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomLast.svg" ) ) );
   connect( mActionZoomLast, &QAction::triggered, this, &QgsGeorefPluginGui::zoomToLast );
 
-  mActionZoomNext->setIcon( getThemeIcon( QStringLiteral( "/mActionZoomNext.svg" ) ) );
+  mActionZoomNext->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomNext.svg" ) ) );
   connect( mActionZoomNext, &QAction::triggered, this, &QgsGeorefPluginGui::zoomToNext );
 
   mActionLinkGeorefToQGis->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/georeferencer/mActionLinkGeorefToQGis.png" ) ) );
@@ -891,18 +891,18 @@ void QgsGeorefPluginGui::createActions()
   connect( mActionLinkQGisToGeoref, &QAction::triggered, this, &QgsGeorefPluginGui::linkQGisToGeoref );
 
   // Settings actions
-  mActionRasterProperties->setIcon( getThemeIcon( QStringLiteral( "/mActionRasterProperties.png" ) ) );
+  mActionRasterProperties->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRasterProperties.png" ) ) );
   connect( mActionRasterProperties, &QAction::triggered, this, &QgsGeorefPluginGui::showRasterPropertiesDialog );
 
-  mActionGeorefConfig->setIcon( getThemeIcon( QStringLiteral( "/mActionGeorefConfig.png" ) ) );
+  mActionGeorefConfig->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionGeorefConfig.png" ) ) );
   connect( mActionGeorefConfig, &QAction::triggered, this, &QgsGeorefPluginGui::showGeorefConfigDialog );
 
   // Histogram stretch
-  mActionLocalHistogramStretch->setIcon( getThemeIcon( QStringLiteral( "/mActionLocalHistogramStretch.svg" ) ) );
+  mActionLocalHistogramStretch->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLocalHistogramStretch.svg" ) ) );
   connect( mActionLocalHistogramStretch, &QAction::triggered, this, &QgsGeorefPluginGui::localHistogramStretch );
   mActionLocalHistogramStretch->setEnabled( false );
 
-  mActionFullHistogramStretch->setIcon( getThemeIcon( QStringLiteral( "/mActionFullHistogramStretch.svg" ) ) );
+  mActionFullHistogramStretch->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFullHistogramStretch.svg" ) ) );
   connect( mActionFullHistogramStretch, &QAction::triggered, this, &QgsGeorefPluginGui::fullHistogramStretch );
   mActionFullHistogramStretch->setEnabled( false );
 
@@ -910,7 +910,7 @@ void QgsGeorefPluginGui::createActions()
   mActionHelp = new QAction( tr( "Help" ), this );
   connect( mActionHelp, &QAction::triggered, this, &QgsGeorefPluginGui::showHelp );
 
-  mActionQuit->setIcon( getThemeIcon( QStringLiteral( "/mActionQuit.png" ) ) );
+  mActionQuit->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionQuit.png" ) ) );
   mActionQuit->setShortcuts( QList<QKeySequence>() << QKeySequence( Qt::CTRL + Qt::Key_Q )
                              << QKeySequence( Qt::Key_Escape ) );
   connect( mActionQuit, &QAction::triggered, this, &QWidget::close );
@@ -1792,7 +1792,7 @@ void QgsGeorefPluginGui::showGDALScript( const QStringList &commands )
 
   // create window to show gdal script
   QDialogButtonBox *bbxGdalScript = new QDialogButtonBox( QDialogButtonBox::Cancel, Qt::Horizontal, this );
-  QPushButton *pbnCopyInClipBoard = new QPushButton( getThemeIcon( QStringLiteral( "/mActionEditPaste.svg" ) ),
+  QPushButton *pbnCopyInClipBoard = new QPushButton( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditPaste.svg" ) ),
       tr( "Copy to Clipboard" ), bbxGdalScript );
   bbxGdalScript->addButton( pbnCopyInClipBoard, QDialogButtonBox::AcceptRole );
 
@@ -2067,33 +2067,6 @@ QString QgsGeorefPluginGui::guessWorldFileName( const QString &rasterFileName )
     worldFileName = rasterFileName.left( point + 1 ) + "wld";
 
   return worldFileName;
-}
-
-// Note this code is duplicated from qgisapp.cpp because
-// I didn't want to make plugins on qgsapplication [TS]
-QIcon QgsGeorefPluginGui::getThemeIcon( const QString &name )
-{
-  if ( QFile::exists( QgsApplication::activeThemePath() + name ) )
-  {
-    return QIcon( QgsApplication::activeThemePath() + name );
-  }
-  else if ( QFile::exists( QgsApplication::defaultThemePath() + name ) )
-  {
-    return QIcon( QgsApplication::defaultThemePath() + name );
-  }
-  else
-  {
-    QgsSettings settings;
-    QString themePath = ":/icons/" + settings.value( QStringLiteral( "Themes" ) ).toString() + name;
-    if ( QFile::exists( themePath ) )
-    {
-      return QIcon( themePath );
-    }
-    else
-    {
-      return QIcon( ":/icons/default" + name );
-    }
-  }
 }
 
 bool QgsGeorefPluginGui::checkFileExisting( const QString &fileName, const QString &title, const QString &question )
