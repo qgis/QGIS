@@ -18,7 +18,7 @@
 
 #include <QDialog>
 
-#include "qgsgeorefplugingui.h"
+#include "qgsgeorefmainwindow.h"
 
 #include "ui_qgstransformsettingsdialogbase.h"
 

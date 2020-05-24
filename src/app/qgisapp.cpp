@@ -118,7 +118,7 @@
 #endif
 
 #ifdef HAVE_GEOREFERENCER
-#include "georeferencer/qgsgeorefplugingui.h"
+#include "georeferencer/qgsgeorefmainwindow.h"
 #endif
 
 #include "qgsgui.h"
