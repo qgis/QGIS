@@ -1705,6 +1705,14 @@ QgisApp::~QgisApp()
   // shouldn't be needed, but from this stage on, we don't want/need ANY map canvas refreshes to take place
   mFreezeCount = 1000000;
 
+#ifdef HAVE_GEOREFERENCER
+  if ( mGeoreferencer )
+  {
+    delete mGeoreferencer;
+    mGeoreferencer = nullptr;
+  }
+#endif
+
   mNetworkLoggerWidgetFactory.reset();
 
   delete mInternalClipboard;
