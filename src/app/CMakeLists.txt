@@ -239,7 +239,7 @@ IF (WITH_GEOREFERENCER)
     georeferencer/qgsgeorefdatapoint.cpp
     georeferencer/qgsgeorefdelegates.cpp
     georeferencer/qgsgeorefdescriptiondialog.cpp
-    georeferencer/qgsgeorefplugingui.cpp
+    georeferencer/qgsgeorefmainwindow.cpp
     georeferencer/qgsgeoreftooladdpoint.cpp
     georeferencer/qgsgeoreftooldeletepoint.cpp
     georeferencer/qgsgeoreftoolmovepoint.cpp

@@ -1,5 +1,5 @@
 /***************************************************************************
-     QgsGeorefPluginGui.cpp
+     qgsgeorefmainwindow.cpp
      --------------------------------------
     Date                 : Sun Sep 16 12:03:52 AKDT 2007
     Copyright            : (C) 2007 by Gary E. Sherman
@@ -66,7 +66,7 @@
 #include "qgsresidualplotitem.h"
 #include "qgstransformsettingsdialog.h"
 
-#include "qgsgeorefplugingui.h"
+#include "qgsgeorefmainwindow.h"
 #include "qgsmessagebar.h"
 
 QgsGeorefDockWidget::QgsGeorefDockWidget( const QString &title, QWidget *parent, Qt::WindowFlags flags )
