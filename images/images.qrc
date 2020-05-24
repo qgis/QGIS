@@ -860,7 +860,6 @@
         <file>themes/default/mLayoutItemMarker.svg</file>
         <file>themes/default/algorithms/mAlgorithmConstantRaster.svg</file>
         <file>themes/default/mIconStopwatch.svg</file>
-        <file>themes/default/georeferencer/mGeorefDescription.png</file>
         <file>themes/default/georeferencer/mGeorefRun.png</file>
         <file>themes/default/georeferencer/mPushButtonPencil.png</file>
         <file>themes/default/georeferencer/mActionGDALScript.png</file>
