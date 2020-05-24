@@ -127,7 +127,7 @@ void QgsGeorefPlugin::unload()
 void QgsGeorefPlugin::setCurrentTheme( const QString & )
 {
   if ( mActionRunGeoref )
-    mActionRunGeoref->setIcon( getThemeIcon( QStringLiteral( "/mGeorefRun.png" ) ) );
+    mActionRunGeoref->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/georeferencer/mGeorefRun.png" ) ) );
 }
 
 QIcon QgsGeorefPlugin::getThemeIcon( const QString &name )

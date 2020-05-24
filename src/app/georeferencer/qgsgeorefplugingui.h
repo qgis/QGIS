@@ -126,8 +126,6 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
 
     bool updateGeorefTransform();
 
-    void updateIconTheme( const QString &theme );
-
   private:
     enum SaveGCPs
     {
