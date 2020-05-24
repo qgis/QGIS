@@ -3341,6 +3341,10 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
   </action>
   <action name="mActionShowGeoreferencer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/georeferencer/mGeorefRun.png</normaloff>:/images/themes/default/georeferencer/mGeorefRun.png</iconset>
+   </property>
    <property name="text">
     <string>Georeferencer…</string>
    </property>
