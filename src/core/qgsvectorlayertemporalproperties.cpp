@@ -411,7 +411,7 @@ QString dateTimeExpressionLiteral( const QDateTime &datetime )
          .arg( datetime.time().second() + datetime.time().msec() / 1000.0 );
 }
 
-QString QgsVectorLayerTemporalProperties::createFilterString( QgsVectorLayer *, const QgsDateTimeRange &range ) const
+QString QgsVectorLayerTemporalProperties::createFilterString( const QgsVectorLayerTemporalContext &, const QgsDateTimeRange &range ) const
 {
   if ( !isActive() )
     return QString();
@@ -650,4 +650,14 @@ void QgsVectorLayerTemporalProperties::guessDefaultsFromFields( const QgsFields 
 
   // note -- NEVER auto enable temporal properties here! It's just a helper designed
   // to shortcut the initial field selection
+}
+
+QgsVectorLayer *QgsVectorLayerTemporalContext::layer() const
+{
+  return mLayer;
+}
+
+void QgsVectorLayerTemporalContext::setLayer( QgsVectorLayer *layer )
+{
+  mLayer = layer;
 }

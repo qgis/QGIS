@@ -30,6 +30,37 @@ class QgsVectorLayer;
 class QgsFields;
 
 /**
+ * \class QgsVectorLayerTemporalContext
+ * \ingroup core
+ * Encapsulates the context in which a QgsVectorLayer's temporal capabilities
+ * will be applied
+ *
+ * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsVectorLayerTemporalContext
+{
+  public:
+
+    /**
+     * Returns the associated layer.
+     *
+     * \see setLayer()
+     */
+    QgsVectorLayer *layer() const;
+
+    /**
+     * Sets the associated \a layer.
+     *
+     * \see layer()
+     */
+    void setLayer( QgsVectorLayer *layer );
+
+  private:
+
+    QgsVectorLayer *mLayer = nullptr;
+};
+
+/**
  * \class QgsVectorLayerTemporalProperties
  * \ingroup core
  * Implementation of map layer temporal properties for vector layers.
@@ -283,8 +314,8 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
     void setAccumulateFeatures( bool accumulate );
 
     /**
-     * Creates a QGIS expression filter string for filtering features from \a layer
-     * to those within the specified time \a range.
+     * Creates a QGIS expression filter string for filtering features within
+     * the specified \a context to those within the specified time \a range.
      *
      * The returned expression string considers the mode() and other related
      * settings (such as startField()) when building the filter string.
@@ -294,7 +325,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      * isVisibleInTemporalRange() when testing whether features from a layer set to the
      * ModeFixedTemporalRange should ALL be filtered out.
      */
-    QString createFilterString( QgsVectorLayer *layer, const QgsDateTimeRange &range ) const;
+    QString createFilterString( const QgsVectorLayerTemporalContext &context, const QgsDateTimeRange &range ) const;
 
     /**
      * Attempts to setup the temporal properties by scanning a set of \a fields
