@@ -95,7 +95,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   mListCompression.append( QStringLiteral( "PACKBITS" ) );
   mListCompression.append( QStringLiteral( "DEFLATE" ) );
   QStringList listCompressionTr;
-  Q_FOREACH ( const QString &item, mListCompression )
+  for ( const QString &item : qgis::as_const( mListCompression ) )
   {
     listCompressionTr.append( tr( item.toLatin1().data() ) );
   }

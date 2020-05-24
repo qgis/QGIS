@@ -637,6 +637,10 @@ ADD_DEFINITIONS(-DQT_DEPRECATED_WARNINGS)
 # Unfortunately Qwt uses deprecated QString::null in headers, preventing this being raised above 5.8
 ADD_DEFINITIONS(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
 
+IF (WITH_GEOREFERENCER)
+  FIND_PACKAGE(GSL REQUIRED)
+ENDIF (WITH_GEOREFERENCER)
+
 IF(ENABLE_COVERAGE)
   INCLUDE("cmake/modules/coverage/CodeCoverage.cmake")
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
