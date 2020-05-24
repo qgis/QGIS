@@ -62,7 +62,6 @@
 #include "qgsgcplistwidget.h"
 
 #include "qgsgeorefconfigdialog.h"
-#include "qgsgeorefdescriptiondialog.h"
 #include "qgsresidualplotitem.h"
 #include "qgstransformsettingsdialog.h"
 
