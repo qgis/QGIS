@@ -333,7 +333,7 @@
   <customwidget>
    <class>QgsValidatedDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
-   <header location="global">qgsvalidateddoublespinbox.h</header>
+   <header location="global">georeferencer/qgsvalidateddoublespinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

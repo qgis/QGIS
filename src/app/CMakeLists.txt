@@ -175,6 +175,29 @@ SET(QGIS_APP_SRCS
   devtools/profiler/qgsprofilerpanelwidget.cpp
   devtools/profiler/qgsprofilerwidgetfactory.cpp
 
+  georeferencer/qgsgcpcanvasitem.cpp
+  georeferencer/qgsgeorefconfigdialog.cpp
+  georeferencer/qgsgeorefdatapoint.cpp
+  georeferencer/qgsgeorefdelegates.cpp
+  georeferencer/qgsgeorefdescriptiondialog.cpp
+  georeferencer/qgsgeorefplugin.cpp
+  georeferencer/qgsgeorefplugingui.cpp
+  georeferencer/qgsgeoreftooladdpoint.cpp
+  georeferencer/qgsgeoreftooldeletepoint.cpp
+  georeferencer/qgsgeoreftoolmovepoint.cpp
+  georeferencer/qgsgeorefvalidators.cpp
+  georeferencer/qgsleastsquares.cpp
+  georeferencer/qgsmapcoordsdialog.cpp
+  georeferencer/qgsresidualplotitem.cpp
+  georeferencer/qgstransformsettingsdialog.cpp
+  georeferencer/qgsgcplist.cpp
+  georeferencer/qgsgcplistmodel.cpp
+  georeferencer/qgsimagewarper.cpp
+  georeferencer/qgsgeoreftransform.cpp
+  georeferencer/qgsgcplistwidget.cpp
+  georeferencer/qgsrasterchangecoords.cpp
+  georeferencer/qgsvalidateddoublespinbox.cpp
+
   labeling/qgslabelpropertydialog.cpp
   labeling/qgsmaptoolchangelabelproperties.cpp
   labeling/qgsmaptoolpinlabels.cpp
@@ -580,6 +603,15 @@ IF (WITH_3D)
     qgis_3d
   )
 ENDIF (WITH_3D)
+
+IF (WITH_GEOREFERENCER)
+  INCLUDE_DIRECTORIES(SYSTEM
+    ${GSL_INCLUDE_DIR}
+  )
+  TARGET_LINK_LIBRARIES(qgis_app
+    ${GSL_LIBRARIES}
+  )
+ENDIF (WITH_GEOREFERENCER)
 
 GENERATE_EXPORT_HEADER(
    qgis_app
