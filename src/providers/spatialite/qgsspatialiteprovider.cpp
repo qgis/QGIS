@@ -4362,6 +4362,7 @@ bool QgsSpatiaLiteProvider::deleteFeatures( const QgsFeatureIds &id )
         errMsg = ( char * ) sqlite3_malloc( ( int ) strlen( err ) + 1 );
         strcpy( errMsg, err );
         handleError( sql, errMsg, savepointId );
+        sqlite3_finalize( stmt );
         return false;
       }
     }
@@ -4643,6 +4644,7 @@ bool QgsSpatiaLiteProvider::changeGeometryValues( const QgsGeometryMap &geometry
         errMsg = ( char * ) sqlite3_malloc( ( int ) strlen( err ) + 1 );
         strcpy( errMsg, err );
         handleError( sql, errMsg, savepointId );
+        sqlite3_finalize( stmt );
         return false;
       }
     }
