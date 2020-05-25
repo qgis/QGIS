@@ -19,8 +19,10 @@
 #include "qgssettings.h"
 #include "qgssymbollayerutils.h"
 
+#include <QLabel>
 #include <QWidget>
 #include <QFont>
+#include <QFontDatabase>
 #include <QDebug>
 #include <QFocusEvent>
 
@@ -102,6 +104,9 @@ void QgsCodeEditor::setSciWidget()
     }
   }
   QPalette pal = qApp->palette();
+
+  QFont font = getMonospaceFont();
+  setFont( font );
 
   setUtf8( true );
   setCaretLineVisible( true );
@@ -193,14 +198,16 @@ bool QgsCodeEditor::isFixedPitch( const QFont &font )
 
 QFont QgsCodeEditor::getMonospaceFont()
 {
+  QFont font = QFontDatabase::systemFont( QFontDatabase::FixedFont );
+#ifdef Q_OS_MAC
+  // The font size gotten from getMonospaceFont() is too small on Mac
+  font.setPointSize( QLabel().font().pointSize() );
+#else
   QgsSettings settings;
-  QString loadFont = settings.value( QStringLiteral( "pythonConsole/fontfamilytextEditor" ), "Monospace" ).toString();
-  int fontSize = settings.value( QStringLiteral( "pythonConsole/fontsizeEditor" ), 10 ).toInt();
-
-  QFont font( loadFont );
-  font.setFixedPitch( true );
+  int fontSize = settings.value( QStringLiteral( "qgis/stylesheet/fontPointSize" ), 10 ).toInt();
   font.setPointSize( fontSize );
-  font.setStyleHint( QFont::TypeWriter );
+#endif
   font.setBold( false );
+
   return font;
 }
