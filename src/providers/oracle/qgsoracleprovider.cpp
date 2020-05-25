@@ -218,6 +218,11 @@ QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions 
   {
     disconnectDb();
   }
+
+  if ( QgsWkbTypes::isMultiType( mRequestedGeomType ) )
+  {
+    castSingleGeomToMulti();
+  }
 }
 
 QgsOracleProvider::~QgsOracleProvider()
@@ -1951,6 +1956,103 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
   return returnvalue;
 }
 
+void QgsOracleProvider::castSingleGeomToMulti()
+{
+  QgsOracleConn *conn = connectionRW();
+  if ( mIsQuery || !conn )
+    return;
+
+  QSqlDatabase db( *conn );
+
+  QSqlQuery qry( db );
+
+  QString singleGeomClause;
+  switch ( mRequestedGeomType )
+  {
+    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::MultiPoint25D:
+      singleGeomClause = QStringLiteral( "mod(FEATUREREQUEST.%1.sdo_gtype,100) = 1" ).arg( mGeometryColumn );
+      break;
+    case QgsWkbTypes::MultiLineString:
+    case QgsWkbTypes::MultiLineString25D:
+    case QgsWkbTypes::MultiLineStringZ:
+      singleGeomClause = QStringLiteral( "mod(FEATUREREQUEST.%1.sdo_gtype,100) = 2 AND not to_char(substr(FEATUREREQUEST.%1.get_wkt(),0,13)) in ('CIRCULARSTRIN', 'COMPOUNDCURVE')" ).arg( mGeometryColumn );
+      break;
+    case QgsWkbTypes::MultiCurve:
+    case QgsWkbTypes::MultiCurveZ:
+      singleGeomClause = QStringLiteral( "mod(FEATUREREQUEST.%1.sdo_gtype,100) = 2 AND to_char(substr(FEATUREREQUEST.%1.get_wkt(),0,13)) in ('CIRCULARSTRIN', 'COMPOUNDCURVE');" ).arg( mGeometryColumn );
+      break;
+    case QgsWkbTypes::MultiPolygon:
+    case QgsWkbTypes::MultiPolygonZ:
+    case QgsWkbTypes::MultiPolygon25D:
+    case QgsWkbTypes::MultiSurface:
+    case QgsWkbTypes::MultiSurfaceZ:
+      singleGeomClause = QStringLiteral( "mod(FEATUREREQUEST.%1.sdo_gtype,100) = 3" ).arg( mGeometryColumn );
+      break;
+    case QgsWkbTypes::NoGeometry:
+      Q_ASSERT( !"no geometry detected" );
+      return;
+    case QgsWkbTypes::Unknown:
+      Q_ASSERT( !"unknown geometry unexpected" );
+      return;
+    default:
+      return;
+  }
+
+  QString sql = QStringLiteral( """SELECT COUNT(*) FROM %1 FEATUREREQUEST WHERE """ ).arg( mQuery );
+  sql += singleGeomClause;
+  if ( qry.exec( sql ) )
+  {
+    if ( qry.next() )
+    {
+      if ( qry.value( 0 ).toInt() > 0 )
+      {
+        if ( QMessageBox::question( nullptr, QObject::tr( "Cast single geometry feature to multi geometry feature" ),
+                                    QObject::tr( "\"%1\" table will be loaded as a %2 layer but the table contains %3 . Do you want to convert single geometry to multigeometry ?" )
+                                    .arg( mTableName ).arg( QgsWkbTypes::displayString( mRequestedGeomType ) ).arg( QgsWkbTypes::displayString( QgsWkbTypes::singleType( mRequestedGeomType ) ) ),
+                                    QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
+        {
+          sql = QString( """SELECT %1 , FEATUREREQUEST.%2.get_wkt() FROM %3 FEATUREREQUEST WHERE """ ).arg( quotedIdentifier( mUri.keyColumn() ) ).arg( quotedIdentifier( mGeometryColumn ) ).arg( mQuery );
+          sql += singleGeomClause;
+          if ( qry.exec( sql ) )
+          {
+            try
+            {
+              while ( qry.next() )
+              {
+                QSqlQuery subqry( db );
+                sql = QStringLiteral( "UPDATE %1 SET %2=? WHERE %3=%4" ).arg( mQuery ).arg( quotedIdentifier( mGeometryColumn ) ).arg( quotedIdentifier( mUri.keyColumn() ) ).arg( qry.value( 0 ).toString() );
+                if ( !subqry.prepare( sql ) )
+                {
+                  throw OracleException( tr( "Could not prepare update statement." ), subqry );
+                }
+                QgsGeometry g = QgsGeometry::fromWkt( qry.value( 1 ).toString() );
+                appendGeomParam( g, subqry );
+                subqry.exec();
+              }
+
+              if ( !conn->commit( db ) )
+              {
+                throw OracleException( tr( "Could not commit transaction" ), db );
+              }
+              if ( mTransaction )
+                mTransaction->dirtyLastSavePoint();
+            }
+            catch ( OracleException &e )
+            {
+              pushError( tr( "Oracle error while changing attributes: %1" ).arg( e.errorMessage() ) );
+              if ( !conn->rollback( db ) )
+              {
+                QgsMessageLog::logMessage( tr( "Could not rollback transaction" ), tr( "Oracle" ) );
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry ) const
 {
   QOCISpatialGeometry g;
@@ -2611,6 +2713,7 @@ bool QgsOracleProvider::getGeometryDetails()
   if ( mGeometryColumn.isNull() )
   {
     mDetectedGeomType = QgsWkbTypes::NoGeometry;
+    mRequestedGeomType = QgsWkbTypes::NoGeometry;
     mValid = true;
     return true;
   }

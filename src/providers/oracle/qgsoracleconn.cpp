@@ -649,21 +649,24 @@ QString QgsOracleConn::databaseTypeFilter( const QString &alias, QString geomCol
     case QgsWkbTypes::LineString:
     case QgsWkbTypes::LineString25D:
     case QgsWkbTypes::LineStringZ:
+      return QStringLiteral( "mod(%1.sdo_gtype,100) = 2 AND not to_char(substr(%1.get_wkt(),0,13)) in ('CIRCULARSTRIN', 'COMPOUNDCURVE');" ).arg( geomCol );
     case QgsWkbTypes::CircularString:
     case QgsWkbTypes::CircularStringZ:
-      return QStringLiteral( "mod(%1.sdo_gtype,100) = 2" ).arg( geomCol );
+      return QStringLiteral( "mod(%1.sdo_gtype,100) = 2 AND to_char(substr(%1.get_wkt(),0,13)) in ('CIRCULARSTRIN', 'COMPOUNDCURVE');" ).arg( geomCol );
     case QgsWkbTypes::MultiLineString:
     case QgsWkbTypes::MultiLineString25D:
     case QgsWkbTypes::MultiLineStringZ:
+      return QStringLiteral( "mod(%1.sdo_gtype,100) = 6 and not to_char(substr(%1.get_wkt(),0,10)) = 'MULTICURVE'" ).arg( geomCol );
     case QgsWkbTypes::MultiCurve:
     case QgsWkbTypes::MultiCurveZ:
-      return QStringLiteral( "mod(%1.sdo_gtype,100) = 6" ).arg( geomCol );
+      return QStringLiteral( "mod(%1.sdo_gtype,100) = 6 and to_char(substr(%1.get_wkt(),0,10)) = 'MULTICURVE'" ).arg( geomCol );
     case QgsWkbTypes::Polygon:
     case QgsWkbTypes::Polygon25D:
     case QgsWkbTypes::PolygonZ:
+      return QStringLiteral( "mod(%1.sdo_gtype,100) = 3 and not to_char(substr(%1.get_wkt(),0,12)) = 'CURVEPOLYGON'" ).arg( geomCol );
     case QgsWkbTypes::CurvePolygon:
     case QgsWkbTypes::CurvePolygonZ:
-      return QStringLiteral( "mod(%1.sdo_gtype,100) = 3" ).arg( geomCol );
+      return QStringLiteral( "mod(%1.sdo_gtype,100) = 3 and to_char(substr(%1.get_wkt(),0,12)) = 'CURVEPOLYGON'" ).arg( geomCol );
     case QgsWkbTypes::MultiPolygon:
     case QgsWkbTypes::MultiPolygonZ:
     case QgsWkbTypes::MultiPolygon25D:

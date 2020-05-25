@@ -196,6 +196,13 @@ class QgsOracleProvider : public QgsVectorDataProvider
     void appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry ) const;
     void appendPkParams( QgsFeatureId fid, QSqlQuery &qry ) const;
 
+    /**
+     * Allow to cast single geometry to multi geometry, specific to Oracle DB as a table can contain both type
+     *
+     * \since QGIS 3.14
+     */
+    void castSingleGeomToMulti();
+
     bool hasSufficientPermsAndCapabilities();
 
     QgsField field( int index ) const;
