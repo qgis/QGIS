@@ -96,6 +96,7 @@ has no effect.
 %End
 
   signals:
+
     void styleChanged( const QString &styleSheet );
 %Docstring
 emitted when the message level has changed

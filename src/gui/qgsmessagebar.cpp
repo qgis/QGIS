@@ -260,7 +260,13 @@ void QgsMessageBar::showItem( QgsMessageBarItem *item )
   }
 
   connect( mCurrentItem, &QgsMessageBarItem::styleChanged, this, &QWidget::setStyleSheet );
-  setStyleSheet( item->getStyleSheet() );
+
+  if ( item->level() != mPrevLevel )
+  {
+    setStyleSheet( item->getStyleSheet() );
+    mPrevLevel = item->level();
+  }
+
   show();
 
   emit widgetAdded( item );
