@@ -920,7 +920,7 @@ bool QgsPostgresProvider::loadFields()
         notNullMap[attrelid][attnum] = attNotNull;
         uniqueMap[attrelid][attnum] = uniqueConstraint;
         identityMap[attrelid][attnum] = attIdentity.isEmpty() ? " " : attIdentity;
-        generatedMap[attrelid][attnum] = attGenerated;
+        generatedMap[attrelid][attnum] = attGenerated == "s" ? defVal : "";
       }
     }
   }
@@ -2077,10 +2077,14 @@ QString QgsPostgresProvider::defaultValueClause( int fieldId ) const
 
   // with generated columns (PostgreSQL 12+), the provider will ALWAYS evaluate the default values.
   // The only acceptable value for such columns on INSERT or UPDATE clauses is the keyword "DEFAULT".
+  // Here, we return the expression used to generate the field value, so the
+  // user can see what is happening when inserting a new feature.
+  // On inserting a new feature or updating a generated field, this is
+  // ommited from the generated queries.
   // See https://www.postgresql.org/docs/12/ddl-generated-columns.html
   if ( !genVal.isEmpty() )
   {
-    return "DEFAULT";
+    return defVal;
   }
 
   if ( !providerProperty( EvaluateDefaultValues, false ).toBool() && !defVal.isEmpty() )
@@ -2334,6 +2338,13 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         continue;
 
       QString fieldname = mAttributeFields.at( idx ).name();
+
+      if ( mGeneratedValues.contains( idx ) && !mGeneratedValues.value( idx, QString() ).isEmpty() )
+      {
+        QgsDebugMsg( QStringLiteral( "Skipping field %1 (idx %2) which is GENERATED." ).arg( fieldname, idx ) );
+        continue;
+      }
+
       QString fieldTypeName = mAttributeFields.at( idx ).typeName();
 
       QgsDebugMsgLevel( "Checking field against: " + fieldname, 2 );
@@ -2937,6 +2948,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
 
       // cycle through the changed attributes of the feature
       QString delim;
+      int numChangedFields = 0;
       for ( QgsAttributeMap::const_iterator siter = attrs.constBegin(); siter != attrs.constEnd(); ++siter )
       {
         try
@@ -2944,6 +2956,14 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
           QgsField fld = field( siter.key() );
 
           pkChanged = pkChanged || mPrimaryKeyAttrs.contains( siter.key() );
+
+          if ( mGeneratedValues.contains( siter.key() ) && !mGeneratedValues.value( siter.key(), QString() ).isEmpty() )
+          {
+            pushError( tr( "Changing the value of GENERATED field %1 is not allowed." ).arg( fld.name() ) );
+            continue;
+          }
+
+          numChangedFields++;
 
           sql += delim + QStringLiteral( "%1=" ).arg( quotedIdentifier( fld.name() ) );
           delim = ',';
@@ -2986,9 +3006,14 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
 
       sql += QStringLiteral( " WHERE %1" ).arg( whereClause( fid ) );
 
-      QgsPostgresResult result( conn->PQexec( sql ) );
-      if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
-        throw PGException( result );
+      // Don't try to UPDATE an empty set of values (might happen if the table only has GENERATED fields,
+      // or if the user only changed GENERATED fields in the form/attribute table.
+      if ( numChangedFields > 0 )
+      {
+        QgsPostgresResult result( conn->PQexec( sql ) );
+        if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
+          throw PGException( result );
+      }
 
       // update feature id map if key was changed
       if ( pkChanged && mPrimaryKeyType == PktFidMap )
