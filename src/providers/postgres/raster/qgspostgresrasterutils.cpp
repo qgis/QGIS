@@ -71,51 +71,57 @@ QVariantMap QgsPostgresRasterUtils::parseWkb( const QByteArray &wkb, int bandNo 
   {
     result[ QStringLiteral( "pxType" ) ] = *reinterpret_cast<const unsigned short int *>( &wkb.constData()[offset] ) & 0x0F;
     /*
-    | 'Bool1'  // unsupported
-    | 'Uint2'  // unsupported
-    | 'Uint4'  // unsupported
-    | 'Int8'
-    | 'Uint8'
-    | 'Int16'
-    | 'Uint16'
-    | 'Int32'
-    | 'Uint32'
-    | 'Float32'
-    | 'Float64'
+    | 0 'Bool1'  // unsupported
+    | 1 'Uint2'  // unsupported
+    | 2 'Uint4'  // unsupported
+    | 3 'Int8'
+    | 4 'Uint8'
+    | 5 'Int16'
+    | 6 'Uint16'
+    | 7 'Int32'
+    | 8 'Uint32'
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!
+    | 9 is missing!!!!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!
+    | 10 'Float32'
+    | 11 'Float64'
     */
     offset++;
     int pxSize = 0; // in bytes
     switch ( result[ QStringLiteral( "pxType" ) ].toInt() )
     {
-      case 4:  // int8
+      case 3:  // int8
         pxSize = 1;
         result[ QStringLiteral( "nodata" ) ] = *reinterpret_cast<const short int *>( &wkb.constData()[ offset ] );
         break;
-      case 5: // uint8
+      case 4: // uint8
         result[ QStringLiteral( "nodata" ) ] = *reinterpret_cast<const unsigned short int *>( &wkb.constData()[ offset ] );
         pxSize = 1;
         break;
-      case 6: // int16
+      case 5: // int16
         result[ QStringLiteral( "nodata" ) ] = *reinterpret_cast<const int *>( &wkb.constData()[ offset ] );
         pxSize = 2;
         break;
-      case 7: // uint16
+      case 6: // uint16
         result[ QStringLiteral( "nodata" ) ] = *reinterpret_cast<const unsigned int *>( &wkb.constData()[ offset ] );
         pxSize = 2;
         break;
-      case 8: // int32
+      case 7: // int32
         result[ QStringLiteral( "nodata" ) ] = static_cast<long long>( *reinterpret_cast<const long int *>( &wkb.constData()[ offset ] ) );
         pxSize = 4;
         break;
-      case 9: // uint32
+      case 8: // uint32
         result[ QStringLiteral( "nodata" ) ] = static_cast<unsigned long long>( *reinterpret_cast<const unsigned long int *>( &wkb.constData()[ offset ] ) );
         pxSize = 4;
         break;
-      case 10: // float
+
+      // Note: 9 is missing from the specs
+
+      case 10: // float 32 bit
         result[ QStringLiteral( "nodata" ) ] = *reinterpret_cast<const float *>( &wkb.constData()[ offset ] );
         pxSize = 4;
         break;
-      case 11: // double
+      case 11: // double 64 bit
         result[ QStringLiteral( "nodata" ) ] = *reinterpret_cast<const double *>( &wkb.constData()[ offset ] );
         pxSize = 8;
         break;
@@ -127,7 +133,7 @@ QVariantMap QgsPostgresRasterUtils::parseWkb( const QByteArray &wkb, int bandNo 
     }
     result[ QStringLiteral( "pxSize" ) ] = pxSize;
     offset += pxSize; // Init of band data
-    result[ QStringLiteral( "dataSize" ) ] = static_cast<unsigned int>( pxSize * result[ QStringLiteral( "width" ) ].toInt() * result[ QStringLiteral( "height" ) ].toInt() );
+    result[ QStringLiteral( "dataSize" ) ] = static_cast<unsigned int>( pxSize ) * result[ QStringLiteral( "width" ) ].toUInt() * result[ QStringLiteral( "height" ) ].toUInt();
   };
 
   if ( static_cast<unsigned int>( bandNo ) > nBands )
@@ -143,13 +149,13 @@ QVariantMap QgsPostgresRasterUtils::parseWkb( const QByteArray &wkb, int bandNo 
     readBandHeader( );
     if ( bandNo == 0 || static_cast<unsigned int>( bandNo ) == bandCnt )
     {
-      result[ QStringLiteral( "band%1" ).arg( bandCnt )] = wkb.mid( offset, result[ QStringLiteral( "dataSize" ) ].toInt() );
+      result[ QStringLiteral( "band%1" ).arg( bandCnt )] = wkb.mid( offset, result[ QStringLiteral( "dataSize" ) ].toUInt() );
     }
     else
     {
       // Skip
     }
-    offset += result[ QStringLiteral( "dataSize" ) ].toInt();
+    offset += result[ QStringLiteral( "dataSize" ) ].toUInt();
   }
   return result;
 }
