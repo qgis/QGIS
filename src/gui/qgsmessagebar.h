@@ -92,7 +92,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     //! convenience method for pushing a message to the bar with a detail text which be shown when pressing a "more" button
     void pushMessage( const QString &title, const QString &text, const QString &showMore, Qgis::MessageLevel level = Qgis::Info, int duration = 5 );
 
-    QgsMessageBarItem *currentItem() { return mCurrentItem; }
+    QgsMessageBarItem *currentItem() { return mItems.value( 0 ); }
 
   signals:
     //! emitted when a message widget is added to the bar
@@ -165,6 +165,10 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     QProgressBar *mCountProgress = nullptr;
     QString mCountStyleSheet;
     Qgis::MessageLevel mPrevLevel = Qgis::MessageLevel::None;
+
+    static constexpr int MAX_ITEMS = 100;
+
+    void removeLowestPriorityOldestItem();
 
   private slots:
     //! updates count of items in widget list
