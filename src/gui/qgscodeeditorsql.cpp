@@ -20,7 +20,6 @@
 #include <QWidget>
 #include <QString>
 #include <QFont>
-#include <QLabel>
 
 
 QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )
@@ -50,10 +49,6 @@ void QgsCodeEditorSQL::initializeLexer()
   }
 
   QFont font = getMonospaceFont();
-#ifdef Q_OS_MAC
-  // The font size gotten from getMonospaceFont() is too small on Mac
-  font.setPointSize( QLabel().font().pointSize() );
-#endif
   QColor defaultColor = colors.value( QStringLiteral( "sql/defaultFontColor" ), Qt::black );
 
   mSqlLexer = new QgsCaseInsensitiveLexerSQL( this );
