@@ -2343,7 +2343,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       QString fieldname = mAttributeFields.at( idx ).name();
 
-      if ( mGeneratedValues.contains( idx ) && !mGeneratedValues.value( idx, QString() ).isEmpty() )
+      if ( !mGeneratedValues.value( idx, QString() ).isEmpty() )
       {
         QgsDebugMsg( QStringLiteral( "Skipping field %1 (idx %2) which is GENERATED." ).arg( fieldname, idx ) );
         continue;
@@ -2375,12 +2375,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       if ( i == flist.size() )
       {
-        // generated values override everything.
-        if ( !mGeneratedValues[idx].isEmpty() )
-        {
-          values += delim + defVal;
-        }
-        else if ( qgsVariantEqual( v, defVal ) )
+        if ( qgsVariantEqual( v, defVal ) )
         {
           if ( defVal.isNull() )
           {
