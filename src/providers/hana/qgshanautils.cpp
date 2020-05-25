@@ -483,7 +483,7 @@ QString QgsHanaUtils::formatErrorMessage( const char *message, bool withPrefix )
   int pos = ret.indexOf( mark );
   if ( pos != -1 )
     ret = ret.remove( 0, pos + mark.length() );
-  if ( withPrefix )
+  if ( withPrefix && ret.indexOf( "HANA" ) == -1 )
     return QStringLiteral( "HANA: " ) + ret;
   return ret;
 }

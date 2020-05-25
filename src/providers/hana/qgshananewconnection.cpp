@@ -313,7 +313,7 @@ void QgsHanaNewConnection::testConnection()
   if ( !warningMsg.isEmpty() )
   {
     bar->clearWidgets();
-    bar->pushWarning( tr( "Connection Failed" ), warningMsg );
+    bar->pushWarning( tr( "Connection failed" ), warningMsg );
     return;
   }
 
@@ -321,12 +321,14 @@ void QgsHanaNewConnection::testConnection()
 
   QgsHanaSettings settings( txtName->text() );
   readSettingsFromControls( settings );
-  QgsHanaConnectionRef connRef( settings.toDataSourceUri() );
 
-  if ( !connRef.isNull() )
+  QString errorMsg;
+  unique_ptr<QgsHanaConnection> conn( QgsHanaConnection::createConnection( settings.toDataSourceUri(), &errorMsg ) );
+
+  if ( conn )
     bar->pushMessage( tr( "Connection to the server was successful." ), Qgis::Info );
   else
-    bar->pushMessage( tr( "Connection failed - consult message log for details." ), Qgis::Warning );
+    bar->pushMessage( tr( "Connection failed: %1." ).arg( errorMsg ), Qgis::Warning );
 }
 
 QString QgsHanaNewConnection::getDatabaseName() const

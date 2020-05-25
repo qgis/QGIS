@@ -118,7 +118,7 @@ void QgsHanaSourceSelectDelegate::setModelData(
   {
     if ( index.column() == QgsHanaTableModel::DbtmGeomType )
     {
-      QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->currentData().toInt();
+      QgsWkbTypes::Type type = static_cast<QgsWkbTypes::Type>( cb->currentData().toInt() );
 
       model->setData( index, QgsHanaTableModel::iconForWkbType( type ), Qt::DecorationRole );
       model->setData( index, type != QgsWkbTypes::Unknown ? QgsWkbTypes::displayString( type ) : tr( "Select…" ) );

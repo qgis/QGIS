@@ -107,6 +107,8 @@ QgsHanaConnection::QgsHanaConnection( const QgsDataSourceUri &uri )
 
   if ( conn->connected() )
     mConnection = conn;
+  else
+    throw QgsHanaException( errorMessage.toStdString().c_str() );
 }
 
 QgsHanaConnection::~QgsHanaConnection()
@@ -116,26 +118,40 @@ QgsHanaConnection::~QgsHanaConnection()
 
 QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &uri )
 {
-  QgsHanaConnection *conn = nullptr;
+  QString errorMessage;
+  QgsHanaConnection *conn = createConnection( uri, &errorMessage );
 
+  if ( !errorMessage.isEmpty() )
+  {
+    QString logMessage = QObject::tr( "Connection to database failed" ) + '\n' + errorMessage;
+    QgsDebugMsg( logMessage );
+    QgsMessageLog::logMessage( logMessage, tr( "HANA" ) );
+  }
+
+  return conn;
+}
+
+QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &uri, QString *errorMessage )
+{
   try
   {
-    conn = new QgsHanaConnection( uri );
+    QgsHanaConnection *conn = new QgsHanaConnection( uri );
 
     if ( conn->getNativeRef().isNull() )
     {
       delete conn;
       return nullptr;
     }
+
+    return conn;
   }
-  catch ( const exception &ex )
+  catch ( const QgsHanaException &ex )
   {
-    QString msg = QObject::tr( "Connection to database failed" ) + '\n' + QgsHanaUtils::formatErrorMessage( ex.what() );
-    QgsDebugMsg( msg );
-    QgsMessageLog::logMessage( msg, tr( "HANA" ) );
+    if ( errorMessage != nullptr )
+      *errorMessage = ex.what();
   }
 
-  return conn;
+  return nullptr;
 }
 
 QStringList QgsHanaConnection::connectionList()

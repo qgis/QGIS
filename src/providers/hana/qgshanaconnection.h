@@ -52,14 +52,10 @@ class QgsHanaConnection : public QObject
     odbc::ConnectionRef &getNativeRef() { return mConnection; }
 
     static QgsHanaConnection *createConnection( const QgsDataSourceUri &uri );
-    static void setConnectionAttemptCanceled( bool value )
-    {
-      sConnectionAttemptCanceled = value;
-    }
-    static bool isConnectionAttemptCanceled()
-    {
-      return sConnectionAttemptCanceled;
-    }
+    static QgsHanaConnection *createConnection( const QgsDataSourceUri &uri, QString *errorMessage );
+
+    static void setConnectionAttemptCanceled( bool value ) {  sConnectionAttemptCanceled = value;  }
+    static bool isConnectionAttemptCanceled() {  return sConnectionAttemptCanceled;  }
 
     static QStringList connectionList();
 
