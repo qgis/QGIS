@@ -146,6 +146,13 @@ is set to 0, then the message must be manually dismissed by the user.
 Returns the current visible item, or ``None`` if no item is shown.
 %End
 
+    QList<QgsMessageBarItem *> items();
+%Docstring
+Returns a list of all items currently visible or queued for the bar.
+
+.. versionadded:: 3.14
+%End
+
   signals:
 
     void widgetAdded( QgsMessageBarItem *item );

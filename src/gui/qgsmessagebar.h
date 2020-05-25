@@ -163,6 +163,13 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      */
     QgsMessageBarItem *currentItem();
 
+    /**
+     * Returns a list of all items currently visible or queued for the bar.
+     *
+     * \since QGIS 3.14
+     */
+    QList<QgsMessageBarItem *> items();
+
   signals:
 
     /**

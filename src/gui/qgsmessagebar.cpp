@@ -355,6 +355,11 @@ QgsMessageBarItem *QgsMessageBar::currentItem()
   return mItems.value( 0 );
 }
 
+QList<QgsMessageBarItem *> QgsMessageBar::items()
+{
+  return mItems;
+}
+
 QgsMessageBarItem *QgsMessageBar::createMessage( const QString &text, QWidget *parent )
 {
   QgsMessageBarItem *item = new QgsMessageBarItem( text, Qgis::Info, 0, parent );
