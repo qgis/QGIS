@@ -65,7 +65,8 @@ class CORE_EXPORT QgsStatisticalSummary
       InterQuartileRange = 1 << 14, //!< Inter quartile range (IQR)
       First = 1 << 16, //!< First value (since QGIS 3.6)
       Last = 1 << 17, //!< Last value (since QGIS 3.6)
-      All = Count | CountMissing | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | FirstQuartile | ThirdQuartile | InterQuartileRange | First | Last
+      Mode = 1 << 18, //!< Last value (since QGIS 3.16)
+      All = Count | CountMissing | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | FirstQuartile | ThirdQuartile | InterQuartileRange | First | Last | Mode
     };
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
@@ -286,6 +287,14 @@ class CORE_EXPORT QgsStatisticalSummary
     double interQuartileRange() const { return std::isnan( mThirdQuartile ) || std::isnan( mFirstQuartile ) ? std::numeric_limits<double>::quiet_NaN() : mThirdQuartile - mFirstQuartile; }
 
     /**
+     * Returns the inter mode statistic of the values.
+     * be calculated.
+     * \see majority
+     * \since 3.16
+     */
+    QList<double> mode() const { return mMode; }
+
+    /**
      * Returns the friendly display name for a \a statistic.
      * \see shortName()
      */
@@ -317,6 +326,7 @@ class CORE_EXPORT QgsStatisticalSummary
     double mThirdQuartile;
     double mFirst;
     double mLast;
+    QList<double> mMode;
     QMap< double, int > mValueCount;
     QList< double > mValues;
     bool mRequiresAllValueStorage = false;

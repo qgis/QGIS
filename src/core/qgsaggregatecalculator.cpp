@@ -481,6 +481,11 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
     QStringLiteral( "mode" ),
     QCoreApplication::tr( "Mode" ),
     QSet<QVariant::Type>()
+        << QVariant::Int
+        << QVariant::UInt
+        << QVariant::LongLong
+        << QVariant::ULongLong
+        << QVariant::Double
         << QVariant::DateTime
         << QVariant::Date
         << QVariant::Time
@@ -625,12 +630,13 @@ QgsStatisticalSummary::Statistic QgsAggregateCalculator::numericStatFromAggregat
       return QgsStatisticalSummary::First;
     case Last:
       return QgsStatisticalSummary::Last;
+    case Mode:
+      return QgsStatisticalSummary::Mode;
     case StringMinimumLength:
     case StringMaximumLength:
     case StringConcatenate:
     case StringConcatenateUnique:
     case GeometryCollect:
-    case Mode:
     case ArrayAggregate:
     {
       if ( ok )
@@ -786,8 +792,17 @@ QVariant QgsAggregateCalculator::calculateNumericAggregate( QgsFeatureIterator &
     }
   }
   s.finalize();
-  double val = s.statistic( stat );
-  return std::isnan( val ) ? QVariant() : val;
+
+  // QgsStatisticalSummary::statistic returns a double, while Mode requires a list of doubles
+  if ( stat == QgsStatisticalSummary::Mode )
+  {
+    return qgis::toVariantList( s.mode() );
+  }
+  else
+  {
+    double val = s.statistic( stat );
+    return std::isnan( val ) ? QVariant() : val;
+  }
 }
 
 QVariant QgsAggregateCalculator::calculateStringAggregate( QgsFeatureIterator &fit, int attr, QgsExpression *expression,

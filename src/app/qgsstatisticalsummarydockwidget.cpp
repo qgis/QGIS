@@ -51,7 +51,8 @@ Q_GLOBAL_STATIC_WITH_ARGS( StatsList, sDisplayStats, ( {
   QgsStatisticalSummary::Majority,
   QgsStatisticalSummary::First,
   QgsStatisticalSummary::Last,
-  QgsStatisticalSummary::Variety} ) )
+  QgsStatisticalSummary::Variety,
+  QgsStatisticalSummary::Mode} ) )
 Q_GLOBAL_STATIC_WITH_ARGS( StringStatsList, sDisplayStringStats, ( {
   QgsStringStatisticalSummary::Count,
   QgsStringStatisticalSummary::CountDistinct,

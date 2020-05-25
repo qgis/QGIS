@@ -26,6 +26,7 @@ from qgis.PyQt.QtCore import QDateTime, QDate, QTime
 from qgis.testing import unittest, start_app
 
 from utilities import compareWkt
+import math
 
 start_app()
 
@@ -135,16 +136,18 @@ class TestQgsAggregateCalculator(unittest.TestCase):
                  [QgsAggregateCalculator.First, 'flddbl', dbl_values[0]],
                  [QgsAggregateCalculator.Last, 'fldint', int_values[-1]],
                  [QgsAggregateCalculator.Last, 'flddbl', dbl_values[-1]],
+                 [QgsAggregateCalculator.Mode, 'fldint', [2]],
+                 [QgsAggregateCalculator.Mode, 'flddbl', [3.5, 5.0, 5.5, 7.0, 7.5, 9.0]]
                  ]
 
         agg = QgsAggregateCalculator(layer)
         for t in tests:
             val, ok = agg.calculate(t[0], t[1])
-            self.assertTrue(ok)
+            self.assertTrue(ok, "Assert failed for {} {} - not ok".format(t[0], t[1]))
             if isinstance(t[2], (int, list)):
-                self.assertEqual(val, t[2])
+                self.assertEqual(val, t[2], "Assert failed for {} {}".format(t[0], t[1]))
             else:
-                self.assertAlmostEqual(val, t[2], 3)
+                self.assertAlmostEqual(val, t[2], 3, "Assert failed for {} {}".format(t[0], t[1]))
 
         # bad tests - the following stats should not be calculatable for numeric fields
         for t in [QgsAggregateCalculator.StringMinimumLength,
@@ -201,8 +204,8 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         agg = QgsAggregateCalculator(layer)
         for t in tests:
             val, ok = agg.calculate(t[0], t[1])
-            self.assertTrue(ok)
-            self.assertEqual(val, t[2])
+            self.assertTrue(ok, "Assert failed for {} {} - not ok".format(t[0], t[1]))
+            self.assertEqual(val, t[2], "Assert failed for {} {}".format(t[0], t[1]))
 
         # test string concatenation
         agg.setDelimiter(',')

@@ -48,6 +48,7 @@ specifying the statistic in the constructor or via setStatistics().
       InterQuartileRange,
       First,
       Last,
+      Mode,
       All
     };
     typedef QFlags<QgsStatisticalSummary::Statistic> Statistics;
@@ -312,6 +313,16 @@ be calculated.
 .. seealso:: :py:func:`firstQuartile`
 
 .. seealso:: :py:func:`thirdQuartile`
+%End
+
+    QList<double> mode() const;
+%Docstring
+Returns the inter mode statistic of the values.
+be calculated.
+
+.. seealso:: :py:func:`majority`
+
+.. versionadded:: 3.16
 %End
 
     static QString displayName( QgsStatisticalSummary::Statistic statistic );

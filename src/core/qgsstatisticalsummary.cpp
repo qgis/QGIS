@@ -56,7 +56,8 @@ void QgsStatisticalSummary::reset()
   mValueCount.clear();
   mValues.clear();
 
-  mRequiresHisto = mStatistics & QgsStatisticalSummary::Majority || mStatistics & QgsStatisticalSummary::Minority || mStatistics & QgsStatisticalSummary::Variety;
+  mRequiresHisto = mStatistics & QgsStatisticalSummary::Majority || mStatistics & QgsStatisticalSummary::Minority || 
+                  mStatistics & QgsStatisticalSummary::Variety || mStatistics & QgsStatisticalSummary::Mode;
 
   mRequiresAllValueStorage = mStatistics & QgsStatisticalSummary::StDev || mStatistics & QgsStatisticalSummary::StDevSample ||
                              mStatistics & QgsStatisticalSummary::Median || mStatistics & QgsStatisticalSummary::FirstQuartile ||
@@ -129,6 +130,7 @@ void QgsStatisticalSummary::finalize()
     mMajority = std::numeric_limits<double>::quiet_NaN();
     mFirstQuartile = std::numeric_limits<double>::quiet_NaN();
     mThirdQuartile = std::numeric_limits<double>::quiet_NaN();
+    mMode.empty();
     return;
   }
 
@@ -240,6 +242,28 @@ void QgsStatisticalSummary::finalize()
     }
   }
 
+  if ( mStatistics & QgsStatisticalSummary::Mode )
+  {
+    int maxOccurrences = 0;
+
+    for ( const double key : mValueCount.keys() )
+    {
+      int occurrences = mValueCount[key];
+
+      if ( occurrences > maxOccurrences )
+      {
+        mMode.clear();
+        maxOccurrences = occurrences;
+      }
+      else if ( occurrences == 0 || occurrences < maxOccurrences )
+      {
+        continue;
+      }
+
+      mMode.append( key );
+    }
+  }
+
 }
 
 /***************************************************************************
@@ -288,6 +312,10 @@ double QgsStatisticalSummary::statistic( QgsStatisticalSummary::Statistic stat )
       return mFirst;
     case Last:
       return mLast;
+    case Mode:
+      // return NaN as we have to return a list of numbers, but the function retuns a single number
+      // this statistic can be accessed only with explicit call of the `mode()` method
+      return std::numeric_limits<double>::quiet_NaN();
     case All:
       return 0;
   }
@@ -334,6 +362,8 @@ QString QgsStatisticalSummary::displayName( QgsStatisticalSummary::Statistic sta
       return QObject::tr( "First" );
     case Last:
       return QObject::tr( "Last" );
+    case Mode:
+      return QObject::tr( "Mode" );
     case All:
       return QString();
   }
@@ -380,6 +410,8 @@ QString QgsStatisticalSummary::shortName( QgsStatisticalSummary::Statistic stati
       return QStringLiteral( "first" );
     case Last:
       return QStringLiteral( "last" );
+    case Mode:
+      return QStringLiteral( "mode" );
     case All:
       return QString();
   }

@@ -1995,6 +1995,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "int aggregate 2" ) << "aggregate('test','max',\"col1\")" << false << QVariant( 41 );
       QTest::newRow( "int aggregate first" ) << "aggregate('test','first',\"col1\")" << false << QVariant( 10 );
       QTest::newRow( "int aggregate last" ) << "aggregate('test','last',\"col1\")" << false << QVariant( 41 );
+      QTest::newRow( "int aggregate mode" ) << "aggregate('test','mode',\"col1\")" << false << QVariant( QVariantList( { QVariant( 3 ), QVariant( 10 ), QVariant( 11 ), QVariant( 41 ) } ) );
       QTest::newRow( "int aggregate named" ) << "aggregate(layer:='test',aggregate:='sum',expression:=\"col1\")" << false << QVariant( 65 );
       QTest::newRow( "string aggregate on int" ) << "aggregate('test','max_length',\"col1\")" << true << QVariant();
       QTest::newRow( "string aggregate 1" ) << "aggregate('test','min',\"col2\")" << false << QVariant( "test1" );
