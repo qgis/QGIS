@@ -64,7 +64,7 @@ class QgsHanaConnectionStringBuilder
     const QString &getSslHostNameInCertificate() const { return mSslHostNameInCertificate; }
     void setSslHostNameInCertificate( const QString &value ) { mSslHostNameInCertificate = value; }
 
-    QString toString();
+    QString toString() const;
 
   private:
     QString mDriver;
