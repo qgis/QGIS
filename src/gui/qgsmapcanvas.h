@@ -71,6 +71,9 @@ class QgsReferencedRectangle;
 
 class QgsTemporalController;
 
+class QMenu;
+class QgsMapMouseEvent;
+
 
 /**
  * \ingroup gui
@@ -1106,6 +1109,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! previous tool if current is for zooming/panning
     QgsMapTool *mLastNonZoomMapTool = nullptr;
 
+    //! Context menu
+    QMenu *mMenu = nullptr;
+
     //! recently used extent
     QList <QgsRectangle> mLastExtent;
     int mLastExtentIndex = -1;
@@ -1238,6 +1244,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * \since QGIS 3.14
      */
     void clearTemporalCache();
+
+    void showContextMenu( QgsMapMouseEvent *event );
 
     friend class TestQgsMapCanvas;
 

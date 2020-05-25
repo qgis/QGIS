@@ -15,7 +15,6 @@
 
 #include <QBitmap>
 #include <QCursor>
-
 #include "qgsmaptoolpan.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
@@ -48,6 +47,11 @@ void QgsMapToolPan::deactivate()
 {
   mCanvas->ungrabGesture( Qt::PinchGesture );
   QgsMapTool::deactivate();
+}
+
+QgsMapTool::Flags QgsMapToolPan::flags() const
+{
+  return QgsMapTool::Transient | QgsMapTool::AllowZoomRect | QgsMapTool::ShowContextMenu;
 }
 
 void QgsMapToolPan::canvasPressEvent( QgsMapMouseEvent *e )
