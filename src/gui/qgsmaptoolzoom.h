@@ -36,7 +36,7 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
     QgsMapToolZoom( QgsMapCanvas *canvas, bool zoomOut );
     ~QgsMapToolZoom() override;
 
-    Flags flags() const override { return QgsMapTool::Transient; }
+    Flags flags() const override;
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;

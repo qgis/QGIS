@@ -37,6 +37,8 @@ email                : sherman at mrcc.com
 #include <QStringList>
 #include <QWheelEvent>
 #include <QWindow>
+#include <QMenu>
+#include <QClipboard>
 
 #include "qgis.h"
 #include "qgssettings.h"
@@ -80,6 +82,7 @@ email                : sherman at mrcc.com
 #include "qgsvectorlayertemporalproperties.h"
 #include "qgstemporalcontroller.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsprojectionselectiondialog.h"
 
 /**
  * \ingroup gui
@@ -114,6 +117,7 @@ class QgsMapCanvas::CanvasProperties
 QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   : QGraphicsView( parent )
   , mCanvasProperties( new CanvasProperties )
+  , mMenu( new QMenu( this ) )
   , mExpressionContextScope( tr( "Map Canvas" ) )
 {
   mScene = new QGraphicsScene();
@@ -793,6 +797,85 @@ void QgsMapCanvas::clearTemporalCache()
       }
     }
   }
+}
+
+void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
+{
+  const QgsPointXY mapPoint = event->originalMapPoint();
+
+  mMenu->clear();
+
+  QMenu *copyCoordinateMenu = new QMenu( tr( "Copy Coordinate" ), mMenu );
+  copyCoordinateMenu->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCopy.svg" ) ) );
+
+  auto addCoordinateFormat = [ = ]( const QString identifier, const QgsCoordinateReferenceSystem & crs )
+  {
+    QgsCoordinateTransform ct( mSettings.destinationCrs(), crs, mSettings.transformContext() );
+    try
+    {
+      const QgsPointXY transformedPoint = ct.transform( mapPoint );
+
+      const int displayPrecision = crs.mapUnits() == QgsUnitTypes::DistanceDegrees ? 5 : 3;
+      QAction *copyCoordinateAction = new QAction( QStringLiteral( "%1, %2 (%3)" ).arg(
+            QString::number( transformedPoint.x(), 'f', displayPrecision ),
+            QString::number( transformedPoint.y(), 'f', displayPrecision ),
+            identifier ), mMenu );
+
+      connect( copyCoordinateAction, &QAction::triggered, this, [displayPrecision, transformedPoint]
+      {
+        QClipboard *clipboard = QApplication::clipboard();
+
+        const QString coordinates = QString::number( transformedPoint.x(), 'f', displayPrecision ) + ',' + QString::number( transformedPoint.y(), 'f', displayPrecision );
+
+        //if we are on x11 system put text into selection ready for middle button pasting
+        if ( clipboard->supportsSelection() )
+        {
+          clipboard->setText( coordinates, QClipboard::Selection );
+        }
+        clipboard->setText( coordinates, QClipboard::Clipboard );
+
+      } );
+      copyCoordinateMenu->addAction( copyCoordinateAction );
+    }
+    catch ( QgsCsException & )
+    {
+
+    }
+  };
+
+  addCoordinateFormat( tr( "%1 - Map CRS" ).arg( mSettings.destinationCrs().userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) ), mSettings.destinationCrs() );
+  if ( mSettings.destinationCrs() != QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) )
+    addCoordinateFormat( tr( "WGS84" ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+
+  QgsSettings settings;
+  const QString customCrsString = settings.value( QStringLiteral( "qgis/custom_coordinate_crs" ) ).toString();
+  if ( !customCrsString.isEmpty() )
+  {
+    QgsCoordinateReferenceSystem customCrs( customCrsString );
+    if ( customCrs != mSettings.destinationCrs() && customCrs != QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) )
+    {
+      addCoordinateFormat( tr( "%1 - Custom CRS" ).arg( customCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) ), customCrs );
+    }
+  }
+  copyCoordinateMenu->addSeparator();
+  QAction *setCustomCrsAction = new QAction( QStringLiteral( "Set Custom CRS…" ), mMenu );
+  connect( setCustomCrsAction, &QAction::triggered, this, [ = ]
+  {
+    QgsProjectionSelectionDialog selector( this );
+    selector.setCrs( QgsCoordinateReferenceSystem( customCrsString ) );
+    if ( selector.exec() )
+    {
+      QgsSettings().setValue( QStringLiteral( "qgis/custom_coordinate_crs" ), selector.crs().authid().isEmpty() ? selector.crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) : selector.crs().authid() );
+    }
+  } );
+  copyCoordinateMenu->addAction( setCustomCrsAction );
+
+  mMenu->addMenu( copyCoordinateMenu );
+
+  if ( mMapTool )
+    mMapTool->populateContextMenu( mMenu );
+
+  mMenu->exec( event->globalPos() );
 }
 
 void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
@@ -1601,6 +1684,12 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent *e )
         beginZoomRect( e->pos() );
         return;
       }
+      else if ( mMapTool->flags() & QgsMapTool::ShowContextMenu && e->button() == Qt::RightButton )
+      {
+        std::unique_ptr<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
+        showContextMenu( me.get() );
+        return;
+      }
       else
       {
         std::unique_ptr<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
@@ -1616,9 +1705,7 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent *e )
 
   mCanvasProperties->mouseButtonDown = true;
   mCanvasProperties->rubberStartPoint = e->pos();
-
-} // mousePressEvent
-
+}
 
 void QgsMapCanvas::mouseReleaseEvent( QMouseEvent *e )
 {
@@ -1679,7 +1766,7 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent *e )
   if ( mCanvasProperties->panSelectorDown )
     return;
 
-} // mouseReleaseEvent
+}
 
 void QgsMapCanvas::resizeEvent( QResizeEvent *e )
 {
