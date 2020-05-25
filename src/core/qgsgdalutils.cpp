@@ -503,10 +503,10 @@ void QgsGdalUtils::setupProxy()
   if ( settings.value( QStringLiteral( "proxy/proxyEnabled" ), false ).toBool() )
   {
     // Get the first configured proxy
-    QList<QNetworkProxy> proxyes( QgsNetworkAccessManager::instance()->proxyFactory()->queryProxy( ) );
-    if ( ! proxyes.isEmpty() )
+    QList<QNetworkProxy> proxies( QgsNetworkAccessManager::instance()->proxyFactory()->queryProxy( ) );
+    if ( ! proxies.isEmpty() )
     {
-      QNetworkProxy proxy( proxyes.first() );
+      QNetworkProxy proxy( proxies.first() );
       // TODO/FIXME: check excludes (the GDAL config options are global, we need a per-connection config option)
       //QStringList excludes;
       //excludes = settings.value( QStringLiteral( "proxy/proxyExcludedUrls" ), "" ).toStringList();
