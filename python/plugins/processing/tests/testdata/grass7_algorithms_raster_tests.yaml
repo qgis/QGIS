@@ -1595,3 +1595,22 @@ tests:
         rules:
           - '1|1|0|344550|6693650|344550|6693650'
           - '1|3|100|352650|6693650|352750|6693650'
+
+  - algorithm: grass7:r.tileset
+    name: GRASS 7 r.tileset
+    params:
+      -g: false
+      -w: false
+      destscale: 1.0
+      maxcols: 1024
+      maxrows: 2048
+      overlap: 0
+      separator: pipe
+      sourceproj: EPSG:4326
+      sourcescale: 1.0
+    results:
+      html:
+        name: expected/grass7/r_tileset.html
+        type: regex
+        rules:
+          - '1.0|0.0|1.0|1.0|1|2'
