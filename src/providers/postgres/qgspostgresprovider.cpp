@@ -920,7 +920,7 @@ bool QgsPostgresProvider::loadFields()
         notNullMap[attrelid][attnum] = attNotNull;
         uniqueMap[attrelid][attnum] = uniqueConstraint;
         identityMap[attrelid][attnum] = attIdentity.isEmpty() ? " " : attIdentity;
-        generatedMap[attrelid][attnum] = attGenerated == "s" ? defVal : "";
+        generatedMap[attrelid][attnum] = attGenerated.isEmpty() ? "" : defVal;
       }
     }
   }
