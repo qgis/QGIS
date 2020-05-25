@@ -127,6 +127,18 @@ std::string HdfAttribute::readString() const
   return res;
 }
 
+double HdfAttribute::readDouble() const
+{
+  HdfDataType datatype( H5Aget_type( id() ) );
+  double value;
+  herr_t status = H5Aread( d->id, H5T_NATIVE_DOUBLE, &value );
+  if ( status < 0 )
+  {
+    return std::numeric_limits<double>::quiet_NaN();
+  }
+  return value;
+}
+
 void HdfAttribute::write( const std::string &value )
 {
   if ( !isValid() || !mType.isValid() )

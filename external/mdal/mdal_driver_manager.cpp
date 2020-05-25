@@ -25,7 +25,6 @@
 
 #ifdef HAVE_NETCDF
 #include "frmts/mdal_ugrid.hpp"
-#include "frmts/mdal_3di.hpp"
 #include "frmts/mdal_sww.hpp"
 #include "frmts/mdal_tuflowfv.hpp"
 #endif
@@ -36,6 +35,10 @@
 
 #if defined HAVE_HDF5 && defined HAVE_XML
 #include "frmts/mdal_xdmf.hpp"
+#endif
+
+#if defined HAVE_SQLITE3 && defined HAVE_NETCDF
+#include "frmts/mdal_3di.hpp"
 #endif
 
 std::string MDAL::DriverManager::getUris( const std::string &file, const std::string &driverName ) const
@@ -209,9 +212,12 @@ MDAL::DriverManager::DriverManager()
 
 #ifdef HAVE_NETCDF
   mDrivers.push_back( std::make_shared<MDAL::DriverTuflowFV>() );
-  mDrivers.push_back( std::make_shared<MDAL::Driver3Di>() );
   mDrivers.push_back( std::make_shared<MDAL::DriverSWW>() );
   mDrivers.push_back( std::make_shared<MDAL::DriverUgrid>() );
+#endif
+
+#if defined HAVE_SQLITE3 && defined HAVE_NETCDF
+  mDrivers.push_back( std::make_shared<MDAL::Driver3Di>() );
 #endif
 
 #if defined HAVE_GDAL && defined HAVE_NETCDF

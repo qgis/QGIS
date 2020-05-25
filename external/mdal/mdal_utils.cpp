@@ -11,7 +11,6 @@
 #include <sstream>
 #include <math.h>
 #include <assert.h>
-#include <cmath>
 #include <string.h>
 #include <stdio.h>
 #include <ctime>
@@ -355,11 +354,6 @@ MDAL::BBox MDAL::computeExtent( const MDAL::Vertices &vertices )
     if ( n.y < b.minY ) b.minY = n.y;
   }
   return b;
-}
-
-bool MDAL::equals( double val1, double val2, double eps )
-{
-  return fabs( val1 - val2 ) < eps;
 }
 
 double MDAL::safeValue( double val, double nodata, double eps )

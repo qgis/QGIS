@@ -52,8 +52,9 @@ void MDAL::MemoryDataset2D::activateFaces( MDAL::MemoryMesh *mesh )
 
   for ( unsigned int idx = 0; idx < nFaces; ++idx )
   {
-    Face elem = mesh->faces.at( idx );
-    for ( size_t i = 0; i < elem.size(); ++i )
+    const Face &elem = mesh->faces.at( idx );
+    const std::size_t elemSize = elem.size();
+    for ( size_t i = 0; i < elemSize; ++i )
     {
       const size_t vertexIndex = elem[i];
       if ( isScalar )
@@ -267,8 +268,9 @@ size_t MDAL::MemoryMeshFaceIterator::next(
     if ( mLastFaceIndex + faceIndex >= maxFaces )
       break;
 
-    const Face f = mMemoryMesh->faces[mLastFaceIndex + faceIndex];
-    for ( size_t faceVertexIndex = 0; faceVertexIndex < f.size(); ++faceVertexIndex )
+    const Face &f = mMemoryMesh->faces[mLastFaceIndex + faceIndex];
+    const std::size_t faceSize = f.size();
+    for ( size_t faceVertexIndex = 0; faceVertexIndex < faceSize; ++faceVertexIndex )
     {
       assert( vertexIndex < vertexIndicesBufferLen );
       vertexIndicesBuffer[vertexIndex] = static_cast<int>( f[faceVertexIndex] );
