@@ -128,16 +128,16 @@ void QgsMessageBar::popItem( QgsMessageBarItem *item )
 {
   Q_ASSERT( item );
 
-  if ( item != mCurrentItem && !mItems.contains( item ) )
+  if ( !mItems.contains( item ) )
     return;
 
-  if ( item == mCurrentItem )
+  if ( item == mItems.at( 0 ) )
   {
-    mLayout->removeWidget( mCurrentItem );
-    mCurrentItem->hide();
-    disconnect( mCurrentItem, &QgsMessageBarItem::styleChanged, this, &QWidget::setStyleSheet );
-    mCurrentItem->deleteLater();
-    mCurrentItem = nullptr;
+    mItems.removeOne( item );
+    mLayout->removeWidget( item );
+    item->hide();
+    disconnect( item, &QgsMessageBarItem::styleChanged, this, &QWidget::setStyleSheet );
+    item->deleteLater();
 
     if ( !mItems.isEmpty() )
     {
@@ -151,6 +151,7 @@ void QgsMessageBar::popItem( QgsMessageBarItem *item )
   else
   {
     mItems.removeOne( item );
+    item->deleteLater();
   }
 
   emit widgetRemoved( item );
@@ -158,53 +159,36 @@ void QgsMessageBar::popItem( QgsMessageBarItem *item )
 
 bool QgsMessageBar::popWidget( QgsMessageBarItem *item )
 {
-  if ( !item || !mCurrentItem )
+  if ( !item || !mItems.contains( item ) )
     return false;
 
-  if ( item == mCurrentItem )
-  {
-    popItem( mCurrentItem );
-    return true;
-  }
-
-  for ( QgsMessageBarItem *existingItem : qgis::as_const( mItems ) )
-  {
-    if ( existingItem == item )
-    {
-      mItems.removeOne( existingItem );
-      existingItem->deleteLater();
-      return true;
-    }
-  }
-
-  return false;
+  popItem( item );
+  return true;
 }
 
 bool QgsMessageBar::popWidget()
 {
-  if ( !mCurrentItem )
+  if ( mItems.empty() )
     return false;
 
   resetCountdown();
 
-  QgsMessageBarItem *item = mCurrentItem;
-  popItem( item );
+  popItem( mItems.at( 0 ) );
 
   return true;
 }
 
 bool QgsMessageBar::clearWidgets()
 {
-  if ( !mCurrentItem && mItems.empty() )
+  if ( mItems.empty() )
     return true;
 
   while ( !mItems.isEmpty() )
   {
     popWidget();
   }
-  popWidget();
 
-  return !mCurrentItem && mItems.empty();
+  return true;
 }
 
 void QgsMessageBar::pushSuccess( const QString &title, const QString &message )
@@ -231,25 +215,24 @@ void QgsMessageBar::showItem( QgsMessageBarItem *item )
 {
   Q_ASSERT( item );
 
-  if ( mCurrentItem )
-    disconnect( mCurrentItem, &QgsMessageBarItem::styleChanged, this, &QWidget::setStyleSheet );
+  if ( !mItems.empty() )
+    disconnect( mItems.at( 0 ), &QgsMessageBarItem::styleChanged, this, &QWidget::setStyleSheet );
 
-  if ( item == mCurrentItem )
-    return;
+  if ( mItems.count() >= MAX_ITEMS )
+    removeLowestPriorityOldestItem();
+
+  if ( !mItems.empty() )
+  {
+    mLayout->removeWidget( mItems.at( 0 ) );
+    mItems.at( 0 )->hide();
+  }
 
   if ( mItems.contains( item ) )
     mItems.removeOne( item );
+  mItems.prepend( item );
 
-  if ( mCurrentItem )
-  {
-    mItems.prepend( mCurrentItem );
-    mLayout->removeWidget( mCurrentItem );
-    mCurrentItem->hide();
-  }
-
-  mCurrentItem = item;
   mLayout->addWidget( item, 0, 1, 1, 1 );
-  mCurrentItem->show();
+  item->show();
 
   if ( item->duration() > 0 )
   {
@@ -259,7 +242,7 @@ void QgsMessageBar::showItem( QgsMessageBarItem *item )
     mCountdownTimer->start();
   }
 
-  connect( mCurrentItem, &QgsMessageBarItem::styleChanged, this, &QWidget::setStyleSheet );
+  connect( item, &QgsMessageBarItem::styleChanged, this, &QWidget::setStyleSheet );
 
   if ( item->level() != mPrevLevel )
   {
@@ -270,6 +253,22 @@ void QgsMessageBar::showItem( QgsMessageBarItem *item )
   show();
 
   emit widgetAdded( item );
+}
+
+void QgsMessageBar::removeLowestPriorityOldestItem()
+{
+  for ( Qgis::MessageLevel level : { Qgis::Success, Qgis::Info, Qgis::Warning, Qgis::Critical } )
+  {
+    for ( int i = mItems.size() - 1; i >= 0; --i )
+    {
+      QgsMessageBarItem *item = mItems.at( i );
+      if ( item->level() == level )
+      {
+        popItem( item );
+        return;
+      }
+    }
+  }
 }
 
 void QgsMessageBar::pushItem( QgsMessageBarItem *item )
@@ -314,10 +313,6 @@ QgsMessageBarItem *QgsMessageBar::pushWidget( QWidget *widget, Qgis::MessageLeve
 
 void QgsMessageBar::pushMessage( const QString &title, const QString &text, Qgis::MessageLevel level, int duration )
 {
-  // keep the number of items in the message bar to a maximum of 20, avoids flooding (and freezing) of the main window
-  if ( mItems.count() > 20 )
-    mItems.removeFirst();
-
   // block duplicate items, avoids flooding (and freezing) of the main window
   for ( auto it = mItems.constBegin(); it != mItems.constEnd(); ++it )
   {
