@@ -817,7 +817,16 @@ void QgsMapRendererJob::composeSecondPass( LayerRenderJobs &secondPassJobs, Labe
       // Only retain parts of the second rendering that are "inside" the mask image
       QPainter *painter = job.context.painter();
       painter->setCompositionMode( QPainter::CompositionMode_DestinationIn );
-      painter->drawImage( 0, 0, *maskImage );
+      QImage maskBinAlpha( *maskImage );
+      QRgb *pdata = ( QRgb * )maskBinAlpha.bits();
+      for ( int i = 0; i < maskBinAlpha.width() * maskBinAlpha.height(); ++i )
+      {
+        pdata[i] = qRgba( qRed( pdata[i] ),
+                          qGreen( pdata[i] ),
+                          qBlue( pdata[i] ),
+                          qAlpha( pdata[i] ) > 0 ? 255 : 0 );
+      }
+      painter->drawImage( 0, 0, maskBinAlpha );
 #if DEBUG_RENDERING
       job.img->save( QString( "/tmp/second_%1_a.png" ).arg( i ) );
 #endif
