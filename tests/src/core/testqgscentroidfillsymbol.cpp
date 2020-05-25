@@ -180,7 +180,7 @@ void TestQgsCentroidFillSymbol::centroidFillClipOnCurrentPartOnlyBiggest()
 
 void TestQgsCentroidFillSymbol::centroidFillClipMultiplayerPoints()
 {
-  QgsSimpleFillSymbolLayer simpleFill(QColor(255, 255, 255, 100));
+  QgsSimpleFillSymbolLayer simpleFill( QColor( 255, 255, 255, 100 ) );
 
   mCentroidFill = mCentroidFill->clone();
   mCentroidFill->setClipPoints( true );
