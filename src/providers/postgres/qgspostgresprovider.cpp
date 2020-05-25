@@ -4010,6 +4010,11 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
       fieldSize = -1;
       break;
 
+    case QVariant::ByteArray:
+      fieldType = QStringLiteral( "bytea" );
+      fieldPrec = -1;
+      break;
+
     default:
       return false;
   }
