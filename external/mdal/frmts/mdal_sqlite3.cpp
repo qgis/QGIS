@@ -75,9 +75,8 @@ int Sqlite3Statement::getInt( int column ) const
 
 int Sqlite3Statement::columnCount() const
 {
-
   if ( mStatement )
     return sqlite3_column_count( mStatement );
   else
-    return std::numeric_limits<int>::quiet_NaN();
+    return -1;
 }

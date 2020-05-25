@@ -433,7 +433,7 @@ void MDAL::Driver3Di::parse1DConnection( const std::vector<int> &nodesId,
   if ( ! stmt.prepare( &db, "SELECT id, start_node_idx, end_node_idx FROM flowlines" ) )
     throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to read edges connectivity from sqlite database" );
 
-  if ( std::isnan( stmt.columnCount() ) || stmt.columnCount() != 3 )
+  if ( stmt.columnCount() < 0 || stmt.columnCount() != 3 )
     throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Invalid edges connectivity schema in sqlite database" );
 
   while ( stmt.next() )
