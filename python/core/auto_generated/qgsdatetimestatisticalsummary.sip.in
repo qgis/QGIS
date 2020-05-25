@@ -181,7 +181,7 @@ be calculated.
     QDateTime median() const;
 %Docstring
 Returns calculated median of values. This is only calculated if Statistic.Median has
-been specified in the constructor or via setStatistics. 
+been specified in the constructor or via setStatistics.
 
 .. versionadded:: 3.16
 %End
