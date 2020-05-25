@@ -160,6 +160,10 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const ProviderOptions &opt
 
   QgsGdalProviderBase::registerGdalDrivers();
 
+#ifndef QT_NO_NETWORKPROXY
+  QgsGdalUtils::setupProxy();
+#endif
+
   if ( !CPLGetConfigOption( "AAIGRID_DATATYPE", nullptr ) )
   {
     // GDAL tends to open AAIGrid as Float32 which results in lost precision

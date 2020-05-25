@@ -321,10 +321,6 @@ class QgsOgrProvider final: public QgsVectorDataProvider
 
     bool addAttributeOGRLevel( const QgsField &field, bool &ignoreErrorOut );
 
-#ifndef QT_NO_NETWORKPROXY
-    void setupProxy();
-#endif
-
     QgsOgrTransaction *mTransaction = nullptr;
 
     void setTransaction( QgsTransaction *transaction ) override;
