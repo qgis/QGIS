@@ -20,7 +20,6 @@
 #include <QWidget>
 #include <QString>
 #include <QFont>
-#include <QLabel>
 #include <Qsci/qscilexerhtml.h>
 
 
@@ -49,10 +48,6 @@ void QgsCodeEditorHTML::setSciLexerHTML()
   }
 
   QFont font = getMonospaceFont();
-#ifdef Q_OS_MAC
-  // The font size gotten from getMonospaceFont() is too small on Mac
-  font.setPointSize( QLabel().font().pointSize() );
-#endif
   QColor defaultColor = colors.value( QStringLiteral( "html/defaultFontColor" ), Qt::black );
 
   QsciLexerHTML *lexer = new QsciLexerHTML( this );
