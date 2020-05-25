@@ -42,6 +42,7 @@ from qgis.core import (Qgis,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameterDefinition,
                        QgsProcessingException,
+                       QgsProcessingParameterCrs,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterNumber,
@@ -625,6 +626,9 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     continue
                 else:
                     value = '{},{}'.format(v[0], v[1])
+            elif isinstance(param, QgsProcessingParameterCrs):
+                if self.parameterAsCrs(parameters, paramName, context):
+                    value = '"{}"'.format(self.parameterAsCrs(parameters, paramName, context).toProj())
             # For everything else, we assume that it is a string
             else:
                 value = '"{}"'.format(
