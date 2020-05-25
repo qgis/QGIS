@@ -57,10 +57,10 @@ QgsHanaNewConnection::QgsHanaNewConnection(
 
   txtDriver->setText( QgsHanaDriver::instance()->getDriver() );
 
-  cbxCryptoProvider->addItem( tr( "openssl" ), QLatin1String( "openssl" ) );
-  cbxCryptoProvider->addItem( tr( "commoncrypto" ), QLatin1String( "commoncrypto" ) );
-  cbxCryptoProvider->addItem( tr( "sapcrypto" ), QLatin1String( "sapcrypto" ) );
-  cbxCryptoProvider->addItem( tr( "mscrypto" ), QLatin1String( "mscrypto" ) );
+  cbxCryptoProvider->addItem( tr( "openssl" ), QStringLiteral( "openssl" ) );
+  cbxCryptoProvider->addItem( tr( "commoncrypto" ), QStringLiteral( "commoncrypto" ) );
+  cbxCryptoProvider->addItem( tr( "sapcrypto" ), QStringLiteral( "sapcrypto" ) );
+  cbxCryptoProvider->addItem( tr( "mscrypto" ), QStringLiteral( "mscrypto" ) );
 
   mAuthSettings->setDataprovider( QStringLiteral( "hana" ) );
   mAuthSettings->showStoreCheckboxes( true );
@@ -172,7 +172,7 @@ void QgsHanaNewConnection::cmbIdentifierType_changed( int index )
   else
   {
     txtIdentifier->setMaxLength( 5 );
-    txtIdentifier->setValidator( new QIntValidator( 10000, 99999, this ) );
+    txtIdentifier->setValidator( new QIntValidator( 1, 65535, this ) );
     txtIdentifier->setText( QStringLiteral( "00000" ) );
   }
 }
