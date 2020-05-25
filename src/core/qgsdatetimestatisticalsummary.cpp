@@ -108,7 +108,7 @@ void QgsDateTimeStatisticalSummary::finalize()
 
     if ( mIsTimes )
     {
-      const QTime meanTime = QTime( 0, 0 ).addMSecs(  mSumMSec / mCount ).addMSecs( mFirst.time().msecsSinceStartOfDay() );
+      const QTime meanTime = QTime( 0, 0 ).addMSecs( mSumMSec / mCount ).addMSecs( mFirst.time().msecsSinceStartOfDay() );
       mMean = QDateTime( QDate::fromJulianDay( 0 ), meanTime );
     }
     else
@@ -129,7 +129,7 @@ void QgsDateTimeStatisticalSummary::finalize()
 
       if ( mStatistics & StDev )
         mStDev = QgsInterval( std::pow( sumSecsSquared / mCount, 0.5 ) );
-      
+
       if ( mStatistics & StDevSample )
         mSampleStDev = QgsInterval( std::pow( sumSecsSquared / ( mCount - 1 ), 0.5 ) );
     }

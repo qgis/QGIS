@@ -180,7 +180,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
 
     /**
      * Returns calculated median of values. This is only calculated if Statistic::Median has
-     * been specified in the constructor or via setStatistics. 
+     * been specified in the constructor or via setStatistics.
      * \since QGIS 3.16
      */
     QDateTime median() const { return ( mIsTimes ) ? QDateTime( QDate::fromJulianDay( 0 ), mMedian.time() ) : mMedian; }

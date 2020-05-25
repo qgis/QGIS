@@ -56,8 +56,8 @@ void QgsStatisticalSummary::reset()
   mValueCount.clear();
   mValues.clear();
 
-  mRequiresHisto = mStatistics & QgsStatisticalSummary::Majority || mStatistics & QgsStatisticalSummary::Minority || 
-                  mStatistics & QgsStatisticalSummary::Variety || mStatistics & QgsStatisticalSummary::Mode;
+  mRequiresHisto = mStatistics & QgsStatisticalSummary::Majority || mStatistics & QgsStatisticalSummary::Minority ||
+                   mStatistics & QgsStatisticalSummary::Variety || mStatistics & QgsStatisticalSummary::Mode;
 
   mRequiresAllValueStorage = mStatistics & QgsStatisticalSummary::StDev || mStatistics & QgsStatisticalSummary::StDevSample ||
                              mStatistics & QgsStatisticalSummary::Median || mStatistics & QgsStatisticalSummary::FirstQuartile ||

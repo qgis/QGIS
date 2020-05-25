@@ -470,19 +470,19 @@ namespace qgis
 
   /**
    * Converts any list to QVariantList
-   * 
-   * \tparam T 
+   *
+   * \tparam T
    * \param list list to be converted
-   * \return QVariantList 
+   * \return QVariantList
    * \since 3.16
    */
   template<class T>
   QVariantList toVariantList( const QList<T> &list )
   {
     QVariantList variantList;
-    
-    for( const T &item : list )
-        variantList << QVariant::fromValue( item );
+
+    for ( const T &item : list )
+      variantList << QVariant::fromValue( item );
 
     return variantList;
   }

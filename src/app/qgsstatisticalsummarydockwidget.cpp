@@ -33,16 +33,17 @@
 typedef QList< QgsStatisticalSummary::Statistic > StatsList;
 typedef QList< QgsStringStatisticalSummary::Statistic > StringStatsList;
 typedef QList< QgsDateTimeStatisticalSummary::Statistic > DateTimeStatsList;
-Q_GLOBAL_STATIC_WITH_ARGS( StatsList, sDisplayStats, ( {
-  QgsStatisticalSummary::Count, 
+Q_GLOBAL_STATIC_WITH_ARGS( StatsList, sDisplayStats, (
+{
+  QgsStatisticalSummary::Count,
   QgsStatisticalSummary::CountMissing,
-  QgsStatisticalSummary::Sum, 
-  QgsStatisticalSummary::Mean, 
-  QgsStatisticalSummary::Median, 
-  QgsStatisticalSummary::StDev, 
-  QgsStatisticalSummary::StDevSample, 
-  QgsStatisticalSummary::Min, 
-  QgsStatisticalSummary::Max, 
+  QgsStatisticalSummary::Sum,
+  QgsStatisticalSummary::Mean,
+  QgsStatisticalSummary::Median,
+  QgsStatisticalSummary::StDev,
+  QgsStatisticalSummary::StDevSample,
+  QgsStatisticalSummary::Min,
+  QgsStatisticalSummary::Max,
   QgsStatisticalSummary::Range,
   QgsStatisticalSummary::FirstQuartile,
   QgsStatisticalSummary::ThirdQuartile,
@@ -53,7 +54,8 @@ Q_GLOBAL_STATIC_WITH_ARGS( StatsList, sDisplayStats, ( {
   QgsStatisticalSummary::Last,
   QgsStatisticalSummary::Variety,
   QgsStatisticalSummary::Mode} ) )
-Q_GLOBAL_STATIC_WITH_ARGS( StringStatsList, sDisplayStringStats, ( {
+Q_GLOBAL_STATIC_WITH_ARGS( StringStatsList, sDisplayStringStats, (
+{
   QgsStringStatisticalSummary::Count,
   QgsStringStatisticalSummary::CountDistinct,
   QgsStringStatisticalSummary::CountMissing,
@@ -67,7 +69,8 @@ Q_GLOBAL_STATIC_WITH_ARGS( StringStatsList, sDisplayStringStats, ( {
   QgsStringStatisticalSummary::MinimumLength,
   QgsStringStatisticalSummary::MaximumLength,
   QgsStringStatisticalSummary::MeanLength} ) )
-Q_GLOBAL_STATIC_WITH_ARGS( DateTimeStatsList, sDisplayDateTimeStats, ( {
+Q_GLOBAL_STATIC_WITH_ARGS( DateTimeStatsList, sDisplayDateTimeStats, (
+{
   QgsDateTimeStatisticalSummary::Count,
   QgsDateTimeStatisticalSummary::CountDistinct,
   QgsDateTimeStatisticalSummary::CountMissing,
