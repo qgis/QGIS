@@ -3,6 +3,7 @@
 
 CREATE TABLE qgis_test.test_gen_col (
   id SERIAL PRIMARY KEY,
+  name varchar(32),
   geom GEOMETRY('Polygon', 4326) NOT NULL,
   cent GEOMETRY('Point', 4326) NOT NULL GENERATED ALWAYS AS ( st_centroid(geom) ) STORED,
   poly_area FLOAT NOT NULL GENERATED ALWAYS AS ( st_area(st_transform(geom, 31979)) ) STORED
