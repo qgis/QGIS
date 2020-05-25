@@ -481,17 +481,17 @@ iteration only is required.
 
        # print the WKT representation of each part in a multi-point geometry
        geometry = QgsGeometry.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
-       for part in geometry.parts():
+       for part in geometry.constParts():
            print(part.asWkt())
 
        # single part geometries only have one part - this loop will iterate once only
        geometry = QgsGeometry.fromWkt( 'LineString( 0 0, 10 10 )' )
-       for part in geometry.parts():
+       for part in geometry.constParts():
            print(part.asWkt())
 
        # part iteration can also be combined with vertex iteration
        geometry = QgsGeometry.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
-       for part in geometry.parts():
+       for part in geometry.constParts():
            for v in part.vertices():
                print(v.x(), v.y())
 
