@@ -164,6 +164,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     QTimer *mCountdownTimer = nullptr;
     QProgressBar *mCountProgress = nullptr;
     QString mCountStyleSheet;
+    Qgis::MessageLevel mPrevLevel = Qgis::MessageLevel::None;
 
   private slots:
     //! updates count of items in widget list

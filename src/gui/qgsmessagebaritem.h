@@ -104,7 +104,10 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
     void dismiss();
 
   signals:
-    //! emitted when the message level has changed
+
+    /**
+     * emitted when the message level has changed
+     */
     void styleChanged( const QString &styleSheet );
 
   private slots:
