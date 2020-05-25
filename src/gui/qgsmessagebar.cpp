@@ -350,6 +350,11 @@ void QgsMessageBar::pushMessage( const QString &title, const QString &text, cons
   pushItem( item );
 }
 
+QgsMessageBarItem *QgsMessageBar::currentItem()
+{
+  return mItems.value( 0 );
+}
+
 QgsMessageBarItem *QgsMessageBar::createMessage( const QString &text, QWidget *parent )
 {
   QgsMessageBarItem *item = new QgsMessageBarItem( text, Qgis::Info, 0, parent );
@@ -364,6 +369,11 @@ QgsMessageBarItem *QgsMessageBar::createMessage( const QString &title, const QSt
 QgsMessageBarItem *QgsMessageBar::createMessage( QWidget *widget, QWidget *parent )
 {
   return new QgsMessageBarItem( widget, Qgis::Info, 0, parent );
+}
+
+void QgsMessageBar::pushMessage( const QString &text, Qgis::MessageLevel level, int duration )
+{
+  pushMessage( QString(), text, level, duration );
 }
 
 void QgsMessageBar::updateCountdown()
