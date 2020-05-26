@@ -819,7 +819,7 @@ void QgsMapRendererJob::composeSecondPass( LayerRenderJobs &secondPassJobs, Labe
       painter->setCompositionMode( QPainter::CompositionMode_DestinationIn );
 
       //Create an "alpha binarized" image of the maskImage to :
-      //* Elimite aliasing artefact
+      //* Eliminate antialiasing artefact
       //* Avoid applying mask opacity to elements under the mask but not masked
       QImage maskBinAlpha = maskImage->createMaskFromColor( 0 );
       maskBinAlpha.setColorCount( 0 );
