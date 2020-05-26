@@ -815,7 +815,38 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
     {
       const QgsPointXY transformedPoint = ct.transform( mapPoint );
 
-      const int displayPrecision = crs.mapUnits() == QgsUnitTypes::DistanceDegrees ? 5 : 3;
+      // calculate precision based on visible map extent -- if user is zoomed in, we get better precision!
+      int displayPrecision = 0;
+      try
+      {
+        QgsRectangle extentReproj = ct.transformBoundingBox( extent() );
+        const double mapUnitsPerPixel = ( extentReproj.width() / width() + extentReproj.height() / height() ) * 0.5;
+        if ( mapUnitsPerPixel > 10 )
+          displayPrecision = 0;
+        else if ( mapUnitsPerPixel > 1 )
+          displayPrecision = 1;
+        else if ( mapUnitsPerPixel > 0.1 )
+          displayPrecision = 2;
+        else if ( mapUnitsPerPixel > 0.01 )
+          displayPrecision = 3;
+        else if ( mapUnitsPerPixel > 0.001 )
+          displayPrecision = 4;
+        else if ( mapUnitsPerPixel > 0.0001 )
+          displayPrecision = 5;
+        else if ( mapUnitsPerPixel > 0.00001 )
+          displayPrecision = 6;
+        else if ( mapUnitsPerPixel > 0.000001 )
+          displayPrecision = 7;
+        else if ( mapUnitsPerPixel > 0.0000001 )
+          displayPrecision = 8;
+        else
+          displayPrecision = 9;
+      }
+      catch ( QgsCsException & )
+      {
+        displayPrecision = crs.mapUnits() == QgsUnitTypes::DistanceDegrees ? 5 : 3;
+      }
+
       QAction *copyCoordinateAction = new QAction( QStringLiteral( "%3 (%1, %2)" ).arg(
             QString::number( transformedPoint.x(), 'f', displayPrecision ),
             QString::number( transformedPoint.y(), 'f', displayPrecision ),
