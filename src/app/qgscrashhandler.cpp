@@ -62,7 +62,7 @@ LONG WINAPI QgsCrashHandler::handle( LPEXCEPTION_POINTERS exception )
   QString projectFile = QgsProject::instance()->fileName();
   if ( !projectFile.isEmpty() )
     // quote project file path to avoid issues if it has spaces
-    arguments << '"' << projectFile << '"';
+    arguments << QStringLiteral( "\"%1\"" ).arg( projectFile );
   else
     arguments << projectFile;
 
