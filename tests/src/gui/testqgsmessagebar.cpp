@@ -30,6 +30,7 @@ class TestQgsMessageBar: public QObject
     void cleanup(); // will be called after every testfunction.
     void dismiss();
     void pushPop();
+    void autoDelete();
 
 };
 
@@ -142,6 +143,40 @@ void TestQgsMessageBar::pushPop()
   QVERIFY( !bar.popWidget() );
   QCOMPARE( bar.items().size(), 0 );
   QVERIFY( !bar.currentItem() );
+}
+
+void TestQgsMessageBar::autoDelete()
+{
+  // ensure that items are automatically deleted when queue grows too large
+  QgsMessageBar bar;
+  for ( int i = 0; i < bar.MAX_ITEMS; ++i )
+  {
+    bar.pushMessage( QString::number( i ), Qgis::Warning );
+  }
+  QCOMPARE( bar.items().size(), 100 );
+  QCOMPARE( bar.items().at( 0 )->text(), QStringLiteral( "99" ) );
+  QCOMPARE( bar.items().at( 99 )->text(), QStringLiteral( "0" ) );
+  QPointer< QgsMessageBarItem > oldest = bar.items().at( 99 );
+
+  // push one more item, oldest one should be auto-removed
+  bar.pushMessage( QStringLiteral( "100" ), Qgis::Warning );
+  QCOMPARE( bar.items().size(), 100 );
+  QCOMPARE( bar.items().at( 0 )->text(), QStringLiteral( "100" ) );
+  QCOMPARE( bar.items().at( 99 )->text(), QStringLiteral( "1" ) );
+  QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
+  QVERIFY( !oldest );
+
+  // but if we have a lower priority message we can pop, then do that instead
+  bar.pushMessage( QStringLiteral( "101" ), Qgis::Info );
+  QCOMPARE( bar.items().size(), 100 );
+  QCOMPARE( bar.items().at( 0 )->text(), QStringLiteral( "101" ) );
+  QCOMPARE( bar.items().at( 1 )->text(), QStringLiteral( "100" ) );
+  QCOMPARE( bar.items().at( 99 )->text(), QStringLiteral( "2" ) );
+  bar.pushMessage( QStringLiteral( "102" ), Qgis::Info );
+  QCOMPARE( bar.items().size(), 100 );
+  QCOMPARE( bar.items().at( 0 )->text(), QStringLiteral( "102" ) );
+  QCOMPARE( bar.items().at( 1 )->text(), QStringLiteral( "100" ) );
+  QCOMPARE( bar.items().at( 99 )->text(), QStringLiteral( "2" ) );
 }
 
 QGSTEST_MAIN( TestQgsMessageBar )
