@@ -445,7 +445,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
         QFileInfo fi( outputFilePath );
         // build the world file name
         QString outputSuffix = fi.suffix();
-        QString worldFileName = fi.absolutePath() + '/' + fi.baseName() + '.'
+        QString worldFileName = fi.absolutePath() + '/' + fi.completeBaseName() + '.'
                                 + outputSuffix.at( 0 ) + outputSuffix.at( fi.suffix().size() - 1 ) + 'w';
 
         writeWorldFile( worldFileName, a, b, c, d, e, f );
