@@ -236,7 +236,7 @@ void QgsHanaProviderConnection::executeSqlStatement( const QString &sql ) const
   {
     ConnectionRef connRef = conn->getNativeRef();
     StatementRef stmt = connRef->createStatement();
-    stmt->execute( reinterpret_cast<const char16_t *>( sql.unicode() ) );
+    stmt->execute( reinterpret_cast<const char16_t *>( sql.utf16() ) );
     connRef->commit();
   }
   catch ( const odbc::Exception &ex )

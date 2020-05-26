@@ -137,7 +137,7 @@ QgsGeometry QgsHanaResultSet::getGeometry( unsigned short columnIndex )
       return QgsGeometry();
 
     if ( size > static_cast<size_t>( std::numeric_limits<int>::max() ) )
-      throw std::overflow_error( "Geometry size is larger than INT_MAX" );
+      throw std::overflow_error( "Geometry size is larger than maximum integer value" );
 
     QByteArray wkbBytes( data, static_cast<int>( size ) );
     QgsGeometry geom;
