@@ -4377,7 +4377,7 @@ void QgsLayoutDesignerDialog::atlasFeatureChanged( const QgsFeature &feature )
   const QString atlasFeatureName = atlas->nameForPage( atlas->currentFeatureNumber() );
   mView->setSectionLabel( atlasFeatureName );
 
-  if ( !feature.hasGeometry() || feature.geometry().isEmpty() )
+  if ( feature.isValid() && ( !feature.hasGeometry() || feature.geometry().isEmpty() ) )
   {
     // a little sanity check -- if there's any maps in this layout which are set to be atlas controlled,
     // and we hit a feature with no geometry attached, then warn the user
