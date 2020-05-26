@@ -255,6 +255,30 @@ static bool cmpByText_( QAction *a, QAction *b )
 }
 
 
+class QgsAtlasExportGuard
+{
+  public:
+
+    QgsAtlasExportGuard( QgsLayoutDesignerDialog *dialog )
+      : mDialog( dialog )
+    {
+      mDialog->mIsExportingAtlas = true;
+    }
+
+    ~QgsAtlasExportGuard()
+    {
+      mDialog->mIsExportingAtlas = false;
+
+      // need to update the GUI to reflect the final atlas feature
+      mDialog->atlasFeatureChanged( mDialog->currentLayout()->reportContext().feature() );
+    }
+
+  private:
+    QgsLayoutDesignerDialog *mDialog = nullptr;
+
+};
+
+
 QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFlags flags )
   : QMainWindow( parent, flags )
   , mInterface( new QgsAppLayoutDesignerInterface( this ) )
@@ -2713,6 +2737,7 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
 
   mView->setPaintingEnabled( false );
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
+  QgsAtlasExportGuard exportingAtlas( this );
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
@@ -2870,6 +2895,7 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
 
   mView->setPaintingEnabled( false );
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
+  QgsAtlasExportGuard exportingAtlas( this );
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
@@ -3083,6 +3109,8 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
 
   mView->setPaintingEnabled( false );
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
+  QgsAtlasExportGuard exportingAtlas( this );
+
   pdfSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
 
   QString error;
@@ -3221,6 +3249,7 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
 
   mView->setPaintingEnabled( false );
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
+  QgsAtlasExportGuard exportingAtlas( this );
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
@@ -3339,6 +3368,7 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
 
   mView->setPaintingEnabled( false );
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
+  QgsAtlasExportGuard exportingAtlas( this );
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
@@ -3474,6 +3504,7 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
 
   mView->setPaintingEnabled( false );
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
+  QgsAtlasExportGuard exportingAtlas( this );
 
   pdfSettings.rasterizeWholeImage = rasterize;
 
@@ -4343,7 +4374,8 @@ void QgsLayoutDesignerDialog::updateAtlasPageComboBox( int pageCount )
 
 void QgsLayoutDesignerDialog::atlasFeatureChanged( const QgsFeature &feature )
 {
-  //TODO - this should be disabled during an export
+  if ( mIsExportingAtlas )
+    return;
 
   QgsPrintLayout *printLayout = qobject_cast< QgsPrintLayout *>( mLayout );
   if ( !printLayout )

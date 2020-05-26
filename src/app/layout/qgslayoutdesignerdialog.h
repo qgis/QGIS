@@ -489,6 +489,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
 
     QgsLayoutGuideWidget *mGuideWidget = nullptr;
 
+    bool mIsExportingAtlas = false;
+
     //! Save window state
     void saveWindowState();
 
@@ -557,6 +559,14 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     void setLastExportPath( const QString &path ) const;
 
     bool checkBeforeExport();
+<<<<<<< HEAD
+=======
+
+    //! update default action of toolbutton
+    void toolButtonActionTriggered( QAction * );
+
+    friend class QgsAtlasExportGuard;
+>>>>>>> 57519e9faa... [layouts] Don't refresh the map canvas multiple times during atlas exports
 };
 
 #endif // QGSLAYOUTDESIGNERDIALOG_H
