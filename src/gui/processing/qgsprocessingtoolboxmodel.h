@@ -451,6 +451,12 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
     QgsProcessingToolboxModel *toolboxModel();
 
     /**
+     * Returns the underlying source Processing toolbox model.
+     * \note Not available in Python bindings
+     */
+    const QgsProcessingToolboxModel *toolboxModel() const SIP_SKIP;
+
+    /**
      * Set \a filters that affect how toolbox content is filtered.
      * \see filters()
      */

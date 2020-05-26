@@ -23,6 +23,7 @@
 #include <Qt3DRender/QRenderPassFilter>
 #include <Qt3DRender/QTechnique>
 
+#include "qgs3dmapsettings.h"
 #include "qgsmesh3dsymbol.h"
 #include "qgscolorrampshader.h"
 
@@ -37,6 +38,7 @@
 // version without notice, or even be removed.
 //
 
+class QgsMeshLayer;
 
 /**
  * \ingroup 3d
@@ -64,13 +66,20 @@ class QgsMesh3dMaterial : public Qt3DRender::QMaterial
     };
 
     //! Constructor
-    QgsMesh3dMaterial( const QgsMesh3DSymbol &symbol );
+    QgsMesh3dMaterial( QgsMeshLayer *layer,
+                       const QgsDateTimeRange &timeRange,
+                       const QgsVector3D &origin,
+                       const QgsMesh3DSymbol &symbol,
+                       MagnitudeType magnitudeType = ZValue );
 
   private:
     QgsMesh3DSymbol mSymbol;
     Qt3DRender::QTechnique *mTechnique;
+    MagnitudeType mMagnitudeType = ZValue;
+    QgsVector3D mOrigin;
 
     void configure();
+    void configureArrows( QgsMeshLayer *layer, const QgsDateTimeRange &timeRange );
 };
 
 ///@endcond

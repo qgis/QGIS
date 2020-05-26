@@ -107,6 +107,7 @@ bool MDAL::DateTime::isValid() const { return mValid; }
 MDAL::DateTime::DateTime( int64_t julianTime ): mJulianTime( julianTime ), mValid( true )
 {}
 
+/*
 MDAL::DateTime::DateTimeValues MDAL::DateTime::dateTimeGregorianJulianCalendar() const
 {
   // https://fr.wikipedia.org/wiki/Jour_julien
@@ -147,6 +148,7 @@ MDAL::DateTime::DateTimeValues MDAL::DateTime::dateTimeGregorianJulianCalendar()
 
   return values;
 }
+*/
 
 MDAL::DateTime::DateTimeValues MDAL::DateTime::dateTimeGregorianProleptic() const
 {

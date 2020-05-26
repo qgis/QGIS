@@ -135,6 +135,7 @@ void QgsAttributeEditorRelation::saveConfiguration( QDomElement &elem ) const
   elem.setAttribute( QStringLiteral( "relation" ), mRelation.id() );
   elem.setAttribute( QStringLiteral( "showLinkButton" ), mShowLinkButton );
   elem.setAttribute( QStringLiteral( "showUnlinkButton" ), mShowUnlinkButton );
+  elem.setAttribute( QStringLiteral( "showSaveChildEditsButton" ), mShowSaveChildEditsButton );
 }
 
 QString QgsAttributeEditorRelation::typeIdentifier() const
@@ -160,6 +161,16 @@ bool QgsAttributeEditorRelation::showUnlinkButton() const
 void QgsAttributeEditorRelation::setShowUnlinkButton( bool showUnlinkButton )
 {
   mShowUnlinkButton = showUnlinkButton;
+}
+
+void QgsAttributeEditorRelation::setShowSaveChildEditsButton( bool showSaveChildEdits )
+{
+  mShowSaveChildEditsButton = showSaveChildEdits;
+}
+
+bool QgsAttributeEditorRelation::showSaveChildEditsButton() const
+{
+  return mShowSaveChildEditsButton;
 }
 
 QgsAttributeEditorElement *QgsAttributeEditorQmlElement::clone( QgsAttributeEditorElement *parent ) const

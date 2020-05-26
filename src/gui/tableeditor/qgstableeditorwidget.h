@@ -40,13 +40,28 @@ class QgsTableEditorTextEdit : public QPlainTextEdit
      */
     void setWeakEditorMode( bool weakEditorMode );
 
+    void setWidgetOwnsGeometry( bool value )
+    {
+      mWidgetOwnsGeometry = value;
+    }
+
+  public slots:
+
+    void resizeToContents();
+
   protected:
+    void changeEvent( QEvent *e ) override;
 
     void keyPressEvent( QKeyEvent *e ) override;
 
   private:
 
+    void updateMinimumSize();
+
     bool mWeakEditorMode = false;
+    int mOriginalWidth = -1;
+    int mOriginalHeight = -1;
+    bool mWidgetOwnsGeometry = false;
 
 };
 
@@ -62,6 +77,10 @@ class QgsTableEditorDelegate : public QStyledItemDelegate
      */
     void setWeakEditorMode( bool weakEditorMode );
 
+  signals:
+
+    void updateNumericFormatForIndex( const QModelIndex &index ) const;
+
   protected:
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
@@ -70,6 +89,7 @@ class QgsTableEditorDelegate : public QStyledItemDelegate
   private:
 
     bool mWeakEditorMode = false;
+    mutable QModelIndex mLastIndex;
 };
 
 ///@endcond
@@ -224,6 +244,18 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
      */
     QList<int> columnsAssociatedWithSelection();
 
+    /**
+     * Returns the table header values.
+     *
+     * \see setTableHeaders()
+     */
+    QVariantList tableHeaders() const;
+
+    /**
+     * Returns TRUE if any header cells are selected.
+     */
+    bool isHeaderCellSelected();
+
   public slots:
 
     /**
@@ -317,6 +349,20 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
      */
     void setSelectionColumnWidth( double height );
 
+    /**
+     * Sets whether the table includes a header row.
+     *
+     * \see includeTableHeader()
+     */
+    void setIncludeTableHeader( bool included );
+
+    /**
+     * Sets the table \a headers.
+     *
+     * \see tableHeaders()
+     */
+    void setTableHeaders( const QVariantList &headers );
+
   protected:
     void keyPressEvent( QKeyEvent *event ) override;
 
@@ -332,6 +378,10 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
      */
     void activeCellChanged();
 
+  private slots:
+
+    void updateNumericFormatForIndex( const QModelIndex &index );
+
   private:
 
     //! Custom roles
@@ -339,7 +389,8 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
     {
       PresetBackgroundColorRole = Qt::UserRole + 1,
       RowHeight,
-      ColumnWidth
+      ColumnWidth,
+      CellContent
     };
 
     void updateHeaders();
@@ -352,6 +403,10 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
     int mBlockSignals = 0;
     QHash< QTableWidgetItem *, QgsNumericFormat * > mNumericFormats;
     QMenu *mHeaderMenu = nullptr;
+    bool mIncludeHeader = false;
+    bool mFirstSet = true;
+
+    friend class QgsTableEditorDelegate;
 
 };
 

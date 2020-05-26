@@ -601,6 +601,15 @@ relating to how a QgsProject should be viewed and behave inside a map canvas
 %End
 
 
+    QgsProjectTimeSettings *timeSettings();
+%Docstring
+Returns the project's time settings, which contains the project's temporal range and other
+time based settings.
+
+.. versionadded:: 3.14
+%End
+
+
     QgsProjectDisplaySettings *displaySettings();
 %Docstring
 Returns the project's display settings, which settings and properties relating

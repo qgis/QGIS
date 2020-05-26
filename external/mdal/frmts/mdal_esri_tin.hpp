@@ -71,7 +71,7 @@ namespace MDAL
 
       Driver *create() override;
 
-      virtual std::unique_ptr< Mesh > load( const std::string &uri, MDAL_Status *status ) override;
+      virtual std::unique_ptr< Mesh > load( const std::string &uri ) override;
 
       bool canReadMesh( const std::string &uri ) override;
 
@@ -85,14 +85,7 @@ namespace MDAL
       std::string denvFile( const std::string &uri ) const;
       std::string denv9File( const std::string &uri ) const;
       std::string crsFile( const std::string &uri ) const;
-
-      //* can be used to read superpoints indexes, currently unused in MDAL
-      void readSuperpoints( const std::string &uri, std::list<int> &superpointsIndexes ) const;
-
-
       std::string getCrsWkt( const std::string &uri ) const;
-      std::string getTinName( const std::string &uri ) const;
-
   };
 }
 

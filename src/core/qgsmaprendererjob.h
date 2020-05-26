@@ -129,7 +129,7 @@ struct LabelRenderJob
    * There is only one label job, with labels coming from different layers or rules (for rule-based labeling).
    * So we may have different labels with different label masks. We then need one different mask image for each configuration of label masks.
    * Labels that share the same kind of label masks, i.e. having the same set of symbol layers that are to be masked, should share the same mask image.
-   * Labels that have different label masks, i.e. having different set of symbol layers that are to be masked, should have differnent mask images.
+   * Labels that have different label masks, i.e. having different set of symbol layers that are to be masked, should have different mask images.
    * The index in the vector corresponds to the mask identifier.
    * \see maskIdProvider
    */

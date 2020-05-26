@@ -293,7 +293,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   if ( r )
     r->stopRender( context );
 
-  QgsDebugMsg( "Number of new selected features: " + QString::number( newSelectedFeatures.size() ) );
+  QgsDebugMsgLevel( "Number of new selected features: " + QString::number( newSelectedFeatures.size() ), 2 );
 
   return newSelectedFeatures;
 }

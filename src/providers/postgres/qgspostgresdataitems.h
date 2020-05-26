@@ -81,6 +81,10 @@ class QgsPGSchemaItem : public QgsDataCollectionItem
     QgsPGLayerItem *createLayer( QgsPostgresLayerProperty layerProperty );
 
     QString mConnectionName;
+
+    // QgsDataItem interface
+  public:
+    bool layerCollection() const override;
 };
 
 class QgsPGLayerItem : public QgsLayerItem
@@ -105,6 +109,8 @@ class QgsPostgresDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
+
+    QString dataProviderKey() const override;
 
     int capabilities() const override;
 

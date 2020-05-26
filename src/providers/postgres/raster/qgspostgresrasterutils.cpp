@@ -47,10 +47,10 @@ QVariantMap QgsPostgresRasterUtils::parseWkb( const QByteArray &wkb, int bandNo 
   */
 
   // Endianness
-  result[ QStringLiteral( "endiannes" ) ] = static_cast<unsigned short int>( wkb[0] );  //#spellok
+  result[ QStringLiteral( "endianness" ) ] = static_cast<unsigned short int>( wkb[0] );
   // NOTE: For now only little endian is supported
   // TODO: endianness
-  Q_ASSERT( result[ QStringLiteral( "endiannes" ) ] == 1 );  //#spellok
+  Q_ASSERT( result[ QStringLiteral( "endianness" ) ] == 1 );
   result[ QStringLiteral( "version" ) ] = *reinterpret_cast<const unsigned short int *>( &wkb.constData()[1] );
   const unsigned short int nBands { *reinterpret_cast<const unsigned short int *>( &wkb.constData()[3] ) };
   result[ QStringLiteral( "nBands" ) ] = nBands;

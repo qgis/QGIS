@@ -349,7 +349,7 @@ void TestQgsGrassProvider::fatalError()
   QString errorMessage = QStringLiteral( "test fatal error" );
   G_TRY
   {
-    G_fatal_error( "%s", errorMessage.toAscii().data() );
+    G_fatal_error( "%s", errorMessage.toLatin1().data() );
     ok = false; // should not be reached
     reportRow( QStringLiteral( "G_fatal_error() did not throw exception" ) );
   }
@@ -403,7 +403,7 @@ void TestQgsGrassProvider::mapsets()
 #if 0
   Q_FOREACH ( QString expectedMapset, expectedMapsets )
   {
-    if ( G_is_mapset_in_search_path( expectedMapset.toAscii().data() ) != 1 )
+    if ( G_is_mapset_in_search_path( expectedMapset.toLatin1().data() ) != 1 )
     {
       reportRow( "mapset " + expectedMapset + " not in search path" );
       ok = false;

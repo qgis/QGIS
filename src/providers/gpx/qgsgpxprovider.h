@@ -39,7 +39,7 @@ class QgsGPXFeatureIterator;
 * This provider adds the ability to load GPX files as vector layers.
 *
 */
-class QgsGPXProvider : public QgsVectorDataProvider
+class QgsGPXProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
 
@@ -117,7 +117,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
     friend class QgsGPXFeatureSource;
 };
 
-class QgsGpxProviderMetadata: public QgsProviderMetadata
+class QgsGpxProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsGpxProviderMetadata();

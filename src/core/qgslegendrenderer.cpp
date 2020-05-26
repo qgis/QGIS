@@ -684,9 +684,9 @@ QSizeF QgsLegendRenderer::drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, 
 {
   QSizeF size( 0, 0 );
   QModelIndex idx = mLegendModel->node2index( nodeLayer );
-
+  QString titleString = mLegendModel->data( idx, Qt::DisplayRole ).toString();
   //Let the user omit the layer title item by having an empty layer title string
-  if ( mLegendModel->data( idx, Qt::DisplayRole ).toString().isEmpty() )
+  if ( titleString.isEmpty() )
     return size;
 
   double y = top;
@@ -707,7 +707,7 @@ QSizeF QgsLegendRenderer::drawLayerTitleInternal( QgsLayerTreeLayer *nodeLayer, 
 
   QgsExpressionContext tempContext;
 
-  const QStringList lines = mSettings.evaluateItemText( mLegendModel->data( idx, Qt::DisplayRole ).toString(),
+  const QStringList lines = mSettings.evaluateItemText( titleString,
                             context ? context->expressionContext() : tempContext );
   int i = 0;
   for ( QStringList::ConstIterator layerItemPart = lines.constBegin(); layerItemPart != lines.constEnd(); ++layerItemPart )

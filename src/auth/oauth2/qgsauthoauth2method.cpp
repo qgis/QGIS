@@ -36,6 +36,7 @@
 #include <QPointer>
 #include <QString>
 #include <QMutexLocker>
+#include <QUrlQuery>
 
 
 static const QString AUTH_METHOD_KEY = QStringLiteral( "OAuth2" );
@@ -266,7 +267,7 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
   switch ( accessmethod )
   {
     case QgsAuthOAuth2Config::Header:
-      request.setRawHeader( O2_HTTP_AUTHORIZATION_HEADER, QStringLiteral( "Bearer %1" ).arg( o2->token() ).toAscii() );
+      request.setRawHeader( O2_HTTP_AUTHORIZATION_HEADER, QStringLiteral( "Bearer %1" ).arg( o2->token() ).toLatin1() );
 #ifdef QGISDEBUG
       msg = QStringLiteral( "Updated request HEADER with access token for authcfg: %1" ).arg( authcfg );
       QgsDebugMsgLevel( msg, 2 );

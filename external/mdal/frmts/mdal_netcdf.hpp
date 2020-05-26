@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 
+
 //! C++ Wrapper around netcdf C library
 class NetCDFFile
 {
@@ -59,6 +60,7 @@ class NetCDFFile
 
     bool hasAttrInt( const std::string &name, const std::string &attr_name ) const;
     int getAttrInt( const std::string &name, const std::string &attr_name ) const;
+    bool hasAttrDouble( int varid, const std::string &attr_name ) const;
     double getAttrDouble( int varid, const std::string &attr_name ) const;
     /**
      * Get string attribute

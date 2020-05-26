@@ -83,6 +83,8 @@
     <addaction name="menuInsert_Columns"/>
     <addaction name="mActionDeleteRows"/>
     <addaction name="mActionDeleteColumns"/>
+    <addaction name="separator"/>
+    <addaction name="mActionIncludeHeader"/>
    </widget>
    <widget class="QMenu" name="menu_Edit">
     <property name="title">
@@ -98,6 +100,8 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="mActionImportFromClipboard"/>
+    <addaction name="separator"/>
     <addaction name="mActionClose"/>
    </widget>
    <addaction name="menuFile"/>
@@ -159,6 +163,11 @@
     <string>Select Column</string>
    </property>
   </action>
+  <action name="mActionImportFromClipboard">
+   <property name="text">
+    <string>Import Content from Clipboard</string>
+   </property>
+  </action>
   <action name="mActionClose">
    <property name="text">
     <string>Close Editor</string>
@@ -177,6 +186,14 @@
   <action name="mActionClear">
    <property name="text">
     <string>Clear Cell(s)</string>
+   </property>
+  </action>
+  <action name="mActionIncludeHeader">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Include Header Row</string>
    </property>
   </action>
  </widget>

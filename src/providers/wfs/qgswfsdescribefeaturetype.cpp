@@ -15,6 +15,7 @@
 
 #include "qgswfsdescribefeaturetype.h"
 #include "qgsmessagelog.h"
+#include <QUrlQuery>
 
 QgsWFSDescribeFeatureType::QgsWFSDescribeFeatureType( QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )

@@ -26,6 +26,7 @@
 
 #include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgsunittypes.h"
 
 class QString;
 
@@ -65,6 +66,11 @@ class CORE_EXPORT QgsInterval
      * \param seconds duration of interval in seconds
      */
     QgsInterval( double seconds );
+
+    /**
+     * Constructor for QgsInterval, using the specified \a duration and \a units.
+     */
+    QgsInterval( double duration, QgsUnitTypes::TemporalUnit unit );
 
     /**
      * Returns the interval duration in years (based on an average year length)

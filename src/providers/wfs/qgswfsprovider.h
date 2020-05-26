@@ -60,7 +60,7 @@ class QgsWFSSharedData;
  * the specific attributes of a WFS URI.
  *
  */
-class QgsWFSProvider : public QgsVectorDataProvider
+class QgsWFSProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
   public:
@@ -197,7 +197,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     bool processSQL( const QString &sqlString, QString &errorMsg, QString &warningMsg );
 };
 
-class QgsWfsProviderMetadata: public QgsProviderMetadata
+class QgsWfsProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsWfsProviderMetadata();

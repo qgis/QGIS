@@ -143,6 +143,8 @@ class QgsSymbolLayer
       PropertyRandomSeed,
       PropertyClipPoints,
       PropertyDensityArea,
+      PropertyFontFamily,
+      PropertyFontStyle,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();

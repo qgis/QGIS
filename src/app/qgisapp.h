@@ -50,6 +50,7 @@ class QgsComposerManager;
 class QgsContrastEnhancement;
 class QgsCoordinateReferenceSystem;
 class QgsCustomDropHandler;
+class QgsCustomProjectOpenHandler;
 class QgsCustomLayerOrderWidget;
 class QgsDockWidget;
 class QgsDoubleSpinBox;
@@ -119,6 +120,7 @@ class QgsAdvancedDigitizingDockWidget;
 class QgsGpsInformationWidget;
 class QgsStatisticalSummaryDockWidget;
 class QgsMapCanvasTracer;
+class QgsTemporalControllerDockWidget;
 
 class QgsDecorationItem;
 class QgsMessageLogViewer;
@@ -138,6 +140,10 @@ class QgsLayoutCustomDropHandler;
 class QgsProxyProgressTask;
 class QgsNetworkRequestParameters;
 class QgsBearingNumericFormat;
+class QgsDevToolsPanelWidget;
+class QgsDevToolWidgetFactory;
+class QgsNetworkLogger;
+class QgsNetworkLoggerWidgetFactory;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -164,6 +170,7 @@ class QgsBearingNumericFormat;
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
 #include "qgsvectorlayerref.h"
+#include "devtools/qgsappdevtoolutils.h"
 
 #include <QGestureEvent>
 #include <QTapAndHoldGesture>
@@ -543,6 +550,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionHideAllLayers() { return mActionHideAllLayers; }
     QAction *actionShowAllLayers() { return mActionShowAllLayers; }
     QAction *actionHideSelectedLayers() { return mActionHideSelectedLayers; }
+    QAction *actionToggleSelectedLayers() { return mActionToggleSelectedLayers; }
+    QAction *actionToggleSelectedLayersIndependently() { return mActionToggleSelectedLayersIndependently; }
     QAction *actionHideDeselectedLayers() { return mActionHideDeselectedLayers; }
     QAction *actionShowSelectedLayers() { return mActionShowSelectedLayers; }
 
@@ -632,7 +641,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsLocatorWidget *locatorWidget() { return mLocatorWidget; }
 
     //! show layer properties
-    void showLayerProperties( QgsMapLayer *mapLayer );
+    void showLayerProperties( QgsMapLayer *mapLayer, const QString &page = QString() );
 
     //! returns pointer to map legend
     QgsLayerTreeView *layerTreeView();
@@ -681,11 +690,33 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Unregister a previously registered tab in the options dialog
     void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory );
 
+    //! Register a dev tool factory
+    void registerDevToolFactory( QgsDevToolWidgetFactory *factory );
+
+    //! Unregister a previously registered dev tool factory
+    void unregisterDevToolFactory( QgsDevToolWidgetFactory *factory );
+
     //! Register a new custom drop handler.
     void registerCustomDropHandler( QgsCustomDropHandler *handler );
 
     //! Unregister a previously registered custom drop handler.
     void unregisterCustomDropHandler( QgsCustomDropHandler *handler );
+
+    /**
+     * Register a new custom project open \a handler.
+     * \note Ownership of \a handler is not transferred, and the handler must
+     *       be unregistered when plugin is unloaded.
+     * \see QgsCustomProjectOpenHandler
+     * \see unregisterCustomProjectOpenHandler()
+     */
+    void registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler );
+
+    /**
+     * Unregister a previously registered custom project open \a handler.
+     * \see QgsCustomDropHandler
+     * \see registerCustomProjectOpenHandler()
+     */
+    void unregisterCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler );
 
     //! Returns a list of registered custom drop handlers.
     QVector<QPointer<QgsCustomDropHandler >> customDropHandlers() const;
@@ -957,8 +988,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Duplicate map layer(s) in legend
     void duplicateLayers( const QList<QgsMapLayer *> &lyrList = QList<QgsMapLayer *>() );
 
-    //! change layer subset of current vector layer
-    void layerSubsetString();
+    /**
+     * Changes layer subset of \a mapLayer
+     * \since QGIS 3.12
+     */
+    void layerSubsetString( QgsMapLayer *mapLayer );
+
+    //! change layer subset of the active layer
+    void layerSubsetString( );
 
     //! Sets scale visibility of selected layers
     void setLayerScaleVisibility();
@@ -1101,6 +1138,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Create a new spatial bookmark
     void newBookmark( bool inProject = false );
+
+    /**
+     * Creates a default attribute editor context using the main map canvas and the main edit tools and message bar
+     * \since QGIS 3.12
+     */
+    QgsAttributeEditorContext createAttributeEditorContext();
 
   protected:
 
@@ -1399,6 +1442,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showAllLayers();
     //reimplements method from base (gui) class
     void hideSelectedLayers();
+    //! Toggles the visibility of the selected layers depending on the state of the first layer in selection (first clicked)
+    void toggleSelectedLayers();
+    //! Toggles the visibility of the selected layers independently
+    void toggleSelectedLayersIndependently();
     //! Hides any layers which are not selected
     void hideDeselectedLayers();
     //reimplements method from base (gui) class
@@ -1489,6 +1536,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! deselect features from all layers
     void deselectAll();
+
+    //! deselect features from the current active layer
+    void deselectActiveLayer();
 
     //! select all features
     void selectAll();
@@ -1813,7 +1863,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void activeLayerChanged( QgsMapLayer *layer );
 
   private:
-    void createPreviewImage( const QString &path );
+    void createPreviewImage( const QString &path, const QIcon &overlayIcon = QIcon() );
     void startProfile( const QString &name );
     void endProfile();
     void functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, const QString &name );
@@ -1868,8 +1918,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * instance simultaneously results in data loss.
      *
      * \param savePreviewImage Set to false when the preview image should not be saved. E.g. project load.
+     * \param iconOverlay optional icon to overlay when saving a preview image
      */
-    void saveRecentProjectPath( bool savePreviewImage = true );
+    void saveRecentProjectPath( bool savePreviewImage = true, const QIcon &iconOverlay = QIcon() );
     //! Save recent projects list to settings
     void saveRecentProjects();
     //! Update project menu with the current list of recently accessed projects
@@ -2300,6 +2351,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsBrowserDockWidget *mBrowserWidget = nullptr;
     QgsBrowserDockWidget *mBrowserWidget2 = nullptr;
 
+    QgsTemporalControllerDockWidget *mTemporalControllerWidget = nullptr;
+
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
     QgsStatisticalSummaryDockWidget *mStatisticalSummaryDockWidget = nullptr;
     QgsBookmarks *mBookMarksDockWidget = nullptr;
@@ -2316,6 +2369,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsUserProfileManager *mUserProfileManager = nullptr;
     QgsDockWidget *mMapStylingDock = nullptr;
     QgsLayerStylingWidget *mMapStyleWidget = nullptr;
+    QgsDockWidget *mDevToolsDock = nullptr;
+    QgsDevToolsPanelWidget *mDevToolsWidget = nullptr;
 
     //! Persistent tile scale slider
     QgsTileScaleWidget *mpTileScaleWidget = nullptr;
@@ -2359,7 +2414,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QList<QgsMapLayerConfigWidgetFactory *> mMapLayerPanelFactories;
     QList<QPointer<QgsOptionsWidgetFactory>> mOptionsWidgetFactories;
 
+    QList<QgsDevToolWidgetFactory * > mDevToolFactories;
+
     QVector<QPointer<QgsCustomDropHandler>> mCustomDropHandlers;
+    QVector<QPointer<QgsCustomProjectOpenHandler>> mCustomProjectOpenHandlers;
     QVector<QPointer<QgsLayoutCustomDropHandler>> mCustomLayoutDropHandlers;
 
     QgsLayoutCustomDropHandler *mLayoutQptDropHandler = nullptr;
@@ -2409,6 +2467,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsHandleBadLayersHandler *mAppBadLayersHandler = nullptr;
 
     std::unique_ptr< QgsBearingNumericFormat > mBearingNumericFormat;
+
+    QgsNetworkLogger *mNetworkLogger = nullptr;
+    QgsScopedDevToolWidgetFactory mNetworkLoggerWidgetFactory;
 
     class QgsCanvasRefreshBlocker
     {

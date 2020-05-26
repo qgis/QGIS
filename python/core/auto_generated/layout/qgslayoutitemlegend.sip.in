@@ -504,6 +504,15 @@ Returns the associated map.
 .. seealso:: :py:func:`setLinkedMap`
 %End
 
+    QString themeName() const;
+%Docstring
+Returns the name of the theme currently linked to the legend.
+
+This usually equates to the theme rendered in the linkedMap().
+
+.. versionadded:: 3.14
+%End
+
     void updateLegend();
 %Docstring
 Updates the model and all legend entries.

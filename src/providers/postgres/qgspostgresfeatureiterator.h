@@ -26,7 +26,7 @@ class QgsPostgresResult;
 class QgsPostgresTransaction;
 
 
-class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
+class QgsPostgresFeatureSource final: public QgsAbstractFeatureSource
 {
   public:
     explicit QgsPostgresFeatureSource( const QgsPostgresProvider *p );
@@ -69,7 +69,7 @@ class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
 
 class QgsPostgresConn;
 
-class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>
+class QgsPostgresFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>
 {
   public:
     QgsPostgresFeatureIterator( QgsPostgresFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );

@@ -55,6 +55,8 @@ Returns map layer or ``None`` if the layer does not exist anymore
 Sets the map layer for this record
 %End
 
+        bool isVisible;
+
         bool usingCurrentStyle;
         QString currentStyle;
         bool usingLegendItems;

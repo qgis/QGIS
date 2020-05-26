@@ -24,6 +24,7 @@
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingmodelparameter.h"
 #include "qgsprocessingmodelchildparametersource.h"
+#include "qgsprocessingmodelgroupbox.h"
 
 ///@cond NOT_STABLE
 
@@ -242,6 +243,33 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     void updateDestinationParameters();
 
     /**
+     * Adds a new group \a box to the model.
+     *
+     * If an existing group box with the same uuid already exists then its definition will be replaced.
+     *
+     * \see groupBoxes()
+     * \since QGIS 3.14
+     */
+    void addGroupBox( const QgsProcessingModelGroupBox &groupBox );
+
+    /**
+     * Returns a list of the group boxes within the model.
+     *
+     * \see addGroupBox()
+     * \since QGIS 3.14
+     */
+    QList< QgsProcessingModelGroupBox > groupBoxes() const;
+
+    /**
+     * Removes the group box with matching \a uuid from the model.
+     *
+     * \see addGroupBox()
+     * \see groupBoxes()
+     * \since QGIS 3.14
+     */
+    void removeGroupBox( const QString &uuid );
+
+    /**
      * Writes the model to a file, at the specified \a path.
      * \see fromFile()
      */
@@ -398,6 +426,32 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      */
     void setVariables( const QVariantMap &variables );
 
+    /**
+     * Returns the parameter values to use as default values when running this model through the
+     * designer dialog.
+     *
+     * This usually corresponds to the last set of parameter values used when the model was
+     * run through the designer.
+     *
+     * \see setDesignerParameterValues()
+     *
+     * \since QGIS 3.14
+     */
+    QVariantMap designerParameterValues() const { return mDesignerParameterValues; }
+
+    /**
+     * Sets the parameter \a values to use as default values when running this model through the
+     * designer dialog.
+     *
+     * This usually corresponds to the last set of parameter values used when the model was
+     * run through the designer.
+     *
+     * \see designerParameterValues()
+     *
+     * \since QGIS 3.14
+     */
+    void setDesignerParameterValues( const QVariantMap &values ) { mDesignerParameterValues = values; }
+
   protected:
 
     QgsProcessingAlgorithm *createInstance() const override SIP_FACTORY;
@@ -423,6 +477,10 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QVariantMap mResults;
 
     QVariantMap mVariables;
+
+    QVariantMap mDesignerParameterValues;
+
+    QMap< QString, QgsProcessingModelGroupBox > mGroupBoxes;
 
     void dependsOnChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
     void dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;

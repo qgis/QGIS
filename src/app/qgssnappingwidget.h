@@ -23,6 +23,7 @@ class QDoubleSpinBox;
 class QFont;
 class QToolButton;
 class QTreeView;
+class QCheckBox;
 
 class QgsDoubleSpinBox;
 class QgsFloatingWidget;
@@ -31,6 +32,7 @@ class QgsLayerTreeNode;
 class QgsLayerTreeView;
 class QgsMapCanvas;
 class QgsProject;
+class QgsScaleWidget;
 
 
 #include "qgssnappingconfig.h"
@@ -100,6 +102,10 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
 
     void changeTolerance( double tolerance );
 
+    void changeMinScale( double minScale );
+
+    void changeMaxScale( double maxScale );
+
     void changeUnit( int idx );
 
     void enableTopologicalEditing( bool enabled );
@@ -108,6 +114,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
 
     void modeButtonTriggered( QAction *action );
     void typeButtonTriggered( QAction *action );
+    void snappingScaleModeTriggered( QAction *action );
 
     //! number of decimals of the tolerance spin box depends on map units
     void updateToleranceDecimals();
@@ -140,9 +147,17 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QAction *mTypeAction = nullptr; // hide widget does not work on toolbar, action needed
     QAction *mVertexAction = nullptr;
     QAction *mSegmentAction = nullptr;
-    QAction *mVertexAndSegmentAction = nullptr;
+    QAction *mAreaAction = nullptr;
+    QAction *mCentroidAction = nullptr;
+    QAction *mMiddleAction = nullptr;
     QDoubleSpinBox *mToleranceSpinBox = nullptr;
+    QgsScaleWidget *mMinScaleWidget = nullptr;
+    QgsScaleWidget *mMaxScaleWidget = nullptr;
     QAction *mToleranceAction = nullptr; // hide widget does not work on toolbar, action needed
+    QToolButton *mSnappingScaleModeButton = nullptr;
+    QAction *mDefaultSnappingScaleAct = nullptr;
+    QAction *mGlobalSnappingScaleAct = nullptr;
+    QAction *mPerLayerSnappingScaleAct = nullptr;
     QComboBox *mUnitsComboBox = nullptr;
     QAction *mUnitAction = nullptr; // hide widget does not work on toolbar, action needed
     QAction *mTopologicalEditingAction = nullptr;

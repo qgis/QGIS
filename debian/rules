@@ -40,7 +40,7 @@ endif
 
 QT_PLUGINS_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"buster bionic disco eoan"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"buster bionic eoan focal"))
 	DISTRIBUTION := sid
 endif
 
@@ -73,6 +73,12 @@ else
 TESTMAKE=ninja $(NINJA_OPTS)
 endif
 
+ifeq (,$(findstring $(DISTRIBUTION),"focal sid"))
+PYTHON_LIBRARY=$(shell python3-config --ldflags | sed -e 's\#-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$\#\1/lib\2.so\#')
+else
+PYTHON_LIBRARY=$(shell python3-config --ldflags --embed | sed -e 's\#-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$\#\1/lib\2.so\#')
+endif
+
 CMAKE_OPTS := \
 	-G Ninja \
 	-DBUILDNAME=$(DEB_BUILD_NAME) \
@@ -91,7 +97,7 @@ CMAKE_OPTS := \
 	-DWITH_SERVER_PLUGINS=TRUE \
 	-DWITH_QWTPOLAR=FALSE \
 	-DQT_PLUGINS_DIR=$(QT_PLUGINS_DIR) \
-	-DPYTHON_LIBRARY=$(shell python3-config --ldflags | sed -e 's\#-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$\#\1/lib\2.so\#') \
+	-DPYTHON_LIBRARY=$(PYTHON_LIBRARY) \
 	-DDOXYGEN_ON_DEMAND=TRUE \
 	-DWITH_QSPATIALITE=TRUE
 
@@ -110,12 +116,12 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid buster"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid buster bionic disco eoan"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster bionic eoan focal"))
 	CMAKE_OPTS += \
 		-DWITH_3D=TRUE \
 		-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid buster disco eoan"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster eoan focal"))
 # Qt3DExtras intentionally removed from debian (#895386) and in turn ubuntu
 	CMAKE_OPTS += \
 		-DCMAKE_PREFIX_PATH=$(realpath external/qt3dextra-headers/cmake) \

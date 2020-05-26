@@ -240,7 +240,7 @@ Copy constructor copies the iterator, increases ref.count
     bool rewind();
     bool close();
 
-    virtual bool isValid() const;
+    bool isValid() const;
 %Docstring
 Will return if this iterator is valid.
 An invalid iterator was probably introduced by a failed attempt to acquire a connection

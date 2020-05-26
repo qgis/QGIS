@@ -55,12 +55,6 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
     //! Returns index of the active vector dataset group
     int activeVectorDatasetGroup() const;
 
-    //! Gets index of the selected/active scalar dataset
-    QgsMeshDatasetIndex activeScalarDataset() const;
-
-    //! Gets index of the selected/active vector dataset
-    QgsMeshDatasetIndex activeVectorDataset() const;
-
     //! Synchronizes widgets state with associated mesh layer
     void syncToLayer();
 
@@ -78,32 +72,14 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
   private slots:
     void onActiveScalarGroupChanged( int groupIndex );
     void onActiveVectorGroupChanged( int groupIndex );
-    void onActiveTimeChanged( int value );
-    void onTimeSettingsClicked();
-    void onFirstTimeClicked();
-    void onPreviousTimeClicked();
-    void onNextTimeClicked();
-    void onLastTimeClicked();
-    void onDatasetPlaybackClicked();
-    void datasetPlaybackTick();
     QString metadata( QgsMeshDatasetIndex datasetIndex );
 
   private:
-    //! Loops through all dataset groups and finds the maximum number of datasets
-    void setTimeRange();
-
-    //! Enables/Disables time controls depending on whether the selected datasets are time varying
-    void enableTimeControls();
-
     void updateMetadata();
 
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
     int mActiveScalarDatasetGroup = -1;
     int mActiveVectorDatasetGroup = -1;
-    QgsMeshDatasetIndex mActiveScalarDataset;
-    QgsMeshDatasetIndex mActiveVectorDataset;
-    bool mDatasetIsPlaying = false;
-    QTimer *mDatasetPlaybackTimer = nullptr;
 };
 
 #endif // QGSMESHRENDERERSCALARSETTINGSWIDGET_H

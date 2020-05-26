@@ -536,6 +536,16 @@ void QgisAppInterface::unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *
   qgis->unregisterOptionsWidgetFactory( factory );
 }
 
+void QgisAppInterface::registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory )
+{
+  qgis->registerDevToolFactory( factory );
+}
+
+void QgisAppInterface::unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory )
+{
+  qgis->unregisterDevToolFactory( factory );
+}
+
 void QgisAppInterface::registerCustomDropHandler( QgsCustomDropHandler *handler )
 {
   qgis->registerCustomDropHandler( handler );
@@ -554,6 +564,16 @@ void QgisAppInterface::unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHan
 void QgisAppInterface::unregisterCustomDropHandler( QgsCustomDropHandler *handler )
 {
   qgis->unregisterCustomDropHandler( handler );
+}
+
+void QgisAppInterface::registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler )
+{
+  qgis->registerCustomProjectOpenHandler( handler );
+}
+
+void QgisAppInterface::unregisterCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler )
+{
+  qgis->unregisterCustomProjectOpenHandler( handler );
 }
 
 QMenu *QgisAppInterface::projectMenu() { return qgis->projectMenu(); }
@@ -684,6 +704,8 @@ QAction *QgisAppInterface::actionRemoveAllFromOverview() { return qgis->actionRe
 QAction *QgisAppInterface::actionHideAllLayers() { return qgis->actionHideAllLayers(); }
 QAction *QgisAppInterface::actionShowAllLayers() { return qgis->actionShowAllLayers(); }
 QAction *QgisAppInterface::actionHideSelectedLayers() { return qgis->actionHideSelectedLayers(); }
+QAction *QgisAppInterface::actionToggleSelectedLayers() { return qgis->actionToggleSelectedLayers(); }
+QAction *QgisAppInterface::actionToggleSelectedLayersIndependently() { return qgis->actionToggleSelectedLayersIndependently(); }
 QAction *QgisAppInterface::actionHideDeselectedLayers() { return qgis->actionHideDeselectedLayers(); }
 QAction *QgisAppInterface::actionShowSelectedLayers() { return qgis->actionShowSelectedLayers(); }
 
@@ -755,10 +777,8 @@ QgsAttributeDialog *QgisAppInterface::getFeatureForm( QgsVectorLayer *l, QgsFeat
   myDa.setSourceCrs( l->crs(), QgsProject::instance()->transformContext() );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
-  QgsAttributeEditorContext context;
+  QgsAttributeEditorContext context( QgisApp::instance()->createAttributeEditorContext() );
   context.setDistanceArea( myDa );
-  context.setVectorLayerTools( qgis->vectorLayerTools() );
-  context.setMapCanvas( qgis->mapCanvas() );
   QgsAttributeDialog *dialog = new QgsAttributeDialog( l, &feature, false, qgis, true, context );
   if ( !feature.isValid() )
   {

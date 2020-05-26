@@ -30,6 +30,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
 #include "qgscolorrampbutton.h"
+#include "qgsfontutils.h"
 #include "qgsgradientcolorrampdialog.h"
 #include "qgsproperty.h"
 #include "qgsstyle.h" //for symbol selector dialog
@@ -2336,7 +2337,7 @@ void QgsSvgMarkerSymbolLayerWidget::populateIcons( const QModelIndex &idx )
   QString path = idx.data( Qt::UserRole + 1 ).toString();
 
   QAbstractItemModel *oldModel = viewImages->model();
-  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( viewImages, path );
+  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( viewImages, path, mIconSize );
   viewImages->setModel( m );
   delete oldModel;
 
@@ -2708,6 +2709,14 @@ QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( QgsVectorLayer *vl, QW
   mSvgStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                        << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mSvgTreeView->setHeaderHidden( true );
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+  mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 4 ) ) );
+#else
+  mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 4 ) ) );
+#endif
+  mSvgListView->setGridSize( QSize( mIconSize * 1.2, mIconSize * 1.2 ) );
+
   insertIcons();
 
   mRotationSpinBox->setClearValue( 0.0 );
@@ -2832,7 +2841,7 @@ void QgsSVGFillSymbolLayerWidget::insertIcons()
   }
 
   oldModel = mSvgListView->model();
-  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mSvgListView );
+  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mSvgListView, mIconSize );
   mSvgListView->setModel( m );
   delete oldModel;
 }
@@ -2842,7 +2851,7 @@ void QgsSVGFillSymbolLayerWidget::populateIcons( const QModelIndex &idx )
   QString path = idx.data( Qt::UserRole + 1 ).toString();
 
   QAbstractItemModel *oldModel = mSvgListView->model();
-  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mSvgListView, path );
+  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mSvgListView, path, mIconSize );
   mSvgListView->setModel( m );
   delete oldModel;
 
@@ -3308,6 +3317,7 @@ QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( QgsVectorLayer *
     mSizeDDBtn->setSymbol( mAssistantPreviewSymbol );
 
   connect( cboFont, &QFontComboBox::currentFontChanged, this, &QgsFontMarkerSymbolLayerWidget::setFontFamily );
+  connect( mFontStyleComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsFontMarkerSymbolLayerWidget::mFontStyleComboBox_currentIndexChanged );
   connect( spinSize, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsFontMarkerSymbolLayerWidget::setSize );
   connect( cboJoinStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsFontMarkerSymbolLayerWidget::penJoinStyleChanged );
   connect( btnColor, &QgsColorButton::colorChanged, this, &QgsFontMarkerSymbolLayerWidget::setColor );
@@ -3330,9 +3340,15 @@ void QgsFontMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   // layer type is correct, we can do the cast
   mLayer = static_cast<QgsFontMarkerSymbolLayer *>( layer );
 
-  QFont layerFont( mLayer->fontFamily() );
+  mRefFont.setFamily( mLayer->fontFamily() );
+  mRefFont.setStyleName( QgsFontUtils::translateNamedStyle( mLayer->fontStyle() ) );
+
+  mFontStyleComboBox->blockSignals( true );
+  populateFontStyleComboBox();
+  mFontStyleComboBox->blockSignals( false );
+
   // set values
-  whileBlocking( cboFont )->setCurrentFont( layerFont );
+  whileBlocking( cboFont )->setCurrentFont( mRefFont );
   whileBlocking( spinSize )->setValue( mLayer->size() );
   whileBlocking( btnColor )->setColor( mLayer->color() );
   whileBlocking( btnStrokeColor )->setColor( mLayer->strokeColor() );
@@ -3340,14 +3356,14 @@ void QgsFontMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   whileBlocking( spinAngle )->setValue( mLayer->angle() );
 
   widgetChar->blockSignals( true );
-  widgetChar->setFont( layerFont );
+  widgetChar->setFont( mRefFont );
   if ( mLayer->character().length() == 1 )
   {
     widgetChar->setCharacter( mLayer->character().at( 0 ) );
   }
   widgetChar->blockSignals( false );
   whileBlocking( mCharLineEdit )->setText( mLayer->character() );
-  mCharPreview->setFont( layerFont );
+  mCharPreview->setFont( mRefFont );
 
   //block
   whileBlocking( spinOffsetX )->setValue( mLayer->offset().x() );
@@ -3374,6 +3390,8 @@ void QgsFontMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   whileBlocking( mHorizontalAnchorComboBox )->setCurrentIndex( mLayer->horizontalAnchorPoint() );
   whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( mLayer->verticalAnchorPoint() );
 
+  registerDataDefinedButton( mFontFamilyDDBtn, QgsSymbolLayer::PropertyFontFamily );
+  registerDataDefinedButton( mFontStyleDDBtn, QgsSymbolLayer::PropertyFontStyle );
   registerDataDefinedButton( mSizeDDBtn, QgsSymbolLayer::PropertySize );
   registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::PropertyAngle );
   registerDataDefinedButton( mColorDDBtn, QgsSymbolLayer::PropertyFillColor );
@@ -3395,10 +3413,27 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayerWidget::symbolLayer()
 
 void QgsFontMarkerSymbolLayerWidget::setFontFamily( const QFont &font )
 {
-  mLayer->setFontFamily( font.family() );
-  widgetChar->setFont( font );
-  mCharPreview->setFont( font );
-  emit changed();
+  if ( mLayer )
+  {
+    mLayer->setFontFamily( font.family() );
+    mRefFont.setFamily( font.family() );
+    widgetChar->setFont( mRefFont );
+    mCharPreview->setFont( mRefFont );
+    populateFontStyleComboBox();
+    emit changed();
+  }
+}
+
+void QgsFontMarkerSymbolLayerWidget::setFontStyle( const QString &style )
+{
+  if ( mLayer )
+  {
+    QgsFontUtils::updateFontViaStyle( mRefFont, style );
+    mLayer->setFontStyle( QgsFontUtils::untranslateNamedStyle( style ) );
+    widgetChar->setFont( mRefFont );
+    mCharPreview->setFont( mRefFont );
+    emit changed();
+  }
 }
 
 void QgsFontMarkerSymbolLayerWidget::setColor( const QColor &color )
@@ -3517,6 +3552,39 @@ void QgsFontMarkerSymbolLayerWidget::mStrokeWidthUnitWidget_changed()
   }
 }
 
+void QgsFontMarkerSymbolLayerWidget::populateFontStyleComboBox()
+{
+  mFontStyleComboBox->clear();
+  QStringList styles = mFontDB.styles( mRefFont.family() );
+  const auto constStyles = styles;
+  for ( const QString &style : constStyles )
+  {
+    mFontStyleComboBox->addItem( style );
+  }
+
+  QString targetStyle = mFontDB.styleString( mRefFont );
+  if ( !styles.contains( targetStyle ) )
+  {
+    QFont f = QFont( mRefFont.family() );
+    targetStyle = QFontInfo( f ).styleName();
+    mRefFont.setStyleName( targetStyle );
+  }
+  int curIndx = 0;
+  int stylIndx = mFontStyleComboBox->findText( targetStyle );
+  if ( stylIndx > -1 )
+  {
+    curIndx = stylIndx;
+  }
+
+  mFontStyleComboBox->setCurrentIndex( curIndx );
+}
+
+void QgsFontMarkerSymbolLayerWidget::mFontStyleComboBox_currentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+  setFontStyle( mFontStyleComboBox->currentText() );
+}
+
 void QgsFontMarkerSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged( int index )
 {
   if ( mLayer )
@@ -3619,7 +3687,7 @@ QgsRasterMarkerSymbolLayerWidget::QgsRasterMarkerSymbolLayerWidget( QgsVectorLay
   connect( mLockAspectRatio, static_cast < void ( QgsRatioLockButton::* )( bool ) > ( &QgsRatioLockButton::lockChanged ), this, &QgsRasterMarkerSymbolLayerWidget::setLockAspectRatio );
 
   mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits
-                             << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+                             << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches << QgsUnitTypes::RenderPercentage );
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
@@ -3890,7 +3958,7 @@ QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( QgsVectorLayer *
   connect( mWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterFillSymbolLayerWidget::mWidthSpinBox_valueChanged );
 
   mWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits
-                              << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+                              << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches << QgsUnitTypes::RenderPercentage );
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 

@@ -179,7 +179,7 @@ void QgsAfsSourceSelect::buildQuery( const QgsOwsConnection &connection, const Q
 
   //add available attributes to expression builder
   QgsExpressionBuilderWidget *w = d.expressionBuilder();
-  w->loadFieldNames( provider.fields() );
+  w->initWithFields( provider.fields() );
 
   if ( d.exec() == QDialog::Accepted )
   {

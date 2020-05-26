@@ -36,16 +36,14 @@ class QgsMeshTerrainTileLoader: public QgsTerrainTileLoader
     //! Construct the loader for a node
     QgsMeshTerrainTileLoader( QgsTerrainEntity *terrain,
                               QgsChunkNode *node,
-                              const QgsTriangularMesh &triangularMesh,
-                              const QgsRectangle &extent,
+                              QgsMeshLayer *layer,
                               const QgsMesh3DSymbol &symbol );
 
     //! Create the 3D entity and returns it
     Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
-    QgsRectangle mExtent;
-    QgsTriangularMesh mTriangularMesh;
+    QgsMapLayerRef mLayerRef;
     QgsMesh3DSymbol mSymbol;
 };
 

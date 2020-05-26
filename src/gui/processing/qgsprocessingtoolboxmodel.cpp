@@ -666,6 +666,11 @@ QgsProcessingToolboxModel *QgsProcessingToolboxProxyModel::toolboxModel()
   return mModel;
 }
 
+const QgsProcessingToolboxModel *QgsProcessingToolboxProxyModel::toolboxModel() const
+{
+  return mModel;
+}
+
 void QgsProcessingToolboxProxyModel::setFilters( QgsProcessingToolboxProxyModel::Filters filters )
 {
   mFilters = filters;

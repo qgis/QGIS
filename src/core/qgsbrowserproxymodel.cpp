@@ -146,14 +146,33 @@ bool QgsBrowserProxyModel::filterAcceptsString( const QString &value ) const
 
 bool QgsBrowserProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
-  if ( ( mFilter.isEmpty() && !mFilterByLayerType && mHiddenDataItemsKeys.empty() ) || !mModel )
+  if ( ( mFilter.isEmpty() && !mFilterByLayerType && mHiddenDataItemsKeys.empty() && mShownDataItemsKeys.empty() ) || !mModel )
     return true;
 
   QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
   if ( !filterAcceptsProviderKey( sourceIndex ) || !filterRootAcceptsProviderKey( sourceIndex ) )
     return false;
 
+  if ( ! mShowLayers )
+  {
+    QgsDataItem *item = mModel->dataItem( sourceIndex );
+    if ( qobject_cast< QgsLayerItem * >( item ) )
+    {
+      return false;
+    }
+  }
+
   return filterAcceptsItem( sourceIndex ) || filterAcceptsAncestor( sourceIndex ) || filterAcceptsDescendant( sourceIndex );
+}
+
+bool QgsBrowserProxyModel::showLayers() const
+{
+  return mShowLayers;
+}
+
+void QgsBrowserProxyModel::setShowLayers( bool showLayers )
+{
+  mShowLayers = showLayers;
 }
 
 QgsMapLayerType QgsBrowserProxyModel::layerType() const
@@ -243,7 +262,7 @@ bool QgsBrowserProxyModel::filterAcceptsProviderKey( const QModelIndex &sourceIn
   if ( providerKey.isEmpty() )
     return true;
 
-  return !mHiddenDataItemsKeys.contains( providerKey );
+  return !mHiddenDataItemsKeys.contains( providerKey ) && ( mShownDataItemsKeys.isEmpty() || mShownDataItemsKeys.contains( providerKey ) );
 }
 
 bool QgsBrowserProxyModel::filterRootAcceptsProviderKey( const QModelIndex &sourceIndex ) const
@@ -260,8 +279,27 @@ bool QgsBrowserProxyModel::filterRootAcceptsProviderKey( const QModelIndex &sour
   return filterRootAcceptsProviderKey( sourceParentIndex );
 }
 
-void QgsBrowserProxyModel::setDataItemProviderKeyFilter( const QStringList &filter )
+void QgsBrowserProxyModel::setHiddenDataItemProviderKeyFilter( const QStringList &filter )
 {
   mHiddenDataItemsKeys = filter;
   invalidateFilter();
+}
+
+void QgsBrowserProxyModel::setShownDataItemProviderKeyFilter( const QStringList &filter )
+{
+  mShownDataItemsKeys = filter;
+  invalidateFilter();
+
+}
+
+
+bool QgsBrowserProxyModel::hasChildren( const QModelIndex &parent ) const
+{
+  bool isFertile { QSortFilterProxyModel::hasChildren( parent ) };
+  if ( isFertile && ! mShowLayers && parent.isValid() )
+  {
+    QgsDataItem *item = dataItem( parent );
+    return ! item->layerCollection();
+  }
+  return isFertile;
 }

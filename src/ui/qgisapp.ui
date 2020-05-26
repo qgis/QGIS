@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1033</width>
+    <width>847</width>
     <height>506</height>
    </rect>
   </property>
@@ -16,8 +16,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1033</width>
-     <height>24</height>
+     <width>847</width>
+     <height>23</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -151,6 +151,8 @@
     <addaction name="mActionHideAllLayers"/>
     <addaction name="mActionShowSelectedLayers"/>
     <addaction name="mActionHideSelectedLayers"/>
+    <addaction name="mActionToggleSelectedLayers"/>
+    <addaction name="mActionToggleSelectedLayersIndependently"/>
     <addaction name="mActionHideDeselectedLayers"/>
     <addaction name="separator"/>
    </widget>
@@ -292,6 +294,7 @@
      <addaction name="mActionSelectByForm"/>
      <addaction name="mActionSelectByExpression"/>
      <addaction name="mActionDeselectAll"/>
+     <addaction name="mActionDeselectActiveLayer"/>
      <addaction name="mActionReselect"/>
      <addaction name="mActionSelectAll"/>
      <addaction name="mActionInvertSelection"/>
@@ -525,6 +528,7 @@
    <addaction name="mActionNewMapCanvas"/>
    <addaction name="mActionNewBookmark"/>
    <addaction name="mActionShowBookmarks"/>
+   <addaction name="mActionTemporalController"/>
    <addaction name="mActionDraw"/>
   </widget>
   <widget class="QToolBar" name="mAttributesToolBar">
@@ -541,7 +545,6 @@
     <bool>true</bool>
    </attribute>
    <addaction name="mActionIdentify"/>
-   <addaction name="mActionDeselectAll"/>
    <addaction name="mActionOpenTable"/>
    <addaction name="mActionOpenFieldCalc"/>
    <addaction name="mActionStatisticalSummary"/>
@@ -1207,6 +1210,18 @@
    </property>
    <property name="text">
     <string>Deselect Features from All Layers</string>
+   </property>
+    <property name="shortcut">
+    <string>Ctrl+Alt+A</string>
+   </property>
+  </action>
+  <action name="mActionDeselectActiveLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeselectActiveLayer.svg</normaloff>:/images/themes/default/mActionDeselectActiveLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Deselect Features from the Current Active Layer</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+A</string>
@@ -2663,6 +2678,20 @@ Acts on the currently active layer only.</string>
     <string>Hide Selected Layers</string>
    </property>
   </action>
+  <action name="mActionToggleSelectedLayers">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionToggleSelectedLayers.svg</normaloff>:/images/themes/default/mActionToggleSelectedLayers.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Toggle Selected Layers</string>
+   </property>
+  </action>
+  <action name="mActionToggleSelectedLayersIndependently">
+   <property name="text">
+    <string>Toggle Selected Layers Independently</string>
+   </property>
+  </action>
   <action name="mActionHideDeselectedLayers">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -3254,6 +3283,19 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="toolTip">
     <string>Reselect Features from Current Layer</string>
+   </property>
+  </action>
+  <action name="mActionTemporalController">
+   <property name="icon">
+    <iconset>
+     <normalon>:/images/themes/default/propertyicons/temporal.svg</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Temporal Controller</string>
+   </property>
+   <property name="toolTip">
+    <string>Temporal Controller Panel</string>
    </property>
   </action>
  </widget>

@@ -82,6 +82,7 @@ struct QgsPostgresLayerProperty
   QString                       relKind;
   bool                          isView = false;
   bool                          isMaterializedView = false;
+  bool                          isForeignTable = false;
   bool                          isRaster = false;
   QString                       tableComment;
 

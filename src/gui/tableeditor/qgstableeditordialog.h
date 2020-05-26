@@ -55,6 +55,15 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
     void setTableContents( const QgsTableContents &contents );
 
     /**
+     * Parses the clipboard text into contents to show in the editor widget.
+     * \returns TRUE if the clipboard was successfully parsed
+     *
+     * \see tableContents()
+     */
+
+    bool setTableContentsFromClipboard();
+
+    /**
      * Returns the current contents of the editor widget table.
      *
      * \see setTableContents()
@@ -97,12 +106,45 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
      */
     void setTableColumnWidth( int column, double width );
 
+    /**
+     * Returns TRUE if the table includes a header row.
+     *
+     * \see setIncludeTableHeader()
+     */
+    bool includeTableHeader() const;
+
+    /**
+     * Sets whether the table includes a header row.
+     *
+     * \see includeTableHeader()
+     */
+    void setIncludeTableHeader( bool included );
+
+    /**
+     * Returns the table header values.
+     *
+     * \see setTableHeaders()
+     */
+    QVariantList tableHeaders() const;
+
+    /**
+     * Sets the table \a headers.
+     *
+     * \see tableHeaders()
+     */
+    void setTableHeaders( const QVariantList &headers );
+
   signals:
 
     /**
      * Emitted whenever the table contents are changed.
      */
     void tableChanged();
+
+    /**
+     * Emitted whenever the "include table header" setting is changed.
+     */
+    void includeHeaderChanged( bool included );
 
   private:
     QgsTableEditorWidget *mTableWidget = nullptr;

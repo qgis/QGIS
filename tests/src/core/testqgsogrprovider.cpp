@@ -100,7 +100,7 @@ void TestQgsOgrProvider::setupProxy()
     settings.setValue( QStringLiteral( "proxy/proxyPassword" ), QStringLiteral( "password" ) );
     settings.setValue( QStringLiteral( "proxy/proxyExcludedUrls" ), QStringLiteral( "http://www.myhost.com|http://www.myotherhost.com" ) );
     QgsNetworkAccessManager::instance()->setupDefaultProxyAndCache();
-    QgsVectorLayer vl( mTestDataDir + '/' + QStringLiteral( "lines.shp" ), QStringLiteral( "proxy_test" ), QLatin1Literal( "ogr" ) );
+    QgsVectorLayer vl( mTestDataDir + '/' + QStringLiteral( "lines.shp" ), QStringLiteral( "proxy_test" ), QLatin1String( "ogr" ) );
     QVERIFY( vl.isValid() );
     const char *proxyConfig = CPLGetConfigOption( "GDAL_HTTP_PROXY", nullptr );
     QCOMPARE( proxyConfig, "myproxyhostname.com:1234" );
@@ -116,7 +116,7 @@ void TestQgsOgrProvider::setupProxy()
     settings.setValue( QStringLiteral( "proxy/proxyUser" ), QStringLiteral( "username" ) );
     settings.remove( QStringLiteral( "proxy/proxyPassword" ) );
     QgsNetworkAccessManager::instance()->setupDefaultProxyAndCache();
-    QgsVectorLayer vl( mTestDataDir + '/' + QStringLiteral( "lines.shp" ), QStringLiteral( "proxy_test" ), QLatin1Literal( "ogr" ) );
+    QgsVectorLayer vl( mTestDataDir + '/' + QStringLiteral( "lines.shp" ), QStringLiteral( "proxy_test" ), QLatin1String( "ogr" ) );
     QVERIFY( vl.isValid() );
     const char *proxyConfig = CPLGetConfigOption( "GDAL_HTTP_PROXY", nullptr );
     QCOMPARE( proxyConfig, "myproxyhostname.com" );
@@ -167,7 +167,7 @@ class ReadVectorLayer : public QThread
     void run() override
     {
 
-      QgsVectorLayer *vl2 = new QgsVectorLayer( _filePath, QStringLiteral( "thread_test" ), QLatin1Literal( "ogr" ) );
+      QgsVectorLayer *vl2 = new QgsVectorLayer( _filePath, QStringLiteral( "thread_test" ), QLatin1String( "ogr" ) );
 
       QgsFeature f;
       QVERIFY( vl2->getFeatures().nextFeature( f ) );

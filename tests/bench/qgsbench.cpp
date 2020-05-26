@@ -267,7 +267,7 @@ void QgsBench::saveSnapsot( const QString &fileName )
 
 void QgsBench::printLog( const QString &printTime )
 {
-  std::cout << "iterations: " << mLogMap[QStringLiteral( "iterations" )].toString().toAscii().constData() << std::endl;
+  std::cout << "iterations: " << mLogMap[QStringLiteral( "iterations" )].toString().toLatin1().constData() << std::endl;
 
   bool validPrintTime = false;
   for ( int x = 0; x < 4; ++x )
@@ -276,7 +276,7 @@ void QgsBench::printLog( const QString &printTime )
 
   if ( !validPrintTime )
   {
-    std::cout << "invalid --print option: " << printTime.toAscii().data() << std::endl;
+    std::cout << "invalid --print option: " << printTime.toLatin1().data() << std::endl;
     return;
   }
 
@@ -286,7 +286,7 @@ void QgsBench::printLog( const QString &printTime )
   while ( i != totalMap.end() )
   {
     QString s = printTime + '_' + i.key() + ": " + i.value().toString();
-    std::cout << s.toAscii().constData() << std::endl;
+    std::cout << s.toLatin1().constData() << std::endl;
     ++i;
   }
 }
@@ -327,7 +327,7 @@ void QgsBench::saveLog( const QString &fileName )
     return;
 
   QTextStream out( &file );
-  out << serialize( mLogMap ).toAscii().constData() << '\n';
+  out << serialize( mLogMap ).toLatin1().constData() << '\n';
   file.close();
 }
 

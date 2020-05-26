@@ -36,7 +36,8 @@ from qgis.core import (QgsProcessingParameterNumber,
                        QgsProcessingContext,
                        QgsProcessingUtils,
                        QgsProcessingFeedback,
-                       QgsProcessingParameterDefinition)
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingModelAlgorithm)
 from qgis.testing import start_app, unittest
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.gui.AlgorithmDialog import AlgorithmDialog

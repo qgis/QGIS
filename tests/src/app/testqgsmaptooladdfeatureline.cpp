@@ -42,7 +42,7 @@ namespace QTest
   // pretty printing of geometries in comparison tests
   template<> char *toString( const QgsGeometry &geom )
   {
-    QByteArray ba = geom.asWkt().toAscii();
+    QByteArray ba = geom.asWkt().toLatin1();
     return qstrdup( ba.data() );
   }
 }
@@ -499,7 +499,7 @@ void TestQgsMapToolAddFeatureLine::testCloseLine()
   utils.mouseClick( 1, 1, Qt::LeftButton );
   utils.mouseClick( 5, 1, Qt::LeftButton );
   utils.mouseClick( 5, 5, Qt::LeftButton );
-  utils.keyClick( Qt::Key_C );
+  utils.mouseClick( 5, 5, Qt::RightButton, Qt::ShiftModifier );
   QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
   QString wkt = "LineString (1 1, 5 1, 5 5, 1 1)";

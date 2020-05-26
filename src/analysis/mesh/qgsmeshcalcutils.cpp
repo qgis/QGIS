@@ -25,6 +25,7 @@
 #include "qgsmapsettings.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshlayerrenderer.h"
+#include "qgsproject.h"
 
 const double D_TRUE = 1.0;
 const double D_FALSE = 0.0;
@@ -106,7 +107,7 @@ std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::create( const QStri
                 mMeshLayer->nativeMesh(),
                 mMeshLayer->triangularMesh(),
                 nullptr,
-                mMeshLayer->rendererSettings().scalarSettings( groupIndex ).dataInterpolationMethod()
+                mMeshLayer->rendererSettings().scalarSettings( groupIndex ).dataResamplingMethod()
               );
             Q_ASSERT( dataX.size() == resultCount );
             QVector<double> dataY =
@@ -115,7 +116,7 @@ std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::create( const QStri
                 mMeshLayer->nativeMesh(),
                 mMeshLayer->triangularMesh(),
                 nullptr,
-                mMeshLayer->rendererSettings().scalarSettings( groupIndex ).dataInterpolationMethod()
+                mMeshLayer->rendererSettings().scalarSettings( groupIndex ).dataResamplingMethod()
               );
 
             Q_ASSERT( dataY.size() == resultCount );
@@ -179,8 +180,20 @@ QgsMeshCalcUtils:: QgsMeshCalcUtils( QgsMeshLayer *layer,
   : mMeshLayer( layer )
   , mIsValid( false )
 {
+  // Layer must be valid
+  if ( !mMeshLayer || !mMeshLayer->dataProvider() )
+    return;
+
   // Resolve output type of the calculation
   mOutputType = determineResultDataType( layer, usedGroupNames );
+
+  // Data on edges are not implemented
+  if ( mOutputType == QgsMeshDatasetGroupMetadata::DataOnEdges )
+    return;
+
+  // Support for meshes with edges are not implemented
+  if ( mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) )
+    return;
 
   // First populate group's names map and see if we have all groups present
   // And basically fetch all data from any mesh provider to memory
@@ -699,20 +712,8 @@ void QgsMeshCalcUtils::updateMesh() const
 {
   if ( ! mMeshLayer->nativeMesh() )
   {
-    // THIS code is very confusing -- someone please add some explanation as to why a map renderer is created here! (Or better,
-    // add explicit members to do whatever it is that's actually wanted here, instead of creating the map renderer)
-
-    // we do not care about triangles,
-    // we just want transformed coordinates
-    // of the native mesh. So create
-    // some dummy triangular mesh.
-    QgsMapSettings mapSettings;
-    mapSettings.setExtent( mMeshLayer->extent() );
-    mapSettings.setDestinationCrs( mMeshLayer->crs() );
-    mapSettings.setOutputDpi( 96 );
-    QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
-
-    delete mMeshLayer->createMapRenderer( context );
+    //calling this method creates the triangular mesh if it doesn't exist
+    mMeshLayer->updateTriangularMesh();
   }
 }
 
@@ -1184,6 +1185,10 @@ QgsMeshDatasetGroupMetadata::DataType QgsMeshCalcUtils::determineResultDataType(
       if ( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices )
       {
         return QgsMeshDatasetGroupMetadata::DataOnVertices;
+      }
+      else if ( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnEdges )
+      {
+        return QgsMeshDatasetGroupMetadata::DataOnEdges;
       }
     }
   }

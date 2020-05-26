@@ -261,7 +261,6 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
 
     QgsFeatureFilterModel *mModel = nullptr;
     QCompleter *mCompleter = nullptr;
-    QString mDisplayExpression;
     QgsFilterLineEdit *mLineEdit;
     bool mPopupRequested = false;
     bool mIsCurrentlyEdited = false;

@@ -296,6 +296,8 @@ Preset name that decides which layers and layer styles are used for map renderin
 used when followVisibilityPreset() returns ``True``.
 
 .. seealso:: :py:func:`setFollowVisibilityPresetName`
+
+.. seealso:: :py:func:`themeChanged`
 %End
 
     void setFollowVisibilityPresetName( const QString &name );
@@ -303,6 +305,8 @@ used when followVisibilityPreset() returns ``True``.
 Sets preset name for map rendering. See followVisibilityPresetName() for more details.
 
 .. seealso:: :py:func:`followVisibilityPresetName`
+
+.. seealso:: :py:func:`themeChanged`
 %End
 
     virtual void moveContent( double dx, double dy );
@@ -680,6 +684,18 @@ Emitted when the map has been prepared for atlas rendering, just before actual r
 %Docstring
 Emitted when layer style overrides are changed... a means to let
 associated legend items know they should update
+%End
+
+    void themeChanged( const QString &theme );
+%Docstring
+Emitted when the map's associated ``theme`` is changed.
+
+.. note::
+
+   This signal is not emitted when the definition of the theme changes, only the map
+   is linked to a different theme then it previously was.
+
+.. versionadded:: 3.14
 %End
 
   public slots:

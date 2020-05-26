@@ -174,7 +174,6 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
       selItem->setCheckState( Qt::Unchecked );
       checkPkUnicityItem->setFlags( checkPkUnicityItem->flags() & ~ Qt::ItemIsUserCheckable );
       checkPkUnicityItem->setCheckState( Qt::Unchecked );
-      sqlItem->setEnabled( false );
     }
 
     QList<QStandardItem *> childItemList;
@@ -396,15 +395,21 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   {
     if ( isRaster )
     {
-      // GDAL connection string
+      // GDAL/PG connection string
       const QString schemaName = index.sibling( index.row(), DbtmSchema ).data( Qt::DisplayRole ).toString();
       const QString tableName = index.sibling( index.row(), DbtmTable ).data( Qt::DisplayRole ).toString();
       const QString geomColumnName = index.sibling( index.row(), DbtmGeomCol ).data( Qt::DisplayRole ).toString();
-      return QStringLiteral( "PG:  %1 mode=2 schema='%2' column='%3' table='%4'" )
-             .arg( connInfo )
-             .arg( schemaName )
-             .arg( geomColumnName )
-             .arg( tableName );
+      QString connString  { QStringLiteral( "PG:  %1 mode=2 schema='%2' column='%3' table='%4'" )
+                            .arg( connInfo )
+                            .arg( schemaName )
+                            .arg( geomColumnName )
+                            .arg( tableName ) };
+      const QString sql { index.sibling( index.row(), DbtmSql ).data( Qt::DisplayRole ).toString() };
+      if ( ! sql.isEmpty() )
+      {
+        connString.append( QStringLiteral( " sql=%1" ).arg( sql ) );
+      }
+      return connString;
     }
     else
     {
@@ -463,7 +468,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   uri.setWkbType( wkbType );
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
-  uri.setParam( QStringLiteral( "checkPrimaryKeyUnicity" ), checkPrimaryKeyUnicity ? QLatin1Literal( "1" ) : QLatin1Literal( "0" ) );
+  uri.setParam( QStringLiteral( "checkPrimaryKeyUnicity" ), checkPrimaryKeyUnicity ? QLatin1String( "1" ) : QLatin1String( "0" ) );
 
   QgsDebugMsg( QStringLiteral( "returning uri %1" ).arg( uri.uri( false ) ) );
   return uri.uri( false );

@@ -109,7 +109,7 @@ class QgsCachedImageFetcher: public QgsImageFetcher
   data residing in a OGC Web Map Service.
 
 */
-class QgsWmsProvider : public QgsRasterDataProvider
+class QgsWmsProvider final: public QgsRasterDataProvider
 {
     Q_OBJECT
 
@@ -341,6 +341,13 @@ class QgsWmsProvider : public QgsRasterDataProvider
     void createTileRequestsWMTS( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests );
     void createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests );
 
+    /**
+      * Add WMS-T parameters to the \a query, if provider has temporal properties
+      *
+      * \since QGIS 3.14
+      */
+    void addWmstParameters( QUrlQuery &query );
+
     //! Helper structure to store a cached tile image with its rectangle
     typedef struct TileImage
     {
@@ -471,6 +478,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
     //! User's settings (URI, authorization, layer, style, ...)
     QgsWmsSettings mSettings;
 
+    //! Temporal range member
+    QgsDateTimeRange mRange;
+
     QList< double > mNativeResolutions;
 
     friend class TestQgsWmsProvider;
@@ -575,7 +585,7 @@ class QgsWmsStatistics
 
 Q_DECLARE_TYPEINFO( QgsWmsProvider::TilePosition, Q_PRIMITIVE_TYPE );
 
-class QgsWmsProviderMetadata: public QgsProviderMetadata
+class QgsWmsProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsWmsProviderMetadata();

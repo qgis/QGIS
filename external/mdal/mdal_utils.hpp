@@ -34,9 +34,6 @@ namespace MDAL
   //! returns quiet_NaN if value equals nodata value, otherwise returns val itself
   double safeValue( double val, double nodata, double eps = std::numeric_limits<double>::epsilon() );
 
-  // debugging
-  void debug( const std::string &message );
-
   /** Return whether file exists */
   bool fileExists( const std::string &filename );
   std::string baseName( const std::string &filename );
@@ -159,5 +156,13 @@ namespace MDAL
   //! https://www.unidata.ucar.edu/software/netcdf-java/current/CDM/CalendarDateTime.html
   MDAL::DateTime parseCFReferenceTime( const std::string &timeInformation, const std::string &calendarString );
 
+  struct Error
+  {
+    Error( MDAL_Status s, std::string m, std::string d = "" );
+    void setDriver( std::string d );
+    MDAL_Status status;
+    std::string mssg;
+    std::string driver;
+  };
 } // namespace MDAL
 #endif //MDAL_UTILS_HPP

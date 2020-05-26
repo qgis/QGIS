@@ -103,6 +103,29 @@ QString QgsField::displayNameWithAlias() const
   return QStringLiteral( "%1 (%2)" ).arg( name() ).arg( alias() );
 }
 
+QString QgsField::displayType( const bool showConstraints ) const
+{
+  QString typeStr = typeName();
+
+  if ( length() > 0 && precision() > 0 )
+    typeStr += QStringLiteral( "(%1, %2)" ).arg( length() ).arg( precision() );
+  else if ( length() > 0 )
+    typeStr += QStringLiteral( "(%1)" ).arg( length() );
+
+  if ( showConstraints )
+  {
+    typeStr += constraints().constraints() & QgsFieldConstraints::ConstraintNotNull
+               ? QStringLiteral( " NOT NULL" )
+               : QStringLiteral( " NULL" );
+
+    typeStr += constraints().constraints() & QgsFieldConstraints::ConstraintUnique
+               ? QStringLiteral( " UNIQUE" )
+               : QString();
+  }
+
+  return typeStr;
+}
+
 QVariant::Type QgsField::type() const
 {
   return d->type;

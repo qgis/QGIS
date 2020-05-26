@@ -57,7 +57,7 @@ class QgsSpatialIndex;
  * between QgsDelimitedTextFile and QgsDelimitedTextProvider.
  *
  */
-class QgsDelimitedTextProvider : public QgsVectorDataProvider
+class QgsDelimitedTextProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
 
@@ -234,7 +234,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     friend class QgsDelimitedTextFeatureSource;
 };
 
-class QgsDelimitedTextProviderMetadata: public QgsProviderMetadata
+class QgsDelimitedTextProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsDelimitedTextProviderMetadata();

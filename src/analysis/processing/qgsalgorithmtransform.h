@@ -59,6 +59,7 @@ class QgsTransformAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsCoordinateTransform mTransform;
     QgsCoordinateTransformContext mTransformContext;
     QString mCoordOp;
+    bool mWarnedAboutFallbackTransform = false;
 
 };
 

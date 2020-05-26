@@ -79,7 +79,7 @@ class UniqueValues(QgisAlgorithm):
                                                       self.tr('Target field(s)'),
                                                       parentLayerParameterName=self.INPUT, type=QgsProcessingParameterField.Any, allowMultiple=True))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Unique values'), optional=True, defaultValue=''))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Unique values'), optional=True, defaultValue=None))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT_HTML_FILE, self.tr('HTML report'), self.tr('HTML files (*.html)'), None, True))
         self.addOutput(QgsProcessingOutputNumber(self.TOTAL_VALUES, self.tr('Total unique values')))

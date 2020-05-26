@@ -2314,10 +2314,14 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
 
   if ( mFlags & FlagNoMText )
   {
+    txt.replace( QChar( QChar::LineFeed ), ' ' );
+    txt.replace( QChar( QChar::CarriageReturn ), ' ' );
     writeText( dxfLayer, txt, label, tmpLyr, context.expressionContext() );
   }
   else
   {
+    txt.replace( QString( QChar( QChar::CarriageReturn ) ) + QString( QChar( QChar::LineFeed ) ), QStringLiteral( "\\P" ) );
+    txt.replace( QChar( QChar::CarriageReturn ), QStringLiteral( "\\P" ) );
     txt = txt.replace( wrapchr, QLatin1String( "\\P" ) );
     txt.replace( " ", "\\~" );
 

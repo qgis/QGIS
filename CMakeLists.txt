@@ -15,7 +15,7 @@ SET(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 #############################################################
 # Project and version
 SET(CPACK_PACKAGE_VERSION_MAJOR "3")
-SET(CPACK_PACKAGE_VERSION_MINOR "11")
+SET(CPACK_PACKAGE_VERSION_MINOR "13")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 SET(RELEASE_NAME "Master")
@@ -31,6 +31,20 @@ ENDIF (APPLE)
 MATH(EXPR QGIS_VERSION_INT "${CPACK_PACKAGE_VERSION_MAJOR}*10000+${CPACK_PACKAGE_VERSION_MINOR}*100+${CPACK_PACKAGE_VERSION_PATCH}")
 MESSAGE(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSION_INT})")
 
+#############################################################
+IF (APPLE)
+  # QGIS custom dependencies package from qgis/QGIS-Mac-Packager
+  # they can be downloaded from https://qgis.org/downloads/macos/qgis-deps
+  # and extracted to /opt/QGIS/qgis-deps-<deps-version>/stage
+  SET (QGIS_MAC_DEPS_DIR "" CACHE PATH "Path to QGIS Mac custom dependencies directory")
+
+  # Setup LIB_DIR and CMAKE_PREFIX_PATH to help CMake's
+  # find_packages to look for these libraries instead of system libraries
+  IF ( QGIS_MAC_DEPS_DIR )
+    SET(ENV{LIB_DIR} ${QGIS_MAC_DEPS_DIR})
+    LIST(APPEND CMAKE_PREFIX_PATH ${QGIS_MAC_DEPS_DIR})
+  ENDIF ( QGIS_MAC_DEPS_DIR )
+ENDIF (APPLE)
 
 #############################################################
 # Configure OpenCL if available
@@ -331,6 +345,14 @@ IF(WITH_CORE)
     MESSAGE (SEND_ERROR "sqlite3 dependency was not found!")
   ENDIF (NOT SQLITE3_FOUND)
 
+  FIND_PACKAGE(Protobuf REQUIRED)   # for decoding of vector tiles in MVT format
+  MESSAGE(STATUS "Found Protobuf: ${Protobuf_LIBRARIES}")
+  IF (NOT Protobuf_PROTOC_EXECUTABLE)
+    MESSAGE (SEND_ERROR "Protobuf library's 'protoc' tool was not found!")
+  ENDIF ()
+  FIND_PACKAGE(ZLIB REQUIRED)       # for decompression of vector tiles in MBTiles file
+  MESSAGE(STATUS "Found zlib: ${ZLIB_LIBRARIES}")
+
   # optional
   IF (WITH_POSTGRESQL)
     FIND_PACKAGE(Postgres) # PostgreSQL provider
@@ -401,7 +423,11 @@ IF(WITH_CORE)
   IF (APPLE)
     FIND_PACKAGE(Qt5MacExtras REQUIRED)
   ENDIF (APPLE)
-  INCLUDE("cmake/modules/ECMQt4To5Porting.cmake")
+
+  # get the Qt plugins directory
+  GET_TARGET_PROPERTY(QMAKE_EXECUTABLE Qt5::qmake LOCATION)
+  EXEC_PROGRAM(${QMAKE_EXECUTABLE} ARGS "-query QT_INSTALL_PLUGINS" RETURN_VALUE return_code OUTPUT_VARIABLE QT_PLUGINS_DIR )
+
   MESSAGE(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
   IF (WITH_QUICK)
     FIND_PACKAGE(Qt5Qml REQUIRED)
@@ -545,6 +571,8 @@ IF (PEDANTIC)
 
     # c++ only warnings
 
+    SET(_warnings "${_warnings} -Wnon-virtual-dtor")
+
     # unavoidable - we can't avoid these, as older, supported compilers do not support removing the redundant move
     SET(_warnings "${_warnings} -Wno-redundant-move")
 
@@ -605,6 +633,11 @@ IF(MSVC)
   ADD_DEFINITIONS(-DNOMINMAX)
 ENDIF(MSVC)
 
+# Prevent build when Qt api deprecated before this Qt version is used:
+ADD_DEFINITIONS(-DQT_DEPRECATED_WARNINGS)
+# Unfortunately Qwt uses deprecated QString::null in headers, preventing this being raised above 5.8
+ADD_DEFINITIONS(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
+
 IF(ENABLE_COVERAGE)
   INCLUDE("cmake/modules/coverage/CodeCoverage.cmake")
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
@@ -664,8 +697,9 @@ IF (WITH_CORE)
       SET (QGIS_MACAPP_PREFIX ${CMAKE_INSTALL_PREFIX}/${QGIS_APP_NAME}.app/Contents)
       # common prefix for components, let cmake handle it
       SET (CMAKE_INSTALL_PREFIX ${QGIS_MACAPP_PREFIX}/MacOS)
-      # 4 bundling levels, each includes previous
-      #   0  nothing
+      # 5 bundling levels, each includes previous
+      #  -1  nothing
+      #   0  fixup the library paths for all QGIS libraries with @loader_path
       #   1  Qt frameworks
       #   2  non-system libraries, "standard"
       #   3  non-system frameworks, "standalone"
@@ -827,7 +861,7 @@ ENDIF (DISABLE_DEPRECATED)
 #############################################################
 # Python build dependency
 
-FIND_PACKAGE(PythonInterp 3 REQUIRED)
+FIND_PACKAGE(PythonLibrary REQUIRED)
 
 #############################################################
 # Python bindings

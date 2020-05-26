@@ -67,6 +67,7 @@ accelleration:acceleration
 accension:ascension
 acceptence:acceptance
 acceptible:acceptable
+accetable:acceptable
 acces:access
 accesing:accessing
 accesnt:accent
@@ -559,6 +560,7 @@ appearence:appearance
 appearences:appearances
 appeares:appears
 appeneded:appended
+appendend:appended
 apperance:appearance
 apperances:appearances
 appereance:appearance
@@ -1297,6 +1299,7 @@ chemcially:chemically
 chemestry:chemistry
 chemicaly:chemically
 childen:children
+chilren:children
 childern:children
 childs:children:*
 chnage:change
@@ -1487,6 +1490,7 @@ comparaison:comparison
 comparation:comparison
 comparations:comparisons
 comparision:comparison
+comaprison:comparison
 comparisions:comparisons
 comparitive:comparative
 comparitively:comparatively
@@ -1951,6 +1955,7 @@ customise:customize
 cxan:cyan
 cyclinder:cylinder
 cymk:CMYK
+dicarding:discarding
 dacquiri:daiquiri
 daed:dead
 dael:deal
@@ -2025,6 +2030,7 @@ defenitions:definitions
 defered:deferred
 deffensively:defensively
 defferent:different
+differnent:different
 defferred:deferred
 deffine:define
 deffined:defined
@@ -2201,6 +2207,7 @@ detatches:detaches
 detatching:detaching
 detemine:determine
 detemined:determined
+determinated:determined
 detemines:determines
 detemining:determining
 deteoriated:deteriorated
@@ -2501,6 +2508,7 @@ driectly:directly
 drnik:drink
 drop down:drop-down
 droped:dropped:*
+dorp:drop
 droppped:dropped
 druming:drumming
 drummless:drumless
@@ -3376,6 +3384,7 @@ hander:handler
 handfull:handful
 hanle:handle
 hanled:handled
+handeled:handled
 hanles:handles
 hanling:handling
 hanshake:handshake
@@ -4224,7 +4233,7 @@ kwno:know
 labatory:laboratory
 labelling:labeling
 lable:label
-labled:labeled
+labled:labeled:*
 lables:labels:*
 labour:labor
 labratory:laboratory
@@ -4260,7 +4269,7 @@ leage:league
 leanr:learn
 leathal:lethal
 leats:least
-lefted:left
+lefted:left:*
 legitamate:legitimate
 legitmate:legitimate
 leibnitz:leibniz
@@ -4422,6 +4431,7 @@ manufaturing:manufacturing
 manully:manually
 manupulation:manipulation
 manupulations:manipulations
+maniuplated:manipulated
 manuver:maneuver
 maped:mapped
 maping:mapping
@@ -4797,6 +4807,7 @@ noteable:notable
 noteably:notably
 noteriety:notoriety
 notfication:notification
+notificaton:notification
 notfications:notifications
 noth:north
 nothern:northern
@@ -5851,6 +5862,7 @@ redefintions:redefinitions
 rediculous:ridiculous
 redircet:redirect
 redirectrion:redirection
+directon:direction
 reedeming:redeeming
 reenable:re-enable
 reenabled:re-enabled
@@ -7678,6 +7690,7 @@ waranties:warranties
 waranty:warranty
 wardobe:wardrobe
 waring:warning
+warinings:warnings
 warrent:warrant
 warrriors:warriors
 was'nt:weren't
@@ -7730,6 +7743,7 @@ widesread:widespread
 widht:width
 wief:wife
 wierd:weird
+wierdness:weirdness
 wiew:view
 wih:with
 wihout:without
@@ -7817,3 +7831,4 @@ yrea:year
 ytou:you
 yuo:you
 yur:your
+mose:mouse

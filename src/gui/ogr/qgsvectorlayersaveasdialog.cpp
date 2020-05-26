@@ -412,7 +412,11 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
   }
 
   bool selectAllFields = true;
-  bool fieldsAsDisplayedValues = false;
+
+  // Is it a format for which fields that have attached widgets of types
+  // ValueMap, ValueRelation, etc. should be by default exported with their displayed
+  // values
+  bool isFormatForFieldsAsDisplayedValues = false;
 
   const QString sFormat( format() );
   if ( sFormat == QLatin1String( "DXF" ) || sFormat == QLatin1String( "DGN" ) )
@@ -423,8 +427,13 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
   else
   {
     if ( mOptions & Fields )
+    {
       mAttributesSelection->setVisible( true );
-    fieldsAsDisplayedValues = ( sFormat == QLatin1String( "CSV" ) || sFormat == QLatin1String( "XLS" ) || sFormat == QLatin1String( "XLSX" ) || sFormat == QLatin1String( "ODS" ) );
+      isFormatForFieldsAsDisplayedValues = ( sFormat == QLatin1String( "CSV" ) ||
+                                             sFormat == QLatin1String( "XLS" ) ||
+                                             sFormat == QLatin1String( "XLSX" ) ||
+                                             sFormat == QLatin1String( "ODS" ) );
+    }
   }
 
   // Show symbology options only for some formats
@@ -487,6 +496,7 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
 
     mAttributeTableItemChangedSlotEnabled = false;
 
+    bool checkReplaceRawFieldValues = selectAllFields && isFormatForFieldsAsDisplayedValues;
     for ( int i = 0; i < mLayer->fields().size(); ++i )
     {
       QgsField fld = mLayer->fields().at( i );
@@ -505,13 +515,21 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
       {
         const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mLayer, mLayer->fields()[i].name() );
         QgsEditorWidgetFactory *factory = nullptr;
+        const QString widgetId( setup.type() );
         if ( flags == Qt::ItemIsEnabled &&
-             setup.type() != QLatin1String( "TextEdit" ) &&
-             ( factory = QgsGui::editorWidgetRegistry()->factory( setup.type() ) ) )
+             widgetId != QLatin1String( "TextEdit" ) &&
+             ( factory = QgsGui::editorWidgetRegistry()->factory( widgetId ) ) )
         {
           item = new QTableWidgetItem( tr( "Use %1" ).arg( factory->name() ) );
           item->setFlags( ( selectAllFields ) ? ( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable ) : Qt::ItemIsUserCheckable );
-          item->setCheckState( ( selectAllFields && fieldsAsDisplayedValues ) ? Qt::Checked : Qt::Unchecked );
+          const bool checkItem = ( selectAllFields && isFormatForFieldsAsDisplayedValues &&
+                                   ( widgetId == QLatin1String( "ValueMap" ) ||
+                                     widgetId == QLatin1String( "ValueRelation" ) ||
+                                     widgetId == QLatin1String( "CheckBox" ) ||
+                                     widgetId == QLatin1String( "RelationReference" ) ) );
+          checkReplaceRawFieldValues &= checkItem;
+          item->setCheckState( checkItem ?
+                               Qt::Checked : Qt::Unchecked );
           mAttributeTable->setItem( i, COLUMN_IDX_EXPORT_AS_DISPLAYED_VALUE, item );
         }
         else
@@ -526,7 +544,7 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
     mAttributeTableItemChangedSlotEnabled = true;
 
     mReplaceRawFieldValuesStateChangedSlotEnabled = false;
-    mReplaceRawFieldValues->setChecked( selectAllFields && fieldsAsDisplayedValues );
+    mReplaceRawFieldValues->setChecked( checkReplaceRawFieldValues );
     mReplaceRawFieldValuesStateChangedSlotEnabled = true;
     mReplaceRawFieldValues->setEnabled( selectAllFields );
     mReplaceRawFieldValues->setVisible( foundFieldThatCanBeExportedAsDisplayedValue );

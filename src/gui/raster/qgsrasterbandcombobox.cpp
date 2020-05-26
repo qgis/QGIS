@@ -161,7 +161,7 @@ void QgsRasterBandComboBox::setShowNotSetOption( bool show, const QString &strin
   setLayer( mLayer );
 }
 
-QString QgsRasterBandComboBox::displayBandName( QgsRasterDataProvider *provider, int band ) const
+QString QgsRasterBandComboBox::displayBandName( QgsRasterDataProvider *provider, int band )
 {
   if ( !provider )
     return QString();

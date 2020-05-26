@@ -114,7 +114,7 @@ void TestQgsGML::testFromURL()
   QgsWkbTypes::Type wkbType;
   QTemporaryFile tmpFile;
   tmpFile.open();
-  tmpFile.write( data1.toAscii() );
+  tmpFile.write( data1.toLatin1() );
   tmpFile.flush();
   QCOMPARE( gmlParser.getFeatures( QUrl::fromLocalFile( tmpFile.fileName() ).toString(), &wkbType ), 0 );
   QCOMPARE( wkbType, QgsWkbTypes::Point );
@@ -134,7 +134,7 @@ void TestQgsGML::testFromByteArray()
   fields.append( QgsField( QStringLiteral( "nillablefield" ), QVariant::Int, QStringLiteral( "nillablefield" ) ) );
   QgsGml gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QgsWkbTypes::Type wkbType;
-  QCOMPARE( gmlParser.getFeatures( data1.toAscii(), &wkbType ), 0 );
+  QCOMPARE( gmlParser.getFeatures( data1.toLatin1(), &wkbType ), 0 );
   QMap<QgsFeatureId, QgsFeature * > featureMaps = gmlParser.featuresMap();
   QCOMPARE( featureMaps.size(), 1 );
   QVERIFY( featureMaps.constFind( 0 ) != featureMaps.constEnd() );
@@ -157,9 +157,9 @@ void TestQgsGML::testStreamingParser()
   fields.append( QgsField( QStringLiteral( "strfield" ), QVariant::String, QStringLiteral( "string" ) ) );
   fields.append( QgsField( QStringLiteral( "datetimefield" ), QVariant::DateTime, QStringLiteral( "datetime" ) ) );
   QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
-  QCOMPARE( gmlParser.processData( data1.mid( 0, data1.size() / 2 ).toAscii(), false ), true );
+  QCOMPARE( gmlParser.processData( data1.mid( 0, data1.size() / 2 ).toLatin1(), false ), true );
   QCOMPARE( gmlParser.getAndStealReadyFeatures().size(), 0 );
-  QCOMPARE( gmlParser.processData( data1.mid( data1.size() / 2 ).toAscii(), true ), true );
+  QCOMPARE( gmlParser.processData( data1.mid( data1.size() / 2 ).toLatin1(), true ), true );
   QCOMPARE( gmlParser.isException(), false );
   QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
   QCOMPARE( features.size(), 1 );

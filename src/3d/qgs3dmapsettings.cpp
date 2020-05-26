@@ -31,6 +31,7 @@
 
 Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   : QObject( nullptr )
+  , QgsTemporalRangeObject( other )
   , mOrigin( other.mOrigin )
   , mCrs( other.mCrs )
   , mBackgroundColor( other.mBackgroundColor )
@@ -197,6 +198,11 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mShowTerrainBoundingBoxes = elemDebug.attribute( QStringLiteral( "bounding-boxes" ), QStringLiteral( "0" ) ).toInt();
   mShowTerrainTileInfo = elemDebug.attribute( QStringLiteral( "terrain-tile-info" ), QStringLiteral( "0" ) ).toInt();
   mShowCameraViewCenter = elemDebug.attribute( QStringLiteral( "camera-view-center" ), QStringLiteral( "0" ) ).toInt();
+
+  QDomElement elemTemporalRange = elem.firstChildElement( QStringLiteral( "temporal-range" ) );
+  QDateTime start = QDateTime::fromString( elemTemporalRange.attribute( QStringLiteral( "start" ) ), Qt::ISODate );
+  QDateTime end = QDateTime::fromString( elemTemporalRange.attribute( QStringLiteral( "end" ) ), Qt::ISODate );
+  setTemporalRange( QgsDateTimeRange( start, end ) );
 }
 
 QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -278,6 +284,10 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemDebug.setAttribute( QStringLiteral( "terrain-tile-info" ), mShowTerrainTileInfo ? 1 : 0 );
   elemDebug.setAttribute( QStringLiteral( "camera-view-center" ), mShowCameraViewCenter ? 1 : 0 );
   elem.appendChild( elemDebug );
+
+  QDomElement elemTemporalRange = doc.createElement( QStringLiteral( "temporal-range" ) );
+  elemTemporalRange.setAttribute( QStringLiteral( "start" ), temporalRange().begin().toString( Qt::ISODate ) );
+  elemTemporalRange.setAttribute( QStringLiteral( "end" ), temporalRange().end().toString( Qt::ISODate ) );
 
   return elem;
 }

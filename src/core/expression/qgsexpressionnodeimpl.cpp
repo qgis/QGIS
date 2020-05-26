@@ -124,7 +124,10 @@ bool QgsExpressionNodeUnaryOperator::prepareNode( QgsExpression *parent, const Q
 
 QString QgsExpressionNodeUnaryOperator::dump() const
 {
-  return QStringLiteral( "%1 %2" ).arg( UNARY_OPERATOR_TEXT[mOp], mOperand->dump() );
+  if ( dynamic_cast<QgsExpressionNodeBinaryOperator *>( mOperand ) )
+    return QStringLiteral( "%1 ( %2 )" ).arg( UNARY_OPERATOR_TEXT[mOp], mOperand->dump() );
+  else
+    return QStringLiteral( "%1 %2" ).arg( UNARY_OPERATOR_TEXT[mOp], mOperand->dump() );
 }
 
 QSet<QString> QgsExpressionNodeUnaryOperator::referencedColumns() const

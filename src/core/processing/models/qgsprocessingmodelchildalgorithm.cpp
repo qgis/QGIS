@@ -35,8 +35,7 @@ QgsProcessingModelChildAlgorithm::QgsProcessingModelChildAlgorithm( const QgsPro
   , mModelOutputs( other.mModelOutputs )
   , mActive( other.mActive )
   , mDependencies( other.mDependencies )
-  , mParametersCollapsed( other.mParametersCollapsed )
-  , mOutputsCollapsed( other.mOutputsCollapsed )
+  , mComment( other.mComment )
 {
   setAlgorithmId( other.algorithmId() );
 }
@@ -51,9 +50,43 @@ QgsProcessingModelChildAlgorithm &QgsProcessingModelChildAlgorithm::operator=( c
   mModelOutputs = other.mModelOutputs;
   mActive = other.mActive;
   mDependencies = other.mDependencies;
-  mParametersCollapsed = other.mParametersCollapsed;
-  mOutputsCollapsed = other.mOutputsCollapsed;
+  mComment = other.mComment;
   return *this;
+}
+
+QgsProcessingModelChildAlgorithm *QgsProcessingModelChildAlgorithm::clone() const
+{
+  return new QgsProcessingModelChildAlgorithm( *this );
+}
+
+void QgsProcessingModelChildAlgorithm::copyNonDefinitionPropertiesFromModel( QgsProcessingModelAlgorithm *model )
+{
+  const QgsProcessingModelChildAlgorithm existingChild = model->childAlgorithm( mId );
+  copyNonDefinitionProperties( existingChild );
+
+  int i = 0;
+  for ( auto it = mModelOutputs.begin(); it != mModelOutputs.end(); ++it )
+  {
+    if ( !existingChild.modelOutputs().value( it.key() ).position().isNull() )
+    {
+      it.value().setPosition( existingChild.modelOutputs().value( it.key() ).position() );
+      it.value().setSize( existingChild.modelOutputs().value( it.key() ).size() );
+    }
+    else
+      it.value().setPosition( position() + QPointF( size().width(), ( i + 1.5 ) * size().height() ) );
+
+    if ( QgsProcessingModelComment *comment = it.value().comment() )
+    {
+      if ( const QgsProcessingModelComment *existingComment = existingChild.modelOutputs().value( it.key() ).comment() )
+      {
+        comment->setDescription( existingComment->description() );
+        comment->setSize( existingComment->size() );
+        comment->setPosition( existingComment->position() );
+        comment->setColor( existingComment->color() );
+      }
+    }
+    i++;
+  }
 }
 
 const QgsProcessingAlgorithm *QgsProcessingModelChildAlgorithm::algorithm() const
@@ -88,8 +121,6 @@ QVariant QgsProcessingModelChildAlgorithm::toVariant() const
   map.insert( QStringLiteral( "alg_config" ), mConfiguration );
   map.insert( QStringLiteral( "active" ), mActive );
   map.insert( QStringLiteral( "dependencies" ), mDependencies );
-  map.insert( QStringLiteral( "parameters_collapsed" ), mParametersCollapsed );
-  map.insert( QStringLiteral( "outputs_collapsed" ), mOutputsCollapsed );
 
   saveCommonProperties( map );
 
@@ -127,8 +158,6 @@ bool QgsProcessingModelChildAlgorithm::loadVariant( const QVariant &child )
   setAlgorithmId( map.value( QStringLiteral( "alg_id" ) ).toString() );
   mActive = map.value( QStringLiteral( "active" ) ).toBool();
   mDependencies = map.value( QStringLiteral( "dependencies" ) ).toStringList();
-  mParametersCollapsed = map.value( QStringLiteral( "parameters_collapsed" ) ).toBool();
-  mOutputsCollapsed = map.value( QStringLiteral( "outputs_collapsed" ) ).toBool();
 
   restoreCommonProperties( map );
 
@@ -176,6 +205,9 @@ QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing:
 
   if ( !description().isEmpty() )
     lines << baseIndent + QStringLiteral( "# %1" ).arg( description() );
+  if ( !mComment.description().isEmpty() )
+    lines << baseIndent + QStringLiteral( "# %1" ).arg( mComment.description() );
+
   QStringList paramParts;
   for ( auto paramIt = mParams.constBegin(); paramIt != mParams.constEnd(); ++paramIt )
   {

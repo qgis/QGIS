@@ -13,7 +13,7 @@
 
 
 
-class QgsRenderContext
+class QgsRenderContext : QgsTemporalRangeObject
 {
 %Docstring
 Contains information about the context of a rendering operation.

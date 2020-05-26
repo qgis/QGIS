@@ -168,6 +168,8 @@ This is an abstract base class and will always need to be subclassed.
       sipType = sipType_QgsCurrencyNumericFormat;
     else if ( dynamic_cast< QgsBasicNumericFormat * >( sipCpp ) )
       sipType = sipType_QgsBasicNumericFormat;
+    else if ( dynamic_cast< QgsFractionNumericFormat * >( sipCpp ) )
+      sipType = sipType_QgsFractionNumericFormat;
     else
       sipType = NULL;
 %End

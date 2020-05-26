@@ -470,10 +470,44 @@ void QgsMeshDatasetGroupTreeView::setActiveGroupFromActiveDataset()
   if ( mMeshLayer )
   {
     const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
-    scalarGroup = rendererSettings.activeScalarDataset().group();
-    vectorGroup = rendererSettings.activeVectorDataset().group();
+    scalarGroup = rendererSettings.activeScalarDatasetGroup();
+    vectorGroup = rendererSettings.activeVectorDatasetGroup();
   }
 
   setActiveScalarGroup( scalarGroup );
   setActiveVectorGroup( vectorGroup );
+}
+
+void QgsMeshDatasetGroupListModel::syncToLayer( QgsMeshLayer *layer )
+{
+  mLayer = layer;
+}
+
+int QgsMeshDatasetGroupListModel::rowCount( const QModelIndex &parent ) const
+{
+  Q_UNUSED( parent );
+  if ( mLayer )
+    return mLayer->dataProvider()->datasetGroupCount();
+  else
+    return 0;
+}
+
+QVariant QgsMeshDatasetGroupListModel::data( const QModelIndex &index, int role ) const
+{
+  if ( !mLayer || ! index.isValid() )
+    return QVariant();
+
+  QgsMeshDataProvider *dataProvider = mLayer->dataProvider();
+
+  if ( !dataProvider || index.row() >= dataProvider->datasetGroupCount() )
+    return QVariant();
+
+  QgsMeshDatasetGroupMetadata meta = dataProvider->datasetGroupMetadata( index.row() );
+
+  if ( role == Qt::DisplayRole )
+  {
+    return meta.name();
+  }
+
+  return QVariant();
 }

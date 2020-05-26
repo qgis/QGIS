@@ -45,7 +45,7 @@ class QgsPostgresListener;
   interface defined in the QgsDataProvider class to provide access to spatial
   data residing in a PostgreSQL/PostGIS enabled database.
   */
-class QgsPostgresProvider : public QgsVectorDataProvider
+class QgsPostgresProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
 
@@ -192,6 +192,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
     bool supportsSubsetString() const override { return true; }
     QgsVectorDataProvider::Capabilities capabilities() const override;
+    SpatialIndexPresence hasSpatialIndex() const override;
 
     /**
      * The Postgres provider does its own transforms so we return
@@ -556,7 +557,7 @@ class QgsPostgresSharedData
     QMap<int, bool> mFieldSupportsEnumValues;        // map field index to bool flag supports enum values
 };
 
-class QgsPostgresProviderMetadata: public QgsProviderMetadata
+class QgsPostgresProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsPostgresProviderMetadata();
@@ -583,6 +584,7 @@ class QgsPostgresProviderMetadata: public QgsProviderMetadata
     void initProvider() override;
     void cleanupProvider() override;
     QVariantMap decodeUri( const QString &uri ) override;
+    QString encodeUri( const QVariantMap &parts ) override;
 };
 
 // clazy:excludeall=qstring-allocations

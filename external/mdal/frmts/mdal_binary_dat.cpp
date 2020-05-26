@@ -17,6 +17,7 @@
 #include "mdal_binary_dat.hpp"
 #include "mdal.h"
 #include "mdal_utils.hpp"
+#include "mdal_logger.hpp"
 
 #include <math.h>
 
@@ -41,13 +42,10 @@ static const int CF_FLAG_SIZE = 1;
 static const int CF_FLAG_INT_SIZE = 4;
 
 
-static void exit_with_error( MDAL_Status *status, MDAL_Status error, const std::string msg )
+static void exit_with_error( MDAL_Status error, const std::string msg )
 {
-  MDAL::debug( "BINARY DAT: " + msg );
-  if ( status ) *status = ( error );
+  MDAL::Log::error( error, "BINARY_DAT", msg );
 }
-
-#define EXIT_WITH_ERROR(error)       {  if (status) *status = (error); return; }
 
 static bool read( std::ifstream &in, char *s, int n )
 {
@@ -82,7 +80,7 @@ MDAL::DriverBinaryDat::DriverBinaryDat():
   Driver( "BINARY_DAT",
           "Binary DAT",
           "*.dat",
-          Capability::ReadDatasets | Capability::WriteDatasetsOnVertices2D
+          Capability::ReadDatasets | Capability::WriteDatasetsOnVertices
         )
 {
 }
@@ -118,14 +116,14 @@ bool MDAL::DriverBinaryDat::canReadDatasets( const std::string &uri )
  * In MDAL we convert one output to one MDAL dataset;
  *
  */
-void MDAL::DriverBinaryDat::load( const std::string &datFile, MDAL::Mesh *mesh, MDAL_Status *status )
+void MDAL::DriverBinaryDat::load( const std::string &datFile, MDAL::Mesh *mesh )
 {
   mDatFile = datFile;
-  if ( status ) *status = MDAL_Status::None;
+  MDAL::Log::resetLastStatus();
 
   if ( !MDAL::fileExists( mDatFile ) )
   {
-    if ( status ) *status = MDAL_Status::Err_FileNotFound;
+    MDAL::Log::error( MDAL_Status::Err_FileNotFound, name(), "File could not be found " + mDatFile );
     return;
   }
 
@@ -133,7 +131,7 @@ void MDAL::DriverBinaryDat::load( const std::string &datFile, MDAL::Mesh *mesh, 
 
   // implementation based on information from:
   // http://www.xmswiki.com/wiki/SMS:Binary_Dataset_Files_*.dat
-  if ( !in ) return exit_with_error( status, MDAL_Status::Err_FileNotFound, "Couldn't open the file" );
+  if ( !in ) return exit_with_error( MDAL_Status::Err_FileNotFound, "Couldn't open the file" );
 
   size_t vertexCount = mesh->verticesCount();
   size_t elemCount = mesh->facesCount();
@@ -154,16 +152,16 @@ void MDAL::DriverBinaryDat::load( const std::string &datFile, MDAL::Mesh *mesh, 
   char istat;
   float time;
 
-  if ( read( in, reinterpret_cast< char * >( &version ), 4 ) ) return exit_with_error( status, MDAL_Status::Err_UnknownFormat, "Unable to read version" );
+  if ( read( in, reinterpret_cast< char * >( &version ), 4 ) ) return exit_with_error( MDAL_Status::Err_UnknownFormat, "Unable to read version" );
 
-  if ( version != CT_VERSION ) return exit_with_error( status, MDAL_Status::Err_UnknownFormat, "Invalid version " );
+  if ( version != CT_VERSION ) return exit_with_error( MDAL_Status::Err_UnknownFormat, "Invalid version " );
 
   std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >(
                                           name(),
                                           mesh,
                                           mDatFile
                                         ); // DAT datasets
-  group->setDataLocation( MDAL_DataLocation::DataOnVertices2D );
+  group->setDataLocation( MDAL_DataLocation::DataOnVertices );
 
   // in TUFLOW results there could be also a special timestep (99999) with maximums
   // we will put it into a separate dataset
@@ -172,7 +170,7 @@ void MDAL::DriverBinaryDat::load( const std::string &datFile, MDAL::Mesh *mesh, 
         mesh,
         mDatFile
       );
-  groupMax->setDataLocation( MDAL_DataLocation::DataOnVertices2D );
+  groupMax->setDataLocation( MDAL_DataLocation::DataOnVertices );
 
   while ( card != CT_ENDDS )
   {
@@ -186,19 +184,19 @@ void MDAL::DriverBinaryDat::load( const std::string &datFile, MDAL::Mesh *mesh, 
     {
       case CT_OBJTYPE:
         // Object type
-        if ( read( in, reinterpret_cast< char * >( &objecttype ), 4 ) || objecttype != CT_2D_MESHES ) return exit_with_error( status, MDAL_Status::Err_UnknownFormat, "Invalid object type" );
+        if ( read( in, reinterpret_cast< char * >( &objecttype ), 4 ) || objecttype != CT_2D_MESHES ) return exit_with_error( MDAL_Status::Err_UnknownFormat, "Invalid object type" );
         break;
 
       case CT_SFLT:
         // Float size
-        if ( read( in, reinterpret_cast< char * >( &sflt ), 4 ) || sflt != CT_FLOAT_SIZE ) return exit_with_error( status, MDAL_Status::Err_UnknownFormat, "unable to read float size" );
+        if ( read( in, reinterpret_cast< char * >( &sflt ), 4 ) || sflt != CT_FLOAT_SIZE ) return exit_with_error( MDAL_Status::Err_UnknownFormat, "unable to read float size" );
         break;
 
       case CT_SFLG:
         // Flag size
         if ( read( in, reinterpret_cast< char * >( &sflg ), 4 ) )
           if ( sflg != CF_FLAG_SIZE && sflg != CF_FLAG_INT_SIZE )
-            return exit_with_error( status, MDAL_Status::Err_UnknownFormat, "unable to read flag size" );
+            return exit_with_error( MDAL_Status::Err_UnknownFormat, "unable to read flag size" );
         break;
 
       case CT_BEGSCL:
@@ -213,29 +211,29 @@ void MDAL::DriverBinaryDat::load( const std::string &datFile, MDAL::Mesh *mesh, 
 
       case CT_VECTYPE:
         // Vector type
-        if ( read( in, reinterpret_cast< char * >( &vectype ), 4 ) || vectype != 0 ) return exit_with_error( status, MDAL_Status::Err_UnknownFormat, "unable to read vector type" );
+        if ( read( in, reinterpret_cast< char * >( &vectype ), 4 ) || vectype != 0 ) return exit_with_error( MDAL_Status::Err_UnknownFormat, "unable to read vector type" );
         break;
 
       case CT_OBJID:
         // Object id
-        if ( read( in, reinterpret_cast< char * >( &objid ), 4 ) ) return exit_with_error( status, MDAL_Status::Err_UnknownFormat, "unable to read object id" );
+        if ( read( in, reinterpret_cast< char * >( &objid ), 4 ) ) return exit_with_error( MDAL_Status::Err_UnknownFormat, "unable to read object id" );
         break;
 
       case CT_NUMDATA:
         // Num data
-        if ( read( in, reinterpret_cast< char * >( &numdata ), 4 ) ) return exit_with_error( status, MDAL_Status::Err_UnknownFormat, "unable to read num data" );
-        if ( numdata != static_cast< int >( vertexCount ) ) return exit_with_error( status, MDAL_Status::Err_IncompatibleMesh, "invalid num data" );
+        if ( read( in, reinterpret_cast< char * >( &numdata ), 4 ) ) return exit_with_error( MDAL_Status::Err_UnknownFormat, "unable to read num data" );
+        if ( numdata != static_cast< int >( vertexCount ) ) return exit_with_error( MDAL_Status::Err_IncompatibleMesh, "invalid num data" );
         break;
 
       case CT_NUMCELLS:
         // Num data
-        if ( read( in, reinterpret_cast< char * >( &numcells ), 4 ) ) return exit_with_error( status, MDAL_Status::Err_UnknownFormat, "unable to read num cells" );
-        if ( numcells != static_cast< int >( elemCount ) ) return exit_with_error( status, MDAL_Status::Err_IncompatibleMesh, "invalid num cells" );
+        if ( read( in, reinterpret_cast< char * >( &numcells ), 4 ) ) return exit_with_error( MDAL_Status::Err_UnknownFormat, "unable to read num cells" );
+        if ( numcells != static_cast< int >( elemCount ) ) return exit_with_error( MDAL_Status::Err_IncompatibleMesh, "invalid num cells" );
         break;
 
       case CT_NAME:
         // Name
-        if ( read( in, reinterpret_cast< char * >( &groupName ), 40 ) ) return exit_with_error( status, MDAL_Status::Err_UnknownFormat, "unable to read name" );
+        if ( read( in, reinterpret_cast< char * >( &groupName ), 40 ) ) return exit_with_error( MDAL_Status::Err_UnknownFormat, "unable to read name" );
         if ( groupName[39] != 0 )
           groupName[39] = 0;
         group->setName( trim( std::string( groupName ) ) );
@@ -245,10 +243,10 @@ void MDAL::DriverBinaryDat::load( const std::string &datFile, MDAL::Mesh *mesh, 
       case CT_RT_JULIAN:
         // Reference time
         if ( readIStat( in, sflg, &istat ) )
-          return exit_with_error( status, MDAL_Status::Err_UnknownFormat, "unable to read reference time" );
+          return exit_with_error( MDAL_Status::Err_UnknownFormat, "unable to read reference time" );
 
         if ( read( in, reinterpret_cast< char * >( &time ), 8 ) )
-          return exit_with_error( status, MDAL_Status::Err_UnknownFormat, "unable to read reference time" );
+          return exit_with_error( MDAL_Status::Err_UnknownFormat, "unable to read reference time" );
 
         referenceTime = static_cast<double>( time );
         group->setReferenceTime( DateTime( referenceTime, DateTime::JulianDay ) );
@@ -257,7 +255,7 @@ void MDAL::DriverBinaryDat::load( const std::string &datFile, MDAL::Mesh *mesh, 
       case CT_TIMEUNITS:
         // Time unit
         if ( read( in, reinterpret_cast< char * >( &timeUnit ), 4 ) )
-          return exit_with_error( status, MDAL_Status::Err_UnknownFormat, "Unable to read time units" );
+          return exit_with_error( MDAL_Status::Err_UnknownFormat, "Unable to read time units" );
 
         switch ( timeUnit )
         {
@@ -283,23 +281,23 @@ void MDAL::DriverBinaryDat::load( const std::string &datFile, MDAL::Mesh *mesh, 
       case CT_TS:
         // Time step!
         if ( readIStat( in, sflg, &istat ) )
-          return exit_with_error( status, MDAL_Status::Err_UnknownFormat, "Invalid time step" );
+          return exit_with_error( MDAL_Status::Err_UnknownFormat, "Invalid time step" );
 
         if ( read( in, reinterpret_cast< char * >( &time ), 4 ) )
-          return exit_with_error( status, MDAL_Status::Err_UnknownFormat, "Invalid time step" );
+          return exit_with_error( MDAL_Status::Err_UnknownFormat, "Invalid time step" );
 
         double rawTime = static_cast<double>( time );
         MDAL::RelativeTimestamp t( rawTime, MDAL::parseDurationTimeUnit( timeUnitStr ) );
 
         if ( readVertexTimestep( mesh, group, groupMax, t, istat, sflg, in ) )
-          return exit_with_error( status, MDAL_Status::Err_UnknownFormat, "Unable to read vertex timestep" );
+          return exit_with_error( MDAL_Status::Err_UnknownFormat, "Unable to read vertex timestep" );
 
         break;
     }
   }
 
   if ( !group || group->datasets.size() == 0 )
-    return exit_with_error( status, MDAL_Status::Err_UnknownFormat, "No datasets" );
+    return exit_with_error( MDAL_Status::Err_UnknownFormat, "No datasets" );
 
   group->setStatistics( MDAL::calculateStatistics( group ) );
   mesh->datasetGroups.push_back( group );
@@ -394,7 +392,7 @@ static bool writeRawData( std::ofstream &out, const char *s, int n )
 
 bool MDAL::DriverBinaryDat::persist( MDAL::DatasetGroup *group )
 {
-  assert( group->dataLocation() == MDAL_DataLocation::DataOnVertices2D );
+  assert( group->dataLocation() == MDAL_DataLocation::DataOnVertices );
 
   std::ofstream out( group->uri(), std::ofstream::out | std::ofstream::binary );
 

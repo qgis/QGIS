@@ -39,6 +39,7 @@ class QWidget;
 class QgsAdvancedDigitizingDockWidget;
 class QgsAttributeDialog;
 class QgsCustomDropHandler;
+class QgsCustomProjectOpenHandler;
 class QgsLayoutCustomDropHandler;
 class QgsFeature;
 class QgsLayerTreeMapCanvasBridge;
@@ -61,6 +62,7 @@ class QgsLocatorFilter;
 class QgsStatusBar;
 class QgsMeshLayer;
 class QgsBrowserGuiModel;
+class QgsDevToolWidgetFactory;
 
 
 /**
@@ -512,6 +514,18 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionHideSelectedLayers() = 0;
 
     /**
+     * Returns the Toggle Selected Layers action.
+     * \since QGIS 3.14
+     */
+    virtual QAction *actionToggleSelectedLayers() = 0;
+
+    /**
+     * Returns the Toggle Selected Layers Independently action.
+     * \since QGIS 3.14
+     */
+    virtual QAction *actionToggleSelectedLayersIndependently() = 0;
+
+    /**
      * Returns the Hide Deselected Layers action.
      * \since QGIS 3.0
      */
@@ -928,8 +942,24 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
     /**
-     * Register a new custom drop handler.
+     * Register a new tool in the development/debugging tools dock.
      * \note Ownership of the factory is not transferred, and the factory must
+     *       be unregistered when plugin is unloaded.
+     * \see unregisterDevToolWidgetFactory()
+     * \since QGIS 3.14
+     */
+    virtual void registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
+
+    /**
+     * Unregister a previously registered tool factory from the development/debugging tools dock.
+     * \see registerDevToolWidgetFactory()
+     * \since QGIS 3.14
+    */
+    virtual void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
+
+    /**
+     * Register a new custom drop \a handler.
+     * \note Ownership of \a handler is not transferred, and the handler must
      *       be unregistered when plugin is unloaded.
      * \see QgsCustomDropHandler
      * \see unregisterCustomDropHandler()
@@ -938,7 +968,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 
     /**
-     * Unregister a previously registered custom drop handler.
+     * Unregister a previously registered custom drop \a handler.
      * \see QgsCustomDropHandler
      * \see registerCustomDropHandler()
      * \since QGIS 3.0
@@ -946,8 +976,26 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 
     /**
+     * Register a new custom project open \a handler.
+     * \note Ownership of \a handler is not transferred, and the handler must
+     *       be unregistered when plugin is unloaded.
+     * \see QgsCustomProjectOpenHandler
+     * \see unregisterCustomProjectOpenHandler()
+     * \since QGIS 3.14
+     */
+    virtual void registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) = 0;
+
+    /**
+     * Unregister a previously registered custom project open \a handler.
+     * \see QgsCustomDropHandler
+     * \see registerCustomProjectOpenHandler()
+     * \since QGIS 3.14
+     */
+    virtual void unregisterCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) = 0;
+
+    /**
      * Register a new custom drop \a handler for layout windows.
-     * \note Ownership of the factory is not transferred, and the factory must
+     * \note Ownership of \a handler is not transferred, and the handler must
      *       be unregistered when plugin is unloaded.
      * \see QgsLayoutCustomDropHandler
      * \see unregisterCustomLayoutDropHandler()

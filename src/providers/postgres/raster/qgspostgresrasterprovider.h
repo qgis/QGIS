@@ -66,6 +66,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     virtual QString lastErrorTitle() override;
     virtual QString lastError() override;
     int capabilities() const override;
+    QgsFields fields() const override;
 
     // QgsRasterInterface interface
     int xSize() const override;
@@ -90,7 +91,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     QString mRasterColumn;
     //! Name of the schema
     QString mSchemaName;
-    //! SQL statement used to limit the features retrieved
+    //! SQL statement used to limit the features retrieved (subset string)
     QString mSqlWhereClause;
     //! Rectangle that contains the extent (bounding box) of the layer
     mutable QgsRectangle mExtent;
@@ -126,6 +127,21 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     double mScaleX = 0;
     //! Scale y
     double mScaleY = 0;
+    //! Temporal field index
+    int mTemporalFieldIndex = -1;
+    //! Temporal default time
+    QDateTime mTemporalDefaultTime;
+    //! Keep track of fields
+    QgsFields mAttributeFields;
+    //! Keeps track of identity fields
+    QHash<int, char> mIdentityFields;
+    //! Keeps track of default values
+    QHash<int, QString> mDefaultValues;
+    //! Data comment
+    QString mDataComment;
+    //! Layer metadata
+    QgsLayerMetadata mLayerMetadata;
+
 
     QString mDetectedSrid;            //!< Spatial reference detected in the database
     QString mRequestedSrid;           //!< Spatial reference requested in the uri
@@ -152,10 +168,24 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     QgsPostgresConn *connectionRO() const;
     QgsPostgresConn *connectionRW();
 
+    bool supportsSubsetString() const override { return true; }
+
+    QString subsetString() const override;
+    bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) override;
+
+    //! Subset string with temporal range from request (if any)
+    QString subsetStringWithTemporalRange() const;
+
+    //! Subset string with only the temporal default time part
+    QString defaultTimeSubsetString( const QDateTime &defaultTime ) const;
+
     bool hasSufficientPermsAndCapabilities();
     void disconnectDb();
     //! Initialize the raster by fetching metadata and creating spatial indexes.
     bool init();
+    //! Initialize fields and temporal capabilities
+    bool initFieldsAndTemporal();
+
     //! Search for overviews and store a map
     void findOverviews();
     //! Initialize spatial indexes
@@ -165,7 +195,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     static QString quotedJsonValue( const QVariant &value ) { return QgsPostgresConn::quotedJsonValue( value ); }
     static QString quotedByteaValue( const QVariant &value );
     QgsPostgresProvider::Relkind relkind() const;
-
+    bool loadFields();
 
     /**
      * Determine the fields making up the primary key
@@ -181,11 +211,33 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     void determinePrimaryKeyFromUriKeyColumn();
 
     /**
-     * Returns the SQL frament to retrieve the PK from the raster table
+     * Returns the quoted SQL frament to retrieve the PK from the raster table
      */
     QString pkSql();
 
+    /**
+     * Returns table comment
+     */
+    QString dataComment() const override;
+
+
+    /**
+     * Private struct for column type information
+     */
+    struct PGTypeInfo
+    {
+      QString typeName;
+      QString typeType;
+      QString typeElem;
+      int typeLen;
+    };
+
+    QStringList parseUriKey( const QString &key );
+
+  public:
 };
+
+
 
 struct QgsPostgresRasterProviderException: public std::exception
 {

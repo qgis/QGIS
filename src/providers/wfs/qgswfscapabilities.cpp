@@ -26,6 +26,7 @@
 
 #include <QDomDocument>
 #include <QStringList>
+#include <QUrlQuery>
 
 QgsWfsCapabilities::QgsWfsCapabilities( const QString &uri, const QgsDataProvider::ProviderOptions &options )
   : QgsWfsRequest( QgsWFSDataSourceURI( uri ) ),

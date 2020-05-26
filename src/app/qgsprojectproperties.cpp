@@ -69,6 +69,8 @@
 #include "qgsnumericformatwidget.h"
 #include "qgsbearingnumericformat.h"
 #include "qgsprojectdisplaysettings.h"
+#include "qgsprojecttimesettings.h"
+#include "qgstemporalutils.h"
 
 //qt includes
 #include <QInputDialog>
@@ -77,6 +79,8 @@
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QAbstractListModel>
+#include <QList>
+#include <QtCore>
 
 const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
 
@@ -119,6 +123,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( mButtonAddColor, &QToolButton::clicked, this, &QgsProjectProperties::mButtonAddColor_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectProperties::showHelp );
   connect( mCustomizeBearingFormatButton, &QPushButton::clicked, this, &QgsProjectProperties::customizeBearingFormat );
+  connect( mCalculateFromLayerButton, &QPushButton::clicked, this, &QgsProjectProperties::calculateFromLayersButton_clicked );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -228,6 +233,15 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
       mAutoTransaction->setToolTip( tr( "Layers are in edit mode. Stop edit mode on all layers to toggle transactional editing." ) );
     }
   }
+
+  // Set time settings input
+  QgsDateTimeRange range = QgsProject::instance()->timeSettings()->temporalRange();
+
+  mStartDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
+  mEndDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
+
+  mStartDateTimeEdit->setDateTime( range.begin() );
+  mEndDateTimeEdit->setDateTime( range.end() );
 
   mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
   title( QgsProject::instance()->title() );
@@ -665,20 +679,20 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mWMSMaxAtlasFeaturesSpinBox->setValue( QgsProject::instance()->readNumEntry( QStringLiteral( "WMSMaxAtlasFeatures" ), QStringLiteral( "/" ), 1 ) );
 
   QString defaultValueToolTip = tr( "In case of no other information to evaluate the map unit sized symbols, it uses default scale (on projected CRS) or default map units per mm (on geographic CRS)." );
-  mWMSDefaultMapUnitsPerMm = new QDoubleSpinBox();
-  mWMSDefaultMapUnitsPerMm->setDecimals( 4 );
-  mWMSDefaultMapUnitsPerMm->setSingleStep( 0.001 );
-  mWMSDefaultMapUnitsPerMm->setValue( QgsProject::instance()->readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 ) );
-  mWMSDefaultMapUnitsPerMm->setToolTip( defaultValueToolTip );
-  mWMSDefaultMapUnitScale = new QgsScaleWidget();
-  mWMSDefaultMapUnitScale->setScale( QgsProject::instance()->readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 ) * QgsUnitTypes::fromUnitToUnitFactor( QgsProject::instance()->crs().mapUnits(), QgsUnitTypes::DistanceMillimeters ) );
-  mWMSDefaultMapUnitScale->setToolTip( defaultValueToolTip );
   if ( QgsProject::instance()->crs().isGeographic() )
   {
+    mWMSDefaultMapUnitsPerMm = new QDoubleSpinBox();
+    mWMSDefaultMapUnitsPerMm->setDecimals( 4 );
+    mWMSDefaultMapUnitsPerMm->setSingleStep( 0.001 );
+    mWMSDefaultMapUnitsPerMm->setValue( QgsProject::instance()->readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 ) );
+    mWMSDefaultMapUnitsPerMm->setToolTip( defaultValueToolTip );
     mWMSDefaultMapUnitsPerMmLayout->addWidget( mWMSDefaultMapUnitsPerMm );
   }
   else
   {
+    mWMSDefaultMapUnitScale = new QgsScaleWidget();
+    mWMSDefaultMapUnitScale->setScale( QgsProject::instance()->readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 ) * QgsUnitTypes::fromUnitToUnitFactor( QgsProject::instance()->crs().mapUnits(), QgsUnitTypes::DistanceMillimeters ) );
+    mWMSDefaultMapUnitScale->setToolTip( defaultValueToolTip );
     mWMSDefaultMapUnitsPerMmLayout->addWidget( mWMSDefaultMapUnitScale );
     mWMSDefaultMapUnitsPerMmLabel->setText( tr( "Default scale for legend" ) );
   }
@@ -1017,6 +1031,12 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->setEvaluateDefaultValues( mEvaluateDefaultValues->isChecked() );
   QgsProject::instance()->setTrustLayerMetadata( mTrustProjectCheckBox->isChecked() );
 
+  // Time settings
+  QDateTime start = mStartDateTimeEdit->dateTime();
+  QDateTime end = mEndDateTimeEdit->dateTime();
+
+  QgsProject::instance()->timeSettings()->setTemporalRange( QgsDateTimeRange( start, end ) );
+
   // set the mouse display precision method and the
   // number of decimal places for the manual option
   // Note. Qt 3.2.3 and greater have a function selectedId() that
@@ -1330,17 +1350,15 @@ void QgsProjectProperties::apply()
   int maxAtlasFeatures = mWMSMaxAtlasFeaturesSpinBox->value();
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSMaxAtlasFeatures" ), QStringLiteral( "/" ), maxAtlasFeatures );
 
-  double defaultMapUnitsPerMm;
-  if ( QgsProject::instance()->crs().isGeographic() )
+  if ( QgsProject::instance()->crs().isGeographic() && mWMSDefaultMapUnitsPerMm )
   {
-    defaultMapUnitsPerMm = mWMSDefaultMapUnitsPerMm->value();
+    QgsProject::instance()->writeEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), mWMSDefaultMapUnitsPerMm->value() );
   }
-  else
+  else if ( mWMSDefaultMapUnitScale )
   {
-    defaultMapUnitsPerMm = mWMSDefaultMapUnitScale->scale() / QgsUnitTypes::fromUnitToUnitFactor( QgsProject::instance()->crs().mapUnits(), QgsUnitTypes::DistanceMillimeters );
+    double defaultMapUnitsPerMm = mWMSDefaultMapUnitScale->scale() / QgsUnitTypes::fromUnitToUnitFactor( QgsProject::instance()->crs().mapUnits(), QgsUnitTypes::DistanceMillimeters );
+    QgsProject::instance()->writeEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), defaultMapUnitsPerMm );
   }
-
-  QgsProject::instance()->writeEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), defaultMapUnitsPerMm );
 
   QgsProject::instance()->writeEntry( QStringLiteral( "WMTSUrl" ), QStringLiteral( "/" ), mWMTSUrlLineEdit->text() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMTSMinScale" ), QStringLiteral( "/" ), mWMTSMinScaleLineEdit->value() );
@@ -2475,6 +2493,13 @@ void QgsProjectProperties::mButtonAddColor_clicked()
   activateWindow();
 
   mTreeProjectColors->addColor( newColor, QgsSymbolLayerUtils::colorToName( newColor ) );
+}
+
+void QgsProjectProperties::calculateFromLayersButton_clicked()
+{
+  const QgsDateTimeRange range = QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject::instance() );
+  mStartDateTimeEdit->setDateTime( range.begin() );
+  mEndDateTimeEdit->setDateTime( range.end() );
 }
 
 QListWidgetItem *QgsProjectProperties::addScaleToScaleList( const QString &newScale )

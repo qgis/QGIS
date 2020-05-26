@@ -114,6 +114,10 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     //! Emitted when the scene's state has changed
     void sceneStateChanged();
 
+  public slots:
+    //! Updates the temporale entities
+    void updateTemporal();
+
   private slots:
     void onCameraChanged();
     void onFrameTriggered( float dt );
@@ -135,6 +139,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void updateScene();
     bool updateCameraNearFarPlanes();
     void finalizeNewEntity( Qt3DCore::QEntity *newEntity );
+    int maximumTextureSize() const;
 
   private:
     const Qgs3DMapSettings &mMap;

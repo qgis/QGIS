@@ -1699,6 +1699,11 @@ void QgsMapLayer::setCustomProperties( const QgsObjectCustomProperties &properti
   mCustomProperties = properties;
 }
 
+const QgsObjectCustomProperties &QgsMapLayer::customProperties() const
+{
+  return mCustomProperties;
+}
+
 QVariant QgsMapLayer::customProperty( const QString &value, const QVariant &defaultValue ) const
 {
   return mCustomProperties.value( value, defaultValue );

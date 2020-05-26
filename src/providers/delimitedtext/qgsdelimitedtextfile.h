@@ -194,7 +194,7 @@ class QgsDelimitedTextFile : public QObject
     }
 
     /**
-     * Set the option for dicarding empty fields
+     * Set the option for discarding empty fields
      * \param useheaders Empty fields will be discarded if true
      */
     void setDiscardEmptyFields( bool discardEmptyFields = true );

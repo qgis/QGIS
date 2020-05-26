@@ -63,7 +63,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
         bool operator==( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const
         {
-          return mLayer == other.mLayer &&
+          return mLayer == other.mLayer && isVisible == other.isVisible &&
                  usingCurrentStyle == other.usingCurrentStyle && currentStyle == other.currentStyle &&
                  usingLegendItems == other.usingLegendItems && checkedLegendItems == other.checkedLegendItems &&
                  expandedLegendItems == other.expandedLegendItems && expandedLayerNode == other.expandedLayerNode;
@@ -78,6 +78,12 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
         //! Sets the map layer for this record
         void setLayer( QgsMapLayer *layer );
+
+        /**
+         * TRUE if the layer is visible in the associated theme.
+         * \since QGIS 3.14
+         */
+        bool isVisible = true;
 
         //! Whether current style is valid and should be applied
         bool usingCurrentStyle = false;

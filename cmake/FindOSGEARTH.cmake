@@ -27,6 +27,7 @@ FIND_PATH( ${THIS_OSGEARTH_INCLUDE_DIR} ${THIS_OSGEARTH_INCLUDE_FILE}
         $ENV{OSGEARTHDIR}
         $ENV{OSGEARTH_DIR}
         $ENV{OSGEO4W_ROOT}
+        $ENV{LIB_DIR}
         /usr/local/
         /usr/
         /sw/ # Fink
@@ -62,6 +63,7 @@ FIND_LIBRARY(${MYLIBRARY}
         $ENV{OSGEO4W_ROOT}
         ~/Library/Frameworks
         /Library/Frameworks
+        $ENV{LIB_DIR}
         /usr/local
         /usr
         /sw

@@ -1,4 +1,4 @@
-Content-Type: application/openapi+json;version=3.0
+Content-Type: application/vnd.oai.openapi+json;version=3.0
 
 {
   "components": {
@@ -563,7 +563,7 @@ Content-Type: application/openapi+json;version=3.0
         "responses": {
           "200": {
             "content": {
-              "application/openapi+json;version=3.0": {
+              "application/vnd.oai.openapi+json;version=3.0": {
                 "schema": {
                   "type": "object"
                 }
@@ -782,40 +782,32 @@ Content-Type: application/openapi+json;version=3.0
       "post": {
         "description": "Adds a new feature to the collection {collectionId}",
         "operationId": "getFeatures_testlayer_èé_2_a5f61891_b949_43e3_ad30_84013fc922de_POST",
-        "responses": [
-          [
-            "201",
-            {
-              "description": "A new feature was successfully added to the collection"
-            },
-            "403",
-            {
-              "description": "Forbidden: the operation requested was not authorized"
-            },
-            "500",
-            {
-              "description": "Posted data could not be parsed correctly or another error occurred"
-            }
-          ],
-          [
-            "default",
-            {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/exception"
-                  }
-                },
-                "text/html": {
-                  "schema": {
-                    "type": "string"
-                  }
+        "responses": {
+          "201": {
+            "description": "A new feature was successfully added to the collection"
+          },
+          "403": {
+            "description": "Forbidden: the operation requested was not authorized"
+          },
+          "500": {
+            "description": "Posted data could not be parsed correctly or another error occurred"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/exception"
                 }
               },
-              "description": "An error occurred."
-            }
-          ]
-        ],
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "An error occurred."
+          }
+        },
         "summary": "Adds a new feature to the collection {collectionId}",
         "tags": [
           "edit",
@@ -827,40 +819,32 @@ Content-Type: application/openapi+json;version=3.0
       "delete": {
         "description": "Deletes the feature with ID {featureId} in the collection {collectionId}",
         "operationId": "getFeatureDELETE",
-        "responses": [
-          [
-            "201",
-            {
-              "description": "The feature was successfully deleted from the collection"
-            },
-            "403",
-            {
-              "description": "Forbidden: the operation requested was not authorized"
-            },
-            "500",
-            {
-              "description": "Posted data could not be parsed correctly or another error occurred"
-            }
-          ],
-          [
-            "default",
-            {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/exception"
-                  }
-                },
-                "text/html": {
-                  "schema": {
-                    "type": "string"
-                  }
+        "responses": {
+          "201": {
+            "description": "The feature was successfully deleted from the collection"
+          },
+          "403": {
+            "description": "Forbidden: the operation requested was not authorized"
+          },
+          "500": {
+            "description": "Posted data could not be parsed correctly or another error occurred"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/exception"
                 }
               },
-              "description": "An error occurred."
-            }
-          ]
-        ],
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "An error occurred."
+          }
+        },
         "summary": "Deletes the feature with ID {featureId} in the collection {collectionId}",
         "tags": [
           "edit",
@@ -915,40 +899,32 @@ Content-Type: application/openapi+json;version=3.0
       "patch": {
         "description": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
         "operationId": "getFeaturePUT",
-        "responses": [
-          [
-            "200",
-            {
-              "description": "The feature was successfully updated"
-            },
-            "403",
-            {
-              "description": "Forbidden: the operation requested was not authorized"
-            },
-            "500",
-            {
-              "description": "Posted data could not be parsed correctly or another error occurred"
-            }
-          ],
-          [
-            "default",
-            {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/exception"
-                  }
-                },
-                "text/html": {
-                  "schema": {
-                    "type": "string"
-                  }
+        "responses": {
+          "200": {
+            "description": "The feature was successfully updated"
+          },
+          "403": {
+            "description": "Forbidden: the operation requested was not authorized"
+          },
+          "500": {
+            "description": "Posted data could not be parsed correctly or another error occurred"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/exception"
                 }
               },
-              "description": "An error occurred."
-            }
-          ]
-        ],
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "An error occurred."
+          }
+        },
         "summary": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
         "tags": [
           "edit"
@@ -957,40 +933,32 @@ Content-Type: application/openapi+json;version=3.0
       "put": {
         "description": "Replaces the feature with ID {featureId} in the collection {collectionId}",
         "operationId": "getFeaturePUT",
-        "responses": [
-          [
-            "200",
-            {
-              "description": "The feature was successfully updated"
-            },
-            "403",
-            {
-              "description": "Forbidden: the operation requested was not authorized"
-            },
-            "500",
-            {
-              "description": "Posted data could not be parsed correctly or another error occurred"
-            }
-          ],
-          [
-            "default",
-            {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/exception"
-                  }
-                },
-                "text/html": {
-                  "schema": {
-                    "type": "string"
-                  }
+        "responses": {
+          "200": {
+            "description": "The feature was successfully updated"
+          },
+          "403": {
+            "description": "Forbidden: the operation requested was not authorized"
+          },
+          "500": {
+            "description": "Posted data could not be parsed correctly or another error occurred"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/exception"
                 }
               },
-              "description": "An error occurred."
-            }
-          ]
-        ],
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "An error occurred."
+          }
+        },
         "summary": "Replaces the feature with ID {featureId} in the collection {collectionId}",
         "tags": [
           "edit",
@@ -1151,40 +1119,32 @@ Content-Type: application/openapi+json;version=3.0
       "post": {
         "description": "Adds a new feature to the collection {collectionId}",
         "operationId": "getFeatures_testlayer_èé_cf86cf11_222f_4b62_929c_12cfc82b9774_POST",
-        "responses": [
-          [
-            "201",
-            {
-              "description": "A new feature was successfully added to the collection"
-            },
-            "403",
-            {
-              "description": "Forbidden: the operation requested was not authorized"
-            },
-            "500",
-            {
-              "description": "Posted data could not be parsed correctly or another error occurred"
-            }
-          ],
-          [
-            "default",
-            {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/exception"
-                  }
-                },
-                "text/html": {
-                  "schema": {
-                    "type": "string"
-                  }
+        "responses": {
+          "201": {
+            "description": "A new feature was successfully added to the collection"
+          },
+          "403": {
+            "description": "Forbidden: the operation requested was not authorized"
+          },
+          "500": {
+            "description": "Posted data could not be parsed correctly or another error occurred"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/exception"
                 }
               },
-              "description": "An error occurred."
-            }
-          ]
-        ],
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "An error occurred."
+          }
+        },
         "summary": "Adds a new feature to the collection {collectionId}",
         "tags": [
           "edit",
@@ -1196,40 +1156,32 @@ Content-Type: application/openapi+json;version=3.0
       "delete": {
         "description": "Deletes the feature with ID {featureId} in the collection {collectionId}",
         "operationId": "getFeatureDELETE",
-        "responses": [
-          [
-            "201",
-            {
-              "description": "The feature was successfully deleted from the collection"
-            },
-            "403",
-            {
-              "description": "Forbidden: the operation requested was not authorized"
-            },
-            "500",
-            {
-              "description": "Posted data could not be parsed correctly or another error occurred"
-            }
-          ],
-          [
-            "default",
-            {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/exception"
-                  }
-                },
-                "text/html": {
-                  "schema": {
-                    "type": "string"
-                  }
+        "responses": {
+          "201": {
+            "description": "The feature was successfully deleted from the collection"
+          },
+          "403": {
+            "description": "Forbidden: the operation requested was not authorized"
+          },
+          "500": {
+            "description": "Posted data could not be parsed correctly or another error occurred"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/exception"
                 }
               },
-              "description": "An error occurred."
-            }
-          ]
-        ],
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "An error occurred."
+          }
+        },
         "summary": "Deletes the feature with ID {featureId} in the collection {collectionId}",
         "tags": [
           "edit",
@@ -1284,40 +1236,32 @@ Content-Type: application/openapi+json;version=3.0
       "patch": {
         "description": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
         "operationId": "getFeaturePUT",
-        "responses": [
-          [
-            "200",
-            {
-              "description": "The feature was successfully updated"
-            },
-            "403",
-            {
-              "description": "Forbidden: the operation requested was not authorized"
-            },
-            "500",
-            {
-              "description": "Posted data could not be parsed correctly or another error occurred"
-            }
-          ],
-          [
-            "default",
-            {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/exception"
-                  }
-                },
-                "text/html": {
-                  "schema": {
-                    "type": "string"
-                  }
+        "responses": {
+          "200": {
+            "description": "The feature was successfully updated"
+          },
+          "403": {
+            "description": "Forbidden: the operation requested was not authorized"
+          },
+          "500": {
+            "description": "Posted data could not be parsed correctly or another error occurred"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/exception"
                 }
               },
-              "description": "An error occurred."
-            }
-          ]
-        ],
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "An error occurred."
+          }
+        },
         "summary": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
         "tags": [
           "edit"
@@ -1326,40 +1270,32 @@ Content-Type: application/openapi+json;version=3.0
       "put": {
         "description": "Replaces the feature with ID {featureId} in the collection {collectionId}",
         "operationId": "getFeaturePUT",
-        "responses": [
-          [
-            "200",
-            {
-              "description": "The feature was successfully updated"
-            },
-            "403",
-            {
-              "description": "Forbidden: the operation requested was not authorized"
-            },
-            "500",
-            {
-              "description": "Posted data could not be parsed correctly or another error occurred"
-            }
-          ],
-          [
-            "default",
-            {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/exception"
-                  }
-                },
-                "text/html": {
-                  "schema": {
-                    "type": "string"
-                  }
+        "responses": {
+          "200": {
+            "description": "The feature was successfully updated"
+          },
+          "403": {
+            "description": "Forbidden: the operation requested was not authorized"
+          },
+          "500": {
+            "description": "Posted data could not be parsed correctly or another error occurred"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/exception"
                 }
               },
-              "description": "An error occurred."
-            }
-          ]
-        ],
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "An error occurred."
+          }
+        },
         "summary": "Replaces the feature with ID {featureId} in the collection {collectionId}",
         "tags": [
           "edit",
@@ -1520,40 +1456,32 @@ Content-Type: application/openapi+json;version=3.0
       "post": {
         "description": "Adds a new feature to the collection {collectionId}",
         "operationId": "getFeatures_testlayer_c0988fd7_97ca_451d_adbc_37ad6d10583a_POST",
-        "responses": [
-          [
-            "201",
-            {
-              "description": "A new feature was successfully added to the collection"
-            },
-            "403",
-            {
-              "description": "Forbidden: the operation requested was not authorized"
-            },
-            "500",
-            {
-              "description": "Posted data could not be parsed correctly or another error occurred"
-            }
-          ],
-          [
-            "default",
-            {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/exception"
-                  }
-                },
-                "text/html": {
-                  "schema": {
-                    "type": "string"
-                  }
+        "responses": {
+          "201": {
+            "description": "A new feature was successfully added to the collection"
+          },
+          "403": {
+            "description": "Forbidden: the operation requested was not authorized"
+          },
+          "500": {
+            "description": "Posted data could not be parsed correctly or another error occurred"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/exception"
                 }
               },
-              "description": "An error occurred."
-            }
-          ]
-        ],
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "An error occurred."
+          }
+        },
         "summary": "Adds a new feature to the collection {collectionId}",
         "tags": [
           "edit",
@@ -1565,40 +1493,32 @@ Content-Type: application/openapi+json;version=3.0
       "delete": {
         "description": "Deletes the feature with ID {featureId} in the collection {collectionId}",
         "operationId": "getFeatureDELETE",
-        "responses": [
-          [
-            "201",
-            {
-              "description": "The feature was successfully deleted from the collection"
-            },
-            "403",
-            {
-              "description": "Forbidden: the operation requested was not authorized"
-            },
-            "500",
-            {
-              "description": "Posted data could not be parsed correctly or another error occurred"
-            }
-          ],
-          [
-            "default",
-            {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/exception"
-                  }
-                },
-                "text/html": {
-                  "schema": {
-                    "type": "string"
-                  }
+        "responses": {
+          "201": {
+            "description": "The feature was successfully deleted from the collection"
+          },
+          "403": {
+            "description": "Forbidden: the operation requested was not authorized"
+          },
+          "500": {
+            "description": "Posted data could not be parsed correctly or another error occurred"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/exception"
                 }
               },
-              "description": "An error occurred."
-            }
-          ]
-        ],
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "An error occurred."
+          }
+        },
         "summary": "Deletes the feature with ID {featureId} in the collection {collectionId}",
         "tags": [
           "edit",
@@ -1653,40 +1573,32 @@ Content-Type: application/openapi+json;version=3.0
       "patch": {
         "description": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
         "operationId": "getFeaturePUT",
-        "responses": [
-          [
-            "200",
-            {
-              "description": "The feature was successfully updated"
-            },
-            "403",
-            {
-              "description": "Forbidden: the operation requested was not authorized"
-            },
-            "500",
-            {
-              "description": "Posted data could not be parsed correctly or another error occurred"
-            }
-          ],
-          [
-            "default",
-            {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/exception"
-                  }
-                },
-                "text/html": {
-                  "schema": {
-                    "type": "string"
-                  }
+        "responses": {
+          "200": {
+            "description": "The feature was successfully updated"
+          },
+          "403": {
+            "description": "Forbidden: the operation requested was not authorized"
+          },
+          "500": {
+            "description": "Posted data could not be parsed correctly or another error occurred"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/exception"
                 }
               },
-              "description": "An error occurred."
-            }
-          ]
-        ],
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "An error occurred."
+          }
+        },
         "summary": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
         "tags": [
           "edit"
@@ -1695,40 +1607,32 @@ Content-Type: application/openapi+json;version=3.0
       "put": {
         "description": "Replaces the feature with ID {featureId} in the collection {collectionId}",
         "operationId": "getFeaturePUT",
-        "responses": [
-          [
-            "200",
-            {
-              "description": "The feature was successfully updated"
-            },
-            "403",
-            {
-              "description": "Forbidden: the operation requested was not authorized"
-            },
-            "500",
-            {
-              "description": "Posted data could not be parsed correctly or another error occurred"
-            }
-          ],
-          [
-            "default",
-            {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/exception"
-                  }
-                },
-                "text/html": {
-                  "schema": {
-                    "type": "string"
-                  }
+        "responses": {
+          "200": {
+            "description": "The feature was successfully updated"
+          },
+          "403": {
+            "description": "Forbidden: the operation requested was not authorized"
+          },
+          "500": {
+            "description": "Posted data could not be parsed correctly or another error occurred"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/exception"
                 }
               },
-              "description": "An error occurred."
-            }
-          ]
-        ],
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "An error occurred."
+          }
+        },
         "summary": "Replaces the feature with ID {featureId} in the collection {collectionId}",
         "tags": [
           "edit",
@@ -1889,40 +1793,32 @@ Content-Type: application/openapi+json;version=3.0
       "post": {
         "description": "Adds a new feature to the collection {collectionId}",
         "operationId": "getFeatures_testlayer20150528120452665_POST",
-        "responses": [
-          [
-            "201",
-            {
-              "description": "A new feature was successfully added to the collection"
-            },
-            "403",
-            {
-              "description": "Forbidden: the operation requested was not authorized"
-            },
-            "500",
-            {
-              "description": "Posted data could not be parsed correctly or another error occurred"
-            }
-          ],
-          [
-            "default",
-            {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/exception"
-                  }
-                },
-                "text/html": {
-                  "schema": {
-                    "type": "string"
-                  }
+        "responses": {
+          "201": {
+            "description": "A new feature was successfully added to the collection"
+          },
+          "403": {
+            "description": "Forbidden: the operation requested was not authorized"
+          },
+          "500": {
+            "description": "Posted data could not be parsed correctly or another error occurred"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/exception"
                 }
               },
-              "description": "An error occurred."
-            }
-          ]
-        ],
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "An error occurred."
+          }
+        },
         "summary": "Adds a new feature to the collection {collectionId}",
         "tags": [
           "edit",
@@ -1934,40 +1830,32 @@ Content-Type: application/openapi+json;version=3.0
       "delete": {
         "description": "Deletes the feature with ID {featureId} in the collection {collectionId}",
         "operationId": "getFeatureDELETE",
-        "responses": [
-          [
-            "201",
-            {
-              "description": "The feature was successfully deleted from the collection"
-            },
-            "403",
-            {
-              "description": "Forbidden: the operation requested was not authorized"
-            },
-            "500",
-            {
-              "description": "Posted data could not be parsed correctly or another error occurred"
-            }
-          ],
-          [
-            "default",
-            {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/exception"
-                  }
-                },
-                "text/html": {
-                  "schema": {
-                    "type": "string"
-                  }
+        "responses": {
+          "201": {
+            "description": "The feature was successfully deleted from the collection"
+          },
+          "403": {
+            "description": "Forbidden: the operation requested was not authorized"
+          },
+          "500": {
+            "description": "Posted data could not be parsed correctly or another error occurred"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/exception"
                 }
               },
-              "description": "An error occurred."
-            }
-          ]
-        ],
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "An error occurred."
+          }
+        },
         "summary": "Deletes the feature with ID {featureId} in the collection {collectionId}",
         "tags": [
           "edit",
@@ -2022,40 +1910,32 @@ Content-Type: application/openapi+json;version=3.0
       "patch": {
         "description": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
         "operationId": "getFeaturePUT",
-        "responses": [
-          [
-            "200",
-            {
-              "description": "The feature was successfully updated"
-            },
-            "403",
-            {
-              "description": "Forbidden: the operation requested was not authorized"
-            },
-            "500",
-            {
-              "description": "Posted data could not be parsed correctly or another error occurred"
-            }
-          ],
-          [
-            "default",
-            {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/exception"
-                  }
-                },
-                "text/html": {
-                  "schema": {
-                    "type": "string"
-                  }
+        "responses": {
+          "200": {
+            "description": "The feature was successfully updated"
+          },
+          "403": {
+            "description": "Forbidden: the operation requested was not authorized"
+          },
+          "500": {
+            "description": "Posted data could not be parsed correctly or another error occurred"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/exception"
                 }
               },
-              "description": "An error occurred."
-            }
-          ]
-        ],
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "An error occurred."
+          }
+        },
         "summary": "Changes attributes of feature with ID {featureId} in the collection {collectionId}",
         "tags": [
           "edit"
@@ -2064,40 +1944,32 @@ Content-Type: application/openapi+json;version=3.0
       "put": {
         "description": "Replaces the feature with ID {featureId} in the collection {collectionId}",
         "operationId": "getFeaturePUT",
-        "responses": [
-          [
-            "200",
-            {
-              "description": "The feature was successfully updated"
-            },
-            "403",
-            {
-              "description": "Forbidden: the operation requested was not authorized"
-            },
-            "500",
-            {
-              "description": "Posted data could not be parsed correctly or another error occurred"
-            }
-          ],
-          [
-            "default",
-            {
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/exception"
-                  }
-                },
-                "text/html": {
-                  "schema": {
-                    "type": "string"
-                  }
+        "responses": {
+          "200": {
+            "description": "The feature was successfully updated"
+          },
+          "403": {
+            "description": "Forbidden: the operation requested was not authorized"
+          },
+          "500": {
+            "description": "Posted data could not be parsed correctly or another error occurred"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/exception"
                 }
               },
-              "description": "An error occurred."
-            }
-          ]
-        ],
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "An error occurred."
+          }
+        },
         "summary": "Replaces the feature with ID {featureId} in the collection {collectionId}",
         "tags": [
           "edit",

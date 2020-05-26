@@ -91,6 +91,12 @@ QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
       break;
     }
 
+    case QgsMapLayerType::VectorTileLayer:
+    {
+      layerType = QStringLiteral( "vector-tile" );
+      break;
+    }
+
     case QgsMapLayerType::PluginLayer:
     {
       // plugin layers do not have a standard way of storing their URI...

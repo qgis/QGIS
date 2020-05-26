@@ -92,12 +92,15 @@
          <property name="wordWrap">
           <bool>true</bool>
          </property>
+         <property name="currentRow">
+          <number>0</number>
+         </property>
          <item>
           <property name="text">
            <string>Information</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/metadata.svg</normaloff>:/images/themes/default/propertyicons/metadata.svg</iconset>
           </property>
          </item>
@@ -106,7 +109,7 @@
            <string>Source</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/system.svg</normaloff>:/images/themes/default/propertyicons/system.svg</iconset>
           </property>
          </item>
@@ -118,7 +121,7 @@
            <string>Symbology</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/symbology.svg</normaloff>:/images/themes/default/propertyicons/symbology.svg</iconset>
           </property>
          </item>
@@ -130,7 +133,7 @@
            <string>Transparency</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/transparency.svg</normaloff>:/images/themes/default/propertyicons/transparency.svg</iconset>
           </property>
          </item>
@@ -142,7 +145,7 @@
            <string>Histogram</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/histogram.svg</normaloff>:/images/themes/default/propertyicons/histogram.svg</iconset>
           </property>
          </item>
@@ -154,8 +157,20 @@
            <string>Rendering</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/rendering.svg</normaloff>:/images/themes/default/propertyicons/rendering.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Temporal</string>
+          </property>
+          <property name="toolTip">
+           <string>Temporal Settings</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/temporal.svg</normaloff>:/images/themes/default/propertyicons/temporal.svg</iconset>
           </property>
          </item>
          <item>
@@ -166,7 +181,7 @@
            <string>Pyramids</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/pyramids.svg</normaloff>:/images/themes/default/propertyicons/pyramids.svg</iconset>
           </property>
          </item>
@@ -175,7 +190,7 @@
            <string>Metadata</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/editmetadata.svg</normaloff>:/images/themes/default/propertyicons/editmetadata.svg</iconset>
           </property>
          </item>
@@ -184,7 +199,7 @@
            <string>Legend</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/legend.svg</normaloff>:/images/themes/default/legend.svg</iconset>
           </property>
          </item>
@@ -196,7 +211,7 @@
            <string>Edit QGIS Server settings</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/overlay.svg</normaloff>:/images/themes/default/propertyicons/overlay.svg</iconset>
           </property>
          </item>
@@ -239,10 +254,22 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_20">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QgsWebView" name="mMetadataViewer" native="true"/>
            </item>
@@ -274,9 +301,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>261</width>
-                <height>92</height>
+                <y>-188</y>
+                <width>629</width>
+                <height>914</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -336,14 +363,294 @@ border-radius: 2px;</string>
                 </widget>
                </item>
                <item>
+                <widget class="QGroupBox" name="mWmstGroup">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="title">
+                  <string>Use static WMS-T capabilities</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_15">
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_16">
+                    <property name="text">
+                     <string>Time slice mode</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="0" colspan="3">
+                   <widget class="QLabel" name="label_10">
+                    <property name="text">
+                     <string>Note:  If the capabilities of this layer move out of this time range, the range will be reset to layer's advertised  default layer time range.</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="0" colspan="3">
+                   <widget class="QFrame" name="mStaticWmstFrame">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="frameShape">
+                     <enum>QFrame::NoFrame</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_16">
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item row="2" column="1" colspan="2">
+                      <widget class="QPushButton" name="mSetEndAsStartStaticButton">
+                       <property name="text">
+                        <string>Set end same as start</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_13">
+                       <property name="text">
+                        <string>Start date</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1" colspan="2">
+                      <widget class="QgsDateTimeEdit" name="mEndStaticDateTimeEdit">
+                       <property name="displayFormat">
+                        <string>M/d/yyyy H:mm:ss AP</string>
+                       </property>
+                       <property name="timeSpec">
+                        <enum>Qt::UTC</enum>
+                       </property>
+                       <property name="allowNull" stdset="0">
+                        <bool>false</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="label_4">
+                       <property name="text">
+                        <string>End date</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="3" column="1" colspan="2">
+                      <widget class="QCheckBox" name="mDisableTime">
+                       <property name="text">
+                        <string>Use dates only</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1" colspan="2">
+                      <widget class="QgsDateTimeEdit" name="mStartStaticDateTimeEdit">
+                       <property name="dateTime">
+                        <datetime>
+                         <hour>2</hour>
+                         <minute>3</minute>
+                         <second>57</second>
+                         <year>2020</year>
+                         <month>4</month>
+                         <day>30</day>
+                        </datetime>
+                       </property>
+                       <property name="currentSection">
+                        <enum>QDateTimeEdit::MonthSection</enum>
+                       </property>
+                       <property name="displayFormat">
+                        <string>M/d/yyyy H:mm:ss AP</string>
+                       </property>
+                       <property name="timeSpec">
+                        <enum>Qt::UTC</enum>
+                       </property>
+                       <property name="allowNull" stdset="0">
+                        <bool>false</bool>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="9" column="0">
+                   <widget class="QFrame" name="mWmstReferenceTimeFrame">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="frameShape">
+                     <enum>QFrame::NoFrame</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                    <layout class="QGridLayout" name="gridLayout_17">
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <item row="0" column="0">
+                      <widget class="QgsDateTimeEdit" name="mReferenceDateTimeEdit">
+                       <property name="dateTime">
+                        <datetime>
+                         <hour>16</hour>
+                         <minute>20</minute>
+                         <second>36</second>
+                         <year>2020</year>
+                         <month>1</month>
+                         <day>25</day>
+                        </datetime>
+                       </property>
+                       <property name="date">
+                        <date>
+                         <year>2020</year>
+                         <month>1</month>
+                         <day>25</day>
+                        </date>
+                       </property>
+                       <property name="currentSection">
+                        <enum>QDateTimeEdit::MonthSection</enum>
+                       </property>
+                       <property name="displayFormat">
+                        <string>M/d/yyyy H:mm:ss AP</string>
+                       </property>
+                       <property name="calendarPopup">
+                        <bool>false</bool>
+                       </property>
+                       <property name="timeSpec">
+                        <enum>Qt::UTC</enum>
+                       </property>
+                       <property name="allowNull" stdset="0">
+                        <bool>false</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="mReferenceTimeLabel">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="0" column="0" colspan="3">
+                   <widget class="QLabel" name="mLabel">
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1" rowspan="2" colspan="2">
+                   <widget class="QComboBox" name="mFetchModeComboBox"/>
+                  </item>
+                  <item row="4" column="0" colspan="3">
+                   <widget class="QRadioButton" name="mStaticTemporalRange">
+                    <property name="text">
+                     <string>Use static WMS-T temporal range</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="0" colspan="3">
+                   <widget class="QRadioButton" name="mProjectTemporalRange">
+                    <property name="text">
+                     <string>Pass project temporal range to provider</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="8" column="0" colspan="3">
+                   <widget class="QCheckBox" name="mReferenceTime">
+                    <property name="text">
+                     <string>Reference time</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="mPostgresRasterTemporalGroup">
+                 <property name="title">
+                  <string>Temporal capabilities</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_18">
+                  <item row="0" column="0" colspan="2">
+                   <widget class="QLabel" name="mPostgresRasterTemporalLabel">
+                    <property name="text">
+                     <string>If the dataset contains multiple rasters belonging to a time series, specify the field that contains the time information, the type of the field can be any type that can be converted to a timestamp.</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="label_12">
+                    <property name="text">
+                     <string>Default time</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QgsFieldComboBox" name="mPostgresRasterTemporalFieldComboBox">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                      <horstretch>1</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label">
+                    <property name="text">
+                     <string>Temporal field</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QgsDateTimeEdit" name="mPostgresRasterDefaultTime"/>
+                  </item>
+                  <item row="2" column="0" colspan="2">
+                   <widget class="QLabel" name="label_14">
+                    <property name="text">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;A default value can be specified and it will be used when the temporal controller is not requesting any particular time.&lt;/p&gt;&lt;p&gt;It is recommended to set a default temporal value here instead of using a provider filter because the provider filter will still be active when using the temporal controller while this default value will be ignored.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <spacer name="verticalSpacer_3">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
                  </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Expanding</enum>
+                 </property>
                  <property name="sizeHint" stdset="0">
                   <size>
-                   <width>20</width>
-                   <height>415</height>
+                   <width>17</width>
+                   <height>111</height>
                   </size>
                  </property>
                 </spacer>
@@ -381,11 +688,23 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>512</width>
-                <height>502</height>
+                <width>470</width>
+                <height>514</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="mBandRenderingGrpBx">
                  <property name="sizePolicy">
@@ -701,7 +1020,7 @@ border-radius: 2px;</string>
                      <string>Reset</string>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
                     </property>
                     <property name="toolButtonStyle">
@@ -969,12 +1288,18 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>348</width>
-                <height>446</height>
+                <width>332</width>
+                <height>477</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
                <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
                 <number>0</number>
                </property>
                <property name="bottomMargin">
@@ -1167,7 +1492,7 @@ border-radius: 2px;</string>
                        <string>…</string>
                       </property>
                       <property name="icon">
-                       <iconset>
+                       <iconset resource="../../images/images.qrc">
                         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                       </property>
                      </widget>
@@ -1184,7 +1509,7 @@ border-radius: 2px;</string>
                        <string>…</string>
                       </property>
                       <property name="icon">
-                       <iconset>
+                       <iconset resource="../../images/images.qrc">
                         <normaloff>:/images/themes/default/mActionContextHelp.png</normaloff>:/images/themes/default/mActionContextHelp.png</iconset>
                       </property>
                      </widget>
@@ -1198,7 +1523,7 @@ border-radius: 2px;</string>
                        <string>…</string>
                       </property>
                       <property name="icon">
-                       <iconset>
+                       <iconset resource="../../images/images.qrc">
                         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                       </property>
                      </widget>
@@ -1212,7 +1537,7 @@ border-radius: 2px;</string>
                        <string>…</string>
                       </property>
                       <property name="icon">
-                       <iconset>
+                       <iconset resource="../../images/images.qrc">
                         <normaloff>:/images/themes/default/mActionOpenTable.svg</normaloff>:/images/themes/default/mActionOpenTable.svg</iconset>
                       </property>
                      </widget>
@@ -1226,7 +1551,7 @@ border-radius: 2px;</string>
                        <string>…</string>
                       </property>
                       <property name="icon">
-                       <iconset>
+                       <iconset resource="../../images/images.qrc">
                         <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
                       </property>
                      </widget>
@@ -1240,7 +1565,7 @@ border-radius: 2px;</string>
                        <string>…</string>
                       </property>
                       <property name="icon">
-                       <iconset>
+                       <iconset resource="../../images/images.qrc">
                         <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
                       </property>
                      </widget>
@@ -1317,11 +1642,17 @@ border-radius: 2px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>98</width>
-                <height>42</height>
+                <height>45</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_16">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
                <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
                 <number>0</number>
                </property>
                <property name="bottomMargin">
@@ -1350,6 +1681,18 @@ border-radius: 2px;</string>
          </widget>
          <widget class="QWidget" name="mOptsPage_Rendering">
           <layout class="QVBoxLayout" name="verticalLayout_11">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QgsCollapsibleGroupBox" name="chkUseScaleDependentRendering">
              <property name="title">
@@ -1454,6 +1797,41 @@ border-radius: 2px;</string>
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="mOptsPage_Temporal">
+          <layout class="QVBoxLayout" name="verticalLayout_21">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QFrame" name="temporalFrame">
+             <property name="minimumSize">
+              <size>
+               <width>100</width>
+               <height>450</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="mOptsPage_Pyramids">
           <layout class="QVBoxLayout" name="verticalLayout_9">
            <property name="leftMargin">
@@ -1481,12 +1859,18 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>553</width>
-                <height>193</height>
+                <width>531</width>
+                <height>205</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
                <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
                 <number>0</number>
                </property>
                <property name="bottomMargin">
@@ -1545,8 +1929,8 @@ border-radius: 2px;</string>
                        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Cantarell'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Cantarell'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Cantarell';&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
@@ -1626,6 +2010,18 @@ p, li { white-space: pre-wrap; }
          </widget>
          <widget class="QWidget" name="mOptsPage_Metadata">
           <layout class="QVBoxLayout" name="verticalLayout_13">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QFrame" name="metadataFrame">
              <property name="frameShape">
@@ -1640,6 +2036,18 @@ p, li { white-space: pre-wrap; }
          </widget>
          <widget class="QWidget" name="mOptsPage_Legend">
           <layout class="QVBoxLayout" name="verticalLayout_18">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QGroupBox" name="groupBox">
              <property name="title">
@@ -1681,11 +2089,23 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>324</width>
-                <height>634</height>
+                <width>325</width>
+                <height>667</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_12">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item row="0" column="0">
                 <widget class="QgsCollapsibleGroupBox" name="mMetaDescriptionGrpBx">
                  <property name="title">
@@ -2121,6 +2541,17 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDateTimeEdit</class>
+   <extends>QDateTimeEdit</extends>
+   <header>qgsdatetimeedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
@@ -2138,22 +2569,21 @@ p, li { white-space: pre-wrap; }
    <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsOpacityWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsopacitywidget.h</header>
-   <container>1</container>
+   <class>QgsRasterBandComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsrasterbandcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScaleRangeWidget</class>
@@ -2172,21 +2602,20 @@ p, li { white-space: pre-wrap; }
    <header>qgsblendmodecombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsRasterBandComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsrasterbandcombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsWebView</class>
    <extends>QWidget</extends>
    <header>qgswebview.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsfieldcombobox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mSearchLineEdit</tabstop>
   <tabstop>mOptionsListWidget</tabstop>
-  <tabstop>scrollArea_3</tabstop>
   <tabstop>mLayerOrigNameLineEd</tabstop>
   <tabstop>leDisplayName</tabstop>
   <tabstop>mCrsSelector</tabstop>
@@ -2248,7 +2677,11 @@ p, li { white-space: pre-wrap; }
   <tabstop>mPublishDataSourceUrlCheckBox</tabstop>
   <tabstop>mBackgroundLayerCheckBox</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>mOptionsListWidget</sender>

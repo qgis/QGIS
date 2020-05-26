@@ -17,10 +17,12 @@
 #include "qgslayoutscalebarwidget.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemscalebar.h"
+#include "qgsscalebarrendererregistry.h"
 #include "qgslayout.h"
 #include "qgsguiutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsnumericformatselectorwidget.h"
+#include "qgslayoutundostack.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -32,15 +34,11 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
 {
   setupUi( this );
   connect( mHeightSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mHeightSpinBox_valueChanged );
-  connect( mLineWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mLineWidthSpinBox_valueChanged );
   connect( mSegmentSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mSegmentSizeSpinBox_valueChanged );
   connect( mSegmentsLeftSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mSegmentsLeftSpinBox_valueChanged );
   connect( mNumberOfSegmentsSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mNumberOfSegmentsSpinBox_valueChanged );
   connect( mUnitLabelLineEdit, &QLineEdit::textChanged, this, &QgsLayoutScaleBarWidget::mUnitLabelLineEdit_textChanged );
   connect( mMapUnitsPerBarUnitSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMapUnitsPerBarUnitSpinBox_valueChanged );
-  connect( mFillColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutScaleBarWidget::mFillColorButton_colorChanged );
-  connect( mFillColor2Button, &QgsColorButton::colorChanged, this, &QgsLayoutScaleBarWidget::mFillColor2Button_colorChanged );
-  connect( mStrokeColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutScaleBarWidget::mStrokeColorButton_colorChanged );
   connect( mStyleComboBox, &QComboBox::currentTextChanged, this, &QgsLayoutScaleBarWidget::mStyleComboBox_currentIndexChanged );
   connect( mLabelBarSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mLabelBarSpaceSpinBox_valueChanged );
   connect( mBoxSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mBoxSizeSpinBox_valueChanged );
@@ -48,8 +46,6 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   connect( mLabelVerticalPlacementComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mLabelVerticalPlacementComboBox_currentIndexChanged );
   connect( mLabelHorizontalPlacementComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mLabelHorizontalPlacementComboBox_currentIndexChanged );
   connect( mUnitsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mUnitsComboBox_currentIndexChanged );
-  connect( mLineJoinStyleCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mLineJoinStyleCombo_currentIndexChanged );
-  connect( mLineCapStyleCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutScaleBarWidget::mLineCapStyleCombo_currentIndexChanged );
   connect( mMinWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMinWidthSpinBox_valueChanged );
   connect( mMaxWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMaxWidthSpinBox_valueChanged );
   connect( mNumberFormatPushButton, &QPushButton::clicked, this, &QgsLayoutScaleBarWidget::changeNumberFormat );
@@ -70,12 +66,11 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   blockMemberSignals( true );
 
   //style combo box
-  mStyleComboBox->insertItem( 0, tr( "Single Box" ) );
-  mStyleComboBox->insertItem( 1, tr( "Double Box" ) );
-  mStyleComboBox->insertItem( 2, tr( "Line Ticks Middle" ) );
-  mStyleComboBox->insertItem( 3, tr( "Line Ticks Down" ) );
-  mStyleComboBox->insertItem( 4, tr( "Line Ticks Up" ) );
-  mStyleComboBox->insertItem( 5, tr( "Numeric" ) );
+  const QStringList renderers = QgsApplication::scaleBarRendererRegistry()->sortedRendererList();
+  for ( const QString &renderer : renderers )
+  {
+    mStyleComboBox->addItem( QgsApplication::scaleBarRendererRegistry()->visibleName( renderer ), renderer );
+  }
 
   //label vertical/horizontal placement combo box
   mLabelVerticalPlacementComboBox->addItem( tr( "Above Segments" ), static_cast< int >( QgsScaleBarSettings::LabelAboveSegment ) );
@@ -97,37 +92,20 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   mUnitsComboBox->addItem( tr( "Centimeters" ), QgsUnitTypes::DistanceCentimeters );
   mUnitsComboBox->addItem( tr( "Millimeters" ), QgsUnitTypes::DistanceMillimeters );
 
-  mFillColorButton->setColorDialogTitle( tr( "Select Fill Color" ) );
-  mFillColorButton->setAllowOpacity( true );
-  mFillColorButton->setContext( QStringLiteral( "composer" ) );
-  mFillColorButton->setNoColorString( tr( "Transparent Fill" ) );
-  mFillColorButton->setShowNoColor( true );
+  mLineStyleButton->setSymbolType( QgsSymbol::Line );
+  connect( mLineStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutScaleBarWidget::lineSymbolChanged );
 
-  mFillColor2Button->setColorDialogTitle( tr( "Select Alternate Fill Color" ) );
-  mFillColor2Button->setAllowOpacity( true );
-  mFillColor2Button->setContext( QStringLiteral( "composer" ) );
-  mFillColor2Button->setNoColorString( tr( "Transparent Fill" ) );
-  mFillColor2Button->setShowNoColor( true );
+  mFillSymbol1Button->setSymbolType( QgsSymbol::Fill );
+  connect( mFillSymbol1Button, &QgsSymbolButton::changed, this, &QgsLayoutScaleBarWidget::fillSymbol1Changed );
+
+  mFillSymbol2Button->setSymbolType( QgsSymbol::Fill );
+  connect( mFillSymbol2Button, &QgsSymbolButton::changed, this, &QgsLayoutScaleBarWidget::fillSymbol2Changed );
 
   mFontButton->setDialogTitle( tr( "Scalebar Font" ) );
   mFontButton->setMode( QgsFontButton::ModeTextRenderer );
 
-  mStrokeColorButton->setColorDialogTitle( tr( "Select Line Color" ) );
-  mStrokeColorButton->setAllowOpacity( true );
-  mStrokeColorButton->setContext( QStringLiteral( "composer" ) );
-  mStrokeColorButton->setNoColorString( tr( "Transparent Line" ) );
-  mStrokeColorButton->setShowNoColor( true );
-
-  mFillColorDDBtn->registerLinkedWidget( mFillColorButton );
-  mFillColor2DDBtn->registerLinkedWidget( mFillColor2Button );
-  mLineColorDDBtn->registerLinkedWidget( mStrokeColorButton );
-
   if ( mScalebar )
   {
-    mFillColorDDBtn->registerExpressionContextGenerator( mScalebar );
-    mFillColor2DDBtn->registerExpressionContextGenerator( mScalebar );
-    mLineColorDDBtn->registerExpressionContextGenerator( mScalebar );
-    mLineWidthDDBtn->registerExpressionContextGenerator( mScalebar );
     QgsLayout *scaleBarLayout = mScalebar->layout();
     if ( scaleBarLayout )
     {
@@ -138,19 +116,24 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
 
   connect( mMapItemComboBox, &QgsLayoutItemComboBox::itemChanged, this, &QgsLayoutScaleBarWidget::mapChanged );
 
-  registerDataDefinedButton( mFillColorDDBtn, QgsLayoutObject::ScalebarFillColor );
-  registerDataDefinedButton( mFillColor2DDBtn, QgsLayoutObject::ScalebarFillColor2 );
-  registerDataDefinedButton( mLineColorDDBtn, QgsLayoutObject::ScalebarLineColor );
-  registerDataDefinedButton( mLineWidthDDBtn, QgsLayoutObject::ScalebarLineWidth );
-
   blockMemberSignals( false );
   setGuiElements(); //set the GUI elements to the state of scaleBar
+
+  mLineStyleButton->registerExpressionContextGenerator( mScalebar );
+  mLineStyleButton->setLayer( coverageLayer() );
+  mFillSymbol1Button->registerExpressionContextGenerator( mScalebar );
+  mFillSymbol1Button->setLayer( coverageLayer() );
+  mFillSymbol2Button->registerExpressionContextGenerator( mScalebar );
+  mFillSymbol2Button->setLayer( coverageLayer() );
 
   connect( mFontButton, &QgsFontButton::changed, this, &QgsLayoutScaleBarWidget::textFormatChanged );
   mFontButton->setLayer( coverageLayer() );
   if ( mScalebar->layout() )
   {
     connect( &mScalebar->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mFontButton, &QgsFontButton::setLayer );
+    connect( &mScalebar->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mLineStyleButton, &QgsSymbolButton::setLayer );
+    connect( &mScalebar->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mFillSymbol1Button, &QgsSymbolButton::setLayer );
+    connect( &mScalebar->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mFillSymbol2Button, &QgsSymbolButton::setLayer );
   }
 }
 
@@ -183,15 +166,47 @@ bool QgsLayoutScaleBarWidget::setNewItem( QgsLayoutItem *item )
   if ( mScalebar )
   {
     connectUpdateSignal();
-    mFillColorDDBtn->registerExpressionContextGenerator( mScalebar );
-    mFillColor2DDBtn->registerExpressionContextGenerator( mScalebar );
-    mLineColorDDBtn->registerExpressionContextGenerator( mScalebar );
-    mLineWidthDDBtn->registerExpressionContextGenerator( mScalebar );
+    mFillSymbol1Button->registerExpressionContextGenerator( mScalebar );
+    mFillSymbol2Button->registerExpressionContextGenerator( mScalebar );
+    mLineStyleButton->registerExpressionContextGenerator( mScalebar );
   }
 
   setGuiElements();
 
   return true;
+}
+
+void QgsLayoutScaleBarWidget::lineSymbolChanged()
+{
+  if ( !mScalebar )
+    return;
+
+  mScalebar->layout()->undoStack()->beginCommand( mScalebar, tr( "Change Scalebar Line Style" ), QgsLayoutItem::UndoShapeStyle );
+  mScalebar->setLineSymbol( mLineStyleButton->clonedSymbol<QgsLineSymbol>() );
+  mScalebar->update();
+  mScalebar->layout()->undoStack()->endCommand();
+}
+
+void QgsLayoutScaleBarWidget::fillSymbol1Changed()
+{
+  if ( !mScalebar )
+    return;
+
+  mScalebar->layout()->undoStack()->beginCommand( mScalebar, tr( "Change Scalebar Fill Style" ), QgsLayoutItem::UndoShapeStyle );
+  mScalebar->setFillSymbol( mFillSymbol1Button->clonedSymbol<QgsFillSymbol>() );
+  mScalebar->update();
+  mScalebar->layout()->undoStack()->endCommand();
+}
+
+void QgsLayoutScaleBarWidget::fillSymbol2Changed()
+{
+  if ( !mScalebar )
+    return;
+
+  mScalebar->layout()->undoStack()->beginCommand( mScalebar, tr( "Change Scalebar Fill Style" ), QgsLayoutItem::UndoShapeStyle );
+  mScalebar->setAlternateFillSymbol( mFillSymbol2Button->clonedSymbol<QgsFillSymbol>() );
+  mScalebar->update();
+  mScalebar->layout()->undoStack()->endCommand();
 }
 
 void QgsLayoutScaleBarWidget::setGuiElements()
@@ -205,25 +220,23 @@ void QgsLayoutScaleBarWidget::setGuiElements()
   mNumberOfSegmentsSpinBox->setValue( mScalebar->numberOfSegments() );
   mSegmentsLeftSpinBox->setValue( mScalebar->numberOfSegmentsLeft() );
   mSegmentSizeSpinBox->setValue( mScalebar->unitsPerSegment() );
-  mLineWidthSpinBox->setValue( mScalebar->lineWidth() );
   mHeightSpinBox->setValue( mScalebar->height() );
   mMapUnitsPerBarUnitSpinBox->setValue( mScalebar->mapUnitsPerScaleBarUnit() );
   mLabelBarSpaceSpinBox->setValue( mScalebar->labelBarSpace() );
   mBoxSizeSpinBox->setValue( mScalebar->boxContentSpace() );
   mUnitLabelLineEdit->setText( mScalebar->unitLabel() );
-  mLineJoinStyleCombo->setPenJoinStyle( mScalebar->lineJoinStyle() );
-  mLineCapStyleCombo->setPenCapStyle( mScalebar->lineCapStyle() );
-  mFillColorButton->setColor( mScalebar->fillColor() );
-  mFillColor2Button->setColor( mScalebar->fillColor2() );
-  mStrokeColorButton->setColor( mScalebar->lineColor() );
   mFontButton->setTextFormat( mScalebar->textFormat() );
+
+  whileBlocking( mLineStyleButton )->setSymbol( mScalebar->lineSymbol()->clone() );
+  whileBlocking( mFillSymbol1Button )->setSymbol( mScalebar->fillSymbol()->clone() );
+  whileBlocking( mFillSymbol2Button )->setSymbol( mScalebar->alternateFillSymbol()->clone() );
 
   //map combo box
   mMapItemComboBox->setItem( mScalebar->linkedMap() );
 
   //style...
-  QString style = mScalebar->style();
-  mStyleComboBox->setCurrentIndex( mStyleComboBox->findText( tr( style.toLocal8Bit().data() ) ) );
+  const QString style = mScalebar->style();
+  mStyleComboBox->setCurrentIndex( mStyleComboBox->findData( style ) );
   toggleStyleSpecificControls( style );
 
   //label vertical/horizontal placement
@@ -266,29 +279,10 @@ void QgsLayoutScaleBarWidget::setGuiElements()
   }
   mMinWidthSpinBox->setValue( mScalebar->minimumBarWidth() );
   mMaxWidthSpinBox->setValue( mScalebar->maximumBarWidth() );
-  updateDataDefinedButton( mFillColorDDBtn );
-  updateDataDefinedButton( mFillColor2DDBtn );
-  updateDataDefinedButton( mLineColorDDBtn );
-  updateDataDefinedButton( mLineWidthDDBtn );
   blockMemberSignals( false );
 }
 
 //slots
-
-void QgsLayoutScaleBarWidget::mLineWidthSpinBox_valueChanged( double d )
-{
-  if ( !mScalebar )
-  {
-    return;
-  }
-
-  mScalebar->beginCommand( tr( "Set Scalebar Line Width" ), QgsLayoutItem::UndoScaleBarLineWidth );
-  disconnectUpdateSignal();
-  mScalebar->setLineWidth( d );
-  mScalebar->update();
-  connectUpdateSignal();
-  mScalebar->endCommand();
-}
 
 void QgsLayoutScaleBarWidget::mSegmentSizeSpinBox_valueChanged( double d )
 {
@@ -387,51 +381,6 @@ void QgsLayoutScaleBarWidget::changeNumberFormat()
   return;
 }
 
-void QgsLayoutScaleBarWidget::mFillColorButton_colorChanged( const QColor &newColor )
-{
-  if ( !mScalebar )
-  {
-    return;
-  }
-
-  mScalebar->beginCommand( tr( "Set Scalebar Fill Color" ), QgsLayoutItem::UndoScaleBarFillColor );
-  disconnectUpdateSignal();
-  mScalebar->setFillColor( newColor );
-  mScalebar->update();
-  connectUpdateSignal();
-  mScalebar->endCommand();
-}
-
-void QgsLayoutScaleBarWidget::mFillColor2Button_colorChanged( const QColor &newColor )
-{
-  if ( !mScalebar )
-  {
-    return;
-  }
-
-  mScalebar->beginCommand( tr( "Set Scalebar Fill Color" ), QgsLayoutItem::UndoScaleBarFillColor2 );
-  disconnectUpdateSignal();
-  mScalebar->setFillColor2( newColor );
-  mScalebar->update();
-  connectUpdateSignal();
-  mScalebar->endCommand();
-}
-
-void QgsLayoutScaleBarWidget::mStrokeColorButton_colorChanged( const QColor &newColor )
-{
-  if ( !mScalebar )
-  {
-    return;
-  }
-
-  mScalebar->beginCommand( tr( "Set Scalebar Stroke Color" ), QgsLayoutItem::UndoScaleBarStrokeColor );
-  disconnectUpdateSignal();
-  mScalebar->setLineColor( newColor );
-  mScalebar->update();
-  connectUpdateSignal();
-  mScalebar->endCommand();
-}
-
 void QgsLayoutScaleBarWidget::mUnitLabelLineEdit_textChanged( const QString &text )
 {
   if ( !mScalebar )
@@ -462,108 +411,58 @@ void QgsLayoutScaleBarWidget::mMapUnitsPerBarUnitSpinBox_valueChanged( double d 
   mScalebar->endCommand();
 }
 
-void QgsLayoutScaleBarWidget::mStyleComboBox_currentIndexChanged( const QString &text )
+void QgsLayoutScaleBarWidget::mStyleComboBox_currentIndexChanged( const QString & )
 {
   if ( !mScalebar )
   {
     return;
   }
 
+  const QString rendererId = mStyleComboBox->currentData().toString();
+  if ( rendererId == mScalebar->style() )
+    return;
+
   mScalebar->beginCommand( tr( "Set Scalebar Style" ) );
   disconnectUpdateSignal();
-  QString untranslatedStyleName;
-  if ( text == tr( "Single Box" ) )
-  {
-    untranslatedStyleName = QStringLiteral( "Single Box" );
-  }
-  else if ( text == tr( "Double Box" ) )
-  {
-    untranslatedStyleName = QStringLiteral( "Double Box" );
-  }
-  else if ( text == tr( "Line Ticks Middle" ) )
-  {
-    untranslatedStyleName = QStringLiteral( "Line Ticks Middle" );
-  }
-  else if ( text == tr( "Line Ticks Middle" ) )
-  {
-    untranslatedStyleName = QStringLiteral( "Line Ticks Middle" );
-  }
-  else if ( text == tr( "Line Ticks Down" ) )
-  {
-    untranslatedStyleName = QStringLiteral( "Line Ticks Down" );
-  }
-  else if ( text == tr( "Line Ticks Up" ) )
-  {
-    untranslatedStyleName = QStringLiteral( "Line Ticks Up" );
-  }
-  else if ( text == tr( "Numeric" ) )
-  {
-    untranslatedStyleName = QStringLiteral( "Numeric" );
-  }
+
+  bool defaultsApplied = false;
+  std::unique_ptr< QgsScaleBarRenderer > renderer( QgsApplication::scaleBarRendererRegistry()->renderer( rendererId ) );
+  if ( renderer )
+    defaultsApplied = mScalebar->applyDefaultRendererSettings( renderer.get() );
 
   //disable or enable controls which apply to specific scale bar styles
-  toggleStyleSpecificControls( untranslatedStyleName );
+  toggleStyleSpecificControls( rendererId );
 
-  mScalebar->setStyle( untranslatedStyleName );
+  mScalebar->setStyle( rendererId );
   mScalebar->update();
   connectUpdateSignal();
   mScalebar->endCommand();
+
+  if ( defaultsApplied )
+    setGuiElements();
 }
 
 void QgsLayoutScaleBarWidget::toggleStyleSpecificControls( const QString &style )
 {
-  if ( style == QLatin1String( "Numeric" ) )
-  {
-    //Disable controls which don't apply to numeric scale bars
-    mUnitsComboBox->setEnabled( false );
-    mUnitsLabel->setEnabled( false );
-    mMapUnitsPerBarUnitSpinBox->setEnabled( false );
-    mMapUnitsPerBarUnitLabel->setEnabled( false );
-    mUnitLabelLineEdit->setEnabled( false );
-    mUnitLabelLabel->setEnabled( false );
-    mGroupBoxSegments->setEnabled( false );
-    mGroupBoxSegments->setCollapsed( true );
-    mLabelBarSpaceSpinBox->setEnabled( false );
-    mLineWidthSpinBox->setEnabled( false );
-    mFillColorButton->setEnabled( false );
-    mFillColor2Button->setEnabled( false );
-    mStrokeColorButton->setEnabled( false );
-    mLineJoinStyleCombo->setEnabled( false );
-    mLineCapStyleCombo->setEnabled( false );
-    mLabelVerticalPlacementComboBox->setEnabled( false );
-    mLabelHorizontalPlacementComboBox->setEnabled( false );
-    mAlignmentComboBox->setEnabled( true );
-  }
-  else
-  {
-    //Enable controls
-    mUnitsComboBox->setEnabled( true );
-    mUnitsLabel->setEnabled( true );
-    mMapUnitsPerBarUnitSpinBox->setEnabled( true );
-    mMapUnitsPerBarUnitLabel->setEnabled( true );
-    mUnitLabelLineEdit->setEnabled( true );
-    mUnitLabelLabel->setEnabled( true );
-    mGroupBoxSegments->setEnabled( true );
-    mLabelBarSpaceSpinBox->setEnabled( true );
-    mLineWidthSpinBox->setEnabled( true );
-    mFillColorButton->setEnabled( true );
-    mFillColor2Button->setEnabled( true );
-    mStrokeColorButton->setEnabled( true );
-    mLabelVerticalPlacementComboBox->setEnabled( true );
-    mLabelHorizontalPlacementComboBox->setEnabled( true );
-    mAlignmentComboBox->setEnabled( false );
-    if ( style == QLatin1String( "Single Box" ) || style == QLatin1String( "Double Box" ) )
-    {
-      mLineJoinStyleCombo->setEnabled( true );
-      mLineCapStyleCombo->setEnabled( false );
-    }
-    else
-    {
-      mLineJoinStyleCombo->setEnabled( false );
-      mLineCapStyleCombo->setEnabled( true );
-    }
+  std::unique_ptr< QgsScaleBarRenderer > renderer( QgsApplication::scaleBarRendererRegistry()->renderer( style ) );
 
-  }
+  //Selectively enable controls which apply to the scale bar style
+  mUnitsComboBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagRespectsUnits : true );
+  mUnitsLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagRespectsUnits : true );
+  mMapUnitsPerBarUnitSpinBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagRespectsMapUnitsPerScaleBarUnit : true );
+  mMapUnitsPerBarUnitLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagRespectsMapUnitsPerScaleBarUnit : true );
+  mUnitLabelLineEdit->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesUnitLabel : true );
+  mUnitLabelLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesUnitLabel : true );
+  mGroupBoxSegments->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesSegments : true );
+  if ( !mGroupBoxUnits->isEnabled() )
+    mGroupBoxSegments->setCollapsed( true );
+  mLabelBarSpaceSpinBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelBarSpace : true );
+  mLabelVerticalPlacementComboBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelVerticalPlacement : true );
+  mLabelHorizontalPlacementComboBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelHorizontalPlacement : true );
+  mAlignmentComboBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesAlignment : true );
+  mFillSymbol1Button->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesFillSymbol : true );
+  mFillSymbol2Button->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesAlternateFillSymbol : true );
+  mLineStyleButton->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLineSymbol : true );
 }
 
 void QgsLayoutScaleBarWidget::mLabelBarSpaceSpinBox_valueChanged( double d )
@@ -679,18 +578,15 @@ void QgsLayoutScaleBarWidget::blockMemberSignals( bool block )
   mUnitLabelLineEdit->blockSignals( block );
   mMapUnitsPerBarUnitSpinBox->blockSignals( block );
   mHeightSpinBox->blockSignals( block );
-  mLineWidthSpinBox->blockSignals( block );
+  mLineStyleButton->blockSignals( block );
   mLabelBarSpaceSpinBox->blockSignals( block );
   mBoxSizeSpinBox->blockSignals( block );
   mLabelVerticalPlacementComboBox->blockSignals( block );
   mLabelHorizontalPlacementComboBox->blockSignals( block );
   mAlignmentComboBox->blockSignals( block );
   mUnitsComboBox->blockSignals( block );
-  mLineJoinStyleCombo->blockSignals( block );
-  mLineCapStyleCombo->blockSignals( block );
-  mFillColorButton->blockSignals( block );
-  mFillColor2Button->blockSignals( block );
-  mStrokeColorButton->blockSignals( block );
+  mFillSymbol1Button->blockSignals( block );
+  mFillSymbol2Button->blockSignals( block );
   mSegmentSizeRadioGroup.blockSignals( block );
   mMapItemComboBox->blockSignals( block );
   mFontButton->blockSignals( block );
@@ -712,32 +608,6 @@ void QgsLayoutScaleBarWidget::disconnectUpdateSignal()
   {
     disconnect( mScalebar, &QgsLayoutObject::changed, this, &QgsLayoutScaleBarWidget::setGuiElements );
   }
-}
-
-void QgsLayoutScaleBarWidget::mLineJoinStyleCombo_currentIndexChanged( int index )
-{
-  Q_UNUSED( index )
-  if ( !mScalebar )
-  {
-    return;
-  }
-
-  mScalebar->beginCommand( tr( "Set Scalebar Join Style" ) );
-  mScalebar->setLineJoinStyle( mLineJoinStyleCombo->penJoinStyle() );
-  mScalebar->endCommand();
-}
-
-void QgsLayoutScaleBarWidget::mLineCapStyleCombo_currentIndexChanged( int index )
-{
-  Q_UNUSED( index )
-  if ( !mScalebar )
-  {
-    return;
-  }
-
-  mScalebar->beginCommand( tr( "Set Scalebar Cap Style" ) );
-  mScalebar->setLineCapStyle( mLineCapStyleCombo->penCapStyle() );
-  mScalebar->endCommand();
 }
 
 void QgsLayoutScaleBarWidget::segmentSizeRadioChanged( QAbstractButton *radio )

@@ -313,11 +313,11 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
   }
   else
   {
-    QRegularExpression reCrsStr( "^(?:(wkt|proj4)\\:)?(.+)$", QRegularExpression::CaseInsensitiveOption );
+    QRegularExpression reCrsStr( "^(?:(wkt|proj4|proj)\\:)?(.+)$", QRegularExpression::CaseInsensitiveOption );
     match = reCrsStr.match( definition );
     if ( match.capturedStart() == 0 )
     {
-      if ( match.captured( 1 ).compare( QLatin1String( "proj4" ), Qt::CaseInsensitive ) == 0 )
+      if ( match.captured( 1 ).startsWith( QLatin1String( "proj" ), Qt::CaseInsensitive ) )
       {
         result = createFromProj( match.captured( 2 ) );
       }
@@ -1886,8 +1886,8 @@ bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSyste
   if ( !d->mIsValid || !srs.d->mIsValid )
     return false;
 
-  if ( !d->mAuthId.isEmpty() && d->mAuthId == srs.d->mAuthId )
-    return true;
+  if ( ( !d->mAuthId.isEmpty() || !srs.d->mAuthId.isEmpty() ) )
+    return d->mAuthId == srs.d->mAuthId;
 
   return toWkt( WKT2_2018 ) == srs.toWkt( WKT2_2018 );
 }
@@ -2688,17 +2688,61 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     return -1;
   }
 
+  sqlite3_statement_unique_ptr statement;
+  int result;
+  char *errMsg = nullptr;
+
 #if PROJ_VERSION_MAJOR<6
 // fix up database, if not done already //
   if ( sqlite3_exec( database.get(), "alter table tbl_srs add noupdate boolean", nullptr, nullptr, nullptr ) == SQLITE_OK )
     ( void )sqlite3_exec( database.get(), "update tbl_srs set noupdate=(auth_name='EPSG' and auth_id in (5513,5514,5221,2065,102067,4156,4818))", nullptr, nullptr, nullptr );
 
   ( void )sqlite3_exec( database.get(), "UPDATE tbl_srs SET srid=141001 WHERE srid=41001 AND auth_name='OSGEO' AND auth_id='41001'", nullptr, nullptr, nullptr );
+#else
+  if ( sqlite3_exec( database.get(), "create table tbl_info (proj_major INT, proj_minor INT, proj_patch INT)", nullptr, nullptr, nullptr ) == SQLITE_OK )
+  {
+    QString sql = QStringLiteral( "INSERT INTO tbl_info(proj_major, proj_minor, proj_patch) VALUES (%1, %2,%3)" )
+                  .arg( QString::number( PROJ_VERSION_MAJOR ),
+                        QString::number( PROJ_VERSION_MINOR ),
+                        QString::number( PROJ_VERSION_PATCH ) );
+    if ( sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, &errMsg ) != SQLITE_OK )
+    {
+      QgsDebugMsg( QStringLiteral( "Could not execute: %1 [%2/%3]\n" ).arg(
+                     sql,
+                     database.errorMessage(),
+                     errMsg ? errMsg : "(unknown error)" ) );
+      if ( errMsg )
+        sqlite3_free( errMsg );
+      return -1;
+    }
+  }
+  else
+  {
+    // retrieve last update details
+    QString sql = QStringLiteral( "SELECT proj_major, proj_minor, proj_patch FROM tbl_info" );
+    statement = database.prepare( sql, result );
+    if ( result != SQLITE_OK )
+    {
+      QgsDebugMsg( QStringLiteral( "Could not prepare: %1 [%2]\n" ).arg( sql, database.errorMessage() ) );
+      return -1;
+    }
+    if ( statement.step() == SQLITE_ROW )
+    {
+      int major = statement.columnAsInt64( 0 );
+      int minor = statement.columnAsInt64( 1 );
+      int patch = statement.columnAsInt64( 2 );
+      if ( major == PROJ_VERSION_MAJOR && minor == PROJ_VERSION_MINOR && patch == PROJ_VERSION_PATCH )
+        // yay, nothing to do!
+        return 0;
+    }
+    else
+    {
+      QgsDebugMsg( QStringLiteral( "Could not retrieve previous CRS sync PROJ version number" ) );
+      return -1;
+    }
+  }
 #endif
 
-  sqlite3_statement_unique_ptr statement;
-  int result;
-  char *errMsg = nullptr;
 
 #if PROJ_VERSION_MAJOR>=6
   PJ_CONTEXT *pjContext = QgsProjContext::get();
@@ -2707,8 +2751,8 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
   PROJ_STRING_LIST authorities = proj_get_authorities_from_database( pjContext );
 
-  int nextSrsId = 60000;
-  int nextSrId = 520000000;
+  int nextSrsId = 63321;
+  int nextSrId = 520003321;
   for ( auto authIter = authorities; authIter && *authIter; ++authIter )
   {
     const QString authority( *authIter );
@@ -2939,7 +2983,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     if ( name.isEmpty() )
       name = QObject::tr( "Imported from GDAL" );
 
-    bool deprecated = name.contains( QLatin1Literal( "(deprecated)" ) );
+    bool deprecated = name.contains( QLatin1String( "(deprecated)" ) );
 
     sql = QStringLiteral( "SELECT parameters,description,deprecated,noupdate FROM tbl_srs WHERE auth_name='EPSG' AND auth_id='%1'" ).arg( it.key() );
     statement = database.prepare( sql, result );
@@ -3153,6 +3197,23 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
   pj_ctx_free( pContext );
 
+#endif
+
+#if PROJ_VERSION_MAJOR>=6
+  QString sql = QStringLiteral( "UPDATE tbl_info set proj_major=%1,proj_minor=%2,proj_patch=%3" )
+                .arg( QString::number( PROJ_VERSION_MAJOR ),
+                      QString::number( PROJ_VERSION_MINOR ),
+                      QString::number( PROJ_VERSION_PATCH ) );
+  if ( sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, &errMsg ) != SQLITE_OK )
+  {
+    QgsDebugMsg( QStringLiteral( "Could not execute: %1 [%2/%3]\n" ).arg(
+                   sql,
+                   database.errorMessage(),
+                   errMsg ? errMsg : "(unknown error)" ) );
+    if ( errMsg )
+      sqlite3_free( errMsg );
+    return -1;
+  }
 #endif
 
   if ( sqlite3_exec( database.get(), "COMMIT", nullptr, nullptr, nullptr ) != SQLITE_OK )

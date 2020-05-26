@@ -100,6 +100,13 @@ QString doubleToExifCoordinate( const double val )
   return QStringLiteral( "%1/1 %2/1 %3/1000" ).arg( degrees ).arg( minutes ).arg( seconds );
 }
 
+bool QgsExifTools::hasGeoTag( const QString &imagePath )
+{
+  bool ok = false;
+  QgsExifTools::getGeoTag( imagePath, ok );
+  return ok;
+}
+
 QgsPoint QgsExifTools::getGeoTag( const QString &imagePath, bool &ok )
 {
   ok = false;

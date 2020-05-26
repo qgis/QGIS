@@ -176,6 +176,7 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *ma
   registerDataDefinedButton( mAtlasMarginDDBtn, QgsLayoutObject::MapAtlasMargin );
   registerDataDefinedButton( mStylePresetsDDBtn, QgsLayoutObject::MapStylePreset );
   registerDataDefinedButton( mLayersDDBtn, QgsLayoutObject::MapLayers );
+  registerDataDefinedButton( mCRSDDBtn, QgsLayoutObject::MapCrs );
 
   updateGuiElements();
   loadGridEntries();
@@ -247,6 +248,7 @@ void QgsLayoutMapWidget::populateDataDefinedButtons()
   updateDataDefinedButton( mAtlasMarginDDBtn );
   updateDataDefinedButton( mStylePresetsDDBtn );
   updateDataDefinedButton( mLayersDDBtn );
+  updateDataDefinedButton( mCRSDDBtn );
 }
 
 void QgsLayoutMapWidget::compositionAtlasToggled( bool atlasEnabled )
@@ -712,7 +714,7 @@ void QgsLayoutMapWidget::viewScaleInCanvas()
   }
 
   const double currentScale = mMapItem->scale();
-  mMapCanvas->zoomScale( currentScale );
+  mMapCanvas->zoomScale( currentScale, true );
 }
 
 void QgsLayoutMapWidget::mXMinLineEdit_editingFinished()

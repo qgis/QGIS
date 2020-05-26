@@ -22,9 +22,12 @@
 #include <Qt3DRender/qgeometry.h>
 #include <QVector3D>
 
+#include <Qt3DRender/QBufferDataGenerator>
+
 #include <qgsvector3d.h>
 
-#include "qgstriangularmesh.h"
+#include "qgsmaplayerref.h"
+#include "qgsmesh3dsymbol.h"
 
 ///@cond PRIVATE
 
@@ -43,33 +46,76 @@ namespace Qt3DRender
   class QBuffer;
 }
 
+class QgsMeshLayer;
+
 /**
- * \ingroup 3d
- * Stores attributes and vertex/index buffers for a mesh layer
- * \since QGIS 3.12
+ * Creates attributes and vertex/index buffers for a mesh layer
  */
 class QgsMesh3dGeometry: public  Qt3DRender::QGeometry
 {
   public:
+    QgsMeshLayer *meshLayer() const;
 
+  protected:
+    //! Constructor
+    explicit QgsMesh3dGeometry( QgsMeshLayer *layer,
+                                const QgsVector3D &origin,
+                                const QgsMesh3DSymbol &symbol,
+                                QNode *parent );
+    virtual ~QgsMesh3dGeometry() = default;
+    void prepareVerticesPositionAttribute( Qt3DRender::QBuffer *buffer, int count, int stride, int offset );
+    void prepareVerticesNormalAttribute( Qt3DRender::QBuffer *buffer, int count, int stride, int offset );
+    void prepareIndexesAttribute( Qt3DRender::QBuffer *buffer, int count );
+
+    QgsVector3D mOrigin;
+    float mVertScale;
+
+  private:
+
+    QgsMapLayerRef mLayerRef;
+};
+
+/**
+ * Creates attributes and vertex/index buffers for a mesh layer that renders the dataset
+ */
+class QgsMeshDataset3dGeometry: public  QgsMesh3dGeometry
+{
+  public:
     //! Constructs a mesh layer geometry from triangular mesh.
-    explicit QgsMesh3dGeometry( const QgsTriangularMesh &mesh, const QgsVector3D &origin, const QgsRectangle &extent, float verticaleScale, QNode *parent );
+    explicit QgsMeshDataset3dGeometry( QgsMeshLayer *layer,
+                                       const QgsDateTimeRange &timeRange,
+                                       const QgsVector3D &origin,
+                                       const QgsMesh3DSymbol &symbol,
+                                       QNode *parent );
 
   private:
     void init();
 
-    QgsTriangularMesh mTriangularMesh;
-    QgsVector3D mOrigin;
-    QgsRectangle mExtent;
-    float mVertScale;
+    //! Returns the number of active faces
+    int extractDataset( QVector<double> &verticaleMagnitude, QVector<double> &scalarMagnitude, QgsMeshDataBlock &verticalActiveFaceFlagValues );
+    void prepareVerticesDatasetAttribute( Qt3DRender::QBuffer *buffer, int count, int stride, int offset );
 
-    Qt3DRender::QAttribute *mPositionAttribute = nullptr;
-    Qt3DRender::QAttribute *mNormalAttribute = nullptr;
-    Qt3DRender::QAttribute *mTexCoordAttribute = nullptr;
-    Qt3DRender::QAttribute *mIndexAttribute = nullptr;
-    Qt3DRender::QBuffer *mVertexBuffer = nullptr;
-    Qt3DRender::QBuffer *mIndexBuffer = nullptr;
+    bool mIsVerticalMagnitudeRelative;
+    int mVerticalGroupDatasetIndex;
+    QgsDateTimeRange mTimeRange;
+
 };
+
+/**
+ * Creates attributes and vertex/index buffers for a mesh layer that renders terrain
+ */
+class QgsMeshTerrain3dGeometry: public  QgsMesh3dGeometry
+{
+  public:
+    //! Constructs a mesh layer geometry from triangular mesh.
+    explicit QgsMeshTerrain3dGeometry( QgsMeshLayer *layer,
+                                       const QgsVector3D &origin,
+                                       const QgsMesh3DSymbol &symbol,
+                                       QNode *parent );
+  private:
+    void init();
+};
+
 
 ///@endcond
 

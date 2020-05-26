@@ -1424,7 +1424,7 @@ namespace QgsWms
     bool segmentizeWktGeometry = QgsServerProjectUtils::wmsFeatureInfoSegmentizeWktGeometry( *mProject );
     const QSet<QString> &excludedAttributes = layer->excludeAttributesWms();
 
-    bool hasGeometry = addWktGeometry || featureBBox || layerFilterGeom;
+    bool hasGeometry = QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) || addWktGeometry || featureBBox || layerFilterGeom;
     fReq.setFlags( ( ( hasGeometry ) ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) | QgsFeatureRequest::ExactIntersect );
 
     if ( ! searchRect.isEmpty() )
@@ -1582,7 +1582,8 @@ namespace QgsWms
         }
 
         //append feature bounding box to feature info xml
-        if ( layer->wkbType() != QgsWkbTypes::NoGeometry && hasGeometry )
+        if ( QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) &&
+             layer->wkbType() != QgsWkbTypes::NoGeometry && hasGeometry )
         {
           QDomElement bBoxElem = infoDocument.createElement( QStringLiteral( "BoundingBox" ) );
           bBoxElem.setAttribute( version == QLatin1String( "1.1.1" ) ? "SRS" : "CRS", outputCrs.authid() );
@@ -2314,8 +2315,11 @@ namespace QgsWms
       expressionContext << QgsExpressionContextUtils::layerScope( layer );
     expressionContext.setFeature( *feat );
 
-    // always add bounding box info if feature contains geometry
-    if ( !geom.isNull() && geom.type() != QgsWkbTypes::UnknownGeometry && geom.type() != QgsWkbTypes::NullGeometry )
+    // always add bounding box info if feature contains geometry and has been
+    // explicitly configured in the project
+    if ( QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) &&
+         !geom.isNull() && geom.type() != QgsWkbTypes::UnknownGeometry &&
+         geom.type() != QgsWkbTypes::NullGeometry )
     {
       QgsRectangle box = feat->geometry().boundingBox();
       if ( transform.isValid() )
@@ -2526,7 +2530,7 @@ namespace QgsWms
 
       // create vector layer
       const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-      std::unique_ptr<QgsVectorLayer> layer = qgis::make_unique<QgsVectorLayer>( url, param.mName, QLatin1Literal( "memory" ), options );
+      std::unique_ptr<QgsVectorLayer> layer = qgis::make_unique<QgsVectorLayer>( url, param.mName, QLatin1String( "memory" ), options );
       if ( !layer->isValid() )
       {
         continue;
@@ -2721,6 +2725,7 @@ namespace QgsWms
         }
 
         case QgsMapLayerType::MeshLayer:
+        case QgsMapLayerType::VectorTileLayer:
         case QgsMapLayerType::PluginLayer:
           break;
       }

@@ -30,6 +30,7 @@ class TestQgsDatumTransformDialog: public QObject
     void cleanup(); // will be called after every testfunction.
 
     void defaultTransform();
+    void fallback();
     void shouldAskUser();
     void applyDefaultTransform();
     void runDialog();
@@ -74,6 +75,7 @@ void TestQgsDatumTransformDialog::defaultTransform()
   QCOMPARE( def.sourceCrs.authid(), QStringLiteral( "EPSG:7844" ) );
   QCOMPARE( def.destinationCrs.authid(), QStringLiteral( "EPSG:4283" ) );
   QCOMPARE( def.proj, QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=push +v_3 +step +proj=cart +ellps=GRS80 +step +inv +proj=helmert +x=0.06155 +y=-0.01087 +z=-0.04019 +rx=-0.0394924 +ry=-0.0327221 +rz=-0.0328979 +s=-0.009994 +convention=coordinate_frame +step +inv +proj=cart +ellps=GRS80 +step +proj=pop +v_3 +step +proj=unitconvert +xy_in=rad +xy_out=deg" ) );
+  QVERIFY( def.allowFallback );
 
   // default should be initially selected
   def = dlg.selectedDatumTransform();
@@ -111,6 +113,20 @@ void TestQgsDatumTransformDialog::defaultTransform()
   QCOMPARE( QgsDatumTransform::datumTransformToProj( def.destinationTransformId ), QStringLiteral( "+towgs84=-10,158,187" ) );
 
   Q_NOWARN_DEPRECATED_POP
+#endif
+}
+
+void TestQgsDatumTransformDialog::fallback()
+{
+#if PROJ_VERSION_MAJOR>=6
+  // don't default to allow fallback
+  QgsDatumTransformDialog dlg( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:7844" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4283" ) ), false, true, false, qMakePair( -1, -1 ), nullptr, nullptr, QString(), nullptr, false );
+
+  QgsDatumTransformDialog::TransformInfo def = dlg.selectedDatumTransform();
+  QCOMPARE( def.sourceCrs.authid(), QStringLiteral( "EPSG:7844" ) );
+  QCOMPARE( def.destinationCrs.authid(), QStringLiteral( "EPSG:4283" ) );
+  QCOMPARE( def.proj, QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=push +v_3 +step +proj=cart +ellps=GRS80 +step +inv +proj=helmert +x=0.06155 +y=-0.01087 +z=-0.04019 +rx=-0.0394924 +ry=-0.0327221 +rz=-0.0328979 +s=-0.009994 +convention=coordinate_frame +step +inv +proj=cart +ellps=GRS80 +step +proj=pop +v_3 +step +proj=unitconvert +xy_in=rad +xy_out=deg" ) );
+  QVERIFY( !def.allowFallback );
 #endif
 }
 

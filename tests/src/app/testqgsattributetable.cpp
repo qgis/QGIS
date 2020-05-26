@@ -53,6 +53,7 @@ class TestQgsAttributeTable : public QObject
     void testSelectedOnTop();
     void testSortByDisplayExpression();
     void testOrderColumn();
+    void testFilteredFeatures();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -331,7 +332,10 @@ void TestQgsAttributeTable::testRegression15974()
   QString path = QDir::tempPath() + "/testshp15974.shp";
   std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "polygon?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
-  QgsVectorFileWriter::writeAsVectorFormat( tempLayer.get(), path, QStringLiteral( "system" ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QStringLiteral( "ESRI Shapefile" ) );
+  QgsVectorFileWriter::SaveVectorOptions saveOptions;
+  saveOptions.fileEncoding = QStringLiteral( "system" );
+  saveOptions.driverName = QStringLiteral( "ESRI Shapefile" );
+  QgsVectorFileWriter::writeAsVectorFormatV2( tempLayer.get(), path, tempLayer->transformContext(), saveOptions );
   std::unique_ptr< QgsVectorLayer> shpLayer( new QgsVectorLayer( path, QStringLiteral( "test" ),  QStringLiteral( "ogr" ) ) );
   QgsFeature f1( shpLayer->dataProvider()->fields(), 1 );
   QgsGeometry geom;
@@ -400,6 +404,86 @@ void TestQgsAttributeTable::testOrderColumn()
 
   // column 0 is indeed column 2 since we move it
   QCOMPARE( filterModel->sortColumn(), 2 );
+}
+
+void TestQgsAttributeTable::testFilteredFeatures()
+{
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:int&field=col2:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QVERIFY( tempLayer->isValid() );
+
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( 0, 1 );
+  f1.setAttribute( 1, 2 );
+  QgsFeature f2( tempLayer->dataProvider()->fields(), 2 );
+  f2.setAttribute( 0, 2 );
+  f2.setAttribute( 1, 4 );
+  QgsFeature f3( tempLayer->dataProvider()->fields(), 3 );
+  f3.setAttribute( 0, 3 );
+  f3.setAttribute( 1, 6 );
+  QgsFeature f4( tempLayer->dataProvider()->fields(), 4 );
+  f4.setAttribute( 0, 4 );
+  f4.setAttribute( 1, 8 );
+
+  QVERIFY( tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
+
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowAll ) );
+
+  // show all (three features)
+  dlg->mFeatureFilterWidget->filterShowAll();
+  QCOMPARE( dlg->mMainView->featureCount(), 3 );
+  QCOMPARE( dlg->mMainView->filteredFeatureCount(), 3 );
+
+  // add a feature
+  tempLayer->startEditing();
+  QVERIFY( tempLayer->addFeatures( QgsFeatureList() << f4 ) );
+  //still show all (four features)
+  QCOMPARE( tempLayer->featureCount(), 4L );
+  QCOMPARE( dlg->mMainView->featureCount(), 4 );
+  QCOMPARE( dlg->mMainView->filteredFeatureCount(), 4 );
+
+  // bigger 5 (two of four features)
+  dlg->mFeatureFilterWidget->setFilterExpression( QStringLiteral( "col1>5" ), QgsAttributeForm::ReplaceFilter, true );
+  QCOMPARE( dlg->mMainView->featureCount(), 4 );
+  QCOMPARE( dlg->mMainView->filteredFeatureCount(), 2 );
+  // bigger 7 (one of four features)
+  dlg->mFeatureFilterWidget->setFilterExpression( QStringLiteral( "col1>7" ), QgsAttributeForm::ReplaceFilter, true );
+  QCOMPARE( dlg->mMainView->featureCount(), 4 );
+  QCOMPARE( dlg->mMainView->filteredFeatureCount(), 1 );
+  // bigger 9 (no of four features)
+  dlg->mFeatureFilterWidget->setFilterExpression( QStringLiteral( "col1>9" ), QgsAttributeForm::ReplaceFilter, true );
+  QCOMPARE( dlg->mMainView->featureCount(), 4 );
+  QCOMPARE( dlg->mMainView->filteredFeatureCount(), 0 );
+
+  //add two features
+  QgsFeature f5( tempLayer->dataProvider()->fields(), 5 );
+  f5.setAttribute( 0, 5 );
+  f5.setAttribute( 1, 10 );
+  QgsFeature f6( tempLayer->dataProvider()->fields(), 6 );
+  f6.setAttribute( 0, 6 );
+  f6.setAttribute( 1, 12 );
+  QVERIFY( tempLayer->addFeatures( QgsFeatureList() << f5 << f6 ) );
+  tempLayer->commitChanges();
+
+  //no filter change -> now two of six features
+  QCOMPARE( dlg->mMainView->featureCount(), 6 );
+  QCOMPARE( dlg->mMainView->filteredFeatureCount(), 2 );
+
+  //remove a feature not affecting the filter
+  tempLayer->startEditing();
+  QVERIFY( tempLayer->deleteFeature( f2.id() ) );
+  //no filter change -> now two of five features
+  QCOMPARE( dlg->mMainView->featureCount(), 5 );
+  QCOMPARE( dlg->mMainView->filteredFeatureCount(), 2 );
+
+  //remove a feature affecting the filter
+  QVERIFY( tempLayer->deleteFeature( f5.id() ) );
+  //no filter change -> now one of four features
+  QCOMPARE( dlg->mMainView->featureCount(), 4 );
+  QCOMPARE( dlg->mMainView->filteredFeatureCount(), 1 );
+
+  // smaller 11 (three of four features)
+  dlg->mFeatureFilterWidget->setFilterExpression( QStringLiteral( "col1<11" ), QgsAttributeForm::ReplaceFilter, true );
+  QCOMPARE( dlg->mMainView->filteredFeatureCount(), 3 );
 }
 
 QGSTEST_MAIN( TestQgsAttributeTable )

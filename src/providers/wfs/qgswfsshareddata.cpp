@@ -20,6 +20,7 @@
 #include "qgsexpression.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
+#include <QUrlQuery>
 
 QgsWFSSharedData::QgsWFSSharedData( const QString &uri )
   : QgsBackgroundCachedSharedData( "wfs", tr( "WFS" ) )

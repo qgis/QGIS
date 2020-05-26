@@ -54,6 +54,16 @@ QgsVectorLayer *QgsFieldComboBox::layer() const
   return mFieldProxyModel->sourceFieldModel()->layer();
 }
 
+void QgsFieldComboBox::setFields( const QgsFields &fields )
+{
+  mFieldProxyModel->sourceFieldModel()->setFields( fields );
+}
+
+QgsFields QgsFieldComboBox::fields() const
+{
+  return mFieldProxyModel->sourceFieldModel()->fields();
+}
+
 void QgsFieldComboBox::setField( const QString &fieldName )
 {
   const QString prevField = currentField();

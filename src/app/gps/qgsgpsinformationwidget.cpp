@@ -943,7 +943,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
         if ( radRecenterMap->isChecked() ||
              ( radRecenterWhenNeeded->isChecked() && !myExtentLimit.contains( myPoint ) ) )
         {
-          mMapCanvas->setExtent( myRect );
+          mMapCanvas->setExtent( myRect, true );
           mMapCanvas->refresh();
         }
       }

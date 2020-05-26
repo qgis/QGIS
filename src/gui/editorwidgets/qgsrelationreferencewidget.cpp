@@ -156,6 +156,7 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
   mHighlightFeatureButton->hide();
   mAttributeEditorFrame->hide();
   mInvalidLabel->hide();
+  mAddEntryButton->hide();
 
   // connect buttons
   connect( mOpenFormButton, &QAbstractButton::clicked, this, &QgsRelationReferenceWidget::openForm );
@@ -164,45 +165,12 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
   connect( mRemoveFKButton, &QAbstractButton::clicked, this, &QgsRelationReferenceWidget::deleteForeignKeys );
   connect( mAddEntryButton, &QAbstractButton::clicked, this, &QgsRelationReferenceWidget::addEntry );
   connect( mComboBox, &QComboBox::editTextChanged, this, &QgsRelationReferenceWidget::updateAddEntryButton );
-  connect( mComboBox, &QgsFeatureListComboBox::modelUpdated, this, &QgsRelationReferenceWidget::updateIndex );
 }
 
 QgsRelationReferenceWidget::~QgsRelationReferenceWidget()
 {
   deleteHighlight();
   unsetMapTool();
-}
-
-void QgsRelationReferenceWidget::updateIndex()
-{
-  if ( mChainFilters && mComboBox->count() > 0 )
-  {
-    int index = -1;
-
-    // uninitialized filter
-    if ( ! mFilterComboBoxes.isEmpty()
-         && mFilterComboBoxes[0]->currentIndex() == 0 && mAllowNull )
-    {
-      index = mComboBox->nullIndex();
-    }
-    else if ( mComboBox->count() > mComboBox->nullIndex() )
-    {
-      index = mComboBox->nullIndex() + 1;
-    }
-    else if ( mAllowNull )
-    {
-      index = mComboBox->nullIndex();
-    }
-    else
-    {
-      index = 0;
-    }
-
-    if ( mComboBox->count() > index )
-    {
-      mComboBox->setCurrentIndex( index );
-    }
-  }
 }
 
 void QgsRelationReferenceWidget::setRelation( const QgsRelation &relation, bool allowNullValue )
@@ -462,8 +430,12 @@ void QgsRelationReferenceWidget::setEditorContext( const QgsAttributeEditorConte
   mMapToolIdentify.reset( new QgsMapToolIdentifyFeature( mCanvas ) );
   mMapToolIdentify->setButton( mMapIdentificationButton );
 
-  mMapToolDigitize.reset( new QgsMapToolDigitizeFeature( mCanvas, context.cadDockWidget() ) );
-  mMapToolDigitize->setButton( mAddEntryButton );
+  if ( mEditorContext.cadDockWidget() )
+  {
+    mMapToolDigitize.reset( new QgsMapToolDigitizeFeature( mCanvas, mEditorContext.cadDockWidget() ) );
+    mMapToolDigitize->setButton( mAddEntryButton );
+    updateAddEntryButton();
+  }
 }
 
 void QgsRelationReferenceWidget::setEmbedForm( bool display )
@@ -615,8 +587,6 @@ void QgsRelationReferenceWidget::init()
 
     // Only connect after iterating, to have only one iterator on the referenced table at once
     connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRelationReferenceWidget::comboReferenceChanged );
-    //call it for the first time
-    emit mComboBox->currentIndexChanged( mComboBox->currentIndex() );
 
     QApplication::restoreOverrideCursor();
 
@@ -681,7 +651,7 @@ void QgsRelationReferenceWidget::highlightFeature( QgsFeature f, CanvasExtent ca
     {
       extent.combineExtentWith( featBBox );
       extent.scale( 1.1 );
-      mCanvas->setExtent( extent );
+      mCanvas->setExtent( extent, true );
       mCanvas->refresh();
     }
   }
@@ -793,9 +763,9 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature &feature )
     }
     mLineEdit->setText( title );
     mForeignKeys.clear();
+    mFeature = feature;
     for ( const QString &fieldName : qgis::as_const( mReferencedFields ) )
       mForeignKeys << mFeature.attribute( fieldName );
-    mFeature = feature;
   }
   else
   {
@@ -1041,7 +1011,7 @@ void QgsRelationReferenceWidget::entryAdded( const QgsFeature &feat )
 
 void QgsRelationReferenceWidget::updateAddEntryButton()
 {
-  mAddEntryButton->setVisible( mAllowAddFeatures );
+  mAddEntryButton->setVisible( mAllowAddFeatures && mMapToolDigitize );
   mAddEntryButton->setEnabled( mReferencedLayer && mReferencedLayer->isEditable() );
 }
 

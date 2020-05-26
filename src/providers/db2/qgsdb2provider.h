@@ -32,7 +32,7 @@
  * \class QgsDb2Provider
  * \brief Data provider for DB2 server.
  */
-class QgsDb2Provider : public QgsVectorDataProvider
+class QgsDb2Provider final: public QgsVectorDataProvider
 {
     Q_OBJECT
 
@@ -165,7 +165,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     friend class QgsDb2FeatureSource;
 };
 
-class QgsDb2ProviderMetadata: public QgsProviderMetadata
+class QgsDb2ProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsDb2ProviderMetadata();

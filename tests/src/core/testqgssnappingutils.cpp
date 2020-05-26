@@ -116,7 +116,7 @@ class TestQgsSnappingUtils : public QObject
 
       // now enable snapping
       snappingConfig.setEnabled( true );
-      snappingConfig.setType( QgsSnappingConfig::Vertex );
+      snappingConfig.setTypeFlag( QgsSnappingConfig::VertexFlag );
       u.setConfig( snappingConfig );
 
       QgsPointLocator::Match m = u.snapToMap( QPoint( 100, 100 ) );
@@ -131,7 +131,7 @@ class TestQgsSnappingUtils : public QObject
       // do not consider edges in the following test - on 32-bit platforms
       // result was an edge match very close to (1,0) instead of being exactly (1,0)
 
-      snappingConfig.setType( QgsSnappingConfig::Vertex );
+      snappingConfig.setTypeFlag( QgsSnappingConfig::VertexFlag );
       u.setConfig( snappingConfig );
 
       // test with filtering
@@ -188,7 +188,7 @@ class TestQgsSnappingUtils : public QObject
 
       // now enable snapping
       snappingConfig.setEnabled( true );
-      snappingConfig.setType( QgsSnappingConfig::Vertex );
+      snappingConfig.setTypeFlag( QgsSnappingConfig::VertexFlag );
       u.setConfig( snappingConfig );
 
       QgsPointLocator::Match m5 = u.snapToMap( QPoint( 2, 2 ) );
@@ -220,6 +220,7 @@ class TestQgsSnappingUtils : public QObject
       QgsSnappingConfig snappingConfig = u.config();
       u.setMapSettings( mapSettings );
       snappingConfig.setEnabled( true );
+      snappingConfig.setTypeFlag( QgsSnappingConfig::VertexFlag );
       snappingConfig.setMode( QgsSnappingConfig::AllLayers );
       u.setConfig( snappingConfig );
 
@@ -249,7 +250,7 @@ class TestQgsSnappingUtils : public QObject
       u.setMapSettings( mapSettings );
       snappingConfig.setEnabled( true );
       snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
-      snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::Vertex, 10, QgsTolerance::Pixels ) );
+      snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::VertexFlag, 10, QgsTolerance::Pixels, -1.0, -1.0 ) );
       u.setConfig( snappingConfig );
 
       QgsPointLocator::Match m = u.snapToMap( QPoint( 100, 100 ) );
@@ -296,7 +297,7 @@ class TestQgsSnappingUtils : public QObject
       QgsSnappingConfig snappingConfig = u.config();
       snappingConfig.setEnabled( true );
       snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
-      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::Vertex, 0.1, QgsTolerance::ProjectUnits );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::VertexFlag, 0.1, QgsTolerance::ProjectUnits, 0.0, 0.0 );
       snappingConfig.setIndividualLayerSettings( vl, layerSettings );
       u.setConfig( snappingConfig );
 
@@ -348,7 +349,7 @@ class TestQgsSnappingUtils : public QObject
       QgsSnappingConfig snappingConfig = u.config();
       snappingConfig.setEnabled( true );
       snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
-      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::Vertex, 0.2, QgsTolerance::ProjectUnits );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::VertexFlag, 0.2, QgsTolerance::ProjectUnits, 0.0, 0.0 );
       snappingConfig.setIntersectionSnapping( true );
       snappingConfig.setIndividualLayerSettings( vCurveZ.get(), layerSettings );
       u.setConfig( snappingConfig );
@@ -385,7 +386,7 @@ class TestQgsSnappingUtils : public QObject
       QgsSnappingConfig snappingConfig = u.config();
       snappingConfig.setEnabled( true );
       snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
-      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::Vertex, 0.2, QgsTolerance::ProjectUnits );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::VertexFlag, 0.2, QgsTolerance::ProjectUnits, 0.0, 0.0 );
       snappingConfig.setIntersectionSnapping( true );
       snappingConfig.setIndividualLayerSettings( vMulti.get(), layerSettings );
       u.setConfig( snappingConfig );
@@ -399,6 +400,43 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( m2.isValid() );
       QCOMPARE( m2.type(), QgsPointLocator::Vertex );
       QCOMPARE( m2.point(), QgsPointXY( 5.0, 2.5 ) );
+
+    }
+    void testSnapOnCentroidAndMiddleSegment()
+    {
+      std::unique_ptr<QgsVectorLayer> vSnapCentroidMiddle( new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) ) );
+      QgsFeature f1;
+      QgsGeometry f1g = QgsGeometry::fromWkt( "LineString (0 0, 0 5, 5 5, 5 0, 0 0)" );
+      f1.setGeometry( f1g );
+
+      QgsFeatureList flist;
+      flist << f1;
+      vSnapCentroidMiddle->dataProvider()->addFeatures( flist );
+      QVERIFY( vSnapCentroidMiddle->dataProvider()->featureCount() == 1 );
+
+      QgsMapSettings mapSettings;
+      mapSettings.setOutputSize( QSize( 100, 100 ) );
+      mapSettings.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+      QVERIFY( mapSettings.hasValidSettings() );
+
+      QgsSnappingUtils u;
+      u.setMapSettings( mapSettings );
+      QgsSnappingConfig snappingConfig = u.config();
+      snappingConfig.setEnabled( true );
+      snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::MiddleOfSegmentFlag | QgsSnappingConfig::CentroidFlag ), 0.2, QgsTolerance::ProjectUnits, 0.0, 0.0 );
+      snappingConfig.setIndividualLayerSettings( vSnapCentroidMiddle.get(), layerSettings );
+      u.setConfig( snappingConfig );
+
+      QgsPointLocator::Match m = u.snapToMap( QgsPointXY( 0, 2.6 ) );
+      QVERIFY( m.isValid() );
+      QCOMPARE( m.type(), QgsPointLocator::MiddleOfSegment );
+      QCOMPARE( m.point(), QgsPointXY( 0.0, 2.5 ) );
+
+      QgsPointLocator::Match m2 = u.snapToMap( QgsPointXY( 2.5, 2.6 ) );
+      QVERIFY( m2.isValid() );
+      QCOMPARE( m2.type(), QgsPointLocator::Centroid );
+      QCOMPARE( m2.point(), QgsPointXY( 2.5, 2.5 ) );
 
     }
 
@@ -419,6 +457,78 @@ class TestQgsSnappingUtils : public QObject
       QCOMPARE( m.point(), QgsPointXY( 1, 0 ) );
     }
 
+    void testSnapScaleDependency()
+    {
+      QgsMapSettings mapSettings;
+      mapSettings.setOutputSize( QSize( 100, 100 ) );
+      mapSettings.setExtent( QgsRectangle( 0, 0, 1, 1 ) );
+      //Cannot set a specific scale directly, so play with Dpi in map settings, default scale is now 43295.7
+      mapSettings.setOutputDpi( 1 );
+      QVERIFY( mapSettings.hasValidSettings() );
+
+      QgsSnappingUtils u;
+      QgsSnappingConfig snappingConfig = u.config();
+      u.setMapSettings( mapSettings );
+      snappingConfig.setEnabled( true );
+      snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
+      snappingConfig.setScaleDependencyMode( QgsSnappingConfig::Disabled );
+      snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::VertexFlag, 10, QgsTolerance::Pixels, -1.0, -1.0 ) );
+      u.setConfig( snappingConfig );
+
+      //No limit on scale
+      QgsPointLocator::Match m = u.snapToMap( QPoint( 100, 100 ) );
+      QVERIFY( m.isValid() );
+      QVERIFY( m.hasVertex() );
+      QCOMPARE( m.point(), QgsPointXY( 1, 0 ) );
+
+      snappingConfig.setScaleDependencyMode( QgsSnappingConfig::Global );
+      snappingConfig.setMinimumScale( 0.0 );
+      snappingConfig.setMaximumScale( 0.0 );
+      u.setConfig( snappingConfig );
+
+      //Global settings for scale limit, but scale are set to 0 -> snapping enabled
+      QgsPointLocator::Match m1 = u.snapToMap( QPoint( 100, 100 ) );
+      QVERIFY( m1.isValid() );
+      QVERIFY( m1.hasVertex() );
+
+      snappingConfig.setScaleDependencyMode( QgsSnappingConfig::Global );
+      snappingConfig.setMinimumScale( 1000.0 );
+      snappingConfig.setMaximumScale( 10000.0 );
+      u.setConfig( snappingConfig );
+
+      //Global settings for scale limit, but scale outside min max range -> no snapping
+      QgsPointLocator::Match m2 = u.snapToMap( QPoint( 100, 100 ) );
+      QVERIFY( m2.isValid() == false );
+      QVERIFY( m2.hasVertex() == false );
+
+      snappingConfig.setScaleDependencyMode( QgsSnappingConfig::Global );
+      snappingConfig.setMinimumScale( 1000.0 );
+      snappingConfig.setMaximumScale( 100000.0 );
+      u.setConfig( snappingConfig );
+
+      //Global settings for scale limit, scale inside min max range -> snapping enabled
+      QgsPointLocator::Match m3 = u.snapToMap( QPoint( 100, 100 ) );
+      QVERIFY( m3.isValid() );
+      QVERIFY( m3.hasVertex() );
+
+      snappingConfig.setScaleDependencyMode( QgsSnappingConfig::PerLayer );
+      snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::VertexFlag, 10, QgsTolerance::Pixels, 1000.0, 10000.0 ) );
+      u.setConfig( snappingConfig );
+
+      //Per layer settings, but scale outside min max range of layer -> no snapping
+      QgsPointLocator::Match m4 = u.snapToMap( QPoint( 100, 100 ) );
+      QVERIFY( m4.isValid() == false );
+      QVERIFY( m4.hasVertex() == false );
+
+      snappingConfig.setScaleDependencyMode( QgsSnappingConfig::PerLayer );
+      snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::VertexFlag, 10, QgsTolerance::Pixels, 1000.0, 100000.0 ) );
+      u.setConfig( snappingConfig );
+
+      //Per layer settings, scale inside min max range of layer -> snapping enabled
+      QgsPointLocator::Match m5 = u.snapToMap( QPoint( 100, 100 ) );
+      QVERIFY( m5.isValid() );
+      QVERIFY( m5.hasVertex() );
+    }
 };
 
 QGSTEST_MAIN( TestQgsSnappingUtils )

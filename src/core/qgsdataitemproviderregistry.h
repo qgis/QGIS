@@ -17,6 +17,8 @@
 #define QGSDATAITEMPROVIDERREGISTRY_H
 
 #include <QList>
+#include <QMap>
+
 #include "qgis_sip.h"
 
 #include "qgis_core.h"
@@ -52,6 +54,12 @@ class CORE_EXPORT QgsDataItemProviderRegistry
     QList<QgsDataItemProvider *> providers() const;
 
     /**
+     * Returns the (possibly NULL) data item provider named \a providerName
+     * \since QGIS 3.14
+     */
+    QgsDataItemProvider *provider( const QString &providerName ) const;
+
+    /**
      * Adds a \a provider implementation to the registry. Ownership of the provider
      * is transferred to the registry.
      */
@@ -63,6 +71,14 @@ class CORE_EXPORT QgsDataItemProviderRegistry
      */
     void removeProvider( QgsDataItemProvider *provider );
 
+    /**
+     * Returns the (possibly blank) data provider key for a given data item provider name.
+     *
+     * \param dataItemProviderName name of the data item provider
+     * \since QGIS 3.14
+     */
+    QString dataProviderKey( const QString &dataItemProviderName );
+
   private:
 #ifdef SIP_RUN
     QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry &rh );
@@ -70,6 +86,9 @@ class CORE_EXPORT QgsDataItemProviderRegistry
 
     //! Available providers, owned by this class
     QList<QgsDataItemProvider *> mProviders;
+
+    //! Keeps track of data item provider <-> data provider association
+    QMap<QString, QString> mDataItemProviderOrigin;
 
 };
 

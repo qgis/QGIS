@@ -925,7 +925,7 @@ QSqlError qMakeError( const QString &errString, QSqlError::ErrorType type, OCIEr
   ENTER
   int errorCode = 0;
   const QString oraErrorString = qOraWarn( err, &errorCode );
-  return QSqlError( errString, oraErrorString, type, errorCode );
+  return QSqlError( errString, oraErrorString, type, QString::number( errorCode ) );
 }
 
 QVariant::Type qDecodeOCIType( const QString &ocitype, QSql::NumericalPrecisionPolicy precisionPolicy )

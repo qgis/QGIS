@@ -620,9 +620,8 @@ void TestQgsMapToolIdentifyAction::identifyMesh()
   tempLayer->createMapRenderer( context );
 
   // only scalar dataset
-  QgsMeshRendererSettings settings = tempLayer->rendererSettings();
-  settings.setActiveScalarDataset( QgsMeshDatasetIndex( 0, 0 ) );
-  tempLayer->setRendererSettings( settings );
+  tempLayer->temporalProperties()->setIsActive( false );
+  tempLayer->setStaticScalarDatasetIndex( QgsMeshDatasetIndex( 0, 0 ) );
   QList<QgsMapToolIdentify::IdentifyResult> results;
 
   results = testIdentifyMesh( tempLayer, 500, 500 );
@@ -633,9 +632,8 @@ void TestQgsMapToolIdentifyAction::identifyMesh()
   QCOMPARE( results[0].mAttributes[ QStringLiteral( "Scalar Value" )], QStringLiteral( "42" ) );
 
   // scalar + vector same
-  settings.setActiveScalarDataset( QgsMeshDatasetIndex( 1, 0 ) );
-  settings.setActiveVectorDataset( QgsMeshDatasetIndex( 1, 0 ) );
-  tempLayer->setRendererSettings( settings );
+  tempLayer->setStaticScalarDatasetIndex( QgsMeshDatasetIndex( 1, 0 ) );
+  tempLayer->setStaticVectorDatasetIndex( QgsMeshDatasetIndex( 1, 0 ) );
   results = testIdentifyMesh( tempLayer, 500, 500 );
   QCOMPARE( results.size(), 1 );
   QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector Value" )], QStringLiteral( "no data" ) );
@@ -646,9 +644,8 @@ void TestQgsMapToolIdentifyAction::identifyMesh()
   QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector y-component" )], QStringLiteral( "2.4" ) );
 
   // scalar + vector different
-  settings.setActiveScalarDataset( QgsMeshDatasetIndex( 0, 0 ) );
-  settings.setActiveVectorDataset( QgsMeshDatasetIndex( 1, 0 ) );
-  tempLayer->setRendererSettings( settings );
+  tempLayer->setStaticScalarDatasetIndex( QgsMeshDatasetIndex( 0, 0 ) );
+  tempLayer->setStaticVectorDatasetIndex( QgsMeshDatasetIndex( 1, 0 ) );
   results = testIdentifyMesh( tempLayer, 2400, 2400 );
   QCOMPARE( results.size(), 2 );
   QCOMPARE( results[0].mAttributes[ QStringLiteral( "Scalar Value" )], QStringLiteral( "42" ) );
@@ -657,9 +654,8 @@ void TestQgsMapToolIdentifyAction::identifyMesh()
   QCOMPARE( results[1].mAttributes[ QStringLiteral( "Vector y-component" )], QStringLiteral( "2.4" ) );
 
   // only vector
-  settings.setActiveScalarDataset( QgsMeshDatasetIndex() );
-  settings.setActiveVectorDataset( QgsMeshDatasetIndex( 1, 0 ) );
-  tempLayer->setRendererSettings( settings );
+  tempLayer->setStaticScalarDatasetIndex( QgsMeshDatasetIndex() );
+  tempLayer->setStaticVectorDatasetIndex( QgsMeshDatasetIndex( 1, 0 ) );
   results = testIdentifyMesh( tempLayer, 2400, 2400 );
   QCOMPARE( results.size(), 1 );
   QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector Magnitude" )], QStringLiteral( "3" ) );

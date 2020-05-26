@@ -17,7 +17,7 @@
 
 #include "qgsmeshrenderersettings.h"
 #include "qgssymbollayerutils.h"
-
+#include "qgsunittypes.h"
 
 bool QgsMeshRendererMeshSettings::isEnabled() const
 {
@@ -49,12 +49,23 @@ void QgsMeshRendererMeshSettings::setColor( const QColor &color )
   mColor = color;
 }
 
+QgsUnitTypes::RenderUnit QgsMeshRendererMeshSettings::lineWidthUnit() const
+{
+  return mLineWidthUnit;
+}
+
+void QgsMeshRendererMeshSettings::setLineWidthUnit( const QgsUnitTypes::RenderUnit &lineWidthUnit )
+{
+  mLineWidthUnit = lineWidthUnit;
+}
+
 QDomElement QgsMeshRendererMeshSettings::writeXml( QDomDocument &doc ) const
 {
   QDomElement elem = doc.createElement( QStringLiteral( "mesh-settings" ) );
   elem.setAttribute( QStringLiteral( "enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elem.setAttribute( QStringLiteral( "line-width" ), mLineWidth );
   elem.setAttribute( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
+  elem.setAttribute( QStringLiteral( "line-width-unit" ), QgsUnitTypes::encodeUnit( mLineWidthUnit ) );
   return elem;
 }
 
@@ -63,8 +74,8 @@ void QgsMeshRendererMeshSettings::readXml( const QDomElement &elem )
   mEnabled = elem.attribute( QStringLiteral( "enabled" ) ).toInt();
   mLineWidth = elem.attribute( QStringLiteral( "line-width" ) ).toDouble();
   mColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "color" ) ) );
+  mLineWidthUnit = QgsUnitTypes::decodeRenderUnit( elem.attribute( QStringLiteral( "line-width-unit" ) ) );
 }
-
 // ---------------------------------------------------------------------
 
 QgsColorRampShader QgsMeshRendererScalarSettings::colorRampShader() const
@@ -91,14 +102,14 @@ double QgsMeshRendererScalarSettings::opacity() const { return mOpacity; }
 
 void QgsMeshRendererScalarSettings::setOpacity( double opacity ) { mOpacity = opacity; }
 
-QgsMeshRendererScalarSettings::DataInterpolationMethod QgsMeshRendererScalarSettings::dataInterpolationMethod() const
+QgsMeshRendererScalarSettings::DataResamplingMethod QgsMeshRendererScalarSettings::dataResamplingMethod() const
 {
-  return mDataInterpolationMethod;
+  return mDataResamplingMethod;
 }
 
-void QgsMeshRendererScalarSettings::setDataInterpolationMethod( const QgsMeshRendererScalarSettings::DataInterpolationMethod &dataInterpolationMethod )
+void QgsMeshRendererScalarSettings::setDataResamplingMethod( const QgsMeshRendererScalarSettings::DataResamplingMethod &dataInterpolationMethod )
 {
-  mDataInterpolationMethod = dataInterpolationMethod;
+  mDataResamplingMethod = dataInterpolationMethod;
 }
 
 QDomElement QgsMeshRendererScalarSettings::writeXml( QDomDocument &doc ) const
@@ -107,9 +118,11 @@ QDomElement QgsMeshRendererScalarSettings::writeXml( QDomDocument &doc ) const
   elem.setAttribute( QStringLiteral( "min-val" ), mClassificationMinimum );
   elem.setAttribute( QStringLiteral( "max-val" ), mClassificationMaximum );
   elem.setAttribute( QStringLiteral( "opacity" ), mOpacity );
+  elem.setAttribute( QStringLiteral( "edge-width" ), mEdgeWidth );
+  elem.setAttribute( QStringLiteral( "edge-width-unit" ), QgsUnitTypes::encodeUnit( mEdgeWidthUnit ) );
 
   QString methodTxt;
-  switch ( mDataInterpolationMethod )
+  switch ( mDataResamplingMethod )
   {
     case None:
       methodTxt = QStringLiteral( "none" );
@@ -129,17 +142,40 @@ void QgsMeshRendererScalarSettings::readXml( const QDomElement &elem )
   mClassificationMinimum = elem.attribute( QStringLiteral( "min-val" ) ).toDouble();
   mClassificationMaximum = elem.attribute( QStringLiteral( "max-val" ) ).toDouble();
   mOpacity = elem.attribute( QStringLiteral( "opacity" ) ).toDouble();
+  mEdgeWidth = elem.attribute( QStringLiteral( "edge-width" ) ).toDouble();
+  mEdgeWidthUnit = QgsUnitTypes::decodeRenderUnit( elem.attribute( QStringLiteral( "edge-width-unit" ) ) );
+
   QString methodTxt = elem.attribute( QStringLiteral( "interpolation-method" ) );
   if ( QStringLiteral( "neighbour-average" ) == methodTxt )
   {
-    mDataInterpolationMethod = DataInterpolationMethod::NeighbourAverage;
+    mDataResamplingMethod = DataResamplingMethod::NeighbourAverage;
   }
   else
   {
-    mDataInterpolationMethod = DataInterpolationMethod::None;
+    mDataResamplingMethod = DataResamplingMethod::None;
   }
   QDomElement elemShader = elem.firstChildElement( QStringLiteral( "colorrampshader" ) );
   mColorRampShader.readXml( elemShader );
+}
+
+double QgsMeshRendererScalarSettings::edgeWidth() const
+{
+  return mEdgeWidth;
+}
+
+void QgsMeshRendererScalarSettings::setEdgeWidth( double edgeWidth )
+{
+  mEdgeWidth = edgeWidth;
+}
+
+QgsUnitTypes::RenderUnit QgsMeshRendererScalarSettings::edgeWidthUnit() const
+{
+  return mEdgeWidthUnit;
+}
+
+void QgsMeshRendererScalarSettings::setEdgeWidthUnit( const QgsUnitTypes::RenderUnit &edgeWidthLengthUnit )
+{
+  mEdgeWidthUnit = edgeWidthLengthUnit;
 }
 
 // ---------------------------------------------------------------------
@@ -364,12 +400,10 @@ QDomElement QgsMeshRendererSettings::writeXml( QDomDocument &doc ) const
 {
   QDomElement elem = doc.createElement( QStringLiteral( "mesh-renderer-settings" ) );
 
-  QDomElement elemActiveDataset = doc.createElement( QStringLiteral( "active-dataset" ) );
-  if ( mActiveScalarDataset.isValid() )
-    elemActiveDataset.setAttribute( QStringLiteral( "scalar" ), QStringLiteral( "%1,%2" ).arg( mActiveScalarDataset.group() ).arg( mActiveScalarDataset.dataset() ) );
-  if ( mActiveVectorDataset.isValid() )
-    elemActiveDataset.setAttribute( QStringLiteral( "vector" ), QStringLiteral( "%1,%2" ).arg( mActiveVectorDataset.group() ).arg( mActiveVectorDataset.dataset() ) );
-  elem.appendChild( elemActiveDataset );
+  QDomElement elemActiveDatasetGroup = doc.createElement( QStringLiteral( "active-dataset-group" ) );
+  elemActiveDatasetGroup.setAttribute( QStringLiteral( "scalar" ), mActiveScalarDatasetGroup );
+  elemActiveDatasetGroup.setAttribute( QStringLiteral( "vector" ), mActiveVectorDatasetGroup );
+  elem.appendChild( elemActiveDatasetGroup );
 
   for ( int groupIndex : mRendererScalarSettings.keys() )
   {
@@ -390,6 +424,10 @@ QDomElement QgsMeshRendererSettings::writeXml( QDomDocument &doc ) const
   QDomElement elemNativeMesh = mRendererNativeMeshSettings.writeXml( doc );
   elemNativeMesh.setTagName( QStringLiteral( "mesh-settings-native" ) );
   elem.appendChild( elemNativeMesh );
+
+  QDomElement elemEdgeMesh = mRendererEdgeMeshSettings.writeXml( doc );
+  elemEdgeMesh.setTagName( QStringLiteral( "mesh-settings-edge" ) );
+  elem.appendChild( elemEdgeMesh );
 
   QDomElement elemTriangularMesh = mRendererTriangularMeshSettings.writeXml( doc );
   elemTriangularMesh.setTagName( QStringLiteral( "mesh-settings-triangular" ) );
@@ -413,19 +451,12 @@ void QgsMeshRendererSettings::readXml( const QDomElement &elem )
   mRendererVectorSettings.clear();
   mAveragingMethod.reset();
 
-  QDomElement elemActiveDataset = elem.firstChildElement( QStringLiteral( "active-dataset" ) );
+  QDomElement elemActiveDataset = elem.firstChildElement( QStringLiteral( "active-dataset-group" ) );
   if ( elemActiveDataset.hasAttribute( QStringLiteral( "scalar" ) ) )
-  {
-    QStringList lst = elemActiveDataset.attribute( QStringLiteral( "scalar" ) ).split( QChar( ',' ) );
-    if ( lst.count() == 2 )
-      mActiveScalarDataset = QgsMeshDatasetIndex( lst[0].toInt(), lst[1].toInt() );
-  }
+    mActiveScalarDatasetGroup = elemActiveDataset.attribute( QStringLiteral( "scalar" ) ).toInt();
+
   if ( elemActiveDataset.hasAttribute( QStringLiteral( "vector" ) ) )
-  {
-    QStringList lst = elemActiveDataset.attribute( QStringLiteral( "vector" ) ).split( QChar( ',' ) );
-    if ( lst.count() == 2 )
-      mActiveVectorDataset = QgsMeshDatasetIndex( lst[0].toInt(), lst[1].toInt() );
-  }
+    mActiveVectorDatasetGroup = elemActiveDataset.attribute( QStringLiteral( "vector" ) ).toInt();
 
   QDomElement elemScalar = elem.firstChildElement( QStringLiteral( "scalar-settings" ) );
   while ( !elemScalar.isNull() )
@@ -452,6 +483,9 @@ void QgsMeshRendererSettings::readXml( const QDomElement &elem )
   QDomElement elemNativeMesh = elem.firstChildElement( QStringLiteral( "mesh-settings-native" ) );
   mRendererNativeMeshSettings.readXml( elemNativeMesh );
 
+  QDomElement elemEdgeMesh = elem.firstChildElement( QStringLiteral( "mesh-settings-edge" ) );
+  mRendererEdgeMeshSettings.readXml( elemEdgeMesh );
+
   QDomElement elemTriangularMesh = elem.firstChildElement( QStringLiteral( "mesh-settings-triangular" ) );
   mRendererTriangularMeshSettings.readXml( elemTriangularMesh );
 
@@ -460,6 +494,26 @@ void QgsMeshRendererSettings::readXml( const QDomElement &elem )
   {
     mAveragingMethod.reset( QgsMesh3dAveragingMethod::createFromXml( elemAveraging ) );
   }
+}
+
+int QgsMeshRendererSettings::activeScalarDatasetGroup() const
+{
+  return mActiveScalarDatasetGroup;
+}
+
+void QgsMeshRendererSettings::setActiveScalarDatasetGroup( int activeScalarDatasetGroup )
+{
+  mActiveScalarDatasetGroup = activeScalarDatasetGroup;
+}
+
+int QgsMeshRendererSettings::activeVectorDatasetGroup() const
+{
+  return mActiveVectorDatasetGroup;
+}
+
+void QgsMeshRendererSettings::setActiveVectorDatasetGroup( int activeVectorDatasetGroup )
+{
+  mActiveVectorDatasetGroup = activeVectorDatasetGroup;
 }
 
 QgsMeshRendererVectorStreamlineSettings::SeedingStartPointsMethod QgsMeshRendererVectorStreamlineSettings::seedingMethod() const
@@ -536,7 +590,10 @@ QDomElement QgsMeshRendererVectorSettings::writeXml( QDomDocument &doc ) const
   elem.setAttribute( QStringLiteral( "symbology" ), mDisplayingMethod );
 
   elem.setAttribute( QStringLiteral( "line-width" ), mLineWidth );
+  elem.setAttribute( QStringLiteral( "coloring-method" ), coloringMethod() );
   elem.setAttribute( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
+  QDomElement elemShader = mColorRampShader.writeXml( doc );
+  elem.appendChild( elemShader );
   elem.setAttribute( QStringLiteral( "filter-min" ), mFilterMin );
   elem.setAttribute( QStringLiteral( "filter-max" ), mFilterMax );
 
@@ -557,7 +614,10 @@ void QgsMeshRendererVectorSettings::readXml( const QDomElement &elem )
                         elem.attribute( QStringLiteral( "symbology" ) ).toInt() );
 
   mLineWidth = elem.attribute( QStringLiteral( "line-width" ) ).toDouble();
+  mColoringMethod = static_cast<QgsMeshRendererVectorSettings::ColoringMethod>(
+                      elem.attribute( QStringLiteral( "coloring-method" ) ).toInt() );
   mColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "color" ) ) );
+  mColorRampShader.readXml( elem.firstChildElement( "colorrampshader" ) );
   mFilterMin = elem.attribute( QStringLiteral( "filter-min" ) ).toDouble();
   mFilterMax = elem.attribute( QStringLiteral( "filter-max" ) ).toDouble();
 
@@ -576,6 +636,26 @@ void QgsMeshRendererVectorSettings::readXml( const QDomElement &elem )
   QDomElement elemTraces = elem.firstChildElement( QStringLiteral( "vector-traces-settings" ) );
   if ( ! elemTraces.isNull() )
     mTracesSettings.readXml( elemTraces );
+}
+
+QgsMeshRendererVectorSettings::ColoringMethod QgsMeshRendererVectorSettings::coloringMethod() const
+{
+  return mColoringMethod;
+}
+
+void QgsMeshRendererVectorSettings::setColoringMethod( const QgsMeshRendererVectorSettings::ColoringMethod &coloringMethod )
+{
+  mColoringMethod = coloringMethod;
+}
+
+QgsColorRampShader QgsMeshRendererVectorSettings::colorRampShader() const
+{
+  return mColorRampShader;
+}
+
+void QgsMeshRendererVectorSettings::setColorRampShader( const QgsColorRampShader &colorRampShader )
+{
+  mColorRampShader = colorRampShader;
 }
 
 QgsMeshRendererVectorTracesSettings QgsMeshRendererVectorSettings::tracesSettings() const

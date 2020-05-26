@@ -533,7 +533,22 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       if ( mLockedFeature && mLockedFeature->layer() != vlayer )
         continue;  // with locked feature we only allow selection of its vertices
 
-      QgsRectangle layerRect = toLayerCoordinates( vlayer, rubberBandGeometry.boundingBox() );
+      QgsGeometry layerRubberBandGeometry = rubberBandGeometry;
+      try
+      {
+        QgsCoordinateTransform ct = mCanvas->mapSettings().layerTransform( vlayer );
+        if ( ct.isValid() )
+          layerRubberBandGeometry.transform( ct, QgsCoordinateTransform::ReverseTransform );
+      }
+      catch ( QgsCsException & )
+      {
+        continue;
+      }
+
+      QgsRectangle layerRect = layerRubberBandGeometry.boundingBox();
+      std::unique_ptr< QgsGeometryEngine > layerRubberBandEngine( QgsGeometry::createGeometryEngine( layerRubberBandGeometry.constGet() ) );
+      layerRubberBandEngine->prepareGeometry();
+
       QgsFeature f;
       QgsFeatureIterator fi = vlayer->getFeatures( QgsFeatureRequest( layerRect ).setNoAttributes() );
       while ( fi.nextFeature( f ) )
@@ -545,8 +560,8 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         QgsGeometry g = f.geometry();
         for ( int i = 0; i < g.constGet()->nCoordinates(); ++i )
         {
-          QgsPointXY pt = g.vertexAt( i );
-          if ( rubberBandGeometry.contains( &pt ) )
+          QgsPoint pt = g.vertexAt( i );
+          if ( layerRubberBandEngine->contains( &pt ) )
           {
             vertices << Vertex( vlayer, f.id(), i );
 
@@ -754,7 +769,7 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
           continue;
 
         config.setIndividualLayerSettings( vlayer, QgsSnappingConfig::IndividualLayerSettings(
-                                             vlayer == currentVlayer, QgsSnappingConfig::VertexAndSegment, tol, QgsTolerance::ProjectUnits ) );
+                                             vlayer == currentVlayer, static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag ), tol, QgsTolerance::ProjectUnits, 0.0, 0.0 ) );
       }
 
       snapUtils->setConfig( config );
@@ -781,7 +796,7 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
         continue;
 
       config.setIndividualLayerSettings( vlayer, QgsSnappingConfig::IndividualLayerSettings(
-                                           vlayer->isEditable(), QgsSnappingConfig::VertexAndSegment, tol, QgsTolerance::ProjectUnits ) );
+                                           vlayer->isEditable(), static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag ), tol, QgsTolerance::ProjectUnits, 0.0, 0.0 ) );
     }
 
     snapUtils->setConfig( config );

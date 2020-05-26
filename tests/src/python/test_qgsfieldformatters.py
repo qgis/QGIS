@@ -175,6 +175,24 @@ class TestQgsValueRelationFieldFormatter(unittest.TestCase):
 
         QgsProject.instance().removeMapLayer(layer.id())
 
+    def test_expressionRequiresParentFormScope(self):
+
+        res = list(QgsValueRelationFieldFormatter.expressionFormAttributes("current_value('ONE') AND current_parent_value('TWO')"))
+        res = sorted(res)
+        self.assertEqual(res, ['ONE'])
+
+        res = list(QgsValueRelationFieldFormatter.expressionParentFormAttributes("current_value('ONE') AND current_parent_value('TWO')"))
+        res = sorted(res)
+        self.assertEqual(res, ['TWO'])
+
+        res = list(QgsValueRelationFieldFormatter.expressionParentFormVariables("@current_parent_geometry"))
+        self.assertEqual(res, ['current_parent_geometry'])
+
+        self.assertFalse(QgsValueRelationFieldFormatter.expressionRequiresParentFormScope(""))
+        self.assertTrue(QgsValueRelationFieldFormatter.expressionRequiresParentFormScope("current_parent_value('TWO')"))
+        self.assertTrue(QgsValueRelationFieldFormatter.expressionRequiresParentFormScope("current_parent_value ( 'TWO' )"))
+        self.assertTrue(QgsValueRelationFieldFormatter.expressionRequiresParentFormScope("@current_parent_geometry"))
+
 
 class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
 

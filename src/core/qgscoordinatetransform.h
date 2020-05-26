@@ -381,6 +381,94 @@ class CORE_EXPORT QgsCoordinateTransform
     void setCoordinateOperation( const QString &operation ) const;
 
     /**
+     * Sets whether "ballpark" fallback transformations can be used in the case that the specified
+     * coordinate operation fails (such as when coordinates from outside a required grid shift file
+     * are transformed). See fallbackOperationOccurred() for further details.
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting.
+     *
+     * \warning If setBallparkTransformsAreAppropriate() is set to TRUE, this setting will be ignored
+     * and fallback transformations will always be permitted.
+     *
+     * \see allowFallbackTransforms()
+     * \see setBallparkTransformsAreAppropriate()
+     * \since QGIS 3.12
+     */
+    void setAllowFallbackTransforms( bool allowed );
+
+    /**
+     * Returns whether "ballpark" fallback transformations will be used in the case that the specified
+     * coordinate operation fails (such as when coordinates from outside a required grid shift file
+     * are transformed). See fallbackOperationOccurred() for further details.
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting.
+     *
+     * \see setAllowFallbackTransforms()
+     * \see setBallparkTransformsAreAppropriate()
+     * \since QGIS 3.12
+     */
+    bool allowFallbackTransforms() const;
+
+    /**
+     * Sets whether approximate "ballpark" results are appropriate for this coordinate transform.
+     *
+     * When a coordinate transform is only being used to generate ballpark results then the
+     * \a appropriate argument should be set to TRUE. This indicates that its perfectable
+     * acceptable (and even expected!) for the transform to use fallback coordinate operations
+     * in the case that the preferred or user-specified operation fails (such as when coordinates
+     * from outside of a grid shift file's extent are transformed).
+     *
+     * When \a appropriate is TRUE, then no warnings will be generated when the transform
+     * falls back to a default operation, which may introduce inaccuracies when compared to
+     * the default/specified coordinate operation.
+     *
+     * This should be set when a transform expects that coordinates outside of the direct
+     * area of use while be transformed, e.g. when transforming from a global extent to a
+     * CRS with a localized area of use.
+     *
+     * If \a appropriate is FALSE (the default behavior), then transforms MAY STILL fallback to default operations
+     * when the preferred or user-specified operation fails, however whenever this occurs
+     * a user-visible warning will be generated.
+     *
+     * If \a appropriate is TRUE, then this setting overrides allowFallbackTransforms()
+     * and fallback transforms will always be allowed when required.
+     *
+     * \warning This setting applies to a single instance of a coordinate transform only,
+     * and is not copied when a coordinate transform object is copied or assigned.
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting.
+     *
+     * \since QGIS 3.12
+     */
+    void setBallparkTransformsAreAppropriate( bool appropriate );
+
+    /**
+     * Sets whether the default fallback operation handler is disabled for this transform instance.
+     *
+     * If the default handler is \a disabled then it is possible to determine whether a fallback
+     * operation occurred by testing fallbackOperationOccurred() immediately after a transformation.
+     *
+     * \warning This setting applies to a single instance of a coordinate transform only,
+     * and is not copied when a coordinate transform object is copied or assigned.
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will never perform fallback operations.
+     *
+     * \see fallbackOperationOccurred()
+     * \since QGIS 3.12
+     */
+    void disableFallbackOperationHandler( bool disabled );
+
+    /**
+     * Returns TRUE if a fallback operation occurred for the most recent transform.
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will never perform fallback operations.
+     *
+     * \see disableFallbackOperationHandler()
+     * \since QGIS 3.12
+     */
+    bool fallbackOperationOccurred() const;
+
+    /**
      * Returns the ID of the datum transform to use when projecting from the source
      * CRS.
      *
@@ -555,6 +643,18 @@ class CORE_EXPORT QgsCoordinateTransform
     static void setCustomMissingGridUsedByContextHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
         const QgsCoordinateReferenceSystem &destinationCrs,
         const QgsDatumTransform::TransformDetails &desiredOperation )> &handler );
+
+
+    /**
+     * Sets a custom \a handler to use when the desired coordinate operation for use between \a sourceCrs and
+     * \a destinationCrs failed and an alternative fallback operation was utilized instead.
+     *
+     * \since QGIS 3.10.3
+     */
+    static void setFallbackOperationOccurredHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+        const QgsCoordinateReferenceSystem &destinationCrs,
+        const QString &desiredOperation )> &handler );
+
 #endif
 
 #ifndef SIP_RUN
@@ -577,10 +677,15 @@ class CORE_EXPORT QgsCoordinateTransform
     bool mHasContext = false;
 #endif
 
+    mutable QString mLastError;
+    bool mBallparkTransformsAreAppropriate = false;
+    bool mDisableFallbackHandler = false;
+    mutable bool mFallbackOperationOccurred = false;
+
 #if PROJ_VERSION_MAJOR>=6
     bool setFromCache( const QgsCoordinateReferenceSystem &src,
                        const QgsCoordinateReferenceSystem &dest,
-                       const QString &coordinateOperationProj );
+                       const QString &coordinateOperationProj, bool allowFallback );
 #else
     bool setFromCache( const QgsCoordinateReferenceSystem &src,
                        const QgsCoordinateReferenceSystem &dest,
@@ -593,6 +698,11 @@ class CORE_EXPORT QgsCoordinateTransform
     static QReadWriteLock sCacheLock;
     static QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > sTransforms; //same auth_id pairs might have different datum transformations
     static bool sDisableCache;
+
+
+    static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                const QgsCoordinateReferenceSystem &destinationCrs,
+                                const QString &desiredOperation )> sFallbackOperationOccurredHandler;
 
 };
 

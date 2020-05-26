@@ -38,10 +38,12 @@
 #include "qgsrasterviewport.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgscontrastenhancement.h"
+#include "qgsrasterlayertemporalproperties.h"
 
 class QgsMapToPixel;
 class QgsRasterRenderer;
 class QgsRectangle;
+
 class QImage;
 class QPixmap;
 class QSlider;
@@ -50,43 +52,14 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
 
 /**
  * \ingroup core
- *  This class provides qgis with the ability to render raster datasets
- *  onto the mapcanvas.
  *
- *  The qgsrasterlayer class makes use of gdal for data io, and thus supports
- *  any gdal supported format. The constructor attempts to infer what type of
- *  file (LayerType) is being opened - not in terms of the file format (tif, ascii grid etc.)
- *  but rather in terms of whether the image is a GRAYSCALE, PaletteD or Multiband.
+ * Represents a raster layer.
  *
- *  Within the three allowable raster layer types, there are 8 permutations of
- *  how a layer can actually be rendered. These are defined in the DrawingStyle enum
- *  and consist of:
- *
- *  - SingleBandGray -> a GRAYSCALE layer drawn as a range of gray colors (0-255)
- *  - SingleBandPseudoColor -> a GRAYSCALE layer drawn using a pseudocolor algorithm
- *  - PalettedSingleBandGray -> a PaletteD layer drawn in gray scale (using only one of the color components)
- *  - PalettedSingleBandPseudoColor -> a PaletteD layer having only one of its color components rendered as pseudo color
- *  - PalettedMultiBandColor -> a PaletteD image where the bands contains 24bit color info and 8 bits is pulled out per color
- *  - MultiBandSingleBandGray -> a layer containing 2 or more bands, but using only one band to produce a grayscale image
- *  - MultiBandSingleBandPseudoColor -> a layer containing 2 or more bands, but using only one band to produce a pseudocolor image
- *  - MultiBandColor -> a layer containing 2 or more bands, mapped to the three RGBcolors. In the case of a multiband with only two bands, one band will have to be mapped to more than one color
- *
- *  Each of the above mentioned drawing styles is implemented in its own draw* function.
- *  Some of the drawing styles listed above require statistics about the layer such
- *  as the min / max / mean / stddev etc. statistics for a band can be gathered using the
- *  bandStatistics function. Note that statistics gathering is a slow process and
- *  every effort should be made to call this function as few times as possible. For this
- *  reason, qgsraster has a vector class member to store stats for each band. The
- *  constructor initializes this vector on startup, but only populates the band name and
- *  number fields.
- *
- *  Note that where bands are of gdal 'undefined' type, their values may exceed the
- *  renderable range of 0-255. Because of this a linear scaling histogram enhanceContrast is
- *  applied to undefined layers to normalise the data into the 0-255 range.
- *
- *  A qgsrasterlayer band can be referred to either by name or by number (base=1). It
- *  should be noted that band names as stored in datafiles may not be unique, and
- *  so the rasterlayer class appends the band number in brackets behind each band name.
+ * A QgsRasterLayer is instantiated by specifying the name of a data provider,
+ * such as "gdal" or "wms", and a url defining the specific data set to connect to.
+ * The raster layer constructor in turn instantiates a QgsRasterDataProvider subclass
+ * corresponding to the provider type, and passes it the url. The data provider
+ * connects to the data source.
  *
  *  Sample usage of the QgsRasterLayer class:
  *
@@ -95,45 +68,7 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
  *     QString myBaseNameQString = "my layer";
  *     QgsRasterLayer *myRasterLayer = new QgsRasterLayer(myFileNameQString, myBaseNameQString);
  * \endcode
- *
- *  In order to automate redrawing of a raster layer, you should link it to a map canvas like this:
- *
- * \code{.cpp}
- *     QObject::connect( myRasterLayer, SIGNAL(repaintRequested()), mapCanvas, SLOT(refresh()) );
- * \endcode
- *
- * Once a layer has been created you can find out what type of layer it is (GrayOrUndefined, Palette or Multiband):
- *
- * \code{.cpp}
- *    if (rasterLayer->rasterType()==QgsRasterLayer::Multiband)
- *    {
- *      //do something
- *    }
- *    else if (rasterLayer->rasterType()==QgsRasterLayer::Palette)
- *    {
- *      //do something
- *    }
- *    else // QgsRasterLayer::GrayOrUndefined
- *    {
- *      //do something.
- *    }
- * \endcode
- *
- *  Raster layers can also have an arbitrary level of transparency defined, and have their
- *  color palettes inverted using the setTransparency and setInvertHistogram methods.
- *
- *  Pseudocolor images can have their output adjusted to a given number of standard
- *  deviations using the setStandardDeviations method.
- *
- *  The final area of functionality you may be interested in is band mapping. Band mapping
- *  allows you to choose arbitrary band -> color mappings and is applicable only to Palette
- *  and Multiband rasters, There are four mappings that can be made: red, green, blue and gray.
- *  Mappings are non-exclusive. That is a given band can be assigned to no, some or all
- *  color mappings. The constructor sets sensible defaults for band mappings but these can be
- *  overridden at run time using the setRedBandName, setGreenBandName, setBlueBandName and setGrayBandName
- *  methods.
  */
-
 class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 {
     Q_OBJECT
@@ -450,6 +385,23 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void refreshRendererIfNeeded( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent ) SIP_SKIP;
 
     /**
+     * Returns the string (typically sql) used to define a subset of the layer.
+     * \returns The subset string or null QString if not implemented by the provider
+     * \since QGIS 3.12
+     */
+    virtual QString subsetString() const;
+
+    /**
+     * Sets the string (typically sql) used to define a subset of the layer
+     * \param subset The subset string. This may be the where clause of a sql statement
+     *               or other definition string specific to the underlying dataprovider
+     *               and data store.
+     * \returns TRUE, when setting the subset string was successful, FALSE otherwise
+     * \since QGIS 3.12
+     */
+    virtual bool setSubsetString( const QString &subset );
+
+    /**
      * Returns default contrast enhancement settings for that type of raster.
      *  \note not available in Python bindings
      */
@@ -494,6 +446,11 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     bool ignoreExtents() const;
 
+    /**
+     * Returns temporal properties associated with the raster layer.
+     */
+    QgsRasterLayerTemporalProperties *temporalProperties() override;
+
   public slots:
     void showStatusMessage( const QString &message );
 
@@ -503,6 +460,15 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * \since QGIS 3.8
      */
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
+
+  signals:
+
+    /**
+     * Emitted when the layer's subset string has changed.
+     * \since QGIS 3.12
+     */
+    void subsetStringChanged();
+
 
   protected:
     bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;
@@ -515,6 +481,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const override;
     QString decodedSource( const QString &source, const QString &provider,  const QgsReadWriteContext &context ) const override;
+
   private:
     //! \brief Initialize default values
     void init();
@@ -535,6 +502,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                                  bool generateLookupTableFlag,
                                  QgsRasterRenderer *rasterRenderer );
 
+    //! Refresh renderer
+    void refreshRenderer( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent );
+
     void computeMinMax( int band,
                         const QgsRasterMinMaxOrigin &mmo,
                         QgsRasterMinMaxOrigin::Limits limits,
@@ -548,6 +518,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     //! Pointer to data provider
     QgsRasterDataProvider *mDataProvider = nullptr;
+
+    //! Pointer to temporal properties
+    QgsRasterLayerTemporalProperties *mTemporalProperties = nullptr;
 
     //! [ data provider interface ] Timestamp, the last modified time of the data source when the layer was created
     QDateTime mLastModified;

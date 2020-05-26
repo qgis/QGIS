@@ -30,7 +30,7 @@
 
 class QgsOapifSharedData;
 
-class QgsOapifProvider : public QgsVectorDataProvider
+class QgsOapifProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
   public:
@@ -115,7 +115,7 @@ class QgsOapifProvider : public QgsVectorDataProvider
     void reloadProviderData() override;
 };
 
-class QgsOapifProviderMetadata: public QgsProviderMetadata
+class QgsOapifProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsOapifProviderMetadata();
@@ -123,7 +123,7 @@ class QgsOapifProviderMetadata: public QgsProviderMetadata
 };
 
 // !Class shared between provider and feature source
-class QgsOapifSharedData : public QObject, public QgsBackgroundCachedSharedData
+class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedSharedData
 {
     Q_OBJECT
   public:
@@ -200,7 +200,7 @@ class QgsOapifSharedData : public QObject, public QgsBackgroundCachedSharedData
 };
 
 
-class QgsOapifFeatureDownloaderImpl: public QObject, public QgsFeatureDownloaderImpl
+class QgsOapifFeatureDownloaderImpl final: public QObject, public QgsFeatureDownloaderImpl
 {
     Q_OBJECT
 

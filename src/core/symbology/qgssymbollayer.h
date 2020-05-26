@@ -185,6 +185,8 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyRandomSeed, //!< Random number seed
       PropertyClipPoints, //!< Whether markers should be clipped to polygon boundaries
       PropertyDensityArea, //<! Density area
+      PropertyFontFamily, //!< Font family
+      PropertyFontStyle, //!< Font style
     };
 
     /**

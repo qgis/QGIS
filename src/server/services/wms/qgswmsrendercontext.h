@@ -259,7 +259,7 @@ namespace QgsWms
       double mScaleDenominator = -1.0;
 
       // nickname of all layers defined within the project
-      QMap<QString, QgsMapLayer *> mNicknameLayers;
+      QMultiMap<QString, QgsMapLayer *> mNicknameLayers;
 
       // map of layers to use for rendering
       QList<QgsMapLayer *> mLayersToRender;

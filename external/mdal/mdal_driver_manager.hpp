@@ -13,6 +13,7 @@
 
 #include "mdal.h"
 #include "mdal_data_model.hpp"
+#include "mdal_logger.hpp"
 #include "frmts/mdal_driver.hpp"
 
 namespace MDAL
@@ -29,10 +30,10 @@ namespace MDAL
       DriverManager( DriverManager const & )   = delete;
       void operator=( DriverManager const & )  = delete;
 
-      std::unique_ptr< Mesh > load( const std::string &meshFile, MDAL_Status *status ) const;
-      void loadDatasets( Mesh *mesh, const std::string &datasetFile, MDAL_Status *status ) const;
+      std::unique_ptr< Mesh > load( const std::string &meshFile ) const;
+      void loadDatasets( Mesh *mesh, const std::string &datasetFile ) const;
 
-      void save( Mesh *mesh, const std::string &uri, const std::string &driver, MDAL_Status *status ) const;
+      void save( Mesh *mesh, const std::string &uri, const std::string &driver ) const;
 
       size_t driversCount() const;
       std::shared_ptr<MDAL::Driver> driver( const std::string &driverName ) const;

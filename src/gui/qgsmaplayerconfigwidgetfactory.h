@@ -110,7 +110,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      * \returns A new QgsMapStylePanel which is shown in the map style dock.
      * \note This function is called each time the panel is selected. Keep it light for better UX.
      */
-    virtual QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget *parent SIP_TRANSFERTHIS = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget *parent = nullptr ) const = 0 SIP_FACTORY;
 
   private:
     QIcon mIcon;

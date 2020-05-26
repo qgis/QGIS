@@ -65,9 +65,13 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     QString prefix() const { return mPrefix; }
 
     //! Sets whether values from the joined layer should be cached in memory to speed up lookups
-    void setUsingMemoryCache( bool enabled ) { mMemoryCache = enabled; }
-    //! Returns whether values from the joined layer should be cached in memory to speed up lookups
-    bool isUsingMemoryCache() const { return mMemoryCache; }
+    void setUsingMemoryCache( bool enabled );
+
+    /**
+     * Returns whether values from the joined layer should be cached in memory to speed up lookups.
+     * Will return false if upsertOnEdit is enabled.
+     */
+    bool isUsingMemoryCache() const;
 
     /**
      * Returns whether the form has to be dynamically updated with joined fields

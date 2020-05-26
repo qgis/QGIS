@@ -624,7 +624,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
     else
     {
       const QgsField field = layer()->fields().at( mAttributes.at( section ) );
-      return QgsFieldModel::fieldToolTip( field );
+      return QgsFieldModel::fieldToolTipExtended( field, layer() );
     }
   }
   else
@@ -846,7 +846,7 @@ void QgsAttributeTableModel::executeAction( QUuid action, const QModelIndex &idx
 void QgsAttributeTableModel::executeMapLayerAction( QgsMapLayerAction *action, const QModelIndex &idx ) const
 {
   QgsFeature f = feature( idx );
-  action->triggerForFeature( layer(), &f );
+  action->triggerForFeature( layer(), f );
 }
 
 QgsFeature QgsAttributeTableModel::feature( const QModelIndex &idx ) const

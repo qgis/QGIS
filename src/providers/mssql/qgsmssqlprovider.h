@@ -25,6 +25,7 @@
 
 #include <QStringList>
 #include <QFile>
+#include <QVariantMap>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
@@ -47,7 +48,7 @@ class QgsMssqlFeatureIterator;
 \brief Data provider for mssql server.
 *
 */
-class QgsMssqlProvider : public QgsVectorDataProvider
+class QgsMssqlProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
 
@@ -128,6 +129,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     //! Convert values to quoted values for database work *
     static QString quotedValue( const QVariant &value );
+    static QString quotedIdentifier( const QString &value );
 
     QString defaultValueClause( int fieldId ) const override;
 
@@ -227,7 +229,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     static int sConnectionId;
 };
 
-class QgsMssqlProviderMetadata: public QgsProviderMetadata
+class QgsMssqlProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsMssqlProviderMetadata();
@@ -249,6 +251,20 @@ class QgsMssqlProviderMetadata: public QgsProviderMetadata
       const QMap<QString, QVariant> *options ) override;
     QgsMssqlProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     virtual QList< QgsDataItemProvider * > dataItemProviders() const override;
+
+    // Connections API
+    QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true ) override;
+    QgsAbstractProviderConnection *createConnection( const QString &name ) override;
+    QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) override;
+    void deleteConnection( const QString &name ) override;
+    void saveConnection( const QgsAbstractProviderConnection *createConnection, const QString &name ) override;
+
+    // Data source URI API
+    QVariantMap decodeUri( const QString &uri ) override;
+    QString encodeUri( const QVariantMap &parts ) override;
+
 };
+
+
 
 #endif // QGSMSSQLPROVIDER_H

@@ -89,7 +89,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     void triggerForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList );
 
     //! Triggers the action with the specified layer and feature.
-    void triggerForFeature( QgsMapLayer *layer, const QgsFeature *feature );
+    void triggerForFeature( QgsMapLayer *layer, const QgsFeature &feature );
 
     //! Triggers the action with the specified layer.
     void triggerForLayer( QgsMapLayer *layer );

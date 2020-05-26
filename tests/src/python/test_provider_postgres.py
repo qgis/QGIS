@@ -43,7 +43,8 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsProject,
     QgsWkbTypes,
-    QgsGeometry
+    QgsGeometry,
+    QgsProviderRegistry
 )
 from qgis.gui import QgsGui, QgsAttributeForm
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QObject, QByteArray
@@ -1501,6 +1502,64 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(feature.attribute(3).startswith(now.strftime('%Y-%m-%d')))
         self.assertEqual(feature.attribute(4), 123)
         self.assertEqual(feature.attribute(5), 'My default')
+
+    def testEncodeDecodeUri(self):
+        """Test PG encode/decode URI"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        self.assertEqual(md.decodeUri('dbname=\'qgis_tests\' host=localhost port=5432 user=\'myuser\' sslmode=disable estimatedmetadata=true srid=3067 table="public"."basic_map_tiled" (rast)'),
+                         {'dbname': 'qgis_tests',
+                          'estimatedmetadata': True,
+                          'geometrycolumn': 'rast',
+                          'host': 'localhost',
+                          'port': '5432',
+                          'schema': 'public',
+                          'selectatid': False,
+                          'srid': '3067',
+                          'sslmode': 1,
+                          'table': 'basic_map_tiled',
+                          'username': 'myuser'})
+
+        self.assertEqual(md.decodeUri('dbname=\'qgis_tests\' host=localhost port=5432 user=\'myuser\' sslmode=disable key=\'id\' estimatedmetadata=true srid=3763 type=MultiPolygon checkPrimaryKeyUnicity=\'1\' table="public"."copas1" (geom)'),
+                         {'dbname': 'qgis_tests',
+                          'estimatedmetadata': True,
+                          'geometrycolumn': 'geom',
+                          'host': 'localhost',
+                          'key': 'id',
+                          'port': '5432',
+                          'schema': 'public',
+                          'selectatid': False,
+                          'srid': '3763',
+                          'sslmode': 1,
+                          'table': 'copas1',
+                          'type': 6,
+                          'username': 'myuser'})
+
+        self.assertEqual(md.encodeUri({'dbname': 'qgis_tests',
+                                       'estimatedmetadata': True,
+                                       'geometrycolumn': 'geom',
+                                       'host': 'localhost',
+                                       'key': 'id',
+                                       'port': '5432',
+                                       'schema': 'public',
+                                       'selectatid': False,
+                                       'srid': '3763',
+                                       'sslmode': 1,
+                                       'table': 'copas1',
+                                       'type': 6,
+                                       'username': 'myuser'}), "dbname='qgis_tests' user='myuser' srid=3763 estimatedmetadata='true' host='localhost' key='id' port='5432' selectatid='false' sslmode='disable' type='MultiPolygon' table=\"public\".\"copas1\" (geom)")
+
+        self.assertEqual(md.encodeUri({'dbname': 'qgis_tests',
+                                       'estimatedmetadata': True,
+                                       'geometrycolumn': 'rast',
+                                       'host': 'localhost',
+                                       'port': '5432',
+                                       'schema': 'public',
+                                       'selectatid': False,
+                                       'srid': '3067',
+                                       'sslmode': 1,
+                                       'table': 'basic_map_tiled',
+                                       'username': 'myuser'}), "dbname='qgis_tests' user='myuser' srid=3067 estimatedmetadata='true' host='localhost' port='5432' selectatid='false' sslmode='disable' table=\"public\".\"basic_map_tiled\" (rast)")
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):

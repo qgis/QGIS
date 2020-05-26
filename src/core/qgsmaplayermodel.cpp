@@ -225,6 +225,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
   switch ( role )
   {
     case Qt::DisplayRole:
+    case Qt::EditRole:
     {
       if ( index.row() == 0 && mAllowEmpty )
         return QVariant();
@@ -236,7 +237,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
       if ( !layer )
         return QVariant();
 
-      if ( !mShowCrs || !layer->isSpatial() )
+      if ( !mShowCrs || !layer->isSpatial() || role == Qt::EditRole )
       {
         return layer->name();
       }
@@ -365,6 +366,11 @@ QIcon QgsMapLayerModel::iconForLayer( QgsMapLayer *layer )
     case QgsMapLayerType::MeshLayer:
     {
       return QgsLayerItem::iconMesh();
+    }
+
+    case QgsMapLayerType::VectorTileLayer:
+    {
+      return QgsLayerItem::iconVectorTile();
     }
 
     case QgsMapLayerType::VectorLayer:

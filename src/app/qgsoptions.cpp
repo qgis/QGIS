@@ -687,7 +687,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mComboCopyFeatureFormat->addItem( tr( "GeoJSON" ), QgsClipboard::GeoJSON );
   mComboCopyFeatureFormat->setCurrentIndex( mComboCopyFeatureFormat->findData( mSettings->enumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesWithWKT ) ) );
   leNullValue->setText( QgsApplication::nullRepresentation() );
-  cbxIgnoreShapeEncoding->setChecked( mSettings->value( QStringLiteral( "/qgis/ignoreShapeEncoding" ), true ).toBool() );
 
   cmbLegendDoubleClickAction->setCurrentIndex( mSettings->value( QStringLiteral( "/qgis/legendDoubleClickAction" ), 0 ).toInt() );
 
@@ -1035,10 +1034,14 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   //default snap mode
   mSnappingEnabledDefault->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ),  false ).toBool() );
-  mDefaultSnapModeComboBox->addItem( tr( "Vertex" ), QgsSnappingConfig::Vertex );
-  mDefaultSnapModeComboBox->addItem( tr( "Vertex and segment" ), QgsSnappingConfig::VertexAndSegment );
-  mDefaultSnapModeComboBox->addItem( tr( "Segment" ), QgsSnappingConfig::Segment );
-  mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( mSettings->enumValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), QgsSnappingConfig::Vertex ) ) );
+  mDefaultSnapModeComboBox->addItem( tr( "No Snapping" ), QgsSnappingConfig::NoSnapFlag );
+  mDefaultSnapModeComboBox->addItem( tr( "Vertex" ), QgsSnappingConfig::VertexFlag );
+  mDefaultSnapModeComboBox->addItem( tr( "Segment" ), QgsSnappingConfig::SegmentFlag );
+  mDefaultSnapModeComboBox->addItem( tr( "Centroid" ), QgsSnappingConfig::CentroidFlag );
+  mDefaultSnapModeComboBox->addItem( tr( "Middle of Segments" ), QgsSnappingConfig::MiddleOfSegmentFlag );
+  mDefaultSnapModeComboBox->addItem( tr( "Area" ), QgsSnappingConfig::AreaFlag );
+  QgsSnappingConfig::SnappingTypeFlag defaultSnapMode = mSettings->flagValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ),  QgsSnappingConfig::VertexFlag );
+  mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( static_cast<int>( defaultSnapMode ) ) );
   mDefaultSnappingToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), Qgis::DEFAULT_SNAP_TOLERANCE ).toDouble() );
   mSearchRadiusVertexEditSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble() );
   QgsTolerance::UnitType defSnapUnits = mSettings->enumValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), Qgis::DEFAULT_SNAP_UNITS );
@@ -1193,9 +1196,18 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
 #else
 
-  mOptionsListWidget->removeItemWidget( mOptionsListWidget->findItems( tr( "Acceleration" ), Qt::MatchExactly ).first() );
-  mOptionsStackedWidget->removeWidget( mOptionsPageAcceleration );
-
+  mGPUEnableCheckBox->setChecked( false );
+  for ( int idx = 0; idx < mOptionsPageAccelerationLayout->count(); ++idx )
+  {
+    QWidget *item = mOptionsPageAccelerationLayout->itemAt( idx )->widget();
+    if ( item )
+    {
+      item->setEnabled( false );
+    }
+  }
+  QLabel *noOpenCL = new QLabel( tr( "QGIS is compiled without OpenCL support. "
+                                     "GPU acceleration is not available." ), this );
+  mOptionsPageAccelerationLayout->insertWidget( 0, noOpenCL );
 
 #endif
 
@@ -1486,7 +1498,6 @@ void QgsOptions::saveOptions()
                        cmbScanItemsInBrowser->currentData().toString() );
   mSettings->setValue( QStringLiteral( "/qgis/scanZipInBrowser2" ),
                        cmbScanZipInBrowser->currentData().toString() );
-  mSettings->setValue( QStringLiteral( "/qgis/ignoreShapeEncoding" ), cbxIgnoreShapeEncoding->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/mainSnappingWidgetMode" ), mSnappingMainDialogComboBox->currentData() );
 
   mSettings->setValue( QStringLiteral( "/qgis/compileExpressions" ), cbxCompileExpressions->isChecked() );
@@ -1608,7 +1619,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/projections/promptWhenMultipleTransformsExist" ), mShowDatumTransformDialogCheckBox->isChecked(), QgsSettings::App );
 
   //measurement settings
-  mSettings->setValue( QStringLiteral( "/qgis/measure/planimetric" ), mPlanimetricMeasurementsComboBox->isChecked() );
+  mSettings->setValue( QStringLiteral( "measure/planimetric" ), mPlanimetricMeasurementsComboBox->isChecked(), QgsSettings::Core );
 
   QgsUnitTypes::DistanceUnit distanceUnit = static_cast< QgsUnitTypes::DistanceUnit >( mDistanceUnitsComboBox->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/measure/displayunits" ), QgsUnitTypes::encodeUnit( distanceUnit ) );
@@ -1666,7 +1677,7 @@ void QgsOptions::saveOptions()
 
   //default snap mode
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), mSnappingEnabledDefault->isChecked() );
-  mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), static_cast<QgsSnappingConfig::SnappingType>( mDefaultSnapModeComboBox->currentData().toInt() ) );
+  mSettings->setFlagValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), static_cast<QgsSnappingConfig::SnappingTypeFlag>( mDefaultSnapModeComboBox->currentData().toInt() ) );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), mDefaultSnappingToleranceSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), mSearchRadiusVertexEditSpinBox->value() );
   mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ),

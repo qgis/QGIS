@@ -405,6 +405,7 @@ level group containing recently used algorithms.
 Returns the underlying source Processing toolbox model.
 %End
 
+
     void setFilters( QgsProcessingToolboxProxyModel::Filters filters );
 %Docstring
 Set ``filters`` that affect how toolbox content is filtered.

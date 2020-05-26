@@ -409,21 +409,15 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
 
   QString newLayerName( layerName );
 
-  std::unique_ptr< QgsVectorFileWriter > writer = qgis::make_unique< QgsVectorFileWriter >(
-        uri,
-        encoding,
-        fields,
-        wkbType,
-        srs,
-        driverName,
-        dsOptions,
-        layerOptions,
-        nullptr,
-        QgsVectorFileWriter::NoSymbology,
-        nullptr,
-        layerName,
-        action,
-        &newLayerName );
+  QgsVectorFileWriter::SaveVectorOptions saveOptions;
+  saveOptions.layerName = layerName;
+  saveOptions.fileEncoding = encoding;
+  saveOptions.driverName = driverName;
+  saveOptions.datasourceOptions = dsOptions;
+  saveOptions.layerOptions = layerOptions;
+  saveOptions.actionOnExistingFile = action;
+  saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
+  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( uri, fields, wkbType, srs, QgsCoordinateTransformContext(), saveOptions, nullptr, nullptr, &newLayerName ) );
   layerName = newLayerName;
 
   QgsVectorFileWriter::WriterError error = writer->hasError();
@@ -489,7 +483,14 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   QgsApplication::registerOgrDrivers();
 
   QgsSettings settings;
-  CPLSetConfigOption( "SHAPE_ENCODING", settings.value( QStringLiteral( "qgis/ignoreShapeEncoding" ), true ).toBool() ? "" : nullptr );
+  // we always disable GDAL side shapefile encoding handling, and do it on the QGIS side.
+  // why? it's not the ideal choice, but...
+  // - if we DON'T disable GDAL side encoding support, then there's NO way to change the encoding used when reading
+  //   shapefiles. And unfortunately the embedded encoding (which is read by GDAL) is sometimes wrong, so we need
+  //   to expose support for users to be able to change and correct this
+  // - we can't change this setting on-the-fly. If we don't set it upfront, we can't reverse this decision later when
+  //   a user does want/need to manually specify the encoding
+  CPLSetConfigOption( "SHAPE_ENCODING", "" );
 
 #ifndef QT_NO_NETWORKPROXY
   setupProxy();
@@ -1003,9 +1004,10 @@ QStringList QgsOgrProvider::_subLayers( bool withFeatureCount )  const
 void QgsOgrProvider::setEncoding( const QString &e )
 {
   QgsSettings settings;
-  if ( ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) &&
-         settings.value( QStringLiteral( "qgis/ignoreShapeEncoding" ), true ).toBool() ) ||
-       ( mOgrLayer && !mOgrLayer->TestCapability( OLCStringsAsUTF8 ) ) )
+
+  // if the layer has the OLCStringsAsUTF8 capability, we CANNOT override the
+  // encoding on the QGIS side!
+  if ( mOgrLayer && !mOgrLayer->TestCapability( OLCStringsAsUTF8 ) )
   {
     QgsVectorDataProvider::setEncoding( e );
   }
@@ -3580,12 +3582,6 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
   layer = GDALDatasetCreateLayer( dataSource.get(), QFileInfo( uri ).completeBaseName().toUtf8().constData(), reference, OGRvectortype, papszOptions );
   CSLDestroy( papszOptions );
 
-  QgsSettings settings;
-  if ( !settings.value( QStringLiteral( "qgis/ignoreShapeEncoding" ), true ).toBool() )
-  {
-    CPLSetConfigOption( "SHAPE_ENCODING", nullptr );
-  }
-
   if ( !layer )
   {
     errorMessage = QString::fromUtf8( CPLGetLastErrorMsg() );
@@ -4070,12 +4066,12 @@ static bool IsLocalFile( const QString &path )
        ( dirName[2] == '\\' || dirName[2] == '/' ) )
   {
     dirName.resize( 3 );
-    return GetDriveType( dirName.toAscii().constData() ) != DRIVE_REMOTE;
+    return GetDriveType( dirName.toLatin1().constData() ) != DRIVE_REMOTE;
   }
   return true;
 #elif defined(Q_OS_LINUX)
   struct statfs sStatFS;
-  if ( statfs( dirName.toAscii().constData(), &sStatFS ) == 0 )
+  if ( statfs( dirName.toLatin1().constData(), &sStatFS ) == 0 )
   {
     // Codes from http://man7.org/linux/man-pages/man2/statfs.2.html
     if ( sStatFS.f_type == 0x6969 /* NFS */ ||
@@ -4410,7 +4406,10 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
   }
   else
   {
-    OGR_L_SetAttributeFilter( layer, encoding->fromUnicode( subsetString ).constData() );
+    if ( OGR_L_SetAttributeFilter( layer, encoding->fromUnicode( subsetString ).constData() ) != OGRERR_NONE )
+    {
+      return nullptr;
+    }
     subsetLayer = layer;
   }
 
@@ -4528,7 +4527,28 @@ void QgsOgrProvider::open( OpenMode mode )
     mOgrLayer = mOgrOrigLayer.get();
 
     // check that the initial encoding setting is fit for this layer
-    setEncoding( encoding() );
+
+    if ( mode == OpenModeInitial && mGDALDriverName == QLatin1String( "ESRI Shapefile" ) )
+    {
+      // determine encoding from shapefile cpg or LDID information, if possible
+      QString shpEncoding;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0)
+      shpEncoding = mOgrLayer->GetMetadataItem( QStringLiteral( "ENCODING_FROM_CPG" ), QStringLiteral( "SHAPEFILE" ) );
+      if ( shpEncoding.isEmpty() )
+        shpEncoding = mOgrLayer->GetMetadataItem( QStringLiteral( "ENCODING_FROM_LDID" ), QStringLiteral( "SHAPEFILE" ) );
+#else
+      shpEncoding = QgsOgrUtils::readShapefileEncoding( mFilePath );
+#endif
+
+      if ( !shpEncoding.isEmpty() )
+        setEncoding( shpEncoding );
+      else
+        setEncoding( encoding() );
+    }
+    else
+    {
+      setEncoding( encoding() );
+    }
 
     // Ensure subset is set (setSubsetString does nothing if the passed sql subset string is equal to mSubsetString, which is the case when reloading the dataset)
     QString origSubsetString = mSubsetString;

@@ -571,7 +571,7 @@ void eVisGenericEventBrowserGui::displayImage()
       // only change the extents if the point is beyond the current extents to minimize repaints
       if ( !mCanvas->extent().contains( myPoint ) )
       {
-        mCanvas->setExtent( myRect );
+        mCanvas->setExtent( myRect, true );
       }
       mCanvas->refresh();
     }

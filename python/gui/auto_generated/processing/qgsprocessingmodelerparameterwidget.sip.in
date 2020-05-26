@@ -114,7 +114,49 @@ Sets the current ``value`` for the parameter.
 .. seealso:: :py:func:`value`
 %End
 
-    virtual QgsProcessingModelChildParameterSource value() const;
+    void setWidgetValue( const QList< QgsProcessingModelChildParameterSource > &values );
+%Docstring
+Sets the current ``values`` for the parameter.
+
+.. seealso:: :py:func:`value`
+
+.. versionadded:: 3.14
+%End
+
+    void setToModelOutput( const QString &value );
+%Docstring
+Sets the widget to a model output, for destination parameters only.
+
+.. seealso:: :py:func:`isModelOutput`
+
+.. seealso:: :py:func:`modelOutputName`
+
+.. versionadded:: 3.14
+%End
+
+    bool isModelOutput() const;
+%Docstring
+Returns ``True`` if the widget is set to the model output mode.
+
+.. seealso:: :py:func:`setToModelOutput`
+
+.. seealso:: :py:func:`modelOutputName`
+
+.. versionadded:: 3.14
+%End
+
+    QString modelOutputName() const;
+%Docstring
+Returns the model output name, if isModelOutput() is ``True``.
+
+.. seealso:: :py:func:`setToModelOutput`
+
+.. seealso:: :py:func:`isModelOutput`
+
+.. versionadded:: 3.14
+%End
+
+    virtual QVariant value() const;
 %Docstring
 Returns the current value of the parameter.
 

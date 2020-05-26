@@ -1018,6 +1018,13 @@ class TestQgsProject(unittest.TestCase):
         scope = QgsExpressionContextUtils.projectScope(p)
         self.assertEqual(scope.variable('project_home'), '../home')
 
+        p = QgsProject()
+        path_changed_spy = QSignalSpy(p.homePathChanged)
+        p.setFileName('/tmp/not/existing/here/path.qgz')
+        self.assertFalse(p.presetHomePath())
+        self.assertEqual(p.homePath(), '/tmp/not/existing/here')
+        self.assertEqual(len(path_changed_spy), 1)
+
     def testDirtyBlocker(self):
         # first test manual QgsProjectDirtyBlocker construction
         p = QgsProject()

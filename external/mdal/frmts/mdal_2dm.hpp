@@ -23,6 +23,7 @@ namespace MDAL
   {
     public:
       Mesh2dm( size_t verticesCount,
+               size_t edgesCount,
                size_t facesCount,
                size_t faceVerticesMaximumCount,
                BBox extent,
@@ -54,7 +55,10 @@ namespace MDAL
    * 2DM format specification used in TUFLOW, HYDRO_AS-2D and BASEMENET solvers
    * Text file format representing mesh vertices (ND) and faces (E**)
    * ND id x y z
-   * Supports lines, triangles and polygons up to 9 vertices (implemented triangles and quads)
+   * The format supports lines, triangles and quads, where the elememts could be
+   * stored with some intermediate points (e.g. triangle defined by 6 vertices, vertices
+   * and the middle of the edges) We do support only simple definition, so E6T, E8Q and E9Q
+   * are not supported.
    * E3T id 1 2 3 mat_id -> face type, id, vertex indices ..., material index
    *
    * full specification here: https://www.xmswiki.com/wiki/SMS:2D_Mesh_Files_*.2dm
@@ -87,8 +91,8 @@ namespace MDAL
       {return MAX_VERTICES_PER_FACE_2DM;}
 
       bool canReadMesh( const std::string &uri ) override;
-      std::unique_ptr< Mesh > load( const std::string &meshFile, MDAL_Status *status ) override;
-      void save( const std::string &uri, Mesh *mesh, MDAL_Status *status ) override;
+      std::unique_ptr< Mesh > load( const std::string &meshFile ) override;
+      void save( const std::string &uri, Mesh *mesh ) override;
 
     private:
       std::string mMeshFile;

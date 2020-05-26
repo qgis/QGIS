@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsmdaldataitems.h"
+#include "qgsmeshdataprovidertemporalcapabilities.h"
 
 
 const QString QgsMdalProvider::MDAL_PROVIDER_KEY = QStringLiteral( "mdal" );
@@ -50,6 +51,7 @@ QgsCoordinateReferenceSystem QgsMdalProvider::crs() const
 QgsMdalProvider::QgsMdalProvider( const QString &uri, const ProviderOptions &options )
   : QgsMeshDataProvider( uri, options )
 {
+  temporalCapabilities()->setTemporalUnit( QgsUnitTypes::TemporalHours );
   loadData();
 }
 
@@ -63,6 +65,14 @@ int QgsMdalProvider::vertexCount() const
 {
   if ( mMeshH )
     return MDAL_M_vertexCount( mMeshH );
+  else
+    return 0;
+}
+
+int QgsMdalProvider::edgeCount() const
+{
+  if ( mMeshH )
+    return MDAL_M_edgeCount( mMeshH );
   else
     return 0;
 }
@@ -81,6 +91,7 @@ void QgsMdalProvider::populateMesh( QgsMesh *mesh ) const
   {
     mesh->faces = faces();
     mesh->vertices = vertices();
+    mesh->edges = edges();
   }
 }
 
@@ -108,6 +119,34 @@ QVector<QgsMeshVertex> QgsMdalProvider::vertices( ) const
     vertexIndex += verticesRead;
   }
   MDAL_VI_close( it );
+  return ret;
+}
+
+QVector<QgsMeshEdge> QgsMdalProvider::edges( ) const
+{
+  const int edgesCount = edgeCount();
+  const int bufferSize = std::min( edgesCount, 1000 );
+  QVector<QgsMeshEdge> ret( edgesCount );
+  QVector<int> startBuffer( bufferSize );
+  QVector<int> endBuffer( bufferSize );
+  MeshEdgeIteratorH it = MDAL_M_edgeIterator( mMeshH );
+  int edgeIndex = 0;
+  while ( edgeIndex < edgesCount )
+  {
+    int edgesRead = MDAL_EI_next( it, bufferSize, startBuffer.data(), endBuffer.data() );
+    if ( edgesRead == 0 )
+      break;
+    for ( int i = 0; i < edgesRead; i++ )
+    {
+      QgsMeshEdge edge(
+        startBuffer[i],
+        endBuffer[i]
+      );
+      ret[edgeIndex + i] = edge;
+    }
+    edgeIndex += edgesRead;
+  }
+  MDAL_EI_close( it );
   return ret;
 }
 
@@ -195,7 +234,7 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &path,
 
   // Form DRIVER:filename
   QString filename = path;
-  // ASCII dat supports both face and vertex datasets
+  // ASCII dat supports face, edge and vertex datasets
   QString driverName = QStringLiteral( "DAT" );
   QStringList parts = path.split( ':' );
   if ( parts.size() > 1 )
@@ -213,13 +252,16 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &path,
   switch ( meta.dataType() )
   {
     case QgsMeshDatasetGroupMetadata::DataOnFaces:
-      location = MDAL_DataLocation::DataOnFaces2D;
+      location = MDAL_DataLocation::DataOnFaces;
       break;
     case QgsMeshDatasetGroupMetadata::DataOnVertices:
-      location = MDAL_DataLocation::DataOnVertices2D;
+      location = MDAL_DataLocation::DataOnVertices;
+      break;
+    case QgsMeshDatasetGroupMetadata::DataOnEdges:
+      location = MDAL_DataLocation::DataOnEdges;
       break;
     case QgsMeshDatasetGroupMetadata::DataOnVolumes:
-      location = MDAL_DataLocation::DataOnVolumes3D;
+      location = MDAL_DataLocation::DataOnVolumes;
       break;
   }
 
@@ -267,12 +309,44 @@ void QgsMdalProvider::loadData()
 {
   QByteArray curi = dataSourceUri().toUtf8();
   mMeshH = MDAL_LoadMesh( curi.constData() );
+  temporalCapabilities()->clear();
+
   if ( mMeshH )
   {
     const QString proj = MDAL_M_projection( mMeshH );
     if ( !proj.isEmpty() )
       mCrs.createFromString( proj );
+
+    int dsGroupCount = MDAL_M_datasetGroupCount( mMeshH );
+    for ( int i = 0; i < dsGroupCount; ++i )
+      addGroupToTemporalCapabilities( i );
   }
+}
+
+
+void QgsMdalProvider::addGroupToTemporalCapabilities( int indexGroup )
+{
+  if ( !mMeshH )
+    return;
+  QgsMeshDataProviderTemporalCapabilities *tempCap = temporalCapabilities();
+  tempCap->setHasTemporalCapabilities( true );
+  tempCap->setHasTemporalCapabilities( true );
+  QgsMeshDatasetGroupMetadata dsgMetadata = datasetGroupMetadata( indexGroup );
+  QDateTime refTime = dsgMetadata.referenceTime();
+  refTime.setTimeSpec( Qt::UTC ); //For now provider don't support time zone and return always in local time, force UTC
+  tempCap->addGroupReferenceDateTime( indexGroup, refTime );
+  int dsCount = datasetCount( indexGroup );
+
+  if ( dsgMetadata.isTemporal() )
+  {
+    for ( int dsi = 0; dsi < dsCount; ++dsi )
+    {
+      QgsMeshDatasetMetadata dsMeta = datasetMetadata( QgsMeshDatasetIndex( indexGroup, dsi ) );
+      if ( dsMeta.isValid() )
+        tempCap->addDatasetTime( indexGroup, dsMeta.time() );
+    }
+  }
+
 }
 
 void QgsMdalProvider::reloadProviderData()
@@ -282,11 +356,16 @@ void QgsMdalProvider::reloadProviderData()
 
   loadData();
 
+  int datasetCountBeforeAdding = datasetGroupCount();
+
   if ( mMeshH )
     for ( auto uri : mExtraDatasetUris )
     {
       std::string str = uri.toStdString();
       MDAL_M_LoadDatasets( mMeshH, str.c_str() );
+      int datasetCount = datasetGroupCount();
+      for ( ; datasetCountBeforeAdding < datasetCount; datasetCountBeforeAdding++ )
+        addGroupToTemporalCapabilities( datasetCountBeforeAdding );
     }
 }
 
@@ -428,8 +507,11 @@ bool QgsMdalProvider::addDataset( const QString &uri )
   else
   {
     mExtraDatasetUris << uri;
-    emit datasetGroupsAdded( datasetGroupCount() - datasetCount );
+    int datasetCountAfterAdding = datasetGroupCount();
+    emit datasetGroupsAdded( datasetCountAfterAdding - datasetCount );
     emit dataChanged();
+    for ( ; datasetCount < datasetCountAfterAdding; datasetCount++ )
+      addGroupToTemporalCapabilities( datasetCount );
     return true; // Ok
   }
 }
@@ -465,13 +547,16 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
   QgsMeshDatasetGroupMetadata::DataType type;
   switch ( location )
   {
-    case MDAL_DataLocation::DataOnFaces2D:
+    case MDAL_DataLocation::DataOnFaces:
       type = QgsMeshDatasetGroupMetadata::DataOnFaces;
       break;
-    case MDAL_DataLocation::DataOnVertices2D:
+    case MDAL_DataLocation::DataOnVertices:
       type = QgsMeshDatasetGroupMetadata::DataOnVertices;
       break;
-    case MDAL_DataLocation::DataOnVolumes3D:
+    case MDAL_DataLocation::DataOnEdges:
+      type = QgsMeshDatasetGroupMetadata::DataOnEdges;
+      break;
+    case MDAL_DataLocation::DataOnVolumes:
       type = QgsMeshDatasetGroupMetadata::DataOnVolumes;
       break;
     case MDAL_DataLocation::DataInvalidLocation:
@@ -496,6 +581,8 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
   QString referenceTimeString( MDAL_G_referenceTime( group ) );
   QDateTime referenceTime = QDateTime::fromString( referenceTimeString, Qt::ISODate );
 
+  bool isTemporal = MDAL_G_datasetCount( group ) > 1;
+
   QgsMeshDatasetGroupMetadata meta(
     name,
     isScalar,
@@ -504,6 +591,7 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
     max,
     maximumVerticalLevels,
     referenceTime,
+    isTemporal,
     metadata
   );
 
@@ -737,12 +825,15 @@ QList<QgsMeshDriverMetadata> QgsMdalProviderMetadata::meshDriversMetadata()
     QString longName = MDAL_DR_longName( mdalDriver );
 
     QgsMeshDriverMetadata::MeshDriverCapabilities capabilities;
-    bool hasSaveFaceDatasetsCapability = MDAL_DR_writeDatasetsCapability( mdalDriver, MDAL_DataLocation::DataOnFaces2D );
+    bool hasSaveFaceDatasetsCapability = MDAL_DR_writeDatasetsCapability( mdalDriver, MDAL_DataLocation::DataOnFaces );
     if ( hasSaveFaceDatasetsCapability )
       capabilities |= QgsMeshDriverMetadata::CanWriteFaceDatasets;
-    bool hasSaveVertexDatasetsCapability = MDAL_DR_writeDatasetsCapability( mdalDriver, MDAL_DataLocation::DataOnVertices2D );
+    bool hasSaveVertexDatasetsCapability = MDAL_DR_writeDatasetsCapability( mdalDriver, MDAL_DataLocation::DataOnVertices );
     if ( hasSaveVertexDatasetsCapability )
       capabilities |= QgsMeshDriverMetadata::CanWriteVertexDatasets;
+    bool hasSaveEdgeDatasetsCapability = MDAL_DR_writeDatasetsCapability( mdalDriver, MDAL_DataLocation::DataOnEdges );
+    if ( hasSaveEdgeDatasetsCapability )
+      capabilities |= QgsMeshDriverMetadata::CanWriteEdgeDatasets;
     const QgsMeshDriverMetadata meta( name, longName, capabilities );
     ret.push_back( meta );
   }

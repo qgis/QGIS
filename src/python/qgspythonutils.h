@@ -92,10 +92,10 @@ class PYTHON_EXPORT QgsPythonUtils
     virtual bool runString( const QString &command, QString msgOnError = QString(), bool single = true ) = 0;
 
     /**
-     * Runs a Python \a command. No error reporting is not performed.
-     * \returns TRUE if no error occurred
+     * Runs a Python \a command.
+     * \returns empty QString if no error occurred, or Python traceback as a QString on error.
      */
-    virtual bool runStringUnsafe( const QString &command, bool single = true ) = 0;
+    virtual QString runStringUnsafe( const QString &command, bool single = true ) = 0;
 
     /**
      * Evaluates a Python \a command and stores the result in a the \a result string.

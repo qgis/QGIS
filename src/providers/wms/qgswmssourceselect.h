@@ -178,12 +178,22 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     void enableLayersForCrs( QTreeWidgetItem *item );
 
     void collectSelectedLayers( QStringList &layers, QStringList &styles, QStringList &titles );
+
+    /**
+     * Collects the available dimensions from the WMS layers and adds them
+     * to the passed \a uri.
+     */
+    void collectDimensions( QStringList &layers, QgsDataSourceUri &uri );
+
     QString selectedImageEncoding();
 
     QList<QTreeWidgetItem *> mCurrentSelection;
     QTableWidgetItem *mCurrentTileset = nullptr;
 
     QList<QgsWmtsTileLayer> mTileLayers;
+
+    //! Stores all the layers properties from the service capabilities.
+    QVector<QgsWmsLayerProperty> mLayerProperties;
 
   private slots:
     void btnSearch_clicked();

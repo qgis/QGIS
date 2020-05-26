@@ -120,11 +120,11 @@ void QgsRasterTransparencyWidget::syncToLayer()
   QgsDebugMsg( QStringLiteral( "noDataRangeList.size = %1" ).arg( noDataRangeList.size() ) );
   if ( !noDataRangeList.isEmpty() )
   {
-    leNoDataValue->insert( QgsRasterBlock::printValue( noDataRangeList.value( 0 ).min() ) );
+    leNoDataValue->setText( QgsRasterBlock::printValue( noDataRangeList.value( 0 ).min() ) );
   }
   else
   {
-    leNoDataValue->insert( QString() );
+    leNoDataValue->setText( QString() );
   }
 
   populateTransparencyTable( mRasterLayer->renderer() );

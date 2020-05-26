@@ -106,3 +106,13 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
   }
   return res;
 }
+
+bool QgsVectorLayerTools::forceSuppressFormPopup() const
+{
+  return mForceSuppressFormPopup;
+}
+
+void QgsVectorLayerTools::setForceSuppressFormPopup( bool forceSuppressFormPopup )
+{
+  mForceSuppressFormPopup = forceSuppressFormPopup;
+}

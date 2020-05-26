@@ -14,46 +14,47 @@
 #include "mdal_hec2d.hpp"
 #include "mdal_hdf5.hpp"
 #include "mdal_utils.hpp"
+#include "mdal_logger.hpp"
 
 static HdfFile openHdfFile( const std::string &fileName )
 {
   HdfFile file( fileName, HdfFile::ReadOnly );
-  if ( !file.isValid() ) throw MDAL_Status::Err_UnknownFormat;
+  if ( !file.isValid() ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to open Hdf file " + fileName );
   return file;
 }
 
 static HdfGroup openHdfGroup( const HdfFile &hdfFile, const std::string &name )
 {
   HdfGroup grp = hdfFile.group( name );
-  if ( !grp.isValid() ) throw MDAL_Status::Err_UnknownFormat;
+  if ( !grp.isValid() ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to open Hdf group " + name + " from file" );
   return grp;
 }
 
 static HdfGroup openHdfGroup( const HdfGroup &hdfGroup, const std::string &name )
 {
   HdfGroup grp = hdfGroup.group( name );
-  if ( !grp.isValid() ) throw MDAL_Status::Err_UnknownFormat;
+  if ( !grp.isValid() ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to open Hdf group " + name + " from group" );
   return grp;
 }
 
 static HdfDataset openHdfDataset( const HdfGroup &hdfGroup, const std::string &name )
 {
   HdfDataset dsFileType = hdfGroup.dataset( name );
-  if ( !dsFileType.isValid() ) throw MDAL_Status::Err_UnknownFormat;
+  if ( !dsFileType.isValid() ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to open Hdf dataset " + name );
   return dsFileType;
 }
 
 static std::string openHdfAttribute( const HdfFile &hdfFile, const std::string &name )
 {
   HdfAttribute attr = hdfFile.attribute( name );
-  if ( !attr.isValid() ) throw MDAL_Status::Err_UnknownFormat;
+  if ( !attr.isValid() ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to open Hdf attribute " + name + " from file" );
   return attr.readString();
 }
 
 static std::string openHdfAttribute( const HdfDataset &hdfDataset, const std::string &name )
 {
   HdfAttribute attr = hdfDataset.attribute( name );
-  if ( !attr.isValid() ) throw MDAL_Status::Err_UnknownFormat;
+  if ( !attr.isValid() ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to open Hdf group " + name + " from dataset" );
   return attr.readString();
 }
 
@@ -233,7 +234,7 @@ void MDAL::DriverHec2D::readFaceOutput( const HdfFile &hdfFile,
                                           mFileName,
                                           datasetName
                                         );
-  group->setDataLocation( MDAL_DataLocation::DataOnFaces2D );
+  group->setDataLocation( MDAL_DataLocation::DataOnFaces );
   group->setIsScalar( true );
   group->setReferenceTime( referenceTime );
 
@@ -330,7 +331,7 @@ std::shared_ptr<MDAL::MemoryDataset2D> MDAL::DriverHec2D::readElemOutput( const 
                                           mFileName,
                                           datasetName
                                         );
-  group->setDataLocation( MDAL_DataLocation::DataOnFaces2D );
+  group->setDataLocation( MDAL_DataLocation::DataOnFaces );
   group->setIsScalar( true );
   group->setReferenceTime( referenceTime );
 
@@ -473,7 +474,7 @@ std::vector<std::string> MDAL::DriverHec2D::read2DFlowAreasNamesOld( HdfGroup gG
 {
   HdfDataset dsNames = openHdfDataset( gGeom2DFlowAreas, "Names" );
   std::vector<std::string> names = dsNames.readArrayString();
-  if ( names.empty() ) throw MDAL_Status::Err_InvalidData;
+  if ( names.empty() ) throw MDAL::Error( MDAL_Status::Err_InvalidData, "Unable to read 2D Flow area names, no names found" );
   return names;
 }
 
@@ -542,7 +543,7 @@ std::vector<std::string> MDAL::DriverHec2D::read2DFlowAreasNames505( HdfGroup gG
   H5Tclose( attributeHID );
   H5Tclose( stringHID );
   std::vector<std::string> names;
-  if ( attributes.empty() ) throw MDAL_Status::Err_InvalidData;
+  if ( attributes.empty() ) throw MDAL::Error( MDAL_Status::Err_InvalidData, "Unable to read 2D Flow Area Names, no attributes found" );
 
   for ( const auto &attr : attributes )
   {
@@ -561,6 +562,7 @@ void MDAL::DriverHec2D::setProjection( HdfFile hdfFile )
     mMesh->setSourceCrsFromWKT( proj_wkt );
   }
   catch ( MDAL_Status ) { /* projection not set */}
+  catch ( MDAL::Error ) { /* projection not set */}
 }
 
 void MDAL::DriverHec2D::parseMesh(
@@ -631,6 +633,7 @@ void MDAL::DriverHec2D::parseMesh(
     new MemoryMesh(
       name(),
       vertices.size(),
+      0,
       faces.size(),
       maxVerticesInFace,
       computeExtent( vertices ),
@@ -666,6 +669,10 @@ bool MDAL::DriverHec2D::canReadMesh( const std::string &uri )
   {
     return false;
   }
+  catch ( MDAL::Error )
+  {
+    return false;
+  }
 }
 
 bool MDAL::DriverHec2D::canReadOldFormat( const std::string &fileType ) const
@@ -678,10 +685,10 @@ bool MDAL::DriverHec2D::canReadFormat505( const std::string &fileType ) const
   return fileType == "HEC-RAS Geometry";
 }
 
-std::unique_ptr<MDAL::Mesh> MDAL::DriverHec2D::load( const std::string &resultsFile, MDAL_Status *status )
+std::unique_ptr<MDAL::Mesh> MDAL::DriverHec2D::load( const std::string &resultsFile )
 {
   mFileName = resultsFile;
-  if ( status ) *status = MDAL_Status::None;
+  MDAL::Log::resetLastStatus();
   mMesh.reset();
 
   try
@@ -721,7 +728,12 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverHec2D::load( const std::string &resultsF
   }
   catch ( MDAL_Status error )
   {
-    if ( status ) *status = ( error );
+    MDAL::Log::error( error, name(), "Error occured while loading file " + resultsFile );
+    mMesh.reset();
+  }
+  catch ( MDAL::Error err )
+  {
+    MDAL::Log::error( err, name() );
     mMesh.reset();
   }
 

@@ -30,6 +30,13 @@ QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
   {
     QList<QgsDataItemProvider *> providerList = QgsProviderRegistry::instance()->dataItemProviders( key );
     mProviders << providerList;
+    for ( const auto &p : qgis::as_const( providerList ) )
+    {
+      if ( ! p->dataProviderKey().isEmpty() )
+      {
+        mDataItemProviderOrigin[ p->name() ] = p->dataProviderKey();
+      }
+    }
   }
 }
 
@@ -40,8 +47,24 @@ QgsDataItemProviderRegistry::~QgsDataItemProviderRegistry()
 
 QList<QgsDataItemProvider *> QgsDataItemProviderRegistry::providers() const { return mProviders; }
 
+QgsDataItemProvider *QgsDataItemProviderRegistry::provider( const QString &providerName ) const
+{
+  for ( const auto &p : qgis::as_const( mProviders ) )
+  {
+    if ( p->name() == providerName )
+    {
+      return p;
+    }
+  }
+  return nullptr;
+}
+
 void QgsDataItemProviderRegistry::addProvider( QgsDataItemProvider *provider )
 {
+  if ( ! provider->dataProviderKey().isEmpty() )
+  {
+    mDataItemProviderOrigin[ provider->name() ] = provider->dataProviderKey();
+  }
   mProviders.append( provider );
 }
 
@@ -50,4 +73,9 @@ void QgsDataItemProviderRegistry::removeProvider( QgsDataItemProvider *provider 
   int index = mProviders.indexOf( provider );
   if ( index >= 0 )
     delete mProviders.takeAt( index );
+}
+
+QString QgsDataItemProviderRegistry::dataProviderKey( const QString &dataItemProviderName )
+{
+  return mDataItemProviderOrigin.value( dataItemProviderName, QString() );
 }

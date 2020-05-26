@@ -489,6 +489,41 @@ class CORE_EXPORT QgsProperty
       return QVariant::fromValue( *this );
     }
 
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString typeString;
+    QString definitionString;
+    switch ( sipCpp->propertyType() )
+    {
+      case QgsProperty::StaticProperty:
+        typeString = QStringLiteral( "static" );
+        definitionString = sipCpp->staticValue().toString();
+        break;
+
+      case QgsProperty::FieldBasedProperty:
+        typeString = QStringLiteral( "field" );
+        definitionString = sipCpp->field();
+        break;
+
+      case QgsProperty::ExpressionBasedProperty:
+        typeString = QStringLiteral( "expression" );
+        definitionString = sipCpp->expressionString();
+        break;
+
+      case QgsProperty::InvalidProperty:
+        typeString = QStringLiteral( "invalid" );
+        break;
+    }
+
+    QString str = QStringLiteral( "<QgsProperty: %1%2%3>" ).arg( !sipCpp->isActive() && sipCpp->propertyType() != QgsProperty::InvalidProperty ? QStringLiteral( "INACTIVE " ) : QString(),
+                  typeString,
+                  definitionString.isEmpty() ? QString() : QStringLiteral( " (%1)" ).arg( definitionString ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
   private:
 
     mutable QExplicitlySharedDataPointer<QgsPropertyPrivate> d;

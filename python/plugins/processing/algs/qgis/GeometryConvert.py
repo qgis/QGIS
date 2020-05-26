@@ -214,7 +214,7 @@ class GeometryConvert(QgisAlgorithm):
             p.setExteriorRing(linestring)
             return [QgsGeometry(p)]
         elif QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.LineGeometry:
-            if QgsWkbTypes.isMultiType(geom):
+            if QgsWkbTypes.isMultiType(geom.wkbType()):
                 parts = []
                 for i in range(geom.constGet().numGeometries()):
                     p = QgsPolygon()
@@ -232,7 +232,7 @@ class GeometryConvert(QgisAlgorithm):
                 return [QgsGeometry(p)]
         else:
             #polygon
-            if QgsWkbTypes.isMultiType(geom):
+            if QgsWkbTypes.isMultiType(geom.wkbType()):
                 return geom.asGeometryCollection()
             else:
                 return [geom]

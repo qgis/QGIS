@@ -304,6 +304,19 @@ to reflect the new values.
 Will call the value() method to determine the emitted value
 %End
 
+    virtual void parentFormValueChanged( const QString &attribute, const QVariant &value );
+%Docstring
+Is called in embedded form widgets when an ``attribute`` ``value`` in
+the parent form has changed.
+
+The default implementations does nothing.
+Subclasses should reimplement this method to notify the form widgets
+that something has changed in case they have filter expressions that
+depend on the parent form scope.
+
+.. versionadded:: 3.14
+%End
+
   protected:
 
     virtual void updateConstraintWidgetStatus();

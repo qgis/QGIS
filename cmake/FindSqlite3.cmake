@@ -21,7 +21,7 @@
 
 # try to use framework on mac
 # want clean framework path, not unix compatibility path
-IF (APPLE)
+IF (APPLE AND NOT QGIS_MAC_DEPS_DIR)
   IF (CMAKE_FIND_FRAMEWORK MATCHES "FIRST"
       OR CMAKE_FRAMEWORK_PATH MATCHES "ONLY"
       OR NOT CMAKE_FIND_FRAMEWORK)
@@ -35,18 +35,28 @@ IF (APPLE)
     ENDIF (SQLITE3_LIBRARY)
     SET (CMAKE_FIND_FRAMEWORK ${CMAKE_FIND_FRAMEWORK_save} CACHE STRING "" FORCE)
   ENDIF ()
-ENDIF (APPLE)
+ENDIF (APPLE AND NOT QGIS_MAC_DEPS_DIR)
 
+# FIND_PATH and FIND_LIBRARY normally search standard locations
+# before the specified paths. To search non-standard paths first,
+# FIND_* is invoked first with specified paths and NO_DEFAULT_PATH
+# and then again with no specified paths to search the default
+# locations. When an earlier FIND_* succeeds, subsequent FIND_*s
+# searching for the same item do nothing.
 FIND_PATH(SQLITE3_INCLUDE_DIR sqlite3.h
   "$ENV{LIB_DIR}/include"
   "$ENV{LIB_DIR}/include/sqlite"
   "$ENV{INCLUDE}"
+  NO_DEFAULT_PATH
 )
+FIND_PATH(SQLITE3_INCLUDE_DIR sqlite3.h)
 
 FIND_LIBRARY(SQLITE3_LIBRARY NAMES sqlite3_i sqlite3 PATHS
   "$ENV{LIB_DIR}/lib"
   "$ENV{LIB}/lib"
-  )
+  NO_DEFAULT_PATH
+)
+FIND_LIBRARY(SQLITE3_LIBRARY NAMES sqlite3_i sqlite3)
 
 IF (SQLITE3_INCLUDE_DIR AND SQLITE3_LIBRARY)
    SET(SQLITE3_FOUND TRUE)

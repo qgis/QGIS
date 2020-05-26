@@ -74,6 +74,7 @@ class QgsMapLayer;
 class QgsBookmarkManager;
 class QgsProjectViewSettings;
 class QgsProjectDisplaySettings;
+class QgsProjectTimeSettings;
 
 /**
  * \ingroup core
@@ -104,6 +105,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QgsProjectMetadata metadata READ metadata WRITE setMetadata NOTIFY metadataChanged )
     Q_PROPERTY( QColor backgroundColor READ backgroundColor WRITE setBackgroundColor NOTIFY backgroundColorChanged )
     Q_PROPERTY( QColor selectionColor READ selectionColor WRITE setSelectionColor NOTIFY selectionColorChanged )
+    Q_PROPERTY( bool topologicalEditing READ topologicalEditing WRITE setTopologicalEditing NOTIFY topologicalEditingChanged )
 
   public:
 
@@ -610,6 +612,23 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.10.1
      */
     QgsProjectViewSettings *viewSettings();
+
+    /**
+     * Returns the project's time settings, which contains the project's temporal range and other
+     * time based settings.
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.14
+     */
+    const QgsProjectTimeSettings *timeSettings() const SIP_SKIP;
+
+    /**
+     * Returns the project's time settings, which contains the project's temporal range and other
+     * time based settings.
+     *
+     * \since QGIS 3.14
+     */
+    QgsProjectTimeSettings *timeSettings();
 
     /**
      * Returns the project's display settings, which settings and properties relating
@@ -1749,7 +1768,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The optional \a flags argument can be used to control layer reading behavior.
      * \note not available in Python bindings
      */
-    void loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFlags flags = nullptr ) SIP_SKIP;
+    bool loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFlags flags = nullptr ) SIP_SKIP;
 
     //! Read .qgs file
     bool readProjectFile( const QString &filename, QgsProject::ReadFlags flags = nullptr );
@@ -1789,6 +1808,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsBookmarkManager *mBookmarkManager = nullptr;
 
     QgsProjectViewSettings *mViewSettings = nullptr;
+
+    QgsProjectTimeSettings *mTimeSettings = nullptr;
 
     QgsProjectDisplaySettings *mDisplaySettings = nullptr;
 
@@ -1849,6 +1870,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     // Required by QGIS Server for switching the current project instance
     friend class QgsConfigCache;
+
+    friend class TestQgsProject;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProject::ReadFlags )

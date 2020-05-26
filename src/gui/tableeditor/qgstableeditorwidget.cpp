@@ -120,7 +120,9 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
   } );
 
 
-  setItemDelegate( new QgsTableEditorDelegate( this ) );
+  QgsTableEditorDelegate *delegate = new QgsTableEditorDelegate( this );
+  connect( delegate, &QgsTableEditorDelegate::updateNumericFormatForIndex, this, &QgsTableEditorWidget::updateNumericFormatForIndex );
+  setItemDelegate( delegate );
 
 
   connect( this, &QTableWidget::cellDoubleClicked, this, [ = ]
@@ -137,6 +139,17 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
 QgsTableEditorWidget::~QgsTableEditorWidget()
 {
   qDeleteAll( mNumericFormats );
+}
+
+void QgsTableEditorWidget::updateNumericFormatForIndex( const QModelIndex &index )
+{
+  if ( QTableWidgetItem *i = item( index.row(), index.column() ) )
+  {
+    if ( QgsNumericFormat *format = mNumericFormats.value( i ) )
+    {
+      i->setData( Qt::DisplayRole, format->formatDouble( index.data( CellContent ).toDouble(), QgsNumericFormatContext() ) );
+    }
+  }
 }
 
 void QgsTableEditorWidget::updateHeaders()
@@ -180,6 +193,16 @@ void QgsTableEditorWidget::updateHeaders()
   }
 
   setHorizontalHeaderLabels( headers );
+
+  headers.clear();
+  if ( mIncludeHeader )
+    headers << tr( "Header" );
+  for ( int i = 1; i <= 1000; i++ )
+  {
+    headers << QString::number( i );
+  }
+
+  setVerticalHeaderLabels( headers );
 }
 
 bool QgsTableEditorWidget::collectConsecutiveRowRange( const QModelIndexList &list, int &minRow, int &maxRow ) const
@@ -282,22 +305,31 @@ void QgsTableEditorWidget::setTableContents( const QgsTableContents &contents )
   qDeleteAll( mNumericFormats );
   mNumericFormats.clear();
 
-  int rowNumber = 0;
-  setRowCount( contents.size() );
+  QgsNumericFormatContext numericContext;
+  int rowNumber = mIncludeHeader ? 1 : 0;
+  bool first = true;
+  setRowCount( contents.size() + rowNumber );
   for ( const QgsTableRow &row : contents )
   {
-    if ( rowNumber == 0 )
+    if ( first )
+    {
       setColumnCount( row.size() );
+      first = false;
+    }
 
     int colNumber = 0;
     for ( const QgsTableCell &col : row )
     {
       QTableWidgetItem *item = new QTableWidgetItem( col.content().toString() );
+      item->setData( CellContent, col.content() ); // can't use EditRole, because Qt. (https://bugreports.qt.io/browse/QTBUG-11549)
       item->setData( Qt::BackgroundRole, col.backgroundColor().isValid() ? col.backgroundColor() : QColor( 255, 255, 255 ) );
       item->setData( PresetBackgroundColorRole, col.backgroundColor().isValid() ? col.backgroundColor() : QVariant() );
       item->setData( Qt::ForegroundRole, col.foregroundColor().isValid() ? col.foregroundColor() : QVariant() );
       if ( col.numericFormat() )
+      {
         mNumericFormats.insert( item, col.numericFormat()->clone() );
+        item->setData( Qt::DisplayRole, mNumericFormats.value( item )->formatDouble( col.content().toDouble(), numericContext ) );
+      }
       setItem( rowNumber, colNumber, item );
       colNumber++;
     }
@@ -306,6 +338,13 @@ void QgsTableEditorWidget::setTableContents( const QgsTableContents &contents )
 
   mBlockSignals--;
   updateHeaders();
+
+  if ( mFirstSet )
+  {
+    resizeColumnsToContents();
+    resizeRowsToContents();
+    mFirstSet = false;
+  }
   emit tableChanged();
 }
 
@@ -314,7 +353,7 @@ QgsTableContents QgsTableEditorWidget::tableContents() const
   QgsTableContents items;
   items.reserve( rowCount() );
 
-  for ( int r = 0; r < rowCount(); r++ )
+  for ( int r = mIncludeHeader ? 1 : 0; r < rowCount(); r++ )
   {
     QgsTableRow row;
     row.reserve( columnCount() );
@@ -323,7 +362,7 @@ QgsTableContents QgsTableEditorWidget::tableContents() const
       QgsTableCell cell;
       if ( QTableWidgetItem *i = item( r, c ) )
       {
-        cell.setContent( i->text() );
+        cell.setContent( i->data( CellContent ) );
         cell.setBackgroundColor( i->data( PresetBackgroundColorRole ).value< QColor >() );
         cell.setForegroundColor( i->data( Qt::ForegroundRole ).value< QColor >() );
 
@@ -346,8 +385,12 @@ void QgsTableEditorWidget::setSelectionNumericFormat( QgsNumericFormat *format )
   mBlockSignals++;
   std::unique_ptr< QgsNumericFormat > newFormat( format );
   const QModelIndexList selection = selectedIndexes();
+  QgsNumericFormatContext numericContext;
   for ( const QModelIndex &index : selection )
   {
+    if ( index.row() == 0 && mIncludeHeader )
+      continue;
+
     QTableWidgetItem *i = item( index.row(), index.column() );
     if ( !i )
     {
@@ -371,6 +414,7 @@ void QgsTableEditorWidget::setSelectionNumericFormat( QgsNumericFormat *format )
       delete mNumericFormats.value( i );
       mNumericFormats.insert( i, newFormat->clone() );
     }
+    i->setData( Qt::DisplayRole, newFormat ? mNumericFormats.value( i )->formatDouble( i->data( CellContent ).toDouble(), numericContext ) : i->data( CellContent ) );
   }
   mBlockSignals--;
   if ( changed && !mBlockSignals )
@@ -526,7 +570,7 @@ double QgsTableEditorWidget::tableRowHeight( int row )
   double height = 0;
   for ( int col = 0; col < columnCount(); ++col )
   {
-    double thisHeight = model()->data( model()->index( row, col ), RowHeight ).toDouble();
+    double thisHeight = model()->data( model()->index( row + ( mIncludeHeader ? 1 : 0 ), col ), RowHeight ).toDouble();
     height = std::max( thisHeight, height );
   }
   return height;
@@ -545,12 +589,15 @@ double QgsTableEditorWidget::tableColumnWidth( int column )
 
 void QgsTableEditorWidget::setTableRowHeight( int row, double height )
 {
+  if ( row == 0 && mIncludeHeader )
+    return;
+
   bool changed = false;
   mBlockSignals++;
 
   for ( int col = 0; col < columnCount(); ++col )
   {
-    if ( QTableWidgetItem *i = item( row, col ) )
+    if ( QTableWidgetItem *i = item( row + ( mIncludeHeader ? 1 : 0 ), col ) )
     {
       if ( i->data( RowHeight ).toDouble() != height )
       {
@@ -562,7 +609,7 @@ void QgsTableEditorWidget::setTableRowHeight( int row, double height )
     {
       QTableWidgetItem *newItem = new QTableWidgetItem();
       newItem->setData( RowHeight, height );
-      setItem( row, col, newItem );
+      setItem( row + ( mIncludeHeader ? 1 : 0 ), col, newItem );
       changed = true;
     }
   }
@@ -607,6 +654,35 @@ QList<int> QgsTableEditorWidget::rowsAssociatedWithSelection()
 QList<int> QgsTableEditorWidget::columnsAssociatedWithSelection()
 {
   return collectUniqueColumns( selectedIndexes() );
+}
+
+QVariantList QgsTableEditorWidget::tableHeaders() const
+{
+  if ( !mIncludeHeader )
+    return QVariantList();
+
+  QVariantList res;
+  res.reserve( columnCount() );
+  for ( int col = 0; col < columnCount(); ++col )
+  {
+    if ( QTableWidgetItem *i = item( 0, col ) )
+    {
+      res << i->data( CellContent );
+    }
+    else
+    {
+      res << QVariant();
+    }
+  }
+  return res;
+}
+
+bool QgsTableEditorWidget::isHeaderCellSelected()
+{
+  if ( !mIncludeHeader )
+    return false;
+
+  return collectUniqueRows( selectedIndexes() ).contains( 0 );
 }
 
 void QgsTableEditorWidget::insertRowsBelow()
@@ -759,6 +835,7 @@ void QgsTableEditorWidget::clearSelectedCells()
     if ( QTableWidgetItem *i = item( index.row(), index.column() ) )
     {
       i->setText( QString() );
+      i->setData( CellContent, QVariant() );
       changed = true;
     }
   }
@@ -774,6 +851,9 @@ void QgsTableEditorWidget::setSelectionForegroundColor( const QColor &color )
   mBlockSignals++;
   for ( const QModelIndex &index : selection )
   {
+    if ( index.row() == 0 && mIncludeHeader )
+      continue;
+
     if ( QTableWidgetItem *i = item( index.row(), index.column() ) )
     {
       if ( i->data( Qt::ForegroundRole ).value< QColor >() != color )
@@ -802,6 +882,9 @@ void QgsTableEditorWidget::setSelectionBackgroundColor( const QColor &color )
   mBlockSignals++;
   for ( const QModelIndex &index : selection )
   {
+    if ( index.row() == 0 && mIncludeHeader )
+      continue;
+
     if ( QTableWidgetItem *i = item( index.row(), index.column() ) )
     {
       if ( i->data( PresetBackgroundColorRole ).value< QColor >() != color )
@@ -832,6 +915,9 @@ void QgsTableEditorWidget::setSelectionRowHeight( double height )
   const QList< int > rows = rowsAssociatedWithSelection();
   for ( int row : rows )
   {
+    if ( row == 0 && mIncludeHeader )
+      continue;
+
     for ( int col = 0; col < columnCount(); ++col )
     {
       if ( QTableWidgetItem *i = item( row, col ) )
@@ -887,6 +973,44 @@ void QgsTableEditorWidget::setSelectionColumnWidth( double width )
     emit tableChanged();
 }
 
+void QgsTableEditorWidget::setIncludeTableHeader( bool included )
+{
+  if ( included == mIncludeHeader )
+    return;
+
+  mIncludeHeader = included;
+
+  if ( mIncludeHeader )
+    insertRow( 0 );
+  else
+    removeRow( 0 );
+  updateHeaders();
+}
+
+void QgsTableEditorWidget::setTableHeaders( const QVariantList &headers )
+{
+  if ( !mIncludeHeader )
+    return;
+
+  mBlockSignals++;
+
+  for ( int col = 0; col < columnCount(); ++col )
+  {
+    if ( QTableWidgetItem *i = item( 0, col ) )
+    {
+      i->setText( headers.value( col ).toString() );
+      i->setData( CellContent, headers.value( col ) ); // can't use EditRole, because Qt. (https://bugreports.qt.io/browse/QTBUG-11549)
+    }
+    else
+    {
+      QTableWidgetItem *item = new QTableWidgetItem( headers.value( col ).toString() );
+      item->setData( CellContent, headers.value( col ) ); // can't use EditRole, because Qt. (https://bugreports.qt.io/browse/QTBUG-11549)
+      setItem( 0, col, item );
+    }
+  }
+  mBlockSignals--;
+}
+
 /// @cond PRIVATE
 
 QgsTableEditorTextEdit::QgsTableEditorTextEdit( QWidget *parent )
@@ -894,6 +1018,9 @@ QgsTableEditorTextEdit::QgsTableEditorTextEdit( QWidget *parent )
 {
   // narrower default margins
   document()->setDocumentMargin( document()->documentMargin() / 2 );
+
+  connect( this, &QPlainTextEdit::textChanged, this, &QgsTableEditorTextEdit::resizeToContents );
+  updateMinimumSize();
 }
 
 void QgsTableEditorTextEdit::keyPressEvent( QKeyEvent *event )
@@ -907,6 +1034,7 @@ void QgsTableEditorTextEdit::keyPressEvent( QKeyEvent *event )
       {
         // ctrl+enter inserts a line break
         insertPlainText( QString( '\n' ) );
+        resizeToContents();
       }
       else
       {
@@ -938,12 +1066,81 @@ void QgsTableEditorTextEdit::keyPressEvent( QKeyEvent *event )
   }
 }
 
+void QgsTableEditorTextEdit::updateMinimumSize()
+{
+  const double tm = document()->documentMargin();
+  const QMargins cm = contentsMargins();
+  const int width = tm * 2 + cm.left() + cm.right() + 30;
+  const int height = tm * 2 + cm.top() + cm.bottom() + 4;
+  QStyleOptionFrame opt;
+  initStyleOption( &opt );
+  const QSize sizeFromContent = style()->sizeFromContents( QStyle::CT_LineEdit, &opt, QSize( width, height ), this );
+  setMinimumWidth( sizeFromContent.width() );
+  setMinimumHeight( sizeFromContent.height() );
+}
 
 void QgsTableEditorTextEdit::setWeakEditorMode( bool weakEditorMode )
 {
   mWeakEditorMode = weakEditorMode;
 }
 
+void QgsTableEditorTextEdit::resizeToContents()
+{
+  int oldWidth = width();
+  int oldHeight = height();
+  if ( mOriginalWidth == -1 )
+    mOriginalWidth = oldWidth;
+  if ( mOriginalHeight == -1 )
+    mOriginalHeight = oldHeight;
+
+  if ( QWidget *parent = parentWidget() )
+  {
+    QPoint position = pos();
+    QFontMetrics fm( font() );
+
+    const QStringList lines = toPlainText().split( '\n' );
+    int maxTextLineWidth = 0;
+    int totalTextHeight = 0;
+    for ( const QString &line : lines )
+    {
+      const QRect bounds = fontMetrics().boundingRect( line );
+      maxTextLineWidth = std::max( maxTextLineWidth, bounds.width() );
+      totalTextHeight += fm.height();
+    }
+
+    int hintWidth = minimumWidth() + maxTextLineWidth;
+    int hintHeight = minimumHeight() + totalTextHeight;
+    int parentWidth = parent->width();
+    int maxWidth = isRightToLeft() ? position.x() + oldWidth : parentWidth - position.x();
+    int maxHeight = parent->height() - position.y();
+    int newWidth = qBound( mOriginalWidth, hintWidth, maxWidth );
+    int newHeight = qBound( mOriginalHeight, hintHeight, maxHeight );
+
+    if ( mWidgetOwnsGeometry )
+    {
+      setMaximumWidth( newWidth );
+      setMaximumHeight( newHeight );
+    }
+    if ( isRightToLeft() )
+      move( position.x() - newWidth + oldWidth, position.y() );
+    resize( newWidth, newHeight );
+  }
+}
+
+void QgsTableEditorTextEdit::changeEvent( QEvent *e )
+{
+  switch ( e->type() )
+  {
+    case QEvent::FontChange:
+    case QEvent::StyleChange:
+    case QEvent::ContentsRectChange:
+      updateMinimumSize();
+      break;
+    default:
+      break;
+  }
+  QPlainTextEdit::changeEvent( e );
+}
 
 QgsTableEditorDelegate::QgsTableEditorDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
@@ -960,25 +1157,40 @@ QWidget *QgsTableEditorDelegate::createEditor( QWidget *parent, const QStyleOpti
 {
   QgsTableEditorTextEdit *w = new QgsTableEditorTextEdit( parent );
   w->setWeakEditorMode( mWeakEditorMode );
+
+  if ( !w->style()->styleHint( QStyle::SH_ItemView_DrawDelegateFrame, 0, w ) )
+    w->setFrameShape( QFrame::NoFrame );
+  if ( !w->style()->styleHint( QStyle::SH_ItemView_ShowDecorationSelected, 0, w ) )
+    w->setWidgetOwnsGeometry( true );
+
   return w;
 }
 
 void QgsTableEditorDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
-  QVariant value = index.model()->data( index, Qt::EditRole );
+  QVariant value = index.model()->data( index, QgsTableEditorWidget::CellContent );
   if ( QgsTableEditorTextEdit *lineEdit = qobject_cast<QgsTableEditorTextEdit * >( editor ) )
   {
-    lineEdit->setPlainText( value.toString() );
-    lineEdit->selectAll();
+    if ( index != mLastIndex || lineEdit->toPlainText() != value.toString() )
+    {
+      lineEdit->setPlainText( value.toString() );
+      lineEdit->selectAll();
+    }
   }
+  mLastIndex = index;
 }
 
 void QgsTableEditorDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
   if ( QgsTableEditorTextEdit *lineEdit = qobject_cast<QgsTableEditorTextEdit * >( editor ) )
   {
-    model->setData( index, lineEdit->toPlainText(), Qt::EditRole );
-    model->setData( index, lineEdit->toPlainText(), Qt::DisplayRole );
+    const QString text = lineEdit->toPlainText();
+    if ( text != model->data( index, QgsTableEditorWidget::CellContent ).toString() )
+    {
+      model->setData( index, text, QgsTableEditorWidget::CellContent );
+      model->setData( index, text, Qt::DisplayRole );
+      emit updateNumericFormatForIndex( index );
+    }
   }
 }
 

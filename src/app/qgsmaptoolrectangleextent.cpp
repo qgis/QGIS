@@ -34,6 +34,15 @@ void QgsMapToolRectangleExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsPoint point = mapPoint( *e );
 
+  if ( !currentVectorLayer() )
+  {
+    notifyNotVectorLayer();
+    clean();
+    stopCapturing();
+    e->ignore();
+    return;
+  }
+
   if ( e->button() == Qt::LeftButton )
   {
     if ( mPoints.empty() )
@@ -49,11 +58,7 @@ void QgsMapToolRectangleExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   {
     mPoints.append( point );
 
-    deactivate();
-    if ( mParentTool )
-    {
-      mParentTool->canvasReleaseEvent( e );
-    }
+    release( e );
   }
 }
 

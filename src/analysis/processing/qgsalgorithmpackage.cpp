@@ -177,6 +177,12 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
         feedback->pushDebugInfo( QObject::tr( "Packaging mesh layers is not supported." ) );
         errored = true;
         break;
+
+      case QgsMapLayerType::VectorTileLayer:
+        //not supported
+        feedback->pushDebugInfo( QObject::tr( "Packaging vector tile layers is not supported." ) );
+        errored = true;
+        break;
     }
   }
 
@@ -216,7 +222,7 @@ bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QStri
   QString error;
   QString newFilename;
   QString newLayer;
-  if ( QgsVectorFileWriter::writeAsVectorFormat( layer, path, options, &newFilename, &error, &newLayer ) != QgsVectorFileWriter::NoError )
+  if ( QgsVectorFileWriter::writeAsVectorFormatV2( layer, path, context.transformContext(), options, &newFilename, &newLayer, &error ) != QgsVectorFileWriter::NoError )
   {
     feedback->reportError( QObject::tr( "Packaging layer failed: %1" ).arg( error ) );
     return false;

@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsabstractgeopdfexporter.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgsrenderedfeaturehandlerinterface.h"
 #include "qgsfeaturerequest.h"
 #include "qgslogger.h"
@@ -162,19 +163,22 @@ bool QgsAbstractGeoPdfExporter::saveTemporaryLayers()
       // write out features to disk
       const QgsFeatureList features = it.value();
       QString layerName;
-      QgsVectorFileWriter writer( filePath, QString(), features.first().fields(), features.first().geometry().wkbType(), QgsCoordinateReferenceSystem(), QStringLiteral( "GPKG" ), QStringList(), QStringList(), nullptr, QgsVectorFileWriter::NoSymbology, QgsFeatureSink::RegeneratePrimaryKey, &layerName );
-      if ( writer.hasError() )
+      QgsVectorFileWriter::SaveVectorOptions saveOptions;
+      saveOptions.driverName = QStringLiteral( "GPKG" );
+      saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
+      std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( filePath, features.first().fields(), features.first().geometry().wkbType(), QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), saveOptions, QgsFeatureSink::RegeneratePrimaryKey, nullptr, &layerName ) );
+      if ( writer->hasError() )
       {
-        mErrorMessage = writer.errorMessage();
+        mErrorMessage = writer->errorMessage();
         QgsDebugMsg( mErrorMessage );
         return false;
       }
       for ( const QgsFeature &feature : features )
       {
         QgsFeature f = feature;
-        if ( !writer.addFeature( f, QgsFeatureSink::FastInsert ) )
+        if ( !writer->addFeature( f, QgsFeatureSink::FastInsert ) )
         {
-          mErrorMessage = writer.errorMessage();
+          mErrorMessage = writer->errorMessage();
           QgsDebugMsg( mErrorMessage );
           return false;
         }

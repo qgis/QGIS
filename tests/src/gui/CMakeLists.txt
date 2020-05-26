@@ -15,6 +15,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/gui/layout
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/processing
+  ${CMAKE_SOURCE_DIR}/src/gui/processing/models
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
   ${CMAKE_SOURCE_DIR}/src/core
@@ -161,3 +162,4 @@ ADD_QGIS_TEST(relationreferencewidget testqgsrelationreferencewidget.cpp)
 ADD_QGIS_TEST(featurelistcombobox testqgsfeaturelistcombobox.cpp)
 ADD_QGIS_TEST(texteditwrapper testqgstexteditwrapper.cpp)
 ADD_QGIS_TEST(tableeditorwidget testqgstableeditor.cpp)
+ADD_QGIS_TEST(newdatabasetablewidget testqgsnewdatabasetablewidget.cpp)

@@ -85,7 +85,7 @@ class DBManagerPlugin(object):
 
     def onLayerWasAdded(self, aMapLayer):
         # Be able to update every Db layer from Postgres, Spatialite and Oracle
-        if hasattr(aMapLayer, 'dataProvider') and aMapLayer.dataProvider().name() in ['postgres', 'spatialite', 'oracle']:
+        if hasattr(aMapLayer, 'dataProvider') and aMapLayer.dataProvider() and aMapLayer.dataProvider().name() in ['postgres', 'spatialite', 'oracle']:
             self.iface.addCustomActionForLayer(self.layerAction, aMapLayer)
         # virtual has QUrl source
         # url = QUrl(QUrl.fromPercentEncoding(l.source()))

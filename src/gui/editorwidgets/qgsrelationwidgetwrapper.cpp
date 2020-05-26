@@ -30,6 +30,10 @@ QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( QgsVectorLayer *vl, const Qg
 
 QWidget *QgsRelationWidgetWrapper::createWidget( QWidget *parent )
 {
+  QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( parent );
+  if ( form )
+    connect( form, &QgsAttributeForm::widgetValueChanged, this, &QgsRelationWidgetWrapper::widgetValueChanged );
+
   return new QgsRelationEditorWidget( parent );
 }
 
@@ -78,6 +82,23 @@ QgsRelation QgsRelationWidgetWrapper::relation() const
   return mRelation;
 }
 
+void QgsRelationWidgetWrapper::widgetValueChanged( const QString &attribute, const QVariant &newValue, bool attributeChanged )
+{
+  if ( mWidget && attributeChanged )
+  {
+    QgsFeature feature { mWidget->feature() };
+    if ( feature.attribute( attribute ) != newValue )
+    {
+      feature.setAttribute( attribute, newValue );
+      QgsAttributeEditorContext newContext { mWidget->editorContext() };
+      newContext.setParentFormFeature( feature );
+      mWidget->setEditorContext( newContext );
+      mWidget->setFeature( feature, false );
+      mWidget->parentFormValueChanged( attribute, newValue );
+    }
+  }
+}
+
 bool QgsRelationWidgetWrapper::showUnlinkButton() const
 {
   return mWidget->showUnlinkButton();
@@ -87,6 +108,13 @@ void QgsRelationWidgetWrapper::setShowUnlinkButton( bool showUnlinkButton )
 {
   if ( mWidget )
     mWidget->setShowUnlinkButton( showUnlinkButton );
+}
+
+
+void QgsRelationWidgetWrapper::setShowSaveChildEditsButton( bool showSaveChildEditsButton )
+{
+  if ( mWidget )
+    mWidget->setShowSaveChildEditsButton( showSaveChildEditsButton );
 }
 
 bool QgsRelationWidgetWrapper::showLabel() const
@@ -120,6 +148,16 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
   }
 
   QgsAttributeEditorContext myContext( QgsAttributeEditorContext( context(), mRelation, QgsAttributeEditorContext::Multiple, QgsAttributeEditorContext::Embed ) );
+
+  if ( config( QStringLiteral( "force-suppress-popup" ), false ).toBool() )
+  {
+    const_cast<QgsVectorLayerTools *>( myContext.vectorLayerTools() )->setForceSuppressFormPopup( true );
+  }
+
+  if ( config( QStringLiteral( "hide-save-child-edits" ), false ).toBool() )
+  {
+    w->setShowSaveChildEditsButton( false );
+  }
 
   w->setEditorContext( myContext );
 
@@ -158,4 +196,9 @@ void QgsRelationWidgetWrapper::setShowLinkButton( bool showLinkButton )
 {
   if ( mWidget )
     mWidget->setShowLinkButton( showLinkButton );
+}
+
+bool QgsRelationWidgetWrapper::showSaveChildEditsButton() const
+{
+  return mWidget && mWidget->showSaveChildEditsButton();
 }

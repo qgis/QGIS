@@ -1,0 +1,154 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/models/qgsmodelgraphicsview.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsModelGraphicsView : QGraphicsView
+{
+%Docstring
+QGraphicsView subclass representing the model designer.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodelgraphicsview.h"
+%End
+  public:
+
+    QgsModelGraphicsView( QWidget *parent = 0 );
+%Docstring
+Constructor for QgsModelGraphicsView, with the specified ``parent`` widget.
+%End
+    ~QgsModelGraphicsView();
+
+    virtual void dragEnterEvent( QDragEnterEvent *event );
+
+    virtual void dropEvent( QDropEvent *event );
+
+    virtual void dragMoveEvent( QDragMoveEvent *event );
+
+    virtual void wheelEvent( QWheelEvent *event );
+
+    virtual void mousePressEvent( QMouseEvent *event );
+
+    virtual void mouseReleaseEvent( QMouseEvent *event );
+
+    virtual void mouseMoveEvent( QMouseEvent *event );
+
+    virtual void mouseDoubleClickEvent( QMouseEvent *event );
+
+    virtual void keyPressEvent( QKeyEvent *event );
+
+    virtual void keyReleaseEvent( QKeyEvent *event );
+
+
+    void setModelScene( QgsModelGraphicsScene *scene );
+%Docstring
+Sets the related ``scene``.
+%End
+
+    QgsModelGraphicsScene *modelScene() const;
+%Docstring
+Returns the scene associated with the tool.
+
+.. seealso:: :py:func:`view`
+%End
+
+
+
+
+
+    void startMacroCommand( const QString &text );
+%Docstring
+Starts a macro command, containing a group of interactions in the view.
+%End
+
+    void endMacroCommand();
+%Docstring
+Ends a macro command, containing a group of interactions in the view.
+%End
+
+  public slots:
+
+    void snapSelected();
+%Docstring
+Snaps the selected items to the grid.
+%End
+
+  signals:
+
+    void algorithmDropped( const QString &algorithmId, const QPointF &pos );
+%Docstring
+Emitted when an algorithm is dropped onto the view.
+%End
+
+    void inputDropped( const QString &inputId, const QPointF &pos );
+%Docstring
+Emitted when an input parameter is dropped onto the view.
+%End
+
+
+    void itemFocused( QgsModelComponentGraphicItem *item );
+%Docstring
+Emitted when an ``item`` is "focused" in the view, i.e. it becomes the active
+item and should have its properties displayed in any designer windows.
+%End
+
+    void willBeDeleted();
+%Docstring
+Emitted in the destructor when the view is about to be deleted,
+but is still in a perfectly valid state.
+%End
+
+    void macroCommandStarted( const QString &text );
+%Docstring
+Emitted when a macro command containing a group of interactions is started in the view.
+%End
+
+    void macroCommandEnded();
+%Docstring
+Emitted when a macro command containing a group of interactions in the view has ended.
+%End
+
+};
+
+
+class QgsModelViewSnapMarker : QGraphicsRectItem
+{
+%Docstring
+A simple graphics item rendered as an 'x'.
+%End
+
+%TypeHeaderCode
+#include "qgsmodelgraphicsview.h"
+%End
+  public:
+
+    QgsModelViewSnapMarker();
+
+    virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
+
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/models/qgsmodelgraphicsview.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

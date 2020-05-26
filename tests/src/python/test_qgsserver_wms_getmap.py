@@ -1730,6 +1730,28 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Mode_8bit_with_transparency")
 
+    def test_multiple_layers_with_equal_name(self):
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(os.path.join(self.testdata_path, 'test_project_wms_duplicate_names.qgz')),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "BBOX": "613402.5658687877003,5809005.018114360981,619594.408781287726,5813869.006602735259",
+            "CRS": "EPSG:25832",
+            "WIDTH": "429",
+            "HEIGHT": "337",
+            "LAYERS": "layer",
+            "STYLES": ",",
+            "FORMAT": "image/png",
+            "DPI": "200",
+            "MAP_RESOLUTION": "200",
+            "FORMAT_OPTIONS": "dpi:200"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_DuplicateNames")
+
 
 if __name__ == '__main__':
     unittest.main()
