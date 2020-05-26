@@ -18,6 +18,7 @@
 #include "qgisapp.h"
 #include "qgsversioninfo.h"
 #include "qgsapplication.h"
+#include "qgsfocuskeeper.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsnative.h"
@@ -291,6 +292,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
       QAction *openFolderAction = new QAction( tr( "Open Directory…" ), menu );
       connect( openFolderAction, &QAction::triggered, this, [path]
       {
+        QgsFocusKeeper focusKeeper;
         QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( path );
       } );
       menu->addAction( openFolderAction );
