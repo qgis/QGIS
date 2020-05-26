@@ -700,6 +700,7 @@
         <file>themes/default/mIconSnappingMiddle.svg</file>
         <file>themes/default/mIconSnappingOnScale.svg</file>
         <file>themes/default/mIconSnappingVertex.svg</file>
+        <file>themes/default/mIconSnappingSelf.svg</file>
         <file>themes/default/mIconSnappingSegment.svg</file>
         <file>themes/default/mIconTopologicalEditing.svg</file>
         <file>themes/default/mIconSnappingIntersection.svg</file>

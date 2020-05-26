@@ -166,6 +166,42 @@ Set if invisible features must be snapped or not.
 .. versionadded:: 3.2
 %End
 
+    void addExtraSnapLayer( QgsVectorLayer *vl );
+%Docstring
+Supply an extra snapping layer (typically a memory layer).
+This can be used by map tools to provide additionnal
+snappings points.
+
+.. seealso:: :py:func:`removeExtraSnapLayer`
+
+.. seealso:: :py:func:`getExtraSnapLayers`
+
+.. versionadded:: 3.14
+%End
+
+    void removeExtraSnapLayer( QgsVectorLayer *vl );
+%Docstring
+Removes an extra snapping layer
+
+.. seealso:: :py:func:`addExtraSnapLayer`
+
+.. seealso:: :py:func:`getExtraSnapLayers`
+
+.. versionadded:: 3.14
+%End
+
+    QSet<QgsVectorLayer *> getExtraSnapLayers();
+%Docstring
+Returns the list of extra snapping layers
+
+.. seealso:: :py:func:`addExtraSnapLayer`
+
+.. seealso:: :py:func:`removeExtraSnapLayer`
+
+.. versionadded:: 3.14
+%End
+
+
   public slots:
 
     void setConfig( const QgsSnappingConfig &snappingConfig );
