@@ -588,6 +588,14 @@ QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt *stmt, 
     return sqlite3_column_double( stmt, ic );
   }
 
+  if ( sqlite3_column_type( stmt, ic ) == SQLITE_BLOB )
+  {
+    // BLOB value
+    int blob_size = sqlite3_column_bytes( stmt, ic );
+    const char *blob = static_cast<const char *>( sqlite3_column_blob( stmt, ic ) );
+    return QByteArray( blob, blob_size );
+  }
+
   if ( sqlite3_column_type( stmt, ic ) == SQLITE_TEXT )
   {
     // TEXT value

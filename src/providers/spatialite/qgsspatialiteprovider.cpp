@@ -116,6 +116,12 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
       break;
     }
 
+    case QVariant::ByteArray:
+      fieldType = QStringLiteral( "BLOB" );
+      fieldSize = -1;
+      fieldPrec = -1;
+      break;
+
     default:
       return false;
   }
@@ -688,6 +694,10 @@ static TypeSubType getVariantType( const QString &type )
   {
     return TypeSubType( QVariant::List, QVariant::Invalid );
   }
+  else if ( type == QLatin1String( "blob" ) )
+  {
+    return TypeSubType( QVariant::ByteArray, QVariant::Invalid );
+  }
   else if ( type == QLatin1String( "timestamp" ) ||
             type == QLatin1String( "datetime" ) )
   {
@@ -738,6 +748,11 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
       {
         fieldType = QVariant::Double;
         type = "DOUBLE";
+      }
+      if ( fld->BlobValuesCount != 0 )
+      {
+        fieldType = QVariant::ByteArray;
+        type = "BLOB";
       }
       mAttributeFields.append( QgsField( name, fieldType, type, 0, 0, QString() ) );
     }
@@ -4241,6 +4256,12 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
             QByteArray ba = stringVal.toUtf8();
             sqlite3_bind_text( stmt, ++ia, ba.constData(), ba.size(), SQLITE_TRANSIENT );
           }
+          else if ( type == QVariant::ByteArray )
+          {
+            // binding a BLOB value
+            const QByteArray ba = v.toByteArray();
+            sqlite3_bind_blob( stmt, ++ia, ba.constData(), ba.size(), SQLITE_TRANSIENT );
+          }
           else if ( type == QVariant::StringList || type == QVariant::List )
           {
             const QByteArray ba = QgsJsonUtils::encodeValue( v ).toUtf8();
@@ -4562,6 +4583,10 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
   for ( QgsChangedAttributesMap::const_iterator iter = attr_map.begin(); iter != attr_map.end(); ++iter )
   {
     // Loop over all changed features
+    //
+    // For each changed feature, create an update string like
+    // "UPDATE table SET simple_column=23.5, complex_column=? WHERE primary_key=fid"
+    // On any update failure, changes to all features will be rolled back
 
     QgsFeatureId fid = iter.key();
 
@@ -4576,10 +4601,13 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
     QString sql = QStringLiteral( "UPDATE %1 SET " ).arg( QgsSqliteUtils::quotedIdentifier( mTableName ) );
     bool first = true;
 
+    // keep track of map of parameter index to value
+    QMap<int, QVariant> bindings;
+    int bind_parameter_idx = 1;
+
     // cycle through the changed attributes of the feature
     for ( QgsAttributeMap::const_iterator siter = attrs.begin(); siter != attrs.end(); ++siter )
     {
-      // Loop over all changed attributes
       try
       {
         QgsField fld = field( siter.key() );
@@ -4626,6 +4654,12 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
             return false;
           }
         }
+        else if ( type == QVariant::ByteArray )
+        {
+          // binding a BLOB value
+          sql += QStringLiteral( "%1=?" ).arg( QgsSqliteUtils::quotedIdentifier( fld.name() ) );
+          bindings[ bind_parameter_idx++ ] = val;
+        }
         else if ( type == QVariant::DateTime )
         {
           sql += QStringLiteral( "%1=%2" ).arg( QgsSqliteUtils::quotedIdentifier( fld.name() ), QgsSqliteUtils::quotedString( val.toDateTime().toString( QStringLiteral( "yyyy-MM-ddThh:mm:ss" ) ) ) );
@@ -4647,9 +4681,60 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
     }
     sql += QStringLiteral( " WHERE %1=%2" ).arg( QgsSqliteUtils::quotedIdentifier( mPrimaryKey ) ).arg( fid );
 
-    ret = exec_sql( sql.toUtf8(), errMsg );
+    // prepare SQLite statement
+    sqlite3_stmt *stmt = nullptr;
+    ret = sqlite3_prepare_v2( sqliteHandle( ), sql.toUtf8().constData(), -1, &stmt, nullptr );
     if ( ret != SQLITE_OK )
     {
+      // some unexpected error occurred during preparation
+      const char *err = sqlite3_errmsg( sqliteHandle( ) );
+      errMsg = static_cast<char *>( sqlite3_malloc( strlen( err ) + 1 ) );
+      strcpy( errMsg, err );
+      handleError( sql, errMsg, savepointId );
+      return false;
+    }
+
+    // bind variables not handled directly in the string
+    for ( auto i = bindings.cbegin(); i != bindings.cend(); ++i )
+    {
+      int parameter_idx = i.key();
+      const QVariant val = i.value();
+      switch ( val.type() )
+      {
+        case QVariant::ByteArray:
+        {
+          const QByteArray ba = val.toByteArray();
+          sqlite3_bind_blob( stmt, parameter_idx, ba.constData(), ba.size(), SQLITE_TRANSIENT );
+          break;
+        }
+
+        default:
+          // This will only happen if the above code is changed to bind more types,
+          // but the programmer has forgotten to handle the type here. Fatal error.
+          sqlite3_finalize( stmt );
+          Q_ASSERT( false );
+      }
+
+      if ( ret != SQLITE_OK )
+      {
+        // some unexpected error occurred during binding
+        const char *err = sqlite3_errmsg( sqliteHandle( ) );
+        errMsg = static_cast<char *>( sqlite3_malloc( strlen( err ) + 1 ) );
+        strcpy( errMsg, err );
+        handleError( sql, errMsg, savepointId );
+        sqlite3_finalize( stmt );
+        return false;
+      }
+    }
+
+    ret = sqlite3_step( stmt );
+    sqlite3_finalize( stmt );
+    if ( ret != SQLITE_DONE )
+    {
+      // some unexpected error occurred during execution of update query
+      const char *err = sqlite3_errmsg( sqliteHandle( ) );
+      errMsg = static_cast<char *>( sqlite3_malloc( strlen( err ) + 1 ) );
+      strcpy( errMsg, err );
       handleError( sql, errMsg, savepointId );
       return false;
     }
