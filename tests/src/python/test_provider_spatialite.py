@@ -964,7 +964,9 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
     def testPKNotInt(self):
         """ Check when primary key is not an integer """
         # create test db
-        dbname = os.path.join(tempfile.mkdtemp(), "test_pknotint.sqlite")
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        dbname = os.path.join(tmpdir, "test_pknotint.sqlite")
         con = spatialite_connect(dbname, isolation_level=None)
         cur = con.cursor()
 
@@ -1010,8 +1012,6 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
 
         con.close()
 
-        basepath, filename = os.path.split(dbname)
-        shutil.rmtree(basepath)
 
     def testLoadStyle(self):
         """Check that we can store and load a style"""
