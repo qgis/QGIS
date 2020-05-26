@@ -650,59 +650,65 @@ QString QgsOracleConn::databaseTypeFilter( const QString &alias, QString geomCol
     case QgsWkbTypes::LineString25D:
     case QgsWkbTypes::LineStringZ:
       return QStringLiteral( " mod(%3.sdo_gtype,100) = 2 AND %1.%2 in ( "
-                             " SELECT res.PK FROM (SELECT subres.PK, MAX(subres.interpretation) as interpretation "
-                             " FROM (SELECT %1.%2 as PK, MAX(DECODE(MOD(ROWNUM, 3), 1, t.COLUMN_VALUE, NULL)) offset "
-                             " , MAX(DECODE(MOD(ROWNUM, 3), 2, t.COLUMN_VALUE, NULL)) etype , MAX(DECODE(MOD(ROWNUM, 3), 0, t.COLUMN_VALUE, NULL)) interpretation "
-                             " FROM %4 %1, TABLE(%3.sdo_elem_info) t GROUP BY %1.%2, TRUNC((ROWNUM - 1) / 3, 0) ) subres "
-                             " GROUP BY subres.PK ORDER BY subres.PK ) res, %4 %1 WHERE %1.%2 = res.PK AND not res.interpretation in (2,3) "
-                             " )" ).arg( alias, quotedIdentifier( pk ), geomCol, tableName );
+                             "      SELECT res.pk"
+                             "      FROM ("
+                             "          SELECT %1.%2 as PK, MAX(DECODE(MOD(ROWNUM, 3), 0, t.COLUMN_VALUE, NULL)) interpretation "
+                             "          FROM %4 %1, TABLE(%3.sdo_elem_info) t "
+                             "          GROUP BY %1.%2) res"
+                             "      WHERE %1.%2= res.PK and not res.interpretation in (2,3)"
+                             "  )" ).arg( alias, quotedIdentifier( pk ), geomCol, tableName );
     case QgsWkbTypes::CircularString:
     case QgsWkbTypes::CircularStringZ:
       return QStringLiteral( " mod(%3.sdo_gtype,100) = 2 AND %1.%2 in ( "
-                             " SELECT res.PK FROM (SELECT subres.PK, MAX(subres.interpretation) as interpretation "
-                             " FROM (SELECT %1.%2 as PK, MAX(DECODE(MOD(ROWNUM, 3), 1, t.COLUMN_VALUE, NULL)) offset "
-                             " , MAX(DECODE(MOD(ROWNUM, 3), 2, t.COLUMN_VALUE, NULL)) etype , MAX(DECODE(MOD(ROWNUM, 3), 0, t.COLUMN_VALUE, NULL)) interpretation "
-                             " FROM %4 %1, TABLE(%3.sdo_elem_info) t GROUP BY %1.%2, TRUNC((ROWNUM - 1) / 3, 0) ) subres "
-                             " GROUP BY subres.PK ORDER BY subres.PK ) res, %4 %1 WHERE %1.%2 = res.PK AND res.interpretation in (2,3) "
-                             " )" ).arg( alias, quotedIdentifier( pk ), geomCol, tableName );
+                             "      SELECT res.pk"
+                             "      FROM ("
+                             "          SELECT %1.%2 as PK, MAX(DECODE(MOD(ROWNUM, 3), 0, t.COLUMN_VALUE, NULL)) interpretation "
+                             "          FROM %4 %1, TABLE(%3.sdo_elem_info) t "
+                             "          GROUP BY %1.%2) res"
+                             "      WHERE %1.%2= res.PK and res.interpretation in (2,3)"
+                             "  )" ).arg( alias, quotedIdentifier( pk ), geomCol, tableName );
     case QgsWkbTypes::MultiLineString:
     case QgsWkbTypes::MultiLineString25D:
     case QgsWkbTypes::MultiLineStringZ:
       return QStringLiteral( " mod(%3.sdo_gtype,100) = 6 AND %1.%2 in ( "
-                             " SELECT res.PK FROM (SELECT subres.PK, MAX(subres.interpretation) as interpretation "
-                             " FROM (SELECT %1.%2 as PK, MAX(DECODE(MOD(ROWNUM, 3), 1, t.COLUMN_VALUE, NULL)) offset "
-                             " , MAX(DECODE(MOD(ROWNUM, 3), 2, t.COLUMN_VALUE, NULL)) etype , MAX(DECODE(MOD(ROWNUM, 3), 0, t.COLUMN_VALUE, NULL)) interpretation "
-                             " FROM %4 %1, TABLE(%3.sdo_elem_info) t GROUP BY %1.%2, TRUNC((ROWNUM - 1) / 3, 0) ) subres "
-                             " GROUP BY subres.PK ORDER BY subres.PK ) res, %4 %1 WHERE %1.%2 = res.PK AND not res.interpretation in (2,3) "
-                             " )" ).arg( alias, quotedIdentifier( pk ), geomCol, tableName );
+                             "      SELECT res.pk"
+                             "      FROM ("
+                             "          SELECT %1.%2 as PK, MAX(DECODE(MOD(ROWNUM, 3), 0, t.COLUMN_VALUE, NULL)) interpretation "
+                             "          FROM %4 %1, TABLE(%3.sdo_elem_info) t "
+                             "          GROUP BY %1.%2) res"
+                             "      WHERE %1.%2= res.PK and not res.interpretation in (2,3)"
+                             "  )" ).arg( alias, quotedIdentifier( pk ), geomCol, tableName );
     case QgsWkbTypes::MultiCurve:
     case QgsWkbTypes::MultiCurveZ:
       return QStringLiteral( " mod(%3.sdo_gtype,100) = 6 AND %1.%2 in ( "
-                             " SELECT res.PK FROM (SELECT subres.PK, MAX(subres.interpretation) as interpretation "
-                             " FROM (SELECT %1.%2 as PK, MAX(DECODE(MOD(ROWNUM, 3), 1, t.COLUMN_VALUE, NULL)) offset "
-                             " , MAX(DECODE(MOD(ROWNUM, 3), 2, t.COLUMN_VALUE, NULL)) etype , MAX(DECODE(MOD(ROWNUM, 3), 0, t.COLUMN_VALUE, NULL)) interpretation "
-                             " FROM %4 %1, TABLE(%3.sdo_elem_info) t GROUP BY %1.%2, TRUNC((ROWNUM - 1) / 3, 0) ) subres "
-                             " GROUP BY subres.PK ORDER BY subres.PK ) res, %4 %1 WHERE %1.%2 = res.PK AND res.interpretation in (2,3) "
-                             " )" ).arg( alias, quotedIdentifier( pk ), geomCol, tableName );
+                             "      SELECT res.pk"
+                             "      FROM ("
+                             "          SELECT %1.%2 as PK, MAX(DECODE(MOD(ROWNUM, 3), 0, t.COLUMN_VALUE, NULL)) interpretation "
+                             "          FROM %4 %1, TABLE(%3.sdo_elem_info) t "
+                             "          GROUP BY %1.%2) res"
+                             "      WHERE %1.%2= res.PK and res.interpretation in (2,3)"
+                             "  )" ).arg( alias, quotedIdentifier( pk ), geomCol, tableName );
     case QgsWkbTypes::Polygon:
     case QgsWkbTypes::Polygon25D:
     case QgsWkbTypes::PolygonZ:
       return QStringLiteral( " mod(%3.sdo_gtype,100) = 3 AND %1.%2 in ( "
-                             " SELECT res.PK FROM (SELECT subres.PK, MAX(subres.interpretation) as interpretation "
-                             " FROM (SELECT %1.%2 as PK, MAX(DECODE(MOD(ROWNUM, 3), 1, t.COLUMN_VALUE, NULL)) offset "
-                             " , MAX(DECODE(MOD(ROWNUM, 3), 2, t.COLUMN_VALUE, NULL)) etype , MAX(DECODE(MOD(ROWNUM, 3), 0, t.COLUMN_VALUE, NULL)) interpretation "
-                             " FROM %4 %1, TABLE(%3.sdo_elem_info) t GROUP BY %1.%2, TRUNC((ROWNUM - 1) / 3, 0) ) subres "
-                             " GROUP BY subres.PK ORDER BY subres.PK ) res, %4 %1 WHERE %1.%2 = res.PK AND not res.interpretation in (2,4) "
-                             " )" ).arg( alias, quotedIdentifier( pk ), geomCol, tableName );
+                             "      SELECT res.pk"
+                             "      FROM ("
+                             "          SELECT %1.%2 as PK, MAX(DECODE(MOD(ROWNUM, 3), 0, t.COLUMN_VALUE, NULL)) interpretation "
+                             "          FROM %4 %1, TABLE(%3.sdo_elem_info) t "
+                             "          GROUP BY %1.%2) res"
+                             "      WHERE %1.%2= res.PK and not res.interpretation in (2,4)"
+                             "  )" ).arg( alias, quotedIdentifier( pk ), geomCol, tableName );
     case QgsWkbTypes::CurvePolygon:
     case QgsWkbTypes::CurvePolygonZ:
       return QStringLiteral( " mod(%3.sdo_gtype,100) = 3 AND %1.%2 in ( "
-                             " SELECT res.PK FROM (SELECT subres.PK, MAX(subres.interpretation) as interpretation "
-                             " FROM (SELECT %1.%2 as PK, MAX(DECODE(MOD(ROWNUM, 3), 1, t.COLUMN_VALUE, NULL)) offset "
-                             " , MAX(DECODE(MOD(ROWNUM, 3), 2, t.COLUMN_VALUE, NULL)) etype , MAX(DECODE(MOD(ROWNUM, 3), 0, t.COLUMN_VALUE, NULL)) interpretation "
-                             " FROM %4 %1, TABLE(%3.sdo_elem_info) t GROUP BY %1.%2, TRUNC((ROWNUM - 1) / 3, 0) ) subres "
-                             " GROUP BY subres.PK ORDER BY subres.PK ) res, %4 %1 WHERE %1.%2 = res.PK AND res.interpretation in (2,4) "
-                             " )" ).arg( alias, quotedIdentifier( pk ), geomCol, tableName );;
+                             "      SELECT res.pk"
+                             "      FROM ("
+                             "          SELECT %1.%2 as PK, MAX(DECODE(MOD(ROWNUM, 3), 0, t.COLUMN_VALUE, NULL)) interpretation "
+                             "          FROM %4 %1, TABLE(%3.sdo_elem_info) t "
+                             "          GROUP BY %1.%2) res"
+                             "      WHERE %1.%2= res.PK and res.interpretation in (2,4)"
+                             "  )" ).arg( alias, quotedIdentifier( pk ), geomCol, tableName );;
     case QgsWkbTypes::MultiPolygon:
     case QgsWkbTypes::MultiPolygonZ:
     case QgsWkbTypes::MultiPolygon25D:
