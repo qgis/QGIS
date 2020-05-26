@@ -268,6 +268,8 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     //! updates the countdown for widgets that have a timeout duration
     void updateCountdown();
     void resetCountdown();
+
+    friend class TestQgsMessageBar;
 };
 
 #endif
