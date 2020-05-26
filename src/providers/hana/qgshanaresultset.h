@@ -46,6 +46,8 @@ class QgsHanaResultSet
 
     void close();
     bool next();
+
+    QString getString( unsigned short columnIndex );
     QVariant getValue( unsigned short columnIndex );
     QgsGeometry getGeometry( unsigned short columnIndex );
     ResultSetMetaDataRef getMetadata() { return mResultSet->getMetaData() ; }

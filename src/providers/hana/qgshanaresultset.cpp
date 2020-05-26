@@ -47,6 +47,11 @@ bool QgsHanaResultSet::next()
   return mResultSet->next();
 }
 
+QString QgsHanaResultSet::getString( unsigned short columnIndex )
+{
+  return QgsHanaUtils::toQString( mResultSet->getNString( columnIndex ) );
+}
+
 QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
 {
   switch ( mMetadata->getColumnType( columnIndex ) )

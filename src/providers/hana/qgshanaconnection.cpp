@@ -22,6 +22,7 @@
 #include "qgshanaconnectionstringbuilder.h"
 #include "qgshanadriver.h"
 #include "qgshanaexception.h"
+#include "qgshanaresultset.h"
 #include "qgshanasettings.h"
 #include "qgshanatablemodel.h"
 #include "qgshanautils.h"
@@ -313,111 +314,114 @@ QVector<QgsHanaLayerProperty> QgsHanaConnection::getLayers(
 {
   QVector<QgsHanaLayerProperty> list;
 
-  // Read table names with geometry columns
-  QString sqlTables = "SELECT SCHEMA_NAME, TABLE_NAME, COLUMN_NAME, DATA_TYPE_NAME, TABLE_OID, TABLE_COMMENTS FROM "
-                      "(SELECT * FROM SYS.TABLE_COLUMNS WHERE TABLE_OID IN "
-                      "(SELECT OBJECT_OID FROM OWNERSHIP WHERE OBJECT_TYPE = 'TABLE' AND OWNER_NAME LIKE '%1') AND "
-                      "SCHEMA_NAME IN (SELECT SCHEMA_NAME FROM SYS.SCHEMAS WHERE HAS_PRIVILEGES = 'TRUE')) "
-                      "INNER JOIN "
-                      "(SELECT TABLE_OID AS TABLE_OID_2, COMMENTS AS TABLE_COMMENTS FROM SYS.TABLES WHERE "
-                      "IS_USER_DEFINED_TYPE = 'FALSE' AND SCHEMA_NAME NOT LIKE_REGEXPR 'SYS|_SYS.*|UIS|SAP_XS|SAP_REST|HANA_XS') "
-                      "ON TABLE_OID = TABLE_OID_2 AND SCHEMA_NAME LIKE '%2' AND DATA_TYPE_NAME LIKE_REGEXPR '%3'";
-  QString schema = mUri.schema().isEmpty() ? schemaName : mUri.schema();
-  QString sql = sqlTables.arg(
-                  userTablesOnly ? "CURRENT_USER" : "%",
-                  schema.isEmpty() ? "%" : schema,
-                  "ST_GEOMETRY|ST_POINT" );
+  const QString schema = mUri.schema().isEmpty() ? schemaName : mUri.schema();
+  const QString sqlSchemas = QStringLiteral(
+                               "SELECT DISTINCT(SCHEMA_NAME) FROM SYS.EFFECTIVE_PRIVILEGES WHERE "
+                               "SCHEMA_NAME LIKE '%1' AND "
+                               "SCHEMA_NAME NOT LIKE_REGEXPR 'SYS|_SYS.*|UIS|SAP_XS|SAP_REST|HANA_XS' AND "
+                               "PRIVILEGE IN ('SELECT', 'CREATE ANY') AND "
+                               "USER_NAME = CURRENT_USER AND IS_VALID = 'TRUE'" )
+                             .arg( schema.isEmpty() ? "%" : schema );
+
+  const QString sqlTables = QStringLiteral(
+                              "SELECT SCHEMA_NAME, TABLE_NAME, COLUMN_NAME, DATA_TYPE_NAME, TABLE_OID, TABLE_COMMENTS FROM "
+                              "(SELECT * FROM SYS.TABLE_COLUMNS WHERE "
+                              "TABLE_OID IN (SELECT OBJECT_OID FROM OWNERSHIP WHERE OBJECT_TYPE = 'TABLE' AND OWNER_NAME LIKE '%1') AND "
+                              "SCHEMA_NAME IN (%2) AND "
+                              "DATA_TYPE_NAME LIKE_REGEXPR '%3') "
+                              "INNER JOIN "
+                              "(SELECT TABLE_OID AS TABLE_OID_2, COMMENTS AS TABLE_COMMENTS FROM SYS.TABLES WHERE IS_USER_DEFINED_TYPE = 'FALSE') "
+                              "ON TABLE_OID = TABLE_OID_2" );
+
+  const QString sqlViews = QStringLiteral(
+                             "SELECT SCHEMA_NAME, VIEW_NAME, COLUMN_NAME, DATA_TYPE_NAME, VIEW_COMMENTS FROM "
+                             "(SELECT * FROM SYS.VIEW_COLUMNS WHERE "
+                             "VIEW_OID IN (SELECT OBJECT_OID FROM OWNERSHIP WHERE OBJECT_TYPE = 'VIEW' AND OWNER_NAME LIKE '%1') AND "
+                             "SCHEMA_NAME IN (%2) AND "
+                             "DATA_TYPE_NAME LIKE_REGEXPR '%3') "
+                             "INNER JOIN "
+                             "(SELECT VIEW_OID AS VIEW_OID_2, COMMENTS AS VIEW_COMMENTS FROM SYS.VIEWS) "
+                             "ON VIEW_OID = VIEW_OID_2" );
 
   try
   {
     StatementRef stmt = mConnection->createStatement();
-    ResultSetRef rsTables = stmt->executeQuery( reinterpret_cast<const char16_t *>( sql.unicode() ) );
 
+    QString sql = sqlTables.arg( userTablesOnly ? "CURRENT_USER" : "%", sqlSchemas, "ST_GEOMETRY|ST_POINT" );
+    QgsHanaResultSetRef rsTables = QgsHanaResultSet::create( stmt, sql );
     while ( rsTables->next() )
     {
       QgsHanaLayerProperty layerProperty;
-      layerProperty.schemaName = QgsHanaUtils::toQString( rsTables->getNString( 1 ) );
-      layerProperty.tableName = QgsHanaUtils::toQString( rsTables->getNString( 2 ) );
-      layerProperty.geometryColName = QgsHanaUtils::toQString( rsTables->getNString( 3 ) );
-      layerProperty.tableComment = QgsHanaUtils::toQString( rsTables->getNString( 6 ) );
+      layerProperty.schemaName = rsTables->getString( 1 );
+      layerProperty.tableName = rsTables->getString( 2 );
+      layerProperty.geometryColName = rsTables->getString( 3 );
+      layerProperty.tableComment = rsTables->getString( 6 );
 
       addNewLayer( list, layerProperty );
     }
     rsTables->close();
 
-    // Read geometryless tables
     if ( allowGeometrylessTables )
     {
       sql = QStringLiteral( "SELECT DISTINCT SCHEMA_NAME, TABLE_NAME, TABLE_COMMENTS FROM (%1)" ).arg(
-              sqlTables.arg( userTablesOnly ? "CURRENT_USER" : "%", schema.isEmpty() ? "%" : schema, "" ) );
-      ResultSetRef rsTables = stmt->executeQuery( reinterpret_cast<const char16_t *>( sql.unicode() ) );
+              sqlTables.arg( userTablesOnly ? "CURRENT_USER" : "%", sqlSchemas, "" ) );
+      QgsHanaResultSetRef rsTables = QgsHanaResultSet::create( stmt, sql );
       while ( rsTables->next() )
       {
         QgsHanaLayerProperty layerProperty;
-        layerProperty.schemaName = QgsHanaUtils::toQString( rsTables->getNString( 1 ) );
-        layerProperty.tableName = QgsHanaUtils::toQString( rsTables->getNString( 2 ) );
+        layerProperty.schemaName = rsTables->getString( 1 );
+        layerProperty.tableName = rsTables->getString( 2 );
         layerProperty.geometryColName = "";
-        layerProperty.tableComment = QgsHanaUtils::toQString( rsTables->getNString( 3 ) );
+        layerProperty.tableComment = rsTables->getString( 3 );
 
         addNewLayer( list, layerProperty, true );
       }
       rsTables->close();
     }
 
-    // Read views
-    sql = QStringLiteral( "SELECT SCHEMA_NAME, VIEW_NAME, COLUMN_NAME, DATA_TYPE_NAME, VIEW_OID, VIEW_COMMENTS FROM "
-                          "(SELECT * FROM SYS.VIEW_COLUMNS WHERE VIEW_OID IN (SELECT OBJECT_OID FROM OWNERSHIP WHERE "
-                          "OBJECT_TYPE = 'VIEW' AND OWNER_NAME LIKE '%1')) "
-                          "INNER JOIN "
-                          "(SELECT VIEW_OID AS VIEW_OID_2, COMMENTS AS VIEW_COMMENTS FROM SYS.VIEWS WHERE "
-                          "IS_VALID = 'TRUE' AND SCHEMA_NAME IN (SELECT SCHEMA_NAME FROM SYS.SCHEMAS WHERE "
-                          "HAS_PRIVILEGES = 'TRUE') AND SCHEMA_NAME NOT LIKE_REGEXPR 'SYS|_SYS.*|UIS|SAP_XS|SAP_REST|HANA_XS') "
-                          "ON VIEW_OID = VIEW_OID_2 AND SCHEMA_NAME LIKE '%2' AND DATA_TYPE_NAME LIKE_REGEXPR '%3'" )
-          .arg(
-            userTablesOnly ? "CURRENT_USER" : "%",
-            schema.isEmpty() ? "%" : schema,
-            allowGeometrylessTables ? "" : "ST_GEOMETRY|ST_POINT" );
-    ResultSetRef rsViews = stmt->executeQuery( reinterpret_cast<const char16_t *>( sql.unicode() ) );
+    sql = sqlViews.arg( userTablesOnly ? "CURRENT_USER" : "%", sqlSchemas, allowGeometrylessTables ? "" : "ST_GEOMETRY|ST_POINT" );
+    QgsHanaResultSetRef rsViews = QgsHanaResultSet::create( stmt, sql );
     while ( rsViews->next() )
     {
       QgsHanaLayerProperty layerProperty;
-      layerProperty.schemaName = QgsHanaUtils::toQString( rsViews->getNString( 1 ) );
-      layerProperty.tableName = QgsHanaUtils::toQString( rsViews->getNString( 2 ) );
-      layerProperty.geometryColName = ( QgsHanaUtils::toQString( rsViews->getNString( 4 ) ) != "ST_GEOMETRY" ) ? ""
-                                      : QgsHanaUtils::toQString( rsViews->getNString( 3 ) );
-      layerProperty.tableComment = QgsHanaUtils::toQString( rsViews->getNString( 6 ) );
+      layerProperty.schemaName = rsViews->getString( 1 );
+      layerProperty.tableName = rsViews->getString( 2 );
+      layerProperty.geometryColName = ( rsViews->getString( 4 ) != "ST_GEOMETRY" ) ? ""
+                                      : rsViews->getString( 3 );
+      layerProperty.tableComment = rsViews->getString( 5 );
       layerProperty.isView = true;
 
       addNewLayer( list, layerProperty, layerProperty.geometryColName.isEmpty() );
     }
     rsViews->close();
-
-    int size = list.size();
-    for ( int i = 0; i < size; ++i )
-    {
-      QgsHanaLayerProperty &lp1 = list[i];
-      bool found = false;
-      for ( int j = 0; j < size; ++j )
-      {
-        if ( i != j )
-        {
-          const QgsHanaLayerProperty &lp2 = list.at( j );
-          if ( lp1.schemaName == lp2.schemaName && lp1.tableName == lp2.tableName )
-          {
-            found = true;
-            break;
-          }
-        }
-      }
-
-      if ( !found )
-        lp1.isUnique = true;
-    }
   }
   catch ( const Exception &ex )
   {
     throw QgsHanaException( ex.what() );
   }
+
+  int size = list.size();
+  for ( int i = 0; i < size; ++i )
+  {
+    QgsHanaLayerProperty &lp1 = list[i];
+    bool found = false;
+    for ( int j = 0; j < size; ++j )
+    {
+      if ( i != j )
+      {
+        const QgsHanaLayerProperty &lp2 = list.at( j );
+        if ( lp1.schemaName == lp2.schemaName && lp1.tableName == lp2.tableName )
+        {
+          found = true;
+          break;
+        }
+      }
+    }
+
+    if ( !found )
+      lp1.isUnique = true;
+  }
+
   return list;
 }
 
