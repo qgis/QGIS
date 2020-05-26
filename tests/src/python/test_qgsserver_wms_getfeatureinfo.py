@@ -40,7 +40,7 @@ from qgis.core import QgsProject
 class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
     """QGIS Server WMS Tests for GetFeatureInfo request"""
 
-    #regenerate_reference = True
+    # regenerate_reference = True
 
     def testGetFeatureInfo(self):
         # Test getfeatureinfo response xml
