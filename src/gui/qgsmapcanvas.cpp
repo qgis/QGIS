@@ -816,7 +816,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
       const QgsPointXY transformedPoint = ct.transform( mapPoint );
 
       const int displayPrecision = crs.mapUnits() == QgsUnitTypes::DistanceDegrees ? 5 : 3;
-      QAction *copyCoordinateAction = new QAction( QStringLiteral( "%1, %2 (%3)" ).arg(
+      QAction *copyCoordinateAction = new QAction( QStringLiteral( "%3 (%1, %2)" ).arg(
             QString::number( transformedPoint.x(), 'f', displayPrecision ),
             QString::number( transformedPoint.y(), 'f', displayPrecision ),
             identifier ), mMenu );
@@ -843,7 +843,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
     }
   };
 
-  addCoordinateFormat( tr( "%1 - Map CRS" ).arg( mSettings.destinationCrs().userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) ), mSettings.destinationCrs() );
+  addCoordinateFormat( tr( "Map CRS — %1" ).arg( mSettings.destinationCrs().userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) ), mSettings.destinationCrs() );
   if ( mSettings.destinationCrs() != QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) )
     addCoordinateFormat( tr( "WGS84" ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
 
@@ -854,7 +854,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
     QgsCoordinateReferenceSystem customCrs( customCrsString );
     if ( customCrs != mSettings.destinationCrs() && customCrs != QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) )
     {
-      addCoordinateFormat( tr( "%1 - Custom CRS" ).arg( customCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) ), customCrs );
+      addCoordinateFormat( customCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ), customCrs );
     }
   }
   copyCoordinateMenu->addSeparator();
