@@ -2344,8 +2344,7 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
   mIsAborted = false;
 
   QString url = mBaseUrl;
-  if ( !url.contains( QLatin1String( "SERVICE=WMTS" ), Qt::CaseInsensitive ) &&
-       !url.contains( QLatin1String( "/WMTSCapabilities.xml" ), Qt::CaseInsensitive ) )
+  if ( !QgsWmsProvider::isUrlForWMTS( url ) )
   {
     url += QLatin1String( "SERVICE=WMS&REQUEST=GetCapabilities" );
   }
