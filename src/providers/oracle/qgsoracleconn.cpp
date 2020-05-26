@@ -638,6 +638,11 @@ QString QgsOracleConn::databaseTypeFilter( const QString &alias, QString geomCol
 {
   geomCol = quotedIdentifier( alias ) + "." + quotedIdentifier( geomCol );
 
+  // Oracle DB allows tables to contain several geometry types (including also single and multi geometry).
+  // This behavior is not wished in QGIS. Indeed, as other provider don't handle this feature, QgsVectorLayer is supposed to allow only one geometry type.
+  // In Oracle DB, geometry type are determined by sdo_gtype and sdo_interpretation (cf. https://docs.oracle.com/database/121/SPATL/sdo_geometry-object-type.htm)
+  // sdo_interpretation is a part of sdo_elem_info, which can be extracted like explained in the following discussion :
+  // https://stackoverflow.com/questions/3971693/sql-query-to-determine-if-oracle-spatial-table-contains-curves
   switch ( geomType )
   {
     case QgsWkbTypes::Point:
@@ -649,6 +654,7 @@ QString QgsOracleConn::databaseTypeFilter( const QString &alias, QString geomCol
     case QgsWkbTypes::LineString:
     case QgsWkbTypes::LineString25D:
     case QgsWkbTypes::LineStringZ:
+      // LineString gtype ends with 2, sdo_interpretation must not be equal to 2 (CircularString) or 3 (Nurbs)
       return QStringLiteral( " mod(%3.sdo_gtype,100) = 2 AND %1.%2 in ( "
                              "      SELECT res.pk"
                              "      FROM ("
@@ -659,6 +665,7 @@ QString QgsOracleConn::databaseTypeFilter( const QString &alias, QString geomCol
                              "  )" ).arg( alias, quotedIdentifier( pk ), geomCol, tableName );
     case QgsWkbTypes::CircularString:
     case QgsWkbTypes::CircularStringZ:
+      // CircularString gtype ends with 2, sdo_interpretation must be equal to 2 (CircularString) or 3 (Nurbs)
       return QStringLiteral( " mod(%3.sdo_gtype,100) = 2 AND %1.%2 in ( "
                              "      SELECT res.pk"
                              "      FROM ("
@@ -670,6 +677,7 @@ QString QgsOracleConn::databaseTypeFilter( const QString &alias, QString geomCol
     case QgsWkbTypes::MultiLineString:
     case QgsWkbTypes::MultiLineString25D:
     case QgsWkbTypes::MultiLineStringZ:
+      // MultiLineString gtype ends with 6, sdo_interpretation must not be equal to 2 (CircularString) or 3 (Nurbs)
       return QStringLiteral( " mod(%3.sdo_gtype,100) = 6 AND %1.%2 in ( "
                              "      SELECT res.pk"
                              "      FROM ("
@@ -680,6 +688,7 @@ QString QgsOracleConn::databaseTypeFilter( const QString &alias, QString geomCol
                              "  )" ).arg( alias, quotedIdentifier( pk ), geomCol, tableName );
     case QgsWkbTypes::MultiCurve:
     case QgsWkbTypes::MultiCurveZ:
+      // MultiCurve gtype ends with 2, sdo_interpretation must be equal to 2 (CircularString) or 3 (Nurbs)
       return QStringLiteral( " mod(%3.sdo_gtype,100) = 6 AND %1.%2 in ( "
                              "      SELECT res.pk"
                              "      FROM ("
@@ -691,6 +700,7 @@ QString QgsOracleConn::databaseTypeFilter( const QString &alias, QString geomCol
     case QgsWkbTypes::Polygon:
     case QgsWkbTypes::Polygon25D:
     case QgsWkbTypes::PolygonZ:
+      // Polygon gtype ends with 3, sdo_interpretation must not be equal to 2 (CurvePolygon) or 4 (Circle)
       return QStringLiteral( " mod(%3.sdo_gtype,100) = 3 AND %1.%2 in ( "
                              "      SELECT res.pk"
                              "      FROM ("
@@ -701,6 +711,7 @@ QString QgsOracleConn::databaseTypeFilter( const QString &alias, QString geomCol
                              "  )" ).arg( alias, quotedIdentifier( pk ), geomCol, tableName );
     case QgsWkbTypes::CurvePolygon:
     case QgsWkbTypes::CurvePolygonZ:
+      // CurvePolygon gtype ends with 3, sdo_interpretation must be equal to 2 (CurvePolygon) or 4 (Circle)
       return QStringLiteral( " mod(%3.sdo_gtype,100) = 3 AND %1.%2 in ( "
                              "      SELECT res.pk"
                              "      FROM ("
