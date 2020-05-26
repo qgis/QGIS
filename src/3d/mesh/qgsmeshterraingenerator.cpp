@@ -99,6 +99,7 @@ void QgsMeshTerrainGenerator::resolveReferences( const QgsProject &project )
 void QgsMeshTerrainGenerator::setLayer( QgsMeshLayer *layer )
 {
   mLayer = QgsMapLayerRef( layer );
+  mIsValid = layer != nullptr;
 }
 
 QgsMeshLayer *QgsMeshTerrainGenerator::meshLayer() const
