@@ -85,6 +85,11 @@ class TestPyQgsOGRProviderGpkgConformance(unittest.TestCase, ProviderTestCase):
         cls.check_constraint = QgsVectorLayer(
             cls.basetestfile + '|layername=check_constraint', 'check_constraint', 'ogr')
 
+        # Create the other layer for unique and not null constraints check
+        cls.unique_not_null_constraints = QgsVectorLayer(
+            cls.basetestfile + '|layername=unique_not_null_constraints', 'unique_not_null_constraints', 'ogr')
+        assert cls.unique_not_null_constraints.isValid()
+
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
@@ -106,6 +111,11 @@ class TestPyQgsOGRProviderGpkgConformance(unittest.TestCase, ProviderTestCase):
         """Returns the layer for attribute change CHECK constraint violation"""
 
         return self.check_constraint
+
+    def getEditableLayerWithUniqueNotNullConstraints(self):
+        """Returns the layer for UNIQUE and NOT NULL constraints detection"""
+
+        return self.unique_not_null_constraints
 
     def enableCompiler(self):
         QgsSettings().setValue('/qgis/compileExpressions', True)
