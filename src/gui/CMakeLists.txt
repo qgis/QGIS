@@ -416,6 +416,7 @@ SET(QGIS_GUI_SRCS
   qgsfilterlineedit.cpp
   qgsfindfilesbypatternwidget.cpp
   qgsfloatingwidget.cpp
+  qgsfocuskeeper.cpp
   qgsfocuswatcher.cpp
   qgsfontbutton.cpp
   qgsformannotation.cpp
