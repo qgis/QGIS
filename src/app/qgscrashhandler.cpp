@@ -63,8 +63,6 @@ LONG WINAPI QgsCrashHandler::handle( LPEXCEPTION_POINTERS exception )
   if ( !projectFile.isEmpty() )
     // quote project file path to avoid issues if it has spaces
     arguments << QStringLiteral( "\"%1\"" ).arg( projectFile );
-  else
-    arguments << projectFile;
 
   QStringList reportData;
   reportData.append( QStringLiteral( "QGIS Version: %1" ).arg( Qgis::version() ) );
