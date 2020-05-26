@@ -493,6 +493,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfilewidget.h
   qgsfilterlineedit.h
   qgsfloatingwidget.h
+  qgsfocuskeeper.h
   qgsfocuswatcher.h
   qgsfontbutton.h
   qgsformannotation.h
