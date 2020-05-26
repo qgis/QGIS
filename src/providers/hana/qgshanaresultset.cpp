@@ -27,7 +27,7 @@ QgsHanaResultSet::QgsHanaResultSet( ResultSetRef &&resultSet )
 
 QgsHanaResultSetRef QgsHanaResultSet::create( StatementRef &stmt, const QString &sql )
 {
-  QgsHanaResultSetRef ret( new QgsHanaResultSet( stmt->executeQuery( reinterpret_cast<const char16_t *>( sql.unicode() ) ) ) );
+  QgsHanaResultSetRef ret( new QgsHanaResultSet( stmt->executeQuery( reinterpret_cast<const char16_t *>( sql.utf16() ) ) ) );
   return ret;
 }
 
