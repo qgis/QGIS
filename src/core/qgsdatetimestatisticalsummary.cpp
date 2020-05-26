@@ -22,6 +22,7 @@
 #include <QVariant>
 #include <QDebug>
 #include <QVariantList>
+#include <QTimeZone>
 #include <limits>
 #include <cmath>
 
@@ -108,12 +109,12 @@ void QgsDateTimeStatisticalSummary::finalize()
 
     if ( mIsTimes )
     {
-      const QTime meanTime = QTime( 0, 0 ).addMSecs( mSumMSec / mCount ).addMSecs( mFirst.time().msecsSinceStartOfDay() );
-      mMean = QDateTime( QDate::fromJulianDay( 0 ), meanTime );
+      const QTime meanTime = QTime( 0, 0 ).addMSecs( mSumMSec / mCount ).addMSecs( mFirst.offsetFromUtc() + mFirst.time().msecsSinceStartOfDay() );
+      mMean = QDateTime( QDate::fromJulianDay( 0 ), meanTime, QTimeZone( Qt::UTC ) );
     }
     else
     {
-      mMean = mFirst.addMSecs( mSumMSec / mCount );
+      mMean = mFirst.toUTC().addMSecs( mSumMSec / mCount );
     }
 
     if ( mStatistics & StDev || mStatistics & StDevSample )
@@ -312,7 +313,7 @@ void QgsDateTimeStatisticalSummary::testDateTime( const QDateTime &dateTime )
     mLast = dateTime;
 
   if ( mStatistics & Mean || mStatistics & StDev || mStatistics & StDevSample )
-    mSumMSec += mFirst.msecsTo( dateTime );
+    mSumMSec += mFirst.toUTC().msecsTo( dateTime.toUTC() );
 
   if ( mStatistics & Median || mStatistics & FirstQuartile || mStatistics & ThirdQuartile || mStatistics & InterQuartileRange )
     mAllValues.append( dateTime );

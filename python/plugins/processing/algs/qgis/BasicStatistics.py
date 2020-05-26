@@ -63,6 +63,7 @@ class BasicStatisticsForField(QgisAlgorithm):
     SUM = 'SUM'
     MEAN = 'MEAN'
     STD_DEV = 'STD_DEV'
+    STD_DEV_SAMPLE = 'STD_DEV_SAMPLE'
     RANGE = 'RANGE'
     MEDIAN = 'MEDIAN'
     MINORITY = 'MINORITY'
@@ -70,6 +71,7 @@ class BasicStatisticsForField(QgisAlgorithm):
     FIRSTQUARTILE = 'FIRSTQUARTILE'
     THIRDQUARTILE = 'THIRDQUARTILE'
     IQR = 'IQR'
+    MODE = 'MODE'
 
     def icon(self):
         return QgsApplication.getThemeIcon("/algorithms/mAlgorithmBasicStatistics.svg")
@@ -80,7 +82,7 @@ class BasicStatisticsForField(QgisAlgorithm):
     def tags(self):
         return self.tr(
             'stats,statistics,date,time,datetime,string,number,text,table,layer,sum,maximum,minimum,mean,average,standard,deviation,'
-            'count,distinct,unique,variance,median,quartile,range,majority,minority,summary').split(',')
+            'count,distinct,unique,variance,median,quartile,range,majority,minority,summary,mode').split(',')
 
     def group(self):
         return self.tr('Vector analysis')
@@ -116,6 +118,7 @@ class BasicStatisticsForField(QgisAlgorithm):
         self.addOutput(QgsProcessingOutputNumber(self.SUM, self.tr('Sum')))
         self.addOutput(QgsProcessingOutputNumber(self.MEAN, self.tr('Mean value')))
         self.addOutput(QgsProcessingOutputNumber(self.STD_DEV, self.tr('Standard deviation')))
+        self.addOutput(QgsProcessingOutputNumber(self.STD_DEV_SAMPLE, self.tr('Sample standard deviation')))
         self.addOutput(QgsProcessingOutputNumber(self.RANGE, self.tr('Range')))
         self.addOutput(QgsProcessingOutputNumber(self.MEDIAN, self.tr('Median')))
         self.addOutput(QgsProcessingOutputNumber(self.MINORITY, self.tr('Minority (rarest occurring value)')))
@@ -123,6 +126,7 @@ class BasicStatisticsForField(QgisAlgorithm):
         self.addOutput(QgsProcessingOutputNumber(self.FIRSTQUARTILE, self.tr('First quartile')))
         self.addOutput(QgsProcessingOutputNumber(self.THIRDQUARTILE, self.tr('Third quartile')))
         self.addOutput(QgsProcessingOutputNumber(self.IQR, self.tr('Interquartile Range (IQR)')))
+        self.addOutput(QgsProcessingOutputNumber(self.MODE, self.tr('Mode')))
 
     def name(self):
         return 'basicstatisticsforfields'
@@ -188,12 +192,14 @@ class BasicStatisticsForField(QgisAlgorithm):
                    self.MEAN: stat.mean(),
                    self.MEDIAN: stat.median(),
                    self.STD_DEV: stat.stDev(),
+                   self.STD_DEV_SAMPLE: stat.sampleStDev(),
                    self.CV: cv,
                    self.MINORITY: stat.minority(),
                    self.MAJORITY: stat.majority(),
                    self.FIRSTQUARTILE: stat.firstQuartile(),
                    self.THIRDQUARTILE: stat.thirdQuartile(),
-                   self.IQR: stat.interQuartileRange()}
+                   self.IQR: stat.interQuartileRange(),
+                   self.MODE: stat.mode()}
 
         data = []
         data.append(self.tr('Count: {}').format(stat.count()))
@@ -206,12 +212,14 @@ class BasicStatisticsForField(QgisAlgorithm):
         data.append(self.tr('Mean value: {}').format(stat.mean()))
         data.append(self.tr('Median value: {}').format(stat.median()))
         data.append(self.tr('Standard deviation: {}').format(stat.stDev()))
+        data.append(self.tr('Sample standard deviation: {}').format(stat.sampleStDev()))
         data.append(self.tr('Coefficient of Variation: {}').format(cv))
         data.append(self.tr('Minority (rarest occurring value): {}').format(stat.minority()))
         data.append(self.tr('Majority (most frequently occurring value): {}').format(stat.majority()))
         data.append(self.tr('First quartile: {}').format(stat.firstQuartile()))
         data.append(self.tr('Third quartile: {}').format(stat.thirdQuartile()))
         data.append(self.tr('Interquartile Range (IQR): {}').format(stat.interQuartileRange()))
+        data.append(self.tr('Mode: {}').format(stat.mode()))
         return data, results
 
     def calcStringStats(self, features, feedback, field, count):
@@ -232,7 +240,10 @@ class BasicStatisticsForField(QgisAlgorithm):
                    self.MAX: stat.max(),
                    self.MIN_LENGTH: stat.minLength(),
                    self.MAX_LENGTH: stat.maxLength(),
-                   self.MEAN_LENGTH: stat.meanLength()}
+                   self.MEAN_LENGTH: stat.meanLength(),
+                   self.MINORITY: stat.minority(),
+                   self.MAJORITY: stat.majority(),
+                   self.MODE: stat.mode()}
 
         data = []
         data.append(self.tr('Count: {}').format(count))
@@ -242,7 +253,10 @@ class BasicStatisticsForField(QgisAlgorithm):
         data.append(self.tr('Maximum value: {}').format(stat.max()))
         data.append(self.tr('Minimum length: {}').format(stat.minLength()))
         data.append(self.tr('Maximum length: {}').format(stat.maxLength()))
+        data.append(self.tr('Minority (rarest occurring value): {}').format(stat.minority()))
+        data.append(self.tr('Majority (most frequently occurring value): {}').format(stat.majority()))
         data.append(self.tr('Mean length: {}').format(stat.meanLength()))
+        data.append(self.tr('Mode: {}').format(stat.meanLength()))
 
         return data, results
 
@@ -260,17 +274,39 @@ class BasicStatisticsForField(QgisAlgorithm):
                    self.UNIQUE: stat.countDistinct(),
                    self.EMPTY: stat.countMissing(),
                    self.FILLED: stat.count() - stat.countMissing(),
-                   self.MIN: stat.statistic(QgsDateTimeStatisticalSummary.Min),
-                   self.MAX: stat.statistic(QgsDateTimeStatisticalSummary.Max)}
+                   self.MIN: stat.min(),
+                   self.MAX: stat.max(),
+                   self.RANGE: stat.range(),
+                   self.MEAN: stat.mean(),
+                   self.MEDIAN: stat.median(),
+                   self.STD_DEV: stat.stDev(),
+                   self.STD_DEV_SAMPLE: stat.sampleStDev(),
+                   self.MINORITY: stat.minority(),
+                   self.MAJORITY: stat.majority(),
+                   self.FIRSTQUARTILE: stat.firstQuartile(),
+                   self.THIRDQUARTILE: stat.thirdQuartile(),
+                   self.IQR: stat.interQuartileRange(),
+                   self.MODE: stat.mode()}
 
         data = []
         data.append(self.tr('Count: {}').format(count))
         data.append(self.tr('Unique values: {}').format(stat.countDistinct()))
         data.append(self.tr('NULL (missing) values: {}').format(stat.countMissing()))
         data.append(
-            self.tr('Minimum value: {}').format(field.displayString(stat.statistic(QgsDateTimeStatisticalSummary.Min))))
+            self.tr('Minimum value: {}').format(field.displayString(stat.min())))
         data.append(
-            self.tr('Maximum value: {}').format(field.displayString(stat.statistic(QgsDateTimeStatisticalSummary.Max))))
+            self.tr('Maximum value: {}').format(field.displayString(stat.max())))
+        data.append(self.tr('Range: {}').format(stat.range()))
+        data.append(self.tr('Mean value: {}').format(field.displayString(stat.mean())))
+        data.append(self.tr('Median value: {}').format(field.displayString(stat.median())))
+        data.append(self.tr('Standard deviation: {}').format(stat.stDev()))
+        data.append(self.tr('Sample standard deviation: {}').format(stat.sampleStDev()))
+        data.append(self.tr('Minority (rarest occurring value): {}').format(field.displayString((stat.minority()))))
+        data.append(self.tr('Majority (most frequently occurring value): {}').format(field.displayString((stat.majority()))))
+        data.append(self.tr('First quartile: {}').format(field.displayString(stat.firstQuartile())))
+        data.append(self.tr('Third quartile: {}').format(field.displayString(stat.thirdQuartile())))
+        data.append(self.tr('Interquartile Range (IQR): {}').format(stat.interQuartileRange()))
+        data.append(self.tr('Mode: {}').format(stat.mode()))
 
         return data, results
 

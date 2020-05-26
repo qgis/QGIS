@@ -425,7 +425,7 @@ tests:
           - 'Maximum value: Test'
           - 'Minimum length: 4'
           - 'Maximum length: 4'
-          - 'Mean length: 3.0'
+          - 'Mean length: 4.0'
           - 'NULL \(missing\) values: 1'
 
   - algorithm: qgis:listuniquevalues
