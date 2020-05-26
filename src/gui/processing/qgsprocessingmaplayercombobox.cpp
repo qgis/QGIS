@@ -298,11 +298,6 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
   if ( !found )
   {
     const QString string = val.toString();
-    if ( mUseSelectionCheckBox )
-    {
-      mUseSelectionCheckBox->setChecked( false );
-      mUseSelectionCheckBox->setEnabled( false );
-    }
     if ( mIterateButton )
       mIterateButton->setChecked( iterate );
 
@@ -316,6 +311,11 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
         mCombo->setAdditionalItems( additional );
       }
       mCombo->setCurrentIndex( mCombo->findText( string ) ); // this may or may not throw a signal, so let's block it..
+      if ( mUseSelectionCheckBox )
+      {
+        mUseSelectionCheckBox->setChecked( false );
+        mUseSelectionCheckBox->setEnabled( false );
+      }
       mBlockChangedSignal--;
       if ( !mBlockChangedSignal )
         emit valueChanged(); // and ensure we only ever raise one
@@ -323,6 +323,11 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
     else if ( mParameter->flags() & QgsProcessingParameterDefinition::FlagOptional )
     {
       mCombo->setLayer( nullptr );
+      if ( mUseSelectionCheckBox )
+      {
+        mUseSelectionCheckBox->setChecked( false );
+        mUseSelectionCheckBox->setEnabled( false );
+      }
     }
   }
 }
