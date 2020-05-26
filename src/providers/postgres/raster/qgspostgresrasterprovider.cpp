@@ -310,7 +310,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
         const int _int { val.toInt( &ok ) };
         if ( ! ok )
         {
-          QgsMessageLog::logMessage( tr( "Cannot convert identified value to unsigned long" ), QStringLiteral( "PostGIS" ), Qgis::Warning );
+          QgsMessageLog::logMessage( tr( "Cannot convert identified value to int" ), QStringLiteral( "PostGIS" ), Qgis::Warning );
           return false;
         }
         std::memcpy( data, &_int, sizeof( int ) );
@@ -318,7 +318,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
       }
       case Qgis::DataType::Int32:
       {
-        const long _long { val.toInt( &ok ) };
+        const long _long { val.toLong( &ok ) };
         if ( ! ok )
         {
           QgsMessageLog::logMessage( tr( "Cannot convert identified value to long" ), QStringLiteral( "PostGIS" ), Qgis::Warning );
