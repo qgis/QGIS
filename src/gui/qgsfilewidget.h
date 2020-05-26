@@ -202,14 +202,6 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      */
     void fileChanged( const QString &path );
 
-    /**
-     * Emitted before and after showing the file dialog.
-     *
-     * \note not available in Python bindings
-     * \since QGIS 3.10
-     */
-    void blockEvents( bool ) SIP_SKIP;
-
   private slots:
     void openFileDialog();
     void textEdited( const QString &path );
