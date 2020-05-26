@@ -96,6 +96,7 @@ void QgsMesh3dSymbolWidget::configureForTerrain()
 {
   mComboBoxTextureType->addItem( tr( "Color Ramp Shader" ), QgsMesh3DSymbol::ColorRamp );
   enableVerticalSetting( false );
+  enableArrowSettings( false );
 }
 
 void QgsMesh3dSymbolWidget::configureForDataset()
@@ -103,6 +104,7 @@ void QgsMesh3dSymbolWidget::configureForDataset()
   mComboBoxTextureType->addItem( tr( "2D Contour Color Ramp Shader" ), QgsMesh3DSymbol::ColorRamp2DRendering );
   mGroupBoxColorRampShader->hide();
   enableVerticalSetting( true );
+  enableArrowSettings( true );
 }
 
 void QgsMesh3dSymbolWidget::setLayer( QgsMeshLayer *meshLayer, bool updateSymbol )
@@ -213,6 +215,11 @@ void QgsMesh3dSymbolWidget::setColorRampMinMax( double min, double max )
 void QgsMesh3dSymbolWidget::enableVerticalSetting( bool isEnable )
 {
   mGroupBoxVerticaleSettings->setVisible( isEnable );
+}
+
+void QgsMesh3dSymbolWidget::enableArrowSettings( bool isEnable )
+{
+  mGroupBoxArrowsSettings->setVisible( isEnable );
 }
 
 
