@@ -4339,6 +4339,58 @@ java.io.IOExceptionCannot do natural order without a primary key, please add it 
         vl_extent = QgsGeometry.fromRect(vl.extent())
         assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl_extent.asWkt())
 
+    def testGetCapabilitiesReturnWFSException(self):
+        """Test parsing of WFS exception
+        """
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_testGetCapabilitiesReturnWFSException'
+
+        get_cap_response = """<?xml version="1.0" encoding="UTF-8"?>
+<ExceptionReport xmlns="http://www.opengis.net/ows" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd" version="1.0.0" language="en">
+  <Exception exceptionCode="foo" locator="service">
+    <ExceptionText>bar</ExceptionText>
+  </Exception>
+</ExceptionReport>
+""".encode('UTF-8')
+
+        with open(sanitize(endpoint,
+                           '?SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.0.0'),
+                  'wb') as f:
+            f.write(get_cap_response)
+
+        with MessageLogger('WFS') as logger:
+            vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
+            self.assertFalse(vl.isValid())
+
+            self.assertEqual(len(logger.messages()), 1, logger.messages())
+            self.assertTrue("foo: bar" in logger.messages()[0].decode('UTF-8'), logger.messages())
+
+    def testGetCapabilitiesReturnWMSException(self):
+        """Test fix for https://github.com/qgis/QGIS/issues/29866
+        """
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_testGetCapabilitiesReturnWMSxception'
+
+        get_cap_response = """<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE ServiceExceptionReport SYSTEM "http://schemas.opengis.net/wms/1.1.1/exception_1_1_1.dtd">
+<ServiceExceptionReport version="1.1.1">
+  <ServiceException code="InvalidFormat">
+Can't recognize service requested.
+  </ServiceException>
+</ServiceExceptionReport>
+""".encode('UTF-8')
+
+        with open(sanitize(endpoint,
+                           '?SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.0.0'),
+                  'wb') as f:
+            f.write(get_cap_response)
+
+        with MessageLogger('WFS') as logger:
+            vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
+            self.assertFalse(vl.isValid())
+
+            self.assertEqual(len(logger.messages()), 1, logger.messages())
+            self.assertTrue("InvalidFormat: Can't recognize service requested." in logger.messages()[0].decode('UTF-8'), logger.messages())
+
 
 if __name__ == '__main__':
     unittest.main()
