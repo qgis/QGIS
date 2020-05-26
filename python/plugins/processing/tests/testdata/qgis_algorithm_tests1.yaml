@@ -420,10 +420,10 @@ tests:
         rules:
           - 'Analyzed field: Bname'
           - 'Count: 4'
-          - 'Unique values: 2'
+          - 'Unique values: 1'
           - 'Minimum value: Test'
           - 'Maximum value: Test'
-          - 'Minimum length: 0'
+          - 'Minimum length: 4'
           - 'Maximum length: 4'
           - 'Mean length: 3.0'
           - 'NULL \(missing\) values: 1'
