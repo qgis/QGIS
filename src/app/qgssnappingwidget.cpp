@@ -291,7 +291,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mSelfSnappingAction = new QAction( tr( "Self-snapping" ), this );
   mSelfSnappingAction->setCheckable( true );
   mSelfSnappingAction->setIcon( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingSelf.svg" ) ) );
-  mSelfSnappingAction->setToolTip( tr( "Enable Self-snapping" ) );
+  mSelfSnappingAction->setToolTip( tr( "If self snapping is enabled, snapping will also take the current state of the digitized feature into consideration." ) );
   mSelfSnappingAction->setObjectName( QStringLiteral( "SelfSnappingAction" ) );
   connect( mSelfSnappingAction, &QAction::toggled, this, &QgsSnappingWidget::enableSelfSnapping );
 

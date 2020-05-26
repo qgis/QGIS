@@ -92,7 +92,10 @@ class CORE_EXPORT QgsCadUtils
       //! map point aligned according to the constraints
       QgsPointXY finalMapPoint;
 
-      //! Snapped point - only valid if actually used for something
+      /**
+       * Snapped point - only valid if actually used for something
+       * \since QGIS 3.14
+       */
       QgsPointLocator::Match snapMatch;
 
       /**

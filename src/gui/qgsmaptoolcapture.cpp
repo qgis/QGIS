@@ -72,6 +72,7 @@ QgsMapToolCapture::~QgsMapToolCapture()
     mValidator->deleteLater();
     mValidator = nullptr;
   }
+  mCanvas->snappingUtils()->removeExtraSnapLayer( mExtraSnapLayer );
   mExtraSnapLayer->deleteLater();
   mExtraSnapLayer = nullptr;
 }

@@ -187,7 +187,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
     /**
      * Supply an extra snapping layer (typically a memory layer).
-     * This is can be used by map tools to provide additionnal
+     * This can be used by map tools to provide additionnal
      * snappings points.
      *
      * \see removeExtraSnapLayer()
