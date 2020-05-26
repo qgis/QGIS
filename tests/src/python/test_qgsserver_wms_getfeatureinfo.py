@@ -657,7 +657,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&INFO_FORMAT=application/json' +
                                  '&I=0&J=1' +
                                  '&FEATURE_COUNT=10',
-                                 'wms_getfeatureinfo_group_name_areas',
+                                 'wms_getfeatureinfo_group_name_areas_nested',
                                  'test_project_wms_grouped_nested_layers.qgs',
                                  normalizeJson=True)
 
@@ -670,7 +670,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&INFO_FORMAT=application/json' +
                                  '&I=0&J=1' +
                                  '&FEATURE_COUNT=10',
-                                 'wms_getfeatureinfo_group_name_areas',
+                                 'wms_getfeatureinfo_group_name_areas_nested',
                                  'test_project_wms_grouped_nested_layers.qgs',
                                  normalizeJson=True)
 
