@@ -53,12 +53,9 @@ class QgsHanaResultSet
     ResultSetMetaDataRef getMetadata() { return mResultSet->getMetaData() ; }
 
   private:
-    void ensureBufferCapacity( std::size_t capacity );
-
-  private:
     ResultSetRef mResultSet;
     ResultSetMetaDataRef mMetadata;
-    std::vector<unsigned char> mBuffer;
+    std::vector<char> mBuffer;
 };
 
 #endif // QGSHANARESULTSET_H
