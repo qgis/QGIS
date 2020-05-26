@@ -23,6 +23,7 @@
 #include "qgsmapmouseevent.h"
 #include <memory>
 #include "qgssnapindicator.h"
+#include "qgsvectorlayer.h"
 
 QgsMapToolRectangle3Points::QgsMapToolRectangle3Points( QgsMapToolCapture *parentTool,
     QgsMapCanvas *canvas, CreateMode createMode, CaptureMode mode )
