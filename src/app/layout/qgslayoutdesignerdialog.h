@@ -488,6 +488,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
 
     QgsLayoutGuideWidget *mGuideWidget = nullptr;
 
+    bool mIsExportingAtlas = false;
+
     //! Save window state
     void saveWindowState();
 
@@ -559,6 +561,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
 
     //! update default action of toolbutton
     void toolButtonActionTriggered( QAction * );
+
+    friend class QgsAtlasExportGuard;
 };
 
 #endif // QGSLAYOUTDESIGNERDIALOG_H
