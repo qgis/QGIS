@@ -262,6 +262,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
     } TilePosition;
     typedef QList<TilePosition> TilePositions;
 
+    static bool isUrlForWMTS( const QString &url );
+
   private slots:
     void identifyReplyFinished();
     void getLegendGraphicReplyFinished( const QImage & );
