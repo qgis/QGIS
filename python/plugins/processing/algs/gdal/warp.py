@@ -175,8 +175,6 @@ class warp(GdalAlgorithm):
         if inLayer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
 
-        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
-        self.setOutputValue(self.OUTPUT, out)
         sourceCrs = self.parameterAsCrs(parameters, self.SOURCE_CRS, context)
         targetCrs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
         if self.NODATA in parameters and parameters[self.NODATA] is not None:
