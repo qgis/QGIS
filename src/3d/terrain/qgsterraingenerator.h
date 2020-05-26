@@ -99,9 +99,14 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsChunkLoaderFactory
     //! Returns CRS of the terrain
     QgsCoordinateReferenceSystem crs() const { return mTerrainTilingScheme.crs(); }
 
+    //! Returns whether the terrain generator is valid
+    bool isValid() const;
+
   protected:
     QgsTilingScheme mTerrainTilingScheme;   //!< Tiling scheme of the terrain
     QgsTerrainEntity *mTerrain = nullptr;
+
+    bool mIsValid = true;
 };
 
 

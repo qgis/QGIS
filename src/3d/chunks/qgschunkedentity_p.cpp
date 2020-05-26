@@ -123,6 +123,9 @@ QgsChunkedEntity::~QgsChunkedEntity()
 
 void QgsChunkedEntity::update( const SceneState &state )
 {
+  if ( !mIsValid )
+    return;
+
   QElapsedTimer t;
   t.start();
 
@@ -399,7 +402,8 @@ void QgsChunkedEntity::startJobs()
     delete entry;
 
     QgsChunkQueueJob *job = startJob( node );
-    mActiveJobs.append( job );
+    if ( job )
+      mActiveJobs.append( job );
   }
 }
 
@@ -411,6 +415,8 @@ QgsChunkQueueJob *QgsChunkedEntity::startJob( QgsChunkNode *node )
     QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, QStringLiteral( "3D" ), QStringLiteral( "Load " ) + node->tileId().text(), node->tileId().text() );
 
     QgsChunkLoader *loader = mChunkLoaderFactory->createChunkLoader( node );
+    if ( !loader )
+      return nullptr;
     connect( loader, &QgsChunkQueueJob::finished, this, &QgsChunkedEntity::onActiveJobFinished );
     node->setLoading( loader );
     return loader;

@@ -172,6 +172,8 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
 
     //! If picking is enabled, QObjectPicker objects will be assigned to chunks and pickedObject() signals fired on mouse click
     bool mPickingEnabled = false;
+
+    bool mIsValid = true;
 };
 
 /// @endcond
