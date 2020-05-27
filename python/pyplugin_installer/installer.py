@@ -119,7 +119,7 @@ class QgsPluginInstaller(QObject):
 
         for key in repositories.allEnabled():
             if reloadMode or repositories.all()[key]["state"] == 3:  # if state = 3 (error or not fetched yet), try to fetch once again
-                repositories.requestFetching(key)
+                repositories.requestFetching(key, force_reload=reloadMode)
 
         if repositories.fetchingInProgress():
             fetchDlg = QgsPluginInstallerFetchingDialog(iface.mainWindow())

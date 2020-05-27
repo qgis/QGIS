@@ -316,7 +316,7 @@ class Repositories(QObject):
         settings.endGroup()
 
     # ----------------------------------------- #
-    def requestFetching(self, key, url=None, redirectionCounter=0):
+    def requestFetching(self, key, url=None, redirectionCounter=0, force_reload=False):
         """ start fetching the repository given by key """
         self.mRepositories[key]["state"] = 1
         if not url:
@@ -327,6 +327,8 @@ class Repositories(QObject):
         self.mRepositories[key]["QRequest"] = QNetworkRequest(url)
         self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.AttributeInitiatorClass), "Relay")
         self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.FollowRedirectsAttribute, True)
+        if force_reload:
+            self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.CacheLoadControlAttribute, QNetworkRequest.AlwaysNetwork)
         authcfg = self.mRepositories[key]["authcfg"]
         if authcfg and isinstance(authcfg, str):
             if not QgsApplication.authManager().updateNetworkRequest(
