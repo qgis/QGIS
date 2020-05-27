@@ -60,7 +60,8 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
             with open(os.path.join(TEST_DATA_DIR, 'provider', 'postgresraster', basename + '.sql'), 'r') as f:
                 sql = f.read()
                 conn.executeSql(sql)
-            assert (tablename in [n.tableName() for n in conn.tables(schemaname)]), tablename + ' not found!'
+            assert (tablename in [n.tableName() for n in conn.tables(
+                schemaname)]), tablename + ' not found!'
 
     @classmethod
     def setUpClass(cls):
@@ -101,7 +102,8 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
             })
         gdal_rl = QgsRasterLayer(gdal_uri, "rl", "gdal")
         self.assertTrue(gdal_rl.isValid())
-        self.assertEqual(value, gdal_rl.dataProvider().block(band, self.rl.extent(), 6, 5).data().toHex())
+        self.assertEqual(value, gdal_rl.dataProvider().block(
+            band, self.rl.extent(), 6, 5).data().toHex())
 
     @classmethod
     def tearDownClass(cls):
@@ -109,7 +111,8 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
 
     def testExtent(self):
         extent = self.rl.extent()
-        self.assertEqual(extent, QgsRectangle(4080050, 2430625, 4080200, 2430750))
+        self.assertEqual(extent, QgsRectangle(
+            4080050, 2430625, 4080200, 2430750))
 
     def testSize(self):
         self.assertEqual(self.source.xSize(), 6)
@@ -119,7 +122,8 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         self.assertEqual(self.source.crs().authid(), 'EPSG:3035')
 
     def testGetData(self):
-        identify = self.source.identify(QgsPointXY(4080137.9, 2430687.9), QgsRaster.IdentifyFormatValue)
+        identify = self.source.identify(QgsPointXY(
+            4080137.9, 2430687.9), QgsRaster.IdentifyFormatValue)
         expected = 192.51044
         self.assertAlmostEqual(identify.results()[1], expected, 4)
 
@@ -214,13 +218,16 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
 
         def _speed_check(schema, table, width, height):
             print('-' * 80)
-            print("Testing: {schema}.{table}".format(table=table, schema=schema))
+            print("Testing: {schema}.{table}".format(
+                table=table, schema=schema))
             print('-' * 80)
 
             # GDAL
             start = time.time()
             rl = QgsRasterLayer(
-                "PG: " + conn + "table={table} mode=2 schema={schema}".format(table=table, schema=schema), 'gdal_layer',
+                "PG: " + conn +
+                "table={table} mode=2 schema={schema}".format(
+                    table=table, schema=schema), 'gdal_layer',
                 'gdal')
             self.assertTrue(rl.isValid())
             # Make is smaller than full extent
@@ -229,10 +236,12 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
             print("Tiled GDAL start time: {:.6f}".format(checkpoint_1 - start))
             rl.dataProvider().block(1, extent, width, height)
             checkpoint_2 = time.time()
-            print("Tiled GDAL first block time: {:.6f}".format(checkpoint_2 - checkpoint_1))
+            print("Tiled GDAL first block time: {:.6f}".format(
+                checkpoint_2 - checkpoint_1))
             # rl.dataProvider().block(1, extent, width, height)
             checkpoint_3 = time.time()
-            print("Tiled GDAL second block time: {:.6f}".format(checkpoint_3 - checkpoint_2))
+            print("Tiled GDAL second block time: {:.6f}".format(
+                checkpoint_3 - checkpoint_2))
             print("Total GDAL time: {:.6f}".format(checkpoint_3 - start))
             print('-' * 80)
 
@@ -246,10 +255,12 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
             print("Tiled PG start time: {:.6f}".format(checkpoint_1 - start))
             rl.dataProvider().block(1, extent, width, height)
             checkpoint_2 = time.time()
-            print("Tiled PG first block time: {:.6f}".format(checkpoint_2 - checkpoint_1))
+            print("Tiled PG first block time: {:.6f}".format(
+                checkpoint_2 - checkpoint_1))
             rl.dataProvider().block(1, extent, width, height)
             checkpoint_3 = time.time()
-            print("Tiled PG second block time: {:.6f}".format(checkpoint_3 - checkpoint_2))
+            print("Tiled PG second block time: {:.6f}".format(
+                checkpoint_3 - checkpoint_2))
             print("Total PG time: {:.6f}".format(checkpoint_3 - start))
             print('-' * 80)
 
@@ -260,7 +271,8 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         See: GH #34823"""
 
         rl = QgsRasterLayer(
-            self.dbconn + " sslmode=disable table={table} schema={schema}".format(table='cosmo_i5_snow', schema='idro'),
+            self.dbconn + " sslmode=disable table={table} schema={schema}".format(
+                table='cosmo_i5_snow', schema='idro'),
             'pg_layer', 'postgresraster')
         self.assertTrue(rl.isValid())
         self.assertTrue(compareWkt(rl.extent().asWktPolygon(),
@@ -303,7 +315,8 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
                 data.append(int(block.value(i, j)))
         self.assertEqual(data, [136, 142, 161, 169])
 
-        stats = rl.dataProvider().bandStatistics(1, QgsRasterBandStats.Min | QgsRasterBandStats.Max, rl.extent())
+        stats = rl.dataProvider().bandStatistics(
+            1, QgsRasterBandStats.Min | QgsRasterBandStats.Max, rl.extent())
         self.assertEqual(int(stats.minimumValue), 136)
         self.assertEqual(int(stats.maximumValue), 169)
 
@@ -321,7 +334,8 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         self.assertEqual(data, [136, 142, 145, 153])
 
         # Check that we have new statistics
-        stats = rl.dataProvider().bandStatistics(1, QgsRasterBandStats.Min | QgsRasterBandStats.Max, rl.extent())
+        stats = rl.dataProvider().bandStatistics(
+            1, QgsRasterBandStats.Min | QgsRasterBandStats.Max, rl.extent())
         self.assertEqual(int(stats.minimumValue), 136)
         self.assertEqual(int(stats.maximumValue), 153)
 
@@ -448,6 +462,23 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
             'temporalFieldIndex': '2',
             'username': 'my username',
         })
+
+    def testInt16(self):
+        """Test regression https://github.com/qgis/QGIS/issues/36689"""
+
+        rl = QgsRasterLayer(
+            self.dbconn + " sslmode=disable table={table} schema={schema}".format(
+                table='int16_regression_36689', schema='public'), 'pg_layer', 'postgresraster')
+
+        self.assertTrue(rl.isValid())
+        block = rl.dataProvider().block(1, rl.extent(), 6, 6)
+        data = []
+        for i in range(6):
+            for j in range(6):
+                data.append(int(block.value(i, j)))
+
+        self.assertEqual(data, [55, 52, 46, 39, 33, 30, 58, 54, 49, 45, 41, 37, 58, 54, 50,
+                                47, 45, 43, 54, 51, 49, 47, 46, 44, 47, 47, 47, 47, 46, 45, 41, 43, 45, 48, 49, 46])
 
 
 if __name__ == '__main__':
