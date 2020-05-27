@@ -907,6 +907,62 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
         vl.dataProvider().createSpatialIndex()
         self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexPresent)
 
+    def testCREndOfLineAndWorkingBuffer(self):
+        # Test CSV file with \r (CR) endings
+        # Test also that the logic to refill the buffer works properly
+        os.environ['QGIS_DELIMITED_TEXT_FILE_BUFFER_SIZE'] = '17'
+        try:
+            basetestfile = os.path.join(unitTestDataPath("delimitedtext"), 'test_cr_end_of_line.csv')
+
+            url = MyUrl.fromLocalFile(basetestfile)
+            url.addQueryItem("type", "csv")
+            url.addQueryItem("geomType", "none")
+
+            vl = QgsVectorLayer(url.toString(), 'test', 'delimitedtext')
+            assert vl.isValid(), "{} is invalid".format(basetestfile)
+
+            fields = vl.fields()
+            self.assertEqual(len(fields), 2)
+            self.assertEqual(fields[0].name(), 'col0')
+            self.assertEqual(fields[1].name(), 'col1')
+
+            features = [f for f in vl.getFeatures()]
+            self.assertEqual(len(features), 2)
+            self.assertEqual(features[0]['col0'], 'value00')
+            self.assertEqual(features[0]['col1'], 'value01')
+            self.assertEqual(features[1]['col0'], 'value10')
+            self.assertEqual(features[1]['col1'], 'value11')
+
+        finally:
+            del os.environ['QGIS_DELIMITED_TEXT_FILE_BUFFER_SIZE']
+
+    def testSaturationOfWorkingBuffer(self):
+        # 10 bytes is sufficient to detect the header line, but not enough for the
+        # first record
+        os.environ['QGIS_DELIMITED_TEXT_FILE_BUFFER_SIZE'] = '10'
+        try:
+            basetestfile = os.path.join(unitTestDataPath("delimitedtext"), 'test_cr_end_of_line.csv')
+
+            url = MyUrl.fromLocalFile(basetestfile)
+            url.addQueryItem("type", "csv")
+            url.addQueryItem("geomType", "none")
+
+            vl = QgsVectorLayer(url.toString(), 'test', 'delimitedtext')
+            assert vl.isValid(), "{} is invalid".format(basetestfile)
+
+            fields = vl.fields()
+            self.assertEqual(len(fields), 2)
+            self.assertEqual(fields[0].name(), 'col0')
+            self.assertEqual(fields[1].name(), 'col1')
+
+            features = [f for f in vl.getFeatures()]
+            self.assertEqual(len(features), 1)
+            self.assertEqual(features[0]['col0'], 'value00')
+            self.assertEqual(features[0]['col1'], 'va')  # truncated
+
+        finally:
+            del os.environ['QGIS_DELIMITED_TEXT_FILE_BUFFER_SIZE']
+
 
 if __name__ == '__main__':
     unittest.main()

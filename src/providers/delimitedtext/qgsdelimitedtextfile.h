@@ -428,6 +428,9 @@ class QgsDelimitedTextFile : public QObject
     long mLineNumber = -1;
     long mRecordLineNumber = -1;
     long mRecordNumber = -1;
+    QString mBuffer;
+    int mPosInBuffer = 0;
+    int mMaxBufferSize = 0;
     QStringList mCurrentRecord;
     bool mHoldCurrentRecord = false;
     // Maximum number of record (ie maximum record number visited)
