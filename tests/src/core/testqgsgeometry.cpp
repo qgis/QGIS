@@ -18178,6 +18178,22 @@ void TestQgsGeometry::wktParser()
   QCOMPARE( poly.asWkt(), QStringLiteral( "Polygon ((0 1, 2 3, 3 4, 0 1))" ) );
   QVERIFY( poly.fromWkt( "Polygon((0 1e3, -2 3, +3 4, 0 1))" ) );
   QCOMPARE( poly.asWkt(), QStringLiteral( "Polygon ((0 1000, -2 3, 3 4, 0 1))" ) );
+
+  // Circular string
+  // unbalanced parenthesis
+  QVERIFY( ! QgsCircularString().fromWkt( "CircularString(0 1, 1 2, 3 3) )" ) );
+  QVERIFY( ! QgsCircularString().fromWkt( "CircularString (0 1, 1 2, 3 3) )" ) );
+  QVERIFY( ! QgsCircularString().fromWkt( "CircularString( (0 1, 1 2, 3 3) )) " ) );
+  QVERIFY( ! QgsCircularString().fromWkt( "CircularString ( (0 1, 1 2, 3 3) )) " ) );
+  // not a number
+  QVERIFY( ! QgsCircularString().fromWkt( "CircularString (0 a, b 2, 3 3) " ) );
+  QVERIFY( ! QgsCircularString().fromWkt( "CircularString (0 a, b 2, 3 3, 0 a) " ) );
+  // valid
+  QgsCircularString c;
+  QVERIFY( c.fromWkt( "CircularString( 0 1, 2 3, 3 4)" ) );
+  QCOMPARE( c.asWkt(), QStringLiteral( "CircularString (0 1, 2 3, 3 4)" ) );
+  QVERIFY( c.fromWkt( "CircularString(0 1e3, -2 3, +3 4)" ) );
+  QCOMPARE( c.asWkt(), QStringLiteral( "CircularString (0 1000, -2 3, 3 4)" ) );
 }
 QGSTEST_MAIN( TestQgsGeometry )
 #include "testqgsgeometry.moc"
