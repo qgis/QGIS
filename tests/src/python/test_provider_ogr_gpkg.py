@@ -320,7 +320,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         vl.dataProvider().addFeatures([f])
         got = [feat for feat in vl.getFeatures()][0]
         got_geom = got.geometry()
-        reference = QgsGeometry.fromWkt('CurvePolygon (((0 0, 0 1, 1 1, 0 0)))')
+        reference = QgsGeometry.fromWkt('CurvePolygon ((0 0, 0 1, 1 1, 0 0))')
         # The geometries must be binarily identical
         self.assertEqual(got_geom.asWkb(), reference.asWkb(),
                          'Expected {}, got {}'.format(reference.asWkt(), got_geom.asWkt()))
