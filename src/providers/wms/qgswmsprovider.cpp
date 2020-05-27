@@ -171,7 +171,7 @@ QString QgsWmsProvider::prepareUri( QString uri )
   // some services provide a percent/url encoded (legend) uri string, always decode here
   uri = QUrl::fromPercentEncoding( uri.toUtf8() );
 
-  if ( uri.contains( QLatin1String( "SERVICE=WMTS" ) ) || uri.contains( QLatin1String( "/WMTSCapabilities.xml" ) ) )
+  if ( isUrlForWMTS( uri ) )
   {
     return uri;
   }
@@ -3345,6 +3345,12 @@ QUrl QgsWmsProvider::getLegendGraphicFullURL( double scale, const QgsRectangle &
 
   QUrl url( lurl );
 
+  if ( isUrlForWMTS( dataSourceUri() ) )
+  {
+    QgsDebugMsg( QString( "getlegendgraphicrequest: %1" ).arg( url.toString() ) );
+    return url;
+  }
+
   // query names are NOT case-sensitive, so make an uppercase list for proper comparison
   QStringList qnames = QStringList();
   for ( int i = 0; i < url.queryItems().size(); i++ )
@@ -3550,6 +3556,14 @@ void QgsWmsProvider::getLegendGraphicReplyProgress( qint64 bytesReceived, qint64
   QgsDebugMsg( msg );
   emit statusChanged( msg );
 }
+
+bool QgsWmsProvider::isUrlForWMTS( const QString &url )
+{
+  // Do comparison in case insensitive way to match OGC KVP requirements
+  return  url.contains( QLatin1String( "SERVICE=WMTS" ), Qt::CaseInsensitive ) ||
+          url.contains( QLatin1String( "/WMTSCapabilities.xml" ), Qt::CaseInsensitive );
+}
+
 
 QgsWmsProvider *QgsWmsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
