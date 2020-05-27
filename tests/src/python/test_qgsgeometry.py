@@ -5732,16 +5732,16 @@ class TestQgsGeometry(unittest.TestCase):
             coerce_to_wkt('MultiPolygon(((1 1, 2 2, 3 3, 1 1)), ((1 1, 2 2, 3 3, 1 1)))', QgsWkbTypes.MultiPolygon),
             ['MultiPolygon (((1 1, 2 2, 3 3, 1 1)),((1 1, 2 2, 3 3, 1 1)))'])
 
-        self.assertEqual(coerce_to_wkt('LineString((1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.LineString),
-                         ['LineString (0 1, 2 2, 3 3, 1 0)'])
-        self.assertEqual(coerce_to_wkt('LineString z ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.LineString),
-                         ['LineString (0 1, 2 2, 3 3, 1 1)'])
-        self.assertEqual(coerce_to_wkt('LineString z ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.LineStringZ),
-                         ['LineStringZ (0 1 1, 2 2 2, 3 3 3, 1 1 0)'])
-        self.assertEqual(coerce_to_wkt('LineString m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.LineString),
-                         ['LineString (0 1, 2 2, 3 3, 1 1)'])
-        self.assertEqual(coerce_to_wkt('LineString m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.LineStringM),
-                         ['LineStringM (0 1 1, 2 2 2, 3 3 3, 1 1 0)'])
+        self.assertEqual(coerce_to_wkt('LineString(1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.LineString),
+                         ['LineString (1 1, 2 2, 3 3, 1 1)'])
+        self.assertEqual(coerce_to_wkt('LineString z (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.LineString),
+                         ['LineString (1 1, 2 2, 3 3, 1 1)'])
+        self.assertEqual(coerce_to_wkt('LineString z (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.LineStringZ),
+                         ['LineStringZ (1 1 1, 2 2 2, 3 3 3, 1 1 1)'])
+        self.assertEqual(coerce_to_wkt('LineString m (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.LineString),
+                         ['LineString (1 1, 2 2, 3 3, 1 1)'])
+        self.assertEqual(coerce_to_wkt('LineString m (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.LineStringM),
+                         ['LineStringM (1 1 1, 2 2 2, 3 3 3, 1 1 1)'])
 
         # Adding Z back
         self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.LineStringZ),
