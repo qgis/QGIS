@@ -2915,25 +2915,20 @@ bool DualEdgeTriangulation::swapEdge( double x, double y )
 QList<int> *DualEdgeTriangulation::getPointsAroundEdge( double x, double y )
 {
   QgsPoint p( x, y, 0 );
-  int p1, p2, p3, p4;
-  int edge1 = baseEdgeOfTriangle( p );
+  const int edge1 = baseEdgeOfTriangle( p );
   if ( edge1 >= 0 )
   {
-    int edge2, edge3;
-    QgsPoint *point1 = nullptr;
-    QgsPoint *point2 = nullptr;
-    QgsPoint *point3 = nullptr;
-    edge2 = mHalfEdge[edge1]->getNext();
-    edge3 = mHalfEdge[edge2]->getNext();
-    point1 = getPoint( mHalfEdge[edge1]->getPoint() );
-    point2 = getPoint( mHalfEdge[edge2]->getPoint() );
-    point3 = getPoint( mHalfEdge[edge3]->getPoint() );
+    const int edge2 = mHalfEdge[edge1]->getNext();
+    const int edge3 = mHalfEdge[edge2]->getNext();
+    QgsPoint *point1 = getPoint( mHalfEdge[edge1]->getPoint() );
+    QgsPoint *point2 = getPoint( mHalfEdge[edge2]->getPoint() );
+    QgsPoint *point3 = getPoint( mHalfEdge[edge3]->getPoint() );
     if ( point1 && point2 && point3 )
     {
-      double dist1, dist2, dist3;
-      dist1 = MathUtils::distPointFromLine( &p, point3, point1 );
-      dist2 = MathUtils::distPointFromLine( &p, point1, point2 );
-      dist3 = MathUtils::distPointFromLine( &p, point2, point3 );
+      int p1, p2, p3, p4;
+      const double dist1 = MathUtils::distPointFromLine( &p, point3, point1 );
+      const double dist2 = MathUtils::distPointFromLine( &p, point1, point2 );
+      const double dist3 = MathUtils::distPointFromLine( &p, point2, point3 );
       if ( dist1 <= dist2 && dist1 <= dist3 )
       {
         p1 = mHalfEdge[edge1]->getPoint();
@@ -2948,7 +2943,7 @@ QList<int> *DualEdgeTriangulation::getPointsAroundEdge( double x, double y )
         p3 = mHalfEdge[mHalfEdge[edge2]->getDual()]->getPoint();
         p4 = mHalfEdge[mHalfEdge[mHalfEdge[edge2]->getDual()]->getNext()]->getPoint();
       }
-      else if ( dist3 <= dist1 && dist3 <= dist2 )
+      else /* if ( dist3 <= dist1 && dist3 <= dist2 ) */
       {
         p1 = mHalfEdge[edge3]->getPoint();
         p2 = mHalfEdge[mHalfEdge[edge3]->getNext()]->getPoint();
