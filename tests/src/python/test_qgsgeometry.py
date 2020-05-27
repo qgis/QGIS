@@ -842,7 +842,7 @@ class TestQgsGeometry(unittest.TestCase):
                                        "Perimeter {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
 
     def testCollection(self):
-        g = QgsGeometry.fromWkt('MultiLineString()')
+        g = QgsGeometry.fromWkt('MultiLineString EMPTY')
         self.assertEqual(len(g.get()), 0)
         self.assertTrue(g.get())
         g = QgsGeometry.fromWkt('MultiLineString((0 0, 1 1),(13 2, 14 1))')
@@ -4528,7 +4528,7 @@ class TestQgsGeometry(unittest.TestCase):
         """
         Test curve straightDistance2d() and sinuosity()
         """
-        linestring = QgsGeometry.fromWkt('LineString()')
+        linestring = QgsGeometry.fromWkt('LineString EMPTY')
         self.assertTrue(math.isnan(linestring.constGet().straightDistance2d()))
         self.assertTrue(math.isnan(linestring.constGet().sinuosity()))
         linestring = QgsGeometry.fromWkt('LineString(0 0, 10 0)')
@@ -4844,7 +4844,7 @@ class TestQgsGeometry(unittest.TestCase):
         empty = QgsGeometry()
         o = QgsGeometry.polygonize([empty])
         self.assertFalse(o)
-        line = QgsGeometry.fromWkt('LineString()')
+        line = QgsGeometry.fromWkt('LineString EMPTY')
         o = QgsGeometry.polygonize([line])
         self.assertFalse(o)
 
@@ -4873,7 +4873,7 @@ class TestQgsGeometry(unittest.TestCase):
         empty = QgsGeometry()
         o = empty.delaunayTriangulation()
         self.assertFalse(o)
-        line = QgsGeometry.fromWkt('LineString()')
+        line = QgsGeometry.fromWkt('LineString EMPTY')
         o = line.delaunayTriangulation()
         self.assertFalse(o)
 
@@ -4952,7 +4952,7 @@ class TestQgsGeometry(unittest.TestCase):
         empty = QgsGeometry()
         o = empty.voronoiDiagram()
         self.assertFalse(o)
-        line = QgsGeometry.fromWkt('LineString()')
+        line = QgsGeometry.fromWkt('LineString EMPTY')
         o = line.voronoiDiagram()
         self.assertFalse(o)
 
