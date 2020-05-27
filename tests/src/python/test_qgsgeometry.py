@@ -4190,42 +4190,42 @@ class TestQgsGeometry(unittest.TestCase):
 
     def testDeleteVertexCircularString(self):
 
-        wkt = "CircularString ((0 0,1 1,2 0))"
+        wkt = "CircularString (0 0,1 1,2 0)"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(0)
         self.assertEqual(geom.asWkt(), QgsCircularString().asWkt())
 
-        wkt = "CircularString ((0 0,1 1,2 0,3 -1,4 0))"
+        wkt = "CircularString (0 0,1 1,2 0,3 -1,4 0)"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(0)
         expected_wkt = "CircularString (2 0, 3 -1, 4 0)"
         self.assertEqual(geom.asWkt(), QgsGeometry.fromWkt(expected_wkt).asWkt())
 
-        wkt = "CircularString ((0 0,1 1,2 0,3 -1,4 0))"
+        wkt = "CircularString (0 0,1 1,2 0,3 -1,4 0)"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(1)
         expected_wkt = "CircularString (0 0, 3 -1, 4 0)"
         self.assertEqual(geom.asWkt(), QgsGeometry.fromWkt(expected_wkt).asWkt())
 
-        wkt = "CircularString ((0 0,1 1,2 0,3 -1,4 0))"
+        wkt = "CircularString (0 0,1 1,2 0,3 -1,4 0)"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(2)
         expected_wkt = "CircularString (0 0, 1 1, 4 0)"
         self.assertEqual(geom.asWkt(), QgsGeometry.fromWkt(expected_wkt).asWkt())
 
-        wkt = "CircularString ((0 0,1 1,2 0,3 -1,4 0))"
+        wkt = "CircularString (0 0,1 1,2 0,3 -1,4 0)"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(3)
         expected_wkt = "CircularString (0 0, 1 1, 4 0)"
         self.assertEqual(geom.asWkt(), QgsGeometry.fromWkt(expected_wkt).asWkt())
 
-        wkt = "CircularString ((0 0,1 1,2 0,3 -1,4 0))"
+        wkt = "CircularString (0 0,1 1,2 0,3 -1,4 0)"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(4)
         expected_wkt = "CircularString (0 0,1 1,2 0)"
         self.assertEqual(geom.asWkt(), QgsGeometry.fromWkt(expected_wkt).asWkt())
 
-        wkt = "CircularString ((0 0,1 1,2 0,3 -1,4 0))"
+        wkt = "CircularString (0 0,1 1,2 0,3 -1,4 0)"
         geom = QgsGeometry.fromWkt(wkt)
         assert not geom.deleteVertex(-1)
         assert not geom.deleteVertex(5)
