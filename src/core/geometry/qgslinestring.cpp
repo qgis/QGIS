@@ -440,7 +440,11 @@ bool QgsLineString::fromWkt( const QString &wkt )
   if ( parts.second.compare( QLatin1String( "NULL" ), Qt::CaseInsensitive ) == 0 )
     return false;
 
-  setPoints( QgsGeometryUtils::pointsFromWKT( parts.second, is3D(), isMeasure() ) );
+  QgsPointSequence points = QgsGeometryUtils::pointsFromWKT( parts.second, is3D(), isMeasure() );
+  if ( points.isEmpty() )
+    return false;
+
+  setPoints( points );
   return true;
 }
 
