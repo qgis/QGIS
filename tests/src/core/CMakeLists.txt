@@ -220,6 +220,7 @@ SET(TESTS
  testqgstracer.cpp
  testqgstriangularmesh.cpp
  testqgsfontutils.cpp
+ testqgsvaluerelationfieldformatter.cpp
  testqgsvector.cpp
  testqgsvectordataprovider.cpp
  testqgsvectorlayercache.cpp
