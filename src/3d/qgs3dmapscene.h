@@ -49,10 +49,12 @@ class Qgs3DMapSettings;
 class QgsTerrainEntity;
 class QgsChunkedEntity;
 
+#define SIP_NO_FILE
 
 /**
  * \ingroup 3d
  * Entity that encapsulates our 3D scene - contains all other entities (such as terrain) as children.
+ * \note Not available in Python bindings
  * \since QGIS 3.0
  */
 class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
