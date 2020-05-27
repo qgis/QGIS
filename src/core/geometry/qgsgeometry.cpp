@@ -89,14 +89,17 @@ QgsGeometry::QgsGeometry( const QgsGeometry &other )
 
 QgsGeometry &QgsGeometry::operator=( QgsGeometry const &other )
 {
-  if ( !d->ref.deref() )
+  if ( this != &other )
   {
-    delete d;
-  }
+    if ( !d->ref.deref() )
+    {
+      delete d;
+    }
 
-  mLastError = other.mLastError;
-  d = other.d;
-  d->ref.ref();
+    mLastError = other.mLastError;
+    d = other.d;
+    d->ref.ref();
+  }
   return *this;
 }
 
