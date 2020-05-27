@@ -12,6 +12,7 @@
 #include <limits>
 #include <sstream>
 #include <fstream>
+#include <cmath>
 
 #include <algorithm>
 
@@ -33,7 +34,10 @@ namespace MDAL
   bool isNativeLittleEndian();
 
   // numbers
-  bool equals( double val1, double val2, double eps = std::numeric_limits<double>::epsilon() );
+  inline bool equals( double val1, double val2, double eps = std::numeric_limits<double>::epsilon() )
+  {
+    return fabs( val1 - val2 ) < eps;
+  }
 
   //! returns quiet_NaN if value equals nodata value, otherwise returns val itself
   double safeValue( double val, double nodata, double eps = std::numeric_limits<double>::epsilon() );
