@@ -463,6 +463,19 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
      */
     bool waitForTaskFinished( QgsNetworkContentFetcherTask *task ) const
     {
+      // First step, waiting for task running
+      bool waitForTaskBegun = ( task->status() != QgsTask::Running
+                                && task->status() != QgsTask::Complete
+                                && task->status() != QgsTask::Terminated );
+      if ( waitForTaskBegun )
+      {
+        QEventLoop loop;
+        connect( task, &QgsNetworkContentFetcherTask::begun, &loop, &QEventLoop::quit );
+        if ( waitForTaskBegun )
+          loop.exec();
+      }
+
+      // Second step, wait for task finished
       // Wait up to timeout seconds for task finished
       if ( task->waitForFinished( QgsNetworkAccessManager::timeout() ) )
       {
