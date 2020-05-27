@@ -64,7 +64,7 @@ class QgsHanaUtils
         return QVariant( *value );
     }
 
-    static QgsWkbTypes::Type toWkbType( const QString &hanaType );
+    static QgsWkbTypes::Type toWkbType( const odbc::String &type, const odbc::Int &hasZ, const odbc::Int &hasM );
     static QVersionNumber toHANAVersion( const QString &dbVersion );
     static int toPlanarSRID( int srid );
     static bool convertField( QgsField &field );

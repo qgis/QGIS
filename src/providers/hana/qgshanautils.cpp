@@ -266,24 +266,95 @@ QVariant QgsHanaUtils::toVariant( const Binary &value )
   return QByteArray( value->data(), static_cast<int>( value->size() ) );
 }
 
-QgsWkbTypes::Type QgsHanaUtils::toWkbType( const QString &hanaType )
+QgsWkbTypes::Type QgsHanaUtils::toWkbType( const odbc::String &type, const odbc::Int &hasZ, const odbc::Int &hasM )
 {
+  if ( type.isNull() )
+    return QgsWkbTypes::Unknown;
+
+  bool hasZValue = hasZ.isNull() ? false : *hasZ == 1;
+  bool hasMValue = hasM.isNull() ? false : *hasM == 1;
+  QString hanaType( type->c_str() );
+
   if ( hanaType == QStringLiteral( "ST_POINT" ) )
-    return QgsWkbTypes::Type::Point;
+  {
+    if ( hasZValue && hasMValue )
+      return QgsWkbTypes::PointZM;
+    if ( hasZValue )
+      return QgsWkbTypes::PointZ;
+    if ( hasMValue )
+      return QgsWkbTypes::PointM;
+    return QgsWkbTypes::Point;
+  }
   else if ( hanaType == QStringLiteral( "ST_MULTIPOINT" ) )
-    return QgsWkbTypes::Type::MultiPoint;
+  {
+    if ( hasZValue && hasMValue )
+      return QgsWkbTypes::MultiPointZM;
+    if ( hasZValue )
+      return QgsWkbTypes::MultiPointZ;
+    if ( hasMValue )
+      return QgsWkbTypes::MultiPointM;
+    return QgsWkbTypes::MultiPoint;
+  }
   else if ( hanaType == QStringLiteral( "ST_LINESTRING" ) )
-    return QgsWkbTypes::Type::LineString;
+  {
+    if ( hasZValue && hasMValue )
+      return QgsWkbTypes::LineStringZM;
+    if ( hasZValue )
+      return QgsWkbTypes::LineStringZ;
+    if ( hasMValue )
+      return QgsWkbTypes::LineStringM;
+    return QgsWkbTypes::LineString;
+  }
   else if ( hanaType == QStringLiteral( "ST_MULTILINESTRING" ) )
-    return QgsWkbTypes::Type::MultiLineString;
+  {
+    if ( hasZValue && hasMValue )
+      return QgsWkbTypes::MultiLineStringZM;
+    if ( hasZValue )
+      return QgsWkbTypes::MultiLineStringZ;
+    if ( hasMValue )
+      return QgsWkbTypes::MultiLineStringM;
+    return QgsWkbTypes::MultiLineString;
+  }
   else if ( hanaType == QStringLiteral( "ST_POLYGON" ) )
-    return QgsWkbTypes::Type::Polygon;
+  {
+    if ( hasZValue && hasMValue )
+      return QgsWkbTypes::PolygonZM;
+    if ( hasZValue )
+      return QgsWkbTypes::PolygonZ;
+    if ( hasMValue )
+      return QgsWkbTypes::PolygonM;
+    return QgsWkbTypes::Polygon;
+  }
   else if ( hanaType == QStringLiteral( "ST_MULTIPOLYGON" ) )
-    return QgsWkbTypes::Type::MultiPolygon;
+  {
+    if ( hasZValue && hasMValue )
+      return QgsWkbTypes::MultiPolygonZM;
+    if ( hasZValue )
+      return QgsWkbTypes::MultiPolygonZ;
+    if ( hasMValue )
+      return QgsWkbTypes::MultiPolygonM;
+    return QgsWkbTypes::MultiPolygon;
+  }
   else if ( hanaType == QStringLiteral( "ST_GEOMETRYCOLLECTION" ) )
+  {
+    if ( hasZValue && hasMValue )
+      return QgsWkbTypes::GeometryCollectionZM;
+    if ( hasZValue )
+      return QgsWkbTypes::GeometryCollectionZ;
+    if ( hasMValue )
+      return QgsWkbTypes::GeometryCollectionM;
     return QgsWkbTypes::Type::GeometryCollection;
+  }
   else if ( hanaType == QStringLiteral( "ST_CIRCULARSTRING" ) )
+  {
+    if ( hasZValue && hasMValue )
+      return QgsWkbTypes::CircularStringZM;
+    if ( hasZValue )
+      return QgsWkbTypes::CircularStringZ;
+    if ( hasMValue )
+      return QgsWkbTypes::CircularStringM;
     return QgsWkbTypes::Type::CircularString;
+  }
 
   return QgsWkbTypes::Type::Unknown;
 }

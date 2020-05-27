@@ -565,7 +565,7 @@ QgsWkbTypes::Type QgsHanaConnection::getLayerGeometryType( const QgsHanaLayerPro
 
   QgsWkbTypes::Type ret;
 
-  QString sql = QStringLiteral( "SELECT upper(%1.ST_GeometryType()) AS geom_type FROM %2.%3 "
+  QString sql = QStringLiteral( "SELECT upper(%1.ST_GeometryType()), %1.ST_Is3D(), %1.ST_IsMeasured() FROM %2.%3 "
                                 "WHERE %1 IS NOT NULL LIMIT %4" ).arg(
                   QgsHanaUtils::quotedIdentifier( layerProperty.geometryColName ),
                   QgsHanaUtils::quotedIdentifier( layerProperty.schemaName ),
@@ -575,11 +575,12 @@ QgsWkbTypes::Type QgsHanaConnection::getLayerGeometryType( const QgsHanaLayerPro
   try
   {
     StatementRef stmt = mConnection->createStatement();
-    ResultSetRef rsGeomType = stmt->executeQuery( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+    ResultSetRef rsGeomInfo = stmt->executeQuery( reinterpret_cast<const char16_t *>( sql.utf16() ) );
     QgsWkbTypes::Type geomType = QgsWkbTypes::Unknown, prevGeomType = QgsWkbTypes::Unknown;
-    while ( rsGeomType->next() )
+    while ( rsGeomInfo->next() )
     {
-      geomType = QgsWkbTypes::singleType( QgsHanaUtils::toWkbType( rsGeomType->getString( 1 )->c_str() ) );
+      geomType = QgsWkbTypes::singleType( QgsHanaUtils::toWkbType(
+                                            rsGeomInfo->getString( 1 ), rsGeomInfo->getInt( 2 ), rsGeomInfo->getInt( 3 ) ) );
       if ( prevGeomType != QgsWkbTypes::Unknown && geomType != prevGeomType )
       {
         geomType = QgsWkbTypes::Unknown;
@@ -588,7 +589,7 @@ QgsWkbTypes::Type QgsHanaConnection::getLayerGeometryType( const QgsHanaLayerPro
       prevGeomType = geomType;
     }
     ret = geomType;
-    rsGeomType->close();
+    rsGeomInfo->close();
   }
   catch ( const Exception &ex )
   {
