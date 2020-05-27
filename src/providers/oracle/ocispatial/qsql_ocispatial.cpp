@@ -3432,7 +3432,10 @@ bool QOCISpatialResult::gotoNext( QSqlCachedResult::ValueCache &values, int inde
 
   // need to read piecewise before assigning values
   if ( r == OCI_SUCCESS && piecewise )
+  {
+    values.clear();
     r = d->cols->readPiecewise( values, index );
+  }
 
   if ( r == OCI_SUCCESS )
     d->cols->getValues( values, index );
