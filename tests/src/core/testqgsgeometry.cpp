@@ -18012,6 +18012,20 @@ void TestQgsGeometry::wktParser()
   QVERIFY( ! QgsPoint().fromWkt( "POINT(0, 1) )" ) );
   QVERIFY( ! QgsPoint().fromWkt( "POINT ((0, 1)" ) );
   QVERIFY( ! QgsPoint().fromWkt( "POINT (0, 1) )" ) );
+  // not a number
+  QVERIFY( ! QgsPoint().fromWkt( "POINT ( (5, 1) )" ) );
+  QVERIFY( ! QgsPoint().fromWkt( "POINT (a, b)" ) );
+  // valid
+  QgsPoint p;
+  QVERIFY( p.fromWkt( "POINT (5 1)" ) );
+  QCOMPARE( p.asWkt(), QStringLiteral( "Point (5 1)" ) );
+  QVERIFY( p.fromWkt( "POINT (5.1234 1.4321)" ) );
+  QCOMPARE( p.asWkt( 4 ), QStringLiteral( "Point (5.1234 1.4321)" ) );
+  QVERIFY( p.fromWkt( "POINT (-5.1234 -1.4321)" ) );
+  QCOMPARE( p.asWkt( 4 ), QStringLiteral( "Point (-5.1234 -1.4321)" ) );
+  QVERIFY( p.fromWkt( "POINT (-12e4 -1.4e-1)" ) );
+  QCOMPARE( p.asWkt( 2 ), QStringLiteral( "Point (-120000 -0.14)" ) );
+
   QVERIFY( ! QgsLineString().fromWkt( "LineString(0, 1) )" ) );
   QVERIFY( ! QgsLineString().fromWkt( "LineString(0 1, 1 2) )" ) );
   QVERIFY( ! QgsLineString().fromWkt( "LineString (0, 1) )" ) );
