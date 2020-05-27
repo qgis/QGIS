@@ -190,10 +190,10 @@ namespace
         stmt->setDecimal( paramIndex, isNull ? Decimal() :
                           makeNullable<decimal>( value.toString().toStdString(), field.length(), field.precision() ) );
         break;
-      case SQLDataTypes::Float:
       case SQLDataTypes::Real:
         stmt->setFloat( paramIndex, isNull ? Float() : Float( value.toFloat() ) );
         break;
+      case SQLDataTypes::Float:
       case SQLDataTypes::Double:
         stmt->setDouble( paramIndex, isNull ? Double() : Double( value.toDouble() ) );
         break;
@@ -1287,10 +1287,9 @@ void QgsHanaProvider::readAttributeFields()
         fieldType = QVariant::Bool;
         break;
       case SQLDataTypes::TinyInt:
-      case SQLDataTypes::SmallInt:
-        // we try to make it more compatible with other providers
-        fieldType = QVariant::Int;
+        fieldType = QVariant::UInt;
         break;
+      case SQLDataTypes::SmallInt:
       case SQLDataTypes::Integer:
         fieldType = isSigned ? QVariant::Int : QVariant::UInt;
         break;
@@ -1310,7 +1309,7 @@ void QgsHanaProvider::readAttributeFields()
         break;
       case SQLDataTypes::Char:
       case SQLDataTypes::WChar:
-        fieldType = QVariant::Char;
+        fieldType = ( fieldSize == 1 ) ? QVariant::Char : QVariant::String;
         break;
       case SQLDataTypes::VarChar:
       case SQLDataTypes::WVarChar:
@@ -1363,11 +1362,12 @@ void QgsHanaProvider::readAttributeFields()
       QString schemaName( rsmd->getSchemaName( i ).c_str() );
       if ( schemaName.isEmpty() )
         schemaName = mSchemaName;
-      ResultSetRef rsColumns = dmd->getColumns( nullptr, schemaName.toStdString().c_str(),
-                               rsmd->getTableName( i ).c_str(), fieldName.toStdString().c_str() );
+      QString tableName( rsmd->getTableName( i ).c_str() );
+      if ( tableName.isEmpty() )
+        tableName = mTableName;
+      QgsHanaResultSetRef rsColumns = QgsHanaResultSet::getColumns( dmd, schemaName, tableName, fieldName );
       if ( rsColumns->next() )
-        mDefaultValues.insert( mAttributeFields.size() - 1,
-                               QgsHanaUtils::toVariant( rsColumns->getString( 13/*COLUMN_DEF*/ ), sqlType, isSigned ) );
+        mDefaultValues.insert( mAttributeFields.size() - 1, rsColumns->getValue( 13/*COLUMN_DEF*/ ) );
       rsColumns->close();
     }
   }

@@ -14,6 +14,7 @@
  * (at your option) any later version.
  *
  ***************************************************************************/
+#include "qgshanaexception.h"
 #include "qgshanaresultset.h"
 #include "qgshanautils.h"
 #include "qgslogger.h"
@@ -34,6 +35,13 @@ QgsHanaResultSetRef QgsHanaResultSet::create( StatementRef &stmt, const QString 
 QgsHanaResultSetRef QgsHanaResultSet::create( PreparedStatementRef &stmt )
 {
   QgsHanaResultSetRef ret( new QgsHanaResultSet( stmt->executeQuery() ) );
+  return ret;
+}
+
+QgsHanaResultSetRef QgsHanaResultSet::getColumns( DatabaseMetaDataRef &metadata, const QString &schemaName, const QString &tableName, const QString &fieldName )
+{
+  QgsHanaResultSetRef ret( new QgsHanaResultSet( metadata->getColumns( nullptr,
+                           schemaName.toStdString().c_str(), tableName.toStdString().c_str(), fieldName.toStdString().c_str() ) ) );
   return ret;
 }
 
@@ -100,8 +108,11 @@ QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
         return QgsHanaUtils::toVariant( mResultSet->getLong( columnIndex ) );
       else
         return QgsHanaUtils::toVariant( mResultSet->getULong( columnIndex ) );
+    case SQLDataTypes::Real:
+      return QgsHanaUtils::toVariant( mResultSet->getFloat( columnIndex ) );
     case SQLDataTypes::Double:
     case SQLDataTypes::Decimal:
+    case SQLDataTypes::Float:
     case SQLDataTypes::Numeric:
       return QgsHanaUtils::toVariant( mResultSet->getDouble( columnIndex ) );
     case SQLDataTypes::Date:
@@ -137,7 +148,7 @@ QgsGeometry QgsHanaResultSet::getGeometry( unsigned short columnIndex )
       return QgsGeometry();
 
     if ( size > static_cast<size_t>( std::numeric_limits<int>::max() ) )
-      throw std::overflow_error( "Geometry size is larger than maximum integer value" );
+      throw QgsHanaException( "Geometry size is larger than maximum integer value" );
 
     QByteArray wkbBytes( data, static_cast<int>( size ) );
     QgsGeometry geom;

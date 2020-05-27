@@ -47,12 +47,12 @@ class QgsHanaUtils
     static QVariant toVariant( const odbc::UInt &value );
     static QVariant toVariant( const odbc::Long &value );
     static QVariant toVariant( const odbc::ULong &value );
+    static QVariant toVariant( const odbc::Float &value );
     static QVariant toVariant( const odbc::Double &value );
     static QVariant toVariant( const odbc::Date &value );
     static QVariant toVariant( const odbc::Time &value );
     static QVariant toVariant( const odbc::Timestamp &value );
     static QVariant toVariant( const odbc::String &value );
-    static QVariant toVariant( const odbc::String &value, int type, bool isSigned );
     static QVariant toVariant( const odbc::NString &value );
     static QVariant toVariant( const odbc::Binary &value );
     template<typename T>
@@ -63,7 +63,6 @@ class QgsHanaUtils
       else
         return QVariant( *value );
     }
-    static QByteArray toQByteArray( const odbc::Binary &value );
 
     static QgsWkbTypes::Type toWkbType( const QString &hanaType );
     static QVersionNumber toHANAVersion( const QString &dbVersion );

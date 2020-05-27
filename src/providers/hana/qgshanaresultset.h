@@ -25,6 +25,7 @@
 #include <QString>
 #include <QVariant>
 
+#include "odbc/DatabaseMetaData.h"
 #include "odbc/PreparedStatement.h"
 #include "odbc/Statement.h"
 #include "odbc/ResultSet.h"
@@ -43,6 +44,7 @@ class QgsHanaResultSet
   public:
     static QgsHanaResultSetRef create( PreparedStatementRef &stmt );
     static QgsHanaResultSetRef create( StatementRef &stmt, const QString &sql );
+    static QgsHanaResultSetRef getColumns( DatabaseMetaDataRef &metadata, const QString &schemaName, const QString &tableName, const QString &fieldName );
 
     void close();
     bool next();

@@ -15,6 +15,7 @@
  *
  ***************************************************************************/
 #include "qgsdatasourceuri.h"
+#include "qgshanaexception.h"
 #include "qgshanautils.h"
 
 #include <QDate>
@@ -144,9 +145,9 @@ QVariant QgsHanaUtils::toVariant( const Byte &value )
 QVariant QgsHanaUtils::toVariant( const UByte &value )
 {
   if ( value.isNull() )
-    return QVariant( QVariant::Char );
+    return QVariant( QVariant::UInt );
   else
-    return QVariant( static_cast<int>( *value ) );
+    return QVariant( static_cast<uint>( *value ) );
 }
 
 QVariant QgsHanaUtils::toVariant( const Short &value )
@@ -197,12 +198,20 @@ QVariant QgsHanaUtils::toVariant( const ULong &value )
     return QVariant( static_cast<qulonglong>( *value ) );
 }
 
-QVariant QgsHanaUtils::toVariant( const Double &value )
+QVariant QgsHanaUtils::toVariant( const Float &value )
 {
   if ( value.isNull() )
     return QVariant( QVariant::Double );
   else
     return QVariant( static_cast<double>( *value ) );
+}
+
+QVariant QgsHanaUtils::toVariant( const Double &value )
+{
+  if ( value.isNull() )
+    return QVariant( QVariant::Double );
+  else
+    return QVariant( *value );
 }
 
 QVariant QgsHanaUtils::toVariant( const Date &value )
@@ -238,77 +247,6 @@ QVariant QgsHanaUtils::toVariant( const String &value )
     return QVariant( QString::fromUtf8( value->c_str() ) );
 }
 
-QVariant QgsHanaUtils::toVariant( const String &value, int type, bool isSigned )
-{
-  bool isNull = value.isNull();
-  switch ( type )
-  {
-    case SQLDataTypes::Bit:
-    case SQLDataTypes::Boolean:
-      if ( isNull )
-        return QVariant( QVariant::Bool );
-      else
-        return QVariant( ( *value == "true" || *value == "1" ) ? true : false );
-    case SQLDataTypes::Integer:
-    case SQLDataTypes::TinyInt:
-      if ( isNull )
-        return QVariant( isSigned ? QVariant::Int : QVariant::UInt );
-      else
-        return QVariant( atoi( value->c_str() ) );
-    case SQLDataTypes::BigInt:
-      if ( isNull )
-        return QVariant( isSigned ? QVariant::LongLong : QVariant::ULongLong );
-      else
-        return QVariant( static_cast< qlonglong >( atoll( value->c_str() ) ) );
-    case SQLDataTypes::Numeric:
-    case SQLDataTypes::Double:
-    case SQLDataTypes::Decimal:
-      if ( isNull )
-        return QVariant( QVariant::Double );
-      else
-        return QVariant( stod( value->c_str() ) );
-    case SQLDataTypes::Float:
-    case SQLDataTypes::Real:
-      if ( isNull )
-        return QVariant( QVariant::Double );
-      else
-        return QVariant( stof( value->c_str() ) );
-    case SQLDataTypes::Char:
-    case SQLDataTypes::WChar:
-      if ( isNull )
-        return QVariant( QVariant::Char );
-      else
-      {
-        QString str = QString( value->c_str() );
-        if ( str.isEmpty() )
-          return QVariant( QVariant::Char );
-        return QVariant( str.at( 0 ) );
-      }
-    case SQLDataTypes::VarChar:
-    case SQLDataTypes::WVarChar:
-    case SQLDataTypes::LongVarChar:
-    case SQLDataTypes::WLongVarChar:
-      if ( isNull )
-        return QVariant( QVariant::String );
-      else
-        return QVariant( QString( value->c_str() ) );
-    case SQLDataTypes::Binary:
-    case SQLDataTypes::VarBinary:
-      return QVariant( QByteArray( value->c_str(), static_cast< int >( value->length() ) ) );
-    case SQLDataTypes::Date:
-    case SQLDataTypes::TypeDate:
-      return QVariant( QDate::fromString( QString( value->c_str() ) ) );
-    case SQLDataTypes::Time:
-    case SQLDataTypes::TypeTime:
-      return QVariant( QTime::fromString( QString( value->c_str() ) ) );
-    case SQLDataTypes::Timestamp:
-    case SQLDataTypes::TypeTimestamp:
-      return QVariant( QDateTime::fromString( QString( value->c_str() ) ) );
-    default:
-      return QVariant( QVariant::String );
-  }
-}
-
 QVariant QgsHanaUtils::toVariant( const NString &value )
 {
   if ( value.isNull() )
@@ -321,16 +259,11 @@ QVariant QgsHanaUtils::toVariant( const Binary &value )
 {
   if ( value.isNull() )
     return QVariant( QVariant::ByteArray );
-  else
-    return QVariant( toQByteArray( value ) );
-}
 
-QByteArray QgsHanaUtils::toQByteArray( const Binary &value )
-{
-  if ( value.isNull() )
-    return QByteArray();
-  else
-    return QByteArray( value->data(), static_cast<int>( value->size() ) );
+  if ( value->size() > static_cast<size_t>( std::numeric_limits<int>::max() ) )
+    throw QgsHanaException( "Binary size is larger than maximum integer value" );
+
+  return QByteArray( value->data(), static_cast<int>( value->size() ) );
 }
 
 QgsWkbTypes::Type QgsHanaUtils::toWkbType( const QString &hanaType )
@@ -437,15 +370,15 @@ bool QgsHanaUtils::convertField( QgsField &field )
       }
       else
       {
-        if ( field.length() > 0 && field.precision() >= 0 )
-          fieldType = QStringLiteral( "DECIMAL(%1,%2)" ).arg( field.length(), field.precision() );
+        if ( fieldPrec > 0 )
+          fieldType = QStringLiteral( "DECIMAL(%1,%2)" ).arg( fieldSize, fieldPrec );
         else
           fieldType = QStringLiteral( "DECIMAL" );
       }
       break;
     case QVariant::ByteArray:
-      if ( fieldSize > 0 )
-        fieldType = QStringLiteral( "BLOB(%1)" ).arg( QString::number( fieldSize ) );
+      if ( fieldSize > 1 && fieldSize <= 5000 )
+        fieldType = QStringLiteral( "VARBINARY(%1)" ).arg( QString::number( fieldSize ) );
       else
         fieldType = QStringLiteral( "BLOB" );
       break;
