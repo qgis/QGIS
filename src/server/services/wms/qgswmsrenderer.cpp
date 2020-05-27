@@ -2224,7 +2224,7 @@ namespace QgsWms
 
         for ( const auto &feature : qgis::as_const( features ) )
         {
-          const QString id = QStringLiteral( "%1.%2" ).arg( layer->name(), QgsJsonUtils::encodeValue( feature.id() ) );
+          const QString id = QStringLiteral( "%1.%2" ).arg( layerName ).arg( feature.id() );
           json["features"].push_back( exporter.exportFeatureToJsonObject( feature, QVariantMap(), id ) );
         }
       }
@@ -2243,7 +2243,7 @@ namespace QgsWms
         json["features"].push_back(
         {
           {"type", "Feature" },
-          {"id", layer->name().toStdString() },
+          {"id", layerName.toStdString() },
           {"properties", properties }
         } );
       }
