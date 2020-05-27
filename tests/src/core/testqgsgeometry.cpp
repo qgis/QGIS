@@ -18007,6 +18007,7 @@ void TestQgsGeometry::testRandomPointsInPolygon()
 
 void TestQgsGeometry::wktParser()
 {
+  // POINT
   // unbalanced parenthesis
   QVERIFY( ! QgsPoint().fromWkt( "POINT((0, 1)" ) );
   QVERIFY( ! QgsPoint().fromWkt( "POINT(0, 1) )" ) );
@@ -18014,7 +18015,9 @@ void TestQgsGeometry::wktParser()
   QVERIFY( ! QgsPoint().fromWkt( "POINT (0, 1) )" ) );
   // not a number
   QVERIFY( ! QgsPoint().fromWkt( "POINT ( (5, 1) )" ) );
+  QVERIFY( ! QgsPoint().fromWkt( "POINT ( (5 1) )" ) );
   QVERIFY( ! QgsPoint().fromWkt( "POINT (a, b)" ) );
+  QVERIFY( ! QgsPoint().fromWkt( "POINT (a b)" ) );
   // valid
   QgsPoint p;
   QVERIFY( p.fromWkt( "POINT (5 1)" ) );
@@ -18026,16 +18029,61 @@ void TestQgsGeometry::wktParser()
   QVERIFY( p.fromWkt( "POINT (-12e4 -1.4e-1)" ) );
   QCOMPARE( p.asWkt( 2 ), QStringLiteral( "Point (-120000 -0.14)" ) );
 
+  // LINESTRING
   QVERIFY( ! QgsLineString().fromWkt( "LineString(0, 1) )" ) );
   QVERIFY( ! QgsLineString().fromWkt( "LineString(0 1, 1 2) )" ) );
   QVERIFY( ! QgsLineString().fromWkt( "LineString (0, 1) )" ) );
   QVERIFY( ! QgsLineString().fromWkt( "LineString (0 1, 1 2) )" ) );
   QVERIFY( ! QgsMultiLineString().fromWkt( "MULTILINESTRING ((((1 2, 2 4, 4 5))" ) );
   QVERIFY( ! QgsMultiLineString().fromWkt( "MULTILINESTRING((((1 2, 2 4, 4 5))" ) );
+  // not a number
+  QVERIFY( ! QgsLineString().fromWkt( "LineString ( (0 1) )" ) );
+  QVERIFY( ! QgsLineString().fromWkt( "LineString ( ( 0 1, 2 3 ) )" ) );
+  QVERIFY( ! QgsLineString().fromWkt( "LineString (a b, 3 4)" ) );
+  QVERIFY( ! QgsMultiLineString().fromWkt( "MULTILINESTRING ((1 2, 2 a, 4 b))" ) );
+  // valid
+  QgsLineString l;
+  QVERIFY( l.fromWkt( "LINESTRING ( 1 2, 3 4 )" ) );
+  QCOMPARE( l.asWkt(), QStringLiteral( "LineString (1 2, 3 4)" ) );
+  QVERIFY( l.fromWkt( "LINESTRING ( 1e4 -2, 3 +4.5 )" ) );
+  QCOMPARE( l.asWkt( 1 ), QStringLiteral( "LineString (10000 -2, 3 4.5)" ) );
+  QgsMultiLineString m;
+  QVERIFY( m.fromWkt( "MULTILINESTRING ((1 2, 2 3, 4 5))" ) );
+  QCOMPARE( m.asWkt( 1 ), QStringLiteral( "MultiLineString ((1 2, 2 3, 4 5))" ) );
+
+  // TRIANGLE
+  // unbalanced parenthesis
   QVERIFY( ! QgsLineString().fromWkt( "Triangle(0 1, 1 2, 3 3) )" ) );
   QVERIFY( ! QgsLineString().fromWkt( "Triangle (0 1, 1 2, 3 3) )" ) );
   QVERIFY( ! QgsLineString().fromWkt( "Triangle( (0 1, 1 2, 3 3) )) " ) );
   QVERIFY( ! QgsLineString().fromWkt( "Triangle ( (0 1, 1 2, 3 3) )) " ) );
+  // not a number
+  QVERIFY( ! QgsLineString().fromWkt( "Triangle ( (0 a, b 2, 3 3 )) " ) );
+  QVERIFY( ! QgsLineString().fromWkt( "Triangle ( (0 a, b 2, 3 3, 0 a )) " ) );
+  // valid
+  QgsTriangle t;
+  QVERIFY( t.fromWkt( "TRIANGLE(( 0 1, 2 3, 3 4))" ) );
+  QVERIFY( t.fromWkt( "TRIANGLE(( 0 1, 2 3, 3 4, 0 1))" ) );
+  QCOMPARE( t.asWkt(), QStringLiteral( "Triangle ((0 1, 2 3, 3 4, 0 1))" ) );
+  QVERIFY( t.fromWkt( "TRIANGLE((0 1e3, -2 3, +3 4, 0 1))" ) );
+  QCOMPARE( t.asWkt(), QStringLiteral( "Triangle ((0 1000, -2 3, 3 4, 0 1))" ) );
+
+  // POLYGON
+  // unbalanced parenthesis
+  QVERIFY( ! QgsLineString().fromWkt( "Polygon(0 1, 1 2, 3 3) )" ) );
+  QVERIFY( ! QgsLineString().fromWkt( "Polygon (0 1, 1 2, 3 3) )" ) );
+  QVERIFY( ! QgsLineString().fromWkt( "Polygon( (0 1, 1 2, 3 3) )) " ) );
+  QVERIFY( ! QgsLineString().fromWkt( "Polygon ( (0 1, 1 2, 3 3) )) " ) );
+  // not a number
+  QVERIFY( ! QgsLineString().fromWkt( "Polygon ( (0 a, b 2, 3 3 )) " ) );
+  QVERIFY( ! QgsLineString().fromWkt( "Polygon ( (0 a, b 2, 3 3, 0 a )) " ) );
+  // valid
+  QgsPolygon poly;
+  QVERIFY( poly.fromWkt( "Polygon(( 0 1, 2 3, 3 4))" ) );
+  QVERIFY( poly.fromWkt( "Polygon(( 0 1, 2 3, 3 4, 0 1))" ) );
+  QCOMPARE( poly.asWkt(), QStringLiteral( "Polygon ((0 1, 2 3, 3 4, 0 1))" ) );
+  QVERIFY( poly.fromWkt( "Polygon((0 1e3, -2 3, +3 4, 0 1))" ) );
+  QCOMPARE( poly.asWkt(), QStringLiteral( "Polygon ((0 1000, -2 3, 3 4, 0 1))" ) );
 }
 QGSTEST_MAIN( TestQgsGeometry )
 #include "testqgsgeometry.moc"
