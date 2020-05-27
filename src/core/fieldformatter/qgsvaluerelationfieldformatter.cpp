@@ -110,7 +110,7 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer *layer, i
 
 QVariant QgsValueRelationFieldFormatter::sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
-  return representValue( layer, fieldIndex, config, cache, value );
+  return value.isNull() ? QString() : representValue( layer, fieldIndex, config, cache, value );
 }
 
 QVariant QgsValueRelationFieldFormatter::createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const
