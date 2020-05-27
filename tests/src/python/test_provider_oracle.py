@@ -234,6 +234,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
     def testDefaultValue(self):
         self.assertEqual(self.source.defaultValue(1), NULL)
         self.assertEqual(self.source.defaultValue(2), "'qgis'")
+        self.assertEqual(self.source.defaultValue(3), "'qgis'")
 
     def testPoints(self):
         vl = QgsVectorLayer('%s table="QGIS"."POINT_DATA" (GEOM) srid=4326 type=POINT sql=' %
