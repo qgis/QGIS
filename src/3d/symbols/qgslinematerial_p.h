@@ -29,6 +29,8 @@
 
 #include <Qt3DRender/QMaterial>
 
+#define SIP_NO_FILE
+
 namespace Qt3DRender
 {
   class QCamera;

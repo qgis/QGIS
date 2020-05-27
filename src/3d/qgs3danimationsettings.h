@@ -26,10 +26,13 @@ class QDomDocument;
 class QDomElement;
 class QgsReadWriteContext;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup 3d
  * Class that holds information about animation in 3D view. The animation is defined
  * as a series of keyframes
+ * \note Not available in Python bindings
  * \since QGIS 3.8
  */
 class _3D_EXPORT Qgs3DAnimationSettings

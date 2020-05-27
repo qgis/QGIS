@@ -30,6 +30,8 @@
 #include <QVector>
 #include <QVector3D>
 
+#define SIP_NO_FILE
+
 #include "qgs3dtypes.h"
 
 namespace Qt3DCore

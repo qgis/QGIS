@@ -38,6 +38,8 @@
 // version without notice, or even be removed.
 //
 
+#define SIP_NO_FILE
+
 class QgsMeshLayer;
 
 /**
