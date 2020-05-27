@@ -1882,21 +1882,28 @@ void QgsRasterLayerProperties::saveStyleAs_clicked()
   QgsSettings settings;
   QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
+  QString selectedFilter;
   QString outputFileName = QFileDialog::getSaveFileName(
                              this,
                              tr( "Save layer properties as style file" ),
                              lastUsedDir,
-                             tr( "QGIS Layer Style File" ) + " (*.qml)" + ";;" + tr( "Styled Layer Descriptor" ) + " (*.sld)" );
+                             tr( "QGIS Layer Style File" ) + " (*.qml)" + ";;" + tr( "Styled Layer Descriptor" ) + " (*.sld)",
+                             &selectedFilter );
   if ( outputFileName.isEmpty() )
     return;
 
-  // set style type depending on extension
-  StyleType type = StyleType::QML;
-  if ( outputFileName.endsWith( QLatin1String( ".sld" ), Qt::CaseInsensitive ) )
-    type = StyleType::SLD;
-  else
-    // ensure the user never omits the extension from the file name
+  StyleType type;
+  // use selectedFilter to set style type
+  if ( selectedFilter.contains( QStringLiteral( ".qml" ), Qt::CaseInsensitive ) )
+  {
     outputFileName = QgsFileUtils::ensureFileNameHasExtension( outputFileName, QStringList() << QStringLiteral( "qml" ) );
+    type = StyleType::QML;
+  }
+  else
+  {
+    outputFileName = QgsFileUtils::ensureFileNameHasExtension( outputFileName, QStringList() << QStringLiteral( "sld" ) );
+    type = StyleType::SLD;
+  }
 
   apply(); // make sure the style to save is uptodate
 
