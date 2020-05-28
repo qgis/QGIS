@@ -49,6 +49,9 @@ class GUI_EXPORT QgsGeoPdfLayerTreeModel : public QgsLayerTreeModel
     QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
 
+    /**
+     * Checks (or unchecks) all rows and children from the specified \a parent index.
+     */
     void checkAll( bool checked, const QModelIndex &parent = QModelIndex() );
 
   private:
