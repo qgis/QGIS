@@ -1878,6 +1878,9 @@ void QgsLayoutItemMap::connectUpdateSlot()
     {
       invalidateCache();
     } );
+
+    connect( project->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsLayoutItemMap::mapThemeChanged );
+    connect( project->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &QgsLayoutItemMap::currentMapThemeRenamed );
   }
   connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutItemMap::invalidateCache );
   connect( &mLayout->renderContext(), &QgsLayoutRenderContext::predefinedScalesChanged, this, [ = ]
@@ -1885,9 +1888,6 @@ void QgsLayoutItemMap::connectUpdateSlot()
     if ( mAtlasScalingMode == Predefined )
       updateAtlasFeature();
   } );
-
-  connect( project->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsLayoutItemMap::mapThemeChanged );
-  connect( project->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &QgsLayoutItemMap::currentMapThemeRenamed );
 }
 
 QTransform QgsLayoutItemMap::layoutToMapCoordsTransform() const
