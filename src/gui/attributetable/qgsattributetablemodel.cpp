@@ -405,7 +405,11 @@ void QgsAttributeTableModel::loadAttributes()
   if ( mFieldCount + mExtraColumns < attributes.size() + mExtraColumns )
   {
     ins = true;
-    beginInsertColumns( QModelIndex(), mFieldCount + mExtraColumns, attributes.size() - 1 );
+	if (attributes.size() - 1 >= mFieldCount + mExtraColumns) {
+		beginInsertColumns( QModelIndex(), mFieldCount + mExtraColumns, attributes.size() - 1 );
+	} else {
+		beginInsertColumns( QModelIndex(), attributes.size() - 1, mFieldCount + mExtraColumns );
+	}
   }
   else if ( attributes.size() + mExtraColumns < mFieldCount + mExtraColumns )
   {
