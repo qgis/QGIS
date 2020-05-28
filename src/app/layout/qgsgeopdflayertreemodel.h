@@ -38,6 +38,8 @@ class APP_EXPORT QgsGeoPdfLayerTreeModel : public QgsLayerTreeModel
     QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
 
+    void checkAll( bool checked, const QModelIndex &parent = QModelIndex() );
+
   private:
     enum Columns
     {
