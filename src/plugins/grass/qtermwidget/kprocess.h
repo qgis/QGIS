@@ -353,10 +353,10 @@ protected:
 
     QString prog;
     QStringList args;
-    KProcess::OutputChannelMode outputChannelMode;
+    KProcess::OutputChannelMode outputChannelMode = KProcess::SeparateChannels; // arbitrary value
     QIODevice::OpenMode openMode;
 
-    KProcess *q_ptr;
+    KProcess *q_ptr = nullptr;
 };
 /* ------------------------------------------- */
 #endif

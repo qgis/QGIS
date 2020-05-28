@@ -169,7 +169,7 @@ public:
             pty->logout();
     }
 
-    KPtyDevice *pty;
+    KPtyDevice *pty = nullptr;
     KPtyProcess::PtyChannels ptyChannels;
     bool addUtmp : 1;
 };
