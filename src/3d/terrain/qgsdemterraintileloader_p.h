@@ -125,7 +125,6 @@ class QgsDemHeightMapGenerator : public QObject
       QgsChunkNodeId tileId;
       QgsRectangle extent;
       QFuture<QByteArray> future;
-      QFutureWatcher<QByteArray> *fw;
       QElapsedTimer timer;
     };
 
