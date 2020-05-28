@@ -704,21 +704,21 @@ QDomDocument QgsManageConnectionsDialog::saveHanaConnections( const QStringList 
     el.setAttribute( QStringLiteral( "name" ), connections[i] );
     el.setAttribute( QStringLiteral( "driver" ), settings.value( path + "/driver", "" ).toString() );
     el.setAttribute( QStringLiteral( "host" ), settings.value( path + "/host", "" ).toString() );
-    el.setAttribute( QStringLiteral( "port" ), settings.value( path + "/port", "" ).toString() );
+    el.setAttribute( QStringLiteral( "identifierType" ), settings.value( path + "/identifierType", "" ).toString() );
+    el.setAttribute( QStringLiteral( "identifier" ), settings.value( path + "/identifier", "" ).toString() );
+    el.setAttribute( QStringLiteral( "multitenant" ), settings.value( path + "/multitenant", "" ).toString() );
     el.setAttribute( QStringLiteral( "database" ), settings.value( path + "/database", "" ).toString() );
-    el.setAttribute( QStringLiteral( "schema" ), settings.value( path + "/schema", QString() ).toString() );
-    el.setAttribute( QStringLiteral( "geometryColumnsOnly" ), settings.value( path + "/geometryColumnsOnly", "0" ).toString() );
+    el.setAttribute( QStringLiteral( "schema" ), settings.value( path + "/schema", "" ).toString() );
+    el.setAttribute( QStringLiteral( "userTablesOnly" ), settings.value( path + "/userTablesOnly", "0" ).toString() );
     el.setAttribute( QStringLiteral( "allowGeometrylessTables" ), settings.value( path + "/allowGeometrylessTables", "0" ).toString() );
 
     el.setAttribute( QStringLiteral( "saveUsername" ), settings.value( path + "/saveUsername", "false" ).toString() );
-
     if ( settings.value( path + "/saveUsername", "false" ).toString() == QLatin1String( "true" ) )
     {
       el.setAttribute( QStringLiteral( "username" ), settings.value( path + "/username", "" ).toString() );
     }
 
     el.setAttribute( QStringLiteral( "savePassword" ), settings.value( path + "/savePassword", "false" ).toString() );
-
     if ( settings.value( path + "/savePassword", "false" ).toString() == QLatin1String( "true" ) )
     {
       el.setAttribute( QStringLiteral( "password" ), settings.value( path + "/password", "" ).toString() );
@@ -1450,17 +1450,17 @@ void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, c
 
     settings.setValue( QStringLiteral( "/driver" ), child.attribute( QStringLiteral( "driver" ) ) );
     settings.setValue( QStringLiteral( "/host" ), child.attribute( QStringLiteral( "host" ) ) );
-    settings.setValue( QStringLiteral( "/port" ), child.attribute( QStringLiteral( "port" ) ) );
     settings.setValue( QStringLiteral( "/database" ), child.attribute( QStringLiteral( "database" ) ) );
+    settings.setValue( QStringLiteral( "/identifierType" ), child.attribute( QStringLiteral( "identifierType" ) ) );
+    settings.setValue( QStringLiteral( "/identifier" ), child.attribute( QStringLiteral( "identifier" ) ) );
+    settings.setValue( QStringLiteral( "/multitenant" ), child.attribute( QStringLiteral( "multitenant" ) ) );
     settings.setValue( QStringLiteral( "/schema" ), child.attribute( QStringLiteral( "schema" ) ) );
-    settings.setValue( QStringLiteral( "/sslmode" ), child.attribute( QStringLiteral( "sslmode" ) ) );
-    settings.setValue( QStringLiteral( "/geometryColumnsOnly" ), child.attribute( QStringLiteral( "geometryColumnsOnly" ) ) );
+    settings.setValue( QStringLiteral( "/userTablesOnly" ), child.attribute( QStringLiteral( "userTablesOnly" ) ) );
     settings.setValue( QStringLiteral( "/allowGeometrylessTables" ), child.attribute( QStringLiteral( "allowGeometrylessTables" ) ) );
     settings.setValue( QStringLiteral( "/saveUsername" ), child.attribute( QStringLiteral( "saveUsername" ) ) );
     settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
     settings.setValue( QStringLiteral( "/savePassword" ), child.attribute( QStringLiteral( "savePassword" ) ) );
     settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
-
     settings.setValue( QStringLiteral( "/sslEnabled" ), child.attribute( QStringLiteral( "sslEnabled" ) ) );
     settings.setValue( QStringLiteral( "/sslCryptoProvider" ), child.attribute( QStringLiteral( "sslCryptoProvider" ) ) );
     settings.setValue( QStringLiteral( "/sslKeyStore" ), child.attribute( QStringLiteral( "sslKeyStore" ) ) );
