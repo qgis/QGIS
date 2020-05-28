@@ -27,6 +27,8 @@
 
 #include "qgsrendercontext.h"
 
+class QgsGeoPdfLayerTreeModel;
+
 /**
  * \ingroup gui
  * A dialog for customizing the properties of an exported PDF file from a layout.
@@ -97,10 +99,13 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::Qg
   private slots:
 
     void showHelp();
+    void showContextMenuForGeoPdfStructure( QPoint point, const QModelIndex &index );
 
   private:
 
     bool mGeopdfAvailable = true;
+    QgsGeoPdfLayerTreeModel *mGeoPdfStructureModel = nullptr;
+    QMenu *mGeoPdfStructureTreeMenu = nullptr;
 
 };
 
