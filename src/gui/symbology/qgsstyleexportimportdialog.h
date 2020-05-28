@@ -97,13 +97,13 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     void clearSelection();
 
     /**
-     * \brief selectFavorites selects favorite symbols
+     * Selects favorite symbols
      * \since QGIS 3.14
      */
     void selectFavorites();
 
     /**
-     * \brief deselectFavorites deselects favorite symbols
+     * Deselects favorite symbols
      * \since QGIS 3.14
      */
     void deselectFavorites();
