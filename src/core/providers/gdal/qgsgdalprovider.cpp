@@ -216,6 +216,7 @@ QgsGdalProvider::QgsGdalProvider( const QgsGdalProvider &other )
   if ( forceUseSameDataset )
   {
     ++ ( *other.mpRefCounter );
+    // cppcheck-suppress copyCtorPointerCopying
     mpRefCounter = other.mpRefCounter;
     mpMutex = other.mpMutex;
     mpLightRefCounter = new QAtomicInt( 1 );
