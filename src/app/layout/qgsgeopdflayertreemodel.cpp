@@ -179,3 +179,24 @@ void QgsGeoPdfLayerTreeModel::checkAll( bool checked, const QModelIndex &parent 
     checkAll( checked, childIndex );
   }
 }
+
+///@cond PRIVATE
+QgsGeoPdfLayerFilteredTreeModel::QgsGeoPdfLayerFilteredTreeModel( QgsGeoPdfLayerTreeModel *sourceModel, QObject *parent )
+  : QSortFilterProxyModel( parent )
+  , mLayerTreeModel( sourceModel )
+{
+  setSourceModel( sourceModel );
+}
+
+bool QgsGeoPdfLayerFilteredTreeModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+{
+  if ( QgsLayerTreeNode *node = mLayerTreeModel->index2node( sourceModel()->index( source_row, 0, source_parent ) ) )
+  {
+    // filter out non-vector layers
+    if ( QgsLayerTree::isLayer( node ) && QgsLayerTree::toLayer( node ) && QgsLayerTree::toLayer( node )->layer() && QgsLayerTree::toLayer( node )->layer()->type() != QgsMapLayerType::VectorLayer )
+      return false;
+  }
+  return true;
+}
+
+///@endcond
