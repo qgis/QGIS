@@ -51,6 +51,14 @@ class GUI_EXPORT QgsStyleGroupSelectionDialog : public QDialog, private Ui::Symb
     void allDeselected();
     //! all selected
     void allSelected();
+    /** favorites has been deselected
+     * \since QGIS 3.14
+     */
+    void favoritesDeselected();
+    /** favorites has need selected
+     * \since QGIS 3.14
+     */
+    void favoritesSelected();
 
   private slots:
     void groupTreeSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );

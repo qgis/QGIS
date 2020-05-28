@@ -258,6 +258,18 @@ void QgsStyleExportImportDialog::clearSelection()
   listItems->clearSelection();
 }
 
+void QgsStyleExportImportDialog::selectFavorites()
+{
+  QStringList symbolNames = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
+  selectSymbols( symbolNames );
+}
+
+void QgsStyleExportImportDialog::deselectFavorites()
+{
+  QStringList symbolNames = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
+  deselectSymbols( symbolNames );
+}
+
 void QgsStyleExportImportDialog::selectSymbols( const QStringList &symbolNames )
 {
   const auto constSymbolNames = symbolNames;
@@ -329,6 +341,8 @@ void QgsStyleExportImportDialog::selectByGroup()
     connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::tagDeselected, this, &QgsStyleExportImportDialog::deselectTag );
     connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::allSelected, this, &QgsStyleExportImportDialog::selectAll );
     connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::allDeselected, this, &QgsStyleExportImportDialog::clearSelection );
+    connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::favoritesSelected, this, &QgsStyleExportImportDialog::selectFavorites );
+    connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::favoritesDeselected, this, &QgsStyleExportImportDialog::deselectFavorites );
     connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::smartgroupSelected, this, &QgsStyleExportImportDialog::selectSmartgroup );
     connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::smartgroupDeselected, this, &QgsStyleExportImportDialog::deselectSmartgroup );
   }
