@@ -73,6 +73,20 @@ selectAll selects all symbols
 clearSelection deselects all symbols
 %End
 
+    void selectFavorites();
+%Docstring
+Selects favorite symbols
+
+.. versionadded:: 3.14
+%End
+
+    void deselectFavorites();
+%Docstring
+Deselects favorite symbols
+
+.. versionadded:: 3.14
+%End
+
     void selectTag( const QString &tagName );
 %Docstring
 Select the symbols belonging to the given tag
