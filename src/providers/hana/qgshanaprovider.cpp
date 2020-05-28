@@ -65,7 +65,7 @@ namespace
   size_t executeCountQuery( ConnectionRef &conn, const QString &sql )
   {
     StatementRef stmt = conn->createStatement();
-    ResultSetRef rs = stmt->executeQuery( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+    ResultSetRef rs = stmt->executeQuery( QgsHanaUtils::toQueryString( sql ) );
     rs->next();
     size_t ret = static_cast<size_t>( *rs->getLong( 1 ) );
     rs->close();
@@ -77,7 +77,7 @@ namespace
     try
     {
       StatementRef stmt = conn->createStatement();
-      stmt->execute( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+      stmt->execute( QgsHanaUtils::toQueryString( sql ) );
       conn->commit();
       return true;
     }
@@ -605,12 +605,12 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
   try
   {
-    PreparedStatementRef stmtInsert = conn->prepareStatement( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+    PreparedStatementRef stmtInsert = conn->prepareStatement( QgsHanaUtils::toQueryString( sql ) );
     PreparedStatementRef stmtIdentityValue;
     if ( !allowBatchInserts )
     {
       QString sqlIdentity = QStringLiteral( "SELECT CURRENT_IDENTITY_VALUE() \"current identity value\" FROM %1.%2" ).arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ) );
-      stmtIdentityValue = conn->prepareStatement( reinterpret_cast<const char16_t *>( sqlIdentity.utf16() ) );
+      stmtIdentityValue = conn->prepareStatement( QgsHanaUtils::toQueryString( sql ) );
     }
 
     for ( auto &feature : flist )
@@ -756,7 +756,7 @@ bool QgsHanaProvider::deleteFeatures( const QgsFeatureIds &id )
     QString sql = QStringLiteral( "DELETE FROM %1.%2 WHERE %3 IN (%4)" ).arg(
                     QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ),
                     QgsHanaUtils::quotedIdentifier( mFidColumn ), featureIds );
-    stmt->execute( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+    stmt->execute( QgsHanaUtils::toQueryString( sql ) );
     conn->commit();
   }
   catch ( const Exception &ex )
@@ -789,7 +789,7 @@ bool QgsHanaProvider::truncate()
     StatementRef stmt = conn->createStatement();
     QString sql = QStringLiteral( "TRUNCATE TABLE %1.%2" ).arg(
                     QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ) );
-    stmt->execute( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+    stmt->execute( QgsHanaUtils::toQueryString( sql ) );
     conn->commit();
   }
   catch ( const Exception &ex )
@@ -830,7 +830,7 @@ bool QgsHanaProvider::addAttributes( const QList<QgsField> &attributes )
     StatementRef stmt = conn->createStatement();
     QString sql = QStringLiteral( "ALTER TABLE %1.%2 ADD (%3)" ).arg(
                     QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ), columnDefs );
-    stmt->execute( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+    stmt->execute( QgsHanaUtils::toQueryString( sql ) );
     conn->commit();
   }
   catch ( const Exception &ex )
@@ -871,7 +871,7 @@ bool QgsHanaProvider::deleteAttributes( const QgsAttributeIds &attributes )
   try
   {
     StatementRef stmt = conn->createStatement();
-    stmt->execute( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+    stmt->execute( QgsHanaUtils::toQueryString( sql ) );
     conn->commit();
   }
   catch ( const Exception &ex )
@@ -921,7 +921,7 @@ bool QgsHanaProvider::renameAttributes( const QgsFieldNameMap &fieldMap )
                       QgsHanaUtils::quotedIdentifier( it.value() ) );
 
       StatementRef stmt = conn->createStatement();
-      stmt->execute( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+      stmt->execute( QgsHanaUtils::toQueryString( sql ) );
     }
 
     conn->commit();
@@ -963,7 +963,7 @@ bool QgsHanaProvider::changeGeometryValues( const QgsGeometryMap &geometryMap )
                     QgsHanaUtils::quotedIdentifier( mGeometryColumn ), QString::number( mSrid ),
                     QgsHanaUtils::quotedIdentifier( mFidColumn ) );
 
-    PreparedStatementRef stmt = conn->prepareStatement( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+    PreparedStatementRef stmt = conn->prepareStatement( QgsHanaUtils::toQueryString( sql ) );
 
     for ( QgsGeometryMap::const_iterator it = geometryMap.begin(); it != geometryMap.end(); ++it )
     {
@@ -1055,7 +1055,7 @@ bool QgsHanaProvider::changeAttributeValues( const QgsChangedAttributesMap &attr
       if ( !mFidColumn.isEmpty() )
         sql += QStringLiteral( " WHERE %1=%2" ).arg( QgsHanaUtils::quotedIdentifier( mFidColumn ), FID_TO_STRING( fid ) );
 
-      PreparedStatementRef stmt = conn->prepareStatement( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+      PreparedStatementRef stmt = conn->prepareStatement( QgsHanaUtils::toQueryString( sql ) );
 
       unsigned short paramIndex = 1;
       for ( QgsAttributeMap::const_iterator attrIt = attrs.begin(); attrIt != attrs.end(); ++attrIt )
@@ -1123,7 +1123,7 @@ bool QgsHanaProvider::checkPermissionsAndSetCapabilities()
     StatementRef stmt = conn->createStatement();
     QString sql = QStringLiteral( "SELECT OBJECT_NAME, OBJECT_TYPE, PRIVILEGE FROM PUBLIC.EFFECTIVE_PRIVILEGES "
                                   "WHERE USER_NAME = CURRENT_USER AND SCHEMA_NAME = '%1' AND IS_VALID = 'TRUE'" ).arg( mSchemaName );
-    ResultSetRef rsPrivileges = stmt->executeQuery( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+    ResultSetRef rsPrivileges = stmt->executeQuery( QgsHanaUtils::toQueryString( sql ) );
     while ( rsPrivileges->next() )
     {
       QString objName = QgsHanaUtils::toQString( *rsPrivileges->getNString( 1 ) );
@@ -1209,7 +1209,7 @@ QgsRectangle QgsHanaProvider::estimateExtent() const
                           "\"ext\".ST_YMax() FROM (SELECT ST_EnvelopeAggr(%1) AS \"ext\" FROM (%2))" )
           .arg( QgsHanaUtils::quotedIdentifier( mGeometryColumn ), buildQuery( mQuery, mQueryWhereClause ) );
   }
-  ResultSetRef rsExtent = stmt->executeQuery( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+  ResultSetRef rsExtent = stmt->executeQuery( QgsHanaUtils::toQueryString( sql ) );
 
   QgsRectangle ret;
   if ( rsExtent->next() )
@@ -1265,7 +1265,7 @@ void QgsHanaProvider::readAttributeFields()
   DatabaseMetaDataRef dmd = conn->getDatabaseMetaData();
   StatementRef stmt = conn->createStatement();
   QString sql = QStringLiteral( "SELECT * FROM (%1) LIMIT 0" ).arg( mQuery );
-  ResultSetRef rsAttributes = stmt->executeQuery( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+  ResultSetRef rsAttributes = stmt->executeQuery( QgsHanaUtils::toQueryString( sql ) );
   ResultSetMetaDataRef rsmd = rsAttributes->getMetaData();
   for ( unsigned short i = 1; i <= rsmd->getColumnCount(); ++i )
   {
@@ -1413,7 +1413,7 @@ void QgsHanaProvider::readSrsInformation()
   bool isRoundEarth = false;
   QString sql = QStringLiteral( "SELECT MIN_X, MIN_Y, MAX_X, MAX_Y, ROUND_EARTH FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS "
                                 "WHERE SRS_ID = %1" ).arg( QString::number( mSrid ) );
-  ResultSetRef rs = stmt->executeQuery( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+  ResultSetRef rs = stmt->executeQuery( QgsHanaUtils::toQueryString( sql ) );
   if ( rs->next() )
   {
     ext.setXMinimum( *rs->getDouble( 1 ) );

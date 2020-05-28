@@ -79,7 +79,7 @@ void QgsHanaProviderConnection::setCapabilities()
   StatementRef stmt = conn->createStatement();
   const QString sql = QStringLiteral( "SELECT PRIVILEGE FROM PUBLIC.EFFECTIVE_PRIVILEGES "
                                       "WHERE USER_NAME = CURRENT_USER AND IS_VALID = 'TRUE' AND OBJECT_TYPE = 'SYSTEMPRIVILEGE'" );
-  ResultSetRef rsPrivileges = stmt->executeQuery( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+  ResultSetRef rsPrivileges = stmt->executeQuery( QgsHanaUtils::toQueryString( sql ) );
   while ( rsPrivileges->next() )
   {
     QString privType = QgsHanaUtils::toQString( *rsPrivileges->getString( 1 ) );
@@ -236,7 +236,7 @@ void QgsHanaProviderConnection::executeSqlStatement( const QString &sql ) const
   {
     ConnectionRef connRef = conn->getNativeRef();
     StatementRef stmt = connRef->createStatement();
-    stmt->execute( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+    stmt->execute( QgsHanaUtils::toQueryString( sql ) );
     connRef->commit();
   }
   catch ( const odbc::Exception &ex )

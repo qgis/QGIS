@@ -76,7 +76,7 @@ QgsHanaFeatureIterator::QgsHanaFeatureIterator(
   try
   {
     QString sql = buildSqlQuery( request );
-    PreparedStatementRef stmt = mConnRef->getNativeRef()->prepareStatement( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+    PreparedStatementRef stmt = mConnRef->getNativeRef()->prepareStatement( QgsHanaUtils::toQueryString( sql ) );
     mSqlQuery = sql;
     mClosed = false;
 
@@ -101,7 +101,7 @@ bool QgsHanaFeatureIterator::rewind()
     return false;
 
   mResultSet.reset();
-  PreparedStatementRef stmt =  mConnRef->getNativeRef()->prepareStatement( reinterpret_cast<const char16_t *>( mSqlQuery.utf16() ) );
+  PreparedStatementRef stmt =  mConnRef->getNativeRef()->prepareStatement( QgsHanaUtils::toQueryString( mSqlQuery ) );
   mResultSet = QgsHanaResultSet::create( stmt );
   return true;
 }

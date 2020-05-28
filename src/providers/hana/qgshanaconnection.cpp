@@ -217,7 +217,7 @@ bool QgsHanaConnection::dropTable( const QString &schemaName, const QString &tab
   try
   {
     StatementRef stmt = mConnection->createStatement();
-    stmt->execute( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+    stmt->execute( QgsHanaUtils::toQueryString( sql ) );
     mConnection->commit();
     return true;
   }
@@ -277,7 +277,7 @@ QgsCoordinateReferenceSystem QgsHanaConnection::getCrs( int srid )
 
   QString sql = QStringLiteral( "SELECT ORGANIZATION, ORGANIZATION_COORDSYS_ID, DEFINITION, TRANSFORM_DEFINITION FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS WHERE SRS_ID = %1" ).arg( srid );
   StatementRef stmt = mConnection->createStatement();
-  ResultSetRef rsSrs = stmt->executeQuery( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+  ResultSetRef rsSrs = stmt->executeQuery( QgsHanaUtils::toQueryString( sql ) );
 
   if ( rsSrs->next() )
   {
@@ -443,7 +443,7 @@ QVector<QgsHanaSchemaProperty> QgsHanaConnection::getSchemas( const QString &own
   try
   {
     StatementRef stmt = mConnection->createStatement();
-    ResultSetRef rsSchemas = stmt->executeQuery( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+    ResultSetRef rsSchemas = stmt->executeQuery( QgsHanaUtils::toQueryString( sql ) );
     while ( rsSchemas->next() )
     {
       QgsHanaSchemaProperty schema;
@@ -476,7 +476,7 @@ int QgsHanaConnection::getLayerSRID( const QgsHanaLayerProperty &layerProperty )
       QString sql = QStringLiteral( "SELECT SRS_ID FROM SYS.ST_GEOMETRY_COLUMNS "
                                     "WHERE SCHEMA_NAME = '%1' AND TABLE_NAME = '%2' AND COLUMN_NAME = '%3'" )
                     .arg( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName );
-      ResultSetRef rsSrid = stmt->executeQuery( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+      ResultSetRef rsSrid = stmt->executeQuery( QgsHanaUtils::toQueryString( sql ) );
       ret = rsSrid->next() ? *rsSrid->getInt( 1 ) : -1;
       rsSrid->close();
     }
@@ -487,7 +487,7 @@ int QgsHanaConnection::getLayerSRID( const QgsHanaLayerProperty &layerProperty )
                           QgsHanaUtils::quotedIdentifier( layerProperty.schemaName ),
                           QgsHanaUtils::quotedIdentifier( layerProperty.tableName ),
                           QString::number( GEOM_TYPE_SELECT_LIMIT ) );
-      ResultSetRef rsSrid = stmt->executeQuery( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+      ResultSetRef rsSrid = stmt->executeQuery( QgsHanaUtils::toQueryString( sql ) );
       int srid = -1, prevSrid = -1;
       while ( rsSrid->next() )
       {
@@ -575,7 +575,7 @@ QgsWkbTypes::Type QgsHanaConnection::getLayerGeometryType( const QgsHanaLayerPro
   try
   {
     StatementRef stmt = mConnection->createStatement();
-    ResultSetRef rsGeomInfo = stmt->executeQuery( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+    ResultSetRef rsGeomInfo = stmt->executeQuery( QgsHanaUtils::toQueryString( sql ) );
     QgsWkbTypes::Type geomType = QgsWkbTypes::Unknown, prevGeomType = QgsWkbTypes::Unknown;
     while ( rsGeomInfo->next() )
     {
@@ -607,7 +607,7 @@ QString QgsHanaConnection::getColumnDataType( const QString &schemaName, const Q
   try
   {
     StatementRef stmt = mConnection->createStatement();
-    ResultSetRef rsDataType = stmt->executeQuery( reinterpret_cast<const char16_t *>( sql.utf16() ) );
+    ResultSetRef rsDataType = stmt->executeQuery( QgsHanaUtils::toQueryString( sql ) );
     while ( rsDataType->next() )
     {
       ret = QgsHanaUtils::toQString( rsDataType->getString( 1 ) );
