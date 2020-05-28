@@ -110,7 +110,7 @@ struct DxfLayerJob
 };
 
 // dxf color palette
-static int sDxfColors[][3] =
+static const int sDxfColors[][3] =
 {
   { 255, 255, 255 },
   { 255, 0, 0 },
