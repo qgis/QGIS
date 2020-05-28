@@ -4238,7 +4238,23 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   }
 
   // open options dialog
-  QgsLayoutPdfExportOptionsDialog dialog( this );
+
+  QList< QgsLayoutItemMap * > maps;
+  if ( mLayout )
+    mLayout->layoutItems( maps );
+  bool allowGeoPdfExport = true;
+  QString geoPdfReason;
+  for ( const QgsLayoutItemMap *map : maps )
+  {
+    if ( !map->crs().isValid() )
+    {
+      allowGeoPdfExport = false;
+      geoPdfReason = tr( "One or more map items do not have a valid CRS set. This is required for GeoPDF export." );
+      break;
+    }
+  }
+
+  QgsLayoutPdfExportOptionsDialog dialog( this, allowGeoPdfExport, geoPdfReason );
 
   dialog.setTextRenderFormat( prevTextRenderFormat );
   dialog.setForceVector( forceVector );
