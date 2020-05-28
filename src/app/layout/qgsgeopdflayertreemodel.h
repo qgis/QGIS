@@ -38,6 +38,14 @@ class APP_EXPORT QgsGeoPdfLayerTreeModel : public QgsLayerTreeModel
     QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
 
+<<<<<<< HEAD:src/app/layout/qgsgeopdflayertreemodel.h
+=======
+    /**
+     * Checks (or unchecks) all rows and children from the specified \a parent index.
+     */
+    void checkAll( bool checked, const QModelIndex &parent = QModelIndex() );
+
+>>>>>>> 4eb10f2990... Dox:src/gui/layout/qgsgeopdflayertreemodel.h
   private:
     enum Columns
     {
