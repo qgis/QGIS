@@ -103,6 +103,10 @@ struct DxfLayerJob
     QString splitLayerAttribute;
     QString layerTitle;
     QSet<QString> attributes;
+
+  private:
+    DxfLayerJob( const DxfLayerJob & ) = delete;
+    DxfLayerJob &operator=( const DxfLayerJob & ) = delete;
 };
 
 // dxf color palette
