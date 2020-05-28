@@ -28,7 +28,7 @@
 #include <QPushButton>
 #include <QMenu>
 
-QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *parent, Qt::WindowFlags flags )
+QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *parent, bool allowGeoPdfExport, const QString &geoPdfReason, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
   setupUi( this );
@@ -38,13 +38,13 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
   mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Paths (Recommended)" ), QgsRenderContext::TextFormatAlwaysOutlines );
   mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Text Objects" ), QgsRenderContext::TextFormatAlwaysText );
 
-  mGeopdfAvailable = QgsAbstractGeoPdfExporter::geoPDFCreationAvailable();
+  mGeopdfAvailable = allowGeoPdfExport && QgsAbstractGeoPdfExporter::geoPDFCreationAvailable();
   mGeoPDFGroupBox->setEnabled( mGeopdfAvailable );
   mGeoPDFGroupBox->setChecked( false );
   if ( !mGeopdfAvailable )
   {
     mGeoPDFOptionsStackedWidget->setCurrentIndex( 0 );
-    mGeoPdfUnavailableReason->setText( QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation() );
+    mGeoPdfUnavailableReason->setText( geoPdfReason.isEmpty() ? QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation() : geoPdfReason );
     // avoid showing reason in disabled text color - we want it to stand out
     QPalette p = mGeoPdfUnavailableReason->palette();
     p.setColor( QPalette::Disabled, QPalette::WindowText, QPalette::WindowText );
