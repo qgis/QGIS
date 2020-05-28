@@ -169,3 +169,13 @@ bool QgsGeoPdfLayerTreeModel::setData( const QModelIndex &index, const QVariant 
   }
   return false;
 }
+
+void QgsGeoPdfLayerTreeModel::checkAll( bool checked, const QModelIndex &parent )
+{
+  for ( int row = 0; row < rowCount( parent ); ++row )
+  {
+    const QModelIndex childIndex = index( row, LayerColumn, parent );
+    setData( childIndex, checked ? Qt::Checked : Qt::Unchecked, Qt::CheckStateRole );
+    checkAll( checked, childIndex );
+  }
+}
