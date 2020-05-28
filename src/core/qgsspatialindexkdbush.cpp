@@ -32,9 +32,8 @@ QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( const QgsFeatureSource &source, Qg
 {
 }
 
-QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( const QgsSpatialIndexKDBush &other )
+QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( const QgsSpatialIndexKDBush &other ): d( other.d )
 {
-  d = other.d;
   d->ref.ref();
 }
 
