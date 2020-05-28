@@ -1142,6 +1142,28 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
 
         QgsProject.instance().removeMapLayer(ml)
 
+    def test_filter_rect_precise(self):
+
+        # Check if don't lost precision when filtering on rect (see https://github.com/qgis/QGIS/issues/36054)
+
+        pl = QgsVectorLayer(os.path.join(self.testDataDir, "points.shp"), "points", "ogr")
+        self.assertTrue(pl.isValid())
+        QgsProject.instance().addMapLayer(pl)
+
+        query = toPercent("SELECT * FROM points")
+        vl = QgsVectorLayer("?query=%s&uid=OBJECTID" % (query), "vl", "virtual")
+        self.assertEqual(vl.isValid(), True)
+        self.assertEqual(vl.dataProvider().featureCount(), 17)
+
+        # Take an extent where east farthest point is excluded and second farthest east is on the edge
+        # and should be returned
+        extent = QgsRectangle(-117.23257418909581418, 22.80020703933767834, -85.6521739130433276, 46.87198067632875365)
+        r = QgsFeatureRequest(extent)
+        features = [feature for feature in vl.getFeatures(r)]
+        self.assertEqual(len(features), 16)
+
+        QgsProject.instance().removeMapLayer(pl)
+
 
 if __name__ == '__main__':
     unittest.main()
