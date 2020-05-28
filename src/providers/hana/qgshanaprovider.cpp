@@ -1677,10 +1677,6 @@ QgsHanaProviderMetadata::QgsHanaProviderMetadata()
 {
 }
 
-void QgsHanaProviderMetadata::initProvider()
-{
-}
-
 void QgsHanaProviderMetadata::cleanupProvider()
 {
   QgsHanaConnectionPool::cleanupInstance();

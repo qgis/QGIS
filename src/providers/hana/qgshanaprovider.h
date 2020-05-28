@@ -55,7 +55,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     static const QString HANA_KEY;
     static const QString HANA_DESCRIPTION;
 
-    explicit QgsHanaProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    QgsHanaProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
     ~QgsHanaProvider() override;
 
     /* Functions inherited from QgsVectorDataProvider */
@@ -175,8 +175,6 @@ class QgsHanaProviderMetadata : public QgsProviderMetadata
 {
   public:
     QgsHanaProviderMetadata();
-
-    void initProvider() override;
 
     void cleanupProvider() override;
 
