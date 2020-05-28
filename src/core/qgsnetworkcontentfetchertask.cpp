@@ -19,14 +19,15 @@
 #include "qgsnetworkcontentfetchertask.h"
 #include "qgsnetworkcontentfetcher.h"
 
-QgsNetworkContentFetcherTask::QgsNetworkContentFetcherTask( const QUrl &url )
-  : QgsNetworkContentFetcherTask( QNetworkRequest( url ) )
+QgsNetworkContentFetcherTask::QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg, QgsTask::Flags flags )
+  : QgsNetworkContentFetcherTask( QNetworkRequest( url ), authcfg, flags )
 {
 }
 
-QgsNetworkContentFetcherTask::QgsNetworkContentFetcherTask( const QNetworkRequest &request )
-  : QgsTask( tr( "Fetching %1" ).arg( request.url().toString() ) )
+QgsNetworkContentFetcherTask::QgsNetworkContentFetcherTask( const QNetworkRequest &request, const QString &authcfg, QgsTask::Flags flags )
+  : QgsTask( tr( "Fetching %1" ).arg( request.url().toString() ), flags )
   , mRequest( request )
+  , mAuthcfg( authcfg )
 {
 }
 
@@ -52,7 +53,7 @@ bool QgsNetworkContentFetcherTask::run()
         setProgress( progress );
     }
   } );
-  mFetcher->fetchContent( mRequest );
+  mFetcher->fetchContent( mRequest, mAuthcfg );
   loop.exec();
   if ( !isCanceled() )
     setProgress( 100 );
@@ -71,4 +72,9 @@ void QgsNetworkContentFetcherTask::cancel()
 QNetworkReply *QgsNetworkContentFetcherTask::reply()
 {
   return mFetcher ? mFetcher->reply() : nullptr;
+}
+
+QString QgsNetworkContentFetcherTask::contentAsString() const
+{
+  return mFetcher ? mFetcher->contentAsString() : QString();
 }

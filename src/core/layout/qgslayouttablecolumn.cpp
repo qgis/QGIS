@@ -51,8 +51,8 @@ bool QgsLayoutTableColumn::readXml( const QDomElement &columnElem )
 {
   mHAlignment = static_cast< Qt::AlignmentFlag >( columnElem.attribute( QStringLiteral( "hAlignment" ), QString::number( Qt::AlignLeft ) ).toInt() );
   mVAlignment = static_cast< Qt::AlignmentFlag >( columnElem.attribute( QStringLiteral( "vAlignment" ), QString::number( Qt::AlignVCenter ) ).toInt() );
-  mHeading = columnElem.attribute( QStringLiteral( "heading" ), QLatin1String( "" ) );
-  mAttribute = columnElem.attribute( QStringLiteral( "attribute" ), QLatin1String( "" ) );
+  mHeading = columnElem.attribute( QStringLiteral( "heading" ), QString() );
+  mAttribute = columnElem.attribute( QStringLiteral( "attribute" ), QString() );
   mSortByRank = columnElem.attribute( QStringLiteral( "sortByRank" ), QStringLiteral( "0" ) ).toInt();
   mSortOrder = static_cast< Qt::SortOrder >( columnElem.attribute( QStringLiteral( "sortOrder" ), QString::number( Qt::AscendingOrder ) ).toInt() );
   mWidth = columnElem.attribute( QStringLiteral( "width" ), QStringLiteral( "0.0" ) ).toDouble();
@@ -74,17 +74,4 @@ bool QgsLayoutTableColumn::readXml( const QDomElement &columnElem )
   }
 
   return true;
-}
-
-QgsLayoutTableColumn *QgsLayoutTableColumn::clone()
-{
-  std::unique_ptr< QgsLayoutTableColumn > newColumn = qgis::make_unique< QgsLayoutTableColumn >();
-  newColumn->setAttribute( mAttribute );
-  newColumn->setHeading( mHeading );
-  newColumn->setHAlignment( mHAlignment );
-  newColumn->setVAlignment( mVAlignment );
-  newColumn->setSortByRank( mSortByRank );
-  newColumn->setSortOrder( mSortOrder );
-  newColumn->setWidth( mWidth );
-  return newColumn.release();
 }

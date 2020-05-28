@@ -24,10 +24,12 @@
 #include "qgsstatusbar.h"
 #include "qgslinestring.h"
 #include "qgsmultipolygon.h"
-#include "qgsspinbox.h"
+#include "qgsdoublespinbox.h"
 #include "qgsgeometryutils.h"
 #include <memory>
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
+#include "qgsmessagebar.h"
+#include "qgssnapindicator.h"
 
 QgsMapToolCircle2TangentsPoint::QgsMapToolCircle2TangentsPoint( QgsMapToolCapture *parentTool,
     QgsMapCanvas *canvas, CaptureMode mode )
@@ -44,6 +46,16 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
 {
 
   QgsPoint mapPoint( e->mapPoint() );
+
+  if ( !currentVectorLayer() )
+  {
+    notifyNotVectorLayer();
+    clean();
+    stopCapturing();
+    e->ignore();
+    return;
+  }
+
   EdgesOnlyFilter filter;
   QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( mapPoint, &filter );
 
@@ -71,6 +83,7 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
         QgisApp::instance()->messageBar()->pushMessage( tr( "Error" ), tr( "Segments are parallels" ),
             Qgis::Critical, QgisApp::instance()->messageTimeout() );
         deactivate();
+        activate();
       }
       else
         createRadiusSpinBox();
@@ -88,19 +101,18 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
     qDeleteAll( mRubberBands );
     mRubberBands.clear();
 
-    deactivate();
     deleteRadiusSpinBox();
     mCenters.clear();
-    if ( mParentTool )
-    {
-      mParentTool->canvasReleaseEvent( e );
-    }
+    release( e );
   }
 }
 
 void QgsMapToolCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   QgsPoint mapPoint( e->mapPoint() );
+
+  mSnapIndicator->setMatch( e->mapPointMatch() );
+
   EdgesOnlyFilter filter;
   QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( mapPoint, &filter );
 
@@ -108,10 +120,7 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   {
     if ( !mTempRubberBand )
     {
-      mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
-      mTempRubberBand->setFillColor( QColor( 0, 0, 255 ) );
-      mTempRubberBand->setStrokeColor( QColor( 0, 0, 255 ) );
-      mTempRubberBand->setStrokeWidth( 2 );
+      mTempRubberBand = createGeometryRubberBand( mLayerType, true );
       mTempRubberBand->show();
     }
     else
@@ -191,14 +200,15 @@ void QgsMapToolCircle2TangentsPoint::getPossibleCenter( )
 void QgsMapToolCircle2TangentsPoint::createRadiusSpinBox()
 {
   deleteRadiusSpinBox();
-  mRadiusSpinBox = new QgsSpinBox();
+  mRadiusSpinBox = new QgsDoubleSpinBox();
   mRadiusSpinBox->setMaximum( 99999999 );
   mRadiusSpinBox->setMinimum( 0 );
+  mRadiusSpinBox->setDecimals( 2 );
   mRadiusSpinBox->setPrefix( tr( "Radius of the circle: " ) );
   mRadiusSpinBox->setValue( mRadius );
   QgisApp::instance()->addUserInputWidget( mRadiusSpinBox );
   mRadiusSpinBox->setFocus( Qt::TabFocusReason );
-  QObject::connect( mRadiusSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( radiusSpinBoxChanged( int ) ) );
+  QObject::connect( mRadiusSpinBox, qgis::overload< double >::of( &QDoubleSpinBox::valueChanged ), this, &QgsMapToolCircle2TangentsPoint::radiusSpinBoxChanged );
 }
 
 void QgsMapToolCircle2TangentsPoint::deleteRadiusSpinBox()
@@ -210,7 +220,7 @@ void QgsMapToolCircle2TangentsPoint::deleteRadiusSpinBox()
   }
 }
 
-void QgsMapToolCircle2TangentsPoint::radiusSpinBoxChanged( int radius )
+void QgsMapToolCircle2TangentsPoint::radiusSpinBoxChanged( double radius )
 {
   mRadius = radius;
   getPossibleCenter( );

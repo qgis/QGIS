@@ -34,13 +34,13 @@ static bool _initWidgetFunction( const QString &name, QgsPaintEffectWidgetFunc f
   QgsPaintEffectAbstractMetadata *abstractMetadata = registry->effectMetadata( name );
   if ( !abstractMetadata )
   {
-    QgsDebugMsg( QString( "Failed to find paint effect entry in registry: %1" ).arg( name ) );
+    QgsDebugMsg( QStringLiteral( "Failed to find paint effect entry in registry: %1" ).arg( name ) );
     return false;
   }
   QgsPaintEffectMetadata *metadata = dynamic_cast<QgsPaintEffectMetadata *>( abstractMetadata );
   if ( !metadata )
   {
-    QgsDebugMsg( QString( "Failed to cast paint effect's metadata: " ) .arg( name ) );
+    QgsDebugMsg( QStringLiteral( "Failed to cast paint effect's metadata: " ) .arg( name ) );
     return false;
   }
   metadata->setWidgetFunction( f );
@@ -91,7 +91,8 @@ void QgsPaintEffectPropertiesWidget::populateEffectTypes()
   QgsPaintEffectRegistry *registry = QgsApplication::paintEffectRegistry();
   QStringList types = registry->effects();
 
-  Q_FOREACH ( const QString &type, types )
+  const auto constTypes = types;
+  for ( const QString &type : constTypes )
   {
     //don't show stack effect
     if ( type == QLatin1String( "effectStack" ) )

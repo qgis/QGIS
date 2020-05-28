@@ -18,8 +18,8 @@
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgsvectorlayer.h"
 
-QgsClassificationWidgetWrapper::QgsClassificationWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
-  :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+QgsClassificationWidgetWrapper::QgsClassificationWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
+  :  QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
 
 {
 }
@@ -70,7 +70,7 @@ bool QgsClassificationWidgetWrapper::valid() const
   return mComboBox;
 }
 
-void QgsClassificationWidgetWrapper::setValue( const QVariant &value )
+void QgsClassificationWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   mComboBox->setCurrentIndex( mComboBox->findData( value ) );
 }

@@ -27,8 +27,7 @@ QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root,
   , mRegistryRemovingLayers( false )
   , mEnabled( true )
   , mNewLayersVisible( true )
-  , mInsertionPointGroup( root )
-  , mInsertionPointIndex( 0 )
+  , mInsertionPoint( root, 0 )
 {
   connect( mProject, &QgsProject::legendLayersAdded, this, &QgsLayerTreeRegistryBridge::layersAdded );
   connect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsLayerTreeRegistryBridge::layersWillBeRemoved );
@@ -39,8 +38,13 @@ QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root,
 
 void QgsLayerTreeRegistryBridge::setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index )
 {
-  mInsertionPointGroup = parentGroup;
-  mInsertionPointIndex = index;
+  mInsertionPoint.group = parentGroup;
+  mInsertionPoint.position = index;
+}
+
+void QgsLayerTreeRegistryBridge::setLayerInsertionPoint( const InsertionPoint &insertionPoint )
+{
+  mInsertionPoint = insertionPoint;
 }
 
 void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers )
@@ -49,7 +53,8 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers
     return;
 
   QList<QgsLayerTreeNode *> nodes;
-  Q_FOREACH ( QgsMapLayer *layer, layers )
+  const auto constLayers = layers;
+  for ( QgsMapLayer *layer : constLayers )
   {
     QgsLayerTreeLayer *nodeLayer = new QgsLayerTreeLayer( layer );
     nodeLayer->setItemVisibilityChecked( mNewLayersVisible );
@@ -66,7 +71,7 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers
   }
 
   // add new layers to the right place
-  mInsertionPointGroup->insertChildNodes( mInsertionPointIndex, nodes );
+  mInsertionPoint.group->insertChildNodes( mInsertionPoint.position, nodes );
 
   // tell other components that layers have been added - this signal is used in QGIS to auto-select the first layer
   emit addedLayersToLayerTree( layers );
@@ -74,7 +79,7 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers
 
 void QgsLayerTreeRegistryBridge::layersWillBeRemoved( const QStringList &layerIds )
 {
-  QgsDebugMsgLevel( QString( "%1 layers will be removed, enabled:%2" ).arg( layerIds.count() ).arg( mEnabled ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "%1 layers will be removed, enabled:%2" ).arg( layerIds.count() ).arg( mEnabled ), 4 );
 
   if ( !mEnabled )
     return;
@@ -83,7 +88,8 @@ void QgsLayerTreeRegistryBridge::layersWillBeRemoved( const QStringList &layerId
   // the registry _again_ in groupRemovedChildren() - this prevents it
   mRegistryRemovingLayers = true;
 
-  Q_FOREACH ( const QString &layerId, layerIds )
+  const auto constLayerIds = layerIds;
+  for ( const QString &layerId : constLayerIds )
   {
     QgsLayerTreeLayer *nodeLayer = mRoot->findLayer( layerId );
     if ( nodeLayer )
@@ -131,12 +137,13 @@ void QgsLayerTreeRegistryBridge::groupRemovedChildren()
   // remove only those that really do not exist in the tree
   // (ignores layers that were dragged'n'dropped: 1. drop new 2. remove old)
   QStringList toRemove;
-  Q_FOREACH ( const QString &layerId, mLayerIdsForRemoval )
+  const auto constMLayerIdsForRemoval = mLayerIdsForRemoval;
+  for ( const QString &layerId : constMLayerIdsForRemoval )
     if ( !mRoot->findLayer( layerId ) )
       toRemove << layerId;
   mLayerIdsForRemoval.clear();
 
-  QgsDebugMsgLevel( QString( "%1 layers will be removed" ).arg( toRemove.count() ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "%1 layers will be removed" ).arg( toRemove.count() ), 4 );
 
   // delay the removal of layers from the registry. There may be other slots connected to map layer registry's signals
   // that might disrupt the execution flow - e.g. a processEvents() call may force update of layer tree view with

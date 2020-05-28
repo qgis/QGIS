@@ -20,10 +20,12 @@
 #include "qgsapplication.h"
 #include "qgsauthoauth2config.h"
 #include "qgslogger.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include <QDir>
 #include <QSettings>
 #include <QUrl>
+#include <QUrlQuery>
 
 
 QString QgsO2::O2_OAUTH2_STATE = QStringLiteral( "state" );
@@ -31,7 +33,7 @@ QString QgsO2::O2_OAUTH2_STATE = QStringLiteral( "state" );
 QgsO2::QgsO2( const QString &authcfg, QgsAuthOAuth2Config *oauth2config,
               QObject *parent, QNetworkAccessManager *manager )
   : O2( parent, manager )
-  , mTokenCacheFile( QString::null )
+  , mTokenCacheFile( QString() )
   , mAuthcfg( authcfg )
   , mOAuth2Config( oauth2config )
 {
@@ -66,9 +68,11 @@ void QgsO2::initOAuthConfig()
   QgsDebugMsg( QStringLiteral( "localpolicy(w/port): %1" ).arg( localpolicy.arg( mOAuth2Config->redirectPort() ) ) );
   setLocalhostPolicy( localpolicy );
   setLocalPort( mOAuth2Config->redirectPort() );
+  mIsLocalHost = isLocalHost( QUrl( localpolicy.arg( mOAuth2Config->redirectPort() ) ) );
 
   setTokenUrl( mOAuth2Config->tokenUrl() );
-  setRefreshTokenUrl( mOAuth2Config->refreshTokenUrl() );
+  // refresh token url is marked as optional -- we use the token url if user has not specified a specific refresh URL
+  setRefreshTokenUrl( !mOAuth2Config->refreshTokenUrl().isEmpty() ? mOAuth2Config->refreshTokenUrl() : mOAuth2Config->tokenUrl() );
 
   setScope( mOAuth2Config->scope() );
   // TODO: add support to O2 (or this class?) for state query param
@@ -168,7 +172,7 @@ void QgsO2::link()
   setRefreshToken( QString() );
   setExpires( 0 );
 
-  if ( grantFlow_ == GrantFlowAuthorizationCode )
+  if ( grantFlow_ == GrantFlowAuthorizationCode || grantFlow_ == GrantFlowImplicit )
   {
     if ( mIsLocalHost )
     {
@@ -189,7 +193,7 @@ void QgsO2::link()
     parameters.append( qMakePair( O2_OAUTH2_STATE, state_ ) );
     parameters.append( qMakePair( QString( O2_OAUTH2_API_KEY ), apiKey_ ) );
 
-    for ( QVariantMap::const_iterator iter = extraReqParams_.begin(); iter != extraReqParams_.end(); ++iter )
+    for ( auto iter = extraReqParams_.constBegin(); iter != extraReqParams_.constEnd(); ++iter )
     {
       parameters.append( qMakePair( iter.key(), iter.value().toString() ) );
     }
@@ -218,7 +222,7 @@ void QgsO2::link()
     parameters.append( O0RequestParameter( O2_OAUTH2_API_KEY, apiKey_.toUtf8() ) );
 
 
-    for ( QVariantMap::const_iterator iter = extraReqParams_.begin(); iter != extraReqParams_.end(); ++iter )
+    for ( auto iter = extraReqParams_.constBegin(); iter != extraReqParams_.constEnd(); ++iter )
     {
       parameters.append( O0RequestParameter( iter.key().toUtf8(), iter.value().toString().toUtf8() ) );
     }
@@ -228,13 +232,23 @@ void QgsO2::link()
 
     QUrl url( tokenUrl_ );
     QNetworkRequest tokenRequest( url );
-    tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1Literal( "application/x-www-form-urlencoded" ) );
-    QNetworkReply *tokenReply = manager_->post( tokenRequest, payload );
+    QgsSetRequestInitiatorClass( tokenRequest, QStringLiteral( "QgsO2" ) );
+    tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/x-www-form-urlencoded" ) );
+    QNetworkReply *tokenReply = getManager()->post( tokenRequest, payload );
 
     connect( tokenReply, SIGNAL( finished() ), this, SLOT( onTokenReplyFinished() ), Qt::QueuedConnection );
     connect( tokenReply, SIGNAL( error( QNetworkReply::NetworkError ) ), this, SLOT( onTokenReplyError( QNetworkReply::NetworkError ) ), Qt::QueuedConnection );
   }
 }
+
+
+void QgsO2::setState( const QString & )
+{
+  qsrand( QTime::currentTime().msec() );
+  state_ = QString::number( qrand() );
+  Q_EMIT stateChanged();
+}
+
 
 void QgsO2::onVerificationReceived( QMap<QString, QString> response )
 {
@@ -250,20 +264,23 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
       return;
     }
 
-    if ( response.contains( QStringLiteral( "state" ) ) )
+    if ( !state_.isEmpty() )
     {
-      if ( response.value( QStringLiteral( "state" ), QStringLiteral( "ignore" ) ) != state_ )
+      if ( response.contains( QStringLiteral( "state" ) ) )
       {
-        QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived: Verification failed: (Response returned wrong state)" ), 3 ) ;
+        if ( response.value( QStringLiteral( "state" ), QStringLiteral( "ignore" ) ) != state_ )
+        {
+          QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived: Verification failed: (Response returned wrong state)" ), 3 ) ;
+          emit linkingFailed();
+          return;
+        }
+      }
+      else
+      {
+        QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived: Verification failed: (Response does not contain state)" ), 3 );
         emit linkingFailed();
         return;
       }
-    }
-    else
-    {
-      QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived: Verification failed: (Response does not contain state)" ), 3 );
-      emit linkingFailed();
-      return;
     }
     // Save access code
     setCode( response.value( QString( O2_OAUTH2_GRANT_TYPE_CODE ) ) );
@@ -277,6 +294,7 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
     if ( !apiKey_.isEmpty() )
       query = QStringLiteral( "?=%1" ).arg( QString( O2_OAUTH2_API_KEY ), apiKey_ );
     QNetworkRequest tokenRequest( QUrl( tokenUrl_.toString() + query ) );
+    QgsSetRequestInitiatorClass( tokenRequest, QStringLiteral( "QgsO2" ) );
     tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, O2_MIME_TYPE_XFORM );
     QMap<QString, QString> parameters;
     parameters.insert( O2_OAUTH2_GRANT_TYPE_CODE, code() );
@@ -285,14 +303,45 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
     parameters.insert( O2_OAUTH2_REDIRECT_URI, redirectUri_ );
     parameters.insert( O2_OAUTH2_GRANT_TYPE, O2_AUTHORIZATION_CODE );
     QByteArray data = buildRequestBody( parameters );
-    QNetworkReply *tokenReply = manager_->post( tokenRequest, data );
+    QNetworkReply *tokenReply = getManager()->post( tokenRequest, data );
     timedReplies_.add( tokenReply );
     connect( tokenReply, &QNetworkReply::finished, this, &QgsO2::onTokenReplyFinished, Qt::QueuedConnection );
     connect( tokenReply, qgis::overload<QNetworkReply::NetworkError>::of( &QNetworkReply::error ), this, &QgsO2::onTokenReplyError, Qt::QueuedConnection );
+  }
+  else if ( grantFlow_ == GrantFlowImplicit )
+  {
+    // Check for mandatory tokens
+    if ( response.contains( O2_OAUTH2_ACCESS_TOKEN ) )
+    {
+      qDebug() << "O2::onVerificationReceived: Access token returned for implicit flow";
+      setToken( response.value( O2_OAUTH2_ACCESS_TOKEN ) );
+      if ( response.contains( O2_OAUTH2_EXPIRES_IN ) )
+      {
+        bool ok = false;
+        int expiresIn = response.value( O2_OAUTH2_EXPIRES_IN ).toInt( &ok );
+        if ( ok )
+        {
+          qDebug() << "O2::onVerificationReceived: Token expires in" << expiresIn << "seconds";
+          setExpires( QDateTime::currentMSecsSinceEpoch() / 1000 + expiresIn );
+        }
+      }
+      setLinked( true );
+      Q_EMIT linkingSucceeded();
+    }
+    else
+    {
+      qWarning() << "O2::onVerificationReceived: Access token missing from response for implicit flow";
+      Q_EMIT linkingFailed();
+    }
   }
   else
   {
     setToken( response.value( O2_OAUTH2_ACCESS_TOKEN ) );
     setRefreshToken( response.value( O2_OAUTH2_REFRESH_TOKEN ) );
   }
+}
+
+QNetworkAccessManager *QgsO2::getManager()
+{
+  return QgsNetworkAccessManager::instance();
 }

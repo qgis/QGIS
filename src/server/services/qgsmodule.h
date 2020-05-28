@@ -17,10 +17,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgsservicemodule.h"
 #include "qgsserviceregistry.h"
 #include "qgsservice.h"
+#include "qgsserverapi.h"
 #include "qgsserverinterface.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"

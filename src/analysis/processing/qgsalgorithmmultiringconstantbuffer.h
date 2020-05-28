@@ -20,7 +20,7 @@
 
 #define SIP_NO_FILE
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
@@ -42,13 +42,16 @@ class QgsMultiRingConstantBufferAlgorithm : public QgsProcessingFeatureBasedAlgo
     QString shortHelpString() const override;
     QgsMultiRingConstantBufferAlgorithm *createInstance() const override SIP_FACTORY;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
 
     QString outputName() const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
     QgsProcessing::SourceType outputLayerType() const override { return QgsProcessing::TypeVectorPolygon; }
-    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override { Q_UNUSED( inputWkbType ); return QgsWkbTypes::Polygon; }
+    QgsProcessingFeatureSource::Flag sourceFlags() const override;
+    QgsFeatureSink::SinkFlags sinkFlags() const override;
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override { Q_UNUSED( inputWkbType ) return QgsWkbTypes::MultiPolygon; }
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
@@ -60,6 +63,7 @@ class QgsMultiRingConstantBufferAlgorithm : public QgsProcessingFeatureBasedAlgo
     double mDistance = 0.0;
     bool mDynamicDistance = false;
     QgsProperty mDistanceProperty;
+
 };
 
 ///@endcond PRIVATE

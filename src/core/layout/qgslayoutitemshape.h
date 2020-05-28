@@ -107,6 +107,8 @@ class CORE_EXPORT QgsLayoutItemShape : public QgsLayoutItem
     // rather than the item's pen
     double estimatedFrameBleed() const override;
 
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
+
   protected:
 
     void draw( QgsLayoutItemRenderContext &context ) override;

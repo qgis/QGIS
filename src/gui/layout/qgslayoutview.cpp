@@ -339,7 +339,7 @@ void QgsLayoutView::copyItems( const QList<QgsLayoutItem *> &items, QgsLayoutVie
     else if ( QgsLayoutFrame *frame = qobject_cast<QgsLayoutFrame *>( item ) )
     {
       // copy multiframe too
-      if ( !copiedMultiFrames.contains( frame->multiFrame() ) )
+      if ( frame->multiFrame() && !copiedMultiFrames.contains( frame->multiFrame() ) )
       {
         frame->multiFrame()->writeXml( documentElement, doc, context );
         copiedMultiFrames.insert( frame->multiFrame() );
@@ -364,6 +364,7 @@ void QgsLayoutView::copyItems( const QList<QgsLayoutItem *> &items, QgsLayoutVie
     if ( itemNode.isElement() )
     {
       itemNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+      itemNode.toElement().removeAttribute( QStringLiteral( "groupUuid" ) );
     }
   }
   QDomNodeList multiFrameNodes = doc.elementsByTagName( QStringLiteral( "LayoutMultiFrame" ) );
@@ -1263,7 +1264,11 @@ QgsLayoutViewSnapMarker::QgsLayoutViewSnapMarker()
 {
   QFont f;
   QFontMetrics fm( f );
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   mSize = fm.width( QStringLiteral( "X" ) );
+#else
+  mSize = fm.horizontalAdvance( 'X' );
+#endif
   setPen( QPen( Qt::transparent, mSize ) );
 
   setFlags( flags() | QGraphicsItem::ItemIgnoresTransformations );

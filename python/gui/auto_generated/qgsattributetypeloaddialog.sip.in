@@ -37,14 +37,14 @@ Sets predefined vector layer for selection of data
 %Docstring
 Returns the value map which is currently active.
 
-:return: value map of vlues selected from layer
+:return: value map of values selected from layer
 %End
 
     bool insertNull();
 %Docstring
-Returns true if the "Add NULL value" checkbox has been checked.
+Returns ``True`` if the "Add NULL value" checkbox has been checked.
 
-:return: true if the "Add NULL value" checkbox has been checked.
+:return: ``True`` if the "Add NULL value" checkbox has been checked.
 %End
 
 };

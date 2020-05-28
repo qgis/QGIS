@@ -64,7 +64,8 @@ QgsColorRamp *QgsGradientColorRamp::create( const QgsStringMap &props )
   QgsGradientStopsList stops;
   if ( props.contains( QStringLiteral( "stops" ) ) )
   {
-    Q_FOREACH ( const QString &stop, props["stops"].split( ':' ) )
+    const auto constSplit = props["stops"].split( ':' );
+    for ( const QString &stop : constSplit )
     {
       int i = stop.indexOf( ';' );
       if ( i == -1 )
@@ -419,7 +420,7 @@ int QgsRandomColorRamp::count() const
 
 double QgsRandomColorRamp::value( int index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
   return 0.0;
 }
 
@@ -551,7 +552,7 @@ double QgsColorBrewerColorRamp::value( int index ) const
 
 QColor QgsColorBrewerColorRamp::color( double value ) const
 {
-  if ( mPalette.isEmpty() || value < 0 || value > 1 )
+  if ( mPalette.isEmpty() || value < 0 || value > 1 || std::isnan( value ) )
     return QColor();
 
   int paletteEntry = static_cast< int >( value * mPalette.count() );
@@ -638,7 +639,7 @@ void QgsCptCityColorRamp::invert()
 
 QgsCptCityColorRamp *QgsCptCityColorRamp::clone() const
 {
-  QgsCptCityColorRamp *ramp = new QgsCptCityColorRamp( QLatin1String( "" ), QLatin1String( "" ), mInverted, false );
+  QgsCptCityColorRamp *ramp = new QgsCptCityColorRamp( QString(), QString(), mInverted, false );
   ramp->copy( this );
   return ramp;
 }
@@ -728,7 +729,7 @@ bool QgsCptCityColorRamp::loadFile()
     return false;
   }
 
-  QgsDebugMsg( QString( "filename= %1 loaded=%2" ).arg( filename ).arg( mFileLoaded ) );
+  QgsDebugMsg( QStringLiteral( "filename= %1 loaded=%2" ).arg( filename ).arg( mFileLoaded ) );
 
   // get color ramp from svg file
   QMap< double, QPair<QColor, QColor> > colorMap =
@@ -738,7 +739,7 @@ bool QgsCptCityColorRamp::loadFile()
   mFileLoaded = false;
   mStops.clear();
   QMap<double, QPair<QColor, QColor> >::const_iterator it, prev;
-  // first detect if file is gradient is continuous or dicrete
+  // first detect if file is gradient is continuous or discrete
   // discrete: stop contains 2 colors and first color is identical to previous second
   // multi: stop contains 2 colors and no relation with previous stop
   mDiscrete = false;
@@ -809,7 +810,8 @@ bool QgsCptCityColorRamp::loadFile()
 
 QgsPresetSchemeColorRamp::QgsPresetSchemeColorRamp( const QList<QColor> &colors )
 {
-  Q_FOREACH ( const QColor &color, colors )
+  const auto constColors = colors;
+  for ( const QColor &color : constColors )
   {
     mColors << qMakePair( color, color.name() );
   }

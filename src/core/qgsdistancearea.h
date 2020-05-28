@@ -71,14 +71,23 @@ class CORE_EXPORT QgsDistanceArea
     /**
      * Returns the source spatial reference system.
      * \see setSourceCrs()
+     * \see ellipsoidCrs()
      */
     QgsCoordinateReferenceSystem sourceCrs() const { return mCoordTransform.sourceCrs(); }
+
+    /**
+     * Returns the ellipsoid (destination) spatial reference system.
+     * \see sourceCrs()
+     * \see ellipsoid()
+     * \since QGIS 3.6
+     */
+    QgsCoordinateReferenceSystem ellipsoidCrs() const { return mCoordTransform.destinationCrs(); }
 
     /**
      * Sets the \a ellipsoid by its acronym. Known ellipsoid acronyms can be
      * retrieved using QgsEllipsoidUtils::acronyms().
      * Calculations will only use the ellipsoid if a valid ellipsoid has been set.
-     * \returns true if ellipsoid was successfully set
+     * \returns TRUE if ellipsoid was successfully set
      * \see ellipsoid()
      * \see willUseEllipsoid()
      */
@@ -87,7 +96,7 @@ class CORE_EXPORT QgsDistanceArea
     /**
      * Sets ellipsoid by supplied radii. Calculations will only use the ellipsoid if
      * a valid ellipsoid been set.
-     * \returns true if ellipsoid was successfully set
+     * \returns TRUE if ellipsoid was successfully set
      * \see ellipsoid()
      * \see willUseEllipsoid()
      */
@@ -98,6 +107,7 @@ class CORE_EXPORT QgsDistanceArea
      * ellipsoid if a valid ellipsoid has been set.
      * \see setEllipsoid()
      * \see willUseEllipsoid()
+     * \see ellipsoidCrs()
      */
     QString ellipsoid() const { return mEllipsoid; }
 
@@ -224,7 +234,7 @@ class CORE_EXPORT QgsDistanceArea
      * \param distance distance to format
      * \param decimals number of decimal places to show
      * \param unit unit of distance
-     * \param keepBaseUnit set to false to allow conversion of large distances to more suitable units, e.g., meters to
+     * \param keepBaseUnit set to FALSE to allow conversion of large distances to more suitable units, e.g., meters to
      * kilometers
      * \returns formatted distance string
      * \see formatArea()
@@ -237,7 +247,7 @@ class CORE_EXPORT QgsDistanceArea
      * \param area area to format
      * \param decimals number of decimal places to show
      * \param unit unit of area
-     * \param keepBaseUnit set to false to allow conversion of large areas to more suitable units, e.g., square meters to
+     * \param keepBaseUnit set to FALSE to allow conversion of large areas to more suitable units, e.g., square meters to
      * square kilometers
      * \returns formatted area string
      * \see formatDistance()
@@ -288,6 +298,70 @@ class CORE_EXPORT QgsDistanceArea
      */
     QgsPointXY computeSpheroidProject( const QgsPointXY &p1, double distance = 1, double azimuth = M_PI_2 ) const;
 
+    /**
+     * Calculates the geodesic line between \a p1 and \a p2, which represents the shortest path on the
+     * ellipsoid between these two points.
+     *
+     * The ellipsoid settings defined on this QgsDistanceArea object will be used during the calculations.
+     *
+     * \a p1 and \a p2 must be in the sourceCrs() of this QgsDistanceArea object. The returned line
+     * will also be in this same CRS.
+     *
+     * The \a interval parameter gives the maximum distance between points on the computed line.
+     * This argument is always specified in meters. A shorter distance results in a denser line,
+     * at the cost of extra computing time.
+     *
+     * If the geodesic line crosses the antimeridian (+/- 180 degrees longitude) and \a breakLine is TRUE, then
+     * the line will be split into two parts, broken at the antimeridian. In this case the function
+     * will return two lines, corresponding to the portions at either side of the antimeridian.
+     *
+     * \since QGIS 3.6
+     */
+    QVector<QVector<QgsPointXY> > geodesicLine( const QgsPointXY &p1, const QgsPointXY &p2, double interval, bool breakLine = false ) const;
+
+    /**
+     * Calculates the latitude at which the geodesic line joining \a p1 and \a p2 crosses
+     * the antimeridian (longitude +/- 180 degrees).
+     *
+     * The ellipsoid settings defined on this QgsDistanceArea object will be used during the calculations.
+     *
+     * \a p1 and \a p2 must be in the ellipsoidCrs() of this QgsDistanceArea object. The returned latitude
+     * will also be in this same CRS.
+     *
+     * \param p1 Starting point, in ellipsoidCrs()
+     * \param p2 Ending point, in ellipsoidCrs()
+     * \param fractionAlongLine will be set to the fraction along the geodesic line joining \a p1 to \a p2 at which the antimeridian crossing occurs.
+     *
+     * \returns the latitude at which the geodesic crosses the antimeridian
+     * \see splitGeometryAtAntimeridian()
+     *
+     * \since QGIS 3.6
+     */
+    double latitudeGeodesicCrossesAntimeridian( const QgsPointXY &p1, const QgsPointXY &p2, double &fractionAlongLine SIP_OUT ) const;
+
+    /**
+     * Splits a (Multi)LineString \a geometry at the antimeridian (longitude +/- 180 degrees).
+     * The returned geometry will always be a multi-part geometry.
+     *
+     * Whenever line segments in the input geometry cross the antimeridian, they will be
+     * split into two segments, with the latitude of the breakpoint being determined using a geodesic
+     * line connecting the points either side of this segment.
+     *
+     * The ellipsoid settings defined on this QgsDistanceArea object will be used during the calculations.
+     *
+     * \a geometry must be in the sourceCrs() of this QgsDistanceArea object. The returned geometry
+     * will also be in this same CRS.
+     *
+     * If \a geometry contains M or Z values, these will be linearly interpolated for the new vertices
+     * created at the antimeridian.
+     *
+     * \note Non-(Multi)LineString geometries will be returned unchanged.
+     *
+     * \see latitudeGeodesicCrossesAntimeridian()
+     * \since QGIS 3.6
+     */
+    QgsGeometry splitGeometryAtAntimeridian( const QgsGeometry &geometry ) const;
+
   private:
 
     /**
@@ -297,7 +371,7 @@ class CORE_EXPORT QgsDistanceArea
      * Points \a p1 and \a p2 are expected to be in degrees and in currently used ellipsoid
      *
      * \returns distance in meters
-     * \note if course1 is not NULL, bearing (in radians) from first point is calculated
+     * \note if course1 is not NULLPTR, bearing (in radians) from first point is calculated
      * (the same for course2)
      */
     double computeDistanceBearing( const QgsPointXY &p1, const QgsPointXY &p2,

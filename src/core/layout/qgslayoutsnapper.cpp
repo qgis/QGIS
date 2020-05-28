@@ -282,7 +282,8 @@ double QgsLayoutSnapper::snapPointsToGuides( const QList<double> &points, Qt::Or
 
   for ( double p : points )
   {
-    Q_FOREACH ( QgsLayoutGuide *guide, mLayout->guides().guides( orientation ) )
+    const auto constGuides = mLayout->guides().guides( orientation );
+    for ( QgsLayoutGuide *guide : constGuides )
     {
       double guidePos = guide->layoutPosition();
       double diff = std::fabs( p - guidePos );

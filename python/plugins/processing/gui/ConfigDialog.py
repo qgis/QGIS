@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import warnings
 
@@ -59,7 +55,6 @@ from processing.core.ProcessingConfig import (ProcessingConfig,
 from processing.core.Processing import Processing
 from processing.gui.DirectorySelectorDialog import DirectorySelectorDialog
 from processing.gui.menus import defaultMenuEntries, menusSettingsGroup
-
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 with warnings.catch_warnings():
@@ -111,11 +106,7 @@ class ConfigDialog(BASE, WIDGET):
         super(ConfigDialog, self).__init__(None)
         self.setupUi(self)
 
-        self.groupIcon = QIcon()
-        self.groupIcon.addPixmap(self.style().standardPixmap(
-            QStyle.SP_DirClosedIcon), QIcon.Normal, QIcon.Off)
-        self.groupIcon.addPixmap(self.style().standardPixmap(
-            QStyle.SP_DirOpenIcon), QIcon.Normal, QIcon.On)
+        self.groupIcon = QgsApplication.getThemeIcon('mIconFolder.svg')
 
         self.model = QStandardItemModel()
         self.tree.setModel(self.model)
@@ -198,7 +189,7 @@ class ConfigDialog(BASE, WIDGET):
             emptyItem.setEditable(False)
 
             rootItem.insertRow(0, [groupItem, emptyItem])
-            if not group in settings:
+            if group not in settings:
                 continue
 
             # add menu item only if it has any search matches
@@ -471,7 +462,7 @@ class FileDirectorySelector(QWidget):
                                                             QFileDialog.ShowDirsOnly)
         else:
             selectedPath, selected_filter = QFileDialog.getOpenFileName(None,
-                                                                        self.tr('Select file'), lastDir, self.tr('All files (*.*)')
+                                                                        self.tr('Select file'), lastDir, self.tr('All files (*)')
                                                                         )
 
         if not selectedPath:

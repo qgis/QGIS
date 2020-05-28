@@ -18,9 +18,9 @@
 #include "qgslogger.h"
 #include "qgsexpression.h"
 #include "qgsexpressionnodeimpl.h"
-#include "qgsfeature.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
+#include "qgspointxy.h"
 
 
 //
@@ -63,6 +63,8 @@ QgsPropertyTransformer &QgsPropertyTransformer::operator=( const QgsPropertyTran
   mCurveTransform.reset( other.mCurveTransform ? new QgsCurveTransform( *other.mCurveTransform ) : nullptr );
   return *this;
 }
+
+QgsPropertyTransformer::~QgsPropertyTransformer() = default;
 
 bool QgsPropertyTransformer::loadVariant( const QVariant &transformer )
 {
@@ -175,6 +177,9 @@ bool QgsGenericNumericTransformer::loadVariant( const QVariant &transformer )
 
 double QgsGenericNumericTransformer::value( double input ) const
 {
+  if ( qgsDoubleNear( mMaxValue, mMinValue ) )
+    return qBound( mMinOutput, input, mMaxOutput );
+
   input = transformNumeric( input );
   if ( qgsDoubleNear( mExponent, 1.0 ) )
     return mMinOutput + ( qBound( mMinValue, input, mMaxValue ) - mMinValue ) * ( mMaxOutput - mMinOutput ) / ( mMaxValue - mMinValue );
@@ -184,7 +189,7 @@ double QgsGenericNumericTransformer::value( double input ) const
 
 QVariant QgsGenericNumericTransformer::transform( const QgsExpressionContext &context, const QVariant &v ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 
   if ( v.isNull() )
     return mNullOutput;
@@ -388,7 +393,7 @@ void QgsSizeScaleTransformer::setType( QgsSizeScaleTransformer::ScaleType type )
 
 QVariant QgsSizeScaleTransformer::transform( const QgsExpressionContext &context, const QVariant &value ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 
   if ( value.isNull() )
     return mNullSize;
@@ -591,7 +596,7 @@ bool QgsColorRampTransformer::loadVariant( const QVariant &definition )
 
 QVariant QgsColorRampTransformer::transform( const QgsExpressionContext &context, const QVariant &value ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
 
   if ( value.isNull() )
     return mNullColor;
@@ -619,7 +624,7 @@ QString QgsColorRampTransformer::toExpression( const QString &baseExpression ) c
   QString maxValueString = QString::number( mMaxValue );
   QString nullColorString = mNullColor.name();
 
-  return QStringLiteral( "coalesce(ramp_color('%1',scale_linear(%2, %3, %4, 0, 1), '%5')" ).arg( !mRampName.isEmpty() ? mRampName : QStringLiteral( "custom ramp" ),
+  return QStringLiteral( "coalesce(ramp_color('%1',scale_linear(%2, %3, %4, 0, 1)), '%5')" ).arg( !mRampName.isEmpty() ? mRampName : QStringLiteral( "custom ramp" ),
          baseExpression, minValueString, maxValueString, nullColorString );
 }
 
@@ -805,7 +810,8 @@ QVector<double> QgsCurveTransform::y( const QVector<double> &x ) const
   if ( n < 3 )
   {
     // invalid control points - use simple transform
-    Q_FOREACH ( double i, x )
+    const auto constX = x;
+    for ( double i : constX )
       result << y( i );
 
     return result;
@@ -894,7 +900,8 @@ bool QgsCurveTransform::writeXml( QDomElement &transformElem, QDomDocument & ) c
 {
   QStringList x;
   QStringList y;
-  Q_FOREACH ( const QgsPointXY &p, mControlPoints )
+  const auto constMControlPoints = mControlPoints;
+  for ( const QgsPointXY &p : constMControlPoints )
   {
     x << qgsDoubleToString( p.x() );
     y << qgsDoubleToString( p.y() );
@@ -912,7 +919,8 @@ QVariant QgsCurveTransform::toVariant() const
 
   QStringList x;
   QStringList y;
-  Q_FOREACH ( const QgsPointXY &p, mControlPoints )
+  const auto constMControlPoints = mControlPoints;
+  for ( const QgsPointXY &p : constMControlPoints )
   {
     x << qgsDoubleToString( p.x() );
     y << qgsDoubleToString( p.y() );

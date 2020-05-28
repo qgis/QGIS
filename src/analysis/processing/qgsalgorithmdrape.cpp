@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmdrape.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -170,7 +171,7 @@ QString QgsDrapeToZAlgorithm::name() const
 
 QString QgsDrapeToZAlgorithm::displayName() const
 {
-  return QObject::tr( "Drape (set z-value from raster)" );
+  return QObject::tr( "Drape (set Z value from raster)" );
 }
 
 QStringList QgsDrapeToZAlgorithm::tags() const
@@ -193,6 +194,17 @@ QString QgsDrapeToZAlgorithm::shortDescription() const
 QgsDrapeToZAlgorithm *QgsDrapeToZAlgorithm::createInstance() const
 {
   return new QgsDrapeToZAlgorithm();
+}
+
+bool QgsDrapeToZAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
+{
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  if ( !layer )
+    return false;
+
+  if ( ! QgsDrapeAlgorithmBase::supportInPlaceEdit( layer ) )
+    return false;
+  return QgsWkbTypes::hasZ( layer->wkbType() );
 }
 
 QgsWkbTypes::Type QgsDrapeToZAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
@@ -222,7 +234,7 @@ QString QgsDrapeToMAlgorithm::name() const
 
 QString QgsDrapeToMAlgorithm::displayName() const
 {
-  return QObject::tr( "Set m-value from raster" );
+  return QObject::tr( "Set M value from raster" );
 }
 
 QStringList QgsDrapeToMAlgorithm::tags() const
@@ -232,19 +244,30 @@ QStringList QgsDrapeToMAlgorithm::tags() const
 
 QString QgsDrapeToMAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm sets the m-value for every vertex in the feature geometry to a value sampled from a band within a raster layer." )
+  return QObject::tr( "This algorithm sets the M value for every vertex in the feature geometry to a value sampled from a band within a raster layer." )
          + QStringLiteral( "\n\n" )
          + QObject::tr( "The raster values can optionally be scaled by a preset amount." );
 }
 
 QString QgsDrapeToMAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Sets the m-value for vertices to values sampled from a raster layer." );
+  return QObject::tr( "Sets the M value for vertices to values sampled from a raster layer." );
 }
 
 QgsDrapeToMAlgorithm *QgsDrapeToMAlgorithm::createInstance() const
 {
   return new QgsDrapeToMAlgorithm();
+}
+
+bool QgsDrapeToMAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
+{
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  if ( !layer )
+    return false;
+
+  if ( ! QgsDrapeAlgorithmBase::supportInPlaceEdit( layer ) )
+    return false;
+  return QgsWkbTypes::hasM( layer->wkbType() );
 }
 
 QgsWkbTypes::Type QgsDrapeToMAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const

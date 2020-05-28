@@ -360,8 +360,8 @@ void TestQgsPaintEffect::blur()
   QCOMPARE( effect->opacity(), 0.5 );
   effect->setEnabled( false );
   QCOMPARE( effect->enabled(), false );
-  effect->setBlurLevel( 6 );
-  QCOMPARE( effect->blurLevel(), 6 );
+  effect->setBlurLevel( 6.0 );
+  QCOMPARE( effect->blurLevel(), 6.0 );
   effect->setBlurMethod( QgsBlurEffect::GaussianBlur );
   QCOMPARE( effect->blurMethod(), QgsBlurEffect::GaussianBlur );
   effect->setDrawMode( QgsPaintEffect::Modifier );
@@ -434,8 +434,8 @@ void TestQgsPaintEffect::dropShadow()
   QCOMPARE( effect->opacity(), 0.5 );
   effect->setEnabled( false );
   QCOMPARE( effect->enabled(), false );
-  effect->setBlurLevel( 6 );
-  QCOMPARE( effect->blurLevel(), 6 );
+  effect->setBlurLevel( 6.0 );
+  QCOMPARE( effect->blurLevel(), 6.0 );
   effect->setOffsetAngle( 77 );
   QCOMPARE( effect->offsetAngle(), 77 );
   effect->setOffsetDistance( 9.7 );
@@ -531,8 +531,8 @@ void TestQgsPaintEffect::glow()
   QCOMPARE( effect->opacity(), 0.5 );
   effect->setEnabled( false );
   QCOMPARE( effect->enabled(), false );
-  effect->setBlurLevel( 6 );
-  QCOMPARE( effect->blurLevel(), 6 );
+  effect->setBlurLevel( 6.0 );
+  QCOMPARE( effect->blurLevel(), 6.0 );
   effect->setSpread( 7.8 );
   QCOMPARE( effect->spread(), 7.8 );
   effect->setSpreadUnit( QgsUnitTypes::RenderMapUnits );

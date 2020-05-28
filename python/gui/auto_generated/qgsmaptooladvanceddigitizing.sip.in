@@ -79,7 +79,7 @@ For example, in vertex tool before user picks a vertex to move, advanced digitiz
 widget should be disabled and only enabled once a vertex is being moved. Other map tools
 may keep advanced digitizing allowed all the time.
 
-If true is returned, that does not mean that advanced digitizing is actually active,
+If ``True`` is returned, that does not mean that advanced digitizing is actually active,
 because it is up to the user to enable/disable it when it is allowed.
 \sa setAdvancedDigitizingAllowed()
 
@@ -117,6 +117,8 @@ This method is protected because it should be a decision of the map tool and not
 .. versionadded:: 3.0
 %End
 
+
+
   public:
 
     virtual void cadCanvasPressEvent( QgsMapMouseEvent *e );
@@ -149,6 +151,22 @@ canvasMoveEvent is triggered and it's not hidden by the cad's
 construction mode.
 
 :param e: Mouse events prepared by the cad system
+%End
+
+    bool snapToLayerGridEnabled() const;
+%Docstring
+Enables or disables snap to grid of mouse events.
+The snapping will occur in the layer's CRS.
+
+.. versionadded:: 3.4
+%End
+
+    void setSnapToLayerGridEnabled( bool snapToLayerGridEnabled );
+%Docstring
+Enables or disables snap to grid of mouse events.
+The snapping will occur in the layer's CRS.
+
+.. versionadded:: 3.4
 %End
 
 };

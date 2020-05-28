@@ -51,6 +51,8 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
   private slots:
     //! layers are rendered, labeling is still pending
     void renderLayersFinished();
+    //! the second pass of layer rendering is finished
+    void renderLayersSecondPassFinished();
     //! all rendering is finished, including labeling
     void renderingFinished();
 
@@ -64,13 +66,17 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
     QImage mFinalImage;
 
     //! \note not available in Python bindings
-    enum { Idle, RenderingLayers, RenderingLabels } mStatus SIP_SKIP;
+    enum { Idle, RenderingLayers, RenderingSecondPass, RenderingLabels } mStatus SIP_SKIP;
 
     QFuture<void> mFuture;
     QFutureWatcher<void> mFutureWatcher;
 
     LayerRenderJobs mLayerJobs;
     LabelRenderJob mLabelJob;
+
+    LayerRenderJobs mSecondPassLayerJobs;
+    QFuture<void> mSecondPassFuture;
+    QFutureWatcher<void> mSecondPassFutureWatcher;
 
     //! New labeling engine
     std::unique_ptr< QgsLabelingEngine > mLabelingEngineV2;

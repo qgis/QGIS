@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>603</width>
-    <height>335</height>
+    <width>390</width>
+    <height>548</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <item>
     <widget class="QGroupBox" name="grpEnable">
      <property name="title">
-      <string>Enable grid</string>
+      <string>Enable Grid</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -29,234 +29,17 @@
       <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="3" rowspan="8">
-       <widget class="QGroupBox" name="mDrawAnnotationCheckBox">
-        <property name="title">
-         <string>Draw annotation</string>
+      <item row="3" column="1">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>X</string>
         </property>
-        <property name="flat">
-         <bool>false</bool>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-        <layout class="QGridLayout" name="gridLayout">
-         <property name="sizeConstraint">
-          <enum>QLayout::SetMinimumSize</enum>
-         </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="mAnnotationDirectionLabel">
-           <property name="frameShape">
-            <enum>QFrame::NoFrame</enum>
-           </property>
-           <property name="text">
-            <string>Annotation direction</string>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QComboBox" name="mAnnotationDirectionComboBox"/>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="mDistanceToFrameLabel">
-           <property name="text">
-            <string>Distance to map frame</string>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QDoubleSpinBox" name="mDistanceToMapFrameSpinBox"/>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="mCoordinatePrecisionLabel">
-           <property name="text">
-            <string>Coordinate precision</string>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QSpinBox" name="mCoordinatePrecisionSpinBox"/>
-         </item>
-         <item row="1" column="0" colspan="2">
-          <widget class="QgsFontButton" name="mAnnotationFontButton">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Font</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
        </widget>
       </item>
       <item row="1" column="2">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>10</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="mIntervalYLabel">
-        <property name="text">
-         <string>Interval Y</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLineEdit" name="mIntervalYEdit"/>
-      </item>
-      <item row="3" column="0" colspan="2">
-       <widget class="Line" name="line_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="mGridTypeLabel">
-        <property name="accessibleName">
-         <string extracomment="Hello translotor"/>
-        </property>
-        <property name="text">
-         <string>Grid type</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QComboBox" name="mGridTypeComboBox">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>100</width>
-          <height>0</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="mLineSymbolLabel">
-        <property name="text">
-         <string>Line symbol</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="mMarkerSymbolLabel">
-        <property name="text">
-         <string>Marker symbol</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="0" colspan="2">
-       <widget class="Line" name="line_3">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="0">
-       <widget class="QLabel" name="mOffsetXLabel">
-        <property name="text">
-         <string>Offset X</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="1">
-       <widget class="QLineEdit" name="mOffsetXEdit"/>
-      </item>
-      <item row="8" column="3" rowspan="2">
-       <widget class="QGroupBox" name="groupBox">
-        <property name="title">
-         <string>Update Interval / Offset from</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_2">
-         <item row="0" column="0">
-          <widget class="QPushButton" name="mPbtnUpdateFromExtents">
-           <property name="text">
-            <string>Canvas Extents</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QPushButton" name="mPbtnUpdateFromLayer">
-           <property name="text">
-            <string>Active Raster Layer</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="9" column="0">
-       <widget class="QLabel" name="mOffsetYLabel">
-        <property name="text">
-         <string>Offset Y</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="1">
-       <widget class="QLineEdit" name="mOffsetYEdit"/>
-      </item>
-      <item row="0" column="1" rowspan="2">
-       <widget class="QLineEdit" name="mIntervalXEdit"/>
-      </item>
-      <item row="0" column="0" rowspan="2">
-       <widget class="QLabel" name="mIntervalXLabel">
-        <property name="text">
-         <string>Interval X</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
        <widget class="QgsSymbolButton" name="mLineSymbolButton">
         <property name="enabled">
          <bool>false</bool>
@@ -278,7 +61,124 @@
         </property>
        </widget>
       </item>
+      <item row="9" column="0" colspan="3">
+       <layout class="QGridLayout" name="gridLayout_4">
+        <property name="leftMargin">
+         <number>9</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>9</number>
+        </property>
+        <item row="0" column="1">
+         <widget class="QPushButton" name="mPbtnUpdateFromLayer">
+          <property name="text">
+           <string>Active Raster Layer</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QPushButton" name="mPbtnUpdateFromExtents">
+          <property name="text">
+           <string>Canvas Extents</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="7" column="1">
+       <widget class="QLabel" name="mOffsetYLabel">
+        <property name="text">
+         <string>Y</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QLineEdit" name="mIntervalYEdit"/>
+      </item>
+      <item row="3" column="2">
+       <widget class="QLineEdit" name="mIntervalXEdit"/>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLabel" name="mIntervalYLabel">
+        <property name="text">
+         <string>Y</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="2">
+       <widget class="QLabel" name="mGridTypeLabel">
+        <property name="accessibleName">
+         <string extracomment="Hello translotor"/>
+        </property>
+        <property name="text">
+         <string>Grid type</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
       <item row="6" column="1">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>X</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QComboBox" name="mGridTypeComboBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QLabel" name="mLineSymbolLabel">
+        <property name="text">
+         <string>Line symbol</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="2">
+       <widget class="QLineEdit" name="mOffsetYEdit"/>
+      </item>
+      <item row="6" column="2">
+       <widget class="QLineEdit" name="mOffsetXEdit"/>
+      </item>
+      <item row="2" column="2">
        <widget class="QgsSymbolButton" name="mMarkerSymbolButton">
         <property name="enabled">
          <bool>false</bool>
@@ -300,25 +200,140 @@
         </property>
        </widget>
       </item>
+      <item row="3" column="0" rowspan="2">
+       <widget class="QLabel" name="mIntervalXLabel">
+        <property name="text">
+         <string>Interval</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QLabel" name="mMarkerSymbolLabel">
+        <property name="text">
+         <string>Marker symbol</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0" rowspan="2">
+       <widget class="QLabel" name="mOffsetXLabel">
+        <property name="text">
+         <string>Offset</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="18" column="0" colspan="3">
+       <widget class="QGroupBox" name="mDrawAnnotationCheckBox">
+        <property name="title">
+         <string>Draw Annotation</string>
+        </property>
+        <property name="flat">
+         <bool>false</bool>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+        <layout class="QGridLayout" name="gridLayout">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetMinimumSize</enum>
+         </property>
+         <item row="3" column="1">
+          <widget class="QSpinBox" name="mCoordinatePrecisionSpinBox"/>
+         </item>
+         <item row="2" column="1">
+          <widget class="QDoubleSpinBox" name="mDistanceToMapFrameSpinBox"/>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="mAnnotationDirectionComboBox"/>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="mCoordinatePrecisionLabel">
+           <property name="text">
+            <string>Coordinate precision</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="mDistanceToFrameLabel">
+           <property name="text">
+            <string>Distance to map frame</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="mAnnotationDirectionLabel">
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
+           <property name="text">
+            <string>Annotation direction</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QgsFontButton" name="mAnnotationFontButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Font</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="mAnnotationFontLabel">
+           <property name="text">
+            <string>Annotation font</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="19" column="0" colspan="3">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="8" column="0" colspan="3">
+       <widget class="QLabel" name="mUpdateIntervalOffsetLabel">
+        <property name="text">
+         <string>Update Interval / Offset from</string>
+        </property>
+       </widget>
+      </item>
      </layout>
-     <zorder>mOffsetYEdit</zorder>
-     <zorder>mOffsetXEdit</zorder>
-     <zorder>mDrawAnnotationCheckBox</zorder>
-     <zorder>mLineSymbolLabel</zorder>
-     <zorder>groupBox</zorder>
-     <zorder>mLineSymbolButton</zorder>
-     <zorder>mMarkerSymbolButton</zorder>
-     <zorder>mMarkerSymbolLabel</zorder>
-     <zorder>mIntervalXEdit</zorder>
-     <zorder>line_2</zorder>
-     <zorder>line_3</zorder>
-     <zorder>mIntervalYEdit</zorder>
-     <zorder>mIntervalXLabel</zorder>
-     <zorder>mOffsetXLabel</zorder>
-     <zorder>mGridTypeComboBox</zorder>
-     <zorder>mGridTypeLabel</zorder>
-     <zorder>mIntervalYLabel</zorder>
-     <zorder>mOffsetYLabel</zorder>
     </widget>
    </item>
    <item>
@@ -335,33 +350,32 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsSymbolButton</class>
-   <extends>QToolButton</extends>
-   <header>qgssymbolbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsFontButton</class>
    <extends>QToolButton</extends>
    <header>qgsfontbutton.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>grpEnable</tabstop>
-  <tabstop>mIntervalXEdit</tabstop>
-  <tabstop>mIntervalYEdit</tabstop>
   <tabstop>mGridTypeComboBox</tabstop>
   <tabstop>mLineSymbolButton</tabstop>
   <tabstop>mMarkerSymbolButton</tabstop>
+  <tabstop>mIntervalXEdit</tabstop>
+  <tabstop>mIntervalYEdit</tabstop>
   <tabstop>mOffsetXEdit</tabstop>
   <tabstop>mOffsetYEdit</tabstop>
+  <tabstop>mPbtnUpdateFromExtents</tabstop>
+  <tabstop>mPbtnUpdateFromLayer</tabstop>
   <tabstop>mDrawAnnotationCheckBox</tabstop>
   <tabstop>mAnnotationDirectionComboBox</tabstop>
   <tabstop>mAnnotationFontButton</tabstop>
   <tabstop>mDistanceToMapFrameSpinBox</tabstop>
   <tabstop>mCoordinatePrecisionSpinBox</tabstop>
-  <tabstop>mPbtnUpdateFromExtents</tabstop>
-  <tabstop>mPbtnUpdateFromLayer</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

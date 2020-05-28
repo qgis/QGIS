@@ -18,7 +18,7 @@
 #define QGSHISTOGRAMWIDGET_H
 
 #include "ui_qgshistogramwidgetbase.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include "qgshistogram.h"
 #include "qgsstatisticalsummary.h"

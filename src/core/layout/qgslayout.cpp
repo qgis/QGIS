@@ -28,6 +28,9 @@
 #include "qgslayoutitemmap.h"
 #include "qgslayoutundostack.h"
 #include "qgscompositionconverter.h"
+#include "qgsvectorlayer.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsstyleentityvisitor.h"
 
 QgsLayout::QgsLayout( QgsProject *project )
   : mProject( project )
@@ -468,7 +471,8 @@ QRectF QgsLayout::layoutBounds( bool ignorePages, double margin ) const
   QRectF bounds;
 
   //add all layout items and pages which are in the layout
-  Q_FOREACH ( const QGraphicsItem *item, items() )
+  const auto constItems = items();
+  for ( const QGraphicsItem *item : constItems )
   {
     const QgsLayoutItem *layoutItem = dynamic_cast<const QgsLayoutItem *>( item );
     if ( !layoutItem )
@@ -781,6 +785,21 @@ QList<QgsLayoutItem *> QgsLayout::ungroupItems( QgsLayoutItemGroup *group )
   return ungroupedItems;
 }
 
+bool QgsLayout::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  const QList< QGraphicsItem * > constItems = items();
+  for ( const QGraphicsItem *item : constItems )
+  {
+    const QgsLayoutItem *layoutItem = dynamic_cast<const QgsLayoutItem *>( item );
+    if ( !layoutItem )
+      continue;
+
+    if ( !layoutItem->accept( visitor ) )
+      return false;
+  }
+  return true;
+}
+
 void QgsLayout::refresh()
 {
   mUndoStack->blockCommands( true );
@@ -827,7 +846,8 @@ QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteConte
   //save multiframes
   for ( QgsLayoutMultiFrame *mf : mMultiFrames )
   {
-    mf->writeXml( element, document, context );
+    if ( mf->frameCount() > 0 )
+      mf->writeXml( element, document, context );
   }
 
   writeXmlLayoutSettings( element, document, context );
@@ -850,6 +870,7 @@ void QgsLayout::addLayoutItemPrivate( QgsLayoutItem *item )
   addItem( item );
   updateBounds();
   mItemsModel->rebuildZList();
+  connect( item, &QgsLayoutItem::backgroundTaskCountChanged, this, &QgsLayout::itemBackgroundTaskCountChanged );
 }
 
 void QgsLayout::removeLayoutItemPrivate( QgsLayoutItem *item )
@@ -1079,4 +1100,25 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
 void QgsLayout::updateBounds()
 {
   setSceneRect( layoutBounds( false, 0.05 ) );
+}
+
+void QgsLayout::itemBackgroundTaskCountChanged( int count )
+{
+  QgsLayoutItem *item = qobject_cast<QgsLayoutItem *>( sender() );
+  if ( !item )
+    return;
+
+  if ( count > 0 )
+    mBackgroundTaskCount.insert( item, count );
+  else
+    mBackgroundTaskCount.remove( item );
+
+  // sum up new count of background tasks
+  int total = 0;
+  for ( auto it = mBackgroundTaskCount.constBegin(); it != mBackgroundTaskCount.constEnd(); ++it )
+  {
+    total += it.value();
+  }
+
+  emit backgroundTaskCountChanged( total );
 }

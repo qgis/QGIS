@@ -26,7 +26,7 @@ Save scales to the given file
 :param errorMessage: it will contain the error message if something
                      went wrong
 
-:return: true on success and false if failed
+:return: ``True`` on success and ``False`` if failed
 %End
 
     static bool loadScaleList( const QString &fileName, QStringList &scales, QString &errorMessage );
@@ -38,7 +38,7 @@ Load scales from the given file
 :param errorMessage: it will contain the error message if something
                      went wrong
 
-:return: true on success and false if failed
+:return: ``True`` on success and ``False`` if failed
 %End
 };
 

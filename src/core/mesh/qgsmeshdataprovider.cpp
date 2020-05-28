@@ -15,162 +15,32 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmeshdataprovider.h"
 #include "qgis.h"
-
-
-QgsMeshDatasetIndex::QgsMeshDatasetIndex( int group, int dataset ):
-  mGroupIndex( group ), mDatasetIndex( dataset ) {}
-
-int QgsMeshDatasetIndex::group() const
-{
-  return mGroupIndex;
-}
-
-int QgsMeshDatasetIndex::dataset() const
-{
-  return mDatasetIndex;
-}
-
-bool QgsMeshDatasetIndex::isValid() const
-{
-  return ( group() > -1 ) && ( dataset() > -1 );
-}
-
-bool QgsMeshDatasetIndex::operator ==( const QgsMeshDatasetIndex &other ) const
-{
-  return other.group() == group() && other.dataset() == dataset();
-}
-
+#include "qgsmeshdataprovider.h"
+#include "qgsmeshdataprovidertemporalcapabilities.h"
+#include "qgsrectangle.h"
 
 QgsMeshDataProvider::QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
-  : QgsDataProvider( uri, options )
+  : QgsDataProvider( uri, options ), mTemporalCapabilities( qgis::make_unique<QgsMeshDataProviderTemporalCapabilities>() )
 {
 }
 
-
-QgsRectangle QgsMeshDataProvider::extent() const
+QgsMeshDataProviderTemporalCapabilities *QgsMeshDataProvider::temporalCapabilities()
 {
-  QgsRectangle rec;
-  rec.setMinimal();
-  for ( int i = 0; i < vertexCount(); ++i )
-  {
-    QgsMeshVertex v = vertex( i );
-    rec.setXMinimum( std::min( rec.xMinimum(), v.x() ) );
-    rec.setYMinimum( std::min( rec.yMinimum(), v.y() ) );
-    rec.setXMaximum( std::max( rec.xMaximum(), v.x() ) );
-    rec.setYMaximum( std::max( rec.yMaximum(), v.y() ) );
-  }
-  return rec;
-
+  return mTemporalCapabilities.get();
 }
 
-QgsMeshDatasetValue::QgsMeshDatasetValue( double x, double y )
-  : mX( x ), mY( y )
-{}
-
-QgsMeshDatasetValue::QgsMeshDatasetValue( double scalar )
-  : mX( scalar )
-{}
-
-double QgsMeshDatasetValue::scalar() const
+const QgsMeshDataProviderTemporalCapabilities *QgsMeshDataProvider::temporalCapabilities() const
 {
-  if ( std::isnan( mY ) )
-  {
-    return mX;
-  }
-  else if ( std::isnan( mX ) )
-  {
-    return std::numeric_limits<double>::quiet_NaN();
-  }
-  else
-  {
-    return std::sqrt( ( mX ) * ( mX ) + ( mY ) * ( mY ) );
-  }
+  return mTemporalCapabilities.get();
 }
 
-void QgsMeshDatasetValue::set( double scalar )
+void QgsMeshDataProvider::setTemporalUnit( QgsUnitTypes::TemporalUnit unit )
 {
-  setX( scalar );
-}
-
-void QgsMeshDatasetValue::setX( double x )
-{
-  mX = x;
-}
-
-void QgsMeshDatasetValue::setY( double y )
-{
-  mY = y;
-}
-
-double QgsMeshDatasetValue::x() const
-{
-  return mX;
-}
-
-double QgsMeshDatasetValue::y() const
-{
-  return mY;
-}
-
-bool QgsMeshDatasetValue::operator==( const QgsMeshDatasetValue &other ) const
-{
-  bool equal = std::isnan( mX ) == std::isnan( other.x() );
-  equal &= std::isnan( mY ) == std::isnan( other.y() );
-
-  if ( equal )
-  {
-    if ( std::isnan( mY ) )
-    {
-      equal &= qgsDoubleNear( other.x(), mX, 1E-8 );
-    }
-    else
-    {
-      equal &= qgsDoubleNear( other.x(), mX, 1E-8 );
-      equal &= qgsDoubleNear( other.y(), mY, 1E-8 );
-    }
-  }
-  return equal;
-}
-
-QgsMeshDatasetGroupMetadata::QgsMeshDatasetGroupMetadata(
-  const QString &name,
-  bool isScalar,
-  bool isOnVertices,
-  const QMap<QString, QString> &extraOptions )
-  : mName( name )
-  ,  mIsScalar( isScalar )
-  , mIsOnVertices( isOnVertices )
-  , mExtraOptions( extraOptions )
-{
-}
-
-QMap<QString, QString> QgsMeshDatasetGroupMetadata::extraOptions() const
-{
-  return mExtraOptions;
-}
-
-bool QgsMeshDatasetGroupMetadata::isVector() const
-{
-  return !mIsScalar;
-}
-
-bool QgsMeshDatasetGroupMetadata::isScalar() const
-{
-  return mIsScalar;
-}
-
-
-
-QString QgsMeshDatasetGroupMetadata::name() const
-{
-  return mName;
-}
-
-QgsMeshDatasetGroupMetadata::DataType QgsMeshDatasetGroupMetadata::dataType() const
-{
-  return ( mIsOnVertices ) ? DataType::DataOnVertices : DataType::DataOnFaces;
+  QgsUnitTypes::TemporalUnit oldUnit = mTemporalCapabilities->temporalUnit();
+  mTemporalCapabilities->setTemporalUnit( unit );
+  if ( oldUnit != unit )
+    reloadData();
 }
 
 int QgsMeshDatasetSourceInterface::datasetCount( QgsMeshDatasetIndex index ) const
@@ -183,19 +53,94 @@ QgsMeshDatasetGroupMetadata QgsMeshDatasetSourceInterface::datasetGroupMetadata(
   return datasetGroupMetadata( index.group() );
 }
 
-QgsMeshDatasetMetadata::QgsMeshDatasetMetadata( double time,
-    bool isValid )
-  : mTime( time )
-  , mIsValid( isValid )
+bool QgsMeshDatasetSourceInterface::persistDatasetGroup(
+  const QString &path,
+  const QgsMeshDatasetGroupMetadata &meta,
+  const QVector<QgsMeshDataBlock> &datasetValues,
+  const QVector<QgsMeshDataBlock> &datasetActive,
+  const QVector<double> &times )
 {
+  // Form DRIVER:filename
+  QString filename = path;
+  // ASCII dat supports face, edge and vertex datasets
+  QString driverName = QStringLiteral( "DAT" );
+  QStringList parts = path.split( ':' );
+  if ( parts.size() > 1 )
+  {
+    driverName = parts[0];
+    parts.removeFirst();
+    filename = parts.join( QString() );
+  }
+  return persistDatasetGroup( filename, driverName, meta, datasetValues, datasetActive, times );
 }
 
-double QgsMeshDatasetMetadata::time() const
+QgsMeshVertex QgsMesh::vertex( int index ) const
 {
-  return mTime;
+  if ( index < vertices.size() && index >= 0 )
+    return vertices[index];
+  return QgsMeshVertex();
 }
 
-bool QgsMeshDatasetMetadata::isValid() const
+QgsMeshFace QgsMesh::face( int index ) const
 {
-  return mIsValid;
+  if ( index < faces.size() && index >= 0 )
+    return faces[index];
+  return QgsMeshFace();
+}
+
+QgsMeshEdge QgsMesh::edge( int index ) const
+{
+  if ( index < edges.size() && index >= 0 )
+    return edges[index];
+  return QgsMeshEdge();
+}
+
+void QgsMesh::clear()
+{
+  vertices.clear();
+  edges.clear();
+  faces.clear();
+}
+
+bool QgsMesh::contains( const QgsMesh::ElementType &type ) const
+{
+  switch ( type )
+  {
+    case ElementType::Vertex:
+      return !vertices.isEmpty();
+    case ElementType::Edge:
+      return !edges.isEmpty();
+    case ElementType::Face:
+      return !faces.isEmpty();
+  }
+  return false;
+}
+
+int QgsMesh::vertexCount() const
+{
+  return vertices.size();
+}
+
+int QgsMesh::faceCount() const
+{
+  return faces.size();
+}
+
+int QgsMesh::edgeCount() const
+{
+  return edges.size();
+}
+
+bool QgsMeshDataSourceInterface::contains( const QgsMesh::ElementType &type ) const
+{
+  switch ( type )
+  {
+    case QgsMesh::ElementType::Vertex:
+      return vertexCount() != 0;
+    case QgsMesh::ElementType::Edge:
+      return edgeCount() != 0;
+    case QgsMesh::ElementType::Face:
+      return faceCount() != 0;
+  }
+  return false;
 }

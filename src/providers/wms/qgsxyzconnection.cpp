@@ -29,13 +29,15 @@ QString QgsXyzConnection::encodedUri() const
   if ( zMax != -1 )
     uri.setParam( QStringLiteral( "zmax" ), QString::number( zMax ) );
   if ( ! authCfg.isEmpty() )
-    uri.setParam( QStringLiteral( "authcfg" ), authCfg );
+    uri.setAuthConfigId( authCfg );
   if ( ! username.isEmpty() )
-    uri.setParam( QStringLiteral( "username" ), username );
+    uri.setUsername( username );
   if ( ! password.isEmpty() )
-    uri.setParam( QStringLiteral( "password" ), password );
+    uri.setPassword( password );
   if ( ! referer.isEmpty() )
     uri.setParam( QStringLiteral( "referer" ), referer );
+  if ( tilePixelRatio != 0 )
+    uri.setParam( QStringLiteral( "tilePixelRatio" ), QString::number( tilePixelRatio ) );
   return uri.encodedUri();
 }
 
@@ -64,6 +66,18 @@ QStringList QgsXyzConnectionUtils::connectionList()
   return connList;
 }
 
+QString QgsXyzConnectionUtils::selectedConnection()
+{
+  QgsSettings settings;
+  return settings.value( QStringLiteral( "qgis/connections-xyz/selected" ) ).toString();
+}
+
+void QgsXyzConnectionUtils::setSelectedConnection( const QString &name )
+{
+  QgsSettings settings;
+  return settings.setValue( QStringLiteral( "qgis/connections-xyz/selected" ), name );
+}
+
 QgsXyzConnection QgsXyzConnectionUtils::connection( const QString &name )
 {
   QgsSettings settings;
@@ -78,6 +92,7 @@ QgsXyzConnection QgsXyzConnectionUtils::connection( const QString &name )
   conn.username = settings.value( QStringLiteral( "username" ) ).toString();
   conn.password = settings.value( QStringLiteral( "password" ) ).toString();
   conn.referer = settings.value( QStringLiteral( "referer" ) ).toString();
+  conn.tilePixelRatio = settings.value( QStringLiteral( "tilePixelRatio" ), 0 ).toDouble();
   conn.hidden = settings.value( QStringLiteral( "hidden" ) ).toBool();
   return conn;
 }
@@ -120,9 +135,9 @@ void QgsXyzConnectionUtils::addConnection( const QgsXyzConnection &conn )
   settings.setValue( QStringLiteral( "username" ), conn.username );
   settings.setValue( QStringLiteral( "password" ), conn.password );
   settings.setValue( QStringLiteral( "referer" ), conn.referer );
+  settings.setValue( QStringLiteral( "tilePixelRatio" ), conn.tilePixelRatio );
   if ( addHiddenProperty )
   {
     settings.setValue( QStringLiteral( "hidden" ), false );
   }
-
 }

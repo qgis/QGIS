@@ -27,41 +27,215 @@
 
 class QIODevice;
 
-struct CORE_EXPORT QgsSatelliteInfo
-{
-  int id;
-  bool inUse;
-  int elevation;
-  int azimuth;
-  int signal;
-};
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include "qgsgpsconnection.h"
+% End
+#endif
 
-struct CORE_EXPORT QgsGpsInformation
+/**
+ * \ingroup core
+ * \class QgsSatelliteInfo
+ * Encapsulates information relating to a GPS satellite.
+*/
+class CORE_EXPORT QgsSatelliteInfo
 {
-  double latitude;
-  double longitude;
-  double elevation;
-  double speed; //in km/h
-  double direction;
-  QList<QgsSatelliteInfo> satellitesInView;
-  double pdop;
-  double hdop;
-  double vdop;
-  double hacc; //horizontal accuracy in meters
-  double vacc; //vertical accuracy in meters
-  QDateTime utcDateTime;
-  QChar fixMode;
-  int fixType;
-  int quality; // from GPGGA
-  int satellitesUsed; // from GPGGA
-  QChar status; // from GPRMC A,V
-  QList<int> satPrn; // list of SVs in use; needed for QgsSatelliteInfo.inUse and other uses
-  bool satInfoComplete; // based on GPGSV sentences - to be used to determine when to graph signal and satellite position
+  public:
+
+    /**
+     * Contains the satellite identifier number.
+     *
+     * The satellite identifier number can be used to identify a satellite inside the satellite system.
+     * For satellite system GPS the satellite identifier number represents the PRN (Pseudo-random noise)
+     * number. For satellite system GLONASS the satellite identifier number represents the slot number.
+     */
+    int id = 0;
+
+    /**
+     * TRUE if satellite was used in obtaining the position fix.
+     */
+    bool inUse = false;
+
+#ifndef SIP_RUN
+
+    /**
+     * Elevation of the satellite, in degrees.
+     */
+    double elevation = std::numeric_limits< double >::quiet_NaN();
+#else
+
+    /**
+     * Elevation of the satellite, in degrees.
+     */
+    double elevation;
+#endif
+
+#ifndef SIP_RUN
+
+    /**
+     * The azimuth of the satellite to true north, in degrees.
+     */
+    double azimuth = std::numeric_limits< double >::quiet_NaN();
+#else
+
+    /**
+     * The azimuth of the satellite to true north, in degrees.
+     */
+    double azimuth;
+#endif
+
+    /**
+     * Signal strength (0-99dB), or -1 if not available.
+     */
+    int signal = -1;
 };
 
 /**
  * \ingroup core
- * Abstract base class for connection to a GPS device*/
+ * \class QgsGpsInformation
+ * Encapsulates information relating to a GPS position fix.
+*/
+class CORE_EXPORT QgsGpsInformation
+{
+  public:
+
+    /**
+     * GPS fix status
+     * \since QGIS 3.10
+     */
+    enum FixStatus
+    {
+      NoData,
+      NoFix,
+      Fix2D,
+      Fix3D
+    };
+
+    /**
+     * Latitude in decimal degrees, using the WGS84 datum. A positive value indicates the Northern Hemisphere, and
+     * a negative value indicates the Southern Hemisphere.
+     */
+    double latitude = 0;
+
+    /**
+     * Longitude in decimal degrees, using the WGS84 datum. A positive value indicates the Eastern Hemisphere, and
+     * a negative value indicates the Western Hemisphere.
+     */
+    double longitude = 0;
+
+    /**
+     * Altitude (in meters) above or below the mean sea level.
+     */
+    double elevation = 0;
+
+    /**
+     * Ground speed, in km/h.
+     */
+    double speed = 0;
+
+#ifndef SIP_RUN
+
+    /**
+     * The bearing measured in degrees clockwise from true north to the direction of travel.
+     */
+    double direction = std::numeric_limits< double >::quiet_NaN();
+#else
+
+    /**
+     * The bearing measured in degrees clockwise from true north to the direction of travel.
+     */
+    double direction;
+#endif
+
+    /**
+     * Contains a list of information relating to the current satellites in view.
+     */
+    QList<QgsSatelliteInfo> satellitesInView;
+
+    /**
+     * Dilution of precision.
+     */
+    double pdop = 0;
+
+    /**
+     * Horizontal dilution of precision.
+     */
+    double hdop = 0;
+
+    /**
+     * Vertical dilution of precision.
+     */
+    double vdop = 0;
+
+#ifndef SIP_RUN
+    //! Horizontal accuracy in meters
+    double hacc = std::numeric_limits< double >::quiet_NaN();
+    //! Vertical accuracy in meters
+    double vacc = std::numeric_limits< double >::quiet_NaN();
+#else
+    //! Horizontal accuracy in meters
+    double hacc;
+    //! Vertical accuracy in meters
+    double vacc;
+#endif
+
+    /**
+     * The date and time at which this position was reported, in UTC time.
+     */
+    QDateTime utcDateTime;
+
+    /**
+     * Fix mode (where M = Manual, forced to operate in 2D or 3D or A = Automatic, 3D/2D)
+     */
+    QChar fixMode;
+
+    /**
+     * Contains the fix type, where 1 = no fix, 2 = 2d fix, 3 = 3d fix
+     */
+    int fixType = 0;
+
+    /**
+     * GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive)
+     */
+    int quality = -1;
+
+    /**
+     * Count of satellites used in obtaining the fix.
+     */
+    int satellitesUsed = 0;
+
+    /**
+     * Status (A = active or V = void)
+     */
+    QChar status;
+
+    /**
+     * IDs of satellites used in the position fix.
+     */
+    QList<int> satPrn;
+
+    /**
+     * TRUE if satellite information is complete.
+     */
+    bool satInfoComplete = false;
+
+    /**
+     * Returns whether the connection information is valid
+     * \since QGIS 3.10
+     */
+    bool isValid() const;
+
+    /**
+     * Returns the fix status
+     * \since QGIS 3.10
+     */
+    FixStatus fixStatus() const;
+};
+
+/**
+ * \ingroup core
+ * Abstract base class for connection to a GPS device
+*/
 class CORE_EXPORT QgsGpsConnection : public QObject
 {
 #ifdef SIP_RUN
@@ -118,11 +292,11 @@ class CORE_EXPORT QgsGpsConnection : public QObject
 
   protected:
     //! Data source (e.g. serial device, socket, file,...)
-    QIODevice *mSource = nullptr;
+    std::unique_ptr< QIODevice > mSource;
     //! Last state of the gps related variables (e.g. position, time, ...)
     QgsGpsInformation mLastGPSInformation;
     //! Connection status
-    Status mStatus;
+    Status mStatus = NotConnected;
 
   private:
     //! Closes and deletes mSource

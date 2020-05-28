@@ -17,6 +17,7 @@
 
 #include <QOffscreenSurface>
 #include <QSurfaceFormat>
+#include <QOpenGLFunctions>
 
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DLogic/QLogicAspect>
@@ -32,12 +33,28 @@
 #include <Qt3DRender/QRenderSurfaceSelector>
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QViewport>
+#include <QtGui/QOpenGLContext>
 
 
 QgsOffscreen3DEngine::QgsOffscreen3DEngine()
 {
   // Set up the default OpenGL surface format.
   QSurfaceFormat format;
+
+  // by default we get just some older version of OpenGL from the system,
+  // but for 3D lines we use "primitive restart" functionality supported in OpenGL >= 3.1
+  // Qt3DWindow uses this - requesting OpenGL 4.3 - so let's request the same version.
+#ifdef QT_OPENGL_ES_2
+  format.setRenderableType( QSurfaceFormat::OpenGLES );
+#else
+  if ( QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL )
+  {
+    format.setVersion( 4, 3 );
+    format.setProfile( QSurfaceFormat::CoreProfile );
+  }
+#endif
+
+  format.setMajorVersion( 3 );
   format.setDepthBufferSize( 32 ); // TODO: or 24?  (used by QWindow3D)
   format.setSamples( 8 );
   QSurfaceFormat::setDefaultFormat( format );
@@ -87,7 +104,7 @@ QgsOffscreen3DEngine::~QgsOffscreen3DEngine()
   delete mOffscreenSurface;
 }
 
-void QgsOffscreen3DEngine::setSize( const QSize &s )
+void QgsOffscreen3DEngine::setSize( QSize s )
 {
   mSize = s;
 
@@ -106,7 +123,7 @@ void QgsOffscreen3DEngine::setClearColor( const QColor &color )
 void QgsOffscreen3DEngine::setFrustumCullingEnabled( bool enabled )
 {
   // TODO
-  Q_UNUSED( enabled );
+  Q_UNUSED( enabled )
 }
 
 void QgsOffscreen3DEngine::createRenderTarget()
@@ -211,6 +228,11 @@ Qt3DRender::QCamera *QgsOffscreen3DEngine::camera()
 QSize QgsOffscreen3DEngine::size() const
 {
   return mSize;
+}
+
+QSurface *QgsOffscreen3DEngine::surface() const
+{
+  return mOffscreenSurface;
 }
 
 void QgsOffscreen3DEngine::requestCaptureImage()

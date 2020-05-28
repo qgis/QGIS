@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'October 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import re
 import warnings
@@ -41,17 +37,16 @@ from qgis.core import (Qgis,
                        QgsProperty,
                        QgsProject,
                        QgsMessageLog,
+                       QgsMapLayerType,
                        QgsProcessingOutputLayerDefinition)
 from qgis.gui import QgsEncodingFileDialog, QgsGui
-from qgis.utils import OverrideCursor
+from qgis.utils import OverrideCursor, iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.AlgorithmExecutor import execute
 from processing.tools import dataobjects
 from processing.gui.Postprocessing import handleAlgorithmResults
-from processing.gui.PostgisTableSelector import PostgisTableSelector
-from processing.gui.ParameterGuiUtils import getFileFilter
 
 pluginPath = os.path.dirname(__file__)
 with warnings.catch_warnings():
@@ -61,7 +56,6 @@ with warnings.catch_warnings():
 
 
 class FieldCalculatorFeedback(QgsProcessingFeedback):
-
     """
     Directs algorithm feedback to an algorithm dialog
     """
@@ -86,6 +80,12 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         self.layer = None
 
         self.cmbInputLayer.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        try:
+            if iface.activeLayer().type() == QgsMapLayerType.VectorLayer:
+                self.cmbInputLayer.setLayer(iface.activeLayer())
+        except:
+            pass
+
         self.cmbInputLayer.layerChanged.connect(self.updateLayer)
         self.btnBrowse.clicked.connect(self.selectFile)
         self.mNewFieldGroupBox.toggled.connect(self.toggleExistingGroup)
@@ -150,7 +150,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
 
     def selectFile(self):
         output = self.alg.parameterDefinition('OUTPUT')
-        fileFilter = getFileFilter(output)
+        fileFilter = output.createFileFilter()
 
         settings = QgsSettings()
         if settings.contains('/Processing/LastOutputPath'):
@@ -249,7 +249,8 @@ class FieldsCalculatorDialog(BASE, WIDGET):
                     handleAlgorithmResults(self.alg,
                                            context,
                                            self.feedback,
-                                           not keepOpen)
+                                           not keepOpen,
+                                           parameters)
                 self._wasExecuted = self.executed or self._wasExecuted
                 if not keepOpen:
                     QDialog.reject(self)

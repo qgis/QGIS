@@ -25,7 +25,6 @@
 #include <QVBoxLayout>
 
 #include "qgis.h"
-#include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgscoordinatereferencesystem.h"
 
@@ -111,7 +110,7 @@ class QgsGrassModuleParam
     //! Item's id
     QString id() { return mId; }
 
-    //! Check if otpion is ready
+    //! Check if option is ready
     //  Returns empty string or error message
     virtual QString ready() { return QString() ; }
 

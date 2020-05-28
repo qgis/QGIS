@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmextractbylocation.h"
 #include "qgsgeometryengine.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -28,7 +29,6 @@ void QgsLocationBasedAlgorithm::addPredicateParameter()
 
   QVariantMap predicateMetadata;
   QVariantMap widgetMetadata;
-  widgetMetadata.insert( QStringLiteral( "class" ), QStringLiteral( "processing.gui.wrappers.EnumWidgetWrapper" ) );
   widgetMetadata.insert( QStringLiteral( "useCheckBoxes" ), true );
   widgetMetadata.insert( QStringLiteral( "columns" ), 2 );
   predicateMetadata.insert( QStringLiteral( "widget_wrapper" ), widgetMetadata );
@@ -79,12 +79,149 @@ void QgsLocationBasedAlgorithm::process( const QgsProcessingContext &context, Qg
     const QList< int > &selectedPredicates,
     const std::function < void( const QgsFeature & ) > &handleFeatureFunction,
     bool onlyRequireTargetIds,
-    QgsFeedback *feedback )
+    QgsProcessingFeedback *feedback )
 {
+
+  if ( targetSource->featureCount() > 0 && intersectSource->featureCount() > 0
+       && targetSource->featureCount() < intersectSource->featureCount() )
+  {
+    // joining FEWER features to a layer with MORE features. So we iterate over the FEW features and find matches from the MANY
+    processByIteratingOverTargetSource( context, targetSource, intersectSource,
+                                        selectedPredicates, handleFeatureFunction,
+                                        onlyRequireTargetIds, feedback );
+  }
+  else
+  {
+    // default -- iterate over the intersect source and match back to the target source. We do this on the assumption that the most common
+    // use case is joining a points layer to a polygon layer (e.g. findings points within a polygon), so by iterating
+    // over the polygons we can take advantage of prepared geometries for the spatial relationship test.
+
+    // TODO - consider using more heuristics to determine whether it's always best to iterate over the intersect
+    // source.
+    processByIteratingOverIntersectSource( context, targetSource, intersectSource,
+                                           selectedPredicates, handleFeatureFunction,
+                                           onlyRequireTargetIds, feedback );
+  }
+}
+
+void QgsLocationBasedAlgorithm::processByIteratingOverTargetSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource,
+    QgsFeatureSource *intersectSource,
+    const QList< int > &selectedPredicates,
+    const std::function < void( const QgsFeature & ) > &handleFeatureFunction,
+    bool onlyRequireTargetIds,
+    QgsProcessingFeedback *feedback )
+{
+  if ( intersectSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
+    feedback->reportError( QObject::tr( "No spatial index exists for intersect layer, performance will be severely degraded" ) );
+
+  QgsFeatureIds foundSet;
+  QgsFeatureRequest request = QgsFeatureRequest();
+  if ( onlyRequireTargetIds )
+    request.setNoAttributes();
+
+  QgsFeatureIterator fIt = targetSource->getFeatures( request );
+  double step = targetSource->featureCount() > 0 ? 100.0 / targetSource->featureCount() : 1;
+  int current = 0;
+  QgsFeature f;
+  std::unique_ptr< QgsGeometryEngine > engine;
+  while ( fIt.nextFeature( f ) )
+  {
+    if ( feedback->isCanceled() )
+      break;
+
+    if ( !f.hasGeometry() )
+      continue;
+
+    engine.reset();
+
+    QgsRectangle bbox = f.geometry().boundingBox();
+    request = QgsFeatureRequest().setFilterRect( bbox ).setNoAttributes().setDestinationCrs( targetSource->sourceCrs(), context.transformContext() );
+
+    QgsFeatureIterator testFeatureIt = intersectSource->getFeatures( request );
+    QgsFeature testFeature;
+    bool isMatch = false;
+    bool isDisjoint = true;
+    while ( testFeatureIt.nextFeature( testFeature ) )
+    {
+      if ( feedback->isCanceled() )
+        break;
+
+      if ( !engine )
+      {
+        engine.reset( QgsGeometry::createGeometryEngine( f.geometry().constGet() ) );
+        engine->prepareGeometry();
+      }
+
+      for ( int predicate : selectedPredicates )
+      {
+        switch ( static_cast< Predicate>( predicate ) )
+        {
+          case Intersects:
+            isMatch = engine->intersects( testFeature.geometry().constGet() );
+            break;
+          case Contains:
+            isMatch = engine->contains( testFeature.geometry().constGet() );
+            break;
+          case Disjoint:
+            if ( engine->intersects( testFeature.geometry().constGet() ) )
+            {
+              isDisjoint = false;
+            }
+            break;
+          case IsEqual:
+            isMatch = engine->isEqual( testFeature.geometry().constGet() );
+            break;
+          case Touches:
+            isMatch = engine->touches( testFeature.geometry().constGet() );
+            break;
+          case Overlaps:
+            isMatch = engine->overlaps( testFeature.geometry().constGet() );
+            break;
+          case Within:
+            isMatch = engine->within( testFeature.geometry().constGet() );
+            break;
+          case Crosses:
+            isMatch = engine->crosses( testFeature.geometry().constGet() );
+            break;
+        }
+
+        if ( isMatch )
+          break;
+      }
+
+      if ( isMatch )
+      {
+        foundSet.insert( f.id() );
+        handleFeatureFunction( f );
+        break;
+      }
+    }
+    if ( isDisjoint && selectedPredicates.contains( Disjoint ) )
+    {
+      foundSet.insert( f.id() );
+      handleFeatureFunction( f );
+    }
+
+    current += 1;
+    feedback->setProgress( current * step );
+  }
+}
+
+void QgsLocationBasedAlgorithm::processByIteratingOverIntersectSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource,
+    QgsFeatureSource *intersectSource,
+    const QList< int > &selectedPredicates,
+    const std::function < void( const QgsFeature & ) > &handleFeatureFunction,
+    bool onlyRequireTargetIds,
+    QgsProcessingFeedback *feedback )
+{
+  if ( targetSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
+    feedback->reportError( QObject::tr( "No spatial index exists for input layer, performance will be severely degraded" ) );
+
   // build a list of 'reversed' predicates, because in this function
   // we actually test the reverse of what the user wants (allowing us
   // to prepare geometries and optimise the algorithm)
   QList< Predicate > predicates;
+  predicates.reserve( selectedPredicates.count() );
   for ( int i : selectedPredicates )
   {
     predicates << reversePredicate( static_cast< Predicate >( i ) );
@@ -95,7 +232,7 @@ void QgsLocationBasedAlgorithm::process( const QgsProcessingContext &context, Qg
     disjointSet = targetSource->allFeatureIds();
 
   QgsFeatureIds foundSet;
-  QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ).setDestinationCrs( targetSource->sourceCrs(), context.transformContext() );
+  QgsFeatureRequest request = QgsFeatureRequest().setNoAttributes().setDestinationCrs( targetSource->sourceCrs(), context.transformContext() );
   QgsFeatureIterator fIt = intersectSource->getFeatures( request );
   double step = intersectSource->featureCount() > 0 ? 100.0 / intersectSource->featureCount() : 1;
   int current = 0;
@@ -114,7 +251,7 @@ void QgsLocationBasedAlgorithm::process( const QgsProcessingContext &context, Qg
     QgsRectangle bbox = f.geometry().boundingBox();
     request = QgsFeatureRequest().setFilterRect( bbox );
     if ( onlyRequireTargetIds )
-      request.setSubsetOfAttributes( QgsAttributeList() );
+      request.setNoAttributes();
 
     QgsFeatureIterator testFeatureIt = targetSource->getFeatures( request );
     QgsFeature testFeature;
@@ -191,7 +328,7 @@ void QgsLocationBasedAlgorithm::process( const QgsProcessingContext &context, Qg
     disjointSet = disjointSet.subtract( foundSet );
     QgsFeatureRequest disjointReq = QgsFeatureRequest().setFilterFids( disjointSet );
     if ( onlyRequireTargetIds )
-      disjointReq.setSubsetOfAttributes( QgsAttributeList() ).setFlags( QgsFeatureRequest::NoGeometry );
+      disjointReq.setNoAttributes().setFlags( QgsFeatureRequest::NoGeometry );
     QgsFeatureIterator disjointIt = targetSource->getFeatures( disjointReq );
     QgsFeature f;
     while ( disjointIt.nextFeature( f ) )

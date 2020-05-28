@@ -21,18 +21,22 @@ __author__ = 'Nyall Dawson'
 __date__ = 'May 2017'
 __copyright__ = '(C) 2017, Nyall Dawson'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
-
 from qgis.core import (QgsApplication,
                        QgsProcessingAlgorithm,
+                       QgsProcessingFeatureBasedAlgorithm,
                        QgsLocatorFilter,
-                       QgsLocatorResult)
+                       QgsLocatorResult,
+                       QgsProcessing,
+                       QgsWkbTypes,
+                       QgsMapLayerType,
+                       QgsFields,
+                       QgsStringUtils)
+from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
+from processing.gui.AlgorithmExecutor import execute_in_place
 from qgis.utils import iface
+from processing.core.ProcessingConfig import ProcessingConfig
 
 
 class AlgorithmLocatorFilter(QgsLocatorFilter):
@@ -64,6 +68,98 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
         for a in QgsApplication.processingRegistry().algorithms():
             if a.flags() & QgsProcessingAlgorithm.FlagHideFromToolbox:
                 continue
+            if not ProcessingConfig.getSetting(ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES) and \
+                    a.flags() & QgsProcessingAlgorithm.FlagKnownIssues:
+                continue
+
+            result = QgsLocatorResult()
+            result.filter = self
+            result.displayString = a.displayName()
+            result.icon = a.icon()
+            result.userData = a.id()
+            result.score = 0
+
+            if (context.usingPrefix and not string):
+                self.resultFetched.emit(result)
+
+            if not string:
+                return
+
+            string = string.lower()
+            tagScore = 0
+            tags = [*a.tags(), a.provider().name(), a.group()]
+
+            for t in tags:
+                if string in t.lower():
+                    tagScore = 1
+                    break
+
+            result.score = QgsStringUtils.fuzzyScore(result.displayString, string) * 0.5 + tagScore * 0.5
+
+            if result.score > 0:
+                self.resultFetched.emit(result)
+
+    def triggerResult(self, result):
+        alg = QgsApplication.processingRegistry().createAlgorithmById(result.userData)
+        if alg:
+            ok, message = alg.canExecute()
+            if not ok:
+                dlg = MessageDialog()
+                dlg.setTitle(self.tr('Missing dependency'))
+                dlg.setMessage(message)
+                dlg.exec_()
+                return
+            dlg = alg.createCustomParametersWidget(parent=iface.mainWindow())
+            if not dlg:
+                dlg = AlgorithmDialog(alg, parent=iface.mainWindow())
+            canvas = iface.mapCanvas()
+            prevMapTool = canvas.mapTool()
+            dlg.show()
+            dlg.exec_()
+            if canvas.mapTool() != prevMapTool:
+                try:
+                    canvas.mapTool().reset()
+                except:
+                    pass
+                canvas.setMapTool(prevMapTool)
+
+
+class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+    def clone(self):
+        return InPlaceAlgorithmLocatorFilter()
+
+    def name(self):
+        return 'edit_features'
+
+    def displayName(self):
+        return self.tr('Edit Selected Features')
+
+    def priority(self):
+        return QgsLocatorFilter.Low
+
+    def prefix(self):
+        return 'ef'
+
+    def flags(self):
+        return QgsLocatorFilter.FlagFast
+
+    def fetchResults(self, string, context, feedback):
+        # collect results in main thread, since this method is inexpensive and
+        # accessing the processing registry/current layer is not thread safe
+
+        if iface.activeLayer() is None or iface.activeLayer().type() != QgsMapLayerType.VectorLayer:
+            return
+
+        for a in QgsApplication.processingRegistry().algorithms():
+            if not a.flags() & QgsProcessingAlgorithm.FlagSupportsInPlaceEdits:
+                continue
+
+            if not a.supportInPlaceEdit(iface.activeLayer()):
+                continue
 
             if QgsLocatorFilter.stringMatches(a.displayName(), string) or [t for t in a.tags() if QgsLocatorFilter.stringMatches(t, string)] or \
                     (context.usingPrefix and not string):
@@ -88,16 +184,23 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
                 dlg.setMessage(message)
                 dlg.exec_()
                 return
-            dlg = alg.createCustomParametersWidget(None)
-            if not dlg:
-                dlg = AlgorithmDialog(alg)
-            canvas = iface.mapCanvas()
-            prevMapTool = canvas.mapTool()
-            dlg.show()
-            dlg.exec_()
-            if canvas.mapTool() != prevMapTool:
-                try:
-                    canvas.mapTool().reset()
-                except:
-                    pass
-                canvas.setMapTool(prevMapTool)
+
+            if [d for d in alg.parameterDefinitions() if
+                    d.name() not in ('INPUT', 'OUTPUT')]:
+                dlg = alg.createCustomParametersWidget(parent=iface.mainWindow())
+                if not dlg:
+                    dlg = AlgorithmDialog(alg, True, parent=iface.mainWindow())
+                canvas = iface.mapCanvas()
+                prevMapTool = canvas.mapTool()
+                dlg.show()
+                dlg.exec_()
+                if canvas.mapTool() != prevMapTool:
+                    try:
+                        canvas.mapTool().reset()
+                    except:
+                        pass
+                    canvas.setMapTool(prevMapTool)
+            else:
+                feedback = MessageBarProgress(algname=alg.displayName())
+                parameters = {}
+                execute_in_place(alg, parameters, feedback=feedback)

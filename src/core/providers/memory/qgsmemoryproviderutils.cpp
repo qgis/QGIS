@@ -44,6 +44,12 @@ QString memoryLayerFieldType( QVariant::Type type )
     case QVariant::DateTime:
       return QStringLiteral( "datetime" );
 
+    case QVariant::ByteArray:
+      return QStringLiteral( "binary" );
+
+    case QVariant::Bool:
+      return QStringLiteral( "boolean" );
+
     default:
       break;
   }
@@ -59,23 +65,19 @@ QgsVectorLayer *QgsMemoryProviderUtils::createMemoryLayer( const QString &name, 
   QStringList parts;
   if ( crs.isValid() )
   {
-    parts << QStringLiteral( "crs=" ) + crs.authid();
+    if ( !crs.authid().isEmpty() )
+      parts << QStringLiteral( "crs=%1" ).arg( crs.authid() );
+    else
+      parts << QStringLiteral( "crs=wkt:%1" ).arg( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
   }
   for ( const auto &field : fields )
   {
-    QString lengthPrecision;
-    if ( field.length() > 0 && field.precision() > 0 )
-    {
-      lengthPrecision = QStringLiteral( "(%1,%2)" ).arg( field.length() ).arg( field.precision() );
-    }
-    else if ( field.length() > 0 )
-    {
-      lengthPrecision = QStringLiteral( "(%1)" ).arg( field.length() );
-    }
+    const QString lengthPrecision = QStringLiteral( "(%1,%2)" ).arg( field.length() ).arg( field.precision() );
     parts << QStringLiteral( "field=%1:%2%3" ).arg( QString( QUrl::toPercentEncoding( field.name() ) ), memoryLayerFieldType( field.type() ), lengthPrecision );
   }
 
   QString uri = geomType + '?' + parts.join( '&' );
-
-  return new QgsVectorLayer( uri, name, QStringLiteral( "memory" ) );
+  QgsVectorLayer::LayerOptions options{ QgsCoordinateTransformContext() };
+  options.skipCrsValidation = true;
+  return new QgsVectorLayer( uri, name, QStringLiteral( "memory" ), options );
 }

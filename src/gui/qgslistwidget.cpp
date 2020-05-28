@@ -68,13 +68,13 @@ bool QgsListModel::valid() const
 
 int QgsListModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return mLines.count();
 }
 
 int QgsListModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 1;
 }
 
@@ -118,7 +118,7 @@ Qt::ItemFlags QgsListModel::flags( const QModelIndex &index ) const
 
 bool QgsListModel::insertRows( int position, int rows, const QModelIndex &parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   beginInsertRows( QModelIndex(), position, position + rows - 1 );
   for ( int i = 0; i < rows; ++i )
   {
@@ -130,7 +130,7 @@ bool QgsListModel::insertRows( int position, int rows, const QModelIndex &parent
 
 bool QgsListModel::removeRows( int position, int rows, const QModelIndex &parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   beginRemoveRows( QModelIndex(), position, position + rows - 1 );
   for ( int i = 0; i < rows; ++i )
     mLines.removeAt( position );

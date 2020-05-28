@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
    <property name="leftMargin">
@@ -39,7 +39,7 @@
    <item row="4" column="0" colspan="2">
     <widget class="QPushButton" name="mRendererSettingsButton">
      <property name="text">
-      <string>Renderer settings...</string>
+      <string>Renderer Settings…</string>
      </property>
     </widget>
    </item>

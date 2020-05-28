@@ -29,6 +29,18 @@
 #include "qgsfeaturefiltermodel.h"
 #include "qgsgui.h"
 #include "qgsmapcanvas.h"
+#include "qgsvectorlayertools.h"
+#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsmaptooldigitizefeature.h"
+
+QStringList getComboBoxItems( const QComboBox *cb )
+{
+  QStringList items;
+  for ( int i = 0; i < cb->count(); i++ )
+    items << cb->itemText( i );
+
+  return items;
+}
 
 class TestQgsRelationReferenceWidget : public QObject
 {
@@ -43,15 +55,24 @@ class TestQgsRelationReferenceWidget : public QObject
     void cleanup(); // will be called after every testfunction.
 
     void testChainFilter();
+    void testChainFilter_data();
+    void testChainFilterFirstInit_data();
+    void testChainFilterFirstInit();
     void testChainFilterRefreshed();
     void testChainFilterDeleteForeignKey();
     void testInvalidRelation();
     void testSetGetForeignKey();
+    void testIdentifyOnMap();
+    void testAddEntry();
+    void testAddEntryNoGeom();
+    void testDependencies(); // Test relation datasource, id etc. config storage
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer1;
     std::unique_ptr<QgsVectorLayer> mLayer2;
     std::unique_ptr<QgsRelation> mRelation;
+    QgsMapCanvas *mMapCanvas = nullptr;
+    QgsAdvancedDigitizingDockWidget *mCadWidget = nullptr;
 };
 
 void TestQgsRelationReferenceWidget::initTestCase()
@@ -59,10 +80,14 @@ void TestQgsRelationReferenceWidget::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsGui::editorWidgetRegistry()->initEditors();
+  mMapCanvas = new QgsMapCanvas();
+  mCadWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas );
 }
 
 void TestQgsRelationReferenceWidget::cleanupTestCase()
 {
+  delete mCadWidget;
+  delete mMapCanvas;
   QgsApplication::exitQgis();
 }
 
@@ -134,16 +159,30 @@ void TestQgsRelationReferenceWidget::cleanup()
   QgsProject::instance()->removeMapLayer( mLayer2.get() );
 }
 
+void TestQgsRelationReferenceWidget::testChainFilter_data()
+{
+  QTest::addColumn<bool>( "allowNull" );
+
+  QTest::newRow( "allowNull=true" ) << true;
+  QTest::newRow( "allowNull=false" ) << false;
+}
+
 void TestQgsRelationReferenceWidget::testChainFilter()
 {
+  QFETCH( bool, allowNull );
+
   // init a relation reference widget
   QStringList filterFields = { "material", "diameter", "raccord" };
 
   QWidget parentWidget;
   QgsRelationReferenceWidget w( &parentWidget );
+
+  QEventLoop loop;
+  connect( qobject_cast<QgsFeatureFilterModel *>( w.mComboBox->model() ), &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
+
   w.setChainFilters( true );
   w.setFilterFields( filterFields );
-  w.setRelation( *mRelation, true );
+  w.setRelation( *mRelation, allowNull );
   w.init();
 
   // check default status for comboboxes
@@ -159,9 +198,18 @@ void TestQgsRelationReferenceWidget::testChainFilter()
       QCOMPARE( cb->count(), 3 );
   }
 
+  loop.exec();
+  QStringList items = getComboBoxItems( w.mComboBox );
+  QCOMPARE( w.mComboBox->currentText(), allowNull ? QString( "NULL" ) : QString( "10" ) );
+
   // set first filter
   cbs[0]->setCurrentIndex( cbs[0]->findText( QStringLiteral( "iron" ) ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), allowNull ? QString( "NULL" ) : QString( "10" ) );
+
   cbs[1]->setCurrentIndex( cbs[1]->findText( QStringLiteral( "120" ) ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), allowNull ? QString( "NULL" ) : QString( "10" ) );
 
   Q_FOREACH ( const QComboBox *cb, cbs )
   {
@@ -171,9 +219,7 @@ void TestQgsRelationReferenceWidget::testChainFilter()
       QCOMPARE( cb->count(), 2 );
     else if ( cb->itemText( 0 ) == QLatin1String( "raccord" ) )
     {
-      QStringList items;
-      for ( int i = 0; i < cb->count(); i++ )
-        items << cb->itemText( i );
+      QStringList items = getComboBoxItems( cb );
 
       QCOMPARE( cb->count(), 3 );
       QCOMPARE( items.contains( "collar" ), false );
@@ -183,49 +229,175 @@ void TestQgsRelationReferenceWidget::testChainFilter()
     }
   }
 
+
+  // set the filter for "raccord" and then reset filter for "diameter". As
+  // chain filter is activated, the filter on "raccord" field should be reset
+
+  cbs[0]->setCurrentIndex( 0 );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), allowNull ? QString( "NULL" ) : QString( "10" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" << "12" );
+
+  if ( allowNull )
+  {
+    w.mComboBox->setCurrentIndex( w.mComboBox->findText( QStringLiteral( "10" ) ) );
+    QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+    QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" << "12" );
+  }
+
+  cbs[0]->setCurrentIndex( cbs[0]->findText( "iron" ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" );
+
+  // prefer 12 over NULL
+  cbs[0]->setCurrentIndex( cbs[0]->findText( "steel" ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "12" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "12" );
+
+  if ( allowNull )
+  {
+    w.mComboBox->setCurrentIndex( w.mComboBox->findText( QStringLiteral( "12" ) ) );
+    QCOMPARE( w.mComboBox->currentText(), QString( "12" ) );
+    QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "12" );
+  }
+
+  // reset IRON, prefer 10 over NULL
+  cbs[0]->setCurrentIndex( cbs[0]->findText( "iron" ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" );
+
+  if ( allowNull )
+  {
+    w.mComboBox->setCurrentIndex( w.mComboBox->findText( QStringLiteral( "10" ) ) );
+    QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+    QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" );
+  }
+
+  cbs[1]->setCurrentIndex( cbs[1]->findText( "120" ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" );
+
+  cbs[2]->setCurrentIndex( cbs[2]->findText( QStringLiteral( "brides" ) ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" );
+
+  cbs[1]->setCurrentIndex( cbs[1]->findText( QStringLiteral( "diameter" ) ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" );
+
+  // combobox should propose NULL (if allowNull is true), 10 and 11 because the filter is now:
+  // "material" == 'iron'
+  QCOMPARE( w.mComboBox->count(), allowNull ? 3 : 2 );
+
+  // if there's no filter at all, all features' id should be proposed
+  cbs[0]->setCurrentIndex( cbs[0]->findText( QStringLiteral( "material" ) ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->count(), allowNull ? 4 : 3 );
+  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" << "12" );
+
+  // change item to check that currently selected item remains
+  w.mComboBox->setCurrentIndex( w.mComboBox->findText( QStringLiteral( "11" ) ) );
+  cbs[0]->setCurrentIndex( cbs[0]->findText( "iron" ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "11" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" );
+
+  // reset all filter
+  cbs[0]->setCurrentIndex( cbs[0]->findText( QStringLiteral( "material" ) ) );
+  loop.exec();
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" << "12" );
+
+  // set value with foreign key -> all the comboboxes matches feature values
+  w.setForeignKeys( QVariantList() << "11" );
+  loop.exec();
+  QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
+  QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
+  QCOMPARE( cbs[2]->currentText(), QString( "sleeve" ) );
+  QCOMPARE( w.mComboBox->currentText(), QString( "11" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "11" );
+
+  // remove filter on raccord
+  cbs[2]->setCurrentIndex( cbs[2]->findText( "raccord" ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "11" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" );
+
+  // change material, prever 12 over NULL
+  cbs[0]->setCurrentIndex( cbs[0]->findText( QStringLiteral( "steel" ) ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "12" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "12" );
+}
+
+void TestQgsRelationReferenceWidget::testChainFilterFirstInit_data()
+{
+  QTest::addColumn<bool>( "allowNull" );
+
+  QTest::newRow( "allowNull=true" ) << true;
+  QTest::newRow( "allowNull=false" ) << false;
+}
+
+void TestQgsRelationReferenceWidget::testChainFilterFirstInit()
+{
+  QFETCH( bool, allowNull );
+
+  // init a relation reference widget
+  QStringList filterFields = { "material", "diameter", "raccord" };
+
+  QWidget parentWidget;
+  QgsRelationReferenceWidget w( &parentWidget );
+  w.setChainFilters( true );
+  w.setFilterFields( filterFields );
+  w.setRelation( *mRelation, allowNull );
+  w.init();
+
+  // check default status for comboboxes
+  QList<QComboBox *> cbs = w.mFilterComboBoxes;
+  QCOMPARE( cbs.count(), 3 );
+  Q_FOREACH ( const QComboBox *cb, cbs )
+  {
+    if ( cb->currentText() == QLatin1String( "raccord" ) )
+      QCOMPARE( cb->count(), 5 );
+    else if ( cb->currentText() == QLatin1String( "material" ) )
+      QCOMPARE( cb->count(), 4 );
+    else if ( cb->currentText() == QLatin1String( "diameter" ) )
+      QCOMPARE( cb->count(), 3 );
+  }
+
   // set the filter for "raccord" and then reset filter for "diameter". As
   // chain filter is activated, the filter on "raccord" field should be reset
   QEventLoop loop;
   connect( qobject_cast<QgsFeatureFilterModel *>( w.mComboBox->model() ), &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
 
-  cbs[0]->setCurrentIndex( 0 );
+  // set value with foreign key -> all the comboboxes matches feature values
+  w.setForeignKeys( QVariantList() << "11" );
   loop.exec();
-  QCOMPARE( w.mComboBox->currentText(), QString( "NULL" ) );
+  QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
+  QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
+  QCOMPARE( cbs[2]->currentText(), QString( "sleeve" ) );
+  QCOMPARE( w.mComboBox->currentText(), QString( "11" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "11" );
 
-  cbs[0]->setCurrentIndex( cbs[0]->findText( "iron" ) );
+  // remove filter on raccord
+  cbs[2]->setCurrentIndex( cbs[2]->findText( "raccord" ) );
   loop.exec();
-  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+  QCOMPARE( w.mComboBox->currentText(), QString( "11" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "10" << "11" );
 
-  cbs[0]->setCurrentIndex( cbs[0]->findText( "steel" ) );
+  // change material prever 12 over NULL
+  cbs[0]->setCurrentIndex( cbs[0]->findText( QStringLiteral( "steel" ) ) );
   loop.exec();
   QCOMPARE( w.mComboBox->currentText(), QString( "12" ) );
-
-  cbs[0]->setCurrentIndex( cbs[0]->findText( "iron" ) );
-  loop.exec();
-  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
-
-  cbs[1]->setCurrentIndex( cbs[1]->findText( "120" ) );
-  loop.exec();
-  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
-
-  cbs[2]->setCurrentIndex( cbs[2]->findText( QStringLiteral( "brides" ) ) );
-  loop.exec();
-  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
-
-  cbs[1]->setCurrentIndex( cbs[1]->findText( QStringLiteral( "diameter" ) ) );
-  loop.exec();
-  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
-
-  // combobox should propose NULL, 10 and 11 because the filter is now:
-  // "material" == 'iron'
-  QCOMPARE( w.mComboBox->count(), 3 );
-
-  // if there's no filter at all, all features' id should be proposed
-  cbs[0]->setCurrentIndex( cbs[0]->findText( QStringLiteral( "material" ) ) );
-  loop.exec();
-  QCOMPARE( w.mComboBox->count(), 4 );
-  QCOMPARE( w.mComboBox->currentText(), QString( "NULL" ) );
+  QCOMPARE( getComboBoxItems( w.mComboBox ), ( allowNull ? QStringList() << "NULL" : QStringList() ) << "12" );
 }
+
 
 void TestQgsRelationReferenceWidget::testChainFilterRefreshed()
 {
@@ -246,17 +418,17 @@ void TestQgsRelationReferenceWidget::testChainFilterRefreshed()
   QCOMPARE( cbs[2]->currentText(), QString( "raccord" ) );
 
   // update foreign key
-  w.setForeignKey( QVariant( 12 ) );
+  w.setForeignKeys( QVariantList() << QVariant( 12 ) );
   QCOMPARE( cbs[0]->currentText(), QString( "steel" ) );
   QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
   QCOMPARE( cbs[2]->currentText(), QString( "collar" ) );
 
-  w.setForeignKey( QVariant( 10 ) );
+  w.setForeignKeys( QVariantList() << QVariant( 10 ) );
   QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
   QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
   QCOMPARE( cbs[2]->currentText(), QString( "brides" ) );
 
-  w.setForeignKey( QVariant( 11 ) );
+  w.setForeignKeys( QVariantList() << QVariant( 11 ) );
   QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
   QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
   QCOMPARE( cbs[2]->currentText(), QString( "sleeve" ) );
@@ -286,14 +458,14 @@ void TestQgsRelationReferenceWidget::testChainFilterDeleteForeignKey()
   QCOMPARE( cbs[2]->isEnabled(), false );
 
   // set a foreign key
-  w.setForeignKey( QVariant( 11 ) );
+  w.setForeignKeys( QVariantList() << QVariant( 11 ) );
 
   QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
   QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
   QCOMPARE( cbs[2]->currentText(), QString( "sleeve" ) );
 
   // delete the foreign key
-  w.deleteForeignKey();
+  w.deleteForeignKeys();
 
   QCOMPARE( cbs[0]->currentText(), QString( "material" ) );
   QCOMPARE( cbs[0]->isEnabled(), true );
@@ -303,16 +475,37 @@ void TestQgsRelationReferenceWidget::testChainFilterDeleteForeignKey()
 
   QCOMPARE( cbs[2]->currentText(), QString( "raccord" ) );
   QCOMPARE( cbs[2]->isEnabled(), false );
+
+  // set a foreign key
+  w.setForeignKeys( QVariantList() << QVariant( 11 ) );
+
+  QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
+  QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
+  QCOMPARE( cbs[2]->currentText(), QString( "sleeve" ) );
+
+  // set a null foreign key
+  w.setForeignKeys( QVariantList() << QVariant( QVariant::Int ) );
+  QCOMPARE( cbs[0]->currentText(), QString( "material" ) );
+  QCOMPARE( cbs[0]->isEnabled(), true );
+  QCOMPARE( cbs[1]->currentText(), QString( "diameter" ) );
+  QCOMPARE( cbs[1]->isEnabled(), false );
+  QCOMPARE( cbs[2]->currentText(), QString( "raccord" ) );
+  QCOMPARE( cbs[2]->isEnabled(), false );
 }
 
 void TestQgsRelationReferenceWidget::testInvalidRelation()
 {
   QgsVectorLayer vl( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
-  QgsMapCanvas canvas;
+
   QgsRelationReferenceWidget editor( new QWidget() );
 
   // initWidget with an invalid relation
-  QgsRelationReferenceWidgetWrapper ww( &vl, 10, &editor, &canvas, nullptr, nullptr );
+  QgsRelationReferenceWidgetWrapper ww( &vl, 10, &editor, mMapCanvas, nullptr, nullptr );
+
+  QgsAttributeEditorContext context = ww.context();
+  context.setCadDockWidget( mCadWidget );
+  ww.setContext( context );
+
   ww.initWidget( nullptr );
 }
 
@@ -325,19 +518,195 @@ void TestQgsRelationReferenceWidget::testSetGetForeignKey()
 
   QSignalSpy spy( &w, SIGNAL( foreignKeyChanged( QVariant ) ) );
 
-  w.setForeignKey( 11 );
-  QCOMPARE( w.foreignKey(), QVariant( 11 ) );
+  w.setForeignKeys( QVariantList() << 11 );
+  QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 11 ) );
   QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(11)" ) );
   QCOMPARE( spy.count(), 1 );
 
-  w.setForeignKey( 12 );
-  QCOMPARE( w.foreignKey(), QVariant( 12 ) );
+  w.setForeignKeys( QVariantList() << 12 );
+  QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 12 ) );
   QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(12)" ) );
   QCOMPARE( spy.count(), 2 );
 
-  w.setForeignKey( QVariant( QVariant::Int ) );
-  Q_ASSERT( w.foreignKey().isNull() );
+  w.setForeignKeys( QVariantList() << QVariant() );
+  QVERIFY( w.foreignKeys().at( 0 ).isNull() );
+  QVERIFY( w.foreignKeys().at( 0 ).isValid() );
   QCOMPARE( spy.count(), 3 );
+}
+
+// Test issue https://github.com/qgis/QGIS/issues/29884
+// Relation reference widget wrong feature when "on map identification"
+void TestQgsRelationReferenceWidget::testIdentifyOnMap()
+{
+  QWidget parentWidget;
+  QgsRelationReferenceWidget w( &parentWidget );
+  QVERIFY( mLayer1->startEditing() );
+  w.setRelation( *mRelation, true );
+  w.setAllowMapIdentification( true );
+  w.init();
+  QEventLoop loop;
+  // Populate model (I tried to listen to signals but the module reload() runs twice
+  // (the first load triggers a second one which does the population of the combo)
+  // and I haven't fin a way to properly wait for it.
+  QTimer::singleShot( 300, this, [&] { loop.quit(); } );
+  loop.exec();
+  QgsFeature feature;
+  mLayer2->getFeatures( QStringLiteral( "pk = %1" ).arg( 11 ) ).nextFeature( feature );
+  QVERIFY( feature.isValid() );
+  QCOMPARE( feature.attribute( QStringLiteral( "pk" ) ).toInt(), 11 );
+  w.featureIdentified( feature );
+  QCOMPARE( w.mComboBox->currentData( Qt::DisplayRole ).toInt(), 11 );
+
+  mLayer2->getFeatures( QStringLiteral( "pk = %1" ).arg( 10 ) ).nextFeature( feature );
+  QVERIFY( feature.isValid() );
+  QCOMPARE( feature.attribute( QStringLiteral( "pk" ) ).toInt(), 10 );
+  w.featureIdentified( feature );
+  QCOMPARE( w.mComboBox->currentData( Qt::DisplayRole ).toInt(), 10 );
+
+  w.setReadOnlySelector( true );
+
+  mLayer2->getFeatures( QStringLiteral( "pk = %1" ).arg( 11 ) ).nextFeature( feature );
+  QVERIFY( feature.isValid() );
+  QCOMPARE( feature.attribute( QStringLiteral( "pk" ) ).toInt(), 11 );
+  w.featureIdentified( feature );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "11" ) );
+  QCOMPARE( w.mForeignKeys.count(), 1 );
+  QCOMPARE( w.mForeignKeys.at( 0 ).toInt(), 11 );
+
+  mLayer2->getFeatures( QStringLiteral( "pk = %1" ).arg( 10 ) ).nextFeature( feature );
+  QVERIFY( feature.isValid() );
+  QCOMPARE( feature.attribute( QStringLiteral( "pk" ) ).toInt(), 10 );
+  w.featureIdentified( feature );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "10" ) );
+  QCOMPARE( w.mForeignKeys.count(), 1 );
+  QCOMPARE( w.mForeignKeys.at( 0 ).toInt(), 10 );
+
+  mLayer1->rollBack();
+}
+
+// Monkey patch gui vector layer tool in order to simple add a new feature in
+// referenced layer
+class DummyVectorLayerTools : public QgsVectorLayerTools // clazy:exclude=missing-qobject-macro
+{
+    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &, const QgsGeometry &, QgsFeature *feat = nullptr ) const override
+    {
+      feat->setAttribute( QStringLiteral( "pk" ), 13 );
+      feat->setAttribute( QStringLiteral( "material" ), QStringLiteral( "steel" ) );
+      feat->setAttribute( QStringLiteral( "diameter" ), 140 );
+      feat->setAttribute( QStringLiteral( "raccord" ), "collar" );
+      layer->addFeature( *feat );
+      return true;
+    }
+
+    bool startEditing( QgsVectorLayer * ) const override {return true;}
+
+    bool stopEditing( QgsVectorLayer *, bool = true ) const override {return true;}
+
+    bool saveEdits( QgsVectorLayer * ) const override {return true;}
+};
+
+void TestQgsRelationReferenceWidget::testAddEntry()
+{
+  // check that a new added entry in referenced layer populate correctly the
+  // referencing combobox
+  QgsMapCanvas canvas;
+  QgsRelationReferenceWidget w( &canvas );
+  QVERIFY( mLayer1->startEditing() );
+  w.setRelation( *mRelation, true );
+  w.init();
+
+  QgsAdvancedDigitizingDockWidget cadDockWidget( &canvas );
+  QgsAttributeEditorContext context;
+  DummyVectorLayerTools tools;
+  context.setVectorLayerTools( &tools );
+  context.setCadDockWidget( &cadDockWidget );
+  w.setEditorContext( context, &canvas, nullptr );
+  w.addEntry();
+
+  QVERIFY( w.mCurrentMapTool );
+  QgsFeature feat( mLayer1->fields() );
+  w.mMapToolDigitize->digitized( feat );
+
+  QCOMPARE( w.mComboBox->identifierValues().at( 0 ).toInt(), 13 );
+}
+
+void TestQgsRelationReferenceWidget::testAddEntryNoGeom()
+{
+  QgsVectorLayer mLayer1( QStringLiteral( "Point?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( &mLayer1, false, false );
+
+  QgsVectorLayer mLayer2( QStringLiteral( "None?field=pk:int&field=material:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( &mLayer2, false, false );
+
+  // create relation
+  QgsRelation mRelation;
+  mRelation.setId( QStringLiteral( "vl1.vl2" ) );
+  mRelation.setName( QStringLiteral( "vl1.vl2" ) );
+  mRelation.setReferencingLayer( mLayer1.id() );
+  mRelation.setReferencedLayer( mLayer2.id() );
+  mRelation.addFieldPair( QStringLiteral( "fk" ), QStringLiteral( "pk" ) );
+  QVERIFY( mRelation.isValid() );
+  QgsProject::instance()->relationManager()->addRelation( mRelation );
+
+  // add feature
+  QgsFeature ft0( mLayer1.fields() );
+  ft0.setAttribute( QStringLiteral( "pk" ), 0 );
+  ft0.setAttribute( QStringLiteral( "fk" ), 0 );
+  mLayer1.startEditing();
+  mLayer1.addFeature( ft0 );
+  mLayer1.commitChanges();
+
+  // check that a new added entry in referenced layer populate correctly the
+  // referencing combobox
+  QgsMapCanvas canvas;
+  QgsRelationReferenceWidget w( &canvas );
+  QVERIFY( mLayer1.startEditing() );
+  w.setRelation( mRelation, true );
+  w.init();
+
+  QgsAdvancedDigitizingDockWidget cadDockWidget( &canvas );
+  QgsAttributeEditorContext context;
+  DummyVectorLayerTools tools;
+  context.setVectorLayerTools( &tools );
+  context.setCadDockWidget( &cadDockWidget );
+  w.setEditorContext( context, &canvas, nullptr );
+  w.addEntry();
+
+  QVERIFY( !w.mCurrentMapTool );
+
+  QCOMPARE( w.mComboBox->identifierValues().at( 0 ).toInt(), 13 );
+}
+
+void TestQgsRelationReferenceWidget::testDependencies()
+{
+  QgsVectorLayer mLayer1( QStringLiteral( "Point?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( &mLayer1, false, false );
+
+  QgsVectorLayer mLayer2( QStringLiteral( "None?field=pk:int&field=material:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( &mLayer2, false, false );
+
+  // create relation
+  QgsRelation mRelation;
+  mRelation.setId( QStringLiteral( "vl1.vl2" ) );
+  mRelation.setName( QStringLiteral( "vl1.vl2" ) );
+  mRelation.setReferencingLayer( mLayer1.id() );
+  mRelation.setReferencedLayer( mLayer2.id() );
+  mRelation.addFieldPair( QStringLiteral( "fk" ), QStringLiteral( "pk" ) );
+  QVERIFY( mRelation.isValid() );
+  QgsProject::instance()->relationManager()->addRelation( mRelation );
+
+  // check that a new added entry in referenced layer populate correctly
+  // widget config
+  QgsMapCanvas canvas;
+  QgsRelationReferenceWidget w( &canvas );
+  w.setRelation( mRelation, true );
+  w.init();
+
+  QCOMPARE( w.referencedLayerId(), mLayer2.id() );
+  QCOMPARE( w.referencedLayerName(), mLayer2.name() );
+  QCOMPARE( w.referencedLayerDataSource(), mLayer2.publicSource() );
+  QCOMPARE( w.referencedLayerProviderKey(), mLayer2.providerType() );
+
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )

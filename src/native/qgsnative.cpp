@@ -21,6 +21,9 @@
 #include <QUrl>
 #include <QFileInfo>
 
+void QgsNative::cleanup()
+{}
+
 QgsNative::Capabilities QgsNative::capabilities() const
 {
   return nullptr;
@@ -45,6 +48,11 @@ void QgsNative::openFileExplorerAndSelectFile( const QString &path )
   QDesktopServices::openUrl( QUrl::fromLocalFile( folder ) );
 }
 
+void QgsNative::showFileProperties( const QString & )
+{
+
+}
+
 void QgsNative::showUndefinedApplicationProgress()
 {
 
@@ -58,6 +66,21 @@ void QgsNative::setApplicationProgress( double )
 void QgsNative::hideApplicationProgress()
 {
 
+}
+
+void QgsNative::setApplicationBadgeCount( int )
+{
+
+}
+
+bool QgsNative::hasDarkTheme()
+{
+  return false;
+}
+
+bool QgsNative::openTerminalAtPath( const QString & )
+{
+  return false;
 }
 
 QgsNative::NotificationResult QgsNative::showDesktopNotification( const QString &, const QString &, const NotificationSettings & )

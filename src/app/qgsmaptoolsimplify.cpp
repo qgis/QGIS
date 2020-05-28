@@ -26,7 +26,7 @@
 #include "qgisapp.h"
 #include "qgssettings.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
 
 #include <cmath>
 #include <cfloat>
@@ -36,14 +36,14 @@ QgsSimplifyUserInputWidget::QgsSimplifyUserInputWidget( QWidget *parent )
 {
   setupUi( this );
 
-  mMethodComboBox->addItem( tr( "Simplify by distance" ), QgsMapToolSimplify::SimplifyDistance );
-  mMethodComboBox->addItem( tr( "Simplify by snapping to grid" ), QgsMapToolSimplify::SimplifySnapToGrid );
-  mMethodComboBox->addItem( tr( "Simplify by area (Visvalingam)" ), QgsMapToolSimplify::SimplifyVisvalingam );
+  mMethodComboBox->addItem( tr( "Simplify by Distance" ), QgsMapToolSimplify::SimplifyDistance );
+  mMethodComboBox->addItem( tr( "Simplify by Snapping to Grid" ), QgsMapToolSimplify::SimplifySnapToGrid );
+  mMethodComboBox->addItem( tr( "Simplify by Area (Visvalingam)" ), QgsMapToolSimplify::SimplifyVisvalingam );
   mMethodComboBox->addItem( tr( "Smooth" ), QgsMapToolSimplify::Smooth );
 
-  mToleranceUnitsComboBox->addItem( tr( "Layer units" ), QgsTolerance::LayerUnits );
+  mToleranceUnitsComboBox->addItem( tr( "Layer Units" ), QgsTolerance::LayerUnits );
   mToleranceUnitsComboBox->addItem( tr( "Pixels" ), QgsTolerance::Pixels );
-  mToleranceUnitsComboBox->addItem( tr( "Map units" ), QgsTolerance::ProjectUnits );
+  mToleranceUnitsComboBox->addItem( tr( "Map Units" ), QgsTolerance::ProjectUnits );
 
   mToleranceSpinBox->setShowClearButton( false );
 
@@ -79,11 +79,11 @@ QgsSimplifyUserInputWidget::QgsSimplifyUserInputWidget( QWidget *parent )
   setFocusProxy( mButtonBox );
 }
 
-void QgsSimplifyUserInputWidget::setConfig( const QgsMapToolSimplify::Method &method,
-    const double &tolerance,
-    const QgsTolerance::UnitType &units,
-    const double &smoothOffset,
-    const int &smoothIterations )
+void QgsSimplifyUserInputWidget::setConfig( QgsMapToolSimplify::Method method,
+    double tolerance,
+    QgsTolerance::UnitType units,
+    double smoothOffset,
+    int smoothIterations )
 {
   mMethodComboBox->setCurrentIndex( mMethodComboBox->findData( method ) );
 
@@ -105,7 +105,7 @@ void QgsSimplifyUserInputWidget::enableOkButton( bool enabled )
 
 bool QgsSimplifyUserInputWidget::eventFilter( QObject *object, QEvent *ev )
 {
-  Q_UNUSED( object );
+  Q_UNUSED( object )
   if ( ev->type() == QEvent::KeyPress )
   {
     QKeyEvent *event = static_cast<QKeyEvent *>( ev );
@@ -185,7 +185,8 @@ void QgsMapToolSimplify::updateSimplificationPreview()
   mReducedVertexCount = 0;
   int i = 0;
 
-  Q_FOREACH ( const QgsFeature &fSel, mSelectedFeatures )
+  const auto constMSelectedFeatures = mSelectedFeatures;
+  for ( const QgsFeature &fSel : constMSelectedFeatures )
   {
     QgsGeometry g = processGeometry( fSel.geometry(), layerTolerance );
     if ( !g.isNull() )
@@ -298,7 +299,8 @@ void QgsMapToolSimplify::storeSimplified()
   double layerTolerance = QgsTolerance::toleranceInMapUnits( mTolerance, vlayer, mCanvas->mapSettings(), mToleranceUnits );
 
   vlayer->beginEditCommand( tr( "Geometry simplified" ) );
-  Q_FOREACH ( const QgsFeature &feat, mSelectedFeatures )
+  const auto constMSelectedFeatures = mSelectedFeatures;
+  for ( const QgsFeature &feat : constMSelectedFeatures )
   {
     QgsGeometry g = processGeometry( feat.geometry(), layerTolerance );
     if ( !g.isNull() )
@@ -394,7 +396,8 @@ void QgsMapToolSimplify::canvasReleaseEvent( QgsMapMouseEvent *e )
 
   // count vertices, prepare rubber bands
   mOriginalVertexCount = 0;
-  Q_FOREACH ( const QgsFeature &f, mSelectedFeatures )
+  const auto constMSelectedFeatures = mSelectedFeatures;
+  for ( const QgsFeature &f : constMSelectedFeatures )
   {
     if ( f.hasGeometry() )
       mOriginalVertexCount += f.geometry().constGet()->nCoordinates();
@@ -424,7 +427,7 @@ void QgsMapToolSimplify::selectOneFeature( QPoint canvasPoint )
   double r = QgsTolerance::vertexSearchRadius( vlayer, mCanvas->mapSettings() );
   QgsRectangle selectRect = QgsRectangle( layerCoords.x() - r, layerCoords.y() - r,
                                           layerCoords.x() + r, layerCoords.y() + r );
-  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setNoAttributes() );
 
   QgsGeometry geometry = QgsGeometry::fromPointXY( layerCoords );
   double minDistance = std::numeric_limits<double>::max();
@@ -459,7 +462,7 @@ void QgsMapToolSimplify::selectFeaturesInRect()
   QgsFeatureRequest request;
   request.setFilterRect( rect );
   request.setFlags( QgsFeatureRequest::ExactIntersect );
-  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setNoAttributes();
   QgsFeatureIterator fit = vlayer->getFeatures( request );
   while ( fit.nextFeature( f ) )
     mSelectedFeatures << f;

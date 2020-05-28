@@ -16,7 +16,7 @@
 #define QGSINVERTEDPOLYGONRENDERERWIDGET_H
 
 #include "ui_qgsinvertedpolygonrendererwidgetbase.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgsrendererwidget.h"
 #include "qgis_gui.h"
@@ -55,6 +55,8 @@ class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererWidget, pr
 
     void setContext( const QgsSymbolWidgetContext &context ) override;
 
+    void setDockMode( bool dockMode ) override;
+
   protected:
     //! The mask renderer
     std::unique_ptr<QgsInvertedPolygonRenderer> mRenderer;
@@ -67,4 +69,4 @@ class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererWidget, pr
 };
 
 
-#endif // QGSMASKRENDERERV2WIDGET_H
+#endif // QGSINVERTEDPOLYGONRENDERERWIDGET_H

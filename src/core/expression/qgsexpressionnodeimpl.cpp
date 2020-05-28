@@ -124,7 +124,10 @@ bool QgsExpressionNodeUnaryOperator::prepareNode( QgsExpression *parent, const Q
 
 QString QgsExpressionNodeUnaryOperator::dump() const
 {
-  return QStringLiteral( "%1 %2" ).arg( UNARY_OPERATOR_TEXT[mOp], mOperand->dump() );
+  if ( dynamic_cast<QgsExpressionNodeBinaryOperator *>( mOperand ) )
+    return QStringLiteral( "%1 ( %2 )" ).arg( UNARY_OPERATOR_TEXT[mOp], mOperand->dump() );
+  else
+    return QStringLiteral( "%1 %2" ).arg( UNARY_OPERATOR_TEXT[mOp], mOperand->dump() );
 }
 
 QSet<QString> QgsExpressionNodeUnaryOperator::referencedColumns() const
@@ -178,6 +181,17 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
 {
   QVariant vL = mOpLeft->eval( parent, context );
   ENSURE_NO_EVAL_ERROR;
+
+  if ( mOp == boAnd || mOp == boOr )
+  {
+    QgsExpressionUtils::TVL tvlL = QgsExpressionUtils::getTVLValue( vL, parent );
+    ENSURE_NO_EVAL_ERROR;
+    if ( mOp == boAnd && tvlL == QgsExpressionUtils::False )
+      return TVL_False;  // shortcut -- no need to evaluate right-hand side
+    if ( mOp == boOr && tvlL == QgsExpressionUtils::True )
+      return TVL_True;  // shortcut -- no need to evaluate right-hand side
+  }
+
   QVariant vR = mOpRight->eval( parent, context );
   ENSURE_NO_EVAL_ERROR;
 
@@ -203,7 +217,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         return QVariant();
       else if ( mOp != boDiv && QgsExpressionUtils::isIntSafe( vL ) && QgsExpressionUtils::isIntSafe( vR ) )
       {
-        // both are integers - let's use integer arithmetics
+        // both are integers - let's use integer arithmetic
         qlonglong iL = QgsExpressionUtils::getIntValue( vL, parent );
         ENSURE_NO_EVAL_ERROR;
         qlonglong iR = QgsExpressionUtils::getIntValue( vR, parent );
@@ -389,14 +403,55 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
             return TVL_Unknown;
         }
       }
-      else if ( QgsExpressionUtils::isDoubleSafe( vL ) && QgsExpressionUtils::isDoubleSafe( vR ) &&
-                ( vL.type() != QVariant::String || vR.type() != QVariant::String ) )
+      else if ( ( vL.type() == QVariant::DateTime && vR.type() == QVariant::DateTime ) )
+      {
+        QDateTime dL = QgsExpressionUtils::getDateTimeValue( vL, parent );
+        ENSURE_NO_EVAL_ERROR;
+        QDateTime dR = QgsExpressionUtils::getDateTimeValue( vR, parent );
+        ENSURE_NO_EVAL_ERROR;
+
+        // while QDateTime has innate handling of timezones, we don't expose these ANYWHERE
+        // in QGIS. So to avoid confusion where seemingly equal datetime values give unexpected
+        // results (due to different hidden timezones), we force all datetime comparisons to treat
+        // all datetime values as having the same time zone
+        dL.setTimeSpec( Qt::UTC );
+        dR.setTimeSpec( Qt::UTC );
+
+        return compare( dR.msecsTo( dL ) ) ? TVL_True : TVL_False;
+      }
+      else if ( ( vL.type() == QVariant::Date && vR.type() == QVariant::Date ) )
+      {
+        const QDate dL = QgsExpressionUtils::getDateValue( vL, parent );
+        ENSURE_NO_EVAL_ERROR;
+        const QDate dR = QgsExpressionUtils::getDateValue( vR, parent );
+        ENSURE_NO_EVAL_ERROR;
+        return compare( dR.daysTo( dL ) ) ? TVL_True : TVL_False;
+      }
+      else if ( ( vL.type() == QVariant::Time && vR.type() == QVariant::Time ) )
+      {
+        const QTime dL = QgsExpressionUtils::getTimeValue( vL, parent );
+        ENSURE_NO_EVAL_ERROR;
+        const QTime dR = QgsExpressionUtils::getTimeValue( vR, parent );
+        ENSURE_NO_EVAL_ERROR;
+        return compare( dR.msecsTo( dL ) ) ? TVL_True : TVL_False;
+      }
+      else if ( ( vL.type() != QVariant::String || vR.type() != QVariant::String ) &&
+                QgsExpressionUtils::isDoubleSafe( vL ) && QgsExpressionUtils::isDoubleSafe( vR ) )
       {
         // do numeric comparison if both operators can be converted to numbers,
         // and they aren't both string
         double fL = QgsExpressionUtils::getDoubleValue( vL, parent );
         ENSURE_NO_EVAL_ERROR;
         double fR = QgsExpressionUtils::getDoubleValue( vR, parent );
+        ENSURE_NO_EVAL_ERROR;
+        return compare( fL - fR ) ? TVL_True : TVL_False;
+      }
+      // warning - QgsExpression::isIntervalSafe is VERY expensive and should not be used here
+      else if ( vL.canConvert< QgsInterval >() && vR.canConvert< QgsInterval >() )
+      {
+        double fL = QgsExpressionUtils::getInterval( vL, parent ).seconds();
+        ENSURE_NO_EVAL_ERROR;
+        double fR = QgsExpressionUtils::getInterval( vR, parent ).seconds();
         ENSURE_NO_EVAL_ERROR;
         return compare( fL - fR ) ? TVL_True : TVL_False;
       }
@@ -787,8 +842,11 @@ QVariant QgsExpressionNodeInOperator::evalNode( QgsExpression *parent, const Qgs
     {
       bool equal = false;
       // check whether they are equal
-      if ( QgsExpressionUtils::isDoubleSafe( v1 ) && QgsExpressionUtils::isDoubleSafe( v2 ) )
+      if ( ( v1.type() != QVariant::String || v2.type() != QVariant::String ) &&
+           QgsExpressionUtils::isDoubleSafe( v1 ) && QgsExpressionUtils::isDoubleSafe( v2 ) )
       {
+        // do numeric comparison if both operators can be converted to numbers,
+        // and they aren't both string
         double f1 = QgsExpressionUtils::getDoubleValue( v1, parent );
         ENSURE_NO_EVAL_ERROR;
         double f2 = QgsExpressionUtils::getDoubleValue( v2, parent );
@@ -1141,8 +1199,8 @@ bool QgsExpressionNodeFunction::validateParams( int fnIndex, QgsExpressionNode::
 
 QVariant QgsExpressionNodeLiteral::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  Q_UNUSED( context );
-  Q_UNUSED( parent );
+  Q_UNUSED( context )
+  Q_UNUSED( parent )
   return mValue;
 }
 
@@ -1153,8 +1211,8 @@ QgsExpressionNode::NodeType QgsExpressionNodeLiteral::nodeType() const
 
 bool QgsExpressionNodeLiteral::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  Q_UNUSED( parent );
-  Q_UNUSED( context );
+  Q_UNUSED( parent )
+  Q_UNUSED( context )
   return true;
 }
 
@@ -1170,6 +1228,8 @@ QString QgsExpressionNodeLiteral::dump() const
       return QString::number( mValue.toInt() );
     case QVariant::Double:
       return QString::number( mValue.toDouble() );
+    case QVariant::LongLong:
+      return QString::number( mValue.toLongLong() );
     case QVariant::String:
       return QgsExpression::quotedString( mValue.toString() );
     case QVariant::Bool:
@@ -1224,7 +1284,7 @@ bool QgsExpressionNodeLiteral::isStatic( QgsExpression *parent, const QgsExpress
 
 QVariant QgsExpressionNodeColumnRef::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   int index = mIndex;
 
   if ( index < 0 )
@@ -1237,15 +1297,19 @@ QVariant QgsExpressionNodeColumnRef::evalNode( QgsExpression *parent, const QgsE
     }
   }
 
-  if ( context && context->hasFeature() )
+  if ( context )
   {
     QgsFeature feature = context->feature();
-    if ( index >= 0 )
-      return feature.attribute( index );
-    else
-      return feature.attribute( mName );
+    if ( feature.isValid() )
+    {
+      if ( index >= 0 )
+        return feature.attribute( index );
+      else
+        return feature.attribute( mName );
+    }
   }
-  return QVariant( '[' + mName + ']' );
+  parent->setEvalErrorString( tr( "Column '%1' not found" ).arg( mName ) );
+  return QVariant();
 }
 
 QgsExpressionNode::NodeType QgsExpressionNodeColumnRef::nodeType() const
@@ -1261,16 +1325,18 @@ bool QgsExpressionNodeColumnRef::prepareNode( QgsExpression *parent, const QgsEx
   QgsFields fields = qvariant_cast<QgsFields>( context->variable( QgsExpressionContext::EXPR_FIELDS ) );
 
   mIndex = fields.lookupField( mName );
-  if ( mIndex >= 0 )
+
+  if ( mIndex == -1 && context->hasFeature() )
   {
-    return true;
+    mIndex = context->feature().fieldNameIndex( mName );
   }
-  else
+
+  if ( mIndex == -1 )
   {
     parent->setEvalErrorString( tr( "Column '%1' not found" ).arg( mName ) );
-    mIndex = -1;
     return false;
   }
+  return true;
 }
 
 QString QgsExpressionNodeColumnRef::dump() const
@@ -1548,3 +1614,97 @@ QString QgsExpressionNodeBinaryOperator::text() const
   return BINARY_OPERATOR_TEXT[mOp];
 }
 
+//
+
+QVariant QgsExpressionNodeIndexOperator::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
+{
+  const QVariant container = mContainer->eval( parent, context );
+  ENSURE_NO_EVAL_ERROR;
+  const QVariant index = mIndex->eval( parent, context );
+  ENSURE_NO_EVAL_ERROR;
+
+  switch ( container.type() )
+  {
+    case QVariant::Map:
+      return QgsExpressionUtils::getMapValue( container, parent ).value( index.toString() );
+
+    case QVariant::List:
+    case QVariant::StringList:
+    {
+      const QVariantList list = QgsExpressionUtils::getListValue( container, parent );
+      qlonglong pos = QgsExpressionUtils::getIntValue( index, parent );
+      if ( pos >= list.length() || pos < -list.length() )
+      {
+        return QVariant();
+      }
+      if ( pos < 0 )
+      {
+        // negative indices are from back of list
+        pos += list.length();
+      }
+
+      return list.at( pos );
+    }
+
+    default:
+      parent->setEvalErrorString( tr( "[] can only be used with map or array values, not %1" ).arg( QMetaType::typeName( container.type() ) ) );
+      return QVariant();
+  }
+}
+
+QgsExpressionNode::NodeType QgsExpressionNodeIndexOperator::nodeType() const
+{
+  return ntIndexOperator;
+}
+
+bool QgsExpressionNodeIndexOperator::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
+{
+  bool resC = mContainer->prepare( parent, context );
+  bool resV = mIndex->prepare( parent, context );
+  return resC && resV;
+}
+
+QString QgsExpressionNodeIndexOperator::dump() const
+{
+  return QStringLiteral( "%1[%2]" ).arg( mContainer->dump(), mIndex->dump() );
+}
+
+QSet<QString> QgsExpressionNodeIndexOperator::referencedColumns() const
+{
+  return mContainer->referencedColumns() + mIndex->referencedColumns();
+}
+
+QSet<QString> QgsExpressionNodeIndexOperator::referencedVariables() const
+{
+  return mContainer->referencedVariables() + mIndex->referencedVariables();
+}
+
+QSet<QString> QgsExpressionNodeIndexOperator::referencedFunctions() const
+{
+  return mContainer->referencedFunctions() + mIndex->referencedFunctions();
+}
+
+QList<const QgsExpressionNode *> QgsExpressionNodeIndexOperator::nodes() const
+{
+  QList<const QgsExpressionNode *> lst;
+  lst << this;
+  lst += mContainer->nodes() + mIndex->nodes();
+  return lst;
+}
+
+bool QgsExpressionNodeIndexOperator::needsGeometry() const
+{
+  return mContainer->needsGeometry() || mIndex->needsGeometry();
+}
+
+QgsExpressionNode *QgsExpressionNodeIndexOperator::clone() const
+{
+  QgsExpressionNodeIndexOperator *copy = new QgsExpressionNodeIndexOperator( mContainer->clone(), mIndex->clone() );
+  cloneTo( copy );
+  return copy;
+}
+
+bool QgsExpressionNodeIndexOperator::isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const
+{
+  return mContainer->isStatic( parent, context ) && mIndex->isStatic( parent, context );
+}

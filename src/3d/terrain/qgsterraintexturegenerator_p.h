@@ -34,6 +34,7 @@ class QgsRasterLayer;
 
 #include <QObject>
 
+#include "qgschunknode_p.h"
 #include "qgsrectangle.h"
 
 class Qgs3DMapSettings;
@@ -60,7 +61,7 @@ class QgsTerrainTextureGenerator : public QObject
      * Starts async rendering of a map for the given extent (must be a square!).
      * Returns job ID. The class will emit tileReady() signal with the job ID when rendering is done.
      */
-    int render( const QgsRectangle &extent, const QString &debugText = QString() );
+    int render( const QgsRectangle &extent, QgsChunkNodeId nodeId, const QString &debugText = QString() );
 
     //! Cancels a rendering job
     void cancelJob( int jobId );
@@ -83,6 +84,7 @@ class QgsTerrainTextureGenerator : public QObject
     struct JobData
     {
       int jobId;
+      QgsChunkNodeId tileId;
       QgsMapRendererSequentialJob *job = nullptr;
       QgsRectangle extent;
       QString debugText;

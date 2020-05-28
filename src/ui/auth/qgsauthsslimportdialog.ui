@@ -69,7 +69,7 @@
        </sizepolicy>
       </property>
       <property name="title">
-       <string>Import certificate</string>
+       <string>Import Certificate</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <property name="spacing">

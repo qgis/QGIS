@@ -12,6 +12,7 @@
 
 
 
+
 class QgsField
 {
 %Docstring
@@ -88,6 +89,33 @@ field alias if set, otherwise the field name.
 .. versionadded:: 3.0
 %End
 
+    QString displayNameWithAlias() const;
+%Docstring
+Returns the name to use when displaying this field and adds the alias in parenthesis if it is defined.
+
+This will be used when working close to the data structure (i.e. building expressions and queries),
+when the real field name must be shown but the alias is also useful to understand what the field
+represents.
+
+.. seealso:: :py:func:`name`
+
+.. seealso:: :py:func:`alias`
+
+.. versionadded:: 3.12
+%End
+
+
+    QString displayType( bool showConstraints = false ) const;
+%Docstring
+Returns the type to use when displaying this field, including the length and precision of the datatype if applicable.
+
+This will be used when the full datatype with details has to displayed to the user.
+
+.. seealso:: :py:func:`type`
+
+.. versionadded:: 3.14
+%End
+
     QVariant::Type type() const;
 %Docstring
 Gets variant type of the field as it will be retrieved from data source
@@ -133,9 +161,16 @@ Returns the field comment
     bool isNumeric() const;
 %Docstring
 Returns if this field is numeric. Any integer or floating point type
-will return true for this.
+will return ``True`` for this.
 
 .. versionadded:: 2.18
+%End
+
+    bool isDateOrTime() const;
+%Docstring
+Returns if this field is a date and/or time type.
+
+.. versionadded:: 3.6
 %End
 
     void setName( const QString &name );
@@ -259,7 +294,7 @@ Converts the provided variant to a compatible format
 
 :param v: The value to convert
 
-:return: True if the conversion was successful
+:return: ``True`` if the conversion was successful
 %End
 %MethodCode
     PyObject *sipParseErr = NULL;
@@ -276,9 +311,7 @@ Converts the provided variant to a compatible format
         Py_BEGIN_ALLOW_THREADS
         try
         {
-          QgsDebugMsg( a0->toString() );
           sipRes = sipCpp->convertCompatible( *a0 );
-          QgsDebugMsg( a0->toString() );
         }
         catch ( ... )
         {
@@ -333,7 +366,7 @@ by manual field configuration.
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsField: %1 (%2)>" ).arg( sipCpp->name() ).arg( sipCpp->typeName() );
-    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
 }; // class QgsField

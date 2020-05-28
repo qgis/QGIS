@@ -1,0 +1,87 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/symbols/qgsabstract3dsymbol.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsAbstract3DSymbol
+{
+%Docstring
+Abstract base class for 3D symbols that are used by VectorLayer3DRenderer objects.
+
+3D symbol objects define appearance of GIS data.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsabstract3dsymbol.h"
+%End
+  public:
+    virtual ~QgsAbstract3DSymbol();
+
+    virtual QString type() const = 0;
+%Docstring
+Returns identifier of symbol type. Each 3D symbol implementation should return a different type.
+%End
+    virtual QgsAbstract3DSymbol *clone() const = 0 /Factory/;
+%Docstring
+Returns a new instance of the symbol with the same settings
+%End
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const = 0;
+%Docstring
+Writes symbol configuration to the given DOM element
+%End
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) = 0;
+%Docstring
+Reads symbol configuration from the given DOM element
+%End
+
+    enum Property
+    {
+      PropertyHeight,
+      PropertyExtrusionHeight,
+    };
+
+    static const QgsPropertiesDefinition &propertyDefinitions();
+%Docstring
+Returns the symbol layer property definitions.
+%End
+
+    QgsPropertyCollection &dataDefinedProperties();
+%Docstring
+Returns a reference to the symbol layer's property collection, used for data defined overrides.
+%End
+
+
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
+%Docstring
+Sets the symbol layer's property collection, used for data defined overrides.
+%End
+
+  protected:
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/symbols/qgsabstract3dsymbol.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

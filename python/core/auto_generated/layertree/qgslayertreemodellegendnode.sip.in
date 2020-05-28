@@ -27,6 +27,12 @@ and customized look.
 %TypeHeaderCode
 #include "qgslayertreemodellegendnode.h"
 %End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsSymbolLegendNode *> ( sipCpp ) )
+      sipType = sipType_QgsSymbolLegendNode;
+    else
+      sipType = 0;
+%End
   public:
 
     enum LegendNodeRoles
@@ -57,7 +63,7 @@ Returns data associated with the item. Must be implemented in derived class.
 
     virtual bool setData( const QVariant &value, int role );
 %Docstring
-Sets some data associated with the item. Default implementation does nothing and returns false.
+Sets some data associated with the item. Default implementation does nothing and returns ``False``.
 %End
 
     virtual bool isEmbeddedInParent() const;
@@ -65,6 +71,48 @@ Sets some data associated with the item. Default implementation does nothing and
 
     virtual QString userLabel() const;
     virtual void setUserLabel( const QString &userLabel );
+
+    virtual QSizeF userPatchSize() const;
+%Docstring
+Returns the user (overridden) size for the legend node.
+
+If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+symbol width or height from :py:class:`QgsLegendSettings`.
+
+.. seealso:: :py:func:`setUserPatchSize`
+
+.. versionadded:: 3.14
+%End
+
+    virtual void setUserPatchSize( QSizeF size );
+%Docstring
+Sets the user (overridden) ``size`` for the legend node.
+
+If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+symbol width or height from :py:class:`QgsLegendSettings`.
+
+.. seealso:: :py:func:`userPatchSize`
+
+.. versionadded:: 3.14
+%End
+
+    virtual void setColumnBreak( bool breakBeforeNode );
+%Docstring
+Sets whether a forced column break should occur before the node.
+
+.. seealso:: :py:func:`columnBreak`
+
+.. versionadded:: 3.14
+%End
+
+    virtual bool columnBreak() const;
+%Docstring
+Returns whether a forced column break should occur before the node.
+
+.. seealso:: :py:func:`setColumnBreak`
+
+.. versionadded:: 3.14
+%End
 
     virtual bool isScaleOK( double scale ) const;
 
@@ -76,9 +124,26 @@ Default implementation does nothing. *
 
     struct ItemContext
     {
+      ItemContext();
+
+      QgsRenderContext *context;
       QPainter *painter;
-      QPointF point;
-      double labelXOffset;
+
+ QPointF point;
+
+ double labelXOffset;
+
+      double top;
+
+      double columnLeft;
+
+      double columnRight;
+
+      double maxSiblingSymbolWidth;
+
+      QgsLegendPatchShape patchShape;
+
+      QSizeF patchSize;
     };
 
     struct ItemMetrics
@@ -92,7 +157,18 @@ Default implementation does nothing. *
 Entry point called from QgsLegendRenderer to do the rendering.
 Default implementation calls drawSymbol() and drawSymbolText() methods.
 
-If ctx is null, this is just first stage when preparing layout - without actual rendering.
+If ctx is ``None``, this is just first stage when preparing layout - without actual rendering.
+%End
+
+    QJsonObject exportToJson( const QgsLegendSettings &settings, const QgsRenderContext &context );
+%Docstring
+Entry point called from QgsLegendRenderer to do the rendering in a
+JSON object.
+
+:param settings: Legend layout configuration
+:param context: Rendering context
+
+.. versionadded:: 3.8
 %End
 
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
@@ -100,10 +176,20 @@ If ctx is null, this is just first stage when preparing layout - without actual 
 Draws symbol on the left side of the item
 
 :param settings: Legend layout configuration
-:param ctx: Context for rendering - may be null if only doing layout without actual rendering
+:param ctx: Context for rendering - may be ``None`` if only doing layout without actual rendering
 :param itemHeight: Minimal height of the legend item - used for correct positioning when rendering
 
 :return: Real size of the symbol (may be bigger than "normal" symbol size from settings)
+%End
+
+    virtual QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const;
+%Docstring
+Adds a symbol in base64 string within a JSON object with the key "icon".
+
+:param settings: Legend layout configuration
+:param context: Rendering context
+
+.. versionadded:: 3.8
 %End
 
     virtual QSizeF drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const;
@@ -111,7 +197,7 @@ Draws symbol on the left side of the item
 Draws label on the right side of the item
 
 :param settings: Legend layout configuration
-:param ctx: Context for rendering - may be null if only doing layout without actual rendering
+:param ctx: Context for rendering - may be ``None`` if only doing layout without actual rendering
 :param symbolSize: Real size of the associated symbol - used for correct positioning when rendering
 
 :return: Size of the label (may span multiple lines)
@@ -131,7 +217,7 @@ Construct the node with pointer to its parent layer node
 
     QgsRenderContext *createTemporaryRenderContext() const /Factory/;
 %Docstring
-Returns a temporary context or null if legendMapViewData are not valid
+Returns a temporary context or ``None`` if legendMapViewData are not valid
 %End
 
   protected:
@@ -169,6 +255,9 @@ Constructor for QgsSymbolLegendNode.
 
 
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
+
+
+    virtual QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const;
 
 
     virtual void setEmbeddedInParent( bool embedded );
@@ -221,9 +310,9 @@ Returns the symbol used by the legend node.
 .. versionadded:: 2.14
 %End
 
-    void setSymbol( QgsSymbol *symbol );
+    void setSymbol( QgsSymbol *symbol /Transfer/ );
 %Docstring
-Sets the symbol to be used by the legend node. The symbol change is also propagated
+Sets the ``symbol`` to be used by the legend node. The symbol change is also propagated
 to the associated vector layer's renderer.
 
 :param symbol: new symbol for node. Ownership is transferred.
@@ -261,6 +350,67 @@ Sets format of text to be shown on top of the symbol.
 .. versionadded:: 3.2
 %End
 
+    QString symbolLabel() const;
+%Docstring
+Label of the symbol, user defined label will be used, otherwise will default to the label made by QGIS.
+
+.. versionadded:: 3.10
+%End
+
+    QgsLegendPatchShape patchShape() const;
+%Docstring
+Returns the symbol patch shape to use when rendering the legend node symbol.
+
+.. seealso:: :py:func:`setPatchShape`
+
+.. versionadded:: 3.14
+%End
+
+    void setPatchShape( const QgsLegendPatchShape &shape );
+%Docstring
+Sets the symbol patch ``shape`` to use when rendering the legend node symbol.
+
+.. seealso:: :py:func:`patchShape`
+
+.. versionadded:: 3.14
+%End
+
+    QgsSymbol *customSymbol() const;
+%Docstring
+Returns the node's custom symbol.
+
+If a non-``None`` value is returned, then this symbol will be used for rendering
+the legend node instead of the default symbol().
+
+.. seealso:: :py:func:`setCustomSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    void setCustomSymbol( QgsSymbol *symbol /Transfer/ );
+%Docstring
+Sets the node's custom ``symbol``.
+
+If a non-``None`` value is set, then this symbol will be used for rendering
+the legend node instead of the default symbol().
+
+Ownership of ``symbol`` is transferred.
+
+.. seealso:: :py:func:`customSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    QString evaluateLabel( const QgsExpressionContext &context = QgsExpressionContext(), const QString &label = QString() );
+%Docstring
+Evaluates  and returns the text label of the current node
+
+:param context: extra QgsExpressionContext to use for evaluating the expression
+:param label: text to evaluate instead of the layer layertree string
+
+.. versionadded:: 3.10
+%End
+
   public slots:
 
     void checkAllItems();
@@ -268,6 +418,8 @@ Sets format of text to be shown on top of the symbol.
 Checks all items belonging to the same layer as this node.
 
 .. seealso:: :py:func:`uncheckAllItems`
+
+.. seealso:: :py:func:`toggleAllItems`
 
 .. versionadded:: 2.14
 %End
@@ -278,7 +430,20 @@ Unchecks all items belonging to the same layer as this node.
 
 .. seealso:: :py:func:`checkAllItems`
 
+.. seealso:: :py:func:`toggleAllItems`
+
 .. versionadded:: 2.14
+%End
+
+    void toggleAllItems();
+%Docstring
+Toggle all items belonging to the same layer as this node.
+
+.. seealso:: :py:func:`checkAllItems`
+
+.. seealso:: :py:func:`uncheckAllItems`
+
+.. versionadded:: 3.6
 %End
 
 };
@@ -342,6 +507,9 @@ Constructor for QgsImageLegendNode.
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
 
+    virtual QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const;
+
+
 };
 
 class QgsRasterSymbolLegendNode : QgsLayerTreeModelLegendNode
@@ -373,6 +541,9 @@ Constructor for QgsRasterSymbolLegendNode.
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
 
+    virtual QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const;
+
+
 };
 
 
@@ -401,6 +572,9 @@ Constructor for QgsWmsLegendNode.
 
 
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
+
+
+    virtual QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const;
 
 
     virtual void invalidateMapBasedData();

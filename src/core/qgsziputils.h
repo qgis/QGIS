@@ -17,7 +17,7 @@
 #define QGSZIPUTILS_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QStringList>
 
 #ifdef SIP_RUN
@@ -30,20 +30,20 @@ namespace QgsZipUtils
 {
 
   /**
-   * Returns true if the file name is a zipped file ( i.e with a '.qgz'
-   *  extension, false otherwise.
+   * Returns TRUE if the file name is a zipped file ( i.e with a '.qgz'
+   *  extension, FALSE otherwise.
    * \param filename The name of the file
-   * \returns true if the file is zipped, false otherwise
+   * \returns TRUE if the file is zipped, FALSE otherwise
    */
   CORE_EXPORT bool isZipFile( const QString &filename );
 
   /**
-   * Unzip a zip file in an output directory. An error is returned if the zip
-   *  filename does not exist, the output directory does not exist or is
-   *  not writable.
+   * Unzip a zip file in an output directory.
    * \param zip The zip filename
    * \param dir The output directory
    * \param files The absolute path of unzipped files
+   * \returns FALSE if the zip filename does not exist, the output directory
+   * does not exist or is not writable.
    * \since QGIS 3.0
    */
   CORE_EXPORT bool unzip( const QString &zip, const QString &dir, QStringList &files SIP_OUT );

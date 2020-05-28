@@ -99,7 +99,7 @@ in the range.
 
     bool contains( double value ) const;
 %Docstring
-Returns true if this range contains the specified ``value``.
+Returns ``True`` if this range contains the specified ``value``.
 
 .. versionadded:: 3.2
 %End
@@ -111,12 +111,12 @@ Tests if a ``value`` is within the list of ranges
 :param value: value
 :param rangeList: list of ranges
 
-:return: true if value is in at least one of ranges
+:return: ``True`` if value is in at least one of ranges
 %End
 
     bool overlaps( const QgsRasterRange &other ) const;
 %Docstring
-Returns true if this range overlaps another range.
+Returns ``True`` if this range overlaps another range.
 
 .. versionadded:: 3.2
 %End

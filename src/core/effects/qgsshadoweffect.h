@@ -19,7 +19,7 @@
 
 #include "qgis_core.h"
 #include "qgspainteffect.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgssymbol.h"
 #include <QPainter>
 
@@ -42,20 +42,64 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
     void readProperties( const QgsStringMap &props ) override;
 
     /**
-     * Sets blur level (strength) for the shadow.
-     * \param level blur level. Values between 0 and 16 are valid, with larger
+     * Sets blur level (radius) for the shadow.
+     * \param level blur level.
      * values indicating greater blur strength.
      * \see blurLevel
+     * \see setBlurUnit
+     * \see setBlurMapUnitScale
      */
-    void setBlurLevel( const int level ) { mBlurLevel = level; }
+    void setBlurLevel( const double level ) { mBlurLevel = level; }
 
     /**
-     * Returns the blur level (strength) for the shadow.
-     * \returns blur level. Value will be between 0 and 16, with larger
+     * Returns the blur level (radius) for the shadow.
+     * \returns blur level.
      * values indicating greater blur strength.
      * \see setBlurLevel
+     * \see blurUnit
+     * \see blurMapUnitScale
      */
-    int blurLevel() const { return mBlurLevel; }
+    double blurLevel() const { return mBlurLevel; }
+
+    /**
+     * Sets the units used for the shadow blur level (radius).
+     * \param unit units for blur level
+     * \see blurUnit
+     * \see setBlurLevel
+     * \see setBlurMapUnitScale
+     * \since QGIS 3.4.9
+     */
+    void setBlurUnit( const QgsUnitTypes::RenderUnit unit ) { mBlurUnit = unit; }
+
+    /**
+     * Returns the units used for the shadow blur level (radius).
+     * \returns units for blur level
+     * \see setBlurUnit
+     * \see blurLevel
+     * \see blurMapUnitScale
+     * \since QGIS 3.4.9
+     */
+    QgsUnitTypes::RenderUnit blurUnit() const { return mBlurUnit; }
+
+    /**
+     * Sets the map unit scale used for the shadow blur strength (radius).
+     * \param scale map unit scale for blur strength
+     * \see blurMapUnitScale
+     * \see setBlurLevel
+     * \see setBlurUnit
+     * \since QGIS 3.4.9
+     */
+    void setBlurMapUnitScale( const QgsMapUnitScale &scale ) { mBlurMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale used for the shadow blur strength (radius).
+     * \returns map unit scale for blur strength
+     * \see setBlurMapUnitScale
+     * \see blurLevel
+     * \see blurUnit
+     * \since QGIS 3.4.9
+     */
+    const QgsMapUnitScale &blurMapUnitScale() const { return mBlurMapUnitScale; }
 
     /**
      * Sets the angle for offsetting the shadow.
@@ -181,12 +225,14 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
     /**
      * Specifies whether the shadow is drawn outside the picture or within
      * the picture.
-     * \returns true if shadow is to be drawn outside the picture, or false
+     * \returns TRUE if shadow is to be drawn outside the picture, or FALSE
      * to draw shadow within the picture
      */
     virtual bool exteriorShadow() const = 0;
 
-    int mBlurLevel = 10;
+    double mBlurLevel = 2.645;
+    QgsUnitTypes::RenderUnit mBlurUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mBlurMapUnitScale;
     int mOffsetAngle = 135;
     double mOffsetDist = 2.0;
     QgsUnitTypes::RenderUnit mOffsetUnit = QgsUnitTypes::RenderMillimeters;

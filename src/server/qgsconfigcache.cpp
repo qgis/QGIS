@@ -17,8 +17,9 @@
 
 #include "qgsconfigcache.h"
 #include "qgsmessagelog.h"
-#include "qgsaccesscontrol.h"
-#include "qgsproject.h"
+#include "qgsserverexception.h"
+#include "qgsstorebadlayerinfo.h"
+#include "qgsserverprojectutils.h"
 
 #include <QFile>
 
@@ -37,19 +38,66 @@ QgsConfigCache::QgsConfigCache()
   QObject::connect( &mFileSystemWatcher, &QFileSystemWatcher::fileChanged, this, &QgsConfigCache::removeChangedEntry );
 }
 
-const QgsProject *QgsConfigCache::project( const QString &path )
+
+const QgsProject *QgsConfigCache::project( const QString &path, QgsServerSettings *settings )
 {
   if ( ! mProjectCache[ path ] )
   {
     std::unique_ptr<QgsProject> prj( new QgsProject() );
+    QgsStoreBadLayerInfo *badLayerHandler = new QgsStoreBadLayerInfo();
+    prj->setBadLayerHandler( badLayerHandler );
     if ( prj->read( path ) )
     {
+      if ( !badLayerHandler->badLayers().isEmpty() )
+      {
+        // if bad layers are not restricted layers so service failed
+        QStringList unrestrictedBadLayers;
+        // test bad layers through restrictedlayers
+        const QStringList badLayerIds = badLayerHandler->badLayers();
+        const QMap<QString, QString> badLayerNames = badLayerHandler->badLayerNames();
+        const QStringList resctrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *prj );
+        for ( const QString &badLayerId : badLayerIds )
+        {
+          // if this bad layer is in restricted layers
+          // it doesn't need to be added to unrestricted bad layers
+          if ( badLayerNames.contains( badLayerId ) &&
+               resctrictedLayers.contains( badLayerNames.value( badLayerId ) ) )
+          {
+            continue;
+          }
+          unrestrictedBadLayers.append( badLayerId );
+        }
+        if ( !unrestrictedBadLayers.isEmpty() )
+        {
+          // This is a critical error unless QGIS_SERVER_IGNORE_BAD_LAYERS is set to TRUE
+          if ( ! settings || ! settings->ignoreBadLayers() )
+          {
+            QgsMessageLog::logMessage(
+              QStringLiteral( "Error, Layer(s) %1 not valid in project %2" ).arg( unrestrictedBadLayers.join( QStringLiteral( ", " ) ), path ),
+              QStringLiteral( "Server" ), Qgis::Critical );
+            throw QgsServerException( QStringLiteral( "Layer(s) not valid" ) );
+          }
+          else
+          {
+            QgsMessageLog::logMessage(
+              QStringLiteral( "Warning, Layer(s) %1 not valid in project %2" ).arg( unrestrictedBadLayers.join( QStringLiteral( ", " ) ), path ),
+              QStringLiteral( "Server" ), Qgis::Warning );
+          }
+        }
+      }
       mProjectCache.insert( path, prj.release() );
       mFileSystemWatcher.addPath( path );
+    }
+    else
+    {
+      QgsMessageLog::logMessage(
+        QStringLiteral( "Error when loading project file '%1': %2 " ).arg( path, prj->error() ),
+        QStringLiteral( "Server" ), Qgis::Critical );
     }
   }
   QgsProject::setInstance( mProjectCache[ path ] );
   return mProjectCache[ path ];
+
 }
 
 QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )
@@ -106,4 +154,3 @@ void QgsConfigCache::removeEntry( const QString &path )
 {
   removeChangedEntry( path );
 }
-

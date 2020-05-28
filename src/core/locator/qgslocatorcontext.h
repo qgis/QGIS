@@ -52,7 +52,7 @@ class CORE_EXPORT QgsLocatorContext
     QgsCoordinateReferenceSystem targetExtentCrs;
 
     /**
-     * Will be true if search is being conducted using a filter prefix.
+     * Will be TRUE if search is being conducted using a filter prefix.
      */
     bool usingPrefix = false;
 

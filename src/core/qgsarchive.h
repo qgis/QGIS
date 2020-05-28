@@ -20,6 +20,7 @@
 #define QGSARCHIVE_H
 
 #include "qgis_core.h"
+
 #include <QStringList>
 #include <QTemporaryFile>
 #include <QTemporaryDir>
@@ -55,7 +56,7 @@ class CORE_EXPORT QgsArchive
     /**
      * Zip the content of this archive
      * \param zipFilename The name of the zip to generate
-     * \returns false if something goes wrong, true otherwise
+     * \returns FALSE if something goes wrong, TRUE otherwise
      */
     bool zip( const QString &zipFilename );
 
@@ -63,7 +64,7 @@ class CORE_EXPORT QgsArchive
      * Clear the current content of this archive and unzip. Files are unzipped
      * in the temporary directory.
      * \param zipFilename The zip file to unzip
-     * \returns true if unzip action is a success, false otherwise
+     * \returns TRUE if unzip action is a success, FALSE otherwise
      */
     virtual bool unzip( const QString &zipFilename );
 
@@ -83,7 +84,7 @@ class CORE_EXPORT QgsArchive
     /**
      * Remove a file from this archive and from the filesystem.
      * \param filename The path of the file to remove
-     * \returns true if the file has been removed from the filesystem, false otherwise
+     * \returns TRUE if the file has been removed from the filesystem, FALSE otherwise
      */
     bool removeFile( const QString &filename );
 
@@ -120,7 +121,7 @@ class  CORE_EXPORT QgsProjectArchive : public QgsArchive
      * is found in the content, then this archive may be considered as a valid
      * one. Files are unzipped in the temporary directory.
      * \param zipFilename The zip file to unzip
-     * \returns true if a project file has been found, false otherwise
+     * \returns TRUE if a project file has been found, FALSE otherwise
      */
     bool unzip( const QString &zipFilename ) override;
 
@@ -131,7 +132,7 @@ class  CORE_EXPORT QgsProjectArchive : public QgsArchive
 
     /**
      * Remove the current .qgs project file from the temporary directory.
-     * \returns true if the file is well removed, false otherwise
+     * \returns TRUE if the file is well removed, FALSE otherwise
      */
     bool clearProjectFile();
 

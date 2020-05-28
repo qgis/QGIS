@@ -147,13 +147,18 @@ QgsFeatureList QgsSmoothAlgorithm::processFeature( const QgsFeature &feature, Qg
       maxAngle = mMaxAngleProperty.valueAsDouble( context.expressionContext(), maxAngle );
 
     QgsGeometry outputGeometry = f.geometry().smooth( iterations, offset, -1, maxAngle );
-    if ( !outputGeometry )
+    if ( outputGeometry.isNull() )
     {
       feedback->reportError( QObject::tr( "Error smoothing geometry %1" ).arg( feature.id() ) );
     }
     f.setGeometry( outputGeometry );
   }
   return QgsFeatureList() << f;
+}
+
+QgsProcessingFeatureSource::Flag QgsSmoothAlgorithm::sourceFlags() const
+{
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
 }
 
 ///@endcond

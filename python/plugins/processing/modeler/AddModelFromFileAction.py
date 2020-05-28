@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'April 2014'
 __copyright__ = '(C) 201, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import shutil
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
@@ -33,7 +29,6 @@ from qgis.PyQt.QtCore import QFileInfo, QCoreApplication
 from qgis.core import QgsApplication, QgsSettings, QgsProcessingModelAlgorithm
 
 from processing.gui.ToolboxAction import ToolboxAction
-from processing.modeler.exceptions import WrongModelException
 from processing.modeler.ModelerUtils import ModelerUtils
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]

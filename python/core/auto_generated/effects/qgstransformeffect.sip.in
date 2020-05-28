@@ -269,7 +269,7 @@ Returns the y axis shearing factor.
 %Docstring
 Sets whether to reflect along the x-axis
 
-:param reflectX: true to reflect horizontally
+:param reflectX: ``True`` to reflect horizontally
 
 .. seealso:: :py:func:`reflectX`
 
@@ -280,7 +280,7 @@ Sets whether to reflect along the x-axis
 %Docstring
 Returns whether transform will be reflected along the x-axis
 
-:return: true if transform will reflect horizontally
+:return: ``True`` if transform will reflect horizontally
 
 .. seealso:: :py:func:`setReflectX`
 
@@ -291,7 +291,7 @@ Returns whether transform will be reflected along the x-axis
 %Docstring
 Sets whether to reflect along the y-axis
 
-:param reflectY: true to reflect horizontally
+:param reflectY: ``True`` to reflect horizontally
 
 .. seealso:: :py:func:`reflectY`
 
@@ -302,7 +302,7 @@ Sets whether to reflect along the y-axis
 %Docstring
 Returns whether transform will be reflected along the y-axis
 
-:return: true if transform will reflect horizontally
+:return: ``True`` if transform will reflect horizontally
 
 .. seealso:: :py:func:`setReflectY`
 

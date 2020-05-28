@@ -10,11 +10,15 @@ SET(QGIS_QUICK_PLUGIN_SRC
 )
 
 SET(QGIS_QUICK_PLUGIN_RESOURCES
+  components/qgsquickicontextitem.qml
+  editor/qgsquickeditorwidgetcombobox.qml
   editor/qgsquickcheckbox.qml
   editor/qgsquickdatetime.qml
   editor/qgsquickexternalresource.qml
+  editor/qgsquickrange.qml
   editor/qgsquicktextedit.qml
   editor/qgsquickvaluemap.qml
+  editor/qgsquickvaluerelation.qml
   qgsquickfeatureform.qml
   qgsquickfeatureformstyling.qml
   qgsquickmapcanvas.qml
@@ -22,9 +26,14 @@ SET(QGIS_QUICK_PLUGIN_RESOURCES
   qgsquickphotopanel.qml
   qgsquickpositionmarker.qml
   qgsquickscalebar.qml
-  qmldir
 )
 
+IF (IOS)
+  SET(QGIS_QUICK_PLUGIN_RESOURCES ${QGIS_QUICK_PLUGIN_RESOURCES} ios/qmldir )
+  SET(QGIS_QUICK_PLUGIN_QRC ios/qgsquick.qrc)
+ELSE (IOS)
+  SET(QGIS_QUICK_PLUGIN_RESOURCES ${QGIS_QUICK_PLUGIN_RESOURCES} qmldir)
+ENDIF (IOS)
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -54,19 +63,17 @@ INCLUDE_DIRECTORIES(
 )
 
 INCLUDE_DIRECTORIES(SYSTEM
+  ${GDAL_INCLUDE_DIR}
+  ${PROJ_INCLUDE_DIR}
   ${LIBZIP_INCLUDE_DIRS}
   ${SPATIALINDEX_INCLUDE_DIR}
-  ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
   ${EXPAT_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${SPATIALITE_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
-
-ADD_DEFINITIONS(-DCORE_EXPORT=)
 
 ############################################################
 # qgis_quick_plugin module (QML) library
@@ -80,7 +87,7 @@ ENDIF(MSVC)
 
 SET(QGIS_QUICK_PLUGIN_RUNTIME_DIR ${QGIS_OUTPUT_DIRECTORY}/${QGIS_QML_SUBDIR}/QgsQuick)
 
-ADD_LIBRARY(qgis_quick_plugin MODULE
+ADD_LIBRARY(qgis_quick_plugin ${LIBRARY_TYPE}
     ${QGIS_QUICK_PLUGIN_SRC}
     ${QGIS_QUICK_PLUGIN_MOC_HDRS}
     ${QGIS_QUICK_PLUGIN_MOC_SRCS}
@@ -88,10 +95,10 @@ ADD_LIBRARY(qgis_quick_plugin MODULE
 )
 TARGET_LINK_LIBRARIES(qgis_quick_plugin qgis_quick)
 SET_TARGET_PROPERTIES(qgis_quick_plugin PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${QGIS_QUICK_PLUGIN_RUNTIME_DIR})
-TARGET_COMPILE_DEFINITIONS(qgis_quick_plugin PRIVATE "-DQUICK_EXPORT=" "-DQT_NO_FOREACH")
+TARGET_COMPILE_DEFINITIONS(qgis_quick_plugin PRIVATE "-DQT_NO_FOREACH")
 
 # Copy qml files to output directory, we need qml files in the same directory as the plugin shared library
-FOREACH(qmlfile ${QGIS_QUICK_PLUGIN_RESOURCES})
+FOREACH(qmlfile ${QGIS_QUICK_PLUGIN_RESOURCES} ${QGIS_QUICK_PLUGIN_QRC})
   ADD_CUSTOM_COMMAND(TARGET qgis_quick_plugin
     PRE_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy ${qmlfile} ${QGIS_QUICK_PLUGIN_RUNTIME_DIR}
@@ -129,7 +136,8 @@ SET(QUICK_PLUGIN_INSTALL_DIR ${QGIS_QML_DIR}/QgsQuick)
 INSTALL(TARGETS qgis_quick_plugin
   RUNTIME DESTINATION ${QUICK_PLUGIN_INSTALL_DIR}
   LIBRARY DESTINATION ${QUICK_PLUGIN_INSTALL_DIR}
+  ARCHIVE DESTINATION ${QUICK_PLUGIN_INSTALL_DIR}
 )
-INSTALL(FILES ${QGIS_QUICK_PLUGIN_RESOURCES} ${QGIS_QUICK_PLUGIN_TYPEINFO}
+INSTALL(FILES ${QGIS_QUICK_PLUGIN_RESOURCES} ${QGIS_QUICK_PLUGIN_TYPEINFO} ${QGIS_QUICK_PLUGIN_QRC}
   DESTINATION ${QUICK_PLUGIN_INSTALL_DIR}
 )

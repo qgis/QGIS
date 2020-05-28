@@ -20,6 +20,7 @@
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgssymbollayerregistry.h"
+#include "qgsexpressioncontextutils.h"
 
 // the widgets
 #include "qgssymbolslistwidget.h"
@@ -34,6 +35,10 @@
 #include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
 #include "qgssvgcache.h"
+#include "qgsimagecache.h"
+#include "qgsproject.h"
+#include "qgsguiutils.h"
+#include "qgsgui.h"
 
 #include <QColorDialog>
 #include <QPainter>
@@ -145,11 +150,16 @@ class SymbolLayerItem : public QStandardItem
 
     void updatePreview()
     {
+      if ( !mSize.isValid() )
+      {
+        const int size = QgsGuiUtils::scaleIconSize( 16 );
+        mSize = QSize( size, size );
+      }
       QIcon icon;
       if ( mIsLayer )
-        icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( mLayer, QgsUnitTypes::RenderMillimeters, QSize( 16, 16 ) ); //todo: make unit a parameter
+        icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( mLayer, QgsUnitTypes::RenderMillimeters, mSize ); //todo: make unit a parameter
       else
-        icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSymbol, QSize( 16, 16 ) );
+        icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSymbol, mSize );
       setIcon( icon );
 
       if ( parent() )
@@ -181,11 +191,11 @@ class SymbolLayerItem : public QStandardItem
           switch ( mSymbol->type() )
           {
             case QgsSymbol::Marker :
-              return QCoreApplication::translate( "SymbolLayerItem", "Marker", nullptr, QCoreApplication::UnicodeUTF8 );
+              return QCoreApplication::translate( "SymbolLayerItem", "Marker" );
             case QgsSymbol::Fill   :
-              return QCoreApplication::translate( "SymbolLayerItem", "Fill", nullptr, QCoreApplication::UnicodeUTF8 );
+              return QCoreApplication::translate( "SymbolLayerItem", "Fill" );
             case QgsSymbol::Line   :
-              return QCoreApplication::translate( "SymbolLayerItem", "Line", nullptr, QCoreApplication::UnicodeUTF8 );
+              return QCoreApplication::translate( "SymbolLayerItem", "Line" );
             default:
               return "Symbol";
           }
@@ -212,6 +222,7 @@ class SymbolLayerItem : public QStandardItem
     QgsSymbolLayer *mLayer = nullptr;
     QgsSymbol *mSymbol = nullptr;
     bool mIsLayer;
+    QSize mSize;
 };
 
 ///@endcond
@@ -231,6 +242,10 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
 
   setupUi( this );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
+
+  layersTree->setMaximumHeight( static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 7 ) );
+  layersTree->setMinimumHeight( layersTree->maximumHeight() );
+  lblPreview->setMaximumWidth( layersTree->maximumHeight() );
 
   // setup icons
   btnAddLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
@@ -253,11 +268,15 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   //get first feature from layer for previews
   if ( mVectorLayer )
   {
+#if 0 // this is too expensive to do for many providers. TODO revisit when support for connection timeouts is complete across all providers
     // short timeout for request - it doesn't really matter if we don't get the feature, and this call is blocking UI
     QgsFeatureIterator it = mVectorLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ).setConnectionTimeout( 100 ) );
     it.nextFeature( mPreviewFeature );
+#endif
     mPreviewExpressionContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
+#if 0
     mPreviewExpressionContext.setFeature( mPreviewFeature );
+#endif
   }
   else
   {
@@ -293,8 +312,32 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
     // have been generated using the temporary "downloading" svg. In this case
     // we require the preview to be regenerated to use the correct fetched
     // svg
+    mBlockModified = true;
     symbolChanged();
     updatePreview();
+    mBlockModified = false;
+  } );
+  connect( QgsApplication::imageCache(), &QgsImageCache::remoteImageFetched, this, [ = ]
+  {
+    // when a remote image has been fetched, update the widget's previews
+    // this is required if the symbol utilizes remote images, and the current previews
+    // have been generated using the temporary "downloading" image. In this case
+    // we require the preview to be regenerated to use the correct fetched
+    // image
+    mBlockModified = true;
+    symbolChanged();
+    updatePreview();
+    mBlockModified = false;
+  } );
+
+  connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, [ = ]
+  {
+    // if project color scheme changes, we need to redraw symbols - they may use project colors and accordingly
+    // need updating to reflect the new colors
+    mBlockModified = true;
+    symbolChanged();
+    updatePreview();
+    mBlockModified = false;
   } );
 }
 
@@ -342,6 +385,16 @@ QgsSymbolWidgetContext QgsSymbolSelectorWidget::context() const
 
 void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent )
 {
+  if ( !symbol )
+    return;
+
+  if ( !parent )
+  {
+    mSymbol = symbol;
+    model->clear();
+    parent = static_cast<SymbolLayerItem *>( model->invisibleRootItem() );
+  }
+
   SymbolLayerItem *symbolItem = new SymbolLayerItem( symbol );
   QFont boldFont = symbolItem->font();
   boldFont.setBold( true );
@@ -364,7 +417,7 @@ void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *pa
 }
 
 
-void QgsSymbolSelectorWidget::loadSymbol()
+void QgsSymbolSelectorWidget::reloadSymbol()
 {
   model->clear();
   loadSymbol( mSymbol, static_cast<SymbolLayerItem *>( model->invisibleRootItem() ) );
@@ -399,10 +452,15 @@ void QgsSymbolSelectorWidget::updateUi()
 
 void QgsSymbolSelectorWidget::updatePreview()
 {
-  QImage preview = mSymbol->bigSymbolPreviewImage( &mPreviewExpressionContext );
+  if ( !mSymbol )
+    return;
+
+  std::unique_ptr< QgsSymbol > symbolClone( mSymbol->clone() );
+  QImage preview = symbolClone->bigSymbolPreviewImage( &mPreviewExpressionContext );
   lblPreview->setPixmap( QPixmap::fromImage( preview ) );
   // Hope this is a appropriate place
-  emit symbolModified();
+  if ( !mBlockModified )
+    emit symbolModified();
 }
 
 void QgsSymbolSelectorWidget::updateLayerPreview()
@@ -468,7 +526,9 @@ void QgsSymbolSelectorWidget::layerChanged()
   {
     mDataDefineRestorer.reset();
     // then it must be a symbol
+    Q_NOWARN_DEPRECATED_PUSH
     currentItem->symbol()->setLayer( mVectorLayer );
+    Q_NOWARN_DEPRECATED_POP
     // Now populate symbols of that type using the symbols list widget:
     QgsSymbolsListWidget *symbolsList = new QgsSymbolsListWidget( currentItem->symbol(), mStyle, mAdvancedMenu, this, mVectorLayer );
     symbolsList->setContext( mContext );
@@ -499,7 +559,7 @@ void QgsSymbolSelectorWidget::symbolChanged()
   else
   {
     //it is the symbol itself
-    loadSymbol();
+    reloadSymbol();
     QModelIndex newIndex = layersTree->model()->index( 0, 0 );
     layersTree->setCurrentIndex( newIndex );
   }
@@ -712,6 +772,7 @@ QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *s
   : QDialog( parent )
 {
   setLayout( new QVBoxLayout() );
+
   mSelectorWidget = new QgsSymbolSelectorWidget( symbol, style, vl, this );
   mButtonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok );
 
@@ -722,10 +783,13 @@ QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *s
   layout()->addWidget( mSelectorWidget );
   layout()->addWidget( mButtonBox );
 
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/SymbolSelectorWidget/geometry" ) ).toByteArray() );
+  connect( mSelectorWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
 
-  // can be embedded in renderer properties dialog
+  mSelectorWidget->setMinimumSize( 460, 560 );
+  setObjectName( QStringLiteral( "SymbolSelectorDialog" ) );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+
+  // Can be embedded in renderer properties dialog
   if ( embedded )
   {
     mButtonBox->hide();
@@ -736,12 +800,6 @@ QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *s
     setWindowTitle( tr( "Symbol Selector" ) );
   }
   mSelectorWidget->setDockMode( embedded );
-}
-
-QgsSymbolSelectorDialog::~QgsSymbolSelectorDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/SymbolSelectorWidget/geometry" ), saveGeometry() );
 }
 
 QMenu *QgsSymbolSelectorDialog::advancedMenu()
@@ -777,9 +835,9 @@ void QgsSymbolSelectorDialog::keyPressEvent( QKeyEvent *e )
   }
 }
 
-void QgsSymbolSelectorDialog::loadSymbol()
+void QgsSymbolSelectorDialog::reloadSymbol()
 {
-  mSelectorWidget->loadSymbol();
+  mSelectorWidget->reloadSymbol();
 }
 
 void QgsSymbolSelectorDialog::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent )
@@ -872,7 +930,12 @@ void QgsSymbolSelectorDialog::changeLayer( QgsSymbolLayer *layer )
   mSelectorWidget->changeLayer( layer );
 }
 
+QDialogButtonBox *QgsSymbolSelectorDialog::buttonBox() const
+{
+  return mButtonBox;
+}
+
 void QgsSymbolSelectorDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#the-symbol-selector" ) );
+  QgsHelp::openHelp( QStringLiteral( "style_library/symbol_selector.html" ) );
 }

@@ -22,10 +22,12 @@
 #include "qgis_sip.h"
 
 #include "qgsexpressioncontext.h"
-#include "qgsfeature.h"
-#include "qgsmessagebar.h"
 #include "qgsrectangle.h"
-#include "qgis.h"
+#include "qgsfeatureid.h"
+#include "qgsgeometry.h"
+#include "qgscustomdrophandler.h"
+#include "qgstemporalrangeobject.h"
+#include "qgsmapcanvasinteractionblocker.h"
 
 #include <QDomDocument>
 #include <QGraphicsView>
@@ -65,6 +67,13 @@ class QgsMapTool;
 class QgsSnappingUtils;
 class QgsRubberBand;
 class QgsMapCanvasAnnotationItem;
+class QgsReferencedRectangle;
+
+class QgsTemporalController;
+
+class QMenu;
+class QgsMapMouseEvent;
+
 
 /**
  * \ingroup gui
@@ -76,10 +85,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( dynamic_cast<QgsMapCanvas *>( sipCpp ) != NULL )
+    if ( qobject_cast<QgsMapCanvas *>( sipCpp ) != nullptr )
       sipType = sipType_QgsMapCanvas;
     else
-      sipType = NULL;
+      sipType = nullptr;
     SIP_END
 #endif
 
@@ -122,6 +131,22 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     const QgsMapSettings &mapSettings() const SIP_KEEPREFERENCE;
 
     /**
+     * Sets the temporal controller, tQgsMapCanvasInteractionBlockerhis controller will be used to
+     * update the canvas temporal range.
+     *
+     * \since QGIS 3.14
+     */
+    void setTemporalController( QgsTemporalController *controller );
+
+    /**
+     * Gets access to the temporal controller that will be used to
+     * update the canvas temporal range.
+     *
+     * \since QGIS 3.14
+     */
+    const QgsTemporalController *temporalController() const;
+
+    /**
      * sets destination coordinate reference system
      * \since QGIS 2.4
      */
@@ -134,7 +159,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setMapSettingsFlags( QgsMapSettings::Flags flags );
 
     /**
-     * Gets access to the labeling results (may be null)
+     * Gets access to the labeling results (may be NULLPTR)
      * \since QGIS 2.4
      */
     const QgsLabelingResults *labelingResults() const;
@@ -206,8 +231,28 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Returns the combined extent for all layers on the map canvas
     QgsRectangle fullExtent() const;
 
-    //! Sets the extent of the map canvas
+    /**
+     * Sets the extent of the map canvas to the specified rectangle.
+     *
+     * The \a magnified argument dictates whether existing canvas constraints such
+     * as a scale lock should be respected or not during the operation. If \a magnified is
+     * TRUE then an existing scale lock constraint will be applied. This means that the final
+     * visible canvas extent may not match the specified extent.
+     *
+     * If \a magnified is FALSE then scale lock settings will be ignored, and the specified
+     * rectangle will ALWAYS be visible in the canvas.
+     */
     void setExtent( const QgsRectangle &r, bool magnified = false );
+
+    /**
+     * Sets the canvas to the specified \a extent.
+     *
+     * \returns TRUE if the zoom was successful.
+     *
+     * \throws QgsCsException if a transformation error occurred.
+     * \since QGIS 3.10
+     */
+    bool setReferencedExtent( const QgsReferencedRectangle &extent ) SIP_THROW( QgsCsException );
 
     /**
      * Gets the current map canvas rotation in clockwise degrees
@@ -254,9 +299,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Centers canvas extent to feature ids
-        \param layer the vector layer
-        \param ids the feature ids*/
-    void panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids );
+     * \param layer the vector layer
+     * \param ids the feature ids
+     * \param alwaysRecenter if false, the canvas is recentered only if the bounding box is not contained within the current extent
+     */
+    void panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids, bool alwaysRecenter = true );
 
     //! Pan to the selected features of current (vector) layer keeping same extent.
     void panToSelected( QgsVectorLayer *layer = nullptr );
@@ -343,8 +390,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /**
      * Freeze/thaw the map canvas. This is used to prevent the canvas from
      * responding to events while layers are being added/removed etc.
-     * \param frozen Boolean specifying if the canvas should be frozen (true) or
-     * thawed (false). Default is true.
+     * \param frozen Boolean specifying if the canvas should be frozen (TRUE) or
+     * thawed (FALSE). Default is TRUE.
      * \see isFrozen()
      * \see setRenderFlag(). freeze() should be used to programmatically halt map updates,
      * while setRenderFlag() should only be used when users disable rendering via GUI.
@@ -352,7 +399,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void freeze( bool frozen = true );
 
     /**
-     * Returns true if canvas is frozen.
+     * Returns TRUE if canvas is frozen.
      * \see renderFlag(). isFrozen() should be used to determine whether map updates
      * have been halted programmatically, while renderFlag() should be used to
      * determine whether a user has disabled rendering via GUI.
@@ -361,7 +408,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool isFrozen() const;
 
     /**
-     * Returns true if canvas render is disabled as a result of user disabling
+     * Returns TRUE if canvas render is disabled as a result of user disabling
      * renders via the GUI.
      * \see setRenderFlag()
      * \see isFrozen(). isFrozen() should be used to determine whether map updates
@@ -438,14 +485,20 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /**
      * Zooms the canvas to a specific \a scale.
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+
+     * If \a ignoreScaleLock is set to TRUE, then any existing constraint on the map scale
+     * of the canvas will be ignored during the zoom operation.
      */
-    void zoomScale( double scale );
+    void zoomScale( double scale, bool ignoreScaleLock = false );
 
     /**
      * Zoom with the factor supplied. Factor > 1 zooms out, interval (0,1) zooms in
-     * If point is given, re-center on it
+     * If point is given, re-center on it.
+     *
+     * If \a ignoreScaleLock is set to TRUE, then any existing constraint on the map scale
+     * of the canvas will be ignored during the zoom operation.
      */
-    void zoomByFactor( double scaleFactor, const QgsPointXY *center = nullptr );
+    void zoomByFactor( double scaleFactor, const QgsPointXY *center = nullptr, bool ignoreScaleLock = false );
 
     //! Zooms in/out with a given center
     void zoomWithCenter( int x, int y, bool zoomIn );
@@ -466,7 +519,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! used to determine if anti-aliasing is enabled or not
     void enableAntiAliasing( bool flag );
 
-    //! true if antialising is enabled
+    //! TRUE if antialiasing is enabled
     bool antiAliasingEnabled() const { return mSettings.testFlag( QgsMapSettings::Antialiasing ); }
 
     //! sets map tile rendering flag
@@ -477,6 +530,16 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Ends pan action and redraws the canvas.
     void panActionEnd( QPoint releasePoint );
 
+#ifndef SIP_RUN
+
+    /**
+     * Starts a pan action.
+     * \note Not available in Python bindings
+     * \since QGIS 3.12
+     */
+    void panActionStart( QPoint releasePoint );
+#endif
+
     //! Called when mouse is moving and pan is activated
     void panAction( QMouseEvent *event );
 
@@ -485,14 +548,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Enables a preview mode for the map canvas
-     * \param previewEnabled set to true to enable a preview mode
+     * \param previewEnabled set to TRUE to enable a preview mode
      * \see setPreviewMode
      * \since QGIS 2.3 */
     void setPreviewModeEnabled( bool previewEnabled );
 
     /**
      * Returns whether a preview mode is enabled for the map canvas
-     * \returns true if a preview mode is currently enabled
+     * \returns TRUE if a preview mode is currently enabled
      * \see setPreviewModeEnabled
      * \see previewMode
      * \since QGIS 2.3 */
@@ -500,7 +563,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Sets a preview mode for the map canvas. This setting only has an effect if
-     * previewModeEnabled is true.
+     * previewModeEnabled is TRUE.
      * \param mode preview mode for the canvas
      * \see previewMode
      * \see setPreviewModeEnabled
@@ -510,7 +573,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Returns the current preview mode for the map canvas. This setting only has an effect if
-     * previewModeEnabled is true.
+     * previewModeEnabled is TRUE.
      * \returns preview mode for map canvas
      * \see setPreviewMode
      * \see previewModeEnabled
@@ -593,7 +656,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QList< QgsMapCanvasAnnotationItem *> annotationItems() const;
 
     /**
-     * Returns true if annotations are visible within the map canvas.
+     * Returns TRUE if annotations are visible within the map canvas.
      * \see setAnnotationsVisible()
      * \since QGIS 3.0
      */
@@ -619,7 +682,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     const QgsLabelingEngineSettings &labelingEngineSettings() const;
 
     /**
-     * Returns true if canvas map preview jobs (low priority render jobs which render portions
+     * Returns TRUE if canvas map preview jobs (low priority render jobs which render portions
      * of the view just outside of the canvas extent, to allow preview of these
      * out-of-canvas areas when panning or zooming out the map) are enabled
      * for the canvas.
@@ -638,21 +701,92 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void setPreviewJobsEnabled( bool enabled );
 
+    /**
+     * Sets a list of custom drop \a handlers to use when drop events occur on the canvas.
+     * \note Not available in Python bindings
+     * \since QGIS 3.10
+     */
+    void setCustomDropHandlers( const QVector<QPointer<QgsCustomDropHandler >> &handlers ) SIP_SKIP;
+
+    /**
+     * Set datetime \a range for the map canvas.
+     *
+     * The temporalRangeChanged() signal will be emitted if the temporal range has been changed.
+     *
+     * \note Calling setTemporalRange() does not automatically trigger a map refresh.
+     *
+     * \see temporalRange()
+     * \since QGIS 3.14
+    */
+    void setTemporalRange( const QgsDateTimeRange &range );
+
+    /**
+     * Returns map canvas datetime range.
+     *
+     * \see setTemporalRange()
+     * \since QGIS 3.14
+    */
+    const QgsDateTimeRange &temporalRange() const;
+
+    /**
+     * Installs an interaction \a blocker onto the canvas, which may prevent certain map canvas
+     * interactions from occurring.
+     *
+     * The caller retains ownership of \a blocker, and must correctly call removeInteractionBlocker()
+     * before deleting the object.
+     *
+     * \see allowInteraction()
+     * \see removeInteractionBlocker()
+     * \since QGIS 3.14
+     */
+    void installInteractionBlocker( QgsMapCanvasInteractionBlocker *blocker );
+
+    /**
+     * Removes an interaction \a blocker from the canvas.
+     *
+     * \see allowInteraction()
+     * \see installInteractionBlocker()
+     * \since QGIS 3.14
+     */
+    void removeInteractionBlocker( QgsMapCanvasInteractionBlocker *blocker );
+
+    /**
+     * Returns TRUE if the specified \a interaction is currently permitted on the canvas.
+     *
+     * \since QGIS 3.14
+     */
+    bool allowInteraction( QgsMapCanvasInteractionBlocker::Interaction interaction ) const;
+
   public slots:
 
     //! Repaints the canvas map
     void refresh();
 
     /**
-     * Reload all layers, clear the cache and refresh the canvas
+     * Reload all layers (including refreshing layer properties from their data sources),
+     * clears the cache and refreshes the canvas.
+     *
+     * \note Consider using the less expensive redrawAllLayers() method if a layer reload
+     * from the data provider is not required.
+     *
      * \since QGIS 2.9
      */
     void refreshAllLayers();
 
+    /**
+     * Clears all cached images and redraws all layers.
+     *
+     * \note Unlike refreshAllLayers(), this does NOT reload layers themselves, and accordingly
+     * is more "lightweight". Use this method when only an update of the layer's renderers is required.
+     *
+     * \since QGIS 3.10
+     */
+    void redrawAllLayers();
+
     //! Receives signal about selection change, and pass it on with layer info
     void selectionChangedSlot();
 
-    //! Save the convtents of the map canvas to disk as an image
+    //! Save the contents of the map canvas to disk as an image
     void saveAsImage( const QString &fileName, QPixmap *QPixmap = nullptr, const QString & = "PNG" );
 
     //! This slot is connected to the visibility change of one or more layers
@@ -660,7 +794,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Sets whether a user has disabled canvas renders via the GUI.
-     * \param flag set to false to indicate that user has disabled renders
+     * \param flag set to FALSE to indicate that user has disabled renders
      * \see renderFlag()
      * \see freeze(). freeze() should be used to programmatically halt map updates,
      * while setRenderFlag() should only be used when users disable rendering via GUI.
@@ -678,11 +812,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! called to write map canvas settings to project
     void writeProject( QDomDocument & );
-
-#if 0
-    //! ask user about datum transformation
-    void getDatumTransformInfo( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
-#endif
 
     /**
      * Sets the factor of magnification to apply to the map canvas. Indeed, we
@@ -711,6 +840,20 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void zoomToSelected( QgsVectorLayer *layer = nullptr );
 
+    /**
+     * Set a list of resolutions (map units per pixel) to which to "snap to" when zooming the map
+     * \param resolutions A list of resolutions
+     * \since QGIS 3.12
+     */
+    void setZoomResolutions( const QList<double> &resolutions ) { mZoomResolutions = resolutions; }
+
+    /**
+     * \returns List of resolutions to which to "snap to" when zooming the map
+     * \see setZoomResolutions()
+     * \since QGIS 3.12
+     */
+    const QList<double> &zoomResolutions() const { return mZoomResolutions; }
+
   private slots:
     //! called when current maptool is destroyed
     void mapToolDestroyed();
@@ -726,6 +869,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void refreshMap();
 
     void mapThemeChanged( const QString &theme );
+    //! Renames the active map theme called \a theme to \a newTheme
+    void mapThemeRenamed( const QString &theme, const QString &newTheme );
 
   signals:
 
@@ -841,43 +986,59 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! emit a message (usually to be displayed in a message bar)
     void messageEmitted( const QString &title, const QString &message, Qgis::MessageLevel = Qgis::Info );
 
+    /**
+     * Emitted whenever an error is encountered during a map render operation.
+     *
+     * The \a layer argument indicates the associated map layer, if available.
+     *
+     * \since QGIS 3.10.0
+     */
+    void renderErrorOccurred( const QString &error, QgsMapLayer *layer );
+
+    /**
+     * Emitted whenever the distance or bearing of an in-progress panning
+     * operation is changed.
+     *
+     * This signal will be emitted during a pan operation as the user moves the map,
+     * giving the total distance and bearing between the map position at the
+     * start of the pan and the current pan position.
+     *
+     * \since QGIS 3.12
+     */
+    void panDistanceBearingChanged( double distance, QgsUnitTypes::DistanceUnit unit, double bearing );
+
+    /**
+     * Emitted whenever a tap and hold \a gesture occurs at the specified map point.
+     * \since QGIS 3.12
+     */
+    void tapAndHoldGestureOccurred( const QgsPointXY &mapPoint, QTapAndHoldGesture *gesture );
+
+    /**
+     * Emitted when the map canvas temporal range changes.
+    *
+    * \since QGIS 3.14
+    */
+    void temporalRangeChanged();
+
   protected:
 
-    //! Overridden standard event to be gestures aware
     bool event( QEvent *e ) override;
-
-    //! Overridden key press event
     void keyPressEvent( QKeyEvent *e ) override;
-
-    //! Overridden key release event
     void keyReleaseEvent( QKeyEvent *e ) override;
-
-    //! Overridden mouse double-click event
     void mouseDoubleClickEvent( QMouseEvent *e ) override;
-
-    //! Overridden mouse move event
     void mouseMoveEvent( QMouseEvent *e ) override;
-
-    //! Overridden mouse press event
     void mousePressEvent( QMouseEvent *e ) override;
-
-    //! Overridden mouse release event
     void mouseReleaseEvent( QMouseEvent *e ) override;
-
-    //! Overridden mouse wheel event
     void wheelEvent( QWheelEvent *e ) override;
-
-    //! Overridden resize event
     void resizeEvent( QResizeEvent *e ) override;
-
-    //! Overridden paint event
     void paintEvent( QPaintEvent *e ) override;
-
-    //! Overridden drag enter event
     void dragEnterEvent( QDragEnterEvent *e ) override;
 
     //! called when panning is in action, reset indicates end of panning
     void moveCanvasContents( bool reset = false );
+
+    void dropEvent( QDropEvent *event ) override;
+
 
     /// implementation struct
     class CanvasProperties;
@@ -918,17 +1079,26 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! owns pixmap with rendered map and controls rendering
     QgsMapCanvasMap *mMap = nullptr;
 
+    /**
+     * Temporal controller for tracking update of temporal objects
+     * which relates with canvas
+     */
+    QgsTemporalController *mController = nullptr;
+
     //! Flag indicating if the map canvas is frozen.
     bool mFrozen = false;
 
     //! Flag that allows squashing multiple refresh() calls into just one delayed rendering job
     bool mRefreshScheduled = false;
 
+    //! Flag that triggers a refresh after an ongoing rendering job triggered by autoRefresh
+    bool mRefreshAfterJob = false;
+
     //! determines whether user has requested to suppress rendering
     bool mRenderFlag = true;
 
     //! current layer in legend
-    QgsMapLayer *mCurrentLayer = nullptr;
+    QPointer< QgsMapLayer > mCurrentLayer;
 
     //! graphics scene manages canvas items
     QGraphicsScene *mScene = nullptr;
@@ -938,6 +1108,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! previous tool if current is for zooming/panning
     QgsMapTool *mLastNonZoomMapTool = nullptr;
+
+    //! Context menu
+    QMenu *mMenu = nullptr;
 
     //! recently used extent
     QList <QgsRectangle> mLastExtent;
@@ -1009,6 +1182,13 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     QHash< QString, int > mLastLayerRenderTime;
 
+    QVector<QPointer<QgsCustomDropHandler >> mDropHandlers;
+
+    QgsDistanceArea mDa;
+    QList<double> mZoomResolutions;
+
+    QList< QgsMapCanvasInteractionBlocker * > mInteractionBlockers;
+
     /**
      * Returns the last cursor position on the canvas in geographical coordinates
      * \since QGIS 3.4
@@ -1049,6 +1229,23 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void startPreviewJobs();
     void stopPreviewJobs();
     void schedulePreviewJob( int number );
+
+    /**
+     * Returns TRUE if a pan operation is in progress
+     */
+    bool panOperationInProgress();
+
+    int nextZoomLevel( const QList<double> &resolutions, bool zoomIn = true ) const;
+    double zoomInFactor() const;
+    double zoomOutFactor() const;
+
+    /**
+     * Make sure to remove any rendered images of temporal-enabled layers from cache (does nothing if cache is not enabled)
+     * \since QGIS 3.14
+     */
+    void clearTemporalCache();
+
+    void showContextMenu( QgsMapMouseEvent *event );
 
     friend class TestQgsMapCanvas;
 

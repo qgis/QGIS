@@ -7,7 +7,7 @@ if [ "$1" = "install" -o "$1" = "upgrade" ]; then
 	for i in /usr/bin/qgis /usr/bin/qbrowser; do
 		pkg=$(dpkg-divert --listpackage $i)
 		if [ -n "$pkg" -a "$pkg" = qgis-plugin-grass -o "$pkg" = qgis-provider-grass ]; then
-			dpkg-divert --package $pkg --rename --remove $i
+			dpkg-divert --package $pkg --remove $i
 		fi
 	done
 fi

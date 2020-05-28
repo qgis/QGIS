@@ -18,7 +18,7 @@
 #define QGSORDERBYDIALOG_H
 
 #include <QDialog>
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include "ui_qgsorderbydialogbase.h"
 #include "qgsfeaturerequest.h"

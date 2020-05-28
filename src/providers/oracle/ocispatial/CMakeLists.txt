@@ -14,10 +14,9 @@ INCLUDE_DIRECTORIES(SYSTEM
 	${Qt5Sql_PRIVATE_INCLUDE_DIRS}
 )
 
-SET(QSQLOCISPATIAL_SRC qsql_ocispatial.cpp main.cpp)
-QT5_WRAP_CPP(QSQLOCISPATIAL_MOC_SRC qsql_ocispatial.h main.h)
+SET(QSQLOCISPATIAL_SRC qsql_ocispatial.cpp main.cpp qsql_ocispatial.h main.h)
 
-ADD_LIBRARY(qsqlocispatial SHARED ${QSQLOCISPATIAL_SRC} ${QSQLOCISPATIAL_MOC_SRC})
+ADD_LIBRARY(qsqlocispatial SHARED ${QSQLOCISPATIAL_SRC})
 
 TARGET_LINK_LIBRARIES(qsqlocispatial
   ${Qt5Core_LIBRARIES}

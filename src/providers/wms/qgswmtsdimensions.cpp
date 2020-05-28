@@ -18,6 +18,7 @@
 #include "qgswmsprovider.h"
 #include "qgswmtsdimensions.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QComboBox>
 
@@ -46,17 +47,7 @@ QgsWmtsDimensions::QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *pa
     cb->setCurrentIndex( idx < 0 ? 0 : idx );
     mDimensions->setCellWidget( i, 4, cb );
   }
-
-  QgsSettings settings;
-  QgsDebugMsg( "restoring geometry" );
-  restoreGeometry( settings.value( QStringLiteral( "Windows/WMTSDimensions/geometry" ) ).toByteArray() );
-}
-
-QgsWmtsDimensions::~QgsWmtsDimensions()
-{
-  QgsSettings settings;
-  QgsDebugMsg( "saving geometry" );
-  settings.setValue( QStringLiteral( "Windows/WmtsDimensions/geometry" ), saveGeometry() );
+  QgsGui::enableAutoGeometryRestore( this );
 }
 
 void QgsWmtsDimensions::selectedDimensions( QHash<QString, QString> &selected )

@@ -68,6 +68,30 @@ class CORE_EXPORT QgsProcessingParameterType
      */
     virtual QString name() const = 0;
 
+    // TODO QGIS 4.0 -- make pure virtual
+
+    /**
+     * Returns a valid Python import string for importing the corresponding parameter type,
+     * e.g. "from qgis.core import QgsProcessingParameterBoolean".
+     *
+     * \see className()
+     * \since QGIS 3.6
+     */
+    virtual QString pythonImportString() const { return QString(); }
+
+    // TODO QGIS 4.0 -- make pure virtual
+
+    /**
+     * Returns the corresponding class name for the parameter type.
+     *
+     * \see pythonImportString()
+     * \since QGIS 3.6
+     */
+    virtual QString className() const
+    {
+      return name(); // this is wrong, but it's better than nothing for subclasses which don't implement this method
+    }
+
     /**
      * A static id for this type which will be used for storing this parameter type.
      */
@@ -75,7 +99,7 @@ class CORE_EXPORT QgsProcessingParameterType
 
     /**
      * Determines if this parameter is available in the modeler.
-     * The default implementation returns true.
+     * The default implementation returns TRUE.
      */
     virtual ParameterFlags flags() const;
 
@@ -92,8 +116,23 @@ class CORE_EXPORT QgsProcessingParameterType
      * These values should should match the Python types exactly
      * (e.g. "str" not "string", "bool" not "boolean"). Extra explanatory help can
      * be used (which must be translated), eg "str: as comma delimited list of numbers".
+     *
+     * \see acceptedStringValues()
      */
     virtual QStringList acceptedPythonTypes() const;
+
+    /**
+     * Returns a descriptive list of the possible string values acceptable for the parameter.
+     *
+     * E.g. for a QgsProcessingParameterVectorLayer this may include "Path to a vector layer",
+     * for QgsProcessingParameterBoolean "1 for true, 0 for false" etc.
+     *
+     * Extra explanatory help can be used (which must be translated), eg "a comma delimited list of numbers".
+     *
+     * \see acceptedPythonTypes()
+     * \since QGIS 3.8
+     */
+    virtual QStringList acceptedStringValues() const;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingParameterType::ParameterFlags )

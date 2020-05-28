@@ -340,7 +340,9 @@ bool QSpatiaLiteResultPrivate::fetchNext( QSqlCachedResult::ValueCache &values, 
       q->setAt( QSql::AfterLastRow );
       return false;
   }
+#ifndef _MSC_VER // avoid warning
   return false;
+#endif
 }
 
 QSpatiaLiteResult::QSpatiaLiteResult( const QSpatiaLiteDriver *db )

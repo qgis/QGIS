@@ -17,7 +17,7 @@
 #define QGSRENDERCHECKER_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QDir>
 #include <QString>
 #include <QRegExp>
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsRenderChecker
 
     /**
      * Gets access to buffered dash messages.
-     * Only will return something if you call enableDashBuffering( true ); before.
+     * Only will return something if you call enableDashBuffering( TRUE ); before.
      *
      * \returns buffered dash messages
      */
@@ -207,14 +207,14 @@ class CORE_EXPORT QgsRenderChecker
 
 inline bool compareWkt( const QString &a, const QString &b, double tolerance = 0.000001 )
 {
-  QgsDebugMsg( QString( "a:%1 b:%2 tol:%3" ).arg( a, b ).arg( tolerance ) );
+  QgsDebugMsg( QStringLiteral( "a:%1 b:%2 tol:%3" ).arg( a, b ).arg( tolerance ) );
   QRegExp re( "-?\\d+(?:\\.\\d+)?(?:[eE]\\d+)?" );
 
   QString a0( a ), b0( b );
   a0.replace( re, QStringLiteral( "#" ) );
   b0.replace( re, QStringLiteral( "#" ) );
 
-  QgsDebugMsg( QString( "a0:%1 b0:%2" ).arg( a0, b0 ) );
+  QgsDebugMsg( QStringLiteral( "a0:%1 b0:%2" ).arg( a0, b0 ) );
 
   if ( a0 != b0 )
     return false;

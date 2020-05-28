@@ -9,15 +9,13 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nathan Woodrow'
 __date__ = '4/11/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.testing import unittest
 from qgis.utils import qgsfunction
-from qgis.core import QgsExpression, QgsFeatureRequest, QgsExpressionContext, NULL
+from qgis.core import QgsExpression, QgsFeatureRequest, QgsFields, QgsExpressionContext, NULL
 
 
 class TestQgsExpressionCustomFunctions(unittest.TestCase):
@@ -265,6 +263,12 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         value = True
         res = '"my\'field" = TRUE'
         self.assertEqual(e.createFieldEqualityExpression(field, value), res)
+
+    def testReferencedAttributeIndexesNonExistingField(self):
+        e = QgsExpression()
+        e.setExpression("foo = 1")
+        self.assertTrue(e.isValid())
+        self.assertEqual(len(e.referencedAttributeIndexes(QgsFields())), 0)
 
 
 if __name__ == "__main__":

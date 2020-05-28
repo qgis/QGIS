@@ -19,7 +19,7 @@
 #define QGSMULTIBANDCOLORRENDERER_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsrasterrenderer.h"
 
 class QgsContrastEnhancement;
@@ -70,6 +70,8 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
     QList<int> usesBands() const override;
+
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
 
   private:
 #ifdef SIP_RUN

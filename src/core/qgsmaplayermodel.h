@@ -21,7 +21,7 @@
 #include <QStringList>
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 class QgsMapLayer;
 
@@ -52,6 +52,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
       EmptyRole, //!< True if index corresponds to the empty (not set) value
       AdditionalRole, //!< True if index corresponds to an additional (non map layer) item
     };
+    Q_ENUM( ItemDataRole )
 
     /**
      * \brief QgsMapLayerModel creates a model to display layers in widgets.
@@ -81,7 +82,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     void setAllowEmptyLayer( bool allowEmpty );
 
     /**
-     * Returns true if the model allows the empty layer ("not set") choice.
+     * Returns TRUE if the model allows the empty layer ("not set") choice.
      * \see setAllowEmptyLayer()
      * \since QGIS 3.0
      */
@@ -95,7 +96,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     void setShowCrs( bool showCrs );
 
     /**
-     * Returns true if the model includes layer's CRS in the display role.
+     * Returns TRUE if the model includes layer's CRS in the display role.
      * \see setShowCrs()
      * \since QGIS 3.0
      */

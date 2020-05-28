@@ -21,9 +21,6 @@
 __author__ = 'Nyall Dawson'
 __date__ = 'February 2015'
 __copyright__ = '(C) 2015, Nyall Dawson'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
-
 
 # Generates (or updates) a unit test image mask, which is used to specify whether
 # a pixel in the control image should be checked (black pixel in mask) or not (white
@@ -150,7 +147,7 @@ def updateMask(control_image_path, rendered_image_path, mask_image_path):
         print('No mismatches in {}'.format(mask_image_path))
 
 
-parser = argparse.ArgumentParser() # OptionParser("usage: %prog control_image rendered_image mask_image")
+parser = argparse.ArgumentParser()  # OptionParser("usage: %prog control_image rendered_image mask_image")
 parser.add_argument('control_image')
 parser.add_argument('rendered_image')
 parser.add_argument('mask_image', nargs='?', default=None)

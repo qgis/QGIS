@@ -53,7 +53,7 @@ class PointXYKDBush : public kdbush::KDBush< std::pair<double, double>, QgsSpati
     explicit PointXYKDBush( const QgsFeatureSource &source, QgsFeedback *feedback )
     {
       points.reserve( source.featureCount() );
-      QgsFeatureIterator it = source.getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+      QgsFeatureIterator it = source.getFeatures( QgsFeatureRequest().setNoAttributes() );
       fillFromIterator( it, feedback );
     }
 

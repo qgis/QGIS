@@ -35,6 +35,8 @@
 #include "qgsbearingutils.h"
 #include "qgsmapsettings.h"
 #include "qgsreadwritecontext.h"
+#include "qgsimagecache.h"
+#include "qgslayoutnortharrowhandler.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -49,6 +51,7 @@
 
 QgsLayoutItemPicture::QgsLayoutItemPicture( QgsLayout *layout )
   : QgsLayoutItem( layout )
+  , mNorthArrowHandler( new QgsLayoutNorthArrowHandler( this ) )
 {
   //default to no background
   setBackgroundEnabled( false );
@@ -63,6 +66,7 @@ QgsLayoutItemPicture::QgsLayoutItemPicture( QgsLayout *layout )
   connect( &layout->renderContext(), &QgsLayoutRenderContext::dpiChanged, this, &QgsLayoutItemPicture::recalculateSize );
 
   connect( this, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutItemPicture::shapeChanged );
+  connect( mNorthArrowHandler, &QgsLayoutNorthArrowHandler::arrowRotationChanged, this, &QgsLayoutItemPicture::updateNorthArrowRotation );
 }
 
 int QgsLayoutItemPicture::type() const
@@ -336,24 +340,28 @@ void QgsLayoutItemPicture::refreshPicture( const QgsExpressionContext *context )
   QgsExpressionContext scopedContext = createExpressionContext();
   const QgsExpressionContext *evalContext = context ? context : &scopedContext;
 
-  QString source = mSourcePath;
+  mDataDefinedProperties.prepare( *evalContext );
+
+  QVariant source( mSourcePath );
 
   //data defined source set?
   mHasExpressionError = false;
   if ( mDataDefinedProperties.isActive( QgsLayoutObject::PictureSource ) )
   {
+    mMode = FormatUnknown;
     bool ok = false;
-    source = mDataDefinedProperties.valueAsString( QgsLayoutObject::PictureSource, *evalContext, source, &ok );
-    if ( ok )
-    {
-      source = source.trimmed();
-      QgsDebugMsg( QStringLiteral( "exprVal PictureSource:%1" ).arg( source ) );
-    }
-    else
+    const QgsProperty &sourceProperty = mDataDefinedProperties.property( QgsLayoutObject::PictureSource );
+    source = sourceProperty.value( *evalContext, source, &ok );
+    if ( !ok || !source.canConvert( QMetaType::QString ) )
     {
       mHasExpressionError = true;
       source = QString();
       QgsMessageLog::logMessage( tr( "Picture expression eval error" ) );
+    }
+    else if ( source.type() != QVariant::ByteArray )
+    {
+      source = source.toString().trimmed();
+      QgsDebugMsgLevel( QStringLiteral( "exprVal PictureSource:%1" ).arg( source.toString() ), 2 );
     }
   }
 
@@ -436,73 +444,104 @@ void QgsLayoutItemPicture::loadLocalPicture( const QString &path )
   }
 }
 
-void QgsLayoutItemPicture::disconnectMap( QgsLayoutItemMap *map )
+void QgsLayoutItemPicture::loadPictureUsingCache( const QString &path )
 {
-  if ( map )
+  if ( path.isEmpty() )
   {
-    disconnect( map, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
-    disconnect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
-  }
-}
-
-void QgsLayoutItemPicture::updateMapRotation()
-{
-  if ( !mRotationMap )
+    mImage = QImage();
     return;
+  }
 
-  // take map rotation
-  double rotation = mRotationMap->mapRotation();
-
-  // handle true north
-  switch ( mNorthMode )
+  switch ( mMode )
   {
-    case GridNorth:
-      break; // nothing to do
+    case FormatUnknown:
+      break;
 
-    case TrueNorth:
+    case FormatRaster:
     {
-      QgsPointXY center = mRotationMap->extent().center();
-      QgsCoordinateReferenceSystem crs = mRotationMap->crs();
-      QgsCoordinateTransformContext transformContext = mLayout->project()->transformContext();
+      bool fitsInCache = false;
+      bool isMissing = false;
+      mImage = QgsApplication::imageCache()->pathAsImage( path, QSize(), true, 1, fitsInCache, true, &isMissing );
+      if ( mImage.isNull() || isMissing )
+        mMode = FormatUnknown;
+      break;
+    }
 
-      try
+    case FormatSVG:
+    {
+      QgsExpressionContext context = createExpressionContext();
+      QColor fillColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::PictureSvgBackgroundColor, context, mSvgFillColor );
+      QColor strokeColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::PictureSvgStrokeColor, context, mSvgStrokeColor );
+      double strokeWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::PictureSvgStrokeWidth, context, mSvgStrokeWidth );
+      bool isMissingImage = false;
+      const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( path, rect().width(), fillColor, strokeColor, strokeWidth,
+                                     1.0, 0, false, &isMissingImage );
+      mSVG.load( svgContent );
+      if ( mSVG.isValid() && !isMissingImage )
       {
-        double bearing = QgsBearingUtils::bearingTrueNorth( crs, transformContext, center );
-        rotation += bearing;
+        mMode = FormatSVG;
+        QRect viewBox = mSVG.viewBox(); //take width/height ratio from view box instead of default size
+        mDefaultSvgSize.setWidth( viewBox.width() );
+        mDefaultSvgSize.setHeight( viewBox.height() );
       }
-      catch ( QgsException &e )
+      else
       {
-        Q_UNUSED( e );
-        QgsDebugMsg( QStringLiteral( "Caught exception %1" ).arg( e.what() ) );
+        mMode = FormatUnknown;
       }
       break;
     }
   }
-
-  rotation += mNorthOffset;
-  setPictureRotation( rotation );
 }
 
-void QgsLayoutItemPicture::loadPicture( const QString &path )
+void QgsLayoutItemPicture::updateNorthArrowRotation( double rotation )
 {
-  if ( path.startsWith( QLatin1String( "http" ) ) )
+  setPictureRotation( rotation );
+  emit pictureRotationChanged( rotation );
+}
+
+void QgsLayoutItemPicture::loadPicture( const QVariant &data )
+{
+  mIsMissingImage = false;
+  QVariant imageData( data );
+  mEvaluatedPath = data.toString();
+
+  if ( mEvaluatedPath.startsWith( QLatin1String( "base64:" ), Qt::CaseInsensitive ) && mMode == FormatUnknown )
   {
-    //remote location
-    loadRemotePicture( path );
+    QByteArray base64 = mEvaluatedPath.mid( 7 ).toLocal8Bit(); // strip 'base64:' prefix
+    imageData = QByteArray::fromBase64( base64, QByteArray::OmitTrailingEquals );
+  }
+
+  if ( imageData.type() == QVariant::ByteArray )
+  {
+    if ( mImage.loadFromData( imageData.toByteArray() ) )
+    {
+      mMode = FormatRaster;
+    }
+  }
+  else if ( mMode == FormatUnknown  && mEvaluatedPath.startsWith( QLatin1String( "http" ) ) )
+  {
+    //remote location (unsafe way, uses QEventLoop) - for old API/project compatibility only!!
+    loadRemotePicture( mEvaluatedPath );
+  }
+  else if ( mMode == FormatUnknown )
+  {
+    //local location - for old API/project compatibility only!!
+    loadLocalPicture( mEvaluatedPath );
   }
   else
   {
-    //local location
-    loadLocalPicture( path );
+    loadPictureUsingCache( mEvaluatedPath );
   }
+
   if ( mMode != FormatUnknown ) //make sure we start with a new QImage
   {
     recalculateSize();
   }
-  else if ( mHasExpressionError || !( path.isEmpty() ) )
+  else if ( mHasExpressionError || !mEvaluatedPath.isEmpty() )
   {
     //trying to load an invalid file or bad expression, show cross picture
     mMode = FormatSVG;
+    mIsMissingImage = true;
     QString badFile( QStringLiteral( ":/images/composer/missing_image.svg" ) );
     mSVG.load( badFile );
     if ( mSVG.isValid() )
@@ -569,6 +608,16 @@ QSizeF QgsLayoutItemPicture::pictureSize()
   }
 }
 
+bool QgsLayoutItemPicture::isMissingImage() const
+{
+  return mIsMissingImage;
+}
+
+QString QgsLayoutItemPicture::evaluatedPath() const
+{
+  return mEvaluatedPath;
+}
+
 void QgsLayoutItemPicture::shapeChanged()
 {
   if ( mMode == FormatSVG && !mLoadingSvg )
@@ -617,24 +666,7 @@ void QgsLayoutItemPicture::setPictureRotation( double rotation )
 
 void QgsLayoutItemPicture::setLinkedMap( QgsLayoutItemMap *map )
 {
-  if ( mRotationMap )
-  {
-    disconnectMap( mRotationMap );
-  }
-
-  if ( !map ) //disable rotation from map
-  {
-    mRotationMap = nullptr;
-  }
-  else
-  {
-    mPictureRotation = map->mapRotation();
-    connect( map, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
-    connect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
-    mRotationMap = map;
-    updateMapRotation();
-    emit pictureRotationChanged( mPictureRotation );
-  }
+  mNorthArrowHandler->setLinkedMap( map );
 }
 
 void QgsLayoutItemPicture::setResizeMode( QgsLayoutItemPicture::ResizeMode mode )
@@ -669,16 +701,9 @@ void QgsLayoutItemPicture::refreshDataDefinedProperty( const QgsLayoutObject::Da
   QgsLayoutItem::refreshDataDefinedProperty( property );
 }
 
-bool QgsLayoutItemPicture::containsAdvancedEffects() const
+void QgsLayoutItemPicture::setPicturePath( const QString &path, Format format )
 {
-  if ( QgsLayoutItem::containsAdvancedEffects() )
-    return true;
-
-  return mMode == FormatSVG && itemOpacity() < 1.0;
-}
-
-void QgsLayoutItemPicture::setPicturePath( const QString &path )
-{
+  mMode = format;
   mSourcePath = path;
   refreshPicture();
 }
@@ -707,19 +732,20 @@ bool QgsLayoutItemPicture::writePropertiesToElement( QDomElement &elem, QDomDocu
   elem.setAttribute( QStringLiteral( "svgFillColor" ), QgsSymbolLayerUtils::encodeColor( mSvgFillColor ) );
   elem.setAttribute( QStringLiteral( "svgBorderColor" ), QgsSymbolLayerUtils::encodeColor( mSvgStrokeColor ) );
   elem.setAttribute( QStringLiteral( "svgBorderWidth" ), QString::number( mSvgStrokeWidth ) );
+  elem.setAttribute( QStringLiteral( "mode" ), mMode );
 
   //rotation
   elem.setAttribute( QStringLiteral( "pictureRotation" ), QString::number( mPictureRotation ) );
-  if ( !mRotationMap )
+  if ( !mNorthArrowHandler->linkedMap() )
   {
     elem.setAttribute( QStringLiteral( "mapUuid" ), QString() );
   }
   else
   {
-    elem.setAttribute( QStringLiteral( "mapUuid" ), mRotationMap->uuid() );
+    elem.setAttribute( QStringLiteral( "mapUuid" ), mNorthArrowHandler->linkedMap()->uuid() );
   }
-  elem.setAttribute( QStringLiteral( "northMode" ), mNorthMode );
-  elem.setAttribute( QStringLiteral( "northOffset" ), mNorthOffset );
+  elem.setAttribute( QStringLiteral( "northMode" ), mNorthArrowHandler->northMode() );
+  elem.setAttribute( QStringLiteral( "northOffset" ), mNorthArrowHandler->northOffset() );
   return true;
 }
 
@@ -734,6 +760,7 @@ bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemEle
   mSvgFillColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "svgFillColor" ), QgsSymbolLayerUtils::encodeColor( QColor( 255, 255, 255 ) ) ) );
   mSvgStrokeColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "svgBorderColor" ), QgsSymbolLayerUtils::encodeColor( QColor( 0, 0, 0 ) ) ) );
   mSvgStrokeWidth = itemElem.attribute( QStringLiteral( "svgBorderWidth" ), QStringLiteral( "0.2" ) ).toDouble();
+  mMode = static_cast< Format >( itemElem.attribute( QStringLiteral( "mode" ), QString::number( FormatUnknown ) ).toInt() );
 
   QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
   if ( !composerItemList.isEmpty() )
@@ -752,7 +779,7 @@ bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemEle
   if ( itemElem.hasAttribute( QStringLiteral( "sourceExpression" ) ) )
   {
     //update pre 2.5 picture expression to use data defined expression
-    QString sourceExpression = itemElem.attribute( QStringLiteral( "sourceExpression" ), QLatin1String( "" ) );
+    QString sourceExpression = itemElem.attribute( QStringLiteral( "sourceExpression" ), QString() );
     QString useExpression = itemElem.attribute( QStringLiteral( "useExpression" ) );
     bool expressionActive;
     expressionActive = ( useExpression.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 );
@@ -778,11 +805,10 @@ bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemEle
   }
 
   //rotation map
-  mNorthMode = static_cast< NorthMode >( itemElem.attribute( QStringLiteral( "northMode" ), QStringLiteral( "0" ) ).toInt() );
-  mNorthOffset = itemElem.attribute( QStringLiteral( "northOffset" ), QStringLiteral( "0" ) ).toDouble();
+  mNorthArrowHandler->setNorthMode( static_cast< QgsLayoutNorthArrowHandler::NorthMode >( itemElem.attribute( QStringLiteral( "northMode" ), QStringLiteral( "0" ) ).toInt() ) );
+  mNorthArrowHandler->setNorthOffset( itemElem.attribute( QStringLiteral( "northOffset" ), QStringLiteral( "0" ) ).toDouble() );
 
-  disconnectMap( mRotationMap );
-  mRotationMap = nullptr;
+  mNorthArrowHandler->setLinkedMap( nullptr );
   mRotationMapUuid = itemElem.attribute( QStringLiteral( "mapUuid" ) );
 
   return true;
@@ -790,19 +816,27 @@ bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemEle
 
 QgsLayoutItemMap *QgsLayoutItemPicture::linkedMap() const
 {
-  return mRotationMap;
+  return mNorthArrowHandler->linkedMap();
+}
+
+QgsLayoutItemPicture::NorthMode QgsLayoutItemPicture::northMode() const
+{
+  return static_cast< QgsLayoutItemPicture::NorthMode >( mNorthArrowHandler->northMode() );
 }
 
 void QgsLayoutItemPicture::setNorthMode( QgsLayoutItemPicture::NorthMode mode )
 {
-  mNorthMode = mode;
-  updateMapRotation();
+  mNorthArrowHandler->setNorthMode( static_cast< QgsLayoutNorthArrowHandler::NorthMode >( mode ) );
+}
+
+double QgsLayoutItemPicture::northOffset() const
+{
+  return mNorthArrowHandler->northOffset();
 }
 
 void QgsLayoutItemPicture::setNorthOffset( double offset )
 {
-  mNorthOffset = offset;
-  updateMapRotation();
+  mNorthArrowHandler->setNorthOffset( offset );
 }
 
 void QgsLayoutItemPicture::setPictureAnchor( ReferencePoint anchor )
@@ -829,23 +863,24 @@ void QgsLayoutItemPicture::setSvgStrokeWidth( double width )
   refreshPicture();
 }
 
+void QgsLayoutItemPicture::setMode( QgsLayoutItemPicture::Format mode )
+{
+  if ( mMode == mode )
+    return;
+
+  mMode = mode;
+  refreshPicture();
+}
+
 void QgsLayoutItemPicture::finalizeRestoreFromXml()
 {
   if ( !mLayout || mRotationMapUuid.isEmpty() )
   {
-    mRotationMap = nullptr;
+    mNorthArrowHandler->setLinkedMap( nullptr );
   }
   else
   {
-    if ( mRotationMap )
-    {
-      disconnectMap( mRotationMap );
-    }
-    if ( ( mRotationMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mRotationMapUuid, true ) ) ) )
-    {
-      connect( mRotationMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
-      connect( mRotationMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
-    }
+    mNorthArrowHandler->setLinkedMap( qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mRotationMapUuid, true ) ) );
   }
 
   refreshPicture();

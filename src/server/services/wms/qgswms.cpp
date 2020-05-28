@@ -2,7 +2,7 @@
                               qgswms.cpp
                               -------------------------
   begin                : December 20 , 2016
-  copyright            : (C) 2007 by Marco Hugentobler  ( parts fron qgswmshandler)
+  copyright            : (C) 2007 by Marco Hugentobler  ( parts from qgswmshandler)
                          (C) 2014 by Alessandro Pasotti ( parts from qgswmshandler)
                          (C) 2016 by David Marteau
   email                : marco dot hugentobler at karto dot baug dot ethz dot ch
@@ -20,8 +20,8 @@
  ***************************************************************************/
 
 #include "qgsmodule.h"
-#include "qgswmsutils.h"
 #include "qgsdxfwriter.h"
+#include "qgswmsserviceexception.h"
 #include "qgswmsgetcapabilities.h"
 #include "qgswmsgetmap.h"
 #include "qgswmsgetstyles.h"
@@ -34,7 +34,7 @@
 #include "qgswmsparameters.h"
 
 #define QSTR_COMPARE( str, lit )\
-  (str.compare( QStringLiteral( lit ), Qt::CaseInsensitive ) == 0)
+  (str.compare( QLatin1String( lit ), Qt::CaseInsensitive ) == 0)
 
 namespace QgsWms
 {
@@ -90,13 +90,13 @@ namespace QgsWms
         const QString req = parameters.request();
         if ( req.isEmpty() )
         {
-          throw QgsServiceException( QStringLiteral( "OperationNotSupported" ),
-                                     QStringLiteral( "Please check the value of the REQUEST parameter" ) );
+          throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported,
+                                     QStringLiteral( "Please add or check the value of the REQUEST parameter" ), 501 );
         }
 
-        if ( ( mVersion.compare( QStringLiteral( "1.1.1" ) ) == 0 \
-               && req.compare( QStringLiteral( "capabilities" ) ) == 0 )
-             || req.compare( QStringLiteral( "GetCapabilities" ) ) == 0 )
+        if ( ( mVersion.compare( QLatin1String( "1.1.1" ) ) == 0 \
+               && QSTR_COMPARE( req, "capabilities" ) )
+             || QSTR_COMPARE( req, "GetCapabilities" ) )
         {
           writeGetCapabilities( mServerIface, project, version, request, response, false );
         }
@@ -128,7 +128,7 @@ namespace QgsWms
         }
         else if ( QSTR_COMPARE( req, "GetSchemaExtension" ) )
         {
-          writeGetSchemaExtension( mServerIface, version, request, response );
+          writeGetSchemaExtension( response );
         }
         else if ( QSTR_COMPARE( req, "GetStyle" ) )
         {
@@ -153,8 +153,8 @@ namespace QgsWms
         else
         {
           // Operation not supported
-          throw QgsServiceException( QStringLiteral( "OperationNotSupported" ),
-                                     QString( "Request %1 is not supported" ).arg( req ) );
+          throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported,
+                                     QStringLiteral( "Request %1 is not supported" ).arg( req ), 501 );
         }
       }
 
@@ -175,7 +175,7 @@ class QgsWmsModule: public QgsServiceModule
   public:
     void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
-      QgsDebugMsg( "WMSModule::registerSelf called" );
+      QgsDebugMsg( QStringLiteral( "WMSModule::registerSelf called" ) );
       registry.registerService( new  QgsWms::Service( "1.3.0", serverIface ) );
     }
 };

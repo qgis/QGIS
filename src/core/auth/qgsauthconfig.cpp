@@ -149,7 +149,7 @@ bool QgsAuthMethodConfig::uriToResource( const QString &accessurl, QString *reso
     if ( url.isValid() )
     {
       res = QStringLiteral( "%1://%2:%3%4" ).arg( url.scheme(), url.host() )
-            .arg( url.port() ).arg( withpath ? url.path() : QLatin1String( "" ) );
+            .arg( url.port() ).arg( withpath ? url.path() : QString() );
     }
   }
   *resource = res;

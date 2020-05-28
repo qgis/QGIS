@@ -28,6 +28,9 @@ Represents a final output created by the model.
 Constructor for QgsProcessingModelOutput with the specified ``name`` and ``description``.
 %End
 
+    virtual QgsProcessingModelOutput *clone() const /Factory/;
+
+
     QString name() const;
 %Docstring
 Returns the model output name.
@@ -62,7 +65,7 @@ Sets the default value for the model output.
 
     bool isMandatory() const;
 %Docstring
-Returns true if the output is mandatory. This may override the associated
+Returns ``True`` if the output is mandatory. This may override the associated
 child algorithm's parameter optional status - e.g. allowing
 an optional output from an algorithm to be mandatory within a model.
 
@@ -123,6 +126,9 @@ Loads this output from a QVariantMap.
 
 .. seealso:: :py:func:`toVariant`
 %End
+
+    virtual QgsProcessingModelComment *comment();
+    virtual void setComment( const QgsProcessingModelComment &comment );
 
 };
 

@@ -24,8 +24,9 @@
 
 #include <QVariant>
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgsunittypes.h"
 
 class QString;
 
@@ -65,6 +66,22 @@ class CORE_EXPORT QgsInterval
      * \param seconds duration of interval in seconds
      */
     QgsInterval( double seconds );
+
+    /**
+     * Constructor for QgsInterval, using the specified \a duration and \a units.
+     */
+    QgsInterval( double duration, QgsUnitTypes::TemporalUnit unit );
+
+    /**
+     * Constructor for QgsInterval, using the specified \a years, \a months,
+     * \a weeks, \a days, \a hours, \a minutes and \a seconds.
+     *
+     * \note Month units assumes a 30 day month length.
+     * \note Year units assumes a 365.25 day year length.
+     *
+     * \since QGIS 3.14
+     */
+    QgsInterval( double years, double months, double weeks, double days, double hours, double minutes, double seconds );
 
     /**
      * Returns the interval duration in years (based on an average year length)
@@ -158,14 +175,14 @@ class CORE_EXPORT QgsInterval
     void setSeconds( double seconds ) { mSeconds = seconds; mValid = true; }
 
     /**
-     * Returns true if the interval is valid.
+     * Returns TRUE if the interval is valid.
      * \see setValid()
      */
     bool isValid() const { return mValid; }
 
     /**
      * Sets whether the interval is valid.
-     * \param valid set to true to set the interval as valid.
+     * \param valid set to TRUE to set the interval as valid.
      * \see isValid()
      */
     void setValid( bool valid ) { mValid = valid; }

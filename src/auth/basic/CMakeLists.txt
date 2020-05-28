@@ -4,13 +4,8 @@ SET(AUTH_BASIC_SRCS
 )
 
 SET(AUTH_BASIC_HDRS
-  qgsauthbasicmethod.h
   qgsauthbasicedit.h
-)
-
-SET(AUTH_BASIC_MOC_HDRS
   qgsauthbasicmethod.h
-  qgsauthbasicedit.h
 )
 
 SET(AUTH_BASIC_UIS qgsauthbasicedit.ui)
@@ -35,14 +30,13 @@ INCLUDE_DIRECTORIES (
 
 QT5_WRAP_UI (AUTH_BASIC_UIS_H ${AUTH_BASIC_UIS})
 
-QT5_WRAP_CPP(AUTH_BASIC_MOC_SRCS ${AUTH_BASIC_MOC_HDRS})
-
-ADD_LIBRARY (basicauthmethod MODULE ${AUTH_BASIC_SRCS} ${AUTH_BASIC_HDRS} ${AUTH_BASIC_MOC_SRCS} ${AUTH_BASIC_UIS_H})
+ADD_LIBRARY (basicauthmethod MODULE ${AUTH_BASIC_SRCS} ${AUTH_BASIC_HDRS} ${AUTH_BASIC_UIS_H})
 
 TARGET_LINK_LIBRARIES (basicauthmethod
   qgis_core
   qgis_gui
 )
+TARGET_COMPILE_DEFINITIONS(basicauthmethod PRIVATE "-DQT_NO_FOREACH")
 
 INSTALL(TARGETS basicauthmethod
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}

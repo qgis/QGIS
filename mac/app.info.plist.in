@@ -15,7 +15,7 @@
 	<key>CFBundleSignature</key>
 	<string>QGIS</string>
 	<key>CFBundleGetInfoString</key>
-	<string>${QGIS_APP_NAME} ${COMPLETE_VERSION}-${RELEASE_NAME} (${SHA}), © 2002-2017 QGIS Development Team</string>
+	<string>${QGIS_APP_NAME} ${COMPLETE_VERSION}-${RELEASE_NAME} (${SHA}), © 2002-2019 QGIS Development Team</string>
 	<key>CFBundleShortVersionString</key>
 	<string>${COMPLETE_VERSION}</string>
 	<key>CFBundleVersion</key>

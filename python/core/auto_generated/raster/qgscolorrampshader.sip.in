@@ -82,7 +82,7 @@ Returns the custom colormap.
 Returns the color ramp type.
 %End
 
-    QString colorRampTypeAsQString();
+    QString colorRampTypeAsQString() const;
 %Docstring
 Returns the color ramp type as a string.
 %End
@@ -101,9 +101,9 @@ Whether the color ramp contains any items
 .. versionadded:: 3.4
 %End
 
-    QgsColorRamp *sourceColorRamp() const /Factory/;
+    QgsColorRamp *sourceColorRamp() const;
 %Docstring
-Gets the source color ramp
+Returns the source color ramp.
 
 .. seealso:: :py:func:`setSourceColorRamp`
 
@@ -160,6 +160,20 @@ Generates and new RGB value based on original RGB value
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
 
 
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+
+.. versionadded:: 3.4
+%End
+
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+
+.. versionadded:: 3.4
+%End
+
     void setClassificationMode( ClassificationMode classificationMode );
 %Docstring
 Sets classification mode
@@ -174,7 +188,7 @@ Returns the classification mode
 %Docstring
 Sets whether the shader should not render values out of range.
 
-:param clip: set to true to clip values which are out of range.
+:param clip: set to ``True`` to clip values which are out of range.
 
 .. seealso:: :py:func:`clip`
 %End

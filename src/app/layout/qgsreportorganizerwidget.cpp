@@ -56,11 +56,11 @@ QgsReportOrganizerWidget::QgsReportOrganizerWidget( QWidget *parent, QgsLayoutDe
   mViewSections->setEditTriggers( QAbstractItemView::AllEditTriggers );
 
   QMenu *addMenu = new QMenu( mButtonAddSection );
-  QAction *layoutSection = new QAction( tr( "Static layout section" ), addMenu );
+  QAction *layoutSection = new QAction( tr( "Static Layout Section" ), addMenu );
   layoutSection->setToolTip( tr( "A static layout report section which consists of a single layout inserted into the report" ) );
   addMenu->addAction( layoutSection );
   connect( layoutSection, &QAction::triggered, this, &QgsReportOrganizerWidget::addLayoutSection );
-  QAction *fieldGroupSection = new QAction( tr( "Field group section" ), addMenu );
+  QAction *fieldGroupSection = new QAction( tr( "Field Group Section" ), addMenu );
   fieldGroupSection->setToolTip( tr( "A report section which is repeated for every matching feature within a layer" ) );
   addMenu->addAction( fieldGroupSection );
   connect( fieldGroupSection, &QAction::triggered, this, &QgsReportOrganizerWidget::addFieldGroupSection );
@@ -107,7 +107,7 @@ void QgsReportOrganizerWidget::addFieldGroupSection()
 void QgsReportOrganizerWidget::removeSection()
 {
   QgsAbstractReportSection *section = mSectionModel->sectionForIndex( mViewSections->currentIndex() );
-  if ( dynamic_cast< QgsReport * >( section ) )
+  if ( !section || dynamic_cast< QgsReport * >( section ) )
     return; //report cannot be removed
 
   int res = QMessageBox::question( this, tr( "Remove Section" ),
@@ -115,6 +115,29 @@ void QgsReportOrganizerWidget::removeSection()
                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
   if ( res == QMessageBox::No )
     return;
+
+  std::function< void( QgsAbstractReportSection *section ) > cleanup;
+  cleanup = [ =, &cleanup]( QgsAbstractReportSection * section )
+  {
+    if ( mDesigner->currentLayout() == section->header() || mDesigner->currentLayout() == section->footer() )
+      mDesigner->setCurrentLayout( nullptr );
+    if ( section->type() == QLatin1String( "SectionFieldGroup" ) )
+    {
+      QgsReportSectionFieldGroup *fieldGroup = static_cast< QgsReportSectionFieldGroup * >( section );
+      if ( fieldGroup->body() == mDesigner->currentLayout() )
+        mDesigner->setCurrentLayout( nullptr );
+    }
+    if ( section->type() == QLatin1String( "SectionLayout" ) )
+    {
+      QgsReportSectionLayout *sectionLayout = static_cast< QgsReportSectionLayout * >( section );
+      if ( sectionLayout->body() == mDesigner->currentLayout() )
+        mDesigner->setCurrentLayout( nullptr );
+    }
+    const QList< QgsAbstractReportSection * > children = section->childSections();
+    for ( QgsAbstractReportSection *child : children )
+      cleanup( child );
+  };
+  cleanup( section );
 
   mSectionModel->removeRow( mViewSections->currentIndex().row(), mViewSections->currentIndex().parent() );
 }

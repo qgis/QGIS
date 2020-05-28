@@ -23,9 +23,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsproperty.h"
 #include "qgisapp.h"
+#include "qgsmapmouseevent.h"
+
 
 #include <QGraphicsPixmapItem>
-#include <QMouseEvent>
+
 
 QgsMapToolRotatePointSymbols::QgsMapToolRotatePointSymbols( QgsMapCanvas *canvas )
   : QgsMapToolPointSymbol( canvas )
@@ -156,7 +158,7 @@ void QgsMapToolRotatePointSymbols::canvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 
   if ( mRotating && mActiveLayer )
   {
@@ -171,7 +173,7 @@ void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QgsMapMouseEvent *e )
     }
     else
     {
-      rotation = ( int )mCurrentRotationFeature;
+      rotation = static_cast<int>( mCurrentRotationFeature );
     }
 
     QSet<int>::const_iterator it = mCurrentRotationAttributes.constBegin();
@@ -218,11 +220,10 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsMarkerSymbol *markerSymb
 
   if ( markerSymbol )
   {
-    QgsSymbol *clone = markerSymbol->clone();
-    QgsMarkerSymbol *markerClone = static_cast<QgsMarkerSymbol *>( clone );
+    std::unique_ptr< QgsSymbol > clone( markerSymbol->clone() );
+    QgsMarkerSymbol *markerClone = static_cast<QgsMarkerSymbol *>( clone.get() );
     markerClone->setDataDefinedAngle( QgsProperty() );
     pointImage = markerClone->bigSymbolPreviewImage();
-    delete clone;
   }
 
   mRotationItem = new QgsPointRotationItem( mCanvas );

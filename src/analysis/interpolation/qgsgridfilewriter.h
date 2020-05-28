@@ -46,7 +46,7 @@ class ANALYSIS_EXPORT QgsGridFileWriter
     /**
      * Writes the grid file.
      *
-     * An optional \a feedback object can be set for progress reports and cancelation support
+     * An optional \a feedback object can be set for progress reports and cancellation support
      *
      * \returns 0 in case of success
     */

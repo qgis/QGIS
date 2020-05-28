@@ -17,7 +17,10 @@
 #define QGSDATAITEMPROVIDERREGISTRY_H
 
 #include <QList>
-#include "qgis.h"
+#include <QMap>
+#include <QObject>
+
+#include "qgis_sip.h"
 
 #include "qgis_core.h"
 
@@ -33,8 +36,9 @@ class QgsDataItemProvider;
  *
  * \since QGIS 2.10
  */
-class CORE_EXPORT QgsDataItemProviderRegistry
+class CORE_EXPORT QgsDataItemProviderRegistry : public QObject
 {
+    Q_OBJECT
   public:
 
     QgsDataItemProviderRegistry();
@@ -46,22 +50,61 @@ class CORE_EXPORT QgsDataItemProviderRegistry
     //! QgsDataItemProviderRegistry cannot be copied.
     QgsDataItemProviderRegistry &operator=( const QgsDataItemProviderRegistry &rh ) = delete;
 
-    //! Gets list of available providers
-    QList<QgsDataItemProvider *> providers() const { return mProviders; }
+    /**
+     * Returns the list of available providers.
+     */
+    QList<QgsDataItemProvider *> providers() const;
 
-    //! Add a provider implementation. Takes ownership of the object.
+    /**
+     * Returns the (possibly NULL) data item provider named \a providerName
+     * \since QGIS 3.14
+     */
+    QgsDataItemProvider *provider( const QString &providerName ) const;
+
+    /**
+     * Adds a \a provider implementation to the registry. Ownership of the provider
+     * is transferred to the registry.
+     */
     void addProvider( QgsDataItemProvider *provider SIP_TRANSFER );
 
-    //! Remove provider implementation from the list (provider object is deleted)
+    /**
+     * Removes a \a provider implementation from the registry.
+     * The provider object is automatically deleted.
+     */
     void removeProvider( QgsDataItemProvider *provider );
+
+    /**
+     * Returns the (possibly blank) data provider key for a given data item provider name.
+     *
+     * \param dataItemProviderName name of the data item provider
+     * \since QGIS 3.14
+     */
+    QString dataProviderKey( const QString &dataItemProviderName );
+
+  signals:
+
+    /**
+     * Emitted when a new data item provider has been added.
+     * \since QGIS 3.14
+     */
+    void providerAdded( QgsDataItemProvider *provider );
+
+    /**
+     * Emitted when a data item provider is about to be removed
+     * \since QGIS 3.14
+     */
+    void providerWillBeRemoved( QgsDataItemProvider *provider );
 
   private:
 #ifdef SIP_RUN
     QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry &rh );
 #endif
 
-    //! available providers. this class owns the pointers
+    //! Available providers, owned by this class
     QList<QgsDataItemProvider *> mProviders;
+
+    //! Keeps track of data item provider <-> data provider association
+    QMap<QString, QString> mDataItemProviderOrigin;
 
 };
 

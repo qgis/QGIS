@@ -73,9 +73,10 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
 {
   QgsFeatureIds ids;
 
-  QgsDebugMsg( QString( "Index count: %1" ).arg( selection.indexes().size() ) );
+  QgsDebugMsg( QStringLiteral( "Index count: %1" ).arg( selection.indexes().size() ) );
 
-  Q_FOREACH ( const QModelIndex &index, selection.indexes() )
+  const auto constIndexes = selection.indexes();
+  for ( const QModelIndex &index : constIndexes )
   {
     QgsFeatureId id = index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
 
@@ -89,7 +90,8 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
     if ( !mSyncEnabled )
     {
       mClearAndSelectBuffer = true;
-      Q_FOREACH ( QgsFeatureId id, ids )
+      const auto constIds = ids;
+      for ( QgsFeatureId id : constIds )
       {
         if ( !mDeselectedBuffer.remove( id ) )
         {
@@ -106,7 +108,8 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
   {
     if ( !mSyncEnabled )
     {
-      Q_FOREACH ( QgsFeatureId id, ids )
+      const auto constIds = ids;
+      for ( QgsFeatureId id : constIds )
       {
         if ( !mDeselectedBuffer.remove( id ) )
         {
@@ -123,7 +126,8 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
   {
     if ( !mSyncEnabled )
     {
-      Q_FOREACH ( QgsFeatureId id, ids )
+      const auto constIds = ids;
+      for ( QgsFeatureId id : constIds )
       {
         if ( !mSelectedBuffer.remove( id ) )
         {
@@ -140,7 +144,8 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
   connect( mFeatureSelectionManager, &QgsIFeatureSelectionManager::selectionChanged, this, &QgsFeatureSelectionModel::layerSelectionChanged );
 
   QModelIndexList updatedIndexes;
-  Q_FOREACH ( const QModelIndex &idx, selection.indexes() )
+  const auto indexes = selection.indexes();
+  for ( const QModelIndex &idx : indexes )
   {
     updatedIndexes.append( expandIndexToRow( idx ) );
   }
@@ -150,6 +155,9 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
 
 void QgsFeatureSelectionModel::setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager )
 {
+  if ( mFeatureSelectionManager )
+    disconnect( mFeatureSelectionManager, &QgsIFeatureSelectionManager::selectionChanged, this, &QgsFeatureSelectionModel::layerSelectionChanged );
+
   mFeatureSelectionManager = featureSelectionManager;
 
   connect( mFeatureSelectionManager, &QgsIFeatureSelectionManager::selectionChanged, this, &QgsFeatureSelectionModel::layerSelectionChanged );
@@ -164,12 +172,14 @@ void QgsFeatureSelectionModel::layerSelectionChanged( const QgsFeatureIds &selec
   else
   {
     QModelIndexList updatedIndexes;
-    Q_FOREACH ( QgsFeatureId fid, selected )
+    const auto constSelected = selected;
+    for ( QgsFeatureId fid : constSelected )
     {
       updatedIndexes.append( expandIndexToRow( mFeatureModel->fidToIndex( fid ) ) );
     }
 
-    Q_FOREACH ( QgsFeatureId fid, deselected )
+    const auto constDeselected = deselected;
+    for ( QgsFeatureId fid : constDeselected )
     {
       updatedIndexes.append( expandIndexToRow( mFeatureModel->fidToIndex( fid ) ) );
     }

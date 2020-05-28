@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmmergevector.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -97,7 +98,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
       continue;
     }
 
-    if ( layer->type() != QgsMapLayer::VectorLayer )
+    if ( layer->type() != QgsMapLayerType::VectorLayer )
       throw QgsProcessingException( QObject::tr( "All layers must be vector layers!" ) );
 
     QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer );
@@ -177,7 +178,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
   }
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, outputType, outputCrs ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, outputType, outputCrs, QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 

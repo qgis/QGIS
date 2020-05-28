@@ -19,6 +19,7 @@
 #define SIP_NO_FILE
 
 #include "qgsprocessingalgorithm.h"
+#include "qgsapplication.h"
 
 ///@cond PRIVATE
 
@@ -33,7 +34,8 @@ class QgsDifferenceAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
-
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
+    QgsProcessingAlgorithm::Flags flags() const override;
   protected:
     QgsProcessingAlgorithm *createInstance() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;

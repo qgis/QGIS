@@ -33,6 +33,7 @@
 #include "qgslogger.h"
 #include "qgsoptionsdialoghighlightwidget.h"
 #include "qgsoptionswidgetfactory.h"
+#include "qgsguiutils.h"
 
 QgsOptionsDialogBase::QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent, Qt::WindowFlags fl, QgsSettings *settings )
   : QDialog( parent, fl )
@@ -101,14 +102,15 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
     return;
   }
 
-  int size = mSettings->value( QStringLiteral( "/IconSize" ), 24 ).toInt();
+  int size = QgsGuiUtils::scaleIconSize( mSettings->value( QStringLiteral( "/IconSize" ), 24 ).toInt() );
   // buffer size to match displayed icon size in toolbars, and expected geometry restore
   // newWidth (above) may need adjusted if you adjust iconBuffer here
-  int iconBuffer = 4;
+  const int iconBuffer = QgsGuiUtils::scaleIconSize( 4 );
   mOptListWidget->setIconSize( QSize( size + iconBuffer, size + iconBuffer ) );
   mOptListWidget->setFrameStyle( QFrame::NoFrame );
 
-  optionsFrame->layout()->setContentsMargins( 0, 3, 3, 3 );
+  const int frameMargin = QgsGuiUtils::scaleIconSize( 3 );
+  optionsFrame->layout()->setContentsMargins( 0, frameMargin, frameMargin, frameMargin );
   QVBoxLayout *layout = static_cast<QVBoxLayout *>( optionsFrame->layout() );
 
   if ( buttonBoxFrame )
@@ -166,11 +168,13 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
   if ( !title.isEmpty() )
   {
     mDialogTitle = title;
-    updateWindowTitle();
   }
-
-  // re-save original dialog title in case it was changed after dialog initialization
-  mDialogTitle = windowTitle();
+  else
+  {
+    // re-save original dialog title in case it was changed after dialog initialization
+    mDialogTitle = windowTitle();
+  }
+  updateWindowTitle();
 
   restoreGeometry( mSettings->value( QStringLiteral( "/Windows/%1/geometry" ).arg( mOptsKey ) ).toByteArray() );
   // mOptListWidget width is fixed to take up less space in QtDesigner
@@ -181,7 +185,7 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
   int curIndx = mSettings->value( QStringLiteral( "/Windows/%1/tab" ).arg( mOptsKey ), 0 ).toInt();
 
   // if the last used tab is out of range or not enabled display the first enabled one
-  if ( mOptStackedWidget->count() < ( curIndx + 1 )
+  if ( mOptStackedWidget->count() < curIndx + 1
        || !mOptStackedWidget->widget( curIndx )->isEnabled() )
   {
     curIndx = 0;
@@ -203,6 +207,45 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
 
   // get rid of annoying outer focus rect on Mac
   mOptListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
+}
+
+void QgsOptionsDialogBase::resizeAlltabs( int index )
+{
+  // Adjust size (GH issue #31449 and #32615)
+  // make the stacked widget size to the current page only
+  for ( int i = 0; i < mOptStackedWidget->count(); ++i )
+  {
+    // Set the size policy
+    QSizePolicy::Policy policy = QSizePolicy::Ignored;
+    if ( i == index )
+    {
+      policy = QSizePolicy::MinimumExpanding;
+    }
+
+    // update the size policy
+    mOptStackedWidget->widget( i )->setSizePolicy( policy, policy );
+
+    if ( i == index )
+    {
+      mOptStackedWidget->layout()->update();
+    }
+  }
+  mOptStackedWidget->adjustSize();
+}
+
+void QgsOptionsDialogBase::setCurrentPage( const QString &page )
+{
+  //find the page with a matching widget name
+  for ( int idx = 0; idx < mOptStackedWidget->count(); ++idx )
+  {
+    QWidget *currentPage = mOptStackedWidget->widget( idx );
+    if ( currentPage->objectName() == page )
+    {
+      //found the page, set it as current
+      mOptStackedWidget->setCurrentIndex( idx );
+      return;
+    }
+  }
 }
 
 void QgsOptionsDialogBase::searchText( const QString &text )
@@ -256,11 +299,12 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
 
   for ( int i = 0; i < mOptStackedWidget->count(); i++ )
   {
-    Q_FOREACH ( QWidget *w, mOptStackedWidget->widget( i )->findChildren<QWidget *>() )
+    const auto constWidget = mOptStackedWidget->widget( i )->findChildren<QWidget *>();
+    for ( QWidget *w : constWidget )
     {
 
       // get custom highlight widget in user added pages
-      QMap<QWidget *, QgsOptionsDialogHighlightWidget *> customHighlightWidgets = QMap<QWidget *, QgsOptionsDialogHighlightWidget *>();
+      QHash<QWidget *, QgsOptionsDialogHighlightWidget *> customHighlightWidgets;
       QgsOptionsPageWidget *opw = qobject_cast<QgsOptionsPageWidget *>( mOptStackedWidget->widget( i ) );
       if ( opw )
       {
@@ -279,7 +323,7 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
       }
       if ( shw && shw->isValid() )
       {
-        QgsDebugMsgLevel( QString( "Registering: %1" ).arg( w->objectName() ), 4 );
+        QgsDebugMsgLevel( QStringLiteral( "Registering: %1" ).arg( w->objectName() ), 4 );
         mRegisteredSearchWidgets.append( qMakePair( shw, i ) );
       }
       else

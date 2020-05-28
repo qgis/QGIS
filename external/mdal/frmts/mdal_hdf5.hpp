@@ -6,18 +6,22 @@
 #ifndef MDAL_HDF5_HPP
 #define MDAL_HDF5_HPP
 
+
 /** A simple C++ wrapper around HDF5 library API */
 
 // for compatibility (older hdf5 version in Travis)
 #define H5Gopen_vers 1
 
 #include "mdal_utils.hpp"
+#include "mdal_logger.hpp"
 #include "hdf5.h"
 typedef unsigned char uchar;
 
 #include <memory>
 #include <vector>
 #include <string>
+#include <numeric>
+
 #include <assert.h>
 #include "stdlib.h"
 
@@ -31,7 +35,9 @@ template <int TYPE> inline void hdfClose( hid_t id ) { MDAL_UNUSED( id ); assert
 template <> inline void hdfClose<H5I_FILE>( hid_t id ) { H5Fclose( id ); }
 template <> inline void hdfClose<H5I_GROUP>( hid_t id ) { H5Gclose( id ); }
 template <> inline void hdfClose<H5I_DATASET>( hid_t id ) { H5Dclose( id ); }
-template <> inline void hdfClose<H5I_ATTR>( hid_t id ) { H5Dclose( id ); }
+template <> inline void hdfClose<H5I_ATTR>( hid_t id ) { H5Aclose( id ); }
+template <> inline void hdfClose<H5I_DATASPACE>( hid_t id ) { H5Sclose( id ); }
+template <> inline void hdfClose<H5I_DATATYPE>( hid_t id ) { H5Tclose( id ); }
 
 template <int TYPE>
 class HdfH
@@ -47,25 +53,55 @@ class HdfH
 class HdfGroup;
 class HdfDataset;
 class HdfAttribute;
+class HdfDataspace;
+class HdfDataType;
 
 class HdfFile
 {
   public:
+    enum Mode
+    {
+      ReadOnly,
+      ReadWrite,
+      Create
+    };
     typedef HdfH<H5I_FILE> Handle;
 
-    HdfFile( const std::string &path ) { d.reset( new Handle( H5Fopen( path.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT ) ) ); }
-
-    bool isValid() const { return d->id >= 0; }
-    hid_t id() const { return d->id; }
+    HdfFile( const std::string &path, HdfFile::Mode mode );
+    ~HdfFile();
+    bool isValid() const;
+    hid_t id() const;
 
     inline std::vector<std::string> groups() const;
 
     inline HdfGroup group( const std::string &path ) const;
     inline HdfDataset dataset( const std::string &path ) const;
     inline HdfAttribute attribute( const std::string &attr_name ) const;
+    inline bool pathExists( const std::string &path ) const;
+    std::string filePath() const;
 
   protected:
     std::shared_ptr<Handle> d;
+    std::string mPath;
+};
+
+class HdfDataType
+{
+  public:
+    typedef HdfH<H5I_DATATYPE> Handle;
+    HdfDataType();
+    HdfDataType( hid_t type, bool isNativeType = true );
+    ~HdfDataType();
+
+    // Creates new string type with size, use HDF_MAX_NAME for maximum length
+    static HdfDataType createString( int size = HDF_MAX_NAME );
+    bool isValid() const;
+    hid_t id() const;
+
+
+  protected:
+    std::shared_ptr<Handle> d;
+    hid_t mNativeId = -1;
 };
 
 class HdfGroup
@@ -73,77 +109,81 @@ class HdfGroup
   public:
     typedef HdfH<H5I_GROUP> Handle;
 
-    HdfGroup( hid_t file, const std::string &path ) { d.reset( new Handle( H5Gopen( file, path.c_str() ) ) ); }
+    static HdfGroup create( hid_t file, const std::string &path );
+    HdfGroup( hid_t file, const std::string &path );
+    HdfGroup( std::shared_ptr<Handle> handle );
 
-    bool isValid() const { return d->id >= 0; }
-    hid_t id() const { return d->id; }
-    hid_t file_id() const { return H5Iget_file_id( d->id ); }
+    bool isValid() const;
+    hid_t id() const;
+    hid_t file_id() const;
 
-    std::string name() const
-    {
-      char name[HDF_MAX_NAME];
-      H5Iget_name( d->id, name, HDF_MAX_NAME );
-      return std::string( name );
-    }
+    std::string name() const;
 
-    std::vector<std::string> groups() const { return objects( H5G_GROUP ); }
-    std::vector<std::string> datasets() const { return objects( H5G_DATASET ); }
-    std::vector<std::string> objects() const { return objects( H5G_UNKNOWN ); }
+    std::vector<std::string> groups() const;
+    std::vector<std::string> datasets() const;
+    std::vector<std::string> objects() const;
 
-    std::string childPath( const std::string &childName ) const { return name() + "/" + childName; }
+    std::string childPath( const std::string &childName ) const;
 
     inline HdfGroup group( const std::string &groupName ) const;
     inline HdfDataset dataset( const std::string &dsName ) const;
     inline HdfAttribute attribute( const std::string &attr_name ) const;
-
+    inline bool pathExists( const std::string &path ) const;
   protected:
-    std::vector<std::string> objects( H5G_obj_t type ) const
-    {
-      std::vector<std::string> lst;
-
-      hsize_t nobj;
-      H5Gget_num_objs( d->id, &nobj );
-      for ( hsize_t i = 0; i < nobj; ++i )
-      {
-        if ( type == H5G_UNKNOWN || H5Gget_objtype_by_idx( d->id, i ) == type )
-        {
-          char name[HDF_MAX_NAME];
-          H5Gget_objname_by_idx( d->id, i, name, ( size_t )HDF_MAX_NAME );
-          lst.push_back( std::string( name ) );
-        }
-      }
-      return lst;
-    }
+    std::vector<std::string> objects( H5G_obj_t type ) const;
 
   protected:
     std::shared_ptr<Handle> d;
 };
-
 
 class HdfAttribute
 {
   public:
     typedef HdfH<H5I_ATTR> Handle;
 
-    HdfAttribute( hid_t obj_id, const std::string &attr_name ) { d.reset( new Handle( H5Aopen( obj_id, attr_name.c_str(), H5P_DEFAULT ) ) ); }
+    //! Create new attribute for writing for 1 item
+    HdfAttribute( hid_t obj_id, const std::string &attr_name, HdfDataType type );
 
-    bool isValid() const { return d->id >= 0; }
-    hid_t id() const { return d->id; }
+    //! Open existing attribute for reading
+    HdfAttribute( hid_t obj_id, const std::string &attr_name );
+    ~HdfAttribute();
+    bool isValid() const;
+    hid_t id() const;
 
-    std::string readString() const
-    {
-      char name[HDF_MAX_NAME];
-      hid_t datatype = H5Tcopy( H5T_C_S1 );
-      H5Tset_size( datatype, HDF_MAX_NAME );
-      herr_t status = H5Aread( d->id, datatype, name );
-      if ( status < 0 )
-      {
-        //MDAL::debug("Failed to read data!");
-        return std::string();
-      }
-      H5Tclose( datatype );
-      return std::string( name );
-    }
+    std::string readString() const;
+    double readDouble() const;
+
+    void write( const std::string &value );
+    void write( int value );
+
+  protected:
+    std::shared_ptr<Handle> d;
+    hid_t m_objId;
+    std::string m_name;
+    HdfDataType mType; // when in write mode
+};
+
+
+
+class HdfDataspace
+{
+  public:
+    typedef HdfH<H5I_DATASPACE> Handle;
+
+    //! memory dataspace for simple N-D array
+    HdfDataspace( const std::vector<hsize_t> &dims );
+    //! dataspace of the dataset
+    HdfDataspace( hid_t dataset = -1 );
+    ~HdfDataspace( );
+    //! select from 1D array
+    void selectHyperslab( hsize_t start, hsize_t count );
+    //! select from N-D array
+    void selectHyperslab( const std::vector<hsize_t> offsets,
+                          const std::vector<hsize_t> counts );
+
+    bool isValid() const;
+    hid_t id() const;
+
   protected:
     std::shared_ptr<Handle> d;
 };
@@ -153,64 +193,42 @@ class HdfDataset
   public:
     typedef HdfH<H5I_DATASET> Handle;
 
-    HdfDataset( hid_t file, const std::string &path ) { d.reset( new Handle( H5Dopen2( file, path.c_str(), H5P_DEFAULT ) ) ); }
+    //! Create new, simple 1 dimensional dataset
+    HdfDataset( hid_t file, const std::string &path, HdfDataType dtype, size_t nItems = 1 );
+    //! Create new dataset with custom dimensions
+    HdfDataset( hid_t file, const std::string &path, HdfDataType dtype, HdfDataspace dataspace );
+    //! Opens dataset for reading
+    HdfDataset( hid_t file, const std::string &path );
+    ~HdfDataset();
+    bool isValid() const;
+    hid_t id() const;
 
-    bool isValid() const { return d->id >= 0; }
-    hid_t id() const { return d->id; }
+    std::vector<hsize_t> dims() const;
 
-    std::vector<hsize_t> dims() const
-    {
-      hid_t sid = H5Dget_space( d->id );
-      std::vector<hsize_t> d( H5Sget_simple_extent_ndims( sid ) );
-      H5Sget_simple_extent_dims( sid, d.data(), NULL );
-      H5Sclose( sid );
-      return d;
-    }
+    hsize_t elementCount() const;
 
-    hsize_t elementCount() const
-    {
-      hsize_t count = 1;
-      for ( hsize_t dsize : dims() )
-        count *= dsize;
-      return count;
-    }
+    H5T_class_t type() const;
 
-    H5T_class_t type() const
-    {
-      hid_t tid = H5Dget_type( d->id );
-      H5T_class_t t_class = H5Tget_class( tid );
-      H5Tclose( tid );
-      return t_class;
-    }
+    //! Reads full array into vector
+    //! Array can have any number of dimenstions
+    //! and it is fully read into 1D vector
+    std::vector<uchar> readArrayUint8() const;
+    std::vector<float> readArray() const;
+    std::vector<double> readArrayDouble() const;
+    std::vector<int> readArrayInt() const;
+    std::vector<std::string> readArrayString() const;
 
-    std::vector<uchar> readArrayUint8() const { return readArray<uchar>( H5T_NATIVE_UINT8 ); }
+    //! Reads part of the N-D array into vector,
+    //! for each dimension specified by offset and count
+    //! size of offsets and counts must be same as rank (number of dims) of dataset
+    //! the results array is 1D
+    std::vector<uchar> readArrayUint8( const std::vector<hsize_t> offsets, const std::vector<hsize_t> counts ) const;
+    std::vector<float> readArray( const std::vector<hsize_t> offsets, const std::vector<hsize_t> counts ) const;
+    std::vector<double> readArrayDouble( const std::vector<hsize_t> offsets, const std::vector<hsize_t> counts ) const;
+    std::vector<int> readArrayInt( const std::vector<hsize_t> offsets, const std::vector<hsize_t> counts ) const;
 
-    std::vector<float> readArray() const { return readArray<float>( H5T_NATIVE_FLOAT ); }
-
-    std::vector<double> readArrayDouble() const { return readArray<double>( H5T_NATIVE_DOUBLE ); }
-
-    std::vector<int> readArrayInt() const { return readArray<int>( H5T_NATIVE_INT ); }
-
-    std::vector<std::string> readArrayString() const
-    {
-      std::vector<std::string> ret;
-
-      hid_t datatype = H5Tcopy( H5T_C_S1 );
-      H5Tset_size( datatype, HDF_MAX_NAME );
-
-      std::vector<HdfString> arr = readArray<HdfString>( datatype );
-
-      H5Tclose( datatype );
-
-      for ( const HdfString &str : arr )
-      {
-        std::string dat = std::string( str.data );
-        ret.push_back( MDAL::trim( dat ) );
-      }
-
-      return ret;
-    }
-
+    inline bool hasAttribute( const std::string &attr_name ) const;
+    inline HdfAttribute attribute( const std::string &attr_name ) const;
 
     template <typename T> std::vector<T> readArray( hid_t mem_type_id ) const
     {
@@ -219,53 +237,59 @@ class HdfDataset
       herr_t status = H5Dread( d->id, mem_type_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, data.data() );
       if ( status < 0 )
       {
-        MDAL::debug( "Failed to read data!" );
+        MDAL::Log::debug( "Failed to read data!" );
         return std::vector<T>();
       }
       return data;
     }
 
-    float readFloat() const
+    template <typename T> std::vector<T> readArray( hid_t mem_type_id,
+        const std::vector<hsize_t> offsets,
+        const std::vector<hsize_t> counts ) const
     {
-      if ( elementCount() != 1 )
-      {
-        MDAL::debug( "Not scalar!" );
-        return 0;
-      }
+      HdfDataspace dataspace( d->id );
+      dataspace.selectHyperslab( offsets, counts );
 
-      float value;
-      herr_t status = H5Dread( d->id, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL, H5P_DEFAULT, &value );
+      hsize_t totalItems = 1;
+      for ( auto it = counts.begin(); it != counts.end(); ++it )
+        totalItems *= *it;
+
+      std::vector<hsize_t> dims = {totalItems};
+      HdfDataspace memspace( dims );
+      memspace.selectHyperslab( 0, totalItems );
+
+      std::vector<T> data( totalItems );
+      herr_t status = H5Dread( d->id, mem_type_id, memspace.id(), dataspace.id(), H5P_DEFAULT, data.data() );
       if ( status < 0 )
       {
-        MDAL::debug( "Failed to read data!" );
-        return 0;
+        MDAL::Log::debug( "Failed to read data!" );
+        return std::vector<T>();
       }
-      return value;
+      return data;
     }
 
-    std::string readString() const
-    {
-      if ( elementCount() != 1 )
-      {
-        MDAL::debug( "Not scalar!" );
-        return std::string();
-      }
+    //! Reads float value
+    float readFloat() const;
 
-      char name[HDF_MAX_NAME];
-      hid_t datatype = H5Tcopy( H5T_C_S1 );
-      H5Tset_size( datatype, HDF_MAX_NAME );
-      herr_t status = H5Dread( d->id, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, name );
-      if ( status < 0 )
-      {
-        MDAL::debug( "Failed to read data!" );
-        return std::string();
-      }
-      H5Tclose( datatype );
-      return std::string( name );
-    }
+    //! Reads string value
+    std::string readString() const;
+
+    //! Writes string dataset with single entry
+    void write( const std::string &value );
+
+    //! Writes array of float data
+    void write( std::vector<float> &value );
+    void write( float value );
+
+    //! Writes array of double data
+    void write( std::vector<double> &value );
 
   protected:
     std::shared_ptr<Handle> d;
+    hid_t m_fileId;
+    std::string m_path;
+
+    HdfDataType mType; // when in write mode
 };
 
 inline std::vector<std::string> HdfFile::groups() const { return group( "/" ).groups(); }
@@ -278,8 +302,20 @@ inline HdfGroup HdfGroup::group( const std::string &groupName ) const { return H
 
 inline HdfDataset HdfGroup::dataset( const std::string &dsName ) const { return HdfDataset( file_id(), childPath( dsName ) ); }
 
+inline bool HdfDataset::hasAttribute( const std::string &attr_name ) const
+{
+  htri_t res = H5Aexists( d->id, attr_name.c_str() );
+  return  res > 0 ;
+}
+
 inline HdfAttribute HdfFile::attribute( const std::string &attr_name ) const { return HdfAttribute( d->id, attr_name ); }
 
 inline HdfAttribute HdfGroup::attribute( const std::string &attr_name ) const { return HdfAttribute( d->id, attr_name ); }
+
+inline HdfAttribute HdfDataset::attribute( const std::string &attr_name ) const { return HdfAttribute( d->id, attr_name ); }
+
+inline bool HdfFile::pathExists( const std::string &path ) const { return H5Lexists( d->id, path.c_str(), H5P_DEFAULT ) > 0; }
+
+inline bool HdfGroup::pathExists( const std::string &path ) const { return H5Lexists( d->id, path.c_str(), H5P_DEFAULT ) > 0; }
 
 #endif // MDAL_HDF5_HPP

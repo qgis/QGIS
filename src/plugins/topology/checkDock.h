@@ -20,7 +20,6 @@
 
 #include "qgsdockwidget.h"
 
-#include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
 //#include "qgsvertexmarker.h"
 #include "qgsspatialindex.h"
@@ -30,6 +29,7 @@
 #include "topolError.h"
 #include "topolTest.h"
 #include "dockModel.h"
+#include "qobjectuniqueptr.h"
 
 class QgsRubberBand;
 class QgsVertexMarker;
@@ -110,9 +110,10 @@ class checkDock : public QgsDockWidget, private Ui::checkDock
   private:
     rulesDialog *mConfigureDialog = nullptr;
 
-    QgsRubberBand *mRBConflict = nullptr;
-    QgsRubberBand *mRBFeature1 = nullptr;
-    QgsRubberBand *mRBFeature2 = nullptr;
+    QObjectUniquePtr<QgsRubberBand> mRBConflict;
+    QObjectUniquePtr<QgsRubberBand> mRBFeature1;
+    QObjectUniquePtr<QgsRubberBand> mRBFeature2;
+
     QgsVertexMarker *mVMConflict = nullptr;
     QgsVertexMarker *mVMFeature1 = nullptr;
     QgsVertexMarker *mVMFeature2 = nullptr;

@@ -74,7 +74,7 @@ void QgsPointOnSurfaceAlgorithm::initParameters( const QVariantMap & )
 
 bool QgsPointOnSurfaceAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mAllParts = parameterAsBool( parameters, QStringLiteral( "ALL_PARTS" ), context );
+  mAllParts = parameterAsBoolean( parameters, QStringLiteral( "ALL_PARTS" ), context );
   mDynamicAllParts = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "ALL_PARTS" ) );
   if ( mDynamicAllParts )
     mAllPartsProperty = parameters.value( QStringLiteral( "ALL_PARTS" ) ).value< QgsProperty >();
@@ -102,7 +102,7 @@ QgsFeatureList QgsPointOnSurfaceAlgorithm::processFeature( const QgsFeature &f, 
       {
         QgsGeometry partGeometry( geomCollection->geometryN( i )->clone() );
         QgsGeometry outputGeometry = partGeometry.pointOnSurface();
-        if ( !outputGeometry )
+        if ( outputGeometry.isNull() )
         {
           feedback->pushInfo( QObject::tr( "Error calculating point on surface for feature %1 part %2: %3" ).arg( feature.id() ).arg( i ).arg( outputGeometry.lastError() ) );
         }
@@ -113,7 +113,7 @@ QgsFeatureList QgsPointOnSurfaceAlgorithm::processFeature( const QgsFeature &f, 
     else
     {
       QgsGeometry outputGeometry = feature.geometry().pointOnSurface();
-      if ( !outputGeometry )
+      if ( outputGeometry.isNull() )
       {
         feedback->pushInfo( QObject::tr( "Error calculating point on surface for feature %1: %2" ).arg( feature.id() ).arg( outputGeometry.lastError() ) );
       }

@@ -42,7 +42,7 @@ int main( int argc, char *argv[] )
   QCoreApplication::setApplicationName( "QGIS3" );
 
   QString extraInfoFile = QString( argv[1] );
-  std::cout << "Extra Info File: " << extraInfoFile.toUtf8().data() << std::endl;
+  std::cout << "Extra Info File: " << extraInfoFile.toUtf8().constData() << std::endl;
 
   QFile file( extraInfoFile );
   QString processIdString;
@@ -75,7 +75,7 @@ int main( int argc, char *argv[] )
   std::cout << "Process ID: " << processIdString.toLocal8Bit().constData() << std::endl;
   std::cout << "Thread ID:" << threadIdString.toLocal8Bit().constData() << std::endl;
   std::cout << "Exception Pointer: " << exceptionPointersString.toLocal8Bit().constData() << std::endl;
-  std::cout << "Symbol Path :" << symbolPaths.toUtf8().data() << std::endl;
+  std::cout << "Symbol Path :" << symbolPaths.toUtf8().constData() << std::endl;
 
   std::unique_ptr<QgsStackTrace> stackTrace( QgsStackTrace::trace( processId, threadId, exception, symbolPaths ) );
 

@@ -45,7 +45,7 @@ Gets the edit value.
 %Docstring
 Check the content is valid
 
-:return: true if valid
+:return: ``True`` if valid
 %End
 
 };

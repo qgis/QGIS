@@ -81,7 +81,7 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
   signals:
 
     /**
-     * Is emitted when an action column item is painted.
+     * Emitted when an action column item is painted.
      * The consumer of this signal can initialize the index widget.
      *
      * \note This signal is emitted repeatedly whenever the item is being painted.

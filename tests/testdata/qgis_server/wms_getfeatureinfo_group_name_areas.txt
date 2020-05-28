@@ -1,0 +1,37 @@
+*****
+Content-Type: application/json; charset=utf-8
+
+{
+  "features": [
+    {
+      "geometry": null,
+      "id": "as_areas.18",
+      "properties": {
+        "bearbeiter": "scholle-b",
+        "bemerkung": "",
+        "beschriftung": "",
+        "datum": "2013-06-11",
+        "farbe": "255 0 0",
+        "fid": 18,
+        "flaeche": 12879.0,
+        "flaechentyp": "Schraffur",
+        "gid": 34,
+        "last_change": "2013-06-11 10:03:45.52301+02",
+        "name": "",
+        "schraff_size": "10",
+        "schraff_size_prt": "30.00",
+        "schraff_width": "2",
+        "schraff_width_prt": "6.00",
+        "schraff_winkel": "45",
+        "umfang": 758.4703,
+        "umrissfarbe": "0 0 0",
+        "umrissstaerke": "1",
+        "umrissstaerke_prt": "3.00",
+        "umrisstyp": "durchgezogen",
+        "veranstaltung": ""
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

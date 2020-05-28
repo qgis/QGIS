@@ -26,6 +26,9 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspolygon.h"
 #include "qgsmultipolygon.h"
 #include "qgswkbptr.h"
+#include "qgsgeos.h"
+
+#include <nlohmann/json.hpp>
 #include <memory>
 
 QgsGeometryCollection::QgsGeometryCollection()
@@ -78,8 +81,19 @@ bool QgsGeometryCollection::operator==( const QgsAbstractGeometry &other ) const
 
   for ( int i = 0; i < mGeometries.count(); ++i )
   {
-    if ( mGeometries.at( i ) != otherCollection->mGeometries.at( i ) )
-      return false;
+    QgsAbstractGeometry *g1 = mGeometries.at( i );
+    QgsAbstractGeometry *g2 = otherCollection->mGeometries.at( i );
+
+    // Quick check if the geometries are exactly the same
+    if ( g1 != g2 )
+    {
+      if ( !g1 || !g2 )
+        return false;
+
+      // Slower check, compare the contents of the geometries
+      if ( *g1 != *g2 )
+        return false;
+    }
   }
 
   return true;
@@ -133,7 +147,7 @@ bool QgsGeometryCollection::removeDuplicateNodes( double epsilon, bool useZValue
   bool result = false;
   for ( QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
   {
-    result = result || geom->removeDuplicateNodes( epsilon, useZValues );
+    if ( geom->removeDuplicateNodes( epsilon, useZValues ) ) result = true;
   }
   return result;
 }
@@ -179,6 +193,11 @@ int QgsGeometryCollection::vertexNumberFromVertexId( QgsVertexId id ) const
     part++;
   }
   return -1; // should not happen
+}
+
+void QgsGeometryCollection::reserve( int size )
+{
+  mGeometries.reserve( size );
 }
 
 QgsAbstractGeometry *QgsGeometryCollection::geometryN( int n )
@@ -303,6 +322,7 @@ bool QgsGeometryCollection::fromWkb( QgsConstWkbPtr &wkbPtr )
 
   QVector<QgsAbstractGeometry *> geometryListBackup = mGeometries;
   mGeometries.clear();
+  mGeometries.reserve( nGeometries );
   for ( int i = 0; i < nGeometries; ++i )
   {
     std::unique_ptr< QgsAbstractGeometry > geom( QgsGeometryFactory::geomFromWkb( wkbPtr ) );  // also updates wkbPtr
@@ -362,21 +382,28 @@ QByteArray QgsGeometryCollection::asWkb() const
 
 QString QgsGeometryCollection::asWkt( int precision ) const
 {
-  QString wkt = wktTypeStr() + " (";
-  for ( const QgsAbstractGeometry *geom : mGeometries )
+  QString wkt = wktTypeStr();
+
+  if ( isEmpty() )
+    wkt += QStringLiteral( " EMPTY" );
+  else
   {
-    QString childWkt = geom->asWkt( precision );
-    if ( wktOmitChildType() )
+    wkt += QLatin1String( " (" );
+    for ( const QgsAbstractGeometry *geom : mGeometries )
     {
-      childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
+      QString childWkt = geom->asWkt( precision );
+      if ( wktOmitChildType() )
+      {
+        childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
+      }
+      wkt += childWkt + ',';
     }
-    wkt += childWkt + ',';
+    if ( wkt.endsWith( ',' ) )
+    {
+      wkt.chop( 1 ); // Remove last ','
+    }
+    wkt += ')';
   }
-  if ( wkt.endsWith( ',' ) )
-  {
-    wkt.chop( 1 ); // Remove last ','
-  }
-  wkt += ')';
   return wkt;
 }
 
@@ -404,19 +431,31 @@ QDomElement QgsGeometryCollection::asGml3( QDomDocument &doc, int precision, con
   return elemMultiGeometry;
 }
 
-QString QgsGeometryCollection::asJson( int precision ) const
+json QgsGeometryCollection::asJsonObject( int precision ) const
 {
-  QString json = QStringLiteral( "{\"type\": \"GeometryCollection\", \"geometries\": [" );
-  for ( const QgsAbstractGeometry *geom : mGeometries )
+  json coordinates( json::array( ) );
+  for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
   {
-    json += geom->asJson( precision ) + ", ";
+    coordinates.push_back( geom->asJsonObject( precision ) );
   }
-  if ( json.endsWith( QLatin1String( ", " ) ) )
+  return
   {
-    json.chop( 2 ); // Remove last ", "
+    { "type",  "GeometryCollection" },
+    { "geometries", coordinates }
+  };
+}
+
+QString QgsGeometryCollection::asKml( int precision ) const
+{
+  QString kml;
+  kml.append( QLatin1String( "<MultiGeometry>" ) );
+  const QVector< QgsAbstractGeometry * > &geometries = mGeometries;
+  for ( const QgsAbstractGeometry *geometry : geometries )
+  {
+    kml.append( geometry->asKml( precision ) );
   }
-  json += QLatin1String( "] }" );
-  return json;
+  kml.append( QLatin1String( "</MultiGeometry>" ) );
+  return kml;
 }
 
 QgsRectangle QgsGeometryCollection::boundingBox() const
@@ -438,8 +477,28 @@ QgsRectangle QgsGeometryCollection::calculateBoundingBox() const
   QgsRectangle bbox = mGeometries.at( 0 )->boundingBox();
   for ( int i = 1; i < mGeometries.size(); ++i )
   {
+    if ( mGeometries.at( i )->isEmpty() )
+      continue;
+
     QgsRectangle geomBox = mGeometries.at( i )->boundingBox();
-    bbox.combineExtentWith( geomBox );
+    if ( bbox.isNull() )
+    {
+      // workaround treatment of a QgsRectangle(0,0,0,0) as a "null"/invalid rectangle
+      // if bbox is null, then the first geometry must have returned a bounding box of (0,0,0,0)
+      // so just manually include that as a point... ew.
+      geomBox.combineExtentWith( QPointF( 0, 0 ) );
+      bbox = geomBox;
+    }
+    else if ( geomBox.isNull() )
+    {
+      // ...as above... this part must have a bounding box of (0,0,0,0).
+      // if we try to combine the extent with this "null" box it will just be ignored.
+      bbox.combineExtentWith( QPointF( 0, 0 ) );
+    }
+    else
+    {
+      bbox.combineExtentWith( geomBox );
+    }
   }
   return bbox;
 }
@@ -447,6 +506,8 @@ QgsRectangle QgsGeometryCollection::calculateBoundingBox() const
 void QgsGeometryCollection::clearCache() const
 {
   mBoundingBox = QgsRectangle();
+  mHasCachedValidity = false;
+  mValidityFailureReason.clear();
   QgsAbstractGeometry::clearCache();
 }
 
@@ -621,7 +682,10 @@ bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QVector
   }
   mWkbType = parts.first;
 
-  QString defChildWkbType = QStringLiteral( "%1%2%3 " ).arg( defaultChildWkbType, is3D() ? "Z" : "", isMeasure() ? "M" : "" );
+  if ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 )
+    return true;
+
+  QString defChildWkbType = QStringLiteral( "%1%2%3 " ).arg( defaultChildWkbType, is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );
 
   const QStringList blocks = QgsGeometryUtils::wktGetChildBlocks( parts.second, defChildWkbType );
   for ( const QString &childWkt : blocks )
@@ -684,13 +748,14 @@ bool QgsGeometryCollection::hasCurvedSegments() const
 
 QgsAbstractGeometry *QgsGeometryCollection::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
-  std::unique_ptr< QgsAbstractGeometry > geom( QgsGeometryFactory::geomFromWkbType( mWkbType ) );
+  std::unique_ptr< QgsAbstractGeometry > geom( QgsGeometryFactory::geomFromWkbType( QgsWkbTypes::linearType( mWkbType ) ) );
   QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( geom.get() );
   if ( !geomCollection )
   {
     return clone();
   }
 
+  geomCollection->reserve( mGeometries.size() );
   QVector< QgsAbstractGeometry * >::const_iterator geomIt = mGeometries.constBegin();
   for ( ; geomIt != mGeometries.constEnd(); ++geomIt )
   {
@@ -759,6 +824,25 @@ int QgsGeometryCollection::partCount() const
 QgsPoint QgsGeometryCollection::vertexAt( QgsVertexId id ) const
 {
   return mGeometries[id.part]->vertexAt( id );
+}
+
+bool QgsGeometryCollection::isValid( QString &error, int flags ) const
+{
+  if ( flags == 0 && mHasCachedValidity )
+  {
+    // use cached validity results
+    error = mValidityFailureReason;
+    return error.isEmpty();
+  }
+
+  QgsGeos geos( this );
+  bool res = geos.isValid( &error, flags & QgsGeometry::FlagAllowSelfTouchingHoles, nullptr );
+  if ( flags == 0 )
+  {
+    mValidityFailureReason = !res ? error : QString();
+    mHasCachedValidity = true;
+  }
+  return res;
 }
 
 bool QgsGeometryCollection::addZValue( double zValue )
@@ -853,6 +937,7 @@ void QgsGeometryCollection::swapXy()
 QgsGeometryCollection *QgsGeometryCollection::toCurveType() const
 {
   std::unique_ptr< QgsGeometryCollection > newCollection( new QgsGeometryCollection() );
+  newCollection->reserve( mGeometries.size() );
   for ( QgsAbstractGeometry *geom : mGeometries )
   {
     newCollection->addGeometry( geom->toCurveType() );

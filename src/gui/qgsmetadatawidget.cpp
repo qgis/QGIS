@@ -46,7 +46,7 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   mDefaultCategories << tr( "Farming" ) << tr( "Climatology Meteorology Atmosphere" ) << tr( "Location" ) << tr( "Intelligence Military" ) << tr( "Transportation" ) << tr( "Structure" ) << tr( "Boundaries" );
   mDefaultCategories << tr( "Inland Waters" ) << tr( "Planning Cadastre" ) << tr( "Geoscientific Information" ) << tr( "Elevation" ) << tr( "Health" ) << tr( "Biota" ) << tr( "Oceans" ) << tr( "Environment" );
   mDefaultCategories << tr( "Utilities Communication" ) << tr( "Economy" ) << tr( "Society" ) << tr( "Imagery Base Maps Earth Cover" );
-  mDefaultCategoriesModel = new QStringListModel( mDefaultCategories );
+  mDefaultCategoriesModel = new QStringListModel( mDefaultCategories, this );
   mDefaultCategoriesModel->sort( 0 );  // Sorting using translations
   listDefaultCategories->setModel( mDefaultCategoriesModel );
 
@@ -295,6 +295,8 @@ void QgsMetadataWidget::addConstraint()
 void QgsMetadataWidget::removeSelectedConstraint()
 {
   const QModelIndexList selectedRows = tabConstraints->selectionModel()->selectedRows();
+  if ( selectedRows.empty() )
+    return;
   mConstraintsModel->removeRow( selectedRows[0].row() );
 }
 
@@ -302,7 +304,7 @@ void QgsMetadataWidget::crsChanged()
 {
   if ( ( mCrs.isValid() ) && ( mLayer ) )
   {
-    lblCurrentCrs->setText( tr( "CRS: %1 - %2" ).arg( mCrs.authid(), mCrs.description() ) );
+    lblCurrentCrs->setText( tr( "CRS: %1" ).arg( mCrs.userFriendlyIdentifier() ) );
     spatialExtentSelector->setEnabled( true );
     spatialExtentSelector->setOutputCrs( mCrs );
 
@@ -394,6 +396,9 @@ void QgsMetadataWidget::addLink()
 void QgsMetadataWidget::removeSelectedLink()
 {
   const QModelIndexList selectedRows = tabLinks->selectionModel()->selectedRows();
+  if ( selectedRows.empty() )
+    return;
+
   mLinksModel->removeRow( selectedRows[0].row() );
 }
 
@@ -792,9 +797,9 @@ bool QgsMetadataWidget::checkMetadata()
     for ( const QgsAbstractMetadataBaseValidator::ValidationResult &result : qgis::as_const( validationResults ) )
     {
       errors += QLatin1String( "<b>" ) % result.section;
-      if ( ! result.identifier.isNull() )
+      if ( ! result._identifier().isNull() )
       {
-        errors += QLatin1String( " " ) % QVariant( result.identifier.toInt() + 1 ).toString();
+        errors += QLatin1String( " " ) % QVariant( result._identifier().toInt() + 1 ).toString();
       }
       errors += QLatin1String( "</b>: " ) % result.note % QLatin1String( "<br />" );
     }
@@ -822,7 +827,7 @@ QMap<QString, QString> QgsMetadataWidget::parseLanguages()
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugMsg( QString( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    QgsDebugMsg( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
     return countries;
   }
 
@@ -840,7 +845,7 @@ QMap<QString, QString> QgsMetadataWidget::parseLanguages()
   QFile secondFile( path );
   if ( !secondFile.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugMsg( QString( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    QgsDebugMsg( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
     return countries;
   }
 
@@ -865,7 +870,7 @@ QStringList QgsMetadataWidget::parseLicenses()
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugMsg( QString( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    QgsDebugMsg( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
     return wordList;
   }
 
@@ -889,7 +894,7 @@ QStringList QgsMetadataWidget::parseLinkTypes()
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugMsg( QString( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    QgsDebugMsg( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
     return wordList;
   }
 
@@ -913,7 +918,7 @@ QStringList QgsMetadataWidget::parseMimeTypes()
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugMsg( QString( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    QgsDebugMsg( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
     return wordList;
   }
 
@@ -934,7 +939,7 @@ QMap<QString, QString> QgsMetadataWidget::parseTypes()
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugMsg( QString( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    QgsDebugMsg( QStringLiteral( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
     return types;
   }
 

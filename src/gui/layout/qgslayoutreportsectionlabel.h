@@ -17,6 +17,7 @@
 #ifndef QGSLAYOUTREPORTSECTIONLABEL_H
 #define QGSLAYOUTREPORTSECTIONLABEL_H
 
+// We don't want to expose this in the public API
 #define SIP_NO_FILE
 
 #include <QGraphicsRectItem>
@@ -44,8 +45,9 @@ class GUI_EXPORT QgsLayoutReportSectionLabel: public QGraphicsRectItem
      */
     QgsLayoutReportSectionLabel( QgsLayout *layout, QgsLayoutView *view );
 
-    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
 
+    //! Sets the \a label.
     void setLabel( const QString &label );
 
   private:

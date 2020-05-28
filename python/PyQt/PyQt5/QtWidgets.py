@@ -20,8 +20,6 @@
 __author__ = 'Matthias Kuhn'
 __date__ = 'November 2015'
 __copyright__ = '(C) 2015, Matthias Kuhn'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from PyQt5.QtWidgets import *
 

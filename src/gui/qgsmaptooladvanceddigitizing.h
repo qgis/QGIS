@@ -22,6 +22,7 @@
 
 class QgsMapMouseEvent;
 class QgsAdvancedDigitizingDockWidget;
+class QgsSnapToGridCanvasItem;
 
 /**
  * \ingroup gui
@@ -71,7 +72,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      * widget should be disabled and only enabled once a vertex is being moved. Other map tools
      * may keep advanced digitizing allowed all the time.
      *
-     * If true is returned, that does not mean that advanced digitizing is actually active,
+     * If TRUE is returned, that does not mean that advanced digitizing is actually active,
      * because it is up to the user to enable/disable it when it is allowed.
      * \sa setAdvancedDigitizingAllowed()
      * \since QGIS 3.0
@@ -105,6 +106,9 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      * \since QGIS 3.0
      */
     void setAutoSnapEnabled( bool enabled ) { mAutoSnapEnabled = enabled; }
+
+
+    QgsAdvancedDigitizingDockWidget *mCadDockWidget = nullptr;
 
   public:
 
@@ -140,6 +144,22 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      */
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e ) { Q_UNUSED( e ) }
 
+    /**
+     * Enables or disables snap to grid of mouse events.
+     * The snapping will occur in the layer's CRS.
+     *
+     * \since QGIS 3.4
+     */
+    bool snapToLayerGridEnabled() const;
+
+    /**
+     * Enables or disables snap to grid of mouse events.
+     * The snapping will occur in the layer's CRS.
+     *
+     * \since QGIS 3.4
+     */
+    void setSnapToLayerGridEnabled( bool snapToLayerGridEnabled );
+
   private slots:
 
     /**
@@ -152,13 +172,17 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      */
     void cadPointChanged( const QgsPointXY &point );
 
+    void onCurrentLayerChanged();
+
   private:
-    QgsAdvancedDigitizingDockWidget *mCadDockWidget = nullptr;
 
     //! Whether to allow use of advanced digitizing dock at this point
     bool mAdvancedDigitizingAllowed = true;
     //! Whether to snap mouse cursor to map before passing coordinates to cadCanvas*Event()
     bool mAutoSnapEnabled = true;
+    //! Whether to snap to grid before passing coordinates to cadCanvas*Event()
+    bool mSnapToLayerGridEnabled = true;
+    QgsSnapToGridCanvasItem *mSnapToGridCanvasItem = nullptr;
 };
 
 #endif // QGSMAPTOOLADVANCEDDIGITIZE_H

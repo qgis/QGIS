@@ -39,7 +39,7 @@ class QgsPostgresListener : public QThread
 
     /**
      * create an instance if possible and starts the associated thread
-     * /returns nullptr on error
+     * /returns NULLPTR on error
      */
     static std::unique_ptr< QgsPostgresListener > create( const QString &connString );
 

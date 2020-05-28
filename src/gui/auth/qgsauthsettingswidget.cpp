@@ -187,13 +187,13 @@ bool QgsAuthSettingsWidget::convertToEncrypted( )
 
 void QgsAuthSettingsWidget::userNameTextChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   updateConvertBtnState();
 }
 
 void QgsAuthSettingsWidget::passwordTextChanged( const QString &text )
 {
-  Q_UNUSED( text );
+  Q_UNUSED( text )
   updateConvertBtnState();
 }
 

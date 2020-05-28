@@ -18,7 +18,6 @@
 #define QGSATTRIBUTETABLEFILTERMODEL_H
 
 #include <QSortFilterProxyModel>
-#include "qgis.h"
 #include <QModelIndex>
 
 #include "qgsattributetablemodel.h"
@@ -92,7 +91,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     void setSourceModel( QgsAttributeTableModel *sourceModel );
 
     /**
-     * Changes the sort order of the features. If set to true, selected features
+     * Changes the sort order of the features. If set to TRUE, selected features
      * will be sorted on top, regardless of the current sort column
      *
      * \param selectedOnTop Specify, if selected features should be sorted on top
@@ -102,7 +101,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     /**
      * Returns if selected features are currently shown on top
      *
-     * \returns True if selected are shown on top
+     * \returns TRUE if selected are shown on top
      */
     bool selectedOnTop();
 
@@ -127,6 +126,16 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * \param filterMode Sets the current mode of the filter
      */
     void setFilterMode( FilterMode filterMode );
+
+    /**
+     * Disconnect the connections set for the current filterMode
+     */
+    void disconnectFilterModeConnections();
+
+    /**
+     * Disconnect the connections set for the new \a filterMode
+     */
+    void connectFilterModeConnections( FilterMode filterMode );
 
     /**
      * The current filterModel
@@ -222,19 +231,37 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     void setAttributeTableConfig( const QgsAttributeTableConfig &config );
 
+    /**
+     * Set the \a expression and the \a context to be stored in case of the features
+     * need to be filtered again (like on filter or on main model data change).
+     *
+     * \since QGIS 3.10.3
+     */
+    void setFilterExpression( const QgsExpression &expression, const QgsExpressionContext &context );
+
   signals:
 
     /**
-     * Is emitted whenever the sort column is changed
+     * Emitted whenever the sort column is changed
      * \param column The sort column
      * \param order The sort order
      */
     void sortColumnChanged( int column, Qt::SortOrder order );
 
+    /**
+     * Emitted when the filtering of the features has been done
+     */
+    void featuresFiltered();
+
+    /**
+     * Emitted when the the visible features on extend are reloaded (the list is created)
+     */
+    void visibleReloaded();
+
   protected:
 
     /**
-     * Returns true if the source row will be accepted
+     * Returns TRUE if the source row will be accepted
      *
      * \param sourceRow row from the source model
      * \param sourceParent parent index in the source model
@@ -258,12 +285,25 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     /**
      * Is called upon every change of the visible extents on the map canvas.
      * When a change is signalled, the filter is updated and invalidated if needed.
+     *
+     * \deprecated since QGIS 3.10.3 - made private as reloadVisible()
      */
-    void extentsChanged();
+    Q_DECL_DEPRECATED void extentsChanged();
+
+    /**
+     * Updates the filtered features in the filter model. It is called when the data of the
+     * main table or the filter expression changed.
+     *
+     * \since QGIS 3.10.3
+     */
+    void filterFeatures();
 
   private slots:
     void selectionChanged();
     void onColumnsChanged();
+    void reloadVisible();
+    void onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
+    void onGeometryChanged();
 
   private:
     QgsFeatureIds mFilteredFeatures;
@@ -274,8 +314,16 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
 
     QgsAttributeTableConfig mConfig;
     QVector<int> mColumnMapping;
-    int mapColumnToSource( int column ) const;
+    QgsExpression mFilterExpression;
+    QgsExpressionContext mFilterExpressionContext;
 
+    int mapColumnToSource( int column ) const;
+    int mapColumnFromSource( int column ) const;
+
+    QTimer mReloadVisibleTimer;
+    QTimer mFilterFeaturesTimer;
+    void startTimedReloadVisible();
+    void startTimedFilterFeatures();
 };
 
 #endif

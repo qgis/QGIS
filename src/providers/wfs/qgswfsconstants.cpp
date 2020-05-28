@@ -48,8 +48,3 @@ const QString QgsWFSConstants::SETTINGS_VERSION( QStringLiteral( "version" ) );
 const QString QgsWFSConstants::SETTINGS_MAXNUMFEATURES( QStringLiteral( "maxnumfeatures" ) );
 const QString QgsWFSConstants::SETTINGS_PAGING_ENABLED( QStringLiteral( "pagingenabled" ) );
 const QString QgsWFSConstants::SETTINGS_PAGE_SIZE( QStringLiteral( "pagesize" ) );
-
-const QString QgsWFSConstants::FIELD_GEN_COUNTER( QStringLiteral( "__qgis_gen_counter" ) );
-const QString QgsWFSConstants::FIELD_GMLID( QStringLiteral( "__qgis_gmlid" ) );
-const QString QgsWFSConstants::FIELD_HEXWKB_GEOM( QStringLiteral( "__qgis_hexwkb_geom" ) );
-const QString QgsWFSConstants::FIELD_MD5( QStringLiteral( "__qgis_md5" ) );

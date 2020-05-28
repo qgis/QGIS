@@ -17,6 +17,7 @@
 
 #include "qgsstyle.h"
 #include "qgsapplication.h"
+#include "qgsgui.h"
 
 #include <QVariant>
 #include <QMessageBox>
@@ -79,6 +80,8 @@ QgsSmartGroupEditorDialog::QgsSmartGroupEditorDialog( QgsStyle *style, QWidget *
   , mStyle( style )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsSmartGroupEditorDialog::buttonBox_accepted );
 
   mCondCount = 0;
@@ -102,7 +105,8 @@ void QgsSmartGroupEditorDialog::addCondition()
   // enable the remove buttons when 2nd condition is added
   if ( mConditionMap.count() == 1 )
   {
-    Q_FOREACH ( QgsSmartGroupCondition *condition, mConditionMap )
+    const auto constMConditionMap = mConditionMap;
+    for ( QgsSmartGroupCondition *condition : constMConditionMap )
     {
       condition->hideRemoveButton( false );
     }
@@ -124,7 +128,8 @@ void QgsSmartGroupEditorDialog::removeCondition( int id )
   // hide the remove button of the last condition when 2nd last is removed
   if ( mConditionMap.count() == 2 )
   {
-    Q_FOREACH ( QgsSmartGroupCondition *condition, mConditionMap )
+    const auto constMConditionMap = mConditionMap;
+    for ( QgsSmartGroupCondition *condition : constMConditionMap )
     {
       condition->hideRemoveButton( true );
     }
@@ -138,7 +143,8 @@ QgsSmartConditionMap QgsSmartGroupEditorDialog::conditionMap()
 {
   QgsSmartConditionMap conditions;
 
-  Q_FOREACH ( QgsSmartGroupCondition *condition, mConditionMap )
+  const auto constMConditionMap = mConditionMap;
+  for ( QgsSmartGroupCondition *condition : constMConditionMap )
   {
     conditions.insert( condition->constraint(), condition->parameter() );
   }
@@ -161,10 +167,12 @@ void QgsSmartGroupEditorDialog::setConditionMap( const QgsSmartConditionMap &map
   mConditionMap.clear();
 
   //set the constraints
-  Q_FOREACH ( const QString &constr, constraints )
+  const auto constConstraints = constraints;
+  for ( const QString &constr : constConstraints )
   {
     QStringList params = map.values( constr );
-    Q_FOREACH ( const QString &param, params )
+    const auto constParams = params;
+    for ( const QString &param : constParams )
     {
       QgsSmartGroupCondition *cond = new QgsSmartGroupCondition( mCondCount, this );
       mLayout->addWidget( cond, mCondCount, 0, 1, 1 );

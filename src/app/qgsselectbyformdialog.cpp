@@ -13,12 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QLayout>
+
 #include "qgsselectbyformdialog.h"
 #include "qgsattributeform.h"
 #include "qgsmapcanvas.h"
 #include "qgssettings.h"
+#include "qgsmessagebar.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsgui.h"
 
-#include <QLayout>
 
 QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer *layer, const QgsAttributeEditorContext &context, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -30,7 +34,7 @@ QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer *layer, const QgsAt
   dlgContext.setAllowCustomUi( false );
 
   mForm = new QgsAttributeForm( layer, QgsFeature(), dlgContext, this );
-  mForm->setMode( QgsAttributeForm::SearchMode );
+  mForm->setMode( QgsAttributeEditorContext::SearchMode );
 
   QVBoxLayout *vLayout = new QVBoxLayout();
   vLayout->setMargin( 0 );
@@ -41,16 +45,9 @@ QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer *layer, const QgsAt
 
   connect( mForm, &QgsAttributeForm::closed, this, &QWidget::close );
 
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/SelectByForm/geometry" ) ).toByteArray() );
+  QgsGui::enableAutoGeometryRestore( this );
 
-  setWindowTitle( tr( "Select Features by Value" ) );
-}
-
-QgsSelectByFormDialog::~QgsSelectByFormDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/SelectByForm/geometry" ), saveGeometry() );
+  setWindowTitle( tr( "%1 - Select Features" ).arg( layer->name() ) );
 }
 
 void QgsSelectByFormDialog::setMessageBar( QgsMessageBar *messageBar )
@@ -72,7 +69,7 @@ void QgsSelectByFormDialog::zoomToFeatures( const QString &filter )
 
   QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( filter )
                               .setExpressionContext( context )
-                              .setSubsetOfAttributes( QgsAttributeList() );
+                              .setNoAttributes();
 
   QgsFeatureIterator features = mLayer->getFeatures( request );
 
@@ -120,7 +117,7 @@ void QgsSelectByFormDialog::flashFeatures( const QString &filter )
 
   QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( filter )
                               .setExpressionContext( context )
-                              .setSubsetOfAttributes( QgsAttributeList() );
+                              .setNoAttributes();
 
   QgsFeatureIterator features = mLayer->getFeatures( request );
   QgsFeature feat;

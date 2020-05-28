@@ -19,7 +19,6 @@
 #define QGSRASTERINTERFACE_H
 
 #include "qgis_core.h"
-#include "qgis.h"
 #include "qgis_sip.h"
 #include <limits>
 
@@ -77,6 +76,23 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
      */
     void setRenderPartialOutput( bool enable ) { mRenderPartialOutput = enable; }
 
+    /**
+     * Appends an error message to the stored list of errors. Should be called
+     * whenever an error is encountered while retrieving a raster block.
+     *
+     * \see errors()
+     * \since QGIS 3.8.0
+     */
+    void appendError( const QString &error ) { mErrors.append( error ); }
+
+    /**
+     * Returns a list of any errors encountered while retrieving the raster block.
+     *
+     * \see appendError()
+     * \since QGIS 3.8.0
+     */
+    QStringList errors() const { return mErrors; }
+
   private:
 
     /**
@@ -87,6 +103,9 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
 
     //! Whether our painter is drawing to a temporary image used just by this layer
     bool mRenderPartialOutput = false;
+
+    //! List of errors encountered while retrieving block
+    QStringList mErrors;
 };
 
 
@@ -173,6 +192,7 @@ class CORE_EXPORT QgsRasterInterface
       IdentifyText     = 1 << 7, // WMS text
       IdentifyHtml     = 1 << 8, // WMS HTML
       IdentifyFeature  = 1 << 9, // WMS GML -> feature
+      Prefetch         = 1 << 10, // allow prefetching of out-of-view images
     };
 
     QgsRasterInterface( QgsRasterInterface *input = nullptr );
@@ -189,7 +209,7 @@ class CORE_EXPORT QgsRasterInterface
     }
 
     /**
-     *  Returns the above in friendly format.
+     *  Returns the raster interface capabilities in friendly format.
      */
     QString capabilitiesString() const;
 
@@ -198,7 +218,8 @@ class CORE_EXPORT QgsRasterInterface
 
     /**
      * Returns source data type for the band specified by number,
-     *  source data type may be shorter than dataType */
+     *  source data type may be shorter than dataType
+    */
     virtual Qgis::DataType sourceDataType( int bandNo ) const { return mInput ? mInput->sourceDataType( bandNo ) : Qgis::UnknownDataType; }
 
     /**
@@ -234,13 +255,14 @@ class CORE_EXPORT QgsRasterInterface
      * \param extent extent of block
      * \param width pixel width of block
      * \param height pixel height of block
-     * \param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
+     * \param feedback optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
      */
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) = 0 SIP_FACTORY;
 
     /**
      * Set input.
-      * Returns true if set correctly, false if cannot use that input */
+      * Returns TRUE if set correctly, FALSE if cannot use that input
+    */
     virtual bool setInput( QgsRasterInterface *input ) { mInput = input; return true; }
 
     //! Current input
@@ -260,7 +282,7 @@ class CORE_EXPORT QgsRasterInterface
      */
     virtual const QgsRasterInterface *sourceInput() const SIP_SKIP
     {
-      QgsDebugMsgLevel( "Entered", 4 );
+      QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
       return mInput ? mInput->sourceInput() : this;
     }
 
@@ -271,7 +293,7 @@ class CORE_EXPORT QgsRasterInterface
      */
     virtual QgsRasterInterface *sourceInput()
     {
-      QgsDebugMsgLevel( "Entered", 4 );
+      QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
       return mInput ? mInput->sourceInput() : this;
     }
 
@@ -289,8 +311,8 @@ class CORE_EXPORT QgsRasterInterface
         int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr );
 
     /**
-     * \brief Returns true if histogram is available (cached, already calculated).     *   The parameters are the same as in bandStatistics()
-     * \returns true if statistics are available (ready to use)
+     * \brief Returns TRUE if histogram is available (cached, already calculated).     *   The parameters are the same as in bandStatistics()
+     * \returns TRUE if statistics are available (ready to use)
      */
     virtual bool hasStatistics( int bandNo,
                                 int stats = QgsRasterBandStats::All,
@@ -358,14 +380,14 @@ class CORE_EXPORT QgsRasterInterface
       maximum = PyFloat_AsDouble( a3 );
     }
 
-    QgsRasterHistogram h = sipCpp->histogram( a0, a1, minimum, maximum, *a4, a5, a6, a7 );
-    sipRes = &h;
+    QgsRasterHistogram *h = new QgsRasterHistogram( sipCpp->histogram( a0, a1, minimum, maximum, *a4, a5, a6, a7 ) );
+    return sipConvertFromType( h, sipType_QgsRasterHistogram, Py_None );
     % End
 #endif
 
 
     /**
-     * \brief Returns true if histogram is available (cached, already calculated)
+     * \brief Returns TRUE if histogram is available (cached, already calculated)
      * \note the parameters are the same as in \see histogram()
      */
 #ifndef SIP_RUN
@@ -436,9 +458,9 @@ class CORE_EXPORT QgsRasterInterface
                                 int sampleSize = 0 );
 
     //! Write base class members to xml.
-    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const { Q_UNUSED( doc ); Q_UNUSED( parentElem ); }
+    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const { Q_UNUSED( doc ) Q_UNUSED( parentElem ); }
     //! Sets base class members from xml. Usually called from create() methods of subclasses
-    virtual void readXml( const QDomElement &filterElem ) { Q_UNUSED( filterElem ); }
+    virtual void readXml( const QDomElement &filterElem ) { Q_UNUSED( filterElem ) }
 
   protected:
     // QgsRasterInterface used as input

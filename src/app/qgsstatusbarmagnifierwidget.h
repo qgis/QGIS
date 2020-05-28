@@ -20,6 +20,7 @@
 class QLabel;
 class QFont;
 class QHBoxLayout;
+class QToolButton;
 class QgsDoubleSpinBox;
 
 #include <QWidget>
@@ -63,11 +64,13 @@ class APP_EXPORT QgsStatusBarMagnifierWidget : public QWidget
   signals:
     void magnificationChanged( double factor );
 
+    void scaleLockChanged( bool );
 
   private:
     QHBoxLayout *mLayout = nullptr;
     QLabel *mLabel = nullptr;
     QgsDoubleSpinBox *mSpinBox = nullptr;
+    QToolButton *mLockButton = nullptr;
 };
 
 #endif

@@ -19,7 +19,7 @@
 #define QGSPOINTDISPLACEMENTRENDERERWIDGET_H
 
 #include "ui_qgspointdisplacementrendererwidgetbase.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsrendererwidget.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgis_gui.h"
@@ -60,6 +60,7 @@ class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererWidget, p
     void mDistanceUnitWidget_changed();
     void mLabelColorButton_colorChanged( const QColor &newColor );
     void mCircleModificationSpinBox_valueChanged( double d );
+    void mLabelDistanceFactorSpinBox_valueChanged( double d );
     void mScaleDependentLabelsCheckBox_stateChanged( int state );
     void minLabelScaleChanged( double scale );
     void mRendererSettingsButton_clicked();

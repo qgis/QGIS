@@ -20,6 +20,7 @@
 #include "qgsdelimitedtextfile.h"
 #include "qgssettings.h"
 #include "qgsproviderregistry.h"
+#include "qgsgui.h"
 
 #include <QButtonGroup>
 #include <QFile>
@@ -35,16 +36,14 @@ const int MAX_SAMPLE_LENGTH = 200;
 
 QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
-  , mFile( new QgsDelimitedTextFile() )
-  , mPluginKey( QStringLiteral( "/Plugin-DelimitedText" ) )
+  , mFile( qgis::make_unique<QgsDelimitedTextFile>() )
+  , mSettingsKey( QStringLiteral( "/Plugin-DelimitedText" ) )
 {
 
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDelimitedTextSourceSelect::showHelp );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( mPluginKey + "/geometry" ).toByteArray() );
 
   bgFileFormat = new QButtonGroup( this );
   bgFileFormat->addButton( delimiterCSV, swFileFormat->indexOf( swpCSVOptions ) );
@@ -58,6 +57,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
 
   connect( bgFileFormat, static_cast < void ( QButtonGroup::* )( int ) > ( &QButtonGroup::buttonClicked ), swFileFormat, &QStackedWidget::setCurrentIndex );
   connect( bgGeomType, static_cast < void ( QButtonGroup::* )( int ) > ( &QButtonGroup::buttonClicked ), swGeomType, &QStackedWidget::setCurrentIndex );
+  connect( bgGeomType, static_cast < void ( QButtonGroup::* )( int ) > ( &QButtonGroup::buttonClicked ), this, &QgsDelimitedTextSourceSelect::showCrsWidget );
 
   cmbEncoding->clear();
   cmbEncoding->addItems( QgsVectorDataProvider::availableEncodings() );
@@ -94,17 +94,11 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
 
   connect( crsGeometry, &QgsProjectionSelectionWidget::crsChanged, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
 
-  mFileWidget->setDialogTitle( tr( "Choose a Delimited Text File to Open" ) );
-  mFileWidget->setFilter( tr( "Text files" ) + " (*.txt *.csv *.dat *.wkt);;" + tr( "All files" ) + " (* *.*)" );
-  mFileWidget->setSelectedFilter( settings.value( mPluginKey + "/file_filter", "" ).toString() );
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]() { updateFileName(); } );
-}
-
-QgsDelimitedTextSourceSelect::~QgsDelimitedTextSourceSelect()
-{
   QgsSettings settings;
-  settings.setValue( mPluginKey + "/geometry", saveGeometry() );
-  delete mFile;
+  mFileWidget->setDialogTitle( tr( "Choose a Delimited Text File to Open" ) );
+  mFileWidget->setFilter( tr( "Text files" ) + QStringLiteral( " (*.txt *.csv *.dat *.wkt);;" ) + tr( "All files" ) + QStringLiteral( " (* *.*)" ) );
+  mFileWidget->setSelectedFilter( settings.value( mSettingsKey + QStringLiteral( "/file_filter" ), QString() ).toString() );
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsDelimitedTextSourceSelect::updateFileName );
 }
 
 void QgsDelimitedTextSourceSelect::addButtonClicked()
@@ -144,27 +138,39 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
   //Build the delimited text URI from the user provided information
 
   QUrl url = mFile->url();
+  QUrlQuery query( url );
 
-  url.addQueryItem( QStringLiteral( "detectTypes" ), cbxDetectTypes->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
+  query.addQueryItem( QStringLiteral( "detectTypes" ), cbxDetectTypes->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
 
   if ( cbxPointIsComma->isChecked() )
   {
-    url.addQueryItem( QStringLiteral( "decimalPoint" ), QStringLiteral( "," ) );
+    query.addQueryItem( QStringLiteral( "decimalPoint" ), QStringLiteral( "," ) );
   }
   if ( cbxXyDms->isChecked() )
   {
-    url.addQueryItem( QStringLiteral( "xyDms" ), QStringLiteral( "yes" ) );
+    query.addQueryItem( QStringLiteral( "xyDms" ), QStringLiteral( "yes" ) );
   }
 
   bool haveGeom = true;
   if ( geomTypeXY->isChecked() )
   {
+    QString field;
     if ( !cmbXField->currentText().isEmpty() && !cmbYField->currentText().isEmpty() )
     {
-      QString field = cmbXField->currentText();
-      url.addQueryItem( QStringLiteral( "xField" ), field );
+      field = cmbXField->currentText();
+      query.addQueryItem( QStringLiteral( "xField" ), field );
       field = cmbYField->currentText();
-      url.addQueryItem( QStringLiteral( "yField" ), field );
+      query.addQueryItem( QStringLiteral( "yField" ), field );
+    }
+    if ( !cmbZField->currentText().isEmpty() )
+    {
+      field = cmbZField->currentText();
+      query.addQueryItem( QStringLiteral( "zField" ), field );
+    }
+    if ( !cmbMField->currentText().isEmpty() )
+    {
+      field = cmbMField->currentText();
+      query.addQueryItem( QStringLiteral( "mField" ), field );
     }
   }
   else if ( geomTypeWKT->isChecked() )
@@ -172,36 +178,37 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
     if ( ! cmbWktField->currentText().isEmpty() )
     {
       QString field = cmbWktField->currentText();
-      url.addQueryItem( QStringLiteral( "wktField" ), field );
+      query.addQueryItem( QStringLiteral( "wktField" ), field );
     }
     if ( cmbGeometryType->currentIndex() > 0 )
     {
-      url.addQueryItem( QStringLiteral( "geomType" ), cmbGeometryType->currentText() );
+      query.addQueryItem( QStringLiteral( "geomType" ), cmbGeometryType->currentText() );
     }
   }
   else
   {
     haveGeom = false;
-    url.addQueryItem( QStringLiteral( "geomType" ), QStringLiteral( "none" ) );
+    query.addQueryItem( QStringLiteral( "geomType" ), QStringLiteral( "none" ) );
   }
   if ( haveGeom )
   {
     QgsCoordinateReferenceSystem crs = crsGeometry->crs();
     if ( crs.isValid() )
     {
-      url.addQueryItem( QStringLiteral( "crs" ), crs.authid() );
+      query.addQueryItem( QStringLiteral( "crs" ), crs.authid() );
     }
 
   }
 
   if ( ! geomTypeNone->isChecked() )
   {
-    url.addQueryItem( QStringLiteral( "spatialIndex" ), cbxSpatialIndex->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
+    query.addQueryItem( QStringLiteral( "spatialIndex" ), cbxSpatialIndex->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
   }
 
-  url.addQueryItem( QStringLiteral( "subsetIndex" ), cbxSubsetIndex->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
-  url.addQueryItem( QStringLiteral( "watchFile" ), cbxWatchFile->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
+  query.addQueryItem( QStringLiteral( "subsetIndex" ), cbxSubsetIndex->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
+  query.addQueryItem( QStringLiteral( "watchFile" ), cbxWatchFile->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
 
+  url.setQuery( query );
   // store the settings
   saveSettings();
   saveSettingsForFile( mFileWidget->filePath() );
@@ -258,7 +265,7 @@ void QgsDelimitedTextSourceSelect::loadSettings( const QString &subkey, bool loa
 
   // at startup, fetch the last used delimiter and directory from
   // settings
-  QString key = mPluginKey;
+  QString key = mSettingsKey;
   if ( ! subkey.isEmpty() ) key.append( '/' ).append( subkey );
 
   // and how to use the delimiter
@@ -319,7 +326,7 @@ void QgsDelimitedTextSourceSelect::loadSettings( const QString &subkey, bool loa
 void QgsDelimitedTextSourceSelect::saveSettings( const QString &subkey, bool saveGeomSettings )
 {
   QgsSettings settings;
-  QString key = mPluginKey;
+  QString key = mSettingsKey;
   if ( ! subkey.isEmpty() ) key.append( '/' ).append( subkey );
   settings.setValue( key + "/encoding", cmbEncoding->currentText() );
   settings.setValue( key + "/geometry", saveGeometry() );
@@ -403,7 +410,7 @@ bool QgsDelimitedTextSourceSelect::loadDelimitedFileDefinition()
 void QgsDelimitedTextSourceSelect::updateFieldLists()
 {
   // Update the x and y field drop-down boxes
-  QgsDebugMsg( "Updating field lists" );
+  QgsDebugMsg( QStringLiteral( "Updating field lists" ) );
 
   disconnect( cmbXField, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDelimitedTextSourceSelect::enableAccept );
   disconnect( cmbYField, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDelimitedTextSourceSelect::enableAccept );
@@ -414,11 +421,15 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
 
   QString columnX = cmbXField->currentText();
   QString columnY = cmbYField->currentText();
+  QString columnZ = cmbZField->currentText();
+  QString columnM = cmbMField->currentText();
   QString columnWkt = cmbWktField->currentText();
 
   // clear the field lists
   cmbXField->clear();
   cmbYField->clear();
+  cmbZField->clear();
+  cmbMField->clear();
   cmbWktField->clear();
 
   // clear the sample text box
@@ -470,7 +481,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
 
     for ( int i = 0; i < tblSample->columnCount(); i++ )
     {
-      QString value = i < nv ? values[i] : QLatin1String( "" );
+      QString value = i < nv ? values[i] : QString();
       if ( value.length() > MAX_SAMPLE_LENGTH )
         value = value.mid( 0, MAX_SAMPLE_LENGTH ) + QChar( 0x2026 );
       QTableWidgetItem *item = new QTableWidgetItem( value );
@@ -539,6 +550,8 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     if ( field.isEmpty() ) continue;
     cmbXField->addItem( field );
     cmbYField->addItem( field );
+    cmbZField->addItem( field );
+    cmbMField->addItem( field );
     cmbWktField->addItem( field );
     fieldNo++;
   }
@@ -548,6 +561,8 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   cmbWktField->setCurrentIndex( cmbWktField->findText( columnWkt ) );
   cmbXField->setCurrentIndex( cmbXField->findText( columnX ) );
   cmbYField->setCurrentIndex( cmbYField->findText( columnY ) );
+  cmbZField->setCurrentIndex( cmbYField->findText( columnZ ) );
+  cmbMField->setCurrentIndex( cmbYField->findText( columnM ) );
 
   // Now try setting optional X,Y fields - will only reset the fields if
   // not already set.
@@ -651,7 +666,7 @@ bool QgsDelimitedTextSourceSelect::trySetXYField( QStringList &fields, QList<boo
 void QgsDelimitedTextSourceSelect::updateFileName()
 {
   QgsSettings settings;
-  settings.setValue( mPluginKey + "/file_filter", mFileWidget->selectedFilter() );
+  settings.setValue( mSettingsKey + "/file_filter", mFileWidget->selectedFilter() );
 
   // put a default layer name in the text entry
   QString filename = mFileWidget->filePath();
@@ -659,7 +674,7 @@ void QgsDelimitedTextSourceSelect::updateFileName()
   if ( finfo.exists() )
   {
     QgsSettings settings;
-    settings.setValue( mPluginKey + "/text_path", finfo.path() );
+    settings.setValue( mSettingsKey + "/text_path", finfo.path() );
   }
 
   txtLayerName->setText( finfo.completeBaseName() );
@@ -677,7 +692,7 @@ bool QgsDelimitedTextSourceSelect::validate()
 {
   // Check that input data is valid - provide a status message if not..
 
-  QString message( QLatin1String( "" ) );
+  QString message;
   bool enabled = false;
 
   if ( mFileWidget->filePath().trimmed().isEmpty() )
@@ -766,4 +781,10 @@ void QgsDelimitedTextSourceSelect::enableAccept()
 void QgsDelimitedTextSourceSelect::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#importing-a-delimited-text-file" ) );
+}
+
+void QgsDelimitedTextSourceSelect::showCrsWidget()
+{
+  crsGeometry->setVisible( !geomTypeNone->isChecked() );
+  textLabelCrs->setVisible( !geomTypeNone->isChecked() );
 }

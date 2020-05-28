@@ -65,7 +65,12 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   QgsSettings settings;
 
   mSchemeList->header()->hide();
-  mSchemeList->setColumnWidth( 0, 44 );
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+  mSchemeList->setColumnWidth( 0, static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 6 ) );
+#else
+  mSchemeList->setColumnWidth( 0, static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 6 ) );
+#endif
+
 
   //get schemes with ShowInColorDialog set
   refreshSchemeComboBox();
@@ -177,6 +182,51 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   //restore sample radius
   mSpinBoxRadius->setValue( settings.value( QStringLiteral( "Windows/ColorDialog/sampleRadius" ), 1 ).toInt() );
   mSamplePreview->setColor( QColor() );
+
+  // hidpi friendly sizes
+  const int swatchWidth = static_cast< int >( std::round( std::max( Qgis::UI_SCALE_FACTOR * 1.9 * mSwatchButton1->fontMetrics().height(), 38.0 ) ) );
+  const int swatchHeight = static_cast< int >( std::round( std::max( Qgis::UI_SCALE_FACTOR * 1.5 * mSwatchButton1->fontMetrics().height(), 30.0 ) ) );
+  mSwatchButton1->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton1->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton2->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton2->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton3->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton3->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton4->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton4->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton5->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton5->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton6->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton6->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton7->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton7->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton8->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton8->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton9->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton9->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton10->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton10->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton11->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton11->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton12->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton12->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton13->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton13->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton14->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton14->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton15->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton15->setMaximumSize( swatchWidth, swatchHeight );
+  mSwatchButton16->setMinimumSize( swatchWidth, swatchHeight );
+  mSwatchButton16->setMaximumSize( swatchWidth, swatchHeight );
+  const int previewHeight = static_cast< int >( std::round( std::max( Qgis::UI_SCALE_FACTOR * 2.0 * mSwatchButton1->fontMetrics().height(), 40.0 ) ) );
+  mColorPreview->setMinimumSize( 0, previewHeight );
+  mPreviewWidget->setMaximumHeight( previewHeight * 2 );
+  const int swatchAddSize = static_cast< int >( std::round( std::max( Qgis::UI_SCALE_FACTOR * 1.4 * mSwatchButton1->fontMetrics().height(), 28.0 ) ) );
+  mAddCustomColorButton->setMinimumWidth( swatchAddSize );
+  mAddCustomColorButton->setMaximumWidth( swatchAddSize );
+
+  const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+  mTabWidget->setIconSize( QSize( iconSize, iconSize ) );
 
   if ( color.isValid() )
   {
@@ -474,7 +524,7 @@ void QgsCompoundColorWidget::schemeIndexChanged( int index )
 
 void QgsCompoundColorWidget::listSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
-  Q_UNUSED( deselected );
+  Q_UNUSED( deselected )
   mActionCopyColors->setEnabled( selected.length() > 0 );
 }
 
@@ -571,7 +621,8 @@ void QgsCompoundColorWidget::mActionShowInButtons_toggled( bool state )
 
 QScreen *QgsCompoundColorWidget::findScreenAt( QPoint pos )
 {
-  for ( QScreen *screen : QGuiApplication::screens() )
+  const QList< QScreen * > screens = QGuiApplication::screens();
+  for ( QScreen *screen : screens )
   {
     if ( screen->geometry().contains( pos ) )
     {
@@ -670,7 +721,8 @@ void QgsCompoundColorWidget::setColor( const QColor &color )
     fixedColor.setAlpha( 255 );
   }
   QList<QgsColorWidget *> colorWidgets = this->findChildren<QgsColorWidget *>();
-  Q_FOREACH ( QgsColorWidget *widget, colorWidgets )
+  const auto constColorWidgets = colorWidgets;
+  for ( QgsColorWidget *widget : constColorWidgets )
   {
     if ( widget == mSamplePreview )
     {
@@ -711,7 +763,7 @@ QColor QgsCompoundColorWidget::averageColor( const QImage &image ) const
   //scan through image and sum rgb components
   for ( int heightIndex = 0; heightIndex < image.height(); ++heightIndex )
   {
-    QRgb *scanLine = ( QRgb * )image.constScanLine( heightIndex );
+    const QRgb *scanLine = reinterpret_cast< const QRgb * >( image.constScanLine( heightIndex ) );
     for ( int widthIndex = 0; widthIndex < image.width(); ++widthIndex )
     {
       tmpRgb = scanLine[widthIndex];
@@ -722,9 +774,9 @@ QColor QgsCompoundColorWidget::averageColor( const QImage &image ) const
     }
   }
   //calculate average components as floats
-  double avgRed = ( double )sumRed / ( 255.0 * colorCount );
-  double avgGreen = ( double )sumGreen / ( 255.0 * colorCount );
-  double avgBlue = ( double )sumBlue / ( 255.0 * colorCount );
+  double avgRed = static_cast<double>( sumRed ) / ( 255.0 * colorCount );
+  double avgGreen = static_cast<double>( sumGreen ) / ( 255.0 * colorCount );
+  double avgBlue = static_cast<double>( sumBlue ) / ( 255.0 * colorCount );
 
   //create a new color representing the average
   return QColor::fromRgbF( avgRed, avgGreen, avgBlue );

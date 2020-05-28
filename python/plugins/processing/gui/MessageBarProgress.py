@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'April 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QProgressBar
 from qgis.utils import iface
@@ -45,8 +41,8 @@ class MessageBarProgress(QgsProcessingFeedback):
         self.progress.setMaximum(100)
         self.progress.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self.progressMessageBar.layout().addWidget(self.progress)
-        iface.messageBar().pushWidget(self.progressMessageBar,
-                                      Qgis.Info)
+        self.message_bar_item = iface.messageBar().pushWidget(self.progressMessageBar,
+                                                              Qgis.Info)
 
     def reportError(self, msg, fatalError=False):
         self.msg.append(msg)
@@ -57,7 +53,7 @@ class MessageBarProgress(QgsProcessingFeedback):
             dlg.setTitle(QCoreApplication.translate('MessageBarProgress', 'Problem executing algorithm'))
             dlg.setMessage("<br>".join(self.msg))
             dlg.exec_()
-        iface.messageBar().clearWidgets()
+        iface.messageBar().popWidget(self.message_bar_item)
 
     def tr(self, string, context=''):
         if context == '':

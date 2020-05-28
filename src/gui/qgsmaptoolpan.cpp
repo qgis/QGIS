@@ -13,12 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QBitmap>
+#include <QCursor>
 #include "qgsmaptoolpan.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
-#include <QBitmap>
-#include <QCursor>
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
+#include "qgsproject.h"
+#include "qgslogger.h"
 
 
 QgsMapToolPan::QgsMapToolPan( QgsMapCanvas *canvas )
@@ -47,10 +49,18 @@ void QgsMapToolPan::deactivate()
   QgsMapTool::deactivate();
 }
 
+QgsMapTool::Flags QgsMapToolPan::flags() const
+{
+  return QgsMapTool::Transient | QgsMapTool::AllowZoomRect | QgsMapTool::ShowContextMenu;
+}
+
 void QgsMapToolPan::canvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( e->button() == Qt::LeftButton )
+  {
     mCanvas->setCursor( QCursor( Qt::ClosedHandCursor ) );
+    mCanvas->panActionStart( e->pos() );
+  }
 }
 
 
@@ -80,10 +90,19 @@ void QgsMapToolPan::canvasReleaseEvent( QgsMapMouseEvent *e )
       }
       else // add pan to mouse cursor
       {
-        // transform the mouse pos to map coordinates
-        QgsPointXY center = mCanvas->getCoordinateTransform()->toMapPoint( e->x(), e->y() );
-        mCanvas->setCenter( center );
-        mCanvas->refresh();
+        if ( mCanvas->allowInteraction( QgsMapCanvasInteractionBlocker::Interaction::MapPanOnSingleClick ) )
+        {
+          // transform the mouse pos to map coordinates
+          const QgsPointXY prevCenter = mCanvas->center();
+          QgsPointXY center = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
+          mCanvas->setCenter( center );
+          mCanvas->refresh();
+
+          QgsDistanceArea da;
+          da.setEllipsoid( QgsProject::instance()->ellipsoid() );
+          da.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
+          emit panDistanceBearingChanged( da.measureLine( center, prevCenter ), da.lengthUnits(), da.bearing( center, prevCenter ) * 180 / M_PI );
+        }
       }
     }
   }
@@ -103,7 +122,6 @@ bool QgsMapToolPan::gestureEvent( QGestureEvent *event )
   if ( QTouchDevice::devices().isEmpty() )
     return true; // no touch support
 
-  qDebug() << "gesture " << event;
   if ( QGesture *gesture = event->gesture( Qt::PinchGesture ) )
   {
     mPinching = true;
@@ -127,7 +145,7 @@ void QgsMapToolPan::pinchTriggered( QPinchGesture *gesture )
       QPoint pos = gesture->centerPoint().toPoint();
       pos = mCanvas->mapFromGlobal( pos );
       // transform the mouse pos to map coordinates
-      QgsPointXY center  = mCanvas->getCoordinateTransform()->toMapPoint( pos.x(), pos.y() );
+      QgsPointXY center  = mCanvas->getCoordinateTransform()->toMapCoordinates( pos.x(), pos.y() );
       QgsRectangle r = mCanvas->extent();
       r.scale( 1 / gesture->totalScaleFactor(), &center );
       mCanvas->setExtent( r );

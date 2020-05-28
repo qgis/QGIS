@@ -5,7 +5,7 @@
   Copyright : (C) 2016 by David Adler
                           Shirley Xiao, David Nguyen
   Email     : dadler at adtechgeospatial.com
-              xshirley2012 at yahoo.com, davidng0123 at gmail.com
+              xshirley2012 at yahoo.com,  davidng0123 at gmail.com
 ****************************************************************************
  *
  * This program is free software; you can redistribute it and/or modify
@@ -24,17 +24,24 @@
 #include "qgsgeometry.h"
 #include "qgsfields.h"
 #include <QtSql>
+#include <QMutex>
+
+#include "qgsprovidermetadata.h"
 
 /**
  * \class QgsDb2Provider
  * \brief Data provider for DB2 server.
  */
-class QgsDb2Provider : public QgsVectorDataProvider
+class QgsDb2Provider final: public QgsVectorDataProvider
 {
     Q_OBJECT
 
   public:
-    explicit QgsDb2Provider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+
+    static const QString DB2_PROVIDER_KEY;
+    static const QString DB2_PROVIDER_DESCRIPTION;
+
+    explicit QgsDb2Provider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
     ~QgsDb2Provider() override;
 
@@ -99,8 +106,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
       const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
-      QString *errorMessage = nullptr,
-      const QMap<QString, QVariant> *options = nullptr
+      QString *errorMessage = nullptr
     );
 
     //! Convert a QgsField to work with DB2
@@ -118,6 +124,13 @@ class QgsDb2Provider : public QgsVectorDataProvider
   private:
     static void db2WkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim );
     static QString db2TypeName( int typeId );
+
+    /**
+       * Returns a thread-safe connection name for use with QSqlDatabase
+       */
+    static QString dbConnectionName( const QString &name );
+
+    static QMutex sMutex;
 
     QgsFields mAttributeFields; //fields
     QMap<int, QVariant> mDefaultValues;
@@ -150,6 +163,23 @@ class QgsDb2Provider : public QgsVectorDataProvider
     }
 
     friend class QgsDb2FeatureSource;
+};
+
+class QgsDb2ProviderMetadata final: public QgsProviderMetadata
+{
+  public:
+    QgsDb2ProviderMetadata();
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
+    QgsVectorLayerExporter::ExportError createEmptyLayer(
+      const QString &uri,
+      const QgsFields &fields,
+      QgsWkbTypes::Type wkbType,
+      const QgsCoordinateReferenceSystem &srs,
+      bool overwrite,
+      QMap<int, int> &oldToNewAttrIdxMap,
+      QString &errorMessage,
+      const QMap<QString, QVariant> *options ) override;
+    QgsDb2Provider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
 };
 
 #endif

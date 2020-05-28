@@ -46,6 +46,11 @@
 class CORE_EXPORT QgsActionScope
 {
   public:
+#ifdef SIP_RUN
+    % TypeCode
+#include <QHash>
+    % End
+#endif
 
     /**
      * Creates a new invalid action scope.
@@ -117,6 +122,12 @@ class CORE_EXPORT QgsActionScope
      * \since QGIS 3.0
      */
     bool isValid() const;
+#ifdef SIP_RUN
+    long __hash__();
+    % MethodCode
+    sipRes = qHash( *sipCpp );
+    % End
+#endif
 
   private:
     QString mId;

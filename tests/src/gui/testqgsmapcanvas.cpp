@@ -15,13 +15,15 @@
 
 #include "qgstest.h"
 
-#include <qgsapplication.h>
-#include <qgsmapcanvas.h>
-#include <qgsvectorlayer.h>
-#include <qgsproject.h>
-#include <qgsrenderchecker.h>
-#include <qgsvectordataprovider.h>
-#include <qgsmaptoolpan.h>
+#include "qgsapplication.h"
+#include "qgsmapcanvas.h"
+#include "qgsvectorlayer.h"
+#include "qgsproject.h"
+#include "qgsrenderchecker.h"
+#include "qgsvectordataprovider.h"
+#include "qgsmaptoolpan.h"
+#include "qgscustomdrophandler.h"
+#include "qgsreferencedgeometry.h"
 
 namespace QTest
 {
@@ -33,7 +35,7 @@ namespace QTest
   }
 }
 
-class QgsMapToolTest : public QgsMapTool
+class QgsMapToolTest : public QgsMapTool // clazy:exclude=missing-qobject-macro
 {
   public:
     QgsMapToolTest( QgsMapCanvas *canvas ) : QgsMapTool( canvas ) {}
@@ -51,12 +53,15 @@ class TestQgsMapCanvas : public QObject
     void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testPanByKeyboard();
+    void testSetExtent();
     void testMagnification();
     void testMagnificationExtent();
     void testMagnificationScale();
     void testScaleLockCanvasResize();
     void testZoomByWheel();
     void testShiftZoom();
+    void testDragDrop();
+    void testZoomResolutions();
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
@@ -105,6 +110,16 @@ void TestQgsMapCanvas::testPanByKeyboard()
     }
     QVERIFY( mCanvas->extent() == originalExtent );
   }
+}
+
+void TestQgsMapCanvas::testSetExtent()
+{
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  QVERIFY( mCanvas->setReferencedExtent( QgsReferencedRectangle( QgsRectangle( 0, 0, 10, 10 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) ) ) );
+  QCOMPARE( mCanvas->extent().toString( 0 ), QStringLiteral( "-3,-3 : 13,13" ) );
+  QVERIFY( mCanvas->setReferencedExtent( QgsReferencedRectangle( QgsRectangle( 16259461, -2477192, 16391255, -2372535 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) ) ) );
+  QCOMPARE( mCanvas->extent().toString( 0 ), QStringLiteral( "146,-22 : 147,-21" ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( ) );
 }
 
 void TestQgsMapCanvas::testMagnification()
@@ -304,7 +319,10 @@ void TestQgsMapCanvas::testMagnificationScale()
 void TestQgsMapCanvas::testScaleLockCanvasResize()
 {
   QSize prevSize = mCanvas->size();
+
   mCanvas->resize( 600, 400 );
+  QgsApplication::sendPostedEvents( mCanvas );
+  mCanvas->resizeEvent( nullptr );
   QCOMPARE( mCanvas->width(), 600 );
   QCOMPARE( mCanvas->height(), 400 );
 
@@ -313,6 +331,8 @@ void TestQgsMapCanvas::testScaleLockCanvasResize()
   mCanvas->setScaleLocked( true );
 
   mCanvas->resize( 300, 200 );
+  QgsApplication::sendPostedEvents( mCanvas );
+  mCanvas->resizeEvent( nullptr );
   QCOMPARE( mCanvas->width(), 300 );
   QCOMPARE( mCanvas->height(), 200 );
 
@@ -322,6 +342,8 @@ void TestQgsMapCanvas::testScaleLockCanvasResize()
   mCanvas->setScaleLocked( false );
   mCanvas->setMagnificationFactor( 1.0 );
   mCanvas->resize( prevSize );
+  QgsApplication::sendPostedEvents( mCanvas );
+  mCanvas->resizeEvent( nullptr );
 }
 
 void TestQgsMapCanvas::testZoomByWheel()
@@ -422,6 +444,96 @@ void TestQgsMapCanvas::testShiftZoom()
 
   QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.00001 );
   QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight, 0.00001 );
+}
+
+class TestNoDropHandler : public QgsCustomDropHandler
+{
+    Q_OBJECT
+
+  public:
+
+    QString customUriProviderKey() const override { return QStringLiteral( "test" ); }
+    bool canHandleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &, QgsMapCanvas * ) override { return false; }
+    bool handleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &, QgsMapCanvas * ) const override { return false; }
+};
+
+class TestYesDropHandler : public QgsCustomDropHandler
+{
+    Q_OBJECT
+
+  public:
+
+    QString customUriProviderKey() const override { return QStringLiteral( "test" ); }
+    bool canHandleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &, QgsMapCanvas * ) override { return true; }
+    bool handleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &, QgsMapCanvas * ) const override { return true; }
+};
+
+void TestQgsMapCanvas::testDragDrop()
+{
+  // default drag, should not be accepted
+  std::unique_ptr< QMimeData > data = qgis::make_unique< QMimeData >();
+  std::unique_ptr< QDragEnterEvent > event = qgis::make_unique< QDragEnterEvent >( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
+  mCanvas->dragEnterEvent( event.get() );
+  QVERIFY( !event->isAccepted() );
+
+  // with mime data
+  QgsMimeDataUtils::UriList list;
+  QgsMimeDataUtils::Uri uri;
+  uri.name = QStringLiteral( "name" );
+  uri.providerKey = QStringLiteral( "test" );
+  list << uri;
+  data.reset( QgsMimeDataUtils::encodeUriList( list ) );
+  event = qgis::make_unique< QDragEnterEvent >( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
+  mCanvas->dragEnterEvent( event.get() );
+  // still not accepted by default
+  QVERIFY( !event->isAccepted() );
+
+  // add a custom drop handler to the canvas
+  TestNoDropHandler handler;
+  mCanvas->setCustomDropHandlers( QVector< QPointer< QgsCustomDropHandler > >() << &handler );
+  mCanvas->dragEnterEvent( event.get() );
+  // not accepted by handler
+  QVERIFY( !event->isAccepted() );
+
+  TestYesDropHandler handler2;
+  mCanvas->setCustomDropHandlers( QVector< QPointer< QgsCustomDropHandler > >() << &handler << &handler2 );
+  mCanvas->dragEnterEvent( event.get() );
+  // IS accepted by handler
+  QVERIFY( event->isAccepted() );
+
+  // check drop event logic
+  mCanvas->setCustomDropHandlers( QVector< QPointer< QgsCustomDropHandler > >() );
+  std::unique_ptr< QDropEvent > dropEvent = qgis::make_unique< QDropEvent >( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
+  mCanvas->dropEvent( dropEvent.get() );
+  QVERIFY( !dropEvent->isAccepted() );
+  mCanvas->setCustomDropHandlers( QVector< QPointer< QgsCustomDropHandler > >() << &handler );
+  mCanvas->dropEvent( dropEvent.get() );
+  QVERIFY( !dropEvent->isAccepted() );
+  mCanvas->setCustomDropHandlers( QVector< QPointer< QgsCustomDropHandler > >() << &handler << &handler2 );
+  mCanvas->dropEvent( dropEvent.get() );
+  // is accepted!
+  QVERIFY( dropEvent->isAccepted() );
+}
+
+void TestQgsMapCanvas::testZoomResolutions()
+{
+  mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  double resolution = mCanvas->mapSettings().mapUnitsPerPixel();
+
+  double nextResolution = qCeil( resolution ) + 1;
+  QList<double> resolutions = QList<double>() << nextResolution << ( 2.5 * nextResolution ) << ( 3.6 * nextResolution ) << ( 4.7 * nextResolution );
+  mCanvas->setZoomResolutions( resolutions );
+
+  mCanvas->zoomOut();
+  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions[0], 0.0001 );
+
+  mCanvas->zoomOut();
+  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions[1], 0.0001 );
+
+  mCanvas->zoomIn();
+  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions[0], 0.0001 );
+
+  QCOMPARE( mCanvas->zoomResolutions(), resolutions );
 }
 
 QGSTEST_MAIN( TestQgsMapCanvas )

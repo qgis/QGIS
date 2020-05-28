@@ -16,21 +16,27 @@
 #ifndef QGSADVANCEDDIGITIZINGDOCK
 #define QGSADVANCEDDIGITIZINGDOCK
 
-#include "qgsdockwidget.h"
-#include "qgsmapmouseevent.h"
-#include "qgsmessagebaritem.h"
+#include <QList>
+
+#include <memory>
 
 #include "ui_qgsadvanceddigitizingdockwidgetbase.h"
+#include "qgsadvanceddigitizingfloater.h"
 #include "qgis_gui.h"
-#include "qgis.h"
-#include <memory>
+#include "qgis_sip.h"
+#include "qgsdockwidget.h"
+#include "qgsmessagebaritem.h"
+#include "qgspointxy.h"
+#include "qgspointlocator.h"
+#include "qgssnapindicator.h"
 
 
 class QgsAdvancedDigitizingCanvasItem;
+class QgsAdvancedDigitizingFloater;
 class QgsMapCanvas;
 class QgsMapTool;
 class QgsMapToolAdvancedDigitizing;
-class QgsPointXY;
+class QgsMapMouseEvent;
 
 /**
  * \ingroup gui
@@ -62,12 +68,23 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
      * Additional constraints which can be enabled
      */
-    enum AdditionalConstraint
+    enum class AdditionalConstraint SIP_MONKEYPATCH_SCOPEENUM : int
     {
       NoConstraint,  //!< No additional constraint
       Perpendicular, //!< Perpendicular
       Parallel       //!< Parallel
     };
+
+    /**
+     * Type of interaction to simulate when editing values from external widget
+     * \note unstable API (will likely change)
+     * \since QGIS 3.8
+     */
+    enum WidgetSetMode
+    {
+      ReturnPressed, FocusOut, TextEdited
+    };
+
 
     /**
      * \ingroup gui
@@ -119,7 +136,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
         bool isLocked() const { return mLockMode != NoLock; }
 
         /**
-         * Returns true if a repeating lock is set for the constraint. Repeating locks are not
+         * Returns TRUE if a repeating lock is set for the constraint. Repeating locks are not
          * automatically cleared after a new point is added.
          * \see setRepeatingLock()
          * \since QGIS 2.16
@@ -149,7 +166,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
         /**
          * Sets whether a repeating lock is set for the constraint. Repeating locks are not
          * automatically cleared after a new point is added.
-         * \param repeating set to true to set the lock to repeat automatically
+         * \param repeating set to TRUE to set the lock to repeat automatically
          * \see isRepeatingLock()
          * \since QGIS 2.16
          */
@@ -163,7 +180,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
         /**
          * Set the value of the constraint
          * \param value new value for constraint
-         * \param updateWidget set to false to prevent automatically updating the associated widget's value
+         * \param updateWidget set to FALSE to prevent automatically updating the associated widget's value
          */
         void setValue( double value, bool updateWidget = true );
 
@@ -196,11 +213,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     explicit QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
     /**
-     * Disables the CAD tools when hiding the dock
-     */
-    void hideEvent( QHideEvent * ) override;
-
-    /**
      * Filter key events to e.g. toggle construction mode or adapt constraints
      *
      * \param e A mouse event (may be modified)
@@ -210,7 +222,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     /**
      * apply the CAD constraints. The will modify the position of the map event in map coordinates by applying the CAD constraints.
-     * \returns false if no solution was found (invalid constraints)
+     * \returns FALSE if no solution was found (invalid constraints)
      */
     bool applyConstraints( QgsMapMouseEvent *e );
 
@@ -223,7 +235,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     /**
      * unlock all constraints
-     * \param releaseRepeatingLocks set to false to preserve the lock for any constraints set to repeating lock mode
+     * \param releaseRepeatingLocks set to FALSE to preserve the lock for any constraints set to repeating lock mode
      * \since QGIS 3.0
      */
     void releaseLocks( bool releaseRepeatingLocks = true );
@@ -241,18 +253,27 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! construction mode is used to draw intermediate points. These points won't be given any further (i.e. to the map tools)
     bool constructionMode() const { return mConstructionMode; }
 
-    //! Additional constraints are used to place perpendicular/parallel segments to snapped segments on the canvas
+    /**
+     * Returns the additional constraints which are used to place
+     * perpendicular/parallel segments to snapped segments on the canvas
+     */
     AdditionalConstraint additionalConstraint() const  { return mAdditionalConstraint; }
-    //! Constraint on the angle
+    //! Returns the \a CadConstraint on the angle
     const CadConstraint *constraintAngle() const  { return mAngleConstraint.get(); }
-    //! Constraint on the distance
+    //! Returns the \a CadConstraint on the distance
     const CadConstraint *constraintDistance() const { return mDistanceConstraint.get(); }
-    //! Constraint on the X coordinate
+    //! Returns the \a CadConstraint on the X coordinate
     const CadConstraint *constraintX() const { return mXConstraint.get(); }
-    //! Constraint on the Y coordinate
+    //! Returns the \a CadConstraint on the Y coordinate
     const CadConstraint *constraintY() const { return mYConstraint.get(); }
-    //! Constraint on a common angle
+    //! Returns TRUE if a constraint on a common angle is active
     bool commonAngleConstraint() const { return !qgsDoubleNear( mCommonAngleConstraint, 0.0 ); }
+
+    /**
+     * Returns the point locator match
+     * \since QGIS 3.4
+     */
+    QgsPointLocator::Match mapPointMatch() const { return mSnapMatch; }
 
     /**
      * Removes all points from the CAD point list
@@ -265,6 +286,12 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * \since QGIS 3.0
      */
     void addPoint( const QgsPointXY &point );
+
+    /**
+     * Remove previous point in the CAD point list
+     * \since QGIS 3.8
+     */
+    void removePreviousPoint();
 
     /**
      * Configures list of current CAD points
@@ -304,7 +331,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
      * Is it snapped to a vertex
      */
-    inline bool snappedToVertex() const { return mSnappedToVertex; }
+    inline bool snappedToVertex() const { return ( mSnapMatch.isValid() && mSnapMatch.hasVertex() ); }
 
     /**
      * Snapped to a segment
@@ -333,6 +360,48 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     void updateCadPaintItem();
 
+    /**
+    * Set the X value on the widget.
+    * Can be used to set constraints by external widgets.
+    * \param mode What type of interaction to emulate
+    * \param value The value (as a QString, as it could be an expression)
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void setX( const QString &value, WidgetSetMode mode );
+
+    /**
+    * Set the Y value on the widget.
+    * Can be used to set constraints by external widgets.
+    * \param mode What type of interaction to emulate
+    * \param value The value (as a QString, as it could be an expression)
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void setY( const QString &value, WidgetSetMode mode );
+
+    /**
+    * Set the angle value on the widget.
+    * Can be used to set constraints by external widgets.
+    * \param mode What type of interaction to emulate
+    * \param value The value (as a QString, as it could be an expression)
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void setAngle( const QString &value, WidgetSetMode mode );
+
+    /**
+    * Set the distance value on the widget.
+    * Can be used to set constraints by external widgets.
+    * \param mode What type of interaction to emulate
+    * \param value The value (as a QString, as it could be an expression)
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void setDistance( const QString &value, WidgetSetMode mode );
+
+
+
   signals:
 
     /**
@@ -354,6 +423,190 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * \param point The last known digitizing point. Can be used to emulate a mouse event.
      */
     void pointChanged( const QgsPointXY &point );
+
+    //! Signals for external widgets that need to update according to current values
+
+    /**
+    * Emitted whenever CAD is enabled or disabled
+    *
+    * \param enabled Whether CAD is enabled or not
+    * \note unstable API (will likely change).
+    * \since QGIS 3.8
+    */
+    void cadEnabledChanged( bool enabled );
+
+    /**
+    * Emitted whenever the X \a value changes (either the mouse moved, or the user changed the input).
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void valueXChanged( const QString &value );
+
+    /**
+    * Emitted whenever the Y \a value changes (either the mouse moved, or the user changed the input).
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void valueYChanged( const QString &value );
+
+    /**
+    * Emitted whenever the angle \a value changes (either the mouse moved, or the user changed the input).
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void valueAngleChanged( const QString &value );
+
+    /**
+    * Emitted whenever the distance \a value changes (either the mouse moved, or the user changed the input).
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void valueDistanceChanged( const QString &value );
+
+    /**
+    * Emitted whenever the X parameter is \a locked.
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void lockXChanged( bool locked );
+
+    /**
+    * Emitted whenever the Y parameter is \a locked.
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void lockYChanged( bool locked );
+
+    /**
+    * Emitted whenever the angle parameter is \a locked.
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void lockAngleChanged( bool locked );
+
+    /**
+    * Emitted whenever the distance parameter is \a locked.
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void lockDistanceChanged( bool locked );
+
+    /**
+    * Emitted whenever the X parameter is toggled between absolute and relative.
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    *
+    * \param relative Whether the X parameter is relative or not.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void relativeXChanged( bool relative );
+
+    /**
+    * Emitted whenever the Y parameter is toggled between absolute and relative.
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    *
+    * \param relative Whether the Y parameter is relative or not.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void relativeYChanged( bool relative );
+
+    /**
+    * Emitted whenever the angleX parameter is toggled between absolute and relative.
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    *
+    * \param relative Whether the angle parameter is relative or not.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void relativeAngleChanged( bool relative );
+
+    // relativeDistanceChanged doesn't exist as distance is always relative
+
+    /**
+    * Emitted whenever the X field is enabled or disabled. Depending on the context, some parameters
+    * do not make sense (e.g. you need a previous point to define a distance).
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    *
+    * \param enabled Whether the X parameter is enabled or not.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void enabledChangedX( bool enabled );
+
+    /**
+    * Emitted whenever the Y field is enabled or disabled. Depending on the context, some parameters
+    * do not make sense (e.g. you need a previous point to define a distance).
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    *
+    * \param enabled Whether the Y parameter is enabled or not.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void enabledChangedY( bool enabled );
+
+    /**
+    * Emitted whenever the angle field is enabled or disabled. Depending on the context, some parameters
+    * do not make sense (e.g. you need a previous point to define a distance).
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    *
+    * \param enabled Whether the angle parameter is enabled or not.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void enabledChangedAngle( bool enabled );
+
+    /**
+    * Emitted whenever the distance field is enabled or disabled. Depending on the context, some parameters
+    * do not make sense (e.g. you need a previous point to define a distance).
+    * Could be used by widgets that must reflect the current advanced digitizing state.
+    *
+    * \param enabled Whether the distance parameter is enabled or not.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void enabledChangedDistance( bool enabled );
+
+    /**
+    * Emitted whenever the X field should get the focus using the shortcuts (X).
+    * Could be used by widgets to capture the focus when a field is being edited.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void focusOnXRequested();
+
+    /**
+    * Emitted whenever the Y field should get the focus using the shortcuts (Y).
+    * Could be used by widgets to capture the focus when a field is being edited.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void focusOnYRequested();
+
+    /**
+    * Emitted whenever the angle field should get the focus using the shortcuts (A).
+    * Could be used by widgets to capture the focus when a field is being edited.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void focusOnAngleRequested();
+
+    /**
+    * Emitted whenever the distance field should get the focus using the shortcuts (D).
+    * Could be used by widgets to capture the focus when a field is being edited.
+    * \note unstable API (will likely change)
+    * \since QGIS 3.8
+    */
+    void focusOnDistanceRequested();
+
 
   private slots:
     //! Sets the additional constraint by clicking on the perpendicular/parallel buttons
@@ -398,7 +651,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     /**
      * \brief updateCapacity updates the cad capacities depending on the point list and update the UI according to the capabilities.
-     * \param updateUIwithoutChange if true, it will update the UI even if new capacities are not different from previous ones.
+     * \param updateUIwithoutChange if TRUE, it will update the UI even if new capacities are not different from previous ones.
      */
     void updateCapacity( bool updateUIwithoutChange = false );
 
@@ -414,8 +667,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     //! update the current point in the CAD point list
     void updateCurrentPoint( const QgsPointXY &point );
-    //! remove previous point in the CAD point list
-    void removePreviousPoint();
+
 
     /**
      * filters key press
@@ -442,7 +694,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * Updates a constraint value based on a text input.
      * \param constraint constraint to update
      * \param textValue user entered text value, may be an expression
-     * \param convertExpression set to true to update widget contents to calculated expression value
+     * \param convertExpression set to TRUE to update widget contents to calculated expression value
      */
     void updateConstraintValue( CadConstraint *constraint, const QString &textValue, bool convertExpression = false );
 
@@ -451,10 +703,15 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsAdvancedDigitizingCanvasItem *mCadPaintItem = nullptr;
+    //! Snapping indicator
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
     CadCapacities mCapacities = nullptr;
 
     bool mCurrentMapToolSupportsCad = false;
+
+    // Pointer to the floater
+    QgsAdvancedDigitizingFloater *mFloater = nullptr;
 
     // CAD properties
     //! is CAD currently enabled for current map tool
@@ -472,7 +729,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     // point list and current snap point / segment
     QList<QgsPointXY> mCadPointList;
     QList<QgsPointXY> mSnappedSegment;
-    bool mSnappedToVertex = false;
 
     bool mSessionActive = false;
 
@@ -480,9 +736,11 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     std::unique_ptr<QgsMessageBarItem> mErrorMessage;
 
     // UI
-    QAction *mEnableAction = nullptr;
     QMap< QAction *, double > mCommonAngleActions; // map the common angle actions with their angle values
 
+    // Snap indicator
+
+    QgsPointLocator::Match mSnapMatch;
   private:
 #ifdef SIP_RUN
     //! event filter for line edits in the dock UI (angle/distance/x/y line edits)

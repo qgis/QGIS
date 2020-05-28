@@ -87,7 +87,7 @@ class GUI_EXPORT QgsListWidget: public QgsTableWidgetBase
 
     /**
      * Check the content is valid
-     * \returns true if valid
+     * \returns TRUE if valid
      */
     bool valid() const { return mModel.valid(); }
 

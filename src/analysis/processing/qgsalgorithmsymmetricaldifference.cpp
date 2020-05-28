@@ -41,7 +41,9 @@ QString QgsSymmetricalDifferenceAlgorithm::groupId() const
 
 QString QgsSymmetricalDifferenceAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a layer containing features from both the Input and Difference layers but with the overlapping areas between the two layers removed. The attribute table of the Symmetrical Difference layer contains attributes from both the Input and Difference layers." );
+  return QObject::tr( "This algorithm extracts the portions of features from both the Input and Overlay layers that do not overlap. "
+                      "Overlapping areas between the two layers are removed. The attribute table of the Symmetrical Difference layer "
+                      "contains original attributes from both the Input and Difference layers." );
 }
 
 QgsProcessingAlgorithm *QgsSymmetricalDifferenceAlgorithm::createInstance() const
@@ -52,7 +54,12 @@ QgsProcessingAlgorithm *QgsSymmetricalDifferenceAlgorithm::createInstance() cons
 void QgsSymmetricalDifferenceAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Difference layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Overlay layer" ) ) );
+
+  std::unique_ptr< QgsProcessingParameterString > prefix = qgis::make_unique< QgsProcessingParameterString >( QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), QObject::tr( "Overlay fields prefix" ), QString(), false, true );
+  prefix->setFlags( prefix->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( prefix.release() );
+
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Symmetrical difference" ) ) );
 }
 
@@ -69,10 +76,11 @@ QVariantMap QgsSymmetricalDifferenceAlgorithm::processAlgorithm( const QVariantM
 
   QgsWkbTypes::Type geomType = QgsWkbTypes::multiType( sourceA->wkbType() );
 
-  QgsFields fields = QgsProcessingUtils::combineFields( sourceA->fields(), sourceB->fields() );
+  QString overlayFieldsPrefix = parameterAsString( parameters, QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), context );
+  QgsFields fields = QgsProcessingUtils::combineFields( sourceA->fields(), sourceB->fields(), overlayFieldsPrefix );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, geomType, sourceA->sourceCrs() ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, geomType, sourceA->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 

@@ -18,10 +18,11 @@
 
 #include "qgspolygon.h"
 #include "qgsmaptoolcapture.h"
-#include "qgsbox3d.h"
+#include "qgsquadrilateral.h"
 #include "qgis_app.h"
 
 class QgsPolygon;
+class QgsSnapIndicator;
 
 class APP_EXPORT QgsMapToolAddRectangle: public QgsMapToolCapture
 {
@@ -34,13 +35,16 @@ class APP_EXPORT QgsMapToolAddRectangle: public QgsMapToolCapture
     void keyPressEvent( QKeyEvent *e ) override;
     void keyReleaseEvent( QKeyEvent *e ) override;
 
-    void deactivate( bool isOriented = false );
+    void deactivate( ) override;
 
     void activate() override;
     void clean() override;
 
   protected:
     explicit QgsMapToolAddRectangle( QgsMapCanvas *canvas ) = delete; //forbidden
+
+    //! Convenient method to release (activate/deactivate) tools
+    void release( QgsMapMouseEvent *e );
 
     /**
      * The parent map tool, e.g. the add feature tool.
@@ -52,40 +56,13 @@ class APP_EXPORT QgsMapToolAddRectangle: public QgsMapToolCapture
     //! The rubberband to show the rectangle currently working on
     QgsGeometryRubberBand *mTempRubberBand = nullptr;
     //! Rectangle
-    QgsBox3d mRectangle;
+    QgsQuadrilateral mRectangle;
 
-    //! Convenient method to export a QgsRectangle to a LineString
-    QgsLineString *rectangleToLinestring( bool isOriented = false ) const;
-    //! Convenient method to export a QgsRectangle to a Polygon
-    QgsPolygon *rectangleToPolygon( bool isOriented = false ) const;
+    //! Layer type which will be used for rubberband
+    QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::LineGeometry;
 
-    //! Sets the azimuth. \see mAzimuth
-    void setAzimuth( double azimuth );
-    //! Sets the first distance. \see mDistance1
-    void setDistance1( double distance1 );
-    //! Sets the second distance. \see mDistance2
-    void setDistance2( double distance2 );
-    //! Sets the side. \see mSide
-    void setSide( int side );
-
-    //! Returns the azimuth. \see mAzimuth
-    double azimuth( ) const { return mAzimuth; }
-    //! Returns the first distance. \see mDistance1
-    double distance1( ) const { return mDistance1; }
-    //! Returns the second distance. \see mDistance2
-    double distance2( ) const { return mDistance2; }
-    //! Returns the side. \see mSide
-    int side( ) const { return mSide; }
-
-  private:
-    //! Convenient member for the azimuth of the rotated rectangle or when map is rotated.
-    double mAzimuth = 0.0;
-    //! Convenient member for the first distance of the rotated rectangle or when map is rotated.
-    double mDistance1 = 0.0;
-    //! Convenient member for the second distance of the rotated rectangle or when map is rotated.
-    double mDistance2 = 0.0;
-    //! Convenient member for the side where the second distance is drawn or when map is rotated.
-    int mSide = 1;
+    //! Snapping indicators
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 };
 
 #endif // QGSMAPTOOLADDRECTANGLE_H

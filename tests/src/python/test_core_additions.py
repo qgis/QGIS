@@ -9,15 +9,13 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Denis Rouzaud'
 __date__ = '15.5.2018'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 import os
 
 from qgis.testing import unittest, start_app
 from qgis.core import metaEnumFromValue, metaEnumFromType, QgsTolerance, QgsMapLayer
-import sip
+from qgis.PyQt import sip
 
 start_app()
 

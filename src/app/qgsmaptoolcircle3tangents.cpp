@@ -22,7 +22,10 @@
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
 #include "qgisapp.h"
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
+#include "qgsmessagebar.h"
+#include "qgssnapindicator.h"
+
 
 QgsMapToolCircle3Tangents::QgsMapToolCircle3Tangents( QgsMapToolCapture *parentTool,
     QgsMapCanvas *canvas, CaptureMode mode )
@@ -33,6 +36,16 @@ QgsMapToolCircle3Tangents::QgsMapToolCircle3Tangents( QgsMapToolCapture *parentT
 void QgsMapToolCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsPoint point = mapPoint( *e );
+
+  if ( !currentVectorLayer() )
+  {
+    notifyNotVectorLayer();
+    clean();
+    stopCapturing();
+    e->ignore();
+    return;
+  }
+
   EdgesOnlyFilter filter;
   QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( point, &filter );
 
@@ -63,26 +76,22 @@ void QgsMapToolCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         mTempRubberBand = nullptr;
       }
     }
-    deactivate();
-    if ( mParentTool )
-    {
-      mParentTool->canvasReleaseEvent( e );
-    }
+    release( e );
   }
 }
 
 void QgsMapToolCircle3Tangents::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   QgsPoint point = mapPoint( *e );
+
+  mSnapIndicator->setMatch( e->mapPointMatch() );
+
   EdgesOnlyFilter filter;
   QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( point, &filter );
 
   if ( !mTempRubberBand )
   {
-    mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
-    mTempRubberBand->setFillColor( QColor( 0, 0, 255 ) );
-    mTempRubberBand->setStrokeColor( QColor( 0, 0, 255 ) );
-    mTempRubberBand->setStrokeWidth( 2 );
+    mTempRubberBand = createGeometryRubberBand( mLayerType, true );
     mTempRubberBand->show();
   }
   else
@@ -92,13 +101,24 @@ void QgsMapToolCircle3Tangents::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   {
     QgsPointXY p1, p2;
     match.edgePoints( p1, p2 );
-    std::unique_ptr<QgsLineString> line( new QgsLineString() );
+    if ( mPoints.size() == 4 )
+    {
+      mCircle = QgsCircle().from3Tangents( mPoints.at( 0 ), mPoints.at( 1 ), mPoints.at( 2 ), mPoints.at( 3 ), QgsPoint( p1 ), QgsPoint( p2 ) );
+      mTempRubberBand->setGeometry( mCircle.toLineString() );
+      mTempRubberBand->show();
+    }
+    else
+    {
+      std::unique_ptr<QgsLineString> line( new QgsLineString() );
 
-    line->addVertex( mapPoint( p1 ) );
-    line->addVertex( mapPoint( p2 ) );
+      line->addVertex( mapPoint( p1 ) );
+      line->addVertex( mapPoint( p2 ) );
 
-    mTempRubberBand->setGeometry( line.release() );
-    mTempRubberBand->show();
+      mTempRubberBand->setGeometry( line.release() );
+      mTempRubberBand->show();
+
+
+    }
   }
 
 }

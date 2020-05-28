@@ -24,8 +24,8 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgisapp.h"
+#include "qgsmapmouseevent.h"
 
-#include <QMouseEvent>
 
 QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas *canvas )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), CaptureNone )
@@ -33,6 +33,11 @@ QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas *canvas )
   mToolName = tr( "Add part" );
   connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddPart::stopCapturing );
   connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddPart::stopCapturing );
+}
+
+QgsMapToolCapture::Capabilities QgsMapToolAddPart::capabilities() const
+{
+  return QgsMapToolCapture::SupportsCurves;
 }
 
 void QgsMapToolAddPart::canvasReleaseEvent( QgsMapMouseEvent *e )
@@ -71,7 +76,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     QgsFeatureIterator selectedFeatures = vlayer->getSelectedFeatures();
     QgsFeature firstSelectedFeature;
     if ( selectedFeatures.nextFeature( firstSelectedFeature ) )
-      if ( !firstSelectedFeature.geometry().isNull() )
+      if ( firstSelectedFeature.geometry().isNull() )
         isGeometryEmpty = true;
   }
 
@@ -91,7 +96,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       if ( nextPoint( QgsPoint( mapPoint ), layerPoint ) != 0 )
       {
-        QgsDebugMsg( "nextPoint failed" );
+        QgsDebugMsg( QStringLiteral( "nextPoint failed" ) );
         return;
       }
 
@@ -109,7 +114,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         int error = addVertex( e->mapPoint(), e->mapPointMatch() );
         if ( error == 1 )
         {
-          QgsDebugMsg( "current layer is not a vector layer" );
+          QgsDebugMsg( QStringLiteral( "current layer is not a vector layer" ) );
           return;
         }
         else if ( error == 2 )
@@ -159,7 +164,23 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         QgsCurvePolygon *cp = new QgsCurvePolygon();
         cp->setExteriorRing( curveToAdd );
         QgsGeometry *geom = new QgsGeometry( cp );
-        geom->avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
+
+        QList<QgsVectorLayer *>  avoidIntersectionsLayers;
+        switch ( QgsProject::instance()->avoidIntersectionsMode() )
+        {
+          case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
+            avoidIntersectionsLayers.append( vlayer );
+            break;
+          case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
+            avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
+            break;
+          case QgsProject::AvoidIntersectionsMode::AllowIntersections:
+            break;
+        }
+        if ( avoidIntersectionsLayers.size() > 0 )
+        {
+          geom->avoidIntersections( avoidIntersectionsLayers );
+        }
 
         const QgsCurvePolygon *cpGeom = qgsgeometry_cast<const QgsCurvePolygon *>( geom->constGet() );
         if ( !cpGeom )
@@ -198,7 +219,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       bool topologicalEditing = QgsProject::instance()->topologicalEditing();
       if ( topologicalEditing )
       {
-        addTopologicalPoints( points() );
+        addTopologicalPoints( pointsZM() );
       }
 
       vlayer->endEditCommand();

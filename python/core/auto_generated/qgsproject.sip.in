@@ -13,25 +13,55 @@
 
 
 
-class QgsProject : QObject, QgsExpressionContextGenerator, QgsProjectTranslator
+class QgsProject : QObject, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsProjectTranslator
 {
 %Docstring
-Reads and writes project states.
+Encapsulates a QGIS project, including sets of map layers and their styles,
+layouts, annotations, canvases, etc.
 
-\note
+QgsProject is available both as a singleton (QgsProject.instance()) and for use as
+standalone objects. The QGIS project singleton always gives access to the canonical project reference
+open within the main QGIS application.
 
-Has two general kinds of state to make persistent.  (I.e., to read and
-write.)  First, QGIS proprietary information.  Second plug-in information.
+.. note::
 
-A singleton since there shall only be one active project at a time; and
-provides canonical location for plug-ins and main app to find/set
-properties.
+   QgsProject has two general kinds of state to make persistent. (I.e., to read and
+   write.) First, QGIS proprietary information. Second plugin information.
 %End
 
 %TypeHeaderCode
 #include "qgsproject.h"
 %End
   public:
+
+    enum class ReadFlag
+    {
+      FlagDontResolveLayers,
+      FlagDontLoadLayouts,
+    };
+    typedef QFlags<QgsProject::ReadFlag> ReadFlags;
+
+
+    enum class FileFormat
+    {
+      Qgz,
+      Qgs,
+    };
+
+    enum class AvoidIntersectionsMode
+    {
+      AllowIntersections,
+      AvoidIntersectionsCurrentLayer,
+      AvoidIntersectionsLayers,
+    };
+
+    enum DataDefinedServerProperty
+    {
+      NoProperty,
+      AllProperties,
+      WMSOnlineResource,
+    };
+
     static QgsProject *instance();
 %Docstring
 Returns the QgsProject singleton instance
@@ -72,14 +102,32 @@ Returns the project's title.
    Since QGIS 3.2 this is just a shortcut to retrieving the title from the project's metadata().
 %End
 
+    QString saveUser() const;
+%Docstring
+Returns the user name that did the last save.
+
+.. seealso:: :py:func:`saveUserFullName`
+
+.. versionadded:: 3.12
+%End
+
+    QString saveUserFullName() const;
+%Docstring
+Returns the full user name that did the last save.
+
+.. seealso:: :py:func:`saveUser`
+
+.. versionadded:: 3.12
+%End
+
     bool isDirty() const;
 %Docstring
-Returns true if the project has been modified since the last write()
+Returns ``True`` if the project has been modified since the last write()
 %End
 
     void setFileName( const QString &name );
 %Docstring
-Sets the file name associated with the project. This is the file which contains the project's XML
+Sets the file name associated with the project. This is the file or the storage URI which contains the project's XML
 representation.
 
 :param name: project file name
@@ -89,7 +137,7 @@ representation.
 
     QString fileName() const;
 %Docstring
-Returns the project's file name. This is the file which contains the project's XML
+Returns the project's file name. This is the file or the storage URI which contains the project's XML
 representation.
 
 .. seealso:: :py:func:`setFileName`
@@ -109,15 +157,14 @@ Returns QFileInfo object for the project's associated file.
 
 .. seealso:: :py:func:`fileName`
 
-.. versionadded:: 2.9
-
-.. deprecated:: Use absoluteFilePath(), baseName() or lastModifiedTime() instead
+.. deprecated:: QGIS 3.2
+   use absoluteFilePath(), baseName() or lastModifiedTime() instead
 %End
 
     QgsProjectStorage *projectStorage() const;
 %Docstring
 Returns pointer to project storage implementation that handles read/write of the project file.
-If the project file is stored in the local file system, returns null pointer.
+If the project file is stored in the local file system, returns ``None``.
 The project storage object is inferred from fileName() of the project.
 
 .. versionadded:: 3.2
@@ -164,9 +211,11 @@ Returns the project's native coordinate reference system.
 .. versionadded:: 3.0
 %End
 
-    void setCrs( const QgsCoordinateReferenceSystem &crs );
+    void setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEllipsoid = false );
 %Docstring
 Sets the project's native coordinate reference system.
+If ``adjustEllipsoid`` is set to ``True``, the ellpsoid of this project will be set to
+the ellipsoid imposed by the CRS.
 
 .. seealso:: :py:func:`crs`
 
@@ -233,20 +282,24 @@ Clears the project, removing all settings and resetting it back to an empty, def
 .. versionadded:: 2.4
 %End
 
-    bool read( const QString &filename );
+    bool read( const QString &filename, QgsProject::ReadFlags flags = 0 );
 %Docstring
 Reads given project file from the given file.
 
 :param filename: name of project file to read
+:param flags: optional flags which control the read behavior of projects
 
-:return: true if project file has been read successfully
+:return: ``True`` if project file has been read successfully
 %End
 
-    bool read();
+    bool read( QgsProject::ReadFlags flags = 0 );
 %Docstring
 Reads the project from its currently associated file (see fileName() ).
 
-:return: true if project file has been read successfully
+The ``flags`` argument can be used to specify optional flags which control
+the read behavior of projects.
+
+:return: ``True`` if project file has been read successfully
 %End
 
     bool readLayer( const QDomNode &layerNode );
@@ -268,7 +321,7 @@ Writes the project to a file.
 
 :param filename: destination file
 
-:return: true if project was written successfully
+:return: ``True`` if project was written successfully
 
 .. note::
 
@@ -276,7 +329,7 @@ Writes the project to a file.
 
 .. note::
 
-   isDirty() will be set to false if project is successfully written
+   isDirty() will be set to ``False`` if project is successfully written
 
 .. versionadded:: 3.0
 %End
@@ -285,11 +338,11 @@ Writes the project to a file.
 %Docstring
 Writes the project to its current associated file (see fileName() ).
 
-:return: true if project was written successfully
+:return: ``True`` if project was written successfully
 
 .. note::
 
-   isDirty() will be set to false if project is successfully written
+   isDirty() will be set to ``False`` if project is successfully written
 %End
 
     bool writeEntry( const QString &scope, const QString &key, bool value ) /PyName=writeEntryBool/;
@@ -373,7 +426,6 @@ implying a hierarchy of keys and corresponding values
     double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok = 0 ) const;
     bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok = 0 ) const;
 
-
     bool removeEntry( const QString &scope, const QString &key );
 %Docstring
 Remove the given key
@@ -438,9 +490,11 @@ Returns project file path if layer is embedded from other project file. Returns 
 %End
 
 
-    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers );
+    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags = 0 );
 %Docstring
 Create layer group instance defined in an arbitrary project file.
+
+The optional ``flags`` argument can be used to control layer reading behavior.
 
 .. versionadded:: 2.4
 %End
@@ -534,10 +588,47 @@ an absolute path.
 
     QgsLayoutManager *layoutManager();
 %Docstring
-Returns the project's layout manager, which manages compositions within
+Returns the project's layout manager, which manages print layouts, atlases and reports within
 the project.
 
 .. versionadded:: 3.0
+%End
+
+
+    QgsBookmarkManager *bookmarkManager();
+%Docstring
+Returns the project's bookmark manager, which manages bookmarks within
+the project.
+
+.. versionadded:: 3.10
+%End
+
+
+    QgsProjectViewSettings *viewSettings();
+%Docstring
+Returns the project's view settings, which contains settings and properties
+relating to how a QgsProject should be viewed and behave inside a map canvas
+(e.g. map scales and default view extent)
+
+.. versionadded:: 3.10.1
+%End
+
+
+    QgsProjectTimeSettings *timeSettings();
+%Docstring
+Returns the project's time settings, which contains the project's temporal range and other
+time based settings.
+
+.. versionadded:: 3.14
+%End
+
+
+    QgsProjectDisplaySettings *displaySettings();
+%Docstring
+Returns the project's display settings, which settings and properties relating
+to how a QgsProject should display values such as map coordinates and bearings.
+
+.. versionadded:: 3.12
 %End
 
     QgsLayerTree *layerTreeRoot() const;
@@ -573,19 +664,28 @@ Returns pointer to the project's annotation manager.
 %End
 
 
-    void setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers );
+ void setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
 Set a list of layers which should not be taken into account on map identification
+
+.. deprecated:: QGIS 3.4
+   use QgsMapLayer.setFlags() instead
 %End
 
-    void setNonIdentifiableLayers( const QStringList &layerIds );
+ void setNonIdentifiableLayers( const QStringList &layerIds );
 %Docstring
 Set a list of layers which should not be taken into account on map identification
+
+.. deprecated:: QGIS 3.4
+   use QgsMapLayer.setFlags() instead
 %End
 
-    QStringList nonIdentifiableLayers() const;
+ QStringList nonIdentifiableLayers() const;
 %Docstring
 Gets the list of layers which currently should not be taken into account on map identification
+
+.. deprecated:: QGIS 3.4
+   use QgsMapLayer.setFlags() instead
 %End
 
     bool autoTransaction() const;
@@ -613,7 +713,7 @@ Make sure that this is only called when all layers are not in edit mode.
 %Docstring
 Returns the matching transaction group from a provider key and connection string.
 
-Returns None if a matching transaction group is not available.
+Returns ``None`` if a matching transaction group is not available.
 
 .. versionadded:: 3.2
 %End
@@ -634,6 +734,8 @@ Defines if default values should be evaluated on provider side when requested an
 
     virtual QgsExpressionContext createExpressionContext() const;
 
+    virtual QgsExpressionContextScope *createExpressionContextScope() const;
+
 
     QgsSnappingConfig snappingConfig() const;
 %Docstring
@@ -651,9 +753,24 @@ A list of layers with which intersections should be avoided.
 
     void setAvoidIntersectionsLayers( const QList<QgsVectorLayer *> &layers );
 %Docstring
-A list of layers with which intersections should be avoided.
+Sets the list of layers with which intersections should be avoided.
+Only used if the avoid intersection mode is set to advanced.
 
 .. versionadded:: 3.0
+%End
+
+    void setAvoidIntersectionsMode( const AvoidIntersectionsMode mode );
+%Docstring
+Sets the avoid intersections mode.
+
+.. versionadded:: 3.14
+%End
+
+    AvoidIntersectionsMode avoidIntersectionsMode() const;
+%Docstring
+Returns the current avoid intersections mode.
+
+.. versionadded:: 3.14
 %End
 
     QVariantMap customVariables() const;
@@ -696,18 +813,24 @@ Returns a pointer to the project's internal layer store.
 Returns the number of registered layers.
 %End
 
+    int validCount() const;
+%Docstring
+Returns the number of registered valid layers.
+%End
+
     QgsMapLayer *mapLayer( const QString &layerId ) const;
 %Docstring
 Retrieve a pointer to a registered layer by layer ID.
 
 :param layerId: ID of layer to retrieve
 
-:return: matching layer, or None if no matching layer found
+:return: matching layer, or ``None`` if no matching layer found
 
 .. seealso:: :py:func:`mapLayersByName`
 
 .. seealso:: :py:func:`mapLayers`
 %End
+
 
     QList<QgsMapLayer *> mapLayersByName( const QString &layerName ) const;
 %Docstring
@@ -722,9 +845,26 @@ Retrieve a list of matching registered layers by layer name.
 .. seealso:: :py:func:`mapLayers`
 %End
 
-    QMap<QString, QgsMapLayer *> mapLayers() const;
+    QList<QgsMapLayer *> mapLayersByShortName( const QString &shortName ) const;
+%Docstring
+Retrieves a list of matching registered layers by layer ``shortName``.
+If layer's short name is empty a match with layer's name is attempted.
+
+:return: list of matching layers
+
+.. seealso:: :py:func:`mapLayer`
+
+.. seealso:: :py:func:`mapLayers`
+
+.. versionadded:: 3.10
+%End
+
+
+    QMap<QString, QgsMapLayer *> mapLayers( const bool validOnly = false ) const;
 %Docstring
 Returns a map of all registered layers by layer ID.
+
+:param validOnly: if set only valid layers will be returned
 
 .. seealso:: :py:func:`mapLayer`
 
@@ -735,7 +875,7 @@ Returns a map of all registered layers by layer ID.
 
     bool isZipped() const;
 %Docstring
-Returns true if the project comes from a zip archive, false otherwise.
+Returns ``True`` if the project comes from a zip archive, ``False`` otherwise.
 %End
 
 
@@ -746,18 +886,15 @@ Returns true if the project comes from a zip archive, false otherwise.
 Add a list of layers to the map of loaded layers.
 
 The layersAdded() and layerWasAdded() signals will always be emitted.
-The legendLayersAdded() signal is emitted only if addToLegend is true.
+The legendLayersAdded() signal is emitted only if addToLegend is ``True``.
 
 :param mapLayers: A list of layer which should be added to the registry
-:param addToLegend: If true (by default), the layers will be added to the
+:param addToLegend: If ``True`` (by default), the layers will be added to the
                     legend and to the main canvas. If you have a private
-                    layer you can set this parameter to false to hide it.
-:param takeOwnership: Ownership will be transferred to the layer registry.
-                      If you specify false here you have take care of deleting
-                      the layers yourself. Not available in Python.
+                    layer you can set this parameter to ``False`` to hide it.
 
 :return: a list of the map layers that were added
-         successfully. If a layer is invalid, or already exists in the registry,
+         successfully. If a layer or already exists in the registry,
          it will not be part of the returned QList.
 
 
@@ -782,19 +919,16 @@ The legendLayersAdded() signal is emitted only if addToLegend is true.
 Add a layer to the map of loaded layers.
 
 The layersAdded() and layerWasAdded() signals will always be emitted.
-The legendLayersAdded() signal is emitted only if addToLegend is true.
+The legendLayersAdded() signal is emitted only if addToLegend is ``True``.
 If you are adding multiple layers at once, you should use
 addMapLayers() instead.
 
 :param mapLayer: A layer to add to the registry
-:param addToLegend: If true (by default), the layer will be added to the
+:param addToLegend: If ``True`` (by default), the layer will be added to the
                     legend and to the main canvas. If you have a private
-                    layer you can set this parameter to false to hide it.
-:param takeOwnership: Ownership will be transferred to the layer registry.
-                      If you specify false here you have take care of deleting
-                      the layer yourself. Not available in Python.
+                    layer you can set this parameter to ``False`` to hide it.
 
-:return: None if unable to add layer, otherwise pointer to newly added layer
+:return: ``None`` if unable to add layer, otherwise pointer to newly added layer
 
 
 .. seealso:: :py:func:`addMapLayers`
@@ -836,7 +970,24 @@ of any layers these layers will also be deleted.
 .. versionadded:: 1.8
 %End
 
+
     void removeMapLayers( const QList<QgsMapLayer *> &layers );
+%Docstring
+Remove a set of layers from the registry.
+
+The specified layers will be removed from the registry. If the registry has ownership
+of any layers these layers will also be deleted.
+
+:param layers: A list of layers to remove. ``None`` values are ignored.
+
+.. note::
+
+   As a side-effect the QgsProject instance is marked dirty.
+
+.. seealso:: :py:func:`removeMapLayer`
+
+.. seealso:: :py:func:`removeAllMapLayers`
+%End
 
     void removeMapLayer( const QString &layerId );
 %Docstring
@@ -863,7 +1014,7 @@ Remove a layer from the registry.
 The specified layer will be removed from the registry. If the registry has ownership
 of the layer then it will also be deleted.
 
-:param layer: The layer to remove. Null pointers are ignored.
+:param layer: The layer to remove. ``None`` values are ignored.
 
 .. note::
 
@@ -926,14 +1077,14 @@ data provider has to determine it. Moreover, when this option is
 activated, primary key unicity is not checked for views and
 materialized views with Postgres provider.
 
-:param trust: True to trust the project, false otherwise
+:param trust: ``True`` to trust the project, ``False`` otherwise
 
 .. versionadded:: 3.0
 %End
 
     bool trustLayerMetadata() const;
 %Docstring
-Returns true if the trust option is activated, false otherwise. This
+Returns ``True`` if the trust option is activated, ``False`` otherwise. This
 option allows indicateing if the extent has to be read from the XML
 document when data source has no metadata or if the data provider has
 to determine it. Moreover, when this option is activated, primary key
@@ -950,6 +1101,8 @@ Returns the current auxiliary storage.
 
 .. versionadded:: 3.0
 %End
+
+
 
     const QgsProjectMetadata &metadata() const;
 %Docstring
@@ -973,24 +1126,129 @@ Sets the project's ``metadata`` store.
 .. versionadded:: 3.2
 %End
 
-    QSet<QgsMapLayer *> requiredLayers() const;
+ QSet<QgsMapLayer *> requiredLayers() const;
 %Docstring
 Returns a set of map layers that are required in the project and therefore they should not get
 removed from the project. The set of layers may be configured by users in project properties.
 and it is mainly a hint for the user interface to protect users from removing layers that important
 in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
 
+.. deprecated:: QGIS 3.4
+   use QgsMapLayer.flags() instead
+
 .. versionadded:: 3.2
 %End
 
-    void setRequiredLayers( const QSet<QgsMapLayer *> &layers );
+ void setRequiredLayers( const QSet<QgsMapLayer *> &layers );
 %Docstring
 Configures a set of map layers that are required in the project and therefore they should not get
 removed from the project. The set of layers may be configured by users in project properties.
 and it is mainly a hint for the user interface to protect users from removing layers that important
 in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
 
+.. deprecated:: QGIS 3.4
+   use QgsMapLayer.setFlags() instead
+
 .. versionadded:: 3.2
+%End
+
+    void setProjectColors( const QgsNamedColorList &colors );
+%Docstring
+Sets the ``colors`` for the project's color scheme (see QgsProjectColorScheme).
+
+.. seealso:: :py:func:`projectColorsChanged`
+
+.. versionadded:: 3.6
+%End
+
+    void setBackgroundColor( const QColor &color );
+%Docstring
+Sets the default background ``color`` used by default map canvases.
+
+.. seealso:: :py:func:`backgroundColor`
+
+.. versionadded:: 3.10
+%End
+
+    QColor backgroundColor() const;
+%Docstring
+Returns the default background color used by default map canvases.
+
+.. seealso:: :py:func:`setBackgroundColor`
+
+.. versionadded:: 3.10
+%End
+
+    void setSelectionColor( const QColor &color );
+%Docstring
+Sets the ``color`` used to highlight selected features.
+
+.. seealso:: :py:func:`selectionColor`
+
+.. versionadded:: 3.10
+%End
+
+    QColor selectionColor() const;
+%Docstring
+Returns the color used to highlight selected features
+
+.. seealso:: :py:func:`setSelectionColor`
+
+.. versionadded:: 3.10
+%End
+
+ void setMapScales( const QVector<double> &scales ) /Deprecated/;
+%Docstring
+Sets the list of custom project map ``scales``.
+
+The ``scales`` list consists of a list of scale denominator values, e.g.
+1000 for a 1:1000 scale.
+
+.. seealso:: :py:func:`mapScales`
+
+.. seealso:: :py:func:`mapScalesChanged`
+
+.. deprecated::
+   Use viewSettings() instead
+%End
+
+ QVector<double> mapScales() const /Deprecated/;
+%Docstring
+Returns the list of custom project map scales.
+
+The scales list consists of a list of scale denominator values, e.g.
+1000 for a 1:1000 scale.
+
+.. seealso:: :py:func:`setMapScales`
+
+.. seealso:: :py:func:`mapScalesChanged`
+
+.. deprecated::
+   Use viewSettings() instead
+%End
+
+ void setUseProjectScales( bool enabled ) /Deprecated/;
+%Docstring
+Sets whether project mapScales() are ``enabled``.
+
+.. seealso:: :py:func:`useProjectScales`
+
+.. seealso:: :py:func:`setMapScales`
+
+.. deprecated::
+   Use viewSettings() instead
+%End
+
+ bool useProjectScales() const /Deprecated/;
+%Docstring
+Returns ``True`` if project mapScales() are enabled.
+
+.. seealso:: :py:func:`setUseProjectScales`
+
+.. seealso:: :py:func:`mapScales`
+
+.. deprecated::
+   Use viewSettings() instead
 %End
 
     void generateTsFile( const QString &locale );
@@ -1013,6 +1271,24 @@ Translates the project with QTranslator and qm file
 :param n: if -1 uses the appropriate form
 
 .. versionadded:: 3.4
+%End
+
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified style entity ``visitor``, causing it to visit all style entities associated
+with the project.
+
+Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
+should be canceled.
+
+.. versionadded:: 3.10
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsProject: '%1'%2>" ).arg( sipCpp->fileName(),
+                  sipCpp == QgsProject::instance() ? QStringLiteral( " (singleton instance)" ) : QString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
   signals:
@@ -1095,9 +1371,11 @@ Emitted when loading layers has produced some messages
 .. versionadded:: 3.2
 %End
 
-    void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
+ void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 %Docstring
 Emitted when the list of layer which are excluded from map identification changes
+
+.. deprecated:: QGIS 3.4
 %End
 
     void fileNameChanged();
@@ -1119,6 +1397,13 @@ Emitted when the home path of the project changes.
     void snappingConfigChanged( const QgsSnappingConfig &config );
 %Docstring
 Emitted whenever the configuration for snapping has changed.
+%End
+
+    void avoidIntersectionsModeChanged();
+%Docstring
+Emitted whenever the avoid intersections mode has changed.
+
+.. versionadded:: 3.14
 %End
 
     void customVariablesChanged();
@@ -1216,6 +1501,33 @@ Emitted when the project's metadata is changed.
 .. versionadded:: 3.2
 %End
 
+    void projectColorsChanged();
+%Docstring
+Emitted whenever the project's color scheme has been changed.
+
+.. seealso:: :py:func:`setProjectColors`
+
+.. versionadded:: 3.6
+%End
+
+    void backgroundColorChanged();
+%Docstring
+Emitted whenever the project's canvas background color has been changed.
+
+.. seealso:: :py:func:`setBackgroundColor`
+
+.. versionadded:: 3.10
+%End
+
+    void selectionColorChanged();
+%Docstring
+Emitted whenever the project's selection color has been changed.
+
+.. seealso:: :py:func:`setSelectionColor`
+
+.. versionadded:: 3.10
+%End
+
 
     void layersWillBeRemoved( const QStringList &layerIds );
 %Docstring
@@ -1291,7 +1603,14 @@ Emitted after a layer was removed from the registry.
 .. seealso:: :py:func:`layerWillBeRemoved`
 %End
 
+
     void removeAll();
+%Docstring
+Emitted when all layers are removed, before layersWillBeRemoved() and
+layerWillBeRemoved() signals are emitted. The layersWillBeRemoved() and
+layerWillBeRemoved() signals will still be emitted following this signal.
+You can use this signal to do easy (and fast) cleanup.
+%End
 
     void layersAdded( const QList<QgsMapLayer *> &layers );
 %Docstring
@@ -1331,9 +1650,22 @@ advertised by this signal.
 %Docstring
 Emitted when the project dirty status changes.
 
-:param dirty: True if the project is in a dirty state and has pending unsaved changes.
+:param dirty: ``True`` if the project is in a dirty state and has pending unsaved changes.
 
 .. versionadded:: 3.2
+%End
+
+
+ void mapScalesChanged() /Deprecated/;
+%Docstring
+Emitted when the list of custom project map scales changes.
+
+.. seealso:: :py:func:`mapScales`
+
+.. seealso:: :py:func:`setMapScales`
+
+.. deprecated::
+   Use viewSettings() instead
 %End
 
   public slots:
@@ -1392,7 +1724,26 @@ So there can be created a ts file with these values.
 .. versionadded:: 3.4
 %End
 
+    void setDataDefinedServerProperties( const QgsPropertyCollection &properties );
+%Docstring
+Sets the data defined properties used for overrides in user defined server
+parameters to ``properties``
+
+.. versionadded:: 3.14
+%End
+
+    QgsPropertyCollection dataDefinedServerProperties() const;
+%Docstring
+Returns the data defined properties used for overrides in user defined server
+parameters
+
+.. versionadded:: 3.14
+%End
+
 };
+
+QFlags<QgsProject::ReadFlag> operator|(QgsProject::ReadFlag f1, QFlags<QgsProject::ReadFlag> f2);
+
 
 class QgsProjectDirtyBlocker
 {
@@ -1436,6 +1787,9 @@ This will block dirtying the specified ``project`` for the lifetime of this obje
   private:
     QgsProjectDirtyBlocker( const QgsProjectDirtyBlocker &other );
 };
+
+
+
 
 
 /************************************************************************

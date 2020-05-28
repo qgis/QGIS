@@ -25,6 +25,8 @@
 
 #include "qgsdataitem.h"
 
+class QgsDataItemProvider;
+
 /**
  * \ingroup core
  * \class QgsBrowserWatcher
@@ -61,6 +63,12 @@ class CORE_EXPORT QgsBrowserWatcher : public QFutureWatcher<QVector <QgsDataItem
  * QgsBrowserModel models are not initially populated and use a deferred initialization
  * approach. After constructing a QgsBrowserModel, a call must be made
  * to initialize() in order to populate the model.
+ *
+ * \note Since QGIS 3.10 it is recommended to use QgsBrowserGuiModel from GUI library.
+ * Implementation of data items used from QgsBrowserModel should not trigger any GUI
+ * operations such as opening of widgets/dialogs or showing message boxes. Such actions
+ * should be implemented in a new QgsDataItemGuiProvider subclass which is used
+ * by QgsBrowserGuiModel (but not by QgsBrowserModel).
  */
 class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 {
@@ -84,11 +92,13 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
       PathRole = Qt::UserRole, //!< Item path used to access path in the tree, see QgsDataItem::mPath
       CommentRole = Qt::UserRole + 1, //!< Item comment
       SortRole, //!< Custom sort role, see QgsDataItem::sortKey()
+      ProviderKeyRole, //!< Data item provider key that created the item, \since QGIS 3.12
     };
     // implemented methods from QAbstractItemModel for read-only access
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -101,8 +111,20 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     bool canFetchMore( const QModelIndex &parent ) const override;
     void fetchMore( const QModelIndex &parent ) override;
 
+    /**
+     * Returns the model index corresponding to the specified data \a item.
+     * If the item was not found, an invalid QModelIndex is returned.
+     *
+     * If the \a parent item is argument is specified, then only items which are children
+     * of \a parent are searched. If no \a parent is specified, then all items within
+     * the model are searched.
+     */
     QModelIndex findItem( QgsDataItem *item, QgsDataItem *parent = nullptr ) const;
 
+    /**
+     * Returns the data item at the specified index, or NULLPTR if no item
+     * exists at the index.
+     */
     QgsDataItem *dataItem( const QModelIndex &idx ) const;
 
     //! Refresh item specified by path
@@ -117,22 +139,47 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      * \param path item path
      * \param matchFlag supported is Qt::MatchExactly and Qt::MatchStartsWith which has reverse meaning, i.e. find
      *        item with the longest match from start with path (to get as close/deep as possible to deleted item).
-     * \returns model index, invalid if item not found */
+     * \returns model index, invalid if item not found
+    */
     QModelIndex findPath( const QString &path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
 
     //! \note not available in Python bindings
     static QModelIndex findPath( QAbstractItemModel *model, const QString &path, Qt::MatchFlag matchFlag = Qt::MatchExactly ) SIP_SKIP;
 
-    void connectItem( QgsDataItem *item );
+    /**
+     * Returns index of layer item with given uri. It only searches in currently fetched
+     * items, i.e. it does not fetch children.
+     * \param uri item uri
+     * \param index the current index of the parent (to search for children)
+     * \returns model index, invalid if item not found
+     *
+     * \since QGIS 3.6
+     */
+    QModelIndex findUri( const QString &uri, QModelIndex index = QModelIndex() );
 
     /**
-     * Returns true if the model has been initialized.
+     * \deprecated Deprecated since QGIS 3.4 -- this method has no effect, and is dangerous to call in earlier QGIS versions. Any usage should be removed (and will have no harmful side-effects!).
+     */
+    Q_DECL_DEPRECATED void connectItem( QgsDataItem *item ) SIP_DEPRECATED;
+
+    /**
+     * Returns TRUE if the model has been initialized.
      *
      * \see initialize()
      */
     bool initialized() const { return mInitialized;  }
 
+    /**
+     * Returns a map of the root drive items shown in the browser.
+     *
+     * These correspond to the top-level directory items shown, e.g. on Windows the C:\, D:\, etc,
+     * and on Linux the "/" root directory.
+     *
+     * \since QGIS 3.6
+     */
+    QMap<QString, QgsDirectoryItem *> driveItems() const;
   signals:
+
     //! Emitted when item children fetch was finished
     void stateChanged( const QModelIndex &index, QgsDataItem::State oldState );
 
@@ -145,6 +192,15 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
   public slots:
     //! Reload the whole model
     void reload();
+
+    /**
+     * Refreshes the list of drive items, removing any corresponding to removed
+     * drives and adding newly added drives.
+     *
+     * \since QGIS 3.4
+     */
+    void refreshDrives();
+
     void beginInsertItems( QgsDataItem *parent, int first, int last );
     void endInsertItems();
     void beginRemoveItems( QgsDataItem *parent, int first, int last );
@@ -170,6 +226,14 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      */
     void removeFavorite( const QModelIndex &index );
 
+    /**
+     * Removes a \a favorite item.
+     * \see addFavoriteDirectory()
+     * \note Not available in Python bindings
+     * \since QGIS 3.6
+     */
+    void removeFavorite( QgsFavoriteItem *favorite ) SIP_SKIP;
+
     void updateProjectHome();
 
     //! Hide the given path in the browser model
@@ -190,8 +254,22 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     QgsFavoritesItem *mFavorites = nullptr;
     QgsDirectoryItem *mProjectHome = nullptr;
 
+  private slots:
+    void dataItemProviderAdded( QgsDataItemProvider *provider );
+    void dataItemProviderWillBeRemoved( QgsDataItemProvider *provider );
+
   private:
     bool mInitialized = false;
+    QMap< QString, QgsDirectoryItem * > mDriveItems;
+
+    void setupItemConnections( QgsDataItem *item );
+
+    void removeRootItem( QgsDataItem *item );
+
+    QgsDataItem *addProviderRootItem( QgsDataItemProvider *provider );
+
+    friend class TestQgsBrowserModel;
+    friend class TestQgsBrowserProxyModel;
 };
 
 #endif // QGSBROWSERMODEL_H

@@ -34,7 +34,7 @@ class QgsGeometryCheckerDialog : public QDialog
     Q_OBJECT
   public:
     QgsGeometryCheckerDialog( QgisInterface *iface, QWidget *parent = nullptr );
-    ~QgsGeometryCheckerDialog() override;
+
 
   private:
     QgisInterface *mIface = nullptr;

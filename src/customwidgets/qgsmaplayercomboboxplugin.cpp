@@ -62,7 +62,7 @@ bool QgsMapLayerComboBoxPlugin::isInitialized() const
 
 void QgsMapLayerComboBoxPlugin::initialize( QDesignerFormEditorInterface *core )
 {
-  Q_UNUSED( core );
+  Q_UNUSED( core )
   if ( mInitialized )
     return;
   mInitialized = true;

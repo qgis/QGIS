@@ -24,13 +24,9 @@
 #include "qgswfsgetcapabilities_1_0_0.h"
 
 #include "qgsproject.h"
-#include "qgsexception.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgsmapserviceexception.h"
 #include "qgscoordinatereferencesystem.h"
-
-#include <QStringList>
 
 namespace QgsWfs
 {
@@ -43,17 +39,41 @@ namespace QgsWfs
     void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                                const QgsServerRequest &request, QgsServerResponse &response )
     {
-      QDomDocument doc = createGetCapabilitiesDocument( serverIface, project, version, request );
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      QgsAccessControl *accessControl = serverIface->accessControls();
+#endif
+      QDomDocument doc;
+      const QDomDocument *capabilitiesDocument = nullptr;
 
-      response.setHeader( "Content-Type", "text/xml; charset=utf-8" );
-      response.write( doc.toByteArray() );
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      QgsServerCacheManager *cacheManager = serverIface->cacheManager();
+      if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
+      {
+        capabilitiesDocument = &doc;
+      }
+      else //capabilities xml not in cache. Create a new one
+      {
+        doc = createGetCapabilitiesDocument( serverIface, project, version, request );
+
+        if ( cacheManager )
+        {
+          cacheManager->setCachedDocument( &doc, project, request, accessControl );
+        }
+        capabilitiesDocument = &doc;
+      }
+#else
+      doc = createGetCapabilitiesDocument( serverIface, project, version, request );
+      capabilitiesDocument = &doc;
+#endif
+      response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
+      response.write( capabilitiesDocument->toByteArray() );
     }
 
 
     QDomDocument createGetCapabilitiesDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
         const QgsServerRequest &request )
     {
-      Q_UNUSED( version );
+      Q_UNUSED( version )
 
       QDomDocument doc;
 
@@ -248,7 +268,11 @@ namespace QgsWfs
 
     QDomElement getFeatureTypeListElement( QDomDocument &doc, QgsServerInterface *serverIface, const QgsProject *project )
     {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       QgsAccessControl *accessControl = serverIface->accessControls();
+#else
+      ( void )serverIface;
+#endif
 
       //wfs:FeatureTypeList element
       QDomElement featureTypeListElement = doc.createElement( QStringLiteral( "FeatureTypeList" )/*wfs:FeatureTypeList*/ );
@@ -270,15 +294,16 @@ namespace QgsWfs
         {
           continue;
         }
-        if ( layer->type() != QgsMapLayer::LayerType::VectorLayer )
+        if ( layer->type() != QgsMapLayerType::VectorLayer )
         {
           continue;
         }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
         if ( accessControl && !accessControl->layerReadPermission( layer ) )
         {
           continue;
         }
-
+#endif
         QDomElement layerElem = doc.createElement( QStringLiteral( "FeatureType" ) );
 
         //create Name
@@ -328,13 +353,20 @@ namespace QgsWfs
         srsElem.appendChild( srsText );
         layerElem.appendChild( srsElem );
 
+        // Define precision
+        int precision = 3;
+        if ( layer->crs().isGeographic() )
+        {
+          precision = 6;
+        }
+
         //create LatLongBoundingBox
         QgsRectangle layerExtent = layer->extent();
         QDomElement bBoxElement = doc.createElement( QStringLiteral( "LatLongBoundingBox" ) );
-        bBoxElement.setAttribute( QStringLiteral( "minx" ), QString::number( layerExtent.xMinimum() ) );
-        bBoxElement.setAttribute( QStringLiteral( "miny" ), QString::number( layerExtent.yMinimum() ) );
-        bBoxElement.setAttribute( QStringLiteral( "maxx" ), QString::number( layerExtent.xMaximum() ) );
-        bBoxElement.setAttribute( QStringLiteral( "maxy" ), QString::number( layerExtent.yMaximum() ) );
+        bBoxElement.setAttribute( QStringLiteral( "minx" ), qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerExtent.xMinimum(), precision ), precision ) );
+        bBoxElement.setAttribute( QStringLiteral( "miny" ), qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerExtent.yMinimum(), precision ), precision ) );
+        bBoxElement.setAttribute( QStringLiteral( "maxx" ), qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( layerExtent.xMaximum(), precision ), precision ) );
+        bBoxElement.setAttribute( QStringLiteral( "maxy" ), qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( layerExtent.yMaximum(), precision ), precision ) );
         layerElem.appendChild( bBoxElement );
 
         // layer metadata URL

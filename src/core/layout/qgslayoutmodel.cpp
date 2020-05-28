@@ -19,6 +19,7 @@
 #include "qgslayout.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgslayoutitemgroup.h"
 #include <QApplication>
 #include <QGraphicsItem>
 #include <QDomDocument>
@@ -38,7 +39,7 @@ QgsLayoutModel::QgsLayoutModel( QgsLayout *layout, QObject *parent )
 QgsLayoutItem *QgsLayoutModel::itemFromIndex( const QModelIndex &index ) const
 {
   //try to return the QgsLayoutItem corresponding to a QModelIndex
-  if ( !index.isValid() )
+  if ( !index.isValid() || index.row() == 0 )
   {
     return nullptr;
   }
@@ -56,10 +57,14 @@ QModelIndex QgsLayoutModel::index( int row, int column,
     return QModelIndex();
   }
 
-  if ( !parent.isValid() && row >= 0 && row < mItemsInScene.size() )
+  if ( !parent.isValid() && row == 0 )
+  {
+    return createIndex( row, column, nullptr );
+  }
+  else if ( !parent.isValid() && row >= 1 && row < mItemsInScene.size() + 1 )
   {
     //return an index for the layout item at this position
-    return createIndex( row, column, mItemsInScene.at( row ) );
+    return createIndex( row, column, mItemsInScene.at( row - 1 ) );
   }
 
   //only top level supported for now
@@ -84,7 +89,7 @@ void QgsLayoutModel::refreshItemsInScene()
 
 QModelIndex QgsLayoutModel::parent( const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
+  Q_UNUSED( index )
 
   //all items are top level for now
   return QModelIndex();
@@ -94,25 +99,26 @@ int QgsLayoutModel::rowCount( const QModelIndex &parent ) const
 {
   if ( !parent.isValid() )
   {
-    return mItemsInScene.size();
+    return mItemsInScene.size() + 1;
   }
 
+#if 0
   QGraphicsItem *parentItem = itemFromIndex( parent );
 
-  if ( !parentItem )
+  if ( parentItem )
   {
-    return mItemsInScene.size();
-  }
-  else
-  {
-    //no children for now
+    // return child count for item
     return 0;
   }
+#endif
+
+  //no children for now
+  return 0;
 }
 
 int QgsLayoutModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 3;
 }
 
@@ -182,16 +188,6 @@ QVariant QgsLayoutModel::data( const QModelIndex &index, int role ) const
           return QVariant();
       }
 
-    case Qt::FontRole:
-      if ( index.column() == ItemId && item->isSelected() )
-      {
-        //draw name of selected items in bold
-        QFont boldFont;
-        boldFont.setBold( true );
-        return boldFont;
-      }
-      return QVariant();
-
     default:
       return QVariant();
   }
@@ -199,7 +195,7 @@ QVariant QgsLayoutModel::data( const QModelIndex &index, int role ) const
 
 bool QgsLayoutModel::setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole )
 {
-  Q_UNUSED( role );
+  Q_UNUSED( role )
 
   if ( !index.isValid() )
     return false;
@@ -416,7 +412,7 @@ bool QgsLayoutModel::dropMimeData( const QMimeData *data,
 
 bool QgsLayoutModel::removeRows( int row, int count, const QModelIndex &parent )
 {
-  Q_UNUSED( count );
+  Q_UNUSED( count )
   if ( parent.isValid() )
   {
     return false;
@@ -492,7 +488,7 @@ void QgsLayoutModel::rebuildSceneItemList()
     else if ( sceneListPos != -1 )
     {
       //in list, but in wrong spot
-      beginMoveRows( QModelIndex(), sceneListPos, sceneListPos, QModelIndex(), row );
+      beginMoveRows( QModelIndex(), sceneListPos + 1, sceneListPos + 1, QModelIndex(), row + 1 );
       mItemsInScene.removeAt( sceneListPos );
       mItemsInScene.insert( row, item );
       endMoveRows();
@@ -500,7 +496,7 @@ void QgsLayoutModel::rebuildSceneItemList()
     else
     {
       //needs to be inserted into list
-      beginInsertRows( QModelIndex(), row, row );
+      beginInsertRows( QModelIndex(), row + 1, row + 1 );
       mItemsInScene.insert( row, item );
       endInsertRows();
     }
@@ -579,27 +575,6 @@ void QgsLayoutModel::setItemRemoved( QgsLayoutItem *item )
   refreshItemsInScene();
   endRemoveRows();
 }
-
-#if 0
-void QgsLayoutModel::setItemRestored( QgsComposerItem *item )
-{
-  if ( !item )
-  {
-    //nothing to do
-    return;
-  }
-
-  int pos = mItemZList.indexOf( item );
-  if ( pos == -1 )
-  {
-    //item not in z list, nothing to do
-    return;
-  }
-
-  item->setIsRemoved( false );
-  rebuildSceneItemList();
-}
-#endif
 
 void QgsLayoutModel::updateItemDisplayName( QgsLayoutItem *item )
 {
@@ -808,7 +783,7 @@ bool QgsLayoutModel::reorderItemToTop( QgsLayoutItem *item )
 
   //move item to top
   int row = itemIndex.row();
-  beginMoveRows( QModelIndex(), row, row, QModelIndex(), 0 );
+  beginMoveRows( QModelIndex(), row, row, QModelIndex(), 1 );
   refreshItemsInScene();
   endMoveRows();
   return true;
@@ -906,15 +881,22 @@ Qt::ItemFlags QgsLayoutModel::flags( const QModelIndex &index ) const
     return flags | Qt::ItemIsDropEnabled;
   }
 
-  switch ( index.column() )
+  if ( index.row() == 0 )
   {
-    case Visibility:
-    case LockStatus:
-      return flags | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
-    case ItemId:
-      return flags | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
-    default:
-      return flags | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    return flags | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+  }
+  else
+  {
+    switch ( index.column() )
+    {
+      case Visibility:
+      case LockStatus:
+        return flags | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
+      case ItemId:
+        return flags | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
+      default:
+        return flags | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    }
   }
 }
 
@@ -932,7 +914,7 @@ QModelIndex QgsLayoutModel::indexForItem( QgsLayoutItem *item, const int column 
     return QModelIndex();
   }
 
-  return index( row, column );
+  return index( row + 1, column );
 }
 
 ///@cond PRIVATE
@@ -944,7 +926,18 @@ void QgsLayoutModel::setSelected( const QModelIndex &index )
     return;
   }
 
+  // find top level group this item is contained within, and mark the group as selected
+  QgsLayoutItemGroup *group = item->parentGroup();
+  while ( group && group->parentGroup() )
+  {
+    group = group->parentGroup();
+  }
+
+  // but the actual main selected item is the item itself (allows editing of item properties)
   mLayout->setSelectedItem( item );
+
+  if ( group && group != item )
+    group->setSelected( true );
 }
 ///@endcond
 
@@ -960,7 +953,6 @@ QgsLayoutProxyModel::QgsLayoutProxyModel( QgsLayout *layout, QObject *parent )
   if ( mLayout )
     setSourceModel( mLayout->itemsModel() );
 
-  // TODO doesn't seem to work correctly - not updated when item changes
   setDynamicSortFilter( true );
   setSortLocaleAware( true );
   sort( QgsLayoutModel::ItemId );
@@ -968,6 +960,13 @@ QgsLayoutProxyModel::QgsLayoutProxyModel( QgsLayout *layout, QObject *parent )
 
 bool QgsLayoutProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
+  const QString leftText = sourceModel()->data( left, Qt::DisplayRole ).toString();
+  const QString rightText = sourceModel()->data( right, Qt::DisplayRole ).toString();
+  if ( leftText.isEmpty() )
+    return true;
+  if ( rightText.isEmpty() )
+    return false;
+
   //sort by item id
   const QgsLayoutItem *item1 = itemFromSourceIndex( left );
   const QgsLayoutItem *item2 = itemFromSourceIndex( right );
@@ -988,6 +987,17 @@ QgsLayoutItem *QgsLayoutProxyModel::itemFromSourceIndex( const QModelIndex &sour
   //get column corresponding to an index from the source model
   QVariant itemAsVariant = sourceModel()->data( sourceIndex, Qt::UserRole + 1 );
   return qobject_cast<QgsLayoutItem *>( itemAsVariant.value<QObject *>() );
+}
+
+void QgsLayoutProxyModel::setAllowEmptyItem( bool allowEmpty )
+{
+  mAllowEmpty = allowEmpty;
+  invalidateFilter();
+}
+
+bool QgsLayoutProxyModel::allowEmptyItem() const
+{
+  return mAllowEmpty;
 }
 
 void QgsLayoutProxyModel::setFilterType( QgsLayoutItemRegistry::ItemType filter )
@@ -1012,7 +1022,7 @@ bool QgsLayoutProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &so
   QgsLayoutItem *item = itemFromSourceIndex( index );
 
   if ( !item )
-    return false;
+    return mAllowEmpty;
 
   // specific exceptions
   if ( mExceptedList.contains( item ) )

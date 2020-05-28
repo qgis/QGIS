@@ -33,13 +33,12 @@ class QgsDwgImportDialog : public QDialog, private Ui::QgsDwgImportBase
 
   private slots:
     void buttonBox_accepted();
-    void pbBrowseDatabase_clicked();
     void pbBrowseDrawing_clicked();
     void pbImportDrawing_clicked();
     void pbLoadDatabase_clicked();
     void pbSelectAll_clicked();
     void pbDeselectAll_clicked();
-    void leDatabase_textChanged( const QString &text );
+    void mDatabaseFileWidget_textChanged( const QString &filename );
     void leLayerGroup_textChanged( const QString &text );
     void showHelp();
 

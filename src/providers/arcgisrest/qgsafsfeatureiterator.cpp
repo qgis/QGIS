@@ -133,9 +133,12 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
 
     mDeferredFeaturesInFilterRectCheck = false;
 
-    // discard the filter rect - we know that the features in mRemainingFeatureIds are guaranteed
-    // to be intersecting the rect, so avoid any extra unnecessary checks
-    mFilterRect = QgsRectangle();
+    if ( !( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) )
+    {
+      // discard the filter rect - we know that the features in mRemainingFeatureIds are guaranteed
+      // to be intersecting the rect, so avoid any extra unnecessary checks
+      mFilterRect = QgsRectangle();
+    }
   }
 
   if ( !mFeatureIdList.empty() && mRemainingFeatureIds.empty() )

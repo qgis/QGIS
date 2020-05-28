@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '20/08/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -118,6 +116,18 @@ class TestQgsFilterLineEdit(unittest.TestCase):
         self.assertEqual(w.value(), 'def')
         self.assertEqual(w.text(), 'def')
         self.assertFalse(w.isNull())
+
+    def test_selectedText(self):
+        """ test that NULL value is selected on focus and not-null value is not"""
+        w = qgis.gui.QgsFilterLineEdit(nullValue='my_null_value')
+        w.clearValue()
+        self.assertEqual(w.selectedText(), 'my_null_value')
+
+        w.setValue('my new value')
+        self.assertEqual(w.selectedText(), '')
+
+        w.clearValue()
+        self.assertEqual(w.selectedText(), 'my_null_value')
 
     @unittest.skipIf(not use_signal_spy, "No QSignalSpy available")
     def test_ChangedSignals(self):

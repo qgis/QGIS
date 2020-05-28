@@ -27,10 +27,11 @@
 #include "qgsoptionsdialogbase.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"
-#include "qgsmessagebar.h"
+#include "qgis.h"
 
 class QgsPluginSortFilterProxyModel;
 class QgsPythonUtils;
+class QgsMessageBar;
 
 const int PLUGMAN_TAB_ALL = 0;
 const int PLUGMAN_TAB_INSTALLED = 1;
@@ -111,9 +112,6 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Load/unload plugin when checkbox state changed
     void pluginItemChanged( QStandardItem *item );
 
-    //! Display details of inactive item too
-    void vwPlugins_clicked( const QModelIndex &index );
-
     //! Load/unload plugin by double-click
     void vwPlugins_doubleClicked( const QModelIndex &index );
 
@@ -128,6 +126,9 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 
     //! Install selected plugin
     void buttonInstall_clicked();
+
+    //! Install selected plugin
+    void buttonInstallExperimental_clicked();
 
     //! Uninstall selected plugin
     void buttonUninstall_clicked();

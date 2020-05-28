@@ -45,7 +45,7 @@ my $translators= {
 	'cs' => 'Jan Helebrant, Martin Landa, Peter Antolik, Martin Dzurov, Stanislav Horáček',
 	'da' => 'Jacob Overgaard Madsen, Bo Victor Thomsen',
 	'de' => 'Jürgen E. Fischer, Stephan Holl, Otto Dassau, Werner Macho',
-	'es' => 'Carlos Dávila, Javier César Aldariz, Gabriela Awad, Edwin Amado, Mayeul Kauffmann, Diana Galindo',
+	'es' => 'Carlos Dávila, Javier César Aldariz, Gabriela Awad, Edwin Amado, Mayeul Kauffmann, Diana Galindo, Fran Raga',
 	'el' => 'Theodoros Vakkas, Ioannis Tsimpiris, Evripidis Argyropoulos, Mike Pegnigiannis, Nikos Ves',
 	'eo' => 'Augustin Roche, Nikolay Korotkiy',
 	'et' => 'Veiko Viil',
@@ -57,8 +57,8 @@ my $translators= {
 	'hi' => 'Harish Kumar Solanki',
 	'hu' => 'Zoltan Siki, Zoltan Toldi',
 	'hr' => 'Zoran Jankovic',
-	'is' => 'Ásta Kristín Óladóttir, Thordur Ivarsson',
-	'id' => 'Emir Hartato, Muhammad Iqnaul Haq Siregar, Trias Aditya, Januar V. Simarmata, I Made Anombawa',
+	'is' => 'Ásta Kristín Óladóttir, Thordur Ivarsson, Sveinn í Felli',
+	'id' => 'Emir Hartato, Muhammad Iqnaul Haq Siregar, Trias Aditya, Januar V. Simarmata, I Made Anombawa',  #spellok
 	'it' => 'Marco Grisolia, Roberto Angeletti, Michele Beneventi, Marco Braida, Stefano Campus, Luca Casagrande, Paolo Cavallini, Giuliano Curti, Luca Delucchi, Alessandro Fanna, Michele Ferretti, Matteo Ghetta, Anne Gishla, Maurizio Napolitano, Flavio Rigolon',
 	'ja' => 'BABA Yoshihiko, Yoichi Kayama, Minoru Akagi, Takayuki Nuimura, Takayuki Mizutani, Norihiro Yamate, Kohei Tomita',
 	'ka' => 'Shota Murtskhvaladze, George Machitidze',
@@ -71,7 +71,7 @@ my $translators= {
 	'ml' => 'Vinayan Parameswaran',
 	'mn' => 'Bayarmaa Enkhtur',
 	'mr' => '',
-	'nb' => 'James Stott, Maléne Peterson',
+	'nb' => 'James Stott, Maléne Peterson, Kjell Cato Heskjestad',
 	'nl' => 'Richard Duivenvoorde, Raymond Nijssen, Carlo van Rijswijk, Diethard Jansen, Willem Hoffmans, Dick Groskamp',
 	'pl' => 'Robert Szczepanek, Milena Nowotarska, Borys Jurgiel, Mateusz Łoskot, Tomasz Paul, Andrzej Świąder, Radosław Pasiok, Michał Kułach, Ewelina Krawczak, Michał Smoczyk, Jakub Bobrowski, Kuba Kiszkurno, Beata Baziak, Bartosz Mazurkiewcz, Tomasz Rychlicki',
 	'pt_BR' => 'Sidney Schaberle Goveia, Arthur Nanni, Marcelo Soares Souza, Narcélio de Sá Pereira Filho, Leônidas Descovi Filho, Felipe Sodré Barros ',
@@ -90,10 +90,10 @@ my $translators= {
 	'th' => 'Man Chao',
 	'tl' => 'Kathrina Gregana',
 	'tr' => 'Osman Yalçın YILMAZ, Omur Saygin',
-	'uk' => 'Alexander Bruy, Svitlana Shulik (IT-Transit LLC), Alesya Shushova (IT-Transit LLC)',
+	'uk' => 'Alexander Bruy, Daria Svidzinska, Svitlana Shulik, Alesya Shushova',
 	'vi' => 'Phùng Văn Doanh, Bùi Hữu Mạnh, Nguyễn Văn Thanh, Nguyễn Hữu Phúc, Cao Minh Tu',
 	'zh-Hant' => 'Calvin Ngei, Zhang Jun, Richard Xie, Dennis Raylin Chen',
-	'zh-Hans' => 'Calvin Ngei, Lisashen',
+	'zh-Hans' => 'Calvin Ngei, Lisashen, Wang Shuai',
 };
 
 my $maxn;
@@ -106,9 +106,11 @@ for my $i (<i18n/qgis_*.ts>) {
 
 	my $charset = "";
 	my $lc = $langcode;
+	my $svg = $langcode;
 	if( $langcode =~ /(.*)\@latin/ ) {
 		$charset = " (latin)";
 		$langcode = $1;
+		$svg = $1;
 	}
 	if( $langcode =~ /(.*)\-Hans/ ) {
                 $charset = " simplified";
@@ -156,6 +158,7 @@ for my $i (<i18n/qgis_*.ts>) {
 
 	push @lang, {
 		code=>$langcode,
+		svg=>$svg,
 		origcode=>$lc,
 		name=>$name, n=>$n,
 		translations=>$translations,
@@ -171,58 +174,29 @@ foreach my $l (@lang) {
 	$l->{percentage} = ($l->{finished}+$l->{unfinished}/2)/$maxn*100;
 }
 
-if ( @ARGV && $ARGV[0] eq "site") {
-	print "<html><body>";
-	print "<head>";
-	print "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>";
-	print "<style>";
-	print "body {font-family:sans-serif; background-color:#d3d3d3; }";
-	print "table {font-size:80%;border-collapse: collapse;}";
-	print "td {border-left:solid 1px #aaaaaa;border-right:solid 1px #aaaaaa;padding:1px 10px;}";
-	print ".bartodo{ background-color:red;width:100px;height:20px;}";
-	print ".bardone{ background-color:green;width:80px;height:20px;font-size:80%;text-align:center;padding-top:4px;height:16px;color:white;}";
-	print "</style></head>";
-	print "<table>";
-	print "<tr><td colspan=\"2\" style=\"width:250px;\">Language</td><td>Count</td><td>Finished</td><td>Unfinished</td><td>Untranslated</td><td>Percentage</td><td>Translators</td></tr>\n";
-	for my $l (sort { $b->{percentage} <=> $a->{percentage} } @lang) {
-		last if $l->{percentage} < 35;
-		printf "\n<tr>"
-			. '<td align="center"><img src="flags/%s.svg" height="20"></td><td nowrap>%s</td>'
-			. '<td nowrap>%s</td><td>%d</td><td>%d</td><td>%d</td>'
-			. '<td><div class="bartodo"><div class="bardone" style="width:%dpx">%.1f</div></div></td>'
-			. '<td>%s</td>'
-			. '</tr>',
-			$l->{code}, $l->{name},
-			$l->{diff}==0 ? $l->{n} : "$l->{n} ($l->{diff})",
-			$l->{finished}, $l->{unfinished}, $l->{untranslated},
-			$l->{percentage}, $l->{percentage},
-			$l->{translator};
-	}
-	print "</table></body></html>\n";
-} else {
-	print "<style>";
-	print "body { font-family:sans-serif; background-color:#d3d3d3; }";
-	print "table {font-size:80%;}";
-	print "th {text-align:left; }";
-	print ".bartodo{ background-color:red;width:100px;height:20px;}";
-	print ".bardone{ background-color:green;width:80px;height:20px;font-size:80%;text-align:center;padding-top:4px;height:16px;color:white;}";
-	print "</style>";
-	print "<table>";
-	print "<tr><th colspan=\"2\" style=\"width:250px;\">Language</th><th>Finished %</th><th>Translators</th></tr>\n";
-	for my $l (sort { $b->{percentage} <=> $a->{percentage} } @lang) {
-		last if $l->{percentage} < 35;
-		printf "\n<tr>"
-			. '<td align="center"><img src="qrc:/images/flags/%s.svg" height="20"></td><td>%s</td>'
-			. '<td><div title="finished:%d unfinished:%d untranslated:%d" class="bartodo"><div class="bardone" style="width:%dpx">%.1f</div></div></td>'
-			. '<td>%s</td>'
-			. '</tr>',
-			$l->{code}, $l->{name},
-			$l->{finished}, $l->{unfinished}, $l->{untranslated},
-			$l->{percentage}, $l->{percentage},
-			$l->{translator};
-	}
-	print "</table>\n";
+print "<!-- created by scripts/tsstat.pl - Edits will be lost -->\n";
+print "<style>";
+print "body { font-family:sans-serif; background-color:#d3d3d3; }";
+print "table {font-size:80%;}";
+print "th {text-align:left; }";
+print ".bartodo{ background-color:red;width:100px;height:20px;}";
+print ".bardone{ background-color:green;width:80px;height:20px;font-size:80%;text-align:center;padding-top:4px;height:16px;color:white;}";
+print "</style>";
+print "<table>";
+print "<tr><th colspan=\"2\" style=\"width:250px;\">Language</th><th>Finished %</th><th>Translators</th></tr>\n";
+for my $l (sort { $b->{percentage} <=> $a->{percentage} } @lang) {
+	last if $l->{percentage} < 35;
+	printf "\n<tr>"
+		. '<td align="center"><img src="qrc:/images/flags/%s.svg" height="20"></td><td>%s</td>'
+		. '<td><div title="finished:%d unfinished:%d untranslated:%d" class="bartodo"><div class="bardone" style="width:%dpx">%.1f</div></div></td>'
+		. '<td>%s</td>'
+		. '</tr>',
+		$l->{svg}, $l->{name},
+		$l->{finished}, $l->{unfinished}, $l->{untranslated},
+		$l->{percentage}, $l->{percentage},
+		$l->{translator};
 }
+print "</table>\n";
 
 my @ts;
 for my $l (sort { $a->{code} cmp $b->{code} } @lang) {

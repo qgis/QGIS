@@ -36,19 +36,26 @@ class CORE_EXPORT QgsNumericScaleBarRenderer: public QgsScaleBarRenderer
      */
     QgsNumericScaleBarRenderer() = default;
 
-    QString name() const override { return QStringLiteral( "Numeric" ); }
+    QString id() const override;
+    QString visibleName() const override;
+    int sortKey() const override;
+    Flags flags() const override;
+    QgsNumericScaleBarRenderer *clone() const override SIP_FACTORY;
 
     void draw( QgsRenderContext &context,
                const QgsScaleBarSettings &settings,
                const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override;
 
-    QSizeF calculateBoxSize( const QgsScaleBarSettings &settings,
+    QSizeF calculateBoxSize( QgsRenderContext &context,
+                             const QgsScaleBarSettings &settings,
                              const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override;
+
+    Q_DECL_DEPRECATED QSizeF calculateBoxSize( const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override SIP_DEPRECATED ;
 
   private:
 
     //! Returns the text for the scale bar or an empty string in case of error
-    QString scaleText( double scale ) const;
+    QString scaleText( double scale, const QgsScaleBarSettings &settings ) const;
 
 };
 

@@ -14,10 +14,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsowsprovider.h"
 
 #include "qgslogger.h"
-#include "qgsowsprovider.h"
 #include "qgsconfig.h"
+#include "qgsowsdataitems.h"
 
 #include <QString>
 
@@ -27,11 +28,6 @@ static QString PROVIDER_DESCRIPTION = QStringLiteral( "OWS meta provider" );
 QgsOwsProvider::QgsOwsProvider( const QString &uri, const ProviderOptions &options )
   : QgsDataProvider( uri, options )
 {
-}
-
-QGISEXTERN QgsOwsProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
-{
-  return new QgsOwsProvider( *uri, options );
 }
 
 QString QgsOwsProvider::name() const
@@ -44,18 +40,26 @@ QString QgsOwsProvider::description() const
   return PROVIDER_DESCRIPTION;
 }
 
-QGISEXTERN QString providerKey()
+
+QgsOwsProviderMetadata::QgsOwsProviderMetadata():
+  QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {
-  return PROVIDER_KEY;
 }
 
-QGISEXTERN QString description()
+QgsOwsProvider *QgsOwsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return PROVIDER_DESCRIPTION;
+  return new QgsOwsProvider( uri, options );
 }
 
-QGISEXTERN bool isProvider()
+QList<QgsDataItemProvider *> QgsOwsProviderMetadata::dataItemProviders() const
 {
-  return true;
+  QList<QgsDataItemProvider *> providers;
+  providers << new QgsOwsDataItemProvider;
+  return providers;
+}
+
+QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
+{
+  return new QgsOwsProviderMetadata();
 }
 

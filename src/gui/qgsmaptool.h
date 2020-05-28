@@ -18,9 +18,6 @@
 
 #include "qgsconfig.h"
 #include "qgis.h"
-#include "qgsmessagebar.h"
-#include "qgspoint.h"
-#include "qgsmapmouseevent.h"
 
 #include <QCursor>
 #include <QString>
@@ -35,11 +32,14 @@ class QgsRenderContext;
 class QKeyEvent;
 class QMouseEvent;
 class QWheelEvent;
+class QgsPoint;
 class QgsPointXY;
 class QgsRectangle;
 class QPoint;
 class QAction;
 class QAbstractButton;
+class QgsMapMouseEvent;
+class QMenu;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -93,6 +93,7 @@ class GUI_EXPORT QgsMapTool : public QObject
                                tool automatically restored. */
       EditTool = 1 << 2, //!< Map tool is an edit tool, which can only be used when layer is editable
       AllowZoomRect = 1 << 3, //!< Allow zooming by rectangle (by holding shift and dragging) while the tool is active
+      ShowContextMenu = 1 << 4, //!< Show a context menu when right-clicking with the tool (since QGIS 3.14). See populateContextMenu().
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -135,15 +136,21 @@ class GUI_EXPORT QgsMapTool : public QObject
      * the previously used toolbutton to pop out. */
     void setAction( QAction *action );
 
-    //! Returns associated action with map tool or NULL if no action is associated
+    //! Returns associated action with map tool or NULLPTR if no action is associated
     QAction *action();
+
+    /**
+     * Returns if the current map tool active on the map canvas
+     * \since QGIS 3.4
+     */
+    bool isActive() const;
 
     /**
      * Use this to associate a button to this maptool. It has the same meaning
      * as setAction() function except it works with a button instead of an QAction. */
     void setButton( QAbstractButton *button );
 
-    //! Returns associated button with map tool or NULL if no button is associated
+    //! Returns associated button with map tool or NULLPTR if no button is associated
     QAbstractButton *button();
 
     //! Sets a user defined cursor
@@ -159,7 +166,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     virtual void clean();
 
     //! returns pointer to the tool's map canvas
-    QgsMapCanvas *canvas();
+    QgsMapCanvas *canvas() const;
 
     /**
      * Emit map tool changed with the old tool
@@ -185,6 +192,22 @@ class GUI_EXPORT QgsMapTool : public QObject
      *  The values is calculated from searchRadiusMM().
      *  \since QGIS 2.3 */
     static double searchRadiusMU( QgsMapCanvas *canvas );
+
+    /**
+     * Allows the tool to populate and customize the given \a menu,
+     * prior to showing it in response to a right-mouse button click.
+     *
+     * \a menu will be initially populated with a set of default, generic actions.
+     * Any new actions added to the menu should be correctly parented to \a menu.
+     *
+     * The default implementation does nothing.
+     *
+     * \note The context menu is only shown when the ShowContextMenu flag
+     * is present in flags().
+     *
+     * \since QGIS 3.14
+     */
+    virtual void populateContextMenu( QMenu *menu );
 
   signals:
     //! emit a message
@@ -230,7 +253,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     QgsRectangle toLayerCoordinates( const QgsMapLayer *layer, const QgsRectangle &rect );
 
     //! transformation from map coordinates to screen coordinates
-    QPoint toCanvasCoordinates( const QgsPointXY &point );
+    QPoint toCanvasCoordinates( const QgsPointXY &point ) const;
 
     //! pointer to map canvas
     QgsMapCanvas *mCanvas = nullptr;

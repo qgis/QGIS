@@ -50,7 +50,7 @@ QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget *parent,
     enc = settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString();
   }
 
-  // The specified decoding is added if not existing alread, and then set current.
+  // The specified decoding is added if not existing already, and then set current.
   // This should select it.
   int encindex = mEncodingComboBox->findText( enc );
   if ( encindex < 0 )
@@ -79,7 +79,7 @@ void QgsEncodingFileDialog::saveUsedEncoding()
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "UI/encoding" ), encoding() );
-  QgsDebugMsg( QString( "Set encoding " + encoding() + " as default." ) );
+  QgsDebugMsg( QStringLiteral( "Set encoding %1 as default." ).arg( encoding() ) );
 }
 
 void QgsEncodingFileDialog::addCancelAll()
@@ -153,7 +153,7 @@ QString QgsEncodingSelectionDialog::encoding() const
 
 void QgsEncodingSelectionDialog::setEncoding( const QString &encoding )
 {
-  // The specified decoding is added if not existing alread, and then set current.
+  // The specified decoding is added if not existing already, and then set current.
   // This should select it.
 
   int encindex = mEncodingComboBox->findText( encoding );

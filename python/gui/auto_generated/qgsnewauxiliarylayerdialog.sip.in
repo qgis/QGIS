@@ -9,6 +9,7 @@
 
 
 
+
 class QgsNewAuxiliaryLayerDialog: QDialog
 {
 %Docstring

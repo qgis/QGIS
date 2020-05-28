@@ -17,11 +17,11 @@
 #define QGSATTRIBUTETABLEVIEW_H
 
 #include <QTableView>
-#include "qgis.h"
 #include <QAction>
+#include "qgsfeatureid.h"
 
-#include "qgsfeature.h" // For QgsFeatureIds
 #include "qgis_gui.h"
+#include "qgsattributetableconfig.h"
 
 class QgsAttributeTableDelegate;
 class QgsAttributeTableFilterModel;
@@ -34,6 +34,7 @@ class QgsVectorLayerCache;
 class QMenu;
 class QProgressDialog;
 class QgsAttributeTableConfig;
+class QgsFeature;
 
 /**
  * \ingroup gui
@@ -57,9 +58,9 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
 
     /**
      * \brief setFeatureSelectionManager
-     * \param featureSelectionManager We will take ownership
+     * \param featureSelectionManager
      */
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager SIP_TRANSFER );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
 
     /**
      * This event filter is installed on the verticalHeader to intercept mouse press and release
@@ -69,7 +70,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      * \param object The object which is the target of the event.
      * \param event  The intercepted event
      *
-     * \returns Returns always false, so the event gets processed
+     * \returns Returns always FALSE, so the event gets processed
      */
     bool eventFilter( QObject *object, QEvent *event ) override;
 
@@ -79,6 +80,14 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      * \since QGIS 2.16
      */
     void setAttributeTableConfig( const QgsAttributeTableConfig &config );
+
+    /**
+     * Returns the selected features in the attribute table in table sorted order.
+     * \returns The selected features in the attribute table in the order sorted by the table.
+     * \since QGIS 3.4
+     */
+    QList<QgsFeatureId> selectedFeaturesIds() const;
+
 
   protected:
 
@@ -133,7 +142,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
 
     /**
      * \brief
-     * Is emitted, in order to provide a hook to add additional* menu entries to the context menu.
+     * Emitted in order to provide a hook to add additional* menu entries to the context menu.
      *
      * \param menu     If additional QMenuItems are added, they will show up in the context menu.
      * \param atIndex  The QModelIndex, to which the context menu belongs. Relative to the source model.
@@ -173,12 +182,14 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     void selectRow( int row, bool anchor );
     QgsAttributeTableFilterModel *mFilterModel = nullptr;
     QgsFeatureSelectionModel *mFeatureSelectionModel = nullptr;
+    QgsIFeatureSelectionManager *mOwnedFeatureSelectionManager = nullptr;
     QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
     QgsAttributeTableDelegate *mTableDelegate = nullptr;
     QMenu *mActionPopup = nullptr;
     int mRowSectionAnchor = 0;
     QItemSelectionModel::SelectionFlag mCtrlDragSelectionFlag = QItemSelectionModel::Select;
     QMap< QModelIndex, QWidget * > mActionWidgets;
+    QgsAttributeTableConfig mConfig;
 };
 
 #endif

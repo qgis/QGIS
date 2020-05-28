@@ -21,11 +21,8 @@
 #include "qgswcsdescribecoverage.h"
 
 #include "qgsproject.h"
-#include "qgsexception.h"
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
-#include "qgsmapserviceexception.h"
-#include "qgscoordinatereferencesystem.h"
 
 namespace QgsWcs
 {
@@ -36,17 +33,41 @@ namespace QgsWcs
   void writeDescribeCoverage( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                               const QgsServerRequest &request, QgsServerResponse &response )
   {
-    QDomDocument doc = createDescribeCoverageDocument( serverIface, project, version, request );
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    QgsAccessControl *accessControl = serverIface->accessControls();
+#endif
+    QDomDocument doc;
+    const QDomDocument *describeDocument = nullptr;
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    QgsServerCacheManager *cacheManager = serverIface->cacheManager();
+    if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
+    {
+      describeDocument = &doc;
+    }
+    else //describe feature xml not in cache. Create a new one
+    {
+      doc = createDescribeCoverageDocument( serverIface, project, version, request );
+
+      if ( cacheManager )
+      {
+        cacheManager->setCachedDocument( &doc, project, request, accessControl );
+      }
+      describeDocument = &doc;
+    }
+#else
+    doc = createDescribeCoverageDocument( serverIface, project, version, request );
+    describeDocument = &doc;
+#endif
     response.setHeader( "Content-Type", "text/xml; charset=utf-8" );
-    response.write( doc.toByteArray() );
+    response.write( describeDocument->toByteArray() );
   }
 
 
   QDomDocument createDescribeCoverageDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
       const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QDomDocument doc;
 
@@ -54,6 +75,8 @@ namespace QgsWcs
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
+#else
+    ( void )serverIface;
 #endif
 
     //wcs:WCS_Capabilities element
@@ -102,7 +125,7 @@ namespace QgsWcs
       {
         continue;
       }
-      if ( layer->type() != QgsMapLayer::LayerType::RasterLayer )
+      if ( layer->type() != QgsMapLayerType::RasterLayer )
       {
         continue;
       }
@@ -120,7 +143,7 @@ namespace QgsWcs
       if ( coveNameList.size() == 0 || coveNameList.contains( name ) )
       {
         QgsRasterLayer *rLayer = qobject_cast<QgsRasterLayer *>( layer );
-        coveDescElement.appendChild( getCoverageOffering( doc, const_cast<QgsRasterLayer *>( rLayer ) ) );
+        coveDescElement.appendChild( getCoverageOffering( doc, const_cast<QgsRasterLayer *>( rLayer ), project ) );
       }
     }
     return doc;

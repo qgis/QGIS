@@ -6,9 +6,13 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
@@ -17,8 +21,8 @@ INCLUDE_DIRECTORIES(
 )
 INCLUDE_DIRECTORIES (SYSTEM
   ${GDAL_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
   ${POSTGRES_INCLUDE_DIR}
 )
 
@@ -30,18 +34,6 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
     SET(GRASS_MAJOR_VERSION ${GRASS_MAJOR_VERSION${GRASS_BUILD_VERSION}})
     SET(GRASS_MINOR_VERSION ${GRASS_MINOR_VERSION${GRASS_BUILD_VERSION}})
     SET(GRASS_OFF_T_SIZE ${GRASS_OFF_T_SIZE${GRASS_BUILD_VERSION}})
-
-    SET(GRASS_LIBRARY_MOC_HDRS
-      ../qgsgrass.h
-      ../qgsgrassdatafile.h
-      ../qgsgrassfeatureiterator.h
-      ../qgsgrassimport.h
-      ../qgsgrassprovider.h
-      ../qgsgrassrasterprovider.h
-      ../qgsgrassvector.h
-      ../qgsgrassvectormap.h
-      ../qgsgrassvectormaplayer.h
-    )
 
     SET (GRASS_LIBRARY_SRCS
       ../qgsgrass.cpp
@@ -58,15 +50,10 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
     )
 
     IF (WITH_GUI)
-      SET(GRASS_LIBRARY_MOC_HDRS ${GRASS_LIBRARY_MOC_HDRS}
-        ../qgsgrassoptions.h
-      )
       SET(GRASS_LIBRARY_SRCS ${GRASS_LIBRARY_SRCS}
         ../qgsgrassoptions.cpp
       )
     ENDIF ()
-
-    QT5_WRAP_CPP(GRASS_LIBRARY_MOC_SRCS ${GRASS_LIBRARY_MOC_HDRS})
 
     IF(MSVC)
       # 4611 setjmp
@@ -93,7 +80,6 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
 
     ADD_LIBRARY(qgisgrass${GRASS_BUILD_VERSION} SHARED
       ${GRASS_LIBRARY_SRCS}
-      ${GRASS_LIBRARY_MOC_SRCS}
       ${GRASS_LIBRARY_UIS_H}
     )
 
@@ -172,8 +158,7 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
     # GRASS vector provider
     #
     SET (GRASS_VECTOR_PROVIDER_SRCS ../qgsgrassprovidermodule.cpp)
-    QT5_WRAP_CPP(GRASS_VECTOR_PROVIDER_MOC_SRCS ../qgsgrassprovidermodule.h)
-    ADD_LIBRARY(grassprovider${GRASS_BUILD_VERSION} MODULE ${GRASS_VECTOR_PROVIDER_SRCS} ${GRASS_VECTOR_PROVIDER_MOC_SRCS})
+    ADD_LIBRARY(grassprovider${GRASS_BUILD_VERSION} MODULE ${GRASS_VECTOR_PROVIDER_SRCS})
     SET_TARGET_PROPERTIES(grassprovider${GRASS_BUILD_VERSION} PROPERTIES
       COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\""
     )
@@ -185,6 +170,7 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
       TARGET_LINK_LIBRARIES(grassprovider${GRASS_BUILD_VERSION}
         qgis_gui
       )
+      ADD_DEPENDENCIES(grassprovider${GRASS_BUILD_VERSION} ui)
     ENDIF ()
 
     #

@@ -15,9 +15,9 @@
 
 #include "qgsvariableeditorwidget.h"
 #include "qgsexpressioncontext.h"
-#include "qgsfeature.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsexpression.h"
 
 #include <QVBoxLayout>
 #include <QTreeWidget>
@@ -28,7 +28,7 @@
 #include <QPushButton>
 #include <QHeaderView>
 #include <QMessageBox>
-
+#include <QClipboard>
 
 //
 // QgsVariableEditorWidget
@@ -141,7 +141,8 @@ QVariantMap QgsVariableEditorWidget::variablesInActiveScope() const
   }
 
   QgsExpressionContextScope *scope = mContext->scope( mEditableScopeIndex );
-  Q_FOREACH ( const QString &variable, scope->variableNames() )
+  const auto constVariableNames = scope->variableNames();
+  for ( const QString &variable : constVariableNames )
   {
     if ( scope->isReadOnly( variable ) )
       continue;
@@ -185,7 +186,8 @@ void QgsVariableEditorWidget::mRemoveButton_clicked()
   QgsExpressionContextScope *editableScope = mContext->scope( mEditableScopeIndex );
   QList<QTreeWidgetItem *> selectedItems = mTreeWidget->selectedItems();
 
-  Q_FOREACH ( QTreeWidgetItem *item, selectedItems )
+  const auto constSelectedItems = selectedItems;
+  for ( QTreeWidgetItem *item : constSelectedItems )
   {
     if ( !( item->flags() & Qt::ItemIsEditable ) )
       continue;
@@ -216,7 +218,8 @@ void QgsVariableEditorWidget::selectionChanged()
   QList<QTreeWidgetItem *> selectedItems = mTreeWidget->selectedItems();
 
   bool removeEnabled = true;
-  Q_FOREACH ( QTreeWidgetItem *item, selectedItems )
+  const auto constSelectedItems = selectedItems;
+  for ( QTreeWidgetItem *item : constSelectedItems )
   {
     if ( !( item->flags() & Qt::ItemIsEditable ) )
     {
@@ -264,7 +267,6 @@ QgsVariableEditorTree::QgsVariableEditorTree( QWidget *parent )
   setIconSize( QSize( 18, 18 ) );
   setColumnCount( 2 );
   setHeaderLabels( QStringList() << tr( "Variable" ) << tr( "Value" ) );
-  setAlternatingRowColors( true );
   setEditTriggers( QAbstractItemView::AllEditTriggers );
   setRootIsDecorated( false );
   header()->setSectionsMovable( false );
@@ -326,7 +328,8 @@ void QgsVariableEditorTree::refreshTree()
 
   //add all scopes from the context
   int scopeIndex = 0;
-  Q_FOREACH ( QgsExpressionContextScope *scope, mContext->scopes() )
+  const auto constScopes = mContext->scopes();
+  for ( QgsExpressionContextScope *scope : constScopes )
   {
     refreshScopeItems( scope, scopeIndex );
     scopeIndex++;
@@ -339,7 +342,8 @@ void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope *sc
   bool isCurrent = scopeIndex == mEditableScopeIndex;
   QTreeWidgetItem *scopeItem = mScopeToItem.value( scopeIndex );
 
-  Q_FOREACH ( const QString &name, scope->filteredVariableNames() )
+  const QStringList names = scope->filteredVariableNames();
+  for ( const QString &name : names )
   {
     QTreeWidgetItem *item = mVariableToItem.value( qMakePair( scopeIndex, name ) );
     if ( !item )
@@ -359,8 +363,9 @@ void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope *sc
 
     item->setFlags( item->flags() | Qt::ItemIsEnabled );
     item->setText( 0, name );
-    QString value = scope->variable( name ).toString();
-    item->setText( 1, value );
+    const QVariant value = scope->variable( name );
+    const QString previewString = QgsExpression::formatPreviewString( value, false );
+    item->setText( 1, previewString );
     QFont font = item->font( 0 );
     if ( readOnly || !isCurrent )
     {
@@ -384,7 +389,7 @@ void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope *sc
     {
       font.setStrikeOut( false );
       item->setToolTip( 0, name );
-      item->setToolTip( 1, value );
+      item->setToolTip( 1, previewString );
     }
     item->setFont( 0, font );
     item->setFont( 1, font );
@@ -477,9 +482,19 @@ void QgsVariableEditorTree::drawRow( QPainter *painter, const QStyleOptionViewIt
   if ( index.parent().isValid() )
   {
     //not a top-level item, so shade row background by context
-    const QColor baseColor = item->data( 0, RowBaseColor ).value<QColor>();
+    QColor baseColor = item->data( 0, RowBaseColor ).value<QColor>();
+    if ( index.row() % 2 == 1 )
+    {
+      baseColor = baseColor.lighter( 110 );
+    }
     painter->fillRect( option.rect, baseColor );
-    opt.palette.setColor( QPalette::AlternateBase, baseColor.lighter( 110 ) );
+
+    //declare custom text color since we've overwritten default background color
+    QPalette pal = opt.palette;
+    pal.setColor( QPalette::Active, QPalette::Text, Qt::black );
+    pal.setColor( QPalette::Inactive, QPalette::Text, Qt::black );
+    pal.setColor( QPalette::Disabled, QPalette::Text, Qt::gray );
+    opt.palette = pal;
   }
   QTreeWidget::drawRow( painter, opt, index );
   QColor color = static_cast<QRgb>( QApplication::style()->styleHint( QStyle::SH_Table_GridLineColor, &opt ) );
@@ -612,6 +627,25 @@ void QgsVariableEditorTree::keyPressEvent( QKeyEvent *event )
     default:
       break;
   }
+
+  if ( event == QKeySequence::Copy )
+  {
+    QList<QTreeWidgetItem *> selected = selectedItems();
+    if ( selected.size() > 0 )
+    {
+      QString text = selected.at( 0 )->text( 0 );
+      QString varName = variableNameFromItem( selected.at( 0 ) );
+      QgsExpressionContextScope *scope = scopeFromItem( selected.at( 0 ) );
+      if ( !varName.isEmpty() && scope )
+        text = scope->variable( varName ).toString();
+
+      QClipboard *clipboard = QApplication::clipboard();
+      clipboard->setText( text );
+      event->accept();
+      return;
+    }
+  }
+
   QTreeWidget::keyPressEvent( event );
 }
 
@@ -700,7 +734,7 @@ QSize VariableEditorDelegate::sizeHint( const QStyleOptionViewItem &option,
 void VariableEditorDelegate::setModelData( QWidget *widget, QAbstractItemModel *model,
     const QModelIndex &index ) const
 {
-  Q_UNUSED( model );
+  Q_UNUSED( model )
 
   if ( !mParentTree )
     return;
@@ -720,7 +754,7 @@ void VariableEditorDelegate::setModelData( QWidget *widget, QAbstractItemModel *
     //edited variable name
     QString newName = lineEdit->text();
     newName = newName.trimmed();
-    newName = newName.replace( QStringLiteral( " " ), "_" );
+    newName = newName.replace( ' ', '_' );
 
     //test for validity
     if ( newName == variableName )

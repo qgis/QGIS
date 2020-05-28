@@ -18,6 +18,13 @@
 #include <QStringList>
 
 #include "qgspallabeling.h"
+#include "qgsfontutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsnullsymbolrenderer.h"
+#include "qgsvectorlayerlabeling.h"
+#include "qgsmapsettings.h"
+#include "qgsmaprenderersequentialjob.h"
+#include "qgsrenderchecker.h"
 
 class TestQgsPalLabeling: public QObject
 {
@@ -30,8 +37,11 @@ class TestQgsPalLabeling: public QObject
     void cleanup();// will be called after every testfunction.
     void wrapChar();//test wrapping text lines
     void graphemes(); //test splitting strings to graphemes
+    bool imageCheck( const QString &testName, QImage &image, int mismatchCount );
+    void testGeometryGenerator();
 
   private:
+    QString mReport;
 };
 
 void TestQgsPalLabeling::initTestCase()
@@ -40,7 +50,15 @@ void TestQgsPalLabeling::initTestCase()
 
 void TestQgsPalLabeling::cleanupTestCase()
 {
-
+  QgsApplication::exitQgis();
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+  }
 }
 
 void TestQgsPalLabeling::init()
@@ -61,6 +79,14 @@ void TestQgsPalLabeling::wrapChar()
   QCOMPARE( QgsPalLabeling::splitToLines( "mixed new line\nand char", QString( " " ) ), QStringList() << "mixed" << "new" << "line" << "and" << "char" );
   QCOMPARE( QgsPalLabeling::splitToLines( "no matching chars", QString( "#" ) ), QStringList() << "no matching chars" );
   QCOMPARE( QgsPalLabeling::splitToLines( "no\nmatching\nchars", QString( "#" ) ), QStringList() << "no" << "matching" << "chars" );
+
+  // with auto wrap
+  QCOMPARE( QgsPalLabeling::splitToLines( "with auto wrap", QString(), 12, true ), QStringList() << "with auto" << "wrap" );
+  QCOMPARE( QgsPalLabeling::splitToLines( "with auto wrap", QString(), 6, false ), QStringList() << "with auto" << "wrap" );
+
+  // manual wrap character should take precedence
+  QCOMPARE( QgsPalLabeling::splitToLines( QStringLiteral( "with auto-wrap and manual-wrap" ), QStringLiteral( "-" ), 12, true ), QStringList() << "with auto" << "wrap and" << "manual" << "wrap" );
+  QCOMPARE( QgsPalLabeling::splitToLines( QStringLiteral( "with auto-wrap and manual-wrap" ), QStringLiteral( "-" ), 6, false ), QStringList() << "with auto" << "wrap and" << "manual" << "wrap" );
 }
 
 void TestQgsPalLabeling::graphemes()
@@ -168,6 +194,102 @@ void TestQgsPalLabeling::graphemes()
             << expected2Pt10
             << expected2Pt11 );
 }
+
+bool TestQgsPalLabeling::imageCheck( const QString &testName, QImage &image, int mismatchCount )
+{
+  //draw background
+  QImage imageWithBackground( image.width(), image.height(), QImage::Format_RGB32 );
+  QgsRenderChecker::drawBackground( &imageWithBackground );
+  QPainter painter( &imageWithBackground );
+  painter.drawImage( 0, 0, image );
+  painter.end();
+
+  mReport += "<h2>" + testName + "</h2>\n";
+  QString tempDir = QDir::tempPath() + '/';
+  QString fileName = tempDir + testName + ".png";
+  imageWithBackground.save( fileName, "PNG" );
+  QgsRenderChecker checker;
+  checker.setControlPathPrefix( QStringLiteral( "pallabeling" ) );
+  checker.setControlName( "expected_" + testName );
+  checker.setRenderedImage( fileName );
+  checker.setColorTolerance( 2 );
+  bool resultFlag = checker.compareImages( testName, mismatchCount );
+  mReport += checker.report();
+  return resultFlag;
+}
+
+void TestQgsPalLabeling::testGeometryGenerator()
+{
+  // test that no labels are drawn outside of the specified label boundary
+  QgsPalLayerSettings settings;
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'X'" );
+  settings.isExpression = true;
+
+  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.geometryGeneratorEnabled = true;
+  settings.geometryGeneratorType = QgsWkbTypes::PointGeometry;
+  settings.geometryGenerator = "translate($geometry, 1, 0)";
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+
+  vl2->setRenderer( new QgsNullSymbolRenderer() );
+
+  // DEBUG HINT:
+  // Labels should be rendered with an offset of their original geometry. To debug, enable rendering the geometry itself.
+  // vl2->setRenderer( new QgsSingleSymbolRenderer( new QgsMarkerSymbol() ) );
+
+
+  QgsFeature f( vl2->fields(), 1 );
+
+  for ( int x = 0; x < 17; x += 3 )
+  {
+    for ( int y = 0; y < 10; y += 3 )
+    {
+      f.setGeometry( qgis::make_unique< QgsPoint >( x, y ) );
+      vl2->dataProvider()->addFeature( f );
+    }
+  }
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  QgsCoordinateReferenceSystem tgtCrs;
+  tgtCrs.createFromString( QStringLiteral( "EPSG:4326" ) );
+  mapSettings.setDestinationCrs( tgtCrs );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl2->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "geometry_generator_translated" ), img, 20 ) );
+
+  // with rotation
+  mapSettings.setRotation( 45 );
+  QgsMapRendererSequentialJob job2( mapSettings );
+  job2.start();
+  job2.waitForFinished();
+
+  img = job2.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "rotated_geometry_generator_translated" ), img, 20 ) );
+}
+
 
 QGSTEST_MAIN( TestQgsPalLabeling )
 #include "testqgspallabeling.moc"

@@ -51,13 +51,27 @@ Returns the virtual layer definition.
 %Docstring
 Reloads the data.
 
-:return: True if the virtual layer is valid, false otherwise.
+:return: ``True`` if the virtual layer is valid, ``False`` otherwise.
 %End
 
     virtual void cancel();
 
 %Docstring
 Cancels the pending query and the parent task.
+%End
+
+    QString exceptionText() const;
+%Docstring
+Returns the exception text or an empty string if no exceptions were raised
+
+.. versionadded:: 3.4
+%End
+
+    void setExceptionText( const QString &exceptionText );
+%Docstring
+Sets the ``exceptionText``
+
+.. versionadded:: 3.4
 %End
 
 };

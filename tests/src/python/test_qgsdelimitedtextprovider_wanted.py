@@ -20,8 +20,6 @@
 __author__ = 'Chris Crook'
 __date__ = 'May 2013'
 __copyright__ = '(C) 2013, Chris Crook'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 
 def test_002_load_csv_file():
@@ -101,7 +99,7 @@ def test_003_field_naming():
             'data': 'Some data',
             'field_4': 'Some info',
             'data_2': 'NULL',
-            '28_1': 'NULL',
+            '28': 'NULL',
             '24.5': 'NULL',
             'field_3_1': 'NULL',
             'data_1': 'NULL',
@@ -128,7 +126,7 @@ def test_004_max_fields():
             'data': 'Some data',
             'field_4': 'Some info',
             'data_1': 'NULL',
-            '28_1': 'NULL',
+            '28': 'NULL',
             '24.5': 'NULL',
             '#fid': 2,
             '#geometry': 'None',

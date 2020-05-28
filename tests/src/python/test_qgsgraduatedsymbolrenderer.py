@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Chris Crook'
 __date__ = '3/10/2014'
 __copyright__ = 'Copyright 2014, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -33,7 +31,8 @@ from qgis.PyQt.QtGui import QColor
 
 start_app()
 
-#===========================================================
+
+# ===========================================================
 # Utility functions
 
 
@@ -81,6 +80,7 @@ def createLabelFormat():
     format.setTrimTrailingZeroes(True)
     return format
 
+
 # Note: Dump functions are not designed for a user friendly dump, just
 # for a moderately compact representation of a rendererer that is independent
 # of the renderer source code and so appropriate for use in unit tests.
@@ -119,6 +119,7 @@ def dumpRangeList(rlist, breaksOnly=False, labelsOnly=False):
         ) + ","
     return rstr + ')'
 
+
 # Crude dump for deterministic ramp - just dumps colors at a range of values
 
 
@@ -144,7 +145,8 @@ def dumpGraduatedRenderer(r):
     rstr = rstr + dumpRangeList(r.ranges())
     return rstr
 
-#=================================================================
+
+# =================================================================
 # Tests
 
 
@@ -262,7 +264,7 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
         format.setFormat(label)
         result = format.labelForRange(range)
         self.assertEqual(result, ltests[0][1], "Label for range error {0} => {1}".format(
-                         label, result))
+            label, result))
 
     def testQgsGraduatedSymbolRenderer_1(self):
         """Test QgsGraduatedSymbolRenderer: Basic get/set functions """
@@ -410,14 +412,13 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
         renderer.deleteAllClasses()
         self.assertEqual(len(renderer.ranges()), 0, "deleteAllClasses didn't delete all")
 
-
-#    void addClass( QgsSymbol* symbol );
-#    //! \note available in python bindings as addClassRange
-#    void addClass( QgsRendererRange range ) /PyName=addClassRange/;
-#    //! \note available in python bindings as addClassLowerUpper
-#    void addClass( double lower, double upper ) /PyName=addClassLowerUpper/;
-#    void deleteClass( int idx );
-#    void deleteAllClasses();
+    #    void addClass( QgsSymbol* symbol );
+    #    //! \note available in python bindings as addClassRange
+    #    void addClass( QgsRendererRange range ) /PyName=addClassRange/;
+    #    //! \note available in python bindings as addClassLowerUpper
+    #    void addClass( double lower, double upper ) /PyName=addClassLowerUpper/;
+    #    void deleteClass( int idx );
+    #    void deleteAllClasses();
 
     def testQgsGraduatedSymbolRenderer_3(self):
         """Test QgsGraduatedSymbolRenderer: Reading attribute data, calculating classes """
@@ -450,11 +451,30 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
             '(0.5000-1.0000,1.0000-1.1000,1.1000-1.2000,1.2000-5.0000,)',
             'Quantile classification not correct')
 
-        # Tests still needed
+    def testUsedAttributes(self):
+        renderer = QgsGraduatedSymbolRenderer()
+        ctx = QgsRenderContext()
 
-        # Other calculation method tests
-        # createRenderer function
-        # symbolForFeature correctly selects range
+        # attribute can contain either attribute name or an expression.
+        # Sometimes it is not possible to distinguish between those two,
+        # e.g. "a - b" can be both a valid attribute name or expression.
+        # Since we do not have access to fields here, the method should return both options.
+        renderer.setClassAttribute("value")
+        self.assertEqual(renderer.usedAttributes(ctx), {"value"})
+        renderer.setClassAttribute("value - 1")
+        self.assertEqual(renderer.usedAttributes(ctx), {"value", "value - 1"})
+        renderer.setClassAttribute("valuea - valueb")
+        self.assertEqual(renderer.usedAttributes(ctx), {"valuea", "valuea - valueb", "valueb"})
+
+    def testFilterNeedsGeometry(self):
+        renderer = QgsGraduatedSymbolRenderer()
+
+        renderer.setClassAttribute("value")
+        self.assertFalse(renderer.filterNeedsGeometry())
+        renderer.setClassAttribute("$area")
+        self.assertTrue(renderer.filterNeedsGeometry())
+        renderer.setClassAttribute("value - $area")
+        self.assertTrue(renderer.filterNeedsGeometry())
 
 
 if __name__ == "__main__":

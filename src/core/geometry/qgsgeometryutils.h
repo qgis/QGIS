@@ -19,11 +19,12 @@ email                : marco.hugentobler at sourcepole dot com
 #include <limits>
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgspoint.h"
 #include "qgsabstractgeometry.h"
 #include "qgsvector3d.h"
 
+#include <QJsonArray>
 
 class QgsLineString;
 
@@ -72,7 +73,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param distance distance to traverse along geometry
      * \param previousVertex will be set to previous vertex ID
      * \param nextVertex will be set to next vertex ID
-     * \returns true if vertices were successfully retrieved
+     * \returns TRUE if vertices were successfully retrieved
      * \note if the distance coincides exactly with a vertex, then both previousVertex and nextVertex will be set to this vertex
      * \since QGIS 3.0
      */
@@ -111,9 +112,9 @@ class CORE_EXPORT QgsGeometryUtils
      * \param q1 Second segment start point
      * \param q2 Second segment end point
      * \param intersectionPoint Output parameter, the intersection point
-     * \param isIntersection Output parameter, return true if an intersection is found
+     * \param isIntersection Output parameter, return TRUE if an intersection is found
      * \param tolerance The tolerance to use
-     * \param acceptImproperIntersection By default, this method returns true only if segments have proper intersection. If set true, returns also true if segments have improper intersection (end of one segment on other segment ; continuous segments).
+     * \param acceptImproperIntersection By default, this method returns true only if segments have proper intersection. If set true, returns also TRUE if segments have improper intersection (end of one segment on other segment ; continuous segments).
      * \returns  Whether the segments intersect
      * * Example:
      * \code{.py}
@@ -149,7 +150,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param linePoint1 a first point on the line
      * \param linePoint2 a second point on the line
      * \param intersection the initial point and the returned intersection point
-     * \return true if an intersection has been found
+     * \return TRUE if an intersection has been found
      */
     static bool lineCircleIntersection( const QgsPointXY &center, double radius,
                                         const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
@@ -203,6 +204,29 @@ class CORE_EXPORT QgsGeometryUtils
       QgsPointXY &line2P1 SIP_OUT, QgsPointXY &line2P2 SIP_OUT );
 
     /**
+     * Calculates the inner tangent points for two circles, centered at \a
+     * center1 and \a center2 and with radii of \a radius1 and \a radius2
+     * respectively.
+     *
+     * The inner tangent points correspond to the points at which the two lines
+     * which are drawn so that they are tangential to both circles and are
+     * crossing each other.
+     *
+     * The first tangent line is described by the points
+     * stored in \a line1P1 and \a line1P2,
+     * and the second line is described by the points stored in \a line2P1
+     * and \a line2P2.
+     *
+     * Returns the number of tangents (either 0 or 2).
+     *
+     * \since QGIS 3.6
+     */
+    static int circleCircleInnerTangents(
+      const QgsPointXY &center1, double radius1, const QgsPointXY &center2, double radius2,
+      QgsPointXY &line1P1 SIP_OUT, QgsPointXY &line1P2 SIP_OUT,
+      QgsPointXY &line2P1 SIP_OUT, QgsPointXY &line2P2 SIP_OUT );
+
+    /**
      * \brief Project the point on a segment
      * \param p The point
      * \param s1 The segment start point
@@ -238,13 +262,24 @@ class CORE_EXPORT QgsGeometryUtils
     static QVector<SelfIntersection> selfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance ) SIP_SKIP;
 
     /**
-     * Returns a value < 0 if the point (\a x, \a y) is left of the line from (\a x1, \a y1) -> ( \a x2, \a y2).
+     * Returns a value < 0 if the point (\a x, \a y) is left of the line from (\a x1, \a y1) -> (\a x2, \a y2).
      * A positive return value indicates the point is to the right of the line.
      *
      * If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
      * on the line, or exactly in line with the segment) and the result is undefined.
      */
-    static int leftOfLine( double x, double y, double x1, double y1, double x2, double y2 );
+    static int leftOfLine( const double x, const double y, const double x1, const double y1, const double x2, const double y2 );
+
+    /**
+     * Returns a value < 0 if the point \a point is left of the line from \a p1 -> \a p2.
+     * A positive return value indicates the point is to the right of the line.
+     *
+     * If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
+     * on the line, or exactly in line with the segment) and the result is undefined.
+     *
+     * \since QGIS 3.6
+     */
+    static int leftOfLine( const QgsPoint &point, const QgsPoint &p1, const QgsPoint &p2 );
 
     /**
      * Returns a point a specified \a distance toward a second point.
@@ -282,18 +317,18 @@ class CORE_EXPORT QgsGeometryUtils
                                     double &centerX SIP_OUT, double &centerY SIP_OUT );
 
     /**
-     * Returns true if the circle defined by three angles is ordered clockwise.
+     * Returns TRUE if the circle defined by three angles is ordered clockwise.
      *
      * The angles are defined counter-clockwise from the origin, i.e. using
      * Euclidean angles as opposed to geographic "North up" angles.
      */
     static bool circleClockwise( double angle1, double angle2, double angle3 );
 
-    //! Returns true if, in a circle, angle is between angle1 and angle2
+    //! Returns TRUE if, in a circle, angle is between angle1 and angle2
     static bool circleAngleBetween( double angle, double angle1, double angle2, bool clockwise );
 
     /**
-     * Returns true if an angle is between angle1 and angle3 on a circle described by
+     * Returns TRUE if an angle is between angle1 and angle3 on a circle described by
      * angle1, angle2 and angle3.
      */
     static bool angleOnCircle( double angle, double angle1, double angle2, double angle3 );
@@ -316,8 +351,8 @@ class CORE_EXPORT QgsGeometryUtils
      * Calculates the midpoint on the circle passing through \a p1 and \a p2,
      * with the specified \a center coordinate.
      *
-     * If \a useShortestArc is true, then the midpoint returned will be that corresponding
-     * to the shorter arc from \a p1 to \a p2. If it is false, the longer arc from \a p1
+     * If \a useShortestArc is TRUE, then the midpoint returned will be that corresponding
+     * to the shorter arc from \a p1 to \a p2. If it is FALSE, the longer arc from \a p1
      * to \a p2 will be used (i.e. winding the other way around the circle).
      *
      * \see segmentMidPoint()
@@ -336,6 +371,24 @@ class CORE_EXPORT QgsGeometryUtils
                                QgsPointSequence SIP_PYALTERNATIVETYPE( QVector<QgsPoint> ) &points SIP_OUT, double tolerance = M_PI_2 / 90,
                                QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::MaximumAngle,
                                bool hasZ = false, bool hasM = false );
+
+    /**
+     * Returns true if point \a b is on the arc formed by points \a a1, \a a2, and \a a3, but not within
+     * that arc portion already described by \a a1, \a a2 and \a a3.
+     *
+     * The \a distanceTolerance specifies the maximum deviation allowed between the original location
+     * of point \b and where it would fall on the candidate arc.
+     *
+     * This method only consider a segments as continuing an arc if the points are all regularly spaced
+     * on the candidate arc. The \a pointSpacingAngleTolerance parameter specifies the maximum
+     * angular deviation (in radians) allowed when testing for regular point spacing.
+     *
+     * \note The API is considered EXPERIMENTAL and can be changed without a notice
+     *
+     * \since QGIS 3.14
+     */
+    static bool pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2, const QgsPoint &a3, const QgsPoint &b, double distanceTolerance,
+                                   double pointSpacingAngleTolerance );
 
     /**
      * For line defined by points pt1 and pt3, find out on which side of the line is point pt3.
@@ -372,19 +425,25 @@ class CORE_EXPORT QgsGeometryUtils
      * Returns a gml::coordinates DOM element.
      * \note not available in Python bindings
      */
-    static QDomElement pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder = QgsAbstractGeometry::AxisOrder::XY ) SIP_SKIP;
+    static QDomElement pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) SIP_SKIP;
 
     /**
      * Returns a gml::posList DOM element.
      * \note not available in Python bindings
      */
-    static QDomElement pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, bool is3D, const QgsAbstractGeometry::AxisOrder &axisOrder = QgsAbstractGeometry::AxisOrder::XY ) SIP_SKIP;
+    static QDomElement pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, bool is3D, QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) SIP_SKIP;
 
     /**
      * Returns a geoJSON coordinates string.
      * \note not available in Python bindings
      */
     static QString pointsToJSON( const QgsPointSequence &points, int precision ) SIP_SKIP;
+
+    /**
+     * Returns coordinates as json object.
+     * \note not available in Python bindings
+     */
+    static json pointsToJson( const QgsPointSequence &points, int precision ) SIP_SKIP;
 
     /**
      * Ensures that an angle is in the range 0 <= angle < 2 pi.
@@ -577,7 +636,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param P22 is the second point that belongs to second skew line,
      * \param X1 is the result projection point of line P2P22 onto line P1P12,
      * \param epsilon the tolerance to use.
-     * \return true if such point exists, false - otherwise.
+     * \return TRUE if such point exists, FALSE - otherwise.
      */
     static bool skewLinesProjection( const QgsVector3D &P1, const QgsVector3D &P12,
                                      const QgsVector3D &P2, const QgsVector3D &P22,
@@ -591,7 +650,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param Lb1 is the first point on the second line,
      * \param Lb2 is the second point on the second line,
      * \param intersection is the result intersection, of it can be found.
-     * \return true if the intersection can be found, false - otherwise.
+     * \return TRUE if the intersection can be found, FALSE - otherwise.
      * example:
      * \code{.py}
      *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(2,1,0), QgsVector3D(2,3,0))
@@ -623,12 +682,40 @@ class CORE_EXPORT QgsGeometryUtils
                                      QgsVector3D &intersection  SIP_OUT );
 
     /**
+     * Returns the area of the triangle denoted by the points (\a aX, \a aY), (\a bX, \a bY) and
+     * (\a cX, \a cY).
+     *
+     * \since QGIS 3.10
+     */
+    static double triangleArea( double aX, double aY, double bX, double bY, double cX, double cY );
+
+    /**
+     * Returns a weighted point inside the triangle denoted by the points (\a aX, \a aY), (\a bX, \a bY) and
+     * (\a cX, \a cY).
+     *
+     * \param aX x-coordinate of first vertex in triangle
+     * \param aY y-coordinate of first vertex in triangle
+     * \param bX x-coordinate of second vertex in triangle
+     * \param bY y-coordinate of second vertex in triangle
+     * \param cX x-coordinate of third vertex in triangle
+     * \param cY y-coordinate of third vertex in triangle
+     * \param weightB weighting factor along axis A-B (between 0 and 1)
+     * \param weightC weighting factor along axis A-C (between 0 and 1)
+     * \param pointX x-coordinate of generated point
+     * \param pointY y-coordinate of generated point
+     *
+     * \since QGIS 3.10
+     */
+    static void weightedPointInTriangle( double aX, double aY, double bX, double bY, double cX, double cY,
+                                         double weightB, double weightC, double &pointX SIP_OUT, double &pointY SIP_OUT );
+
+    /**
      * A Z dimension is added to \a point if one of the point in the list
      * \a points is in 3D. Moreover, the Z value of \a point is updated with.
      *
      * \param points List of points in which a 3D point is searched.
      * \param point The point to update with Z dimension and value.
-     * \returns true if the point is updated, false otherwise
+     * \returns TRUE if the point is updated, FALSE otherwise
      *
      * \since QGIS 3.0
      */

@@ -19,7 +19,7 @@
 #define QGSATTRIBUTES_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include <QMap>
 #include <QString>
@@ -33,7 +33,6 @@
 #include "qgsfields.h"
 
 
-class QgsGeometry;
 class QgsRectangle;
 class QgsFeature;
 class QgsFeaturePrivate;
@@ -95,7 +94,7 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
      * handle NULL values for certain types (like int).
      *
      * \param v The attributes to compare
-     * \returns True if v is equal
+     * \returns TRUE if v is equal
      */
     bool operator==( const QgsAttributes &v ) const
     {
@@ -130,7 +129,7 @@ typedef QVector<QVariant> QgsAttributes;
 % MappedType QgsAttributes
 {
   % TypeHeaderCode
-#include <qgsfeature.h>
+#include "qgsfeature.h"
   % End
 
   % ConvertFromTypeCode

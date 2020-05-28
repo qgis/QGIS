@@ -66,7 +66,6 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void loadMinMaxFromTree( double min, double max );
 
   private slots:
-    void mLoadFromBandButton_clicked();
     void bandChanged();
     void mMinLineEdit_textChanged( const QString & );
     void mMaxLineEdit_textChanged( const QString & );

@@ -57,7 +57,13 @@ QgsNewNameDialog::QgsNewNameDialog( const QString &source, const QString &initia
     QRegExpValidator *validator = new QRegExpValidator( regexp, this );
     mLineEdit->setValidator( validator );
   }
+
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   mLineEdit->setMinimumWidth( mLineEdit->fontMetrics().width( QStringLiteral( "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ) ) );
+#else
+  mLineEdit->setMinimumWidth( mLineEdit->fontMetrics().horizontalAdvance( 'x' ) * 44 );
+#endif
   connect( mLineEdit, &QLineEdit::textChanged, this, &QgsNewNameDialog::nameChanged );
   connect( mLineEdit, &QLineEdit::textChanged, this, &QgsNewNameDialog::newNameChanged );
   layout()->addWidget( mLineEdit );
@@ -164,7 +170,8 @@ QString QgsNewNameDialog::name() const
 QStringList QgsNewNameDialog::fullNames( const QString &name, const QStringList &extensions )
 {
   QStringList list;
-  Q_FOREACH ( const QString &ext, extensions )
+  const auto constExtensions = extensions;
+  for ( const QString &ext : constExtensions )
   {
     list << name + ext;
 
@@ -181,9 +188,11 @@ QStringList QgsNewNameDialog::matching( const QStringList &newNames, const QStri
 {
   QStringList list;
 
-  Q_FOREACH ( const QString &newName, newNames )
+  const auto constNewNames = newNames;
+  for ( const QString &newName : constNewNames )
   {
-    Q_FOREACH ( const QString &existingName, existingNames )
+    const auto constExistingNames = existingNames;
+    for ( const QString &existingName : constExistingNames )
     {
       if ( existingName.compare( newName, cs ) == 0 )
       {

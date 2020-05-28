@@ -18,7 +18,10 @@
 
 #include "qgslogger.h"
 #include "qgsrectangle.h"
-
+#include "qgsproperty.h"
+#include "qgssymbollayerutils.h"
+#include "qgsprocessingparameters.h"
+#include "qgsremappingproxyfeaturesink.h"
 
 QgsUnitTypes::DistanceUnit QgsXmlUtils::readMapUnits( const QDomElement &element )
 {
@@ -105,6 +108,12 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
   QDomElement element = doc.createElement( QStringLiteral( "Option" ) );
   switch ( value.type() )
   {
+    case QVariant::Invalid:
+    {
+      element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "invalid" ) );
+      break;
+    }
+
     case QVariant::Map:
     {
       QVariantMap map = value.toMap();
@@ -123,7 +132,8 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
     {
       QVariantList list = value.toList();
 
-      Q_FOREACH ( const QVariant &value, list )
+      const auto constList = list;
+      for ( const QVariant &value : constList )
       {
         QDomElement valueElement = writeVariant( value, doc );
         element.appendChild( valueElement );
@@ -136,7 +146,8 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
     {
       QStringList list = value.toStringList();
 
-      Q_FOREACH ( const QString &value, list )
+      const auto constList = list;
+      for ( const QString &value : constList )
       {
         QDomElement valueElement = writeVariant( value, doc );
         element.appendChild( valueElement );
@@ -146,16 +157,91 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
     }
 
     case QVariant::Int:
+    case QVariant::UInt:
     case QVariant::Bool:
     case QVariant::Double:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
     case QVariant::String:
       element.setAttribute( QStringLiteral( "type" ), QVariant::typeToName( value.type() ) );
       element.setAttribute( QStringLiteral( "value" ), value.toString() );
       break;
 
+    case QVariant::Char:
+      element.setAttribute( QStringLiteral( "type" ), QVariant::typeToName( value.type() ) );
+      element.setAttribute( QStringLiteral( "value" ), value.isNull() ? QString() : value.toString() );
+      break;
+
+    case QVariant::Color:
+      element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "color" ) );
+      element.setAttribute( QStringLiteral( "value" ), value.value< QColor >().isValid() ? QgsSymbolLayerUtils::encodeColor( value.value< QColor >() ) : QString() );
+      break;
+
+    case QVariant::DateTime:
+      element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "datetime" ) );
+      element.setAttribute( QStringLiteral( "value" ), value.value< QDateTime >().isValid() ? value.toDateTime().toString( Qt::ISODate ) : QString() );
+      break;
+
+    case QVariant::Date:
+      element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "date" ) );
+      element.setAttribute( QStringLiteral( "value" ), value.value< QDate >().isValid() ? value.toDate().toString( Qt::ISODate ) : QString() );
+      break;
+
+    case QVariant::Time:
+      element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "time" ) );
+      element.setAttribute( QStringLiteral( "value" ), value.value< QTime >().isValid() ? value.toTime().toString( Qt::ISODate ) : QString() );
+      break;
+
+    case QVariant::UserType:
+    {
+      if ( value.canConvert< QgsProperty >() )
+      {
+        element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsProperty" ) );
+        const QDomElement propertyElem = QgsXmlUtils::writeVariant( value.value< QgsProperty >().toVariant(), doc );
+        element.appendChild( propertyElem );
+        break;
+      }
+      else if ( value.canConvert< QgsCoordinateReferenceSystem >() )
+      {
+        element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsCoordinateReferenceSystem" ) );
+        const QgsCoordinateReferenceSystem crs = value.value< QgsCoordinateReferenceSystem >();
+        crs.writeXml( element, doc );
+        break;
+      }
+      else if ( value.canConvert< QgsGeometry >() )
+      {
+        element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsGeometry" ) );
+        const QgsGeometry geom = value.value< QgsGeometry >();
+        element.setAttribute( QStringLiteral( "value" ), geom.asWkt() );
+        break;
+      }
+      else if ( value.canConvert< QgsProcessingOutputLayerDefinition >() )
+      {
+        QDomElement valueElement = writeVariant( value.value< QgsProcessingOutputLayerDefinition >().toVariant(), doc );
+        element.appendChild( valueElement );
+        element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsProcessingOutputLayerDefinition" ) );
+        break;
+      }
+      else if ( value.canConvert< QgsProcessingFeatureSourceDefinition >() )
+      {
+        QDomElement valueElement = writeVariant( value.value< QgsProcessingFeatureSourceDefinition >().toVariant(), doc );
+        element.appendChild( valueElement );
+        element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsProcessingFeatureSourceDefinition" ) );
+        break;
+      }
+      else if ( value.canConvert< QgsRemappingSinkDefinition >() )
+      {
+        QDomElement valueElement = writeVariant( value.value< QgsRemappingSinkDefinition >().toVariant(), doc );
+        element.appendChild( valueElement );
+        element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsRemappingSinkDefinition" ) );
+        break;
+      }
+      Q_ASSERT_X( false, "QgsXmlUtils::writeVariant", QStringLiteral( "unsupported user variant type %1" ).arg( QMetaType::typeName( value.userType() ) ).toLocal8Bit() );
+      break;
+    }
+
     default:
-      element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "Unknown" ) );
-      element.setAttribute( QStringLiteral( "value" ), value.toString() );
+      Q_ASSERT_X( false, "QgsXmlUtils::writeVariant", QStringLiteral( "unsupported variant type %1" ).arg( QVariant::typeToName( value.type() ) ).toLocal8Bit() );
       break;
   }
 
@@ -166,9 +252,25 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
 {
   QString type = element.attribute( QStringLiteral( "type" ) );
 
-  if ( type == QLatin1String( "int" ) )
+  if ( type == QLatin1String( "invalid" ) )
+  {
+    return QVariant();
+  }
+  else if ( type == QLatin1String( "int" ) )
   {
     return element.attribute( QStringLiteral( "value" ) ).toInt();
+  }
+  else if ( type == QLatin1String( "uint" ) )
+  {
+    return element.attribute( QStringLiteral( "value" ) ).toUInt();
+  }
+  else if ( type == QLatin1String( "qlonglong" ) )
+  {
+    return element.attribute( QStringLiteral( "value" ) ).toLongLong();
+  }
+  else if ( type == QLatin1String( "qulonglong" ) )
+  {
+    return element.attribute( QStringLiteral( "value" ) ).toULongLong();
   }
   else if ( type == QLatin1String( "double" ) )
   {
@@ -178,9 +280,30 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
   {
     return element.attribute( QStringLiteral( "value" ) );
   }
+  else if ( type == QLatin1String( "QChar" ) )
+  {
+    const QString res = element.attribute( QStringLiteral( "value" ) );
+    return res.isEmpty() ? QChar() : res.at( 0 );
+  }
   else if ( type == QLatin1String( "bool" ) )
   {
     return element.attribute( QStringLiteral( "value" ) ) == QLatin1String( "true" );
+  }
+  else if ( type == QLatin1String( "color" ) )
+  {
+    return element.attribute( QStringLiteral( "value" ) ).isEmpty() ? QColor() : QgsSymbolLayerUtils::decodeColor( element.attribute( QStringLiteral( "value" ) ) );
+  }
+  else if ( type == QLatin1String( "datetime" ) )
+  {
+    return element.attribute( QStringLiteral( "value" ) ).isEmpty() ? QDateTime() : QDateTime::fromString( element.attribute( QStringLiteral( "value" ) ), Qt::ISODate );
+  }
+  else if ( type == QLatin1String( "date" ) )
+  {
+    return element.attribute( QStringLiteral( "value" ) ).isEmpty() ? QDate() : QDate::fromString( element.attribute( QStringLiteral( "value" ) ), Qt::ISODate );
+  }
+  else if ( type == QLatin1String( "time" ) )
+  {
+    return element.attribute( QStringLiteral( "value" ) ).isEmpty() ? QTime() : QTime::fromString( element.attribute( QStringLiteral( "value" ) ), Qt::ISODate );
   }
   else if ( type == QLatin1String( "Map" ) )
   {
@@ -216,6 +339,64 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
       list.append( readVariant( elem ).toString() );
     }
     return list;
+  }
+  else if ( type == QLatin1String( "QgsProperty" ) )
+  {
+    const QDomNodeList values = element.childNodes();
+    if ( values.isEmpty() )
+      return QVariant();
+
+    QgsProperty p;
+    if ( p.loadVariant( QgsXmlUtils::readVariant( values.at( 0 ).toElement() ) ) )
+      return p;
+
+    return QVariant();
+  }
+  else if ( type == QLatin1String( "QgsCoordinateReferenceSystem" ) )
+  {
+    QgsCoordinateReferenceSystem crs;
+    crs.readXml( element );
+    return crs;
+  }
+  else if ( type == QLatin1String( "QgsGeometry" ) )
+  {
+    return QgsGeometry::fromWkt( element.attribute( "value" ) );
+  }
+  else if ( type == QLatin1String( "QgsProcessingOutputLayerDefinition" ) )
+  {
+    QgsProcessingOutputLayerDefinition res;
+    const QDomNodeList values = element.childNodes();
+    if ( values.isEmpty() )
+      return QVariant();
+
+    if ( res.loadVariant( QgsXmlUtils::readVariant( values.at( 0 ).toElement() ).toMap() ) )
+      return res;
+
+    return QVariant();
+  }
+  else if ( type == QLatin1String( "QgsProcessingFeatureSourceDefinition" ) )
+  {
+    QgsProcessingFeatureSourceDefinition res;
+    const QDomNodeList values = element.childNodes();
+    if ( values.isEmpty() )
+      return QVariant();
+
+    if ( res.loadVariant( QgsXmlUtils::readVariant( values.at( 0 ).toElement() ).toMap() ) )
+      return res;
+
+    return QVariant();
+  }
+  else if ( type == QLatin1String( "QgsRemappingSinkDefinition" ) )
+  {
+    QgsRemappingSinkDefinition res;
+    const QDomNodeList values = element.childNodes();
+    if ( values.isEmpty() )
+      return QVariant();
+
+    if ( res.loadVariant( QgsXmlUtils::readVariant( values.at( 0 ).toElement() ).toMap() ) )
+      return QVariant::fromValue( res );
+
+    return QVariant();
   }
   else
   {

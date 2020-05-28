@@ -61,9 +61,9 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
   markerLayers << markerSymbolLayer;
   QgsMarkerSymbol *markerSymbol = new QgsMarkerSymbol( markerLayers );
   firstVertexMarkerLine->setSubSymbol( markerSymbol );
-  firstVertexMarkerLine->setPlacement( QgsMarkerLineSymbolLayer::FirstVertex );
+  firstVertexMarkerLine->setPlacement( QgsTemplatedLineSymbolLayerBase::FirstVertex );
   QgsMarkerLineSymbolLayer *lastVertexMarkerLine = static_cast<QgsMarkerLineSymbolLayer *>( firstVertexMarkerLine->clone() );
-  lastVertexMarkerLine->setPlacement( QgsMarkerLineSymbolLayer::LastVertex );
+  lastVertexMarkerLine->setPlacement( QgsTemplatedLineSymbolLayerBase::LastVertex );
   Q_FOREACH ( int value, colors.keys() )
   {
     QgsSymbol *symbol = QgsSymbol::defaultSymbol( QgsWkbTypes::LineGeometry );
@@ -157,7 +157,7 @@ QgsSymbol *QgsGrassEditRenderer::symbolForFeature( const QgsFeature &feature, Qg
 
 void QgsGrassEditRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
-  Q_UNUSED( fields );
+  Q_UNUSED( fields )
   // TODO better
   //QgsFields topoFields;
   //topoFields.append( QgsField( "topo_symbol", QVariant::Int, "int" ) );

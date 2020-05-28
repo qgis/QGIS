@@ -174,6 +174,14 @@ void TestQgsPaintEffectRegistry::defaultStack()
   QgsPaintEffect *effect2 = new DummyPaintEffect();
   QVERIFY( !registry->isDefaultStack( effect2 ) );
   delete effect2;
+
+  effect = static_cast<QgsEffectStack *>( registry->defaultStack() );
+  static_cast< QgsDrawSourceEffect * >( effect->effect( 2 ) )->setOpacity( 0.5 );
+  QVERIFY( !registry->isDefaultStack( effect ) );
+  static_cast< QgsDrawSourceEffect * >( effect->effect( 2 ) )->setOpacity( 1.0 );
+  QVERIFY( registry->isDefaultStack( effect ) );
+  static_cast< QgsDrawSourceEffect * >( effect->effect( 2 ) )->setBlendMode( QPainter::CompositionMode_Lighten );
+  QVERIFY( !registry->isDefaultStack( effect ) );
 }
 
 QGSTEST_MAIN( TestQgsPaintEffectRegistry )

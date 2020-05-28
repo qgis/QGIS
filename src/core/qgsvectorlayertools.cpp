@@ -18,13 +18,14 @@
 #include "qgsvectorlayertools.h"
 #include "qgsfeaturerequest.h"
 #include "qgslogger.h"
+#include "qgsvectorlayerutils.h"
 
 
 QgsVectorLayerTools::QgsVectorLayerTools()
   : QObject( nullptr )
 {}
 
-bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg ) const
+bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg, const bool topologicalEditing, QgsVectorLayer *topologicalLayer ) const
 {
   bool res = false;
   if ( !layer || !layer->isEditable() )
@@ -34,7 +35,6 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
 
   QgsFeatureIterator fi = layer->getFeatures( request );
   QgsFeature f;
-  QgsAttributeList pkAttrList = layer->primaryKeyAttributes();
 
   int browsedFeatureCount = 0;
   int couldNotWriteCount = 0;
@@ -45,29 +45,35 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
   while ( fi.nextFeature( f ) )
   {
     browsedFeatureCount++;
-    // remove pkey values
-    Q_FOREACH ( auto idx, pkAttrList )
-    {
-      f.setAttribute( idx, QVariant() );
-    }
+
+    QgsFeature newFeature = QgsVectorLayerUtils::createFeature( layer, f.geometry(), f.attributes().toMap() );
+
     // translate
-    if ( f.hasGeometry() )
+    if ( newFeature.hasGeometry() )
     {
-      QgsGeometry geom = f.geometry();
+      QgsGeometry geom = newFeature.geometry();
       geom.translate( dx, dy );
-      f.setGeometry( geom );
+      newFeature.setGeometry( geom );
 #ifdef QGISDEBUG
-      const QgsFeatureId fid = f.id();
+      const QgsFeatureId fid = newFeature.id();
 #endif
       // paste feature
-      if ( !layer->addFeature( f ) )
+      if ( !layer->addFeature( newFeature ) )
       {
         couldNotWriteCount++;
-        QgsDebugMsg( QString( "Could not add new feature. Original copied feature id: %1" ).arg( fid ) );
+        QgsDebugMsg( QStringLiteral( "Could not add new feature. Original copied feature id: %1" ).arg( fid ) );
       }
       else
       {
-        fidList.insert( f.id() );
+        fidList.insert( newFeature.id() );
+        if ( topologicalEditing )
+        {
+          if ( topologicalLayer )
+          {
+            topologicalLayer->addTopologicalPoints( geom );
+          }
+          layer->addTopologicalPoints( geom );
+        }
       }
     }
     else
@@ -99,4 +105,14 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
     }
   }
   return res;
+}
+
+bool QgsVectorLayerTools::forceSuppressFormPopup() const
+{
+  return mForceSuppressFormPopup;
+}
+
+void QgsVectorLayerTools::setForceSuppressFormPopup( bool forceSuppressFormPopup )
+{
+  mForceSuppressFormPopup = forceSuppressFormPopup;
 }

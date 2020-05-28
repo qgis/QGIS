@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '12/02/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 import os
@@ -37,11 +35,18 @@ def create_temp_filename(base_file):
 class TestQgsVectorFileWriterTask(unittest.TestCase):
 
     def setUp(self):
+        self.new_filename = ''
+        self.new_layer = ''
         self.success = False
         self.fail = False
 
     def onSuccess(self):
         self.success = True
+
+    def onComplete(self, filename, layer):
+        self.success = True
+        self.new_filename = filename
+        self.new_layer = layer
 
     def onFail(self):
         self.fail = True
@@ -77,6 +82,26 @@ class TestQgsVectorFileWriterTask(unittest.TestCase):
         while not self.success and not self.fail:
             QCoreApplication.processEvents()
 
+        self.assertTrue(self.success)
+        self.assertFalse(self.fail)
+
+    def testSuccessWithLayer(self):
+        """test successfully writing to a layer-enabled format"""
+        self.layer = self.createLayer()
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = "KML"
+        options.layerName = "test-dashes"
+        tmp = create_temp_filename('successlayer.kml')
+        task = QgsVectorFileWriterTask(self.layer, tmp, options)
+
+        task.completed.connect(self.onComplete)
+        task.errorOccurred.connect(self.onFail)
+
+        QgsApplication.taskManager().addTask(task)
+        while not self.success and not self.fail:
+            QCoreApplication.processEvents()
+
+        self.assertEqual(self.new_layer, "test_dashes")
         self.assertTrue(self.success)
         self.assertFalse(self.fail)
 

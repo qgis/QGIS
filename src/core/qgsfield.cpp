@@ -23,6 +23,7 @@
 #include <QDataStream>
 #include <QIcon>
 #include <QLocale>
+#include <QJsonDocument>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -55,6 +56,8 @@ QgsField::QgsField( const QgsField &other ) //NOLINT
 {
 
 }
+
+QgsField::~QgsField() = default;
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -91,6 +94,38 @@ QString QgsField::displayName() const
     return d->name;
 }
 
+QString QgsField::displayNameWithAlias() const
+{
+  if ( alias().isEmpty() )
+  {
+    return name();
+  }
+  return QStringLiteral( "%1 (%2)" ).arg( name() ).arg( alias() );
+}
+
+QString QgsField::displayType( const bool showConstraints ) const
+{
+  QString typeStr = typeName();
+
+  if ( length() > 0 && precision() > 0 )
+    typeStr += QStringLiteral( "(%1, %2)" ).arg( length() ).arg( precision() );
+  else if ( length() > 0 )
+    typeStr += QStringLiteral( "(%1)" ).arg( length() );
+
+  if ( showConstraints )
+  {
+    typeStr += constraints().constraints() & QgsFieldConstraints::ConstraintNotNull
+               ? QStringLiteral( " NOT NULL" )
+               : QStringLiteral( " NULL" );
+
+    typeStr += constraints().constraints() & QgsFieldConstraints::ConstraintUnique
+               ? QStringLiteral( " UNIQUE" )
+               : QString();
+  }
+
+  return typeStr;
+}
+
 QVariant::Type QgsField::type() const
 {
   return d->type;
@@ -124,6 +159,11 @@ QString QgsField::comment() const
 bool QgsField::isNumeric() const
 {
   return d->type == QVariant::Double || d->type == QVariant::Int || d->type == QVariant::UInt || d->type == QVariant::LongLong || d->type == QVariant::ULongLong;
+}
+
+bool QgsField::isDateOrTime() const
+{
+  return d->type == QVariant::Date || d->type == QVariant::Time || d->type == QVariant::DateTime;
 }
 
 /***************************************************************************
@@ -218,7 +258,14 @@ QString QgsField::displayString( const QVariant &v ) const
     {
       if ( d->precision > 0 )
       {
-        return QLocale().toString( v.toDouble(), 'f', d->precision );
+        if ( -1 < v.toDouble() && v.toDouble() < 1 )
+        {
+          return QLocale().toString( v.toDouble(), 'g', d->precision );
+        }
+        else
+        {
+          return QLocale().toString( v.toDouble(), 'f', d->precision );
+        }
       }
       else
       {
@@ -227,21 +274,38 @@ QString QgsField::displayString( const QVariant &v ) const
         QString s( v.toString() );
         int dotPosition( s.indexOf( '.' ) );
         int precision;
-        if ( dotPosition < 0 )
+        if ( dotPosition < 0 && s.indexOf( 'e' ) < 0 )
         {
           precision = 0;
+          return QLocale().toString( v.toDouble(), 'f', precision );
         }
         else
         {
-          precision = s.length() - dotPosition - 1;
+          if ( dotPosition < 0 ) precision = 0;
+          else precision = s.length() - dotPosition - 1;
+
+          if ( -1 < v.toDouble() && v.toDouble() < 1 )
+          {
+            return QLocale().toString( v.toDouble(), 'g', precision );
+          }
+          else
+          {
+            return QLocale().toString( v.toDouble(), 'f', precision );
+          }
         }
-        return QLocale().toString( v.toDouble(), 'f', precision );
       }
     }
     // Default for doubles with precision
     else if ( d->type == QVariant::Double && d->precision > 0 )
     {
-      return QString::number( v.toDouble(), 'f', d->precision );
+      if ( -1 < v.toDouble() && v.toDouble() < 1 )
+      {
+        return QString::number( v.toDouble(), 'g', d->precision );
+      }
+      else
+      {
+        return QString::number( v.toDouble(), 'f', d->precision );
+      }
     }
   }
   // Other numeric types than doubles
@@ -252,6 +316,15 @@ QString QgsField::displayString( const QVariant &v ) const
     qlonglong converted( v.toLongLong( &ok ) );
     if ( ok )
       return QLocale().toString( converted );
+  }
+  else if ( d->typeName.compare( QLatin1String( "json" ), Qt::CaseInsensitive ) == 0 || d->typeName == QLatin1String( "jsonb" ) )
+  {
+    QJsonDocument doc = QJsonDocument::fromVariant( v );
+    return QString::fromUtf8( doc.toJson().data() );
+  }
+  else if ( d->type == QVariant::ByteArray )
+  {
+    return QObject::tr( "BLOB" );
   }
   // Fallback if special rules do not apply
   return v.toString();
@@ -285,8 +358,8 @@ bool QgsField::convertCompatible( QVariant &v ) const
     if ( !tmp.convert( d->type ) )
     {
       // This might be a string with thousand separator: use locale to convert
-      bool ok;
-      double d = QLocale().toDouble( v.toString(), &ok );
+      bool ok = false;
+      double d = qgsPermissiveToDouble( v.toString(), ok );
       if ( ok )
       {
         v = QVariant( d );
@@ -295,7 +368,7 @@ bool QgsField::convertCompatible( QVariant &v ) const
       // For not 'dot' locales, we also want to accept '.'
       if ( QLocale().decimalPoint() != '.' )
       {
-        d = QLocale( QLocale::English ).toDouble( v.toString(), &ok );
+        d = QLocale( QLocale::C ).toDouble( v.toString(), &ok );
         if ( ok )
         {
           v = QVariant( d );
@@ -313,7 +386,7 @@ bool QgsField::convertCompatible( QVariant &v ) const
     {
       // This might be a string with thousand separator: use locale to convert
       bool ok;
-      int i = QLocale().toInt( v.toString(), &ok );
+      int i = qgsPermissiveToInt( v.toString(), ok );
       if ( ok )
       {
         v = QVariant( i );
@@ -330,7 +403,7 @@ bool QgsField::convertCompatible( QVariant &v ) const
     {
       // This might be a string with thousand separator: use locale to convert
       bool ok;
-      qlonglong l = QLocale().toLongLong( v.toString(), &ok );
+      qlonglong l = qgsPermissiveToLongLong( v.toString(), ok );
       if ( ok )
       {
         v = QVariant( l );
@@ -363,6 +436,34 @@ bool QgsField::convertCompatible( QVariant &v ) const
     return true;
   }
 
+  //String representations of doubles in QVariant will return false to convert( QVariant::LongLong )
+  //work around this by first converting to double, and then checking whether the double is convertible to longlong
+  if ( d->type == QVariant::LongLong && v.canConvert( QVariant::Double ) )
+  {
+    //firstly test the conversion to longlong because conversion to double will rounded the value
+    QVariant tmp( v );
+    if ( !tmp.convert( d->type ) )
+    {
+      bool ok = false;
+      double dbl = v.toDouble( &ok );
+      if ( !ok )
+      {
+        //couldn't convert to number
+        v = QVariant( d->type );
+        return false;
+      }
+
+      double round = std::round( dbl );
+      if ( round  > std::numeric_limits<long long>::max() || round < -std::numeric_limits<long long>::max() )
+      {
+        //double too large to fit in longlong
+        v = QVariant( d->type );
+        return false;
+      }
+      v = QVariant( static_cast< long long >( std::round( dbl ) ) );
+      return true;
+    }
+  }
 
   if ( !v.convert( d->type ) )
   {

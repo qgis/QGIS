@@ -23,7 +23,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QUrl>
-
+#include <QUrlQuery>
 
 static bool _parseMetadataDocument( const QJsonDocument &doc, QgsProjectStorage::Metadata &metadata )
 {
@@ -162,7 +162,7 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
     QgsPostgresResult res( conn->PQexec( sql ) );
     if ( res.PQresultStatus() != PGRES_COMMAND_OK )
     {
-      QString errCause = QObject::tr( "Unable to save project. It's not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( projectUri.connInfo.username() );
+      QString errCause = QObject::tr( "Unable to save project. It's not possible to create the destination table on the database. Maybe this is due to database permissions (user=%1). Please contact your database admin." ).arg( projectUri.connInfo.username() );
       context.pushMessage( errCause, Qgis::Critical );
       QgsPostgresConnPool::instance()->releaseConnection( conn );
       return false;
@@ -184,15 +184,20 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
                  QgsPostgresConn::quotedValue( projectUri.projectName ),
                  metadataExpr  // no need to quote: already quoted
                );
-  sql += QString::fromAscii( content.toHex() );
+  sql += QString::fromLatin1( content.toHex() );
   sql += "') ON CONFLICT (name) DO UPDATE SET content = EXCLUDED.content, metadata = EXCLUDED.metadata;";
 
   QgsPostgresResult res( conn->PQexec( sql ) );
-  bool ok = res.PQresultStatus() == PGRES_COMMAND_OK;
+  if ( res.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    QString errCause = QObject::tr( "Unable to insert or update project (project=%1) in the destination table on the database. Maybe this is due to table permissions (user=%2). Please contact your database admin." ).arg( projectUri.projectName, projectUri.connInfo.username() );
+    context.pushMessage( errCause, Qgis::Critical );
+    QgsPostgresConnPool::instance()->releaseConnection( conn );
+    return false;
+  }
 
   QgsPostgresConnPool::instance()->releaseConnection( conn );
-
-  return ok;
+  return true;
 }
 
 
@@ -248,36 +253,6 @@ bool QgsPostgresProjectStorage::readProjectStorageMetadata( const QString &uri, 
 
   return ok;
 }
-
-
-#ifdef HAVE_GUI
-
-#include "qgspostgresprojectstoragedialog.h"
-
-QString QgsPostgresProjectStorage::visibleName()
-{
-  return QObject::tr( "PostgreSQL" );
-}
-
-QString QgsPostgresProjectStorage::showLoadGui()
-{
-  QgsPostgresProjectStorageDialog dlg( false );
-  if ( !dlg.exec() )
-    return QString();
-
-  return dlg.currentProjectUri();
-}
-
-QString QgsPostgresProjectStorage::showSaveGui()
-{
-  QgsPostgresProjectStorageDialog dlg( true );
-  if ( !dlg.exec() )
-    return QString();
-
-  return dlg.currentProjectUri();
-}
-
-#endif
 
 
 QString QgsPostgresProjectStorage::encodeUri( const QgsPostgresProjectUri &postUri )

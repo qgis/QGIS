@@ -13,12 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCPTCITYCOLORRAMPV2DIALOG_H
-#define QGSCPTCITYCOLORRAMPV2DIALOG_H
+#ifndef QGSCPTCITYCOLORRAMPDIALOG_H
+#define QGSCPTCITYCOLORRAMPDIALOG_H
 
 
-#include "ui_qgscptcitycolorrampv2dialogbase.h"
-#include "qgis.h"
+#include "ui_qgscptcitycolorrampdialogbase.h"
+#include "qgis_sip.h"
 #include <QDialog>
 
 #include "qgscptcityarchive.h"
@@ -75,9 +75,15 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
     }
 
     /**
-     * Returns true if the ramp should be converted to a QgsGradientColorRamp.
+     * Returns TRUE if the ramp should be converted to a QgsGradientColorRamp.
      */
     bool saveAsGradientRamp() const;
+
+    /**
+     * Returns a reference to the dialog's button box.
+     * \since QGIS 3.10
+     */
+    QDialogButtonBox *buttonBox() const;
 
     bool eventFilter( QObject *obj, QEvent *event ) override;
 

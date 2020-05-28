@@ -26,12 +26,12 @@ class QgsSpatialIndex;
 
 class QgsMemoryFeatureIterator;
 
-class QgsMemoryProvider : public QgsVectorDataProvider
+class QgsMemoryProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
 
   public:
-    explicit QgsMemoryProvider( const QString &uri, const QgsVectorDataProvider::ProviderOptions &options );
+    explicit QgsMemoryProvider( const QString &uri, const QgsVectorDataProvider::ProviderOptions &coordinateTransformContext );
 
     ~QgsMemoryProvider() override;
 
@@ -44,7 +44,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      * Creates a new memory provider, with provider properties embedded within the given \a uri and \a options
      * argument.
      */
-    static QgsMemoryProvider *createProvider( const QString &uri, const QgsVectorDataProvider::ProviderOptions &options );
+    static QgsMemoryProvider *createProvider( const QString &uri, const QgsVectorDataProvider::ProviderOptions &coordinateTransformContext );
 
     /* Implementation of functions from QgsVectorDataProvider */
 
@@ -67,7 +67,9 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
     bool supportsSubsetString() const override { return true; }
     bool createSpatialIndex() override;
+    QgsFeatureSource::SpatialIndexPresence hasSpatialIndex() const override;
     QgsVectorDataProvider::Capabilities capabilities() const override;
+    bool truncate() override;
 
     /* Implementation of functions from QgsDataProvider */
 
@@ -77,6 +79,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     void updateExtents() override;
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
+    void handlePostCloneOperations( QgsVectorDataProvider *source ) override;
 
   private:
     // Coordinate reference system

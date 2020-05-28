@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmdropgeometry.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -62,6 +63,11 @@ QgsDropGeometryAlgorithm *QgsDropGeometryAlgorithm::createInstance() const
 QgsCoordinateReferenceSystem QgsDropGeometryAlgorithm::outputCrs( const QgsCoordinateReferenceSystem & ) const
 {
   return QgsCoordinateReferenceSystem();
+}
+
+bool QgsDropGeometryAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
+{
+  return qobject_cast< const QgsVectorLayer * >( l );
 }
 
 QgsWkbTypes::Type QgsDropGeometryAlgorithm::outputWkbType( QgsWkbTypes::Type ) const

@@ -22,12 +22,11 @@
 #include "qgsfeature.h"
 #include "qgsexpression.h"
 #include "qgscolorramp.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsrasterlayer.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-
+#include "qgsvectorlayer.h"
 
 #define ENSURE_NO_EVAL_ERROR   {  if ( parent->hasEvalError() ) return QVariant(); }
 #define SET_EVAL_ERROR(x)   { parent->setEvalErrorString( x ); return QVariant(); }
@@ -187,6 +186,23 @@ class QgsExpressionUtils
     static QString getStringValue( const QVariant &value, QgsExpression * )
     {
       return value.toString();
+    }
+
+    /**
+     * Returns an expression value converted to binary (byte array) value.
+     *
+     * An empty byte array will be returned if the value is NULL.
+     *
+     * \since QGIS 3.12
+     */
+    static QByteArray getBinaryValue( const QVariant &value, QgsExpression *parent )
+    {
+      if ( value.type() != QVariant::ByteArray )
+      {
+        parent->setEvalErrorString( QObject::tr( "Value is not a binary value" ) );
+        return QByteArray();
+      }
+      return value.toByteArray();
     }
 
     static double getDoubleValue( const QVariant &value, QgsExpression *parent )

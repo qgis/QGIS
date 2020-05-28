@@ -52,9 +52,8 @@ QHash<const char *, int> QgsDateTimeEditFactory::supportedWidgetTypes()
 unsigned int QgsDateTimeEditFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().field( fieldIdx );
-  const QVariant::Type type = field.type();
   const QVariantMap config = field.editorWidgetSetup().config();
-  if ( type == QVariant::DateTime || type == QVariant::Date || type == QVariant::Time || config.contains( QStringLiteral( "field_format" ) ) )
+  if ( field.isDateOrTime() || config.contains( QStringLiteral( "field_format" ) ) )
   {
     return 20;
   }

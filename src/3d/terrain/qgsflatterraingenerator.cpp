@@ -16,28 +16,13 @@
 #include "qgsflatterraingenerator.h"
 
 #include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DExtras/QPlaneGeometry>
 
 #include "qgs3dmapsettings.h"
 #include "qgschunknode_p.h"
 #include "qgsterrainentity_p.h"
-#include "qgsterraintileloader_p.h"
 #include "qgsterraintileentity_p.h"
 
 /// @cond PRIVATE
-
-//! Chunk loader for flat terrain implementation
-class FlatTerrainChunkLoader : public QgsTerrainTileLoader
-{
-  public:
-    //! Construct the loader for a node
-    FlatTerrainChunkLoader( QgsTerrainEntity *terrain, QgsChunkNode *mNode );
-
-    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
-
-  private:
-    Qt3DExtras::QPlaneGeometry *mTileGeometry = nullptr;
-};
 
 
 //---------------
@@ -52,7 +37,7 @@ FlatTerrainChunkLoader::FlatTerrainChunkLoader( QgsTerrainEntity *terrain, QgsCh
 
 Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *parent )
 {
-  QgsTerrainTileEntity *entity = new QgsTerrainTileEntity;
+  QgsTerrainTileEntity *entity = new QgsTerrainTileEntity( mNode->tileId() );
 
   // make geometry renderer
 
@@ -67,7 +52,8 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
 
   // create material
 
-  createTextureComponent( entity );
+  const Qgs3DMapSettings &map = terrain()->map3D();
+  createTextureComponent( entity, map.isTerrainShadingEnabled(), map.terrainShadingMaterial() );
 
   // create transform
 
@@ -125,22 +111,22 @@ void QgsFlatTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) c
 void QgsFlatTerrainGenerator::writeXml( QDomElement &elem ) const
 {
   QgsRectangle r = mExtent;
-  QDomElement elemExtent = elem.ownerDocument().createElement( "extent" );
-  elemExtent.setAttribute( "xmin", QString::number( r.xMinimum() ) );
-  elemExtent.setAttribute( "xmax", QString::number( r.xMaximum() ) );
-  elemExtent.setAttribute( "ymin", QString::number( r.yMinimum() ) );
-  elemExtent.setAttribute( "ymax", QString::number( r.yMaximum() ) );
+  QDomElement elemExtent = elem.ownerDocument().createElement( QStringLiteral( "extent" ) );
+  elemExtent.setAttribute( QStringLiteral( "xmin" ), QString::number( r.xMinimum() ) );
+  elemExtent.setAttribute( QStringLiteral( "xmax" ), QString::number( r.xMaximum() ) );
+  elemExtent.setAttribute( QStringLiteral( "ymin" ), QString::number( r.yMinimum() ) );
+  elemExtent.setAttribute( QStringLiteral( "ymax" ), QString::number( r.yMaximum() ) );
 
   // crs is not read/written - it should be the same as destination crs of the map
 }
 
 void QgsFlatTerrainGenerator::readXml( const QDomElement &elem )
 {
-  QDomElement elemExtent = elem.firstChildElement( "extent" );
-  double xmin = elemExtent.attribute( "xmin" ).toDouble();
-  double xmax = elemExtent.attribute( "xmax" ).toDouble();
-  double ymin = elemExtent.attribute( "ymin" ).toDouble();
-  double ymax = elemExtent.attribute( "ymax" ).toDouble();
+  QDomElement elemExtent = elem.firstChildElement( QStringLiteral( "extent" ) );
+  double xmin = elemExtent.attribute( QStringLiteral( "xmin" ) ).toDouble();
+  double xmax = elemExtent.attribute( QStringLiteral( "xmax" ) ).toDouble();
+  double ymin = elemExtent.attribute( QStringLiteral( "ymin" ) ).toDouble();
+  double ymax = elemExtent.attribute( QStringLiteral( "ymax" ) ).toDouble();
 
   setExtent( QgsRectangle( xmin, ymin, xmax, ymax ) );
 

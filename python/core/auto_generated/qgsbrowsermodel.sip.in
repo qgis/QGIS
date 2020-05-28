@@ -9,6 +9,7 @@
 
 
 
+
 class QgsBrowserModel : QAbstractItemModel
 {
 %Docstring
@@ -22,6 +23,14 @@ items for the different data providers and folders accessible to users.
 QgsBrowserModel models are not initially populated and use a deferred initialization
 approach. After constructing a QgsBrowserModel, a call must be made
 to initialize() in order to populate the model.
+
+.. note::
+
+   Since QGIS 3.10 it is recommended to use QgsBrowserGuiModel from GUI library.
+   Implementation of data items used from QgsBrowserModel should not trigger any GUI
+   operations such as opening of widgets/dialogs or showing message boxes. Such actions
+   should be implemented in a new QgsDataItemGuiProvider subclass which is used
+   by QgsBrowserGuiModel (but not by QgsBrowserModel).
 %End
 
 %TypeHeaderCode
@@ -47,11 +56,14 @@ Constructor for QgsBrowserModel, with the specified ``parent`` object.
       PathRole,
       CommentRole,
       SortRole,
+      ProviderKeyRole,
     };
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
 
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
+
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
     virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 
@@ -77,8 +89,20 @@ Constructor for QgsBrowserModel, with the specified ``parent`` object.
 
 
     QModelIndex findItem( QgsDataItem *item, QgsDataItem *parent = 0 ) const;
+%Docstring
+Returns the model index corresponding to the specified data ``item``.
+If the item was not found, an invalid QModelIndex is returned.
+
+If the ``parent`` item is argument is specified, then only items which are children
+of ``parent`` are searched. If no ``parent`` is specified, then all items within
+the model are searched.
+%End
 
     QgsDataItem *dataItem( const QModelIndex &idx ) const;
+%Docstring
+Returns the data item at the specified index, or ``None`` if no item
+exists at the index.
+%End
 
     void refresh( const QString &path );
 %Docstring
@@ -99,20 +123,48 @@ items, i.e. it does not fetch children.
 :param matchFlag: supported is Qt.MatchExactly and Qt.MatchStartsWith which has reverse meaning, i.e. find
                   item with the longest match from start with path (to get as close/deep as possible to deleted item).
 
-:return: model index, invalid if item not found *
+:return: model index, invalid if item not found
 %End
 
 
-    void connectItem( QgsDataItem *item );
+    QModelIndex findUri( const QString &uri, QModelIndex index = QModelIndex() );
+%Docstring
+Returns index of layer item with given uri. It only searches in currently fetched
+items, i.e. it does not fetch children.
+
+:param uri: item uri
+:param index: the current index of the parent (to search for children)
+
+:return: model index, invalid if item not found
+
+.. versionadded:: 3.6
+%End
+
+ void connectItem( QgsDataItem *item ) /Deprecated/;
+%Docstring
+
+.. deprecated::
+   Deprecated since QGIS 3.4 -- this method has no effect, and is dangerous to call in earlier QGIS versions. Any usage should be removed (and will have no harmful side-effects!).
+%End
 
     bool initialized() const;
 %Docstring
-Returns true if the model has been initialized.
+Returns ``True`` if the model has been initialized.
 
 .. seealso:: :py:func:`initialize`
 %End
 
+    QMap<QString, QgsDirectoryItem *> driveItems() const;
+%Docstring
+Returns a map of the root drive items shown in the browser.
+
+These correspond to the top-level directory items shown, e.g. on Windows the C:\, D:\, etc,
+and on Linux the "/" root directory.
+
+.. versionadded:: 3.6
+%End
   signals:
+
     void stateChanged( const QModelIndex &index, QgsDataItem::State oldState );
 %Docstring
 Emitted when item children fetch was finished
@@ -129,6 +181,15 @@ notify the provider dialogs of a changed connection
 %Docstring
 Reload the whole model
 %End
+
+    void refreshDrives();
+%Docstring
+Refreshes the list of drive items, removing any corresponding to removed
+drives and adding newly added drives.
+
+.. versionadded:: 3.4
+%End
+
     void beginInsertItems( QgsDataItem *parent, int first, int last );
     void endInsertItems();
     void beginRemoveItems( QgsDataItem *parent, int first, int last );
@@ -156,6 +217,7 @@ Removes a favorite directory from its corresponding model index.
 
 .. versionadded:: 3.0
 %End
+
 
     void updateProjectHome();
 

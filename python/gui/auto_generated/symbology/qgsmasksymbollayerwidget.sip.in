@@ -1,0 +1,59 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology/qgsmasksymbollayerwidget.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsMaskMarkerSymbolLayerWidget: QgsSymbolLayerWidget
+{
+%Docstring
+Symbol layer widget for the handling of QgsMaskMarkerSymbolLayer.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsmasksymbollayerwidget.h"
+%End
+  public:
+
+    QgsMaskMarkerSymbolLayerWidget( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor
+
+:param layer: the layer where this symbol layer is applied
+:param parent: the parent widget
+%End
+
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *layer ) /Factory/;
+%Docstring
+Static creation method
+
+:param layer: the layer where this symbol layer is applied
+%End
+
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
+%Docstring
+Update the current symbol layer displayed
+%End
+
+    virtual QgsSymbolLayer *symbolLayer();
+
+%Docstring
+Returns the current symbol layer
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology/qgsmasksymbollayerwidget.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

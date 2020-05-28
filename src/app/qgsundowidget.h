@@ -56,6 +56,12 @@ class APP_EXPORT QgsUndoWidget : public QgsPanelWidget
     void setUndoStack( QUndoStack *undoStack );
 
     /**
+     * Show or hide the undo/redo buttons on the widget.
+     * \param show Show or hide the undo/redo buttons.
+     */
+    void setButtonsVisible( bool show );
+
+    /**
      * Handles destroying of stack when active layer is changed
      */
     void destroyStack();

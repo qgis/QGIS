@@ -181,31 +181,31 @@ class HeatmapPixelSizeWidgetWrapper(WidgetWrapper):
             return
 
         for wrapper in wrappers:
-            if wrapper.param.name() == self.param.parent_layer:
-                self.setSource(wrapper.value())
+            if wrapper.parameterDefinition().name() == self.param.parent_layer:
+                self.setSource(wrapper.parameterValue())
                 wrapper.widgetValueHasChanged.connect(self.parentLayerChanged)
-            elif wrapper.param.name() == self.param.radius_param:
-                self.setRadius(wrapper.value())
+            elif wrapper.parameterDefinition().name() == self.param.radius_param:
+                self.setRadius(wrapper.parameterValue())
                 wrapper.widgetValueHasChanged.connect(self.radiusChanged)
-            elif wrapper.param.name() == self.param.radius_field_param:
-                self.setSource(wrapper.value())
+            elif wrapper.parameterDefinition().name() == self.param.radius_field_param:
+                self.setSource(wrapper.parameterValue())
                 wrapper.widgetValueHasChanged.connect(self.radiusFieldChanged)
 
     def parentLayerChanged(self, wrapper):
-        self.setSource(wrapper.value())
+        self.setSource(wrapper.parameterValue())
 
     def setSource(self, source):
         source = QgsProcessingUtils.variantToSource(source, self.context)
         self.widget.setSource(source)
 
     def radiusChanged(self, wrapper):
-        self.setRadius(wrapper.value())
+        self.setRadius(wrapper.parameterValue())
 
     def setRadius(self, radius):
         self.widget.setRadius(radius)
 
     def radiusFieldChanged(self, wrapper):
-        self.setRadiusField(wrapper.value())
+        self.setRadiusField(wrapper.parameterValue())
 
     def setRadiusField(self, radius_field):
         self.widget.setRadiusField(radius_field)

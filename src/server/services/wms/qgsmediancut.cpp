@@ -2,7 +2,7 @@
                               qgsmediancut.cpp
                               -------------------------
   begin                : December 20 , 2016
-  copyright            : (C) 2007 by Marco Hugentobler  ( parts fron qgswmshandler)
+  copyright            : (C) 2007 by Marco Hugentobler  ( parts from qgswmshandler)
                          (C) 2014 by Alessandro Pasotti ( parts from qgswmshandler)
                          (C) 2016 by David Marteau
   email                : marco dot hugentobler at karto dot baug dot ethz dot ch
@@ -166,7 +166,7 @@ namespace QgsWms
       {
         currentColor = colorBoxIt->first;
         currentPixel = colorBoxIt->second;
-        weight = ( double )currentPixel / boxPixels;
+        weight = static_cast<double>( currentPixel ) / boxPixels;
         avRed   += ( qRed( currentColor ) * weight );
         avGreen += ( qGreen( currentColor ) * weight );
         avBlue  += ( qBlue( currentColor ) * weight );

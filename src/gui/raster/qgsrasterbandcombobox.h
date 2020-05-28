@@ -56,7 +56,7 @@ class GUI_EXPORT QgsRasterBandComboBox : public QComboBox
     int currentBand() const;
 
     /**
-     * Returns true if the combo box is showing the "not set" option.
+     * Returns TRUE if the combo box is showing the "not set" option.
      * \see setShowNotSetOption()
      */
     bool isShowingNotSetOption() const;
@@ -68,6 +68,11 @@ class GUI_EXPORT QgsRasterBandComboBox : public QComboBox
      * \see setShowNotSetOption()
      */
     void setShowNotSetOption( bool show, const QString &string = QString() );
+
+    /**
+     * Returns a user-friendly band name for the specified \a band.
+     */
+    static QString displayBandName( QgsRasterDataProvider *provider, int band );
 
   public slots:
 
@@ -87,7 +92,7 @@ class GUI_EXPORT QgsRasterBandComboBox : public QComboBox
   signals:
 
     /**
-     * This signal is emitted when the currently selected band changes.
+     * Emitted when the currently selected band changes.
      */
     void bandChanged( int band );
 
@@ -97,8 +102,8 @@ class GUI_EXPORT QgsRasterBandComboBox : public QComboBox
 
     bool mShowNotSet = false;
     QString mNotSetString;
+    int mPrevBand = -1;
 
-    QString displayBandName( QgsRasterDataProvider *provider, int band ) const;
 
 
 };

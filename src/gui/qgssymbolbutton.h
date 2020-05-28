@@ -16,7 +16,7 @@
 #define QGSSYMBOLBUTTON_H
 
 #include "qgis_gui.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgssymbol.h"
 #include <QToolButton>
 #include <QPointer>
@@ -26,6 +26,7 @@ class QgsMapCanvas;
 class QgsVectorLayer;
 class QgsExpressionContextGenerator;
 class QgsPanelWidget;
+class QgsMessageBar;
 
 /**
  * \ingroup gui
@@ -123,6 +124,21 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     void setMapCanvas( QgsMapCanvas *canvas );
 
     /**
+     * Sets the message \a bar associated with the widget. This allows the widget to push feedback messages
+     * to the appropriate message bar.
+     * \see messageBar()
+     * \since QGIS 3.6
+     */
+    void setMessageBar( QgsMessageBar *bar );
+
+    /**
+     * Returns the message bar associated with the widget.
+     * \see setMessageBar()
+     * \since QGIS 3.6
+     */
+    QgsMessageBar *messageBar() const;
+
+    /**
      * Returns the layer associated with the widget.
      * \see setLayer()
      */
@@ -203,6 +219,8 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     void mousePressEvent( QMouseEvent *e ) override;
     // Reimplemented to allow dragging colors/symbols from button
     void mouseMoveEvent( QMouseEvent *e ) override;
+    void mouseReleaseEvent( QMouseEvent *e ) override;
+    void keyPressEvent( QKeyEvent *e ) override;
     // Reimplemented to accept dragged colors
     void dragEnterEvent( QDragEnterEvent *e ) override;
 
@@ -225,6 +243,11 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
 
     void addRecentColor( const QColor &color );
 
+    /**
+     * Activates the color picker tool, which allows for sampling a color from anywhere on the screen
+     */
+    void activatePicker();
+
   private:
 
     QSize mSizeHint;
@@ -234,6 +257,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     QgsSymbol::SymbolType mType = QgsSymbol::Fill;
 
     QgsMapCanvas *mMapCanvas = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
 
     QPoint mDragStartPosition;
 
@@ -247,6 +271,8 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
 
     QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 
+    bool mPickingColor = false;
+
     /**
      * Regenerates the text preview. If \a color is specified, a temporary color preview
      * is shown instead.
@@ -256,10 +282,10 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     /**
      * Attempts to parse mimeData as a color, either via the mime data's color data or by
      * parsing a textual representation of a color.
-     * \returns true if mime data could be intrepreted as a color
+     * \returns TRUE if mime data could be intrepreted as a color
      * \param mimeData mime data
      * \param resultColor QColor to store evaluated color
-     * \param hasAlpha will be set to true if mime data also included an alpha component
+     * \param hasAlpha will be set to TRUE if mime data also included an alpha component
      * \see formatFromMimeData
      */
     bool colorFromMimeData( const QMimeData *mimeData, QColor &resultColor, bool &hasAlpha );
@@ -268,6 +294,16 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      * Create a \a color icon for display in the drop-down menu.
      */
     QPixmap createColorIcon( const QColor &color ) const;
+
+    /**
+     * Ends a color picking operation
+     * \param eventPos global position of pixel to sample color from
+     * \param samplingColor set to TRUE to actually sample the color, FALSE to just cancel
+     * the color picking operation
+     */
+    void stopPicking( QPoint eventPos, bool samplingColor = true );
+
+    void showColorDialog();
 
 };
 

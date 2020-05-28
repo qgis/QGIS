@@ -18,14 +18,17 @@
 
 #include <QString>
 #include <QVector>
+#include <QStringList>
 
 #include <mdal.h>
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmeshdataprovider.h"
+#include "qgsprovidermetadata.h"
 
 class QMutex;
 class QgsCoordinateTransform;
+class QgsCoordinateReferenceSystem;
 
 /**
   \brief Data provider for MDAL layers.
@@ -36,26 +39,31 @@ class QgsMdalProvider : public QgsMeshDataProvider
 
   public:
 
+    static const QString MDAL_PROVIDER_KEY;
+    static const QString MDAL_PROVIDER_DESCRIPTION;
+
     /**
      * Constructor for the provider.
      *
      * \param uri file name
      * \param options generic provider options
      */
-    QgsMdalProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    QgsMdalProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
     ~QgsMdalProvider() override;
 
     bool isValid() const override;
     QString name() const override;
     QString description() const override;
     QgsCoordinateReferenceSystem crs() const override;
+    QStringList subLayers() const override;
 
     int vertexCount() const override;
+    int edgeCount() const override;
     int faceCount() const override;
-    QgsMeshVertex vertex( int index ) const override;
-    QgsMeshFace face( int index ) const override;
+    void populateMesh( QgsMesh *mesh ) const override;
 
     bool addDataset( const QString &uri ) override;
+    QStringList extraDatasets() const override;
 
     int datasetGroupCount() const override;
     int datasetCount( int groupIndex ) const override;
@@ -63,9 +71,68 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QgsMeshDatasetGroupMetadata datasetGroupMetadata( int groupIndex ) const override;
     QgsMeshDatasetMetadata datasetMetadata( QgsMeshDatasetIndex index ) const override;
     QgsMeshDatasetValue datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const override;
+    QgsMeshDataBlock datasetValues( QgsMeshDatasetIndex index, int valueIndex, int count ) const override;
+    QgsMesh3dDataBlock dataset3dValues( QgsMeshDatasetIndex index, int faceIndex, int count ) const override;
+
+    bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const override;
+    QgsMeshDataBlock areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const override;
+    QgsRectangle extent() const override;
+
+    bool persistDatasetGroup( const QString &outputFilePath,
+                              const QString &outputDriver,
+                              const QgsMeshDatasetGroupMetadata &meta,
+                              const QVector<QgsMeshDataBlock> &datasetValues,
+                              const QVector<QgsMeshDataBlock> &datasetActive,
+                              const QVector<double> &times
+                            ) override;
+
+    /**
+     * Returns file filters for meshes and datasets to be used in Open File Dialogs
+     * \param fileMeshFiltersString file mesh filters
+     * \param fileMeshDatasetFiltersString file mesh datasets filters
+     *
+     * \see fileMeshExtensions()
+     *
+     * \since QGIS 3.6
+     */
+    static void fileMeshFilters( QString &fileMeshFiltersString, QString &fileMeshDatasetFiltersString );
+
+    /**
+     * Returns file extensions for meshes and datasets
+     * \param fileMeshExtensions file mesh extensions
+     * \param fileMeshDatasetExtensions file mesh datasets extensions
+     *
+     * \see fileMeshFilters()
+     *
+     * \since QGIS 3.6
+     */
+    static void fileMeshExtensions( QStringList &fileMeshExtensions, QStringList &fileMeshDatasetExtensions );
 
   private:
-    MeshH mMeshH;
+    QVector<QgsMeshVertex> vertices( ) const;
+    QVector<QgsMeshEdge> edges( ) const;
+    QVector<QgsMeshFace> faces( ) const;
+    void loadData();
+    void addGroupToTemporalCapabilities( int indexGroup );
+    MDAL_MeshH mMeshH = nullptr;
+    QStringList mExtraDatasetUris;
+    QgsCoordinateReferenceSystem mCrs;
+    QStringList mSubLayersUris;
+
+    /**
+     * Closes and reloads dataset
+    */
+    void reloadProviderData() override;
+};
+
+class QgsMdalProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsMdalProviderMetadata();
+    QString filters( FilterType type ) override;
+    QList<QgsMeshDriverMetadata> meshDriversMetadata() override;
+    QgsMdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
 };
 
 #endif //QGSMDALPROVIDER_H

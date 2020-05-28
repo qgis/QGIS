@@ -62,11 +62,13 @@ The caller takes responsibility for deleting the returned object.
 %End
 
 
-    void setPicturePath( const QString &path );
+    void setPicturePath( const QString &path, Format format = FormatUnknown );
 %Docstring
 Sets the source ``path`` of the image (may be svg or a raster format). Data defined
 picture source may override this value. The path can either be a local path
 or a remote (http) path.
+
+Ideally, the ``format`` argument should specify the image format.
 
 .. seealso:: :py:func:`picturePath`
 %End
@@ -79,6 +81,8 @@ this value. The path can either be a local path or a remote (http) path.
 :return: path for the source image
 
 .. seealso:: :py:func:`setPicturePath`
+
+.. seealso:: :py:func:`evaluatedPath`
 %End
 
     double pictureRotation() const;
@@ -106,7 +110,7 @@ syncing north arrows with a map item.
 
     QgsLayoutItemMap *linkedMap() const;
 %Docstring
-Returns the linked rotation map, if set. An None means map rotation is
+Returns the linked rotation map, if set. An ``None`` means map rotation is
 disabled.  If this is set then the picture is rotated by the same amount
 as the specified map object.
 
@@ -151,7 +155,7 @@ Sets the ``offset`` added to the picture's rotation from a map's North.
 
     ResizeMode resizeMode() const;
 %Docstring
-Returns the resize mode used for drawing the picture within the composer
+Returns the resize mode used for drawing the picture within the layout
 item's frame.
 
 .. seealso:: :py:func:`setResizeMode`
@@ -247,10 +251,39 @@ Sets the stroke ``width`` (in layout units) used for parametrized SVG files.
     Format mode() const;
 %Docstring
 Returns the current picture mode (image format).
+
+.. seealso:: :py:func:`setMode`
+%End
+
+    void setMode( Format mode );
+%Docstring
+Sets the current picture ``mode`` (image format).
+
+.. seealso:: :py:func:`mode`
+
+.. versionadded:: 3.14
 %End
 
     virtual void finalizeRestoreFromXml();
 
+
+    bool isMissingImage() const;
+%Docstring
+Returns ``True`` if the source image is missing and the picture
+cannot be rendered.
+
+.. versionadded:: 3.6
+%End
+
+    QString evaluatedPath() const;
+%Docstring
+Returns the current evaluated picture path, which includes
+the result of data defined path overrides.
+
+.. seealso:: :py:func:`picturePath`
+
+.. versionadded:: 3.6
+%End
 
   public slots:
 
@@ -286,13 +319,11 @@ Forces a recalculation of the picture's frame size
 
     virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
-    virtual bool containsAdvancedEffects() const;
-
 
   signals:
     void pictureRotationChanged( double newRotation );
 %Docstring
-Is emitted on picture rotation change
+Emitted on picture rotation change
 %End
 
   protected:

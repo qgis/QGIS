@@ -17,17 +17,20 @@
 #define QGSMAPLAYERLEGEND_H
 
 #include <QObject>
-#include "qgis.h"
+#include "qgis_sip.h"
 
 class QDomDocument;
 class QDomElement;
 
 class QgsLayerTreeLayer;
 class QgsLayerTreeModelLegendNode;
+class QgsMeshLayer;
 class QgsPluginLayer;
 class QgsRasterLayer;
 class QgsReadWriteContext;
 class QgsVectorLayer;
+class QgsLegendPatchShape;
+class QgsSymbol;
 
 #include "qgis_core.h"
 
@@ -75,6 +78,9 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
     //! Create new legend implementation for raster layer
     static QgsMapLayerLegend *defaultRasterLegend( QgsRasterLayer *rl ) SIP_FACTORY;
 
+    //! Create new legend implementation for mesh layer
+    static QgsMapLayerLegend *defaultMeshLegend( QgsMeshLayer *ml ) SIP_FACTORY;
+
   signals:
     //! Emitted when existing items/nodes got invalid and should be replaced by new ones
     void itemsChanged();
@@ -98,6 +104,84 @@ class CORE_EXPORT QgsMapLayerLegendUtils
     static QString legendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex );
     static bool hasLegendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex );
 
+    /**
+     * Sets the legend patch \a shape for the legend node belonging to \a nodeLayer at the specified \a originalIndex.
+     *
+     * \see legendNodePatchShape()
+     * \since QGIS 3.14
+     */
+    static void setLegendNodePatchShape( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QgsLegendPatchShape &shape );
+
+    /**
+     * Returns the legend patch shape for the legend node belonging to \a nodeLayer at the specified \a originalIndex.
+     *
+     * \see setLegendNodePatchShape()
+     * \since QGIS 3.14
+     */
+    static QgsLegendPatchShape legendNodePatchShape( QgsLayerTreeLayer *nodeLayer, int originalIndex );
+
+    /**
+     * Sets the legend symbol \a size for the legend node belonging to \a nodeLayer at the specified \a originalIndex.
+     *
+     * If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+     * symbol width or height from QgsLegendSettings.
+     *
+     * \see legendNodeSymbolSize()
+     * \since QGIS 3.14
+     */
+    static void setLegendNodeSymbolSize( QgsLayerTreeLayer *nodeLayer, int originalIndex, QSizeF size );
+
+    /**
+     * Returns the legend node symbol size for the legend node belonging to \a nodeLayer at the specified \a originalIndex.
+     *
+     * If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+     * symbol width or height from QgsLegendSettings.
+     *
+     * \see setLegendNodeSymbolSize()
+     * \since QGIS 3.14
+     */
+    static QSizeF legendNodeSymbolSize( QgsLayerTreeLayer *nodeLayer, int originalIndex );
+
+    /**
+     * Sets a custom legend \a symbol size for the legend node belonging to \a nodeLayer at the specified \a originalIndex.
+     *
+     * If \a symbol is non-NULLPTR, it will be used in place of the default symbol when rendering
+     * the legend node.
+     *
+     * \see legendNodeCustomSymbol()
+     * \since QGIS 3.14
+     */
+    static void setLegendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QgsSymbol *symbol );
+
+    /**
+     * Returns the custom legend symbol for the legend node belonging to \a nodeLayer at the specified \a originalIndex.
+     *
+     * If the symbol is non-NULLPTR, it will be used in place of the default symbol when rendering
+     * the legend node.
+     *
+     * Caller takes ownership of the returned symbol.
+     *
+     * \see setLegendNodeCustomSymbol()
+     * \since QGIS 3.14
+     */
+    static QgsSymbol *legendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex ) SIP_FACTORY;
+
+    /**
+     * Sets whether a forced column break should occur before the node.
+     *
+     * \see legendNodeColumnBreak()
+     * \since QGIS 3.14
+     */
+    static void setLegendNodeColumnBreak( QgsLayerTreeLayer *nodeLayer, int originalIndex, bool columnBreakBeforeNode );
+
+    /**
+     * Returns whether a forced column break should occur before the node.
+     *
+     * \see setLegendNodeColumnBreak()
+     * \since QGIS 3.14
+     */
+    static bool legendNodeColumnBreak( QgsLayerTreeLayer *nodeLayer, int originalIndex );
+
     //! update according to layer node's custom properties (order of items, user labels for items)
     static void applyLayerNodeProperties( QgsLayerTreeLayer *nodeLayer, QList<QgsLayerTreeModelLegendNode *> &nodes );
 };
@@ -105,7 +189,7 @@ class CORE_EXPORT QgsMapLayerLegendUtils
 
 #include <QHash>
 
-#include "qgstextrenderer.h"
+#include "qgstextformat.h"
 
 /**
  * \ingroup core
@@ -191,6 +275,26 @@ class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
 
   private:
     QgsRasterLayer *mLayer = nullptr;
+};
+
+
+/**
+ * \ingroup core
+ * Default legend implementation for mesh layers
+ * \since QGIS 3.4
+ */
+class CORE_EXPORT QgsDefaultMeshLayerLegend : public QgsMapLayerLegend
+{
+    Q_OBJECT
+
+  public:
+    //! Creates an instance for the given mesh layer
+    explicit QgsDefaultMeshLayerLegend( QgsMeshLayer *ml );
+
+    QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
+
+  private:
+    QgsMeshLayer *mLayer = nullptr;
 };
 
 

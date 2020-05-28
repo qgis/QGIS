@@ -1,0 +1,9 @@
+{
+  "name": "is_file",
+  "type": "function",
+  "description": "Returns true if a path corresponds to a file.",
+  "arguments": [ {"arg":"path","description":"a file path"}],
+  "examples": [ { "expression":"is_file('/home/qgis/data/country_boundaries.shp')", "returns":"true"},
+{ "expression":"is_file('/home/qgis/data/')", "returns":"false"}]
+}
+

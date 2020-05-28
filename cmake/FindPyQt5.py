@@ -32,12 +32,14 @@
 
 try:
     import PyQt5.pyqtconfig
+
     pyqtcfg = PyQt5.pyqtconfig.Configuration()
 except ImportError:
     import PyQt5.QtCore
-    import sipconfig # won't work for SIP v5
+    import sipconfig  # won't work for SIP v5
     import os.path
     import sys
+
     cfg = sipconfig.Configuration()
     sip_dir = cfg.default_sip_dir
     if sys.platform.startswith('freebsd'):
@@ -45,7 +47,8 @@ except ImportError:
         sip_dir = sip_dir.replace(py_version, '')
     for p in (os.path.join(sip_dir, "PyQt5"),
               os.path.join(sip_dir, "PyQt5-3"),
-              sip_dir):
+              sip_dir,
+              os.path.join(cfg.default_mod_dir, "PyQt5", "bindings")):
         if os.path.exists(os.path.join(p, "QtCore", "QtCoremod.sip")):
             sip_dir = p
             break
@@ -79,3 +82,10 @@ print("pyqt_mod_dir:%s" % pyqtcfg.pyqt_mod_dir)
 print("pyqt_sip_dir:%s" % pyqtcfg.pyqt_sip_dir)
 print("pyqt_sip_flags:%s" % pyqtcfg.pyqt_sip_flags)
 print("pyqt_bin_dir:%s" % pyqtcfg.pyqt_bin_dir)
+
+try:
+    import PyQt5.sip
+
+    print("pyqt_sip_module:PyQt5.sip")
+except:
+    print("pyqt_sip_module:sip")

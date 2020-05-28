@@ -1,0 +1,136 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/validity/qgsabstractvaliditycheck.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsValidityCheckResult
+{
+%Docstring
+Represents an individual result from a validity check run by a QgsAbstractValidityCheck subclass.
+
+Results can either be warnings or critical errors, as dictated by the type member. Critical error
+are errors which are serious enough to prevent an operation from proceeding, while a warning
+result will be communicated to users, but not prevent them from proceeding.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsabstractvaliditycheck.h"
+%End
+  public:
+
+    enum Type
+    {
+      Warning,
+      Critical,
+    };
+
+    Type type;
+
+    QString title;
+
+    QString detailedDescription;
+
+    QString checkId;
+
+};
+
+class QgsAbstractValidityCheck
+{
+%Docstring
+Abstract base class for individual validity checks.
+
+Validity checks represent objects which can run a test using a :py:class:`QgsValidityCheckContext`, and return
+the results of the check via QgsValidityCheckResult objects.
+
+Checks can be used for many different use cases, e.g. validating a layout's contents before allowing
+an export to occur, or validating the contents of a Processing model (and warning if required plugin based
+providers are not available or if compulsory algorithm parameters have not been populated).
+
+Subclasses must indicate the type of check they represent via the checkType() method. When checks are performed,
+all the registered checks with a matching check type are performed sequentially. The check type also
+dictates the subclass of the QgsValidityCheckContext which is given to the subclass' runCheck method.
+
+Checks must be registered in the application's :py:class:`QgsValidityCheckRegistry`, which is accessible via
+:py:func:`QgsApplication.validityCheckRegistry()`
+
+.. seealso:: :py:class:`QgsValidityCheckRegistry`
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsabstractvaliditycheck.h"
+%End
+  public:
+
+    enum Type
+    {
+      TypeLayoutCheck,
+      TypeUserCheck,
+    };
+
+    virtual ~QgsAbstractValidityCheck();
+
+    virtual QgsAbstractValidityCheck *create() const = 0 /Factory/;
+%Docstring
+Creates a new instance of the check and returns it.
+%End
+
+    virtual QString id() const = 0;
+%Docstring
+Returns the unique ID of the check.
+
+This is a non-translated, non-user visible string identifying the check.
+%End
+
+    virtual int checkType() const = 0;
+%Docstring
+Returns the type of the check.
+%End
+
+    virtual bool prepareCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback );
+%Docstring
+Prepares the check for execution, and returns ``True`` if the check can be run.
+
+This method is always called from the main thread, and subclasses can implement
+it to do preparatory steps which are not thread safe (e.g. obtaining feature
+sources from vector layers). It is followed by a call to runCheck(), which
+may be performed in a background thread.
+
+Individual calls to prepareCheck()/runCheck() are run on a new instance of the
+check (see create()), so subclasses can safely store state from the prepareCheck() method
+ready for the subsequent runCheck() method.
+
+The ``context`` argument gives the wider in which the check is being run.
+%End
+
+    virtual QList< QgsValidityCheckResult > runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) = 0;
+%Docstring
+Runs the check and returns a list of results. If the check is "passed" and no warnings or errors are generated,
+then an empty list should be returned.
+
+This method may be called in a background thread, so subclasses should take care to ensure that
+only thread-safe methods are used. It is always preceded by a call to prepareCheck().
+
+If a check needs to perform non-thread-safe tests, these should be implemented within prepareCheck()
+and stored in the subclass instance to be returned by this method.
+
+The ``context`` argument gives the wider in which the check is being run.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/validity/qgsabstractvaliditycheck.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -21,6 +21,7 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include <QWidget>
+#include <memory>
 
 class QgsEditorWidgetRegistry;
 class QgsShortcutsManager;
@@ -32,6 +33,12 @@ class QgsLayoutItemGuiRegistry;
 class QgsWidgetStateHelper;
 class QgsProcessingGuiRegistry;
 class QgsProcessingRecentAlgorithmLog;
+class QgsWindowManagerInterface;
+class QgsDataItemGuiProviderRegistry;
+class QgsProviderGuiRegistry;
+class QgsProjectStorageGuiRegistry;
+class QgsNumericFormatGuiRegistry;
+class QgsMessageBar;
 
 /**
  * \ingroup gui
@@ -39,9 +46,21 @@ class QgsProcessingRecentAlgorithmLog;
  * related to GUI classes.
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsGui
+class GUI_EXPORT QgsGui : public QObject
 {
+    Q_OBJECT
+
   public:
+
+    /**
+     * Defines the behavior to use when setting the CRS for a newly created project.
+     */
+    enum ProjectCrsBehavior
+    {
+      UseCrsOfFirstLayerAdded = 1, //!< Set the project CRS to the CRS of the first layer added to a new project
+      UsePresetCrs = 2, //!< Always set new projects to use a preset default CRS
+    };
+    Q_ENUM( ProjectCrsBehavior )
 
     //! QgsGui cannot be copied
     QgsGui( const QgsGui &other ) = delete;
@@ -64,12 +83,12 @@ class GUI_EXPORT QgsGui
     /**
      * Returns the global editor widget registry, used for managing all known edit widget factories.
      */
-    static QgsEditorWidgetRegistry *editorWidgetRegistry();
+    static QgsEditorWidgetRegistry *editorWidgetRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the global source select provider registry, used for managing all known source select widget factories.
      */
-    static QgsSourceSelectProviderRegistry *sourceSelectProviderRegistry();
+    static QgsSourceSelectProviderRegistry *sourceSelectProviderRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the global shortcuts manager, used for managing a QAction and QShortcut sequences.
@@ -79,23 +98,29 @@ class GUI_EXPORT QgsGui
     /**
      * Returns the global layer tree embedded widget registry, used for registering widgets that may be embedded into layer tree view.
      */
-    static QgsLayerTreeEmbeddedWidgetRegistry *layerTreeEmbeddedWidgetRegistry();
+    static QgsLayerTreeEmbeddedWidgetRegistry *layerTreeEmbeddedWidgetRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the global map layer action registry, used for registering map layer actions.
      */
-    static QgsMapLayerActionRegistry *mapLayerActionRegistry();
+    static QgsMapLayerActionRegistry *mapLayerActionRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the global layout item GUI registry, used for registering the GUI behavior of layout items.
      */
-    static QgsLayoutItemGuiRegistry *layoutItemGuiRegistry();
+    static QgsLayoutItemGuiRegistry *layoutItemGuiRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the global processing gui registry, used for registering the GUI behavior of processing algorithms.
      * \since QGIS 3.2
      */
-    static QgsProcessingGuiRegistry *processingGuiRegistry();
+    static QgsProcessingGuiRegistry *processingGuiRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns the global numeric format gui registry, used for registering the GUI widgets associated with QgsNumericFormats.
+     * \since QGIS 3.12
+     */
+    static QgsNumericFormatGuiRegistry *numericFormatGuiRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the global processing recent algorithm log, used for tracking recently used processing algorithms.
@@ -104,17 +129,93 @@ class GUI_EXPORT QgsGui
     static QgsProcessingRecentAlgorithmLog *processingRecentAlgorithmLog();
 
     /**
+     * Returns the global data item GUI provider registry, used for tracking providers which affect the browser
+     * GUI.
+     * \since QGIS 3.6
+     */
+    static QgsDataItemGuiProviderRegistry *dataItemGuiProviderRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns the global GUI-related project storage registry
+     * \since QGIS 3.10
+     */
+    static QgsProjectStorageGuiRegistry *projectStorageGuiRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns the registry of GUI-related components of data providers
+     * \since QGIS 3.10
+     */
+    static QgsProviderGuiRegistry *providerGuiRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * Register the widget to allow its position to be automatically saved and restored when open and closed.
      * Use this to avoid needing to call saveGeometry() and restoreGeometry() on your widget.
      */
     static void enableAutoGeometryRestore( QWidget *widget, const QString &key = QString() );
 
+    /**
+     * Returns the global window manager, if set.
+     * \see setWindowManager()
+     * \since QGIS 3.4
+     */
+    static QgsWindowManagerInterface *windowManager();
+
+    /**
+     * Sets the global window \a manager. Ownership is transferred to the QgsGui instance.
+     * \see windowManager()
+     * \since QGIS 3.4
+     */
+    static void setWindowManager( QgsWindowManagerInterface *manager SIP_TRANSFER );
+
+    /**
+     * HIG flags, which indicate the Human Interface Guidelines for the current platform.
+     * \since QGIS 3.4
+    */
+    enum HigFlag
+    {
+      HigMenuTextIsTitleCase = 1 << 0,       //!< Menu action texts should be title case
+      HigDialogTitleIsTitleCase = 1 << 1     //!< Dialog titles should be title case
+    };
+    Q_DECLARE_FLAGS( HigFlags, HigFlag )
+
+    /**
+    * Returns the platform's HIG flags.
+    * \since QGIS 3.4
+    */
+    static QgsGui::HigFlags higFlags();
+
     ~QgsGui();
+
+    /**
+     * Samples the color on screen at the specified global \a point (pixel).
+     *
+     * \since QGIS 3.10
+     */
+    static QColor sampleColor( QPoint point );
+
+    /**
+     * Returns the screen at the given global \a point (pixel).
+     *
+     * \since QGIS 3.10
+     */
+    static QScreen *findScreenAt( QPoint point );
+
+    /**
+     * Returns true if python macros are currently allowed to be run
+     * If the global option is to ask user, a modal dialog will be shown
+     * \param lambda a pointer to a lambda method. If specified, the dialog is not modal,
+     * a message is shown with a button to enable macro.
+     * The lambda will be run either if macros are currently allowed or if the user accepts the message.
+     * The \a messageBar must be given in such case.
+     * \param messageBar the message bar must be provided if a lambda method is used.
+     */
+    static bool pythonMacroAllowed( void ( *lambda )() = nullptr, QgsMessageBar *messageBar = nullptr ) SIP_SKIP;
 
   private:
 
     QgsGui();
 
+    QgsProviderGuiRegistry *mProviderGuiRegistry = nullptr;
     QgsWidgetStateHelper *mWidgetStateHelper = nullptr;
     QgsNative *mNative = nullptr;
     QgsEditorWidgetRegistry *mEditorWidgetRegistry = nullptr;
@@ -125,11 +226,17 @@ class GUI_EXPORT QgsGui
     QgsLayoutItemGuiRegistry *mLayoutItemGuiRegistry = nullptr;
     QgsProcessingGuiRegistry *mProcessingGuiRegistry = nullptr;
     QgsProcessingRecentAlgorithmLog *mProcessingRecentAlgorithmLog = nullptr;
+    QgsNumericFormatGuiRegistry *mNumericFormatGuiRegistry = nullptr;
+    QgsDataItemGuiProviderRegistry *mDataItemGuiProviderRegistry = nullptr;
+    QgsProjectStorageGuiRegistry *mProjectStorageGuiRegistry = nullptr;
+    std::unique_ptr< QgsWindowManagerInterface > mWindowManager;
 
 #ifdef SIP_RUN
     QgsGui( const QgsGui &other );
 #endif
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsGui::HigFlags )
 
 #endif // QGSGUI_H

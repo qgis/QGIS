@@ -52,16 +52,32 @@ class QgsSettingsTree : public QTreeWidget
     Q_OBJECT
 
   public:
+
+    //! Model roles
+    enum Roles
+    {
+      TypeRole = Qt::UserRole + 1, //!< Item type role, see Type enum
+      PathRole, //!< Complete setting path, including parent groups
+    };
+
+    //! Item types
+    enum Type
+    {
+      Group = 0, //!< Group item
+      Setting, //!< Setting item
+    };
+    Q_ENUM( Type )
+
     explicit QgsSettingsTree( QWidget *parent = nullptr );
 
-    void setSettingsObject( QgsSettings *settings );
+    void setSettingsObject( QgsSettings *mSettings );
     QSize sizeHint() const override;
 
-    void setSettingsMap( QMap< QString, QStringList > &map ) { settingsMap = map; }
+    void setSettingsMap( QMap< QString, QStringList > &map ) { mSettingsMap = map; }
     QString itemKey( QTreeWidgetItem *item );
 
   public slots:
-    void setAutoRefresh( bool autoRefresh );
+    void setAutoRefresh( bool mAutoRefresh );
     void maybeRefresh();
     void refresh();
 
@@ -70,23 +86,25 @@ class QgsSettingsTree : public QTreeWidget
 
   private slots:
     void updateSetting( QTreeWidgetItem *item );
+    void showContextMenu( QPoint pos );
 
   private:
     void updateChildItems( QTreeWidgetItem *parent );
     QTreeWidgetItem *createItem( const QString &text, QTreeWidgetItem *parent,
-                                 int index );
+                                 int index, bool isGroup );
     QTreeWidgetItem *childAt( QTreeWidgetItem *parent, int index );
     int childCount( QTreeWidgetItem *parent );
     int findChild( QTreeWidgetItem *parent, const QString &text, int startIndex );
     void moveItemForward( QTreeWidgetItem *parent, int oldIndex, int newIndex );
 
-    QgsSettings *settings = nullptr;
-    QTimer refreshTimer;
-    bool autoRefresh;
-    QIcon groupIcon;
-    QIcon keyIcon;
+    QgsSettings *mSettings = nullptr;
+    QTimer mRefreshTimer;
+    bool mAutoRefresh = false;
+    QIcon mGroupIcon;
+    QIcon mKeyIcon;
 
-    QMap< QString, QStringList > settingsMap;
+    QMap< QString, QStringList > mSettingsMap;
+    QMenu *mContextMenu = nullptr;
 };
 
 #endif

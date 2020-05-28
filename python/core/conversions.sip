@@ -1457,15 +1457,10 @@ template <TYPE>
 
         if (tobj == NULL || PyList_SetItem(l, i, tobj) < 0)
         {
+            Py_DECREF(tobj);
             Py_DECREF(l);
-
-            if (!tobj)
-                delete t;
-
             return NULL;
         }
-
-        Py_DECREF(tobj);
     }
 
     return l;

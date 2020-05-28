@@ -21,7 +21,7 @@
        <item>
         <widget class="QLabel" name="mSQLStatementLabel">
          <property name="text">
-          <string>SQL statement</string>
+          <string>SQL Statement</string>
          </property>
         </widget>
        </item>

@@ -17,7 +17,7 @@
 #define QGSDOUBLESPINBOX_H
 
 #include <QDoubleSpinBox>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
 class QgsSpinBoxLineEdit;
@@ -75,7 +75,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     /**
      * Sets whether the widget will show a clear button. The clear button
      * allows users to reset the widget to a default or empty state.
-     * \param showClearButton set to true to show the clear button, or false to hide it
+     * \param showClearButton set to TRUE to show the clear button, or FALSE to hide it
      * \see showClearButton()
      */
     void setShowClearButton( bool showClearButton );
@@ -89,7 +89,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     /**
      * Sets if the widget will allow entry of simple expressions, which are
      * evaluated and then discarded.
-     * \param enabled set to true to allow expression entry
+     * \param enabled set to TRUE to allow expression entry
      * \since QGIS 2.7
      */
     void setExpressionsEnabled( bool enabled );
@@ -97,7 +97,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     /**
      * Returns whether the widget will allow entry of simple expressions, which are
      * evaluated and then discarded.
-     * \returns true if spin box allows expression entry
+     * \returns TRUE if spin box allows expression entry
      * \since QGIS 2.7
      */
     bool expressionsEnabled() const {return mExpressionsEnabled;}
@@ -132,6 +132,13 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      */
     void setLineEditAlignment( Qt::Alignment alignment );
 
+    /**
+     * Set the special-value text to be \a txt
+     * If set, the spin box will display this text instead of a numeric value whenever the current value
+     * is equal to minimum(). Typical use is to indicate that this choice has a special (default) meaning.
+     */
+    void setSpecialValueText( const QString &txt );
+
     double valueFromText( const QString &text ) const override;
     QValidator::State validate( QString &input, int &pos ) const override;
     void paintEvent( QPaintEvent *e ) override;
@@ -139,6 +146,10 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
   protected:
     void changeEvent( QEvent *event ) override;
     void wheelEvent( QWheelEvent *event ) override;
+    // This is required because private implementation of
+    // QAbstractSpinBoxPrivate may trigger a second
+    // undesired event from the auto-repeat mouse timer
+    void timerEvent( QTimerEvent *event ) override;
 
   private slots:
     void changed( double value );
@@ -156,6 +167,8 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     bool mExpressionsEnabled = true;
 
     QString stripped( const QString &originalText ) const;
+
+    friend class TestQgsRangeWidgetWrapper;
 };
 
 #endif // QGSDOUBLESPINBOX_H

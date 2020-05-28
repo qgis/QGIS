@@ -49,8 +49,8 @@ class CORE_EXPORT QgsMessageLog : public QObject
     /**
      * Adds a \a message to the log instance (and creates it if necessary).
      *
-     * If \a notifyUser is true, then the message should be brought to the user's attention by various UI hints.
-     * If it is false, the message should appear in logs silently. Note that log viewer implementations may
+     * If \a notifyUser is TRUE, then the message should be brought to the user's attention by various UI hints.
+     * If it is FALSE, the message should appear in logs silently. Note that log viewer implementations may
      * only respect notification hints for certain message levels.
      */
     static void logMessage( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::Warning, bool notifyUser = true );
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsMessageLog : public QObject
 
     /**
      * Emitted whenever the log receives a message which is not a Qgis::Info level message
-     * and which has the \a notifyUser flag as true.
+     * and which has the \a notifyUser flag as TRUE.
      *
      * If QgsMessageLogNotifyBlocker objects have been created then this signal may be
      * temporarily suppressed.
@@ -128,20 +128,44 @@ class CORE_EXPORT QgsMessageLogNotifyBlocker
 
 /**
  * \ingroup core
-\brief Default implementation of message logging interface
-
-This class outputs log messages to the standard output. Therefore it might
-be the right choice for apps without GUI.
-*/
+ * \brief Default implementation of message logging interface
+ *
+ * This class outputs log messages to the standard error. Therefore it might
+ * be the right choice for applications without GUI.
+ */
 class CORE_EXPORT QgsMessageLogConsole : public QObject
 {
     Q_OBJECT
 
   public:
+
+    /**
+     * Constructor for QgsMessageLogConsole.
+     */
     QgsMessageLogConsole();
 
+  protected:
+
+    /**
+     * Formats a log message. Used by child classes.
+     *
+     * \param message the message to format
+     * \param tag the tag of the message
+     * \param level the log level of the message
+     * \since QGIS 3.4
+     */
+    QString formatLogMessage( const QString &message, const QString &tag, Qgis::MessageLevel level = Qgis::Info ) const;
+
   public slots:
-    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
+
+    /**
+     * Logs a message to stderr.
+     *
+     * \param message the message to format
+     * \param tag the tag of the message
+     * \param level the log level of the message
+     */
+    virtual void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
 };
 
 #endif

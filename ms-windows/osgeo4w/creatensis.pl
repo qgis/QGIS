@@ -78,6 +78,9 @@ chdir $packages;
 system "wget $wgetopt -c http://qgis.org/downloads/Untgz.zip" unless -f "Untgz.zip";
 die "download of Untgz.zip failed" if $?;
 
+system "wget $wgetopt -c https://qgis.org/downloads/Inetc.zip" unless -f "Inetc.zip";
+die "download of Inetc.zip failed" if $?;
+
 my %dep;
 my %file;
 my %lic;
@@ -386,6 +389,12 @@ unless(-d "untgz") {
 	die "unpacking Untgz.zip failed" if $?;
 }
 
+unless(-d "inetc") {
+	mkdir "inetc", 0755;
+	system "unzip -p $packages/Inetc.zip Plugins/x86-ansi/INetC.dll >inetc/INetC.dll";
+	die "unpacking Inetc.zip failed" if $?;
+}
+
 chdir "..";
 
 
@@ -540,7 +549,7 @@ creatensis.pl [options] [packages...]
     -verbose		increase verbosity
     -releasename=name	name of release (defaults to CMakeLists.txt setting)
     -keep		don't start with a fresh unpacked directory
-    -signwith=cert.p12	optionall sign package with certificate (requires osslsigncode)
+    -signwith=cert.p12	optionally sign package with certificate (requires osslsigncode)
     -signpass=password	password of certificate
     -version=m.m.p	package version (defaults to CMakeLists.txt setting)
     -binary=b		binary version of package

@@ -36,6 +36,7 @@
   #ifdef _MSC_VER
   #define YY_NO_UNISTD_H
   #endif
+
 %}
 
 white       [ \t\r\n]+
@@ -61,6 +62,9 @@ raster_band_ref_quoted  \"(\\.|[^"])*\"
 "atan" { rasterlval.op = QgsRasterCalcNode::opATAN; return FUNCTION;}
 "ln" { rasterlval.op = QgsRasterCalcNode::opLOG; return FUNCTION;}
 "log10" { rasterlval.op = QgsRasterCalcNode::opLOG10; return FUNCTION;}
+"abs" { rasterlval.op = QgsRasterCalcNode::opABS; return FUNCTION;}
+"min" { rasterlval.op = QgsRasterCalcNode::opMIN; return FUNCTION;}
+"max" { rasterlval.op = QgsRasterCalcNode::opMAX; return FUNCTION;}
 
 "AND" { return AND; }
 "OR" { return OR; }
@@ -80,7 +84,11 @@ raster_band_ref_quoted  \"(\\.|[^"])*\"
 {raster_band_ref_quoted} { return RASTER_BAND_REF; }
 
 {white}    /* skip blanks and tabs */
+
+[a-z][a-z0-9_]* { return yytext[0]; } /* other unknown tokens */
+
 %%
+
 
 void set_raster_input_buffer(const char* buffer)
 {

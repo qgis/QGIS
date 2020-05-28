@@ -23,16 +23,17 @@
 #include "qgsdataitem.h"
 #include "qgsbrowsertreeview.h"
 #include "qgsdockwidget.h"
-#include "qgsbrowserdockwidget_p.h"
 #include "qgis_gui.h"
 #include <QSortFilterProxyModel>
 
-class QgsBrowserModel;
+class QgsBrowserGuiModel;
 class QModelIndex;
 class QgsDockBrowserTreeView;
 class QgsLayerItem;
 class QgsDataItem;
-class QgsBrowserTreeFilterProxyModel;
+class QgsBrowserProxyModel;
+class QgsMessageBar;
+class QgsDataItemGuiContext;
 
 /**
  * \ingroup gui
@@ -50,23 +51,81 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
       * \param browserModel instance of the (shared) browser model
       * \param parent parent widget
       */
-    explicit QgsBrowserDockWidget( const QString &name, QgsBrowserModel *browserModel, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsBrowserDockWidget( const QString &name, QgsBrowserGuiModel *browserModel, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsBrowserDockWidget() override;
-    //! Add directory to favorites
-    void addFavoriteDirectory( const QString &favDir, const QString &name = QString() );
+
+    /**
+     * Add directory to favorites.
+     * \deprecated will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
+     */
+    Q_DECL_DEPRECATED void addFavoriteDirectory( const QString &favDir, const QString &name = QString() ) SIP_DEPRECATED;
+
+    /**
+     * Sets a message \a bar to use alongside the dock widget. Setting this allows items
+     * to utilize the message bar to provide non-blocking feedback to users, e.g.
+     * success or failure of actions.
+     *
+     * \see messageBar()
+     *
+     * \since QGIS 3.6
+     */
+    void setMessageBar( QgsMessageBar *bar );
+
+    /**
+     * Returns the message bar associated with the dock.
+     *
+     * \see setMessageBar()
+     *
+     * \since QGIS 3.6
+     */
+    QgsMessageBar *messageBar();
+
+    /**
+     * Sets the customization for data items based on item's data provider key
+     *
+     * By default browser model shows all items from all available data items provider and few special
+     * items (e.g. Favourites). To customize the behavior, set the filter to not load certain data items.
+     * The items that are not based on data item providers (e.g. Favourites, Home) have
+     * prefix "special:"
+     *
+     * Used in the proxy browser model to hide items
+     *
+     * \since QGIS 3.12
+     */
+    void setDisabledDataItemsKeys( const QStringList &filter );
 
   public slots:
-    //! Add layer at index
-    void addLayerAtIndex( const QModelIndex &index );
+
+    /**
+     * Adds the layer corresponding to the specified model \a index.
+     *
+     * Returns TRUE if the index was successfully intrepreted as a map layer and loaded, or
+     * FALSE if the index is not a map layer or could not be loaded.
+     *
+     * \deprecated will be removed in QGIS 4.0 - retrieve the QgsLayerItem itself and manually add to project.
+     */
+    Q_DECL_DEPRECATED bool addLayerAtIndex( const QModelIndex &index ) SIP_DEPRECATED;
+
     //! Show context menu
     void showContextMenu( QPoint );
 
-    //! Add current item to favorite
-    void addFavorite();
-    //! Add directory from file dialog to favorite
-    void addFavoriteDirectory();
-    //! Remove from favorite
-    void removeFavorite();
+    /**
+     * Add current item to favorite.
+     * \deprecated will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
+     */
+    Q_DECL_DEPRECATED void addFavorite() SIP_DEPRECATED;
+
+    /**
+     * Add directory from file dialog to favorite.
+     * \deprecated will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
+     */
+    Q_DECL_DEPRECATED void addFavoriteDirectory() SIP_DEPRECATED;
+
+    /**
+     * Remove from favorite.
+     * \deprecated will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
+     */
+    Q_DECL_DEPRECATED void removeFavorite() SIP_DEPRECATED;
 
     //! Refresh browser view model (and view)
     void refresh();
@@ -81,6 +140,8 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     void setCaseSensitive( bool caseSensitive );
     //! Apply filter to the model
     void setFilter();
+    //! Sets the selection to \a index and expand it
+    void setActiveIndex( const QModelIndex &index );
     //! Update project home directory
     void updateProjectHome();
 
@@ -90,8 +151,14 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     void showProperties();
     //! Hide current item
     void hideItem();
-    //! Toggle fast scan
-    void toggleFastScan();
+
+    /**
+     * Toggle fast scan
+     * \deprecated will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED void toggleFastScan() SIP_DEPRECATED;
+
+    // TODO QGIS 4.0: make these private
 
     //! Selection has changed
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
@@ -112,7 +179,6 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
 
   private slots:
     void itemDoubleClicked( const QModelIndex &index );
-    void renameFavorite();
 
   private:
     //! Refresh the model
@@ -129,16 +195,18 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     //! Settings prefix (the object name)
     QString settingsSection() { return objectName().toLower(); }
 
+    QgsDataItemGuiContext createContext();
+
     QgsDockBrowserTreeView *mBrowserView = nullptr;
-    QgsBrowserModel *mModel = nullptr;
-    QgsBrowserTreeFilterProxyModel *mProxyModel = nullptr;
+    QgsBrowserGuiModel *mModel = nullptr;
+    QgsBrowserProxyModel *mProxyModel = nullptr;
     QString mInitPath;
     bool mPropertiesWidgetEnabled;
     // height fraction
     float mPropertiesWidgetHeight;
 
+    QgsMessageBar *mMessageBar = nullptr;
+    QStringList mDisabledDataItemsKeys;
 };
-
-
 
 #endif // QGSBROWSERDOCKWIDGET_H

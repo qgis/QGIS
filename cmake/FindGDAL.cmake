@@ -32,9 +32,14 @@ IF(WIN32)
          CACHE STRING INTERNAL)
     ENDIF (GDAL_LIBRARY)
   ENDIF (MSVC)
-  
-  
+
+ELSEIF(APPLE AND QGIS_MAC_DEPS_DIR)
+
+    FIND_PATH(GDAL_INCLUDE_DIR gdal.h "$ENV{LIB_DIR}/include")
+    FIND_LIBRARY(GDAL_LIBRARY NAMES gdal PATHS "$ENV{LIB_DIR}/lib")
+
 ELSE(WIN32)
+
   IF(UNIX) 
 
     # try to use framework on mac
@@ -81,6 +86,7 @@ ELSE(WIN32)
       FIND_PROGRAM(GDAL_CONFIG gdal-config
           ${GDAL_CONFIG_PREFER_PATH}
           ${GDAL_CONFIG_PREFER_FWTOOLS_PATH}
+          $ENV{LIB_DIR}/bin
           /usr/local/bin/
           /usr/bin/
           )
@@ -94,6 +100,7 @@ ELSE(WIN32)
             OUTPUT_VARIABLE GDAL_VERSION )
         STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\1" GDAL_VERSION_MAJOR "${GDAL_VERSION}")
         STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\2" GDAL_VERSION_MINOR "${GDAL_VERSION}")
+        STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\3" GDAL_VERSION_MICRO "${GDAL_VERSION}")
   
         # MESSAGE("DBG GDAL_VERSION ${GDAL_VERSION}")
         # MESSAGE("DBG GDAL_VERSION_MAJOR ${GDAL_VERSION_MAJOR}")
@@ -108,6 +115,9 @@ ELSE(WIN32)
         IF ( (GDAL_VERSION_MAJOR EQUAL 2) AND (GDAL_VERSION_MINOR LESS 1) )
           MESSAGE (FATAL_ERROR "GDAL version is too old (${GDAL_VERSION}). Use 2.1 or higher.")
         ENDIF( (GDAL_VERSION_MAJOR EQUAL 2) AND (GDAL_VERSION_MINOR LESS 1) )
+        IF ( (GDAL_VERSION_MAJOR EQUAL 3) AND (GDAL_VERSION_MINOR EQUAL 0) AND (GDAL_VERSION_MICRO LESS 3) )
+          MESSAGE (FATAL_ERROR "GDAL version is too old (${GDAL_VERSION}). Use 3.0.3 or higher.")
+        ENDIF( (GDAL_VERSION_MAJOR EQUAL 3) AND (GDAL_VERSION_MINOR EQUAL 0) AND (GDAL_VERSION_MICRO LESS 3) )
 
         # set INCLUDE_DIR to prefix+include
         EXEC_PROGRAM(${GDAL_CONFIG}

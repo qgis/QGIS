@@ -104,9 +104,6 @@ class QgsSpatiaLiteConnection : public QObject
      */
     bool getTableInfoAbstractInterface( sqlite3 *handle, bool loadGeometrylessTables );
 
-    //! Cleaning well-formatted SQL strings
-    QString quotedValue( QString value ) const;
-
     //! Checks if geometry_columns_auth table exists
     bool checkGeometryColumnsAuth( sqlite3 *handle );
 
@@ -161,7 +158,13 @@ class QgsSqliteHandle
     {
       mIsValid = false;
     }
+
+    /**
+     * Returns a possibly cached SQLite DB object from \a path, if \a shared is FALSE
+     * the DB will not be searched in the cache and a new READ ONLY connection will be returned.
+     */
     static QgsSqliteHandle *openDb( const QString &dbPath, bool shared = true );
+
     static bool checkMetadata( sqlite3 *handle );
     static void closeDb( QgsSqliteHandle *&handle );
 

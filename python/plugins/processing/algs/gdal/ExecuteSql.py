@@ -21,11 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'November 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
-
 from qgis.core import (QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
@@ -37,7 +32,6 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 
 class ExecuteSql(GdalAlgorithm):
-
     INPUT = 'INPUT'
     SQL = 'SQL'
     DIALECT = 'DIALECT'
@@ -93,6 +87,7 @@ class ExecuteSql(GdalAlgorithm):
         sql = self.parameterAsString(parameters, self.SQL, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, outFile)
 
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 

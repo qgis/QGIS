@@ -15,12 +15,31 @@
 
 #include "qgspoint3dsymbol.h"
 
+#include "qgs3dutils.h"
 #include "qgsreadwritecontext.h"
 #include "qgsxmlutils.h"
+#include "qgssymbollayerutils.h"
+
 
 QgsAbstract3DSymbol *QgsPoint3DSymbol::clone() const
 {
   return new QgsPoint3DSymbol( *this );
+}
+
+QgsPoint3DSymbol::QgsPoint3DSymbol()
+{
+  setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
+}
+
+QgsPoint3DSymbol::QgsPoint3DSymbol( const QgsPoint3DSymbol &other ) :
+  mAltClamping( other.altitudeClamping() )
+  , mMaterial( other.material() )
+  , mShape( other.shape() )
+  , mShapeProperties( other.shapeProperties() )
+  , mTransform( other.transform() )
+  , mBillboardSymbol( other.billboardSymbol() ? other.billboardSymbol()->clone() : nullptr )
+{
+  setDataDefinedProperties( other.dataDefinedProperties() );
 }
 
 void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
@@ -38,7 +57,7 @@ void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &c
   elem.setAttribute( QStringLiteral( "shape" ), shapeToString( mShape ) );
 
   QVariantMap shapePropertiesCopy( mShapeProperties );
-  shapePropertiesCopy["model"] = QVariant( context.pathResolver().writePath( shapePropertiesCopy["model"].toString() ) );
+  shapePropertiesCopy[QStringLiteral( "model" )] = QVariant( context.pathResolver().writePath( shapePropertiesCopy[QStringLiteral( "model" )].toString() ) );
 
   QDomElement elemShapeProperties = doc.createElement( QStringLiteral( "shape-properties" ) );
   elemShapeProperties.appendChild( QgsXmlUtils::writeVariant( shapePropertiesCopy, doc ) );
@@ -47,6 +66,13 @@ void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &c
   QDomElement elemTransform = doc.createElement( QStringLiteral( "transform" ) );
   elemTransform.setAttribute( QStringLiteral( "matrix" ), Qgs3DUtils::matrix4x4toString( mTransform ) );
   elem.appendChild( elemTransform );
+
+  if ( billboardSymbol() )
+  {
+    QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "symbol" ), billboardSymbol(), doc, context );
+
+    elem.appendChild( symbolElem );
+  }
 }
 
 void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
@@ -61,10 +87,14 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
 
   QDomElement elemShapeProperties = elem.firstChildElement( QStringLiteral( "shape-properties" ) );
   mShapeProperties = QgsXmlUtils::readVariant( elemShapeProperties.firstChildElement() ).toMap();
-  mShapeProperties["model"] = QVariant( context.pathResolver().readPath( mShapeProperties["model"].toString() ) );
+  mShapeProperties[QStringLiteral( "model" )] = QVariant( context.pathResolver().readPath( mShapeProperties[QStringLiteral( "model" )].toString() ) );
 
   QDomElement elemTransform = elem.firstChildElement( QStringLiteral( "transform" ) );
   mTransform = Qgs3DUtils::stringToMatrix4x4( elemTransform.attribute( QStringLiteral( "matrix" ) ) );
+
+  QDomElement symbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
+
+  setBillboardSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, context ) );
 }
 
 QgsPoint3DSymbol::Shape QgsPoint3DSymbol::shapeFromString( const QString &shape )
@@ -83,6 +113,8 @@ QgsPoint3DSymbol::Shape QgsPoint3DSymbol::shapeFromString( const QString &shape 
     return ExtrudedText;
   else if ( shape == QStringLiteral( "model" ) )
     return Model;
+  else if ( shape == QStringLiteral( "billboard" ) )
+    return Billboard;
   else   // "cylinder" (default)
     return Cylinder;
 }
@@ -99,6 +131,16 @@ QString QgsPoint3DSymbol::shapeToString( QgsPoint3DSymbol::Shape shape )
     case Plane: return QStringLiteral( "plane" );
     case ExtrudedText: return QStringLiteral( "extruded-text" );
     case Model: return QStringLiteral( "model" );
+    case Billboard: return QStringLiteral( "billboard" );
     default: Q_ASSERT( false ); return QString();
   }
+}
+
+QMatrix4x4 QgsPoint3DSymbol::billboardTransform() const
+{
+  QMatrix4x4 billboardTransformMatrix;
+  billboardTransformMatrix.translate( QVector3D( 0, mTransform.data()[13], 0 ) );
+
+  return billboardTransformMatrix;
+
 }

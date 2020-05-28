@@ -38,7 +38,6 @@ from .ui.ui_DlgCreateTable import Ui_DbManagerDlgCreateTable as Ui_Dialog
 
 
 class TableFieldsDelegate(QItemDelegate):
-
     """ delegate with some special item editors """
 
     columnNameChanged = pyqtSignal()
@@ -174,7 +173,7 @@ class DlgCreateTable(QDialog, Ui_Dialog):
         self.cboPrimaryKey.setCurrentIndex(selRow)
 
     def addField(self):
-        """ add new field to the end of field table """
+        """Adds new field to the end of field table """
         m = self.fields.model()
         newRow = m.rowCount()
         m.insertRows(newRow, 1)
@@ -209,7 +208,7 @@ class DlgCreateTable(QDialog, Ui_Dialog):
         return sel[0].row()
 
     def deleteField(self):
-        """ delete selected field """
+        """Deletes selected field """
         row = self.selectedField()
         if row is None:
             QMessageBox.information(self, self.tr("DB Manager"), self.tr("No field selected."))
@@ -259,7 +258,7 @@ class DlgCreateTable(QDialog, Ui_Dialog):
         self.updatePkeyCombo()
 
     def createTable(self):
-        """ create table with chosen fields, optionally add a geometry column """
+        """Creates table with chosen fields, optionally add a geometry column """
         if not self.hasSchemas:
             schema = None
         else:
@@ -309,6 +308,19 @@ class DlgCreateTable(QDialog, Ui_Dialog):
 
             except (ConnectionError, DbError) as e:
                 DlgDbError.showError(e, self)
-            return
+
+        # clear UI
+        self.editName.clear()
+        self.fields.model().removeRows(0, self.fields.model().rowCount())
+        self.cboPrimaryKey.clear()
+        self.chkGeomColumn.setChecked(False)
+        self.chkSpatialIndex.setChecked(False)
+        self.editGeomSrid.clear()
+
+        self.cboGeomType.setEnabled(False)
+        self.editGeomColumn.setEnabled(False)
+        self.spinGeomDim.setEnabled(False)
+        self.editGeomSrid.setEnabled(False)
+        self.chkSpatialIndex.setEnabled(False)
 
         QMessageBox.information(self, self.tr("DB Manager"), self.tr("Table created successfully."))

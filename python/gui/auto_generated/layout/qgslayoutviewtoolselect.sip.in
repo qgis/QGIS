@@ -44,6 +44,9 @@ Constructor for QgsLayoutViewToolSelect.
 
 
     void setLayout( QgsLayout *layout );
+%Docstring
+Sets the a ``layout``.
+%End
 
 };
 

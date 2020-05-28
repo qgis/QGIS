@@ -12,6 +12,7 @@ SET(QT_USE_QTDESIGNER ON)
 
 SET (QGIS_CUSTOMWIDGETS_SRCS
   qgiscustomwidgets.cpp
+  qgsauthconfigselectplugin.cpp
   qgscollapsiblegroupboxplugin.cpp
   qgscolorbuttonplugin.cpp
   qgscheckablecomboboxplugin.cpp
@@ -21,6 +22,8 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgsexpressionbuilderwidgetplugin.cpp
   qgsextentgroupboxplugin.cpp
   qgsexternalresourcewidgetplugin.cpp
+  qgsfeaturelistcomboboxplugin.cpp
+  qgsfeaturepickerwidgetplugin.cpp
   qgsfieldcomboboxplugin.cpp
   qgsfieldexpressionwidgetplugin.cpp
   qgsfilewidgetplugin.cpp
@@ -43,6 +46,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
 
 SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgiscustomwidgets.h
+  qgsauthconfigselectplugin.h
   qgscollapsiblegroupboxplugin.h
   qgscolorbuttonplugin.h
   qgscheckablecomboboxplugin.h
@@ -52,6 +56,8 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgsexpressionbuilderwidgetplugin.h
   qgsextentgroupboxplugin.h
   qgsexternalresourcewidgetplugin.h
+  qgsfeaturelistcomboboxplugin.h
+  qgsfeaturepickerwidgetplugin.h
   qgsfieldcomboboxplugin.h
   qgsfieldexpressionwidgetplugin.h
   qgsfilewidgetplugin.h
@@ -86,12 +92,17 @@ ENDIF(MSVC)
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/effects
+  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
+  ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
   ${CMAKE_SOURCE_DIR}/src/gui/raster
@@ -100,6 +111,8 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/core/raster
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/customwidgets
+  ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
 )
 INCLUDE_DIRECTORIES(SYSTEM
@@ -114,10 +127,7 @@ QT5_WRAP_CPP(QGIS_CUSTOMWIDGETS_MOC_SRCS ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
 #############################################################
 # qgis_customwidgets library
 
-SET(IMAGE_RCCS ../../images/images.qrc)
-QT5_ADD_RESOURCES(IMAGE_RCC_SRCS ${IMAGE_RCCS})
-
-ADD_LIBRARY(qgis_customwidgets SHARED ${QGIS_CUSTOMWIDGETS_SRCS} ${QGIS_CUSTOMWIDGETS_MOC_SRCS} ${QGIS_CUSTOMWIDGETS_MOC_HDRS} ${IMAGE_RCC_SRCS})
+ADD_LIBRARY(qgis_customwidgets SHARED ${QGIS_CUSTOMWIDGETS_SRCS} ${QGIS_CUSTOMWIDGETS_MOC_SRCS} ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
 
 SET_TARGET_PROPERTIES(qgis_customwidgets PROPERTIES
   VERSION ${COMPLETE_VERSION}

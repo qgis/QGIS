@@ -1,0 +1,168 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdataitemguiprovider.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsDataItemGuiContext
+{
+%Docstring
+
+Encapsulates the context in which a QgsDataItem is shown within the application GUI.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsdataitemguiprovider.h"
+%End
+  public:
+
+    QgsDataItemGuiContext();
+%Docstring
+Constructor for QgsDataItemGuiContext.
+%End
+
+    QgsMessageBar *messageBar() const;
+%Docstring
+Returns the associated message bar.
+
+This bar can be used to provide non-blocking feedback to users.
+
+.. seealso:: :py:func:`setMessageBar`
+%End
+
+    void setMessageBar( QgsMessageBar *bar );
+%Docstring
+Sets the associated message ``bar``.
+
+This bar can be used to provide non-blocking feedback to users.
+
+.. seealso:: :py:func:`messageBar`
+%End
+
+};
+
+
+class QgsDataItemGuiProvider
+{
+%Docstring
+
+Abstract base class for providers which affect how QgsDataItem items behave
+within the application GUI.
+
+Providers must be registered via :py:class:`QgsDataItemGuiProviderRegistry`.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsdataitemguiprovider.h"
+%End
+  public:
+
+    virtual ~QgsDataItemGuiProvider();
+
+    virtual QString name() = 0;
+%Docstring
+Returns the provider's name.
+%End
+
+    virtual void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                                      const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context );
+%Docstring
+Called when the given context ``menu`` is being populated for the given ``item``, allowing the provider
+to add its own actions and submenus to the context menu. Additionally,
+providers could potentially alter menus and actions added by other providers
+if desired, or use standard QMenu API to insert their items and submenus into
+the desired location within the context menu.
+
+The ``selectedItems`` list contains a list of ALL currently selected items within the browser view.
+Subclasses can utilize this list in order to create actions which operate on multiple items
+at once, e.g. to allow deletion of multiple layers from a database at once.
+
+When creating a context menu, this method is called for EVERY QgsDataItemGuiProvider
+within the QgsDataItemGuiProviderRegistry. It is the QgsDataItemGuiProvider subclass'
+responsibility to test the ``item`` and ``selectedItems`` for their properties and classes and decide what actions
+(if any) are appropriate to add to the context ``menu``.
+
+Care must be taken to correctly parent newly created sub menus and actions to the
+provided ``menu`` to avoid memory leaks.
+
+The ``context`` argument gives the wider context under which the context menu is being shown,
+and contains accessors for useful objects like the application message bar.
+
+The base class method has no effect.
+%End
+
+    virtual bool rename( QgsDataItem *item, const QString &name, QgsDataItemGuiContext context );
+%Docstring
+Sets a new ``name`` for the item, and returns ``True`` if the item was successfully renamed.
+
+Items which implement this method should return the QgsDataItem.Rename capability.
+
+The default implementation does nothing.
+
+.. versionadded:: 3.10
+%End
+
+    virtual bool deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext context );
+%Docstring
+Tries to permanently delete map layer representing the given item.
+Returns true if the layer was successfully deleted.
+
+Items which implement this method should return the QgsDataItem.Delete capability.
+
+The default implementation does nothing.
+
+.. versionadded:: 3.10
+%End
+
+    virtual bool handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext context );
+%Docstring
+Called when a user double clicks on an ``item``. Providers should return ``True``
+if the double-click was handled and do not want other providers to handle the
+double-click, and to prevent the default double-click behavior for items.
+%End
+
+    virtual bool acceptDrop( QgsDataItem *item, QgsDataItemGuiContext context );
+%Docstring
+Providers should return ``True`` if the drops are allowed (handleDrop() should be
+implemented in that case as well).
+
+.. versionadded:: 3.10
+%End
+
+    virtual bool handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction action );
+%Docstring
+Called when a user drops on an ``item``. Providers should return ``True``
+if the drop was handled and do not want other providers to handle the
+drop, and to prevent the default drop behavior for items.
+
+.. versionadded:: 3.10
+%End
+
+    virtual QWidget *createParamWidget( QgsDataItem *item, QgsDataItemGuiContext context ) /Factory/;
+%Docstring
+Creates source widget from data item for :py:class:`QgsBrowserPropertiesWidget`
+By default it returns None.
+Caller takes responsibility of deleting created.
+
+The function is replacement of :py:func:`QgsDataItem.paramWidget()`
+
+.. versionadded:: 3.10
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdataitemguiprovider.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

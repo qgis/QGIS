@@ -1,0 +1,141 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/symbols/qgspoint3dsymbol.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsPoint3DSymbol : QgsAbstract3DSymbol
+{
+%Docstring
+3D symbol that draws point geometries as 3D objects using one of the predefined shapes.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgspoint3dsymbol.h"
+%End
+  public:
+    QgsPoint3DSymbol();
+%Docstring
+Constructor for QgsPoint3DSymbol with default QgsMarkerSymbol as the billboardSymbol
+%End
+
+    QgsPoint3DSymbol( const QgsPoint3DSymbol &other );
+%Docstring
+Copy Constructor for QgsPoint3DSymbol
+%End
+
+    virtual QString type() const;
+    virtual QgsAbstract3DSymbol *clone() const /Factory/;
+
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+
+    Qgs3DTypes::AltitudeClamping altitudeClamping() const;
+%Docstring
+Returns method that determines altitude (whether to clamp to feature to terrain)
+%End
+    void setAltitudeClamping( Qgs3DTypes::AltitudeClamping altClamping );
+%Docstring
+Sets method that determines altitude (whether to clamp to feature to terrain)
+%End
+
+    QgsPhongMaterialSettings material() const;
+%Docstring
+Returns material used for shading of the symbol
+%End
+    void setMaterial( const QgsPhongMaterialSettings &material );
+%Docstring
+Sets material used for shading of the symbol
+%End
+
+    enum Shape
+    {
+      Cylinder,
+      Sphere,
+      Cone,
+      Cube,
+      Torus,
+      Plane,
+      ExtrudedText,
+      Model,
+      Billboard,
+    };
+
+    static Shape shapeFromString( const QString &shape );
+%Docstring
+Returns shape enum value from a string
+%End
+    static QString shapeToString( Shape shape );
+%Docstring
+Returns string from a shape enum value
+%End
+
+    Shape shape() const;
+%Docstring
+Returns 3D shape for points
+%End
+    void setShape( Shape shape );
+%Docstring
+Sets 3D shape for points
+%End
+
+    QVariantMap shapeProperties() const;
+%Docstring
+Returns a key-value dictionary of point shape properties
+%End
+    void setShapeProperties( const QVariantMap &properties );
+%Docstring
+Sets a key-value dictionary of point shape properties
+%End
+
+    QgsMarkerSymbol *billboardSymbol() const;
+%Docstring
+Returns a symbol for billboard
+%End
+    void setBillboardSymbol( QgsMarkerSymbol *symbol );
+%Docstring
+Set symbol for billboard and the ownership is transferred
+%End
+
+    QMatrix4x4 transform() const;
+%Docstring
+Returns transform for individual objects represented by the symbol
+%End
+    void setTransform( const QMatrix4x4 &transform );
+%Docstring
+Sets transform for individual objects represented by the symbol
+%End
+
+    QMatrix4x4 billboardTransform() const;
+%Docstring
+Returns transform for billboards
+%End
+
+  private:
+    QgsPoint3DSymbol &operator=( const QgsPoint3DSymbol & );
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/symbols/qgspoint3dsymbol.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

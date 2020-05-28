@@ -4,6 +4,6 @@
   "description": "Returns an array containing distinct values of the given array.",
   "arguments": [
     {"arg":"array","description":"an array"}],
-  "examples": [ { "expression":"array_distinct(array(1,2,3,2,1))", "returns":"array: 1,2,3"}
+  "examples": [ { "expression":"array_distinct(array(1,2,3,2,1))", "returns":"[ 1, 2, 3 ]"}
   ]
 }

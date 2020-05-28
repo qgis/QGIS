@@ -2,7 +2,7 @@
      testqgscurve.cpp
      --------------------------------------
     Date                 : 21 July 2017
-    Copyright            : (C) 2017 by Sandro Santilli
+    Copyright            : (C) 2017-2019 by Sandro Santilli
     Email                : strk @ kbt.io
  ***************************************************************************
  *                                                                         *
@@ -92,13 +92,18 @@ void TestQgsCurve::curveToLine()
   TEST_C2L( circularString, 10, QgsAbstractGeometry::MaximumDifference,
             "LineString (0 0, 29.29 70.71, 100 100, 170.71 70.71, 200 0)", 2 );
 
+  /* op: Maximum of 300 units (higher than sagitta) of difference, symmetric */
+  /* See https://github.com/qgis/QGIS/issues/31832 */
+  TEST_C2L( circularString, 300, QgsAbstractGeometry::MaximumDifference,
+            "LineString (0 0, 200 0)", 2 );
+
   /* op: Maximum of M_PI / 8 degrees of angle, (a)symmetric */
-  /* See https://issues.qgis.org/issues/16717 */
+  /* See https://github.com/qgis/QGIS/issues/24616 */
   TEST_C2L( circularString, M_PI / 8, QgsAbstractGeometry::MaximumAngle,
             "LineString (0 0, 7.61 38.27, 29.29 70.71, 61.73 92.39, 100 100, 138.27 92.39, 170.71 70.71, 192.39 38.27, 200 0)", 2 );
 
   /* op: Maximum of 70 degrees of angle, symmetric */
-  /* See https://issues.qgis.org/issues/16722 */
+  /* See https://github.com/qgis/QGIS/issues/24621 */
   TEST_C2L( circularString, 70 * M_PI / 180, QgsAbstractGeometry::MaximumAngle,
             "LineString (0 0, 50 86.6, 150 86.6, 200 0)", 2 );
 

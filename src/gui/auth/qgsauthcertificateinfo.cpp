@@ -42,7 +42,8 @@ static void setItemBold_( QTreeWidgetItem *item )
 
 static void removeChildren_( QTreeWidgetItem *item )
 {
-  Q_FOREACH ( QTreeWidgetItem *child, item->takeChildren() )
+  const auto constTakeChildren = item->takeChildren();
+  for ( QTreeWidgetItem *child : constTakeChildren )
   {
     delete child;
   }
@@ -115,7 +116,7 @@ void QgsAuthCertInfo::setupError( const QString &msg )
 
 void QgsAuthCertInfo::currentCertItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
 {
-  Q_UNUSED( previous );
+  Q_UNUSED( previous )
   updateCurrentCert( current );
 }
 
@@ -144,7 +145,8 @@ bool QgsAuthCertInfo::populateQcaCertCollection()
   }
   if ( !mConnectionCAs.isEmpty() )
   {
-    Q_FOREACH ( const QSslCertificate &cert, mConnectionCAs )
+    const auto constMConnectionCAs = mConnectionCAs;
+    for ( const QSslCertificate &cert : constMConnectionCAs )
     {
       QCA::ConvertResult res;
       QCA::Certificate acert = QCA::Certificate::fromPEM( cert.toPem(), &res, QStringLiteral( "qca-ossl" ) );
@@ -190,7 +192,7 @@ bool QgsAuthCertInfo::populateCertChain()
 
   if ( mACertChain.isEmpty() )
   {
-    QgsDebugMsg( "Could not populate QCA certificate chain" );
+    QgsDebugMsg( QStringLiteral( "Could not populate QCA certificate chain" ) );
     mACertChain = certchain;
   }
 
@@ -201,7 +203,8 @@ bool QgsAuthCertInfo::populateCertChain()
   }
 
   // mirror chain to QSslCertificate
-  Q_FOREACH ( QCA::Certificate cert, mACertChain )
+  const auto constMACertChain = mACertChain;
+  for ( QCA::Certificate cert : constMACertChain )
   {
     QSslCertificate qcert;
     if ( !cert.isNull() )
@@ -224,7 +227,7 @@ void QgsAuthCertInfo::setCertHierarchy()
   {
     QSslCertificate cert( it.previous() );
     bool missingCA = cert.isNull();
-    QString cert_source( QLatin1String( "" ) );
+    QString cert_source;
     if ( missingCA && it.hasPrevious() )
     {
       cert_source = QgsAuthCertUtils::resolvedCertName( it.peekPrevious(), true );
@@ -321,7 +324,7 @@ void QgsAuthCertInfo::setUpCertDetailsTree()
   mSecGeneral = new QTreeWidgetItem(
     treeDetails,
     QStringList( tr( "General" ) ),
-    ( int )DetailsSection );
+    static_cast<int>( DetailsSection ) );
   setItemBold_( mSecGeneral );
   mSecGeneral->setFirstColumnSpanned( true );
   mSecGeneral->setFlags( Qt::ItemIsEnabled );
@@ -331,7 +334,7 @@ void QgsAuthCertInfo::setUpCertDetailsTree()
   mSecDetails = new QTreeWidgetItem(
     treeDetails,
     QStringList( tr( "Details" ) ),
-    ( int )DetailsSection );
+    static_cast<int>( DetailsSection ) );
   setItemBold_( mSecDetails );
   mSecDetails->setFirstColumnSpanned( true );
   mSecDetails->setFlags( Qt::ItemIsEnabled );
@@ -348,7 +351,7 @@ void QgsAuthCertInfo::setUpCertDetailsTree()
   mSecPemText = new QTreeWidgetItem(
     treeDetails,
     QStringList( tr( "PEM Text" ) ),
-    ( int )DetailsSection );
+    static_cast<int>( DetailsSection ) );
   setItemBold_( mSecPemText );
   mSecPemText->setFirstColumnSpanned( true );
   mSecPemText->setFlags( Qt::ItemIsEnabled );
@@ -371,7 +374,7 @@ QTreeWidgetItem *QgsAuthCertInfo::addGroupItem( QTreeWidgetItem *parent, const Q
   QTreeWidgetItem *grpitem = new QTreeWidgetItem(
     parent,
     QStringList( group ),
-    ( int )DetailsGroup );
+    static_cast<int>( DetailsGroup ) );
 
   grpitem->setFirstColumnSpanned( true );
   grpitem->setFlags( Qt::ItemIsEnabled );
@@ -395,8 +398,8 @@ void QgsAuthCertInfo::addFieldItem( QTreeWidgetItem *parent, const QString &fiel
 
   QTreeWidgetItem *item = new QTreeWidgetItem(
     parent,
-    QStringList() << field << ( wdgt == NoWidget ? value : QLatin1String( "" ) ),
-    ( int )DetailsField );
+    QStringList() << field << ( wdgt == NoWidget ? value : QString() ),
+    static_cast<int>( DetailsField ) );
 
   item->setTextAlignment( 0, Qt::AlignRight );
   item->setTextAlignment( 1, Qt::AlignLeft );
@@ -577,7 +580,7 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
                 mCurrentACert.subjectInfo().value( QCA::XMPP ),
                 LineEdit );
 
-  QMultiMap<QSsl::AlternateNameEntryType, QString> alts( mCurrentQCert.alternateSubjectNames() );
+  QMultiMap<QSsl::AlternativeNameEntryType, QString> alts( mCurrentQCert.subjectAlternativeNames() );
   QStringList altslist;
   QString email( tr( "Email: " ) );
   QStringList emails( alts.values( QSsl::EmailEntry ) );
@@ -777,7 +780,8 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
   QStringList keyusage;
   QStringList extkeyusage;
   QList<QCA::ConstraintType> certconsts = mCurrentACert.constraints();
-  Q_FOREACH ( const QCA::ConstraintType &certconst, certconsts )
+  const auto constCertconsts = certconsts;
+  for ( const QCA::ConstraintType &certconst : constCertconsts )
   {
     if ( certconst.section() == QCA::ConstraintType::KeyUsage )
     {
@@ -818,8 +822,8 @@ void QgsAuthCertInfo::populateInfoPemTextSection()
 
   QTreeWidgetItem *item = new QTreeWidgetItem(
     mSecPemText,
-    QStringList( QLatin1String( "" ) ),
-    ( int )DetailsField );
+    QStringList( QString() ),
+    static_cast<int>( DetailsField ) );
 
   item->setFirstColumnSpanned( true );
 
@@ -836,7 +840,7 @@ void QgsAuthCertInfo::btnSaveTrust_clicked()
   QgsAuthCertUtils::CertTrustPolicy newpolicy( cmbbxTrust->trustPolicy() );
   if ( !QgsApplication::authManager()->storeCertTrustPolicy( mCurrentQCert, newpolicy ) )
   {
-    QgsDebugMsg( "Could not set trust policy for certificate" );
+    QgsDebugMsg( QStringLiteral( "Could not set trust policy for certificate" ) );
   }
   mCurrentTrustPolicy = newpolicy;
   decorateCertTreeItem( mCurrentQCert, newpolicy, nullptr );

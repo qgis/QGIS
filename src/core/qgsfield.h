@@ -20,9 +20,8 @@
 #include <QVariant>
 #include <QVector>
 #include <QSharedDataPointer>
-#include "qgsfield_p.h"
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 typedef QList<int> QgsAttributeList SIP_SKIP;
 
@@ -35,6 +34,8 @@ typedef QList<int> QgsAttributeList SIP_SKIP;
 #include "qgseditorwidgetsetup.h"
 #include "qgsfieldconstraints.h"
 #include "qgsdefaultvalue.h"
+
+class QgsFieldPrivate;
 
 /**
  * \class QgsField
@@ -50,6 +51,7 @@ class CORE_EXPORT QgsField
     Q_GADGET
 
     Q_PROPERTY( bool isNumeric READ isNumeric )
+    Q_PROPERTY( bool isDateOrTime READ isDateOrTime )
     Q_PROPERTY( int length READ length WRITE setLength )
     Q_PROPERTY( int precision READ precision WRITE setPrecision )
     Q_PROPERTY( QVariant::Type type READ type WRITE setType )
@@ -94,7 +96,7 @@ class CORE_EXPORT QgsField
      */
     QgsField &operator =( const QgsField &other ) SIP_SKIP;
 
-    virtual ~QgsField() = default;
+    virtual ~QgsField();
 
     bool operator==( const QgsField &other ) const;
     bool operator!=( const QgsField &other ) const;
@@ -114,6 +116,30 @@ class CORE_EXPORT QgsField
      * \since QGIS 3.0
      */
     QString displayName() const;
+
+    /**
+     * Returns the name to use when displaying this field and adds the alias in parenthesis if it is defined.
+     *
+     * This will be used when working close to the data structure (i.e. building expressions and queries),
+     * when the real field name must be shown but the alias is also useful to understand what the field
+     * represents.
+     *
+     * \see name()
+     * \see alias()
+     * \since QGIS 3.12
+     */
+    QString displayNameWithAlias() const;
+
+
+    /**
+     * Returns the type to use when displaying this field, including the length and precision of the datatype if applicable.
+     *
+     * This will be used when the full datatype with details has to displayed to the user.
+     *
+     * \see type()
+     * \since QGIS 3.14
+     */
+    QString displayType( bool showConstraints = false ) const;
 
     //! Gets variant type of the field as it will be retrieved from data source
     QVariant::Type type() const;
@@ -153,11 +179,18 @@ class CORE_EXPORT QgsField
 
     /**
      * Returns if this field is numeric. Any integer or floating point type
-     * will return true for this.
+     * will return TRUE for this.
      *
      * \since QGIS 2.18
      */
     bool isNumeric() const;
+
+    /**
+     * Returns if this field is a date and/or time type.
+     *
+     * \since QGIS 3.6
+     */
+    bool isDateOrTime() const;
 
     /**
      * Set the field name.
@@ -257,7 +290,7 @@ class CORE_EXPORT QgsField
      *
      * \param v  The value to convert
      *
-     * \returns   True if the conversion was successful
+     * \returns   TRUE if the conversion was successful
      */
     bool convertCompatible( QVariant &v ) const;
 #ifdef SIP_RUN
@@ -276,9 +309,7 @@ class CORE_EXPORT QgsField
         Py_BEGIN_ALLOW_THREADS
         try
         {
-          QgsDebugMsg( a0->toString() );
           sipRes = sipCpp->convertCompatible( *a0 );
-          QgsDebugMsg( a0->toString() );
         }
         catch ( ... )
         {
@@ -339,7 +370,7 @@ class CORE_EXPORT QgsField
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = QStringLiteral( "<QgsField: %1 (%2)>" ).arg( sipCpp->name() ).arg( sipCpp->typeName() );
-    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 

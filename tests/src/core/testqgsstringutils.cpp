@@ -36,8 +36,12 @@ class TestQgsStringUtils : public QObject
     void insertLinks();
     void titleCase_data();
     void titleCase();
+    void camelCase();
     void ampersandEncode_data();
     void ampersandEncode();
+    void htmlToMarkdown();
+    void wordWrap_data();
+    void wordWrap();
 
 };
 
@@ -156,6 +160,8 @@ void TestQgsStringUtils::insertLinks()
   QVERIFY( found );
   QCOMPARE( QgsStringUtils::insertLinks( QString( "is a@a an email?" ), &found ), QString( "is a@a an email?" ) );
   QVERIFY( !found );
+  QCOMPARE( QgsStringUtils::insertLinks( QString( "Load file:///this/is/path/to.file?query=1#anchor" ), &found ), QString( "Load <a href=\"file:///this/is/path/to.file?query=1#anchor\">file:///this/is/path/to.file?query=1#anchor</a>" ) );
+  QVERIFY( found );
 }
 
 void TestQgsStringUtils::titleCase_data()
@@ -186,6 +192,21 @@ void TestQgsStringUtils::titleCase()
   QCOMPARE( QgsStringUtils::capitalize( input, QgsStringUtils::TitleCase ), expected );
 }
 
+void TestQgsStringUtils::camelCase()
+{
+  QCOMPARE( QgsStringUtils::capitalize( QString(), QgsStringUtils::UpperCamelCase ), QString() );
+  QCOMPARE( QgsStringUtils::capitalize( QString( " abc def" ), QgsStringUtils::UpperCamelCase ), QString( "AbcDef" ) );
+  QCOMPARE( QgsStringUtils::capitalize( QString( "ABC DEF" ), QgsStringUtils::UpperCamelCase ), QString( "AbcDef" ) );
+  QCOMPARE( QgsStringUtils::capitalize( QString( "àbc def" ), QgsStringUtils::UpperCamelCase ), QString( "ÀbcDef" ) );
+  QCOMPARE( QgsStringUtils::capitalize( QString( "àbc dÉf" ), QgsStringUtils::UpperCamelCase ), QString( "ÀbcDéf" ) );
+}
+
+void TestQgsStringUtils::htmlToMarkdown()
+{
+  QCOMPARE( QgsStringUtils::htmlToMarkdown( QString( "<b>Visit</b> <a href=\"http://qgis.org\">!</a>" ) ), QString( "**Visit** [!](http://qgis.org)" ) );
+  QCOMPARE( QgsStringUtils::htmlToMarkdown( QString( "<b>Visit</b><br><a href='http://qgis.org'>QGIS</a>" ) ), QString( "**Visit**\n[QGIS](http://qgis.org)" ) );
+}
+
 void TestQgsStringUtils::ampersandEncode_data()
 {
   QTest::addColumn<QString>( "input" );
@@ -204,6 +225,35 @@ void TestQgsStringUtils::ampersandEncode()
   QFETCH( QString, expected );
   QCOMPARE( QgsStringUtils::ampersandEncode( input ), expected );
 
+}
+
+void TestQgsStringUtils::wordWrap_data()
+{
+  QTest::addColumn<QString>( "input" );
+  QTest::addColumn<int>( "length" );
+  QTest::addColumn<bool>( "isMax" );
+  QTest::addColumn<QString>( "delimiter" );
+  QTest::addColumn<QString>( "expected" );
+
+  QTest::newRow( "wordwrap" ) << "university of qgis" << 13 << true << QString() << "university of\nqgis";
+  QTest::newRow( "optional parameters unspecified" ) << "test string" << 5 << true << QString() << "test\nstring";
+  QTest::newRow( "wordwrap with delim" ) << "university of qgis" << 13 << true << QStringLiteral( " " ) << "university of\nqgis";
+  QTest::newRow( "wordwrap min" ) << "university of qgis" << 3 << false << QStringLiteral( " " ) << "university\nof qgis";
+  QTest::newRow( "wordwrap min with delim" ) << "university of qgis" << 3 << false << QStringLiteral( " " ) << "university\nof qgis";
+  QTest::newRow( "wordwrap on multi line" ) << "university of qgis\nsupports many multiline" << 5 << false << QStringLiteral( " " ) << "university\nof qgis\nsupports\nmany multiline";
+  QTest::newRow( "wordwrap on zero-space width" ) << QStringLiteral( "test%1zero-width space" ).arg( QChar( 8203 ) ) << 4 << false << QString() << "test\nzero-width\nspace";
+  QTest::newRow( "optional parameters specified" ) << "testxstring" << 5 << true << "x" << "test\nstring";
+}
+
+void TestQgsStringUtils::wordWrap()
+{
+  QFETCH( QString, input );
+  QFETCH( int, length );
+  QFETCH( bool, isMax );
+  QFETCH( QString, delimiter );
+  QFETCH( QString, expected );
+
+  QCOMPARE( QgsStringUtils::wordWrap( input, length, isMax, delimiter ), expected );
 }
 
 

@@ -6,7 +6,7 @@
     {"arg":"string", "description":"the string to capture groups from against the regular expression"},
     {"arg":"regex","description":"the regular expression used to capture groups"},
     {"arg":"empty_value","optional":true,"default":"''","description":"the optional string to use as replacement for empty (zero length) matches"}],
-  "examples": [ { "expression":"regexp_matches('QGIS=>rocks','(.*)=>(.*)')", "returns":"array: 'QGIS', 'rocks'"},
-                { "expression":"regexp_matches('key=>','(.*)=>(.*)','empty value')", "returns":"array: 'key', 'empty value'"}
+  "examples": [ { "expression":"regexp_matches('QGIS=>rocks','(.*)=>(.*)')", "returns":"[ 'QGIS', 'rocks' ]"},
+                { "expression":"regexp_matches('key=>','(.*)=>(.*)','empty value')", "returns":"[ 'key', 'empty value' ]"}
   ]
 }

@@ -95,7 +95,7 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
   QgsFeature feat;
 
   std::vector< Feature > clusterFeatures;
-  QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setNoAttributes() );
   QHash< QgsFeatureId, int > idToObj;
   while ( features.nextFeature( feat ) )
   {
@@ -115,7 +115,7 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
     else
     {
       QgsGeometry centroid = feat.geometry().centroid();
-      if ( !centroid )
+      if ( centroid.isNull() )
         continue; // centroid failed, e.g. empty linestring
 
       point = QgsPointXY( *qgsgeometry_cast< const QgsPoint * >( centroid.constGet() ) );

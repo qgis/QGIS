@@ -88,7 +88,7 @@ void KProcessPrivate::_k_forwardStdout()
 #ifndef _WIN32_WCE
     forwardStd(KProcess::StandardOutput, STD_OUTPUT_HANDLE);
 #else
-    forwardStd(KProcess::StandardOutput, (int)stdout);
+    forwardStd(KProcess::StandardOutput, static_cast<int>(stdout));
 #endif
 }
 
@@ -97,7 +97,7 @@ void KProcessPrivate::_k_forwardStderr()
 #ifndef _WIN32_WCE
     forwardStd(KProcess::StandardError, STD_ERROR_HANDLE);
 #else
-    forwardStd(KProcess::StandardError, (int)stderr);
+    forwardStd(KProcess::StandardError, static_cast<int>(stderr));
 #endif
 }
 

@@ -83,11 +83,11 @@ QgsFeatureList QgsConvexHullAlgorithm::processFeature( const QgsFeature &feature
     else
     {
       outputGeometry = f.geometry().convexHull();
-      if ( !outputGeometry )
+      if ( outputGeometry.isNull() )
         feedback->reportError( outputGeometry.lastError() );
       f.setGeometry( outputGeometry );
     }
-    if ( outputGeometry )
+    if ( !outputGeometry.isNull() )
     {
       QgsAttributes attrs = f.attributes();
       attrs << outputGeometry.constGet()->area()

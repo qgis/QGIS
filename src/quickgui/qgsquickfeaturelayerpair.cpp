@@ -66,8 +66,5 @@ bool QgsQuickFeatureLayerPair::hasValidGeometry() const
   if ( mFeature.geometry().type() != mLayer->geometryType() )
     return false;
 
-  if ( QgsWkbTypes::hasZ( mLayer->wkbType() ) != QgsWkbTypes::hasZ( mFeature.geometry().wkbType() ) )
-    return false;
-
   return true;
 }

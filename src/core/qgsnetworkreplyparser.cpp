@@ -38,7 +38,8 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
   {
     // reply is not multipart, copy body and headers
     QMap<QByteArray, QByteArray> headers;
-    Q_FOREACH ( QByteArray h, mReply->rawHeaderList() )
+    const auto constRawHeaderList = mReply->rawHeaderList();
+    for ( QByteArray h : constRawHeaderList )
     {
       headers.insert( h, mReply->rawHeader( h ) );
     }
@@ -59,7 +60,7 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
     }
 
     QString boundary = re.cap( 1 );
-    QgsDebugMsg( QString( "boundary = %1 size = %2" ).arg( boundary ).arg( boundary.size() ) );
+    QgsDebugMsg( QStringLiteral( "boundary = %1 size = %2" ).arg( boundary ).arg( boundary.size() ) );
     boundary = "--" + boundary;
 
     // Lines should be terminated by CRLF ("\r\n") but any new line combination may appear
@@ -74,7 +75,7 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
       to = data.indexOf( boundary.toLatin1(), from );
       if ( to < 0 )
       {
-        QgsDebugMsg( QString( "No more boundaries, rest size = %1" ).arg( data.size() - from - 1 ) );
+        QgsDebugMsg( QStringLiteral( "No more boundaries, rest size = %1" ).arg( data.size() - from - 1 ) );
         // It may be end, last boundary is followed by '--'
         if ( data.size() - from - 1 == 2 && QString( data.mid( from, 2 ) ) == QLatin1String( "--" ) ) // end
         {
@@ -92,7 +93,7 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
           break;
         }
       }
-      QgsDebugMsg( QString( "part %1 - %2" ).arg( from ).arg( to ) );
+      QgsDebugMsg( QStringLiteral( "part %1 - %2" ).arg( from ).arg( to ) );
       QByteArray part = data.mid( from, to - from );
       // Remove possible new line from beginning
       while ( !part.isEmpty() && ( part.at( 0 ) == '\r' || part.at( 0 ) == '\n' ) )
@@ -118,7 +119,8 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
       QgsDebugMsg( "headers:\n" + headers );
 
       QStringList headerRows = QString( headers ).split( QRegExp( "[\n\r]+" ) );
-      Q_FOREACH ( const QString &row, headerRows )
+      const auto constHeaderRows = headerRows;
+      for ( const QString &row : constHeaderRows )
       {
         QgsDebugMsg( "row = " + row );
         QStringList kv = row.split( QStringLiteral( ": " ) );

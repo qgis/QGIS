@@ -71,7 +71,7 @@ QPainter::CompositionMode QgsPainting::getCompositionMode( QgsPainting::BlendMod
     case QgsPainting::BlendXor:
       return QPainter::CompositionMode_Xor;
     default:
-      QgsDebugMsg( QString( "Blend mode %1 mapped to SourceOver" ).arg( blendMode ) );
+      QgsDebugMsg( QStringLiteral( "Blend mode %1 mapped to SourceOver" ).arg( blendMode ) );
       return QPainter::CompositionMode_SourceOver;
   }
 }
@@ -131,7 +131,7 @@ QgsPainting::BlendMode QgsPainting::getBlendModeEnum( QPainter::CompositionMode 
     case QPainter::CompositionMode_Xor:
       return QgsPainting::BlendXor;
     default:
-      QgsDebugMsg( QString( "Composition mode %1 mapped to Normal" ).arg( blendMode ) );
+      QgsDebugMsg( QStringLiteral( "Composition mode %1 mapped to Normal" ).arg( blendMode ) );
       return QgsPainting::BlendNormal;
   }
 }

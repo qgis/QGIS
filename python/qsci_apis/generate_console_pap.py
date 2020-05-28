@@ -50,7 +50,7 @@ class PrepareAPIs(QObject):
         try:
             if os.path.exists(self._pap_file):
                 os.remove(self._pap_file)
-            prepd = self._api.savePrepared(unicode(self._pap_file))
+            prepd = self._api.savePrepared(str(self._pap_file))
             self._api = None
             sys.exit(0 if prepd else 1)
         except Exception as err:
@@ -62,7 +62,7 @@ class PrepareAPIs(QObject):
             self._api = QsciAPIs(self._api_lexer)
             self._api.apiPreparationFinished.connect(self._preparationFinished)
             for api_file in self._api_files:
-                self._api.load(unicode(api_file))
+                self._api.load(str(api_file))
             self._api.prepare()
         except Exception as err:
             self._api = None
@@ -71,7 +71,7 @@ class PrepareAPIs(QObject):
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
-        print 'Usage: python <script> <pap_file> <apis_src_dir> <api_bin_dir>'
+        print('Usage: python <script> <pap_file> <apis_src_dir> <api_bin_dir>')
         sys.exit(1)
     pap_file = sys.argv[1]
     api_src_dir = sys.argv[2]

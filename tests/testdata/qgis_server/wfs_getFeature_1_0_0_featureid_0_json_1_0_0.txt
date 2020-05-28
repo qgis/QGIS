@@ -1,0 +1,8 @@
+Content-Type: application/vnd.geo+json; charset=utf-8
+
+{"type": "FeatureCollection",
+ "bbox": [ 8.20345931, 44.90139484, 8.20354699, 44.90148253],
+ "features": [
+  {"geometry":{"coordinates":[8.203496,44.901483],"type":"Point"},"id":"testlayer.0","properties":{"id":1,"name":"one","utf8nameè":"one èé"},"type":"Feature"}
+ ]
+}

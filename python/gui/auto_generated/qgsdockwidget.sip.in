@@ -41,12 +41,31 @@ Constructor for QgsDockWidget.
 
     bool isUserVisible() const;
 %Docstring
-Returns true if the dock is both opened and raised to the front (ie not hidden by
+Returns ``True`` if the dock is both opened and raised to the front (ie not hidden by
 any other tabs.
 
 .. seealso:: :py:func:`setUserVisible`
 
 .. seealso:: :py:func:`toggleUserVisible`
+%End
+
+    void setToggleVisibilityAction( QAction *action );
+%Docstring
+Links an ``action`` to the dock, so that toggling the action will automatically set the dock's visibility
+to suit (and changing the dock visibility will update the action's state).
+
+.. seealso:: :py:func:`toggleVisibilityAction`
+
+.. versionadded:: 3.4
+%End
+
+    QAction *toggleVisibilityAction();
+%Docstring
+Returns the action linked to the dock.
+
+.. seealso:: :py:func:`setToggleVisibilityAction`
+
+.. versionadded:: 3.4
 %End
 
   public slots:
@@ -55,7 +74,7 @@ any other tabs.
 %Docstring
 Sets the dock widget as visible to a user, ie both shown and raised to the front.
 
-:param visible: set to true to show the dock to the user, or false to hide the dock.
+:param visible: set to ``True`` to show the dock to the user, or ``False`` to hide the dock.
                 When setting a dock as user visible, the dock will be opened (if it is not already
                 opened) and raised to the front.
                 When setting as hidden, the following logic is used:
@@ -105,7 +124,7 @@ Emitted when dock widget is closed.
 %Docstring
 Emitted when dock widget is closed (or opened).
 
-:param wasClosed: will be true if dock widget was closed, or false if dock widget was opened
+:param wasClosed: will be ``True`` if dock widget was closed, or ``False`` if dock widget was opened
 
 .. seealso:: :py:func:`closed`
 
@@ -125,7 +144,7 @@ Emitted when dock widget is opened.
 %Docstring
 Emitted when dock widget is opened (or closed).
 
-:param wasOpened: will be true if dock widget was opened, or false if dock widget was closed
+:param wasOpened: will be ``True`` if dock widget was opened, or ``False`` if dock widget was closed
 
 .. seealso:: :py:func:`closedStateChanged`
 

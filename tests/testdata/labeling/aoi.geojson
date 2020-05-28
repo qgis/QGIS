@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "aoi",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::32613" } },
+"features": [
+{ "type": "Feature", "properties": { "pkuid": 1, "ftype": "single" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 606510.0, 4827130.0 ], [ 612510.0, 4827130.0 ], [ 612510.0, 4823130.0 ], [ 606510.0, 4823130.0 ], [ 606510.0, 4827130.0 ] ] ] } }
+]
+}

@@ -19,6 +19,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgschunknode_p.h"
 #include "qgsdemterraintilegeometry_p.h"
+#include "qgseventtracing.h"
 #include "qgsraycastingutils_p.h"
 #include "qgsterraingenerator.h"
 #include "qgsterraintexturegenerator_p.h"
@@ -69,6 +70,7 @@ QgsTerrainEntity::QgsTerrainEntity( int maxLevel, const Qgs3DMapSettings &map, Q
   connect( &map, &Qgs3DMapSettings::showLabelsChanged, this, &QgsTerrainEntity::invalidateMapImages );
   connect( &map, &Qgs3DMapSettings::layersChanged, this, &QgsTerrainEntity::onLayersChanged );
   connect( &map, &Qgs3DMapSettings::backgroundColorChanged, this, &QgsTerrainEntity::invalidateMapImages );
+  connect( &map, &Qgs3DMapSettings::terrainMapThemeChanged, this, &QgsTerrainEntity::invalidateMapImages );
 
   connectToLayersRepaintRequest();
 
@@ -80,15 +82,14 @@ QgsTerrainEntity::QgsTerrainEntity( int maxLevel, const Qgs3DMapSettings &map, Q
 
   mTerrainPicker = new Qt3DRender::QObjectPicker;
   // add camera control's terrain picker as a component to be able to capture height where mouse was
-  // pressed in order to correcly pan camera when draggin mouse
+  // pressed in order to correctly pan camera when dragging mouse
   addComponent( mTerrainPicker );
 }
 
 QgsTerrainEntity::~QgsTerrainEntity()
 {
   // cancel / wait for jobs
-  if ( mActiveJob )
-    cancelActiveJob();
+  cancelActiveJobs();
 
   delete mTextureGenerator;
   delete mTerrainToMapTransform;
@@ -137,6 +138,8 @@ void QgsTerrainEntity::onShowBoundingBoxesChanged()
 
 void QgsTerrainEntity::invalidateMapImages()
 {
+  QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Invalidate textures" ) );
+
   // handle active nodes
 
   updateNodes( mActiveNodes, mUpdateJobFactory.get() );
@@ -189,7 +192,7 @@ TerrainMapUpdateJob::TerrainMapUpdateJob( QgsTerrainTextureGenerator *textureGen
 {
   QgsTerrainTileEntity *entity = qobject_cast<QgsTerrainTileEntity *>( node->entity() );
   connect( textureGenerator, &QgsTerrainTextureGenerator::tileReady, this, &TerrainMapUpdateJob::onTileReady );
-  mJobId = textureGenerator->render( entity->textureImage()->imageExtent(), entity->textureImage()->imageDebugText() );
+  mJobId = textureGenerator->render( entity->textureImage()->imageExtent(), node->tileId(), entity->textureImage()->imageDebugText() );
 }
 
 void TerrainMapUpdateJob::cancel()

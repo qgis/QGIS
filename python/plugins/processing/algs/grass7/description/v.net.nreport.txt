@@ -3,4 +3,4 @@ v.net.nreport - Reports nodes information of a network
 Vector (v.*)
 QgsProcessingParameterFeatureSource|input|Input vector line layer (arcs)|1|None|False
 Hardcoded|operation=nreport
-QgsProcessingParameterFileDestination|html|NReport|Html files (*.html)|None|False
+QgsProcessingParameterFileDestination|output|NReport|Html files (*.html)|None|False

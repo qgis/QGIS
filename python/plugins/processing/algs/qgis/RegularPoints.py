@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'September 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 from random import seed, uniform
 from math import sqrt
@@ -53,7 +49,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class RegularPoints(QgisAlgorithm):
-
     EXTENT = 'EXTENT'
     SPACING = 'SPACING'
     INSET = 'INSET'
@@ -81,9 +76,9 @@ class RegularPoints(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
                                                        self.tr('Input extent'), optional=False))
         self.addParameter(QgsProcessingParameterDistance(self.SPACING,
-                                                         self.tr('Point spacing/count'), 100, self.CRS, False, 0.000001, 999999999.999999999))
+                                                         self.tr('Point spacing/count'), 100, self.CRS, False, 0.000001))
         self.addParameter(QgsProcessingParameterDistance(self.INSET,
-                                                         self.tr('Initial inset from corner (LH side)'), 0.0, self.CRS, False, 0.0, 9999.9999))
+                                                         self.tr('Initial inset from corner (LH side)'), 0.0, self.CRS, False, 0.0))
         self.addParameter(QgsProcessingParameterBoolean(self.RANDOMIZE,
                                                         self.tr('Apply random offset to point spacing'), False))
         self.addParameter(QgsProcessingParameterBoolean(self.IS_SPACING,
@@ -102,8 +97,8 @@ class RegularPoints(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         spacing = self.parameterAsDouble(parameters, self.SPACING, context)
         inset = self.parameterAsDouble(parameters, self.INSET, context)
-        randomize = self.parameterAsBool(parameters, self.RANDOMIZE, context)
-        isSpacing = self.parameterAsBool(parameters, self.IS_SPACING, context)
+        randomize = self.parameterAsBoolean(parameters, self.RANDOMIZE, context)
+        isSpacing = self.parameterAsBoolean(parameters, self.IS_SPACING, context)
         crs = self.parameterAsCrs(parameters, self.CRS, context)
         extent = self.parameterAsExtent(parameters, self.EXTENT, context, crs)
 

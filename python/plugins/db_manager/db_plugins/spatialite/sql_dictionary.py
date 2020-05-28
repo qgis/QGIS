@@ -21,8 +21,6 @@ from builtins import map
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'April 2012'
 __copyright__ = '(C) 2012, Giuseppe Sucameli'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 # keywords
 keywords = [
@@ -152,6 +150,7 @@ def getQueryBuilderDictionary():
 
     def add_paren(l):
         return [s + "(" for s in l]
+
     foo = sorted(add_paren(ff(list(set.union(set(functions), set(spatialite_functions))))))
     m = sorted(add_paren(ff(math_functions)))
     agg = sorted(add_paren(ff(aggregate_functions)))

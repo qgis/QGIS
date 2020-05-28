@@ -118,6 +118,20 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     */
     int calculateStatistics( QgsFeedback *feedback );
 
+    /**
+     * Returns the friendly display name for a \a statistic.
+     * \see shortName()
+     * \since QGIS 3.12
+     */
+    static QString displayName( QgsZonalStatistics::Statistic statistic );
+
+    /**
+     * Returns a short, friendly display name for a \a statistic, suitable for use in a field name.
+     * \see displayName()
+     * \since QGIS 3.12
+     */
+    static QString shortName( QgsZonalStatistics::Statistic statistic );
+
   private:
     QgsZonalStatistics() = default;
 

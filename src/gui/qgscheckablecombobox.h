@@ -23,7 +23,7 @@
 #include <QStandardItemModel>
 #include <QStyledItemDelegate>
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
 class QEvent;
@@ -70,16 +70,16 @@ class QgsCheckableItemModel : public QStandardItemModel
      * \param index item index
      * \param value data value
      * \param role data role
-     * \returns true on success, false otherwise
+     * \returns TRUE on success, FALSE otherwise
      */
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
   signals:
 
     /**
-     * This signal is emitted whenever the items checkstate has changed.
+     * Emitted whenever the item's checkstate has changed.
      */
-    void itemCheckStateChanged();
+    void itemCheckStateChanged( const QModelIndex &index );
 };
 
 
@@ -170,6 +170,13 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
     QStringList checkedItems() const;
 
     /**
+     * Returns userData (stored in the Qt::UserRole) associated with
+     * currently checked items.
+     * \see checkedItems()
+     */
+    QVariantList checkedItemsData() const;
+
+    /**
      * Returns the checked state of the item identified by index
      * \param index item index
      * \see setItemCheckState()
@@ -208,7 +215,7 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
   signals:
 
     /**
-     * This signal is emitted whenever the checked items list changed.
+     * Emitted whenever the checked items list changed.
      */
     void checkedItemsChanged( const QStringList &items );
 

@@ -15,12 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPOLYGONV2_H
-#define QGSPOLYGONV2_H
+#ifndef QGSPOLYGON_H
+#define QGSPOLYGON_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgscurvepolygon.h"
+
+class QgsLineString;
 
 /**
  * \ingroup core
@@ -32,6 +34,15 @@ class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
 {
   public:
     QgsPolygon();
+
+    /**
+     * Constructor for QgsPolygon, with the specified \a exterior ring and interior \a rings.
+     *
+     * Ownership of \a exterior and \a rings is transferred to the polygon.
+     *
+     * \since QGIS 3.14
+     */
+    QgsPolygon( QgsLineString *exterior SIP_TRANSFER, const QList< QgsLineString * > &rings SIP_TRANSFER = QList< QgsLineString * >() );
 
     QString geometryType() const override;
     QgsPolygon *clone() const override SIP_FACTORY;
@@ -87,8 +98,11 @@ class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsPolygon: %1>" ).arg( sipCpp->asWkt() );
-    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    QString wkt = sipCpp->asWkt();
+    if ( wkt.length() > 1000 )
+      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
+    QString str = QStringLiteral( "<QgsPolygon: %1>" ).arg( wkt );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
@@ -97,4 +111,4 @@ class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
     friend class QgsCurvePolygon;
 
 };
-#endif // QGSPOLYGONV2_H
+#endif // QGSPOLYGON_H

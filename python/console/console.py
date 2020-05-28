@@ -87,6 +87,10 @@ class PythonConsole(QgsDockWidget):
         if iface and not iface.mainWindow().restoreDockWidget(self):
             iface.mainWindow().addDockWidget(Qt.BottomDockWidgetArea, self)
 
+        # closeEvent is not always called for this widget -- so we also trigger a settings
+        # save on application exit
+        QgsApplication.instance().aboutToQuit.connect(self.console.saveSettingsConsole)
+
     def activate(self):
         self.activateWindow()
         self.raise_()

@@ -47,23 +47,25 @@ class CORE_EXPORT QgsStatisticalSummary
     //! Enumeration of flags that specify statistics to be calculated
     enum Statistic
     {
-      Count = 1,  //!< Count
-      CountMissing = 32770, //!< Number of missing (null) values
-      Sum = 2,  //!< Sum of values
-      Mean = 4,  //!< Mean of values
-      Median = 8, //!< Median of values
-      StDev = 16, //!< Standard deviation of values
-      StDevSample = 32, //!< Sample standard deviation of values
-      Min = 64,  //!< Min of values
-      Max = 128,  //!< Max of values
-      Range = 256, //!< Range of values (max - min)
-      Minority = 512, //!< Minority of values
-      Majority = 1024, //!< Majority of values
-      Variety = 2048, //!< Variety (count of distinct) values
-      FirstQuartile = 4096, //!< First quartile
-      ThirdQuartile = 8192, //!< Third quartile
-      InterQuartileRange = 16384, //!< Inter quartile range (IQR)
-      All = Count | CountMissing | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | FirstQuartile | ThirdQuartile | InterQuartileRange
+      Count = 1 << 0,  //!< Count
+      CountMissing = 1 << 15, //!< Number of missing (null) values
+      Sum = 1 << 1,  //!< Sum of values
+      Mean = 1 << 2,  //!< Mean of values
+      Median = 1 << 3, //!< Median of values
+      StDev = 1 << 4, //!< Standard deviation of values
+      StDevSample = 1 << 5, //!< Sample standard deviation of values
+      Min = 1 << 6,  //!< Min of values
+      Max = 1 << 7,  //!< Max of values
+      Range = 1 << 8, //!< Range of values (max - min)
+      Minority = 1 << 9, //!< Minority of values
+      Majority = 1 << 10, //!< Majority of values
+      Variety = 1 << 11, //!< Variety (count of distinct) values
+      FirstQuartile = 1 << 12, //!< First quartile
+      ThirdQuartile = 1 << 13, //!< Third quartile
+      InterQuartileRange = 1 << 14, //!< Inter quartile range (IQR)
+      First = 1 << 16, //!< First value (since QGIS 3.6)
+      Last = 1 << 17, //!< Last value (since QGIS 3.6)
+      All = Count | CountMissing | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | FirstQuartile | ThirdQuartile | InterQuartileRange | First | Last
     };
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
@@ -88,7 +90,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * \param stats flags for statistics to calculate
      * \see statistics
      */
-    void setStatistics( QgsStatisticalSummary::Statistics stats ) { mStatistics = stats; }
+    void setStatistics( QgsStatisticalSummary::Statistics stats );
 
     /**
      * Resets the calculated values
@@ -200,6 +202,22 @@ class CORE_EXPORT QgsStatisticalSummary
     double range() const { return std::isnan( mMax ) || std::isnan( mMin ) ? std::numeric_limits<double>::quiet_NaN() : mMax - mMin; }
 
     /**
+     * Returns the first value obtained. A NaN value may be returned if no values were encountered.
+     *
+     * \see last()
+     * \since QGIS 3.6
+     */
+    double first() const { return mFirst; }
+
+    /**
+     * Returns the last value obtained. A NaN value may be returned if no values were encountered.
+     *
+     * \see first()
+     * \since QGIS 3.6
+     */
+    double last() const { return mLast; }
+
+    /**
      * Returns population standard deviation. This is only calculated if Statistic::StDev has
      * been specified in the constructor or via setStatistics. A NaN value may be returned if the standard deviation cannot
      * be calculated.
@@ -223,19 +241,19 @@ class CORE_EXPORT QgsStatisticalSummary
     int variety() const { return mValueCount.count(); }
 
     /**
-     * Returns minority of values. The minority is the value with least occurrences in the list
+     * Returns minority of values. The minority is the value with least occurrences in the list.
      * This is only calculated if Statistic::Minority has been specified in the constructor
-     * or via setStatistics. A NaN value may be returned if the minority cannot
-     * be calculated.
+     * or via setStatistics. If multiple values match, return the first value relative to the
+     * initial values order. A NaN value may be returned if the minority cannot be calculated.
      * \see majority
      */
     double minority() const { return mMinority; }
 
     /**
-     * Returns majority of values. The majority is the value with most occurrences in the list
+     * Returns majority of values. The majority is the value with most occurrences in the list.
      * This is only calculated if Statistic::Majority has been specified in the constructor
-     * or via setStatistics. A NaN value may be returned if the majority cannot
-     * be calculated.
+     * or via setStatistics. If multiple values match, return the first value relative to the
+     * initial values order. A NaN value may be returned if the minority cannot be calculated.
      * \see minority
      */
     double majority() const { return mMajority; }
@@ -268,10 +286,17 @@ class CORE_EXPORT QgsStatisticalSummary
     double interQuartileRange() const { return std::isnan( mThirdQuartile ) || std::isnan( mFirstQuartile ) ? std::numeric_limits<double>::quiet_NaN() : mThirdQuartile - mFirstQuartile; }
 
     /**
-     * Returns the friendly display name for a statistic
-     * \param statistic statistic to return name for
+     * Returns the friendly display name for a \a statistic.
+     * \see shortName()
      */
     static QString displayName( QgsStatisticalSummary::Statistic statistic );
+
+    /**
+     * Returns a short, friendly display name for a \a statistic, suitable for use in a field name.
+     * \see displayName()
+     * \since QGIS 3.6
+     */
+    static QString shortName( QgsStatisticalSummary::Statistic statistic );
 
   private:
 
@@ -290,8 +315,12 @@ class CORE_EXPORT QgsStatisticalSummary
     double mMajority;
     double mFirstQuartile;
     double mThirdQuartile;
+    double mFirst;
+    double mLast;
     QMap< double, int > mValueCount;
     QList< double > mValues;
+    bool mRequiresAllValueStorage = false;
+    bool mRequiresHisto = false;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsStatisticalSummary::Statistics )

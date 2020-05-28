@@ -28,7 +28,9 @@ Runs the dialog and creates a new memory layer
 %End
 
     QgsNewMemoryLayerDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-    ~QgsNewMemoryLayerDialog();
+%Docstring
+New dialog constructor.
+%End
 
     QgsWkbTypes::Type selectedType() const;
 %Docstring
@@ -54,6 +56,13 @@ Returns the selected CRS for the new layer.
     QString layerName() const;
 %Docstring
 Returns the layer name
+%End
+
+    QgsFields fields() const;
+%Docstring
+Returns attributes for the new layer.
+
+.. versionadded:: 3.14
 %End
 
 };

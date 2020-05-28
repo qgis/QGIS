@@ -16,41 +16,23 @@
 #ifndef QGSLAYERTREEVIEWMEMORYINDICATOR_H
 #define QGSLAYERTREEVIEWMEMORYINDICATOR_H
 
-#include "qgslayertreeviewindicator.h"
-
-#include <QSet>
-#include <memory>
-
-class QgsLayerTreeNode;
-class QgsLayerTreeView;
-class QgsVectorLayer;
+#include "qgslayertreeviewindicatorprovider.h"
 
 //! Adds indicators showing whether layers are memory layers.
-class QgsLayerTreeViewMemoryIndicatorProvider : public QObject
+class QgsLayerTreeViewMemoryIndicatorProvider : public QgsLayerTreeViewIndicatorProvider
 {
     Q_OBJECT
   public:
     explicit QgsLayerTreeViewMemoryIndicatorProvider( QgsLayerTreeView *view );
 
-  private slots:
-    //! Connects to signals of layers newly added to the tree
-    void onAddedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
-    //! Disconnects from layers about to be removed from the tree
-    void onWillRemoveChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
-    void onLayerLoaded();
-    //! Adds/removes indicator of a layer
-    void onDataSourceChanged();
+  protected slots:
 
-    void onIndicatorClicked( const QModelIndex &index );
+    void onIndicatorClicked( const QModelIndex &index ) override;
 
   private:
-    std::unique_ptr< QgsLayerTreeViewIndicator > newIndicator();
-    void addOrRemoveIndicator( QgsLayerTreeNode *node, QgsVectorLayer *vlayer );
-
-  private:
-    QgsLayerTreeView *mLayerTreeView = nullptr;
-    QIcon mIcon;
-    QSet<QgsLayerTreeViewIndicator *> mIndicators;
+    bool acceptLayer( QgsMapLayer *layer ) override;
+    QString iconName( QgsMapLayer *layer ) override;
+    QString tooltipText( QgsMapLayer *layer ) override;
 };
 
 #endif // QGSLAYERTREEVIEWMEMORYINDICATOR_H

@@ -29,7 +29,7 @@
       </size>
      </property>
      <property name="text">
-      <string>Generating prepared API file (please wait)...</string>
+      <string>Generating prepared API file (please wait)…</string>
      </property>
     </widget>
    </item>

@@ -1,0 +1,54 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspostgresstringutils.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+%ModuleHeaderCode
+#include "qgspostgresstringutils.h"
+%End
+
+class QgsPostgresStringUtils
+{
+%Docstring
+The QgsPostgresStringUtils provides functions to handle postgres array like formatted lists in strings.
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgspostgresstringutils.h"
+%End
+  public:
+
+    static QVariantList parseArray( const QString &string );
+%Docstring
+Returns a QVariantList created out of a string containing an array in postgres array format {1,2,3} or {"a","b","c"}
+
+:param string: The formatted list in a string
+
+.. versionadded:: 3.8
+%End
+
+    static QString buildArray( const QVariantList &list );
+%Docstring
+Build a postgres array like formatted list in a string from a QVariantList
+
+:param list: The list that needs to be stored to the string
+
+.. versionadded:: 3.8
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspostgresstringutils.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

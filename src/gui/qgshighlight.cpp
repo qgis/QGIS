@@ -29,6 +29,7 @@
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgsrenderer.h"
+#include "qgsexpressioncontextutils.h"
 
 /* Few notes about highlighting (RB):
  - The highlight fill must always be partially transparent because above highlighted layer
@@ -116,7 +117,8 @@ std::unique_ptr<QgsFeatureRenderer> QgsHighlight::createRenderer( QgsRenderConte
   }
   if ( renderer )
   {
-    Q_FOREACH ( QgsSymbol *symbol, renderer->symbols( context ) )
+    const auto constSymbols = renderer->symbols( context );
+    for ( QgsSymbol *symbol : constSymbols )
     {
       if ( !symbol ) continue;
       setSymbol( symbol, context, color, fillColor );
@@ -360,10 +362,12 @@ void QgsHighlight::paint( QPainter *p )
       // coefficient to subtract alpha using green (temporary fill)
       double k = ( 255. - mBrush.color().alpha() ) / 255.;
       QRgb *line = nullptr;
-      for ( int r = 0; r < image.height(); r++ )
+      const int height = image.height();
+      const int width = image.width();
+      for ( int r = 0; r < height; r++ )
       {
-        line = ( QRgb * )image.scanLine( r );
-        for ( int c = 0; c < image.width(); c++ )
+        line = reinterpret_cast<QRgb *>( image.scanLine( r ) );
+        for ( int c = 0; c < width; c++ )
         {
           int alpha = qAlpha( line[c] );
           if ( alpha > 0 )
@@ -407,7 +411,7 @@ void QgsHighlight::updateRect()
     // This is an hack to pass QgsMapCanvasItem::setRect what it
     // expects (encoding of position and size of the item)
     const QgsMapToPixel &m2p = mMapCanvas->mapSettings().mapToPixel();
-    QgsPointXY topLeft = m2p.toMapPoint( 0, 0 );
+    QgsPointXY topLeft = m2p.toMapCoordinates( 0, 0 );
     double res = m2p.mapUnitsPerPixel();
     QSizeF imageSize = mMapCanvas->mapSettings().outputSize();
     QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + imageSize.width()*res, topLeft.y() - imageSize.height()*res );

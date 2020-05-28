@@ -27,10 +27,7 @@
 #include "qgsexception.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgsmapserviceexception.h"
 #include "qgscoordinatereferencesystem.h"
-
-#include <QStringList>
 
 namespace QgsWfs
 {
@@ -41,17 +38,41 @@ namespace QgsWfs
   void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                              const QgsServerRequest &request, QgsServerResponse &response )
   {
-    QDomDocument doc = createGetCapabilitiesDocument( serverIface, project, version, request );
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    QgsAccessControl *accessControl = serverIface->accessControls();
+#endif
+    QDomDocument doc;
+    const QDomDocument *capabilitiesDocument = nullptr;
 
-    response.setHeader( "Content-Type", "text/xml; charset=utf-8" );
-    response.write( doc.toByteArray() );
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    QgsServerCacheManager *cacheManager = serverIface->cacheManager();
+    if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
+    {
+      capabilitiesDocument = &doc;
+    }
+    else //capabilities xml not in cache. Create a new one
+    {
+      doc = createGetCapabilitiesDocument( serverIface, project, version, request );
+
+      if ( cacheManager )
+      {
+        cacheManager->setCachedDocument( &doc, project, request, accessControl );
+      }
+      capabilitiesDocument = &doc;
+    }
+#else
+    doc = createGetCapabilitiesDocument( serverIface, project, version, request );
+    capabilitiesDocument = &doc;
+#endif
+    response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
+    response.write( capabilitiesDocument->toByteArray() );
   }
 
 
   QDomDocument createGetCapabilitiesDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
       const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QDomDocument doc;
 
@@ -105,8 +126,7 @@ namespace QgsWfs
     QStringList spatialOperators;
     spatialOperators << QStringLiteral( "Equals" ) << QStringLiteral( "Disjoint" ) << QStringLiteral( "Touches" )
                      << QStringLiteral( "Within" ) << QStringLiteral( "Overlaps" ) << QStringLiteral( "Crosses" )
-                     << QStringLiteral( "Intersects" ) << QStringLiteral( "Contains" ) << QStringLiteral( "DWithin" )
-                     << QStringLiteral( "Beyond" ) << QStringLiteral( "BBOX" );
+                     << QStringLiteral( "Intersects" ) << QStringLiteral( "Contains" ) << QStringLiteral( "BBOX" );
     QDomElement spatialOperatorsElem = doc.createElement( QStringLiteral( "ogc:SpatialOperators" ) );
     for ( const QString &spatialOperator : spatialOperators )
     {
@@ -133,6 +153,11 @@ namespace QgsWfs
       comparisonOperatorsElem.appendChild( comparisonOperatorElem );
     }
     scalarCapabilitiesElement.appendChild( comparisonOperatorsElem );
+
+    QDomElement idCapabilitiesElement = doc.createElement( QStringLiteral( "ogc:Id_Capabilities" ) );
+    QDomElement fidElem = doc.createElement( QStringLiteral( "ogc:FID" ) );
+    idCapabilitiesElement.appendChild( fidElem );
+    filterCapabilitiesElement.appendChild( idCapabilitiesElement );
 
     return doc;
 
@@ -404,7 +429,11 @@ namespace QgsWfs
 
   QDomElement getFeatureTypeListElement( QDomDocument &doc, QgsServerInterface *serverIface, const QgsProject *project )
   {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
+#else
+    ( void )serverIface;
+#endif
 
     //wfs:FeatureTypeList element
     QDomElement featureTypeListElement = doc.createElement( QStringLiteral( "FeatureTypeList" )/*wfs:FeatureTypeList*/ );
@@ -412,8 +441,10 @@ namespace QgsWfs
     QDomElement operationsElement = doc.createElement( QStringLiteral( "Operations" )/*wfs:Operations*/ );
     featureTypeListElement.appendChild( operationsElement );
     //wfs:Query element
-    QDomElement queryElement = doc.createElement( QStringLiteral( "Query" )/*wfs:Query*/ );
-    operationsElement.appendChild( queryElement );
+    QDomElement operationElement = doc.createElement( QStringLiteral( "Operation" ) );
+    QDomText queryText = doc.createTextNode( "Query" );
+    operationElement.appendChild( queryText );
+    operationsElement.appendChild( operationElement );
 
     const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
     const QStringList wfstUpdateLayersId = QgsServerProjectUtils::wfstUpdateLayerIds( *project );
@@ -426,15 +457,16 @@ namespace QgsWfs
       {
         continue;
       }
-      if ( layer->type() != QgsMapLayer::LayerType::VectorLayer )
+      if ( layer->type() != QgsMapLayerType::VectorLayer )
       {
         continue;
       }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( accessControl && !accessControl->layerReadPermission( layer ) )
       {
         continue;
       }
-
+#endif
       QDomElement layerElem = doc.createElement( QStringLiteral( "FeatureType" ) );
 
       //create Name
@@ -501,24 +533,61 @@ namespace QgsWfs
         layerElem.appendChild( otherSrsElem );
       }
 
-      //create OutputFormats element
-      QDomElement outputFormatsElem = doc.createElement( QStringLiteral( "OutputFormats" ) );
-      QDomElement outputFormatElem = doc.createElement( QStringLiteral( "Format" ) );
-      QDomText outputFormatText = doc.createTextNode( QStringLiteral( "text/xml; subtype=gml/3.1.1" ) );
-      outputFormatElem.appendChild( outputFormatText );
-      outputFormatsElem.appendChild( outputFormatElem );
-      layerElem.appendChild( outputFormatsElem );
+      //wfs:Operations element
+      QDomElement operationsElement = doc.createElement( QStringLiteral( "Operations" )/*wfs:Operations*/ );
+      //wfs:Query element
+      QDomElement operationElement = doc.createElement( QStringLiteral( "Operation" ) );
+      QDomText queryText = doc.createTextNode( QStringLiteral( "Query" ) );
+      operationElement.appendChild( queryText );
+      operationsElement.appendChild( operationElement );
+
+      if ( wfstUpdateLayersId.contains( layer->id() ) ||
+           wfstInsertLayersId.contains( layer->id() ) ||
+           wfstDeleteLayersId.contains( layer->id() ) )
+      {
+        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+        QgsVectorDataProvider *provider = vlayer->dataProvider();
+        if ( ( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) && wfstInsertLayersId.contains( layer->id() ) )
+        {
+          //wfs:Insert element
+          QDomElement operationElement = doc.createElement( QStringLiteral( "Operation" ) );
+          QDomText insertText = doc.createTextNode( QStringLiteral( "Insert" )/*wfs:Insert*/ );
+          operationElement.appendChild( insertText );
+          operationsElement.appendChild( operationElement );
+        }
+
+        if ( ( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) &&
+             ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) &&
+             wfstUpdateLayersId.contains( layer->id() ) )
+        {
+          //wfs:Update element
+          QDomElement operationElement = doc.createElement( QStringLiteral( "Operation" ) );
+          QDomText updateText = doc.createTextNode( QStringLiteral( "Update" )/*wfs:Update*/ );
+          operationElement.appendChild( updateText );
+          operationsElement.appendChild( operationElement );
+        }
+
+        if ( ( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) && wfstDeleteLayersId.contains( layer->id() ) )
+        {
+          //wfs:Delete element
+          QDomElement operationElement = doc.createElement( QStringLiteral( "Operation" ) );
+          QDomText deleteText = doc.createTextNode( QStringLiteral( "Delete" )/*wfs:Delete*/ );
+          operationElement.appendChild( deleteText );
+          operationsElement.appendChild( operationElement );
+        }
+      }
+
+      layerElem.appendChild( operationsElement );
 
       //create WGS84BoundingBox
       QgsRectangle layerExtent = layer->extent();
       //transform the layers native CRS into WGS84
-      QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+      QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
+      int wgs84precision = 6;
       QgsRectangle wgs84BoundingRect;
       if ( !layerExtent.isNull() )
       {
-        Q_NOWARN_DEPRECATED_PUSH
-        QgsCoordinateTransform exGeoTransform( layer->crs(), wgs84 );
-        Q_NOWARN_DEPRECATED_POP
+        QgsCoordinateTransform exGeoTransform( layer->crs(), wgs84, project );
         try
         {
           wgs84BoundingRect = exGeoTransform.transformBoundingBox( layerExtent );
@@ -528,15 +597,16 @@ namespace QgsWfs
           wgs84BoundingRect = QgsRectangle();
         }
       }
+
       //create WGS84BoundingBox element
       QDomElement bBoxElement = doc.createElement( QStringLiteral( "ows:WGS84BoundingBox" ) );
       bBoxElement.setAttribute( QStringLiteral( "dimensions" ), QStringLiteral( "2" ) );
       QDomElement lCornerElement = doc.createElement( QStringLiteral( "ows:LowerCorner" ) );
-      QDomText lCornerText = doc.createTextNode( QString::number( wgs84BoundingRect.xMinimum() ) + " " + QString::number( wgs84BoundingRect.yMinimum() ) );
+      QDomText lCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wgs84BoundingRect.xMinimum(), wgs84precision ), wgs84precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wgs84BoundingRect.yMinimum(), wgs84precision ), wgs84precision ) );
       lCornerElement.appendChild( lCornerText );
       bBoxElement.appendChild( lCornerElement );
       QDomElement uCornerElement = doc.createElement( QStringLiteral( "ows:UpperCorner" ) );
-      QDomText uCornerText = doc.createTextNode( QString::number( wgs84BoundingRect.xMaximum() ) + " " + QString::number( wgs84BoundingRect.yMaximum() ) );
+      QDomText uCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wgs84BoundingRect.xMaximum(), wgs84precision ), wgs84precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wgs84BoundingRect.yMaximum(), wgs84precision ), wgs84precision ) );
       uCornerElement.appendChild( uCornerText );
       bBoxElement.appendChild( uCornerElement );
       layerElem.appendChild( bBoxElement );
@@ -555,48 +625,13 @@ namespace QgsWfs
         layerElem.appendChild( metaUrlElem );
       }
 
-      //wfs:Operations element
-      QDomElement operationsElement = doc.createElement( QStringLiteral( "Operations" )/*wfs:Operations*/ );
-      //wfs:Query element
-      QDomElement queryElement = doc.createElement( QStringLiteral( "Query" )/*wfs:Query*/ );
-      operationsElement.appendChild( queryElement );
-      if ( wfstUpdateLayersId.contains( layer->id() ) ||
-           wfstInsertLayersId.contains( layer->id() ) ||
-           wfstDeleteLayersId.contains( layer->id() ) )
-      {
-        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-        QgsVectorDataProvider *provider = vlayer->dataProvider();
-        if ( ( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) && wfstInsertLayersId.contains( layer->id() ) )
-        {
-          //wfs:Insert element
-          QDomElement insertElement = doc.createElement( QStringLiteral( "Insert" )/*wfs:Insert*/ );
-          operationsElement.appendChild( insertElement );
-        }
-        if ( ( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) &&
-             ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) &&
-             wfstUpdateLayersId.contains( layer->id() ) )
-        {
-          //wfs:Update element
-          QDomElement updateElement = doc.createElement( QStringLiteral( "Update" )/*wfs:Update*/ );
-          operationsElement.appendChild( updateElement );
-        }
-        if ( ( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) && wfstDeleteLayersId.contains( layer->id() ) )
-        {
-          //wfs:Delete element
-          QDomElement deleteElement = doc.createElement( QStringLiteral( "Delete" )/*wfs:Delete*/ );
-          operationsElement.appendChild( deleteElement );
-        }
-      }
-
-      layerElem.appendChild( operationsElement );
-
       featureTypeListElement.appendChild( layerElem );
     }
 
     return featureTypeListElement;
   }
 
-} // samespace QgsWfs
+} // namespace QgsWfs
 
 
 

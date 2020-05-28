@@ -56,3 +56,7 @@ AFS_LINK_TYPES = [
     'ESRI:ArcGIS:FeatureServer',
     'Esri REST: Feature Service'
 ]
+
+GIS_FILE_LINK_TYPES = [
+    'FILE:GEO'
+]

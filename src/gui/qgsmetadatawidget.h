@@ -17,15 +17,18 @@
 #ifndef QgsAbstractMetadataBaseWIDGET_H
 #define QgsAbstractMetadataBaseWIDGET_H
 
-#include "QStandardItemModel"
-#include "QStyledItemDelegate"
+#include <QStandardItemModel>
+#include <QStyledItemDelegate>
+#include <QStringListModel>
 
 #include "qgis_gui.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdataprovider.h"
-#include "qgsmaplayer.h"
 #include "qgslayermetadata.h"
 #include "ui_qgsmetadatawidget.h"
+
+class QgsMapLayer;
+class QgsMapCanvas;
 
 /**
  * \ingroup gui

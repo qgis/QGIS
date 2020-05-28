@@ -37,22 +37,19 @@ The builder widget that is used by the dialog
 
     QString expectedOutputFormat();
 %Docstring
-The set expected format string. This is pure text format and no expression validation
+Returns the expected format string, which is shown in the dialog.
+This is purely a text format and no expression validation
 is done against it.
 
-:return: The expected value format.
+.. seealso:: :py:func:`setExpectedOutputFormat`
 %End
 
     void setExpectedOutputFormat( const QString &expected );
 %Docstring
-The set expected format string. This is pure text format and no expression validation
-is done against it.
+Set the ``expected`` format string, which is shown in the dialog.
+This is purely a text format and no expression validation is done against it.
 
-:param expected: The expected value format for the expression.
-
-.. note::
-
-   Only a UI hint and not used for expression validation.
+.. seealso:: :py:func:`expectedOutputFormat`
 %End
 
     QgsExpressionContext expressionContext() const;

@@ -19,7 +19,7 @@
 #define QGSEDITFORMCONFIG_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QMap>
 #include <QDomElement>
 #include <QDomDocument>
@@ -36,6 +36,9 @@ class QgsEditFormConfigPrivate;
  */
 class CORE_EXPORT QgsEditFormConfig
 {
+
+    Q_GADGET
+
   public:
 
     //! The different types to layout the attribute editor.
@@ -45,6 +48,7 @@ class CORE_EXPORT QgsEditFormConfig
       TabLayout = 1,       //!< Use a layout with tabs and group boxes. Needs to be configured.
       UiFileLayout = 2     //!< Load a .ui file for the layout. Needs to be configured.
     };
+    Q_ENUM( EditorLayout )
 
     struct GroupData
     {
@@ -81,6 +85,7 @@ class CORE_EXPORT QgsEditFormConfig
       SuppressOn = 1,      //!< Suppress feature form
       SuppressOff = 2      //!< Do not suppress feature form
     };
+    Q_ENUM( FeatureFormSuppress )
 
     /**
      * The Python init code source options.
@@ -91,6 +96,21 @@ class CORE_EXPORT QgsEditFormConfig
       CodeSourceFile = 1,             //!< Load the Python code from an external file
       CodeSourceDialog = 2,           //!< Use the Python code provided in the dialog
       CodeSourceEnvironment = 3       //!< Use the Python code available in the Python environment
+    };
+    Q_ENUM( PythonInitCodeSource )
+
+    /**
+     * Data defined properties.
+     * Form data defined overrides are stored in a property collection
+     * and they can be retrieved using the indexes specified in this
+     * enum.
+     * \since QGIS 3.14
+     */
+    enum DataDefinedProperty
+    {
+      NoProperty = 0, //!< No property
+      AllProperties = 1, //!< All properties for item
+      Alias = 2, //!< Alias
     };
 
     /**
@@ -162,7 +182,7 @@ class CORE_EXPORT QgsEditFormConfig
      *
      * \param widgetName  The name of the widget to configure
      * \param config      The config to set for this widget
-     * \returns false if a field exists with the provided widgetName. In this case
+     * \returns FALSE if a field exists with the provided widgetName. In this case
      *          QgsVectorLayer::setEditorWidgetSetup should be used.
      *
      * \see QgsVectorLayer::setEditorWidgetSetup() for field configurations.
@@ -183,34 +203,34 @@ class CORE_EXPORT QgsEditFormConfig
      *
      * \param widgetName The name of the widget.
      *
-     * \returns true if a configuration has been removed
+     * \returns TRUE if a configuration has been removed
      */
     bool removeWidgetConfig( const QString &widgetName );
 
     /**
-     * This returns true if the field is manually set to read only or if the field
+     * This returns TRUE if the field is manually set to read only or if the field
      * does not support editing like joins or virtual fields.
      */
     bool readOnly( int idx ) const;
 
     /**
-     * If set to false, the widget at the given index will be read-only.
+     * If set to FALSE, the widget at the given index will be read-only.
      */
     void setReadOnly( int idx, bool readOnly = true );
 
     /**
-     * If this returns true, the widget at the given index will receive its label on the previous line
-     * while if it returns false, the widget will receive its label on the left hand side.
+     * If this returns TRUE, the widget at the given index will receive its label on the previous line
+     * while if it returns FALSE, the widget will receive its label on the left hand side.
      * Labeling on top leaves more horizontal space for the widget itself.
-     **/
+     */
     bool labelOnTop( int idx ) const;
 
     /**
-     * If this is set to true, the widget at the given index will receive its label on
-     * the previous line while if it is set to false, the widget will receive its label
+     * If this is set to TRUE, the widget at the given index will receive its label on
+     * the previous line while if it is set to FALSE, the widget will receive its label
      * on the left hand side.
      * Labeling on top leaves more horizontal space for the widget itself.
-     **/
+     */
     void setLabelOnTop( int idx, bool onTop );
 
 
@@ -294,6 +314,25 @@ class CORE_EXPORT QgsEditFormConfig
      * Create a new edit form config. Normally invoked by QgsVectorLayer
      */
     explicit QgsEditFormConfig();
+
+    /**
+     * Set data defined properties for \a fieldName to \a properties
+     * \since QGIS 3.14
+     */
+    void setDataDefinedFieldProperties( const QString &fieldName, const QgsPropertyCollection &properties );
+
+    /**
+     * Returns data defined properties for \a fieldName
+     * \since QGIS 3.14
+     */
+    QgsPropertyCollection dataDefinedFieldProperties( const QString &fieldName ) const;
+
+
+    /**
+     * Returns data defined property definitions.
+     * \since QGIS 3.14
+     */
+    static const QgsPropertiesDefinition &propertyDefinitions();
 
   private:
 

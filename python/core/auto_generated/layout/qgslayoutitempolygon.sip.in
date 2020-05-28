@@ -47,6 +47,8 @@ The caller takes responsibility for deleting the returned object.
 
     virtual QString displayName() const;
 
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
 
     QgsFillSymbol *symbol();
 %Docstring

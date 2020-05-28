@@ -38,7 +38,7 @@ Constructs margins with the given ``left``, ``top``, ``right``, ``bottom``
 
     bool isNull() const;
 %Docstring
-Returns \c true if all margins are is 0; otherwise returns false.
+Returns \c ``True`` if all margins are is 0; otherwise returns ``False``.
 %End
 
     double left() const;

@@ -97,7 +97,7 @@ QMap<QString, QString> O2ReplyServer::parseQueryParams(QByteArray *data) {
     QUrlQuery query(getTokenUrl);
     tokens = query.queryItems();
 #endif
-    QMultiMap<QString, QString> queryParams;
+    QMap<QString, QString> queryParams;
     QPair<QString, QString> tokenPair;
     foreach (tokenPair, tokens) {
         // FIXME: We are decoding key and value again. This helps with Google OAuth, but is it mandated by the standard?

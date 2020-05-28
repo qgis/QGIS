@@ -60,13 +60,13 @@ QgsKeyValueModel::QgsKeyValueModel( QObject *parent ) :
 
 int QgsKeyValueModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return mLines.count();
 }
 
 int QgsKeyValueModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 2;
 }
 
@@ -119,11 +119,11 @@ Qt::ItemFlags QgsKeyValueModel::flags( const QModelIndex &index ) const
 
 bool QgsKeyValueModel::insertRows( int position, int rows, const QModelIndex &parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   beginInsertRows( QModelIndex(), position, position + rows - 1 );
   for ( int i = 0; i < rows; ++i )
   {
-    mLines.insert( position, Line( QLatin1String( "" ), QVariant() ) );
+    mLines.insert( position, Line( QString(), QVariant() ) );
   }
   endInsertRows();
   return true;
@@ -131,7 +131,7 @@ bool QgsKeyValueModel::insertRows( int position, int rows, const QModelIndex &pa
 
 bool QgsKeyValueModel::removeRows( int position, int rows, const QModelIndex &parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   beginRemoveRows( QModelIndex(), position, position + rows - 1 );
   mLines.remove( position, rows );
   endRemoveRows();

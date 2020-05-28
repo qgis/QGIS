@@ -65,7 +65,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem &crs, bool all ) override;
     QStringList output( int type ) override;
     bool hasOutput( int type ) override
-    { Q_UNUSED( type ); return true; }
+    { Q_UNUSED( type ) return true; }
 
     //! \brief receives contentsMousePressEvent from view
     void mousePressEvent( QMouseEvent * ) override;
@@ -406,7 +406,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
     // Half size of socket symbol
     int mSocketHalf;
 
-    // Margin beteween mRect and QCanvasRectangle.rect()
+    // Margin between mRect and QCanvasRectangle.rect()
     int mMargin;
 
     // Space between text boxes

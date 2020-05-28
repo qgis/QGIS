@@ -106,7 +106,7 @@ void qgsGeometryToSpatialiteBlob( const QgsGeometry &geom, int32_t srid, char *&
 // Return the bounding box of a SpatiaLite geometry blob
 QgsRectangle spatialiteBlobBbox( const char *blob, size_t size )
 {
-  Q_UNUSED( size );
+  Q_UNUSED( size )
 
   SpatialiteBlobHeader h;
   h.readFrom( blob );

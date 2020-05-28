@@ -18,6 +18,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgssettings.h"
 #include "qgslogger.h"
+#include "qgsguiutils.h"
 
 #include <QResizeEvent>
 #include <QStyleOptionFrameV3>
@@ -29,6 +30,8 @@
 #include <QToolButton>
 #include <QMenu>
 #include <QDrag>
+#include <QRectF>
+#include <QLineF>
 
 #include <cmath>
 
@@ -53,18 +56,19 @@ int QgsColorWidget::componentValue() const
 QPixmap QgsColorWidget::createDragIcon( const QColor &color )
 {
   //craft a pixmap for the drag icon
-  QPixmap pixmap( 50, 50 );
+  const int iconSize = QgsGuiUtils::scaleIconSize( 50 );
+  QPixmap pixmap( iconSize, iconSize );
   pixmap.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &pixmap );
   //start with a light gray background
-  painter.fillRect( QRect( 0, 0, 50, 50 ), QBrush( QColor( 200, 200, 200 ) ) );
+  painter.fillRect( QRect( 0, 0, iconSize, iconSize ), QBrush( QColor( 200, 200, 200 ) ) );
   //draw rect with white border, filled with current color
   QColor pixmapColor = color;
   pixmapColor.setAlpha( 255 );
   painter.setBrush( QBrush( pixmapColor ) );
   painter.setPen( QPen( Qt::white ) );
-  painter.drawRect( QRect( 1, 1, 47, 47 ) );
+  painter.drawRect( QRect( 1, 1, iconSize - 2, iconSize - 2 ) );
   painter.end();
   return pixmap;
 }
@@ -372,7 +376,7 @@ QgsColorWheel::QgsColorWheel( QWidget *parent )
   QColor gradColor = QColor::fromHsvF( 1.0, 1.0, 1.0 );
   for ( int pos = 0; pos <= wheelStops; ++pos )
   {
-    double relativePos = ( double )pos / wheelStops;
+    double relativePos = static_cast<double>( pos ) / wheelStops;
     gradColor.setHsvF( relativePos, 1, 1 );
     wheelGradient.setColorAt( relativePos, gradColor );
   }
@@ -388,13 +392,17 @@ QgsColorWheel::~QgsColorWheel()
 
 QSize QgsColorWheel::sizeHint() const
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   int size = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) );
+#else
+  int size = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 22;
+#endif
   return QSize( size, size );
 }
 
 void QgsColorWheel::paintEvent( QPaintEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   QPainter painter( this );
 
   if ( !mWidgetImage || !mWheelImage || !mTriangleImage )
@@ -617,7 +625,7 @@ void QgsColorWheel::mousePressEvent( QMouseEvent *event )
 
 void QgsColorWheel::mouseReleaseEvent( QMouseEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   mClickedPart = QgsColorWheel::None;
 }
 
@@ -746,13 +754,17 @@ QgsColorBox::~QgsColorBox()
 
 QSize QgsColorBox::sizeHint() const
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   int size = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) );
+#else
+  int size = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 22;
+#endif
   return QSize( size, size );
 }
 
 void QgsColorBox::paintEvent( QPaintEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   QPainter painter( this );
 
   QStyleOptionFrame option;
@@ -769,8 +781,8 @@ void QgsColorBox::paintEvent( QPaintEvent *event )
   painter.drawImage( QPoint( mMargin, mMargin ), *mBoxImage );
 
   //draw cross lines
-  double xPos = mMargin + ( width() - 2 * mMargin - 1 ) * ( double )xComponentValue() / ( double )valueRangeX();
-  double yPos = mMargin + ( height() - 2 * mMargin - 1 ) - ( height() - 2 * mMargin - 1 ) * ( double )yComponentValue() / ( double )valueRangeY();
+  double xPos = mMargin + ( width() - 2 * mMargin - 1 ) * static_cast<double>( xComponentValue() ) / static_cast<double>( valueRangeX() );
+  double yPos = mMargin + ( height() - 2 * mMargin - 1 ) - ( height() - 2 * mMargin - 1 ) * static_cast<double>( yComponentValue() ) / static_cast<double>( valueRangeY() );
 
   painter.setBrush( Qt::white );
   painter.setPen( Qt::NoPen );
@@ -977,18 +989,26 @@ QSize QgsColorRampWidget::sizeHint() const
   if ( mOrientation == QgsColorRampWidget::Horizontal )
   {
     //horizontal
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
     return QSize( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ), Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.3 );
+#else
+    return QSize( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 22, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.3 );
+#endif
   }
   else
   {
     //vertical
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
     return QSize( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.3, Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ) );
+#else
+    return QSize( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.3, Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 22 );
+#endif
   }
 }
 
 void QgsColorRampWidget::paintEvent( QPaintEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   QPainter painter( this );
 
   if ( mShowFrame )
@@ -1015,14 +1035,18 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
     QColor color = QColor( mCurrentColor );
     color.setAlpha( 255 );
     QPen pen;
-    pen.setWidth( 0 );
+    // we need to set pen width to 1,
+    // since on retina displays
+    // pen.setWidth(0) <=> pen.width = 0.5
+    // see https://github.com/qgis/QGIS/issues/23900
+    pen.setWidth( 1 );
     painter.setPen( pen );
     painter.setBrush( Qt::NoBrush );
 
     //draw background ramp
     for ( int c = 0; c <= maxValue; ++c )
     {
-      int colorVal = componentRange() * ( double )c / maxValue;
+      int colorVal = static_cast<int>( componentRange() * static_cast<double>( c ) / maxValue );
       //vertical sliders are reversed
       if ( mOrientation == QgsColorRampWidget::Vertical )
       {
@@ -1038,12 +1062,12 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
       if ( mOrientation == QgsColorRampWidget::Horizontal )
       {
         //horizontal
-        painter.drawLine( c + mMargin, mMargin, c + mMargin, height() - mMargin - 1 );
+        painter.drawLine( QLineF( c + mMargin, mMargin, c + mMargin, height() - mMargin - 1 ) );
       }
       else
       {
         //vertical
-        painter.drawLine( mMargin, c + mMargin, width() - mMargin - 1, c + mMargin );
+        painter.drawLine( QLineF( mMargin, c + mMargin, width() - mMargin - 1, c + mMargin ) );
       }
     }
   }
@@ -1054,7 +1078,7 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
     QBrush checkBrush = QBrush( transparentBackground() );
     painter.setBrush( checkBrush );
     painter.setPen( Qt::NoPen );
-    painter.drawRect( mMargin, mMargin, width() - 2 * mMargin - 1, height() - 2 * mMargin - 1 );
+    painter.drawRect( QRectF( mMargin, mMargin, width() - 2 * mMargin - 1, height() - 2 * mMargin - 1 ) );
     QLinearGradient colorGrad;
     if ( mOrientation == QgsColorRampWidget::Horizontal )
     {
@@ -1074,7 +1098,7 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
     colorGrad.setColorAt( 1, opaque );
     QBrush colorBrush = QBrush( colorGrad );
     painter.setBrush( colorBrush );
-    painter.drawRect( mMargin, mMargin, width() - 2 * mMargin - 1, height() - 2 * mMargin - 1 );
+    painter.drawRect( QRectF( mMargin, mMargin, width() - 2 * mMargin - 1, height() - 2 * mMargin - 1 ) );
   }
 
   if ( mOrientation == QgsColorRampWidget::Horizontal )
@@ -1083,7 +1107,7 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
     painter.setRenderHint( QPainter::Antialiasing );
     painter.setBrush( QBrush( Qt::black ) );
     painter.setPen( Qt::NoPen );
-    painter.translate( mMargin + ( width() - 2 * mMargin ) * ( double )componentValue() / componentRange(), mMargin - 1 );
+    painter.translate( mMargin + ( width() - 2 * mMargin ) * static_cast<double>( componentValue() ) / componentRange(), mMargin - 1 );
     painter.drawPolygon( mTopTriangle );
     painter.translate( 0, height() - mMargin - 2 );
     painter.setBrush( QBrush( Qt::white ) );
@@ -1093,12 +1117,12 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
   else
   {
     //draw cross lines for vertical ramps
-    int ypos = mMargin + ( height() - 2 * mMargin - 1 ) - ( height() - 2 * mMargin - 1 ) * ( double )componentValue() / componentRange();
+    double ypos = mMargin + ( height() - 2 * mMargin - 1 ) - ( height() - 2 * mMargin - 1 ) * static_cast<double>( componentValue() ) / componentRange();
     painter.setBrush( Qt::white );
     painter.setPen( Qt::NoPen );
-    painter.drawRect( mMargin, ypos - 1, width() - 2 * mMargin - 1, 3 );
+    painter.drawRect( QRectF( mMargin, ypos - 1, width() - 2 * mMargin - 1, 3 ) );
     painter.setPen( Qt::black );
-    painter.drawLine( mMargin, ypos, width() - mMargin - 1, ypos );
+    painter.drawLine( QLineF( mMargin, ypos, width() - mMargin - 1, ypos ) );
   }
 }
 
@@ -1269,7 +1293,11 @@ QgsColorSliderWidget::QgsColorSliderWidget( QWidget *parent, const ColorComponen
 
   mSpinBox = new QSpinBox();
   //set spinbox to a reasonable width
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   int largestCharWidth = mSpinBox->fontMetrics().width( QStringLiteral( "888%" ) );
+#else
+  int largestCharWidth = mSpinBox->fontMetrics().horizontalAdvance( QStringLiteral( "888%" ) );
+#endif
   mSpinBox->setMinimumWidth( largestCharWidth + 35 );
   mSpinBox->setMinimum( 0 );
   mSpinBox->setMaximum( convertRealToDisplay( componentRange() ) );
@@ -1423,7 +1451,7 @@ void QgsColorTextWidget::setColor( const QColor &color, const bool emitSignals )
 
 void QgsColorTextWidget::resizeEvent( QResizeEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   QSize sz = mMenuButton->sizeHint();
   int frameWidth = style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
   mMenuButton->move( mLineEdit->rect().right() - frameWidth - sz.width(),
@@ -1560,7 +1588,7 @@ void QgsColorPreviewWidget::drawColor( const QColor &color, QRect rect, QPainter
 
 void QgsColorPreviewWidget::paintEvent( QPaintEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   QPainter painter( this );
 
   if ( mColor2.isValid() )
@@ -1580,7 +1608,11 @@ void QgsColorPreviewWidget::paintEvent( QPaintEvent *event )
 
 QSize QgsColorPreviewWidget::sizeHint() const
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   return QSize( Qgis::UI_SCALE_FACTOR *  fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ), Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ) * 0.75 );
+#else
+  return QSize( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 22, Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 22 * 0.75 );
+#endif
 }
 
 void QgsColorPreviewWidget::setColor2( const QColor &color )

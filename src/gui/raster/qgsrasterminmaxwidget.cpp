@@ -35,7 +35,7 @@ QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer *layer, QWidget *pa
   , mLastRectangleValid( false )
   , mBandsChanged( false )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
   setupUi( this );
   connect( mUserDefinedRadioButton, &QRadioButton::toggled, this, &QgsRasterMinMaxWidget::mUserDefinedRadioButton_toggled );
   connect( mMinMaxRadioButton, &QRadioButton::toggled, this, &QgsRasterMinMaxWidget::mMinMaxRadioButton_toggled );
@@ -99,7 +99,6 @@ void QgsRasterMinMaxWidget::setFromMinMaxOrigin( const QgsRasterMinMaxOrigin &mi
   switch ( minMaxOrigin.limits() )
   {
     case QgsRasterMinMaxOrigin::None:
-    default:
       mUserDefinedRadioButton->setChecked( true );
       break;
 
@@ -118,7 +117,6 @@ void QgsRasterMinMaxWidget::setFromMinMaxOrigin( const QgsRasterMinMaxOrigin &mi
 
   switch ( minMaxOrigin.extent() )
   {
-    default:
     case QgsRasterMinMaxOrigin::WholeRaster:
       mStatisticsExtentCombo->setCurrentIndex( IDX_WHOLE_RASTER );
       break;
@@ -182,7 +180,9 @@ QgsRasterMinMaxOrigin QgsRasterMinMaxWidget::minMaxOrigin()
 
 void QgsRasterMinMaxWidget::doComputations()
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
+  if ( !mLayer->dataProvider() )
+    return;
 
   QgsRectangle myExtent = extent(); // empty == full
   int mySampleSize = sampleSize(); // 0 == exact
@@ -192,7 +192,7 @@ void QgsRasterMinMaxWidget::doComputations()
        mLastMinMaxOrigin == newMinMaxOrigin &&
        !mBandsChanged )
   {
-    QgsDebugMsg( "Does not need to redo statistics computations" );
+    QgsDebugMsg( QStringLiteral( "Does not need to redo statistics computations" ) );
     return;
   }
 
@@ -201,9 +201,10 @@ void QgsRasterMinMaxWidget::doComputations()
   mLastMinMaxOrigin = newMinMaxOrigin;
   mBandsChanged = false;
 
-  Q_FOREACH ( int myBand, mBands )
+  const auto constMBands = mBands;
+  for ( int myBand : constMBands )
   {
-    QgsDebugMsg( QString( "myBand = %1" ).arg( myBand ) );
+    QgsDebugMsg( QStringLiteral( "myBand = %1" ).arg( myBand ) );
     if ( myBand < 1 || myBand > mLayer->dataProvider()->bandCount() )
     {
       continue;

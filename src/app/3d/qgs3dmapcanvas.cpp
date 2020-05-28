@@ -18,16 +18,22 @@
 #include <QBoxLayout>
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DRender/QRenderCapture>
+#include <QMouseEvent>
+
 
 #include "qgscameracontroller.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmapscene.h"
+#include "qgs3dmaptool.h"
 #include "qgswindow3dengine.h"
-
+#include "qgs3dnavigationwidget.h"
+#include "qgssettings.h"
+#include "qgstemporalcontroller.h"
 
 Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   : QWidget( parent )
 {
+  QgsSettings setting;
   mEngine = new QgsWindow3DEngine;
 
   connect( mEngine, &QgsAbstract3DEngine::imageCaptured, this, [ = ]( const QImage & image )
@@ -37,17 +43,28 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   } );
 
   mContainer = QWidget::createWindowContainer( mEngine->window() );
+  mNavigationWidget = new Qgs3DNavigationWidget( this );
 
   QHBoxLayout *hLayout = new QHBoxLayout( this );
   hLayout->setMargin( 0 );
   hLayout->addWidget( mContainer, 1 );
+  hLayout->addWidget( mNavigationWidget );
+  this->setOnScreenNavigationVisibility(
+    setting.value( QStringLiteral( "/3D/navigationWidget/visibility" ), true, QgsSettings::Gui ).toBool()
+  );
 
   mEngine->window()->setCursor( Qt::OpenHandCursor );
 }
 
 Qgs3DMapCanvas::~Qgs3DMapCanvas()
 {
+  if ( mMapTool )
+    mMapTool->deactivate();
+  // make sure the scene is deleted while map settings object is still alive
+  delete mScene;
+  mScene = nullptr;
   delete mMap;
+  mMap = nullptr;
 }
 
 void Qgs3DMapCanvas::resizeEvent( QResizeEvent *ev )
@@ -80,6 +97,19 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
   mMap = map;
 
   resetView();
+
+  // Connect the camera to the navigation widget.
+  QObject::connect(
+    this->cameraController(),
+    &QgsCameraController::cameraChanged,
+    mNavigationWidget,
+    [ = ]
+  {
+    mNavigationWidget->updateFromCamera();
+  }
+  );
+
+  emit mapSettingsChanged();
 }
 
 QgsCameraController *Qgs3DMapCanvas::cameraController()
@@ -107,4 +137,80 @@ void Qgs3DMapCanvas::saveAsImage( const QString fileName, const QString fileForm
     mCaptureFileFormat = fileFormat;
     mEngine->requestCaptureImage();
   }
+}
+
+void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
+{
+  if ( tool == mMapTool )
+    return;
+
+  // For Camera Control tool
+  if ( mMapTool && !tool )
+  {
+    mEngine->window()->removeEventFilter( this );
+    mScene->cameraController()->setEnabled( true );
+    mEngine->window()->setCursor( Qt::OpenHandCursor );
+  }
+  else if ( !mMapTool && tool )
+  {
+    mEngine->window()->installEventFilter( this );
+    mScene->cameraController()->setEnabled( tool->allowsCameraControls() );
+  }
+
+  if ( mMapTool )
+    mMapTool->deactivate();
+
+  mMapTool = tool;
+
+  if ( mMapTool )
+  {
+    mMapTool->activate();
+    mEngine->window()->setCursor( mMapTool->cursor() );
+  }
+
+}
+
+bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
+{
+  if ( !mMapTool )
+    return false;
+
+  Q_UNUSED( watched )
+  switch ( event->type() )
+  {
+    case QEvent::MouseButtonPress:
+      mMapTool->mousePressEvent( static_cast<QMouseEvent *>( event ) );
+      break;
+    case QEvent::MouseButtonRelease:
+      mMapTool->mouseReleaseEvent( static_cast<QMouseEvent *>( event ) );
+      break;
+    case QEvent::MouseMove:
+      mMapTool->mouseMoveEvent( static_cast<QMouseEvent *>( event ) );
+      break;
+    default:
+      break;
+  }
+  return false;
+}
+
+void Qgs3DMapCanvas::setOnScreenNavigationVisibility( bool visibility )
+{
+  mNavigationWidget->setVisible( visibility );
+  QgsSettings setting;
+  setting.setValue( QStringLiteral( "/3D/navigationWidget/visibility" ), visibility, QgsSettings::Gui );
+}
+
+void Qgs3DMapCanvas::setTemporalController( QgsTemporalController *temporalController )
+{
+  if ( mTemporalController )
+    disconnect( mTemporalController, &QgsTemporalController::updateTemporalRange, this, &Qgs3DMapCanvas::updateTemporalRange );
+
+  mTemporalController = temporalController;
+  connect( mTemporalController, &QgsTemporalController::updateTemporalRange, this, &Qgs3DMapCanvas::updateTemporalRange );
+}
+
+void Qgs3DMapCanvas::updateTemporalRange( const QgsDateTimeRange &temporalrange )
+{
+  mMap->setTemporalRange( temporalrange );
+  mScene->updateTemporal();
 }

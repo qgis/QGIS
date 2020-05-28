@@ -74,10 +74,10 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
     QgsPointXY snapPoint();
 
     /**
-     * Returns true if there is a snapped point cached.
+     * Returns TRUE if there is a snapped point cached.
      * Will only be useful after snapPoint has previously been called.
      *
-     * \returns True if there is a snapped point cached.
+     * \returns TRUE if there is a snapped point cached.
      */
     bool isSnapped() const { return mSnapMatch.isValid(); }
 
@@ -125,6 +125,15 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      * \returns Mouse position in pixel coordinates
      */
     QPoint originalPixelPoint() const { return pos(); }
+
+    /**
+     * Snaps the mapPoint to a grid with the given \a precision.
+     * The snapping will be done in the specified \a crs. If this crs is
+     * different from the mapCanvas crs, it will be reprojected on the fly.
+     *
+     * \since QGIS 3.4
+     */
+    void snapToGrid( double precision, const QgsCoordinateReferenceSystem &crs );
 
   private:
 

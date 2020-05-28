@@ -52,6 +52,16 @@ Reads renderer's properties from given XML element
 %Docstring
 Resolves references to other objects - second phase of loading - after readXml()
 %End
+
+  protected:
+    QgsAbstract3DRenderer();
+%Docstring
+Default constructor
+%End
+
+  private:
+    QgsAbstract3DRenderer( const QgsAbstract3DRenderer & );
+    QgsAbstract3DRenderer &operator=( const QgsAbstract3DRenderer & );
 };
 
 

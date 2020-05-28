@@ -113,8 +113,8 @@ QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget *parent, Qt::WindowFlags fl 
   mRemoveJoinButton->setEnabled( false );
 
   mTableJoins->setRowCount( 0 );
-  mTableJoins->setItem( 0, 0, new QTableWidgetItem( QLatin1String( "" ) ) );
-  mTableJoins->setItem( 0, 1, new QTableWidgetItem( QLatin1String( "" ) ) );
+  mTableJoins->setItem( 0, 0, new QTableWidgetItem( QString() ) );
+  mTableJoins->setItem( 0, 1, new QTableWidgetItem( QString() ) );
 }
 
 QgsSQLComposerDialog::~QgsSQLComposerDialog()
@@ -279,7 +279,8 @@ void QgsSQLComposerDialog::splitSQLIntoFields()
   mDistinct = nodeSelect->distinct();
   QList<QgsSQLStatement::NodeSelectedColumn *> columns = nodeSelect->columns();
   QString columnText;
-  Q_FOREACH ( QgsSQLStatement::NodeSelectedColumn *column, columns )
+  const auto constColumns = columns;
+  for ( QgsSQLStatement::NodeSelectedColumn *column : constColumns )
   {
     if ( !columnText.isEmpty() )
       columnText += QLatin1String( ", " );
@@ -288,7 +289,8 @@ void QgsSQLComposerDialog::splitSQLIntoFields()
 
   QList<QgsSQLStatement::NodeTableDef *> tables = nodeSelect->tables();
   QString tablesText;
-  Q_FOREACH ( QgsSQLStatement::NodeTableDef *table, tables )
+  const auto constTables = tables;
+  for ( QgsSQLStatement::NodeTableDef *table : constTables )
   {
     if ( !tablesText.isEmpty() )
       tablesText += QLatin1String( ", " );
@@ -303,7 +305,8 @@ void QgsSQLComposerDialog::splitSQLIntoFields()
 
   QString orderText;
   QList<QgsSQLStatement::NodeColumnSorted *> orderColumns = nodeSelect->orderBy();
-  Q_FOREACH ( QgsSQLStatement::NodeColumnSorted *column, orderColumns )
+  const auto constOrderColumns = orderColumns;
+  for ( QgsSQLStatement::NodeColumnSorted *column : constOrderColumns )
   {
     if ( !orderText.isEmpty() )
       orderText += QLatin1String( ", " );
@@ -320,25 +323,27 @@ void QgsSQLComposerDialog::splitSQLIntoFields()
 
   mTableJoins->setRowCount( joins.size() + 1 );
   int iRow = 0;
-  Q_FOREACH ( QgsSQLStatement::NodeJoin *join, joins )
+  const auto constJoins = joins;
+  for ( QgsSQLStatement::NodeJoin *join : constJoins )
   {
     loadTableColumns( QgsSQLStatement::quotedIdentifierIfNeeded( join->tableDef()->name() ) );
     mTableJoins->setItem( iRow, 0, new QTableWidgetItem( join->tableDef()->dump() ) );
     if ( join->onExpr() )
       mTableJoins->setItem( iRow, 1, new QTableWidgetItem( join->onExpr()->dump() ) );
     else
-      mTableJoins->setItem( iRow, 1, new QTableWidgetItem( QLatin1String( "" ) ) );
+      mTableJoins->setItem( iRow, 1, new QTableWidgetItem( QString() ) );
     iRow ++;
   }
-  mTableJoins->setItem( iRow, 0, new QTableWidgetItem( QLatin1String( "" ) ) );
-  mTableJoins->setItem( iRow, 1, new QTableWidgetItem( QLatin1String( "" ) ) );
+  mTableJoins->setItem( iRow, 0, new QTableWidgetItem( QString() ) );
+  mTableJoins->setItem( iRow, 1, new QTableWidgetItem( QString() ) );
 
   mAlreadyModifyingFields = false;
 }
 
 void QgsSQLComposerDialog::addTableNames( const QStringList &list )
 {
-  Q_FOREACH ( const QString &name, list )
+  const auto constList = list;
+  for ( const QString &name : constList )
     mapTableEntryTextToName[name] = name;
   mTablesCombo->addItems( list );
   addApis( list );
@@ -348,7 +353,8 @@ void QgsSQLComposerDialog::addTableNames( const QList<PairNameTitle> &listNameTi
 {
   QStringList listCombo;
   QStringList listApi;
-  Q_FOREACH ( const PairNameTitle &pair, listNameTitle )
+  const auto constListNameTitle = listNameTitle;
+  for ( const PairNameTitle &pair : constListNameTitle )
   {
     listApi << pair.first;
     QString entryText( pair.first );
@@ -369,7 +375,8 @@ void QgsSQLComposerDialog::addTableNames( const QList<PairNameTitle> &listNameTi
 void QgsSQLComposerDialog::addColumnNames( const QStringList &list, const QString &tableName )
 {
   QList<PairNameType> listPair;
-  Q_FOREACH ( const QString &name, list )
+  const auto constList = list;
+  for ( const QString &name : constList )
     listPair << PairNameType( name, QString() );
   addColumnNames( listPair, tableName );
 }
@@ -393,7 +400,8 @@ void QgsSQLComposerDialog::addColumnNames( const QList<PairNameType> &list, cons
 
   QStringList listCombo;
   QStringList listApi;
-  Q_FOREACH ( const PairNameType &pair, list )
+  const auto constList = list;
+  for ( const PairNameType &pair : constList )
   {
     listApi << pair.first;
     QString entryText( pair.first );
@@ -449,7 +457,8 @@ void QgsSQLComposerDialog::getFunctionList( const QList<Function> &list,
     QStringList &listCombo,
     QMap<QString, QString> &mapEntryTextToName )
 {
-  Q_FOREACH ( const Function &f, list )
+  const auto constList = list;
+  for ( const Function &f : constList )
   {
     listApi << f.name;
     QString entryText( f.name );
@@ -499,7 +508,8 @@ void QgsSQLComposerDialog::getFunctionList( const QList<Function> &list,
 void QgsSQLComposerDialog::addSpatialPredicates( const QStringList &list )
 {
   QList<Function> listFunction;
-  Q_FOREACH ( const QString &name, list )
+  const auto constList = list;
+  for ( const QString &name : constList )
   {
     Function f;
     f.name = name;
@@ -521,7 +531,8 @@ void QgsSQLComposerDialog::addSpatialPredicates( const QList<Function> &list )
 void QgsSQLComposerDialog::addFunctions( const QStringList &list )
 {
   QList<Function> listFunction;
-  Q_FOREACH ( const QString &name, list )
+  const auto constList = list;
+  for ( const QString &name : constList )
   {
     Function f;
     f.name = name;
@@ -718,8 +729,8 @@ void QgsSQLComposerDialog::mAddJoinButton_clicked()
     mTableJoins->setItem( row, 0, mTableJoins->takeItem( row - 1, 0 ) );
     mTableJoins->setItem( row, 1, mTableJoins->takeItem( row - 1, 1 ) );
   }
-  mTableJoins->setItem( ( insertRow == rowCount ) ? insertRow : insertRow + 1, 0, new QTableWidgetItem( QLatin1String( "" ) ) );
-  mTableJoins->setItem( ( insertRow == rowCount ) ? insertRow : insertRow + 1, 1, new QTableWidgetItem( QLatin1String( "" ) ) );
+  mTableJoins->setItem( ( insertRow == rowCount ) ? insertRow : insertRow + 1, 0, new QTableWidgetItem( QString() ) );
+  mTableJoins->setItem( ( insertRow == rowCount ) ? insertRow : insertRow + 1, 1, new QTableWidgetItem( QString() ) );
 }
 
 void QgsSQLComposerDialog::mRemoveJoinButton_clicked()
@@ -755,7 +766,8 @@ void QgsSQLComposerDialog::addApis( const QStringList &list )
   delete mQueryEdit->lexer()->apis();
   QsciAPIs *apis = new QsciAPIs( mQueryEdit->lexer() );
 
-  Q_FOREACH ( const QString &str, mApiList )
+  const auto constMApiList = mApiList;
+  for ( const QString &str : constMApiList )
   {
     apis->add( str );
   }

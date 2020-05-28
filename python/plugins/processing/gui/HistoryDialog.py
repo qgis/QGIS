@@ -21,13 +21,11 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import warnings
 
+from qgis.core import QgsApplication
+from qgis.gui import QgsGui, QgsHelp
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QPushButton, QDialogButtonBox, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem
@@ -49,18 +47,19 @@ class HistoryDialog(BASE, WIDGET):
         super(HistoryDialog, self).__init__(None)
         self.setupUi(self)
 
-        self.groupIcon = QIcon()
-        self.groupIcon.addPixmap(self.style().standardPixmap(
-            QStyle.SP_DirClosedIcon), QIcon.Normal, QIcon.Off)
-        self.groupIcon.addPixmap(self.style().standardPixmap(
-            QStyle.SP_DirOpenIcon), QIcon.Normal, QIcon.On)
+        QgsGui.instance().enableAutoGeometryRestore(self)
 
-        self.keyIcon = QIcon()
-        self.keyIcon.addPixmap(self.style().standardPixmap(QStyle.SP_FileIcon))
+        self.groupIcon = QgsApplication.getThemeIcon('mIconFolder.svg')
+
+        self.keyIcon = self.style().standardIcon(QStyle.SP_FileIcon)
 
         self.clearButton = QPushButton(self.tr('Clear'))
         self.clearButton.setToolTip(self.tr('Clear history'))
         self.buttonBox.addButton(self.clearButton, QDialogButtonBox.ActionRole)
+
+        self.helpButton = QPushButton(self.tr('Help'))
+        self.helpButton.setToolTip(self.tr('Show help'))
+        self.buttonBox.addButton(self.helpButton, QDialogButtonBox.HelpRole)
 
         self.saveButton = QPushButton(QCoreApplication.translate('HistoryDialog', 'Save As…'))
         self.saveButton.setToolTip(self.tr('Save history'))
@@ -70,6 +69,7 @@ class HistoryDialog(BASE, WIDGET):
         self.tree.currentItemChanged.connect(self.changeText)
         self.clearButton.clicked.connect(self.clearLog)
         self.saveButton.clicked.connect(self.saveLog)
+        self.helpButton.clicked.connect(self.openHelp)
 
         self.tree.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tree.customContextMenuRequested.connect(self.showPopupMenu)
@@ -99,6 +99,9 @@ class HistoryDialog(BASE, WIDGET):
 
         ProcessingLog.saveLog(fileName)
 
+    def openHelp(self):
+        QgsHelp.openHelp("processing/history.html")
+
     def fillTree(self):
         self.tree.clear()
         entries = ProcessingLog.getLogEntries()
@@ -117,7 +120,7 @@ class HistoryDialog(BASE, WIDGET):
         if isinstance(item, TreeLogEntryItem):
             if item.isAlg:
                 script = 'import processing\n'
-                script += 'from qgis.core import QgsProcessingOutputLayerDefinition, QgsProcessingFeatureSourceDefinition, QgsProperty\n'
+                script += 'from qgis.core import QgsProcessingOutputLayerDefinition, QgsProcessingFeatureSourceDefinition, QgsProperty, QgsCoordinateReferenceSystem, QgsFeatureRequest\n'
                 script += item.entry.text.replace('processing.run(', 'processing.execAlgorithmDialog(')
                 self.close()
                 exec(script)

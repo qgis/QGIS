@@ -64,6 +64,19 @@ Sets source spatial reference system ``crs``.
 Returns the source spatial reference system.
 
 .. seealso:: :py:func:`setSourceCrs`
+
+.. seealso:: :py:func:`ellipsoidCrs`
+%End
+
+    QgsCoordinateReferenceSystem ellipsoidCrs() const;
+%Docstring
+Returns the ellipsoid (destination) spatial reference system.
+
+.. seealso:: :py:func:`sourceCrs`
+
+.. seealso:: :py:func:`ellipsoid`
+
+.. versionadded:: 3.6
 %End
 
     bool setEllipsoid( const QString &ellipsoid );
@@ -72,7 +85,7 @@ Sets the ``ellipsoid`` by its acronym. Known ellipsoid acronyms can be
 retrieved using :py:func:`QgsEllipsoidUtils.acronyms()`
 Calculations will only use the ellipsoid if a valid ellipsoid has been set.
 
-:return: true if ellipsoid was successfully set
+:return: ``True`` if ellipsoid was successfully set
 
 .. seealso:: :py:func:`ellipsoid`
 
@@ -84,7 +97,7 @@ Calculations will only use the ellipsoid if a valid ellipsoid has been set.
 Sets ellipsoid by supplied radii. Calculations will only use the ellipsoid if
 a valid ellipsoid been set.
 
-:return: true if ellipsoid was successfully set
+:return: ``True`` if ellipsoid was successfully set
 
 .. seealso:: :py:func:`ellipsoid`
 
@@ -99,6 +112,8 @@ ellipsoid if a valid ellipsoid has been set.
 .. seealso:: :py:func:`setEllipsoid`
 
 .. seealso:: :py:func:`willUseEllipsoid`
+
+.. seealso:: :py:func:`ellipsoidCrs`
 %End
 
     double ellipsoidSemiMajor() const;
@@ -221,9 +236,9 @@ otherwise QgsPoint.project() will be called after QgsUnitTypes.fromUnitToUnitFac
 :param p1: start point [can be Cartesian or Geographic]
 :param distance: must be in meters
 :param azimuth: - azimuth in radians, clockwise from North
-:param projectedPoint: calculated projected point
 
-:return: distance in mapUnits
+:return: - distance in mapUnits
+         - projectedPoint: calculated projected point
 
 .. seealso:: :py:func:`sourceCrs`
 
@@ -271,7 +286,7 @@ Returns an distance formatted as a friendly string.
 :param distance: distance to format
 :param decimals: number of decimal places to show
 :param unit: unit of distance
-:param keepBaseUnit: set to false to allow conversion of large distances to more suitable units, e.g., meters to
+:param keepBaseUnit: set to ``False`` to allow conversion of large distances to more suitable units, e.g., meters to
                      kilometers
 
 :return: formatted distance string
@@ -288,7 +303,7 @@ Returns an area formatted as a friendly string.
 :param area: area to format
 :param decimals: number of decimal places to show
 :param unit: unit of area
-:param keepBaseUnit: set to false to allow conversion of large areas to more suitable units, e.g., square meters to
+:param keepBaseUnit: set to ``False`` to allow conversion of large areas to more suitable units, e.g., square meters to
                      square kilometers
 
 :return: formatted area string
@@ -353,6 +368,75 @@ Datum of Australia Technical Manual", Chapter 4.
    --> latitudes outside these bounds cause the calculations to become unstable and can return invalid results
 
 .. versionadded:: 3.0
+%End
+
+    QVector<QVector<QgsPointXY> > geodesicLine( const QgsPointXY &p1, const QgsPointXY &p2, double interval, bool breakLine = false ) const;
+%Docstring
+Calculates the geodesic line between ``p1`` and ``p2``, which represents the shortest path on the
+ellipsoid between these two points.
+
+The ellipsoid settings defined on this QgsDistanceArea object will be used during the calculations.
+
+``p1`` and ``p2`` must be in the sourceCrs() of this QgsDistanceArea object. The returned line
+will also be in this same CRS.
+
+The ``interval`` parameter gives the maximum distance between points on the computed line.
+This argument is always specified in meters. A shorter distance results in a denser line,
+at the cost of extra computing time.
+
+If the geodesic line crosses the antimeridian (+/- 180 degrees longitude) and ``breakLine`` is ``True``, then
+the line will be split into two parts, broken at the antimeridian. In this case the function
+will return two lines, corresponding to the portions at either side of the antimeridian.
+
+.. versionadded:: 3.6
+%End
+
+    double latitudeGeodesicCrossesAntimeridian( const QgsPointXY &p1, const QgsPointXY &p2, double &fractionAlongLine /Out/ ) const;
+%Docstring
+Calculates the latitude at which the geodesic line joining ``p1`` and ``p2`` crosses
+the antimeridian (longitude +/- 180 degrees).
+
+The ellipsoid settings defined on this QgsDistanceArea object will be used during the calculations.
+
+``p1`` and ``p2`` must be in the ellipsoidCrs() of this QgsDistanceArea object. The returned latitude
+will also be in this same CRS.
+
+:param p1: Starting point, in ellipsoidCrs()
+:param p2: Ending point, in ellipsoidCrs()
+
+:return: - the latitude at which the geodesic crosses the antimeridian
+         - fractionAlongLine: will be set to the fraction along the geodesic line joining ``p1`` to ``p2`` at which the antimeridian crossing occurs.
+
+.. seealso:: :py:func:`splitGeometryAtAntimeridian`
+
+
+.. versionadded:: 3.6
+%End
+
+    QgsGeometry splitGeometryAtAntimeridian( const QgsGeometry &geometry ) const;
+%Docstring
+Splits a (Multi)LineString ``geometry`` at the antimeridian (longitude +/- 180 degrees).
+The returned geometry will always be a multi-part geometry.
+
+Whenever line segments in the input geometry cross the antimeridian, they will be
+split into two segments, with the latitude of the breakpoint being determined using a geodesic
+line connecting the points either side of this segment.
+
+The ellipsoid settings defined on this QgsDistanceArea object will be used during the calculations.
+
+``geometry`` must be in the sourceCrs() of this QgsDistanceArea object. The returned geometry
+will also be in this same CRS.
+
+If ``geometry`` contains M or Z values, these will be linearly interpolated for the new vertices
+created at the antimeridian.
+
+.. note::
+
+   Non-(Multi)LineString geometries will be returned unchanged.
+
+.. seealso:: :py:func:`latitudeGeodesicCrossesAntimeridian`
+
+.. versionadded:: 3.6
 %End
 
 };

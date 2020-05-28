@@ -43,13 +43,15 @@ enum QgsPostgresGeometryColumnType
   SctGeometry,
   SctGeography,
   SctTopoGeometry,
-  SctPcPatch
+  SctPcPatch,
+  SctRaster
 };
 
 enum QgsPostgresPrimaryKeyType
 {
   PktUnknown,
   PktInt,
+  PktInt64,
   PktUint64,
   PktTid,
   PktOid,
@@ -81,13 +83,14 @@ struct QgsPostgresLayerProperty
   QString                       relKind;
   bool                          isView = false;
   bool                          isMaterializedView = false;
+  bool                          isForeignTable = false;
+  bool                          isRaster = false;
   QString                       tableComment;
-
 
   // TODO: rename this !
   int size() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
 
-  QString   defaultName() const
+  QString defaultName() const
   {
     QString n = tableName;
     if ( nSpCols > 1 ) n += '.' + geometryColName;
@@ -102,17 +105,18 @@ struct QgsPostgresLayerProperty
 
     property.types << types[ i ];
     property.srids << srids[ i ];
-    property.schemaName      = schemaName;
-    property.tableName       = tableName;
-    property.geometryColName = geometryColName;
-    property.geometryColType = geometryColType;
-    property.pkCols          = pkCols;
-    property.nSpCols         = nSpCols;
-    property.sql             = sql;
-    property.relKind         = relKind;
-    property.isView          = isView;
+    property.schemaName         = schemaName;
+    property.tableName          = tableName;
+    property.geometryColName    = geometryColName;
+    property.geometryColType    = geometryColType;
+    property.pkCols             = pkCols;
+    property.nSpCols            = nSpCols;
+    property.sql                = sql;
+    property.relKind            = relKind;
+    property.isView             = isView;
+    property.isRaster           = isRaster;
     property.isMaterializedView = isMaterializedView;
-    property.tableComment    = tableComment;
+    property.tableComment       = tableComment;
 
     return property;
   }
@@ -121,14 +125,16 @@ struct QgsPostgresLayerProperty
   QString toString() const
   {
     QString typeString;
-    Q_FOREACH ( QgsWkbTypes::Type type, types )
+    const auto constTypes = types;
+    for ( QgsWkbTypes::Type type : constTypes )
     {
       if ( !typeString.isEmpty() )
         typeString += '|';
       typeString += QString::number( type );
     }
     QString sridString;
-    Q_FOREACH ( int srid, srids )
+    const auto constSrids = srids;
+    for ( int srid : constSrids )
     {
       if ( !sridString.isEmpty() )
         sridString += '|';
@@ -168,8 +174,8 @@ class QgsPostgresResult
 
     int PQnfields();
     QString PQfname( int col );
-    int PQftable( int col );
-    int PQftype( int col );
+    Oid PQftable( int col );
+    Oid PQftype( int col );
     int PQfmod( int col );
     int PQftablecol( int col );
     Oid PQoidValue();
@@ -194,41 +200,38 @@ class QgsPostgresConn : public QObject
      */
     static QgsPostgresConn *connectDb( const QString &connInfo, bool readOnly, bool shared = true, bool transaction = false );
 
-    void ref() { ++mRef; }
+    void ref();
     void unref();
 
     //! Gets postgis version string
-    QString postgisVersion();
+    QString postgisVersion() const;
 
     //! Gets status of GEOS capability
-    bool hasGEOS();
+    bool hasGEOS() const;
 
     //! Gets status of topology capability
-    bool hasTopology();
+    bool hasTopology() const;
 
     //! Gets status of Pointcloud capability
-    bool hasPointcloud();
+    bool hasPointcloud() const;
 
-    //! Gets status of GIST capability
-    bool hasGIST();
-
-    //! Gets status of PROJ4 capability
-    bool hasPROJ();
+    //! Gets status of Raster capability
+    bool hasRaster() const;
 
     //! encode wkb in hex
-    bool useWkbHex() { return mUseWkbHex; }
+    bool useWkbHex() const { return mUseWkbHex; }
 
     //! major PostGIS version
-    int majorVersion() { return mPostgisVersionMajor; }
+    int majorVersion() const { return mPostgisVersionMajor; }
 
     //! minor PostGIS version
-    int minorVersion() { return mPostgisVersionMinor; }
+    int minorVersion() const { return mPostgisVersionMinor; }
 
     //! PostgreSQL version
-    int pgVersion() { return mPostgresqlVersion; }
+    int pgVersion() const { return mPostgresqlVersion; }
 
     //! run a query and free result buffer
-    bool PQexecNR( const QString &query, bool retry = true );
+    bool PQexecNR( const QString &query );
 
     //! cursor handling
     bool openCursor( const QString &cursorName, const QString &declare );
@@ -244,15 +247,25 @@ class QgsPostgresConn : public QObject
     // libpq wrapper
     //
 
-    // run a query and check for errors
-    PGresult *PQexec( const QString &query, bool logError = true ) const;
+    // run a query and check for errors, thread-safe
+    PGresult *PQexec( const QString &query, bool logError = true, bool retry = true ) const;
     void PQfinish();
     QString PQerrorMessage() const;
-    int PQsendQuery( const QString &query );
     int PQstatus() const;
-    PGresult *PQgetResult();
     PGresult *PQprepare( const QString &stmtName, const QString &query, int nParams, const Oid *paramTypes );
     PGresult *PQexecPrepared( const QString &stmtName, const QStringList &params );
+
+    /**
+     * PQsendQuery is used for asynchronous queries (with PQgetResult)
+     * Thread safety must be ensured by the caller by calling QgsPostgresConn::lock() and QgsPostgresConn::unlock()
+     */
+    int PQsendQuery( const QString &query );
+
+    /**
+     * PQgetResult is used for asynchronous queries (with PQsendQuery)
+     * Thread safety must be ensured by the caller by calling QgsPostgresConn::lock() and QgsPostgresConn::unlock()
+     */
+    PGresult *PQgetResult();
 
     bool begin();
     bool commit();
@@ -271,6 +284,12 @@ class QgsPostgresConn : public QObject
      * Quote a value for placement in a SQL string.
      */
     static QString quotedValue( const QVariant &value );
+
+    /**
+     * Quote a json(b) value for placement in a SQL string.
+     * \note a null value will be represented as a NULL and not as a json null.
+     */
+    static QString quotedJsonValue( const QVariant &value );
 
     /**
      * Gets the list of supported layers
@@ -296,7 +315,15 @@ class QgsPostgresConn : public QObject
      */
     bool getSchemas( QList<QgsPostgresSchemaProperty> &schemas );
 
+    /**
+     * Determine type and srid of a layer from data (possibly estimated)
+     */
     void retrieveLayerTypes( QgsPostgresLayerProperty &layerProperty, bool useEstimatedMetadata );
+
+    /**
+     * Determine type and srid of a vector of layers from data (possibly estimated)
+     */
+    void retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &layerProperties, bool useEstimatedMetadata );
 
     /**
      * Gets information about the spatial tables
@@ -345,6 +372,7 @@ class QgsPostgresConn : public QObject
     static bool publicSchemaOnly( const QString &connName );
     static bool geometryColumnsOnly( const QString &connName );
     static bool dontResolveType( const QString &connName );
+    static bool useEstimatedMetadata( const QString &connName );
     static bool allowGeometrylessTables( const QString &connName );
     static bool allowProjectsInDatabase( const QString &connName );
     static void deleteConnection( const QString &connName );
@@ -363,39 +391,41 @@ class QgsPostgresConn : public QObject
     QString mConnInfo;
 
     //! GEOS capability
-    bool mGeosAvailable;
+    mutable bool mGeosAvailable;
+
+    //! PROJ capability
+    mutable bool mProjAvailable;
 
     //! Topology capability
-    bool mTopologyAvailable;
+    mutable bool mTopologyAvailable;
 
     //! PostGIS version string
-    QString mPostgisVersionInfo;
+    mutable QString mPostgisVersionInfo;
 
-    //! Are mPostgisVersionMajor, mPostgisVersionMinor, mGeosAvailable, mGistAvailable, mProjAvailable, mTopologyAvailable valid?
-    bool mGotPostgisVersion;
+    //! Are mPostgisVersionMajor, mPostgisVersionMinor, mGeosAvailable, mTopologyAvailable valid?
+    mutable bool mGotPostgisVersion;
 
     //! PostgreSQL version
-    int mPostgresqlVersion;
+    mutable int mPostgresqlVersion;
 
     //! PostGIS major version
-    int mPostgisVersionMajor;
+    mutable int mPostgisVersionMajor;
 
     //! PostGIS minor version
-    int mPostgisVersionMinor;
-
-    //! GIST capability
-    bool mGistAvailable;
-
-    //! PROJ4 capability
-    bool mProjAvailable;
+    mutable int mPostgisVersionMinor;
 
     //! pointcloud support available
-    bool mPointcloudAvailable;
+    mutable bool mPointcloudAvailable;
+
+    //! raster support available
+    mutable bool mRasterAvailable;
 
     //! encode wkb in hex
-    bool mUseWkbHex;
+    mutable bool mUseWkbHex;
 
     bool mReadOnly;
+
+    QStringList supportedSpatialTypes() const;
 
     static QMap<QString, QgsPostgresConn *> sConnectionsRW;
     static QMap<QString, QgsPostgresConn *> sConnectionsRO;
@@ -421,11 +451,11 @@ class QgsPostgresConn : public QObject
 
     int mNextCursorId;
 
-    bool mShared; //! < whether the connection is shared by more providers (must not be if going to be used in worker threads)
+    bool mShared; //!< Whether the connection is shared by more providers (must not be if going to be used in worker threads)
 
     bool mTransaction;
 
-    QMutex mLock;
+    mutable QMutex mLock;
 };
 
 // clazy:excludeall=qstring-allocations

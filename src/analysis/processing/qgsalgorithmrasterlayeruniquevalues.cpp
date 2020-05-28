@@ -136,6 +136,7 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
   int iterTop = 0;
   int iterCols = 0;
   int iterRows = 0;
+  bool isNoData = false;
   std::unique_ptr< QgsRasterBlock > rasterBlock;
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, rasterBlock, iterLeft, iterTop ) )
   {
@@ -146,13 +147,13 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
         break;
       for ( int column = 0; column < iterCols; column++ )
       {
-        if ( mHasNoDataValue && rasterBlock->isNoData( row, column ) )
+        double value = rasterBlock->valueAndNoData( row, column, isNoData );
+        if ( mHasNoDataValue && isNoData )
         {
-          noDataCount += 1;
+          noDataCount++;
         }
         else
         {
-          double value = rasterBlock->value( row, column );
           uniqueValues[ value ]++;
         }
       }
@@ -186,7 +187,7 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
       out << QStringLiteral( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n" );
       out << QStringLiteral( "<p>%1: %2 (%3 %4)</p>\n" ).arg( QObject::tr( "Analyzed file" ), mSource, QObject::tr( "band" ) ).arg( mBand );
       out << QObject::tr( "<p>%1: %2</p>\n" ).arg( QObject::tr( "Extent" ), mExtent.toString() );
-      out << QObject::tr( "<p>%1: %2 (%3)</p>\n" ).arg( QObject::tr( "Projection" ), mCrs.description(), mCrs.authid() );
+      out << QObject::tr( "<p>%1: %2</p>\n" ).arg( QObject::tr( "Projection" ), mCrs.userFriendlyIdentifier() );
       out << QObject::tr( "<p>%1: %2 (%3 %4)</p>\n" ).arg( QObject::tr( "Width in pixels" ) ).arg( mLayerWidth ).arg( QObject::tr( "units per pixel" ) ).arg( mRasterUnitsPerPixelX );
       out << QObject::tr( "<p>%1: %2 (%3 %4)</p>\n" ).arg( QObject::tr( "Height in pixels" ) ).arg( mLayerHeight ).arg( QObject::tr( "units per pixel" ) ).arg( mRasterUnitsPerPixelY );
       out << QObject::tr( "<p>%1: %2</p>\n" ).arg( QObject::tr( "Total pixel count" ) ).arg( layerSize );

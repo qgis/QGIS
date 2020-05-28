@@ -50,9 +50,9 @@ void QgsTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) const
 
 float QgsTerrainGenerator::heightAt( double x, double y, const Qgs3DMapSettings &map ) const
 {
-  Q_UNUSED( x );
-  Q_UNUSED( y );
-  Q_UNUSED( map );
+  Q_UNUSED( x )
+  Q_UNUSED( y )
+  Q_UNUSED( map )
   return 0.f;
 }
 
@@ -60,12 +60,14 @@ QString QgsTerrainGenerator::typeToString( QgsTerrainGenerator::Type type )
 {
   switch ( type )
   {
+    case QgsTerrainGenerator::Mesh:
+      return QStringLiteral( "mesh" );
     case QgsTerrainGenerator::Flat:
-      return "flat";
+      return QStringLiteral( "flat" );
     case QgsTerrainGenerator::Dem:
-      return "dem";
-    case QgsTerrainGenerator::QuantizedMesh:
-      return "quantized-mesh";
+      return QStringLiteral( "dem" );
+    case QgsTerrainGenerator::Online:
+      return QStringLiteral( "online" );
   }
   return QString();
 }

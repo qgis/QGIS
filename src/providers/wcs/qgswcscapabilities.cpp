@@ -32,6 +32,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsmessageoutput.h"
 #include "qgsmessagelog.h"
+#include "qgsapplication.h"
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -58,6 +59,29 @@ QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceUri const &uri )
   retrieveServerCapabilities();
 }
 
+QgsWcsCapabilities::QgsWcsCapabilities( const QgsWcsCapabilities &other )
+  : QObject()
+  , mUri( other.mUri )
+  , mVersion( other.mVersion )
+  , mCapabilitiesResponse( other.mCapabilitiesResponse )
+  , mCapabilitiesDom( other.mCapabilitiesDom )
+  , mServiceExceptionReportDom( other.mServiceExceptionReportDom )
+  , mCapabilities( other.mCapabilities )
+  , mCoveragesSupported( other.mCoveragesSupported )
+  , mCapabilitiesReply( nullptr ) // not copied from other
+  , mErrorTitle() // not copied from other
+  , mError() // not copied from other
+  , mErrorFormat() // not copied from other
+  , mCoverageCount( other.mCoverageCount )
+  , mCoverageParents( other.mCoverageParents )
+  , mCoverageParentIdentifiers( other.mCoverageParentIdentifiers )
+  , mUserName( other.mUserName )
+  , mPassword( other.mPassword )
+  , mCacheLoadControl( other.mCacheLoadControl )
+{
+}
+
+
 void QgsWcsCapabilities::parseUri()
 {
   mCacheLoadControl = QNetworkRequest::PreferNetwork;
@@ -69,7 +93,7 @@ void QgsWcsCapabilities::parseUri()
   {
     mCacheLoadControl = QgsNetworkAccessManager::cacheLoadControlFromName( cache );
   }
-  QgsDebugMsg( QString( "mCacheLoadControl = %1" ).arg( mCacheLoadControl ) );
+  QgsDebugMsg( QStringLiteral( "mCacheLoadControl = %1" ).arg( mCacheLoadControl ) );
 }
 
 // TODO: return if successful
@@ -105,11 +129,11 @@ QgsWcsCapabilitiesProperty QgsWcsCapabilities::capabilities()
 
 bool QgsWcsCapabilities::supportedCoverages( QVector<QgsWcsCoverageSummary> &coverageSummary )
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugMsg( QStringLiteral( "Entering." ) );
 
   coverageSummary = mCoveragesSupported;
 
-  QgsDebugMsg( "Exiting." );
+  QgsDebugMsg( QStringLiteral( "Exiting." ) );
 
   return true;
 }
@@ -129,6 +153,7 @@ bool QgsWcsCapabilities::sendRequest( QString const &url )
   QgsDebugMsg( "url = " + url );
   mError.clear();
   QNetworkRequest request( url );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWcsCapabilities" ) );
   if ( !setAuthorization( request ) )
   {
     mError = tr( "Download of capabilities failed: network request update failed for authentication config" );
@@ -137,9 +162,9 @@ bool QgsWcsCapabilities::sendRequest( QString const &url )
   }
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mCacheLoadControl );
-  QgsDebugMsg( QString( "mCacheLoadControl = %1" ).arg( mCacheLoadControl ) );
+  QgsDebugMsg( QStringLiteral( "mCacheLoadControl = %1" ).arg( mCacheLoadControl ) );
 
-  QgsDebugMsg( QString( "getcapabilities: %1" ).arg( url ) );
+  QgsDebugMsg( QStringLiteral( "getcapabilities: %1" ).arg( url ) );
   mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
   if ( !setAuthorizationReply( mCapabilitiesReply ) )
   {
@@ -230,7 +255,8 @@ bool QgsWcsCapabilities::retrieveServerCapabilities()
     versions << QStringLiteral( "1.0.0" ) << QStringLiteral( "1.1.0,1.0.0" );
   }
 
-  Q_FOREACH ( const QString &v, versions )
+  const auto constVersions = versions;
+  for ( const QString &v : constVersions )
   {
     if ( retrieveServerCapabilities( v ) )
     {
@@ -252,7 +278,7 @@ bool QgsWcsCapabilities::retrieveServerCapabilities( const QString &preferredVer
     return false;
   }
 
-  QgsDebugMsg( "Converting to Dom." );
+  QgsDebugMsg( QStringLiteral( "Converting to Dom." ) );
 
   bool domOK;
   domOK = parseCapabilitiesDom( mCapabilitiesResponse, mCapabilities );
@@ -296,7 +322,7 @@ bool QgsWcsCapabilities::describeCoverage( QString const &identifier, bool force
   QgsWcsCoverageSummary *coverage = coverageSummary( identifier );
   if ( !coverage )
   {
-    QgsDebugMsg( "coverage not found" );
+    QgsDebugMsg( QStringLiteral( "coverage not found" ) );
     return false;
   }
 
@@ -309,7 +335,7 @@ bool QgsWcsCapabilities::describeCoverage( QString const &identifier, bool force
     return false;
   }
 
-  QgsDebugMsg( "Converting to Dom." );
+  QgsDebugMsg( QStringLiteral( "Converting to Dom." ) );
 
   bool domOK = false;
   if ( mVersion.startsWith( QLatin1String( "1.0" ) ) )
@@ -346,6 +372,7 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
       emit statusChanged( tr( "Capabilities request redirected." ) );
 
       QNetworkRequest request( redirect.toUrl() );
+      QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWcsCapabilities" ) );
       if ( !setAuthorization( request ) )
       {
         mCapabilitiesResponse.clear();
@@ -357,7 +384,7 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
       request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
       mCapabilitiesReply->deleteLater();
-      QgsDebugMsg( QString( "redirected getcapabilities: %1" ).arg( redirect.toString() ) );
+      QgsDebugMsg( QStringLiteral( "redirected getcapabilities: %1" ).arg( redirect.toString() ) );
       mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
       if ( !setAuthorizationReply( mCapabilitiesReply ) )
       {
@@ -386,9 +413,10 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
   {
     // Resend request if AlwaysCache
     QNetworkRequest request = mCapabilitiesReply->request();
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWcsCapabilities" ) );
     if ( request.attribute( QNetworkRequest::CacheLoadControlAttribute ).toInt() == QNetworkRequest::AlwaysCache )
     {
-      QgsDebugMsg( "Resend request with PreferCache" );
+      QgsDebugMsg( QStringLiteral( "Resend request with PreferCache" ) );
       request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
 
       mCapabilitiesReply->deleteLater();
@@ -422,9 +450,9 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
 
 void QgsWcsCapabilities::capabilitiesReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
-  QString msg = tr( "%1 of %2 bytes of capabilities downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QStringLiteral( "unknown number of" ) : QString::number( bytesTotal ) );
-  QgsDebugMsg( msg );
-  emit statusChanged( msg );
+  QString message = tr( "%1 of %2 bytes of capabilities downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QStringLiteral( "unknown number of" ) : QString::number( bytesTotal ) );
+  QgsDebugMsg( message );
+  emit statusChanged( message );
 }
 
 QString QgsWcsCapabilities::stripNS( const QString &name )
@@ -434,7 +462,7 @@ QString QgsWcsCapabilities::stripNS( const QString &name )
 
 bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapabilitiesProperty &capabilities )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 #ifdef QGISDEBUG
   QFile file( QDir::tempPath() + "/qgis-wcs-capabilities.xml" );
   if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
@@ -446,12 +474,12 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
 
   if ( ! convertToDom( xml ) ) return false;
 
-  QDomElement docElem = mCapabilitiesDom.documentElement();
+  QDomElement documentElement = mCapabilitiesDom.documentElement();
 
   // Assert that the DTD is what we expected (i.e. a WCS Capabilities document)
-  QgsDebugMsg( "testing tagName " + docElem.tagName() );
+  QgsDebugMsg( "testing tagName " + documentElement.tagName() );
 
-  QString tagName = stripNS( docElem.tagName() );
+  QString tagName = stripNS( documentElement.tagName() );
   if (
     // We don't support 1.0, but try WCS_Capabilities tag to get version
     tagName != QLatin1String( "WCS_Capabilities" ) && // 1.0
@@ -462,7 +490,7 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
     {
       mErrorTitle = tr( "Exception" );
       mErrorFormat = QStringLiteral( "text/plain" );
-      mError = tr( "Could not get WCS capabilities: %1" ).arg( domElementText( docElem, QStringLiteral( "Exception.ExceptionText" ) ) );
+      mError = tr( "Could not get WCS capabilities: %1" ).arg( domElementText( documentElement, QStringLiteral( "Exception.ExceptionText" ) ) );
     }
     else
     {
@@ -470,7 +498,7 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
       mErrorFormat = QStringLiteral( "text/plain" );
       mError = tr( "Could not get WCS capabilities in the expected format (DTD): no %1 found.\nThis might be due to an incorrect WCS Server URL.\nTag: %3\nResponse was:\n%4" )
                .arg( QStringLiteral( "Capabilities" ),
-                     docElem.tagName(),
+                     documentElement.tagName(),
                      QString( xml ) );
     }
 
@@ -479,7 +507,7 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
     return false;
   }
 
-  capabilities.version = docElem.attribute( QStringLiteral( "version" ) );
+  capabilities.version = documentElement.attribute( QStringLiteral( "version" ) );
   mVersion = capabilities.version;
 
   if ( !mVersion.startsWith( QLatin1String( "1.0" ) ) && !mVersion.startsWith( QLatin1String( "1.1" ) ) )
@@ -496,21 +524,22 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
 
   if ( mVersion.startsWith( QLatin1String( "1.0" ) ) )
   {
-    capabilities.title = domElementText( docElem, QStringLiteral( "Service.name" ) );
-    capabilities.abstract = domElementText( docElem, QStringLiteral( "Service.description" ) );
+    capabilities.title = domElementText( documentElement, QStringLiteral( "Service.name" ) );
+    capabilities.abstract = domElementText( documentElement, QStringLiteral( "Service.description" ) );
     // There is also "label" in 1.0
 
-    capabilities.getCoverageGetUrl = domElement( docElem, QStringLiteral( "Capability.Request.GetCoverage.DCPType.HTTP.Get.OnlineResource" ) ).attribute( QStringLiteral( "xlink:href" ) );
+    capabilities.getCoverageGetUrl = domElement( documentElement, QStringLiteral( "Capability.Request.GetCoverage.DCPType.HTTP.Get.OnlineResource" ) ).attribute( QStringLiteral( "xlink:href" ) );
 
-    parseContentMetadata( domElement( docElem, QStringLiteral( "ContentMetadata" ) ), capabilities.contents );
+    parseContentMetadata( domElement( documentElement, QStringLiteral( "ContentMetadata" ) ), capabilities.contents );
   }
   else if ( mVersion.startsWith( QLatin1String( "1.1" ) ) )
   {
-    capabilities.title = domElementText( docElem, QStringLiteral( "ServiceIdentification.Title" ) );
-    capabilities.abstract = domElementText( docElem, QStringLiteral( "ServiceIdentification.Abstract" ) );
+    capabilities.title = domElementText( documentElement, QStringLiteral( "ServiceIdentification.Title" ) );
+    capabilities.abstract = domElementText( documentElement, QStringLiteral( "ServiceIdentification.Abstract" ) );
 
-    QList<QDomElement> operationElements = domElements( docElem, QStringLiteral( "OperationsMetadata.Operation" ) );
-    Q_FOREACH ( const QDomElement &el, operationElements )
+    QList<QDomElement> operationElements = domElements( documentElement, QStringLiteral( "OperationsMetadata.Operation" ) );
+    const auto constOperationElements = operationElements;
+    for ( const QDomElement &el : constOperationElements )
     {
       if ( el.attribute( QStringLiteral( "name" ) ) == QLatin1String( "GetCoverage" ) )
       {
@@ -518,7 +547,7 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
       }
     }
 
-    parseCoverageSummary( domElement( docElem, QStringLiteral( "Contents" ) ), capabilities.contents );
+    parseCoverageSummary( domElement( documentElement, QStringLiteral( "Contents" ) ), capabilities.contents );
   }
 
   return true;
@@ -526,29 +555,29 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
 
 QDomElement QgsWcsCapabilities::firstChild( const QDomElement &element, const QString &name )
 {
-  QDomNode n1 = element.firstChild();
-  while ( !n1.isNull() )
+  QDomNode node = element.firstChild();
+  while ( !node.isNull() )
   {
-    QDomElement el = n1.toElement();
-    if ( !el.isNull() )
+    QDomElement nodeElement = node.toElement();
+    if ( !nodeElement.isNull() )
     {
-      QString tagName = stripNS( el.tagName() );
+      QString tagName = stripNS( nodeElement.tagName() );
       if ( tagName == name )
       {
-        return el;
+        return nodeElement;
       }
     }
-    n1 = n1.nextSibling();
+    node = node.nextSibling();
   }
   return QDomElement();
 }
 
 QString QgsWcsCapabilities::firstChildText( const QDomElement &element, const QString &name )
 {
-  QDomElement el = firstChild( element, name );
-  if ( !el.isNull() )
+  QDomElement firstChildElement = firstChild( element, name );
+  if ( !firstChildElement.isNull() )
   {
-    return el.text();
+    return firstChildElement.text();
   }
   return QString();
 }
@@ -562,26 +591,26 @@ QList<QDomElement> QgsWcsCapabilities::domElements( const QDomElement &element, 
   QString name = names.value( 0 );
   names.removeFirst();
 
-  QDomNode n1 = element.firstChild();
-  while ( !n1.isNull() )
+  QDomNode node = element.firstChild();
+  while ( !node.isNull() )
   {
-    QDomElement el = n1.toElement();
-    if ( !el.isNull() )
+    QDomElement nodeElement = node.toElement();
+    if ( !nodeElement.isNull() )
     {
-      QString tagName = stripNS( el.tagName() );
+      QString tagName = stripNS( nodeElement.tagName() );
       if ( tagName == name )
       {
         if ( names.isEmpty() )
         {
-          list.append( el );
+          list.append( nodeElement );
         }
         else
         {
-          list.append( domElements( el, names.join( QStringLiteral( "." ) ) ) );
+          list.append( domElements( nodeElement, names.join( QStringLiteral( "." ) ) ) );
         }
       }
     }
-    n1 = n1.nextSibling();
+    node = node.nextSibling();
   }
 
   return list;
@@ -590,9 +619,10 @@ QList<QDomElement> QgsWcsCapabilities::domElements( const QDomElement &element, 
 QStringList QgsWcsCapabilities::domElementsTexts( const QDomElement &element, const QString &path )
 {
   QStringList list;
-  QList<QDomElement> elems = domElements( element, path );
+  QList<QDomElement> elements = domElements( element, path );
 
-  Q_FOREACH ( const QDomElement &el, elems )
+  const auto constElements = elements;
+  for ( const QDomElement &el : constElements )
   {
     list << el.text();
   }
@@ -604,19 +634,19 @@ QDomElement QgsWcsCapabilities::domElement( const QDomElement &element, const QS
   QStringList names = path.split( '.' );
   if ( names.isEmpty() ) return QDomElement();
 
-  QDomElement el = firstChild( element, names.value( 0 ) );
-  if ( names.size() == 1 || el.isNull() )
+  QDomElement firstChildElement = firstChild( element, names.value( 0 ) );
+  if ( names.size() == 1 || firstChildElement.isNull() )
   {
-    return el;
+    return firstChildElement;
   }
   names.removeFirst();
-  return domElement( el, names.join( QStringLiteral( "." ) ) );
+  return domElement( firstChildElement, names.join( QStringLiteral( "." ) ) );
 }
 
 QString QgsWcsCapabilities::domElementText( const QDomElement &element, const QString &path )
 {
-  QDomElement el = domElement( element, path );
-  return el.text();
+  QDomElement pathElement = domElement( element, path );
+  return pathElement.text();
 }
 
 QList<int> QgsWcsCapabilities::parseInts( const QString &text )
@@ -669,15 +699,15 @@ QString QgsWcsCapabilities::crsUrnToAuthId( const QString &text )
 // ------------------------ 1.0 ----------------------------------------------
 
 
-void QgsWcsCapabilities::parseContentMetadata( QDomElement const &e, QgsWcsCoverageSummary &coverageSummary )
+void QgsWcsCapabilities::parseContentMetadata( const QDomElement &element, QgsWcsCoverageSummary &coverageSummary )
 {
-  QDomNode n1 = e.firstChild();
-  while ( !n1.isNull() )
+  QDomNode node = element.firstChild();
+  while ( !node.isNull() )
   {
-    QDomElement el = n1.toElement();
-    if ( !el.isNull() )
+    QDomElement nodeElement = node.toElement();
+    if ( !nodeElement.isNull() )
     {
-      QString tagName = stripNS( el.tagName() );
+      QString tagName = stripNS( nodeElement.tagName() );
 
       if ( tagName == QLatin1String( "CoverageOfferingBrief" ) )
       {
@@ -685,30 +715,32 @@ void QgsWcsCapabilities::parseContentMetadata( QDomElement const &e, QgsWcsCover
 
         initCoverageSummary( subCoverageSummary );
 
-        parseCoverageOfferingBrief( el, subCoverageSummary, &coverageSummary );
+        parseCoverageOfferingBrief( nodeElement, subCoverageSummary, &coverageSummary );
 
         subCoverageSummary.valid = true;
 
         coverageSummary.coverageSummary.push_back( subCoverageSummary );
       }
     }
-    n1 = n1.nextSibling();
+    node = node.nextSibling();
   }
 }
 
-void QgsWcsCapabilities::parseCoverageOfferingBrief( QDomElement const &e, QgsWcsCoverageSummary &coverageSummary, QgsWcsCoverageSummary *parent )
+void QgsWcsCapabilities::parseCoverageOfferingBrief( const QDomElement &element, QgsWcsCoverageSummary &coverageSummary, QgsWcsCoverageSummary *parent )
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   coverageSummary.orderId = ++mCoverageCount;
 
-  coverageSummary.identifier = firstChildText( e, QStringLiteral( "name" ) );
-  coverageSummary.title = firstChildText( e, QStringLiteral( "label" ) );
-  coverageSummary.abstract = firstChildText( e, QStringLiteral( "description" ) );
+  coverageSummary.identifier = firstChildText( element, QStringLiteral( "name" ) );
+  coverageSummary.title = firstChildText( element, QStringLiteral( "label" ) );
+  coverageSummary.abstract = firstChildText( element, QStringLiteral( "description" ) );
 
-  QList<QDomElement> posElements = domElements( e, QStringLiteral( "lonLatEnvelope.pos" ) );
+  parseMetadataLink( element, coverageSummary.metadataLink );
+
+  QList<QDomElement> posElements = domElements( element, QStringLiteral( "lonLatEnvelope.pos" ) );
   if ( posElements.size() != 2 )
   {
-    QgsDebugMsg( "Wrong number of pos elements" );
+    QgsDebugMsg( QStringLiteral( "Wrong number of pos elements" ) );
   }
   else
   {
@@ -731,12 +763,34 @@ void QgsWcsCapabilities::parseCoverageOfferingBrief( QDomElement const &e, QgsWc
   {
     mCoverageParentIdentifiers[ coverageSummary.orderId ] = QStringList() << coverageSummary.identifier << coverageSummary.title << coverageSummary.abstract;
   }
-  QgsDebugMsg( QString( "coverage orderId = %1 identifier = %2" ).arg( coverageSummary.orderId ).arg( coverageSummary.identifier ) );
+  QgsDebugMsg( QStringLiteral( "coverage orderId = %1 identifier = %2" ).arg( coverageSummary.orderId ).arg( coverageSummary.identifier ) );
+}
+
+void QgsWcsCapabilities::parseMetadataLink( const QDomElement &element, QgsWcsMetadataLinkProperty &metadataLink )
+{
+  QDomElement metadataElement = firstChild( element, QStringLiteral( "metadataLink" ) );
+
+  if ( !metadataElement.isNull() )
+  {
+    metadataLink.metadataType = metadataElement.attribute( QStringLiteral( "metadataType" ) );
+    metadataLink.xlinkHref = elementLink( metadataElement );
+  }
+
+}
+
+QString QgsWcsCapabilities::elementLink( const QDomElement &element )
+{
+  if ( !element.isNull() )
+  {
+    return QUrl::fromEncoded( element.attribute( QStringLiteral( "xlink:href" ) ).toUtf8() ).toString();
+  }
+
+  return QString();
 }
 
 bool QgsWcsCapabilities::convertToDom( QByteArray const &xml )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
   // Convert completed document into a Dom
   QString errorMsg;
   int errorLine;
@@ -765,18 +819,18 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
   QgsDebugMsg( "coverage->identifier = " + coverage->identifier );
   if ( ! convertToDom( xml ) ) return false;
 
-  QDomElement docElem = mCapabilitiesDom.documentElement();
+  QDomElement documentElement = mCapabilitiesDom.documentElement();
 
-  QgsDebugMsg( "testing tagName " + docElem.tagName() );
+  QgsDebugMsg( "testing tagName " + documentElement.tagName() );
 
-  QString tagName = stripNS( docElem.tagName() );
+  QString tagName = stripNS( documentElement.tagName() );
   if ( tagName != QLatin1String( "CoverageDescription" ) )
   {
     mErrorTitle = tr( "Dom Exception" );
     mErrorFormat = QStringLiteral( "text/plain" );
     mError = tr( "Could not get WCS capabilities in the expected format (DTD): no %1 found.\nThis might be due to an incorrect WCS Server URL.\nTag: %3\nResponse was:\n%4" )
              .arg( QStringLiteral( "CoverageDescription" ),
-                   docElem.tagName(),
+                   documentElement.tagName(),
                    QString( xml ) );
 
     QgsLogger::debug( "Dom Exception: " + mError );
@@ -784,13 +838,30 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
     return false;
   }
 
-  QDomElement coverageOfferingElement = firstChild( docElem, QStringLiteral( "CoverageOffering" ) );
+  QDomElement coverageOfferingElement = firstChild( documentElement, QStringLiteral( "CoverageOffering" ) );
 
   if ( coverageOfferingElement.isNull() ) return false;
   QDomElement supportedCRSsElement = firstChild( coverageOfferingElement, QStringLiteral( "supportedCRSs" ) );
 
   // requestResponseCRSs and requestCRSs + responseCRSs are alternatives
-  coverage->supportedCrs = domElementsTexts( coverageOfferingElement, QStringLiteral( "supportedCRSs.requestResponseCRSs" ) );
+  // we try to parse one or the other
+  QStringList crsList;
+  crsList = domElementsTexts( coverageOfferingElement, QStringLiteral( "supportedCRSs.requestResponseCRSs" ) );
+  if ( crsList.isEmpty() )
+  {
+    crsList = domElementsTexts( coverageOfferingElement, QStringLiteral( "supportedCRSs.requestCRSs" ) );
+    crsList << domElementsTexts( coverageOfferingElement, QStringLiteral( "supportedCRSs.responseCRSs" ) );
+  }
+
+  // exclude invalid CRSs from the lists
+  for ( const QString &crsid : qgis::as_const( crsList ) )
+  {
+    if ( QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsid ).isValid() )
+    {
+      coverage->supportedCrs << crsid;
+    }
+  }
+
   // TODO: requestCRSs, responseCRSs - must be then implemented also in provider
   //QgsDebugMsg( "supportedCrs = " + coverage->supportedCrs.join( "," ) );
 
@@ -813,7 +884,11 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
   // If supportedCRSs.nativeCRSs is not defined we try to get it from RectifiedGrid
   if ( coverage->nativeCrs.isEmpty() )
   {
-    coverage->nativeCrs = gridElement.attribute( QStringLiteral( "srsName" ) );
+    QString crs = gridElement.attribute( QStringLiteral( "srsName" ) );
+    if ( QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs ).isValid() )
+    {
+      coverage->nativeCrs = crs;
+    }
   }
 
   if ( !gridElement.isNull() )
@@ -843,16 +918,17 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
 
   QList<QDomElement> envelopeElements = domElements( coverageOfferingElement, QStringLiteral( "domainSet.spatialDomain.Envelope" ) );
 
-  QgsDebugMsg( QString( "%1 envelopeElements found" ).arg( envelopeElements.size() ) );
+  QgsDebugMsg( QStringLiteral( "%1 envelopeElements found" ).arg( envelopeElements.size() ) );
 
-  Q_FOREACH ( const QDomElement &el, envelopeElements )
+  const auto constEnvelopeElements = envelopeElements;
+  for ( const QDomElement &el : constEnvelopeElements )
   {
     QString srsName = el.attribute( QStringLiteral( "srsName" ) );
 
     QList<QDomElement> posElements = domElements( el, QStringLiteral( "pos" ) );
     if ( posElements.size() != 2 )
     {
-      QgsDebugMsg( "Wrong number of pos elements" );
+      QgsDebugMsg( QStringLiteral( "Wrong number of pos elements" ) );
       continue;
     }
 
@@ -870,9 +946,10 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
 
   QList<QDomElement> timePeriodElements = domElements( coverageOfferingElement, QStringLiteral( "domainSet.temporalDomain.timePeriod" ) );
 
-  QgsDebugMsg( QString( "%1 timePeriod found" ).arg( timePeriodElements.size() ) );
+  QgsDebugMsg( QStringLiteral( "%1 timePeriod found" ).arg( timePeriodElements.size() ) );
 
-  Q_FOREACH ( const QDomElement &el, timePeriodElements )
+  const auto constTimePeriodElements = timePeriodElements;
+  for ( const QDomElement &el : constTimePeriodElements )
   {
     QString beginPosition = domElementText( el, QStringLiteral( "beginPosition" ) );
     QString endPosition = domElementText( el, QStringLiteral( "endPosition" ) );
@@ -921,18 +998,18 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
   QgsDebugMsg( "coverage->identifier = " + coverage->identifier );
   if ( ! convertToDom( xml ) ) return false;
 
-  QDomElement docElem = mCapabilitiesDom.documentElement();
+  QDomElement documentElement = mCapabilitiesDom.documentElement();
 
-  QgsDebugMsg( "testing tagName " + docElem.tagName() );
+  QgsDebugMsg( "testing tagName " + documentElement.tagName() );
 
-  QString tagName = stripNS( docElem.tagName() );
+  QString tagName = stripNS( documentElement.tagName() );
   if ( tagName != QLatin1String( "CoverageDescriptions" ) )
   {
     mErrorTitle = tr( "Dom Exception" );
     mErrorFormat = QStringLiteral( "text/plain" );
     mError = tr( "Could not get WCS capabilities in the expected format (DTD): no %1 found.\nThis might be due to an incorrect WCS Server URL.\nTag: %3\nResponse was:\n%4" )
              .arg( QStringLiteral( "CoverageDescriptions" ),
-                   docElem.tagName(),
+                   documentElement.tagName(),
                    QString( xml ) );
 
     QgsLogger::debug( "Dom Exception: " + mError );
@@ -944,11 +1021,12 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
   // but while at least one BoundingBox is mandatory, it does not have to be urn:ogc:def:crs:OGC::imageCRS
   // TODO: if BoundingBox with crs=urn:ogc:def:crs:OGC::imageCRS is not found,
   // we could calculate image size from GridCRS.GridOffsets (if available)
-  QList<QDomElement> boundingBoxElements = domElements( docElem, QStringLiteral( "CoverageDescription.Domain.SpatialDomain.BoundingBox" ) );
+  QList<QDomElement> boundingBoxElements = domElements( documentElement, QStringLiteral( "CoverageDescription.Domain.SpatialDomain.BoundingBox" ) );
 
-  QgsDebugMsg( QString( "%1 BoundingBox found" ).arg( boundingBoxElements.size() ) );
+  QgsDebugMsg( QStringLiteral( "%1 BoundingBox found" ).arg( boundingBoxElements.size() ) );
 
-  Q_FOREACH ( const QDomElement &el, boundingBoxElements )
+  const auto constBoundingBoxElements = boundingBoxElements;
+  for ( const QDomElement &el : constBoundingBoxElements )
   {
     QString authid = crsUrnToAuthId( el.attribute( QStringLiteral( "crs" ) ) );
     QList<double> low = parseDoubles( domElementText( el, QStringLiteral( "LowerCorner" ) ) );
@@ -975,14 +1053,14 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
         box = QgsRectangle( low[0], low[1], high[0], high[1] );
       }
       coverage->boundingBoxes.insert( authid, box );
-      QgsDebugMsg( "crs: " + crs.authid() + ' ' + crs.description() + QString( " axisInverted = %1" ).arg( crs.hasAxisInverted() ) );
+      QgsDebugMsg( "crs: " + crs.userFriendlyIdentifier() + QString( " axisInverted = %1" ).arg( crs.hasAxisInverted() ) );
       QgsDebugMsg( "BoundingBox: " + authid + " : " + box.toString() );
     }
   }
-  QgsDebugMsg( QString( "width = %1 height = %2" ).arg( coverage->width ).arg( coverage->height ) );
+  QgsDebugMsg( QStringLiteral( "width = %1 height = %2" ).arg( coverage->width ).arg( coverage->height ) );
 
   // Each georectified coverage should have GridCRS
-  QDomElement gridCRSElement = domElement( docElem, QStringLiteral( "CoverageDescription.Domain.SpatialDomain.GridCRS" ) );
+  QDomElement gridCRSElement = domElement( documentElement, QStringLiteral( "CoverageDescription.Domain.SpatialDomain.GridCRS" ) );
 
   if ( !gridCRSElement.isNull() )
   {
@@ -994,13 +1072,14 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
     // if urn:ogc:def:crs:OGC::imageCRS BoundingBox was not found
   }
 
-  coverage->times = domElementsTexts( docElem, QStringLiteral( "CoverageDescription.Domain.TemporalDomain.timePosition" ) );
+  coverage->times = domElementsTexts( documentElement, QStringLiteral( "CoverageDescription.Domain.TemporalDomain.timePosition" ) );
 
-  QList<QDomElement> timePeriodElements = domElements( docElem, QStringLiteral( "CoverageDescription.Domain.TemporalDomain.timePeriod" ) );
+  QList<QDomElement> timePeriodElements = domElements( documentElement, QStringLiteral( "CoverageDescription.Domain.TemporalDomain.timePeriod" ) );
 
-  QgsDebugMsg( QString( "%1 timePeriod found" ).arg( timePeriodElements.size() ) );
+  QgsDebugMsg( QStringLiteral( "%1 timePeriod found" ).arg( timePeriodElements.size() ) );
 
-  Q_FOREACH ( const QDomElement &el, timePeriodElements )
+  const auto constTimePeriodElements = timePeriodElements;
+  for ( const QDomElement &el : constTimePeriodElements )
   {
     QString beginPosition = domElementText( el, QStringLiteral( "beginTime" ) );
     QString endPosition = domElementText( el, QStringLiteral( "endTime" ) );
@@ -1016,7 +1095,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
 
   // NULL / no data values
   // TODO: handle multiple fields / ranges (?)
-  Q_FOREACH ( const QString &text, domElementsTexts( docElem, "CoverageDescription.Range.Field.NullValue" ) )
+  Q_FOREACH ( const QString &text, domElementsTexts( documentElement, "CoverageDescription.Range.Field.NullValue" ) )
   {
     bool ok;
     double val = text.toDouble( &ok );
@@ -1026,7 +1105,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
     }
   }
 
-  QStringList formats = domElementsTexts( docElem, QStringLiteral( "CoverageDescription.SupportedFormat" ) );
+  QStringList formats = domElementsTexts( documentElement, QStringLiteral( "CoverageDescription.SupportedFormat" ) );
   // There could be formats from GetCapabilities
   if ( !formats.isEmpty() )
   {
@@ -1034,9 +1113,10 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
   }
 
 
-  QStringList crss = domElementsTexts( docElem, QStringLiteral( "CoverageDescription.SupportedCRS" ) );
+  QStringList crss = domElementsTexts( documentElement, QStringLiteral( "CoverageDescription.SupportedCRS" ) );
   QSet<QString> authids; // Set, in case one CRS is in more formats (URN, non URN)
-  Q_FOREACH ( const QString &crs, crss )
+  const auto constCrss = crss;
+  for ( const QString &crs : constCrss )
   {
     authids.insert( crsUrnToAuthId( crs ) );
   }
@@ -1051,38 +1131,38 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
 }
 
 
-void QgsWcsCapabilities::parseCoverageSummary( QDomElement const &e, QgsWcsCoverageSummary &coverageSummary, QgsWcsCoverageSummary *parent )
+void QgsWcsCapabilities::parseCoverageSummary( const QDomElement &element, QgsWcsCoverageSummary &coverageSummary, QgsWcsCoverageSummary *parent )
 {
   coverageSummary.orderId = ++mCoverageCount;
 
-  coverageSummary.identifier = firstChildText( e, QStringLiteral( "Identifier" ) );
-  coverageSummary.title = firstChildText( e, QStringLiteral( "Title" ) );
-  coverageSummary.abstract = firstChildText( e, QStringLiteral( "Abstract" ) );
+  coverageSummary.identifier = firstChildText( element, QStringLiteral( "Identifier" ) );
+  coverageSummary.title = firstChildText( element, QStringLiteral( "Title" ) );
+  coverageSummary.abstract = firstChildText( element, QStringLiteral( "Abstract" ) );
 
-  QDomNode n1 = e.firstChild();
-  while ( !n1.isNull() )
+  QDomNode node = element.firstChild();
+  while ( !node.isNull() )
   {
-    QDomElement el = n1.toElement();
-    if ( !el.isNull() )
+    QDomElement nodeElement = node.toElement();
+    if ( !nodeElement.isNull() )
     {
-      QString tagName = stripNS( el.tagName() );
-      QgsDebugMsg( tagName + " : " + el.text() );
+      QString tagName = stripNS( nodeElement.tagName() );
+      QgsDebugMsg( tagName + " : " + nodeElement.text() );
 
       if ( tagName == QLatin1String( "SupportedFormat" ) )
       {
         // image/tiff, ...
         // Formats may be here (UMN Mapserver) or may not (GeoServer)
-        coverageSummary.supportedFormat << el.text();
+        coverageSummary.supportedFormat << nodeElement.text();
       }
       else if ( tagName == QLatin1String( "SupportedCRS" ) )
       {
         // TODO: SupportedCRS may be URL referencing a document
-        coverageSummary.supportedCrs << crsUrnToAuthId( el.text() );
+        coverageSummary.supportedCrs << crsUrnToAuthId( nodeElement.text() );
       }
       else if ( tagName == QLatin1String( "WGS84BoundingBox" ) )
       {
-        QList<double> low = parseDoubles( domElementText( el, QStringLiteral( "LowerCorner" ) ) );
-        QList<double> high = parseDoubles( domElementText( el, QStringLiteral( "UpperCorner" ) ) );
+        QList<double> low = parseDoubles( domElementText( nodeElement, QStringLiteral( "LowerCorner" ) ) );
+        QList<double> high = parseDoubles( domElementText( nodeElement, QStringLiteral( "UpperCorner" ) ) );
 
         if ( low.size() == 2 && high.size() == 2 )
         {
@@ -1090,22 +1170,22 @@ void QgsWcsCapabilities::parseCoverageSummary( QDomElement const &e, QgsWcsCover
         }
       }
     }
-    n1 = n1.nextSibling();
+    node = node.nextSibling();
   }
   //QgsDebugMsg( "supportedFormat = " + coverageSummary.supportedFormat.join( "," ) );
 
   // We collected params to be inherited, do children
-  n1 = e.firstChild();
-  while ( !n1.isNull() )
+  node = element.firstChild();
+  while ( !node.isNull() )
   {
-    QDomElement el = n1.toElement();
-    if ( !el.isNull() )
+    QDomElement nodeElement = node.toElement();
+    if ( !nodeElement.isNull() )
     {
-      QString tagName = stripNS( el.tagName() );
+      QString tagName = stripNS( nodeElement.tagName() );
 
       if ( tagName == QLatin1String( "CoverageSummary" ) )
       {
-        QgsDebugMsg( "      Nested coverage." );
+        QgsDebugMsg( QStringLiteral( "      Nested coverage." ) );
 
         QgsWcsCoverageSummary subCoverageSummary;
 
@@ -1115,18 +1195,18 @@ void QgsWcsCapabilities::parseCoverageSummary( QDomElement const &e, QgsWcsCover
         subCoverageSummary.supportedCrs = coverageSummary.supportedCrs;
         subCoverageSummary.supportedFormat = coverageSummary.supportedFormat;
 
-        parseCoverageSummary( el, subCoverageSummary, &coverageSummary );
+        parseCoverageSummary( nodeElement, subCoverageSummary, &coverageSummary );
         subCoverageSummary.valid = true;
 
         coverageSummary.coverageSummary.push_back( subCoverageSummary );
       }
     }
-    n1 = n1.nextSibling();
+    node = node.nextSibling();
   }
 
   if ( parent && parent->orderId > 1 ) // ignore Contents to put them on top level
   {
-    QgsDebugMsg( QString( "coverage orderId = %1 identifier = %2 has parent %3" ).arg( coverageSummary.orderId ).arg( coverageSummary.identifier ).arg( parent->orderId ) );
+    QgsDebugMsg( QStringLiteral( "coverage orderId = %1 identifier = %2 has parent %3" ).arg( coverageSummary.orderId ).arg( coverageSummary.identifier ).arg( parent->orderId ) );
     mCoverageParents[ coverageSummary.orderId ] = parent->orderId;
   }
 
@@ -1140,7 +1220,7 @@ void QgsWcsCapabilities::parseCoverageSummary( QDomElement const &e, QgsWcsCover
   {
     mCoverageParentIdentifiers[ coverageSummary.orderId ] = QStringList() << coverageSummary.identifier << coverageSummary.title << coverageSummary.abstract;
   }
-  QgsDebugMsg( QString( "coverage orderId = %1 identifier = %2" ).arg( coverageSummary.orderId ).arg( coverageSummary.identifier ) );
+  QgsDebugMsg( QStringLiteral( "coverage orderId = %1 identifier = %2" ).arg( coverageSummary.orderId ).arg( coverageSummary.identifier ) );
 
 }
 
@@ -1177,23 +1257,23 @@ QString QgsWcsCapabilities::lastErrorFormat()
 
 bool QgsWcsCapabilities::setAuthorization( QNetworkRequest &request ) const
 {
-  if ( mUri.hasParam( QStringLiteral( "authcfg" ) ) && !mUri.param( QStringLiteral( "authcfg" ) ).isEmpty() )
+  if ( !mUri.authConfigId().isEmpty() )
   {
-    return QgsApplication::authManager()->updateNetworkRequest( request, mUri.param( QStringLiteral( "authcfg" ) ) );
+    return QgsApplication::authManager()->updateNetworkRequest( request, mUri.authConfigId() );
   }
-  else if ( mUri.hasParam( QStringLiteral( "username" ) ) && mUri.hasParam( QStringLiteral( "password" ) ) )
+  else if ( !mUri.username().isEmpty() && !mUri.password().isEmpty() )
   {
-    QgsDebugMsg( "setAuthorization " + mUri.param( "username" ) );
-    request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUri.param( QStringLiteral( "username" ) ), mUri.param( QStringLiteral( "password" ) ) ).toLatin1().toBase64() );
+    QgsDebugMsg( "setAuthorization " + mUri.username() );
+    request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUri.username(), mUri.password() ).toLatin1().toBase64() );
   }
   return true;
 }
 
 bool QgsWcsCapabilities::setAuthorizationReply( QNetworkReply *reply ) const
 {
-  if ( mUri.hasParam( QStringLiteral( "authcfg" ) ) && !mUri.param( QStringLiteral( "authcfg" ) ).isEmpty() )
+  if ( !mUri.authConfigId().isEmpty() )
   {
-    return QgsApplication::authManager()->updateNetworkReply( reply, mUri.param( QStringLiteral( "authcfg" ) ) );
+    return QgsApplication::authManager()->updateNetworkReply( reply, mUri.authConfigId() );
   }
   return true;
 }
@@ -1208,12 +1288,12 @@ void QgsWcsCapabilities::showMessageBox( const QString &title, const QString &te
 
 QgsWcsCoverageSummary QgsWcsCapabilities::coverage( QString const &identifier )
 {
-  QgsWcsCoverageSummary *cp = coverageSummary( identifier );
-  if ( cp ) return *cp;
+  QgsWcsCoverageSummary *coverageSummaryPointer = coverageSummary( identifier );
+  if ( coverageSummaryPointer ) return *coverageSummaryPointer;
 
-  QgsWcsCoverageSummary c;
-  initCoverageSummary( c );
-  return c;
+  QgsWcsCoverageSummary coverageSummary;
+  initCoverageSummary( coverageSummary );
+  return coverageSummary;
 }
 
 QgsWcsCoverageSummary *QgsWcsCapabilities::coverageSummary( QString const &identifier, QgsWcsCoverageSummary *parent )
@@ -1233,10 +1313,10 @@ QgsWcsCoverageSummary *QgsWcsCapabilities::coverageSummary( QString const &ident
     else
     {
       // search sub coverages
-      QgsWcsCoverageSummary *sc = coverageSummary( identifier, c );
-      if ( sc )
+      QgsWcsCoverageSummary *subCoverage = coverageSummary( identifier, c );
+      if ( subCoverage )
       {
-        return sc;
+        return subCoverage;
       }
     }
   }

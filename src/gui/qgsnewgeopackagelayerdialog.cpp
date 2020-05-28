@@ -31,12 +31,13 @@
 #include "qgshelp.h"
 #include "qgsogrutils.h"
 #include "qgsgui.h"
+#include "qgsproviderconnectionmodel.h"
 
 #include <QPushButton>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QFileDialog>
-#include <QLibrary>
+#include <QCompleter>
 
 #include <ogr_api.h>
 #include <ogr_srs_api.h>
@@ -44,11 +45,13 @@
 #include <cpl_error.h>
 #include <cpl_string.h>
 
+#define DEFAULT_OGR_FID_COLUMN_TITLE "fid" // default value from OGR
+
 QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
 {
   setupUi( this );
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   connect( mAddAttributeButton, &QToolButton::clicked, this, &QgsNewGeoPackageLayerDialog::mAddAttributeButton_clicked );
   connect( mRemoveAttributeButton, &QToolButton::clicked, this, &QgsNewGeoPackageLayerDialog::mRemoveAttributeButton_clicked );
@@ -64,7 +67,7 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
   mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
 
-  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) ), tr( "No geometry" ), wkbNone );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) ), tr( "No Geometry" ), wkbNone );
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "Point" ), wkbPoint );
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "Line" ), wkbLineString );
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "Polygon" ), wkbPolygon );
@@ -80,21 +83,24 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "CurvePolygon" ), wkbCurvePolygon );
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "MultiCurve" ), wkbMultiCurve );
   mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "MultiSurface" ), wkbMultiSurface );
+  mGeometryTypeBox->setCurrentIndex( -1 );
 
   mGeometryWithZCheckBox->setEnabled( false );
   mGeometryWithMCheckBox->setEnabled( false );
   mGeometryColumnEdit->setEnabled( false );
-  mGeometryColumnEdit->setText( "geometry" );
-  mFeatureIdColumnEdit->setText( "fid" );
+  mGeometryColumnEdit->setText( QStringLiteral( "geometry" ) );
+  mFeatureIdColumnEdit->setPlaceholderText( QStringLiteral( DEFAULT_OGR_FID_COLUMN_TITLE ) );
   mCheckBoxCreateSpatialIndex->setEnabled( false );
   mCrsSelector->setEnabled( false );
 
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ), tr( "Text data" ), "text" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole number (integer)" ), "integer" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole number (integer 64 bit)" ), "integer64" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), tr( "Decimal number (real)" ), "real" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ), tr( "Text Data" ), "text" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number (integer)" ), "integer" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number (integer 64 bit)" ), "integer64" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), tr( "Decimal Number (real)" ), "real" );
   mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) ), tr( "Date" ), "date" );
-  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) ), tr( "Date&time" ), "datetime" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) ), tr( "Date and Time" ), "datetime" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBool.svg" ) ), tr( "Boolean" ), "bool" );
+  mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBinary.svg" ) ), tr( "Binary (BLOB)" ), "binary" );
 
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
   mOkButton->setEnabled( false );
@@ -102,6 +108,7 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   connect( mFieldNameEdit, &QLineEdit::textChanged, this, &QgsNewGeoPackageLayerDialog::fieldNameChanged );
   connect( mAttributeView, &QTreeWidget::itemSelectionChanged, this, &QgsNewGeoPackageLayerDialog::selectionChanged );
   connect( mTableNameEdit, &QLineEdit::textChanged, this, &QgsNewGeoPackageLayerDialog::checkOk );
+  connect( mGeometryTypeBox, static_cast<void( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this,  &QgsNewGeoPackageLayerDialog::checkOk );
 
   mAddAttributeButton->setEnabled( false );
   mRemoveAttributeButton->setEnabled( false );
@@ -126,6 +133,15 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
     }
     checkOk();
   } );
+
+  QgsProviderConnectionModel *ogrProviderModel = new QgsProviderConnectionModel( QStringLiteral( "ogr" ), this );
+
+  QCompleter *completer = new QCompleter( this );
+  completer->setModel( ogrProviderModel );
+  completer->setCompletionRole( QgsProviderConnectionModel::RoleUri );
+  completer->setCompletionMode( QCompleter::PopupCompletion );
+  completer->setFilterMode( Qt::MatchContains );
+  mDatabase->lineEdit()->setCompleter( completer );
 }
 
 void QgsNewGeoPackageLayerDialog::setCrs( const QgsCoordinateReferenceSystem &crs )
@@ -183,7 +199,9 @@ void QgsNewGeoPackageLayerDialog::mLayerIdentifierEdit_textEdited( const QString
 void QgsNewGeoPackageLayerDialog::checkOk()
 {
   bool ok = !mDatabase->filePath().isEmpty() &&
-            !mTableNameEdit->text().isEmpty();
+            !mTableNameEdit->text().isEmpty() &&
+            mGeometryTypeBox->currentIndex() != -1;
+
   mOkButton->setEnabled( ok );
 }
 
@@ -192,7 +210,8 @@ void QgsNewGeoPackageLayerDialog::mAddAttributeButton_clicked()
   if ( !mFieldNameEdit->text().isEmpty() )
   {
     QString myName = mFieldNameEdit->text();
-    if ( myName == mFeatureIdColumnEdit->text() )
+    const QString featureId = mFeatureIdColumnEdit->text().isEmpty() ? QStringLiteral( DEFAULT_OGR_FID_COLUMN_TITLE ) : mFeatureIdColumnEdit->text();
+    if ( myName.compare( featureId, Qt::CaseInsensitive ) == 0 )
     {
       QMessageBox::critical( this, tr( "Add Field" ), tr( "The field cannot have the same name as the feature identifier." ) );
       return;
@@ -258,7 +277,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
         msgBox.setWindowTitle( tr( "New GeoPackage Layer" ) );
         msgBox.setText( tr( "The File already exists. Do you want to overwrite the existing file with a new database or add a new layer to it?" ) );
         QPushButton *overwriteButton = msgBox.addButton( tr( "Overwrite" ), QMessageBox::ActionRole );
-        QPushButton *addNewLayerButton = msgBox.addButton( tr( "Add new layer" ), QMessageBox::ActionRole );
+        QPushButton *addNewLayerButton = msgBox.addButton( tr( "Add New Layer" ), QMessageBox::ActionRole );
         msgBox.setStandardButtons( QMessageBox::Cancel );
         msgBox.setDefaultButton( addNewLayerButton );
         bool cancel = false;
@@ -384,7 +403,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   QgsCoordinateReferenceSystem srs = mCrsSelector->crs();
   if ( wkbType != wkbNone && srs.isValid() )
   {
-    QString srsWkt = srs.toWkt();
+    QString srsWkt = srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
     hSRS = OSRNewSpatialReference( srsWkt.toLocal8Bit().data() );
   }
 
@@ -428,6 +447,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
     QString fieldType( ( *it )->text( 1 ) );
     QString fieldWidth( ( *it )->text( 2 ) );
 
+    bool isBool = false;
     OGRFieldType ogrType( OFTString );
     if ( fieldType == QLatin1String( "text" ) )
       ogrType = OFTString;
@@ -441,11 +461,21 @@ bool QgsNewGeoPackageLayerDialog::apply()
       ogrType = OFTDate;
     else if ( fieldType == QLatin1String( "datetime" ) )
       ogrType = OFTDateTime;
+    else if ( fieldType == QLatin1String( "bool" ) )
+    {
+      ogrType = OFTInteger;
+      isBool = true;
+    }
+    else if ( fieldType == QLatin1String( "binary" ) )
+      ogrType = OFTBinary;
 
     int ogrWidth = fieldWidth.toInt();
 
     gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( fieldName.toUtf8().constData(), ogrType ) );
-    OGR_Fld_SetWidth( fld.get(), ogrWidth );
+    if ( ogrType != OFTBinary )
+      OGR_Fld_SetWidth( fld.get(), ogrWidth );
+    if ( isBool )
+      OGR_Fld_SetSubType( fld.get(), OFSTBoolean );
 
     if ( OGR_L_CreateField( hLayer, fld.get(), true ) != OGRERR_NONE )
     {
@@ -476,22 +506,29 @@ bool QgsNewGeoPackageLayerDialog::apply()
 
   QString uri( QStringLiteral( "%1|layername=%2" ).arg( fileName, tableName ) );
   QString userVisiblelayerName( layerIdentifier.isEmpty() ? tableName : layerIdentifier );
-  QgsVectorLayer *layer = new QgsVectorLayer( uri, userVisiblelayerName, QStringLiteral( "ogr" ) );
+  QgsVectorLayer::LayerOptions layerOptions { QgsProject::instance()->transformContext() };
+  std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique< QgsVectorLayer >( uri, userVisiblelayerName, QStringLiteral( "ogr" ), layerOptions );
   if ( layer->isValid() )
   {
-    // register this layer with the central layers registry
-    QList<QgsMapLayer *> myList;
-    myList << layer;
-    //addMapLayers returns a list of all successfully added layers
-    //so we compare that to our original list.
-    if ( myList == QgsProject::instance()->addMapLayers( myList ) )
+    if ( mAddToProject )
+    {
+      // register this layer with the central layers registry
+      QList<QgsMapLayer *> myList;
+      myList << layer.release();
+      //addMapLayers returns a list of all successfully added layers
+      //so we compare that to our original list.
+      if ( myList == QgsProject::instance()->addMapLayers( myList ) )
+        return true;
+    }
+    else
+    {
       return true;
+    }
   }
   else
   {
     if ( !property( "hideDialogs" ).toBool() )
       QMessageBox::critical( this, tr( "New GeoPackage Layer" ), tr( "%1 is an invalid layer and cannot be loaded." ).arg( tableName ) );
-    delete layer;
   }
 
   return false;
@@ -500,6 +537,11 @@ bool QgsNewGeoPackageLayerDialog::apply()
 void QgsNewGeoPackageLayerDialog::setOverwriteBehavior( OverwriteBehavior behavior )
 {
   mBehavior = behavior;
+}
+
+void QgsNewGeoPackageLayerDialog::setAddToProject( bool addToProject )
+{
+  mAddToProject = addToProject;
 }
 
 void QgsNewGeoPackageLayerDialog::showHelp()

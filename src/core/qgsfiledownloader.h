@@ -50,7 +50,7 @@ class CORE_EXPORT QgsFileDownloader : public QObject
      * \param url the download url
      * \param outputFileName file name where the downloaded content will be stored
      * \param authcfg optionally apply this authentication configuration
-     * \param delayStart if true, the download will not be commenced immediately and must
+     * \param delayStart if TRUE, the download will not be commenced immediately and must
      * be triggered by a later call to startDownload(). This can be useful if connections need
      * to be made to the downloader and there's a chance the download will emit
      * signals before these connections have been made.
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsFileDownloader : public QObject
   public slots:
 
     /**
-     * Call to abort the download and delete this object after the cancelation
+     * Call to abort the download and delete this object after the cancellation
      * has been processed.
      * \see downloadCanceled()
      */
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsFileDownloader : public QObject
     //! Called on data ready to be processed
     void onDownloadProgress( qint64 bytesReceived, qint64 bytesTotal );
     //! Called when a network request times out
-    void onRequestTimedOut();
+    void onRequestTimedOut( QNetworkReply *reply );
 
 #ifndef QT_NO_SSL
 

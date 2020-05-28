@@ -1,0 +1,62 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/classification/qgsclassificationmethodregistry.h            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsClassificationMethodRegistry
+{
+%Docstring
+This class manages all known classification methods
+
+QgsClassificationMethodRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.classificationMethodRegistry()`
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsclassificationmethodregistry.h"
+%End
+  public:
+    QgsClassificationMethodRegistry();
+    ~QgsClassificationMethodRegistry();
+
+    bool addMethod( QgsClassificationMethod *method /Transfer/ );
+%Docstring
+Adds a method to the registry
+Returns false if a method with same id already exists.
+%End
+
+    QgsClassificationMethod *method( const QString &id ) /Factory/;
+%Docstring
+Returns a new instance of the method for the given id
+%End
+
+    QMap<QString, QString> methodNames() const;
+%Docstring
+Returns a map <name, id> of all registered methods.
+%End
+
+    QIcon icon( const QString &id ) const;
+%Docstring
+Returns the icon for a given method id
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/classification/qgsclassificationmethodregistry.h            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

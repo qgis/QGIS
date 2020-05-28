@@ -18,13 +18,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+
 #include "qgswmsutils.h"
+#include "qgswmsserviceexception.h"
 #include "qgswmsgetstyles.h"
 #include "qgsserverprojectutils.h"
 
+#include "qgsproject.h"
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsvectorlayerlabeling.h"
+
 
 namespace QgsWms
 {
@@ -46,7 +52,7 @@ namespace QgsWms
   QDomDocument getStyles( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                           const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QgsServerRequest::Parameters parameters = request.parameters();
 
@@ -54,15 +60,15 @@ namespace QgsWms
 
     if ( layersName.isEmpty() )
     {
-      throw QgsBadRequestException( QStringLiteral( "LayerNotSpecified" ),
-                                    QStringLiteral( "Layers is mandatory for GetStyles operation" ) );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue,
+                                    QgsWmsParameter::LAYERS );
     }
 
     QStringList layerList = layersName.split( ',', QString::SkipEmptyParts );
     if ( layerList.isEmpty() )
     {
-      throw QgsBadRequestException( QStringLiteral( "LayerNotSpecified" ),
-                                    QStringLiteral( "Layers is mandatory for GetStyles operation" ) );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue,
+                                    QgsWmsParameter::LAYERS );
     }
 
     return getStyledLayerDescriptorDocument( serverIface, project, layerList );
@@ -80,7 +86,7 @@ namespace QgsWms
   QDomDocument getStyle( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                          const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QgsServerRequest::Parameters parameters = request.parameters();
 
@@ -91,14 +97,14 @@ namespace QgsWms
 
     if ( styleName.isEmpty() )
     {
-      throw QgsServiceException( QStringLiteral( "StyleNotSpecified" ),
-                                 QStringLiteral( "Style is mandatory for GetStyle operation" ), 400 );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue,
+                                    QgsWmsParameter::STYLE );
     }
 
     if ( layerName.isEmpty() )
     {
-      throw QgsServiceException( QStringLiteral( "LayerNotSpecified" ),
-                                 QStringLiteral( "Layer is mandatory for GetStyle operation" ), 400 );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue,
+                                    QgsWmsParameter::LAYERS );
     }
 
     QStringList layerList;
@@ -127,13 +133,17 @@ namespace QgsWms
       myDocument.appendChild( root );
 
       // access control
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       QgsAccessControl *accessControl = serverIface->accessControls();
+#else
+      ( void )serverIface;
+#endif
       // Use layer ids
       bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );
       // WMS restricted layers
       QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
 
-      Q_FOREACH ( QgsMapLayer *layer, project->mapLayers() )
+      for ( QgsMapLayer *layer : project->mapLayers() )
       {
         QString name = layer->name();
         if ( useLayerIds )
@@ -151,12 +161,12 @@ namespace QgsWms
         {
           throw QgsSecurityException( QStringLiteral( "You are not allowed to access to this layer" ) );
         }
-
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
         if ( accessControl && !accessControl->layerReadPermission( layer ) )
         {
           throw QgsSecurityException( QStringLiteral( "You are not allowed to access to this layer" ) );
         }
-
+#endif
         // Create the NamedLayer element
         QDomElement namedLayerNode = myDocument.createElement( QStringLiteral( "NamedLayer" ) );
         root.appendChild( namedLayerNode );
@@ -166,17 +176,41 @@ namespace QgsWms
         nameNode.appendChild( myDocument.createTextNode( name ) );
         namedLayerNode.appendChild( nameNode );
 
-        if ( layer->type() == QgsMapLayer::VectorLayer )
+        if ( layer->type() == QgsMapLayerType::VectorLayer )
         {
           QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
           if ( vlayer->isSpatial() )
           {
             QString currentStyle = vlayer->styleManager()->currentStyle();
-            Q_FOREACH ( QString styleName, vlayer->styleManager()->styles() )
+
+            QgsStringMap props;
+            if ( vlayer->hasScaleBasedVisibility() )
+            {
+              props[ QStringLiteral( "scaleMinDenom" ) ] = QString::number( vlayer->maximumScale() );
+              props[ QStringLiteral( "scaleMaxDenom" ) ] = QString::number( vlayer->minimumScale() );
+            }
+
+            for ( const QString &styleName : vlayer->styleManager()->styles() )
             {
               vlayer->styleManager()->setCurrentStyle( styleName );
-              QDomElement styleElem = vlayer->renderer()->writeSld( myDocument, styleName );
-              namedLayerNode.appendChild( styleElem );
+
+              QDomElement userStyleElem = myDocument.createElement( QStringLiteral( "UserStyle" ) );
+
+              QDomElement styleNameElem = myDocument.createElement( QStringLiteral( "se:Name" ) );
+              styleNameElem.appendChild( myDocument.createTextNode( styleName ) );
+
+              userStyleElem.appendChild( styleNameElem );
+
+              QDomElement featureTypeStyleElem = myDocument.createElement( QStringLiteral( "se:FeatureTypeStyle" ) );
+              userStyleElem.appendChild( featureTypeStyleElem );
+
+              vlayer->renderer()->toSld( myDocument, featureTypeStyleElem, props );
+              if ( vlayer->labelsEnabled() )
+              {
+                vlayer->labeling()->toSld( featureTypeStyleElem, props );
+              }
+
+              namedLayerNode.appendChild( userStyleElem );
             }
             vlayer->styleManager()->setCurrentStyle( currentStyle );
           }
@@ -188,7 +222,7 @@ namespace QgsWms
   }
 
 
-} // samespace QgsWms
+} // namespace QgsWms
 
 
 

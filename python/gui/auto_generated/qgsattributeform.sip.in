@@ -44,11 +44,43 @@ class QgsAttributeForm : QWidget
 
     const QgsFeature &feature();
 
+    void displayWarning( const QString &message );
+%Docstring
+Displays a warning message in the form message bar
+
+:param message: message string
+
+.. seealso:: :py:func:`mode`
+
+.. versionadded:: 3.12
+%End
+
+
     void hideButtonBox();
+%Docstring
+Hides the button box (OK/Cancel) and enables auto-commit
+
+.. note::
+
+   set Embed in QgsAttributeEditorContext in constructor instead
+%End
+
 
     void showButtonBox();
+%Docstring
+Shows the button box (OK/Cancel) and disables auto-commit
+
+.. note::
+
+   set Embed in QgsAttributeEditorContext in constructor instead
+%End
+
 
     void disconnectButtonBox();
+%Docstring
+Disconnects the button box (OK/Cancel) from the accept/resetValues slots
+If this method is called, you have to create these connections from outside
+%End
 
     void addInterface( QgsAttributeFormInterface *iface /Transfer/ );
 %Docstring
@@ -71,7 +103,7 @@ Returns if the form is currently in editable mode.
 :return: Editable mode of this form
 %End
 
-    Mode mode() const;
+    QgsAttributeEditorContext::Mode mode() const;
 %Docstring
 Returns the current mode of the form.
 
@@ -80,7 +112,7 @@ Returns the current mode of the form.
 .. versionadded:: 2.16
 %End
 
-    void setMode( Mode mode );
+    void setMode( QgsAttributeEditorContext::Mode mode );
 %Docstring
 Sets the current mode of the form.
 
@@ -106,7 +138,7 @@ Intercepts keypress on custom form (escape should not close it)
 :param object: The object for which the event has been sent
 :param event: The event which is being filtered
 
-:return: true if the event has been handled (key was ESC)
+:return: ``True`` if the event has been handled (key was ESC)
 %End
 
     void setMultiEditFeatureIds( const QgsFeatureIds &fids );
@@ -147,7 +179,8 @@ back to the original one.
 :param attribute: The name of the attribute that changed.
 :param value: The new value of the attribute.
 
-.. deprecated:: since 3.0
+.. deprecated::
+   since 3.0
 %End
 
     void widgetValueChanged( const QString &attribute, const QVariant &value, bool attributeChanged );
@@ -156,7 +189,7 @@ Notifies about changes of attributes
 
 :param attribute: The name of the attribute that changed.
 :param value: The new value of the attribute.
-:param attributeChanged: If true, it corresponds to an actual change of the feature attribute
+:param attributeChanged: If ``True``, it corresponds to an actual change of the feature attribute
 
 .. versionadded:: 3.0.1
 %End
@@ -164,12 +197,12 @@ Notifies about changes of attributes
 
     void featureSaved( const QgsFeature &feature );
 %Docstring
-Is emitted, when a feature is changed or added
+Emitted when a feature is changed or added
 %End
 
     void filterExpressionSet( const QString &expression, QgsAttributeForm::FilterType type );
 %Docstring
-Is emitted when a filter expression is set using the form.
+Emitted when a filter expression is set using the form.
 
 :param expression: filter expression
 :param type: filter type
@@ -177,7 +210,7 @@ Is emitted when a filter expression is set using the form.
 .. versionadded:: 2.16
 %End
 
-    void modeChanged( QgsAttributeForm::Mode mode );
+    void modeChanged( QgsAttributeEditorContext::Mode mode );
 %Docstring
 Emitted when the form changes mode.
 
@@ -227,7 +260,7 @@ Update all editors to correspond to a different feature.
 %Docstring
 Save all the values from the editors to the layer.
 
-:return: True if successful
+:return: ``True`` if successful
 %End
 
     void resetValues();
@@ -246,6 +279,18 @@ Resets the search/filter form values.
 %Docstring
 reload current feature
 %End
+
+    void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
+%Docstring
+Is called in embedded forms when an ``attribute`` value in the parent form
+has changed to ``newValue``.
+
+Notify the form widgets that something has changed in case they
+have filter expressions that depend on the parent form scope.
+
+.. versionadded:: 3.14
+%End
+
 
 };
 

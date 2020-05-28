@@ -25,6 +25,7 @@
 #include "qgsunittypes.h"
 #include "qgsmaptoolselect.h"
 #include "qgsmaptoolselectutils.h"
+#include "qgsmapmouseevent.h"
 
 #include "cpl_conv.h"
 

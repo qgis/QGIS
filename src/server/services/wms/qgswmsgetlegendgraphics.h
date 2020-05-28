@@ -18,6 +18,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgslayertreemodel.h"
+
+#include "qgswmsrendercontext.h"
 
 namespace QgsWms
 {
@@ -29,8 +32,15 @@ namespace QgsWms
                                const QString &version, const QgsServerRequest &request,
                                QgsServerResponse &response );
 
-} // samespace QgsWms
+  /**
+   * checkParameters checks request \a parameters and sets SRCHEIGHT and SRCWIDTH to default values
+   * in case BBOX is specified for contextual legend and (SRC)HEIGHT or (SRC)WIDTH are not.
+   */
+  void checkParameters( QgsWmsParameters &parameters );
 
+  QgsLayerTreeModel *legendModel( const QgsWmsRenderContext &context, QgsLayerTree &tree );
 
+  QgsLayerTree *layerTree( const QgsWmsRenderContext &context );
 
-
+  QgsLayerTreeModelLegendNode *legendNode( const QString &rule, QgsLayerTreeModel &model );
+} // namespace QgsWms

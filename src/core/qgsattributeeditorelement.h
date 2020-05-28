@@ -19,6 +19,8 @@
 #include "qgis_core.h"
 #include "qgsrelation.h"
 #include "qgsoptionalexpression.h"
+#include "qgspropertycollection.h"
+#include <QColor>
 
 class QgsRelationManager;
 
@@ -27,7 +29,7 @@ class QgsRelationManager;
  * This is an abstract base class for any elements of a drag and drop form.
  *
  * This can either be a container which will be represented on the screen
- * as a tab widget or ca collapsible group box. Or it can be a field which will
+ * as a tab widget or a collapsible group box. Or it can be a field which will
  * then be represented based on the QgsEditorWidget type and configuration.
  * Or it can be a relation and embed the form of several children of another
  * layer.
@@ -61,13 +63,15 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
       AeTypeContainer, //!< A container
       AeTypeField,     //!< A field
       AeTypeRelation,  //!< A relation
-      AeTypeInvalid    //!< Invalid
+      AeTypeInvalid,   //!< Invalid
+      AeTypeQmlElement, //!< A QML element
+      AeTypeHtmlElement //!< A HTML element
     };
 
     /**
      * Constructor
      *
-     * \param type The type of the new element. Should never
+     * \param type The type of the new element.
      * \param name
      * \param parent
      */
@@ -126,7 +130,6 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
 
     /**
      * Controls if this element should be labeled with a title (field, relation or groupname).
-     *
      * \since QGIS 2.18
      */
     void setShowLabel( bool showLabel );
@@ -155,6 +158,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      * \since QGIS 2.18
      */
     virtual QString typeIdentifier() const = 0;
+
 };
 
 
@@ -172,11 +176,13 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      *
      * \param name   The name to show as title
      * \param parent The parent. May be another container.
+     * \param backgroundColor The optional background color of the container.
      */
-    QgsAttributeEditorContainer( const QString &name, QgsAttributeEditorElement *parent )
+    QgsAttributeEditorContainer( const QString &name, QgsAttributeEditorElement *parent, const QColor &backgroundColor = QColor() )
       : QgsAttributeEditorElement( AeTypeContainer, name, parent )
       , mIsGroupBox( true )
       , mColumnCount( 1 )
+      , mBackgroundColor( backgroundColor )
     {}
 
 
@@ -192,14 +198,14 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     /**
      * Determines if this container is rendered as collapsible group box or tab in a tabwidget
      *
-     * \param isGroupBox If true, this will be a group box
+     * \param isGroupBox If TRUE, this will be a group box
      */
     virtual void setIsGroupBox( bool isGroupBox ) { mIsGroupBox = isGroupBox; }
 
     /**
      * Returns if this container is going to be rendered as a group box
      *
-     * \returns True if it will be a group box, false if it will be a tab
+     * \returns TRUE if it will be a group box, FALSE if it will be a tab
      */
     virtual bool isGroupBox() const { return mIsGroupBox; }
 
@@ -264,6 +270,18 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      */
     void setVisibilityExpression( const QgsOptionalExpression &visibilityExpression );
 
+    /**
+     * \brief backgroundColor
+     * \return background color of the container
+     * \since QGIS 3.8
+     */
+    QColor backgroundColor() const;
+
+    /**
+     * Sets the background color to \a backgroundColor
+     */
+    void setBackgroundColor( const QColor &backgroundColor );
+
   private:
     void saveConfiguration( QDomElement &elem ) const override;
     QString typeIdentifier() const override;
@@ -272,6 +290,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     QList<QgsAttributeEditorElement *> mChildren;
     int mColumnCount;
     QgsOptionalExpression mVisibilityExpression;
+    QColor mBackgroundColor;
 };
 
 /**
@@ -367,7 +386,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * Initializes the relation from the id
      *
      * \param relManager The relation manager to use for the initialization
-     * \returns true if the relation was found in the relationmanager
+     * \returns TRUE if the relation was found in the relationmanager
      */
     bool init( QgsRelationManager *relManager );
 
@@ -401,6 +420,20 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      */
     void setShowUnlinkButton( bool showUnlinkButton );
 
+    /**
+     * Determines if the "save child layer edits" button should be shown
+     *
+     * \since QGIS 3.14
+     */
+    void setShowSaveChildEditsButton( bool showSaveChildEditsButton );
+
+    /**
+     * Returns TRUE if the "save child layer edits" button should be shown.
+     *
+     * \since QGIS 3.14
+     */
+    bool showSaveChildEditsButton( ) const;
+
 
   private:
     void saveConfiguration( QDomElement &elem ) const override;
@@ -409,6 +442,88 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     QgsRelation mRelation;
     bool mShowLinkButton = true;
     bool mShowUnlinkButton = true;
+    bool mShowSaveChildEditsButton = true;
+};
+
+/**
+ * \ingroup core
+ * An attribute editor widget that will represent arbitrary QML code.
+ *
+ * \since QGIS 3.4
+ */
+class CORE_EXPORT QgsAttributeEditorQmlElement : public QgsAttributeEditorElement
+{
+  public:
+
+    /**
+     * Creates a new element which can display QML
+     *
+     * \param name         The name of the widget
+     * \param parent       The parent (used as container)
+    */
+    QgsAttributeEditorQmlElement( const QString &name, QgsAttributeEditorElement *parent )
+      : QgsAttributeEditorElement( AeTypeQmlElement, name, parent )
+    {}
+
+    QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
+
+    /**
+     * The QML code that will be represented within this widget.
+     *
+     * \since QGIS 3.4
+     */
+    QString qmlCode() const;
+
+    /**
+     * Sets the QML code that will be represented within this widget to \a qmlCode.
+     */
+    void setQmlCode( const QString &qmlCode );
+
+  private:
+    void saveConfiguration( QDomElement &elem ) const override;
+    QString typeIdentifier() const override;
+    QString mQmlCode;
+};
+
+
+/**
+ * \ingroup core
+ * An attribute editor widget that will represent arbitrary HTML code.
+ *
+ * \since QGIS 3.8
+ */
+class CORE_EXPORT QgsAttributeEditorHtmlElement : public QgsAttributeEditorElement
+{
+  public:
+
+    /**
+     * Creates a new element which can display HTML
+     *
+     * \param name         The name of the widget
+     * \param parent       The parent (used as container)
+    */
+    QgsAttributeEditorHtmlElement( const QString &name, QgsAttributeEditorElement *parent )
+      : QgsAttributeEditorElement( AeTypeHtmlElement, name, parent )
+    {}
+
+    QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
+
+    /**
+     * The QML code that will be represented within this widget.
+     *
+     * \since QGIS 3.4
+     */
+    QString htmlCode() const;
+
+    /**
+     * Sets the HTML code that will be represented within this widget to \a htmlCode.
+     */
+    void setHtmlCode( const QString &htmlCode );
+
+  private:
+    void saveConfiguration( QDomElement &elem ) const override;
+    QString typeIdentifier() const override;
+    QString mHtmlCode;
 };
 
 

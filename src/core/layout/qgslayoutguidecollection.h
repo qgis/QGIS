@@ -255,7 +255,7 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel, public 
     QList< QgsLayoutGuide * > guidesOnPage( int page );
 
     /**
-     * Returns true if the guide lines should be drawn.
+     * Returns TRUE if the guide lines should be drawn.
      * \see setVisible()
      */
     bool visible() const;

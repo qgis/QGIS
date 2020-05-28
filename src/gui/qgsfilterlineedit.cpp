@@ -18,6 +18,7 @@
 #include "qgsfilterlineedit.h"
 #include "qgsapplication.h"
 #include "qgsanimatedicon.h"
+#include "qgis.h"
 
 #include <QAction>
 #include <QToolButton>
@@ -89,7 +90,16 @@ void QgsFilterLineEdit::focusInEvent( QFocusEvent *e )
   QLineEdit::focusInEvent( e );
   if ( e->reason() == Qt::MouseFocusReason && ( isNull() || mSelectOnFocus ) )
   {
-    mFocusInEvent = true;
+    mWaitingForMouseRelease = true;
+  }
+}
+
+void QgsFilterLineEdit::mouseReleaseEvent( QMouseEvent *e )
+{
+  QLineEdit::mouseReleaseEvent( e );
+  if ( mWaitingForMouseRelease )
+  {
+    mWaitingForMouseRelease = false;
     selectAll();
   }
 }
@@ -198,8 +208,37 @@ bool QgsFilterLineEdit::shouldShowClear() const
 
 bool QgsFilterLineEdit::event( QEvent *event )
 {
-  if ( event->type() == QEvent::ReadOnlyChange )
+  if ( event->type() == QEvent::ReadOnlyChange || event->type() == QEvent::EnabledChange )
     updateClearIcon();
 
-  return QLineEdit::event( event );;
+  return QLineEdit::event( event );
 }
+
+void QgsFilterLineEdit::storeState()
+{
+  mLineEditState.text = text();
+  mLineEditState.selectionStart = selectionStart();
+  mLineEditState.selectionLength = selectedText().length();
+  mLineEditState.cursorPosition = cursorPosition();
+  mLineEditState.hasStateStored = true;
+}
+
+void QgsFilterLineEdit::restoreState()
+{
+  setText( mLineEditState.text );
+  setCursorPosition( mLineEditState.cursorPosition );
+  if ( mLineEditState.selectionStart > -1 )
+    setSelection( mLineEditState.selectionStart, mLineEditState.selectionLength );
+  mLineEditState.hasStateStored = false;
+}
+
+/// @cond PRIVATE
+void QgsSpinBoxLineEdit::focusInEvent( QFocusEvent *e )
+{
+  QgsFilterLineEdit::focusInEvent( e );
+  if ( isNull() )
+  {
+    clear();
+  }
+}
+/// @endcond

@@ -44,9 +44,9 @@ Represents a single parameter passed to a function.
 Constructor for Parameter.
 
 :param name: parameter name, used when named parameter are specified in an expression
-:param optional: set to true if parameter should be optional
+:param optional: set to ``True`` if parameter should be optional
 :param defaultValue: default value to use for optional parameters
-:param isSubExpression: set to true if this parameter is a sub-expression
+:param isSubExpression: set to ``True`` if this parameter is a sub-expression
 %End
 
         QString name() const;
@@ -56,7 +56,7 @@ Returns the name of the parameter.
 
         bool optional() const;
 %Docstring
-Returns true if the parameter is optional.
+Returns ``True`` if the parameter is optional.
 %End
 
         QVariant defaultValue() const;
@@ -66,7 +66,7 @@ Returns the default value for the parameter.
 
         bool isSubExpression() const;
 %Docstring
-Returns true if parameter argument is a separate sub-expression, and
+Returns ``True`` if parameter argument is a separate sub-expression, and
 should not be checked while determining referenced columns for the expression.
 
 .. versionadded:: 3.2
@@ -169,7 +169,7 @@ other permissible names for the function, e.g., deprecated names.
 
     bool lazyEval() const;
 %Docstring
-True if this function should use lazy evaluation.  Lazy evaluation functions take QgsExpression.Node objects
+``True`` if this function should use lazy evaluation.  Lazy evaluation functions take QgsExpression.Node objects
 rather than the node results when called.  You can use node->eval(parent, feature) to evaluate the node and return the result
 Functions are non lazy default and will be given the node return value when called.
 %End
@@ -180,7 +180,7 @@ Will be called during prepare to determine if the function is static.
 A function is static if it will return the same value for every feature with different
 attributes and/or geometry.
 
-By default this will return true, if all arguments that have been passed to the function
+By default this will return ``True``, if all arguments that have been passed to the function
 are also static.
 
 .. versionadded:: 3.0
@@ -215,7 +215,7 @@ Returns whether the function is only available if provided by a QgsExpressionCon
 
     virtual bool isDeprecated() const;
 %Docstring
-Returns true if the function is deprecated and should not be presented as a valid option
+Returns ``True`` if the function is deprecated and should not be presented as a valid option
 to users in expression builders.
 
 .. versionadded:: 3.0
@@ -266,7 +266,7 @@ function's func() method.
 
     virtual bool handlesNull() const;
 %Docstring
-Returns true if the function handles NULL values in arguments by itself, and the default
+Returns ``True`` if the function handles NULL values in arguments by itself, and the default
 NULL value handling should be skipped.
 %End
 
@@ -274,7 +274,7 @@ NULL value handling should be skipped.
 
     static bool allParamsStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context );
 %Docstring
-This will return true if all the params for the provided function ``node`` are static within the
+This will return ``True`` if all the params for the provided function ``node`` are static within the
 constraints imposed by the ``context`` within the given ``parent``.
 
 This can be used as callback for custom implementations of subclasses. It is the default for implementation

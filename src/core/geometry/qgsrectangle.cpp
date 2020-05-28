@@ -58,6 +58,13 @@ QgsRectangle QgsRectangle::fromCenterAndSize( QgsPointXY center, double width, d
   return QgsRectangle( xMin, yMin, xMax, yMax );
 }
 
+QgsRectangle QgsRectangle::scaled( double scaleFactor, const QgsPointXY *center ) const
+{
+  QgsRectangle scaledRect = QgsRectangle( *this );
+  scaledRect.scale( scaleFactor, center );
+  return scaledRect;
+}
+
 QgsRectangle QgsRectangle::operator-( const QgsVector v ) const
 {
   double xmin = mXmin - v.x();
@@ -97,7 +104,7 @@ QgsRectangle &QgsRectangle::operator+=( const QgsVector v )
 QString QgsRectangle::asWktCoordinates() const
 {
   QString rep =
-    qgsDoubleToString( mXmin ) + ' ' + qgsDoubleToString( mYmin ) + ", " +
+    qgsDoubleToString( mXmin ) + ' ' + qgsDoubleToString( mYmin ) + QLatin1String( ", " ) +
     qgsDoubleToString( mXmax ) + ' ' + qgsDoubleToString( mYmax );
 
   return rep;
@@ -106,11 +113,11 @@ QString QgsRectangle::asWktCoordinates() const
 QString QgsRectangle::asWktPolygon() const
 {
   QString rep =
-    QStringLiteral( "POLYGON((" ) +
-    qgsDoubleToString( mXmin ) + ' ' + qgsDoubleToString( mYmin ) + ", " +
-    qgsDoubleToString( mXmax ) + ' ' + qgsDoubleToString( mYmin ) + ", " +
-    qgsDoubleToString( mXmax ) + ' ' + qgsDoubleToString( mYmax ) + ", " +
-    qgsDoubleToString( mXmin ) + ' ' + qgsDoubleToString( mYmax ) + ", " +
+    QLatin1String( "POLYGON((" ) +
+    qgsDoubleToString( mXmin ) + ' ' + qgsDoubleToString( mYmin ) + QLatin1String( ", " ) +
+    qgsDoubleToString( mXmax ) + ' ' + qgsDoubleToString( mYmin ) + QLatin1String( ", " ) +
+    qgsDoubleToString( mXmax ) + ' ' + qgsDoubleToString( mYmax ) + QLatin1String( ", " ) +
+    qgsDoubleToString( mXmin ) + ' ' + qgsDoubleToString( mYmax ) + QLatin1String( ", " ) +
     qgsDoubleToString( mXmin ) + ' ' + qgsDoubleToString( mYmin ) +
     QStringLiteral( "))" );
 
@@ -142,7 +149,7 @@ QString QgsRectangle::toString( int precision ) const
           .arg( mXmax, 0, 'f', precision )
           .arg( mYmax, 0, 'f', precision );
 
-  QgsDebugMsgLevel( QString( "Extents : %1" ).arg( rep ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Extents : %1" ).arg( rep ), 4 );
 
   return rep;
 }
@@ -173,6 +180,25 @@ QString QgsRectangle::asPolygon() const
 QgsBox3d QgsRectangle::toBox3d( double zMin, double zMax ) const
 {
   return QgsBox3d( mXmin, mYmin, zMin, mXmax, mYmax, zMax );
+}
+
+QgsRectangle QgsRectangle::snappedToGrid( double spacing ) const
+{
+  // helper function
+  auto gridifyValue = []( double value, double spacing ) -> double
+  {
+    if ( spacing > 0 )
+      return  std::round( value / spacing ) * spacing;
+    else
+      return value;
+  };
+
+  return QgsRectangle(
+           gridifyValue( mXmin, spacing ),
+           gridifyValue( mYmin, spacing ),
+           gridifyValue( mXmax, spacing ),
+           gridifyValue( mYmax, spacing )
+         );
 }
 
 QDataStream &operator<<( QDataStream &out, const QgsRectangle &rectangle )

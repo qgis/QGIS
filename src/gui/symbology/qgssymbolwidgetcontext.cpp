@@ -14,10 +14,14 @@
  ***************************************************************************/
 #include "qgssymbolwidgetcontext.h"
 #include "qgsmapcanvas.h"
+#include "qgsmessagebar.h"
 #include "qgsproject.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgstemporalcontroller.h"
 
 QgsSymbolWidgetContext::QgsSymbolWidgetContext( const QgsSymbolWidgetContext &other )
   : mMapCanvas( other.mMapCanvas )
+  , mMessageBar( other.mMessageBar )
   , mAdditionalScopes( other.mAdditionalScopes )
 {
   if ( other.mExpressionContext )
@@ -29,6 +33,7 @@ QgsSymbolWidgetContext::QgsSymbolWidgetContext( const QgsSymbolWidgetContext &ot
 QgsSymbolWidgetContext &QgsSymbolWidgetContext::operator=( const QgsSymbolWidgetContext &other )
 {
   mMapCanvas = other.mMapCanvas;
+  mMessageBar = other.mMessageBar;
   mAdditionalScopes = other.mAdditionalScopes;
   if ( other.mExpressionContext )
   {
@@ -49,6 +54,16 @@ void QgsSymbolWidgetContext::setMapCanvas( QgsMapCanvas *canvas )
 QgsMapCanvas *QgsSymbolWidgetContext::mapCanvas() const
 {
   return mMapCanvas;
+}
+
+void QgsSymbolWidgetContext::setMessageBar( QgsMessageBar *bar )
+{
+  mMessageBar = bar;
+}
+
+QgsMessageBar *QgsSymbolWidgetContext::messageBar() const
+{
+  return mMessageBar;
 }
 
 void QgsSymbolWidgetContext::setExpressionContext( QgsExpressionContext *context )
@@ -85,6 +100,11 @@ QList<QgsExpressionContextScope *> QgsSymbolWidgetContext::globalProjectAtlasMap
     scopes << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
            << mMapCanvas->defaultExpressionContextScope()
            << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
+
+    if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast< const QgsExpressionContextScopeGenerator * >( mMapCanvas->temporalController() ) )
+    {
+      scopes << generator->createExpressionContextScope();
+    }
   }
   else
   {

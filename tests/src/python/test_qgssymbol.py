@@ -20,15 +20,14 @@
 __author__ = 'Nyall Dawson'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Nyall Dawson'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
 from utilities import unitTestDataPath
 
-from qgis.PyQt.QtCore import QDir
+from qgis.PyQt.QtCore import QDir, Qt, QSize
 from qgis.PyQt.QtGui import QImage, QColor, QPainter
+from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsGeometry,
                        QgsRectangle,
@@ -47,9 +46,14 @@ from qgis.core import (QgsGeometry,
                        QgsRenderChecker,
                        QgsSimpleMarkerSymbolLayer,
                        QgsSimpleMarkerSymbolLayerBase,
+                       QgsSimpleLineSymbolLayer,
+                       QgsSimpleFillSymbolLayer,
                        QgsUnitTypes,
                        QgsWkbTypes,
-                       QgsProject
+                       QgsProject,
+                       QgsReadWriteContext,
+                       QgsSymbolLayerUtils,
+                       QgsMarkerLineSymbolLayer
                        )
 
 from qgis.testing import unittest, start_app
@@ -72,7 +76,78 @@ class TestQgsSymbol(unittest.TestCase):
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
-    def txestGeometryRendering(self):
+    def testPythonAdditions(self):
+        """
+        Test PyQGIS additions to QgsSymbol
+        """
+        markerSymbol = QgsMarkerSymbol()
+        markerSymbol.symbolLayer(0).setColor(QColor(255, 255, 0))
+        self.assertEqual(len(markerSymbol), 1)
+        layers = [l.color().name() for l in markerSymbol]
+        self.assertEqual(layers, ['#ffff00'])
+        self.assertEqual(markerSymbol[0].color().name(), '#ffff00')
+        self.assertEqual(markerSymbol[-1].color().name(), '#ffff00')
+        with self.assertRaises(IndexError):
+            _ = markerSymbol[1]
+        with self.assertRaises(IndexError):
+            _ = markerSymbol[-2]
+        with self.assertRaises(IndexError):
+            _ = markerSymbol.symbolLayer(1)
+        with self.assertRaises(IndexError):
+            _ = markerSymbol.symbolLayer(-1)  # negative index only supported by []
+
+        with self.assertRaises(IndexError):
+            del markerSymbol[1]
+        with self.assertRaises(IndexError):
+            del markerSymbol[-2]
+
+        del markerSymbol[0]
+        self.assertEqual(len(markerSymbol), 0)
+        self.assertTrue(markerSymbol)
+
+        with self.assertRaises(IndexError):
+            _ = markerSymbol[0]
+        with self.assertRaises(IndexError):
+            _ = markerSymbol[-1]
+
+        with self.assertRaises(IndexError):
+            del markerSymbol[0]
+        with self.assertRaises(IndexError):
+            del markerSymbol[-1]
+
+        markerSymbol.appendSymbolLayer(
+            QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayerBase.Star, color=QColor(255, 0, 0),
+                                       strokeColor=QColor(0, 255, 0), size=10))
+        markerSymbol.appendSymbolLayer(
+            QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayerBase.Star, color=QColor(255, 255, 0),
+                                       strokeColor=QColor(0, 255, 255), size=10))
+
+        self.assertEqual(len(markerSymbol), 2)
+        layers = [l.color().name() for l in markerSymbol]
+        self.assertEqual(layers, ['#ff0000', '#ffff00'])
+        self.assertEqual(markerSymbol[0].color().name(), '#ff0000')
+        self.assertEqual(markerSymbol[-1].color().name(), '#ffff00')
+        self.assertEqual(markerSymbol[1].color().name(), '#ffff00')
+        self.assertEqual(markerSymbol[-2].color().name(), '#ff0000')
+        with self.assertRaises(IndexError):
+            _ = markerSymbol[2]
+        with self.assertRaises(IndexError):
+            _ = markerSymbol[-3]
+        with self.assertRaises(IndexError):
+            _ = markerSymbol.symbolLayer(2)
+        with self.assertRaises(IndexError):
+            _ = markerSymbol.symbolLayer(-1)  # negative index only supported by []
+
+        with self.assertRaises(IndexError):
+            del markerSymbol[2]
+        with self.assertRaises(IndexError):
+            del markerSymbol[-3]
+
+        del markerSymbol[1]
+        layers = [l.color().name() for l in markerSymbol]
+        self.assertEqual(layers, ['#ff0000'])
+
+    def testGeometryRendering(self):
         '''Tests rendering a bunch of different geometries, including bad/odd geometries.'''
 
         empty_multipolygon = QgsMultiPolygon()
@@ -432,7 +507,8 @@ class TestQgsSymbol(unittest.TestCase):
 
         painter = QPainter()
         ms = QgsMapSettings()
-        crs = QgsCoordinateReferenceSystem.fromProj4('+proj=ortho +lat_0=36.5 +lon_0=-118.8 +x_0=0 +y_0=0 +a=6371000 +b=6371000 +units=m +no_defs')
+        crs = QgsCoordinateReferenceSystem.fromProj(
+            '+proj=ortho +lat_0=36.5 +lon_0=-118.8 +x_0=0 +y_0=0 +a=6371000 +b=6371000 +units=m +no_defs')
         self.assertTrue(crs.isValid())
         ms.setDestinationCrs(crs)
         ms.setExtent(QgsRectangle(1374999.8, 3912610.7, 4724462.5, 6505499.6))
@@ -446,7 +522,8 @@ class TestQgsSymbol(unittest.TestCase):
         context.setCoordinateTransform(ct)
         context.setExtent(ct.transformBoundingBox(ms.extent(), QgsCoordinateTransform.ReverseTransform))
 
-        fill_symbol = QgsFillSymbol.createSimple({'color': '#ffffff', 'outline_color': '#ffffff', 'outline_width': '10'})
+        fill_symbol = QgsFillSymbol.createSimple(
+            {'color': '#ffffff', 'outline_color': '#ffffff', 'outline_width': '10'})
 
         painter.begin(image)
         try:
@@ -459,7 +536,7 @@ class TestQgsSymbol(unittest.TestCase):
 
         assert self.imageCheck('Reprojection errors polygon', 'reprojection_errors_polygon', image)
 
-        #also test linestring
+        # also test linestring
         linestring = QgsGeometry(geom.constGet().boundary())
         f.setGeometry(linestring)
         line_symbol = QgsLineSymbol.createSimple({'color': '#ffffff', 'outline_width': '10'})
@@ -504,6 +581,16 @@ class TestQgsMarkerSymbol(unittest.TestCase):
 
     def testSize(self):
         # test size and setSize
+        ms = QgsMapSettings()
+        extent = QgsRectangle(100, 200, 100, 200)
+        ms.setExtent(extent)
+        ms.setOutputSize(QSize(400, 400))
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        ms.setExtent(QgsRectangle(100, 150, 100, 150))
+        ms.setOutputDpi(ms.outputDpi() * 2)
+        context2 = QgsRenderContext.fromMapSettings(ms)
+        context2.setScaleFactor(300 / 25.4)
 
         # create a marker symbol with a single layer
         markerSymbol = QgsMarkerSymbol()
@@ -512,9 +599,13 @@ class TestQgsMarkerSymbol(unittest.TestCase):
             QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayerBase.Star, color=QColor(255, 0, 0),
                                        strokeColor=QColor(0, 255, 0), size=10))
         self.assertEqual(markerSymbol.size(), 10)
+        self.assertAlmostEqual(markerSymbol.size(context), 37.795275590551185, 3)
+        self.assertAlmostEqual(markerSymbol.size(context2), 118.11023622047244, 3)
         markerSymbol.setSize(20)
         self.assertEqual(markerSymbol.size(), 20)
         self.assertEqual(markerSymbol.symbolLayer(0).size(), 20)
+        self.assertAlmostEqual(markerSymbol.size(context), 75.59055118, 3)
+        self.assertAlmostEqual(markerSymbol.size(context2), 236.2204724409449, 3)
 
         # add additional layers
         markerSymbol.appendSymbolLayer(
@@ -524,12 +615,26 @@ class TestQgsMarkerSymbol(unittest.TestCase):
             QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayerBase.Star, color=QColor(255, 0, 0),
                                        strokeColor=QColor(0, 255, 0), size=30))
         self.assertEqual(markerSymbol.size(), 30)
+        self.assertAlmostEqual(markerSymbol.size(context), 113.38582677165356, 3)
+        self.assertAlmostEqual(markerSymbol.size(context2), 354.33070866141736, 3)
+
         markerSymbol.setSize(3)
         self.assertEqual(markerSymbol.size(), 3)
         # layer sizes should maintain relative size
         self.assertEqual(markerSymbol.symbolLayer(0).size(), 2)
         self.assertEqual(markerSymbol.symbolLayer(1).size(), 1)
         self.assertEqual(markerSymbol.symbolLayer(2).size(), 3)
+
+        # symbol layer in different size
+        markerSymbol.symbolLayer(1).setSize(15)
+        self.assertAlmostEqual(markerSymbol.size(context), 56.69291338582678, 3)
+        self.assertAlmostEqual(markerSymbol.size(context2), 177.16535433070868, 3)
+        markerSymbol.symbolLayer(1).setSizeUnit(QgsUnitTypes.RenderPixels)
+        self.assertAlmostEqual(markerSymbol.size(context), 15, 3)
+        self.assertAlmostEqual(markerSymbol.size(context2), 35.43307086614173, 3)
+        markerSymbol.symbolLayer(1).setSize(45)
+        self.assertAlmostEqual(markerSymbol.size(context), 45, 3)
+        self.assertAlmostEqual(markerSymbol.size(context2), 45, 3)
 
     def testAngle(self):
         # test angle and setAngle
@@ -621,6 +726,174 @@ class TestQgsMarkerSymbol(unittest.TestCase):
         self.assertEqual(markerSymbol.symbolLayer(0).sizeMapUnitScale(), QgsMapUnitScale(3000, 4000))
         self.assertEqual(markerSymbol.symbolLayer(1).sizeMapUnitScale(), QgsMapUnitScale(3000, 4000))
         self.assertEqual(markerSymbol.symbolLayer(2).sizeMapUnitScale(), QgsMapUnitScale(3000, 4000))
+
+
+class TestQgsLineSymbol(unittest.TestCase):
+
+    def setUp(self):
+        self.report = "<h1>Python QgsLineSymbol Tests</h1>\n"
+
+    def tearDown(self):
+        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(self.report)
+
+    def testWidth(self):
+        # test width and setWidth
+        ms = QgsMapSettings()
+        extent = QgsRectangle(100, 200, 100, 200)
+        ms.setExtent(extent)
+        ms.setOutputSize(QSize(400, 400))
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+        ms.setExtent(QgsRectangle(100, 150, 100, 150))
+        ms.setOutputDpi(ms.outputDpi() * 2)
+        context2 = QgsRenderContext.fromMapSettings(ms)
+        context2.setScaleFactor(300 / 25.4)
+
+        # create a line symbol with a single layer
+        line_symbol = QgsLineSymbol()
+        line_symbol.deleteSymbolLayer(0)
+        line_symbol.appendSymbolLayer(
+            QgsSimpleLineSymbolLayer(color=QColor(255, 0, 0), width=10))
+        self.assertEqual(line_symbol.width(), 10)
+        self.assertAlmostEqual(line_symbol.width(context), 37.795275590551185, 3)
+        self.assertAlmostEqual(line_symbol.width(context2), 118.11023622047244, 3)
+        line_symbol.setWidth(20)
+        self.assertEqual(line_symbol.width(), 20)
+        self.assertEqual(line_symbol.symbolLayer(0).width(), 20)
+        self.assertAlmostEqual(line_symbol.width(context), 75.59055118, 3)
+        self.assertAlmostEqual(line_symbol.width(context2), 236.2204724409449, 3)
+
+        # add additional layers
+        line_symbol.appendSymbolLayer(
+            QgsSimpleLineSymbolLayer(color=QColor(255, 0, 0), width=10))
+        line_symbol.appendSymbolLayer(
+            QgsSimpleLineSymbolLayer(color=QColor(255, 0, 0), width=30))
+        self.assertEqual(line_symbol.width(), 30)
+        self.assertAlmostEqual(line_symbol.width(context), 113.38582677165356, 3)
+        self.assertAlmostEqual(line_symbol.width(context2), 354.33070866141736, 3)
+
+        line_symbol.setWidth(3)
+        self.assertEqual(line_symbol.width(), 3)
+        # layer widths should maintain relative size
+        self.assertEqual(line_symbol.symbolLayer(0).width(), 2)
+        self.assertEqual(line_symbol.symbolLayer(1).width(), 1)
+        self.assertEqual(line_symbol.symbolLayer(2).width(), 3)
+
+        # symbol layer in different size
+        line_symbol.symbolLayer(1).setWidth(15)
+        self.assertAlmostEqual(line_symbol.width(context), 56.69291338582678, 3)
+        self.assertAlmostEqual(line_symbol.width(context2), 177.16535433070868, 3)
+        line_symbol.symbolLayer(1).setWidthUnit(QgsUnitTypes.RenderPixels)
+        self.assertAlmostEqual(line_symbol.width(context), 15, 3)
+        self.assertAlmostEqual(line_symbol.width(context2), 35.43307086614173, 3)
+        line_symbol.symbolLayer(1).setWidth(45)
+        self.assertAlmostEqual(line_symbol.width(context), 45, 3)
+        self.assertAlmostEqual(line_symbol.width(context2), 45, 3)
+
+
+class TestQgsFillSymbol(unittest.TestCase):
+
+    def setUp(self):
+        self.report = "<h1>Python QgsFillSymbol Tests</h1>\n"
+
+    def tearDown(self):
+        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(self.report)
+
+    def testForceRHR(self):
+        # test forcing right hand rule during rendering
+
+        s = QgsFillSymbol()
+        s.deleteSymbolLayer(0)
+        s.appendSymbolLayer(
+            QgsSimpleFillSymbolLayer(color=QColor(255, 0, 0), strokeColor=QColor(0, 255, 0)))
+        self.assertFalse(s.forceRHR())
+        s.setForceRHR(True)
+        self.assertTrue(s.forceRHR())
+        s.setForceRHR(False)
+        self.assertFalse(s.forceRHR())
+
+        s.setForceRHR(True)
+        doc = QDomDocument()
+        context = QgsReadWriteContext()
+        element = QgsSymbolLayerUtils.saveSymbol('test', s, doc, context)
+
+        s2 = QgsSymbolLayerUtils.loadSymbol(element, context)
+        self.assertTrue(s2.forceRHR())
+
+        # rendering test
+        s3 = QgsFillSymbol()
+        s3.deleteSymbolLayer(0)
+        s3.appendSymbolLayer(
+            QgsSimpleFillSymbolLayer(color=QColor(255, 200, 200), strokeColor=QColor(0, 255, 0), strokeWidth=2))
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacement(QgsMarkerLineSymbolLayer.FirstVertex)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+        s3.appendSymbolLayer(marker_line)
+
+        g = QgsGeometry.fromWkt(
+            'Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
+        rendered_image = self.renderGeometry(s3, g)
+        assert self.imageCheck('force_rhr_off', 'polygon_forcerhr_off', rendered_image)
+
+        s3.setForceRHR(True)
+        rendered_image = self.renderGeometry(s3, g)
+        assert self.imageCheck('force_rhr_on', 'polygon_forcerhr_on', rendered_image)
+
+    def renderGeometry(self, symbol, geom):
+        f = QgsFeature()
+        f.setGeometry(geom)
+
+        image = QImage(200, 200, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        extent = geom.get().boundingBox()
+        # buffer extent by 10%
+        if extent.width() > 0:
+            extent = extent.buffered((extent.height() + extent.width()) / 20.0)
+        else:
+            extent = extent.buffered(10)
+
+        ms.setExtent(extent)
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+
+        painter.begin(image)
+        try:
+            image.fill(QColor(0, 0, 0))
+            symbol.startRender(context)
+            symbol.renderFeature(f, context)
+            symbol.stopRender(context)
+        finally:
+            painter.end()
+
+        return image
+
+    def imageCheck(self, name, reference_image, image):
+        self.report += "<h2>Render {}</h2>\n".format(name)
+        temp_dir = QDir.tempPath() + '/'
+        file_name = temp_dir + 'symbol_' + name + ".png"
+        image.save(file_name, "PNG")
+        checker = QgsRenderChecker()
+        checker.setControlPathPrefix("symbol")
+        checker.setControlName("expected_" + reference_image)
+        checker.setRenderedImage(file_name)
+        checker.setColorTolerance(2)
+        result = checker.compareImages(name, 20)
+        self.report += checker.report()
+        print((self.report))
+        return result
 
 
 if __name__ == '__main__':

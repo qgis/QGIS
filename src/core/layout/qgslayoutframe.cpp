@@ -17,6 +17,7 @@
 #include "qgslayoutmultiframe.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayout.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsLayoutFrame::QgsLayoutFrame( QgsLayout *layout, QgsLayoutMultiFrame *multiFrame )
   : QgsLayoutItem( layout )
@@ -133,6 +134,10 @@ QgsExpressionContext QgsLayoutFrame::createExpressionContext() const
   return context;
 }
 
+QgsLayoutItem::ExportLayerBehavior QgsLayoutFrame::exportLayerBehavior() const
+{
+  return CanGroupWithItemsOfSameType;
+}
 
 QString QgsLayoutFrame::displayName() const
 {

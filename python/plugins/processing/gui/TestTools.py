@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'February 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import posixpath
 import re
@@ -61,7 +57,7 @@ from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QMessageBox
 
 def extractSchemaPath(filepath):
     """
-    Trys to find where the file is relative to the QGIS source code directory.
+    Tries to find where the file is relative to the QGIS source code directory.
     If it is already placed in the processing or QGIS testdata directory it will
     return an appropriate schema and relative filepath
 
@@ -135,7 +131,14 @@ def splitAlgIdAndParameters(command):
     """
     exp = re.compile(r"""['"](.*?)['"]\s*,\s*(.*)""")
     m = exp.search(command[len('processing.run('):-1])
-    return m.group(1), ast.literal_eval(m.group(2))
+    alg_id = m.group(1)
+    params = m.group(2)
+
+    # replace QgsCoordinateReferenceSystem('EPSG:4325') with just string value
+    exp = re.compile(r"""QgsCoordinateReferenceSystem\((['"].*?['"])\)""")
+    params = exp.sub('\\1', params)
+
+    return alg_id, ast.literal_eval(params)
 
 
 def createTest(text):

@@ -52,6 +52,36 @@ This method is safe to call from the main thread.
 
 };
 
+class QgsScopedProxyProgressTask
+{
+%Docstring
+
+Scoped :py:class:`QgsScopedProxyProgressTask`, which automatically adds the proxy task
+to the application task manager on construction and finalizes the task
+when it goes out of scope.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsproxyprogresstask.h"
+%End
+  public:
+
+    QgsScopedProxyProgressTask( const QString &description );
+%Docstring
+Constructor for QgsScopedProxyProgressTask, with the specified ``description``.
+%End
+
+    ~QgsScopedProxyProgressTask();
+
+    void setProgress( double progress );
+%Docstring
+Sets the ``progress`` (from 0 to 100) for the proxied operation.
+%End
+
+};
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

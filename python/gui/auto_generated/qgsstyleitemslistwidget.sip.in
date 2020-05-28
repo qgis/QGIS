@@ -1,0 +1,119 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsstyleitemslistwidget.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsStyleItemsListWidget : QWidget
+{
+%Docstring
+A reusable widget for showing a filtered list of entities from a QgsStyle database.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsstyleitemslistwidget.h"
+%End
+  public:
+
+    QgsStyleItemsListWidget( QWidget *parent /TransferThis/ );
+%Docstring
+Constructor for QgsStyleItemsListWidget, with the specified ``parent`` widget.
+%End
+
+    void setStyle( QgsStyle *style );
+%Docstring
+Sets the ``style`` database associated with the widget.
+
+Ownership of ``style`` is not transferred, and the caller is responsible for ensuring that
+it exists for the lifetime of the widget.
+%End
+
+    void setEntityType( QgsStyle::StyleEntity type );
+%Docstring
+Sets the ``type`` of style entity to show in the widget.
+
+.. seealso:: :py:func:`setSymbolType`
+%End
+
+
+    void setSymbolType( QgsSymbol::SymbolType type );
+%Docstring
+Sets the ``type`` of symbols to show in the widget.
+
+.. seealso:: :py:func:`setEntityType`
+%End
+
+    void setLayerType( QgsWkbTypes::GeometryType type );
+%Docstring
+Sets the layer ``type`` to show in the widget. Set ``type`` to QgsWkbTypes.UnknownGeometry if no
+layer type filter is desired.
+
+This setting only applies to label settings style entities.
+%End
+
+    QString currentTagFilter() const;
+%Docstring
+Returns the current tag filter set for the widget, if any is set.
+%End
+
+
+    QString currentItemName() const;
+%Docstring
+Returns the name of the item currently selected in the widget.
+
+.. seealso:: :py:func:`currentEntityType`
+%End
+
+    QgsStyle::StyleEntity currentEntityType() const;
+%Docstring
+Returns the type of the item currently selected in the widget.
+
+.. seealso:: :py:func:`currentItemName`
+%End
+
+  protected:
+
+    virtual void showEvent( QShowEvent *event );
+
+
+  signals:
+
+    void selectionChanged( const QString &name, QgsStyle::StyleEntity type );
+%Docstring
+Emitted when the selected item is changed in the widget.
+
+:param name: Newly selected item name
+:param type: Newly selected item type
+%End
+
+    void saveEntity();
+%Docstring
+Emitted when the user has opted to save a new entity to the style
+database, by clicking the "Save" button in the widget.
+
+It is the caller's responsibility to handle this in an appropriate
+manner given the context of the widget.
+%End
+
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsstyleitemslistwidget.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

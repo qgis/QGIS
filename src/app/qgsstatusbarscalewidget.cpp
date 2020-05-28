@@ -17,13 +17,14 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QToolButton>
 #include <QValidator>
 
 #include "qgsstatusbarscalewidget.h"
 
 #include "qgsmapcanvas.h"
 #include "qgsscalecombobox.h"
+#include "qgsproject.h"
+#include "qgsprojectviewsettings.h"
 
 QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget *parent )
   : QWidget( parent )
@@ -46,21 +47,12 @@ QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget 
   // so we need to set font for it separately
   mScale->setMinimumWidth( 10 );
   mScale->setContentsMargins( 0, 0, 0, 0 );
-  mScale->setWhatsThis( tr( "Displays the current map scale" ) );
   mScale->setToolTip( tr( "Current map scale (formatted as x:y)" ) );
-
-  mLockButton = new QToolButton();
-  mLockButton->setIcon( QIcon( QgsApplication::getThemeIcon( "/lockedGray.svg" ) ) );
-  mLockButton->setToolTip( tr( "Lock the scale to use magnifier to zoom in or out." ) );
-  mLockButton->setCheckable( true );
-  mLockButton->setChecked( false );
-  mLockButton->setAutoRaise( true );
 
   // layout
   mLayout = new QHBoxLayout( this );
   mLayout->addWidget( mLabel );
   mLayout->addWidget( mScale );
-  mLayout->addWidget( mLockButton );
   mLayout->setContentsMargins( 0, 0, 0, 0 );
   mLayout->setAlignment( Qt::AlignRight );
   mLayout->setSpacing( 0 );
@@ -68,9 +60,6 @@ QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget 
   setLayout( mLayout );
 
   connect( mScale, &QgsScaleComboBox::scaleChanged, this, &QgsStatusBarScaleWidget::userScale );
-
-  connect( mLockButton, &QAbstractButton::toggled, this, &QgsStatusBarScaleWidget::scaleLockChanged );
-  connect( mLockButton, &QAbstractButton::toggled, mScale, &QWidget::setDisabled );
 }
 
 void QgsStatusBarScaleWidget::setScale( double scale )
@@ -87,7 +76,12 @@ void QgsStatusBarScaleWidget::setScale( double scale )
 
 bool QgsStatusBarScaleWidget::isLocked() const
 {
-  return mLockButton->isChecked();
+  return !mScale->isEnabled();
+}
+
+void QgsStatusBarScaleWidget::setLocked( bool state )
+{
+  mScale->setDisabled( state );
 }
 
 void QgsStatusBarScaleWidget::setFont( const QFont &font )
@@ -96,9 +90,22 @@ void QgsStatusBarScaleWidget::setFont( const QFont &font )
   mScale->lineEdit()->setFont( font );
 }
 
-void QgsStatusBarScaleWidget::updateScales( const QStringList &scales )
+void QgsStatusBarScaleWidget::updateScales()
 {
-  mScale->updateScales( scales );
+  if ( QgsProject::instance()->viewSettings()->useProjectScales() )
+  {
+    const QVector< double > scales = QgsProject::instance()->viewSettings()->mapScales();
+    QStringList textScales;
+    textScales.reserve( scales.size() );
+    for ( double scale : scales )
+      textScales << QStringLiteral( "1:%1" ).arg( scale );
+    mScale->updateScales( textScales );
+  }
+  else
+  {
+    // use global scales
+    mScale->updateScales();
+  }
 }
 
 void QgsStatusBarScaleWidget::userScale() const

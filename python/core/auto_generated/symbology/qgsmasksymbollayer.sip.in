@@ -1,0 +1,100 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsmasksymbollayer.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMaskMarkerSymbolLayer : QgsMarkerSymbolLayer
+{
+%Docstring
+Special symbol layer that uses its sub symbol as a selective mask
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsmasksymbollayer.h"
+%End
+  public:
+    QgsMaskMarkerSymbolLayer();
+%Docstring
+Simple constructor
+%End
+
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+%Docstring
+Create a new QgsMaskMarkerSymbolLayer
+
+:param properties: A property map to deserialize saved information from properties()
+
+:return: A new QgsMaskMarkerSymbolLayer
+%End
+
+    virtual QgsMaskMarkerSymbolLayer *clone() const /Factory/;
+
+    virtual QgsSymbol *subSymbol();
+    virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
+
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
+    virtual bool hasDataDefinedProperties() const;
+
+
+    virtual QgsStringMap properties() const;
+
+
+    virtual QString layerType() const;
+
+    virtual void startRender( QgsSymbolRenderContext &context );
+
+    virtual void stopRender( QgsSymbolRenderContext &context );
+
+    virtual void renderPoint( QPointF point, QgsSymbolRenderContext &context );
+
+    virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context );
+
+
+    virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
+
+    bool enabled() const;
+%Docstring
+Whether some masked symbol layers are defined
+%End
+
+    virtual QgsSymbolLayerReferenceList masks() const;
+%Docstring
+Returns a list of references to symbol layers that are masked by the sub symbol's shape.
+
+:return: a list of references to masked symbol layers
+
+.. seealso:: :py:func:`setMasks`
+%End
+
+    void setMasks( QgsSymbolLayerReferenceList maskedLayers );
+%Docstring
+Sets the symbol layers that will be masked by the sub symbol's shape.
+
+:param maskedLayers: list of references to symbol layers
+
+.. seealso:: :py:func:`masks`
+%End
+
+  private:
+    QgsMaskMarkerSymbolLayer( const QgsMaskMarkerSymbolLayer & );
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsmasksymbollayer.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,0 +1,62 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaskidprovider.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsMaskIdProvider
+{
+%Docstring
+
+Some rendering operations may need multiple mask images. This is the case for label rendering in which we can
+have different mask images: one different for each labeling rule for instance.
+Some label layers may need to share their mask images, some other need to have distinct mask images.
+Label layers share the same mask image if the set of symbol layers they mask is the same.
+
+A "mask id" is then associated to each label layer. They are contiguous integer numbers starting at 0.
+
+This class allows the creation of mask ids based on the different label layers and to give a mask id from a label layer.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsmaskidprovider.h"
+%End
+  public:
+
+    int insertLabelLayer( const QString &layerId, const QString &ruleId, const QSet<QgsSymbolLayerReference> &maskedSymbolLayers );
+%Docstring
+Inserts a label layer to the provider and returns its associated mask id.
+
+:param layerId: id of the vector layer that carries these labels
+:param ruleId: id of the labeling rule, if any
+:param maskedSymbolLayers: the symbol layers that are masked by this label layer
+
+:return: the associated mask id.
+%End
+
+    int maskId( const QString &labelLayerId = QString(), const QString &labelRuleId = QString() ) const;
+%Docstring
+Returns the mask id associated with a label layer and its optional label rule.
+Returns -1 if not found.
+%End
+
+    int size() const;
+%Docstring
+Returns the number of identifiers allocated.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaskidprovider.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

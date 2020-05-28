@@ -21,10 +21,6 @@ __author__ = 'Michael Minn'
 __date__ = 'May 2010'
 __copyright__ = '(C) 2010, Michael Minn'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
                        QgsProcessing,
@@ -34,7 +30,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
 class TextToFloat(QgisFeatureBasedAlgorithm):
-
     FIELD = 'FIELD'
 
     def group(self):
@@ -76,6 +71,9 @@ class TextToFloat(QgisFeatureBasedAlgorithm):
     def prepareAlgorithm(self, parameters, context, feedback):
         self.field_name = self.parameterAsString(parameters, self.FIELD, context)
         return True
+
+    def supportInPlaceEdit(self, layer):
+        return False
 
     def sourceFlags(self):
         return QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks

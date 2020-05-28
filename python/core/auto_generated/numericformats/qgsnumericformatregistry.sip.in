@@ -1,0 +1,103 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgsnumericformatregistry.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsNumericFormatRegistry
+{
+%Docstring
+The QgsNumericFormatRegistry manages registered classes of QgsNumericFormat.
+
+A reference to the QgsFieldFormatterRegistry can be obtained from
+:py:func:`QgsApplication.numericFormatRegistry()`
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsnumericformatregistry.h"
+%End
+  public:
+
+    explicit QgsNumericFormatRegistry();
+%Docstring
+You should not normally need to create your own numeric format registry.
+
+Use the one provided by `QgsApplication.numericFormatRegistry()` instead.
+%End
+    ~QgsNumericFormatRegistry();
+
+    QStringList formats() const;
+%Docstring
+Returns a list of the format IDs currently contained in the registry.
+%End
+
+    void addFormat( QgsNumericFormat *format /Transfer/ );
+%Docstring
+Adds a new ``format`` to the registry.
+
+Ownership is transferred to the registry.
+%End
+
+    void removeFormat( const QString &id );
+%Docstring
+Removes the format with matching ``id`` from the registry.
+%End
+
+    QgsNumericFormat *format( const QString &id ) const /TransferBack/;
+%Docstring
+Creates a new numeric format by ``id``. If there is no such ``id`` registered,
+a default QgsFallbackNumericFormat with a null id will be returned instead.
+
+The caller takes ownership of the returned object.
+%End
+
+    QgsNumericFormat *create( const QString &id, const QVariantMap &configuration, const QgsReadWriteContext &context ) const /TransferBack/;
+%Docstring
+Creates a new numeric format by ``id``, using the supplied ``configuration``. If there is no such ``id`` registered,
+a default QgsFallbackNumericFormat with a null id will be returned instead.
+
+The caller takes ownership of the returned object.
+%End
+
+    QgsNumericFormat *createFromXml( const QDomElement &element, const QgsReadWriteContext &context ) const /TransferBack/;
+%Docstring
+Creates a new numeric format from an XML ``element``. If there is no matching format ID registered,
+a default QgsFallbackNumericFormat will be returned instead.
+
+The caller takes ownership of the returned object.
+%End
+
+    QgsNumericFormat *fallbackFormat() const /Factory/;
+%Docstring
+Returns a basic numeric formatter which can be used
+to represent any number in an default manner.
+
+The caller takes ownership of the returned object.
+%End
+
+    QString visibleName( const QString &id ) const;
+%Docstring
+Returns the translated, user-visible name for the format with matching ``id``.
+%End
+
+    int sortKey( const QString &id ) const;
+%Docstring
+Returns the sorting key for the format with matching ``id``.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgsnumericformatregistry.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

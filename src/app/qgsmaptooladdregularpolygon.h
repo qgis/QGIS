@@ -22,6 +22,7 @@
 #include "qgis_app.h"
 
 class QSpinBox;
+class QgsSnapIndicator;
 
 class APP_EXPORT QgsMapToolAddRegularPolygon: public QgsMapToolCapture
 {
@@ -50,6 +51,9 @@ class APP_EXPORT QgsMapToolAddRegularPolygon: public QgsMapToolCapture
     //! delete the spin box to enter the number of sides, if it exists
     void deleteNumberSidesSpinBox();
 
+    //! Convenient method to release (activate/deactivate) tools
+    void release( QgsMapMouseEvent *e );
+
     /**
      * The parent map tool, e.g. the add feature tool.
      *  Completed regular polygon will be added to this tool by calling its addCurve() method.
@@ -61,6 +65,12 @@ class APP_EXPORT QgsMapToolAddRegularPolygon: public QgsMapToolCapture
     QgsGeometryRubberBand *mTempRubberBand = nullptr;
     //! Regular shape as a regular polygon
     QgsRegularPolygon mRegularPolygon;
+
+    //! Layer type which will be used for rubberband
+    QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::LineGeometry;
+
+    //! Snapping indicators
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
 };
 

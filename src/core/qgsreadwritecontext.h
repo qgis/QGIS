@@ -21,6 +21,7 @@
 #include "qgspathresolver.h"
 #include "qgis.h"
 #include "qgsprojecttranslator.h"
+#include "qgscoordinatetransformcontext.h"
 
 class QgsReadWriteContextCategoryPopper;
 
@@ -107,21 +108,32 @@ class CORE_EXPORT QgsReadWriteContext
     const QgsProjectTranslator *projectTranslator( ) const { return mProjectTranslator; }
 
     /**
-     * Sets the project translator. Means it shouldn't conform mDefaultTranslator anymore.
+     * Sets the project translator.
      * It's usually the QgsProject where the function with the context is made and won't be changed anymore.
      *
      * \since QGIS 3.4
      */
     void setProjectTranslator( QgsProjectTranslator *projectTranslator );
 
-  private:
+    /**
+     * Returns data provider coordinate transform context
+     *
+     * \see setTransformContext()
+     *
+     * \since QGIS 3.8
+     */
+    QgsCoordinateTransformContext transformContext() const;
 
-    class DefaultTranslator : public QgsProjectTranslator
-    {
-        // QgsProjectTranslator interface
-      public:
-        QString translate( const QString &context, const QString &sourceText, const char *disambiguation, int n ) const;
-    };
+    /**
+     * Sets data coordinate transform context to \a transformContext
+     *
+     * \see transformContext()
+     *
+     * \since QGIS 3.8
+     */
+    void setTransformContext( const QgsCoordinateTransformContext &transformContext );
+
+  private:
 
     //! Pop the last category
     void leaveCategory();
@@ -131,7 +143,7 @@ class CORE_EXPORT QgsReadWriteContext
     QStringList mCategories = QStringList();
     QgsProjectTranslator *mProjectTranslator = nullptr;
     friend class QgsReadWriteContextCategoryPopper;
-    DefaultTranslator mDefaultTranslator;
+    QgsCoordinateTransformContext mCoordinateTransformContext = QgsCoordinateTransformContext();
 };
 
 

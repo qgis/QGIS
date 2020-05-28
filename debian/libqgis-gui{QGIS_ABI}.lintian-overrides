@@ -1,2 +1,10 @@
-libqgis-gui{QGIS_ABI}: shlib-calls-exit usr/lib/libqgis_gui.so.{QGIS_ABI}
-libqgis-gui{QGIS_ABI}: no-symbols-control-file usr/lib/libqgis_gui.so.{QGIS_ABI}
+shlib-calls-exit *
+no-symbols-control-file *
+spelling-error-in-binary * Lik Link
+spelling-error-in-binary * LsIt List
+spelling-error-in-binary * TEh The
+spelling-error-in-binary * aKs ask
+spelling-error-in-binary * akS ask
+spelling-error-in-binary * hapen happen
+spelling-error-in-binary * oFO of
+spelling-error-in-binary * yElD yield

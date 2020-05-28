@@ -296,7 +296,8 @@ std::string DRW_Converter::encodeNum( int c )
   return std::string( ( char * )ret );
 }
 
-/** 's' is a string with at least 4 bytes length
+/**
+ * 's' is a string with at least 4 bytes length
 ** returned 'b' is byte length of encoded char: 2,3 or 4
 **/
 int DRW_Converter::decodeNum( std::string s, int *b )

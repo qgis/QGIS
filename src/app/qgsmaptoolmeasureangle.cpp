@@ -24,8 +24,8 @@
 #include "qgssnappingutils.h"
 #include "qgssettings.h"
 #include "qgssnapindicator.h"
+#include "qgsmapmouseevent.h"
 
-#include <QMouseEvent>
 #include <cmath>
 
 QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas *canvas )

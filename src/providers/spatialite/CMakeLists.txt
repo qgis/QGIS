@@ -12,30 +12,21 @@ SET(SPATIALITE_SRCS
   qgsspatialiteconnpool.cpp
   qgsspatialitefeatureiterator.cpp
   qgsspatialitetablemodel.cpp
-)
-
-SET(SPATIALITE_MOC_HDRS
-  qgsspatialiteprovider.h
-  qgsspatialiteconnpool.h
-  qgsspatialitedataitems.h
-  qgsspatialitetablemodel.h
-  qgsspatialiteconnection.h
+  qgsspatialiteproviderconnection.cpp
+  qgsspatialitetransaction.cpp
 )
 
 IF (WITH_GUI)
   SET(SPATIALITE_SRCS ${SPATIALITE_SRCS}
+    qgsspatialiteprovidergui.cpp
+    qgsspatialitedataitemguiprovider.cpp
     qgsspatialitesourceselect.cpp
-  )
-  SET(SPATIALITE_MOC_HDRS ${SPATIALITE_MOC_HDRS}
-    qgsspatialitesourceselect.h
   )
 ENDIF ()
 
 
 ########################################################
 # Build
-
-QT5_WRAP_CPP(SPATIALITE_MOC_SRCS ${SPATIALITE_MOC_HDRS})
 
 IF (WITH_GUI)
   INCLUDE_DIRECTORIES(SYSTEM
@@ -44,22 +35,29 @@ IF (WITH_GUI)
 ENDIF ()
 
 INCLUDE_DIRECTORIES(
+  ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/providers/ogr
   ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
 )
 INCLUDE_DIRECTORIES(SYSTEM
+  ${GDAL_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${SPATIALITE_INCLUDE_DIR}
 )
 
-ADD_LIBRARY (spatialiteprovider MODULE ${SPATIALITE_SRCS} ${SPATIALITE_MOC_SRCS})
+ADD_LIBRARY (spatialiteprovider MODULE ${SPATIALITE_SRCS})
 
 TARGET_LINK_LIBRARIES(spatialiteprovider
   qgis_core
@@ -70,6 +68,7 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES (spatialiteprovider
     qgis_gui
   )
+  ADD_DEPENDENCIES(spatialiteprovider ui)
 ENDIF ()
 
 # clang-tidy

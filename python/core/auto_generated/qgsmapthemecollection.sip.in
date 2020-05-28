@@ -47,13 +47,15 @@ Initialize layer record with a map layer - it will be stored as a weak pointer
 
         QgsMapLayer *layer() const;
 %Docstring
-Returns map layer or null if the layer does not exist anymore
+Returns map layer or ``None`` if the layer does not exist anymore
 %End
 
         void setLayer( QgsMapLayer *layer );
 %Docstring
 Sets the map layer for this record
 %End
+
+        bool isVisible;
 
         bool usingCurrentStyle;
         QString currentStyle;
@@ -120,11 +122,21 @@ Sets whether the map theme contains valid expanded/collapsed state of nodes
         QSet<QString> expandedGroupNodes() const;
 %Docstring
 Returns a set of group identifiers for group nodes that should have expanded state (other group nodes should be collapsed).
-The returned value is valid only when hasExpandedStateInfo() returns true.
+The returned value is valid only when hasExpandedStateInfo() returns ``True``.
 Group identifiers are built using group names, a sub-group name is prepended by parent group's identifier
 and a forward slash, e.g. "level1/level2"
 
 .. versionadded:: 3.2
+%End
+
+        QSet<QString> checkedGroupNodes() const;
+%Docstring
+Returns a set of group identifiers for group nodes that should have checked state (other group nodes should be unchecked).
+The returned value is valid only when hasCheckedStateInfo() returns ``True``.
+Group identifiers are built using group names, a sub-group name is prepended by parent group's identifier
+and a forward slash, e.g. "level1/level2"
+
+.. versionadded:: 3.10.1
 %End
 
         void setExpandedGroupNodes( const QSet<QString> &expandedGroupNodes );
@@ -132,6 +144,13 @@ and a forward slash, e.g. "level1/level2"
 Sets a set of group identifiers for group nodes that should have expanded state. See expandedGroupNodes().
 
 .. versionadded:: 3.2
+%End
+
+        void setCheckedGroupNodes( const QSet<QString> &checkedGroupNodes );
+%Docstring
+Sets a set of group identifiers for group nodes that should have checked state. See checkedGroupNodes().
+
+.. versionadded:: 3.10.1
 %End
 
     };
@@ -167,14 +186,22 @@ Updates a map theme within the collection.
 
     void removeMapTheme( const QString &name );
 %Docstring
-Remove an existing map theme from collection.
+Removes an existing map theme from collection.
 
 .. versionadded:: 3.0
 %End
 
+    bool renameMapTheme( const QString &name, const QString &newName );
+%Docstring
+Renames the existing map theme called ``name`` to ``newName``.
+Returns ``True`` if the rename was successful, or ``False`` if it failed (e.g. due to a duplicate name for ``newName``).
+
+.. versionadded:: 3.14
+%End
+
     void clear();
 %Docstring
-Remove all map themes from the collection.
+Removes all map themes from the collection.
 %End
 
     QStringList mapThemes() const;
@@ -305,6 +332,13 @@ Emitted when map themes within the collection are changed.
 Emitted when a map theme changes definition.
 
 .. versionadded:: 3.0
+%End
+
+    void mapThemeRenamed( const QString &name, const QString &newName );
+%Docstring
+Emitted when a map theme within the collection is renamed.
+
+.. versionadded:: 3.14
 %End
 
     void projectChanged();

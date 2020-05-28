@@ -18,12 +18,15 @@
 
 #define SIP_NO_FILE
 
+#include <functional>
+
 #include "qgspointxy.h"
 
 class QgsGeometry;
 class QgsAbstractGeometry;
 class QgsLineString;
 class QgsLineSegment2D;
+class QgsFeedback;
 
 /**
  * \ingroup core
@@ -146,6 +149,40 @@ class QgsInternalGeometryEngine
      */
     QgsGeometry variableWidthBufferByM( int segments ) const;
 
+    /**
+     * Returns a list of \a count random points generated inside a \a polygon geometry.
+     *
+     * Optionally, a specific random \a seed can be used when generating points. If \a seed
+     * is 0, then a completely random sequence of points will be generated.
+     *
+     * The \a acceptPoint function is used to filter result candidates. If the function returns
+     * FALSE, then the point will not be accepted and another candidate generated.
+     *
+     * The optional \a feedback argument can be used to provide cancellation support during
+     * the point generation.
+     *
+     * \since QGIS 3.10
+     */
+    static QVector< QgsPointXY > randomPointsInPolygon( const QgsGeometry &polygon, int count,
+        const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr );
+
+    /**
+     * Attempts to convert a non-curved geometry into a curved geometry type (e.g.
+     * LineString to CompoundCurve, Polygon to CurvePolygon).
+     *
+     * The \a distanceTolerance specifies the maximum deviation allowed between the original location
+     * of vertices and where they would fall on the candidate curved geometry.
+     *
+     * This method only consider a segments as suitable for replacing with an arc if the points are all
+     * regularly spaced on the candidate arc. The \a pointSpacingAngleTolerance parameter specifies the maximum
+     * angular deviation (in radians) allowed when testing for regular point spacing.
+     *
+     * \note The API is considered EXPERIMENTAL and can be changed without a notice
+     *
+     * \since QGIS 3.14
+     */
+    QgsGeometry convertToCurves( double distanceTolerance, double angleTolerance ) const;
+
   private:
     const QgsAbstractGeometry *mGeometry = nullptr;
 };
@@ -174,7 +211,7 @@ class CORE_EXPORT QgsRay2D
      *
      * If found, the intersection point will be stored in \a intersectPoint.
      *
-     * Returns true if the ray intersects the line segment.
+     * Returns TRUE if the ray intersects the line segment.
      */
     bool intersects( const QgsLineSegment2D &segment, QgsPointXY &intersectPoint ) const;
 
@@ -213,7 +250,7 @@ class CORE_EXPORT QgsLineSegmentDistanceComparer
      * line segment \a cd.
      * \param ab line segment: left hand side of the comparison operator
      * \param cd line segment: right hand side of the comparison operator
-     * \returns true if ab < cd (ab is closer than cd) to origin
+     * \returns TRUE if ab < cd (ab is closer than cd) to origin
      */
     bool operator()( QgsLineSegment2D ab, QgsLineSegment2D cd ) const;
 

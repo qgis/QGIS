@@ -104,7 +104,7 @@ class QgsLocatorFiltersModel : public QAbstractTableModel
 
     QgsLocator *mLocator = nullptr;
 
-    // changes are deferred to support cancelation
+    // changes are deferred to support cancellation
     QHash< QgsLocatorFilter *, QString > mPrefixes;
     QHash< QgsLocatorFilter *, bool > mEnabledChanges;
     QHash< QgsLocatorFilter *, bool > mDefaultChanges;

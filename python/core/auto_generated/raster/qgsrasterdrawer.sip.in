@@ -29,7 +29,7 @@ Draws raster data.
 :param p: destination QPainter
 :param viewPort: viewport to render
 :param qgsMapToPixel: map to pixel converter
-:param feedback: optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
+:param feedback: optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
 %End
 
   protected:

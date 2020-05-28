@@ -30,7 +30,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
-
+#include "qgsapplication.h"
 
 QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -78,15 +78,18 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer
 
   mModel->clear();
 
-  Q_FOREACH ( const QString name, mLayer->styleManager()->styles() )
+  const QStringList styles = mLayer->styleManager()->styles();
+  for ( const QString &styleName : styles )
   {
-    QString stylename = name;
-    QStandardItem *item = new QStandardItem( stylename );
+    QStandardItem *item = new QStandardItem( styleName );
+    item->setData( styleName );
     mModel->appendRow( item );
   }
 
   QString active = mLayer->styleManager()->currentStyle();
   currentStyleChanged( active );
+
+  connect( mModel, &QStandardItemModel::itemChanged, this, &QgsMapLayerStyleManagerWidget::renameStyle );
 }
 
 void QgsMapLayerStyleManagerWidget::styleClicked( const QModelIndex &index )
@@ -111,8 +114,9 @@ void QgsMapLayerStyleManagerWidget::currentStyleChanged( const QString &name )
 
 void QgsMapLayerStyleManagerWidget::styleAdded( const QString &name )
 {
-  QgsDebugMsg( "Style added" );
+  QgsDebugMsg( QStringLiteral( "Style added" ) );
   QStandardItem *item = new QStandardItem( name );
+  item->setData( name );
   mModel->appendRow( item );
 }
 
@@ -134,12 +138,13 @@ void QgsMapLayerStyleManagerWidget::styleRenamed( const QString &oldname, const 
 
   QStandardItem *item = items.at( 0 );
   item->setText( newname );
+  item->setData( newname );
 }
 
 void QgsMapLayerStyleManagerWidget::addStyle()
 {
   bool ok;
-  QString text = QInputDialog::getText( nullptr, tr( "New style" ),
+  QString text = QInputDialog::getText( nullptr, tr( "New Style" ),
                                         tr( "Style name:" ), QLineEdit::Normal,
                                         QStringLiteral( "new style" ), &ok );
   if ( !ok || text.isEmpty() )
@@ -171,9 +176,17 @@ void QgsMapLayerStyleManagerWidget::removeStyle()
   }
   else
   {
-    QgsDebugMsg( "Failed to remove current style" );
+    QgsDebugMsg( QStringLiteral( "Failed to remove current style" ) );
   }
 
+}
+
+void QgsMapLayerStyleManagerWidget::renameStyle( QStandardItem *item )
+{
+  const QString oldName = item->data().toString();
+  const QString newName = item->text();
+  item->setData( newName );
+  whileBlocking( this )->mLayer->styleManager()->renameStyle( oldName, newName );
 }
 
 void QgsMapLayerStyleManagerWidget::saveAsDefault()
@@ -189,15 +202,15 @@ void QgsMapLayerStyleManagerWidget::saveAsDefault()
       askToUser.setText( tr( "Save default style to: " ) );
       askToUser.setIcon( QMessageBox::Question );
       askToUser.addButton( tr( "Cancel" ), QMessageBox::RejectRole );
-      askToUser.addButton( tr( "Local database" ), QMessageBox::NoRole );
-      askToUser.addButton( tr( "Datasource database" ), QMessageBox::YesRole );
+      askToUser.addButton( tr( "Local Database" ), QMessageBox::NoRole );
+      askToUser.addButton( tr( "Datasource Database" ), QMessageBox::YesRole );
 
       switch ( askToUser.exec() )
       {
         case 0:
           return;
         case 2:
-          layer->saveStyleToDatabase( QLatin1String( "" ), QLatin1String( "" ), true, QLatin1String( "" ), errorMsg );
+          layer->saveStyleToDatabase( QString(), QString(), true, QString(), errorMsg );
           if ( errorMsg.isNull() )
           {
             return;
@@ -232,8 +245,8 @@ void QgsMapLayerStyleManagerWidget::loadDefault()
       askToUser.setText( tr( "Load default style from: " ) );
       askToUser.setIcon( QMessageBox::Question );
       askToUser.addButton( tr( "Cancel" ), QMessageBox::RejectRole );
-      askToUser.addButton( tr( "Local database" ), QMessageBox::NoRole );
-      askToUser.addButton( tr( "Datasource database" ), QMessageBox::YesRole );
+      askToUser.addButton( tr( "Local Database" ), QMessageBox::NoRole );
+      askToUser.addButton( tr( "Datasource Database" ), QMessageBox::YesRole );
 
       switch ( askToUser.exec() )
       {

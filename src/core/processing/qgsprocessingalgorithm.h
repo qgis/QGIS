@@ -32,9 +32,9 @@
 class QgsProcessingProvider;
 class QgsProcessingFeedback;
 class QgsFeatureSink;
-class QgsProcessingFeedback;
 class QgsProcessingModelAlgorithm;
 class QgsProcessingAlgorithmConfigurationWidget;
+class QgsMeshLayer;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -74,6 +74,11 @@ class CORE_EXPORT QgsProcessingAlgorithm
       FlagRequiresMatchingCrs = 1 << 5, //!< Algorithm requires that all input layers have matching coordinate reference systems
       FlagNoThreading = 1 << 6, //!< Algorithm is not thread safe and cannot be run in a background thread, e.g. for algorithms which manipulate the current project, layer selections, or with external dependencies which are not thread-safe.
       FlagDisplayNameIsLiteral = 1 << 7, //!< Algorithm's display name is a static literal string, and should not be translated or automatically formatted. For use with algorithms named after commands, e.g. GRASS 'v.in.ogr'.
+      FlagSupportsInPlaceEdits = 1 << 8, //!< Algorithm supports in-place editing
+      FlagKnownIssues = 1 << 9, //!< Algorithm has known issues
+      FlagCustomException = 1 << 10, //!< Algorithm raises custom exception notices, don't use the standard ones
+      FlagPruneModelBranchesBasedOnAlgorithmResults = 1 << 11, //!< Algorithm results will cause remaining model branches to be pruned based on the results of running the algorithm
+      FlagSkipGenericModelLogging = 1 << 12, //!< When running as part of a model, the generic algorithm setup and results logging should be skipped
       FlagDeprecated = FlagHideFromToolbox | FlagHideFromModeler, //!< Algorithm is deprecated
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -121,9 +126,12 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * algorithms in a model, allowing them to adjust their behavior at run time
      * according to some user configuration.
      *
+     * Raises a QgsProcessingException if a new algorithm instance could not be created,
+     * e.g. if there is an issue with the subclass' createInstance() method.
+     *
      * \see initAlgorithm()
      */
-    QgsProcessingAlgorithm *create( const QVariantMap &configuration = QVariantMap() ) const SIP_TRANSFERBACK;
+    QgsProcessingAlgorithm *create( const QVariantMap &configuration = QVariantMap() ) const SIP_THROW( QgsProcessingException ) SIP_TRANSFERBACK;
 
     /**
      * Returns the algorithm name, used for identifying the algorithm. This string
@@ -182,8 +190,9 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * helpString() or helpUrl().
      * \see helpUrl()
      * \see shortHelpString()
+     * \deprecated Unused, will be removed in QGIS 4.0
      */
-    virtual QString helpString() const;
+    Q_DECL_DEPRECATED virtual QString helpString() const SIP_DEPRECATED;
 
     /**
      * Returns a url pointing to the algorithm's help page.
@@ -228,7 +237,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
     virtual Flags flags() const;
 
     /**
-     * Returns true if the algorithm can execute. Algorithm subclasses can return false
+     * Returns TRUE if the algorithm can execute. Algorithm subclasses can return FALSE
      * here to indicate that they are not able to execute, e.g. as a result of unmet
      * external dependencies. If specified, the \a errorMessage argument will be filled
      * with a localised error message describing why the algorithm cannot execute.
@@ -240,7 +249,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * of this algorithm in the supplied \a context. The \a message parameter will be
      * filled with explanatory text if validation fails.
      * Overridden implementations should also check this base class implementation.
-     * \returns true if parameters are acceptable for the algorithm.
+     * \returns TRUE if parameters are acceptable for the algorithm.
      */
     virtual bool checkParameterValues( const QVariantMap &parameters,
                                        QgsProcessingContext &context, QString *message SIP_OUT = nullptr ) const;
@@ -302,9 +311,59 @@ class CORE_EXPORT QgsProcessingAlgorithm
     const QgsProcessingOutputDefinition *outputDefinition( const QString &name ) const;
 
     /**
-     * Returns true if this algorithm generates HTML outputs.
+     * Returns TRUE if this algorithm generates HTML outputs.
      */
     bool hasHtmlOutputs() const;
+
+    /**
+     * Property availability, used for QgsProcessingAlgorithm::VectorProperties
+     * in order to determine if properties are available or not
+     */
+    enum PropertyAvailability
+    {
+      NotAvailable, //!< Properties are not available
+      Available, //!< Properties are available
+    };
+
+    /**
+     * Properties of a vector source or sink used in an algorithm.
+     *
+     * \since QGIS 3.14
+     */
+    struct VectorProperties
+    {
+      //! Fields
+      QgsFields fields;
+
+      //! Geometry (WKB) type
+      QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown;
+
+      //! Coordinate Reference System
+      QgsCoordinateReferenceSystem crs;
+
+      //! Availability of the properties. By default properties are not available.
+      QgsProcessingAlgorithm::PropertyAvailability availability = QgsProcessingAlgorithm::NotAvailable;
+    };
+
+    /**
+     * Returns the vector properties which will be used for the \a sink with matching name.
+     *
+     * The \a parameters argument specifies the values of all parameters which would be used to generate
+     * the sink. These can be used alongside the provided \a context in order to pre-evaluate inputs
+     * when required in order to determine the sink's properties.
+     *
+     * The \a sourceProperties map will contain the vector properties of the various sources used
+     * as inputs to the algorithm. These will only be available in certain circumstances (e.g. when the
+     * algorithm is used within a model), so implementations will need to be adaptable to circumstances
+     * when either \a sourceParameters is empty or \a parameters is empty, and use whatever information
+     * is passed in order to make a best guess determination of the output properties.
+     *
+     * \since QGIS 3.14
+     */
+    virtual QgsProcessingAlgorithm::VectorProperties sinkProperties( const QString &sink,
+        const QVariantMap &parameters,
+        QgsProcessingContext &context,
+        const QMap< QString, QgsProcessingAlgorithm::VectorProperties > &sourceProperties ) const;
 
     /**
      * Executes the algorithm using the specified \a parameters. This method internally
@@ -315,7 +374,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * Algorithm progress should be reported using the supplied \a feedback object.
      *
-     * If specified, \a ok will be set to true if algorithm was successfully run.
+     * If specified, \a ok will be set to TRUE if algorithm was successfully run.
      *
      * \returns A map of algorithm outputs. These may be output layer references, or calculated
      * values such as statistical calculations.
@@ -339,7 +398,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     /**
      * Runs the algorithm, which has been prepared by an earlier call to prepare().
-     * This method is safe to call from any thread. Returns true if the algorithm was successfully executed.
+     * This method is safe to call from any thread. Returns TRUE if the algorithm was successfully executed.
      * After runPrepared() has finished, the postProcess() method should be called from the main thread
      * to allow the algorithm to perform any required cleanup tasks and return its final result.
      * \see prepare()
@@ -363,7 +422,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
     /**
      * If an algorithm subclass implements a custom parameters widget, a copy of this widget
      * should be constructed and returned by this method.
-     * The base class implementation returns nullptr, which indicates that an autogenerated
+     * The base class implementation returns NULLPTR, which indicates that an autogenerated
      * parameters widget should be used.
      */
     virtual QWidget *createCustomParametersWidget( QWidget *parent = nullptr ) const SIP_FACTORY;
@@ -374,14 +433,14 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * Optionally, a \a source can be specified which will be used to populate the context if it
      * implements the QgsExpressionContextGenerator interface.
      */
-    QgsExpressionContext createExpressionContext( const QVariantMap &parameters,
+    virtual QgsExpressionContext createExpressionContext( const QVariantMap &parameters,
         QgsProcessingContext &context, QgsProcessingFeatureSource *source = nullptr ) const;
 
     /**
      * Checks whether the coordinate reference systems for the specified set of \a parameters
      * are valid for the algorithm. For instance, the base implementation performs
      * checks to ensure that all input CRS are equal
-     * Returns true if \a parameters have passed the CRS check.
+     * Returns TRUE if \a parameters have passed the CRS check.
      */
     virtual bool validateInputCrs( const QVariantMap &parameters,
                                    QgsProcessingContext &context ) const;
@@ -407,7 +466,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * This method should return a 'pristine' instance of the algorithm class.
      */
-    virtual QgsProcessingAlgorithm *createInstance() const = 0 SIP_FACTORY;
+    virtual QgsProcessingAlgorithm *createInstance() const = 0 SIP_FACTORY SIP_VIRTUALERRORHANDLER( processing_exception_handler );
 
     /**
      * Initializes the algorithm using the specified \a configuration.
@@ -431,16 +490,16 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     /**
      * Adds a parameter \a definition to the algorithm. Ownership of the definition is transferred to the algorithm.
-     * Returns true if parameter could be successfully added, or false if the parameter could not be added (e.g.
+     * Returns TRUE if parameter could be successfully added, or FALSE if the parameter could not be added (e.g.
      * as a result of a duplicate name).
      *
      * This should usually be called from a subclass' initAlgorithm() implementation.
      *
-     * If the \a createOutput argument is true, then a corresponding output definition will also be created
+     * If the \a createOutput argument is TRUE, then a corresponding output definition will also be created
      * (and added to the algorithm) where appropriate. E.g. when adding a QgsProcessingParameterVectorDestination
-     * and \a createOutput is true, then a QgsProcessingOutputVectorLayer output will be created and
+     * and \a createOutput is TRUE, then a QgsProcessingOutputVectorLayer output will be created and
      * added to the algorithm. There is no need to call addOutput() to manually add a corresponding output
-     * for this vector. If \a createOutput is false then this automatic output creation will not
+     * for this vector. If \a createOutput is FALSE then this automatic output creation will not
      * occur.
      *
      * \see initAlgorithm()
@@ -456,7 +515,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     /**
      * Adds an output \a definition to the algorithm. Ownership of the definition is transferred to the algorithm.
-     * Returns true if the output could be successfully added, or false if the output could not be added (e.g.
+     * Returns TRUE if the output could be successfully added, or FALSE if the output could not be added (e.g.
      * as a result of a duplicate name).
      *
      * This should usually be called from a subclass' initAlgorithm() implementation.
@@ -491,11 +550,11 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * well-behaved algorithms should periodically check \a feedback to determine whether the
      * algorithm should be canceled and exited early.
      *
-     * If the preparation was successful algorithms must return true. If a false value is returned
+     * If the preparation was successful algorithms must return TRUE. If a FALSE value is returned
      * this indicates that the preparation could not be completed, and the algorithm execution
      * will be canceled.
      *
-     * \returns true if preparation was successful.
+     * \returns TRUE if preparation was successful.
      * \see processAlgorithm()
      * \see postProcessAlgorithm()
      */
@@ -517,11 +576,10 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * well-behaved algorithms should periodically check \a feedback to determine whether the
      * algorithm should be canceled and exited early.
      *
-     * This method will not be called if the prepareAlgorithm() step failed (returned false).
+     * This method will not be called if the prepareAlgorithm() step failed (returned FALSE).
      *
-     * c++ implementations of processAlgorithm can throw the QgsProcessingException exception
-     * to indicate that a fatal error occurred within the execution. Python based subclasses
-     * should raise GeoAlgorithmExecutionException for the same purpose.
+     * Implementations of processAlgorithm can throw the QgsProcessingException exception
+     * to indicate that a fatal error occurred within the execution.
      *
      * \returns A map of algorithm outputs. These may be output layer references, or calculated
      * values such as statistical calculations. Unless the algorithm subclass overrides
@@ -550,7 +608,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * algorithms which are run as a step in a larger model or as a subcomponent of a script-based algorithm
      * will call postProcessAlgorithm from the same thread as that model/script it being executed in.
      *
-     * postProcessAlgorithm will not be called if the prepareAlgorithm() step failed (returned false),
+     * postProcessAlgorithm will not be called if the prepareAlgorithm() step failed (returned FALSE),
      * or if an exception was raised by the processAlgorithm() step.
      *
      * \returns A map of algorithm outputs. These may be output layer references, or calculated
@@ -583,6 +641,12 @@ class CORE_EXPORT QgsProcessingAlgorithm
     int parameterAsInt( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
 
     /**
+     * Evaluates the parameter with matching \a name to a list of integer values.
+     * \since QGIS 3.4
+     */
+    QList<int> parameterAsInts( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+
+    /**
      * Evaluates the parameter with matching \a name to a enum value.
      */
     int parameterAsEnum( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
@@ -598,6 +662,12 @@ class CORE_EXPORT QgsProcessingAlgorithm
     bool parameterAsBool( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
 
     /**
+     * Evaluates the parameter with matching \a name to a static boolean value.
+     * \since QGIS 3.8
+     */
+    bool parameterAsBoolean( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+
+    /**
      * Evaluates the parameter with matching \a name to a feature sink.
      *
      * Sinks will either be taken from \a context's active project, or created from external
@@ -610,9 +680,11 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * to the sink, e.g. via calling QgsProcessingUtils::mapLayerFromString().
      *
      * This function creates a new object and the caller takes responsibility for deleting the returned object.
+     *
+     * \throws QgsProcessingException
      */
     QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT,
-                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) const SIP_FACTORY;
+                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = nullptr ) const SIP_THROW( QgsProcessingException ) SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a name to a feature source.
@@ -635,9 +707,44 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * The \a preferredFormat argument is used to specify to desired file extension to use when a temporary
      * layer export is required.
+     *
+     * When an algorithm is capable of handling multi-layer input files (such as Geopackage), it is preferable
+     * to use parameterAsCompatibleSourceLayerPathAndLayerName() which may avoid conversion in more situations.
      */
     QString parameterAsCompatibleSourceLayerPath( const QVariantMap &parameters, const QString &name,
         QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = nullptr );
+
+    /**
+     * Evaluates the parameter with matching \a name to a source vector layer file path and layer name of compatible format.
+     *
+     * If the parameter is evaluated to an existing layer, and that layer is not of the format listed in the
+     * \a compatibleFormats argument, then the layer will first be exported to a compatible format
+     * in a temporary location. The function will then return the path to that temporary file.
+     *
+     * \a compatibleFormats should consist entirely of lowercase file extensions, e.g. 'shp'.
+     *
+     * The \a preferredFormat argument is used to specify to desired file extension to use when a temporary
+     * layer export is required. This defaults to shapefiles, because shapefiles are the future (don't believe the geopackage hype!).
+     *
+     * This method should be preferred over parameterAsCompatibleSourceLayerPath() when an algorithm is able
+     * to correctly handle files with multiple layers. Unlike parameterAsCompatibleSourceLayerPath(), it will not force
+     * a conversion in this case and will return the target layer name in the \a layerName argument.
+     *
+     * \param parameters input parameter value map
+     * \param name name of target parameter
+     * \param context processing context
+     * \param compatibleFormats a list of lowercase file extensions compatible with the algorithm
+     * \param preferredFormat preferred format extension to use if conversion if required
+     * \param feedback feedback object
+     * \param layerName will be set to the target layer name for multi-layer sources (e.g. Geopackage)
+     *
+     * \returns path to source layer, or nearly converted compatible layer
+     *
+     * \see parameterAsCompatibleSourceLayerPath()
+     * \since QGIS 3.10
+     */
+    QString parameterAsCompatibleSourceLayerPathAndLayerName( const QVariantMap &parameters, const QString &name,
+        QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = nullptr, QString *layerName SIP_OUT = nullptr );
 
     /**
      * Evaluates the parameter with matching \a name to a map layer.
@@ -656,6 +763,18 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * need to handle deletion of the returned layer.
      */
     QgsRasterLayer *parameterAsRasterLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a mesh layer.
+     *
+     * Layers will either be taken from \a context's active project, or loaded from external
+     * sources and stored temporarily in the \a context. In either case, callers do not
+     * need to handle deletion of the returned layer.
+     *
+     * \since QGIS 3.6
+     */
+    QgsMeshLayer *parameterAsMeshLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
 
     /**
      * Evaluates the parameter with matching \a name to a output layer destination.
@@ -747,6 +866,13 @@ class CORE_EXPORT QgsProcessingAlgorithm
     QList< QgsMapLayer *> parameterAsLayerList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
+     * Evaluates the parameter with matching \a name to a list of files (for QgsProcessingParameterMultipleLayers in QgsProcessing:TypeFile mode).
+     *
+     * \since QGIS 3.10
+     */
+    QStringList parameterAsFileList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
      * Evaluates the parameter with matching \a name to a range of values.
      */
     QList<double> parameterAsRange( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
@@ -755,6 +881,62 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * Evaluates the parameter with matching \a name to a list of fields.
      */
     QStringList parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a print layout.
+     *
+     * \warning This method is not safe to run in a background thread, so it must either be used within a prepareAlgorithm
+     * implementation (which runs in the main thread), or the algorithm must return the FlagNoThreading flag.
+     *
+     * \since QGIS 3.8
+     */
+    QgsPrintLayout *parameterAsLayout( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a name to a print layout item, taken from the specified \a layout.
+     *
+     * \warning This method is not safe to run in a background thread, so it must either be used within a prepareAlgorithm
+     * implementation (which runs in the main thread), or the algorithm must return the FlagNoThreading flag.
+     *
+     * \since QGIS 3.8
+     */
+    QgsLayoutItem *parameterAsLayoutItem( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsPrintLayout *layout );
+
+    /**
+     * Evaluates the parameter with matching \a name to a color, or returns an invalid color if the parameter was not set.
+     *
+     * \since QGIS 3.10
+     */
+    QColor parameterAsColor( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a name to a connection name string.
+     *
+     * \since QGIS 3.14
+     */
+    QString parameterAsConnectionName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a name to a database schema name string.
+     *
+     * \since QGIS 3.14
+     */
+    QString parameterAsSchema( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a name to a database table name string.
+     *
+     * \since QGIS 3.14
+     */
+    QString parameterAsDatabaseTableName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a name to a DateTime, or returns an invalid date time if the parameter was not set.
+     *
+     * \since QGIS 3.14
+     */
+    QDateTime parameterAsDateTime( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+
 
     /**
      * Returns a user-friendly string to use as an error when a source parameter could
@@ -798,6 +980,15 @@ class CORE_EXPORT QgsProcessingAlgorithm
      */
     static QString invalidSinkError( const QVariantMap &parameters, const QString &name );
 
+    /**
+     * Checks whether this algorithm supports in-place editing on the given \a layer
+     * Default implementation returns FALSE.
+     *
+     * \return TRUE if the algorithm supports in-place editing
+     * \since QGIS 3.4
+     */
+    virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
+
   private:
 
     QgsProcessingProvider *mProvider = nullptr;
@@ -810,9 +1001,11 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     bool createAutoOutputForParameter( QgsProcessingParameterDefinition *parameter );
 
+
     friend class QgsProcessingProvider;
     friend class TestQgsProcessing;
     friend class QgsProcessingModelAlgorithm;
+    friend class QgsProcessingToolboxProxyModel;
 
 #ifdef SIP_RUN
     QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other );
@@ -855,9 +1048,54 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
       */
     QgsProcessingFeatureBasedAlgorithm() = default;
 
+    QgsProcessingAlgorithm::Flags flags() const override;
+
+    /**
+     * Processes an individual input \a feature from the source. Algorithms should implement their
+     * logic in this method for performing the algorithm's operation (e.g. replacing the feature's
+     * geometry with the centroid of the original feature geometry for a 'centroid' type
+     * algorithm).
+     *
+     * Implementations should return a list containing the modified feature. Returning an empty an list
+     * will indicate that this feature should be 'skipped', and will not be added to the algorithm's output.
+     * Subclasses can use this approach to filter the incoming features as desired.
+     *
+     * Additionally, multiple features can be returned for a single input feature. Each returned feature
+     * will be added to the algorithm's output. This allows for "explode" type algorithms where a single
+     * input feature results in multiple output features.
+     *
+     * The provided \a feedback object can be used to push messages to the log and for giving feedback
+     * to users. Note that handling of progress reports and algorithm cancellation is handled by
+     * the base class and subclasses do not need to reimplement this logic.
+     *
+     * Algorithms can throw a QgsProcessingException if a fatal error occurred which should
+     * prevent the algorithm execution from continuing. This can be annoying for users though as it
+     * can break valid model execution - so use with extreme caution, and consider using
+     * \a feedback to instead report non-fatal processing failures for features instead.
+     */
+    virtual QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) SIP_THROW( QgsProcessingException ) = 0 SIP_VIRTUALERRORHANDLER( processing_exception_handler );
+
   protected:
 
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+
+    /**
+     * Returns the name of the parameter corresponding to the input layer.
+     *
+     * By default this is the standard "INPUT" parameter name.
+     *
+     * \since QGIS 3.12
+     */
+    virtual QString inputParameterName() const;
+
+    /**
+     * Returns the translated description of the parameter corresponding to the input layer.
+     *
+     * By default this is a translated "Input layer" string.
+     *
+     * \since QGIS 3.12
+     */
+    virtual QString inputParameterDescription() const;
 
     /**
      * Returns the translated, user visible name for any layers created by this algorithm.
@@ -883,6 +1121,13 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * Returns the processing feature source flags to be used in the algorithm.
      */
     virtual QgsProcessingFeatureSource::Flag sourceFlags() const;
+
+    /**
+     * Returns the feature sink flags to be used for the output.
+     *
+     * \since QGIS 3.4.1
+     */
+    virtual QgsFeatureSink::SinkFlags sinkFlags() const;
 
     /**
      * Maps the input WKB geometry type (\a inputWkbType) to the corresponding
@@ -928,30 +1173,6 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      */
     QgsCoordinateReferenceSystem sourceCrs() const;
 
-    /**
-     * Processes an individual input \a feature from the source. Algorithms should implement their
-     * logic in this method for performing the algorithm's operation (e.g. replacing the feature's
-     * geometry with the centroid of the original feature geometry for a 'centroid' type
-     * algorithm).
-     *
-     * Implementations should return a list containing the modified feature. Returning an empty an list
-     * will indicate that this feature should be 'skipped', and will not be added to the algorithm's output.
-     * Subclasses can use this approach to filter the incoming features as desired.
-     *
-     * Additionally, multiple features can be returned for a single input feature. Each returned feature
-     * will be added to the algorithm's output. This allows for "explode" type algorithms where a single
-     * input feature results in multiple output features.
-     *
-     * The provided \a feedback object can be used to push messages to the log and for giving feedback
-     * to users. Note that handling of progress reports and algorithm cancelation is handled by
-     * the base class and subclasses do not need to reimplement this logic.
-     *
-     * Algorithms can throw a QgsProcessingException if a fatal error occurred which should
-     * prevent the algorithm execution from continuing. This can be annoying for users though as it
-     * can break valid model execution - so use with extreme caution, and consider using
-     * \a feedback to instead report non-fatal processing failures for features instead.
-     */
-    virtual QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) SIP_THROW( QgsProcessingException ) = 0 SIP_VIRTUALERRORHANDLER( processing_exception_handler );
 
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override SIP_THROW( QgsProcessingException );
 
@@ -960,6 +1181,28 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * source layer. The default implementation requests all attributes and geometry.
      */
     virtual QgsFeatureRequest request() const;
+
+    /**
+     * Checks whether this algorithm supports in-place editing on the given \a layer
+     * Default implementation for feature based algorithms run some basic compatibility
+     * checks based on the geometry type of the layer.
+     *
+     * \return TRUE if the algorithm supports in-place editing
+     * \since QGIS 3.4
+     */
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
+
+    /**
+     * Read the source from \a parameters and \a context and set it
+     *
+     * \since QGIS 3.4
+     */
+    void prepareSource( const QVariantMap &parameters, QgsProcessingContext &context );
+
+    QgsProcessingAlgorithm::VectorProperties sinkProperties( const QString &sink,
+        const QVariantMap &parameters,
+        QgsProcessingContext &context,
+        const QMap< QString, QgsProcessingAlgorithm::VectorProperties > &sourceProperties ) const override;
 
   private:
 

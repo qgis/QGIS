@@ -76,6 +76,12 @@ to change due to centralization.
 %End
   public:
 
+    enum StyleSheetType
+    {
+      Qt,
+      WebBrowser,
+    };
+
     static const char *QGIS_ORGANIZATION_NAME;
     static const char *QGIS_ORGANIZATION_DOMAIN;
     static const char *QGIS_APPLICATION_NAME;
@@ -143,7 +149,7 @@ for resources in their own datastores e.g. a Qt4 resource bundle.
    be reverted to 'default'.
 %End
 
-    static QString resolvePkgPath( );
+    static QString resolvePkgPath();
 %Docstring
 Calculate the application pkg path
 
@@ -200,7 +206,7 @@ but don't have commit access. *
 %Docstring
 Returns the path to the developers map file.
 The developers map was created by using leaflet framework,
-it shows the doc/contributors.json file.
+it shows the contributors.json file.
 
 .. versionadded:: 2.7
 %End
@@ -503,21 +509,23 @@ Gets application icon
 Returns whether this machine uses big or little endian
 %End
 
-
-    static QString reportStyleSheet();
+    static QString reportStyleSheet( QgsApplication::StyleSheetType styleSheetType = QgsApplication::StyleSheetType::Qt );
 %Docstring
-Returns a standard css style sheet for reports.
+Returns a css style sheet for reports, the ``styleSheetType`` argument
+determines what type of stylesheet is supported by the widget.
 
 Typically you will use this method by doing:
 QString myStyle = QgsApplication.reportStyleSheet();
 textBrowserReport->document()->setDefaultStyleSheet(myStyle);
+if you are using a QgsWebView you will need to manually inject
+the CSS into a head -> script tag instead.
 
-:return: QString containing the CSS 2.1 compliant stylesheet.
+:return: the stylesheet CSS rules.
 
 .. note::
 
-   you can use the special Qt extensions too, for example
-   the gradient fills for backgrounds.
+   if styleSheetType equals StyleSheetType.Qt you can use the special Qt extensions too,
+   for example the gradient fills for backgrounds.
 %End
 
     static QString showSettings();
@@ -588,6 +596,32 @@ Apply the skipped drivers list to gdal
 .. seealso:: :py:func:`skippedGdalDrivers`
 %End
 
+    static void registerGdalDriversFromSettings();
+%Docstring
+Register gdal drivers, excluding the ones mentioned in "gdal/skipList" setting.
+
+.. versionadded:: 3.10
+%End
+
+    static QStringList deferredSkippedGdalDrivers();
+%Docstring
+Returns the list of gdal drivers that have been disabled in the current session,
+and thus, for safety, should not be disabled right now, but at the
+next application restart.
+
+.. versionadded:: 3.10
+%End
+
+    static void setSkippedGdalDrivers( const QStringList &skippedGdalDrivers,
+                                       const QStringList &deferredSkippedGdalDrivers );
+%Docstring
+Sets the list of gdal drivers that should be disabled (``skippedGdalDrivers``),
+but excludes for now the ones defines in ``deferredSkippedGdalDrivers``.
+This writes the "gdal/skipList" setting.
+
+.. versionadded:: 3.10
+%End
+
     static int maxThreads();
 %Docstring
 Gets maximum concurrent thread count
@@ -614,21 +648,21 @@ wide background task handling.
 .. versionadded:: 3.0
 %End
 
-    static QgsColorSchemeRegistry *colorSchemeRegistry();
+    static QgsColorSchemeRegistry *colorSchemeRegistry() /KeepReference/;
 %Docstring
 Returns the application's color scheme registry, used for managing color schemes.
 
 .. versionadded:: 3.0
 %End
 
-    static QgsPaintEffectRegistry *paintEffectRegistry();
+    static QgsPaintEffectRegistry *paintEffectRegistry() /KeepReference/;
 %Docstring
 Returns the application's paint effect registry, used for managing paint effects.
 
 .. versionadded:: 3.0
 %End
 
-    static QgsRendererRegistry *rendererRegistry();
+    static QgsRendererRegistry *rendererRegistry() /KeepReference/;
 %Docstring
 Returns the application's renderer registry, used for managing vector layer renderers.
 
@@ -636,7 +670,7 @@ Returns the application's renderer registry, used for managing vector layer rend
 %End
 
 
-    static QgsDataItemProviderRegistry *dataItemProviderRegistry();
+    static QgsDataItemProviderRegistry *dataItemProviderRegistry() /KeepReference/;
 %Docstring
 Returns the application's data item provider registry, which keeps a list of data item
 providers that may add items to the browser tree.
@@ -649,42 +683,90 @@ providers that may add items to the browser tree.
 Returns the application's SVG cache, used for caching SVG images and handling parameter replacement
 within SVG files.
 
+.. seealso:: :py:func:`imageCache`
+
 .. versionadded:: 3.0
 %End
 
-    static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry();
+    static QgsImageCache *imageCache();
+%Docstring
+Returns the application's image cache, used for caching resampled versions of raster images.
+
+.. seealso:: :py:func:`svgCache`
+
+.. versionadded:: 3.6
+%End
+
+    static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry() /KeepReference/;
 %Docstring
 Returns the application's network content registry used for fetching temporary files during QGIS session
 
 .. versionadded:: 3.2
 %End
 
-    static QgsSymbolLayerRegistry *symbolLayerRegistry();
+    static QgsValidityCheckRegistry *validityCheckRegistry() /KeepReference/;
+%Docstring
+Returns the application's validity check registry, used for managing validity checks.
+
+.. versionadded:: 3.6
+%End
+
+    static QgsSymbolLayerRegistry *symbolLayerRegistry() /KeepReference/;
 %Docstring
 Returns the application's symbol layer registry, used for managing symbol layers.
 
 .. versionadded:: 3.0
 %End
 
-    static QgsLayoutItemRegistry *layoutItemRegistry();
+    static QgsCalloutRegistry *calloutRegistry() /KeepReference/;
+%Docstring
+Returns the application's callout registry, used for managing callout types.
+
+.. versionadded:: 3.10
+%End
+
+    static QgsLayoutItemRegistry *layoutItemRegistry() /KeepReference/;
 %Docstring
 Returns the application's layout item registry, used for layout item types.
 
 .. versionadded:: 3.0
 %End
 
-    static QgsGpsConnectionRegistry *gpsConnectionRegistry();
+    static QgsGpsConnectionRegistry *gpsConnectionRegistry() /KeepReference/;
 %Docstring
 Returns the application's GPS connection registry, used for managing GPS connections.
 
 .. versionadded:: 3.0
 %End
 
-    static QgsPluginLayerRegistry *pluginLayerRegistry();
+    static QgsPluginLayerRegistry *pluginLayerRegistry() /KeepReference/;
 %Docstring
 Returns the application's plugin layer registry, used for managing plugin layer types.
 
 .. versionadded:: 3.0
+%End
+
+    static QgsClassificationMethodRegistry *classificationMethodRegistry() /KeepReference/;
+%Docstring
+Returns the application's classification methods registry, used in graduated renderer
+
+.. versionadded:: 3.10
+%End
+
+    static QgsBookmarkManager *bookmarkManager();
+%Docstring
+Returns the application's bookmark manager, used for storing installation-wide bookmarks.
+
+.. versionadded:: 3.10
+%End
+
+    static QgsStyleModel *defaultStyleModel();
+%Docstring
+Returns a shared QgsStyleModel containing the default style library (see QgsStyle.defaultStyle()).
+
+Using this shared model instead of creating a new QgsStyleModel improves performance.
+
+.. versionadded:: 3.10
 %End
 
     static QgsMessageLog *messageLog();
@@ -700,7 +782,7 @@ Returns the application's authentication manager instance
 
 .. note::
 
-   this can be a null pointer if called before initQgis
+   this can be ``None`` if called before initQgis
 
 .. seealso:: :py:func:`initQgis`
 
@@ -715,7 +797,7 @@ algorithms, and various parameters and outputs.
 .. versionadded:: 3.0
 %End
 
-    static QgsPageSizeRegistry *pageSizeRegistry();
+    static QgsPageSizeRegistry *pageSizeRegistry() /KeepReference/;
 %Docstring
 Returns the application's page size registry, used for managing layout page sizes.
 
@@ -723,11 +805,18 @@ Returns the application's page size registry, used for managing layout page size
 %End
 
 
-    static QgsActionScopeRegistry *actionScopeRegistry();
+    static QgsActionScopeRegistry *actionScopeRegistry() /KeepReference/;
 %Docstring
 Returns the action scope registry.
 
 .. versionadded:: 3.0
+%End
+
+    static QgsConnectionRegistry *connectionRegistry();
+%Docstring
+Returns the application's connection registry, used for managing saved data provider connections.
+
+.. versionadded:: 3.14
 %End
 
     static QgsRuntimeProfiler *profiler();
@@ -737,23 +826,48 @@ Returns the application runtime profiler.
 .. versionadded:: 3.0
 %End
 
-    static QgsFieldFormatterRegistry *fieldFormatterRegistry();
+    static QgsNumericFormatRegistry *numericFormatRegistry() /KeepReference/;
+%Docstring
+Gets the registry of available numeric formats.
+
+.. versionadded:: 3.12
+%End
+
+    static QgsFieldFormatterRegistry *fieldFormatterRegistry() /KeepReference/;
 %Docstring
 Gets the registry of available field formatters.
 %End
 
-    static Qgs3DRendererRegistry *renderer3DRegistry();
+    static Qgs3DRendererRegistry *renderer3DRegistry() /KeepReference/;
 %Docstring
 Returns registry of available 3D renderers.
 
 .. versionadded:: 3.0
 %End
 
-    static QgsProjectStorageRegistry *projectStorageRegistry();
+    static QgsScaleBarRendererRegistry *scaleBarRendererRegistry() /KeepReference/;
+%Docstring
+Gets the registry of available scalebar renderers.
+
+.. versionadded:: 3.14
+%End
+
+    static QgsProjectStorageRegistry *projectStorageRegistry() /KeepReference/;
 %Docstring
 Returns registry of available project storage implementations.
 
 .. versionadded:: 3.2
+%End
+
+    static QgsLocalizedDataPathRegistry *localizedDataPathRegistry() /KeepReference/;
+%Docstring
+Returns the registry of data repositories
+These are used as paths for basemaps, logos, etc. which can be referenced
+differently across work stations.
+
+.. seealso:: :py:class:`QgsLocalizedDataPathRegistry`
+
+.. versionadded:: 3.14
 %End
 
     static QString nullRepresentation();
@@ -806,6 +920,13 @@ The maximum number of concurrent connections per connections pool.
 
    QGIS may in some situations allocate more than this amount
    of connections to avoid deadlocks.
+
+.. versionadded:: 3.4
+%End
+
+    static void setTranslation( const QString &translation );
+%Docstring
+Set translation
 
 .. versionadded:: 3.4
 %End

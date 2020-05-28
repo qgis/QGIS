@@ -114,7 +114,7 @@
    <item>
     <widget class="QPushButton" name="btnConnect">
      <property name="text">
-      <string>&amp;Test connection</string>
+      <string>&amp;Test Connection</string>
      </property>
     </widget>
    </item>

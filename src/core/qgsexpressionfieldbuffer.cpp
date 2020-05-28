@@ -45,7 +45,8 @@ void QgsExpressionFieldBuffer::writeXml( QDomNode &layerNode, QDomDocument &docu
   QDomElement expressionFieldsElem = document.createElement( QStringLiteral( "expressionfields" ) );
   layerNode.appendChild( expressionFieldsElem );
 
-  Q_FOREACH ( const ExpressionField &fld, mExpressions )
+  const auto constMExpressions = mExpressions;
+  for ( const ExpressionField &fld : constMExpressions )
   {
     QDomElement fldElem = document.createElement( QStringLiteral( "field" ) );
 
@@ -92,7 +93,8 @@ void QgsExpressionFieldBuffer::readXml( const QDomNode &layerNode )
 void QgsExpressionFieldBuffer::updateFields( QgsFields &flds )
 {
   int index = 0;
-  Q_FOREACH ( const ExpressionField &fld, mExpressions )
+  const auto constMExpressions = mExpressions;
+  for ( const ExpressionField &fld : constMExpressions )
   {
     flds.appendExpressionField( fld.field, index );
     ++index;

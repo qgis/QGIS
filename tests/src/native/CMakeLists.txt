@@ -60,12 +60,11 @@ ENDIF (APPLE)
 MACRO (ADD_QGIS_TEST testname testsrc)
   SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
   SET(qgis_${testname}_MOC_CPPS ${testsrc})
-  ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS} ${IMAGE_RCC_SRCS})
-  SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTOMOC TRUE)
+  ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
   TARGET_LINK_LIBRARIES(qgis_${testname}
     ${Qt5Core_LIBRARIES}
     ${Qt5Test_LIBRARIES}
-    qgis_gui
+    qgis_core
     qgis_native
   )
   ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)

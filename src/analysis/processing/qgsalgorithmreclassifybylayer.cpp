@@ -95,7 +95,7 @@ bool QgsReclassifyAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters
   mNbCellsYProvider = mInterface->ySize();
 
   mNoDataValue = parameterAsDouble( parameters, QStringLiteral( "NO_DATA" ), context );
-  mUseNoDataForMissingValues = parameterAsBool( parameters, QStringLiteral( "NODATA_FOR_MISSING" ), context );
+  mUseNoDataForMissingValues = parameterAsBoolean( parameters, QStringLiteral( "NODATA_FOR_MISSING" ), context );
 
   int boundsType = parameterAsEnum( parameters, QStringLiteral( "RANGE_BOUNDARIES" ), context );
   switch ( boundsType )
@@ -315,6 +315,7 @@ QVector<QgsReclassifyUtils::RasterClass> QgsReclassifyByTableAlgorithm::createCl
 
   const int rows = table.count() / 3;
   QVector< QgsReclassifyUtils::RasterClass > classes;
+  classes.reserve( rows );
   for ( int row = 0; row < rows; ++row )
   {
     bool ok = false;

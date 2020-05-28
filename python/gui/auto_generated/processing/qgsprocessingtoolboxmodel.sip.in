@@ -61,7 +61,7 @@ Returns the node's type.
 
     QgsProcessingToolboxModelNode *parent();
 %Docstring
-Returns the node's parent. If the node's parent is a null pointer, then the node is a root node.
+Returns the node's parent. If the node's parent is ``None``, then the node is a root node.
 %End
 
     QList<QgsProcessingToolboxModelNode *> children();
@@ -79,7 +79,7 @@ ownership back to the caller.
     QgsProcessingToolboxModelGroupNode *getChildGroupNode( const QString &id );
 %Docstring
 Tries to find a child node belonging to this node, which corresponds to
-a group node with the given group ``id``. Returns None if no matching
+a group node with the given group ``id``. Returns ``None`` if no matching
 child group node was found.
 %End
 
@@ -256,6 +256,7 @@ of this model.
       RoleAlgorithmName,
       RoleAlgorithmShortDescription,
       RoleAlgorithmTags,
+      RoleProviderFlags,
     };
 
     QgsProcessingToolboxModel( QObject *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0,
@@ -304,7 +305,7 @@ Returns the model index corresponding to the given ``node``.
     QgsProcessingProvider *providerForIndex( const QModelIndex &index ) const;
 %Docstring
 Returns the provider which corresponds to a given ``index``, or
-a None if the index does not represent a provider.
+``None`` if the index does not represent a provider.
 
 .. seealso:: :py:func:`algorithmForIndex`
 
@@ -324,7 +325,7 @@ an empty string if the index does not represent a provider.
     const QgsProcessingAlgorithm *algorithmForIndex( const QModelIndex &index ) const;
 %Docstring
 Returns the algorithm which corresponds to a given ``index``, or
-a None if the index does not represent an algorithm.
+``None`` if the index does not represent an algorithm.
 
 .. seealso:: :py:func:`isAlgorithm`
 
@@ -333,7 +334,7 @@ a None if the index does not represent an algorithm.
 
     bool isAlgorithm( const QModelIndex &index ) const;
 %Docstring
-Returns true if ``index`` corresponds to an algorithm.
+Returns ``True`` if ``index`` corresponds to an algorithm.
 
 .. seealso:: :py:func:`algorithmForIndex`
 %End
@@ -379,6 +380,8 @@ the results.
     {
       FilterToolbox,
       FilterModeler,
+      FilterInPlace,
+      FilterShowKnownIssues,
     };
     typedef QFlags<QgsProcessingToolboxProxyModel::Filter> Filters;
 
@@ -403,6 +406,7 @@ level group containing recently used algorithms.
 Returns the underlying source Processing toolbox model.
 %End
 
+
     void setFilters( QgsProcessingToolboxProxyModel::Filters filters );
 %Docstring
 Set ``filters`` that affect how toolbox content is filtered.
@@ -415,6 +419,11 @@ Set ``filters`` that affect how toolbox content is filtered.
 Returns any filters that affect how toolbox content is filtered.
 
 .. seealso:: :py:func:`setFilters`
+%End
+
+    void setInPlaceLayer( QgsVectorLayer *layer );
+%Docstring
+Sets the vector ``layer`` for in-place algorithm filter
 %End
 
     void setFilterString( const QString &filter );
@@ -438,6 +447,8 @@ Returns the current filter string, if set.
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
 
     virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
 
 
 };

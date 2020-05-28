@@ -20,6 +20,7 @@
 #include <QMap>
 #include <QObject>
 #include <QDebug>
+#include <QDateTime>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -31,6 +32,26 @@ QgsInterval::QgsInterval( double seconds )
   : mSeconds( seconds )
   , mValid( true )
 { }
+
+QgsInterval::QgsInterval( double duration, QgsUnitTypes::TemporalUnit unit )
+  : mSeconds( duration * QgsUnitTypes::fromUnitToUnitFactor( unit, QgsUnitTypes::TemporalSeconds ) )
+  , mValid( true )
+{
+
+}
+
+QgsInterval::QgsInterval( double years, double months, double weeks, double days, double hours, double minutes, double seconds )
+  : mSeconds( years * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalYears, QgsUnitTypes::TemporalSeconds )
+              + months * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalMonths, QgsUnitTypes::TemporalSeconds )
+              + weeks * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalWeeks, QgsUnitTypes::TemporalSeconds )
+              + days * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalDays, QgsUnitTypes::TemporalSeconds )
+              + hours * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalHours, QgsUnitTypes::TemporalSeconds )
+              + minutes * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalMinutes, QgsUnitTypes::TemporalSeconds )
+              + seconds )
+  , mValid( true )
+{
+
+}
 
 bool QgsInterval::operator==( QgsInterval other ) const
 {
@@ -64,7 +85,8 @@ QgsInterval QgsInterval::fromString( const QString &string )
   map.insert( 0 + MONTHS, QStringList() << QStringLiteral( "month" ) << QStringLiteral( "months" ) << QObject::tr( "month|months", "list of words separated by | which reference months" ).split( '|' ) );
   map.insert( 0 + YEARS, QStringList() << QStringLiteral( "year" ) << QStringLiteral( "years" ) << QObject::tr( "year|years", "list of words separated by | which reference years" ).split( '|' ) );
 
-  Q_FOREACH ( const QString &match, list )
+  const auto constList = list;
+  for ( const QString &match : constList )
   {
     QStringList split = match.split( QRegExp( "\\s+" ) );
     bool ok;
@@ -79,7 +101,8 @@ QgsInterval QgsInterval::fromString( const QString &string )
     for ( ; it != map.constEnd(); ++it )
     {
       int duration = it.key();
-      Q_FOREACH ( const QString &name, it.value() )
+      const auto constValue = it.value();
+      for ( const QString &name : constValue )
       {
         if ( match.contains( name, Qt::CaseInsensitive ) )
         {
@@ -118,7 +141,7 @@ QgsInterval operator-( const QDateTime &dt1, const QDateTime &dt2 )
   return QgsInterval( mSeconds / 1000.0 );
 }
 
-QDateTime operator+( const QDateTime &start, QgsInterval interval )
+QDateTime operator+( const QDateTime &start, const QgsInterval &interval )
 {
   return start.addMSecs( static_cast<qint64>( interval.seconds() * 1000.0 ) );
 }

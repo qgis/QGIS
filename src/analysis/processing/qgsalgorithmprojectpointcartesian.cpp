@@ -123,6 +123,7 @@ QgsFeatureList QgsProjectPointCartesianAlgorithm::processFeature( const QgsFeatu
     {
       const QgsMultiPoint *mp = static_cast< const QgsMultiPoint * >( g.constGet() );
       std::unique_ptr< QgsMultiPoint > result = qgis::make_unique< QgsMultiPoint >();
+      result->reserve( mp->numGeometries() );
       for ( int i = 0; i < mp->numGeometries(); ++i )
       {
         const QgsPoint *p = static_cast< const QgsPoint * >( mp->geometryN( i ) );

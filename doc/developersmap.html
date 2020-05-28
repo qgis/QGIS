@@ -3,14 +3,19 @@
 <head>
   <title>Developers Map</title>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"
+  integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+  crossorigin="" />
   <style type="text/css">
   body {  padding: 0; margin: 0;  }
   html, body, #developers-map {  height: 100%;  }
   </style>
-  <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
+  integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
+  crossorigin="">
+  </script>
   <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-  <link rel="points" type="application/json" href="contributors.json">
+  <link rel="points" type="application/json" href="../resources/data/contributors.json">
 </head>
 <body>
   <div id="developers-map"></div>

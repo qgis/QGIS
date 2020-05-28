@@ -20,8 +20,6 @@
 __author__ = 'Victor Olaya'
 __date__ = 'February 2016'
 __copyright__ = '(C) 2016, Victor Olaya'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 from qgis.PyQt.QtCore import QCoreApplication
@@ -33,6 +31,7 @@ from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from qgis.utils import iface
 from qgis.core import QgsApplication, QgsMessageLog, QgsStringUtils, QgsProcessingAlgorithm
+from qgis.gui import QgsGui
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmExecutor import execute
 from processing.gui.Postprocessing import handleAlgorithmResults
@@ -46,23 +45,23 @@ defaultMenuEntries = {}
 vectorMenu = QApplication.translate('MainWindow', 'Vect&or')
 analysisToolsMenu = vectorMenu + "/" + Processing.tr('&Analysis Tools')
 defaultMenuEntries.update({'qgis:distancematrix': analysisToolsMenu,
-                           'qgis:sumlinelengths': analysisToolsMenu,
-                           'qgis:countpointsinpolygon': analysisToolsMenu,
+                           'native:sumlinelengths': analysisToolsMenu,
+                           'native:countpointsinpolygon': analysisToolsMenu,
                            'qgis:listuniquevalues': analysisToolsMenu,
                            'qgis:basicstatisticsforfields': analysisToolsMenu,
-                           'qgis:nearestneighbouranalysis': analysisToolsMenu,
+                           'native:nearestneighbouranalysis': analysisToolsMenu,
                            'native:meancoordinates': analysisToolsMenu,
                            'native:lineintersections': analysisToolsMenu})
 researchToolsMenu = vectorMenu + "/" + Processing.tr('&Research Tools')
-defaultMenuEntries.update({'qgis:creategrid': researchToolsMenu,
+defaultMenuEntries.update({'native:creategrid': researchToolsMenu,
                            'qgis:randomselection': researchToolsMenu,
                            'qgis:randomselectionwithinsubsets': researchToolsMenu,
-                           'qgis:randompointsinextent': researchToolsMenu,
+                           'native:randompointsinextent': researchToolsMenu,
                            'qgis:randompointsinlayerbounds': researchToolsMenu,
                            'qgis:randompointsinsidepolygons': researchToolsMenu,
                            'qgis:regularpoints': researchToolsMenu,
                            'native:selectbylocation': researchToolsMenu,
-                           'qgis:polygonfromlayerextent': researchToolsMenu})
+                           'native:polygonfromlayerextent': researchToolsMenu})
 
 geoprocessingToolsMenu = vectorMenu + "/" + Processing.tr('&Geoprocessing Tools')
 defaultMenuEntries.update({'native:buffer': geoprocessingToolsMenu,
@@ -81,22 +80,23 @@ defaultMenuEntries.update({'qgis:checkvalidity': geometryToolsMenu,
                            'qgis:delaunaytriangulation': geometryToolsMenu,
                            'qgis:voronoipolygons': geometryToolsMenu,
                            'native:simplifygeometries': geometryToolsMenu,
-                           'qgis:densifygeometries': geometryToolsMenu,
+                           'native:densifygeometries': geometryToolsMenu,
                            'native:multiparttosingleparts': geometryToolsMenu,
                            'native:collect': geometryToolsMenu,
-                           'qgis:polygonstolines': geometryToolsMenu,
+                           'native:polygonstolines': geometryToolsMenu,
                            'qgis:linestopolygons': geometryToolsMenu,
                            'native:extractvertices': geometryToolsMenu})
 managementToolsMenu = vectorMenu + "/" + Processing.tr('&Data Management Tools')
 defaultMenuEntries.update({'native:reprojectlayer': managementToolsMenu,
-                           'qgis:joinattributesbylocation': managementToolsMenu,
+                           'native:joinattributesbylocation': managementToolsMenu,
                            'qgis:splitvectorlayer': managementToolsMenu,
                            'native:mergevectorlayers': managementToolsMenu,
-                           'qgis:createspatialindex': managementToolsMenu})
+                           'native:createspatialindex': managementToolsMenu})
 
 rasterMenu = QApplication.translate('MainWindow', '&Raster')
 projectionsMenu = rasterMenu + "/" + Processing.tr('Projections')
 defaultMenuEntries.update({'gdal:warpreproject': projectionsMenu,
+                           'gdal:extractprojection': projectionsMenu,
                            'gdal:assignprojection': projectionsMenu})
 conversionMenu = rasterMenu + "/" + Processing.tr('Conversion')
 defaultMenuEntries.update({'gdal:rasterize': conversionMenu,
@@ -183,10 +183,10 @@ def removeMenus():
 
 def addAlgorithmEntry(alg, menuName, submenuName, actionText=None, icon=None, addButton=False):
     if actionText is None:
-        if alg.flags() & QgsProcessingAlgorithm.FlagDisplayNameIsLiteral:
-            alg_title = alg.displayName()
-        else:
+        if (QgsGui.higFlags() & QgsGui.HigMenuTextIsTitleCase) and not (alg.flags() & QgsProcessingAlgorithm.FlagDisplayNameIsLiteral):
             alg_title = QgsStringUtils.capitalize(alg.displayName(), QgsStringUtils.TitleCase)
+        else:
+            alg_title = alg.displayName()
         actionText = alg_title + QCoreApplication.translate('Processing', '…')
     action = QAction(icon or alg.icon(), actionText, iface.mainWindow())
     alg_id = alg.id()
@@ -203,6 +203,7 @@ def addAlgorithmEntry(alg, menuName, submenuName, actionText=None, icon=None, ad
         global algorithmsToolbar
         if algorithmsToolbar is None:
             algorithmsToolbar = iface.addToolBar(QCoreApplication.translate('MainWindow', 'Processing Algorithms'))
+            algorithmsToolbar.setObjectName("ProcessingAlgorithms")
             algorithmsToolbar.setToolTip(QCoreApplication.translate('MainWindow', 'Processing Algorithms Toolbar'))
         algorithmsToolbar.addAction(action)
 
@@ -247,9 +248,9 @@ def _executeAlgorithm(alg_id):
         return
 
     if (alg.countVisibleParameters()) > 0:
-        dlg = alg.createCustomParametersWidget(None)
+        dlg = alg.createCustomParametersWidget(parent=iface.mainWindow())
         if not dlg:
-            dlg = AlgorithmDialog(alg)
+            dlg = AlgorithmDialog(alg, parent=iface.mainWindow())
         canvas = iface.mapCanvas()
         prevMapTool = canvas.mapTool()
         dlg.show()

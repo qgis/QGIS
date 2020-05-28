@@ -12,9 +12,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Alessandro Pasotti'
 __date__ = '2018-03-18'
 __copyright__ = 'Copyright 2018, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
-
 
 from qgis.core import (
     QgsField,
@@ -80,9 +77,13 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
         if self._filter_rect is not None and self._source._provider._spatialindex is not None:
             self._feature_id_list = self._source._provider._spatialindex.intersects(self._filter_rect)
 
+        if self._request.filterType() == QgsFeatureRequest.FilterFid or self._request.filterType() == QgsFeatureRequest.FilterFids:
+            fids = [self._request.filterFid()] if self._request.filterType() == QgsFeatureRequest.FilterFid else self._request.filterFids()
+            self._feature_id_list = list(set(self._feature_id_list).intersection(set(fids))) if self._feature_id_list else fids
+
     def fetchFeature(self, f):
         """fetch next feature, return true on success"""
-        #virtual bool nextFeature( QgsFeature &f );
+        # virtual bool nextFeature( QgsFeature &f );
         if self._index < 0:
             f.setValid(False)
             return False
@@ -145,7 +146,7 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
 
     def rewind(self):
         """reset the iterator to the starting position"""
-        #virtual bool rewind() = 0;
+        # virtual bool rewind() = 0;
         if self._index < 0:
             return False
         self._index = 0
@@ -153,7 +154,7 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
 
     def close(self):
         """end of iterating: free the resources / lock"""
-        #virtual bool close() = 0;
+        # virtual bool close() = 0;
         self._index = -1
         return True
 
@@ -214,7 +215,7 @@ class PyProvider(QgsVectorDataProvider):
         self._crs = mlayer.crs()
         self._spatialindex = None
         self._provider_options = providerOptions
-        if 'index=yes'in self._uri:
+        if 'index=yes' in self._uri:
             self.createSpatialIndex()
 
     def featureSource(self):
@@ -322,7 +323,7 @@ class PyProvider(QgsVectorDataProvider):
                 result = False
                 continue
             if self._fields.indexFromName(new_name) >= 0:
-                #field name already in use
+                # field name already in use
                 result = False
                 continue
             new_fields[fieldIndex].setName(new_name)
@@ -340,7 +341,7 @@ class PyProvider(QgsVectorDataProvider):
             self._fields.remove(idx)
             for f in self._features.values():
                 attr = f.attributes()
-                del(attr[idx])
+                del (attr[idx])
                 f.setAttributes(attr)
         self.clearMinMaxCache()
         return True
@@ -394,7 +395,7 @@ class PyProvider(QgsVectorDataProvider):
     def capabilities(self):
         return QgsVectorDataProvider.AddFeatures | QgsVectorDataProvider.DeleteFeatures | QgsVectorDataProvider.CreateSpatialIndex | QgsVectorDataProvider.ChangeGeometries | QgsVectorDataProvider.ChangeAttributeValues | QgsVectorDataProvider.AddAttributes | QgsVectorDataProvider.DeleteAttributes | QgsVectorDataProvider.RenameAttributes | QgsVectorDataProvider.SelectAtId | QgsVectorDataProvider. CircularGeometries
 
-    #/* Implementation of functions from QgsDataProvider */
+    # /* Implementation of functions from QgsDataProvider */
 
     def name(self):
         return self.providerKey()
@@ -424,3 +425,6 @@ class PyProvider(QgsVectorDataProvider):
 
     def crs(self):
         return self._crs
+
+    def handlePostCloneOperations(self, source):
+        self._features = source._features

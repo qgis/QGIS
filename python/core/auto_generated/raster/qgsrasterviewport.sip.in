@@ -19,9 +19,9 @@ struct QgsRasterViewPort
 
   QgsPointXY mBottomRightPoint;
 
-  int mWidth;
+  qgssize mWidth;
 
-  int mHeight;
+  qgssize mHeight;
 
   QgsRectangle mDrawnExtent;
 
@@ -29,8 +29,7 @@ struct QgsRasterViewPort
 
   QgsCoordinateReferenceSystem mDestCRS;
 
-  int mSrcDatumTransform;
-  int mDestDatumTransform;
+  QgsCoordinateTransformContext mTransformContext;
 };
 
 /************************************************************************

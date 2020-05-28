@@ -62,7 +62,7 @@ bool QgsExtentGroupBoxPlugin::isInitialized() const
 
 void QgsExtentGroupBoxPlugin::initialize( QDesignerFormEditorInterface *core )
 {
-  Q_UNUSED( core );
+  Q_UNUSED( core )
   if ( mInitialized )
     return;
   mInitialized = true;

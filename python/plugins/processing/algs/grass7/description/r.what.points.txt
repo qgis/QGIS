@@ -4,7 +4,7 @@ Raster (r.*)
 QgsProcessingParameterRasterLayer|map|Name of raster map|None|False
 QgsProcessingParameterFeatureSource|points|Name of vector points layer for query|0|None|False
 QgsProcessingParameterString|null_value|String representing NULL value|*|False|True
-QgsProcessingParameterString|separator|Field separator. Special characters: pipe, comma, space, tab, newlineString representing NULL value|pipe|False|True
+QgsProcessingParameterString|separator|Field separator. Special characters: pipe, comma, space, tab, newline|pipe|False|True
 QgsProcessingParameterNumber|cache|Size of point cache|QgsProcessingParameterNumber.Integer|500|True|0|None
 *QgsProcessingParameterBoolean|-n|Output header row|False|True
 *QgsProcessingParameterBoolean|-f|Show the category labels of the grid cell(s)|False|True

@@ -27,6 +27,17 @@
 #include "qgsapplication.h"
 #include "qgsmaplayerlistutils.h"
 #include "qgsvectorlayer.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsrenderedfeaturehandlerinterface.h"
+
+class TestHandler : public QgsRenderedFeatureHandlerInterface
+{
+  public:
+
+    void handleRenderedFeature( const QgsFeature &, const QgsGeometry &, const QgsRenderedFeatureHandlerInterface::RenderedFeatureContext & ) override {}
+
+};
 
 class TestQgsMapSettings: public QObject
 {
@@ -35,13 +46,21 @@ class TestQgsMapSettings: public QObject
     void initTestCase();
     void cleanupTestCase();
     void testDefaults();
+    void testGettersSetters();
+    void testLabelingEngineSettings();
     void visibleExtent();
+    void extentBuffer();
     void mapUnitsPerPixel();
+    void testDevicePixelRatio();
     void visiblePolygon();
     void testIsLayerVisible();
     void testMapLayerListUtils();
     void testXmlReadWrite();
     void testSetLayers();
+    void testLabelBoundary();
+    void testExpressionContext();
+    void testRenderedFeatureHandlers();
+    void testCustomRenderingFlags();
 
   private:
     QString toString( const QPolygonF &p, int decimalPlaces = 2 ) const;
@@ -81,6 +100,48 @@ void TestQgsMapSettings::testDefaults()
   QCOMPARE( ms.destinationCrs(), QgsCoordinateReferenceSystem() );
 }
 
+void TestQgsMapSettings::testGettersSetters()
+{
+  // basic getter/setter tests
+  QgsMapSettings ms;
+
+  ms.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
+  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+  ms.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
+  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+
+  // must default to no simplification
+  QCOMPARE( ms.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::NoSimplification );
+  QgsVectorSimplifyMethod simplify;
+  simplify.setSimplifyHints( QgsVectorSimplifyMethod::GeometrySimplification );
+  ms.setSimplifyMethod( simplify );
+  QCOMPARE( ms.simplifyMethod().simplifyHints(), QgsVectorSimplifyMethod::GeometrySimplification );
+}
+
+void TestQgsMapSettings::testLabelingEngineSettings()
+{
+  // test that setting labeling engine settings for QgsMapSettings works
+  QgsMapSettings ms;
+  QgsLabelingEngineSettings les;
+  les.setMaximumLineCandidatesPerCm( 4 );
+  les.setMaximumPolygonCandidatesPerCmSquared( 8.0 );
+  ms.setLabelingEngineSettings( les );
+  QCOMPARE( ms.labelingEngineSettings().maximumLineCandidatesPerCm(), 4.0 );
+  QCOMPARE( ms.labelingEngineSettings().maximumPolygonCandidatesPerCmSquared(), 8.0 );
+
+  // ensure that setting labeling engine settings also sets text format
+  les.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
+  ms.setLabelingEngineSettings( les );
+  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+  les.setDefaultTextRenderFormat( QgsRenderContext::TextFormatAlwaysOutlines );
+  ms.setLabelingEngineSettings( les );
+  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysOutlines );
+  // but we should be able to override this manually
+  ms.setTextRenderFormat( QgsRenderContext::TextFormatAlwaysText );
+  QCOMPARE( ms.textRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+  QCOMPARE( ms.labelingEngineSettings().defaultTextRenderFormat(), QgsRenderContext::TextFormatAlwaysText );
+}
+
 void TestQgsMapSettings::visibleExtent()
 {
   QgsMapSettings ms;
@@ -116,6 +177,17 @@ void TestQgsMapSettings::visibleExtent()
   QCOMPARE( ms.visibleExtent().toString( 0 ), QString( "-56,-81 : 156,131" ) );
 }
 
+void TestQgsMapSettings::extentBuffer()
+{
+  QgsMapSettings ms;
+  ms.setExtent( QgsRectangle( 50, 50, 100, 100 ) );
+  ms.setOutputSize( QSize( 50, 50 ) );
+  ms.setExtentBuffer( 10 );
+  QgsRectangle visibleExtent = ms.visibleExtent();
+  visibleExtent.grow( ms.extentBuffer() );
+  QCOMPARE( visibleExtent.toString( 0 ), QString( "40,40 : 110,110" ) );
+}
+
 void TestQgsMapSettings::mapUnitsPerPixel()
 {
   QgsMapSettings ms;
@@ -135,6 +207,19 @@ void TestQgsMapSettings::mapUnitsPerPixel()
 
   ms.setOutputSize( QSize( 1000, 500 ) );
   QCOMPARE( ms.mapUnitsPerPixel(), 0.2 );
+}
+
+void TestQgsMapSettings::testDevicePixelRatio()
+{
+  QgsMapSettings ms;
+  ms.setOutputSize( QSize( 100, 50 ) );
+  ms.setExtent( QgsRectangle( 0, 0, 100, 100 ) );
+  ms.setDevicePixelRatio( 1 );
+  double scale = ms.scale();
+  ms.setDevicePixelRatio( 1.5 );
+  ms.setExtent( QgsRectangle( 0, 0, 100, 100 ) );
+  QCOMPARE( ms.outputSize() * 1.5, ms.deviceOutputSize() );
+  QCOMPARE( scale * 1.5, ms.scale() );
 }
 
 void TestQgsMapSettings::visiblePolygon()
@@ -172,23 +257,62 @@ void TestQgsMapSettings::testIsLayerVisible()
 {
   QgsVectorLayer *vlA = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
   QgsVectorLayer *vlB = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "b" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vlC = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "c" ), QStringLiteral( "memory" ) );
+  vlC->setScaleBasedVisibility( true );
+  vlC->setMinimumScale( 100 );
+  vlC->setMaximumScale( 0 );
 
   QList<QgsMapLayer *> layers;
-  layers << vlA << vlB;
+  layers << vlA << vlB << vlC;
+
+  QgsProject::instance()->addMapLayers( layers );
 
   QgsMapSettings ms;
   ms.setLayers( layers );
+  ms.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3148" ) ) );
+  ms.setExtent( QgsRectangle( 100, 100, 200, 200 ) );
+  ms.setOutputSize( QSize( 100, 100 ) ); // this results in a scale roughly equal to 3779
+
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::mapSettingsScope( ms );
 
   // test checking for visible layer by id
-  QgsExpression e( QStringLiteral( "is_layer_visible( '%1' )" ).arg( vlA-> id() ) );
+  QgsExpression e( QStringLiteral( "is_layer_visible( '%1' )" ).arg( vlA->id() ) );
   QVariant r = e.evaluate( &context );
   QCOMPARE( r.toBool(), true );
 
+  // test checking for visible layer by direct map layer object
+  QgsExpression e4( QStringLiteral( "is_layer_visible(array_get( @map_layers, 0 ) )" ) );
+  r = e4.evaluate( &context );
+  QCOMPARE( r.toBool(), true );
+
   // test checking for visible layer by name
-  QgsExpression e2( QStringLiteral( "is_layer_visible( '%1' )" ).arg( vlB-> name() ) );
+  QgsExpression e2( QStringLiteral( "is_layer_visible( '%1' )" ).arg( vlB->name() ) );
   r = e2.evaluate( &context );
+  QCOMPARE( r.toBool(), true );
+
+  // test checking for visible layer taking into account scale-based visibility
+  QgsExpression e5( QStringLiteral( "is_layer_visible( '%1' )" ).arg( vlC->name() ) );
+  r = e5.evaluate( &context );
+  QCOMPARE( r.toBool(), false );
+  vlC->setMinimumScale( 100000 );
+  QgsExpressionContext context2;
+  context2 << QgsExpressionContextUtils::mapSettingsScope( ms );
+  QgsExpression e6( QStringLiteral( "is_layer_visible( '%1' )" ).arg( vlC->name() ) );
+  r = e6.evaluate( &context2 );
+  QCOMPARE( r.toBool(), true );
+  vlC->setMinimumScale( 0 );
+  vlC->setMaximumScale( 5000 );
+  QgsExpressionContext context3;
+  context3 << QgsExpressionContextUtils::mapSettingsScope( ms );
+  QgsExpression e7( QStringLiteral( "is_layer_visible( '%1' )" ).arg( vlC->name() ) );
+  r = e7.evaluate( &context3 );
+  QCOMPARE( r.toBool(), false );
+  vlC->setMaximumScale( 200 );
+  QgsExpressionContext context4;
+  context4 << QgsExpressionContextUtils::mapSettingsScope( ms );
+  QgsExpression e8( QStringLiteral( "is_layer_visible( '%1' )" ).arg( vlC->name() ) );
+  r = e8.evaluate( &context4 );
   QCOMPARE( r.toBool(), true );
 
   // test checking for non-existent layer
@@ -196,8 +320,19 @@ void TestQgsMapSettings::testIsLayerVisible()
   r = e3.evaluate( &context );
   QCOMPARE( r.toBool(), false );
 
-  delete vlA;
-  delete vlB;
+  QgsProject::instance()->removeMapLayer( vlA );
+  e.prepare( &context );
+  r = e.evaluate( &context );
+  QCOMPARE( r.toBool(), false ); // layer is deleted
+  e2.prepare( &context );
+  r = e2.evaluate( &context );
+  QCOMPARE( r.toBool(), true ); // layer still exists
+
+  QgsProject::instance()->removeMapLayer( vlB );
+  e2.prepare( &context );
+  r = e2.evaluate( &context );
+  QCOMPARE( r.toBool(), false ); // layer is deleted
+
 }
 
 void TestQgsMapSettings::testMapLayerListUtils()
@@ -297,6 +432,160 @@ void TestQgsMapSettings::testSetLayers()
   // non spatial and null layers should be stripped
   ms.setLayers( QList< QgsMapLayer * >() << vlA.get() << nonSpatial.get() << nullptr << vlB.get() );
   QCOMPARE( ms.layers(), QList< QgsMapLayer * >() << vlA.get() << vlB.get() );
+}
+
+void TestQgsMapSettings::testLabelBoundary()
+{
+  QgsMapSettings ms;
+  QVERIFY( ms.labelBoundaryGeometry().isNull() );
+  ms.setLabelBoundaryGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 0 0, 1 0, 1 1, 0 1, 0 0 ))" ) ) );
+  QCOMPARE( ms.labelBoundaryGeometry().asWkt(), QStringLiteral( "Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))" ) );
+}
+
+void TestQgsMapSettings::testExpressionContext()
+{
+  QgsMapSettings ms;
+  QgsExpressionContext c;
+  QVariant r;
+
+  ms.setOutputSize( QSize( 5000, 5000 ) );
+  ms.setExtent( QgsRectangle( -1, 0, 2, 2 ) );
+  ms.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  ms.setRotation( -32 );
+  c << QgsExpressionContextUtils::mapSettingsScope( ms );
+
+  QgsExpression e( QStringLiteral( "@map_scale" ) );
+  r = e.evaluate( &c );
+  QGSCOMPARENEAR( r.toDouble(), 247990, 10.0 );
+
+  // The old $scale function should silently map to @map_scale, so that older projects work without change
+  e = QgsExpression( QStringLiteral( "$scale" ) );
+  r = e.evaluate( &c );
+  QGSCOMPARENEAR( r.toDouble(), 247990, 10.0 );
+
+  // no map settings scope -- $scale is meaningless
+  e = QgsExpression( QStringLiteral( "$scale" ) );
+  r = e.evaluate( nullptr );
+  QVERIFY( !r.isValid() );
+
+  e = QgsExpression( QStringLiteral( "@map_id" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "canvas" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_rotation" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toDouble(), -32.0 );
+
+  ms.setRotation( 0 );
+  c << QgsExpressionContextUtils::mapSettingsScope( ms );
+
+  e = QgsExpression( QStringLiteral( "geom_to_wkt( @map_extent )" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "Polygon ((-1 -0.5, 2 -0.5, 2 2.5, -1 2.5, -1 -0.5))" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_extent_width" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toDouble(), 3.0 );
+
+  e = QgsExpression( QStringLiteral( "@map_extent_height" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toDouble(), 3.0 );
+
+  e = QgsExpression( QStringLiteral( "geom_to_wkt( @map_extent_center )" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "Point (0.5 1)" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_crs" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "EPSG:4326" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_crs_definition" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_units" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "degrees" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_crs_description" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "WGS 84" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_crs_acronym" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "longlat" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_crs_proj4" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toString(), QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" ) );
+
+  e = QgsExpression( QStringLiteral( "@map_crs_wkt" ) );
+  r = e.evaluate( &c );
+  QVERIFY( r.toString().length() > 15 );
+
+  e = QgsExpression( QStringLiteral( "@map_crs_ellipsoid" ) );
+  r = e.evaluate( &c );
+
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( r.toString(), QStringLiteral( "EPSG:7030" ) );
+#else
+  QCOMPARE( r.toString(), QStringLiteral( "WGS84" ) );
+#endif
+
+  e = QgsExpression( QStringLiteral( "@map_start_time" ) );
+  r = e.evaluate( &c );
+  QVERIFY( !r.isValid() );
+  e = QgsExpression( QStringLiteral( "@map_end_time" ) );
+  r = e.evaluate( &c );
+  QVERIFY( !r.isValid() );
+  e = QgsExpression( QStringLiteral( "@map_interval" ) );
+  r = e.evaluate( &c );
+  QVERIFY( !r.isValid() );
+
+  ms.setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2002, 3, 4 ) ), QDateTime( QDate( 2010, 6, 7 ) ) ) );
+  c = QgsExpressionContext();
+  c << QgsExpressionContextUtils::mapSettingsScope( ms );
+  e = QgsExpression( QStringLiteral( "@map_start_time" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toDateTime(), QDateTime( QDate( 2002, 3, 4 ) ) );
+  e = QgsExpression( QStringLiteral( "@map_end_time" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toDateTime(), QDateTime( QDate( 2010, 6, 7 ) ) );
+  e = QgsExpression( QStringLiteral( "@map_interval" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.value< QgsInterval >(), QgsInterval( QDateTime( QDate( 2010, 6, 7 ) ) - QDateTime( QDate( 2002, 3, 4 ) ) ) );
+}
+
+void TestQgsMapSettings::testRenderedFeatureHandlers()
+{
+  std::unique_ptr< TestHandler > testHandler = qgis::make_unique< TestHandler >();
+  std::unique_ptr< TestHandler > testHandler2 = qgis::make_unique< TestHandler >();
+
+  std::unique_ptr< QgsMapSettings> mapSettings = qgis::make_unique< QgsMapSettings >();
+  QVERIFY( mapSettings->renderedFeatureHandlers().isEmpty() );
+  mapSettings->addRenderedFeatureHandler( testHandler.get() );
+  mapSettings->addRenderedFeatureHandler( testHandler2.get() );
+  QCOMPARE( mapSettings->renderedFeatureHandlers(), QList< QgsRenderedFeatureHandlerInterface * >() << testHandler.get() << testHandler2.get() );
+
+  //ownership should NOT be transferred, i.e. it won't delete the registered handlers upon QgsMapSettings destruction
+  mapSettings.reset();
+  // should be no double-delete here
+}
+
+void TestQgsMapSettings::testCustomRenderingFlags()
+{
+  QgsMapSettings settings;
+  settings.setCustomRenderingFlag( QStringLiteral( "myexport" ), true );
+  settings.setCustomRenderingFlag( QStringLiteral( "omitgeometries" ), QStringLiteral( "points" ) );
+  QVERIFY( settings.customRenderingFlags()[ QStringLiteral( "myexport" ) ].toBool() == true );
+  QVERIFY( settings.customRenderingFlags()[ QStringLiteral( "omitgeometries" ) ].toString() == QStringLiteral( "points" ) );
+
+  // Test deprecated API
+  Q_NOWARN_DEPRECATED_PUSH
+  settings.setCustomRenderFlags( QStringLiteral( "myexport;omitpoints" ) );
+  QVERIFY( settings.customRenderFlags().split( ";" ).contains( QStringLiteral( "myexport" ) ) );
+  QVERIFY( settings.customRenderFlags().split( ";" ).contains( QStringLiteral( "omitpoints" ) ) );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QGSTEST_MAIN( TestQgsMapSettings )

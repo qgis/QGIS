@@ -1,0 +1,95 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsnewsfeedmodel.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsNewsFeedModel : QAbstractItemModel
+{
+%Docstring
+A model for published QGIS news feeds.
+
+This class is designed to work with QgsNewsFeedParser, for displaying
+feeds from a https://github.com/elpaso/qgis-feed server instance.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsnewsfeedmodel.h"
+%End
+  public:
+
+    enum Role
+    {
+      Key,
+      Title,
+      Content,
+      ImageUrl,
+      Image,
+      Link,
+      Sticky,
+    };
+
+    QgsNewsFeedModel( QgsNewsFeedParser *parser, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsNewsFeedModel, with the specified ``parent`` object.
+
+The ``parser`` argument must specify a valid QgsNewsFeedParser object, which
+must exist for the lifetime of this model.
+%End
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual QModelIndex parent( const QModelIndex &index ) const;
+
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+
+
+};
+
+class QgsNewsFeedProxyModel : QSortFilterProxyModel
+{
+%Docstring
+A proxy model for use with QgsNewsFeedModel.
+
+QgsNewsFeedProxyModel applies custom sorting to the entries in a QgsNewsFeedModel.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsnewsfeedmodel.h"
+%End
+  public:
+
+    explicit QgsNewsFeedProxyModel( QgsNewsFeedParser *parser, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsNewsFeedProxyModel, with the specified ``parent`` object.
+
+The ``parser`` argument must specify a valid QgsNewsFeedParser object, which
+must exist for the lifetime of this model.
+%End
+
+  protected:
+    virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsnewsfeedmodel.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

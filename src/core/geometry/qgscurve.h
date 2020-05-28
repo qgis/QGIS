@@ -15,11 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCURVEV2_H
-#define QGSCURVEV2_H
+#ifndef QGSCURVE_H
+#define QGSCURVE_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsabstractgeometry.h"
 #include "qgsrectangle.h"
 
@@ -65,12 +65,12 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     virtual QgsPoint endPoint() const = 0;
 
     /**
-     * Returns true if the curve is closed.
+     * Returns TRUE if the curve is closed.
      */
     virtual bool isClosed() const;
 
     /**
-     * Returns true if the curve is a ring.
+     * Returns TRUE if the curve is a ring.
      */
     virtual bool isRing() const;
 
@@ -106,6 +106,22 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
      */
     virtual int numPoints() const = 0;
 
+#ifdef SIP_RUN
+    int __len__() const;
+    % Docstring
+    Returns the number of points in the curve.
+    % End
+    % MethodCode
+    sipRes = sipCpp->numPoints();
+    % End
+
+    //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
+    int __bool__() const;
+    % MethodCode
+    sipRes = true;
+    % End
+#endif
+
     /**
      * Sums up the area of the curve by iterating over the vertices (shoelace formula).
      */
@@ -121,7 +137,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
      * \param node node number, where the first node is 0
      * \param point will be set to point at corresponding node in the curve
      * \param type will be set to the vertex type of the node
-     * \returns true if node exists within the curve
+     * \returns TRUE if node exists within the curve
      */
     virtual bool pointAt( int node, QgsPoint &point SIP_OUT, QgsVertexId::VertexType &type SIP_OUT ) const = 0;
 
@@ -132,6 +148,8 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     virtual QgsCurve *reversed() const = 0 SIP_FACTORY;
 
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+
+    QString asKml( int precision = 17 ) const override;
 
     /**
      * Returns a geometry without curves. Caller takes ownership
@@ -146,6 +164,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     QgsCurve *toCurveType() const override SIP_FACTORY;
 
     QgsRectangle boundingBox() const override;
+    bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
 
     /**
      * Returns the x-coordinate of the specified node in the line string.
@@ -172,7 +191,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
      * If z or m values are present, the output z and m will be interpolated using
      * the existing vertices' z or m values.
      *
-     * If distance is negative, or is greater than the length of the curve, a nullptr
+     * If distance is negative, or is greater than the length of the curve, NULLPTR
      * will be returned.
      *
      * \since QGIS 3.4
@@ -212,6 +231,22 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
      * \since QGIS 3.2
      */
     double sinuosity() const;
+
+    //! Curve orientation
+    enum Orientation
+    {
+      Clockwise, //!< Clockwise orientation
+      CounterClockwise, //!< Counter-clockwise orientation
+    };
+
+    /**
+     * Returns the curve's orientation, e.g. clockwise or counter-clockwise.
+     *
+     * \warning The result is not predictable for non-closed curves.
+     *
+     * \since QGIS 3.6
+     */
+    Orientation orientation() const;
 
 #ifndef SIP_RUN
 
@@ -258,6 +293,9 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
   private:
 
     mutable QgsRectangle mBoundingBox;
+
+    mutable bool mHasCachedValidity = false;
+    mutable QString mValidityFailureReason;
 };
 
-#endif // QGSCURVEV2_H
+#endif // QGSCURVE_H

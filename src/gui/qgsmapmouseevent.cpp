@@ -49,7 +49,7 @@ QgsPointXY QgsMapMouseEvent::snapPoint()
   mHasCachedSnapResult = true;
 
   QgsSnappingUtils *snappingUtils = mMapCanvas->snappingUtils();
-  mSnapMatch = snappingUtils->snapToMap( mMapPoint );
+  mSnapMatch = snappingUtils->snapToMap( mMapPoint, nullptr, true );
 
   if ( mSnapMatch.isValid() )
   {
@@ -69,6 +69,30 @@ void QgsMapMouseEvent::setMapPoint( const QgsPointXY &point )
 {
   mMapPoint = point;
   mPixelPoint = mapToPixelCoordinates( point );
+}
+
+void QgsMapMouseEvent::snapToGrid( double precision, const QgsCoordinateReferenceSystem &crs )
+{
+  if ( precision <= 0 )
+    return;
+
+  try
+  {
+    QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), crs, mMapCanvas->mapSettings().transformContext() );
+
+    QgsPointXY pt = ct.transform( mMapPoint );
+
+    pt.setX( std::round( pt.x() / precision ) * precision );
+    pt.setY( std::round( pt.y() / precision ) * precision );
+
+    pt = ct.transform( pt, QgsCoordinateTransform::ReverseTransform );
+
+    setMapPoint( pt );
+  }
+  catch ( QgsCsException &e )
+  {
+    Q_UNUSED( e )
+  }
 }
 
 QPoint QgsMapMouseEvent::mapToPixelCoordinates( const QgsPointXY &point )

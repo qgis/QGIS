@@ -23,10 +23,11 @@
 #include <QtDBus/QtDBus>
 #include <QtDebug>
 #include <QImage>
+#include <QProcess>
 
 QgsNative::Capabilities QgsLinuxNative::capabilities() const
 {
-  return NativeDesktopNotifications;
+  return NativeDesktopNotifications | NativeFilePropertiesDialog | NativeOpenTerminalAtPath;
 }
 
 void QgsLinuxNative::initializeMainWindow( QWindow *,
@@ -35,7 +36,7 @@ void QgsLinuxNative::initializeMainWindow( QWindow *,
     const QString & )
 {
   // Hardcoded desktop file value matching our official .deb packages
-  mDesktopFile = QStringLiteral( "qgis.desktop" );
+  mDesktopFile = QStringLiteral( "org.qgis.qgis.desktop" );
 }
 
 void QgsLinuxNative::openFileExplorerAndSelectFile( const QString &path )
@@ -55,6 +56,26 @@ void QgsLinuxNative::openFileExplorerAndSelectFile( const QString &path )
   if ( iface.lastError().type() != QDBusError::NoError )
   {
     QgsNative::openFileExplorerAndSelectFile( path );
+  }
+}
+
+void QgsLinuxNative::showFileProperties( const QString &path )
+{
+  if ( !QDBusConnection::sessionBus().isConnected() )
+  {
+    QgsNative::showFileProperties( path );
+    return;
+  }
+
+  QDBusInterface iface( QStringLiteral( "org.freedesktop.FileManager1" ),
+                        QStringLiteral( "/org/freedesktop/FileManager1" ),
+                        QStringLiteral( "org.freedesktop.FileManager1" ),
+                        QDBusConnection::sessionBus() );
+
+  iface.call( QDBus::NoBlock, QStringLiteral( "ShowItemProperties" ), QStringList( QUrl::fromLocalFile( path ).toString() ), QStringLiteral( "QGIS" ) );
+  if ( iface.lastError().type() != QDBusError::NoError )
+  {
+    QgsNative::showFileProperties( path );
   }
 }
 
@@ -100,6 +121,54 @@ void QgsLinuxNative::hideApplicationProgress()
                          QStringLiteral( "Update" ) );
   message.setArguments( {mDesktopFile, properties} );
   QDBusConnection::sessionBus().send( message );
+}
+
+void QgsLinuxNative::setApplicationBadgeCount( int count )
+{
+  // the badge will only be shown when the count is greater than one
+  const QVariantMap properties
+  {
+    { QStringLiteral( "count-visible" ), count > 1 },
+    { QStringLiteral( "count" ), static_cast< long long >( count ) }
+  };
+
+  QDBusMessage message = QDBusMessage::createSignal( QStringLiteral( "/org/qgis/UnityLauncher" ),
+                         QStringLiteral( "com.canonical.Unity.LauncherEntry" ),
+                         QStringLiteral( "Update" ) );
+  message.setArguments( {mDesktopFile, properties} );
+  QDBusConnection::sessionBus().send( message );
+}
+
+bool QgsLinuxNative::openTerminalAtPath( const QString &path )
+{
+  // logic adapted from https://askubuntu.com/a/227669,
+  // https://github.com/Microsoft/vscode/blob/fec1775aa52e2124d3f09c7b2ac8f69c57309549/src/vs/workbench/parts/execution/electron-browser/terminal.ts
+  QString term = QStringLiteral( "xterm" );
+  const QString desktopSession = qgetenv( "DESKTOP_SESSION" );
+  const QString currentDesktop = qgetenv( "XDG_CURRENT_DESKTOP" );
+  const QString gdmSession = qgetenv( "GDMSESSION" );
+  const bool isDebian = QFile::exists( QStringLiteral( "/etc/debian_version" ) );
+  if ( isDebian )
+  {
+    term = QStringLiteral( "x-terminal-emulator" );
+  }
+  else if ( desktopSession.contains( QLatin1String( "gnome" ), Qt::CaseInsensitive ) ||
+            currentDesktop.contains( QLatin1String( "gnome" ), Qt::CaseInsensitive ) ||
+            currentDesktop.contains( QLatin1String( "unity" ), Qt::CaseInsensitive ) )
+  {
+    term = QStringLiteral( "gnome-terminal" );
+  }
+  else if ( desktopSession.contains( QLatin1String( "kde" ), Qt::CaseInsensitive ) ||
+            currentDesktop.contains( QLatin1String( "kde" ), Qt::CaseInsensitive ) ||
+            gdmSession.contains( QLatin1String( "kde" ), Qt::CaseInsensitive ) )
+  {
+    term = QStringLiteral( "konsole" );
+  }
+
+  QStringList arguments;
+  arguments << QStringLiteral( "--working-directory" )
+            << path;
+  return QProcess::startDetached( term, QStringList(), path );
 }
 
 /**
@@ -152,7 +221,11 @@ QDBusArgument &operator<<( QDBusArgument &arg, const QImage &image )
   int channels = i.isGrayscale() ? 1 : ( i.hasAlphaChannel() ? 4 : 3 );
   arg << i.depth() / channels;
   arg << channels;
-  arg << QByteArray( reinterpret_cast<const char *>( i.bits() ), i.numBytes() );
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
+  arg << QByteArray( reinterpret_cast<const char *>( i.bits() ), i.byteCount() );
+#else
+  arg << QByteArray( reinterpret_cast<const char *>( i.bits() ), i.sizeInBytes() );
+#endif
   arg.endStructure();
   return arg;
 }

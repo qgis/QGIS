@@ -9,18 +9,21 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Matthias Kuhn'
 __date__ = '05/12/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
+
+
+import tempfile
 
 import qgis  # NOQA
 
 from qgis.core import (QgsFeature, QgsProject, QgsRelation, QgsVectorLayer,
                        QgsValueMapFieldFormatter, QgsValueRelationFieldFormatter,
                        QgsRelationReferenceFieldFormatter, QgsRangeFieldFormatter,
-                       QgsSettings, QgsGeometry, QgsPointXY)
+                       QgsCheckBoxFieldFormatter, QgsFallbackFieldFormatter,
+                       QgsSettings, QgsGeometry, QgsPointXY, QgsVectorFileWriter)
 
-from qgis.PyQt.QtCore import QCoreApplication, QLocale
+from qgis.PyQt.QtCore import QCoreApplication, QLocale, QVariant
 from qgis.testing import start_app, unittest
+from utilities import writeShape
 
 start_app()
 
@@ -132,7 +135,12 @@ class TestQgsValueRelationFieldFormatter(unittest.TestCase):
         _test([1, 2, 3], ["1", "2", "3"])
         _test("{1,2,3}", ["1", "2", "3"])
         _test(['1', '2', '3'], ["1", "2", "3"])
-        _test('not an array', ['not an array'])
+        _test('not an array', [])
+        _test('[1,2,3]', ["1", "2", "3"])
+        _test('{1,2,3}', ["1", "2", "3"])
+        _test('{"1","2","3"}', ["1", "2", "3"])
+        _test('["1","2","3"]', ["1", "2", "3"])
+        _test(r'["a string,comma","a string\"quote", "another string[]"]', ['a string,comma', 'a string"quote', 'another string[]'])
 
     def test_expressionRequiresFormScope(self):
 
@@ -166,6 +174,24 @@ class TestQgsValueRelationFieldFormatter(unittest.TestCase):
         self.assertTrue(QgsValueRelationFieldFormatter.expressionIsUsable("@current_geometry current_value ( 'pkid' )", f))
 
         QgsProject.instance().removeMapLayer(layer.id())
+
+    def test_expressionRequiresParentFormScope(self):
+
+        res = list(QgsValueRelationFieldFormatter.expressionFormAttributes("current_value('ONE') AND current_parent_value('TWO')"))
+        res = sorted(res)
+        self.assertEqual(res, ['ONE'])
+
+        res = list(QgsValueRelationFieldFormatter.expressionParentFormAttributes("current_value('ONE') AND current_parent_value('TWO')"))
+        res = sorted(res)
+        self.assertEqual(res, ['TWO'])
+
+        res = list(QgsValueRelationFieldFormatter.expressionParentFormVariables("@current_parent_geometry"))
+        self.assertEqual(res, ['current_parent_geometry'])
+
+        self.assertFalse(QgsValueRelationFieldFormatter.expressionRequiresParentFormScope(""))
+        self.assertTrue(QgsValueRelationFieldFormatter.expressionRequiresParentFormScope("current_parent_value('TWO')"))
+        self.assertTrue(QgsValueRelationFieldFormatter.expressionRequiresParentFormScope("current_parent_value ( 'TWO' )"))
+        self.assertTrue(QgsValueRelationFieldFormatter.expressionRequiresParentFormScope("@current_parent_geometry"))
 
 
 class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
@@ -352,6 +378,203 @@ class TestQgsRangeFieldFormatter(unittest.TestCase):
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '123000'), '123000.00')
 
         QgsProject.instance().removeAllMapLayers()
+
+
+class TestQgsCheckBoxFieldFormatter(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        QCoreApplication.setOrganizationName("QGIS_Test")
+        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsCheckBoxFieldFormatter.com")
+        QCoreApplication.setApplicationName("QGIS_TestPyQgsCheckBoxFieldFormatter")
+        QgsSettings().clear()
+        start_app()
+
+    def test_representValue(self):
+        null_value = "NULL"
+        QgsSettings().setValue("qgis/nullValue", null_value)
+        layer = QgsVectorLayer("point?field=int:integer&field=str:string", "layer", "memory")
+        self.assertTrue(layer.isValid())
+
+        field_formatter = QgsCheckBoxFieldFormatter()
+
+        # test with integer
+        # normal case
+        self.assertEqual(field_formatter.representValue(layer, 0, {'UncheckedState': 0, 'CheckedState': 1}, None, 1), 'true')
+        self.assertEqual(field_formatter.representValue(layer, 0, {'UncheckedState': 0, 'CheckedState': 1}, None, 0), 'false')
+        self.assertEqual(field_formatter.representValue(layer, 0, {'UncheckedState': 0, 'CheckedState': 1}, None, 10), "(10)")
+        # invert true/false
+        self.assertEqual(field_formatter.representValue(layer, 0, {'UncheckedState': 1, 'CheckedState': 0}, None, 0), 'true')
+        self.assertEqual(field_formatter.representValue(layer, 0, {'UncheckedState': 1, 'CheckedState': 0}, None, 1), 'false')
+
+        # test with string
+        self.assertEqual(field_formatter.representValue(layer, 1, {'UncheckedState': 'nooh', 'CheckedState': 'yeah'}, None, 'yeah'), 'true')
+        self.assertEqual(field_formatter.representValue(layer, 1, {'UncheckedState': 'nooh', 'CheckedState': 'yeah'}, None, 'nooh'), 'false')
+        self.assertEqual(field_formatter.representValue(layer, 1, {'UncheckedState': 'nooh', 'CheckedState': 'yeah'}, None, 'oops'), "(oops)")
+
+
+class TestQgsFallbackFieldFormatter(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        QCoreApplication.setOrganizationName("QGIS_Test")
+        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsFieldFormatter.com")
+        QCoreApplication.setApplicationName("QGIS_TestPyQgsFieldFormatter")
+        QgsSettings().clear()
+        QLocale.setDefault(QLocale(QLocale.English))
+        start_app()
+
+    @classmethod
+    def tearDownClass(cls):
+        """Reset locale"""
+        QLocale.setDefault(QLocale(QLocale.English))
+
+    def test_representValue(self):
+
+        def _test(layer, is_gpkg=False):
+
+            # Skip fid and precision tests
+            offset = 1 if is_gpkg else 0
+
+            fieldFormatter = QgsFallbackFieldFormatter()
+
+            QLocale.setDefault(QLocale('en'))
+
+            # Precision is ignored for integers and longlongs
+            self.assertEqual(fieldFormatter.representValue(layer, 0 + offset, {}, None, '123'), '123')
+            self.assertEqual(fieldFormatter.representValue(layer, 0 + offset, {}, None, '123000'), '123,000')
+            self.assertEqual(fieldFormatter.representValue(layer, 0 + offset, {}, None, '9999999'), '9,999,999')
+            self.assertEqual(fieldFormatter.representValue(layer, 0 + offset, {}, None, None), 'NULL')
+            self.assertEqual(fieldFormatter.representValue(layer, 2 + offset, {}, None, '123'), '123')
+            self.assertEqual(fieldFormatter.representValue(layer, 2 + offset, {}, None, '123000'), '123,000')
+            self.assertEqual(fieldFormatter.representValue(layer, 2 + offset, {}, None, '9999999'), '9,999,999')
+            self.assertEqual(fieldFormatter.representValue(layer, 2 + offset, {}, None, None), 'NULL')
+
+            self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, None), 'NULL')
+
+            if not is_gpkg:
+                self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '123'), '123.00000')
+            else:
+                self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '123'), '123')
+
+            self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, None), 'NULL')
+
+            if not is_gpkg:
+                self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '123000'), '123,000.00000')
+            else:
+                self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '123000'), '123,000')
+
+            self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '0'), '0')
+            self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '0.127'), '0.127')
+            self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '1.27e-1'), '0.127')
+
+            if not is_gpkg:
+                self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '-123'), '-123.00000')
+            else:
+                self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '-123'), '-123')
+
+            self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '-0.127'), '-0.127')
+            self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '-1.27e-1'), '-0.127')
+
+            # Check with Italian locale
+            QLocale.setDefault(QLocale('it'))
+
+            self.assertEqual(fieldFormatter.representValue(layer, 0 + offset, {}, None, '9999999'),
+                             '9.999.999')  # scientific notation for integers!
+            self.assertEqual(fieldFormatter.representValue(layer, 2 + offset, {}, None, '123'), '123')
+            self.assertEqual(fieldFormatter.representValue(layer, 2 + offset, {}, None, '123000'), '123.000')
+            self.assertEqual(fieldFormatter.representValue(layer, 2 + offset, {}, None, '9999999'), '9.999.999')
+            self.assertEqual(fieldFormatter.representValue(layer, 2 + offset, {}, None, None), 'NULL')
+
+            self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, None), 'NULL')
+
+            if not is_gpkg:
+                self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '123000'), '123.000,00000')
+            else:
+                self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '123000'), '123.000')
+
+            self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '0'), '0')
+
+            if not is_gpkg:
+                self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '123'), '123,00000')
+            else:
+                self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '123'), '123')
+
+            self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '0.127'), '0,127')
+            self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '1.27e-1'), '0,127')
+
+            if not is_gpkg:
+                self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '-123'), '-123,00000')
+            else:
+                self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '-123'), '-123')
+
+            self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '-0.127'), '-0,127')
+            self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '-1.27e-1'), '-0,127')
+
+            # Check with custom locale without thousand separator
+
+            custom = QLocale('en')
+            custom.setNumberOptions(QLocale.OmitGroupSeparator)
+            QLocale.setDefault(custom)
+
+            self.assertEqual(fieldFormatter.representValue(layer, 0 + offset, {}, None, '9999999'),
+                             '9999999')  # scientific notation for integers!
+            self.assertEqual(fieldFormatter.representValue(layer, 2 + offset, {}, None, '123'), '123')
+            self.assertEqual(fieldFormatter.representValue(layer, 2 + offset, {}, None, '9999999'), '9999999')
+
+            if not is_gpkg:
+                self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '123000'), '123000.00000')
+            else:
+                self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, '123000'), '123000')
+
+            # Check string
+            self.assertEqual(fieldFormatter.representValue(layer, 3 + offset, {}, None, '123'), '123')
+            self.assertEqual(fieldFormatter.representValue(layer, 3 + offset, {}, None, 'a string'), 'a string')
+            self.assertEqual(fieldFormatter.representValue(layer, 3 + offset, {}, None, ''), '')
+            self.assertEqual(fieldFormatter.representValue(layer, 3 + offset, {}, None, None), 'NULL')
+
+            # Check NULLs (this is what happens in real life inside QGIS)
+            self.assertEqual(fieldFormatter.representValue(layer, 0 + offset, {}, None, QVariant(QVariant.String)), 'NULL')
+            self.assertEqual(fieldFormatter.representValue(layer, 1 + offset, {}, None, QVariant(QVariant.String)), 'NULL')
+            self.assertEqual(fieldFormatter.representValue(layer, 2 + offset, {}, None, QVariant(QVariant.String)), 'NULL')
+            self.assertEqual(fieldFormatter.representValue(layer, 3 + offset, {}, None, QVariant(QVariant.String)), 'NULL')
+
+        memory_layer = QgsVectorLayer("point?field=int:integer&field=double:double&field=long:long&field=string:string",
+                                      "layer", "memory")
+        self.assertTrue(memory_layer.isValid())
+
+        _test(memory_layer)
+
+        # Test a shapefile
+        shape_path = writeShape(memory_layer, 'test_qgsfieldformatters.shp')
+
+        shapefile_layer = QgsVectorLayer(shape_path, 'test', 'ogr')
+        self.assertTrue(shapefile_layer.isValid())
+
+        _test(shapefile_layer)
+
+        gpkg_path = tempfile.mktemp('.gpkg')
+
+        # Test a geopackage
+        _, _ = QgsVectorFileWriter.writeAsVectorFormat(
+            memory_layer,
+            gpkg_path,
+            'utf-8',
+            memory_layer.crs(),
+            'GPKG',
+            False,
+            [],
+            [],
+            False
+        )
+
+        gpkg_layer = QgsVectorLayer(gpkg_path, 'test', 'ogr')
+        self.assertTrue(gpkg_layer.isValid())
+
+        # No precision here
+        _test(gpkg_layer, True)
 
 
 if __name__ == '__main__':

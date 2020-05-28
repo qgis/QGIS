@@ -1,0 +1,50 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsprojutils.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsProjUtils
+{
+%Docstring
+Utility functions for working with the proj library.
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgsprojutils.h"
+%End
+  public:
+
+    static int projVersionMajor();
+%Docstring
+Returns the proj library major version number.
+%End
+
+    static QStringList searchPaths();
+%Docstring
+Returns the current list of Proj file search paths.
+
+.. note::
+
+   Only available on builds based on Proj >= 6.0. Builds based on
+   earlier Proj versions will always return an empty list.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsprojutils.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

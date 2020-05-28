@@ -7,7 +7,7 @@ QgsProcessingParameterNumber|TIME_STEP|Simulation Time Step [h]|QgsProcessingPar
 QgsProcessingParameterNumber|ROUGHNESS|Manning's Roughness|QgsProcessingParameterNumber.Double|0.03|False|None|None
 QgsProcessingParameterNumber|NEWTON_MAXITER|Max. Iterations|QgsProcessingParameterNumber.Integer|100|False|None|None
 QgsProcessingParameterNumber|NEWTON_EPSILON|Epsilon|QgsProcessingParameterNumber.Double|0.0001|False|None|None
-QgsProcessingParameterEnum|PRECIP|Precipitation|[0] Homogenous;[1] Above Elevation;[2] Left Half
+QgsProcessingParameterEnum|PRECIP|Precipitation|[0] Homogeneous;[1] Above Elevation;[2] Left Half
 QgsProcessingParameterNumber|THRESHOLD|Threshold Elevation|QgsProcessingParameterNumber.Double|0.0|False|None|None
 QgsProcessingParameterRasterDestination|FLOW|Runoff
 QgsProcessingParameterVectorDestination|GAUGES_FLOW|Flow at Gauges

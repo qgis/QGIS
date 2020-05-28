@@ -18,7 +18,9 @@
 #ifndef QGSLAYERMETADATAFORMATTER_H
 #define QGSLAYERMETADATAFORMATTER_H
 
-#include "qgis.h"
+#include <QCoreApplication>
+
+#include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgslayermetadata.h"
 
@@ -30,6 +32,8 @@
  */
 class CORE_EXPORT QgsLayerMetadataFormatter
 {
+    Q_DECLARE_TR_FUNCTIONS( "QgsLayerMetadataFormatter" )
+
   public:
 
     /**
@@ -50,10 +54,11 @@ class CORE_EXPORT QgsLayerMetadataFormatter
     QString contactsSectionHtml() const;
 
     /**
-     * Formats the "Extents" section according to a \a metadata object.
+     * Formats the "Extents" section according to a \a metadata object (extent and temporal).
      * This will return a HTML table.
+     * \param showSpatialExtent flag if the spatial extent needs to be displayed. Default to TRUE.
      */
-    QString extentSectionHtml() const;
+    QString extentSectionHtml( const bool showSpatialExtent = true ) const;
 
     /**
      * Formats the "Identification" section according to a \a metadata object.

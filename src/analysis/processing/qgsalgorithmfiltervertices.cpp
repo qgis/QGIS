@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfiltervertices.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -42,9 +43,8 @@ QString QgsFilterVerticesAlgorithmBase::shortHelpString() const
                       "the maximum value.\n\n"
                       "If the minimum value is not specified than only the maximum value is tested, "
                       "and similarly if the maximum value is not specified than only the minimum value is tested.\n\n"
-                      "The resultant geometries created by this algorithm may not be valid "
-                      "and may need to be run through the \"Repair geometries\" algorithm to ensure "
-                      "their validity." ).arg( componentString() );
+                      "Depending on the input geometry attributes and the filters used, "
+                      "the resultant geometries created by this algorithm may no longer be valid." ).arg( componentString() );
 }
 
 QList<int> QgsFilterVerticesAlgorithmBase::inputLayerTypes() const
@@ -123,7 +123,7 @@ QString QgsFilterVerticesByM::name() const
 
 QString QgsFilterVerticesByM::displayName() const
 {
-  return QObject::tr( "Filter vertices by m value" );
+  return QObject::tr( "Filter vertices by M value" );
 }
 
 QStringList QgsFilterVerticesByM::tags() const
@@ -134,6 +134,17 @@ QStringList QgsFilterVerticesByM::tags() const
 QgsFilterVerticesByM *QgsFilterVerticesByM::createInstance() const
 {
   return new QgsFilterVerticesByM();
+}
+
+bool QgsFilterVerticesByM::supportInPlaceEdit( const QgsMapLayer *l ) const
+{
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  if ( !layer )
+    return false;
+
+  if ( ! QgsFilterVerticesAlgorithmBase::supportInPlaceEdit( layer ) )
+    return  false;
+  return QgsWkbTypes::hasM( layer->wkbType() );
 }
 
 QString QgsFilterVerticesByM::componentString() const
@@ -162,7 +173,7 @@ QString QgsFilterVerticesByZ::name() const
 
 QString QgsFilterVerticesByZ::displayName() const
 {
-  return QObject::tr( "Filter vertices by z value" );
+  return QObject::tr( "Filter vertices by Z value" );
 }
 
 QStringList QgsFilterVerticesByZ::tags() const
@@ -173,6 +184,17 @@ QStringList QgsFilterVerticesByZ::tags() const
 QgsFilterVerticesByZ *QgsFilterVerticesByZ::createInstance() const
 {
   return new QgsFilterVerticesByZ();
+}
+
+bool QgsFilterVerticesByZ::supportInPlaceEdit( const QgsMapLayer *l ) const
+{
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  if ( !layer )
+    return false;
+
+  if ( ! QgsFilterVerticesAlgorithmBase::supportInPlaceEdit( layer ) )
+    return false;
+  return QgsWkbTypes::hasZ( layer->wkbType() );
 }
 
 QString QgsFilterVerticesByZ::componentString() const

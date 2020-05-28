@@ -108,7 +108,7 @@ class CORE_EXPORT QgsLayoutPoint
     /**
      * Tests whether the position is null, ie both its x and y coordinates
      * are zero.
-     * \returns true if point is null
+     * \returns TRUE if point is null
     */
     bool isNull() const;
 
@@ -153,6 +153,14 @@ class CORE_EXPORT QgsLayoutPoint
      * Divides the x and y by a scalar value.
      */
     QgsLayoutPoint operator/=( double v );
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsLayoutPoint: %1, %2 %3 >" ).arg( sipCpp->x() ).arg( sipCpp->y() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   private:
 

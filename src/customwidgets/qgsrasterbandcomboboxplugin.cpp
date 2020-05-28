@@ -62,7 +62,7 @@ bool QgsRasterBandComboBoxPlugin::isInitialized() const
 
 void QgsRasterBandComboBoxPlugin::initialize( QDesignerFormEditorInterface *core )
 {
-  Q_UNUSED( core );
+  Q_UNUSED( core )
   if ( mInitialized )
     return;
   mInitialized = true;

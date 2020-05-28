@@ -29,87 +29,94 @@
 
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-Transfer
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=keepreference#function-annotation-Transfer
  *
  * Example QgsVectorLayer::setDiagramRenderer
  */
 #define SIP_TRANSFER
 
+
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-TransferBack
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-GetWrapper
+ *
+ */
+#define SIP_GETWRAPPER
+
+/*
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=keepreference#function-annotation-TransferBack
  */
 #define SIP_TRANSFERBACK
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-TransferThis
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=keepreference#function-annotation-TransferThis
  */
 #define SIP_TRANSFERTHIS
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#argument-annotation-Out
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-Out
  */
 #define SIP_OUT
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#argument-annotation-In
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-In
  */
 #define SIP_IN
 
 /*
  * Combination of
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#argument-annotation-In
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-In
  * and
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#argument-annotation-Out
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-Out
  */
 #define SIP_INOUT
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#function-annotation-Factory
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#function-annotation-Factory
  */
 #define SIP_FACTORY
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#class-annotation-PyName
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#class-annotation-PyName
  */
 #define SIP_PYNAME(name)
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#argument-annotation-KeepReference
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-KeepReference
  */
 #define SIP_KEEPREFERENCE
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#argument-annotation-Array
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-Array
  */
 #define SIP_ARRAY
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#argument-annotation-ArraySize
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-ArraySize
  */
 #define SIP_ARRAYSIZE
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#class-annotation-NoDefaultCtors
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#class-annotation-NoDefaultCtors
  */
 #define SIP_NODEFAULTCTORS
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=deprecated#function-annotation-Deprecated
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=deprecated#function-annotation-Deprecated
  */
 #define SIP_DEPRECATED
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=constrained#argument-annotation-Constrained
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=constrained#argument-annotation-Constrained
  */
 #define SIP_CONSTRAINED
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=external#class-annotation-External
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=external#class-annotation-External
  */
 #define SIP_EXTERNAL
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=allownone
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=allownone
  */
 #define SIP_ALLOWNONE
 
@@ -140,7 +147,7 @@
 
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-ReleaseGIL
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=keepreference#function-annotation-ReleaseGIL
  */
 #define SIP_RELEASEGIL
 
@@ -198,6 +205,25 @@
 #define SIP_DOC_TEMPLATE
 
 /*
+ * Specifies the type of the value returned by the function as it will appear in any
+ * generated docstrings and PEP 484 type hints. It is usually used with results of type
+ * SIP_PYOBJECT to provide a more specific type.
+ * Available for SIP 4.18+
+ */
+#define SIP_TYPEHINT(type)
+
+/*
+ * Sip supports the final keyword since version 4.19.0, earlier than that
+ * we will have build issues because it tries to override final methods.
+ */
+#if SIP_VERSION < 0x041300
+#if defined FINAL
+#undef FINAL
+#endif
+#define FINAL override
+#endif
+
+/*
  * Define Python special method (bool, repr, etc.) using the given method or code
  * sipify.pl will create a dedicated python file named according to the class
  * and located in python/{module}/auto_additions/{classname}.py
@@ -212,5 +238,22 @@
  */
 #define SIP_PYTHON_SPECIAL_BOOL(method_or_code)
 #define SIP_PYTHON_SPECIAL_REPR(method_or_code)
+
+/*
+ * If one reformat an enum to a scope based enum
+ * sipify will take care of monkey patching to keep
+ * API compatibility.
+ * If OUTSIDE_CLASS is defined, the enum has been unnested
+ * from the class, and it will be used for monkey patching
+ * e.g. QgsMapLayer.VectorLayer = QgsMapLayerType.VectorLayer
+ * These macros should be removed in QGIS 4
+ */
+#define SIP_MONKEYPATCH_SCOPEENUM
+#define SIP_MONKEYPATCH_SCOPEENUM_UNNEST(OUTSIDE_CLASS,FORMERNAME)
+
+/*
+ * Directive to define a Python property;
+ */
+#define SIP_PROPERTY(name,getter,setter)
 
 #endif // QGIS_SIP_H

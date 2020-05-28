@@ -19,12 +19,9 @@
 #define QGSWFSPARAMETERS_H
 
 #include <QMap>
-#include <QObject>
 #include <QMetaEnum>
 
 #include "qgsrectangle.h"
-#include "qgswfsserviceexception.h"
-#include "qgsserverrequest.h"
 #include "qgsprojectversion.h"
 #include "qgsserverparameters.h"
 
@@ -86,7 +83,7 @@ namespace QgsWfs
 
       /**
        * Converts the parameter into a list of string.
-       * \param exp The expression to use for splitting
+       * \param exp The expression to use for splitting, pass an empty string to avoid splitting
        * \returns A list of strings
        * \throws QgsBadRequestException Invalid parameter exception
        */

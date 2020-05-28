@@ -17,14 +17,9 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
-
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
 
 import os
 import warnings
@@ -32,6 +27,7 @@ import warnings
 from qgis.core import QgsProcessing
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSignal
+
 ''
 from processing.gui.MultipleInputDialog import MultipleInputDialog
 from processing.gui.MultipleFileInputDialog import MultipleFileInputDialog
@@ -45,7 +41,6 @@ with warnings.catch_warnings():
 
 
 class MultipleInputPanel(BASE, WIDGET):
-
     selectionChanged = pyqtSignal()
 
     def __init__(self, options=None, datatype=None):
@@ -83,7 +78,7 @@ class MultipleInputPanel(BASE, WIDGET):
         selectedoptions = []
         selected = [self.options[i] if isinstance(i, int) else i for i in self.selectedoptions]
         for sel in selected:
-            if isinstance(sel, int):
+            if not isinstance(sel, int):
                 try:
                     idx = options.index(sel)
                     selectedoptions.append(idx)

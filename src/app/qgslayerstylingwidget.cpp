@@ -22,6 +22,7 @@
 
 #include "qgsapplication.h"
 #include "qgslabelingwidget.h"
+#include "qgsmaskingwidget.h"
 #include "qgslayerstylingwidget.h"
 #include "qgsrastertransparencywidget.h"
 #include "qgsrendererpropertiesdialog.h"
@@ -34,6 +35,9 @@
 #include "qgsmaplayer.h"
 #include "qgsstyle.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectortilelayer.h"
+#include "qgsvectortilebasiclabelingwidget.h"
+#include "qgsvectortilebasicrendererwidget.h"
 #include "qgsmeshlayer.h"
 #include "qgsproject.h"
 #include "qgsundowidget.h"
@@ -46,21 +50,28 @@
 #include "qgsmaplayerstylemanagerwidget.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsrasterminmaxwidget.h"
+#include "qgisapp.h"
+#include "qgssymbolwidgetcontext.h"
 
 #ifdef HAVE_3D
 #include "qgsvectorlayer3drendererwidget.h"
+#include "qgsmeshlayer3drendererwidget.h"
 #endif
 
 
-QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent )
+QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBar *messageBar, const QList<QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent )
   : QWidget( parent )
   , mNotSupportedPage( 0 )
   , mLayerPage( 1 )
   , mMapCanvas( canvas )
+  , mMessageBar( messageBar )
   , mBlockAutoApply( false )
   , mPageFactories( pages )
 {
   setupUi( this );
+
+  mOptionsListWidget->setIconSize( QgisApp::instance()->iconSize( false ) );
+  mOptionsListWidget->setMaximumWidth( static_cast< int >( mOptionsListWidget->iconSize().width() * 1.18 ) );
 
   connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( QgsMapLayer * ) > ( &QgsProject::layerWillBeRemoved ), this, &QgsLayerStylingWidget::layerAboutToBeRemoved );
 
@@ -71,6 +82,7 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<
   mAutoApplyTimer->setSingleShot( true );
 
   mUndoWidget = new QgsUndoWidget( this, mMapCanvas );
+  mUndoWidget->setButtonsVisible( false );
   mUndoWidget->setAutoDelete( false );
   mUndoWidget->setObjectName( QStringLiteral( "Undo Styles" ) );
   mUndoWidget->hide();
@@ -129,7 +141,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
     disconnect( mCurrentLayer, &QgsMapLayer::styleChanged, this, &QgsLayerStylingWidget::updateCurrentWidgetLayer );
   }
 
-  if ( !layer || !layer->isSpatial() )
+  if ( !layer || !layer->isSpatial() || !QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
   {
     mLayerCombo->setLayer( nullptr );
     mStackedWidget->setCurrentIndex( mNotSupportedPage );
@@ -154,52 +166,87 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   mOptionsListWidget->blockSignals( true );
   mOptionsListWidget->clear();
   mUserPages.clear();
-  if ( layer->type() == QgsMapLayer::VectorLayer )
+
+  switch ( layer->type() )
   {
-    QListWidgetItem *symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ), QString() );
-    symbolItem->setData( Qt::UserRole, Symbology );
-    symbolItem->setToolTip( tr( "Symbology" ) );
-    mOptionsListWidget->addItem( symbolItem );
-    QListWidgetItem *labelItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), QString() );
-    labelItem->setData( Qt::UserRole, VectorLabeling );
-    labelItem->setToolTip( tr( "Labels" ) );
-    mOptionsListWidget->addItem( labelItem );
+    case QgsMapLayerType::VectorLayer:
+    {
+      QListWidgetItem *symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ), QString() );
+      symbolItem->setData( Qt::UserRole, Symbology );
+      symbolItem->setToolTip( tr( "Symbology" ) );
+      mOptionsListWidget->addItem( symbolItem );
+      QListWidgetItem *labelItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), QString() );
+      labelItem->setData( Qt::UserRole, VectorLabeling );
+      labelItem->setToolTip( tr( "Labels" ) );
+      mOptionsListWidget->addItem( labelItem );
+      QListWidgetItem *maskItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/labelmask.svg" ) ), QString() );
+      maskItem->setData( Qt::UserRole, VectorLabeling );
+      maskItem->setToolTip( tr( "Masks" ) );
+      mOptionsListWidget->addItem( maskItem );
 
 #ifdef HAVE_3D
-    QListWidgetItem *symbol3DItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "3d.svg" ) ), QString() );
-    symbol3DItem->setData( Qt::UserRole, Symbology3D );
-    symbol3DItem->setToolTip( tr( "3D View" ) );
-    mOptionsListWidget->addItem( symbol3DItem );
+      QListWidgetItem *symbol3DItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "3d.svg" ) ), QString() );
+      symbol3DItem->setData( Qt::UserRole, Symbology3D );
+      symbol3DItem->setToolTip( tr( "3D View" ) );
+      mOptionsListWidget->addItem( symbol3DItem );
 #endif
-  }
-  else if ( layer->type() == QgsMapLayer::RasterLayer )
-  {
-    QListWidgetItem *symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ), QString() );
-    symbolItem->setData( Qt::UserRole, Symbology );
-    symbolItem->setToolTip( tr( "Symbology" ) );
-    mOptionsListWidget->addItem( symbolItem );
-    QListWidgetItem *transparencyItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/transparency.svg" ) ), QString() );
-    transparencyItem->setToolTip( tr( "Transparency" ) );
-    transparencyItem->setData( Qt::UserRole, RasterTransparency );
-    mOptionsListWidget->addItem( transparencyItem );
-
-    if ( static_cast<QgsRasterLayer *>( layer )->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
-    {
-      QListWidgetItem *histogramItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/histogram.svg" ) ), QString() );
-      histogramItem->setData( Qt::UserRole, RasterHistogram );
-      mOptionsListWidget->addItem( histogramItem );
-      histogramItem->setToolTip( tr( "Histogram" ) );
+      break;
     }
-  }
-  else if ( layer->type() == QgsMapLayer::MeshLayer )
-  {
-    QListWidgetItem *symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ), QString() );
-    symbolItem->setData( Qt::UserRole, Symbology );
-    symbolItem->setToolTip( tr( "Symbology" ) );
-    mOptionsListWidget->addItem( symbolItem );
+    case QgsMapLayerType::RasterLayer:
+    {
+      QListWidgetItem *symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ), QString() );
+      symbolItem->setData( Qt::UserRole, Symbology );
+      symbolItem->setToolTip( tr( "Symbology" ) );
+      mOptionsListWidget->addItem( symbolItem );
+      QListWidgetItem *transparencyItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/transparency.svg" ) ), QString() );
+      transparencyItem->setToolTip( tr( "Transparency" ) );
+      transparencyItem->setData( Qt::UserRole, RasterTransparency );
+      mOptionsListWidget->addItem( transparencyItem );
+
+      if ( static_cast<QgsRasterLayer *>( layer )->dataProvider() && static_cast<QgsRasterLayer *>( layer )->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
+      {
+        QListWidgetItem *histogramItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/histogram.svg" ) ), QString() );
+        histogramItem->setData( Qt::UserRole, RasterHistogram );
+        mOptionsListWidget->addItem( histogramItem );
+        histogramItem->setToolTip( tr( "Histogram" ) );
+      }
+      break;
+    }
+    case QgsMapLayerType::MeshLayer:
+    {
+      QListWidgetItem *symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ), QString() );
+      symbolItem->setData( Qt::UserRole, Symbology );
+      symbolItem->setToolTip( tr( "Symbology" ) );
+      mOptionsListWidget->addItem( symbolItem );
+
+#ifdef HAVE_3D
+      QListWidgetItem *symbol3DItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "3d.svg" ) ), QString() );
+      symbol3DItem->setData( Qt::UserRole, Symbology3D );
+      symbol3DItem->setToolTip( tr( "3D View" ) );
+      mOptionsListWidget->addItem( symbol3DItem );
+#endif
+      break;
+    }
+
+    case QgsMapLayerType::VectorTileLayer:
+    {
+      QListWidgetItem *symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ), QString() );
+      symbolItem->setData( Qt::UserRole, Symbology );
+      symbolItem->setToolTip( tr( "Symbology" ) );
+      mOptionsListWidget->addItem( symbolItem );
+      QListWidgetItem *labelItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), QString() );
+      labelItem->setData( Qt::UserRole, VectorLabeling );
+      labelItem->setToolTip( tr( "Labels" ) );
+      mOptionsListWidget->addItem( labelItem );
+      break;
+    }
+
+    case QgsMapLayerType::PluginLayer:
+      break;
   }
 
-  Q_FOREACH ( QgsMapLayerConfigWidgetFactory *factory, mPageFactories )
+  const auto constMPageFactories = mPageFactories;
+  for ( QgsMapLayerConfigWidgetFactory *factory : constMPageFactories )
   {
     if ( factory->supportsStyleDock() && factory->supportsLayer( layer ) )
     {
@@ -246,11 +293,18 @@ void QgsLayerStylingWidget::apply()
   QWidget *current = mWidgetStack->mainPanel();
 
   bool styleWasChanged = false;
+  bool triggerRepaint = false;  // whether the change needs the layer to be repainted
   if ( QgsLabelingWidget *widget = qobject_cast<QgsLabelingWidget *>( current ) )
   {
     widget->apply();
     styleWasChanged = true;
     undoName = QStringLiteral( "Label Change" );
+  }
+  if ( QgsMaskingWidget *widget = qobject_cast<QgsMaskingWidget *>( current ) )
+  {
+    widget->apply();
+    styleWasChanged = true;
+    undoName = QStringLiteral( "Mask Change" );
   }
   if ( QgsPanelWidgetWrapper *wrapper = qobject_cast<QgsPanelWidgetWrapper *>( current ) )
   {
@@ -261,31 +315,34 @@ void QgsLayerStylingWidget::apply()
       QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( layer->renderer()->type() );
       undoName = QStringLiteral( "Style Change - %1" ).arg( m->visibleName() );
       styleWasChanged = true;
+      triggerRepaint = true;
     }
   }
   else if ( QgsRasterTransparencyWidget *widget = qobject_cast<QgsRasterTransparencyWidget *>( current ) )
   {
     widget->apply();
     styleWasChanged = true;
+    triggerRepaint = true;
   }
   else if ( qobject_cast<QgsRasterHistogramWidget *>( current ) )
   {
     mRasterStyleWidget->apply();
     styleWasChanged = true;
+    triggerRepaint = true;
   }
   else if ( QgsMapLayerConfigWidget *widget = qobject_cast<QgsMapLayerConfigWidget *>( current ) )
   {
     widget->apply();
     styleWasChanged = true;
+    triggerRepaint = widget->shouldTriggerLayerRepaint();
   }
 
-  pushUndoItem( undoName );
+  pushUndoItem( undoName, triggerRepaint );
 
   if ( styleWasChanged )
   {
     emit styleChanged( mCurrentLayer );
     QgsProject::instance()->setDirty( true );
-    mCurrentLayer->triggerRepaint();
   }
   connect( mCurrentLayer, &QgsMapLayer::styleChanged, this, &QgsLayerStylingWidget::updateCurrentWidgetLayer );
 }
@@ -330,6 +387,10 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     {
       mLabelingWidget = widget;
     }
+    else if ( QgsMaskingWidget *widget = qobject_cast<QgsMaskingWidget *>( current ) )
+    {
+      mMaskingWidget = widget;
+    }
     else if ( QgsUndoWidget *widget = qobject_cast<QgsUndoWidget *>( current ) )
     {
       mUndoWidget = widget;
@@ -348,6 +409,12 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     {
       mMeshStyleWidget = widget;
     }
+#ifdef HAVE_3D
+    else if ( QgsMeshLayer3DRendererWidget *widget = qobject_cast<QgsMeshLayer3DRendererWidget *>( current ) )
+    {
+      mMesh3DWidget = widget;
+    }
+#endif
   }
 
   mWidgetStack->clear();
@@ -368,152 +435,221 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
   {
     mWidgetStack->setMainPanel( mUndoWidget );
   }
-  else if ( mCurrentLayer->type() == QgsMapLayer::VectorLayer )
-  {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
-
-    switch ( row )
-    {
-      case 0: // Style
-      {
-        QgsRendererPropertiesDialog *styleWidget = new QgsRendererPropertiesDialog( vlayer, QgsStyle::defaultStyle(), true, mStackedWidget );
-        styleWidget->setMapCanvas( mMapCanvas );
-        styleWidget->setDockMode( true );
-        connect( styleWidget, &QgsRendererPropertiesDialog::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
-        QgsPanelWidgetWrapper *wrapper = new QgsPanelWidgetWrapper( styleWidget, mStackedWidget );
-        wrapper->setDockMode( true );
-        connect( styleWidget, &QgsRendererPropertiesDialog::showPanel, wrapper, &QgsPanelWidget::openPanel );
-        mWidgetStack->setMainPanel( wrapper );
-        break;
-      }
-      case 1: // Labels
-      {
-        if ( !mLabelingWidget )
-        {
-          mLabelingWidget = new QgsLabelingWidget( nullptr, mMapCanvas, mWidgetStack );
-          mLabelingWidget->setDockMode( true );
-          connect( mLabelingWidget, &QgsLabelingWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
-        }
-        mLabelingWidget->setLayer( vlayer );
-        mWidgetStack->setMainPanel( mLabelingWidget );
-        break;
-      }
-#ifdef HAVE_3D
-      case 2:  // 3D View
-      {
-        if ( !mVector3DWidget )
-        {
-          mVector3DWidget = new QgsVectorLayer3DRendererWidget( nullptr, mMapCanvas, mWidgetStack );
-          mVector3DWidget->setDockMode( true );
-          connect( mVector3DWidget, &QgsVectorLayer3DRendererWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
-        }
-        mVector3DWidget->setLayer( vlayer );
-        mWidgetStack->setMainPanel( mVector3DWidget );
-        break;
-      }
-#endif
-      default:
-        break;
-    }
-  }
-  else if ( mCurrentLayer->type() == QgsMapLayer::RasterLayer )
-  {
-    QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( mCurrentLayer );
-    bool hasMinMaxCollapsedState = false;
-    bool minMaxCollapsed = false;
-
-    switch ( row )
-    {
-      case 0: // Style
-      {
-        // Backup collapsed state of min/max group so as to restore it
-        // on the new widget.
-        if ( mRasterStyleWidget )
-        {
-          QgsRasterRendererWidget *currentRenderWidget = mRasterStyleWidget->currentRenderWidget();
-          if ( currentRenderWidget )
-          {
-            QgsRasterMinMaxWidget *mmWidget = currentRenderWidget->minMaxWidget();
-            if ( mmWidget )
-            {
-              hasMinMaxCollapsedState = true;
-              minMaxCollapsed = mmWidget->isCollapsed();
-            }
-          }
-        }
-        mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( rlayer, mMapCanvas, mWidgetStack );
-        if ( hasMinMaxCollapsedState )
-        {
-          QgsRasterRendererWidget *currentRenderWidget = mRasterStyleWidget->currentRenderWidget();
-          if ( currentRenderWidget )
-          {
-            QgsRasterMinMaxWidget *mmWidget = currentRenderWidget->minMaxWidget();
-            if ( mmWidget )
-            {
-              mmWidget->setCollapsed( minMaxCollapsed );
-            }
-          }
-        }
-        mRasterStyleWidget->setDockMode( true );
-        connect( mRasterStyleWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
-        mWidgetStack->setMainPanel( mRasterStyleWidget );
-        break;
-      }
-
-      case 1: // Transparency
-      {
-        QgsRasterTransparencyWidget *transwidget = new QgsRasterTransparencyWidget( rlayer, mMapCanvas, mWidgetStack );
-        transwidget->setDockMode( true );
-        connect( transwidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
-        mWidgetStack->setMainPanel( transwidget );
-        break;
-      }
-      case 2: // Histogram
-      {
-        if ( rlayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
-        {
-          if ( !mRasterStyleWidget )
-          {
-            mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( rlayer, mMapCanvas, mWidgetStack );
-            mRasterStyleWidget->syncToLayer( rlayer );
-          }
-          connect( mRasterStyleWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
-
-          QgsRasterHistogramWidget *widget = new QgsRasterHistogramWidget( rlayer, mWidgetStack );
-          connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
-          QString name = mRasterStyleWidget->currentRenderWidget()->renderer()->type();
-          widget->setRendererWidget( name, mRasterStyleWidget->currentRenderWidget() );
-          widget->setDockMode( true );
-
-          mWidgetStack->setMainPanel( widget );
-        }
-        break;
-      }
-      default:
-        break;
-    }
-  }
-  else if ( mCurrentLayer->type() == QgsMapLayer::MeshLayer )
-  {
-    QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( mCurrentLayer );
-    switch ( row )
-    {
-      case 0: // Style
-      {
-        mMeshStyleWidget = new QgsRendererMeshPropertiesWidget( meshLayer, mMapCanvas, mWidgetStack );
-
-        mMeshStyleWidget->setDockMode( true );
-        connect( mMeshStyleWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
-        mWidgetStack->setMainPanel( mMeshStyleWidget );
-        break;
-      }
-      default:
-        break;
-    }
-  }
   else
   {
-    mStackedWidget->setCurrentIndex( mNotSupportedPage );
+    switch ( mCurrentLayer->type() )
+    {
+      case QgsMapLayerType::VectorLayer:
+      {
+        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
+
+        switch ( row )
+        {
+          case 0: // Style
+          {
+            QgsRendererPropertiesDialog *styleWidget = new QgsRendererPropertiesDialog( vlayer, QgsStyle::defaultStyle(), true, mStackedWidget );
+            QgsSymbolWidgetContext context;
+            context.setMapCanvas( mMapCanvas );
+            context.setMessageBar( mMessageBar );
+            styleWidget->setContext( context );
+            styleWidget->setDockMode( true );
+            connect( styleWidget, &QgsRendererPropertiesDialog::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            QgsPanelWidgetWrapper *wrapper = new QgsPanelWidgetWrapper( styleWidget, mStackedWidget );
+            wrapper->setDockMode( true );
+            connect( styleWidget, &QgsRendererPropertiesDialog::showPanel, wrapper, &QgsPanelWidget::openPanel );
+            mWidgetStack->setMainPanel( wrapper );
+            break;
+          }
+          case 1: // Labels
+          {
+            if ( !mLabelingWidget )
+            {
+              mLabelingWidget = new QgsLabelingWidget( nullptr, mMapCanvas, mWidgetStack, mMessageBar );
+              mLabelingWidget->setDockMode( true );
+              connect( mLabelingWidget, &QgsLabelingWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            }
+            mLabelingWidget->setLayer( vlayer );
+            mWidgetStack->setMainPanel( mLabelingWidget );
+            break;
+          }
+          case 2: // Masks
+          {
+            if ( !mMaskingWidget )
+            {
+              mMaskingWidget = new QgsMaskingWidget( mWidgetStack );
+              mMaskingWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
+              connect( mMaskingWidget, &QgsMaskingWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            }
+            mMaskingWidget->setLayer( vlayer );
+            mWidgetStack->setMainPanel( mMaskingWidget );
+            break;
+          }
+#ifdef HAVE_3D
+          case 3:  // 3D View
+          {
+            if ( !mVector3DWidget )
+            {
+              mVector3DWidget = new QgsVectorLayer3DRendererWidget( nullptr, mMapCanvas, mWidgetStack );
+              mVector3DWidget->setDockMode( true );
+              connect( mVector3DWidget, &QgsVectorLayer3DRendererWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            }
+            mVector3DWidget->syncToLayer( vlayer );
+            mWidgetStack->setMainPanel( mVector3DWidget );
+            break;
+          }
+#endif
+          default:
+            break;
+        }
+        break;
+      }
+
+      case QgsMapLayerType::RasterLayer:
+      {
+        QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( mCurrentLayer );
+        bool hasMinMaxCollapsedState = false;
+        bool minMaxCollapsed = false;
+
+        switch ( row )
+        {
+          case 0: // Style
+          {
+            // Backup collapsed state of min/max group so as to restore it
+            // on the new widget.
+            if ( mRasterStyleWidget )
+            {
+              QgsRasterRendererWidget *currentRenderWidget = mRasterStyleWidget->currentRenderWidget();
+              if ( currentRenderWidget )
+              {
+                QgsRasterMinMaxWidget *mmWidget = currentRenderWidget->minMaxWidget();
+                if ( mmWidget )
+                {
+                  hasMinMaxCollapsedState = true;
+                  minMaxCollapsed = mmWidget->isCollapsed();
+                }
+              }
+            }
+            mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( rlayer, mMapCanvas, mWidgetStack );
+            if ( hasMinMaxCollapsedState )
+            {
+              QgsRasterRendererWidget *currentRenderWidget = mRasterStyleWidget->currentRenderWidget();
+              if ( currentRenderWidget )
+              {
+                QgsRasterMinMaxWidget *mmWidget = currentRenderWidget->minMaxWidget();
+                if ( mmWidget )
+                {
+                  mmWidget->setCollapsed( minMaxCollapsed );
+                }
+              }
+            }
+            mRasterStyleWidget->setDockMode( true );
+            connect( mRasterStyleWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            mWidgetStack->setMainPanel( mRasterStyleWidget );
+            break;
+          }
+
+          case 1: // Transparency
+          {
+            QgsRasterTransparencyWidget *transwidget = new QgsRasterTransparencyWidget( rlayer, mMapCanvas, mWidgetStack );
+            transwidget->setDockMode( true );
+            connect( transwidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            mWidgetStack->setMainPanel( transwidget );
+            break;
+          }
+          case 2: // Histogram
+          {
+            if ( rlayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
+            {
+              if ( !mRasterStyleWidget )
+              {
+                mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( rlayer, mMapCanvas, mWidgetStack );
+                mRasterStyleWidget->syncToLayer( rlayer );
+              }
+              connect( mRasterStyleWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+
+              QgsRasterHistogramWidget *widget = new QgsRasterHistogramWidget( rlayer, mWidgetStack );
+              connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+              QString name = mRasterStyleWidget->currentRenderWidget()->renderer()->type();
+              widget->setRendererWidget( name, mRasterStyleWidget->currentRenderWidget() );
+              widget->setDockMode( true );
+
+              mWidgetStack->setMainPanel( widget );
+            }
+            break;
+          }
+          default:
+            break;
+        }
+        break;
+      }
+
+      case QgsMapLayerType::MeshLayer:
+      {
+        QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( mCurrentLayer );
+        switch ( row )
+        {
+          case 0: // Style
+          {
+            mMeshStyleWidget = new QgsRendererMeshPropertiesWidget( meshLayer, mMapCanvas, mWidgetStack );
+
+            mMeshStyleWidget->setDockMode( true );
+            connect( mMeshStyleWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            mWidgetStack->setMainPanel( mMeshStyleWidget );
+            break;
+          }
+#ifdef HAVE_3D
+          case 1:  // 3D View
+          {
+            if ( !mMesh3DWidget )
+            {
+              mMesh3DWidget = new QgsMeshLayer3DRendererWidget( nullptr, mMapCanvas, mWidgetStack );
+              mMesh3DWidget->setDockMode( true );
+              connect( mMesh3DWidget, &QgsMeshLayer3DRendererWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            }
+            mMesh3DWidget->setLayer( meshLayer );
+            mWidgetStack->setMainPanel( mMesh3DWidget );
+            break;
+          }
+#endif
+          default:
+            break;
+        }
+        break;
+      }
+
+      case QgsMapLayerType::VectorTileLayer:
+      {
+        QgsVectorTileLayer *vtLayer = qobject_cast<QgsVectorTileLayer *>( mCurrentLayer );
+        switch ( row )
+        {
+          case 0: // Style
+          {
+            mVectorTileStyleWidget = new QgsVectorTileBasicRendererWidget( vtLayer, mMapCanvas, mMessageBar, mWidgetStack );
+            mVectorTileStyleWidget->setDockMode( true );
+            connect( mVectorTileStyleWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            mWidgetStack->setMainPanel( mVectorTileStyleWidget );
+            break;
+          }
+          case 1: // Labeling
+          {
+            mVectorTileLabelingWidget = new QgsVectorTileBasicLabelingWidget( vtLayer, mMapCanvas, mMessageBar, mWidgetStack );
+            mVectorTileLabelingWidget->setDockMode( true );
+            connect( mVectorTileLabelingWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            mWidgetStack->setMainPanel( mVectorTileLabelingWidget );
+            break;
+          }
+          default:
+            break;
+        }
+        break;
+      }
+
+      case QgsMapLayerType::PluginLayer:
+      {
+        mStackedWidget->setCurrentIndex( mNotSupportedPage );
+        break;
+      }
+    }
   }
 
   mBlockAutoApply = false;
@@ -547,25 +683,26 @@ void QgsLayerStylingWidget::liveApplyToggled( bool value )
   settings.setValue( QStringLiteral( "UI/autoApplyStyling" ), value );
 }
 
-void QgsLayerStylingWidget::pushUndoItem( const QString &name )
+void QgsLayerStylingWidget::pushUndoItem( const QString &name, bool triggerRepaint )
 {
   QString errorMsg;
   QDomDocument doc( QStringLiteral( "style" ) );
   QDomElement rootNode = doc.createElement( QStringLiteral( "qgis" ) );
   doc.appendChild( rootNode );
   mCurrentLayer->writeStyle( rootNode, doc, errorMsg, QgsReadWriteContext() );
-  mCurrentLayer->undoStackStyles()->push( new QgsMapLayerStyleCommand( mCurrentLayer, name, rootNode, mLastStyleXml ) );
+  mCurrentLayer->undoStackStyles()->push( new QgsMapLayerStyleCommand( mCurrentLayer, name, rootNode, mLastStyleXml, triggerRepaint ) );
   // Override the last style on the stack
   mLastStyleXml = rootNode.cloneNode();
 }
 
 
-QgsMapLayerStyleCommand::QgsMapLayerStyleCommand( QgsMapLayer *layer, const QString &text, const QDomNode &current, const QDomNode &last )
+QgsMapLayerStyleCommand::QgsMapLayerStyleCommand( QgsMapLayer *layer, const QString &text, const QDomNode &current, const QDomNode &last, bool triggerRepaint )
   : QUndoCommand( text )
   , mLayer( layer )
   , mXml( current )
   , mLastState( last )
   , mTime( QTime::currentTime() )
+  , mTriggerRepaint( triggerRepaint )
 {
 }
 
@@ -574,7 +711,8 @@ void QgsMapLayerStyleCommand::undo()
   QString error;
   QgsReadWriteContext context = QgsReadWriteContext();
   mLayer->readStyle( mLastState, error, context );
-  mLayer->triggerRepaint();
+  if ( mTriggerRepaint )
+    mLayer->triggerRepaint();
 }
 
 void QgsMapLayerStyleCommand::redo()
@@ -582,7 +720,8 @@ void QgsMapLayerStyleCommand::redo()
   QString error;
   QgsReadWriteContext context = QgsReadWriteContext();
   mLayer->readStyle( mXml, error, context );
-  mLayer->triggerRepaint();
+  if ( mTriggerRepaint )
+    mLayer->triggerRepaint();
 }
 
 bool QgsMapLayerStyleCommand::mergeWith( const QUndoCommand *other )
@@ -603,6 +742,7 @@ bool QgsMapLayerStyleCommand::mergeWith( const QUndoCommand *other )
 
   mXml = otherCmd->mXml;
   mTime = otherCmd->mTime;
+  mTriggerRepaint |= otherCmd->mTriggerRepaint;
   return true;
 }
 
@@ -614,12 +754,25 @@ QgsLayerStyleManagerWidgetFactory::QgsLayerStyleManagerWidgetFactory()
 
 QgsMapLayerConfigWidget *QgsLayerStyleManagerWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockMode, QWidget *parent ) const
 {
-  Q_UNUSED( dockMode );
+  Q_UNUSED( dockMode )
   return new QgsMapLayerStyleManagerWidget( layer,  canvas, parent );
 
 }
 
 bool QgsLayerStyleManagerWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
 {
-  return ( layer->type() == QgsMapLayer::VectorLayer || layer->type() == QgsMapLayer::RasterLayer || layer->type() == QgsMapLayer::MeshLayer );
+  switch ( layer->type() )
+  {
+    case QgsMapLayerType::VectorLayer:
+    case QgsMapLayerType::RasterLayer:
+    case QgsMapLayerType::MeshLayer:
+      return true;
+
+    case QgsMapLayerType::VectorTileLayer:
+      return false;  // TODO
+
+    case QgsMapLayerType::PluginLayer:
+      return false;
+  }
+  return false; // no warnings
 }

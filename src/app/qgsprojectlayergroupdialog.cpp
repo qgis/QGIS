@@ -21,6 +21,7 @@
 #include "qgslayertreeutils.h"
 #include "qgssettings.h"
 #include "qgsziputils.h"
+#include "qgsgui.h"
 
 #include <QDomDocument>
 #include <QFileDialog>
@@ -48,6 +49,7 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const Q
   , mRootGroup( new QgsLayerTree )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   QgsEmbeddedLayerTreeModel *model = new QgsEmbeddedLayerTreeModel( mRootGroup, this );
   mTreeView->setModel( model );
@@ -74,21 +76,13 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const Q
   }
 
   connect( mProjectFileWidget, &QgsFileWidget::fileChanged, this, &QgsProjectLayerGroupDialog::changeProjectFile );
-
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsProjectLayerGroupDialog::mButtonBox_accepted );
-
-  restoreGeometry( settings.value( QStringLiteral( "Windows/EmbedLayer/geometry" ) ).toByteArray() );
-
-
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectLayerGroupDialog::showHelp );
 }
 
 QgsProjectLayerGroupDialog::~QgsProjectLayerGroupDialog()
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/EmbedLayer/geometry" ), saveGeometry() );
-
   delete mRootGroup;
 }
 
@@ -96,7 +90,8 @@ QStringList QgsProjectLayerGroupDialog::selectedGroups() const
 {
   QStringList groups;
   QgsLayerTreeModel *model = mTreeView->layerTreeModel();
-  Q_FOREACH ( const QModelIndex &index, mTreeView->selectionModel()->selectedIndexes() )
+  const auto constSelectedIndexes = mTreeView->selectionModel()->selectedIndexes();
+  for ( const QModelIndex &index : constSelectedIndexes )
   {
     QgsLayerTreeNode *node = model->index2node( index );
     if ( QgsLayerTree::isGroup( node ) )
@@ -109,7 +104,8 @@ QStringList QgsProjectLayerGroupDialog::selectedLayerIds() const
 {
   QStringList layerIds;
   QgsLayerTreeModel *model = mTreeView->layerTreeModel();
-  Q_FOREACH ( const QModelIndex &index, mTreeView->selectionModel()->selectedIndexes() )
+  const auto constSelectedIndexes = mTreeView->selectionModel()->selectedIndexes();
+  for ( const QModelIndex &index : constSelectedIndexes )
   {
     QgsLayerTreeNode *node = model->index2node( index );
     if ( QgsLayerTree::isLayer( node ) )
@@ -122,7 +118,8 @@ QStringList QgsProjectLayerGroupDialog::selectedLayerNames() const
 {
   QStringList layerNames;
   QgsLayerTreeModel *model = mTreeView->layerTreeModel();
-  Q_FOREACH ( const QModelIndex &index, mTreeView->selectionModel()->selectedIndexes() )
+  const auto constSelectedIndexes = mTreeView->selectionModel()->selectedIndexes();
+  for ( const QModelIndex &index : constSelectedIndexes )
   {
     QgsLayerTreeNode *node = model->index2node( index );
     if ( QgsLayerTree::isLayer( node ) )
@@ -168,37 +165,42 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
     return;
   }
 
+  std::unique_ptr<QgsProjectArchive> archive;
+
   QDomDocument projectDom;
   if ( QgsZipUtils::isZipFile( mProjectFileWidget->filePath() ) )
   {
-    QgsProjectArchive archive;
+
+    archive = qgis::make_unique<QgsProjectArchive>();
 
     // unzip the archive
-    if ( !archive.unzip( mProjectFileWidget->filePath() ) )
+    if ( !archive->unzip( mProjectFileWidget->filePath() ) )
     {
       return;
     }
 
     // test if zip provides a .qgs file
-    if ( archive.projectFile().isEmpty() )
+    if ( archive->projectFile().isEmpty() )
     {
       return;
     }
 
-    projectFile.setFileName( archive.projectFile() );
+    projectFile.setFileName( archive->projectFile() );
     if ( !projectFile.exists() )
     {
       return;
     }
   }
-
-  if ( !projectDom.setContent( &projectFile ) )
+  QString errorMessage;
+  int errorLine;
+  if ( !projectDom.setContent( &projectFile, &errorMessage, &errorLine ) )
   {
+    QgsDebugMsg( QStringLiteral( "Error reading the project file %1 at line %2: %3" )
+                 .arg( projectFile.fileName() )
+                 .arg( errorLine )
+                 .arg( errorMessage ) );
     return;
   }
-
-
-
 
   mRootGroup->removeAllChildren();
 
@@ -224,21 +226,24 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
 void QgsProjectLayerGroupDialog::removeEmbeddedNodes( QgsLayerTreeGroup *node )
 {
   QList<QgsLayerTreeNode *> childrenToRemove;
-  Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
+  const auto constChildren = node->children();
+  for ( QgsLayerTreeNode *child : constChildren )
   {
     if ( child->customProperty( QStringLiteral( "embedded" ) ).toInt() )
       childrenToRemove << child;
     else if ( QgsLayerTree::isGroup( child ) )
       removeEmbeddedNodes( QgsLayerTree::toGroup( child ) );
   }
-  Q_FOREACH ( QgsLayerTreeNode *childToRemove, childrenToRemove )
+  const auto constChildrenToRemove = childrenToRemove;
+  for ( QgsLayerTreeNode *childToRemove : constChildrenToRemove )
     node->removeChildNode( childToRemove );
 }
 
 
 void QgsProjectLayerGroupDialog::onTreeViewSelectionChanged()
 {
-  Q_FOREACH ( const QModelIndex &index, mTreeView->selectionModel()->selectedIndexes() )
+  const auto constSelectedIndexes = mTreeView->selectionModel()->selectedIndexes();
+  for ( const QModelIndex &index : constSelectedIndexes )
   {
     deselectChildren( index );
   }

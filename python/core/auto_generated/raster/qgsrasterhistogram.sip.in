@@ -24,6 +24,9 @@ It is used to cache computed histograms in raster providers.
     typedef QVector<int> HistogramVector;
 
     QgsRasterHistogram();
+%Docstring
+Constructor for an invalid QgsRasterHistogram.
+%End
 
     bool operator==( const QgsRasterHistogram &h ) const;
 

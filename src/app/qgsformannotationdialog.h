@@ -36,6 +36,7 @@ class APP_EXPORT QgsFormAnnotationDialog: public QDialog, private Ui::QgsFormAnn
     void mBrowseToolButton_clicked();
     void deleteItem();
     void mButtonBox_clicked( QAbstractButton *button );
+    void showHelp();
 };
 
 #endif // QGSFORMANNOTATIONDIALOG_H

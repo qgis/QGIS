@@ -37,10 +37,17 @@ class APP_EXPORT QgsDatumTransformTableModel : public QAbstractTableModel
 
     enum TableColumns
     {
+#if PROJ_VERSION_MAJOR>=6
+      SourceCrsColumn  = 0,
+      DestinationCrsColumn,
+      ProjDefinitionColumn,
+      AllowFallbackColumn,
+#else
       SourceCrsColumn  = 0,
       SourceTransformColumn,
       DestinationCrsColumn,
       DestinationTransformColumn,
+#endif
     };
 
     QgsDatumTransformTableModel( QObject *parent = nullptr );
@@ -93,10 +100,14 @@ class APP_EXPORT QgsDatumTransformTableWidget : public QWidget, private Ui::QgsD
     void removeDatumTransform();
 
     //! edit currently selected datum transform
-    void editDatumTransform();
+    void editDatumTransform( const QModelIndex &index );
+
+  private slots:
+
+    void selectionChanged( const QItemSelection &selected = QItemSelection(), const QItemSelection &deselected = QItemSelection() );
 
   private:
-    QgsDatumTransformTableModel *mModel = new QgsDatumTransformTableModel( this );
+    QgsDatumTransformTableModel *mModel = nullptr;
 };
 
 

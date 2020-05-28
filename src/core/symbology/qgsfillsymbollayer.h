@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSFILLSYMBOLLAYERV2_H
-#define QGSFILLSYMBOLLAYERV2_H
+#ifndef QGSFILLSYMBOLLAYER_H
+#define QGSFILLSYMBOLLAYER_H
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -49,6 +49,11 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
 
     // static stuff
 
+    /**
+     * Creates a new QgsSimpleFillSymbolLayer using the specified \a properties map containing symbol properties (see properties()).
+     *
+     * Caller takes ownership of the returned symbol layer.
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
@@ -60,7 +65,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
 
     void stopRender( QgsSymbolRenderContext &context ) override;
 
-    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
 
     QgsStringMap properties() const override;
 
@@ -209,6 +214,11 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 
     // static stuff
 
+    /**
+     * Creates a new QgsGradientFillSymbolLayer using the specified \a properties map containing symbol properties (see properties()).
+     *
+     * Caller takes ownership of the returned symbol layer.
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     // implemented from base classes
@@ -219,7 +229,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 
     void stopRender( QgsSymbolRenderContext &context ) override;
 
-    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
 
     QgsStringMap properties() const override;
 
@@ -250,7 +260,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
      * \see colorRamp()
      * \see setGradientColorType()
      */
-    void setColorRamp( QgsColorRamp *ramp );
+    void setColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
     //! Color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor
     QColor color2() const { return mColor2; }
@@ -366,6 +376,11 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     // static stuff
 
+    /**
+     * Creates a new QgsShapeburstFillSymbolLayer using the specified \a properties map containing symbol properties (see properties()).
+     *
+     * Caller takes ownership of the returned symbol layer.
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     // implemented from base classes
@@ -376,7 +391,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     void stopRender( QgsSymbolRenderContext &context ) override;
 
-    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
 
     QgsStringMap properties() const override;
 
@@ -402,7 +417,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     /**
      * Sets whether the shapeburst fill should be drawn using the entire shape.
-     * \param useWholeShape Set to true if shapeburst should cover entire shape. If false, setMaxDistance is used to calculate how far from the boundary of the shape should
+     * \param useWholeShape Set to TRUE if shapeburst should cover entire shape. If FALSE, setMaxDistance is used to calculate how far from the boundary of the shape should
      * be shaded
      * \see useWholeShape
      * \see setMaxDistance
@@ -412,7 +427,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     /**
      * Returns whether the shapeburst fill is set to cover the entire shape.
-     * \returns True if shapeburst fill will cover the entire shape. If false, shapeburst is drawn to a distance of maxDistance from the polygon's boundary.
+     * \returns TRUE if shapeburst fill will cover the entire shape. If FALSE, shapeburst is drawn to a distance of maxDistance from the polygon's boundary.
      * \see setUseWholeShape
      * \see maxDistance
      * \since QGIS 2.3
@@ -421,7 +436,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     /**
      * Sets the maximum distance to shape inside of the shape from the polygon's boundary.
-     * \param maxDistance distance from boundary to shade. setUseWholeShape must be set to false for this parameter to take effect. Distance unit is controlled by setDistanceUnit.
+     * \param maxDistance distance from boundary to shade. setUseWholeShape must be set to FALSE for this parameter to take effect. Distance unit is controlled by setDistanceUnit.
      * \see maxDistance
      * \see setUseWholeShape
      * \see setDistanceUnit
@@ -430,7 +445,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     void setMaxDistance( double maxDistance ) { mMaxDistance = maxDistance; }
 
     /**
-     * Returns the maximum distance from the shape's boundary which is shaded. This parameter is only effective if useWholeShape is false.
+     * Returns the maximum distance from the shape's boundary which is shaded. This parameter is only effective if useWholeShape is FALSE.
      * \returns the maximum distance from the polygon's boundary which is shaded. Distance units are indicated by distanceUnit.
      * \see useWholeShape
      * \see setMaxDistance
@@ -485,13 +500,15 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     ShapeburstColorType colorType() const { return mColorType; }
 
     /**
-     * Sets the color ramp used to draw the shapeburst fill. Color ramps are only used if setColorType is set ShapeburstColorType::ColorRamp.
-     * \param ramp color ramp to use for shapeburst fill
+     * Sets the color \a ramp used to draw the shapeburst fill. Color ramps are only used if setColorType is set ShapeburstColorType::ColorRamp.
+     *
+     * Ownership of \a ramp is transferred to the fill.
+     *
      * \see setColorType
      * \see colorRamp
      * \since QGIS 2.3
      */
-    void setColorRamp( QgsColorRamp *ramp );
+    void setColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
     /**
      * Returns the color ramp used for the shapeburst fill. The color ramp is only used if the colorType is set to ShapeburstColorType::ColorRamp
@@ -523,7 +540,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     /**
      * Sets whether the shapeburst fill should ignore polygon rings when calculating
      * the buffered shading.
-     * \param ignoreRings Set to true if buffers should ignore interior rings for polygons.
+     * \param ignoreRings Set to TRUE if buffers should ignore interior rings for polygons.
      * \see ignoreRings
      * \since QGIS 2.3
      */
@@ -531,7 +548,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     /**
      * Returns whether the shapeburst fill is set to ignore polygon interior rings.
-     * \returns True if the shapeburst fill will ignore interior rings when calculating buffered shading.
+     * \returns TRUE if the shapeburst fill will ignore interior rings when calculating buffered shading.
      * \see setIgnoreRings
      * \since QGIS 2.3
      */
@@ -611,12 +628,12 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     /* distance transform of a 1d function using squared distance */
     void distanceTransform1d( double *f, int n, int *v, double *z, double *d );
     /* distance transform of 2d function using squared distance */
-    void distanceTransform2d( double *im, int width, int height );
+    void distanceTransform2d( double *im, int width, int height, QgsRenderContext &context );
     /* distance transform of a binary QImage */
-    double *distanceTransform( QImage *im );
+    double *distanceTransform( QImage *im, QgsRenderContext &context );
 
     /* fills a QImage with values from an array of doubles containing squared distance transform values */
-    void dtArrayToQImage( double *array, QImage *im, QgsColorRamp *ramp, double layerAlpha = 1, bool useWholeShape = true, int maxPixelDistance = 0 );
+    void dtArrayToQImage( double *array, QImage *im, QgsColorRamp *ramp, QgsRenderContext &context, bool useWholeShape = true, int maxPixelDistance = 0 );
 
 #ifdef SIP_RUN
     QgsShapeburstFillSymbolLayer( const QgsShapeburstFillSymbolLayer &other );
@@ -631,41 +648,53 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
   public:
 
     QgsImageFillSymbolLayer();
-    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
 
     QgsSymbol *subSymbol() override { return mStroke.get(); }
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
 
     /**
-     * Sets the units for the symbol's stroke width.
-     * \param unit symbol units
+     * Sets the \a units fo the symbol's stroke width.
      * \see strokeWidthUnit()
+     * \see setStrokeWidthMapUnitScale()
     */
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mStrokeWidthUnit = unit; }
 
     /**
      * Returns the units for the symbol's stroke width.
      * \see setStrokeWidthUnit()
+     * \see strokeWidthMapUnitScale()
     */
     QgsUnitTypes::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
 
+    /**
+     * Sets the stroke width map unit \a scale.
+     *
+     * \see strokeWidthMapUnitScale()
+     * \see setStrokeWidthUnit()
+     */
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale ) { mStrokeWidthMapUnitScale = scale; }
+
+    /**
+     * Returns the stroke width map unit scale.
+     *
+     * \see setStrokeWidthMapUnitScale()
+     * \see strokeWidthUnit()
+     *
+     * \since QGIS 2.16
+    */
     const QgsMapUnitScale &strokeWidthMapUnitScale() const { return mStrokeWidthMapUnitScale; }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
-
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
-
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
-
     double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
     QColor dxfColor( QgsSymbolRenderContext &context ) const override;
-
     Qt::PenStyle dxfPenStyle() const override;
-
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    bool hasDataDefinedProperties() const override;
 
   protected:
     QBrush mBrush;
@@ -679,7 +708,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     //! Custom stroke
     std::unique_ptr< QgsLineSymbol > mStroke;
 
-    virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context ) { Q_UNUSED( context ); }
+    virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context ) { Q_UNUSED( context ) }
 
   private:
 #ifdef SIP_RUN
@@ -697,14 +726,23 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 {
   public:
 
+    //! Fill coordinate modes, dictates fill tiling behavior
     enum FillCoordinateMode
     {
-      Feature,
-      Viewport
+      Feature, //!< Tiling is based on feature bounding box
+      Viewport, //!< Tiling is based on complete map viewport
     };
 
+    /**
+     * Constructor for QgsRasterFillSymbolLayer, using a raster fill from the
+     * specified \a imageFilePath.
+     */
     QgsRasterFillSymbolLayer( const QString &imageFilePath = QString() );
 
+    /**
+     * Creates a new QgsRasterFillSymbolLayer from a \a properties map. The caller takes
+     * ownership of the returned object.
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     /**
@@ -716,7 +754,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 
     // implemented from base classes
     QString layerType() const override;
-    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
     QgsStringMap properties() const override;
@@ -883,6 +921,10 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 
   protected:
 
+    void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
+
+  private:
+
     //! Path to the image file
     QString mImageFilePath;
     FillCoordinateMode mCoordinateMode = QgsRasterFillSymbolLayer::Feature;
@@ -896,10 +938,6 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsUnitTypes::RenderUnit mWidthUnit = QgsUnitTypes::RenderPixels;
     QgsMapUnitScale mWidthMapUnitScale;
 
-    void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
-
-  private:
-
     //! Applies the image pattern to the brush
     void applyPattern( QBrush &brush, const QString &imageFilePath, double width, double opacity,
                        const QgsSymbolRenderContext &context );
@@ -907,17 +945,32 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 
 /**
  * \ingroup core
- * A class for svg fill patterns. The class automatically scales the pattern to
-   the appropriate pixel dimensions of the output device*/
+ * A class for filling symbols with a repeated SVG file.
+*/
 class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
 {
   public:
-    //! Constructs SVG fill symbol layer with picture from given absolute path to a SVG file
-    QgsSVGFillSymbolLayer( const QString &svgFilePath, double width = 20, double rotation = 0.0 );
-    QgsSVGFillSymbolLayer( const QByteArray &svgData, double width = 20, double rotation = 0.0 );
-    ~QgsSVGFillSymbolLayer() override;
 
+    /**
+     * Constructor for QgsSVGFillSymbolLayer, using the SVG picture at the specified absolute file path.
+     */
+    QgsSVGFillSymbolLayer( const QString &svgFilePath, double width = 20, double rotation = 0.0 );
+
+    /**
+     * Constructor for QgsSVGFillSymbolLayer, using the specified SVG picture data.
+     */
+    QgsSVGFillSymbolLayer( const QByteArray &svgData, double width = 20, double rotation = 0.0 );
+
+    /**
+     * Creates a new QgsSVGFillSymbolLayer from a \a properties map. The caller takes
+     * ownership of the returned object.
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+
+    /**
+     * Creates a new QgsSVGFillSymbolLayer from a SLD \a element. The caller takes
+     * ownership of the returned object.
+     */
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     /**
@@ -930,60 +983,189 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     // implemented from base classes
 
     QString layerType() const override;
-
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
-
     QgsStringMap properties() const override;
-
     QgsSVGFillSymbolLayer *clone() const override SIP_FACTORY;
-
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 
-    //getters and setters
+    /**
+     * Sets the path to the SVG file to render in the fill.
+     *
+     * This is usually an absolute file path. Other supported options include
+     * - relative paths to folders from the user's SVG search paths
+     * - base64 encoded content, prefixed with a 'base64:' string
+     * - http(s) paths
+     *
+     * \see svgFilePath()
+     */
     void setSvgFilePath( const QString &svgPath );
+
+    /**
+     * Returns the path to the SVG file used to render the fill.
+     *
+     * \see setSvgFilePath()
+     */
     QString svgFilePath() const { return mSvgFilePath; }
+
+    /**
+     * Sets the \a width to render the SVG content as within the fill (i.e. the pattern repeat/tile size).
+     *
+     * Units are specified by setPatternWidthUnit()
+     *
+     * \see patternWidth()
+     * \see setPatternWidthUnit()
+     * \see setPatternWidthMapUnitScale()
+     */
     void setPatternWidth( double width ) { mPatternWidth = width;}
+
+    /**
+     * Returns the width of the rendered SVG content within the fill (i.e. the pattern repeat/tile size).
+     *
+     * Units are retrieved by patternWidthUnit()
+     *
+     * \see setPatternWidth()
+     * \see patternWidthUnit()
+     * \see patternWidthMapUnitScale()
+     */
     double patternWidth() const { return mPatternWidth; }
 
+    /**
+     * Sets the fill color used for rendering the SVG content.
+     *
+     * Fill color is only supported for parametrized SVG files. Color opacity is
+     * ignored if the SVG file does not support parametrized fill opacity.
+     *
+     * \see svgFillColor()
+     * \see setSvgStrokeColor()
+     */
     void setSvgFillColor( const QColor &c ) { setColor( c );  }
+
+    /**
+     * Returns the fill color used for rendering the SVG content.
+     *
+     * Fill color is only supported for parametrized SVG files.
+     *
+     * \see setSvgFillColor()
+     * \see svgStrokeColor()
+     */
     QColor svgFillColor() const { return color(); }
 
+    /**
+     * Sets the stroke color used for rendering the SVG content.
+     *
+     * Stroke color is only supported for parametrized SVG files. Color opacity is
+     * ignored if the SVG file does not support parametrized outline opacity.
+     *
+     * \see svgStrokeColor()
+     * \see setSvgFillColor()
+     */
     void setSvgStrokeColor( const QColor &c ) { mSvgStrokeColor = c; }
+
+    /**
+     * Returns the stroke color used for rendering the SVG content.
+     *
+     * Stroke color is only supported for parametrized SVG files.
+     *
+     * \see setSvgStrokeColor()
+     * \see svgFillColor()
+     */
     QColor svgStrokeColor() const { return mSvgStrokeColor; }
+
+    /**
+     * Sets the stroke width used for rendering the SVG content.
+     *
+     * Stroke width is only supported for parametrized SVG files. Units are
+     * specified via setSvgStrokeWidthUnit()
+     *
+     * \see svgStrokeWidth()
+     * \see setSvgStrokeWidthUnit()
+     * \see setSvgStrokeWidthMapUnitScale()
+     */
     void setSvgStrokeWidth( double w ) { mSvgStrokeWidth = w; }
+
+    /**
+     * Returns the stroke width used for rendering the SVG content.
+     *
+     * Stroke width is only supported for parametrized SVG files. Units are
+     * retrieved via setSvgStrokeWidthUnit()
+     *
+     * \see setSvgStrokeWidth()
+     * \see svgStrokeWidthUnit()
+     * \see svgStrokeWidthMapUnitScale()
+     */
     double svgStrokeWidth() const { return mSvgStrokeWidth; }
 
     /**
-     * Sets the units for the width of the SVG images in the pattern.
-     * \param unit width units
+     * Sets the \a unit for the width of the SVG images in the pattern.
+     *
      * \see patternWidthUnit()
+     * \see setPatternWidth()
+     * \see setPatternWidthMapUnitScale()
     */
     void setPatternWidthUnit( QgsUnitTypes::RenderUnit unit ) { mPatternWidthUnit = unit; }
 
     /**
      * Returns the units for the width of the SVG images in the pattern.
+     *
      * \see setPatternWidthUnit()
+     * \see patternWidth()
+     * \see patternWidthMapUnitScale()
     */
     QgsUnitTypes::RenderUnit patternWidthUnit() const { return mPatternWidthUnit; }
 
+    /**
+     * Sets the map unit \a scale for the pattern's width.
+     *
+     * \see patternWidthMapUnitScale()
+     * \see setPatternWidth()
+     * \see setPatternWidthUnit()
+     */
     void setPatternWidthMapUnitScale( const QgsMapUnitScale &scale ) { mPatternWidthMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the pattern's width.
+     *
+     * \see setPatternWidthMapUnitScale()
+     * \see patternWidth()
+     * \see patternWidthUnit()
+     */
     const QgsMapUnitScale &patternWidthMapUnitScale() const { return mPatternWidthMapUnitScale; }
 
     /**
-     * Sets the units for the stroke width.
-     * \param unit width units
+     * Sets the \a unit for the stroke width.
+     *
      * \see svgStrokeWidthUnit()
+     * \see setSvgStrokeWidth()
+     * \see setSvgStrokeWidthMapUnitScale()
     */
     void setSvgStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mSvgStrokeWidthUnit = unit; }
 
     /**
      * Returns the units for the stroke width.
+     *
      * \see setSvgStrokeWidthUnit()
+     * \see svgStrokeWidth()
+     * \see svgStrokeWidthMapUnitScale()
     */
     QgsUnitTypes::RenderUnit svgStrokeWidthUnit() const { return mSvgStrokeWidthUnit; }
 
+    /**
+     * Sets the map unit \a scale for the pattern's stroke.
+     *
+     * \see svgStrokeWidthMapUnitScale()
+     * \see setSvgStrokeWidth()
+     * \see setSvgStrokeWidthUnit()
+     */
     void setSvgStrokeWidthMapUnitScale( const QgsMapUnitScale &scale ) { mSvgStrokeWidthMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the pattern's stroke.
+     *
+     * \see setSvgStrokeWidthMapUnitScale()
+     * \see svgStrokeWidth()
+     * \see svgStrokeWidthUnit()
+     */
     const QgsMapUnitScale &svgStrokeWidthMapUnitScale() const { return mSvgStrokeWidthMapUnitScale; }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
@@ -993,9 +1175,14 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsMapUnitScale mapUnitScale() const override;
 
   protected:
+
+    void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
+
+  private:
+
     //! Width of the pattern (in output units)
-    double mPatternWidth;
-    QgsUnitTypes::RenderUnit mPatternWidthUnit;
+    double mPatternWidth = 20;
+    QgsUnitTypes::RenderUnit mPatternWidthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mPatternWidthMapUnitScale;
 
     //! SVG data
@@ -1004,19 +1191,14 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     QString mSvgFilePath;
     //! SVG view box (to keep the aspect ratio
     QRectF mSvgViewBox;
-    //! SVG pattern image
-    QImage *mSvgPattern = nullptr;
 
     //param(fill), param(stroke), param(stroke-width) are going
     //to be replaced in memory
-    QColor mSvgStrokeColor;
-    double mSvgStrokeWidth;
-    QgsUnitTypes::RenderUnit mSvgStrokeWidthUnit;
+    QColor mSvgStrokeColor = QColor( 35, 35, 35 );
+    double mSvgStrokeWidth = 0.2;
+    QgsUnitTypes::RenderUnit mSvgStrokeWidthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mSvgStrokeWidthMapUnitScale;
 
-    void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
-
-  private:
     //! Helper function that gets the view box from the byte array
     void storeViewBox();
     void setDefaultSvgParams(); //fills mSvgFillColor, mSvgStrokeColor, mSvgStrokeWidth with default values for mSvgFilePath
@@ -1029,6 +1211,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
 /**
  * \ingroup core
  * \class QgsLinePatternFillSymbolLayer
+ * A symbol fill consisting of repeated parallel lines.
  */
 class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 {
@@ -1036,27 +1219,44 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsLinePatternFillSymbolLayer();
     ~QgsLinePatternFillSymbolLayer() override;
 
+    /**
+     * Creates a new QgsLinePatternFillSymbolLayer from a \a properties map. The caller takes
+     * ownership of the returned object.
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+
+    /**
+     * Creates a new QgsLinePatternFillSymbolLayer from a SLD \a element. The caller takes
+     * ownership of the returned object.
+     */
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     QString layerType() const override;
-
     void startRender( QgsSymbolRenderContext &context ) override;
-
     void stopRender( QgsSymbolRenderContext &context ) override;
-
     QgsStringMap properties() const override;
-
     QgsLinePatternFillSymbolLayer *clone() const override SIP_FACTORY;
-
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
-
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
 
     QString ogrFeatureStyleWidth( double widthScaleFactor ) const;
 
-    //getters and setters
+    /**
+     * Sets the angle for the parallel lines used to fill the symbol.
+     *
+     * Angles are in degrees, clockwise from North.
+     *
+     * \see lineAngle()
+     */
     void setLineAngle( double a ) { mLineAngle = a; }
+
+    /**
+     * Returns the angle for the parallel lines used to fill the symbol.
+     *
+     * Angles are in degrees, clockwise from North.
+     *
+     * \see setLineAngle()
+     */
     double lineAngle() const { return mLineAngle; }
 
     /**
@@ -1074,16 +1274,54 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     */
     double distance() const { return mDistance; }
 
+    /**
+     * Sets the width of the line subsymbol used to render the parallel lines
+     * in the fill.
+     *
+     * \see lineWidth()
+     */
     void setLineWidth( double w );
+
+    /**
+     * Returns the width of the line subsymbol used to render the parallel lines
+     * in the fill.
+     *
+     * \see setLineWidth()
+     */
     double lineWidth() const { return mLineWidth; }
+
     void setColor( const QColor &c ) override;
     QColor color() const override;
+
+    /**
+     * Sets the \a offset distance for lines within the fill, which is
+     * the distance to offset the parallel lines from their normal
+     * position.
+     *
+     * Units are specified via setOffsetUnit().
+     *
+     * \see offset()
+     * \see setOffsetUnit()
+     * \see setOffsetMapUnitScale()
+     */
     void setOffset( double offset ) { mOffset = offset; }
+
+    /**
+     * Returns the offset distance for lines within the fill, which is
+     * the distance to offset the parallel lines from their normal
+     * position.
+     *
+     * Units are retrieved via offsetUnit().
+     *
+     * \see setOffset()
+     * \see offsetUnit()
+     * \see offsetMapUnitScale()
+     */
     double offset() const { return mOffset; }
 
     /**
-     * Sets the units for the distance between lines in the fill pattern.
-     * \param unit distance units
+     * Sets the \a unit for the distance between lines in the fill pattern.
+     *
      * \see distanceUnit()
      * \see setDistance()
     */
@@ -1091,58 +1329,108 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     /**
      * Returns the units for the distance between lines in the fill pattern.
+     *
      * \see setDistanceUnit()
      * \see distance()
     */
     QgsUnitTypes::RenderUnit distanceUnit() const { return mDistanceUnit; }
 
+    /**
+     * Sets the map unit \a scale for the pattern's line distance.
+     *
+     * \see distanceMapUnitScale()
+     * \see setDistance()
+     * \see setDistanceUnit()
+     */
     void setDistanceMapUnitScale( const QgsMapUnitScale &scale ) { mDistanceMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the pattern's line distance.
+     *
+     * \see setDistanceMapUnitScale()
+     * \see distance()
+     * \see distanceUnit()
+     */
     const QgsMapUnitScale &distanceMapUnitScale() const { return mDistanceMapUnitScale; }
 
     /**
-     * Sets the units for the line's width.
-     * \param unit width units
+     * Sets the \a unit for the line's width.
+     *
      * \see lineWidthUnit()
     */
     void setLineWidthUnit( QgsUnitTypes::RenderUnit unit ) { mLineWidthUnit = unit; }
 
     /**
      * Returns the units for the line's width.
+     *
      * \see setLineWidthUnit()
     */
     QgsUnitTypes::RenderUnit lineWidthUnit() const { return mLineWidthUnit; }
 
+    /**
+     * Sets the map unit \a scale for the pattern's line width.
+     *
+     * \see lineWidthMapUnitScale()
+     * \see setLineWidth()
+     * \see setLineWidthUnit()
+     */
     void setLineWidthMapUnitScale( const QgsMapUnitScale &scale ) { mLineWidthMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the pattern's line width.
+     *
+     * \see setLineWidthMapUnitScale()
+     * \see lineWidth()
+     * \see lineWidthUnit()
+     */
     const QgsMapUnitScale &lineWidthMapUnitScale() const { return mLineWidthMapUnitScale; }
 
     /**
-     * Sets the units for the line pattern's offset.
-     * \param unit offset units
+     * Sets the \a unit for the line pattern's offset.
+
      * \see offsetUnit()
     */
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
 
     /**
      * Returns the units for the line pattern's offset.
+     *
      * \see setOffsetUnit()
     */
     QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
+    /**
+     * Sets the map unit \a scale for the pattern's line offset.
+     *
+     * \see offsetMapUnitScale()
+     * \see setOffset()
+     * \see setOffsetUnit()
+     */
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the pattern's line offset.
+     *
+     * \see setOffsetMapUnitScale()
+     * \see offset()
+     * \see offsetUnit()
+     */
     const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
-
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
-
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     QgsSymbol *subSymbol() override;
-
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    bool hasDataDefinedProperties() const override;
 
   protected:
+
+    void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
+
+  private:
     //! Distance (in mm or map units) between lines
     double mDistance = 5.0;
     QgsUnitTypes::RenderUnit mDistanceUnit = QgsUnitTypes::RenderMillimeters;
@@ -1151,7 +1439,6 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     double mLineWidth = 0;
     QgsUnitTypes::RenderUnit mLineWidthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mLineWidthMapUnitScale;
-    QColor mColor;
     //! Vector line angle in degrees (0 = horizontal, counterclockwise)
     double mLineAngle = 45.0;
     //! Offset perpendicular to line direction
@@ -1159,9 +1446,6 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsUnitTypes::RenderUnit mOffsetUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mOffsetMapUnitScale;
 
-    void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
-
-  private:
 #ifdef SIP_RUN
     QgsLinePatternFillSymbolLayer( const QgsLinePatternFillSymbolLayer &other );
 #endif
@@ -1183,14 +1467,19 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsPointPatternFillSymbolLayer();
     ~QgsPointPatternFillSymbolLayer() override;
 
+    /**
+     * Creates a new QgsPointPatternFillSymbolLayer using the specified \a properties map containing symbol properties (see properties()).
+     *
+     * Caller takes ownership of the returned symbol layer.
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     QString layerType() const override;
 
     void startRender( QgsSymbolRenderContext &context ) override;
-
     void stopRender( QgsSymbolRenderContext &context ) override;
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
 
     QgsStringMap properties() const override;
 
@@ -1212,6 +1501,40 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     double displacementY() const { return mDisplacementY; }
     void setDisplacementY( double d ) { mDisplacementY = d; }
+
+    /**
+     * Sets the horizontal offset values for points in the pattern.
+     * \param offset offset value
+     * \see offsetX()
+     * \see setOffsetY()
+     * \since QGIS 3.8
+    */
+    void setOffsetX( double offset ) { mOffsetX = offset; }
+
+    /**
+     * Returns the horizontal offset values for points in the pattern.
+     * \see setOffsetX()
+     * \see offsetY()
+     * \since QGIS 3.8
+    */
+    double offsetX() const { return mOffsetX; }
+
+    /**
+     * Sets the vertical offset values for points in the pattern.
+     * \param offset offset value
+     * \see offsetY()
+     * \see setOffsetX()
+     * \since QGIS 3.8
+    */
+    void setOffsetY( double offset ) { mOffsetY = offset; }
+
+    /**
+     * Returns the vertical offset values for points in the pattern.
+     * \see setOffsetY()
+     * \see offsetX()
+     * \since QGIS 3.8
+    */
+    double offsetY() const { return mOffsetY; }
 
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     QgsSymbol *subSymbol() override { return mMarkerSymbol; }
@@ -1288,6 +1611,74 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void setDisplacementYMapUnitScale( const QgsMapUnitScale &scale ) { mDisplacementYMapUnitScale = scale; }
     const QgsMapUnitScale &displacementYMapUnitScale() const { return mDisplacementYMapUnitScale; }
 
+    /**
+     * Sets the units for the horizontal offset between rows in the pattern.
+     * \param unit offset units
+     * \see offsetXUnit()
+     * \see setOffsetYUnit()
+     * \since QGIS 3.8
+    */
+    void setOffsetXUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetXUnit = unit; }
+
+    /**
+     * Returns the units for the horizontal offset for rows in the pattern.
+     * \see setOffsetXUnit()
+     * \see offsetYUnit()
+     * \since QGIS 3.8
+    */
+    QgsUnitTypes::RenderUnit offsetXUnit() const { return mOffsetXUnit; }
+
+    /**
+     * Sets the unit scale for the horizontal offset for rows in the pattern.
+     * \param scale offset unit scale
+     * \see offsetXMapUnitScale()
+     * \see setOffsetYMapUnitScale()
+     * \since QGIS 3.8
+    */
+    void setOffsetXMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetXMapUnitScale = scale; }
+
+    /**
+     * Returns the unit scale for the horizontal offset for rows in the pattern.
+     * \see setOffsetXMapUnitScale()
+     * \see offsetYMapUnitScale()
+     * \since QGIS 3.8
+    */
+    const QgsMapUnitScale &offsetXMapUnitScale() const { return mOffsetXMapUnitScale; }
+
+    /**
+     * Sets the units for the vertical offset for rows in the pattern.
+     * \param unit offset units
+     * \see offsetYUnit()
+     * \see setOffsetXUnit()
+     * \since QGIS 3.8
+    */
+    void setOffsetYUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetYUnit = unit; }
+
+    /**
+     * Returns the units for the vertical offset for rows in the pattern.
+     * \see setOffsetYUnit()
+     * \see offsetXUnit()
+     * \since QGIS 3.8
+    */
+    QgsUnitTypes::RenderUnit offsetYUnit() const { return mOffsetYUnit; }
+
+    /**
+     * Sets the unit scale for the vertical offset for rows in the pattern.
+     * \param scale offset unit scale
+     * \see offsetYMapUnitScale()
+     * \see setOffsetXMapUnitScale()
+     * \since QGIS 3.8
+    */
+    void setOffsetYMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetYMapUnitScale = scale; }
+
+    /**
+     * Returns the unit scale for the vertical offset between rows in the pattern.
+     * \see setOffsetYMapUnitScale()
+     * \see offsetXMapUnitScale()
+     * \since QGIS 3.8
+    */
+    const QgsMapUnitScale &offsetYMapUnitScale() const { return mOffsetYMapUnitScale; }
+
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
 
@@ -1295,6 +1686,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsMapUnitScale mapUnitScale() const override;
 
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    bool hasDataDefinedProperties() const override;
     void setColor( const QColor &c ) override;
     QColor color() const override;
 
@@ -1312,6 +1704,12 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     double mDisplacementY = 0;
     QgsUnitTypes::RenderUnit mDisplacementYUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mDisplacementYMapUnitScale;
+    double mOffsetX = 0;
+    QgsUnitTypes::RenderUnit mOffsetXUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mOffsetXMapUnitScale;
+    double mOffsetY = 0;
+    QgsUnitTypes::RenderUnit mOffsetYUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mOffsetYMapUnitScale;
 
     void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
 
@@ -1321,8 +1719,203 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 #endif
 
     void applyPattern( const QgsSymbolRenderContext &context, QBrush &brush, double distanceX, double distanceY,
-                       double displacementX, double displacementY );
+                       double displacementX, double displacementY, double offsetX, double offsetY );
+
+    bool mRenderUsingMarkers = false;
 };
+
+/**
+ * \ingroup core
+ * \class QgsRandomMarkerFillSymbolLayer
+ *
+ * A fill symbol layer which places markers at random locations within polygons.
+ *
+ * \since QGIS 3.12
+ */
+class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
+{
+  public:
+
+    //! Methods to define the number of points randomly filling the polygon
+    enum CountMethod
+    {
+      AbsoluteCount, //!< The point count is used as an absolute count of markers
+      DensityBasedCount, //!< The point count is part of a marker density count
+    };
+
+    /**
+     * Constructor for QgsRandomMarkerFillSymbolLayer, with the specified \a pointCount.
+     *
+     * Optionally a specific random number \a seed can be used when generating points. A \a seed of 0 indicates that
+     * a truly random sequence will be used on every rendering, causing points to appear in different locations with every map refresh.
+     */
+    QgsRandomMarkerFillSymbolLayer( int pointCount = 10, CountMethod method = AbsoluteCount, double densityArea = 250.0, unsigned long seed = 0 );
+
+    /**
+     * Creates a new QgsRandomMarkerFillSymbolLayer using the specified \a properties map containing symbol properties (see properties()).
+     *
+     * Caller takes ownership of the returned symbol layer.
+     */
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+
+    QString layerType() const override;
+    void startRender( QgsSymbolRenderContext &context ) override;
+    void stopRender( QgsSymbolRenderContext &context ) override;
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
+    QgsStringMap properties() const override;
+    QgsRandomMarkerFillSymbolLayer *clone() const override SIP_FACTORY;
+
+    void setColor( const QColor &color ) override;
+    QColor color() const override;
+
+    QgsSymbol *subSymbol() override;
+    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
+
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
+    QgsUnitTypes::RenderUnit outputUnit() const override;
+
+    void setMapUnitScale( const QgsMapUnitScale &scale ) override;
+    QgsMapUnitScale mapUnitScale() const override;
+
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    bool hasDataDefinedProperties() const override;
+
+    /**
+     * Returns the count of random points to render in the fill.
+     *
+     * \see setPointCount()
+     */
+    int pointCount() const;
+
+    /**
+     * Sets the \a count of random points to render in the fill.
+     *
+     * \see pointCount()
+     */
+    void setPointCount( int count );
+
+    /**
+     * Returns the random number seed to use when generating points, or 0 if
+     * a truly random sequence will be used (causing points to appear in different locations with every map refresh).
+     * \see setSeed()
+     */
+    unsigned long seed() const;
+
+    /**
+     * Sets the random number \a seed to use when generating points, or 0 if
+     * a truly random sequence will be used on every rendering (causing points to appear
+     * in different locations with every map refresh).
+     *
+     * \see seed()
+     */
+    void setSeed( unsigned long seed );
+
+    /**
+     * Returns TRUE if point markers should be clipped to the polygon boundary.
+     *
+     * \see setClipPoints()
+     */
+    bool clipPoints() const;
+
+    /**
+     * Sets whether point markers should be \a clipped to the polygon boundary.
+     *
+     * \see clipPoints()
+     */
+    void setClipPoints( bool clipped );
+
+    /**
+     * Returns the count method used to randomly fill the polygon.
+     *
+     * \see setCountMethod()
+     */
+    CountMethod countMethod() const;
+
+    /**
+     * Sets the count \a method used to randomly fill the polygon.
+     *
+     * \see countMethod()
+     */
+    void setCountMethod( CountMethod method );
+
+    /**
+     * Returns the density area used to count the number of points to randomly fill the polygon.
+     *
+     * Only used when the count method is set to QgsRandomMarkerFillSymbolLayer::DensityBasedCount.
+     *
+     * Units are specified by setDensityAreaUnit().
+     *
+     * \see setDensityArea()
+     */
+    double densityArea() const;
+
+    /**
+     * Sets the density \a area used to count the number of points to randomly fill the polygon.
+     *
+     * \see densityArea()
+     */
+    void setDensityArea( double area );
+
+    /**
+     * Sets the units for the density area.
+     * \param unit width units
+     * \see densityAreaUnit()
+    */
+    void setDensityAreaUnit( QgsUnitTypes::RenderUnit unit ) { mDensityAreaUnit = unit; }
+
+    /**
+     * Returns the units for the density area.
+     * \see setDensityAreaUnit()
+    */
+    QgsUnitTypes::RenderUnit densityAreaUnit() const { return mDensityAreaUnit; }
+
+    /**
+     * Sets the map scale for the density area.
+     * \param scale density area map unit scale
+     * \see densityAreaUnitScale()
+     * \see setDensityArea()
+     * \see setDensityAreaUnit()
+     */
+    void setDensityAreaUnitScale( const QgsMapUnitScale &scale ) { mDensityAreaUnitScale = scale; }
+
+    /**
+     * Returns the map scale for the density area.
+     * \see setDensityAreaUnitScale()
+     * \see densityArea()
+     * \see densityAreaUnit()
+     */
+    const QgsMapUnitScale &densityAreaUnitScale() const { return mDensityAreaUnitScale; }
+
+    void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+    void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+
+  private:
+#ifdef SIP_RUN
+    QgsRandomMarkerFillSymbolLayer( const QgsRandomMarkerFillSymbolLayer &other );
+#endif
+
+    struct Part
+    {
+      QPolygonF exterior;
+      QVector<QPolygonF> rings;
+    };
+
+    QVector< Part > mCurrentParts;
+
+    void render( QgsRenderContext &context, const QVector< Part > &parts, const QgsFeature &feature, bool selected );
+
+    std::unique_ptr< QgsMarkerSymbol > mMarker;
+    CountMethod mCountMethod = AbsoluteCount;
+    int mPointCount = 10;
+    double mDensityArea = 250.0;
+    QgsUnitTypes::RenderUnit mDensityAreaUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mDensityAreaUnitScale;
+    unsigned long mSeed = 0;
+    bool mClipPoints = false;
+
+    bool mRenderingFeature = false;
+};
+
 
 /**
  * \ingroup core
@@ -1335,6 +1928,11 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 
     // static stuff
 
+    /**
+     * Creates a new QgsCentroidFillSymbolLayer using the specified \a properties map containing symbol properties (see properties()).
+     *
+     * Caller takes ownership of the returned symbol layer.
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
@@ -1346,7 +1944,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 
     void stopRender( QgsSymbolRenderContext &context ) override;
 
-    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
 
     QgsStringMap properties() const override;
 
@@ -1367,24 +1965,67 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
     QgsMapUnitScale mapUnitScale() const override;
 
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    bool hasDataDefinedProperties() const override;
 
     void setPointOnSurface( bool pointOnSurface ) { mPointOnSurface = pointOnSurface; }
     bool pointOnSurface() const { return mPointOnSurface; }
 
     /**
      * Sets whether a point is drawn for all parts or only on the biggest part of multi-part features.
+     * \see pointOnAllParts()
      * \since QGIS 2.16 */
     void setPointOnAllParts( bool pointOnAllParts ) { mPointOnAllParts = pointOnAllParts; }
 
     /**
      * Returns whether a point is drawn for all parts or only on the biggest part of multi-part features.
+     * \see setPointOnAllParts()
      * \since QGIS 2.16 */
     bool pointOnAllParts() const { return mPointOnAllParts; }
 
+    /**
+     * Returns TRUE if point markers should be clipped to the polygon boundary.
+     *
+     * \see setClipPoints()
+     * \since 3.14
+     */
+    bool clipPoints() const { return mClipPoints; }
+
+    /**
+     * Sets whether point markers should be \a clipped to the polygon boundary.
+     *
+     * \see clipPoints()
+     * \since 3.14
+     */
+    void setClipPoints( bool clipPoints ) { mClipPoints = clipPoints; }
+
+    /**
+     * Returns TRUE if point markers should be clipped to the current part boundary only.
+     *
+     * \see setClipPoints()
+     * \since 3.14
+     */
+    bool clipOnCurrentPartOnly() const { return mClipOnCurrentPartOnly; }
+
+    /**
+     * Sets whether point markers should be \a clipped to the current part boundary only.
+     *
+     * \see clipOnCurrentPartOnly()
+     * \since 3.14
+     */
+    void setClipOnCurrentPartOnly( bool clipOnCurrentPartOnly ) { mClipOnCurrentPartOnly = clipOnCurrentPartOnly; }
+
+    void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+    void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+
   protected:
+
     std::unique_ptr< QgsMarkerSymbol > mMarker;
     bool mPointOnSurface = false;
     bool mPointOnAllParts = true;
+    bool mClipPoints = false;
+    bool mClipOnCurrentPartOnly = false;
+
+    bool mRenderingFeature = false;
 
     QgsFeatureId mCurrentFeatureId = -1;
     int mBiggestPartIndex = -1;
@@ -1393,6 +2034,14 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 #ifdef SIP_RUN
     QgsCentroidFillSymbolLayer( const QgsCentroidFillSymbolLayer &other );
 #endif
+    struct Part
+    {
+      QPolygonF exterior;
+      QVector<QPolygonF> rings;
+    };
+
+    void render( QgsRenderContext &context, const QVector<Part> &parts, const QgsFeature &feature, bool selected );
+    QVector<Part> mCurrentParts;
 };
 
 #endif

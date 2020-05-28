@@ -36,9 +36,10 @@
 static QgsMapLayer *_rasterLayer( const QString &filename )
 {
   QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
-  Q_FOREACH ( QgsMapLayer *layer, layers )
+  const auto constLayers = layers;
+  for ( QgsMapLayer *layer : constLayers )
   {
-    if ( layer->type() == QgsMapLayer::RasterLayer && layer->source() == filename )
+    if ( layer->type() == QgsMapLayerType::RasterLayer && layer->source() == filename )
       return layer;
   }
   return nullptr;
@@ -137,7 +138,8 @@ void QgsAlignRasterDialog::populateLayersView()
 
   QStandardItemModel *model = new QStandardItemModel();
   int i = 0;
-  Q_FOREACH ( QgsAlignRaster::Item item, mAlign->rasters() )
+  const auto constRasters = mAlign->rasters();
+  for ( QgsAlignRaster::Item item : constRasters )
   {
     QString layerName = _rasterLayerName( item.inputFilename );
 
@@ -194,7 +196,7 @@ void QgsAlignRasterDialog::updateParametersFromReferenceLayer()
   {
     QgsCoordinateReferenceSystem refCRS( refInfo.crs() );
     if ( refCRS != mCrsSelector->crs() )
-      customCRSWkt = mCrsSelector->crs().toWkt();
+      customCRSWkt = mCrsSelector->crs( ).toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
   }
 
   if ( mChkCustomCellSize->isChecked() )
@@ -311,7 +313,7 @@ void QgsAlignRasterDialog::referenceLayerChanged()
 
 void QgsAlignRasterDialog::destinationCrsChanged()
 {
-  if ( mCrsSelector->crs().toWkt() == mAlign->destinationCrs() )
+  if ( mCrsSelector->crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ) == mAlign->destinationCrs() )
     return;
 
   int index = mCboReferenceLayer->currentIndex();
@@ -365,7 +367,8 @@ void QgsAlignRasterDialog::runAlign()
   {
     if ( mChkAddToCanvas->isChecked() )
     {
-      Q_FOREACH ( const QgsAlignRaster::Item &item, mAlign->rasters() )
+      const auto constRasters = mAlign->rasters();
+      for ( const QgsAlignRaster::Item &item : constRasters )
       {
         QgsRasterLayer *layer = new QgsRasterLayer( item.outputFilename, QFileInfo( item.outputFilename ).baseName() );
         if ( layer->isValid() )
@@ -394,11 +397,11 @@ QgsAlignRasterLayerConfigDialog::QgsAlignRasterLayerConfigDialog()
   cboLayers->setFilters( QgsMapLayerProxyModel::RasterLayer );
 
   cboResample = new QComboBox( this );
-  cboResample->addItem( tr( "Nearest neighbour" ), QgsAlignRaster::RA_NearestNeighbour );
-  cboResample->addItem( tr( "Bilinear (2x2 kernel)" ), QgsAlignRaster::RA_Bilinear );
-  cboResample->addItem( tr( "Cubic (4x4 kernel)" ), QgsAlignRaster::RA_Cubic );
-  cboResample->addItem( tr( "Cubic B-Spline (4x4 kernel)" ), QgsAlignRaster::RA_CubicSpline );
-  cboResample->addItem( tr( "Lanczos (6x6 kernel)" ), QgsAlignRaster::RA_Lanczos );
+  cboResample->addItem( tr( "Nearest Neighbour" ), QgsAlignRaster::RA_NearestNeighbour );
+  cboResample->addItem( tr( "Bilinear (2x2 Kernel)" ), QgsAlignRaster::RA_Bilinear );
+  cboResample->addItem( tr( "Cubic (4x4 Kernel)" ), QgsAlignRaster::RA_Cubic );
+  cboResample->addItem( tr( "Cubic B-Spline (4x4 Kernel)" ), QgsAlignRaster::RA_CubicSpline );
+  cboResample->addItem( tr( "Lanczos (6x6 Kernel)" ), QgsAlignRaster::RA_Lanczos );
   cboResample->addItem( tr( "Average" ), QgsAlignRaster::RA_Average );
   cboResample->addItem( tr( "Mode" ), QgsAlignRaster::RA_Mode );
   cboResample->addItem( tr( "Maximum" ), QgsAlignRaster::RA_Max );

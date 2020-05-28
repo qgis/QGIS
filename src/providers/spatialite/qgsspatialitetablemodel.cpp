@@ -153,7 +153,7 @@ void QgsSpatiaLiteTableModel::setGeometryTypesForTable( const QString &table, co
       for ( int j = 1; j < typeList.size(); ++j )
       {
         //todo: add correct type
-        addTableEntry( typeList.at( j ), table, geomColText + " AS " + typeList.at( j ), QLatin1String( "" ) );
+        addTableEntry( typeList.at( j ), table, geomColText + " AS " + typeList.at( j ), QString() );
       }
     }
   }

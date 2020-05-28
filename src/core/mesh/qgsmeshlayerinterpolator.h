@@ -20,19 +20,27 @@
 
 class QgsMeshLayer;
 class QgsSymbol;
-
-#define SIP_NO_FILE
-
-#include <QSize>
+class QgsCoordinateReferenceSystem;
+class QgsCoordinateTransformContext;
+class QgsMeshDatasetIndex;
 
 #include "qgis.h"
+#include "qgis_sip.h"
 
+#include <QSize>
 #include "qgsmaplayerrenderer.h"
-#include "qgsrendercontext.h"
 #include "qgstriangularmesh.h"
 #include "qgsrasterinterface.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsrastershader.h"
+
+class QgsRenderContext;
+
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include "qgsmeshlayerinterpolator.h"
+% End
+#endif
 
 ///@cond PRIVATE
 
@@ -43,13 +51,14 @@ class QgsSymbol;
  * \note not available in Python bindings
  * \since QGIS 3.2
  */
-class QgsMeshLayerInterpolator : public QgsRasterInterface
+class QgsMeshLayerInterpolator : public QgsRasterInterface SIP_SKIP
 {
   public:
     //! Ctor
     QgsMeshLayerInterpolator( const QgsTriangularMesh &m,
                               const QVector<double> &datasetValues,
-                              bool dataIsOnVertices,
+                              const QgsMeshDataBlock &activeFaceFlagValues,
+                              QgsMeshDatasetGroupMetadata::DataType dataType,
                               const QgsRenderContext &context,
                               const QSize &size );
     ~QgsMeshLayerInterpolator() override;
@@ -59,30 +68,49 @@ class QgsMeshLayerInterpolator : public QgsRasterInterface
     int bandCount() const override;
     QgsRasterBlock *block( int, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    /*
-    * Interpolates value based on known values on the vertices of a triangle
-    * \param p1 first vertex of the triangle
-    * \param p2 second vertex of the triangle
-    * \param p3 third vertex of the triangle
-    * \param val1 value on p1 of the triangle
-    * \param val2 value on p2 of the triangle
-    * \param val3 value on p3 of the triangle
-    * \param pt point where to calculate value
-    * \returns value on the point pt or NaN in case the point is outside the triangle
-    */
-    static double interpolateFromVerticesData(
-      const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,
-      double val1, double val2, double val3, const QgsPointXY &pt
-    );
+    void setSpatialIndexActive( bool active );
 
   private:
     const QgsTriangularMesh &mTriangularMesh;
     const QVector<double> &mDatasetValues;
+    const QgsMeshDataBlock &mActiveFaceFlagValues;
     const QgsRenderContext &mContext;
-    bool mDataOnVertices = true;
+    QgsMeshDatasetGroupMetadata::DataType mDataType = QgsMeshDatasetGroupMetadata::DataType::DataOnVertices;
     QSize mOutputSize;
+    bool mSpatialIndexActive = false;
 };
 
 ///@endcond
+
+namespace QgsMeshUtils
+{
+
+  /**
+   * Exports mesh layer's dataset values as raster block
+   *
+   * The function always fetches native mesh and dataset data
+   * from data provider and calculates triangular mesh
+   *
+   * \param layer mesh layer
+   * \param datasetIndex index from layer defining group and dataset (time) to export
+   * \param destinationCrs destination/map CRS. Used to create triangular mesh from native mesh
+   * \param transformContext Transform context to transform layer CRS to destination CRS
+   * \param mapUnitsPerPixel map units per pixel for block
+   * \param extent extent of block in destination CRS
+   * \param feedback optional raster feedback object for cancellation/preview
+   * \returns raster block with Float::64 values. NULLPTR on error
+   *
+   * \since QGIS 3.6
+   */
+  CORE_EXPORT QgsRasterBlock *exportRasterBlock(
+    const QgsMeshLayer &layer,
+    const QgsMeshDatasetIndex &datasetIndex,
+    const QgsCoordinateReferenceSystem &destinationCrs,
+    const QgsCoordinateTransformContext &transformContext,
+    double mapUnitsPerPixel,
+    const QgsRectangle &extent,
+    QgsRasterBlockFeedback *feedback = nullptr
+  ) SIP_FACTORY;
+};
 
 #endif // QGSMESHLAYERINTERPOLATOR_H

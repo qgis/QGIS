@@ -33,12 +33,12 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#include <mutex>
 
 QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri, const ProviderOptions &options )
   : QgsDataProvider( uri, options )
+  , mTemporalCapabilities( qgis::make_unique< QgsVectorDataProviderTemporalCapabilities >() )
 {
-  QgsSettings settings;
-  setEncoding( settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString() );
 }
 
 QString QgsVectorDataProvider::storageType() const
@@ -50,7 +50,7 @@ bool QgsVectorDataProvider::empty() const
 {
   QgsFeature f;
   QgsFeatureRequest request;
-  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setNoAttributes();
   request.setFlags( QgsFeatureRequest::NoGeometry );
   request.setLimit( 1 );
   if ( getFeatures( request ).nextFeature( f ) )
@@ -84,14 +84,14 @@ QString QgsVectorDataProvider::dataComment() const
 
 bool QgsVectorDataProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
-  Q_UNUSED( flist );
-  Q_UNUSED( flags );
+  Q_UNUSED( flist )
+  Q_UNUSED( flags )
   return false;
 }
 
 bool QgsVectorDataProvider::deleteFeatures( const QgsFeatureIds &ids )
 {
-  Q_UNUSED( ids );
+  Q_UNUSED( ids )
   return false;
 }
 
@@ -101,7 +101,7 @@ bool QgsVectorDataProvider::truncate()
     return false;
 
   QgsFeatureIds toDelete;
-  QgsFeatureIterator it = getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeatureIterator it = getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setNoAttributes() );
   QgsFeature f;
   while ( it.nextFeature( f ) )
     toDelete << f.id();
@@ -111,37 +111,37 @@ bool QgsVectorDataProvider::truncate()
 
 bool QgsVectorDataProvider::addAttributes( const QList<QgsField> &attributes )
 {
-  Q_UNUSED( attributes );
+  Q_UNUSED( attributes )
   return false;
 }
 
 bool QgsVectorDataProvider::deleteAttributes( const QgsAttributeIds &attributes )
 {
-  Q_UNUSED( attributes );
+  Q_UNUSED( attributes )
   return false;
 }
 
 bool QgsVectorDataProvider::renameAttributes( const QgsFieldNameMap &renamedAttributes )
 {
-  Q_UNUSED( renamedAttributes );
+  Q_UNUSED( renamedAttributes )
   return false;
 }
 
 bool QgsVectorDataProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
-  Q_UNUSED( attr_map );
+  Q_UNUSED( attr_map )
   return false;
 }
 
 QVariant QgsVectorDataProvider::defaultValue( int fieldId ) const
 {
-  Q_UNUSED( fieldId );
+  Q_UNUSED( fieldId )
   return QVariant();
 }
 
 QString QgsVectorDataProvider::defaultValueClause( int fieldIndex ) const
 {
-  Q_UNUSED( fieldIndex );
+  Q_UNUSED( fieldIndex )
   return QString();
 }
 
@@ -161,7 +161,7 @@ bool QgsVectorDataProvider::skipConstraintCheck( int, QgsFieldConstraints::Const
 
 bool QgsVectorDataProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 {
-  Q_UNUSED( geometry_map );
+  Q_UNUSED( geometry_map )
   return false;
 }
 
@@ -184,7 +184,7 @@ bool QgsVectorDataProvider::createSpatialIndex()
 
 bool QgsVectorDataProvider::createAttributeIndex( int field )
 {
-  Q_UNUSED( field );
+  Q_UNUSED( field )
   return true;
 }
 
@@ -200,7 +200,8 @@ void QgsVectorDataProvider::setEncoding( const QString &e )
 
   if ( !mEncoding && e != QLatin1String( "System" ) )
   {
-    QgsMessageLog::logMessage( tr( "Codec %1 not found. Falling back to system locale" ).arg( e ) );
+    if ( !e.isEmpty() )
+      QgsMessageLog::logMessage( tr( "Codec %1 not found. Falling back to system locale" ).arg( e ) );
     mEncoding = QTextCodec::codecForName( "System" );
   }
 
@@ -217,7 +218,7 @@ QString QgsVectorDataProvider::encoding() const
     return mEncoding->name();
   }
 
-  return QLatin1String( "" );
+  return QString();
 }
 
 QString QgsVectorDataProvider::capabilitiesString() const
@@ -346,15 +347,16 @@ QgsAttrPalIndexNameHash QgsVectorDataProvider::palAttributeIndexNames() const
 
 bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
 {
-  QgsDebugMsgLevel( QString( "field name = %1 type = %2 length = %3 precision = %4" )
+  QgsDebugMsgLevel( QStringLiteral( "field name = %1 type = %2 length = %3 precision = %4" )
                     .arg( field.name(),
                           QVariant::typeToName( field.type() ) )
                     .arg( field.length() )
                     .arg( field.precision() ), 2 );
 
-  Q_FOREACH ( const NativeType &nativeType, mNativeTypes )
+  const auto constMNativeTypes = mNativeTypes;
+  for ( const NativeType &nativeType : constMNativeTypes )
   {
-    QgsDebugMsgLevel( QString( "native field type = %1 min length = %2 max length = %3 min precision = %4 max precision = %5" )
+    QgsDebugMsgLevel( QStringLiteral( "native field type = %1 min length = %2 max length = %3 min precision = %4 max precision = %5" )
                       .arg( QVariant::typeToName( nativeType.mType ) )
                       .arg( nativeType.mMinLen )
                       .arg( nativeType.mMaxLen )
@@ -386,11 +388,11 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
       }
     }
 
-    QgsDebugMsg( "native type matches" );
+    QgsDebugMsgLevel( QStringLiteral( "native type matches" ), 3 );
     return true;
   }
 
-  QgsDebugMsg( "no sufficient native type found" );
+  QgsDebugMsg( QStringLiteral( "no sufficient native type found" ) );
   return false;
 }
 
@@ -464,13 +466,14 @@ QStringList QgsVectorDataProvider::uniqueStringsMatching( int index, const QStri
 }
 
 QVariant QgsVectorDataProvider::aggregate( QgsAggregateCalculator::Aggregate aggregate, int index,
-    const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context, bool &ok ) const
+    const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context, bool &ok, QgsFeatureIds *fids ) const
 {
   //base implementation does nothing
-  Q_UNUSED( aggregate );
-  Q_UNUSED( index );
-  Q_UNUSED( parameters );
-  Q_UNUSED( context );
+  Q_UNUSED( aggregate )
+  Q_UNUSED( index )
+  Q_UNUSED( parameters )
+  Q_UNUSED( context )
+  Q_UNUSED( fids )
 
   ok = false;
   return QVariant();
@@ -558,6 +561,33 @@ void QgsVectorDataProvider::fillMinMaxCache() const
             mCacheMaxValues[ attributeIndex ] = value;
           break;
         }
+        case QVariant::DateTime:
+        {
+          QDateTime value = varValue.toDateTime();
+          if ( value < mCacheMinValues[ attributeIndex ].toDateTime() || !mCacheMinValues[ attributeIndex ].isValid() )
+            mCacheMinValues[attributeIndex ] = value;
+          if ( value > mCacheMaxValues[ attributeIndex ].toDateTime() || !mCacheMaxValues[ attributeIndex ].isValid() )
+            mCacheMaxValues[ attributeIndex ] = value;
+          break;
+        }
+        case QVariant::Date:
+        {
+          QDate value = varValue.toDate();
+          if ( value < mCacheMinValues[ attributeIndex ].toDate() || !mCacheMinValues[ attributeIndex ].isValid() )
+            mCacheMinValues[attributeIndex ] = value;
+          if ( value > mCacheMaxValues[ attributeIndex ].toDate() || !mCacheMaxValues[ attributeIndex ].isValid() )
+            mCacheMaxValues[ attributeIndex ] = value;
+          break;
+        }
+        case QVariant::Time:
+        {
+          QTime value = varValue.toTime();
+          if ( value < mCacheMinValues[ attributeIndex ].toTime() || !mCacheMinValues[ attributeIndex ].isValid() )
+            mCacheMinValues[attributeIndex ] = value;
+          if ( value > mCacheMaxValues[ attributeIndex ].toTime() || !mCacheMaxValues[ attributeIndex ].isValid() )
+            mCacheMaxValues[ attributeIndex ] = value;
+          break;
+        }
         default:
         {
           QString value = varValue.toString();
@@ -593,11 +623,6 @@ QgsTransaction *QgsVectorDataProvider::transaction() const
   return nullptr;
 }
 
-void QgsVectorDataProvider::forceReload()
-{
-  emit dataChanged();
-}
-
 static bool _compareEncodings( const QString &s1, const QString &s2 )
 {
   return s1.toLower() < s2.toLower();
@@ -605,9 +630,11 @@ static bool _compareEncodings( const QString &s1, const QString &s2 )
 
 QStringList QgsVectorDataProvider::availableEncodings()
 {
-  if ( sEncodings.isEmpty() )
+  static std::once_flag initialized;
+  std::call_once( initialized, [ = ]
   {
-    Q_FOREACH ( const QString &codec, QTextCodec::availableCodecs() )
+    const auto codecs { QTextCodec::availableCodecs() };
+    for ( const QString &codec : codecs )
     {
       sEncodings << codec;
     }
@@ -658,10 +685,11 @@ QStringList QgsVectorDataProvider::availableEncodings()
     smEncodings << "TIS-620";
     smEncodings << "System";
 #endif
-  }
 
-  // Do case-insensitive sorting of encodings
-  std::sort( sEncodings.begin(), sEncodings.end(), _compareEncodings );
+    // Do case-insensitive sorting of encodings
+    std::sort( sEncodings.begin(), sEncodings.end(), _compareEncodings );
+
+  } );
 
   return sEncodings;
 }
@@ -691,7 +719,12 @@ bool QgsVectorDataProvider::isDeleteStyleFromDatabaseSupported() const
   return false;
 }
 
-QgsFeatureRenderer *QgsVectorDataProvider::createRenderer( const QVariantMap & ) const SIP_FACTORY
+QgsFeatureRenderer *QgsVectorDataProvider::createRenderer( const QVariantMap & ) const
+{
+  return nullptr;
+}
+
+QgsAbstractVectorLayerLabeling *QgsVectorDataProvider::createLabeling( const QVariantMap & ) const
 {
   return nullptr;
 }
@@ -829,4 +862,19 @@ QStringList QgsVectorDataProvider::sEncodings;
 QList<QgsRelation> QgsVectorDataProvider::discoverRelations( const QgsVectorLayer *, const QList<QgsVectorLayer *> & ) const
 {
   return QList<QgsRelation>();
+}
+
+void QgsVectorDataProvider::handlePostCloneOperations( QgsVectorDataProvider * )
+{
+
+}
+
+QgsVectorDataProviderTemporalCapabilities *QgsVectorDataProvider::temporalCapabilities()
+{
+  return mTemporalCapabilities.get();
+}
+
+const QgsVectorDataProviderTemporalCapabilities *QgsVectorDataProvider::temporalCapabilities() const
+{
+  return mTemporalCapabilities.get();
 }

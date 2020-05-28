@@ -261,21 +261,21 @@ int main( int argc, char *argv[] )
         return 2;   // XXX need standard exit codes
 
       default:
-        QgsDebugMsg( QString( "%1: getopt returned character code %2" ).arg( argv[0] ).arg( optionChar ) );
+        QgsDebugMsg( QStringLiteral( "%1: getopt returned character code %2" ).arg( argv[0] ).arg( optionChar ) );
         return 1;   // XXX need standard exit codes
     }
   }
 
   // Add any remaining args to the file list - we will attempt to load them
   // as layers in the map view further down....
-  QgsDebugMsg( QString( "Files specified on command line: %1" ).arg( optind ) );
+  QgsDebugMsg( QStringLiteral( "Files specified on command line: %1" ).arg( optind ) );
   if ( optind < argc )
   {
     while ( optind < argc )
     {
 #ifdef QGISDEBUG
       int idx = optind;
-      QgsDebugMsg( QString( "%1: %2" ).arg( idx ).arg( argv[idx] ) );
+      QgsDebugMsg( QStringLiteral( "%1: %2" ).arg( idx ).arg( argv[idx] ) );
 #endif
       sFileList.append( QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[optind++] ) ).absoluteFilePath() ) );
     }
@@ -396,6 +396,9 @@ int main( int argc, char *argv[] )
   QgsApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QgsApplication::setApplicationName( QStringLiteral( "QGIS3" ) );
 
+  QgsApplication::init();
+  QgsApplication::initQgis();
+
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
 
 #ifdef Q_OS_MACX
@@ -511,7 +514,7 @@ int main( int argc, char *argv[] )
         return 1;
       }
     }
-    QgsDebugMsg( QString( "hints: %1" ).arg( hints ) );
+    QgsDebugMsg( QStringLiteral( "hints: %1" ).arg( hints ) );
     qbench->setRenderHints( hints );
   }
 
@@ -520,10 +523,10 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   // autoload any file names that were passed in on the command line
   /////////////////////////////////////////////////////////////////////
-  QgsDebugMsg( QString( "Number of files in myFileList: %1" ).arg( sFileList.count() ) );
+  QgsDebugMsg( QStringLiteral( "Number of files in myFileList: %1" ).arg( sFileList.count() ) );
   for ( QStringList::Iterator myIterator = sFileList.begin(); myIterator != sFileList.end(); ++myIterator )
   {
-    QgsDebugMsg( QString( "Trying to load file : %1" ).arg( ( *myIterator ) ) );
+    QgsDebugMsg( QStringLiteral( "Trying to load file : %1" ).arg( ( *myIterator ) ) );
     QString myLayerName = *myIterator;
     // don't load anything with a .qgs or .qgz extension - these are project files
     if ( !myLayerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) &&
@@ -571,7 +574,7 @@ int main( int argc, char *argv[] )
 
     if ( !ok )
     {
-      QgsDebugMsg( "Error while parsing initial extent!" );
+      QgsDebugMsg( QStringLiteral( "Error while parsing initial extent!" ) );
     }
     else
     {

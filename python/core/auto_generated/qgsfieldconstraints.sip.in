@@ -83,8 +83,7 @@ is not present on this field.
 
     void setConstraintStrength( Constraint constraint, ConstraintStrength strength );
 %Docstring
-Sets the strength of a constraint. Note that the strength of constraints which originate
-from a provider cannot be changed. Constraints default to ConstraintStrengthHard unless
+Sets the strength of a constraint. Constraints default to ConstraintStrengthHard unless
 explicitly changed.
 
 .. seealso:: :py:func:`constraintStrength`

@@ -24,7 +24,7 @@ include(CheckLibraryExists)
 
 # try to use sqlite framework on mac
 # want clean framework path, not unix compatibility path
-IF (APPLE)
+IF (APPLE AND NOT IOS)
   IF (CMAKE_FIND_FRAMEWORK MATCHES "FIRST"
       OR CMAKE_FRAMEWORK_PATH MATCHES "ONLY"
       OR NOT CMAKE_FIND_FRAMEWORK)
@@ -39,7 +39,7 @@ IF (APPLE)
     ENDIF (SPATIALITE_INCLUDE_DIR)
     SET (CMAKE_FIND_FRAMEWORK ${CMAKE_FIND_FRAMEWORK_save} CACHE STRING "" FORCE)
   ENDIF ()
-ENDIF (APPLE)
+ENDIF (APPLE AND NOT IOS)
 
 FIND_PATH(SPATIALITE_INCLUDE_DIR spatialite.h
   /usr/include
@@ -69,11 +69,6 @@ IF (SPATIALITE_FOUND)
      # no extra LDFLAGS used in link test, may fail in OS X SDK
      SET(CMAKE_REQUIRED_LIBRARIES "-F/Library/Frameworks" ${CMAKE_REQUIRED_LIBRARIES})
    ENDIF(APPLE)
-
-   check_library_exists("${SPATIALITE_LIBRARY}" gaiaStatisticsInvalidate "" SPATIALITE_VERSION_GE_4_2_0)
-   IF (NOT SPATIALITE_VERSION_GE_4_2_0)
-     MESSAGE(FATAL_ERROR "Found SpatiaLite, but version is too old. Requires at least version 4.2.0")
-   ENDIF (NOT SPATIALITE_VERSION_GE_4_2_0)
 
 ELSE (SPATIALITE_FOUND)
 

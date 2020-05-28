@@ -42,11 +42,11 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget
 
     void setFromRenderer( const QgsRasterRenderer *r );
 
-    QString min( int index = 0 ) override { Q_UNUSED( index ); return mMinLineEdit->text(); }
-    QString max( int index = 0 ) override { Q_UNUSED( index ); return mMaxLineEdit->text(); }
+    QString min( int index = 0 ) override { Q_UNUSED( index ) return mMinLineEdit->text(); }
+    QString max( int index = 0 ) override { Q_UNUSED( index ) return mMaxLineEdit->text(); }
     void setMin( const QString &value, int index = 0 ) override;
     void setMax( const QString &value, int index = 0 ) override;
-    int selectedBand( int index = 0 ) override { Q_UNUSED( index ); return mGrayBandComboBox->currentIndex() + 1; }
+    int selectedBand( int index = 0 ) override { Q_UNUSED( index ) return mGrayBandComboBox->currentIndex() + 1; }
     void doComputations() override;
     QgsRasterMinMaxWidget *minMaxWidget() override { return mMinMaxWidget; }
 

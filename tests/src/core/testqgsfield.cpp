@@ -40,12 +40,15 @@ class TestQgsField: public QObject
     void assignment();
     void gettersSetters(); //test getters and setters
     void isNumeric(); //test isNumeric
+    void isDateTime(); //test isNumeric
     void equality(); //test equality operators
     void asVariant(); //test conversion to and from a QVariant
     void displayString();
     void convertCompatible();
     void dataStream();
     void displayName();
+    void displayNameWithAlias();
+    void displayType();
     void editorWidgetSetup();
     void collection();
 
@@ -173,7 +176,7 @@ void TestQgsField::gettersSetters()
   constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
   constraints.setConstraintStrength( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthSoft );
   field.setConstraints( constraints );
-  QCOMPARE( field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ), QgsFieldConstraints::ConstraintStrengthHard );
+  QCOMPARE( field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ), QgsFieldConstraints::ConstraintStrengthSoft );
 }
 
 void TestQgsField::isNumeric()
@@ -197,6 +200,33 @@ void TestQgsField::isNumeric()
   QVERIFY( !field.isNumeric() );
   field.setType( QVariant::Invalid );
   QVERIFY( !field.isNumeric() );
+}
+
+void TestQgsField::isDateTime()
+{
+  QgsField field;
+  field.setType( QVariant::Int );
+  QVERIFY( !field.isDateOrTime() );
+  field.setType( QVariant::UInt );
+  QVERIFY( !field.isDateOrTime() );
+  field.setType( QVariant::Double );
+  QVERIFY( !field.isDateOrTime() );
+  field.setType( QVariant::LongLong );
+  QVERIFY( !field.isDateOrTime() );
+  field.setType( QVariant::ULongLong );
+  QVERIFY( !field.isDateOrTime() );
+  field.setType( QVariant::String );
+  QVERIFY( !field.isDateOrTime() );
+  field.setType( QVariant::DateTime );
+  QVERIFY( field.isDateOrTime() );
+  field.setType( QVariant::Time );
+  QVERIFY( field.isDateOrTime() );
+  field.setType( QVariant::Date );
+  QVERIFY( field.isDateOrTime() );
+  field.setType( QVariant::Bool );
+  QVERIFY( !field.isDateOrTime() );
+  field.setType( QVariant::Invalid );
+  QVERIFY( !field.isDateOrTime() );
 }
 
 void TestQgsField::equality()
@@ -330,12 +360,14 @@ void TestQgsField::displayString()
   //test double value
   QgsField doubleField( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ), 10, 3 );
   QCOMPARE( doubleField.displayString( 5.005005 ), QString( "5.005" ) );
+  QCOMPARE( doubleField.displayString( 4.5e-09 ), QString( "4.5e-09" ) );
+  QCOMPARE( doubleField.displayString( 1e-04 ), QString( "0.0001" ) );
   QgsField doubleFieldNoPrec( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ), 10 );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005 ), QString( "5.005005" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005005 ), QString( "5.005005005" ) );
-#if QT_VERSION >= 0x050700
+  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-09 ), QString( "4.5e-09" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 1e-04 ), QString( "0.0001" ) );
   QCOMPARE( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator, QLocale::NumberOption::DefaultNumberOptions );
-#endif
   QCOMPARE( doubleFieldNoPrec.displayString( 599999898999.0 ), QString( "599,999,898,999" ) );
 
   //test NULL double
@@ -345,8 +377,12 @@ void TestQgsField::displayString()
   //test double value with German locale
   QLocale::setDefault( QLocale::German );
   QCOMPARE( doubleField.displayString( 5.005005 ), QString( "5,005" ) );
+  QCOMPARE( doubleField.displayString( 4.5e-09 ), QString( "4,5e-09" ) );
+  QCOMPARE( doubleField.displayString( 1e-04 ), QString( "0,0001" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005 ), QString( "5,005005" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005005 ), QString( "5,005005005" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-09 ), QString( "4,5e-09" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 1e-04 ), QString( "0,0001" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 599999898999.0 ), QString( "599.999.898.999" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5999.123456 ), QString( "5.999,123456" ) );
 
@@ -355,8 +391,12 @@ void TestQgsField::displayString()
   customGerman.setNumberOptions( QLocale::NumberOption::OmitGroupSeparator );
   QLocale::setDefault( customGerman );
   QCOMPARE( doubleField.displayString( 5.005005 ), QString( "5,005" ) );
+  QCOMPARE( doubleField.displayString( 4.5e-09 ), QString( "4,5e-09" ) );
+  QCOMPARE( doubleField.displayString( 1e-04 ), QString( "0,0001" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005 ), QString( "5,005005" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005005 ), QString( "5,005005005" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-09 ), QString( "4,5e-09" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 1e-04 ), QString( "0,0001" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 599999898999.0 ), QString( "599999898999" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5999.123456 ), QString( "5999,123456" ) );
 
@@ -373,8 +413,20 @@ void TestQgsField::displayString()
   customEnglish.setNumberOptions( QLocale::NumberOption::OmitGroupSeparator );
   QLocale::setDefault( customEnglish );
   QCOMPARE( doubleField.displayString( 5.005005 ), QString( "5.005" ) );
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 11, 0 )
+  QCOMPARE( doubleField.displayString( 4.5e-09 ), QString( "4.5e-09" ) );
+#else
+  QCOMPARE( doubleField.displayString( 4.5e-09 ), QString( "4.5e-9" ) );
+#endif
+  QCOMPARE( doubleField.displayString( 1e-04 ), QString( "0.0001" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005 ), QString( "5.005005" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005005 ), QString( "5.005005005" ) );
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 11, 0 )
+  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-09 ), QString( "4.5e-09" ) );
+#else
+  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-09 ), QString( "4.5e-9" ) );
+#endif
+  QCOMPARE( doubleFieldNoPrec.displayString( 1e-04 ), QString( "0.0001" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 599999898999.0 ), QString( "599999898999" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5999.123456 ), QString( "5999.123456" ) );
 
@@ -386,6 +438,11 @@ void TestQgsField::displayString()
   QCOMPARE( longField.displayString( 5 ), QString( "5" ) );
   QCOMPARE( longField.displayString( 599999898999LL ), QString( "599999898999" ) );
 
+  // binary field
+  QgsField binaryField( QStringLiteral( "binary" ), QVariant::ByteArray, QStringLiteral( "Binary" ) );
+  QString testBAString( QStringLiteral( "test string" ) );
+  QByteArray testBA( testBAString.toLocal8Bit() );
+  QCOMPARE( binaryField.displayString( testBA ), QStringLiteral( "BLOB" ) );
 }
 
 void TestQgsField::convertCompatible()
@@ -493,12 +550,16 @@ void TestQgsField::convertCompatible()
   QVERIFY( intField.convertCompatible( smallLonglong ) );
   QCOMPARE( smallLonglong.type(), QVariant::Int );
   QCOMPARE( smallLonglong, QVariant( 99 ) );
-  //conversion of longlong to longlong field
-  QgsField longlongField( QStringLiteral( "long" ), QVariant::LongLong, QStringLiteral( "longlong" ) );
-  longlong = QVariant( 99999999999999999LL );
-  QVERIFY( longlongField.convertCompatible( longlong ) );
-  QCOMPARE( longlong.type(), QVariant::LongLong );
-  QCOMPARE( longlong, QVariant( 99999999999999999LL ) );
+  // negative longlong to int
+  QVariant negativeLonglong( -99999999999999999LL );
+  QVERIFY( !intField.convertCompatible( negativeLonglong ) );
+  QCOMPARE( negativeLonglong.type(), QVariant::Int );
+  QVERIFY( negativeLonglong.isNull() );
+  // small negative longlong to int
+  QVariant smallNegativeLonglong( -99LL );
+  QVERIFY( intField.convertCompatible( smallNegativeLonglong ) );
+  QCOMPARE( smallNegativeLonglong.type(), QVariant::Int );
+  QCOMPARE( smallNegativeLonglong, QVariant( -99 ) );
 
   //string representation of an int
   QVariant stringInt( "123456" );
@@ -511,6 +572,13 @@ void TestQgsField::convertCompatible()
   QCOMPARE( stringInt.type(), QVariant::Int );
   QCOMPARE( stringInt, QVariant( "123456" ) );
 
+  //conversion of longlong to longlong field
+  QgsField longlongField( QStringLiteral( "long" ), QVariant::LongLong, QStringLiteral( "longlong" ) );
+  longlong = QVariant( 99999999999999999LL );
+  QVERIFY( longlongField.convertCompatible( longlong ) );
+  QCOMPARE( longlong.type(), QVariant::LongLong );
+  QCOMPARE( longlong, QVariant( 99999999999999999LL ) );
+
   //string representation of a longlong
   QVariant stringLong( "99999999999999999" );
   QVERIFY( longlongField.convertCompatible( stringLong ) );
@@ -522,6 +590,30 @@ void TestQgsField::convertCompatible()
   QCOMPARE( stringLong.type(), QVariant::LongLong );
   QCOMPARE( stringLong, QVariant( 99999999999999999LL ) );
 
+  //conversion of string double value to longlong
+  notNumberString = QVariant( "notanumber" );
+  QVERIFY( !longlongField.convertCompatible( notNumberString ) );
+  QCOMPARE( notNumberString.type(), QVariant::LongLong );
+  QVERIFY( notNumberString.isNull() );
+  //small double, should be rounded
+  smallDoubleString = QVariant( "45.7" );
+  QVERIFY( longlongField.convertCompatible( smallDoubleString ) );
+  QCOMPARE( smallDoubleString.type(), QVariant::LongLong );
+  QCOMPARE( smallDoubleString, QVariant( 46 ) );
+  negativeSmallDoubleString = QVariant( "-9345.754534525235235" );
+  QVERIFY( longlongField.convertCompatible( negativeSmallDoubleString ) );
+  QCOMPARE( negativeSmallDoubleString.type(), QVariant::LongLong );
+  QCOMPARE( negativeSmallDoubleString, QVariant( -9346 ) );
+  //large double, can be converted
+  largeDoubleString = QVariant( "9999999999.99" );
+  QVERIFY( longlongField.convertCompatible( largeDoubleString ) );
+  QCOMPARE( largeDoubleString.type(), QVariant::LongLong );
+  QCOMPARE( largeDoubleString, QVariant( 10000000000LL ) );
+  //extra large double, cannot be converted
+  largeDoubleString = QVariant( "999999999999999999999.99" );
+  QVERIFY( !longlongField.convertCompatible( largeDoubleString ) );
+  QCOMPARE( largeDoubleString.type(), QVariant::LongLong );
+  QVERIFY( largeDoubleString.isNull() );
 
   //string representation of a double
   QVariant stringDouble( "123456.012345" );
@@ -607,6 +699,12 @@ void TestQgsField::convertCompatible()
   QCOMPARE( stringDouble.type(), QVariant::Double );
   QCOMPARE( stringDouble, QVariant( 1223456.012345 ) );
 
+  // Test that wrongly formatted decimal separator are also accepted
+  QLocale::setDefault( QLocale::German );
+  stringDouble = QVariant( "12.23.456,012345" );
+  QVERIFY( doubleField.convertCompatible( stringDouble ) );
+  QCOMPARE( stringDouble.type(), QVariant::Double );
+  QCOMPARE( stringDouble, QVariant( 1223456.012345 ) );
 
 }
 
@@ -651,6 +749,37 @@ void TestQgsField::displayName()
   field.setAlias( QString() );
   QCOMPARE( field.displayName(), QString( "name" ) );
 }
+
+
+void TestQgsField::displayNameWithAlias()
+{
+  QgsField field;
+  field.setName( QStringLiteral( "name" ) );
+  QCOMPARE( field.displayNameWithAlias(), QString( "name" ) );
+  field.setAlias( QStringLiteral( "alias" ) );
+  QCOMPARE( field.displayNameWithAlias(), QString( "name (alias)" ) );
+  field.setAlias( QString() );
+  QCOMPARE( field.displayNameWithAlias(), QString( "name" ) );
+}
+
+
+void TestQgsField::displayType()
+{
+  QgsField field;
+  field.setTypeName( QStringLiteral( "numeric" ) );
+  QCOMPARE( field.displayType(), QString( "numeric" ) );
+  field.setLength( 20 );
+  QCOMPARE( field.displayType(), QString( "numeric(20)" ) );
+  field.setPrecision( 10 );
+  field.setPrecision( 10 );
+  QCOMPARE( field.displayType(), QString( "numeric(20, 10)" ) );
+  QCOMPARE( field.displayType( true ), QString( "numeric(20, 10) NULL" ) );
+  QgsFieldConstraints constraints;
+  constraints.setConstraint( QgsFieldConstraints::ConstraintUnique );
+  field.setConstraints( constraints );
+  QCOMPARE( field.displayType( true ), QString( "numeric(20, 10) NULL UNIQUE" ) );
+}
+
 
 void TestQgsField::editorWidgetSetup()
 {

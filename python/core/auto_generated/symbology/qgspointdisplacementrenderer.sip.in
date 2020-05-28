@@ -44,6 +44,8 @@ Constructor for QgsPointDisplacementRenderer.
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
 
     static QgsFeatureRenderer *create( QDomElement &symbologyElem, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
@@ -106,6 +108,26 @@ Returns the factor for increasing the ring size of displacement groups.
 .. seealso:: :py:func:`setCircleRadiusAddition`
 %End
 
+    void setLabelDistanceFactor( double factor );
+%Docstring
+Sets a factor for increasing the label distances from the symbol.
+
+:param factor: addition factor
+
+.. seealso:: :py:func:`labelDistanceFactor`
+
+.. versionadded:: 3.8
+%End
+
+    double labelDistanceFactor() const;
+%Docstring
+Returns the factor for label distance from the symbol.
+
+.. seealso:: :py:func:`setLabelDistanceFactor`
+
+.. versionadded:: 3.8
+%End
+
     Placement placement() const;
 %Docstring
 Returns the placement method used for dispersing the points.
@@ -146,7 +168,7 @@ Sets the center symbol for a displacement group.
 %Docstring
 Creates a QgsPointDisplacementRenderer from an existing renderer.
 
-:return: a new renderer if the conversion was possible, otherwise None.
+:return: a new renderer if the conversion was possible, otherwise ``None``.
 
 .. versionadded:: 2.5
 %End

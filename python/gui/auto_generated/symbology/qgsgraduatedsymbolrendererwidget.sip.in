@@ -10,6 +10,10 @@
 
 
 
+
+
+
+
 class QgsGraduatedSymbolRendererWidget : QgsRendererWidget
 {
 
@@ -24,9 +28,10 @@ class QgsGraduatedSymbolRendererWidget : QgsRendererWidget
 
     virtual QgsFeatureRenderer *renderer();
 
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
 
   public slots:
-    void changeGraduatedSymbol();
     void graduatedColumnChanged( const QString &field );
     void classifyGraduated();
     void reapplyColorRamp();
@@ -58,15 +63,24 @@ Toggle the link between classes boundaries
 
     void rowsMoved();
     void modelDataChanged();
-    void refreshRanges( bool reset = false );
+
+    void refreshRanges( bool reset );
+%Docstring
+Refreshes the ranges for the renderer.
+
+The ``reset`` argument is deprecated and has no effect.
+%End
+
+  protected slots:
+
+    virtual void pasteSymbolToSelection();
+
 
   protected:
     void updateUiFromRenderer( bool updateCount = true );
     void connectUpdateHandlers();
     void disconnectUpdateHandlers();
     bool rowsOrdered();
-
-    void updateGraduatedSymbolIcon();
 
     QList<int> selectedClasses();
 %Docstring

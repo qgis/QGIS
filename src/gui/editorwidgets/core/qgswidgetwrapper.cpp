@@ -66,6 +66,7 @@ void QgsWidgetWrapper::setConfig( const QVariantMap &config )
 void QgsWidgetWrapper::setContext( const QgsAttributeEditorContext &context )
 {
   mContext = context;
+  emit contextChanged();
 }
 
 QVariant QgsWidgetWrapper::config( const QString &key, const QVariant &defaultVal ) const
@@ -109,7 +110,7 @@ void QgsWidgetWrapper::initWidget( QWidget *editor )
 
 void QgsWidgetWrapper::setEnabled( bool enabled )
 {
-  Q_UNUSED( enabled );
+  Q_UNUSED( enabled )
 }
 
 void QgsWidgetWrapper::aboutToSave()

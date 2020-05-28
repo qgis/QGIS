@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Matthias Kuhn'
 __date__ = '28/11/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -23,14 +21,16 @@ from qgis.core import (
     QgsRelation,
     QgsTransaction,
     QgsFeatureRequest,
-    QgsVectorLayerTools
+    QgsVectorLayerTools,
+    QgsGeometry
 )
 
 from qgis.gui import (
     QgsGui,
     QgsRelationWidgetWrapper,
     QgsAttributeEditorContext,
-    QgsMapCanvas
+    QgsMapCanvas,
+    QgsAdvancedDigitizingDockWidget
 )
 
 from qgis.PyQt.QtCore import QTimer
@@ -39,7 +39,7 @@ from qgis.PyQt.QtWidgets import (
     QMessageBox,
     QDialogButtonBox,
     QTableView,
-    QApplication
+    QDialog
 )
 from qgis.testing import start_app, unittest
 
@@ -60,27 +60,29 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
         # Create test layer
-        cls.vl_b = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."books" sql=', 'books', 'postgres')
-        cls.vl_a = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."authors" sql=', 'authors', 'postgres')
-        cls.vl_link = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."books_authors" sql=', 'books_authors', 'postgres')
+        cls.vl_books = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."books" sql=', 'books', 'postgres')
+        cls.vl_authors = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."authors" sql=', 'authors', 'postgres')
+        cls.vl_editors = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'fk_book,fk_author\' table="qgis_test"."editors" sql=', 'editors', 'postgres')
+        cls.vl_link_books_authors = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."books_authors" sql=', 'books_authors', 'postgres')
 
-        QgsProject.instance().addMapLayer(cls.vl_b)
-        QgsProject.instance().addMapLayer(cls.vl_a)
-        QgsProject.instance().addMapLayer(cls.vl_link)
+        QgsProject.instance().addMapLayer(cls.vl_books)
+        QgsProject.instance().addMapLayer(cls.vl_authors)
+        QgsProject.instance().addMapLayer(cls.vl_editors)
+        QgsProject.instance().addMapLayer(cls.vl_link_books_authors)
 
         cls.relMgr = QgsProject.instance().relationManager()
 
         cls.rel_a = QgsRelation()
-        cls.rel_a.setReferencingLayer(cls.vl_link.id())
-        cls.rel_a.setReferencedLayer(cls.vl_a.id())
+        cls.rel_a.setReferencingLayer(cls.vl_link_books_authors.id())
+        cls.rel_a.setReferencedLayer(cls.vl_authors.id())
         cls.rel_a.addFieldPair('fk_author', 'pk')
         cls.rel_a.setId('rel_a')
         assert(cls.rel_a.isValid())
         cls.relMgr.addRelation(cls.rel_a)
 
         cls.rel_b = QgsRelation()
-        cls.rel_b.setReferencingLayer(cls.vl_link.id())
-        cls.rel_b.setReferencedLayer(cls.vl_b.id())
+        cls.rel_b.setReferencingLayer(cls.vl_link_books_authors.id())
+        cls.rel_b.setReferencedLayer(cls.vl_books.id())
         cls.rel_b.addFieldPair('fk_book', 'pk')
         cls.rel_b.setId('rel_b')
         assert(cls.rel_b.isValid())
@@ -89,9 +91,10 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         # Our mock QgsVectorLayerTools, that allow injecting data where user input is expected
         cls.vltools = VlTools()
 
-        assert(cls.vl_a.isValid())
-        assert(cls.vl_b.isValid())
-        assert(cls.vl_link.isValid())
+        assert(cls.vl_authors.isValid())
+        assert(cls.vl_books.isValid())
+        assert(cls.vl_editors.isValid())
+        assert(cls.vl_link_books_authors.isValid())
 
     def setUp(self):
         self.startTransaction()
@@ -104,13 +107,13 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         """
         Check if a feature can be deleted properly
         """
-        self.createWrapper(self.vl_a, '"name"=\'Erich Gamma\'')
+        self.createWrapper(self.vl_authors, '"name"=\'Erich Gamma\'')
 
         self.assertEqual(self.table_view.model().rowCount(), 1)
 
-        self.assertEqual(1, len([f for f in self.vl_b.getFeatures()]))
+        self.assertEqual(1, len([f for f in self.vl_books.getFeatures()]))
 
-        fid = next(self.vl_b.getFeatures(QgsFeatureRequest().setFilterExpression('"name"=\'Design Patterns. Elements of Reusable Object-Oriented Software\''))).id()
+        fid = next(self.vl_books.getFeatures(QgsFeatureRequest().setFilterExpression('"name"=\'Design Patterns. Elements of Reusable Object-Oriented Software\''))).id()
 
         self.widget.featureSelectionManager().select([fid])
 
@@ -128,10 +131,10 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         btn.click()
 
         # This is the important check that the feature is deleted
-        self.assertEqual(0, len([f for f in self.vl_b.getFeatures()]))
+        self.assertEqual(0, len([f for f in self.vl_books.getFeatures()]))
 
         # This is actually more checking that the database on delete action is properly set on the relation
-        self.assertEqual(0, len([f for f in self.vl_link.getFeatures()]))
+        self.assertEqual(0, len([f for f in self.vl_link_books_authors.getFeatures()]))
 
         self.assertEqual(self.table_view.model().rowCount(), 0)
 
@@ -139,28 +142,27 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         """
         Simple check if several related items are shown
         """
-        wrapper = self.createWrapper(self.vl_b)  # NOQA
+        wrapper = self.createWrapper(self.vl_books)  # NOQA
 
         self.assertEqual(self.table_view.model().rowCount(), 4)
 
-    @unittest.expectedFailure(os.environ.get('QT_VERSION', '5') == '4' and os.environ.get('TRAVIS_OS_NAME', '') == 'linux')  # It's probably not related to this variables at all, but that's the closest we can get to the real source of this problem at the moment...
     def test_add_feature(self):
         """
         Check if a new related feature is added
         """
-        self.createWrapper(self.vl_a, '"name"=\'Douglas Adams\'')
+        self.createWrapper(self.vl_authors, '"name"=\'Douglas Adams\'')
 
         self.assertEqual(self.table_view.model().rowCount(), 0)
 
-        self.vltools.setValues([None, 'The Hitchhiker\'s Guide to the Galaxy'])
+        self.vltools.setValues([None, 'The Hitchhiker\'s Guide to the Galaxy', 'Sputnik Editions', 1961])
         btn = self.widget.findChild(QToolButton, 'mAddFeatureButton')
         btn.click()
 
         # Book entry has been created
-        self.assertEqual(2, len([f for f in self.vl_b.getFeatures()]))
+        self.assertEqual(2, len([f for f in self.vl_books.getFeatures()]))
 
         # Link entry has been created
-        self.assertEqual(5, len([f for f in self.vl_link.getFeatures()]))
+        self.assertEqual(5, len([f for f in self.vl_link_books_authors.getFeatures()]))
 
         self.assertEqual(self.table_view.model().rowCount(), 1)
 
@@ -168,29 +170,21 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         """
         Check if an existing feature can be linked
         """
-        wrapper = self.createWrapper(self.vl_a, '"name"=\'Douglas Adams\'')  # NOQA
+        wrapper = self.createWrapper(self.vl_authors, '"name"=\'Douglas Adams\'')  # NOQA
 
-        f = QgsFeature(self.vl_b.fields())
-        f.setAttributes([self.vl_b.dataProvider().defaultValueClause(0), 'The Hitchhiker\'s Guide to the Galaxy'])
-        self.vl_b.addFeature(f)
-
-        def choose_linked_feature():
-            dlg = QApplication.activeModalWidget()
-            dlg.setSelectedFeatures([f.id()])
-            dlg.accept()
+        f = QgsFeature(self.vl_books.fields())
+        f.setAttributes([self.vl_books.dataProvider().defaultValueClause(0), 'The Hitchhiker\'s Guide to the Galaxy', 'Sputnik Editions', 1961])
+        self.vl_books.addFeature(f)
 
         btn = self.widget.findChild(QToolButton, 'mLinkFeatureButton')
-
-        timer = QTimer()
-        timer.setSingleShot(True)
-        timer.setInterval(0)  # will run in the event loop as soon as it's processed when the dialog is opened
-        timer.timeout.connect(choose_linked_feature)
-        timer.start()
-
         btn.click()
-        # magically the above code selects the feature here...
 
-        link_feature = next(self.vl_link.getFeatures(QgsFeatureRequest().setFilterExpression('"fk_book"={}'.format(f[0]))))
+        dlg = self.widget.findChild(QDialog)
+        dlg.setSelectedFeatures([f.id()])
+        dlg.accept()
+
+        # magically the above code selects the feature here...
+        link_feature = next(self.vl_link_books_authors.getFeatures(QgsFeatureRequest().setFilterExpression('"fk_book"={}'.format(f[0]))))
         self.assertIsNotNone(link_feature[0])
 
         self.assertEqual(self.table_view.model().rowCount(), 1)
@@ -199,12 +193,12 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         """
         Check if a linked feature can be unlinked
         """
-        wrapper = self.createWrapper(self.vl_b)   # NOQA
+        wrapper = self.createWrapper(self.vl_books)   # NOQA
 
         # All authors are listed
         self.assertEqual(self.table_view.model().rowCount(), 4)
 
-        it = self.vl_a.getFeatures(
+        it = self.vl_authors.getFeatures(
             QgsFeatureRequest().setFilterExpression('"name" IN (\'Richard Helm\', \'Ralph Johnson\')'))
 
         self.widget.featureSelectionManager().select([f.id() for f in it])
@@ -215,7 +209,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         btn.click()
 
         # This is actually more checking that the database on delete action is properly set on the relation
-        self.assertEqual(2, len([f for f in self.vl_link.getFeatures()]))
+        self.assertEqual(2, len([f for f in self.vl_link_books_authors.getFeatures()]))
 
         self.assertEqual(2, self.table_view.model().rowCount())
 
@@ -223,7 +217,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         """
         Test the automatic discovery of relations
         """
-        relations = self.relMgr.discoverRelations([], [self.vl_a, self.vl_b, self.vl_link])
+        relations = self.relMgr.discoverRelations([], [self.vl_authors, self.vl_books, self.vl_link_books_authors])
         relations = {r.name(): r for r in relations}
         self.assertEqual({'books_authors_fk_book_fkey', 'books_authors_fk_author_fkey'}, set(relations.keys()))
 
@@ -241,8 +235,120 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         self.assertEqual([1], ba2a.referencingFields())
         self.assertEqual([0], ba2a.referencedFields())
 
-        self.assertEqual([], self.relMgr.discoverRelations([self.rel_a, self.rel_b], [self.vl_a, self.vl_b, self.vl_link]))
-        self.assertEqual(1, len(self.relMgr.discoverRelations([], [self.vl_a, self.vl_link])))
+        self.assertEqual([], self.relMgr.discoverRelations([self.rel_a, self.rel_b], [self.vl_authors, self.vl_books, self.vl_link_books_authors]))
+        self.assertEqual(1, len(self.relMgr.discoverRelations([], [self.vl_authors, self.vl_link_books_authors])))
+
+        # composite keys relation
+        relations = self.relMgr.discoverRelations([], [self.vl_books, self.vl_editors])
+        self.assertEqual(len(relations), 1)
+        relation = relations[0]
+        self.assertEqual('books_fk_editor_fkey', relation.name())
+        self.assertTrue(relation.isValid())
+        self.assertEqual('books', relation.referencingLayer().name())
+        self.assertEqual('editors', relation.referencedLayer().name())
+        self.assertEqual([2, 3], relation.referencingFields())
+        self.assertEqual([0, 1], relation.referencedFields())
+
+    def test_selection(self):
+
+        fbook = QgsFeature(self.vl_books.fields())
+        fbook.setAttributes([self.vl_books.dataProvider().defaultValueClause(0), 'The Hitchhiker\'s Guide to the Galaxy', 'Sputnik Editions', 1961])
+        self.vl_books.addFeature(fbook)
+
+        flink = QgsFeature(self.vl_link_books_authors.fields())
+        flink.setAttributes([fbook.id(), 5])
+        self.vl_link_books_authors.addFeature(flink)
+
+        self.createWrapper(self.vl_authors, '"name"=\'Douglas Adams\'')
+
+        self.zoomToButton = self.widget.findChild(QToolButton, "mDeleteFeatureButton")
+        self.assertTrue(self.zoomToButton)
+        self.assertTrue(not self.zoomToButton.isEnabled())
+
+        selectionMgr = self.widget.featureSelectionManager()
+        self.assertTrue(selectionMgr)
+
+        self.vl_books.select(fbook.id())
+        self.assertEqual([fbook.id()], selectionMgr.selectedFeatureIds())
+        self.assertTrue(self.zoomToButton.isEnabled())
+
+        selectionMgr.deselect([fbook.id()])
+        self.assertEqual([], selectionMgr.selectedFeatureIds())
+        self.assertTrue(not self.zoomToButton.isEnabled())
+
+        self.vl_books.select([1, fbook.id()])
+        self.assertEqual([fbook.id()], selectionMgr.selectedFeatureIds())
+        self.assertTrue(self.zoomToButton.isEnabled())
+
+    def test_add_feature_geometry(self):
+        """
+        Test to add a feature with a geometry
+        """
+        vl_pipes = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."pipes" (geom) sql=', 'pipes', 'postgres')
+        vl_leaks = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."leaks" (geom) sql=', 'leaks', 'postgres')
+        vl_leaks.startEditing()
+
+        QgsProject.instance().addMapLayer(vl_pipes)
+        QgsProject.instance().addMapLayer(vl_leaks)
+
+        self.assertEqual(vl_pipes.featureCount(), 2)
+        self.assertEqual(vl_leaks.featureCount(), 3)
+
+        rel = QgsRelation()
+        rel.setReferencingLayer(vl_leaks.id())
+        rel.setReferencedLayer(vl_pipes.id())
+        rel.addFieldPair('pipe', 'id')
+        rel.setId('rel_pipe_leak')
+        self.assertTrue(rel.isValid())
+        self.relMgr.addRelation(rel)
+
+        # Mock vector layer tool to just set default value on created feature
+        class DummyVlTools(QgsVectorLayerTools):
+
+            def addFeature(self, layer, defaultValues, defaultGeometry):
+                f = QgsFeature(layer.fields())
+                for idx, value in defaultValues.items():
+                    f.setAttribute(idx, value)
+                f.setGeometry(defaultGeometry)
+                ok = layer.addFeature(f)
+
+                return ok, f
+
+        wrapper = QgsRelationWidgetWrapper(vl_leaks, rel)
+        context = QgsAttributeEditorContext()
+        vltool = DummyVlTools()
+        context.setVectorLayerTools(vltool)
+        context.setMapCanvas(self.mapCanvas)
+        cadDockWidget = QgsAdvancedDigitizingDockWidget(self.mapCanvas)
+        context.setCadDockWidget(cadDockWidget)
+        wrapper.setContext(context)
+        widget = wrapper.widget()
+        widget.show()
+        pipe = next(vl_pipes.getFeatures())
+        self.assertEqual(pipe.id(), 1)
+        wrapper.setFeature(pipe)
+        table_view = widget.findChild(QTableView)
+        self.assertEqual(table_view.model().rowCount(), 1)
+
+        btn = widget.findChild(QToolButton, 'mAddFeatureGeometryButton')
+        self.assertTrue(btn.isVisible())
+        self.assertTrue(btn.isEnabled())
+        btn.click()
+        self.assertTrue(self.mapCanvas.mapTool())
+        feature = QgsFeature(vl_leaks.fields())
+        feature.setGeometry(QgsGeometry.fromWkt('POINT(0 0.8)'))
+        self.mapCanvas.mapTool().digitizingCompleted.emit(feature)
+        self.assertEqual(table_view.model().rowCount(), 2)
+        self.assertEqual(vl_leaks.featureCount(), 4)
+        request = QgsFeatureRequest()
+        request.addOrderBy("id", False)
+
+        # get new created feature
+        feat = next(vl_leaks.getFeatures('"id" is NULL'))
+        self.assertTrue(feat.isValid())
+        self.assertTrue(feat.geometry().equals(QgsGeometry.fromWkt('POINT(0 0.8)')))
+
+        vl_leaks.rollBack()
 
     def startTransaction(self):
         """
@@ -250,7 +356,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
 
         :return: None
         """
-        lyrs = [self.vl_a, self.vl_b, self.vl_link]
+        lyrs = [self.vl_authors, self.vl_books, self.vl_link_books_authors]
 
         self.transaction = QgsTransaction.create(lyrs)
         self.transaction.begin()
@@ -265,7 +371,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
 
         :return: None
         """
-        lyrs = [self.vl_a, self.vl_b, self.vl_link]
+        lyrs = [self.vl_authors, self.vl_books, self.vl_link_books_authors]
         for l in lyrs:
             l.commitChanges()
         self.transaction.rollback()
@@ -282,7 +388,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
 
         :return: The created wrapper
         """
-        if layer == self.vl_b:
+        if layer == self.vl_books:
             relation = self.rel_b
             nmrel = self.rel_a
         else:
@@ -292,6 +398,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         self.wrapper = QgsRelationWidgetWrapper(layer, relation)
         self.wrapper.setConfig({'nm-rel': nmrel.id()})
         context = QgsAttributeEditorContext()
+        context.setMapCanvas(self.mapCanvas)
         context.setVectorLayerTools(self.vltools)
         self.wrapper.setContext(context)
 

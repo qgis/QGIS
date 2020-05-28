@@ -27,11 +27,11 @@
 #include <sqlite3.h>
 #include <QFile>
 
-const QString AS_JOINFIELD = "ASPK";
-const QString AS_EXTENSION = "qgd";
-const QString AS_JOINPREFIX = "auxiliary_storage_";
-
-const QVector<QgsPalLayerSettings::Property> palHiddenProperties
+#define AS_JOINFIELD QStringLiteral( "ASPK" )
+#define AS_EXTENSION QStringLiteral( "qgd" )
+#define AS_JOINPREFIX QStringLiteral( "auxiliary_storage_" )
+typedef QVector<QgsPalLayerSettings::Property> PalPropertyList;
+Q_GLOBAL_STATIC_WITH_ARGS( PalPropertyList, palHiddenProperties, (
 {
   QgsPalLayerSettings::PositionX,
   QgsPalLayerSettings::PositionY,
@@ -45,7 +45,9 @@ const QVector<QgsPalLayerSettings::Property> palHiddenProperties
   QgsPalLayerSettings::Underline,
   QgsPalLayerSettings::Color,
   QgsPalLayerSettings::Strikeout,
+  QgsPalLayerSettings::MultiLineAlignment,
   QgsPalLayerSettings::BufferSize,
+  QgsPalLayerSettings::BufferDraw,
   QgsPalLayerSettings::BufferColor,
   QgsPalLayerSettings::LabelDistance,
   QgsPalLayerSettings::Hali,
@@ -53,15 +55,18 @@ const QVector<QgsPalLayerSettings::Property> palHiddenProperties
   QgsPalLayerSettings::ScaleVisibility,
   QgsPalLayerSettings::MinScale,
   QgsPalLayerSettings::MaxScale,
-  QgsPalLayerSettings::AlwaysShow
-};
+  QgsPalLayerSettings::AlwaysShow,
+  QgsPalLayerSettings::CalloutDraw,
+  QgsPalLayerSettings::LabelAllParts
+} ) )
 
 //
 // QgsAuxiliaryLayer
 //
 
 QgsAuxiliaryLayer::QgsAuxiliaryLayer( const QString &pkField, const QString &filename, const QString &table, QgsVectorLayer *vlayer )
-  : QgsVectorLayer( QString( "%1|layername=%2" ).arg( filename, table ), QString( "%1_auxiliarystorage" ).arg( table ), "ogr" )
+  : QgsVectorLayer( QStringLiteral( "%1|layername=%2" ).arg( filename, table ),
+                    QStringLiteral( "%1_auxiliarystorage" ).arg( table ), QStringLiteral( "ogr" ) )
   , mFileName( filename )
   , mTable( table )
   , mLayer( vlayer )
@@ -243,8 +248,6 @@ int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, Q
 
         layer->labeling()->setSettings( settings, providerId );
       }
-
-      emit layer->styleChanged();
     }
 
     index = layer->fields().lookupField( fieldName );
@@ -273,8 +276,6 @@ int QgsAuxiliaryLayer::createProperty( QgsDiagramLayerSettings::Property propert
       settings.setDataDefinedProperties( c );
 
       layer->setDiagramLayerSettings( settings );
-      emit layer->styleChanged();
-
       index = layer->fields().lookupField( fieldName );
     }
   }
@@ -287,9 +288,10 @@ bool QgsAuxiliaryLayer::isHiddenProperty( int index ) const
   bool hidden = false;
   QgsPropertyDefinition def = propertyDefinitionFromIndex( index );
 
-  if ( def.origin().compare( "labeling" ) == 0 )
+  if ( def.origin().compare( QLatin1String( "labeling" ) ) == 0 )
   {
-    for ( const QgsPalLayerSettings::Property &p : palHiddenProperties )
+    const PalPropertyList &palProps = *palHiddenProperties();
+    for ( const QgsPalLayerSettings::Property &p : palProps )
     {
       const QString propName = QgsPalLayerSettings::propertyDefinitions()[ p ].name();
       if ( propName.compare( def.name() ) == 0 )
@@ -308,7 +310,7 @@ int QgsAuxiliaryLayer::propertyFromIndex( int index ) const
   int p = -1;
   QgsPropertyDefinition aDef = propertyDefinitionFromIndex( index );
 
-  if ( aDef.origin().compare( QStringLiteral( "labeling" ) ) == 0 )
+  if ( aDef.origin().compare( QLatin1String( "labeling" ) ) == 0 )
   {
     const QgsPropertiesDefinition defs = QgsPalLayerSettings::propertyDefinitions();
     QgsPropertiesDefinition::const_iterator it = defs.constBegin();
@@ -321,7 +323,7 @@ int QgsAuxiliaryLayer::propertyFromIndex( int index ) const
       }
     }
   }
-  else if ( aDef.origin().compare( QStringLiteral( "symbol" ) ) == 0 )
+  else if ( aDef.origin().compare( QLatin1String( "symbol" ) ) == 0 )
   {
     const QgsPropertiesDefinition defs = QgsSymbolLayer::propertyDefinitions();
     QgsPropertiesDefinition::const_iterator it = defs.constBegin();
@@ -334,7 +336,7 @@ int QgsAuxiliaryLayer::propertyFromIndex( int index ) const
       }
     }
   }
-  else if ( aDef.origin().compare( QStringLiteral( "diagram" ) ) == 0 )
+  else if ( aDef.origin().compare( QLatin1String( "diagram" ) ) == 0 )
   {
     const QgsPropertiesDefinition defs = QgsDiagramLayerSettings::propertyDefinitions();
     QgsPropertiesDefinition::const_iterator it = defs.constBegin();
@@ -366,13 +368,13 @@ QString QgsAuxiliaryLayer::nameFromProperty( const QgsPropertyDefinition &def, b
   QString fieldName = def.origin();
 
   if ( !def.name().isEmpty() )
-    fieldName =  QString( "%1_%2" ).arg( fieldName, def.name().toLower() );
+    fieldName =  QStringLiteral( "%1_%2" ).arg( fieldName, def.name().toLower() );
 
   if ( !def.comment().isEmpty() )
-    fieldName = QString( "%1_%2" ).arg( fieldName, def.comment() );
+    fieldName = QStringLiteral( "%1_%2" ).arg( fieldName, def.comment() );
 
   if ( joined )
-    fieldName = QString( "%1%2" ).arg( AS_JOINPREFIX, fieldName );
+    fieldName = QStringLiteral( "%1%2" ).arg( AS_JOINPREFIX, fieldName );
 
   return fieldName;
 }
@@ -391,17 +393,17 @@ QgsField QgsAuxiliaryLayer::createAuxiliaryField( const QgsPropertyDefinition &d
       case QgsPropertyDefinition::DataTypeString:
         type = QVariant::String;
         len = 50;
-        typeName = "String";
+        typeName = QStringLiteral( "String" );
         break;
       case QgsPropertyDefinition::DataTypeNumeric:
         type = QVariant::Double;
         len = 0;
         precision = 0;
-        typeName = "Real";
+        typeName = QStringLiteral( "Real" );
         break;
       case QgsPropertyDefinition::DataTypeBoolean:
         type = QVariant::Int; // sqlite does not have a bool type
-        typeName = "Integer";
+        typeName = QStringLiteral( "Integer" );
         break;
     }
 
@@ -426,7 +428,7 @@ QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromField( const QgsF
   const QString origin = parts[0];
   const QString propertyName = parts[1];
 
-  if ( origin.compare( "labeling", Qt::CaseInsensitive ) == 0 )
+  if ( origin.compare( QLatin1String( "labeling" ), Qt::CaseInsensitive ) == 0 )
   {
     const QgsPropertiesDefinition props = QgsPalLayerSettings::propertyDefinitions();
     for ( auto it = props.constBegin(); it != props.constEnd(); ++it )
@@ -434,13 +436,13 @@ QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromField( const QgsF
       if ( it.value().name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
       {
         def = it.value();
-        if ( parts.size() == 3 )
-          def.setComment( parts[2] );
+        if ( parts.size() >= 3 )
+          def.setComment( parts.mid( 2 ).join( '_' ) );
         break;
       }
     }
   }
-  else if ( origin.compare( "symbol", Qt::CaseInsensitive ) == 0 )
+  else if ( origin.compare( QLatin1String( "symbol" ), Qt::CaseInsensitive ) == 0 )
   {
     const QgsPropertiesDefinition props = QgsSymbolLayer::propertyDefinitions();
     for ( auto it = props.constBegin(); it != props.constEnd(); ++it )
@@ -448,13 +450,13 @@ QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromField( const QgsF
       if ( it.value().name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
       {
         def = it.value();
-        if ( parts.size() == 3 )
-          def.setComment( parts[2] );
+        if ( parts.size() >= 3 )
+          def.setComment( parts.mid( 2 ).join( '_' ) );
         break;
       }
     }
   }
-  else if ( origin.compare( "diagram", Qt::CaseInsensitive ) == 0 )
+  else if ( origin.compare( QLatin1String( "diagram" ), Qt::CaseInsensitive ) == 0 )
   {
     const QgsPropertiesDefinition props = QgsDiagramLayerSettings::propertyDefinitions();
     for ( auto it = props.constBegin(); it != props.constEnd(); ++it )
@@ -462,8 +464,8 @@ QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromField( const QgsF
       if ( it.value().name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
       {
         def = it.value();
-        if ( parts.size() == 3 )
-          def.setComment( parts[2] );
+        if ( parts.size() >= 3 )
+          def.setComment( parts.mid( 2 ).join( '_' ) );
         break;
       }
     }
@@ -472,9 +474,24 @@ QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromField( const QgsF
   {
     def.setOrigin( origin );
     def.setName( propertyName );
+    switch ( f.type() )
+    {
+      case QVariant::Double:
+        def.setDataType( QgsPropertyDefinition::DataTypeNumeric );
+        break;
 
-    if ( parts.size() == 3 )
-      def.setComment( parts[2] );
+      case QVariant::Bool:
+        def.setDataType( QgsPropertyDefinition::DataTypeBoolean );
+        break;
+
+      case QVariant::String:
+      default:
+        def.setDataType( QgsPropertyDefinition::DataTypeString );
+        break;
+    }
+
+    if ( parts.size() >= 3 )
+      def.setComment( parts.mid( 2 ).join( '_' ) );
   }
 
   return def;
@@ -595,7 +612,7 @@ bool QgsAuxiliaryStorage::deleteTable( const QgsDataSourceUri &ogrUri )
 
     if ( database )
     {
-      QString sql = QString( "DROP TABLE %1" ).arg( uri.table() );
+      QString sql = QStringLiteral( "DROP TABLE %1" ).arg( uri.table() );
       rc = exec( sql, database.get() );
 
       sql = QStringLiteral( "VACUUM" );
@@ -626,15 +643,33 @@ bool QgsAuxiliaryStorage::duplicateTable( const QgsDataSourceUri &ogrUri, const 
   return rc;
 }
 
-bool QgsAuxiliaryStorage::saveAs( const QString &filename ) const
+QString QgsAuxiliaryStorage::errorString() const
 {
-  if ( QFile::exists( filename ) )
-    QFile::remove( filename );
-
-  return  QFile::copy( currentFileName(), filename );
+  return mErrorString;
 }
 
-bool QgsAuxiliaryStorage::saveAs( const QgsProject &project ) const
+bool QgsAuxiliaryStorage::saveAs( const QString &filename )
+{
+  mErrorString.clear();
+
+  QFile dest( filename );
+  if ( dest.exists() && !dest.remove() )
+  {
+    mErrorString = dest.errorString();
+    return false;
+  }
+
+  QFile origin( currentFileName() );
+  if ( !origin.copy( filename ) )
+  {
+    mErrorString = origin.errorString();
+    return false;
+  }
+
+  return true;
+}
+
+bool QgsAuxiliaryStorage::saveAs( const QgsProject &project )
 {
   return saveAs( filenameForProject( project ) );
 }
@@ -675,8 +710,8 @@ void QgsAuxiliaryStorage::debugMsg( const QString &sql, sqlite3 *handler )
   const QString errMsg = QObject::tr( "%1 '%2': %3" ).arg( msg, sql, err );
   QgsDebugMsg( errMsg );
 #else
-  Q_UNUSED( sql );
-  Q_UNUSED( handler );
+  Q_UNUSED( sql )
+  Q_UNUSED( handler )
 #endif
 }
 
@@ -714,7 +749,7 @@ spatialite_database_unique_ptr QgsAuxiliaryStorage::openDB( const QString &filen
 
   if ( rc )
   {
-    debugMsg( "sqlite3_open_v2", database.get() );
+    debugMsg( QStringLiteral( "sqlite3_open_v2" ), database.get() );
   }
 
   return database;
@@ -804,7 +839,7 @@ QgsDataSourceUri QgsAuxiliaryStorage::parseOgrUri( const QgsDataSourceUri &uri )
   if ( uriParts.count() < 2 )
     return newUri;
 
-  const QString databasePath = uriParts[0].replace( ' ', "" );
+  const QString databasePath = uriParts[0].replace( ' ', QString() );
 
   const QString table = uriParts[1];
   QStringList tableParts = table.split( ' ' );
@@ -812,7 +847,7 @@ QgsDataSourceUri QgsAuxiliaryStorage::parseOgrUri( const QgsDataSourceUri &uri )
   if ( tableParts.count() < 1 )
     return newUri;
 
-  const QString tableName = tableParts[0].replace( QStringLiteral( "layername=" ), QStringLiteral( "" ) );
+  const QString tableName = tableParts[0].replace( QStringLiteral( "layername=" ), QString() );
 
   newUri.setDataSource( QString(), tableName, QString() );
   newUri.setDatabase( databasePath );

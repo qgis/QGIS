@@ -33,20 +33,32 @@ Constructor for :py:class:`QgsSymbolSaveDialog`
 
     QString name() const;
 %Docstring
-returns the text value of the name element
+Returns the entered name for the new symbol.
+%End
+
+    void setDefaultTags( const QString &tags );
+%Docstring
+Sets the default ``tags`` for the newly created item.
+
+.. versionadded:: 3.10
 %End
 
     QString tags() const;
 %Docstring
-returns the text value of the tags element
+Returns any tags entered for the new symbol (as a comma separated value list).
 %End
 
     bool isFavorite() const;
 %Docstring
-returns whether the favorite element is checked
+Returns ``True`` if the favorite is checked for the symbol.
 %End
 
+    QgsStyle::StyleEntity selectedType() const;
+%Docstring
+Returns the type of style entity to save.
 
+.. versionadded:: 3.10
+%End
 
 };
 

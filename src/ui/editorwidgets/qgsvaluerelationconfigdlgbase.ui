@@ -7,14 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>427</width>
-    <height>474</height>
+    <height>489</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0">
-   <item row="12" column="0" colspan="2">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,0">
+   <item row="13" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="label_19">
@@ -32,7 +32,7 @@
         <enum>Qt::RightToLeft</enum>
        </property>
        <property name="icon">
-        <iconset resource="../../../images/images.qrc">
+        <iconset>
          <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
        </property>
       </widget>
@@ -52,6 +52,23 @@
      </item>
     </layout>
    </item>
+   <item row="9" column="0">
+    <widget class="QLabel" name="label_nofColumns">
+     <property name="text">
+      <string>Number of columns</string>
+     </property>
+    </widget>
+   </item>
+   <item row="14" column="0" colspan="2">
+    <widget class="QTextEdit" name="mFilterExpression"/>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="label_8">
+     <property name="text">
+      <string>Select layer, key column and value column</string>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label_5">
      <property name="text">
@@ -62,30 +79,37 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0" colspan="2">
-    <widget class="QLabel" name="label_8">
+   <item row="3" column="1">
+    <widget class="QgsFieldComboBox" name="mValueColumn"/>
+   </item>
+   <item row="1" column="1">
+    <widget class="QgsMapLayerComboBox" name="mLayerName"/>
+   </item>
+   <item row="8" column="0" colspan="2">
+    <widget class="QCheckBox" name="mAllowMulti">
      <property name="text">
-      <string>Select layer, key column and value column</string>
+      <string>Allow multiple selections</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2">
+   <item row="5" column="0" colspan="2">
     <widget class="QCheckBox" name="mAllowNull">
      <property name="text">
       <string>Allow NULL value</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QgsFieldComboBox" name="mKeyColumn"/>
-   </item>
-   <item row="3" column="1">
-    <widget class="QgsFieldComboBox" name="mValueColumn"/>
-   </item>
-   <item row="10" column="0" colspan="2">
+   <item row="11" column="0" colspan="2">
     <widget class="QCheckBox" name="mUseCompleter">
      <property name="text">
       <string>Use completer</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0" colspan="2">
+    <widget class="QCheckBox" name="mOrderByValue">
+     <property name="text">
+      <string>Order by value</string>
      </property>
     </widget>
    </item>
@@ -99,6 +123,12 @@
      </property>
     </widget>
    </item>
+   <item row="9" column="1">
+    <widget class="QSpinBox" name="mNofColumns"/>
+   </item>
+   <item row="2" column="1">
+    <widget class="QgsFieldComboBox" name="mKeyColumn"/>
+   </item>
    <item row="3" column="0">
     <widget class="QLabel" name="label_7">
      <property name="text">
@@ -109,35 +139,15 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="0" colspan="2">
-    <widget class="QCheckBox" name="mOrderByValue">
+   <item row="4" column="0">
+    <widget class="QLabel" name="label">
      <property name="text">
-      <string>Order by value</string>
+      <string>Description column</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QgsMapLayerComboBox" name="mLayerName"/>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="label_nofColumns">
-     <property name="text">
-      <string>Number of columns</string>
-     </property>
-    </widget>
-   </item>
-   <item row="13" column="0" colspan="2">
-    <widget class="QTextEdit" name="mFilterExpression"/>
-   </item>
-   <item row="7" column="0" colspan="2">
-    <widget class="QCheckBox" name="mAllowMulti">
-     <property name="text">
-      <string>Allow multiple selections</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="1">
-    <widget class="QSpinBox" name="mNofColumns"/>
+   <item row="4" column="1">
+    <widget class="QgsFieldExpressionWidget" name="mDescriptionExpression" native="true"/>
    </item>
   </layout>
  </widget>
@@ -152,6 +162,12 @@
    <extends>QComboBox</extends>
    <header>qgsmaplayercombobox.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mLayerName</tabstop>
@@ -164,8 +180,6 @@
   <tabstop>mEditExpression</tabstop>
   <tabstop>mFilterExpression</tabstop>
  </tabstops>
- <resources>
-  <include location="../../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

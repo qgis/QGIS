@@ -29,6 +29,7 @@ class QDomElement;
 
 class QPainter;
 class QgsRasterTransparency;
+class QgsStyleEntityVisitorInterface;
 
 /**
  * \ingroup core
@@ -37,7 +38,7 @@ class QgsRasterTransparency;
 class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 {
 
-    Q_DECLARE_TR_FUNCTIONS( QgsRasterRenderer );
+    Q_DECLARE_TR_FUNCTIONS( QgsRasterRenderer )
 
   public:
 
@@ -86,6 +87,29 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
      */
     double opacity() const { return mOpacity; }
 
+    /**
+     * Returns the color to use for shading nodata pixels.
+     *
+     * If the returned value is an invalid color then the default transparent rendering of
+     * nodata values will be used.
+     *
+     * \see renderColorForNodataPixel()
+     * \see setNodataColor()
+     * \since QGIS 3.12
+     */
+    QColor nodataColor() const { return mNodataColor; }
+
+    /**
+     * Sets the \a color to use for shading nodata pixels.
+     *
+     * If \a color is an invalid color then the default transparent rendering of
+     * nodata values will be used.
+     *
+     * \see nodataColor()
+     * \since QGIS 3.12
+     */
+    void setNodataColor( const QColor &color ) { mNodataColor = color; }
+
     void setRasterTransparency( QgsRasterTransparency *t SIP_TRANSFER );
     const QgsRasterTransparency *rasterTransparency() const { return mRasterTransparency; }
 
@@ -93,7 +117,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     int alphaBand() const { return mAlphaBand; }
 
     //! Gets symbology items if provided by renderer
-    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const { Q_UNUSED( symbolItems ); }
+    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const { Q_UNUSED( symbolItems ) }
 
     //! Sets base class members from xml. Usually called from create() methods of subclasses
     void readXml( const QDomElement &rendererElem ) override;
@@ -112,6 +136,22 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     //! Sets origin of min/max values
     void setMinMaxOrigin( const QgsRasterMinMaxOrigin &origin ) { mMinMaxOrigin = origin; }
+
+    /**
+     * Used from subclasses to create SLD Rule elements following SLD v1.0 specs
+     * \since QGIS 3.6  */
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+
+    /**
+     * Accepts the specified symbology \a visitor, causing it to visit all symbols associated
+     * with the renderer.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 3.10
+     */
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
   protected:
 
@@ -133,7 +173,20 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     //! Origin of min/max values
     QgsRasterMinMaxOrigin mMinMaxOrigin;
 
+    /**
+     * Returns the color for the renderer to use to represent nodata pixels.
+     *
+     * Subclasses should use this rather then nodataColor() to determine the color to use for nodata pixels
+     * during an actual rendering operation.
+     *
+     * \since QGIS 3.10
+     */
+    QRgb renderColorForNodataPixel() const;
+
   private:
+
+    QColor mNodataColor;
+
 #ifdef SIP_RUN
     QgsRasterRenderer( const QgsRasterRenderer & );
     const QgsRasterRenderer &operator=( const QgsRasterRenderer & );

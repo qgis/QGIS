@@ -28,22 +28,14 @@ from qgis.PyQt.QtCore import (pyqtSignal, QObject, QCoreApplication, QFile,
                               QLocale, QByteArray)
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
-from qgis.core import QgsSettings
+from qgis.core import Qgis, QgsSettings, QgsNetworkRequestParameters
 import sys
 import os
 import codecs
 import re
-try:
-    import configparser
-except ImportError:
-    import configparser as configparser
-try:
-    from importlib import reload
-except ImportError:
-    from imp import reload
+import configparser
 import qgis.utils
 from qgis.core import QgsNetworkAccessManager, QgsApplication
-from qgis.gui import QgsMessageBar
 from qgis.utils import iface, plugin_paths
 from .version_compare import pyQgisVersion, compareVersions, normalizeVersion, isCompatible
 
@@ -93,6 +85,9 @@ mPlugins = dict of dicts {id : {
     "downloads" unicode,                        # number of downloads
     "average_vote" unicode,                     # average vote
     "rating_votes" unicode,                     # number of votes
+    "create_date" unicode,                      # ISO datetime when the plugin has been created
+    "update_date" unicode,                      # ISO datetime when the plugin has been last updated
+    "plugin_dependencies" unicode,              # PIP-style comma separated list of plugin dependencies
 }}
 """
 
@@ -330,6 +325,8 @@ class Repositories(QObject):
         # url.addQueryItem('qgis', '.'.join([str(int(s)) for s in [v[0], v[1:3]]]) ) # don't include the bugfix version!
 
         self.mRepositories[key]["QRequest"] = QNetworkRequest(url)
+        self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.AttributeInitiatorClass), "Relay")
+        self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.FollowRedirectsAttribute, True)
         authcfg = self.mRepositories[key]["authcfg"]
         if authcfg and isinstance(authcfg, str):
             if not QgsApplication.authManager().updateNetworkRequest(
@@ -346,7 +343,7 @@ class Repositories(QObject):
         self.mRepositories[key]["xmlData"].setProperty('reposName', key)
         self.mRepositories[key]["xmlData"].setProperty('redirectionCounter', redirectionCounter)
         self.mRepositories[key]["xmlData"].downloadProgress.connect(self.mRepositories[key]["Relay"].dataReadProgress)
-        self.mRepositories[key]["xmlData"].finished.connect(self.xmlDownloaded)
+        self.mRepositories[key]["xmlDataFinished"] = self.mRepositories[key]["xmlData"].finished.connect(self.xmlDownloaded)
 
     # ----------------------------------------- #
     def fetchingInProgress(self):
@@ -360,7 +357,7 @@ class Repositories(QObject):
     def killConnection(self, key):
         """ kill the fetching on demand """
         if self.mRepositories[key]["state"] == 1 and self.mRepositories[key]["xmlData"] and self.mRepositories[key]["xmlData"].isRunning():
-            self.mRepositories[key]["xmlData"].finished.disconnect()
+            self.mRepositories[key]["xmlData"].finished.disconnect(self.mRepositories[key]["xmlDataFinished"])
             self.mRepositories[key]["xmlData"].abort()
 
     # ----------------------------------------- #
@@ -414,23 +411,32 @@ class Repositories(QObject):
                         trusted = True
                     icon = pluginNodes.item(i).firstChildElement("icon").text().strip()
                     if icon and not icon.startswith("http"):
-                        icon = "http://{}/{}".format(QUrl(self.mRepositories[reposName]["url"]).host(), icon)
+                        url = QUrl(self.mRepositories[reposName]["url"])
+                        if url.scheme() in ('http', 'https'):
+                            icon = "{}://{}/{}".format(url.scheme(), url.host(), icon)
 
                     if pluginNodes.item(i).toElement().hasAttribute("plugin_id"):
                         plugin_id = pluginNodes.item(i).toElement().attribute("plugin_id")
                     else:
                         plugin_id = None
 
+                    version = pluginNodes.item(i).toElement().attribute("version")
+                    download_url = pluginNodes.item(i).firstChildElement("download_url").text().strip()
+
                     plugin = {
                         "id": name,
                         "plugin_id": plugin_id,
                         "name": pluginNodes.item(i).toElement().attribute("name"),
-                        "version_available": pluginNodes.item(i).toElement().attribute("version"),
+                        "version_available": version,
+                        "version_available_stable": version if not experimental else "",
+                        "version_available_experimental": version if experimental else "",
                         "description": pluginNodes.item(i).firstChildElement("description").text().strip(),
                         "about": pluginNodes.item(i).firstChildElement("about").text().strip(),
                         "author_name": pluginNodes.item(i).firstChildElement("author_name").text().strip(),
                         "homepage": pluginNodes.item(i).firstChildElement("homepage").text().strip(),
-                        "download_url": pluginNodes.item(i).firstChildElement("download_url").text().strip(),
+                        "download_url": download_url,
+                        "download_url_stable": download_url if not experimental else "",
+                        "download_url_experimental": download_url if experimental else "",
                         "category": pluginNodes.item(i).firstChildElement("category").text().strip(),
                         "tags": pluginNodes.item(i).firstChildElement("tags").text().strip(),
                         "changelog": pluginNodes.item(i).firstChildElement("changelog").text().strip(),
@@ -440,6 +446,12 @@ class Repositories(QObject):
                         "downloads": pluginNodes.item(i).firstChildElement("downloads").text().strip(),
                         "average_vote": pluginNodes.item(i).firstChildElement("average_vote").text().strip(),
                         "rating_votes": pluginNodes.item(i).firstChildElement("rating_votes").text().strip(),
+                        "create_date": pluginNodes.item(i).firstChildElement("create_date").text().strip(),
+                        "update_date": pluginNodes.item(i).firstChildElement("update_date").text().strip(),
+                        "create_date_stable": pluginNodes.item(i).firstChildElement("create_date").text().strip() if not experimental else "",
+                        "update_date_stable": pluginNodes.item(i).firstChildElement("update_date").text().strip() if not experimental else "",
+                        "create_date_experimental": pluginNodes.item(i).firstChildElement("create_date").text().strip() if experimental else "",
+                        "update_date_experimental": pluginNodes.item(i).firstChildElement("update_date").text().strip() if experimental else "",
                         "icon": icon,
                         "experimental": experimental,
                         "deprecated": deprecated,
@@ -448,12 +460,14 @@ class Repositories(QObject):
                         "installed": False,
                         "available": True,
                         "status": "not installed",
+                        "status_exp": "not installed",
                         "error": "",
                         "error_details": "",
                         "version_installed": "",
                         "zip_repository": reposName,
                         "library": "",
-                        "readonly": False
+                        "readonly": False,
+                        "plugin_dependencies": pluginNodes.item(i).firstChildElement("plugin_dependencies").text().strip(),
                     }
                     qgisMinimumVersion = pluginNodes.item(i).firstChildElement("qgis_minimum_version").text().strip()
                     if not qgisMinimumVersion:
@@ -565,7 +579,7 @@ class Plugins(QObject):
         """ get the metadata of an installed plugin """
         def metadataParser(fct):
             """ plugin metadata parser reimplemented from qgis.utils
-                for better control on wchich module is examined
+                for better control of which module is examined
                 in case there is an installed plugin masking a core one """
             global errorDetails
             cp = configparser.ConfigParser()
@@ -600,6 +614,10 @@ class Plugins(QObject):
         errorDetails = ""
         version = None
 
+        if not os.path.exists(os.path.join(path, '__init__.py')):
+            error = "broken"
+            errorDetails = QCoreApplication.translate("QgsPluginInstaller", "Missing __init__.py")
+
         metadataFile = os.path.join(path, 'metadata.txt')
         if os.path.exists(metadataFile):
             version = normalizeVersion(pluginMetadata("version"))
@@ -621,7 +639,7 @@ class Plugins(QObject):
         else:
             error = "broken"
             e = errorDetails
-            errorDetails = QCoreApplication.translate("QgsPluginInstaller", u"Error reading metadata")
+            errorDetails = QCoreApplication.translate("QgsPluginInstaller", "Error reading metadata")
             if e:
                 errorDetails += ": " + e
 
@@ -666,18 +684,31 @@ class Plugins(QObject):
             "deprecated": pluginMetadata("deprecated").strip().upper() in ["TRUE", "YES"],
             "trusted": False,
             "version_available": "",
+            "version_available_stable": "",
+            "version_available_experimental": "",
             "zip_repository": "",
             "download_url": path,      # warning: local path as url!
+            "download_url_stable": "",
+            "download_url_experimental": "",
             "filename": "",
             "downloads": "",
             "average_vote": "",
             "rating_votes": "",
+            "create_date": pluginMetadata("create_date"),
+            "update_date": pluginMetadata("update_date"),
+            "create_date_stable": pluginMetadata("create_date_stable"),
+            "update_date_stable": pluginMetadata("update_date_stable"),
+            "create_date_experimental": pluginMetadata("create_date_experimental"),
+            "update_date_experimental": pluginMetadata("update_date_experimental"),
             "available": False,     # Will be overwritten, if any available version found.
             "installed": True,
             "status": "orphan",  # Will be overwritten, if any available version found.
+            "status_exp": "orphan",  # Will be overwritten, if any available version found.
             "error": error,
             "error_details": errorDetails,
-            "readonly": readOnly}
+            "readonly": readOnly,
+            "plugin_dependencies": pluginMetadata("plugin_dependencies"),
+        }
         return plugin
 
     # ----------------------------------------- #
@@ -732,7 +763,12 @@ class Plugins(QObject):
                 # check if the plugin is allowed and if there isn't any better one added already.
                 if (allowExperimental or not plugin["experimental"]) \
                    and (allowDeprecated or not plugin["deprecated"]) \
-                   and not (key in self.mPlugins and self.mPlugins[key]["version_available"] and compareVersions(self.mPlugins[key]["version_available"], plugin["version_available"]) < 2):
+                   and not (
+                       key in self.mPlugins and self.mPlugins[key]["version_available"]
+                       and compareVersions(self.mPlugins[key]["version_available"], plugin["version_available"]) < 2
+                       and self.mPlugins[key]["experimental"] and not plugin["experimental"]
+                ):
+
                     # The mPlugins dict contains now locally installed plugins.
                     # Now, add the available one if not present yet or update it if present already.
                     if key not in self.mPlugins:
@@ -749,36 +785,67 @@ class Plugins(QObject):
                         # other remote metadata is preferred:
                         for attrib in ["name", "plugin_id", "description", "about", "category", "tags", "changelog", "author_name", "author_email", "homepage",
                                        "tracker", "code_repository", "experimental", "deprecated", "version_available", "zip_repository",
-                                       "download_url", "filename", "downloads", "average_vote", "rating_votes", "trusted"]:
+                                       "download_url", "filename", "downloads", "average_vote", "rating_votes", "trusted", "plugin_dependencies",
+                                       "version_available_stable", "version_available_experimental", "download_url_stable", "download_url_experimental",
+                                       "create_date", "update_date", "create_date_stable", "update_date_stable", "create_date_experimental", "update_date_experimental"]:
                             if attrib not in translatableAttributes or attrib == "name":  # include name!
-                                if plugin[attrib]:
+                                if plugin.get(attrib, False):
                                     self.mPlugins[key][attrib] = plugin[attrib]
+
+                    # If the stable version is higher than the experimental version, we ignore the experimental version
+                    if compareVersions(self.mPlugins[key]["version_available_stable"], self.mPlugins[key]["version_available_experimental"]) == 1:
+                        self.mPlugins[key]["version_available_experimental"] = ''
+
                     # set status
                     #
                     # installed   available   status
                     # ---------------------------------------
                     # none        any         "not installed" (will be later checked if is "new")
-                    # any         none        "orphan"
+                    # no          none        "none available"
+                    # yes         none        "orphan"
                     # same        same        "installed"
                     # less        greater     "upgradeable"
                     # greater     less        "newer"
-                    if not self.mPlugins[key]["version_available"]:
+                    if not self.mPlugins[key]["version_available_stable"] and not self.mPlugins[key]["version_installed"]:
+                        self.mPlugins[key]["status"] = "none available"
+                    elif not self.mPlugins[key]["version_available_stable"] and self.mPlugins[key]["version_installed"]:
                         self.mPlugins[key]["status"] = "orphan"
                     elif not self.mPlugins[key]["version_installed"]:
                         self.mPlugins[key]["status"] = "not installed"
                     elif self.mPlugins[key]["version_installed"] in ["?", "-1"]:
                         self.mPlugins[key]["status"] = "installed"
-                    elif compareVersions(self.mPlugins[key]["version_available"], self.mPlugins[key]["version_installed"]) == 0:
+                    elif compareVersions(self.mPlugins[key]["version_available_stable"], self.mPlugins[key]["version_installed"]) == 0:
                         self.mPlugins[key]["status"] = "installed"
-                    elif compareVersions(self.mPlugins[key]["version_available"], self.mPlugins[key]["version_installed"]) == 1:
+                    elif compareVersions(self.mPlugins[key]["version_available_stable"], self.mPlugins[key]["version_installed"]) == 1:
                         self.mPlugins[key]["status"] = "upgradeable"
                     else:
                         self.mPlugins[key]["status"] = "newer"
                     # debug: test if the status match the "installed" tag:
-                    if self.mPlugins[key]["status"] in ["not installed"] and self.mPlugins[key]["installed"]:
-                        raise Exception("Error: plugin status is ambiguous (1)")
+                    if self.mPlugins[key]["status"] in ["not installed", "none available"] and self.mPlugins[key]["installed"]:
+                        raise Exception("Error: plugin status is ambiguous (1) for plugin {}".format(key))
                     if self.mPlugins[key]["status"] in ["installed", "orphan", "upgradeable", "newer"] and not self.mPlugins[key]["installed"]:
-                        raise Exception("Error: plugin status is ambiguous (2)")
+                        raise Exception("Error: plugin status is ambiguous (2) for plugin {}".format(key))
+
+                    if not self.mPlugins[key]["version_available_experimental"] and not self.mPlugins[key]["version_installed"]:
+                        self.mPlugins[key]["status_exp"] = "none available"
+                    elif not self.mPlugins[key]["version_available_experimental"] and self.mPlugins[key]["version_installed"]:
+                        self.mPlugins[key]["status_exp"] = "orphan"
+                    elif not self.mPlugins[key]["version_installed"]:
+                        self.mPlugins[key]["status_exp"] = "not installed"
+                    elif self.mPlugins[key]["version_installed"] in ["?", "-1"]:
+                        self.mPlugins[key]["status_exp"] = "installed"
+                    elif compareVersions(self.mPlugins[key]["version_available_experimental"], self.mPlugins[key]["version_installed"]) == 0:
+                        self.mPlugins[key]["status_exp"] = "installed"
+                    elif compareVersions(self.mPlugins[key]["version_available_experimental"], self.mPlugins[key]["version_installed"]) == 1:
+                        self.mPlugins[key]["status_exp"] = "upgradeable"
+                    else:
+                        self.mPlugins[key]["status_exp"] = "newer"
+                    # debug: test if the status_exp match the "installed" tag:
+                    if self.mPlugins[key]["status_exp"] in ["not installed", "none available"] and self.mPlugins[key]["installed"]:
+                        raise Exception("Error: plugin status_exp is ambiguous (1) for plugin {}".format(key))
+                    if self.mPlugins[key]["status_exp"] in ["installed", "orphan", "upgradeable", "newer"] and not self.mPlugins[key]["installed"]:
+                        raise Exception("Error: plugin status_exp is ambiguous (2) for plugin {} (status_exp={})".format(key, self.mPlugins[key]["status_exp"]))
+
         self.markNews()
 
     # ----------------------------------------- #

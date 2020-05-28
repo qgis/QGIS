@@ -122,17 +122,22 @@ QgsLimitedRandomColorRampDialog::QgsLimitedRandomColorRampDialog( const QgsLimit
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsLimitedRandomColorRampWidget( ramp );
   vLayout->addWidget( mWidget );
-  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok, Qt::Horizontal );
-  connect( bbox, &QDialogButtonBox::accepted, this, &QDialog::accept );
-  connect( bbox, &QDialogButtonBox::rejected, this, &QDialog::reject );
-  connect( bbox, &QDialogButtonBox::helpRequested, this, &QgsLimitedRandomColorRampDialog::showHelp );
-  vLayout->addWidget( bbox );
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok, Qt::Horizontal );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsLimitedRandomColorRampDialog::showHelp );
+  vLayout->addWidget( mButtonBox );
   setLayout( vLayout );
   setWindowTitle( tr( "Random Color Ramp" ) );
   connect( mWidget, &QgsLimitedRandomColorRampWidget::changed, this, &QgsLimitedRandomColorRampDialog::changed );
 }
 
+QDialogButtonBox *QgsLimitedRandomColorRampDialog::buttonBox() const
+{
+  return mButtonBox;
+}
+
 void QgsLimitedRandomColorRampDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#color-ramp" ) );
+  QgsHelp::openHelp( QStringLiteral( "style_library/style_manager.html#setting-a-color-ramp" ) );
 }

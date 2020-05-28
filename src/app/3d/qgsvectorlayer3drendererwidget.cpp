@@ -15,161 +15,200 @@
 
 #include "qgsvectorlayer3drendererwidget.h"
 
-#include "qgsline3dsymbol.h"
-#include "qgspoint3dsymbol.h"
-#include "qgspolygon3dsymbol.h"
-
-#include "qgsline3dsymbolwidget.h"
-#include "qgspoint3dsymbolwidget.h"
-#include "qgspolygon3dsymbolwidget.h"
-#include "qgsvectorlayer3drenderer.h"
-
+#include "qgs3dutils.h"
+#include "qgsrulebased3drenderer.h"
+#include "qgsrulebased3drendererwidget.h"
+#include "qgssymbol3dwidget.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayer3dpropertieswidget.h"
+#include "qgsvectorlayer3drenderer.h"
+#include "qgsapplication.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>
+#include <QComboBox>
+#include <QLabel>
 #include <QStackedWidget>
 
-QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
+
+
+QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QWidget *parent )
+  : QWidget( parent )
+{
+  widgetSymbol = new QgsSymbol3DWidget( this );
+
+  QVBoxLayout *layout = new QVBoxLayout( this );
+  layout->setContentsMargins( 0, 0, 0, 0 );
+  layout->addWidget( widgetSymbol );
+
+  connect( widgetSymbol, &QgsSymbol3DWidget::widgetChanged, this, &QgsSingleSymbol3DRendererWidget::widgetChanged );
+}
+
+
+void QgsSingleSymbol3DRendererWidget::setLayer( QgsVectorLayer *layer )
+{
+  QgsAbstract3DRenderer *r = layer->renderer3D();
+  if ( r && r->type() == QStringLiteral( "vector" ) )
+  {
+    QgsVectorLayer3DRenderer *vectorRenderer = static_cast<QgsVectorLayer3DRenderer *>( r );
+    widgetSymbol->setSymbol( vectorRenderer->symbol(), layer );
+  }
+  else
+  {
+    std::unique_ptr<QgsAbstract3DSymbol> sym( Qgs3DUtils::symbolForGeometryType( layer->geometryType() ) );
+    widgetSymbol->setSymbol( sym.get(), layer );
+  }
+}
+
+QgsAbstract3DSymbol *QgsSingleSymbol3DRendererWidget::symbol()
+{
+  return widgetSymbol->symbol();  // cloned or null
+}
+
+// -------
+
+QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   setPanelTitle( tr( "3D View" ) );
 
   QVBoxLayout *layout = new QVBoxLayout( this );
-  chkEnabled = new QCheckBox( "Enable 3D renderer", this );
-  widgetStack = new QStackedWidget( this );
-  layout->addWidget( chkEnabled );
-  layout->addWidget( widgetStack );
+  layout->setContentsMargins( 0, 0, 0, 0 );
 
-  widgetUnsupported = new QLabel( tr( "Sorry, this layer is not supported." ), this );
-  widgetLine = new QgsLine3DSymbolWidget( this );
-  widgetPoint = new QgsPoint3DSymbolWidget( this );
-  widgetPolygon = new QgsPolygon3DSymbolWidget( this );
+  cboRendererType = new QComboBox( this );
+  cboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererNullSymbol.svg" ) ), tr( "No Symbols" ) );
+  cboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererSingleSymbol.svg" ) ), tr( "Single Symbol" ) );
+  cboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererRuleBasedSymbol.svg" ) ), tr( "Rule-based" ) );
 
-  widgetStack->addWidget( widgetUnsupported );
-  widgetStack->addWidget( widgetLine );
-  widgetStack->addWidget( widgetPoint );
-  widgetStack->addWidget( widgetPolygon );
+  widgetBaseProperties = new QgsVectorLayer3DPropertiesWidget( this );
 
-  connect( chkEnabled, &QCheckBox::clicked, this, &QgsVectorLayer3DRendererWidget::onEnabledClicked );
-  connect( widgetLine, &QgsLine3DSymbolWidget::changed, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
-  connect( widgetPoint, &QgsPoint3DSymbolWidget::changed, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
-  connect( widgetPolygon, &QgsPolygon3DSymbolWidget::changed, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
+  widgetRendererStack = new QStackedWidget( this );
+  layout->addWidget( cboRendererType );
+  layout->addWidget( widgetRendererStack );
+  layout->addWidget( widgetBaseProperties );
+
+  widgetNoRenderer = new QLabel;
+  widgetSingleSymbolRenderer = new QgsSingleSymbol3DRendererWidget( this );
+  widgetRuleBasedRenderer = new QgsRuleBased3DRendererWidget( this );
+
+  widgetRendererStack->addWidget( widgetNoRenderer );
+  widgetRendererStack->addWidget( widgetSingleSymbolRenderer );
+  widgetRendererStack->addWidget( widgetRuleBasedRenderer );
+
+  connect( cboRendererType, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, &QgsVectorLayer3DRendererWidget::onRendererTypeChanged );
+  connect( widgetSingleSymbolRenderer, &QgsSingleSymbol3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
+  connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
+  connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::showPanel, this, &QgsPanelWidget::openPanel );
+  connect( widgetBaseProperties, &QgsVectorLayer3DPropertiesWidget::changed, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
+
+  syncToLayer( layer );
 }
 
-void QgsVectorLayer3DRendererWidget::setLayer( QgsVectorLayer *layer )
+
+void QgsVectorLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
 {
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  if ( !vlayer )
+  {
+    return;
+  }
   mLayer = layer;
 
-  QgsAbstract3DRenderer *r = layer->renderer3D();
-  if ( r && r->type() == "vector" )
-  {
-    QgsVectorLayer3DRenderer *vectorRenderer = static_cast<QgsVectorLayer3DRenderer *>( r );
-    setRenderer( vectorRenderer );
-  }
-  else
-  {
-    setRenderer( nullptr );
-  }
-}
-
-void QgsVectorLayer3DRendererWidget::setRenderer( const QgsVectorLayer3DRenderer *renderer )
-{
-  mRenderer.reset( renderer ? renderer->clone() : nullptr );
-
-  whileBlocking( chkEnabled )->setChecked( ( bool )mRenderer );
-  widgetLine->setEnabled( chkEnabled->isChecked() );
-  widgetPoint->setEnabled( chkEnabled->isChecked() );
-  widgetPolygon->setEnabled( chkEnabled->isChecked() );
-
   int pageIndex;
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
-  switch ( vlayer->geometryType() )
+  QgsAbstract3DRenderer *r = vlayer->renderer3D();
+  if ( r && r->type() == QLatin1String( "vector" ) )
   {
-    case QgsWkbTypes::PointGeometry:
-      pageIndex = 2;
-      if ( mRenderer && mRenderer->symbol() && mRenderer->symbol()->type() == "point" )
-      {
-        whileBlocking( widgetPoint )->setSymbol( *static_cast<const QgsPoint3DSymbol *>( mRenderer->symbol() ) );
-      }
-      else
-      {
-        whileBlocking( widgetPoint )->setSymbol( QgsPoint3DSymbol() );
-      }
-      break;
-
-    case QgsWkbTypes::LineGeometry:
-      pageIndex = 1;
-      if ( mRenderer && mRenderer->symbol() && mRenderer->symbol()->type() == "line" )
-      {
-        whileBlocking( widgetLine )->setSymbol( *static_cast<const QgsLine3DSymbol *>( mRenderer->symbol() ) );
-      }
-      else
-      {
-        whileBlocking( widgetLine )->setSymbol( QgsLine3DSymbol() );
-      }
-      break;
-
-    case QgsWkbTypes::PolygonGeometry:
-      pageIndex = 3;
-      if ( mRenderer && mRenderer->symbol() && mRenderer->symbol()->type() == "polygon" )
-      {
-        whileBlocking( widgetPolygon )->setSymbol( *static_cast<const QgsPolygon3DSymbol *>( mRenderer->symbol() ), vlayer );
-      }
-      else
-      {
-        whileBlocking( widgetPolygon )->setSymbol( QgsPolygon3DSymbol(), vlayer );
-      }
-      break;
-
-    default:
-      pageIndex = 0;   // unsupported
-      break;
+    pageIndex = 1;
+    widgetSingleSymbolRenderer->setLayer( vlayer );
   }
-  widgetStack->setCurrentIndex( pageIndex );
-}
-
-QgsVectorLayer3DRenderer *QgsVectorLayer3DRendererWidget::renderer()
-{
-  if ( chkEnabled->isChecked() )
+  else if ( r && r->type() == QLatin1String( "rulebased" ) )
   {
-    int pageIndex = widgetStack->currentIndex();
-    if ( pageIndex == 1 || pageIndex == 2 || pageIndex == 3 )
-    {
-      QgsAbstract3DSymbol *sym = nullptr;
-      if ( pageIndex == 1 )
-        sym = new QgsLine3DSymbol( widgetLine->symbol() );
-      else if ( pageIndex == 2 )
-        sym = new QgsPoint3DSymbol( widgetPoint->symbol() );
-      else
-        sym = new QgsPolygon3DSymbol( widgetPolygon->symbol() );
-      QgsVectorLayer3DRenderer *r = new QgsVectorLayer3DRenderer( sym );
-      r->setLayer( qobject_cast<QgsVectorLayer *>( mLayer ) );
-      mRenderer.reset( r );
-    }
-    else
-    {
-      mRenderer.reset();
-    }
+    pageIndex = 2;
+    widgetRuleBasedRenderer->setLayer( vlayer );
   }
   else
   {
-    mRenderer.reset();
+    pageIndex = 0;
   }
+  widgetRendererStack->setCurrentIndex( pageIndex );
+  whileBlocking( cboRendererType )->setCurrentIndex( pageIndex );
 
-  return mRenderer.get();
+  if ( r && ( r->type() == QLatin1String( "vector" ) || r->type() == QLatin1String( "rulebased" ) ) )
+  {
+    widgetBaseProperties->load( static_cast<QgsAbstractVectorLayer3DRenderer *>( r ) );
+  }
 }
+
+void QgsVectorLayer3DRendererWidget::setDockMode( bool dockMode )
+{
+  QgsPanelWidget::setDockMode( dockMode );
+  widgetRuleBasedRenderer->setDockMode( dockMode );
+}
+
 
 void QgsVectorLayer3DRendererWidget::apply()
 {
-  QgsVectorLayer3DRenderer *r = renderer();
-  mLayer->setRenderer3D( r ? r->clone() : nullptr );
+  int idx = widgetRendererStack->currentIndex();
+  switch ( idx )
+  {
+    case 0:
+      mLayer->setRenderer3D( nullptr );
+      break;
+    case 1:
+    {
+      QgsVectorLayer3DRenderer *r = new QgsVectorLayer3DRenderer( widgetSingleSymbolRenderer->symbol() );
+      r->setLayer( qobject_cast<QgsVectorLayer *>( mLayer ) );
+      widgetBaseProperties->apply( r );
+      mLayer->setRenderer3D( r );
+    }
+    break;
+    case 2:
+    {
+      QgsRuleBased3DRenderer *r = new QgsRuleBased3DRenderer( widgetRuleBasedRenderer->rootRule()->clone() );
+      r->setLayer( qobject_cast<QgsVectorLayer *>( mLayer ) );
+      widgetBaseProperties->apply( r );
+      mLayer->setRenderer3D( r );
+    }
+    break;
+    default:
+      Q_ASSERT( false );
+  }
 }
 
-void QgsVectorLayer3DRendererWidget::onEnabledClicked()
+void QgsVectorLayer3DRendererWidget::onRendererTypeChanged( int index )
 {
-  widgetLine->setEnabled( chkEnabled->isChecked() );
-  widgetPoint->setEnabled( chkEnabled->isChecked() );
-  widgetPolygon->setEnabled( chkEnabled->isChecked() );
+  widgetRendererStack->setCurrentIndex( index );
+  switch ( index )
+  {
+    case 0:
+      break;
+    case 1:
+      widgetSingleSymbolRenderer->setLayer( qobject_cast<QgsVectorLayer *>( mLayer ) );
+      break;
+    case 2:
+      widgetRuleBasedRenderer->setLayer( qobject_cast<QgsVectorLayer *>( mLayer ) );
+      break;
+    default:
+      Q_ASSERT( false );
+  }
   emit widgetChanged();
+}
+
+
+QgsVectorLayer3DRendererWidgetFactory::QgsVectorLayer3DRendererWidgetFactory( QObject *parent )
+  : QObject( parent )
+{
+  setIcon( QIcon( ":/images/themes/default/3d.svg" ) );
+  setTitle( tr( "3D View" ) );
+}
+
+QgsMapLayerConfigWidget *QgsVectorLayer3DRendererWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const
+{
+  Q_UNUSED( dockWidget )
+  return new QgsVectorLayer3DRendererWidget( layer, canvas, parent );
+}
+
+bool QgsVectorLayer3DRendererWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
+{
+  return layer->type() == QgsMapLayerType::VectorLayer;
 }

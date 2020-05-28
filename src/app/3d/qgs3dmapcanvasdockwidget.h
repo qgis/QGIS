@@ -16,7 +16,12 @@
 #ifndef QGS3DMAPCANVASDOCKWIDGET_H
 #define QGS3DMAPCANVASDOCKWIDGET_H
 
+#include "qmenu.h"
 #include "qgsdockwidget.h"
+#include "qgis_app.h"
+#include "qtoolbutton.h"
+
+#define SIP_NO_FILE
 
 class QLabel;
 class QProgressBar;
@@ -24,10 +29,13 @@ class QProgressBar;
 class Qgs3DAnimationWidget;
 class Qgs3DMapCanvas;
 class Qgs3DMapSettings;
+class Qgs3DMapToolIdentify;
+class Qgs3DMapToolMeasureLine;
 class QgsMapCanvas;
 
 
-class Qgs3DMapCanvasDockWidget : public QgsDockWidget
+
+class APP_EXPORT Qgs3DMapCanvasDockWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:
@@ -41,15 +49,24 @@ class Qgs3DMapCanvasDockWidget : public QgsDockWidget
     Qgs3DMapCanvas *mapCanvas3D() { return mCanvas; }
     Qgs3DAnimationWidget *animationWidget() { return mAnimationWidget; }
 
+    Qgs3DMapToolMeasureLine *measurementLineTool() { return  mMapToolMeasureLine; }
+
   private slots:
     void resetView();
     void configure();
     void saveAsImage();
     void toggleAnimations();
+    void cameraControl();
+    void identify();
+    void measureLine();
+    void toggleNavigationWidget( bool visibility );
 
     void onMainCanvasLayersChanged();
     void onMainCanvasColorChanged();
-    void onTerrainPendingJobsCountChanged();
+    void onTotalPendingJobsCountChanged();
+    void mapThemeMenuAboutToShow();
+    //! Renames the active map theme called \a theme to \a newTheme
+    void currentMapThemeRenamed( const QString &theme, const QString &newTheme );
 
   private:
     Qgs3DMapCanvas *mCanvas = nullptr;
@@ -57,6 +74,11 @@ class Qgs3DMapCanvasDockWidget : public QgsDockWidget
     QgsMapCanvas *mMainCanvas = nullptr;
     QProgressBar *mProgressPendingJobs = nullptr;
     QLabel *mLabelPendingJobs = nullptr;
+    Qgs3DMapToolIdentify *mMapToolIdentify = nullptr;
+    Qgs3DMapToolMeasureLine *mMapToolMeasureLine = nullptr;
+    QMenu *mMapThemeMenu = nullptr;
+    QList<QAction *> mMapThemeMenuPresetActions;
+    QToolButton *mBtnMapThemes = nullptr;
 };
 
 #endif // QGS3DMAPCANVASDOCKWIDGET_H

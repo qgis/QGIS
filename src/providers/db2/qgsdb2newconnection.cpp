@@ -26,14 +26,25 @@
 #include "qgsdb2newconnection.h"
 #include "qgsdb2dataitems.h"
 #include "qgsdb2provider.h"
+#include "qgsgui.h"
 
 QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mOriginalConnName( connName )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( btnConnect, &QPushButton::clicked, this, &QgsDb2NewConnection::btnConnect_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDb2NewConnection::showHelp );
+
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
+  connect( txtName, &QLineEdit::textChanged, this, &QgsDb2NewConnection::updateOkButtonState );
+  connect( txtService, &QLineEdit::textChanged, this, &QgsDb2NewConnection::updateOkButtonState );
+  connect( txtDriver, &QLineEdit::textChanged, this, &QgsDb2NewConnection::updateOkButtonState );
+  connect( txtHost, &QLineEdit::textChanged, this, &QgsDb2NewConnection::updateOkButtonState );
+  connect( txtPort, &QLineEdit::textChanged, this, &QgsDb2NewConnection::updateOkButtonState );
+  connect( txtDatabase, &QLineEdit::textChanged, this, &QgsDb2NewConnection::updateOkButtonState );
 
   mAuthSettings->setDataprovider( QStringLiteral( "db2" ) );
   mAuthSettings->showStoreCheckboxes( true );
@@ -64,7 +75,7 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString &connNa
     }
 
     QString authcfg = settings.value( key + "/authcfg" ).toString();
-    QgsDebugMsg( QString( "authcfg: %1" ).arg( authcfg ) );
+    QgsDebugMsg( QStringLiteral( "authcfg: %1" ).arg( authcfg ) );
     mAuthSettings->setConfigId( authcfg );
 
     txtName->setText( connName );
@@ -79,7 +90,7 @@ void QgsDb2NewConnection::accept()
   QString baseKey = QStringLiteral( "/DB2/connections/" );
   settings.setValue( baseKey + "selected", txtName->text() );
   bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
-  QgsDebugMsg( QString( "hasAuthConfigID: %1" ).arg( hasAuthConfigID ) );
+  QgsDebugMsg( QStringLiteral( "hasAuthConfigID: %1" ).arg( hasAuthConfigID ) );
   if ( !hasAuthConfigID && mAuthSettings->storePasswordIsChecked( ) &&
        QMessageBox::question( this,
                               tr( "Saving Passwords" ),
@@ -115,8 +126,8 @@ void QgsDb2NewConnection::accept()
   settings.setValue( baseKey + "/port", txtPort->text() );
   settings.setValue( baseKey + "/driver", txtDriver->text() );
   settings.setValue( baseKey + "/database", txtDatabase->text() );
-  settings.setValue( baseKey + "/username", mAuthSettings->storeUsernameIsChecked( ) ? mAuthSettings->username( ) : QLatin1String( "" ) );
-  settings.setValue( baseKey + "/password", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? mAuthSettings->password( ) : QLatin1String( "" ) );
+  settings.setValue( baseKey + "/username", mAuthSettings->storeUsernameIsChecked( ) ? mAuthSettings->username( ) : QString() );
+  settings.setValue( baseKey + "/password", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? mAuthSettings->password( ) : QString() );
   settings.setValue( baseKey + "/saveUsername", mAuthSettings->storeUsernameIsChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/savePassword", mAuthSettings->storePasswordIsChecked( )  && !hasAuthConfigID ? "true" : "false" );
   settings.setValue( baseKey + "/authcfg", mAuthSettings->configId() );
@@ -196,4 +207,12 @@ void QgsDb2NewConnection::listDatabases()
 void QgsDb2NewConnection::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#connecting-to-db2-spatial" ) );
+}
+
+void QgsDb2NewConnection::updateOkButtonState()
+{
+  bool enabled = !txtName->text().isEmpty() && (
+                   ( !txtService->text().isEmpty() && !txtDatabase->text().isEmpty() ) ||
+                   ( !txtDriver->text().isEmpty() && !txtHost->text().isEmpty() && !txtPort->text().isEmpty() && !txtDatabase->text().isEmpty() ) );
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }

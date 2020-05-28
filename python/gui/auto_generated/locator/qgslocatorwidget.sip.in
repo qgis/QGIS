@@ -64,7 +64,6 @@ Emitted when the configure option is triggered in the widget.
 %End
 
   protected:
-
     virtual bool eventFilter( QObject *obj, QEvent *event );
 
 

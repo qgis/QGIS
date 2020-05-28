@@ -37,7 +37,8 @@ QgsLayerTreeNode::QgsLayerTreeNode( const QgsLayerTreeNode &other )
   , mProperties( other.mProperties )
 {
   QList<QgsLayerTreeNode *> clonedChildren;
-  Q_FOREACH ( QgsLayerTreeNode *child, other.mChildren )
+
+  for ( QgsLayerTreeNode *child : qgis::as_const( other.mChildren ) )
     clonedChildren << child->clone();
   insertChildrenPrivate( -1, clonedChildren );
 }
@@ -109,7 +110,8 @@ bool QgsLayerTreeNode::isItemVisibilityCheckedRecursive() const
 {
   if ( !mChecked )
     return false;
-  Q_FOREACH ( QgsLayerTreeNode *child, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsLayerTreeNode *child : constMChildren )
   {
     if ( !child->isItemVisibilityCheckedRecursive() )
       return false;
@@ -122,7 +124,8 @@ bool QgsLayerTreeNode::isItemVisibilityUncheckedRecursive() const
 {
   if ( mChecked )
     return false;
-  Q_FOREACH ( QgsLayerTreeNode *child, mChildren )
+  const auto constMChildren = mChildren;
+  for ( QgsLayerTreeNode *child : constMChildren )
   {
     if ( !child->isItemVisibilityUncheckedRecursive() )
       return false;
@@ -140,7 +143,8 @@ void fetchCheckedLayers( const QgsLayerTreeNode *node, QList<QgsMapLayer *> &lay
       layers << nodeLayer->layer();
   }
 
-  Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
+  const auto constChildren = node->children();
+  for ( QgsLayerTreeNode *child : constChildren )
     fetchCheckedLayers( child, layers );
 }
 
@@ -149,6 +153,18 @@ QList<QgsMapLayer *> QgsLayerTreeNode::checkedLayers() const
   QList<QgsMapLayer *> layers;
   fetchCheckedLayers( this, layers );
   return layers;
+}
+
+int QgsLayerTreeNode::depth() const
+{
+  int depth = 0;
+  QgsLayerTreeNode *node = mParent;
+  while ( node )
+  {
+    node = node->parent();
+    ++depth;
+  }
+  return depth;
 }
 
 void QgsLayerTreeNode::setExpanded( bool expanded )
@@ -199,7 +215,8 @@ void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode 
   if ( nodes.isEmpty() )
     return;
 
-  Q_FOREACH ( QgsLayerTreeNode *node, nodes )
+  const auto constNodes = nodes;
+  for ( QgsLayerTreeNode *node : constNodes )
   {
     Q_ASSERT( !node->mParent );
     node->mParent = this;

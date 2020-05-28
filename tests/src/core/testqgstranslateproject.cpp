@@ -71,7 +71,7 @@ void TestQgsTranslateProject::cleanupTestCase()
 
   //delete created ts file
   QString tsFileName( TEST_DATA_DIR );
-  tsFileName = tsFileName + "/project_translation/points_translation_de.ts";
+  tsFileName = tsFileName + "/project_translation/points_translation.ts";
   QFile tsFile( tsFileName );
   tsFile.remove();
 }
@@ -99,7 +99,7 @@ void TestQgsTranslateProject::createTsFile()
 
   //check if ts file is created
   QString tsFileName( TEST_DATA_DIR );
-  tsFileName = tsFileName + "/project_translation/points_translation_de.ts";
+  tsFileName = tsFileName + "/project_translation/points_translation.ts";
   QFile tsFile( tsFileName );
   QVERIFY( tsFile.exists() );
 
@@ -167,8 +167,8 @@ void TestQgsTranslateProject::translateProject()
   QgsProject::instance()->read( projectFileName );
 
   //with the qm file containing translation from en to de, the project should be in german and renamed with postfix .de
-  QgsVectorLayer *points_layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( "points_240d6bd6_9203_470a_994a_aae13cd9fa04" ) );
-  QgsVectorLayer *lines_layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( "lines_a677672a_bf5d_410d_98c9_d326a5719a1b" ) );
+  QgsVectorLayer *points_layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( "points_240d6bd6_9203_470a_994a_aae13cd9fa04" );
+  QgsVectorLayer *lines_layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( "lines_a677672a_bf5d_410d_98c9_d326a5719a1b" );
 
   //LAYER NAMES
   //lines -> Linien
@@ -195,8 +195,8 @@ void TestQgsTranslateProject::translateProject()
   const QgsFields points_fields = points_layer->fields();
   //Class (Alias: Level) -> Klasse
   QCOMPARE( points_fields.field( QStringLiteral( "Class" ) ).alias(), QStringLiteral( "Klasse" ) );
-  //Heading -> Titel
-  QCOMPARE( points_fields.field( QStringLiteral( "Heading" ) ).alias(), QStringLiteral( "Titel" ) );
+  //Heading -> Titel  //#spellok
+  QCOMPARE( points_fields.field( QStringLiteral( "Heading" ) ).alias(), QStringLiteral( "Titel" ) );  //#spellok
   //Importance -> Wichtigkeit
   QCOMPARE( points_fields.field( QStringLiteral( "Importance" ) ).alias(), QStringLiteral( "Wichtigkeit" ) );
   //Pilots -> Piloten

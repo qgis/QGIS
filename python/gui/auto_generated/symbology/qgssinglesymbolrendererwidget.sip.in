@@ -33,7 +33,7 @@ class QgsSingleSymbolRendererWidget : QgsRendererWidget
 Set the widget in dock mode which tells the widget to emit panel
 widgets and not open dialogs
 
-:param dockMode: True to enable dock mode.
+:param dockMode: ``True`` to enable dock mode.
 %End
 
 };

@@ -38,6 +38,91 @@ class QgsReadWriteContext;
  */
 class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGenerator
 {
+#ifdef SIP_RUN
+#include <qgslayoutitem.h>
+#include "qgslayoutitemgroup.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitempicture.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitemlegend.h"
+#include "qgslayoutitempolygon.h"
+#include "qgslayoutitempolyline.h"
+#include "qgslayoutitemscalebar.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutitemshape.h"
+#include "qgslayoutitempage.h"
+#endif
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( QgsLayoutItem *item = qobject_cast< QgsLayoutItem * >( sipCpp ) )
+    {
+      // the conversions have to be static, because they're using multiple inheritance
+      // (seen in PyQt4 .sip files for some QGraphicsItem classes)
+      switch ( item->type() )
+      {
+        // FREAKKKKIIN IMPORTANT!
+        // IF YOU PUT SOMETHING HERE, PUT IT IN QgsLayoutItem CASTING **ALSO**
+        // (it's not enough for it to be in only one of the places, as sip inconsistently
+        // decides which casting code to perform here)
+
+        // really, these *should* use the constants from QgsLayoutItemRegistry, but sip doesn't like that!
+        case QGraphicsItem::UserType + 101:
+          sipType = sipType_QgsLayoutItemGroup;
+          *sipCppRet = static_cast<QgsLayoutItemGroup *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 102:
+          sipType = sipType_QgsLayoutItemPage;
+          *sipCppRet = static_cast<QgsLayoutItemPage *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 103:
+          sipType = sipType_QgsLayoutItemMap;
+          *sipCppRet = static_cast<QgsLayoutItemMap *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 104:
+          sipType = sipType_QgsLayoutItemPicture;
+          *sipCppRet = static_cast<QgsLayoutItemPicture *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 105:
+          sipType = sipType_QgsLayoutItemLabel;
+          *sipCppRet = static_cast<QgsLayoutItemLabel *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 106:
+          sipType = sipType_QgsLayoutItemLegend;
+          *sipCppRet = static_cast<QgsLayoutItemLegend *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 107:
+          sipType = sipType_QgsLayoutItemShape;
+          *sipCppRet = static_cast<QgsLayoutItemShape *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 108:
+          sipType = sipType_QgsLayoutItemPolygon;
+          *sipCppRet = static_cast<QgsLayoutItemPolygon *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 109:
+          sipType = sipType_QgsLayoutItemPolyline;
+          *sipCppRet = static_cast<QgsLayoutItemPolyline *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 110:
+          sipType = sipType_QgsLayoutItemScaleBar;
+          *sipCppRet = static_cast<QgsLayoutItemScaleBar *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 111:
+          sipType = sipType_QgsLayoutFrame;
+          *sipCppRet = static_cast<QgsLayoutFrame *>( sipCpp );
+          break;
+
+        // did you read that comment above? NO? Go read it now. You're about to break stuff.
+
+        default:
+          sipType = sipType_QgsLayoutItem;
+      }
+    }
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
     Q_OBJECT
   public:
 
@@ -78,6 +163,17 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       MapAtlasMargin, //!< Map atlas margin
       MapLayers, //!< Map layer set
       MapStylePreset, //!< Layer and style map theme
+      MapLabelMargin, //!< Map label margin
+      MapGridEnabled, //!< Map grid enabled
+      MapGridIntervalX, //!< Map grid interval X
+      MapGridIntervalY, //!< Map grid interval Y
+      MapGridOffsetX, //!< Map grid offset X
+      MapGridOffsetY, //!< Map grid offset Y
+      MapGridFrameSize, //!< Map grid frame size
+      MapGridFrameMargin, //!< Map grid frame margin
+      MapGridLabelDistance, //!< Map grid label distance
+      MapGridCrossSize, //!< Map grid cross size
+      MapGridFrameLineThickness, //!< Map grid frame line thickness
       //composer picture
       PictureSource, //!< Picture source url
       PictureSvgBackgroundColor, //!< SVG background color
@@ -89,12 +185,15 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       LegendTitle, //!< Legend title
       LegendColumnCount, //!< Legend column count
       //scalebar item
-      ScalebarFillColor, //!< Scalebar fill color
-      ScalebarFillColor2, //!< Scalebar secondary fill color
-      ScalebarLineColor, //!< Scalebar line color
-      ScalebarLineWidth, //!< Scalebar line width,
+      ScalebarFillColor, //!< Scalebar fill color (deprecated, use data defined properties on scalebar fill symbol 1 instead)
+      ScalebarFillColor2, //!< Scalebar secondary fill color (deprecated, use data defined properties on scalebar fill symbol 2 instead)
+      ScalebarLineColor, //!< Scalebar line color (deprecated, use data defined properties on scalebar line symbol instead)
+      ScalebarLineWidth, //!< Scalebar line width (deprecated, use data defined properties on scalebar line symbol instead)
       //table item
       AttributeTableSourceLayer, //!< Attribute table source layer
+      MapCrs, //!< Map CRS
+      StartDateTime, //!< Temporal range's start DateTime
+      EndDateTime, //!< Temporal range's end DateTime
     };
 
     /**
@@ -140,6 +239,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
     /**
      * Returns a reference to the object's property collection, used for data defined overrides.
      * \see setDataDefinedProperties()
+     * \see DataDefinedProperty
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
 
@@ -147,6 +247,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
      * Sets the objects's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
      * \see dataDefinedProperties()
+     * \see DataDefinedProperty
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
@@ -216,7 +317,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
      * \param parentElement is the parent DOM element to store the object's properties in
      * \param document DOM document
      * \param context read write context
-     * \returns true if write was successful
+     * \returns TRUE if write was successful
      * \see readObjectPropertiesFromElement()
      */
     bool writeObjectPropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
@@ -226,7 +327,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
      * \param parentElement is the parent DOM element for the object
      * \param document DOM document
      * \param context read write context
-     * \returns true if read was successful
+     * \returns TRUE if read was successful
      * \see writeObjectPropertiesToElement()
      */
     bool readObjectPropertiesFromElement( const QDomElement &parentElement, const QDomDocument &document, const QgsReadWriteContext &context );

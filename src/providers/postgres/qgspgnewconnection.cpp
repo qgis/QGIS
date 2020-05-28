@@ -24,6 +24,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgspostgresconn.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -31,9 +32,18 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
 
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( btnConnect, &QPushButton::clicked, this, &QgsPgNewConnection::btnConnect_clicked );
   connect( cb_geometryColumnsOnly, &QCheckBox::clicked, this, &QgsPgNewConnection::cb_geometryColumnsOnly_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPgNewConnection::showHelp );
+
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
+  connect( txtName, &QLineEdit::textChanged, this, &QgsPgNewConnection::updateOkButtonState );
+  connect( txtService, &QLineEdit::textChanged, this, &QgsPgNewConnection::updateOkButtonState );
+  connect( txtHost, &QLineEdit::textChanged, this, &QgsPgNewConnection::updateOkButtonState );
+  connect( txtPort, &QLineEdit::textChanged, this, &QgsPgNewConnection::updateOkButtonState );
+  connect( txtDatabase, &QLineEdit::textChanged, this, &QgsPgNewConnection::updateOkButtonState );
 
   cbxSSLmode->addItem( tr( "disable" ), QgsDataSourceUri::SslDisable );
   cbxSSLmode->addItem( tr( "allow" ), QgsDataSourceUri::SslAllow );
@@ -89,7 +99,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
     if ( settings.contains( key + "/save" ) )
     {
       mAuthSettings->setUsername( settings.value( key + "/username" ).toString() );
-      mAuthSettings->setStoreUsernameChecked( ! mAuthSettings->username().isEmpty() );
+      mAuthSettings->setStoreUsernameChecked( !mAuthSettings->username().isEmpty() );
 
       if ( settings.value( key + "/save" ).toString() == QLatin1String( "true" ) )
         mAuthSettings->setPassword( settings.value( key + "/password" ).toString() );
@@ -112,6 +122,7 @@ void QgsPgNewConnection::accept()
   QString baseKey = QStringLiteral( "/PostgreSQL/connections/" );
   settings.setValue( baseKey + "selected", txtName->text() );
   bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
+  testConnection();
 
   if ( !hasAuthConfigID && mAuthSettings->storePasswordIsChecked( ) &&
        QMessageBox::question( this,
@@ -146,8 +157,8 @@ void QgsPgNewConnection::accept()
   settings.setValue( baseKey + "/host", txtHost->text() );
   settings.setValue( baseKey + "/port", txtPort->text() );
   settings.setValue( baseKey + "/database", txtDatabase->text() );
-  settings.setValue( baseKey + "/username", mAuthSettings->storeUsernameIsChecked( ) ? mAuthSettings->username() : QLatin1String( "" ) );
-  settings.setValue( baseKey + "/password", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? mAuthSettings->password() : QLatin1String( "" ) );
+  settings.setValue( baseKey + "/username", mAuthSettings->storeUsernameIsChecked( ) ? mAuthSettings->username() : QString() );
+  settings.setValue( baseKey + "/password", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? mAuthSettings->password() : QString() );
   settings.setValue( baseKey + "/authcfg", mAuthSettings->configId() );
   settings.setValue( baseKey + "/publicOnly", cb_publicSchemaOnly->isChecked() );
   settings.setValue( baseKey + "/geometryColumnsOnly", cb_geometryColumnsOnly->isChecked() );
@@ -204,6 +215,18 @@ void QgsPgNewConnection::testConnection()
 
   if ( conn )
   {
+    if ( conn->pgVersion() < 90500 )
+    {
+      cb_projectsInDatabase->setEnabled( false );
+      cb_projectsInDatabase->setChecked( false );
+      cb_projectsInDatabase->setToolTip( tr( "Saving projects in databases not available for PostgreSQL databases earlier than 9.5" ) );
+    }
+    else
+    {
+      cb_projectsInDatabase->setEnabled( true );
+      cb_projectsInDatabase->setToolTip( QString() );
+    }
+
     // Database successfully opened; we can now issue SQL commands.
     bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtName->text() ),
                       Qgis::Info );
@@ -221,4 +244,12 @@ void QgsPgNewConnection::testConnection()
 void QgsPgNewConnection::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#creating-a-stored-connection" ) );
+}
+
+void QgsPgNewConnection::updateOkButtonState()
+{
+  bool enabled = !txtName->text().isEmpty() && (
+                   !txtService->text().isEmpty() ||
+                   !txtDatabase->text().isEmpty() );
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }

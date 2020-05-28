@@ -51,7 +51,8 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   connect( mLayersTable->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &QgsVirtualLayerSourceSelect::tableRowChanged );
 
   // prepare provider list
-  Q_FOREACH ( const QString &pk, QgsProviderRegistry::instance()->providerList() )
+  const auto constProviderList = QgsProviderRegistry::instance()->providerList();
+  for ( const QString &pk : constProviderList )
   {
     // we cannot know before trying to actually load a dataset
     // if the provider is raster or vector
@@ -127,7 +128,9 @@ void QgsVirtualLayerSourceSelect::layerComboChanged( int idx )
   {
     mGeometryRadio->setChecked( true );
     mSrid = def.geometrySrid();
+    Q_NOWARN_DEPRECATED_PUSH
     QgsCoordinateReferenceSystem crs( def.geometrySrid() );
+    Q_NOWARN_DEPRECATED_POP
     mCRS->setText( crs.authid() );
     mGeometryType->setCurrentIndex( static_cast<long>( def.geometryWkbType() ) - 1 );
     mGeometryField->setText( def.geometryField() );
@@ -136,7 +139,8 @@ void QgsVirtualLayerSourceSelect::layerComboChanged( int idx )
   // Clear embedded layers table
   mLayersTable->model()->removeRows( 0, mLayersTable->model()->rowCount() );
   // Add embedded layers
-  Q_FOREACH ( const QgsVirtualLayerDefinition::SourceLayer &l, def.sourceLayers() )
+  const auto constSourceLayers = def.sourceLayers();
+  for ( const QgsVirtualLayerDefinition::SourceLayer &l : constSourceLayers )
   {
     if ( ! l.isReferenced() )
     {
@@ -148,7 +152,9 @@ void QgsVirtualLayerSourceSelect::layerComboChanged( int idx )
 void QgsVirtualLayerSourceSelect::browseCRS()
 {
   QgsProjectionSelectionDialog crsSelector( this );
+  Q_NOWARN_DEPRECATED_PUSH
   QgsCoordinateReferenceSystem crs( mSrid );
+  Q_NOWARN_DEPRECATED_POP
   crsSelector.setCrs( crs );
   crsSelector.setMessage( QString() );
   if ( crsSelector.exec() )
@@ -204,7 +210,8 @@ void QgsVirtualLayerSourceSelect::testQuery()
   //       according to the validity of the active layer definition
   if ( ! def.toString().isEmpty() )
   {
-    std::unique_ptr<QgsVectorLayer> vl( new QgsVectorLayer( def.toString(), QStringLiteral( "test" ), QStringLiteral( "virtual" ) ) );
+    QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+    std::unique_ptr<QgsVectorLayer> vl( new QgsVectorLayer( def.toString(), QStringLiteral( "test" ), QStringLiteral( "virtual" ), options ) );
     if ( vl->isValid() )
     {
       QMessageBox::information( nullptr, tr( "Virtual layer test" ), tr( "No error" ) );
@@ -243,7 +250,7 @@ void QgsVirtualLayerSourceSelect::removeLayer()
 
 void QgsVirtualLayerSourceSelect::tableRowChanged( const QModelIndex &current, const QModelIndex &previous )
 {
-  Q_UNUSED( previous );
+  Q_UNUSED( previous )
   mRemoveLayerBtn->setEnabled( current.row() != -1 );
 }
 
@@ -254,7 +261,8 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
   if ( mTreeView )
   {
     QgsLayerTreeModel *model = qobject_cast<QgsLayerTreeModel *>( mTreeView->model() );
-    Q_FOREACH ( QgsLayerTreeLayer *layer, model->rootGroup()->findLayers() )
+    const auto constFindLayers = model->rootGroup()->findLayers();
+    for ( QgsLayerTreeLayer *layer : constFindLayers )
     {
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer->layer() );
       if ( vl && vl->providerType() == QLatin1String( "virtual" ) )
@@ -272,7 +280,7 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
   if ( mTreeView )
   {
     QList<QgsMapLayer *> selected = mTreeView->selectedLayers();
-    if ( selected.size() == 1 && selected[0]->type() == QgsMapLayer::VectorLayer && static_cast<QgsVectorLayer *>( selected[0] )->providerType() == QLatin1String( "virtual" ) )
+    if ( selected.size() == 1 && selected[0]->type() == QgsMapLayerType::VectorLayer && static_cast<QgsVectorLayer *>( selected[0] )->providerType() == QLatin1String( "virtual" ) )
     {
       mLayerNameCombo->setCurrentIndex( mLayerNameCombo->findData( selected[0]->id() ) );
     }
@@ -294,13 +302,15 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
   }
 
   // configure auto completion with table and column names
-  Q_FOREACH ( QgsMapLayer *l, QgsProject::instance()->mapLayers() )
+  const auto constMapLayers = QgsProject::instance()->mapLayers();
+  for ( QgsMapLayer *l : constMapLayers )
   {
-    if ( l->type() == QgsMapLayer::VectorLayer )
+    if ( l->type() == QgsMapLayerType::VectorLayer )
     {
       apis->add( l->name() );
       QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( l );
-      Q_FOREACH ( const QgsField &f, vl->fields().toList() )
+      const QgsFields fields = vl->fields();
+      for ( const QgsField &f : fields )
       {
         apis->add( f.name() );
       }
@@ -340,7 +350,8 @@ void QgsVirtualLayerSourceSelect::importLayer()
   if ( mEmbeddedSelectionDialog && mEmbeddedSelectionDialog->exec() == QDialog::Accepted )
   {
     QStringList ids = mEmbeddedSelectionDialog->layers();
-    Q_FOREACH ( const QString &id, ids )
+    const auto constIds = ids;
+    for ( const QString &id : constIds )
     {
       QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( id ) );
       addEmbeddedLayer( vl->name(), vl->providerType(), vl->dataProvider()->encoding(), vl->source() );
@@ -392,9 +403,3 @@ void QgsVirtualLayerSourceSelect::addButtonClicked()
     accept();
   }
 }
-
-QGISEXTERN QgsVirtualLayerSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-{
-  return new QgsVirtualLayerSourceSelect( parent, fl, widgetMode );
-}
-

@@ -107,13 +107,30 @@ Returns the project translator
 
     void setProjectTranslator( QgsProjectTranslator *projectTranslator );
 %Docstring
-Sets the project translator. Means it shouldn't conform mDefaultTranslator anymore.
+Sets the project translator.
 It's usually the QgsProject where the function with the context is made and won't be changed anymore.
 
 .. versionadded:: 3.4
 %End
 
-      public:
+    QgsCoordinateTransformContext transformContext() const;
+%Docstring
+Returns data provider coordinate transform context
+
+.. seealso:: :py:func:`setTransformContext`
+
+.. versionadded:: 3.8
+%End
+
+    void setTransformContext( const QgsCoordinateTransformContext &transformContext );
+%Docstring
+Sets data coordinate transform context to ``transformContext``
+
+.. seealso:: :py:func:`transformContext`
+
+.. versionadded:: 3.8
+%End
+
 };
 
 

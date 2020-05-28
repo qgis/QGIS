@@ -43,7 +43,7 @@ QgsLayoutRuler::QgsLayoutRuler( QWidget *parent, Qt::Orientation orientation )
   //calculate ruler sizes and marker separations
 
   //minimum gap required between major ticks is 3 digits * 250%, based on appearance
-  mScaleMinPixelsWidth = mRulerFontMetrics->width( QStringLiteral( "000" ) ) * 2.5;
+  mScaleMinPixelsWidth = mRulerFontMetrics->boundingRect( QStringLiteral( "000" ) ).width() * 2.5;
   //minimum ruler height is twice the font height in pixels
   mRulerMinSize = mRulerFontMetrics->height() * 1.5;
 
@@ -56,7 +56,11 @@ QgsLayoutRuler::QgsLayoutRuler( QWidget *parent, Qt::Orientation orientation )
   mTextBaseline = mRulerMinSize / 1.667;
   mMinSpacingVerticalLabels = mRulerMinSize / 5;
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   double guideMarkerSize = mRulerFontMetrics->width( QStringLiteral( "*" ) );
+#else
+  double guideMarkerSize = mRulerFontMetrics->horizontalAdvance( '*' );
+#endif
   mDragGuideTolerance = guideMarkerSize;
   switch ( mOrientation )
   {
@@ -79,7 +83,7 @@ QSize QgsLayoutRuler::minimumSizeHint() const
 
 void QgsLayoutRuler::paintEvent( QPaintEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   if ( !mView || !mView->currentLayout() )
   {
     return;
@@ -187,7 +191,7 @@ void QgsLayoutRuler::paintEvent( QPaintEvent *event )
           p.drawLine( 0, pixelCoord, mRulerMinSize, pixelCoord );
           //calc size of label
           QString label = QString::number( beforePageCoord );
-          int labelSize = mRulerFontMetrics->width( label );
+          int labelSize = mRulerFontMetrics->boundingRect( label ).width();
 
           //draw label only if it fits in before start of next page
           if ( pixelCoord + labelSize + 8 < firstPageY )
@@ -235,7 +239,7 @@ void QgsLayoutRuler::paintEvent( QPaintEvent *event )
           p.drawLine( 0, pixelCoord, mRulerMinSize, pixelCoord );
           //calc size of label
           QString label = QString::number( pageCoord );
-          int labelSize = mRulerFontMetrics->width( label );
+          int labelSize = mRulerFontMetrics->boundingRect( label ).width();
 
           //draw label only if it fits in before start of next page
           if ( ( pixelCoord + labelSize + 8 < nextPageStartPixel )
@@ -287,7 +291,8 @@ void QgsLayoutRuler::drawGuideMarkers( QPainter *p, QgsLayout *layout )
   p->save();
   p->setRenderHint( QPainter::Antialiasing, true );
   p->setPen( Qt::NoPen );
-  Q_FOREACH ( QgsLayoutGuide *guide, guides )
+  const auto constGuides = guides;
+  for ( QgsLayoutGuide *guide : constGuides )
   {
     if ( visiblePages.contains( guide->page() ) )
     {
@@ -376,7 +381,8 @@ QgsLayoutGuide *QgsLayoutRuler::guideAtPoint( QPoint localPoint ) const
   QList< QgsLayoutGuide * > guides = mView->currentLayout()->guides().guides( mOrientation == Qt::Horizontal ? Qt::Vertical : Qt::Horizontal );
   QgsLayoutGuide *closestGuide = nullptr;
   double minDelta = std::numeric_limits<double>::max();
-  Q_FOREACH ( QgsLayoutGuide *guide, guides )
+  const auto constGuides = guides;
+  for ( QgsLayoutGuide *guide : constGuides )
   {
     if ( visiblePages.contains( guide->page() ) )
     {

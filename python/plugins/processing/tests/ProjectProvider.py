@@ -21,10 +21,6 @@ __author__ = 'Nyall Dawson'
 __date__ = 'July 2018'
 __copyright__ = '(C) 2018, Nyall Dawson'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QTemporaryFile
 from qgis.core import (QgsApplication,
@@ -99,6 +95,13 @@ class ProjectProviderTest(unittest.TestCase):
         provider.remove_model(alg)
         self.assertEqual(len(provider.algorithms()), 1)
         self.assertEqual(provider.algorithms()[0].name(), 'test name2')
+
+        # overwrite model
+        alg2b = QgsProcessingModelAlgorithm('test name2', 'test group2')
+        alg2b.setHelpContent({'test': 'test'})
+        provider.add_model(alg2b)
+        self.assertEqual(len(provider.algorithms()), 1)
+        self.assertEqual(provider.algorithms()[0].helpContent(), {'test': 'test'})
 
         provider.remove_model(alg2)
         self.assertEqual(len(provider.algorithms()), 0)

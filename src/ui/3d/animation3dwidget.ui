@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1301</width>
-    <height>138</height>
+    <width>986</width>
+    <height>129</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -52,7 +52,7 @@
         <string>Edit keyframe</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>
@@ -62,7 +62,20 @@
         <string>Duplicate keyframe</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnExportAnimation">
+       <property name="acceptDrops">
+        <bool>true</bool>
+       </property>
+       <property name="toolTip">
+        <string>Export Animation Frames</string>
+       </property>
+       <property name="text">
+        <string>…</string>
        </property>
       </widget>
      </item>
@@ -268,7 +281,7 @@
         <string>Repeat</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>

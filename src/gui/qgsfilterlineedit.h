@@ -20,7 +20,7 @@
 
 #include <QLineEdit>
 #include <QIcon>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
 class QToolButton;
@@ -75,7 +75,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     QgsFilterLineEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &nullValue = QString() );
 
     /**
-     * Returns true if the widget's clear button is visible.
+     * Returns TRUE if the widget's clear button is visible.
      * \see setShowClearButton()
      * \since QGIS 3.0
      */
@@ -83,7 +83,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
     /**
      * Sets whether the widget's clear button is visible.
-     * \param visible set to false to hide the clear button
+     * \param visible set to FALSE to hide the clear button
      * \see showClearButton()
      * \since QGIS 3.0
      */
@@ -115,7 +115,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     void setNullValue( const QString &nullValue ) { mNullValue = nullValue; }
 
     /**
-     * Returns the string used for representating null values in the widget.
+     * Returns the string used for representing null values in the widget.
      * \see setNullValue()
      * \see isNull()
      */
@@ -124,7 +124,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     /**
      * Define if a search icon shall be shown on the left of the image
      * when no text is entered
-     * \param visible set to false to hide the search icon
+     * \param visible set to FALSE to hide the search icon
      * \since QGIS 3.0
      */
     void setShowSearchIcon( bool visible );
@@ -179,7 +179,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     /**
      * Determine if the current text represents null.
      *
-     * \returns True if the widget's value is null.
+     * \returns TRUE if the widget's value is null.
      * \see nullValue()
      */
     inline bool isNull() const { return text() == mNullValue; }
@@ -214,7 +214,6 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      */
     void setSelectOnFocus( bool selectOnFocus );
 
-
     /**
      * Reimplemented to enable/disable the clear action
      * depending on read-only status
@@ -222,6 +221,12 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * \since QGIS 3.0.1
      */
     bool event( QEvent *event ) override;
+
+    /**
+     * Returns if a state is already saved
+     * \since QGIS 3.14
+     */
+    bool hasStateStored() const {return mLineEditState.hasStateStored;}
 
   public slots:
 
@@ -231,6 +236,18 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * \since QGIS 3.0
      */
     virtual void clearValue();
+
+    /**
+     * Stores the current state of the line edit (selection and cursor position)
+     * \since QGIS 3.14
+     */
+    void storeState();
+
+    /**
+     * Restores the current state of the line edit (selection and cursor position)
+     * \since QGIS 3.14
+     */
+    void restoreState();
 
   signals:
 
@@ -265,6 +282,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
   protected:
     void focusInEvent( QFocusEvent *e ) override;
+    void mouseReleaseEvent( QMouseEvent *e ) override;
 
   private slots:
     void onTextChanged( const QString &text );
@@ -272,6 +290,15 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     void updateClearIcon();
 
   private:
+    struct LineEditState
+    {
+      bool hasStateStored = false;
+      QString text;
+      int selectionStart;
+      int selectionLength;
+      int cursorPosition;
+    };
+
     QIcon mClearIcon;
     QAction *mClearAction = nullptr;
     QAction *mSearchAction = nullptr;
@@ -285,13 +312,17 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     QString mNullValue;
     QString mDefaultValue;
     QString mStyleSheet;
-    bool mFocusInEvent = false;
+    bool mWaitingForMouseRelease = false;
     bool mSelectOnFocus = false;
+
+    LineEditState mLineEditState;
 
     QgsAnimatedIcon *mBusySpinnerAnimatedIcon = nullptr;
 
-    //! Returns true if clear button should be shown
+    //! Returns TRUE if clear button should be shown
     bool shouldShowClear() const;
+
+    friend class TestQgsFeatureListComboBox;
 };
 
 /// @cond PRIVATE
@@ -321,6 +352,9 @@ class SIP_SKIP QgsSpinBoxLineEdit : public QgsFilterLineEdit
       setModified( true );
       emit cleared();
     }
+
+  protected:
+    void focusInEvent( QFocusEvent *e ) override;
 };
 /// @endcond
 

@@ -39,4 +39,3 @@ class QgsQuickPlugin : public QQmlExtensionPlugin
 };
 
 #endif // QGSQUICKPLUGIN_H
-

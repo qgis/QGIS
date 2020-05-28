@@ -11,11 +11,10 @@ the Free Software Foundation; either version 2 of the License, or
 
 """
 from builtins import next
+
 __author__ = 'Martin Dobias'
 __date__ = '2018-03-29'
 __copyright__ = 'Copyright 2018, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 import psycopg2
@@ -72,7 +71,7 @@ class TestPyQgsProjectStoragePostgres(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.dbconn = 'dbname=\'qgis_test\''
+        cls.dbconn = 'service=qgis_test'
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
         cls.ds_uri = QgsDataSourceUri(cls.dbconn)
@@ -98,7 +97,6 @@ class TestPyQgsProjectStoragePostgres(unittest.TestCase):
         self.execSQLCommand("DROP TABLE IF EXISTS qgis_test.qgis_projects;")
 
     def testSaveLoadProject(self):
-
         schema_uri = encode_uri(self.ds_uri, 'qgis_test')
         project_uri = encode_uri(self.ds_uri, 'qgis_test', 'abc')
 

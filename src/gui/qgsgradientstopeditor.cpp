@@ -74,7 +74,7 @@ QSize QgsGradientStopEditor::sizeHint() const
 
 void QgsGradientStopEditor::paintEvent( QPaintEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   QPainter painter( this );
 
   QRect frameRect( rect().x() + MARGIN_X, rect().y(),
@@ -122,7 +122,8 @@ void QgsGradientStopEditor::paintEvent( QPaintEvent *event )
   drawStopMarker( painter, QPoint( box.left(), markerTop ), mGradient.color1(), mSelectedStop == 0 );
   drawStopMarker( painter, QPoint( box.right(), markerTop ), mGradient.color2(), mSelectedStop == mGradient.count() - 1 );
   int i = 1;
-  Q_FOREACH ( const QgsGradientStop &stop, mStops )
+  const auto constMStops = mStops;
+  for ( const QgsGradientStop &stop : constMStops )
   {
     int x = stop.offset * box.width() + box.left();
     drawStopMarker( painter, QPoint( x, markerTop ), stop.color, mSelectedStop == i );
@@ -139,7 +140,8 @@ void QgsGradientStopEditor::selectStop( int index )
     // need to map original stop index across to cached, possibly out of order stop index
     QgsGradientStop selectedStop = mGradient.stops().at( index - 1 );
     index = 1;
-    Q_FOREACH ( const QgsGradientStop &stop, mStops )
+    const auto constMStops = mStops;
+    for ( const QgsGradientStop &stop : constMStops )
     {
       if ( stop == selectedStop )
       {
@@ -282,7 +284,8 @@ int QgsGradientStopEditor::findClosestStop( int x, int threshold ) const
   // otherwise it's impossible to select a stop which sits above the first/last stop, making
   // it impossible to move or delete these
   int i = 1;
-  Q_FOREACH ( const QgsGradientStop &stop, mGradient.stops() )
+  const auto constStops = mGradient.stops();
+  for ( const QgsGradientStop &stop : constStops )
   {
     currentDiff = std::abs( relativePositionToPoint( stop.offset ) + 1 - x );
     if ( ( threshold < 0 || currentDiff < threshold ) && currentDiff < closestDiff )

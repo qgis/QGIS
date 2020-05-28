@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'April 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 from datetime import datetime
 
@@ -51,7 +47,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class PointsToPaths(QgisAlgorithm):
-
     INPUT = 'INPUT'
     GROUP_FIELD = 'GROUP_FIELD'
     ORDER_FIELD = 'ORDER_FIELD'
@@ -144,10 +139,10 @@ class PointsToPaths(QgisAlgorithm):
 
             point = f.geometry().constGet().clone()
             if group_field_index >= 0:
-                group = f.attributes()[group_field_index]
+                group = f[group_field_index]
             else:
                 group = 1
-            order = f.attributes()[order_field_index]
+            order = f[order_field_index]
             if date_format != '':
                 order = datetime.strptime(str(order), date_format)
             if group in points:
@@ -165,7 +160,7 @@ class PointsToPaths(QgisAlgorithm):
 
         current = 0
         total = 100.0 / len(points) if points else 1
-        for group, vertices in list(points.items()):
+        for group, vertices in points.items():
             if feedback.isCanceled():
                 break
 

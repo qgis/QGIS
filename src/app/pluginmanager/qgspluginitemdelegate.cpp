@@ -29,8 +29,8 @@ QgsPluginItemDelegate::QgsPluginItemDelegate( QObject *parent ) : QStyledItemDel
 
 QSize QgsPluginItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( option );
-  Q_UNUSED( index );
+  Q_UNUSED( option )
+  Q_UNUSED( index )
   // Calculate row height, adds some 20% padding
   int pixelsHigh = QApplication::fontMetrics().height() * 1.4;
   return QSize( pixelsHigh, pixelsHigh );
@@ -76,6 +76,10 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
   if ( option.state & QStyle::State_Selected )
   {
     painter->setPen( option.palette.highlightedText().color() );
+  }
+  else if ( index.data( PLUGIN_ISDEPRECATED_ROLE ).toString() == QLatin1String( "true" ) )
+  {
+    painter->setPen( option.palette.color( QPalette::Disabled, QPalette::Text ) );
   }
   else
   {

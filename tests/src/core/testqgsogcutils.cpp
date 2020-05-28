@@ -35,12 +35,7 @@ class TestQgsOgcUtils : public QObject
     void initTestCase()
     {
       // Needed on Qt 5 so that the serialization of XML is consistent among all executions
-#if QT_VERSION >= 0x50600
       qSetGlobalQHashSeed( 0 );
-#else
-      extern Q_CORE_EXPORT QBasicAtomicInt qt_qhash_seed;
-      qt_qhash_seed.store( 0 );
-#endif
 
       //
       // Runs once before any tests are run
@@ -61,6 +56,12 @@ class TestQgsOgcUtils : public QObject
     void testExpressionFromOgcFilter();
     void testExpressionFromOgcFilter_data();
 
+    void testExpressionFromOgcFilterWithLongLong();
+    void testExpressionFromOgcFilterWithLongLong_data();
+
+    void testExpressionFromOgcFilterWFS20();
+    void testExpressionFromOgcFilterWFS20_data();
+
     void testExpressionToOgcFilter();
     void testExpressionToOgcFilter_data();
 
@@ -79,41 +80,41 @@ void TestQgsOgcUtils::testGeometryFromGML()
 {
   // Test GML2
   QgsGeometry geom( QgsOgcUtils::geometryFromGML( QStringLiteral( "<Point><coordinates>123,456</coordinates></Point>" ) ) );
-  QVERIFY( geom );
+  QVERIFY( !geom.isNull() );
   QVERIFY( geom.wkbType() == QgsWkbTypes::Point );
   QVERIFY( geom.asPoint() == QgsPointXY( 123, 456 ) );
 
   QgsGeometry geomBox( QgsOgcUtils::geometryFromGML( QStringLiteral( "<gml:Box srsName=\"foo\"><gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box>" ) ) );
-  QVERIFY( geomBox );
+  QVERIFY( !geomBox.isNull() );
   QVERIFY( geomBox.wkbType() == QgsWkbTypes::Polygon );
 
 
   // Test GML3
   geom = QgsOgcUtils::geometryFromGML( QStringLiteral( "<Point><pos>123 456</pos></Point>" ) );
-  QVERIFY( geom );
+  QVERIFY( !geom.isNull() );
   QVERIFY( geom.wkbType() == QgsWkbTypes::Point );
   QVERIFY( geom.asPoint() == QgsPointXY( 123, 456 ) );
 
   geomBox = QgsOgcUtils::geometryFromGML( QStringLiteral( "<gml:Envelope srsName=\"foo\"><gml:lowerCorner>135.2239 34.4879</gml:lowerCorner><gml:upperCorner>135.8578 34.8471</gml:upperCorner></gml:Envelope>" ) );
-  QVERIFY( geomBox );
+  QVERIFY( !geomBox.isNull() );
   QVERIFY( geomBox.wkbType() == QgsWkbTypes::Polygon );
 }
 
 static bool compareElements( QDomElement &element1, QDomElement &element2 )
 {
   QString tag1 = element1.tagName();
-  tag1.replace( QRegExp( ".*:" ), QLatin1String( "" ) );
+  tag1.replace( QRegExp( ".*:" ), QString() );
   QString tag2 = element2.tagName();
-  tag2.replace( QRegExp( ".*:" ), QLatin1String( "" ) );
+  tag2.replace( QRegExp( ".*:" ), QString() );
   if ( tag1 != tag2 )
   {
-    qDebug( "Different tag names: %s, %s", tag1.toAscii().data(), tag2.toAscii().data() );
+    qDebug( "Different tag names: %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data() );
     return false ;
   }
 
   if ( element1.hasAttributes() != element2.hasAttributes() )
   {
-    qDebug( "Different hasAttributes: %s, %s", tag1.toAscii().data(), tag2.toAscii().data() );
+    qDebug( "Different hasAttributes: %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data() );
     return false;
   }
 
@@ -124,7 +125,7 @@ static bool compareElements( QDomElement &element1, QDomElement &element2 )
 
     if ( attrs1.size() != attrs2.size() )
     {
-      qDebug( "Different attributes size: %s, %s", tag1.toAscii().data(), tag2.toAscii().data() );
+      qDebug( "Different attributes size: %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data() );
       return false;
     }
 
@@ -135,13 +136,13 @@ static bool compareElements( QDomElement &element1, QDomElement &element2 )
 
       if ( !element2.hasAttribute( attr1.name() ) )
       {
-        qDebug( "Element2 has not attribute: %s, %s, %s", tag1.toAscii().data(), tag2.toAscii().data(), attr1.name().toAscii().data() );
+        qDebug( "Element2 has not attribute: %s, %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data(), attr1.name().toLatin1().data() );
         return false;
       }
 
       if ( element2.attribute( attr1.name() ) != attr1.value() )
       {
-        qDebug( "Element2 attribute has not the same value: %s, %s, %s", tag1.toAscii().data(), tag2.toAscii().data(), attr1.name().toAscii().data() );
+        qDebug( "Element2 attribute has not the same value: %s, %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data(), attr1.name().toLatin1().data() );
         return false;
       }
     }
@@ -149,7 +150,7 @@ static bool compareElements( QDomElement &element1, QDomElement &element2 )
 
   if ( element1.hasChildNodes() != element2.hasChildNodes() )
   {
-    qDebug( "Different childNodes: %s, %s", tag1.toAscii().data(), tag2.toAscii().data() );
+    qDebug( "Different childNodes: %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data() );
     return false;
   }
 
@@ -160,7 +161,7 @@ static bool compareElements( QDomElement &element1, QDomElement &element2 )
 
     if ( nodes1.size() != nodes2.size() )
     {
-      qDebug( "Different childNodes size: %s, %s", tag1.toAscii().data(), tag2.toAscii().data() );
+      qDebug( "Different childNodes size: %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data() );
       return false;
     }
 
@@ -183,8 +184,8 @@ static bool compareElements( QDomElement &element1, QDomElement &element2 )
 
         if ( txt1.data() != txt2.data() )
         {
-          qDebug( "Different text data: %s %s", tag1.toAscii().data(), txt1.data().toAscii().data() );
-          qDebug( "Different text data: %s %s", tag2.toAscii().data(), txt2.data().toAscii().data() );
+          qDebug( "Different text data: %s %s", tag1.toLatin1().data(), txt1.data().toLatin1().data() );
+          qDebug( "Different text data: %s %s", tag2.toLatin1().data(), txt2.data().toLatin1().data() );
           return false;
         }
       }
@@ -193,8 +194,8 @@ static bool compareElements( QDomElement &element1, QDomElement &element2 )
 
   if ( element1.text() != element2.text() )
   {
-    qDebug( "Different text: %s %s", tag1.toAscii().data(), element1.text().toAscii().data() );
-    qDebug( "Different text: %s %s", tag2.toAscii().data(), element2.text().toAscii().data() );
+    qDebug( "Different text: %s %s", tag1.toLatin1().data(), element1.text().toLatin1().data() );
+    qDebug( "Different text: %s %s", tag2.toLatin1().data(), element2.text().toLatin1().data() );
     return false;
   }
 
@@ -264,6 +265,63 @@ void TestQgsOgcUtils::testGeometryToGML()
   doc.removeChild( elemLine );
 }
 
+void TestQgsOgcUtils::testExpressionFromOgcFilterWFS20_data()
+{
+  QTest::addColumn<QString>( "xmlText" );
+  QTest::addColumn<QString>( "dumpText" );
+
+  QTest::newRow( "=" ) << QString(
+                         "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\">"
+                         "<fes:PropertyIsEqualTo>"
+                         "<fes:ValueReference>NAME</fes:ValueReference>"
+                         "<fes:Literal>New York</fes:Literal>"
+                         "</fes:PropertyIsEqualTo></fes:Filter>" )
+                       << QStringLiteral( "NAME = 'New York'" );
+
+  QTest::newRow( "bbox coordinates" ) << QString(
+                                        "<Filter>"
+                                        "<BBOX><ValueReference>Name>NAME</ValueReference><gml:Box srsName='foo'>"
+                                        "<gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box></BBOX>"
+                                        "</Filter>" )
+                                      << QStringLiteral( "intersects_bbox($geometry, geom_from_gml('<Box srsName=\"foo\"><coordinates>135.2239,34.4879 135.8578,34.8471</coordinates></Box>'))" );
+
+  QTest::newRow( "bbox corner" )
+      << QString(
+        "<fes:Filter>"
+        "<fes:BBOX>"
+        "<fes:ValueReference>my_geometry_name</fes:ValueReference>"
+        "<gml:Envelope>"
+        "<gml:lowerCorner>49 2</gml:lowerCorner>"
+        "<gml:upperCorner>50 3</gml:upperCorner>"
+        "</gml:Envelope>"
+        "</fes:BBOX>"
+        "</fes:Filter>" )
+      << QStringLiteral( "intersects_bbox($geometry, geom_from_gml('<Envelope><lowerCorner>49 2</lowerCorner><upperCorner>50 3</upperCorner></Envelope>'))" );
+}
+
+void TestQgsOgcUtils::testExpressionFromOgcFilterWFS20()
+{
+  QFETCH( QString, xmlText );
+  QFETCH( QString, dumpText );
+
+  QDomDocument doc;
+  QVERIFY( doc.setContent( xmlText, true ) );
+  QDomElement rootElem = doc.documentElement();
+
+  QgsVectorLayer layer( "Point?crs=epsg:4326&field=LITERAL:string(20)", "temp", "memory" );
+
+  std::unique_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, QgsOgcUtils::FILTER_FES_2_0, &layer ) );
+  QVERIFY( expr.get() );
+
+  qDebug( "OGC XML  : %s", xmlText.toLatin1().data() );
+  qDebug( "EXPR-DUMP: %s", expr->expression().toLatin1().data() );
+
+  if ( expr->hasParserError() )
+    qDebug( "ERROR: %s ", expr->parserErrorString().toLatin1().data() );
+  QVERIFY( !expr->hasParserError() );
+
+  QCOMPARE( dumpText, expr->expression() );
+}
 
 void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
 {
@@ -323,12 +381,34 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
                            << QStringLiteral( "NAME ILIKE '*QGIS*'" );
 
   // different wildCards
-  QTest::newRow( "like wildCard" ) << QString(
-                                     "<Filter>"
-                                     "<PropertyIsLike wildCard='*' singleChar='.' escape=\"\\\">"
-                                     "<PropertyName>NAME</PropertyName><Literal>*%QGIS*\\*</Literal></PropertyIsLike>"
-                                     "</Filter>" )
-                                   << QStringLiteral( "NAME LIKE '%\\\\%QGIS%*'" );
+  QTest::newRow( "like wildCard simple" ) << QString(
+      "<Filter>"
+      "<PropertyIsLike wildCard='*' singleChar='.' escape=\"\\\">"
+      "<PropertyName>NAME</PropertyName><Literal>*QGIS*</Literal></PropertyIsLike>"
+      "</Filter>" )
+                                          << QStringLiteral( "NAME LIKE '%QGIS%'" );
+
+  QTest::newRow( "like wildCard complex" ) << QString(
+        "<Filter>"
+        "<PropertyIsLike wildCard='*' singleChar='.' escape=\"\\\">"
+        "<PropertyName>NAME</PropertyName><Literal>*%QGIS*\\*</Literal></PropertyIsLike>"
+        "</Filter>" )
+      << QStringLiteral( "NAME LIKE '%\\\\%QGIS%*'" );
+
+  QTest::newRow( "ilike wildCard simple" ) << QString(
+        "<Filter>"
+        "<PropertyIsLike matchCase=\"false\" wildCard='*' singleChar='.' escape=\"\\\">"
+        "<PropertyName>NAME</PropertyName><Literal>*QGIS*</Literal></PropertyIsLike>"
+        "</Filter>" )
+      << QStringLiteral( "NAME ILIKE '%QGIS%'" );
+
+  QTest::newRow( "ilike wildCard complex" ) << QString(
+        "<Filter>"
+        "<PropertyIsLike matchCase=\"false\"  wildCard='*' singleChar='.' escape=\"\\\">"
+        "<PropertyName>NAME</PropertyName><Literal>*%QGIS*\\*</Literal></PropertyIsLike>"
+        "</Filter>" )
+      << QStringLiteral( "NAME ILIKE '%\\\\%QGIS%*'" );
+
   // different single chars
   QTest::newRow( "like single char" ) << QString(
                                         "<Filter>"
@@ -336,10 +416,17 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
                                         "<PropertyName>NAME</PropertyName><Literal>._QGIS.\\.</Literal></PropertyIsLike>"
                                         "</Filter>" )
                                       << QStringLiteral( "NAME LIKE '_\\\\_QGIS_.'" );
-  // different single chars
+  // different escape chars
   QTest::newRow( "like escape char" ) << QString(
                                         "<Filter>"
                                         "<PropertyIsLike wildCard=\"*\" singleChar=\".\" escape=\"!\">"
+                                        "<PropertyName>NAME</PropertyName><Literal>_QGIS.!.!!%QGIS*!*</Literal></PropertyIsLike>"
+                                        "</Filter>" )
+                                      << QStringLiteral( "NAME LIKE '\\\\_QGIS_.!\\\\%QGIS%*'" );
+
+  QTest::newRow( "like escape char" ) << QString(
+                                        "<Filter>"
+                                        "<PropertyIsLike wildCard=\"*\" singleChar=\".\" escapeChar=\"!\">"
                                         "<PropertyName>NAME</PropertyName><Literal>_QGIS.!.!!%QGIS*!*</Literal></PropertyIsLike>"
                                         "</Filter>" )
                                       << QStringLiteral( "NAME LIKE '\\\\_QGIS_.!\\\\%QGIS%*'" );
@@ -376,6 +463,25 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
                                           "<Literal>+2</Literal>"
                                           "</PropertyIsEqualTo></Filter>" )
                                         << QStringLiteral( "LITERAL = '+2'" );
+
+  QTest::newRow( "not or list" ) << QStringLiteral( "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+                                 "<ogc:Not>"
+                                 " <ogc:Or>"
+                                 "  <ogc:PropertyIsEqualTo>"
+                                 "   <ogc:PropertyName>A</ogc:PropertyName>"
+                                 "   <ogc:Literal>1</ogc:Literal>"
+                                 "  </ogc:PropertyIsEqualTo>"
+                                 "  <ogc:PropertyIsEqualTo>"
+                                 "   <ogc:PropertyName>A</ogc:PropertyName>"
+                                 "   <ogc:Literal>2</ogc:Literal>"
+                                 "  </ogc:PropertyIsEqualTo>"
+                                 "  <ogc:PropertyIsEqualTo>"
+                                 "   <ogc:PropertyName>A</ogc:PropertyName>"
+                                 "   <ogc:Literal>3</ogc:Literal>"
+                                 "  </ogc:PropertyIsEqualTo>"
+                                 " </ogc:Or>"
+                                 "</ogc:Not>"
+                                 "</ogc:Filter>" ) << QStringLiteral( "NOT ( A = 1 OR A = 2 OR A = 3 )" );
 }
 
 void TestQgsOgcUtils::testExpressionFromOgcFilter()
@@ -389,14 +495,64 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter()
 
   QgsVectorLayer layer( "Point?crs=epsg:4326&field=LITERAL:string(20)", "temp", "memory" );
 
-  std::shared_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, &layer ) );
+  std::unique_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, &layer ) );
   QVERIFY( expr.get() );
 
-  qDebug( "OGC XML  : %s", xmlText.toAscii().data() );
-  qDebug( "EXPR-DUMP: %s", expr->expression().toAscii().data() );
+  qDebug( "OGC XML  : %s", xmlText.toLatin1().data() );
+  qDebug( "EXPR-DUMP: %s", expr->expression().toLatin1().data() );
 
   if ( expr->hasParserError() )
-    qDebug( "ERROR: %s ", expr->parserErrorString().toAscii().data() );
+    qDebug( "ERROR: %s ", expr->parserErrorString().toLatin1().data() );
+  QVERIFY( !expr->hasParserError() );
+
+  QCOMPARE( dumpText, expr->expression() );
+}
+
+void TestQgsOgcUtils::testExpressionFromOgcFilterWithLongLong_data()
+{
+  QTest::addColumn<QString>( "xmlText" );
+  QTest::addColumn<QString>( "dumpText" );
+  QTest::newRow( "Literal less than" ) << QString(
+                                         "<Filter><And>"
+                                         "<PropertyIsGreaterThan>"
+                                         "<PropertyName>id</PropertyName>"
+                                         "<Literal>1</Literal>"
+                                         "</PropertyIsGreaterThan>"
+                                         "<PropertyIsLessThan>"
+                                         "<PropertyName>id</PropertyName>"
+                                         "<Literal>3</Literal>"
+                                         "</PropertyIsLessThan>"
+                                         "</And></Filter>" )
+                                       << QStringLiteral( "id > 1 AND id < 3" );
+}
+
+void TestQgsOgcUtils::testExpressionFromOgcFilterWithLongLong()
+{
+  QFETCH( QString, xmlText );
+  QFETCH( QString, dumpText );
+
+  QDomDocument doc;
+
+  QVERIFY( doc.setContent( xmlText, true ) );
+  QDomElement rootElem = doc.documentElement();
+
+  QgsVectorLayer layer( "Point?crs=epsg:4326", "temp", "memory" );
+
+  QgsField longlongField( QStringLiteral( "id" ), QVariant::LongLong );
+
+  QList<QgsField> fields;
+  fields.append( longlongField );
+  layer.dataProvider()->addAttributes( fields );
+  layer.updateFields();
+
+  std::unique_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, &layer ) );
+  QVERIFY( expr.get() );
+
+  qDebug( "OGC XML  : %s", xmlText.toLatin1().data() );
+  qDebug( "EXPR-DUMP: %s", expr->expression().toLatin1().data() );
+
+  if ( expr->hasParserError() )
+    qDebug( "ERROR: %s ", expr->parserErrorString().toLatin1().data() );
   QVERIFY( !expr->hasParserError() );
 
   QCOMPARE( dumpText, expr->expression() );
@@ -415,14 +571,14 @@ void TestQgsOgcUtils::testExpressionToOgcFilter()
   QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( exp, doc, &errorMsg );
 
   if ( !errorMsg.isEmpty() )
-    qDebug( "ERROR: %s", errorMsg.toAscii().data() );
+    qDebug( "ERROR: %s", errorMsg.toLatin1().data() );
 
   QVERIFY( !filterElem.isNull() );
 
   doc.appendChild( filterElem );
 
-  qDebug( "EXPR: %s", exp.expression().toAscii().data() );
-  qDebug( "OGC : %s", doc.toString( -1 ).toAscii().data() );
+  qDebug( "EXPR: %s", exp.expression().toLatin1().data() );
+  qDebug( "OGC : %s", doc.toString( -1 ).toLatin1().data() );
 
 
   QDomElement xmlElem = comparableElement( xmlText );
@@ -579,15 +735,15 @@ void TestQgsOgcUtils::testExpressionToOgcFilterWFS11()
                            QgsOgcUtils::GML_3_1_0, QgsOgcUtils::FILTER_OGC_1_1, QStringLiteral( "my_geometry_name" ), srsName, true, false, &errorMsg );
 
   if ( !errorMsg.isEmpty() )
-    qDebug( "ERROR: %s", errorMsg.toAscii().data() );
+    qDebug( "ERROR: %s", errorMsg.toLatin1().data() );
 
   QVERIFY( !filterElem.isNull() );
 
   doc.appendChild( filterElem );
 
-  qDebug( "EXPR: %s", exp.expression().toAscii().data() );
-  qDebug( "SRSNAME: %s", srsName.toAscii().data() );
-  qDebug( "OGC : %s", doc.toString( -1 ).toAscii().data() );
+  qDebug( "EXPR: %s", exp.expression().toLatin1().data() );
+  qDebug( "SRSNAME: %s", srsName.toLatin1().data() );
+  qDebug( "OGC : %s", doc.toString( -1 ).toLatin1().data() );
 
 
   QDomElement xmlElem = comparableElement( xmlText );
@@ -631,15 +787,15 @@ void TestQgsOgcUtils::testExpressionToOgcFilterWFS20()
                            QgsOgcUtils::GML_3_2_1, QgsOgcUtils::FILTER_FES_2_0, QStringLiteral( "my_geometry_name" ), srsName, true, false, &errorMsg );
 
   if ( !errorMsg.isEmpty() )
-    qDebug( "ERROR: %s", errorMsg.toAscii().data() );
+    qDebug( "ERROR: %s", errorMsg.toLatin1().data() );
 
   QVERIFY( !filterElem.isNull() );
 
   doc.appendChild( filterElem );
 
-  qDebug( "EXPR: %s", exp.expression().toAscii().data() );
-  qDebug( "SRSNAME: %s", srsName.toAscii().data() );
-  qDebug( "OGC : %s", doc.toString( -1 ).toAscii().data() );
+  qDebug( "EXPR: %s", exp.expression().toLatin1().data() );
+  qDebug( "SRSNAME: %s", srsName.toLatin1().data() );
+  qDebug( "OGC : %s", doc.toString( -1 ).toLatin1().data() );
 
   QDomElement xmlElem = comparableElement( xmlText );
   QDomElement ogcElem = comparableElement( doc.toString( -1 ) );
@@ -706,7 +862,7 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilter()
   QgsSQLStatement statement( statementText );
   if ( !statement.hasParserError() )
   {
-    qDebug( "%s", statement.parserErrorString().toAscii().data() );
+    qDebug( "%s", statement.parserErrorString().toLatin1().data() );
     QVERIFY( !statement.hasParserError() );
   }
 
@@ -728,20 +884,20 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilter()
                            &errorMsg );
 
   if ( !errorMsg.isEmpty() )
-    qDebug( "ERROR: %s", errorMsg.toAscii().data() );
+    qDebug( "ERROR: %s", errorMsg.toLatin1().data() );
 
   QVERIFY( !filterElem.isNull() );
 
   doc.appendChild( filterElem );
 
-  qDebug( "SQL:    %s", statement.statement().toAscii().data() );
+  qDebug( "SQL:    %s", statement.statement().toLatin1().data() );
   qDebug( "GML:    %s", gmlVersion == QgsOgcUtils::GML_2_1_2 ? "2.1.2" :
           gmlVersion == QgsOgcUtils::GML_3_1_0 ? "3.1.0" :
           gmlVersion == QgsOgcUtils::GML_3_2_1 ? "3.2.1" : "unknown" );
   qDebug( "FILTER: %s", filterVersion == QgsOgcUtils::FILTER_OGC_1_0 ? "OGC 1.0" :
           filterVersion == QgsOgcUtils::FILTER_OGC_1_1 ? "OGC 1.1" :
           filterVersion == QgsOgcUtils::FILTER_FES_2_0 ? "FES 2.0" : "unknown" );
-  qDebug( "OGC :   %s", doc.toString( -1 ).toAscii().data() );
+  qDebug( "OGC :   %s", doc.toString( -1 ).toLatin1().data() );
 
   QDomElement xmlElem = comparableElement( xmlText );
   QDomElement ogcElem = comparableElement( doc.toString( -1 ) );

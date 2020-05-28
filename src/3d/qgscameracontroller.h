@@ -18,9 +18,26 @@
 
 #include "qgis_3d.h"
 
+#include <QPointer>
+#include <QRect>
 #include <Qt3DCore/QEntity>
-#include <Qt3DInput>
-#include <Qt3DRender>
+
+namespace Qt3DInput
+{
+  class QKeyEvent;
+  class QKeyboardDevice;
+  class QKeyboardHandler;
+  class QMouseEvent;
+  class QMouseDevice;
+  class QMouseHandler;
+  class QWheelEvent;
+}
+
+namespace Qt3DRender
+{
+  class QCamera;
+  class QPickEvent;
+}
 
 #include "qgscamerapose.h"
 
@@ -60,7 +77,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     //! Assigns camera that should be controlled by this class. Called internally from 3D scene.
     void setCamera( Qt3DRender::QCamera *camera );
     //! Sets viewport rectangle. Called internally from 3D canvas. Allows conversion of mouse coordinates.
-    void setViewport( const QRect &viewport );
+    void setViewport( QRect viewport );
     //! Called internally from 3D scene when a new frame is generated. Updates camera according to keyboard/mouse input
     void frameTriggered( float dt );
 
@@ -118,8 +135,20 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     //! Reads camera configuration from the given DOM element
     void readXml( const QDomElement &elem );
 
+    //! Zoom the map by \a factor
+    void zoom( float factor );
+    //! Tilt up the view by \a deltaPitch around the view center (camera moves)
+    void tiltUpAroundViewCenter( float deltaPitch );
+    //! Rotate clockwise the view by \a deltaYaw around the view center (camera moves)
+    void rotateAroundViewCenter( float deltaYaw );
+    //! Set camera heading to \a angle (used for rotating the view)
+    void setCameraHeadingAngle( float angle );
+    //! Move the map by \a tx and \a ty
+    void moveView( float tx, float ty );
+
   private:
     void rotateCamera( float diffPitch, float diffYaw );
+    void updateCameraFromPose( bool centerPointChanged = false );
 
   signals:
     //! Emitted when camera has been updated
@@ -129,6 +158,11 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
   private slots:
     void onPositionChanged( Qt3DInput::QMouseEvent *mouse );
+    void onWheel( Qt3DInput::QWheelEvent *wheel );
+    void onMousePressed( Qt3DInput::QMouseEvent *mouse );
+    void onMouseReleased( Qt3DInput::QMouseEvent *mouse );
+    void onKeyPressed( Qt3DInput::QKeyEvent *event );
+    void onKeyReleased( Qt3DInput::QKeyEvent *event );
     void onPickerMousePressed( Qt3DRender::QPickEvent *pick );
 
   private:
@@ -146,50 +180,14 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
     //! Last mouse position recorded
     QPoint mMousePos;
-    //! Mouse position used in the previous frame
-    QPoint mLastMousePos;
 
     //! Delegates mouse events to the attached MouseHandler objects
     Qt3DInput::QMouseDevice *mMouseDevice = nullptr;
-
     Qt3DInput::QKeyboardDevice *mKeyboardDevice = nullptr;
 
     Qt3DInput::QMouseHandler *mMouseHandler = nullptr;
+    Qt3DInput::QKeyboardHandler *mKeyboardHandler = nullptr;
 
-    /**
-     * Allows us to define a set of actions that we wish to use
-     * (it is a component that can be attached to 3D scene)
-     */
-    Qt3DInput::QLogicalDevice *mLogicalDevice = nullptr;
-
-    Qt3DInput::QAction *mLeftMouseButtonAction = nullptr;
-    Qt3DInput::QActionInput *mLeftMouseButtonInput = nullptr;
-
-    Qt3DInput::QAction *mMiddleMouseButtonAction = nullptr;
-    Qt3DInput::QActionInput *mMiddleMouseButtonInput = nullptr;
-
-    Qt3DInput::QAction *mRightMouseButtonAction = nullptr;
-    Qt3DInput::QActionInput *mRightMouseButtonInput = nullptr;
-
-    Qt3DInput::QAction *mShiftAction = nullptr;
-    Qt3DInput::QActionInput *mShiftInput = nullptr;
-
-    Qt3DInput::QAction *mCtrlAction = nullptr;
-    Qt3DInput::QActionInput *mCtrlInput = nullptr;
-
-    Qt3DInput::QAxis *mWheelAxis = nullptr;
-    Qt3DInput::QAnalogAxisInput *mMouseWheelInput = nullptr;
-
-    Qt3DInput::QAxis *mTxAxis = nullptr;
-    Qt3DInput::QAxis *mTyAxis = nullptr;
-    Qt3DInput::QButtonAxisInput *mKeyboardTxPosInput = nullptr;
-    Qt3DInput::QButtonAxisInput *mKeyboardTyPosInput = nullptr;
-    Qt3DInput::QButtonAxisInput *mKeyboardTxNegInput = nullptr;
-    Qt3DInput::QButtonAxisInput *mKeyboardTyNegInput = nullptr;
-
-    Qt3DInput::QAxis *mTelevAxis = nullptr;
-    Qt3DInput::QButtonAxisInput *mKeyboardTelevPosInput = nullptr;
-    Qt3DInput::QButtonAxisInput *mKeyboardTelevNegInput = nullptr;
 };
 
 #endif // QGSCAMERACONTROLLER_H

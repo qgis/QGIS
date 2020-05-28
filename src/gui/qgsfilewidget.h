@@ -23,10 +23,11 @@ class QVariant;
 class QgsFileDropEdit;
 class QHBoxLayout;
 #include <QWidget>
+#include <QFileDialog>
 
 #include "qgis_gui.h"
-#include "qgis.h"
-#include "qgsfilterlineedit.h"
+#include "qgis_sip.h"
+#include "qgshighlightablelineedit.h"
 
 /**
  * \ingroup gui
@@ -44,7 +45,6 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     SIP_END
 #endif
 
-
     Q_OBJECT
     Q_PROPERTY( bool fileWidgetButtonVisible READ fileWidgetButtonVisible WRITE setFileWidgetButtonVisible )
     Q_PROPERTY( bool useLink READ useLink WRITE setUseLink )
@@ -54,6 +54,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     Q_PROPERTY( QString defaultRoot READ defaultRoot WRITE setDefaultRoot )
     Q_PROPERTY( StorageMode storageMode READ storageMode WRITE setStorageMode )
     Q_PROPERTY( RelativeStorage relativeStorage READ relativeStorage WRITE setRelativeStorage )
+    Q_PROPERTY( QFileDialog::Options options READ options WRITE setOptions )
 
   public:
 
@@ -62,11 +63,12 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      */
     enum StorageMode
     {
-      GetFile, //! Select a single file
-      GetDirectory, //! Select a directory
-      GetMultipleFiles, //! Select multiple files
-      SaveFile, //! Select a single new or pre-existing file
+      GetFile, //!< Select a single file
+      GetDirectory, //!< Select a directory
+      GetMultipleFiles, //!< Select multiple files
+      SaveFile, //!< Select a single new or pre-existing file
     };
+    Q_ENUM( StorageMode )
 
     /**
      * \brief The RelativeStorage enum determines if path is absolute, relative to the current project path or relative to a defined default path.
@@ -77,6 +79,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
       RelativeProject,
       RelativeDefaultPath
     };
+    Q_ENUM( RelativeStorage )
 
     /**
      * \brief QgsFileWidget creates a widget for selecting a file or a folder.
@@ -122,6 +125,18 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     void setFilter( const QString &filter );
 
     /**
+     * Returns additional options used for QFileDialog
+     * \since QGIS 3.14
+     */
+    QFileDialog::Options options() const;
+
+    /**
+     * \brief setOptions sets additional options used for QFileDialog. These options affect the look and feel of the QFileDialog
+     * \since QGIS 3.14
+     */
+    void setOptions( QFileDialog::Options options );
+
+    /**
      * Sets the selected filter when the file dialog opens.
      */
     void setSelectedFilter( const QString &selectedFilter ) { mSelectedFilter = selectedFilter; }
@@ -134,7 +149,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     /**
      * Sets whether a confirmation to overwrite an existing file will appear.
      * By default, a confirmation will appear.
-     * \param confirmOverwrite If set to true, an overwrite confirmation will be shown
+     * \param confirmOverwrite If set to TRUE, an overwrite confirmation will be shown
      */
     void setConfirmOverwrite( bool confirmOverwrite ) { mConfirmOverwrite = confirmOverwrite; }
 
@@ -181,18 +196,26 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     QgsFilterLineEdit *lineEdit();
 
   signals:
-    //! emitted as soon as the current file or directory is changed
-    void fileChanged( const QString & );
+
+    /**
+     * Emitted whenever the current file or directory \a path is changed.
+     */
+    void fileChanged( const QString &path );
 
   private slots:
     void openFileDialog();
     void textEdited( const QString &path );
+    void editLink();
 
   private:
+    void updateLayout();
+
     QString mFilePath;
     bool mButtonVisible = true;
     bool mUseLink = false;
     bool mFullUrl = false;
+    bool mReadOnly = false;
+    bool mIsLinkEdited = false;
     QString mDialogTitle;
     QString mFilter;
     QString mSelectedFilter;
@@ -200,9 +223,11 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     bool mConfirmOverwrite = true;
     StorageMode mStorageMode = GetFile;
     RelativeStorage mRelativeStorage = Absolute;
+    QFileDialog::Options mOptions = QFileDialog::Options();
 
     QLabel *mLinkLabel = nullptr;
     QgsFileDropEdit *mLineEdit = nullptr;
+    QToolButton *mLinkEditButton = nullptr;
     QToolButton *mFileWidgetButton = nullptr;
     QHBoxLayout *mLayout = nullptr;
 
@@ -215,9 +240,9 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     friend class TestQgsFileWidget;
 };
 
-
-
 ///@cond PRIVATE
+
+
 
 #ifndef SIP_RUN
 
@@ -230,7 +255,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
  * or directories only. By default, dropping is limited to files only.
  * \note not available in Python bindings
  */
-class GUI_EXPORT QgsFileDropEdit: public QgsFilterLineEdit
+class GUI_EXPORT QgsFileDropEdit: public QgsHighlightableLineEdit
 {
     Q_OBJECT
 
@@ -246,7 +271,6 @@ class GUI_EXPORT QgsFileDropEdit: public QgsFilterLineEdit
     void dragEnterEvent( QDragEnterEvent *event ) override;
     void dragLeaveEvent( QDragLeaveEvent *event ) override;
     void dropEvent( QDropEvent *event ) override;
-    void paintEvent( QPaintEvent *e ) override;
 
   private:
 
@@ -255,7 +279,6 @@ class GUI_EXPORT QgsFileDropEdit: public QgsFilterLineEdit
 
     QStringList mAcceptableExtensions;
     QgsFileWidget::StorageMode mStorageMode = QgsFileWidget::GetFile;
-    bool mDragActive;
     friend class TestQgsFileWidget;
 };
 

@@ -31,7 +31,7 @@
 #include <limits>
 
 const char NS_SEPARATOR = '?';
-const QString GML_NAMESPACE = QStringLiteral( "http://www.opengis.net/gml" );
+#define GML_NAMESPACE QStringLiteral( "http://www.opengis.net/gml" )
 
 
 QgsGmlFeatureClass::QgsGmlFeatureClass( const QString &name, const QString &path )
@@ -88,16 +88,17 @@ bool QgsGmlSchema::parseXSD( const QByteArray &xml )
 
   QList<QDomElement> elementElements = domElements( docElem, QStringLiteral( "element" ) );
 
-  //QgsDebugMsg( QString( "%1 elemets read" ).arg( elementElements.size() ) );
+  //QgsDebugMsg( QStringLiteral( "%1 elements read" ).arg( elementElements.size() ) );
 
-  Q_FOREACH ( const QDomElement &elementElement, elementElements )
+  const auto constElementElements = elementElements;
+  for ( const QDomElement &elementElement : constElementElements )
   {
     QString name = elementElement.attribute( QStringLiteral( "name" ) );
     QString type = elementElement.attribute( QStringLiteral( "type" ) );
 
     QString gmlBaseType = xsdComplexTypeGmlBaseType( docElem, stripNS( type ) );
-    //QgsDebugMsg( QString( "gmlBaseType = %1" ).arg( gmlBaseType ) );
-    //QgsDebugMsg( QString( "name = %1 gmlBaseType = %2" ).arg( name ).arg( gmlBaseType ) );
+    //QgsDebugMsg( QStringLiteral( "gmlBaseType = %1" ).arg( gmlBaseType ) );
+    //QgsDebugMsg( QStringLiteral( "name = %1 gmlBaseType = %2" ).arg( name ).arg( gmlBaseType ) );
     // We should only use gml:AbstractFeatureType descendants which have
     // ancestor listed in gml:FeatureAssociationType (featureMember) descendant
     // But we could only loose some data if XSD was not correct, I think.
@@ -105,7 +106,7 @@ bool QgsGmlSchema::parseXSD( const QByteArray &xml )
     if ( gmlBaseType == QLatin1String( "AbstractFeatureType" ) )
     {
       // Get feature type definition
-      QgsGmlFeatureClass featureClass( name, QLatin1String( "" ) );
+      QgsGmlFeatureClass featureClass( name, QString() );
       xsdFeatureClass( docElem, stripNS( type ), featureClass );
       mFeatureClassMap.insert( name, featureClass );
     }
@@ -144,7 +145,8 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString &t
 
   // Supported geometry types
   QStringList geometryPropertyTypes;
-  Q_FOREACH ( const QString &geom, mGeometryTypes )
+  const auto constMGeometryTypes = mGeometryTypes;
+  for ( const QString &geom : constMGeometryTypes )
   {
     geometryPropertyTypes << geom + "PropertyType";
   }
@@ -157,7 +159,8 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString &t
 
   // Add attributes from current comple type
   QList<QDomElement> sequenceElements = domElements( extrest, QStringLiteral( "sequence.element" ) );
-  Q_FOREACH ( const QDomElement &sequenceElement, sequenceElements )
+  const auto constSequenceElements = sequenceElements;
+  for ( const QDomElement &sequenceElement : constSequenceElements )
   {
     QString fieldName = sequenceElement.attribute( QStringLiteral( "name" ) );
     QString fieldTypeName = stripNS( sequenceElement.attribute( QStringLiteral( "type" ) ) );
@@ -174,20 +177,20 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString &t
         }
         else
         {
-          QgsDebugMsg( QString( "Unknown referenced GML element: %1" ).arg( ref ) );
+          QgsDebugMsg( QStringLiteral( "Unknown referenced GML element: %1" ).arg( ref ) );
         }
       }
       else
       {
         // TODO: get type from referenced element
-        QgsDebugMsg( QString( "field %1.%2 is referencing %3 - not supported" ).arg( typeName, fieldName ) );
+        QgsDebugMsg( QStringLiteral( "field %1.%2 is referencing %3 - not supported" ).arg( typeName, fieldName ) );
       }
       continue;
     }
 
     if ( fieldName.isEmpty() )
     {
-      QgsDebugMsg( QString( "field in %1 without name" ).arg( typeName ) );
+      QgsDebugMsg( QStringLiteral( "field in %1 without name" ).arg( typeName ) );
       continue;
     }
 
@@ -202,7 +205,7 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString &t
     QVariant::Type fieldType = QVariant::String;
     if ( fieldTypeName.isEmpty() )
     {
-      QgsDebugMsg( QString( "Cannot get %1.%2 field type" ).arg( typeName, fieldName ) );
+      QgsDebugMsg( QStringLiteral( "Cannot get %1.%2 field type" ).arg( typeName, fieldName ) );
     }
     else
     {
@@ -234,14 +237,14 @@ QString QgsGmlSchema::xsdComplexTypeGmlBaseType( const QDomElement &element, con
 {
   //QgsDebugMsg("name = " + name );
   QDomElement complexTypeElement = domElement( element, QStringLiteral( "complexType" ), QStringLiteral( "name" ), name );
-  if ( complexTypeElement.isNull() ) return QLatin1String( "" );
+  if ( complexTypeElement.isNull() ) return QString();
 
   QDomElement extrest = domElement( complexTypeElement, QStringLiteral( "complexContent.extension" ) );
   if ( extrest.isNull() )
   {
     extrest = domElement( complexTypeElement, QStringLiteral( "complexContent.restriction" ) );
   }
-  if ( extrest.isNull() ) return QLatin1String( "" );
+  if ( extrest.isNull() ) return QString();
 
   QString extrestName = extrest.attribute( QStringLiteral( "base" ) );
   if ( extrestName.startsWith( QLatin1String( "gml:" ) ) )
@@ -300,7 +303,8 @@ QDomElement QgsGmlSchema::domElement( const QDomElement &element, const QString 
 QList<QDomElement> QgsGmlSchema::domElements( QList<QDomElement> &elements, const QString &attr, const QString &attrVal )
 {
   QList<QDomElement> list;
-  Q_FOREACH ( const QDomElement &el, elements )
+  const auto constElements = elements;
+  for ( const QDomElement &el : constElements )
   {
     if ( el.attribute( attr ) == attrVal )
     {
@@ -330,7 +334,7 @@ bool QgsGmlSchema::guessSchema( const QByteArray &data )
   if ( res == 0 )
   {
     QString err = QString( XML_ErrorString( XML_GetErrorCode( p ) ) );
-    QgsDebugMsg( QString( "XML_Parse returned %1 error %2" ).arg( res ).arg( err ) );
+    QgsDebugMsg( QStringLiteral( "XML_Parse returned %1 error %2" ).arg( res ).arg( err ) );
     mError = QgsError( err, QStringLiteral( "GML schema" ) );
     mError.append( tr( "Cannot guess schema" ) );
   }
@@ -340,15 +344,15 @@ bool QgsGmlSchema::guessSchema( const QByteArray &data )
 
 void QgsGmlSchema::startElement( const XML_Char *el, const XML_Char **attr )
 {
-  Q_UNUSED( attr );
+  Q_UNUSED( attr )
   mLevel++;
 
   QString elementName = QString::fromUtf8( el );
-  QgsDebugMsgLevel( QString( "-> %1 %2 %3" ).arg( mLevel ).arg( elementName, mLevel >= mSkipLevel ? "skip" : "" ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "-> %1 %2 %3" ).arg( mLevel ).arg( elementName, mLevel >= mSkipLevel ? "skip" : "" ), 5 );
 
   if ( mLevel >= mSkipLevel )
   {
-    //QgsDebugMsg( QString("skip level %1").arg( mLevel ) );
+    //QgsDebugMsg( QStringLiteral("skip level %1").arg( mLevel ) );
     return;
   }
 
@@ -357,7 +361,7 @@ void QgsGmlSchema::startElement( const XML_Char *el, const XML_Char **attr )
 
   QStringList splitName = elementName.split( NS_SEPARATOR );
   QString localName = splitName.last();
-  QString ns = splitName.size() > 1 ? splitName.first() : QLatin1String( "" );
+  QString ns = splitName.size() > 1 ? splitName.first() : QString();
   //QgsDebugMsg( "ns = " + ns + " localName = " + localName );
 
   ParseMode parseMode = modeStackTop();
@@ -443,11 +447,11 @@ void QgsGmlSchema::startElement( const XML_Char *el, const XML_Char **attr )
 void QgsGmlSchema::endElement( const XML_Char *el )
 {
   QString elementName = QString::fromUtf8( el );
-  QgsDebugMsgLevel( QString( "<- %1 %2" ).arg( mLevel ).arg( elementName ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "<- %1 %2" ).arg( mLevel ).arg( elementName ), 5 );
 
   if ( mLevel >= mSkipLevel )
   {
-    //QgsDebugMsg( QString("skip level %1").arg( mLevel ) );
+    //QgsDebugMsg( QStringLiteral("skip level %1").arg( mLevel ) );
     mLevel--;
     return;
   }
@@ -459,7 +463,7 @@ void QgsGmlSchema::endElement( const XML_Char *el )
 
   QStringList splitName = elementName.split( NS_SEPARATOR );
   QString localName = splitName.last();
-  QString ns = splitName.size() > 1 ? splitName.first() : QLatin1String( "" );
+  QString ns = splitName.size() > 1 ? splitName.first() : QString();
 
   QgsGmlSchema::ParseMode parseMode = modeStackTop();
 
@@ -492,10 +496,10 @@ void QgsGmlSchema::endElement( const XML_Char *el )
 
 void QgsGmlSchema::characters( const XML_Char *chars, int len )
 {
-  //QgsDebugMsg( QString("level %1 : %2").arg( mLevel ).arg( QString::fromUtf8( chars, len ) ) );
+  //QgsDebugMsg( QStringLiteral("level %1 : %2").arg( mLevel ).arg( QString::fromUtf8( chars, len ) ) );
   if ( mLevel >= mSkipLevel )
   {
-    //QgsDebugMsg( QString("skip level %1").arg( mLevel ) );
+    //QgsDebugMsg( QStringLiteral("skip level %1").arg( mLevel ) );
     return;
   }
 

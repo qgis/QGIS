@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import subprocess
 import platform
@@ -45,7 +41,9 @@ from qgis.core import (Qgis,
                        QgsMessageLog,
                        QgsSettings,
                        QgsCredentials,
-                       QgsDataSourceUri)
+                       QgsDataSourceUri,
+                       QgsProjUtils,
+                       QgsCoordinateReferenceSystem)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows, isMac
 
@@ -157,10 +155,10 @@ class GdalUtils:
                 if extensions:
                     GdalUtils.supportedRasters[shortName] = extensions
                     # Only creatable rasters can be referenced in output rasters
-                    if ((gdal.DCAP_CREATE in metadata
-                         and metadata[gdal.DCAP_CREATE] == 'YES')
-                        or (gdal.DCAP_CREATECOPY in metadata
-                            and metadata[gdal.DCAP_CREATECOPY] == 'YES')):
+                    if ((gdal.DCAP_CREATE in metadata and
+                         metadata[gdal.DCAP_CREATE] == 'YES') or
+                        (gdal.DCAP_CREATECOPY in metadata and
+                            metadata[gdal.DCAP_CREATECOPY] == 'YES')):
                         GdalUtils.supportedOutputRasters[shortName] = extensions
 
         return GdalUtils.supportedRasters
@@ -241,28 +239,10 @@ class GdalUtils:
         return gdal.VersionInfo('RELEASE_NAME')
 
     @staticmethod
-    def gdalHelpPath():
-        helpPath = ProcessingConfig.getSetting(GdalUtils.GDAL_HELP_PATH)
-
-        if helpPath is None:
-            if isWindows():
-                pass
-            elif isMac():
-                pass
-            else:
-                searchPaths = ['/usr/share/doc/libgdal-doc/gdal']
-                for path in searchPaths:
-                    if os.path.exists(path):
-                        helpPath = os.path.abspath(path)
-                        break
-
-        return helpPath if helpPath is not None else 'http://www.gdal.org/'
-
-    @staticmethod
-    def ogrConnectionString(uri, context):
-        """Generates OGR connection string from layer source
+    def ogrConnectionStringFromLayer(layer):
+        """Generates OGR connection string from a layer
         """
-        return GdalUtils.ogrConnectionStringAndFormat(uri, context)[0]
+        return GdalUtils.ogrConnectionStringAndFormatFromLayer(layer)[0]
 
     @staticmethod
     def ogrConnectionStringAndFormat(uri, context):
@@ -318,7 +298,7 @@ class GdalUtils:
             ogrstr = "PG:%s" % dsUri.connectionInfo()
             format = 'PostgreSQL'
         elif provider == 'mssql':
-            #'dbname=\'db_name\' host=myHost estimatedmetadata=true
+            # 'dbname=\'db_name\' host=myHost estimatedmetadata=true
             # srid=27700 type=MultiPolygon table="dbo"."my_table"
             # #(Shape) sql='
             dsUri = layer.dataProvider().uri()
@@ -363,6 +343,11 @@ class GdalUtils:
 
             ogrstr += dsUri.table()
             format = 'OCI'
+        elif provider.lower() == "wfs":
+            uri = QgsDataSourceUri(layer.source())
+            baseUrl = uri.param('url').split('?')[0]
+            ogrstr = "WFS:{}".format(baseUrl)
+            format = 'WFS'
         else:
             ogrstr = str(layer.source()).split("|")[0]
             path, ext = os.path.splitext(ogrstr)
@@ -371,11 +356,13 @@ class GdalUtils:
         return ogrstr, '"' + format + '"'
 
     @staticmethod
+    def ogrOutputLayerName(uri):
+        uri = uri.strip('"')
+        return os.path.basename(os.path.splitext(uri)[0])
+
+    @staticmethod
     def ogrLayerName(uri):
         uri = uri.strip('"')
-        #if os.path.isfile(uri):
-        #    return os.path.basename(os.path.splitext(uri)[0])
-
         if ' table=' in uri:
             # table="schema"."table"
             re_table_schema = re.compile(' table="([^"]*)"\\."([^"]*)"')
@@ -424,16 +411,19 @@ class GdalUtils:
 
     @staticmethod
     def writeLayerParameterToTextFile(filename, alg, parameters, parameter_name, context, quote=True, executing=False):
-        listFile = os.path.join(QgsProcessingUtils.tempFolder(), filename)
-        with open(listFile, 'w') as f:
-            if executing:
-                layers = []
-                for l in alg.parameterAsLayerList(parameters, parameter_name, context):
-                    if quote:
-                        layers.append('"' + l.source() + '"')
-                    else:
-                        layers.append(l.source())
+        listFile = QgsProcessingUtils.generateTempFilename(filename)
+
+        if executing:
+            layers = []
+            for l in alg.parameterAsLayerList(parameters, parameter_name, context):
+                if quote:
+                    layers.append('"' + l.source() + '"')
+                else:
+                    layers.append(l.source())
+
+            with open(listFile, 'w') as f:
                 f.write('\n'.join(layers))
+
         return listFile
 
     @staticmethod
@@ -444,8 +434,12 @@ class GdalUtils:
         :param crs: crs to convert
         :return: gdal friendly string
         """
-        if crs.authid().upper().startswith('EPSG:'):
+        if crs.authid().upper().startswith('EPSG:') or crs.authid().upper().startswith('IGNF:') or crs.authid().upper().startswith('ESRI:'):
             return crs.authid()
 
-        # fallback to proj4 string
-        return crs.toProj4()
+        if QgsProjUtils.projVersionMajor() >= 6:
+            # use WKT
+            return crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL)
+
+        # fallback to proj4 string, stripping out newline characters
+        return crs.toProj().replace('\n', ' ').replace('\r', ' ')

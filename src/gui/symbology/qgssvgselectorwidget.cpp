@@ -23,6 +23,7 @@
 #include "qgssvgcache.h"
 #include "qgssymbollayerutils.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QAbstractListModel>
 #include <QCheckBox>
@@ -78,12 +79,13 @@ void QgsSvgSelectorLoader::loadPath( const QString &path )
   if ( mCanceled )
     return;
 
-  // QgsDebugMsg( QString( "loading path: %1" ).arg( path ) );
+  // QgsDebugMsg( QStringLiteral( "loading path: %1" ).arg( path ) );
 
   if ( path.isEmpty() )
   {
     QStringList svgPaths = QgsApplication::svgPaths();
-    Q_FOREACH ( const QString &svgPath, svgPaths )
+    const auto constSvgPaths = svgPaths;
+    for ( const QString &svgPath : constSvgPaths )
     {
       if ( mCanceled )
         return;
@@ -107,14 +109,15 @@ void QgsSvgSelectorLoader::loadPath( const QString &path )
 
     loadImages( path );
 
-    Q_FOREACH ( const QString &item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+    const auto constEntryList = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot );
+    for ( const QString &item : constEntryList )
     {
       if ( mCanceled )
         return;
 
       QString newPath = dir.path() + '/' + item;
       loadPath( newPath );
-      // QgsDebugMsg( QString( "added path: %1" ).arg( newPath ) );
+      // QgsDebugMsg( QStringLiteral( "added path: %1" ).arg( newPath ) );
     }
   }
 }
@@ -122,14 +125,15 @@ void QgsSvgSelectorLoader::loadPath( const QString &path )
 void QgsSvgSelectorLoader::loadImages( const QString &path )
 {
   QDir dir( path );
-  Q_FOREACH ( const QString &item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
+  const auto constEntryList = dir.entryList( QStringList( "*.svg" ), QDir::Files );
+  for ( const QString &item : constEntryList )
   {
     if ( mCanceled )
       return;
 
     // TODO test if it is correct SVG
     QString svgPath = dir.path() + '/' + item;
-    // QgsDebugMsg( QString( "adding svg: %1" ).arg( svgPath ) );
+    // QgsDebugMsg( QStringLiteral( "adding svg: %1" ).arg( svgPath ) );
 
     // add it to the list of queued SVGs
     mQueuedSvgs << svgPath;
@@ -196,7 +200,8 @@ void QgsSvgGroupLoader::loadGroup( const QString &parentPath )
 
   mTraversedPaths.insert( canonicalPath );
 
-  Q_FOREACH ( const QString &item, parentDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+  const auto constEntryList = parentDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot );
+  for ( const QString &item : constEntryList )
   {
     if ( mCanceled )
       return;
@@ -234,7 +239,7 @@ QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject *parent, const QString
 
 int QgsSvgSelectorListModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return mSvgFiles.count();
 }
 
@@ -273,14 +278,17 @@ QVariant QgsSvgSelectorListModel::data( const QModelIndex &index, int role ) con
 
   if ( role == Qt::DecorationRole ) // icon
   {
-    QPixmap pixmap;
-    if ( !QPixmapCache::find( entry, pixmap ) )
+    QPixmap *pixmap = nullptr;
+    if ( !QPixmapCache::find( entry, pixmap ) || !pixmap )
     {
-      pixmap = createPreview( entry );
-      QPixmapCache::insert( entry, pixmap );
+      QPixmap newPixmap = createPreview( entry );
+      QPixmapCache::insert( entry, newPixmap );
+      return newPixmap;
     }
-
-    return pixmap;
+    else
+    {
+      return *pixmap;
+    }
   }
   else if ( role == Qt::UserRole || role == Qt::ToolTipRole )
   {
@@ -332,12 +340,12 @@ QgsSvgSelectorGroupsModel::QgsSvgSelectorGroupsModel( QObject *parent )
     baseGroup->setData( QVariant( svgPaths.at( i ) ) );
     baseGroup->setEditable( false );
     baseGroup->setCheckable( false );
-    baseGroup->setIcon( QgsApplication::style()->standardIcon( QStyle::SP_DirIcon ) );
+    baseGroup->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconFolder.svg" ) ) );
     baseGroup->setToolTip( dir.path() );
     parentItem->appendRow( baseGroup );
     parentPaths << svgPaths.at( i );
     mPathItemHash.insert( svgPaths.at( i ), baseGroup );
-    QgsDebugMsg( QString( "SVG base path %1: %2" ).arg( i ).arg( baseGroup->data().toString() ) );
+    QgsDebugMsg( QStringLiteral( "SVG base path %1: %2" ).arg( i ).arg( baseGroup->data().toString() ) );
   }
   mLoader->setParentPaths( parentPaths );
   connect( mLoader, &QgsSvgGroupLoader::foundPath, this, &QgsSvgSelectorGroupsModel::addPath );
@@ -361,7 +369,7 @@ void QgsSvgSelectorGroupsModel::addPath( const QString &parentPath, const QStrin
   group->setEditable( false );
   group->setCheckable( false );
   group->setToolTip( fullPath );
-  group->setIcon( QgsApplication::style()->standardIcon( QStyle::SP_DirIcon ) );
+  group->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconFolder.svg" ) ) );
   parentGroup->appendRow( group );
   mPathItemHash.insert( fullPath, group );
 }
@@ -375,9 +383,13 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
   // TODO: in-code gui setup with option to vertically or horizontally stack SVG groups/images widgets
   setupUi( this );
 
-  connect( mSvgSourceLineEdit, &QgsSvgSourceLineEdit::sourceChanged, this, &QgsSvgSelectorWidget::svgSourceChanged );
+  connect( mSvgSourceLineEdit, &QgsAbstractFileContentSourceLineEdit::sourceChanged, this, &QgsSvgSelectorWidget::svgSourceChanged );
 
-  mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXX" ) ) ) ) );
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+  mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 3 ) ) );
+#else
+  mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 3 ) ) );
+#endif
   mImagesListView->setGridSize( QSize( mIconSize * 1.2, mIconSize * 1.2 ) );
 
   mGroupsTreeView->setHeaderHidden( true );
@@ -477,7 +489,7 @@ QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl,
   : QDialog( parent, fl )
 {
   // TODO: pass 'orientation' to QgsSvgSelectorWidget for customizing its layout, once implemented
-  Q_UNUSED( orientation );
+  Q_UNUSED( orientation )
 
   // create buttonbox
   mButtonBox = new QDialogButtonBox( buttons, orientation, this );
@@ -493,14 +505,5 @@ QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl,
 
   mLayout->addWidget( mButtonBox );
   setLayout( mLayout );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/SvgSelectorDialog/geometry" ) ).toByteArray() );
-}
-
-QgsSvgSelectorDialog::~QgsSvgSelectorDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/SvgSelectorDialog/geometry" ), saveGeometry() );
 }
 

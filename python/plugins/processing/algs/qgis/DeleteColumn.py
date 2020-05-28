@@ -21,21 +21,20 @@ __author__ = 'Michael Minn'
 __date__ = 'May 2010'
 __copyright__ = '(C) 2010, Michael Minn'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.PyQt.QtCore import QCoreApplication
 
 from qgis.core import (QgsProcessingParameterField,
                        QgsProcessing,
+                       QgsProcessingAlgorithm,
                        QgsProcessingFeatureSource)
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
 class DeleteColumn(QgisFeatureBasedAlgorithm):
-
     COLUMNS = 'COLUMN'
+
+    def flags(self):
+        return super().flags() & ~QgsProcessingAlgorithm.FlagSupportsInPlaceEdits
 
     def tags(self):
         return self.tr('drop,delete,remove,fields,columns,attributes').split(',')
@@ -66,7 +65,7 @@ class DeleteColumn(QgisFeatureBasedAlgorithm):
         return self.tr('Drop field(s)')
 
     def outputName(self):
-        return self.tr('Fields dropped')
+        return self.tr('Remaining fields')
 
     def prepareAlgorithm(self, parameters, context, feedback):
         self.fields_to_delete = self.parameterAsFields(parameters, self.COLUMNS, context)

@@ -21,10 +21,6 @@ __author__ = 'Arnaud Morvan'
 __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Arnaud Morvan'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import (
     QgsDistanceArea,
     QgsExpression,
@@ -36,13 +32,12 @@ from qgis.core import (
     QgsProcessingParameterType,
     NULL)
 
-from PyQt5.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
 class FieldsMapper(QgisFeatureBasedAlgorithm):
-
     INPUT_LAYER = 'INPUT_LAYER'
     FIELDS_MAPPING = 'FIELDS_MAPPING'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
@@ -79,6 +74,9 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
     def parameterAsFieldsMapping(self, parameters, name, context):
         return parameters[name]
 
+    def supportInPlaceEdit(self, layer):
+        return False
+
     def prepareAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, 'INPUT', context)
         if source is None:
@@ -109,9 +107,12 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
                 expression.setAreaUnits(context.project().areaUnits())
                 if expression.hasParserError():
                     feedback.reportError(
-                        self.tr(u'Parser error in expression "{}": {}')
-                        .format(expression.expression(),
-                                expression.parserErrorString()))
+                        self.tr('Parser error for field "{}" with expression "{}": {}')
+                        .format(
+                            field_def['name'],
+                            expression.expression(),
+                            expression.parserErrorString()),
+                        True)
                     return False
                 self.expressions.append(expression)
             else:
@@ -121,12 +122,12 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
     def outputFields(self, inputFields):
         return self.fields
 
-    def processAlgorithm(self, parameters, context, feeback):
+    def processAlgorithm(self, parameters, context, feedback):
         for expression in self.expressions:
             if expression is not None:
                 expression.prepare(self.expr_context)
         self._row_number = 0
-        return super().processAlgorithm(parameters, context, feeback)
+        return super().processAlgorithm(parameters, context, feedback)
 
     def processFeature(self, feature, context, feedback):
         attributes = []
@@ -163,6 +164,12 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
 
         def id(self):
             return 'fields_mapping'
+
+        def pythonImportString(self):
+            return 'from processing.algs.qgis.FieldsMapper import FieldsMapper'
+
+        def className(self):
+            return 'FieldsMapper.ParameterFieldsMapping'
 
         def description(self):
             return QCoreApplication.translate('Processing', 'A mapping of field names to field type definitions and expressions. Used for the refactor fields algorithm.')

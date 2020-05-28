@@ -20,7 +20,7 @@
 
 #define SIP_NO_FILE
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
@@ -73,6 +73,7 @@ class QgsDrapeToZAlgorithm : public QgsDrapeAlgorithmBase
     QString shortHelpString() const override;
     QString shortDescription() const override;
     QgsDrapeToZAlgorithm *createInstance() const override SIP_FACTORY;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
 
@@ -81,6 +82,7 @@ class QgsDrapeToZAlgorithm : public QgsDrapeAlgorithmBase
   private:
     void prepareGeometry( QgsGeometry &geometry, double defaultVal ) const override;
     QgsPoint drapeVertex( const QgsPoint &vertex, double rasterVal ) const override;
+
 
 };
 
@@ -95,6 +97,7 @@ class QgsDrapeToMAlgorithm : public QgsDrapeAlgorithmBase
     QString shortHelpString() const override;
     QString shortDescription() const override;
     QgsDrapeToMAlgorithm *createInstance() const override SIP_FACTORY;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
 

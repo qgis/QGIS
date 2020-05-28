@@ -25,7 +25,12 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QAction, QApplication
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsProject, QgsMapLayer, QgsDataSourceUri, QgsApplication
+from qgis.core import (
+    QgsProject,
+    QgsMapLayerType,
+    QgsDataSourceUri,
+    QgsApplication
+)
 
 from . import resources_rc  # NOQA
 
@@ -56,7 +61,7 @@ class DBManagerPlugin(object):
                                    self.iface.mainWindow())
         self.layerAction.setObjectName("dbManagerUpdateSqlLayer")
         self.layerAction.triggered.connect(self.onUpdateSqlLayer)
-        self.iface.addCustomActionForLayerType(self.layerAction, "", QgsMapLayer.VectorLayer, False)
+        self.iface.addCustomActionForLayerType(self.layerAction, "", QgsMapLayerType.VectorLayer, False)
         for l in list(QgsProject.instance().mapLayers().values()):
             self.onLayerWasAdded(l)
         QgsProject.instance().layerWasAdded.connect(self.onLayerWasAdded)
@@ -80,7 +85,7 @@ class DBManagerPlugin(object):
 
     def onLayerWasAdded(self, aMapLayer):
         # Be able to update every Db layer from Postgres, Spatialite and Oracle
-        if hasattr(aMapLayer, 'dataProvider') and aMapLayer.dataProvider().name() in ['postgres', 'spatialite', 'oracle']:
+        if hasattr(aMapLayer, 'dataProvider') and aMapLayer.dataProvider() and aMapLayer.dataProvider().name() in ['postgres', 'spatialite', 'oracle']:
             self.iface.addCustomActionForLayer(self.layerAction, aMapLayer)
         # virtual has QUrl source
         # url = QUrl(QUrl.fromPercentEncoding(l.source()))

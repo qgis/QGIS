@@ -10,8 +10,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Larry Shaffer'
 __date__ = '2014/02/11'
 __copyright__ = 'Copyright 2014, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import sys
 import os
@@ -789,9 +787,8 @@ if __name__ == '__main__':
     # local_srv.open_temp_dir()
     # sys.exit()
     # creating crs needs app instance to access /resources/srs.db
-    #   crs = QgsCoordinateReferenceSystem()
+    #   crs = QgsCoordinateReferenceSystem('EPSG:32613')
     # default for labeling test data sources: WGS 84 / UTM zone 13N
-    #   crs.createFromSrid(32613)
     req_params = {
         'SERVICE': 'WMS',
         'VERSION': '1.3.0',

@@ -24,6 +24,7 @@
 #include "qgsrendercontext.h"
 #include "qgslayoutundocommand.h"
 #include "qgslayoutmeasurement.h"
+#include "qgsapplication.h"
 #include <QGraphicsRectItem>
 #include <QIcon>
 #include <QPainter>
@@ -32,7 +33,7 @@ class QgsLayout;
 class QPainter;
 class QgsLayoutItemGroup;
 class QgsLayoutEffect;
-
+class QgsStyleEntityVisitorInterface;
 
 /**
  * \ingroup core
@@ -102,7 +103,6 @@ class CORE_EXPORT QgsLayoutItemRenderContext
     double mViewScaleFactor = 1.0;
 };
 
-
 /**
  * \ingroup core
  * \class QgsLayoutItem
@@ -125,9 +125,14 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 #include "qgslayoutitempage.h"
 #endif
 
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
+
+    // FREAKKKKIIN IMPORTANT!!!!!!!!!!!
+    // IF YOU PUT SOMETHING HERE, PUT IT IN QgsLayoutObject CASTING *****ALSO******
+    // (it's not enough for it to be in only one of the places, as sip inconsistently
+    // decides which casting code to perform here)
+
     // the conversions have to be static, because they're using multiple inheritance
     // (seen in PyQt4 .sip files for some QGraphicsItem classes)
     switch ( sipCpp->type() )
@@ -177,11 +182,15 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
         sipType = sipType_QgsLayoutFrame;
         *sipCppRet = static_cast<QgsLayoutFrame *>( sipCpp );
         break;
+
+      // did you read that comment above? NO? Go read it now. You're about to break stuff.
+
       default:
-        sipType = 0;
+        sipType = NULL;
     }
     SIP_END
 #endif
+
 
     Q_OBJECT
     Q_PROPERTY( bool locked READ isLocked WRITE setLocked NOTIFY lockChanged )
@@ -228,6 +237,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoMapGridAnnotationFontColor, //!< Map frame annotation color
       UndoMapGridLineSymbol, //!< Grid line symbol
       UndoMapGridMarkerSymbol, //!< Grid marker symbol
+      UndoMapGridIntervalRange, //!< Grid interval range
+      UndoMapLabelMargin, //!< Margin for labels from edge of map
       UndoPictureRotation, //!< Picture rotation
       UndoPictureFillColor, //!< Picture fill color
       UndoPictureStrokeColor, //!< Picture stroke color
@@ -263,6 +274,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoScaleBarSegmentsLeft, //!< Scalebar segments left
       UndoScaleBarSegments, //!< Scalebar number of segments
       UndoScaleBarHeight, //!< Scalebar height
+      UndoScaleBarSubdivisions, //!< Scalebar number of subdivisions
+      UndoScaleBarSubdivisionsHeight, //!< Scalebar subdivisions height
       UndoScaleBarFontColor, //!< Scalebar font color
       UndoScaleBarFillColor, //!< Scalebar fill color
       UndoScaleBarFillColor2, //!< Scalebar secondary fill color
@@ -280,9 +293,19 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     };
 
     /**
+     * Flags for controlling how an item behaves.
+     * \since QGIS 3.4.3
+     */
+    enum Flag
+    {
+      FlagOverridesPaint = 1 << 1,  //!< Item overrides the default layout item painting method
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
+    /**
      * Constructor for QgsLayoutItem, with the specified parent \a layout.
      *
-     * If \a manageZValue is true, the z-Value of this item will be managed by the layout.
+     * If \a manageZValue is TRUE, the z-Value of this item will be managed by the layout.
      * Generally this is the desired behavior.
      */
     explicit QgsLayoutItem( QgsLayout *layout, bool manageZValue = true );
@@ -315,6 +338,12 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see setId()
     */
     virtual QString uuid() const { return mUuid; }
+
+    /**
+     * Returns the item's flags, which indicate how the item behaves.
+     * \since QGIS 3.4.3
+     */
+    virtual Flags itemFlags() const;
 
     /**
      * Returns the item's ID name. This is not necessarily unique, and duplicate ID names may exist
@@ -361,14 +390,14 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void setLocked( bool locked );
 
     /**
-     * Returns true if the item is locked, and cannot be interacted with using the mouse.
+     * Returns TRUE if the item is locked, and cannot be interacted with using the mouse.
      * \see setLocked()
      * \see lockChanged()
      */
     bool isLocked() const { return mIsLocked; }
 
     /**
-     * Returns true if the item is part of a QgsLayoutItemGroup group.
+     * Returns TRUE if the item is part of a QgsLayoutItemGroup group.
      * \see parentGroup()
      * \see setParentGroup()
      */
@@ -389,14 +418,92 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void setParentGroup( QgsLayoutItemGroup *group );
 
     /**
+     * Behavior of item when exporting to layered outputs.
+     * \since QGIS 3.10
+     */
+    enum ExportLayerBehavior
+    {
+      CanGroupWithAnyOtherItem, //!< Item can be placed on a layer with any other item (default behavior)
+      CanGroupWithItemsOfSameType, //!< Item can only be placed on layers with other items of the same type, but multiple items of this type can be grouped together
+      MustPlaceInOwnLayer, //!< Item must be placed in its own individual layer
+      ItemContainsSubLayers, //!< Item contains multiple sublayers which must be individually exported
+    };
+
+    /**
+     * Returns the behavior of this item during exporting to layered exports (e.g. SVG).
+     * \see numberExportLayers()
+     * \see exportLayerDetails()
+     * \since QGIS 3.10
+     */
+    virtual ExportLayerBehavior exportLayerBehavior() const;
+
+    /**
      * Returns the number of layers that this item requires for exporting during layered exports (e.g. SVG).
      * Returns 0 if this item is to be placed on the same layer as the previous item,
      * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers.
      *
      * Items which require multiply layers should check QgsLayoutContext::currentExportLayer() during
      * their rendering to determine which layer should be drawn.
+     *
+     * \see exportLayerBehavior()
+     * \see exportLayerDetails()
+     *
+     * \deprecated Use nextExportPart() and exportLayerBehavior() instead.
      */
-    virtual int numberExportLayers() const { return 0; }
+    Q_DECL_DEPRECATED virtual int numberExportLayers() const SIP_DEPRECATED;
+
+    /**
+     * Starts a multi-layer export operation.
+     *
+     * \see stopLayeredExport()
+     * \see nextExportPart()
+     * \since QGIS 3.10
+     */
+    virtual void startLayeredExport();
+
+    /**
+     * Stops a multi-layer export operation.
+     *
+     * \see startLayeredExport()
+     * \see nextExportPart()
+     * \since QGIS 3.10
+     */
+    virtual void stopLayeredExport();
+
+    /**
+     * Moves to the next export part for a multi-layered export item, during a multi-layered export.
+     *
+     * \see startLayeredExport()
+     * \see stopLayeredExport()
+     * \since QGIS 3.10
+     */
+    virtual bool nextExportPart();
+
+    /**
+     * Contains details of a particular export layer relating to a layout item.
+     * \ingroup core
+     * \since QGIS 3.10
+     */
+    struct CORE_EXPORT ExportLayerDetail
+    {
+      //! User-friendly name for the export layer
+      QString name;
+
+      //! Associated map layer ID, or an empty string if this export layer is not associated with a map layer
+      QString mapLayerId;
+
+      //! Associated map theme, or an empty string if this export layer does not need to be associated with a map theme
+      QString mapTheme;
+    };
+
+    /**
+     * Returns the details for the specified current export layer.
+     *
+     * Only valid between calls to startLayeredExport() and stopLayeredExport()
+     *
+     * \since QGIS 3.10
+     */
+    virtual QgsLayoutItem::ExportLayerDetail exportLayerDetails() const;
 
     /**
      * Handles preparing a paint surface for the layout item and painting the item's
@@ -443,7 +550,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * size will place restrictions on the allowed item size. Data defined item size overrides
      * will also override the specified target size.
      *
-     * If \a includesFrame is true, then the size specified by \a size includes the
+     * If \a includesFrame is TRUE, then the size specified by \a size includes the
      * item's frame.
      *
      * \see minimumSize()
@@ -456,14 +563,14 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     /**
      * Attempts to move the item to a specified \a point.
      *
-     * If \a useReferencePoint is true, this method will respect the item's
+     * If \a useReferencePoint is TRUE, this method will respect the item's
      * reference point, in that the item will be moved so that its current reference
      * point is placed at the specified target point.
      *
-     * If \a useReferencePoint is false, the item will be moved so that \a point
+     * If \a useReferencePoint is FALSE, the item will be moved so that \a point
      * falls at the top-left corner of the item.
      *
-     * If \a includesFrame is true, then the position specified by \a point represents the
+     * If \a includesFrame is TRUE, then the position specified by \a point represents the
      * point at which to place the outside of the item's frame.
      *
      * If \a page is not left at the default -1 value, then the position specified by \a point
@@ -484,7 +591,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * Attempts to update the item's position and size to match the passed \a rect in layout
      * coordinates.
      *
-     * If \a includesFrame is true, then the position and size specified by \a rect represents the
+     * If \a includesFrame is TRUE, then the position and size specified by \a rect represents the
      * position and size at for the outside of the item's frame.
      *
      * Note that the final position and size of the item may not match the specified target rect,
@@ -599,7 +706,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = nullptr ) override SIP_FACTORY;
 
     /**
-     * Returns true if the item includes a frame.
+     * Returns TRUE if the item includes a frame.
      * \see setFrameEnabled()
      * \see frameStrokeWidth()
      * \see frameJoinStyle()
@@ -626,7 +733,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void setFrameStrokeColor( const QColor &color );
 
     /**
-     * Returns the frame's stroke color. This is only used if frameEnabled() returns true.
+     * Returns the frame's stroke color. This is only used if frameEnabled() returns TRUE.
      * \see frameEnabled()
      * \see setFrameStrokeColor()
      * \see frameJoinStyle()
@@ -644,7 +751,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual void setFrameStrokeWidth( QgsLayoutMeasurement width );
 
     /**
-     * Returns the frame's stroke width. This is only used if frameEnabled() returns true.
+     * Returns the frame's stroke width. This is only used if frameEnabled() returns TRUE.
      * \see frameEnabled()
      * \see setFrameStrokeWidth()
      * \see frameJoinStyle()
@@ -671,7 +778,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void setFrameJoinStyle( Qt::PenJoinStyle style );
 
     /**
-     * Returns true if the item has a background.
+     * Returns TRUE if the item has a background.
      * \see setBackgroundEnabled()
      * \see backgroundColor()
      */
@@ -686,7 +793,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     /**
      * Returns the background color for this item. This is only used if hasBackground()
-     * returns true.
+     * returns TRUE.
      * \see setBackgroundColor()
      * \see hasBackground()
      */
@@ -742,7 +849,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void setExcludeFromExports( bool exclude );
 
     /**
-     * Returns true if the item contains contents with blend modes or transparency
+     * Returns TRUE if the item contains contents with blend modes or transparency
      * effects which can only be reproduced by rastering the item.
      *
      * Subclasses should ensure that implemented overrides of this method
@@ -753,7 +860,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual bool containsAdvancedEffects() const;
 
     /**
-     * Returns true if the item is drawn in such a way that forces the whole layout
+     * Returns TRUE if the item is drawn in such a way that forces the whole layout
      * to be rasterized when exporting to vector formats.
      * \see containsAdvancedEffects()
      */
@@ -837,6 +944,17 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     QgsExpressionContext createExpressionContext() const override;
 
+    /**
+     * Accepts the specified style entity \a visitor, causing it to visit all style entities associated
+     * with the layout item.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 3.10
+     */
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
   public slots:
 
     /**
@@ -866,8 +984,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     /**
      * Sets the layout item's \a rotation, in degrees clockwise.
      *
-     * If \a adjustPosition is true, then this rotation occurs around the center of the item.
-     * If \a adjustPosition is false, rotation occurs around the item origin.
+     * If \a adjustPosition is TRUE, then this rotation occurs around the center of the item.
+     * If \a adjustPosition is FALSE, rotation occurs around the item origin.
      *
      * \see itemRotation()
      * \see rotateItem()
@@ -904,6 +1022,13 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * Emitted when the item's size or position changes.
      */
     void sizePositionChanged();
+
+    /**
+     * Emitted whenever the number of background tasks an item is executing changes.
+     *
+     * \since QGIS 3.10
+     */
+    void backgroundTaskCountChanged( int count );
 
   protected:
 
@@ -988,21 +1113,21 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     /**
      * Refresh item's opacity, considering data defined opacity.
-      * If \a updateItem is set to false the item will not be automatically
+      * If \a updateItem is set to FALSE the item will not be automatically
       * updated after the opacity is set and a later call to update() must be made.
      */
     void refreshOpacity( bool updateItem = true );
 
     /**
      * Refresh item's frame, considering data defined colors and frame size.
-     * If \a updateItem is set to false, the item will not be automatically updated
+     * If \a updateItem is set to FALSE, the item will not be automatically updated
      * after the frame is set and a later call to update() must be made.
      */
     void refreshFrame( bool updateItem = true );
 
     /**
      * Refresh item's background color, considering data defined colors.
-     * If \a updateItem is set to false, the item will not be automatically updated
+     * If \a updateItem is set to FALSE, the item will not be automatically updated
      * after the frame color is set and a later call to update() must be made.
      */
     void refreshBackgroundColor( bool updateItem = true );
@@ -1101,6 +1226,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     //! Item opacity, between 0 and 1
     double mOpacity = 1.0;
+    double mEvaluatedOpacity = 1.0;
 
     QImage mItemCachedImage;
     double mItemCacheDpi = -1;
@@ -1129,7 +1255,6 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void preparePainter( QPainter *painter );
     bool shouldDrawAntialiased() const;
     bool shouldDrawDebugRect() const;
-
     QSizeF applyMinimumSize( QSizeF targetSize );
     QSizeF applyFixedSize( QSizeF targetSize );
     QgsLayoutPoint applyDataDefinedPosition( const QgsLayoutPoint &position );
@@ -1148,6 +1273,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     friend class QgsLayoutItemGroup;
     friend class QgsCompositionConverter;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayoutItem::Flags )
 
 #endif //QGSLAYOUTITEM_H
 

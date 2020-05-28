@@ -24,13 +24,37 @@ The content of this file is based on
 from builtins import zip
 from builtins import next
 from builtins import str
+from hashlib import md5
 
-from qgis.PyQt.QtCore import Qt, pyqtSignal
-from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QInputDialog, QStyledItemDelegate, QTableWidgetItem
-from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardItemModel, QStandardItem
+import os
+
+from qgis.PyQt.QtCore import Qt, pyqtSignal, QDir
+from qgis.PyQt.QtWidgets import (QDialog,
+                                 QWidget,
+                                 QAction,
+                                 QApplication,
+                                 QInputDialog,
+                                 QStyledItemDelegate,
+                                 QTableWidgetItem,
+                                 QFileDialog,
+                                 QMessageBox
+                                 )
+from qgis.PyQt.QtGui import (QKeySequence,
+                             QCursor,
+                             QClipboard,
+                             QIcon,
+                             QStandardItemModel,
+                             QStandardItem
+                             )
 from qgis.PyQt.Qsci import QsciAPIs
 
-from qgis.core import QgsProject, QgsApplication, QgsTask, QgsSettings
+from qgis.core import (
+    QgsProject,
+    QgsApplication,
+    QgsTask,
+    QgsSettings,
+    QgsMapLayerType
+)
 from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import BaseError
@@ -51,9 +75,41 @@ from .ui.ui_DlgSqlWindow import Ui_DbManagerDlgSqlWindow as Ui_Dialog
 import re
 
 
+def check_comments_in_sql(raw_sql_input):
+    lines = []
+    for line in raw_sql_input.split('\n'):
+        if not line.strip().startswith('--'):
+            if '--' in line:
+                comment_positions = []
+                comments = re.finditer(r'--', line)
+                for match in comments:
+                    comment_positions.append(match.start())
+                quote_positions = []
+                identifiers = re.finditer(r'"(?:[^"]|"")*"', line)
+                quotes = re.finditer(r"'(?:[^']|'')*'", line)
+                for match in identifiers:
+                    quote_positions.append((match.start(), match.end()))
+                for match in quotes:
+                    quote_positions.append((match.start(), match.end()))
+                unquoted_comments = comment_positions.copy()
+                for comment in comment_positions:
+                    for quote_position in quote_positions:
+                        if comment >= quote_position[0] and comment < quote_position[1]:
+                            unquoted_comments.remove(comment)
+                if len(unquoted_comments) > 0:
+                    lines.append(line[:unquoted_comments[0]])
+                else:
+                    lines.append(line)
+            else:
+                lines.append(line)
+    sql = ' '.join(lines)
+    return sql.strip()
+
+
 class DlgSqlWindow(QWidget, Ui_Dialog):
     nameChanged = pyqtSignal(str)
     QUERY_HISTORY_LIMIT = 20
+    hasChanged = False
 
     def __init__(self, iface, db, parent=None):
         QWidget.__init__(self, parent)
@@ -64,13 +120,14 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.connectionName = db.connection().connectionName()
         self.filter = ""
         self.modelAsync = None
-        self.allowMultiColumnPk = isinstance(db, PGDatabase)  # at the moment only PostgreSQL allows a primary key to span multiple columns, SpatiaLite doesn't
-        self.aliasSubQuery = isinstance(db, PGDatabase)       # only PostgreSQL requires subqueries to be aliases
+        self.allowMultiColumnPk = isinstance(db,
+                                             PGDatabase)  # at the moment only PostgreSQL allows a primary key to span multiple columns, SpatiaLite doesn't
+        self.aliasSubQuery = isinstance(db, PGDatabase)  # only PostgreSQL requires subqueries to be aliases
         self.setupUi(self)
         self.setWindowTitle(
             self.tr(u"{0} - {1} [{2}]").format(self.windowTitle(), self.connectionName, self.dbType))
 
-        self.defaultLayerName = 'QueryLayer'
+        self.defaultLayerName = self.tr('QueryLayer')
 
         if self.allowMultiColumnPk:
             self.uniqueColumnCheck.setText(self.tr("Column(s) with unique values"))
@@ -81,6 +138,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.editSql.setMarginVisible(True)
         self.initCompleter()
+        self.editSql.textChanged.connect(lambda: self.setHasChanged(True))
 
         settings = QgsSettings()
         self.history = settings.value('DB_Manager/queryHistory/' + self.dbType, {self.connectionName: []})
@@ -93,14 +151,9 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.populateQueryHistory()
         self.btnQueryHistory.toggled.connect(self.showHideQueryHistory)
 
-        self.btnCancel.setText(self.tr("Cancel (ESC)"))
         self.btnCancel.setEnabled(False)
         self.btnCancel.clicked.connect(self.executeSqlCanceled)
-        try:
-            self.btnCancel.setShortcut(QKeySequence.Cancel)
-        except AttributeError:
-            # QKeySequence.Cancel only available in Qt >= 5.6
-            pass
+        self.btnCancel.setShortcut(QKeySequence.Cancel)
         self.progressBar.setEnabled(False)
         self.progressBar.setRange(0, 100)
         self.progressBar.setValue(0)
@@ -119,6 +172,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.btnClear.clicked.connect(self.clearSql)
 
         self.presetStore.clicked.connect(self.storePreset)
+        self.presetSaveAsFile.clicked.connect(self.saveAsFilePreset)
+        self.presetLoadFile.clicked.connect(self.loadFilePreset)
         self.presetDelete.clicked.connect(self.deletePreset)
         self.presetCombo.activated[str].connect(self.loadPreset)
         self.presetCombo.activated[str].connect(self.presetName.setText)
@@ -134,8 +189,9 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.uniqueCombo.setModel(self.uniqueModel)
         if self.allowMultiColumnPk:
             self.uniqueCombo.setItemDelegate(QStyledItemDelegate())
-            self.uniqueModel.itemChanged.connect(self.uniqueChanged)                 # react to the (un)checking of an item
-            self.uniqueCombo.lineEdit().textChanged.connect(self.uniqueTextChanged)  # there are other events that change the displayed text and some of them can not be caught directly
+            self.uniqueModel.itemChanged.connect(self.uniqueChanged)  # react to the (un)checking of an item
+            self.uniqueCombo.lineEdit().textChanged.connect(
+                self.uniqueTextChanged)  # there are other events that change the displayed text and some of them can not be caught directly
 
         # hide the load query as layer if feature is not supported
         self._loadAsLayerAvailable = self.db.connector.hasCustomQuerySupport()
@@ -197,6 +253,9 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
         self.populateQueryHistory()
 
+    def getQueryHash(self, name):
+        return 'q%s' % md5(name.encode('utf8')).hexdigest()
+
     def updatePresetsCombobox(self):
         self.presetCombo.clear()
 
@@ -214,9 +273,9 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         query = self._getSqlQuery()
         if query == "":
             return
-        name = self.presetName.text()
-        QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/name', name)
-        QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/query', query)
+        name = str(self.presetName.text())
+        QgsProject.instance().writeEntry('DBManager', 'savedQueries/' + self.getQueryHash(name) + '/name', name)
+        QgsProject.instance().writeEntry('DBManager', 'savedQueries/' + self.getQueryHash(name) + '/query', query)
         index = self.presetCombo.findText(name)
         if index == -1:
             self.presetCombo.addItem(name)
@@ -224,15 +283,55 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         else:
             self.presetCombo.setCurrentIndex(index)
 
+    def saveAsFilePreset(self):
+        settings = QgsSettings()
+        lastDir = settings.value('DB_Manager/lastDirSQLFIle', "")
+
+        query = self.editSql.text()
+        if query == "":
+            return
+
+        filename, _ = QFileDialog.getSaveFileName(
+            self,
+            self.tr('Save SQL Query'),
+            lastDir,
+            self.tr("SQL File (*.sql *.SQL)"))
+
+        if filename:
+            if not filename.lower().endswith('.sql'):
+                filename += ".sql"
+
+            with open(filename, 'w') as f:
+                f.write(query)
+                lastDir = os.path.dirname(filename)
+                settings.setValue('DB_Manager/lastDirSQLFile', lastDir)
+
+    def loadFilePreset(self):
+        settings = QgsSettings()
+        lastDir = settings.value('DB_Manager/lastDirSQLFIle', "")
+
+        filename, _ = QFileDialog.getOpenFileName(
+            self,
+            self.tr("Load SQL Query"),
+            lastDir,
+            self.tr("SQL File (*.sql *.SQL);;All Files (*)"))
+
+        if filename:
+            with open(filename, 'r') as f:
+                self.editSql.clear()
+                for line in f:
+                    self.editSql.insertText(line)
+                lastDir = os.path.dirname(filename)
+                settings.setValue('DB_Manager/lastDirSQLFile', lastDir)
+
     def deletePreset(self):
         name = self.presetCombo.currentText()
-        QgsProject.instance().removeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()))
+        QgsProject.instance().removeEntry('DBManager', 'savedQueries/' + self.getQueryHash(name))
         self.presetCombo.removeItem(self.presetCombo.findText(name))
         self.presetCombo.setCurrentIndex(-1)
 
     def loadPreset(self, name):
-        query = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/query')[0]
-        name = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/name')[0]
+        query = QgsProject.instance().readEntry('DBManager', 'savedQueries/' + self.getQueryHash(name) + '/query')[0]
         self.editSql.setText(query)
 
     def loadAsLayerToggled(self, checked):
@@ -245,6 +344,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.editSql.clear()
         self.editSql.setFocus()
         self.filter = ""
+        self.setHasChanged(True)
 
     def updateUiWhileSqlExecution(self, status):
         if status:
@@ -289,7 +389,6 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         with OverrideCursor(Qt.WaitCursor):
             if self.modelAsync.task.status() == QgsTask.Complete:
                 model = self.modelAsync.model
-                cols = []
                 quotedCols = []
 
                 self.viewResult.setModel(model)
@@ -306,11 +405,9 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                 DlgDbError.showError(self.modelAsync.error, self)
                 self.uniqueModel.clear()
                 self.geomCombo.clear()
-                pass
 
     def executeSql(self):
-
-        sql = self._getSqlQuery()
+        sql = self._getExecutableSqlQuery()
         if sql == "":
             return
 
@@ -352,7 +449,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         else:
             geomFieldName = None
 
-        query = self._getSqlQuery()
+        query = self._getExecutableSqlQuery()
         if query == "":
             return None
 
@@ -360,9 +457,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if query.strip().endswith(';'):
             query = query.strip()[:-1]
 
-        from qgis.core import QgsMapLayer
-
-        layerType = QgsMapLayer.VectorLayer if self.vectorRadio.isChecked() else QgsMapLayer.RasterLayer
+        layerType = QgsMapLayerType.VectorLayer if self.vectorRadio.isChecked() else QgsMapLayerType.RasterLayer
 
         # get a new layer name
         names = []
@@ -384,6 +479,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if layer.isValid():
             return layer
         else:
+            e = BaseError(self.tr("There was an error creating the SQL layer, please check the logs for further information."))
+            DlgDbError.showError(e, self)
             return None
 
     def loadSqlLayer(self):
@@ -395,7 +492,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             QgsProject.instance().addMapLayers([layer], True)
 
     def fillColumnCombos(self):
-        query = self._getSqlQuery()
+        query = self._getExecutableSqlQuery()
         if query == "":
             return
 
@@ -405,7 +502,6 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                 query = query.strip()[:-1]
 
             # get all the columns
-            cols = []
             quotedCols = []
             connector = self.db.connector
             if self.aliasSubQuery:
@@ -499,10 +595,6 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                 items[0].setCheckState(Qt.Checked)
             else:
                 self.uniqueCombo.setEditText(defaultUniqueCol)
-        try:
-            pass
-        except:
-            pass
 
     def copySelectedResults(self):
         if len(self.viewResult.selectedIndexes()) <= 0:
@@ -528,7 +620,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             dictionary = getSqlDictionary()
 
         wordlist = []
-        for name, value in list(dictionary.items()):
+        for value in dictionary.values():
             wordlist += value  # concat lists
         wordlist = list(set(wordlist))  # remove duplicates
 
@@ -547,10 +639,10 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             self.editSql.setText(dlg.query)
 
     def createView(self):
-        name, ok = QInputDialog.getText(None, "View name", "View name")
+        name, ok = QInputDialog.getText(None, self.tr("View Name"), self.tr("View name"))
         if ok:
             try:
-                self.db.connector.createSpatialView(name, self._getSqlQuery())
+                self.db.connector.createSpatialView(name, self._getExecutableSqlQuery())
             except BaseError as e:
                 DlgDbError.showError(e, self)
 
@@ -559,6 +651,12 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if len(sql) == 0:
             sql = self.editSql.text()
         return sql
+
+    def _getExecutableSqlQuery(self):
+        sql = self._getSqlQuery()
+
+        uncommented_sql = check_comments_in_sql(sql)
+        return uncommented_sql
 
     def uniqueChanged(self):
         # when an item is (un)checked, simply trigger an update of the combobox text
@@ -585,3 +683,23 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if dlg.exec_():
             self.filter = dlg.sql()
         layer.deleteLater()
+
+    def setHasChanged(self, hasChanged):
+        self.hasChanged = hasChanged
+
+    def close(self):
+        if self.hasChanged:
+            ret = QMessageBox.question(
+                self, self.tr('Unsaved Changes?'),
+                self.tr('There are unsaved changes. Do you want to keep them?'),
+                QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard, QMessageBox.Cancel)
+
+            if ret == QMessageBox.Save:
+                self.saveAsFilePreset()
+                return True
+            elif ret == QMessageBox.Discard:
+                return True
+            else:
+                return False
+        else:
+            return True

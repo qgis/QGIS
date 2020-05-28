@@ -19,8 +19,9 @@
 #define QGSVECTORLAYERJOINBUFFER_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsvectorlayerjoininfo.h"
+#include "qgsfeaturesink.h"
 
 #include <QHash>
 #include <QString>
@@ -41,12 +42,14 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
     /**
      * Joins another vector layer to this layer
       \param joinInfo join object containing join layer id, target and source field
-      \returns (since 2.6) whether the join was successfully added */
+      \returns (since 2.6) whether the join was successfully added
+    */
     bool addJoin( const QgsVectorLayerJoinInfo &joinInfo );
 
     /**
      * Removes a vector layer join
-      \returns true if join was found and successfully removed */
+      \returns true if join was found and successfully removed
+    */
     bool removeJoin( const QString &joinLayerId );
 
     /**
@@ -80,9 +83,11 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
 
     /**
      * Finds the vector join for a layer field index.
-      \param index this layers attribute index
-      \param fields fields of the vector layer (including joined fields)
-      \param sourceFieldIndex Output: field's index in source layer */
+     * \param index this layers attribute index
+     * \param fields fields of the vector layer (including joined fields)
+     * \param sourceFieldIndex Output: field's index in source layer
+     * \returns the vector layer join info
+     */
     const QgsVectorLayerJoinInfo *joinForFieldIndex( int index, const QgsFields &fields, int &sourceFieldIndex SIP_OUT ) const;
 
     /**
@@ -122,11 +127,11 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
     QgsFeature targetedFeatureOf( const QgsVectorLayerJoinInfo *info, const QgsFeature &feature ) const;
 
     /**
-     * Returns true if the join information is about auxiliary layer, false otherwise
+     * Returns TRUE if the join information is about auxiliary layer, FALSE otherwise
      *
      * \param info The join information
      *
-     * \returns true if the join information is about auxiliary layer, false otherwise
+     * \returns TRUE if the join information is about auxiliary layer, FALSE otherwise
      *
      * \since QGIS 3.0
      */
@@ -148,7 +153,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      * \param features The list of features added in the target layer
      * \param flags Unused parameter
      *
-     * \returns false if an error happened, true otherwise
+     * \returns FALSE if an error happened, TRUE otherwise
      *
      * \since QGIS 3.0
      */
@@ -165,7 +170,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      * \param newValue The new value of the attribute
      * \param oldValue The old value of the attribute
      *
-     * \returns false if an error happened, true otherwise
+     * \returns FALSE if an error happened, TRUE otherwise
      *
      * \since QGIS 3.0
      */
@@ -181,7 +186,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      * \param newValues The new values for attributes
      * \param oldValues The old values for attributes
      *
-     * \returns false if an error happened, true otherwise
+     * \returns FALSE if an error happened, TRUE otherwise
      *
      * \since QGIS 3.0
      */
@@ -192,24 +197,26 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      * parameter is the one coming from the target layer.
      *
      * \param fid The feature id from the target layer to delete
+     * \param context The chain of features which will be deleted for feedback and to avoid infinite recursions. Can be NULLPTR.
      *
-     * \returns false if an error happened, true otherwise
+     * \returns FALSE if an error happened, TRUE otherwise
      *
      * \since QGIS 3.0
      */
-    bool deleteFeature( QgsFeatureId fid ) const;
+    bool deleteFeature( QgsFeatureId fid, QgsVectorLayer::DeleteContext *context = nullptr ) const;
 
     /**
      * Deletes a list of features from joined layers. Feature ids given
      * in a parameter are those coming from the target layer.
      *
      * \param fids Feature ids from the target layer to delete
+     * \param context The chain of features who will be deleted for feedback and to avoid infinite recursions. Can be NULLPTR.
      *
-     * \returns false if an error happened, true otherwise
+     * \returns FALSE if an error happened, TRUE otherwise
      *
      * \since QGIS 3.0
      */
-    bool deleteFeatures( const QgsFeatureIds &fids ) const;
+    bool deleteFeatures( const QgsFeatureIds &fids, QgsVectorLayer::DeleteContext *context = nullptr ) const;
 
   signals:
 
@@ -236,7 +243,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
     //! Joined vector layers
     QgsVectorJoinList mVectorJoins;
 
-    //! Caches attributes of join layer in memory if QgsVectorJoinInfo.memoryCache is true (and the cache is not already there)
+    //! Caches attributes of join layer in memory if QgsVectorJoinInfo.memoryCache is TRUE (and the cache is not already there)
     void cacheJoinLayer( QgsVectorLayerJoinInfo &joinInfo );
 
     //! Main mutex to protect most data members that can be modified concurrently

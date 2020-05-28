@@ -24,6 +24,9 @@
 #ifndef QGSSTRINGUTILS_H
 #define QGSSTRINGUTILS_H
 
+#define FUZZY_SCORE_WORD_MATCH 5
+#define FUZZY_SCORE_NEW_MATCH 3
+#define FUZZY_SCORE_CONSECUTIVE_MATCH 4
 
 /**
  * \ingroup core
@@ -41,8 +44,8 @@ class CORE_EXPORT QgsStringReplacement
      * Constructor for QgsStringReplacement.
      * \param match string to match
      * \param replacement string to replace match with
-     * \param caseSensitive set to true for a case sensitive match
-     * \param wholeWordOnly set to true to match complete words only, or false to allow partial word matches
+     * \param caseSensitive set to TRUE for a case sensitive match
+     * \param wholeWordOnly set to TRUE to match complete words only, or FALSE to allow partial word matches
      */
     QgsStringReplacement( const QString &match,
                           const QString &replacement,
@@ -55,10 +58,10 @@ class CORE_EXPORT QgsStringReplacement
     //! Returns the string to replace matches with
     QString replacement() const { return mReplacement; }
 
-    //! Returns true if match is case sensitive
+    //! Returns TRUE if match is case sensitive
     bool caseSensitive() const { return mCaseSensitive; }
 
-    //! Returns true if match only applies to whole words, or false if partial word matches are permitted
+    //! Returns TRUE if match only applies to whole words, or FALSE if partial word matches are permitted
     bool wholeWordOnly() const { return mWholeWordOnly; }
 
     /**
@@ -189,6 +192,7 @@ class CORE_EXPORT QgsStringUtils
       AllLowercase = QFont::AllLowercase,  //!< Convert all characters to lowercase
       ForceFirstLetterToCapital = QFont::Capitalize, //!< Convert just the first letter of each word to uppercase, leave the rest untouched
       TitleCase = QFont::Capitalize + 1000, //!< Simple title case conversion - does not fully grammatically parse the text and uses simple rules only. Note that this method does not convert any characters to lowercase, it only uppercases required letters. Callers must ensure that input strings are already lowercased.
+      UpperCamelCase = QFont::Capitalize + 1001, //!< Convert the string to upper camel case. Note that this method does not unaccent characters.
     };
 
     /**
@@ -216,7 +220,7 @@ class CORE_EXPORT QgsStringUtils
      * one string to another.
      * \param string1 first string
      * \param string2 second string
-     * \param caseSensitive set to true for case sensitive comparison
+     * \param caseSensitive set to TRUE for case sensitive comparison
      * \returns edit distance. Lower distances indicate more similar strings.
      */
     static int levenshteinDistance( const QString &string1, const QString &string2, bool caseSensitive = false );
@@ -227,7 +231,7 @@ class CORE_EXPORT QgsStringUtils
      * of "ABABC" and "BABCA" is "ABC".
      * \param string1 first string
      * \param string2 second string
-     * \param caseSensitive set to true for case sensitive comparison
+     * \param caseSensitive set to TRUE for case sensitive comparison
      * \returns longest common substring
      */
     static QString longestCommonSubstring( const QString &string1, const QString &string2, bool caseSensitive = false );
@@ -238,7 +242,7 @@ class CORE_EXPORT QgsStringUtils
      * strings must be the same length.
      * \param string1 first string
      * \param string2 second string
-     * \param caseSensitive set to true for case sensitive comparison
+     * \param caseSensitive set to TRUE for case sensitive comparison
      * \returns Hamming distance between strings, or -1 if strings are different lengths.
      */
     static int hammingDistance( const QString &string1, const QString &string2, bool caseSensitive = false );
@@ -252,14 +256,56 @@ class CORE_EXPORT QgsStringUtils
     static QString soundex( const QString &string );
 
     /**
+     * Tests a \a candidate string to see how likely it is a match for
+     * a specified \a search string. Values are normalized between 0 and 1.
+     * \param candidate candidate string
+     * \param search search term string
+     * \return Normalized value of how likely is the \a search to be in the \a candidate
+     * \note Use this function only to calculate the fuzzy score between two strings and later compare these values, but do not depend on the actual numbers. They are implementation detail that may change in a future release.
+     * \since 3.14
+     */
+    static double fuzzyScore( const QString &candidate, const QString &search );
+
+    /**
      * Returns a string with any URL (e.g., http(s)/ftp) and mailto: text converted to valid HTML <a ...>
      * links.
      * \param string string to insert links into
-     * \param foundLinks if specified, will be set to true if any links were inserted into the string
+     * \param foundLinks if specified, will be set to TRUE if any links were inserted into the string
      * \returns string with inserted links
      * \since QGIS 3.0
      */
     static QString insertLinks( const QString &string, bool *foundLinks = nullptr );
+
+    /**
+     * Automatically wraps a \a string by inserting new line characters at appropriate locations in the string.
+     *
+     * The \a length argument specifies either the minimum or maximum length of lines desired, depending
+     * on whether \a useMaxLineLength is true. If \a useMaxLineLength is TRUE, then the string will be wrapped
+     * so that each line ideally will not exceed \a length of characters. If \a useMaxLineLength is FALSE, then
+     * the string will be wrapped so that each line will ideally exceed \a length of characters.
+     *
+     * A custom delimiter can be specified to use instead of space characters.
+     *
+     * \since QGIS 3.4
+     */
+    static QString wordWrap( const QString &string, int length, bool useMaxLineLength = true, const QString &customDelimiter = QString() );
+
+    /**
+     * Returns a string with characters having vertical representation form substituted.
+     * \param string input string
+     * \returns string with substitution applied
+     * \since QGIS 3.10
+     */
+    static QString substituteVerticalCharacters( QString string );
+
+    /**
+     * Convert simple HTML to markdown. Only br, b and link are supported.
+     * \param html HTML to convert to markdown
+     * \returns String formatted as markdown
+     * \since QGIS 3.10
+     */
+    static QString htmlToMarkdown( const QString &html );
+
 };
 
 #endif //QGSSTRINGUTILS_H

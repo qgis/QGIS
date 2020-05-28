@@ -66,9 +66,9 @@ Retrieves the vertices which are before and after the interpolated point at a sp
 :param geometry: line or polygon geometry
 :param distance: distance to traverse along geometry
 :param previousVertex: will be set to previous vertex ID
-:param nextVertex: will be set to next vertex ID
 
-:return: true if vertices were successfully retrieved
+:return: - ``True`` if vertices were successfully retrieved
+         - nextVertex: will be set to next vertex ID
 
 .. note::
 
@@ -97,9 +97,9 @@ supported and is retrieved from the first 3D point amongst ``p1`` and
 :param v1: Direction vector of the first line
 :param p2: Point on the second line
 :param v2: Direction vector of the second line
-:param intersection: Output parameter, the intersection point
 
-:return: Whether the lines intersect
+:return: - Whether the lines intersect
+         - intersection: Output parameter, the intersection point
 %End
 
     static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint /Out/, bool &isIntersection /Out/, double tolerance = 1e-8, bool acceptImproperIntersection = false );
@@ -110,12 +110,12 @@ Compute the intersection between two segments
 :param p2: First segment end point
 :param q1: Second segment start point
 :param q2: Second segment end point
-:param intersectionPoint: Output parameter, the intersection point
-:param isIntersection: Output parameter, return true if an intersection is found
+:param isIntersection: Output parameter, return ``True`` if an intersection is found
 :param tolerance: The tolerance to use
-:param acceptImproperIntersection: By default, this method returns true only if segments have proper intersection. If set true, returns also true if segments have improper intersection (end of one segment on other segment ; continuous segments).
+:param acceptImproperIntersection: By default, this method returns true only if segments have proper intersection. If set true, returns also ``True`` if segments have improper intersection (end of one segment on other segment ; continuous segments).
 
-:return: Whether the segments intersect
+:return: - Whether the segments intersect
+         - intersectionPoint: Output parameter, the intersection point
          * Example:
 .. code-block:: python
 
@@ -154,7 +154,7 @@ the closest point to the initial ``intersection`` point is returned.
 :param linePoint2: a second point on the line
 :param intersection: the initial point and the returned intersection point
 
-:return: true if an intersection has been found
+:return: ``True`` if an intersection has been found
 %End
 
     static int circleCircleIntersections( QgsPointXY center1, double radius1,
@@ -204,6 +204,29 @@ Returns the number of tangents (either 0 or 2).
 .. versionadded:: 3.2
 %End
 
+    static int circleCircleInnerTangents(
+      const QgsPointXY &center1, double radius1, const QgsPointXY &center2, double radius2,
+      QgsPointXY &line1P1 /Out/, QgsPointXY &line1P2 /Out/,
+      QgsPointXY &line2P1 /Out/, QgsPointXY &line2P2 /Out/ );
+%Docstring
+Calculates the inner tangent points for two circles, centered at \a
+center1 and ``center2`` and with radii of ``radius1`` and ``radius2``
+respectively.
+
+The inner tangent points correspond to the points at which the two lines
+which are drawn so that they are tangential to both circles and are
+crossing each other.
+
+The first tangent line is described by the points
+stored in ``line1P1`` and ``line1P2``,
+and the second line is described by the points stored in ``line2P1``
+and ``line2P2``.
+
+Returns the number of tangents (either 0 or 2).
+
+.. versionadded:: 3.6
+%End
+
     static QgsPoint projectPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 );
 %Docstring
 Project the point on a segment
@@ -217,13 +240,24 @@ Project the point on a segment
 
 
 
-    static int leftOfLine( double x, double y, double x1, double y1, double x2, double y2 );
+    static int leftOfLine( const double x, const double y, const double x1, const double y1, const double x2, const double y2 );
 %Docstring
-Returns a value < 0 if the point (``x``, ``y``) is left of the line from (``x1``, ``y1``) -> ( ``x2``, ``y2``).
+Returns a value < 0 if the point (``x``, ``y``) is left of the line from (``x1``, ``y1``) -> (``x2``, ``y2``).
 A positive return value indicates the point is to the right of the line.
 
 If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
 on the line, or exactly in line with the segment) and the result is undefined.
+%End
+
+    static int leftOfLine( const QgsPoint &point, const QgsPoint &p1, const QgsPoint &p2 );
+%Docstring
+Returns a value < 0 if the point ``point`` is left of the line from ``p1`` -> ``p2``.
+A positive return value indicates the point is to the right of the line.
+
+If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
+on the line, or exactly in line with the segment) and the result is undefined.
+
+.. versionadded:: 3.6
 %End
 
     static QgsPoint pointOnLineWithDistance( const QgsPoint &startPoint, const QgsPoint &directionPoint, double distance );
@@ -255,7 +289,7 @@ Returns radius and center of the circle through pt1, pt2, pt3
 
     static bool circleClockwise( double angle1, double angle2, double angle3 );
 %Docstring
-Returns true if the circle defined by three angles is ordered clockwise.
+Returns ``True`` if the circle defined by three angles is ordered clockwise.
 
 The angles are defined counter-clockwise from the origin, i.e. using
 Euclidean angles as opposed to geographic "North up" angles.
@@ -263,12 +297,12 @@ Euclidean angles as opposed to geographic "North up" angles.
 
     static bool circleAngleBetween( double angle, double angle1, double angle2, bool clockwise );
 %Docstring
-Returns true if, in a circle, angle is between angle1 and angle2
+Returns ``True`` if, in a circle, angle is between angle1 and angle2
 %End
 
     static bool angleOnCircle( double angle, double angle1, double angle2, double angle3 );
 %Docstring
-Returns true if an angle is between angle1 and angle3 on a circle described by
+Returns ``True`` if an angle is between angle1 and angle3 on a circle described by
 angle1, angle2 and angle3.
 %End
 
@@ -296,8 +330,8 @@ first 3D point amongst ``p1`` and ``p2``.
 Calculates the midpoint on the circle passing through ``p1`` and ``p2``,
 with the specified ``center`` coordinate.
 
-If ``useShortestArc`` is true, then the midpoint returned will be that corresponding
-to the shorter arc from ``p1`` to ``p2``. If it is false, the longer arc from ``p1``
+If ``useShortestArc`` is ``True``, then the midpoint returned will be that corresponding
+to the shorter arc from ``p1`` to ``p2``. If it is ``False``, the longer arc from ``p1``
 to ``p2`` will be used (i.e. winding the other way around the circle).
 
 .. seealso:: :py:func:`segmentMidPoint`
@@ -320,6 +354,26 @@ Convert circular arc defined by p1, p2, p3 (p1/p3 being start resp. end point, p
 .. versionadded:: 3.0
 %End
 
+    static bool pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2, const QgsPoint &a3, const QgsPoint &b, double distanceTolerance,
+                                   double pointSpacingAngleTolerance );
+%Docstring
+Returns true if point ``b`` is on the arc formed by points ``a1``, ``a2``, and ``a3``, but not within
+that arc portion already described by ``a1``, ``a2`` and ``a3``.
+
+The ``distanceTolerance`` specifies the maximum deviation allowed between the original location
+of point \b and where it would fall on the candidate arc.
+
+This method only consider a segments as continuing an arc if the points are all regularly spaced
+on the candidate arc. The ``pointSpacingAngleTolerance`` parameter specifies the maximum
+angular deviation (in radians) allowed when testing for regular point spacing.
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.14
+%End
+
     static int segmentSide( const QgsPoint &pt1, const QgsPoint &pt3, const QgsPoint &pt2 );
 %Docstring
 For line defined by points pt1 and pt3, find out on which side of the line is point pt3.
@@ -334,6 +388,7 @@ Interpolate a value at given angle on circular arc given values (zm1, zm2, zm3) 
 
 .. versionadded:: 3.0
 %End
+
 
 
 
@@ -504,7 +559,6 @@ Returns the coefficients (a, b, c for equation "ax + by + c = 0") of a line defi
 
 :param pt1: first point.
 :param pt2: second point.
-:param a: Output parameter, a coefficient of the equation.
 :param b: Output parameter, b coefficient of the equation.
 :param c: Output parameter, c coefficient of the equation.
 
@@ -550,7 +604,7 @@ A method to project one skew line onto another.
 :param X1: is the result projection point of line P2P22 onto line P1P12,
 :param epsilon: the tolerance to use.
 
-:return: true if such point exists, false - otherwise.
+:return: ``True`` if such point exists, ``False`` - otherwise.
 %End
 
     static bool linesIntersection3D( const QgsVector3D &La1, const QgsVector3D &La2,
@@ -563,9 +617,9 @@ An algorithm to calculate an (approximate) intersection of two lines in 3D.
 :param La2: is the second point on the first line,
 :param Lb1: is the first point on the second line,
 :param Lb2: is the second point on the second line,
-:param intersection: is the result intersection, of it can be found.
 
-:return: true if the intersection can be found, false - otherwise.
+:return: - ``True`` if the intersection can be found, ``False`` - otherwise.
+         - intersection: is the result intersection, of it can be found.
          example:
 .. code-block:: python
 
@@ -593,6 +647,33 @@ An algorithm to calculate an (approximate) intersection of two lines in 3D.
        # (True, PyQt5.QtGui.QgsVector3D(0.0, 5.0, 5.0))
 %End
 
+    static double triangleArea( double aX, double aY, double bX, double bY, double cX, double cY );
+%Docstring
+Returns the area of the triangle denoted by the points (``aX``, ``aY``), (``bX``, ``bY``) and
+(``cX``, ``cY``).
+
+.. versionadded:: 3.10
+%End
+
+    static void weightedPointInTriangle( double aX, double aY, double bX, double bY, double cX, double cY,
+                                         double weightB, double weightC, double &pointX /Out/, double &pointY /Out/ );
+%Docstring
+Returns a weighted point inside the triangle denoted by the points (``aX``, ``aY``), (``bX``, ``bY``) and
+(``cX``, ``cY``).
+
+:param aX: x-coordinate of first vertex in triangle
+:param aY: y-coordinate of first vertex in triangle
+:param bX: x-coordinate of second vertex in triangle
+:param bY: y-coordinate of second vertex in triangle
+:param cX: x-coordinate of third vertex in triangle
+:param cY: y-coordinate of third vertex in triangle
+:param weightB: weighting factor along axis A-B (between 0 and 1)
+:param weightC: weighting factor along axis A-C (between 0 and 1)
+:param pointY: y-coordinate of generated point
+
+.. versionadded:: 3.10
+%End
+
     static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
 %Docstring
 A Z dimension is added to ``point`` if one of the point in the list
@@ -601,7 +682,7 @@ A Z dimension is added to ``point`` if one of the point in the list
 :param points: List of points in which a 3D point is searched.
 :param point: The point to update with Z dimension and value.
 
-:return: true if the point is updated, false otherwise
+:return: ``True`` if the point is updated, ``False`` otherwise
 
 .. versionadded:: 3.0
 %End

@@ -1,0 +1,43 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsfcgiserverrequest.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsFcgiServerRequest: QgsServerRequest
+{
+%Docstring
+Class defining fcgi request
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsfcgiserverrequest.h"
+%End
+  public:
+    QgsFcgiServerRequest();
+
+    virtual QByteArray data() const;
+
+
+    bool hasError() const;
+%Docstring
+Returns ``True`` if an error occurred during initialization
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsfcgiserverrequest.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

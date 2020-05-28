@@ -89,7 +89,8 @@ with valid prefixes.
 
 .. seealso:: :py:func:`filters`
 
-.. deprecated:: since QGIS 3.2 use filters() instead
+.. deprecated:: QGIS 3.2
+   use filters() instead
 %End
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback = 0 );
@@ -114,7 +115,7 @@ all filters.
 
     void cancelWithoutBlocking();
 %Docstring
-Triggers cancelation of any current running query without blocking. The query may
+Triggers cancellation of any current running query without blocking. The query may
 take some time to cancel after calling this.
 
 .. seealso:: :py:func:`cancel`
@@ -122,7 +123,7 @@ take some time to cancel after calling this.
 
     bool isRunning() const;
 %Docstring
-Returns true if a query is currently being executed by the locator.
+Returns ``True`` if a query is currently being executed by the locator.
 %End
 
     void clearPreviousResults();
@@ -143,7 +144,7 @@ is called.
     void finished();
 %Docstring
 Emitted when locator has finished a query, either as a result
-of successful completion or early cancelation.
+of successful completion or early cancellation.
 %End
 
 };

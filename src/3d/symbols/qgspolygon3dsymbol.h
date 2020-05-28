@@ -20,13 +20,17 @@
 
 #include "qgsabstract3dsymbol.h"
 #include "qgsphongmaterialsettings.h"
-#include "qgs3dutils.h"
+#include "qgs3dtypes.h"
 
 #include <Qt3DRender/QCullFace>
 
 /**
  * \ingroup 3d
  * 3D symbol that draws polygon geometries as planar polygons, optionally extruded (with added walls).
+ *
+ * \warning This is not considered stable API, and may change in future QGIS releases. It is
+ * exposed to the Python bindings as a tech preview only.
+ *
  * \since QGIS 3.0
  */
 class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
@@ -42,14 +46,14 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
     //! Returns method that determines altitude (whether to clamp to feature to terrain)
-    AltitudeClamping altitudeClamping() const { return mAltClamping; }
+    Qgs3DTypes::AltitudeClamping altitudeClamping() const { return mAltClamping; }
     //! Sets method that determines altitude (whether to clamp to feature to terrain)
-    void setAltitudeClamping( AltitudeClamping altClamping ) { mAltClamping = altClamping; }
+    void setAltitudeClamping( Qgs3DTypes::AltitudeClamping altClamping ) { mAltClamping = altClamping; }
 
     //! Returns method that determines how altitude is bound to individual vertices
-    AltitudeBinding altitudeBinding() const { return mAltBinding; }
+    Qgs3DTypes::AltitudeBinding altitudeBinding() const { return mAltBinding; }
     //! Sets method that determines how altitude is bound to individual vertices
-    void setAltitudeBinding( AltitudeBinding altBinding ) { mAltBinding = altBinding; }
+    void setAltitudeBinding( Qgs3DTypes::AltitudeBinding altBinding ) { mAltBinding = altBinding; }
 
     //! Returns height (altitude) of the symbol (in map units)
     float height() const { return mHeight; }
@@ -67,9 +71,9 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
     void setMaterial( const QgsPhongMaterialSettings &material ) { mMaterial = material; }
 
     //! Returns front/back culling mode
-    Qt3DRender::QCullFace::CullingMode cullingMode() const { return mCullingMode; }
+    Qgs3DTypes::CullingMode cullingMode() const { return mCullingMode; }
     //! Sets front/back culling mode
-    void setCullingMode( Qt3DRender::QCullFace::CullingMode mode ) { mCullingMode = mode; }
+    void setCullingMode( Qgs3DTypes::CullingMode mode ) { mCullingMode = mode; }
 
     //! Returns whether the normals of triangles will be inverted (useful for fixing clockwise / counter-clockwise face vertex orders)
     bool invertNormals() const { return mInvertNormals; }
@@ -88,18 +92,58 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
      */
     void setAddBackFaces( bool add ) { mAddBackFaces = add; }
 
+    /**
+     * Returns whether edge highlighting is enabled
+     * \since QGIS 3.8
+     */
+    bool edgesEnabled() const { return mEdgesEnabled; }
+
+    /**
+     * Sets whether edge highlighting is enabled
+     * \since QGIS 3.8
+     */
+    void setEdgesEnabled( bool enabled ) { mEdgesEnabled = enabled; }
+
+    /**
+     * Returns width of edge lines (in pixels)
+     * \since QGIS 3.8
+     */
+    float edgeWidth() const { return mEdgeWidth; }
+
+    /**
+     * Sets width of edge lines (in pixels)
+     * \since QGIS 3.8
+     */
+    void setEdgeWidth( float width ) { mEdgeWidth = width; }
+
+    /**
+     * Returns edge lines color
+     * \since QGIS 3.8
+     */
+    QColor edgeColor() const { return mEdgeColor; }
+
+    /**
+     * Sets edge lines color
+     * \since QGIS 3.8
+     */
+    void setEdgeColor( const QColor &color ) { mEdgeColor = color; }
+
   private:
     //! how to handle altitude of vector features
-    AltitudeClamping mAltClamping = AltClampRelative;
+    Qgs3DTypes::AltitudeClamping mAltClamping = Qgs3DTypes::AltClampRelative;
     //! how to handle clamping of vertices of individual features
-    AltitudeBinding mAltBinding = AltBindCentroid;
+    Qgs3DTypes::AltitudeBinding mAltBinding = Qgs3DTypes::AltBindCentroid;
 
     float mHeight = 0.0f;           //!< Base height of polygons
     float mExtrusionHeight = 0.0f;  //!< How much to extrude (0 means no walls)
     QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
-    Qt3DRender::QCullFace::CullingMode mCullingMode = Qt3DRender::QCullFace::NoCulling;  //!< Front/back culling mode
+    Qgs3DTypes::CullingMode mCullingMode = Qgs3DTypes::NoCulling;  //!< Front/back culling mode
     bool mInvertNormals = false;
     bool mAddBackFaces = false;
+
+    bool mEdgesEnabled = false;  //!< Whether to highlight edges
+    float mEdgeWidth = 1.f;  //!< Width of edges in pixels
+    QColor mEdgeColor = Qt::black; //!< Color of edge lines
 };
 
 

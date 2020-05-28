@@ -17,7 +17,11 @@
 
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QMesh>
+#include <Qt3DRender/QObjectPicker>
+#include <Qt3DRender/QPickEvent>
 #include <Qt3DRender/QPickingSettings>
+#include <Qt3DRender/QPickTriangleEvent>
+#include <Qt3DRender/QPointLight>
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DExtras/QForwardRenderer>
@@ -26,21 +30,32 @@
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DLogic/QFrameAction>
 
+#include <QOpenGLContext>
+#include <QOpenGLFunctions>
 #include <QTimer>
 
 #include "qgsaabb.h"
 #include "qgsabstract3dengine.h"
+#include "qgs3dmapscenepickhandler.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsabstract3drenderer.h"
 #include "qgscameracontroller.h"
 #include "qgschunkedentity_p.h"
 #include "qgschunknode_p.h"
+#include "qgseventtracing.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshlayer3drenderer.h"
+#include "qgsrulebased3drenderer.h"
 #include "qgsterrainentity_p.h"
 #include "qgsterraingenerator.h"
+#include "qgstessellatedpolygongeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
+#include "qgspoint3dbillboardmaterial.h"
+#include "qgsmaplayertemporalproperties.h"
 
+#include "qgslinematerial_p.h"
 
 Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
@@ -63,7 +78,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
 
   // Camera
   float aspectRatio = ( float )viewportRect.width() / viewportRect.height();
-  mEngine->camera()->lens()->setPerspectiveProjection( 45.0f, aspectRatio, 10.f, 10000.0f );
+  mEngine->camera()->lens()->setPerspectiveProjection( mMap.fieldOfView(), aspectRatio, 10.f, 10000.0f );
 
   mFrameAction = new Qt3DLogic::QFrameAction();
   connect( mFrameAction, &Qt3DLogic::QFrameAction::triggered,
@@ -80,37 +95,25 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
 
   // create terrain entity
 
-  createTerrain();
+  createTerrainDeferred();
   connect( &map, &Qgs3DMapSettings::terrainGeneratorChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::terrainVerticalScaleChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::mapTileResolutionChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::maxTerrainScreenErrorChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::maxTerrainGroundErrorChanged, this, &Qgs3DMapScene::createTerrain );
+  connect( &map, &Qgs3DMapSettings::terrainShadingChanged, this, &Qgs3DMapScene::createTerrain );
+  connect( &map, &Qgs3DMapSettings::pointLightsChanged, this, &Qgs3DMapScene::updateLights );
+  connect( &map, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapScene::updateCameraLens );
+  connect( &map, &Qgs3DMapSettings::renderersChanged, this, &Qgs3DMapScene::onRenderersChanged );
 
   // create entities of renderers
 
-  Q_FOREACH ( const QgsAbstract3DRenderer *renderer, map.renderers() )
-  {
-    Qt3DCore::QEntity *newEntity = renderer->createEntity( map );
-    newEntity->setParent( this );
-  }
+  onRenderersChanged();
 
   // listen to changes of layers in order to add/remove 3D renderer entities
   connect( &map, &Qgs3DMapSettings::layersChanged, this, &Qgs3DMapScene::onLayersChanged );
 
-  Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity;
-  Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
-  lightTransform->setTranslation( QVector3D( 0, 1000, 0 ) );
-  // defaults: white, intensity 0.5
-  // attenuation: constant 1.0, linear 0.0, quadratic 0.0
-  Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight;
-  light->setConstantAttenuation( 0 );
-  //light->setColor(Qt::white);
-  //light->setIntensity(0.5);
-  lightEntity->addComponent( light );
-  lightEntity->addComponent( lightTransform );
-  lightEntity->setParent( this );
-
+  updateLights();
 
 #if 0
   ChunkedEntity *testChunkEntity = new ChunkedEntity( AABB( -500, 0, -500, 500, 100, 500 ), 2.f, 3.f, 7, new TestChunkLoaderFactory );
@@ -177,6 +180,75 @@ int Qgs3DMapScene::terrainPendingJobsCount() const
   return mTerrain ? mTerrain->pendingJobsCount() : 0;
 }
 
+int Qgs3DMapScene::totalPendingJobsCount() const
+{
+  int count = 0;
+  for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
+    count += entity->pendingJobsCount();
+  return count;
+}
+
+void Qgs3DMapScene::registerPickHandler( Qgs3DMapScenePickHandler *pickHandler )
+{
+  if ( mPickHandlers.isEmpty() )
+  {
+    // we need to add object pickers
+    for ( Qt3DCore::QEntity *entity : mLayerEntities.values() )
+    {
+      if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
+        chunkedEntity->setPickingEnabled( true );
+    }
+  }
+
+  mPickHandlers.append( pickHandler );
+}
+
+void Qgs3DMapScene::unregisterPickHandler( Qgs3DMapScenePickHandler *pickHandler )
+{
+  mPickHandlers.removeOne( pickHandler );
+
+  if ( mPickHandlers.isEmpty() )
+  {
+    // we need to remove pickers
+    for ( Qt3DCore::QEntity *entity : mLayerEntities.values() )
+    {
+      if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
+        chunkedEntity->setPickingEnabled( false );
+    }
+  }
+}
+
+void Qgs3DMapScene::onLayerEntityPickedObject( Qt3DRender::QPickEvent *pickEvent, QgsFeatureId fid )
+{
+  QgsMapLayer *layer = mLayerEntities.key( qobject_cast<QgsChunkedEntity *>( sender() ) );
+  if ( !layer )
+    return;
+
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  if ( !vlayer )
+    return;
+
+  for ( Qgs3DMapScenePickHandler *pickHandler : qgis::as_const( mPickHandlers ) )
+  {
+    pickHandler->handlePickOnVectorLayer( vlayer, fid, pickEvent->worldIntersection(), pickEvent );
+  }
+}
+
+
+float Qgs3DMapScene::worldSpaceError( float epsilon, float distance )
+{
+  Qt3DRender::QCamera *camera = mCameraController->camera();
+  float fov = camera->fieldOfView();
+  QRect rect = mCameraController->viewport();
+  float screenSizePx = std::max( rect.width(), rect.height() ); // TODO: is this correct?
+
+  // in qgschunkedentity_p.cpp there is inverse calculation (world space error to screen space error)
+  // with explanation of the math.
+  float frustumWidthAtDistance = 2 * distance * tan( fov / 2 );
+  float err = frustumWidthAtDistance * epsilon / screenSizePx;
+  return err;
+}
+
 QgsChunkedEntity::SceneState _sceneState( QgsCameraController *cameraController )
 {
   Qt3DRender::QCamera *camera = cameraController->camera();
@@ -205,6 +277,8 @@ void Qgs3DMapScene::onCameraChanged()
 
 void Qgs3DMapScene::updateScene()
 {
+  QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
+
   for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
   {
     if ( entity->isEnabled() )
@@ -268,7 +342,7 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
     if ( fnear == 1e9 && ffar == 0 )
     {
       // the update didn't work out... this should not happen
-      // well at least temprarily use some conservative starting values
+      // well at least temporarily use some conservative starting values
       qDebug() << "oops... this should not happen! couldn't determine near/far plane. defaulting to 1...1e9";
       fnear = 1;
       ffar = 1e9;
@@ -314,6 +388,8 @@ void Qgs3DMapScene::createTerrain()
 
     mTerrain->deleteLater();
     mTerrain = nullptr;
+
+    emit terrainEntityChanged();
   }
 
   if ( !mTerrainUpdateScheduled )
@@ -355,6 +431,7 @@ void Qgs3DMapScene::createTerrainDeferred()
 
   mTerrainUpdateScheduled = false;
 
+  connect( mTerrain, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
   connect( mTerrain, &QgsTerrainEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::terrainPendingJobsCountChanged );
 
   emit terrainEntityChanged();
@@ -363,6 +440,63 @@ void Qgs3DMapScene::createTerrainDeferred()
 void Qgs3DMapScene::onBackgroundColorChanged()
 {
   mEngine->setClearColor( mMap.backgroundColor() );
+}
+
+
+void Qgs3DMapScene::updateLights()
+{
+  for ( Qt3DCore::QEntity *entity : qgis::as_const( mLightEntities ) )
+    entity->deleteLater();
+  mLightEntities.clear();
+
+  const auto newPointLights = mMap.pointLights();
+  for ( const QgsPointLightSettings &pointLightSettings : newPointLights )
+  {
+    Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity;
+    Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
+    lightTransform->setTranslation( QVector3D( pointLightSettings.position().x(),
+                                    pointLightSettings.position().y(),
+                                    pointLightSettings.position().z() ) );
+
+    Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight;
+    light->setColor( pointLightSettings.color() );
+    light->setIntensity( pointLightSettings.intensity() );
+
+    light->setConstantAttenuation( pointLightSettings.constantAttenuation() );
+    light->setLinearAttenuation( pointLightSettings.linearAttenuation() );
+    light->setQuadraticAttenuation( pointLightSettings.quadraticAttenuation() );
+
+    lightEntity->addComponent( light );
+    lightEntity->addComponent( lightTransform );
+    lightEntity->setParent( this );
+    mLightEntities << lightEntity;
+  }
+}
+
+void Qgs3DMapScene::updateCameraLens()
+{
+  mEngine->camera()->lens()->setFieldOfView( mMap.fieldOfView() );
+  onCameraChanged();
+}
+
+void Qgs3DMapScene::onRenderersChanged()
+{
+  // remove entities (if any)
+  qDeleteAll( mRenderersEntities );
+  mRenderersEntities.clear();
+
+  // re-add entities from new set of renderers
+  const QList<QgsAbstract3DRenderer *> renderers = mMap.renderers();
+  for ( const QgsAbstract3DRenderer *renderer : renderers )
+  {
+    Qt3DCore::QEntity *newEntity = renderer->createEntity( mMap );
+    if ( newEntity )
+    {
+      newEntity->setParent( this );
+      finalizeNewEntity( newEntity );
+      mRenderersEntities[renderer] = newEntity;
+    }
+  }
 }
 
 void Qgs3DMapScene::onLayerRenderer3DChanged()
@@ -405,19 +539,43 @@ void Qgs3DMapScene::onLayersChanged()
   }
 }
 
+void Qgs3DMapScene::updateTemporal()
+{
+  for ( auto layer : mLayerEntities.keys() )
+  {
+    if ( layer->temporalProperties()->isActive() )
+    {
+      removeLayerEntity( layer );
+      addLayerEntity( layer );
+    }
+  }
+}
+
 void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
 {
+  bool needsSceneUpdate = false;
   QgsAbstract3DRenderer *renderer = layer->renderer3D();
   if ( renderer )
   {
     // Fix vector layer's renderer to make sure the renderer is pointing to its layer.
     // It has happened before that renderer pointed to a different layer (probably after copying a style).
     // This is a bit of a hack and it should be handled in QgsMapLayer::setRenderer3D() but in qgis_core
-    // the vector layer 3D renderer class is not available. Maybe we need an intermediate map layer 3D renderer
-    // class in qgis_core that can be used to handle this case nicely.
-    if ( layer->type() == QgsMapLayer::VectorLayer && renderer->type() == "vector" )
+    // the vector layer 3D renderer classes are not available.
+    if ( layer->type() == QgsMapLayerType::VectorLayer &&
+         ( renderer->type() == QLatin1String( "vector" ) || renderer->type() == QLatin1String( "rulebased" ) ) )
     {
-      static_cast<QgsVectorLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
+      static_cast<QgsAbstractVectorLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
+    }
+    else if ( layer->type() == QgsMapLayerType::MeshLayer && renderer->type() == QLatin1String( "mesh" ) )
+    {
+      QgsMeshLayer3DRenderer *meshRenderer = static_cast<QgsMeshLayer3DRenderer *>( renderer );
+      meshRenderer->setLayer( static_cast<QgsMeshLayer *>( layer ) );
+
+      // Before entity creation, set the maximum texture size
+      // Not very clean, but for now, only place found in the workflow to do that simple
+      QgsMesh3DSymbol *sym = new QgsMesh3DSymbol( *meshRenderer->symbol() );
+      sym->setMaximumTextureSize( maximumTextureSize() );
+      meshRenderer->setSymbol( sym );
     }
 
     Qt3DCore::QEntity *newEntity = renderer->createEntity( mMap );
@@ -425,31 +583,106 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     {
       newEntity->setParent( this );
       mLayerEntities.insert( layer, newEntity );
+
+      finalizeNewEntity( newEntity );
+
+      if ( QgsChunkedEntity *chunkedNewEntity = qobject_cast<QgsChunkedEntity *>( newEntity ) )
+      {
+        mChunkEntities.append( chunkedNewEntity );
+        needsSceneUpdate = true;
+
+        chunkedNewEntity->setPickingEnabled( !mPickHandlers.isEmpty() );
+        connect( chunkedNewEntity, &QgsChunkedEntity::pickedObject, this, &Qgs3DMapScene::onLayerEntityPickedObject );
+
+        connect( chunkedNewEntity, &QgsChunkedEntity::newEntityCreated, this, [this]( Qt3DCore::QEntity * entity )
+        {
+          finalizeNewEntity( entity );
+        } );
+
+        connect( chunkedNewEntity, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
+      }
     }
   }
 
+  if ( needsSceneUpdate )
+    onCameraChanged();   // needed for chunked entities
+
   connect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
 
-  if ( layer->type() == QgsMapLayer::VectorLayer )
+  if ( layer->type() == QgsMapLayerType::VectorLayer )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     connect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
+
+  if ( layer->type() == QgsMapLayerType::MeshLayer )
+  {
+    connect( layer, &QgsMapLayer::rendererChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
+  }
+
 }
 
 void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
 {
   Qt3DCore::QEntity *entity = mLayerEntities.take( layer );
+
+  if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
+  {
+    mChunkEntities.removeOne( chunkedEntity );
+  }
+
   if ( entity )
     entity->deleteLater();
 
   disconnect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
 
-  if ( layer->type() == QgsMapLayer::VectorLayer )
+  if ( layer->type() == QgsMapLayerType::VectorLayer )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
+
+  if ( layer->type() == QgsMapLayerType::MeshLayer )
+  {
+    disconnect( layer, &QgsMapLayer::rendererChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
+  }
+}
+
+void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
+{
+  // this is probably not the best place for material-specific configuration,
+  // maybe this could be more generalized when other materials need some specific treatment
+  for ( QgsLineMaterial *lm : newEntity->findChildren<QgsLineMaterial *>() )
+  {
+    connect( mCameraController, &QgsCameraController::viewportChanged, lm, [lm, this]
+    {
+      lm->setViewportSize( mCameraController->viewport().size() );
+    } );
+
+    lm->setViewportSize( cameraController()->viewport().size() );
+  }
+  // configure billboard's viewport when the viewport is changed.
+  for ( QgsPoint3DBillboardMaterial *bm : newEntity->findChildren<QgsPoint3DBillboardMaterial *>() )
+  {
+    connect( mCameraController, &QgsCameraController::viewportChanged, bm, [bm, this]
+    {
+      bm->setViewportSize( mCameraController->viewport().size() );
+    } );
+
+    bm->setViewportSize( mCameraController->viewport().size() );
+  }
+}
+
+int Qgs3DMapScene::maximumTextureSize() const
+{
+  QSurface *surface = mEngine->surface();
+  QOpenGLContext context;
+  context.create();
+  context.makeCurrent( surface );
+  QOpenGLFunctions openglFunctions( &context );
+  GLint size;
+  openglFunctions.glGetIntegerv( GL_MAX_TEXTURE_SIZE, &size );
+  return int( size );
 }
 
 void Qgs3DMapScene::addCameraViewCenterEntity( Qt3DRender::QCamera *camera )

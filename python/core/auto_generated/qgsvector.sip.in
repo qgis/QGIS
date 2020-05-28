@@ -119,6 +119,19 @@ Will throw a QgsException if called on a vector with length of 0.
 
     bool operator!=( QgsVector other ) const;
 
+
+    QString toString( int precision = 17 ) const;
+%Docstring
+Returns a string representation of the vector.
+Members will be truncated to the specified ``precision``.
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsVector: %1>" ).arg( sipCpp->toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
 };
 
 

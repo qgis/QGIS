@@ -62,7 +62,7 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     /**
      * Add a processing provider to the registry. Ownership of the provider is transferred to the registry,
      * and the provider's parent will be set to the registry.
-     * Returns false if the provider could not be added (eg if a provider with a duplicate ID already exists
+     * Returns FALSE if the provider could not be added (eg if a provider with a duplicate ID already exists
      * in the registry).
      * Adding a provider to the registry automatically triggers the providers QgsProcessingProvider::load()
      * method to populate the provider with algorithms.
@@ -72,14 +72,14 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
 
     /**
      * Removes a provider implementation from the registry (the provider object is deleted).
-     * Returns false if the provider could not be removed (eg provider does not exist in the registry).
+     * Returns FALSE if the provider could not be removed (eg provider does not exist in the registry).
      * \see addProvider()
      */
     bool removeProvider( QgsProcessingProvider *provider );
 
     /**
      * Removes a provider implementation from the registry (the provider object is deleted).
-     * Returns false if the provider could not be removed (eg provider does not exist in the registry).
+     * Returns FALSE if the provider could not be removed (eg provider does not exist in the registry).
      * \see addProvider()
      */
     bool removeProvider( const QString &providerId );
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     QList< const QgsProcessingAlgorithm *> algorithms() const;
 
     /**
-     * Finds an algorithm by its ID. If no matching algorithm is found, a nullptr
+     * Finds an algorithm by its ID. If no matching algorithm is found, NULLPTR
      * is returned.
      * \see algorithms()
      * \see createAlgorithmById()
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      */
 
     /**
-     * Creates a new instance of an algorithm by its ID. If no matching algorithm is found, a nullptr
+     * Creates a new instance of an algorithm by its ID. If no matching algorithm is found, NULLPTR
      * is returned. Callers take responsibility for deleting the returned object.
      *
      * The \a configuration argument allows passing of a map of configuration settings
@@ -132,6 +132,19 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      * \see algorithmById()
      */
     QgsProcessingAlgorithm *createAlgorithmById( const QString &id, const QVariantMap &configuration = QVariantMap() ) const SIP_TRANSFERBACK;
+
+    /**
+     * Adds a new alias to an existing algorithm.
+     *
+     * This allows algorithms to be referred to by a different provider ID and algorithm name to their actual underlying provider and algorithm name.
+     * It provides a mechanism to allow algorithms to be moved between providers without breaking existing scripts or plugins.
+     *
+     * The \a aliasId argument specifies the "fake" algorithm id (eg "fake_provider:fake_alg") by which the algorithm can
+     * be referred to, and the \a actualId argument specifies the real algorithm ID for the algorithm.
+     *
+     * \since QGIS 3.10
+     */
+    void addAlgorithmAlias( const QString &aliasId, const QString &actualId );
 
     /**
      * Register a new parameter type for processing.
@@ -199,6 +212,8 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
 
     //! Hash of available parameter types by id. This object owns the pointers.
     QMap<QString, QgsProcessingParameterType *> mParameterTypes;
+
+    QMap< QString, QString > mAlgorithmAliases;
 
 #ifdef SIP_RUN
     QgsProcessingRegistry( const QgsProcessingRegistry &other );

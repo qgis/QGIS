@@ -20,12 +20,15 @@
 #include "qgsgeometry.h"
 #include "qgis_app.h"
 #include "ui_qgsoffsetuserinputwidget.h"
+#include "qgspointlocator.h"
+#include "qgsfeature.h"
 
 class QGridLayout;
 
 class QgsSnapIndicator;
 class QgsDoubleSpinBox;
 class QGraphicsProxyWidget;
+class QgsFeature;
 
 class APP_EXPORT QgsOffsetUserWidget : public QWidget, private Ui::QgsOffsetUserInputBase
 {
@@ -67,7 +70,7 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     void updateGeometryAndRubberBand( double offset );
 
     //! Apply the offset either from the spin box or from the mouse event
-    void applyOffset( const double &offset, const Qt::KeyboardModifiers &modifiers );
+    void applyOffset( double offset, Qt::KeyboardModifiers modifiers );
 
     void cancel();
 
@@ -77,8 +80,8 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     //! Snapping indicators
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
-    //! The layer being maniuplated
-    QgsVectorLayer *mLayer = nullptr;
+    //! The layer being manipulated
+    QgsVectorLayer *mSourceLayer = nullptr;
 
     //! Geometry to manipulate
     QgsGeometry mOriginalGeometry;
@@ -100,7 +103,9 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     //! Forces geometry copy (no modification of geometry in current layer)
     bool mCtrlHeldOnFirstClick = false;
 
-    double calculateOffset( QgsPointXY mapPoint );
+    QgsFeature mSourceFeature;
+
+    double calculateOffset( const QgsPointXY &mapPoint );
 
     void createUserInputWidget();
     void deleteUserInputWidget();

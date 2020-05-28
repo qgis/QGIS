@@ -52,12 +52,12 @@ class GUI_EXPORT QgsAggregateToolButton : public QToolButton
     QVariant::Type type() const;
 
     /**
-     * When this flag is false, the aggregate will be deactivated. I.e. no aggregate is chosen.
+     * When this flag is FALSE, the aggregate will be deactivated. I.e. no aggregate is chosen.
      */
     void setActive( bool active );
 
     /**
-     * When this flag is false, the aggregate will be deactivated. I.e. no aggregate is chosen.
+     * When this flag is FALSE, the aggregate will be deactivated. I.e. no aggregate is chosen.
      */
     bool active() const;
 

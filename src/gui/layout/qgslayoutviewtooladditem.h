@@ -16,7 +16,7 @@
 #ifndef QGSLAYOUTVIEWTOOLADDITEM_H
 #define QGSLAYOUTVIEWTOOLADDITEM_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 #include "qgslayoutviewtool.h"
 #include "qgslayoutviewrubberband.h"
@@ -34,6 +34,7 @@ class GUI_EXPORT QgsLayoutViewToolAddItem : public QgsLayoutViewTool
 
   public:
 
+    //! Constructs a QgsLayoutViewToolAddItem for the given layout \a view.
     QgsLayoutViewToolAddItem( QgsLayoutView *view SIP_TRANSFERTHIS );
 
     /**
@@ -75,6 +76,9 @@ class GUI_EXPORT QgsLayoutViewToolAddItem : public QgsLayoutViewTool
 
     //! Start position for mouse press
     QPoint mMousePressStartPos;
+
+    //! Start position for mouse press in layout coordinates
+    QPointF mMousePressStartLayoutPos;
 
     //! Start of rubber band creation
     QPointF mRubberBandStartPos;

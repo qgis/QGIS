@@ -31,11 +31,41 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     Q_OBJECT
   public:
 
+    /**
+     * Prompt behavior of the QgsSublayersDialog
+     * \since QGIS 3.14
+     */
+    enum PromptMode
+    {
+
+      /**
+       * always ask if there are existing sublayers
+       */
+      PromptAlways,
+
+      /**
+       * always ask if there are existing sublayers, but skip if there are bands for rasters
+       */
+      PromptIfNeeded,
+
+      /**
+       * never prompt, will not load anything
+       */
+      PromptNever,
+
+      /**
+       * never prompt, but load all sublayers
+       */
+      PromptLoadAll
+    };
+    Q_ENUM( PromptMode )
+
     enum ProviderType
     {
       Ogr,
       Gdal,
-      Vsifile
+      Vsifile,
+      Mdal //!< \since QGIS 3.14
     };
 
     /**
@@ -48,6 +78,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
       QString layerName;  //!< Name of the layer (not necessarily unique)
       int count = -1 ;          //!< Number of features (might be unused)
       QString type;       //!< Extra type depending on the use (e.g. geometry type for vector sublayers)
+      QString description;  //!< Description. Added in QGIS 3.10
     };
 
     /**
@@ -57,10 +88,21 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     typedef QList<QgsSublayersDialog::LayerDefinition> LayerDefinitionList;
 
     //! Constructor for QgsSublayersDialog
+
+    /**
+     * Construct a new QgsSublayersDialog object - a dialog to select which sub layers to be imported from a data source (e.g. from geopackage or zipfile)
+     *
+     * \param providerType provider type
+     * \param name provider type name
+     * \param parent parent widget of the dialog
+     * \param fl window flags
+     * \param dataSourceUri data source URI
+     */
     QgsSublayersDialog( ProviderType providerType,
                         const QString &name,
                         QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                        Qt::WindowFlags fl = nullptr );
+                        Qt::WindowFlags fl = nullptr,
+                        const QString &dataSourceUri = QString() );
 
     ~QgsSublayersDialog() override;
 
@@ -92,7 +134,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
      * If we should add layers in a group
      * \since QGIS 3.0
      */
-    bool addToGroupCheckbox() const { return mCheckboxAddToGroup->isChecked(); }
+    bool addToGroupCheckbox() const { return mCbxAddToGroup->isChecked(); }
 
     /**
      * Returns column with count or -1
@@ -103,16 +145,24 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
   public slots:
     int exec() override;
 
+  private slots:
+    void layersTable_selectionChanged( const QItemSelection &, const QItemSelection & );
+    void mBtnDeselectAll_pressed();
+
   protected:
+
+    /**
+     * Provider type name
+     */
     QString mName;
     QStringList mSelectedSubLayers;
     bool mShowCount = false;  //!< Whether to show number of features in the table
     bool mShowType = false;   //!< Whether to show type in the table
+    bool mShowDescription = false;   //!< Whether to show description in the table
 
   private:
 
     bool mShowAddToGroupCheckbox = false;   //!< Whether to show the add to group checkbox
-    QCheckBox *mCheckboxAddToGroup = nullptr;
 };
 
 #endif

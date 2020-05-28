@@ -37,7 +37,7 @@ class TestQgsLayoutObject: public QObject
     void context();
     void writeReadXml();
     void writeRetrieveDDProperty(); //test writing and retrieving dd properties from xml
-    void writeRetrieveCustomProperties(); //test writing/retreiving custom properties from xml
+    void writeRetrieveCustomProperties(); //test writing/retrieving custom properties from xml
 
 
   private:

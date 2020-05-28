@@ -20,131 +20,165 @@
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgsgeometryutils.h"
+#include "qgsvectorlayerutils.h"
+#include "qgsreadwritelocker.h"
 
 #include <QMutexLocker>
-#include <limits>
 
-QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, double layerToMapUnits, const QgsCoordinateTransform &layerToMapTransform, bool selectedOnly )
+
+QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer )
   : mFeatureCache( CACHE_SIZE )
   , mLayer( layer )
-  , mLayerToMapUnits( layerToMapUnits )
-  , mLayerToMapTransform( layerToMapTransform )
-  , mSelectedOnly( selectedOnly )
+  , mGeometryType( layer->geometryType() )
+  , mFeatureSource( qgis::make_unique<QgsVectorLayerFeatureSource>( layer ) )
+  , mLayerName( layer->name() )
 {
-  if ( selectedOnly )
+
+}
+
+bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature )
+{
+  // Why is there a write lock acquired here? Weird, we only want to read a feature from the cache, right?
+  // A method like `QCache::object(const Key &key) const` certainly would not modify its internals.
+  // Mmmh. What if reality was different?
+  // If one reads the docs very, very carefully one will find the term "reentrant" in the
+  // small print of the QCache docs. This is the hint that reality is different.
+  //
+  // https://bugreports.qt.io/browse/QTBUG-19794
+
+  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Write );
+  QgsFeature *cachedFeature = mFeatureCache.object( id );
+  if ( cachedFeature )
   {
-    mFeatureIds = layer->selectedFeatureIds();
+    //feature was cached
+    feature = *cachedFeature;
   }
   else
   {
-    mFeatureIds = layer->allFeatureIds();
-  }
-
-  // Build spatial index
-  QgsFeature feature;
-  QgsFeatureRequest req;
-  req.setSubsetOfAttributes( QgsAttributeList() );
-  QgsFeatureIterator it = layer->getFeatures( req );
-  while ( it.nextFeature( feature ) )
-  {
-    if ( mFeatureIds.contains( feature.id() ) && feature.geometry() )
+    // Feature not in cache, retrieve from layer
+    // TODO: avoid always querying all attributes (attribute values are needed when merging by attribute)
+    if ( !mFeatureSource->getFeatures( QgsFeatureRequest( id ) ).nextFeature( feature ) )
     {
-      mIndex.insertFeature( feature );
+      return false;
     }
-    else
-    {
-      mFeatureIds.remove( feature.id() );
-    }
+    locker.changeMode( QgsReadWriteLocker::Write );
+    mFeatureCache.insert( id, new QgsFeature( feature ) );
+    mIndex.addFeature( feature );
   }
-}
-
-bool QgsFeaturePool::get( QgsFeatureId id, QgsFeature &feature )
-{
-  QMutexLocker lock( &mLayerMutex );
-  QgsFeature *pfeature = mFeatureCache.object( id );
-  if ( pfeature )
-  {
-    //feature was cached
-    feature = *pfeature;
-  }
-
-  // Feature not in cache, retrieve from layer
-  pfeature = new QgsFeature();
-  // TODO: avoid always querying all attributes (attribute values are needed when merging by attribute)
-  if ( !mLayer->getFeatures( QgsFeatureRequest( id ) ).nextFeature( *pfeature ) )
-  {
-    delete pfeature;
-    return false;
-  }
-  //make a copy of pfeature into feature parameter
-  feature = QgsFeature( *pfeature );
-  //ownership of pfeature is transferred to cache
-  mFeatureCache.insert( id, pfeature );
   return true;
 }
 
-void QgsFeaturePool::addFeature( QgsFeature &feature )
+QgsFeatureIds QgsFeaturePool::getFeatures( const QgsFeatureRequest &request, QgsFeedback *feedback )
 {
-  QgsFeatureList features;
-  features.append( feature );
-  mLayerMutex.lock();
-  mLayer->dataProvider()->addFeatures( features );
-  feature.setId( features.front().id() );
-  if ( mSelectedOnly )
+  QgsReadWriteLocker( mCacheLock, QgsReadWriteLocker::Write );
+  Q_UNUSED( feedback )
+  Q_ASSERT( QThread::currentThread() == qApp->thread() );
+
+  mFeatureCache.clear();
+  mIndex = QgsSpatialIndex();
+
+  QgsFeatureIds fids;
+
+  mFeatureSource = qgis::make_unique<QgsVectorLayerFeatureSource>( mLayer );
+
+  QgsFeatureIterator it = mFeatureSource->getFeatures( request );
+  QgsFeature feature;
+  while ( it.nextFeature( feature ) )
   {
-    QgsFeatureIds selectedFeatureIds = mLayer->selectedFeatureIds();
-    selectedFeatureIds.insert( feature.id() );
-    mLayer->selectByIds( selectedFeatureIds );
+    insertFeature( feature, true );
+    fids << feature.id();
   }
-  mLayerMutex.unlock();
-  mIndexMutex.lock();
-  mIndex.insertFeature( feature );
-  mIndexMutex.unlock();
+
+  return fids;
 }
 
-void QgsFeaturePool::updateFeature( QgsFeature &feature )
+QgsFeatureIds QgsFeaturePool::allFeatureIds() const
 {
-  QgsFeature origFeature;
-  get( feature.id(), origFeature );
-
-  QgsGeometryMap geometryMap;
-  geometryMap.insert( feature.id(), QgsGeometry( feature.geometry().constGet()->clone() ) );
-  QgsChangedAttributesMap changedAttributesMap;
-  QgsAttributeMap attribMap;
-  for ( int i = 0, n = feature.attributes().size(); i < n; ++i )
-  {
-    attribMap.insert( i, feature.attributes().at( i ) );
-  }
-  changedAttributesMap.insert( feature.id(), attribMap );
-  mLayerMutex.lock();
-  mFeatureCache.remove( feature.id() ); // Remove to force reload on next get()
-  mLayer->dataProvider()->changeGeometryValues( geometryMap );
-  mLayer->dataProvider()->changeAttributeValues( changedAttributesMap );
-  mLayerMutex.unlock();
-  mIndexMutex.lock();
-  mIndex.deleteFeature( origFeature );
-  mIndex.insertFeature( feature );
-  mIndexMutex.unlock();
-}
-
-void QgsFeaturePool::deleteFeature( const QgsFeatureId &fid )
-{
-  QgsFeature origFeature;
-  if ( get( fid, origFeature ) )
-  {
-    mIndexMutex.lock();
-    mIndex.deleteFeature( origFeature );
-    mIndexMutex.unlock();
-  }
-  mLayerMutex.lock();
-  mFeatureCache.remove( origFeature.id() );
-  mLayer->dataProvider()->deleteFeatures( QgsFeatureIds() << fid );
-  mLayerMutex.unlock();
+  return mFeatureIds;
 }
 
 QgsFeatureIds QgsFeaturePool::getIntersects( const QgsRectangle &rect ) const
 {
-  QMutexLocker lock( &mIndexMutex );
-  return QgsFeatureIds::fromList( mIndex.intersects( rect ) );
+  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Read );
+  QgsFeatureIds ids = QgsFeatureIds::fromList( mIndex.intersects( rect ) );
+  return ids;
+}
+
+QgsVectorLayer *QgsFeaturePool::layer() const
+{
+  Q_ASSERT( QThread::currentThread() == qApp->thread() );
+
+  return mLayer.data();
+}
+
+QPointer<QgsVectorLayer> QgsFeaturePool::layerPtr() const
+{
+  return mLayer;
+}
+
+void QgsFeaturePool::insertFeature( const QgsFeature &feature, bool skipLock )
+{
+  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Unlocked );
+  if ( !skipLock )
+    locker.changeMode( QgsReadWriteLocker::Write );
+  mFeatureCache.insert( feature.id(), new QgsFeature( feature ) );
+  QgsFeature indexFeature( feature );
+  mIndex.addFeature( indexFeature );
+}
+
+void QgsFeaturePool::refreshCache( const QgsFeature &feature )
+{
+  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Write );
+  mFeatureCache.remove( feature.id() );
+  mIndex.deleteFeature( feature );
+  locker.unlock();
+
+  QgsFeature tempFeature;
+  getFeature( feature.id(), tempFeature );
+}
+
+void QgsFeaturePool::removeFeature( const QgsFeatureId featureId )
+{
+  QgsFeature origFeature;
+  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Unlocked );
+  if ( getFeature( featureId, origFeature ) )
+  {
+    locker.changeMode( QgsReadWriteLocker::Write );
+    mIndex.deleteFeature( origFeature );
+  }
+  locker.changeMode( QgsReadWriteLocker::Write );
+  mFeatureCache.remove( origFeature.id() );
+}
+
+void QgsFeaturePool::setFeatureIds( const QgsFeatureIds &ids )
+{
+  mFeatureIds = ids;
+}
+
+bool QgsFeaturePool::isFeatureCached( QgsFeatureId fid )
+{
+  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Read );
+  return mFeatureCache.contains( fid );
+}
+
+QString QgsFeaturePool::layerName() const
+{
+  return mLayerName;
+}
+
+QgsCoordinateReferenceSystem QgsFeaturePool::crs() const
+{
+  QgsReadWriteLocker( mCacheLock, QgsReadWriteLocker::Read );
+  return mFeatureSource->crs();
+}
+
+QgsWkbTypes::GeometryType QgsFeaturePool::geometryType() const
+{
+  return mGeometryType;
+}
+
+QString QgsFeaturePool::layerId() const
+{
+  QgsReadWriteLocker( mCacheLock, QgsReadWriteLocker::Read );
+  return mFeatureSource->id();
 }

@@ -21,10 +21,6 @@ __author__ = 'Giovanni Manghi'
 __date__ = 'January 2015'
 __copyright__ = '(C) 2015, Giovanni Manghi'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import (QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
@@ -40,7 +36,6 @@ from processing.tools.system import isWindows
 
 
 class PointsAlongLines(GdalAlgorithm):
-
     INPUT = 'INPUT'
     GEOMETRY = 'GEOMETRY'
     DISTANCE = 'DISTANCE'
@@ -100,6 +95,7 @@ class PointsAlongLines(GdalAlgorithm):
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, outFile)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
 
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
@@ -108,10 +104,10 @@ class PointsAlongLines(GdalAlgorithm):
         for f in fields:
             if f.name() == geometry:
                 continue
-            other_fields.append(f.name())
+            other_fields.append('"{}"'.format(f.name()))
 
         if other_fields:
-            other_fields = ', {}'.format(','.join(other_fields))
+            other_fields = ',*'
         else:
             other_fields = ''
 
@@ -122,7 +118,7 @@ class PointsAlongLines(GdalAlgorithm):
         arguments.append('sqlite')
         arguments.append('-sql')
 
-        sql = "SELECT ST_Line_Interpolate_Point({}, {}) AS {}{} FROM '{}'".format(geometry, distance, geometry, other_fields, layerName)
+        sql = 'SELECT ST_Line_Interpolate_Point({}, {}) AS {}{} FROM "{}"'.format(geometry, distance, geometry, other_fields, layerName)
         arguments.append(sql)
 
         if options:

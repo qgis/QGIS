@@ -27,7 +27,6 @@
 #
 ###############################################################################
 
-import warnings
 from qgis.core import QgsSettings
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 
@@ -37,7 +36,6 @@ BASE_CLASS = get_ui_class('newconnectiondialog.ui')
 
 
 class NewConnectionDialog(QDialog, BASE_CLASS):
-
     """Dialogue to add a new CSW entry"""
 
     def __init__(self, conn_name=None):

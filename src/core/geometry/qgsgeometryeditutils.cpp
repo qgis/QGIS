@@ -254,7 +254,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
 
     QgsFeatureIterator fi = currentLayer->getFeatures( QgsFeatureRequest( geom.boundingBox() )
                             .setFlags( QgsFeatureRequest::ExactIntersect )
-                            .setSubsetOfAttributes( QgsAttributeList() ) );
+                            .setNoAttributes() );
     QgsFeature f;
     while ( fi.nextFeature( f ) )
     {

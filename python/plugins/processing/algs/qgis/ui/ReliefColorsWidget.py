@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'December 2016'
 __copyright__ = '(C) 2016, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import codecs
 
@@ -258,7 +254,7 @@ class ReliefColorsWidgetWrapper(WidgetWrapper):
                 break
 
     def parentValueChanged(self, wrapper):
-        self.setLayer(wrapper.value())
+        self.setLayer(wrapper.parameterValue())
 
     def setLayer(self, layer):
         if isinstance(layer, QgsMapLayer):

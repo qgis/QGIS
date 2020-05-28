@@ -20,7 +20,6 @@
 
 #include <QObject>
 
-#include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
 #include "qgsspatialindex.h"
 
@@ -208,8 +207,14 @@ class topolTest: public QObject
      */
     ErrorList checkyLineEndsCoveredByPoints( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
 
+    /**
+     * Returns true if the test was canceled
+     */
+    bool testCanceled();
 
   public slots:
+
+    void resetCanceledFlag();
 
     //! Cancels the test
     void setTestCanceled();
@@ -244,10 +249,6 @@ class topolTest: public QObject
      */
     void fillFeatureMap( QgsVectorLayer *layer, const QgsRectangle &extent );
 
-    /**
-     * Returns true if the test was canceled
-     */
-    bool testCanceled();
 
   signals:
 

@@ -30,6 +30,11 @@ SIP_NO_FILE
 class GUI_EXPORT QgsEnumerationWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
+
+    /**
+     * Constructor for QgsEnumerationWidgetFactory, where \a name is a human-readable
+     * name for the factory.
+     */
     explicit QgsEnumerationWidgetFactory( const QString &name );
 
     // QgsEditorWidgetFactory interface

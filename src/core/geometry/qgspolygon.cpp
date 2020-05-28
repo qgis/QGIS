@@ -27,6 +27,18 @@ QgsPolygon::QgsPolygon()
   mWkbType = QgsWkbTypes::Polygon;
 }
 
+///@cond DOXYGEN_SHUTTUP
+QgsPolygon::QgsPolygon( QgsLineString *exterior, const QList<QgsLineString *> &rings )
+{
+  setExteriorRing( exterior );
+  for ( QgsLineString *ring : rings )
+  {
+    addInteriorRing( ring );
+  }
+  clearCache();
+}
+///@endcond
+
 QString QgsPolygon::geometryType() const
 {
   return QStringLiteral( "Polygon" );
@@ -223,8 +235,9 @@ QgsAbstractGeometry *QgsPolygon::boundary() const
   else
   {
     QgsMultiLineString *multiLine = new QgsMultiLineString();
-    multiLine->addGeometry( mExteriorRing->clone() );
     int nInteriorRings = mInteriorRings.size();
+    multiLine->reserve( nInteriorRings + 1 );
+    multiLine->addGeometry( mExteriorRing->clone() );
     for ( int i = 0; i < nInteriorRings; ++i )
     {
       multiLine->addGeometry( mInteriorRings.at( i )->clone() );

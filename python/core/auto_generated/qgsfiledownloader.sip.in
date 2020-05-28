@@ -41,7 +41,7 @@ QgsFileDownloader
 :param url: the download url
 :param outputFileName: file name where the downloaded content will be stored
 :param authcfg: optionally apply this authentication configuration
-:param delayStart: if true, the download will not be commenced immediately and must
+:param delayStart: if ``True``, the download will not be commenced immediately and must
                    be triggered by a later call to startDownload(). This can be useful if connections need
                    to be made to the downloader and there's a chance the download will emit
                    signals before these connections have been made.
@@ -77,7 +77,7 @@ Emitted when data are ready to be processed
 
     void cancelDownload();
 %Docstring
-Call to abort the download and delete this object after the cancelation
+Call to abort the download and delete this object after the cancellation
 has been processed.
 
 .. seealso:: :py:func:`downloadCanceled`

@@ -19,13 +19,33 @@
 #define QGSMACNATIVE_H
 
 #include "qgsnative.h"
-#include <windows.h>
-#include <shlobj.h>
+#include <QAbstractNativeEventFilter>
+
+#include <Windows.h>
+#include <ShlObj.h>
 #pragma comment(lib,"Shell32.lib")
 
 class QWinTaskbarButton;
 class QWinTaskbarProgress;
 class QWindow;
+
+
+class QgsWinNativeEventFilter : public QObject, public QAbstractNativeEventFilter
+{
+    Q_OBJECT
+  public:
+
+    bool nativeEventFilter( const QByteArray &eventType, void *message, long * ) override;
+
+  signals:
+
+    void usbStorageNotification( const QString &path, bool inserted );
+
+  private:
+
+    quintptr mLastMessageHash = 0;
+};
+
 
 class NATIVE_EXPORT QgsWinNative : public QgsNative
 {
@@ -35,18 +55,25 @@ class NATIVE_EXPORT QgsWinNative : public QgsNative
                                const QString &applicationName,
                                const QString &organizationName,
                                const QString &version ) override;
+    void cleanup() override;
     void openFileExplorerAndSelectFile( const QString &path ) override;
+    void showFileProperties( const QString &path ) override;
     void showUndefinedApplicationProgress() override;
     void setApplicationProgress( double progress ) override;
     void hideApplicationProgress() override;
     void onRecentProjectsChanged( const std::vector< RecentProjectProperties > &recentProjects ) override;
     NotificationResult showDesktopNotification( const QString &summary, const QString &body, const NotificationSettings &settings = NotificationSettings() ) override;
+    bool openTerminalAtPath( const QString &path ) override;
 
   private:
 
-    Capabilities mCapabilities = nullptr;
+    QWindow *mWindow = nullptr;
+    Capabilities mCapabilities = NativeFilePropertiesDialog | NativeOpenTerminalAtPath;
+    bool mWinToastInitialized = false;
     QWinTaskbarButton *mTaskButton = nullptr;
     QWinTaskbarProgress *mTaskProgress = nullptr;
+    QgsWinNativeEventFilter *mNativeEventFilter = nullptr;
+
 };
 
 #endif // QGSMACNATIVE_H

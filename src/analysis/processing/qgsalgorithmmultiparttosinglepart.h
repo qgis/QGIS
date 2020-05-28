@@ -20,8 +20,9 @@
 
 #define SIP_NO_FILE
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
+#include "qgsapplication.h"
 
 ///@cond PRIVATE
 
@@ -49,6 +50,7 @@ class QgsMultipartToSinglepartAlgorithm : public QgsProcessingFeatureBasedAlgori
   protected:
 
     QgsProcessingFeatureSource::Flag sourceFlags() const override;
+    QgsFeatureSink::SinkFlags sinkFlags() const override;
     QgsFeatureList processFeature( const QgsFeature &feature,
                                    QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 

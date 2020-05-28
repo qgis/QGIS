@@ -39,23 +39,27 @@
 #include "qgsfields.h"
 #include "qgseditorwidgetregistry.h"
 
+#include "qgsgui.h"
 
-QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, QWidget *parent, Qt::WindowFlags flags )
+
+QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, const QgsAttributeTableConfig &config, QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   connect( mShowAllButton, &QAbstractButton::clicked, this, &QgsOrganizeTableColumnsDialog::showAll );
   connect( mHideAllButton, &QAbstractButton::clicked, this, &QgsOrganizeTableColumnsDialog::hideAll );
 
   if ( vl )
   {
-    mConfig = vl->attributeTableConfig();
+    mConfig = config;
     mConfig.update( vl->fields() );
 
     mFieldsList->clear();
 
-    Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig &columnConfig, mConfig.columns() )
+    const auto constColumns = mConfig.columns();
+    for ( const QgsAttributeTableConfig::ColumnConfig &columnConfig : constColumns )
     {
       QListWidgetItem *item = nullptr;
       if ( columnConfig.type == QgsAttributeTableConfig::Action )
@@ -94,16 +98,14 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
     mShowAllButton->hide();
     mHideAllButton->hide();
   }
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/QgsOrganizeTableColumnsDialog/geometry" ) ).toByteArray() );
 }
 
-QgsOrganizeTableColumnsDialog::~QgsOrganizeTableColumnsDialog()
+///@cond PRIVATE
+QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, QWidget *parent, Qt::WindowFlags flags )
+  : QgsOrganizeTableColumnsDialog( vl, vl->attributeTableConfig(), parent, flags )
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/QgsOrganizeTableColumnsDialog/geometry" ), saveGeometry() );
 }
+///@endcond
 
 QgsAttributeTableConfig QgsOrganizeTableColumnsDialog::config() const
 {

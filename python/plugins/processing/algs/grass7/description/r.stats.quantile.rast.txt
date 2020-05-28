@@ -7,5 +7,4 @@ QgsProcessingParameterNumber|quantiles|Number of quantiles|QgsProcessingParamete
 QgsProcessingParameterString|percentiles|List of percentiles|None|False|True
 QgsProcessingParameterNumber|bins|Number of bins to use|QgsProcessingParameterNumber.Integer|1000|True|0|None
 *QgsProcessingParameterBoolean|-r|Create reclass map with statistics as category labels|False
-QgsProcessingParameterFolderDestination|output_dir|Output Directory
-
+QgsProcessingParameterFolderDestination|output|Output Directory

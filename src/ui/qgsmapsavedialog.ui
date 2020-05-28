@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>600</width>
-    <height>318</height>
+    <height>629</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,38 +15,178 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="9" column="0" colspan="2">
-      <widget class="QLabel" name="mInfo">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="0" colspan="2">
-      <widget class="QCheckBox" name="mSaveAsRaster">
-       <property name="visible">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>Advanced effects such as blend modes or vector layer transparency cannot be exported as vectors.
-Rasterizing the map is recommended when such effects are used.</string>
-       </property>
+    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,0,0,0,0">
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Rasterize map</string>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
+        <string>Resolution</string>
        </property>
       </widget>
      </item>
      <item row="7" column="0" colspan="2">
       <widget class="QCheckBox" name="mSaveWorldFile">
        <property name="text">
-        <string>Save world file</string>
+        <string>Append georeference information (embedded or via world file)</string>
        </property>
        <property name="checked">
         <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="0" colspan="2">
+      <widget class="QCheckBox" name="mExportMetadataCheckBox">
+       <property name="text">
+        <string>Export RDF metadata (title, author, etc.)</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QgsScaleWidget" name="mScaleWidget" native="true"/>
+     </item>
+     <item row="0" column="0" colspan="2">
+      <widget class="QgsExtentGroupBox" name="mExtentGroupBox">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+       <property name="title">
+        <string>Extent</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="0" colspan="2">
+      <widget class="QgsCollapsibleGroupBoxBasic" name="mGeoPDFGroupBox">
+       <property name="title">
+        <string>Create Geospatial PDF (GeoPDF)</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QStackedWidget" name="mGeoPDFOptionsStackedWidget">
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
+          <widget class="QWidget" name="page">
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="mGeoPdfUnavailableReason">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="page_2">
+           <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="mGeoPdfFormatComboBox"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Format</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0" colspan="2">
+             <widget class="QCheckBox" name="mExportGeoPdfFeaturesCheckBox">
+              <property name="text">
+               <string>Include vector feature information</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="10" column="0" colspan="2">
+      <widget class="QgsCollapsibleGroupBox" name="mAdvancedPdfSettings">
+       <property name="title">
+        <string>Advanced Settings</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,1">
+        <item row="2" column="0">
+         <widget class="QLabel" name="mTextExportLabel">
+          <property name="text">
+           <string>Text export</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QComboBox" name="mTextRenderFormatComboBox"/>
+        </item>
+        <item row="1" column="0" colspan="2">
+         <widget class="QCheckBox" name="mSimplifyGeometriesCheckbox">
+          <property name="text">
+           <string>Simplify geometries to reduce output file size</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" colspan="2">
+         <widget class="QCheckBox" name="mSaveAsRaster">
+          <property name="visible">
+           <bool>true</bool>
+          </property>
+          <property name="toolTip">
+           <string>Advanced effects such as blend modes or vector layer transparency cannot be exported as vectors.
+Rasterizing the map is recommended when such effects are used.</string>
+          </property>
+          <property name="text">
+           <string>Rasterize map</string>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Output height</string>
        </property>
       </widget>
      </item>
@@ -67,13 +207,6 @@ Rasterizing the map is recommended when such effects are used.</string>
        </property>
        <property name="checked">
         <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Output height</string>
        </property>
       </widget>
      </item>
@@ -170,13 +303,6 @@ Rasterizing the map is recommended when such effects are used.</string>
        </item>
       </layout>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Resolution</string>
-       </property>
-      </widget>
-     </item>
      <item row="2" column="1">
       <widget class="QgsSpinBox" name="mResolutionSpinBox">
        <property name="suffix">
@@ -203,13 +329,13 @@ Rasterizing the map is recommended when such effects are used.</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QgsScaleWidget" name="mScaleWidget" native="true"/>
-     </item>
-     <item row="0" column="0" colspan="2">
-      <widget class="QgsExtentGroupBox" name="mExtentGroupBox">
-       <property name="title">
-        <string>Extent</string>
+     <item row="11" column="0" colspan="2">
+      <widget class="QLabel" name="mInfo">
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+       <property name="openExternalLinks">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -248,6 +374,12 @@ Rasterizing the map is recommended when such effects are used.</string>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
@@ -272,8 +404,20 @@ Rasterizing the map is recommended when such effects are used.</string>
  </customwidgets>
  <tabstops>
   <tabstop>mExtentGroupBox</tabstop>
-  <tabstop>mDrawAnnotations</tabstop>
+  <tabstop>mResolutionSpinBox</tabstop>
+  <tabstop>mOutputWidthSpinBox</tabstop>
+  <tabstop>mLockAspectRatio</tabstop>
+  <tabstop>mOutputHeightSpinBox</tabstop>
   <tabstop>mDrawDecorations</tabstop>
+  <tabstop>mDrawAnnotations</tabstop>
+  <tabstop>mSaveWorldFile</tabstop>
+  <tabstop>mGeoPDFGroupBox</tabstop>
+  <tabstop>mGeoPdfFormatComboBox</tabstop>
+  <tabstop>mExportMetadataCheckBox</tabstop>
+  <tabstop>mExportGeoPdfFeaturesCheckBox</tabstop>
+  <tabstop>mSaveAsRaster</tabstop>
+  <tabstop>mSimplifyGeometriesCheckbox</tabstop>
+  <tabstop>mTextRenderFormatComboBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

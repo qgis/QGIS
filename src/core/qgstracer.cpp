@@ -23,6 +23,9 @@
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsexception.h"
+#include "qgsrenderer.h"
+#include "qgssettings.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <queue>
 #include <vector>
@@ -129,7 +132,8 @@ QgsTracerGraph *makeGraph( const QVector<QgsPolylineXY> &edges )
   g->joinedVertices = 0;
   QHash<QgsPointXY, int> point2vertex;
 
-  Q_FOREACH ( const QgsPolylineXY &line, edges )
+  const auto constEdges = edges;
+  for ( const QgsPolylineXY &line : constEdges )
   {
     QgsPointXY p1( line[0] );
     QgsPointXY p2( line[line.count() - 1] );
@@ -383,7 +387,7 @@ void resetGraph( QgsTracerGraph &g )
   g.joinedVertices = 0;
 
   // fix vertices of deactivated edges
-  Q_FOREACH ( int eIdx, g.inactiveEdges )
+  for ( int eIdx : qgis::as_const( g.inactiveEdges ) )
   {
     if ( eIdx >= g.e.count() )
       continue;
@@ -430,20 +434,31 @@ void extractLinework( const QgsGeometry &g, QgsMultiPolylineXY &mpl )
       break;
 
     case QgsWkbTypes::Polygon:
-      Q_FOREACH ( const QgsPolylineXY &ring, geom.asPolygon() )
+    {
+      const auto polygon = geom.asPolygon();
+      for ( const QgsPolylineXY &ring : polygon )
         mpl << ring;
-      break;
+    }
+    break;
 
     case QgsWkbTypes::MultiLineString:
-      Q_FOREACH ( const QgsPolylineXY &linestring, geom.asMultiPolyline() )
+    {
+      const auto multiPolyline = geom.asMultiPolyline();
+      for ( const QgsPolylineXY &linestring : multiPolyline )
         mpl << linestring;
-      break;
+    }
+    break;
 
     case QgsWkbTypes::MultiPolygon:
-      Q_FOREACH ( const QgsPolygonXY &polygon, geom.asMultiPolygon() )
-        Q_FOREACH ( const QgsPolylineXY &ring, polygon )
+    {
+      const auto multiPolygon = geom.asMultiPolygon();
+      for ( const QgsPolygonXY &polygon : multiPolygon )
+      {
+        for ( const QgsPolylineXY &ring : polygon )
           mpl << ring;
-      break;
+      }
+    }
+    break;
 
     default:
       break;  // unknown type - do nothing
@@ -469,14 +484,34 @@ bool QgsTracer::initGraph()
 
   // TODO: use QgsPointLocator as a source for the linework
 
-  QTime t1, t2, t2a, t3;
+  QElapsedTimer t1, t2, t2a, t3;
 
   t1.start();
   int featuresCounted = 0;
-  for ( QgsVectorLayer *vl : qgis::as_const( mLayers ) )
+  bool enableInvisibleFeature = QgsSettings().value( QStringLiteral( "/qgis/digitizing/snap_invisible_feature" ), false ).toBool();
+  for ( const QgsVectorLayer *vl : qgis::as_const( mLayers ) )
   {
     QgsFeatureRequest request;
-    request.setSubsetOfAttributes( QgsAttributeList() );
+    bool filter = false;
+    std::unique_ptr< QgsFeatureRenderer > renderer;
+    std::unique_ptr<QgsRenderContext> ctx;
+
+    if ( !enableInvisibleFeature && mRenderContext && vl->renderer() )
+    {
+      renderer.reset( vl->renderer()->clone() );
+      ctx.reset( new QgsRenderContext( *mRenderContext.get() ) );
+      ctx->expressionContext() << QgsExpressionContextUtils::layerScope( vl );
+
+      // setup scale for scale dependent visibility (rule based)
+      renderer->startRender( *ctx.get(), vl->fields() );
+      filter = renderer->capabilities() & QgsFeatureRenderer::Filter;
+      request.setSubsetOfAttributes( renderer->usedAttributes( *ctx.get() ), vl->fields() );
+    }
+    else
+    {
+      request.setNoAttributes();
+    }
+
     request.setDestinationCrs( mCRS, mTransformContext );
     if ( !mExtent.isEmpty() )
       request.setFilterRect( mExtent );
@@ -487,11 +522,25 @@ bool QgsTracer::initGraph()
       if ( !f.hasGeometry() )
         continue;
 
+      if ( filter )
+      {
+        ctx->expressionContext().setFeature( f );
+        if ( !renderer->willRenderFeature( f, *ctx.get() ) )
+        {
+          continue;
+        }
+      }
+
       extractLinework( f.geometry(), mpl );
 
       ++featuresCounted;
       if ( mMaxFeatureCount != 0 && featuresCounted >= mMaxFeatureCount )
         return false;
+    }
+
+    if ( renderer )
+    {
+      renderer->stopRender( *ctx.get() );
     }
   }
   int timeExtract = t1.elapsed();
@@ -526,7 +575,7 @@ bool QgsTracer::initGraph()
 
     mHasTopologyProblem = true;
 
-    QgsDebugMsg( QString( "Tracer Noding Exception: %1" ).arg( e.what() ) );
+    QgsDebugMsg( QStringLiteral( "Tracer Noding Exception: %1" ).arg( e.what() ) );
   }
 #endif
 
@@ -538,12 +587,13 @@ bool QgsTracer::initGraph()
 
   int timeMake = t3.elapsed();
 
-  Q_UNUSED( timeExtract );
-  Q_UNUSED( timeNoding );
-  Q_UNUSED( timeNodingCall );
-  Q_UNUSED( timeMake );
-  QgsDebugMsg( QString( "tracer extract %1 ms, noding %2 ms (call %3 ms), make %4 ms" )
+  Q_UNUSED( timeExtract )
+  Q_UNUSED( timeNoding )
+  Q_UNUSED( timeNodingCall )
+  Q_UNUSED( timeMake )
+  QgsDebugMsg( QStringLiteral( "tracer extract %1 ms, noding %2 ms (call %3 ms), make %4 ms" )
                .arg( timeExtract ).arg( timeNoding ).arg( timeNodingCall ).arg( timeMake ) );
+
   return true;
 }
 
@@ -557,21 +607,27 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer *> &layers )
   if ( mLayers == layers )
     return;
 
-  Q_FOREACH ( QgsVectorLayer *layer, mLayers )
+  for ( QgsVectorLayer *layer : qgis::as_const( mLayers ) )
   {
     disconnect( layer, &QgsVectorLayer::featureAdded, this, &QgsTracer::onFeatureAdded );
     disconnect( layer, &QgsVectorLayer::featureDeleted, this, &QgsTracer::onFeatureDeleted );
     disconnect( layer, &QgsVectorLayer::geometryChanged, this, &QgsTracer::onGeometryChanged );
+    disconnect( layer, &QgsVectorLayer::attributeValueChanged, this, &QgsTracer::onAttributeValueChanged );
+    disconnect( layer, &QgsVectorLayer::dataChanged, this, &QgsTracer::onDataChanged );
+    disconnect( layer, &QgsVectorLayer::styleChanged, this, &QgsTracer::onStyleChanged );
     disconnect( layer, &QObject::destroyed, this, &QgsTracer::onLayerDestroyed );
   }
 
   mLayers = layers;
 
-  Q_FOREACH ( QgsVectorLayer *layer, mLayers )
+  for ( QgsVectorLayer *layer : layers )
   {
     connect( layer, &QgsVectorLayer::featureAdded, this, &QgsTracer::onFeatureAdded );
     connect( layer, &QgsVectorLayer::featureDeleted, this, &QgsTracer::onFeatureDeleted );
     connect( layer, &QgsVectorLayer::geometryChanged, this, &QgsTracer::onGeometryChanged );
+    connect( layer, &QgsVectorLayer::attributeValueChanged, this, &QgsTracer::onAttributeValueChanged );
+    connect( layer, &QgsVectorLayer::dataChanged, this, &QgsTracer::onDataChanged );
+    connect( layer, &QgsVectorLayer::styleChanged, this, &QgsTracer::onStyleChanged );
     connect( layer, &QObject::destroyed, this, &QgsTracer::onLayerDestroyed );
   }
 
@@ -582,6 +638,12 @@ void QgsTracer::setDestinationCrs( const QgsCoordinateReferenceSystem &crs, cons
 {
   mCRS = crs;
   mTransformContext = context;
+  invalidateGraph();
+}
+
+void QgsTracer::setRenderContext( const QgsRenderContext *renderContext )
+{
+  mRenderContext.reset( new QgsRenderContext( *renderContext ) );
   invalidateGraph();
 }
 
@@ -632,20 +694,38 @@ void QgsTracer::invalidateGraph()
 
 void QgsTracer::onFeatureAdded( QgsFeatureId fid )
 {
-  Q_UNUSED( fid );
+  Q_UNUSED( fid )
   invalidateGraph();
 }
 
 void QgsTracer::onFeatureDeleted( QgsFeatureId fid )
 {
-  Q_UNUSED( fid );
+  Q_UNUSED( fid )
   invalidateGraph();
 }
 
 void QgsTracer::onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
 {
-  Q_UNUSED( fid );
-  Q_UNUSED( geom );
+  Q_UNUSED( fid )
+  Q_UNUSED( geom )
+  invalidateGraph();
+}
+
+void QgsTracer::onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
+{
+  Q_UNUSED( fid )
+  Q_UNUSED( idx )
+  Q_UNUSED( value )
+  invalidateGraph();
+}
+
+void QgsTracer::onDataChanged( )
+{
+  invalidateGraph();
+}
+
+void QgsTracer::onStyleChanged( )
+{
   invalidateGraph();
 }
 
@@ -665,7 +745,7 @@ QVector<QgsPointXY> QgsTracer::findShortestPath( const QgsPointXY &p1, const Qgs
     return QVector<QgsPointXY>();
   }
 
-  QTime t;
+  QElapsedTimer t;
   t.start();
   int v1 = pointInGraph( *mGraph, p1 );
   int v2 = pointInGraph( *mGraph, p2 );
@@ -682,14 +762,14 @@ QVector<QgsPointXY> QgsTracer::findShortestPath( const QgsPointXY &p1, const Qgs
     return QVector<QgsPointXY>();
   }
 
-  QTime t2;
+  QElapsedTimer t2;
   t2.start();
   QgsPolylineXY points = shortestPath( *mGraph, v1, v2 );
   int tPath = t2.elapsed();
 
-  Q_UNUSED( tPrep );
-  Q_UNUSED( tPath );
-  QgsDebugMsg( QString( "path timing: prep %1 ms, path %2 ms" ).arg( tPrep ).arg( tPath ) );
+  Q_UNUSED( tPrep )
+  Q_UNUSED( tPath )
+  QgsDebugMsg( QStringLiteral( "path timing: prep %1 ms, path %2 ms" ).arg( tPrep ).arg( tPath ) );
 
   resetGraph( *mGraph );
 

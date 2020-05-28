@@ -21,6 +21,7 @@
 #include "qgsmeshdataprovider.h"
 
 #include <QWidget>
+#include <QIcon>
 
 class QgsMeshLayer;
 
@@ -28,8 +29,9 @@ class QgsMeshLayer;
  * Widget for selection of active dataset group from tree view.
  * Also selects the active scalar and vector dataset by slider
  *
- * At the moment, it is not possible to select different vector and
- * scalar dataset
+ * User can choose different scalar and vector dataset.
+ * Time slider is deactivated when no dataset is selected or
+ * when all selected datasets are non-temporal.
  */
 class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui::QgsMeshRendererActiveDatasetWidgetBase
 {
@@ -38,46 +40,46 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
   public:
 
     /**
-     * A widget to hold the renderer scalar settings for a mesh layer.
+    mTimeComboBox->setCurrentIndex( mTimeComboBox->count() - 1 );     * A widget to hold the renderer scalar settings for a mesh layer.
      * \param parent Parent object
      */
     QgsMeshRendererActiveDatasetWidget( QWidget *parent = nullptr );
+    ~QgsMeshRendererActiveDatasetWidget() override;
 
     //! Associates mesh layer with the widget
     void setLayer( QgsMeshLayer *layer );
 
-    //! Gets index of the selected/active scalar dataset
-    QgsMeshDatasetIndex activeScalarDataset() const;
+    //! Returns index of the active scalar dataset group
+    int activeScalarDatasetGroup() const;
 
-    //! Gets index of the selected/active vector dataset
-    QgsMeshDatasetIndex activeVectorDataset() const;
+    //! Returns index of the active vector dataset group
+    int activeVectorDatasetGroup() const;
 
     //! Synchronizes widgets state with associated mesh layer
     void syncToLayer();
 
   signals:
 
-    //! Emitted when active scalar dataset changed
-    void activeScalarDatasetChanged( QgsMeshDatasetIndex index );
+    //! Emitted when the current scalar group gets changed
+    void activeScalarGroupChanged( int groupIndex );
 
-    //! Emitted when active vector dataset changed
-    void activeVectorDatasetChanged( QgsMeshDatasetIndex index );
+    //! Emitted when the current vector group gets changed
+    void activeVectorGroupChanged( int groupIndex );
 
     //! Emitted when any settings related to rendering changed
     void widgetChanged();
 
   private slots:
-    void onActiveGroupChanged();
-    void onActiveDatasetChanged( int value );
-    void updateMetadata( QgsMeshDatasetIndex datasetIndex );
+    void onActiveScalarGroupChanged( int groupIndex );
+    void onActiveVectorGroupChanged( int groupIndex );
+    QString metadata( QgsMeshDatasetIndex datasetIndex );
 
   private:
-    QgsMeshDatasetIndex datasetIndex() const;
-    void setSliderRange();
+    void updateMetadata();
 
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
-    QgsMeshDatasetIndex mActiveScalarDataset;
-    QgsMeshDatasetIndex mActiveVectorDataset;
+    int mActiveScalarDatasetGroup = -1;
+    int mActiveVectorDatasetGroup = -1;
 };
 
 #endif // QGSMESHRENDERERSCALARSETTINGSWIDGET_H

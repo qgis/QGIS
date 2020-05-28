@@ -48,7 +48,7 @@
 #if __cplusplus >= 201500
 #define FALLTHROUGH [[fallthrough]];
 #elif defined(__clang__)
-#define FALLTHROUGH //[[clang::fallthrough]]
+#define FALLTHROUGH [[clang::fallthrough]];
 #elif defined(__GNUC__) && __GNUC__ >= 7
 #define FALLTHROUGH [[gnu::fallthrough]];
 #else
@@ -99,7 +99,8 @@
 #include <cstdlib>
 
 #define QOCISPATIAL_DYNAMIC_CHUNK_SIZE 65535
-#define QOCISPATIAL_PREFETCH_MEM  10240
+#define QOCISPATIAL_PREFETCH_ROWS 10000
+#define QOCISPATIAL_PREFETCH_MEM 8388608 // 8MB
 
 // setting this define will allow using a query from a different
 // thread than its database connection.
@@ -341,8 +342,9 @@ class QOCISpatialDriverPrivate : public QSqlDriverPrivate
     OCIError *err = nullptr;
     bool transaction = false;
     int serverVersion = -1;
-    ub4 prefetchRows = 0xffffffff;
-    ub2 prefetchMem = QOCISPATIAL_PREFETCH_MEM;
+    ub4 prefetchRows = QOCISPATIAL_PREFETCH_ROWS;
+    ub4 prefetchMem = QOCISPATIAL_PREFETCH_MEM;
+    bool commitOnSuccess = true;
     QString user;
 
     OCIType *geometryTDO = nullptr;
@@ -428,8 +430,9 @@ class QOCISpatialResultPrivate: public QSqlCachedResultPrivate
     QList<QOCISDOGeometryObj *> sdoobj;
     QList<QOCISDOGeometryInd *> sdoind;
     bool transaction;
+    bool commitOnSuccess = true;
     int serverVersion;
-    int prefetchRows, prefetchMem;
+    ub4 prefetchRows, prefetchMem;
     OCIType *geometryTDO = nullptr;
     QOCISDOGeometryObj *geometryObj = nullptr;
     QOCISDOGeometryInd *geometryInd = nullptr;
@@ -489,29 +492,23 @@ void QOCISpatialResultPrivate::setStatementAttributes()
 
   int r = OCI_SUCCESS;
 
-  if ( prefetchRows >= 0 )
-  {
-    r = OCIAttrSet( sql,
-                    OCI_HTYPE_STMT,
-                    &prefetchRows,
-                    0,
-                    OCI_ATTR_PREFETCH_ROWS,
-                    err );
-    if ( r != OCI_SUCCESS )
-      qOraWarning( "Couldn't set OCI_ATTR_PREFETCH_ROWS: ", err );
-  }
-  if ( prefetchMem >= 0 )
-  {
-    r = OCIAttrSet( sql,
-                    OCI_HTYPE_STMT,
-                    &prefetchMem,
-                    0,
-                    OCI_ATTR_PREFETCH_MEMORY,
-                    err );
-    if ( r != OCI_SUCCESS )
-      qOraWarning( "QOCISpatialResultPrivate::setStatementAttributes:"
-                   " Couldn't set OCI_ATTR_PREFETCH_MEMORY: ", err );
-  }
+  r = OCIAttrSet( sql,
+                  OCI_HTYPE_STMT,
+                  &prefetchRows,
+                  0,
+                  OCI_ATTR_PREFETCH_ROWS,
+                  err );
+  if ( r != OCI_SUCCESS )
+    qOraWarning( "Couldn't set OCI_ATTR_PREFETCH_ROWS: ", err );
+  r = OCIAttrSet( sql,
+                  OCI_HTYPE_STMT,
+                  &prefetchMem,
+                  0,
+                  OCI_ATTR_PREFETCH_MEMORY,
+                  err );
+  if ( r != OCI_SUCCESS )
+    qOraWarning( "QOCISpatialResultPrivate::setStatementAttributes:"
+                 " Couldn't set OCI_ATTR_PREFETCH_MEMORY: ", err );
 }
 
 int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError *err, int pos,
@@ -722,9 +719,8 @@ int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError 
           setCharset( *hbnd, OCI_HTYPE_BIND );
         break;
       }
-
-      FALLTHROUGH
     }
+    FALLTHROUGH
 
     default:
     {
@@ -865,7 +861,7 @@ OCIType *QOCISpatialDriverPrivate::tdo( QString type )
   }
   catch ( int r )
   {
-    Q_UNUSED( r );
+    Q_UNUSED( r )
     return nullptr;
   }
 
@@ -929,7 +925,7 @@ QSqlError qMakeError( const QString &errString, QSqlError::ErrorType type, OCIEr
   ENTER
   int errorCode = 0;
   const QString oraErrorString = qOraWarn( err, &errorCode );
-  return QSqlError( errString, oraErrorString, type, errorCode );
+  return QSqlError( errString, oraErrorString, type, QString::number( errorCode ) );
 }
 
 QVariant::Type qDecodeOCIType( const QString &ocitype, QSql::NumericalPrecisionPolicy precisionPolicy )
@@ -2066,7 +2062,7 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
             bindColumn.maxLen, bindColumn.bindAs, bindColumn.indicators, bindColumn.lengths,
             arrayBind ? bindColumn.maxarr_len : 0, arrayBind ? &bindColumn.curelep : 0 );
 
-    for ( int ii = 0; ii < ( int )bindColumn.recordCount; ++ii )
+    for ( int ii = 0; ii < static_cast<int>( bindColumn.recordCount ); ++ii )
     {
       qDebug( " record %d: indicator %d, length %d", ii, bindColumn.indicators[ii],
               bindColumn.lengths[ii] );
@@ -2121,7 +2117,7 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
   r = OCIStmtExecute( d->svc, d->sql, d->err,
                       arrayBind ? 1 : columns[0].recordCount,
                       0, nullptr, nullptr,
-                      d->transaction ? OCI_DEFAULT : OCI_COMMIT_ON_SUCCESS );
+                      d->transaction || !d->commitOnSuccess ? OCI_DEFAULT : OCI_COMMIT_ON_SUCCESS );
 
   if ( r != OCI_SUCCESS && r != OCI_SUCCESS_WITH_INFO )
   {
@@ -2391,11 +2387,7 @@ QOCISpatialCols::CurveParts QOCISpatialCols::getCurveParts( int &iElem, const QV
   if ( etype == 2 && ( n == 1 || n == 2 ) )
   {
     // LineString (n == 1) or CircularString (n == 2)
-    WKBType partType = ( n == 1 ) ? WKBLineString : WKBCircularString;
-    if ( baseType == WKBUnknown )
-      baseType = partType;
-    else if ( baseType != partType )
-      baseType = WKBCompoundCurve; // mixed linestrings/circularstrings => compoundcurve type
+    baseType = ( n == 1 ) ? ( nDims == 2 ? WKBLineString : WKBLineString25D ) : ( nDims == 2 ? WKBCircularString : WKBCircularStringZ );
 
     PointSequence points;
     points.reserve( 1 + ( endOffset - startOffset ) / nDims );
@@ -2406,17 +2398,17 @@ QOCISpatialCols::CurveParts QOCISpatialCols::getCurveParts( int &iElem, const QV
       double z = nDims > 2 ? ordinates[ j + 2] : 0;
       points << Point( x, y, z );
     }
-    return ( CurveParts() << qMakePair( partType, points ) );
+    return ( CurveParts() << qMakePair( baseType, points ) );
   }
   else if ( etype == 4 && n > 1 )
   {
     // CompoundCurve
-    baseType = WKBCompoundCurve;
+    baseType = nDims == 2 ? WKBCompoundCurve : WKBCompoundCurveZ;
     int compoundParts = n;
-    iElem += 3;
     CurveParts parts;
-    for ( int k = 0; k < compoundParts; k += 1, iElem += 3 )
+    for ( int k = 0; k < compoundParts; k += 1 )
     {
+      iElem += 3;
       if ( !getElemInfoElem( iElem, vElems, nOrds, startOffset, endOffset, etype, n ) )
       {
         qWarning() << "could not fetch element info" << iElem;
@@ -2425,7 +2417,7 @@ QOCISpatialCols::CurveParts QOCISpatialCols::getCurveParts( int &iElem, const QV
 
       if ( etype == 2 && ( n == 1 || n == 2 ) )
       {
-        WKBType partType = ( n == 1 ) ? WKBLineString : WKBCircularString;
+        WKBType partType = ( n == 1 ) ? ( nDims == 2 ? WKBLineString : WKBLineString25D ) : ( nDims == 2 ? WKBCircularString : WKBCircularStringZ );
         PointSequence points;
         points.reserve( 1 + ( endOffset - startOffset ) / nDims );
         for ( int j = startOffset; j < endOffset; j += nDims )
@@ -2713,13 +2705,13 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
   {
     Q_ASSERT( nOrds % nDims == 0 );
 
-    QVector< CurveParts > lines;
+    QVector< QPair<WKBType, CurveParts> > lines;
 
-    WKBType baseType = WKBUnknown;
-
+    bool isCurved = false;
     for ( int i = 0; i < nElems; i += 3 )
     {
       bool ok = false;
+      WKBType baseType = WKBUnknown;
       const CurveParts parts = getCurveParts( i, elems, nOrds, ordinates, nDims, baseType, ok );
       if ( !ok )
         return false;
@@ -2727,134 +2719,79 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
       if ( parts.empty() )
         continue;
 
-      lines << parts;
+      if ( baseType == WKBCompoundCurve || baseType == WKBCompoundCurveZ ||
+           baseType == WKBCircularString || baseType == WKBCircularStringZ )
+      {
+        isCurved = true;
+      }
+      lines << qMakePair( baseType, parts );
     }
 
-    int binarySize = 0;
+    int binarySize = 1 + sizeof( int ) ;
     if ( lines.size() > 1 )
-      binarySize += 1 + sizeof( int ) + sizeof( int );
+      binarySize += sizeof( int );
     for ( int partIndex = 0; partIndex < lines.size(); ++partIndex )
     {
-      binarySize += 1 + sizeof( int ) + sizeof( int );
+      if ( lines.size() > 1 )
+        binarySize += 1 + sizeof( int );
       auto &line = lines[ partIndex ];
-      int nCoordinates = 0;
 
-      if ( baseType == WKBCompoundCurve )
+      if ( line.first == WKBCompoundCurve || line.first == WKBCompoundCurveZ )
       {
-        for ( int partNum = 0; partNum < line.size() - 1; ++partNum )
+        binarySize += sizeof( int );
+        for ( int partNum = 0; partNum < line.second.size() - 1; ++partNum )
         {
-          line[ partNum ].second.append( line.at( partNum + 1 ).second.first() );
-        }
-
-        for ( const CurvePart &part : line )
-        {
-          const PointSequence &pts = part.second;
-          if ( part.first == WKBCompoundCurve )
-          {
-            if ( nCoordinates > 0 && pts.size() > 0 )
-            {
-              nCoordinates += 1;
-              binarySize += 1 + sizeof( int ) + sizeof( int );
-            }
-          }
-          nCoordinates += pts.size();
+          line.second[ partNum ].second.append( line.second.at( partNum + 1 ).second.first() );
         }
       }
 
-      for ( const CurvePart &part : line )
+      for ( const CurvePart &part : qAsConst( line.second ) )
       {
         const PointSequence &pts = part.second;
-        if ( part.first == WKBCompoundCurve )
+        if ( line.first == WKBCompoundCurve || line.first == WKBCompoundCurveZ )
         {
-          if ( nCoordinates > 0 && pts.size() > 0 )
-          {
-            nCoordinates += 1;
-            binarySize += 1 + sizeof( int ) + sizeof( int );
-          }
+          binarySize += 1 + sizeof( int );
         }
-        nCoordinates += pts.size();
+        binarySize += sizeof( int ) + pts.size() * ( nDims ) * sizeof( double );
       }
-      binarySize += nCoordinates * ( nDims ) * sizeof( double );
     }
 
-    QByteArray wkbArray;
-    wkbArray.resize( binarySize );
-    ptr.cPtr = wkbArray.data();
+    ba.resize( binarySize );
+    ptr.cPtr = ba.data();
     *ptr.ucPtr++ = byteorder();
-    WKBType partType = baseType;
-    switch ( baseType )
+
+    if ( lines.size() == 1 )
     {
-      case WKBLineString:
-        if ( lines.size() > 1 )
-        {
-          *ptr.iPtr++ = nDims == 2 ? WKBMultiLineString : WKBMultiLineString25D;
-          partType = nDims == 2 ? WKBLineString : WKBLineString25D;
-        }
-        else
-          *ptr.iPtr++ = nDims == 2 ? WKBLineString : WKBLineString25D;
-        break;
-
-      case WKBCircularString:
-        if ( lines.size() > 1 )
-        {
-          *ptr.iPtr++ = nDims == 2 ? WKBMultiCurve : WKBMultiCurveZ;
-          partType = nDims == 2 ? WKBCircularString : WKBCircularStringZ;
-        }
-        else
-          *ptr.iPtr++ = nDims == 2 ? WKBCircularString : WKBCircularStringZ;
-        break;
-
-      case WKBCompoundCurve:
-        if ( lines.size() > 1 )
-        {
-          *ptr.iPtr++ = nDims == 2 ? WKBMultiCurve : WKBMultiCurveZ;
-          partType = nDims == 2 ? WKBCompoundCurve : WKBCompoundCurveZ;
-        }
-        else
-          *ptr.iPtr++ = nDims == 2 ? WKBCompoundCurve : WKBCompoundCurveZ;
-        break;
-
-      default:
-        break;
+      *ptr.iPtr++ = lines[0].first;
+    }
+    else
+    {
+      if ( isCurved )
+        *ptr.iPtr++ = nDims == 2 ? WKBMultiCurve : WKBMultiCurve;
+      else
+        *ptr.iPtr++ = nDims == 2 ? WKBMultiLineString : WKBMultiLineString25D;
+      *ptr.iPtr++ = lines.size();
     }
 
-    if ( lines.size() > 1 )
-      *ptr.iPtr++ = lines.size();
-
-    for ( const auto &line : lines )
+    for ( const auto &line : qAsConst( lines ) )
     {
       if ( lines.size() > 1 )
       {
         *ptr.ucPtr++ = byteorder();
-        *ptr.iPtr++ = partType;
+        *ptr.iPtr++ = line.first;
       }
 
-      if ( baseType == WKBCompoundCurve )
+      if ( line.first == WKBCompoundCurve || line.first == WKBCompoundCurveZ )
       {
-        *ptr.iPtr++ = line.size();
+        *ptr.iPtr++ = line.second.size();
       }
-      for ( const CurvePart &part : line )
+      for ( const CurvePart &part : line.second )
       {
         const PointSequence &pts = part.second;
-        if ( pts.empty() )
-          continue;
-
-        if ( baseType == WKBCompoundCurve )
+        if ( line.first == WKBCompoundCurve || line.first == WKBCompoundCurveZ )
         {
           *ptr.ucPtr++ = byteorder();
-          switch ( part.first )
-          {
-            case WKBLineString:
-              *ptr.iPtr++ = nDims == 2 ? WKBLineString : WKBLineString25D;
-              break;
-
-            case WKBCircularString:
-              *ptr.iPtr++ = nDims == 2 ? WKBCircularString : WKBCircularStringZ;
-              break;
-
-            default:
-              break;
-          }
+          *ptr.iPtr++ = part.first;
         }
         *ptr.iPtr++ = pts.size();
         for ( const Point &point : pts )
@@ -2867,7 +2804,9 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
       }
     }
 
-    v = wkbArray;
+    Q_ASSERT( ptr.cPtr == ba.data() + ba.size() );
+
+    v = ba;
     return true;
   }
 
@@ -2877,9 +2816,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
     SurfaceRings currentPart;
     WKBType currentPartWkbType = WKBUnknown;
 
-    QVector<int> nPolygonRings;
     bool isCurved = false;
-    bool isCompoundCurve = false;
 
     for ( int i = 0; i < nElems; i += 3 )
     {
@@ -2895,6 +2832,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
         // Exterior ring => new Polygon
         parts << qMakePair( currentPartWkbType, currentPart );
         currentPart.clear();
+        currentPartWkbType = WKBUnknown;
       }
 
       if ( etype % 1000 == 3 && ( n == 1 || n == 2 ) )
@@ -2915,7 +2853,8 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
           // linear ring
           type = nDims == 2 ? WKBLineString
                  : WKBLineString25D;
-          currentPartWkbType = nDims == 2 ? WKBPolygon : WKBPolygon25D;
+          if ( currentPartWkbType == WKBUnknown )
+            currentPartWkbType = nDims == 2 ? WKBPolygon : WKBPolygon25D;
         }
         else if ( n == 2 )
         {
@@ -2943,7 +2882,8 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
         points << Point( x1, y1 );
         points << Point( x0, y1 );
         points << Point( x0, y0 );
-        currentPartWkbType = WKBPolygon;
+        if ( currentPartWkbType == WKBUnknown )
+          currentPartWkbType = WKBPolygon;
         currentPart << qMakePair( WKBLineString, CurveParts() << qMakePair( WKBLineString, points ) );
       }
       else if ( etype % 1000 == 3 && n == 4 )
@@ -2963,13 +2903,12 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
       {
         // CompoundCurve ring
         isCurved = true;
-        isCompoundCurve = true;
         int compoundParts = n;
-        i += 3;
-        currentPartWkbType = WKBCurvePolygon;
+        currentPartWkbType = ( nDims == 2 ? WKBCurvePolygon : WKBCurvePolygonZ );
         CurveParts parts;
-        for ( int k = 0; k < compoundParts; k += 1, i += 3 )
+        for ( int k = 0; k < compoundParts; k += 1 )
         {
+          i += 3;
           if ( !getElemInfoElem( i, elems, nOrds, startOffset, endOffset, etype, n ) )
           {
             qWarning() << "could not fetch element info" << i;
@@ -2978,7 +2917,9 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
 
           if ( etype == 2 && ( n == 1 || n == 2 ) )
           {
-            WKBType partType = ( n == 1 ) ? WKBLineString : WKBCircularString;
+            WKBType partType = ( n == 1 ) ?
+                               ( nDims == 2 ? WKBLineString : WKBLineString25D ) :
+                               ( nDims == 2 ? WKBCircularString : WKBCircularStringZ );
             PointSequence points;
             points.reserve( 1 + ( endOffset - startOffset ) / nDims );
             for ( int j = startOffset; j < endOffset; j += nDims )
@@ -3009,29 +2950,37 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
     if ( !currentPart.empty() )
       parts << qMakePair( currentPartWkbType, currentPart );
 
-    int wkbSize = 1 + 2 * sizeof( int );
+    int wkbSize = 1 + sizeof( int );
     const int nPolygons = parts.size();
+    const bool isMultiPolygon = iType == GtMultiPolygon;
+    if ( isMultiPolygon )
+      wkbSize += sizeof( int );
     for ( int part = 0; part < nPolygons; ++part )
     {
       SurfaceRings &rings = parts[ part ].second;
-      if ( nPolygons > 1 )
-        wkbSize += 1 + 2 * sizeof( int );
+      if ( isMultiPolygon )
+        wkbSize += 1 + sizeof( int );
+      wkbSize += sizeof( int );
       for ( int ringIdx = 0; ringIdx < rings.size(); ++ringIdx )
       {
         CurveParts &ring = rings[ ringIdx ].second;
 
-        if ( isCompoundCurve )
+        if ( parts[ part ].first == WKBCurvePolygon || parts[ part ].first == WKBCurvePolygonZ )
         {
-          wkbSize += 1 + 2 * sizeof( int );
+          wkbSize += 1 + sizeof( int );
+        }
+        if ( rings[ ringIdx ].first == WKBCompoundCurve || rings[ ringIdx ].first == WKBCompoundCurveZ )
+        {
+          wkbSize += sizeof( int );
           for ( int partNum = 0; partNum < ring.size() - 1; ++partNum )
           {
             ring[ partNum ].second.append( ring.at( partNum + 1 ).second.first() );
           }
         }
 
-        for ( const CurvePart &curvePart : ring )
+        for ( const CurvePart &curvePart : qAsConst( ring ) )
         {
-          if ( isCurved )
+          if ( rings[ ringIdx ].first == WKBCompoundCurve || rings[ ringIdx ].first == WKBCompoundCurveZ )
             wkbSize += 1 + sizeof( int );
           wkbSize += sizeof( int ) + curvePart.second.size() * nDims * sizeof( double );
         }
@@ -3044,7 +2993,8 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
 
     ptr.cPtr = ba.data();
     *ptr.ucPtr++ = byteorder();
-    if ( nPolygons == 1 )
+
+    if ( !isMultiPolygon )
     {
       if ( isCurved )
         *ptr.iPtr++ = nDims == 2 ? WKBCurvePolygon : WKBCurvePolygonZ;
@@ -3060,9 +3010,9 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
       *ptr.iPtr++ = nPolygons;
     }
 
-    for ( const QPair< WKBType, SurfaceRings > &rings : parts )
+    for ( const QPair< WKBType, SurfaceRings > &rings : qAsConst( parts ) )
     {
-      if ( nPolygons > 1 )
+      if ( isMultiPolygon )
       {
         *ptr.ucPtr++ = byteorder();
         *ptr.iPtr++ = rings.first;
@@ -3071,15 +3021,18 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
       *ptr.iPtr++ = rings.second.size();
       for ( const QPair< WKBType, CurveParts > &ring : rings.second )
       {
-        if ( ring.first == WKBCompoundCurve || ring.first == WKBCompoundCurveZ )
+        if ( rings.first == WKBCurvePolygon || rings.first == WKBCurvePolygonZ )
         {
           *ptr.ucPtr++ = byteorder();
           *ptr.iPtr++ = ring.first;
+        }
+        if ( ring.first == WKBCompoundCurve || ring.first == WKBCompoundCurveZ )
+        {
           *ptr.iPtr++ = ring.second.size();
         }
         for ( const CurvePart &curvePart : ring.second )
         {
-          if ( isCurved )
+          if ( ring.first == WKBCompoundCurve || ring.first == WKBCompoundCurveZ )
           {
             *ptr.ucPtr++ = byteorder();
             *ptr.iPtr++ = curvePart.first;
@@ -3096,6 +3049,8 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
         }
       }
     }
+
+    Q_ASSERT( ptr.cPtr == ba.data() + ba.size() );
 
     qDebug() << "returning (multi)polygon size" << ba.size();
     v = ba;
@@ -3325,7 +3280,9 @@ void QOCISpatialCols::getValues( QVector<QVariant> &v, int index )
             break;
           }
         }
-      // else fall through
+
+        FALLTHROUGH
+
       case QVariant::String:
         qDebug() << "String";
         v[index + i] = QString( reinterpret_cast<const QChar *>( fld.data ) );
@@ -3358,6 +3315,7 @@ QOCISpatialResultPrivate::QOCISpatialResultPrivate( QOCISpatialResult *q, const 
   , env( drv_d_func()->env )
   , svc( const_cast<OCISvcCtx * &>( drv_d_func()->svc ) )
   , transaction( drv_d_func()->transaction )
+  , commitOnSuccess( drv_d_func()->commitOnSuccess )
   , serverVersion( drv_d_func()->serverVersion )
   , prefetchRows( drv_d_func()->prefetchRows )
   , prefetchMem( drv_d_func()->prefetchMem )
@@ -3462,7 +3420,8 @@ bool QOCISpatialResult::gotoNext( QSqlCachedResult::ValueCache &values, int inde
         r = OCI_SUCCESS; /* ignore it */
         break;
       }
-    // fall through
+      FALLTHROUGH
+
     default:
       qOraWarning( "QOCISpatialResult::gotoNext: ", d->err );
       setLastError( qMakeError( QCoreApplication::translate( "QOCISpatialResult",
@@ -3615,7 +3574,7 @@ bool QOCISpatialResult::exec()
   }
 
   iters = stmtType == OCI_STMT_SELECT ? 0 : 1;
-  mode = d->transaction ? OCI_DEFAULT : OCI_COMMIT_ON_SUCCESS;
+  mode = d->transaction || !d->commitOnSuccess ? OCI_DEFAULT : OCI_COMMIT_ON_SUCCESS;
 
   qDebug() << "iters:" << iters;
 
@@ -3831,15 +3790,23 @@ static void qParseOpts( const QString &options, QOCISpatialDriverPrivate *d )
     bool ok;
     if ( opt == QLatin1String( "OCI_ATTR_PREFETCH_ROWS" ) )
     {
-      d->prefetchRows = val.toInt( &ok );
+      int intVal = val.toInt( &ok );
       if ( !ok )
-        d->prefetchRows = 0xffffffff;
+        d->prefetchRows = QOCISPATIAL_PREFETCH_ROWS;
+      else if ( intVal >= 0 )
+        d->prefetchRows = static_cast<ub4>( intVal );
     }
     else if ( opt == QLatin1String( "OCI_ATTR_PREFETCH_MEMORY" ) )
     {
-      d->prefetchMem = val.toInt( &ok );
+      int intVal = val.toInt( &ok );
       if ( !ok )
-        d->prefetchMem = 0xffff;
+        d->prefetchMem = QOCISPATIAL_PREFETCH_MEM;
+      else if ( intVal >= 0 )
+        d->prefetchMem = static_cast<ub4>( intVal );
+    }
+    else if ( opt == QLatin1String( "COMMIT_ON_SUCCESS" ) )
+    {
+      d->commitOnSuccess = val.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
     }
     else
     {

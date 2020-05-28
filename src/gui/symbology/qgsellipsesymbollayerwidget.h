@@ -12,11 +12,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSELLIPSESYMBOLLAYERV2WIDGET_H
-#define QGSELLIPSESYMBOLLAYERV2WIDGET_H
+#ifndef QGSELLIPSESYMBOLLAYERWIDGET_H
+#define QGSELLIPSESYMBOLLAYERWIDGET_H
 
 #include "ui_widget_ellipse.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgssymbollayerwidget.h"
 #include "qgis_gui.h"
 
@@ -77,4 +77,4 @@ class GUI_EXPORT QgsEllipseSymbolLayerWidget: public QgsSymbolLayerWidget, priva
     void setOffset();
 };
 
-#endif // QGSELLIPSESYMBOLLAYERV2WIDGET_H
+#endif // QGSELLIPSESYMBOLLAYERWIDGET_H

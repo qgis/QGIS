@@ -46,6 +46,12 @@ class TestQgsSqliteUtils : public QObject
 
     void testPrintfAscii();
     void testPrintfUtf8();
+    void testQuotedString_data();
+    void testQuotedString();
+    void testQuotedIdentifier_data();
+    void testQuotedIdentifier();
+    void testQuotedValue_data();
+    void testQuotedValue();
 };
 
 
@@ -88,6 +94,63 @@ void TestQgsSqliteUtils::testPrintfUtf8()
   QString lowerTag( tag.toLower() );
   QString query( QgsSqlite3Mprintf( "SELECT id FROM tag WHERE LOWER(name)='%q'", lowerTag.toUtf8().constData() ) );
   QCOMPARE( query, QString( "SELECT id FROM tag WHERE LOWER(name)='%1'" ).arg( lowerTag ) );
+}
+
+void TestQgsSqliteUtils::testQuotedString_data()
+{
+  QTest::addColumn<QString>( "input" );
+  QTest::addColumn<QString>( "expected" );
+
+  QTest::newRow( "test 1" ) << "university of qgis" << "'university of qgis'";
+  QTest::newRow( "test 2" ) << "university of 'qgis'" << "'university of ''qgis'''";
+  QTest::newRow( "test NULL" ) << QString() << "NULL";
+}
+
+void TestQgsSqliteUtils::testQuotedString()
+{
+  QFETCH( QString, input );
+  QFETCH( QString, expected );
+
+  QCOMPARE( QgsSqliteUtils::quotedString( input ), expected );
+}
+
+void TestQgsSqliteUtils::testQuotedIdentifier_data()
+{
+  QTest::addColumn<QString>( "input" );
+  QTest::addColumn<QString>( "expected" );
+
+  QTest::newRow( "myColumn" ) << "myColumn" << "\"myColumn\"";
+  QTest::newRow( "my column" ) << "my column" << "\"my column\"";
+  QTest::newRow( "The \"Column\"" ) << "The \"Column\"" << "\"The \"\"Column\"\"\"";
+}
+
+void TestQgsSqliteUtils::testQuotedIdentifier()
+{
+  QFETCH( QString, input );
+  QFETCH( QString, expected );
+
+  QCOMPARE( QgsSqliteUtils::quotedIdentifier( input ), expected );
+}
+
+void TestQgsSqliteUtils::testQuotedValue_data()
+{
+  QTest::addColumn<QVariant>( "input" );
+  QTest::addColumn<QString>( "expected" );
+
+  QTest::newRow( "String" ) << QVariant( "Test string" ) << "'Test string'";
+  QTest::newRow( "Integer" ) << QVariant( 5 ) << "5";
+  QTest::newRow( "Double" ) << QVariant( 3.2 ) << "3.2";
+  QTest::newRow( "Boolean" ) << QVariant( true ) << "1";
+  QTest::newRow( "Escaped string" ) << QVariant( "It's a test string" ) << "'It''s a test string'";
+  QTest::newRow( "NULL" ) << QVariant() << "NULL";
+}
+
+void TestQgsSqliteUtils::testQuotedValue()
+{
+  QFETCH( QVariant, input );
+  QFETCH( QString, expected );
+
+  QCOMPARE( QgsSqliteUtils::quotedValue( input ), expected );
 }
 
 

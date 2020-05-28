@@ -19,7 +19,7 @@ originally part of the larger QgsRasterLayer class
  ***************************************************************************/
 
 // Threshold for treating values as exact match.
-// Set to 0.0 to support displaying small values (https://issues.qgis.org/issues/12581)
+// Set to 0.0 to support displaying small values (https://github.com/qgis/QGIS/issues/20706)
 #define DOUBLE_DIFF_THRESHOLD 0.0 // 0.0000001
 
 #include "qgslogger.h"
@@ -28,6 +28,7 @@ originally part of the larger QgsRasterLayer class
 #include "qgscolorrampshader.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterminmaxorigin.h"
+#include "qgssymbollayerutils.h"
 
 #include <cmath>
 QgsColorRampShader::QgsColorRampShader( double minimumValue, double maximumValue, QgsColorRamp *colorRamp, Type type, ClassificationMode classificationMode )
@@ -35,7 +36,7 @@ QgsColorRampShader::QgsColorRampShader( double minimumValue, double maximumValue
   , mColorRampType( type )
   , mClassificationMode( classificationMode )
 {
-  QgsDebugMsgLevel( "called.", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "called." ), 4 );
 
   setSourceColorRamp( colorRamp );
 }
@@ -57,6 +58,7 @@ QgsColorRampShader::QgsColorRampShader( const QgsColorRampShader &other )
 
 QgsColorRampShader &QgsColorRampShader::operator=( const QgsColorRampShader &other )
 {
+  QgsRasterShaderFunction::operator=( other );
   if ( other.sourceColorRamp() )
     mSourceColorRamp.reset( other.sourceColorRamp()->clone() );
   else
@@ -73,7 +75,7 @@ QgsColorRampShader &QgsColorRampShader::operator=( const QgsColorRampShader &oth
   return *this;
 }
 
-QString QgsColorRampShader::colorRampTypeAsQString()
+QString QgsColorRampShader::colorRampTypeAsQString() const
 {
   switch ( mColorRampType )
   {
@@ -166,7 +168,7 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
         {
           // if color ramp is continuous scale values to get equally distributed classes.
           // Doesn't work perfectly when stops are non equally distributed.
-          intervalDiff *= ( numberOfEntries - 1 ) / ( double )numberOfEntries;
+          intervalDiff *= ( numberOfEntries - 1 ) / static_cast<double>( numberOfEntries );
         }
 
         // skip first value (always 0.0)
@@ -202,11 +204,12 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
     {
       // Quantile
       if ( band < 0 || !input )
-        return; // quantile classificationr requires a valid band, minMaxOrigin, and input
+        return; // quantile classification requires a valid band, minMaxOrigin, and input
 
       double cut1 = std::numeric_limits<double>::quiet_NaN();
       double cut2 = std::numeric_limits<double>::quiet_NaN();
-      int sampleSize = 250000;
+      // Note: the sample size in other parts of QGIS appears to be 25000, it is ten times here.
+      const int sampleSize = 250000 * 10;
 
       // set min and max from histogram, used later to calculate number of decimals to display
       input->cumulativeCut( band, 0.0, 1.0, min, max, extent, sampleSize );
@@ -436,7 +439,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
   {
     // Assign the color of the higher class for every pixel between two class breaks.
     // NOTE: The implementation has always been different than the documentation,
-    //       which said lower class before, see https://issues.qgis.org/issues/13995
+    //       which said lower class before, see https://github.com/qgis/QGIS/issues/22009
     if ( overflow )
     {
       return false;
@@ -470,10 +473,10 @@ bool QgsColorRampShader::shade( double redValue, double greenValue,
                                 int *returnRedValue, int *returnGreenValue,
                                 int *returnBlueValue, int *returnAlphaValue ) const
 {
-  Q_UNUSED( redValue );
-  Q_UNUSED( greenValue );
-  Q_UNUSED( blueValue );
-  Q_UNUSED( alphaValue );
+  Q_UNUSED( redValue )
+  Q_UNUSED( greenValue )
+  Q_UNUSED( blueValue )
+  Q_UNUSED( alphaValue )
 
   *returnRedValue = 0;
   *returnGreenValue = 0;
@@ -490,4 +493,71 @@ void QgsColorRampShader::legendSymbologyItems( QList< QPair< QString, QColor > >
   {
     symbolItems.push_back( qMakePair( colorRampIt->label, colorRampIt->color ) );
   }
+}
+
+QDomElement QgsColorRampShader::writeXml( QDomDocument &doc ) const
+{
+  QDomElement colorRampShaderElem = doc.createElement( QStringLiteral( "colorrampshader" ) );
+  colorRampShaderElem.setAttribute( QStringLiteral( "colorRampType" ), colorRampTypeAsQString() );
+  colorRampShaderElem.setAttribute( QStringLiteral( "classificationMode" ), classificationMode() );
+  colorRampShaderElem.setAttribute( QStringLiteral( "clip" ), clip() );
+  colorRampShaderElem.setAttribute( QStringLiteral( "minimumValue" ), mMinimumValue );
+  colorRampShaderElem.setAttribute( QStringLiteral( "maximumValue" ), mMaximumValue );
+
+  // save source color ramp
+  if ( sourceColorRamp() )
+  {
+    QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "[source]" ), sourceColorRamp(), doc );
+    colorRampShaderElem.appendChild( colorRampElem );
+  }
+
+  //items
+  QList<QgsColorRampShader::ColorRampItem> itemList = colorRampItemList();
+  QList<QgsColorRampShader::ColorRampItem>::const_iterator itemIt = itemList.constBegin();
+  for ( ; itemIt != itemList.constEnd(); ++itemIt )
+  {
+    QDomElement itemElem = doc.createElement( QStringLiteral( "item" ) );
+    itemElem.setAttribute( QStringLiteral( "label" ), itemIt->label );
+    itemElem.setAttribute( QStringLiteral( "value" ), QgsRasterBlock::printValue( itemIt->value ) );
+    itemElem.setAttribute( QStringLiteral( "color" ), itemIt->color.name() );
+    itemElem.setAttribute( QStringLiteral( "alpha" ), itemIt->color.alpha() );
+    colorRampShaderElem.appendChild( itemElem );
+  }
+  return colorRampShaderElem;
+}
+
+void QgsColorRampShader::readXml( const QDomElement &colorRampShaderElem )
+{
+  // try to load color ramp (optional)
+  QDomElement sourceColorRampElem = colorRampShaderElem.firstChildElement( QStringLiteral( "colorramp" ) );
+  if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( QStringLiteral( "name" ) ) == QLatin1String( "[source]" ) )
+  {
+    setSourceColorRamp( QgsSymbolLayerUtils::loadColorRamp( sourceColorRampElem ) );
+  }
+
+  setColorRampType( colorRampShaderElem.attribute( QStringLiteral( "colorRampType" ), QStringLiteral( "INTERPOLATED" ) ) );
+  setClassificationMode( static_cast< QgsColorRampShader::ClassificationMode >( colorRampShaderElem.attribute( QStringLiteral( "classificationMode" ), QStringLiteral( "1" ) ).toInt() ) );
+  setClip( colorRampShaderElem.attribute( QStringLiteral( "clip" ), QStringLiteral( "0" ) ) == QLatin1String( "1" ) );
+  setMinimumValue( colorRampShaderElem.attribute( QStringLiteral( "minimumValue" ) ).toDouble() );
+  setMaximumValue( colorRampShaderElem.attribute( QStringLiteral( "maximumValue" ) ).toDouble() );
+
+  QList<QgsColorRampShader::ColorRampItem> itemList;
+  QDomElement itemElem;
+  QString itemLabel;
+  double itemValue;
+  QColor itemColor;
+
+  QDomNodeList itemNodeList = colorRampShaderElem.elementsByTagName( QStringLiteral( "item" ) );
+  itemList.reserve( itemNodeList.size() );
+  for ( int i = 0; i < itemNodeList.size(); ++i )
+  {
+    itemElem = itemNodeList.at( i ).toElement();
+    itemValue = itemElem.attribute( QStringLiteral( "value" ) ).toDouble();
+    itemLabel = itemElem.attribute( QStringLiteral( "label" ) );
+    itemColor.setNamedColor( itemElem.attribute( QStringLiteral( "color" ) ) );
+    itemColor.setAlpha( itemElem.attribute( QStringLiteral( "alpha" ), QStringLiteral( "255" ) ).toInt() );
+
+    itemList.push_back( QgsColorRampShader::ColorRampItem( itemValue, itemColor, itemLabel ) );
+  }
+  setColorRampItemList( itemList );
 }

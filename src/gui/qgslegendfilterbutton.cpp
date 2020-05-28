@@ -82,7 +82,7 @@ void QgsLegendFilterButton::onSetLegendFilterExpression()
 void QgsLegendFilterButton::onClearFilterExpression()
 {
   mClearExpressionAction->setEnabled( false );
-  setExpressionText( QLatin1String( "" ) );
+  setExpressionText( QString() );
 
   setChecked( false );
 }

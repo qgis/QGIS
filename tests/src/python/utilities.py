@@ -8,8 +8,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Tim Sutton (tim@linfiniti.com)'
 __date__ = '20/01/2011'
 __copyright__ = 'Copyright 2012, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -109,8 +107,7 @@ def writeShape(theMemoryLayer, theFileName):
     myLayerOptions = []
     mySelectedOnlyFlag = False
     mySkipAttributesFlag = False
-    myGeoCrs = QgsCoordinateReferenceSystem()
-    myGeoCrs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+    myGeoCrs = QgsCoordinateReferenceSystem('EPSG:4326')
     myResult, myErrorMessage = QgsVectorFileWriter.writeAsVectorFormat(
         theMemoryLayer,
         myFileName,
@@ -143,22 +140,22 @@ def compareWkt(a, b, tol=0.000001):
     b0 = b.lower()
 
     # remove optional spaces before z/m
-    r = re.compile("\s+([zm])")
+    r = re.compile(r"\s+([zm])")
     a0 = r.sub(r'\1', a0)
     b0 = r.sub(r'\1', b0)
 
     # spaces before brackets are optional
-    r = re.compile("\s*\(\s*")
+    r = re.compile(r"\s*\(\s*")
     a0 = r.sub('(', a0)
     b0 = r.sub('(', b0)
     # spaces after brackets are optional
-    r = re.compile("\s*\)\s*")
+    r = re.compile(r"\s*\)\s*")
     a0 = r.sub(')', a0)
     b0 = r.sub(')', b0)
 
     # compare the structure
-    r0 = re.compile("-?\d+(?:\.\d+)?(?:[eE]\d+)?")
-    r1 = re.compile("\s*,\s*")
+    r0 = re.compile(r"-?\d+(?:\.\d+)?(?:[eE]\d+)?")
+    r1 = re.compile(r"\s*,\s*")
     a0 = r1.sub(",", r0.sub("#", a0))
     b0 = r1.sub(",", r0.sub("#", b0))
     if a0 != b0:
@@ -321,7 +318,7 @@ def printImportant(info):
 
 
 def waitServer(url, timeout=10):
-    """ Wait for a server to be online and to respond
+    r""" Wait for a server to be online and to respond
         HTTP errors are ignored
         \param timeout: in seconds
         \return: True of False

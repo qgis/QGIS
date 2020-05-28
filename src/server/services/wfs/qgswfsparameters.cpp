@@ -17,7 +17,6 @@
 
 #include "qgswfsparameters.h"
 #include "qgsmessagelog.h"
-#include <iostream>
 
 namespace QgsWfs
 {
@@ -77,18 +76,23 @@ namespace QgsWfs
     if ( val.isEmpty() )
       return theList;
 
-    QRegExp rx( exp );
-    if ( rx.indexIn( val, 0 ) == -1 )
-    {
+    if ( exp.isEmpty() )
       theList << val;
-    }
     else
     {
-      int pos = 0;
-      while ( ( pos = rx.indexIn( val, pos ) ) != -1 )
+      QRegExp rx( exp );
+      if ( rx.indexIn( val, 0 ) == -1 )
       {
-        theList << rx.cap( 1 );
-        pos += rx.matchedLength();
+        theList << val;
+      }
+      else
+      {
+        int pos = 0;
+        while ( ( pos = rx.indexIn( val, pos ) ) != -1 )
+        {
+          theList << rx.cap( 1 );
+          pos += rx.matchedLength();
+        }
       }
     }
 
@@ -237,14 +241,19 @@ namespace QgsWfs
       f = Format::GML2;
     else if ( fStr.compare( QLatin1String( "text/xml; subtype=gml/3.1.1" ), Qt::CaseInsensitive ) == 0 )
       f = Format::GML3;
-    else if ( fStr.compare( QLatin1String( "application/vnd.geo+json" ), Qt::CaseInsensitive ) == 0 )
+    else if ( fStr.compare( QLatin1String( "application/vnd.geo+json" ), Qt::CaseInsensitive ) == 0 ||
+              // Needs to check for space too, because a + sign in the query string is interpreted as a space
+              fStr.compare( QLatin1String( "application/vnd.geo json" ), Qt::CaseInsensitive ) == 0 ||
+              fStr.compare( QLatin1String( "application/geo+json" ), Qt::CaseInsensitive ) == 0 ||
+              fStr.compare( QLatin1String( "application/geo json" ), Qt::CaseInsensitive ) == 0 ||
+              fStr.compare( QLatin1String( "application/json" ), Qt::CaseInsensitive ) == 0 ||
+              fStr.compare( QLatin1String( "geojson" ), Qt::CaseInsensitive ) == 0
+            )
       f = Format::GeoJSON;
     else if ( fStr.compare( QLatin1String( "gml2" ), Qt::CaseInsensitive ) == 0 )
       f = Format::GML2;
     else if ( fStr.compare( QLatin1String( "gml3" ), Qt::CaseInsensitive ) == 0 )
       f = Format::GML3;
-    else if ( fStr.compare( QLatin1String( "geojson" ), Qt::CaseInsensitive ) == 0 )
-      f = Format::GeoJSON;
 
     if ( f == Format::NONE &&
          request().compare( QLatin1String( "describefeaturetype" ), Qt::CaseInsensitive ) == 0 &&
@@ -333,7 +342,7 @@ namespace QgsWfs
 
   QStringList QgsWfsParameters::expFilters() const
   {
-    return mWfsParameters[ QgsWfsParameter::EXP_FILTER ].toStringListWithExp();
+    return mWfsParameters[ QgsWfsParameter::EXP_FILTER ].toStringListWithExp( QString( ) );
   }
 
   QString QgsWfsParameters::geometryNameAsString() const

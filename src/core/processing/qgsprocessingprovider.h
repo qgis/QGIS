@@ -38,6 +38,16 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
   public:
 
     /**
+     * Flags indicating how and when an provider operates and should be exposed to users
+     * \since QGIS 3.14
+     */
+    enum Flag
+    {
+      FlagDeemphasiseSearchResults = 1 << 1, //!< Algorithms should be de-emphasised in the search results when searching for algorithms. Use for low-priority providers or those with substantial known issues.
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
+    /**
      * Constructor for QgsProcessingProvider.
      */
     QgsProcessingProvider( QObject *parent SIP_TRANSFERTHIS = nullptr );
@@ -62,6 +72,13 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     virtual QString svgIconPath() const;
 
     /**
+     * Returns the flags indicating how and when the provider operates and should be exposed to users.
+     * Default is no flags.
+     * \since QGIS 3.14
+     */
+    virtual Flags flags() const;
+
+    /**
      * Returns the unique provider id, used for identifying the provider. This string
      * should be a unique, short, character only string, eg "qgis" or "gdal". This
      * string should not be localised.
@@ -72,8 +89,8 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
 
     /**
      * Returns the provider help id string, used for creating QgsHelp urls for algorithms
-     * belong to this provider. By default, this returns the provider's id(). This string
-     * should not be localised.
+     * belong to this provider. By default, this returns an empty string, meaning that
+     * no QgsHelp url should be created for the provider's algorithms.
      * \see id()
      */
     virtual QString helpId() const;
@@ -87,7 +104,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     virtual QString name() const = 0;
 
     /**
-     * Returns the a longer version of the provider name, which can include extra details
+     * Returns the longer version of the provider name, which can include extra details
      * such as version numbers. E.g. "Lastools LIDAR tools (version 2.2.1)".
      * This string should be localised.
      *
@@ -99,14 +116,36 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     virtual QString longName() const;
 
     /**
-     * Returns true if the provider can be activated, or false if it cannot be activated (e.g. due to
+     * Returns a version information string for the provider, or an empty string if this
+     * is not applicable (e.g. for inbuilt Processing providers).
+     *
+     * For plugin based providers, this should return the plugin's version identifier.
+     *
+     * \since QGIS 3.8
+     */
+    virtual QString versionInfo() const;
+
+    /**
+     * Returns TRUE if the provider can be activated, or FALSE if it cannot be activated (e.g. due to
      * missing external dependencies).
      * \see isActive()
      */
     virtual bool canBeActivated() const { return true; }
 
     /**
-     * Returns true if the provider is active and able to run algorithms.
+     * Returns an optional warning message to show users when running algorithms from this provider.
+     *
+     * This can be used to return a translated warning message which should be shown to users
+     * of this provider. It's intended for use in cases such as a provider which relies on a 3rd-party
+     * backend, where the version of the backend software is not officially supported, or for
+     * alerting users to providers in a "beta" or "untrustworthy" state.
+     *
+     * \since QGIS 3.10.1
+     */
+    virtual QString warningMessage() const { return QString(); }
+
+    /**
+     * Returns TRUE if the provider is active and able to run algorithms.
      */
     virtual bool isActive() const { return true; }
 
@@ -118,6 +157,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
 
     /**
      * Returns a list of the vector format file extensions supported by this provider.
+     * \see supportedOutputTableExtensions()
      * \see defaultVectorFileExtension()
      * \see supportedOutputRasterLayerExtensions()
      * \see supportsNonFileBasedOutput()
@@ -125,11 +165,35 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     virtual QStringList supportedOutputVectorLayerExtensions() const;
 
     /**
+     * Returns a list of the table (geometry-less vector layers) file extensions supported by this provider.
+     *
+     * By default this is the same as supportedOutputVectorLayerExtensions(). Providers which utilize different
+     * formats for geometry-less layers can override this method to return a different list of supported formats.
+     *
+     * \see supportedOutputVectorLayerExtensions()
+     * \see defaultVectorFileExtension()
+     * \see supportedOutputRasterLayerExtensions()
+     * \see supportsNonFileBasedOutput()
+     *
+     * \since QGIS 3.4.3
+     */
+    virtual QStringList supportedOutputTableExtensions() const;
+
+    /**
+     * Returns TRUE if the specified \a outputValue is of a supported file format for the given destination \a parameter.
+     *
+     * If the output value is not supported, \a error will be set to a descriptive message explaining why.
+     *
+     * \since QGIS 3.6
+    */
+    virtual bool isSupportedOutputValue( const QVariant &outputValue, const QgsProcessingDestinationParameter *parameter, QgsProcessingContext &context, QString &error SIP_OUT ) const;
+
+    /**
      * Returns the default file extension to use for vector outputs created by the
      * provider.
      *
-     * If \a hasGeometry is true then the output file format must have support for
-     * geometry. If \a hasGeometry is false then non-spatial formats can be used.
+     * If \a hasGeometry is TRUE then the output file format must have support for
+     * geometry. If \a hasGeometry is FALSE then non-spatial formats can be used.
      *
      * The default implementation returns the user's default Processing vector output format
      * setting, if it's supported by the provider (see supportedOutputVectorLayerExtensions()).
@@ -154,10 +218,10 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     virtual QString defaultRasterFileExtension() const;
 
     /**
-     * Returns true if the provider supports non-file based outputs (such as memory layers
-     * or direct database outputs). If a provider returns false for this method than it
+     * Returns TRUE if the provider supports non-file based outputs (such as memory layers
+     * or direct database outputs). If a provider returns FALSE for this method than it
      * indicates that none of the outputs from any of the provider's algorithms have
-     * support for non-file based outputs. Returning true indicates that the algorithm's
+     * support for non-file based outputs. Returning TRUE indicates that the algorithm's
      * parameters will each individually declare their non-file based support.
      *
      * The default behavior for providers is to support non-file based outputs, and most
@@ -174,7 +238,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * Subclasses should not individually load any algorithms in their load() implementations, as that must
      * occur within the loadAlgorithms() method. Instead, subclasses should call refreshAlgorithms()
      * from any overloaded load() method to trigger an initial load of the provider's algorithms.
-     * \returns true if provider could be successfully loaded
+     * \returns TRUE if provider could be successfully loaded
      * \see unload()
      */
     virtual bool load() { refreshAlgorithms(); return true; }
@@ -197,7 +261,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     QList< const QgsProcessingAlgorithm * > algorithms() const;
 
     /**
-     * Returns the matching algorithm by \a name, or a nullptr if no matching
+     * Returns the matching algorithm by \a name, or NULLPTR if no matching
      * algorithm is contained by this provider.
      * \see algorithms()
      */
@@ -233,6 +297,8 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     QgsProcessingProvider( const QgsProcessingProvider &other );
 #endif
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingProvider::Flags )
 
 #endif // QGSPROCESSINGPROVIDER_H
 

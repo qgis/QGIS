@@ -62,7 +62,7 @@ bool QgsFieldExpressionWidgetPlugin::isInitialized() const
 
 void QgsFieldExpressionWidgetPlugin::initialize( QDesignerFormEditorInterface *core )
 {
-  Q_UNUSED( core );
+  Q_UNUSED( core )
   if ( mInitialized )
     return;
   mInitialized = true;

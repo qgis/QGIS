@@ -140,12 +140,12 @@ class CORE_EXPORT QWebPage : public QObject
 
     void setPalette( const QPalette &palette )
     {
-      Q_UNUSED( palette );
+      Q_UNUSED( palette )
     }
 
     void setViewportSize( const QSize &size ) const
     {
-      Q_UNUSED( size );
+      Q_UNUSED( size )
     }
 
     void setLinkDelegationPolicy( LinkDelegationPolicy linkDelegationPolicy )
@@ -162,7 +162,7 @@ class CORE_EXPORT QWebPage : public QObject
 
     void setNetworkAccessManager( QNetworkAccessManager *networkAccessManager )
     {
-      Q_UNUSED( networkAccessManager );
+      Q_UNUSED( networkAccessManager )
     }
 
     QWebFrame *mainFrame() const

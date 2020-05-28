@@ -21,12 +21,7 @@
 #include "qgswcsgetcapabilities.h"
 
 #include "qgsproject.h"
-#include "qgsexception.h"
 #include "qgsrasterlayer.h"
-#include "qgsmapserviceexception.h"
-#include "qgscoordinatereferencesystem.h"
-
-#include <QStringList>
 
 namespace QgsWcs
 {
@@ -37,17 +32,41 @@ namespace QgsWcs
   void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                              const QgsServerRequest &request, QgsServerResponse &response )
   {
-    QDomDocument doc = createGetCapabilitiesDocument( serverIface, project, version, request );
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    QgsAccessControl *accessControl = serverIface->accessControls();
+#endif
+    QDomDocument doc;
+    const QDomDocument *capabilitiesDocument = nullptr;
 
-    response.setHeader( "Content-Type", "text/xml; charset=utf-8" );
-    response.write( doc.toByteArray() );
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    QgsServerCacheManager *cacheManager = serverIface->cacheManager();
+    if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
+    {
+      capabilitiesDocument = &doc;
+    }
+    else //capabilities xml not in cache. Create a new one
+    {
+      doc = createGetCapabilitiesDocument( serverIface, project, version, request );
+
+      if ( cacheManager )
+      {
+        cacheManager->setCachedDocument( &doc, project, request, accessControl );
+      }
+      capabilitiesDocument = &doc;
+    }
+#else
+    doc = createGetCapabilitiesDocument( serverIface, project, version, request );
+    capabilitiesDocument = &doc;
+#endif
+    response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
+    response.write( capabilitiesDocument->toByteArray() );
   }
 
 
   QDomDocument createGetCapabilitiesDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
       const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QDomDocument doc;
 
@@ -254,6 +273,8 @@ namespace QgsWcs
   {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
+#else
+    ( void )serverIface;
 #endif
     /*
      * Adding layer list in ContentMetadata
@@ -268,7 +289,7 @@ namespace QgsWcs
       {
         continue;
       }
-      if ( layer->type() != QgsMapLayer::LayerType::RasterLayer )
+      if ( layer->type() != QgsMapLayerType::RasterLayer )
       {
         continue;
       }
@@ -280,7 +301,7 @@ namespace QgsWcs
 #endif
 
       QgsRasterLayer *rLayer = qobject_cast<QgsRasterLayer *>( layer );
-      QDomElement layerElem = getCoverageOffering( doc, const_cast<QgsRasterLayer *>( rLayer ), true );
+      QDomElement layerElem = getCoverageOffering( doc, const_cast<QgsRasterLayer *>( rLayer ), project, true );
 
       contentMetadataElement.appendChild( layerElem );
     }

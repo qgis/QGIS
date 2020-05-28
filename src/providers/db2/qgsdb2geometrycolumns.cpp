@@ -24,7 +24,7 @@ QgsDb2GeometryColumns::QgsDb2GeometryColumns( const QSqlDatabase &db )
   : mDatabase( db )
   , mEnvironment( ENV_LUW )
 {
-  QgsDebugMsg( "constructing" );
+  QgsDebugMsg( QStringLiteral( "constructing" ) );
 }
 
 QgsDb2GeometryColumns::~QgsDb2GeometryColumns()
@@ -62,27 +62,27 @@ QString QgsDb2GeometryColumns::open( const QString &schemaName, const QString &t
   {
     QgsDebugMsg( "ST_Geometry_Columns query failed: " + mDatabase.lastError().text() );
     nativeError = mQuery.lastError().nativeErrorCode();
-    QgsDebugMsg( QString( "SQLCODE: %1" ).arg( nativeError ) );
+    QgsDebugMsg( QStringLiteral( "SQLCODE: %1" ).arg( nativeError ) );
     /* The MIN_X, MIN_Y, MAX_X, and MAX_Y columns are not available on z/OS (and LUW 9.5)
        so SQLCODE -206 is returned when specifying non-existent columns. */
     if ( mQuery.lastError().nativeErrorCode() == QStringLiteral( "-206" ) )
     {
-      QgsDebugMsg( "Try query with no extents" );
+      QgsDebugMsg( QStringLiteral( "Try query with no extents" ) );
       mQuery.clear();
 
       if ( !mQuery.exec( queryNoExtents ) )
       {
-        QgsDebugMsg( QString( "SQLCODE: %1" ).arg( mQuery.lastError().nativeErrorCode() ) );
+        QgsDebugMsg( QStringLiteral( "SQLCODE: %1" ).arg( mQuery.lastError().nativeErrorCode() ) );
       }
       else
       {
-        QgsDebugMsg( "success; must be z/OS" );
+        QgsDebugMsg( QStringLiteral( "success; must be z/OS" ) );
         mEnvironment = ENV_ZOS;
         nativeError.clear();
       }
     }
   }
-//  QgsDebugMsg( QString( "sqlcode: %1" ).arg( sqlcode ) );
+//  QgsDebugMsg( QStringLiteral( "sqlcode: %1" ).arg( sqlcode ) );
 
   return nativeError;
 }
@@ -130,7 +130,7 @@ bool QgsDb2GeometryColumns::populateLayerProperty( QgsDb2LayerProperty &layer )
                         mQuery.value( 9 ).toString() ).trimmed();
     }
   }
-  QgsDebugMsg( QString( "layer: %1.%2(%3) type='%4' srid='%5' srsName='%6'" )
+  QgsDebugMsg( QStringLiteral( "layer: %1.%2(%3) type='%4' srid='%5' srsName='%6'" )
                .arg( layer.schemaName, layer.tableName, layer.geometryColName,
                      layer.type, layer.srid, layer.srsName ) );
   QgsDebugMsg( "Extents: '" + layer.extents + "'" );

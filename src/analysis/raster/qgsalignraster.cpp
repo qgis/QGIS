@@ -62,7 +62,7 @@ static QgsRectangle transform_to_extent( const double *geotransform, double xSiz
 
 static int CPL_STDCALL _progress( double dfComplete, const char *pszMessage, void *pProgressArg )
 {
-  Q_UNUSED( pszMessage );
+  Q_UNUSED( pszMessage )
 
   QgsAlignRaster::ProgressHandler *handler = ( ( QgsAlignRaster * ) pProgressArg )->progressHandler();
   if ( handler )
@@ -363,7 +363,8 @@ bool QgsAlignRaster::run()
 
   //dump();
 
-  Q_FOREACH ( const Item &r, mRasters )
+  const auto constMRasters = mRasters;
+  for ( const Item &r : constMRasters )
   {
     if ( !createAndWarp( r ) )
       return false;
@@ -396,9 +397,10 @@ int QgsAlignRaster::suggestedReferenceLayer() const
   // would be a better a choice to more accurately compute areas?
   // (Why earth is not flat???)
   QgsCoordinateReferenceSystem destCRS( QStringLiteral( "EPSG:4326" ) );
-  QString destWkt = destCRS.toWkt();
+  QString destWkt = destCRS.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
 
-  Q_FOREACH ( const Item &raster, mRasters )
+  const auto constMRasters = mRasters;
+  for ( const Item &raster : constMRasters )
   {
     if ( !suggestedWarpOutput( RasterInfo( raster.inputFilename ), destWkt, &cs ) )
       return false;

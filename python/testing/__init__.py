@@ -21,14 +21,12 @@ __author__ = 'Matthias Kuhn'
 __date__ = 'January 2016'
 __copyright__ = '(C) 2016, Matthias Kuhn'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = ':%H$'
-
 import os
 import sys
 import difflib
 import functools
+import filecmp
+import tempfile
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsApplication, QgsFeatureRequest, NULL
@@ -195,6 +193,23 @@ class TestCase(_TestCase):
                 )
                 diff = list(diff)
                 self.assertEqual(0, len(diff), ''.join(diff))
+
+    def assertDirectoriesEqual(self, dirpath_expected, dirpath_result):
+        """ Checks whether both directories have the same content (recursively) and raises an assertion error if not. """
+        dc = filecmp.dircmp(dirpath_expected, dirpath_result)
+        dc.report_full_closure()
+
+        def _check_dirs_equal_recursive(dcmp):
+            self.assertEqual(dcmp.left_only, [])
+            self.assertEqual(dcmp.right_only, [])
+            self.assertEqual(dcmp.diff_files, [])
+            for sub_dcmp in dcmp.subdirs.values():
+                _check_dirs_equal_recursive(sub_dcmp)
+
+        _check_dirs_equal_recursive(dc)
+
+    def assertGeometriesEqual(self, geom0, geom1, geom0_id='geometry 1', geom1_id='geometry 2', precision=14, topo_equal_check=False):
+        self.checkGeometriesEqual(geom0, geom1, geom0_id, geom1_id, use_asserts=True, precision=precision, topo_equal_check=topo_equal_check)
 
     def checkGeometriesEqual(self, geom0, geom1, geom0_id, geom1_id, use_asserts=False, precision=14, topo_equal_check=False):
         """ Checks whether two geometries are the same - using either a strict check of coordinates (up to given precision)
@@ -391,6 +406,11 @@ def start_app(cleanup=True):
     except NameError:
         myGuiFlag = True  # All test will run qgis in gui mode
 
+        try:
+            sys.argv
+        except:
+            sys.argv = ['']
+
         # In python3 we need to convert to a bytes object (or should
         # QgsApplication accept a QString instead of const char* ?)
         try:
@@ -402,6 +422,7 @@ def start_app(cleanup=True):
         # no need to mess with it here.
         QGISAPP = QgsApplication(argvb, myGuiFlag)
 
+        os.environ['QGIS_CUSTOM_CONFIG_PATH'] = tempfile.mkdtemp('', 'QGIS-PythonTestConfigPath')
         QGISAPP.initQgis()
         print(QGISAPP.showSettings())
 

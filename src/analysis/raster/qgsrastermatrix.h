@@ -43,7 +43,9 @@ class ANALYSIS_EXPORT QgsRasterMatrix
       opGE,         // >=
       opLE,         // <=
       opAND,
-      opOR
+      opOR,
+      opMIN,
+      opMAX
     };
 
     enum OneArgOperator
@@ -58,6 +60,7 @@ class ANALYSIS_EXPORT QgsRasterMatrix
       opSIGN,
       opLOG,
       opLOG10,
+      opABS,
     };
 
     //! Takes ownership of data array
@@ -68,7 +71,7 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     QgsRasterMatrix( const QgsRasterMatrix &m );
     ~QgsRasterMatrix();
 
-    //! Returns true if matrix is 1x1 (=scalar number)
+    //! Returns TRUE if matrix is 1x1 (=scalar number)
     bool isNumber() const { return ( mColumns == 1 && mRows == 1 ); }
     double number() const { return mData[0]; }
 
@@ -109,6 +112,20 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     bool logicalAnd( const QgsRasterMatrix &other );
     bool logicalOr( const QgsRasterMatrix &other );
 
+    /**
+     * Calculates the maximum value between two matrices
+     * \return TRUE on success
+     * \since QGIS 3.10
+     */
+    bool max( const QgsRasterMatrix &other );
+
+    /**
+     * Calculates the minimum value between two matrices
+     * \return TRUE on success
+     * \since QGIS 3.10
+     */
+    bool min( const QgsRasterMatrix &other );
+
     bool squareRoot();
     bool sinus();
     bool asinus();
@@ -119,6 +136,13 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     bool changeSign();
     bool log();
     bool log10();
+
+    /**
+     * Calculates the absolute value
+     * \return TRUE on success
+     * \since QGIS 3.10
+     */
+    bool absoluteValue();
 
   private:
     int mColumns = 0;

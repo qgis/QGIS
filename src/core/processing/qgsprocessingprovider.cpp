@@ -41,14 +41,24 @@ QString QgsProcessingProvider::svgIconPath() const
   return QgsApplication::iconPath( QStringLiteral( "processingAlgorithm.svg" ) );
 }
 
+QgsProcessingProvider::Flags QgsProcessingProvider::flags() const
+{
+  return nullptr;
+}
+
 QString QgsProcessingProvider::helpId() const
 {
-  return id();
+  return QString();
 }
 
 QString QgsProcessingProvider::longName() const
 {
   return name();
+}
+
+QString QgsProcessingProvider::versionInfo() const
+{
+  return QString();
 }
 
 QStringList QgsProcessingProvider::supportedOutputRasterLayerExtensions() const
@@ -102,11 +112,89 @@ QStringList QgsProcessingProvider::supportedOutputVectorLayerExtensions() const
   return QgsVectorFileWriter::supportedFormatExtensions();
 }
 
+QStringList QgsProcessingProvider::supportedOutputTableExtensions() const
+{
+  return supportedOutputVectorLayerExtensions();
+}
+
+bool QgsProcessingProvider::isSupportedOutputValue( const QVariant &outputValue, const QgsProcessingDestinationParameter *parameter, QgsProcessingContext &context, QString &error ) const
+{
+  error.clear();
+  QString outputPath = QgsProcessingParameters::parameterAsOutputLayer( parameter, outputValue, context ).trimmed();
+
+  if ( outputPath.isEmpty() )
+  {
+    if ( parameter->flags() & QgsProcessingParameterDefinition::FlagOptional )
+    {
+      return true;
+    }
+    else
+    {
+      error = tr( "Missing parameter value %1" ).arg( parameter->description() );
+      return false;
+    }
+  }
+
+  if ( parameter->type() == QgsProcessingParameterVectorDestination::typeName()
+       ||  parameter->type() == QgsProcessingParameterFeatureSink::typeName() )
+  {
+    if ( outputPath.startsWith( QLatin1String( "memory:" ) ) )
+    {
+      if ( !supportsNonFileBasedOutput() )
+      {
+        error = tr( "This algorithm only supports disk-based outputs" );
+        return false;
+      }
+      return true;
+    }
+
+    QString providerKey;
+    QString uri;
+    QString layerName;
+    QMap<QString, QVariant> options;
+    bool useWriter = false;
+    QString format;
+    QString extension;
+    QgsProcessingUtils::parseDestinationString( outputPath, providerKey, uri, layerName, format, options, useWriter, extension );
+
+    if ( providerKey != QLatin1String( "ogr" ) )
+    {
+      if ( !supportsNonFileBasedOutput() )
+      {
+        error = tr( "This algorithm only supports disk-based outputs" );
+        return false;
+      }
+      return true;
+    }
+
+    if ( !supportedOutputVectorLayerExtensions().contains( extension, Qt::CaseInsensitive ) )
+    {
+      error = tr( "“.%1” files are not supported as outputs for this algorithm" ).arg( extension );
+      return false;
+    }
+    return true;
+  }
+  else if ( parameter->type() == QgsProcessingParameterRasterDestination::typeName() )
+  {
+    QFileInfo fi( outputPath );
+    const QString extension = fi.completeSuffix();
+    if ( !supportedOutputRasterLayerExtensions().contains( extension, Qt::CaseInsensitive ) )
+    {
+      error = tr( "“.%1” files are not supported as outputs for this algorithm" ).arg( extension );
+      return false;
+    }
+    return true;
+  }
+  else
+  {
+    return true;
+  }
+}
+
 QString QgsProcessingProvider::defaultVectorFileExtension( bool hasGeometry ) const
 {
   QgsSettings settings;
-  const QString defaultExtension = hasGeometry ? QStringLiteral( "shp" ) : QStringLiteral( "dbf" );
-  const QString userDefault = settings.value( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), defaultExtension, QgsSettings::Core ).toString();
+  const QString userDefault = QgsProcessingUtils::defaultVectorExtension();
 
   const QStringList supportedExtensions = supportedOutputVectorLayerExtensions();
   if ( supportedExtensions.contains( userDefault, Qt::CaseInsensitive ) )
@@ -122,15 +210,14 @@ QString QgsProcessingProvider::defaultVectorFileExtension( bool hasGeometry ) co
   {
     // who knows? provider says it has no file support at all...
     // let's say shp. even MapInfo supports shapefiles.
-    return defaultExtension;
+    return hasGeometry ? QStringLiteral( "shp" ) : QStringLiteral( "dbf" );
   }
 }
 
 QString QgsProcessingProvider::defaultRasterFileExtension() const
 {
   QgsSettings settings;
-  const QString defaultExtension = QStringLiteral( "tif" );
-  const QString userDefault = settings.value( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), defaultExtension, QgsSettings::Core ).toString();
+  const QString userDefault = QgsProcessingUtils::defaultRasterExtension();
 
   const QStringList supportedExtensions = supportedOutputRasterLayerExtensions();
   if ( supportedExtensions.contains( userDefault, Qt::CaseInsensitive ) )
@@ -145,7 +232,7 @@ QString QgsProcessingProvider::defaultRasterFileExtension() const
   else
   {
     // who knows? provider says it has no file support at all...
-    return defaultExtension;
+    return QStringLiteral( "tif" );
   }
 }
 

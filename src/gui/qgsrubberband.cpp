@@ -14,16 +14,17 @@
  ***************************************************************************/
 
 #include "qgsrubberband.h"
-#include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
+#include "qgsrectangle.h"
 #include <QPainter>
 
 QgsRubberBand::QgsRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geometryType )
-  : QgsMapCanvasItem( mapCanvas )
+  : QObject( nullptr )
+  , QgsMapCanvasItem( mapCanvas )
   , mGeometryType( geometryType )
 {
   reset( geometryType );
@@ -37,7 +38,8 @@ QgsRubberBand::QgsRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType
 }
 
 QgsRubberBand::QgsRubberBand()
-  : QgsMapCanvasItem( nullptr )
+  : QObject( nullptr )
+  , QgsMapCanvasItem( nullptr )
 {
 }
 
@@ -49,6 +51,9 @@ void QgsRubberBand::setColor( const QColor &color )
 
 void QgsRubberBand::setFillColor( const QColor &color )
 {
+  if ( mBrush.color() == color )
+    return;
+
   mBrush.setColor( color );
 }
 
@@ -70,6 +75,13 @@ void QgsRubberBand::setWidth( int width )
 void QgsRubberBand::setIcon( IconType icon )
 {
   mIconType = icon;
+}
+
+void QgsRubberBand::setSvgIcon( const QString &path, QPoint drawOffset )
+{
+  setIcon( ICON_SVG );
+  mSvgRenderer = qgis::make_unique<QSvgRenderer>( path );
+  mSvgOffset = drawOffset;
 }
 
 void QgsRubberBand::setIconSize( int iconSize )
@@ -231,6 +243,18 @@ void QgsRubberBand::setToGeometry( const QgsGeometry &geom, QgsVectorLayer *laye
   addGeometry( geom, layer );
 }
 
+void QgsRubberBand::setToGeometry( const QgsGeometry &geom, const QgsCoordinateReferenceSystem &crs )
+{
+  if ( geom.isNull() )
+  {
+    reset( mGeometryType );
+    return;
+  }
+
+  reset( geom.type() );
+  addGeometry( geom, crs );
+}
+
 void QgsRubberBand::addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer )
 {
   QgsGeometry geom = geometry;
@@ -371,9 +395,11 @@ void QgsRubberBand::paint( QPainter *p )
     return;
 
   QVector< QVector<QPointF> > shapes;
+  shapes.reserve( mPoints.size() );
   for ( const QList<QgsPointXY> &line : qgis::as_const( mPoints ) )
   {
     QVector<QPointF> pts;
+    pts.reserve( line.size() );
     for ( const QgsPointXY &pt : line )
     {
       const QPointF cur = toCanvasCoordinates( QgsPointXY( pt.x() + mTranslationOffsetX, pt.y() + mTranslationOffsetY ) ) - pos();
@@ -419,7 +445,8 @@ void QgsRubberBand::drawShape( QPainter *p, const QVector<QPointF> &pts )
 
     case QgsWkbTypes::PointGeometry:
     {
-      Q_FOREACH ( QPointF pt, pts )
+      const auto constPts = pts;
+      for ( QPointF pt : constPts )
       {
         double x = pt.x();
         double y = pt.y();
@@ -449,11 +476,11 @@ void QgsRubberBand::drawShape( QPainter *p, const QVector<QPointF> &pts )
             break;
 
           case ICON_FULL_BOX:
-            p->drawRect( x - s, y - s, mIconSize, mIconSize );
+            p->drawRect( static_cast< int>( x - s ), static_cast< int >( y - s ), mIconSize, mIconSize );
             break;
 
           case ICON_CIRCLE:
-            p->drawEllipse( x - s, y - s, mIconSize, mIconSize );
+            p->drawEllipse( static_cast< int >( x - s ), static_cast< int >( y - s ), mIconSize, mIconSize );
             break;
 
           case ICON_DIAMOND:
@@ -470,7 +497,17 @@ void QgsRubberBand::drawShape( QPainter *p, const QVector<QPointF> &pts )
               p->drawPolygon( pts, 4 );
             else
               p->drawPolyline( pts, 4 );
+            break;
           }
+
+          case ICON_SVG:
+            QRectF viewBox = mSvgRenderer->viewBoxF();
+            QRectF r( mSvgOffset.x(), mSvgOffset.y(), viewBox.width(), viewBox.height() );
+            p->save();
+            p->translate( pt );
+            mSvgRenderer->render( p, r );
+            p->restore();
+            break;
         }
       }
     }
@@ -496,16 +533,23 @@ void QgsRubberBand::updateRect()
 
   const QgsMapToPixel &m2p = *( mMapCanvas->getCoordinateTransform() );
 
+#if 0 // unused?
+  double iconSize = ( mIconSize + 1 ) / 2.;
+  if ( mSvgRenderer )
+  {
+    QRectF viewBox = mSvgRenderer->viewBoxF();
+    iconSize = std::max( std::fabs( mSvgOffset.x() ) + .5 * viewBox.width(), std::fabs( mSvgOffset.y() ) + .5 * viewBox.height() );
+  }
+#endif
+
   qreal w = ( ( mIconSize - 1 ) / 2 + mPen.width() ); // in canvas units
 
   QgsRectangle r;  // in canvas units
-  for ( int i = 0; i < mPoints.size(); ++i )
+  for ( const QList<QgsPointXY> &ring : qgis::as_const( mPoints ) )
   {
-    QList<QgsPointXY>::const_iterator it = mPoints.at( i ).constBegin(),
-                                      itE = mPoints.at( i ).constEnd();
-    for ( ; it != itE; ++it )
+    for ( const QgsPointXY &point : ring )
     {
-      QgsPointXY p( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY );
+      QgsPointXY p( point.x() + mTranslationOffsetX, point.y() + mTranslationOffsetY );
       p = m2p.transform( p );
       QgsRectangle rect( p.x() - w, p.y() - w, p.x() + w, p.y() + w );
 
@@ -524,7 +568,7 @@ void QgsRubberBand::updateRect()
   // This is an hack to pass QgsMapCanvasItem::setRect what it
   // expects (encoding of position and size of the item)
   qreal res = m2p.mapUnitsPerPixel();
-  QgsPointXY topLeft = m2p.toMapPoint( r.xMinimum(), r.yMinimum() );
+  QgsPointXY topLeft = m2p.toMapCoordinates( r.xMinimum(), r.yMinimum() );
   QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + r.width()*res, topLeft.y() - r.height()*res );
 
   setRect( rect );
@@ -533,7 +577,7 @@ void QgsRubberBand::updateRect()
 void QgsRubberBand::updatePosition()
 {
   // re-compute rectangle
-  // See https://issues.qgis.org/issues/12392
+  // See https://github.com/qgis/QGIS/issues/20566
   // NOTE: could be optimized by saving map-extent
   //       of rubberband and simply re-projecting
   //       that to device-rectangle on "updatePosition"
@@ -561,14 +605,9 @@ int QgsRubberBand::partSize( int geometryIndex ) const
 int QgsRubberBand::numberOfVertices() const
 {
   int count = 0;
-  QList<QList<QgsPointXY> >::const_iterator it = mPoints.constBegin();
-  for ( ; it != mPoints.constEnd(); ++it )
+  for ( const QList<QgsPointXY> &ring : qgis::as_const( mPoints ) )
   {
-    QList<QgsPointXY>::const_iterator iter = it->constBegin();
-    for ( ; iter != it->constEnd(); ++iter )
-    {
-      ++count;
-    }
+    count += ring.size();
   }
   return count;
 }
@@ -590,10 +629,9 @@ QgsGeometry QgsRubberBand::asGeometry() const
     case QgsWkbTypes::PolygonGeometry:
     {
       QgsPolygonXY polygon;
-      QList< QList<QgsPointXY> >::const_iterator it = mPoints.constBegin();
-      for ( ; it != mPoints.constEnd(); ++it )
+      for ( const QList<QgsPointXY> &ring : qgis::as_const( mPoints ) )
       {
-        polygon.append( getPolyline( *it ) );
+        polygon.append( getPolyline( ring ) );
       }
       geom = QgsGeometry::fromPolygonXY( polygon );
       break;
@@ -603,10 +641,9 @@ QgsGeometry QgsRubberBand::asGeometry() const
     {
       QgsMultiPointXY multiPoint;
 
-      QList< QList<QgsPointXY> >::const_iterator it = mPoints.constBegin();
-      for ( ; it != mPoints.constEnd(); ++it )
+      for ( const QList<QgsPointXY> &ring : qgis::as_const( mPoints ) )
       {
-        multiPoint += getPolyline( *it );
+        multiPoint += getPolyline( ring );
       }
       geom = QgsGeometry::fromMultiPointXY( multiPoint );
       break;
@@ -620,10 +657,9 @@ QgsGeometry QgsRubberBand::asGeometry() const
         if ( mPoints.size() > 1 )
         {
           QgsMultiPolylineXY multiPolyline;
-          QList< QList<QgsPointXY> >::const_iterator it = mPoints.constBegin();
-          for ( ; it != mPoints.constEnd(); ++it )
+          for ( const QList<QgsPointXY> &ring : qgis::as_const( mPoints ) )
           {
-            multiPolyline.append( getPolyline( *it ) );
+            multiPolyline.append( getPolyline( ring ) );
           }
           geom = QgsGeometry::fromMultiPolylineXY( multiPolyline );
         }
@@ -640,11 +676,5 @@ QgsGeometry QgsRubberBand::asGeometry() const
 
 QgsPolylineXY QgsRubberBand::getPolyline( const QList<QgsPointXY> &points )
 {
-  QgsPolylineXY polyline;
-  QList<QgsPointXY>::const_iterator iter = points.constBegin();
-  for ( ; iter != points.constEnd(); ++iter )
-  {
-    polyline.append( *iter );
-  }
-  return polyline;
+  return points.toVector();
 }

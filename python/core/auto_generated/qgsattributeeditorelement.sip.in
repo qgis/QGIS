@@ -15,7 +15,7 @@ class QgsAttributeEditorElement /Abstract/
 This is an abstract base class for any elements of a drag and drop form.
 
 This can either be a container which will be represented on the screen
-as a tab widget or ca collapsible group box. Or it can be a field which will
+as a tab widget or a collapsible group box. Or it can be a field which will
 then be represented based on the QgsEditorWidget type and configuration.
 Or it can be a relation and embed the form of several children of another
 layer.
@@ -47,14 +47,16 @@ layer.
       AeTypeContainer,
       AeTypeField,
       AeTypeRelation,
-      AeTypeInvalid
+      AeTypeInvalid,
+      AeTypeQmlElement,
+      AeTypeHtmlElement
     };
 
     QgsAttributeEditorElement( AttributeEditorType type, const QString &name, QgsAttributeEditorElement *parent = 0 );
 %Docstring
 Constructor
 
-:param type: The type of the new element. Should never
+:param type: The type of the new element.
 :param name:
 :param parent:
 %End
@@ -129,12 +131,13 @@ attribute form if it is set to the drag and drop designer.
 %End
   public:
 
-    QgsAttributeEditorContainer( const QString &name, QgsAttributeEditorElement *parent );
+    QgsAttributeEditorContainer( const QString &name, QgsAttributeEditorElement *parent, const QColor &backgroundColor = QColor() );
 %Docstring
 Creates a new attribute editor container
 
 :param name: The name to show as title
 :param parent: The parent. May be another container.
+:param backgroundColor: The optional background color of the container.
 %End
 
 
@@ -151,14 +154,14 @@ Add a child element to this container. This may be another container, a field or
 %Docstring
 Determines if this container is rendered as collapsible group box or tab in a tabwidget
 
-:param isGroupBox: If true, this will be a group box
+:param isGroupBox: If ``True``, this will be a group box
 %End
 
     virtual bool isGroupBox() const;
 %Docstring
 Returns if this container is going to be rendered as a group box
 
-:return: True if it will be a group box, false if it will be a tab
+:return: ``True`` if it will be a group box, ``False`` if it will be a tab
 %End
 
     QList<QgsAttributeEditorElement *> children() const;
@@ -223,6 +226,20 @@ the field value controlled by editor widgets.
 .. versionadded:: 3.0
 %End
 
+    QColor backgroundColor() const;
+%Docstring
+backgroundColor
+
+:return: background color of the container
+
+.. versionadded:: 3.8
+%End
+
+    void setBackgroundColor( const QColor &backgroundColor );
+%Docstring
+Sets the background color to ``backgroundColor``
+%End
+
 };
 
 class QgsAttributeEditorField : QgsAttributeEditorElement
@@ -269,13 +286,15 @@ This element will load a relation editor onto the form.
  QgsAttributeEditorRelation( const QString &name, const QString &relationId, QgsAttributeEditorElement *parent );
 %Docstring
 
-.. deprecated:: since QGIS 3.0.2. The name parameter is not used for anything and overwritten by the relationId internally.
+.. deprecated:: QGIS 3.0.2.
+   The name parameter is not used for anything and overwritten by the relationId internally.
 %End
 
  QgsAttributeEditorRelation( const QString &name, const QgsRelation &relation, QgsAttributeEditorElement *parent );
 %Docstring
 
-.. deprecated:: since QGIS 3.0.2. The name parameter is not used for anything and overwritten by the relationId internally.
+.. deprecated:: QGIS 3.0.2.
+   The name parameter is not used for anything and overwritten by the relationId internally.
 %End
 
     QgsAttributeEditorRelation( const QString &relationId, QgsAttributeEditorElement *parent );
@@ -308,7 +327,7 @@ Initializes the relation from the id
 
 :param relManager: The relation manager to use for the initialization
 
-:return: true if the relation was found in the relationmanager
+:return: ``True`` if the relation was found in the relationmanager
 %End
 
     virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
@@ -342,6 +361,97 @@ Determines if the "unlink feature" button should be shown
 .. versionadded:: 2.18
 %End
 
+    void setShowSaveChildEditsButton( bool showSaveChildEditsButton );
+%Docstring
+Determines if the "save child layer edits" button should be shown
+
+.. versionadded:: 3.14
+%End
+
+    bool showSaveChildEditsButton( ) const;
+%Docstring
+Returns ``True`` if the "save child layer edits" button should be shown.
+
+.. versionadded:: 3.14
+%End
+
+
+};
+
+class QgsAttributeEditorQmlElement : QgsAttributeEditorElement
+{
+%Docstring
+An attribute editor widget that will represent arbitrary QML code.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsattributeeditorelement.h"
+%End
+  public:
+
+    QgsAttributeEditorQmlElement( const QString &name, QgsAttributeEditorElement *parent );
+%Docstring
+Creates a new element which can display QML
+
+:param name: The name of the widget
+:param parent: The parent (used as container)
+%End
+
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
+
+
+    QString qmlCode() const;
+%Docstring
+The QML code that will be represented within this widget.
+
+.. versionadded:: 3.4
+%End
+
+    void setQmlCode( const QString &qmlCode );
+%Docstring
+Sets the QML code that will be represented within this widget to ``qmlCode``.
+%End
+
+};
+
+
+class QgsAttributeEditorHtmlElement : QgsAttributeEditorElement
+{
+%Docstring
+An attribute editor widget that will represent arbitrary HTML code.
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgsattributeeditorelement.h"
+%End
+  public:
+
+    QgsAttributeEditorHtmlElement( const QString &name, QgsAttributeEditorElement *parent );
+%Docstring
+Creates a new element which can display HTML
+
+:param name: The name of the widget
+:param parent: The parent (used as container)
+%End
+
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
+
+
+    QString htmlCode() const;
+%Docstring
+The QML code that will be represented within this widget.
+
+.. versionadded:: 3.4
+%End
+
+    void setHtmlCode( const QString &htmlCode );
+%Docstring
+Sets the HTML code that will be represented within this widget to ``htmlCode``.
+%End
 
 };
 

@@ -28,14 +28,14 @@ import json
 import zipfile
 
 from qgis.PyQt.QtCore import Qt, QObject, QDir, QUrl, QFileInfo, QFile
-from qgis.PyQt.QtWidgets import QMessageBox, QLabel, QFrame, QApplication, QFileDialog
+from qgis.PyQt.QtWidgets import QApplication, QDialog, QDialogButtonBox, QFrame, QMessageBox, QLabel, QVBoxLayout
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 import qgis
-from qgis.core import Qgis, QgsApplication, QgsNetworkAccessManager, QgsSettings
-from qgis.gui import QgsMessageBar
+from qgis.core import Qgis, QgsApplication, QgsNetworkAccessManager, QgsSettings, QgsNetworkRequestParameters
+from qgis.gui import QgsMessageBar, QgsPasswordLineEdit, QgsHelp
 from qgis.utils import (iface, startPlugin, unloadPlugin, loadPlugin,
-                        reloadPlugin, updateAvailablePlugins)
+                        reloadPlugin, updateAvailablePlugins, plugins_metadata_parser)
 from .installer_data import (repositories, plugins, officialRepo,
                              settingsGroup, reposGroup, removeDir)
 from .qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
@@ -43,6 +43,8 @@ from .qgsplugininstallerpluginerrordialog import QgsPluginInstallerPluginErrorDi
 from .qgsplugininstallerfetchingdialog import QgsPluginInstallerFetchingDialog
 from .qgsplugininstallerrepositorydialog import QgsPluginInstallerRepositoryDialog
 from .unzip import unzip
+from .plugindependencies import find_dependencies
+from .qgsplugindependenciesdialog import QgsPluginDependenciesDialog
 
 
 # public instances:
@@ -128,7 +130,7 @@ class QgsPluginInstaller(QObject):
 
         QApplication.restoreOverrideCursor()
 
-        # display error messages for every unavailable reposioty, unless Shift pressed nor all repositories are unavailable
+        # display error messages for every unavailable repository, unless Shift pressed nor all repositories are unavailable
         keepQuiet = QgsApplication.keyboardModifiers() == Qt.KeyboardModifiers(Qt.ShiftModifier)
         if repositories.allUnavailable() and repositories.allUnavailable() != repositories.allEnabled():
             for key in repositories.allUnavailable():
@@ -218,18 +220,30 @@ class QgsPluginInstaller(QObject):
                 "installed": plugin["installed"] and "true" or "false",
                 "available": plugin["available"] and "true" or "false",
                 "status": plugin["status"],
+                "status_exp": plugin["status_exp"],
                 "error": plugin["error"],
                 "error_details": plugin["error_details"],
+                "create_date": plugin["create_date"],
+                "update_date": plugin["update_date"],
+                "create_date_stable": plugin["create_date_stable"],
+                "update_date_stable": plugin["update_date_stable"],
+                "create_date_experimental": plugin["create_date_experimental"],
+                "update_date_experimental": plugin["update_date_experimental"],
                 "experimental": plugin["experimental"] and "true" or "false",
                 "deprecated": plugin["deprecated"] and "true" or "false",
                 "trusted": plugin["trusted"] and "true" or "false",
                 "version_available": plugin["version_available"],
+                "version_available_stable": plugin["version_available_stable"] or "",
+                "version_available_experimental": plugin["version_available_experimental"] or "",
                 "zip_repository": plugin["zip_repository"],
                 "download_url": plugin["download_url"],
+                "download_url_stable": plugin["download_url_stable"],
+                "download_url_experimental": plugin["download_url_experimental"],
                 "filename": plugin["filename"],
                 "downloads": plugin["downloads"],
                 "average_vote": plugin["average_vote"],
                 "rating_votes": plugin["rating_votes"],
+                "plugin_dependencies": plugin.get("plugin_dependencies", None),
                 "pythonic": "true"
             })
         iface.pluginManagerInterface().reloadModel()
@@ -279,19 +293,20 @@ class QgsPluginInstaller(QObject):
             self.installPlugin(key, quiet=True)
 
     # ----------------------------------------- #
-    def installPlugin(self, key, quiet=False):
+    def installPlugin(self, key, quiet=False, stable=True):
         """ Install given plugin """
         error = False
+        status_key = 'status' if stable else 'status_exp'
         infoString = ('', '')
         plugin = plugins.all()[key]
-        previousStatus = plugin["status"]
+        previousStatus = plugin[status_key]
         if not plugin:
             return
-        if plugin["status"] == "newer" and not plugin["error"]:  # ask for confirmation if user downgrades an usable plugin
+        if plugin[status_key] == "newer" and not plugin["error"]:  # ask for confirmation if user downgrades an usable plugin
             if QMessageBox.warning(iface.mainWindow(), self.tr("QGIS Python Plugin Installer"), self.tr("Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!"), QMessageBox.Yes, QMessageBox.No) == QMessageBox.No:
                 return
 
-        dlg = QgsPluginInstallerInstallingDialog(iface.mainWindow(), plugin)
+        dlg = QgsPluginInstallerInstallingDialog(iface.mainWindow(), plugin, stable=stable)
         dlg.exec_()
 
         if dlg.result():
@@ -309,6 +324,7 @@ class QgsPluginInstaller(QObject):
             QApplication.setOverrideCursor(Qt.WaitCursor)
             # update the list of plugins in plugin handling routines
             updateAvailablePlugins()
+            self.processDependencies(plugin["id"])
             # try to load the plugin
             loadPlugin(plugin["id"])
             plugins.getAllInstalled()
@@ -417,6 +433,11 @@ class QgsPluginInstaller(QObject):
                 exec("del sys.modules[%s]" % plugin["id"])
             except:
                 pass
+            try:
+                exec("del plugins_metadata_parser[%s]" % plugin["id"])
+            except:
+                pass
+
             plugins.getAllInstalled()
             plugins.rebuild()
             self.exportPluginsToManager()
@@ -527,6 +548,8 @@ class QgsPluginInstaller(QObject):
         url = "http://plugins.qgis.org/plugins/RPC2/"
         params = {"id": "djangorpc", "method": "plugin.vote", "params": [str(plugin_id), str(vote)]}
         req = QNetworkRequest(QUrl(url))
+        req.setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.AttributeInitiatorClass), "QgsPluginInstaller")
+        req.setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.AttributeInitiatorRequestId), "sendVote")
         req.setRawHeader(b"Content-Type", b"application/json")
         QgsNetworkAccessManager.instance().post(req, bytes(json.dumps(params), "utf-8"))
         return True
@@ -539,41 +562,80 @@ class QgsPluginInstaller(QObject):
         settings.setValue(settingsGroup + '/lastZipDirectory',
                           QFileInfo(filePath).absoluteDir().absolutePath())
 
-        error = False
-        infoString = None
-
         with zipfile.ZipFile(filePath, 'r') as zf:
             pluginName = os.path.split(zf.namelist()[0])[0]
 
         pluginFileName = os.path.splitext(os.path.basename(filePath))[0]
 
+        if not pluginName:
+            msg_box = QMessageBox()
+            msg_box.setIcon(QMessageBox.Warning)
+            msg_box.setWindowTitle(self.tr("QGIS Python Install from ZIP Plugin Installer"))
+            msg_box.setText(self.tr("The Zip file is not a valid QGIS python plugin. No root folder was found inside."))
+            msg_box.setStandardButtons(QMessageBox.Ok)
+            more_info_btn = msg_box.addButton(self.tr("More Information"), QMessageBox.HelpRole)
+            msg_box.exec()
+            if msg_box.clickedButton() == more_info_btn:
+                QgsHelp.openHelp("plugins/plugins.html#the-install-from-zip-tab")
+            return
+
         pluginsDirectory = qgis.utils.home_plugin_path
         if not QDir(pluginsDirectory).exists():
             QDir().mkpath(pluginsDirectory)
 
+        pluginDirectory = QDir.cleanPath(os.path.join(pluginsDirectory, pluginName))
+
         # If the target directory already exists as a link,
         # remove the link without resolving
-        QFile(os.path.join(pluginsDirectory, pluginFileName)).remove()
+        QFile(pluginDirectory).remove()
 
-        try:
-            # Test extraction. If fails, then exception will be raised
-            # and no removing occurs
-            unzip(str(filePath), str(pluginsDirectory))
-            # Removing old plugin files if exist
-            removeDir(QDir.cleanPath(os.path.join(pluginsDirectory, pluginFileName)))
-            # Extract new files
-            unzip(str(filePath), str(pluginsDirectory))
-        except:
-            error = True
-            infoString = (self.tr("Plugin installation failed"),
-                          self.tr("Failed to unzip the plugin package\n{}.\nProbably it is broken".format(filePath)))
+        password = None
+        infoString = None
+        success = False
+        keepTrying = True
 
-        if infoString is None:
+        while keepTrying:
+            try:
+                # Test extraction. If fails, then exception will be raised and no removing occurs
+                unzip(filePath, pluginsDirectory, password)
+                # Removing old plugin files if exist
+                removeDir(pluginDirectory)
+                # Extract new files
+                unzip(filePath, pluginsDirectory, password)
+                keepTrying = False
+                success = True
+            except Exception as e:
+                success = False
+                if 'password' in str(e):
+                    infoString = self.tr('Aborted by user')
+                    if 'Bad password' in str(e):
+                        msg = self.tr('Wrong password. Please enter a correct password to the zip file.')
+                    else:
+                        msg = self.tr('The zip file is encrypted. Please enter password.')
+                    # Display a password dialog with QgsPasswordLineEdit
+                    dlg = QDialog()
+                    dlg.setWindowTitle(self.tr('Enter password'))
+                    buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, Qt.Horizontal)
+                    buttonBox.rejected.connect(dlg.reject)
+                    buttonBox.accepted.connect(dlg.accept)
+                    lePass = QgsPasswordLineEdit()
+                    layout = QVBoxLayout()
+                    layout.addWidget(QLabel(msg))
+                    layout.addWidget(lePass)
+                    layout.addWidget(buttonBox)
+                    dlg.setLayout(layout)
+                    keepTrying = dlg.exec_()
+                    password = lePass.text()
+                else:
+                    infoString = self.tr("Failed to unzip the plugin package\n{}.\nProbably it is broken".format(filePath))
+                    keepTrying = False
+
+        if success:
             updateAvailablePlugins()
+            self.processDependencies(pluginName)
             loadPlugin(pluginName)
             plugins.getAllInstalled()
             plugins.rebuild()
-            self.exportPluginsToManager()
 
             if settings.contains('/PythonPlugins/' + pluginName):
                 if settings.value('/PythonPlugins/' + pluginName, False, bool):
@@ -585,11 +647,40 @@ class QgsPluginInstaller(QObject):
             else:
                 if startPlugin(pluginName):
                     settings.setValue('/PythonPlugins/' + pluginName, True)
-            infoString = (self.tr("Plugin installed successfully"), "")
 
-        if infoString[0]:
-            level = error and Qgis.Critical or Qgis.Info
-            msg = "<b>%s</b>" % infoString[0]
-            if infoString[1]:
-                msg += "<b>:</b> %s" % infoString[1]
-            iface.pluginManagerInterface().pushMessage(msg, level)
+            self.exportPluginsToManager()
+            msg = "<b>%s</b>" % self.tr("Plugin installed successfully")
+        else:
+            msg = "<b>%s:</b> %s" % (self.tr("Plugin installation failed"), infoString)
+
+        level = Qgis.Info if success else Qgis.Critical
+        iface.pluginManagerInterface().pushMessage(msg, level)
+
+    def processDependencies(self, plugin_id):
+        """Processes plugin dependencies
+
+        :param plugin_id: plugin id
+        :type plugin_id: str
+        """
+
+        to_install, to_upgrade, not_found = find_dependencies(plugin_id)
+        if to_install or to_upgrade or not_found:
+            dlg = QgsPluginDependenciesDialog(plugin_id, to_install, to_upgrade, not_found)
+            if dlg.exec_() == QgsPluginDependenciesDialog.Accepted:
+                actions = dlg.actions()
+                for dependency_plugin_id, action in actions.items():
+                    try:
+                        self.installPlugin(dependency_plugin_id)
+                        if action == 'install':
+                            iface.pluginManagerInterface().pushMessage(self.tr("Plugin dependency <b>%s</b> successfully installed") %
+                                                                       dependency_plugin_id, Qgis.Info)
+                        else:
+                            iface.pluginManagerInterface().pushMessage(self.tr("Plugin dependency <b>%s</b> successfully upgraded") %
+                                                                       dependency_plugin_id, Qgis.Info)
+                    except Exception as ex:
+                        if action == 'install':
+                            iface.pluginManagerInterface().pushMessage(self.tr("Error installing plugin dependency <b>%s</b>: %s") %
+                                                                       (dependency_plugin_id, ex), Qgis.Warning)
+                        else:
+                            iface.pluginManagerInterface().pushMessage(self.tr("Error upgrading plugin dependency <b>%s</b>: %s") %
+                                                                       (dependency_plugin_id, ex), Qgis.Warning)

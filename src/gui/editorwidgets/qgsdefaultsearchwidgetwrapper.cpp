@@ -20,6 +20,7 @@
 #include "qgsexpression.h"
 #include "qgsfieldvalueslineedit.h"
 #include "qgssettings.h"
+#include "qgsapplication.h"
 
 #include <QHBoxLayout>
 

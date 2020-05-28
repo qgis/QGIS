@@ -33,7 +33,7 @@ QgsPieDiagram *QgsPieDiagram::clone() const
 
 QSizeF QgsPieDiagram::diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is )
 {
-  Q_UNUSED( c );
+  Q_UNUSED( c )
 
   QVariant attrVal;
   if ( is.classificationAttributeIsExpression )
@@ -74,8 +74,8 @@ QString QgsPieDiagram::diagramName() const
 
 QSizeF QgsPieDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )
 {
-  Q_UNUSED( c );
-  Q_UNUSED( attributes );
+  Q_UNUSED( c )
+  Q_UNUSED( attributes )
   return s.size;
 }
 
@@ -133,17 +133,17 @@ void QgsPieDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext &
     {
       if ( *valIt )
       {
-        currentAngle = *valIt / valSum * 360 * 16;
+        currentAngle = ( *valIt / valSum * 360 * 16 ) * ( s.direction() == QgsDiagramSettings::Clockwise ? -1 : 1 );
         mCategoryBrush.setColor( *colIt );
         p->setBrush( mCategoryBrush );
         // if only 1 value is > 0, draw a circle
         if ( valCount == 1 )
         {
-          p->drawEllipse( baseX, baseY, w, h );
+          p->drawEllipse( QRectF( baseX, baseY, w, h ) );
         }
         else
         {
-          p->drawPie( baseX, baseY, w, h, totalAngle - s.rotationOffset * 16.0, currentAngle );
+          p->drawPie( QRectF( baseX, baseY, w, h ), totalAngle - s.rotationOffset * 16.0, currentAngle );
         }
         totalAngle += currentAngle;
       }
@@ -154,6 +154,6 @@ void QgsPieDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext &
     // draw empty circle if no values are defined at all
     mCategoryBrush.setColor( Qt::transparent );
     p->setBrush( mCategoryBrush );
-    p->drawEllipse( baseX, baseY, w, h );
+    p->drawEllipse( QRectF( baseX, baseY, w, h ) );
   }
 }

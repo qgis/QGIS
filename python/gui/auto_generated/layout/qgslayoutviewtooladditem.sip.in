@@ -22,6 +22,9 @@ Layout view tool for adding items to a layout.
   public:
 
     QgsLayoutViewToolAddItem( QgsLayoutView *view /TransferThis/ );
+%Docstring
+Constructs a QgsLayoutViewToolAddItem for the given layout ``view``.
+%End
 
     int itemMetadataId() const;
 %Docstring

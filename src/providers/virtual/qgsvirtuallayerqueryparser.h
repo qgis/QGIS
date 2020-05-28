@@ -19,7 +19,8 @@ email                : hugo dot mercier at oslandia dot com
 
 #include "qgis.h"
 #include "qgswkbtypes.h"
-#include "qgsvectorlayer.h"
+
+struct sqlite3;
 
 namespace QgsVirtualLayerQueryParser
 {

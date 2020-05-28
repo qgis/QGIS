@@ -25,9 +25,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayertools.h"
 #include "qgssnapindicator.h"
+#include "qgsmapmouseevent.h"
 
 #include <QMessageBox>
-#include <QMouseEvent>
 #include <QSettings>
 #include <limits>
 
@@ -86,7 +86,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     if ( vlayer->selectedFeatureCount() == 0 )
     {
-      QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setSubsetOfAttributes( QgsAttributeList() ) );
+      QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setNoAttributes() );
 
       //find the closest feature
       QgsGeometry pointGeometry = QgsGeometry::fromPointXY( layerCoords );
@@ -131,7 +131,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       mRubberBand = createRubberBand( vlayer->geometryType() );
       QgsFeature feat;
-      QgsFeatureIterator it = vlayer->getSelectedFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+      QgsFeatureIterator it = vlayer->getSelectedFeatures( QgsFeatureRequest().setNoAttributes() );
 
       bool allFeaturesInView = true;
       QgsRectangle viewRect = mCanvas->mapSettings().mapToLayerCoordinates( vlayer, mCanvas->extent() );
@@ -188,9 +188,18 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     switch ( mMode )
     {
       case Move:
-        Q_FOREACH ( QgsFeatureId id, mMovedFeatures )
+        for ( QgsFeatureId id : qgis::as_const( mMovedFeatures ) )
         {
           vlayer->translateFeature( id, dx, dy );
+
+          if ( QgsProject::instance()->topologicalEditing() )
+          {
+            if ( mSnapIndicator && ( mSnapIndicator->match().layer() != nullptr ) )
+            {
+              mSnapIndicator->match().layer()->addTopologicalPoints( vlayer->getGeometry( id ) );
+            }
+            vlayer->addTopologicalPoints( vlayer->getGeometry( id ) );
+          }
         }
         delete mRubberBand;
         mRubberBand = nullptr;
@@ -202,7 +211,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         QgsFeatureRequest request;
         request.setFilterFids( mMovedFeatures );
         QString *errorMsg = new QString();
-        if ( !QgisApp::instance()->vectorLayerTools()->copyMoveFeatures( vlayer, request, dx, dy, errorMsg ) )
+        if ( !QgisApp::instance()->vectorLayerTools()->copyMoveFeatures( vlayer, request, dx, dy, errorMsg, QgsProject::instance()->topologicalEditing(), mSnapIndicator->match().layer() ) )
         {
           emit messageEmitted( *errorMsg, Qgis::Critical );
           delete mRubberBand;

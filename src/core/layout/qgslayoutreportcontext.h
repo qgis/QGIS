@@ -18,8 +18,10 @@
 
 #include "qgis_core.h"
 #include "qgsfeature.h"
-#include "qgsvectorlayer.h"
+#include "qgslayout.h"
+
 #include <QtGlobal>
+#include <QPointer>
 
 /**
  * \ingroup core
@@ -89,14 +91,16 @@ class CORE_EXPORT QgsLayoutReportContext : public QObject
      * Sets the list of predefined \a scales to use with the layout. This is used
      * for maps which are set to the predefined atlas scaling mode.
      * \see predefinedScales()
+     * \deprecated Use QgsLayoutRenderContext::setPredefinedScales()
      */
-    void setPredefinedScales( const QVector<qreal> &scales );
+    Q_DECL_DEPRECATED void setPredefinedScales( const QVector<qreal> &scales ) SIP_DEPRECATED;
 
     /**
      * Returns the current list of predefined scales for use with the layout.
      * \see setPredefinedScales()
+     * \deprecated Use QgsLayoutRenderContext::predefinedScales()
      */
-    QVector<qreal> predefinedScales() const { return mPredefinedScales; }
+    Q_DECL_DEPRECATED QVector<qreal> predefinedScales() const SIP_DEPRECATED { return mPredefinedScales; }
 
   signals:
 

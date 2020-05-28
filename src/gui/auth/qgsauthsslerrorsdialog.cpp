@@ -104,12 +104,12 @@ void QgsAuthSslErrorsDialog::loadUnloadCertificate( bool load )
   grpbxSslErrors->setCollapsed( load );
   if ( !load )
   {
-    QgsDebugMsg( "Unloading certificate and host:port" );
+    QgsDebugMsg( QStringLiteral( "Unloading certificate and host:port" ) );
     clearCertificateConfig();
     return;
   }
   wdgtSslConfig->setEnabled( true );
-  QgsDebugMsg( QString( "Loading certificate for host:port = %1" ).arg( mHostPort ) );
+  QgsDebugMsg( QStringLiteral( "Loading certificate for host:port = %1" ).arg( mHostPort ) );
   wdgtSslConfig->setSslCertificate( mSslConfiguration.peerCertificate(), mHostPort );
   if ( !mSslErrors.isEmpty() )
   {
@@ -206,7 +206,8 @@ void QgsAuthSslErrorsDialog::populateErrorsList()
 {
   QStringList errs;
   errs.reserve( mSslErrors.size() );
-  Q_FOREACH ( const QSslError &err, mSslErrors )
+  const auto constMSslErrors = mSslErrors;
+  for ( const QSslError &err : constMSslErrors )
   {
     errs <<  QStringLiteral( "* %1: %2" )
          .arg( QgsAuthCertUtils::sslErrorEnumString( err.error() ),

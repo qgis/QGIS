@@ -46,7 +46,7 @@ variable
 
 :param request: a QgsServerRequest holding request parameters
 :param response: a QgsServerResponse for handling response I/O)
-:param project: a QgsProject or None, if it is None the project
+:param project: a QgsProject or ``None``, if it is ``None`` the project
                 is created from the MAP param specified in request or from
                 the QGIS_PROJECT_FILE setting
 %End
@@ -61,7 +61,10 @@ Returns a pointer to the server interface
     void initPython();
 %Docstring
 Initialize Python
-Note: not in Python bindings
+
+.. note::
+
+   not available in Python bindings
 %End
 
   private:

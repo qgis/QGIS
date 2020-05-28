@@ -39,7 +39,12 @@ additional calls to QgsVectorLayer.
 #include "qgsmaplayerrenderer.h"
 %End
   public:
-    QgsMapLayerRenderer( const QString &layerID );
+
+    QgsMapLayerRenderer( const QString &layerID, QgsRenderContext *context = 0 );
+%Docstring
+Constructor for QgsMapLayerRenderer, with the associated ``layerID`` and render ``context``.
+%End
+
     virtual ~QgsMapLayerRenderer();
 
     virtual bool render() = 0;
@@ -49,7 +54,7 @@ Do the rendering (based on data stored in the class)
 
     virtual QgsFeedback *feedback() const;
 %Docstring
-Access to feedback object of the layer renderer (may be null)
+Access to feedback object of the layer renderer (may be ``None``)
 
 .. versionadded:: 3.0
 %End
@@ -64,7 +69,15 @@ Returns list of errors (problems) that happened during the rendering
 Gets access to the ID of the layer rendered by this class
 %End
 
+    QgsRenderContext *renderContext();
+%Docstring
+Returns the render context associated with the renderer.
+
+.. versionadded:: 3.10
+%End
+
   protected:
+
 };
 
 /************************************************************************

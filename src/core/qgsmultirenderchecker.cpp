@@ -42,14 +42,17 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
 
   if ( subDirs.isEmpty() )
   {
-    subDirs << QLatin1String( "" );
+    subDirs << QString();
   }
 
   QVector<QgsDartMeasurement> dartMeasurements;
 
-  Q_FOREACH ( const QString &suffix, subDirs )
+  for ( const QString &suffix : qgis::as_const( subDirs ) )
   {
-    qDebug() << "Checking subdir " << suffix;
+    if ( subDirs.count() > 1 )
+    {
+      qDebug() << "Checking subdir " << suffix;
+    }
     bool result;
     QgsRenderChecker checker;
     checker.enableDashBuffering( true );
@@ -80,7 +83,8 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
 
   if ( !successful )
   {
-    Q_FOREACH ( const QgsDartMeasurement &measurement, dartMeasurements )
+    const auto constDartMeasurements = dartMeasurements;
+    for ( const QgsDartMeasurement &measurement : constDartMeasurements )
       measurement.send();
 
     QgsDartMeasurement msg( QStringLiteral( "Image not accepted by test" ), QgsDartMeasurement::Text, "This may be caused because the test is supposed to fail or rendering inconsistencies."
@@ -99,11 +103,11 @@ QString QgsMultiRenderChecker::controlImagePath() const
   return myControlImageDir;
 }
 
-#ifdef ENABLE_TESTS
-
 //
 // QgsLayoutChecker
 //
+
+///@cond PRIVATE
 
 QgsLayoutChecker::QgsLayoutChecker( const QString &testName, QgsLayout *layout )
   : mTestName( testName )
@@ -117,6 +121,9 @@ QgsLayoutChecker::QgsLayoutChecker( const QString &testName, QgsLayout *layout )
 
 bool QgsLayoutChecker::testLayout( QString &checkedReport, int page, int pixelDiff, bool createReferenceImage )
 {
+#ifdef QT_NO_PRINTER
+  return false;
+#else
   if ( !mLayout )
   {
     return false;
@@ -167,9 +174,9 @@ bool QgsLayoutChecker::testLayout( QString &checkedReport, int page, int pixelDi
   checkedReport += report();
 
   return testResult;
+#endif // QT_NO_PRINTER
 }
 
 
-///@endcond
 
-#endif
+///@endcond

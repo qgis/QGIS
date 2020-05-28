@@ -37,6 +37,8 @@
 
 class SERVER_EXPORT QgsServerRequest
 {
+    Q_GADGET
+
   public:
 
     typedef QMap<QString, QString> Parameters;
@@ -51,8 +53,10 @@ class SERVER_EXPORT QgsServerRequest
       PutMethod,
       GetMethod,
       PostMethod,
-      DeleteMethod
+      DeleteMethod,
+      PatchMethod
     };
+    Q_ENUM( Method )
 
 
     /**
@@ -82,7 +86,17 @@ class SERVER_EXPORT QgsServerRequest
     virtual ~QgsServerRequest() = default;
 
     /**
-     * \returns  the request url
+     * Returns a string representation of an HTTP request \a method.
+     * \since QGIS 3.12
+     */
+    static QString methodToString( const Method &method );
+
+
+    /**
+     * \returns  the request url as seen by QGIS server
+     *
+     * \see originalUrl for the unrewritten url as seen by the web
+     *      server, by default the two are equal
      */
     QUrl url() const;
 
@@ -110,7 +124,7 @@ class SERVER_EXPORT QgsServerRequest
     /**
      * Gets a parameter value
      */
-    QString parameter( const QString &key ) const;
+    QString parameter( const QString &key, const QString &defaultValue = QString() ) const;
 
     /**
      * Remove a parameter
@@ -156,12 +170,41 @@ class SERVER_EXPORT QgsServerRequest
     void setUrl( const QUrl &url );
 
     /**
+     * Returns the request url as seen by the web server,
+     * by default this is equal to the url seen by QGIS server
+     *
+     * \see url() for the rewritten url
+     * \since QGIS 3.6
+     */
+    QUrl originalUrl() const;
+
+    /**
      * Set the request method
      */
     void setMethod( QgsServerRequest::Method method );
 
+    /**
+     * Returns the query string parameter with the given \a name from the request URL, a \a defaultValue can be specified.
+     * \since QGIS 3.10
+     */
+    const QString queryParameter( const QString &name, const QString &defaultValue = QString( ) ) const;
+
+  protected:
+
+    /**
+     * Set the request original \a url (the request url as seen by the web server)
+     *
+     * \see setUrl() for the rewritten url
+     * \since QGIS 3.6
+     */
+    void setOriginalUrl( const QUrl &url );
+
+
   private:
+    // Url as seen by QGIS server after web server rewrite
     QUrl       mUrl;
+    // Unrewritten url as seen by the web server
+    QUrl       mOriginalUrl;
     Method     mMethod = GetMethod;
     // We mark as mutable in order
     // to support lazy initialization

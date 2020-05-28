@@ -9,6 +9,8 @@
 
 
 
+
+
 %ModuleHeaderCode
 #include "qgsserverprojectutils.h"
 %End
@@ -16,6 +18,8 @@
 
 namespace QgsServerProjectUtils
 {
+
+
 
   bool owsServiceCapabilities( const QgsProject &project );
 %Docstring
@@ -150,6 +154,37 @@ Returns the quality for WMS images defined in a QGIS project.
 :param project: the QGIS project
 
 :return: quality if defined in project, -1 otherwise.
+%End
+
+  int wmsTileBuffer( const QgsProject &project );
+%Docstring
+Returns the tile buffer in pixels for WMS images defined in a QGIS project.
+
+:param project: the QGIS project
+
+:return: tile buffer if defined in project, 0 otherwise.
+
+.. versionadded:: 3.10
+%End
+
+  int wmsMaxAtlasFeatures( const QgsProject &project );
+%Docstring
+Returns the maximum number of atlas features which can be printed in a request
+
+:param project: the QGIS project
+
+:return: the number of atlas features
+%End
+
+  double wmsDefaultMapUnitsPerMm( const QgsProject &project );
+%Docstring
+Returns the default number of map units per millimeters in case of the scale is not given
+
+:param project: the QGIS project
+
+:return: the default number of map units per millimeter
+
+.. versionadded:: 3.4
 %End
 
   bool wmsUseLayerIds( const QgsProject &project );
@@ -413,6 +448,17 @@ Returns the Layer ids list defined in a QGIS project as published in WCS.
 :param project: the QGIS project
 
 :return: the Layer ids list.
+%End
+
+  QString wmtsServiceUrl( const QgsProject &project );
+%Docstring
+Returns the WMTS service url defined in a QGIS project.
+
+:param project: the QGIS project
+
+:return: url if defined in project, an empty string otherwise.
+
+.. versionadded:: 3.4
 %End
 };
 

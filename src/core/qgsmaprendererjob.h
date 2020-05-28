@@ -18,7 +18,6 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include <QFutureWatcher>
 #include <QImage>
 #include <QPainter>
@@ -28,6 +27,7 @@
 #include "qgsrendercontext.h"
 
 #include "qgsmapsettings.h"
+#include "qgsmaskidprovider.h"
 
 
 class QgsLabelingEngine;
@@ -46,15 +46,65 @@ class QgsFeatureFilterProvider;
 struct LayerRenderJob
 {
   QgsRenderContext context;
-  QImage *img; // may be null if it is not necessary to draw to separate image (e.g. sequential rendering)
-  //! True when img has been initialized (filled with transparent pixels) and is safe to compose
+
+  /**
+   * Pointer to destination image.
+   *
+   * May be NULLPTR if it is not necessary to draw to separate image (e.g. sequential rendering).
+   */
+  QImage *img;
+  //! TRUE when img has been initialized (filled with transparent pixels) and is safe to compose
   bool imageInitialized = false;
   QgsMapLayerRenderer *renderer; // must be deleted
   QPainter::CompositionMode blendMode;
   double opacity;
-  bool cached; // if true, img already contains cached image from previous rendering
+  //! If TRUE, img already contains cached image from previous rendering
+  bool cached;
   QgsWeakMapLayerPointer layer;
   int renderingTime; //!< Time it took to render the layer in ms (it is -1 if not rendered or still rendering)
+  QStringList errors; //!< Rendering errors
+
+  /**
+   * Identifies the associated layer by ID.
+   *
+   * \warning This should NEVER be used to retrieve map layers during a render job, and instead
+   * is intended for use as a string identifier only.
+   *
+   * \since QGIS 3.10
+   */
+  QString layerId;
+
+  /**
+   * Selective masking handling.
+   *
+   * A layer can be involved in selective masking in two ways:
+   * - One of its symbol layer masks a symbol layer of another layer.
+   *   In this case we need to compute a mask image during the regular
+   *   rendering pass that will be stored here;
+   *
+   * - Some of its symbol layers are masked by a symbol layer of another layer (or by a label mask)
+   *   In this case we need to render the layer once again in a second pass, but with some symbol
+   *   layers disabled.
+   *   This second rendering will be composed with mask images that have been computed in the first
+   *   pass by another job. We then need to know which first pass image and which masks correspond.
+   */
+
+  //! Mask image, needed during the first pass if a mask is defined
+  QImage *maskImage = nullptr;
+
+  /**
+   * Pointer to the first pass job, needed during the second pass
+   * to access first pass painter and image.
+   */
+  LayerRenderJob *firstPassJob = nullptr;
+
+  /**
+   * Pointer to first pass jobs that carry a mask image, needed during the second pass.
+   * This can be either a LayerRenderJob, in which case the second element of the QPair is ignored.
+   * Or this can be a LabelRenderJob if the first element is nullptr.
+   * In this latter case, the second element of the QPair gives the label mask id.
+   */
+  QList<QPair<LayerRenderJob *, int>> maskJobs;
 };
 
 typedef QList<LayerRenderJob> LayerRenderJobs;
@@ -68,15 +118,34 @@ struct LabelRenderJob
   QgsRenderContext context;
 
   /**
-   * May be null if it is not necessary to draw to separate image (e.g. using composition modes which prevent "flattening" the layer).
-   * Note that if complete is false then img will be uninitialized and contain random data!.
+   * May be NULLPTR if it is not necessary to draw to separate image (e.g. using composition modes which prevent "flattening" the layer).
+   * Note that if complete is FALSE then img will be uninitialized and contain random data!.
    */
   QImage *img = nullptr;
-  //! If true, img already contains cached image from previous rendering
+
+  /**
+   * Mask images
+   *
+   * There is only one label job, with labels coming from different layers or rules (for rule-based labeling).
+   * So we may have different labels with different label masks. We then need one different mask image for each configuration of label masks.
+   * Labels that share the same kind of label masks, i.e. having the same set of symbol layers that are to be masked, should share the same mask image.
+   * Labels that have different label masks, i.e. having different set of symbol layers that are to be masked, should have different mask images.
+   * The index in the vector corresponds to the mask identifier.
+   * \see maskIdProvider
+   */
+  QVector<QImage *> maskImages;
+
+  /**
+   * A mask id provider that is used to compute a mask image identifier for each label layer.
+   * \see maskImages
+   */
+  QgsMaskIdProvider maskIdProvider;
+
+  //! If TRUE, img already contains cached image from previous rendering
   bool cached = false;
-  //! Will be true if labeling is eligible for caching
+  //! Will be TRUE if labeling is eligible for caching
   bool canUseCache = false;
-  //! If true then label render is complete
+  //! If TRUE then label render is complete
   bool complete = false;
   //! Time it took to render the labels in ms (it is -1 if not rendered or still rendering)
   int renderingTime = -1;
@@ -97,6 +166,7 @@ struct LabelRenderJob
  * amount of time.
  *
  * Common use case:
+ *
  * 0. prepare QgsMapSettings with rendering configuration (extent, layer, map size, ...)
  * 1. create QgsMapRendererJob subclass with QgsMapSettings instance
  * 2. connect to job's finished() signal
@@ -106,6 +176,7 @@ struct LabelRenderJob
  * It is possible to cancel the rendering job while it is active by calling cancel() function.
  *
  * The following subclasses are available:
+ *
  * - QgsMapRendererSequentialJob - renders map in one background thread to an image
  * - QgsMapRendererParallelJob - renders map in multiple background threads to an image
  * - QgsMapRendererCustomPainterJob - renders map with given QPainter in one background thread
@@ -132,7 +203,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     virtual void cancel() = 0;
 
     /**
-     * Triggers cancelation of the rendering job without blocking. The render job will continue
+     * Triggers cancellation of the rendering job without blocking. The render job will continue
      * to operate until it is able to cancel, at which stage the finished() signal will be emitted.
      * Does nothing if the rendering is not active.
      */
@@ -145,7 +216,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     virtual bool isActive() const = 0;
 
     /**
-     * Returns true if the render job was able to use a cached labeling solution.
+     * Returns TRUE if the render job was able to use a cached labeling solution.
      * If so, any previously stored labeling results (see takeLabelingResults())
      * should be retained.
      * \see takeLabelingResults()
@@ -242,7 +313,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
   protected:
 
     QgsMapSettings mSettings;
-    QTime mRenderingStart;
+    QElapsedTimer mRenderingStart;
     Errors mErrors;
 
     QgsMapRendererCache *mCache = nullptr;
@@ -253,14 +324,29 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     QHash< QgsWeakMapLayerPointer, int > mPerLayerRenderingTime;
 
     /**
-     * Prepares the cache for storing the result of labeling. Returns false if
+     * TRUE if layer rendering time should be recorded.
+     */
+    bool mRecordRenderingTime = true;
+
+    /**
+     * Prepares the cache for storing the result of labeling. Returns FALSE if
      * the render cannot use cached labels and should not cache the result.
      * \note not available in Python bindings
      */
     bool prepareLabelCache() const SIP_SKIP;
 
-    //! \note not available in Python bindings
-    LayerRenderJobs prepareJobs( QPainter *painter, QgsLabelingEngine *labelingEngine2 ) SIP_SKIP;
+    /**
+     * Creates a list of layer rendering jobs and prepares them for later render.
+     *
+     * The \a painter argument specifies the destination painter. If not set, the jobs will
+     * be rendered to temporary images. Alternatively, if the \a deferredPainterSet flag is TRUE,
+     * then a \a painter value of NULLPTR skips this default temporary image creation. In this case,
+     * it is the caller's responsibility to correctly set a painter for all rendered jobs prior
+     * to rendering them.
+     *
+     * \note not available in Python bindings
+     */
+    LayerRenderJobs prepareJobs( QPainter *painter, QgsLabelingEngine *labelingEngine2, bool deferredPainterSet = false ) SIP_SKIP;
 
     /**
      * Prepares a labeling job.
@@ -269,14 +355,35 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      */
     LabelRenderJob prepareLabelingJob( QPainter *painter, QgsLabelingEngine *labelingEngine2, bool canUseLabelCache = true ) SIP_SKIP;
 
+    /**
+     * Prepares jobs for a second pass, if selective masks exist (from labels or symbol layers).
+     * Must be called after prepareJobs and prepareLabelingJob.
+     * It returns a list of new jobs for a second pass and also modifies labelJob and firstPassJobs if needed
+     * (image and mask image allocation if needed)
+     * \note not available in Python bindings
+     * \since QGIS 3.12
+     */
+    LayerRenderJobs prepareSecondPassJobs( LayerRenderJobs &firstPassJobs, LabelRenderJob &labelJob ) SIP_SKIP;
+
     //! \note not available in Python bindings
     static QImage composeImage( const QgsMapSettings &settings, const LayerRenderJobs &jobs, const LabelRenderJob &labelJob ) SIP_SKIP;
 
+    /**
+     * Compose second pass images into first pass images.
+     * First pass jobs pointed to by the second pass jobs must still exist.
+     * \note not available in Python bindings
+     * \since QGIS 3.12
+     */
+    static void composeSecondPass( LayerRenderJobs &secondPassJobs, LabelRenderJob &labelJob ) SIP_SKIP;
+
     //! \note not available in Python bindings
-    void logRenderingTime( const LayerRenderJobs &jobs, const LabelRenderJob &labelJob ) SIP_SKIP;
+    void logRenderingTime( const LayerRenderJobs &jobs, const LayerRenderJobs &secondPassJobs, const LabelRenderJob &labelJob ) SIP_SKIP;
 
     //! \note not available in Python bindings
     void cleanupJobs( LayerRenderJobs &jobs ) SIP_SKIP;
+
+    //! \note not available in Python bindings
+    void cleanupSecondPassJobs( LayerRenderJobs &jobs ) SIP_SKIP;
 
     /**
      * Handles clean up tasks for a label job, including deletion of images and storing cached
@@ -286,8 +393,14 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      */
     void cleanupLabelJob( LabelRenderJob &job ) SIP_SKIP;
 
+    /**
+     * \note not available in Python bindings
+     * \deprecated Will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED static void drawLabeling( const QgsMapSettings &settings, QgsRenderContext &renderContext, QgsLabelingEngine *labelingEngine2, QPainter *painter ) SIP_SKIP;
+
     //! \note not available in Python bindings
-    static void drawLabeling( const QgsMapSettings &settings, QgsRenderContext &renderContext, QgsLabelingEngine *labelingEngine2, QPainter *painter ) SIP_SKIP;
+    static void drawLabeling( QgsRenderContext &renderContext, QgsLabelingEngine *labelingEngine2, QPainter *painter ) SIP_SKIP;
 
   private:
 
@@ -295,7 +408,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * Convenience function to project an extent into the layer source
      * CRS, but also split it into two extents if it crosses
      * the +/- 180 degree line. Modifies the given extent to be in the
-     * source CRS coordinates, and if it was split, returns true, and
+     * source CRS coordinates, and if it was split, returns TRUE, and
      * also sets the contents of the r2 parameter
      */
     static bool reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform &ct, QgsRectangle &extent, QgsRectangle &r2 );
@@ -303,6 +416,12 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     bool needTemporaryImage( QgsMapLayer *ml );
 
     const QgsFeatureFilterProvider *mFeatureFilterProvider = nullptr;
+
+    //! Convenient method to allocate a new image and stack an error if not enough memory is available
+    QImage *allocateImage( QString layerId );
+
+    //! Convenient method to allocate a new image and a new QPainter on this image
+    QPainter *allocateImageAndPainter( QString layerId, QImage *&image );
 };
 
 

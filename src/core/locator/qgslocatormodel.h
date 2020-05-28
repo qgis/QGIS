@@ -56,6 +56,7 @@ class CORE_EXPORT QgsLocatorModel : public QAbstractTableModel
       ResultScoreRole, //!< Result match score, used by QgsLocatorProxyModel for sorting roles.
       ResultFilterNameRole, //!< Associated filter name which created the result
       ResultFilterGroupSortingRole, //!< Group results within the same filter results
+      ResultActionsRole, //!< The actions to be shown for the given result in a context menu
     };
 
     /**
@@ -81,6 +82,7 @@ class CORE_EXPORT QgsLocatorModel : public QAbstractTableModel
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    QHash<int, QByteArray> roleNames() const override;
 
   public slots:
 

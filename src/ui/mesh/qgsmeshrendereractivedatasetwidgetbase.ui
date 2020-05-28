@@ -3,22 +3,34 @@
  <class>QgsMeshRendererActiveDatasetWidgetBase</class>
  <widget class="QWidget" name="QgsMeshRendererActiveDatasetWidgetBase">
   <property name="enabled">
-   <bool>false</bool>
+   <bool>true</bool>
   </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>319</width>
-    <height>317</height>
+    <width>343</width>
+    <height>337</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
-    <widget class="QgsMeshDatasetGroupTreeView" name="mDatasetGroupTreeView">
+    <widget class="QgsMeshActiveDatasetGroupTreeView" name="mDatasetGroupTreeView">
      <property name="minimumSize">
       <size>
        <width>0</width>
@@ -30,27 +42,14 @@
    <item>
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Dataset in Selected Group(s)</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QSlider" name="mDatasetSlider">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="tickPosition">
-      <enum>QSlider::TicksBelow</enum>
-     </property>
-     <property name="tickInterval">
-      <number>1</number>
+      <string>Dataset in selected group(s)</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QgsCollapsibleGroupBox" name="mActiveDatasetMetadataGroup">
      <property name="title">
-      <string>Metadata</string>
+      <string>Dataset group Metadata</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
@@ -70,15 +69,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsMeshDatasetGroupTreeView</class>
-   <extends>QTreeView</extends>
-   <header>mesh/qgsmeshdatasetgrouptreeview.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMeshActiveDatasetGroupTreeView</class>
+   <extends>QTreeView</extends>
+   <header>qgsmeshdatasetgrouptreeview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

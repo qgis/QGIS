@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '26/04/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 import os
@@ -29,7 +27,7 @@ start_app()
 
 
 def createLayerWithFivePoints():
-    layer = QgsVectorLayer("Point?field=id:integer&field=fldtxt:string&field=fldint:integer",
+    layer = QgsVectorLayer("Point?crs=EPSG:4326&field=id:integer&field=fldtxt:string&field=fldint:integer",
                            "addfeat", "memory")
     pr = layer.dataProvider()
     f = QgsFeature()
@@ -114,7 +112,8 @@ class TestQgsFeatureSource(unittest.TestCase):
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
         new_layer = layer.materialize(request)
         self.assertEqual(new_layer.fields(), layer.fields())
-        self.assertEqual(new_layer.crs(), layer.crs())
+        self.assertFalse(new_layer.crs().isValid())
+        self.assertFalse(new_layer.isSpatial())
         self.assertEqual(new_layer.featureCount(), 5)
         self.assertEqual(new_layer.wkbType(), QgsWkbTypes.NoGeometry)
         new_features = {f[0]: f for f in new_layer.getFeatures()}
@@ -134,7 +133,7 @@ class TestQgsFeatureSource(unittest.TestCase):
                              2: 'Point (222639 222684)',
                              3: 'Point (333958 222684)',
                              4: 'Point (445278 334111)',
-                             5: 'Point (0 -0)'}
+                             5: 'Point (0 0)'}
         for id, f in original_features.items():
             self.assertEqual(new_features[id].attributes(), f.attributes())
             self.assertEqual(new_features[id].geometry().asWkt(0), expected_geometry[id])

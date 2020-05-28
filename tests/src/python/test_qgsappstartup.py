@@ -11,8 +11,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Hugo Mercier (hugo.mercier@oslandia.com)'
 __date__ = '17/07/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import sys
 import os
@@ -113,6 +111,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
             timeOut=360,
             env={'PYQGIS_STARTUP': testmod})
 
+
 if __name__ == '__main__':
     # look for qgis bin path
     QGIS_BIN = ''
@@ -133,7 +132,7 @@ if __name__ == '__main__':
             # internal binary will match, minus the '.app'
             found = False
             for app_path in glob.glob(d + '/QGIS*.app'):
-                m = re.search('/(QGIS(_\d\.\d-dev)?)\.app', app_path)
+                m = re.search(r'/(QGIS(_\d\.\d-dev)?)\.app', app_path)
                 if m:
                     QGIS_BIN = app_path + '/Contents/MacOS/' + m.group(1)
                     found = True

@@ -1,0 +1,9 @@
+{
+  "name": "json_to_map",
+  "type": "function",
+  "description": "Creates a map from a json-formatted string.",
+  "arguments": [
+    {"arg":"string", "description":"the input string"}],
+  "examples": [ { "expression":"json_to_map('{\"qgis\":\"rocks\"}')", "returns":"{ \"qgis\" : \"rocks\" }"}
+  ]
+}

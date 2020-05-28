@@ -53,7 +53,7 @@ QgsVariantDelegate::QgsVariantDelegate( QObject *parent )
   mByteArrayExp.setPattern( QStringLiteral( "[\\x00-\\xff]*" ) );
   mCharExp.setPattern( QStringLiteral( "." ) );
   mColorExp.setPattern( QStringLiteral( "\\(([0-9]*),([0-9]*),([0-9]*),([0-9]*)\\)" ) );
-  mDoubleExp.setPattern( QLatin1String( "" ) );
+  mDoubleExp.setPattern( QString() );
   mPointExp.setPattern( QStringLiteral( "\\((-?[0-9]*),(-?[0-9]*)\\)" ) );
   mRectExp.setPattern( QStringLiteral( "\\((-?[0-9]*),(-?[0-9]*),(-?[0-9]*),(-?[0-9]*)\\)" ) );
   mSignedIntegerExp.setPattern( QStringLiteral( "-?[0-9]*" ) );

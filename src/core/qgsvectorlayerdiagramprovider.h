@@ -100,7 +100,7 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
   protected:
     //! initialization method - called from constructors
     void init();
-    //! helper method to register one diagram feautre
+    //! helper method to register one diagram feature
     QgsLabelFeature *registerDiagram( QgsFeature &feat, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() );
 
   protected:

@@ -202,7 +202,7 @@ class CORE_EXPORT QgsExpression
     ~QgsExpression();
 
     /**
-     * Compares two expressions. The operator returns true
+     * Compares two expressions. The operator returns TRUE
      * if the expression string is equal.
      *
      * \since QGIS 3.0
@@ -217,7 +217,7 @@ class CORE_EXPORT QgsExpression
      */
     bool isValid() const;
 
-    //! Returns true if an error occurred when parsing the input expression
+    //! Returns TRUE if an error occurred when parsing the input expression
     bool hasParserError() const;
     //! Returns parser error
     QString parserErrorString() const;
@@ -228,7 +228,11 @@ class CORE_EXPORT QgsExpression
      */
     QList<QgsExpression::ParserError> parserErrors() const;
 
-    //! Returns root node of the expression. Root node is null is parsing has failed
+    /**
+     * Returns the root node of the expression.
+     *
+     * The root node is NULLPTR if parsing has failed.
+     */
     const QgsExpressionNode *rootNode() const;
 
     /**
@@ -303,7 +307,7 @@ class CORE_EXPORT QgsExpression
      */
     QSet<int> referencedAttributeIndexes( const QgsFields &fields ) const;
 
-    //! Returns true if the expression uses feature geometry for some computation
+    //! Returns TRUE if the expression uses feature geometry for some computation
     bool needsGeometry() const;
 
     // evaluation
@@ -323,7 +327,7 @@ class CORE_EXPORT QgsExpression
      */
     QVariant evaluate( const QgsExpressionContext *context );
 
-    //! Returns true if an error occurred when evaluating last input
+    //! Returns TRUE if an error occurred when evaluating last input
     bool hasEvalError() const;
     //! Returns evaluation error
     QString evalErrorString() const;
@@ -341,7 +345,7 @@ class CORE_EXPORT QgsExpression
      * \param text string to test
      * \param context optional expression context
      * \param errorMessage will be filled with any error message from the validation
-     * \returns true if string is a valid expression
+     * \returns TRUE if string is a valid expression
      * \since QGIS 2.12
      */
     static bool checkExpression( const QString &text, const QgsExpressionContext *context, QString &errorMessage SIP_OUT );
@@ -379,10 +383,14 @@ class CORE_EXPORT QgsExpression
 
     /**
      * Sets the geometry calculator used for distance and area calculations in expressions.
-     * (used by $length, $area and $perimeter functions only). By default, no geometry
-     * calculator is set and all distance and area calculations are performed using simple
+     * (used by $length, $area and $perimeter functions only).
+     * If the geometry calculator is set to NULLPTR (default), prepare() will read variables
+     * from the expression context ("project_ellipsoid", "_project_transform_context" and
+     * "_layer_crs") to build a geometry calculator.
+     * If these variables does not exist and if setGeomCalculator() is not called,
+     * all distance and area calculations are performed using simple
      * Cartesian methods (ie no ellipsoidal calculations).
-     * \param calc geometry calculator. Ownership is not transferred. Set to a nullptr to force
+     * \param calc geometry calculator. Ownership is not transferred. Set to NULLPTR to force
      * Cartesian calculations.
      * \see geomCalculator()
      */
@@ -399,6 +407,8 @@ class CORE_EXPORT QgsExpression
 
     /**
      * Sets the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
+     * If distance units are set to QgsUnitTypes::DistanceUnknownUnit (default), prepare() will read
+     * variables from the expression context ("project_distance_units") to determine distance units.
      * \note distances are only converted when a geomCalculator() has been set
      * \see distanceUnits()
      * \see setAreaUnits()
@@ -417,6 +427,8 @@ class CORE_EXPORT QgsExpression
 
     /**
      * Sets the desired areal units for calculations involving geomCalculator(), e.g., "$area".
+     * If distance units are set to QgsUnitTypes::AreaUnknownUnit (default), prepare() will read
+     * variables from the expression context ("project_distance_units") to determine distance units.
      * \note areas are only converted when a geomCalculator() has been set
      * \see areaUnits()
      * \see setDistanceUnits()
@@ -472,19 +484,15 @@ class CORE_EXPORT QgsExpression
       soWithin,
     };
 
-    //! \note not available in Python bindings
-    static QList<QgsExpressionFunction *> sFunctions SIP_SKIP;
     static const QList<QgsExpressionFunction *> &Functions();
 
-    //! \note not available in Python bindings
-    static QStringList sBuiltinFunctions SIP_SKIP;
     static const QStringList &BuiltinFunctions();
 
     /**
      * Registers a function to the expression engine. This is required to allow expressions to utilize the function.
      * \param function function to register
-     * \param transferOwnership set to true to transfer ownership of function to expression engine
-     * \returns true on successful registration
+     * \param transferOwnership set to TRUE to transfer ownership of function to expression engine
+     * \returns TRUE on successful registration
      * \see unregisterFunction
      */
     static bool registerFunction( QgsExpressionFunction *function, bool transferOwnership = false );
@@ -495,12 +503,6 @@ class CORE_EXPORT QgsExpression
      * \see registerFunction
      */
     static bool unregisterFunction( const QString &name );
-
-    /**
-     * List of functions owned by the expression engine
-     * \note not available in Python bindings
-     */
-    static QList<QgsExpressionFunction *> sOwnedFunctions SIP_SKIP;
 
     /**
      * Deletes all registered functions whose ownership have been transferred to the expression engine.
@@ -566,6 +568,13 @@ class CORE_EXPORT QgsExpression
     static QString helpText( QString name );
 
     /**
+     * Returns a string list of search tags for a specified function.
+     * \param name function name
+     * \since QGIS 3.12
+     */
+    static QStringList tags( const QString &name );
+
+    /**
      * Returns the help text for a specified variable.
      * \param variableName name of variable
      * \see helpText()
@@ -576,7 +585,7 @@ class CORE_EXPORT QgsExpression
     /**
      * Returns formatted help text for a variable.
      * \param description translated description of variable
-     * \param showValue set to true to include current value of variable in help text
+     * \param showValue set to TRUE to include current value of variable in help text
      * \param value current value of variable to show in help text
      * \see helpText()
      * \see variableHelpText()
@@ -594,10 +603,11 @@ class CORE_EXPORT QgsExpression
      * Formats an expression result for friendly display to the user. Truncates the result to a sensible
      * length, and presents text representations of non numeric/text types (e.g., geometries and features).
      * \param value expression result to format
-     * \returns formatted string, may contain HTML formatting characters
+     * \param htmlOutput set to TRUE to allow HTML formatting, or FALSE for plain text output
+     * \returns formatted string, may contain HTML formatting characters if \a htmlOutput is TRUE
      * \since QGIS 2.14
      */
-    static QString formatPreviewString( const QVariant &value );
+    static QString formatPreviewString( const QVariant &value, bool htmlOutput = true );
 
     /**
      * Create an expression allowing to evaluate if a field is equal to a
@@ -613,86 +623,12 @@ class CORE_EXPORT QgsExpression
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = QStringLiteral( "<QgsExpression: '%1'>" ).arg( sipCpp->expression() );
-    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
   private:
-    void initGeomCalculator();
-
-    struct HelpArg SIP_SKIP
-    {
-      HelpArg( const QString &arg, const QString &desc, bool descOnly = false, bool syntaxOnly = false,
-               bool optional = false, const QString &defaultVal = QString() )
-        : mArg( arg )
-        , mDescription( desc )
-        , mDescOnly( descOnly )
-        , mSyntaxOnly( syntaxOnly )
-        , mOptional( optional )
-        , mDefaultVal( defaultVal )
-      {}
-
-      QString mArg;
-      QString mDescription;
-      bool mDescOnly;
-      bool mSyntaxOnly;
-      bool mOptional;
-      QString mDefaultVal;
-    };
-
-    struct HelpExample SIP_SKIP
-    {
-      HelpExample( const QString &expression, const QString &returns, const QString &note = QString() )
-        : mExpression( expression )
-        , mReturns( returns )
-        , mNote( note )
-      {}
-
-      QString mExpression;
-      QString mReturns;
-      QString mNote;
-    };
-
-    struct HelpVariant SIP_SKIP
-    {
-      HelpVariant( const QString &name, const QString &description,
-                   const QList<QgsExpression::HelpArg> &arguments = QList<QgsExpression::HelpArg>(),
-                   bool variableLenArguments = false,
-                   const QList<QgsExpression::HelpExample> &examples = QList<QgsExpression::HelpExample>(),
-                   const QString &notes = QString() )
-        : mName( name )
-        , mDescription( description )
-        , mArguments( arguments )
-        , mVariableLenArguments( variableLenArguments )
-        , mExamples( examples )
-        , mNotes( notes )
-      {}
-
-      QString mName;
-      QString mDescription;
-      QList<QgsExpression::HelpArg> mArguments;
-      bool mVariableLenArguments;
-      QList<QgsExpression::HelpExample> mExamples;
-      QString mNotes;
-    };
-
-    struct Help SIP_SKIP
-    {
-      //! Constructor for expression help
-      Help() = default;
-
-      Help( const QString &name, const QString &type, const QString &description, const QList<QgsExpression::HelpVariant> &variants )
-        : mName( name )
-        , mType( type )
-        , mDescription( description )
-        , mVariants( variants )
-      {}
-
-      QString mName;
-      QString mType;
-      QString mDescription;
-      QList<QgsExpression::HelpVariant> mVariants;
-    };
+    void initGeomCalculator( const QgsExpressionContext *context );
 
     /**
      * Helper for implicit sharing. When called will create
@@ -703,10 +639,6 @@ class CORE_EXPORT QgsExpression
     void detach() SIP_SKIP;
 
     QgsExpressionPrivate *d = nullptr;
-
-    static QHash<QString, Help> sFunctionHelpTexts;
-    static QHash<QString, QString> sVariableHelpTexts;
-    static QHash<QString, QString> sGroups;
 
     //! \note not available in Python bindings
     static void initFunctionHelp() SIP_SKIP;

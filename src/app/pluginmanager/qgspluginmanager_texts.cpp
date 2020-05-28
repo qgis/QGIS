@@ -17,7 +17,7 @@ Some plugins come with your QGIS installation while most of them are made availa
 \
 <p>\
 You can temporarily enable or disable a plugin.\
- To <i>enable</i> or <i>disable</i> a plugin, click its checkbox or double-click its name...\
+ To <i>enable</i> or <i>disable</i> a plugin, click its checkbox or double-click its name…\
 </p>\
 \
 <p>\

@@ -17,6 +17,8 @@
 
 #include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
+#include "qgswkbtypes.h"
+#include "qgsdataitemprovider.h"
 
 
 class QgsAfsRootItem : public QgsDataCollectionItem
@@ -29,14 +31,12 @@ class QgsAfsRootItem : public QgsDataCollectionItem
     QVariant sortKey() const override { return 13; }
 
 #ifdef HAVE_GUI
-    QList<QAction *> actions( QWidget *parent ) override;
     QWidget *paramWidget() override;
 #endif
 
   public slots:
 #ifdef HAVE_GUI
     void onConnectionsChanged();
-    void newConnection();
 #endif
 };
 
@@ -48,28 +48,76 @@ class QgsAfsConnectionItem : public QgsDataCollectionItem
     QgsAfsConnectionItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &connectionName );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
-#ifdef HAVE_GUI
-    QList<QAction *> actions( QWidget *parent ) override;
-#endif
-
-  public slots:
-#ifdef HAVE_GUI
-    void editConnection();
-    void deleteConnection();
-    void refreshConnection();
-#endif
+    QString url() const;
 
   private:
     QString mConnName;
 };
 
+class QgsAfsFolderItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsAfsFolderItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsStringMap &headers );
+    QVector<QgsDataItem *> createChildren() override;
+    bool equal( const QgsDataItem *other ) override;
+
+  private:
+    QString mFolder;
+    QString mBaseUrl;
+    QString mAuthCfg;
+    QgsStringMap mHeaders;
+};
+
+class QgsAfsServiceItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsAfsServiceItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsStringMap &headers );
+    QVector<QgsDataItem *> createChildren() override;
+    bool equal( const QgsDataItem *other ) override;
+
+  private:
+    QString mFolder;
+    QString mBaseUrl;
+    QString mAuthCfg;
+    QgsStringMap mHeaders;
+};
+
+class QgsAfsParentLayerItem : public QgsDataItem
+{
+    Q_OBJECT
+  public:
+
+    QgsAfsParentLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &authcfg, const QgsStringMap &headers );
+    bool equal( const QgsDataItem *other ) override;
+
+  private:
+
+    QString mAuthCfg;
+    QgsStringMap mHeaders;
+
+};
 
 class QgsAfsLayerItem : public QgsLayerItem
 {
     Q_OBJECT
 
   public:
-    QgsAfsLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &title, const QString &authid );
+
+    QgsAfsLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &title, const QString &authid, const QString &authcfg, const QgsStringMap &headers );
+
+};
+
+//! Provider for afs root data item
+class QgsAfsDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override;
+
+    int capabilities() const override;
+
+    QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 #endif // QGSAFSDATAITEMS_H

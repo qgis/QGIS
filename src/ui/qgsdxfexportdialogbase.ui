@@ -126,14 +126,14 @@
      <item row="0" column="0">
       <widget class="QPushButton" name="mSelectAllButton">
        <property name="text">
-        <string>Select all</string>
+        <string>Select All</string>
        </property>
       </widget>
      </item>
      <item row="0" column="2">
       <widget class="QPushButton" name="mDeselectAllButton">
        <property name="text">
-        <string>Deselect all</string>
+        <string>Deselect All</string>
        </property>
       </widget>
      </item>

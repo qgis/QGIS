@@ -1,1 +1,1 @@
-usr/lib/libqgisgrass{GRASSVER}.so.{QGIS_ABI}
+usr/lib/libqgisgrass?.so.*

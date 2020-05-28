@@ -112,7 +112,7 @@ class CORE_EXPORT QgsLayoutSize
     /**
      * Tests whether the size is empty, ie both its width and height
      * are zero.
-     * \returns true if size is empty
+     * \returns TRUE if size is empty
     */
     bool isEmpty() const;
 
@@ -157,6 +157,14 @@ class CORE_EXPORT QgsLayoutSize
      * Divides the width and height by a scalar value.
      */
     QgsLayoutSize operator/=( double v );
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsLayoutSize: %1 x %2 %3 >" ).arg( sipCpp->width() ).arg( sipCpp->height() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   private:
 

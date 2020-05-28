@@ -19,11 +19,8 @@
    </property>
    <item>
     <widget class="QGroupBox" name="grpEnable">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
      <property name="title">
-      <string>Show layout extents</string>
+      <string>Show Layout Extents</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -34,9 +31,6 @@
      <layout class="QGridLayout" name="gridLayout">
       <item row="1" column="1">
        <widget class="QgsFontButton" name="mButtonFontStyle">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -50,9 +44,6 @@
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="mLineSymbolLabel">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
         <property name="text">
          <string>Symbol</string>
         </property>
@@ -63,9 +54,6 @@
       </item>
       <item row="1" column="0">
        <widget class="QCheckBox" name="mCheckBoxLabelExtents">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
         <property name="text">
          <string>Label extents</string>
         </property>
@@ -73,9 +61,6 @@
       </item>
       <item row="0" column="1">
        <widget class="QgsSymbolButton" name="mSymbolButton">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>

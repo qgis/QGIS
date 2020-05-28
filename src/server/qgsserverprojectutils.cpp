@@ -16,6 +16,19 @@
  ***************************************************************************/
 
 #include "qgsserverprojectutils.h"
+#include "qgsproject.h"
+
+double  QgsServerProjectUtils::ceilWithPrecision( double number, int places )
+{
+  double scaleFactor = std::pow( 10.0, places );
+  return ( std::ceil( number * scaleFactor ) / scaleFactor );
+}
+
+double  QgsServerProjectUtils::floorWithPrecision( double number, int places )
+{
+  double scaleFactor = std::pow( 10.0, places );
+  return ( std::floor( number * scaleFactor ) / scaleFactor );
+}
 
 bool QgsServerProjectUtils::owsServiceCapabilities( const QgsProject &project )
 {
@@ -52,7 +65,16 @@ QStringList QgsServerProjectUtils::owsServiceKeywords( const QgsProject &project
 
 QString QgsServerProjectUtils::owsServiceOnlineResource( const QgsProject &project )
 {
-  return project.readEntry( QStringLiteral( "WMSOnlineResource" ), QStringLiteral( "/" ) );
+  QString wmsOnlineResource = project.readEntry( QStringLiteral( "WMSOnlineResource" ), QStringLiteral( "/" ) );
+
+  QgsProperty wmsOnlineResourceProperty = project.dataDefinedServerProperties().property( QgsProject::DataDefinedServerProperty::WMSOnlineResource );
+  if ( wmsOnlineResourceProperty.isActive() && ! wmsOnlineResourceProperty.expressionString().isEmpty() )
+  {
+    QgsExpressionContext context = project.createExpressionContext();
+    return wmsOnlineResourceProperty.valueAsString( context, wmsOnlineResource );
+  }
+
+  return wmsOnlineResource;
 }
 
 QString QgsServerProjectUtils::owsServiceContactOrganization( const QgsProject &project )
@@ -108,6 +130,21 @@ bool QgsServerProjectUtils::wmsUseLayerIds( const QgsProject &project )
 int QgsServerProjectUtils::wmsImageQuality( const QgsProject &project )
 {
   return project.readNumEntry( QStringLiteral( "WMSImageQuality" ), QStringLiteral( "/" ), -1 );
+}
+
+int QgsServerProjectUtils::wmsTileBuffer( const QgsProject &project )
+{
+  return project.readNumEntry( QStringLiteral( "WMSTileBuffer" ), QStringLiteral( "/" ), 0 );
+}
+
+int QgsServerProjectUtils::wmsMaxAtlasFeatures( const QgsProject &project )
+{
+  return project.readNumEntry( QStringLiteral( "WMSMaxAtlasFeatures" ), QStringLiteral( "/" ), 1 );
+}
+
+double QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( const QgsProject &project )
+{
+  return project.readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 );
 }
 
 bool QgsServerProjectUtils::wmsInfoFormatSia2045( const QgsProject &project )
@@ -330,4 +367,9 @@ QString QgsServerProjectUtils::wcsServiceUrl( const QgsProject &project )
 QStringList QgsServerProjectUtils::wcsLayerIds( const QgsProject &project )
 {
   return project.readListEntry( QStringLiteral( "WCSLayers" ), QStringLiteral( "/" ) );
+}
+
+QString QgsServerProjectUtils::wmtsServiceUrl( const QgsProject &project )
+{
+  return project.readEntry( QStringLiteral( "WMTSUrl" ), QStringLiteral( "/" ), "" );
 }

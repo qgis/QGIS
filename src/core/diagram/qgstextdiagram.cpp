@@ -73,8 +73,8 @@ QString QgsTextDiagram::diagramName() const
 
 QSizeF QgsTextDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )
 {
-  Q_UNUSED( c );
-  Q_UNUSED( attributes );
+  Q_UNUSED( c )
+  Q_UNUSED( attributes )
 
   return s.size;
 }
@@ -207,7 +207,7 @@ void QgsTextDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext 
     QgsExpression *expression = getExpression( s.categoryAttributes.at( i ), expressionContext );
     QString val = expression->evaluate( &expressionContext ).toString();
 
-    //find out dimesions
+    //find out dimensions
     double textWidth = fontMetrics.width( val );
     double textHeight = fontMetrics.height();
 

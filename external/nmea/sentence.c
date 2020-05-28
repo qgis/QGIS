@@ -38,6 +38,12 @@ void nmea_zero_GPGGA( nmeaGPGGA *pack )
   pack->diff_units = 'M';
 }
 
+void nmea_zero_GPGST( nmeaGPGST *pack )
+{
+  memset( pack, 0, sizeof( nmeaGPGST ) );
+  nmea_time_now( &pack->utc );
+}
+
 void nmea_zero_GPGSA( nmeaGPGSA *pack )
 {
   memset( pack, 0, sizeof( nmeaGPGSA ) );

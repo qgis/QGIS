@@ -14,6 +14,6 @@
     "variant_description": "Returns a string representing a color from an expression-created ramp",
     "arguments": [ {"arg":"ramp","description":"the color ramp"},
                  {"arg":"value","description":"the position on the ramp to select the color from as a real number between 0 and 1"}],
-    "examples": [ { "expression":"ramp_color(create_array(map(0,'0,0,0',1,'255,0,0')),1)", "returns":"'255,0,0,255'"} ]
+    "examples": [ { "expression":"ramp_color(create_ramp(map(0,'0,0,0',1,'255,0,0')),1)", "returns":"'255,0,0,255'"} ]
   }]
 }

@@ -9,14 +9,13 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '12/02/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 import os
 
 from qgis.core import (
     QgsApplication,
+    QgsCoordinateTransformContext,
     QgsRasterLayer,
     QgsRasterPipe,
     QgsRasterFileWriter,
@@ -57,7 +56,7 @@ class TestQgsRasterFileWriterTask(unittest.TestCase):
         tmp = create_temp_filename('success.tif')
         writer = QgsRasterFileWriter(tmp)
 
-        task = QgsRasterFileWriterTask(writer, pipe, 100, 100, raster_layer.extent(), raster_layer.crs())
+        task = QgsRasterFileWriterTask(writer, pipe, 100, 100, raster_layer.extent(), raster_layer.crs(), QgsCoordinateTransformContext())
 
         task.writeComplete.connect(self.onSuccess)
         task.errorOccurred.connect(self.onFail)
@@ -82,7 +81,7 @@ class TestQgsRasterFileWriterTask(unittest.TestCase):
         tmp = create_temp_filename('remove_layer.tif')
         writer = QgsRasterFileWriter(tmp)
 
-        task = QgsRasterFileWriterTask(writer, pipe, 100, 100, raster_layer.extent(), raster_layer.crs())
+        task = QgsRasterFileWriterTask(writer, pipe, 100, 100, raster_layer.extent(), raster_layer.crs(), QgsCoordinateTransformContext())
 
         task.writeComplete.connect(self.onSuccess)
         task.errorOccurred.connect(self.onFail)
@@ -99,6 +98,30 @@ class TestQgsRasterFileWriterTask(unittest.TestCase):
         self.assertTrue(self.success)
         self.assertFalse(self.fail)
         self.assertTrue(os.path.exists(tmp))
+
+    def testFail(self):
+        """test error writing a layer"""
+        path = os.path.join(unitTestDataPath(), 'raster', 'with_color_table.tif')
+        raster_layer = QgsRasterLayer(path, "test")
+        self.assertTrue(raster_layer.isValid())
+
+        pipe = QgsRasterPipe()
+        self.assertTrue(pipe.set(raster_layer.dataProvider().clone()))
+
+        tmp = create_temp_filename("/this/is/invalid/file.tif")
+        writer = QgsRasterFileWriter(tmp)
+
+        task = QgsRasterFileWriterTask(writer, pipe, 100, 100, raster_layer.extent(), raster_layer.crs(), QgsCoordinateTransformContext())
+
+        task.writeComplete.connect(self.onSuccess)
+        task.errorOccurred.connect(self.onFail)
+
+        QgsApplication.taskManager().addTask(task)
+        while not self.success and not self.fail:
+            QCoreApplication.processEvents()
+
+        self.assertFalse(self.success)
+        self.assertTrue(self.fail)
 
 
 if __name__ == '__main__':

@@ -21,6 +21,7 @@
 #include "qgslinestring.h"
 #include "qgspoint.h"
 #include "qgsmultipoint.h"
+#include "qgsgeos.h"
 
 bool QgsCurve::operator==( const QgsAbstractGeometry &other ) const
 {
@@ -138,9 +139,21 @@ QgsAbstractGeometry *QgsCurve::boundary() const
     return nullptr;
 
   QgsMultiPoint *multiPoint = new QgsMultiPoint();
+  multiPoint->reserve( 2 );
   multiPoint->addGeometry( new QgsPoint( startPoint() ) );
   multiPoint->addGeometry( new QgsPoint( endPoint() ) );
   return multiPoint;
+}
+
+QString QgsCurve::asKml( int precision ) const
+{
+  std::unique_ptr<QgsLineString> lineString( curveToLine() );
+  if ( !lineString )
+  {
+    return QString();
+  }
+  QString kml = lineString->asKml( precision );
+  return kml;
 }
 
 QgsCurve *QgsCurve::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
@@ -150,14 +163,14 @@ QgsCurve *QgsCurve::segmentize( double tolerance, SegmentationToleranceType tole
 
 int QgsCurve::vertexCount( int part, int ring ) const
 {
-  Q_UNUSED( part );
-  Q_UNUSED( ring );
+  Q_UNUSED( part )
+  Q_UNUSED( ring )
   return numPoints();
 }
 
 int QgsCurve::ringCount( int part ) const
 {
-  Q_UNUSED( part );
+  Q_UNUSED( part )
   return numPoints() > 0 ? 1 : 0;
 }
 
@@ -188,6 +201,25 @@ QgsRectangle QgsCurve::boundingBox() const
   return mBoundingBox;
 }
 
+bool QgsCurve::isValid( QString &error, int flags ) const
+{
+  if ( flags == 0 && mHasCachedValidity )
+  {
+    // use cached validity results
+    error = mValidityFailureReason;
+    return error.isEmpty();
+  }
+
+  QgsGeos geos( this );
+  bool res = geos.isValid( &error, flags & QgsGeometry::FlagAllowSelfTouchingHoles, nullptr );
+  if ( flags == 0 )
+  {
+    mValidityFailureReason = !res ? error : QString();
+    mHasCachedValidity = true;
+  }
+  return res;
+}
+
 QPolygonF QgsCurve::asQPolygonF() const
 {
   const int nb = numPoints();
@@ -214,9 +246,18 @@ double QgsCurve::sinuosity() const
   return length() / d;
 }
 
+QgsCurve::Orientation QgsCurve::orientation() const
+{
+  double a = 0;
+  sumUpArea( a );
+  return a < 0 ? Clockwise : CounterClockwise;
+}
+
 void QgsCurve::clearCache() const
 {
   mBoundingBox = QgsRectangle();
+  mHasCachedValidity = false;
+  mValidityFailureReason.clear();
   QgsAbstractGeometry::clearCache();
 }
 
@@ -231,7 +272,7 @@ QgsPoint QgsCurve::childPoint( int index ) const
   QgsVertexId::VertexType type;
   bool res = pointAt( index, point, type );
   Q_ASSERT( res );
-  Q_UNUSED( res );
+  Q_UNUSED( res )
   return point;
 }
 

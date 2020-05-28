@@ -44,7 +44,6 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
     void mGeometryTypeBox_currentIndexChanged( int index );
     void mTypeBox_currentIndexChanged( int index );
     void pbnFindSRID_clicked();
-    void toolButtonNewDatabase_clicked();
     void nameChanged( const QString & );
     void selectionChanged();
     void checkOk();
@@ -66,7 +65,6 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
     void showHelp();
 
     static QString quotedIdentifier( QString id );
-    static QString quotedValue( QString value );
 
     QPushButton *mOkButton = nullptr;
     QString mCrsId;

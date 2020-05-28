@@ -18,9 +18,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgswmsutils.h"
+#include "qgswmsserviceexception.h"
 #include "qgswmsdescribelayer.h"
 #include "qgsserverprojectutils.h"
+#include "qgsproject.h"
 
 namespace QgsWms
 {
@@ -37,7 +40,7 @@ namespace QgsWms
   QDomDocument describeLayer( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                               const QgsServerRequest &request )
   {
-    Q_UNUSED( version );
+    Q_UNUSED( version )
 
     QgsServerRequest::Parameters parameters = request.parameters();
 
@@ -84,7 +87,7 @@ namespace QgsWms
 
     // get the wms service url defined in project or keep the one from the
     // request url
-    QString wmsHrefString = serviceUrl( request, project ).toString( QUrl::FullyDecoded );
+    QString wmsHrefString = serviceUrl( request, project ).toString();
 
     // get the wfs service url defined in project or take the same as the
     // wms service url
@@ -103,7 +106,11 @@ namespace QgsWms
     }
 
     // access control
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
+#else
+    ( void )serverIface;
+#endif
     // Use layer ids
     bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );
     // WMS restricted layers
@@ -113,7 +120,7 @@ namespace QgsWms
     // WCS layers
     QStringList wcsLayerIds = QgsServerProjectUtils::wcsLayerIds( *project );
 
-    Q_FOREACH ( QgsMapLayer *layer, project->mapLayers() )
+    for ( QgsMapLayer *layer : project->mapLayers() )
     {
       QString name = layer->name();
       if ( useLayerIds )
@@ -132,10 +139,12 @@ namespace QgsWms
         throw QgsSecurityException( QStringLiteral( "You are not allowed to access to this layer" ) );
       }
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( accessControl && !accessControl->layerReadPermission( layer ) )
       {
         throw QgsSecurityException( QStringLiteral( "You are not allowed to access to this layer" ) );
       }
+#endif
 
       // Create the NamedLayer element
       QDomElement layerNode = myDocument.createElement( QStringLiteral( "LayerDescription" ) );
@@ -148,33 +157,43 @@ namespace QgsWms
       oResNode.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
       // store the TypeName element
       QDomElement nameNode = myDocument.createElement( QStringLiteral( "TypeName" ) );
-      if ( layer->type() == QgsMapLayer::VectorLayer )
+      switch ( layer->type() )
       {
-        typeNode.appendChild( myDocument.createTextNode( QStringLiteral( "wfs" ) ) );
-
-        if ( wfsLayerIds.indexOf( layer->id() ) != -1 )
+        case QgsMapLayerType::VectorLayer:
         {
-          oResNode.setAttribute( QStringLiteral( "xlink:href" ), wfsHrefString );
+          typeNode.appendChild( myDocument.createTextNode( QStringLiteral( "wfs" ) ) );
+
+          if ( wfsLayerIds.indexOf( layer->id() ) != -1 )
+          {
+            oResNode.setAttribute( QStringLiteral( "xlink:href" ), wfsHrefString );
+          }
+
+          // store the se:FeatureTypeName element
+          QDomElement typeNameNode = myDocument.createElement( QStringLiteral( "se:FeatureTypeName" ) );
+          typeNameNode.appendChild( myDocument.createTextNode( name ) );
+          nameNode.appendChild( typeNameNode );
+          break;
+        }
+        case QgsMapLayerType::RasterLayer:
+        {
+          typeNode.appendChild( myDocument.createTextNode( QStringLiteral( "wcs" ) ) );
+
+          if ( wcsLayerIds.indexOf( layer->id() ) != -1 )
+          {
+            oResNode.setAttribute( QStringLiteral( "xlink:href" ), wcsHrefString );
+          }
+
+          // store the se:CoverageTypeName element
+          QDomElement typeNameNode = myDocument.createElement( QStringLiteral( "se:CoverageTypeName" ) );
+          typeNameNode.appendChild( myDocument.createTextNode( name ) );
+          nameNode.appendChild( typeNameNode );
+          break;
         }
 
-        // store the se:FeatureTypeName element
-        QDomElement typeNameNode = myDocument.createElement( QStringLiteral( "se:FeatureTypeName" ) );
-        typeNameNode.appendChild( myDocument.createTextNode( name ) );
-        nameNode.appendChild( typeNameNode );
-      }
-      else if ( layer->type() == QgsMapLayer::RasterLayer )
-      {
-        typeNode.appendChild( myDocument.createTextNode( QStringLiteral( "wcs" ) ) );
-
-        if ( wcsLayerIds.indexOf( layer->id() ) != -1 )
-        {
-          oResNode.setAttribute( QStringLiteral( "xlink:href" ), wcsHrefString );
-        }
-
-        // store the se:CoverageTypeName element
-        QDomElement typeNameNode = myDocument.createElement( QStringLiteral( "se:CoverageTypeName" ) );
-        typeNameNode.appendChild( myDocument.createTextNode( name ) );
-        nameNode.appendChild( typeNameNode );
+        case QgsMapLayerType::MeshLayer:
+        case QgsMapLayerType::VectorTileLayer:
+        case QgsMapLayerType::PluginLayer:
+          break;
       }
       layerNode.appendChild( typeNode );
       layerNode.appendChild( oResNode );
@@ -184,4 +203,4 @@ namespace QgsWms
     return myDocument;
   }
 
-} // samespace QgsWms
+} // namespace QgsWms

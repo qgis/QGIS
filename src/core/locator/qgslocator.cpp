@@ -25,9 +25,11 @@ const QList<QString> QgsLocator::CORE_FILTERS = QList<QString>() << QStringLiter
     <<  QStringLiteral( "layertree" )
     <<  QStringLiteral( "layouts" )
     <<  QStringLiteral( "features" )
+    <<  QStringLiteral( "allfeatures" )
     <<  QStringLiteral( "calculator" )
     <<  QStringLiteral( "bookmarks" )
-    <<  QStringLiteral( "optionpages" );
+    <<  QStringLiteral( "optionpages" )
+    <<  QStringLiteral( "edit_features" );
 
 QgsLocator::QgsLocator( QObject *parent )
   : QObject( parent )
@@ -55,7 +57,7 @@ QList<QgsLocatorFilter *> QgsLocator::filters( const QString &prefix )
     QList<QgsLocatorFilter *> filters =  QList<QgsLocatorFilter *>();
     for ( QgsLocatorFilter *filter : mFilters )
     {
-      if ( !filter->activePrefix().isEmpty() && filter->activePrefix() == prefix )
+      if ( !filter->activePrefix().isEmpty() && filter->activePrefix().compare( prefix, Qt::CaseInsensitive ) == 0 )
       {
         filters << filter;
       }
@@ -147,7 +149,7 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
   {
     for ( QgsLocatorFilter *filter : qgis::as_const( mFilters ) )
     {
-      if ( filter->activePrefix() == prefix && filter->enabled() )
+      if ( filter->activePrefix().compare( prefix, Qt::CaseInsensitive ) == 0 && filter->enabled() )
       {
         activeFilters << filter;
       }
@@ -177,7 +179,7 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
     connect( clone.get(), &QgsLocatorFilter::resultFetched, clone.get(), [this, filter]( QgsLocatorResult result )
     {
       result.filter = filter;
-      emit filterSentResult( result );
+      filterSentResult( result );
     } );
     clone->prepare( searchString, context );
 

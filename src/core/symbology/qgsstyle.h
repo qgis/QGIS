@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSTYLEV2_H
-#define QGSSTYLEV2_H
+#ifndef QGSSTYLE_H
+#define QGSSTYLE_H
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -26,16 +26,32 @@
 
 #include "qgssqliteutils.h"
 #include "qgssymbollayerutils.h" // QgsStringMap
+#include "qgstextformat.h"
+#include "qgspallabeling.h"
+#include "layertree/qgslegendpatchshape.h"
 
 class QgsSymbol;
 class QgsSymbolLayer;
 class QgsColorRamp;
+class QgsStyleEntityInterface;
 
 class QDomDocument;
 class QDomElement;
 
 typedef QMap<QString, QgsColorRamp * > QgsVectorColorRampMap;
 typedef QMap<int, QString> QgsSymbolGroupMap;
+
+/**
+ * Map of name to text format.
+ * \since QGIS 3.10
+ */
+typedef QMap<QString, QgsTextFormat > QgsTextFormatMap;
+
+/**
+ * Map of name to label settings.
+ * \since QGIS 3.10
+ */
+typedef QMap<QString, QgsPalLayerSettings > QgsLabelSettingsMap;
 
 /*
  * Constants used to describe copy-paste MIME types
@@ -49,7 +65,7 @@ typedef QMap<int, QString> QgsSymbolGroupMap;
  *
  *  The supported constraints are:
  *  tag -> symbol has the tag matching the parameter
- *  !tag -> symbol doesnot have the tag matching the parameter
+ *  !tag -> symbol doesn't have the tag matching the parameter
  *  name -> symbol has a part of its name matching the parameter
  *  !name -> symbol doesn't have any part of the name matching the parameter
  *
@@ -63,11 +79,78 @@ typedef QMap<int, QString> QgsSymbolGroupMap;
 typedef QMultiMap<QString, QString> QgsSmartConditionMap;
 
 // enumerators representing sqlite DB columns
-enum SymbolTable { SymbolId, SymbolName, SymbolXML, SymbolFavoriteId };
-enum TagTable { TagId, TagName };
-enum TagmapTable { TagmapTagId, TagmapSymbolId };
-enum ColorrampTable { ColorrampId, ColorrampName, ColorrampXML, ColorrampFavoriteId };
-enum SmartgroupTable { SmartgroupId, SmartgroupName, SmartgroupXML };
+
+/**
+ * Columns available in the Symbols table.
+ */
+enum SymbolTable
+{
+  SymbolId, //!< Symbol ID
+  SymbolName, //!< Symbol Name
+  SymbolXML, //!< Symbol definition (as XML)
+  SymbolFavoriteId, //!< Symbol is favorite flag
+};
+
+/**
+ * Columns available in the Tags table.
+ */
+enum TagTable
+{
+  TagId, //!< Tag ID
+  TagName, //!< Tag name
+};
+
+/**
+ * Columns available in the tag to symbol table.
+ */
+enum TagmapTable
+{
+  TagmapTagId, //!< Tag ID
+  TagmapSymbolId, //!< Symbol ID
+};
+
+/**
+ * Columns available in the color ramp table.
+ */
+enum ColorrampTable
+{
+  ColorrampId, //!< Color ramp ID
+  ColorrampName, //!< Color ramp name
+  ColorrampXML, //!< Color ramp definition (as XML)
+  ColorrampFavoriteId, //!< Color ramp is favorite flag
+};
+
+/**
+ * Columns available in the text format table.
+ */
+enum TextFormatTable
+{
+  TextFormatId, //!< Text format ID
+  TextFormatName, //!< Text format name
+  TextFormatXML, //!< Text format definition (as XML)
+  TextFormatFavoriteId, //!< Text format is favorite flag
+};
+
+/**
+ * Columns available in the label settings table.
+ */
+enum LabelSettingsTable
+{
+  LabelSettingsId, //!< Label settings ID
+  LabelSettingsName, //!< Label settings name
+  LabelSettingsXML, //!< Label settings definition (as XML)
+  LabelSettingsFavoriteId, //!< Label settings is favorite flag
+};
+
+/**
+ * Columns available in the smart group table.
+ */
+enum SmartgroupTable
+{
+  SmartgroupId, //!< Smart group ID
+  SmartgroupName, //!< Smart group name
+  SmartgroupXML, //!< Smart group definition (as XML)
+};
 
 /**
  * \ingroup core
@@ -82,7 +165,7 @@ class CORE_EXPORT QgsStyle : public QObject
     /**
      * Constructor for QgsStyle.
      */
-    QgsStyle() = default;
+    QgsStyle();
     ~QgsStyle() override;
 
     /**
@@ -92,7 +175,29 @@ class CORE_EXPORT QgsStyle : public QObject
      *  database functions are being run.
      *  \sa rename(), remove(), symbolsOfFavorite(), symbolsWithTag(), symbolsOfSmartgroup()
      */
-    enum StyleEntity { SymbolEntity, TagEntity, ColorrampEntity, SmartgroupEntity };
+    enum StyleEntity
+    {
+      SymbolEntity, //!< Symbols
+      TagEntity, //!< Tags
+      ColorrampEntity, //!< Color ramps
+      SmartgroupEntity, //!< Smart groups
+      TextFormatEntity, //!< Text formats
+      LabelSettingsEntity, //!< Label settings
+      LegendPatchShapeEntity, //!< Legend patch shape (since QGIS 3.14)
+    };
+
+    /**
+     * Adds an \a entity to the style, with the specified \a name. Ownership is not transferred.
+     *
+     * If \a update is TRUE then the style database is updated automatically as a result.
+     *
+     * Returns TRUE if the add operation was successful.
+     *
+     * \note Adding an entity with the name of existing one replaces the existing one automatically.
+     *
+     * \since QGIS 3.10
+     */
+    bool addEntity( const QString &name, const QgsStyleEntityInterface *entity, bool update = false );
 
     /**
      * Adds a symbol to style and takes symbol's ownership
@@ -100,7 +205,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \note Adding a symbol with the name of existing one replaces it.
      *  \param name is the name of the symbol being added or updated
      *  \param symbol is the Vector symbol
-     *  \param update set to true when the style DB has to be updated, by default it is false
+     *  \param update set to TRUE when the style database has to be updated, by default it is FALSE
      *  \returns success status of the operation
      */
     bool addSymbol( const QString &name, QgsSymbol *symbol SIP_TRANSFER, bool update = false );
@@ -110,16 +215,52 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \note Adding a color ramp with the name of existing one replaces it.
      *  \param name is the name of the color ramp being added or updated
      *  \param colorRamp is the color ramp. Ownership is transferred.
-     *  \param update set to true when the style DB has to be updated, by default it is false
+     *  \param update set to TRUE when the style database has to be updated, by default it is FALSE
      *  \returns success status of the operation
      */
     bool addColorRamp( const QString &name, QgsColorRamp *colorRamp SIP_TRANSFER, bool update = false );
 
     /**
+     * Adds a text \a format with the specified \a name to the style.
+     *
+     * If \a update is set to TRUE, the style database will be automatically updated with the new text format.
+     *
+     * Returns TRUE if the operation was successful.
+     *
+     * \note Adding a text format with the name of existing one replaces it.
+     * \since QGIS 3.10
+     */
+    bool addTextFormat( const QString &name, const QgsTextFormat &format, bool update = false );
+
+    /**
+     * Adds label \a settings with the specified \a name to the style.
+     *
+     * If \a update is set to TRUE, the style database will be automatically updated with the new text format.
+     *
+     * Returns TRUE if the operation was successful.
+     *
+     * \note Adding label settings with the name of existing ones replaces them.
+     * \since QGIS 3.10
+     */
+    bool addLabelSettings( const QString &name, const QgsPalLayerSettings &settings, bool update = false );
+
+    /**
+     * Adds a legend patch \a shape with the specified \a name to the style.
+     *
+     * If \a update is set to TRUE, the style database will be automatically updated with the new legend patch shape.
+     *
+     * Returns TRUE if the operation was successful.
+     *
+     * \note Adding legend patch shapes with the name of existing ones replaces them.
+     * \since QGIS 3.14
+     */
+    bool addLegendPatchShape( const QString &name, const QgsLegendPatchShape &shape, bool update = false );
+
+    /**
      * Adds a new tag and returns the tag's id
      *
      *  \param tagName the name of the new tag to be created
-     *  \returns returns an int, which is the DB id of the new tag created, 0 if the tag couldn't be created
+     *  \returns returns an int, which is the database id of the new tag created, 0 if the tag couldn't be created
      */
     int addTag( const QString &tagName );
 
@@ -129,8 +270,25 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \param name is the name of the new Smart Group to be added
      *  \param op is the operator between the conditions; AND/OR as QString
      *  \param conditions are the smart group conditions
+     *
+     * \note Not available from Python bindings
      */
-    int addSmartgroup( const QString &name, const QString &op, const QgsSmartConditionMap &conditions );
+    int addSmartgroup( const QString &name, const QString &op, const QgsSmartConditionMap &conditions ) SIP_SKIP;
+
+    /**
+     * Adds a new smartgroup to the database and returns the id.
+     *
+     * \param name is the name of the new Smart Group to be added
+     * \param op is the operator between the conditions; AND/OR as QString
+     * \param matchTag list of strings to match within tags
+     * \param noMatchTag list of strings to exclude matches from tags
+     * \param matchName list of string to match within names
+     * \param noMatchName list of strings to exclude matches from names
+     *
+     * \since QGIS 3.4
+     */
+    int addSmartgroup( const QString &name, const QString &op, const QStringList &matchTag, const QStringList &noMatchTag,
+                       const QStringList &matchName, const QStringList &noMatchName );
 
     /**
      * Returns a list of all tags in the style database
@@ -153,7 +311,7 @@ class CORE_EXPORT QgsStyle : public QObject
     int colorRampCount();
 
     //! Returns a list of names of color ramps
-    QStringList colorRampNames();
+    QStringList colorRampNames() const;
 
     //! Returns a const pointer to a symbol (doesn't create new instance)
     const QgsColorRamp *colorRampRef( const QString &name ) const;
@@ -163,6 +321,91 @@ class CORE_EXPORT QgsStyle : public QObject
      * returns 0 if not found
      */
     int colorrampId( const QString &name );
+
+    /**
+     * Returns the text format with the specified \a name.
+     *
+     * \since QGIS 3.10
+     */
+    QgsTextFormat textFormat( const QString &name ) const;
+
+    /**
+     * Returns count of text formats in the style.
+     * \since QGIS 3.10
+     */
+    int textFormatCount() const;
+
+    /**
+     * Returns a list of names of text formats in the style.
+     * \since QGIS 3.10
+     */
+    QStringList textFormatNames() const;
+
+    /**
+     * Returns the ID in the style database for the given text format by \a name.
+     * Returns 0 if the text format was not found.
+     *
+     * \since QGIS 3.10
+     */
+    int textFormatId( const QString &name );
+
+    /**
+     * Returns the label settings with the specified \a name.
+     *
+     * \since QGIS 3.10
+     */
+    QgsPalLayerSettings labelSettings( const QString &name ) const;
+
+    /**
+     * Returns the legend patch shape with the specified \a name.
+     *
+     * \since QGIS 3.14
+     */
+    QgsLegendPatchShape legendPatchShape( const QString &name ) const;
+
+    /**
+     * Returns count of legend patch shapes in the style.
+     * \since QGIS 3.14
+     */
+    int legendPatchShapesCount() const;
+
+    /**
+     * Returns the symbol type corresponding to the legend patch shape
+     * with the specified \a name, or QgsSymbol::Hybrid
+     * if a matching legend patch shape is not present.
+     *
+     * \since QGIS 3.14
+     */
+    QgsSymbol::SymbolType legendPatchShapeSymbolType( const QString &name ) const;
+
+    /**
+     * Returns the layer geometry type corresponding to the label settings
+     * with the specified \a name, or QgsWkbTypes::UnknownGeometry
+     * if matching label settings are not present.
+     *
+     * \since QGIS 3.10
+     */
+    QgsWkbTypes::GeometryType labelSettingsLayerType( const QString &name ) const;
+
+    /**
+     * Returns count of label settings in the style.
+     * \since QGIS 3.10
+     */
+    int labelSettingsCount() const;
+
+    /**
+     * Returns a list of names of label settings in the style.
+     * \since QGIS 3.10
+     */
+    QStringList labelSettingsNames() const;
+
+    /**
+     * Returns the ID in the style database for the given label settings by \a name.
+     * Returns 0 if the label settings were not found.
+     *
+     * \since QGIS 3.10
+     */
+    int labelSettingsId( const QString &name );
 
     //! Returns default application-wide style
     static QgsStyle *defaultStyle();
@@ -205,7 +448,20 @@ class CORE_EXPORT QgsStyle : public QObject
     //! Removes symbol from style (and delete it)
     bool removeSymbol( const QString &name );
 
-    //! Changessymbol's name
+    /**
+     * Renames an entity of the specified \a type from \a oldName to \a newName.
+     *
+     * Returns TRUE if the entity was successfully renamed.
+     *
+     * \since QGIS 3.14
+     */
+    bool renameEntity( StyleEntity type, const QString &oldName, const QString &newName );
+
+    /**
+     * Renames a symbol from \a oldName to \a newName.
+     *
+     * Returns TRUE if symbol was successfully renamed.
+     */
     bool renameSymbol( const QString &oldName, const QString &newName );
 
     //! Returns a NEW copy of symbol
@@ -218,17 +474,30 @@ class CORE_EXPORT QgsStyle : public QObject
     int symbolCount();
 
     //! Returns a list of names of symbols
-    QStringList symbolNames();
+    QStringList symbolNames() const;
 
     /**
      * Returns the id in the style database for the given symbol name
      * returns 0 if not found
      */
     int symbolId( const QString &name );
-    //! Returns the DB id for the given tag name
+
+    /**
+     * Returns the id in the style database for the given \a name of the specified entity \a type.
+     * Returns 0 if not found.
+     */
+    int entityId( StyleEntity type, const QString &name );
+
+    //! Returns the database id for the given tag name
     int tagId( const QString &tag );
-    //! Returns the DB id for the given smartgroup name
+    //! Returns the database id for the given smartgroup name
     int smartgroupId( const QString &smartgroup );
+
+    /**
+     * Returns a list of the names of all existing entities of the specified \a type.
+     * \since QGIS 3.10
+     */
+    QStringList allNames( StyleEntity type ) const;
 
     /**
      * Returns the symbol names which are flagged as favorite
@@ -269,21 +538,31 @@ class CORE_EXPORT QgsStyle : public QObject
      * Renames the given entity with the specified id
      *
      *  \param type is any of the style entities. Refer enum StyleEntity.
-     *  \param id is the DB id of the entity which is to be renamed
+     *  \param id is the database id of the entity which is to be renamed
      *  \param newName is the new name of the entity
      */
-    void rename( StyleEntity type, int id, const QString &newName );
+    bool rename( StyleEntity type, int id, const QString &newName );
 
     /**
-     * Removes the specified entity from the db
+     * Removes the specified entity from the database.
      *
      *  \param type is any of the style entities. Refer enum StyleEntity.
-     *  \param id is the DB id of the entity to be removed
+     *  \param id is the database id of the entity to be removed
+     *
+     * \see removeEntityByName()
      */
-    void remove( StyleEntity type, int id );
+    bool remove( StyleEntity type, int id );
 
     /**
-     * Adds the symbol to the DB with the tags
+     * Removes the entry of the specified \a type with matching \a name from the database.
+     *
+     * \see remove()
+     * \since QGIS 3.14
+     */
+    bool removeEntityByName( StyleEntity type, const QString &name );
+
+    /**
+     * Adds the symbol to the database with tags.
      *
      *  \param name is the name of the symbol as QString
      *  \param symbol is the pointer to the new QgsSymbol being saved
@@ -294,7 +573,7 @@ class CORE_EXPORT QgsStyle : public QObject
     bool saveSymbol( const QString &name, QgsSymbol *symbol, bool favorite, const QStringList &tags );
 
     /**
-     * Adds the colorramp to the DB
+     * Adds the colorramp to the database.
      *
      *  \param name is the name of the colorramp as QString
      *  \param ramp is the pointer to the new QgsColorRamp being saved
@@ -309,6 +588,105 @@ class CORE_EXPORT QgsStyle : public QObject
 
     //! Changes ramp's name
     bool renameColorRamp( const QString &oldName, const QString &newName );
+
+    /**
+     * Adds a text \a format to the database.
+     *
+     *  \param name is the name of the text format
+     *  \param format text format to save
+     *  \param favorite is a boolean value to specify whether the text format should be added to favorites
+     *  \param tags is a list of tags that are associated with the text format
+     *  \returns returns the success state of the save operation
+     */
+    bool saveTextFormat( const QString &name, const QgsTextFormat &format, bool favorite, const QStringList &tags );
+
+    /**
+     * Removes a text format from the style.
+     * \since QGIS 3.10
+     */
+    bool removeTextFormat( const QString &name );
+
+    /**
+     * Changes a text format's name.
+     *
+     * \since QGIS 3.10
+     */
+    bool renameTextFormat( const QString &oldName, const QString &newName );
+
+    /**
+     * Adds label \a settings to the database.
+     *
+     *  \param name is the name of the label settings
+     *  \param settings label settings to save
+     *  \param favorite is a boolean value to specify whether the label settings should be added to favorites
+     *  \param tags is a list of tags that are associated with the label settings
+     *  \returns returns the success state of the save operation
+     */
+    bool saveLabelSettings( const QString &name, const QgsPalLayerSettings &settings, bool favorite, const QStringList &tags );
+
+    /**
+     * Removes label settings from the style.
+     * \since QGIS 3.10
+     */
+    bool removeLabelSettings( const QString &name );
+
+    /**
+     * Changes a label setting's name.
+     *
+     * \since QGIS 3.10
+     */
+    bool renameLabelSettings( const QString &oldName, const QString &newName );
+
+    /**
+     * Adds a legend patch \a shape to the database.
+     *
+     * \param name is the name of the legend patch shape
+     * \param shape legend patch shape to save
+     * \param favorite is a boolean value to specify whether the legend patch shape should be added to favorites
+     * \param tags is a list of tags that are associated with the legend patch shape
+     * \returns returns the success state of the save operation
+     *
+     * \since QGIS 3.14
+     */
+    bool saveLegendPatchShape( const QString &name, const QgsLegendPatchShape &shape, bool favorite, const QStringList &tags );
+
+    /**
+     * Changes a legend patch shape's name.
+     *
+     * \since QGIS 3.14
+     */
+    bool renameLegendPatchShape( const QString &oldName, const QString &newName );
+
+    /**
+     * Returns a list of names of legend patch shapes in the style.
+     * \since QGIS 3.14
+     */
+    QStringList legendPatchShapeNames() const;
+
+    /**
+     * Returns a symbol to use for rendering preview icons for a patch \a shape.
+     *
+     * Ownership of the symbol is not transferred.
+     *
+     * \since QGIS 3.14
+     */
+    const QgsSymbol *previewSymbolForPatchShape( const QgsLegendPatchShape &shape ) const;
+
+    /**
+     * Returns the default legend patch shape for the given symbol \a type.
+     *
+     * \see defaultPatchAsQPolygonF()
+     * \since QGIS 3.14
+     */
+    QgsLegendPatchShape defaultPatch( QgsSymbol::SymbolType type, QSizeF size ) const;
+
+    /**
+     * Returns the default patch geometry for the given symbol \a type and \a size as a set of QPolygonF objects (parts and rings).
+     *
+     * \see defaultPatch()
+     * \since QGIS 3.14
+     */
+    QList< QList< QPolygonF > > defaultPatchAsQPolygonF( QgsSymbol::SymbolType type, QSizeF size ) const;
 
     /**
      * Creates an on-disk database
@@ -378,6 +756,14 @@ class CORE_EXPORT QgsStyle : public QObject
     QStringList tagsOfSymbol( StyleEntity type, const QString &symbol );
 
     /**
+     * Returns TRUE if the symbol with matching \a type and \a name is
+     * marked as a favorite.
+     *
+     * \since QGIS 3.10
+     */
+    bool isFavorite( StyleEntity type, const QString &name );
+
+    /**
      * Returns whether a given tag is associated with the symbol
      *
      *  \param type is either SymbolEntity or ColorrampEntity
@@ -394,7 +780,7 @@ class CORE_EXPORT QgsStyle : public QObject
     QgsSymbolGroupMap smartgroupsListMap();
 
     //! Returns the smart groups list
-    QStringList smartgroupNames();
+    QStringList smartgroupNames() const;
 
     //! Returns the QgsSmartConditionMap for the given id
     QgsSmartConditionMap smartgroup( int id );
@@ -414,32 +800,242 @@ class CORE_EXPORT QgsStyle : public QObject
     //! Imports the symbols and colorramps into the default style database from the given XML file
     bool importXml( const QString &filename );
 
+    /**
+     * Tests if the file at \a path is a QGIS style XML file.
+     *
+     * This method samples only the first line in the file, so is safe to call on
+     * large xml files.
+     *
+     * \since QGIS 3.6
+     */
+    static bool isXmlStyleFile( const QString &path );
+
   signals:
-    //! Is emitted every time a new symbol has been added to the database
+
+    /**
+     * Emitted every time a new symbol has been added to the database.
+     * Emitted whenever a symbol has been added to the style and the database
+     * has been updated as a result.
+     * \see symbolRemoved()
+     * \see rampAdded()
+     * \see symbolChanged()
+     */
     void symbolSaved( const QString &name, QgsSymbol *symbol );
-    //! Is emitted every time a tag or smartgroup has been added, removed, or renamed
+
+    /**
+     * Emitted whenever a symbol's definition is changed. This does not include
+     * name or tag changes.
+     *
+     * \see symbolSaved()
+     *
+     * \since QGIS 3.4
+     */
+    void symbolChanged( const QString &name );
+
+    //! Emitted every time a tag or smartgroup has been added, removed, or renamed
     void groupsModified();
+
+    /**
+     * Emitted whenever an \a entity's tags are changed.
+     *
+     * \since QGIS 3.4
+     */
+    void entityTagsChanged( QgsStyle::StyleEntity entity, const QString &name, const QStringList &newTags );
+
+    /**
+     * Emitted whenever an \a entity is either favorited or un-favorited.
+     *
+     * \since QGIS 3.4
+     */
+    void favoritedChanged( QgsStyle::StyleEntity entity, const QString &name, bool isFavorite );
+
+    /**
+     * Emitted every time a new entity has been added to the database.
+     *
+     * \since QGIS 3.14
+     */
+    void entityAdded( QgsStyle::StyleEntity entity, const QString &name );
+
+    /**
+     * Emitted whenever an entity of the specified type is removed from the style and the database
+     * has been updated as a result.
+     *
+     * \since QGIS 3.14
+     */
+    void entityRemoved( QgsStyle::StyleEntity entity, const QString &name );
+
+    /**
+     * Emitted whenever a entity of the specified type has been renamed from \a oldName to \a newName
+     * \since QGIS 3.14
+     */
+    void entityRenamed( QgsStyle::StyleEntity entity, const QString &oldName, const QString &newName );
+
+    /**
+     * Emitted whenever an entity's definition is changed. This does not include
+     * name or tag changes.
+     *
+     * \since QGIS 3.14
+     */
+    void entityChanged( QgsStyle::StyleEntity entity, const QString &name );
+
+    /**
+     * Emitted whenever a symbol has been removed from the style and the database
+     * has been updated as a result.
+     * \see symbolSaved()
+     * \see rampRemoved()
+     * \since QGIS 3.4
+     */
+    void symbolRemoved( const QString &name );
+
+    /**
+     * Emitted whenever a symbol has been renamed from \a oldName to \a newName
+     * \see rampRenamed()
+     * \since QGIS 3.4
+     */
+    void symbolRenamed( const QString &oldName, const QString &newName );
+
+    /**
+     * Emitted whenever a color ramp has been renamed from \a oldName to \a newName
+     * \see symbolRenamed()
+     * \since QGIS 3.4
+     */
+    void rampRenamed( const QString &oldName, const QString &newName );
+
+    /**
+     * Emitted whenever a color ramp has been added to the style and the database
+     * has been updated as a result.
+     * \see rampRemoved()
+     * \see symbolSaved()
+     * \since QGIS 3.4
+     */
+    void rampAdded( const QString &name );
+
+    /**
+     * Emitted whenever a color ramp has been removed from the style and the database
+     * has been updated as a result.
+     * \see rampAdded()
+     * \see symbolRemoved()
+     * \since QGIS 3.4
+     */
+    void rampRemoved( const QString &name );
+
+    /**
+     * Emitted whenever a color ramp's definition is changed. This does not include
+     * name or tag changes.
+     *
+     * \see rampAdded()
+     *
+     * \since QGIS 3.4
+     */
+    void rampChanged( const QString &name );
+
+
+    /**
+     * Emitted whenever a text format has been renamed from \a oldName to \a newName
+     * \see symbolRenamed()
+     * \since QGIS 3.10
+     */
+    void textFormatRenamed( const QString &oldName, const QString &newName );
+
+    /**
+     * Emitted whenever a text format has been added to the style and the database
+     * has been updated as a result.
+     * \see textFormatRemoved()
+     * \see symbolSaved()
+     * \since QGIS 3.10
+     */
+    void textFormatAdded( const QString &name );
+
+    /**
+     * Emitted whenever a text format has been removed from the style and the database
+     * has been updated as a result.
+     * \see textFormatAdded()
+     * \see symbolRemoved()
+     * \since QGIS 3.10
+     */
+    void textFormatRemoved( const QString &name );
+
+    /**
+     * Emitted whenever a text format's definition is changed. This does not include
+     * name or tag changes.
+     *
+     * \see textFormatAdded()
+     *
+     * \since QGIS 3.10
+     */
+    void textFormatChanged( const QString &name );
+
+    /**
+     * Emitted whenever label settings have been renamed from \a oldName to \a newName
+     * \see symbolRenamed()
+     * \since QGIS 3.10
+     */
+    void labelSettingsRenamed( const QString &oldName, const QString &newName );
+
+    /**
+     * Emitted whenever label settings have been added to the style and the database
+     * has been updated as a result.
+     * \see labelSettingsRemoved()
+     * \see symbolSaved()
+     * \since QGIS 3.10
+     */
+    void labelSettingsAdded( const QString &name );
+
+    /**
+     * Emitted whenever label settings have been removed from the style and the database
+     * has been updated as a result.
+     * \see labelSettingsAdded()
+     * \see symbolRemoved()
+     * \since QGIS 3.10
+     */
+    void labelSettingsRemoved( const QString &name );
+
+    /**
+     * Emitted whenever a label setting's definition is changed. This does not include
+     * name or tag changes.
+     *
+     * \see labelSettingsAdded()
+     *
+     * \since QGIS 3.10
+     */
+    void labelSettingsChanged( const QString &name );
 
   private:
 
     QgsSymbolMap mSymbols;
     QgsVectorColorRampMap mColorRamps;
+    QgsTextFormatMap mTextFormats;
+    QgsLabelSettingsMap mLabelSettings;
+    QMap<QString, QgsLegendPatchShape > mLegendPatchShapes;
+
+    QHash< QgsStyle::StyleEntity, QHash< QString, QStringList > > mCachedTags;
+    QHash< QgsStyle::StyleEntity, QHash< QString, bool > > mCachedFavorites;
 
     QString mErrorString;
     QString mFileName;
 
     sqlite3_database_unique_ptr mCurrentDB;
 
+    std::unique_ptr< QgsSymbol > mPatchMarkerSymbol;
+    std::unique_ptr< QgsSymbol > mPatchLineSymbol;
+    std::unique_ptr< QgsSymbol > mPatchFillSymbol;
+
+    mutable QHash< QgsSymbol::SymbolType, QHash< QSizeF, QgsLegendPatchShape > > mDefaultPatchCache;
+    mutable QHash< QgsSymbol::SymbolType, QHash< QSizeF, QList< QList< QPolygonF > > > > mDefaultPatchQPolygonFCache;
+
     static QgsStyle *sDefaultStyle;
 
     //! Convenience function to open the DB and return a sqlite3 object
     bool openDatabase( const QString &filename );
 
+    //! Imports the symbols and colorramps into the default style database from the given XML file
+    bool importXml( const QString &filename, int sinceVersion );
+
     /**
      * Convenience function that would run queries which don't generate return values
      *
      *  \param query query to run
-     *  \returns success true on success
+     *  \returns success TRUE on success
      */
     bool runEmptyQuery( const QString &query );
 
@@ -459,7 +1055,228 @@ class CORE_EXPORT QgsStyle : public QObject
      */
     bool updateSymbol( StyleEntity type, const QString &name );
 
+    void clearCachedTags( StyleEntity type, const QString &name );
+
+
+    void upgradeIfRequired();
+
+    /**
+     * Returns the table name for the specified entity \a type.
+     */
+    static QString entityTableName( StyleEntity type );
+
+    /**
+     * Returns the tag map table name for the specified entity \a type.
+     */
+    static QString tagmapTableName( StyleEntity type );
+
+    /**
+     * Returns the entity ID field name for for the tag map table for the specified entity \a type.
+     */
+    static QString tagmapEntityIdFieldName( StyleEntity type );
+
     Q_DISABLE_COPY( QgsStyle )
+};
+
+/**
+ * \class QgsStyleEntityInterface
+ * \ingroup core
+ * An interface for entities which can be placed in a QgsStyle database.
+ * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsStyleEntityInterface
+{
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    switch ( sipCpp->type() )
+    {
+      case QgsStyle::SymbolEntity:
+        sipType = sipType_QgsStyleSymbolEntity;
+        break;
+
+      case QgsStyle::ColorrampEntity:
+        sipType = sipType_QgsStyleColorRampEntity;
+        break;
+
+      case QgsStyle::TextFormatEntity:
+        sipType = sipType_QgsStyleTextFormatEntity;
+        break;
+
+      case QgsStyle::LabelSettingsEntity:
+        sipType = sipType_QgsStyleLabelSettingsEntity;
+        break;
+
+      case QgsStyle::SmartgroupEntity:
+      case QgsStyle::TagEntity:
+        sipType = 0;
+        break;
+    }
+    SIP_END
+#endif
+
+  public:
+
+    virtual ~QgsStyleEntityInterface() = default;
+
+    /**
+     * Returns the type of style entity.
+     */
+    virtual QgsStyle::StyleEntity type() const = 0;
+
+};
+
+/**
+ * \class QgsStyleSymbolEntity
+ * \ingroup core
+ * A symbol entity for QgsStyle databases.
+ * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsStyleSymbolEntity : public QgsStyleEntityInterface
+{
+  public:
+
+    /**
+     * Constructor for QgsStyleSymbolEntity, with the specified \a symbol.
+     *
+     * Ownership of \a symbol is NOT transferred.
+     */
+    QgsStyleSymbolEntity( const QgsSymbol *symbol )
+      : mSymbol( symbol )
+    {}
+
+    QgsStyle::StyleEntity type() const override;
+
+    /**
+     * Returns the entity's symbol.
+     */
+    const QgsSymbol *symbol() const { return mSymbol; }
+
+  private:
+
+    const QgsSymbol *mSymbol = nullptr;
+
+};
+
+/**
+ * \class QgsStyleColorRampEntity
+ * \ingroup core
+ * A color ramp entity for QgsStyle databases.
+ * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsStyleColorRampEntity : public QgsStyleEntityInterface
+{
+  public:
+
+    /**
+     * Constructor for QgsStyleColorRampEntity, with the specified color \a ramp.
+     *
+     * Ownership of \a ramp is NOT transferred.
+     */
+    QgsStyleColorRampEntity( const QgsColorRamp *ramp )
+      : mRamp( ramp )
+    {}
+
+    QgsStyle::StyleEntity type() const override;
+
+    /**
+     * Returns the entity's color ramp.
+     */
+    const QgsColorRamp *ramp() const { return mRamp; }
+
+  private:
+
+    const QgsColorRamp *mRamp = nullptr;
+};
+
+/**
+ * \class QgsStyleTextFormatEntity
+ * \ingroup core
+ * A text format entity for QgsStyle databases.
+ * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsStyleTextFormatEntity : public QgsStyleEntityInterface
+{
+  public:
+
+    /**
+     * Constructor for QgsStyleTextFormatEntity, with the specified text \a format.
+     */
+    QgsStyleTextFormatEntity( const QgsTextFormat &format )
+      : mFormat( format )
+    {}
+
+    QgsStyle::StyleEntity type() const override;
+
+    /**
+     * Returns the entity's text format.
+     */
+    QgsTextFormat format() const { return mFormat; }
+
+  private:
+
+    QgsTextFormat mFormat;
+
+};
+
+/**
+ * \class QgsStyleLabelSettingsEntity
+ * \ingroup core
+ * A label settings entity for QgsStyle databases.
+ * \since QGIS 3.10
+ */
+class CORE_EXPORT QgsStyleLabelSettingsEntity : public QgsStyleEntityInterface
+{
+  public:
+
+    /**
+     * Constructor for QgsStyleLabelSettingsEntity, with the specified label \a settings.
+     */
+    QgsStyleLabelSettingsEntity( const QgsPalLayerSettings &settings )
+      : mSettings( settings )
+    {}
+
+    QgsStyle::StyleEntity type() const override;
+
+
+    /**
+     * Returns the entity's label settings.
+     */
+    const QgsPalLayerSettings &settings() const { return mSettings; }
+
+  private:
+
+    QgsPalLayerSettings mSettings;
+};
+
+/**
+ * \class QgsStyleLegendPatchShapeEntity
+ * \ingroup core
+ * A legend patch shape entity for QgsStyle databases.
+ * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsStyleLegendPatchShapeEntity : public QgsStyleEntityInterface
+{
+  public:
+
+    /**
+     * Constructor for QgsStyleLegendPatchShapeEntity, with the specified legend patch \a shape.
+     */
+    QgsStyleLegendPatchShapeEntity( const QgsLegendPatchShape &shape )
+      : mShape( shape )
+    {}
+
+    QgsStyle::StyleEntity type() const override;
+
+
+    /**
+     * Returns the entity's legend patch shape.
+     */
+    const QgsLegendPatchShape &shape() const { return mShape; }
+
+  private:
+
+    QgsLegendPatchShape mShape;
 };
 
 #endif

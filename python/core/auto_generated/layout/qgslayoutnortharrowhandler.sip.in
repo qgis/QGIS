@@ -1,0 +1,106 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layout/qgslayoutnortharrowhandler.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsLayoutNorthArrowHandler: QObject
+{
+%Docstring
+An object which handles north-arrow type behavior for layout items.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgslayoutnortharrowhandler.h"
+%End
+  public:
+
+    enum NorthMode
+    {
+      GridNorth,
+      TrueNorth,
+    };
+
+    QgsLayoutNorthArrowHandler( QObject *parent /TransferThis/ );
+%Docstring
+Constructor for QgsLayoutNorthArrowHandler, with the specified parent ``object``.
+%End
+
+    double arrowRotation() const;
+%Docstring
+Returns the rotation to be used for the arrow, in degrees clockwise.
+%End
+
+    void setLinkedMap( QgsLayoutItemMap *map );
+%Docstring
+Sets the linked ``map`` item.
+
+.. seealso:: :py:func:`linkedMap`
+%End
+
+    QgsLayoutItemMap *linkedMap() const;
+%Docstring
+Returns the linked rotation map, if set. An ``None`` means arrow calculation is
+disabled.
+
+.. seealso:: :py:func:`setLinkedMap`
+%End
+
+    NorthMode northMode() const;
+%Docstring
+Returns the mode used to calculate the arrow rotation.
+
+.. seealso:: :py:func:`setNorthMode`
+
+.. seealso:: :py:func:`northOffset`
+%End
+
+    void setNorthMode( NorthMode mode );
+%Docstring
+Sets the ``mode`` used to calculate the arrow rotation.
+
+.. seealso:: :py:func:`northMode`
+
+.. seealso:: :py:func:`setNorthOffset`
+%End
+
+    double northOffset() const;
+%Docstring
+Returns the offset added to the arrows's rotation from a map's North.
+
+.. seealso:: :py:func:`setNorthOffset`
+
+.. seealso:: :py:func:`northMode`
+%End
+
+    void setNorthOffset( double offset );
+%Docstring
+Sets the ``offset`` added to the arrows's rotation from a map's North.
+
+.. seealso:: :py:func:`northOffset`
+
+.. seealso:: :py:func:`setNorthMode`
+%End
+
+  signals:
+    void arrowRotationChanged( double newRotation );
+%Docstring
+Emitted on arrow rotation change
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layout/qgslayoutnortharrowhandler.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

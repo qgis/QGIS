@@ -22,7 +22,6 @@
 #ifndef QGSWFSDESCRIBEFEATURETYPE_H
 #define QGSWFSDESCRIBEFEATURETYPE_H
 
-#include "qgsvectorlayer.h"
 
 #include <QDomDocument>
 #include <QDomElement>

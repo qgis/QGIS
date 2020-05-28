@@ -26,14 +26,21 @@ class QgsMeshLayer;
 
 /**
  * A widget for setup of the mesh frame settings of
- * the mesh layer. Can be used for both native and
- * triangular mesh renderer settings.
+ * the mesh layer. Can be used for native,
+ * triangular and edge mesh renderer settings.
  */
 class APP_EXPORT QgsMeshRendererMeshSettingsWidget : public QWidget, private Ui::QgsMeshRendererMeshSettingsWidgetBase
 {
     Q_OBJECT
 
   public:
+
+    enum MeshType
+    {
+      Native,
+      Triangular,
+      Edge
+    };
 
     /**
      * A widget to hold the renderer mesh settings for a mesh layer.
@@ -44,11 +51,11 @@ class APP_EXPORT QgsMeshRendererMeshSettingsWidget : public QWidget, private Ui:
     /**
      * Associates mesh layer with the widget
      * \param layer mesh layer that contains mesh frame
-     * \param isTriangularMesh whether use settings for triangular mesh or native mesh
+     * \param meshType whether use settings for triangular mesh or native mesh or edge mesh
      */
-    void setLayer( QgsMeshLayer *layer, bool isTriangularMesh );
+    void setLayer( QgsMeshLayer *layer, MeshType meshType );
 
-    //! Returns the mesh rendering settings (native or triangular)
+    //! Returns the mesh rendering settings (native or triangular or edge)
     QgsMeshRendererMeshSettings settings() const;
 
     //! Synchronizes widgets state with associated mesh layer
@@ -60,12 +67,7 @@ class APP_EXPORT QgsMeshRendererMeshSettingsWidget : public QWidget, private Ui:
 
   private:
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
-
-    /**
-     * If true, the widget works for triangular (derived) mesh
-     * If false, the widget works for native mesh
-     */
-    bool mIsTriangularMesh = true;
+    MeshType mMeshType = MeshType::Native;
 };
 
 #endif // QGSMESHRENDERERMESHSETTINGSWIDGET_H

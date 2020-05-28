@@ -42,7 +42,7 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>Action list</string>
+      <string>Action List</string>
      </property>
      <property name="syncGroup" stdset="0">
       <string notr="true">actiongroup</string>
@@ -104,7 +104,7 @@
       <item row="1" column="6">
        <widget class="QPushButton" name="mAddDefaultActionsButton">
         <property name="text">
-         <string>Create default actions</string>
+         <string>Create Default Actions</string>
         </property>
        </widget>
       </item>

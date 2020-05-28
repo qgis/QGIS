@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'April 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import random
 
@@ -55,7 +51,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class RandomPointsLayer(QgisAlgorithm):
-
     INPUT = 'INPUT'
     POINTS_NUMBER = 'POINTS_NUMBER'
     MIN_DISTANCE = 'MIN_DISTANCE'
@@ -112,7 +107,7 @@ class RandomPointsLayer(QgisAlgorithm):
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, QgsWkbTypes.Point, source.sourceCrs())
+                                               fields, QgsWkbTypes.Point, source.sourceCrs(), QgsFeatureSink.RegeneratePrimaryKey)
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
@@ -151,7 +146,7 @@ class RandomPointsLayer(QgisAlgorithm):
                         f.setAttribute('id', nPoints)
                         f.setGeometry(geom)
                         sink.addFeature(f, QgsFeatureSink.FastInsert)
-                        index.insertFeature(f)
+                        index.addFeature(f)
                         points[nPoints] = p
                         nPoints += 1
                         feedback.setProgress(int(nPoints * total))

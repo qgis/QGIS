@@ -1,0 +1,8 @@
+{
+  "name": "file_path",
+  "type": "function",
+  "description": "Returns the directory component of a file path. This does not include the file name.",
+  "arguments": [ {"arg":"path","description":"a file path"}],
+  "examples": [ { "expression":"file_path('/home/qgis/data/country_boundaries.shp')", "returns":"'/home/qgis/data'"}]
+}
+

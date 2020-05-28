@@ -23,21 +23,21 @@
 #include <memory>
 
 #include "qgis_gui.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsdistancearea.h"
-#include "qgsexpressioncontextgenerator.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfieldproxymodel.h"
 
 
 class QgsMapLayer;
 class QgsVectorLayer;
+class QgsExpressionContextGenerator;
 
 
 /**
  * \ingroup gui
  * \brief The QgsFieldExpressionWidget class reates a widget to choose fields and edit expressions
- * It contains a combo boxto display the fields and expression and a button to open the expression dialog.
+ * It contains a combo box to display the fields and expression and a button to open the expression dialog.
  * The combo box is editable, allowing expressions to be edited inline.
  * The validity of the expression is checked live on key press, invalid expressions are displayed in red.
  * The expression will be added to the model (and the fieldChanged signals emitted)
@@ -48,6 +48,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     Q_OBJECT
     Q_PROPERTY( QString expressionDialogTitle READ expressionDialogTitle WRITE setExpressionDialogTitle )
     Q_PROPERTY( QgsFieldProxyModel::Filters filters READ filters WRITE setFilters )
+    Q_PROPERTY( bool allowEmptyFieldName READ allowEmptyFieldName WRITE setAllowEmptyFieldName )
     Q_PROPERTY( bool allowEvalErrors READ allowEvalErrors WRITE setAllowEvalErrors NOTIFY allowEvalErrorsChanged )
 
   public:
@@ -72,8 +73,22 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     //! Returns the title used for the expression dialog
     const QString expressionDialogTitle() { return mExpressionDialogTitle; }
 
-    //! setFilters allows fitering according to the type of field
+    //! setFilters allows filtering according to the type of field
     void setFilters( QgsFieldProxyModel::Filters filters );
+
+    /**
+     * Sets whether an optional empty field ("not set") option is shown in the combo box.
+     * \see allowEmptyFieldName()
+     * \since QGIS 3.4.6
+     */
+    void setAllowEmptyFieldName( bool allowEmpty );
+
+    /**
+     * Returns TRUE if the combo box allows the empty field ("not set") choice.
+     * \see setAllowEmptyFieldName()
+     * \since QGIS 3.4.6
+     */
+    bool allowEmptyFieldName() const;
 
     void setLeftHandButtonStyle( bool isLeft );
 
@@ -91,12 +106,12 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     QString currentField( bool *isExpression = nullptr, bool *isValid = nullptr ) const;
 
     /**
-      * Returns true if the current expression is valid
+      * Returns TRUE if the current expression is valid
       */
     bool isValidExpression( QString *expressionError = nullptr ) const;
 
     /**
-     * If the content is not just a simple field this method will return true.
+     * If the content is not just a simple field this method will return TRUE.
      */
     bool isExpression() const;
 
@@ -156,7 +171,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     void setAllowEvalErrors( bool allowEvalErrors );
 
   signals:
-    //! the signal is emitted when the currently selected field changes
+    //! Emitted when the currently selected field changes.
     void fieldChanged( const QString &fieldName );
 
     //! fieldChanged signal with indication of the validity of the expression
@@ -183,6 +198,12 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
 
     //! sets the current field or expression in the widget
     void setField( const QString &fieldName );
+
+    /**
+     * Sets the fields used in the widget to \a fields, this allows the widget to work without a layer.
+     * \since QGIS 3.14
+     */
+    void setFields( const QgsFields &fields );
 
     /**
      * Sets the current expression text and if applicable also the field.
@@ -216,6 +237,8 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
   protected:
     void changeEvent( QEvent *event ) override;
 
+    bool eventFilter( QObject *watched, QEvent *event ) override;
+
   private slots:
     void reloadLayer();
 
@@ -227,7 +250,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     QToolButton *mButton = nullptr;
     QgsFieldProxyModel *mFieldProxyModel = nullptr;
     QString mExpressionDialogTitle;
-    std::shared_ptr<const QgsDistanceArea> mDa;
+    std::shared_ptr<const QgsDistanceArea> mDistanceArea;
     QgsExpressionContext mExpressionContext;
     const QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
     QString mBackupExpression;

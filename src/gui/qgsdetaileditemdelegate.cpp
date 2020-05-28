@@ -253,7 +253,7 @@ void QgsDetailedItemDelegate::paintAsWidget( QPainter *thepPainter,
   {
     drawHighlight( option, thepPainter, height( option, data ) );
   }
-  QPixmap myPixmap = QPixmap::grabWidget( mpWidget );
+  QPixmap myPixmap = mpWidget->grab();
   thepPainter->drawPixmap( option.rect.x(),
                            option.rect.y(),
                            myPixmap );
@@ -348,7 +348,7 @@ QStringList QgsDetailedItemDelegate::wordWrap( const QString &string,
       myPreviousSpacePos = i;
     }
     myCumulativeLine += myChar;
-    if ( metrics.width( myCumulativeLine ) >= width )
+    if ( metrics.boundingRect( myCumulativeLine ).width() >= width )
     {
       //time to wrap
       //TODO deal with long strings that have no spaces

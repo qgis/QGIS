@@ -302,8 +302,6 @@ $shebang# -*- coding: utf-8 -*-
 __author__ = '$authorname'
 __date__ = '$authordate'
 __copyright__ = '(C) $authoryear, $authorname'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '\$Format:%H$'
 
 EOF
 		;;

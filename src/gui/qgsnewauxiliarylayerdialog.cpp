@@ -16,19 +16,28 @@
  ***************************************************************************/
 
 #include "qgsnewauxiliarylayerdialog.h"
-#include "qgsproject.h"
 #include "qgsauxiliarystorage.h"
+#include "qgsproject.h"
+#include "qgsgui.h"
 
 #include <QMessageBox>
+#include <QPushButton>
 
 QgsNewAuxiliaryLayerDialog::QgsNewAuxiliaryLayerDialog( QgsVectorLayer *layer, QWidget *parent )
   : QDialog( parent )
   , mLayer( layer )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 
-  for ( const QgsField &field : mLayer->fields() )
+  const QgsFields fields = mLayer->fields();
+  for ( const QgsField &field : fields )
     comboBox->addItem( field.name() );
+
+  if ( fields.isEmpty() )
+  {
+    buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
+  }
 }
 
 void QgsNewAuxiliaryLayerDialog::accept()

@@ -34,7 +34,7 @@
 
 #include <QPushButton>
 
-QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *layer, const QUuid &actionId, int defaultAttr, QObject *parent )
+QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *layer, QUuid actionId, int defaultAttr, QObject *parent )
   : QAction( name, parent )
   , mLayer( layer )
   , mFeature( &f )
@@ -53,7 +53,7 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
 {
   QgsFeature *f = cloneFeature ? new QgsFeature( *mFeature ) : mFeature;
 
-  QgsAttributeEditorContext context;
+  QgsAttributeEditorContext context( QgisApp::instance()->createAttributeEditorContext() );
 
   QgsDistanceArea myDa;
 
@@ -61,12 +61,11 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   context.setDistanceArea( myDa );
-  context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
-  context.setMapCanvas( QgisApp::instance()->mapCanvas() );
   context.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
 
   QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, parentWidget(), true, context );
   dialog->setWindowFlags( dialog->windowFlags() | Qt::Tool );
+
   dialog->setObjectName( QStringLiteral( "featureactiondlg:%1:%2" ).arg( mLayer->id() ).arg( f->id() ) );
 
   QList<QgsAction> actions = mLayer->actions()->actions( QStringLiteral( "Feature" ) );
@@ -74,11 +73,12 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
   {
     dialog->setContextMenuPolicy( Qt::ActionsContextMenu );
 
-    QAction *a = new QAction( tr( "Run actions" ), dialog );
+    QAction *a = new QAction( tr( "Run Actions" ), dialog );
     a->setEnabled( false );
     dialog->addAction( a );
 
-    Q_FOREACH ( const QgsAction &action, actions )
+    const auto constActions = actions;
+    for ( const QgsAction &action : constActions )
     {
       if ( !action.runable() )
         continue;
@@ -135,7 +135,7 @@ bool QgsFeatureAction::editFeature( bool showModal )
     std::unique_ptr<QgsAttributeDialog> dialog( newDialog( false ) );
 
     if ( !mFeature->isValid() )
-      dialog->setMode( QgsAttributeForm::AddFeatureMode );
+      dialog->setMode( QgsAttributeEditorContext::AddFeatureMode );
 
     int rv = dialog->exec();
     mFeature->setAttributes( dialog->feature()->attributes() );
@@ -155,7 +155,7 @@ bool QgsFeatureAction::editFeature( bool showModal )
     dialog = newDialog( false );
 
     if ( !mFeature->isValid() )
-      dialog->setMode( QgsAttributeForm::AddFeatureMode );
+      dialog->setMode( QgsAttributeEditorContext::AddFeatureMode );
 
     // delete the dialog when it is closed
     dialog->setAttribute( Qt::WA_DeleteOnClose );
@@ -172,7 +172,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
 
   QgsSettings settings;
   bool reuseLastValues = settings.value( QStringLiteral( "qgis/digitizing/reuseLastValues" ), false ).toBool();
-  QgsDebugMsg( QString( "reuseLastValues: %1" ).arg( reuseLastValues ) );
+  QgsDebugMsg( QStringLiteral( "reuseLastValues: %1" ).arg( reuseLastValues ) );
 
   QgsFields fields = mLayer->fields();
   QgsAttributeMap initialAttributeValues;
@@ -200,8 +200,19 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
   *mFeature = newFeature;
 
   //show the dialog to enter attribute values
-  //only show if enabled in settings and layer has fields
-  bool isDisabledAttributeValuesDlg = ( fields.count() == 0 ) || settings.value( QStringLiteral( "qgis/digitizing/disable_enter_attribute_values_dialog" ), false ).toBool();
+  //only show if enabled in settings
+  bool isDisabledAttributeValuesDlg = settings.value( QStringLiteral( "qgis/digitizing/disable_enter_attribute_values_dialog" ), false ).toBool();
+
+  // override application-wide setting if layer is non-spatial -- BECAUSE it's bad UX if
+  // it appears that nothing happens when you click the add row button for a non-spatial layer. Unlike
+  // spatial layers, where you can SEE the newly created spatial object on the map, creating a new
+  // feature in a non-spatial layer otherwise seems to have no result.
+  if ( !mLayer->isSpatial() )
+    isDisabledAttributeValuesDlg = false;
+
+  // override application-wide setting if layer has no fields
+  if ( fields.count() == 0 )
+    isDisabledAttributeValuesDlg = true;
 
   // override application-wide setting with any layer setting
   switch ( mLayer->editFormConfig().suppress() )
@@ -215,6 +226,11 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
     case QgsEditFormConfig::SuppressDefault:
       break;
   }
+
+  // finally, if this action has specifically forced suppression of the form, that overrides everything
+  if ( mForceSuppressFormPopup )
+    isDisabledAttributeValuesDlg = true;
+
   if ( isDisabledAttributeValuesDlg )
   {
     mLayer->beginEditCommand( text() );
@@ -229,13 +245,14 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
     {
       mLayer->destroyEditCommand();
     }
+    emit addFeatureFinished();
   }
   else
   {
     QgsAttributeDialog *dialog = newDialog( false );
     // delete the dialog when it is closed
     dialog->setAttribute( Qt::WA_DeleteOnClose );
-    dialog->setMode( QgsAttributeForm::AddFeatureMode );
+    dialog->setMode( QgsAttributeEditorContext::AddFeatureMode );
     dialog->setEditCommandMessage( text() );
 
     connect( dialog->attributeForm(), &QgsAttributeForm::featureSaved, this, &QgsFeatureAction::onFeatureSaved );
@@ -243,16 +260,23 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
     if ( !showModal )
     {
       setParent( dialog ); // keep dialog until the dialog is closed and destructed
+      connect( dialog, &QgsAttributeDialog::finished, this, &QgsFeatureAction::addFeatureFinished );
       dialog->show();
       mFeature = nullptr;
       return true;
     }
 
     dialog->exec();
+    emit addFeatureFinished();
   }
 
   // Will be set in the onFeatureSaved SLOT
   return mFeatureSaved;
+}
+
+void QgsFeatureAction::setForceSuppressFormPopup( bool force )
+{
+  mForceSuppressFormPopup = force;
 }
 
 void QgsFeatureAction::onFeatureSaved( const QgsFeature &feature )
@@ -269,7 +293,7 @@ void QgsFeatureAction::onFeatureSaved( const QgsFeature &feature )
 
   QgsSettings settings;
   bool reuseLastValues = settings.value( QStringLiteral( "qgis/digitizing/reuseLastValues" ), false ).toBool();
-  QgsDebugMsg( QString( "reuseLastValues: %1" ).arg( reuseLastValues ) );
+  QgsDebugMsg( QStringLiteral( "reuseLastValues: %1" ).arg( reuseLastValues ) );
 
   if ( reuseLastValues )
   {
@@ -280,7 +304,7 @@ void QgsFeatureAction::onFeatureSaved( const QgsFeature &feature )
       QgsAttributeMap origValues = sLastUsedValues[ mLayer ];
       if ( origValues[idx] != newValues.at( idx ) )
       {
-        QgsDebugMsg( QString( "saving %1 for %2" ).arg( sLastUsedValues[ mLayer ][idx].toString() ).arg( idx ) );
+        QgsDebugMsg( QStringLiteral( "saving %1 for %2" ).arg( sLastUsedValues[ mLayer ][idx].toString() ).arg( idx ) );
         sLastUsedValues[ mLayer ][idx] = newValues.at( idx );
       }
     }

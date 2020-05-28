@@ -154,7 +154,7 @@ class APP_EXPORT QgsClipboard : public QObject
      * Creates a text representation of the clipboard features.
      * \returns clipboard text, respecting user export format
      */
-    QString generateClipboardText() const;
+    void generateClipboardText( QString &textContent, QString &htmlContent ) const;
 
     /**
      * Attempts to convert a string to a list of features, by parsing the string as WKT and GeoJSON

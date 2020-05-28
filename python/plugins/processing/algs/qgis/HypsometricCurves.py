@@ -21,12 +21,7 @@ __author__ = 'Alexander Bruy'
 __date__ = 'November 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
-import numpy
 import csv
 
 from osgeo import gdal, ogr, osr
@@ -45,9 +40,10 @@ from qgis.core import (QgsRectangle,
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import raster
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 class HypsometricCurves(QgisAlgorithm):
-
     INPUT_DEM = 'INPUT_DEM'
     BOUNDARY_LAYER = 'BOUNDARY_LAYER'
     STEP = 'STEP'
@@ -69,7 +65,7 @@ class HypsometricCurves(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSource(self.BOUNDARY_LAYER,
                                                               self.tr('Boundary layer'), [QgsProcessing.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterNumber(self.STEP,
-                                                       self.tr('Step'), type=QgsProcessingParameterNumber.Double, minValue=0.0, maxValue=999999999.999999, defaultValue=100.0))
+                                                       self.tr('Step'), type=QgsProcessingParameterNumber.Double, minValue=0.0, defaultValue=100.0))
         self.addParameter(QgsProcessingParameterBoolean(self.USE_PERCENTAGE,
                                                         self.tr('Use % of area instead of absolute value'), defaultValue=False))
 
@@ -83,6 +79,11 @@ class HypsometricCurves(QgisAlgorithm):
         return self.tr('Hypsometric curves')
 
     def processAlgorithm(self, parameters, context, feedback):
+        try:
+            import numpy
+        except ImportError:
+            raise QgsProcessingException(QCoreApplication.translate('HypsometricCurves', 'This algorithm requires the Python “numpy” library. Please install this library and try again.'))
+
         raster_layer = self.parameterAsRasterLayer(parameters, self.INPUT_DEM, context)
         target_crs = raster_layer.crs()
         rasterPath = raster_layer.source()
@@ -92,9 +93,11 @@ class HypsometricCurves(QgisAlgorithm):
             raise QgsProcessingException(self.invalidSourceError(parameters, self.BOUNDARY_LAYER))
 
         step = self.parameterAsDouble(parameters, self.STEP, context)
-        percentage = self.parameterAsBool(parameters, self.USE_PERCENTAGE, context)
+        percentage = self.parameterAsBoolean(parameters, self.USE_PERCENTAGE, context)
 
         outputPath = self.parameterAsString(parameters, self.OUTPUT_DIRECTORY, context)
+        if not os.path.exists(outputPath):
+            os.makedirs(outputPath)
 
         rasterDS = gdal.Open(rasterPath, gdal.GA_ReadOnly)
         geoTransform = rasterDS.GetGeoTransform()
@@ -113,7 +116,7 @@ class HypsometricCurves(QgisAlgorithm):
         rasterGeom = QgsGeometry.fromRect(rasterBBox)
 
         crs = osr.SpatialReference()
-        crs.ImportFromProj4(str(target_crs.toProj4()))
+        crs.ImportFromProj4(str(target_crs.toProj()))
 
         memVectorDriver = ogr.GetDriverByName('Memory')
         memRasterDriver = gdal.GetDriverByName('MEM')
@@ -138,7 +141,7 @@ class HypsometricCurves(QgisAlgorithm):
                 continue
 
             fName = os.path.join(
-                outputPath, 'hystogram_%s_%s.csv' % (source.sourceName(), f.id()))
+                outputPath, 'histogram_{}_{}.csv'.format(source.sourceName(), f.id()))
 
             ogrGeom = ogr.CreateGeometryFromWkt(intersectedGeom.asWkt())
             bbox = intersectedGeom.boundingBox()
@@ -225,7 +228,7 @@ class HypsometricCurves(QgisAlgorithm):
         else:
             multiplier = pX * pY
 
-        for k, v in list(out.items()):
+        for k, v in out.items():
             out[k] = v * multiplier
 
         prev = None

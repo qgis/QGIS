@@ -21,7 +21,6 @@
 #define QGSACCESSCONTROLPLUGIN_H
 
 #include <QMultiMap>
-#include <QList>
 #include <QString>
 #include "qgis_server.h"
 #include "qgis_sip.h"
@@ -31,7 +30,6 @@ SIP_IF_MODULE( HAVE_SERVER_PYTHON_PLUGINS )
 class QgsServerInterface;
 class QgsMapLayer;
 class QgsVectorLayer;
-class QgsExpression;
 class QgsFeature;
 
 
@@ -41,10 +39,10 @@ class QgsFeature;
  * \brief Class defining access control interface for QGIS Server plugins.
  *
  * Security can define any (or none) of the following method:
- *  * layerFilterExpression() - To get an additional expression filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature)
- *  * layerFilterSQL() - To get an additional SQL filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature) for layer that support SQL
- *  * layerPermissions() - To give the general layer permissins (read / update / insert / delete)
- *  * authorizedLayerAttributes() - Tho filter the attributes (WMS/GetFeatureInfo, WFS/GetFeature)
+ *  * layerFilterExpression() - To set an additional QGIS expression filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature)
+ *  * layerFilterSubsetString() - To set an additional SQL subset string filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature) for layer that support SQL
+ *  * layerPermissions() - To set the general layer permissins (read / update / insert / delete)
+ *  * authorizedLayerAttributes() - To filter the attributes (WMS/GetFeatureInfo, WFS/GetFeature)
  *  * allowToEdit() - (all WFS-T requests)
  *  * cacheKey()
  */
@@ -107,7 +105,7 @@ class SERVER_EXPORT QgsAccessControlFilter
      * Are we authorized to modify the following geometry
      * \param layer the layer to control
      * \param feature the concerned feature
-     * \returns true if we are allowed to edit
+     * \returns TRUE if we are allowed to edit
      */
     virtual bool allowToEdit( const QgsVectorLayer *layer, const QgsFeature &feature ) const;
 

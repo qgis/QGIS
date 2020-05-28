@@ -38,6 +38,7 @@ Item representing the paper in a layout.
 %Docstring
 Constructor for QgsLayoutItemPage, with the specified parent ``layout``.
 %End
+    ~QgsLayoutItemPage();
 
     static QgsLayoutItemPage *create( QgsLayout *layout ) /Factory/;
 %Docstring
@@ -47,6 +48,8 @@ The caller takes responsibility for deleting the returned object.
 %End
 
     virtual int type() const;
+
+    virtual QString displayName() const;
 
 
     void setPageSize( const QgsLayoutSize &size );
@@ -61,8 +64,8 @@ Sets the ``size`` of the page.
 Sets the page size to a known page ``size``, e.g. "A4" and ``orientation``.
 The known page sizes are managed by :py:class:`QgsPageSizeRegistry`. Valid page sizes
 can be retrieved via :py:func:`QgsPageSizeRegistry.entries()`
-The function returns true if ``size`` was a valid page size and the page
-size was changed. If false is returned then ``size`` could not be matched
+The function returns ``True`` if ``size`` was a valid page size and the page
+size was changed. If ``False`` is returned then ``size`` could not be matched
 to a known page size.
 
 .. seealso:: :py:func:`pageSize`
@@ -77,17 +80,37 @@ Returns the size of the page.
 
     Orientation orientation() const;
 %Docstring
-Returns the page orientiation.
+Returns the page orientation.
 
 .. note::
 
    There is no direct setter for page orientation - use setPageSize() instead.
 %End
 
+    void setPageStyleSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` to use for drawing the page background.
+
+Ownership of ``symbol`` is transferred to the page.
+
+.. seealso:: :py:func:`pageStyleSymbol`
+
+.. versionadded:: 3.10
+%End
+
+    const QgsFillSymbol *pageStyleSymbol() const;
+%Docstring
+Returns the symbol to use for drawing the page background.
+
+.. seealso:: :py:func:`setPageStyleSymbol`
+
+.. versionadded:: 3.10
+%End
+
     static QgsLayoutItemPage::Orientation decodePageOrientation( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Decodes a ``string`` representing a page orientation. If specified, ``ok``
-will be set to true if string could be successfully interpreted as a
+will be set to ``True`` if string could be successfully interpreted as a
 page orientation.
 %End
 
@@ -96,6 +119,10 @@ page orientation.
     virtual void attemptResize( const QgsLayoutSize &size, bool includesFrame = false );
 
     virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = 0 ) /Factory/;
+
+    virtual ExportLayerBehavior exportLayerBehavior() const;
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
   public slots:
@@ -110,6 +137,10 @@ page orientation.
     virtual void drawFrame( QgsRenderContext &context );
 
     virtual void drawBackground( QgsRenderContext &context );
+
+    virtual bool writePropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readPropertiesFromElement( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
 
 };

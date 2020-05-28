@@ -35,12 +35,7 @@ QgsFieldConstraints::ConstraintStrength QgsFieldConstraints::constraintStrength(
 
 void QgsFieldConstraints::setConstraintStrength( QgsFieldConstraints::Constraint constraint, QgsFieldConstraints::ConstraintStrength strength )
 {
-  if ( constraintOrigin( constraint ) == ConstraintOriginProvider )
-  {
-    // cannot be overwritten
-    return;
-  }
-  else if ( strength == ConstraintStrengthNotSet )
+  if ( strength == ConstraintStrengthNotSet )
   {
     mConstraintStrengths.remove( constraint );
   }
@@ -62,7 +57,7 @@ void QgsFieldConstraints::setConstraint( QgsFieldConstraints::Constraint constra
   {
     mConstraints |= constraint;
     mConstraintOrigins.insert( constraint, origin );
-    if ( !mConstraintStrengths.contains( constraint ) || origin == ConstraintOriginProvider )
+    if ( !mConstraintStrengths.contains( constraint ) )
     {
       mConstraintStrengths.insert( constraint, ConstraintStrengthHard );
     }

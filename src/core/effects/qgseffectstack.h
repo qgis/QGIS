@@ -18,7 +18,7 @@
 #define QGSEFFECTSTACK_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgspainteffect.h"
 
 /**
@@ -60,6 +60,11 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
     QgsEffectStack() = default;
 
     QgsEffectStack( const QgsEffectStack &other );
+
+    /**
+     * Move constructor.
+     */
+    QgsEffectStack( QgsEffectStack &&other ) SIP_SKIP;
 
     /**
      * Creates a new QgsEffectStack effect from a single initial effect.
@@ -138,6 +143,9 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
     QgsPaintEffect *effect( int index ) const;
 
     QgsEffectStack &operator=( const QgsEffectStack &rhs );
+
+    QgsEffectStack &operator=( QgsEffectStack &&other ) SIP_SKIP;
+
 
   protected:
 

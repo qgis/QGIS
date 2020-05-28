@@ -1,0 +1,3 @@
+This was originally taken from http://nmea.sourceforge.net, which is now dead.
+
+A fork is alive and well at https://gitlab.com/fhuberts/nmealib, however in the meantime we've diverged considerably and pulling in the changes from the fork is not trivial. Still, the new upstream makes a good reference when working here or checking on bugs!

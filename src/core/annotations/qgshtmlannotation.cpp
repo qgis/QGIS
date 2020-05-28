@@ -25,6 +25,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgswebpage.h"
 #include "qgswebframe.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QDomElement>
 #include <QDir>
@@ -82,8 +83,16 @@ void QgsHtmlAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size
     return;
   }
 
+  // scale painter back to 96 dpi, so layout prints match screen rendering
+  context.painter()->save();
+  const double scaleFactor = context.painter()->device()->logicalDpiX() / 96.0;
+  context.painter()->scale( scaleFactor, scaleFactor );
+  size /= scaleFactor;
+
   mWebPage->setViewportSize( size.toSize() );
   mWebPage->mainFrame()->render( context.painter() );
+
+  context.painter()->restore();
 }
 
 QSizeF QgsHtmlAnnotation::minimumFrameSize() const
@@ -111,7 +120,7 @@ void QgsHtmlAnnotation::writeXml( QDomElement &elem, QDomDocument &doc, const Qg
 
 void QgsHtmlAnnotation::readXml( const QDomElement &itemElem, const QgsReadWriteContext &context )
 {
-  mHtmlFile = itemElem.attribute( QStringLiteral( "htmlfile" ), QLatin1String( "" ) );
+  mHtmlFile = itemElem.attribute( QStringLiteral( "htmlfile" ), QString() );
   QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
   if ( !annotationElem.isNull() )
   {

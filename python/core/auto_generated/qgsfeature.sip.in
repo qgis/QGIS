@@ -13,9 +13,6 @@
 
 
 
-
-
-
 class QgsFeature
 {
 %Docstring
@@ -65,7 +62,7 @@ geometry and a list of field/values attributes.
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -100,7 +97,7 @@ geometry and a list of field/values attributes.
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -132,7 +129,7 @@ geometry and a list of field/values attributes.
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -217,11 +214,11 @@ The feature will be valid if it was successful.
 :param field: the index of the field to set
 :param attr: the value of the attribute
 
-:return: false, if the field index does not exist
+:return: ``False``, if the field index does not exist
 
 .. note::
 
-   For Python: raises a KeyError exception instead of returning false
+   For Python: raises a KeyError exception instead of returning ``False``
 
 .. note::
 
@@ -296,14 +293,14 @@ invalid or to indicate a null feature.
 %Docstring
 Sets the validity of the feature.
 
-:param validity: set to true if feature is valid
+:param validity: set to ``True`` if feature is valid
 
 .. seealso:: :py:func:`isValid`
 %End
 
     bool hasGeometry() const;
 %Docstring
-Returns true if the feature has an associated geometry.
+Returns ``True`` if the feature has an associated geometry.
 
 .. seealso:: :py:func:`geometry`
 
@@ -331,6 +328,39 @@ Set the feature's geometry. The feature will be valid after.
 .. seealso:: :py:func:`clearGeometry`
 %End
 
+    void setGeometry( QgsAbstractGeometry *geometry /Transfer/ );
+%Docstring
+Set the feature's ``geometry``. Ownership of the geometry is transferred to the feature.
+The feature will be made valid after calling this method.
+
+This method is a shortcut for calling:
+.. code-block:: python
+
+       feature.setGeometry( QgsGeometry( geometry ) )
+
+* Example:
+.. code-block:: python
+
+       # Sets a feature's geometry to a point geometry
+       feature.setGeometry( QgsPoint( 210, 41 ) )
+       print(feature.geometry())
+       # output: <QgsGeometry: Point (210 41)>
+
+       # Sets a feature's geometry to a line string
+       feature.setGeometry( QgsLineString( [ QgsPoint( 210, 41 ), QgsPoint( 301, 55 ) ] ) )
+       print(feature.geometry())
+       # output: <QgsGeometry: LineString (210 41, 301 55)>
+
+.. seealso:: :py:func:`geometry`
+
+.. seealso:: :py:func:`clearGeometry`
+
+.. versionadded:: 3.6
+%End
+%MethodCode
+    sipCpp->setGeometry( std::unique_ptr< QgsAbstractGeometry>( a0 ) );
+%End
+
     void clearGeometry();
 %Docstring
 Removes any geometry associated with the feature.
@@ -347,9 +377,9 @@ Removes any geometry associated with the feature.
 Assign a field map with the feature to allow attribute access by attribute name.
 
 :param fields: The attribute fields which this feature holds
-:param initAttributes: If true, attributes are initialized. Clears any data previously assigned.
-                       C++: Defaults to false
-                       Python: Defaults to true
+:param initAttributes: If ``True``, attributes are initialized. Clears any data previously assigned.
+                       C++: Defaults to ``False``
+                       Python: Defaults to ``True``
 
 .. seealso:: :py:func:`fields`
 
@@ -365,18 +395,18 @@ Returns the field map associated with the feature.
 
     void setAttribute( const QString &name, const QVariant &value /GetWrapper/ );
 %Docstring
-Insert a value into attribute. Returns false if attribute name could not be converted to index.
+Insert a value into attribute. Returns ``False`` if attribute name could not be converted to index.
 Field map must be associated using setFields() before this method can be used.
 The feature will be valid if it was successful
 
 :param name: The name of the field to set
 :param value: The value to set
 
-:return: false if attribute name could not be converted to index (C++ only)
+:return: ``False`` if attribute name could not be converted to index (C++ only)
 
 .. note::
 
-   For Python: raises a KeyError exception instead of returning false
+   For Python: raises a KeyError exception instead of returning ``False``
 
 .. note::
 
@@ -388,7 +418,7 @@ The feature will be valid if it was successful
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -411,11 +441,11 @@ before this method can be used.
 
 :param name: The name of the field to delete
 
-:return: false if attribute name could not be converted to index (C++ only)
+:return: ``False`` if attribute name could not be converted to index (C++ only)
 
 .. note::
 
-   For Python: raises a KeyError exception instead of returning false
+   For Python: raises a KeyError exception instead of returning ``False``
 
 .. note::
 
@@ -427,7 +457,7 @@ before this method can be used.
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
       sipRes = false;
     }
@@ -461,7 +491,7 @@ before this method can be used.
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -526,9 +556,6 @@ typedef QMap<qint64, QMap<int, QVariant> > QgsChangedAttributesMap;
 
 
 typedef QMap<qint64, QgsGeometry> QgsGeometryMap;
-
-
-typedef QSet<qint64> QgsFeatureIds;
 
 typedef QList<QgsFeature> QgsFeatureList;
 

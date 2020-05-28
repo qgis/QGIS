@@ -170,7 +170,7 @@ Returns the precedence index for the operator. Higher values have higher precede
 
     bool leftAssociative() const;
 %Docstring
-Returns true if the operator is left-associative.
+Returns ``True`` if the operator is left-associative.
 %End
 
     QString text() const;
@@ -178,6 +178,63 @@ Returns true if the operator is left-associative.
 Returns a the name of this operator without the operands.
 I.e. "AND", "OR", ...
 %End
+
+};
+
+class QgsExpressionNodeIndexOperator : QgsExpressionNode
+{
+%Docstring
+A indexing expression operator, which allows use of square brackets [] to reference map and array items.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsexpressionnodeimpl.h"
+%End
+  public:
+
+    QgsExpressionNodeIndexOperator( QgsExpressionNode *container /Transfer/, QgsExpressionNode *index /Transfer/ );
+%Docstring
+Constructor for QgsExpressionNodeIndexOperator.
+%End
+    ~QgsExpressionNodeIndexOperator();
+
+    QgsExpressionNode *container() const;
+%Docstring
+Returns the container node, representing an array or map value.
+
+.. seealso:: :py:func:`index`
+%End
+
+    QgsExpressionNode *index() const;
+%Docstring
+Returns the index node, representing an array element index or map key.
+
+.. seealso:: :py:func:`container`
+%End
+
+    virtual QgsExpressionNode::NodeType nodeType() const;
+
+    virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
+
+    virtual QString dump() const;
+
+
+    virtual QSet<QString> referencedColumns() const;
+
+    virtual QSet<QString> referencedVariables() const;
+
+    virtual QSet<QString> referencedFunctions() const;
+
+    virtual bool needsGeometry() const;
+
+    virtual QgsExpressionNode *clone() const /Factory/;
+
+    virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
 
 };
 
@@ -194,7 +251,7 @@ An expression node for value IN or NOT IN clauses.
 
     QgsExpressionNodeInOperator( QgsExpressionNode *node /Transfer/, QgsExpressionNode::NodeList *list /Transfer/, bool notin = false );
 %Docstring
-This node tests if the result of ``node`` is in the result of ``list``. Optionally it can be inverted with ``notin`` which by default is false.
+This node tests if the result of ``node`` is in the result of ``list``. Optionally it can be inverted with ``notin`` which by default is ``False``.
 %End
     ~QgsExpressionNodeInOperator();
 
@@ -205,7 +262,7 @@ Returns the expression node.
 
     bool isNotIn() const;
 %Docstring
-Returns true if this node is a "NOT IN" operator, or false if the node is a normal "IN" operator.
+Returns ``True`` if this node is a "NOT IN" operator, or ``False`` if the node is a normal "IN" operator.
 %End
 
     QgsExpressionNode::NodeList *list() const;

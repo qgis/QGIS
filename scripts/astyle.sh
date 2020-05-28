@@ -52,7 +52,15 @@ if ! type -p flip >/dev/null; then
 			dos2unix -q -k "$2"
 		}
 	else
-		echo "flip not found" >&2
+    echo "flip not found" >&2
+    echo "Try:"
+    if [[ -f /etc/fedora-release ]]; then
+      echo "  dnf install dos2unix";
+    elif [[ -f /etc/debian_version ]]; then
+      echo "  apt install flip";
+    else
+      echo "  installing flip or dos2unix from your package manager";
+    fi
 		flip() {
 			:
 		}
@@ -61,6 +69,14 @@ fi
 
 if ! type -p autopep8 >/dev/null; then
 	echo "autopep8 not found" >&2
+	echo "Try:"
+	if [[ -f /etc/fedora-release ]]; then
+		echo "  dnf install python3-autopep8";
+	elif [[ -f /etc/debian_version ]]; then
+		echo "  apt install python3-autopep8";
+	else
+		echo "  installing python3-autopep8 from your package manager";
+	fi
 	autopep8() {
 		:
 	}
@@ -69,6 +85,10 @@ fi
 ASTYLEOPTS=$(dirname "$0")/astyle.options
 if type -p cygpath >/dev/null; then
 	ASTYLEOPTS="$(cygpath -w "$ASTYLEOPTS")"
+fi
+
+if type -p wslpath >/dev/null; then
+	ASTYLEOPTS="$(wslpath -a -w "$ASTYLEOPTS")"
 fi
 
 set -e
@@ -85,7 +105,7 @@ astyleit() {
 
 for f in "$@"; do
 	case "$f" in
-                src/plugins/grass/qtermwidget/*|external/o2/*|external/astyle/*|external/kdbush/*|external/wintoast/*|python/ext-libs/*|ui_*.py|*.astyle|tests/testdata/*|editors/*)
+                src/plugins/grass/qtermwidget/*|external/o2/*|external/qt-unix-signals/*|external/rtree/*|external/astyle/*|external/kdbush/*|external/poly2tri/*|external/wintoast/*|external/qt3dextra-headers/*|external/meshOptimizer/*|external/mapbox-vector-tile/*|python/ext-libs/*|ui_*.py|*.astyle|tests/testdata/*|editors/*)
 			echo -ne "$f skipped $elcr"
 			continue
 			;;

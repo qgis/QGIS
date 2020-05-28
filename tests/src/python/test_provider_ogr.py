@@ -9,21 +9,26 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Even Rouault'
 __date__ = '2016-04-11'
 __copyright__ = 'Copyright 2016, Even Rouault'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 import shutil
 import sys
 import tempfile
+import hashlib
+from datetime import datetime
 
 from osgeo import gdal, ogr  # NOQA
-from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsFeature, QgsFeatureRequest, QgsField, QgsSettings, QgsDataProvider,
+from qgis.PyQt.QtCore import QVariant, QByteArray
+from qgis.core import (NULL,
+                       QgsApplication,
+                       QgsRectangle,
+                       QgsProviderRegistry,
+                       QgsFeature, QgsFeatureRequest, QgsField, QgsSettings, QgsDataProvider,
                        QgsVectorDataProvider, QgsVectorLayer, QgsWkbTypes, QgsNetworkAccessManager)
 from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
+from qgis.utils import spatialite_connect
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -31,6 +36,7 @@ TEST_DATA_DIR = unitTestDataPath()
 
 def GDAL_COMPUTE_VERSION(maj, min, rev):
     return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)
+
 
 # Note - doesn't implement ProviderTestCase as most OGR provider is tested by the shapefile provider test
 
@@ -69,6 +75,10 @@ class PyQgsOGRProvider(unittest.TestCase):
         """Run after all tests"""
         for dirname in cls.dirs_to_cleanup:
             shutil.rmtree(dirname, True)
+
+    def testCapabilities(self):
+        self.assertTrue(QgsProviderRegistry.instance().providerCapabilities("ogr") & QgsDataProvider.File)
+        self.assertTrue(QgsProviderRegistry.instance().providerCapabilities("ogr") & QgsDataProvider.Dir)
 
     def testUpdateMode(self):
 
@@ -112,7 +122,8 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertEqual(len(vl.dataProvider().subLayers()), 1)
-        self.assertEqual(vl.dataProvider().subLayers()[0], QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'testMixOfPolygonCurvePolygon', '4', 'CurvePolygon', '']))
+        self.assertEqual(vl.dataProvider().subLayers()[0], QgsDataProvider.SUBLAYER_SEPARATOR.join(
+            ['0', 'testMixOfPolygonCurvePolygon', '4', 'CurvePolygon', '', '']))
 
     def testMixOfLineStringCompoundCurve(self):
 
@@ -128,7 +139,8 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertEqual(len(vl.dataProvider().subLayers()), 1)
-        self.assertEqual(vl.dataProvider().subLayers()[0], QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'testMixOfLineStringCompoundCurve', '5', 'CompoundCurve', '']))
+        self.assertEqual(vl.dataProvider().subLayers()[0], QgsDataProvider.SUBLAYER_SEPARATOR.join(
+            ['0', 'testMixOfLineStringCompoundCurve', '5', 'CompoundCurve', '', '']))
 
     def testGpxElevation(self):
         # GPX without elevation data
@@ -259,19 +271,34 @@ class PyQgsOGRProvider(unittest.TestCase):
         """ Test support for Triangles (mapped to Polygons) """
         testsets = (
             ("Triangle((0 0, 0 1, 1 1, 0 0))", QgsWkbTypes.Triangle, "Triangle ((0 0, 0 1, 1 1, 0 0))"),
-            ("Triangle Z((0 0 1, 0 1 2, 1 1 3, 0 0 1))", QgsWkbTypes.TriangleZ, "TriangleZ ((0 0 1, 0 1 2, 1 1 3, 0 0 1))"),
-            ("Triangle M((0 0 4, 0 1 5, 1 1 6, 0 0 4))", QgsWkbTypes.TriangleM, "TriangleM ((0 0 4, 0 1 5, 1 1 6, 0 0 4))"),
-            ("Triangle ZM((0 0 0 1, 0 1 2 3, 1 1 4 5, 0 0 0 1))", QgsWkbTypes.TriangleZM, "TriangleZM ((0 0 0 1, 0 1 2 3, 1 1 4 5, 0 0 0 1))"),
+            ("Triangle Z((0 0 1, 0 1 2, 1 1 3, 0 0 1))", QgsWkbTypes.TriangleZ,
+             "TriangleZ ((0 0 1, 0 1 2, 1 1 3, 0 0 1))"),
+            ("Triangle M((0 0 4, 0 1 5, 1 1 6, 0 0 4))", QgsWkbTypes.TriangleM,
+             "TriangleM ((0 0 4, 0 1 5, 1 1 6, 0 0 4))"),
+            ("Triangle ZM((0 0 0 1, 0 1 2 3, 1 1 4 5, 0 0 0 1))", QgsWkbTypes.TriangleZM,
+             "TriangleZM ((0 0 0 1, 0 1 2 3, 1 1 4 5, 0 0 0 1))"),
 
-            ("TIN (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))", QgsWkbTypes.MultiPolygon, "MultiPolygon (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))"),
-            ("TIN Z(((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))", QgsWkbTypes.MultiPolygonZ, "MultiPolygonZ (((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))"),
-            ("TIN M(((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))", QgsWkbTypes.MultiPolygonM, "MultiPolygonM (((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))"),
-            ("TIN ZM(((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))", QgsWkbTypes.MultiPolygonZM, "MultiPolygonZM (((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))"),
+            ("TIN (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))", QgsWkbTypes.MultiPolygon,
+             "MultiPolygon (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))"),
+            ("TIN Z(((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))", QgsWkbTypes.MultiPolygonZ,
+             "MultiPolygonZ (((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))"),
+            ("TIN M(((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))", QgsWkbTypes.MultiPolygonM,
+             "MultiPolygonM (((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))"),
+            ("TIN ZM(((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))",
+             QgsWkbTypes.MultiPolygonZM,
+             "MultiPolygonZM (((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))"),
 
-            ("PolyhedralSurface (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))", QgsWkbTypes.MultiPolygon, "MultiPolygon (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))"),
-            ("PolyhedralSurface Z(((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))", QgsWkbTypes.MultiPolygonZ, "MultiPolygonZ (((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))"),
-            ("PolyhedralSurface M(((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))", QgsWkbTypes.MultiPolygonM, "MultiPolygonM (((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))"),
-            ("PolyhedralSurface ZM(((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))", QgsWkbTypes.MultiPolygonZM, "MultiPolygonZM (((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))")
+            ("PolyhedralSurface (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))", QgsWkbTypes.MultiPolygon,
+             "MultiPolygon (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))"),
+            ("PolyhedralSurface Z(((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))",
+             QgsWkbTypes.MultiPolygonZ,
+             "MultiPolygonZ (((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))"),
+            ("PolyhedralSurface M(((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))",
+             QgsWkbTypes.MultiPolygonM,
+             "MultiPolygonM (((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))"),
+            ("PolyhedralSurface ZM(((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))",
+             QgsWkbTypes.MultiPolygonZM,
+             "MultiPolygonZM (((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))")
         )
         for row in testsets:
             datasource = os.path.join(self.basetestpath, 'test.csv')
@@ -320,7 +347,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXYUSERPWD"), "username")
 
     def testEditGeoJsonRemoveField(self):
-        """ Test bugfix of https://issues.qgis.org/issues/18596 (deleting an existing field)"""
+        """ Test bugfix of https://github.com/qgis/QGIS/issues/26484 (deleting an existing field)"""
 
         datasource = os.path.join(self.basetestpath, 'testEditGeoJsonRemoveField.json')
         with open(datasource, 'wt') as f:
@@ -343,7 +370,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(f['w'], 4)
 
     def testEditGeoJsonAddField(self):
-        """ Test bugfix of https://issues.qgis.org/issues/18596 (adding a new field)"""
+        """ Test bugfix of https://github.com/qgis/QGIS/issues/26484 (adding a new field)"""
 
         datasource = os.path.join(self.basetestpath, 'testEditGeoJsonAddField.json')
         with open(datasource, 'wt') as f:
@@ -370,7 +397,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(len(vl.fields()), 1)
 
     def testEditGeoJsonAddFieldAndThenAddFeatures(self):
-        """ Test bugfix of https://issues.qgis.org/issues/18596 (adding a new field)"""
+        """ Test bugfix of https://github.com/qgis/QGIS/issues/26484 (adding a new field)"""
 
         datasource = os.path.join(self.basetestpath, 'testEditGeoJsonAddField.json')
         with open(datasource, 'wt') as f:
@@ -403,6 +430,280 @@ class PyQgsOGRProvider(unittest.TestCase):
         # Completely reload file
         vl = QgsVectorLayer(datasource, 'test', 'ogr')
         self.assertEqual(len(vl.fields()), 2)
+
+    def testDataItems(self):
+
+        registry = QgsApplication.dataItemProviderRegistry()
+        ogrprovider = next(provider for provider in registry.providers() if provider.name() == 'OGR')
+
+        # Single layer
+        item = ogrprovider.createDataItem(os.path.join(TEST_DATA_DIR, 'lines.shp'), None)
+        self.assertTrue(item.uri().endswith('lines.shp'))
+
+        # Multiple layer
+        item = ogrprovider.createDataItem(os.path.join(TEST_DATA_DIR, 'multilayer.kml'), None)
+        children = item.createChildren()
+        self.assertEqual(len(children), 2)
+        self.assertIn('multilayer.kml|layername=Layer1', children[0].uri())
+        self.assertIn('multilayer.kml|layername=Layer2', children[1].uri())
+
+        # Multiple layer (geopackage)
+        tmpfile = os.path.join(self.basetestpath, 'testDataItems.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('Layer1', geom_type=ogr.wkbPoint)
+        lyr = ds.CreateLayer('Layer2', geom_type=ogr.wkbPoint)
+        ds = None
+        item = ogrprovider.createDataItem(tmpfile, None)
+        children = item.createChildren()
+        self.assertEqual(len(children), 2)
+        self.assertIn('testDataItems.gpkg|layername=Layer1', children[0].uri())
+        self.assertIn('testDataItems.gpkg|layername=Layer2', children[1].uri())
+
+    def testOSM(self):
+        """ Test that opening several layers of the same OSM datasource works properly """
+
+        datasource = os.path.join(TEST_DATA_DIR, 'test.osm')
+        vl_points = QgsVectorLayer(datasource + "|layername=points", 'test', 'ogr')
+        vl_multipolygons = QgsVectorLayer(datasource + "|layername=multipolygons", 'test', 'ogr')
+
+        f = QgsFeature()
+
+        # When sharing the same dataset handle, the spatial filter of test
+        # points layer would apply to the other layers
+        iter_points = vl_points.getFeatures(QgsFeatureRequest().setFilterRect(QgsRectangle(-200, -200, -200, -200)))
+        self.assertFalse(iter_points.nextFeature(f))
+
+        iter_multipolygons = vl_multipolygons.getFeatures(QgsFeatureRequest())
+        self.assertTrue(iter_multipolygons.nextFeature(f))
+        self.assertTrue(iter_multipolygons.nextFeature(f))
+        self.assertTrue(iter_multipolygons.nextFeature(f))
+        self.assertFalse(iter_multipolygons.nextFeature(f))
+
+        # Re-start an iterator (tests #20098)
+        iter_multipolygons = vl_multipolygons.getFeatures(QgsFeatureRequest())
+        self.assertTrue(iter_multipolygons.nextFeature(f))
+
+        # Test filter by id (#20308)
+        f = next(vl_multipolygons.getFeatures(QgsFeatureRequest().setFilterFid(8)))
+        self.assertTrue(f.isValid())
+        self.assertEqual(f.id(), 8)
+
+        f = next(vl_multipolygons.getFeatures(QgsFeatureRequest().setFilterFid(1)))
+        self.assertTrue(f.isValid())
+        self.assertEqual(f.id(), 1)
+
+        f = next(vl_multipolygons.getFeatures(QgsFeatureRequest().setFilterFid(5)))
+        self.assertTrue(f.isValid())
+        self.assertEqual(f.id(), 5)
+
+        # 6 doesn't exist
+        it = vl_multipolygons.getFeatures(QgsFeatureRequest().setFilterFids([1, 5, 6, 8]))
+        f = next(it)
+        self.assertTrue(f.isValid())
+        self.assertEqual(f.id(), 1)
+        f = next(it)
+        self.assertTrue(f.isValid())
+        self.assertEqual(f.id(), 5)
+        f = next(it)
+        self.assertTrue(f.isValid())
+        self.assertEqual(f.id(), 8)
+        del it
+
+    def testBinaryField(self):
+        source = os.path.join(TEST_DATA_DIR, 'attachments.gdb')
+        vl = QgsVectorLayer(source + "|layername=points__ATTACH")
+        self.assertTrue(vl.isValid())
+
+        fields = vl.fields()
+        data_field = fields[fields.lookupField('DATA')]
+        self.assertEqual(data_field.type(), QVariant.ByteArray)
+        self.assertEqual(data_field.typeName(), 'Binary')
+
+        features = {f['ATTACHMENTID']: f for f in vl.getFeatures()}
+        self.assertEqual(len(features), 2)
+        self.assertIsInstance(features[1]['DATA'], QByteArray)
+        self.assertEqual(hashlib.md5(features[1]['DATA'].data()).hexdigest(), 'ef3dbc530cc39a545832a6c82aac57b6')
+        self.assertIsInstance(features[2]['DATA'], QByteArray)
+        self.assertEqual(hashlib.md5(features[2]['DATA'].data()).hexdigest(), '4b952b80e4288ca5111be2f6dd5d6809')
+
+    @unittest.skip(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 4, 0))
+    def testStringListField(self):
+        source = os.path.join(TEST_DATA_DIR, 'stringlist.gml')
+        vl = QgsVectorLayer(source)
+        self.assertTrue(vl.isValid())
+
+        fields = vl.fields()
+        descriptive_group_field = fields[fields.lookupField('descriptiveGroup')]
+        self.assertEqual(descriptive_group_field.type(), QVariant.List)
+        self.assertEqual(descriptive_group_field.typeName(), 'StringList')
+        self.assertEqual(descriptive_group_field.subType(), QVariant.String)
+
+        feature = vl.getFeature(1000002717654)
+        self.assertEqual(feature['descriptiveGroup'], ['Building'])
+        self.assertEqual(feature['reasonForChange'], ['Reclassified', 'Attributes'])
+
+        tmpfile = os.path.join(self.basetestpath, 'newstringlistfield.gml')
+        ds = ogr.GetDriverByName('GML').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('strfield', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('intfield', ogr.OFTInteger))
+        lyr.CreateField(ogr.FieldDefn('strlistfield', ogr.OFTStringList))
+        ds = None
+
+        vl = QgsVectorLayer(tmpfile)
+        self.assertTrue(vl.isValid())
+
+        dp = vl.dataProvider()
+        fields = dp.fields()
+        list_field = fields[fields.lookupField('strlistfield')]
+        self.assertEqual(list_field.type(), QVariant.List)
+        self.assertEqual(list_field.typeName(), 'StringList')
+        self.assertEqual(list_field.subType(), QVariant.String)
+
+    def testBlobCreation(self):
+        """
+        Test creating binary blob field in existing table
+        """
+        tmpfile = os.path.join(self.basetestpath, 'newbinaryfield.sqlite')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['FID=fid'])
+        lyr.CreateField(ogr.FieldDefn('strfield', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('intfield', ogr.OFTInteger))
+        f = None
+        ds = None
+
+        vl = QgsVectorLayer(tmpfile)
+        self.assertTrue(vl.isValid())
+
+        dp = vl.dataProvider()
+        f = QgsFeature(dp.fields())
+        f.setAttributes([1, 'str', 100])
+        self.assertTrue(dp.addFeature(f))
+
+        # add binary field
+        self.assertTrue(dp.addAttributes([QgsField('binfield', QVariant.ByteArray)]))
+
+        fields = dp.fields()
+        bin1_field = fields[fields.lookupField('binfield')]
+        self.assertEqual(bin1_field.type(), QVariant.ByteArray)
+        self.assertEqual(bin1_field.typeName(), 'Binary')
+
+        f = QgsFeature(fields)
+        bin_1 = b'xxx'
+        bin_val1 = QByteArray(bin_1)
+        f.setAttributes([2, 'str2', 200, bin_val1])
+        self.assertTrue(dp.addFeature(f))
+
+        f2 = [f for f in dp.getFeatures()][1]
+        self.assertEqual(f2.attributes(), [2, 'str2', 200, QByteArray(bin_1)])
+
+    def testBoolFieldEvaluation(self):
+        datasource = os.path.join(unitTestDataPath(), 'bool_geojson.json')
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.fields().at(0).name(), 'bool')
+        self.assertEqual(vl.fields().at(0).type(), QVariant.Bool)
+        self.assertEqual([f[0] for f in vl.getFeatures()], [True, False, NULL])
+        self.assertEqual([f[0].__class__.__name__ for f in vl.getFeatures()], ['bool', 'bool', 'QVariant'])
+
+    def testReloadDataAndFeatureCount(self):
+
+        filename = '/vsimem/test.json'
+        gdal.FileFromMemBuffer(filename, """{
+"type": "FeatureCollection",
+"features": [
+{ "type": "Feature", "properties": null, "geometry": { "type": "Point", "coordinates": [2, 49] } },
+{ "type": "Feature", "properties": null, "geometry": { "type": "Point", "coordinates": [3, 50] } }
+]
+}""")
+        vl = QgsVectorLayer(filename, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 2)
+        gdal.FileFromMemBuffer(filename, """{
+"type": "FeatureCollection",
+"features": [
+{ "type": "Feature", "properties": null, "geometry": { "type": "Point", "coordinates": [2, 49] } }
+]
+}""")
+        vl.reload()
+        self.assertEqual(vl.featureCount(), 1)
+        gdal.Unlink(filename)
+
+    def testSpatialiteDefaultValues(self):
+        """Test whether in spatialite table with default values like CURRENT_TIMESTAMP or
+        (datetime('now','localtime')) they are respected. See GH #33383"""
+
+        # Create the test table
+
+        dbname = os.path.join(tempfile.gettempdir(), "test.sqlite")
+        if os.path.exists(dbname):
+            os.remove(dbname)
+        con = spatialite_connect(dbname, isolation_level=None)
+        cur = con.cursor()
+        cur.execute("BEGIN")
+        sql = "SELECT InitSpatialMetadata()"
+        cur.execute(sql)
+
+        # simple table with primary key
+        sql = """
+        CREATE TABLE test_table_default_values (
+            id integer primary key autoincrement,
+            comment TEXT,
+            created_at_01 text DEFAULT (datetime('now','localtime')),
+            created_at_02 text DEFAULT CURRENT_TIMESTAMP,
+            anumber INTEGER DEFAULT 123,
+            atext TEXT default 'My default'
+        )
+        """
+        cur.execute(sql)
+        cur.execute("COMMIT")
+        con.close()
+
+        vl = QgsVectorLayer(dbname + '|layername=test_table_default_values', 'test_table_default_values', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        # Save it for the test
+        now = datetime.now()
+
+        # Test default values
+        dp = vl.dataProvider()
+        # FIXME: should it be None?
+        self.assertTrue(dp.defaultValue(0).isNull())
+        self.assertIsNone(dp.defaultValue(1))
+        # FIXME: This fails because there is no backend-side evaluation in this provider
+        # self.assertTrue(dp.defaultValue(2).startswith(now.strftime('%Y-%m-%d')))
+        self.assertTrue(dp.defaultValue(3).startswith(now.strftime('%Y-%m-%d')))
+        self.assertEqual(dp.defaultValue(4), 123)
+        self.assertEqual(dp.defaultValue(5), 'My default')
+
+        self.assertEqual(dp.defaultValueClause(0), 'Autogenerate')
+        self.assertEqual(dp.defaultValueClause(1), '')
+        self.assertEqual(dp.defaultValueClause(2), "datetime('now','localtime')")
+        self.assertEqual(dp.defaultValueClause(3), "CURRENT_TIMESTAMP")
+        # FIXME: ogr provider simply returns values when asked for clauses
+        # self.assertEqual(dp.defaultValueClause(4), '')
+        # self.assertEqual(dp.defaultValueClause(5), '')
+
+        feature = QgsFeature(vl.fields())
+        for idx in range(vl.fields().count()):
+            default = vl.dataProvider().defaultValue(idx)
+            if not default:
+                feature.setAttribute(idx, 'A comment')
+            else:
+                feature.setAttribute(idx, default)
+
+        self.assertTrue(vl.dataProvider().addFeature(feature))
+        del (vl)
+
+        # Verify
+        vl2 = QgsVectorLayer(dbname + '|layername=test_table_default_values', 'test_table_default_values', 'ogr')
+        self.assertTrue(vl2.isValid())
+        feature = next(vl2.getFeatures())
+        self.assertEqual(feature.attribute(1), 'A comment')
+        self.assertTrue(feature.attribute(2).startswith(now.strftime('%Y-%m-%d')))
+        self.assertTrue(feature.attribute(3).startswith(now.strftime('%Y-%m-%d')))
+        self.assertEqual(feature.attribute(4), 123)
+        self.assertEqual(feature.attribute(5), 'My default')
 
 
 if __name__ == '__main__':

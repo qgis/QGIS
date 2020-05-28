@@ -26,6 +26,7 @@
 #include <QTextCodec>
 #include <QMessageBox>
 
+#if QT_CONFIG(process)
 QgsRunProcess::QgsRunProcess( const QString &action, bool capture )
 
 {
@@ -39,7 +40,7 @@ QgsRunProcess::QgsRunProcess( const QString &action, bool capture )
 
   if ( capture )
   {
-    connect( mProcess, static_cast < void ( QProcess::* )( QProcess::ProcessError ) >( &QProcess::error ), this, &QgsRunProcess::processError );
+    connect( mProcess, &QProcess::errorOccurred, this, &QgsRunProcess::processError );
     connect( mProcess, &QProcess::readyReadStandardOutput, this, &QgsRunProcess::stdoutAvailable );
     connect( mProcess, &QProcess::readyReadStandardError, this, &QgsRunProcess::stderrAvailable );
     // We only care if the process has finished if we are capturing
@@ -51,7 +52,7 @@ QgsRunProcess::QgsRunProcess( const QString &action, bool capture )
     // It will delete itself when the dialog box is closed.
     mOutput = QgsMessageOutput::createMessageOutput();
     mOutput->setTitle( action );
-    mOutput->setMessage( tr( "<b>Starting %1...</b>" ).arg( action ), QgsMessageOutput::MessageHtml );
+    mOutput->setMessage( tr( "<b>Starting %1…</b>" ).arg( action ), QgsMessageOutput::MessageHtml );
     mOutput->showMessage( false ); // non-blocking
 
     // get notification of delete if it's derived from QObject
@@ -140,7 +141,7 @@ void QgsRunProcess::dialogGone()
 
   mOutput = nullptr;
 
-  disconnect( mProcess, static_cast < void ( QProcess::* )( QProcess::ProcessError ) >( &QProcess::error ), this, &QgsRunProcess::processError );
+  disconnect( mProcess, &QProcess::errorOccurred, this, &QgsRunProcess::processError );
   disconnect( mProcess, &QProcess::readyReadStandardOutput, this, &QgsRunProcess::stdoutAvailable );
   disconnect( mProcess, &QProcess::readyReadStandardError, this, &QgsRunProcess::stderrAvailable );
   disconnect( mProcess, static_cast < void ( QProcess::* )( int, QProcess::ExitStatus ) >( &QProcess::finished ), this, &QgsRunProcess::processExit );
@@ -162,3 +163,14 @@ void QgsRunProcess::processError( QProcess::ProcessError err )
     QgsDebugMsg( "Got error: " + QString( "%d" ).arg( err ) );
   }
 }
+#else
+QgsRunProcess::QgsRunProcess( const QString &action, bool )
+{
+  Q_UNUSED( action )
+  QgsDebugMsg( "Skipping command: " + action );
+}
+
+QgsRunProcess::~QgsRunProcess()
+{
+}
+#endif

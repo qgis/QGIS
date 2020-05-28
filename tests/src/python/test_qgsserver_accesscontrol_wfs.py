@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Stephane Brunner'
 __date__ = '28/08/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 print('CTEST_FULL_OUTPUT')
 
@@ -154,8 +152,7 @@ class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):
             str(response).find("<qgs:pk>1</qgs:pk>") != -1,
             "Unexpected result in GetFeature\n%s" % response)  # spellok
 
-
-# # Subset String # #
+    # # Subset String # #
 
     def test_wfs_getfeature_subsetstring(self):
         data = """<?xml version="1.0" encoding="UTF-8"?>

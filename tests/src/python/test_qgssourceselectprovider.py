@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Test the QgsSourceSelectProvider 
+Test the QgsSourceSelectProvider
 and QgsSourceSelectProviderRegistry classes
 
 Run with: ctest -V -R PyQgsSourceSelectProvider
@@ -21,9 +21,6 @@ from qgis.PyQt.QtWidgets import QWidget
 __author__ = 'Alessandro Pasotti'
 __date__ = '01/09/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
-
 
 start_app()
 
@@ -83,7 +80,6 @@ class TestQgsSourceSelectProvider(unittest.TestCase):
         pass
 
     def testConcreteClass(self):
-
         provider = ConcreteSourceSelectProvider()
         self.assertTrue(isinstance(provider, ConcreteSourceSelectProvider))
         widget = provider.createDataSourceWidget()
@@ -100,19 +96,20 @@ class TestQgsSourceSelectProvider(unittest.TestCase):
         self.assertEqual(provider.toolTip(), "MyToolTip")
 
     def _testRegistry(self, registry):
-
         registry.addProvider(ConcreteSourceSelectProvider())
         registry.addProvider(ConcreteSourceSelectProvider2())
 
         # Check order
-        self.assertEqual(['MyTestProviderKey', 'MyName'], [p.name() for p in registry.providers() if p.providerKey().startswith('MyTestProviderKey')])
+        self.assertEqual(['MyTestProviderKey', 'MyName'],
+                         [p.name() for p in registry.providers() if p.providerKey().startswith('MyTestProviderKey')])
 
         registry = QgsSourceSelectProviderRegistry()
         registry.addProvider(ConcreteSourceSelectProvider())
         registry.addProvider(ConcreteSourceSelectProvider2())
 
         # Check order
-        self.assertEqual(['MyTestProviderKey', 'MyName'], [p.name() for p in registry.providers() if p.providerKey().startswith('MyTestProviderKey')])
+        self.assertEqual(['MyTestProviderKey', 'MyName'],
+                         [p.name() for p in registry.providers() if p.providerKey().startswith('MyTestProviderKey')])
 
         # Get provider by name
         self.assertTrue(registry.providerByName('MyTestProviderKey'))
@@ -132,13 +129,16 @@ class TestQgsSourceSelectProvider(unittest.TestCase):
         registry = QgsSourceSelectProviderRegistry()
         registry.addProvider(ConcreteSourceSelectProvider())
         registry.addProvider(ConcreteSourceSelectProvider2())
-        self.assertEqual(['MyTestProviderKey', 'MyName'], [p.name() for p in registry.providers() if p.providerKey().startswith('MyTestProviderKey')])
+        self.assertEqual(['MyTestProviderKey', 'MyName'],
+                         [p.name() for p in registry.providers() if p.providerKey().startswith('MyTestProviderKey')])
 
         self.assertTrue(registry.removeProvider(registry.providerByName('MyName')))
-        self.assertEqual(['MyTestProviderKey'], [p.name() for p in registry.providers() if p.providerKey().startswith('MyTestProviderKey')])
+        self.assertEqual(['MyTestProviderKey'],
+                         [p.name() for p in registry.providers() if p.providerKey().startswith('MyTestProviderKey')])
 
         self.assertTrue(registry.removeProvider(registry.providerByName('MyTestProviderKey')))
-        self.assertEqual([], [p.name() for p in registry.providers() if p.providerKey().startswith('MyTestProviderKey')])
+        self.assertEqual([],
+                         [p.name() for p in registry.providers() if p.providerKey().startswith('MyTestProviderKey')])
 
     def testRegistry(self):
         registry = QgsSourceSelectProviderRegistry()

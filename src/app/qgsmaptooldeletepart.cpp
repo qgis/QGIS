@@ -24,8 +24,7 @@
 #include "qgssnappingutils.h"
 #include "qgstolerance.h"
 #include "qgisapp.h"
-
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
 
 QgsMapToolDeletePart::QgsMapToolDeletePart( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
@@ -42,7 +41,7 @@ QgsMapToolDeletePart::~QgsMapToolDeletePart()
 
 void QgsMapToolDeletePart::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
   //nothing to do
 }
 
@@ -84,7 +83,7 @@ void QgsMapToolDeletePart::canvasPressEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  Q_UNUSED( e );
+  Q_UNUSED( e )
 
   delete mRubberBand;
   mRubberBand = nullptr;

@@ -47,6 +47,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
 
     QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QgsSymbolList symbols( QgsRenderContext &context ) const override;
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     /**
      * Gets the roof color

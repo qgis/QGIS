@@ -21,23 +21,15 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import re
 
-from qgis.core import (QgsVectorFileWriter,
-                       QgsMapLayer,
-                       QgsDataProvider,
+from qgis.core import (QgsDataProvider,
                        QgsRasterLayer,
                        QgsWkbTypes,
                        QgsVectorLayer,
                        QgsProject,
-                       QgsCoordinateReferenceSystem,
                        QgsSettings,
-                       QgsProcessingUtils,
                        QgsProcessingContext,
                        QgsFeatureRequest,
                        QgsExpressionContext,
@@ -48,9 +40,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import (getTempFilename,
-                                     removeInvalidChars)
 
 ALL_TYPES = [-1]
 
@@ -66,6 +55,12 @@ TYPE_TABLE = 5
 def createContext(feedback=None):
     """
     Creates a default processing context
+
+    :param feedback: Optional existing QgsProcessingFeedback object, or None to use a default feedback object
+    :type feedback: Optional[QgsProcessingFeedback]
+
+    :returns: New QgsProcessingContext object
+    :rtype: QgsProcessingContext
     """
     context = QgsProcessingContext()
     context.setProject(QgsProject.instance())
@@ -106,21 +101,26 @@ def createExpressionContext():
 
 
 def load(fileName, name=None, crs=None, style=None, isRaster=False):
-    """Loads a layer/table into the current project, given its file.
     """
+    Loads a layer/table into the current project, given its file.
+
+    .. deprecated:: 3.0
+    Do not use, will be removed in QGIS 4.0
+    """
+
+    from warnings import warn
+    warn("processing.load is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
 
     if fileName is None:
         return
-    prjSetting = None
-    settings = QgsSettings()
-    if crs is not None:
-        prjSetting = settings.value('/Projections/defaultBehavior')
-        settings.setValue('/Projections/defaultBehavior', '')
+
     if name is None:
         name = os.path.split(fileName)[1]
 
     if isRaster:
-        qgslayer = QgsRasterLayer(fileName, name)
+        options = QgsRasterLayer.LayerOptions()
+        options.skipCrsValidation = True
+        qgslayer = QgsRasterLayer(fileName, name, 'gdal', options)
         if qgslayer.isValid():
             if crs is not None and qgslayer.crs() is None:
                 qgslayer.setCrs(crs, False)
@@ -129,12 +129,13 @@ def load(fileName, name=None, crs=None, style=None, isRaster=False):
             qgslayer.loadNamedStyle(style)
             QgsProject.instance().addMapLayers([qgslayer])
         else:
-            if prjSetting:
-                settings.setValue('/Projections/defaultBehavior', prjSetting)
             raise RuntimeError(QCoreApplication.translate('dataobject',
-                                                          'Could not load layer: {0}\nCheck the processing framework log to look for errors.').format(fileName))
+                                                          'Could not load layer: {0}\nCheck the processing framework log to look for errors.').format(
+                fileName))
     else:
-        qgslayer = QgsVectorLayer(fileName, name, 'ogr')
+        options = QgsVectorLayer.LayerOptions()
+        options.skipCrsValidation = True
+        qgslayer = QgsVectorLayer(fileName, name, 'ogr', options)
         if qgslayer.isValid():
             if crs is not None and qgslayer.crs() is None:
                 qgslayer.setCrs(crs, False)
@@ -148,14 +149,10 @@ def load(fileName, name=None, crs=None, style=None, isRaster=False):
             qgslayer.loadNamedStyle(style)
             QgsProject.instance().addMapLayers([qgslayer])
 
-    if prjSetting:
-        settings.setValue('/Projections/defaultBehavior', prjSetting)
-
     return qgslayer
 
 
 def getRasterSublayer(path, param):
-
     layer = QgsRasterLayer(path)
 
     try:

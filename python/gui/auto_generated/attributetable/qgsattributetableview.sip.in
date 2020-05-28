@@ -32,11 +32,11 @@ Constructor for QgsAttributeTableView
 
     virtual void setModel( QgsAttributeTableFilterModel *filterModel );
 
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager /Transfer/ );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
 %Docstring
 setFeatureSelectionManager
 
-:param featureSelectionManager: We will take ownership
+:param featureSelectionManager:
 %End
 
     virtual bool eventFilter( QObject *object, QEvent *event );
@@ -49,7 +49,7 @@ which can be slow due to recurring canvas repaints.
 :param object: The object which is the target of the event.
 :param event: The intercepted event
 
-:return: Returns always false, so the event gets processed
+:return: Returns always ``False``, so the event gets processed
 %End
 
     void setAttributeTableConfig( const QgsAttributeTableConfig &config );
@@ -59,6 +59,16 @@ the appearance of the attribute table.
 
 .. versionadded:: 2.16
 %End
+
+    QList<QgsFeatureId> selectedFeaturesIds() const;
+%Docstring
+Returns the selected features in the attribute table in table sorted order.
+
+:return: The selected features in the attribute table in the order sorted by the table.
+
+.. versionadded:: 3.4
+%End
+
 
   protected:
 
@@ -119,7 +129,7 @@ Saves geometry to the settings on close
 
     void willShowContextMenu( QMenu *menu, const QModelIndex &atIndex );
 %Docstring
-Is emitted, in order to provide a hook to add additional* menu entries to the context menu.
+Emitted in order to provide a hook to add additional* menu entries to the context menu.
 
 :param menu: If additional QMenuItems are added, they will show up in the context menu.
 :param atIndex: The QModelIndex, to which the context menu belongs. Relative to the source model.

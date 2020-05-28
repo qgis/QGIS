@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Paul Blottiere'
 __date__ = '28/02/2018'
 __copyright__ = 'Copyright 2018, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 import os
@@ -33,17 +31,18 @@ class TestQgsVirtualLayerTask(unittest.TestCase):
 
     def setUp(self):
         self.testDataDir = unitTestDataPath()
-        self.success = False
-        self.fail = False
+        self._success = False
+        self._fail = False
         self.ids = None
         self.task = None
 
     def onSuccess(self):
-        self.success = True
+        self._success = True
         self.ids = [f.id() for f in self.task.layer().getFeatures()]
 
     def onFail(self):
-        self.fail = True
+        self._fail = True
+        self._exceptionText = self.task.exceptionText()
 
     def test(self):
         l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "françéà", "ogr", QgsVectorLayer.LayerOptions(False))
@@ -61,13 +60,28 @@ class TestQgsVirtualLayerTask(unittest.TestCase):
         self.task.taskTerminated.connect(self.onFail)
 
         QgsApplication.taskManager().addTask(self.task)
-        while not self.success and not self.fail:
+        while not self._success and not self._fail:
             QCoreApplication.processEvents()
 
-        self.assertTrue(self.success)
-        self.assertFalse(self.fail)
+        self.assertTrue(self._success)
+        self.assertFalse(self._fail)
 
         self.assertEqual(len(self.ids), 4)
+
+        # Test exception
+        self._success = False
+        self._fail = False
+        df.setQuery('select *')
+        self.task = QgsVirtualLayerTask(df)
+        self.task.taskCompleted.connect(self.onSuccess)
+        self.task.taskTerminated.connect(self.onFail)
+        QgsApplication.taskManager().addTask(self.task)
+        while not self._success and not self._fail:
+            QCoreApplication.processEvents()
+
+        self.assertFalse(self._success)
+        self.assertTrue(self._fail)
+        self.assertEqual(self._exceptionText, 'Query preparation error on PRAGMA table_info(_tview): no tables specified', self._exceptionText)
 
 
 if __name__ == '__main__':

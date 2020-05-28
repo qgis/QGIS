@@ -53,7 +53,12 @@ class TestQgsCentroidFillSymbol : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void centroidFillSymbol();
+    void centroidFillSymbolPointOnSurface();
     void centroidFillSymbolPartBiggest();
+    void centroidFillClipPoints();
+    void centroidFillClipOnCurrentPartOnly();
+    void centroidFillClipOnCurrentPartOnlyBiggest();
+    void centroidFillClipMultiplayerPoints();
 
   private:
     bool mTestHasError =  false ;
@@ -132,11 +137,66 @@ void TestQgsCentroidFillSymbol::centroidFillSymbol()
   QVERIFY( imageCheck( "symbol_centroidfill" ) );
 }
 
+void TestQgsCentroidFillSymbol::centroidFillSymbolPointOnSurface()
+{
+  mCentroidFill->setPointOnSurface( true );
+  QVERIFY( imageCheck( "symbol_centroidfill_point_on_surface" ) );
+  mCentroidFill->setPointOnSurface( false );
+}
+
 void TestQgsCentroidFillSymbol::centroidFillSymbolPartBiggest()
 {
   mCentroidFill->setPointOnAllParts( false );
-
   QVERIFY( imageCheck( "symbol_centroidfill_part_biggest" ) );
+  mCentroidFill->setPointOnAllParts( true );
+}
+
+void TestQgsCentroidFillSymbol::centroidFillClipPoints()
+{
+  mCentroidFill->setClipPoints( true );
+  QVERIFY( imageCheck( "symbol_centroidfill_clip_points" ) );
+  mCentroidFill->setClipPoints( false );
+}
+
+void TestQgsCentroidFillSymbol::centroidFillClipOnCurrentPartOnly()
+{
+  mCentroidFill->setClipPoints( true );
+  mCentroidFill->setClipOnCurrentPartOnly( true );
+  QVERIFY( imageCheck( "symbol_centroidfill_clip_current_only" ) );
+  mCentroidFill->setClipPoints( false );
+  mCentroidFill->setClipOnCurrentPartOnly( false );
+}
+
+void TestQgsCentroidFillSymbol::centroidFillClipOnCurrentPartOnlyBiggest()
+{
+  mCentroidFill->setClipPoints( true );
+  mCentroidFill->setClipOnCurrentPartOnly( true );
+  mCentroidFill->setPointOnAllParts( false );
+  QVERIFY( imageCheck( "symbol_centroidfill_clip_current_biggest" ) );
+  mCentroidFill->setClipPoints( false );
+  mCentroidFill->setClipOnCurrentPartOnly( false );
+  mCentroidFill->setPointOnAllParts( true );
+}
+
+void TestQgsCentroidFillSymbol::centroidFillClipMultiplayerPoints()
+{
+  QgsSimpleFillSymbolLayer simpleFill( QColor( 255, 255, 255, 100 ) );
+
+  mCentroidFill = mCentroidFill->clone();
+  mCentroidFill->setClipPoints( true );
+
+  mFillSymbol->deleteSymbolLayer( 0 );
+  mFillSymbol->appendSymbolLayer( simpleFill.clone() );
+  mFillSymbol->appendSymbolLayer( mCentroidFill->clone() );
+  mFillSymbol->appendSymbolLayer( simpleFill.clone() );
+
+  QVERIFY( imageCheck( "symbol_centroidfill_clip_multilayer" ) );
+
+  mCentroidFill->setClipPoints( false );
+  mFillSymbol->deleteSymbolLayer( 0 );
+  mFillSymbol->deleteSymbolLayer( 1 );
+  mFillSymbol->deleteSymbolLayer( 2 );
+  mFillSymbol->changeSymbolLayer( 0, mCentroidFill );
 }
 
 //

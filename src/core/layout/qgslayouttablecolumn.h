@@ -18,7 +18,6 @@
 #ifndef QGSLAYOUTTABLECOLUMN_H
 #define QGSLAYOUTTABLECOLUMN_H
 
-#include <QObject>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QColor>
@@ -28,15 +27,14 @@
 
 /**
  * \ingroup core
- * Stores properties of a column for a QgsLayoutTable. Some properties of aQgsLayoutTableColumn
- * are applicable only in certain contexts. For instance, the attribute and setAttribute methods only
- * have an effect for QgsLayoutItemAttributeTables, and have no effect for QgsLayoutItemTextTables.
+ * Stores properties of a column for a QgsLayoutTable.
+ * Some properties of a QgsLayoutTableColumn are applicable only in certain contexts.
+ * For instance, the attribute and setAttribute methods only have an effect
+ * for QgsLayoutItemAttributeTables, and have no effect for QgsLayoutItemTextTables.
  * \since QGIS 3.0
 */
-class CORE_EXPORT QgsLayoutTableColumn : public QObject
+class CORE_EXPORT QgsLayoutTableColumn
 {
-    Q_OBJECT
-
   public:
 
     /**
@@ -165,42 +163,55 @@ class CORE_EXPORT QgsLayoutTableColumn : public QObject
      * \note only applicable when used in a QgsLayoutItemAttributeTable
      * \see setSortByRank()
      * \see sortOrder()
+     * \deprecated since QGIS 3.14 the order is now hold in a dedicated model
      */
-    int sortByRank() const { return mSortByRank; }
+    Q_DECL_DEPRECATED int sortByRank() const SIP_DEPRECATED { return mSortByRank; }
 
     /**
      * Sets the sort \a rank for the column. If the sort rank is > 0 then the column
      * will be sorted in the table. The sort rank specifies the priority given to the
      * column when the table is sorted by multiple columns, with lower sort ranks
      * having higher priority. This property is only used when the column
-     * is part of a QgsComposerAttributeTable.
+     * is part of a QgsLayoutItemAttributeTable.
      * If the sort \a rank is <= 0 then the column is not being sorted.
      *
      * \note only applicable when used in a QgsLayoutItemAttributeTable
      * \see sortByRank()
      * \see setSortOrder()
+     * \deprecated since QGIS 3.14 the order is now hold in a dedicated model
      */
-    void setSortByRank( int rank ) { mSortByRank = rank; }
+    Q_DECL_DEPRECATED void setSortByRank( int rank ) SIP_DEPRECATED { mSortByRank = rank; }
 
     /**
      * Creates a duplicate column which is a deep copy of this column.
      * \returns a new QgsLayoutTableColumn with same properties as this column.
+     * \deprecated since QGIS 3.14 use a copy instead
      */
-    QgsLayoutTableColumn *clone() SIP_FACTORY;
+    Q_DECL_DEPRECATED QgsLayoutTableColumn *clone() SIP_DEPRECATED SIP_FACTORY {return new QgsLayoutTableColumn( *this );}
+
+    bool operator==( const QgsLayoutTableColumn &other )
+    {
+      return mHeading == other.mHeading
+             && mAttribute == other.mAttribute
+             && mSortByRank == other.mSortByRank
+             && mSortOrder == other.mSortOrder
+             && mWidth == other.mWidth
+             && mHAlignment == other.mHAlignment
+             && mVAlignment == other.mVAlignment;
+    }
 
   private:
 
-    QColor mBackgroundColor = Qt::transparent; //currently unused
-    Qt::AlignmentFlag mHAlignment = Qt::AlignLeft;
-    Qt::AlignmentFlag mVAlignment = Qt::AlignVCenter;
     QString mHeading;
     QString mAttribute;
     int mSortByRank = 0;
     Qt::SortOrder mSortOrder = Qt::AscendingOrder;
     double mWidth = 0.0;
+    QColor mBackgroundColor = Qt::transparent; //currently unused
+    Qt::AlignmentFlag mHAlignment = Qt::AlignLeft;
+    Qt::AlignmentFlag mVAlignment = Qt::AlignVCenter;
 
     friend class QgsCompositionConverter;
 
 };
-
 #endif //QGSLAYOUTTABLECOLUMN_H

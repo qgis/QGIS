@@ -56,10 +56,12 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
       TypeColumn,
       ToleranceColumn,
       UnitsColumn,
-      AvoidIntersectionColumn
+      AvoidIntersectionColumn,
+      MinScaleColumn,
+      MaxScaleColumn
     };
 
-    QgsSnappingLayerTreeModel( QgsProject *project, QObject *parent = nullptr );
+    QgsSnappingLayerTreeModel( QgsProject *project, QgsMapCanvas *canvas, QObject *parent = nullptr );
 
     int columnCount( const QModelIndex &parent ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
@@ -72,9 +74,12 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
 
     QgsLayerTreeModel *layerTreeModel() const;
     void setLayerTreeModel( QgsLayerTreeModel *layerTreeModel );
-    void resetLayerTreeModel() { reset(); }
+    void resetLayerTreeModel() {  beginResetModel(); endResetModel(); }
 
     QgsVectorLayer *vectorLayer( const QModelIndex &idx ) const;
+
+  public slots:
+    void setFilterText( const QString &filterText = QString() );
 
   protected:
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
@@ -86,6 +91,8 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
     bool nodeShown( QgsLayerTreeNode *node ) const;
 
     QgsProject *mProject = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
+    QString mFilterText;
     QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> mIndividualLayerSettings;
     QgsLayerTreeModel *mLayerTreeModel = nullptr;
 

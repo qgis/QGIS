@@ -22,14 +22,19 @@
 
 #include "qgis_core.h"
 #include "qgsmaplayer.h"
-#include "qgsrendercontext.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshrenderersettings.h"
+#include "qgsmeshtimesettings.h"
+#include "qgsmeshsimplificationsettings.h"
 
 class QgsMapLayerRenderer;
+struct QgsMeshLayerRendererCache;
 class QgsSymbol;
 class QgsTriangularMesh;
+class QgsRenderContext;
 struct QgsMesh;
+class QgsMesh3dAveragingMethod;
+class QgsMeshLayerTemporalProperties;
 
 /**
  * \ingroup core
@@ -64,11 +69,11 @@ struct QgsMesh;
  *      "3.0, 2.0 \n" \
  *      "2.0, 3.0 \n" \
  *      "1.0, 3.0 \n" \
- *      "---"
+ *      "---" \
  *      "0, 1, 3, 4 \n" \
  *      "1, 2, 3 \n"
  *    );
- *    QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch layer", "memory_mesh");
+ *    QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch layer", "mesh_memory");
  * \endcode
  *
  * \subsection mdal MDAL data provider (mdal)
@@ -95,7 +100,31 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      */
     struct LayerOptions
     {
-      int unused;  //! @todo remove me once there are actual members here (breaks SIP <4.19)
+
+      /**
+       * Constructor for LayerOptions with optional \a transformContext.
+       * \note transformContext argument was added in QGIS 3.8
+       */
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) )
+        : transformContext( transformContext )
+      {}
+
+      QgsCoordinateTransformContext transformContext;
+
+      /**
+       * Controls whether the layer is allowed to have an invalid/unknown CRS.
+       *
+       * If TRUE, then no validation will be performed on the layer's CRS and the layer
+       * layer's crs() may be invalid() (i.e. the layer will have no georeferencing available
+       * and will be treated as having purely numerical coordinates).
+       *
+       * If FALSE (the default), the layer's CRS will be validated using QgsCoordinateReferenceSystem::validate(),
+       * which may cause a blocking, user-facing dialog asking users to manually select the correct CRS for the
+       * layer.
+       *
+       * \since QGIS 3.10
+       */
+      bool skipCrsValidation = false;
     };
 
     /**
@@ -111,8 +140,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * \param providerLib  The name of the data provider, e.g., "mesh_memory", "mdal"
      * \param options general mesh layer options
      */
-    explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = "mesh_memory",
+    explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = QStringLiteral( "mesh_memory" ),
                            const QgsMeshLayer::LayerOptions &options = QgsMeshLayer::LayerOptions() );
+
     ~QgsMeshLayer() override;
 
     //! QgsMeshLayer cannot be copied.
@@ -125,101 +155,341 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsMeshLayer *clone() const override SIP_FACTORY;
     QgsRectangle extent() const override;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
-    bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context ) override;
-    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
+    bool readSymbology( const QDomNode &node, QString &errorMessage,
+                        QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;
+    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
+                         const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const override;
+    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const override;
+    bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override;
     QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const override;
     QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const override;
     bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) override;
     bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+    QgsMapLayerTemporalProperties *temporalProperties() override;
+    void reload() override;
+    QStringList subLayers() const override;
 
     //! Returns the provider type for this layer
     QString providerType() const;
 
-    //! Returns native mesh (nullptr before rendering)
+    /**
+     * Add datasets to the mesh from file with \a path. Use the the time \a defaultReferenceTime as reference time is not provided in the file
+     *
+     * \param path the path to the atasets file
+     * \param defaultReferenceTime reference time used if not provided in the file
+     * \return whether the dataset is added
+     *
+     * \since QGIS 3.14
+     */
+    bool addDatasets( const QString &path, const QDateTime &defaultReferenceTime = QDateTime() );
+
+    /**
+     * Returns native mesh (NULLPTR before rendering or calling to updateMesh)
+     *
+     * \note Not available in Python bindings
+     */
     QgsMesh *nativeMesh() SIP_SKIP;
 
-    //! Returns triangular mesh (nullptr before rendering)
-    QgsTriangularMesh *triangularMesh() SIP_SKIP;
-
-    //! Returns renderer settings
-    QgsMeshRendererMeshSettings rendererNativeMeshSettings() const;
-
-    //! Sets new renderer settings, triggers repaint
-    void setRendererNativeMeshSettings( const QgsMeshRendererMeshSettings &settings );
-
-    //! Returns renderer settings
-    QgsMeshRendererMeshSettings rendererTriangularMeshSettings() const;
-
-    //! Sets new renderer settings, triggers repaint
-    void setRendererTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings );
-
-    //! Returns renderer settings
-    QgsMeshRendererScalarSettings rendererScalarSettings() const;
-
-    //! Sets new renderer settings, triggers repaint
-    void setRendererScalarSettings( const QgsMeshRendererScalarSettings &settings );
-
-    //! Returns renderer settings
-    QgsMeshRendererVectorSettings rendererVectorSettings() const;
-
-    //! Sets new renderer settings, triggers repaint
-    void setRendererVectorSettings( const QgsMeshRendererVectorSettings &settings );
+    /**
+     * Returns native mesh (NULLPTR before rendering or calling to updateMesh)
+     *
+     * \note Not available in Python bindings
+     */
+    const QgsMesh *nativeMesh() const SIP_SKIP;
 
     /**
-     * Sets active scalar dataset for rendering
+     * Returns triangular mesh (NULLPTR before rendering or calling to updateMesh).
      *
-     * Triggers repaint
+     * If the parameter triangleSize is provided, among the base triangular mesh
+     * and the simplified triangular meshes, the one returned is which has the average triangle size just greater than triangleSize.
+     * The size of a triangle is the maximum between the height and the width of the triangle bounding box
+     * For default parameter (=0), it returns base triangular mesh.
+     * \param minimumTriangleSize is the average size criteria in canvas map units
+     * \returns triangular mesh, the layer keeps the ownership
+     * \note triangular size added in QGIS 3.14
+     * \note Not available in Python bindings
      */
-    void setActiveScalarDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
-    //! Returns active scalar dataset
-    QgsMeshDatasetIndex activeScalarDataset() const { return mActiveScalarDataset; }
+    QgsTriangularMesh *triangularMesh( double minimumTriangleSize = 0 ) const SIP_SKIP;
 
     /**
-     * Sets active vector dataset for rendering.
+     * Gets native mesh and updates (creates if it doesn't exist) the base triangular mesh
      *
-     * If dataset is not vector based, do nothing. Triggers repaint
+     * \param transform Transformation from layer CRS to destination (e.g. map) CRS. With invalid transform, it keeps the native mesh CRS
+     *
+     * \since QGIS 3.14
      */
-    void setActiveVectorDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
-    //! Returns active vector dataset
-    QgsMeshDatasetIndex activeVectorDataset() const { return mActiveVectorDataset; }
+    void updateTriangularMesh( const QgsCoordinateTransform &transform = QgsCoordinateTransform() );
+
+    /**
+     * Returns native mesh (NULLPTR before rendering)
+     *
+     * \note Not available in Python bindings
+     */
+    QgsMeshLayerRendererCache *rendererCache() SIP_SKIP;
+
+    //! Returns renderer settings
+    QgsMeshRendererSettings rendererSettings() const;
+    //! Sets new renderer settings
+    void setRendererSettings( const QgsMeshRendererSettings &settings );
+
+    /**
+     * Returns time format settings
+     *
+     * \since QGIS 3.8
+     */
+    QgsMeshTimeSettings timeSettings() const;
+
+    /**
+     * Sets time format settings
+     *
+     * \since QGIS 3.8
+     */
+    void setTimeSettings( const QgsMeshTimeSettings &settings );
+
+    /**
+     * Returns mesh simplification settings
+     *
+     * \since QGIS 3.14
+     */
+    QgsMeshSimplificationSettings meshSimplificationSettings() const SIP_SKIP;
+
+    /**
+     * Sets mesh simplification settings
+     *
+     * \since QGIS 3.14
+     */
+    void setMeshSimplificationSettings( const QgsMeshSimplificationSettings &meshSimplificationSettings ) SIP_SKIP;
+
+    /**
+     * Returns (date) time in hours formatted to human readable form
+     * \param hours time in double in hours
+     * \returns formatted time string
+     * \since QGIS 3.8
+     */
+    QString formatTime( double hours );
 
     /**
       * Interpolates the value on the given point from given dataset.
+      * For 3D datasets, it uses dataset3dValue(), \n
+      * For 1D datasets, it uses dataset1dValue() with \a searchRadius
       *
       * \note It uses previously cached and indexed triangular mesh
       * and so if the layer has not been rendered previously
       * (e.g. when used in a script) it returns NaN value
+      * \see updateTriangularMesh
       *
       * \param index dataset index specifying group and dataset to extract value from
       * \param point point to query in map coordinates
+      * \param searchRadius the radius of the search area in map unit
       * \returns interpolated value at the point. Returns NaN values for values
       * outside the mesh layer, nodata values and in case triangular mesh was not
       * previously used for rendering
       *
       * \since QGIS 3.4
       */
-    QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
+    QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius = 0 ) const;
+
+    /**
+      * Returns the 3d values of stacked 3d mesh defined by the given point
+      *
+      * \note It uses previously cached and indexed triangular mesh
+      * and so if the layer has not been rendered previously
+      * (e.g. when used in a script) it returns NaN value
+      * \see updateTriangularMesh
+      *
+      * \param index dataset index specifying group and dataset to extract value from
+      * \param point point to query in map coordinates
+      * \returns all 3d stacked values that belong to face defined by given point. Returns invalid block
+      * for point outside the mesh layer or in case triangular mesh was not
+      * previously used for rendering or for datasets that do not have type DataOnVolumes
+      *
+      * \since QGIS 3.12
+      */
+    QgsMesh3dDataBlock dataset3dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
+
+    /**
+      * Returns the value of 1D mesh dataset defined on edge that are in the search area defined by point ans searchRadius
+      *
+      * \note It uses previously cached and indexed triangular mesh
+      * and so if the layer has not been rendered previously
+      * (e.g. when used in a script) it returns NaN value
+      * \see updateTriangularMesh
+      *
+      * \param index dataset index specifying group and dataset to extract value from
+      * \param point the center point of the search area
+      * \param searchRadius the radius of the searc area in map unit
+      * \returns interpolated value at the projected point. Returns NaN values for values
+      * outside the mesh layer and in case triangular mesh was not previously used for rendering
+      *
+      * \since QGIS 3.14
+      */
+    QgsMeshDatasetValue dataset1dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius ) const;
+
+    /**
+      * Returns dataset index from active scalar group depending on the time range.
+      * If the temporal properties is not active, return the static dataset
+      *
+      * \param timeRange the time range
+      * \returns dataset index
+      *
+      * \note the returned dataset index depends on the matching method, see setTemporalMatchingMethod()
+      *
+      * \since QGIS 3.14
+      */
+    QgsMeshDatasetIndex activeScalarDatasetAtTime( const QgsDateTimeRange &timeRange ) const;
+
+    /**
+      * Returns dataset index from active vector group depending on the time range
+      * If the temporal properties is not active, return the static dataset
+      *
+      * \param timeRange the time range
+      * \returns dataset index
+      *
+      * \note the returned dataset index depends on the matching method, see setTemporalMatchingMethod()
+      *
+      * \since QGIS 3.14
+      */
+    QgsMeshDatasetIndex activeVectorDatasetAtTime( const QgsDateTimeRange &timeRange ) const;
+
+    /**
+      * Sets the static scalar dataset index that is rendered if the temporal properties is not active
+      *
+      * \param staticScalarDatasetIndex the scalar data set index
+      *
+      * \since QGIS 3.14
+      */
+    void setStaticScalarDatasetIndex( const QgsMeshDatasetIndex &staticScalarDatasetIndex ) SIP_SKIP;
+
+    /**
+      * Sets the static vector dataset index that is rendered if the temporal properties is not active
+      *
+      * \param staticVectorDatasetIndex the vector data set index
+      *
+      * \since QGIS 3.14
+      */
+    void setStaticVectorDatasetIndex( const QgsMeshDatasetIndex &staticVectorDatasetIndex ) SIP_SKIP;
+
+    /**
+      * Returns the static scalar dataset index that is rendered if the temporal properties is not active
+      *
+      * \since QGIS 3.14
+      */
+    QgsMeshDatasetIndex staticScalarDatasetIndex() const;
+
+    /**
+      * Returns the static vector dataset index that is rendered if the temporal properties is not active
+      *
+      * \since QGIS 3.14
+      */
+    QgsMeshDatasetIndex staticVectorDatasetIndex() const;
+
+    /**
+      * Sets the reference time of the layer
+      *
+      * \param referenceTime the reference time
+      *
+      * \since QGIS 3.14
+      */
+    void setReferenceTime( const QDateTime &referenceTime );
+
+    /**
+      * Sets the method used to match the temporal dataset from a requested time, see activeVectorDatasetAtTime()
+      *
+      * \param matchingMethod the matching method
+      *
+      * \since QGIS 3.14
+      */
+    void setTemporalMatchingMethod( const QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod &matchingMethod );
+
+    /**
+      * Returns the position of the snapped point on the mesh element closest to \a point intersecting with
+      * the searching area defined by \a point and \a searchRadius
+      *
+      * For vertex, the snapped position is the vertex position
+      * For edge, the snapped position is the projected point on the edge, extremity of edge if outside the edge
+      * For face, the snapped position is the centroid of the face
+      * The returned position is in map coordinates.
+      *
+      * \note It uses previously cached and indexed triangular mesh
+      * and so if the layer has not been rendered previously
+      * (e.g. when used in a script) it returns empty QgsPointXY
+      * \see updateTriangularMesh
+      *
+      * \param elementType the type of element to snap
+      * \param point the center of the search area in map coordinates
+      * \param searchRadius the radius of the search area in map units
+      * \return the position of the snapped point on the closest element, empty QgsPointXY if no element of type \a elementType
+      *
+      * \since QGIS 3.14
+      */
+    QgsPointXY snapOnElement( QgsMesh::ElementType elementType, const QgsPointXY &point, double searchRadius );
+
+    /**
+      * Returns the root items of the dataset group tree item
+      *
+      * \return the root item
+      *
+      * \since QGIS 3.14
+      */
+    QgsMeshDatasetGroupTreeItem *datasetGroupTreeRootItem() const;
+
+    /**
+      * Sets the root items of the dataset group tree item.
+      * Changes active dataset groups if those one are not enabled anymore :
+      * - new active scalar dataset group is the first root item enabled child
+      * - new active vector dataset group is none
+      *
+      * Doesn't take ownership of the pointed item, the root item is cloned.
+      *
+      * \param rootItem the new root item
+      *
+      * \since QGIS 3.14
+      */
+    void setDatasetGroupTreeRootItem( QgsMeshDatasetGroupTreeItem *rootItem );
+
+    /**
+     * Reset the dataset group tree item to default from provider
+     *
+     * \since QGIS 3.14
+     */
+    void resetDatasetGroupTreeItem();
+
+  public slots:
+
+    /**
+     * Sets the coordinate transform context to \a transformContext.
+     *
+     * \since QGIS 3.8
+     */
+    void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
 
   signals:
 
     /**
-     * Emitted when active scalar dataset is changed
+     * Emitted when active scalar group dataset is changed
      *
-     * \since QGIS 3.4
+     * \since QGIS 3.14
      */
-    void activeScalarDatasetChanged( const QgsMeshDatasetIndex &index );
+    void activeScalarDatasetGroupChanged( int index );
 
     /**
-     * Emitted when active vector dataset is changed
+     * Emitted when active vector group dataset is changed
      *
-     * \since QGIS 3.4
+     * \since QGIS 3.14
      */
-    void activeVectorDatasetChanged( const QgsMeshDatasetIndex &index );
+    void activeVectorDatasetGroupChanged( int index );
+
+    /**
+     * Emitted when time format is changed
+     *
+     * \since QGIS 3.8
+     */
+    void timeSettingsChanged( );
 
   private: // Private methods
 
     /**
-     * Returns true if the provider is in read-only mode
+     * Returns TRUE if the provider is in read-only mode
      */
     bool isReadOnly() const override {return true;}
 
@@ -236,30 +506,62 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
   private:
     void fillNativeMesh();
+    void assignDefaultStyleToDatasetGroup( int groupIndex );
+    void setDefaultRendererSettings();
+    void createSimplifiedMeshes();
+    int levelsOfDetailsIndex( double partOfMeshInView ) const;
+
+    bool hasSimplifiedMeshes() const;
+
+    QgsMeshDatasetIndex datasetIndexAtTime( const QgsDateTimeRange &timeRange, int datasetGroupIndex ) const;
+
+    //! Changes scalar settings for classified scalar value (information about is in the metadata
+    void applyClassificationOnScalarSettings( const QgsMeshDatasetGroupMetadata &meta, QgsMeshRendererScalarSettings &scalarSettings ) const;
+
+  private slots:
+    void onDatasetGroupsAdded( int count );
 
   private:
     //! Pointer to data provider derived from the abastract base class QgsMeshDataProvider
     QgsMeshDataProvider *mDataProvider = nullptr;
 
-    //! Data provider key
-    QString mProviderKey;
-
     //! Pointer to native mesh structure, used as cache for rendering
     std::unique_ptr<QgsMesh> mNativeMesh;
 
-    //! Pointer to derived mesh structure
-    std::unique_ptr<QgsTriangularMesh> mTriangularMesh;
+    //! Pointer to derived mesh structures (the first one is the base mesh, others are simplified meshes with decreasing level of detail)
+    std::vector<std::unique_ptr<QgsTriangularMesh>> mTriangularMeshes;
 
-    QgsMeshRendererMeshSettings mRendererNativeMeshSettings;
-    QgsMeshRendererMeshSettings mRendererTriangularMeshSettings;
-    QgsMeshRendererScalarSettings mRendererScalarSettings;
-    QgsMeshRendererVectorSettings mRendererVectorSettings;
+    //! Pointer to the cache with data used for last rendering
+    std::unique_ptr<QgsMeshLayerRendererCache> mRendererCache;
 
-    //! index of active scalar dataset
-    QgsMeshDatasetIndex mActiveScalarDataset;
+    //! Renderer configuration
+    QgsMeshRendererSettings mRendererSettings;
 
-    //! index of active vector dataset
-    QgsMeshDatasetIndex mActiveVectorDataset;
+    //! Time format configuration
+    QgsMeshTimeSettings mTimeSettings;
+
+    //! Simplify mesh configuration
+    QgsMeshSimplificationSettings mSimplificationSettings;
+
+    QgsMeshLayerTemporalProperties *mTemporalProperties;
+
+    QgsMeshDatasetIndex mStaticScalarDatasetIndex;
+    QgsMeshDatasetIndex mStaticVectorDatasetIndex;
+
+    std::unique_ptr<QgsMeshDatasetGroupTreeItem> mDatasetGroupTreeRootItem;
+
+    int closestEdge( const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint ) const;
+
+    //! Returns the exact position in map coordinates of the closest vertex in the search area
+    QgsPointXY snapOnVertex( const QgsPointXY &point, double searchRadius );
+
+    //!Returns the position of the projected point on the closest edge in the search area
+    QgsPointXY snapOnEdge( const QgsPointXY &point, double searchRadius );
+
+    //!Returns the position of the centroid point on the closest face in the search area
+    QgsPointXY snapOnFace( const QgsPointXY &point, double searchRadius );
+
+    void updateActiveDatasetGroups();
 };
 
 #endif //QGSMESHLAYER_H

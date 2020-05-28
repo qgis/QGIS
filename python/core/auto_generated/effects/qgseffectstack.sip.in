@@ -51,6 +51,7 @@ Constructor for empty QgsEffectStack.
 
     QgsEffectStack( const QgsEffectStack &other );
 
+
     explicit QgsEffectStack( const QgsPaintEffect &effect );
 %Docstring
 Creates a new QgsEffectStack effect from a single initial effect.
@@ -143,6 +144,8 @@ Returns a pointer to the effect at a specified index within the stack
 
 :return: QgsPaintEffect at specified position
 %End
+
+
 
 
   protected:

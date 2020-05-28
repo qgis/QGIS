@@ -21,32 +21,35 @@ __author__ = 'Victor Olaya'
 __date__ = 'November 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
-from qgis.core import (QgsProcessingParameterFeatureSource,
+from qgis.core import (QgsProcessing,
+                       QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterField,
                        QgsProcessingParameterExtent,
-                       QgsProcessingParameterBoolean)
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterProviderConnection,
+                       QgsProcessingParameterDatabaseSchema,
+                       QgsProcessingParameterDatabaseTable,
+                       QgsProviderRegistry,
+                       QgsProcessingException,
+                       QgsProviderConnectionException,
+                       QgsDataSourceUri)
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
-from processing.tools.postgis import uri_from_name, GeoDB
 from processing.tools.system import isWindows
 
 
 class Ogr2OgrToPostGisList(GdalAlgorithm):
-
     DATABASE = 'DATABASE'
     INPUT = 'INPUT'
     SHAPE_ENCODING = 'SHAPE_ENCODING'
     GTYPE = 'GTYPE'
-    GEOMTYPE = ['', 'NONE', 'GEOMETRY', 'POINT', 'LINESTRING', 'POLYGON', 'GEOMETRYCOLLECTION', 'MULTIPOINT', 'MULTIPOLYGON', 'MULTILINESTRING']
+    GEOMTYPE = ['', 'NONE', 'GEOMETRY', 'POINT', 'LINESTRING', 'POLYGON', 'GEOMETRYCOLLECTION', 'MULTIPOINT',
+                'MULTIPOLYGON', 'MULTILINESTRING']
     S_SRS = 'S_SRS'
     T_SRS = 'T_SRS'
     A_SRS = 'A_SRS'
@@ -83,52 +86,50 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
 
     def initAlgorithm(self, config=None):
 
-        db_param = QgsProcessingParameterString(
+        db_param = QgsProcessingParameterProviderConnection(
             self.DATABASE,
-            self.tr('Database (connection name)'))
-        db_param.setMetadata({
-            'widget_wrapper': {
-                'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}})
+            self.tr('Database (connection name)'), 'postgres')
         self.addParameter(db_param)
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer')))
+                                                              self.tr('Input layer'),
+                                                              types=[QgsProcessing.TypeVector]))
         self.addParameter(QgsProcessingParameterString(self.SHAPE_ENCODING,
                                                        self.tr('Shape encoding'), "", optional=True))
         self.addParameter(QgsProcessingParameterEnum(self.GTYPE,
-                                                     self.tr('Output geometry type'), options=self.GEOMTYPE, defaultValue=0))
+                                                     self.tr('Output geometry type'), options=self.GEOMTYPE,
+                                                     defaultValue=0))
         self.addParameter(QgsProcessingParameterCrs(self.A_SRS,
-                                                    self.tr('Assign an output CRS'), defaultValue='', optional=False))
+                                                    self.tr('Assign an output CRS'), defaultValue='', optional=True))
         self.addParameter(QgsProcessingParameterCrs(self.T_SRS,
-                                                    self.tr('Reproject to this CRS on output '), defaultValue='', optional=True))
+                                                    self.tr('Reproject to this CRS on output '), defaultValue='',
+                                                    optional=True))
         self.addParameter(QgsProcessingParameterCrs(self.S_SRS,
                                                     self.tr('Override source CRS'), defaultValue='', optional=True))
 
-        schema_param = QgsProcessingParameterString(
+        schema_param = QgsProcessingParameterDatabaseSchema(
             self.SCHEMA,
-            self.tr('Schema (schema name)'), 'public', False, True)
-        schema_param.setMetadata({
-            'widget_wrapper': {
-                'class': 'processing.gui.wrappers_postgis.SchemaWidgetWrapper',
-                'connection_param': self.DATABASE}})
+            self.tr('Schema (schema name)'), defaultValue='public', connectionParameterName=self.DATABASE, optional=True)
         self.addParameter(schema_param)
 
-        table_param = QgsProcessingParameterString(
+        table_param = QgsProcessingParameterDatabaseTable(
             self.TABLE,
-            self.tr('Table to import to (leave blank to use layer name)'), '', False, True)
-        table_param.setMetadata({
-            'widget_wrapper': {
-                'class': 'processing.gui.wrappers_postgis.TableWidgetWrapper',
-                'schema_param': self.SCHEMA}})
+            self.tr('Table to import to (leave blank to use layer name)'), defaultValue=None, connectionParameterName=self.DATABASE,
+            schemaParameterName=self.SCHEMA, optional=True, allowNewTableNames=True)
         self.addParameter(table_param)
 
         self.addParameter(QgsProcessingParameterString(self.PK,
-                                                       self.tr('Primary key (new field)'), defaultValue='id', optional=True))
+                                                       self.tr('Primary key (new field)'), defaultValue='id',
+                                                       optional=True))
         self.addParameter(QgsProcessingParameterField(self.PRIMARY_KEY,
-                                                      self.tr('Primary key (existing field, used if the above option is left empty)'), parentLayerParameterName=self.INPUT, optional=True))
+                                                      self.tr(
+                                                          'Primary key (existing field, used if the above option is left empty)'),
+                                                      parentLayerParameterName=self.INPUT, optional=True))
         self.addParameter(QgsProcessingParameterString(self.GEOCOLUMN,
-                                                       self.tr('Geometry column name'), defaultValue='geom', optional=True))
+                                                       self.tr('Geometry column name'), defaultValue='geom',
+                                                       optional=True))
         self.addParameter(QgsProcessingParameterEnum(self.DIM,
-                                                     self.tr('Vector dimensions'), options=self.DIMLIST, defaultValue=0))
+                                                     self.tr('Vector dimensions'), options=self.DIMLIST,
+                                                     defaultValue=0))
         self.addParameter(QgsProcessingParameterString(self.SIMPLIFY,
                                                        self.tr('Distance tolerance for simplification'),
                                                        defaultValue='', optional=True))
@@ -136,12 +137,16 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
                                                        self.tr('Maximum distance between 2 nodes (densification)'),
                                                        defaultValue='', optional=True))
         self.addParameter(QgsProcessingParameterExtent(self.SPAT,
-                                                       self.tr('Select features by extent (defined in input layer CRS)'), optional=True))
+                                                       self.tr(
+                                                           'Select features by extent (defined in input layer CRS)'),
+                                                       optional=True))
         self.addParameter(QgsProcessingParameterBoolean(self.CLIP,
-                                                        self.tr('Clip the input layer using the above (rectangle) extent'),
+                                                        self.tr(
+                                                            'Clip the input layer using the above (rectangle) extent'),
                                                         defaultValue=False))
         self.addParameter(QgsProcessingParameterString(self.WHERE,
-                                                       self.tr('Select features using a SQL "WHERE" statement (Ex: column=\'value\')'),
+                                                       self.tr(
+                                                           'Select features using a SQL "WHERE" statement (Ex: column=\'value\')'),
                                                        defaultValue='', optional=True))
         self.addParameter(QgsProcessingParameterString(self.GT,
                                                        self.tr('Group N features per transaction (Default: 20000)'),
@@ -151,13 +156,17 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.APPEND,
                                                         self.tr('Append to existing table'), defaultValue=False))
         self.addParameter(QgsProcessingParameterBoolean(self.ADDFIELDS,
-                                                        self.tr('Append and add new fields to existing table'), defaultValue=False))
+                                                        self.tr('Append and add new fields to existing table'),
+                                                        defaultValue=False))
         self.addParameter(QgsProcessingParameterBoolean(self.LAUNDER,
-                                                        self.tr('Do not launder columns/table names'), defaultValue=False))
+                                                        self.tr('Do not launder columns/table names'),
+                                                        defaultValue=False))
         self.addParameter(QgsProcessingParameterBoolean(self.INDEX,
                                                         self.tr('Do not create spatial index'), defaultValue=False))
         self.addParameter(QgsProcessingParameterBoolean(self.SKIPFAILURES,
-                                                        self.tr('Continue after a failure, skipping the failed feature'), defaultValue=False))
+                                                        self.tr(
+                                                            'Continue after a failure, skipping the failed feature'),
+                                                        defaultValue=False))
         self.addParameter(QgsProcessingParameterBoolean(self.PROMOTETOMULTI,
                                                         self.tr('Promote to Multipart'),
                                                         defaultValue=True))
@@ -165,13 +174,22 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
                                                         self.tr('Keep width and precision of input attributes'),
                                                         defaultValue=True))
         self.addParameter(QgsProcessingParameterString(self.OPTIONS,
-                                                       self.tr('Additional creation options'), defaultValue='', optional=True))
+                                                       self.tr('Additional creation options'), defaultValue='',
+                                                       optional=True))
 
     def name(self):
         return 'importvectorintopostgisdatabaseavailableconnections'
 
     def displayName(self):
-        return self.tr('Import vector into PostGIS database (available connections)')
+        return self.tr('Export to PostgreSQL (available connections)')
+
+    def shortDescription(self):
+        return self.tr('Exports a vector layer to an existing PostgreSQL database connection')
+
+    def tags(self):
+        t = self.tr('import,into,postgis,database,vector').split(',')
+        t.extend(super().tags())
+        return t
 
     def group(self):
         return self.tr('Vector miscellaneous')
@@ -180,19 +198,27 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         return 'vectormiscellaneous'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        connection = self.parameterAsString(parameters, self.DATABASE, context)
-        uri = uri_from_name(connection)
-        if executing:
-            # to get credentials input when needed
-            uri = GeoDB(uri=uri).uri
+        connection_name = self.parameterAsConnectionName(parameters, self.DATABASE, context)
+        if not connection_name:
+            raise QgsProcessingException(
+                self.tr('No connection specified'))
+
+        # resolve connection details to uri
+        try:
+            md = QgsProviderRegistry.instance().providerMetadata('postgres')
+            conn = md.createConnection(connection_name)
+        except QgsProviderConnectionException:
+            raise QgsProcessingException(self.tr('Could not retrieve connection details for {}').format(connection_name))
+
+        uri = conn.uri()
 
         ogrLayer, layername = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         shapeEncoding = self.parameterAsString(parameters, self.SHAPE_ENCODING, context)
         ssrs = self.parameterAsCrs(parameters, self.S_SRS, context)
         tsrs = self.parameterAsCrs(parameters, self.T_SRS, context)
         asrs = self.parameterAsCrs(parameters, self.A_SRS, context)
-        table = self.parameterAsString(parameters, self.TABLE, context)
-        schema = self.parameterAsString(parameters, self.SCHEMA, context)
+        table = self.parameterAsDatabaseTableName(parameters, self.TABLE, context)
+        schema = self.parameterAsSchema(parameters, self.SCHEMA, context)
         pk = self.parameterAsString(parameters, self.PK, context)
         pkstring = "-lco FID=" + pk
         primary_key = self.parameterAsString(parameters, self.PRIMARY_KEY, context)
@@ -203,20 +229,20 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         simplify = self.parameterAsString(parameters, self.SIMPLIFY, context)
         segmentize = self.parameterAsString(parameters, self.SEGMENTIZE, context)
         spat = self.parameterAsExtent(parameters, self.SPAT, context)
-        clip = self.parameterAsBool(parameters, self.CLIP, context)
+        clip = self.parameterAsBoolean(parameters, self.CLIP, context)
         where = self.parameterAsString(parameters, self.WHERE, context)
         wherestring = '-where "' + where + '"'
         gt = self.parameterAsString(parameters, self.GT, context)
-        overwrite = self.parameterAsBool(parameters, self.OVERWRITE, context)
-        append = self.parameterAsBool(parameters, self.APPEND, context)
-        addfields = self.parameterAsBool(parameters, self.ADDFIELDS, context)
-        launder = self.parameterAsBool(parameters, self.LAUNDER, context)
+        overwrite = self.parameterAsBoolean(parameters, self.OVERWRITE, context)
+        append = self.parameterAsBoolean(parameters, self.APPEND, context)
+        addfields = self.parameterAsBoolean(parameters, self.ADDFIELDS, context)
+        launder = self.parameterAsBoolean(parameters, self.LAUNDER, context)
         launderstring = "-lco LAUNDER=NO"
-        index = self.parameterAsBool(parameters, self.INDEX, context)
+        index = self.parameterAsBoolean(parameters, self.INDEX, context)
         indexstring = "-lco SPATIAL_INDEX=OFF"
-        skipfailures = self.parameterAsBool(parameters, self.SKIPFAILURES, context)
-        promotetomulti = self.parameterAsBool(parameters, self.PROMOTETOMULTI, context)
-        precision = self.parameterAsBool(parameters, self.PRECISION, context)
+        skipfailures = self.parameterAsBoolean(parameters, self.SKIPFAILURES, context)
+        promotetomulti = self.parameterAsBoolean(parameters, self.PROMOTETOMULTI, context)
+        precision = self.parameterAsBoolean(parameters, self.PRECISION, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
 
         arguments = []
@@ -229,7 +255,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         arguments.append('-f')
         arguments.append('PostgreSQL')
         arguments.append('PG:"')
-        for token in uri.connectionInfo(executing).split(' '):
+        for token in QgsDataSourceUri(uri).connectionInfo(executing).split(' '):
             arguments.append(token)
         arguments.append('active_schema={}'.format(schema or 'public'))
         arguments.append('"')
@@ -251,9 +277,9 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
             arguments.append(self.GEOMTYPE[self.parameterAsEnum(parameters, self.GTYPE, context)])
         if len(geocolumn) > 0:
             arguments.append(geocolumnstring)
-        if len(pk) > 0:
+        if pk:
             arguments.append(pkstring)
-        elif primary_key is not None:
+        elif primary_key:
             arguments.append("-lco FID=" + primary_key)
         if len(table) == 0:
             table = layername.lower()

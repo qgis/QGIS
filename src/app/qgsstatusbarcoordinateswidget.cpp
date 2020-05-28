@@ -14,6 +14,7 @@
 ***************************************************************************/
 
 #include <QFont>
+#include <QFileInfo>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -27,6 +28,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgscoordinateutils.h"
+#include "qgsvectorlayer.h"
 
 
 QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
@@ -34,7 +36,7 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   , mMousePrecisionDecimalPlaces( 0 )
 {
   // calculate the size of two chars
-  mTwoCharSize = fontMetrics().width( QStringLiteral( "OO" ) );
+  mTwoCharSize = fontMetrics().boundingRect( 'O' ).width();
   mMinimumWidth = mTwoCharSize * 4;
 
   // add a label to show current position
@@ -57,10 +59,6 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
 
   QRegExp coordValidator( "[+-]?\\d+\\.?\\d*\\s*,\\s*[+-]?\\d+\\.?\\d*" );
   mCoordsEditValidator = new QRegExpValidator( coordValidator, this );
-  mLineEdit->setWhatsThis( tr( "Shows the map coordinates at the "
-                               "current cursor position. The display is continuously updated "
-                               "as the mouse is moved. It also allows editing to set the canvas "
-                               "center to a given position. The format is longitude,latitude or east,north" ) );
   mLineEdit->setToolTip( tr( "Current map coordinate (longitude,latitude or east,north)" ) );
 
   //toggle to switch between mouse pos and extents display in status bar widget
@@ -117,7 +115,19 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
   {
     return;
   }
-  if ( mLineEdit->text() == QLatin1String( "dizzy" ) )
+  else if ( mLineEdit->text() == QLatin1String( "world" ) )
+  {
+    world();
+  }
+  if ( mLineEdit->text() == QLatin1String( "contributors" ) )
+  {
+    contributors();
+  }
+  else if ( mLineEdit->text() == QLatin1String( "hackfests" ) )
+  {
+    hackfests();
+  }
+  else if ( mLineEdit->text() == QLatin1String( "dizzy" ) )
   {
     // sometimes you may feel a bit dizzy...
     if ( mDizzyTimer->isActive() )
@@ -194,6 +204,55 @@ void QgsStatusBarCoordinatesWidget::dizzy()
   mMapCanvas->setTransform( matrix );
 }
 
+void QgsStatusBarCoordinatesWidget::contributors()
+{
+  if ( !mMapCanvas )
+  {
+    return;
+  }
+  QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/contributors.json" );
+  QFileInfo fileInfo = QFileInfo( fileName );
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
+      tr( "QGIS Contributors" ), QStringLiteral( "ogr" ), options );
+  // Register this layer with the layers registry
+  QgsProject::instance()->addMapLayer( layer );
+  layer->setAutoRefreshInterval( 500 );
+  layer->setAutoRefreshEnabled( true );
+}
+
+void QgsStatusBarCoordinatesWidget::world()
+{
+  if ( !mMapCanvas )
+  {
+    return;
+  }
+  QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.gpkg|layername=countries" );
+  QFileInfo fileInfo = QFileInfo( fileName );
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
+      tr( "World Map" ), QStringLiteral( "ogr" ), options );
+  // Register this layer with the layers registry
+  QgsProject::instance()->addMapLayer( layer );
+}
+
+void QgsStatusBarCoordinatesWidget::hackfests()
+{
+  if ( !mMapCanvas )
+  {
+    return;
+  }
+  QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/qgis-hackfests.json" );
+  QFileInfo fileInfo = QFileInfo( fileName );
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
+      tr( "QGIS Hackfests" ), QStringLiteral( "ogr" ), options );
+  // Register this layer with the layers registry
+  QgsProject::instance()->addMapLayer( layer );
+  layer->setAutoRefreshInterval( 500 );
+  layer->setAutoRefreshEnabled( true );
+}
+
 void QgsStatusBarCoordinatesWidget::extentsViewToggled( bool flag )
 {
   if ( flag )
@@ -210,7 +269,7 @@ void QgsStatusBarCoordinatesWidget::extentsViewToggled( bool flag )
     mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "tracking.svg" ) ) );
     mLineEdit->setToolTip( tr( "Map coordinates at mouse cursor position" ) );
     mLineEdit->setReadOnly( false );
-    mLabel->setText( tr( "Coordinate:" ) );
+    mLabel->setText( tr( "Coordinate" ) );
   }
 }
 
@@ -221,7 +280,7 @@ void QgsStatusBarCoordinatesWidget::refreshMapCanvas()
 
   //stop any current rendering
   mMapCanvas->stopRendering();
-  mMapCanvas->refreshAllLayers();
+  mMapCanvas->redrawAllLayers();
 }
 
 void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &p )
@@ -247,7 +306,7 @@ void QgsStatusBarCoordinatesWidget::showExtent()
 
   // update the statusbar with the current extents.
   QgsRectangle myExtents = mMapCanvas->extent();
-  mLabel->setText( tr( "Extents:" ) );
+  mLabel->setText( tr( "Extents" ) );
   mLineEdit->setText( myExtents.toString( true ) );
 
   ensureCoordinatesVisible();
@@ -257,7 +316,7 @@ void QgsStatusBarCoordinatesWidget::ensureCoordinatesVisible()
 {
 
   //ensure the label is big (and small) enough
-  int width = std::max( mLineEdit->fontMetrics().width( mLineEdit->text() ) + 10, mMinimumWidth );
+  int width = std::max( mLineEdit->fontMetrics().boundingRect( mLineEdit->text() ).width() + 16, mMinimumWidth );
   if ( mLineEdit->minimumWidth() < width || ( mLineEdit->minimumWidth() - width ) > mTwoCharSize )
   {
     mLineEdit->setMinimumWidth( width );

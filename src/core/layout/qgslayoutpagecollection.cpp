@@ -33,7 +33,8 @@ QgsLayoutPageCollection::QgsLayoutPageCollection( QgsLayout *layout )
 
 QgsLayoutPageCollection::~QgsLayoutPageCollection()
 {
-  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  const auto constMPages = mPages;
+  for ( QgsLayoutItemPage *page : constMPages )
   {
     mLayout->removeItem( page );
     page->deleteLater();
@@ -49,9 +50,14 @@ void QgsLayoutPageCollection::setPageStyleSymbol( QgsFillSymbol *symbol )
 
   for ( QgsLayoutItemPage *page : qgis::as_const( mPages ) )
   {
+    page->setPageStyleSymbol( symbol->clone() );
     page->update();
   }
+}
 
+const QgsFillSymbol *QgsLayoutPageCollection::pageStyleSymbol() const
+{
+  return mPageStyleSymbol.get();
 }
 
 void QgsLayoutPageCollection::beginPageSizeChange()
@@ -89,7 +95,8 @@ void QgsLayoutPageCollection::reflow()
 {
   double currentY = 0;
   QgsLayoutPoint p( 0, 0, mLayout->units() );
-  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  const auto constMPages = mPages;
+  for ( QgsLayoutItemPage *page : constMPages )
   {
     page->attemptMove( p );
     currentY += mLayout->convertToLayoutUnits( page->pageSize() ).height() + spaceBetweenPages();
@@ -149,7 +156,8 @@ int QgsLayoutPageCollection::pageNumberForPoint( QPointF point ) const
 {
   int pageNumber = 0;
   double startNextPageY = 0;
-  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  const auto constMPages = mPages;
+  for ( QgsLayoutItemPage *page : constMPages )
   {
     startNextPageY += page->rect().height() + spaceBetweenPages();
     if ( startNextPageY > point.y() )
@@ -169,7 +177,8 @@ int QgsLayoutPageCollection::predictPageNumberForPoint( QPointF point ) const
 
   int pageNumber = 0;
   double startNextPageY = 0;
-  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  const auto constMPages = mPages;
+  for ( QgsLayoutItemPage *page : constMPages )
   {
     startNextPageY += page->rect().height() + spaceBetweenPages();
     if ( startNextPageY >= point.y() )
@@ -236,7 +245,8 @@ QPointF QgsLayoutPageCollection::positionOnPage( QPointF position ) const
   double startCurrentPageY = 0;
   double startNextPageY = 0;
   int pageNumber = 0;
-  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  const auto constMPages = mPages;
+  for ( QgsLayoutItemPage *page : constMPages )
   {
     startCurrentPageY = startNextPageY;
     startNextPageY += page->rect().height() + spaceBetweenPages();
@@ -272,11 +282,13 @@ double QgsLayoutPageCollection::pageShadowWidth() const
 
 void QgsLayoutPageCollection::resizeToContents( const QgsMargins &margins, QgsUnitTypes::LayoutUnit marginUnits )
 {
-  if ( !mBlockUndoCommands )
-    mLayout->undoStack()->beginCommand( this, tr( "Resize to Contents" ) );
-
   //calculate current bounds
   QRectF bounds = mLayout->layoutBounds( true, 0.0 );
+  if ( bounds.isEmpty() )
+    return;
+
+  if ( !mBlockUndoCommands )
+    mLayout->undoStack()->beginCommand( this, tr( "Resize to Contents" ) );
 
   for ( int page = mPages.count() - 1; page > 0; page-- )
   {
@@ -395,6 +407,8 @@ bool QgsLayoutPageCollection::readXml( const QDomElement &e, const QDomDocument 
   {
     QDomElement pageElement = pageList.at( i ).toElement();
     std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( mLayout ) );
+    if ( mPageStyleSymbol )
+      page->setPageStyleSymbol( mPageStyleSymbol->clone() );
     page->readXml( pageElement, document, context );
     page->finalizeRestoreFromXml();
     mPages.append( page.get() );
@@ -421,7 +435,8 @@ const QgsLayoutGuideCollection &QgsLayoutPageCollection::guides() const
 
 void QgsLayoutPageCollection::redraw()
 {
-  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  const auto constMPages = mPages;
+  for ( QgsLayoutItemPage *page : constMPages )
   {
     page->redraw();
   }
@@ -460,7 +475,8 @@ int QgsLayoutPageCollection::pageNumber( QgsLayoutItemPage *page ) const
 QList<QgsLayoutItemPage *> QgsLayoutPageCollection::visiblePages( const QRectF &region ) const
 {
   QList<QgsLayoutItemPage *> pages;
-  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  const auto constMPages = mPages;
+  for ( QgsLayoutItemPage *page : constMPages )
   {
     if ( page->mapToScene( page->rect() ).boundingRect().intersects( region ) )
       pages << page;
@@ -472,7 +488,8 @@ QList<int> QgsLayoutPageCollection::visiblePageNumbers( const QRectF &region ) c
 {
   QList< int > pages;
   int p = 0;
-  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  const auto constMPages = mPages;
+  for ( QgsLayoutItemPage *page : constMPages )
   {
     if ( page->mapToScene( page->rect() ).boundingRect().intersects( region ) )
       pages << p;
@@ -654,6 +671,9 @@ void QgsLayoutPageCollection::deletePage( QgsLayoutItemPage *page )
   beginPageSizeChange();
   mPages.removeAll( page );
   page->deleteLater();
+  // remove immediately from scene -- otherwise immediately calculation of layout bounds (such as is done
+  // in reflow) will still consider the page, at least until it's actually deleted at the next event loop
+  mLayout->removeItem( page );
   reflow();
 
   // bump stored page numbers to account
@@ -708,5 +728,4 @@ void QgsLayoutPageCollection::createDefaultPageStyleSymbol()
   properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
   mPageStyleSymbol.reset( QgsFillSymbol::createSimple( properties ) );
 }
-
 

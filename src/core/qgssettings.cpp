@@ -15,6 +15,7 @@
 
 
 #include <cstdlib>
+
 #include <QFileInfo>
 #include <QSettings>
 #include <QDir>
@@ -22,13 +23,13 @@
 #include "qgssettings.h"
 #include "qgslogger.h"
 
-QString QgsSettings::sGlobalSettingsPath = QString();
+Q_GLOBAL_STATIC( QString, sGlobalSettingsPath )
 
 bool QgsSettings::setGlobalSettingsPath( const QString &path )
 {
   if ( QFileInfo::exists( path ) )
   {
-    sGlobalSettingsPath = path;
+    *sGlobalSettingsPath() = path;
     return true;
   }
   return false;
@@ -36,9 +37,9 @@ bool QgsSettings::setGlobalSettingsPath( const QString &path )
 
 void QgsSettings::init()
 {
-  if ( ! sGlobalSettingsPath.isEmpty() )
+  if ( ! sGlobalSettingsPath()->isEmpty() )
   {
-    mGlobalSettings = new QSettings( sGlobalSettingsPath, QSettings::IniFormat );
+    mGlobalSettings = new QSettings( *sGlobalSettingsPath(), QSettings::IniFormat );
     mGlobalSettings->setIniCodec( "UTF-8" );
   }
 }
@@ -102,6 +103,10 @@ void QgsSettings::endGroup()
   }
 }
 
+QString QgsSettings::group() const
+{
+  return mUserSettings->group();
+}
 
 QStringList QgsSettings::allKeys() const
 {
@@ -159,6 +164,11 @@ QStringList QgsSettings::globalChildGroups() const
     keys = mGlobalSettings->childGroups();
   }
   return keys;
+}
+
+QString QgsSettings::globalSettingsPath()
+{
+  return *sGlobalSettingsPath();
 }
 
 QVariant QgsSettings::value( const QString &key, const QVariant &defaultValue, const QgsSettings::Section section ) const
@@ -227,8 +237,10 @@ QString QgsSettings::prefixedKey( const QString &key, const Section section ) co
     case Section::Providers :
       prefix = QStringLiteral( "providers" );
       break;
+    case Section::Expressions :
+      prefix = QStringLiteral( "expressions" );
+      break;
     case Section::NoSection:
-    default:
       return sanitizeKey( key );
   }
   return prefix  + "/" + sanitizeKey( key );
@@ -277,7 +289,24 @@ void QgsSettings::setArrayIndex( int i )
 void QgsSettings::setValue( const QString &key, const QVariant &value, const QgsSettings::Section section )
 {
   // TODO: add valueChanged signal
-  mUserSettings->setValue( prefixedKey( key, section ), value );
+  // Do not store if it hasn't changed from default value
+  // First check if the values are different and if at least one of them is valid.
+  // The valid check is required because different invalid QVariant types
+  // like QVariant(QVariant::String) and QVariant(QVariant::Int))
+  // may be considered different and we don't want to store the value in that case.
+  QVariant currentValue { QgsSettings::value( prefixedKey( key, section ) ) };
+  if ( ( currentValue.isValid() || value.isValid() ) && ( currentValue != value ) )
+  {
+    mUserSettings->setValue( prefixedKey( key, section ), value );
+  }
+  // Deliberately an "else if" because we want to remove a value from the user settings
+  // only if the value is different than the one stored in the global settings (because
+  // it would be the default anyway). The first check is necessary because the global settings
+  // might be a nullptr (for example in case of standalone scripts or apps).
+  else if ( mGlobalSettings && mGlobalSettings->value( prefixedKey( key, section ) ) == currentValue )
+  {
+    mUserSettings->remove( prefixedKey( key, section ) );
+  }
 }
 
 // To lower case and clean the path

@@ -19,7 +19,7 @@
 #define QGSLAYOUTMODEL_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgslayoutitemregistry.h"
 
 #include <QAbstractItemModel>
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
     /**
      * Moves an \a item up the z-order list.
      *
-     * Returns true if \a item was moved. Returns false if \a item was not found
+     * Returns TRUE if \a item was moved. Returns FALSE if \a item was not found
      * in z-order list or was already at the top of the z-order list.
      *
      * \see reorderItemDown()
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
     /**
      * Moves an \a item down the z-order list.
      *
-     * Returns true if \a item was moved. Returns false if \a item was not found
+     * Returns TRUE if \a item was moved. Returns FALSE if \a item was not found
      * in z-order list or was already at the bottom of the z-order list.
      *
      * \see reorderItemUp()
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
     /**
      * Moves an \a item to the top of the z-order list.
      *
-     * Returns true if \a item was moved. Returns false if \a item was not found
+     * Returns TRUE if \a item was moved. Returns FALSE if \a item was not found
      * in z-order list or was already at the top of the z-order list.
      *
      * \see reorderItemUp()
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
     /**
      * Moves an \a item to the bottom of the z-order list.
      *
-     * Returns true if \a item was moved. Returns false if \a item was not found
+     * Returns TRUE if \a item was moved. Returns FALSE if \a item was not found
      * in z-order list or was already at the bottom of the z-order list.
      *
      * \see reorderItemUp()
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
      * Finds the next layout item above an \a item, where \a item is
      * the item to search above.
      *
-     * If no items were found, a nullptr will be returned.
+     * If no items were found, NULLPTR will be returned.
      *
      * \see findItemBelow()
      */
@@ -175,7 +175,7 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
      * Finds the next layout item below an \a item, where \a item
      * is the item to search below.
      *
-     * If no items were found, a nullptr will be returned.
+     * If no items were found, NULLPTR will be returned.
 
      * \see findItemAbove()
      */
@@ -352,6 +352,26 @@ class CORE_EXPORT QgsLayoutProxyModel: public QSortFilterProxyModel
      */
     QgsLayoutItem *itemFromSourceIndex( const QModelIndex &sourceIndex ) const;
 
+    /**
+     * Returns the associated layout.
+     * \since QGIS 3.8
+     */
+    QgsLayout *layout() { return mLayout; }
+
+    /**
+     * Sets whether an optional empty layout item is present in the model.
+     * \see allowEmptyItem()
+     * \since QGIS 3.8
+     */
+    void setAllowEmptyItem( bool allowEmpty );
+
+    /**
+     * Returns TRUE if the model includes the empty item choice.
+     * \see setAllowEmptyItem()
+     * \since QGIS 3.8
+     */
+    bool allowEmptyItem() const;
+
   protected:
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
@@ -360,6 +380,7 @@ class CORE_EXPORT QgsLayoutProxyModel: public QSortFilterProxyModel
     QgsLayout *mLayout = nullptr;
     QgsLayoutItemRegistry::ItemType mItemTypeFilter;
     QList< QgsLayoutItem * > mExceptedList;
+    bool mAllowEmpty = false;
 
 };
 

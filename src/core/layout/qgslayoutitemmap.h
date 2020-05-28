@@ -24,8 +24,11 @@
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgslayoutitemmapgrid.h"
 #include "qgslayoutitemmapoverview.h"
+#include "qgsmaprendererstagedrenderjob.h"
+#include "qgstemporalrangeobject.h"
 
 class QgsAnnotation;
+class QgsRenderedFeatureHandlerInterface;
 
 /**
  * \ingroup core
@@ -33,7 +36,7 @@ class QgsAnnotation;
  * \brief Layout graphical items for displaying a map.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
+class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRangeObject
 {
 
     Q_OBJECT
@@ -64,6 +67,17 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     };
 
     /**
+     * Various flags that affect drawing of map items.
+     * \since QGIS 3.6
+     */
+    enum MapItemFlag
+    {
+      ShowPartialLabels  = 1 << 0, //!< Whether to draw labels which are partially outside of the map view
+      ShowUnplacedLabels = 1 << 1, //!< Whether to render unplaced labels in the map view
+    };
+    Q_DECLARE_FLAGS( MapItemFlags, MapItemFlag )
+
+    /**
      * Constructor for QgsLayoutItemMap, with the specified parent \a layout.
      */
     explicit QgsLayoutItemMap( QgsLayout *layout );
@@ -71,6 +85,21 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     int type() const override;
     QIcon icon() const override;
+    QgsLayoutItem::Flags itemFlags() const override;
+
+    /**
+     * Returns the map item's flags, which control how the map content is drawn.
+     * \see setMapFlags()
+     * \since QGIS 3.6
+     */
+    QgsLayoutItemMap::MapItemFlags mapFlags() const;
+
+    /**
+     * Sets the map item's \a flags, which control how the map content is drawn.
+     * \see mapFlags()
+     * \since QGIS 3.6
+     */
+    void setMapFlags( QgsLayoutItemMap::MapItemFlags flags );
 
     /**
      * Sets the map id() to a number not yet used in the layout. The existing id() is kept if it is not in use.
@@ -89,7 +118,12 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     // for now, map items behave a bit differently and don't implement draw. TODO - see if we can avoid this
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
-    int numberExportLayers() const override;
+    Q_DECL_DEPRECATED int numberExportLayers() const override SIP_DEPRECATED;
+    void startLayeredExport() override;
+    void stopLayeredExport() override;
+    bool nextExportPart() override;
+    ExportLayerBehavior exportLayerBehavior() const override;
+    QgsLayoutItem::ExportLayerDetail exportLayerDetails() const override;
     void setFrameStrokeWidth( QgsLayoutMeasurement width ) override;
 
     /**
@@ -238,7 +272,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     void storeCurrentLayerStyles();
 
     /**
-     * Returns whether the map should follow a map theme. If true, the layers and layer styles
+     * Returns whether the map should follow a map theme. If TRUE, the layers and layer styles
      * will be used from given preset name (configured with setFollowVisibilityPresetName() method).
      * This means when preset's settings are changed, the new settings are automatically
      * picked up next time when rendering, without having to explicitly update them.
@@ -252,20 +286,24 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     /**
      * Sets whether the map should follow a map theme. See followVisibilityPreset() for more details.
      */
-    void setFollowVisibilityPreset( bool follow ) { mFollowVisibilityPreset = follow; }
+    void setFollowVisibilityPreset( bool follow );
 
     /**
      * Preset name that decides which layers and layer styles are used for map rendering. It is only
-     * used when followVisibilityPreset() returns true.
+     * used when followVisibilityPreset() returns TRUE.
      * \see setFollowVisibilityPresetName()
+     *
+     * \see themeChanged()
      */
     QString followVisibilityPresetName() const { return mFollowVisibilityPresetName; }
 
     /**
      * Sets preset name for map rendering. See followVisibilityPresetName() for more details.
      * \see followVisibilityPresetName()
+     *
+     * \see themeChanged()
     */
-    void setFollowVisibilityPresetName( const QString &name ) { mFollowVisibilityPresetName = name; }
+    void setFollowVisibilityPresetName( const QString &name );
 
     void moveContent( double dx, double dy ) override;
     void setMoveContentPreviewOffset( double dx, double dy ) override;
@@ -273,7 +311,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     void zoomContent( double factor, QPointF point ) override;
 
 
-    //! Returns true if the map contains a WMS layer.
+    //! Returns TRUE if the map contains a WMS layer.
     bool containsWmsLayer() const;
 
     bool requiresRasterization() const override;
@@ -312,7 +350,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     /**
      * Returns whether the map extent is set to follow the current atlas feature.
-     * \returns true if map will follow the current atlas feature.
+     * \returns TRUE if map will follow the current atlas feature.
      * \see setAtlasDriven
      * \see atlasScalingMode
      */
@@ -320,7 +358,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     /**
      * Sets whether the map extent will follow the current atlas feature.
-     * \param enabled set to true if the map extents should be set by the current atlas feature.
+     * \param enabled set to TRUE if the map extents should be set by the current atlas feature.
      * \see atlasDriven
      * \see setAtlasScalingMode
      */
@@ -331,7 +369,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * are calculated for the current atlas feature when an atlas composition
      * is enabled.
      * \returns the current scaling mode
-     * \note this parameter is only used if atlasDriven() is true
+     * \note this parameter is only used if atlasDriven() is TRUE
      * \see setAtlasScalingMode
      * \see atlasDriven
      */
@@ -342,7 +380,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * are calculated for the current atlas feature when an atlas composition
      * is enabled.
      * \param mode atlas scaling mode to set
-     * \note this parameter is only used if atlasDriven() is true
+     * \note this parameter is only used if atlasDriven() is TRUE
      * \see atlasScalingMode
      * \see atlasDriven
      */
@@ -397,6 +435,30 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      */
     QgsLayoutItemMapOverview *overview();
 
+    /**
+     * Returns the margin from the map edges in which no labels may be placed.
+     *
+     * If the margin is 0 then labels can be placed right up to the edge (and possibly overlapping the edge)
+     * of the map.
+     *
+     * \see setLabelMargin()
+     *
+     * \since QGIS 3.6
+     */
+    QgsLayoutMeasurement labelMargin() const;
+
+    /**
+     * Sets the \a margin from the map edges in which no labels may be placed.
+     *
+     * If the margin is 0 then labels can be placed right up to the edge (and possibly overlapping the edge)
+     * of the map.
+     *
+     * \see labelMargin()
+     *
+     * \since QGIS 3.6
+     */
+    void setLabelMargin( const QgsLayoutMeasurement &margin );
+
     QgsExpressionContext createExpressionContext() const override;
 
     /**
@@ -409,13 +471,93 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     /**
      * Returns map settings that will be used for drawing of the map.
      *
-     * If \a includeLayerSettings is true, than settings specifically relating to map layers and map layer styles
+     * If \a includeLayerSettings is TRUE, than settings specifically relating to map layers and map layer styles
      * will be calculated. This can be expensive to calculate, so if they are not required in the map settings
-     * (e.g. for map settings which are used for scale related calculations only) then \a includeLayerSettings should be false.
+     * (e.g. for map settings which are used for scale related calculations only) then \a includeLayerSettings should be FALSE.
      */
     QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, double dpi, bool includeLayerSettings ) const;
 
     void finalizeRestoreFromXml() override;
+
+    /**
+     * Returns a list of the layers which will be rendered within this map item, considering
+     * any locked layers, linked map theme, and data defined settings.
+     */
+    QList<QgsMapLayer *> layersToRender( const QgsExpressionContext *context = nullptr ) const;
+
+    /**
+     * Sets the specified layout \a item as a "label blocking item" for this map.
+     *
+     * Items which are marked as label blocking items prevent any map labels from being placed
+     * in the area of the map item covered by the \a item.
+     *
+     * \see removeLabelBlockingItem()
+     * \see isLabelBlockingItem()
+     *
+     * \since QGIS 3.6
+     */
+    void addLabelBlockingItem( QgsLayoutItem *item );
+
+    /**
+     * Removes the specified layout \a item from the map's "label blocking items".
+     *
+     * Items which are marked as label blocking items prevent any map labels from being placed
+     * in the area of the map item covered by the item.
+     *
+     * \see addLabelBlockingItem()
+     * \see isLabelBlockingItem()
+     *
+     * \since QGIS 3.6
+     */
+    void removeLabelBlockingItem( QgsLayoutItem *item );
+
+    /**
+     * Returns TRUE if the specified \a item is a "label blocking item".
+     *
+     * Items which are marked as label blocking items prevent any map labels from being placed
+     * in the area of the map item covered by the item.
+     *
+     * \see addLabelBlockingItem()
+     * \see removeLabelBlockingItem()
+     *
+     * \since QGIS 3.6
+     */
+    bool isLabelBlockingItem( QgsLayoutItem *item ) const;
+
+    /**
+     * \brief Returns map rendering errors
+     * \returns list of errors
+     */
+    QgsMapRendererJob::Errors renderingErrors() const { return mRenderingErrors; }
+
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
+
+    /**
+     * Adds a rendered feature \a handler to use while rendering the map.
+     *
+     * Ownership of \a handler is NOT transferred, and it is the caller's responsibility to ensure
+     * that the handler exists for as long as it is registered with the map item.
+     *
+     * Callers should call removeRenderedFeatureHandler() to remove the handler before
+     * destroying the \a handler.
+     *
+     * \see removeRenderedFeatureHandler()
+     * \since QGIS 3.10
+     */
+    void addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler );
+
+    /**
+     * Removes a previously added rendered feature \a handler.
+     *
+     * \see addRenderedFeatureHandler()
+     * \since QGIS 3.10
+     */
+    void removeRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler );
+
+    /**
+     * Creates a transform from layout coordinates to map coordinates.
+     */
+    QTransform layoutToMapCoordsTransform() const;
 
   protected:
 
@@ -443,20 +585,20 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
   signals:
 
     /**
-     * Is emitted when the map's extent changes.
+     * Emitted when the map's extent changes.
      * \see setExtent()
      * \see extent()
      */
     void extentChanged();
 
     /**
-     * Is emitted when the map's rotation changes.
+     * Emitted when the map's rotation changes.
      * \see setMapRotation()
      * \see mapRotation()
      */
     void mapRotationChanged( double newRotation );
 
-    //! Is emitted when the map has been prepared for atlas rendering, just before actual rendering
+    //! Emitted when the map has been prepared for atlas rendering, just before actual rendering
     void preparedForAtlas();
 
     /**
@@ -464,6 +606,16 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * associated legend items know they should update
      */
     void layerStyleOverridesChanged();
+
+    /**
+     * Emitted when the map's associated \a theme is changed.
+     *
+     * \note This signal is not emitted when the definition of the theme changes, only the map
+     * is linked to a different theme then it previously was.
+     *
+     * \since QGIS 3.14
+     */
+    void themeChanged( const QString &theme );
 
   public slots:
 
@@ -485,11 +637,16 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     void mapThemeChanged( const QString &theme );
 
+    //! Renames the active map theme called \a theme to \a newTheme
+    void currentMapThemeRenamed( const QString &theme, const QString &newTheme );
+
     //! Create cache image
     void recreateCachedImageInBackground();
 
+    void updateAtlasFeature();
   private:
 
+    QgsLayoutItemMap::MapItemFlags mMapFlags = nullptr;
 
     //! Unique identifier
     int mMapId = 1;
@@ -551,7 +708,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * differs from mMapRotation*/
     double mEvaluatedMapRotation = 0;
 
-    //! Flag if layers to be displayed should be read from qgis canvas (true) or from stored list in mLayerSet (false)
+    //! Flag if layers to be displayed should be read from qgis canvas (TRUE) or from stored list in mLayerSet (FALSE)
     bool mKeepLayerSet = false;
 
     //! Stored layer list (used if layer live-link mKeepLayerSet is disabled)
@@ -574,8 +731,11 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     /**
      * Map theme name to be used for map's layers and styles in case mFollowVisibilityPreset
-     *  is true. May be overridden by data-defined expression. */
+     *  is TRUE. May be overridden by data-defined expression. */
     QString mFollowVisibilityPresetName;
+
+    //! Name of the last data-defined evaluated theme name
+    QString mLastEvaluatedThemeName;
 
     /**
      * \brief Draw to paint device
@@ -598,6 +758,12 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     //! Returns first map overview or creates an empty one if none
     const QgsLayoutItemMapOverview *constFirstMapOverview() const;
 
+    /**
+     * Creates a list of label blocking regions for the map, which correspond to the
+     * map areas covered by other layout items marked as label blockers for this map.
+     */
+    QList< QgsLabelBlockingRegion > createLabelBlockingRegions( const QgsMapSettings &mapSettings ) const;
+
     //! Current bounding rectangle. This is used to check if notification to the graphics scene is necessary
     QRectF mCurrentRectangle;
     //! True if annotation items, rubber band, etc. from the main canvas should be displayed
@@ -614,13 +780,25 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     std::unique_ptr< QgsMapRendererCustomPainterJob > mPainterJob;
     bool mPainterCancelWait = false;
 
+    QgsLayoutMeasurement mLabelMargin{ 0 };
+    QgsLayoutMeasurement mEvaluatedLabelMargin{ 0 };
+
+    QStringList mBlockingLabelItemUuids;
+    QList< QPointer< QgsLayoutItem > > mBlockingLabelItems;
+
+    //!layer id / error message
+    QgsMapRendererJob::Errors mRenderingErrors;
+
+    QList< QgsRenderedFeatureHandlerInterface * > mRenderedFeatureHandlers;
+
+    std::unique_ptr< QgsMapRendererStagedRenderJob > mStagedRendererJob;
+
     void init();
 
     //! Resets the item tooltip to reflect current map id
     void updateToolTip();
 
-    //! Returns a list of the layers to render for this map item
-    QList<QgsMapLayer *> layersToRender( const QgsExpressionContext *context = nullptr ) const;
+    QString themeToRender( const QgsExpressionContext &context ) const;
 
     //! Returns current layer style overrides for this map item
     QMap<QString, QString> layerStyleOverridesToRender( const QgsExpressionContext &context ) const;
@@ -647,16 +825,23 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     enum PartType
     {
+      Start,
       Background,
       Layer,
       Grid,
       OverviewMapExtent,
       Frame,
-      SelectionBoxes
+      SelectionBoxes,
+      End,
+      NotLayered,
     };
 
     //! Test if a part of the item needs to be drawn, considering the context's current export layer
     bool shouldDrawPart( PartType part ) const;
+
+    PartType mCurrentExportPart = NotLayered;
+    QStringList mExportThemes;
+    QStringList::iterator mExportThemeIt;
 
     /**
      * Refresh the map's extents, considering data defined extent, scale and rotation
@@ -664,16 +849,21 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      */
     void refreshMapExtents( const QgsExpressionContext *context = nullptr );
 
-    void updateAtlasFeature();
+    void refreshLabelMargin( bool updateItem );
 
     QgsRectangle computeAtlasRectangle();
+
+    void createStagedRenderJob( const QgsRectangle &extent, const QSizeF size, double dpi );
 
     friend class QgsLayoutItemMapGrid;
     friend class QgsLayoutItemMapOverview;
     friend class QgsLayoutItemLegend;
     friend class TestQgsLayoutMap;
     friend class QgsCompositionConverter;
+    friend class QgsGeoPdfRenderedFeatureHandler;
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayoutItemMap::MapItemFlags )
 
 #endif //QGSLAYOUTITEMMAP_H

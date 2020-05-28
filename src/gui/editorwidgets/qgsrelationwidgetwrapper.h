@@ -17,7 +17,7 @@
 #define QGSRELATIONWIDGETWRAPPER_H
 
 #include "qgswidgetwrapper.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
 class QgsRelationEditorWidget;
@@ -67,6 +67,20 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     void setShowLinkButton( bool showLinkButton );
 
     /**
+     * Determines if the "save child layer edits" button should be shown
+     *
+     * \since QGIS 3.14
+     */
+    bool showSaveChildEditsButton() const;
+
+    /**
+     * Determines if the "save child layer edits" button should be shown
+     *
+     * \since QGIS 3.14
+     */
+    void setShowSaveChildEditsButton( bool showSaveChildEditsButton );
+
+    /**
      * Determines if the "unlink feature" button should be shown
      *
      * \since QGIS 2.18
@@ -87,6 +101,20 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
      */
     QgsRelation relation() const;
 
+    /**
+     * Will be called when a value in the current edited form or table row
+     * changes
+     *
+     * Forward the signal to the embedded form
+     *
+     * \param attribute The name of the attribute that changed.
+     * \param newValue     The new value of the attribute.
+     * \param attributeChanged If TRUE, it corresponds to an actual change of the feature attribute
+     * \since QGIS 3.14
+     */
+    void widgetValueChanged( const QString &attribute, const QVariant &newValue, bool attributeChanged );
+
+
   protected:
     QWidget *createWidget( QWidget *parent ) override;
     void initWidget( QWidget *editor ) override;
@@ -97,7 +125,7 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
 
     /**
      * Sets the visibility of the wrapper's widget.
-     * \param visible set to true to show widget, false to hide widget
+     * \param visible set to TRUE to show widget, FALSE to hide widget
      * \since QGIS 2.16
      */
     void setVisible( bool visible );

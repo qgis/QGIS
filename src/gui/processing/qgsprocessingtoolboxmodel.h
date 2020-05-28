@@ -22,6 +22,7 @@
 #include <QSortFilterProxyModel>
 #include <QPointer>
 
+class QgsVectorLayer;
 class QgsProcessingRegistry;
 class QgsProcessingProvider;
 class QgsProcessingAlgorithm;
@@ -79,7 +80,7 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
     virtual NodeType nodeType() const = 0;
 
     /**
-     * Returns the node's parent. If the node's parent is a null pointer, then the node is a root node.
+     * Returns the node's parent. If the node's parent is NULLPTR, then the node is a root node.
      */
     QgsProcessingToolboxModelNode *parent() { return mParent; }
 
@@ -102,7 +103,7 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
 
     /**
      * Tries to find a child node belonging to this node, which corresponds to
-     * a group node with the given group \a id. Returns nullptr if no matching
+     * a group node with the given group \a id. Returns NULLPTR if no matching
      * child group node was found.
      */
     QgsProcessingToolboxModelGroupNode *getChildGroupNode( const QString &id );
@@ -285,6 +286,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
       RoleAlgorithmName, //!< Untranslated algorithm name, for algorithm nodes
       RoleAlgorithmShortDescription, //!< Short algorithm description, for algorithm nodes
       RoleAlgorithmTags, //!< List of algorithm tags, for algorithm nodes
+      RoleProviderFlags, //!< Returns the node's provider flags
     };
 
     /**
@@ -323,7 +325,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
 
     /**
      * Returns the provider which corresponds to a given \a index, or
-     * a nullptr if the index does not represent a provider.
+     * NULLPTR if the index does not represent a provider.
      *
      * \see algorithmForIndex()
      * \see indexForProvider()
@@ -341,7 +343,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
 
     /**
      * Returns the algorithm which corresponds to a given \a index, or
-     * a nullptr if the index does not represent an algorithm.
+     * NULLPTR if the index does not represent an algorithm.
      *
      * \see isAlgorithm()
      * \see providerForIndex()
@@ -349,7 +351,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
     const QgsProcessingAlgorithm *algorithmForIndex( const QModelIndex &index ) const;
 
     /**
-     * Returns true if \a index corresponds to an algorithm.
+     * Returns TRUE if \a index corresponds to an algorithm.
      *
      * \see algorithmForIndex()
      */
@@ -391,7 +393,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
     void addProvider( QgsProcessingProvider *provider );
 
     /**
-     * Returns true if \a providerId is a "top-level" provider, which shows
+     * Returns TRUE if \a providerId is a "top-level" provider, which shows
      * groups directly under the root node and not under a provider child node.
      */
     static bool isTopLevelProvider( const QString &providerId );
@@ -423,6 +425,8 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
     {
       FilterToolbox = 1 << 1, //!< Filters out any algorithms and content which should not be shown in the toolbox
       FilterModeler = 1 << 2, //!< Filters out any algorithms and content which should not be shown in the modeler
+      FilterInPlace = 1 << 3, //!< Only show algorithms which support in-place edits
+      FilterShowKnownIssues = 1 << 4, //!< Show algorithms with known issues (hidden by default)
     };
     Q_DECLARE_FLAGS( Filters, Filter )
     Q_FLAG( Filters )
@@ -448,6 +452,12 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
     QgsProcessingToolboxModel *toolboxModel();
 
     /**
+     * Returns the underlying source Processing toolbox model.
+     * \note Not available in Python bindings
+     */
+    const QgsProcessingToolboxModel *toolboxModel() const SIP_SKIP;
+
+    /**
      * Set \a filters that affect how toolbox content is filtered.
      * \see filters()
      */
@@ -458,6 +468,11 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
      * \see setFilters()
      */
     Filters filters() const { return mFilters; }
+
+    /**
+     * Sets the vector \a layer for in-place algorithm filter
+     */
+    void setInPlaceLayer( QgsVectorLayer *layer );
 
     /**
      * Sets a \a filter string, such that only algorithms matching the
@@ -479,12 +494,14 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
 
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 
   private:
 
     QgsProcessingToolboxModel *mModel = nullptr;
     Filters mFilters = nullptr;
     QString mFilterString;
+    QPointer<QgsVectorLayer> mInPlaceLayer;
 };
 
 

@@ -1,0 +1,8 @@
+{
+  "name": "file_name",
+  "type": "function",
+  "description": "Returns the name of a file (including the file extension), excluding the directory.",
+  "arguments": [ {"arg":"path","description":"a file path"}],
+  "examples": [ { "expression":"file_name('/home/qgis/data/country_boundaries.shp')", "returns":"'country_boundaries.shp'"}]
+}
+

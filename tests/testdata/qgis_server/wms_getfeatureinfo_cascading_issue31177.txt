@@ -1,0 +1,22 @@
+Content-Length: 1268
+Content-Type: application/vnd.ogc.gml; charset=utf-8
+
+<wfs:FeatureCollection xmlns:gml="http://www.opengis.net/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ows="http://www.opengis.net/ows" xmlns:qgs="http://qgis.org/gml" xmlns:wfs="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://qgis.org/gml" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <gml:featureMember>
+  <qgs:Alberate fid="Alberate.0">
+   <qgs:id_posto_pianta>13498</qgs:id_posto_pianta>
+   <qgs:num_posto_pianta>2</qgs:num_posto_pianta>
+   <qgs:descr_ambito>D'OVIDIO Enrico VIA</qgs:descr_ambito>
+   <qgs:descr_specie>ACER PSEUDOPLATANUS LEOPOLDII</qgs:descr_specie>
+   <qgs:descr_eta>(non specificata)</qgs:descr_eta>
+   <qgs:diametro_fusto></qgs:diametro_fusto>
+   <qgs:altezza>10</qgs:altezza>
+   <qgs:descr_pavimentazione>ALTRO</qgs:descr_pavimentazione>
+   <qgs:descr_posiz_posto_pianta>(non specificata)</qgs:descr_posiz_posto_pianta>
+   <qgs:descr_stato_posto_pianta>PIANTA</qgs:descr_stato_posto_pianta>
+   <qgs:id_pianta>4175</qgs:id_pianta>
+   <qgs:altezza_impalcato></qgs:altezza_impalcato>
+   <qgs:diametro_medio_chioma></qgs:diametro_medio_chioma>
+  </qgs:Alberate>
+ </gml:featureMember>
+</wfs:FeatureCollection>

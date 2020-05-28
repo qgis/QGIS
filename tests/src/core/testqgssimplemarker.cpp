@@ -35,6 +35,23 @@
 //qgis test includes
 #include "qgsrenderchecker.h"
 
+static QString _fileNameForTest( const QString &testName )
+{
+  return QDir::tempPath() + '/' + testName + ".png";
+}
+
+static bool _verifyImage( const QString &testName, QString &report )
+{
+  QgsRenderChecker checker;
+  checker.setControlPathPrefix( QStringLiteral( "qgssimplemarkertest" ) );
+  checker.setControlName( "expected_" + testName );
+  checker.setRenderedImage( _fileNameForTest( testName ) );
+  checker.setSizeTolerance( 3, 3 );
+  bool equal = checker.compareImages( testName, 500 );
+  report += checker.report();
+  return equal;
+}
+
 /**
  * \ingroup UnitTests
  * This is a unit test for simple marker symbol types.
@@ -53,6 +70,9 @@ class TestQgsSimpleMarkerSymbol : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void simpleMarkerSymbol();
+    void simpleMarkerSymbolRotation();
+    void simpleMarkerSymbolPreviewRotation();
+    void simpleMarkerSymbolPreviewRotation_data();
     void simpleMarkerSymbolBevelJoin();
     void simpleMarkerSymbolMiterJoin();
     void simpleMarkerSymbolRoundJoin();
@@ -141,6 +161,51 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSymbol()
   QVERIFY( imageCheck( "simplemarker" ) );
 }
 
+void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolRotation()
+{
+  mReport += QLatin1String( "<h2>Simple marker symbol layer test</h2>\n" );
+
+  mSimpleMarkerLayer->setColor( Qt::blue );
+  mSimpleMarkerLayer->setStrokeColor( Qt::black );
+  mSimpleMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::Square );
+  mSimpleMarkerLayer->setSize( 15 );
+  mSimpleMarkerLayer->setAngle( 45 );
+  mSimpleMarkerLayer->setStrokeWidth( 0.2 );
+  mSimpleMarkerLayer->setPenJoinStyle( Qt::BevelJoin );
+  QVERIFY( imageCheck( "simplemarker_rotation" ) );
+}
+
+void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolPreviewRotation()
+{
+  QFETCH( QString, name );
+  QFETCH( double, angle );
+  QFETCH( QString, expression );
+  QgsMarkerSymbol markerSymbol;
+  QgsSimpleMarkerSymbolLayer *simpleMarkerLayer = new QgsSimpleMarkerSymbolLayer();
+  markerSymbol.changeSymbolLayer( 0, simpleMarkerLayer );
+
+  simpleMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::Shape::Arrow );
+  simpleMarkerLayer->setAngle( angle );
+  simpleMarkerLayer->setSize( 20 );
+  simpleMarkerLayer->setColor( Qt::red );
+  simpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, QgsProperty::fromExpression( expression ) );
+
+  QgsExpressionContext ec;
+  QImage image = markerSymbol.bigSymbolPreviewImage( &ec );
+  image.save( _fileNameForTest( name ) );
+  QVERIFY( _verifyImage( name, mReport ) );
+}
+
+void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolPreviewRotation_data()
+{
+  QTest::addColumn<QString>( "name" );
+  QTest::addColumn<double>( "angle" );
+  QTest::addColumn<QString>( "expression" );
+
+  QTest::newRow( "field_based" ) << QStringLiteral( "field_based" ) << 20. << QStringLiteral( "orientation" ); // Should fallback to 20 because orientation is not available
+  QTest::newRow( "static_expression" ) << QStringLiteral( "static_expression" ) << 20. << QStringLiteral( "40" ); // Should use 40 because expression has precedence
+}
+
 void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolBevelJoin()
 {
   mReport += QLatin1String( "<h2>Simple marker symbol layer test</h2>\n" );
@@ -149,6 +214,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolBevelJoin()
   mSimpleMarkerLayer->setStrokeColor( Qt::black );
   mSimpleMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::Triangle );
   mSimpleMarkerLayer->setSize( 25 );
+  mSimpleMarkerLayer->setAngle( 0 );
   mSimpleMarkerLayer->setStrokeWidth( 3 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::BevelJoin );
   QVERIFY( imageCheck( "simplemarker_beveljoin" ) );

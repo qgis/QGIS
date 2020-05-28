@@ -17,7 +17,7 @@
 #define QGSPIXMAPLABEL_H
 
 #include <QLabel>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
 /**

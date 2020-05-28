@@ -61,7 +61,7 @@ Gets the host:port to associate with the server certificate
 
     QSsl::SslProtocol sslProtocol();
 %Docstring
-Gets the SSL protocl used for connections
+Gets the SSL protocol used for connections
 %End
 
     const QList<QSslError::SslError> sslIgnoreErrorEnums();

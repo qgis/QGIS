@@ -10,7 +10,6 @@
 
 
 
-
 class QgsSymbolWidgetContext
 {
 %Docstring
@@ -53,6 +52,25 @@ map scale and other properties from the canvas.
 Returns the map canvas associated with the widget.
 
 .. seealso:: :py:func:`setMapCanvas`
+%End
+
+    void setMessageBar( QgsMessageBar *bar );
+%Docstring
+Sets the message ``bar`` associated with the widget. This allows the widget to push feedback messages
+to the appropriate message bar.
+
+.. seealso:: :py:func:`messageBar`
+
+.. versionadded:: 3.6
+%End
+
+    QgsMessageBar *messageBar() const;
+%Docstring
+Returns the message bar associated with the widget.
+
+.. seealso:: :py:func:`setMessageBar`
+
+.. versionadded:: 3.6
 %End
 
     void setExpressionContext( QgsExpressionContext *context );

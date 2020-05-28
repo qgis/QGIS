@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '18/07/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -126,7 +124,7 @@ class TestQgsRatioLockButton(unittest.TestCase):
         spin_width.blockSignals(True)
         spin_width.setValue(2000)
         spin_width.blockSignals(False)
-        w.resetRatio() # since signals were blocked, we need to manually reset ratio
+        w.resetRatio()  # since signals were blocked, we need to manually reset ratio
         spin_height.setValue(1000)
         self.assertEqual(spin_width.value(), 1000)
 

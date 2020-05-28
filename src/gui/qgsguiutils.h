@@ -45,7 +45,7 @@ namespace QgsGuiUtils
    * Although not the standard Mac modal look, it does lack the minimize
    * control which makes sense only for modeless dislogs.
    *
-   * The Qt3 method of creating a true Mac modal dialog is deprecated in Qt4
+   * The Qt3 method of creating a TRUE Mac modal dialog is deprecated in Qt4
    * and should not be used due to conflicts with QMessageBox style dialogs.
    *
    * Qt::WindowMaximizeButtonHint is included but will be ignored if
@@ -130,7 +130,7 @@ namespace QgsGuiUtils
    * It is strongly recommended that you do not use this method, and instead use the standard
    * QgsFontButton widget to allow users consistent font selection behavior.
    *
-   * \param ok true on ok, false on cancel
+   * \param ok TRUE on ok, FALSE on cancel
    * \param initial initial font
    * \param title optional dialog title
    * \returns QFont the selected fon
@@ -142,7 +142,7 @@ namespace QgsGuiUtils
    * use keyName to save state into settings.
    * \param widget The widget to restore.
    * \param keyName Override for objectName() if needed.
-   * \return True if the geometry was restored.
+   * \return TRUE if the geometry was restored.
    */
   bool GUI_EXPORT restoreGeometry( QWidget *widget, const QString &keyName = QString() );
 
@@ -162,6 +162,33 @@ namespace QgsGuiUtils
    * \return A key name that can be used for the widget in settings.
    */
   QString createWidgetKey( QWidget *widget, const QString &keyName = QString() );
+
+  /**
+   * Scales an icon size to compensate for display pixel density, making the icon
+   * size hi-dpi friendly, whilst still resulting in pixel-perfect sizes for low-dpi
+   * displays.
+   *
+   * \a standardSize should be set to a standard icon size, e.g. 16, 24, 48, etc.
+   *
+   * \since QGIS 3.6
+   */
+  int GUI_EXPORT scaleIconSize( int standardSize );
+
+  /**
+   * Returns the user-preferred size of a window's toolbar icons.
+   * \param dockableToolbar If set to true, the icon size will be returned for dockable window panel's toolbars.
+   * \returns a QSize object representing an icon's width and height.
+   * \since QGIS 3.8
+   */
+  QSize GUI_EXPORT iconSize( bool dockableToolbar = false );
+
+  /**
+   * Returns dockable panel toolbar icon width based on the provided window toolbar width.
+   * \param size Icon size from which the output size will be derived from.
+   * \returns a QSize object representing an icon's width and height.
+   * \since QGIS 3.8
+   */
+  QSize GUI_EXPORT panelIconSize( QSize size );
 }
 
 /**
@@ -170,6 +197,7 @@ namespace QgsGuiUtils
  * When the object is deleted, the cursor override is removed.
  *
  * \ingroup gui
+ * \see QgsTemporaryCursorRestoreOverride
  * \since QGIS 3.2
  */
 class GUI_EXPORT QgsTemporaryCursorOverride
@@ -192,6 +220,38 @@ class GUI_EXPORT QgsTemporaryCursorOverride
   private:
 
     bool mHasOverride = true;
+
+};
+
+/**
+ * Temporarily removes all cursor overrides for the QApplication for the lifetime of the object.
+ *
+ * When the object is deleted, all stacked cursor overrides are restored.
+ *
+ * \ingroup gui
+ * \see QgsTemporaryCursorOverride
+ * \since QGIS 3.8
+ */
+class GUI_EXPORT QgsTemporaryCursorRestoreOverride
+{
+  public:
+
+    /**
+     * Constructor for QgsTemporaryCursorRestoreOverride. Removes all application override
+     * cursors.
+     */
+    QgsTemporaryCursorRestoreOverride();
+
+    ~QgsTemporaryCursorRestoreOverride();
+
+    /**
+     * Restores the cursor override early (i.e. before this object is destroyed).
+     */
+    void restore();
+
+  private:
+
+    std::vector< QCursor > mCursors;
 
 };
 

@@ -136,7 +136,7 @@ void QgsAuthGuiUtils::resetMasterPassword( QgsMessageBar *msgbar, int timeout, Q
 
   if ( !dlg.requestMasterPasswordReset( &newpass, &oldpass, &keepbackup ) )
   {
-    QgsDebugMsg( "Master password reset: input canceled by user" );
+    QgsDebugMsg( QStringLiteral( "Master password reset: input canceled by user" ) );
     return;
   }
 
@@ -245,8 +245,8 @@ void QgsAuthGuiUtils::fileFound( bool found, QWidget *widget )
   }
   else
   {
-    widget->setStyleSheet( QLatin1String( "" ) );
-    widget->setToolTip( QLatin1String( "" ) );
+    widget->setStyleSheet( QString() );
+    widget->setToolTip( QString() );
   }
 }
 
@@ -327,7 +327,7 @@ void QgsAuthGuiUtils::passwordHelperEnable( bool enabled, QgsMessageBar *msgbar,
 
 void QgsAuthGuiUtils::passwordHelperLoggingEnable( bool enabled, QgsMessageBar *msgbar, int timeout )
 {
-  Q_UNUSED( msgbar );
-  Q_UNUSED( timeout );
+  Q_UNUSED( msgbar )
+  Q_UNUSED( timeout )
   QgsApplication::authManager()->setPasswordHelperLoggingEnabled( enabled );
 }

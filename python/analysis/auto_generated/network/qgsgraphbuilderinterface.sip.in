@@ -9,6 +9,7 @@
 
 
 
+
 %ModuleHeaderCode
 #include <qgsgraphbuilder.h>
 %End
@@ -31,7 +32,8 @@ QgsGraphBuilder and QgsGraphDirector both use a "builder" design pattern
 %End
   public:
 
-    QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem &crs, bool ctfEnabled = true, double topologyTolerance = 0.0, const QString &ellipsoidID = "WGS84" );
+    QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem &crs, bool ctfEnabled = true,
+                              double topologyTolerance = 0.0, const QString &ellipsoidID = "WGS84" );
 %Docstring
 Default constructor
 

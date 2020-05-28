@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSLEGENDSYMBOLITEMV2_H
-#define QGSLEGENDSYMBOLITEMV2_H
+#ifndef QGSLEGENDSYMBOLITEM_H
+#define QGSLEGENDSYMBOLITEM_H
 
 #include <memory>
 #include <QString>
@@ -52,7 +52,7 @@ class CORE_EXPORT QgsLegendSymbolItem
     QgsLegendSymbolItem( const QgsLegendSymbolItem &other );
     QgsLegendSymbolItem &operator=( const QgsLegendSymbolItem &other );
 
-    //! Returns associated symbol. May be null.
+    //! Returns associated symbol. May be NULLPTR.
     QgsSymbol *symbol() const { return mSymbol; }
     //! Returns text label
     QString label() const { return mLabel; }
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsLegendSymbolItem
     //! Used for older code that identifies legend entries from symbol pointer within renderer
     QgsSymbol *legacyRuleKey() const { return mOriginalSymbolPointer; }
 
-    //! Determine whether given scale is within the scale range. Returns true if scale or scale range is invalid (value <= 0)
+    //! Determine whether given scale is within the scale range. Returns TRUE if scale or scale range is invalid (value <= 0)
     bool isScaleOK( double scale ) const;
 
     /**
@@ -88,12 +88,18 @@ class CORE_EXPORT QgsLegendSymbolItem
      */
     QString parentRuleKey() const { return mParentKey; }
 
-    //! Sets symbol of the item. Takes ownership of symbol.
-    void setSymbol( QgsSymbol *s SIP_TRANSFER );
+    /**
+     * Sets the symbol of the item.
+     *
+     * Does not take ownership of symbol -- an internal clone is made of the symbol.
+     *
+     * \see symbol()
+     */
+    void setSymbol( QgsSymbol *s );
 
     /**
      * Sets extra information about data-defined size. If set, this item should be converted to QgsDataDefinedSizeLegendNode
-     * rather than QgsSymbolLegendNode instance as usual. Passing null removes any data-defined size legend settings.
+     * rather than QgsSymbolLegendNode instance as usual. Passing NULLPTR removes any data-defined size legend settings.
      *
      * Takes ownership of the settings object.
      * \since QGIS 3.0
@@ -101,13 +107,13 @@ class CORE_EXPORT QgsLegendSymbolItem
     void setDataDefinedSizeLegendSettings( QgsDataDefinedSizeLegend *settings SIP_TRANSFER );
 
     /**
-     * Returns extra information for data-defined size legend rendering. Normally it returns null.
+     * Returns extra information for data-defined size legend rendering. Normally it returns NULLPTR.
      * \since QGIS 3.0
      */
     QgsDataDefinedSizeLegend *dataDefinedSizeLegendSettings() const;
 
   private:
-    //! symbol. owned by the struct. can be null.
+    //! Legend symbol -- may be NULLPTR.
     QgsSymbol *mSymbol = nullptr;
     //! label of the item (may be empty or non-unique)
     QString mLabel;
@@ -135,7 +141,6 @@ class CORE_EXPORT QgsLegendSymbolItem
     QString mParentKey;
 };
 
-
 typedef QList< QgsLegendSymbolItem > QgsLegendSymbolList;
 
-#endif // QGSLEGENDSYMBOLITEMV2_H
+#endif // QGSLEGENDSYMBOLITEM_H

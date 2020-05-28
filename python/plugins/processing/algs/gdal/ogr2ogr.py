@@ -21,13 +21,10 @@ __author__ = 'Victor Olaya'
 __date__ = 'November 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
-from qgis.core import (QgsProcessingException,
+from qgis.core import (QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
@@ -37,7 +34,6 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 
 class ogr2ogr(GdalAlgorithm):
-
     INPUT = 'INPUT'
     OPTIONS = 'OPTIONS'
     OUTPUT = 'OUTPUT'
@@ -47,7 +43,8 @@ class ogr2ogr(GdalAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer')))
+                                                              self.tr('Input layer'),
+                                                              types=[QgsProcessing.TypeVector]))
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),
@@ -78,10 +75,11 @@ class ogr2ogr(GdalAlgorithm):
         ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, outFile)
 
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
-        if outputFormat == 'SQLite' and os.path.isfile(output):
+        if outputFormat in ('SQLite', 'GPKG') and os.path.isfile(output):
             raise QgsProcessingException(self.tr('Output file "{}" already exists.'.format(output)))
 
         arguments = []

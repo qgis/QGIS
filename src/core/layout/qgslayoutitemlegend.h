@@ -19,16 +19,18 @@
 #define QGSLAYOUTITEMLEGEND_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgslayoutitem.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"
 #include "qgslayertreegroup.h"
+#include "qgsexpressioncontext.h"
 
 class QgsLayerTreeModel;
 class QgsSymbol;
 class QgsLayoutItemMap;
 class QgsLegendRenderer;
+class QgsLayoutItemLegend;
 
 /**
  * \ingroup core
@@ -44,11 +46,49 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
 
   public:
     //! Construct the model based on the given layer tree
-    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent SIP_TRANSFERTHIS = nullptr );
+    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent SIP_TRANSFERTHIS = nullptr, QgsLayoutItemLegend *layout = nullptr );
+
+    //! Alternative constructor.
+    QgsLegendModel( QgsLayerTree *rootNode,  QgsLayoutItemLegend *layout );
 
     QVariant data( const QModelIndex &index, int role ) const override;
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
+    /**
+     * Returns filtered list of active legend nodes attached to a particular layer node
+     * (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is true)
+     * \note Parameter skipNodeEmbeddedInParent added in QGIS 2.18
+     * \note Not available in Python bindings
+     * \see layerOriginalLegendNodes()
+     * \since QGIS 3.10
+     */
+    QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false ) const SIP_SKIP;
+
+  signals:
+
+    /**
+     * Emitted to refresh the legend.
+     * \since QGIS 3.10
+     */
+    void refreshLegend();
+
+  private slots:
+
+    /**
+     * Handle incoming signal to refresh the legend.
+     * \since QGIS 3.10
+     */
+    void forceRefresh();
+
+  private:
+
+    /**
+     * Pointer to the QgsLayoutItemLegend class that made the model.
+     * \since QGIS 3.10
+     */
+    QgsLayoutItemLegend *mLayoutLegend = nullptr;
+
 };
 
 
@@ -78,6 +118,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     int type() const override;
     QIcon icon() const override;
+    QgsLayoutItem::Flags itemFlags() const override;
     //Overridden to show legend title
     QString displayName() const override;
 
@@ -88,7 +129,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     /**
      * Sets whether the legend should automatically resize to fit its contents.
-     * \param enabled set to false to disable automatic resizing. The legend frame will not
+     * \param enabled set to FALSE to disable automatic resizing. The legend frame will not
      * be expanded to fit legend items, and items may be cropped from display.
      * \see resizeToContents()
      */
@@ -132,7 +173,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     bool legendFilterByMapEnabled() const { return mLegendFilterByMap; }
 
     /**
-     * When set to true, during an atlas rendering, it will filter out legend elements
+     * When set to TRUE, during an atlas rendering, it will filter out legend elements
      * where features are outside the current atlas feature.
      * \see legendFilterOutAtlas()
      */
@@ -266,6 +307,26 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void setSymbolWidth( double width );
 
     /**
+     * Sets the \a alignment for placement of legend symbols.
+     *
+     * Only Qt::AlignLeft or Qt::AlignRight are supported values.
+     *
+     * \see symbolAlignment()
+     * \since QGIS 3.10
+     */
+    void setSymbolAlignment( Qt::AlignmentFlag alignment );
+
+    /**
+     * Returns the alignment for placement of legend symbols.
+     *
+     * Only Qt::AlignLeft or Qt::AlignRight are supported values.
+     *
+     * \see setSymbolAlignment()
+     * \since QGIS 3.10
+     */
+    Qt::AlignmentFlag symbolAlignment() const;
+
+    /**
      * Returns the legend symbol height.
      * \see setSymbolHeight()
      */
@@ -361,7 +422,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     /**
      * Sets whether a stroke will be drawn around raster symbol items.
-     * \param enabled set to true to draw borders
+     * \param enabled set to TRUE to draw borders
      * \see drawRasterStroke()
      * \see setRasterStrokeColor()
      * \see setRasterStrokeWidth()
@@ -370,7 +431,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     /**
      * Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
-     * only drawn if drawRasterStroke() is true.
+     * only drawn if drawRasterStroke() is TRUE.
      * \see setRasterStrokeColor()
      * \see drawRasterStroke()
      * \see rasterStrokeWidth()
@@ -379,7 +440,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     /**
      * Sets the stroke \a color for the stroke drawn around raster symbol items. The stroke is
-     * only drawn if drawRasterStroke() is true.
+     * only drawn if drawRasterStroke() is TRUE.
      * \see rasterStrokeColor()
      * \see setDrawRasterStroke()
      * \see setRasterStrokeWidth()
@@ -388,7 +449,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     /**
      * Returns the stroke width (in layout units) for the stroke drawn around raster symbol items. The stroke is
-     * only drawn if drawRasterStroke() is true.
+     * only drawn if drawRasterStroke() is TRUE.
      * \see setRasterStrokeWidth()
      * \see drawRasterStroke()
      * \see rasterStrokeColor()
@@ -397,7 +458,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     /**
      * Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
-     * only drawn if drawRasterStroke() is true.
+     * only drawn if drawRasterStroke() is TRUE.
      * \see rasterStrokeWidth()
      * \see setDrawRasterStroke()
      * \see setRasterStrokeColor()
@@ -415,6 +476,15 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
      * \see setLinkedMap()
      */
     QgsLayoutItemMap *linkedMap() const { return mMap; }
+
+    /**
+     * Returns the name of the theme currently linked to the legend.
+     *
+     * This usually equates to the theme rendered in the linkedMap().
+     *
+     * \since QGIS 3.14
+     */
+    QString themeName() const;
 
     /**
      * Updates the model and all legend entries.
@@ -435,6 +505,9 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     void finalizeRestoreFromXml() override;
 
+    QgsExpressionContext createExpressionContext() const override;
+    ExportLayerBehavior exportLayerBehavior() const override;
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
   public slots:
 
@@ -456,6 +529,8 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     //! update legend in case style of associated map has changed
     void mapLayerStyleOverridesChanged();
+    //! update legend in case theme of associated map has changed
+    void mapThemeChanged( const QString &theme );
 
     //! react to atlas
     void onAtlasEnded();
@@ -463,13 +538,16 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     void nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
 
+
   private:
     QgsLayoutItemLegend() = delete;
 
-    //! use new custom layer tree and update model. if new root is null pointer, will use project's tree
+    //! use new custom layer tree and update model. if new root is NULLPTR, will use project's tree
     void setCustomLayerTree( QgsLayerTree *rootGroup );
 
     void setupMapConnections( QgsLayoutItemMap *map, bool connect = true );
+
+    void setModelStyleOverrides( const QMap<QString, QString> &overrides );
 
     std::unique_ptr< QgsLegendModel > mLegendModel;
     std::unique_ptr< QgsLayerTreeGroup > mCustomLayerTree;
@@ -495,14 +573,17 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     bool mInAtlas = false;
 
-    //! Will be false until the associated map scale and DPI have been calculated
+    //! Will be FALSE until the associated map scale and DPI have been calculated
     bool mInitialMapScaleCalculated = false;
 
-    //! Will be true if the legend size should be totally reset at next paint
+    //! Will be TRUE if the legend size should be totally reset at next paint
     bool mForceResize = false;
 
-    //! Will be true if the legend should be resized automatically to fit contents
+    //! Will be TRUE if the legend should be resized automatically to fit contents
     bool mSizeToContents = true;
+
+    //! Name of theme for legend -- usually the theme associated with the linked map.
+    QString mThemeName;
 
     friend class QgsCompositionConverter;
 

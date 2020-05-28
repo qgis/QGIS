@@ -31,7 +31,7 @@
 
 bool QgsLayoutTableStyle::writeXml( QDomElement &styleElem, QDomDocument &doc ) const
 {
-  Q_UNUSED( doc );
+  Q_UNUSED( doc )
   styleElem.setAttribute( QStringLiteral( "cellBackgroundColor" ), QgsSymbolLayerUtils::encodeColor( cellBackgroundColor ) );
   styleElem.setAttribute( QStringLiteral( "enabled" ), enabled );
   return true;
@@ -66,8 +66,8 @@ QgsLayoutTable::QgsLayoutTable( QgsLayout *layout )
 
 QgsLayoutTable::~QgsLayoutTable()
 {
-  qDeleteAll( mColumns );
   mColumns.clear();
+  mSortColumns.clear();
 
   qDeleteAll( mCellStyles );
   mCellStyles.clear();
@@ -93,15 +93,25 @@ bool QgsLayoutTable::writePropertiesToElement( QDomElement &elem, QDomDocument &
   elem.setAttribute( QStringLiteral( "backgroundColor" ), QgsSymbolLayerUtils::encodeColor( mBackgroundColor ) );
   elem.setAttribute( QStringLiteral( "wrapBehavior" ), QString::number( static_cast< int >( mWrapBehavior ) ) );
 
-  //columns
+  // display columns
   QDomElement displayColumnsElem = doc.createElement( QStringLiteral( "displayColumns" ) );
-  for ( QgsLayoutTableColumn *column : qgis::as_const( mColumns ) )
+  for ( const QgsLayoutTableColumn &column : qgis::as_const( mColumns ) )
   {
     QDomElement columnElem = doc.createElement( QStringLiteral( "column" ) );
-    column->writeXml( columnElem, doc );
+    column.writeXml( columnElem, doc );
     displayColumnsElem.appendChild( columnElem );
   }
   elem.appendChild( displayColumnsElem );
+  // sort columns
+  QDomElement sortColumnsElem = doc.createElement( QStringLiteral( "sortColumns" ) );
+  for ( const QgsLayoutTableColumn &column : qgis::as_const( mSortColumns ) )
+  {
+    QDomElement columnElem = doc.createElement( QStringLiteral( "column" ) );
+    column.writeXml( columnElem, doc );
+    sortColumnsElem.appendChild( columnElem );
+  }
+  elem.appendChild( sortColumnsElem );
+
 
   //cell styles
   QDomElement stylesElem = doc.createElement( QStringLiteral( "cellStyles" ) );
@@ -128,14 +138,14 @@ bool QgsLayoutTable::readPropertiesFromElement( const QDomElement &itemElem, con
   mShowEmptyRows = itemElem.attribute( QStringLiteral( "showEmptyRows" ), QStringLiteral( "0" ) ).toInt();
   if ( !QgsFontUtils::setFromXmlChildNode( mHeaderFont, itemElem, QStringLiteral( "headerFontProperties" ) ) )
   {
-    mHeaderFont.fromString( itemElem.attribute( QStringLiteral( "headerFont" ), QLatin1String( "" ) ) );
+    mHeaderFont.fromString( itemElem.attribute( QStringLiteral( "headerFont" ), QString() ) );
   }
   mHeaderFontColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "headerFontColor" ), QStringLiteral( "0,0,0,255" ) ) );
   mHeaderHAlignment = QgsLayoutTable::HeaderHAlignment( itemElem.attribute( QStringLiteral( "headerHAlignment" ), QStringLiteral( "0" ) ).toInt() );
   mHeaderMode = QgsLayoutTable::HeaderMode( itemElem.attribute( QStringLiteral( "headerMode" ), QStringLiteral( "0" ) ).toInt() );
   if ( !QgsFontUtils::setFromXmlChildNode( mContentFont, itemElem, QStringLiteral( "contentFontProperties" ) ) )
   {
-    mContentFont.fromString( itemElem.attribute( QStringLiteral( "contentFont" ), QLatin1String( "" ) ) );
+    mContentFont.fromString( itemElem.attribute( QStringLiteral( "contentFont" ), QString() ) );
   }
   mContentFontColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "contentFontColor" ), QStringLiteral( "0,0,0,255" ) ) );
   mCellMargin = itemElem.attribute( QStringLiteral( "cellMargin" ), QStringLiteral( "1.0" ) ).toDouble();
@@ -147,8 +157,7 @@ bool QgsLayoutTable::readPropertiesFromElement( const QDomElement &itemElem, con
   mBackgroundColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "backgroundColor" ), QStringLiteral( "255,255,255,0" ) ) );
   mWrapBehavior = QgsLayoutTable::WrapBehavior( itemElem.attribute( QStringLiteral( "wrapBehavior" ), QStringLiteral( "0" ) ).toInt() );
 
-  //restore column specifications
-  qDeleteAll( mColumns );
+  //restore display column specifications
   mColumns.clear();
   QDomNodeList columnsList = itemElem.elementsByTagName( QStringLiteral( "displayColumns" ) );
   if ( !columnsList.isEmpty() )
@@ -158,10 +167,34 @@ bool QgsLayoutTable::readPropertiesFromElement( const QDomElement &itemElem, con
     for ( int i = 0; i < columnEntryList.size(); ++i )
     {
       QDomElement columnElem = columnEntryList.at( i ).toElement();
-      QgsLayoutTableColumn *column = new QgsLayoutTableColumn;
-      column->readXml( columnElem );
+      QgsLayoutTableColumn column;
+      column.readXml( columnElem );
       mColumns.append( column );
     }
+  }
+  // sort columns
+  mSortColumns.clear();
+  QDomNodeList sortColumnsList = itemElem.elementsByTagName( QStringLiteral( "sortColumns" ) );
+  if ( !sortColumnsList.isEmpty() )
+  {
+    QDomElement columnsElem = sortColumnsList.at( 0 ).toElement();
+    QDomNodeList columnEntryList = columnsElem.elementsByTagName( QStringLiteral( "column" ) );
+    for ( int i = 0; i < columnEntryList.size(); ++i )
+    {
+      QDomElement columnElem = columnEntryList.at( i ).toElement();
+      QgsLayoutTableColumn column;
+      column.readXml( columnElem );
+      mSortColumns.append( column );
+    }
+  }
+  else
+  {
+    // backward compatibility for QGIS < 3.14
+    // copy the display columns if sortByRank > 0 and then, sort them by rank
+    Q_NOWARN_DEPRECATED_PUSH
+    std::copy_if( mColumns.begin(), mColumns.end(), std::back_inserter( mSortColumns ), []( const QgsLayoutTableColumn & col ) {return col.sortByRank() > 0;} );
+    std::sort( mSortColumns.begin(), mSortColumns.end(), []( const QgsLayoutTableColumn & a, const QgsLayoutTableColumn & b ) {return a.sortByRank() < b.sortByRank();} );
+    Q_NOWARN_DEPRECATED_POP
   }
 
   //restore cell styles
@@ -301,7 +334,7 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
 
   double gridSizeX = mShowGrid && mVerticalGrid ? mGridStrokeWidth : 0;
   double gridSizeY = mShowGrid && mHorizontalGrid ? mGridStrokeWidth : 0;
-  double cellHeaderHeight = QgsLayoutUtils::fontAscentMM( mHeaderFont ) + 2 * mCellMargin;
+  double cellHeaderHeight = mMaxRowHeightMap[0] + 2 * mCellMargin;//QgsLayoutUtils::fontAscentMM( mHeaderFont ) + 2 * mCellMargin;
   double cellBodyHeight = QgsLayoutUtils::fontAscentMM( mContentFont ) + 2 * mCellMargin;
   QRectF cell;
 
@@ -341,7 +374,7 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
   {
     //draw the headers
     int col = 0;
-    for ( const QgsLayoutTableColumn *column : qgis::as_const( mColumns ) )
+    for ( const QgsLayoutTableColumn &column : qgis::as_const( mColumns ) )
     {
       //draw background
       p->save();
@@ -352,15 +385,6 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
 
       currentX += mCellMargin;
 
-      Qt::TextFlag textFlag = static_cast< Qt::TextFlag >( 0 );
-      if ( column->width() <= 0 )
-      {
-        //automatic column width, so we use the Qt::TextDontClip flag when drawing contents, as this works nicer for italicised text
-        //which may slightly exceed the calculated width
-        //if column size was manually set then we do apply text clipping, to avoid painting text outside of columns width
-        textFlag = Qt::TextDontClip;
-      }
-
       cell = QRectF( currentX, currentY, mMaxColumnWidthMap[col], cellHeaderHeight );
 
       //calculate alignment of header
@@ -368,7 +392,7 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
       switch ( mHeaderHAlignment )
       {
         case FollowColumn:
-          headerAlign = column->hAlignment();
+          headerAlign = column.hAlignment();
           break;
         case HeaderLeft:
           headerAlign = Qt::AlignLeft;
@@ -381,7 +405,15 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
           break;
       }
 
-      QgsLayoutUtils::drawText( p, cell, column->heading(), mHeaderFont, mHeaderFontColor, headerAlign, Qt::AlignVCenter, textFlag );
+      // disable text clipping to target text rectangle, because we manually clip to the full cell bounds below
+      // and it's ok if text overlaps into the margin (e.g. extenders or italicized text)
+      QString str = column.heading();
+      Qt::TextFlag textFlag = static_cast< Qt::TextFlag >( Qt::TextDontClip );
+      if ( ( mWrapBehavior != TruncateText || column.width() > 0 ) && textRequiresWrapping( str, column.width(), mHeaderFont ) )
+      {
+        str = wrappedText( str, column.width(), mHeaderFont );
+      }
+      QgsLayoutUtils::drawText( p, cell, str, mHeaderFont, mHeaderFontColor, headerAlign, Qt::AlignVCenter, textFlag );
 
       currentX += mMaxColumnWidthMap[ col ];
       currentX += mCellMargin;
@@ -408,13 +440,14 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
       double rowHeight = mMaxRowHeightMap[row + 1] + 2 * mCellMargin;
 
 
-      for ( const QgsLayoutTableColumn *column : qgis::as_const( mColumns ) )
+      for ( const QgsLayoutTableColumn &column : qgis::as_const( mColumns ) )
       {
+        const QRectF fullCell( currentX, currentY, mMaxColumnWidthMap[col] + 2 * mCellMargin, rowHeight );
         //draw background
         p->save();
         p->setPen( Qt::NoPen );
         p->setBrush( backgroundColor( row, col ) );
-        p->drawRect( QRectF( currentX, currentY, mMaxColumnWidthMap[col] + 2 * mCellMargin, rowHeight ) );
+        p->drawRect( fullCell );
         p->restore();
 
         // currentY = gridSize;
@@ -423,21 +456,25 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
         QVariant cellContents = mTableContents.at( row ).at( col );
         QString str = cellContents.toString();
 
-        Qt::TextFlag textFlag = static_cast< Qt::TextFlag >( 0 );
-        if ( column->width() <= 0 && mWrapBehavior == TruncateText )
+        // disable text clipping to target text rectangle, because we manually clip to the full cell bounds below
+        // and it's ok if text overlaps into the margin (e.g. extenders or italicized text)
+        Qt::TextFlag textFlag = static_cast< Qt::TextFlag >( Qt::TextDontClip );
+        if ( ( mWrapBehavior != TruncateText || column.width() > 0 ) && textRequiresWrapping( str, column.width(), mContentFont ) )
         {
-          //automatic column width, so we use the Qt::TextDontClip flag when drawing contents, as this works nicer for italicised text
-          //which may slightly exceed the calculated width
-          //if column size was manually set then we do apply text clipping, to avoid painting text outside of columns width
-          textFlag = Qt::TextDontClip;
-        }
-        else if ( textRequiresWrapping( str, column->width(), mContentFont ) )
-        {
-          str = wrappedText( str, column->width(), mContentFont );
+          str = wrappedText( str, column.width(), mContentFont );
         }
 
-        cell = QRectF( currentX, currentY, mMaxColumnWidthMap[col], rowHeight );
-        QgsLayoutUtils::drawText( p, cell, str, mContentFont, mContentFontColor, column->hAlignment(), column->vAlignment(), textFlag );
+        p->save();
+        p->setClipRect( fullCell );
+        const QRectF textCell = QRectF( currentX, currentY + mCellMargin, mMaxColumnWidthMap[col], rowHeight - 2 * mCellMargin );
+
+        const QgsConditionalStyle style = conditionalCellStyle( row, col );
+        QColor foreColor = mContentFontColor;
+        if ( style.textColor().isValid() )
+          foreColor = style.textColor();
+
+        QgsLayoutUtils::drawText( p, textCell, str, mContentFont, foreColor, column.hAlignment(), column.vAlignment(), textFlag );
+        p->restore();
 
         currentX += mMaxColumnWidthMap[ col ];
         currentX += mCellMargin;
@@ -467,9 +504,9 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
       }
       else
       {
-        for ( QgsLayoutTableColumn *column : qgis::as_const( mColumns ) )
+        for ( const QgsLayoutTableColumn &column : qgis::as_const( mColumns ) )
         {
-          Q_UNUSED( column );
+          Q_UNUSED( column )
 
           //draw background
 
@@ -754,10 +791,24 @@ void QgsLayoutTable::setWrapBehavior( QgsLayoutTable::WrapBehavior behavior )
 void QgsLayoutTable::setColumns( const QgsLayoutTableColumns &columns )
 {
   //remove existing columns
-  qDeleteAll( mColumns );
-  mColumns.clear();
+  mColumns = columns;
 
-  mColumns.append( columns );
+  // backward compatibility
+  // test if sorting is provided with the columns and call setSortColumns in such case
+  QgsLayoutTableSortColumns newSortColumns;
+  Q_NOWARN_DEPRECATED_PUSH
+  std::copy_if( mColumns.begin(), mColumns.end(), std::back_inserter( newSortColumns ), []( const QgsLayoutTableColumn & col ) {return col.sortByRank() > 0;} );
+  if ( !newSortColumns.isEmpty() )
+  {
+    std::sort( newSortColumns.begin(), newSortColumns.end(), []( const QgsLayoutTableColumn & a, const QgsLayoutTableColumn & b ) {return a.sortByRank() < b.sortByRank();} );
+    setSortColumns( newSortColumns );
+  }
+  Q_NOWARN_DEPRECATED_POP
+}
+
+void QgsLayoutTable::setSortColumns( const QgsLayoutTableSortColumns &sortColumns )
+{
+  mSortColumns = sortColumns;
 }
 
 void QgsLayoutTable::setCellStyle( QgsLayoutTable::CellStyleGroup group, const QgsLayoutTableStyle &style )
@@ -780,19 +831,23 @@ QMap<int, QString> QgsLayoutTable::headerLabels() const
 {
   QMap<int, QString> headers;
 
-  QgsLayoutTableColumns::const_iterator columnIt = mColumns.constBegin();
-  int col = 0;
-  for ( ; columnIt != mColumns.constEnd(); ++columnIt )
+  int i = 0;
+  for ( const QgsLayoutTableColumn &col : qgis::as_const( mColumns ) )
   {
-    headers.insert( col, ( *columnIt )->heading() );
-    col++;
+    headers.insert( i, col.heading() );
+    i++;
   }
   return headers;
 }
 
+QgsConditionalStyle QgsLayoutTable::conditionalCellStyle( int, int ) const
+{
+  return QgsConditionalStyle();
+}
+
 QSizeF QgsLayoutTable::fixedFrameSize( const int frameIndex ) const
 {
-  Q_UNUSED( frameIndex );
+  Q_UNUSED( frameIndex )
   return QSizeF( mTableSize.width(), 0 );
 }
 
@@ -859,43 +914,52 @@ bool QgsLayoutTable::calculateMaxColumnWidths()
   int cells = cols * ( mTableContents.count() + 1 );
   QVector< double > widths( cells );
 
+  double currentCellTextWidth;
+
   //first, go through all the column headers and calculate the sizes
-  QgsLayoutTableColumns::const_iterator columnIt = mColumns.constBegin();
-  int col = 0;
-  for ( ; columnIt != mColumns.constEnd(); ++columnIt )
+  int i = 0;
+  for ( const QgsLayoutTableColumn &col : qgis::as_const( mColumns ) )
   {
-    if ( ( *columnIt )->width() > 0 )
+    if ( col.width() > 0 )
     {
       //column has manually specified width
-      widths[col] = ( *columnIt )->width();
+      widths[i] = col.width();
     }
     else if ( mHeaderMode != QgsLayoutTable::NoHeaders )
     {
-      widths[col] = QgsLayoutUtils::textWidthMM( mHeaderFont, ( *columnIt )->heading() );
+      //column width set to automatic, so check content size
+      QStringList multiLineSplit = col.heading().split( '\n' );
+      currentCellTextWidth = 0;
+      const auto constMultiLineSplit = multiLineSplit;
+      for ( const QString &line : constMultiLineSplit )
+      {
+        currentCellTextWidth = std::max( currentCellTextWidth, QgsLayoutUtils::textWidthMM( mHeaderFont, line ) );
+      }
+      widths[i] = currentCellTextWidth;
     }
     else
     {
-      widths[col] = 0.0;
+      widths[i] = 0.0;
     }
-    col++;
+    i++;
   }
 
   //next, go through all the table contents and calculate the sizes
   QgsLayoutTableContents::const_iterator rowIt = mTableContents.constBegin();
-  double currentCellTextWidth;
   int row = 1;
   for ( ; rowIt != mTableContents.constEnd(); ++rowIt )
   {
     QgsLayoutTableRow::const_iterator colIt = rowIt->constBegin();
-    col = 0;
+    int col = 0;
     for ( ; colIt != rowIt->constEnd(); ++colIt )
     {
-      if ( mColumns.at( col )->width() <= 0 )
+      if ( mColumns.at( col ).width() <= 0 )
       {
         //column width set to automatic, so check content size
         QStringList multiLineSplit = ( *colIt ).toString().split( '\n' );
         currentCellTextWidth = 0;
-        Q_FOREACH ( const QString &line, multiLineSplit )
+        const auto constMultiLineSplit = multiLineSplit;
+        for ( const QString &line : constMultiLineSplit )
         {
           currentCellTextWidth = std::max( currentCellTextWidth, QgsLayoutUtils::textWidthMM( mContentFont, line ) );
         }
@@ -935,13 +999,24 @@ bool QgsLayoutTable::calculateMaxRowHeights()
   QVector< double > heights( cells );
 
   //first, go through all the column headers and calculate the sizes
-  QgsLayoutTableColumns::const_iterator columnIt = mColumns.constBegin();
-  int col = 0;
-  for ( ; columnIt != mColumns.constEnd(); ++columnIt )
+  int i = 0;
+  for ( const QgsLayoutTableColumn &col : qgis::as_const( mColumns ) )
   {
     //height
-    heights[col] = mHeaderMode != QgsLayoutTable::NoHeaders ? QgsLayoutUtils::textHeightMM( mHeaderFont, ( *columnIt )->heading() ) : 0;
-    col++;
+    if ( mHeaderMode == QgsLayoutTable::NoHeaders )
+    {
+      heights[i] = 0;
+    }
+    else if ( textRequiresWrapping( col.heading(), mColumns.at( i ).width(), mHeaderFont ) )
+    {
+      //contents too wide for cell, need to wrap
+      heights[i] = QgsLayoutUtils::textHeightMM( mHeaderFont, wrappedText( col.heading(), mColumns.at( i ).width(), mHeaderFont ) );
+    }
+    else
+    {
+      heights[i] =  QgsLayoutUtils::textHeightMM( mHeaderFont, col.heading() );
+    }
+    i++;
   }
 
   //next, go through all the table contents and calculate the sizes
@@ -950,20 +1025,20 @@ bool QgsLayoutTable::calculateMaxRowHeights()
   for ( ; rowIt != mTableContents.constEnd(); ++rowIt )
   {
     QgsLayoutTableRow::const_iterator colIt = rowIt->constBegin();
-    col = 0;
+    int i = 0;
     for ( ; colIt != rowIt->constEnd(); ++colIt )
     {
-      if ( textRequiresWrapping( ( *colIt ).toString(), mColumns.at( col )->width(), mContentFont ) )
+      if ( textRequiresWrapping( ( *colIt ).toString(), mColumns.at( i ).width(), mContentFont ) )
       {
         //contents too wide for cell, need to wrap
-        heights[ row * cols + col ] = QgsLayoutUtils::textHeightMM( mContentFont, wrappedText( ( *colIt ).toString(), mColumns.at( col )->width(), mContentFont ) );
+        heights[ row * cols + i ] = QgsLayoutUtils::textHeightMM( mContentFont, wrappedText( ( *colIt ).toString(), mColumns.at( i ).width(), mContentFont ) );
       }
       else
       {
-        heights[ row * cols + col ] = QgsLayoutUtils::textHeightMM( mContentFont, ( *colIt ).toString() );
+        heights[ row * cols + i ] = QgsLayoutUtils::textHeightMM( mContentFont, ( *colIt ).toString() );
       }
 
-      col++;
+      i++;
     }
     row++;
   }
@@ -1092,7 +1167,7 @@ void QgsLayoutTable::drawHorizontalGridLines( QPainter *painter, int firstRow, i
   {
     painter->drawLine( QPointF( halfGridStrokeWidth, currentY ), QPointF( mTableSize.width() - halfGridStrokeWidth, currentY ) );
     currentY += ( mShowGrid ? mGridStrokeWidth : 0 );
-    currentY += ( QgsLayoutUtils::fontAscentMM( mHeaderFont ) + 2 * mCellMargin );
+    currentY += mMaxRowHeightMap[0] + 2 * mCellMargin;
   }
   for ( int row = firstRow; row < lastRow; ++row )
   {
@@ -1111,7 +1186,8 @@ bool QgsLayoutTable::textRequiresWrapping( const QString &text, double columnWid
 
   QStringList multiLineSplit = text.split( '\n' );
   double currentTextWidth = 0;
-  Q_FOREACH ( const QString &line, multiLineSplit )
+  const auto constMultiLineSplit = multiLineSplit;
+  for ( const QString &line : constMultiLineSplit )
   {
     currentTextWidth = std::max( currentTextWidth, QgsLayoutUtils::textWidthMM( font, line ) );
   }
@@ -1123,7 +1199,8 @@ QString QgsLayoutTable::wrappedText( const QString &value, double columnWidth, c
 {
   QStringList lines = value.split( '\n' );
   QStringList outLines;
-  Q_FOREACH ( const QString &line, lines )
+  const auto constLines = lines;
+  for ( const QString &line : constLines )
   {
     if ( textRequiresWrapping( line, columnWidth, font ) )
     {
@@ -1131,7 +1208,8 @@ QString QgsLayoutTable::wrappedText( const QString &value, double columnWidth, c
       QStringList words = line.split( ' ' );
       QStringList linesToProcess;
       QString wordsInCurrentLine;
-      Q_FOREACH ( const QString &word, words )
+      const auto constWords = words;
+      for ( const QString &word : constWords )
       {
         if ( textRequiresWrapping( word, columnWidth, font ) )
         {
@@ -1151,12 +1229,19 @@ QString QgsLayoutTable::wrappedText( const QString &value, double columnWidth, c
       if ( !wordsInCurrentLine.isEmpty() )
         linesToProcess << wordsInCurrentLine;
 
-      Q_FOREACH ( const QString &line, linesToProcess )
+      const auto constLinesToProcess = linesToProcess;
+      for ( const QString &line : constLinesToProcess )
       {
         QString remainingText = line;
         int lastPos = remainingText.lastIndexOf( ' ' );
         while ( lastPos > -1 )
         {
+          //check if remaining text is short enough to go in one line
+          if ( !textRequiresWrapping( remainingText, columnWidth, font ) )
+          {
+            break;
+          }
+
           if ( !textRequiresWrapping( remainingText.left( lastPos ), columnWidth, font ) )
           {
             outLines << remainingText.left( lastPos );
@@ -1208,6 +1293,13 @@ QColor QgsLayoutTable::backgroundColor( int row, int column ) const
     if ( style->enabled && row == mTableContents.count() - 1 )
       color = style->cellBackgroundColor;
 
+  if ( row >= 0 )
+  {
+    QgsConditionalStyle conditionalStyle = conditionalCellStyle( row, column );
+    if ( conditionalStyle.backgroundColor().isValid() )
+      color = conditionalStyle.backgroundColor();
+  }
+
   return color;
 }
 
@@ -1223,7 +1315,7 @@ void QgsLayoutTable::drawVerticalGridLines( QPainter *painter, const QMap<int, d
   double tableHeight = 0;
   if ( hasHeader )
   {
-    tableHeight += ( mShowGrid && mHorizontalGrid ? mGridStrokeWidth : 0 ) + mCellMargin * 2 + QgsLayoutUtils::fontAscentMM( mHeaderFont );
+    tableHeight += ( mShowGrid && mHorizontalGrid ? mGridStrokeWidth : 0 ) + mCellMargin * 2 + mMaxRowHeightMap[0];
   }
   tableHeight += ( mShowGrid && mHorizontalGrid ? mGridStrokeWidth : 0 );
   double headerHeight = tableHeight;

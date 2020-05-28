@@ -23,21 +23,12 @@
 #include <QMap>
 #include "qgis_sip.h"
 #include <QString>
-#include <QStringList>
-#include <QPair>
-#include <QColor>
-#include <QHash>
 
 #include "qgis_server.h"
 
-class QDomDocument;
-class QImage;
 class QgsServerException;
 class QgsServerRequest;
 class QgsServerResponse;
-
-typedef QList< QPair<QRgb, int> > QgsColorBox; //Color / number of pixels
-typedef QMultiMap< int, QgsColorBox > QgsColorBoxMap; // sum of pixels / color box
 
 /**
  * \ingroup server
@@ -142,7 +133,7 @@ class SERVER_EXPORT QgsRequestHandler
     //! Returns the requested format string
     QString format() const { return mFormat; }
 
-    //! Returns true if the HTTP headers were already sent to the client
+    //! Returns TRUE if the HTTP headers were already sent to the client
     bool headersSent() const;
 
   private:

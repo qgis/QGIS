@@ -1,0 +1,106 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/callouts/qgscalloutwidget.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsCalloutWidget : QWidget, protected QgsExpressionContextGenerator
+{
+%Docstring
+Base class for widgets which allow control over the properties of callouts.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgscalloutwidget.h"
+%End
+  public:
+
+    QgsCalloutWidget( QWidget *parent /TransferThis/, QgsVectorLayer *vl = 0 );
+%Docstring
+Constructor for QgsCalloutWidget.
+
+:param vl: associated vector layer
+:param parent: parent widget
+%End
+
+    virtual void setCallout( QgsCallout *callout ) = 0;
+%Docstring
+Sets the ``callout`` to show in the widget. Ownership is not transferred.
+
+.. seealso:: :py:func:`callout`
+%End
+
+    virtual QgsCallout *callout() = 0;
+%Docstring
+Returns the callout defined by the current settings in the widget. Ownership is not transferred,
+and the caller should clone the returned value.
+
+.. seealso:: :py:func:`setCallout`
+%End
+
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+%Docstring
+Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+
+:param context: symbol widget context
+
+.. seealso:: :py:func:`context`
+%End
+
+    QgsSymbolWidgetContext context() const;
+%Docstring
+Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. seealso:: :py:func:`setContext`
+%End
+
+    const QgsVectorLayer *vectorLayer() const;
+%Docstring
+Returns the vector layer associated with the widget.
+%End
+
+    virtual void setGeometryType( QgsWkbTypes::GeometryType type ) = 0;
+%Docstring
+Sets the geometry ``type`` of the features to customize the widget accordingly.
+%End
+
+  protected:
+
+    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsCallout::Property key );
+%Docstring
+Registers a data defined override button. Handles setting up connections
+for the button and initializing the button to show the correct descriptions
+and help text for the associated property.
+%End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
+
+  signals:
+
+    void changed();
+%Docstring
+Should be emitted whenever configuration changes happened on this symbol layer configuration.
+If the subsymbol is changed, symbolChanged() should be emitted instead.
+%End
+
+};
+
+
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/callouts/qgscalloutwidget.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

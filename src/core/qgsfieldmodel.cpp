@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoinbuffer.h"
 
 QgsFieldModel::QgsFieldModel( QObject *parent )
   : QAbstractItemModel( parent )
@@ -32,7 +33,10 @@ QModelIndex QgsFieldModel::indexFromName( const QString &fieldName )
 {
   QString fldName( fieldName ); // we may need a copy
 
-  if ( mLayer )
+  // only non-empty names should be used here, as by default all fields
+  // have no aliases set and calling key() fill return just first value
+  // from the aliases map
+  if ( mLayer && !fldName.isEmpty() )
   {
     // the name could be an alias
     // it would be better to have "display name" directly in QgsFields
@@ -246,7 +250,7 @@ QModelIndex QgsFieldModel::index( int row, int column, const QModelIndex &parent
 
 QModelIndex QgsFieldModel::parent( const QModelIndex &child ) const
 {
-  Q_UNUSED( child );
+  Q_UNUSED( child )
   return QModelIndex();
 }
 
@@ -262,7 +266,7 @@ int QgsFieldModel::rowCount( const QModelIndex &parent ) const
 
 int QgsFieldModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  Q_UNUSED( parent )
   return 1;
 }
 
@@ -283,7 +287,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
     {
       if ( isEmpty || exprIdx >= 0 )
       {
-        return "";
+        return QString();
       }
       QgsField field = mFields.at( index.row() - fieldOffset );
       return field.name();
@@ -359,6 +363,39 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       return isEmpty;
     }
 
+    case EditorWidgetType:
+    {
+      if ( exprIdx < 0 && !isEmpty )
+      {
+        return mFields.at( index.row() - fieldOffset ).editorWidgetSetup().type();
+      }
+      return QVariant();
+    }
+
+    case JoinedFieldIsEditable:
+    {
+      if ( exprIdx < 0 && !isEmpty )
+      {
+        if ( mLayer && mFields.fieldOrigin( index.row() - fieldOffset ) == QgsFields::OriginJoin )
+        {
+          int srcFieldIndex;
+          const QgsVectorLayerJoinInfo *info = mLayer->joinBuffer()->joinForFieldIndex( index.row() - fieldOffset, mLayer->fields(), srcFieldIndex );
+
+          if ( !info || !info->isEditable() )
+            return false;
+
+          return true;
+        }
+      }
+      return QVariant();
+    }
+
+    case FieldIsWidgetEditable:
+    {
+      return !( mLayer->editFormConfig().readOnly( index.row() - fieldOffset ) );
+    }
+
+
     case Qt::DisplayRole:
     case Qt::EditRole:
     case Qt::ToolTipRole:
@@ -382,6 +419,10 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       else if ( mLayer )
       {
         return mLayer->attributeDisplayName( index.row() - fieldOffset );
+      }
+      else if ( mFields.size() > index.row() - fieldOffset )
+      {
+        return mFields.field( index.row() - fieldOffset ).displayName();
       }
       else
         return QVariant();
@@ -443,22 +484,49 @@ QString QgsFieldModel::fieldToolTip( const QgsField &field )
   {
     toolTip = QStringLiteral( "<b>%1</b>" ).arg( field.name() );
   }
-  QString typeString;
-  if ( field.length() > 0 )
+
+  toolTip += QStringLiteral( "<br><font style='font-family:monospace; white-space: nowrap;'>%3</font>" ).arg( field.displayType( true ) );
+
+  QString comment = field.comment();
+
+  if ( ! comment.isEmpty() )
   {
-    if ( field.precision() > 0 )
-    {
-      typeString = QStringLiteral( "%1 (%2, %3)" ).arg( field.typeName() ).arg( field.length() ).arg( field.precision() );
-    }
-    else
-    {
-      typeString = QStringLiteral( "%1 (%2)" ).arg( field.typeName() ).arg( field.length() );
-    }
+    toolTip += QStringLiteral( "<br><em>%1</em>" ).arg( comment );
   }
-  else
-  {
-    typeString = field.typeName();
-  }
-  toolTip += QStringLiteral( "<p>%1</p>" ).arg( typeString );
+
   return toolTip;
+}
+
+QString QgsFieldModel::fieldToolTipExtended( const QgsField &field, const QgsVectorLayer *layer )
+{
+  QString toolTip = QgsFieldModel::fieldToolTip( field );
+  const QgsFields fields = layer->fields();
+  int fieldIdx = fields.indexOf( field.name() );
+
+  if ( fieldIdx < 0 )
+    return QString();
+
+  QString expressionString = fields.fieldOrigin( fieldIdx ) == QgsFields::OriginExpression
+                             ? layer->expressionField( fieldIdx )
+                             : QString();
+
+  if ( !expressionString.isEmpty() )
+  {
+    toolTip += QStringLiteral( "<br><font style='font-family:monospace;'>%3</font>" ).arg( expressionString );
+  }
+
+  return toolTip;
+}
+
+void QgsFieldModel::setFields( const QgsFields &fields )
+{
+  setLayer( nullptr );
+  beginResetModel();
+  mFields = fields;
+  endResetModel();
+}
+
+QgsFields QgsFieldModel::fields() const
+{
+  return mFields;
 }

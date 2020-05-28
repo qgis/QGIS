@@ -20,7 +20,7 @@
 
 #define SIP_NO_FILE
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
@@ -41,6 +41,7 @@ class QgsBoundaryAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QList<int> inputLayerTypes() const override;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
     QgsBoundaryAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

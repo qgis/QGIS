@@ -145,13 +145,18 @@ QgsFeatureList QgsSnapToGridAlgorithm::processFeature( const QgsFeature &feature
       intervalM = mIntervalMProperty.valueAsDouble( context.expressionContext(), intervalM );
 
     QgsGeometry outputGeometry = f.geometry().snappedToGrid( intervalX, intervalY, intervalZ, intervalM );
-    if ( !outputGeometry )
+    if ( outputGeometry.isNull() )
     {
       feedback->reportError( QObject::tr( "Error snapping geometry %1" ).arg( feature.id() ) );
     }
     f.setGeometry( outputGeometry );
   }
   return QgsFeatureList() << f;
+}
+
+QgsProcessingFeatureSource::Flag QgsSnapToGridAlgorithm::sourceFlags() const
+{
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
 }
 
 ///@endcond

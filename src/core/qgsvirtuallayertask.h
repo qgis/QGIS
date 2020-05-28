@@ -18,9 +18,9 @@
 #ifndef QGSVIRTUALLAYERTASK_H
 #define QGSVIRTUALLAYERTASK_H
 
-#include "qgsvectorlayer.h"
 #include "qgsvirtuallayerdefinition.h"
 #include "qgstaskmanager.h"
+#include "qgsvectorlayer.h"
 
 /**
  * \ingroup core
@@ -59,7 +59,7 @@ class CORE_EXPORT QgsVirtualLayerTask : public QgsTask
 
     /**
      * Reloads the data.
-     * \returns True if the virtual layer is valid, false otherwise.
+     * \returns TRUE if the virtual layer is valid, FALSE otherwise.
      */
     bool run() override;
 
@@ -68,7 +68,20 @@ class CORE_EXPORT QgsVirtualLayerTask : public QgsTask
      */
     void cancel() override;
 
+    /**
+     * Returns the exception text or an empty string if no exceptions were raised
+     * \since QGIS 3.4
+     */
+    QString exceptionText() const;
+
+    /**
+     * Sets the \a exceptionText
+     * \since QGIS 3.4
+     */
+    void setExceptionText( const QString &exceptionText );
+
   private:
+    QString mExceptionText;
     QgsVirtualLayerDefinition mDefinition;
     std::unique_ptr<QgsVectorLayer> mLayer;
 };

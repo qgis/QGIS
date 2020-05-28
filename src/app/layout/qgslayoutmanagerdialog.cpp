@@ -48,7 +48,7 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
   connect( mTemplatesDefaultDirBtn, &QPushButton::pressed, this, &QgsLayoutManagerDialog::mTemplatesDefaultDirBtn_pressed );
   connect( mTemplatesUserDirBtn, &QPushButton::pressed, this, &QgsLayoutManagerDialog::mTemplatesUserDirBtn_pressed );
 
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
   mTemplateFileWidget->setStorageMode( QgsFileWidget::GetFile );
   mTemplateFileWidget->setFilter( tr( "Layout templates" ) + QStringLiteral( " (*.qpt *.QPT)" ) );
   mTemplateFileWidget->setDialogTitle( tr( "Select a Template" ) );
@@ -71,6 +71,11 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
   mProxyModel->setSourceModel( mModel );
   mLayoutListView->setModel( mProxyModel );
 
+  mSearchLineEdit->setShowSearchIcon( true );
+  mSearchLineEdit->setShowClearButton( true );
+  mSearchLineEdit->setFocus();
+  connect( mSearchLineEdit, &QgsFilterLineEdit::textChanged, mProxyModel, &QgsLayoutManagerProxyModel::setFilterString );
+
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutManagerDialog::showHelp );
   connect( mLayoutListView->selectionModel(), &QItemSelectionModel::selectionChanged,
@@ -85,21 +90,24 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
 #ifdef Q_OS_MAC
   // Create action to select this window
   mWindowAction = new QAction( windowTitle(), this );
-  connect( mWindowAction, SIGNAL( triggered() ), this, SLOT( activate() ) );
+  connect( mWindowAction, &QAction::triggered, this, &QgsLayoutManagerDialog::activate );
 #endif
 
-  mTemplate->addItem( tr( "Empty layout" ) );
-  mTemplate->addItem( tr( "Empty report" ) );
+  mTemplate->addItem( tr( "Empty Layout" ) );
+  mTemplate->addItem( tr( "Empty Report" ) );
   mTemplate->addItem( tr( "Specific" ) );
 
   mUserTemplatesDir = QgsApplication::qgisSettingsDirPath() + "/composer_templates";
   QMap<QString, QString> userTemplateMap = defaultTemplates( true );
-  this->addTemplates( userTemplateMap );
+  addTemplates( userTemplateMap );
 
+  // TODO QGIS 4: Remove this, default templates should not be shipped in the application folder
   mDefaultTemplatesDir = QgsApplication::pkgDataPath() + "/composer_templates";
   QMap<QString, QString> defaultTemplateMap = defaultTemplates( false );
-  this->addTemplates( defaultTemplateMap );
-  this->addTemplates( this->otherTemplates() );
+  addTemplates( defaultTemplateMap );
+  addTemplates( otherTemplates() );
+
+  mTemplatesDefaultDirBtn->setToolTip( tr( "Use <i>Settings --> Options --> Layouts --> Layout Paths</i> to configure the folders in which QGIS will search for print layout templates." ) );
 
   toggleButtons();
 }
@@ -148,6 +156,7 @@ void QgsLayoutManagerDialog::addTemplates( const QMap<QString, QString> &templat
 
 void QgsLayoutManagerDialog::activate()
 {
+  updateTemplateButtonEnabledState();
   raise();
   setWindowState( windowState() & ~Qt::WindowMinimized );
   activateWindow();
@@ -163,8 +172,8 @@ QMap<QString, QString> QgsLayoutManagerDialog::defaultTemplates( bool fromUser )
 QMap<QString, QString> QgsLayoutManagerDialog::otherTemplates() const
 {
   QMap<QString, QString> templateMap;
-  QStringList paths = QgsApplication::layoutTemplatePaths();
-  Q_FOREACH ( const QString &path, paths )
+  const QStringList paths = QgsApplication::layoutTemplatePaths();
+  for ( const QString &path : paths )
   {
     QMap<QString, QString> templates = templatesFromPath( path );
     QMap<QString, QString>::const_iterator templateIt = templates.constBegin();
@@ -186,13 +195,12 @@ QMap<QString, QString> QgsLayoutManagerDialog::templatesFromPath( const QString 
     return templateMap;
   }
 
-  QFileInfoList fileInfoList = templateDir.entryInfoList( QDir::Files );
-  QFileInfoList::const_iterator infoIt = fileInfoList.constBegin();
-  for ( ; infoIt != fileInfoList.constEnd(); ++infoIt )
+  const QFileInfoList fileInfoList = templateDir.entryInfoList( QDir::Files );
+  for ( const QFileInfo &info : fileInfoList )
   {
-    if ( infoIt->suffix().toLower() == QLatin1String( "qpt" ) )
+    if ( info.suffix().compare( QLatin1String( "qpt" ), Qt::CaseInsensitive ) == 0 )
     {
-      templateMap.insert( infoIt->baseName(), infoIt->absoluteFilePath() );
+      templateMap.insert( info.baseName(), info.absoluteFilePath() );
     }
   }
   return templateMap;
@@ -231,7 +239,7 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
     {
       QDomElement layoutElem = templateDoc.documentElement();
       if ( !layoutElem.isNull() )
-        storedTitle = layoutElem.attribute( "name" );
+        storedTitle = layoutElem.attribute( QStringLiteral( "name" ) );
     }
   }
 
@@ -285,7 +293,14 @@ void QgsLayoutManagerDialog::mTemplate_currentIndexChanged( int indx )
 
 void QgsLayoutManagerDialog::mTemplatesDefaultDirBtn_pressed()
 {
-  openLocalDirectory( mDefaultTemplatesDir );
+  if ( QDir( mDefaultTemplatesDir ).exists() )
+    openLocalDirectory( mDefaultTemplatesDir );
+  else
+  {
+    const QStringList paths = QgsApplication::layoutTemplatePaths();
+    if ( !paths.empty() )
+      openLocalDirectory( paths.at( 0 ) );
+  }
 }
 
 void QgsLayoutManagerDialog::mTemplatesUserDirBtn_pressed()
@@ -329,6 +344,11 @@ void QgsLayoutManagerDialog::openLocalDirectory( const QString &localDirPath )
   {
     QDesktopServices::openUrl( QUrl::fromLocalFile( localDirPath ) );
   }
+}
+
+void QgsLayoutManagerDialog::updateTemplateButtonEnabledState()
+{
+  mTemplatesDefaultDirBtn->setEnabled( QDir( mDefaultTemplatesDir ).exists() || !QgsApplication::layoutTemplatePaths().empty() );
 }
 
 #ifdef Q_OS_MAC
@@ -488,161 +508,4 @@ void QgsLayoutManagerDialog::showHelp()
   QgsHelp::openHelp( QStringLiteral( "print_composer/overview_composer.html#the-layout-manager" ) );
 }
 
-//
-// QgsLayoutManagerModel
-//
 
-QgsLayoutManagerModel::QgsLayoutManagerModel( QgsLayoutManager *manager, QObject *parent )
-  : QAbstractListModel( parent )
-  , mLayoutManager( manager )
-{
-  connect( mLayoutManager, &QgsLayoutManager::layoutAboutToBeAdded, this, &QgsLayoutManagerModel::layoutAboutToBeAdded );
-  connect( mLayoutManager, &QgsLayoutManager::layoutAdded, this, &QgsLayoutManagerModel::layoutAdded );
-  connect( mLayoutManager, &QgsLayoutManager::layoutAboutToBeRemoved, this, &QgsLayoutManagerModel::layoutAboutToBeRemoved );
-  connect( mLayoutManager, &QgsLayoutManager::layoutRemoved, this, &QgsLayoutManagerModel::layoutRemoved );
-  connect( mLayoutManager, &QgsLayoutManager::layoutRenamed, this, &QgsLayoutManagerModel::layoutRenamed );
-}
-
-int QgsLayoutManagerModel::rowCount( const QModelIndex &parent ) const
-{
-  Q_UNUSED( parent );
-  return mLayoutManager->layouts().count();
-}
-
-QVariant QgsLayoutManagerModel::data( const QModelIndex &index, int role ) const
-{
-  if ( index.row() < 0 || index.row() >= rowCount( QModelIndex() ) )
-    return QVariant();
-
-  switch ( role )
-  {
-    case Qt::DisplayRole:
-    case Qt::ToolTipRole:
-    case Qt::EditRole:
-      return mLayoutManager->layouts().at( index.row() )->name();
-
-    case LayoutRole:
-    {
-      if ( QgsLayout *l = dynamic_cast< QgsLayout * >( mLayoutManager->layouts().at( index.row() ) ) )
-        return QVariant::fromValue( l );
-      else if ( QgsReport *r = dynamic_cast< QgsReport * >( mLayoutManager->layouts().at( index.row() ) ) )
-        return QVariant::fromValue( r );
-      else
-        return QVariant();
-    }
-
-    case Qt::DecorationRole:
-    {
-      return mLayoutManager->layouts().at( index.row() )->icon();
-    }
-
-    default:
-      return QVariant();
-  }
-}
-
-bool QgsLayoutManagerModel::setData( const QModelIndex &index, const QVariant &value, int role )
-{
-  if ( !index.isValid() || role != Qt::EditRole )
-  {
-    return false;
-  }
-  if ( index.row() >= mLayoutManager->layouts().count() )
-  {
-    return false;
-  }
-
-  if ( value.toString().isEmpty() )
-    return false;
-
-  QgsMasterLayoutInterface *layout = layoutFromIndex( index );
-  if ( !layout )
-    return false;
-
-  //has name changed?
-  bool changed = layout->name() != value.toString();
-  if ( !changed )
-    return true;
-
-  //check if name already exists
-  QStringList layoutNames;
-  const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts();
-  for ( QgsMasterLayoutInterface *l : layouts )
-  {
-    layoutNames << l->name();
-  }
-  if ( layoutNames.contains( value.toString() ) )
-  {
-    //name exists!
-    QMessageBox::warning( nullptr, tr( "Rename Layout" ), tr( "There is already a layout named “%1”." ).arg( value.toString() ) );
-    return false;
-  }
-
-  layout->setName( value.toString() );
-  return true;
-}
-
-Qt::ItemFlags QgsLayoutManagerModel::flags( const QModelIndex &index ) const
-{
-  Qt::ItemFlags flags = QAbstractListModel::flags( index );
-#if 0 // double-click is now used for opening the layout
-  if ( index.isValid() )
-  {
-    return flags | Qt::ItemIsEditable;
-  }
-  else
-  {
-    return flags;
-  }
-#endif
-  return flags;
-}
-
-QgsMasterLayoutInterface *QgsLayoutManagerModel::layoutFromIndex( const QModelIndex &index ) const
-{
-  if ( QgsPrintLayout *l = qobject_cast< QgsPrintLayout * >( qvariant_cast<QObject *>( data( index, LayoutRole ) ) ) )
-    return l;
-  else if ( QgsReport *r = qobject_cast< QgsReport * >( qvariant_cast<QObject *>( data( index, LayoutRole ) ) ) )
-    return r;
-  else
-    return nullptr;
-}
-
-void QgsLayoutManagerModel::layoutAboutToBeAdded( const QString & )
-{
-  int row = mLayoutManager->layouts().count();
-  beginInsertRows( QModelIndex(), row, row );
-}
-
-void QgsLayoutManagerModel::layoutAboutToBeRemoved( const QString &name )
-{
-  QgsMasterLayoutInterface *l = mLayoutManager->layoutByName( name );
-  int row = mLayoutManager->layouts().indexOf( l );
-  if ( row >= 0 )
-    beginRemoveRows( QModelIndex(), row, row );
-}
-
-void QgsLayoutManagerModel::layoutAdded( const QString & )
-{
-  endInsertRows();
-}
-
-void QgsLayoutManagerModel::layoutRemoved( const QString & )
-{
-  endRemoveRows();
-}
-
-void QgsLayoutManagerModel::layoutRenamed( QgsMasterLayoutInterface *layout, const QString & )
-{
-  int row = mLayoutManager->layouts().indexOf( layout );
-  QModelIndex index = createIndex( row, 0 );
-  emit dataChanged( index, index, QVector<int>() << Qt::DisplayRole );
-}
-
-QgsLayoutManagerProxyModel::QgsLayoutManagerProxyModel( QObject *parent )
-  : QSortFilterProxyModel( parent )
-{
-  setDynamicSortFilter( true );
-  sort( 0 );
-  setSortCaseSensitivity( Qt::CaseInsensitive );
-}

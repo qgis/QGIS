@@ -28,7 +28,8 @@ QgsPanelWidget::QgsPanelWidget( QWidget *parent )
 
 void QgsPanelWidget::connectChildPanels( const QList<QgsPanelWidget *> &panels )
 {
-  Q_FOREACH ( QgsPanelWidget *widget, panels )
+  const auto constPanels = panels;
+  for ( QgsPanelWidget *widget : constPanels )
   {
     connectChildPanel( widget );
   }
@@ -62,6 +63,16 @@ QgsPanelWidget *QgsPanelWidget::findParentPanel( QWidget *widget )
 
     p = p->parentWidget();
   }
+  return nullptr;
+}
+
+QString QgsPanelWidget::menuButtonTooltip() const
+{
+  return QString();
+}
+
+QMenu *QgsPanelWidget::menuButtonMenu()
+{
   return nullptr;
 }
 
@@ -103,6 +114,10 @@ void QgsPanelWidget::keyPressEvent( QKeyEvent *event )
   if ( event->key() == Qt::Key_Escape )
   {
     acceptPanel();
+  }
+  else
+  {
+    QWidget::keyPressEvent( event );
   }
 }
 

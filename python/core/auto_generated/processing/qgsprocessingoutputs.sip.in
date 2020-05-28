@@ -41,10 +41,14 @@ as generated layers or calculated values.
       sipType = sipType_QgsProcessingOutputNumber;
     else if ( sipCpp->type() == QgsProcessingOutputString::typeName() )
       sipType = sipType_QgsProcessingOutputString;
+    else if ( sipCpp->type() == QgsProcessingOutputBoolean::typeName() )
+      sipType = sipType_QgsProcessingOutputBoolean;
     else if ( sipCpp->type() == QgsProcessingOutputFolder::typeName() )
       sipType = sipType_QgsProcessingOutputFolder;
     else if ( sipCpp->type() == QgsProcessingOutputFile::typeName() )
       sipType = sipType_QgsProcessingOutputFile;
+    else if ( sipCpp->type() == QgsProcessingOutputConditionalBranch::typeName() )
+      sipType = sipType_QgsProcessingOutputConditionalBranch;
     else
       sipType = nullptr;
 %End
@@ -94,7 +98,28 @@ used to identify this output.
 .. seealso:: :py:func:`description`
 %End
 
+    void setAutoCreated( bool autoCreated );
+%Docstring
+Sets whether an output was automatically created when adding a parameter.
+
+:param autoCreated: set to ``True`` if the output is to be considered as automatically created.
+
+.. seealso:: :py:func:`autoCreated`
+
+.. versionadded:: 3.14
+%End
+
+    bool autoCreated() const;
+%Docstring
+Returns ``True`` if the output was automatically created when adding a parameter.
+
+.. seealso:: :py:func:`setAutoCreated`
+
+.. versionadded:: 3.14
+%End
+
   protected:
+
 
 
 
@@ -313,6 +338,31 @@ Returns the type name for the output class.
 
 };
 
+class QgsProcessingOutputBoolean : QgsProcessingOutputDefinition
+{
+%Docstring
+A boolean output for processing algorithms.
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingoutputs.h"
+%End
+  public:
+
+    QgsProcessingOutputBoolean( const QString &name, const QString &description = QString() );
+%Docstring
+Constructor for :py:class:`QgsProcessingOutputNumber`.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the output class.
+%End
+    virtual QString type() const;
+};
+
 class QgsProcessingOutputFolder : QgsProcessingOutputDefinition
 {
 %Docstring
@@ -356,6 +406,33 @@ A file output for processing algorithms.
     QgsProcessingOutputFile( const QString &name, const QString &description = QString() );
 %Docstring
 Constructor for QgsProcessingOutputFile.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the output class.
+%End
+    virtual QString type() const;
+
+};
+
+class QgsProcessingOutputConditionalBranch : QgsProcessingOutputDefinition
+{
+%Docstring
+A conditional branch output for processing algorithms, which represents a possible model logic
+flow which branches out from this algorithm.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingoutputs.h"
+%End
+  public:
+
+    QgsProcessingOutputConditionalBranch( const QString &name, const QString &description = QString() );
+%Docstring
+Constructor for QgsProcessingOutputConditionalBranch.
 %End
 
     static QString typeName();

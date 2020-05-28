@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0,0,0">
    <item row="9" column="0">
@@ -116,7 +116,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Gradient colors</string>
+      <string>Gradient Colors</string>
      </property>
     </widget>
    </item>
@@ -390,7 +390,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Shading style</string>
+      <string>Shading Style</string>
      </property>
     </widget>
    </item>

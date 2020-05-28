@@ -17,7 +17,7 @@
 
 #include "qgsalgorithmsplitwithlines.h"
 #include "qgsgeometryengine.h"
-
+#include "qgsvectorlayer.h"
 ///@cond PRIVATE
 
 QString QgsSplitWithLinesAlgorithm::name() const
@@ -65,6 +65,25 @@ QgsSplitWithLinesAlgorithm *QgsSplitWithLinesAlgorithm::createInstance() const
   return new QgsSplitWithLinesAlgorithm();
 }
 
+QgsProcessingAlgorithm::Flags QgsSplitWithLinesAlgorithm::flags() const
+{
+  Flags f = QgsProcessingAlgorithm::flags();
+  f |= QgsProcessingAlgorithm::FlagSupportsInPlaceEdits;
+  return f;
+}
+
+bool QgsSplitWithLinesAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
+{
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  if ( !layer )
+    return false;
+
+  if ( layer->geometryType() != QgsWkbTypes::LineGeometry && layer->geometryType() != QgsWkbTypes::PolygonGeometry )
+    return false;
+
+  return true;
+}
+
 QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
@@ -79,28 +98,28 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(),
-                                          QgsWkbTypes::multiType( source->wkbType() ),  source->sourceCrs() ) );
+                                          QgsWkbTypes::multiType( source->wkbType() ),  source->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  QgsSpatialIndex spatialIndex;
   QMap< QgsFeatureId, QgsGeometry > splitGeoms;
   QgsFeatureRequest request;
-  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setNoAttributes();
   request.setDestinationCrs( source->sourceCrs(), context.transformContext() );
 
   QgsFeatureIterator splitLines = linesSource->getFeatures( request );
   QgsFeature aSplitFeature;
-  while ( splitLines.nextFeature( aSplitFeature ) )
+
+  QgsSpatialIndex spatialIndex( splitLines, [&]( const QgsFeature & aSplitFeature )-> bool
   {
     if ( feedback->isCanceled() )
     {
-      break;
+      return false;
     }
 
     splitGeoms.insert( aSplitFeature.id(), aSplitFeature.geometry() );
-    spatialIndex.insertFeature( aSplitFeature );
-  }
+    return true;
+  } );
 
   QgsFeature outFeat;
   QgsFeatureIterator features = source->getFeatures();
@@ -159,7 +178,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
       {
         for ( const QgsGeometry &splitGeom : qgis::as_const( splittingLines ) )
         {
-          QVector<QgsPointXY> splitterPList;
+          QgsPointSequence splitterPList;
           QVector< QgsGeometry > outGeoms;
 
           // use prepared geometries for faster intersection tests
@@ -173,7 +192,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
             }
 
             QgsGeometry inGeom = inGeoms.takeFirst();
-            if ( !inGeom )
+            if ( inGeom.isNull() )
               continue;
 
             if ( splitGeomEngine->intersects( inGeom.constGet() ) )
@@ -188,14 +207,14 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
                   {
                     for ( const QgsPoint &pt : ring )
                     {
-                      splitterPList << QgsPointXY( pt );
+                      splitterPList << pt;
                     }
                   }
                 }
               }
 
               QVector< QgsGeometry > newGeometries;
-              QVector<QgsPointXY> topologyTestPoints;
+              QgsPointSequence topologyTestPoints;
               QgsGeometry::OperationResult result = inGeom.splitGeometry( splitterPList, newGeometries, false, topologyTestPoints );
 
               // splitGeometry: If there are several intersections

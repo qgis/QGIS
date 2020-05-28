@@ -65,7 +65,7 @@ class CORE_EXPORT spatialite_database_unique_ptr : public std::unique_ptr< sqlit
     int open( const QString &path );
 
     /**
-     * Will close the connection and set the internal pointer to nullptr.
+     * Will close the connection and set the internal pointer to NULLPTR.
      */
     void reset();
 

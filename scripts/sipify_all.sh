@@ -37,7 +37,7 @@ pushd ${DIR} > /dev/null
 
 count=0
 
-modules=(core gui analysis server)
+modules=(3d core gui analysis server)
 for module in "${modules[@]}"; do
 
   # clean auto_additions and auto_generated folders

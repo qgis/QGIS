@@ -19,18 +19,23 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+
 #include "qgswfsutils.h"
 #include "qgsserverprojectutils.h"
+#include "qgsserverfeatureid.h"
 #include "qgsfields.h"
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
 #include "qgsmaplayer.h"
+#include "qgsproject.h"
 #include "qgsfeatureiterator.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsfilterrestorer.h"
 #include "qgsogcutils.h"
 #include "qgswfstransaction_1_0_0.h"
+#include "qgsexpressioncontextutils.h"
 
 namespace QgsWfs
 {
@@ -57,7 +62,7 @@ namespace QgsWfs
     QDomDocument createTransactionDocument( QgsServerInterface *serverIface, const QgsProject *project,
                                             const QString &version, const QgsServerRequest &request )
     {
-      Q_UNUSED( version );
+      Q_UNUSED( version )
 
       QgsServerRequest::Parameters parameters = request.parameters();
       transactionRequest aRequest;
@@ -65,14 +70,14 @@ namespace QgsWfs
       QDomDocument doc;
       QString errorMsg;
 
-      if ( doc.setContent( parameters.value( QStringLiteral( "REQUEST_BODY" ) ), true, &errorMsg ) )
+      if ( doc.setContent( request.data(), true, &errorMsg ) )
       {
         QDomElement docElem = doc.documentElement();
-        aRequest = parseTransactionRequestBody( docElem );
+        aRequest = parseTransactionRequestBody( docElem, project );
       }
       else
       {
-        aRequest = parseTransactionParameters( parameters );
+        aRequest = parseTransactionParameters( parameters, project );
       }
 
       int actionCount = aRequest.inserts.size() + aRequest.updates.size() + aRequest.deletes.size();
@@ -221,8 +226,12 @@ namespace QgsWfs
           typeNameList << name;
       }
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       // get access controls
       QgsAccessControl *accessControl = serverIface->accessControls();
+#else
+      ( void )serverIface;
+#endif
 
       //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
       //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
@@ -237,7 +246,7 @@ namespace QgsWfs
       for ( int i = 0; i < wfsLayerIds.size(); ++i )
       {
         QgsMapLayer *layer = project->mapLayer( wfsLayerIds.at( i ) );
-        if ( layer->type() != QgsMapLayer::LayerType::VectorLayer )
+        if ( !layer || layer->type() != QgsMapLayerType::VectorLayer )
         {
           continue;
         }
@@ -277,6 +286,7 @@ namespace QgsWfs
         {
           throw QgsSecurityAccessException( QStringLiteral( "No permissions to do WFS changes on layer '%1'" ).arg( name ) );
         }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
         if ( accessControl && !accessControl->layerUpdatePermission( vlayer )
              && !accessControl->layerDeletePermission( vlayer ) && !accessControl->layerInsertPermission( vlayer ) )
         {
@@ -287,7 +297,7 @@ namespace QgsWfs
         {
           QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( accessControl, vlayer, filterRestorer->originalFilters() );
         }
-
+#endif
         // store layers
         mapLayerMap[name] = vlayer;
       }
@@ -316,13 +326,14 @@ namespace QgsWfs
           action.errorMsg = QStringLiteral( "No permissions to do WFS updates on layer '%1'" ).arg( typeName );
           continue;
         }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
         if ( accessControl && !accessControl->layerUpdatePermission( vlayer ) )
         {
           action.error = true;
           action.errorMsg = QStringLiteral( "No permissions to do WFS updates on layer '%1'" ).arg( typeName );
           continue;
         }
-
+#endif
         //get provider
         QgsVectorDataProvider *provider = vlayer->dataProvider();
 
@@ -347,11 +358,19 @@ namespace QgsWfs
                           << QgsExpressionContextUtils::layerScope( vlayer );
         featureRequest.setExpressionContext( expressionContext );
 
+        // verifying feature ids list
+        if ( !action.serverFids.isEmpty() )
+        {
+          // update request based on feature ids
+          QgsServerFeatureId::updateFeatureRequestFromServerFids( featureRequest, action.serverFids, provider );
+        }
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
         if ( accessControl )
         {
           accessControl->filterFeatures( vlayer, featureRequest );
         }
-
+#endif
         // get iterator
         QgsFeatureIterator fit = vlayer->getFeatures( featureRequest );
         QgsFeature feature;
@@ -360,13 +379,14 @@ namespace QgsWfs
         QDomElement geometryElem = action.geometryElement;
         // get field information
         QgsFields fields = provider->fields();
-        QMap<QString, int> fieldMap = provider->fieldNameMap();
+        const QMap<QString, int> fieldMap = provider->fieldNameMap();
         QMap<QString, int>::const_iterator fieldMapIt;
         QString fieldName;
         bool conversionSuccess;
         // Update the features
         while ( fit.nextFeature( feature ) )
         {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
           if ( accessControl && !accessControl->allowToEdit( vlayer, feature ) )
           {
             action.error = true;
@@ -374,6 +394,7 @@ namespace QgsWfs
             vlayer->rollBack();
             break;
           }
+#endif
           QMap< QString, QString >::const_iterator it = propertyMap.constBegin();
           for ( ; it != propertyMap.constEnd(); ++it )
           {
@@ -385,26 +406,50 @@ namespace QgsWfs
             }
             QgsField field = fields.at( fieldMapIt.value() );
             QVariant value = it.value();
-            if ( field.type() == 2 )
+            if ( value.isNull() )
             {
-              value = it.value().toInt( &conversionSuccess );
-              if ( !conversionSuccess )
+              if ( field.constraints().constraints() & QgsFieldConstraints::Constraint::ConstraintNotNull )
               {
                 action.error = true;
-                action.errorMsg = QStringLiteral( "Property conversion error on layer '%1'" ).arg( typeName );
+                action.errorMsg = QStringLiteral( "NOT NULL constraint error on layer '%1', field '%2'" ).arg( typeName, field.name() );
                 vlayer->rollBack();
                 break;
               }
             }
-            else if ( field.type() == 6 )
+            else  // Not NULL
             {
-              value = it.value().toDouble( &conversionSuccess );
-              if ( !conversionSuccess )
+              if ( field.type() == QVariant::Type::Int )
               {
-                action.error = true;
-                action.errorMsg = QStringLiteral( "Property conversion error on layer '%1'" ).arg( typeName );
-                vlayer->rollBack();
-                break;
+                value = it.value().toInt( &conversionSuccess );
+                if ( !conversionSuccess )
+                {
+                  action.error = true;
+                  action.errorMsg = QStringLiteral( "Property conversion error on layer '%1'" ).arg( typeName );
+                  vlayer->rollBack();
+                  break;
+                }
+              }
+              else if ( field.type() == QVariant::Type::Double )
+              {
+                value = it.value().toDouble( &conversionSuccess );
+                if ( !conversionSuccess )
+                {
+                  action.error = true;
+                  action.errorMsg = QStringLiteral( "Property conversion error on layer '%1'" ).arg( typeName );
+                  vlayer->rollBack();
+                  break;
+                }
+              }
+              else if ( field.type() == QVariant::Type::LongLong )
+              {
+                value = it.value().toLongLong( &conversionSuccess );
+                if ( !conversionSuccess )
+                {
+                  action.error = true;
+                  action.errorMsg = QStringLiteral( "Property conversion error on layer '%1'" ).arg( typeName );
+                  vlayer->rollBack();
+                  break;
+                }
               }
             }
             vlayer->changeAttributeValue( feature.id(), fieldMapIt.value(), value );
@@ -437,6 +482,7 @@ namespace QgsWfs
         {
           continue;
         }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
         // verifying changes
         if ( accessControl )
         {
@@ -452,6 +498,7 @@ namespace QgsWfs
             }
           }
         }
+#endif
         if ( action.error )
         {
           continue;
@@ -494,13 +541,14 @@ namespace QgsWfs
           action.errorMsg = QStringLiteral( "No permissions to do WFS deletes on layer '%1'" ).arg( typeName );
           continue;
         }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
         if ( accessControl && !accessControl->layerDeletePermission( vlayer ) )
         {
           action.error = true;
           action.errorMsg = QStringLiteral( "No permissions to do WFS deletes on layer '%1'" ).arg( typeName );
           continue;
         }
-
+#endif
         //get provider
         QgsVectorDataProvider *provider = vlayer->dataProvider();
 
@@ -515,7 +563,7 @@ namespace QgsWfs
         // start editing
         vlayer->startEditing();
 
-        // update request
+        // delete request
         QgsFeatureRequest featureRequest = action.featureRequest;
 
         // expression context
@@ -525,6 +573,24 @@ namespace QgsWfs
                           << QgsExpressionContextUtils::layerScope( vlayer );
         featureRequest.setExpressionContext( expressionContext );
 
+        // verifying feature ids list
+        if ( action.serverFids.isEmpty() )
+        {
+          action.error = true;
+          action.errorMsg = QStringLiteral( "No feature ids to do WFS deletes on layer '%1'" ).arg( typeName );
+          continue;
+        }
+
+        // update request based on feature ids
+        QgsServerFeatureId::updateFeatureRequestFromServerFids( featureRequest, action.serverFids, provider );
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+        if ( accessControl )
+        {
+          accessControl->filterFeatures( vlayer, featureRequest );
+        }
+#endif
+
         // get iterator
         QgsFeatureIterator fit = vlayer->getFeatures( featureRequest );
         QgsFeature feature;
@@ -532,6 +598,7 @@ namespace QgsWfs
         QgsFeatureIds fids;
         while ( fit.nextFeature( feature ) )
         {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
           if ( accessControl && !accessControl->allowToEdit( vlayer, feature ) )
           {
             action.error = true;
@@ -539,6 +606,7 @@ namespace QgsWfs
             vlayer->rollBack();
             break;
           }
+#endif
           fids << feature.id();
         }
         if ( action.error )
@@ -590,13 +658,14 @@ namespace QgsWfs
           action.errorMsg = QStringLiteral( "No permissions to do WFS inserts on layer '%1'" ).arg( typeName );
           continue;
         }
-        if ( accessControl && !accessControl->layerDeletePermission( vlayer ) )
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+        if ( accessControl && !accessControl->layerInsertPermission( vlayer ) )
         {
           action.error = true;
           action.errorMsg = QStringLiteral( "No permissions to do WFS inserts on layer '%1'" ).arg( typeName );
           continue;
         }
-
+#endif
         //get provider
         QgsVectorDataProvider *provider = vlayer->dataProvider();
 
@@ -624,6 +693,15 @@ namespace QgsWfs
           action.errorMsg = QStringLiteral( "%1 '%2'" ).arg( ex.message() ).arg( typeName );
           continue;
         }
+
+        if ( featureList.empty() )
+        {
+          action.error = true;
+          action.errorMsg = QStringLiteral( "No features to insert in layer '%1'" ).arg( typeName );
+          continue;
+        }
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
         // control features
         if ( accessControl )
         {
@@ -640,6 +718,7 @@ namespace QgsWfs
             featureIt++;
           }
         }
+#endif
         if ( action.error )
         {
           continue;
@@ -670,9 +749,10 @@ namespace QgsWfs
         action.error = false;
 
         // Get the Feature Ids of the inserted feature
-        for ( int j = 0; j < featureList.size(); j++ )
+        QgsAttributeList pkAttributes = provider->pkAttributeIndexes();
+        for ( const QgsFeature &feat : qgis::as_const( featureList ) )
         {
-          action.insertFeatureIds << typeName + "." + QString::number( featureList[j].id() );
+          action.insertFeatureIds << QStringLiteral( "%1.%2" ).arg( typeName, QgsServerFeatureId::getServerFid( feat, pkAttributes ) );
         }
       }
 
@@ -687,7 +767,7 @@ namespace QgsWfs
 
       // Get Layer Field Information
       QgsFields fields = provider->fields();
-      QMap<QString, int> fieldMap = provider->fieldNameMap();
+      const QMap<QString, int> fieldMap = provider->fieldNameMap();
       QMap<QString, int>::const_iterator fieldMapIt;
 
       for ( int i = 0; i < featureNodeList.count(); i++ )
@@ -749,7 +829,7 @@ namespace QgsWfs
       return featList;
     }
 
-    transactionRequest parseTransactionParameters( QgsServerRequest::Parameters parameters )
+    transactionRequest parseTransactionParameters( QgsServerRequest::Parameters parameters, const QgsProject *project )
     {
       if ( !parameters.contains( QStringLiteral( "OPERATION" ) ) )
       {
@@ -780,7 +860,7 @@ namespace QgsWfs
       {
         QStringList fidList = parameters.value( QStringLiteral( "FEATUREID" ) ).split( ',' );
 
-        QMap<QString, QgsFeatureIds> fidsMap;
+        QMap<QString, QStringList> fidsMap;
 
         QStringList::const_iterator fidIt = fidList.constBegin();
         for ( ; fidIt != fidList.constEnd(); ++fidIt )
@@ -801,23 +881,23 @@ namespace QgsWfs
             typeNameList << typeName;
           }
 
-          QgsFeatureIds fids;
+          QStringList fids;
           if ( fidsMap.contains( typeName ) )
           {
             fids = fidsMap.value( typeName );
           }
-          fids.insert( fid.toInt() );
+          fids.append( fid );
           fidsMap.insert( typeName, fids );
         }
 
-        QMap<QString, QgsFeatureIds>::const_iterator fidsMapIt = fidsMap.constBegin();
+        QMap<QString, QStringList>::const_iterator fidsMapIt = fidsMap.constBegin();
         while ( fidsMapIt != fidsMap.constEnd() )
         {
           transactionDelete action;
           action.typeName = fidsMapIt.key();
 
-          QgsFeatureIds fids = fidsMapIt.value();
-          action.featureRequest = QgsFeatureRequest( fids );
+          action.serverFids = fidsMapIt.value();
+          action.featureRequest = QgsFeatureRequest();
 
           request.deletes.append( action );
         }
@@ -987,7 +1067,9 @@ namespace QgsWfs
           }
 
           QDomElement filterElem = filter.firstChildElement();
-          action.featureRequest = parseFilterElement( action.typeName, filterElem );
+          QStringList serverFids;
+          action.featureRequest = parseFilterElement( action.typeName, filterElem, serverFids, project );
+          action.serverFids = serverFids;
 
           if ( filterIt != filterList.constEnd() )
           {
@@ -1000,7 +1082,7 @@ namespace QgsWfs
       return request;
     }
 
-    transactionRequest parseTransactionRequestBody( QDomElement &docElem )
+    transactionRequest parseTransactionRequestBody( QDomElement &docElem, const QgsProject *project )
     {
       transactionRequest request;
 
@@ -1021,12 +1103,12 @@ namespace QgsWfs
         }
         else if ( actionName == QLatin1String( "Update" ) )
         {
-          transactionUpdate action = parseUpdateActionElement( actionElem );
+          transactionUpdate action = parseUpdateActionElement( actionElem, project );
           request.updates.append( action );
         }
         else if ( actionName == QLatin1String( "Delete" ) )
         {
-          transactionDelete action = parseDeleteActionElement( actionElem );
+          transactionDelete action = parseDeleteActionElement( actionElem, project );
           request.deletes.append( action );
         }
       }
@@ -1034,7 +1116,7 @@ namespace QgsWfs
       return request;
     }
 
-    transactionDelete parseDeleteActionElement( QDomElement &actionElem )
+    transactionDelete parseDeleteActionElement( QDomElement &actionElem, const QgsProject *project )
     {
       QString typeName = actionElem.attribute( QStringLiteral( "typeName" ) );
       if ( typeName.contains( ':' ) )
@@ -1046,11 +1128,13 @@ namespace QgsWfs
         throw QgsRequestNotWellFormedException( QStringLiteral( "Delete action element first child is not Filter" ) );
       }
 
-      QgsFeatureRequest featureRequest = parseFilterElement( typeName, filterElem );
+      QStringList serverFids;
+      QgsFeatureRequest featureRequest = parseFilterElement( typeName, filterElem, serverFids, project );
 
       transactionDelete action;
       action.typeName = typeName;
       action.featureRequest = featureRequest;
+      action.serverFids = serverFids;
       action.error = false;
 
       if ( actionElem.hasAttribute( QStringLiteral( "handle" ) ) )
@@ -1061,14 +1145,14 @@ namespace QgsWfs
       return action;
     }
 
-    transactionUpdate parseUpdateActionElement( QDomElement &actionElem )
+    transactionUpdate parseUpdateActionElement( QDomElement &actionElem, const QgsProject *project )
     {
       QString typeName = actionElem.attribute( QStringLiteral( "typeName" ) );
       if ( typeName.contains( ':' ) )
         typeName = typeName.section( ':', 1, 1 );
 
       QDomNodeList propertyNodeList = actionElem.elementsByTagName( QStringLiteral( "Property" ) );
-      if ( propertyNodeList.size() != 1 )
+      if ( propertyNodeList.isEmpty() )
       {
         throw QgsRequestNotWellFormedException( QStringLiteral( "Update action element must have one or more Property element" ) );
       }
@@ -1096,10 +1180,11 @@ namespace QgsWfs
 
       QDomNodeList filterNodeList = actionElem.elementsByTagName( QStringLiteral( "Filter" ) );
       QgsFeatureRequest featureRequest;
+      QStringList serverFids;
       if ( filterNodeList.size() != 0 )
       {
         QDomElement filterElem = filterNodeList.at( 0 ).toElement();
-        featureRequest = parseFilterElement( typeName, filterElem );
+        featureRequest = parseFilterElement( typeName, filterElem, serverFids, project );
       }
 
       transactionUpdate action;
@@ -1107,6 +1192,7 @@ namespace QgsWfs
       action.propertyMap = propertyMap;
       action.geometryElement = geometryElem;
       action.featureRequest = featureRequest;
+      action.serverFids = serverFids;
       action.error = false;
 
       if ( actionElem.hasAttribute( QStringLiteral( "handle" ) ) )
@@ -1186,6 +1272,6 @@ namespace QgsWfs
     }
 
   } // namespace v1_0_0
-} // samespace QgsWfs
+} // namespace QgsWfs
 
 

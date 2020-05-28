@@ -24,7 +24,7 @@
 class QgsReadWriteContext;
 class QgsProject;
 class QgsAnnotation;
-
+class QgsStyleEntityVisitorInterface;
 
 /**
  * \ingroup core
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
 
     /**
      * Adds an annotation to the manager. Ownership of the annotation is transferred to the manager.
-     * Returns true if the addition was successful, or false if the annotation could not be added.
+     * Returns TRUE if the addition was successful, or FALSE if the annotation could not be added.
      * \see removeAnnotation()
      * \see annotationAdded()
      */
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
 
     /**
      * Removes an annotation from the manager. The annotation is deleted.
-     * Returns true if the removal was successful, or false if the removal failed (eg as a result
+     * Returns TRUE if the removal was successful, or FALSE if the removal failed (eg as a result
      * of removing an annotation which is not contained in the manager).
      * \see addAnnotation()
      * \see annotationRemoved()
@@ -106,6 +106,17 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
      * \see readXml()
      */
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Accepts the specified style entity \a visitor, causing it to visit all style entities associated
+     * within the contained annotations.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 3.10
+     */
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
   signals:
 

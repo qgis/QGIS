@@ -16,7 +16,7 @@
 #ifndef QGSLAYOUTVIEWTOOLADDNODEITEM_H
 #define QGSLAYOUTVIEWTOOLADDNODEITEM_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 #include "qgslayoutviewtool.h"
 #include <memory>
@@ -34,6 +34,7 @@ class GUI_EXPORT QgsLayoutViewToolAddNodeItem : public QgsLayoutViewTool
 
   public:
 
+    //! Constructs a QgsLayoutViewToolAddNodeItem for the given layout \a view.
     QgsLayoutViewToolAddNodeItem( QgsLayoutView *view SIP_TRANSFERTHIS );
 
     /**

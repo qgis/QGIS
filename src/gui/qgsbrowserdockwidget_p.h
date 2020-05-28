@@ -32,6 +32,7 @@
 // version without notice, or even be removed.
 //
 
+#include <QSortFilterProxyModel>
 
 #include "ui_qgsbrowserdockwidgetbase.h"
 #include "ui_qgsbrowserlayerpropertiesbase.h"
@@ -41,14 +42,14 @@
 #include "qgsdataitem.h"
 #include "qgsbrowsertreeview.h"
 #include "qgsdockwidget.h"
-#include <QSortFilterProxyModel>
+#include "qgsdataitemguiprovider.h"
 
-class QgsBrowserModel;
+class QgsBrowserGuiModel;
 class QModelIndex;
 class QgsDockBrowserTreeView;
 class QgsLayerItem;
 class QgsDataItem;
-class QgsBrowserTreeFilterProxyModel;
+class QgsDirectoryParamWidget;
 
 #define SIP_NO_FILE
 
@@ -85,19 +86,19 @@ class QgsBrowserPropertiesWidget : public QWidget
       */
     explicit QgsBrowserPropertiesWidget( QWidget *parent = nullptr );
     //! Factory method to create a new browser properties widget
-    static QgsBrowserPropertiesWidget *createWidget( QgsDataItem *item, QWidget *parent = nullptr );
+    static QgsBrowserPropertiesWidget *createWidget( QgsDataItem *item, const QgsDataItemGuiContext &context, QWidget *parent = nullptr );
     //! Stub
-    virtual void setItem( QgsDataItem *item ) { Q_UNUSED( item ) }
+    virtual void setItem( QgsDataItem *item ) { Q_UNUSED( item ); }
     //! Sets content widget, usually item paramWidget. Takes ownership.
     virtual void setWidget( QWidget *widget );
 
     /**
      * Sets whether the properties widget should display in condensed mode, ie, for display in a dock
      * widget rather than it's own separate dialog.
-     * \param condensedMode set to true to enable condensed mode
+     * \param condensedMode set to TRUE to enable condensed mode
      * \since QGIS 2.10
      */
-    virtual void setCondensedMode( bool condensedMode ) { Q_UNUSED( condensedMode ); }
+    virtual void setCondensedMode( bool condensedMode ) { Q_UNUSED( condensedMode ) }
 };
 
 /**
@@ -119,13 +120,22 @@ class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui:
     /**
      * Sets whether the properties widget should display in condensed mode, ie, for display in a dock
      * widget rather than it's own separate dialog.
-     * \param condensedMode set to true to enable condensed mode
+     * \param condensedMode set to TRUE to enable condensed mode
      * \since QGIS 2.10
      */
     void setCondensedMode( bool condensedMode ) override;
 
+  private slots:
+
+    void urlClicked( const QUrl &url );
+
   private:
-    QgsBrowserPropertiesWrapLabel *mUriLabel = nullptr;
+
+    void loadAttributeTable();
+
+    std::unique_ptr<QgsMapLayer> mLayer;
+    QgsAttributeTableFilterModel *mAttributeTableFilterModel = nullptr;
+
 };
 
 /**
@@ -152,7 +162,7 @@ class QgsBrowserDirectoryProperties : public QgsBrowserPropertiesWidget, private
 /**
  * The QgsBrowserPropertiesDialog class
  */
-class QgsBrowserPropertiesDialog : public QDialog, private Ui::QgsBrowserPropertiesDialogBase
+class GUI_EXPORT QgsBrowserPropertiesDialog : public QDialog, private Ui::QgsBrowserPropertiesDialogBase
 {
     Q_OBJECT
   public:
@@ -163,10 +173,9 @@ class QgsBrowserPropertiesDialog : public QDialog, private Ui::QgsBrowserPropert
       * \param parent parent widget
       */
     QgsBrowserPropertiesDialog( const QString &settingsSection, QWidget *parent = nullptr );
-    ~QgsBrowserPropertiesDialog() override;
 
     //! Create dialog from the given item and add it
-    void setItem( QgsDataItem *item );
+    void setItem( QgsDataItem *item, const QgsDataItemGuiContext &context );
 
   private:
     QgsBrowserPropertiesWidget *mPropertiesWidget = nullptr;
@@ -203,57 +212,6 @@ class QgsDockBrowserTreeView : public QgsBrowserTreeView
   private:
     void setAction( QDropEvent *e );
 };
-
-/**
- * Utility class for filtering browser items
- */
-class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
-{
-    Q_OBJECT
-  public:
-
-    /**
-      * Constructor for QgsBrowserTreeFilterProxyModel
-      * \param parent parent widget
-      */
-    explicit QgsBrowserTreeFilterProxyModel( QObject *parent );
-    //! Sets the browser model
-    void setBrowserModel( QgsBrowserModel *model );
-    //! Gets the browser model
-    QgsBrowserModel *browserModel() { return mModel; }
-    //! Sets the filter syntax
-    void setFilterSyntax( const QString &syntax );
-    //! Sets the filter
-    void setFilter( const QString &filter );
-    //! Sets case sensitivity
-    void setCaseSensitive( bool caseSensitive );
-    //! Update filter
-    void updateFilter();
-
-  protected:
-
-    QgsBrowserModel *mModel = nullptr;
-    QString mFilter; //filter string provided
-    QVector<QRegExp> mREList; //list of filters, separated by "|"
-    QString mPatternSyntax;
-    Qt::CaseSensitivity mCaseSensitivity;
-
-    //! Filter accepts string
-    bool filterAcceptsString( const QString &value ) const;
-
-    //! It would be better to apply the filer only to expanded (visible) items, but using mapFromSource() + view here was causing strange errors
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
-
-    //! Returns true if at least one ancestor is accepted by filter
-    bool filterAcceptsAncestor( const QModelIndex &sourceIndex ) const;
-
-    //! Returns true if at least one descendant s accepted by filter
-    bool filterAcceptsDescendant( const QModelIndex &sourceIndex ) const;
-
-    //! Filter accepts item name
-    bool filterAcceptsItem( const QModelIndex &sourceIndex ) const;
-};
-
 
 /// @endcond
 

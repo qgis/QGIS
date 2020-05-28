@@ -1,13 +1,1 @@
-<svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
-<g transform="translate(0 -8)">
-<path d="m7.9999986 7.9999995h7.999999v7.999999h-7.999999z" fill="#6e97c4"/>
-<path d="m16.000002 7.9999995h7.999999v7.999999h-7.999999z" fill="#2b3b4d"/>
-<path d="m7.9999986 16h7.999999v7.999999h-7.999999z" fill="#2b3b4d"/>
-<path d="m16.000002 16h7.999999v7.999999h-7.999999z" fill="#6d97c4"/>
-<path d="m-.00000048 7.9999995h7.999999v7.999999h-7.999999z" fill="#2d3e4d"/>
-<path d="m-.00000048 16h7.999999v7.999999h-7.999999z" fill="#6d97c4"/>
-<path d="m7.9999986 24.000002h7.999999v7.999999h-7.999999z" fill="#6d97c4"/>
-<path d="m-.00000048 24.000002h7.999999v7.999999h-7.999999z" fill="#2b3b4d"/>
-<path d="m-.00000048 7.9999995h23.999998v23.999998h-23.999998z" fill="none"/>
-</g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16"><defs><linearGradient id="a"><stop stop-color="#aec7e2" offset="0"/><stop stop-color="#6e97c4" offset="1"/></linearGradient></defs><path d="M6.333 2h4.334v4.333H6.333z" fill="#aec7e2"/><path d="M2 2h4.333v4.333H2zM6.333 6.333h4.334v4.334H6.333zM10.667 2H15v4.333h-4.333z" fill="#2b3b4d"/><path d="M2 6.333h4.333v4.334H2zM10.667 6.333H15v4.334h-4.333zM6.333 10.667h4.334V15H6.333z" fill="#aec7e2"/><path d="M2 10.667h4.333V15H2z" fill="#2b3b4d"/></svg>

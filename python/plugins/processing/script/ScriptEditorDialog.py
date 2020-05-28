@@ -21,17 +21,13 @@ __author__ = 'Alexander Bruy'
 __date__ = 'December 2012'
 __copyright__ = '(C) 2012, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 import codecs
 import inspect
 import traceback
 import warnings
 
-from qgis.PyQt import uic
+from qgis.PyQt import uic, sip
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QCursor
 from qgis.PyQt.QtWidgets import (QMessageBox,
@@ -44,6 +40,7 @@ from qgis.core import (QgsApplication,
                        QgsProcessingAlgorithm,
                        QgsProcessingFeatureBasedAlgorithm)
 from qgis.utils import iface, OverrideCursor
+from qgis.processing import alg as algfactory
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.script import ScriptUtils
@@ -116,12 +113,12 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.btnFind.clicked.connect(self.find)
         self.btnReplace.clicked.connect(self.replace)
         self.lastSearch = None
+        self.run_dialog = None
 
         self.filePath = None
         if filePath is not None:
             self._loadFile(filePath)
 
-        self.needUpdate = False
         self.setHasChanged(False)
 
     def update_dialog_title(self):
@@ -150,20 +147,14 @@ class ScriptEditorDialog(BASE, WIDGET):
                 QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard, QMessageBox.Cancel)
 
             if ret == QMessageBox.Save:
-                self.updateProvider()
                 self.saveScript(False)
                 event.accept()
             elif ret == QMessageBox.Discard:
-                self.updateProvider()
                 event.accept()
             else:
                 event.ignore()
         else:
             event.accept()
-
-    def updateProvider(self):
-        if self.needUpdate:
-            QgsApplication.processingRegistry().providerById("script").refreshAlgorithms()
 
     def openScript(self):
         if self.hasChanged:
@@ -218,8 +209,10 @@ class ScriptEditorDialog(BASE, WIDGET):
                                     self.tr("Unable to save edits:\n{}").format(str(e))
                                     )
                 return
-            self.needUpdate = True
+
             self.setHasChanged(False)
+
+        QgsApplication.processingRegistry().providerById("script").refreshAlgorithms()
 
     def setHasChanged(self, hasChanged):
         self.hasChanged = hasChanged
@@ -227,9 +220,13 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.update_dialog_title()
 
     def runAlgorithm(self):
-        d = {}
+        if self.run_dialog and not sip.isdeleted(self.run_dialog):
+            self.run_dialog.close()
+            self.run_dialog = None
+
+        _locals = {}
         try:
-            exec(self.editor.text(), d)
+            exec(self.editor.text(), _locals)
         except Exception as e:
             error = QgsError(traceback.format_exc(), "Processing")
             QgsErrorDialog.show(error,
@@ -238,10 +235,13 @@ class ScriptEditorDialog(BASE, WIDGET):
             return
 
         alg = None
-        for k, v in d.items():
-            if inspect.isclass(v) and issubclass(v, (QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm)) and v.__name__ not in ("QgsProcessingAlgorithm", "QgsProcessingFeatureBasedAlgorithm"):
-                alg = v()
-                break
+        try:
+            alg = algfactory.instances.pop().createInstance()
+        except IndexError:
+            for name, attr in _locals.items():
+                if inspect.isclass(attr) and issubclass(attr, (QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm)) and attr.__name__ not in ("QgsProcessingAlgorithm", "QgsProcessingFeatureBasedAlgorithm"):
+                    alg = attr()
+                    break
 
         if alg is None:
             QMessageBox.warning(self,
@@ -253,14 +253,14 @@ class ScriptEditorDialog(BASE, WIDGET):
         alg.setProvider(QgsApplication.processingRegistry().providerById("script"))
         alg.initAlgorithm()
 
-        dlg = alg.createCustomParametersWidget(self)
-        if not dlg:
-            dlg = AlgorithmDialog(alg)
+        self.run_dialog = alg.createCustomParametersWidget(self)
+        if not self.run_dialog:
+            self.run_dialog = AlgorithmDialog(alg, parent=self)
 
         canvas = iface.mapCanvas()
         prevMapTool = canvas.mapTool()
 
-        dlg.show()
+        self.run_dialog.show()
 
         if canvas.mapTool() != prevMapTool:
             try:

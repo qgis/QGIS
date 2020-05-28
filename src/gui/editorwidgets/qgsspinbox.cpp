@@ -26,6 +26,15 @@
 
 #define CLEAR_ICON_SIZE 16
 
+// This is required because private implementation of
+// QAbstractSpinBoxPrivate checks for specialText emptiness
+// and skips specialText handling if it's empty
+#ifdef _MSC_VER
+static QChar SPECIAL_TEXT_WHEN_EMPTY = QChar( 0x2063 );
+#else
+static constexpr QChar SPECIAL_TEXT_WHEN_EMPTY = QChar( 0x2063 );
+#endif
+
 QgsSpinBox::QgsSpinBox( QWidget *parent )
   : QSpinBox( parent )
 {
@@ -54,6 +63,12 @@ void QgsSpinBox::setExpressionsEnabled( const bool enabled )
 void QgsSpinBox::changeEvent( QEvent *event )
 {
   QSpinBox::changeEvent( event );
+
+  if ( event->type() == QEvent::FontChange )
+  {
+    lineEdit()->setFont( font() );
+  }
+
   mLineEdit->setShowClearButton( shouldShowClearForValue( value() ) );
 }
 
@@ -84,6 +99,17 @@ void QgsSpinBox::wheelEvent( QWheelEvent *event )
   setSingleStep( step );
 }
 
+void QgsSpinBox::timerEvent( QTimerEvent *event )
+{
+  // Process all events, which may include a mouse release event
+  // Only allow the timer to trigger additional value changes if the user
+  // has in fact held the mouse button, rather than the timer expiry
+  // simply appearing before the mouse release in the event queue
+  qApp->processEvents();
+  if ( QApplication::mouseButtons() & Qt::LeftButton )
+    QSpinBox::timerEvent( event );
+}
+
 void QgsSpinBox::changed( int value )
 {
   mLineEdit->setShowClearButton( shouldShowClearForValue( value ) );
@@ -92,6 +118,8 @@ void QgsSpinBox::changed( int value )
 void QgsSpinBox::clear()
 {
   setValue( clearValue() );
+  if ( mLineEdit->isNull() )
+    mLineEdit->clear();
 }
 
 void QgsSpinBox::setClearValue( int customValue, const QString &specialValueText )
@@ -135,6 +163,20 @@ int QgsSpinBox::clearValue() const
 void QgsSpinBox::setLineEditAlignment( Qt::Alignment alignment )
 {
   mLineEdit->setAlignment( alignment );
+}
+
+void QgsSpinBox::setSpecialValueText( const QString &txt )
+{
+  if ( txt.isEmpty() )
+  {
+    QSpinBox::setSpecialValueText( SPECIAL_TEXT_WHEN_EMPTY );
+    mLineEdit->setNullValue( SPECIAL_TEXT_WHEN_EMPTY );
+  }
+  else
+  {
+    QSpinBox::setSpecialValueText( txt );
+    mLineEdit->setNullValue( txt );
+  }
 }
 
 int QgsSpinBox::valueFromText( const QString &text ) const
@@ -185,6 +227,9 @@ QString QgsSpinBox::stripped( const QString &originalText ) const
   QString text = originalText;
   if ( specialValueText().isEmpty() || text != specialValueText() )
   {
+    // Strip SPECIAL_TEXT_WHEN_EMPTY
+    if ( text.contains( SPECIAL_TEXT_WHEN_EMPTY ) )
+      text = text.replace( SPECIAL_TEXT_WHEN_EMPTY, QString() );
     int from = 0;
     int size = text.size();
     bool changed = false;

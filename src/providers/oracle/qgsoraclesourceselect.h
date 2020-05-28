@@ -36,6 +36,7 @@ class QStringList;
 class QgsOracleColumnTypeThread;
 class QgisApp;
 class QgsOracleSourceSelect;
+class QgsProxyProgressTask;
 
 class QgsOracleSourceSelectDelegate : public QItemDelegate
 {
@@ -98,8 +99,6 @@ class QgsOracleSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qg
 
   signals:
     void addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey );
-    void progress( int, int );
-    void progressMessage( QString );
 
   public slots:
     //! Determines the tables the user selected and closes the dialog
@@ -158,6 +157,7 @@ class QgsOracleSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qg
     QStringList mColumnLabels;
     // Our thread for doing long running queries
     QgsOracleColumnTypeThread *mColumnTypeThread = nullptr;
+    QgsProxyProgressTask *mColumnTypeTask = nullptr;
     QgsDataSourceUri mConnInfo;
     QStringList mSelectedTables;
     // Storage for the range of layer type icons

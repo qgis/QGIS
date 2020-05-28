@@ -9,17 +9,26 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '2017-05'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
-from qgis.core import QgsMapLayerStore, QgsVectorLayer, QgsMapLayer
+import os
+from qgis.core import (
+    QgsMapLayerStore,
+    QgsVectorLayer,
+    QgsMapLayer,
+    QgsDataProvider,
+    QgsProject,
+    QgsReadWriteContext,
+)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QT_VERSION_STR
-import sip
+from qgis.PyQt import sip
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument, QDomNode
 from time import sleep
+from utilities import unitTestDataPath
 
 start_app()
+TEST_DATA_DIR = unitTestDataPath()
 
 
 def createLayer(name):
@@ -66,9 +75,11 @@ class TestQgsMapLayerStore(unittest.TestCase):
         """ test that invalid map layers can't be added to store """
         store = QgsMapLayerStore()
 
-        self.assertEqual(store.addMapLayer(QgsVectorLayer("Point?field=x:string", 'test', "xxx")), None)
-        self.assertEqual(len(store.mapLayersByName('test')), 0)
-        self.assertEqual(store.count(), 0)
+        vl = QgsVectorLayer("Point?field=x:string", 'test', "xxx")
+        self.assertEqual(store.addMapLayer(vl), vl)
+        self.assertEqual(len(store.mapLayersByName('test')), 1)
+        self.assertEqual(store.count(), 1)
+        self.assertEqual(store.validCount(), 0)
 
     def test_addMapLayerSignals(self):
         """ test that signals are correctly emitted when adding map layer"""
@@ -120,12 +131,14 @@ class TestQgsMapLayerStore(unittest.TestCase):
         store.removeAllMapLayers()
 
     def test_addMapLayersInvalid(self):
-        """ test that invalid map layersd can't be added to store """
+        """ test that invalid map layers can be added to store """
         store = QgsMapLayerStore()
 
-        self.assertEqual(store.addMapLayers([QgsVectorLayer("Point?field=x:string", 'test', "xxx")]), [])
-        self.assertEqual(len(store.mapLayersByName('test')), 0)
-        self.assertEqual(store.count(), 0)
+        vl = QgsVectorLayer("Point?field=x:string", 'test', "xxx")
+        self.assertEqual(store.addMapLayers([vl]), [vl])
+        self.assertEqual(len(store.mapLayersByName('test')), 1)
+        self.assertEqual(store.count(), 1)
+        self.assertEqual(store.validCount(), 0)
 
     def test_addMapLayersAlreadyAdded(self):
         """ test that already added layers can't be readded to store """
@@ -201,7 +214,7 @@ class TestQgsMapLayerStore(unittest.TestCase):
         self.assertEqual(store.mapLayersByName('test'), [l1])
         self.assertEqual(store.mapLayersByName('test2'), [l2])
 
-        #duplicate name
+        # duplicate name
 
         # little bit of a hack - we don't want a duplicate ID and since IDs are currently based on time we wait a bit here
         sleep(0.1)
@@ -239,7 +252,7 @@ class TestQgsMapLayerStore(unittest.TestCase):
         store.addMapLayers([l1, l2, l3])
         self.assertEqual(store.count(), 3)
 
-        #remove bad layers
+        # remove bad layers
         store.removeMapLayersById(['bad'])
         self.assertEqual(store.count(), 3)
         store.removeMapLayersById([None])
@@ -280,7 +293,7 @@ class TestQgsMapLayerStore(unittest.TestCase):
         store.addMapLayers([l1, l2, l3])
         self.assertEqual(store.count(), 3)
 
-        #remove bad layers
+        # remove bad layers
         store.removeMapLayers([None])
         self.assertEqual(store.count(), 3)
 
@@ -311,7 +324,7 @@ class TestQgsMapLayerStore(unittest.TestCase):
         store.addMapLayers([l1, l2])
         self.assertEqual(store.count(), 2)
 
-        #remove bad layers
+        # remove bad layers
         store.removeMapLayer('bad')
         self.assertEqual(store.count(), 2)
         store.removeMapLayer(None)
@@ -352,7 +365,7 @@ class TestQgsMapLayerStore(unittest.TestCase):
         store.addMapLayers([l1, l2])
         self.assertEqual(store.count(), 2)
 
-        #remove bad layers
+        # remove bad layers
         store.removeMapLayer(None)
         self.assertEqual(store.count(), 2)
         l3 = createLayer('test3')
@@ -437,7 +450,7 @@ class TestQgsMapLayerStore(unittest.TestCase):
         self.assertEqual(len(layer_removed_spy), 4)
         self.assertEqual(len(remove_all_spy), 1)
 
-        #remove some layers which aren't in the store
+        # remove some layers which aren't in the store
         store.removeMapLayersById(['asdasd'])
         self.assertEqual(len(layers_will_be_removed_spy), 3)
         self.assertEqual(len(layer_will_be_removed_spy_str), 4)
@@ -464,7 +477,7 @@ class TestQgsMapLayerStore(unittest.TestCase):
 
         # check also that the removal of an unexistent layer does not insert a null layer
         for k, layer in list(store.mapLayers().items()):
-            assert(layer is not None)
+            assert (layer is not None)
 
     def testTakeLayer(self):
         # test taking ownership of a layer from the store
@@ -485,7 +498,7 @@ class TestQgsMapLayerStore(unittest.TestCase):
 
         # take layer from store
         self.assertEqual(store.takeMapLayer(l1), l1)
-        self.assertFalse(store.mapLayers()) # no layers left
+        self.assertFalse(store.mapLayers())  # no layers left
         # but l1 should still exist
         self.assertTrue(l1.isValid())
         # layer should have no parent now
@@ -516,14 +529,47 @@ class TestQgsMapLayerStore(unittest.TestCase):
         store2.addMapLayer(l3)
 
         store2.transferLayersFromStore(store1)
-        self.assertFalse(store1.mapLayers()) # no layers left
+        self.assertFalse(store1.mapLayers())  # no layers left
         self.assertEqual(len(store2.mapLayers()), 3)
         self.assertEqual(store2.mapLayers(), {l1.id(): l1, l2.id(): l2, l3.id(): l3})
 
         store1.transferLayersFromStore(store2)
-        self.assertFalse(store2.mapLayers()) # no layers left
+        self.assertFalse(store2.mapLayers())  # no layers left
         self.assertEqual(len(store1.mapLayers()), 3)
         self.assertEqual(store1.mapLayers(), {l1.id(): l1, l2.id(): l2, l3.id(): l3})
+
+    def testLayerDataSourceReset(self):
+        """When adding a layer with the same id to the store make sure
+        the data source is also updated in case the layer validity has
+        changed from False to True"""
+
+        p = QgsProject()
+        store = p.layerStore()
+        vl1 = createLayer('valid')
+        vl2 = QgsVectorLayer('/not_a_valid_path.shp', 'invalid', 'ogr')
+        self.assertTrue(vl1.isValid())
+        self.assertFalse(vl2.isValid())
+        store.addMapLayers([vl1, vl2])
+        self.assertEqual(store.validCount(), 1)
+        self.assertEqual(len(store.mapLayers()), 2)
+
+        # Re-add the bad layer
+        store.addMapLayers([vl2])
+        self.assertEqual(store.validCount(), 1)
+        self.assertEqual(len(store.mapLayers()), 2)
+
+        doc = QDomDocument()
+        doc.setContent(
+            '<maplayer><provider encoding="UTF-8">ogr</provider><layername>fixed</layername><id>%s</id></maplayer>' % vl2.id())
+        layer_node = QDomNode(doc.firstChild())
+        self.assertTrue(vl2.writeXml(layer_node, doc, QgsReadWriteContext()))
+        datasource_node = doc.createElement("datasource")
+        datasource_node.appendChild(doc.createTextNode(os.path.join(TEST_DATA_DIR, 'points.shp')))
+        layer_node.appendChild(datasource_node)
+        p.readLayer(layer_node)
+        self.assertEqual(store.validCount(), 2)
+        self.assertEqual(len(store.mapLayers()), 2)
+        self.assertEqual(store.mapLayers()[vl2.id()].name(), 'fixed')
 
 
 if __name__ == '__main__':

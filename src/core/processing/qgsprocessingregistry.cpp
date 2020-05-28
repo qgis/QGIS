@@ -18,12 +18,14 @@
 #include "qgsprocessingregistry.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsprocessingparametertypeimpl.h"
+#include "qgsprocessingparametervectortilewriterlayers.h"
 
 QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )
 {
   addParameterType( new QgsProcessingParameterTypeRasterLayer() );
   addParameterType( new QgsProcessingParameterTypeVectorLayer() );
+  addParameterType( new QgsProcessingParameterTypeMeshLayer() );
   addParameterType( new QgsProcessingParameterTypeMapLayer() );
   addParameterType( new QgsProcessingParameterTypeBoolean() );
   addParameterType( new QgsProcessingParameterTypeExpression() );
@@ -40,17 +42,32 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypeFileDestination() );
   addParameterType( new QgsProcessingParameterTypeFolderDestination() );
   addParameterType( new QgsProcessingParameterTypeString() );
+  addParameterType( new QgsProcessingParameterTypeAuthConfig() );
   addParameterType( new QgsProcessingParameterTypeMultipleLayers() );
   addParameterType( new QgsProcessingParameterTypeFeatureSource() );
   addParameterType( new QgsProcessingParameterTypeNumber() );
   addParameterType( new QgsProcessingParameterTypeDistance() );
+  addParameterType( new QgsProcessingParameterTypeScale() );
   addParameterType( new QgsProcessingParameterTypeBand() );
   addParameterType( new QgsProcessingParameterTypeFeatureSink() );
+  addParameterType( new QgsProcessingParameterTypeLayout() );
+  addParameterType( new QgsProcessingParameterTypeLayoutItem() );
+  addParameterType( new QgsProcessingParameterTypeColor() );
+#if PROJ_VERSION_MAJOR>=6
+  addParameterType( new QgsProcessingParameterTypeCoordinateOperation() );
+#endif
+  addParameterType( new QgsProcessingParameterTypeMapTheme() );
+  addParameterType( new QgsProcessingParameterTypeDateTime() );
+  addParameterType( new QgsProcessingParameterTypeProviderConnection() );
+  addParameterType( new QgsProcessingParameterTypeDatabaseSchema() );
+  addParameterType( new QgsProcessingParameterTypeDatabaseTable() );
+  addParameterType( new QgsProcessingParameterTypeVectorTileWriterLayers() );
 }
 
 QgsProcessingRegistry::~QgsProcessingRegistry()
 {
-  Q_FOREACH ( QgsProcessingProvider *p, mProviders )
+  const auto constMProviders = mProviders;
+  for ( QgsProcessingProvider *p : constMProviders )
   {
     removeProvider( p );
   }
@@ -127,12 +144,16 @@ QList< const QgsProcessingAlgorithm * > QgsProcessingRegistry::algorithms() cons
   return algs;
 }
 
-const QgsProcessingAlgorithm *QgsProcessingRegistry::algorithmById( const QString &id ) const
+const QgsProcessingAlgorithm *QgsProcessingRegistry::algorithmById( const QString &constId ) const
 {
+  // allow mapping of algorithm via registered algorithm aliases
+  QString id = mAlgorithmAliases.value( constId, constId );
+
   QMap<QString, QgsProcessingProvider *>::const_iterator it = mProviders.constBegin();
   for ( ; it != mProviders.constEnd(); ++it )
   {
-    Q_FOREACH ( const QgsProcessingAlgorithm *alg, it.value()->algorithms() )
+    const auto constAlgorithms = it.value()->algorithms();
+    for ( const QgsProcessingAlgorithm *alg : constAlgorithms )
       if ( alg->id() == id )
         return alg;
   }
@@ -140,7 +161,7 @@ const QgsProcessingAlgorithm *QgsProcessingRegistry::algorithmById( const QStrin
   // try mapping 'qgis' algs to 'native' algs - this allows us to freely move algorithms
   // from the python 'qgis' provider to the c++ 'native' provider without breaking API
   // or existing models
-  if ( id.startsWith( QStringLiteral( "qgis:" ) ) )
+  if ( id.startsWith( QLatin1String( "qgis:" ) ) )
   {
     QString newId = QStringLiteral( "native:" ) + id.mid( 5 );
     return algorithmById( newId );
@@ -156,6 +177,11 @@ QgsProcessingAlgorithm *QgsProcessingRegistry::createAlgorithmById( const QStrin
 
   std::unique_ptr< QgsProcessingAlgorithm > creation( alg->create( configuration ) );
   return creation.release();
+}
+
+void QgsProcessingRegistry::addAlgorithmAlias( const QString &aliasId, const QString &actualId )
+{
+  mAlgorithmAliases.insert( aliasId, actualId );
 }
 
 bool QgsProcessingRegistry::addParameterType( QgsProcessingParameterType *type )

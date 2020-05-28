@@ -141,6 +141,13 @@ void QgsFeature::setGeometry( const QgsGeometry &geometry )
   d->valid = true;
 }
 
+void QgsFeature::setGeometry( std::unique_ptr<QgsAbstractGeometry> geometry )
+{
+  d.detach();
+  d->geometry = QgsGeometry( std::move( geometry ) );
+  d->valid = true;
+}
+
 void QgsFeature::clearGeometry()
 {
   setGeometry( QgsGeometry() );
@@ -195,10 +202,10 @@ bool QgsFeature::hasGeometry() const
 void QgsFeature::initAttributes( int fieldCount )
 {
   d.detach();
+  d->attributes.resize( 0 ); // clears existing elements, while still preserving the currently allocated capacity of the list (unlike clear)
+  // ensures ALL attributes, including previously existing ones are default constructed.
+  // doing it this way also avoids clearing individual QVariants -- which can trigger a detachment. Cheaper just to make a new one.
   d->attributes.resize( fieldCount );
-  QVariant *ptr = d->attributes.data();
-  for ( int i = 0; i < fieldCount; ++i, ++ptr )
-    ptr->clear();
 }
 
 bool QgsFeature::setAttribute( int idx, const QVariant &value )
@@ -312,7 +319,8 @@ QDataStream &operator>>( QDataStream &in, QgsFeature &feature )
 uint qHash( const QgsFeature &key, uint seed )
 {
   uint hash = seed;
-  Q_FOREACH ( const QVariant &attr, key.attributes() )
+  const auto constAttributes = key.attributes();
+  for ( const QVariant &attr : constAttributes )
   {
     hash ^= qHash( attr.toString() );
   }

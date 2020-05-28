@@ -17,11 +17,20 @@
 
 #include "qgsrasterfilewritertask.h"
 #include "qgsrasterinterface.h"
+#include "qgsrasterdataprovider.h"
 
-QgsRasterFileWriterTask::QgsRasterFileWriterTask( const QgsRasterFileWriter &writer, QgsRasterPipe *pipe,
-    int columns, int rows,
+// Deprecated!
+QgsRasterFileWriterTask::QgsRasterFileWriterTask( const QgsRasterFileWriter &writer, QgsRasterPipe *pipe, int columns, int rows,
+    const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &crs )
+  : QgsRasterFileWriterTask( writer, pipe, columns, rows, outputExtent, crs,
+                             ( pipe && pipe->provider() ) ? pipe->provider()->transformContext() : QgsCoordinateTransformContext() )
+{
+}
+
+QgsRasterFileWriterTask::QgsRasterFileWriterTask( const QgsRasterFileWriter &writer, QgsRasterPipe *pipe, int columns, int rows,
     const QgsRectangle &outputExtent,
-    const QgsCoordinateReferenceSystem &crs )
+    const QgsCoordinateReferenceSystem &crs,
+    const QgsCoordinateTransformContext &transformContext )
   : QgsTask( tr( "Saving %1" ).arg( writer.outputUrl() ), QgsTask::CanCancel )
   , mWriter( writer )
   , mRows( rows )
@@ -30,7 +39,9 @@ QgsRasterFileWriterTask::QgsRasterFileWriterTask( const QgsRasterFileWriter &wri
   , mCrs( crs )
   , mPipe( pipe )
   , mFeedback( new QgsRasterBlockFeedback() )
-{}
+  , mTransformContext( transformContext )
+{
+}
 
 void QgsRasterFileWriterTask::cancel()
 {
@@ -45,7 +56,7 @@ bool QgsRasterFileWriterTask::run()
 
   connect( mFeedback.get(), &QgsRasterBlockFeedback::progressChanged, this, &QgsRasterFileWriterTask::setProgress );
 
-  mError = mWriter.writeRaster( mPipe.get(), mColumns, mRows, mExtent, mCrs, mFeedback.get() );
+  mError = mWriter.writeRaster( mPipe.get(), mColumns, mRows, mExtent, mCrs, mTransformContext, mFeedback.get() );
 
   return mError == QgsRasterFileWriter::NoError;
 }
@@ -55,7 +66,13 @@ void QgsRasterFileWriterTask::finished( bool result )
   if ( result )
     emit writeComplete( mWriter.outputUrl() );
   else
+  {
     emit errorOccurred( mError );
+    QString errorMsg;
+    if ( !mFeedback->errors().isEmpty() )
+      errorMsg = mFeedback->errors().front();
+    emit errorOccurred( mError, errorMsg );
+  }
 }
 
 

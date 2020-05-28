@@ -1,0 +1,15 @@
+Content-Length: 366
+Content-Type: text/xml; charset=utf-8
+
+<GetFeatureInfoResponse>
+ <Layer name="testlayer_thousands">
+  <Feature id="2">
+   <Attribute value="3" name="id"/>
+   <Attribute value="three" name="name"/>
+   <Attribute value="three èé↓" name="utf8nameè"/>
+   <Attribute value="123456" name="long_int"/>
+   <Attribute value="123456.8900" name="long_float"/>
+   <BoundingBox maxy="5606011.4565" maxx="913204.9128" miny="5606011.4565" CRS="EPSG:3857" minx="913204.9128"/>
+  </Feature>
+ </Layer>
+</GetFeatureInfoResponse>

@@ -39,6 +39,14 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     Q_OBJECT
 
   public:
+
+    enum Roles
+    {
+      UrlRole = Qt::UserRole + 1,
+      IsLayerRole,
+      IdRole,
+    };
+
     //! Whether the dialog is for a map service or a feature service
     enum ServiceType { MapService, FeatureService };
 
@@ -71,7 +79,8 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
                                  const QString &layerName,
                                  const QString &crs = QString(),
                                  const QString &filter = QString(),
-                                 const QgsRectangle &bBox = QgsRectangle() ) const = 0;
+                                 const QgsRectangle &bBox = QgsRectangle(),
+                                 const QString &layerId = QString() ) const = 0;
     //! Updates the UI for the list of available image encodings from the specified list.
     void populateImageEncodings( const QStringList &availableEncodings );
     //! Returns the selected image encoding.
@@ -117,6 +126,8 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     void showHelp();
     void treeWidgetItemDoubleClicked( const QModelIndex &index );
     void treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous );
+    void btnSave_clicked();
+    void btnLoad_clicked();
 };
 
 /**

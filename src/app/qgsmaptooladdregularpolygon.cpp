@@ -22,10 +22,12 @@
 #include "qgspoint.h"
 #include "qgisapp.h"
 #include "qgsstatusbar.h"
+#include "qgssnapindicator.h"
 
 QgsMapToolAddRegularPolygon::QgsMapToolAddRegularPolygon( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
   , mParentTool( parentTool )
+  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
 {
   clean();
   connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddRegularPolygon::stopCapturing );
@@ -40,13 +42,12 @@ QgsMapToolAddRegularPolygon::~QgsMapToolAddRegularPolygon()
 void QgsMapToolAddRegularPolygon::createNumberSidesSpinBox()
 {
   deleteNumberSidesSpinBox();
-  mNumberSidesSpinBox = std::unique_ptr<QgsSpinBox>( new QgsSpinBox() );
+  mNumberSidesSpinBox = qgis::make_unique<QgsSpinBox>();
   mNumberSidesSpinBox->setMaximum( 99999999 );
   mNumberSidesSpinBox->setMinimum( 3 );
   mNumberSidesSpinBox->setPrefix( tr( "Number of sides: " ) );
   mNumberSidesSpinBox->setValue( mNumberSides );
   QgisApp::instance()->addUserInputWidget( mNumberSidesSpinBox.get() );
-  mNumberSidesSpinBox->setFocus( Qt::TabFocusReason );
 }
 
 void QgsMapToolAddRegularPolygon::deleteNumberSidesSpinBox()
@@ -67,6 +68,28 @@ void QgsMapToolAddRegularPolygon::keyPressEvent( QKeyEvent *e )
   if ( e && e->key() == Qt::Key_Escape )
   {
     clean();
+    if ( mParentTool )
+      mParentTool->keyPressEvent( e );
+  }
+
+  if ( e && e->key() == Qt::Key_Backspace )
+  {
+    if ( mPoints.size() == 1 )
+    {
+
+      if ( mTempRubberBand )
+      {
+        delete mTempRubberBand;
+        mTempRubberBand = nullptr;
+      }
+
+      mPoints.clear();
+    }
+    else if ( mPoints.size() > 1 )
+    {
+      mPoints.removeLast();
+
+    }
     if ( mParentTool )
       mParentTool->keyPressEvent( e );
   }
@@ -134,4 +157,19 @@ void QgsMapToolAddRegularPolygon::clean()
   }
 
   mRegularPolygon = QgsRegularPolygon();
+
+
+  QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
+  if ( vLayer )
+    mLayerType = vLayer->geometryType();
+}
+
+void QgsMapToolAddRegularPolygon::release( QgsMapMouseEvent *e )
+{
+  deactivate();
+  if ( mParentTool )
+  {
+    mParentTool->canvasReleaseEvent( e );
+  }
+  activate();
 }

@@ -51,7 +51,7 @@ bool QgsMasterPasswordResetDialog::requestMasterPasswordReset( QString *newpass,
     leMasterPassCurrent->setFocus();
 
     bool ok = ( exec() == QDialog::Accepted );
-    //QgsDebugMsg( QString( "exec(): %1" ).arg( ok ? "true" : "false" ) );
+    //QgsDebugMsg( QStringLiteral( "exec(): %1" ).arg( ok ? "true" : "false" ) );
 
     if ( ok )
     {

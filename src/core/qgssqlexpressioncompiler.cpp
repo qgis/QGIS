@@ -340,7 +340,8 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
       QStringList list;
 
       Result inResult = Complete;
-      Q_FOREACH ( const QgsExpressionNode *ln, n->list()->list() )
+      const auto constList = n->list()->list();
+      for ( const QgsExpressionNode *ln : constList )
       {
         QString s;
         Result r = compileNode( ln, s );
@@ -371,13 +372,14 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
       // get sql function to compile node expression
       QString nd = sqlFunctionFromFunctionName( fd->name() );
       // if no sql function the node can't be compiled
-      if ( nd.isEmpty() )
+      if ( nd.isNull() )
         return Fail;
 
       // compile arguments
       QStringList args;
       Result inResult = Complete;
-      Q_FOREACH ( const QgsExpressionNode *ln, n->args()->list() )
+      const auto constList = n->args()->list();
+      for ( const QgsExpressionNode *ln : constList )
       {
         QString s;
         Result r = compileNode( ln, s );
@@ -395,11 +397,14 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
       args = sqlArgumentsFromFunctionName( fd->name(), args );
 
       // build result
-      result = QStringLiteral( "%1(%2)" ).arg( nd, args.join( ',' ) );
+      result = !nd.isEmpty() ? QStringLiteral( "%1(%2)" ).arg( nd, args.join( ',' ) ) : QStringLiteral( "%1" ).arg( args.join( ',' ) );
       return inResult == Partial ? Partial : Complete;
     }
 
     case QgsExpressionNode::ntCondition:
+      break;
+
+    case QgsExpressionNode::ntIndexOperator:
       break;
   }
 
@@ -408,19 +413,19 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
 
 QString QgsSqlExpressionCompiler::sqlFunctionFromFunctionName( const QString &fnName ) const
 {
-  Q_UNUSED( fnName );
+  Q_UNUSED( fnName )
   return QString();
 }
 
 QStringList QgsSqlExpressionCompiler::sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const
 {
-  Q_UNUSED( fnName );
+  Q_UNUSED( fnName )
   return QStringList( fnArgs );
 }
 
 QString QgsSqlExpressionCompiler::castToReal( const QString &value ) const
 {
-  Q_UNUSED( value );
+  Q_UNUSED( value )
   return QString();
 }
 
@@ -431,7 +436,7 @@ QString QgsSqlExpressionCompiler::castToText( const QString &value ) const
 
 QString QgsSqlExpressionCompiler::castToInt( const QString &value ) const
 {
-  Q_UNUSED( value );
+  Q_UNUSED( value )
   return QString();
 }
 

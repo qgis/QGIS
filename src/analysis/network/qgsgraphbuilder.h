@@ -17,7 +17,7 @@
 #define QGSGRAPHBUILDER_H
 
 #include "qgsgraphbuilderinterface.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include "qgsspatialindex.h"
 #include "qgis_analysis.h"

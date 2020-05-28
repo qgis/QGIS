@@ -25,18 +25,9 @@ namespace QgsWms
   /**
    * Output GetSchemaExtension response
    */
-  void writeGetSchemaExtension( QgsServerInterface *serverIface, const QString &version,
-                                const QgsServerRequest &request, QgsServerResponse &response );
+  void writeGetSchemaExtension( QgsServerResponse &response );
 
-
-  /**
-   * Returns the schemaExtension for WMS 1.3.0 capabilities
-   */
-  QDomDocument getSchemaExtension( QgsServerInterface *serverIface, const QString &version,
-                                   const QgsServerRequest &request );
-
-
-} // samespace QgsWms
+} // namespace QgsWms
 
 
 

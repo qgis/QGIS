@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-DIR=$(git rev-parse --show-toplevel)
-REV=$(git log -n1 --pretty=%H)
+srcdir=$(dirname $0)/../../
+
+DIR=$(git -C ${srcdir} rev-parse --show-toplevel)
+REV=$(git -C ${srcdir} log -n1 --pretty=%H)
 
 pushd ${DIR} > /dev/null || exit
 

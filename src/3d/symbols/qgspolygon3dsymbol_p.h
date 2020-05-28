@@ -27,42 +27,19 @@
 // version without notice, or even be removed.
 //
 
-#include <Qt3DCore/QEntity>
-#include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DRender/QGeometryRenderer>
 
-class Qgs3DMapSettings;
-class QgsTessellatedPolygonGeometry;
+#include "qgsfeature3dhandler_p.h"
+
 class QgsPolygon3DSymbol;
 
-class QgsPointXY;
-class QgsVectorLayer;
-class QgsFeatureRequest;
-
-
-//! Entity that handles rendering of polygons
-class QgsPolygon3DSymbolEntity : public Qt3DCore::QEntity
+namespace Qgs3DSymbolImpl
 {
-  public:
-    QgsPolygon3DSymbolEntity( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol, Qt3DCore::QNode *parent = nullptr );
+  //! factory method for QgsPolygon3DSymbol
+  QgsFeature3DHandler *handlerForPolygon3DSymbol( QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol );
 
-  private:
-    void addEntityForSelectedPolygons( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol );
-    void addEntityForNotSelectedPolygons( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol );
-
-    Qt3DExtras::QPhongMaterial *material( const QgsPolygon3DSymbol &symbol ) const;
-};
-
-class QgsPolygon3DSymbolEntityNode : public Qt3DCore::QEntity
-{
-  public:
-    QgsPolygon3DSymbolEntityNode( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol, const QgsFeatureRequest &req, Qt3DCore::QNode *parent = nullptr );
-
-  private:
-    Qt3DRender::QGeometryRenderer *renderer( const Qgs3DMapSettings &map, const QgsPolygon3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request );
-
-    QgsTessellatedPolygonGeometry *mGeometry = nullptr;
-};
+  //! convenience function to create a complete entity from QgsPolygon3DSymbol (will run getFeatures() on the layer)
+  Qt3DCore::QEntity *entityForPolygon3DSymbol( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol );
+}
 
 /// @endcond
 

@@ -15,20 +15,27 @@
 
 #include "mdal_data_model.hpp"
 #include "mdal.h"
+#include "mdal_driver.hpp"
 
 namespace MDAL
 {
 
-  class LoaderBinaryDat
+  class DriverBinaryDat: public Driver
   {
     public:
-      LoaderBinaryDat( const std::string &datFile );
-      void load( Mesh *mesh, MDAL_Status *status );
+      DriverBinaryDat();
+      ~DriverBinaryDat( ) override;
+      DriverBinaryDat *create() override;
+
+      bool canReadDatasets( const std::string &uri ) override;
+      void load( const std::string &datFile, Mesh *mesh ) override;
+      bool persist( DatasetGroup *group ) override;
 
     private:
       bool readVertexTimestep( const Mesh *mesh,
                                std::shared_ptr<DatasetGroup> group,
-                               double time,
+                               std::shared_ptr<DatasetGroup> groupMax,
+                               RelativeTimestamp time,
                                bool hasStatus,
                                int sflg,
                                std::ifstream &in );

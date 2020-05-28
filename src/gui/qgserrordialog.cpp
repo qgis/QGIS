@@ -33,7 +33,7 @@ QgsErrorDialog::QgsErrorDialog( const QgsError &error, const QString &title, QWi
     setWindowTitle( title );
 
   // QMessageBox has static standardIcon( Icon icon ), but it is marked as obsolete
-  QMessageBox messageBox( QMessageBox::Critical, QLatin1String( "" ), QLatin1String( "" ) );
+  QMessageBox messageBox( QMessageBox::Critical, QString(), QString() );
   mIconLabel->setPixmap( messageBox.iconPixmap() );
   mSummaryTextBrowser->setOpenExternalLinks( true );
   mDetailTextBrowser->setOpenExternalLinks( true );

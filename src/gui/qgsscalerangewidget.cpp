@@ -17,6 +17,8 @@
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgsscalewidget.h"
+#include "qgsguiutils.h"
+#include "qgsprojectviewsettings.h"
 
 QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
   : QWidget( parent )
@@ -36,10 +38,11 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
   maxLbl->setToolTip( tr( "Maximum scale, i.e. most \"zoomed in\". "
                           "This limit is inclusive, that means the layer will be displayed on this scale." ) );
 
+  const int iconSize = QgsGuiUtils::scaleIconSize( 24 );
   mMinimumScaleIconLabel = new QLabel( this );
-  mMinimumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( QStringLiteral( "/mActionZoomOut.svg" ) ) );
+  mMinimumScaleIconLabel->setPixmap( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomOut.svg" ) ).pixmap( QSize( iconSize, iconSize ) ) );
   mMaximumScaleIconLabel = new QLabel( this );
-  mMaximumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( QStringLiteral( "/mActionZoomIn.svg" ) ) );
+  mMaximumScaleIconLabel->setPixmap( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomIn.svg" ) ).pixmap( QSize( iconSize, iconSize ) ) );
 
   mMinimumScaleWidget = new QgsScaleWidget( this );
   mMaximumScaleWidget = new QgsScaleWidget( this );
@@ -69,10 +72,14 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
 
 void QgsScaleRangeWidget::reloadProjectScales()
 {
-  bool projectScales = QgsProject::instance()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) );
+  bool projectScales = QgsProject::instance()->viewSettings()->useProjectScales();
   if ( projectScales )
   {
-    QStringList scalesList = QgsProject::instance()->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) );
+    QStringList scalesList;
+    const QVector< double >projectScales = QgsProject::instance()->viewSettings()->mapScales();
+    scalesList.reserve( projectScales.size() );
+    for ( double scale : projectScales )
+      scalesList << QStringLiteral( "1:%1" ).arg( scale );
     mMinimumScaleWidget->updateScales( scalesList );
     mMaximumScaleWidget->updateScales( scalesList );
   }

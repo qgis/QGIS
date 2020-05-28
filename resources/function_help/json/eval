@@ -5,6 +5,6 @@
   "arguments": [ {"arg":"expression","description":"an expression string"}],
   "examples": [
     { "expression":"eval('\\'nice\\'')", "returns":"'nice'"},
-    { "expression":"eval(@expression_var)", "returns":"[whatever the result of evaluating @expression_var might be...]"}
+    { "expression":"eval(@expression_var)", "returns":"[whatever the result of evaluating @expression_var might be…]"}
   ]
 }

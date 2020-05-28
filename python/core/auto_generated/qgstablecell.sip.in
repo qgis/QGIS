@@ -1,0 +1,134 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstablecell.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsTableCell
+{
+%Docstring
+Encapsulates the contents and formatting of a single table cell.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgstablecell.h"
+%End
+  public:
+
+    QgsTableCell( const QVariant &content = QVariant() );
+%Docstring
+Constructor for QgsTableCell, with the specified ``content``.
+%End
+
+    QgsTableCell( const QgsTableCell &other );
+%Docstring
+Copy constructor
+%End
+
+    ~QgsTableCell();
+
+
+    QVariant content() const;
+%Docstring
+Returns the cell's content.
+
+.. seealso:: :py:func:`setContent`
+%End
+
+    void setContent( const QVariant &content );
+%Docstring
+Sets the cell's ``content``.
+
+.. seealso:: :py:func:`content`
+%End
+
+    QColor backgroundColor() const;
+%Docstring
+Returns the cell's background color, or an invalid color if a default color should be used for the background.
+
+.. seealso:: :py:func:`setBackgroundColor`
+%End
+
+    void setBackgroundColor( const QColor &color );
+%Docstring
+Sets the cell's background ``color``.
+
+Set an invalid ``color`` if a default color should be used for the background.
+
+.. seealso:: :py:func:`backgroundColor`
+%End
+
+    QColor foregroundColor() const;
+%Docstring
+Returns the cell's foreground color, or an invalid color if a default color should be used for the foreground.
+
+.. seealso:: :py:func:`setForegroundColor`
+%End
+
+    void setForegroundColor( const QColor &color );
+%Docstring
+Sets the cell's foreground ``color``.
+
+Set an invalid ``color`` if a default color should be used for the foreground.
+
+.. seealso:: :py:func:`foregroundColor`
+%End
+
+    const QgsNumericFormat *numericFormat() const;
+%Docstring
+Returns the numeric format used for numbers in the cell, or ``None`` if no format is set.
+
+.. seealso:: :py:func:`setNumericFormat`
+%End
+
+    void setNumericFormat( QgsNumericFormat *format /Transfer/ );
+%Docstring
+Sets the numeric ``format`` used for numbers in the cell, or ``None`` if no specific format is set.
+
+Ownership of ``format`` is transferred to the cell.
+
+.. seealso:: :py:func:`numericFormat`
+%End
+
+    QVariantMap properties( const QgsReadWriteContext &context ) const;
+%Docstring
+Returns the properties of the cell.
+
+.. seealso:: :py:func:`setProperties`
+%End
+
+    void setProperties( const QVariantMap &properties, const QgsReadWriteContext &context );
+%Docstring
+Sets the ``properties`` for the cell.
+
+.. seealso:: :py:func:`properties`
+%End
+
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsTableCell: %1>" ).arg( sipCpp->content().toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+};
+
+typedef QVector<QgsTableCell> QgsTableRow;
+
+
+typedef QVector<QVector<QgsTableRow>> QgsTableContents;
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstablecell.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

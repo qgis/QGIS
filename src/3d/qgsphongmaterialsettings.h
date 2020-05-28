@@ -26,6 +26,10 @@ class QDomElement;
  * \ingroup 3d
  * Basic shading material used for rendering based on the Phong shading model
  * with three color components: ambient, diffuse and specular.
+ *
+ * \warning This is not considered stable API, and may change in future QGIS releases. It is
+ * exposed to the Python bindings as a tech preview only.
+ *
  * \since QGIS 3.0
  */
 class _3D_EXPORT QgsPhongMaterialSettings
@@ -60,6 +64,14 @@ class _3D_EXPORT QgsPhongMaterialSettings
     void readXml( const QDomElement &elem );
     //! Writes settings to a DOM element
     void writeXml( QDomElement &elem ) const;
+
+    bool operator==( const QgsPhongMaterialSettings &other ) const
+    {
+      return mAmbient == other.mAmbient &&
+             mDiffuse == other.mDiffuse &&
+             mSpecular == other.mSpecular &&
+             mShininess == other.mShininess;
+    }
 
   private:
     QColor mAmbient;

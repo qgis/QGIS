@@ -145,7 +145,7 @@ bool QgsAuthImportIdentityDialog::validateBundle()
 void QgsAuthImportIdentityDialog::clearValidation()
 {
   teValidation->clear();
-  teValidation->setStyleSheet( QLatin1String( "" ) );
+  teValidation->setStyleSheet( QString() );
 }
 
 void QgsAuthImportIdentityDialog::writeValidation( const QString &msg,
@@ -181,7 +181,7 @@ void QgsAuthImportIdentityDialog::writeValidation( const QString &msg,
 
 void QgsAuthImportIdentityDialog::lePkiPathsKeyPass_textChanged( const QString &pass )
 {
-  Q_UNUSED( pass );
+  Q_UNUSED( pass )
   validateIdentity();
 }
 
@@ -212,7 +212,7 @@ void QgsAuthImportIdentityDialog::btnPkiPathsKey_clicked()
 
 void QgsAuthImportIdentityDialog::lePkiPkcs12KeyPass_textChanged( const QString &pass )
 {
-  Q_UNUSED( pass );
+  Q_UNUSED( pass )
   validateIdentity();
 }
 
@@ -406,7 +406,8 @@ bool QgsAuthImportIdentityDialog::validatePkiPkcs12()
     QList<QSslCertificate> ca_certs;
     if ( cert_chain.size() > 1 )
     {
-      Q_FOREACH ( const QCA::Certificate &ca_cert, cert_chain )
+      const auto constCert_chain = cert_chain;
+      for ( const QCA::Certificate &ca_cert : constCert_chain )
       {
         if ( ca_cert != cert_chain.primary() )
         {
@@ -431,8 +432,8 @@ void QgsAuthImportIdentityDialog::fileFound( bool found, QWidget *widget )
   }
   else
   {
-    widget->setStyleSheet( QLatin1String( "" ) );
-    widget->setToolTip( QLatin1String( "" ) );
+    widget->setStyleSheet( QString() );
+    widget->setToolTip( QString() );
   }
 }
 

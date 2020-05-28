@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -94,8 +90,11 @@ class LinesToPolygons(QgisFeatureBasedAlgorithm):
                 feedback.reportError(self.tr("One or more line ignored due to geometry not having a minimum of three vertices."))
         return [feature]
 
+    def supportInPlaceEdit(self, layer):
+        return False
+
     def convertWkbToPolygons(self, wkb):
-        multi_wkb = None
+        multi_wkb = QgsWkbTypes.NoGeometry
         if QgsWkbTypes.singleType(QgsWkbTypes.flatType(wkb)) == QgsWkbTypes.LineString:
             multi_wkb = QgsWkbTypes.MultiPolygon
         elif QgsWkbTypes.singleType(QgsWkbTypes.flatType(wkb)) == QgsWkbTypes.CompoundCurve:

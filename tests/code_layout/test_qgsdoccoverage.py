@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '01/02/2015'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 import sys
@@ -78,14 +76,14 @@ class TestQgsDocCoverage(unittest.TestCase):
         if parser.classes_missing_group:
             print("---------------------------------")
             print('\n')
-            print((colored('{} classes have been added without Doxygen group tag ("\ingroup"):'.format(len(parser.classes_missing_group)), 'yellow')))
+            print((colored('{} classes have been added without Doxygen group tag ("\\ingroup"):'.format(len(parser.classes_missing_group)), 'yellow')))
             print('')
             print(('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_group])))
 
         if parser.classes_missing_version_added:
             print("---------------------------------")
             print('\n')
-            print((colored('{} classes have been added without a version added doxygen note ("\since QGIS x.xx"):'.format(len(parser.classes_missing_version_added)), 'yellow')))
+            print((colored('{} classes have been added without a version added doxygen note ("\\since QGIS x.xx"):'.format(len(parser.classes_missing_version_added)), 'yellow')))
             print('')
             print(('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_version_added])))
 

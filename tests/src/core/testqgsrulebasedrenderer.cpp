@@ -143,6 +143,42 @@ class TestQgsRuleBasedRenderer: public QObject
       delete clone;
     }
 
+    /**
+     * test_many_rules_expression_filter checks that with > 50 rules we have a binary tree (log2(N))
+     */
+    void test_many_rules_expression_filter()
+    {
+
+      QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "point?field=fld:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      QgsRenderContext ctx; // dummy render context
+      ctx.expressionContext().setFields( layer->fields() );
+
+      std::function<QString( const int ruleCount )> makeFilter = [ & ]( const int rc ) -> QString
+      {
+
+        // prepare renderer
+        RRule *rootRule = new RRule( nullptr );
+        for ( int i = 0; i < rc; i++ )
+        {
+          rootRule->appendChild( new RRule( nullptr, 0, 0, QStringLiteral( "%1" ).arg( i ) ) );
+        }
+        QgsRuleBasedRenderer r( rootRule );
+        r.startRender( ctx, layer->fields() );
+        r.stopRender( ctx );
+        return r.filter();
+      };
+
+      QCOMPARE( makeFilter( 1 ), QString( "(0)" ) );
+      QCOMPARE( makeFilter( 2 ), QString( "(0) OR (1)" ) );
+      QCOMPARE( makeFilter( 3 ), QString( "(0) OR (1) OR (2)" ) );
+      QCOMPARE( makeFilter( 10 ), QString( "(0) OR (1) OR (2) OR (3) OR (4) OR (5) OR (6) OR (7) OR (8) OR (9)" ) );
+      QCOMPARE( makeFilter( 51 ), QString( "(((((0) OR ((1) OR (2))) OR ((3) OR ((4) OR (5)))) OR (((6) OR ((7) OR (8))) OR ((9) OR ((10) OR (11))))) OR "
+                                           "((((12) OR ((13) OR (14))) OR ((15) OR ((16) OR (17)))) OR (((18) OR ((19) OR (20))) OR (((21) OR (22)) OR ((23) OR (24)))))) OR "
+                                           "(((((25) OR ((26) OR (27))) OR ((28) OR ((29) OR (30)))) OR (((31) OR ((32) OR (33))) OR (((34) OR (35)) OR ((36) OR (37))))) OR "
+                                           "((((38) OR ((39) OR (40))) OR ((41) OR ((42) OR (43)))) OR (((44) OR ((45) OR (46))) OR (((47) OR (48)) OR ((49) OR (50))))))" ) );
+
+    }
+
   private:
     void xml2domElement( const QString &testFile, QDomDocument &doc )
     {

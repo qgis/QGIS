@@ -14,8 +14,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Larry Shaffer'
 __date__ = '2014/02/21'
 __copyright__ = 'Copyright 2013, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -35,7 +33,8 @@ from qgis.core import (QgsLayout,
                        QgsLayoutExporter,
                        QgsMapSettings,
                        QgsProject,
-                       QgsVectorLayerSimpleLabeling)
+                       QgsVectorLayerSimpleLabeling,
+                       QgsLabelingEngineSettings)
 
 
 from utilities import (
@@ -55,7 +54,7 @@ from test_qgspallabeling_tests import (
 # look for Poppler w/ Cairo, then muPDF
 # * Poppler w/ Cairo renders correctly
 # * Poppler w/o Cairo does not always correctly render vectors in PDF to image
-# * muPDF renders correctly, but sightly shifts colors
+# * muPDF renders correctly, but slightly shifts colors
 for util in [
     'pdftocairo',
     # 'mudraw',
@@ -96,8 +95,6 @@ class TestLayoutBase(TestQgsPalLabeling):
         TestQgsPalLabeling.tearDownClass()
         cls.removeMapLayer(cls.layer)
         cls.layer = None
-        # avoid crash on finish, probably related to https://bugreports.qt.io/browse/QTBUG-35760
-        QThreadPool.globalInstance().waitForDone()
 
     def setUp(self):
         """Run before each test."""
@@ -132,6 +129,8 @@ class TestLayoutBase(TestQgsPalLabeling):
         """:type: QgsLayoutItemMap"""
         self._cmap.setFrameEnabled(False)
         self._cmap.setLayers(self._TestMapSettings.layers())
+        if self._TestMapSettings.labelingEngineSettings().flags() & QgsLabelingEngineSettings.UsePartialCandidates:
+            self._cmap.setMapFlags(QgsLayoutItemMap.ShowPartialLabels)
         self._c.addLayoutItem(self._cmap)
         # now expand map to fill page and set its extent
         self._cmap.attemptSetSceneRect(QRectF(0, 0, paperw, paperw))

@@ -19,26 +19,46 @@
 #define QGSWMSPARAMETERS_H
 
 #include <QMap>
-#include <QObject>
 #include <QMetaEnum>
 #include <QColor>
 
 #include "qgsrectangle.h"
-#include "qgswmsserviceexception.h"
-#include "qgsserverrequest.h"
 #include "qgslegendsettings.h"
 #include "qgsprojectversion.h"
+#include "qgsogcutils.h"
 #include "qgsserverparameters.h"
+#include "qgsdxfexport.h"
 
 namespace QgsWms
 {
+  struct QgsWmsParametersFilter
+  {
+    //! Filter type
+    enum Type
+    {
+      UNKNOWN,
+      SQL,
+      OGC_FE
+    };
+
+    QString mFilter;
+    QgsWmsParametersFilter::Type mType = QgsWmsParametersFilter::UNKNOWN;
+    QgsOgcUtils::FilterVersion mVersion = QgsOgcUtils::FILTER_OGC_1_0; // only if FE
+  };
+
   struct QgsWmsParametersLayer
   {
     QString mNickname; // name, id or short name
     int mOpacity = -1;
-    QStringList mFilter; // list of filter
+    QList<QgsWmsParametersFilter> mFilter; // list of filter
     QStringList mSelection; // list of string fid
     QString mStyle;
+  };
+
+  struct QgsWmsParametersExternalLayer
+  {
+    QString mName;
+    QString mUri;
   };
 
   struct QgsWmsParametersHighlightLayer
@@ -65,6 +85,7 @@ namespace QgsWms
     float mGridX = 0;
     float mGridY = 0;
     QList<QgsWmsParametersLayer> mLayers; // list of layers for this composer map
+    QList<QgsWmsParametersExternalLayer> mExternalLayers; // list of external layers for this composer map
     QList<QgsWmsParametersHighlightLayer> mHighlightLayers; // list of highlight layers for this composer map
   };
 
@@ -116,6 +137,7 @@ namespace QgsWms
         SYMBOLWIDTH,
         OPACITIES,
         SLD,
+        SLD_BODY,
         FI_POLYGON_TOLERANCE,
         FI_LINE_TOLERANCE,
         FI_POINT_TOLERANCE,
@@ -151,7 +173,12 @@ namespace QgsWms
         GRID_INTERVAL_Y,
         WITH_GEOMETRY,
         WITH_MAPTIP,
-        WMTVER
+        WMTVER,
+        ATLAS_PK,
+        FORMAT_OPTIONS,
+        SRCWIDTH,
+        SRCHEIGHT,
+        TILED
       };
       Q_ENUM( Name )
 
@@ -168,12 +195,21 @@ namespace QgsWms
       /**
        * Default destructor for QgsWmsParameter.
        */
-      virtual ~QgsWmsParameter() = default;
+      virtual ~QgsWmsParameter() override = default;
 
       /**
-       * Returns true if the parameter is valid, false otherwise.
+       * Returns TRUE if the parameter is valid, FALSE otherwise.
        */
       bool isValid() const override;
+
+      /**
+       * Converts the parameter into a list of strings and keeps empty parts
+       * Default style value is an empty string
+       * \param delimiter The character used for delimiting
+       * \returns A list of strings
+       * \since QGIS 3.8
+       */
+      QStringList toStyleList( const char delimiter = ',' ) const;
 
       /**
        * Converts the parameter into a list of geometries.
@@ -236,10 +272,32 @@ namespace QgsWms
       QColor toColor() const;
 
       /**
+       * Converts the parameter into an url.
+       * \returns An url
+       * \throws QgsBadRequestException Invalid parameter exception
+       * \since QGIS 3.4
+       */
+      QUrl toUrl() const;
+
+      /**
+       * Loads the data associated to the parameter converted into an url.
+       * \returns The content loaded
+       * \throws QgsBadRequestException Invalid parameter exception
+       * \since QGIS 3.4
+       */
+      QString loadUrl() const;
+
+      /**
        * Raises an error in case of an invalid conversion.
        * \throws QgsBadRequestException Invalid parameter exception
        */
       void raiseError() const;
+
+      /**
+       * Returns the name of the parameter.
+       * \since QGIS 3.8
+       */
+      QString name() const;
 
       /**
        * Converts a parameter's name into its string representation.
@@ -274,11 +332,28 @@ namespace QgsWms
         NONE,
         JPG,
         PNG,
+        SVG,
+        PDF,
         TEXT,
         XML,
         HTML,
-        GML
+        GML,
+        JSON
       };
+      Q_ENUM( Format )
+
+      //! Options for DXF format
+      enum DxfFormatOption
+      {
+        SCALE,
+        MODE,
+        LAYERATTRIBUTES,
+        USE_TITLE_AS_LAYERNAME,
+        CODEC,
+        NO_MTEXT,
+        FORCE_2D
+      };
+      Q_ENUM( DxfFormatOption )
 
       /**
        * Constructor for WMS parameters with specific values.
@@ -291,7 +366,19 @@ namespace QgsWms
         */
       QgsWmsParameters();
 
-      virtual ~QgsWmsParameters() = default;
+      virtual ~QgsWmsParameters() override = default;
+
+      /**
+       * Returns the parameter corresponding to \a name.
+       * \since QGIS 3.8
+       */
+      QgsWmsParameter operator[]( QgsWmsParameter::Name name ) const;
+
+      /**
+       * Sets a parameter \a value thanks to its \a name.
+       * \since QGIS 3.8
+       */
+      void set( QgsWmsParameter::Name name, const QVariant &value );
 
       /**
        * Dumps parameters.
@@ -335,13 +422,47 @@ namespace QgsWms
       int heightAsInt() const;
 
       /**
+       * Returns SRCWIDTH parameter or an empty string if not defined.
+       * \returns srcWidth parameter
+       * \since QGIS 3.8
+       */
+      QString srcWidth() const;
+
+      /**
+       * Returns SRCWIDTH parameter as an int or its default value if not
+       * defined. An exception is raised if SRCWIDTH is defined and cannot be
+       * converted.
+       * \returns srcWidth parameter
+       * \throws QgsBadRequestException
+       * \since QGIS 3.8
+       */
+      int srcWidthAsInt() const;
+
+      /**
+       * Returns SRCHEIGHT parameter or an empty string if not defined.
+       * \returns srcHeight parameter
+       * \since QGIS 3.8
+       */
+      QString srcHeight() const;
+
+      /**
+       * Returns SRCHEIGHT parameter as an int or its default value if not
+       * defined. An exception is raised if SRCHEIGHT is defined and cannot be
+       * converted.
+       * \returns srcHeight parameter
+       * \throws QgsBadRequestException
+       * \since QGIS 3.8
+       */
+      int srcHeightAsInt() const;
+
+      /**
        * Returns VERSION parameter if defined or its default value.
        * \returns version
        */
       QgsProjectVersion versionAsNumber() const;
 
       /**
-       * Returns true if \a version is valid, false otherwise.
+       * Returns TRUE if \a version is valid, FALSE otherwise.
        * \since QGIS 3.4
        */
       bool versionIsValid( const QString version ) const;
@@ -361,10 +482,10 @@ namespace QgsWms
       QgsRectangle bboxAsRectangle() const;
 
       /**
-       * Returns SLD if defined or an empty string.
-       * \returns sld
+       * Returns SLD_body if defined or an empty string.
+       * \returns sld body
        */
-      QString sld() const;
+      QString sldBody() const;
 
       /**
        * Returns the list of feature selection found in SELECTION parameter.
@@ -472,6 +593,12 @@ namespace QgsWms
       QString formatAsString() const;
 
       /**
+       * Returns format parameter as a string.
+       * \since QGIS 3.8
+       */
+      static QString formatAsString( Format format );
+
+      /**
        * Returns format. If the FORMAT parameter is not used, then the
        * default value is PNG.
        * \returns format
@@ -486,7 +613,7 @@ namespace QgsWms
 
       /**
        * Checks if INFO_FORMAT parameter is one of the image formats (PNG, JPG).
-       * \returns true if the INFO_FORMAT is an image format
+       * \returns TRUE if the INFO_FORMAT is an image format
        */
       bool infoFormatIsImage() const;
 
@@ -503,6 +630,20 @@ namespace QgsWms
        * \since QGIS 3.4
        */
       int imageQualityAsInt() const;
+
+      /**
+       * Returns TILED parameter or an empty string if not
+       * defined.
+       * \since QGIS 3.10
+       */
+      QString tiled() const;
+
+      /**
+       * Returns TILED parameter as a boolean.
+       * \throws QgsBadRequestException
+       * \since QGIS 3.10
+       */
+      bool tiledAsBool() const;
 
       /**
        * Returns infoFormat. If the INFO_FORMAT parameter is not used, then the
@@ -903,6 +1044,12 @@ namespace QgsWms
       QList<QgsWmsParametersHighlightLayer> highlightLayersParameters() const;
 
       /**
+       * Returns parameters for each external layer.
+       * \since QGIS 3.8
+       */
+      QList<QgsWmsParametersExternalLayer> externalLayersParameters() const;
+
+      /**
        * Returns HIGHLIGHT_GEOM as a list of string in WKT.
        * \returns highlight geometries
        */
@@ -1090,13 +1237,13 @@ namespace QgsWms
 
       /**
        * Returns if the client wants the feature info response with geometry information
-       * \returns true if geometry information is requested for feature info response
+       * \returns TRUE if geometry information is requested for feature info response
        */
       bool withGeometry() const;
 
       /**
        * \brief withMapTip
-       * \returns true if maptip information is requested for feature info response
+       * \returns TRUE if maptip information is requested for feature info response
        */
       bool withMapTip() const;
 
@@ -1109,13 +1256,80 @@ namespace QgsWms
       /**
        * Returns a layout parameter thanks to its \a id.
        * \param id Parameter id
-       * \param ok True if the parameter is valid, false otherwise
+       * \param ok TRUE if the parameter is valid, FALSE otherwise
        * \returns The layout parameter
        * \since QGIS 3.4
        */
       QString layoutParameter( const QString &id, bool &ok ) const;
 
+      /**
+       * Returns the ATLAS_PK parameter
+       * \returns The ATLAS_PK parameter
+       * \since QGIS 3.6
+      */
+      QStringList atlasPk() const;
+
+      /**
+       * Returns a map of DXF options defined within FORMAT_OPTIONS parameter.
+       * \since QGIS 3.8
+       */
+      QMap<DxfFormatOption, QString> dxfFormatOptions() const;
+
+      /**
+       * Returns the DXF LAYERATTRIBUTES parameter.
+       * \since QGIS 3.8
+       */
+      QStringList dxfLayerAttributes() const;
+
+      /**
+       * Returns the DXF USE_TITLE_AS_LAYERNAME parameter.
+       * \since QGIS 3.8
+       */
+      bool dxfUseLayerTitleAsName() const;
+
+      /**
+       * Returns the DXF SCALE parameter.
+       * \since QGIS 3.8
+       */
+      double dxfScale() const;
+
+      /**
+       * Returns the DXF MODE parameter.
+       * \since QGIS 3.8
+       */
+      QgsDxfExport::SymbologyExport dxfMode() const;
+
+      /**
+       * Returns the DXF CODEC parameter.
+       * \since QGIS 3.8
+       */
+      QString dxfCodec() const;
+
+      /**
+       * Returns the dimensions parameter.
+       * \since QGIS 3.10
+       */
+      QMap<QString, QString> dimensionValues() const;
+
+      /**
+       * \returns true if the FORCE_MTEXT parameter is set and the DXF should
+       * be produced with MTEXT instead of TEXT.
+       *
+       * \since QGIS 3.12
+       */
+      bool noMText() const;
+
+      /**
+       * \returns true if the FORCE_2D parameter is set and the DXF should
+       * be produced in 2D.
+       *
+       * \since QGIS 3.12
+       */
+      bool isForce2D() const;
+
     private:
+      static bool isExternalLayer( const QString &name );
+
       bool loadParameter( const QString &name, const QString &value ) override;
 
       void save( const QgsWmsParameter &parameter, bool multi = false );
@@ -1125,7 +1339,10 @@ namespace QgsWms
       void raiseError( const QString &msg ) const;
       void log( const QString &msg ) const;
 
-      QMultiMap<QString, QString> getLayerFilters( const QStringList &layers ) const;
+      QgsWmsParametersExternalLayer externalLayerParameter( const QString &name ) const;
+
+      QMultiMap<QString, QgsWmsParametersFilter> layerFilters( const QStringList &layers ) const;
+
 
       QMap<QgsWmsParameter::Name, QgsWmsParameter> mWmsParameters;
       QMap<QString, QMap<QString, QString> > mExternalWMSParameters;

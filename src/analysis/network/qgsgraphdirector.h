@@ -20,13 +20,13 @@
 #include <QVector>
 #include <QList>
 
-#include "qgis.h"
-#include "qgspoint.h"
+#include "qgis_sip.h"
 #include "qgsfeedback.h"
 #include "qgsnetworkstrategy.h"
 #include "qgis_analysis.h"
 
 class QgsGraphBuilderInterface;
+class QgsPoint;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -75,10 +75,10 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
                             QVector< QgsPointXY > &snappedPoints SIP_OUT,
                             QgsFeedback *feedback = nullptr ) const
     {
-      Q_UNUSED( builder );
-      Q_UNUSED( additionalPoints );
-      Q_UNUSED( snappedPoints );
-      Q_UNUSED( feedback );
+      Q_UNUSED( builder )
+      Q_UNUSED( additionalPoints )
+      Q_UNUSED( snappedPoints )
+      Q_UNUSED( feedback )
     }
 
     //! Add optimization strategy

@@ -23,14 +23,16 @@
 #include "qgis_core.h"
 #include "qgsfields.h"
 #include "qgsreadwritecontext.h"
+#include "qgsrelationcontext.h"
 
-#include "qgis.h"
+#include "qgis_sip.h"
 
-class QgsVectorLayer;
 class QgsFeatureIterator;
 class QgsFeature;
 class QgsFeatureRequest;
 class QgsAttributes;
+class QgsVectorLayer;
+class QgsRelationPrivate;
 
 /**
  * \ingroup core
@@ -45,7 +47,6 @@ class CORE_EXPORT QgsRelation
     Q_PROPERTY( QgsVectorLayer *referencedLayer READ referencedLayer )
     Q_PROPERTY( QString name READ name WRITE setName )
     Q_PROPERTY( bool isValid READ isValid )
-
 
   public:
 
@@ -92,17 +93,38 @@ class CORE_EXPORT QgsRelation
     /**
      * Default constructor. Creates an invalid relation.
      */
-    QgsRelation() = default;
+    QgsRelation();
+    ~QgsRelation();
+
+    /**
+     * Constructor with context. Creates an invalid relation.
+     */
+    QgsRelation( const QgsRelationContext &context );
+
+    /**
+     * Copies a relation.
+     * This makes a shallow copy, relations are implicitly shared and only duplicated when the copy is
+     * changed.
+     */
+    QgsRelation( const QgsRelation &other );
+
+    /**
+     * Copies a relation.
+     * This makes a shallow copy, relations are implicitly shared and only duplicated when the copy is
+     * changed.
+     */
+    QgsRelation &operator=( const QgsRelation &other );
 
     /**
      * Creates a relation from an XML structure. Used for reading .qgs projects.
      *
      * \param node The dom node containing the relation information
      * \param context to pass project translator
+     * \param relationContext a relation context
      *
      * \returns A relation
      */
-    static QgsRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context );
+    static QgsRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relationContext = QgsRelationContext() );
 
     /**
      * Writes a relation to an XML structure. Used for saving .qgs projects
@@ -322,8 +344,9 @@ class CORE_EXPORT QgsRelation
 
     /**
      * Returns the validity of this relation. Don't use the information if it's not valid.
+     * A relation is considered valid if both referenced and referencig layers are valid.
      *
-     * \returns true if the relation is valid
+     * \returns TRUE if the relation is valid
      */
     bool isValid() const;
 
@@ -331,7 +354,7 @@ class CORE_EXPORT QgsRelation
      * Compares the two QgsRelation, ignoring the name and the ID.
      *
      * \param other The other relation
-     * \returns true if they are similar
+     * \returns TRUE if they are similar
      * \since QGIS 3.0
      */
     bool hasEqualDefinition( const QgsRelation &other ) const;
@@ -350,37 +373,19 @@ class CORE_EXPORT QgsRelation
      */
     Q_INVOKABLE QString resolveReferencingField( const QString &referencedField ) const;
 
-  private:
-
     /**
      * Updates the validity status of this relation.
      * Will be called internally whenever a member is changed.
+     *
+     * \since QGIS 3.6
      */
     void updateRelationStatus();
 
-    //! Unique Id
-    QString mRelationId;
-    //! Human redable name
-    QString mRelationName;
-    //! The child layer
-    QString mReferencingLayerId;
-    //! The child layer
-    QgsVectorLayer *mReferencingLayer = nullptr;
-    //! The parent layer id
-    QString mReferencedLayerId;
-    //! The parent layer
-    QgsVectorLayer *mReferencedLayer = nullptr;
+  private:
 
-    RelationStrength mRelationStrength = Association;
+    mutable QExplicitlySharedDataPointer<QgsRelationPrivate> d;
 
-    /**
-     * A list of fields which define the relation.
-     *  In most cases there will be only one value, but multiple values
-     *  are supported for composited foreign keys.
-     *  The first field is on the referencing layer, the second on the referenced */
-    QList< FieldPair > mFieldPairs;
-
-    bool mValid = false;
+    QgsRelationContext mContext;
 };
 
 // Register QgsRelation for usage with QVariant

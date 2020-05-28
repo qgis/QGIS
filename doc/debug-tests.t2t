@@ -26,7 +26,7 @@ cd build
 make test
 ```
 
-To run all tests and report to http://dash.orfeo-toolbox.org/index.php?project=QGIS
+To run all tests and report to http://cdash.orfeo-toolbox.org/index.php?project=QGIS
 
 ```
 cd build

@@ -8,5 +8,4 @@ QgsProcessingParameterString|percentiles|List of percentiles|None|False|True
 QgsProcessingParameterNumber|bins|Number of bins to use|QgsProcessingParameterNumber.Integer|1000|True|0|None
 *QgsProcessingParameterBoolean|-r|Create reclass map with statistics as category labels|False
 Hardcoded|-p
-QgsProcessingParameterFileDestination|output|Statistics File|Txt files (*.txt)|None|False
-
+QgsProcessingParameterFileDestination|file|Statistics File|Txt files (*.txt)|None|False

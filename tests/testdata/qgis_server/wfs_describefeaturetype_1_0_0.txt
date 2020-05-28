@@ -1,4 +1,4 @@
-Content-Length: 910
+Content-Length: 958
 Content-Type: text/xml; charset=utf-8
 
 <schema xmlns:gml="http://www.opengis.net/gml" targetNamespace="http://www.qgis.org/gml" xmlns:qgs="http://www.qgis.org/gml" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ogc="http://www.opengis.net/ogc" version="1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
@@ -9,9 +9,9 @@ Content-Type: text/xml; charset=utf-8
    <extension base="gml:AbstractFeatureType">
     <sequence>
      <element maxOccurs="1" type="gml:PointPropertyType" minOccurs="0" name="geometry"/>
-     <element type="long" name="id"/>
-     <element type="string" name="name"/>
-     <element type="string" name="utf8nameè"/>
+     <element type="long" nillable="true" name="id"/>
+     <element type="string" nillable="true" name="name"/>
+     <element type="string" nillable="true" name="utf8nameè"/>
     </sequence>
    </extension>
   </complexContent>

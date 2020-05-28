@@ -1,0 +1,144 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsnewsfeedparser.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsNewsFeedParser : QObject
+{
+%Docstring
+Parser for published QGIS news feeds.
+
+This class is designed to work with the specialized QGIS news feed API. See
+https://github.com/elpaso/qgis-feed.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsnewsfeedparser.h"
+%End
+  public:
+
+    class Entry
+{
+%Docstring
+Represents a single entry from a news feed.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsnewsfeedparser.h"
+%End
+      public:
+
+        int key;
+
+        QString title;
+
+        QString imageUrl;
+
+        QPixmap image;
+
+        QString content;
+
+        QUrl link;
+
+        bool sticky;
+
+        QDateTime expiry;
+    };
+
+    QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcfg = QString(), QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsNewsFeedParser, parsing the specified ``feedUrl``.
+
+The optional ``authcfg`` argument can be used to specify an authentication
+configuration to use when connecting to the feed.
+%End
+
+    QList< QgsNewsFeedParser::Entry > entries() const;
+%Docstring
+Returns a list of existing entries in the feed.
+%End
+
+    void dismissEntry( int key );
+%Docstring
+Dismisses an entry with matching ``key``.
+
+This removes the entry from the local store, ensuring it will never be present again.
+
+.. seealso:: :py:func:`dismissAll`
+%End
+
+    void dismissAll();
+%Docstring
+Dismisses all current news items.
+
+.. seealso:: :py:func:`dismissEntry`
+%End
+
+    QString authcfg() const;
+%Docstring
+Returns the authentication configuration for the parser.
+%End
+
+    static QString keyForFeed( const QString &baseUrl );
+%Docstring
+Returns the settings key used for a feed with the given ``baseUrl``.
+%End
+
+  public slots:
+
+    void fetch();
+%Docstring
+Fetches new entries from the feed's URL.
+
+.. seealso:: :py:func:`fetched`
+%End
+
+  signals:
+
+    void fetched( const QList< QgsNewsFeedParser::Entry > &entries );
+%Docstring
+Emitted when ``entries`` have fetched from the feed.
+
+.. seealso:: :py:func:`fetch`
+%End
+
+    void entryAdded( const QgsNewsFeedParser::Entry &entry );
+%Docstring
+Emitted whenever a new ``entry`` is available from the feed (as a result
+of a call to fetch()).
+
+.. seealso:: :py:func:`fetch`
+%End
+
+    void entryDismissed( const QgsNewsFeedParser::Entry &entry );
+%Docstring
+Emitted whenever an ``entry`` is dismissed (as a result of a call
+to dismissEntry()).
+
+.. seealso:: :py:func:`dismissEntry`
+%End
+
+    void imageFetched( int key, const QPixmap &pixmap );
+%Docstring
+Emitted when the image attached to the entry with the specified ``key`` has been fetched
+and is now available.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsnewsfeedparser.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

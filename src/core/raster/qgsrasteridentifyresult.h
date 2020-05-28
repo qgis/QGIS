@@ -19,7 +19,7 @@
 #define QGSRASTERIDENTIFYRESULT_H
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsraster.h"
 #include "qgserror.h"
 
@@ -51,7 +51,7 @@ class CORE_EXPORT QgsRasterIdentifyResult
 
     virtual ~QgsRasterIdentifyResult() = default;
 
-    //! \brief Returns true if valid
+    //! \brief Returns TRUE if valid
     bool isValid() const { return mValid; }
 
     //! Returns the results format.

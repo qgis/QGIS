@@ -55,7 +55,8 @@ void writePoint( struct Map_info *map, int type, const QgsPointXY &point, struct
 void writePolyline( struct Map_info *map, int type, const QgsPolylineXY &polyline, struct line_cats *cats )
 {
   Vect_reset_line( gLine );
-  Q_FOREACH ( const QgsPointXY &point, polyline )
+  const auto constPolyline = polyline;
+  for ( const QgsPointXY &point : constPolyline )
   {
     Vect_append_point( gLine, point.x(), point.y(), 0 );
   }
@@ -73,12 +74,12 @@ void closeMaps()
   if ( tmpMap )
   {
     Vect_close( tmpMap );
-    Vect_delete( sTmpName.toUtf8().data() );
+    Vect_delete( sTmpName.toUtf8().constData() );
   }
   if ( finalMap )
   {
     Vect_close( finalMap );
-    Vect_delete( sFinalName.toUtf8().data() );
+    Vect_delete( sFinalName.toUtf8().constData() );
   }
   if ( driver )
   {
@@ -161,7 +162,7 @@ int main( int argc, char **argv )
   {
     tmpMap = QgsGrass::vectNewMapStruct();
     // TODO: use Vect_open_tmp_new with GRASS 7
-    Vect_open_new( tmpMap, sTmpName.toUtf8().data(), 0 );
+    Vect_open_new( tmpMap, sTmpName.toUtf8().constData(), 0 );
     map = tmpMap;
   }
 
@@ -173,7 +174,7 @@ int main( int argc, char **argv )
   QString key;
   while ( true )
   {
-    key = "cat" + ( keyNum == 1 ? QLatin1String( "" ) : QString::number( keyNum ) );
+    key = "cat" + ( keyNum == 1 ? QString() : QString::number( keyNum ) );
     if ( srcFields.indexFromName( key ) == -1 )
     {
       break;
@@ -248,7 +249,7 @@ int main( int argc, char **argv )
       if ( !isPolygon )
       {
         Vect_reset_cats( cats );
-        Vect_cat_set( cats, 1, ( int )feature.id() + fidToCatPlus );
+        Vect_cat_set( cats, 1, static_cast<int>( feature.id() ) + fidToCatPlus );
       }
 
       if ( geometryType == QgsWkbTypes::Point )
@@ -259,7 +260,8 @@ int main( int argc, char **argv )
       else if ( geometryType == QgsWkbTypes::MultiPoint )
       {
         QgsMultiPointXY multiPoint = geometry.asMultiPoint();
-        Q_FOREACH ( const QgsPointXY &point, multiPoint )
+        const auto constMultiPoint = multiPoint;
+        for ( const QgsPointXY &point : constMultiPoint )
         {
           writePoint( map, GV_POINT, point, cats );
         }
@@ -272,7 +274,8 @@ int main( int argc, char **argv )
       else if ( geometryType == QgsWkbTypes::MultiLineString )
       {
         QgsMultiPolylineXY multiPolyline = geometry.asMultiPolyline();
-        Q_FOREACH ( const QgsPolylineXY &polyline, multiPolyline )
+        const auto constMultiPolyline = multiPolyline;
+        for ( const QgsPolylineXY &polyline : constMultiPolyline )
         {
           writePolyline( map, GV_LINE, polyline, cats );
         }
@@ -280,7 +283,8 @@ int main( int argc, char **argv )
       else if ( geometryType == QgsWkbTypes::Polygon )
       {
         QgsPolygonXY polygon = geometry.asPolygon();
-        Q_FOREACH ( const QgsPolylineXY &polyline, polygon )
+        const auto constPolygon = polygon;
+        for ( const QgsPolylineXY &polyline : constPolygon )
         {
           writePolyline( map, GV_BOUNDARY, polyline, cats );
         }
@@ -288,9 +292,11 @@ int main( int argc, char **argv )
       else if ( geometryType == QgsWkbTypes::MultiPolygon )
       {
         QgsMultiPolygonXY multiPolygon = geometry.asMultiPolygon();
-        Q_FOREACH ( const QgsPolygonXY &polygon, multiPolygon )
+        const auto constMultiPolygon = multiPolygon;
+        for ( const QgsPolygonXY &polygon : constMultiPolygon )
         {
-          Q_FOREACH ( const QgsPolylineXY &polyline, polygon )
+          const auto constPolygon = polygon;
+          for ( const QgsPolylineXY &polyline : constPolygon )
           {
             writePolyline( map, GV_BOUNDARY, polyline, cats );
           }
@@ -396,7 +402,7 @@ int main( int argc, char **argv )
       feature.setGeometry( QgsGeometry::fromPointXY( point ) );
       feature.setValid( true );
       centroids.insert( area, feature );
-      spatialIndex.insertFeature( feature );
+      spatialIndex.addFeature( feature );
     }
 
     G_message( "Attaching input polygons to cleaned areas" );
@@ -423,13 +429,14 @@ int main( int argc, char **argv )
       }
 
       QList<QgsFeatureId> idList = spatialIndex.intersects( feature.geometry().boundingBox() );
-      Q_FOREACH ( QgsFeatureId id, idList )
+      const auto constIdList = idList;
+      for ( QgsFeatureId id : constIdList )
       {
         QgsFeature &centroid = centroids[id];
         if ( feature.geometry().contains( centroid.geometry() ) )
         {
           QgsAttributes attr = centroid.attributes();
-          attr.append( ( int )feature.id() + fidToCatPlus );
+          attr.append( static_cast<int>( feature.id() ) + fidToCatPlus );
           centroid.setAttributes( attr );
         }
       }
@@ -440,7 +447,7 @@ int main( int argc, char **argv )
     G_message( "Copying lines from temporary map" );
     Vect_copy_map_lines( tmpMap, finalMap );
     Vect_close( tmpMap );
-    Vect_delete( sTmpName.toUtf8().data() );
+    Vect_delete( sTmpName.toUtf8().constData() );
 
     int centroidsCount = centroids.size();
     count = 0;
@@ -451,7 +458,8 @@ int main( int argc, char **argv )
       if ( it.value().attributes().size() > 0 )
       {
         Vect_reset_cats( cats );
-        Q_FOREACH ( const QVariant &attribute, it.value().attributes() )
+        const auto constAttributes = it.value().attributes();
+        for ( const QVariant &attribute : constAttributes )
         {
           Vect_cat_set( cats, 1, attribute.toInt() );
         }

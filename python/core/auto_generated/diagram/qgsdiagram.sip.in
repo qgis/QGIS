@@ -20,6 +20,19 @@ Base class for all diagram types*
 %End
   public:
 
+%ConvertToSubClassCode
+    if ( sipCpp->diagramName() == QStringLiteral( "Pie" ) )
+      sipType = sipType_QgsPieDiagram;
+    else if ( sipCpp->diagramName() == QStringLiteral( "Histogram" ) )
+      sipType = sipType_QgsHistogramDiagram;
+    else if ( sipCpp->diagramName() == QStringLiteral( "Text" ) )
+      sipType = sipType_QgsTextDiagram;
+    else if ( sipCpp->diagramName() == QStringLiteral( "Stacked" ) )
+      sipType = sipType_QgsStackedBarDiagram;
+    else
+      sipType = NULL;
+%End
+
     virtual ~QgsDiagram();
 
     virtual QgsDiagram *clone() const = 0 /Factory/;

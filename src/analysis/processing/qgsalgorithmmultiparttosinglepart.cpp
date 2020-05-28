@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmmultiparttosinglepart.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -66,10 +67,16 @@ QgsMultipartToSinglepartAlgorithm *QgsMultipartToSinglepartAlgorithm::createInst
   return new QgsMultipartToSinglepartAlgorithm();
 }
 
+
 QgsProcessingFeatureSource::Flag QgsMultipartToSinglepartAlgorithm::sourceFlags() const
 {
   // skip geometry checks - this algorithm can be used to repair geometries
   return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+}
+
+QgsFeatureSink::SinkFlags QgsMultipartToSinglepartAlgorithm::sinkFlags() const
+{
+  return QgsFeatureSink::RegeneratePrimaryKey;
 }
 
 QgsFeatureList QgsMultipartToSinglepartAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )

@@ -24,6 +24,7 @@
 class QgisInterface;
 class QgsGeometryCheckError;
 class QgsGeometryChecker;
+class QgsFeaturePool;
 
 class QgsGeometryCheckerFixSummaryDialog : public QDialog
 {

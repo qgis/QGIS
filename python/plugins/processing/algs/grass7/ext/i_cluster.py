@@ -21,10 +21,6 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'March 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import os
 from .i import regroupRasters, verifyRasterNum, exportSigFile
 
@@ -45,6 +41,7 @@ def processCommand(alg, parameters, context, feedback):
 
     # Re-add signature files
     parameters['signaturefile'] = signatureFile
+    alg.fileOutputs['signaturefile'] = signatureFile
 
     # Export signature file
     exportSigFile(alg, group, subgroup, signatureFile)

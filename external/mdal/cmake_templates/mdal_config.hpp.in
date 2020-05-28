@@ -7,6 +7,12 @@
 
 #cmakedefine HAVE_GDAL
 
+#cmakedefine HAVE_NETCDF
+
+#cmakedefine HAVE_XML
+
+#cmakedefine HAVE_SQLITE3
+
 #endif // MDAL_CONFIG_HPP
 
  

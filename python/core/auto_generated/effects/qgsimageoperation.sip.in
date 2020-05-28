@@ -125,12 +125,12 @@ speed and blur quality.
 
 :param image: QImage to blur
 :param radius: blur radius in pixels, maximum value of 16
-:param alphaOnly: set to true to blur only the alpha component of the image
+:param alphaOnly: set to ``True`` to blur only the alpha component of the image
 
 .. note::
 
    for fastest operation, ensure the source image is ARGB32_Premultiplied if
-   alphaOnly is set to false, or ARGB32 if alphaOnly is true
+   alphaOnly is set to ``False``, or ARGB32 if alphaOnly is ``True``
 %End
 
     static QImage *gaussianBlur( QImage &image, int radius ) /Factory/;
@@ -164,7 +164,7 @@ Calculates the non-transparent region of an image.
 :param minSize: minimum size for returned region, if desired. If the
                 non-transparent region of the image is smaller than this minimum size,
                 it will be centered in the returned rectangle.
-:param center: return rectangle will be centered on the center of the original image if set to true
+:param center: return rectangle will be centered on the center of the original image if set to ``True``
 
 .. seealso:: :py:func:`cropTransparent`
 
@@ -179,7 +179,7 @@ Crop any transparent border from around an image.
 :param minSize: minimum size for cropped image, if desired. If the
                 cropped image is smaller than the minimum size, it will be centered
                 in the returned image.
-:param center: cropped image will be centered on the center of the original image if set to true
+:param center: cropped image will be centered on the center of the original image if set to ``True``
 
 .. versionadded:: 2.9
 %End

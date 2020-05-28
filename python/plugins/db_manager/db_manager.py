@@ -29,7 +29,12 @@ from qgis.PyQt.QtWidgets import QMainWindow, QApplication, QMenu, QTabWidget, QG
 from qgis.PyQt.QtGui import QIcon, QKeySequence
 
 from qgis.gui import QgsMessageBar
-from qgis.core import Qgis, QgsApplication, QgsSettings, QgsMapLayer
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsSettings,
+    QgsMapLayerType
+)
 from qgis.utils import OverrideCursor
 
 from .info_viewer import InfoViewer
@@ -88,6 +93,8 @@ class DBManager(QMainWindow):
         with OverrideCursor(Qt.WaitCursor):
             try:
                 self.reloadButtons()
+                # Force-reload information on the layer
+                self.info.setDirty()
                 # clear preview, this will delete the layer in preview tab
                 self.preview.loadPreview(None)
                 self.refreshTabs()
@@ -170,7 +177,7 @@ class DBManager(QMainWindow):
             return
 
         inLayer = table.toMapLayer()
-        if inLayer.type() != QgsMapLayer.VectorLayer:
+        if inLayer.type() != QgsMapLayerType.VectorLayer:
             self.infoBar.pushMessage(
                 self.tr("Select a vector or a tabular layer you want export."),
                 Qgis.Warning, self.iface.messageTimeout())
@@ -355,8 +362,13 @@ class DBManager(QMainWindow):
     def close_tab(self, index):
         widget = self.tabs.widget(index)
         if widget not in [self.info, self.table, self.preview]:
-            self.tabs.removeTab(index)
-            widget.deleteLater()
+            if hasattr(widget, "close"):
+                if widget.close():
+                    self.tabs.removeTab(index)
+                    widget.deleteLater()
+            else:
+                self.tabs.removeTab(index)
+                widget.deleteLater()
 
     def toolBarOrientation(self):
         button_style = Qt.ToolButtonIconOnly
@@ -467,9 +479,9 @@ class DBManager(QMainWindow):
                                                      QApplication.translate("DBManager", "&Export to File…"),
                                                      self.exportActionSlot)
         self.menuTable.addSeparator()
-        #self.actionShowSystemTables = self.menuTable.addAction(self.tr("Show system tables/views"), self.showSystemTables)
-        #self.actionShowSystemTables.setCheckable(True)
-        #self.actionShowSystemTables.setChecked(True)
+        # self.actionShowSystemTables = self.menuTable.addAction(self.tr("Show system tables/views"), self.showSystemTables)
+        # self.actionShowSystemTables.setCheckable(True)
+        # self.actionShowSystemTables.setChecked(True)
         actionMenuTable.setVisible(False)
 
         # add actions to the toolbar

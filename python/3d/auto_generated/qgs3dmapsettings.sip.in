@@ -1,0 +1,510 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgs3dmapsettings.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+
+
+
+class Qgs3DMapSettings : QObject, QgsTemporalRangeObject
+{
+%Docstring
+Definition of the world
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgs3dmapsettings.h"
+%End
+  public:
+
+    Qgs3DMapSettings();
+%Docstring
+Constructor for Qgs3DMapSettings
+%End
+    Qgs3DMapSettings( const Qgs3DMapSettings &other );
+%Docstring
+Copy constructor
+%End
+    ~Qgs3DMapSettings();
+
+
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+%Docstring
+Reads configuration from a DOM element previously written by writeXml()
+%End
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes configuration to a DOM element, to be used later with readXml()
+%End
+    void resolveReferences( const QgsProject &project );
+%Docstring
+Resolves references to other objects (map layers) after the call to readXml()
+%End
+
+    void setOrigin( const QgsVector3D &origin );
+%Docstring
+Sets coordinates in map CRS at which our 3D world has origin (0,0,0)
+
+We move the 3D world origin to the center of the extent of our terrain: this is done
+to minimize the impact of numerical errors when operating with 32-bit floats.
+Unfortunately this is not enough when working with a large area (still results in jitter
+with scenes spanning hundreds of kilometers and zooming in a lot).
+
+Need to look into more advanced techniques like "relative to center" or "relative to eye"
+to improve the precision.
+%End
+    QgsVector3D origin() const;
+%Docstring
+Returns coordinates in map CRS at which 3D scene has origin (0,0,0)
+%End
+
+    QgsVector3D mapToWorldCoordinates( const QgsVector3D &mapCoords ) const;
+%Docstring
+Converts map coordinates to 3D world coordinates (applies offset and turns (x,y,z) into (x,-z,y))
+%End
+    QgsVector3D worldToMapCoordinates( const QgsVector3D &worldCoords ) const;
+%Docstring
+Converts 3D world coordinates to map coordinates (applies offset and turns (x,y,z) into (x,-z,y))
+%End
+
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets coordinate reference system used in the 3D scene
+%End
+    QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Returns coordinate reference system used in the 3D scene
+%End
+
+    QgsCoordinateTransformContext transformContext() const;
+%Docstring
+Returns the coordinate transform context, which stores various
+information regarding which datum transforms should be used when transforming points
+from a source to destination coordinate reference system.
+
+.. seealso:: :py:func:`setTransformContext`
+%End
+
+    void setTransformContext( const QgsCoordinateTransformContext &context );
+%Docstring
+Sets the coordinate transform ``context``, which stores various
+information regarding which datum transforms should be used when transforming points
+from a source to destination coordinate reference system.
+
+.. seealso:: :py:func:`transformContext`
+%End
+
+    const QgsPathResolver &pathResolver() const;
+%Docstring
+Returns the path resolver for conversion between relative and absolute paths
+during rendering operations, e.g. for resolving relative symbol paths.
+
+.. seealso:: :py:func:`setPathResolver`
+
+.. versionadded:: 3.0
+%End
+
+    void setPathResolver( const QgsPathResolver &resolver );
+%Docstring
+Sets the path ``resolver`` for conversion between relative and absolute paths
+during rendering operations, e.g. for resolving relative symbol paths.
+
+.. seealso:: :py:func:`pathResolver`
+
+.. versionadded:: 3.0
+%End
+
+    QgsMapThemeCollection *mapThemeCollection() const;
+%Docstring
+Returns pointer to the collection of map themes. Normally this would be :py:func:`QgsProject.mapThemeCollection()`
+of the currently used project. Without a valid map theme collection object it is not possible
+to resolve map themes from their names.
+
+.. versionadded:: 3.6
+%End
+
+    void setMapThemeCollection( QgsMapThemeCollection *mapThemes );
+%Docstring
+Sets pointer to the collection of map themes.
+
+.. seealso:: :py:func:`mapThemeCollection`
+
+.. versionadded:: 3.6
+%End
+
+    void setBackgroundColor( const QColor &color );
+%Docstring
+Sets background color of the 3D map view
+%End
+    QColor backgroundColor() const;
+%Docstring
+Returns background color of the 3D map view
+%End
+
+    void setSelectionColor( const QColor &color );
+%Docstring
+Sets color used for selected features
+%End
+    QColor selectionColor() const;
+%Docstring
+Returns color used for selected features
+%End
+
+
+    void setTerrainVerticalScale( double zScale );
+%Docstring
+Sets vertical scale (exaggeration) of terrain
+(1 = true scale, > 1 = hills get more pronounced)
+%End
+    double terrainVerticalScale() const;
+%Docstring
+Returns vertical scale (exaggeration) of terrain
+%End
+
+    void setLayers( const QList<QgsMapLayer *> &layers );
+%Docstring
+Sets the list of map layers to be rendered as a texture of the terrain
+
+.. note::
+
+   If terrain map theme is set, it has a priority over the list of layers specified here.
+%End
+
+    QList<QgsMapLayer *> layers() const;
+%Docstring
+Returns the list of map layers to be rendered as a texture of the terrain
+
+.. note::
+
+   If terrain map theme is set, it has a priority over the list of layers specified here.
+%End
+
+    void setMapTileResolution( int res );
+%Docstring
+Sets resolution (in pixels) of the texture of a terrain tile
+
+.. seealso:: :py:func:`mapTileResolution`
+%End
+
+    int mapTileResolution() const;
+%Docstring
+Returns resolution (in pixels) of the texture of a terrain tile. This parameter influences
+how many zoom levels for terrain tiles there will be (together with maxTerrainGroundError())
+%End
+
+    void setMaxTerrainScreenError( float error );
+%Docstring
+Sets maximum allowed screen error of terrain tiles in pixels.
+
+.. seealso:: :py:func:`maxTerrainScreenError`
+%End
+
+    float maxTerrainScreenError() const;
+%Docstring
+Returns maximum allowed screen error of terrain tiles in pixels. This parameter decides
+how aggressively less detailed terrain tiles are swapped to more detailed ones as camera gets closer.
+Each tile has its error defined in world units - this error gets projected to screen pixels
+according to camera view and if the tile's error is greater than the allowed error, it will
+be swapped by more detailed tiles with lower error.
+%End
+
+    void setMaxTerrainGroundError( float error );
+%Docstring
+Returns maximum ground error of terrain tiles in world units.
+
+.. seealso:: :py:func:`maxTerrainGroundError`
+%End
+
+    float maxTerrainGroundError() const;
+%Docstring
+Returns maximum ground error of terrain tiles in world units. This parameter influences
+how many zoom levels there will be (together with mapTileResolution()).
+This value tells that when the given ground error is reached (e.g. 10 meters), it makes no sense
+to further split terrain tiles into finer ones because they will not add extra details anymore.
+%End
+
+
+    void setTerrainShadingEnabled( bool enabled );
+%Docstring
+Sets whether terrain shading is enabled.
+
+.. seealso:: :py:func:`isTerrainShadingEnabled`
+
+.. versionadded:: 3.6
+%End
+
+    bool isTerrainShadingEnabled() const;
+%Docstring
+Returns whether terrain shading is enabled. When enabled, in addition to the terrain texture
+generated from the map, the terrain rendering will take into account position of the lights,
+terrain normals and terrain shading material (ambient and specular colors, shininess).
+
+.. versionadded:: 3.6
+%End
+
+    void setTerrainShadingMaterial( const QgsPhongMaterialSettings &material );
+%Docstring
+Sets terrain shading material.
+
+.. seealso:: :py:func:`terrainShadingMaterial`
+
+.. versionadded:: 3.6
+%End
+
+    QgsPhongMaterialSettings terrainShadingMaterial() const;
+%Docstring
+Returns terrain shading material. Diffuse color component is ignored since the diffuse component
+is provided by 2D rendered map texture. Only used when isTerrainShadingEnabled() is ``True``.
+
+.. versionadded:: 3.6
+%End
+
+    void setTerrainMapTheme( const QString &theme );
+%Docstring
+Sets name of the map theme.
+
+.. seealso:: :py:func:`terrainMapTheme`
+
+.. versionadded:: 3.6
+%End
+
+    QString terrainMapTheme() const;
+%Docstring
+Returns name of the map theme (from the active project) that will be used for terrain's texture.
+Empty map theme name means that the map theme is not overridden and the current map theme will be used.
+
+.. note::
+
+   Support for map themes only works if mapThemeCollection() is a valid object (otherwise it is not possible to resolve map themes from names)
+
+.. versionadded:: 3.6
+%End
+
+
+    void setRenderers( const QList<QgsAbstract3DRenderer *> &renderers /Transfer/ );
+%Docstring
+Sets list of extra 3D renderers to use in the scene. Takes ownership of the objects.
+%End
+    QList<QgsAbstract3DRenderer *> renderers() const;
+%Docstring
+Returns list of extra 3D renderers
+%End
+
+    void setSkybox( bool enabled, const QString &fileBase = QString(), const QString &fileExtension = QString() );
+%Docstring
+Sets skybox configuration. When enabled, map scene will try to load six texture files
+using the following syntax of filenames: "[base]_[side][extension]" where [side] is one
+of the following: posx/posy/posz/negx/negy/negz and [base] and [extension] are the arguments
+passed this method.
+%End
+    bool hasSkyboxEnabled() const;
+%Docstring
+Returns whether skybox is enabled
+%End
+    QString skyboxFileBase() const;
+%Docstring
+Returns base part of filenames of skybox (see setSkybox())
+%End
+    QString skyboxFileExtension() const;
+%Docstring
+Returns extension part of filenames of skybox (see setSkybox())
+%End
+
+    void setShowTerrainBoundingBoxes( bool enabled );
+%Docstring
+Sets whether to display bounding boxes of terrain tiles (for debugging)
+%End
+    bool showTerrainBoundingBoxes() const;
+%Docstring
+Returns whether to display bounding boxes of terrain tiles (for debugging)
+%End
+    void setShowTerrainTilesInfo( bool enabled );
+%Docstring
+Sets whether to display extra tile info on top of terrain tiles (for debugging)
+%End
+    bool showTerrainTilesInfo() const;
+%Docstring
+Returns whether to display extra tile info on top of terrain tiles (for debugging)
+%End
+
+    void setShowCameraViewCenter( bool enabled );
+%Docstring
+Sets whether to show camera's view center as a sphere (for debugging)
+
+.. versionadded:: 3.4
+%End
+
+    bool showCameraViewCenter() const;
+%Docstring
+Returns whether to show camera's view center as a sphere (for debugging)
+
+.. versionadded:: 3.4
+%End
+    void setShowLabels( bool enabled );
+%Docstring
+Sets whether to display labels on terrain tiles
+%End
+    bool showLabels() const;
+%Docstring
+Returns whether to display labels on terrain tiles
+%End
+
+    QList<QgsPointLightSettings> pointLights() const;
+%Docstring
+Returns list of point lights defined in the scene
+
+.. versionadded:: 3.6
+%End
+
+    void setPointLights( const QList<QgsPointLightSettings> &pointLights );
+%Docstring
+Sets list of point lights defined in the scene
+
+.. versionadded:: 3.6
+%End
+
+    float fieldOfView() const;
+%Docstring
+Returns the camera lens' field of view
+
+.. versionadded:: 3.8
+%End
+
+    void setFieldOfView( const float fieldOfView );
+%Docstring
+Sets the camera lens' field of view
+
+.. versionadded:: 3.8
+%End
+
+    void setOutputDpi( const double dpi );
+%Docstring
+Sets DPI used for conversion between real world units (e.g. mm) and pixels
+
+:param dpi: the number of dot per inch
+
+.. versionadded:: 3.10
+%End
+
+
+    double outputDpi() const;
+%Docstring
+Returns DPI used for conversion between real world units (e.g. mm) and pixels
+Default value is 96
+
+.. versionadded:: 3.10
+%End
+
+  signals:
+    void backgroundColorChanged();
+%Docstring
+Emitted when the background color has changed
+%End
+    void selectionColorChanged();
+%Docstring
+Emitted when the selection color has changed
+%End
+    void layersChanged();
+%Docstring
+Emitted when the list of map layers for terrain texture has changed
+%End
+    void terrainGeneratorChanged();
+%Docstring
+Emitted when the terrain generator has changed
+%End
+    void terrainVerticalScaleChanged();
+%Docstring
+Emitted when the vertical scale of the terrain has changed
+%End
+    void mapTileResolutionChanged();
+%Docstring
+Emitted when the map tile resoulution has changed
+%End
+    void maxTerrainScreenErrorChanged();
+%Docstring
+Emitted when the maximum terrain screen error has changed
+%End
+    void maxTerrainGroundErrorChanged();
+%Docstring
+Emitted when the maximum terrain ground error has changed
+%End
+
+    void terrainShadingChanged();
+%Docstring
+Emitted when terrain shading enabled flag or terrain shading material has changed
+
+.. versionadded:: 3.6
+%End
+
+    void terrainMapThemeChanged();
+%Docstring
+Emitted when terrain's map theme has changed
+
+.. versionadded:: 3.6
+%End
+
+    void renderersChanged();
+%Docstring
+Emitted when the list of map's extra renderers have been modified
+
+.. versionadded:: 3.10
+%End
+
+    void showTerrainBoundingBoxesChanged();
+%Docstring
+Emitted when the flag whether terrain's bounding boxes are shown has changed
+%End
+    void showTerrainTilesInfoChanged();
+%Docstring
+Emitted when the flag whether terrain's tile info is shown has changed
+%End
+
+    void showCameraViewCenterChanged();
+%Docstring
+Emitted when the flag whether camera's view center is shown has changed
+
+.. versionadded:: 3.4
+%End
+    void showLabelsChanged();
+%Docstring
+Emitted when the flag whether labels are displayed on terrain tiles has changed
+%End
+
+    void pointLightsChanged();
+%Docstring
+Emitted when the list of point lights changes
+
+.. versionadded:: 3.6
+%End
+
+    void fieldOfViewChanged();
+%Docstring
+Emitted when the camera lens field of view changes
+
+.. versionadded:: 3.8
+%End
+
+  private:
+    Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgs3dmapsettings.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

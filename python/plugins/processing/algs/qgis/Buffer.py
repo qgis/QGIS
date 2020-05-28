@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.core import (QgsFeature,
                        QgsGeometry,
                        QgsFeatureRequest,
@@ -33,7 +29,6 @@ from qgis.core import (QgsFeature,
 
 def buffering(feedback, context, sink, distance, field, useField, source, dissolve, segments, endCapStyle=1,
               joinStyle=1, miterLimit=2):
-
     if useField:
         field = source.fields().lookupField(field)
 

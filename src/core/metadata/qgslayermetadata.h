@@ -18,7 +18,7 @@
 #ifndef QGSLAYERMETADATA_H
 #define QGSLAYERMETADATA_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsbox3d.h"
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
         /**
          * Temporal extents of the resource. Use QgsDateTimeRange::isInstant() to determine
          * whether the temporal extent is a range or a single point in time.
-         * If QgsDateTimeRange::isInfinite() returns true then the temporal extent
+         * If QgsDateTimeRange::isInfinite() returns TRUE then the temporal extent
          * is considered to be indeterminate and continuous.
          * \see setTemporalExtents()
          */

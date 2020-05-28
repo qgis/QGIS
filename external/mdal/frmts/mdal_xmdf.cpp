@@ -8,92 +8,163 @@
 #include "mdal_utils.hpp"
 #include "mdal_data_model.hpp"
 #include "mdal_hdf5.hpp"
+#include "mdal_logger.hpp"
 
 #include <string>
 #include <vector>
 #include <memory>
+#include <algorithm>
 
+MDAL::XmdfDataset::~XmdfDataset() = default;
 
-MDAL::LoaderXmdf::LoaderXmdf( const std::string &datFile )
-  : mDatFile( datFile )
-{}
-
-void MDAL::LoaderXmdf::load( MDAL::Mesh *mesh, MDAL_Status *status )
+MDAL::XmdfDataset::XmdfDataset( DatasetGroup *grp, const HdfDataset &valuesDs, const HdfDataset &activeDs, hsize_t timeIndex )
+  : Dataset2D( grp )
+  , mHdf5DatasetValues( valuesDs )
+  , mHdf5DatasetActive( activeDs )
+  , mTimeIndex( timeIndex )
 {
-  if ( status ) *status = MDAL_Status::None;
+  setSupportsActiveFlag( true );
+}
 
-  HdfFile file( mDatFile );
+const HdfDataset &MDAL::XmdfDataset::dsValues() const
+{
+  return mHdf5DatasetValues;
+}
+
+const HdfDataset &MDAL::XmdfDataset::dsActive() const
+{
+  return mHdf5DatasetActive;
+}
+
+hsize_t MDAL::XmdfDataset::timeIndex() const
+{
+  return mTimeIndex;
+}
+
+
+size_t MDAL::XmdfDataset::scalarData( size_t indexStart, size_t count, double *buffer )
+{
+  assert( group()->isScalar() ); //checked in C API interface
+  std::vector<hsize_t> offsets = {timeIndex(), indexStart};
+  std::vector<hsize_t> counts = {1, count};
+  std::vector<float> values = dsValues().readArray( offsets, counts );
+  const float *input = values.data();
+  for ( size_t j = 0; j < count; ++j )
+  {
+    buffer[j] = double( input[j] );
+  }
+  return count;
+}
+
+size_t MDAL::XmdfDataset::vectorData( size_t indexStart, size_t count, double *buffer )
+{
+  assert( !group()->isScalar() ); //checked in C API interface
+  std::vector<hsize_t> offsets = {timeIndex(), indexStart, 0};
+  std::vector<hsize_t> counts = {1, count, 2};
+  std::vector<float> values = dsValues().readArray( offsets, counts );
+  const float *input = values.data();
+  for ( size_t j = 0; j < count; ++j )
+  {
+    buffer[2 * j] = double( input[2 * j] );
+    buffer[2 * j + 1] = double( input[2 * j + 1] );
+  }
+
+  return count;
+}
+
+size_t MDAL::XmdfDataset::activeData( size_t indexStart, size_t count, int *buffer )
+{
+  std::vector<hsize_t> offsets = {timeIndex(), indexStart};
+  std::vector<hsize_t> counts = {1, count};
+  std::vector<uchar> active = dsActive().readArrayUint8( offsets, counts );
+  const uchar *input = active.data();
+  for ( size_t j = 0; j < count; ++j )
+  {
+    buffer[j] = bool( input[ j ] );
+  }
+  return count;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+MDAL::DriverXmdf::DriverXmdf()
+  : Driver( "XMDF",
+            "TUFLOW XMDF",
+            "*.xmdf",
+            Capability::ReadDatasets )
+{
+}
+
+MDAL::DriverXmdf *MDAL::DriverXmdf::create()
+{
+  return new DriverXmdf();
+}
+
+bool MDAL::DriverXmdf::canReadDatasets( const std::string &uri )
+{
+  HdfFile file( uri, HdfFile::ReadOnly );
   if ( !file.isValid() )
   {
-    if ( status ) *status = MDAL_Status::Err_UnknownFormat;
+    return false;
+  }
+
+  HdfDataset dsFileType = file.dataset( "/File Type" );
+  if ( dsFileType.readString() != "Xmdf" )
+  {
+    return false;
+  }
+
+  return true;
+}
+
+void MDAL::DriverXmdf::load( const std::string &datFile,  MDAL::Mesh *mesh )
+{
+  mDatFile = datFile;
+  mMesh = mesh;
+  MDAL::Log::resetLastStatus();
+
+  HdfFile file( mDatFile, HdfFile::ReadOnly );
+  if ( !file.isValid() )
+  {
+    MDAL::Log::error( MDAL_Status::Err_UnknownFormat, name(), "File " + mDatFile + " is not valid" );
     return;
   }
 
   HdfDataset dsFileType = file.dataset( "/File Type" );
   if ( dsFileType.readString() != "Xmdf" )
   {
-    if ( status ) *status = MDAL_Status::Err_UnknownFormat;
+    MDAL::Log::error( MDAL_Status::Err_UnknownFormat, name(), "Unknown dataset file type" );
     return;
   }
 
   // TODO: check version?
 
-  size_t vertexCount = mesh->vertices.size();
-  size_t faceCount = mesh->faces.size();
+  size_t vertexCount = mesh->verticesCount();
+  size_t faceCount = mesh->facesCount();
+
   std::vector<std::string> rootGroups = file.groups();
   if ( rootGroups.size() != 1 )
   {
-    MDAL::debug( "Expecting exactly one root group for the mesh data" );
-    if ( status ) *status = MDAL_Status::Err_UnknownFormat;
+    MDAL::Log::error( MDAL_Status::Err_UnknownFormat, name(), "Expecting exactly one root group for the mesh data" );
     return;
   }
   HdfGroup gMesh = file.group( rootGroups[0] );
-
-  // TODO: read Times group (e.g. time of peak velocity)
-
   DatasetGroups groups; // DAT outputs data
 
-  HdfGroup gTemporal = gMesh.group( "Temporal" );
-  if ( gTemporal.isValid() )
+  for ( const std::string &groupName : gMesh.groups() )
   {
-    addDatasetGroupsFromXmdfGroup( groups, gTemporal, vertexCount, faceCount );
-  }
-
-  HdfGroup gMaximums = gMesh.group( "Maximums" );
-  if ( gMaximums.isValid() )
-  {
-    for ( const std::string &name : gMaximums.groups() )
+    HdfGroup gGroup = gMesh.group( groupName );
+    if ( gGroup.isValid() )
     {
-      HdfGroup g = gMaximums.group( name );
-      std::shared_ptr<MDAL::DatasetGroup> maxGroup = readXmdfGroupAsDatasetGroup( g, name + "/Maximums", vertexCount, faceCount );
-      if ( maxGroup->datasets.size() != 1 )
-        MDAL::debug( "Maximum dataset should have just one timestep!" );
+      if ( groupName == "Maximums" )
+      {
+        addDatasetGroupsFromXmdfGroup( groups, gGroup, "/Maximums", vertexCount, faceCount );
+      }
       else
       {
-        bool found = false;
-        for ( const std::shared_ptr<MDAL::DatasetGroup> grp : groups )
-        {
-          if ( grp->name() == name )
-          {
-            grp->maximumDataset = maxGroup->datasets.at( 0 );
-            found = true;
-            break;
-          }
-        }
-
-        if ( !found )
-        {
-          MDAL::debug( "Unable to find base dataset for maximum dataset" );
-        }
+        addDatasetGroupsFromXmdfGroup( groups, gGroup, "", vertexCount, faceCount );
       }
     }
-  }
-
-  // res_to_res.exe (TUFLOW utiity tool)
-  HdfGroup gDifference = gMesh.group( "Difference" );
-  if ( gDifference.isValid() )
-  {
-    addDatasetGroupsFromXmdfGroup( groups, gDifference, vertexCount, faceCount );
   }
 
   mesh->datasetGroups.insert(
@@ -103,96 +174,122 @@ void MDAL::LoaderXmdf::load( MDAL::Mesh *mesh, MDAL_Status *status )
   );
 }
 
-void MDAL::LoaderXmdf::addDatasetGroupsFromXmdfGroup( DatasetGroups &groups, const HdfGroup &rootGroup, size_t vertexCount, size_t faceCount )
+void MDAL::DriverXmdf::addDatasetGroupsFromXmdfGroup( DatasetGroups &groups,
+    const HdfGroup &rootGroup,
+    const std::string &nameSuffix,
+    size_t vertexCount,
+    size_t faceCount )
 {
-  for ( const std::string &name : rootGroup.groups() )
+  for ( const std::string &groupName : rootGroup.groups() )
   {
-    HdfGroup g = rootGroup.group( name );
-    std::shared_ptr<DatasetGroup> ds = readXmdfGroupAsDatasetGroup( g, name, vertexCount, faceCount );
-    groups.push_back( ds );
+    HdfGroup g = rootGroup.group( groupName );
+    std::shared_ptr<DatasetGroup> ds = readXmdfGroupAsDatasetGroup( g, groupName + nameSuffix, vertexCount, faceCount );
+    if ( ds && ds->datasets.size() > 0 )
+    {
+      groups.push_back( ds );
+    }
   }
 }
 
-std::shared_ptr<MDAL::DatasetGroup> MDAL::LoaderXmdf::readXmdfGroupAsDatasetGroup(
-  const HdfGroup &rootGroup, const std::string &name, size_t vertexCount, size_t faceCount )
+
+std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverXmdf::readXmdfGroupAsDatasetGroup(
+  const HdfGroup &rootGroup, const std::string &groupName, size_t vertexCount, size_t faceCount )
 {
-  std::shared_ptr<DatasetGroup> group( new DatasetGroup() );
+  std::shared_ptr<DatasetGroup> group;
   std::vector<std::string> gDataNames = rootGroup.datasets();
   if ( !MDAL::contains( gDataNames, "Times" ) ||
        !MDAL::contains( gDataNames, "Values" ) ||
-       !MDAL::contains( gDataNames, "Active" ) )
+       !MDAL::contains( gDataNames, "Active" ) ||
+       !MDAL::contains( gDataNames, "Mins" ) ||
+       !MDAL::contains( gDataNames, "Maxs" ) )
   {
-    MDAL::debug( "ignoring dataset " + name + " - not having required arrays" );
+    MDAL::Log::debug( "ignoring dataset " + groupName + " - not having required arrays" );
     return group;
   }
 
   HdfDataset dsTimes = rootGroup.dataset( "Times" );
   HdfDataset dsValues = rootGroup.dataset( "Values" );
   HdfDataset dsActive = rootGroup.dataset( "Active" );
+  HdfDataset dsMins = rootGroup.dataset( "Mins" );
+  HdfDataset dsMaxs = rootGroup.dataset( "Maxs" );
 
   std::vector<hsize_t> dimTimes = dsTimes.dims();
   std::vector<hsize_t> dimValues = dsValues.dims();
   std::vector<hsize_t> dimActive = dsActive.dims();
+  std::vector<hsize_t> dimMins = dsMins.dims();
+  std::vector<hsize_t> dimMaxs = dsMaxs.dims();
 
-  if ( dimTimes.size() != 1 || ( dimValues.size() != 2 && dimValues.size() != 3 ) || dimActive.size() != 2 )
+  if ( dimTimes.size() != 1 ||
+       ( dimValues.size() != 2 && dimValues.size() != 3 ) ||
+       dimActive.size() != 2 ||
+       dimMins.size() != 1 ||
+       dimMaxs.size() != 1
+     )
   {
-    MDAL::debug( "ignoring dataset " + name + " - arrays not having correct dimension counts" );
+    MDAL::Log::debug( "ignoring dataset " + groupName + " - arrays not having correct dimension counts" );
     return group;
   }
   hsize_t nTimeSteps = dimTimes[0];
 
-  if ( dimValues[0] != nTimeSteps || dimActive[0] != nTimeSteps )
+  if ( dimValues[0] != nTimeSteps ||
+       dimActive[0] != nTimeSteps ||
+       dimMins[0] != nTimeSteps ||
+       dimMaxs[0] != nTimeSteps )
   {
-    MDAL::debug( "ignoring dataset " + name + " - arrays not having correct dimension sizes" );
+    MDAL::Log::debug( "ignoring dataset " + groupName + " - arrays not having correct dimension sizes" );
     return group;
   }
   if ( dimValues[1] != vertexCount || dimActive[1] != faceCount )
   {
-    MDAL::debug( "ignoring dataset " + name + " - not aligned with the used mesh" );
+    MDAL::Log::debug( "ignoring dataset " + groupName + " - not aligned with the used mesh" );
     return group;
   }
 
+  // all fine, set group and return
+  group = std::make_shared<MDAL::DatasetGroup>(
+            name(),
+            mMesh,
+            mDatFile,
+            groupName
+          );
   bool isVector = dimValues.size() == 3;
+  group->setIsScalar( !isVector );
+  group->setDataLocation( MDAL_DataLocation::DataOnVertices );
+  std::vector<double> times = dsTimes.readArrayDouble();
+  std::string timeUnitString = rootGroup.attribute( "TimeUnits" ).readString();
+  MDAL::RelativeTimestamp::Unit timeUnit = parseDurationTimeUnit( timeUnitString );
+  HdfAttribute refTime = rootGroup.attribute( "Reftime" );
+  group->setMetadata( "TIMEUNITS", timeUnitString );
 
-  std::vector<float> times = dsTimes.readArray();
-  std::vector<float> values = dsValues.readArray();
-  std::vector<uchar> active = dsActive.readArrayUint8();
+  if ( refTime.isValid() )
+  {
+    std::string referenceTimeJulianDay = rootGroup.attribute( "Reftime" ).readString();
+    double refTime;
+    if ( referenceTimeJulianDay.empty() )
+      refTime = rootGroup.attribute( "Reftime" ).readDouble();
+    else
+      refTime = MDAL::toDouble( referenceTimeJulianDay );
 
-  group->setName( name );
-  group->isScalar = !isVector;
-  group->isOnVertices = true;
-  group->uri = mDatFile;
+    if ( ! std::isnan( refTime ) )
+      group->setReferenceTime( DateTime( refTime, DateTime::JulianDay ) );
+  }
+
+  // lazy loading of min and max of the dataset group
+  std::vector<float> mins = dsMins.readArray();
+  std::vector<float> maxs = dsMaxs.readArray();
+  Statistics grpStats;
+  grpStats.minimum = static_cast<double>( *std::min_element( mins.begin(), mins.end() ) );
+  grpStats.maximum = static_cast<double>( *std::max_element( maxs.begin(), maxs.end() ) );
+  group->setStatistics( grpStats );
+
   for ( hsize_t i = 0; i < nTimeSteps; ++i )
   {
-    std::shared_ptr<Dataset> dataset( new Dataset() );
-    dataset->values.resize( vertexCount );
-    dataset->active.resize( faceCount );
-    dataset->parent = group.get();
-    dataset->time = double( times[i] ) / 3600.0;
-
-    if ( isVector )
-    {
-      const float *input = values.data() + 2 * i * vertexCount;
-      for ( size_t j = 0; j < vertexCount; ++j )
-      {
-        dataset->values[j].x = double( input[2 * j] );
-        dataset->values[j].y = double( input[2 * j + 1] );
-      }
-    }
-    else
-    {
-      const float *input = values.data() + i * vertexCount;
-      for ( size_t j = 0; j < vertexCount; ++j )
-      {
-        dataset->values[j].x = double( input[j] );
-      }
-    }
-
-    const uchar *input = active.data() + i * faceCount;
-    for ( size_t j = 0; j < faceCount; ++j )
-    {
-      dataset->active[j] = input[j];
-    }
+    std::shared_ptr<XmdfDataset> dataset = std::make_shared< XmdfDataset >( group.get(), dsValues, dsActive, i );
+    dataset->setTime( times[i], timeUnit );
+    Statistics stats;
+    stats.minimum = static_cast<double>( mins[i] );
+    stats.maximum = static_cast<double>( maxs[i] );
+    dataset->setStatistics( stats );
     group->datasets.push_back( dataset );
   }
 

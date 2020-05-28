@@ -132,7 +132,7 @@ void QgsAuthPkiPathsEdit::clearConfig()
 void QgsAuthPkiPathsEdit::clearPkiMessage( QLineEdit *lineedit )
 {
   lineedit->clear();
-  lineedit->setStyleSheet( QLatin1String( "" ) );
+  lineedit->setStyleSheet( QString() );
 }
 
 void QgsAuthPkiPathsEdit::writePkiMessage( QLineEdit *lineedit, const QString &msg, Validity valid )
@@ -160,20 +160,20 @@ void QgsAuthPkiPathsEdit::writePkiMessage( QLineEdit *lineedit, const QString &m
 void QgsAuthPkiPathsEdit::clearPkiPathsCertPath()
 {
   lePkiPathsCert->clear();
-  lePkiPathsCert->setStyleSheet( QLatin1String( "" ) );
+  lePkiPathsCert->setStyleSheet( QString() );
 }
 
 void QgsAuthPkiPathsEdit::clearPkiPathsKeyPath()
 {
   lePkiPathsKey->clear();
-  lePkiPathsKey->setStyleSheet( QLatin1String( "" ) );
+  lePkiPathsKey->setStyleSheet( QString() );
 }
 
 
 void QgsAuthPkiPathsEdit::clearPkiPathsKeyPass()
 {
   lePkiPathsKeyPass->clear();
-  lePkiPathsKeyPass->setStyleSheet( QLatin1String( "" ) );
+  lePkiPathsKeyPass->setStyleSheet( QString() );
   chkPkiPathsPassShow->setChecked( false );
 }
 

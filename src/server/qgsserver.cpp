@@ -21,7 +21,6 @@
 //for CMAKE_INSTALL_PREFIX
 #include "qgsconfig.h"
 #include "qgsserver.h"
-#include "qgsmapsettings.h"
 #include "qgsauthmanager.h"
 #include "qgscapabilitiescache.h"
 #include "qgsfontutils.h"
@@ -33,18 +32,17 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsserverlogger.h"
 #include "qgsserverrequest.h"
-#include "qgsbufferserverresponse.h"
-#include "qgsbufferserverrequest.h"
 #include "qgsfilterresponsedecorator.h"
 #include "qgsservice.h"
-#include "qgsserverprojectutils.h"
+#include "qgsserverapi.h"
+#include "qgsserverapicontext.h"
 #include "qgsserverparameters.h"
+#include "qgsapplication.h"
 
 #include <QDomDocument>
 #include <QNetworkDiskCache>
-#include <QImage>
 #include <QSettings>
-#include <QDateTime>
+#include <QElapsedTimer>
 
 // TODO: remove, it's only needed by a single debug message
 #include <fcgi_stdio.h>
@@ -61,9 +59,10 @@ QgsCapabilitiesCache *QgsServer::sCapabilitiesCache = nullptr;
 QgsServerInterfaceImpl *QgsServer::sServerInterface = nullptr;
 // Initialization must run once for all servers
 bool QgsServer::sInitialized = false;
-QgsServerSettings QgsServer::sSettings;
 
 QgsServiceRegistry *QgsServer::sServiceRegistry = nullptr;
+
+Q_GLOBAL_STATIC( QgsServerSettings, sSettings );
 
 QgsServer::QgsServer()
 {
@@ -94,8 +93,8 @@ void QgsServer::setupNetworkAccessManager()
   QSettings settings;
   QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
   QNetworkDiskCache *cache = new QNetworkDiskCache( nullptr );
-  qint64 cacheSize = sSettings.cacheSize();
-  QString cacheDirectory = sSettings.cacheDirectory();
+  qint64 cacheSize = sSettings()->cacheSize();
+  QString cacheDirectory = sSettings()->cacheDirectory();
   cache->setCacheDirectory( cacheDirectory );
   cache->setMaximumCacheSize( cacheSize );
   QgsMessageLog::logMessage( QStringLiteral( "cacheDirectory: %1" ).arg( cache->cacheDirectory() ), QStringLiteral( "Server" ), Qgis::Info );
@@ -139,25 +138,54 @@ void QgsServer::printRequestParameters( const QMap< QString, QString> &parameter
 QString QgsServer::configPath( const QString &defaultConfigPath, const QString &configPath )
 {
   QString cfPath( defaultConfigPath );
-  QString projectFile = sSettings.projectFile();
+  QString projectFile = sSettings()->projectFile();
   if ( !projectFile.isEmpty() )
   {
     cfPath = projectFile;
-    QgsDebugMsg( QString( "QGIS_PROJECT_FILE:%1" ).arg( cfPath ) );
+    QgsDebugMsg( QStringLiteral( "QGIS_PROJECT_FILE:%1" ).arg( cfPath ) );
   }
   else
   {
     if ( configPath.isEmpty() )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Using default configuration file path: %1" ).arg( defaultConfigPath ), QStringLiteral( "Server" ), Qgis::Info );
+      // Read it from the environment, because a rewrite rule may have rewritten it
+      if ( getenv( "QGIS_PROJECT_FILE" ) )
+      {
+        cfPath = getenv( "QGIS_PROJECT_FILE" );
+        QgsMessageLog::logMessage( QStringLiteral( "Using configuration file path from environment: %1" ).arg( cfPath ), QStringLiteral( "Server" ), Qgis::Info );
+      }
+      else  if ( ! defaultConfigPath.isEmpty() )
+      {
+        QgsMessageLog::logMessage( QStringLiteral( "Using default configuration file path: %1" ).arg( defaultConfigPath ), QStringLiteral( "Server" ), Qgis::Info );
+      }
     }
     else
     {
       cfPath = configPath;
-      QgsDebugMsg( QString( "MAP:%1" ).arg( cfPath ) );
+      QgsDebugMsg( QStringLiteral( "MAP:%1" ).arg( cfPath ) );
     }
   }
   return cfPath;
+}
+
+void QgsServer::initLocale()
+{
+  // System locale override
+  if ( ! sSettings()->overrideSystemLocale().isEmpty() )
+  {
+    QLocale::setDefault( QLocale( sSettings()->overrideSystemLocale() ) );
+  }
+  // Number group separator settings
+  QLocale currentLocale;
+  if ( sSettings()->showGroupSeparator() )
+  {
+    currentLocale.setNumberOptions( currentLocale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
+  }
+  else
+  {
+    currentLocale.setNumberOptions( currentLocale.numberOptions() |= QLocale::NumberOption::OmitGroupSeparator );
+  }
+  QLocale::setDefault( currentLocale );
 }
 
 bool QgsServer::init()
@@ -181,15 +209,25 @@ bool QgsServer::init()
 
   // reload settings to take into account QCoreApplication and QgsApplication
   // configuration
-  sSettings.load();
+  sSettings()->load();
 
   // init and configure logger
   QgsServerLogger::instance();
-  QgsServerLogger::instance()->setLogLevel( sSettings.logLevel() );
-  QgsServerLogger::instance()->setLogFile( sSettings.logFile() );
+  QgsServerLogger::instance()->setLogLevel( sSettings()->logLevel() );
+  if ( ! sSettings()->logFile().isEmpty() )
+  {
+    QgsServerLogger::instance()->setLogFile( sSettings()->logFile() );
+  }
+  else if ( sSettings()->logStderr() )
+  {
+    QgsServerLogger::instance()->setLogStderr();
+  }
+
+  // Configure locale
+  initLocale();
 
   // log settings currently used
-  sSettings.logSummary();
+  sSettings()->logSummary();
 
   setupNetworkAccessManager();
   QDomImplementation::setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
@@ -201,7 +239,7 @@ bool QgsServer::init()
   QgsMessageLog::logMessage( "PkgData PATH: " + QgsApplication::pkgDataPath(), QStringLiteral( "Server" ), Qgis::Info );
   QgsMessageLog::logMessage( "User DB PATH: " + QgsApplication::qgisUserDatabaseFilePath(), QStringLiteral( "Server" ), Qgis::Info );
   QgsMessageLog::logMessage( "Auth DB PATH: " + QgsApplication::qgisAuthDatabaseFilePath(), QStringLiteral( "Server" ), Qgis::Info );
-  QgsMessageLog::logMessage( "SVG PATHS: " + QgsApplication::svgPaths().join( QDir::separator() ), QStringLiteral( "Server" ), Qgis::Info );
+  QgsMessageLog::logMessage( "SVG PATHS: " + QgsApplication::svgPaths().join( QDir::listSeparator() ), QStringLiteral( "Server" ), Qgis::Info );
 
   QgsApplication::createDatabase(); //init qgis.db (e.g. necessary for user crs)
 
@@ -232,17 +270,15 @@ bool QgsServer::init()
   //create cache for capabilities XML
   sCapabilitiesCache = new QgsCapabilitiesCache();
 
-#ifdef ENABLE_MS_TESTS
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Roman" ) << QStringLiteral( "Bold" ) );
-#endif
 
   sServiceRegistry = new QgsServiceRegistry();
 
-  sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache, sServiceRegistry, &sSettings );
+  sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache, sServiceRegistry, sSettings() );
 
   // Load service module
   QString modulePath = QgsApplication::libexecPath() + "server";
-  qDebug() << "Initializing server modules from " << modulePath << endl;
+  // qDebug() << QStringLiteral( "Initializing server modules from: %1" ).arg( modulePath );
   sServiceRegistry->init( modulePath,  sServerInterface );
 
   sInitialized = true;
@@ -254,18 +290,21 @@ bool QgsServer::init()
 
 void QgsServer::putenv( const QString &var, const QString &val )
 {
-#ifdef _MSC_VER
-  _putenv_s( var.toStdString().c_str(), val.toStdString().c_str() );
-#else
-  setenv( var.toStdString().c_str(), val.toStdString().c_str(), 1 );
-#endif
-  sSettings.load( var );
+  if ( val.isEmpty() )
+  {
+    qunsetenv( var.toUtf8().data() );
+  }
+  else
+  {
+    qputenv( var.toUtf8().data(), val.toUtf8() );
+  }
+  sSettings()->load( var );
 }
 
 void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project )
 {
   Qgis::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
-  QTime time; //used for measuring request time if loglevel < 1
+  QElapsedTimer time; //used for measuring request time if loglevel < 1
 
   qApp->processEvents();
 
@@ -295,8 +334,32 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   // Set the request handler into the interface for plugins to manipulate it
   sServerInterface->setRequestHandler( &requestHandler );
 
+  // Initialize configfilepath so that is is available
+  // before calling plugin methods
+  // Note that plugins may still change that value using
+  // setConfigFilePath() interface method
+  if ( ! project )
+  {
+    QString configFilePath = configPath( *sConfigFilePath, request.serverParameters().map() );
+    sServerInterface->setConfigFilePath( configFilePath );
+  }
+  else
+  {
+    sServerInterface->setConfigFilePath( project->fileName() );
+  }
+
   // Call  requestReady() method (if enabled)
-  responseDecorator.start();
+  // This may also throw exceptions if there are errors in python plugins code
+  try
+  {
+    responseDecorator.start();
+  }
+  catch ( QgsException &ex )
+  {
+    // Internal server error
+    response.sendError( 500, QStringLiteral( "Internal Server Error" ) );
+    QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::Critical );
+  }
 
   // Plugins may have set exceptions
   if ( !requestHandler.exceptionRaised() )
@@ -306,55 +369,83 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       const QgsServerParameters params = request.serverParameters();
       printRequestParameters( params.toMap(), logLevel );
 
-      //Config file path
+      // Setup project (config file path)
       if ( ! project )
       {
         QString configFilePath = configPath( *sConfigFilePath, params.map() );
 
         // load the project if needed and not empty
-        project = mConfigCache->project( configFilePath );
-        if ( ! project )
-        {
-          throw QgsServerException( QStringLiteral( "Project file error" ) );
-        }
-
-        sServerInterface->setConfigFilePath( configFilePath );
+        project = mConfigCache->project( configFilePath, sServerInterface->serverSettings() );
       }
-      else
+
+      if ( project )
       {
         sServerInterface->setConfigFilePath( project->fileName() );
       }
 
-      if ( ! params.fileName().isEmpty() )
+      // Dispatcher: if SERVICE is set, we assume a OWS service, if not, let's try an API
+      // TODO: QGIS 4 fix the OWS services and treat them as APIs
+      QgsServerApi *api = nullptr;
+      if ( params.service().isEmpty() && ( api = sServiceRegistry->apiForRequest( request ) ) )
       {
-        const QString value = QString( "attachment; filename=\"%1\"" ).arg( params.fileName() );
-        requestHandler.setResponseHeader( QStringLiteral( "Content-Disposition" ), value );
-      }
-
-      // Lookup for service
-      QgsService *service = sServiceRegistry->getService( params.service(), params.version() );
-      if ( service )
-      {
-        service->executeRequest( request, responseDecorator, project );
+        QgsServerApiContext context { api->rootPath(), &request, &responseDecorator, project, sServerInterface };
+        api->executeRequest( context );
       }
       else
       {
-        throw QgsOgcServiceException( QStringLiteral( "Service configuration error" ),
-                                      QStringLiteral( "Service unknown or unsupported" ) );
+
+        // Project is mandatory for OWS at this point
+        if ( ! project )
+        {
+          throw QgsServerException( QStringLiteral( "Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file" ) );
+        }
+
+        if ( ! params.fileName().isEmpty() )
+        {
+          const QString value = QString( "attachment; filename=\"%1\"" ).arg( params.fileName() );
+          requestHandler.setResponseHeader( QStringLiteral( "Content-Disposition" ), value );
+        }
+
+        // Lookup for service
+        QgsService *service = sServiceRegistry->getService( params.service(), params.version() );
+        if ( service )
+        {
+          service->executeRequest( request, responseDecorator, project );
+        }
+        else
+        {
+          throw QgsOgcServiceException( QStringLiteral( "Service configuration error" ),
+                                        QStringLiteral( "Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint" ) );
+        }
       }
     }
     catch ( QgsServerException &ex )
     {
       responseDecorator.write( ex );
+      QString format;
+      QgsMessageLog::logMessage( ex.formatResponse( format ), QStringLiteral( "Server" ), Qgis::Warning );
     }
     catch ( QgsException &ex )
     {
       // Internal server error
-      response.sendError( 500, ex.what() );
+      response.sendError( 500, QStringLiteral( "Internal Server Error" ) );
+      QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::Critical );
     }
   }
+
   // Terminate the response
-  responseDecorator.finish();
+  // This may also throw exceptions if there are errors in python plugins code
+  try
+  {
+    responseDecorator.finish();
+  }
+  catch ( QgsException &ex )
+  {
+    // Internal server error
+    response.sendError( 500, QStringLiteral( "Internal Server Error" ) );
+    QgsMessageLog::logMessage( ex.what(), QStringLiteral( "Server" ), Qgis::Critical );
+  }
+
 
   // We are done using requestHandler in plugins, make sure we don't access
   // to a deleted request handler from Python bindings

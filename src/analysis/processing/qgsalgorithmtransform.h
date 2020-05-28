@@ -20,7 +20,7 @@
 
 #define SIP_NO_FILE
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
@@ -47,6 +47,7 @@ class QgsTransformAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QgsCoordinateReferenceSystem outputCrs( const QgsCoordinateReferenceSystem & ) const override;
     QString outputName() const override;
+    QgsProcessingFeatureSource::Flag sourceFlags() const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
@@ -57,6 +58,8 @@ class QgsTransformAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsCoordinateReferenceSystem mDestCrs;
     QgsCoordinateTransform mTransform;
     QgsCoordinateTransformContext mTransformContext;
+    QString mCoordOp;
+    bool mWarnedAboutFallbackTransform = false;
 
 };
 

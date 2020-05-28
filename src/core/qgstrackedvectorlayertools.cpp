@@ -23,6 +23,8 @@ bool QgsTrackedVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAtt
   if ( !feature )
     f = new QgsFeature();
 
+  const_cast<QgsVectorLayerTools *>( mBackend )->setForceSuppressFormPopup( forceSuppressFormPopup() );
+
   if ( mBackend->addFeature( layer, defaultValues, defaultGeometry, f ) )
   {
     mAddedFeatures[layer].insert( f->id() );
@@ -53,9 +55,9 @@ bool QgsTrackedVectorLayerTools::saveEdits( QgsVectorLayer *layer ) const
   return mBackend->saveEdits( layer );
 }
 
-bool QgsTrackedVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg ) const
+bool QgsTrackedVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg, const bool topologicalEditing, QgsVectorLayer *topologicalLayer ) const
 {
-  return mBackend->copyMoveFeatures( layer, request, dx, dy, errorMsg );
+  return mBackend->copyMoveFeatures( layer, request, dx, dy, errorMsg, topologicalEditing, topologicalLayer );
 }
 
 void QgsTrackedVectorLayerTools::setVectorLayerTools( const QgsVectorLayerTools *tools )

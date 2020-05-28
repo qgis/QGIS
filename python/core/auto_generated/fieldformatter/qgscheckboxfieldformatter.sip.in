@@ -1,0 +1,43 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/fieldformatter/qgscheckboxfieldformatter.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsCheckBoxFieldFormatter : QgsFieldFormatter
+{
+%Docstring
+Field formatter for a checkbox field.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgscheckboxfieldformatter.h"
+%End
+  public:
+
+    QgsCheckBoxFieldFormatter();
+%Docstring
+Constructor for QgsCheckBoxFieldFormatter.
+%End
+
+    virtual QString id() const;
+
+
+    virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/fieldformatter/qgscheckboxfieldformatter.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

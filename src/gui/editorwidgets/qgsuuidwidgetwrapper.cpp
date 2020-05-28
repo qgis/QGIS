@@ -17,8 +17,8 @@
 
 #include <QUuid>
 
-QgsUuidWidgetWrapper::QgsUuidWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
-  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+QgsUuidWidgetWrapper::QgsUuidWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
+  : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
 
 {
 }
@@ -53,7 +53,7 @@ bool QgsUuidWidgetWrapper::valid() const
   return mLineEdit || mLabel;
 }
 
-void QgsUuidWidgetWrapper::setValue( const QVariant &value )
+void QgsUuidWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
   if ( value.isNull() )
   {

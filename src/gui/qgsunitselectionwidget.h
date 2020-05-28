@@ -19,7 +19,7 @@
 #define QGSUNITSELECTIONWIDGET_H
 
 #include <QWidget>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QDialog>
 #include "qgspanelwidget.h"
 #include "qgssymbol.h"
@@ -139,6 +139,11 @@ class GUI_EXPORT QgsMapUnitScaleDialog : public QDialog
      * \since QGIS 2.12
      */
     void setMapCanvas( QgsMapCanvas *canvas );
+
+  private slots:
+
+    void showHelp();
+
 
   private:
 

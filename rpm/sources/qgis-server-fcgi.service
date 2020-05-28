@@ -1,0 +1,21 @@
+# Adapted from http://www.itopen.it/bulk/qgis3-server/#/step-27
+# Path: /etc/systemd/system/qgis-server-fcgi.service
+# systemctl enable qgis-server-fcgi.service && systemctl start qgis-server-fcgi.service
+
+[Unit]
+Description = QGIS Server Tracker FastCGI backend
+After = network.target qgis-server-fcgi.socket
+
+[Service]
+# An existing user must be set
+User = qgis
+Group = qgis
+Environment = "QGIS_PREFIX_PATH=/usr" "QGIS_SERVER_LOG_STDERR=true"
+# See https://docs.qgis.org//en/docs/user_manual/working_with_ogc/server/config.html
+# for the full list of supported environment variables, i.e.:
+# Environment = "QGIS_SERVER_PARALLEL_RENDERING=true"
+ExecStart = /usr/libexec/qgis/qgis_mapserv.fcgi
+StandardInput = socket
+WorkingDirectory = /tmp
+
+Restart = always

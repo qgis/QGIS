@@ -15,13 +15,12 @@
 
 #include "qgsuserprofile.h"
 #include "qgsapplication.h"
+#include "qgssqliteutils.h"
 
 #include <QDir>
 #include <QTextStream>
 #include <QSettings>
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
+#include <sqlite3.h>
 
 QgsUserProfile::QgsUserProfile( const QString &folder )
 {
@@ -58,64 +57,70 @@ void QgsUserProfile::initSettings() const
 
 const QString QgsUserProfile::alias() const
 {
-  QFile qgisPrivateDbFile( qgisDB() );
+  const QString dbFile = qgisDB();
+  QString profileAlias = name();
 
   // Looks for qgis.db
   // If it's not there we can just return name.
-  if ( !qgisPrivateDbFile.exists() )
+  if ( !QFile::exists( dbFile ) )
   {
-    return name();
+    return profileAlias;
   }
 
-  QSqlDatabase db = QSqlDatabase::addDatabase( QStringLiteral( "QSQLITE" ), QStringLiteral( "userprofile" ) );
-  db.setDatabaseName( qgisDB() );
-  if ( !db.open() )
-    return name();
+  sqlite3_database_unique_ptr database;
 
-  QSqlQuery query;
-  query.prepare( QStringLiteral( "SELECT value FROM tbl_config_variables WHERE variable = 'ALIAS'" ) );
-  QString profileAlias = name();
-  if ( query.exec() )
+  //check the db is available
+  int result = database.open( dbFile );
+  if ( result != SQLITE_OK )
   {
-    if ( query.next() )
+    return profileAlias;
+  }
+
+  sqlite3_statement_unique_ptr preparedStatement = database.prepare( QStringLiteral( "SELECT value FROM tbl_config_variables WHERE variable = 'ALIAS'" ), result );
+  if ( result == SQLITE_OK )
+  {
+    if ( preparedStatement.step() == SQLITE_ROW )
     {
-      QString alias = query.value( 0 ).toString();
+      QString alias = preparedStatement.columnAsText( 0 );
       if ( !alias.isEmpty() )
         profileAlias = alias;
     }
   }
-  db.close();
   return profileAlias;
 }
 
 QgsError QgsUserProfile::setAlias( const QString &alias )
 {
   QgsError error;
-  QFile qgisPrivateDbFile( qgisDB() );
+  const QString dbFile = qgisDB();
 
-  if ( !qgisPrivateDbFile.exists() )
+  // Looks for qgis.db
+  // If it's not there we can just return name.
+  if ( !QFile::exists( dbFile ) )
   {
     error.append( QObject::tr( "qgis.db doesn't exist in the user's profile folder" ) );
     return error;
   }
 
-  QSqlDatabase db = QSqlDatabase::addDatabase( QStringLiteral( "QSQLITE" ), QStringLiteral( "userprofile" ) );
-  db.setDatabaseName( qgisDB() );
-  if ( !db.open() )
+  sqlite3_database_unique_ptr database;
+
+  //check the db is available
+  int result = database.open( dbFile );
+  if ( result != SQLITE_OK )
   {
     error.append( QObject::tr( "Unable to open qgis.db for update." ) );
     return error;
   }
 
-  QSqlQuery query;
-  QString sql = QStringLiteral( "INSERT OR REPLACE INTO tbl_config_variables VALUES ('ALIAS', :alias);" );
-  query.prepare( sql );
-  query.bindValue( QStringLiteral( ":alias" ), alias );
-  if ( !query.exec() )
+  const QString sql = QStringLiteral( "INSERT OR REPLACE INTO tbl_config_variables VALUES ('ALIAS', %1);" ).arg(
+                        QgsSqliteUtils::quotedString( alias ) );
+
+  sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
+  if ( result != SQLITE_OK || preparedStatement.step() != SQLITE_DONE )
   {
-    error.append( QObject::tr( "Could not save alias to database: %1" ).arg( query.lastError().text() ) );
+    error.append( QObject::tr( "Could not save alias to database: %1" ).arg( database.errorMessage() ) );
   }
-  db.close();
+
   return error;
 }
 

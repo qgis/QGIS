@@ -19,8 +19,11 @@
 #define QGSINTERPOLATOR_H
 
 #include <QVector>
+#include <QList>
+
 #include "qgis_sip.h"
 #include "qgis_analysis.h"
+#include "qgscoordinatetransformcontext.h"
 
 class QgsFeatureSource;
 class QgsGeometry;
@@ -100,6 +103,13 @@ class ANALYSIS_EXPORT QgsInterpolator
       int interpolationAttribute = -1;
       //! Source type
       QgsInterpolator::SourceType sourceType = SourcePoints;
+
+      /**
+       * Coordinate transform context.
+       *
+       * \since QGIS 3.10.1
+       */
+      QgsCoordinateTransformContext transformContext;
     };
 
     QgsInterpolator( const QList<QgsInterpolator::LayerData> &layerData );
@@ -110,9 +120,10 @@ class ANALYSIS_EXPORT QgsInterpolator
      * Calculates interpolation value for map coordinates x, y
      * \param x x-coordinate (in map units)
      * \param y y-coordinate (in map units)
-     * \param result out: interpolation result
-     * \param feedback optional feedback object for progress and cancelation support
-     * \returns 0 in case of success*/
+     * \param result interpolation result
+     * \param feedback optional feedback object for progress and cancellation support
+     * \returns 0 in case of success
+     */
     virtual int interpolatePoint( double x, double y, double &result SIP_OUT, QgsFeedback *feedback = nullptr ) = 0;
 
     //! \note not available in Python bindings
@@ -124,7 +135,7 @@ class ANALYSIS_EXPORT QgsInterpolator
      * Caches the vertex and value data from the provider. All the vertex data
      * will be held in virtual memory.
      *
-     * An optional \a feedback argument may be specified to allow cancelation and
+     * An optional \a feedback argument may be specified to allow cancellation and
      * progress reports from the cache operation.
      *
      * \returns Success in case of success

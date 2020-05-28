@@ -17,7 +17,7 @@
 #define QGSATTRIBUTEFORM_H
 
 #include "qgsfeature.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgseditorwidgetwrapper.h"
 
@@ -35,6 +35,7 @@ class QgsMessageBarItem;
 class QgsWidgetWrapper;
 class QgsTabWidget;
 class QgsAttributeFormWidget;
+class QgsRelationWidgetWrapper;
 
 /**
  * \ingroup gui
@@ -46,7 +47,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
   public:
 
-    //! Form modes
+    //! Form modes \deprecated Use QgsAttributeEditorContext::Mode instead.
     enum Mode
     {
       SingleEditMode, //!< Single edit mode, for editing a single feature
@@ -75,24 +76,35 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     const QgsFeature &feature() { return mFeature; }
 
     /**
+     * Displays a warning message in the form message bar
+     * \param message message string
+     * \see mode()
+     * \since QGIS 3.12
+     */
+    void displayWarning( const QString &message );
+
+    // TODO QGIS 4.0 - make private
+
+    /**
      * Hides the button box (OK/Cancel) and enables auto-commit
      * \note set Embed in QgsAttributeEditorContext in constructor instead
      */
-    // TODO QGIS 3.0 - make private
     void hideButtonBox();
+
+    // TODO QGIS 4.0 - make private
 
     /**
      * Shows the button box (OK/Cancel) and disables auto-commit
      * \note set Embed in QgsAttributeEditorContext in constructor instead
      */
-    // TODO QGIS 3.0 - make private
     void showButtonBox();
+
+    // TODO QGIS 4.0 - make private
 
     /**
      * Disconnects the button box (OK/Cancel) from the accept/resetValues slots
      * If this method is called, you have to create these connections from outside
      */
-    // TODO QGIS 3.0 - make private
     void disconnectButtonBox();
 
     /**
@@ -120,7 +132,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * \see setMode()
      * \since QGIS 2.16
      */
-    Mode mode() const { return mMode; }
+    QgsAttributeEditorContext::Mode mode() const { return mMode; }
 
     /**
      * Sets the current mode of the form.
@@ -128,7 +140,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * \see mode()
      * \since QGIS 2.16
      */
-    void setMode( Mode mode );
+    void setMode( QgsAttributeEditorContext::Mode mode );
 
     /**
      * Sets the edit command message (Undo) that will be used when the dialog is accepted
@@ -143,7 +155,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * \param object   The object for which the event has been sent
      * \param event    The event which is being filtered
      *
-     * \returns         true if the event has been handled (key was ESC)
+     * \returns         TRUE if the event has been handled (key was ESC)
      */
     bool eventFilter( QObject *object, QEvent *event ) override;
 
@@ -188,28 +200,28 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      *
      * \param attribute The name of the attribute that changed.
      * \param value     The new value of the attribute.
-     * \param attributeChanged If true, it corresponds to an actual change of the feature attribute
+     * \param attributeChanged If TRUE, it corresponds to an actual change of the feature attribute
      * \since QGIS 3.0.1
      */
     void widgetValueChanged( const QString &attribute, const QVariant &value, bool attributeChanged );
 
     /**
      * Will be emitted before the feature is saved. Use this signal to perform sanity checks.
-     * You can set the parameter ok to false to notify the form that you don't want it to be saved.
+     * You can set the parameter ok to FALSE to notify the form that you don't want it to be saved.
      * If you want the form to be saved, leave the parameter untouched.
      *
-     * \param ok  Set this parameter to false if you don't want the form to be saved
+     * \param ok  Set this parameter to FALSE if you don't want the form to be saved
      * \note not available  in Python bindings
      */
     void beforeSave( bool &ok ) SIP_SKIP;
 
     /**
-     * Is emitted, when a feature is changed or added
+     * Emitted when a feature is changed or added
      */
     void featureSaved( const QgsFeature &feature );
 
     /**
-     * Is emitted when a filter expression is set using the form.
+     * Emitted when a filter expression is set using the form.
      * \param expression filter expression
      * \param type filter type
      * \since QGIS 2.16
@@ -220,7 +232,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * Emitted when the form changes mode.
      * \param mode new mode
      */
-    void modeChanged( QgsAttributeForm::Mode mode );
+    void modeChanged( QgsAttributeEditorContext::Mode mode );
 
     /**
      * Emitted when the user selects the close option from the form's button bar.
@@ -261,7 +273,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     /**
      * Save all the values from the editors to the layer.
      *
-     * \returns True if successful
+     * \returns TRUE if successful
      */
     bool save();
 
@@ -281,8 +293,20 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void refreshFeature();
 
+    /**
+     * Is called in embedded forms when an \a attribute value in the parent form
+     * has changed to \a newValue.
+     *
+     * Notify the form widgets that something has changed in case they
+     * have filter expressions that depend on the parent form scope.
+     *
+     * \since QGIS 3.14
+     */
+    void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
+
+
   private slots:
-    void onAttributeChanged( const QVariant &value );
+    void onAttributeChanged( const QVariant &value, const QVariantList &additionalFieldValues );
     void onAttributeAdded( int idx );
     void onAttributeDeleted( int idx );
     void onUpdatedFields();
@@ -321,6 +345,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     bool fieldIsEditable( const QgsVectorLayer &layer, int fieldIndex, QgsFeatureId fid ) const;
 
+    void updateDefaultValueDependencies();
+
     struct WidgetInfo
     {
       QWidget *widget = nullptr;
@@ -348,6 +374,12 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     //! Save single feature or add feature edits
     bool saveEdits();
 
+    //! fill up dependency map for default values
+    void createDefaultValueDependencies();
+
+    //! update the default values in the fields after a referenced field changed
+    bool updateDefaultValues( const int originIdx );
+
     int messageTimeout();
     void clearMultiEditMessages();
     void pushSelectedFeaturesMessage();
@@ -358,10 +390,14 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     //! constraints management
     void updateAllConstraints();
     void updateConstraints( QgsEditorWidgetWrapper *w );
+    void updateContainersVisibility();
     void updateConstraint( const QgsFeature &ft, QgsEditorWidgetWrapper *eww );
+    void updateLabels();
     bool currentFormFeature( QgsFeature &feature );
     bool currentFormValidConstraints( QStringList &invalidFields, QStringList &descriptions );
     QList<QgsEditorWidgetWrapper *> constraintDependencies( QgsEditorWidgetWrapper *w );
+
+    QgsRelationWidgetWrapper *setupRelationWidgetWrapper( const QgsRelation &rel, const QgsAttributeEditorContext &context );
 
     QgsVectorLayer *mLayer = nullptr;
     QgsFeature mFeature;
@@ -376,8 +412,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QList<QgsAttributeFormInterface *> mInterfaces;
     QMap< int, QgsAttributeFormEditorWidget * > mFormEditorWidgets;
     QList< QgsAttributeFormWidget *> mFormWidgets;
-    QgsExpressionContext mExpressionContext;
     QMap<const QgsVectorLayerJoinInfo *, QgsFeature> mJoinedFeatures;
+    QMap<QLabel *, QgsProperty> mLabelDataDefinedProperties;
     bool mValuesInitialized = false;
     bool mDirty = false;
     bool mIsSettingFeature = false;
@@ -420,7 +456,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     int mFormNr;
     QString mPyFormVarName;
 
-    //! Sets to true while saving to prevent recursive saves
+    //! Sets to TRUE while saving to prevent recursive saves
     bool mIsSaving;
 
     //! Flag to prevent refreshFeature() to change mFeature
@@ -433,9 +469,18 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     QString mEditCommandMessage;
 
-    Mode mMode;
+    QgsAttributeEditorContext::Mode mMode;
 
     QMap<QWidget *, QSvgWidget *> mIconMap;
+
+    /**
+     * Dependency map for default values. Attribute index -> widget wrapper.
+     * Attribute indexes will be added multiple times if more than one widget depends on them.
+     */
+    QMap<int, QgsWidgetWrapper *> mDefaultValueDependencies;
+
+    //! List of updated fields to avoid recursion on the setting of defaultValues
+    QList<int> mAlreadyUpdatedFields;
 
     friend class TestQgsDualView;
     friend class TestQgsAttributeForm;

@@ -14,3 +14,9 @@
  ***************************************************************************/
 
 #include "qgsprojectstorage.h"
+
+QString QgsProjectStorage::filePath( const QString &uri )
+{
+  Q_UNUSED( uri );
+  return QString();
+}

@@ -19,6 +19,7 @@
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
 #include "qgssymbollayerutils.h"
+#include "qgsstyleentityvisitor.h"
 
 #include <QColor>
 #include <QDomDocument>
@@ -68,7 +69,7 @@ QgsRasterRenderer *QgsPalettedRasterRenderer::create( const QDomElement &elem, Q
       QColor color;
       QString label;
       entryElem = paletteEntries.at( i ).toElement();
-      value = ( int )entryElem.attribute( QStringLiteral( "value" ), QStringLiteral( "0" ) ).toDouble();
+      value = static_cast<int>( entryElem.attribute( QStringLiteral( "value" ), QStringLiteral( "0" ) ).toDouble() );
       QgsDebugMsgLevel( entryElem.attribute( "color", "#000000" ), 4 );
       color = QColor( entryElem.attribute( QStringLiteral( "color" ), QStringLiteral( "#000000" ) ) );
       color.setAlpha( entryElem.attribute( QStringLiteral( "alpha" ), QStringLiteral( "255" ) ).toInt() );
@@ -97,7 +98,8 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classes() const
 
 QString QgsPalettedRasterRenderer::label( int idx ) const
 {
-  Q_FOREACH ( const Class &c, mClassData )
+  const auto constMClassData = mClassData;
+  for ( const Class &c : constMClassData )
   {
     if ( c.value == idx )
       return c.label;
@@ -119,7 +121,7 @@ void QgsPalettedRasterRenderer::setLabel( int idx, const QString &label )
   }
 }
 
-QgsRasterBlock *QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
+QgsRasterBlock *QgsPalettedRasterRenderer::block( int, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
   if ( !mInput || mClassData.isEmpty() )
@@ -127,11 +129,11 @@ QgsRasterBlock *QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  cons
     return outputBlock.release();
   }
 
-  std::shared_ptr< QgsRasterBlock > inputBlock( mInput->block( bandNo, extent, width, height, feedback ) );
+  std::shared_ptr< QgsRasterBlock > inputBlock( mInput->block( mBand, extent, width, height, feedback ) );
 
   if ( !inputBlock || inputBlock->isEmpty() )
   {
-    QgsDebugMsg( "No raster data!" );
+    QgsDebugMsg( QStringLiteral( "No raster data!" ) );
     return outputBlock.release();
   }
 
@@ -160,21 +162,24 @@ QgsRasterBlock *QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  cons
     return outputBlock.release();
   }
 
-  QRgb myDefaultColor = NODATA_COLOR;
+  const QRgb myDefaultColor = renderColorForNodataPixel();
 
   //use direct data access instead of QgsRasterBlock::setValue
   //because of performance
+  Q_ASSERT( outputBlock ); // to make cppcheck happy
   unsigned int *outputData = ( unsigned int * )( outputBlock->bits() );
 
   qgssize rasterSize = ( qgssize )width * height;
+  bool isNoData = false;
   for ( qgssize i = 0; i < rasterSize; ++i )
   {
-    if ( inputBlock->isNoData( i ) )
+    const double value = inputBlock->valueAndNoData( i, isNoData );
+    if ( isNoData )
     {
       outputData[i] = myDefaultColor;
       continue;
     }
-    int val = ( int ) inputBlock->value( i );
+    int val = static_cast< int >( value );
     if ( !mColors.contains( val ) )
     {
       outputData[i] = myDefaultColor;
@@ -243,6 +248,71 @@ void QgsPalettedRasterRenderer::writeXml( QDomDocument &doc, QDomElement &parent
   parentElem.appendChild( rasterRendererElem );
 }
 
+void QgsPalettedRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+{
+  // create base structure
+  QgsRasterRenderer::toSld( doc, element, props );
+
+  // look for RasterSymbolizer tag
+  QDomNodeList elements = element.elementsByTagName( QStringLiteral( "sld:RasterSymbolizer" ) );
+  if ( elements.size() == 0 )
+    return;
+
+  // there SHOULD be only one
+  QDomElement rasterSymbolizerElem = elements.at( 0 ).toElement();
+
+  // add Channel Selection tags
+  QDomElement channelSelectionElem = doc.createElement( QStringLiteral( "sld:ChannelSelection" ) );
+  rasterSymbolizerElem.appendChild( channelSelectionElem );
+
+  // for the mapped band
+  QDomElement channelElem = doc.createElement( QStringLiteral( "sld:GrayChannel" ) );
+  channelSelectionElem.appendChild( channelElem );
+
+  // set band
+  QDomElement sourceChannelNameElem = doc.createElement( QStringLiteral( "sld:SourceChannelName" ) );
+  sourceChannelNameElem.appendChild( doc.createTextNode( QString::number( band() ) ) );
+  channelElem.appendChild( sourceChannelNameElem );
+
+  // add ColorMap tag
+  QDomElement colorMapElem = doc.createElement( QStringLiteral( "sld:ColorMap" ) );
+  colorMapElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "values" ) );
+  if ( this->classes().size() >= 255 )
+    colorMapElem.setAttribute( QStringLiteral( "extended" ), QStringLiteral( "true" ) );
+  rasterSymbolizerElem.appendChild( colorMapElem );
+
+  // for each color set a ColorMapEntry tag nested into "sld:ColorMap" tag
+  // e.g. <ColorMapEntry color="#EEBE2F" quantity="-300" label="label" opacity="0"/>
+  QList<QgsPalettedRasterRenderer::Class> classes = this->classes();
+  QList<QgsPalettedRasterRenderer::Class>::const_iterator classDataIt = classes.constBegin();
+  for ( ; classDataIt != classes.constEnd();  ++classDataIt )
+  {
+    QDomElement colorMapEntryElem = doc.createElement( QStringLiteral( "sld:ColorMapEntry" ) );
+    colorMapElem.appendChild( colorMapEntryElem );
+
+    // set colorMapEntryElem attributes
+    colorMapEntryElem.setAttribute( QStringLiteral( "color" ), classDataIt->color.name() );
+    colorMapEntryElem.setAttribute( QStringLiteral( "quantity" ), QString::number( classDataIt->value ) );
+    colorMapEntryElem.setAttribute( QStringLiteral( "label" ), classDataIt->label );
+    if ( classDataIt->color.alphaF() != 1.0 )
+    {
+      colorMapEntryElem.setAttribute( QStringLiteral( "opacity" ), QString::number( classDataIt->color.alphaF() ) );
+    }
+  }
+}
+
+bool QgsPalettedRasterRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const
+{
+  if ( mSourceColorRamp )
+  {
+    QgsStyleColorRampEntity entity( mSourceColorRamp.get() );
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity ) ) )
+      return false;
+  }
+
+  return true;
+}
+
 void QgsPalettedRasterRenderer::legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems ) const
 {
   ClassData::const_iterator it = mClassData.constBegin();
@@ -292,7 +362,8 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromStr
   QRegularExpression linePartRx( QStringLiteral( "[\\s,:]+" ) );
 
   QStringList parts = string.split( '\n', QString::SkipEmptyParts );
-  Q_FOREACH ( const QString &part, parts )
+  const auto constParts = parts;
+  for ( const QString &part : constParts )
   {
     QStringList lineParts = part.split( linePartRx, QString::SkipEmptyParts );
     bool ok = false;
@@ -387,7 +458,8 @@ QString QgsPalettedRasterRenderer::classDataToString( const QgsPalettedRasterRen
     return a.value < b.value;
   } );
 
-  Q_FOREACH ( const Class &c, cd )
+  const auto constCd = cd;
+  for ( const Class &c : constCd )
   {
     out << QStringLiteral( "%1 %2 %3 %4 %5 %6" ).arg( c.value ).arg( c.color.red() )
         .arg( c.color.green() ).arg( c.color.blue() ).arg( c.color.alpha() ).arg( c.label );

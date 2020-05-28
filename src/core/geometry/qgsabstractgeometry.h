@@ -16,24 +16,32 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSABSTRACTGEOMETRYV2
 #define QGSABSTRACTGEOMETRYV2
 
+#include <functional>
 #include <QString>
 
 #include "qgis_core.h"
-#include "qgis.h"
 #include "qgscoordinatetransform.h"
 #include "qgswkbtypes.h"
 #include "qgswkbptr.h"
+
+#ifndef SIP_RUN
+#include "json_fwd.hpp"
+using namespace nlohmann;
+#endif
 
 class QgsMapToPixel;
 class QgsCurve;
 class QgsMultiCurve;
 class QgsMultiPoint;
-class QgsPoint;
+
 struct QgsVertexId;
 class QgsVertexIterator;
 class QPainter;
 class QDomDocument;
 class QDomElement;
+class QgsGeometryPartIterator;
+class QgsGeometryConstPartIterator;
+class QgsConstWkbPtr;
 
 typedef QVector< QgsPoint > QgsPointSequence;
 #ifndef SIP_RUN
@@ -44,10 +52,20 @@ typedef QVector< QVector< QgsPoint > > QgsRingSequence;
 typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
 #endif
 
+
 /**
  * \ingroup core
  * \class QgsAbstractGeometry
  * \brief Abstract base class for all geometries
+ *
+ * \note QgsAbstractGeometry objects are inherently Cartesian/planar geometries. They have no concept of geodesy, and none
+ * of the methods or properties exposed from the QgsAbstractGeometry API (or QgsGeometry API) utilize
+ * geodesic calculations. Accordingly, properties like length() and area() and spatial operations like centroid()
+ * are always calculated using strictly Cartesian mathematics. In contrast, the QgsDistanceArea class exposes
+ * methods for working with geodesic calculations and spatial operations on geometries,
+ * and should be used whenever calculations which account for the curvature of the Earth (or any other celestial body)
+ * are required.
+ *
  * \since QGIS 2.10
  */
 class CORE_EXPORT QgsAbstractGeometry
@@ -178,7 +196,7 @@ class CORE_EXPORT QgsAbstractGeometry
     QString wktTypeStr() const;
 
     /**
-     * Returns true if the geometry is 3D and contains a z-value.
+     * Returns TRUE if the geometry is 3D and contains a z-value.
      * \see isMeasure
      */
     bool is3D() const
@@ -187,7 +205,7 @@ class CORE_EXPORT QgsAbstractGeometry
     }
 
     /**
-     * Returns true if the geometry contains m values.
+     * Returns TRUE if the geometry contains m values.
      * \see is3D
      */
     bool isMeasure() const
@@ -198,7 +216,7 @@ class CORE_EXPORT QgsAbstractGeometry
     /**
      * Returns the closure of the combinatorial boundary of the geometry (ie the topological boundary of the geometry).
      * For instance, a polygon geometry will have a boundary consisting of the linestrings for each ring in the polygon.
-     * \returns boundary for geometry. May be null for some geometry types.
+     * \returns boundary for geometry. May be NULLPTR for some geometry types.
      * \since QGIS 3.0
      */
     virtual QgsAbstractGeometry *boundary() const = 0 SIP_FACTORY;
@@ -267,14 +285,34 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const = 0;
 
     /**
-     * Returns a GeoJSON representation of the geometry.
+     * Returns a GeoJSON representation of the geometry as a QString.
      * \param precision number of decimal places for coordinates
      * \see asWkb()
      * \see asWkt()
      * \see asGml2()
      * \see asGml3()
+     * \see asJsonObject()
      */
-    virtual QString asJson( int precision = 17 ) const = 0;
+    QString asJson( int precision = 17 );
+
+    /**
+     * Returns a json object representation of the geometry.
+     * \see asWkb()
+     * \see asWkt()
+     * \see asGml2()
+     * \see asGml3()
+     * \see asJson()
+     * \note not available in Python bindings
+     * \since QGIS 3.10
+     */
+    virtual json asJsonObject( int precision = 17 ) SIP_SKIP const;
+
+    /**
+     * Returns a KML representation of the geometry.
+     * \since QGIS 3.12
+     */
+    virtual QString asKml( int precision = 17 ) const = 0;
+
 
     //render pipeline
 
@@ -282,10 +320,10 @@ class CORE_EXPORT QgsAbstractGeometry
      * Transforms the geometry using a coordinate transform
      * \param ct coordinate transform
      * \param d transformation direction
-     * \param transformZ set to true to also transform z coordinates. This requires that
+     * \param transformZ set to TRUE to also transform z coordinates. This requires that
      * the z coordinates in the geometry represent height relative to the vertical datum
      * of the source CRS (generally ellipsoidal heights) and are expressed in its vertical
-     * units (generally meters). If false, then z coordinates will not be changed by the
+     * units (generally meters). If FALSE, then z coordinates will not be changed by the
      * transform.
      */
     virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) SIP_THROW( QgsCsException ) = 0;
@@ -322,7 +360,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param id initial value should be the starting vertex id. The next vertex id will be stored
      * in this variable if found.
      * \param vertex container for found node
-     * \returns false if at end
+     * \returns FALSE if at end
      */
     virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const = 0;
 
@@ -356,7 +394,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param leftOf indicates whether the point lies on the left side of the geometry (-1 if point is to the left
      * of the geometry, +1 if the point is to the right of the geometry, or 0 for cases where left/right could not
      * be determined, e.g. point exactly on a line)
-     * false if point is to right of segment)
+     * FALSE if point is to right of segment)
      * \param epsilon epsilon for segment snapping
      * \returns squared distance to closest segment or negative value on error
      */
@@ -370,7 +408,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * Inserts a vertex into the geometry
      * \param position vertex id for position of inserted vertex
      * \param vertex vertex to insert
-     * \returns true if insert was successful
+     * \returns TRUE if insert was successful
      * \see moveVertex
      * \see deleteVertex
      */
@@ -380,7 +418,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * Moves a vertex within the geometry
      * \param position vertex id for vertex to move
      * \param newPos new position of vertex
-     * \returns true if move was successful
+     * \returns TRUE if move was successful
      * \see insertVertex
      * \see deleteVertex
      */
@@ -389,28 +427,49 @@ class CORE_EXPORT QgsAbstractGeometry
     /**
      * Deletes a vertex within the geometry
      * \param position vertex id for vertex to delete
-     * \returns true if delete was successful
+     * \returns TRUE if delete was successful
      * \see insertVertex
      * \see moveVertex
      */
     virtual bool deleteVertex( QgsVertexId position ) = 0;
 
     /**
-     * Returns the length of the geometry.
+     * Returns the planar, 2-dimensional length of the geometry.
+     *
+     * \warning QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the length
+     * returned by this method is calculated using strictly Cartesian mathematics. In contrast,
+     * the QgsDistanceArea class exposes methods for calculating the lengths of geometries using
+     * geodesic calculations which account for the curvature of the Earth (or any other
+     * celestial body).
+     *
      * \see area()
      * \see perimeter()
      */
     virtual double length() const;
 
     /**
-     * Returns the perimeter of the geometry.
+     * Returns the planar, 2-dimensional perimeter of the geometry.
+     *
+     * \warning QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the perimeter
+     * returned by this method is calculated using strictly Cartesian mathematics. In contrast,
+     * the QgsDistanceArea class exposes methods for calculating the perimeters of geometries using
+     * geodesic calculations which account for the curvature of the Earth (or any other
+     * celestial body).
+     *
      * \see area()
      * \see length()
      */
     virtual double perimeter() const;
 
     /**
-     * Returns the area of the geometry.
+     * Returns the planar, 2-dimensional area of the geometry.
+     *
+     * \warning QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the area
+     * returned by this method is calculated using strictly Cartesian mathematics. In contrast,
+     * the QgsDistanceArea class exposes methods for calculating the areas of geometries using
+     * geodesic calculations which account for the curvature of the Earth (or any other
+     * celestial body).
+     *
      * \see length()
      * \see perimeter()
      */
@@ -418,6 +477,10 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * Returns the length of the segment of the geometry which begins at \a startVertex.
+     *
+     * \warning QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the lengths
+     * returned by this method are calculated using strictly Cartesian mathematics.
+     *
      * \since QGIS 3.0
      */
     virtual double segmentLength( QgsVertexId startVertex ) const = 0;
@@ -426,12 +489,12 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QgsPoint centroid() const;
 
     /**
-     * Returns true if the geometry is empty
+     * Returns TRUE if the geometry is empty
      */
     virtual bool isEmpty() const;
 
     /**
-     * Returns true if the geometry contains curved segments
+     * Returns TRUE if the geometry contains curved segments
      */
     virtual bool hasCurvedSegments() const;
 
@@ -455,7 +518,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * Makes a new geometry with all the points or vertices snapped to the closest point of the grid.
      * Ownership is transferred to the caller.
      *
-     * If the gridified geometry could not be calculated a nullptr will be returned.
+     * If the gridified geometry could not be calculated NULLPTR will be returned.
      * It may generate an invalid geometry (in some corner cases).
      * It can also be thought as rounding the edges and it may be useful for removing errors.
      * Example:
@@ -481,13 +544,13 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * By default, z values are not considered when detecting duplicate nodes. E.g. two nodes
      * with the same x and y coordinate but different z values will still be considered
-     * duplicate and one will be removed. If \a useZValues is true, then the z values are
+     * duplicate and one will be removed. If \a useZValues is TRUE, then the z values are
      * also tested and nodes with the same x and y but different z will be maintained.
      *
      * Note that duplicate nodes are not tested between different parts of a multipart geometry. E.g.
      * a multipoint geometry with overlapping points will not be changed by this method.
      *
-     * The function will return true if nodes were removed, or false if no duplicate nodes
+     * The function will return TRUE if nodes were removed, or FALSE if no duplicate nodes
      * were found.
      *
      * \since QGIS 3.0
@@ -523,7 +586,7 @@ class CORE_EXPORT QgsAbstractGeometry
     /**
      * Adds a z-dimension to the geometry, initialized to a preset value.
      * \param zValue initial z-value for all nodes
-     * \returns true on success
+     * \returns TRUE on success
      * \see dropZValue()
      * \see addMValue()
      * \since QGIS 2.12
@@ -533,7 +596,7 @@ class CORE_EXPORT QgsAbstractGeometry
     /**
      * Adds a measure to the geometry, initialized to a preset value.
      * \param mValue initial m-value for all nodes
-     * \returns true on success
+     * \returns TRUE on success
      * \see dropMValue()
      * \see addZValue()
      * \since QGIS 2.12
@@ -542,7 +605,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * Drops any z-dimensions which exist in the geometry.
-     * \returns true if Z values were present and have been removed
+     * \returns TRUE if Z values were present and have been removed
      * \see addZValue()
      * \see dropMValue()
      * \since QGIS 2.14
@@ -551,7 +614,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * Drops any measure values which exist in the geometry.
-     * \returns true if m-values were present and have been removed
+     * \returns TRUE if m-values were present and have been removed
      * \see addMValue()
      * \see dropZValue()
      * \since QGIS 2.14
@@ -568,15 +631,28 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * Converts the geometry to a specified type.
-     * \returns true if conversion was successful
+     * \returns TRUE if conversion was successful
      * \since QGIS 2.14
      */
     virtual bool convertTo( QgsWkbTypes::Type type );
 
+    /**
+     * Checks validity of the geometry, and returns TRUE if the geometry is valid.
+     *
+     * \param error will be set to the validity error message
+     * \param flags indicates optional flags which control the type of validity checking performed
+     * (corresponding to QgsGeometry::ValidityFlags).
+     *
+     * \returns TRUE if geometry is valid
+     *
+     * \since QGIS 3.8
+     */
+    virtual bool isValid( QString &error SIP_OUT, int flags = 0 ) const = 0;
+
 #ifndef SIP_RUN
 
     /**
-     * Filters the vertices from the geometry in place, removing any which do not return true for the \a filter function
+     * Filters the vertices from the geometry in place, removing any which do not return TRUE for the \a filter function
      * check. Has no meaning when called on a single point geometry.
      *
      * Depending on the \a filter used, this may result in an invalid geometry.
@@ -601,6 +677,136 @@ class CORE_EXPORT QgsAbstractGeometry
      * \since QGIS 3.4
      */
     virtual void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform );
+
+    /**
+     * \ingroup core
+     * The part_iterator class provides STL-style iterator for geometry parts.
+     * \since QGIS 3.6
+     */
+    class CORE_EXPORT part_iterator
+    {
+      private:
+
+        int mIndex = 0; //!< Current part in the geometry
+        QgsAbstractGeometry *mGeometry = nullptr;
+
+      public:
+        //! Create invalid iterator
+        part_iterator() = default;
+
+        //! Create part iterator for a geometry
+        part_iterator( QgsAbstractGeometry *g, int index );
+
+        /**
+         * The prefix ++ operator (++it) advances the iterator to the next part and returns an iterator to the new current part.
+         * Calling this function on iterator that is already past the last item leads to undefined results.
+         */
+        part_iterator &operator++();
+
+        //! The postfix ++ operator (it++) advances the iterator to the next part and returns an iterator to the previously current part.
+        part_iterator operator++( int );
+
+        //! Returns the current item.
+        QgsAbstractGeometry *operator*() const;
+
+        //! Returns the part number of the current item.
+        int partNumber() const;
+
+        bool operator==( part_iterator other ) const;
+        bool operator!=( part_iterator other ) const { return !( *this == other ); }
+    };
+
+    /**
+     * Returns STL-style iterator pointing to the first part of the geometry.
+     *
+     * \see parts_end()
+     * \see parts()
+     *
+     * \since QGIS 3.6
+     */
+    part_iterator parts_begin()
+    {
+      return part_iterator( this, 0 );
+    }
+
+    /**
+     * Returns STL-style iterator pointing to the imaginary part after the last part of the geometry.
+     *
+     * \see parts_begin()
+     * \see parts()
+     *
+     * \since QGIS 3.6
+     */
+    part_iterator parts_end();
+
+    /**
+     * Returns Java-style iterator for traversal of parts of the geometry. This iterator
+     * returns read-only references to parts and cannot be used to modify the parts.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.6
+     */
+    QgsGeometryConstPartIterator parts() const;
+
+    /**
+     * \ingroup core
+     * The part_iterator class provides STL-style iterator for const references to geometry parts.
+     * \since QGIS 3.6
+     */
+    class CORE_EXPORT const_part_iterator
+    {
+      private:
+
+        int mIndex = 0; //!< Current part in the geometry
+        const QgsAbstractGeometry *mGeometry = nullptr;
+
+      public:
+        //! Create invalid iterator
+        const_part_iterator() = default;
+
+        //! Create part iterator for a geometry
+        const_part_iterator( const QgsAbstractGeometry *g, int index );
+
+        /**
+         * The prefix ++ operator (++it) advances the iterator to the next part and returns an iterator to the new current part.
+         * Calling this function on iterator that is already past the last item leads to undefined results.
+         */
+        const_part_iterator &operator++();
+
+        //! The postfix ++ operator (it++) advances the iterator to the next part and returns an iterator to the previously current part.
+        const_part_iterator operator++( int );
+
+        //! Returns the current item.
+        const QgsAbstractGeometry *operator*() const;
+
+        //! Returns the part number of the current item.
+        int partNumber() const;
+
+        bool operator==( const_part_iterator other ) const;
+        bool operator!=( const_part_iterator other ) const { return !( *this == other ); }
+    };
+
+    /**
+     * Returns STL-style iterator pointing to the const first part of the geometry.
+     *
+     * \see const_parts_end()
+     *
+     * \since QGIS 3.6
+     */
+    const_part_iterator const_parts_begin() const
+    {
+      return const_part_iterator( this, 0 );
+    }
+
+    /**
+     * Returns STL-style iterator pointing to the imaginary const part after the last part of the geometry.
+     *
+     * \see const_parts_begin()
+     *
+     * \since QGIS 3.6
+     */
+    const_part_iterator const_parts_end() const;
+
 
     /**
      * \ingroup core
@@ -654,7 +860,11 @@ class CORE_EXPORT QgsAbstractGeometry
     };
 
     /**
-     * Returns STL-style iterator pointing to the first vertex of the geometry
+     * Returns STL-style iterator pointing to the first vertex of the geometry.
+     *
+     * \see vertices_end()
+     * \see vertices()
+     *
      * \since QGIS 3.0
      */
     vertex_iterator vertices_begin() const
@@ -663,7 +873,11 @@ class CORE_EXPORT QgsAbstractGeometry
     }
 
     /**
-     * Returns STL-style iterator pointing to the imaginary vertex after the last vertex of the geometry
+     * Returns STL-style iterator pointing to the imaginary vertex after the last vertex of the geometry.
+     *
+     * \see vertices_begin()
+     * \see vertices()
+     *
      * \since QGIS 3.0
      */
     vertex_iterator vertices_end() const
@@ -673,7 +887,60 @@ class CORE_EXPORT QgsAbstractGeometry
 #endif
 
     /**
-     * Returns Java-style iterator for traversal of vertices of the geometry
+     * Returns Java-style iterator for traversal of parts of the geometry. This iterator
+     * can safely be used to modify parts of the geometry.
+     *
+     * * Example:
+     * \code{.py}
+     *   # print the WKT representation of each part in a multi-point geometry
+     *   geometry = QgsMultiPoint.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
+     *   for part in geometry.parts():
+     *       print(part.asWkt())
+     *
+     *   # single part geometries only have one part - this loop will iterate once only
+     *   geometry = QgsLineString.fromWkt( 'LineString( 0 0, 10 10 )' )
+     *   for part in geometry.parts():
+     *       print(part.asWkt())
+     *
+     *   # parts can be modified during the iteration
+     *   geometry = QgsMultiPoint.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
+     *   for part in geometry.parts():
+     *       part.transform(ct)
+     *
+     *   # part iteration can also be combined with vertex iteration
+     *   geometry = QgsMultiPolygon.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
+     *   for part in geometry.parts():
+     *       for v in part.vertices():
+     *           print(v.x(), v.y())
+     *
+     * \endcode
+     *
+     * \see vertices()
+     * \since QGIS 3.6
+     */
+    QgsGeometryPartIterator parts();
+
+
+    /**
+     * Returns a read-only, Java-style iterator for traversal of vertices of all the geometry, including all geometry parts and rings.
+     *
+     * \warning The iterator returns a copy of individual vertices, and accordingly geometries cannot be
+     * modified using the iterator. See transformVertices() for a safe method to modify vertices "in-place".
+     *
+     * * Example:
+     * \code{.py}
+     *   # print the x and y coordinate for each vertex in a LineString
+     *   geometry = QgsLineString.fromWkt( 'LineString( 0 0, 1 1, 2 2)' )
+     *   for v in geometry.vertices():
+     *       print(v.x(), v.y())
+     *
+     *   # vertex iteration includes all parts and rings
+     *   geometry = QgsMultiPolygon.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
+     *   for v in geometry.vertices():
+     *       print(v.x(), v.y())
+     * \endcode
+     *
+     * \see parts()
      * \since QGIS 3.0
      */
     QgsVertexIterator vertices() const;
@@ -689,7 +956,7 @@ class CORE_EXPORT QgsAbstractGeometry
   protected:
 
     /**
-     * Returns whether the geometry has any child geometries (false for point / curve, true otherwise)
+     * Returns whether the geometry has any child geometries (FALSE for point / curve, TRUE otherwise)
      * \note used for vertex_iterator implementation
      * \since QGIS 3.0
      */
@@ -707,7 +974,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \note used for vertex_iterator implementation
      * \since QGIS 3.0
      */
-    virtual QgsAbstractGeometry *childGeometry( int index ) const { Q_UNUSED( index ); return nullptr; }
+    virtual QgsAbstractGeometry *childGeometry( int index ) const { Q_UNUSED( index ) return nullptr; }
 
     /**
      * Returns point at index (for geometries without child geometries - i.e. curve / point)
@@ -761,7 +1028,7 @@ struct CORE_EXPORT QgsVertexId
   {}
 
   /**
-   * Returns true if the vertex id is valid
+   * Returns TRUE if the vertex id is valid
    */
   bool isValid() const { return part >= 0 && ring >= 0 && vertex >= 0; }
 
@@ -796,6 +1063,15 @@ struct CORE_EXPORT QgsVertexId
   int ring;
   int vertex;
   VertexType type;
+
+#ifdef SIP_RUN
+  SIP_PYOBJECT __repr__();
+  % MethodCode
+  QString str = QStringLiteral( "<QgsVertexId: %1,%2,%3%4>" ).arg( sipCpp->part ).arg( sipCpp->ring ).arg( sipCpp->vertex ).arg( sipCpp->type == QgsVertexId::CurveVertex ? QStringLiteral( " CurveVertex" ) : QString() );
+  sipRes = PyUnicode_FromString( str.toUtf8().data() );
+  % End
+#endif
+
 };
 
 #ifndef SIP_RUN
@@ -835,7 +1111,7 @@ class CORE_EXPORT QgsVertexIterator
       return g && g->vertices_end() != i;
     }
 
-    //! Returns next vertex of the geometry (undefined behavior if hasNext() returns false before calling next())
+    //! Returns next vertex of the geometry (undefined behavior if hasNext() returns FALSE before calling next())
     QgsPoint next();
 
 #ifdef SIP_RUN
@@ -844,7 +1120,7 @@ class CORE_EXPORT QgsVertexIterator
     sipRes = sipCpp;
     % End
 
-    SIP_PYOBJECT __next__();
+    SIP_PYOBJECT __next__() SIP_TYPEHINT( QgsPoint );
     % MethodCode
     if ( sipCpp->hasNext() )
       sipRes = sipConvertFromType( new QgsPoint( sipCpp->next() ), sipType_QgsPoint, Py_None );
@@ -856,6 +1132,105 @@ class CORE_EXPORT QgsVertexIterator
   private:
     const QgsAbstractGeometry *g = nullptr;
     QgsAbstractGeometry::vertex_iterator i, n;
+
+};
+
+/**
+ * \ingroup core
+ * \brief Java-style iterator for traversal of parts of a geometry
+ * \since QGIS 3.6
+ */
+class CORE_EXPORT QgsGeometryPartIterator
+{
+  public:
+    //! Constructor for QgsGeometryPartIterator
+    QgsGeometryPartIterator() = default;
+
+    //! Constructs iterator for the given geometry
+    QgsGeometryPartIterator( QgsAbstractGeometry *geometry )
+      : g( geometry )
+      , i( g->parts_begin() )
+      , n( g->parts_end() )
+    {
+    }
+
+    //! Find out whether there are more parts
+    bool hasNext() const
+    {
+      return g && g->parts_end() != i;
+    }
+
+    //! Returns next part of the geometry (undefined behavior if hasNext() returns FALSE before calling next())
+    QgsAbstractGeometry *next();
+
+#ifdef SIP_RUN
+    QgsGeometryPartIterator *__iter__();
+    % MethodCode
+    sipRes = sipCpp;
+    % End
+
+    SIP_PYOBJECT __next__() SIP_TYPEHINT( QgsAbstractGeometry );
+    % MethodCode
+    if ( sipCpp->hasNext() )
+      sipRes = sipConvertFromType( sipCpp->next(), sipType_QgsAbstractGeometry, NULL );
+    else
+      PyErr_SetString( PyExc_StopIteration, "" );
+    % End
+#endif
+
+  private:
+    QgsAbstractGeometry *g = nullptr;
+    QgsAbstractGeometry::part_iterator i, n;
+
+};
+
+
+/**
+ * \ingroup core
+ * \brief Java-style iterator for const traversal of parts of a geometry
+ * \since QGIS 3.6
+ */
+class CORE_EXPORT QgsGeometryConstPartIterator
+{
+  public:
+    //! Constructor for QgsGeometryConstPartIterator
+    QgsGeometryConstPartIterator() = default;
+
+    //! Constructs iterator for the given geometry
+    QgsGeometryConstPartIterator( const QgsAbstractGeometry *geometry )
+      : g( geometry )
+      , i( g->const_parts_begin() )
+      , n( g->const_parts_end() )
+    {
+    }
+
+    //! Find out whether there are more parts
+    bool hasNext() const
+    {
+      return g && g->const_parts_end() != i;
+    }
+
+    //! Returns next part of the geometry (undefined behavior if hasNext() returns FALSE before calling next())
+    const QgsAbstractGeometry *next();
+
+#ifdef SIP_RUN
+    QgsGeometryConstPartIterator *__iter__();
+    % MethodCode
+    sipRes = sipCpp;
+    % End
+
+    SIP_PYOBJECT __next__() SIP_TYPEHINT( QgsAbstractGeometry );
+    % MethodCode
+    if ( sipCpp->hasNext() )
+      sipRes = sipConvertFromType( const_cast< QgsAbstractGeometry * >( sipCpp->next() ), sipType_QgsAbstractGeometry, NULL );
+    else
+      PyErr_SetString( PyExc_StopIteration, "" );
+    % End
+#endif
+
+  private:
+    const QgsAbstractGeometry *g = nullptr;
+    QgsAbstractGeometry::const_part_iterator i, n;
 
 };
 

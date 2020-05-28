@@ -15,6 +15,7 @@ FIND_PATH(OCI_INCLUDE_DIR oci.h
   ${ORACLE_INCLUDEDIR}
   $ENV{OSGEO4W_ROOT}/include
   $ENV{ORACLE_HOME}/rdbms/public
+  $ENV{ORACLE_HOME}/include
 )
 
 FIND_LIBRARY(OCI_LIBRARY clntsh oci

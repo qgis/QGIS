@@ -16,6 +16,104 @@
  ***************************************************************************/
 
 #include "qgsprocessingfeedback.h"
+#include "qgsgeos.h"
+#include "qgsprocessingprovider.h"
+#include <ogr_api.h>
+#include <gdal_version.h>
+#if PROJ_VERSION_MAJOR > 4
+#include <proj.h>
+#else
+#include <proj_api.h>
+#endif
+
+QgsProcessingFeedback::QgsProcessingFeedback( bool logFeedback )
+  : mLogFeedback( logFeedback )
+{
+
+}
+
+void QgsProcessingFeedback::setProgressText( const QString & )
+{
+}
+
+void QgsProcessingFeedback::reportError( const QString &error, bool )
+{
+  if ( mLogFeedback )
+    QgsMessageLog::logMessage( error, tr( "Processing" ), Qgis::Critical );
+
+  mHtmlLog.append( QStringLiteral( "<span style=\"color:red\">%1</span><br/>" ).arg( error.toHtmlEscaped() ).replace( '\n', QStringLiteral( "<br>" ) ) );
+  mTextLog.append( error + '\n' );
+}
+
+void QgsProcessingFeedback::pushInfo( const QString &info )
+{
+  if ( mLogFeedback )
+    QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+
+  mHtmlLog.append( info.toHtmlEscaped().replace( '\n', QStringLiteral( "<br>" ) ) + QStringLiteral( "<br/>" ) );
+  mTextLog.append( info + '\n' );
+}
+
+void QgsProcessingFeedback::pushCommandInfo( const QString &info )
+{
+  if ( mLogFeedback )
+    QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+
+  mHtmlLog.append( QStringLiteral( "<code>%1</code><br/>" ).arg( info.toHtmlEscaped().replace( '\n', QStringLiteral( "<br>" ) ) ) );
+  mTextLog.append( info + '\n' );
+}
+
+void QgsProcessingFeedback::pushDebugInfo( const QString &info )
+{
+  if ( mLogFeedback )
+    QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+
+  mHtmlLog.append( QStringLiteral( "<span style=\"color:#777\">%1</span><br/>" ).arg( info.toHtmlEscaped().replace( '\n', QStringLiteral( "<br>" ) ) ) );
+  mTextLog.append( info + '\n' );
+}
+
+void QgsProcessingFeedback::pushConsoleInfo( const QString &info )
+{
+  if ( mLogFeedback )
+    QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+
+  mHtmlLog.append( QStringLiteral( "<code style=\"color:#777\">%1</code><br/>" ).arg( info.toHtmlEscaped().replace( '\n', QStringLiteral( "<br>" ) ) ) );
+  mTextLog.append( info + '\n' );
+}
+
+void QgsProcessingFeedback::pushVersionInfo( const QgsProcessingProvider *provider )
+{
+  pushDebugInfo( tr( "QGIS version: %1" ).arg( Qgis::version() ) );
+  if ( QString( Qgis::devVersion() ) != QLatin1String( "exported" ) )
+  {
+    pushDebugInfo( tr( "QGIS code revision: %1" ).arg( Qgis::devVersion() ) );
+  }
+  pushDebugInfo( tr( "Qt version: %1" ).arg( qVersion() ) );
+  pushDebugInfo( tr( "GDAL version: %1" ).arg( GDALVersionInfo( "RELEASE_NAME" ) ) );
+  pushDebugInfo( tr( "GEOS version: %1" ).arg( GEOSversion() ) );
+
+#if PROJ_VERSION_MAJOR > 4
+  PJ_INFO info = proj_info();
+  pushDebugInfo( tr( "PROJ version: %1" ).arg( info.release ) );
+#else
+  pushDebugInfo( tr( "PROJ version: %1" ).arg( PJ_VERSION ) );
+#endif
+  if ( provider && !provider->versionInfo().isEmpty() )
+  {
+    pushDebugInfo( tr( "%1 version: %2" ).arg( provider->name(), provider->versionInfo() ) );
+  }
+}
+
+QString QgsProcessingFeedback::htmlLog() const
+{
+  return mHtmlLog;
+}
+
+QString QgsProcessingFeedback::textLog() const
+{
+  return mTextLog;
+}
+
 
 QgsProcessingMultiStepFeedback::QgsProcessingMultiStepFeedback( int childAlgorithmCount, QgsProcessingFeedback *feedback )
   : mChildSteps( childAlgorithmCount )
@@ -61,11 +159,20 @@ void QgsProcessingMultiStepFeedback::pushConsoleInfo( const QString &info )
   mFeedback->pushConsoleInfo( info );
 }
 
+QString QgsProcessingMultiStepFeedback::htmlLog() const
+{
+  return mFeedback->htmlLog();
+}
+
+QString QgsProcessingMultiStepFeedback::textLog() const
+{
+  return mFeedback->textLog();
+}
+
 void QgsProcessingMultiStepFeedback::updateOverallProgress( double progress )
 {
   double baseProgress = 100.0 * static_cast< double >( mCurrentStep ) / mChildSteps;
   double currentAlgorithmProgress = progress / mChildSteps;
   mFeedback->setProgress( baseProgress + currentAlgorithmProgress );
 }
-
 

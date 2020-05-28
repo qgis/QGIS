@@ -467,7 +467,7 @@ QList<QgsGrassProvider *> QgsGrassModuleStandardOptions::grassProviders()
   QList<QgsGrassProvider *> providers;
   Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
   {
-    if ( layer->type() == QgsMapLayer::VectorLayer )
+    if ( layer->type() == QgsMapLayerType::VectorLayer )
     {
       QgsVectorLayer *vector = qobject_cast<QgsVectorLayer *>( layer );
       if ( vector  && vector->providerType() == QLatin1String( "grass" ) )
@@ -488,7 +488,7 @@ QList<QgsGrassRasterProvider *> QgsGrassModuleStandardOptions::grassRasterProvid
   QList<QgsGrassRasterProvider *> providers;
   Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
   {
-    if ( layer->type() == QgsMapLayer::RasterLayer )
+    if ( layer->type() == QgsMapLayerType::RasterLayer )
     {
       QgsRasterLayer *raster = qobject_cast<QgsRasterLayer *>( layer );
       if ( raster  && raster->providerType() == QLatin1String( "grassraster" ) )
@@ -918,7 +918,7 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
 
   // GRASS commands usually output text in system default encoding.
   // Let's use the System codec whether Qt doesn't recognize the encoding
-  // of the interface description (see https://issues.qgis.org/issues/4547)
+  // of the interface description (see https://github.com/qgis/QGIS/issues/14461)
   QTextCodec *codec = nullptr;
 
   QgsDebugMsg( "trying to get encoding name from XML interface description..." );

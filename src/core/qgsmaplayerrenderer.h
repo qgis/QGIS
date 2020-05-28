@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 
 class QgsFeedback;
+class QgsRenderContext;
 
 /**
  * \ingroup core
@@ -48,14 +49,22 @@ class QgsFeedback;
 class CORE_EXPORT QgsMapLayerRenderer
 {
   public:
-    QgsMapLayerRenderer( const QString &layerID ) : mLayerID( layerID ) {}
+
+    /**
+     * Constructor for QgsMapLayerRenderer, with the associated \a layerID and render \a context.
+     */
+    QgsMapLayerRenderer( const QString &layerID, QgsRenderContext *context = nullptr )
+      : mLayerID( layerID )
+      , mContext( context )
+    {}
+
     virtual ~QgsMapLayerRenderer() = default;
 
     //! Do the rendering (based on data stored in the class)
     virtual bool render() = 0;
 
     /**
-     * Access to feedback object of the layer renderer (may be null)
+     * Access to feedback object of the layer renderer (may be NULLPTR)
      * \since QGIS 3.0
      */
     virtual QgsFeedback *feedback() const { return nullptr; }
@@ -66,9 +75,27 @@ class CORE_EXPORT QgsMapLayerRenderer
     //! Gets access to the ID of the layer rendered by this class
     QString layerId() const { return mLayerID; }
 
+    /**
+     * Returns the render context associated with the renderer.
+     *
+     * \since QGIS 3.10
+     */
+    QgsRenderContext *renderContext() { return mContext; }
+
   protected:
     QStringList mErrors;
     QString mLayerID;
+
+  private:
+
+    // TODO QGIS 4.0 - make reference instead of pointer!
+
+    /**
+     * Associated render context.
+     *
+     * \since QGIS 3.10
+     */
+    QgsRenderContext *mContext = nullptr;
 };
 
 #endif // QGSMAPLAYERRENDERER_H

@@ -25,6 +25,7 @@
 #include <limits>
 
 #include "qgis.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsmessagelog.h"
 #include "qgspoint.h"
 #include "qgspointxy.h"
@@ -42,7 +43,7 @@ class QgsCoordinateReferenceSystem;
 /**
  * \ingroup quick
  *
- * Encapsulating the common utilies for QgsQuick library.
+ * Encapsulating the common utilities for QgsQuick library.
  *
  * \note QML Type: Utils (Singleton)
  *
@@ -86,21 +87,21 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       *
       * \since QGIS 3.4
       */
-    Q_INVOKABLE QgsPointXY pointXY( double x, double y ) const;
+    Q_INVOKABLE static QgsPointXY pointXY( double x, double y );
 
     /**
       * Creates QgsPoint in QML
       *
       * \since QGIS 3.4
       */
-    Q_INVOKABLE QgsPoint point( double x, double y, double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) const;
+    Q_INVOKABLE static QgsPoint point( double x, double y, double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() );
 
     /**
       * Converts QGeoCoordinate to QgsPoint
       *
       * \since QGIS 3.4
       */
-    Q_INVOKABLE QgsPoint coordinateToPoint( const QGeoCoordinate &coor ) const;
+    Q_INVOKABLE static QgsPoint coordinateToPoint( const QGeoCoordinate &coor );
 
     /**
       * Transforms point between different crs from QML
@@ -121,20 +122,23 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       * Returns whether file on path exists
       * \since QGIS 3.4
       */
-    Q_INVOKABLE bool fileExists( const QString &path ) const;
+    Q_INVOKABLE static bool fileExists( const QString &path );
 
     /**
-     * Extracts filename from path
-     * \since QGIS 3.4
+     * Returns relative path of the file to given prefixPath. If prefixPath does not match a path parameter,
+     * returns an empty string. If a path starts with "file://", this prefix is ignored.
+     * \param path Absolute path to file
+     * \param prefixPath
+     * \since QGIS 3.8
      */
-    Q_INVOKABLE QString getFileName( const QString &path ) const;
+    Q_INVOKABLE static QString getRelativePath( const QString &path, const QString &prefixPath );
 
     /**
       * Log message in QgsMessageLog
       */
-    Q_INVOKABLE void logMessage( const QString &message,
-                                 const QString &tag = QString( "QgsQuick" ),
-                                 Qgis::MessageLevel level = Qgis::Warning );
+    Q_INVOKABLE static void logMessage( const QString &message,
+                                        const QString &tag = QString( "QgsQuick" ),
+                                        Qgis::MessageLevel level = Qgis::Warning );
 
     /**
       * QgsQuickFeatureLayerPair factory for tuple of QgsFeature and QgsVectorLayer used in QgsQUick library.
@@ -143,14 +147,14 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       *
       * \since QGIS 3.4
       */
-    Q_INVOKABLE QgsQuickFeatureLayerPair featureFactory( const QgsFeature &feature, QgsVectorLayer *layer = nullptr ) const;
+    Q_INVOKABLE static QgsQuickFeatureLayerPair featureFactory( const QgsFeature &feature, QgsVectorLayer *layer = nullptr );
 
     /**
       * Returns QUrl to image from library's /images folder.
       *
       * \since QGIS 3.4
       */
-    Q_INVOKABLE const QUrl getThemeIcon( const QString &name ) const;
+    Q_INVOKABLE static const QUrl getThemeIcon( const QString &name );
 
     /**
       * Returns url to field editor component for a feature form.
@@ -159,7 +163,7 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       *
       * \since QGIS 3.4
       */
-    Q_INVOKABLE const QUrl getEditorComponentSource( const QString &widgetName );
+    Q_INVOKABLE static const QUrl getEditorComponentSource( const QString &widgetName );
 
     /**
      * \copydoc QgsCoordinateFormatter::format()
@@ -195,6 +199,16 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
         QgsUnitTypes::SystemOfMeasurement destSystem = QgsUnitTypes::MetricSystem );
 
     /**
+      * Deletes file from a given path.
+      *
+      * \param filePath Absolute path to file
+      * \returns bool TRUE, if removal was successful, otherwise FALSE.
+      *
+      * \since QGIS 3.8
+      */
+    Q_INVOKABLE static bool removeFile( const QString &filePath );
+
+    /**
       * Converts distance to human readable distance in destination system of measurement
       *
       * \sa QgsQuickUtils::formatDistance()
@@ -215,6 +229,40 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
 
     //! Returns a string with information about screen size and resolution - useful for debugging
     QString dumpScreenInfo() const;
+
+    /**
+     * Creates a cache for a value relation field.
+     * This can be used to keep the value map in the local memory
+     * if doing multiple lookups in a loop.
+     * \param config The widget configuration
+     * \param formFeature The feature currently being edited with current attribute values
+     * \return A kvp list of values for the widget
+     *
+     * \since QGIS 3.6
+     */
+    Q_INVOKABLE static QVariantMap createValueRelationCache( const QVariantMap &config, const QgsFeature &formFeature = QgsFeature() );
+
+    /**
+     * Evaluates expression.
+     * \param pair Used to define a context scope.
+     * \param activeProject Used to define a context scope.
+     * \param expression
+     * \return Evaluated expression
+     *
+     * \since QGIS 3.10
+     */
+    Q_INVOKABLE static QString evaluateExpression( const QgsQuickFeatureLayerPair &pair, QgsProject *activeProject, const QString &expression );
+
+    /**
+     * Selects features in a layer
+     * This method is required since QML cannot perform the conversion of a feature ID to a QgsFeatureId (i.e. a qint64)
+     * \param layer the vector layer
+     * \param fids the list of feature IDs
+     * \param behavior the selection behavior
+     *
+     * \since QGIS 3.12
+     */
+    Q_INVOKABLE static void selectFeaturesInLayer( QgsVectorLayer *layer, const QList<int> &fids, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
 
   private:
     static void formatToMetricDistance( double srcDistance,

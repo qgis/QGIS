@@ -42,10 +42,10 @@ Constructor
     virtual QgsLayerTreeView *layerTreeView() = 0;
 
     virtual void addCustomActionForLayerType( QAction *action, QString menu,
-        QgsMapLayer::LayerType type, bool allLayers ) = 0;
+        QgsMapLayerType type, bool allLayers ) = 0;
 %Docstring
 Add action to context menu for layers in the layer tree.
-If allLayers is true, then the action will be available for all layers of given type,
+If allLayers is ``True``, then the action will be available for all layers of given type,
 otherwise the action will be available only for specific layers added with addCustomActionForLayer()
 after this call.
 
@@ -100,7 +100,7 @@ Closes the additional map canvas with matching ``name``.
 
     virtual QSize iconSize( bool dockedToolbar = false ) const = 0;
 %Docstring
-Returns the toolbar icon size. If ``dockedToolbar`` is true, the icon size
+Returns the toolbar icon size. If ``dockedToolbar`` is ``True``, the icon size
 for toolbars contained within docks is returned.
 %End
 
@@ -110,7 +110,7 @@ Returns vector layers in edit mode
 
 :param modified: whether to return only layers that have been modified
 
-:return: list of layers in legend order, or empty list *
+:return: list of layers in legend order, or empty list
 %End
 
     virtual QgsMapLayer *activeLayer() = 0;
@@ -208,6 +208,16 @@ Returns a reference to the main window "Settings" menu.
 Returns a reference to the main window "Plugin" menu.
 %End
 
+    virtual QMenu *pluginHelpMenu() = 0;
+%Docstring
+Returns a reference to the main window "Plugin Help" sub-menu.
+
+Plugins are encouraged to insert help and about actions in this submenu instead of creating
+a submenu under the pluginMenu() which solely contains Plugin Help or About actions.
+
+.. versionadded:: 3.10
+%End
+
     virtual QMenu *rasterMenu() = 0;
 %Docstring
 Returns a reference to the main window "Raster" menu.
@@ -290,6 +300,13 @@ Returns a reference to the main window "Shape Digitizing" toolbar.
     virtual QToolBar *attributesToolBar() = 0;
 %Docstring
 Returns a reference to the main window "Attributes" toolbar.
+%End
+
+    virtual QToolBar *selectionToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Selection" toolbar.
+
+.. versionadded:: 3.14
 %End
 
     virtual QToolBar *pluginToolBar() = 0;
@@ -414,9 +431,21 @@ Returns the native Delete Ring action.
 %Docstring
 Returns the native Delete Part action.
 %End
+
     virtual QAction *actionVertexTool() = 0;
 %Docstring
-Returns the native Vertex Tool action.
+Returns the native "Vertex Tool for All Layers" action.
+
+.. seealso:: :py:func:`actionVertexToolActiveLayer`
+%End
+
+    virtual QAction *actionVertexToolActiveLayer() = 0;
+%Docstring
+Returns the native "Vertex Tool for Active Layer" action.
+
+.. seealso:: :py:func:`actionVertexTool`
+
+.. versionadded:: 3.6
 %End
 
     virtual QAction *actionPan() = 0;
@@ -517,6 +546,20 @@ Returns the native draw action.
     virtual QAction *actionAddRasterLayer() = 0;
     virtual QAction *actionAddPgLayer() = 0;
     virtual QAction *actionAddWmsLayer() = 0;
+
+    virtual QAction *actionAddXyzLayer() = 0;
+%Docstring
+Returns the native Add XYZ Layer action.
+
+.. versionadded:: 3.14
+%End
+
+    virtual QAction *actionAddVectorTileLayer() = 0;
+%Docstring
+Returns the native Add Vector Tile Layer action.
+
+.. versionadded:: 3.14
+%End
     virtual QAction *actionAddAfsLayer() = 0;
 %Docstring
 Returns the native Add ArcGIS FeatureServer action.
@@ -556,6 +599,20 @@ Statistical summary action.
     virtual QAction *actionShowAllLayers() = 0;
     virtual QAction *actionHideSelectedLayers() = 0;
 
+    virtual QAction *actionToggleSelectedLayers() = 0;
+%Docstring
+Returns the Toggle Selected Layers action.
+
+.. versionadded:: 3.14
+%End
+
+    virtual QAction *actionToggleSelectedLayersIndependently() = 0;
+%Docstring
+Returns the Toggle Selected Layers Independently action.
+
+.. versionadded:: 3.14
+%End
+
     virtual QAction *actionHideDeselectedLayers() = 0;
 %Docstring
 Returns the Hide Deselected Layers action.
@@ -576,6 +633,71 @@ Returns the Hide Deselected Layers action.
     virtual QAction *actionQgisHomePage() = 0;
     virtual QAction *actionCheckQgisVersion() = 0;
     virtual QAction *actionAbout() = 0;
+
+    virtual QAction *actionCircle2Points()  = 0;
+%Docstring
+Returns the native add circle from 2 points action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionCircle3Points()  = 0;
+%Docstring
+Returns the native add circle from 3 points action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionCircle3Tangents()  = 0;
+%Docstring
+Returns the native add circle from 3 tangents action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionCircle2TangentsPoint()  = 0;
+%Docstring
+Returns the native add circle from 2 tangents and a point action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionCircleCenterPoint()  = 0;
+%Docstring
+Returns the native add circle from center action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionEllipseCenter2Points()  = 0;
+%Docstring
+Returns the native add ellipse from center and 2 points action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionEllipseCenterPoint()  = 0;
+%Docstring
+Returns the native add ellipse from center and a point action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionEllipseExtent()  = 0;
+%Docstring
+Returns the native add ellipse from an extent action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionEllipseFoci()  = 0;
+%Docstring
+Returns the native add ellipse from foci action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionRectangleCenterPoint()  = 0;
+%Docstring
+Returns the native add rectangle from center and a point action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionRectangleExtent()  = 0;
+%Docstring
+Returns the native add rectangle from extent action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionRectangle3PointsDistance()  = 0;
+%Docstring
+Returns the native add rectangle from 3 points (distance from 2nd and 3rd points) action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionRectangle3PointsProjected()  = 0;
+%Docstring
+Returns the native add rectangle from 3 points (distance from projected 3rd point on segment p1 and p2) action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionRegularPolygon2Points()  = 0;
+%Docstring
+Returns the native add regular polygon from 2 points action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionRegularPolygonCenterPoint()  = 0;
+%Docstring
+Returns the native add regular polygon from center and a point action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionRegularPolygonCenterCorner()  = 0;
+%Docstring
+Returns the native add regular polygon from center and a corner action. Call trigger() on it to set the map tool.
+%End
 
     virtual QgsVectorLayerTools *vectorLayerTools() = 0;
 %Docstring
@@ -600,56 +722,89 @@ status bar (do not use the native Qt statusBar() method).
 .. versionadded:: 3.0
 %End
 
+    virtual void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 );
+%Docstring
+Take screenshots for user documentation
+
+:param saveDirectory: path where the screenshots will be saved
+:param categories: an int as a flag value of QgsAppScreenShots.Categories
+
+.. versionadded:: 3.4
+%End
+
+    virtual QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() = 0;
+%Docstring
+Returns the insertion point.
+This represents the current layer tree group and index where newly added map layers should be inserted into.
+
+.. versionadded:: 3.10
+%End
+
   public slots: // TODO: do these functions really need to be slots?
 
 
     virtual void zoomFull() = 0;
 %Docstring
-Zoom to full extent of map layers
+Zooms to the full extent of all map layers.
 %End
 
     virtual void zoomToPrevious() = 0;
 %Docstring
-Zoom to previous view extent
+Zooms to the previous view extent.
 %End
 
     virtual void zoomToNext() = 0;
 %Docstring
-Zoom to next view extent
+Zooms to the next view extent.
 %End
 
     virtual void zoomToActiveLayer() = 0;
 %Docstring
-Zoom to extent of the active layer
+Zooms to extent of the active layer.
 %End
 
     virtual QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey ) = 0;
 %Docstring
-Add a vector layer
+Adds a vector layer to the current project.
 %End
 
     virtual QgsRasterLayer *addRasterLayer( const QString &rasterLayerPath, const QString &baseName = QString() ) = 0;
 %Docstring
-Add a raster layer given a raster layer file name
+Adds a raster layer to the current project, given a raster layer file name.
 %End
 
     virtual QgsRasterLayer *addRasterLayer( const QString &url, const QString &layerName, const QString &providerKey ) = 0;
 %Docstring
-Add a WMS layer
+Adds a raster layer to the current project, from the specified raster data provider.
 %End
 
     virtual QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
 %Docstring
-Add a mesh layer
+Adds a mesh layer to the current project.
+%End
+
+    virtual QgsVectorTileLayer *addVectorTileLayer( const QString &url, const QString &baseName ) = 0;
+%Docstring
+Adds a vector tile layer to the current project.
+
+.. versionadded:: 3.14
 %End
 
     virtual bool addProject( const QString &project ) = 0;
 %Docstring
-Add a project
+Adds (opens) a project
 %End
-    virtual void newProject( bool promptToSaveFlag = false ) = 0;
+
+    virtual bool newProject( bool promptToSaveFlag = false ) = 0;
 %Docstring
-Start a blank project
+Starts a new blank project.
+
+If ``promptToSaveFlag`` is ``True`` then users will be prompted to save any currently open
+project (if that project has changes). If the flag is ``False``, then the current project will
+be closed without prompting to save (possibly resulting in data loss).
+
+Since QGIS 3.10.1, returns ``True`` if a new project was created, or ``False`` if the operation was not successful (e.g.
+the user opted to cancel when prompted to save the current project).
 %End
 
     virtual void reloadConnections( ) = 0;
@@ -665,7 +820,7 @@ select dialogs and the browser widgets)
     virtual bool setActiveLayer( QgsMapLayer * ) = 0;
 %Docstring
 Set the active layer (layer gets selected in the legend)
-returns true if the layer exists, false otherwise
+returns ``True`` if the layer exists, ``False`` otherwise
 %End
 
     virtual void copySelectionToClipboard( QgsMapLayer * ) = 0;
@@ -801,7 +956,7 @@ Add a toolbar
 
     virtual void openMessageLog() = 0;
 %Docstring
-Open the message log dock widget *
+Opens the message log dock widget.
 %End
 
     virtual void addUserInputWidget( QWidget *widget ) = 0;
@@ -907,12 +1062,34 @@ Remove action from the Web menu
 
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) = 0;
 %Docstring
-Add a dock widget to the main window
+Adds a ``dock`` widget to the main window, in the specified dock ``area``.
+
+.. seealso:: :py:func:`addTabifiedDockWidget`
+
+.. seealso:: :py:func:`removeDockWidget`
+%End
+
+    virtual void addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget, const QStringList &tabifyWith = QStringList(), bool raiseTab = false ) = 0;
+%Docstring
+Add a dock widget to the given area and tabify it (if other dock widgets
+exist in the same ``area``). The new tab will be below other tabs unless
+``raiseTab`` is passed as true.
+
+``tabifyWith`` is a list of dock widget object names, ordered by
+priority, with which the new dock widget should be tabified. Only the
+first matching object name will be picked. If none of the given object
+names is found in that ``area`` (or if ``tabifyWith`` is not given at
+all), the new dock widget will be created anyways, but its location
+within that ``area`` will be unpredictable.
+
+.. versionadded:: 3.14
 %End
 
     virtual void removeDockWidget( QDockWidget *dockwidget ) = 0;
 %Docstring
-Remove specified dock widget from main window (doesn't delete it).
+Removes the specified ``dock`` widget from main window (without deleting it).
+
+.. seealso:: :py:func:`addDockWidget`
 %End
 
     virtual void showLayerProperties( QgsMapLayer *l ) = 0;
@@ -928,13 +1105,13 @@ Open attribute table dialog
     virtual void addWindow( QAction *action ) = 0;
 %Docstring
 Add window to Window menu. The action title is the window title
-and the action should raise, unminimize and activate the window. *
+and the action should raise, unminimize and activate the window.
 %End
 
     virtual void removeWindow( QAction *action ) = 0;
 %Docstring
 Remove window from Window menu. Calling this is necessary only for
-windows which are hidden rather than deleted when closed. *
+windows which are hidden rather than deleted when closed.
 %End
 
     virtual bool registerMainWindowAction( QAction *action, const QString &defaultShortcut ) = 0;
@@ -956,6 +1133,8 @@ Register a new tab in the vector layer properties dialog.
    Ownership of the factory is not transferred, and the factory must
    be unregistered when plugin is unloaded.
 
+.. seealso:: :py:class:`QgsMapLayerConfigWidgetFactory`
+
 .. seealso:: :py:func:`unregisterMapLayerConfigWidgetFactory`
 
 .. versionadded:: 2.16
@@ -964,6 +1143,8 @@ Register a new tab in the vector layer properties dialog.
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 %Docstring
 Unregister a previously registered tab in the vector layer properties dialog.
+
+.. seealso:: :py:class:`QgsMapLayerConfigWidgetFactory`
 
 .. seealso:: :py:func:`registerMapLayerConfigWidgetFactory`
 
@@ -979,6 +1160,8 @@ Register a new tab in the options dialog.
    Ownership of the factory is not transferred, and the factory must
    be unregistered when plugin is unloaded.
 
+.. seealso:: :py:class:`QgsOptionsWidgetFactory`
+
 .. seealso:: :py:func:`unregisterOptionsWidgetFactory`
 
 .. versionadded:: 3.0
@@ -988,19 +1171,46 @@ Register a new tab in the options dialog.
 %Docstring
 Unregister a previously registered tab in the options dialog.
 
+.. seealso:: :py:class:`QgsOptionsWidgetFactory`
+
 .. seealso:: :py:func:`registerOptionsWidgetFactory`
 
 .. versionadded:: 3.0
 %End
 
-    virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
+    virtual void registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
 %Docstring
-Register a new custom drop handler.
+Register a new tool in the development/debugging tools dock.
 
 .. note::
 
    Ownership of the factory is not transferred, and the factory must
    be unregistered when plugin is unloaded.
+
+.. seealso:: :py:func:`unregisterDevToolWidgetFactory`
+
+.. versionadded:: 3.14
+%End
+
+    virtual void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
+%Docstring
+Unregister a previously registered tool factory from the development/debugging tools dock.
+
+.. seealso:: :py:func:`registerDevToolWidgetFactory`
+
+.. versionadded:: 3.14
+%End
+
+    virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
+%Docstring
+Register a new custom drop ``handler``.
+
+.. note::
+
+   Ownership of ``handler`` is not transferred, and the handler must
+   be unregistered when plugin is unloaded.
+
+.. seealso:: :py:class:`QgsCustomDropHandler`
 
 .. seealso:: :py:func:`unregisterCustomDropHandler`
 
@@ -1009,11 +1219,40 @@ Register a new custom drop handler.
 
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 %Docstring
-Unregister a previously registered custom drop handler.
+Unregister a previously registered custom drop ``handler``.
+
+.. seealso:: :py:class:`QgsCustomDropHandler`
 
 .. seealso:: :py:func:`registerCustomDropHandler`
 
 .. versionadded:: 3.0
+%End
+
+    virtual void registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) = 0;
+%Docstring
+Register a new custom project open ``handler``.
+
+.. note::
+
+   Ownership of ``handler`` is not transferred, and the handler must
+   be unregistered when plugin is unloaded.
+
+.. seealso:: :py:class:`QgsCustomProjectOpenHandler`
+
+.. seealso:: :py:func:`unregisterCustomProjectOpenHandler`
+
+.. versionadded:: 3.14
+%End
+
+    virtual void unregisterCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) = 0;
+%Docstring
+Unregister a previously registered custom project open ``handler``.
+
+.. seealso:: :py:class:`QgsCustomDropHandler`
+
+.. seealso:: :py:func:`registerCustomProjectOpenHandler`
+
+.. versionadded:: 3.14
 %End
 
     virtual void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
@@ -1022,8 +1261,10 @@ Register a new custom drop ``handler`` for layout windows.
 
 .. note::
 
-   Ownership of the factory is not transferred, and the factory must
+   Ownership of ``handler`` is not transferred, and the handler must
    be unregistered when plugin is unloaded.
+
+.. seealso:: :py:class:`QgsLayoutCustomDropHandler`
 
 .. seealso:: :py:func:`unregisterCustomLayoutDropHandler`
 
@@ -1033,6 +1274,8 @@ Register a new custom drop ``handler`` for layout windows.
     virtual void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
 %Docstring
 Unregister a previously registered custom drop ``handler`` for layout windows.
+
+.. seealso:: :py:class:`QgsLayoutCustomDropHandler`
 
 .. seealso:: :py:func:`registerCustomLayoutDropHandler`
 
@@ -1045,28 +1288,30 @@ Unregister a previously registered custom drop ``handler`` for layout windows.
 %Docstring
 Open a url in the users browser. By default the QGIS doc directory is used
 as the base for the URL. To open a URL that is not relative to the installed
-QGIS documentation, set useQgisDocDirectory to false.
+QGIS documentation, set useQgisDocDirectory to ``False``.
 
 :param url: URL to open
-:param useQgisDocDirectory: If true, the URL will be formed by concatenating
+:param useQgisDocDirectory: If ``True``, the URL will be formed by concatenating
                             url to the QGIS documentation directory path (prefix/share/doc)
 
-.. deprecated:: Use QDesktopServices instead
+.. deprecated::
+   Use QDesktopServices instead
 %End
 
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) = 0;
 %Docstring
-Open feature form
+Opens a new feature form.
+Returns true if dialog was accepted (if shown modal, ``True`` otherwise).
 
 :param l: vector layer
 :param f: feature to show/modify
 :param updateFeatureOnly: only update the feature update (don't change any attributes of the layer) [UNUSED]
-:param showModal: if true, will wait for the dialog to be executed (only shown otherwise)
+:param showModal: if ``True``, will wait for the dialog to be executed (only shown otherwise)
 %End
 
     virtual QgsAttributeDialog *getFeatureForm( QgsVectorLayer *l, QgsFeature &f ) = 0;
 %Docstring
-Returns a feature form for a given feature
+Returns a feature form for a given feature.
 
 :param l: The layer for which the dialog will be created
 :param f: The feature for which the dialog will be created
@@ -1077,15 +1322,24 @@ Returns a feature form for a given feature
     virtual void preloadForm( const QString &uifile ) = 0;
 %Docstring
 This method is only needed when using a UI form with a custom widget plugin and calling
-openFeatureForm or getFeatureForm from Python (PyQt4) and you haven't used the info tool first.
+openFeatureForm or getFeatureForm from Python (PyQt) and you haven't used the info tool first.
 Python will crash bringing QGIS with it
 if the custom form is not loaded from a C++ method call.
 
-This method uses a QTimer to call QUiLoader in order to load the form via C++
-you only need to call this once after that you can call openFeatureForm/getFeatureForm
-like normal
+This method uses a QTimer to call QUiLoader in order to load the form via C++.
+You only need to call this once. After that you can call openFeatureForm/getFeatureForm
+like usual.
 
 More information here: http://qt-project.org/forums/viewthread/27098
+%End
+
+    virtual void locatorSearch( const QString &searchText ) = 0;
+%Docstring
+This will perform a search in the locator bar
+by setting the line edit text to ``searchText``
+and automatically displaying any results.
+
+.. versionadded:: 3.10
 %End
 
     virtual void registerLocatorFilter( QgsLocatorFilter *filter /Transfer/ ) = 0;
@@ -1130,9 +1384,17 @@ This might be useful if the configuration of the filter changed without going th
 Checks available datum transforms and ask user if several are available and none
 is chosen. Dialog is shown only if global option is set accordingly.
 
-:return: true if a datum transform has been specifically chosen by user or only one is available.
+:return: ``True`` if a datum transform has been specifically chosen by user or only one is available.
 
 .. versionadded:: 3.0
+%End
+
+    virtual QgsBrowserGuiModel *browserModel() = 0;
+%Docstring
+Returns the application browser model. Using this shared model is more efficient than
+creating a new browser model for every use.
+
+.. versionadded:: 3.4
 %End
 
   signals:
@@ -1140,12 +1402,12 @@ is chosen. Dialog is shown only if global option is set accordingly.
     void currentLayerChanged( QgsMapLayer *layer );
 %Docstring
 Emitted whenever current (selected) layer changes.
-The pointer to layer can be null if no layer is selected
+The pointer to layer can be ``None`` if no layer is selected.
 %End
 
     void currentThemeChanged( const QString &theme );
 %Docstring
-Signal emitted when the current ``theme`` is changed so plugins
+Emitted when the current ``theme`` is changed so plugins
 can change their tool button icons.
 
 .. versionadded:: 3.0
@@ -1153,7 +1415,7 @@ can change their tool button icons.
 
     void layoutDesignerOpened( QgsLayoutDesignerInterface *designer );
 %Docstring
-This signal is emitted when a new layout ``designer`` has been opened.
+Emitted when a new layout ``designer`` has been opened.
 
 .. seealso:: :py:func:`layoutDesignerWillBeClosed`
 
@@ -1162,7 +1424,7 @@ This signal is emitted when a new layout ``designer`` has been opened.
 
     void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
 %Docstring
-This signal is emitted before a layout ``designer`` is going to be closed
+Emitted before a layout ``designer`` is going to be closed
 and deleted.
 
 .. seealso:: :py:func:`layoutDesignerClosed`
@@ -1174,7 +1436,7 @@ and deleted.
 
     void layoutDesignerClosed();
 %Docstring
-This signal is emitted after a layout designer window is closed.
+Emitted after a layout designer window is closed.
 
 .. seealso:: :py:func:`layoutDesignerWillBeClosed`
 
@@ -1185,34 +1447,38 @@ This signal is emitted after a layout designer window is closed.
 
     void initializationCompleted();
 %Docstring
-This signal is emitted when the initialization is complete
+Emitted when the initialization is complete.
 %End
 
     void projectRead();
 %Docstring
-Emitted when a project file is successfully read
-\note
-This is useful for plug-ins that store properties with project files.  A
-plug-in can connect to this signal.  When it is emitted, the plug-in
-knows to then check the project properties for any relevant state.
+Emitted when a project file is successfully read.
+
+.. note::
+
+   This is useful for plugins that store properties with project files.
+   A plugin can connect to this signal. When it is emitted, the plugin
+   knows to then check the project properties for any relevant state.
 %End
 
     void newProjectCreated();
 %Docstring
-Emitted when starting an entirely new project
-\note
-This is similar to projectRead(); plug-ins might want to be notified
-that they're in a new project.  Yes, projectRead() could have been
-overloaded to be used in the case of new projects instead.  However,
-it's probably more semantically correct to have an entirely separate
-signal for when this happens.
+Emitted when starting an entirely new project.
+
+.. note::
+
+   This is similar to projectRead(); plugins might want to be notified
+   that they're in a new project. Yes, projectRead() could have been
+   overloaded to be used in the case of new projects instead. However,
+   it's probably more semantically correct to have an entirely separate
+   signal for when this happens.
 %End
 
     void layerSavedAs( QgsMapLayer *l, const QString &path );
 %Docstring
-This signal is emitted when a layer has been saved using save as
-\note
-added in version 2.7
+Emitted when a layer has been saved using save as.
+
+.. versionadded:: 2.7
 %End
 
 };

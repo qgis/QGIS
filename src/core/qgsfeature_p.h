@@ -64,7 +64,7 @@ class QgsFeaturePrivate : public QSharedData
     //! Feature ID
     QgsFeatureId fid;
 
-    ///! Attributes accessed by field index
+    //! Attributes accessed by field index
     QgsAttributes attributes;
 
     //! Geometry, may be empty if feature has no geometry

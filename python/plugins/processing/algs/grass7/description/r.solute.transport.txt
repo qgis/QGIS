@@ -20,7 +20,7 @@ QgsProcessingParameterNumber|maxit|Maximum number of iteration used to solve the
 QgsProcessingParameterNumber|error|Error break criteria for iterative solver|QgsProcessingParameterNumber.Double|0.000001|True|0.0|None
 QgsProcessingParameterEnum|solver|The type of solver which should solve the linear equation system|gauss;lu;jacobi;sor;bicgstab|False|4
 QgsProcessingParameterNumber|relax|The relaxation parameter used by the jacobi and sor solver for speedup or stabilizing|QgsProcessingParameterNumber.Double|1.0|True|0.0|None
-QgsProcessingParameterNumber|al|The longditudinal dispersivity length. [m]|QgsProcessingParameterNumber.Double|0.0|True|0.0|None
+QgsProcessingParameterNumber|al|The longitudinal dispersivity length. [m]|QgsProcessingParameterNumber.Double|0.0|True|0.0|None
 QgsProcessingParameterNumber|at|The transversal dispersivity length. [m]|QgsProcessingParameterNumber.Double|0.0|True|0.0|None
 QgsProcessingParameterNumber|loops|Use this number of time loops if the CFL flag is off. The timestep will become dt/loops.|QgsProcessingParameterNumber.Double|1.0|True|0.0|None
 QgsProcessingParameterEnum|stab|Set the flow stabilizing scheme (full or exponential upwinding).|full;exp|False|0|True

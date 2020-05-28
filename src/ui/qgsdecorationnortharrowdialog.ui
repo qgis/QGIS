@@ -22,7 +22,7 @@
    <item>
     <widget class="QGroupBox" name="grpEnable">
      <property name="title">
-      <string>Enable north arrow</string>
+      <string>Enable North Arrow</string>
      </property>
      <property name="checkable">
       <bool>true</bool>

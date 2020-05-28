@@ -70,7 +70,7 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     void setCacheImage( const QString &cacheKey, const QImage &image, const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
 
     /**
-     * Returns true if the cache contains an image with the specified \a cacheKey.
+     * Returns TRUE if the cache contains an image with the specified \a cacheKey.
      * \see cacheImage()
      * \since QGIS 3.0
      */
@@ -96,6 +96,13 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
      * \see clear()
      */
     void clearCacheImage( const QString &cacheKey );
+
+    /**
+     * Invalidates cached images which relate to the specified map \a layer.
+     *
+     * \since QGIS 3.14
+     */
+    void invalidateCacheForLayer( QgsMapLayer *layer );
 
   private slots:
     //! Remove layer (that emitted the signal) from the cache

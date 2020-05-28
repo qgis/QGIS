@@ -53,6 +53,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsxmlutils.h"
 #include "qgsstringutils.h"
+#include "qgsmaplayertemporalproperties.h"
 
 QString QgsMapLayer::extensionPropertyType( QgsMapLayer::PropertyType type )
 {
@@ -67,7 +68,7 @@ QString QgsMapLayer::extensionPropertyType( QgsMapLayer::PropertyType type )
   return QString();
 }
 
-QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
+QgsMapLayer::QgsMapLayer( QgsMapLayerType type,
                           const QString &lyrname,
                           const QString &source )
   : mDataSource( source )
@@ -78,25 +79,9 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   , mStyleManager( new QgsMapLayerStyleManager( this ) )
   , mRefreshTimer( new QTimer( this ) )
 {
-  //mShortName.replace( QRegExp( "[\\W]" ), "_" );
-
-  // Generate the unique ID of this layer
-  QString uuid = QUuid::createUuid().toString();
-  // trim { } from uuid
-  mID = lyrname + '_' + uuid.mid( 1, uuid.length() - 2 );
-
-  // Tidy the ID up to avoid characters that may cause problems
-  // elsewhere (e.g in some parts of XML). Replaces every non-word
-  // character (word characters are the alphabet, numbers and
-  // underscore) with an underscore.
-  // Note that the first backslashe in the regular expression is
-  // there for the compiler, so the pattern is actually \W
-  mID.replace( QRegExp( "[\\W]" ), QStringLiteral( "_" ) );
-
+  mID = generateId( lyrname );
   connect( this, &QgsMapLayer::crsChanged, this, &QgsMapLayer::configChanged );
   connect( this, &QgsMapLayer::nameChanged, this, &QgsMapLayer::configChanged );
-
-  connect( mStyleManager, &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsMapLayer::styleChanged );
   connect( mRefreshTimer, &QTimer::timeout, this, [ = ] { triggerRepaint( true ); } );
 }
 
@@ -111,7 +96,8 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
 {
   layer->setBlendMode( blendMode() );
 
-  Q_FOREACH ( const QString &s, styleManager()->styles() )
+  const auto constStyles = styleManager()->styles();
+  for ( const QString &s : constStyles )
   {
     layer->styleManager()->addStyle( s, styleManager()->style( s ) );
   }
@@ -135,13 +121,28 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   layer->setLegendUrl( legendUrl() );
   layer->setLegendUrlFormat( legendUrlFormat() );
   layer->setDependencies( dependencies() );
+  layer->mShouldValidateCrs = mShouldValidateCrs;
   layer->setCrs( crs() );
   layer->setCustomProperties( mCustomProperties );
 }
 
-QgsMapLayer::LayerType QgsMapLayer::type() const
+QgsMapLayerType QgsMapLayer::type() const
 {
   return mLayerType;
+}
+
+QgsMapLayer::LayerFlags QgsMapLayer::flags() const
+{
+  return mFlags;
+}
+
+void QgsMapLayer::setFlags( QgsMapLayer::LayerFlags flags )
+{
+  if ( flags == mFlags )
+    return;
+
+  mFlags = flags;
+  emit flagsChanged();
 }
 
 QString QgsMapLayer::id() const
@@ -175,6 +176,11 @@ const QgsDataProvider *QgsMapLayer::dataProvider() const
   return nullptr;
 }
 
+QString QgsMapLayer::shortName() const
+{
+  return mShortName;
+}
+
 QString QgsMapLayer::publicSource() const
 {
   // Redo this every time we're asked for it, as we don't know if
@@ -193,8 +199,11 @@ QgsRectangle QgsMapLayer::extent() const
   return mExtent;
 }
 
-void QgsMapLayer::setBlendMode( QPainter::CompositionMode blendMode )
+void QgsMapLayer::setBlendMode( const QPainter::CompositionMode blendMode )
 {
+  if ( mBlendMode == blendMode )
+    return;
+
   mBlendMode = blendMode;
   emit blendModeChanged( blendMode );
   emit styleChanged();
@@ -206,9 +215,10 @@ QPainter::CompositionMode QgsMapLayer::blendMode() const
 }
 
 
-bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteContext &context )
+bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags )
 {
   bool layerError;
+  mReadFlags = flags;
 
   QDomNode mnl;
   QDomElement mne;
@@ -247,7 +257,8 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteCo
   QDomNode srsNode = layerElement.namedItem( QStringLiteral( "srs" ) );
   mCRS.readXml( srsNode );
   mCRS.setValidationHint( tr( "Specify CRS for layer %1" ).arg( mne.text() ) );
-  mCRS.validate();
+  if ( isSpatial() )
+    mCRS.validate();
   savedCRS = mCRS;
 
   // Do not validate any projections in children, they will be overwritten anyway.
@@ -255,26 +266,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteCo
   savedValidation = QgsCoordinateReferenceSystem::customCrsValidation();
   QgsCoordinateReferenceSystem::setCustomCrsValidation( nullptr );
 
-  // read custom properties before passing reading further to a subclass, so that
-  // the subclass can also read custom properties
-  readCustomProperties( layerElement );
-
   QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Layer" ), mne.text() );
-
-  // now let the children grab what they need from the Dom node.
-  layerError = !readXml( layerElement, context );
-
-  // overwrite CRS with what we read from project file before the raster/vector
-  // file reading functions changed it. They will if projections is specified in the file.
-  // FIXME: is this necessary?
-  QgsCoordinateReferenceSystem::setCustomCrsValidation( savedValidation );
-  mCRS = savedCRS;
-
-  // Abort if any error in layer, such as not found.
-  if ( layerError )
-  {
-    return false;
-  }
 
   // the internal name is just the data source basename
   //QFileInfo dataSourceFileInfo( mDataSource );
@@ -291,25 +283,10 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteCo
     }
   }
 
-  // use scale dependent visibility flag
-  setScaleBasedVisibility( layerElement.attribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ) ).toInt() == 1 );
-  if ( layerElement.hasAttribute( QStringLiteral( "minimumScale" ) ) )
-  {
-    // older element, when scales were reversed
-    setMaximumScale( layerElement.attribute( QStringLiteral( "minimumScale" ) ).toDouble() );
-    setMinimumScale( layerElement.attribute( QStringLiteral( "maximumScale" ) ).toDouble() );
-  }
-  else
-  {
-    setMaximumScale( layerElement.attribute( QStringLiteral( "maxScale" ) ).toDouble() );
-    setMinimumScale( layerElement.attribute( QStringLiteral( "minScale" ) ).toDouble() );
-  }
-
   setAutoRefreshInterval( layerElement.attribute( QStringLiteral( "autoRefreshTime" ), QStringLiteral( "0" ) ).toInt() );
   setAutoRefreshEnabled( layerElement.attribute( QStringLiteral( "autoRefreshEnabled" ), QStringLiteral( "0" ) ).toInt() );
   setRefreshOnNofifyMessage( layerElement.attribute( QStringLiteral( "refreshOnNotifyMessage" ), QString() ) );
   setRefreshOnNotifyEnabled( layerElement.attribute( QStringLiteral( "refreshOnNotifyEnabled" ), QStringLiteral( "0" ) ).toInt() );
-
 
   // set name
   mnl = layerElement.namedItem( QStringLiteral( "layername" ) );
@@ -317,6 +294,15 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteCo
 
   //name can be translated
   setName( context.projectTranslator()->translate( QStringLiteral( "project:layers:%1" ).arg( layerElement.namedItem( QStringLiteral( "id" ) ).toElement().text() ), mne.text() ) );
+
+  // now let the children grab what they need from the Dom node.
+  layerError = !readXml( layerElement, context );
+
+  // overwrite CRS with what we read from project file before the raster/vector
+  // file reading functions changed it. They will if projections is specified in the file.
+  // FIXME: is this necessary? Yes, it is (autumn 2019)
+  QgsCoordinateReferenceSystem::setCustomCrsValidation( savedValidation );
+  mCRS = savedCRS;
 
   //short name
   QDomElement shortNameElem = layerElement.firstChildElement( QStringLiteral( "shortname" ) );
@@ -356,7 +342,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteCo
   if ( !dataUrlElem.isNull() )
   {
     mDataUrl = dataUrlElem.text();
-    mDataUrlFormat = dataUrlElem.attribute( QStringLiteral( "format" ), QLatin1String( "" ) );
+    mDataUrlFormat = dataUrlElem.attribute( QStringLiteral( "format" ), QString() );
   }
 
   //legendUrl
@@ -364,7 +350,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteCo
   if ( !legendUrlElem.isNull() )
   {
     mLegendUrl = legendUrlElem.text();
-    mLegendUrlFormat = legendUrlElem.attribute( QStringLiteral( "format" ), QLatin1String( "" ) );
+    mLegendUrlFormat = legendUrlElem.attribute( QStringLiteral( "format" ), QString() );
   }
 
   //attribution
@@ -372,7 +358,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteCo
   if ( !attribElem.isNull() )
   {
     mAttribution = attribElem.text();
-    mAttributionUrl = attribElem.attribute( QStringLiteral( "href" ), QLatin1String( "" ) );
+    mAttributionUrl = attribElem.attribute( QStringLiteral( "href" ), QString() );
   }
 
   //metadataUrl
@@ -380,36 +366,30 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteCo
   if ( !metaUrlElem.isNull() )
   {
     mMetadataUrl = metaUrlElem.text();
-    mMetadataUrlType = metaUrlElem.attribute( QStringLiteral( "type" ), QLatin1String( "" ) );
-    mMetadataUrlFormat = metaUrlElem.attribute( QStringLiteral( "format" ), QLatin1String( "" ) );
+    mMetadataUrlType = metaUrlElem.attribute( QStringLiteral( "type" ), QString() );
+    mMetadataUrlFormat = metaUrlElem.attribute( QStringLiteral( "format" ), QString() );
   }
 
   // mMetadata.readFromLayer( this );
   QDomElement metadataElem = layerElement.firstChildElement( QStringLiteral( "resourceMetadata" ) );
   mMetadata.readMetadataXml( metadataElem );
 
-  return true;
+  return ! layerError;
 } // bool QgsMapLayer::readLayerXML
 
 
 bool QgsMapLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &context )
 {
-  Q_UNUSED( layer_node );
-  Q_UNUSED( context );
+  Q_UNUSED( layer_node )
+  Q_UNUSED( context )
   // NOP by default; children will over-ride with behavior specific to them
 
   return true;
 } // void QgsMapLayer::readXml
 
 
-
 bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-  // use scale dependent visibility flag
-  layerElement.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
-  layerElement.setAttribute( QStringLiteral( "maxScale" ), QString::number( maximumScale() ) );
-  layerElement.setAttribute( QStringLiteral( "minScale" ), QString::number( minimumScale() ) );
-
   if ( !extent().isNull() )
   {
     layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent, document ) );
@@ -554,19 +534,70 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   layerElement.appendChild( myMetadataElem );
 
   // now append layer node to map layer node
-
-  writeCustomProperties( layerElement, document );
-
   return writeXml( layerElement, document, context );
+}
 
+void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &document,
+                                    const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
+{
+  // save categories
+  QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayer::StyleCategories>();
+  QString categoriesKeys( metaEnum.valueToKeys( static_cast<int>( categories ) ) );
+  layerElement.setAttribute( QStringLiteral( "styleCategories" ), categoriesKeys );
+
+  if ( categories.testFlag( Rendering ) )
+  {
+    // use scale dependent visibility flag
+    layerElement.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
+    layerElement.setAttribute( QStringLiteral( "maxScale" ), QString::number( maximumScale() ) );
+    layerElement.setAttribute( QStringLiteral( "minScale" ), QString::number( minimumScale() ) );
+  }
+
+  if ( categories.testFlag( Symbology3D ) )
+  {
+    if ( m3DRenderer )
+    {
+      QDomElement renderer3DElem = document.createElement( QStringLiteral( "renderer-3d" ) );
+      renderer3DElem.setAttribute( QStringLiteral( "type" ), m3DRenderer->type() );
+      m3DRenderer->writeXml( renderer3DElem, context );
+      layerElement.appendChild( renderer3DElem );
+    }
+  }
+
+  if ( categories.testFlag( LayerConfiguration ) )
+  {
+    // flags
+    // this code is saving automatically all the flags entries
+    QDomElement layerFlagsElem = document.createElement( QStringLiteral( "flags" ) );
+    auto enumMap = qgsEnumMap<QgsMapLayer::LayerFlag>();
+    for ( auto it = enumMap.constBegin(); it != enumMap.constEnd(); ++it )
+    {
+      bool flagValue = mFlags.testFlag( it.key() );
+      QDomElement flagElem = document.createElement( it.value() );
+      flagElem.appendChild( document.createTextNode( QString::number( flagValue ) ) );
+      layerFlagsElem.appendChild( flagElem );
+    }
+    layerElement.appendChild( layerFlagsElem );
+  }
+
+  if ( categories.testFlag( Temporal ) && const_cast< QgsMapLayer * >( this )->temporalProperties() )
+  {
+    const_cast< QgsMapLayer * >( this )->temporalProperties()->writeXml( layerElement, document, context );
+  }
+
+  // custom properties
+  if ( categories.testFlag( CustomProperties ) )
+  {
+    writeCustomProperties( layerElement, document );
+  }
 }
 
 
 bool QgsMapLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( layer_node );
-  Q_UNUSED( document );
-  Q_UNUSED( context );
+  Q_UNUSED( layer_node )
+  Q_UNUSED( document )
+  Q_UNUSED( context )
   // NOP by default; children will over-ride with behavior specific to them
 
   return true;
@@ -574,19 +605,20 @@ bool QgsMapLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const 
 
 QString QgsMapLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   return source;
 }
 
 QString QgsMapLayer::decodedSource( const QString &source, const QString &dataProvider, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( context );
-  Q_UNUSED( dataProvider );
+  Q_UNUSED( context )
+  Q_UNUSED( dataProvider )
   return source;
 }
 
 void QgsMapLayer::resolveReferences( QgsProject *project )
 {
+  emit beforeResolveReferences( project );
   if ( m3DRenderer )
     m3DRenderer->resolveReferences( *project );
 }
@@ -629,7 +661,7 @@ bool QgsMapLayer::isValid() const
 #if 0
 void QgsMapLayer::connectNotify( const char *signal )
 {
-  Q_UNUSED( signal );
+  Q_UNUSED( signal )
   QgsDebugMsgLevel( "QgsMapLayer connected to " + QString( signal ), 3 );
 } //  QgsMapLayer::connectNotify
 #endif
@@ -718,14 +750,14 @@ QStringList QgsMapLayer::subLayers() const
 
 void QgsMapLayer::setLayerOrder( const QStringList &layers )
 {
-  Q_UNUSED( layers );
+  Q_UNUSED( layers )
   // NOOP
 }
 
 void QgsMapLayer::setSubLayerVisibility( const QString &name, bool vis )
 {
-  Q_UNUSED( name );
-  Q_UNUSED( vis );
+  Q_UNUSED( name )
+  Q_UNUSED( vis )
   // NOOP
 }
 
@@ -738,7 +770,7 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSign
 {
   mCRS = srs;
 
-  if ( !mCRS.isValid() )
+  if ( mShouldValidateCrs && isSpatial() && !mCRS.isValid() )
   {
     mCRS.setValidationHint( tr( "Specify CRS for layer %1" ).arg( name() ) );
     mCRS.validate();
@@ -746,6 +778,11 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSign
 
   if ( emitSignal )
     emit crsChanged();
+}
+
+QgsCoordinateTransformContext QgsMapLayer::transformContext() const
+{
+  return dataProvider() ? dataProvider()->transformContext() : QgsCoordinateTransformContext();
 }
 
 QString QgsMapLayer::formatLayerName( const QString &name )
@@ -760,24 +797,15 @@ QString QgsMapLayer::baseURI( PropertyType type ) const
 {
   QString myURI = publicSource();
 
-  // if file is using the VSIFILE mechanism, remove the prefix
-  if ( myURI.startsWith( QLatin1String( "/vsigzip/" ), Qt::CaseInsensitive ) )
+  // first get base path for delimited text, spatialite and OGR layers,
+  // as in these cases URI may contain layer name and/or additional
+  // information. This also strips prefix in case if VSIFILE mechanism
+  // is used
+  if ( providerType() == QLatin1String( "ogr" ) || providerType() == QLatin1String( "delimitedtext" ) ||
+       providerType() == QLatin1String( "spatialite" ) )
   {
-    myURI.remove( 0, 9 );
-  }
-  else if ( myURI.startsWith( QLatin1String( "/vsizip/" ), Qt::CaseInsensitive ) &&
-            myURI.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) )
-  {
-    // ideally we should look for .qml file inside zip file
-    myURI.remove( 0, 8 );
-  }
-  else if ( myURI.startsWith( QLatin1String( "/vsitar/" ), Qt::CaseInsensitive ) &&
-            ( myURI.endsWith( QLatin1String( ".tar" ), Qt::CaseInsensitive ) ||
-              myURI.endsWith( QLatin1String( ".tar.gz" ), Qt::CaseInsensitive ) ||
-              myURI.endsWith( QLatin1String( ".tgz" ), Qt::CaseInsensitive ) ) )
-  {
-    // ideally we should look for .qml file inside tar file
-    myURI.remove( 0, 8 );
+    QVariantMap components = QgsProviderRegistry::instance()->decodeUri( providerType(), myURI );
+    myURI = components["path"].toString();
   }
 
   QFileInfo myFileInfo( myURI );
@@ -845,7 +873,7 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
 
 bool QgsMapLayer::loadNamedPropertyFromDatabase( const QString &db, const QString &uri, QString &xml, QgsMapLayer::PropertyType type )
 {
-  QgsDebugMsgLevel( QString( "db = %1 uri = %2" ).arg( db, uri ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "db = %1 uri = %2" ).arg( db, uri ), 4 );
 
   bool resultFlag = false;
 
@@ -855,7 +883,7 @@ bool QgsMapLayer::loadNamedPropertyFromDatabase( const QString &db, const QStrin
 
   int myResult;
 
-  QgsDebugMsgLevel( QString( "Trying to load style or metadata for \"%1\" from \"%2\"" ).arg( uri, db ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Trying to load style or metadata for \"%1\" from \"%2\"" ).arg( uri, db ), 4 );
 
   if ( db.isEmpty() || !QFile( db ).exists() )
     return false;
@@ -894,14 +922,14 @@ bool QgsMapLayer::loadNamedPropertyFromDatabase( const QString &db, const QStrin
 }
 
 
-QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag )
+QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag, QgsMapLayer::StyleCategories categories )
 {
-  return loadNamedProperty( uri, PropertyType::Style, resultFlag );
+  return loadNamedProperty( uri, PropertyType::Style, resultFlag, categories );
 }
 
-QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::PropertyType type, bool &resultFlag )
+QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::PropertyType type, bool &resultFlag, StyleCategories categories )
 {
-  QgsDebugMsgLevel( QString( "uri = %1 myURI = %2" ).arg( uri, publicSource() ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "uri = %1 myURI = %2" ).arg( uri, publicSource() ), 4 );
 
   resultFlag = false;
 
@@ -914,7 +942,7 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
   QFile myFile( uri );
   if ( myFile.open( QFile::ReadOnly ) )
   {
-    QgsDebugMsgLevel( QString( "file found %1" ).arg( uri ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "file found %1" ).arg( uri ), 2 );
     // read file
     resultFlag = myDocument.setContent( &myFile, &myErrorMessage, &line, &column );
     if ( !resultFlag )
@@ -924,7 +952,7 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
   else
   {
     QFileInfo project( QgsProject::instance()->fileName() );
-    QgsDebugMsgLevel( QString( "project fileName: %1" ).arg( project.absoluteFilePath() ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "project fileName: %1" ).arg( project.absoluteFilePath() ), 4 );
 
     QString xml;
     switch ( type )
@@ -978,7 +1006,7 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
   switch ( type )
   {
     case QgsMapLayer::Style:
-      resultFlag = importNamedStyle( myDocument, myErrorMessage );
+      resultFlag = importNamedStyle( myDocument, myErrorMessage, categories );
       if ( !resultFlag )
         myErrorMessage = tr( "Loading style file %1 failed because:\n%2" ).arg( uri, myErrorMessage );
       break;
@@ -1003,7 +1031,7 @@ bool QgsMapLayer::importNamedMetadata( QDomDocument &document, QString &errorMes
   return mMetadata.readMetadataXml( myRoot );
 }
 
-bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMessage )
+bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMessage, QgsMapLayer::StyleCategories categories )
 {
   QDomElement myRoot = myDocument.firstChildElement( QStringLiteral( "qgis" ) );
   if ( myRoot.isNull() )
@@ -1014,7 +1042,7 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
 
   // get style file version string, if any
   QgsProjectVersion fileVersion( myRoot.attribute( QStringLiteral( "version" ) ) );
-  QgsProjectVersion thisVersion( Qgis::QGIS_VERSION );
+  QgsProjectVersion thisVersion( Qgis::version() );
 
   if ( thisVersion > fileVersion )
   {
@@ -1022,34 +1050,27 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
     styleFile.updateRevision( thisVersion );
   }
 
+  // Get source categories
+  QgsMapLayer::StyleCategories sourceCategories = QgsXmlUtils::readFlagAttribute( myRoot, QStringLiteral( "styleCategories" ), QgsMapLayer::AllStyleCategories );
+
   //Test for matching geometry type on vector layers when applying, if geometry type is given in the style
-  if ( type() == QgsMapLayer::VectorLayer && !myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).isNull() )
+  if ( ( sourceCategories.testFlag( QgsMapLayer::Symbology ) || sourceCategories.testFlag( QgsMapLayer::Symbology3D ) ) &&
+       ( categories.testFlag( QgsMapLayer::Symbology ) || categories.testFlag( QgsMapLayer::Symbology3D ) ) )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( this );
-    QgsWkbTypes::GeometryType importLayerGeometryType = static_cast<QgsWkbTypes::GeometryType>( myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).text().toInt() );
-    if ( vl->geometryType() != importLayerGeometryType )
+    if ( type() == QgsMapLayerType::VectorLayer && !myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).isNull() )
     {
-      myErrorMessage = tr( "Cannot apply style to layer with a different geometry type" );
-      return false;
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( this );
+      QgsWkbTypes::GeometryType importLayerGeometryType = static_cast<QgsWkbTypes::GeometryType>( myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).text().toInt() );
+      if ( vl->geometryType() != importLayerGeometryType )
+      {
+        myErrorMessage = tr( "Cannot apply style with symbology to layer with a different geometry type" );
+        return false;
+      }
     }
   }
 
-  // use scale dependent visibility flag
-  setScaleBasedVisibility( myRoot.attribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ) ).toInt() == 1 );
-  if ( myRoot.hasAttribute( QStringLiteral( "minimumScale" ) ) )
-  {
-    //older scale element, when min/max were reversed
-    setMaximumScale( myRoot.attribute( QStringLiteral( "minimumScale" ) ).toDouble() );
-    setMinimumScale( myRoot.attribute( QStringLiteral( "maximumScale" ) ).toDouble() );
-  }
-  else
-  {
-    setMaximumScale( myRoot.attribute( QStringLiteral( "maxScale" ) ).toDouble() );
-    setMinimumScale( myRoot.attribute( QStringLiteral( "minScale" ) ).toDouble() );
-  }
-
   QgsReadWriteContext context = QgsReadWriteContext();
-  return readSymbology( myRoot, myErrorMessage, context ); // TODO: support relative paths in QML?
+  return readSymbology( myRoot, myErrorMessage, context, categories ); // TODO: support relative paths in QML?
 }
 
 void QgsMapLayer::exportNamedMetadata( QDomDocument &doc, QString &errorMsg ) const
@@ -1059,7 +1080,7 @@ void QgsMapLayer::exportNamedMetadata( QDomDocument &doc, QString &errorMsg ) co
   QDomDocument myDocument( documentType );
 
   QDomElement myRootNode = myDocument.createElement( QStringLiteral( "qgis" ) );
-  myRootNode.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
+  myRootNode.setAttribute( QStringLiteral( "version" ), Qgis::version() );
   myDocument.appendChild( myRootNode );
 
   if ( !mMetadata.writeMetadataXml( myRootNode, myDocument ) )
@@ -1071,21 +1092,17 @@ void QgsMapLayer::exportNamedMetadata( QDomDocument &doc, QString &errorMsg ) co
   doc = myDocument;
 }
 
-void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg ) const
+void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg, const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
   QDomImplementation DomImplementation;
   QDomDocumentType documentType = DomImplementation.createDocumentType( QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument myDocument( documentType );
 
   QDomElement myRootNode = myDocument.createElement( QStringLiteral( "qgis" ) );
-  myRootNode.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
+  myRootNode.setAttribute( QStringLiteral( "version" ), Qgis::version() );
   myDocument.appendChild( myRootNode );
 
-  myRootNode.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
-  myRootNode.setAttribute( QStringLiteral( "maxScale" ), QString::number( maximumScale() ) );
-  myRootNode.setAttribute( QStringLiteral( "minScale" ), QString::number( minimumScale() ) );
-
-  if ( !writeSymbology( myRootNode, myDocument, errorMsg, QgsReadWriteContext() ) )  // TODO: support relative paths in QML?
+  if ( !writeSymbology( myRootNode, myDocument, errorMsg, context, categories ) )  // TODO: support relative paths in QML?
   {
     errorMsg = QObject::tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
     return;
@@ -1095,7 +1112,7 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg ) const
    * Check to see if the layer is vector - in which case we should also export its geometryType
    * to avoid eventually pasting to a layer with a different geometry
   */
-  if ( type() == QgsMapLayer::VectorLayer )
+  if ( type() == QgsMapLayerType::VectorLayer )
   {
     //Getting the selectionLayer geometry
     const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( this );
@@ -1127,7 +1144,7 @@ QString QgsMapLayer::loadNamedMetadata( const QString &uri, bool &resultFlag )
   return loadNamedProperty( uri, QgsMapLayer::Metadata, resultFlag );
 }
 
-QString QgsMapLayer::saveNamedProperty( const QString &uri, QgsMapLayer::PropertyType type, bool &resultFlag )
+QString QgsMapLayer::saveNamedProperty( const QString &uri, QgsMapLayer::PropertyType type, bool &resultFlag, StyleCategories categories )
 {
   // check if the uri is a file or ends with .qml/.qmd,
   // which indicates that it should become one
@@ -1166,7 +1183,8 @@ QString QgsMapLayer::saveNamedProperty( const QString &uri, QgsMapLayer::Propert
       break;
 
     case Style:
-      exportNamedStyle( myDocument, myErrorMessage );
+      QgsReadWriteContext context;
+      exportNamedStyle( myDocument, myErrorMessage, context, categories );
       break;
   }
 
@@ -1357,9 +1375,9 @@ QString QgsMapLayer::saveNamedProperty( const QString &uri, QgsMapLayer::Propert
   return myErrorMessage;
 }
 
-QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
+QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag, StyleCategories categories )
 {
-  return saveNamedProperty( uri, QgsMapLayer::Style, resultFlag );
+  return saveNamedProperty( uri, QgsMapLayer::Style, resultFlag, categories );
 }
 
 void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg ) const
@@ -1369,38 +1387,71 @@ void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg ) const
   QDomNode header = myDocument.createProcessingInstruction( QStringLiteral( "xml" ), QStringLiteral( "version=\"1.0\" encoding=\"UTF-8\"" ) );
   myDocument.appendChild( header );
 
-  // Create the root element
-  QDomElement root = myDocument.createElementNS( QStringLiteral( "http://www.opengis.net/sld" ), QStringLiteral( "StyledLayerDescriptor" ) );
-  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.1.0" ) );
-  root.setAttribute( QStringLiteral( "xsi:schemaLocation" ), QStringLiteral( "http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" ) );
-  root.setAttribute( QStringLiteral( "xmlns:ogc" ), QStringLiteral( "http://www.opengis.net/ogc" ) );
-  root.setAttribute( QStringLiteral( "xmlns:se" ), QStringLiteral( "http://www.opengis.net/se" ) );
-  root.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
-  root.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
-  myDocument.appendChild( root );
-
-  // Create the NamedLayer element
-  QDomElement namedLayerNode = myDocument.createElement( QStringLiteral( "NamedLayer" ) );
-  root.appendChild( namedLayerNode );
-
   const QgsVectorLayer *vlayer = qobject_cast<const QgsVectorLayer *>( this );
-  if ( !vlayer )
+  const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( this );
+  if ( !vlayer && !rlayer )
   {
     errorMsg = tr( "Could not save symbology because:\n%1" )
-               .arg( QStringLiteral( "Non-vector layers not supported yet" ) );
+               .arg( tr( "Only vector and raster layers are supported" ) );
     return;
+  }
+
+  // Create the root element
+  QDomElement root = myDocument.createElementNS( QStringLiteral( "http://www.opengis.net/sld" ), QStringLiteral( "StyledLayerDescriptor" ) );
+  QDomElement layerNode;
+  if ( vlayer )
+  {
+    root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.1.0" ) );
+    root.setAttribute( QStringLiteral( "xsi:schemaLocation" ), QStringLiteral( "http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" ) );
+    root.setAttribute( QStringLiteral( "xmlns:ogc" ), QStringLiteral( "http://www.opengis.net/ogc" ) );
+    root.setAttribute( QStringLiteral( "xmlns:se" ), QStringLiteral( "http://www.opengis.net/se" ) );
+    root.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
+    root.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
+    myDocument.appendChild( root );
+
+    // Create the NamedLayer element
+    layerNode = myDocument.createElement( QStringLiteral( "NamedLayer" ) );
+    root.appendChild( layerNode );
+  }
+
+  // note: Only SLD 1.0 version is generated because seems none is using SE1.1.0 at least for rasters
+  if ( rlayer )
+  {
+    // Create the root element
+    root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0.0" ) );
+    root.setAttribute( QStringLiteral( "xmlns:gml" ), QStringLiteral( "http://www.opengis.net/gml" ) );
+    root.setAttribute( QStringLiteral( "xmlns:ogc" ), QStringLiteral( "http://www.opengis.net/ogc" ) );
+    root.setAttribute( QStringLiteral( "xmlns:sld" ), QStringLiteral( "http://www.opengis.net/sld" ) );
+    myDocument.appendChild( root );
+
+    // Create the NamedLayer element
+    layerNode = myDocument.createElement( QStringLiteral( "UserLayer" ) );
+    root.appendChild( layerNode );
   }
 
   QgsStringMap props;
   if ( hasScaleBasedVisibility() )
   {
-    props[ QStringLiteral( "scaleMinDenom" )] = QString::number( mMinScale );
-    props[ QStringLiteral( "scaleMaxDenom" )] = QString::number( mMaxScale );
+    props[ QStringLiteral( "scaleMinDenom" ) ] = QString::number( mMinScale );
+    props[ QStringLiteral( "scaleMaxDenom" ) ] = QString::number( mMaxScale );
   }
-  if ( !vlayer->writeSld( namedLayerNode, myDocument, errorMsg, props ) )
+
+  if ( vlayer )
   {
-    errorMsg = tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
-    return;
+    if ( !vlayer->writeSld( layerNode, myDocument, errorMsg, props ) )
+    {
+      errorMsg = tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
+      return;
+    }
+  }
+
+  if ( rlayer )
+  {
+    if ( !rlayer->writeSld( layerNode, myDocument, errorMsg, props ) )
+    {
+      errorMsg = tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
+      return;
+    }
   }
 
   doc = myDocument;
@@ -1408,30 +1459,30 @@ void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg ) const
 
 QString QgsMapLayer::saveSldStyle( const QString &uri, bool &resultFlag ) const
 {
+  const QgsMapLayer *mlayer = qobject_cast<const QgsMapLayer *>( this );
+
   QString errorMsg;
   QDomDocument myDocument;
-  exportSldStyle( myDocument, errorMsg );
+  mlayer->exportSldStyle( myDocument, errorMsg );
   if ( !errorMsg.isNull() )
   {
     resultFlag = false;
     return errorMsg;
   }
-  const QgsVectorLayer *vlayer = qobject_cast<const QgsVectorLayer *>( this );
-
   // check if the uri is a file or ends with .sld,
   // which indicates that it should become one
   QString filename;
-  if ( vlayer->providerType() == QLatin1String( "ogr" ) )
+  if ( mlayer->providerType() == QLatin1String( "ogr" ) )
   {
     QStringList theURIParts = uri.split( '|' );
     filename = theURIParts[0];
   }
-  else if ( vlayer->providerType() == QLatin1String( "gpx" ) )
+  else if ( mlayer->providerType() == QLatin1String( "gpx" ) )
   {
     QStringList theURIParts = uri.split( '?' );
     filename = theURIParts[0];
   }
-  else if ( vlayer->providerType() == QLatin1String( "delimitedtext" ) )
+  else if ( mlayer->providerType() == QLatin1String( "delimitedtext" ) )
   {
     filename = QUrl::fromEncoded( uri.toLatin1() ).toLocalFile();
     // toLocalFile() returns an empty string if theURI is a plain Windows-path, e.g. "C:/style.qml"
@@ -1527,52 +1578,111 @@ QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )
     return myErrorMessage;
   }
 
-  return QLatin1String( "" );
+  return QString();
 }
 
-bool QgsMapLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context )
+bool QgsMapLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
-  Q_UNUSED( node );
-  Q_UNUSED( errorMessage );
-  Q_UNUSED( context );
+  Q_UNUSED( node )
+  Q_UNUSED( errorMessage )
+  Q_UNUSED( context )
+  Q_UNUSED( categories )
   return false;
 }
 
-bool QgsMapLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const
+bool QgsMapLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
+                              const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
-  Q_UNUSED( node );
-  Q_UNUSED( doc );
-  Q_UNUSED( errorMessage );
-  Q_UNUSED( context );
+  Q_UNUSED( node )
+  Q_UNUSED( doc )
+  Q_UNUSED( errorMessage )
+  Q_UNUSED( context )
+  Q_UNUSED( categories )
   return false;
 }
 
-
-void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &document, const QgsReadWriteContext &context ) const
+void QgsMapLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
 {
-  if ( m3DRenderer )
-  {
-    QDomElement renderer3DElem = document.createElement( QStringLiteral( "renderer-3d" ) );
-    renderer3DElem.setAttribute( QStringLiteral( "type" ), m3DRenderer->type() );
-    m3DRenderer->writeXml( renderer3DElem, context );
-    layerElement.appendChild( renderer3DElem );
-  }
+  Q_UNUSED( dataSource )
+  Q_UNUSED( baseName )
+  Q_UNUSED( provider )
+  Q_UNUSED( options )
+  Q_UNUSED( loadDefaultStyleFlag )
 }
 
-void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context )
+
+QString QgsMapLayer::providerType() const
 {
-  QgsAbstract3DRenderer *r3D = nullptr;
-  QDomElement renderer3DElem = layerElement.firstChildElement( QStringLiteral( "renderer-3d" ) );
-  if ( !renderer3DElem.isNull() )
+  return mProviderKey;
+}
+
+void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context,
+                                   QgsMapLayer::StyleCategories categories )
+{
+  if ( categories.testFlag( Symbology3D ) )
   {
-    QString type3D = renderer3DElem.attribute( QStringLiteral( "type" ) );
-    Qgs3DRendererAbstractMetadata *meta3D = QgsApplication::renderer3DRegistry()->rendererMetadata( type3D );
-    if ( meta3D )
+    QgsAbstract3DRenderer *r3D = nullptr;
+    QDomElement renderer3DElem = layerElement.firstChildElement( QStringLiteral( "renderer-3d" ) );
+    if ( !renderer3DElem.isNull() )
     {
-      r3D = meta3D->createRenderer( renderer3DElem, context );
+      QString type3D = renderer3DElem.attribute( QStringLiteral( "type" ) );
+      Qgs3DRendererAbstractMetadata *meta3D = QgsApplication::renderer3DRegistry()->rendererMetadata( type3D );
+      if ( meta3D )
+      {
+        r3D = meta3D->createRenderer( renderer3DElem, context );
+      }
+    }
+    setRenderer3D( r3D );
+  }
+
+  if ( categories.testFlag( CustomProperties ) )
+  {
+    // read custom properties before passing reading further to a subclass, so that
+    // the subclass can also read custom properties
+    readCustomProperties( layerElement );
+  }
+
+  // use scale dependent visibility flag
+  if ( categories.testFlag( Rendering ) )
+  {
+    setScaleBasedVisibility( layerElement.attribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ) ).toInt() == 1 );
+    if ( layerElement.hasAttribute( QStringLiteral( "minimumScale" ) ) )
+    {
+      // older element, when scales were reversed
+      setMaximumScale( layerElement.attribute( QStringLiteral( "minimumScale" ) ).toDouble() );
+      setMinimumScale( layerElement.attribute( QStringLiteral( "maximumScale" ) ).toDouble() );
+    }
+    else
+    {
+      setMaximumScale( layerElement.attribute( QStringLiteral( "maxScale" ) ).toDouble() );
+      setMinimumScale( layerElement.attribute( QStringLiteral( "minScale" ) ).toDouble() );
     }
   }
-  setRenderer3D( r3D );
+
+  if ( categories.testFlag( LayerConfiguration ) )
+  {
+    // flags
+    QDomElement flagsElem = layerElement.firstChildElement( QStringLiteral( "flags" ) );
+    LayerFlags flags = mFlags;
+    auto enumMap = qgsEnumMap<QgsMapLayer::LayerFlag>();
+    for ( auto it = enumMap.constBegin(); it != enumMap.constEnd(); ++it )
+    {
+      QDomNode flagNode = flagsElem.namedItem( it.value() );
+      if ( flagNode.isNull() )
+        continue;
+      bool flagValue = flagNode.toElement().text() == "1" ? true : false;
+      if ( flags.testFlag( it.key() ) && !flagValue )
+        flags &= ~it.key();
+      else if ( !flags.testFlag( it.key() ) && flagValue )
+        flags |= it.key();
+    }
+    setFlags( flags );
+  }
+
+  if ( categories.testFlag( Temporal ) && temporalProperties() )
+  {
+    temporalProperties()->readXml( layerElement.toElement(), context );
+  }
 }
 
 QUndoStack *QgsMapLayer::undoStack()
@@ -1600,6 +1710,11 @@ void QgsMapLayer::setCustomProperties( const QgsObjectCustomProperties &properti
   mCustomProperties = properties;
 }
 
+const QgsObjectCustomProperties &QgsMapLayer::customProperties() const
+{
+  return mCustomProperties;
+}
+
 QVariant QgsMapLayer::customProperty( const QString &value, const QVariant &defaultValue ) const
 {
   return mCustomProperties.value( value, defaultValue );
@@ -1625,6 +1740,31 @@ bool QgsMapLayer::isEditable() const
 bool QgsMapLayer::isSpatial() const
 {
   return true;
+}
+
+bool QgsMapLayer::isTemporary() const
+{
+  // invalid layers are temporary? -- who knows?!
+  if ( !isValid() )
+    return false;
+
+  if ( mProviderKey == QLatin1String( "memory" ) )
+    return true;
+
+  const QVariantMap sourceParts = QgsProviderRegistry::instance()->decodeUri( mProviderKey, mDataSource );
+  const QString path = sourceParts.value( QStringLiteral( "path" ) ).toString();
+  if ( path.isEmpty() )
+    return false;
+
+  // check if layer path is inside one of the standard temporary file locations for this platform
+  const QStringList tempPaths = QStandardPaths::standardLocations( QStandardPaths::TempLocation );
+  for ( const QString &tempPath : tempPaths )
+  {
+    if ( path.startsWith( tempPath ) )
+      return true;
+  }
+
+  return false;
 }
 
 void QgsMapLayer::setValid( bool valid )
@@ -1676,7 +1816,12 @@ QgsAbstract3DRenderer *QgsMapLayer::renderer3D() const
 
 void QgsMapLayer::triggerRepaint( bool deferredUpdate )
 {
+  if ( mRepaintRequestedFired )
+    return;
+
+  mRepaintRequestedFired = true;
   emit repaintRequested( deferredUpdate );
+  mRepaintRequestedFired = false;
 }
 
 void QgsMapLayer::setMetadata( const QgsLayerMetadata &metadata )
@@ -1706,54 +1851,45 @@ void QgsMapLayer::setExtent( const QgsRectangle &r )
   mExtent = r;
 }
 
-static QList<const QgsMapLayer *> _depOutEdges( const QgsMapLayer *vl, const QgsMapLayer *that, const QSet<QgsMapLayerDependency> &layers )
-{
-  QList<const QgsMapLayer *> lst;
-  if ( vl == that )
-  {
-    Q_FOREACH ( const QgsMapLayerDependency &dep, layers )
-    {
-      if ( const QgsMapLayer *l = QgsProject::instance()->mapLayer( dep.layerId() ) )
-        lst << l;
-    }
-  }
-  else
-  {
-    Q_FOREACH ( const QgsMapLayerDependency &dep, vl->dependencies() )
-    {
-      if ( const QgsMapLayer *l = QgsProject::instance()->mapLayer( dep.layerId() ) )
-        lst << l;
-    }
-  }
-  return lst;
-}
-
-static bool _depHasCycleDFS( const QgsMapLayer *n, QHash<const QgsMapLayer *, int> &mark, const QgsMapLayer *that, const QSet<QgsMapLayerDependency> &layers )
-{
-  if ( mark.value( n ) == 1 ) // temporary
-    return true;
-  if ( mark.value( n ) == 0 ) // not visited
-  {
-    mark[n] = 1; // temporary
-    Q_FOREACH ( const QgsMapLayer *m, _depOutEdges( n, that, layers ) )
-    {
-      if ( _depHasCycleDFS( m, mark, that, layers ) )
-        return true;
-    }
-    mark[n] = 2; // permanent
-  }
-  return false;
-}
-
-bool QgsMapLayer::hasDependencyCycle( const QSet<QgsMapLayerDependency> &layers ) const
-{
-  QHash<const QgsMapLayer *, int> marks;
-  return _depHasCycleDFS( this, marks, this, layers );
-}
-
 bool QgsMapLayer::isReadOnly() const
 {
   return true;
+}
+
+QString QgsMapLayer::originalXmlProperties() const
+{
+  return mOriginalXmlProperties;
+}
+
+void QgsMapLayer::setOriginalXmlProperties( const QString &originalXmlProperties )
+{
+  mOriginalXmlProperties = originalXmlProperties;
+}
+
+QString QgsMapLayer::generateId( const QString &layerName )
+{
+  // Generate the unique ID of this layer
+  QString uuid = QUuid::createUuid().toString();
+  // trim { } from uuid
+  QString id = layerName + '_' + uuid.mid( 1, uuid.length() - 2 );
+  // Tidy the ID up to avoid characters that may cause problems
+  // elsewhere (e.g in some parts of XML). Replaces every non-word
+  // character (word characters are the alphabet, numbers and
+  // underscore) with an underscore.
+  // Note that the first backslash in the regular expression is
+  // there for the compiler, so the pattern is actually \W
+  id.replace( QRegExp( "[\\W]" ), QStringLiteral( "_" ) );
+  return id;
+}
+
+bool QgsMapLayer::accept( QgsStyleEntityVisitorInterface * ) const
+{
+  return true;
+}
+
+void QgsMapLayer::setProviderType( const QString &providerType )
+{
+  mProviderKey = providerType;
 }
 
 QSet<QgsMapLayerDependency> QgsMapLayer::dependencies() const
@@ -1764,13 +1900,12 @@ QSet<QgsMapLayerDependency> QgsMapLayer::dependencies() const
 bool QgsMapLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
 {
   QSet<QgsMapLayerDependency> deps;
-  Q_FOREACH ( const QgsMapLayerDependency &dep, oDeps )
+  const auto constODeps = oDeps;
+  for ( const QgsMapLayerDependency &dep : constODeps )
   {
     if ( dep.origin() == QgsMapLayerDependency::FromUser )
       deps << dep;
   }
-  if ( hasDependencyCycle( deps ) )
-    return false;
 
   mDependencies = deps;
   emit dependenciesChanged();
@@ -1800,4 +1935,3 @@ void QgsMapLayer::onNotifiedTriggerRepaint( const QString &message )
   if ( refreshOnNotifyMessage().isEmpty() || refreshOnNotifyMessage() == message )
     triggerRepaint();
 }
-

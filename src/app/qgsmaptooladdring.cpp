@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMouseEvent>
 
 #include "qgsmaptooladdring.h"
 #include "qgsgeometry.h"
@@ -23,6 +22,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
+#include "qgsmapmouseevent.h"
 
 
 QgsMapToolAddRing::QgsMapToolAddRing( QgsMapCanvas *canvas )

@@ -21,14 +21,11 @@ __author__ = 'Piotr Pociask'
 __date__ = 'May 2014'
 __copyright__ = '(C) 2014, Piotr Pociask'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from qgis.PyQt.QtCore import QCoreApplication
 from math import sqrt
 
-from qgis.core import (QgsFeature,
+from qgis.core import (QgsApplication,
+                       QgsFeature,
                        QgsFeatureSink,
                        QgsWkbTypes,
                        QgsProcessing,
@@ -42,7 +39,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class ConcaveHull(QgisAlgorithm):
-
     INPUT = 'INPUT'
     ALPHA = 'ALPHA'
     HOLES = 'HOLES'
@@ -75,7 +71,16 @@ class ConcaveHull(QgisAlgorithm):
         return 'concavehull'
 
     def displayName(self):
-        return self.tr('Concave hull')
+        return self.tr('Concave hull (alpha shapes)')
+
+    def shortDescription(self):
+        return self.tr('Creates a concave hull using the alpha shapes algorithm.')
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmConcaveHull.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmConcaveHull.svg")
 
     def processAlgorithm(self, parameters, context, feedback):
         layer = self.parameterAsSource(parameters, ConcaveHull.INPUT, context)
@@ -83,8 +88,8 @@ class ConcaveHull(QgisAlgorithm):
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         alpha = self.parameterAsDouble(parameters, self.ALPHA, context)
-        holes = self.parameterAsBool(parameters, self.HOLES, context)
-        no_multigeom = self.parameterAsBool(parameters, self.NO_MULTIGEOMETRY, context)
+        holes = self.parameterAsBoolean(parameters, self.HOLES, context)
+        no_multigeom = self.parameterAsBoolean(parameters, self.NO_MULTIGEOMETRY, context)
 
         # Delaunay triangulation from input point layer
         feedback.setProgressText(QCoreApplication.translate('ConcaveHull', 'Creating Delaunay triangles…'))
@@ -117,7 +122,7 @@ class ConcaveHull(QgisAlgorithm):
         counter = 50. / len(edges)
         i = 0
         ids = []
-        for id, max_len in list(edges.items()):
+        for id, max_len in edges.items():
             if feedback.isCanceled():
                 break
 

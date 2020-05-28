@@ -171,7 +171,7 @@ void QgsLayoutViewToolAddNodeItem::moveTemporaryNode( QPointF scenePoint, Qt::Ke
     QPointF start = mPolygon.at( mPolygon.size() - 2 );
     QLineF newLine = QLineF( start, scenePoint );
 
-    //movement is contrained to 45 degree angles
+    //movement is constrained to 45 degree angles
     double angle = QgsLayoutUtils::snappedAngle( newLine.angle() );
     newLine.setAngle( angle );
     scenePoint = newLine.p2();

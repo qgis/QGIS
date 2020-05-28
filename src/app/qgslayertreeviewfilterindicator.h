@@ -16,44 +16,28 @@
 #ifndef QGSLAYERTREEVIEWFILTERINDICATOR_H
 #define QGSLAYERTREEVIEWFILTERINDICATOR_H
 
-#include "qgslayertreeviewindicator.h"
+#include "qgslayertreeviewindicatorprovider.h"
 
-#include <QSet>
-#include <memory>
-
-class QgsLayerTreeNode;
-class QgsLayerTreeView;
-class QgsVectorLayer;
-
+#include <QObject>
 
 //! Adds indicators showing whether vector layers have a filter applied.
-class QgsLayerTreeViewFilterIndicatorProvider : public QObject
+class QgsLayerTreeViewFilterIndicatorProvider : public QgsLayerTreeViewIndicatorProvider
 {
     Q_OBJECT
   public:
     explicit QgsLayerTreeViewFilterIndicatorProvider( QgsLayerTreeView *view );
 
-  private slots:
-    //! Connects to signals of layers newly added to the tree
-    void onAddedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
-    //! Disconnects from layers about to be removed from the tree
-    void onWillRemoveChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
-    //! Starts listening to layer provider's dataChanged signal
-    void onLayerLoaded();
-    //! Adds/removes indicator of a layer
-    void onSubsetStringChanged();
-
-    void onIndicatorClicked( const QModelIndex &index );
-
   private:
-    std::unique_ptr< QgsLayerTreeViewIndicator > newIndicator( const QString &filter );
-    void updateIndicator( QgsLayerTreeViewIndicator *indicator, const QString &filter );
-    void addOrRemoveIndicator( QgsLayerTreeNode *node, QgsVectorLayer *vlayer );
+    bool acceptLayer( QgsMapLayer *layer ) override;
+    QString iconName( QgsMapLayer *layer ) override;
+    QString tooltipText( QgsMapLayer *layer ) override;
 
-  private:
-    QgsLayerTreeView *mLayerTreeView = nullptr;
-    QIcon mIcon;
-    QSet<QgsLayerTreeViewIndicator *> mIndicators;
+  protected slots:
+    void onIndicatorClicked( const QModelIndex &index ) override;
+
+  protected:
+    void connectSignals( QgsMapLayer *layer ) override ;
+    void disconnectSignals( QgsMapLayer *layer ) override;
 };
 
 #endif // QGSLAYERTREEVIEWFILTERINDICATOR_H

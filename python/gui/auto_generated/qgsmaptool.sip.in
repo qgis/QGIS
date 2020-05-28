@@ -52,6 +52,7 @@ implemented as map tools.
       Transient,
       EditTool,
       AllowZoomRect,
+      ShowContextMenu,
     };
     typedef QFlags<QgsMapTool::Flag> Flags;
 
@@ -115,7 +116,14 @@ the previously used toolbutton to pop out. *
 
     QAction *action();
 %Docstring
-Returns associated action with map tool or NULL if no action is associated
+Returns associated action with map tool or ``None`` if no action is associated
+%End
+
+    bool isActive() const;
+%Docstring
+Returns if the current map tool active on the map canvas
+
+.. versionadded:: 3.4
 %End
 
     void setButton( QAbstractButton *button );
@@ -126,7 +134,7 @@ as setAction() function except it works with a button instead of an QAction. *
 
     QAbstractButton *button();
 %Docstring
-Returns associated button with map tool or NULL if no button is associated
+Returns associated button with map tool or ``None`` if no button is associated
 %End
 
     virtual void setCursor( const QCursor &cursor );
@@ -149,7 +157,7 @@ called when map tool is being deactivated
 convenient method to clean members
 %End
 
-    QgsMapCanvas *canvas();
+    QgsMapCanvas *canvas() const;
 %Docstring
 returns pointer to the tool's map canvas
 %End
@@ -184,6 +192,24 @@ Gets search radius in map units for given canvas. Used by identify, tip etc.
 The values is calculated from searchRadiusMM().
 
 .. versionadded:: 2.3
+%End
+
+    virtual void populateContextMenu( QMenu *menu );
+%Docstring
+Allows the tool to populate and customize the given ``menu``,
+prior to showing it in response to a right-mouse button click.
+
+``menu`` will be initially populated with a set of default, generic actions.
+Any new actions added to the menu should be correctly parented to ``menu``.
+
+The default implementation does nothing.
+
+.. note::
+
+   The context menu is only shown when the ShowContextMenu flag
+   is present in flags().
+
+.. versionadded:: 3.14
 %End
 
   signals:
@@ -248,7 +274,7 @@ transformation from layer's coordinates to map coordinates (which is different i
 trnasformation of the rect from map coordinates to layer's coordinates
 %End
 
-    QPoint toCanvasCoordinates( const QgsPointXY &point );
+    QPoint toCanvasCoordinates( const QgsPointXY &point ) const;
 %Docstring
 transformation from map coordinates to screen coordinates
 %End

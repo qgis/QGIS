@@ -67,7 +67,7 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
         firstFeature = false;
       }
 
-      if ( f.hasGeometry() && f.geometry() )
+      if ( f.hasGeometry() && !f.geometry().isNull() )
       {
         geomQueue.append( f.geometry() );
         if ( maxQueueLength > 0 && geomQueue.length() > maxQueueLength )
@@ -89,7 +89,8 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
   else
   {
     QList< int > fieldIndexes;
-    Q_FOREACH ( const QString &field, fields )
+    const auto constFields = fields;
+    for ( const QString &field : constFields )
     {
       int index = source->fields().lookupField( field );
       if ( index >= 0 )
@@ -107,7 +108,8 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
       }
 
       QVariantList indexAttributes;
-      Q_FOREACH ( int index, fieldIndexes )
+      const auto constFieldIndexes = fieldIndexes;
+      for ( int index : constFieldIndexes )
       {
         indexAttributes << f.attribute( index );
       }
@@ -118,7 +120,7 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
         attributeHash.insert( indexAttributes, f.attributes() );
       }
 
-      if ( f.hasGeometry() && f.geometry() )
+      if ( f.hasGeometry() && !f.geometry().isNull() )
       {
         geometryHash[ indexAttributes ].append( f.geometry() );
       }
@@ -190,7 +192,7 @@ QString QgsDissolveAlgorithm::groupId() const
 void QgsDissolveAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Unique ID fields" ), QVariant(),
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Dissolve field(s)" ), QVariant(),
                 QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, true, true ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Dissolved" ) ) );
@@ -198,9 +200,9 @@ void QgsDissolveAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsDissolveAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a polygon or line vector layer and combines their geometries into new geometries. One or more attributes can "
-                      "be specified to dissolve only geometries belonging to the same class (having the same value for the specified attributes), alternatively "
-                      "all geometries can be dissolved.\n\n"
+  return QObject::tr( "This algorithm takes a vector layer and combines their features into new features. One or more attributes can "
+                      "be specified to dissolve features belonging to the same class (having the same value for the specified attributes), alternatively "
+                      "all features can be dissolved in a single one.\n\n"
                       "All output geometries will be converted to multi geometries. "
                       "In case the input is a polygon layer, common boundaries of adjacent polygons being dissolved will get erased." );
 }
@@ -212,9 +214,36 @@ QgsDissolveAlgorithm *QgsDissolveAlgorithm::createInstance() const
 
 QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  return processCollection( parameters, context, feedback, []( const QVector< QgsGeometry > &parts )->QgsGeometry
+  return processCollection( parameters, context, feedback, [ & ]( const QVector< QgsGeometry > &parts )->QgsGeometry
   {
-    return QgsGeometry::unaryUnion( parts );
+    QgsGeometry result( QgsGeometry::unaryUnion( parts ) );
+    if ( QgsWkbTypes::geometryType( result.wkbType() ) == QgsWkbTypes::LineGeometry )
+      result = result.mergeLines();
+    // Geos may fail in some cases, let's try a slower but safer approach
+    // See: https://github.com/qgis/QGIS/issues/28411 - Dissolve tool failing to produce outputs
+    if ( ! result.lastError().isEmpty() && parts.count() >  2 )
+    {
+      if ( feedback->isCanceled() )
+        return result;
+
+      feedback->pushDebugInfo( QObject::tr( "GEOS exception: taking the slower route ..." ) );
+      result = QgsGeometry();
+      for ( const auto &p : parts )
+      {
+        result = QgsGeometry::unaryUnion( QVector< QgsGeometry >() << result << p );
+        if ( QgsWkbTypes::geometryType( result.wkbType() ) == QgsWkbTypes::LineGeometry )
+          result = result.mergeLines();
+        if ( feedback->isCanceled() )
+          return result;
+      }
+    }
+    if ( ! result.lastError().isEmpty() )
+    {
+      feedback->reportError( result.lastError(), true );
+      if ( result.isEmpty() )
+        throw QgsProcessingException( QObject::tr( "The algorithm returned no output." ) );
+    }
+    return result;
   }, 10000 );
 }
 

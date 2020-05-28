@@ -29,7 +29,15 @@
 
 
 QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
-  : QDateTimeEdit( parent )
+  : QgsDateTimeEdit( QDateTime(), QVariant::DateTime, parent )
+{
+
+}
+
+///@cond PRIVATE
+QgsDateTimeEdit::QgsDateTimeEdit( const QVariant &var, QVariant::Type parserType, QWidget *parent )
+  : QDateTimeEdit( var, parserType, parent )
+  , mNullRepresentation( QgsApplication::nullRepresentation() )
 {
   QIcon clearIcon = QgsApplication::getThemeIcon( "/mIconClearText.svg" );
   mClearAction = new QAction( clearIcon, tr( "clear" ), this );
@@ -48,6 +56,7 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
   // init with current time so mIsNull is properly initialized
   QDateTimeEdit::setDateTime( QDateTime::currentDateTime() );
 }
+///@endcond
 
 void QgsDateTimeEdit::setAllowNull( bool allowNull )
 {
@@ -60,9 +69,13 @@ void QgsDateTimeEdit::clear()
 {
   if ( mAllowNull )
   {
-    displayNull();
+    displayCurrentDate();
 
-    changed( QDateTime() );
+    // Check if it's really changed or crash, see GH #29937
+    if ( ! dateTime().isNull() )
+    {
+      changed( QDateTime() );
+    }
 
     // emit signal of QDateTime::dateTimeChanged with an invalid date
     // anyway, using parent's signal should be avoided
@@ -72,10 +85,6 @@ void QgsDateTimeEdit::clear()
     disconnect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
     emit dateTimeChanged( QDateTime() );
     connect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
-
-    // otherwise, NULL is not displayed in the line edit
-    // this might not be the right way to do it
-    clearFocus();
   }
 }
 
@@ -88,7 +97,7 @@ void QgsDateTimeEdit::setEmpty()
 void QgsDateTimeEdit::mousePressEvent( QMouseEvent *event )
 {
   // catch mouse press on the button (when the current value is null)
-  // in non-calendar mode: modifiy the date  so it leads to showing current date (don't bother about time)
+  // in non-calendar mode: modify the date  so it leads to showing current date (don't bother about time)
   // in calendar mode: be sure NULL is displayed when needed and show page of current date in calendar widget
 
   bool updateCalendar = false;
@@ -144,7 +153,7 @@ void QgsDateTimeEdit::focusOutEvent( QFocusEvent *event )
   if ( mAllowNull && mIsNull && !mCurrentPressEvent )
   {
     QAbstractSpinBox::focusOutEvent( event );
-    if ( lineEdit()->text() != QgsApplication::nullRepresentation() )
+    if ( lineEdit()->text() != mNullRepresentation )
     {
       displayNull();
     }
@@ -153,6 +162,20 @@ void QgsDateTimeEdit::focusOutEvent( QFocusEvent *event )
   else
   {
     QDateTimeEdit::focusOutEvent( event );
+  }
+}
+
+void QgsDateTimeEdit::focusInEvent( QFocusEvent *event )
+{
+  if ( mAllowNull && mIsNull && !mCurrentPressEvent )
+  {
+    QAbstractSpinBox::focusInEvent( event );
+
+    displayCurrentDate();
+  }
+  else
+  {
+    QDateTimeEdit::focusInEvent( event );
   }
 }
 
@@ -170,13 +193,14 @@ void QgsDateTimeEdit::showEvent( QShowEvent *event )
 {
   QDateTimeEdit::showEvent( event );
   if ( mAllowNull && mIsNull &&
-       lineEdit()->text() != QgsApplication::nullRepresentation() )
+       lineEdit()->text() != mNullRepresentation )
   {
     displayNull();
   }
 }
 
-void QgsDateTimeEdit::changed( const QDateTime &dateTime )
+///@cond PRIVATE
+void QgsDateTimeEdit::changed( const QVariant &dateTime )
 {
   mIsEmpty = false;
   bool isNull = dateTime.isNull();
@@ -198,8 +222,23 @@ void QgsDateTimeEdit::changed( const QDateTime &dateTime )
   }
 
   mClearAction->setVisible( mAllowNull && !mIsNull );
+  if ( !mBlockChangedSignal )
+    emitValueChanged( dateTime );
+}
+///@endcond
 
-  emit QgsDateTimeEdit::valueChanged( dateTime );
+QString QgsDateTimeEdit::nullRepresentation() const
+{
+  return mNullRepresentation;
+}
+
+void QgsDateTimeEdit::setNullRepresentation( const QString &nullRepresentation )
+{
+  mNullRepresentation = nullRepresentation;
+  if ( mIsNull )
+  {
+    lineEdit()->setText( mNullRepresentation );
+  }
 }
 
 void QgsDateTimeEdit::displayNull( bool updateCalendar )
@@ -211,7 +250,25 @@ void QgsDateTimeEdit::displayNull( bool updateCalendar )
     // a date selected in calendar widget
     QDateTimeEdit::setDateTime( minimumDateTime() );
   }
-  lineEdit()->setText( QgsApplication::nullRepresentation() );
+  lineEdit()->setCursorPosition( lineEdit()->text().length() );
+  lineEdit()->setText( mNullRepresentation );
+  connect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
+}
+
+void QgsDateTimeEdit::emitValueChanged( const QVariant &value )
+{
+  emit QgsDateTimeEdit::valueChanged( value.toDateTime() );
+}
+
+bool QgsDateTimeEdit::isNull() const
+{
+  return mAllowNull && mIsNull;
+}
+
+void QgsDateTimeEdit::displayCurrentDate()
+{
+  disconnect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
+  QDateTimeEdit::setDateTime( QDateTime::currentDateTime() );
   connect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
 }
 
@@ -251,17 +308,22 @@ void QgsDateTimeEdit::setDateTime( const QDateTime &dateTime )
   if ( !dateTime.isValid() || dateTime.isNull() )
   {
     clear();
+    displayNull();
   }
-  else
+  // Check if it's really changed or crash, see GH #29937
+  else if ( dateTime != QgsDateTimeEdit::dateTime() )
   {
+    // changed emits a signal, so don't allow it to be emitted from setDateTime
+    mBlockChangedSignal++;
     QDateTimeEdit::setDateTime( dateTime );
+    mBlockChangedSignal--;
     changed( dateTime );
   }
 }
 
 QDateTime QgsDateTimeEdit::dateTime() const
 {
-  if ( mAllowNull && mIsNull )
+  if ( isNull() )
   {
     return QDateTime();
   }
@@ -269,4 +331,102 @@ QDateTime QgsDateTimeEdit::dateTime() const
   {
     return QDateTimeEdit::dateTime();
   }
+}
+
+QTime QgsDateTimeEdit::time() const
+{
+  if ( isNull() )
+  {
+    return QTime();
+  }
+  else
+  {
+    return QDateTimeEdit::time();
+  }
+}
+
+QDate QgsDateTimeEdit::date() const
+{
+  if ( isNull() )
+  {
+    return QDate();
+  }
+  else
+  {
+    return QDateTimeEdit::date();
+  }
+}
+
+
+//
+// QgsTimeEdit
+//
+
+QgsTimeEdit::QgsTimeEdit( QWidget *parent )
+  : QgsDateTimeEdit( QTime(), QVariant::Time, parent )
+{
+
+}
+
+void QgsTimeEdit::setTime( const QTime &time )
+{
+  mIsEmpty = false;
+
+  // set an undefined date
+  if ( !time.isValid() || time.isNull() )
+  {
+    clear();
+    displayNull();
+  }
+  // Check if it's really changed or crash, see GH #29937
+  else if ( time != QgsTimeEdit::time() )
+  {
+    // changed emits a signal, so don't allow it to be emitted from setTime
+    mBlockChangedSignal++;
+    QDateTimeEdit::setTime( time );
+    mBlockChangedSignal--;
+    changed( time );
+  }
+}
+
+void QgsTimeEdit::emitValueChanged( const QVariant &value )
+{
+  emit timeValueChanged( value.toTime() );
+}
+
+
+//
+// QgsDateEdit
+//
+
+QgsDateEdit::QgsDateEdit( QWidget *parent )
+  : QgsDateTimeEdit( QDate(), QVariant::Date, parent )
+{
+
+}
+
+void QgsDateEdit::setDate( const QDate &date )
+{
+  mIsEmpty = false;
+
+  // set an undefined date
+  if ( !date.isValid() || date.isNull() )
+  {
+    clear();
+    displayNull();
+  }
+  // Check if it's really changed or crash, see GH #29937
+  else if ( date != QgsDateEdit::date() )
+  {
+    // changed emits a signal, so don't allow it to be emitted from setDate
+    mBlockChangedSignal++;
+    QDateTimeEdit::setDate( date );
+    mBlockChangedSignal--;
+    changed( date );
+  }
+}
+
+void QgsDateEdit::emitValueChanged( const QVariant &value )
+{
+  emit dateValueChanged( value.toDate() );
 }

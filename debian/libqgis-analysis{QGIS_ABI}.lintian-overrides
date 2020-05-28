@@ -1,2 +1,7 @@
-libqgis-analysis{QGIS_ABI}: no-symbols-control-file
-libqgis-analysis{QGIS_ABI}: shlib-calls-exit
+no-symbols-control-file *
+shlib-calls-exit *
+spelling-error-in-binary * Addd Add
+spelling-error-in-binary * PrES Press
+spelling-error-in-binary * Pres Press
+spelling-error-in-binary * liK link
+spelling-error-in-binary * pres press

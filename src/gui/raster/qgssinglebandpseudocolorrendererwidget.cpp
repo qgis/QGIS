@@ -143,18 +143,6 @@ void QgsSingleBandPseudoColorRendererWidget::setMapCanvas( QgsMapCanvas *canvas 
   mColorRampShaderWidget->setExtent( mMinMaxWidget->extent() );
 }
 
-void QgsSingleBandPseudoColorRendererWidget::mLoadFromBandButton_clicked()
-{
-  if ( !mRasterLayer || !mRasterLayer->dataProvider() )
-  {
-    return;
-  }
-
-  int bandIndex = mBandComboBox->currentBand();
-  mColorRampShaderWidget->setRasterBand( bandIndex );
-  emit widgetChanged();
-}
-
 void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRenderer *r )
 {
   const QgsSingleBandPseudoColorRenderer *pr = dynamic_cast<const QgsSingleBandPseudoColorRenderer *>( r );
@@ -162,6 +150,7 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
   {
     mBandComboBox->setBand( pr->band() );
     mMinMaxWidget->setBands( QList< int >() << pr->band() );
+    mColorRampShaderWidget->setRasterBand( pr->band() );
 
     const QgsRasterShader *rasterShader = pr->shader();
     if ( rasterShader )
@@ -194,11 +183,8 @@ void QgsSingleBandPseudoColorRendererWidget::bandChanged()
 
 void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int bandNo, double min, double max )
 {
-  Q_UNUSED( bandNo );
-  QgsDebugMsg( QString( "theBandNo = %1 min = %2 max = %3" ).arg( bandNo ).arg( min ).arg( max ) );
-
-  double oldMin = lineEditValue( mMinLineEdit );
-  double oldMax = lineEditValue( mMaxLineEdit );
+  Q_UNUSED( bandNo )
+  QgsDebugMsg( QStringLiteral( "theBandNo = %1 min = %2 max = %3" ).arg( bandNo ).arg( min ).arg( max ) );
 
   if ( std::isnan( min ) )
   {
@@ -218,7 +204,10 @@ void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int bandNo, double min,
     whileBlocking( mMaxLineEdit )->setText( QString::number( max ) );
   }
 
-  if ( !qgsDoubleNear( oldMin, min ) || !qgsDoubleNear( oldMax, max ) )
+  // We compare old min and new min as text because QString::number keeps a fixed number of significant
+  // digits (default 6) and so loaded min/max will always differ from current one, which triggers a
+  // classification, and wipe out every user modification (see https://github.com/qgis/QGIS/issues/36172)
+  if ( mMinLineEdit->text() != QString::number( min ) || mMaxLineEdit->text() != QString::number( max ) )
   {
     whileBlocking( mColorRampShaderWidget )->setRasterBand( bandNo );
     whileBlocking( mColorRampShaderWidget )->setMinimumMaximumAndClassify( min, max );

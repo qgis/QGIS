@@ -1,0 +1,79 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsalignmentcombobox.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsAlignmentComboBox : QComboBox
+{
+%Docstring
+A combo box which allows choice of alignment settings (e.g. left, right, ...).
+
+Currently only horizontal alignments are supported. Available alignment choices
+can be manually specified by calling setAvailableAlignments(), which is useful
+when only a subset of Qt's alignment options should be exposed.
+
+.. versionadded:: 3.10
+%End
+
+%TypeHeaderCode
+#include "qgsalignmentcombobox.h"
+%End
+  public:
+
+    QgsAlignmentComboBox( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsAlignmentComboBox, with the specified parent widget.
+%End
+
+    void setAvailableAlignments( Qt::Alignment alignments );
+%Docstring
+Sets the available alignment choices shown in the combo box.
+%End
+
+    Qt::Alignment currentAlignment() const;
+%Docstring
+Returns the current alignment choice.
+
+.. seealso:: :py:func:`setCurrentAlignment`
+%End
+
+    void setCurrentAlignment( Qt::Alignment alignment );
+%Docstring
+Sets the current ``alignment`` choice.
+
+.. seealso:: :py:func:`currentAlignment`
+%End
+
+    void customizeAlignmentDisplay( Qt::Alignment alignment, const QString &text = QString(), const QIcon &icon = QIcon() );
+%Docstring
+Sets the ``text`` and ``icon`` to use for a particular ``alignment`` option,
+replacing the default text or icon.
+
+If ``text`` or ``icon`` is not specified, they will not be changed from the default.
+
+.. note::
+
+   This must be called after first filtering the available alignment options via setAvailableAlignments().
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when the alignment is changed.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsalignmentcombobox.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

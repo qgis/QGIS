@@ -18,6 +18,8 @@
 
 #include "qgsmaptooledit.h"
 #include "qgis_app.h"
+#include "qgsfeatureid.h"
+#include "qgsgeometry.h"
 
 class QgsVertexMarker;
 

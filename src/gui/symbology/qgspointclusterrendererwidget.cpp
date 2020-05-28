@@ -24,6 +24,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsguiutils.h"
+#include "qgsapplication.h"
 
 QgsRendererWidget *QgsPointClusterRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
@@ -123,7 +124,10 @@ void QgsPointClusterRendererWidget::setContext( const QgsSymbolWidgetContext &co
   if ( mDistanceUnitWidget )
     mDistanceUnitWidget->setMapCanvas( context.mapCanvas() );
   if ( mCenterSymbolToolButton )
+  {
     mCenterSymbolToolButton->setMapCanvas( context.mapCanvas() );
+    mCenterSymbolToolButton->setMessageBar( context.messageBar() );
+  }
 }
 
 void QgsPointClusterRendererWidget::mRendererComboBox_currentIndexChanged( int index )
@@ -133,7 +137,8 @@ void QgsPointClusterRendererWidget::mRendererComboBox_currentIndexChanged( int i
   if ( m )
   {
     // unfortunately renderer conversion is only available through the creation of a widget...
-    QgsRendererWidget *tempRenderWidget = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
+    std::unique_ptr< QgsFeatureRenderer > oldRenderer( mRenderer->embeddedRenderer()->clone() );
+    QgsRendererWidget *tempRenderWidget = m->createRendererWidget( mLayer, mStyle, oldRenderer.get() );
     mRenderer->setEmbeddedRenderer( tempRenderWidget->renderer()->clone() );
     delete tempRenderWidget;
   }
@@ -204,7 +209,8 @@ QgsExpressionContext QgsPointClusterRendererWidget::createExpressionContext() co
   scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, 0, true ) );
   QList< QgsExpressionContextScope > scopes = mContext.additionalExpressionContextScopes();
   scopes << scope;
-  Q_FOREACH ( const QgsExpressionContextScope &s, scopes )
+  const auto constScopes = scopes;
+  for ( const QgsExpressionContextScope &s : constScopes )
   {
     context << new QgsExpressionContextScope( s );
   }

@@ -67,7 +67,7 @@ void QgsActionMenu::setFeature( const QgsFeature &feature )
   mFeature = feature;
 }
 
-void QgsActionMenu::setMode( const QgsAttributeForm::Mode mode )
+void QgsActionMenu::setMode( const QgsAttributeEditorContext::Mode mode )
 {
   mMode = mode;
   reloadActions();
@@ -93,7 +93,7 @@ void QgsActionMenu::triggerAction()
   if ( data.actionType == MapLayerAction )
   {
     QgsMapLayerAction *mapLayerAction = data.actionData.value<QgsMapLayerAction *>();
-    mapLayerAction->triggerForFeature( data.mapLayer, &mFeature );
+    mapLayerAction->triggerForFeature( data.mapLayer, mFeature );
   }
   else if ( data.actionType == AttributeAction )
   {
@@ -115,12 +115,13 @@ void QgsActionMenu::reloadActions()
 
   mActions = mLayer->actions()->actions( mActionScope );
 
-  Q_FOREACH ( const QgsAction &action, mActions )
+  const auto constMActions = mActions;
+  for ( const QgsAction &action : constMActions )
   {
     if ( !mLayer->isEditable() && action.isEnabledOnlyWhenEditable() )
       continue;
 
-    if ( action.isEnabledOnlyWhenEditable() && ( mMode == QgsAttributeForm::AddFeatureMode || mMode == QgsAttributeForm::IdentifyMode ) )
+    if ( action.isEnabledOnlyWhenEditable() && ( mMode == QgsAttributeEditorContext::AddFeatureMode || mMode == QgsAttributeEditorContext::IdentifyMode ) )
       continue;
 
     QgsAction act( action );
@@ -155,7 +156,7 @@ void QgsActionMenu::reloadActions()
     {
       QgsMapLayerAction *qaction = mapLayerActions.at( i );
 
-      if ( qaction->isEnabledOnlyWhenEditable() && ( mMode == QgsAttributeForm::AddFeatureMode || mMode == QgsAttributeForm::IdentifyMode ) )
+      if ( qaction->isEnabledOnlyWhenEditable() && ( mMode == QgsAttributeEditorContext::AddFeatureMode || mMode == QgsAttributeEditorContext::IdentifyMode ) )
         continue;
 
       QAction *qAction = new QAction( qaction->icon(), qaction->text(), this );
@@ -203,4 +204,9 @@ void QgsActionMenu::setExpressionContextScope( const QgsExpressionContextScope &
 QgsExpressionContextScope QgsActionMenu::expressionContextScope() const
 {
   return mExpressionContextScope;
+}
+
+QList<QgsAction> QgsActionMenu::menuActions()
+{
+  return mActions;
 }

@@ -30,7 +30,7 @@ from qgis.PyQt.QtWidgets import QDialog
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
 import qgis
-from qgis.core import QgsNetworkAccessManager, QgsApplication
+from qgis.core import QgsNetworkAccessManager, QgsApplication, QgsNetworkRequestParameters
 
 from .ui_qgsplugininstallerinstallingbase import Ui_QgsPluginInstallerInstallingDialogBase
 from .installer_data import removeDir, repositories
@@ -40,7 +40,7 @@ from .unzip import unzip
 class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallingDialogBase):
     # ----------------------------------------- #
 
-    def __init__(self, parent, plugin):
+    def __init__(self, parent, plugin, stable=True):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self.plugin = plugin
@@ -50,7 +50,7 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
         self.labelName.setText(plugin["name"])
         self.buttonBox.clicked.connect(self.abort)
 
-        self.url = QUrl(plugin["download_url"])
+        self.url = QUrl(plugin["download_url_stable"] if stable else plugin["download_url_experimental"])
         self.redirectionCounter = 0
 
         fileName = plugin["filename"]
@@ -62,6 +62,7 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
 
     def requestDownloading(self):
         self.request = QNetworkRequest(self.url)
+        self.request.setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.AttributeInitiatorClass), "QgsPluginInstallerInstallingDialog")
         authcfg = repositories.all()[self.plugin["zip_repository"]]["authcfg"]
         if authcfg and isinstance(authcfg, str):
             if not QgsApplication.authManager().updateNetworkRequest(

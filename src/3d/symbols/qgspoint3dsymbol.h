@@ -20,20 +20,28 @@
 
 #include "qgsabstract3dsymbol.h"
 #include "qgsphongmaterialsettings.h"
-#include "qgs3dutils.h"
+#include "qgs3dtypes.h"
+#include "qgssymbol.h"
 
+#include <QMatrix4x4>
 
 /**
  * \ingroup 3d
  * 3D symbol that draws point geometries as 3D objects using one of the predefined shapes.
+ *
+ * \warning This is not considered stable API, and may change in future QGIS releases. It is
+ * exposed to the Python bindings as a tech preview only.
  *
  * \since QGIS 3.0
  */
 class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
 {
   public:
-    //! Constructor for QgsPoint3DSymbol.
-    QgsPoint3DSymbol() = default;
+    //! Constructor for QgsPoint3DSymbol with default QgsMarkerSymbol as the billboardSymbol
+    QgsPoint3DSymbol();
+
+    //! Copy Constructor for QgsPoint3DSymbol
+    QgsPoint3DSymbol( const QgsPoint3DSymbol &other );
 
     QString type() const override { return "point"; }
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
@@ -42,9 +50,9 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
     //! Returns method that determines altitude (whether to clamp to feature to terrain)
-    AltitudeClamping altitudeClamping() const { return mAltClamping; }
+    Qgs3DTypes::AltitudeClamping altitudeClamping() const { return mAltClamping; }
     //! Sets method that determines altitude (whether to clamp to feature to terrain)
-    void setAltitudeClamping( AltitudeClamping altClamping ) { mAltClamping = altClamping; }
+    void setAltitudeClamping( Qgs3DTypes::AltitudeClamping altClamping ) { mAltClamping = altClamping; }
 
     //! Returns material used for shading of the symbol
     QgsPhongMaterialSettings material() const { return mMaterial; }
@@ -62,6 +70,7 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
       Plane,
       ExtrudedText,  //!< Supported in Qt 5.9+
       Model,
+      Billboard,
     };
 
     //! Returns shape enum value from a string
@@ -79,19 +88,31 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
     //! Sets a key-value dictionary of point shape properties
     void setShapeProperties( const QVariantMap &properties ) { mShapeProperties = properties; }
 
+    //! Returns a symbol for billboard
+    QgsMarkerSymbol *billboardSymbol() const { return mBillboardSymbol.get(); }
+    //! Set symbol for billboard and the ownership is transferred
+    void setBillboardSymbol( QgsMarkerSymbol *symbol ) { mBillboardSymbol.reset( symbol ); }
+
     //! Returns transform for individual objects represented by the symbol
     QMatrix4x4 transform() const { return mTransform; }
     //! Sets transform for individual objects represented by the symbol
     void setTransform( const QMatrix4x4 &transform ) { mTransform = transform; }
 
+    //! Returns transform for billboards
+    QMatrix4x4 billboardTransform() const;
+
   private:
     //! how to handle altitude of vector features
-    AltitudeClamping mAltClamping = AltClampRelative;
+    Qgs3DTypes::AltitudeClamping mAltClamping = Qgs3DTypes::AltClampRelative;
 
     QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
     Shape mShape = Cylinder;  //!< What kind of shape to use
     QVariantMap mShapeProperties;  //!< Key-value dictionary of shape's properties (different keys for each shape)
     QMatrix4x4 mTransform;  //!< Transform of individual instanced models
+    std::unique_ptr<QgsMarkerSymbol> mBillboardSymbol;
+#ifdef SIP_RUN
+    QgsPoint3DSymbol &operator=( const QgsPoint3DSymbol & );
+#endif
 };
 
 

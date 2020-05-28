@@ -32,7 +32,7 @@
 #include <QString>
 #include <QtAlgorithms>
 
-#include "SpatialIndex.h"
+#include <spatialindex/SpatialIndex.h>
 
 using namespace SpatialIndex;
 
@@ -120,7 +120,7 @@ class QgsNetworkVisitor : public SpatialIndex::IVisitor
       : mPoints( pointIndexes ) {}
 
     void visitNode( const INode &n ) override
-    { Q_UNUSED( n ); }
+    { Q_UNUSED( n ) }
 
     void visitData( const IData &d ) override
     {
@@ -128,7 +128,7 @@ class QgsNetworkVisitor : public SpatialIndex::IVisitor
     }
 
     void visitData( std::vector<const IData *> &v ) override
-    { Q_UNUSED( v ); }
+    { Q_UNUSED( v ) }
 
   private:
     QVector< int > &mPoints;
@@ -203,7 +203,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
   };
 
   // first iteration - get all nodes from network, and snap additional points to network
-  QgsFeatureIterator fit = mSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeatureIterator fit = mSource->getFeatures( QgsFeatureRequest().setNoAttributes() );
   QgsFeature feature;
   while ( fit.nextFeature( feature ) )
   {
@@ -254,7 +254,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
             else
             {
               thisSegmentClosestDist = additionalPoint.sqrDistToSegment( pt1.x(), pt1.y(),
-                                       pt2.x(), pt2.y(), snappedPoint );
+                                       pt2.x(), pt2.y(), snappedPoint, 0 );
             }
 
             if ( thisSegmentClosestDist < additionalTiePoints[ i ].mLength )
@@ -384,6 +384,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
             {
               double distance = builder->distanceArea()->measureLine( arcPt1, arcPt2 );
               QVector< QVariant > prop;
+              prop.reserve( mStrategies.size() );
               for ( QgsNetworkStrategy *strategy : mStrategies )
               {
                 prop.push_back( strategy->cost( distance, feature ) );

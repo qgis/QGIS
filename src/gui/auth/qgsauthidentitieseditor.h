@@ -18,7 +18,7 @@
 #define QGSAUTHIDENTITIESEDITOR_H
 
 #include <QWidget>
-#include "qgis.h"
+#include "qgis_sip.h"
 #include <QSslCertificate>
 
 #include "ui_qgsauthidentitieseditor.h"

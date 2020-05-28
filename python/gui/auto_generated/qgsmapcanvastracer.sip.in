@@ -36,7 +36,7 @@ Create tracer associated with a particular map canvas, optionally message bar fo
 
     QAction *actionEnableTracing() const;
 %Docstring
-Access to action that user may use to toggle tracing on/off. May be null if no action was associated
+Access to action that user may use to toggle tracing on/off. May be ``None`` if no action was associated
 %End
 
     void setActionEnableTracing( QAction *action );
@@ -47,7 +47,7 @@ The action is used to determine whether tracing is currently enabled by the user
 
     QAction *actionEnableSnapping() const;
 %Docstring
-Access to action that user may use to toggle snapping on/off. May be null if no action was associated.
+Access to action that user may use to toggle snapping on/off. May be ``None`` if no action was associated.
 
 .. versionadded:: 3.0
 %End

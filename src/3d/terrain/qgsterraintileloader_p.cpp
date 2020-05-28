@@ -25,11 +25,8 @@
 
 #include <Qt3DRender/QTexture>
 
-#if QT_VERSION >= 0x050900
 #include <Qt3DExtras/QTextureMaterial>
-#else
 #include <Qt3DExtras/QDiffuseMapMaterial>
-#endif
 
 #include "quantizedmeshterraingenerator.h"
 
@@ -58,34 +55,51 @@ QgsTerrainTileLoader::QgsTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkN
 
   QgsRectangle extentTerrainCrs = map.terrainGenerator()->tilingScheme().tileToExtent( tx, ty, tz );
   mExtentMapCrs = terrain->terrainToMapTransform().transformBoundingBox( extentTerrainCrs );
-  mTileDebugText = QString( "%1 | %2 | %3" ).arg( tx ).arg( ty ).arg( tz );
+  mTileDebugText = QStringLiteral( "%1 | %2 | %3" ).arg( tx ).arg( ty ).arg( tz );
 }
 
 void QgsTerrainTileLoader::loadTexture()
 {
   connect( mTerrain->textureGenerator(), &QgsTerrainTextureGenerator::tileReady, this, &QgsTerrainTileLoader::onImageReady );
-  mTextureJobId = mTerrain->textureGenerator()->render( mExtentMapCrs, mTileDebugText );
+  mTextureJobId = mTerrain->textureGenerator()->render( mExtentMapCrs, mNode->tileId(), mTileDebugText );
 }
 
-void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity )
+void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial )
 {
-  Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D( entity );
+  Qt3DRender::QTexture2D *texture = createTexture( entity );
+
+  Qt3DRender::QMaterial *material = nullptr;
+  if ( isShadingEnabled )
+  {
+    Qt3DExtras::QDiffuseMapMaterial *diffuseMapMaterial;
+    diffuseMapMaterial = new Qt3DExtras::QDiffuseMapMaterial;
+    diffuseMapMaterial->setDiffuse( texture );
+    diffuseMapMaterial->setAmbient( shadingMaterial.ambient() );
+    diffuseMapMaterial->setSpecular( shadingMaterial.specular() );
+    diffuseMapMaterial->setShininess( shadingMaterial.shininess() );
+    material = diffuseMapMaterial;
+  }
+  else
+  {
+    Qt3DExtras::QTextureMaterial *textureMaterial = new Qt3DExtras::QTextureMaterial;
+    textureMaterial->setTexture( texture );
+    material = textureMaterial;
+  }
+
+  entity->addComponent( material ); // takes ownership if the component has no parent
+}
+
+Qt3DRender::QTexture2D *QgsTerrainTileLoader::createTexture( QgsTerrainTileEntity *entity )
+{
+  Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D;
   QgsTerrainTextureImage *textureImage = new QgsTerrainTextureImage( mTextureImage, mExtentMapCrs, mTileDebugText );
-  texture->addTextureImage( textureImage );
+  texture->addTextureImage( textureImage );//texture take the ownership of textureImage if has no parant
   texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
   texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
-  Qt3DExtras::QTextureMaterial *material = nullptr;
-#if QT_VERSION >= 0x050900
-  material = new Qt3DExtras::QTextureMaterial;
-  material->setTexture( texture );
-#else
-  material = new Qt3DExtras::QDiffuseMapMaterial;
-  material->setDiffuse( texture );
-  material->setShininess( 1 );
-  material->setAmbient( Qt::white );
-#endif
+
   entity->setTextureImage( textureImage );
-  entity->addComponent( material ); // takes ownership if the component has no parent
+
+  return texture;
 }
 
 void QgsTerrainTileLoader::onImageReady( int jobId, const QImage &image )

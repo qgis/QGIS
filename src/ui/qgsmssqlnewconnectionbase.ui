@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>772</width>
-    <height>520</height>
+    <height>575</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -103,7 +103,7 @@
          <item row="0" column="1">
           <widget class="QCheckBox" name="cb_trustedConnection">
            <property name="text">
-            <string>Trusted Connection</string>
+            <string>Trusted connection</string>
            </property>
            <property name="checked">
             <bool>true</bool>
@@ -202,7 +202,7 @@ Untick save if you don't wish to be the case.</string>
    <item row="1" column="1">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
-      <string>Database details</string>
+      <string>Database Details</string>
      </property>
      <layout class="QFormLayout" name="formLayout_3">
       <item row="1" column="1">
@@ -210,6 +210,9 @@ Untick save if you don't wish to be the case.</string>
       </item>
       <item row="3" column="0" colspan="2">
        <widget class="QCheckBox" name="cb_allowGeometrylessTables">
+        <property name="toolTip">
+         <string>If checked, tables without a geometry column attached will also be shown in the available table lists.</string>
+        </property>
         <property name="text">
          <string>Also list tables with no geometry</string>
         </property>
@@ -217,6 +220,9 @@ Untick save if you don't wish to be the case.</string>
       </item>
       <item row="4" column="0" colspan="2">
        <widget class="QCheckBox" name="cb_useEstimatedMetadata">
+        <property name="toolTip">
+         <string>If checked, only estimated table metadata will be used. This avoids a slow table scan, but may result in incorrect layer properties such as layer extent.</string>
+        </property>
         <property name="text">
          <string>Use estimated table parameters</string>
         </property>
@@ -227,15 +233,18 @@ Untick save if you don't wish to be the case.</string>
       </item>
       <item row="2" column="0" colspan="2">
        <widget class="QCheckBox" name="cb_geometryColumns">
+        <property name="toolTip">
+         <string>If checked, only tables which are present in the &quot;geometry_columns&quot; metadata table will be available. This speeds up table scanning, but requires users to manually manage the geometry_columns table and ensure that layers are correctly represented in the table.</string>
+        </property>
         <property name="text">
          <string>Only look in the geometry_columns metadata table</string>
         </property>
         <property name="checked">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="5" column="0" colspan="2">
+      <item row="6" column="0" colspan="2">
        <widget class="QPushButton" name="btnConnect">
         <property name="text">
          <string>Test Connection</string>
@@ -256,6 +265,19 @@ Untick save if you don't wish to be the case.</string>
         </property>
        </widget>
       </item>
+      <item row="5" column="0" colspan="2">
+       <widget class="QCheckBox" name="mCheckNoInvalidGeometryHandling">
+        <property name="toolTip">
+         <string>If checked, all handling of records with invalid geometry will be disabled. This speeds up the provider, however, if any invalid geometries are present in a table then the result is unpredictable and may include missing records. Only check this option if you are certain that all geometries present in the database are valid, and any newly added geometries or tables will also be valid.</string>
+        </property>
+        <property name="text">
+         <string>Skip invalid geometry handling</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -271,15 +293,15 @@ Untick save if you don't wish to be the case.</string>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsPasswordLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgspasswordlineedit.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsMessageBar</class>
    <extends>QWidget</extends>
    <header>qgsmessagebar.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsPasswordLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgspasswordlineedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -296,6 +318,7 @@ Untick save if you don't wish to be the case.</string>
   <tabstop>cb_geometryColumns</tabstop>
   <tabstop>cb_allowGeometrylessTables</tabstop>
   <tabstop>cb_useEstimatedMetadata</tabstop>
+  <tabstop>mCheckNoInvalidGeometryHandling</tabstop>
   <tabstop>btnConnect</tabstop>
  </tabstops>
  <resources/>

@@ -19,7 +19,7 @@
 #define QGSPOINTCLUSTERRENDERERWIDGET_H
 
 #include "ui_qgspointclusterrendererwidgetbase.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsrendererwidget.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgis_gui.h"

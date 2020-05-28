@@ -9,17 +9,18 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Nyall Dawson'
 __date__ = '26/04/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
+
+import os
+from time import sleep
 
 import qgis  # NOQA
 
 from qgis.core import QgsTask, QgsApplication
 
 from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtTest import QSignalSpy
 
 from qgis.testing import start_app, unittest
-from time import sleep
 
 start_app()
 
@@ -78,7 +79,7 @@ class TestQgsTaskManager(unittest.TestCase):
         task = QgsTask.fromFunction('test task', run, 20)
         QgsApplication.taskManager().addTask(task)
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
-            pass
+            QCoreApplication.processEvents()
 
         self.assertEqual(task.returned_values, 20)
         self.assertFalse(task.exception)
@@ -88,7 +89,7 @@ class TestQgsTaskManager(unittest.TestCase):
         bad_task = QgsTask.fromFunction('test task2', run, None)
         QgsApplication.taskManager().addTask(bad_task)
         while bad_task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
-            pass
+            QCoreApplication.processEvents()
 
         self.assertFalse(bad_task.returned_values)
         self.assertTrue(bad_task.exception)
@@ -108,7 +109,7 @@ class TestQgsTaskManager(unittest.TestCase):
         task = QgsTask.fromFunction('test task3', run_with_kwargs, result=5, password=1)
         QgsApplication.taskManager().addTask(task)
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
-            pass
+            QCoreApplication.processEvents()
 
         self.assertEqual(task.returned_values, 5)
         self.assertFalse(task.exception)
@@ -119,11 +120,11 @@ class TestQgsTaskManager(unittest.TestCase):
         bad_task = QgsTask.fromFunction('test task4', cancelable)
         QgsApplication.taskManager().addTask(bad_task)
         while bad_task.status() != QgsTask.Running:
-            pass
+            QCoreApplication.processEvents()
 
         bad_task.cancel()
         while bad_task.status() == QgsTask.Running:
-            pass
+            QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
 
@@ -135,7 +136,7 @@ class TestQgsTaskManager(unittest.TestCase):
         task = QgsTask.fromFunction('test task5', progress_function)
         QgsApplication.taskManager().addTask(task)
         while task.status() != QgsTask.Running:
-            pass
+            QCoreApplication.processEvents()
 
         # wait a fraction so that setProgress gets a chance to be called
         sleep(0.001)
@@ -144,7 +145,7 @@ class TestQgsTaskManager(unittest.TestCase):
 
         task.cancel()
         while task.status() == QgsTask.Running:
-            pass
+            QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
 
@@ -161,7 +162,7 @@ class TestQgsTaskManager(unittest.TestCase):
         task = QgsTask.fromFunction('test task', run_no_result, on_finished=finished_no_val)
         QgsApplication.taskManager().addTask(task)
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
-            pass
+            QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
 
@@ -182,7 +183,7 @@ class TestQgsTaskManager(unittest.TestCase):
         task = QgsTask.fromFunction('test task', run_fail, on_finished=finished_fail)
         QgsApplication.taskManager().addTask(task)
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
-            pass
+            QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
 
@@ -205,7 +206,7 @@ class TestQgsTaskManager(unittest.TestCase):
         QgsApplication.taskManager().addTask(task)
         task.cancel()
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
-            pass
+            QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
 
@@ -227,7 +228,7 @@ class TestQgsTaskManager(unittest.TestCase):
         task = QgsTask.fromFunction('test task', run_single_val_result, on_finished=finished_single_value_result)
         QgsApplication.taskManager().addTask(task)
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
-            pass
+            QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
 
@@ -251,7 +252,7 @@ class TestQgsTaskManager(unittest.TestCase):
         task = QgsTask.fromFunction('test task', run_multiple_val_result, on_finished=finished_multiple_value_result)
         QgsApplication.taskManager().addTask(task)
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
-            pass
+            QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
 
@@ -260,6 +261,37 @@ class TestQgsTaskManager(unittest.TestCase):
         self.assertFalse(task.exception)
         self.assertEqual(result_value, 5)
         self.assertEqual(result_statement, 'whoo')
+
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Test is unstable on Travis')
+    def testTaskFromFunctionWithSubTaskCompletedIsCalledOnce(self):  # spellok
+        """ test that when a parent task has subtasks it does emit taskCompleted only once"""
+
+        self.finished = 0
+        self.completed = 0
+
+        def _on_finished(e):
+            self.finished += 1
+
+        def _on_completed():
+            self.completed += 1
+
+        task = QgsTask.fromFunction('test task', run_no_result, on_finished=_on_finished)
+        task.taskCompleted.connect(_on_completed)
+        spy = QSignalSpy(task.taskCompleted)
+        sub_task_1 = QgsTask.fromFunction('test subtask 1', run_no_result, on_finished=_on_finished)
+        sub_task_2 = QgsTask.fromFunction('test subtask 2', run_no_result, on_finished=_on_finished)
+        task.addSubTask(sub_task_1, [], QgsTask.ParentDependsOnSubTask)
+        task.addSubTask(sub_task_2, [], QgsTask.ParentDependsOnSubTask)
+
+        QgsApplication.taskManager().addTask(task)
+        while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
+            QCoreApplication.processEvents()
+        while QgsApplication.taskManager().countActiveTasks() > 0:
+            QCoreApplication.processEvents()
+
+        self.assertEqual(self.completed, 1)
+        self.assertEqual(self.finished, 3)
+        self.assertEqual(len(spy), 1)
 
 
 if __name__ == '__main__':

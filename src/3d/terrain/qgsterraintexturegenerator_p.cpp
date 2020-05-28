@@ -18,9 +18,12 @@
 #include <qgsmaprenderercustompainterjob.h>
 #include <qgsmaprenderersequentialjob.h>
 #include <qgsmapsettings.h>
+#include <qgsmapthemecollection.h>
 #include <qgsproject.h>
 
 #include "qgs3dmapsettings.h"
+
+#include "qgseventtracing.h"
 
 ///@cond PRIVATE
 
@@ -30,10 +33,12 @@ QgsTerrainTextureGenerator::QgsTerrainTextureGenerator( const Qgs3DMapSettings &
 {
 }
 
-int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, const QString &debugText )
+int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, QgsChunkNodeId tileId, const QString &debugText )
 {
   QgsMapSettings mapSettings( baseMapSettings() );
   mapSettings.setExtent( extent );
+
+  QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, QStringLiteral( "3D" ), QStringLiteral( "Texture" ), tileId.text() );
 
   QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob( mapSettings );
   connect( job, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
@@ -41,6 +46,7 @@ int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, const QStrin
 
   JobData jobData;
   jobData.jobId = ++mLastJobId;
+  jobData.tileId = tileId;
   jobData.job = job;
   jobData.extent = extent;
   jobData.debugText = debugText;
@@ -120,6 +126,8 @@ void QgsTerrainTextureGenerator::onRenderingFinished()
 
   //qDebug() << "finished job " << jobData.jobId << "  ... in queue: " << jobs.count();
 
+  QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Texture" ), jobData.tileId.text() );
+
   // pass QImage further
   emit tileReady( jobData.jobId, img );
 }
@@ -127,13 +135,26 @@ void QgsTerrainTextureGenerator::onRenderingFinished()
 QgsMapSettings QgsTerrainTextureGenerator::baseMapSettings()
 {
   QgsMapSettings mapSettings;
-  mapSettings.setLayers( mMap.layers() );
+
   mapSettings.setOutputSize( QSize( mMap.mapTileResolution(), mMap.mapTileResolution() ) );
   mapSettings.setDestinationCrs( mMap.crs() );
   mapSettings.setBackgroundColor( mMap.backgroundColor() );
   mapSettings.setFlag( QgsMapSettings::DrawLabeling, mMap.showLabels() );
   mapSettings.setTransformContext( mMap.transformContext() );
   mapSettings.setPathResolver( mMap.pathResolver() );
+
+  QgsMapThemeCollection *mapThemes = mMap.mapThemeCollection();
+  QString mapThemeName = mMap.terrainMapTheme();
+  if ( mapThemeName.isEmpty() || !mapThemes || !mapThemes->hasMapTheme( mapThemeName ) )
+  {
+    mapSettings.setLayers( mMap.layers() );
+  }
+  else
+  {
+    mapSettings.setLayers( mapThemes->mapThemeVisibleLayers( mapThemeName ) );
+    mapSettings.setLayerStyleOverrides( mapThemes->mapThemeStyleOverrides( mapThemeName ) );
+  }
+
   return mapSettings;
 }
 

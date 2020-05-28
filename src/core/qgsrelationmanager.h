@@ -44,6 +44,11 @@ class CORE_EXPORT QgsRelationManager : public QObject
     explicit QgsRelationManager( QgsProject *project = nullptr );
 
     /**
+     * Gets the relation context
+     */
+    QgsRelationContext context() const;
+
+    /**
      * Will set the specified relations and remove any relation currently set.
      *
      * \param relations A list of relations to set.
@@ -59,6 +64,8 @@ class CORE_EXPORT QgsRelationManager : public QObject
 
     /**
      * Add a relation.
+     * Invalid relations are added only if both referencing layer and referenced
+     * layer exist.
      *
      * \param relation The relation to add.
      */
@@ -119,7 +126,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      *
      * \returns A list of relations where the specified layer is the referenced part.
      */
-    QList<QgsRelation> referencedRelations( QgsVectorLayer *layer = nullptr ) const;
+    QList<QgsRelation> referencedRelations( const QgsVectorLayer *layer = nullptr ) const;
 
     /**
      * Discover all the relations available from the current layers.
@@ -132,7 +139,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
     static QList<QgsRelation> discoverRelations( const QList<QgsRelation> &existingRelations, const QList<QgsVectorLayer *> &layers );
 
   signals:
-    //! This signal is emitted when the relations were loaded after reading a project
+    //! Emitted when the relations were loaded after reading a project
     void relationsLoaded();
 
     /**
@@ -140,6 +147,13 @@ class CORE_EXPORT QgsRelationManager : public QObject
      * \since QGIS 2.5
      */
     void changed();
+
+  public slots:
+
+    /**
+     * Updates relations status
+     */
+    void updateRelationsStatus();
 
   private slots:
     void readProject( const QDomDocument &doc, QgsReadWriteContext &context );

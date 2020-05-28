@@ -21,6 +21,8 @@
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
 #include "qgslayoutobject.h"
+#include "qgsfeedback.h"
+#include "qgsexpressioncontextutils.h"
 
 
 QgsPropertiesDefinition QgsLayoutObject::sPropertyDefinitions;
@@ -35,9 +37,9 @@ void QgsLayoutObject::initPropertyDefinitions()
     { QgsLayoutObject::TestProperty, QgsPropertyDefinition( "dataDefinedProperty", QgsPropertyDefinition::DataTypeString, "invalid property", QString() ) },
     {
       QgsLayoutObject::PresetPaperSize, QgsPropertyDefinition( "dataDefinedPaperSize", QgsPropertyDefinition::DataTypeString, QObject::tr( "Paper size" ), QObject::tr( "string " ) + QLatin1String( "[<b>A5</b>|<b>A4</b>|<b>A3</b>|<b>A2</b>|<b>A1</b>|<b>A0</b>"
-          "<b>B5</b>|<b>B4</b>|<b>B3</b>|<b>B2</b>|<b>B1</b>|<b>B0</b>"
-          "<b>Legal</b>|<b>Ansi A</b>|<b>Ansi B</b>|<b>Ansi C</b>|<b>Ansi D</b>|<b>Ansi E</b>"
-          "<b>Arch A</b>|<b>Arch B</b>|<b>Arch C</b>|<b>Arch D</b>|<b>Arch E</b>|<b>Arch E1</b>]"
+          "|<b>B5</b>|<b>B4</b>|<b>B3</b>|<b>B2</b>|<b>B1</b>|<b>B0</b>"
+          "|<b>Legal</b>|<b>Ansi A</b>|<b>Ansi B</b>|<b>Ansi C</b>|<b>Ansi D</b>|<b>Ansi E</b>"
+          "|<b>Arch A</b>|<b>Arch B</b>|<b>Arch C</b>|<b>Arch D</b>|<b>Arch E</b>|<b>Arch E1</b>]"
                                                                                                                                                                                                    ) )
     },
     { QgsLayoutObject::PaperWidth, QgsPropertyDefinition( "dataDefinedPaperWidth", QObject::tr( "Page width" ), QgsPropertyDefinition::DoublePositive ) },
@@ -62,9 +64,20 @@ void QgsLayoutObject::initPropertyDefinitions()
     { QgsLayoutObject::MapYMin, QgsPropertyDefinition( "dataDefinedMapYMin", QObject::tr( "Extent minimum Y" ), QgsPropertyDefinition::Double ) },
     { QgsLayoutObject::MapXMax, QgsPropertyDefinition( "dataDefinedMapXMax", QObject::tr( "Extent maximum X" ), QgsPropertyDefinition::Double ) },
     { QgsLayoutObject::MapYMax, QgsPropertyDefinition( "dataDefinedMapYMax", QObject::tr( "Extent maximum Y" ), QgsPropertyDefinition::Double ) },
+    { QgsLayoutObject::MapLabelMargin, QgsPropertyDefinition( "dataDefinedMapLabelMargin", QObject::tr( "Label margin" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::MapAtlasMargin, QgsPropertyDefinition( "dataDefinedMapAtlasMargin", QObject::tr( "Atlas margin" ), QgsPropertyDefinition::DoublePositive ) },
-    { QgsLayoutObject::MapLayers, QgsPropertyDefinition( "dataDefinedMapLayers", QgsPropertyDefinition::DataTypeString, QObject::tr( "Symbol size" ), tr( "list of map layer names separated by | characters" ) ) },
-    { QgsLayoutObject::MapStylePreset, QgsPropertyDefinition( "dataDefinedMapStylePreset", QgsPropertyDefinition::DataTypeString, QObject::tr( "Symbol size" ), tr( "list of map layer names separated by | characters" ) ) },
+    { QgsLayoutObject::MapLayers, QgsPropertyDefinition( "dataDefinedMapLayers", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map Layers" ), tr( "list of map layer names separated by | characters" ) ) },
+    { QgsLayoutObject::MapStylePreset, QgsPropertyDefinition( "dataDefinedMapStylePreset", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map theme" ), tr( "name of an existing map theme (case-sensitive)" ) ) },
+    { QgsLayoutObject::MapGridEnabled, QgsPropertyDefinition( "dataDefinedMapGridEnabled", QObject::tr( "Grid enabled" ), QgsPropertyDefinition::Boolean ) },
+    { QgsLayoutObject::MapGridIntervalX, QgsPropertyDefinition( "dataDefinedMapGridIntervalX", QObject::tr( "Grid interval X" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::MapGridIntervalY, QgsPropertyDefinition( "dataDefinedMapGridIntervalY", QObject::tr( "Grid interval Y" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::MapGridOffsetX, QgsPropertyDefinition( "dataDefinedMapGridOffsetX", QObject::tr( "Grid offset X" ), QgsPropertyDefinition::Double ) },
+    { QgsLayoutObject::MapGridOffsetY, QgsPropertyDefinition( "dataDefinedMapGridOffsetY", QObject::tr( "Grid offset Y" ), QgsPropertyDefinition::Double ) },
+    { QgsLayoutObject::MapGridFrameSize, QgsPropertyDefinition( "dataDefinedMapGridFrameSize", QObject::tr( "Grid frame size" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::MapGridFrameLineThickness, QgsPropertyDefinition( "dataDefinedMapGridFrameLineThickness", QObject::tr( "Grid frame line thickness" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::MapGridCrossSize, QgsPropertyDefinition( "dataDefinedMapGridCrossSize", QObject::tr( "Grid cross size" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::MapGridFrameMargin, QgsPropertyDefinition( "dataDefinedMapGridFrameMargin", QObject::tr( "Grid frame margin" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::MapGridLabelDistance, QgsPropertyDefinition( "dataDefinedMapGridLabelDistance", QObject::tr( "Grid label distance" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::PictureSource, QgsPropertyDefinition( "dataDefinedSource", QObject::tr( "Picture source (URL)" ), QgsPropertyDefinition::String ) },
     { QgsLayoutObject::SourceUrl, QgsPropertyDefinition( "dataDefinedSourceUrl", QObject::tr( "Source URL" ), QgsPropertyDefinition::String ) },
     { QgsLayoutObject::PictureSvgBackgroundColor, QgsPropertyDefinition( "dataDefinedSvgBackgroundColor", QObject::tr( "SVG background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
@@ -77,6 +90,9 @@ void QgsLayoutObject::initPropertyDefinitions()
     { QgsLayoutObject::ScalebarLineColor, QgsPropertyDefinition( "dataDefinedScalebarLineColor", QObject::tr( "Line color" ), QgsPropertyDefinition::ColorWithAlpha ) },
     { QgsLayoutObject::ScalebarLineWidth, QgsPropertyDefinition( "dataDefinedScalebarLineWidth", QObject::tr( "Line width" ), QgsPropertyDefinition::StrokeWidth ) },
     { QgsLayoutObject::AttributeTableSourceLayer, QgsPropertyDefinition( "dataDefinedAttributeTableSourceLayer", QObject::tr( "Table source layer" ), QgsPropertyDefinition::String ) },
+    { QgsLayoutObject::MapCrs, QgsPropertyDefinition( "dataDefinedCrs", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map CRS" ), QObject::tr( "string representing a CRS, either an authority/id pair (e.g. \"EPSG:4326\"), a proj string prefixes by \"PROJ:\" (e.g. \"PROJ: +proj=...\") or a WKT string prefixed by \"WKT:\" (e.g. \"WKT:GEOGCS[\"WGS 84\"...)" ) ) },
+    { QgsLayoutObject::StartDateTime, QgsPropertyDefinition( "dataDefinedStartDateTime", QObject::tr( "Temporal range start date / time" ), QgsPropertyDefinition::DateTime ) },
+    { QgsLayoutObject::EndDateTime, QgsPropertyDefinition( "dataDefinedEndDateTime", QObject::tr( "Temporal range end date / time" ), QgsPropertyDefinition::DateTime ) },
   };
 }
 
@@ -164,7 +180,7 @@ bool QgsLayoutObject::writeObjectPropertiesToElement( QDomElement &parentElement
 
 bool QgsLayoutObject::readObjectPropertiesFromElement( const QDomElement &parentElement, const QDomDocument &document, const QgsReadWriteContext & )
 {
-  Q_UNUSED( document );
+  Q_UNUSED( document )
   if ( parentElement.isNull() )
   {
     return false;

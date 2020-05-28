@@ -21,6 +21,7 @@
 #define SIP_NO_FILE
 
 #include "qgis_core.h"
+#include "qgswkbtypes.h"
 #include <QString>
 #include <memory>
 

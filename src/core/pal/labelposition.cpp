@@ -58,8 +58,8 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
 {
   type = GEOS_POLYGON;
   nbPoints = 4;
-  x = new double[nbPoints];
-  y = new double[nbPoints];
+  x.resize( nbPoints );
+  y.resize( nbPoints );
 
   // alpha take his value bw 0 and 2*pi rad
   while ( this->alpha > 2 * M_PI )
@@ -150,10 +150,9 @@ LabelPosition::LabelPosition( const LabelPosition &other )
   w = other.w;
   h = other.h;
 
-  if ( other.nextPart )
-    nextPart = new LabelPosition( *other.nextPart );
-  else
-    nextPart = nullptr;
+  if ( other.mNextPart )
+    mNextPart = qgis::make_unique< LabelPosition >( *other.mNextPart );
+
   partId = other.partId;
   upsideDown = other.upsideDown;
   reversed = other.reversed;
@@ -173,8 +172,8 @@ bool LabelPosition::isIn( double *bbox )
       return true;
   }
 
-  if ( nextPart )
-    return nextPart->isIn( bbox );
+  if ( mNextPart )
+    return mNextPart->isIn( bbox );
   else
     return false;
 }
@@ -190,8 +189,8 @@ bool LabelPosition::isIntersect( double *bbox )
       return true;
   }
 
-  if ( nextPart )
-    return nextPart->isIntersect( bbox );
+  if ( mNextPart )
+    return mNextPart->isIntersect( bbox );
   else
     return false;
 }
@@ -207,9 +206,9 @@ bool LabelPosition::intersects( const GEOSPreparedGeometry *geometry )
     {
       return true;
     }
-    else if ( nextPart )
+    else if ( mNextPart )
     {
-      return nextPart->intersects( geometry );
+      return mNextPart->intersects( geometry );
     }
   }
   catch ( GEOSException &e )
@@ -232,9 +231,9 @@ bool LabelPosition::within( const GEOSPreparedGeometry *geometry )
     {
       return false;
     }
-    else if ( nextPart )
+    else if ( mNextPart )
     {
-      return nextPart->within( geometry );
+      return mNextPart->within( geometry );
     }
   }
   catch ( GEOSException &e )
@@ -255,25 +254,31 @@ bool LabelPosition::isInside( double *bbox )
       return false;
   }
 
-  if ( nextPart )
-    return nextPart->isInside( bbox );
+  if ( mNextPart )
+    return mNextPart->isInside( bbox );
   else
     return true;
 }
 
-bool LabelPosition::isInConflict( LabelPosition *lp )
+bool LabelPosition::isInConflict( const LabelPosition *lp ) const
 {
   if ( this->probFeat == lp->probFeat ) // bugfix #1
     return false; // always overlaping itself !
 
-  if ( !nextPart && !lp->nextPart )
+  if ( !nextPart() && !lp->nextPart() )
     return isInConflictSinglePart( lp );
   else
     return isInConflictMultiPart( lp );
 }
 
-bool LabelPosition::isInConflictSinglePart( LabelPosition *lp )
+bool LabelPosition::isInConflictSinglePart( const LabelPosition *lp ) const
 {
+  if ( qgsDoubleNear( alpha, 0 ) && qgsDoubleNear( lp->alpha, 0 ) )
+  {
+    // simple case -- both candidates are oriented to axis, so shortcut with easy calculation
+    return boundingBoxIntersects( lp );
+  }
+
   if ( !mGeos )
     createGeosGeom();
 
@@ -293,30 +298,30 @@ bool LabelPosition::isInConflictSinglePart( LabelPosition *lp )
   }
 }
 
-bool LabelPosition::isInConflictMultiPart( LabelPosition *lp )
+bool LabelPosition::isInConflictMultiPart( const LabelPosition *lp ) const
 {
   // check all parts against all parts of other one
-  LabelPosition *tmp1 = this;
+  const LabelPosition *tmp1 = this;
   while ( tmp1 )
   {
     // check tmp1 against parts of other label
-    LabelPosition *tmp2 = lp;
+    const LabelPosition *tmp2 = lp;
     while ( tmp2 )
     {
       if ( tmp1->isInConflictSinglePart( tmp2 ) )
         return true;
-      tmp2 = tmp2->nextPart;
+      tmp2 = tmp2->nextPart();
     }
 
-    tmp1 = tmp1->nextPart;
+    tmp1 = tmp1->nextPart();
   }
   return false; // no conflict found
 }
 
 int LabelPosition::partCount() const
 {
-  if ( nextPart )
-    return nextPart->partCount() + 1;
+  if ( mNextPart )
+    return mNextPart->partCount() + 1;
   else
     return 1;
 }
@@ -329,8 +334,8 @@ void LabelPosition::offsetPosition( double xOffset, double yOffset )
     y[i] += yOffset;
   }
 
-  if ( nextPart )
-    nextPart->offsetPosition( xOffset, yOffset );
+  if ( mNextPart )
+    mNextPart->offsetPosition( xOffset, yOffset );
 
   invalidateGeos();
 }
@@ -363,16 +368,16 @@ void LabelPosition::validateCost()
   }
 }
 
-FeaturePart *LabelPosition::getFeaturePart()
+FeaturePart *LabelPosition::getFeaturePart() const
 {
   return feature;
 }
 
 void LabelPosition::getBoundingBox( double amin[2], double amax[2] ) const
 {
-  if ( nextPart )
+  if ( mNextPart )
   {
-    nextPart->getBoundingBox( amin, amax );
+    mNextPart->getBoundingBox( amin, amax );
   }
   else
   {
@@ -397,110 +402,64 @@ void LabelPosition::getBoundingBox( double amin[2], double amax[2] ) const
 void LabelPosition::setConflictsWithObstacle( bool conflicts )
 {
   mHasObstacleConflict = conflicts;
-  if ( nextPart )
-    nextPart->setConflictsWithObstacle( conflicts );
+  if ( mNextPart )
+    mNextPart->setConflictsWithObstacle( conflicts );
 }
 
-bool LabelPosition::polygonObstacleCallback( FeaturePart *obstacle, void *ctx )
+void LabelPosition::setHasHardObstacleConflict( bool conflicts )
 {
-  PolygonCostCalculator *pCost = reinterpret_cast< PolygonCostCalculator * >( ctx );
-
-  LabelPosition *lp = pCost->getLabel();
-  if ( ( obstacle == lp->feature ) || ( obstacle->getHoleOf() && obstacle->getHoleOf() != lp->feature ) )
-  {
-    return true;
-  }
-
-  pCost->update( obstacle );
-
-  return true;
+  mHasHardConflict = conflicts;
+  if ( mNextPart )
+    mNextPart->setHasHardObstacleConflict( conflicts );
 }
 
-void LabelPosition::removeFromIndex( RTree<LabelPosition *, double, 2, double> *index )
+void LabelPosition::removeFromIndex( PalRtree<LabelPosition> &index )
 {
   double amin[2];
   double amax[2];
   getBoundingBox( amin, amax );
-  index->Remove( amin, amax, this );
+  index.remove( this, QgsRectangle( amin[0], amin[1], amax[0], amax[1] ) );
 }
 
-void LabelPosition::insertIntoIndex( RTree<LabelPosition *, double, 2, double> *index )
+void LabelPosition::insertIntoIndex( PalRtree<LabelPosition> &index )
 {
   double amin[2];
   double amax[2];
   getBoundingBox( amin, amax );
-  index->Insert( amin, amax, this );
-}
-
-bool LabelPosition::pruneCallback( LabelPosition *candidatePosition, void *ctx )
-{
-  FeaturePart *obstaclePart = ( reinterpret_cast< PruneCtx * >( ctx ) )->obstacle;
-
-  // test whether we should ignore this obstacle for the candidate. We do this if:
-  // 1. it's not a hole, and the obstacle belongs to the same label feature as the candidate (e.g.,
-  // features aren't obstacles for their own labels)
-  // 2. it IS a hole, and the hole belongs to a different label feature to the candidate (e.g., holes
-  // are ONLY obstacles for the labels of the feature they belong to)
-  if ( ( !obstaclePart->getHoleOf() && candidatePosition->feature->hasSameLabelFeatureAs( obstaclePart ) )
-       || ( obstaclePart->getHoleOf() && !candidatePosition->feature->hasSameLabelFeatureAs( dynamic_cast< FeaturePart * >( obstaclePart->getHoleOf() ) ) ) )
-  {
-    return true;
-  }
-
-  CostCalculator::addObstacleCostPenalty( candidatePosition, obstaclePart );
-
-  return true;
-}
-
-bool LabelPosition::countOverlapCallback( LabelPosition *lp, void *ctx )
-{
-  LabelPosition *lp2 = reinterpret_cast< LabelPosition * >( ctx );
-
-  if ( lp2->isInConflict( lp ) )
-  {
-    lp2->nbOverlap++;
-  }
-
-  return true;
-}
-
-bool LabelPosition::countFullOverlapCallback( LabelPosition *lp, void *ctx )
-{
-  CountContext *context = reinterpret_cast< CountContext * >( ctx );
-  LabelPosition *lp2 = context->lp;
-  double *cost = context->cost;
-  int *nbOv = context->nbOv;
-  double *inactiveCost = context->inactiveCost;
-  if ( lp2->isInConflict( lp ) )
-  {
-    ( *nbOv ) ++;
-    *cost += inactiveCost[lp->probFeat] + lp->cost();
-  }
-
-  return true;
-}
-
-bool LabelPosition::removeOverlapCallback( LabelPosition *lp, void *ctx )
-{
-  LabelPosition *lp2 = reinterpret_cast< LabelPosition * >( ctx );
-
-  if ( lp2->isInConflict( lp ) )
-  {
-    lp->nbOverlap--;
-    lp2->nbOverlap--;
-  }
-
-  return true;
+  index.insert( this, QgsRectangle( amin[0], amin[1], amax[0], amax[1] ) );
 }
 
 double LabelPosition::getDistanceToPoint( double xp, double yp ) const
 {
   //first check if inside, if so then distance is -1
-  double distance = ( containsPoint( xp, yp ) ? -1
-                      : std::sqrt( minDistanceToPoint( xp, yp ) ) );
+  bool contains = false;
+  if ( alpha == 0 )
+  {
+    // easy case -- horizontal label
+    contains = x[0] <= xp && x[1] >= xp && y[0] <= yp && y[2] >= yp;
+  }
+  else
+  {
+    contains = containsPoint( xp, yp );
+  }
 
-  if ( nextPart && distance > 0 )
-    return std::min( distance, nextPart->getDistanceToPoint( xp, yp ) );
+  double distance = -1;
+  if ( !contains )
+  {
+    if ( alpha == 0 )
+    {
+      const double dx = std::max( std::max( x[0] - xp, 0.0 ), xp - x[1] );
+      const double dy = std::max( std::max( y[0] - yp, 0.0 ), yp - y[2] );
+      distance = std::sqrt( dx * dx + dy * dy );
+    }
+    else
+    {
+      distance = std::sqrt( minDistanceToPoint( xp, yp ) );
+    }
+  }
+
+  if ( mNextPart && distance > 0 )
+    return std::min( distance, mNextPart->getDistanceToPoint( xp, yp ) );
 
   return distance;
 }
@@ -520,9 +479,9 @@ bool LabelPosition::crossesLine( PointSet *line ) const
     {
       return true;
     }
-    else if ( nextPart )
+    else if ( mNextPart )
     {
-      return nextPart->crossesLine( line );
+      return mNextPart->crossesLine( line );
     }
   }
   catch ( GEOSException &e )
@@ -545,14 +504,14 @@ bool LabelPosition::crossesBoundary( PointSet *polygon ) const
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
-    if ( GEOSPreparedOverlaps_r( geosctxt, polygon->preparedGeom(), mGeos ) == 1
-         || GEOSPreparedTouches_r( geosctxt, polygon->preparedGeom(), mGeos ) == 1 )
+    if ( GEOSPreparedIntersects_r( geosctxt, polygon->preparedGeom(), mGeos ) == 1
+         && GEOSPreparedContains_r( geosctxt, polygon->preparedGeom(), mGeos ) != 1 )
     {
       return true;
     }
-    else if ( nextPart )
+    else if ( mNextPart )
     {
-      return nextPart->crossesBoundary( polygon );
+      return mNextPart->crossesBoundary( polygon );
     }
   }
   catch ( GEOSException &e )
@@ -593,9 +552,9 @@ bool LabelPosition::intersectsWithPolygon( PointSet *polygon ) const
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
   }
 
-  if ( nextPart )
+  if ( mNextPart )
   {
-    return nextPart->intersectsWithPolygon( polygon );
+    return mNextPart->intersectsWithPolygon( polygon );
   }
   else
   {
@@ -653,9 +612,9 @@ double LabelPosition::polygonIntersectionCostForParts( PointSet *polygon ) const
   //maintain scaling from 0 -> 12
   cost = 12.0 * cost / 13.0;
 
-  if ( nextPart )
+  if ( mNextPart )
   {
-    cost += nextPart->polygonIntersectionCostForParts( polygon );
+    cost += mNextPart->polygonIntersectionCostForParts( polygon );
   }
 
   return cost;

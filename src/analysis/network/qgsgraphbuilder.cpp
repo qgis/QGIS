@@ -21,7 +21,6 @@
 #include "qgsgraphbuilder.h"
 #include "qgsgraph.h"
 
-#include "qgsfeature.h"
 #include "qgsgeometry.h"
 
 QgsGraphBuilder::QgsGraphBuilder( const QgsCoordinateReferenceSystem &crs, bool otfEnabled, double topologyTolerance, const QString &ellipsoidID )

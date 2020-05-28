@@ -95,7 +95,7 @@ Append new error message.
 %Docstring
 Test if any error is set.
 
-:return: true if contains error
+:return: ``True`` if contains error
 %End
 
     QString message( QgsErrorMessage::Format format = QgsErrorMessage::Html ) const;
@@ -124,6 +124,13 @@ Clear error messages
 messageList return the list of current error messages
 
 :return: current list of error messages
+%End
+
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsError: %1>" ).arg( sipCpp->message( QgsErrorMessage::Text ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
 };

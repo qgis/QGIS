@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="3" column="1">
@@ -47,7 +47,7 @@
    <item row="5" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBox" name="mMarginsGroupBox">
      <property name="title">
-      <string>Contents margins</string>
+      <string>Contents Margins</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">

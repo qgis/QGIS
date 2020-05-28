@@ -20,16 +20,16 @@
 
 void QgsPhongMaterialSettings::readXml( const QDomElement &elem )
 {
-  mAmbient = QgsSymbolLayerUtils::decodeColor( elem.attribute( "ambient" ) );
-  mDiffuse = QgsSymbolLayerUtils::decodeColor( elem.attribute( "diffuse" ) );
-  mSpecular = QgsSymbolLayerUtils::decodeColor( elem.attribute( "specular" ) );
-  mShininess = elem.attribute( "shininess" ).toFloat();
+  mAmbient = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "ambient" ) ) );
+  mDiffuse = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "diffuse" ) ) );
+  mSpecular = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "specular" ) ) );
+  mShininess = elem.attribute( QStringLiteral( "shininess" ) ).toFloat();
 }
 
 void QgsPhongMaterialSettings::writeXml( QDomElement &elem ) const
 {
-  elem.setAttribute( "ambient", QgsSymbolLayerUtils::encodeColor( mAmbient ) );
-  elem.setAttribute( "diffuse", QgsSymbolLayerUtils::encodeColor( mDiffuse ) );
-  elem.setAttribute( "specular", QgsSymbolLayerUtils::encodeColor( mSpecular ) );
-  elem.setAttribute( "shininess", mShininess );
+  elem.setAttribute( QStringLiteral( "ambient" ), QgsSymbolLayerUtils::encodeColor( mAmbient ) );
+  elem.setAttribute( QStringLiteral( "diffuse" ), QgsSymbolLayerUtils::encodeColor( mDiffuse ) );
+  elem.setAttribute( QStringLiteral( "specular" ), QgsSymbolLayerUtils::encodeColor( mSpecular ) );
+  elem.setAttribute( QStringLiteral( "shininess" ), mShininess );
 }

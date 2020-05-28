@@ -46,20 +46,21 @@ QString QgsExtractByAttributeAlgorithm::groupId() const
 
 void QgsExtractByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
+                QList< int >() << QgsProcessing::TypeVector ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Selection attribute" ), QVariant(), QStringLiteral( "INPUT" ) ) );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "OPERATOR" ), QObject::tr( "Operator" ), QStringList()
                 << QObject::tr( "=" )
                 << QObject::tr( "≠" )
                 << QObject::tr( ">" )
-                << QObject::tr( ">=" )
+                << QObject::tr( "≥" )
                 << QObject::tr( "<" )
-                << QObject::tr( "<=" )
+                << QObject::tr( "≤" )
                 << QObject::tr( "begins with" )
                 << QObject::tr( "contains" )
                 << QObject::tr( "is null" )
                 << QObject::tr( "is not null" )
-                << QObject::tr( "does not contain" ) ) );
+                << QObject::tr( "does not contain" ), false, 0 ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "VALUE" ), QObject::tr( "Value" ), QVariant(), false, true ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Extracted (attribute)" ) ) );

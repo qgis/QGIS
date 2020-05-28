@@ -2,7 +2,7 @@ v.decimate
 Decimates a point cloud
 Vector (v.*)
 QgsProcessingParameterFeatureSource|input|Input vector|1|None|False
-QgsProcessingParameterRange|zrange|Filter range for z data (min,max)|QgsProcessingParameterNumber.Integer|None|True
+QgsProcessingParameterRange|zrange|Filter range for z data (min,max)|QgsProcessingParameterNumber.Double|None|True
 QgsProcessingParameterString|cats|Category values|None|False|True
 QgsProcessingParameterNumber|skip|Throw away every n-th point|QgsProcessingParameterNumber.Integer|None|True|0|None
 QgsProcessingParameterNumber|preserve|Preserve only every n-th point|QgsProcessingParameterNumber.Integer|None|True|0|None

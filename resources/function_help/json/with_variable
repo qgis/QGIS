@@ -5,7 +5,7 @@
   "arguments": [
                  {"arg":"name","description":"the name of the variable to set"},
                  {"arg":"value","description":"the value to set"},
-                 {"arg":"node","description":"the expression for which the variable will be available"}
+                 {"arg":"expression","description":"the expression for which the variable will be available"}
                ],
   "examples": [ { "expression":"with_variable('my_sum', 1 + 2 + 3, @my_sum * 2 + @my_sum * 5)", "returns":"42"}]
 }

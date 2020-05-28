@@ -69,7 +69,7 @@ if the feature count is unknown.
     sipRes = sipCpp->featureCount();
 %End
 
-    //! Ensures that bool(obj) returns true (otherwise __len__() would be used)
+    //! Ensures that bool(obj) returns ``True`` (otherwise __len__() would be used)
     int __bool__() const;
 %MethodCode
     sipRes = true;
@@ -158,6 +158,24 @@ The returned value is a new instance and the caller takes responsibility
 for its ownership.
 
 .. versionadded:: 3.0
+%End
+
+    enum SpatialIndexPresence
+    {
+      SpatialIndexUnknown,
+      SpatialIndexNotPresent,
+      SpatialIndexPresent,
+    };
+
+    virtual SpatialIndexPresence hasSpatialIndex() const;
+%Docstring
+Returns an enum value representing the presence of a valid spatial index on the source,
+if it can be determined.
+
+If QgsFeatureSource.SpatialIndexUnknown is returned then the presence of an index cannot
+be determined.
+
+.. versionadded:: 3.10.1
 %End
 };
 

@@ -1,0 +1,8 @@
+{
+  "name": "file_size",
+  "type": "function",
+  "description": "Returns the size (in bytes) of a file.",
+  "arguments": [ {"arg":"path","description":"a file path"}],
+  "examples": [ { "expression":"file_size('/home/qgis/data/country_boundaries.geojson')", "returns":"5674"}]
+}
+

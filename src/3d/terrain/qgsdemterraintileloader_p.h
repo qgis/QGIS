@@ -31,12 +31,14 @@
 #include <QFutureWatcher>
 #include <QElapsedTimer>
 
+#include "qgschunknode_p.h"
 #include "qgsrectangle.h"
 #include "qgsterraintileloader_p.h"
 #include "qgstilingscheme.h"
 
 class QgsRasterDataProvider;
 class QgsRasterLayer;
+class QgsCoordinateTransformContext;
 
 /**
  * \ingroup 3d
@@ -64,6 +66,7 @@ class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
 };
 
 
+class QgsTerrainDownloader;
 
 /**
  * \ingroup 3d
@@ -79,7 +82,7 @@ class QgsDemHeightMapGenerator : public QObject
      * Constructs height map generator based on a raster layer with elevation model,
      * terrain's tiling scheme and height map resolution (number of height values on each side of tile)
      */
-    QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const QgsTilingScheme &tilingScheme, int resolution );
+    QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const QgsTilingScheme &tilingScheme, int resolution, const QgsCoordinateTransformContext &transformContext );
     ~QgsDemHeightMapGenerator() override;
 
     //! asynchronous terrain read for a tile (array of floats)
@@ -114,9 +117,12 @@ class QgsDemHeightMapGenerator : public QObject
 
     int mLastJobId;
 
+    std::unique_ptr<QgsTerrainDownloader> mDownloader;
+
     struct JobData
     {
       int jobId;
+      QgsChunkNodeId tileId;
       QgsRectangle extent;
       QFuture<QByteArray> future;
       QFutureWatcher<QByteArray> *fw;

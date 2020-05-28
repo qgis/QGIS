@@ -9,8 +9,6 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Stephane Brunner'
 __date__ = '28/08/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
@@ -202,8 +200,13 @@ class TestQgsServerAccessControl(QgsServerTestBase):
         self._server.putenv("QGIS_PROJECT_FILE", '')
         return result
 
-    def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize()):
-        temp_image = os.path.join(tempfile.gettempdir(), "%s_result.png" % control_image)
+    def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize(), outputJpg=False):
+
+        extFile = 'png'
+        if outputJpg:
+            extFile = 'jpg'
+
+        temp_image = os.path.join(tempfile.gettempdir(), "%s_result.%s" % (control_image, extFile))
 
         with open(temp_image, "wb") as f:
             f.write(image)
@@ -217,27 +220,9 @@ class TestQgsServerAccessControl(QgsServerTestBase):
         return control.compareImages(control_image), control.report()
 
     def _img_diff_error(self, response, headers, image, max_diff=10, max_size_diff=QSize()):
-        self.assertEqual(
-            headers.get("Content-Type"), "image/png",
-            "Content type is wrong: %s" % headers.get("Content-Type"))
-
-        test, report = self._img_diff(response, image, max_diff, max_size_diff)
-
-        with open(os.path.join(tempfile.gettempdir(), image + "_result.png"), "rb") as rendered_file:
-            encoded_rendered_file = base64.b64encode(rendered_file.read())
-            message = "Image is wrong\n%s\nImage:\necho '%s' | base64 -d >%s/%s_result.png" % (
-                report, encoded_rendered_file.strip().decode('utf8'), tempfile.gettempdir(), image
-            )
-
-        # If the failure is in image sizes the diff file will not exists.
-        if os.path.exists(os.path.join(tempfile.gettempdir(), image + "_result_diff.png")):
-            with open(os.path.join(tempfile.gettempdir(), image + "_result_diff.png"), "rb") as diff_file:
-                encoded_diff_file = base64.b64encode(diff_file.read())
-                message += "\nDiff:\necho '%s' | base64 -d > %s/%s_result_diff.png" % (
-                    encoded_diff_file.strip().decode('utf8'), tempfile.gettempdir(), image
-                )
-
-        self.assertTrue(test, message)
+        super()._img_diff_error(response, headers, image, max_diff=max_diff,
+                                max_size_diff=max_size_diff,
+                                unittest_data_path='qgis_server_accesscontrol')
 
     def _geo_img_diff(self, image_1, image_2):
         if os.name == 'nt':

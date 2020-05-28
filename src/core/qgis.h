@@ -18,24 +18,12 @@
 #ifndef QGIS_H
 #define QGIS_H
 
-#include <QEvent>
-#include <QString>
-#include <QRegExp>
-#include <QMetaType>
-#include <QVariant>
-#include <QDateTime>
-#include <QDate>
-#include <QTime>
-#include <QHash>
-#include <cstdlib>
+#include <QMetaEnum>
 #include <cfloat>
 #include <memory>
-#include <type_traits>
 #include <cmath>
-#include <qnumeric.h>
 
 #include "qgstolerance.h"
-#include "qgswkbtypes.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
@@ -56,17 +44,39 @@ int QgisEvent = QEvent::User + 1;
  */
 class CORE_EXPORT Qgis
 {
+    Q_GADGET
   public:
-    // Version constants
-    //
-    //! Version string
-    static const QString QGIS_VERSION;
-    //! Version number used for comparing versions using the "Check QGIS Version" function
-    static const int QGIS_VERSION_INT;
-    //! Release name
-    static const QString QGIS_RELEASE_NAME;
+
+    /**
+     * Version string.
+     *
+     * \since QGIS 3.12
+     */
+    static QString version();
+
+    /**
+     * Version number used for comparing versions using the "Check QGIS Version" function
+     *
+     * \since QGIS 3.12
+     */
+    static int versionInt();
+
+    /**
+     * Release name
+     *
+     * \since QGIS 3.12
+     */
+    static QString releaseName();
+
     //! The development version
     static const char *QGIS_DEV_VERSION;
+
+    /**
+     * The development version
+     *
+     * \since QGIS 3.12
+     */
+    static QString devVersion();
 
     // Enumerations
     //
@@ -107,8 +117,23 @@ class CORE_EXPORT Qgis
     };
 
     /**
+     * Authorisation to run Python Macros
+     * \since QGIS 3.10
+     */
+    enum PythonMacroMode
+    {
+      Never = 0, //!< Macros are never run
+      Ask = 1, //!< User is prompt before running
+      SessionOnly = 2, //!< Only during this session
+      Always = 3, //!< Macros are always run
+      NotForThisSession, //!< Macros will not be run for this session
+    };
+    Q_ENUM( PythonMacroMode )
+
+    /**
      * Identify search radius in mm
-     *  \since QGIS 2.3 */
+     * \since QGIS 2.3
+     */
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     //! Default threshold between map coordinates and device coordinates for map2pixel simplification
@@ -116,51 +141,64 @@ class CORE_EXPORT Qgis
 
     /**
      * Default highlight color.  The transparency is expected to only be applied to polygon
-     *  fill. Lines and outlines are rendered opaque.
-     *  \since QGIS 2.3 */
+     * fill. Lines and outlines are rendered opaque.
+     *
+     *  \since QGIS 2.3
+     */
     static const QColor DEFAULT_HIGHLIGHT_COLOR;
 
     /**
      * Default highlight buffer in mm.
-     *  \since QGIS 2.3 */
+     *  \since QGIS 2.3
+     */
     static const double DEFAULT_HIGHLIGHT_BUFFER_MM;
 
     /**
      * Default highlight line/stroke minimum width in mm.
-     *  \since QGIS 2.3 */
+     * \since QGIS 2.3
+     */
     static const double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
 
     /**
      * Fudge factor used to compare two scales. The code is often going from scale to scale
      *  denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
      *  To avoid that, use this factor instead of using <= or >=.
-     * \since QGIS 2.15*/
+     * \since QGIS 2.15
+     */
     static const double SCALE_PRECISION;
 
     /**
      * Default Z coordinate value for 2.5d geometry
      *  This value have to be assigned to the Z coordinate for the new 2.5d geometry vertex.
-     *  \since QGIS 3.0 */
+     *  \since QGIS 3.0
+     */
     static const double DEFAULT_Z_COORDINATE;
 
     /**
      * UI scaling factor. This should be applied to all widget sizes obtained from font metrics,
      * to account for differences in the default font sizes across different platforms.
      *  \since QGIS 3.0
-    */
+     */
     static const double UI_SCALE_FACTOR;
 
     /**
      * Default snapping distance tolerance.
      *  \since QGIS 3.0
-    */
+     */
     static const double DEFAULT_SNAP_TOLERANCE;
 
     /**
      * Default snapping distance units.
      *  \since QGIS 3.0
-    */
+     */
     static const QgsTolerance::UnitType DEFAULT_SNAP_UNITS;
+
+    /**
+     * A string with default project scales.
+     *
+     * \since QGIS 3.12
+     */
+    static QString defaultProjectScales();
 };
 
 // hack to workaround warnings when casting void pointers
@@ -237,9 +275,35 @@ CORE_EXPORT uint qHash( const QVariant &variant );
 inline QString qgsDoubleToString( double a, int precision = 17 )
 {
   if ( precision )
-    return QString::number( a, 'f', precision ).remove( QRegExp( "\\.?0+$" ) );
+  {
+    QString str = QString::number( a, 'f', precision );
+    if ( str.contains( QLatin1Char( '.' ) ) )
+    {
+      // remove ending 0s
+      int idx = str.length() - 1;
+      while ( str.at( idx ) == '0' && idx > 1 )
+      {
+        idx--;
+      }
+      if ( idx < str.length() - 1 )
+        str.truncate( str.at( idx ) == '.' ? idx : idx + 1 );
+    }
+    return str;
+  }
   else
-    return QString::number( a, 'f', precision );
+  {
+    // avoid printing -0
+    // see https://bugreports.qt.io/browse/QTBUG-71439
+    const QString str( QString::number( a, 'f', precision ) );
+    if ( str == QLatin1String( "-0" ) )
+    {
+      return QLatin1String( "0" );
+    }
+    else
+    {
+      return str;
+    }
+  }
 }
 
 /**
@@ -250,6 +314,9 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
  */
 inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric_limits<double>::epsilon() )
 {
+  if ( std::isnan( a ) || std::isnan( b ) )
+    return std::isnan( a ) && std::isnan( b ) ;
+
   const double diff = a - b;
   return diff > -epsilon && diff <= epsilon;
 }
@@ -262,6 +329,9 @@ inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric
  */
 inline bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON )
 {
+  if ( std::isnan( a ) || std::isnan( b ) )
+    return std::isnan( a ) && std::isnan( b ) ;
+
   const float diff = a - b;
   return diff > -epsilon && diff <= epsilon;
 }
@@ -269,6 +339,9 @@ inline bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON )
 //! Compare two doubles using specified number of significant digits
 inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
 {
+  if ( std::isnan( a ) || std::isnan( b ) )
+    return std::isnan( a ) && std::isnan( b ) ;
+
   // The most simple would be to print numbers as %.xe and compare as strings
   // but that is probably too costly
   // Then the fastest would be to set some bits directly, but little/big endian
@@ -287,10 +360,11 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
  *
  * \since QGIS 3.0
  */
-inline double qgsRound( double number, double places )
+inline double qgsRound( double number, int places )
 {
-  int scaleFactor = std::pow( 10, places );
-  return static_cast<double>( static_cast<qlonglong>( number * scaleFactor + 0.5 ) ) / scaleFactor;
+  double m = ( number < 0.0 ) ? -1.0 : 1.0;
+  double scaleFactor = std::pow( 10.0, places );
+  return ( std::round( number * m * scaleFactor ) / scaleFactor ) * m;
 }
 
 
@@ -383,15 +457,72 @@ namespace qgis
       return pmf;
     }
   };
+
+  template<class T>
+  QSet<T> listToSet( const QList<T> &list )
+  {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    return list.toSet();
+#else
+    return QSet<T>( list.begin(), list.end() );
+#endif
+  }
 }
 ///@endcond
 #endif
 
 /**
+ * Returns a map of all enum entries.
+ * The map has the enum values (int) as keys and the enum keys (QString) as values.
+ * The enum must have been declared using Q_ENUM or Q_FLAG.
+ */
+template<class T> const QMap<T, QString> qgsEnumMap() SIP_SKIP
+{
+  QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  Q_ASSERT( metaEnum.isValid() );
+  QMap<T, QString> enumMap;
+  for ( int idx = 0; idx < metaEnum.keyCount(); ++idx )
+  {
+    const char *enumKey = metaEnum.key( idx );
+    enumMap.insert( static_cast<T>( metaEnum.keyToValue( enumKey ) ), QString( enumKey ) );
+  }
+  return enumMap;
+}
+
+/**
+ * Returns the value for the given key of an enum.
+ * \since QGIS 3.6
+ */
+template<class T> QString qgsEnumValueToKey( const T &value ) SIP_SKIP
+{
+  QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  Q_ASSERT( metaEnum.isValid() );
+  return QString::fromUtf8( metaEnum.valueToKey( static_cast<int>( value ) ) );
+}
+
+/**
+ * Returns the value corresponding to the given \a key of an enum.
+ * If the key is invalid, it will return the \a defaultValue.
+ * \since QGIS 3.6
+ */
+template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue ) SIP_SKIP
+{
+  QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  Q_ASSERT( metaEnum.isValid() );
+  bool ok = false;
+  T v = static_cast<T>( metaEnum.keyToValue( key.toUtf8().data(), &ok ) );
+  if ( ok )
+    return v;
+  else
+    return defaultValue;
+}
+
+
+/**
  * Converts a string to a double in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
  * \param string string to convert
- * \param ok will be set to true if conversion was successful
+ * \param ok will be set to TRUE if conversion was successful
  * \returns string converted to double if possible
  * \see permissiveToInt
  * \since QGIS 2.9
@@ -402,7 +533,7 @@ CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
  * Converts a string to an integer in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
  * \param string string to convert
- * \param ok will be set to true if conversion was successful
+ * \param ok will be set to TRUE if conversion was successful
  * \returns string converted to int if possible
  * \see permissiveToDouble
  * \since QGIS 2.9
@@ -410,12 +541,37 @@ CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
 CORE_EXPORT int qgsPermissiveToInt( QString string, bool &ok );
 
 /**
+ * Converts a string to an qlonglong in a permissive way, e.g., allowing for incorrect
+ * numbers of digits between thousand separators
+ * \param string string to convert
+ * \param ok will be set to TRUE if conversion was successful
+ * \returns string converted to int if possible
+ * \see permissiveToInt
+ * \since QGIS 3.4
+ */
+CORE_EXPORT qlonglong qgsPermissiveToLongLong( QString string, bool &ok );
+
+/**
  * Compares two QVariant values and returns whether the first is less than the second.
  * Useful for sorting lists of variants, correctly handling sorting of the various
  * QVariant data types (such as strings, numeric values, dates and times)
+ *
+ * Invalid < NULL < Values
+ *
  * \see qgsVariantGreaterThan()
  */
 CORE_EXPORT bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
+
+/**
+ * Compares two QVariant values and returns whether they are equal, two NULL values are
+ * always treated as equal and 0 is not treated as equal with NULL
+ *
+ * \param lhs first value
+ * \param rhs second value
+ * \return TRUE if values are equal
+ */
+CORE_EXPORT bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
+
 
 /**
  * Compares two QVariant values and returns whether the first is greater than the second.
@@ -424,6 +580,12 @@ CORE_EXPORT bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
  * \see qgsVariantLessThan()
  */
 CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
+
+/**
+ * Compares two QVariantList values and returns whether the first is less than the second.
+ */
+template<> CORE_EXPORT bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList &key2 ) SIP_SKIP;
+
 
 CORE_EXPORT QString qgsVsiPrefix( const QString &path );
 
@@ -449,31 +611,84 @@ void CORE_EXPORT *qgsCalloc( size_t nmemb, size_t size ) SIP_SKIP;
  */
 void CORE_EXPORT qgsFree( void *ptr ) SIP_SKIP;
 
+#ifndef SIP_RUN
+
+#ifdef _MSC_VER
+#define CONSTLATIN1STRING inline const QLatin1String
+#else
+#define CONSTLATIN1STRING constexpr QLatin1String
+#endif
+
 /**
- * Wkt string that represents a geographic coord sys
- * \since QGIS GEOWkt
- */
-extern CORE_EXPORT const QString GEOWKT;
-extern CORE_EXPORT const QString PROJECT_SCALES;
+* Wkt string that represents a geographic coord sys
+* \since QGIS GEOWkt
+*/
+CONSTLATIN1STRING geoWkt()
+{
+#if PROJ_VERSION_MAJOR>=6
+  return QLatin1String(
+           R"""(GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]] )"""
+         );
+#else
+  return QLatin1String(
+           "GEOGCS[\"WGS 84\", "
+           "  DATUM[\"WGS_1984\", "
+           "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
+           "      AUTHORITY[\"EPSG\",\"7030\"]], "
+           "    TOWGS84[0,0,0,0,0,0,0], "
+           "    AUTHORITY[\"EPSG\",\"6326\"]], "
+           "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]], "
+           "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9108\"]], "
+           "  AXIS[\"Lat\",NORTH], "
+           "  AXIS[\"Long\",EAST], "
+           "  AUTHORITY[\"EPSG\",\"4326\"]]"
+         );
+#endif
+}
 
 //! PROJ4 string that represents a geographic coord sys
-extern CORE_EXPORT const QString GEOPROJ4;
+CONSTLATIN1STRING geoProj4()
+{
+  return QLatin1String( "+proj=longlat +datum=WGS84 +no_defs" );
+}
+
+//! Geographic coord sys from EPSG authority
+CONSTLATIN1STRING geoEpsgCrsAuthId()
+{
+  return QLatin1String( "EPSG:4326" );
+}
+
+//! Constant that holds the string representation for "No ellips/No CRS"
+CONSTLATIN1STRING geoNone()
+{
+  return QLatin1String( "NONE" );
+}
+
+///@cond PRIVATE
+
+//! Delay between the scheduling of 2 preview jobs
+const int PREVIEW_JOB_DELAY_MS = 250;
+
+//! Maximum rendering time for a layer of a preview job
+const int MAXIMUM_LAYER_PREVIEW_TIME_MS = 250;
+
+///@endcond
+
+#endif
+
 //! Magic number for a geographic coord sys in POSTGIS SRID
 const long GEOSRID = 4326;
+
 //! Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id
 const long GEOCRS_ID = 3452;
+
 //! Magic number for a geographic coord sys in EpsgCrsId ID format
 const long GEO_EPSG_CRS_ID = 4326;
-//! Geographic coord sys from EPSG authority
-extern CORE_EXPORT const QString GEO_EPSG_CRS_AUTHID;
 
 /**
  * Magick number that determines whether a projection crsid is a system (srs.db)
  *  or user (~/.qgis.qgis.db) defined projection. */
 const int USER_CRS_START_ID = 100000;
-
-//! Constant that holds the string representation for "No ellips/No CRS"
-extern CORE_EXPORT const QString GEO_NONE;
 
 //
 // Constants for point symbols
@@ -485,18 +700,6 @@ const double DEFAULT_LINE_WIDTH = 0.26;
 
 //! Default snapping tolerance for segments
 const double DEFAULT_SEGMENT_EPSILON = 1e-8;
-
-///@cond PRIVATE
-#ifndef SIP_RUN
-
-//! Delay between the scheduling of 2 preview jobs
-const int PREVIEW_JOB_DELAY_MS = 250;
-
-//! Maximum rendering time for a layer of a preview job
-const int MAXIMUM_LAYER_PREVIEW_TIME_MS = 250;
-#endif
-
-///@endcond
 
 typedef QMap<QString, QString> QgsStringMap SIP_SKIP;
 
@@ -605,6 +808,25 @@ typedef unsigned long long qgssize;
 #define MAYBE_UNUSED
 #endif
 
+#ifndef FINAL
+#define FINAL final
+#endif
 
+#ifdef SIP_RUN
 
+/**
+ * Wkt string that represents a geographic coord sys
+ * \since QGIS GEOWkt
+ */
+QString CORE_EXPORT geoWkt();
 
+//! PROJ4 string that represents a geographic coord sys
+QString CORE_EXPORT geoProj4();
+
+//! Geographic coord sys from EPSG authority
+QString CORE_EXPORT geoEpsgCrsAuthId();
+
+//! Constant that holds the string representation for "No ellips/No CRS"
+QString CORE_EXPORT geoNone();
+
+#endif

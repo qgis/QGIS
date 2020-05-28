@@ -93,6 +93,7 @@ typedef QtClass<QVariant> QtClassQVariantBase;
       QString mName;
       int mCount;
       QgsMapLayer *mLayer;
+      QList<QAction *> contextMenuActions;
     };
 
     static const int MONTHS;
@@ -169,7 +170,7 @@ Here's some comment mentioning another class QgsAutoAwesomemater.makeLessAwesome
 
     MyPointer *pointerReturnValue();
 %Docstring
-I return a pointer. If something bad happens, I return None.
+I return a pointer. If something bad happens, I return ``None``.
 
 :return: pointer to something cool
 %End

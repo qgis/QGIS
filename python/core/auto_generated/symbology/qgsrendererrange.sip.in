@@ -1,0 +1,132 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsrendererrange.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsRendererRange
+{
+
+%TypeHeaderCode
+#include "qgsrendererrange.h"
+%End
+  public:
+
+    QgsRendererRange();
+%Docstring
+Constructor for QgsRendererRange.
+%End
+
+    QgsRendererRange( const QgsClassificationRange &range, QgsSymbol *symbol /Transfer/, bool render = true );
+%Docstring
+Creates a renderer symbol range
+
+:param range: The classification range
+:param symbol: The symbol for this renderer range
+:param render: If true, it will be renderered
+%End
+    QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true );
+    QgsRendererRange( const QgsRendererRange &range );
+
+
+    bool operator<( const QgsRendererRange &other ) const;
+
+    double lowerValue() const;
+    double upperValue() const;
+
+    QgsSymbol *symbol() const;
+    QString label() const;
+
+    void setSymbol( QgsSymbol *s /Transfer/ );
+    void setLabel( const QString &label );
+    void setLowerValue( double lowerValue );
+    void setUpperValue( double upperValue );
+
+    bool renderState() const;
+    void setRenderState( bool render );
+
+    QString dump() const;
+
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props, bool firstRange = false ) const;
+%Docstring
+Creates a DOM element representing the range in SLD format.
+
+:param doc: DOM document
+:param element: destination DOM element
+:param props: graduated renderer properties
+:param firstRange: set to ``True`` if the range is the first range, where the lower value uses a <= test
+                   rather than a < test.
+%End
+
+  protected:
+
+    void swap( QgsRendererRange &other );
+};
+
+typedef QList<QgsRendererRange> QgsRangeList;
+
+
+class QgsRendererRangeLabelFormat /Deprecated/
+{
+%Docstring
+
+.. versionadded:: 2.6
+
+.. deprecated:: QGIS 3.10
+  use QgsClassificationMethod instead
+%End
+
+%TypeHeaderCode
+#include "qgsrendererrange.h"
+%End
+  public:
+    QgsRendererRangeLabelFormat();
+    QgsRendererRangeLabelFormat( const QString &format, int precision = 4, bool trimTrailingZeroes = false );
+
+    bool operator==( const QgsRendererRangeLabelFormat &other ) const;
+    bool operator!=( const QgsRendererRangeLabelFormat &other ) const;
+
+    QString format() const;
+    void setFormat( const QString &format );
+
+    int precision() const;
+    void setPrecision( int precision );
+
+    bool trimTrailingZeroes() const;
+    void setTrimTrailingZeroes( bool trimTrailingZeroes );
+
+    QString labelForRange( double lower, double upper ) const /PyName=labelForLowerUpper/;
+%Docstring
+
+.. note::
+
+   labelForLowerUpper in Python bindings
+%End
+    QString labelForRange( const QgsRendererRange &range ) const;
+    QString formatNumber( double value ) const;
+
+    void setFromDomElement( QDomElement &element );
+    void saveToDomElement( QDomElement &element );
+
+    static const int MAX_PRECISION;
+    static const int MIN_PRECISION;
+
+  protected:
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsrendererrange.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

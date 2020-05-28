@@ -9,9 +9,8 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = 'Matthias Kuhn'
 __date__ = '2015-04-23'
 __copyright__ = 'Copyright 2015, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
+from urllib.parse import parse_qs
 
 from qgis.core import (
     QgsField,
@@ -28,7 +27,9 @@ from qgis.core import (
     QgsMemoryProviderUtils,
     QgsCoordinateReferenceSystem,
     QgsRectangle,
-    QgsTestUtils
+    QgsTestUtils,
+    QgsFeatureSource,
+    QgsProjUtils
 )
 
 from qgis.testing import (
@@ -42,7 +43,7 @@ from utilities import (
 )
 
 from providertestbase import ProviderTestCase
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant, QByteArray, QDate, QDateTime, QTime
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -53,27 +54,27 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def createLayer(cls):
         vl = QgsVectorLayer(
-            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk',
             'test', 'memory')
         assert (vl.isValid())
 
         f1 = QgsFeature()
-        f1.setAttributes([5, -200, NULL, 'NuLl', '5'])
+        f1.setAttributes([5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)), QDate(2020, 5, 2), QTime(12, 13, 1)])
         f1.setGeometry(QgsGeometry.fromWkt('Point (-71.123 78.23)'))
 
         f2 = QgsFeature()
-        f2.setAttributes([3, 300, 'Pear', 'PEaR', '3'])
+        f2.setAttributes([3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL])
 
         f3 = QgsFeature()
-        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1'])
+        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1', QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)), QDate(2020, 5, 3), QTime(12, 13, 14)])
         f3.setGeometry(QgsGeometry.fromWkt('Point (-70.332 66.33)'))
 
         f4 = QgsFeature()
-        f4.setAttributes([2, 200, 'Apple', 'Apple', '2'])
+        f4.setAttributes([2, 200, 'Apple', 'Apple', '2', QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)), QDate(2020, 5, 4), QTime(12, 14, 14)])
         f4.setGeometry(QgsGeometry.fromWkt('Point (-68.2 70.8)'))
 
         f5 = QgsFeature()
-        f5.setAttributes([4, 400, 'Honey', 'Honey', '4'])
+        f5.setAttributes([4, 400, 'Honey', 'Honey', '4', QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)), QDate(2021, 5, 4), QTime(13, 13, 14)])
         f5.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
 
         vl.dataProvider().addFeatures([f1, f2, f3, f4, f5])
@@ -95,15 +96,18 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
 
         f1 = QgsFeature()
         f1.setAttributes([1])
-        f1.setGeometry(QgsGeometry.fromWkt('Polygon ((-69.03664108 81.35818902, -69.09237722 80.24346619, -73.718477 80.1319939, -73.718477 76.28620011, -74.88893598 76.34193625, -74.83319983 81.35818902, -69.03664108 81.35818902))'))
+        f1.setGeometry(QgsGeometry.fromWkt(
+            'Polygon ((-69.03664108 81.35818902, -69.09237722 80.24346619, -73.718477 80.1319939, -73.718477 76.28620011, -74.88893598 76.34193625, -74.83319983 81.35818902, -69.03664108 81.35818902))'))
 
         f2 = QgsFeature()
         f2.setAttributes([2])
-        f2.setGeometry(QgsGeometry.fromWkt('Polygon ((-67.58750139 81.1909806, -66.30557012 81.24671674, -66.30557012 76.89929767, -67.58750139 76.89929767, -67.58750139 81.1909806))'))
+        f2.setGeometry(QgsGeometry.fromWkt(
+            'Polygon ((-67.58750139 81.1909806, -66.30557012 81.24671674, -66.30557012 76.89929767, -67.58750139 76.89929767, -67.58750139 81.1909806))'))
 
         f3 = QgsFeature()
         f3.setAttributes([3])
-        f3.setGeometry(QgsGeometry.fromWkt('Polygon ((-68.36780737 75.78457483, -67.53176524 72.60761475, -68.64648808 73.66660144, -70.20710006 72.9420316, -68.36780737 75.78457483))'))
+        f3.setGeometry(QgsGeometry.fromWkt(
+            'Polygon ((-68.36780737 75.78457483, -67.53176524 72.60761475, -68.64648808 73.66660144, -70.20710006 72.9420316, -68.36780737 75.78457483))'))
 
         f4 = QgsFeature()
         f4.setAttributes([4])
@@ -228,6 +232,31 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
 
             assert compareWkt(str(geom.asWkt()), "Point (10 10)"), myMessage
 
+    def testClone(self):
+        """
+        Test that cloning a memory layer also clones features
+        """
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=f1:integer&field=f2:integer',
+            'test', 'memory')
+        self.assertTrue(vl.isValid())
+
+        f1 = QgsFeature()
+        f1.setAttributes([5, -200])
+        f2 = QgsFeature()
+        f2.setAttributes([3, 300])
+        f3 = QgsFeature()
+        f3.setAttributes([1, 100])
+        res, [f1, f2, f3] = vl.dataProvider().addFeatures([f1, f2, f3])
+        self.assertEqual(vl.featureCount(), 3)
+
+        vl2 = vl.clone()
+        self.assertEqual(vl2.featureCount(), 3)
+        features = [f for f in vl2.getFeatures()]
+        self.assertTrue([f for f in features if f['f1'] == 5])
+        self.assertTrue([f for f in features if f['f1'] == 3])
+        self.assertTrue([f for f in features if f['f1'] == 1])
+
     def testGetFields(self):
         layer = QgsVectorLayer("Point", "test", "memory")
         provider = layer.dataProvider()
@@ -274,6 +303,21 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertEqual(myMemoryLayer.fields().field('size').length(), 12)
         self.assertEqual(myMemoryLayer.fields().field('size').precision(), 9)
+
+        myMemoryLayer = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=size:double(-1,-1)&index=yes'),
+            'test',
+            'memory')
+
+        self.assertEqual(myMemoryLayer.fields().field('size').length(), -1)
+        self.assertEqual(myMemoryLayer.fields().field('size').precision(), -1)
+
+        myMemoryLayer = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=size:string(-1)&index=yes'),
+            'test',
+            'memory')
+
+        self.assertEqual(myMemoryLayer.fields().field('size').length(), -1)
 
     def testFromUriWithEncodedField(self):
         """Test we can construct the mem provider from a uri when a field name is encoded"""
@@ -393,11 +437,25 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(layer.wkbType(), QgsWkbTypes.PolygonZM)
 
         # crs
-        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.PolygonZM, QgsCoordinateReferenceSystem.fromEpsgId(3111))
+        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.PolygonZM,
+                                                         QgsCoordinateReferenceSystem.fromEpsgId(3111))
         self.assertTrue(layer.isValid())
         self.assertEqual(layer.wkbType(), QgsWkbTypes.PolygonZM)
         self.assertTrue(layer.crs().isValid())
         self.assertEqual(layer.crs().authid(), 'EPSG:3111')
+
+        # custom CRS
+        if QgsProjUtils.projVersionMajor() >= 6:
+            crs = QgsCoordinateReferenceSystem.fromProj('+proj=qsc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs')
+            layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.PolygonZM, crs)
+            self.assertTrue(layer.isValid())
+            self.assertTrue(layer.crs().isValid())
+            self.assertEqual(layer.crs().toProj(), '+proj=qsc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs +type=crs')
+
+            # clone it, just to check
+            layer2 = layer.clone()
+            self.assertEqual(layer2.crs().toProj(),
+                             '+proj=qsc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs +type=crs')
 
         # fields
         fields = QgsFields()
@@ -410,6 +468,8 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         fields.append(QgsField("time", QVariant.Time))
         fields.append(QgsField("#complex_name", QVariant.String))
         fields.append(QgsField("complex/name", QVariant.String))
+        fields.append(QgsField("binaryfield", QVariant.ByteArray))
+        fields.append(QgsField("boolfield", QVariant.Bool))
         layer = QgsMemoryProviderUtils.createMemoryLayer('my name', fields)
         self.assertTrue(layer.isValid())
         self.assertFalse(layer.fields().isEmpty())
@@ -417,6 +477,8 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         for i in range(len(fields)):
             self.assertEqual(layer.fields()[i].name(), fields[i].name())
             self.assertEqual(layer.fields()[i].type(), fields[i].type())
+            self.assertEqual(layer.fields()[i].length(), fields[i].length())
+            self.assertEqual(layer.fields()[i].precision(), fields[i].precision(), fields[i].name())
 
         # unsupported field type
         fields = QgsFields()
@@ -425,11 +487,28 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(layer.isValid())
         self.assertFalse(layer.fields().isEmpty())
         self.assertEqual(layer.fields()[0].name(), 'rect')
-        self.assertEqual(layer.fields()[0].type(), QVariant.String) # should be mapped to string
+        self.assertEqual(layer.fields()[0].type(), QVariant.String)  # should be mapped to string
+
+        # field precision
+        fields = QgsFields()
+        fields.append(QgsField("string", QVariant.String, len=10))
+        fields.append(QgsField("long", QVariant.LongLong, len=6))
+        fields.append(QgsField("double", QVariant.Double, len=10, prec=7))
+        fields.append(QgsField("double2", QVariant.Double, len=-1, prec=-1))
+        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', fields)
+        self.assertTrue(layer.isValid())
+        self.assertFalse(layer.fields().isEmpty())
+        self.assertEqual(len(layer.fields()), len(fields))
+        for i in range(len(fields)):
+            self.assertEqual(layer.fields()[i].name(), fields[i].name())
+            self.assertEqual(layer.fields()[i].type(), fields[i].type())
+            self.assertEqual(layer.fields()[i].length(), fields[i].length())
+            self.assertEqual(layer.fields()[i].precision(), fields[i].precision())
 
     def testThreadSafetyWithIndex(self):
-        layer = QgsVectorLayer('Point?crs=epsg:4326&index=yes&field=pk:integer&field=cnt:int8&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
-                               'test', 'memory')
+        layer = QgsVectorLayer(
+            'Point?crs=epsg:4326&index=yes&field=pk:integer&field=cnt:int8&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+            'test', 'memory')
 
         provider = layer.dataProvider()
         f = QgsFeature()
@@ -509,37 +588,141 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl.dataProvider().minimumValue(0), -100)
         self.assertEqual(vl.dataProvider().maximumValue(0), 400)
 
+    def testBinary(self):
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=f1:integer&field=f2:binary',
+            'test', 'memory')
+        self.assertTrue(vl.isValid())
+
+        dp = vl.dataProvider()
+        fields = dp.fields()
+        self.assertEqual([f.name() for f in fields], ['f1', 'f2'])
+        self.assertEqual([f.type() for f in fields], [QVariant.Int, QVariant.ByteArray])
+        self.assertEqual([f.typeName() for f in fields], ['integer', 'binary'])
+
+        f = QgsFeature(dp.fields())
+        bin_1 = b'xxx'
+        bin_val1 = QByteArray(bin_1)
+        f.setAttributes([1, bin_val1])
+        self.assertTrue(dp.addFeature(f))
+
+        f2 = [f for f in dp.getFeatures()][0]
+        self.assertEqual(f2.attributes(), [1, bin_val1])
+
+        # add binary field
+        self.assertTrue(dp.addAttributes([QgsField('binfield2', QVariant.ByteArray, 'Binary')]))
+
+        fields = dp.fields()
+        bin2_field = fields[fields.lookupField('binfield2')]
+        self.assertEqual(bin2_field.type(), QVariant.ByteArray)
+        self.assertEqual(bin2_field.typeName(), 'Binary')
+
+        f = QgsFeature(fields)
+        bin_2 = b'yyy'
+        bin_val2 = QByteArray(bin_2)
+        f.setAttributes([2, NULL, bin_val2])
+        self.assertTrue(dp.addFeature(f))
+
+        f1 = [f for f in dp.getFeatures()][0]
+        self.assertEqual(f1.attributes(), [1, bin_val1, NULL])
+        f2 = [f for f in dp.getFeatures()][1]
+        self.assertEqual(f2.attributes(), [2, NULL, bin_val2])
+
+    def testBool(self):
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=f1:integer&field=f2:bool',
+            'test', 'memory')
+        self.assertTrue(vl.isValid())
+
+        dp = vl.dataProvider()
+        fields = dp.fields()
+        self.assertEqual([f.name() for f in fields], ['f1', 'f2'])
+        self.assertEqual([f.type() for f in fields], [QVariant.Int, QVariant.Bool])
+        self.assertEqual([f.typeName() for f in fields], ['integer', 'boolean'])
+
+        f = QgsFeature(dp.fields())
+        f.setAttributes([1, True])
+        f2 = QgsFeature(dp.fields())
+        f2.setAttributes([2, False])
+        f3 = QgsFeature(dp.fields())
+        f3.setAttributes([3, NULL])
+        self.assertTrue(dp.addFeatures([f, f2, f3]))
+
+        self.assertEqual([f.attributes() for f in dp.getFeatures()], [[1, True], [2, False], [3, NULL]])
+
+        # add boolean field
+        self.assertTrue(dp.addAttributes([QgsField('boolfield2', QVariant.Bool, 'Boolean')]))
+
+        fields = dp.fields()
+        bool2_field = fields[fields.lookupField('boolfield2')]
+        self.assertEqual(bool2_field.type(), QVariant.Bool)
+        self.assertEqual(bool2_field.typeName(), 'Boolean')
+
+        f = QgsFeature(fields)
+        f.setAttributes([2, NULL, True])
+        self.assertTrue(dp.addFeature(f))
+
+        self.assertEqual([f.attributes() for f in dp.getFeatures()],
+                         [[1, True, NULL], [2, False, NULL], [3, NULL, NULL], [2, NULL, True]])
+
+    def testSpatialIndex(self):
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=f1:integer&field=f2:bool',
+            'test', 'memory')
+        self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexNotPresent)
+        vl.dataProvider().createSpatialIndex()
+        self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexPresent)
+
+    def testClone(self):
+        """Test that a cloned layer has a single new id and
+        the same fields as the source layer"""
+
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326',
+            'test', 'memory')
+        self.assertTrue(vl.isValid)
+        dp = vl.dataProvider()
+        self.assertTrue(dp.addAttributes([QgsField("name", QVariant.String),
+                                          QgsField("age", QVariant.Int),
+                                          QgsField("size", QVariant.Double)]))
+        vl2 = vl.clone()
+        self.assertTrue(
+            'memory?geometry=Point&crs=EPSG:4326&field=name:(0,0)&field=age:(0,0)&field=size:(0,0)' in vl2.publicSource())
+        self.assertEqual(len(parse_qs(vl.publicSource())['uid']), 1)
+        self.assertEqual(len(parse_qs(vl2.publicSource())['uid']), 1)
+        self.assertNotEqual(parse_qs(vl2.publicSource())['uid'][0], parse_qs(vl.publicSource())['uid'][0])
+
 
 class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
-
     """Runs the provider test suite against an indexed memory layer"""
 
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         # Create test layer
-        cls.vl = QgsVectorLayer('Point?crs=epsg:4326&index=yes&field=pk:integer&field=cnt:int8&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
-                                'test', 'memory')
+        cls.vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk',
+            'test', 'memory')
         assert (cls.vl.isValid())
         cls.source = cls.vl.dataProvider()
 
         f1 = QgsFeature()
-        f1.setAttributes([5, -200, NULL, 'NuLl', '5'])
+        f1.setAttributes([5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)), QDate(2020, 5, 2), QTime(12, 13, 1)])
         f1.setGeometry(QgsGeometry.fromWkt('Point (-71.123 78.23)'))
 
         f2 = QgsFeature()
-        f2.setAttributes([3, 300, 'Pear', 'PEaR', '3'])
+        f2.setAttributes([3, 300, 'Pear', 'PEaR', '3', NULL, NULL, NULL])
 
         f3 = QgsFeature()
-        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1'])
+        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1', QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)), QDate(2020, 5, 3), QTime(12, 13, 14)])
         f3.setGeometry(QgsGeometry.fromWkt('Point (-70.332 66.33)'))
 
         f4 = QgsFeature()
-        f4.setAttributes([2, 200, 'Apple', 'Apple', '2'])
+        f4.setAttributes([2, 200, 'Apple', 'Apple', '2', QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)), QDate(2020, 5, 4), QTime(12, 14, 14)])
         f4.setGeometry(QgsGeometry.fromWkt('Point (-68.2 70.8)'))
 
         f5 = QgsFeature()
-        f5.setAttributes([4, 400, 'Honey', 'Honey', '4'])
+        f5.setAttributes([4, 400, 'Honey', 'Honey', '4', QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)), QDate(2021, 5, 4), QTime(13, 13, 14)])
         f5.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
 
         cls.source.addFeatures([f1, f2, f3, f4, f5])
@@ -552,7 +735,8 @@ class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
 
         f1 = QgsFeature()
         f1.setAttributes([1])
-        f1.setGeometry(QgsGeometry.fromWkt('Polygon ((-69.0 81.4, -69.0 80.2, -73.7 80.2, -73.7 76.3, -74.9 76.3, -74.9 81.4, -69.0 81.4))'))
+        f1.setGeometry(QgsGeometry.fromWkt(
+            'Polygon ((-69.0 81.4, -69.0 80.2, -73.7 80.2, -73.7 76.3, -74.9 76.3, -74.9 81.4, -69.0 81.4))'))
 
         f2 = QgsFeature()
         f2.setAttributes([2])

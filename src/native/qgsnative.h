@@ -22,6 +22,7 @@
 #include <QImage>
 #include <QVariant>
 #include <vector>
+#include <QObject>
 
 class QString;
 class QWindow;
@@ -33,18 +34,28 @@ class QWindow;
  * are implemented in subclasses to provide platform abstraction.
  * \since QGIS 3.0
  */
-class NATIVE_EXPORT QgsNative
+class NATIVE_EXPORT QgsNative : public QObject
 {
+    Q_OBJECT
+
   public:
 
     //! Native interface capabilities
     enum Capability
     {
       NativeDesktopNotifications = 1 << 1, //!< Native desktop notifications are supported. See showDesktopNotification().
+      NativeFilePropertiesDialog = 1 << 2, //!< Platform can show a native "file" (or folder) properties dialog.
+      NativeOpenTerminalAtPath = 1 << 3, //!< Platform can open a terminal (command line) at a specific path
     };
     Q_DECLARE_FLAGS( Capabilities, Capability )
 
     virtual ~QgsNative() = default;
+
+    /**
+     * Called on QGIS exit, allowing the native interface to gracefully
+     * cleanup and exit.
+     */
+    virtual void cleanup();
 
     /**
      * Returns the native interface's capabilities.
@@ -83,6 +94,16 @@ class NATIVE_EXPORT QgsNative
     virtual void openFileExplorerAndSelectFile( const QString &path );
 
     /**
+     * Opens the desktop explorer file (or folder) properties dialog, for the given \a path.
+     *
+     * The default implementation does nothing. Platforms which implement this interface should
+     * return the QgsNative::NativeFilePropertiesDialog capability.
+     *
+     * \since QGIS 3.6
+     */
+    virtual void showFileProperties( const QString &path );
+
+    /**
      * Shows the application progress report, using an "undefined" total
      * type progress (i.e. the platform's way of showing that a task
      * is occurring with an unknown progress).
@@ -118,6 +139,28 @@ class NATIVE_EXPORT QgsNative
      */
     virtual void hideApplicationProgress();
 
+    /**
+     * Shows an application badge count.
+     *
+     * The default implementation does nothing.
+     * \since QGIS 3.4
+     */
+    virtual void setApplicationBadgeCount( int count );
+
+    /**
+     * Returns TRUE if the operating system is set to utilize a "dark" theme.
+     * \since QGIS 3.4
+     */
+    virtual bool hasDarkTheme();
+
+    /**
+     * Opens a terminal (command line) window at the given \a path.
+     *
+     * This method is only supported when the interface returns the NativeOpenTerminalAtPath flag for capabilities().
+     *
+     * Returns TRUE if terminal was successfully opened.
+     */
+    virtual bool openTerminalAtPath( const QString &path );
 
     /**
      * Notification settings, for use with showDesktopNotification().
@@ -169,7 +212,7 @@ class NATIVE_EXPORT QgsNative
      *
      * This method is only supported when the interface returns the NativeDesktopNotifications flag for capabilities().
      *
-     * Returns true if notification was successfully sent.
+     * Returns TRUE if notification was successfully sent.
      */
     virtual NotificationResult showDesktopNotification( const QString &summary, const QString &body, const NotificationSettings &settings = NotificationSettings() );
 
@@ -202,6 +245,21 @@ class NATIVE_EXPORT QgsNative
      * \since QGIS 3.4
      */
     virtual void onRecentProjectsChanged( const std::vector< RecentProjectProperties > &recentProjects );
+
+  signals:
+
+    /**
+     * Emitted whenever a USB storage device has been inserted or removed.
+     *
+     * The \a path argument gives the file path to the device (if available).
+     *
+     * If \a inserted is TRUE then the device was inserted. If \a inserted is FALSE then
+     * the device was removed.
+     *
+     * \since QGIS 3.4
+     */
+    void usbStorageNotification( const QString &path, bool inserted );
+
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsNative::Capabilities )

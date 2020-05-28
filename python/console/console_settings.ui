@@ -638,7 +638,7 @@
                    <string>Get autocompletion from current document and installed APIs</string>
                   </property>
                   <property name="text">
-                   <string>from Doc and APIs</string>
+                   <string>From doc and APIs</string>
                   </property>
                  </widget>
                 </item>
@@ -648,7 +648,7 @@
                    <string>Get autocompletion from installed APIs</string>
                   </property>
                   <property name="text">
-                   <string>from APIs files</string>
+                   <string>From API files</string>
                   </property>
                   <property name="checked">
                    <bool>true</bool>
@@ -661,7 +661,7 @@
                    <string>Get autocompletion from current document</string>
                   </property>
                   <property name="text">
-                   <string>from Document</string>
+                   <string>From document</string>
                   </property>
                  </widget>
                 </item>
@@ -1278,7 +1278,7 @@
                    <string>Get autocompletion from current document</string>
                   </property>
                   <property name="text">
-                   <string>from Document</string>
+                   <string>From document</string>
                   </property>
                  </widget>
                 </item>
@@ -1288,7 +1288,7 @@
                    <string>Get autocompletion from current document and installed APIs</string>
                   </property>
                   <property name="text">
-                   <string>from Doc and APIs</string>
+                   <string>From doc and APIs</string>
                   </property>
                  </widget>
                 </item>
@@ -1298,7 +1298,7 @@
                    <string>Get autocompletion from installed APIs</string>
                   </property>
                   <property name="text">
-                   <string>from APIs files</string>
+                   <string>From API files</string>
                   </property>
                   <property name="checked">
                    <bool>true</bool>
@@ -1540,7 +1540,7 @@
              <item row="0" column="0">
               <widget class="QPushButton" name="compileAPIs">
                <property name="text">
-                <string>Compile APIs...</string>
+                <string>Compile APIs…</string>
                </property>
               </widget>
              </item>

@@ -30,6 +30,7 @@ itself the min/max values.
 
     static const double DEFAULT_STDDEV_FACTOR;
 
+    //! \brief This enumerator describes the limits used to compute min/max values
     enum Limits
     {
       None /PyName=None_/,
@@ -40,19 +41,19 @@ itself the min/max values.
 
     enum Extent
     {
-      //! Whole
+      //! Whole raster is used to compute statistics.
       WholeRaster,
-      //! Current
+      //! Current extent of the canvas (at the time of computation) is used to compute statistics.
       CurrentCanvas,
-      //! Constantly
+      //! Constantly updated extent of the canvas is used to compute statistics.
       UpdatedCanvas
     };
 
     enum StatAccuracy
     {
-      //! Exact
+      //! Exact statistics.
       Exact,
-      //! Approximated
+      //! Approximated statistics.
       Estimated
     };
 

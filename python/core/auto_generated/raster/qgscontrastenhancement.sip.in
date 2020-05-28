@@ -38,13 +38,12 @@ ContrastEnhancementAlgorithm.
     ~QgsContrastEnhancement();
 
 
-
-    static double maximumValuePossible( Qgis::DataType );
+    static double maximumValuePossible( Qgis::DataType dataType );
 %Docstring
 Helper function that returns the maximum possible value for a GDAL data type.
 %End
 
-    static double minimumValuePossible( Qgis::DataType );
+    static double minimumValuePossible( Qgis::DataType dataType );
 %Docstring
 Helper function that returns the minimum possible value for a GDAL data type.
 %End
@@ -71,7 +70,6 @@ Returns the minimum value for the contrast enhancement range.
 
     ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const;
 
-
     int enhanceContrast( double value );
 %Docstring
 Applies the contrast enhancement to a ``value``. Return values are 0 - 254, -1 means the pixel was clipped and should not be displayed.
@@ -79,7 +77,7 @@ Applies the contrast enhancement to a ``value``. Return values are 0 - 254, -1 m
 
     bool isValueInDisplayableRange( double value );
 %Docstring
-Returns true if a pixel ``value`` is in displayable range, false if pixel
+Returns ``True`` if a pixel ``value`` is in displayable range, ``False`` if pixel
 is outside of range (i.e. clipped).
 %End
 
@@ -125,6 +123,17 @@ By default it will be generated.
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
     void readXml( const QDomElement &elem );
+
+    void toSld( QDomDocument &doc, QDomElement &element ) const;
+%Docstring
+Write ContrastEnhancement tags following SLD v1.0 specs
+SLD1.0 is limited to the parameters listed in:
+https://docs.geoserver.org/stable/en/user/styling/sld/reference/rastersymbolizer.html#contrastenhancement
+Btw only sld:Normalize + vendor options are supported because there is no clear mapping
+of ContrastEnhancement parameters to support sld:Histogram or sld:GammaValue
+
+.. versionadded:: 3.6
+%End
 
   private:
     const QgsContrastEnhancement &operator=( const QgsContrastEnhancement & );

@@ -21,10 +21,6 @@ __author__ = 'Alexander Bruy'
 __date__ = 'August 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 from osgeo import gdal
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsFeature,
@@ -45,7 +41,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class PointsFromLines(QgisAlgorithm):
-
     INPUT_RASTER = 'INPUT_RASTER'
     RASTER_BAND = 'RASTER_BAND'
     INPUT_VECTOR = 'INPUT_VECTOR'
@@ -65,7 +60,7 @@ class PointsFromLines(QgisAlgorithm):
                                                             self.tr('Raster layer')))
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_VECTOR,
                                                               self.tr('Vector layer'), [QgsProcessing.TypeVectorLine]))
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Points from polygons'), QgsProcessing.TypeVectorPoint))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Points along lines'), QgsProcessing.TypeVectorPoint))
 
     def name(self):
         return 'generatepointspixelcentroidsalongline'
@@ -107,6 +102,10 @@ class PointsFromLines(QgisAlgorithm):
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break
+
+            if not f.hasGeometry():
+                continue
+
             geom = f.geometry()
             if geom.isMultipart():
                 lines = geom.asMultiPolyline()

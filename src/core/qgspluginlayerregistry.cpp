@@ -38,13 +38,13 @@ QgsPluginLayer *QgsPluginLayerType::createLayer()
 
 QgsPluginLayer *QgsPluginLayerType::createLayer( const QString &uri )
 {
-  Q_UNUSED( uri );
+  Q_UNUSED( uri )
   return nullptr;
 }
 
 bool QgsPluginLayerType::showLayerProperties( QgsPluginLayer *layer )
 {
-  Q_UNUSED( layer );
+  Q_UNUSED( layer )
   return false;
 }
 
@@ -56,11 +56,11 @@ QgsPluginLayerRegistry::~QgsPluginLayerRegistry()
 {
   if ( !mPluginLayerTypes.isEmpty() )
   {
-    QgsDebugMsg( "QgsPluginLayerRegistry::~QgsPluginLayerRegistry(): creator list not empty" );
-    PluginLayerTypes::const_iterator it = mPluginLayerTypes.constBegin();
-    for ( ; it != mPluginLayerTypes.constEnd(); ++it )
+    QgsDebugMsg( QStringLiteral( "QgsPluginLayerRegistry::~QgsPluginLayerRegistry(): creator list not empty" ) );
+    const QStringList keys = mPluginLayerTypes.keys();
+    for ( const QString &key : keys )
     {
-      removePluginLayerType( it.key() );
+      removePluginLayerType( key );
     }
   }
 }
@@ -90,9 +90,10 @@ bool QgsPluginLayerRegistry::removePluginLayerType( const QString &typeName )
 
   // remove all remaining layers of this type - to avoid invalid behavior
   QList<QgsMapLayer *> layers = QgsProject::instance()->mapLayers().values();
-  Q_FOREACH ( QgsMapLayer *layer, layers )
+  const auto constLayers = layers;
+  for ( QgsMapLayer *layer : constLayers )
   {
-    if ( layer->type() == QgsMapLayer::PluginLayer )
+    if ( layer->type() == QgsMapLayerType::PluginLayer )
     {
       QgsPluginLayer *pl = qobject_cast<QgsPluginLayer *>( layer );
       if ( pl->pluginLayerType() == typeName )

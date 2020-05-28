@@ -21,6 +21,7 @@
 #include "qgsfilterlineedit.h"
 #include "qgsvaluerelationwidgetwrapper.h"
 #include "qgssettings.h"
+#include "qgsapplication.h"
 
 #include <QStringListModel>
 #include <QCompleter>
@@ -56,7 +57,8 @@ QVariant QgsValueRelationSearchWidgetWrapper::value() const
 
   if ( mLineEdit )
   {
-    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem &i, mCache )
+    const auto constMCache = mCache;
+    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &i : constMCache )
     {
       if ( i.value == mLineEdit->text() )
       {
@@ -213,13 +215,14 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget *editor )
 
   if ( mComboBox )
   {
-    mComboBox->addItem( tr( "Please select" ), QVariant() ); // creates an invalid to allow selecting all features
+    mComboBox->addItem( tr( "Please Select" ), QVariant() ); // creates an invalid to allow selecting all features
     if ( config( QStringLiteral( "AllowNull" ) ).toBool() )
     {
       mComboBox->addItem( tr( "(no selection)" ), QVariant( layer()->fields().at( mFieldIdx ).type() ) );
     }
 
-    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem &element, mCache )
+    const auto constMCache = mCache;
+    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &element : constMCache )
     {
       mComboBox->addItem( element.value, element.key );
     }
@@ -230,7 +233,7 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget *editor )
   {
     QStringList values;
     values.reserve( mCache.size() );
-    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem &i,  mCache )
+    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &i : qgis::as_const( mCache ) )
     {
       values << i.value;
     }

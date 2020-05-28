@@ -56,10 +56,10 @@ QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &datapr
     btnConfigEdit->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
     btnConfigMsgClear->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconClose.svg" ) ) );
 
-    btnConfigAdd->setText( QStringLiteral( "" ) );
-    btnConfigRemove->setText( QStringLiteral( "" ) );
-    btnConfigEdit->setText( QStringLiteral( "" ) );
-    btnConfigMsgClear->setText( QStringLiteral( "" ) );
+    btnConfigAdd->setText( QString() );
+    btnConfigRemove->setText( QString() );
+    btnConfigEdit->setText( QString() );
+    btnConfigMsgClear->setText( QString() );
 
     leConfigMsg->setStyleSheet( QStringLiteral( "QLineEdit{background-color: %1}" )
                                 .arg( QgsAuthGuiUtils::yellowColor().name() ) );
@@ -83,7 +83,11 @@ void QgsAuthConfigSelect::setConfigId( const QString &authcfg )
     {
       mAuthCfg = authcfg;
     }
+    // avoid duplicate call to loadConfig(), which may potentially be triggered by combo box index changes in the
+    // call to populateConfigSelector(). We *always* call loadConfig() after this, so we don't want to do it twice.
+    mTemporarilyBlockLoad = true;
     populateConfigSelector();
+    mTemporarilyBlockLoad = false;
     loadConfig();
   }
 }
@@ -121,7 +125,7 @@ void QgsAuthConfigSelect::loadConfig()
 
 void QgsAuthConfigSelect::clearConfig()
 {
-  cmbConfigSelect->setToolTip( QStringLiteral( "" ) );
+  cmbConfigSelect->setToolTip( QString() );
   btnConfigEdit->setEnabled( false );
   btnConfigRemove->setEnabled( false );
 }
@@ -142,7 +146,7 @@ void QgsAuthConfigSelect::populateConfigSelector()
 
   cmbConfigSelect->blockSignals( true );
   cmbConfigSelect->clear();
-  cmbConfigSelect->addItem( tr( "No authentication" ), "0" );
+  cmbConfigSelect->addItem( tr( "No Authentication" ), "0" );
 
   QgsStringMap sortmap;
   QgsAuthMethodConfigsMap::const_iterator cit = mConfigs.constBegin();
@@ -197,7 +201,8 @@ void QgsAuthConfigSelect::cmbConfigSelect_currentIndexChanged( int index )
 {
   QString authcfg = cmbConfigSelect->itemData( index ).toString();
   mAuthCfg = ( !authcfg.isEmpty() && authcfg != QLatin1String( "0" ) ) ? authcfg : QString();
-  loadConfig();
+  if ( !mTemporarilyBlockLoad )
+    loadConfig();
 }
 
 void QgsAuthConfigSelect::btnConfigAdd_clicked()
@@ -311,7 +316,7 @@ void QgsAuthConfigUriEdit::setDataSourceUri( const QString &datauri )
 
   mAuthCfg = authCfgFromUri();
 
-  QgsDebugMsg( QString( "Parsed authcfg ID: %1" ).arg( mAuthCfg ) );
+  QgsDebugMsg( QStringLiteral( "Parsed authcfg ID: %1" ).arg( mAuthCfg ) );
 
   wdgtAuthSelect->blockSignals( true );
   wdgtAuthSelect->setConfigId( mAuthCfg );

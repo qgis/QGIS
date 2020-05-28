@@ -149,7 +149,6 @@ class TableDataModel(BaseTableModel):
 
 
 class SqlResultModelAsync(QObject):
-
     done = pyqtSignal()
 
     def __init__(self):
@@ -177,7 +176,7 @@ class SqlResultModelAsync(QObject):
 class SqlResultModelTask(QgsTask):
 
     def __init__(self, db, sql, parent):
-        super().__init__()
+        super().__init__(description=QApplication.translate("DBManagerPlugin", "Executing SQL"))
         self.db = db
         self.sql = sql
         self.parent = parent
@@ -192,9 +191,7 @@ class SqlResultModel(BaseTableModel):
 
         t = QTime()
         t.start()
-        c = self.db._execute(None, str(sql))
-        self._secs = t.elapsed() / 1000.0
-        del t
+        c = self.db._execute(None, sql)
 
         self._affectedRows = 0
         data = []
@@ -205,7 +202,7 @@ class SqlResultModel(BaseTableModel):
         try:
             if len(header) > 0:
                 data = self.db._fetchall(c)
-            self._affectedRows = c.rowcount
+            self._affectedRows = len(data)
         except DbError:
             # nothing to fetch!
             data = []
@@ -216,7 +213,9 @@ class SqlResultModel(BaseTableModel):
         # commit before closing the cursor to make sure that the changes are stored
         self.db._commit()
         c.close()
+        self._secs = t.elapsed() / 1000.0
         del c
+        del t
 
     def secs(self):
         return self._secs
@@ -259,7 +258,7 @@ class SimpleTableModel(QStandardItemModel):
 class TableFieldsModel(SimpleTableModel):
 
     def __init__(self, parent, editable=False):
-        SimpleTableModel.__init__(self, ['Name', 'Type', 'Null', 'Default'], editable, parent)
+        SimpleTableModel.__init__(self, ['Name', 'Type', 'Null', 'Default', 'Comment'], editable, parent)
 
     def headerData(self, section, orientation, role):
         if orientation == Qt.Vertical and role == Qt.DisplayRole:
@@ -273,7 +272,7 @@ class TableFieldsModel(SimpleTableModel):
         return flags
 
     def append(self, fld):
-        data = [fld.name, fld.type2String(), not fld.notNull, fld.default2String()]
+        data = [fld.name, fld.type2String(), not fld.notNull, fld.default2String(), fld.getComment()]
         self.appendRow(self.rowFromData(data))
         row = self.rowCount() - 1
         self.setData(self.index(row, 0), fld, Qt.UserRole)
@@ -290,7 +289,6 @@ class TableFieldsModel(SimpleTableModel):
         val = self.data(self.index(row, 0), Qt.UserRole)
         fld = val if val is not None else self._getNewObject()
         fld.name = self.data(self.index(row, 0)) or ""
-
         typestr = self.data(self.index(row, 1)) or ""
         regex = QRegExp("([^\\(]+)\\(([^\\)]+)\\)")
         startpos = regex.indexIn(typestr)
@@ -303,6 +301,7 @@ class TableFieldsModel(SimpleTableModel):
 
         fld.notNull = self.data(self.index(row, 2), Qt.CheckStateRole) == Qt.Unchecked
         fld.primaryKey = self.data(self.index(row, 1), Qt.UserRole)
+        fld.comment = self.data(self.index(row, 4), Qt.UserRole)
         return fld
 
     def getFields(self):

@@ -250,7 +250,7 @@ class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
 
   protected:
     // override refresh to keep Populating state
-    void refresh( const QVector<QgsDataItem *> &children ) override { Q_UNUSED( children ); }
+    void refresh( const QVector<QgsDataItem *> &children ) override { Q_UNUSED( children ) }
     //bool mDeleteAction;
     QgsGrassImport *mImport = nullptr;
 

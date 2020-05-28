@@ -113,6 +113,8 @@ class LSqlResultModelAsync(SqlResultModelAsync):
     def modelDone(self):
         self.status = self.task.status
         self.model = self.task.model
+        if self.task.subtask.exceptionText():
+            self.error = BaseError(self.task.subtask.exceptionText())
         self.done.emit()
 
 

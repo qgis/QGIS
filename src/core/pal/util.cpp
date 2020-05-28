@@ -37,53 +37,6 @@
 #include "qgslogger.h"
 #include <cfloat>
 
-void pal::Util::sort( void **items, int N, bool ( *greater )( void *l, void *r ) )
-{
-
-  if ( N <= 0 )
-    return;
-
-  unsigned int n = static_cast< unsigned int >( N ), i = n / 2, parent, child;
-
-  void *t = nullptr;
-
-  for ( ;; )
-  {
-    if ( i > 0 )
-    {
-      i--;
-      t = items[i];
-    }
-    else
-    {
-      n--;
-      if ( n == 0 ) return;
-      t = items[n];
-      items[n] = items[0];
-    }
-    parent = i;
-    child = i * 2 + 1;
-    while ( child < n )
-    {
-      if ( child + 1 < n  &&  greater( items[child + 1], items[child] ) )
-      {
-        child++;
-      }
-      if ( greater( items[child], t ) )
-      {
-        items[parent] = items[child];
-        parent = child;
-        child = parent * 2 + 1;
-      }
-      else
-      {
-        break;
-      }
-    }
-    items[parent] = t;
-  }
-}
-
 QLinkedList<const GEOSGeometry *> *pal::Util::unmulti( const GEOSGeometry *the_geom )
 {
   QLinkedList<const GEOSGeometry *> *queue = new QLinkedList<const GEOSGeometry *>;
@@ -106,6 +59,7 @@ QLinkedList<const GEOSGeometry *> *pal::Util::unmulti( const GEOSGeometry *the_g
       case GEOS_MULTIPOINT:
       case GEOS_MULTILINESTRING:
       case GEOS_MULTIPOLYGON:
+      case GEOS_GEOMETRYCOLLECTION:
         nGeom = GEOSGetNumGeometries_r( geosctxt, geom );
         for ( i = 0; i < nGeom; i++ )
         {
@@ -118,7 +72,7 @@ QLinkedList<const GEOSGeometry *> *pal::Util::unmulti( const GEOSGeometry *the_g
         final_queue->append( geom );
         break;
       default:
-        QgsDebugMsg( QString( "unexpected geometry type:%1" ).arg( type ) );
+        QgsDebugMsg( QStringLiteral( "unexpected geometry type:%1" ).arg( type ) );
         delete final_queue;
         delete queue;
         return nullptr;

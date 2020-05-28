@@ -29,8 +29,6 @@ import random
 __author__ = 'Alessandro Pasotti'
 __date__ = '20/04/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 from shutil import rmtree
 
@@ -53,7 +51,6 @@ try:
     QGIS_SERVER_ENDPOINT_PORT = os.environ['QGIS_SERVER_ENDPOINT_PORT']
 except:
     QGIS_SERVER_ENDPOINT_PORT = '0'  # Auto
-
 
 QGIS_AUTH_DB_DIR_PATH = tempfile.mkdtemp()
 
@@ -81,7 +78,6 @@ def setup_oauth(username, password, token_uri, refresh_token_uri='', authcfg_id=
         "requestTimeout": '30',
         "requestUrl": "",
         "scope": "",
-        "state": "",
         "tokenUrl": token_uri,
         "username": username,
         "version": 1
@@ -167,7 +163,7 @@ class TestAuthManager(unittest.TestCase):
         cls.server = subprocess.Popen([sys.executable, server_path],
                                       env=os.environ, stdout=subprocess.PIPE)
         line = cls.server.stdout.readline()
-        cls.port = int(re.findall(b':(\d+)', line)[0])
+        cls.port = int(re.findall(br':(\d+)', line)[0])
         assert cls.port != 0
 
         # We need a valid port before we setup the oauth configuration

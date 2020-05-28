@@ -39,6 +39,8 @@ Logs a ``message`` to the viewer.
 
     virtual void reject();
 
+    virtual bool eventFilter( QObject *obj, QEvent *ev );
+
 
 };
 

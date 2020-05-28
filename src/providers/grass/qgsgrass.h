@@ -33,7 +33,6 @@ extern "C"
 #include <stdexcept>
 #include "qgsapplication.h"
 #include "qgsexception.h"
-#include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsrectangle.h"
 #include <QFileSystemWatcher>
@@ -46,6 +45,7 @@ extern "C"
 #include "qgis_grass_lib.h"
 class QgsCoordinateReferenceSystem;
 class QgsRectangle;
+class QgsAttributes;
 
 // Make the release string because it may be for example 0beta1
 #define STR(x) #x
@@ -561,7 +561,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // path to QGIS GRASS modules like qgis.g.info etc.
     static QString qgisGrassModulePath()
     {
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
       if ( QgsApplication::isRunningFromBuildDir() )
       {
         return QCoreApplication::applicationDirPath() + "/../../grass/modules/" + QgsApplication::cfgIntDir();

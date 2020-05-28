@@ -25,6 +25,7 @@
 #include <QHash>
 #include <QVariant>
 #include <QStringList>
+#include <QCoreApplication>
 
 #include "qgis_core.h"
 
@@ -60,21 +61,21 @@ class CORE_EXPORT QgsProjectProperty
     virtual void dump( int tabs = 0 ) const = 0;
 
     /**
-     * Returns true if the property is a QgsProjectPropertyKey.
+     * Returns TRUE if the property is a QgsProjectPropertyKey.
      * \see isValue()
      * \see isLeaf()
      */
     virtual bool isKey() const = 0;
 
     /**
-     * Returns true if the property is a QgsProjectPropertyValue.
+     * Returns TRUE if the property is a QgsProjectPropertyValue.
      * \see isKey()
      * \see isLeaf()
      */
     virtual bool isValue() const = 0;
 
     /**
-     * Returns true if property is a leaf node.
+     * Returns TRUE if property is a leaf node.
      *
      * A leaf node is a key node that has either no value or only a single value.
      * A non-leaf node would be a key node with key sub-nodes.
@@ -181,6 +182,8 @@ class CORE_EXPORT QgsProjectPropertyValue : public QgsProjectProperty
 */
 class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
 {
+    Q_DECLARE_TR_FUNCTIONS( QgsProjectPropertyKey )
+
   public:
 
     /**
@@ -269,7 +272,7 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
     int count() const { return mProperties.count(); }
 
     /**
-     * Returns true if this property contains no sub-keys.
+     * Returns TRUE if this property contains no sub-keys.
      */
     bool isEmpty() const { return mProperties.isEmpty(); }
 

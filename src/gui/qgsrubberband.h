@@ -16,27 +16,59 @@
 #define QGSRUBBERBAND_H
 
 #include "qgsmapcanvasitem.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgsgeometry.h"
+
 #include <QBrush>
 #include <QList>
 #include <QPen>
 #include <QPolygon>
+#include <QObject>
+#include <QSvgRenderer>
+
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
 class QPaintEvent;
+
+#ifdef SIP_RUN
+% ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgsrubberband.h>
+% End
+#endif
 
 /**
  * \ingroup gui
  * A class for drawing transient features (e.g. digitizing lines) on the map.
  *
  * The QgsRubberBand class provides a transparent overlay widget
-  for tracking the mouse while drawing polylines or polygons.
+ * for tracking the mouse while drawing polylines or polygons.
  */
-class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
+#ifndef SIP_RUN
+class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
 {
+#else
+class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
+{
+#endif
+    Q_OBJECT
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsRubberBand *>( sipCpp ) )
+      sipType = sipType_QgsRubberBand;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
   public:
+
+    Q_PROPERTY( QColor fillColor READ fillColor WRITE setFillColor )
+    Q_PROPERTY( QColor strokeColor READ strokeColor WRITE setStrokeColor )
+    Q_PROPERTY( int iconSize READ iconSize WRITE setIconSize )
+    Q_PROPERTY( QColor secondaryStrokeColor READ secondaryStrokeColor WRITE setSecondaryStrokeColor )
+    Q_PROPERTY( int width READ width WRITE setWidth )
 
     //! Icons
     enum IconType
@@ -83,17 +115,27 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
        * \since QGIS 3.0
        */
       ICON_FULL_DIAMOND,
+
+      /**
+       * An svg image is used to highlight points
+       * \since QGIS 3.10
+       */
+      ICON_SVG
     };
 
     /**
      * Creates a new RubberBand.
-     *  \param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
-     *  \param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
+     *  \param mapCanvas The map canvas to draw onto.
+     *         Its CRS will be used to map points onto screen coordinates.
+     * The ownership is transferred to this canvas.
+     *  \param geometryType Defines how the data should be drawn onto the screen.
+     *         QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry or QgsWkbTypes::PointGeometry
      */
     QgsRubberBand( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
 
     /**
-     * Sets the color for the rubberband
+     * Sets the color for the rubberband.
+     * Shorthand method to set fill and stroke color with a single call.
      *  \param color  The color used to render this rubberband
      */
     void setColor( const QColor &color );
@@ -152,6 +194,15 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      */
     void setIcon( IconType icon );
 
+    /**
+     * Set the path to the svg file to use to draw points.
+     * Calling this function automatically calls setIcon(ICON_SVG)
+     * \param path The path to the svg
+     * \param drawOffset The offset where to draw the image origin
+     * \since QGIS 3.10
+     */
+    void setSvgIcon( const QString &path, QPoint drawOffset );
+
 
     /**
      * Returns the current icon type to highlight point geometries.
@@ -188,7 +239,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     /**
      * Adds a vertex to the rubberband and update canvas.
      * The rendering of the vertex depends on the current GeometryType and icon.
-     * If adding more points consider using update=false for better performance
+     * If adding more points consider using update=FALSE for better performance
      *  \param p             The vertex/point to add
      *  \param doUpdate      Should the map canvas be updated immediately?
      *  \param geometryIndex The index of the feature part (in case of multipart geometries)
@@ -198,7 +249,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     /**
      * Ensures that a polygon geometry is closed and that the last vertex equals the
      * first vertex.
-     * \param doUpdate set to true to update the map canvas immediately
+     * \param doUpdate set to TRUE to update the map canvas immediately
      * \param geometryIndex index of the feature part (in case of multipart geometries)
      * \since QGIS 2.16
      */
@@ -237,14 +288,25 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     int partSize( int geometryIndex ) const;
 
     /**
-     * Sets this rubber band to the geometry of an existing feature.
+     * Sets this rubber band to \a geom.
      * This is useful for feature highlighting.
      * In contrast to addGeometry(), this method does also change the geometry type of the rubberband.
      *  \param geom the geometry object
      *  \param layer the layer containing the feature, used for coord transformation to map
-     *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
+     *               crs. If \a layer is NULLPTR, the coordinates are not going to be transformed.
      */
     void setToGeometry( const QgsGeometry &geom, QgsVectorLayer *layer );
+
+    /**
+     * Sets this rubber band to \a geometry.
+     * In contrast to addGeometry(), this method does also change the geometry type of the rubberband.
+     * The coordinate reference system of the geometry can be specified with \a crs. If an invalid \a crs
+     * is passed, the geometry will not be reprojected and needs to be in canvas crs already.
+     * By default, no reprojection is done.
+     *
+     * \since QGIS 3.4
+     */
+    void setToGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
     /**
      * Sets this rubber band to a map canvas rectangle
@@ -261,7 +323,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *
      *  \param geometry the geometry object. Will be treated as a collection of vertices.
      *  \param layer the layer containing the feature, used for coord transformation to map
-     *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
+     *               crs. If \a layer is NULLPTR, the coordinates are not going to be transformed.
      */
     void addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer );
 
@@ -337,6 +399,8 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 
     //! Icon to be shown.
     IconType mIconType = ICON_CIRCLE;
+    std::unique_ptr<QSvgRenderer> mSvgRenderer;
+    QPoint mSvgOffset;
 
     /**
      * Nested lists used for multitypes

@@ -1,0 +1,85 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfindfilesbypatternwidget.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsFindFilesByPatternWidget : QWidget
+{
+%Docstring
+A reusable widget for finding files (recursively) by file pattern.
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgsfindfilesbypatternwidget.h"
+%End
+  public:
+
+    QgsFindFilesByPatternWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsFindFilesByPatternWidget, with the specified ``parent`` widget.
+%End
+
+    QStringList files() const;
+%Docstring
+Returns the list of files found by the dialog. This may be empty if
+no matching files were found.
+
+.. seealso:: :py:func:`findComplete`
+%End
+
+  signals:
+
+    void findComplete( const QStringList &files );
+%Docstring
+Emitted after files are found in the dialog.
+
+The ``files`` argument contains a list of all matching files found. This may be empty if
+no matching files were found.
+
+.. seealso:: :py:func:`files`
+%End
+
+};
+
+class QgsFindFilesByPatternDialog : QDialog
+{
+%Docstring
+A dialog for finding files (recursively) by file pattern.
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgsfindfilesbypatternwidget.h"
+%End
+  public:
+
+    QgsFindFilesByPatternDialog( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsFindFilesByPatternDialog, with the specified ``parent`` widget.
+%End
+
+    QStringList files() const;
+%Docstring
+Returns the list of files found by the dialog. This may be empty if
+no matching files were found.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfindfilesbypatternwidget.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

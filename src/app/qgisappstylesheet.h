@@ -64,33 +64,15 @@ class APP_EXPORT QgisAppStyleSheet: public QObject
 
     // qt styles
     QString mStyle; // active style name (lowercase)
-    bool mMotifStyle; // motif
-    bool mCdeStyle; // cde
-    bool mPlastqStyle; // plastique
-    bool mCleanLkStyle; // cleanlooks
-    bool mGtkStyle; // gtk+
-    bool mWinStyle; // windows
-    bool mWinXpStyle; // windowsxp
-    bool mWinVistaStyle; // windowsvista
-    bool mMacStyle; // macintosh (aqua)
-    bool mOxyStyle; // oxygen
+    bool mMacStyle = false; // macintosh (aqua)
+    bool mOxyStyle = false; // oxygen
 
     // default font saved for reference
     QFont mDefaultFont;
 
     // platforms, specific
-    bool mLinuxOS;
-    bool mWinOS;
-    bool mMacOS;
-    bool mAndroidOS;
-
-    // platforms, general
-    bool mUnix;
-
-    // window servers
-    bool mX11WS;
-    bool mWinWS;
-    bool mMacWS;
+    bool mWinOS = false;
+    bool mAndroidOS = false;
 };
 
 #endif //QGISAPPSTYLESHEET_H

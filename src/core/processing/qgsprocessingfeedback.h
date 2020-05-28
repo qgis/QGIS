@@ -22,6 +22,8 @@
 #include "qgsfeedback.h"
 #include "qgsmessagelog.h"
 
+class QgsProcessingProvider;
+
 /**
  * \class QgsProcessingFeedback
  * \ingroup core
@@ -39,19 +41,27 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
   public:
 
     /**
+     * Constructor for QgsProcessingFeedback.
+     *
+     * If \a logFeedback is TRUE, then all feedback received will be directed
+     * to QgsMessageLog.
+     */
+    QgsProcessingFeedback( bool logFeedback = true );
+
+    /**
      * Sets a progress report text string. This can be used in conjunction with
      * setProgress() to provide detailed progress reports, such as "Transformed
      * 4 of 5 layers".
      * \see setProgress()
      */
-    virtual void setProgressText( const QString &text ) { Q_UNUSED( text ); }
+    virtual void setProgressText( const QString &text );
 
     /**
      * Reports that the algorithm encountered an \a error while executing.
      *
-     * If \a fatalError is true then the error prevented the algorithm from executing.
+     * If \a fatalError is TRUE then the error prevented the algorithm from executing.
      */
-    virtual void reportError( const QString &error, bool fatalError = false ) { Q_UNUSED( fatalError ); QgsMessageLog::logMessage( error, tr( "Processing" ), Qgis::Critical ); }
+    virtual void reportError( const QString &error, bool fatalError = false );
 
     /**
      * Pushes a general informational message from the algorithm. This can
@@ -61,7 +71,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * \see pushDebugInfo()
      * \see pushConsoleInfo()
      */
-    virtual void pushInfo( const QString &info ) { QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info ); }
+    virtual void pushInfo( const QString &info );
 
     /**
      * Pushes an informational message containing a command from the algorithm.
@@ -71,7 +81,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * \see pushDebugInfo()
      * \see pushConsoleInfo()
      */
-    virtual void pushCommandInfo( const QString &info ) { QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info ); }
+    virtual void pushCommandInfo( const QString &info );
 
     /**
      * Pushes an informational message containing debugging helpers from
@@ -80,7 +90,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * \see pushCommandInfo()
      * \see pushConsoleInfo()
      */
-    virtual void pushDebugInfo( const QString &info ) { QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info ); }
+    virtual void pushDebugInfo( const QString &info );
 
     /**
      * Pushes a console feedback message from the algorithm. This is used to
@@ -89,7 +99,34 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * \see pushDebugInfo()
      * \see pushCommandInfo()
      */
-    virtual void pushConsoleInfo( const QString &info ) { QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info ); }
+    virtual void pushConsoleInfo( const QString &info );
+
+    /**
+     * Pushes a summary of the QGIS (and underlying library) version information to the log.
+     * \since QGIS 3.4.7
+     */
+    void pushVersionInfo( const QgsProcessingProvider *provider = nullptr );
+
+    /**
+     * Returns the HTML formatted contents of the log, which contains all messages pushed to the feedback object.
+     *
+     * \see textLog()
+     * \since QGIS 3.14
+     */
+    virtual QString htmlLog() const;
+
+    /**
+     * Returns the plain text contents of the log, which contains all messages pushed to the feedback object.
+     *
+     * \see htmlLog()
+     * \since QGIS 3.14
+     */
+    virtual QString textLog() const;
+
+  private:
+    bool mLogFeedback = true;
+    QString mHtmlLog;
+    QString mTextLog;
 
 };
 
@@ -126,12 +163,13 @@ class CORE_EXPORT QgsProcessingMultiStepFeedback : public QgsProcessingFeedback
     void setCurrentStep( int step );
 
     void setProgressText( const QString &text ) override;
-    void reportError( const QString &error, bool fatalError ) override;
+    void reportError( const QString &error, bool fatalError = false ) override;
     void pushInfo( const QString &info ) override;
     void pushCommandInfo( const QString &info ) override;
     void pushDebugInfo( const QString &info ) override;
     void pushConsoleInfo( const QString &info ) override;
-
+    QString htmlLog() const override;
+    QString textLog() const override;
   private slots:
 
     void updateOverallProgress( double progress );

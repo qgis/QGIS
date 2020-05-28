@@ -12,11 +12,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSSINGLESYMBOLRENDERERV2WIDGET_H
-#define QGSSINGLESYMBOLRENDERERV2WIDGET_H
+#ifndef QGSSINGLESYMBOLRENDERERWIDGET_H
+#define QGSSINGLESYMBOLRENDERERWIDGET_H
 
 #include "qgsrendererwidget.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
 class QgsSingleSymbolRenderer;
@@ -45,7 +45,7 @@ class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
     /**
      * Set the widget in dock mode which tells the widget to emit panel
      * widgets and not open dialogs
-     * \param dockMode True to enable dock mode.
+     * \param dockMode TRUE to enable dock mode.
      */
     void setDockMode( bool dockMode ) override;
 
@@ -64,4 +64,4 @@ class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
 };
 
 
-#endif // QGSSINGLESYMBOLRENDERERV2WIDGET_H
+#endif // QGSSINGLESYMBOLRENDERERWIDGET_H

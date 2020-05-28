@@ -27,12 +27,26 @@ class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
       CapturePolygon
     };
 
+    enum Capability
+    {
+      NoCapabilities,
+      SupportsCurves,
+    };
+
+    typedef QFlags<QgsMapToolCapture::Capability> Capabilities;
+
+
     QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
 %Docstring
 constructor
 %End
 
     ~QgsMapToolCapture();
+
+    virtual QgsMapToolCapture::Capabilities capabilities() const;
+%Docstring
+Returns flags containing the supported capabilities
+%End
 
     virtual void activate();
 
@@ -94,13 +108,55 @@ Clean a temporary rubberband
 convenient method to clean members
 %End
 
+    QgsRubberBand *takeRubberBand() /Factory/;
+%Docstring
+Returns the rubberBand currently owned by this map tool and
+transfers ownership to the caller.
+
+.. versionadded:: 3.8
+%End
+
   protected:
 
+
     int nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint );
+%Docstring
+Converts a map point to layer coordinates
+
+:param mapPoint: the point in map coordinates
+\param[in,out] layerPoint the point in layer coordinates
+
+:return:
+         0 in case of success
+         1 if the current layer is ``None`` or not a vector layer
+         2 if the transformation failed
+%End
+
 
     int nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapPoint );
+%Docstring
+Converts a point to map coordinates and layer coordinates
+
+:param p: the input point
+\param[in,out] layerPoint the point in layer coordinates
+\param[in,out] mapPoint the point in map coordinates
+
+:return:
+         0 in case of success
+         1 if the current layer is ``None`` or not a vector layer
+         2 if the transformation failed
+%End
+
 
     int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint );
+%Docstring
+Fetches the original point from the source layer if it has the same
+CRS as the current layer.
+
+:return: 0 in case of success, 1 if not applicable (CRS mismatch), 2 in case of failure
+
+.. versionadded:: 2.14
+%End
 
     QgsPoint mapPoint( const QgsMapMouseEvent &e ) const;
 %Docstring
@@ -129,7 +185,13 @@ WkbType of the current layer).
 .. versionadded:: 3.0
 %End
 
+
     int addVertex( const QgsPointXY &point );
+%Docstring
+Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
+
+:return: 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed
+%End
 
     int addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &match );
 %Docstring
@@ -165,18 +227,43 @@ Number of points digitized
 :return: Number of points
 %End
 
-    QVector<QgsPointXY> points() const;
+ QVector<QgsPointXY> points() const /Deprecated/;
 %Docstring
 List of digitized points
 
 :return: List of points
+
+.. deprecated:: QGIS 3.12
+   - will be removed in QGIS 4.0. Use the variant returns QgsPoint objects instead of QgsPointXY.
 %End
 
-    void setPoints( const QVector<QgsPointXY> &pointList );
+
+    QgsPointSequence pointsZM() const;
+%Docstring
+List of digitized points
+
+:return: List of points
+
+.. versionadded:: 3.12
+%End
+
+ void setPoints( const QVector<QgsPointXY> &pointList ) /Deprecated/;
 %Docstring
 Set the points on which to work
 
 :param pointList: A list of points
+
+.. deprecated:: QGIS 3.12
+   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+%End
+
+    void setPoints( const QgsPointSequence &pointList );
+%Docstring
+Set the points on which to work
+
+:param pointList: A list of points
+
+.. versionadded:: 3.12
 %End
 
     void closePolygon();
@@ -192,6 +279,9 @@ Stop capturing
 %End
 
 };
+
+QFlags<QgsMapToolCapture::Capability> operator|(QgsMapToolCapture::Capability f1, QFlags<QgsMapToolCapture::Capability> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

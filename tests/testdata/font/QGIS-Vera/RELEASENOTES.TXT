@@ -99,7 +99,7 @@ to proper judgement of problems of the fonts:
       results on other systems when not used anti-aliased may not be
       entirely satisfying. We are primarily interested in reports of
       problems on open source systems implementing Xft2/fontconfig/freetype
-      (which implements antialiasing and hinting adjustements, and
+      (which implements antialiasing and hinting adjustments, and
       sophisticated subpixel decimation on flatpanels).  Also, the
       algorithms used by Xft2 adjust the hints to integer widths and the
       results are crisper on open source systems than on Windows or
@@ -113,7 +113,7 @@ to proper judgement of problems of the fonts:
 We believe and hope that these fonts will resolve the problems
 reported during beta test.  The largest change is the reduction of
 leading (interline spacing), which had annoyed a number of people, and
-reduced Vera's utility for some applcations.  The Vera monospace font
+reduced Vera's utility for some applications.  The Vera monospace font
 should also now make '0' and 'O' and '1' and 'l' more clearly
 distinguishable.
 

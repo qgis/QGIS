@@ -19,7 +19,6 @@
 #include "qgsattributeeditorcontext.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-
 #include <QWidget>
 
 QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor, QWidget *parent )
@@ -31,6 +30,10 @@ QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( QgsVectorLayer *vl, const Qg
 
 QWidget *QgsRelationWidgetWrapper::createWidget( QWidget *parent )
 {
+  QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( parent );
+  if ( form )
+    connect( form, &QgsAttributeForm::widgetValueChanged, this, &QgsRelationWidgetWrapper::widgetValueChanged );
+
   return new QgsRelationEditorWidget( parent );
 }
 
@@ -48,8 +51,22 @@ void QgsRelationWidgetWrapper::setVisible( bool visible )
 
 void QgsRelationWidgetWrapper::aboutToSave()
 {
-  if ( !mRelation.isValid() )
+  if ( !mRelation.isValid() || !widget() || !widget()->isVisible() || mRelation.referencingLayer() ==  mRelation.referencedLayer() )
     return;
+
+  // If the layer is already saved before, return
+  const QgsAttributeEditorContext *ctx = &context();
+  do
+  {
+    if ( ctx->relation().isValid() && ( ctx->relation().referencedLayer() == mRelation.referencingLayer()
+                                        || ( mNmRelation.isValid() && ctx->relation().referencedLayer() == mNmRelation.referencedLayer() ) )
+       )
+    {
+      return;
+    }
+    ctx = ctx->parentContext();
+  }
+  while ( ctx );
 
   // Calling isModified() will emit a beforeModifiedCheck()
   // signal that will make the embedded form to send any
@@ -65,6 +82,23 @@ QgsRelation QgsRelationWidgetWrapper::relation() const
   return mRelation;
 }
 
+void QgsRelationWidgetWrapper::widgetValueChanged( const QString &attribute, const QVariant &newValue, bool attributeChanged )
+{
+  if ( mWidget && attributeChanged )
+  {
+    QgsFeature feature { mWidget->feature() };
+    if ( feature.attribute( attribute ) != newValue )
+    {
+      feature.setAttribute( attribute, newValue );
+      QgsAttributeEditorContext newContext { mWidget->editorContext() };
+      newContext.setParentFormFeature( feature );
+      mWidget->setEditorContext( newContext );
+      mWidget->setFeature( feature, false );
+      mWidget->parentFormValueChanged( attribute, newValue );
+    }
+  }
+}
+
 bool QgsRelationWidgetWrapper::showUnlinkButton() const
 {
   return mWidget->showUnlinkButton();
@@ -74,6 +108,13 @@ void QgsRelationWidgetWrapper::setShowUnlinkButton( bool showUnlinkButton )
 {
   if ( mWidget )
     mWidget->setShowUnlinkButton( showUnlinkButton );
+}
+
+
+void QgsRelationWidgetWrapper::setShowSaveChildEditsButton( bool showSaveChildEditsButton )
+{
+  if ( mWidget )
+    mWidget->setShowSaveChildEditsButton( showSaveChildEditsButton );
 }
 
 bool QgsRelationWidgetWrapper::showLabel() const
@@ -92,7 +133,7 @@ void QgsRelationWidgetWrapper::setShowLabel( bool showLabel )
 
 void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
 {
-  QgsRelationEditorWidget *w = dynamic_cast<QgsRelationEditorWidget *>( editor );
+  QgsRelationEditorWidget *w = qobject_cast<QgsRelationEditorWidget *>( editor );
 
   // if the editor cannot be cast to relation editor, insert a new one
   if ( !w )
@@ -107,6 +148,16 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
   }
 
   QgsAttributeEditorContext myContext( QgsAttributeEditorContext( context(), mRelation, QgsAttributeEditorContext::Multiple, QgsAttributeEditorContext::Embed ) );
+
+  if ( config( QStringLiteral( "force-suppress-popup" ), false ).toBool() )
+  {
+    const_cast<QgsVectorLayerTools *>( myContext.vectorLayerTools() )->setForceSuppressFormPopup( true );
+  }
+
+  if ( config( QStringLiteral( "hide-save-child-edits" ), false ).toBool() )
+  {
+    w->setShowSaveChildEditsButton( false );
+  }
 
   w->setEditorContext( myContext );
 
@@ -125,7 +176,6 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
     ctx = ctx->parentContext();
   }
   while ( ctx );
-
 
   w->setRelations( mRelation, mNmRelation );
 
@@ -146,4 +196,9 @@ void QgsRelationWidgetWrapper::setShowLinkButton( bool showLinkButton )
 {
   if ( mWidget )
     mWidget->setShowLinkButton( showLinkButton );
+}
+
+bool QgsRelationWidgetWrapper::showSaveChildEditsButton() const
+{
+  return mWidget && mWidget->showSaveChildEditsButton();
 }

@@ -21,8 +21,10 @@
 #include "qgsvectorlayer.h"
 #include "qgseditorwidgetwrapper.h"
 #include "qgssearchwidgetwrapper.h"
+#include "qgsapplication.h"
 
 // Editors
+#include "qgsbinarywidgetfactory.h"
 #include "qgsclassificationwidgetwrapperfactory.h"
 #include "qgscheckboxwidgetfactory.h"
 #include "qgscolorwidgetfactory.h"
@@ -63,6 +65,7 @@ void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBa
   registerWidget( QStringLiteral( "ExternalResource" ), new QgsExternalResourceWidgetFactory( tr( "Attachment" ) ) );
   registerWidget( QStringLiteral( "KeyValue" ), new QgsKeyValueWidgetFactory( tr( "Key/Value" ) ) );
   registerWidget( QStringLiteral( "List" ), new QgsListWidgetFactory( tr( "List" ) ) );
+  registerWidget( QStringLiteral( "Binary" ), new QgsBinaryWidgetFactory( tr( "Binary (BLOB)" ), messageBar ) );
 }
 
 QgsEditorWidgetRegistry::~QgsEditorWidgetRegistry()
@@ -77,7 +80,7 @@ QgsEditorWidgetSetup QgsEditorWidgetRegistry::findBest( const QgsVectorLayer *vl
 
   if ( index > -1 )
   {
-    QgsEditorWidgetSetup setup = vl->fields().at( index ).editorWidgetSetup();
+    QgsEditorWidgetSetup setup = fields.at( index ).editorWidgetSetup();
     if ( !setup.isNull() )
       return setup;
   }

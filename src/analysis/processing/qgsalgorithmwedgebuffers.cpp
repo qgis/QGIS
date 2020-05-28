@@ -173,6 +173,7 @@ QgsFeatureList QgsWedgeBuffersAlgorithm::processFeature( const QgsFeature &featu
     {
       const QgsMultiPoint *mp = static_cast< const QgsMultiPoint * >( g.constGet() );
       std::unique_ptr< QgsMultiSurface > result = qgis::make_unique< QgsMultiSurface >();
+      result->reserve( mp->numGeometries() );
       for ( int i = 0; i < mp->numGeometries(); ++i )
       {
         const QgsPoint *p = static_cast< const QgsPoint * >( mp->geometryN( i ) );

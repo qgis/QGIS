@@ -118,7 +118,10 @@ QPointF QgsQuickMapSettings::coordinateToScreen( const QgsPoint &point ) const
 
 QgsPoint QgsQuickMapSettings::screenToCoordinate( const QPointF &point ) const
 {
-  const QgsPointXY pp = mMapSettings.mapToPixel().toMapCoordinates( point.toPoint() );
+  // use floating point precision with mapToCoordinates (i.e. do not use QPointF::toPoint)
+  // this is to avoid rounding errors with an odd screen width or height
+  // and the point being set to the exact center of it
+  const QgsPointXY pp = mMapSettings.mapToPixel().toMapCoordinates( point.x(), point.y() );
   return QgsPoint( pp );
 }
 
@@ -182,6 +185,11 @@ void QgsQuickMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
 
 void QgsQuickMapSettings::onReadProject( const QDomDocument &doc )
 {
+  if ( mProject )
+  {
+    mMapSettings.setBackgroundColor( mProject->backgroundColor() );
+  }
+
   QDomNodeList nodes = doc.elementsByTagName( "mapcanvas" );
   if ( nodes.count() )
   {
@@ -211,4 +219,18 @@ void QgsQuickMapSettings::setRotation( double rotation )
 {
   if ( !qgsDoubleNear( rotation, 0 ) )
     QgsMessageLog::logMessage( tr( "Map Canvas rotation is not supported. Resetting from %1 to 0." ).arg( rotation ) );
+}
+
+QColor QgsQuickMapSettings::backgroundColor() const
+{
+  return mMapSettings.backgroundColor();
+}
+
+void QgsQuickMapSettings::setBackgroundColor( const QColor &color )
+{
+  if ( mMapSettings.backgroundColor() == color )
+    return;
+
+  mMapSettings.setBackgroundColor( color );
+  emit backgroundColorChanged();
 }

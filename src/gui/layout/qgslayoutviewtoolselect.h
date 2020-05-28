@@ -16,7 +16,7 @@
 #ifndef QGSLAYOUTVIEWTOOLSELECT_H
 #define QGSLAYOUTVIEWTOOLSELECT_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 #include "qgslayoutviewtool.h"
 #include "qgslayoutviewrubberband.h"
@@ -58,6 +58,7 @@ class GUI_EXPORT QgsLayoutViewToolSelect : public QgsLayoutViewTool
     SIP_SKIP QgsLayoutMouseHandles *mouseHandles();
     ///@endcond
 
+    //! Sets the a \a layout.
     void setLayout( QgsLayout *layout );
 
   private:

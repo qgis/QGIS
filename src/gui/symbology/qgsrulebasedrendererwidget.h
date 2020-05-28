@@ -13,11 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSRULEBASEDRENDERERV2WIDGET_H
-#define QGSRULEBASEDRENDERERV2WIDGET_H
+#ifndef QGSRULEBASEDRENDERERWIDGET_H
+#define QGSRULEBASEDRENDERERWIDGET_H
 
 #include "qgsrendererwidget.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 #include "qgsrulebasedrenderer.h"
 class QMenu;
@@ -27,7 +27,7 @@ class QgsSymbolSelectorWidget;
 
 #include <QAbstractItemModel>
 
-/* Features count fro rule */
+/* Features count for rule */
 struct QgsRuleBasedRendererCount SIP_SKIP
 {
   int count; // number of features
@@ -85,6 +85,14 @@ class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
     void updateRule( const QModelIndex &index );
     void removeRule( const QModelIndex &index );
 
+    /**
+     * Sets the \a symbol for the rule at the specified \a index. Ownership of the symbols is
+     * transferred to the renderer.
+     *
+     * \since QGIS 3.10
+     */
+    void setSymbol( const QModelIndex &index, QgsSymbol *symbol SIP_TRANSFER );
+
     void willAddRules( const QModelIndex &parent, int count ); // call beginInsertRows
     void finishedAddingRules(); // call endInsertRows
 
@@ -100,7 +108,7 @@ class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
 
 ///////
 
-#include "ui_qgsrulebasedrendererv2widget.h"
+#include "ui_qgsrulebasedrendererwidget.h"
 
 /**
  * \ingroup gui
@@ -118,6 +126,7 @@ class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private 
     ~QgsRuleBasedRendererWidget() override;
 
     QgsFeatureRenderer *renderer() override;
+    void setDockMode( bool dockMode ) override;
 
   public slots:
 
@@ -162,16 +171,19 @@ class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private 
     QAction *mDeleteAction = nullptr;
 
     QgsRuleBasedRenderer::RuleList mCopyBuffer;
+    QMenu *mContextMenu = nullptr;
 
   protected slots:
     void copy() override;
     void paste() override;
+    void pasteSymbolToSelection() override;
 
   private slots:
     void refineRuleCategoriesAccepted( QgsPanelWidget *panel );
     void refineRuleRangesAccepted( QgsPanelWidget *panel );
     void ruleWidgetPanelAccepted( QgsPanelWidget *panel );
     void liveUpdateRuleFromPanel();
+    void showContextMenu( QPoint p );
 };
 
 ///////
@@ -230,7 +242,7 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
 
     /**
      * Set the widget in dock mode.
-     * \param dockMode True for dock mode.
+     * \param dockMode TRUE for dock mode.
      */
     void setDockMode( bool dockMode ) override;
 
@@ -264,8 +276,6 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog
      */
     QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = nullptr, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
 
-    ~QgsRendererRulePropsDialog() override;
-
     QgsRuleBasedRenderer::Rule *rule() { return mPropsWidget->rule(); }
 
   public slots:
@@ -282,4 +292,4 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog
 };
 
 
-#endif // QGSRULEBASEDRENDERERV2WIDGET_H
+#endif // QGSRULEBASEDRENDERERWIDGET_H

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsproxyprogresstask.h"
+#include "qgsapplication.h"
 
 QgsProxyProgressTask::QgsProxyProgressTask( const QString &description )
   : QgsTask( description, QgsTask::Flags() )
@@ -24,6 +25,9 @@ QgsProxyProgressTask::QgsProxyProgressTask( const QString &description )
 
 void QgsProxyProgressTask::finalize( bool result )
 {
+  QMutexLocker lock( &mNotFinishedMutex );
+  mAlreadyFinished = true;
+
   mResult = result;
   mNotFinishedWaitCondition.wakeAll();
 }
@@ -31,7 +35,10 @@ void QgsProxyProgressTask::finalize( bool result )
 bool QgsProxyProgressTask::run()
 {
   mNotFinishedMutex.lock();
-  mNotFinishedWaitCondition.wait( &mNotFinishedMutex );
+  if ( !mAlreadyFinished )
+  {
+    mNotFinishedWaitCondition.wait( &mNotFinishedMutex );
+  }
   mNotFinishedMutex.unlock();
 
   return mResult;
@@ -40,4 +47,24 @@ bool QgsProxyProgressTask::run()
 void QgsProxyProgressTask::setProxyProgress( double progress )
 {
   QMetaObject::invokeMethod( this, "setProgress", Qt::AutoConnection, Q_ARG( double, progress ) );
+}
+
+//
+// QgsScopedProxyProgressTask
+//
+
+QgsScopedProxyProgressTask::QgsScopedProxyProgressTask( const QString &description )
+  : mTask( new QgsProxyProgressTask( description ) )
+{
+  QgsApplication::taskManager()->addTask( mTask );
+}
+
+QgsScopedProxyProgressTask::~QgsScopedProxyProgressTask()
+{
+  mTask->finalize( true );
+}
+
+void QgsScopedProxyProgressTask::setProgress( double progress )
+{
+  mTask->setProxyProgress( progress );
 }

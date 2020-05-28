@@ -3,5 +3,5 @@
   "type": "function",
   "description": "Returns all the keys of a map as an array.",
   "arguments": [ {"arg":"map","description":"a map"}],
-  "examples": [ { "expression":"map_akeys(map('1','one','2','two'))", "returns":"array: '1', '2'"}]
+  "examples": [ { "expression":"map_akeys(map('1','one','2','two'))", "returns":"[ '1', '2' ]"}]
 }

@@ -23,7 +23,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tabSearch">
       <attribute name="title">
@@ -43,7 +43,7 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="0" column="1">
-           <widget class="QLineEdit" name="leKeywords">
+           <widget class="QgsFilterLineEdit" name="leKeywords">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -216,7 +216,7 @@
           <item row="1" column="3" colspan="2">
            <widget class="QPushButton" name="btnShowXml">
             <property name="text">
-             <string>View search results as XML</string>
+             <string>View Search Results as XML</string>
             </property>
            </widget>
           </item>
@@ -377,11 +377,21 @@
               <string>Add ArcGIS FeatureServer</string>
              </property>
             </action>
+            <action name="mActionAddGisFile">
+             <property name="icon">
+              <iconset>
+               <normaloff>:/images/themes/default/mActionAddAfsLayer.svg</normaloff>:/images/themes/default/mActionAddAfsLayer.svg</iconset>
+             </property>
+             <property name="text">
+              <string>Add GIS File</string>
+             </property>
+            </action>
             <addaction name="mActionAddWms"/>
             <addaction name="mActionAddWfs"/>
             <addaction name="mActionAddWcs"/>
             <addaction name="mActionAddAms"/>
             <addaction name="mActionAddAfs"/>
+            <addaction name="mActionAddGisFile"/>
            </widget>
           </item>
          </layout>
@@ -408,42 +418,42 @@
        <item row="1" column="0">
         <widget class="QPushButton" name="btnServerInfo">
          <property name="text">
-          <string>Service info</string>
+          <string>Service Info</string>
          </property>
         </widget>
        </item>
        <item row="1" column="1" colspan="2">
         <widget class="QPushButton" name="btnCapabilities">
          <property name="text">
-          <string>GetCapabilities response</string>
+          <string>GetCapabilities Response</string>
          </property>
         </widget>
        </item>
        <item row="2" column="0">
         <widget class="QPushButton" name="btnNew">
          <property name="text">
-          <string>New</string>
+          <string>New…</string>
          </property>
         </widget>
        </item>
        <item row="2" column="1">
         <widget class="QPushButton" name="btnEdit">
          <property name="text">
-          <string>Edit</string>
+          <string>Edit…</string>
          </property>
         </widget>
        </item>
        <item row="2" column="2">
         <widget class="QPushButton" name="btnDelete">
          <property name="text">
-          <string>Delete</string>
+          <string>Delete…</string>
          </property>
         </widget>
        </item>
        <item row="2" column="4">
         <widget class="QPushButton" name="btnSave">
          <property name="text">
-          <string>Save</string>
+          <string>Save…</string>
          </property>
         </widget>
        </item>
@@ -457,14 +467,14 @@
        <item row="1" column="3" colspan="2">
         <widget class="QPushButton" name="btnAddDefault">
          <property name="text">
-          <string>Add default services</string>
+          <string>Add Default Services</string>
          </property>
         </widget>
        </item>
        <item row="2" column="3">
         <widget class="QPushButton" name="btnLoad">
          <property name="text">
-          <string>Load</string>
+          <string>Load…</string>
          </property>
         </widget>
        </item>
@@ -476,49 +486,9 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
-        <widget class="QGroupBox" name="saveStrategyGroup">
-         <property name="title">
-          <string>Connection naming</string>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <item>
-           <widget class="QLabel" name="lblSaveStrategy">
-            <property name="text">
-             <string>When saving the connection of an OWS service</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="radioTitleAsk">
-            <property name="text">
-             <string>Use the OWS Service Title and ask before overwriting</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="radioTitleNoAsk">
-            <property name="text">
-             <string>Use the OWS Service Title and always overwrite if already available</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="radioTempName">
-            <property name="text">
-             <string>Use a temporary name, which you can change later</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
         <widget class="QGroupBox" name="groupBox_4">
          <property name="title">
-          <string>Server timeout</string>
+          <string>Server Timeout</string>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
@@ -541,7 +511,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
-          <string>Results paging</string>
+          <string>Results Paging</string>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
@@ -567,6 +537,19 @@
          </layout>
         </widget>
        </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
       </layout>
      </widget>
     </widget>
@@ -583,6 +566,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

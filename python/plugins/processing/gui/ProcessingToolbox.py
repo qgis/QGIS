@@ -21,10 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-# This will get replaced with a git SHA1 when you do a git archive
-
-__revision__ = '$Format:%H$'
-
 import operator
 import os
 import warnings
@@ -33,7 +29,9 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QToolButton, QMenu, QAction
 from qgis.utils import iface
-from qgis.core import (QgsApplication,
+from qgis.core import (QgsWkbTypes,
+                       QgsMapLayerType,
+                       QgsApplication,
                        QgsProcessingAlgorithm)
 from qgis.gui import (QgsGui,
                       QgsDockWidget,
@@ -50,6 +48,7 @@ from processing.gui.AlgorithmExecutor import execute
 from processing.gui.ProviderActions import (ProviderActions,
                                             ProviderContextMenuActions)
 from processing.tools import dataobjects
+from processing.gui.AlgorithmExecutor import execute_in_place
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -71,17 +70,21 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
     def __init__(self):
         super(ProcessingToolbox, self).__init__(None)
         self.tipWasClosed = False
+        self.in_place_mode = False
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
         self.processingToolbar.setIconSize(iface.iconSize(True))
 
         self.algorithmTree.setRegistry(QgsApplication.processingRegistry(),
                                        QgsGui.instance().processingRecentAlgorithmLog())
-        self.algorithmTree.setFilters(QgsProcessingToolboxProxyModel.FilterToolbox)
+        filters = QgsProcessingToolboxProxyModel.Filters(QgsProcessingToolboxProxyModel.FilterToolbox)
+        if ProcessingConfig.getSetting(ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES):
+            filters |= QgsProcessingToolboxProxyModel.FilterShowKnownIssues
+        self.algorithmTree.setFilters(filters)
 
         self.searchBox.setShowSearchIcon(True)
 
-        self.searchBox.textChanged.connect(self.algorithmTree.setFilterString)
+        self.searchBox.textChanged.connect(self.set_filter_string)
         self.searchBox.returnPressed.connect(self.activateCurrent)
         self.algorithmTree.customContextMenuRequested.connect(
             self.showPopupMenu)
@@ -107,6 +110,33 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
 
         QgsApplication.processingRegistry().providerRemoved.connect(self.addProvider)
         QgsApplication.processingRegistry().providerRemoved.connect(self.removeProvider)
+
+        iface.currentLayerChanged.connect(self.layer_changed)
+
+    def set_filter_string(self, string):
+        filters = self.algorithmTree.filters()
+        if ProcessingConfig.getSetting(ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES):
+            filters |= QgsProcessingToolboxProxyModel.FilterShowKnownIssues
+        else:
+            filters &= ~QgsProcessingToolboxProxyModel.FilterShowKnownIssues
+        self.algorithmTree.setFilters(filters)
+        self.algorithmTree.setFilterString(string)
+
+    def set_in_place_edit_mode(self, enabled):
+        filters = QgsProcessingToolboxProxyModel.Filters(QgsProcessingToolboxProxyModel.FilterToolbox)
+        if ProcessingConfig.getSetting(ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES):
+            filters |= QgsProcessingToolboxProxyModel.FilterShowKnownIssues
+
+        if enabled:
+            self.algorithmTree.setFilters(filters | QgsProcessingToolboxProxyModel.FilterInPlace)
+        else:
+            self.algorithmTree.setFilters(filters)
+        self.in_place_mode = enabled
+
+    def layer_changed(self, layer):
+        if layer is None or layer.type() != QgsMapLayerType.VectorLayer:
+            return
+        self.algorithmTree.setInPlaceLayer(layer)
 
     def disabledProviders(self):
         showTip = ProcessingConfig.getSetting(ProcessingConfig.SHOW_PROVIDERS_TOOLTIP)
@@ -174,16 +204,19 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                 popupmenu.addSeparator()
             for action in actions:
                 action.setData(alg, self)
-                if action.isEnabled():
+                if action.is_separator:
+                    popupmenu.addSeparator()
+                elif action.isEnabled():
                     contextMenuAction = QAction(action.name,
                                                 popupmenu)
+                    contextMenuAction.setIcon(action.icon())
                     contextMenuAction.triggered.connect(action.execute)
                     popupmenu.addAction(contextMenuAction)
 
             popupmenu.exec_(self.algorithmTree.mapToGlobal(point))
 
     def editRenderingStyles(self):
-        alg = self.algorithmTree.selectedAlgorithm()
+        alg = self.algorithmTree.selectedAlgorithm().create() if self.algorithmTree.selectedAlgorithm() is not None else None
         if alg is not None:
             dlg = EditRenderingStylesDialog(alg)
             dlg.exec_()
@@ -192,14 +225,15 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         self.executeAlgorithm()
 
     def executeAlgorithmAsBatchProcess(self):
-        alg = self.algorithmTree.selectedAlgorithm()
+        alg = self.algorithmTree.selectedAlgorithm().create() if self.algorithmTree.selectedAlgorithm() is not None else None
         if alg is not None:
-            dlg = BatchAlgorithmDialog(alg)
+            dlg = BatchAlgorithmDialog(alg, iface.mainWindow())
+            dlg.setAttribute(Qt.WA_DeleteOnClose)
             dlg.show()
             dlg.exec_()
 
     def executeAlgorithm(self):
-        alg = self.algorithmTree.selectedAlgorithm()
+        alg = self.algorithmTree.selectedAlgorithm().create() if self.algorithmTree.selectedAlgorithm() is not None else None
         if alg is not None:
             ok, message = alg.canExecute()
             if not ok:
@@ -211,11 +245,21 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                 dlg.exec_()
                 return
 
+            if self.in_place_mode and not [d for d in alg.parameterDefinitions() if d.name() not in ('INPUT', 'OUTPUT')]:
+                parameters = {}
+                feedback = MessageBarProgress(algname=alg.displayName())
+                ok, results = execute_in_place(alg, parameters, feedback=feedback)
+                if ok:
+                    iface.messageBar().pushSuccess('', self.tr('{} complete').format(alg.displayName()))
+                feedback.close()
+                # MessageBarProgress handles errors
+                return
+
             if alg.countVisibleParameters() > 0:
                 dlg = alg.createCustomParametersWidget(self)
 
                 if not dlg:
-                    dlg = AlgorithmDialog(alg)
+                    dlg = AlgorithmDialog(alg, self.in_place_mode, iface.mainWindow())
                 canvas = iface.mapCanvas()
                 prevMapTool = canvas.mapTool()
                 dlg.show()
@@ -227,7 +271,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                         pass
                     canvas.setMapTool(prevMapTool)
             else:
-                feedback = MessageBarProgress()
+                feedback = MessageBarProgress(algname=alg.displayName())
                 context = dataobjects.createContext(feedback)
                 parameters = {}
                 ret, results = execute(alg, parameters, context, feedback)

@@ -23,6 +23,7 @@
 #include <vector>
 #include "qgsunittypes.h"
 #include <cassert>
+#include <memory>
 
 class QgsPointXY;
 class QPoint;
@@ -84,7 +85,7 @@ class CORE_EXPORT QgsMapToPixel
     /**
      * Transform the point specified by x,y from map (world)
      * coordinates to device coordinates
-     * \param x x cordinate o point to transform
+     * \param x x coordinate o point to transform
      * \param y y coordinate of point to transform
      * \returns QgsPointXY in device coordinates
      */
@@ -117,10 +118,11 @@ class CORE_EXPORT QgsMapToPixel
     }
 #endif
 
+    //! Transform device coordinates to map (world) coordinates
     QgsPointXY toMapCoordinates( int x, int y ) const;
 
     //! Transform device coordinates to map (world) coordinates
-    QgsPointXY toMapCoordinatesF( double x, double y ) const;
+    QgsPointXY toMapCoordinates( double x, double y ) const SIP_PYNAME( toMapCoordinatesF );
 
     /**
      * Transform device coordinates to map (world) coordinates
@@ -129,7 +131,11 @@ class CORE_EXPORT QgsMapToPixel
      */
     QgsPointXY toMapCoordinates( QPoint p ) const;
 
-    QgsPointXY toMapPoint( double x, double y ) const;
+    /**
+     * Transform device coordinates to map (world) coordinates
+     * \deprecated since QGIS 3.4 use toMapCoordinates instead
+     */
+    Q_DECL_DEPRECATED QgsPointXY toMapPoint( double x, double y ) const SIP_DEPRECATED;
 
     /**
      * Set map units per pixel

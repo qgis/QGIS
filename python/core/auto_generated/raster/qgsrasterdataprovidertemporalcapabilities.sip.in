@@ -1,0 +1,105 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterdataprovidertemporalcapabilities.h          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsRasterDataProviderTemporalCapabilities : QgsDataProviderTemporalCapabilities
+{
+%Docstring
+Implementation of data provider temporal properties for QgsRasterDataProviders.
+
+Data provider temporal capabilities reflect the temporal capabilities of a QgsDataProvider.
+Unlike QgsMapLayerTemporalProperties, these settings are not user-configurable,
+and should only be set by the QgsDataProvider itself.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsrasterdataprovidertemporalcapabilities.h"
+%End
+  public:
+
+    QgsRasterDataProviderTemporalCapabilities( bool enabled = false );
+%Docstring
+Constructor for :py:class:`QgsRasterDataProviderTemporalProperties`.
+
+The ``enabled`` argument specifies whether the data provider has temporal capabilities.
+%End
+
+    enum IntervalHandlingMethod
+    {
+      MatchUsingWholeRange,
+      MatchExactUsingStartOfRange,
+      MatchExactUsingEndOfRange,
+      FindClosestMatchToStartOfRange,
+      FindClosestMatchToEndOfRange
+    };
+
+    IntervalHandlingMethod intervalHandlingMethod() const;
+%Docstring
+Returns the desired method to use when resolving a temporal interval to matching
+layers or bands in the data provider.
+
+.. seealso:: :py:func:`setIntervalHandlingMethod`
+%End
+
+    void setIntervalHandlingMethod( IntervalHandlingMethod method );
+%Docstring
+Sets the desired ``method`` to use when resolving a temporal interval to matching
+layers or bands in the data provider.
+
+.. seealso:: :py:func:`intervalHandlingMethod`
+%End
+
+    void setAvailableTemporalRange( const QgsDateTimeRange &range );
+%Docstring
+Sets the datetime ``range`` extent from which temporal data is available from the provider.
+
+.. seealso:: :py:func:`availableTemporalRange`
+%End
+
+    const QgsDateTimeRange &availableTemporalRange() const;
+%Docstring
+Returns the datetime range extent from which temporal data is available from the provider.
+
+.. seealso:: :py:func:`setAvailableTemporalRange`
+%End
+
+    void setAvailableReferenceTemporalRange( const QgsDateTimeRange &range );
+%Docstring
+Sets the available reference datetime ``range``. This is to be used for
+bi-temporal based data. Where data can have both nominal and reference times.
+
+.. seealso:: :py:func:`availableReferenceTemporalRange`
+%End
+
+    const QgsDateTimeRange &availableReferenceTemporalRange() const;
+%Docstring
+Returns the available reference datetime range, which indicates the maximum
+extent of datetime values available for reference temporal ranges from the provider.
+
+.. seealso:: :py:func:`setAvailableReferenceTemporalRange`
+%End
+
+    const QgsDateTimeRange &requestedTemporalRange() const;
+%Docstring
+Returns the requested temporal range.
+Intended to be used by the provider in fetching data.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterdataprovidertemporalcapabilities.h          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

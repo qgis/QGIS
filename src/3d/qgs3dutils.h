@@ -16,33 +16,29 @@
 #ifndef QGS3DUTILS_H
 #define QGS3DUTILS_H
 
+#include "qgis_sip.h"
+
 class QgsLineString;
 class QgsPolygon;
+class QgsFeedback;
 
 class QgsAbstract3DEngine;
+class QgsAbstract3DSymbol;
 class Qgs3DMapScene;
 
+namespace Qt3DExtras
+{
+  class QPhongMaterial;
+}
+
 #include "qgs3dmapsettings.h"
+#include "qgs3danimationsettings.h"
+#include "qgs3dtypes.h"
 #include "qgsaabb.h"
 
-#include <Qt3DRender/QCullFace>
+#include <memory>
 
-//! how to handle altitude of vector features
-enum AltitudeClamping
-{
-  AltClampAbsolute,   //!< Z_final = z_geometry
-  AltClampRelative,   //!< Z_final = z_terrain + z_geometry
-  AltClampTerrain,    //!< Z_final = z_terrain
-};
-
-
-//! how to handle clamping of vertices of individual features
-enum AltitudeBinding
-{
-  AltBindVertex,      //!< Clamp every vertex of feature
-  AltBindCentroid,    //!< Clamp just centroid of feature
-};
-
+#ifndef SIP_RUN
 
 /**
  * \ingroup 3d
@@ -61,42 +57,68 @@ class _3D_EXPORT Qgs3DUtils
     static QImage captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene );
 
     /**
+     * Captures 3D animation frames to the selected folder
+     *
+     * \param animationSettings Settings for keyframes and camera
+     * \param mapSettings 3d map settings
+     * \param framesPerSecond number of frames per second to export
+     * \param outputDirectory output directory where to export frames
+     * \param fileNameTemplate template for exporting the frames.
+     *        Must be in format prefix####.format, where number of
+     *        # represents how many 0 should be left-padded to the frame number
+     *        e.g. my###.jpg will create frames my001.jpg, my002.jpg, etc
+     * \param outputSize size of the frame in pixels
+     * \param error error string in case of failure
+     * \param feedback optional feedback object used to cancel export or report progress
+     * \return whether export succeeded. In case of failure, see error argument
+     *
+     * \since QGIS 3.8
+     */
+    static bool exportAnimation( const Qgs3DAnimationSettings &animationSettings,
+                                 const Qgs3DMapSettings &mapSettings,
+                                 int framesPerSecond,
+                                 const QString &outputDirectory,
+                                 const QString &fileNameTemplate,
+                                 const QSize &outputSize,
+                                 QString &error,
+                                 QgsFeedback *feedback = nullptr
+                               );
+
+    /**
      * Calculates the highest needed zoom level for tiles in quad-tree given width of the base tile (zoom level 0)
      * in map units, resolution of the tile (e.g. tile's texture width) and desired maximum error in map units.
      */
     static int maxZoomLevel( double tile0width, double tileResolution, double maxError );
 
     //! Converts a value from AltitudeClamping enum to a string
-    static QString altClampingToString( AltitudeClamping altClamp );
+    static QString altClampingToString( Qgs3DTypes::AltitudeClamping altClamp );
     //! Converts a string to a value from AltitudeClamping enum
-    static AltitudeClamping altClampingFromString( const QString &str );
+    static Qgs3DTypes::AltitudeClamping altClampingFromString( const QString &str );
 
     //! Converts a value from AltitudeBinding enum to a string
-    static QString altBindingToString( AltitudeBinding altBind );
+    static QString altBindingToString( Qgs3DTypes::AltitudeBinding altBind );
     //! Converts a string to a value from AltitudeBinding enum
-    static AltitudeBinding altBindingFromString( const QString &str );
+    static Qgs3DTypes::AltitudeBinding altBindingFromString( const QString &str );
 
     //! Converts a value from CullingMode enum to a string
-    static QString cullingModeToString( Qt3DRender::QCullFace::CullingMode mode );
+    static QString cullingModeToString( Qgs3DTypes::CullingMode mode );
     //! Converts a string to a value from CullingMode enum
-    static Qt3DRender::QCullFace::CullingMode cullingModeFromString( const QString &str );
+    static Qgs3DTypes::CullingMode cullingModeFromString( const QString &str );
 
     //! Clamps altitude of a vertex according to the settings, returns Z value
-    static float clampAltitude( const QgsPoint &p, AltitudeClamping altClamp, AltitudeBinding altBind, float height, const QgsPoint &centroid, const Qgs3DMapSettings &map );
+    static float clampAltitude( const QgsPoint &p, Qgs3DTypes::AltitudeClamping altClamp, Qgs3DTypes::AltitudeBinding altBind, float height, const QgsPoint &centroid, const Qgs3DMapSettings &map );
     //! Clamps altitude of vertices of a linestring according to the settings
-    static void clampAltitudes( QgsLineString *lineString, AltitudeClamping altClamp, AltitudeBinding altBind, const QgsPoint &centroid, float height, const Qgs3DMapSettings &map );
+    static void clampAltitudes( QgsLineString *lineString, Qgs3DTypes::AltitudeClamping altClamp, Qgs3DTypes::AltitudeBinding altBind, const QgsPoint &centroid, float height, const Qgs3DMapSettings &map );
     //! Clamps altitude of vertices of a polygon according to the settings
-    static bool clampAltitudes( QgsPolygon *polygon, AltitudeClamping altClamp, AltitudeBinding altBind, float height, const Qgs3DMapSettings &map );
+    static bool clampAltitudes( QgsPolygon *polygon, Qgs3DTypes::AltitudeClamping altClamp, Qgs3DTypes::AltitudeBinding altBind, float height, const Qgs3DMapSettings &map );
 
     //! Converts a 4x4 transform matrix to a string
     static QString matrix4x4toString( const QMatrix4x4 &m );
     //! Convert a string to a 4x4 transform matrix
     static QMatrix4x4 stringToMatrix4x4( const QString &str );
 
-    /**
-     * Calculates (x,y,z) positions of a (multi)point in the Point vector layers
-     */
-    static QList<QVector3D> positions( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &req, AltitudeClamping altClamp );
+    //! Calculates (x,y,z) positions of (multi)point from the given feature
+    static void extractPointPositions( QgsFeature &f, const Qgs3DMapSettings &map, Qgs3DTypes::AltitudeClamping altClamp, QVector<QVector3D> &positions );
 
     /**
         Returns true if bbox is completely outside the current viewing volume.
@@ -109,9 +131,53 @@ class _3D_EXPORT Qgs3DUtils
     //! Converts 3D world coordinates to map coordinates (applies offset and turns (x,y,z) into (x,-z,y))
     static QgsVector3D worldToMapCoordinates( const QgsVector3D &worldCoords, const QgsVector3D &origin );
 
+    /**
+     * Converts extent (in map layer's CRS) to axis aligned bounding box in 3D world coordinates
+     * \since QGIS 3.12
+     */
+    static QgsAABB layerToWorldExtent( const QgsRectangle &extent, double zMin, double zMax, const QgsCoordinateReferenceSystem &layerCrs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &context );
+
+    /**
+     * Converts axis aligned bounding box in 3D world coordinates to extent in map layer CRS
+     * \since QGIS 3.12
+     */
+    static QgsRectangle worldToLayerExtent( const QgsAABB &bbox, const QgsCoordinateReferenceSystem &layerCrs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &context );
+
+    /**
+     * Converts map extent to axis aligned bounding box in 3D world coordinates
+     * \since QGIS 3.12
+     */
+    static QgsAABB mapToWorldExtent( const QgsRectangle &extent, double zMin, double zMax, const QgsVector3D &mapOrigin );
+
+    /**
+     * Converts axis aligned bounding box in 3D world coordinates to extent in map coordinates
+     * \since QGIS 3.12
+     */
+    static QgsRectangle worldToMapExtent( const QgsAABB &bbox, const QgsVector3D &mapOrigin );
+
     //! Transforms a world point from (origin1, crs1) to (origin2, crs2)
     static QgsVector3D transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2,
         const QgsCoordinateTransformContext &context );
+
+    /**
+     * Try to estimate range of Z values used in the given vector layer and store that in zMin and zMax.
+     * The implementation scans a small amount of features and looks at the Z values of geometries
+     * (we don't need exact range, just a rough estimate is fine to know where to expect the data to be).
+     * For layers with geometries without Z values, the returned range will be [0, 0].
+     * \since QGIS 3.12
+     */
+    static void estimateVectorLayerZRange( QgsVectorLayer *layer, double &zMin, double &zMax );
+
+    //! Returns a new 3D symbol based on given geometry type (or NULLPTR if geometry type is not supported)
+    static std::unique_ptr<QgsAbstract3DSymbol> symbolForGeometryType( QgsWkbTypes::GeometryType geomType );
+
+    //! Returns expression context for use in preparation of 3D data of a layer
+    static QgsExpressionContext globalProjectLayerExpressionContext( QgsVectorLayer *layer );
+
+    //! Returns phong material object based on the material settings
+    static Qt3DExtras::QPhongMaterial *phongMaterial( const QgsPhongMaterialSettings &settings );
 };
+
+#endif
 
 #endif // QGS3DUTILS_H

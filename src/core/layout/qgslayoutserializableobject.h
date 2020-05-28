@@ -18,7 +18,7 @@
 #ifndef QGSLAYOUTSERIALIZABLEOBJECT_H
 #define QGSLAYOUTSERIALIZABLEOBJECT_H
 
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgslayoutundocommand.h"
 

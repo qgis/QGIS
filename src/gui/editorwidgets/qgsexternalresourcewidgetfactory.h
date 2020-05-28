@@ -32,6 +32,11 @@ SIP_NO_FILE
 class GUI_EXPORT QgsExternalResourceWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
+
+    /**
+     * Constructor for QgsExternalResourceWidgetFactory, where \a name is a human-readable
+     * name for the factory.
+     */
     QgsExternalResourceWidgetFactory( const QString &name );
 
     // QgsEditorWidgetFactory interface

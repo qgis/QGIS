@@ -33,6 +33,7 @@
  * \ingroup core
  * This class wraps a request for features to a vector layer (or directly its vector data provider).
  * The request may apply a filter to fetch only a particular subset of features. Currently supported filters:
+ *
  * - no filter - all features are returned
  * - feature id - only feature that matches given feature id is returned
  * - feature ids - only features that match any of the given feature ids are returned
@@ -44,6 +45,7 @@
  * ExactIntersect that makes sure that only intersecting features will be returned.
  *
  * For efficiency, it is also possible to tell provider that some data is not required:
+ *
  * - NoGeometry flag
  * - SubsetOfAttributes flag
  * - SimplifyMethod for geometries to fetch
@@ -68,6 +70,7 @@
  *   # fetch only one feature
  *   QgsFeatureRequest().setFilterFid(45)
  * \endcode
+ *
  */
 class CORE_EXPORT QgsFeatureRequest
 {
@@ -142,7 +145,7 @@ class CORE_EXPORT QgsFeatureRequest
          *
          * \param expression The expression to use for ordering
          * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
-         * \param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
+         * \param nullsfirst If TRUE, NULLS are at the beginning, if FALSE, NULLS are at the end
          */
         OrderByClause( const QString &expression, bool ascending, bool nullsfirst );
 
@@ -161,7 +164,7 @@ class CORE_EXPORT QgsFeatureRequest
          *
          * \param expression The expression to use for ordering
          * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
-         * \param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
+         * \param nullsfirst If TRUE, NULLS are at the beginning, if FALSE, NULLS are at the end
          */
         OrderByClause( const QgsExpression &expression, bool ascending, bool nullsfirst );
 
@@ -257,8 +260,15 @@ class CORE_EXPORT QgsFeatureRequest
 
         /**
          * Returns a set of used attributes
+         * \note The returned attributes names are NOT guaranteed to be valid.
          */
         QSet<QString> CORE_EXPORT usedAttributes() const;
+
+        /**
+         * Returns a set of used, validated attribute indices
+         * \since QGIS 3.8
+         */
+        QSet<int> CORE_EXPORT usedAttributeIndices( const QgsFields &fields ) const;
 
         /**
          * Dumps the content to an SQL equivalent syntax
@@ -453,7 +463,7 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \param expression The expression to use for ordering
      * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
-     * \param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
+     * \param nullsfirst If TRUE, NULLS are at the beginning, if FALSE, NULLS are at the end
      *
      * \since QGIS 2.14
      */
@@ -493,10 +503,21 @@ class CORE_EXPORT QgsFeatureRequest
     const Flags &flags() const { return mFlags; }
 
     /**
-     * Set a subset of attributes that will be fetched. Empty list means that all attributes are used.
-     * To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
+     * Set a subset of attributes that will be fetched.
+     *
+     * An empty attributes list indicates that no attributes will be fetched.
+     * To revert a call to setSubsetOfAttributes and fetch all available attributes,
+     * the SubsetOfAttributes flag should be removed from the request.
      */
     QgsFeatureRequest &setSubsetOfAttributes( const QgsAttributeList &attrs );
+
+    /**
+     * Set that no attributes will be fetched.
+     * To revert a call to setNoAttributes and fetch all or some available attributes,
+     * the SubsetOfAttributes flag should be removed from the request.
+     * \since QGIS 3.4
+     */
+    QgsFeatureRequest &setNoAttributes();
 
     /**
      * Returns the subset of attributes which at least need to be fetched
@@ -610,7 +631,7 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \param feature  The feature which will be tested
      *
-     * \returns true, if the filter accepts the feature
+     * \returns TRUE, if the filter accepts the feature
      *
      * \since QGIS 2.1
      */
@@ -622,9 +643,10 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \note Only works if the provider supports this option.
      *
+     * \deprecated Use timeout() instead.
      * \since QGIS 3.0
      */
-    int connectionTimeout() const;
+    Q_DECL_DEPRECATED int connectionTimeout() const SIP_DEPRECATED;
 
     /**
      * Sets the timeout (in milliseconds) for how long we should wait for a connection if none is available from the pool
@@ -632,15 +654,36 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \note Only works if the provider supports this option.
      *
+     * \deprecated Use setTimeout() instead.
      * \since QGIS 3.0
      */
-    QgsFeatureRequest &setConnectionTimeout( int connectionTimeout );
+    Q_DECL_DEPRECATED QgsFeatureRequest &setConnectionTimeout( int connectionTimeout ) SIP_DEPRECATED;
+
+    /**
+     * Returns the timeout (in milliseconds) for the maximum time we should wait during feature requests before a
+     * feature is returned. A negative value (which is set by default) will wait forever.
+     *
+     * \note Only works if the provider supports this option.
+     *
+     * \since QGIS 3.4
+     */
+    int timeout() const;
+
+    /**
+     * Sets the \a timeout (in milliseconds) for the maximum time we should wait during feature requests before a
+     * feature is returned. A negative value (which is set by default) will wait forever.
+     *
+     * \note Only works if the provider supports this option.
+     *
+     * \since QGIS 3.4
+     */
+    QgsFeatureRequest &setTimeout( int timeout );
 
     /**
      * In case this request may be run nested within another already running
-     * iteration on the same connection, set this to true.
+     * iteration on the same connection, set this to TRUE.
      *
-     * If this flag is true, this request will be able to make use of "spare"
+     * If this flag is TRUE, this request will be able to make use of "spare"
      * connections to avoid deadlocks.
      *
      * For example, this should be set on requests that are issued from an
@@ -652,9 +695,9 @@ class CORE_EXPORT QgsFeatureRequest
 
     /**
      * In case this request may be run nested within another already running
-     * iteration on the same connection, set this to true.
+     * iteration on the same connection, set this to TRUE.
      *
-     * If this flag is true, this request will be able to make use of "spare"
+     * If this flag is TRUE, this request will be able to make use of "spare"
      * connections to avoid deadlocks.
      *
      * For example, this should be set on requests that are issued from an
@@ -681,7 +724,7 @@ class CORE_EXPORT QgsFeatureRequest
     std::function< void( const QgsFeature & ) > mTransformErrorCallback;
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransformContext mTransformContext;
-    int mConnectionTimeout = -1;
+    int mTimeout = -1;
     int mRequestMayBeNested = false;
 };
 

@@ -1,5 +1,9 @@
 # for installing headers
 
+INCLUDE_DIRECTORIES(SYSTEM
+  ${QT_INCLUDE_DIR}
+)
+
 SET(QGIS_TEST_HDRS
   qgstest.h
 )

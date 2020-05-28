@@ -15,7 +15,11 @@
 
 #include "qgsmeshrendereractivedatasetwidget.h"
 
+#include <QDateTime>
+#include <QIcon>
+
 #include "qgis.h"
+#include "qgsapplication.h"
 #include "qgsmeshlayer.h"
 #include "qgsmessagelog.h"
 #include "qgsmeshrenderersettings.h"
@@ -24,161 +28,197 @@ QgsMeshRendererActiveDatasetWidget::QgsMeshRendererActiveDatasetWidget( QWidget 
   : QWidget( parent )
 {
   setupUi( this );
-  connect( mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::activeGroupChanged, this, &QgsMeshRendererActiveDatasetWidget::onActiveGroupChanged );
-  connect( mDatasetSlider, &QSlider::valueChanged, this, &QgsMeshRendererActiveDatasetWidget::onActiveDatasetChanged );
+
+  connect( mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::activeScalarGroupChanged,
+           this, &QgsMeshRendererActiveDatasetWidget::onActiveScalarGroupChanged );
+  connect( mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::activeVectorGroupChanged,
+           this, &QgsMeshRendererActiveDatasetWidget::onActiveVectorGroupChanged );
 }
+
+QgsMeshRendererActiveDatasetWidget::~QgsMeshRendererActiveDatasetWidget() = default;
+
 
 void QgsMeshRendererActiveDatasetWidget::setLayer( QgsMeshLayer *layer )
 {
-  if ( layer != mMeshLayer )
+  if ( mMeshLayer )
   {
-    mMeshLayer = layer;
+    disconnect( mMeshLayer, &QgsMeshLayer::activeScalarDatasetGroupChanged,
+                mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveScalarGroup );
+    disconnect( mMeshLayer, &QgsMeshLayer::activeVectorDatasetGroupChanged,
+                mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveVectorGroup );
   }
+
+  mMeshLayer = layer;
 
   mDatasetGroupTreeView->setLayer( layer );
-  setEnabled( mMeshLayer );
-  syncToLayer();
+  connect( layer, &QgsMeshLayer::activeScalarDatasetGroupChanged,
+           mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveScalarGroup );
+  connect( layer, &QgsMeshLayer::activeVectorDatasetGroupChanged,
+           mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveVectorGroup );
 }
 
-QgsMeshDatasetIndex QgsMeshRendererActiveDatasetWidget::activeScalarDataset() const
+int QgsMeshRendererActiveDatasetWidget::activeScalarDatasetGroup() const
 {
-  return mActiveScalarDataset;
+  return mActiveScalarDatasetGroup;
 }
 
-QgsMeshDatasetIndex QgsMeshRendererActiveDatasetWidget::activeVectorDataset() const
+int QgsMeshRendererActiveDatasetWidget::activeVectorDatasetGroup() const
 {
-  return mActiveVectorDataset;
+  return mActiveVectorDatasetGroup;
 }
 
-void QgsMeshRendererActiveDatasetWidget::setSliderRange()
+
+void QgsMeshRendererActiveDatasetWidget::onActiveScalarGroupChanged( int groupIndex )
 {
-  int datasetCount = 1;
-  if ( mMeshLayer &&
-       mMeshLayer->dataProvider() &&
-       mDatasetGroupTreeView->activeGroup() != -1 )
-    datasetCount = mMeshLayer->dataProvider()->datasetCount( mDatasetGroupTreeView->activeGroup() );
+  if ( groupIndex == mActiveScalarDatasetGroup )
+    return;
 
-  mDatasetSlider->setMinimum( 0 );
-  mDatasetSlider->setMaximum( datasetCount - 1 );
-}
-
-void QgsMeshRendererActiveDatasetWidget::onActiveGroupChanged()
-{
-  setSliderRange();
-
-  // keep the same timestep if possible
-  int val = mDatasetSlider->value();
-  if ( ( val < 0 ) || ( val > mDatasetSlider->maximum() ) )
-    val = 0;
-
-  mDatasetSlider->setValue( val );
-  onActiveDatasetChanged( val );
-}
-
-void QgsMeshRendererActiveDatasetWidget::onActiveDatasetChanged( int value )
-{
-  int groupIndex = mDatasetGroupTreeView->activeGroup();
-
-  mActiveScalarDataset = QgsMeshDatasetIndex();
-  mActiveVectorDataset = QgsMeshDatasetIndex();
-  QgsMeshDatasetIndex datasetIndex( groupIndex, value );
-
-  if ( mMeshLayer &&
-       mMeshLayer->dataProvider() &&
-       datasetIndex.isValid() &&
-       mMeshLayer->dataProvider()->datasetCount( groupIndex ) > value )
-  {
-    const QgsMeshDatasetGroupMetadata meta = mMeshLayer->dataProvider()->datasetGroupMetadata( datasetIndex );
-    mActiveScalarDataset = datasetIndex;
-    if ( meta.isVector() )
-      mActiveVectorDataset = datasetIndex;
-  }
-
-  updateMetadata( datasetIndex );
-
-  emit activeScalarDatasetChanged( activeScalarDataset() );
-  emit activeVectorDatasetChanged( activeVectorDataset() );
-
+  mActiveScalarDatasetGroup = groupIndex;
+  updateMetadata();
+  emit activeScalarGroupChanged( mActiveScalarDatasetGroup );
   emit widgetChanged();
 }
 
-void QgsMeshRendererActiveDatasetWidget::updateMetadata( QgsMeshDatasetIndex datasetIndex )
+void QgsMeshRendererActiveDatasetWidget::onActiveVectorGroupChanged( int groupIndex )
 {
-  if ( !mMeshLayer ||
-       !mMeshLayer->dataProvider() ||
-       !datasetIndex.isValid() )
-  {
-    mActiveDatasetMetadata->setText( tr( "No dataset selected" ) );
-  }
-  else
-  {
-    QString msg;
-    msg += QStringLiteral( "<table>" );
+  if ( groupIndex == mActiveVectorDatasetGroup )
+    return;
 
-    const QgsMeshDatasetMetadata meta = mMeshLayer->dataProvider()->datasetMetadata( datasetIndex );
-    msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
-           .arg( tr( "Is valid" ) )
-           .arg( meta.isValid() ? tr( "Yes" ) : tr( "No" ) );
-
-    msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
-           .arg( tr( "Time" ) )
-           .arg( meta.time() );
-
-    const QgsMeshDatasetGroupMetadata gmeta = mMeshLayer->dataProvider()->datasetGroupMetadata( datasetIndex );
-    msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
-           .arg( tr( "Data Type" ) )
-           .arg( gmeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ? tr( "Defined on vertices" ) : tr( "Defined on faces" ) );
-
-    msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
-           .arg( tr( "Is vector" ) )
-           .arg( gmeta.isVector() ? tr( "Yes" ) : tr( "No" ) );
-
-    for ( auto it = gmeta.extraOptions().constBegin(); it != gmeta.extraOptions().constEnd(); ++it )
-    {
-      msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" ).arg( it.key() ).arg( it.value() );
-    }
-
-    msg += QStringLiteral( "</table>" );
-    mActiveDatasetMetadata->setText( msg );
-  }
-
+  mActiveVectorDatasetGroup = groupIndex;
+  updateMetadata();
+  emit activeVectorGroupChanged( mActiveVectorDatasetGroup );
+  emit widgetChanged();
 }
 
-QgsMeshDatasetIndex QgsMeshRendererActiveDatasetWidget::datasetIndex() const
+void QgsMeshRendererActiveDatasetWidget::updateMetadata()
 {
-  int value = mDatasetSlider->value();
-  int groupIndex = mDatasetGroupTreeView->activeGroup();
+  QString msg;
 
-  if ( mMeshLayer &&
-       mMeshLayer->dataProvider() &&
-       groupIndex != -1 &&
-       mMeshLayer->dataProvider()->datasetCount( groupIndex ) > value
-     )
-    return QgsMeshDatasetIndex( groupIndex, value );
+  if ( !mMeshLayer ||
+       !mMeshLayer->dataProvider() )
+  {
+    msg += tr( "Invalid mesh layer selected" );
+  }
   else
-    return QgsMeshDatasetIndex();
+  {
+    if ( mActiveScalarDatasetGroup > -1 )
+    {
+      if ( mActiveVectorDatasetGroup > -1 )
+      {
+        if ( mActiveScalarDatasetGroup == mActiveVectorDatasetGroup )
+        {
+          msg += metadata( mActiveScalarDatasetGroup );
+        }
+        else
+        {
+          msg += QStringLiteral( "<p> <h3> %1 </h3> " ).arg( tr( "Scalar dataset" ) );
+          msg += metadata( mActiveScalarDatasetGroup );
+          msg += QStringLiteral( "</p> <p> <h3> %1 </h3>" ).arg( tr( "Vector dataset" ) );
+          msg += metadata( mActiveVectorDatasetGroup );
+          msg += QStringLiteral( "</p>" );
+        }
+      }
+      else
+      {
+        msg += metadata( mActiveScalarDatasetGroup );
+      }
+    }
+    else
+    {
+      if ( mActiveVectorDatasetGroup > -1 )
+      {
+        msg += metadata( mActiveVectorDatasetGroup );
+      }
+      else
+      {
+        msg += tr( "No mesh dataset selected" );
+      }
+    }
+  }
+
+  mActiveDatasetMetadata->setText( msg );
+}
+
+
+QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datasetIndex )
+{
+
+  QString msg;
+  msg += QStringLiteral( "<table>" );
+
+  QString definedOnMesh;
+  if ( mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Face ) )
+  {
+    if ( mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) )
+    {
+      definedOnMesh = tr( "faces and edges" );
+    }
+    else
+    {
+      definedOnMesh = tr( "faces" );
+    }
+  }
+  else if ( mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) )
+  {
+    definedOnMesh = tr( "edges" );
+  }
+  else
+  {
+    definedOnMesh = tr( "invalid mesh" );
+  }
+  msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
+         .arg( tr( "Mesh type" ) )
+         .arg( definedOnMesh );
+
+  const QgsMeshDatasetGroupMetadata gmeta = mMeshLayer->dataProvider()->datasetGroupMetadata( datasetIndex );
+  QString definedOn;
+  switch ( gmeta.dataType() )
+  {
+    case QgsMeshDatasetGroupMetadata::DataOnVertices:
+      definedOn = tr( "vertices" );
+      break;
+    case QgsMeshDatasetGroupMetadata::DataOnFaces:
+      definedOn = tr( "faces" );
+      break;
+    case QgsMeshDatasetGroupMetadata::DataOnVolumes:
+      definedOn = tr( "volumes" );
+      break;
+    case QgsMeshDatasetGroupMetadata::DataOnEdges:
+      definedOn = tr( "edges" );
+      break;
+  }
+  msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
+         .arg( tr( "Data type" ) )
+         .arg( definedOn );
+
+  msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
+         .arg( tr( "Is vector" ) )
+         .arg( gmeta.isVector() ? tr( "Yes" ) : tr( "No" ) );
+
+  const auto options = gmeta.extraOptions();
+  for ( auto it = options.constBegin(); it != options.constEnd(); ++it )
+  {
+    if ( it.key() == QStringLiteral( "classification" ) )
+    {
+      msg += QStringLiteral( "<tr><td>%1</td></tr>" ).arg( tr( "Classified values" ) );
+      continue;
+    }
+    msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" ).arg( it.key() ).arg( it.value() );
+  }
+
+  msg += QStringLiteral( "</table>" );
+
+  return msg;
 }
 
 void QgsMeshRendererActiveDatasetWidget::syncToLayer()
 {
+  setEnabled( mMeshLayer );
+
   whileBlocking( mDatasetGroupTreeView )->syncToLayer();
 
-  if ( mMeshLayer )
-  {
-    mActiveScalarDataset = mMeshLayer->activeScalarDataset();
-    mActiveVectorDataset = mMeshLayer->activeVectorDataset();
-  }
-  else
-  {
-    mActiveScalarDataset = QgsMeshDatasetIndex();
-    mActiveVectorDataset = QgsMeshDatasetIndex();
-  }
+  mActiveScalarDatasetGroup = mDatasetGroupTreeView->activeScalarGroup();
+  mActiveVectorDatasetGroup = mDatasetGroupTreeView->activeVectorGroup();
 
-  int val = 0;
-  if ( mActiveScalarDataset.isValid() )
-    val = mActiveScalarDataset.dataset();
-  mDatasetSlider->setValue( val );
-
-  setSliderRange();
-  onActiveDatasetChanged( val );
+  updateMetadata();
 }

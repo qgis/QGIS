@@ -9,7 +9,7 @@ Make sure that you have enabled building of tests in CMake.
 # Run tests
 
 You can run all tests using `make check`.
-Note you will need `xvfb-run` for that (sudo apt-get install xfvb).
+Note you will need `xvfb-run` for that (sudo apt-get install xvfb).
 
 Individual tests can be run using `ctest`.
 
@@ -29,7 +29,6 @@ You could re-run the failing test with:
 The parameter `-V` enables verbose mode and `-R` takes a regular expression as
 parameter and will only run matching tests.
 
-
 For python tests, you can run a specific test inside a unit file
 with something like this:
 
@@ -39,6 +38,13 @@ with something like this:
    TestQgsVectorLayer.testOverwriteLayer
 ```
 
+If you get `Could not connect to any X display` errors it means that your build
+machine does not have an X server.  In that case you need to run the test under
+`xvfb-run`.  For example:
+
+```
+    xvfb-run --server-args=-screen\ 0\ 1024x768x24 ctest -V -R PyQgsServerWMSGetMap
+```
 
 # Advanced configuration
 
@@ -51,9 +57,8 @@ To test the postgres provider you will need to have a database available to
 which the postgres provider can connect. The server will need to have PostGIS
 support enabled.
 
-By default the test uses one of the following connection string:
+By default the tests use the following connection string:
 
-    dbname=qgis_test
     service=qgis_test
 
 If these do not match your setup you can set the environment variable

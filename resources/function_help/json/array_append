@@ -4,5 +4,5 @@
   "description": "Returns an array with the given value added at the end.",
   "arguments": [ {"arg":"array","description":"an array"},
                  {"arg":"value","description":"the value to add"}],
-  "examples": [ { "expression":"array_append(array(1,2,3),4)", "returns":"array: 1,2,3,4"}]
+  "examples": [ { "expression":"array_append(array(1,2,3),4)", "returns":"[ 1, 2, 3, 4 ]"}]
 }

@@ -25,7 +25,7 @@ QgsRasterNuller::QgsRasterNuller( QgsRasterInterface *input )
 
 QgsRasterNuller *QgsRasterNuller::clone() const
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   QgsRasterNuller *nuller = new QgsRasterNuller( nullptr );
   nuller->mNoData = mNoData;
   nuller->mOutputNoData = mOutputNoData;
@@ -67,7 +67,7 @@ Qgis::DataType QgsRasterNuller::dataType( int bandNo ) const
 
 QgsRasterBlock *QgsRasterNuller::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   if ( !mInput )
   {
     return new QgsRasterBlock();
@@ -100,13 +100,13 @@ QgsRasterBlock *QgsRasterNuller::block( int bandNo, QgsRectangle  const &extent,
     outputBlock->setNoDataValue( noDataValue );
   }
 
+  bool isNoData = false;
   for ( int i = 0; i < height; i++ )
   {
     for ( int j = 0; j < width; j++ )
     {
-      double value = inputBlock->value( i, j );
+      double value = inputBlock->valueAndNoData( i, j, isNoData );
 
-      bool isNoData = inputBlock->isNoData( i, j );
       if ( QgsRasterRange::contains( value, mNoData.value( bandNo - 1 ) ) )
       {
         isNoData = true;

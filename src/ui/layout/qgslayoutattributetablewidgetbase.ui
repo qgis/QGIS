@@ -66,7 +66,7 @@
           <enum>Qt::StrongFocus</enum>
          </property>
          <property name="title">
-          <string>Main properties</string>
+          <string>Main Properties</string>
          </property>
          <property name="syncGroup" stdset="0">
           <string notr="true">composeritem</string>
@@ -98,14 +98,14 @@
           <item row="6" column="0" colspan="2">
            <widget class="QPushButton" name="mRefreshPushButton">
             <property name="text">
-             <string>Refresh table data</string>
+             <string>Refresh Table Data</string>
             </property>
            </widget>
           </item>
           <item row="7" column="0" colspan="2">
            <widget class="QPushButton" name="mAttributesPushButton">
             <property name="text">
-             <string>Attributes...</string>
+             <string>Attributes…</string>
             </property>
            </widget>
           </item>
@@ -149,7 +149,7 @@
           <enum>Qt::StrongFocus</enum>
          </property>
          <property name="title">
-          <string>Feature filtering</string>
+          <string>Feature Filtering</string>
          </property>
          <property name="syncGroup" stdset="0">
           <string notr="true">composeritem</string>
@@ -269,14 +269,16 @@
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_6">
-          <item row="10" column="0">
-           <widget class="QLabel" name="label_12">
-            <property name="text">
-             <string>Oversized text</string>
-            </property>
-           </widget>
+          <item row="6" column="1">
+           <widget class="QLineEdit" name="mEmptyMessageLineEdit"/>
           </item>
-          <item row="9" column="0">
+          <item row="5" column="1">
+           <widget class="QComboBox" name="mEmptyModeComboBox"/>
+          </item>
+          <item row="3" column="1">
+           <widget class="QComboBox" name="mHeaderModeComboBox"/>
+          </item>
+          <item row="10" column="0">
            <widget class="QLabel" name="label_11">
             <property name="text">
              <string>Wrap text on</string>
@@ -286,73 +288,10 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
-           <widget class="QComboBox" name="mHeaderModeComboBox">
-            <item>
-             <property name="text">
-              <string>On first frame</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>On all frames</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>No header</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_7">
+          <item row="8" column="1">
+           <widget class="QPushButton" name="mAdvancedCustomizationButton">
             <property name="text">
-             <string>Display header</string>
-            </property>
-           </widget>
-          </item>
-          <item row="9" column="1">
-           <widget class="QLineEdit" name="mWrapStringLineEdit">
-            <property name="frame">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="mEmptyMessageLabel">
-            <property name="text">
-             <string>Message to display</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="label_9">
-            <property name="text">
-             <string>Empty tables</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QgsDoubleSpinBox" name="mMarginSpinBox">
-            <property name="suffix">
-             <string> mm</string>
-            </property>
-            <property name="singleStep">
-             <double>0.100000000000000</double>
-            </property>
-            <property name="showClearButton" stdset="0">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="1">
-           <widget class="QLineEdit" name="mEmptyMessageLineEdit"/>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QCheckBox" name="mDrawEmptyCheckBox">
-            <property name="text">
-             <string>Show empty rows</string>
+             <string>Advanced Customization…</string>
             </property>
            </widget>
           </item>
@@ -363,22 +302,24 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="1">
-           <widget class="QComboBox" name="mEmptyModeComboBox"/>
-          </item>
-          <item row="10" column="1">
-           <widget class="QComboBox" name="mWrapBehaviorComboBox"/>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="mMarginLabel">
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_9">
             <property name="text">
-             <string>Cell margins</string>
+             <string>Empty tables</string>
             </property>
-            <property name="wordWrap">
-             <bool>true</bool>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="mDrawEmptyCheckBox">
+            <property name="text">
+             <string>Show empty rows</string>
             </property>
-            <property name="buddy">
-             <cstring>mMarginSpinBox</cstring>
+           </widget>
+          </item>
+          <item row="11" column="0">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>Oversized text</string>
             </property>
            </widget>
           </item>
@@ -418,10 +359,60 @@
             </item>
            </layout>
           </item>
-          <item row="8" column="1">
-           <widget class="QPushButton" name="mAdvancedCustomizationButton">
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_7">
             <property name="text">
-             <string>Advanced customization...</string>
+             <string>Display header</string>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="1">
+           <widget class="QLineEdit" name="mWrapStringLineEdit">
+            <property name="frame">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QgsDoubleSpinBox" name="mMarginSpinBox">
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+            <property name="singleStep">
+             <double>0.100000000000000</double>
+            </property>
+            <property name="showClearButton" stdset="0">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="11" column="1">
+           <widget class="QComboBox" name="mWrapBehaviorComboBox"/>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="mEmptyMessageLabel">
+            <property name="text">
+             <string>Message to display</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="mMarginLabel">
+            <property name="text">
+             <string>Cell margins</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+            <property name="buddy">
+             <cstring>mMarginSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="0" colspan="2">
+           <widget class="QCheckBox" name="mUseConditionalStylingCheckBox">
+            <property name="text">
+             <string>Apply layer conditional styling colors</string>
             </property>
            </widget>
           </item>
@@ -434,7 +425,7 @@
           <enum>Qt::StrongFocus</enum>
          </property>
          <property name="title">
-          <string>Show grid</string>
+          <string>Show Grid</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -538,7 +529,7 @@
           <enum>Qt::StrongFocus</enum>
          </property>
          <property name="title">
-          <string>Fonts and text styling</string>
+          <string>Fonts and Text Styling</string>
          </property>
          <property name="syncGroup" stdset="0">
           <string notr="true">composeritem</string>
@@ -550,7 +541,7 @@
           <item>
            <widget class="QGroupBox" name="groupBox_2">
             <property name="title">
-             <string>Table heading</string>
+             <string>Table Heading</string>
             </property>
             <layout class="QGridLayout" name="gridLayout">
              <item row="1" column="1">
@@ -604,26 +595,6 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
-               <item>
-                <property name="text">
-                 <string>Follow column alignment</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Left</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Center</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Right</string>
-                </property>
-               </item>
               </widget>
              </item>
              <item row="1" column="0">
@@ -649,7 +620,7 @@
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>Heading font</string>
+                <string>Heading Font</string>
                </property>
               </widget>
              </item>
@@ -659,7 +630,7 @@
           <item>
            <widget class="QGroupBox" name="groupBox_4">
             <property name="title">
-             <string>Table contents</string>
+             <string>Table Contents</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_2">
              <item row="0" column="0">
@@ -721,7 +692,7 @@
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>Contents font</string>
+                <string>Contents Font</string>
                </property>
               </widget>
              </item>
@@ -895,34 +866,6 @@
   <tabstop>mHideEmptyBgCheckBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

@@ -21,13 +21,10 @@
 
 # message only if verbose makefiles
 
-CMAKE_POLICY (SET CMP0053 OLD)
-
-
 FUNCTION (MYMESSAGE MSG)
-    IF (@CMAKE_VERBOSE_MAKEFILE@)
+    IF (${CMAKE_VERBOSE_MAKEFILE})
         MESSAGE (STATUS "${MSG}")
-    ENDIF (@CMAKE_VERBOSE_MAKEFILE@)
+    ENDIF (${CMAKE_VERBOSE_MAKEFILE})
 ENDFUNCTION (MYMESSAGE)
 
 # get the install_name of a library or framework
@@ -169,6 +166,11 @@ FUNCTION (UPDATEQGISPATHS LIBFROM LIBTO)
         FOREACH (QP ${QGPLUGLIST})
             INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QP}")
         ENDFOREACH (QP)
+        # quick plugin
+        IF (${OSX_HAVE_LOADERPATH})
+            SET (LIB_CHG_TO "${ATLOADER}/../../${LIBMID}/${LIBPOST}")
+        ENDIF ()
+        INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QAPPDIR}/qml/QgsQuick/libqgis_quick_plugin.dylib")
         # qgis python
         IF (${OSX_HAVE_LOADERPATH})
             SET (LIB_CHG_TO "${ATLOADER}/../../${QGIS_DATA_SUBDIR_REV}/${LIBMID}/${LIBPOST}")

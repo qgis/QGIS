@@ -70,10 +70,8 @@ bool QgsPostgresTransaction::executeSql( const QString &sql, QString &errorMsg, 
     createSavepoint( err );
   }
 
-  QgsDebugMsg( QString( "Transaction sql: %1" ).arg( sql ) );
-  mConn->lock();
+  QgsDebugMsg( QStringLiteral( "Transaction sql: %1" ).arg( sql ) );
   QgsPostgresResult r( mConn->PQexec( sql, true ) );
-  mConn->unlock();
   if ( r.PQresultStatus() == PGRES_BAD_RESPONSE ||
        r.PQresultStatus() == PGRES_FATAL_ERROR )
   {
@@ -94,6 +92,6 @@ bool QgsPostgresTransaction::executeSql( const QString &sql, QString &errorMsg, 
     emit dirtied( sql, name );
   }
 
-  QgsDebugMsg( QString( "Status %1 (OK)" ).arg( r.PQresultStatus() ) );
+  QgsDebugMsg( QStringLiteral( "Status %1 (OK)" ).arg( r.PQresultStatus() ) );
   return true;
 }

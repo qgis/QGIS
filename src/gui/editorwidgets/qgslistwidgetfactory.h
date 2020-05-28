@@ -32,7 +32,8 @@ class GUI_EXPORT QgsListWidgetFactory : public QgsEditorWidgetFactory
   public:
 
     /**
-     * Constructor.
+     * Constructor for QgsListWidgetFactory, where \a name is a human-readable
+     * name for the factory.
      */
     QgsListWidgetFactory( const QString &name );
 

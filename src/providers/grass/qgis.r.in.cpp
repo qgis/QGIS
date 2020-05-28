@@ -98,7 +98,7 @@ int main( int argc, char **argv )
   QString err = QgsGrass::setRegion( &window, extent, rows, cols );
   if ( !err.isEmpty() )
   {
-    G_fatal_error( "Cannot set region: %s", err.toUtf8().data() );
+    G_fatal_error( "Cannot set region: %s", err.toUtf8().constData() );
   }
   window.proj = ( int ) proj;
   window.zone = ( int ) zone;

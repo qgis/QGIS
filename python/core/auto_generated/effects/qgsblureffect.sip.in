@@ -51,28 +51,96 @@ Constructor for QgsBlurEffect.
     virtual QgsBlurEffect *clone() const /Factory/;
 
 
-    void setBlurLevel( const int level );
+    void setBlurLevel( const double level );
 %Docstring
-Sets blur level (strength)
+Sets blur level (radius)
 
 :param level: blur level. Depending on the current blurMethod(), this parameter
               has different effects
 
 .. seealso:: :py:func:`blurLevel`
 
-.. seealso:: :py:func:`blurMethod`
+.. seealso:: :py:func:`setBlurUnit`
+
+.. seealso:: :py:func:`setBlurMapUnitScale`
+
+.. seealso:: :py:func:`setBlurMethod`
 %End
 
-    int blurLevel() const;
+    double blurLevel() const;
 %Docstring
-Returns the blur level (strength)
+Returns the blur level (radius)
 
 :return: blur level. Depending on the current blurMethod(), this parameter
          has different effects
 
 .. seealso:: :py:func:`setBlurLevel`
 
+.. seealso:: :py:func:`blurUnit`
+
+.. seealso:: :py:func:`blurMapUnitScale`
+
 .. seealso:: :py:func:`blurMethod`
+%End
+
+    void setBlurUnit( const QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the units used for the blur level (radius).
+
+:param unit: units for blur level
+
+.. seealso:: :py:func:`blurUnit`
+
+.. seealso:: :py:func:`setBlurLevel`
+
+.. seealso:: :py:func:`setBlurMapUnitScale`
+
+.. versionadded:: 3.4.9
+%End
+
+    QgsUnitTypes::RenderUnit blurUnit() const;
+%Docstring
+Returns the units used for the blur level (radius).
+
+:return: units for blur level
+
+.. seealso:: :py:func:`setBlurUnit`
+
+.. seealso:: :py:func:`blurLevel`
+
+.. seealso:: :py:func:`blurMapUnitScale`
+
+.. versionadded:: 3.4.9
+%End
+
+    void setBlurMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit scale used for the blur strength (radius).
+
+:param scale: map unit scale for blur strength
+
+.. seealso:: :py:func:`blurMapUnitScale`
+
+.. seealso:: :py:func:`setBlurLevel`
+
+.. seealso:: :py:func:`setBlurUnit`
+
+.. versionadded:: 3.4.9
+%End
+
+    const QgsMapUnitScale &blurMapUnitScale() const;
+%Docstring
+Returns the map unit scale used for the blur strength (radius).
+
+:return: map unit scale for blur strength
+
+.. seealso:: :py:func:`setBlurMapUnitScale`
+
+.. seealso:: :py:func:`blurLevel`
+
+.. seealso:: :py:func:`blurUnit`
+
+.. versionadded:: 3.4.9
 %End
 
     void setBlurMethod( const BlurMethod method );

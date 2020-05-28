@@ -97,6 +97,9 @@ QgsSymbolLayer *QgsArrowSymbolLayer::create( const QgsStringMap &props )
   if ( props.contains( QStringLiteral( "offset_unit_scale" ) ) )
     l->setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "offset_unit_scale" )] ) );
 
+  if ( props.contains( QStringLiteral( "ring_filter" ) ) )
+    l->setRingFilter( static_cast< RenderRingFilter>( props[QStringLiteral( "ring_filter" )].toInt() ) );
+
   l->restoreOldDataDefinedProperties( props );
 
   l->setSubSymbol( QgsFillSymbol::createSimple( props ) );
@@ -148,6 +151,8 @@ QgsStringMap QgsArrowSymbolLayer::properties() const
   map[QStringLiteral( "offset_unit" )] = QgsUnitTypes::encodeUnit( offsetUnit() );
   map[QStringLiteral( "offset_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( offsetMapUnitScale() );
 
+  map[QStringLiteral( "ring_filter" )] = QString::number( static_cast< int >( mRingFilter ) );
+
   return map;
 }
 
@@ -160,6 +165,14 @@ QSet<QString> QgsArrowSymbolLayer::usedAttributes( const QgsRenderContext &conte
   return attributes;
 }
 
+bool QgsArrowSymbolLayer::hasDataDefinedProperties() const
+{
+  if ( QgsSymbolLayer::hasDataDefinedProperties() )
+    return true;
+  if ( mSymbol && mSymbol->hasDataDefinedProperties() )
+    return true;
+  return false;
+}
 
 void QgsArrowSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
@@ -180,7 +193,7 @@ void QgsArrowSymbolLayer::stopRender( QgsSymbolRenderContext &context )
   mSymbol->stopRender( context.renderContext() );
 }
 
-inline qreal euclidian_distance( QPointF po, QPointF pd )
+inline qreal euclidean_distance( QPointF po, QPointF pd )
 {
   return std::sqrt( ( po.x() - pd.x() ) * ( po.x() - pd.x() ) + ( po.y() - pd.y() ) * ( po.y() - pd.y() ) );
 }
@@ -193,7 +206,7 @@ QPolygonF straightArrow( QPointF po, QPointF pd,
 {
   QPolygonF polygon; // implicitly shared
   // vector length
-  qreal length = euclidian_distance( po, pd );
+  qreal length = euclidean_distance( po, pd );
 
   // shift points if there is not enough room for the head(s)
   if ( ( headType == QgsArrowSymbolLayer::HeadSingle ) && ( length < headWidth ) )
@@ -472,7 +485,7 @@ QPolygonF curvedArrow( QPointF po, QPointF pm, QPointF pd,
   if ( direction * deltaAngle < 0.0 )
     deltaAngle = deltaAngle + direction * 2 * M_PI;
 
-  qreal length = euclidian_distance( po, pd );
+  qreal length = euclidean_distance( po, pd );
   // for close points and deltaAngle < 180, draw a straight line
   if ( std::fabs( deltaAngle ) < M_PI && ( ( ( headType == QgsArrowSymbolLayer::HeadSingle ) && ( length < headWidth ) ) ||
        ( ( headType == QgsArrowSymbolLayer::HeadReversed ) && ( length < headWidth ) ) ||
@@ -481,7 +494,7 @@ QPolygonF curvedArrow( QPointF po, QPointF pm, QPointF pd,
     return straightArrow( po, pd, startWidth, width, headWidth, headHeight, headType, arrowType, offset );
   }
 
-  // ajust coordinates to include offset
+  // adjust coordinates to include offset
   circleRadius += offset;
   po = circlePoint( circleCenter, circleRadius, angle_o );
   pm = circlePoint( circleCenter, circleRadius, angle_m );
@@ -670,7 +683,7 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext &context )
 
 void QgsArrowSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
 {
-  Q_UNUSED( points );
+  Q_UNUSED( points )
 
   if ( !context.renderContext().painter() )
   {
@@ -714,6 +727,9 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRend
     {
       for ( int pIdx = 0; pIdx < points.size() - 1; pIdx += 2 )
       {
+        if ( context.renderContext().renderingStopped() )
+          break;
+
         mExpressionScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, pIdx + 1, true ) );
         _resolveDataDefined( context );
 
@@ -765,6 +781,9 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRend
       // only straight arrows
       for ( int pIdx = 0; pIdx < points.size() - 1; pIdx++ )
       {
+        if ( context.renderContext().renderingStopped() )
+          break;
+
         mExpressionScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, pIdx + 1, true ) );
         _resolveDataDefined( context );
 

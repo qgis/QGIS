@@ -52,7 +52,7 @@ QgsGrassModuleParam::QgsGrassModuleParam( QgsGrassModule *module, QString key,
   , mRequired( false )
   , mDirect( direct )
 {
-  Q_UNUSED( gdesc );
+  Q_UNUSED( gdesc )
   //mAnswer = qdesc.attribute("answer", "");
 
   if ( !qdesc.attribute( QStringLiteral( "answer" ) ).isNull() )
@@ -208,7 +208,7 @@ QgsGrassModuleGroupBoxItem::QgsGrassModuleGroupBoxItem( QgsGrassModule *module, 
 
 void QgsGrassModuleGroupBoxItem::resizeEvent( QResizeEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   adjustTitle();
   setToolTip( mToolTip );
 }
@@ -508,7 +508,7 @@ void QgsGrassModuleOption::addRow()
   {
     if ( mHaveLimits )
     {
-      mValidator = new QIntValidator( ( int )mMin, ( int )mMax, this );
+      mValidator = new QIntValidator( static_cast<int>( mMin ), static_cast<int>( mMax ), this );
     }
     else
     {
@@ -573,10 +573,10 @@ void QgsGrassModuleOption::removeRow()
 
 void QgsGrassModuleOption::browse( bool checked )
 {
-  Q_UNUSED( checked );
+  Q_UNUSED( checked )
 
   QgsSettings settings;
-  QString lastDir = settings.value( QStringLiteral( "GRASS/lastDirectOutputDir" ), "" ).toString();
+  QString lastDir = settings.value( QStringLiteral( "GRASS/lastDirectOutputDir" ), QString() ).toString();
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Output file" ), lastDir, tr( "GeoTIFF" ) + " (*.tif)" );
   if ( !fileName.isEmpty() )
   {
@@ -751,7 +751,7 @@ QString QgsGrassModuleOption::ready()
 QgsGrassModuleFlag::QgsGrassModuleFlag( QgsGrassModule *module, QString key,
                                         QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                                         bool direct, QWidget *parent )
-  : QgsGrassModuleCheckBox( QLatin1String( "" ), parent ), QgsGrassModuleParam( module, key, qdesc, gdesc, gnode, direct )
+  : QgsGrassModuleCheckBox( QString(), parent ), QgsGrassModuleParam( module, key, qdesc, gdesc, gnode, direct )
 {
 
   if ( mHidden )
@@ -871,7 +871,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
   {
     if ( !layer ) continue;
 
-    if ( mType == Ogr && layer->type() == QgsMapLayer::VectorLayer )
+    if ( mType == Ogr && layer->type() == QgsMapLayerType::VectorLayer )
     {
       QgsVectorLayer *vector = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vector ||
@@ -908,8 +908,8 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
         {
           uri = items[0];
 
-          ogrLayer = QLatin1String( "" );
-          ogrWhere = QLatin1String( "" );
+          ogrLayer.clear();
+          ogrWhere.clear();
 
           for ( int i = 1; i < items.size(); i++ )
           {
@@ -930,14 +930,14 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
 
           if ( uri.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
           {
-            ogrLayer = QLatin1String( "" );
+            ogrLayer.clear();
           }
         }
         else
         {
           uri = items[0];
-          ogrLayer = QLatin1String( "" );
-          ogrWhere = QLatin1String( "" );
+          ogrLayer.clear();
+          ogrWhere.clear();
         }
       }
 
@@ -952,15 +952,15 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
       mOgrLayers.push_back( ogrLayer );
       mOgrWheres.push_back( ogrWhere );
     }
-    else if ( mType == Gdal && layer->type() == QgsMapLayer::RasterLayer )
+    else if ( mType == Gdal && layer->type() == QgsMapLayerType::RasterLayer )
     {
       QString uri = layer->source();
       mLayerComboBox->addItem( layer->name() );
       if ( layer->name() == current )
         mLayerComboBox->setItemText( mLayerComboBox->currentIndex(), current );
       mUri.push_back( uri );
-      mOgrLayers.push_back( QLatin1String( "" ) );
-      mOgrWheres.push_back( QLatin1String( "" ) );
+      mOgrLayers.push_back( QString() );
+      mOgrWheres.push_back( QString() );
     }
   }
 }
@@ -1531,7 +1531,7 @@ QgsGrassModuleCheckBox::QgsGrassModuleCheckBox( const QString &text, QWidget *pa
 
 void QgsGrassModuleCheckBox::resizeEvent( QResizeEvent *event )
 {
-  Q_UNUSED( event );
+  Q_UNUSED( event )
   adjustText();
 }
 void QgsGrassModuleCheckBox::setText( const QString &text )

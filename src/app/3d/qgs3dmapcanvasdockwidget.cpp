@@ -15,43 +15,109 @@
 
 #include "qgs3dmapcanvasdockwidget.h"
 
-#include "qgisapp.h"
-#include "qgs3dmapcanvas.h"
-#include "qgs3dmapconfigwidget.h"
-#include "qgs3dmapscene.h"
-#include "qgscameracontroller.h"
-#include "qgsmapcanvas.h"
-
-#include "qgs3danimationsettings.h"
-#include "qgs3danimationwidget.h"
-#include "qgs3dmapsettings.h"
-#include "qgs3dutils.h"
-
 #include <QBoxLayout>
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QProgressBar>
 #include <QToolBar>
 #include <QUrl>
+#include <QAction>
+
+#include "qgisapp.h"
+#include "qgs3dmapcanvas.h"
+#include "qgs3dmapconfigwidget.h"
+#include "qgs3dmapscene.h"
+#include "qgscameracontroller.h"
+#include "qgshelp.h"
+#include "qgsmapcanvas.h"
+#include "qgsmessagebar.h"
+#include "qgsapplication.h"
+#include "qgssettings.h"
+#include "qgsgui.h"
+#include "qgsmapthemecollection.h"
+#include "qgstemporalcontroller.h"
+
+#include "qgs3danimationsettings.h"
+#include "qgs3danimationwidget.h"
+#include "qgs3dmapsettings.h"
+#include "qgs3dmaptoolidentify.h"
+#include "qgs3dmaptoolmeasureline.h"
+#include "qgs3dutils.h"
+
+
 
 Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   : QgsDockWidget( parent )
 {
+  QgsSettings setting;
   setAttribute( Qt::WA_DeleteOnClose );  // removes the dock widget from main window when
 
   QWidget *contentsWidget = new QWidget( this );
 
   QToolBar *toolBar = new QToolBar( contentsWidget );
   toolBar->setIconSize( QgisApp::instance()->iconSize( true ) );
+
+  QAction *actionCameraControl = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionPan.svg" ) ),
+                                 tr( "Camera Control" ), this, &Qgs3DMapCanvasDockWidget::cameraControl );
+  actionCameraControl->setCheckable( true );
+
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionZoomFullExtent.svg" ) ),
                       tr( "Zoom Full" ), this, &Qgs3DMapCanvasDockWidget::resetView );
-  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionSaveMapAsImage.svg" ) ),
-                      tr( "Save as Image…" ), this, &Qgs3DMapCanvasDockWidget::saveAsImage );
-  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconProperties.svg" ) ),
-                      tr( "Configure…" ), this, &Qgs3DMapCanvasDockWidget::configure );
+
+  QAction *toggleOnScreenNavigation = toolBar->addAction(
+                                        QgsApplication::getThemeIcon( QStringLiteral( "mAction3DNavigation.svg" ) ),
+                                        tr( "Toggle On-Screen Navigation" ) );
+
+  toggleOnScreenNavigation->setCheckable( true );
+  toggleOnScreenNavigation->setChecked(
+    setting.value( QStringLiteral( "/3D/navigationWidget/visibility" ), true, QgsSettings::Gui ).toBool()
+  );
+  QObject::connect( toggleOnScreenNavigation, &QAction::toggled, this, &Qgs3DMapCanvasDockWidget::toggleNavigationWidget );
+
+  toolBar->addSeparator();
+
+  QAction *actionIdentify = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionIdentify.svg" ) ),
+                            tr( "Identify" ), this, &Qgs3DMapCanvasDockWidget::identify );
+  actionIdentify->setCheckable( true );
+
+  QAction *actionMeasurementTool = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionMeasure.svg" ) ),
+                                   tr( "Measurement Line" ), this, &Qgs3DMapCanvasDockWidget::measureLine );
+  actionMeasurementTool->setCheckable( true );
+
+  // Create action group to make the action exclusive
+  QActionGroup *actionGroup = new QActionGroup( this );
+  actionGroup->addAction( actionCameraControl );
+  actionGroup->addAction( actionIdentify );
+  actionGroup->addAction( actionMeasurementTool );
+  actionGroup->setExclusive( true );
+  actionCameraControl->setChecked( true );
+
   QAction *actionAnim = toolBar->addAction( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ),
                         tr( "Animations" ), this, &Qgs3DMapCanvasDockWidget::toggleAnimations );
   actionAnim->setCheckable( true );
+
+  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionSaveMapAsImage.svg" ) ),
+                      tr( "Save as Image…" ), this, &Qgs3DMapCanvasDockWidget::saveAsImage );
+
+  toolBar->addSeparator();
+
+  // Map Theme Menu
+  mMapThemeMenu = new QMenu();
+  connect( mMapThemeMenu, &QMenu::aboutToShow, this, &Qgs3DMapCanvasDockWidget::mapThemeMenuAboutToShow );
+  connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &Qgs3DMapCanvasDockWidget::currentMapThemeRenamed );
+
+  mBtnMapThemes = new QToolButton();
+  mBtnMapThemes->setAutoRaise( true );
+  mBtnMapThemes->setToolTip( tr( "Set View Theme" ) );
+  mBtnMapThemes->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ) );
+  mBtnMapThemes->setPopupMode( QToolButton::InstantPopup );
+  mBtnMapThemes->setMenu( mMapThemeMenu );
+
+  toolBar->addWidget( mBtnMapThemes );
+
+  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ),
+                      tr( "Configure…" ), this, &Qgs3DMapCanvasDockWidget::configure );
+
 
   mCanvas = new Qgs3DMapCanvas( contentsWidget );
   mCanvas->setMinimumSize( QSize( 200, 200 ) );
@@ -61,6 +127,10 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   {
     QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as Image" ), tr( "Successfully saved the 3D map to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
   } );
+
+  mMapToolIdentify = new Qgs3DMapToolIdentify( mCanvas );
+
+  mMapToolMeasureLine = new Qgs3DMapToolMeasureLine( mCanvas );
 
   mLabelPendingJobs = new QLabel( this );
   mProgressPendingJobs = new QProgressBar( this );
@@ -88,7 +158,7 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
 
   setWidget( contentsWidget );
 
-  onTerrainPendingJobsCountChanged();
+  onTotalPendingJobsCountChanged();
 }
 
 void Qgs3DMapCanvasDockWidget::saveAsImage()
@@ -117,13 +187,49 @@ void Qgs3DMapCanvasDockWidget::toggleAnimations()
   }
 }
 
+void Qgs3DMapCanvasDockWidget::cameraControl()
+{
+  QAction *action = qobject_cast<QAction *>( sender() );
+  if ( !action )
+    return;
+
+  mCanvas->setMapTool( nullptr );
+}
+
+void Qgs3DMapCanvasDockWidget::identify()
+{
+  QAction *action = qobject_cast<QAction *>( sender() );
+  if ( !action )
+    return;
+
+  mCanvas->setMapTool( action->isChecked() ? mMapToolIdentify : nullptr );
+}
+
+void Qgs3DMapCanvasDockWidget::measureLine()
+{
+  QAction *action = qobject_cast<QAction *>( sender() );
+  if ( !action )
+    return;
+
+  mCanvas->setMapTool( action->isChecked() ? mMapToolMeasureLine : nullptr );
+}
+
+void Qgs3DMapCanvasDockWidget::toggleNavigationWidget( bool visibility )
+{
+  mCanvas->setOnScreenNavigationVisibility( visibility );
+}
+
 void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
 {
   mCanvas->setMap( map );
 
-  connect( mCanvas->scene(), &Qgs3DMapScene::terrainPendingJobsCountChanged, this, &Qgs3DMapCanvasDockWidget::onTerrainPendingJobsCountChanged );
+  connect( mCanvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, this, &Qgs3DMapCanvasDockWidget::onTotalPendingJobsCountChanged );
 
   mAnimationWidget->setCameraController( mCanvas->scene()->cameraController() );
+  mAnimationWidget->setMap( map );
+
+  // Disable button for switching the map theme if the terrain generator is a mesh
+  mBtnMapThemes->setDisabled( mCanvas->map()->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
 }
 
 void Qgs3DMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )
@@ -143,12 +249,16 @@ void Qgs3DMapCanvasDockWidget::configure()
 {
   QDialog dlg;
   dlg.setWindowTitle( tr( "3D Configuration" ) );
+  dlg.setObjectName( QStringLiteral( "3DConfigurationDialog" ) );
+  dlg.setMinimumSize( 380, 460 );
+  QgsGui::instance()->enableAutoGeometryRestore( &dlg );
 
   Qgs3DMapSettings *map = mCanvas->map();
   Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, mMainCanvas, &dlg );
-  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg );
+  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, &dlg );
   connect( buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
   connect( buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+  connect( buttons, &QDialogButtonBox::helpRequested, w, []() { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#d-map-view" ) ); } );
 
   QVBoxLayout *layout = new QVBoxLayout( &dlg );
   layout->addWidget( w, 1 );
@@ -176,6 +286,9 @@ void Qgs3DMapCanvasDockWidget::configure()
     newCameraPose.setCenterPoint( p );
     mCanvas->cameraController()->setCameraPose( newCameraPose );
   }
+
+  // Disable map theme button if the terrain generator is a mesh
+  mBtnMapThemes->setDisabled( map->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
 }
 
 void Qgs3DMapCanvasDockWidget::onMainCanvasLayersChanged()
@@ -188,11 +301,56 @@ void Qgs3DMapCanvasDockWidget::onMainCanvasColorChanged()
   mCanvas->map()->setBackgroundColor( mMainCanvas->canvasColor() );
 }
 
-void Qgs3DMapCanvasDockWidget::onTerrainPendingJobsCountChanged()
+void Qgs3DMapCanvasDockWidget::onTotalPendingJobsCountChanged()
 {
-  int count = mCanvas->scene() ? mCanvas->scene()->terrainPendingJobsCount() : 0;
+  int count = mCanvas->scene() ? mCanvas->scene()->totalPendingJobsCount() : 0;
   mProgressPendingJobs->setVisible( count );
   mLabelPendingJobs->setVisible( count );
   if ( count )
     mLabelPendingJobs->setText( tr( "Loading %1 tiles" ).arg( count ) );
+}
+
+void Qgs3DMapCanvasDockWidget::mapThemeMenuAboutToShow()
+{
+  qDeleteAll( mMapThemeMenuPresetActions );
+  mMapThemeMenuPresetActions.clear();
+
+  QString currentTheme = mCanvas->map()->terrainMapTheme();
+
+  QAction *actionFollowMain = new QAction( tr( "(none)" ), mMapThemeMenu );
+  actionFollowMain->setCheckable( true );
+  if ( currentTheme.isEmpty() || !QgsProject::instance()->mapThemeCollection()->hasMapTheme( currentTheme ) )
+  {
+    actionFollowMain->setChecked( true );
+  }
+  connect( actionFollowMain, &QAction::triggered, this, [ = ]
+  {
+    mCanvas->map()->setTerrainMapTheme( QString() );
+  } );
+  mMapThemeMenuPresetActions.append( actionFollowMain );
+
+  const auto constMapThemes = QgsProject::instance()->mapThemeCollection()->mapThemes();
+  for ( const QString &grpName : constMapThemes )
+  {
+    QAction *a = new QAction( grpName, mMapThemeMenu );
+    a->setCheckable( true );
+    if ( grpName == currentTheme )
+    {
+      a->setChecked( true );
+    }
+    connect( a, &QAction::triggered, this, [a, this]
+    {
+      mCanvas->map()->setTerrainMapTheme( a->text() );
+    } );
+    mMapThemeMenuPresetActions.append( a );
+  }
+  mMapThemeMenu->addActions( mMapThemeMenuPresetActions );
+}
+
+void Qgs3DMapCanvasDockWidget::currentMapThemeRenamed( const QString &theme, const QString &newTheme )
+{
+  if ( theme == mCanvas->map()->terrainMapTheme() )
+  {
+    mCanvas->map()->setTerrainMapTheme( newTheme );
+  }
 }
