@@ -36,7 +36,8 @@ QgsGeometryCollection::QgsGeometryCollection()
   mWkbType = QgsWkbTypes::GeometryCollection;
 }
 
-QgsGeometryCollection::QgsGeometryCollection( const QgsGeometryCollection &c ): QgsAbstractGeometry( c )
+QgsGeometryCollection::QgsGeometryCollection( const QgsGeometryCollection &c ):
+  QgsAbstractGeometry( c ), mHasCachedValidity( c.mHasCachedValidity ), mValidityFailureReason( c.mValidityFailureReason )
 {
   int nGeoms = c.mGeometries.size();
   mGeometries.resize( nGeoms );
