@@ -97,6 +97,18 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     void clearSelection();
 
     /**
+     * \brief selectFavorites selects favorite symbols
+     * \since QGIS 3.14
+     */
+    void selectFavorites();
+
+    /**
+     * \brief deselectFavorites deselects favorite symbols
+     * \since QGIS 3.14
+     */
+    void deselectFavorites();
+
+    /**
      * Select the symbols belonging to the given tag
      * \param tagName the name of the group to be selected
      */

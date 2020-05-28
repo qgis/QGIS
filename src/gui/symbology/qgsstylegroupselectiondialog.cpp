@@ -34,6 +34,12 @@ QgsStyleGroupSelectionDialog::QgsStyleGroupSelectionDialog( QgsStyle *style, QWi
   QStandardItemModel *model = new QStandardItemModel( groupTree );
   groupTree->setModel( model );
 
+  QStandardItem *favSymbols = new QStandardItem( tr( "Favorites" ) );
+  favSymbols->setData( "favorites", Qt::UserRole + 2 );
+  favSymbols->setEditable( false );
+  setBold( favSymbols );
+  model->appendRow( favSymbols );
+
   QStandardItem *allSymbols = new QStandardItem( tr( "All" ) );
   allSymbols->setData( "all", Qt::UserRole + 2 );
   allSymbols->setEditable( false );
@@ -83,7 +89,6 @@ void QgsStyleGroupSelectionDialog::setBold( QStandardItem *item )
   item->setFont( font );
 }
 
-
 void QgsStyleGroupSelectionDialog::groupTreeSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
   const QModelIndexList selectedItems = selected.indexes();
@@ -94,6 +99,10 @@ void QgsStyleGroupSelectionDialog::groupTreeSelectionChanged( const QItemSelecti
     if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "tagssheader" ) )
     {
       // Ignore: it's the group header
+    }
+    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "favorites" ) )
+    {
+      emit favoritesDeselected();
     }
     else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "all" ) )
     {
@@ -120,6 +129,10 @@ void QgsStyleGroupSelectionDialog::groupTreeSelectionChanged( const QItemSelecti
     {
       // Ignore: it's the group header
     }
+    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "favorites" ) )
+    {
+      emit favoritesSelected();
+    }
     else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "all" ) )
     {
       emit allSelected();
@@ -140,7 +153,6 @@ void QgsStyleGroupSelectionDialog::groupTreeSelectionChanged( const QItemSelecti
   }
 }
 
-
 void QgsStyleGroupSelectionDialog::buildTagTree( QStandardItem *&parent )
 {
   QStringList tags = mStyle->tags();
@@ -155,4 +167,3 @@ void QgsStyleGroupSelectionDialog::buildTagTree( QStandardItem *&parent )
     parent->appendRow( item );
   }
 }
-
