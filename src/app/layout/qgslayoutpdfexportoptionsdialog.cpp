@@ -68,7 +68,8 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
   }
 
   mGeoPdfStructureModel = new QgsGeoPdfLayerTreeModel( QgsProject::instance()->layerTreeRoot(), this );
-  mGeoPdfStructureTree->setModel( mGeoPdfStructureModel );
+  mGeoPdfStructureProxyModel = new QgsGeoPdfLayerFilteredTreeModel( mGeoPdfStructureModel, this );
+  mGeoPdfStructureTree->setModel( mGeoPdfStructureProxyModel );
   mGeoPdfStructureTree->resizeColumnToContents( 0 );
   mGeoPdfStructureTree->header()->show();
   mGeoPdfStructureTree->setSelectionMode( QAbstractItemView::NoSelection );
@@ -78,7 +79,7 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
   {
     const QModelIndex index = mGeoPdfStructureTree->indexAt( point );
     if ( index.isValid() )
-      showContextMenuForGeoPdfStructure( point, index );
+      showContextMenuForGeoPdfStructure( point, mGeoPdfStructureProxyModel->mapToSource( index ) );
   } );
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutPdfExportOptionsDialog::showHelp );
