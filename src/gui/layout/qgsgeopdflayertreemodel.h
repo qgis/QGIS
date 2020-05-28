@@ -61,4 +61,19 @@ class GUI_EXPORT QgsGeoPdfLayerTreeModel : public QgsLayerTreeModel
     QgsVectorLayer *vectorLayer( const QModelIndex &idx ) const;
 };
 
+
+///@cond PRIVATE
+class GUI_EXPORT QgsGeoPdfLayerFilteredTreeModel : public QSortFilterProxyModel
+{
+  public:
+
+    QgsGeoPdfLayerFilteredTreeModel( QgsGeoPdfLayerTreeModel *sourceModel, QObject *parent = nullptr );
+
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+
+  private:
+    QgsGeoPdfLayerTreeModel *mLayerTreeModel = nullptr;
+};
+///@endcond
+
 #endif // QGSGEOPDFLAYERTREEMODEL_H

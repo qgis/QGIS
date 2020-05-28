@@ -28,6 +28,7 @@
 #include "qgsrendercontext.h"
 
 class QgsGeoPdfLayerTreeModel;
+class QgsGeoPdfLayerFilteredTreeModel;
 
 /**
  * \ingroup gui
@@ -105,6 +106,7 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::Qg
 
     bool mGeopdfAvailable = true;
     QgsGeoPdfLayerTreeModel *mGeoPdfStructureModel = nullptr;
+    QgsGeoPdfLayerFilteredTreeModel *mGeoPdfStructureProxyModel = nullptr;
     QMenu *mGeoPdfStructureTreeMenu = nullptr;
 
 };
