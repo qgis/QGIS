@@ -46,7 +46,6 @@ email                : sherman at mrcc.com
 #include "qgsprovidermetadata.h"
 #include "qgsogrdbconnection.h"
 #include "qgsgeopackageproviderconnection.h"
-
 #include "qgis.h"
 
 
@@ -55,6 +54,11 @@ email                : sherman at mrcc.com
 #include <ogr_api.h>
 #include <ogr_srs_api.h>
 #include <cpl_string.h>
+
+// Temporary solution until GDAL Unique suppport is available
+#include "qgssqliteutils.h"
+#include <sqlite3.h>
+// end temporary
 
 #include <limits>
 #include <memory>
@@ -1099,6 +1103,22 @@ void QgsOgrProvider::loadFields()
   mFirstFieldIsFid = !fidColumn.isEmpty() &&
                      fdef.GetFieldIndex( fidColumn ) < 0;
 
+  // This is a temporary solution until GDAL Unique support is available
+  QSet<QString> uniqueFieldNames;
+  if ( mGDALDriverName == QLatin1String( "GPKG" ) )
+  {
+    sqlite3_database_unique_ptr dsPtr;
+    if ( dsPtr.open( mFilePath ) == SQLITE_OK )
+    {
+      QString errMsg;
+      uniqueFieldNames = dsPtr.uniqueFields( mOgrLayer->name(), errMsg );
+      if ( ! errMsg.isEmpty() )
+      {
+        QgsMessageLog::logMessage( tr( "GPKG error searching for unique constraints on fields for table %1" ).arg( QString( mOgrLayer->name() ) ), tr( "OGR" ) );
+      }
+    }
+  }
+
   int createdFields = 0;
   if ( mFirstFieldIsFid )
   {
@@ -1230,6 +1250,13 @@ void QgsOgrProvider::loadFields()
     {
       QgsFieldConstraints constraints;
       constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+      newField.setConstraints( constraints );
+    }
+
+    if ( uniqueFieldNames.contains( OGR_Fld_GetNameRef( fldDef ) ) )
+    {
+      QgsFieldConstraints constraints = newField.constraints();
+      constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
       newField.setConstraints( constraints );
     }
 

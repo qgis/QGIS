@@ -153,6 +153,16 @@ class CORE_EXPORT sqlite3_database_unique_ptr : public std::unique_ptr< sqlite3,
      * \since QGIS 3.6
      */
     int exec( const QString &sql, QString &errorMessage SIP_OUT ) const;
+
+    /**
+     * Returns a list of field names for \a tableName having a UNIQUE constraint,
+     * fields that are part of a UNIQUE constraint that spans over multiple fields
+     * are not returned.
+     * \note the implementation is the same of GDAL but the test coverage is much
+     *       better in GDAL.
+     * \since QGIS 3.14
+     */
+    QSet<QString> uniqueFields( const QString &tableName, QString &errorMessage );
 };
 
 /**
