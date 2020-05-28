@@ -250,6 +250,7 @@ void QgsPgTableModel::setSql( const QModelIndex &index, const QString &sql )
   QModelIndex schemaSibling = index.sibling( index.row(), DbtmSchema );
   QModelIndex tableSibling = index.sibling( index.row(), DbtmTable );
   QModelIndex geomSibling = index.sibling( index.row(), DbtmGeomCol );
+  QModelIndex geomTypeSibling = index.sibling( index.row(), DbtmType );
 
   if ( !schemaSibling.isValid() || !tableSibling.isValid() || !geomSibling.isValid() )
   {
@@ -259,6 +260,7 @@ void QgsPgTableModel::setSql( const QModelIndex &index, const QString &sql )
   QString schemaName = itemFromIndex( schemaSibling )->text();
   QString tableName = itemFromIndex( tableSibling )->text();
   QString geomName = itemFromIndex( geomSibling )->text();
+  QString geomType = itemFromIndex( geomTypeSibling )->text();
 
   QList<QStandardItem *> schemaItems = findItems( schemaName, Qt::MatchExactly, DbtmSchema );
   if ( schemaItems.empty() )
@@ -289,7 +291,15 @@ void QgsPgTableModel::setSql( const QModelIndex &index, const QString &sql )
       continue;
     }
 
-    if ( itemFromIndex( currentTableIndex )->text() == tableName && itemFromIndex( currentGeomIndex )->text() == geomName )
+    QModelIndex currentGeomType = currentChildIndex.sibling( i, DbtmType );
+    if ( !currentGeomType.isValid() )
+    {
+      continue;
+    }
+
+    if ( itemFromIndex( currentTableIndex )->text() == tableName
+         && itemFromIndex( currentGeomIndex )->text() == geomName
+         && itemFromIndex( currentGeomType )->text() == geomType )
     {
       QModelIndex sqlIndex = currentChildIndex.sibling( i, DbtmSql );
       if ( sqlIndex.isValid() )
