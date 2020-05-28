@@ -77,6 +77,7 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         cls._load_test_table('public', 'raster_3035_tiled_composite_pk')
         cls._load_test_table('public', 'raster_3035_untiled_multiple_rows')
         cls._load_test_table('idro', 'cosmo_i5_snow', 'bug_34823_pg_raster')
+        cls._load_test_table('public', 'int16_regression_36689', 'bug_36689_pg_raster')
 
         # Fix timing issues in backend
         # time.sleep(1)
