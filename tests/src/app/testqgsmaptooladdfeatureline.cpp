@@ -30,8 +30,6 @@
 #include "qgsmapmouseevent.h"
 #include "testqgsmaptoolutils.h"
 
-#include <QDebug>
-
 bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )
 {
   if ( g1.isNull() && g2.isNull() )
