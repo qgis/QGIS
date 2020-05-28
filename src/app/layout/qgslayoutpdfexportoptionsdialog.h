@@ -38,9 +38,14 @@ class QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::QgsPdfExportO
     /**
      * Constructor for QgsLayoutPdfExportOptionsDialog
      * \param parent parent widget
+     * \param allowGeoPdfExport set to FALSE if geoPdf export is blocked
+     * \param geoPdfReason set to a descriptive translated string explaining why geopdf export is not available if applicable
      * \param flags window flags
      */
-    QgsLayoutPdfExportOptionsDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsLayoutPdfExportOptionsDialog( QWidget *parent = nullptr,
+                                     bool allowGeoPdfExport = true,
+                                     const QString &geoPdfReason = QString(),
+                                     Qt::WindowFlags flags = nullptr );
 
     void setTextRenderFormat( QgsRenderContext::TextRenderFormat format );
     QgsRenderContext::TextRenderFormat textRenderFormat() const;
