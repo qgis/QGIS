@@ -303,6 +303,8 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
 
     bool mCumulativeTemporalRange = false;
 
+    QgsTemporalNavigationObject( const QgsTemporalNavigationObject & ) = delete;
+    QgsTemporalNavigationObject &operator= ( const QgsTemporalNavigationObject & ) = delete;
 };
 
 #endif // QGSTEMPORALNAVIGATIONOBJECT_H
