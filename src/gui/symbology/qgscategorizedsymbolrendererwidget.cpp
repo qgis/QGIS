@@ -976,7 +976,7 @@ QList<QgsSymbol *> QgsCategorizedSymbolRendererWidget::selectedSymbols()
   QItemSelectionModel *m = viewCategories->selectionModel();
   QModelIndexList selectedIndexes = m->selectedRows( 1 );
 
-  if ( m && !selectedIndexes.isEmpty() )
+  if ( !selectedIndexes.isEmpty() )
   {
     const QgsCategoryList &categories = mRenderer->categories();
     QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();
@@ -1000,7 +1000,7 @@ QgsCategoryList QgsCategorizedSymbolRendererWidget::selectedCategoryList()
   QItemSelectionModel *m = viewCategories->selectionModel();
   QModelIndexList selectedIndexes = m->selectedRows( 1 );
 
-  if ( m && !selectedIndexes.isEmpty() )
+  if ( !selectedIndexes.isEmpty() )
   {
     QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();
     for ( ; indexIt != selectedIndexes.constEnd(); ++indexIt )
@@ -1151,7 +1151,7 @@ void QgsCategorizedSymbolRendererWidget::applyChangeToSymbol()
   QItemSelectionModel *m = viewCategories->selectionModel();
   QModelIndexList i = m->selectedRows();
 
-  if ( m && !i.isEmpty() )
+  if ( !i.isEmpty() )
   {
     QList<int> selectedCats = selectedCategories();
 
