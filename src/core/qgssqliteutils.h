@@ -209,8 +209,9 @@ class CORE_EXPORT QgsSqliteUtils
      * \note the implementation is the same of GDAL but the test coverage is much
      *       better in GDAL.
      * \since QGIS 3.14
+     * \note not available in Python bindings
      */
-    static QSet<QString> uniqueFields( sqlite3 *connection, const QString &tableName, QString &errorMessage );
+    static QSet<QString> uniqueFields( sqlite3 *connection, const QString &tableName, QString &errorMessage ) SIP_SKIP;
 
 };
 
