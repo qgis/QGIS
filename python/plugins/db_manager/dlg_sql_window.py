@@ -653,7 +653,9 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         return sql
 
     def _getExecutableSqlQuery(self):
-        sql = self._getSqlQuery()
+        sql = self._getSqlQuery().strip()
+        if sql.endswith(';'):
+            sql = sql[:-1]
 
         uncommented_sql = check_comments_in_sql(sql)
         return uncommented_sql
