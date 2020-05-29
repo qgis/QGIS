@@ -52,6 +52,21 @@ Returns a string list of SQLite (and spatialite) system tables
 
 .. versionadded:: 3.8
 %End
+
+    static QSet<QString> uniqueFields( sqlite3 *connection, const QString &tableName, QString &errorMessage );
+%Docstring
+Returns a list of field names for ``connection`` and ``tableName`` having a UNIQUE constraint,
+fields that are part of a UNIQUE constraint that spans over multiple fields
+are not returned.
+
+.. note::
+
+   the implementation is the same of GDAL but the test coverage is much
+   better in GDAL.
+
+.. versionadded:: 3.14
+%End
+
 };
 
 /************************************************************************

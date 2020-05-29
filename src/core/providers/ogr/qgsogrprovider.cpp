@@ -1105,13 +1105,15 @@ void QgsOgrProvider::loadFields()
 
   // This is a temporary solution until GDAL Unique support is available
   QSet<QString> uniqueFieldNames;
+
+
   if ( mGDALDriverName == QLatin1String( "GPKG" ) )
   {
     sqlite3_database_unique_ptr dsPtr;
-    if ( dsPtr.open( mFilePath ) == SQLITE_OK )
+    if ( dsPtr.open_v2( mFilePath, SQLITE_OPEN_READONLY, nullptr ) == SQLITE_OK )
     {
       QString errMsg;
-      uniqueFieldNames = dsPtr.uniqueFields( mOgrLayer->name(), errMsg );
+      uniqueFieldNames = QgsSqliteUtils::uniqueFields( dsPtr.get(), mOgrLayer->name(), errMsg );
       if ( ! errMsg.isEmpty() )
       {
         QgsMessageLog::logMessage( tr( "GPKG error searching for unique constraints on fields for table %1" ).arg( QString( mOgrLayer->name() ) ), tr( "OGR" ) );

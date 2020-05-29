@@ -913,15 +913,11 @@ void QgsSpatiaLiteProvider::fetchConstraints()
     // Use the same logic implemented in GDAL for GPKG
     QSet<QString> uniqueFieldNames;
     {
-      sqlite3_database_unique_ptr dsPtr;
-      if ( dsPtr.open( mSqlitePath ) == SQLITE_OK )
+      QString errMsg;
+      uniqueFieldNames = QgsSqliteUtils::uniqueFields( mSqliteHandle, mTableName, errMsg );
+      if ( ! errMsg.isEmpty() )
       {
-        QString errMsg;
-        uniqueFieldNames = dsPtr.uniqueFields( mTableName, errMsg );
-        if ( ! errMsg.isEmpty() )
-        {
-          QgsMessageLog::logMessage( tr( "Error searching for unique constraints on fields for table %1" ).arg( mTableName ), tr( "spatialite" ) );
-        }
+        QgsMessageLog::logMessage( tr( "Error searching for unique constraints on fields for table %1" ).arg( mTableName ), tr( "spatialite" ) );
       }
     }
 

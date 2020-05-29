@@ -120,23 +120,23 @@ int sqlite3_database_unique_ptr::exec( const QString &sql, QString &errorMessage
   return ret;
 }
 
-QSet<QString> sqlite3_database_unique_ptr::uniqueFields( const QString &tableName, QString &errorMessage )
+QSet<QString> QgsSqliteUtils::uniqueFields( sqlite3 *connection, const QString &tableName, QString &errorMessage )
 {
   QSet<QString> uniqueFieldsResults;
   char *zErrMsg = 0;
   std::vector<std::string> rows;
-  QString sql = sqlite3_mprintf( "select sql from sqlite_master where type='table' and name=%q", QgsSqliteUtils::quotedIdentifier( tableName ).toStdString().c_str() );
+  QString sql = sqlite3_mprintf( "select sql from sqlite_master where type='table' and name=%q", quotedIdentifier( tableName ).toStdString().c_str() );
   auto cb = [ ](
               void *data /* Data provided in the 4th argument of sqlite3_exec() */,
               int /* The number of columns in row */,
               char **argv /* An array of strings representing fields in the row */,
-              char **/* An array of strings representing column names */ ) -> int
+              char ** /* An array of strings representing column names */ ) -> int
   {
     static_cast<std::vector<std::string>*>( data )->push_back( argv[0] );
     return 0;
   };
 
-  int rc = sqlite3_exec( get(), sql.toUtf8(), cb, ( void * )&rows, &zErrMsg );
+  int rc = sqlite3_exec( connection, sql.toUtf8(), cb, ( void * )&rows, &zErrMsg );
   if ( rc != SQLITE_OK )
   {
     errorMessage = zErrMsg;
@@ -172,7 +172,7 @@ QSet<QString> sqlite3_database_unique_ptr::uniqueFields( const QString &tableNam
   // Search indexes:
   sql = sqlite3_mprintf( "SELECT sql FROM sqlite_master WHERE type='index' AND"
                          " tbl_name='%q' AND sql LIKE 'CREATE UNIQUE INDEX%%'" );
-  rc = sqlite3_exec( get(), sql.toUtf8(), cb, ( void * )&rows, &zErrMsg );
+  rc = sqlite3_exec( connection, sql.toUtf8(), cb, ( void * )&rows, &zErrMsg );
   if ( rc != SQLITE_OK )
   {
     errorMessage = zErrMsg;
