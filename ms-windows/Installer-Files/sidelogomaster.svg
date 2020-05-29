@@ -18,8 +18,8 @@
    inkscape:version="0.91 r13725"
    sodipodi:docname="sidelogomaster.svg"
    inkscape:export-filename="C:\Users\joao-pc\Desktop\sidelogomaster.png"
-   inkscape:export-xdpi="278"
-   inkscape:export-ydpi="278">
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs4">
     <linearGradient
@@ -116,8 +116,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="117.3921"
-     inkscape:cy="118.1448"
+     inkscape:cx="211.30918"
+     inkscape:cy="138.54568"
      inkscape:document-units="px"
      inkscape:current-layer="layer3"
      showgrid="false"
@@ -136,7 +136,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -214,21 +214,21 @@
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan3358"
-         x="83.674377"
+         x="83.342346"
          y="202.91501"
          style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:20px;font-family:Trueno;-inkscape-font-specification:'Trueno Semi-Bold';text-align:center;text-anchor:middle;fill:#609930;fill-opacity:1;stroke:none;stroke-opacity:1">A free and </tspan><tspan
          sodipodi:role="line"
-         x="83.674377"
+         x="83.342346"
          y="227.91501"
-         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:20px;font-family:Trueno;-inkscape-font-specification:'Trueno Semi-Bold';text-align:center;text-anchor:middle;fill:#609930;fill-opacity:1;stroke:none;stroke-opacity:1"
-         id="tspan3368">Open </tspan><tspan
-         sodipodi:role="line"
-         x="83.674377"
-         y="252.91501"
          id="tspan3360"
-         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:20px;font-family:Trueno;-inkscape-font-specification:'Trueno Semi-Bold';text-align:center;text-anchor:middle;fill:#609930;fill-opacity:1;stroke:none;stroke-opacity:1">Source </tspan><tspan
+         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:20px;font-family:Trueno;-inkscape-font-specification:'Trueno Semi-Bold';text-align:center;text-anchor:middle;fill:#609930;fill-opacity:1;stroke:none;stroke-opacity:1">Open Source </tspan><tspan
          sodipodi:role="line"
-         x="83.674377"
+         x="83.342346"
+         y="252.91501"
+         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:20px;font-family:Trueno;-inkscape-font-specification:'Trueno Semi-Bold';text-align:center;text-anchor:middle;fill:#609930;fill-opacity:1;stroke:none;stroke-opacity:1"
+         id="tspan4167">Geographic </tspan><tspan
+         sodipodi:role="line"
+         x="83.342346"
          y="277.91501"
          style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:20px;font-family:Trueno;-inkscape-font-specification:'Trueno Semi-Bold';text-align:center;text-anchor:middle;fill:#609930;fill-opacity:1;stroke:none;stroke-opacity:1"
          id="tspan3366">Information </tspan><tspan
