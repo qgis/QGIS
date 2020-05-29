@@ -602,6 +602,22 @@ QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt *stmt, 
       }
       return result;
     }
+    else if ( type == QVariant::DateTime )
+    {
+      // first use the GDAL date format
+      QDateTime dt = QDateTime::fromString( txt, QStringLiteral( "yyyy-MM-ddThh:mm:ss" ) );
+      if ( !dt.isValid() )
+      {
+        // if that fails, try SQLite's default date format
+        dt = QDateTime::fromString( txt, QStringLiteral( "yyyy-MM-dd hh:mm:ss" ) );
+      }
+
+      return dt;
+    }
+    else if ( type == QVariant::Date )
+    {
+      return QDate::fromString( txt, QStringLiteral( "yyyy-MM-dd" ) );
+    }
     return txt;
   }
 
