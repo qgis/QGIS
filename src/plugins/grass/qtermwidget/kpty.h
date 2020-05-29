@@ -188,6 +188,7 @@ protected:
      * @internal
      */
     KPtyPrivate * const d_ptr;
+
 };
 
 #endif
