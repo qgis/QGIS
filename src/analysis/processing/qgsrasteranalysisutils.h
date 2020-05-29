@@ -91,6 +91,56 @@ namespace QgsRasterAnalysisUtils
       std::function<void( const std::vector< std::unique_ptr< QgsRasterBlock > > &, bool &, bool &, int, int, bool )> &applyLogicFunc,
       qgssize &noDataCount, qgssize &trueCount, qgssize &falseCount );
 
+  /**
+   * Returns the arithmetic mean from a vector of cell values
+   */
+  double meanFromCellValues( std::vector<double> cellValues, int stackSize );
+
+  /**
+   * Returns the median from a vector of cell values
+   */
+  double medianFromCellValues( std::vector<double> cellValues, int stackSize );
+
+  /**
+   * Returns the standard deviation from a vector of cell values
+   */
+  double stddevFromCellValues( std::vector<double> cellValues, int stackSize );
+
+  /**
+   * Returns the variance from a vector of cell values
+   */
+  double varianceFromCellValues( std::vector<double> cellValues, int stackSize );
+
+  /**
+   * Returns the maximum value from a vector of cell values
+   */
+  double maximumFromCellValues( std::vector<double> cellValues );
+
+  /**
+   * Returns the minimum value from a vector of cell values
+   */
+  double minimumFromCellValues( std::vector<double> cellValues );
+
+  /**
+   * Returns the majority value from a vector of cell values
+   */
+  double majorityFromCellValues( std::vector<double> cellValues, const double noDataValue, int stackSize );
+
+  /**
+   * Returns the minority value from a vector of cell values
+   */
+  double minorityFromCellValues( std::vector<double> cellValues, const double noDataValue, int stackSize );
+
+  /**
+   * Returns the range from a vector of cell values
+   */
+  double rangeFromCellValues( std::vector<double> cellValues );
+
+  /**
+   * Returns the variety from a vector of cell values
+   */
+  double varietyFromCellValues( std::vector<double> cellValues );
+
 }
 
 
