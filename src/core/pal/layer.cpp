@@ -203,7 +203,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       geos::unique_ptr geom = QgsGeos::asGeos( *it );
 
       // ignore invalid geometries (e.g. polygons with self-intersecting rings)
-      if ( GEOSisValid_r( geosctxt, geom.get() ) != 1 ) // 0=invalid, 1=valid, 2=exception
+      if ( !geom.get() || GEOSisValid_r( geosctxt, geom.get() ) != 1 ) // 0=invalid, 1=valid, 2=exception
       {
         continue;
       }
