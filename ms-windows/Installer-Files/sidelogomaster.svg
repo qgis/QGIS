@@ -17,7 +17,7 @@
    version="1.1"
    inkscape:version="0.91 r13725"
    sodipodi:docname="sidelogomaster.svg"
-   inkscape:export-filename="C:\Users\joao-pc\Desktop\sidelogomaster.png"
+   inkscape:export-filename="C:\Users\joao-pc\Desktop\sidelogomaster1.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -88,7 +88,8 @@
        y1="174.12656"
        x2="84.166626"
        y2="134.22552"
-       gradientUnits="userSpaceOnUse" />
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(2.0700781e-6,92.42856)" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient4180"
@@ -107,6 +108,16 @@
        x2="90"
        y2="738.36212"
        gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#SVGID_2_"
+       id="linearGradient4175"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.1829319,0,0,-1.1829319,-349.12188,-54.676766)"
+       x1="365.46191"
+       y1="-221.14549"
+       x2="363.59229"
+       y2="-98.226997" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -122,8 +133,8 @@
      inkscape:current-layer="layer3"
      showgrid="false"
      units="px"
-     inkscape:window-width="1536"
-     inkscape:window-height="801"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
@@ -136,7 +147,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -163,31 +174,31 @@
      id="layer2"
      inkscape:label="logo">
     <polygon
-       points="71.697,54.625 52.613,54.625 52.613,72.746 68.613,88.548 68.613,69.625 86.891,69.625 "
+       points="52.613,72.746 68.613,88.548 68.613,69.625 86.891,69.625 71.697,54.625 52.613,54.625 "
        id="polygon3"
        style="fill:#ee7913"
-       transform="matrix(0.8106562,0,0,0.8106562,30.172722,12.429252)" />
+       transform="matrix(1.1829319,0,0,1.1829319,6.3721996,54.809134)" />
     <polygon
-       points="76.613,77.625 76.613,96.033 107.143,126.625 126.613,126.625 126.613,109.057 94.488,77.625 "
+       points="107.143,126.625 126.613,126.625 126.613,109.057 94.488,77.625 76.613,77.625 76.613,96.033 "
        id="polygon10"
        style="fill:url(#SVGID_1_)"
-       transform="matrix(0.8106562,0,0,0.8106562,30.172722,12.429252)" />
+       transform="matrix(1.1829319,0,0,1.1829319,6.3721996,54.809134)" />
     <polygon
-       points="86.891,69.625 68.613,69.625 68.613,88.548 76.613,96.033 76.613,77.625 94.488,77.625 "
+       points="68.613,88.548 76.613,96.033 76.613,77.625 94.488,77.625 86.891,69.625 68.613,69.625 "
        id="polygon12"
        style="fill:#f0e64a"
-       transform="matrix(0.8106562,0,0,0.8106562,30.172722,12.429252)" />
+       transform="matrix(1.1829319,0,0,1.1829319,6.3721996,54.809134)" />
     <path
-       d="m 86.045574,94.753 c -0.94441,0.19618 -1.43405,0.12728 -3.79792,0.12728 -16.915153,0 -31.301058,-13.90924 -31.301058,-31.944707 0,-18.03549 14.227828,-31.637488 31.301058,-31.637488 17.07322,0 30.669556,13.602808 30.669556,31.637488 0,2.93376 -0.36559,5.75483 -1.04087,8.42919 l 15.65619,15.654577 c 4.03627,-7.07379 6.29475,-15.296267 6.29475,-24.203757 0,-27.796585 -22.18198,-48.609377 -51.894976,-48.609377 -29.577604,-7.43e-4 -51.759582,20.674979 -51.759582,48.608567 0,28.068967 22.181978,49.156567 51.758772,49.156567 7.63396,0 13.02644,-1.19085 18.679146,-3.04888 L 86.045574,94.753 Z"
+       d="m 87.903403,174.93821 c -1.378103,0.28627 -2.0926,0.18573 -5.542026,0.18573 -24.683059,0 -45.675368,-20.29674 -45.675368,-46.61459 0,-26.31788 20.761639,-46.1663 45.675368,-46.1663 24.913713,0 44.753863,19.8496 44.753863,46.1663 0,4.28102 -0.53347,8.39761 -1.51886,12.30011 l 22.84594,22.84358 c 5.88984,-10.32227 9.18548,-22.32072 9.18548,-35.31878 0,-40.56155 -32.36856,-70.932146 -75.726593,-70.932146 -43.160453,-0.0011 -75.5290071,30.169496 -75.5290071,70.930966 0,40.959 32.3685541,71.73061 75.5278311,71.73061 11.139683,0 19.008539,-1.73773 27.257119,-4.44902 L 87.903403,174.93821 Z"
        id="path19"
        inkscape:connector-curvature="0"
-       style="fill:url(#SVGID_2_)" />
+       style="fill:url(#linearGradient4175)" />
     <polygon
        enable-background="new    "
        points="53.083,54.625 71.697,54.625 126.613,109.057 126.613,126.625 "
        id="polygon21"
        style="opacity:0.15;fill:#ffffff"
-       transform="matrix(0.8106562,0,0,0.8106562,30.172722,12.429252)" />
+       transform="matrix(1.1829319,0,0,1.1829319,6.3721996,54.809134)" />
   </g>
   <g
      inkscape:groupmode="layer"
@@ -197,45 +208,13 @@
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:url(#linearGradient4178);fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="82.08828"
-       y="168.00357"
+       y="260.43216"
        id="text3350"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan3352"
          x="82.08828"
-         y="168.00357"
+         y="260.43216"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:50px;font-family:Trueno;-inkscape-font-specification:'Trueno Bold';fill:url(#linearGradient4178);fill-opacity:1">QGIS</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#609930;fill-opacity:1;stroke:#589632;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="80.940002"
-       y="202.91501"
-       id="text3356"
-       sodipodi:linespacing="125%"><tspan
-         sodipodi:role="line"
-         id="tspan3358"
-         x="83.342346"
-         y="202.91501"
-         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:20px;font-family:Trueno;-inkscape-font-specification:'Trueno Semi-Bold';text-align:center;text-anchor:middle;fill:#609930;fill-opacity:1;stroke:none;stroke-opacity:1">A free and </tspan><tspan
-         sodipodi:role="line"
-         x="83.342346"
-         y="227.91501"
-         id="tspan3360"
-         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:20px;font-family:Trueno;-inkscape-font-specification:'Trueno Semi-Bold';text-align:center;text-anchor:middle;fill:#609930;fill-opacity:1;stroke:none;stroke-opacity:1">Open Source </tspan><tspan
-         sodipodi:role="line"
-         x="83.342346"
-         y="252.91501"
-         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:20px;font-family:Trueno;-inkscape-font-specification:'Trueno Semi-Bold';text-align:center;text-anchor:middle;fill:#609930;fill-opacity:1;stroke:none;stroke-opacity:1"
-         id="tspan4167">Geographic </tspan><tspan
-         sodipodi:role="line"
-         x="83.342346"
-         y="277.91501"
-         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:20px;font-family:Trueno;-inkscape-font-specification:'Trueno Semi-Bold';text-align:center;text-anchor:middle;fill:#609930;fill-opacity:1;stroke:none;stroke-opacity:1"
-         id="tspan3366">Information </tspan><tspan
-         sodipodi:role="line"
-         x="80.940002"
-         y="302.91501"
-         style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:20px;font-family:Trueno;-inkscape-font-specification:'Trueno Semi-Bold';text-align:center;text-anchor:middle;fill:#609930;fill-opacity:1;stroke:none;stroke-opacity:1"
-         id="tspan3370">System</tspan></text>
   </g>
 </svg>
