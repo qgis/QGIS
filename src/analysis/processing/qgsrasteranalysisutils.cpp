@@ -21,6 +21,8 @@
 #include "qgsgeos.h"
 #include "qgsprocessingparameters.h"
 #include <map>
+#include <unordered_map>
+#include <unordered_set>
 #include <cmath>
 ///@cond PRIVATE
 
@@ -284,6 +286,167 @@ void QgsRasterAnalysisUtils::applyRasterLogicOperator( const std::vector< QgsRas
   }
   destinationRaster->setEditable( false );
 }
+
+
+double QgsRasterAnalysisUtils::meanFromCellValues( std::vector<double> cellValues, int stackSize )
+{
+  double sum = std::accumulate( cellValues.begin(), cellValues.end(), 0.0 );
+  double mean = sum / static_cast<double>( stackSize );
+  return mean;
+}
+
+double QgsRasterAnalysisUtils::medianFromCellValues( std::vector<double> cellValues, int stackSize )
+{
+  std::sort( cellValues.begin(), cellValues.end() );
+  int medianElementIdx = stackSize / 2;
+  if ( stackSize % 2 == 0 )
+  {
+    return ( cellValues[medianElementIdx] + cellValues[medianElementIdx + 1] ) / 2.0;
+  }
+  else
+  {
+    return cellValues[medianElementIdx];
+  }
+}
+
+
+double QgsRasterAnalysisUtils::stddevFromCellValues( std::vector<double> cellValues, int stackSize )
+{
+  double mean = meanFromCellValues( cellValues, stackSize );
+  double accum = 0.0;
+  for ( int i = 0; i < stackSize; i++ )
+  {
+    accum += std::pow( ( cellValues.at( i ) - mean ), 2.0 );
+  }
+  double stddev = std::sqrt( accum / static_cast<double>( stackSize ) );
+  return stddev;
+}
+
+double QgsRasterAnalysisUtils::varianceFromCellValues( std::vector<double> cellValues, int stackSize )
+{
+  double variance = std::pow( stddevFromCellValues( cellValues, stackSize ), 2.0 );
+  return variance;
+}
+
+double QgsRasterAnalysisUtils::maximumFromCellValues( std::vector<double> cellValues )
+{
+  return *std::max_element( cellValues.begin(), cellValues.end() );
+}
+
+double QgsRasterAnalysisUtils::minimumFromCellValues( std::vector<double> cellValues )
+{
+  return *std::min_element( cellValues.begin(), cellValues.end() );
+}
+
+double QgsRasterAnalysisUtils::majorityFromCellValues( std::vector<double> cellValues, const double noDataValue, int stackSize )
+{
+  if ( stackSize == 1 )
+  {
+    //output will be same as input if only one layer is entered
+    return cellValues[0];
+  }
+  else if ( stackSize == 2 )
+  {
+    //if only two layers are input, return NoData if values are not the same (eg. no Majority could  be found)
+    return ( qgsDoubleNear( cellValues[0], cellValues[1] ) ) ?  cellValues[0] : noDataValue;
+  }
+  else if ( std::adjacent_find( cellValues.begin(), cellValues.end(), std::not_equal_to<double>() ) == cellValues.end() )
+  {
+    //check if all values in cellValues are equal
+    //output will be same as input if all cellValues of the stack are the same
+    return cellValues[0];
+  }
+  else
+  {
+    //search for majority using hash map [O(n)]
+    std::unordered_map<double, int> map;
+
+    for ( int i = 0; i < stackSize; i++ )
+    {
+      map[cellValues[i]]++;
+    }
+
+    int maxCount = 0;
+    bool multipleMajorities = false;
+    double result = noDataValue;
+    for ( auto pair : map )
+    {
+      if ( maxCount < pair.second )
+      {
+        result = pair.first;
+        maxCount = pair.second;
+        multipleMajorities = false;
+      }
+      else if ( maxCount == pair.second )
+      {
+        multipleMajorities = true;
+      }
+    }
+    return multipleMajorities ? noDataValue : result;
+  }
+}
+
+double QgsRasterAnalysisUtils::minorityFromCellValues( std::vector<double> cellValues, const double noDataValue, int stackSize )
+{
+  if ( stackSize == 1 )
+  {
+    //output will be same as input if only one layer is entered
+    return cellValues[0];
+  }
+  else if ( stackSize == 2 )
+  {
+    //if only two layers are input, return NoData if values are not the same (eg. no minority could  be found)
+    return ( qgsDoubleNear( cellValues[0], cellValues[1] ) ) ?  cellValues[0] : noDataValue;
+  }
+  else if ( std::adjacent_find( cellValues.begin(), cellValues.end(), std::not_equal_to<double>() ) == cellValues.end() )
+  {
+    //check if all values in cellValues are equal
+    //output will be same as input if all cellValues of the stack are the same
+    return cellValues[0];
+  }
+  else
+  {
+    //search for minority using hash map [O(n)]
+    std::unordered_map<double, int> map;
+
+    for ( int i = 0; i < stackSize; i++ )
+    {
+      map[cellValues[i]]++;
+    }
+
+    int minCount = stackSize;
+    bool multipleMinorities = false;
+    double result = noDataValue; //result will stay NoData if no minority value exists
+    for ( auto pair : map )
+    {
+      if ( minCount > pair.second )
+      {
+        result = pair.first;
+        minCount = pair.second;
+        multipleMinorities = false;
+      }
+      else if ( minCount == pair.second )
+      {
+        multipleMinorities = true;
+      }
+    }
+    return multipleMinorities ? noDataValue : result;
+  }
+}
+
+double QgsRasterAnalysisUtils::rangeFromCellValues( std::vector<double> cellValues )
+{
+  double max = *std::max_element( cellValues.begin(), cellValues.end() );
+  double min = *std::min_element( cellValues.begin(), cellValues.end() );
+  return max - min;
+}
+
+double QgsRasterAnalysisUtils::varietyFromCellValues( std::vector<double> cellValues )
+{
+  std::unordered_set<double> uniqueValues( cellValues.begin(), cellValues.end() );
+  return uniqueValues.size();
+}
+
 
 ///@endcond PRIVATE
 
