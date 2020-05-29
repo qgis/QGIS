@@ -2397,8 +2397,8 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         # This fails because the "geom" field and "pk" fields are ambiguous
         # There is no easy fix: all duplicated fields should be explicitly aliased
         # and the query internally rewritten
-        #feature = next(vl.getFeatures())
-        #self.assertTrue(vl.isValid())
+        # feature = next(vl.getFeatures())
+        # self.assertTrue(vl.isValid())
 
 
 if __name__ == '__main__':
