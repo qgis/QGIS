@@ -21,6 +21,7 @@
 #include "qgspropertyoverridebutton.h"
 #include "qgsauxiliarystorage.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 
 
 QgsLabelSettingsWidgetBase::QgsLabelSettingsWidgetBase( QWidget *parent, QgsVectorLayer *vl )
@@ -162,9 +163,13 @@ QgsLabelSettingsWidgetDialog::QgsLabelSettingsWidgetDialog( QgsLabelSettingsWidg
   setWindowTitle( widget->windowTitle() );
   QVBoxLayout *vLayout = new QVBoxLayout();
   vLayout->addWidget( widget );
-  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
+  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, Qt::Horizontal );
   connect( bbox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( bbox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( bbox, &QDialogButtonBox::helpRequested, this, [ = ]
+  {
+    QgsHelp::openHelp( QStringLiteral( "style_library/label_settings.html#obstacles" ) );
+  } );
   vLayout->addWidget( bbox );
   setLayout( vLayout );
 
