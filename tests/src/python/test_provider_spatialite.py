@@ -306,12 +306,6 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
     def treat_time_as_string(self):
         return True
 
-    def treat_datetime_as_string(self):
-        return True
-
-    def treat_date_as_string(self):
-        return True
-
     def getEditableLayer(self):
         return self.getSource()
 
