@@ -1149,7 +1149,11 @@ bool QgsPostgresProvider::loadFields()
     if ( fields.contains( fieldName ) )
     {
       QgsMessageLog::logMessage( tr( "Duplicate field %1 found\n" ).arg( fieldName ), tr( "PostGIS" ) );
-      return false;
+      // In case of read-only query layers we can safely ignore the issue
+      if ( ! mIsQuery )
+      {
+        return false;
+      }
     }
 
     fields << fieldName;
