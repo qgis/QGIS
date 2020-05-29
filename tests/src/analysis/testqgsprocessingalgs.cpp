@@ -97,6 +97,8 @@ class TestQgsProcessingAlgs: public QObject
 
     void rasterLogicOp_data();
     void rasterLogicOp();
+    void cellStatistics_data();
+    void cellStatistics();
     void roundRasterValues_data();
     void roundRasterValues();
 
@@ -1911,6 +1913,202 @@ void TestQgsProcessingAlgs::rasterLogicOp()
     for ( int col = 0; col < nCols; col++ )
     {
       QCOMPARE( res2[row * nCols + col], expectedAnd[row * nCols + col] );
+    }
+  }
+}
+
+void TestQgsProcessingAlgs::cellStatistics_data()
+{
+  QTest::addColumn<QStringList>( "inputRasters" );
+  QTest::addColumn<QString>( "referenceLayer" );
+  QTest::addColumn<int>( "statistic" );
+  QTest::addColumn<QString>( "expectedRaster" );
+
+  /*
+   * Testcase 1: sum
+   */
+  QTest::newRow( "testcase_1" )
+      << QStringList( {"/raster/statisticsRas1.asc", "/raster/statisticsRas2.asc", "/raster/statisticsRas3.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1.asc" )
+      << 0
+      << QStringLiteral( "/cellstatistics_sum_result.tif" );
+
+  /*
+   * Testcase 2: mean
+   */
+  QTest::newRow( "testcase_2" )
+      << QStringList( {"/raster/statisticsRas1.asc", "/raster/statisticsRas2.asc", "/raster/statisticsRas3.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1.asc" )
+      << 1
+      << QStringLiteral( "/cellstatistics_mean_result.tif" );
+
+  /*
+   * Testcase 3: median
+   */
+  QTest::newRow( "testcase_3" )
+      << QStringList( {"/raster/statisticsRas1.asc", "/raster/statisticsRas2.asc", "/raster/statisticsRas3.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1.asc" )
+      << 2
+      << QStringLiteral( "/cellstatistics_median_result.tif" );
+
+  /*
+   * Testcase 4: Standard deviation
+   */
+  QTest::newRow( "testcase_4" )
+      << QStringList( {"/raster/statisticsRas1.asc", "/raster/statisticsRas2.asc", "/raster/statisticsRas3.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1.asc" )
+      << 3
+      << QStringLiteral( "/cellstatistics_stddev_result.tif" );
+
+  /*
+   * Testcase 5: Variance
+   */
+  QTest::newRow( "testcase_5" )
+      << QStringList( {"/raster/statisticsRas1.asc", "/raster/statisticsRas2.asc", "/raster/statisticsRas3.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1.asc" )
+      << 4
+      << QStringLiteral( "/cellstatistics_variance_result.tif" );
+
+  /*
+   * Testcase 6: Minimum
+   */
+  QTest::newRow( "testcase_6" )
+      << QStringList( {"/raster/statisticsRas1.asc", "/raster/statisticsRas2.asc", "/raster/statisticsRas3.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1.asc" )
+      << 5
+      << QStringLiteral( "/cellstatistics_min_result.tif" );
+
+  /*
+   * Testcase 7: Maximum
+   */
+  QTest::newRow( "testcase_7" )
+      << QStringList( {"/raster/statisticsRas1.asc", "/raster/statisticsRas2.asc", "/raster/statisticsRas3.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1.asc" )
+      << 6
+      << QStringLiteral( "/cellstatistics_max_result.tif" );
+
+  /*
+   * Testcase 8: Minority
+   */
+  QTest::newRow( "testcase_8" )
+      << QStringList( {"/raster/statisticsRas1.asc", "/raster/statisticsRas2.asc", "/raster/statisticsRas3.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1.asc" )
+      << 7
+      << QStringLiteral( "/cellstatistics_minority_result.tif" );
+
+  /*
+   * Testcase 9: Majority
+   */
+  QTest::newRow( "testcase_9" )
+      << QStringList( {"/raster/statisticsRas1.asc", "/raster/statisticsRas2.asc", "/raster/statisticsRas3.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1.asc" )
+      << 8
+      << QStringLiteral( "/cellstatistics_majority_result.tif" );
+
+  /*
+   * Testcase 10: Range
+   */
+  QTest::newRow( "testcase_10" )
+      << QStringList( {"/raster/statisticsRas1.asc", "/raster/statisticsRas2.asc", "/raster/statisticsRas3.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1.asc" )
+      << 9
+      << QStringLiteral( "/cellstatistics_range_result.tif" );
+
+  /*
+   * Testcase 11: Variety
+   */
+  QTest::newRow( "testcase_11" )
+      << QStringList( {"/raster/statisticsRas1.asc", "/raster/statisticsRas2.asc", "/raster/statisticsRas3.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1.asc" )
+      << 10
+      << QStringLiteral( "/cellstatistics_variety_result.tif" );
+
+}
+
+void TestQgsProcessingAlgs::cellStatistics()
+{
+  QFETCH( QStringList, inputRasters );
+  QFETCH( QString, referenceLayer );
+  QFETCH( int, statistic );
+  QFETCH( QString, expectedRaster );
+
+
+  //prepare input params
+  QgsProject p;
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:cellstatistics" ) ) );
+
+  QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
+
+  QStringList inputDatasetPaths;
+
+  for ( const auto &raster : inputRasters )
+  {
+    inputDatasetPaths << myDataPath + raster;
+  }
+
+  std::unique_ptr<QgsRasterLayer> inputRasterLayer1 = qgis::make_unique< QgsRasterLayer >( myDataPath + inputRasters[0], "inputDataset", "gdal" );
+
+  //set project crs and ellipsoid from input layer
+  p.setCrs( inputRasterLayer1->crs(), true );
+
+  //set project after layer has been added so that transform context/ellipsoid from crs is also set
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( &p );
+
+  QVariantMap parameters;
+
+  parameters.insert( QStringLiteral( "INPUTS" ), inputDatasetPaths );
+  parameters.insert( QStringLiteral( "STATISTIC" ), statistic );
+  parameters.insert( QStringLiteral( "REF_LAYER" ), myDataPath + referenceLayer );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  //prepare expectedRaster
+  std::unique_ptr<QgsRasterLayer> expectedRasterLayer = qgis::make_unique< QgsRasterLayer >( myDataPath + "/control_images/expected_cellStatistics/" + expectedRaster, "expectedDataset", "gdal" );
+  std::unique_ptr< QgsRasterInterface > expectedInterface( expectedRasterLayer->dataProvider()->clone() );
+  QgsRasterIterator expectedIter( expectedInterface.get() );
+  expectedIter.startRasterRead( 1, expectedRasterLayer->width(), expectedRasterLayer->height(), expectedInterface->extent() );
+
+  //run alg...
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  //...and check results with expected datasets
+  std::unique_ptr<QgsRasterLayer> outputRaster = qgis::make_unique< QgsRasterLayer >( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+  std::unique_ptr< QgsRasterInterface > outputInterface( outputRaster->dataProvider()->clone() );
+
+  QCOMPARE( outputRaster->width(), expectedRasterLayer->width() );
+  QCOMPARE( outputRaster->height(), expectedRasterLayer->height() );
+
+  QgsRasterIterator outputIter( outputInterface.get() );
+  outputIter.startRasterRead( 1, outputRaster->width(), outputRaster->height(), outputInterface->extent() );
+  int outputIterLeft = 0;
+  int outputIterTop = 0;
+  int outputIterCols = 0;
+  int outputIterRows = 0;
+  int expectedIterLeft = 0;
+  int expectedIterTop = 0;
+  int expectedIterCols = 0;
+  int expectedIterRows = 0;
+
+  std::unique_ptr< QgsRasterBlock > outputRasterBlock;
+  std::unique_ptr< QgsRasterBlock > expectedRasterBlock;
+
+  while ( outputIter.readNextRasterPart( 1, outputIterCols, outputIterRows, outputRasterBlock, outputIterLeft, outputIterTop ) &&
+          expectedIter.readNextRasterPart( 1, expectedIterCols, expectedIterRows, expectedRasterBlock, expectedIterLeft, expectedIterTop ) )
+  {
+    for ( int row = 0; row < expectedIterRows; row++ )
+    {
+      for ( int column = 0; column < expectedIterCols; column++ )
+      {
+        double expectedValue = expectedRasterBlock->value( row, column );
+        double outputValue = outputRasterBlock->value( row, column );
+        QCOMPARE( outputValue, expectedValue );
+      }
     }
   }
 }
