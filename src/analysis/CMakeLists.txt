@@ -36,6 +36,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmbuffer.cpp
   processing/qgsalgorithmcalculateoverlaps.cpp
   processing/qgsalgorithmcategorizeusingstyle.cpp
+  processing/qgsalgorithmcellstatistics.cpp
   processing/qgsalgorithmcentroid.cpp
   processing/qgsalgorithmclip.cpp
   processing/qgsalgorithmconditionalbranch.cpp
