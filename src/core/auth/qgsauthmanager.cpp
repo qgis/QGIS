@@ -84,18 +84,11 @@ const QString QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME( "Password Manag
 
 QgsAuthManager *QgsAuthManager::instance()
 {
-  // NOTE cppcheck complains about identicalInnerCondition. Pedantically
-  // the below construct is not totally thread-safe.
-  // See https://preshing.com/20130930/double-checked-locking-is-fixed-in-cpp11/
-  // regarding double-checked locking pattern (DCLP)
+  static QMutex sMutex;
+  QMutexLocker locker( &sMutex );
   if ( !sInstance )
   {
-    static QMutex sMutex;
-    QMutexLocker locker( &sMutex );
-    if ( !sInstance )
-    {
-      sInstance = new QgsAuthManager( );
-    }
+    sInstance = new QgsAuthManager( );
   }
   return sInstance;
 }
