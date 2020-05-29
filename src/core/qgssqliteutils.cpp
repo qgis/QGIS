@@ -24,6 +24,7 @@
 
 // Temporary solution until GDAL Unique suppport is available
 #include <regex>
+#include <sstream>
 #include <algorithm>
 // end temporary
 
