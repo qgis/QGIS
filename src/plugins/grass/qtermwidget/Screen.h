@@ -688,6 +688,7 @@ private:
     unsigned short lastDrawnChar;
 
     static Character defaultChar;
+
 };
 
 }
