@@ -71,7 +71,9 @@ QString QgsCellStatisticsAlgorithm::shortHelpString() const
                       "   <li>Variety (count of unique values)</li>"
                       "</ul> "
                       "Input raster layers that do not match the cell size of the reference raster layer will be "
-                      "resampled using nearest neighbor resampling.\n"
+                      "resampled using nearest neighbor resampling. The output raster data type will be set to "
+                      "the most complex data type present in the input datasets except when using the functions "
+                      "Mean and Standard deviation (data type is always Float32) or Count and Variety (data type is always Int32).\n"
                       "<i>Calculation details - general:</i> NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set.\n"
                       "<i>Calculation details - Count:</i> Count will always result in the number of cells without NoData values at the current cell location."
                       "<i>Calculation details - Median:</i> If the number of input layers is even, the median will be calculated as the "
@@ -166,6 +168,31 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
 {
   //obtain statistic method
   int statisticMethodIdx = parameterAsInt( parameters, QStringLiteral( "STATISTIC" ), context );
+
+  //determine output raster data type
+  //initially raster data type to most primitive data type that is possible
+  mDataType = Qgis::Byte;
+  for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : mInputs )
+  {
+    for ( int band : i.bands )
+    {
+      Qgis::DataType inputDataType = i.interface->dataType( band );
+      if( static_cast<int>(mDataType) < static_cast<int>(inputDataType) )
+        mDataType = inputDataType; //if raster data type is more potent, set it as new data type
+    }
+  }
+
+  //force data types on specific functions if input data types don't match
+  if( statisticMethodIdx == 2 || statisticMethodIdx == 4 ) //mean, stddev
+  {
+    if( static_cast<int>(mDataType) < 6 )
+      mDataType = Qgis::Float32; //force float on mean and stddev if all inputs are integer
+  }
+  else if ( statisticMethodIdx == 1 || statisticMethodIdx == 11 ) //count, variety
+  {
+    if( static_cast<int>(mDataType) > 5 ) //if is floating point type
+      mDataType = Qgis::Int32; //force integer on variety if all inputs are float or complex
+  }
 
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   QFileInfo fi( outputFile );
