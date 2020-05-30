@@ -264,6 +264,12 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         """
         cur.execute(sql)
 
+        # Unique and not null constraints
+        sql = "CREATE TABLE \"unique_not_null_constraints\"(pkuid integer primary key autoincrement, \"unique\" TEXT UNIQUE, \"not_null\" TEXT NOT NULL)"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('unique_not_null_constraints', 'geometry', 4326, 'POINT', 'XY')"
+        cur.execute(sql)
+
         # Commit all test data
         cur.execute("COMMIT")
         con.close()
@@ -300,6 +306,15 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         vl = QgsVectorLayer(
             'dbname=\'{}\' table="check_constraint" (geometry) sql='.format(
                 self.dbname), 'check_constraint',
+            'spatialite')
+        return vl
+
+    def getEditableLayerWithUniqueNotNullConstraints(self):
+        """Returns the layer for UNIQUE and NOT NULL constraints detection"""
+
+        vl = QgsVectorLayer(
+            'dbname=\'{}\' table="unique_not_null_constraints" (geometry) sql='.format(
+                self.dbname), 'unique_not_null_constraints',
             'spatialite')
         return vl
 

@@ -20,6 +20,13 @@
 #include <sqlite3.h>
 #include <cstdarg>
 #include <QVariant>
+#include <QSet>
+
+// Temporary solution until GDAL Unique suppport is available
+#include <regex>
+#include <sstream>
+#include <algorithm>
+// end temporary
 
 void QgsSqlite3Closer::operator()( sqlite3 *database )
 {
@@ -112,6 +119,86 @@ int sqlite3_database_unique_ptr::exec( const QString &sql, QString &errorMessage
   }
 
   return ret;
+}
+
+QSet<QString> QgsSqliteUtils::uniqueFields( sqlite3 *connection, const QString &tableName, QString &errorMessage )
+{
+  QSet<QString> uniqueFieldsResults;
+  char *zErrMsg = 0;
+  std::vector<std::string> rows;
+  QString sql = sqlite3_mprintf( "select sql from sqlite_master where type='table' and name=%q", quotedIdentifier( tableName ).toStdString().c_str() );
+  auto cb = [ ](
+              void *data /* Data provided in the 4th argument of sqlite3_exec() */,
+              int /* The number of columns in row */,
+              char **argv /* An array of strings representing fields in the row */,
+              char ** /* An array of strings representing column names */ ) -> int
+  {
+    static_cast<std::vector<std::string>*>( data )->push_back( argv[0] );
+    return 0;
+  };
+
+  int rc = sqlite3_exec( connection, sql.toUtf8(), cb, ( void * )&rows, &zErrMsg );
+  if ( rc != SQLITE_OK )
+  {
+    errorMessage = zErrMsg;
+    sqlite3_free( zErrMsg );
+    return uniqueFieldsResults;
+  }
+
+  // Match identifiers with " or ` or no delimiter (and no spaces).
+  std::smatch uniqueFieldMatch;
+  static const std::regex sFieldIdentifierRe { R"raw(\s*(["`]([^"`]+)["`])|(([^\s]+)\s).*)raw" };
+  for ( auto tableDefinition : rows )
+  {
+    tableDefinition = tableDefinition.substr( tableDefinition.find( '(' ), tableDefinition.rfind( ')' ) );
+    std::stringstream tableDefinitionStream { tableDefinition };
+    while ( tableDefinitionStream.good() )
+    {
+      std::string fieldStr;
+      std::getline( tableDefinitionStream, fieldStr, ',' );
+      std::string upperCaseFieldStr { fieldStr };
+      std::transform( upperCaseFieldStr.begin(), upperCaseFieldStr.end(), upperCaseFieldStr.begin(), ::toupper );
+      if ( upperCaseFieldStr.find( "UNIQUE" ) != std::string::npos )
+      {
+        if ( std::regex_search( fieldStr, uniqueFieldMatch, sFieldIdentifierRe ) )
+        {
+          const std::string quoted { uniqueFieldMatch.str( 2 ) };
+          uniqueFieldsResults.insert( QString::fromStdString( quoted.length() ? quoted :  uniqueFieldMatch.str( 4 ) ) );
+        }
+      }
+    }
+  }
+  rows.clear();
+
+  // Search indexes:
+  sql = sqlite3_mprintf( "SELECT sql FROM sqlite_master WHERE type='index' AND"
+                         " tbl_name='%q' AND sql LIKE 'CREATE UNIQUE INDEX%%'" );
+  rc = sqlite3_exec( connection, sql.toUtf8(), cb, ( void * )&rows, &zErrMsg );
+  if ( rc != SQLITE_OK )
+  {
+    errorMessage = zErrMsg;
+    sqlite3_free( zErrMsg );
+    return uniqueFieldsResults;
+  }
+
+  if ( rows.size() > 0 )
+  {
+    static const std::regex sFieldIndexIdentifierRe { R"raw(\(\s*[`"]?([^",`\)]+)["`]?\s*\))raw" };
+    for ( auto indexDefinition : rows )
+    {
+      std::string upperCaseIndexDefinition { indexDefinition };
+      std::transform( upperCaseIndexDefinition.begin(), upperCaseIndexDefinition.end(), upperCaseIndexDefinition.begin(), ::toupper );
+      if ( upperCaseIndexDefinition.find( "UNIQUE" ) != std::string::npos )
+      {
+        indexDefinition = indexDefinition.substr( indexDefinition.find( '(' ), indexDefinition.rfind( ')' ) );
+        if ( std::regex_search( indexDefinition, uniqueFieldMatch, sFieldIndexIdentifierRe ) )
+        {
+          uniqueFieldsResults.insert( QString::fromStdString( uniqueFieldMatch.str( 1 ) ) );
+        }
+      }
+    }
+  }
+  return uniqueFieldsResults;
 }
 
 QString QgsSqliteUtils::quotedString( const QString &value )

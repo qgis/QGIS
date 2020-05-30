@@ -893,7 +893,7 @@ void QgsSpatiaLiteProvider::fetchConstraints()
   char **results = nullptr;
   char *errMsg = nullptr;
 
-  // this is not particularly robust but unfortunately sqlite offers no way to check directly
+  // this is not robust but unfortunately sqlite offers no way to check directly
   // for the presence of constraints on a field (only indexes, but not all constraints are indexes)
   QString sql = QStringLiteral( "SELECT sql FROM sqlite_master WHERE type='table' AND name=%1" ).arg( QgsSqliteUtils::quotedIdentifier( mTableName ) );
   int columns = 0;
@@ -910,9 +910,20 @@ void QgsSpatiaLiteProvider::fetchConstraints()
     ;
   else
   {
+    // Use the same logic implemented in GDAL for GPKG
+    QSet<QString> uniqueFieldNames;
+    {
+      QString errMsg;
+      uniqueFieldNames = QgsSqliteUtils::uniqueFields( mSqliteHandle, mTableName, errMsg );
+      if ( ! errMsg.isEmpty() )
+      {
+        QgsMessageLog::logMessage( tr( "Error searching for unique constraints on fields for table %1" ).arg( mTableName ), tr( "spatialite" ) );
+      }
+    }
+
     QString sqlDef = QString::fromUtf8( results[ 1 ] );
     // extract definition
-    QRegularExpression re( QStringLiteral( "\\((.*)\\)" ) );
+    QRegularExpression re( QStringLiteral( R"raw(\((.*)\))raw" ) );
     QRegularExpressionMatch match = re.match( sqlDef );
     if ( match.hasMatch() )
     {
@@ -920,13 +931,26 @@ void QgsSpatiaLiteProvider::fetchConstraints()
       for ( auto &field : matched.split( ',' ) )
       {
         field = field.trimmed();
-        QString fieldName = field.left( field.indexOf( ' ' ) );
-        QString definition = field.mid( field.indexOf( ' ' ) + 1 );
+        QString fieldName;
+        QString definition;
+        const QChar delimiter { field.at( 0 ) };
+        if ( delimiter == '"' || delimiter == '`' )
+        {
+          const int start {  field.indexOf( delimiter ) + 1};
+          const int end { field.indexOf( delimiter, start ) };
+          fieldName = field.mid( start, end - start );
+          definition = field.mid( end + 1 );
+        }
+        else
+        {
+          fieldName = field.left( field.indexOf( ' ' ) );
+          definition = field.mid( field.indexOf( ' ' ) + 1 );
+        }
         int fieldIdx = mAttributeFields.lookupField( fieldName );
         if ( fieldIdx >= 0 )
         {
           QgsFieldConstraints constraints = mAttributeFields.at( fieldIdx ).constraints();
-          if ( definition.contains( QLatin1String( "unique" ), Qt::CaseInsensitive ) || definition.contains( QLatin1String( "primary key" ), Qt::CaseInsensitive ) )
+          if ( uniqueFieldNames.contains( fieldName ) || definition.contains( QLatin1String( "primary key" ), Qt::CaseInsensitive ) )
             constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
           if ( definition.contains( QLatin1String( "not null" ), Qt::CaseInsensitive ) || definition.contains( QLatin1String( "primary key" ), Qt::CaseInsensitive ) )
             constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
