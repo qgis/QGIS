@@ -34,7 +34,7 @@ QString QgsCellStatisticsAlgorithm::name() const
 
 QStringList QgsCellStatisticsAlgorithm::tags() const
 {
-  return QObject::tr( "cell,pixel,statistic,mean,sum,majority,minority,variance,variety,range,median,minimum,maximum" ).split( ',' );
+  return QObject::tr( "cell,pixel,statistic,count,mean,sum,majority,minority,variance,variety,range,median,minimum,maximum" ).split( ',' );
 }
 
 QString QgsCellStatisticsAlgorithm::group() const
@@ -58,6 +58,7 @@ QString QgsCellStatisticsAlgorithm::shortHelpString() const
                       "raster cells per output raster cell location: "
                       "<ul> "
                       "   <li>Sum</li>"
+                      "   <li>Count</li>"
                       "   <li>Mean</li>"
                       "   <li>Median</li>"
                       "   <li>Standard deviation</li>"
@@ -71,7 +72,8 @@ QString QgsCellStatisticsAlgorithm::shortHelpString() const
                       "</ul> "
                       "Input raster layers that do not match the cell size of the reference raster layer will be "
                       "resampled using nearest neighbor resampling.\n"
-                      "<i>Calculation details - general:</i> NoData values in any of the input layers will result in a NoData cell output.\n"
+                      "<i>Calculation details - general:</i> NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set.\n"
+                      "<i>Calculation details - Count:</i> Count will always result in the number of cells without NoData values at the current cell location."
                       "<i>Calculation details - Median:</i> If the number of input layers is even, the median will be calculated as the "
                       "arithmetic mean of the two middle values of the ordered cell input values.\n"
                       "<i>Calculation details - Minority/Majority:</i> If no unique minority or majority could be found, the result is NoData, except all "
@@ -90,6 +92,7 @@ void QgsCellStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
 
   QStringList statistics = QStringList();
   statistics << QStringLiteral( "Sum" )
+             << QStringLiteral( "Count" )
              << QStringLiteral( "Mean" )
              << QStringLiteral( "Median" )
              << QStringLiteral( "Standard deviation" )
@@ -102,6 +105,7 @@ void QgsCellStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
              << QStringLiteral( "Variety" );
 
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "STATISTIC" ), QObject::tr( "Statistic" ),  statistics, false, 0, false ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "IGNORE_NODATA" ), QObject::tr( "Ignore NoData values" ), true) );
 
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "REF_LAYER" ), QObject::tr( "Reference layer" ) ) );
 
@@ -120,6 +124,9 @@ bool QgsCellStatisticsAlgorithm::prepareAlgorithm( const QVariantMap &parameters
   QgsRasterLayer *referenceLayer = parameterAsRasterLayer( parameters, QStringLiteral( "REF_LAYER" ), context );
   if ( !referenceLayer )
     throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "REF_LAYER" ) ) );
+
+  mIgnoreNoData = parameterAsBool( parameters, QStringLiteral( "IGNORE_NODATA" ), context);
+
   mCrs = referenceLayer->crs();
   mRasterUnitsPerPixelX = referenceLayer->rasterUnitsPerPixelX();
   mRasterUnitsPerPixelY = referenceLayer->rasterUnitsPerPixelY();
@@ -175,6 +182,7 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
 
   provider->setNoDataValue( 1, mNoDataValue );
   qgssize layerSize = static_cast< qgssize >( mLayerWidth ) * static_cast< qgssize >( mLayerHeight );
+  const int countOfInputs = mInputs.size();
 
   int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
   int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
@@ -213,50 +221,58 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
       {
         double result = 0;
         bool hasNoData = false;
-        std::vector<double> cellValues = getCellValues( inputBlocks, row, col, hasNoData );
+        std::vector<double> cellValues = QgsRasterAnalysisUtils::getCellValuesFromBlockStack( inputBlocks, row, col, hasNoData );
         int cellValueStackSize = cellValues.size();
 
-        if ( hasNoData )
+        if ( hasNoData && !mIgnoreNoData )
         {
-          //output cell will always be NoData if NoData occurs in cellValueStack
+          //output cell will always be NoData if NoData occurs in cellValueStack and NoData is not ignored
           //this saves unnecessary iterations on the cellValueStack
-          outputBlock->setValue( row, col, mNoDataValue );
+          if( statisticMethodIdx == 1)
+            outputBlock->setValue( row, col,  cellValueStackSize);
+          else
+          {
+            outputBlock->setValue( row, col, mNoDataValue );
+          }
         }
-        else
+        else if ( !hasNoData || (hasNoData && mIgnoreNoData) )
         {
           switch ( statisticMethodIdx )
           {
             case 0: //sum
               result = std::accumulate( cellValues.begin(), cellValues.end(), 0.0 );
               break;
-            case 1: //mean
+            case 1: //count
+              result = cellValueStackSize;
+              break;
+            case 2: //mean
               result = QgsRasterAnalysisUtils::meanFromCellValues( cellValues, cellValueStackSize );
               break;
-            case 2: //median
+            case 3: //median
               result = QgsRasterAnalysisUtils::medianFromCellValues( cellValues, cellValueStackSize );
               break;
-            case 3: //stddev
+            case 4: //stddev
               result = QgsRasterAnalysisUtils::stddevFromCellValues( cellValues, cellValueStackSize );
               break;
-            case 4: //variance
+            case 5: //variance
               result = QgsRasterAnalysisUtils::varianceFromCellValues( cellValues, cellValueStackSize );
               break;
-            case 5: //min
+            case 6: //min
               result = QgsRasterAnalysisUtils::minimumFromCellValues( cellValues );
               break;
-            case 6: //max
+            case 7: //max
               result = QgsRasterAnalysisUtils::maximumFromCellValues( cellValues );
               break;
-            case 7: //minority
+            case 8: //minority
               result = QgsRasterAnalysisUtils::minorityFromCellValues( cellValues, mNoDataValue, cellValueStackSize );
               break;
-            case 8: //majority
+            case 9: //majority
               result = QgsRasterAnalysisUtils::majorityFromCellValues( cellValues, mNoDataValue, cellValueStackSize );
               break;
-            case 9: //range
+            case 10: //range
               result = QgsRasterAnalysisUtils::rangeFromCellValues( cellValues );
               break;
-            case 10: //variety
+            case 11: //variety
               result = QgsRasterAnalysisUtils::varietyFromCellValues( cellValues );
               break;
             default:
@@ -281,28 +297,7 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
   return outputs;
 }
 
-std::vector<double> QgsCellStatisticsAlgorithm::getCellValues( const std::vector< std::unique_ptr< QgsRasterBlock > > &inputBlocks, int &row, int &col, bool &hasNoData )
-{
-  //get all values from inputBlocks
-  std::vector<double> cellValues;
-  for ( auto &block : inputBlocks )
-  {
-    double value = 0;
-    if ( !block || !block->isValid() )
-    {
-      hasNoData = true;
-      break;
-    }
-    else
-    {
-      value = block->valueAndNoData( row, col, hasNoData );
-      if ( hasNoData )
-        break;
-      cellValues.push_back( value );
-    }
-  }
-  return cellValues;
-}
+
 
 ///@endcond
 

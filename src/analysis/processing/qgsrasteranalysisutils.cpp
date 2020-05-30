@@ -287,6 +287,28 @@ void QgsRasterAnalysisUtils::applyRasterLogicOperator( const std::vector< QgsRas
   destinationRaster->setEditable( false );
 }
 
+std::vector<double> QgsRasterAnalysisUtils::getCellValuesFromBlockStack( const std::vector< std::unique_ptr< QgsRasterBlock > > &inputBlocks, int &row, int &col, bool &hasNoData )
+{
+  //get all values from inputBlocks
+  std::vector<double> cellValues;
+  for ( auto &block : inputBlocks )
+  {
+    double value = 0;
+    if ( !block || !block->isValid() )
+    {
+      hasNoData = true;
+      break;
+    }
+    else
+    {
+      value = block->valueAndNoData( row, col, hasNoData );
+      if ( hasNoData )
+        break;
+      cellValues.push_back( value );
+    }
+  }
+  return cellValues;
+}
 
 double QgsRasterAnalysisUtils::meanFromCellValues( std::vector<double> cellValues, int stackSize )
 {
