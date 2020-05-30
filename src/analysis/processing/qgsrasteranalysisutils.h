@@ -92,6 +92,11 @@ namespace QgsRasterAnalysisUtils
       qgssize &noDataCount, qgssize &trueCount, qgssize &falseCount );
 
   /**
+   * Returns a vector of double values obtained from a stack of input QgsRasterBlocks
+   */
+  std::vector<double> getCellValuesFromBlockStack( const std::vector< std::unique_ptr< QgsRasterBlock > > &inputBlocks, int &row, int &col, bool &hasNoData );
+
+  /**
    * Returns the arithmetic mean from a vector of cell values
    */
   double meanFromCellValues( std::vector<double> cellValues, int stackSize );
