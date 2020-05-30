@@ -53,7 +53,7 @@ class QgsCellStatisticsAlgorithm : public QgsProcessingAlgorithm
   private:
     std::vector< QgsRasterAnalysisUtils::RasterLogicInput > mInputs;
     bool mIgnoreNoData;
-    Qgis::DataType mDataType = Qgis::Float32;
+    Qgis::DataType mDataType;
     double mNoDataValue = -9999;
     int mLayerWidth;
     int mLayerHeight;
