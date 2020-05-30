@@ -51,9 +51,8 @@ class QgsCellStatisticsAlgorithm : public QgsProcessingAlgorithm
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    std::vector<double> getCellValues( const std::vector< std::unique_ptr< QgsRasterBlock > > &inputBlocks, int &row, int &col, bool &hasNoData );
-
     std::vector< QgsRasterAnalysisUtils::RasterLogicInput > mInputs;
+    bool mIgnoreNoData;
     Qgis::DataType mDataType = Qgis::Float32;
     double mNoDataValue = -9999;
     int mLayerWidth;
