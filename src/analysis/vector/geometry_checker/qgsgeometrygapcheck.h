@@ -145,7 +145,7 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
     const double mGapThresholdMapUnits;
     QgsWeakMapLayerPointer mAllowedGapsLayer;
     std::unique_ptr<QgsVectorLayerFeatureSource> mAllowedGapsSource;
-    double mAllowedGapsBuffer;
+    double mAllowedGapsBuffer = 0;
 
 };
 

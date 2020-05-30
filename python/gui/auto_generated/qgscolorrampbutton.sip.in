@@ -9,7 +9,6 @@
 
 
 
-
 class QgsColorRampButton : QToolButton
 {
 %Docstring
@@ -117,7 +116,7 @@ Returns a copy of the default color ramp for the button, which is shown in the b
 "default color ramp" option.
 
 :return: default color ramp for the button. Returns ``None`` if the default color ramp
-         option is disabled.
+         option is disabled. Caller takes ownership of the returned object.
 
 .. seealso:: :py:func:`setDefaultColorRamp`
 %End

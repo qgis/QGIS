@@ -39,7 +39,7 @@ static const int COLUMN_IDX_EXPORT_AS_DISPLAYED_VALUE = 2;
 
 QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
-  , mCRS( srsid )
+  , mSelectedCrs( QgsCoordinateReferenceSystem::fromSrsId( srsid ) )
   , mAttributeTableItemChangedSlotEnabled( true )
   , mReplaceRawFieldValuesStateChangedSlotEnabled( true )
   , mActionOnExistingFile( QgsVectorFileWriter::CreateOrOverwriteFile )
@@ -57,7 +57,7 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, i
 {
   if ( layer )
   {
-    mCRS = layer->crs().srsid();
+    mSelectedCrs = layer->crs();
     mLayerExtent = layer->extent();
   }
   setup();
@@ -149,9 +149,8 @@ void QgsVectorLayerSaveAsDialog::setup()
     idx = 0;
   }
 
-  QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromSrsId( mCRS );
-  mCrsSelector->setCrs( srs );
-  mCrsSelector->setLayerCrs( srs );
+  mCrsSelector->setCrs( mSelectedCrs );
+  mCrsSelector->setLayerCrs( mSelectedCrs );
   mCrsSelector->setMessage( tr( "Select the coordinate reference system for the vector file. "
                                 "The data points will be transformed from the layer coordinate reference system." ) );
 
@@ -159,14 +158,14 @@ void QgsVectorLayerSaveAsDialog::setup()
   mFormatComboBox_currentIndexChanged( mFormatComboBox->currentIndex() );
 
   //symbology export combo box
-  mSymbologyExportComboBox->addItem( tr( "No symbology" ), QgsVectorFileWriter::NoSymbology );
-  mSymbologyExportComboBox->addItem( tr( "Feature symbology" ), QgsVectorFileWriter::FeatureSymbology );
-  mSymbologyExportComboBox->addItem( tr( "Symbol layer symbology" ), QgsVectorFileWriter::SymbolLayerSymbology );
+  mSymbologyExportComboBox->addItem( tr( "No Symbology" ), QgsVectorFileWriter::NoSymbology );
+  mSymbologyExportComboBox->addItem( tr( "Feature Symbology" ), QgsVectorFileWriter::FeatureSymbology );
+  mSymbologyExportComboBox->addItem( tr( "Symbol Layer Symbology" ), QgsVectorFileWriter::SymbolLayerSymbology );
   mSymbologyExportComboBox_currentIndexChanged( mSymbologyExportComboBox->currentText() );
 
   // extent group box
-  mExtentGroupBox->setOutputCrs( srs );
-  mExtentGroupBox->setOriginalExtent( mLayerExtent, srs );
+  mExtentGroupBox->setOutputCrs( mSelectedCrs );
+  mExtentGroupBox->setOriginalExtent( mLayerExtent, mSelectedCrs );
   mExtentGroupBox->setOutputExtentFromOriginal();
   mExtentGroupBox->setCheckable( true );
   mExtentGroupBox->setChecked( false );
@@ -726,8 +725,8 @@ void QgsVectorLayerSaveAsDialog::mAttributeTable_itemChanged( QTableWidgetItem *
 
 void QgsVectorLayerSaveAsDialog::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
-  mCRS = crs.srsid();
-  mExtentGroupBox->setOutputCrs( crs );
+  mSelectedCrs = crs;
+  mExtentGroupBox->setOutputCrs( mSelectedCrs );
 }
 
 QString QgsVectorLayerSaveAsDialog::filename() const
@@ -752,7 +751,12 @@ QString QgsVectorLayerSaveAsDialog::format() const
 
 long QgsVectorLayerSaveAsDialog::crs() const
 {
-  return mCRS;
+  return mSelectedCrs.srsid();
+}
+
+QgsCoordinateReferenceSystem QgsVectorLayerSaveAsDialog::crsObject() const
+{
+  return mSelectedCrs;
 }
 
 QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const

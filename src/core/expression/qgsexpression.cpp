@@ -159,13 +159,16 @@ QgsExpression::QgsExpression( const QgsExpression &other )
 
 QgsExpression &QgsExpression::operator=( const QgsExpression &other )
 {
-  if ( !d->ref.deref() )
+  if ( this != &other )
   {
-    delete d;
-  }
+    if ( !d->ref.deref() )
+    {
+      delete d;
+    }
 
-  d = other.d;
-  d->ref.ref();
+    d = other.d;
+    d->ref.ref();
+  }
   return *this;
 }
 

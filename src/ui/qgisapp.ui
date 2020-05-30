@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>847</width>
-     <height>20</height>
+     <height>24</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -275,6 +275,7 @@
     </property>
     <addaction name="mActionShowRasterCalculator"/>
     <addaction name="mActionShowAlignRasterTool"/>
+    <addaction name="mActionShowGeoreferencer"/>
    </widget>
    <widget class="QMenu" name="mVectorMenu">
     <property name="title">
@@ -3337,6 +3338,15 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="toolTip">
     <string>Add Vector Tile Layer…</string>
+   </property>
+  </action>
+  <action name="mActionShowGeoreferencer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/georeferencer/mGeorefRun.png</normaloff>:/images/themes/default/georeferencer/mGeorefRun.png</iconset>
+   </property>
+   <property name="text">
+    <string>Georeferencer…</string>
    </property>
   </action>
  </widget>

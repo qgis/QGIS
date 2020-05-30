@@ -100,6 +100,27 @@ class CORE_EXPORT QgsGdalUtils
      */
     static gdal::dataset_unique_ptr imageToMemoryDataset( const QImage &image );
 
+    /**
+     * This is a copy of GDALAutoCreateWarpedVRT optimized for imagery using RPC georeferencing
+     * that also sets RPC_HEIGHT in GDALCreateGenImgProjTransformer2 based on HEIGHT_OFF.
+     * By default GDAL would assume that the imagery has zero elevation - if that is not the case,
+     * the image would not be shown in the correct location.
+     *
+     * \since QGIS 3.14
+     */
+    static GDALDatasetH rpcAwareAutoCreateWarpedVrt(
+      GDALDatasetH hSrcDS,
+      const char *pszSrcWKT,
+      const char *pszDstWKT,
+      GDALResampleAlg eResampleAlg,
+      double dfMaxError,
+      const GDALWarpOptions *psOptionsIn );
+
+#ifndef QT_NO_NETWORKPROXY
+    //! Sets the gdal proxy variables
+    static void setupProxy();
+#endif
+
     friend class TestQgsGdalUtils;
 };
 

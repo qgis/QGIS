@@ -146,6 +146,11 @@ void QgsAppLayoutDesignerInterface::setAtlasPreviewEnabled( bool enabled )
   mDesigner->setAtlasPreviewEnabled( enabled );
 }
 
+void QgsAppLayoutDesignerInterface::setAtlasFeature( const QgsFeature &feature )
+{
+  mDesigner->setAtlasFeature( feature );
+}
+
 bool QgsAppLayoutDesignerInterface::atlasPreviewEnabled() const
 {
   return mDesigner->atlasPreviewEnabled();
@@ -252,6 +257,30 @@ static bool cmpByText_( QAction *a, QAction *b )
 {
   return QString::localeAwareCompare( a->text(), b->text() ) < 0;
 }
+
+
+class QgsAtlasExportGuard
+{
+  public:
+
+    QgsAtlasExportGuard( QgsLayoutDesignerDialog *dialog )
+      : mDialog( dialog )
+    {
+      mDialog->mIsExportingAtlas = true;
+    }
+
+    ~QgsAtlasExportGuard()
+    {
+      mDialog->mIsExportingAtlas = false;
+
+      // need to update the GUI to reflect the final atlas feature
+      mDialog->atlasFeatureChanged( mDialog->currentLayout()->reportContext().feature() );
+    }
+
+  private:
+    QgsLayoutDesignerDialog *mDialog = nullptr;
+
+};
 
 
 QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFlags flags )
@@ -2759,6 +2788,7 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
 
   mView->setPaintingEnabled( false );
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
+  QgsAtlasExportGuard exportingAtlas( this );
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
@@ -2923,6 +2953,7 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
 
   mView->setPaintingEnabled( false );
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
+  QgsAtlasExportGuard exportingAtlas( this );
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
@@ -3143,6 +3174,8 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
 
   mView->setPaintingEnabled( false );
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
+  QgsAtlasExportGuard exportingAtlas( this );
+
   pdfSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
 
   QString error;
@@ -3279,6 +3312,7 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
 
   mView->setPaintingEnabled( false );
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
+  QgsAtlasExportGuard exportingAtlas( this );
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
@@ -3395,6 +3429,7 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
 
   mView->setPaintingEnabled( false );
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
+  QgsAtlasExportGuard exportingAtlas( this );
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
@@ -3528,6 +3563,7 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
 
   mView->setPaintingEnabled( false );
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
+  QgsAtlasExportGuard exportingAtlas( this );
 
   pdfSettings.rasterizeWholeImage = rasterize;
 
@@ -4317,7 +4353,23 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   }
 
   // open options dialog
-  QgsLayoutPdfExportOptionsDialog dialog( this );
+
+  QList< QgsLayoutItemMap * > maps;
+  if ( mLayout )
+    mLayout->layoutItems( maps );
+  bool allowGeoPdfExport = true;
+  QString geoPdfReason;
+  for ( const QgsLayoutItemMap *map : maps )
+  {
+    if ( !map->crs().isValid() )
+    {
+      allowGeoPdfExport = false;
+      geoPdfReason = tr( "One or more map items do not have a valid CRS set. This is required for GeoPDF export." );
+      break;
+    }
+  }
+
+  QgsLayoutPdfExportOptionsDialog dialog( this, allowGeoPdfExport, geoPdfReason );
 
   dialog.setTextRenderFormat( prevTextRenderFormat );
   dialog.setForceVector( forceVector );
@@ -4422,7 +4474,8 @@ void QgsLayoutDesignerDialog::updateAtlasPageComboBox( int pageCount )
 
 void QgsLayoutDesignerDialog::atlasFeatureChanged( const QgsFeature &feature )
 {
-  //TODO - this should be disabled during an export
+  if ( mIsExportingAtlas )
+    return;
 
   QgsPrintLayout *printLayout = qobject_cast< QgsPrintLayout *>( mLayout );
   if ( !printLayout )
@@ -4453,7 +4506,24 @@ void QgsLayoutDesignerDialog::atlasFeatureChanged( const QgsFeature &feature )
   mapCanvas->stopRendering();
   mapCanvas->redrawAllLayers();
 
-  mView->setSectionLabel( atlas->nameForPage( atlas->currentFeatureNumber() ) );
+  const QString atlasFeatureName = atlas->nameForPage( atlas->currentFeatureNumber() );
+  mView->setSectionLabel( atlasFeatureName );
+
+  if ( feature.isValid() && ( !feature.hasGeometry() || feature.geometry().isEmpty() ) )
+  {
+    // a little sanity check -- if there's any maps in this layout which are set to be atlas controlled,
+    // and we hit a feature with no geometry attached, then warn the user
+    QList< QgsLayoutItemMap * > maps;
+    mLayout->layoutItems( maps );
+    for ( const QgsLayoutItemMap *map : qgis::as_const( maps ) )
+    {
+      if ( map->atlasDriven() )
+      {
+        mMessageBar->pushWarning( QString(), tr( "Atlas feature %1 has no geometry — linked map extents cannot be updated" ).arg( atlasFeatureName ) );
+        break;
+      }
+    }
+  }
 }
 
 void QgsLayoutDesignerDialog::loadPredefinedScalesFromProject()
@@ -4771,12 +4841,11 @@ bool QgsLayoutDesignerDialog::atlasPreviewEnabled() const
   return mActionAtlasPreview->isChecked();
 }
 
-void QgsLayoutDesignerDialog::setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feat )
+void QgsLayoutDesignerDialog::setAtlasFeature( const QgsFeature &feature )
 {
   QgsLayoutAtlas *layoutAtlas = atlas();
-  if ( !layoutAtlas || !layoutAtlas->enabled() || layoutAtlas->coverageLayer() != layer )
+  if ( !layoutAtlas || !layoutAtlas->enabled() )
   {
-    //either atlas isn't enabled, or layer doesn't match
     return;
   }
 
@@ -4788,7 +4857,7 @@ void QgsLayoutDesignerDialog::setAtlasFeature( QgsMapLayer *layer, const QgsFeat
   }
 
   //set current preview feature id
-  layoutAtlas->seekTo( feat );
+  layoutAtlas->seekTo( feature );
 
   //bring layout window to foreground
   activate();

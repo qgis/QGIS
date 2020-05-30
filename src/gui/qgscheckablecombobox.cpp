@@ -87,6 +87,9 @@ QgsCheckableComboBox::QgsCheckableComboBox( QWidget *parent )
   pal.setBrush( QPalette::Base, pal.button() );
   lineEdit->setPalette( pal );
   setLineEdit( lineEdit );
+  lineEdit->installEventFilter( this );
+  lineEdit->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( lineEdit, &QAbstractItemView::customContextMenuRequested, this, &QgsCheckableComboBox::showContextMenu );
 
   mContextMenu = new QMenu( this );
   mSelectAllAction = mContextMenu->addAction( tr( "Select All" ) );
@@ -227,8 +230,16 @@ void QgsCheckableComboBox::deselectAllOptions()
 
 bool QgsCheckableComboBox::eventFilter( QObject *object, QEvent *event )
 {
-  if ( ( event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonRelease )
-       && object == view()->viewport() )
+  if ( object == lineEdit() )
+  {
+    if ( event->type() == QEvent::MouseButtonPress && static_cast<QMouseEvent *>( event )->button() == Qt::LeftButton && object == lineEdit() )
+    {
+      mSkipHide = true;
+      showPopup();
+    }
+  }
+  else if ( ( event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonRelease )
+            && object == view()->viewport() )
   {
     mSkipHide = true;
 

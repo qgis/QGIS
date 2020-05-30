@@ -35,6 +35,11 @@ QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas *canvas )
   connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddPart::stopCapturing );
 }
 
+QgsMapToolCapture::Capabilities QgsMapToolAddPart::capabilities() const
+{
+  return QgsMapToolCapture::SupportsCurves;
+}
+
 void QgsMapToolAddPart::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( checkSelection() )

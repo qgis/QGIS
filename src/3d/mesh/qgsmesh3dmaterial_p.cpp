@@ -316,7 +316,7 @@ void QgsMesh3dMaterial::configure()
 
 void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeRange &timeRange )
 {
-  if ( !layer )
+  if ( !layer || !layer->dataProvider() )
     return;
 
   QgsMeshDatasetIndex datasetIndex = layer->activeVectorDatasetAtTime( timeRange );
@@ -330,7 +330,7 @@ void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeR
   QVector<QgsVector> vectors;
   QSize gridSize;
   QgsPointXY minCorner;
-  Qt3DRender::QParameter *arrowsEnabledParameter = new Qt3DRender::QParameter( "arrowsEnabled", false );
+  Qt3DRender::QParameter *arrowsEnabledParameter = new Qt3DRender::QParameter( "arrowsEnabled", nullptr );
   if ( mMagnitudeType != MagnitudeType::ScalarDataSet || !mSymbol.arrowsEnabled() || meta.isScalar() || !datasetIndex.isValid() )
     arrowsEnabledParameter->setValue( false );
   else

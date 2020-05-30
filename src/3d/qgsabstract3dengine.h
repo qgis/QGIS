@@ -20,6 +20,8 @@
 
 #include <QObject>
 
+#define SIP_NO_FILE
+
 class QColor;
 class QRect;
 class QSurface;
@@ -46,6 +48,7 @@ namespace Qt3DRender
  * - QgsWindow3DEngine - used for rendering on display (has a QWindow that can be embedded into QWidget)
  * - QgsOffscreen3DEngine - renders scene to images
  *
+ * \note Not available in Python bindings
  * \since QGIS 3.4
  */
 class _3D_EXPORT QgsAbstract3DEngine : public QObject

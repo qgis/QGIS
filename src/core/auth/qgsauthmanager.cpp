@@ -52,6 +52,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#include "qgsruntimeprofiler.h"
 
 QgsAuthManager *QgsAuthManager::sInstance = nullptr;
 
@@ -172,6 +173,8 @@ bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabas
   if ( mAuthInit )
     return true;
   mAuthInit = true;
+
+  QgsScopedRuntimeProfile profile( tr( "Initializing authentication manager" ) );
 
   QgsDebugMsgLevel( QStringLiteral( "Initializing QCA..." ), 2 );
   mQcaInitializer = qgis::make_unique<QCA::Initializer>( QCA::Practical, 256 );
@@ -957,7 +960,7 @@ void QgsAuthManager::updateConfigAuthMethods()
 
   if ( query.isActive() )
   {
-    QgsDebugMsg( QStringLiteral( "Syncing existing auth config and their auth methods" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Syncing existing auth config and their auth methods" ), 2 );
     mConfigAuthMethods.clear();
     QStringList cfgmethods;
     while ( query.next() )
@@ -966,7 +969,7 @@ void QgsAuthManager::updateConfigAuthMethods()
                                  query.value( 1 ).toString() );
       cfgmethods << QStringLiteral( "%1=%2" ).arg( query.value( 0 ).toString(), query.value( 1 ).toString() );
     }
-    QgsDebugMsg( QStringLiteral( "Stored auth config/methods:\n%1" ).arg( cfgmethods.join( ", " ) ) );
+    QgsDebugMsgLevel( QStringLiteral( "Stored auth config/methods:\n%1" ).arg( cfgmethods.join( ", " ) ), 2 );
   }
 }
 
@@ -1690,6 +1693,8 @@ bool QgsAuthManager::removeAuthSetting( const QString &key )
 
 bool QgsAuthManager::initSslCaches()
 {
+  QgsScopedRuntimeProfile profile( "Initialize SSL cache" );
+
   QMutexLocker locker( mMutex.get() );
   bool res = true;
   res = res && rebuildCaCertsCache();

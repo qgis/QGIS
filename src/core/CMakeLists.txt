@@ -306,6 +306,7 @@ SET(QGIS_CORE_SRCS
   qgslegendstyle.cpp
   qgslocaldefaultsettings.cpp
   qgslocalec.cpp
+  qgslocalizeddatapathregistry.cpp
   qgslogger.cpp
   qgsmapdecoration.cpp
   qgsmaphittest.cpp
@@ -854,6 +855,7 @@ SET(QGIS_CORE_HDRS
   qgslegendstyle.h
   qgslocaldefaultsettings.h
   qgslocalec.h
+  qgslocalizeddatapathregistry.h
   qgslogger.h
   qgsmapdecoration.h
   qgsmaphittest.h

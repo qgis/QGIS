@@ -371,8 +371,9 @@ void QgsMeshStreamField::addTrace( QgsPointXY startPoint )
 
 void QgsMeshStreamField::addRandomTraces()
 {
-  while ( mPixelFillingCount < mMaxPixelFillingCount && !mRenderContext.renderingStopped() )
-    addRandomTrace();
+  if ( mMaximumMagnitude > 0 )
+    while ( mPixelFillingCount < mMaxPixelFillingCount && !mRenderContext.renderingStopped() )
+      addRandomTrace();
 }
 
 void QgsMeshStreamField::addRandomTrace()
@@ -427,6 +428,9 @@ void QgsMeshStreamField::addTrace( QPoint startPixel )
     return;
 
   if ( !mVectorValueInterpolator )
+    return;
+
+  if ( !( mMaximumMagnitude > 0 ) )
     return;
 
   mPainter->setPen( mPen );
@@ -910,7 +914,6 @@ QgsMeshVectorStreamlineRenderer::QgsMeshVectorStreamlineRenderer(
   mStreamlineField->setColor( settings.color() );
   mStreamlineField->setFilter( settings.filterMin(), settings.filterMax() );
 
-
   switch ( settings.streamLinesSettings().seedingMethod() )
   {
     case QgsMeshRendererVectorStreamlineSettings::MeshGridded:
@@ -956,6 +959,7 @@ QgsMeshParticleTracesField::QgsMeshParticleTracesField( const QgsTriangularMesh 
 QgsMeshParticleTracesField::QgsMeshParticleTracesField( const QgsMeshParticleTracesField &other ):
   QgsMeshStreamField( other ),
   mTimeField( other.mTimeField ),
+  mMagnitudeField( other.mMagnitudeField ),
   mDirectionField( other.mDirectionField ),
   mParticles( other.mParticles ),
   mStumpImage( other.mStumpImage ),

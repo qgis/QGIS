@@ -451,13 +451,21 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * - if none of the above match, use the Proj string to create the CRS and do not associated an internal CRS ID to it.
      *
      * \param projString A Proj format string
+     * \param identify if FALSE, no attempts will be made to match the proj string against known CRS authorities. This is much
+     * faster, but should only ever be used when it is known in advance that the definition does not correspond to a known or user CRS. This
+     * argument is not available in Python.
+     *
      * \returns TRUE on success else FALSE
      * \note Some members may be left blank if no match can be found in CRS database.
      * \note This method uses an internal cache. Call invalidateCache() to clear the cache.
      * \see fromProj()
      * \since QGIS 3.10.3
      */
+#ifndef SIP_RUN
+    bool createFromProj( const QString &projString, bool identify = true );
+#else
     bool createFromProj( const QString &projString );
+#endif
 
     /**
      * Set up this CRS from a string definition.

@@ -445,7 +445,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
         QFileInfo fi( outputFilePath );
         // build the world file name
         QString outputSuffix = fi.suffix();
-        QString worldFileName = fi.absolutePath() + '/' + fi.baseName() + '.'
+        QString worldFileName = fi.absolutePath() + '/' + fi.completeBaseName() + '.'
                                 + outputSuffix.at( 0 ) + outputSuffix.at( fi.suffix().size() - 1 ) + 'w';
 
         writeWorldFile( worldFileName, a, b, c, d, e, f );
@@ -528,7 +528,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   }
 
   std::unique_ptr< QgsLayoutGeoPdfExporter > geoPdfExporter;
-  if ( settings.writeGeoPdf )
+  if ( settings.writeGeoPdf || settings.exportLayersAsSeperateFiles )
     geoPdfExporter = qgis::make_unique< QgsLayoutGeoPdfExporter >( mLayout );
 
   mLayout->renderContext().setFlags( settings.flags );
@@ -542,19 +542,23 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   mLayout->renderContext().setExportThemes( settings.exportThemes );
 
   ExportResult result = Success;
-  if ( settings.writeGeoPdf )
+  if ( settings.writeGeoPdf || settings.exportLayersAsSeperateFiles )
   {
     mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagRenderLabelsByMapLayer, true );
 
     // here we need to export layers to individual PDFs
     PdfExportSettings subSettings = settings;
     subSettings.writeGeoPdf = false;
+    subSettings.exportLayersAsSeperateFiles = false;
 
     const QList<QGraphicsItem *> items = mLayout->items( Qt::AscendingOrder );
 
     QList< QgsLayoutGeoPdfExporter::ComponentLayerDetail > pdfComponents;
 
-    auto exportFunc = [this, &subSettings, &pdfComponents, &geoPdfExporter]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail & layerDetail )->QgsLayoutExporter::ExportResult
+    const QDir baseDir = settings.exportLayersAsSeperateFiles ? QFileInfo( filePath ).dir() : QDir();
+    const QString baseFileName = settings.exportLayersAsSeperateFiles ? QFileInfo( filePath ).completeBaseName() : QString();
+
+    auto exportFunc = [this, &subSettings, &pdfComponents, &geoPdfExporter, &settings, &baseDir, &baseFileName]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail & layerDetail )->QgsLayoutExporter::ExportResult
     {
       ExportResult layerExportResult = Success;
       QPrinter printer;
@@ -562,7 +566,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       component.name = layerDetail.name;
       component.mapLayerId = layerDetail.mapLayerId;
       component.group = layerDetail.mapTheme;
-      component.sourcePdfPath = geoPdfExporter->generateTemporaryFilepath( QStringLiteral( "layer_%1.pdf" ).arg( layerId ) );
+      component.sourcePdfPath = settings.writeGeoPdf ? geoPdfExporter->generateTemporaryFilepath( QStringLiteral( "layer_%1.pdf" ).arg( layerId ) ) : baseDir.filePath( QStringLiteral( "%1_%2.pdf" ).arg( baseFileName ).arg( layerId, 4, 10, QChar( '0' ) ) );
       pdfComponents << component;
       preparePrintAsPdf( mLayout, printer, component.sourcePdfPath );
       preparePrint( mLayout, printer, false );
@@ -581,72 +585,79 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
     if ( result != Success )
       return result;
 
-    QgsAbstractGeoPdfExporter::ExportDetails details;
-    details.dpi = settings.dpi;
-    // TODO - multipages
-    QgsLayoutSize pageSize = mLayout->pageCollection()->page( 0 )->sizeWithUnits();
-    QgsLayoutSize pageSizeMM = mLayout->renderContext().measurementConverter().convert( pageSize, QgsUnitTypes::LayoutMillimeters );
-    details.pageSizeMm = pageSizeMM.toQSizeF();
-
-    if ( settings.exportMetadata )
+    if ( settings.writeGeoPdf )
     {
-      // copy layout metadata to GeoPDF export settings
-      details.author = mLayout->project()->metadata().author();
-      details.producer = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
-      details.creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
-      details.creationDateTime = mLayout->project()->metadata().creationDateTime();
-      details.subject = mLayout->project()->metadata().abstract();
-      details.title = mLayout->project()->metadata().title();
-      details.keywords = mLayout->project()->metadata().keywords();
-    }
+      QgsAbstractGeoPdfExporter::ExportDetails details;
+      details.dpi = settings.dpi;
+      // TODO - multipages
+      QgsLayoutSize pageSize = mLayout->pageCollection()->page( 0 )->sizeWithUnits();
+      QgsLayoutSize pageSizeMM = mLayout->renderContext().measurementConverter().convert( pageSize, QgsUnitTypes::LayoutMillimeters );
+      details.pageSizeMm = pageSizeMM.toQSizeF();
 
-    if ( settings.appendGeoreference )
-    {
-      // setup georeferencing
-      QList< QgsLayoutItemMap * > maps;
-      mLayout->layoutItems( maps );
-      for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
+      if ( settings.exportMetadata )
       {
-        QgsAbstractGeoPdfExporter::GeoReferencedSection georef;
-        georef.crs = map->crs();
-
-        const QPointF topLeft = map->mapToScene( QPointF( 0, 0 ) );
-        const QPointF topRight = map->mapToScene( QPointF( map->rect().width(), 0 ) );
-        const QPointF bottomLeft = map->mapToScene( QPointF( 0, map->rect().height() ) );
-        const QPointF bottomRight = map->mapToScene( QPointF( map->rect().width(), map->rect().height() ) );
-        const QgsLayoutPoint topLeftMm = mLayout->convertFromLayoutUnits( topLeft, QgsUnitTypes::LayoutMillimeters );
-        const QgsLayoutPoint topRightMm = mLayout->convertFromLayoutUnits( topRight, QgsUnitTypes::LayoutMillimeters );
-        const QgsLayoutPoint bottomLeftMm = mLayout->convertFromLayoutUnits( bottomLeft, QgsUnitTypes::LayoutMillimeters );
-        const QgsLayoutPoint bottomRightMm = mLayout->convertFromLayoutUnits( bottomRight, QgsUnitTypes::LayoutMillimeters );
-
-        georef.pageBoundsPolygon.setExteriorRing( new QgsLineString( QVector< QgsPointXY >() << QgsPointXY( topLeftMm.x(), topLeftMm.y() )
-            << QgsPointXY( topRightMm.x(), topRightMm.y() )
-            << QgsPointXY( bottomRightMm.x(), bottomRightMm.y() )
-            << QgsPointXY( bottomLeftMm.x(), bottomLeftMm.y() )
-            << QgsPointXY( topLeftMm.x(), topLeftMm.y() ) ) );
-
-        georef.controlPoints.reserve( 4 );
-        const QTransform t = map->layoutToMapCoordsTransform();
-        const QgsPointXY topLeftMap = t.map( topLeft );
-        const QgsPointXY topRightMap = t.map( topRight );
-        const QgsPointXY bottomLeftMap = t.map( bottomLeft );
-        const QgsPointXY bottomRightMap = t.map( bottomRight );
-
-        georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( topLeftMm.x(), topLeftMm.y() ), topLeftMap );
-        georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( topRightMm.x(), topRightMm.y() ), topRightMap );
-        georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( bottomLeftMm.x(), bottomLeftMm.y() ), bottomLeftMap );
-        georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( bottomRightMm.x(), bottomRightMm.y() ), bottomRightMap );
-        details.georeferencedSections << georef;
+        // copy layout metadata to GeoPDF export settings
+        details.author = mLayout->project()->metadata().author();
+        details.producer = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
+        details.creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
+        details.creationDateTime = mLayout->project()->metadata().creationDateTime();
+        details.subject = mLayout->project()->metadata().abstract();
+        details.title = mLayout->project()->metadata().title();
+        details.keywords = mLayout->project()->metadata().keywords();
       }
+
+      if ( settings.appendGeoreference )
+      {
+        // setup georeferencing
+        QList< QgsLayoutItemMap * > maps;
+        mLayout->layoutItems( maps );
+        for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
+        {
+          QgsAbstractGeoPdfExporter::GeoReferencedSection georef;
+          georef.crs = map->crs();
+
+          const QPointF topLeft = map->mapToScene( QPointF( 0, 0 ) );
+          const QPointF topRight = map->mapToScene( QPointF( map->rect().width(), 0 ) );
+          const QPointF bottomLeft = map->mapToScene( QPointF( 0, map->rect().height() ) );
+          const QPointF bottomRight = map->mapToScene( QPointF( map->rect().width(), map->rect().height() ) );
+          const QgsLayoutPoint topLeftMm = mLayout->convertFromLayoutUnits( topLeft, QgsUnitTypes::LayoutMillimeters );
+          const QgsLayoutPoint topRightMm = mLayout->convertFromLayoutUnits( topRight, QgsUnitTypes::LayoutMillimeters );
+          const QgsLayoutPoint bottomLeftMm = mLayout->convertFromLayoutUnits( bottomLeft, QgsUnitTypes::LayoutMillimeters );
+          const QgsLayoutPoint bottomRightMm = mLayout->convertFromLayoutUnits( bottomRight, QgsUnitTypes::LayoutMillimeters );
+
+          georef.pageBoundsPolygon.setExteriorRing( new QgsLineString( QVector< QgsPointXY >() << QgsPointXY( topLeftMm.x(), topLeftMm.y() )
+              << QgsPointXY( topRightMm.x(), topRightMm.y() )
+              << QgsPointXY( bottomRightMm.x(), bottomRightMm.y() )
+              << QgsPointXY( bottomLeftMm.x(), bottomLeftMm.y() )
+              << QgsPointXY( topLeftMm.x(), topLeftMm.y() ) ) );
+
+          georef.controlPoints.reserve( 4 );
+          const QTransform t = map->layoutToMapCoordsTransform();
+          const QgsPointXY topLeftMap = t.map( topLeft );
+          const QgsPointXY topRightMap = t.map( topRight );
+          const QgsPointXY bottomLeftMap = t.map( bottomLeft );
+          const QgsPointXY bottomRightMap = t.map( bottomRight );
+
+          georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( topLeftMm.x(), topLeftMm.y() ), topLeftMap );
+          georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( topRightMm.x(), topRightMm.y() ), topRightMap );
+          georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( bottomLeftMm.x(), bottomLeftMm.y() ), bottomLeftMap );
+          georef.controlPoints << QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( bottomRightMm.x(), bottomRightMm.y() ), bottomRightMap );
+          details.georeferencedSections << georef;
+        }
+      }
+
+      details.customLayerTreeGroups = geoPdfExporter->customLayerTreeGroups();
+      details.includeFeatures = settings.includeGeoPdfFeatures;
+      details.useOgcBestPracticeFormatGeoreferencing = settings.useOgcBestPracticeFormatGeoreferencing;
+      details.useIso32000ExtensionFormatGeoreferencing = settings.useIso32000ExtensionFormatGeoreferencing;
+
+      if ( !geoPdfExporter->finalize( pdfComponents, filePath, details ) )
+        result = PrintError;
     }
-
-    details.customLayerTreeGroups = geoPdfExporter->customLayerTreeGroups();
-    details.includeFeatures = settings.includeGeoPdfFeatures;
-    details.useOgcBestPracticeFormatGeoreferencing = settings.useOgcBestPracticeFormatGeoreferencing;
-    details.useIso32000ExtensionFormatGeoreferencing = settings.useIso32000ExtensionFormatGeoreferencing;
-
-    if ( !geoPdfExporter->finalize( pdfComponents, filePath, details ) )
-      result = PrintError;
+    else
+    {
+      result = Success;
+    }
   }
   else
   {

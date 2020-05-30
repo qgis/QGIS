@@ -39,6 +39,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmclip.cpp
   processing/qgsalgorithmconditionalbranch.cpp
   processing/qgsalgorithmconstantraster.cpp
+  processing/qgsalgorithmconverttocurves.cpp
   processing/qgsalgorithmconvexhull.cpp
   processing/qgsalgorithmdbscanclustering.cpp
   processing/qgsalgorithmdeleteduplicategeometries.cpp
@@ -50,6 +51,9 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmdrape.cpp
   processing/qgsalgorithmdropgeometry.cpp
   processing/qgsalgorithmdropmzvalues.cpp
+  processing/qgsalgorithmexecutepostgisquery.cpp
+  processing/qgsalgorithmexecutespatialitequery.cpp
+  processing/qgsalgorithmexecutespatialitequeryregistered.cpp
   processing/qgsalgorithmexplode.cpp
   processing/qgsalgorithmexplodehstore.cpp
   processing/qgsalgorithmextendlines.cpp
@@ -108,6 +112,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmpointsalonggeometry.cpp
   processing/qgsalgorithmpointslayerfromtable.cpp
   processing/qgsalgorithmpoleofinaccessibility.cpp
+  processing/qgsalgorithmpolygonize.cpp
   processing/qgsalgorithmprojectpointcartesian.cpp
   processing/qgsalgorithmpromotetomultipart.cpp
   processing/qgsalgorithmraiseexception.cpp
@@ -150,11 +155,13 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsinglesidedbuffer.cpp
   processing/qgsalgorithmslope.cpp
   processing/qgsalgorithmsmooth.cpp
+  processing/qgsalgorithmsnapgeometries.cpp
   processing/qgsalgorithmsnaptogrid.cpp
   processing/qgsalgorithmspatialindex.cpp
   processing/qgsalgorithmsplitfeaturesbyattributecharacter.cpp
   processing/qgsalgorithmsplitlineantimeridian.cpp
   processing/qgsalgorithmsplitlinesbylength.cpp
+  processing/qgsalgorithmsplitvectorlayer.cpp
   processing/qgsalgorithmsplitwithlines.cpp
   processing/qgsalgorithmstringconcatenation.cpp
   processing/qgsalgorithmswapxy.cpp

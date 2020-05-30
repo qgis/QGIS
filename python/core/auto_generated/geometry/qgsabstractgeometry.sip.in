@@ -838,6 +838,13 @@ Returns ``True`` if the vertex id is valid
   int ring;
   int vertex;
   VertexType type;
+
+  SIP_PYOBJECT __repr__();
+%MethodCode
+  QString str = QStringLiteral( "<QgsVertexId: %1,%2,%3%4>" ).arg( sipCpp->part ).arg( sipCpp->ring ).arg( sipCpp->vertex ).arg( sipCpp->type == QgsVertexId::CurveVertex ? QStringLiteral( " CurveVertex" ) : QString() );
+  sipRes = PyUnicode_FromString( str.toUtf8().data() );
+%End
+
 };
 
 

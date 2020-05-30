@@ -897,7 +897,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
   return createFromProj( proj4String );
 }
 
-bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
+bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, const bool identify )
 {
   d.detach();
 
@@ -937,51 +937,60 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
   d->mIsValid = false;
   d->mWktPreferred.clear();
 #if PROJ_VERSION_MAJOR>=6
-  // first, try to use proj to do this for us...
-  const QString projCrsString = myProj4String + ( myProj4String.contains( QStringLiteral( "+type=crs" ) ) ? QString() : QStringLiteral( " +type=crs" ) );
-  QgsProjUtils::proj_pj_unique_ptr crs( proj_create( QgsProjContext::get(), projCrsString.toLatin1().constData() ) );
-  if ( crs )
+  if ( identify )
   {
-    QString authName;
-    QString authCode;
-    if ( QgsProjUtils::identifyCrs( crs.get(), authName, authCode, QgsProjUtils::FlagMatchBoundCrsToUnderlyingSourceCrs ) )
+    // first, try to use proj to do this for us...
+    const QString projCrsString = myProj4String + ( myProj4String.contains( QStringLiteral( "+type=crs" ) ) ? QString() : QStringLiteral( " +type=crs" ) );
+    QgsProjUtils::proj_pj_unique_ptr crs( proj_create( QgsProjContext::get(), projCrsString.toLatin1().constData() ) );
+    if ( crs )
     {
-      const QString authid = QStringLiteral( "%1:%2" ).arg( authName, authCode );
-      if ( createFromOgcWmsCrs( authid ) )
+      QString authName;
+      QString authCode;
+      if ( QgsProjUtils::identifyCrs( crs.get(), authName, authCode, QgsProjUtils::FlagMatchBoundCrsToUnderlyingSourceCrs ) )
       {
-        locker.changeMode( QgsReadWriteLocker::Write );
-        if ( !sDisableProjCache )
-          sProj4Cache()->insert( projString, *this );
-        return true;
+        const QString authid = QStringLiteral( "%1:%2" ).arg( authName, authCode );
+        if ( createFromOgcWmsCrs( authid ) )
+        {
+          locker.changeMode( QgsReadWriteLocker::Write );
+          if ( !sDisableProjCache )
+            sProj4Cache()->insert( projString, *this );
+          return true;
+        }
+      }
+    }
+
+    // try a direct match against user crses
+    QgsCoordinateReferenceSystem::RecordMap myRecord = getRecord( "select * from tbl_srs where parameters=" + QgsSqliteUtils::quotedString( myProj4String ) + " order by deprecated" );
+    long id = 0;
+    if ( !myRecord.empty() )
+    {
+      id = myRecord[QStringLiteral( "srs_id" )].toLong();
+      if ( id >= USER_CRS_START_ID )
+      {
+        createFromSrsId( id );
+      }
+    }
+    if ( id < USER_CRS_START_ID )
+    {
+      // no direct matches, so go ahead and create a new proj object based on the proj string alone.
+      setProjString( myProj4String );
+
+      // lastly, try a tolerant match of the created proj object against all user CRSes (allowing differences in parameter order during the comparison)
+      id = matchToUserCrs();
+      if ( id >= USER_CRS_START_ID )
+      {
+        createFromSrsId( id );
       }
     }
   }
-
-  // try a direct match against user crses
-  QgsCoordinateReferenceSystem::RecordMap myRecord = getRecord( "select * from tbl_srs where parameters=" + QgsSqliteUtils::quotedString( myProj4String ) + " order by deprecated" );
-  long id = 0;
-  if ( !myRecord.empty() )
+  else
   {
-    id = myRecord[QStringLiteral( "srs_id" )].toLong();
-    if ( id >= USER_CRS_START_ID )
-    {
-      createFromSrsId( id );
-    }
-  }
-  if ( id < USER_CRS_START_ID )
-  {
-    // no direct matches, so go ahead and create a new proj object based on the proj string alone.
     setProjString( myProj4String );
-
-    // lastly, try a tolerant match of the created proj object against all user CRSes (allowing differences in parameter order during the comparison)
-    id = matchToUserCrs();
-    if ( id >= USER_CRS_START_ID )
-    {
-      createFromSrsId( id );
-    }
   }
 
 #else
+  Q_UNUSED( identify )
+
   QRegExp myProjRegExp( "\\+proj=(\\S+)" );
   int myStart = myProjRegExp.indexIn( myProj4String );
   if ( myStart == -1 )

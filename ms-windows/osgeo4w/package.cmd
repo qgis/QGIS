@@ -130,7 +130,6 @@ cmake -G "%CMAKEGEN%" ^
 	-D WITH_3D=TRUE ^
 	-D WITH_GRASS7=TRUE ^
 	-D GRASS_PREFIX7=%GRASS_PREFIX:\=/% ^
-	-D WITH_GLOBE=FALSE ^
 	-D WITH_ORACLE=TRUE ^
 	-D WITH_CUSTOM_WIDGETS=TRUE ^
 	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
@@ -379,9 +378,6 @@ if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAG
 	"apps/%PACKAGENAME%/i18n/" ^
 	"apps/%PACKAGENAME%/icons/" ^
 	"apps/%PACKAGENAME%/images/" ^
-	"apps/%PACKAGENAME%/plugins/coordinatecaptureplugin.dll" ^
-	"apps/%PACKAGENAME%/plugins/evis.dll" ^
-	"apps/%PACKAGENAME%/plugins/georefplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/gpsimporterplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/offlineeditingplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/topolplugin.dll" ^

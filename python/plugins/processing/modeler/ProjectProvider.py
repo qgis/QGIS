@@ -27,7 +27,8 @@ from qgis.core import (Qgis,
                        QgsMessageLog,
                        QgsProcessingModelAlgorithm,
                        QgsProject,
-                       QgsXmlUtils)
+                       QgsXmlUtils,
+                       QgsRuntimeProfiler)
 
 PROJECT_PROVIDER_ID = 'project'
 
@@ -56,7 +57,9 @@ class ProjectProvider(QgsProcessingProvider):
         self.refreshAlgorithms()
 
     def load(self):
-        self.refreshAlgorithms()
+        with QgsRuntimeProfiler.profile('Project Provider'):
+            self.refreshAlgorithms()
+
         return True
 
     def clear(self):

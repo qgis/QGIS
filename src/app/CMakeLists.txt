@@ -115,6 +115,8 @@ SET(QGIS_APP_SRCS
   decorations/qgsdecorationgrid.cpp
   decorations/qgsdecorationgriddialog.cpp
 
+  vectortile/qgsvectortilelayerproperties.cpp
+
   vertextool/qgslockedfeature.cpp
   vertextool/qgsvertexeditor.cpp
   vertextool/qgsvertextool.cpp
@@ -170,6 +172,10 @@ SET(QGIS_APP_SRCS
   devtools/networklogger/qgsnetworkloggernode.cpp
   devtools/networklogger/qgsnetworkloggerpanelwidget.cpp
   devtools/networklogger/qgsnetworkloggerwidgetfactory.cpp
+  devtools/profiler/qgsprofilerpanelwidget.cpp
+  devtools/profiler/qgsprofilerwidgetfactory.cpp
+
+  georeferencer/qgsvalidateddoublespinbox.cpp
 
   labeling/qgslabelpropertydialog.cpp
   labeling/qgsmaptoolchangelabelproperties.cpp
@@ -224,6 +230,31 @@ SET(QGIS_APP_SRCS
   mesh/qgsmeshstaticdatasetwidget.cpp
   mesh/qgsmeshvariablestrokewidthwidget.cpp
 )
+
+IF (WITH_GEOREFERENCER)
+  SET(QGIS_APP_SRCS
+    ${QGIS_APP_SRCS}
+    georeferencer/qgsgcpcanvasitem.cpp
+    georeferencer/qgsgeorefconfigdialog.cpp
+    georeferencer/qgsgeorefdatapoint.cpp
+    georeferencer/qgsgeorefdelegates.cpp
+    georeferencer/qgsgeorefmainwindow.cpp
+    georeferencer/qgsgeoreftooladdpoint.cpp
+    georeferencer/qgsgeoreftooldeletepoint.cpp
+    georeferencer/qgsgeoreftoolmovepoint.cpp
+    georeferencer/qgsgeorefvalidators.cpp
+    georeferencer/qgsleastsquares.cpp
+    georeferencer/qgsmapcoordsdialog.cpp
+    georeferencer/qgsresidualplotitem.cpp
+    georeferencer/qgstransformsettingsdialog.cpp
+    georeferencer/qgsgcplist.cpp
+    georeferencer/qgsgcplistmodel.cpp
+    georeferencer/qgsimagewarper.cpp
+    georeferencer/qgsgeoreftransform.cpp
+    georeferencer/qgsgcplistwidget.cpp
+    georeferencer/qgsrasterchangecoords.cpp
+  )
+ENDIF (WITH_GEOREFERENCER)
 
 IF (WITH_3D)
   SET(QGIS_APP_SRCS
@@ -384,6 +415,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/app/dwg
   ${CMAKE_SOURCE_DIR}/src/app/mesh
   ${CMAKE_SOURCE_DIR}/src/app/locator
+  ${CMAKE_SOURCE_DIR}/src/app/vectortile
   ${CMAKE_SOURCE_DIR}/src/analysis
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
   ${CMAKE_SOURCE_DIR}/src/analysis/mesh
@@ -575,6 +607,15 @@ IF (WITH_3D)
     qgis_3d
   )
 ENDIF (WITH_3D)
+
+IF (WITH_GEOREFERENCER)
+  INCLUDE_DIRECTORIES(SYSTEM
+    ${GSL_INCLUDE_DIR}
+  )
+  TARGET_LINK_LIBRARIES(qgis_app
+    ${GSL_LIBRARIES}
+  )
+ENDIF (WITH_GEOREFERENCER)
 
 GENERATE_EXPORT_HEADER(
    qgis_app

@@ -40,7 +40,8 @@ from qgis.core import (QgsMessageLog,
                        QgsProcessingOutputRasterLayer,
                        QgsProcessingOutputMapLayer,
                        QgsProcessingOutputMultipleLayers,
-                       QgsProcessingFeedback)
+                       QgsProcessingFeedback,
+                       QgsRuntimeProfiler)
 
 import processing
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -51,12 +52,25 @@ from processing.gui.AlgorithmExecutor import execute
 from processing.script import ScriptUtils
 from processing.tools import dataobjects
 
-from processing.algs.qgis.QgisAlgorithmProvider import QgisAlgorithmProvider  # NOQA
-from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
-from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
-from processing.algs.otb.OtbAlgorithmProvider import OtbAlgorithmProvider  # NOQA
-from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # NOQA
-from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
+with QgsRuntimeProfiler.profile('Import QGIS Provider'):
+    from processing.algs.qgis.QgisAlgorithmProvider import QgisAlgorithmProvider  # NOQA
+
+with QgsRuntimeProfiler.profile('Import GRASS Provider'):
+    from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
+
+with QgsRuntimeProfiler.profile('Import GDAL Provider'):
+    from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
+
+with QgsRuntimeProfiler.profile('Import OTB Provider'):
+    from processing.algs.otb.OtbAlgorithmProvider import OtbAlgorithmProvider  # NOQA
+
+with QgsRuntimeProfiler.profile('Import SAGA Provider'):
+    from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # NOQA
+
+with QgsRuntimeProfiler.profile('Import Script Provider'):
+    from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
+
+
 # from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider  # NOQA
 
 # should be loaded last - ensures that all dependent algorithms are available when loading models
@@ -83,24 +97,26 @@ class Processing(object):
     def initialize():
         if "model" in [p.id() for p in QgsApplication.processingRegistry().providers()]:
             return
-        # Add the basic providers
-        for c in [
-            QgisAlgorithmProvider,
-            Grass7AlgorithmProvider,
-            GdalAlgorithmProvider,
-            OtbAlgorithmProvider,
-            SagaAlgorithmProvider,
-            ScriptAlgorithmProvider,
-            ModelerAlgorithmProvider,
-            ProjectProvider
-        ]:
-            p = c()
-            if QgsApplication.processingRegistry().addProvider(p):
-                Processing.BASIC_PROVIDERS.append(p)
-        # And initialize
-        ProcessingConfig.initialize()
-        ProcessingConfig.readSettings()
-        RenderingStyles.loadStyles()
+
+        with QgsRuntimeProfiler.profile('Initialize'):
+            # Add the basic providers
+            for c in [
+                QgisAlgorithmProvider,
+                Grass7AlgorithmProvider,
+                GdalAlgorithmProvider,
+                OtbAlgorithmProvider,
+                SagaAlgorithmProvider,
+                ScriptAlgorithmProvider,
+                ModelerAlgorithmProvider,
+                ProjectProvider
+            ]:
+                p = c()
+                if QgsApplication.processingRegistry().addProvider(p):
+                    Processing.BASIC_PROVIDERS.append(p)
+            # And initialize
+            ProcessingConfig.initialize()
+            ProcessingConfig.readSettings()
+            RenderingStyles.loadStyles()
 
     @staticmethod
     def deinitialize():

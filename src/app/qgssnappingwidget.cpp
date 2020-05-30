@@ -44,6 +44,22 @@
 #include "qgsscalewidget.h"
 
 
+class SnapTypeMenu: public QMenu
+{
+  public:
+    SnapTypeMenu( const QString &title, QWidget *parent = nullptr )
+      : QMenu( title, parent ) {}
+
+    void mouseReleaseEvent( QMouseEvent *e )
+    {
+      QAction *action = activeAction();
+      if ( action )
+        action->trigger();
+      else
+        QMenu::mouseReleaseEvent( e );
+    }
+};
+
 QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas, QWidget *parent )
   : QWidget( parent )
   , mProject( project )
@@ -162,7 +178,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mTypeButton = new QToolButton();
   mTypeButton->setToolTip( tr( "Snapping Type" ) );
   mTypeButton->setPopupMode( QToolButton::InstantPopup );
-  QMenu *typeMenu = new QMenu( tr( "Set Snapping Mode" ), this );
+  SnapTypeMenu *typeMenu = new SnapTypeMenu( tr( "Set Snapping Mode" ), this );
   mVertexAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertex.svg" ) ), tr( "Vertex" ), typeMenu );
   mSegmentAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingSegment.svg" ) ), tr( "Segment" ), typeMenu );
   mAreaAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingArea.svg" ) ), tr( "Area" ), typeMenu );
@@ -287,6 +303,14 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   tracingMenu->addAction( widgetAction );
   mEnableTracingAction->setMenu( tracingMenu );
 
+  // self-snapping button
+  mSelfSnappingAction = new QAction( tr( "Self-snapping" ), this );
+  mSelfSnappingAction->setCheckable( true );
+  mSelfSnappingAction->setIcon( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingSelf.svg" ) ) );
+  mSelfSnappingAction->setToolTip( tr( "If self snapping is enabled, snapping will also take the current state of the digitized feature into consideration." ) );
+  mSelfSnappingAction->setObjectName( QStringLiteral( "SelfSnappingAction" ) );
+  connect( mSelfSnappingAction, &QAction::toggled, this, &QgsSnappingWidget::enableSelfSnapping );
+
   // layout
   if ( mDisplayMode == ToolBar )
   {
@@ -316,6 +340,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     mAvoidIntersectionsModeAction = tb->addWidget( mAvoidIntersectionsModeButton );
     tb->addAction( mIntersectionSnappingAction );
     tb->addAction( mEnableTracingAction );
+    tb->addAction( mSelfSnappingAction );
   }
   else
   {
@@ -349,6 +374,12 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     interButton->setDefaultAction( mIntersectionSnappingAction );
     interButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
     layout->addWidget( interButton );
+
+    QToolButton *selfsnapButton = new QToolButton();
+    selfsnapButton->addAction( mSelfSnappingAction );
+    selfsnapButton->setDefaultAction( mSelfSnappingAction );
+    selfsnapButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+    layout->addWidget( selfsnapButton );
 
     layout->setContentsMargins( 0, 0, 0, 0 );
     layout->setAlignment( Qt::AlignRight );
@@ -488,6 +519,11 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
     mIntersectionSnappingAction->setChecked( config.intersectionSnapping() );
   }
 
+  if ( config.selfSnapping() != mSelfSnappingAction->isChecked() )
+  {
+    mSelfSnappingAction->setChecked( config.selfSnapping() );
+  }
+
   toggleSnappingWidgets( config.enabled() );
 
 }
@@ -552,6 +588,7 @@ void QgsSnappingWidget::toggleSnappingWidgets( bool enabled )
     mAdvancedConfigWidget->setEnabled( enabled );
   }
   mIntersectionSnappingAction->setEnabled( enabled );
+  mSelfSnappingAction->setEnabled( enabled );
   mEnableTracingAction->setEnabled( enabled );
 }
 
@@ -590,6 +627,12 @@ void QgsSnappingWidget::enableTopologicalEditing( bool enabled )
 void QgsSnappingWidget::enableIntersectionSnapping( bool enabled )
 {
   mConfig.setIntersectionSnapping( enabled );
+  mProject->setSnappingConfig( mConfig );
+}
+
+void QgsSnappingWidget::enableSelfSnapping( bool enabled )
+{
+  mConfig.setSelfSnapping( enabled );
   mProject->setSnappingConfig( mConfig );
 }
 

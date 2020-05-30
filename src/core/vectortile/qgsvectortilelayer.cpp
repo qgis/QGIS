@@ -293,6 +293,7 @@ QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
 void QgsVectorTileLayer::setRenderer( QgsVectorTileRenderer *r )
 {
   mRenderer.reset( r );
+  triggerRepaint();
 }
 
 QgsVectorTileRenderer *QgsVectorTileLayer::renderer() const
@@ -303,6 +304,7 @@ QgsVectorTileRenderer *QgsVectorTileLayer::renderer() const
 void QgsVectorTileLayer::setLabeling( QgsVectorTileLabeling *labeling )
 {
   mLabeling.reset( labeling );
+  triggerRepaint();
 }
 
 QgsVectorTileLabeling *QgsVectorTileLayer::labeling() const

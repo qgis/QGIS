@@ -85,10 +85,10 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
   mTileHeightLineEdit->setValidator( new QIntValidator( 0, 9999, this ) );
   mFeatureCountLineEdit->setValidator( new QIntValidator( 0, 9999, this ) );
 
-  mCacheComboBox->addItem( tr( "Always cache" ), QNetworkRequest::AlwaysCache );
-  mCacheComboBox->addItem( tr( "Prefer cache" ), QNetworkRequest::PreferCache );
-  mCacheComboBox->addItem( tr( "Prefer network" ), QNetworkRequest::PreferNetwork );
-  mCacheComboBox->addItem( tr( "Always network" ), QNetworkRequest::AlwaysNetwork );
+  mCacheComboBox->addItem( tr( "Always Cache" ), QNetworkRequest::AlwaysCache );
+  mCacheComboBox->addItem( tr( "Prefer Cache" ), QNetworkRequest::PreferCache );
+  mCacheComboBox->addItem( tr( "Prefer Network" ), QNetworkRequest::PreferNetwork );
+  mCacheComboBox->addItem( tr( "Always Network" ), QNetworkRequest::AlwaysNetwork );
 
   // 'Prefer network' is the default noted in the combobox's tool tip
   mCacheComboBox->setCurrentIndex( mCacheComboBox->findData( QNetworkRequest::PreferNetwork ) );

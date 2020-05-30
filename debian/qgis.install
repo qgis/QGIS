@@ -1,7 +1,4 @@
-usr/lib/qgis/plugins/libcoordinatecaptureplugin.so
-usr/lib/qgis/plugins/libevis.so
 usr/lib/qgis/plugins/libgeometrycheckerplugin.so
-usr/lib/qgis/plugins/libgeorefplugin.so
 usr/lib/qgis/plugins/libgpsimporterplugin.so
 usr/lib/qgis/plugins/liboauth2authmethod.so
 usr/lib/qgis/plugins/libofflineeditingplugin.so

@@ -29,6 +29,8 @@ class QgsCoordinateReferenceSystem;
 class QgsRasterLayer;
 class QgsCoordinateTransformContext;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup 3d
  * Takes care of downloading terrain data from a publicly available data source.
@@ -37,6 +39,8 @@ class QgsCoordinateTransformContext;
  * - data format: https://github.com/tilezen/joerd/blob/master/docs/formats.md
  * - data sources: https://github.com/tilezen/joerd/blob/master/docs/data-sources.md
  * - hosting: https://registry.opendata.aws/terrain-tiles/
+ *
+ * \note Not available in Python bindings
  *
  * \since QGIS 3.8
  */

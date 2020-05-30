@@ -15,11 +15,15 @@
 
 #include "qgsgdalutils.h"
 #include "qgslogger.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgssettings.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include "gdal.h"
+#include "gdalwarper.h"
 #include "cpl_string.h"
 
+#include <QNetworkProxy>
 #include <QString>
 #include <QImage>
 
@@ -277,3 +281,261 @@ QString QgsGdalUtils::validateCreationOptionsFormat( const QStringList &createOp
     return QStringLiteral( "Failed GDALValidateCreationOptions() test" );
   return QString();
 }
+
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,3,0)
+// GDAL < 2.3 does not come with GDALWarpInitDefaultBandMapping and GDALWarpInitNoDataReal
+// in the public API so we define them here for rpcAwareAutoCreateWarpedVrt()
+
+static void GDALWarpInitDefaultBandMapping( GDALWarpOptions *psOptionsIn, int nBandCount )
+{
+  if ( psOptionsIn->nBandCount != 0 ) { return; }
+
+  psOptionsIn->nBandCount = nBandCount;
+
+  psOptionsIn->panSrcBands = static_cast<int *>(
+                               CPLMalloc( sizeof( int ) * psOptionsIn->nBandCount ) );
+  psOptionsIn->panDstBands = static_cast<int *>(
+                               CPLMalloc( sizeof( int ) * psOptionsIn->nBandCount ) );
+
+  for ( int i = 0; i < psOptionsIn->nBandCount; i++ )
+  {
+    psOptionsIn->panSrcBands[i] = i + 1;
+    psOptionsIn->panDstBands[i] = i + 1;
+  }
+}
+
+static void InitNoData( int nBandCount, double **ppdNoDataReal, double dDataReal )
+{
+  if ( nBandCount <= 0 ) { return; }
+  if ( *ppdNoDataReal != nullptr ) { return; }
+
+  *ppdNoDataReal = static_cast<double *>(
+                     CPLMalloc( sizeof( double ) * nBandCount ) );
+
+  for ( int i = 0; i < nBandCount; ++i )
+  {
+    ( *ppdNoDataReal )[i] = dDataReal;
+  }
+}
+
+static void GDALWarpInitNoDataReal( GDALWarpOptions *psOptionsIn, double  dNoDataReal )
+{
+  InitNoData( psOptionsIn->nBandCount, &psOptionsIn->padfDstNoDataReal, dNoDataReal );
+  InitNoData( psOptionsIn->nBandCount, &psOptionsIn->padfSrcNoDataReal, dNoDataReal );
+  // older GDAL also requires imaginary values to be set
+  InitNoData( psOptionsIn->nBandCount, &psOptionsIn->padfDstNoDataImag, 0 );
+  InitNoData( psOptionsIn->nBandCount, &psOptionsIn->padfSrcNoDataImag, 0 );
+}
+#endif
+
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,2,0)
+
+GDALDatasetH GDALAutoCreateWarpedVRTEx( GDALDatasetH hSrcDS, const char *pszSrcWKT, const char *pszDstWKT, GDALResampleAlg eResampleAlg,
+                                        double dfMaxError, const GDALWarpOptions *psOptionsIn, char **papszTransformerOptions )
+{
+  VALIDATE_POINTER1( hSrcDS, "GDALAutoCreateWarpedVRT", nullptr );
+
+  /* -------------------------------------------------------------------- */
+  /*      Populate the warp options.                                      */
+  /* -------------------------------------------------------------------- */
+  GDALWarpOptions *psWO = nullptr;
+  if ( psOptionsIn != nullptr )
+    psWO = GDALCloneWarpOptions( psOptionsIn );
+  else
+    psWO = GDALCreateWarpOptions();
+
+  psWO->eResampleAlg = eResampleAlg;
+
+  psWO->hSrcDS = hSrcDS;
+
+  GDALWarpInitDefaultBandMapping( psWO, GDALGetRasterCount( hSrcDS ) );
+
+  /* -------------------------------------------------------------------- */
+  /*      Setup no data values                                            */
+  /* -------------------------------------------------------------------- */
+  for ( int i = 0; i < psWO->nBandCount; i++ )
+  {
+    GDALRasterBandH rasterBand = GDALGetRasterBand( psWO->hSrcDS, psWO->panSrcBands[i] );
+
+    int hasNoDataValue;
+    double noDataValue = GDALGetRasterNoDataValue( rasterBand, &hasNoDataValue );
+
+    if ( hasNoDataValue )
+    {
+      // Check if the nodata value is out of range
+      int bClamped = FALSE;
+      int bRounded = FALSE;
+      CPL_IGNORE_RET_VAL(
+        GDALAdjustValueToDataType( GDALGetRasterDataType( rasterBand ),
+                                   noDataValue, &bClamped, &bRounded ) );
+      if ( !bClamped )
+      {
+        GDALWarpInitNoDataReal( psWO, -1e10 );
+
+        psWO->padfSrcNoDataReal[i] = noDataValue;
+        psWO->padfDstNoDataReal[i] = noDataValue;
+      }
+    }
+  }
+
+  if ( psWO->padfDstNoDataReal != nullptr )
+  {
+    if ( CSLFetchNameValue( psWO->papszWarpOptions, "INIT_DEST" ) == nullptr )
+    {
+      psWO->papszWarpOptions =
+        CSLSetNameValue( psWO->papszWarpOptions, "INIT_DEST", "NO_DATA" );
+    }
+  }
+
+  /* -------------------------------------------------------------------- */
+  /*      Create the transformer.                                         */
+  /* -------------------------------------------------------------------- */
+  psWO->pfnTransformer = GDALGenImgProjTransform;
+
+  char **papszOptions = nullptr;
+  if ( pszSrcWKT != nullptr )
+    papszOptions = CSLSetNameValue( papszOptions, "SRC_SRS", pszSrcWKT );
+  if ( pszDstWKT != nullptr )
+    papszOptions = CSLSetNameValue( papszOptions, "DST_SRS", pszDstWKT );
+  papszOptions = CSLMerge( papszOptions, papszTransformerOptions );
+  psWO->pTransformerArg =
+    GDALCreateGenImgProjTransformer2( psWO->hSrcDS, nullptr,
+                                      papszOptions );
+  CSLDestroy( papszOptions );
+
+  if ( psWO->pTransformerArg == nullptr )
+  {
+    GDALDestroyWarpOptions( psWO );
+    return nullptr;
+  }
+
+  /* -------------------------------------------------------------------- */
+  /*      Figure out the desired output bounds and resolution.            */
+  /* -------------------------------------------------------------------- */
+  double adfDstGeoTransform[6] = { 0.0 };
+  int nDstPixels = 0;
+  int nDstLines = 0;
+  CPLErr eErr =
+    GDALSuggestedWarpOutput( hSrcDS, psWO->pfnTransformer,
+                             psWO->pTransformerArg,
+                             adfDstGeoTransform, &nDstPixels, &nDstLines );
+  if ( eErr != CE_None )
+  {
+    GDALDestroyTransformer( psWO->pTransformerArg );
+    GDALDestroyWarpOptions( psWO );
+    return nullptr;
+  }
+
+  /* -------------------------------------------------------------------- */
+  /*      Update the transformer to include an output geotransform        */
+  /*      back to pixel/line coordinates.                                 */
+  /*                                                                      */
+  /* -------------------------------------------------------------------- */
+  GDALSetGenImgProjTransformerDstGeoTransform(
+    psWO->pTransformerArg, adfDstGeoTransform );
+
+  /* -------------------------------------------------------------------- */
+  /*      Do we want to apply an approximating transformation?            */
+  /* -------------------------------------------------------------------- */
+  if ( dfMaxError > 0.0 )
+  {
+    psWO->pTransformerArg =
+      GDALCreateApproxTransformer( psWO->pfnTransformer,
+                                   psWO->pTransformerArg,
+                                   dfMaxError );
+    psWO->pfnTransformer = GDALApproxTransform;
+    GDALApproxTransformerOwnsSubtransformer( psWO->pTransformerArg, TRUE );
+  }
+
+  /* -------------------------------------------------------------------- */
+  /*      Create the VRT file.                                            */
+  /* -------------------------------------------------------------------- */
+  GDALDatasetH hDstDS
+    = GDALCreateWarpedVRT( hSrcDS, nDstPixels, nDstLines,
+                           adfDstGeoTransform, psWO );
+
+  GDALDestroyWarpOptions( psWO );
+
+  if ( pszDstWKT != nullptr )
+    GDALSetProjection( hDstDS, pszDstWKT );
+  else if ( pszSrcWKT != nullptr )
+    GDALSetProjection( hDstDS, pszSrcWKT );
+  else if ( GDALGetGCPCount( hSrcDS ) > 0 )
+    GDALSetProjection( hDstDS, GDALGetGCPProjection( hSrcDS ) );
+  else
+    GDALSetProjection( hDstDS, GDALGetProjectionRef( hSrcDS ) );
+
+  return hDstDS;
+}
+#endif
+
+
+GDALDatasetH QgsGdalUtils::rpcAwareAutoCreateWarpedVrt(
+  GDALDatasetH hSrcDS,
+  const char *pszSrcWKT,
+  const char *pszDstWKT,
+  GDALResampleAlg eResampleAlg,
+  double dfMaxError,
+  const GDALWarpOptions *psOptionsIn )
+{
+  char **opts = nullptr;
+  if ( GDALGetMetadata( hSrcDS, "RPC" ) )
+  {
+    // well-behaved RPC should have height offset a good value for RPC_HEIGHT
+    const char *heightOffStr = GDALGetMetadataItem( hSrcDS, "HEIGHT_OFF", "RPC" );
+    if ( heightOffStr )
+      opts = CSLAddNameValue( opts, "RPC_HEIGHT", heightOffStr );
+  }
+
+  return GDALAutoCreateWarpedVRTEx( hSrcDS, pszSrcWKT, pszDstWKT, eResampleAlg, dfMaxError, psOptionsIn, opts );
+}
+
+#ifndef QT_NO_NETWORKPROXY
+void QgsGdalUtils::setupProxy()
+{
+  // Check proxy configuration, they are application level but
+  // instead of adding an API and complex signal/slot connections
+  // given the limited cost of checking them on every provider instantiation
+  // we can do it here so that new settings are applied whenever a new layer
+  // is created.
+  QgsSettings settings;
+  // Check that proxy is enabled
+  if ( settings.value( QStringLiteral( "proxy/proxyEnabled" ), false ).toBool() )
+  {
+    // Get the first configured proxy
+    QList<QNetworkProxy> proxies( QgsNetworkAccessManager::instance()->proxyFactory()->queryProxy( ) );
+    if ( ! proxies.isEmpty() )
+    {
+      QNetworkProxy proxy( proxies.first() );
+      // TODO/FIXME: check excludes (the GDAL config options are global, we need a per-connection config option)
+      //QStringList excludes;
+      //excludes = settings.value( QStringLiteral( "proxy/proxyExcludedUrls" ), "" ).toStringList();
+
+      QString proxyHost( proxy.hostName() );
+      qint16 proxyPort( proxy.port() );
+
+      QString proxyUser( proxy.user() );
+      QString proxyPassword( proxy.password() );
+
+      if ( ! proxyHost.isEmpty() )
+      {
+        QString connection( proxyHost );
+        if ( proxyPort )
+        {
+          connection += ':' +  QString::number( proxyPort );
+        }
+        CPLSetConfigOption( "GDAL_HTTP_PROXY", connection.toUtf8() );
+        if ( !  proxyUser.isEmpty( ) )
+        {
+          QString credentials( proxyUser );
+          if ( !  proxyPassword.isEmpty( ) )
+          {
+            credentials += ':' + proxyPassword;
+          }
+          CPLSetConfigOption( "GDAL_HTTP_PROXYUSERPWD", credentials.toUtf8() );
+        }
+      }
+    }
+  }
+}
+#endif

@@ -147,10 +147,8 @@ MDAL::cfdataset_info_map MDAL::DriverCF::parseDatasetGroupInfo()
 
       //construct classification metadata
       if ( isClassified && !is_vector )
-      {
-
         meta.push_back( metadataFromClassification( classes ) );
-      }
+
 
       // Add dsinfo to the map
       auto it = dsinfo_map.find( vectorName );

@@ -512,6 +512,13 @@ bool QgsRasterDataProvider::ignoreExtents() const
   return false;
 }
 
+QgsPoint QgsRasterDataProvider::transformCoordinates( const QgsPoint &point, QgsRasterDataProvider::TransformType type )
+{
+  Q_UNUSED( point )
+  Q_UNUSED( type )
+  return QgsPoint();
+}
+
 bool QgsRasterDataProvider::userNoDataValuesContains( int bandNo, double value ) const
 {
   QgsRasterRangeList rangeList = mUserNoDataValue.value( bandNo - 1 );

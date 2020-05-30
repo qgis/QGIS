@@ -99,6 +99,7 @@
 %Include auto_generated/qgslegendsettings.sip
 %Include auto_generated/qgslegendstyle.sip
 %Include auto_generated/qgslocaldefaultsettings.sip
+%Include auto_generated/qgslocalizeddatapathregistry.sip
 %Include auto_generated/qgslogger.sip
 %Include auto_generated/qgsmapdecoration.sip
 %Include auto_generated/qgsmaphittest.sip

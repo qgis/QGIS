@@ -67,6 +67,11 @@ QgsPoint::QgsPoint( const QgsPointXY &p )
   , mM( std::numeric_limits<double>::quiet_NaN() )
 {
   mWkbType = QgsWkbTypes::Point;
+  if ( p.isEmpty() )
+  {
+    mX = std::numeric_limits<double>::quiet_NaN();
+    mY = std::numeric_limits<double>::quiet_NaN();
+  }
 }
 
 QgsPoint::QgsPoint( QPointF p )

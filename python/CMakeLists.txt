@@ -247,6 +247,7 @@ IF (WITH_3D)
   INCLUDE_DIRECTORIES(
     ${CMAKE_SOURCE_DIR}/src/3d
     ${CMAKE_SOURCE_DIR}/src/3d/chunks
+    ${CMAKE_SOURCE_DIR}/src/3d/processing
     ${CMAKE_SOURCE_DIR}/src/3d/symbols
     ${CMAKE_SOURCE_DIR}/src/3d/terrain
     ${CMAKE_BINARY_DIR}/src/3d

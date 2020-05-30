@@ -1098,9 +1098,9 @@ bool QgsLayerTreeModel::dropMimeData( const QMimeData *data, Qt::DropAction acti
   // if we are coming from another QGIS instance, we need to add the layers too
   bool ok = false;
   // the application pid is only provided from QGIS 3.14, so do not check to OK before defaulting to moving in the legend
-  int qgisPid = data->data( QStringLiteral( "application/qgis.application.pid" ) ).toInt( &ok );
+  qint64 qgisPid = data->data( QStringLiteral( "application/qgis.application.pid" ) ).toInt( &ok );
 
-  if ( ok && qgisPid != QString::number( QCoreApplication::applicationPid() ) )
+  if ( ok && qgisPid != QCoreApplication::applicationPid() )
   {
     QByteArray encodedLayerDefinitionData = data->data( QStringLiteral( "application/qgis.layertree.layerdefinitions" ) );
     QDomDocument layerDefinitionDoc;

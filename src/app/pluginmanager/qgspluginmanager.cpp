@@ -289,7 +289,7 @@ void QgsPluginManager::loadPlugin( const QString &id )
     pRegistry->loadCppPlugin( library );
   }
 
-  QgsDebugMsg( "Plugin loaded: " + library );
+  QgsDebugMsgLevel( "Plugin loaded: " + library, 2 );
   QApplication::restoreOverrideCursor();
 }
 
@@ -310,12 +310,12 @@ void QgsPluginManager::unloadPlugin( const QString &id )
   if ( plugin->value( QStringLiteral( "pythonic" ) ) == QLatin1String( "true" ) )
   {
     library = plugin->value( QStringLiteral( "id" ) );
-    QgsDebugMsg( "Unloading Python plugin: " + library );
+    QgsDebugMsgLevel( "Unloading Python plugin: " + library, 2 );
     pRegistry->unloadPythonPlugin( library );
   }
   else // C++ plugin
   {
-    QgsDebugMsg( "Unloading C++ plugin: " + library );
+    QgsDebugMsgLevel( "Unloading C++ plugin: " + library, 2 );
     pRegistry->unloadCppPlugin( library );
   }
 }
@@ -408,17 +408,17 @@ void QgsPluginManager::getCppPluginsMetadata()
 #endif //#ifndef Q_OS_WIN && Q_OS_MACX
 #endif //#ifdef TESTLIB
 
-      QgsDebugMsg( "Examining: " + lib );
+      QgsDebugMsgLevel( "Examining: " + lib, 2 );
       QLibrary *myLib = new QLibrary( lib );
       bool loaded = myLib->load();
       if ( !loaded )
       {
-        QgsDebugMsg( QStringLiteral( "Failed to load: %1 (%2)" ).arg( myLib->fileName(), myLib->errorString() ) );
+        QgsDebugMsgLevel( QStringLiteral( "Failed to load: %1 (%2)" ).arg( myLib->fileName(), myLib->errorString() ), 2 );
         delete myLib;
         continue;
       }
 
-      QgsDebugMsg( "Loaded library: " + myLib->fileName() );
+      QgsDebugMsgLevel( "Loaded library: " + myLib->fileName(), 2 );
       //Type is only used in non-provider plugins, so data providers are not picked
       if ( !myLib->resolve( "type" ) )
       {
@@ -439,64 +439,64 @@ void QgsPluginManager::getCppPluginsMetadata()
       // show the values (or lack of) for each function
       if ( pName )
       {
-        QgsDebugMsg( "Plugin name: " + pName() );
+        QgsDebugMsgLevel( "Plugin name: " + pName(), 2 );
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Plugin name not returned when queried" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Plugin name not returned when queried" ), 2 );
       }
       if ( pDesc )
       {
-        QgsDebugMsg( "Plugin description: " + pDesc() );
+        QgsDebugMsgLevel( "Plugin description: " + pDesc(), 2 );
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Plugin description not returned when queried" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Plugin description not returned when queried" ), 2 );
       }
       if ( pCat )
       {
-        QgsDebugMsg( "Plugin category: " + pCat() );
+        QgsDebugMsgLevel( "Plugin category: " + pCat(), 2 );
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Plugin category not returned when queried" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Plugin category not returned when queried" ), 2 );
       }
       if ( pVersion )
       {
-        QgsDebugMsg( "Plugin version: " + pVersion() );
+        QgsDebugMsgLevel( "Plugin version: " + pVersion(), 2 );
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Plugin version not returned when queried" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Plugin version not returned when queried" ), 2 );
       }
       if ( pIcon )
       {
-        QgsDebugMsg( "Plugin icon: " + pIcon() );
+        QgsDebugMsgLevel( "Plugin icon: " + pIcon(), 2 );
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Plugin icon not returned when queried" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Plugin icon not returned when queried" ), 2 );
       }
       if ( pCreateDate )
       {
-        QgsDebugMsg( "Plugin create date: " + pCreateDate() );
+        QgsDebugMsgLevel( "Plugin create date: " + pCreateDate(), 2 );
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Plugin create date not returned when queried" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Plugin create date not returned when queried" ), 2 );
       }
       if ( pUpdateDate )
       {
-        QgsDebugMsg( "Plugin update date: " + pUpdateDate() );
+        QgsDebugMsgLevel( "Plugin update date: " + pUpdateDate(), 2 );
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "Plugin update date not returned when queried" ) );
+        QgsDebugMsgLevel( QStringLiteral( "Plugin update date not returned when queried" ), 2 );
       }
 
       if ( !pName || !pDesc || !pVersion )
       {
-        QgsDebugMsg( "Failed to get name, description, or type for " + myLib->fileName() );
+        QgsDebugMsgLevel( "Failed to get name, description, or type for " + myLib->fileName(), 2 );
         delete myLib;
         continue;
       }

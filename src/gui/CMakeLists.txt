@@ -416,6 +416,7 @@ SET(QGIS_GUI_SRCS
   qgsfilterlineedit.cpp
   qgsfindfilesbypatternwidget.cpp
   qgsfloatingwidget.cpp
+  qgsfocuskeeper.cpp
   qgsfocuswatcher.cpp
   qgsfontbutton.cpp
   qgsformannotation.cpp
@@ -674,6 +675,7 @@ SET(QGIS_GUI_HDRS
   qgsmanageconnectionsdialog.h
   qgsmapcanvas.h
   qgsmapcanvasannotationitem.h
+  qgsmapcanvasinteractionblocker.h
   qgsmapcanvasitem.h
   qgsmapcanvasmap.h
   qgsmapcanvassnappingutils.h

@@ -160,6 +160,10 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const ProviderOptions &opt
 
   QgsGdalProviderBase::registerGdalDrivers();
 
+#ifndef QT_NO_NETWORKPROXY
+  QgsGdalUtils::setupProxy();
+#endif
+
   if ( !CPLGetConfigOption( "AAIGRID_DATATYPE", nullptr ) )
   {
     // GDAL tends to open AAIGrid as Float32 which results in lost precision
@@ -456,6 +460,9 @@ void QgsGdalProvider::closeCachedGdalHandlesFor( QgsGdalProvider *provider )
 QgsGdalProvider::~QgsGdalProvider()
 {
   QMutexLocker locker( sGdalProviderMutex() );
+
+  if ( mGdalTransformerArg )
+    GDALDestroyTransformer( mGdalTransformerArg );
 
   int lightRefCounter = -- ( *mpLightRefCounter );
   int refCounter = -- ( *mpRefCounter );
@@ -2667,9 +2674,18 @@ void QgsGdalProvider::initBaseDataset()
   {
     QgsLogger::warning( QStringLiteral( "Creating Warped VRT." ) );
 
-    mGdalDataset =
-      GDALAutoCreateWarpedVRT( mGdalBaseDataset, nullptr, nullptr,
-                               GRA_NearestNeighbour, 0.2, nullptr );
+    if ( GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
+    {
+      mGdalDataset =
+        QgsGdalUtils::rpcAwareAutoCreateWarpedVrt( mGdalBaseDataset, nullptr, nullptr,
+            GRA_NearestNeighbour, 0.2, nullptr );
+    }
+    else
+    {
+      mGdalDataset =
+        GDALAutoCreateWarpedVRT( mGdalBaseDataset, nullptr, nullptr,
+                                 GRA_NearestNeighbour, 0.2, nullptr );
+    }
 
     if ( !mGdalDataset )
     {
@@ -2685,6 +2701,8 @@ void QgsGdalProvider::initBaseDataset()
   {
     mGdalDataset = mGdalBaseDataset;
   }
+
+  mGdalTransformerArg = GDALCreateGenImgProjTransformer( mGdalBaseDataset, nullptr, nullptr, nullptr, TRUE, 1.0, 0 );
 
   if ( !hasGeoTransform )
   {
@@ -3154,6 +3172,20 @@ QString QgsGdalProvider::validatePyramidsConfigOptions( QgsRaster::RasterPyramid
   }
 
   return QString();
+}
+
+QgsPoint QgsGdalProvider::transformCoordinates( const QgsPoint &point, QgsRasterDataProvider::TransformType type )
+{
+  if ( !mGdalTransformerArg )
+    return QgsPoint();
+
+  int success;
+  double x = point.x(), y = point.y(), z = point.is3D() ? point.z() : 0;
+  GDALUseTransformer( mGdalTransformerArg, type == TransformLayerToImage, 1, &x, &y, &z, &success );
+  if ( !success )
+    return QgsPoint();
+
+  return QgsPoint( x, y, z );
 }
 
 bool QgsGdalProvider::isEditable() const

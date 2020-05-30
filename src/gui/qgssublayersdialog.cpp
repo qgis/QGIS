@@ -17,6 +17,7 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgsproviderregistry.h"
 
 #include <QTableWidgetItem>
 #include <QPushButton>
@@ -42,18 +43,22 @@ class SubLayerItem : public QTreeWidgetItem
 };
 //! @endcond
 
-QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString &name,
-                                        QWidget *parent, Qt::WindowFlags fl )
+QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType,
+                                        const QString &name,
+                                        QWidget *parent,
+                                        Qt::WindowFlags fl,
+                                        const QString &dataSourceUri )
   : QDialog( parent, fl )
   , mName( name )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
+  QString title;
   switch ( providerType )
   {
     case QgsSublayersDialog::Ogr :
-      setWindowTitle( tr( "Select Vector Layers to Add…" ) );
+      title = tr( "Select Vector Layers to Add…" );
       layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
                                     << tr( "Number of features" ) << tr( "Geometry type" ) << tr( "Description" ) );
       mShowCount = true;
@@ -61,31 +66,35 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
       mShowDescription = true;
       break;
     case QgsSublayersDialog::Gdal:
-      setWindowTitle( tr( "Select Raster Layers to Add…" ) );
+      title = tr( "Select Raster Layers to Add…" );
       layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" ) );
       break;
     case QgsSublayersDialog::Mdal:
-      setWindowTitle( tr( "Select Mesh Layers to Add…" ) );
+      title = tr( "Select Mesh Layers to Add…" );
       layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Mesh name" ) );
       break;
     default:
-      setWindowTitle( tr( "Select Layers to Add…" ) );
+      title = tr( "Select Layers to Add…" );
       layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
                                     << tr( "Type" ) );
       mShowType = true;
-      break;
   }
 
-  // add a "Select All" button - would be nicer with an icon
-  QPushButton *button = new QPushButton( tr( "Select All" ) );
-  buttonBox->addButton( button, QDialogButtonBox::ActionRole );
-  connect( button, &QAbstractButton::pressed, layersTable, &QTreeView::selectAll );
-  // connect( pbnSelectNone, SIGNAL( pressed() ), SLOT( layersTable->selectNone() ) );
+  const QVariantMap dataSourceUriParsed = QgsProviderRegistry::instance()->decodeUri( name, dataSourceUri );
+  const QString dataSourceFilePath = dataSourceUriParsed.value( QStringLiteral( "path" ) ).toString();
+  const QString filePath = dataSourceFilePath.isEmpty() ? dataSourceUri : dataSourceFilePath;
+  const QString fileName = QFileInfo( filePath ).fileName();
 
-  // Checkbox about adding sublayers to a group
-  mCheckboxAddToGroup = new QCheckBox( tr( "Add layers to a group" ), this );
-  buttonBox->addButton( mCheckboxAddToGroup, QDialogButtonBox::ActionRole );
-  mCheckboxAddToGroup->setVisible( false );
+  setWindowTitle( fileName.isEmpty() ? title : QStringLiteral( "%1 | %2" ).arg( title, fileName ) );
+  mLblFilePath->setText( QDir::toNativeSeparators( QFileInfo( filePath ).canonicalFilePath() ) );
+  mLblFilePath->setVisible( ! fileName.isEmpty() );
+
+  // add a "Select All" button - would be nicer with an icon
+  connect( mBtnSelectAll, &QAbstractButton::pressed, layersTable, &QTreeView::selectAll );
+  connect( mBtnDeselectAll, &QAbstractButton::pressed, this, &QgsSublayersDialog::mBtnDeselectAll_pressed );
+  connect( layersTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsSublayersDialog::layersTable_selectionChanged );
+
+  mCbxAddToGroup->setVisible( false );
 }
 
 QgsSublayersDialog::~QgsSublayersDialog()
@@ -172,27 +181,23 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
 int QgsSublayersDialog::exec()
 {
   QgsSettings settings;
-  QString promptLayers = settings.value( QStringLiteral( "qgis/promptForSublayers" ), 1 ).toString();
+  PromptMode promptLayers = settings.enumValue( QStringLiteral( "qgis/promptForSublayers" ), PromptAlways );
 
   // make sure three are sublayers to choose
   if ( layersTable->topLevelItemCount() == 0 )
     return QDialog::Rejected;
 
+  layersTable->selectAll();
+
   // check promptForSublayers settings - perhaps this should be in QgsDataSource instead?
-  if ( promptLayers == QLatin1String( "no" ) )
+  if ( promptLayers == PromptNever )
     return QDialog::Rejected;
-  else if ( promptLayers == QLatin1String( "all" ) )
-  {
-    layersTable->selectAll();
+  else if ( promptLayers == PromptLoadAll )
     return QDialog::Accepted;
-  }
 
   // if there is only 1 sublayer (probably the main layer), just select that one and return
   if ( layersTable->topLevelItemCount() == 1 )
-  {
-    layersTable->selectAll();
     return QDialog::Accepted;
-  }
 
   layersTable->sortByColumn( 1, Qt::AscendingOrder );
   layersTable->setSortingEnabled( true );
@@ -210,9 +215,9 @@ int QgsSublayersDialog::exec()
   // Checkbox about adding sublayers to a group
   if ( mShowAddToGroupCheckbox )
   {
-    mCheckboxAddToGroup->setVisible( true );
+    mCbxAddToGroup->setVisible( true );
     bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), false ).toBool();
-    mCheckboxAddToGroup->setChecked( addToGroup );
+    mCbxAddToGroup->setChecked( addToGroup );
   }
 
   int ret = QDialog::exec();
@@ -220,6 +225,16 @@ int QgsSublayersDialog::exec()
     QApplication::setOverrideCursor( cursor );
 
   if ( mShowAddToGroupCheckbox )
-    settings.setValue( QStringLiteral( "/qgis/openSublayersInGroup" ), mCheckboxAddToGroup->isChecked() );
+    settings.setValue( QStringLiteral( "/qgis/openSublayersInGroup" ), mCbxAddToGroup->isChecked() );
   return ret;
+}
+
+void QgsSublayersDialog::layersTable_selectionChanged( const QItemSelection &, const QItemSelection & )
+{
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( layersTable->selectedItems().length() > 0 );
+}
+
+void QgsSublayersDialog::mBtnDeselectAll_pressed()
+{
+  layersTable->selectionModel()->clear();
 }

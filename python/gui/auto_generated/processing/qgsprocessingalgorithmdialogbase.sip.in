@@ -63,7 +63,7 @@ Sets the main ``widget`` for the dialog, usually a panel for configuring algorit
 .. seealso:: :py:func:`mainWidget`
 %End
 
-    QWidget *mainWidget();
+    QgsPanelWidget *mainWidget();
 %Docstring
 Returns the main widget for the dialog, usually a panel for configuring algorithm parameters.
 
@@ -181,6 +181,9 @@ Copies the current log contents to the clipboard.
 %Docstring
 Switches the dialog to the parameters page.
 %End
+
+    virtual void reject();
+
 
   protected:
 

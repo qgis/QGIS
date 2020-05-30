@@ -27,6 +27,9 @@
 
 #include "qgsrendercontext.h"
 
+class QgsGeoPdfLayerTreeModel;
+class QgsGeoPdfLayerFilteredTreeModel;
+
 /**
  * \ingroup gui
  * A dialog for customizing the properties of an exported PDF file from a layout.
@@ -43,9 +46,14 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::Qg
     /**
      * Constructor for QgsLayoutPdfExportOptionsDialog
      * \param parent parent widget
+     * \param allowGeoPdfExport set to FALSE if geoPdf export is blocked
+     * \param geoPdfReason set to a descriptive translated string explaining why geopdf export is not available if applicable
      * \param flags window flags
      */
-    QgsLayoutPdfExportOptionsDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsLayoutPdfExportOptionsDialog( QWidget *parent = nullptr,
+                                     bool allowGeoPdfExport = true,
+                                     const QString &geoPdfReason = QString(),
+                                     Qt::WindowFlags flags = nullptr );
 
     //! Sets the text render format
     void setTextRenderFormat( QgsRenderContext::TextRenderFormat format );
@@ -97,10 +105,14 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::Qg
   private slots:
 
     void showHelp();
+    void showContextMenuForGeoPdfStructure( QPoint point, const QModelIndex &index );
 
   private:
 
     bool mGeopdfAvailable = true;
+    QgsGeoPdfLayerTreeModel *mGeoPdfStructureModel = nullptr;
+    QgsGeoPdfLayerFilteredTreeModel *mGeoPdfStructureProxyModel = nullptr;
+    QMenu *mGeoPdfStructureTreeMenu = nullptr;
 
 };
 

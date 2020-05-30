@@ -597,6 +597,8 @@ void QgsVectorLayerProperties::syncToLayer()
 
   mMetadataWidget->setMetadata( &mLayer->metadata() );
 
+  mTemporalWidget->syncToLayer();
+
 } // syncToLayer()
 
 void QgsVectorLayerProperties::apply()
@@ -613,6 +615,10 @@ void QgsVectorLayerProperties::apply()
   // save metadata
   mMetadataWidget->acceptMetadata();
   mMetadataFilled = false;
+
+  // save masking settings
+  if ( mMaskingWidget )
+    mMaskingWidget->apply();
 
   //
   // Set up sql subset query if applicable

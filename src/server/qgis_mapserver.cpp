@@ -259,7 +259,7 @@ int main( int argc, char *argv[] )
       };
 
       // This will delete the connection when disconnected before ready read is called
-      clientConnection->connect( clientConnection, &QAbstractSocket::disconnected, context, connectionDeleter );
+      clientConnection->connect( clientConnection, &QAbstractSocket::disconnected, context, connectionDeleter, Qt::QueuedConnection );
 
       // Incoming connection parser
       clientConnection->connect( clientConnection, &QIODevice::readyRead, context, [ =, &server, &connCounter ] {
@@ -380,7 +380,7 @@ int main( int argc, char *argv[] )
           if ( clientConnection->state() == QAbstractSocket::SocketState::ConnectedState )
           {
             clientConnection->connect( clientConnection, &QAbstractSocket::disconnected,
-                                       clientConnection, connectionDeleter );
+                                       clientConnection, connectionDeleter, Qt::QueuedConnection );
           }
           else
           {
@@ -450,7 +450,7 @@ int main( int argc, char *argv[] )
           clientConnection->disconnectFromHost();
         }
 
-      } );
+      }, Qt::QueuedConnection );
 
     } );
 

@@ -39,6 +39,8 @@ class QgsOgrExpressionCompiler : public QgsSqlExpressionCompiler
     Result compileNode( const QgsExpressionNode *node, QString &str ) override;
     QString quotedIdentifier( const QString &identifier ) override;
     QString quotedValue( const QVariant &value, bool &ok ) override;
+    QString sqlFunctionFromFunctionName( const QString &fnName ) const override;
+    QStringList sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const override;
     QString castToReal( const QString &value ) const override;
     QString castToInt( const QString &value ) const override;
 

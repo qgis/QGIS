@@ -307,46 +307,46 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
       }
       case Qgis::DataType::Int16:
       {
-        const int _int { val.toInt( &ok ) };
+        const int intVal { val.toInt( &ok ) };
         if ( ! ok )
         {
-          QgsMessageLog::logMessage( tr( "Cannot convert identified value to unsigned long" ), QStringLiteral( "PostGIS" ), Qgis::Warning );
+          QgsMessageLog::logMessage( tr( "Cannot convert identified value to int" ), QStringLiteral( "PostGIS" ), Qgis::Warning );
           return false;
         }
-        std::memcpy( data, &_int, sizeof( int ) );
+        std::memcpy( data, &intVal, sizeof( int ) );
         break;
       }
       case Qgis::DataType::Int32:
       {
-        const long _long { val.toInt( &ok ) };
+        const long longVal { val.toLong( &ok ) };
         if ( ! ok )
         {
           QgsMessageLog::logMessage( tr( "Cannot convert identified value to long" ), QStringLiteral( "PostGIS" ), Qgis::Warning );
           return false;
         }
-        std::memcpy( data, &_long, sizeof( long ) );
+        std::memcpy( data, &longVal, sizeof( long ) );
         break;
       }
       case Qgis::DataType::Float32:
       {
-        const float _float { val.toFloat( &ok ) };
+        const float floatVal { val.toFloat( &ok ) };
         if ( ! ok )
         {
           QgsMessageLog::logMessage( tr( "Cannot convert identified value to float" ), QStringLiteral( "PostGIS" ), Qgis::Warning );
           return false;
         }
-        std::memcpy( data, &_float, sizeof( float ) );
+        std::memcpy( data, &floatVal, sizeof( float ) );
         break;
       }
       case Qgis::DataType::Float64:
       {
-        const double _double { val.toDouble( &ok ) };
+        const double doubleVal { val.toDouble( &ok ) };
         if ( ! ok )
         {
           QgsMessageLog::logMessage( tr( "Cannot convert identified value to double" ), QStringLiteral( "PostGIS" ), Qgis::Warning );
           return false;
         }
-        std::memcpy( data, &_double, sizeof( double ) );
+        std::memcpy( data, &doubleVal, sizeof( double ) );
         break;
       }
       default:

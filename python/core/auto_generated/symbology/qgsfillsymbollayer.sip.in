@@ -45,7 +45,7 @@ Caller takes ownership of the returned symbol layer.
     virtual void stopRender( QgsSymbolRenderContext &context );
 
 
-    virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
 
     virtual QgsStringMap properties() const;
@@ -214,7 +214,7 @@ Caller takes ownership of the returned symbol layer.
     virtual void stopRender( QgsSymbolRenderContext &context );
 
 
-    virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
 
     virtual QgsStringMap properties() const;
@@ -374,7 +374,7 @@ Caller takes ownership of the returned symbol layer.
     virtual void stopRender( QgsSymbolRenderContext &context );
 
 
-    virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
 
     virtual QgsStringMap properties() const;
@@ -686,7 +686,7 @@ Base class for polygon renderers generating texture images*
   public:
 
     QgsImageFillSymbolLayer();
-    virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
 
     virtual QgsSymbol *subSymbol();
@@ -806,7 +806,7 @@ Used internally when reading/writing symbols.
 
     virtual QString layerType() const;
 
-    virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     virtual void startRender( QgsSymbolRenderContext &context );
 
@@ -1615,8 +1615,9 @@ Caller takes ownership of the returned symbol layer.
 
     virtual void startRender( QgsSymbolRenderContext &context );
 
-
     virtual void stopRender( QgsSymbolRenderContext &context );
+
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
 
     virtual QgsStringMap properties() const;
@@ -1952,7 +1953,7 @@ Caller takes ownership of the returned symbol layer.
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
-    virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     virtual QgsStringMap properties() const;
 
@@ -2139,7 +2140,7 @@ Caller takes ownership of the returned symbol layer.
     virtual void stopRender( QgsSymbolRenderContext &context );
 
 
-    virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
 
     virtual QgsStringMap properties() const;
@@ -2183,6 +2184,8 @@ Caller takes ownership of the returned symbol layer.
 %Docstring
 Sets whether a point is drawn for all parts or only on the biggest part of multi-part features.
 
+.. seealso:: :py:func:`pointOnAllParts`
+
 .. versionadded:: 2.16
 %End
 
@@ -2190,10 +2193,55 @@ Sets whether a point is drawn for all parts or only on the biggest part of multi
 %Docstring
 Returns whether a point is drawn for all parts or only on the biggest part of multi-part features.
 
+.. seealso:: :py:func:`setPointOnAllParts`
+
 .. versionadded:: 2.16
 %End
 
+    bool clipPoints() const;
+%Docstring
+Returns ``True`` if point markers should be clipped to the polygon boundary.
+
+.. seealso:: :py:func:`setClipPoints`
+
+.. versionadded:: 3.14
+%End
+
+    void setClipPoints( bool clipPoints );
+%Docstring
+Sets whether point markers should be ``clipped`` to the polygon boundary.
+
+.. seealso:: :py:func:`clipPoints`
+
+.. versionadded:: 3.14
+%End
+
+    bool clipOnCurrentPartOnly() const;
+%Docstring
+Returns ``True`` if point markers should be clipped to the current part boundary only.
+
+.. seealso:: :py:func:`setClipPoints`
+
+.. versionadded:: 3.14
+%End
+
+    void setClipOnCurrentPartOnly( bool clipOnCurrentPartOnly );
+%Docstring
+Sets whether point markers should be ``clipped`` to the current part boundary only.
+
+.. seealso:: :py:func:`clipOnCurrentPartOnly`
+
+.. versionadded:: 3.14
+%End
+
+    virtual void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+    virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+
   protected:
+
+
 
 
   private:

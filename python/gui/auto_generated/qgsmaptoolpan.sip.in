@@ -34,6 +34,7 @@ constructor
 
 
     virtual Flags flags() const;
+
     virtual void canvasPressEvent( QgsMapMouseEvent *e );
 
     virtual void canvasMoveEvent( QgsMapMouseEvent *e );

@@ -743,7 +743,7 @@ void QgsRelationEditorWidget::deleteFeatures( const QgsFeatureIds &featureids )
 
     // for extra safety to make sure we know that the delete can have impact on children and joins
     int res = QMessageBox::question( this, tr( "Delete at least %1 feature(s) on other layer(s)" ).arg( childrenCount ),
-                                     tr( "Delete %1 feature(s) on layer \"%2\" and %3as well.\nAnd all the further descendants of them.\nDelete these features?" ).arg( featureids.count() ).arg( layer->name() ).arg( childrenInfo ),
+                                     tr( "Delete %1 feature(s) on layer \"%2\", %3 as well\nand all of its other descendants.\nDelete these features?" ).arg( featureids.count() ).arg( layer->name() ).arg( childrenInfo ),
                                      QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
       deleteFeatures = false;

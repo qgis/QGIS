@@ -33,6 +33,7 @@
 #include "qgslogger.h"
 #include "qgsoptionsdialoghighlightwidget.h"
 #include "qgsoptionswidgetfactory.h"
+#include "qgsguiutils.h"
 
 QgsOptionsDialogBase::QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent, Qt::WindowFlags fl, QgsSettings *settings )
   : QDialog( parent, fl )
@@ -101,14 +102,15 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
     return;
   }
 
-  int size = mSettings->value( QStringLiteral( "/IconSize" ), 24 ).toInt();
+  int size = QgsGuiUtils::scaleIconSize( mSettings->value( QStringLiteral( "/IconSize" ), 24 ).toInt() );
   // buffer size to match displayed icon size in toolbars, and expected geometry restore
   // newWidth (above) may need adjusted if you adjust iconBuffer here
-  int iconBuffer = 4;
+  const int iconBuffer = QgsGuiUtils::scaleIconSize( 4 );
   mOptListWidget->setIconSize( QSize( size + iconBuffer, size + iconBuffer ) );
   mOptListWidget->setFrameStyle( QFrame::NoFrame );
 
-  optionsFrame->layout()->setContentsMargins( 0, 3, 3, 3 );
+  const int frameMargin = QgsGuiUtils::scaleIconSize( 3 );
+  optionsFrame->layout()->setContentsMargins( 0, frameMargin, frameMargin, frameMargin );
   QVBoxLayout *layout = static_cast<QVBoxLayout *>( optionsFrame->layout() );
 
   if ( buttonBoxFrame )
@@ -166,11 +168,13 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
   if ( !title.isEmpty() )
   {
     mDialogTitle = title;
-    updateWindowTitle();
   }
-
-  // re-save original dialog title in case it was changed after dialog initialization
-  mDialogTitle = windowTitle();
+  else
+  {
+    // re-save original dialog title in case it was changed after dialog initialization
+    mDialogTitle = windowTitle();
+  }
+  updateWindowTitle();
 
   restoreGeometry( mSettings->value( QStringLiteral( "/Windows/%1/geometry" ).arg( mOptsKey ) ).toByteArray() );
   // mOptListWidget width is fixed to take up less space in QtDesigner

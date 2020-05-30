@@ -11,6 +11,36 @@
 
 
 
+class QgsVectorLayerTemporalContext
+{
+%Docstring
+Encapsulates the context in which a QgsVectorLayer's temporal capabilities
+will be applied
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayertemporalproperties.h"
+%End
+  public:
+
+    QgsVectorLayer *layer() const;
+%Docstring
+Returns the associated layer.
+
+.. seealso:: :py:func:`setLayer`
+%End
+
+    void setLayer( QgsVectorLayer *layer );
+%Docstring
+Sets the associated ``layer``.
+
+.. seealso:: :py:func:`layer`
+%End
+
+};
+
 class QgsVectorLayerTemporalProperties : QgsMapLayerTemporalProperties
 {
 %Docstring
@@ -298,10 +328,10 @@ occur before or within the map's temporal range should be rendered).
 .. seealso:: :py:func:`accumulateFeatures`
 %End
 
-    QString createFilterString( QgsVectorLayer *layer, const QgsDateTimeRange &range ) const;
+    QString createFilterString( const QgsVectorLayerTemporalContext &context, const QgsDateTimeRange &range ) const;
 %Docstring
-Creates a QGIS expression filter string for filtering features from ``layer``
-to those within the specified time ``range``.
+Creates a QGIS expression filter string for filtering features within
+the specified ``context`` to those within the specified time ``range``.
 
 The returned expression string considers the mode() and other related
 settings (such as startField()) when building the filter string.

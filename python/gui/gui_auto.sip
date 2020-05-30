@@ -119,6 +119,7 @@
 %Include auto_generated/qgsmanageconnectionsdialog.sip
 %Include auto_generated/qgsmapcanvas.sip
 %Include auto_generated/qgsmapcanvasannotationitem.sip
+%Include auto_generated/qgsmapcanvasinteractionblocker.sip
 %Include auto_generated/qgsmapcanvasitem.sip
 %Include auto_generated/qgsmapcanvassnappingutils.sip
 %Include auto_generated/qgsmapcanvastracer.sip

@@ -705,5 +705,19 @@ CREATE TABLE test_table_default_values (
     created_at_02 text DEFAULT CURRENT_TIMESTAMP,
     anumber INTEGER DEFAULT 123,
     atext TEXT default 'My default'
-)
+);
+
+---------------------------------------------
+--
+-- Point table with check constraint on a field
+--
+
+CREATE TABLE IF NOT EXISTS "test_check_constraint" (
+    "id" SERIAL PRIMARY KEY,
+    "geom" geometry(POINT),
+    "i_will_fail_on_no_name" TEXT CHECK ("i_will_fail_on_no_name" != 'no name')
+);
+
+INSERT INTO test_check_constraint (geom, i_will_fail_on_no_name)
+VALUES ('POINT(9 45)'::geometry, 'I have a name'), ('POINT(10 46)'::geometry, 'I have a name too');
 

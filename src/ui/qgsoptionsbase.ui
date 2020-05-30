@@ -332,7 +332,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>13</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -361,8 +361,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>843</width>
-                <height>917</height>
+                <width>645</width>
+                <height>1003</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1118,8 +1118,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>541</width>
-                <height>1072</height>
+                <width>539</width>
+                <height>1114</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1481,15 +1481,6 @@
                          <height>120</height>
                         </size>
                        </property>
-                       <property name="editTriggers">
-                        <set>QAbstractItemView::AllEditTriggers</set>
-                       </property>
-                       <property name="dragEnabled">
-                        <bool>true</bool>
-                       </property>
-                       <property name="dragDropMode">
-                        <enum>QAbstractItemView::DragOnly</enum>
-                       </property>
                        <property name="selectionMode">
                         <enum>QAbstractItemView::SingleSelection</enum>
                        </property>
@@ -1654,8 +1645,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>552</width>
-                <height>509</height>
+                <width>555</width>
+                <height>501</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -1867,8 +1858,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>499</width>
-                <height>615</height>
+                <width>848</width>
+                <height>816</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1995,14 +1986,18 @@
                   <item row="0" column="2">
                    <widget class="QComboBox" name="cmbScanItemsInBrowser"/>
                   </item>
-                  <item row="2" column="2">
-                   <widget class="QComboBox" name="cmbPromptRasterSublayers">
-                    <item>
-                     <property name="text">
-                      <string/>
-                     </property>
-                    </item>
+                  <item row="6" column="0" colspan="4">
+                   <widget class="QCheckBox" name="cbxEvaluateDefaultValues">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When digitizing a new feature, default values are retrieved from the database. With this option turned on, the default values will be evaluated at the time of digitizing. With this option turned off, the default values will be evaluated at the time of saving.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                    <property name="text">
+                     <string>Evaluate default values</string>
+                    </property>
                    </widget>
+                  </item>
+                  <item row="1" column="2">
+                   <widget class="QComboBox" name="cmbScanZipInBrowser"/>
                   </item>
                   <item row="1" column="1">
                    <spacer name="horizontalSpacer_3">
@@ -2017,28 +2012,26 @@
                     </property>
                    </spacer>
                   </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_29">
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="textLabel1_13">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
                     <property name="text">
-                     <string>Scan for contents of compressed files (.zip) in browser dock</string>
+                     <string>Prompt for sublayers when opening</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="6" column="0" colspan="4">
-                   <widget class="QCheckBox" name="cbxEvaluateDefaultValues">
-                    <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When digitizing a new feature, default values are retrieved from the database. With this option turned on, the default values will be evaluated at the time of digitizing. With this option turned off, the default values will be evaluated at the time of saving.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                    </property>
-                    <property name="text">
-                     <string>Evaluate default values</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="2">
-                   <widget class="QComboBox" name="cmbScanZipInBrowser">
-                    <property name="currentIndex">
-                     <number>-1</number>
-                    </property>
+                  <item row="2" column="2">
+                   <widget class="QComboBox" name="cmbPromptSublayers">
+                    <item>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </item>
                    </widget>
                   </item>
                   <item row="0" column="0">
@@ -2055,16 +2048,105 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="textLabel1_13">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_29">
+                    <property name="text">
+                     <string>Scan for contents of compressed files (.zip) in browser dock</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_301">
+                 <property name="title">
+                  <string>Localized data paths</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_34">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_9">
+                    <property name="text">
+                     <string>Localized data paths for basemaps, logos, etc. (in order of preference) </string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <spacer name="horizontalSpacer_19">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="2">
+                   <widget class="QToolButton" name="mLocalizedDataPathAddButton">
+                    <property name="toolTip">
+                     <string>Add localized data path</string>
                     </property>
                     <property name="text">
-                     <string>Prompt for raster sublayers when opening</string>
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="3">
+                   <widget class="QToolButton" name="mLocalizedDataPathRemoveButton">
+                    <property name="toolTip">
+                     <string>Remove localized data path</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="4">
+                   <widget class="QToolButton" name="mLocalizedDataPathUpButton">
+                    <property name="toolTip">
+                     <string>Raise selected localized data path priority</string>
+                    </property>
+                    <property name="text">
+                     <string>…</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/mActionArrowUp.svg</normaloff>:/images/themes/default/mActionArrowUp.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="5">
+                   <widget class="QToolButton" name="mLocalizedDataPathDownButton">
+                    <property name="toolTip">
+                     <string>Lower selected localized data path priority</string>
+                    </property>
+                    <property name="text">
+                     <string>…</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/mActionArrowDown.svg</normaloff>:/images/themes/default/mActionArrowDown.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0" colspan="6">
+                   <widget class="QListWidget" name="mLocalizedDataPathListWidget">
+                    <property name="selectionMode">
+                     <enum>QAbstractItemView::MultiSelection</enum>
+                    </property>
+                    <property name="selectionBehavior">
+                     <enum>QAbstractItemView::SelectRows</enum>
                     </property>
                    </widget>
                   </item>
@@ -2077,6 +2159,20 @@
                   <string>Hidden browser paths</string>
                  </property>
                  <layout class="QGridLayout" name="_15">
+                  <item row="0" column="2">
+                   <widget class="QToolButton" name="mBtnRemoveHiddenPath">
+                    <property name="toolTip">
+                     <string>Remove path</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="0" column="0">
                    <widget class="QLabel" name="mSVGLabel_4">
                     <property name="text">
@@ -2104,20 +2200,6 @@
                       <width>0</width>
                       <height>120</height>
                      </size>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="2">
-                   <widget class="QToolButton" name="mBtnRemoveHiddenPath">
-                    <property name="toolTip">
-                     <string>Remove path</string>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../../images/images.qrc">
-                      <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
                   </item>
@@ -2173,8 +2255,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>674</width>
-                <height>1057</height>
+                <width>695</width>
+                <height>1139</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2959,8 +3041,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>501</width>
-                <height>293</height>
+                <width>529</width>
+                <height>309</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3270,8 +3352,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>604</width>
-                <height>671</height>
+                <width>606</width>
+                <height>741</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3775,8 +3857,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>157</width>
-                <height>265</height>
+                <width>181</width>
+                <height>318</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -3943,8 +4025,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>543</width>
-                <height>801</height>
+                <width>570</width>
+                <height>827</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4507,6 +4589,22 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                 </widget>
                </item>
                <item>
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_30">
+                 <property name="title">
+                  <string>Tracing</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout1">
+                  <item row="0" column="0" colspan="3">
+                   <widget class="QCheckBox" name="mTracingConvertToCurveCheckBox">
+                    <property name="text">
+                     <string>Convert tracing to curve (this feature is experimental)</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <spacer name="verticalSpacer_4">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
@@ -4552,8 +4650,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>480</width>
-                <height>538</height>
+                <width>469</width>
+                <height>572</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -4821,8 +4919,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>412</width>
-                <height>372</height>
+                <width>506</width>
+                <height>367</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4990,8 +5088,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>682</height>
+                <width>633</width>
+                <height>720</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5478,7 +5576,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Noto Sans'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
@@ -5596,15 +5694,15 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsProjectionSelectionWidget</class>
@@ -5738,7 +5836,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>leNullValue</tabstop>
   <tabstop>cmbScanItemsInBrowser</tabstop>
   <tabstop>cmbScanZipInBrowser</tabstop>
-  <tabstop>cmbPromptRasterSublayers</tabstop>
+  <tabstop>cmbPromptSublayers</tabstop>
   <tabstop>cbxCompileExpressions</tabstop>
   <tabstop>cbxEvaluateDefaultValues</tabstop>
   <tabstop>mBtnRemoveHiddenPath</tabstop>
@@ -5836,6 +5934,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>mOffsetJoinStyleComboBox</tabstop>
   <tabstop>mOffsetQuadSegSpinBox</tabstop>
   <tabstop>mCurveOffsetMiterLimitComboBox</tabstop>
+  <tabstop>mTracingConvertToCurveCheckBox</tabstop>
   <tabstop>mOptionsScrollArea_12</tabstop>
   <tabstop>mComposerFontComboBox</tabstop>
   <tabstop>mGridStyleComboBox</tabstop>
@@ -5879,7 +5978,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>mGPUInfoTextBrowser</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

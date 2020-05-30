@@ -332,6 +332,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       * \param timeRange the time range
       * \returns dataset index
       *
+      * \note the returned dataset index depends on the matching method, see setTemporalMatchingMethod()
+      *
       * \since QGIS 3.14
       */
     QgsMeshDatasetIndex activeScalarDatasetAtTime( const QgsDateTimeRange &timeRange ) const;
@@ -342,6 +344,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       *
       * \param timeRange the time range
       * \returns dataset index
+      *
+      * \note the returned dataset index depends on the matching method, see setTemporalMatchingMethod()
       *
       * \since QGIS 3.14
       */
@@ -387,6 +391,15 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       * \since QGIS 3.14
       */
     void setReferenceTime( const QDateTime &referenceTime );
+
+    /**
+      * Sets the method used to match the temporal dataset from a requested time, see activeVectorDatasetAtTime()
+      *
+      * \param matchingMethod the matching method
+      *
+      * \since QGIS 3.14
+      */
+    void setTemporalMatchingMethod( const QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod &matchingMethod );
 
     /**
       * Returns the position of the snapped point on the mesh element closest to \a point intersecting with

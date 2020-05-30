@@ -39,20 +39,10 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
   mModeComboBox->addItem( tr( "Start and End Date/Time from Expressions" ), QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromExpressions );
   mModeComboBox->addItem( tr( "Redraw Layer Only" ), QgsVectorLayerTemporalProperties::ModeRedrawLayerOnly );
 
-  const QgsVectorLayerTemporalProperties *properties = qobject_cast< QgsVectorLayerTemporalProperties * >( layer->temporalProperties() );
-  mTemporalGroupBox->setChecked( properties->isActive() );
-
-  mModeComboBox->setCurrentIndex( mModeComboBox->findData( properties->mode() ) );
-
   connect( mModeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), mStackedWidget, &QStackedWidget::setCurrentIndex );
-
-  mStackedWidget->setCurrentIndex( static_cast< int >( properties->mode() ) );
 
   mStartTemporalDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
   mEndTemporalDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
-
-  mStartTemporalDateTimeEdit->setDateTime( properties->fixedTemporalRange().begin() );
-  mEndTemporalDateTimeEdit->setDateTime( properties->fixedTemporalRange().end() );
 
   mSingleFieldComboBox->setLayer( layer );
   mStartFieldComboBox->setLayer( layer );
@@ -69,7 +59,6 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
 
   mFixedDurationSpinBox->setMinimum( 0 );
   mFixedDurationSpinBox->setClearValue( 0 );
-  mFixedDurationSpinBox->setValue( properties->fixedDuration() );
 
   for ( QgsUnitTypes::TemporalUnit u :
         {
@@ -91,21 +80,6 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
     mFixedDurationUnitsComboBox->addItem( title, u );
   }
 
-  if ( !properties->startField().isEmpty() )
-  {
-    mSingleFieldComboBox->setField( properties->startField() );
-    mStartFieldComboBox->setField( properties->startField() );
-    mDurationStartFieldComboBox->setField( properties->startField() );
-  }
-  if ( !properties->endField().isEmpty() )
-  {
-    mEndFieldComboBox->setField( properties->endField() );
-  }
-  mDurationFieldComboBox->setField( properties->durationField() );
-  mDurationUnitsComboBox->setCurrentIndex( mDurationUnitsComboBox->findData( properties->durationUnits() ) );
-  mFixedDurationUnitsComboBox->setCurrentIndex( mDurationUnitsComboBox->findData( properties->durationUnits() ) );
-
-  mAccumulateCheckBox->setChecked( properties->accumulateFeatures() );
   mFixedDurationUnitsComboBox->setEnabled( !mAccumulateCheckBox->isChecked() );
   mFixedDurationSpinBox->setEnabled( !mAccumulateCheckBox->isChecked() );
   connect( mAccumulateCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
@@ -121,8 +95,7 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
   mStartExpressionWidget->registerExpressionContextGenerator( this );
   mEndExpressionWidget->registerExpressionContextGenerator( this );
 
-  mStartExpressionWidget->setField( properties->startExpression() );
-  mEndExpressionWidget->setField( properties->endExpression() );
+  syncToLayer();
 }
 
 void QgsVectorLayerTemporalPropertiesWidget::saveTemporalProperties()
@@ -171,4 +144,37 @@ QgsExpressionContext QgsVectorLayerTemporalPropertiesWidget::createExpressionCon
   QgsExpressionContext context;
   context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
   return context;
+}
+
+void QgsVectorLayerTemporalPropertiesWidget::syncToLayer()
+{
+  const QgsVectorLayerTemporalProperties *properties = qobject_cast< QgsVectorLayerTemporalProperties * >( mLayer->temporalProperties() );
+  mTemporalGroupBox->setChecked( properties->isActive() );
+
+  mModeComboBox->setCurrentIndex( mModeComboBox->findData( properties->mode() ) );
+  mStackedWidget->setCurrentIndex( static_cast< int >( properties->mode() ) );
+
+  mStartTemporalDateTimeEdit->setDateTime( properties->fixedTemporalRange().begin() );
+  mEndTemporalDateTimeEdit->setDateTime( properties->fixedTemporalRange().end() );
+
+  mFixedDurationSpinBox->setValue( properties->fixedDuration() );
+
+  if ( !properties->startField().isEmpty() )
+  {
+    mSingleFieldComboBox->setField( properties->startField() );
+    mStartFieldComboBox->setField( properties->startField() );
+    mDurationStartFieldComboBox->setField( properties->startField() );
+  }
+  if ( !properties->endField().isEmpty() )
+  {
+    mEndFieldComboBox->setField( properties->endField() );
+  }
+  mDurationFieldComboBox->setField( properties->durationField() );
+  mDurationUnitsComboBox->setCurrentIndex( mDurationUnitsComboBox->findData( properties->durationUnits() ) );
+  mFixedDurationUnitsComboBox->setCurrentIndex( mDurationUnitsComboBox->findData( properties->durationUnits() ) );
+
+  mAccumulateCheckBox->setChecked( properties->accumulateFeatures() );
+
+  mStartExpressionWidget->setField( properties->startExpression() );
+  mEndExpressionWidget->setField( properties->endExpression() );
 }

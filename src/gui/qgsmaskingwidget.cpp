@@ -28,29 +28,51 @@
 #include "qgsvectorlayerutils.h"
 #include "qgsmasksymbollayer.h"
 #include "qgsvectorlayerlabeling.h"
+#include "qgsmessagebaritem.h"
 
 QgsMaskingWidget::QgsMaskingWidget( QWidget *parent ) :
   QgsPanelWidget( parent )
 {
   setupUi( this );
+}
 
-  connect( mMaskTargetsWidget, &QgsSymbolLayerSelectionWidget::changed, this, [&]()
-  {
-    mMaskSourcesWidget->setEnabled( ! mMaskTargetsWidget->selection().isEmpty() );
-    emit widgetChanged();
-  } );
-  connect( mMaskSourcesWidget, &QgsMaskSourceSelectionWidget::changed, this, [&]()
-  {
-    emit widgetChanged();
-  } );
+void QgsMaskingWidget::onSelectionChanged()
+{
+  // display message if configuration is not consistent
+  bool printMessage = mMaskTargetsWidget->selection().empty() != mMaskSourcesWidget->selection().empty();
 
-  connect( mEditMaskSettingsGroup, &QGroupBox::toggled, this, [&]( bool on )
+  if ( mMessageBarItem && !printMessage )
   {
-    if ( on && mLayer )
-    {
-      populate();
-    }
-  } );
+    mMessageBar->popWidget( mMessageBarItem );
+    delete mMessageBarItem;
+  }
+  else if ( !mMessageBarItem && printMessage )
+  {
+    mMessageBarItem = new QgsMessageBarItem( tr( "Select both sources and symbol layers or your configuration will be lost" ), Qgis::Warning, 0, this );
+    mMessageBar->pushItem( mMessageBarItem );
+  }
+
+  emit widgetChanged();
+}
+
+void QgsMaskingWidget::showEvent( QShowEvent *event )
+{
+  Q_UNUSED( event );
+
+  // populate is quite long, so we delay it when the widget is first shown
+  if ( mMustPopulate )
+  {
+    disconnect( mMaskTargetsWidget, &QgsSymbolLayerSelectionWidget::changed, this, &QgsMaskingWidget::onSelectionChanged );
+    disconnect( mMaskSourcesWidget, &QgsMaskSourceSelectionWidget::changed, this, &QgsMaskingWidget::onSelectionChanged );
+
+    mMustPopulate = false;
+    populate();
+
+    connect( mMaskTargetsWidget, &QgsSymbolLayerSelectionWidget::changed, this, &QgsMaskingWidget::onSelectionChanged );
+    connect( mMaskSourcesWidget, &QgsMaskSourceSelectionWidget::changed, this, &QgsMaskingWidget::onSelectionChanged );
+
+    onSelectionChanged();
+  }
 }
 
 /**
@@ -141,10 +163,10 @@ QList<QPair<QgsSymbolLayerId, QList<QgsSymbolLayerReference>>> symbolLayerMasks(
 
 void QgsMaskingWidget::setLayer( QgsVectorLayer *layer )
 {
-  mLayer = layer;
-  if ( mEditMaskSettingsGroup->isChecked() )
+  if ( mLayer != layer )
   {
-    populate();
+    mLayer = layer;
+    mMustPopulate = true;
   }
 }
 

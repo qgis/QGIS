@@ -52,6 +52,7 @@ implemented as map tools.
       Transient,
       EditTool,
       AllowZoomRect,
+      ShowContextMenu,
     };
     typedef QFlags<QgsMapTool::Flag> Flags;
 
@@ -191,6 +192,24 @@ Gets search radius in map units for given canvas. Used by identify, tip etc.
 The values is calculated from searchRadiusMM().
 
 .. versionadded:: 2.3
+%End
+
+    virtual void populateContextMenu( QMenu *menu );
+%Docstring
+Allows the tool to populate and customize the given ``menu``,
+prior to showing it in response to a right-mouse button click.
+
+``menu`` will be initially populated with a set of default, generic actions.
+Any new actions added to the menu should be correctly parented to ``menu``.
+
+The default implementation does nothing.
+
+.. note::
+
+   The context menu is only shown when the ShowContextMenu flag
+   is present in flags().
+
+.. versionadded:: 3.14
 %End
 
   signals:

@@ -61,14 +61,16 @@ void QgsMeshStaticDatasetWidget::setScalarDatasetGroup( int index )
 {
   mScalarDatasetGroup = index;
   mDatasetScalarModel->setDatasetGroup( index );
-  mScalarName->setText( mLayer->dataProvider()->datasetGroupMetadata( index ).name() );
+  if ( mLayer && mLayer->dataProvider() )
+    mScalarName->setText( mLayer->dataProvider()->datasetGroupMetadata( index ).name() );
 }
 
 void QgsMeshStaticDatasetWidget::setVectorDatasetGroup( int index )
 {
   mVectorDatasetGroup = index;
   mDatasetVectorModel->setDatasetGroup( index );
-  mVectorName->setText( mLayer->dataProvider()->datasetGroupMetadata( index ).name() );
+  if ( mLayer && mLayer->dataProvider() )
+    mVectorName->setText( mLayer->dataProvider()->datasetGroupMetadata( index ).name() );
 }
 
 QgsMeshDatasetListModel::QgsMeshDatasetListModel( QObject *parent ): QAbstractListModel( parent )

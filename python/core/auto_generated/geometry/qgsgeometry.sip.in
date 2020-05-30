@@ -481,17 +481,17 @@ iteration only is required.
 
        # print the WKT representation of each part in a multi-point geometry
        geometry = QgsGeometry.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
-       for part in geometry.parts():
+       for part in geometry.constParts():
            print(part.asWkt())
 
        # single part geometries only have one part - this loop will iterate once only
        geometry = QgsGeometry.fromWkt( 'LineString( 0 0, 10 10 )' )
-       for part in geometry.parts():
+       for part in geometry.constParts():
            print(part.asWkt())
 
        # part iteration can also be combined with vertex iteration
        geometry = QgsGeometry.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
-       for part in geometry.parts():
+       for part in geometry.constParts():
            for v in part.vertices():
                print(v.x(), v.y())
 
@@ -556,7 +556,7 @@ and the indices of the vertices before and after the closest vertex.
                     not present.
 :param sqrDist: will be set to the square distance between the closest vertex and the specified point
 
-:return: - closest point in geometry. If not found (empty geometry), returns null point nad sqrDist is negative.
+:return: - closest point in geometry. If not found (empty geometry), returns null point and sqrDist is negative.
          - atVertex: will be set to the vertex index of the closest found vertex
 %End
 
@@ -669,7 +669,7 @@ Returns coordinates of a vertex.
 
 :param atVertex: index of the vertex
 
-:return: Coordinates of the vertex or QgsPoint(0,0) on error
+:return: Coordinates of the vertex or empty :py:class:`QgsPoint`() on error
 %End
 
     double sqrDistToVertexAt( QgsPointXY &point /In/, int atVertex ) const;
@@ -1229,6 +1229,25 @@ Curved geometry types are automatically segmentized by this routine.
 .. seealso:: :py:func:`densifyByCount`
 
 .. versionadded:: 3.0
+%End
+
+    QgsGeometry convertToCurves( double distanceTolerance = 1e-8, double angleTolerance = 1e-8 ) const;
+%Docstring
+Attempts to convert a non-curved geometry into a curved geometry type (e.g.
+LineString to CompoundCurve, Polygon to CurvePolygon).
+
+The ``distanceTolerance`` specifies the maximum deviation allowed between the original location
+of vertices and where they would fall on the candidate curved geometry.
+
+This method only consider a segments as suitable for replacing with an arc if the points are all
+regularly spaced on the candidate arc. The ``pointSpacingAngleTolerance`` parameter specifies the maximum
+angular deviation (in radians) allowed when testing for regular point spacing.
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.14
 %End
 
     QgsGeometry centroid() const;

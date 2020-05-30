@@ -25,6 +25,7 @@
 
 #include "qgssettings.h"
 #include "qgsfilterlineedit.h"
+#include "qgsfocuskeeper.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsapplication.h"
@@ -53,6 +54,7 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
   mLinkEditButton = new QToolButton( this );
   mLinkEditButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
   connect( mLinkEditButton, &QToolButton::clicked, this, &QgsFileWidget::editLink );
+  mLinkEditButton->hide(); // do not show by default
 
   // otherwise, use the traditional QLineEdit subclass
   mLineEdit = new QgsFileDropEdit( this );
@@ -309,40 +311,41 @@ void QgsFileWidget::openFileDialog()
   QStringList fileNames;
   QString title;
 
-  emit blockEvents( true );
-  switch ( mStorageMode )
   {
-    case GetFile:
-      title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a file" );
-      fileName = QFileDialog::getOpenFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, mOptions );
-      break;
-    case GetMultipleFiles:
-      title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select one or more files" );
-      fileNames = QFileDialog::getOpenFileNames( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, mOptions );
-      break;
-    case GetDirectory:
-      title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a directory" );
-      fileName = QFileDialog::getExistingDirectory( this, title, QFileInfo( oldPath ).absoluteFilePath(), mOptions | QFileDialog::ShowDirsOnly );
-      break;
-    case SaveFile:
+    QgsFocusKeeper focusKeeper;
+    switch ( mStorageMode )
     {
-      title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Create or select a file" );
-      if ( !confirmOverwrite() )
+      case GetFile:
+        title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a file" );
+        fileName = QFileDialog::getOpenFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, mOptions );
+        break;
+      case GetMultipleFiles:
+        title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select one or more files" );
+        fileNames = QFileDialog::getOpenFileNames( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, mOptions );
+        break;
+      case GetDirectory:
+        title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a directory" );
+        fileName = QFileDialog::getExistingDirectory( this, title, QFileInfo( oldPath ).absoluteFilePath(), mOptions | QFileDialog::ShowDirsOnly );
+        break;
+      case SaveFile:
       {
-        fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, mOptions | QFileDialog::DontConfirmOverwrite );
-      }
-      else
-      {
-        fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, mOptions );
-      }
+        title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Create or select a file" );
+        if ( !confirmOverwrite() )
+        {
+          fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, mOptions | QFileDialog::DontConfirmOverwrite );
+        }
+        else
+        {
+          fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, mOptions );
+        }
 
-      // make sure filename ends with filter. This isn't automatically done by
-      // getSaveFileName on some platforms (e.g. gnome)
-      fileName = QgsFileUtils::addExtensionFromFilter( fileName, mSelectedFilter );
+        // make sure filename ends with filter. This isn't automatically done by
+        // getSaveFileName on some platforms (e.g. gnome)
+        fileName = QgsFileUtils::addExtensionFromFilter( fileName, mSelectedFilter );
+      }
+      break;
     }
-    break;
   }
-  emit blockEvents( false );
 
   if ( fileName.isEmpty() && fileNames.isEmpty( ) )
     return;

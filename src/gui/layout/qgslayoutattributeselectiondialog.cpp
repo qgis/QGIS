@@ -374,15 +374,15 @@ QWidget *QgsLayoutColumnAlignmentDelegate::createEditor( QWidget *parent, const 
   //create a combo box showing alignment options
   QComboBox *comboBox = new QComboBox( parent );
 
-  comboBox->addItem( tr( "Top left" ), int( Qt::AlignTop | Qt::AlignLeft ) );
-  comboBox->addItem( tr( "Top center" ), int( Qt::AlignTop | Qt::AlignHCenter ) );
-  comboBox->addItem( tr( "Top right" ), int( Qt::AlignTop | Qt::AlignRight ) );
-  comboBox->addItem( tr( "Middle left" ), int( Qt::AlignVCenter | Qt::AlignLeft ) );
-  comboBox->addItem( tr( "Middle center" ), int( Qt::AlignVCenter | Qt::AlignHCenter ) );
-  comboBox->addItem( tr( "Middle right" ), int( Qt::AlignVCenter | Qt::AlignRight ) );
-  comboBox->addItem( tr( "Bottom left" ), int( Qt::AlignBottom | Qt::AlignLeft ) );
-  comboBox->addItem( tr( "Bottom center" ), int( Qt::AlignBottom | Qt::AlignHCenter ) );
-  comboBox->addItem( tr( "Bottom right" ), int( Qt::AlignBottom | Qt::AlignRight ) );
+  comboBox->addItem( tr( "Top Left" ), int( Qt::AlignTop | Qt::AlignLeft ) );
+  comboBox->addItem( tr( "Top Center" ), int( Qt::AlignTop | Qt::AlignHCenter ) );
+  comboBox->addItem( tr( "Top Right" ), int( Qt::AlignTop | Qt::AlignRight ) );
+  comboBox->addItem( tr( "Middle Left" ), int( Qt::AlignVCenter | Qt::AlignLeft ) );
+  comboBox->addItem( tr( "Middle Center" ), int( Qt::AlignVCenter | Qt::AlignHCenter ) );
+  comboBox->addItem( tr( "Middle Right" ), int( Qt::AlignVCenter | Qt::AlignRight ) );
+  comboBox->addItem( tr( "Bottom Left" ), int( Qt::AlignBottom | Qt::AlignLeft ) );
+  comboBox->addItem( tr( "Bottom Center" ), int( Qt::AlignBottom | Qt::AlignHCenter ) );
+  comboBox->addItem( tr( "Bottom Right" ), int( Qt::AlignBottom | Qt::AlignRight ) );
 
   Qt::AlignmentFlag alignment = ( Qt::AlignmentFlag )index.model()->data( index, Qt::EditRole ).toInt();
   comboBox->setCurrentIndex( comboBox->findData( alignment ) );

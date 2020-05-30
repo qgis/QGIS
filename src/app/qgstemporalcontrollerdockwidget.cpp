@@ -19,11 +19,14 @@
 #include "qgstemporalcontrollerwidget.h"
 #include "qgspanelwidgetstack.h"
 #include "qgsanimationexportdialog.h"
+#include "qgsdecorationitem.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapdecoration.h"
 
 #include "qgstemporalutils.h"
 #include "qgstaskmanager.h"
 #include "qgsproxyprogresstask.h"
+#include "qgsmessagebar.h"
 
 #include <QProgressDialog>
 #include <QMessageBox>
@@ -50,7 +53,7 @@ QgsTemporalController *QgsTemporalControllerDockWidget::temporalController()
 
 void QgsTemporalControllerDockWidget::exportAnimation()
 {
-  QgsAnimationExportDialog *dlg = new QgsAnimationExportDialog( this, QgisApp::instance()->mapCanvas() );
+  QgsAnimationExportDialog *dlg = new QgsAnimationExportDialog( this, QgisApp::instance()->mapCanvas(), QgisApp::instance()->activeDecorations() );
   connect( dlg, &QgsAnimationExportDialog::startExport, this, [ = ]
   {
     QgsMapSettings s = QgisApp::instance()->mapCanvas()->mapSettings();
@@ -81,19 +84,29 @@ void QgsTemporalControllerDockWidget::exportAnimation()
 
     connect( &progressDialog, &QProgressDialog::canceled, &progressFeedback, &QgsFeedback::cancel );
 
-    bool success = QgsTemporalUtils::exportAnimation(
-      s,
-      animationRange,
-      frameDuration,
-      outputDir,
-      fileNameExpression,
-      error,
-      &progressFeedback );
+    QList<QgsMapDecoration *> decorations;
+    if ( dlg->drawDecorations() )
+      decorations = QgisApp::instance()->activeDecorations();
+
+    QgsTemporalUtils::AnimationExportSettings animationSettings;
+    animationSettings.frameDuration = frameDuration;
+    animationSettings.animationRange = animationRange;
+    animationSettings.outputDirectory = outputDir;
+    animationSettings.fileNameTemplate = fileNameExpression;
+    animationSettings.decorations = decorations;
+
+    bool success = QgsTemporalUtils::exportAnimation( s, animationSettings, error, &progressFeedback );
 
     progressDialog.hide();
     if ( !success )
     {
-      QMessageBox::warning( this, tr( "Export Animation" ), error );
+      QgisApp::instance()->messageBar()->pushMessage( tr( "Export Animation" ), error, Qgis::Critical );
+    }
+    else
+    {
+      QgisApp::instance()->messageBar()->pushMessage( tr( "Export Animation" ),
+          tr( "Successfully exported animation to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputDir ).toString(), QDir::toNativeSeparators( outputDir ) ),
+          Qgis::Success, 0 );
     }
   } );
   dlg->setAttribute( Qt::WA_DeleteOnClose );

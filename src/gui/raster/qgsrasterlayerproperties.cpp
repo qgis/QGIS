@@ -938,18 +938,11 @@ void QgsRasterLayerProperties::sync()
   QVariant wmsBackgroundLayer = mRasterLayer->customProperty( QStringLiteral( "WMSBackgroundLayer" ), false );
   mBackgroundLayerCheckBox->setChecked( wmsBackgroundLayer.toBool() );
 
-  /*
-   * Legend Tab
-   */
   mLegendConfigEmbeddedWidget->setLayer( mRasterLayer );
 
-} // QgsRasterLayerProperties::sync()
+  mTemporalWidget->syncToLayer();
+}
 
-/*
- *
- * PUBLIC AND PRIVATE SLOTS
- *
- */
 void QgsRasterLayerProperties::apply()
 {
 
@@ -1153,6 +1146,8 @@ void QgsRasterLayerProperties::apply()
   // Update temporal properties
   mTemporalWidget->saveTemporalProperties();
 
+  mRasterLayer->setCrs( mCrsSelector->crs() );
+
   //get the thumbnail for the layer
   QPixmap thumbnail = QPixmap::fromImage( mRasterLayer->previewAsImage( pixmapThumbnail->size() ) );
   pixmapThumbnail->setPixmap( thumbnail );
@@ -1232,7 +1227,9 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
 {
   QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata(
                                     mRasterLayer->providerType() );
-  QVariantMap uri = metadata->decodeUri( mRasterLayer->dataProvider()->dataSourceUri() );
+  const QVariantMap currentUri = metadata->decodeUri( mRasterLayer->dataProvider()->dataSourceUri() );
+
+  QVariantMap uri = currentUri;
 
   if ( mWmstGroup->isVisibleTo( this ) )
     uri[ QStringLiteral( "allowTemporalUpdates" ) ] = mWmstGroup->isChecked();
@@ -1281,8 +1278,9 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
     qobject_cast< QgsRasterLayerTemporalProperties * >( mRasterLayer->temporalProperties() )->setIntervalHandlingMethod( static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >(
           mFetchModeComboBox->currentData().toInt() ) );
   }
-  mRasterLayer->setDataSource( metadata->encodeUri( uri ), mRasterLayer->name(), mRasterLayer->providerType(), QgsDataProvider::ProviderOptions() );
 
+  if ( currentUri != uri )
+    mRasterLayer->setDataSource( metadata->encodeUri( uri ), mRasterLayer->name(), mRasterLayer->providerType(), QgsDataProvider::ProviderOptions() );
 }
 
 void QgsRasterLayerProperties::setSourceStaticTimeState()
@@ -2171,21 +2169,28 @@ void QgsRasterLayerProperties::saveStyleAs_clicked()
   QgsSettings settings;
   QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
+  QString selectedFilter;
   QString outputFileName = QFileDialog::getSaveFileName(
                              this,
                              tr( "Save layer properties as style file" ),
                              lastUsedDir,
-                             tr( "QGIS Layer Style File" ) + " (*.qml)" + ";;" + tr( "Styled Layer Descriptor" ) + " (*.sld)" );
+                             tr( "QGIS Layer Style File" ) + " (*.qml)" + ";;" + tr( "Styled Layer Descriptor" ) + " (*.sld)",
+                             &selectedFilter );
   if ( outputFileName.isEmpty() )
     return;
 
-  // set style type depending on extension
-  StyleType type = StyleType::QML;
-  if ( outputFileName.endsWith( QLatin1String( ".sld" ), Qt::CaseInsensitive ) )
-    type = StyleType::SLD;
-  else
-    // ensure the user never omits the extension from the file name
+  StyleType type;
+  // use selectedFilter to set style type
+  if ( selectedFilter.contains( QStringLiteral( ".qml" ), Qt::CaseInsensitive ) )
+  {
     outputFileName = QgsFileUtils::ensureFileNameHasExtension( outputFileName, QStringList() << QStringLiteral( "qml" ) );
+    type = StyleType::QML;
+  }
+  else
+  {
+    outputFileName = QgsFileUtils::ensureFileNameHasExtension( outputFileName, QStringList() << QStringLiteral( "sld" ) );
+    type = StyleType::SLD;
+  }
 
   apply(); // make sure the style to save is up-to-date
 

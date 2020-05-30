@@ -335,6 +335,20 @@ class CORE_EXPORT QgsSnappingConfig
     //! Sets if the snapping on intersection is enabled
     void setIntersectionSnapping( bool enabled );
 
+    /**
+     * Returns if self snapping (snapping to the currently digitised feature) is enabled
+     *
+     * \since QGIS 3.14
+     */
+    bool selfSnapping() const;
+
+    /**
+     * Sets if self snapping (snapping to the currently digitised feature) is enabled
+     *
+     * \since QGIS 3.14
+     */
+    void setSelfSnapping( bool enabled );
+
     //! Returns individual snapping settings for all layers
 #ifndef SIP_RUN
     QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> individualLayerSettings() const;
@@ -458,6 +472,7 @@ class CORE_EXPORT QgsSnappingConfig
     double mMaximumScale = 0.0;
     QgsTolerance::UnitType mUnits = QgsTolerance::ProjectUnits;
     bool mIntersectionSnapping = false;
+    bool mSelfSnapping = false;
 
     QHash<QgsVectorLayer *, IndividualLayerSettings> mIndividualLayerSettings;
 

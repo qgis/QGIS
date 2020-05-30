@@ -37,6 +37,8 @@ email                : sherman at mrcc.com
 #include <QStringList>
 #include <QWheelEvent>
 #include <QWindow>
+#include <QMenu>
+#include <QClipboard>
 
 #include "qgis.h"
 #include "qgssettings.h"
@@ -79,6 +81,8 @@ email                : sherman at mrcc.com
 #include "qgsrasterlayertemporalproperties.h"
 #include "qgsvectorlayertemporalproperties.h"
 #include "qgstemporalcontroller.h"
+#include "qgsruntimeprofiler.h"
+#include "qgsprojectionselectiondialog.h"
 
 /**
  * \ingroup gui
@@ -113,6 +117,7 @@ class QgsMapCanvas::CanvasProperties
 QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   : QGraphicsView( parent )
   , mCanvasProperties( new CanvasProperties )
+  , mMenu( new QMenu( this ) )
   , mExpressionContextScope( tr( "Map Canvas" ) )
 {
   mScene = new QGraphicsScene();
@@ -143,24 +148,27 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &QgsMapCanvas::mapThemeRenamed );
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemesChanged, this, &QgsMapCanvas::projectThemesChanged );
 
-  mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
-  mSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
-  mSettings.setFlag( QgsMapSettings::RenderPartialOutput );
-  mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
-  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged,
-           this, [ = ]
   {
+    QgsScopedRuntimeProfile profile( "Map settings initialization" );
+    mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
+    mSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
+    mSettings.setFlag( QgsMapSettings::RenderPartialOutput );
     mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
-    refresh();
-  } );
-  mSettings.setTransformContext( QgsProject::instance()->transformContext() );
-  connect( QgsProject::instance(), &QgsProject::transformContextChanged,
-           this, [ = ]
-  {
+    connect( QgsProject::instance(), &QgsProject::ellipsoidChanged,
+             this, [ = ]
+    {
+      mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
+      refresh();
+    } );
     mSettings.setTransformContext( QgsProject::instance()->transformContext() );
-    emit transformContextChanged();
-    refresh();
-  } );
+    connect( QgsProject::instance(), &QgsProject::transformContextChanged,
+             this, [ = ]
+    {
+      mSettings.setTransformContext( QgsProject::instance()->transformContext() );
+      emit transformContextChanged();
+      refresh();
+    } );
+  }
 
   // refresh canvas when a remote svg/image has finished downloading
   connect( QgsApplication::svgCache(), &QgsSvgCache::remoteSvgFetched, this, &QgsMapCanvas::redrawAllLayers );
@@ -221,8 +229,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   setTemporalRange( mSettings.temporalRange() );
 
   refresh();
-
-} // QgsMapCanvas ctor
+}
 
 
 QgsMapCanvas::~QgsMapCanvas()
@@ -792,12 +799,123 @@ void QgsMapCanvas::clearTemporalCache()
   }
 }
 
+void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
+{
+  const QgsPointXY mapPoint = event->originalMapPoint();
+
+  mMenu->clear();
+
+  QMenu *copyCoordinateMenu = new QMenu( tr( "Copy Coordinate" ), mMenu );
+  copyCoordinateMenu->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCopy.svg" ) ) );
+
+  auto addCoordinateFormat = [ = ]( const QString identifier, const QgsCoordinateReferenceSystem & crs )
+  {
+    QgsCoordinateTransform ct( mSettings.destinationCrs(), crs, mSettings.transformContext() );
+    try
+    {
+      const QgsPointXY transformedPoint = ct.transform( mapPoint );
+
+      // calculate precision based on visible map extent -- if user is zoomed in, we get better precision!
+      int displayPrecision = 0;
+      try
+      {
+        QgsRectangle extentReproj = ct.transformBoundingBox( extent() );
+        const double mapUnitsPerPixel = ( extentReproj.width() / width() + extentReproj.height() / height() ) * 0.5;
+        if ( mapUnitsPerPixel > 10 )
+          displayPrecision = 0;
+        else if ( mapUnitsPerPixel > 1 )
+          displayPrecision = 1;
+        else if ( mapUnitsPerPixel > 0.1 )
+          displayPrecision = 2;
+        else if ( mapUnitsPerPixel > 0.01 )
+          displayPrecision = 3;
+        else if ( mapUnitsPerPixel > 0.001 )
+          displayPrecision = 4;
+        else if ( mapUnitsPerPixel > 0.0001 )
+          displayPrecision = 5;
+        else if ( mapUnitsPerPixel > 0.00001 )
+          displayPrecision = 6;
+        else if ( mapUnitsPerPixel > 0.000001 )
+          displayPrecision = 7;
+        else if ( mapUnitsPerPixel > 0.0000001 )
+          displayPrecision = 8;
+        else
+          displayPrecision = 9;
+      }
+      catch ( QgsCsException & )
+      {
+        displayPrecision = crs.mapUnits() == QgsUnitTypes::DistanceDegrees ? 5 : 3;
+      }
+
+      QAction *copyCoordinateAction = new QAction( QStringLiteral( "%3 (%1, %2)" ).arg(
+            QString::number( transformedPoint.x(), 'f', displayPrecision ),
+            QString::number( transformedPoint.y(), 'f', displayPrecision ),
+            identifier ), mMenu );
+
+      connect( copyCoordinateAction, &QAction::triggered, this, [displayPrecision, transformedPoint]
+      {
+        QClipboard *clipboard = QApplication::clipboard();
+
+        const QString coordinates = QString::number( transformedPoint.x(), 'f', displayPrecision ) + ',' + QString::number( transformedPoint.y(), 'f', displayPrecision );
+
+        //if we are on x11 system put text into selection ready for middle button pasting
+        if ( clipboard->supportsSelection() )
+        {
+          clipboard->setText( coordinates, QClipboard::Selection );
+        }
+        clipboard->setText( coordinates, QClipboard::Clipboard );
+
+      } );
+      copyCoordinateMenu->addAction( copyCoordinateAction );
+    }
+    catch ( QgsCsException & )
+    {
+
+    }
+  };
+
+  addCoordinateFormat( tr( "Map CRS — %1" ).arg( mSettings.destinationCrs().userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) ), mSettings.destinationCrs() );
+  if ( mSettings.destinationCrs() != QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) )
+    addCoordinateFormat( tr( "WGS84" ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+
+  QgsSettings settings;
+  const QString customCrsString = settings.value( QStringLiteral( "qgis/custom_coordinate_crs" ) ).toString();
+  if ( !customCrsString.isEmpty() )
+  {
+    QgsCoordinateReferenceSystem customCrs( customCrsString );
+    if ( customCrs != mSettings.destinationCrs() && customCrs != QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) )
+    {
+      addCoordinateFormat( customCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ), customCrs );
+    }
+  }
+  copyCoordinateMenu->addSeparator();
+  QAction *setCustomCrsAction = new QAction( QStringLiteral( "Set Custom CRS…" ), mMenu );
+  connect( setCustomCrsAction, &QAction::triggered, this, [ = ]
+  {
+    QgsProjectionSelectionDialog selector( this );
+    selector.setCrs( QgsCoordinateReferenceSystem( customCrsString ) );
+    if ( selector.exec() )
+    {
+      QgsSettings().setValue( QStringLiteral( "qgis/custom_coordinate_crs" ), selector.crs().authid().isEmpty() ? selector.crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) : selector.crs().authid() );
+    }
+  } );
+  copyCoordinateMenu->addAction( setCustomCrsAction );
+
+  mMenu->addMenu( copyCoordinateMenu );
+
+  if ( mMapTool )
+    mMapTool->populateContextMenu( mMenu );
+
+  mMenu->exec( event->globalPos() );
+}
+
 void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
   if ( temporalRange() == dateTimeRange )
     return;
 
   mSettings.setTemporalRange( dateTimeRange );
+  mSettings.setIsTemporal( dateTimeRange.begin().isValid() || dateTimeRange.end().isValid() );
 
   emit temporalRangeChanged();
 
@@ -812,6 +930,26 @@ void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
 const QgsDateTimeRange &QgsMapCanvas::temporalRange() const
 {
   return mSettings.temporalRange();
+}
+
+void QgsMapCanvas::installInteractionBlocker( QgsMapCanvasInteractionBlocker *blocker )
+{
+  mInteractionBlockers.append( blocker );
+}
+
+void QgsMapCanvas::removeInteractionBlocker( QgsMapCanvasInteractionBlocker *blocker )
+{
+  mInteractionBlockers.removeAll( blocker );
+}
+
+bool QgsMapCanvas::allowInteraction( QgsMapCanvasInteractionBlocker::Interaction interaction ) const
+{
+  for ( const QgsMapCanvasInteractionBlocker *block : mInteractionBlockers )
+  {
+    if ( block->blockCanvasInteraction( interaction ) )
+      return false;
+  }
+  return true;
 }
 
 void QgsMapCanvas::mapUpdateTimeout()
@@ -895,7 +1033,7 @@ void QgsMapCanvas::saveAsImage( const QString &fileName, QPixmap *theQPixmap, co
 
   // build the world file name
   QString outputSuffix = myInfo.suffix();
-  QString myWorldFileName = myInfo.absolutePath() + '/' + myInfo.baseName() + '.'
+  QString myWorldFileName = myInfo.absolutePath() + '/' + myInfo.completeBaseName() + '.'
                             + outputSuffix.at( 0 ) + outputSuffix.at( myInfo.suffix().size() - 1 ) + 'w';
   QFile myWorldFile( myWorldFileName );
   if ( !myWorldFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) ) //don't use QIODevice::Text
@@ -1577,6 +1715,12 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent *e )
         beginZoomRect( e->pos() );
         return;
       }
+      else if ( mMapTool->flags() & QgsMapTool::ShowContextMenu && e->button() == Qt::RightButton )
+      {
+        std::unique_ptr<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
+        showContextMenu( me.get() );
+        return;
+      }
       else
       {
         std::unique_ptr<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
@@ -1592,9 +1736,7 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent *e )
 
   mCanvasProperties->mouseButtonDown = true;
   mCanvasProperties->rubberStartPoint = e->pos();
-
-} // mousePressEvent
-
+}
 
 void QgsMapCanvas::mouseReleaseEvent( QMouseEvent *e )
 {
@@ -1655,7 +1797,7 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent *e )
   if ( mCanvasProperties->panSelectorDown )
     return;
 
-} // mouseReleaseEvent
+}
 
 void QgsMapCanvas::resizeEvent( QResizeEvent *e )
 {

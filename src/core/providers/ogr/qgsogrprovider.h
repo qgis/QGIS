@@ -144,6 +144,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     QSet< QVariant > uniqueValues( int index, int limit = -1 ) const override;
     QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
                                        QgsFeedback *feedback = nullptr ) const override;
+    QgsFeatureSource::SpatialIndexPresence hasSpatialIndex() const override;
 
     QString name() const override;
     static QString providerKey();
@@ -319,10 +320,6 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     bool doInitialActionsForEdition();
 
     bool addAttributeOGRLevel( const QgsField &field, bool &ignoreErrorOut );
-
-#ifndef QT_NO_NETWORKPROXY
-    void setupProxy();
-#endif
 
     QgsOgrTransaction *mTransaction = nullptr;
 

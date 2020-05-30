@@ -46,6 +46,7 @@
 #include "qgslocaldefaultsettings.h"
 #include "qgsprojectdisplaysettings.h"
 #include "qgsbearingnumericformat.h"
+#include "qgspolygon.h"
 
 // QWT Charting widget
 
@@ -318,6 +319,17 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   mRotateMapCheckBox->setChecked( mySettings.value( QStringLiteral( "gps/rotateMap" ), false ).toBool() );
   mSpinMapRotateInterval->setValue( mySettings.value( QStringLiteral( "gps/rotateMapInterval" ), 0 ).toInt() );
   mShowBearingLineCheck->setChecked( mySettings.value( QStringLiteral( "gps/showBearingLine" ), false ).toBool() );
+  connect( mShowBearingLineCheck, &QgsCollapsibleGroupBox::toggled, this, [ = ]( bool checked )
+  {
+    if ( !checked )
+    {
+      if ( mMapBearingItem )
+      {
+        delete mMapBearingItem;
+        mMapBearingItem = nullptr;
+      }
+    }
+  } );
 
   mBtnDebug->setVisible( mySettings.value( QStringLiteral( "gps/showDebug" ), "false" ).toBool() );  // use a registry setting to control - power users/devs could set it
 
@@ -415,6 +427,8 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
            this, &QgsGpsInformationWidget::cboAcquisitionIntervalEdited );
   connect( mCboDistanceThreshold, qgis::overload< const QString & >::of( &QComboBox::currentTextChanged ),
            this, &QgsGpsInformationWidget::cboDistanceThresholdEdited );
+
+  mMapCanvas->installInteractionBlocker( this );
 }
 
 QgsGpsInformationWidget::~QgsGpsInformationWidget()
@@ -490,6 +504,26 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
   QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "Symbol" ), mBearingLineStyleButton->symbol(), doc, QgsReadWriteContext() );
   doc.appendChild( elem );
   mySettings.setValue( QStringLiteral( "gps/bearingLineSymbol" ), doc.toString() );
+
+  if ( mMapCanvas )
+    mMapCanvas->removeInteractionBlocker( this );
+}
+
+bool QgsGpsInformationWidget::blockCanvasInteraction( QgsMapCanvasInteractionBlocker::Interaction interaction ) const
+{
+  switch ( interaction )
+  {
+    case QgsMapCanvasInteractionBlocker::Interaction::MapPanOnSingleClick:
+      // if we're connected and set to follow the GPS location, block the single click navigation mode
+      // to avoid accidental map canvas pans away from the GPS location.
+      // (for now, we don't block click-and-drag pans, as they are less likely to be accidentally triggered)
+      if ( mNmea && ( radRecenterMap->isChecked() || radRecenterWhenNeeded->isChecked() ) )
+        return true;
+
+      break;
+  }
+
+  return false;
 }
 
 void QgsGpsInformationWidget::mSpinTrackWidth_valueChanged( int value )
@@ -833,17 +867,20 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
   QgsPointXY myNewCenter;
   nmeaPOS newNmeaPosition;
   nmeaTIME newNmeaTime;
+  double newAlt = 0.0;
   if ( validFlag )
   {
     myNewCenter = QgsPointXY( info.longitude, info.latitude );
     newNmeaPosition.lat = nmea_degree2radian( info.latitude );
     newNmeaPosition.lon = nmea_degree2radian( info.longitude );
+    newAlt = info.elevation;
     nmea_time_now( &newNmeaTime );
   }
   else
   {
     myNewCenter = mLastGpsPosition;
     newNmeaPosition = mLastNmeaPosition;
+    newAlt = mLastElevation;
   }
   if ( !mAcquisitionEnabled || ( nmea_distance( &newNmeaPosition, &mLastNmeaPosition ) < mDistanceThreshold ) )
   {
@@ -925,6 +962,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     mLastGpsPosition = myNewCenter;
     mLastNmeaPosition = newNmeaPosition;
     mLastNmeaTime = newNmeaTime;
+    mLastElevation = newAlt;
     // Pan based on user specified behavior
     if ( radRecenterMap->isChecked() || radRecenterWhenNeeded->isChecked() )
     {
@@ -964,22 +1002,27 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
   if ( !std::isnan( info.direction ) )
   {
     double trueNorth = 0;
-    try
+    QgsSettings settings;
+    if ( settings.value( QStringLiteral( "gps/correctForTrueNorth" ), false, QgsSettings::App ).toBool() )
     {
-      trueNorth = QgsBearingUtils::bearingTrueNorth( mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext(), mMapCanvas->mapSettings().visibleExtent().center() );
-    }
-    catch ( QgsException & )
-    {
+      try
+      {
+        trueNorth = QgsBearingUtils::bearingTrueNorth( mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext(), mMapCanvas->mapSettings().visibleExtent().center() );
+      }
+      catch ( QgsException & )
+      {
 
+      }
     }
+    const double adjustment = settings.value( QStringLiteral( "gps/bearingAdjustment" ), 0.0, QgsSettings::App ).toDouble();
 
     if ( mRotateMapCheckBox->isChecked() && ( !mLastRotateTimer.isValid() || mLastRotateTimer.hasExpired( mSpinMapRotateInterval->value() * 1000 ) ) )
     {
-      mMapCanvas->setRotation( trueNorth - info.direction );
+      mMapCanvas->setRotation( trueNorth - info.direction - adjustment );
       mLastRotateTimer.restart();
     }
 
-    if ( mShowBearingLineCheck )
+    if ( mShowBearingLineCheck->isChecked() )
     {
       if ( ! mMapBearingItem )
       {
@@ -988,7 +1031,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
       }
 
       mMapBearingItem->setGpsPosition( myNewCenter );
-      mMapBearingItem->setGpsBearing( info.direction - trueNorth );
+      mMapBearingItem->setGpsBearing( info.direction - trueNorth + adjustment );
     }
     else if ( mMapBearingItem )
     {
@@ -1042,7 +1085,9 @@ void QgsGpsInformationWidget::addVertex()
 
   // we store the capture list in wgs84 and then transform to layer crs when
   // calling close feature
-  mCaptureList.push_back( mLastGpsPosition );
+  QgsPoint point = QgsPoint( mLastGpsPosition.x(), mLastGpsPosition.y(), mLastElevation );
+  mCaptureList.push_back( point );
+
 
   // we store the rubber band points in map canvas CRS so transform to map crs
   // potential problem with transform errors and wrong coordinates if map CRS is changed after points are stored - SLM
@@ -1100,6 +1145,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
   }
 
   QgsCoordinateTransform t( mWgs84CRS, vlayer->crs(), QgsProject::instance() );
+  bool is3D = QgsWkbTypes::hasZ( vlayer->wkbType() );
   switch ( vlayer->geometryType() )
   {
     case QgsWkbTypes::PointGeometry:
@@ -1107,7 +1153,14 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
       QgsFeature f;
       try
       {
-        QgsGeometry g = QgsGeometry::fromPointXY( t.transform( mLastGpsPosition ) );
+        QgsPointXY pointXY = t.transform( mLastGpsPosition );
+
+        QgsGeometry g;
+        if ( is3D )
+          g = QgsGeometry( new QgsPoint( pointXY.x(), pointXY.y(), mLastElevation ) );
+        else
+          g = QgsGeometry::fromPointXY( pointXY );
+
         if ( QgsWkbTypes::isMultiType( vlayer->wkbType() ) )
           g.convertToMultiType();
 
@@ -1151,9 +1204,14 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
       QgsFeature f;
       QgsGeometry g;
 
+      std::unique_ptr<QgsLineString> ring( new QgsLineString( mCaptureList ) );
+      if ( ! is3D )
+        ring->dropZValue();
+
       if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
       {
-        g = QgsGeometry::fromPolylineXY( mCaptureList );
+
+        g = QgsGeometry( ring.release() );
         try
         {
           g.transform( t );
@@ -1169,13 +1227,11 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
       }
       else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
       {
-        QVector< QgsPointXY > line = mCaptureList;
+        ring->close();
+        std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
+        polygon->setExteriorRing( ring.release() );
 
-        // close ring if required
-        if ( line.constFirst() != line.constLast() )
-          line << line.constFirst();
-
-        g = QgsGeometry::fromPolygonXY( QVector< QgsPolylineXY > () << line );
+        g = QgsGeometry( polygon.release() );
         try
         {
           g.transform( t );

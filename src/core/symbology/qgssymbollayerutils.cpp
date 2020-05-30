@@ -4008,7 +4008,7 @@ QPointF QgsSymbolLayerUtils::polygonCentroid( const QPolygonF &points )
   return QPointF( cx, cy );
 }
 
-QPointF QgsSymbolLayerUtils::polygonPointOnSurface( const QPolygonF &points, QList<QPolygonF> *rings )
+QPointF QgsSymbolLayerUtils::polygonPointOnSurface( const QPolygonF &points, const QVector<QPolygonF> *rings )
 {
   QPointF centroid = QgsSymbolLayerUtils::polygonCentroid( points );
 
@@ -4022,8 +4022,7 @@ QPointF QgsSymbolLayerUtils::polygonPointOnSurface( const QPolygonF &points, QLi
     {
       if ( rings )
       {
-        QList<QPolygonF>::const_iterator ringIt = rings->constBegin();
-        for ( ; ringIt != rings->constEnd(); ++ringIt )
+        for ( auto ringIt = rings->constBegin(); ringIt != rings->constEnd(); ++ringIt )
         {
           pointCount = ( *ringIt ).count();
           QgsPolylineXY polyline( pointCount );

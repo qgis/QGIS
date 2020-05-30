@@ -103,7 +103,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
       }
 
       RenderLevel( const QgsRuleBasedRenderer::RenderLevel &other )
-        : zIndex( other.zIndex )
+        : zIndex( other.zIndex ), jobs()
       {
         for ( RenderJob *job : qgis::as_const( other.jobs ) )
         {

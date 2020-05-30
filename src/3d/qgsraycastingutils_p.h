@@ -29,6 +29,8 @@
 
 #include <QVector3D>
 
+#define SIP_NO_FILE
+
 class QgsAABB;
 
 namespace Qt3DRender

@@ -77,6 +77,17 @@ IF (WITH_INTERNAL_MDAL)
     SET (HAVE_HDF5 TRUE)
   ENDIF(HDF5_FOUND)
 
+  IF(SQLITE3_FOUND AND NETCDF_FOUND)
+     SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_sqlite3.cpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_3di.cpp
+    )
+    SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_sqlite3.hpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_3di.hpp
+    )
+  ENDIF(SQLITE3_FOUND AND NETCDF_FOUND)
+
   IF(GDAL_FOUND)
     SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_gdal.cpp

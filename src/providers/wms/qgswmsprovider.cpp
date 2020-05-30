@@ -197,7 +197,7 @@ QString QgsWmsProvider::prepareUri( QString uri )
   // some services provide a percent/url encoded (legend) uri string, always decode here
   uri = QUrl::fromPercentEncoding( uri.toUtf8() );
 
-  if ( uri.contains( QLatin1String( "SERVICE=WMTS" ) ) || uri.contains( QLatin1String( "/WMTSCapabilities.xml" ) ) )
+  if ( isUrlForWMTS( uri ) )
   {
     return uri;
   }
@@ -1765,7 +1765,7 @@ void QgsWmsProvider::parseServiceException( QDomElement const &e, QString &error
     if ( locator == QLatin1String( "time" ) )
       errorText = tr( "Request contains a time value that does not match any available layer in the server." );
     else
-      errorText = tr( "Request contains some parameter value that does not match any available layer in the server" );
+      errorText = tr( "Request contains some parameter values that do not match any available layer in the server" );
   }
   else if ( seCode.isEmpty() )
   {
@@ -3652,7 +3652,7 @@ QUrl QgsWmsProvider::getLegendGraphicFullURL( double scale, const QgsRectangle &
   QUrl url( lurl );
   QUrlQuery query( url );
 
-  if ( dataSourceUri().contains( "SERVICE=WMTS" ) || dataSourceUri().contains( "/WMTSCapabilities.xml" ) )
+  if ( isUrlForWMTS( dataSourceUri() ) )
   {
     QgsDebugMsg( QString( "getlegendgraphicrequest: %1" ).arg( url.toString() ) );
     return url;
@@ -3864,6 +3864,14 @@ void QgsWmsProvider::getLegendGraphicReplyProgress( qint64 bytesReceived, qint64
   QgsDebugMsg( msg );
   emit statusChanged( msg );
 }
+
+bool QgsWmsProvider::isUrlForWMTS( const QString &url )
+{
+  // Do comparison in case insensitive way to match OGC KVP requirements
+  return  url.contains( QLatin1String( "SERVICE=WMTS" ), Qt::CaseInsensitive ) ||
+          url.contains( QLatin1String( "/WMTSCapabilities.xml" ), Qt::CaseInsensitive );
+}
+
 
 QgsWmsProvider *QgsWmsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {

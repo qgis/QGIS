@@ -32,6 +32,7 @@ class QgsFieldFormatterRegistry;
 class QgsColorSchemeRegistry;
 class QgsPaintEffectRegistry;
 class QgsProjectStorageRegistry;
+class QgsLocalizedDataPathRegistry;
 class QgsRendererRegistry;
 class QgsSvgCache;
 class QgsImageCache;
@@ -790,6 +791,15 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsProjectStorageRegistry *projectStorageRegistry() SIP_KEEPREFERENCE;
 
     /**
+     * Returns the registry of data repositories
+     * These are used as paths for basemaps, logos, etc. which can be referenced
+     * differently across work stations.
+     * \see QgsLocalizedDataPathRegistry
+     * \since QGIS 3.14
+     */
+    static QgsLocalizedDataPathRegistry *localizedDataPathRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * This string is used to represent the value `NULL` throughout QGIS.
      *
      * In general, when passing values around, prefer to use a null QVariant
@@ -913,6 +923,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsActionScopeRegistry *mActionScopeRegistry = nullptr;
       QgsAnnotationRegistry *mAnnotationRegistry = nullptr;
       QgsColorSchemeRegistry *mColorSchemeRegistry = nullptr;
+      QgsLocalizedDataPathRegistry *mLocalizedDataPathRegistry = nullptr;
       QgsNumericFormatRegistry *mNumericFormatRegistry = nullptr;
       QgsFieldFormatterRegistry *mFieldFormatterRegistry = nullptr;
       QgsGpsConnectionRegistry *mGpsConnectionRegistry = nullptr;

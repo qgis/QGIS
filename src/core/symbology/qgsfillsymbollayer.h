@@ -65,7 +65,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
 
     void stopRender( QgsSymbolRenderContext &context ) override;
 
-    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
 
     QgsStringMap properties() const override;
 
@@ -229,7 +229,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 
     void stopRender( QgsSymbolRenderContext &context ) override;
 
-    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
 
     QgsStringMap properties() const override;
 
@@ -391,7 +391,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     void stopRender( QgsSymbolRenderContext &context ) override;
 
-    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
 
     QgsStringMap properties() const override;
 
@@ -648,7 +648,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
   public:
 
     QgsImageFillSymbolLayer();
-    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
 
     QgsSymbol *subSymbol() override { return mStroke.get(); }
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
@@ -754,7 +754,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 
     // implemented from base classes
     QString layerType() const override;
-    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
     QgsStringMap properties() const override;
@@ -1478,8 +1478,8 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QString layerType() const override;
 
     void startRender( QgsSymbolRenderContext &context ) override;
-
     void stopRender( QgsSymbolRenderContext &context ) override;
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
 
     QgsStringMap properties() const override;
 
@@ -1720,6 +1720,8 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     void applyPattern( const QgsSymbolRenderContext &context, QBrush &brush, double distanceX, double distanceY,
                        double displacementX, double displacementY, double offsetX, double offsetY );
+
+    bool mRenderUsingMarkers = false;
 };
 
 /**
@@ -1759,7 +1761,7 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
     QString layerType() const override;
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
-    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
     QgsStringMap properties() const override;
     QgsRandomMarkerFillSymbolLayer *clone() const override SIP_FACTORY;
 
@@ -1895,7 +1897,7 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
     struct Part
     {
       QPolygonF exterior;
-      QList<QPolygonF> rings;
+      QVector<QPolygonF> rings;
     };
 
     QVector< Part > mCurrentParts;
@@ -1942,7 +1944,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 
     void stopRender( QgsSymbolRenderContext &context ) override;
 
-    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
 
     QgsStringMap properties() const override;
 
@@ -1970,18 +1972,60 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 
     /**
      * Sets whether a point is drawn for all parts or only on the biggest part of multi-part features.
+     * \see pointOnAllParts()
      * \since QGIS 2.16 */
     void setPointOnAllParts( bool pointOnAllParts ) { mPointOnAllParts = pointOnAllParts; }
 
     /**
      * Returns whether a point is drawn for all parts or only on the biggest part of multi-part features.
+     * \see setPointOnAllParts()
      * \since QGIS 2.16 */
     bool pointOnAllParts() const { return mPointOnAllParts; }
 
+    /**
+     * Returns TRUE if point markers should be clipped to the polygon boundary.
+     *
+     * \see setClipPoints()
+     * \since 3.14
+     */
+    bool clipPoints() const { return mClipPoints; }
+
+    /**
+     * Sets whether point markers should be \a clipped to the polygon boundary.
+     *
+     * \see clipPoints()
+     * \since 3.14
+     */
+    void setClipPoints( bool clipPoints ) { mClipPoints = clipPoints; }
+
+    /**
+     * Returns TRUE if point markers should be clipped to the current part boundary only.
+     *
+     * \see setClipPoints()
+     * \since 3.14
+     */
+    bool clipOnCurrentPartOnly() const { return mClipOnCurrentPartOnly; }
+
+    /**
+     * Sets whether point markers should be \a clipped to the current part boundary only.
+     *
+     * \see clipOnCurrentPartOnly()
+     * \since 3.14
+     */
+    void setClipOnCurrentPartOnly( bool clipOnCurrentPartOnly ) { mClipOnCurrentPartOnly = clipOnCurrentPartOnly; }
+
+    void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+    void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+
   protected:
+
     std::unique_ptr< QgsMarkerSymbol > mMarker;
     bool mPointOnSurface = false;
     bool mPointOnAllParts = true;
+    bool mClipPoints = false;
+    bool mClipOnCurrentPartOnly = false;
+
+    bool mRenderingFeature = false;
 
     QgsFeatureId mCurrentFeatureId = -1;
     int mBiggestPartIndex = -1;
@@ -1990,6 +2034,14 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 #ifdef SIP_RUN
     QgsCentroidFillSymbolLayer( const QgsCentroidFillSymbolLayer &other );
 #endif
+    struct Part
+    {
+      QPolygonF exterior;
+      QVector<QPolygonF> rings;
+    };
+
+    void render( QgsRenderContext &context, const QVector<Part> &parts, const QgsFeature &feature, bool selected );
+    QVector<Part> mCurrentParts;
 };
 
 #endif

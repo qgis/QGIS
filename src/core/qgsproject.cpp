@@ -593,6 +593,16 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
   }
 }
 
+void QgsProject::setDataDefinedServerProperties( const QgsPropertyCollection &properties )
+{
+  mDataDefinedServerProperties = properties;
+}
+
+QgsPropertyCollection QgsProject::dataDefinedServerProperties() const
+{
+  return mDataDefinedServerProperties;
+}
+
 void QgsProject::setFileName( const QString &name )
 {
   if ( name == mFile.fileName() )
@@ -883,6 +893,26 @@ void _getProperties( const QDomDocument &doc, QgsProjectPropertyKey &project_pro
   }
 }
 
+/**
+  Returns the data defined server properties collection found in "doc" to "dataDefinedServerProperties".
+  \param doc xml document
+  \param dataDefinedServerProperties property collection of the server overrides
+  \since QGIS 3.14
+**/
+QgsPropertyCollection getDataDefinedServerProperties( const QDomDocument &doc, const QgsPropertiesDefinition &dataDefinedServerPropertyDefinitions )
+{
+  QgsPropertyCollection ddServerProperties;
+  // Read data defined server properties
+  QDomElement ddElem = doc.documentElement().firstChildElement( QStringLiteral( "dataDefinedServerProperties" ) );
+  if ( !ddElem.isNull() )
+  {
+    if ( !ddServerProperties.readXml( ddElem, dataDefinedServerPropertyDefinitions ) )
+    {
+      QgsDebugMsg( QStringLiteral( "dataDefinedServerProperties.readXml() failed" ) );
+    }
+  }
+  return ddServerProperties;
+}
 
 /**
    Get the project title
@@ -1277,6 +1307,9 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 
   // now get any properties
   _getProperties( *doc, mProperties );
+
+  // now get the data defined server properties
+  mDataDefinedServerProperties = getDataDefinedServerProperties( *doc, dataDefinedServerPropertyDefinitions() );
 
   QgsDebugMsgLevel( QString::number( mProperties.count() ) + " properties read", 2 );
 
@@ -1847,8 +1880,8 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
         {
           if ( QgsTransaction::supportsTransaction( vlayer ) )
           {
-            QString connString = QgsDataSourceUri( vlayer->source() ).connectionInfo();
-            QString key = vlayer->providerType();
+            const QString connString = QgsTransaction::connectionString( vlayer->source() );
+            const QString key = vlayer->providerType();
 
             QgsTransactionGroup *tg = mTransactionGroups.value( qMakePair( key, connString ) );
 
@@ -2198,6 +2231,10 @@ bool QgsProject::writeProjectFile( const QString &filename )
     mProperties.writeXml( QStringLiteral( "properties" ), qgisNode, *doc );
   }
 
+  QDomElement ddElem = doc->createElement( QStringLiteral( "dataDefinedServerProperties" ) );
+  mDataDefinedServerProperties.writeXml( ddElem, dataDefinedServerPropertyDefinitions() );
+  qgisNode.appendChild( ddElem );
+
   mMapThemeCollection->writeXml( *doc );
 
   mTransformContext.writeXml( qgisNode, context );
@@ -2476,7 +2513,6 @@ bool QgsProject::readBoolEntry( const QString &scope, const QString &key, bool d
 
   return def;
 }
-
 
 bool QgsProject::removeEntry( const QString &scope, const QString &key )
 {
@@ -3363,6 +3399,18 @@ bool QgsProject::saveAuxiliaryStorage( const QString &filename )
   {
     return mAuxiliaryStorage->saveAs( *this );
   }
+}
+
+QgsPropertiesDefinition &QgsProject::dataDefinedServerPropertyDefinitions()
+{
+  static QgsPropertiesDefinition sPropertyDefinitions
+  {
+    {
+      QgsProject::DataDefinedServerProperty::WMSOnlineResource,
+      QgsPropertyDefinition( "WMSOnlineResource", QObject::tr( "WMS Online Resource" ), QgsPropertyDefinition::String )
+    },
+  };
+  return sPropertyDefinitions;
 }
 
 const QgsAuxiliaryStorage *QgsProject::auxiliaryStorage() const

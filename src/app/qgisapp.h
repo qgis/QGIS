@@ -123,6 +123,7 @@ class QgsStatisticalSummaryDockWidget;
 class QgsMapCanvasTracer;
 class QgsTemporalControllerDockWidget;
 
+class QgsMapDecoration;
 class QgsDecorationItem;
 class QgsMessageLogViewer;
 class QgsMessageBar;
@@ -145,7 +146,6 @@ class QgsDevToolsPanelWidget;
 class QgsDevToolWidgetFactory;
 class QgsNetworkLogger;
 class QgsNetworkLoggerWidgetFactory;
-
 #include <QMainWindow>
 #include <QToolBar>
 #include <QAbstractSocket>
@@ -181,6 +181,10 @@ class QgsNetworkLoggerWidgetFactory;
 #endif
 
 class QgsLegendFilterButton;
+
+#ifdef HAVE_GEOREFERENCER
+class QgsGeoreferencerMainWindow;
+#endif
 
 /**
  * \class QgisApp
@@ -695,7 +699,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void emitCustomCrsValidation( QgsCoordinateReferenceSystem &crs );
 
+    /**
+     * Returns a list of active map decorations
+     * \since QGIS 3.14
+     */
+    QList<QgsMapDecoration *> activeDecorations();
+
+    //! Returns a list of registered map decoration items
     QList<QgsDecorationItem *> decorationItems() { return mDecorationItems; }
+
+    //! A a map decoration \a item
     void addDecorationItem( QgsDecorationItem *item ) { mDecorationItems.append( item ); }
 
     //! \since QGIS 2.1
@@ -1825,6 +1838,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Enable or disable event tracing (for debugging)
     void toggleEventTracing();
 
+#ifdef HAVE_GEOREFERENCER
+    void showGeoreferencer();
+#endif
+
   signals:
 
     /**
@@ -2023,7 +2040,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void setupAtlasMapLayerAction( QgsPrintLayout *layout, bool enableAction );
 
-    void setLayoutAtlasFeature( QgsPrintLayout *layout, QgsMapLayer *layer, const QgsFeature &feat );
+    void setLayoutAtlasFeature( QgsPrintLayout *layout, const QgsFeature &feat );
 
     QString saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true, bool onlySelected = false, bool defaultToAddToMap = true );
 
@@ -2460,6 +2477,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsSnappingUtils *mSnappingUtils = nullptr;
 
+#ifdef HAVE_GEOREFERENCER
+    QgsGeoreferencerMainWindow *mGeoreferencer = nullptr;
+#endif
+
     QList<QgsMapLayerConfigWidgetFactory *> mMapLayerPanelFactories;
     QList<QPointer<QgsOptionsWidgetFactory>> mOptionsWidgetFactories;
 
@@ -2519,6 +2540,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsNetworkLogger *mNetworkLogger = nullptr;
     QgsScopedDevToolWidgetFactory mNetworkLoggerWidgetFactory;
+    QgsScopedDevToolWidgetFactory mStartupProfilerWidgetFactory;
 
     class QgsCanvasRefreshBlocker
     {

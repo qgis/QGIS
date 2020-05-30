@@ -215,7 +215,7 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget *editor )
 
   if ( mComboBox )
   {
-    mComboBox->addItem( tr( "Please select" ), QVariant() ); // creates an invalid to allow selecting all features
+    mComboBox->addItem( tr( "Please Select" ), QVariant() ); // creates an invalid to allow selecting all features
     if ( config( QStringLiteral( "AllowNull" ) ).toBool() )
     {
       mComboBox->addItem( tr( "(no selection)" ), QVariant( layer()->fields().at( mFieldIdx ).type() ) );

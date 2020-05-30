@@ -29,6 +29,8 @@
 
 #include <Qt3DCore/QEntity>
 
+#define SIP_NO_FILE
+
 class QgsAABB;
 class QgsChunkNode;
 class QgsChunkList;

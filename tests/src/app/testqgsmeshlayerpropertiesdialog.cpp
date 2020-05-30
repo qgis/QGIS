@@ -41,6 +41,7 @@ class TestQgsMeshLayerPropertiesDialog : public QObject
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
+    void testInvalidLayer();
     void testCrs();
     void testDatasetGroupTree();
 
@@ -72,6 +73,15 @@ void TestQgsMeshLayerPropertiesDialog::initTestCase()
 void TestQgsMeshLayerPropertiesDialog::cleanupTestCase()
 {
   QgsApplication::exitQgis();
+}
+
+void TestQgsMeshLayerPropertiesDialog::testInvalidLayer()
+{
+  QgsMeshLayer invalidLayer;
+  std::unique_ptr< QgsMeshLayerProperties > dialog = qgis::make_unique< QgsMeshLayerProperties> ( &invalidLayer,
+      mQgisApp->mapCanvas() );
+
+  QVERIFY( dialog );
 }
 
 void TestQgsMeshLayerPropertiesDialog::testCrs()

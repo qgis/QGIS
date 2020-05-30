@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsmaptoolcapture.h"
-
 #include "qgsexception.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometryvalidator.h"
@@ -52,6 +51,15 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizin
   connect( canvas, &QgsMapCanvas::currentLayerChanged,
            this, &QgsMapToolCapture::currentLayerChanged );
 
+  mExtraSnapLayer = new QgsVectorLayer( "LineString?crs=0", "extra snap", "memory" );
+  mExtraSnapLayer->startEditing();
+  QgsFeature f;
+  mExtraSnapLayer->addFeature( f );
+  mExtraSnapFeatureId = f.id();
+
+  connect( QgsProject::instance(), &QgsProject::snappingConfigChanged,
+           this, &QgsMapToolCapture::updateExtraSnapLayer );
+
   currentLayerChanged( canvas->currentLayer() );
 }
 
@@ -64,6 +72,14 @@ QgsMapToolCapture::~QgsMapToolCapture()
     mValidator->deleteLater();
     mValidator = nullptr;
   }
+  mCanvas->snappingUtils()->removeExtraSnapLayer( mExtraSnapLayer );
+  mExtraSnapLayer->deleteLater();
+  mExtraSnapLayer = nullptr;
+}
+
+QgsMapToolCapture::Capabilities QgsMapToolCapture::capabilities() const
+{
+  return QgsMapToolCapture::NoCapabilities;
 }
 
 void QgsMapToolCapture::activate()
@@ -71,6 +87,7 @@ void QgsMapToolCapture::activate()
   if ( mTempRubberBand )
     mTempRubberBand->show();
 
+  mCanvas->snappingUtils()->addExtraSnapLayer( mExtraSnapLayer );
   QgsMapToolAdvancedDigitizing::activate();
 }
 
@@ -81,6 +98,7 @@ void QgsMapToolCapture::deactivate()
 
   mSnapIndicator->setMatch( QgsPointLocator::Match() );
 
+  mCanvas->snappingUtils()->removeExtraSnapLayer( mExtraSnapLayer );
   QgsMapToolAdvancedDigitizing::deactivate();
 }
 
@@ -289,9 +307,24 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
     mSnappingMatches.append( QgsPointLocator::Match() );
   }
 
+  // Curves de-approximation
+  QgsSettings settings;
+  if ( settings.value( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false ).toBool() )
+  {
+    // If the tool and the layer support curves
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+    if ( capabilities().testFlag( QgsMapToolCapture::Capability::SupportsCurves ) && vlayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::CircularGeometries ) )
+    {
+      QgsGeometry linear = QgsGeometry( mCaptureCurve.segmentize() );
+      QgsGeometry curved = linear.convertToCurves();
+      mCaptureCurve = *qgsgeometry_cast<QgsCompoundCurve *>( curved.constGet() );
+    }
+  }
+
   tracer->reportError( QgsTracer::ErrNone, true ); // clear messagebar if there was any error
   return true;
 }
+
 
 QgsRubberBand *QgsMapToolCapture::takeRubberBand()
 {
@@ -509,6 +542,7 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
     mTempRubberBand->addPoint( point );
   }
 
+  updateExtraSnapLayer();
   validateGeometry();
 
   return 0;
@@ -555,6 +589,7 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
     c->transform( ct, QgsCoordinateTransform::ReverseTransform );
   }
   mCaptureCurve.addCurve( c );
+  updateExtraSnapLayer();
   for ( int i = 0; i < c->length(); ++i )
     mSnappingMatches.append( QgsPointLocator::Match() );
 
@@ -564,6 +599,7 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
 void QgsMapToolCapture::clearCurve()
 {
   mCaptureCurve.clear();
+  updateExtraSnapLayer();
 }
 
 QList<QgsPointLocator::Match> QgsMapToolCapture::snappingMatches() const
@@ -608,6 +644,7 @@ void QgsMapToolCapture::undo()
     vertexToRemove.vertex = size() - 1;
     mCaptureCurve.deleteVertex( vertexToRemove );
     mSnappingMatches.removeAt( vertexToRemove.vertex );
+    updateExtraSnapLayer();
 
     mCadDockWidget->removePreviousPoint();
 
@@ -657,6 +694,7 @@ void QgsMapToolCapture::stopCapturing()
 
   mCapturing = false;
   mCaptureCurve.clear();
+  updateExtraSnapLayer();
   mSnappingMatches.clear();
   if ( currentVectorLayer() )
     currentVectorLayer()->triggerRepaint();
@@ -676,6 +714,7 @@ void QgsMapToolCapture::clean()
 void QgsMapToolCapture::closePolygon()
 {
   mCaptureCurve.close();
+  updateExtraSnapLayer();
 }
 
 void QgsMapToolCapture::validateGeometry()
@@ -776,6 +815,7 @@ void QgsMapToolCapture::setPoints( const QVector<QgsPointXY> &pointList )
   QgsLineString *line = new QgsLineString( pointList );
   mCaptureCurve.clear();
   mCaptureCurve.addCurve( line );
+  updateExtraSnapLayer();
   mSnappingMatches.clear();
   for ( int i = 0; i < line->length(); ++i )
     mSnappingMatches.append( QgsPointLocator::Match() );
@@ -786,6 +826,7 @@ void QgsMapToolCapture::setPoints( const QgsPointSequence &pointList )
   QgsLineString *line = new QgsLineString( pointList );
   mCaptureCurve.clear();
   mCaptureCurve.addCurve( line );
+  updateExtraSnapLayer();
   mSnappingMatches.clear();
   for ( int i = 0; i < line->length(); ++i )
     mSnappingMatches.append( QgsPointLocator::Match() );
@@ -848,4 +889,25 @@ QgsPoint QgsMapToolCapture::mapPoint( const QgsMapMouseEvent &e ) const
   }
 
   return newPoint;
+}
+
+void QgsMapToolCapture::updateExtraSnapLayer()
+{
+  if ( canvas()->snappingUtils()->config().selfSnapping() && mCanvas->currentLayer() && mCaptureCurve.numPoints() >= 2 )
+  {
+    // the current layer may have changed
+    mExtraSnapLayer->setCrs( mCanvas->currentLayer()->crs() );
+    QgsGeometry geom = QgsGeometry( mCaptureCurve.clone() );
+    // we close the curve to allow snapping on last segment
+    if ( mCaptureMode == CapturePolygon && mCaptureCurve.numPoints() >= 3 )
+    {
+      qgsgeometry_cast<QgsCompoundCurve *>( geom.get() )->close();
+    }
+    mExtraSnapLayer->changeGeometry( mExtraSnapFeatureId, geom );
+  }
+  else
+  {
+    QgsGeometry geom;
+    mExtraSnapLayer->changeGeometry( mExtraSnapFeatureId, geom );
+  }
 }

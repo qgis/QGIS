@@ -19,6 +19,7 @@ email                : sherman at mrcc.com
 ///@cond PRIVATE
 
 #include "qgscplerrorhandler.h"
+#include "qgsgdalutils.h"
 #include "qgsogrfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -45,7 +46,6 @@ email                : sherman at mrcc.com
 #include "qgsprovidermetadata.h"
 #include "qgsogrdbconnection.h"
 #include "qgsgeopackageproviderconnection.h"
-
 #include "qgis.h"
 
 
@@ -54,6 +54,11 @@ email                : sherman at mrcc.com
 #include <ogr_api.h>
 #include <ogr_srs_api.h>
 #include <cpl_string.h>
+
+// Temporary solution until GDAL Unique suppport is available
+#include "qgssqliteutils.h"
+#include <sqlite3.h>
+// end temporary
 
 #include <limits>
 #include <memory>
@@ -493,7 +498,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   CPLSetConfigOption( "SHAPE_ENCODING", "" );
 
 #ifndef QT_NO_NETWORKPROXY
-  setupProxy();
+  QgsGdalUtils::setupProxy();
 #endif
 
   // make connection to the data source
@@ -1098,6 +1103,24 @@ void QgsOgrProvider::loadFields()
   mFirstFieldIsFid = !fidColumn.isEmpty() &&
                      fdef.GetFieldIndex( fidColumn ) < 0;
 
+  // This is a temporary solution until GDAL Unique support is available
+  QSet<QString> uniqueFieldNames;
+
+
+  if ( mGDALDriverName == QLatin1String( "GPKG" ) )
+  {
+    sqlite3_database_unique_ptr dsPtr;
+    if ( dsPtr.open_v2( mFilePath, SQLITE_OPEN_READONLY, nullptr ) == SQLITE_OK )
+    {
+      QString errMsg;
+      uniqueFieldNames = QgsSqliteUtils::uniqueFields( dsPtr.get(), mOgrLayer->name(), errMsg );
+      if ( ! errMsg.isEmpty() )
+      {
+        QgsMessageLog::logMessage( tr( "GPKG error searching for unique constraints on fields for table %1" ).arg( QString( mOgrLayer->name() ) ), tr( "OGR" ) );
+      }
+    }
+  }
+
   int createdFields = 0;
   if ( mFirstFieldIsFid )
   {
@@ -1229,6 +1252,13 @@ void QgsOgrProvider::loadFields()
     {
       QgsFieldConstraints constraints;
       constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+      newField.setConstraints( constraints );
+    }
+
+    if ( uniqueFieldNames.contains( OGR_Fld_GetNameRef( fldDef ) ) )
+    {
+      QgsFieldConstraints constraints = newField.constraints();
+      constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
       newField.setConstraints( constraints );
     }
 
@@ -2191,6 +2221,8 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   if ( attr_map.isEmpty() )
     return true;
 
+  bool returnValue = true;
+
   clearMinMaxCache();
 
   setRelevantFields( true, attributeIndexes() );
@@ -2351,6 +2383,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     if ( mOgrLayer->SetFeature( of.get() ) != OGRERR_NONE )
     {
       pushError( tr( "OGR error setting feature %1: %2" ).arg( fid ).arg( CPLGetLastErrorMsg() ) );
+      returnValue = false;
     }
   }
 
@@ -2367,7 +2400,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     pushError( tr( "OGR error syncing to disk: %1" ).arg( CPLGetLastErrorMsg() ) );
   }
   QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
-  return true;
+  return returnValue;
 }
 
 bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
@@ -2601,56 +2634,6 @@ bool QgsOgrProvider::doInitialActionsForEdition()
 
   return true;
 }
-
-#ifndef QT_NO_NETWORKPROXY
-void QgsOgrProvider::setupProxy()
-{
-  // Check proxy configuration, they are application level but
-  // instead of adding an API and complex signal/slot connections
-  // given the limited cost of checking them on every provider instantiation
-  // we can do it here so that new settings are applied whenever a new layer
-  // is created.
-  QgsSettings settings;
-  // Check that proxy is enabled
-  if ( settings.value( QStringLiteral( "proxy/proxyEnabled" ), false ).toBool() )
-  {
-    // Get the first configured proxy
-    QList<QNetworkProxy> proxyes( QgsNetworkAccessManager::instance()->proxyFactory()->queryProxy( ) );
-    if ( ! proxyes.isEmpty() )
-    {
-      QNetworkProxy proxy( proxyes.first() );
-      // TODO/FIXME: check excludes (the GDAL config options are global, we need a per-connection config option)
-      //QStringList excludes;
-      //excludes = settings.value( QStringLiteral( "proxy/proxyExcludedUrls" ), "" ).toStringList();
-
-      QString proxyHost( proxy.hostName() );
-      qint16 proxyPort( proxy.port() );
-
-      QString proxyUser( proxy.user() );
-      QString proxyPassword( proxy.password() );
-
-      if ( ! proxyHost.isEmpty() )
-      {
-        QString connection( proxyHost );
-        if ( proxyPort )
-        {
-          connection += ':' +  QString::number( proxyPort );
-        }
-        CPLSetConfigOption( "GDAL_HTTP_PROXY", connection.toUtf8() );
-        if ( !  proxyUser.isEmpty( ) )
-        {
-          QString credentials( proxyUser );
-          if ( !  proxyPassword.isEmpty( ) )
-          {
-            credentials += ':' + proxyPassword;
-          }
-          CPLSetConfigOption( "GDAL_HTTP_PROXYUSERPWD", credentials.toUtf8() );
-        }
-      }
-    }
-  }
-}
-#endif
 
 QgsVectorDataProvider::Capabilities QgsOgrProvider::capabilities() const
 {
@@ -3861,6 +3844,16 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString &sub
   }
 
   return results;
+}
+
+QgsFeatureSource::SpatialIndexPresence QgsOgrProvider::hasSpatialIndex() const
+{
+  if ( mOgrLayer && mOgrLayer->TestCapability( OLCFastSpatialFilter ) )
+    return QgsFeatureSource::SpatialIndexPresent;
+  else if ( mOgrLayer )
+    return QgsFeatureSource::SpatialIndexNotPresent;
+  else
+    return QgsFeatureSource::SpatialIndexUnknown;
 }
 
 QVariant QgsOgrProvider::minimumValue( int index ) const

@@ -19,6 +19,8 @@
 
 
 
+
+
 class QgsMapCanvas : QGraphicsView
 {
 %Docstring
@@ -75,7 +77,7 @@ Gets access to properties used for map rendering
 
     void setTemporalController( QgsTemporalController *controller );
 %Docstring
-Sets the temporal controller, this controller will be used to
+Sets the temporal controller, tQgsMapCanvasInteractionBlockerhis controller will be used to
 update the canvas temporal range.
 
 .. versionadded:: 3.14
@@ -783,6 +785,39 @@ The temporalRangeChanged() signal will be emitted if the temporal range has been
 Returns map canvas datetime range.
 
 .. seealso:: :py:func:`setTemporalRange`
+
+.. versionadded:: 3.14
+%End
+
+    void installInteractionBlocker( QgsMapCanvasInteractionBlocker *blocker );
+%Docstring
+Installs an interaction ``blocker`` onto the canvas, which may prevent certain map canvas
+interactions from occurring.
+
+The caller retains ownership of ``blocker``, and must correctly call removeInteractionBlocker()
+before deleting the object.
+
+.. seealso:: :py:func:`allowInteraction`
+
+.. seealso:: :py:func:`removeInteractionBlocker`
+
+.. versionadded:: 3.14
+%End
+
+    void removeInteractionBlocker( QgsMapCanvasInteractionBlocker *blocker );
+%Docstring
+Removes an interaction ``blocker`` from the canvas.
+
+.. seealso:: :py:func:`allowInteraction`
+
+.. seealso:: :py:func:`installInteractionBlocker`
+
+.. versionadded:: 3.14
+%End
+
+    bool allowInteraction( QgsMapCanvasInteractionBlocker::Interaction interaction ) const;
+%Docstring
+Returns ``True`` if the specified ``interaction`` is currently permitted on the canvas.
 
 .. versionadded:: 3.14
 %End

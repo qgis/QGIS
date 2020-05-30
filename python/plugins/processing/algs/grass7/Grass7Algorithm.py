@@ -42,6 +42,7 @@ from qgis.core import (Qgis,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameterDefinition,
                        QgsProcessingException,
+                       QgsProcessingParameterCrs,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterNumber,
@@ -116,6 +117,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         self.commands = []
         self.outputCommands = []
         self.exportedLayers = {}
+        self.fileOutputs = {}
         self.descriptionFile = descriptionfile
 
         # Default GRASS parameters
@@ -398,6 +400,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         self.commands = []
         self.outputCommands = []
         self.exportedLayers = {}
+        self.fileOutputs = {}
 
         # If GRASS session has been created outside of this algorithm then
         # get the list of layers loaded in GRASS otherwise start a new
@@ -442,9 +445,15 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         for out in self.outputDefinitions():
             outName = out.name()
             if outName in parameters:
-                outputs[outName] = parameters[outName]
+                if outName in self.fileOutputs:
+                    print('ADD', outName)
+                    print('VAL', parameters[outName])
+                    print('VAL 2', self.fileOutputs[outName])
+                    outputs[outName] = self.fileOutputs[outName]
+                else:
+                    outputs[outName] = parameters[outName]
                 if isinstance(out, QgsProcessingOutputHtml):
-                    self.convertToHtml(parameters[outName])
+                    self.convertToHtml(self.fileOutputs[outName])
 
         return outputs
 
@@ -625,6 +634,9 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     continue
                 else:
                     value = '{},{}'.format(v[0], v[1])
+            elif isinstance(param, QgsProcessingParameterCrs):
+                if self.parameterAsCrs(parameters, paramName, context):
+                    value = '"{}"'.format(self.parameterAsCrs(parameters, paramName, context).toProj())
             # For everything else, we assume that it is a string
             else:
                 value = '"{}"'.format(
@@ -643,23 +655,18 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 # For File destination
                 if isinstance(out, QgsProcessingParameterFileDestination):
                     if outName in parameters and parameters[outName] is not None:
+                        outPath = self.parameterAsFileOutput(parameters, outName, context)
+                        self.fileOutputs[outName] = outPath
                         # for HTML reports, we need to redirect stdout
                         if out.defaultFileExtension().lower() == 'html':
                             if outName == 'html':
                                 # for "fake" outputs redirect command stdout
-                                command += ' > "{}"'.format(
-                                    self.parameterAsFileOutput(
-                                        parameters, outName, context)
-                                )
+                                command += ' > "{}"'.format(outPath)
                             else:
                                 # for real outputs only output itself should be redirected
-                                command += ' {}=- > "{}"'.format(
-                                    outName,
-                                    self.parameterAsFileOutput(parameters, outName, context))
+                                command += ' {}=- > "{}"'.format(outName, outPath)
                         else:
-                            command += ' {}="{}"'.format(
-                                outName,
-                                self.parameterAsFileOutput(parameters, outName, context))
+                            command += ' {}="{}"'.format(outName, outPath)
                 # For folders destination
                 elif isinstance(out, QgsProcessingParameterFolderDestination):
                     # We need to add a unique temporary basename

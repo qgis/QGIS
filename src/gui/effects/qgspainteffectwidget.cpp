@@ -122,8 +122,8 @@ QgsBlurWidget::QgsBlurWidget( QWidget *parent )
   connect( mDrawModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsBlurWidget::mDrawModeComboBox_currentIndexChanged );
   connect( mBlendCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsBlurWidget::mBlendCmbBx_currentIndexChanged );
 
-  mBlurTypeCombo->addItem( tr( "Stack blur (fast, doesn't support high dpi)" ), QgsBlurEffect::StackBlur );
-  mBlurTypeCombo->addItem( tr( "Gaussian blur (quality, supports high dpi)" ), QgsBlurEffect::GaussianBlur );
+  mBlurTypeCombo->addItem( tr( "Stack Blur (fast, doesn't support high dpi)" ), QgsBlurEffect::StackBlur );
+  mBlurTypeCombo->addItem( tr( "Gaussian Blur (quality, supports high dpi)" ), QgsBlurEffect::GaussianBlur );
 
   mBlurUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
                              << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
@@ -850,9 +850,9 @@ QgsColorEffectWidget::QgsColorEffectWidget( QWidget *parent )
   mColorizeColorButton->setAllowOpacity( false );
 
   mGrayscaleCombo->addItem( tr( "Off" ), QgsImageOperation::GrayscaleOff );
-  mGrayscaleCombo->addItem( tr( "By lightness" ), QgsImageOperation::GrayscaleLightness );
-  mGrayscaleCombo->addItem( tr( "By luminosity" ), QgsImageOperation::GrayscaleLuminosity );
-  mGrayscaleCombo->addItem( tr( "By average" ), QgsImageOperation::GrayscaleAverage );
+  mGrayscaleCombo->addItem( tr( "By Lightness" ), QgsImageOperation::GrayscaleLightness );
+  mGrayscaleCombo->addItem( tr( "By Luminosity" ), QgsImageOperation::GrayscaleLuminosity );
+  mGrayscaleCombo->addItem( tr( "By Average" ), QgsImageOperation::GrayscaleAverage );
 
   initGui();
 

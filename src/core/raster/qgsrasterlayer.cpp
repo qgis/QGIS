@@ -907,8 +907,6 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
     {
       setDefaultContrastEnhancement();
     }
-
-    emit statusChanged( tr( "QgsRasterLayer created" ) );
   }
   emit dataSourceChanged();
   emit dataChanged();
@@ -1967,8 +1965,6 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     }
   }
 
-  mTemporalProperties->readXml( layer_node.toElement(), context );
-
   readStyleManager( layer_node );
 
   return res;
@@ -2070,9 +2066,6 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
   {
     layer_node.appendChild( noData );
   }
-
-  // write temporal properties
-  mTemporalProperties->writeXml( mapLayerNode, document, context );
 
   writeStyleManager( layer_node, document );
 

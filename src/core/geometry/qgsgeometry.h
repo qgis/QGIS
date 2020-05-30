@@ -559,17 +559,17 @@ class CORE_EXPORT QgsGeometry
      * \code{.py}
      *   # print the WKT representation of each part in a multi-point geometry
      *   geometry = QgsGeometry.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
-     *   for part in geometry.parts():
+     *   for part in geometry.constParts():
      *       print(part.asWkt())
      *
      *   # single part geometries only have one part - this loop will iterate once only
      *   geometry = QgsGeometry.fromWkt( 'LineString( 0 0, 10 10 )' )
-     *   for part in geometry.parts():
+     *   for part in geometry.constParts():
      *       print(part.asWkt())
      *
      *   # part iteration can also be combined with vertex iteration
      *   geometry = QgsGeometry.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
-     *   for part in geometry.parts():
+     *   for part in geometry.constParts():
      *       for v in part.vertices():
      *           print(v.x(), v.y())
      *
@@ -632,7 +632,7 @@ class CORE_EXPORT QgsGeometry
      * \param afterVertex will be set to the vertex index of the next vertex after the closest one. Will be set to -1 if
      * not present.
      * \param sqrDist will be set to the square distance between the closest vertex and the specified point
-     * \returns closest point in geometry. If not found (empty geometry), returns null point nad sqrDist is negative.
+     * \returns closest point in geometry. If not found (empty geometry), returns null point and sqrDist is negative.
      */
     QgsPointXY closestVertex( const QgsPointXY &point, int &atVertex SIP_OUT, int &beforeVertex SIP_OUT, int &afterVertex SIP_OUT, double &sqrDist SIP_OUT ) const;
 
@@ -731,7 +731,7 @@ class CORE_EXPORT QgsGeometry
     /**
      * Returns coordinates of a vertex.
      * \param atVertex index of the vertex
-     * \returns Coordinates of the vertex or QgsPoint(0,0) on error
+     * \returns Coordinates of the vertex or empty QgsPoint() on error
      */
     QgsPoint vertexAt( int atVertex ) const;
 
@@ -1244,6 +1244,23 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry densifyByDistance( double distance ) const;
 
     /**
+     * Attempts to convert a non-curved geometry into a curved geometry type (e.g.
+     * LineString to CompoundCurve, Polygon to CurvePolygon).
+     *
+     * The \a distanceTolerance specifies the maximum deviation allowed between the original location
+     * of vertices and where they would fall on the candidate curved geometry.
+     *
+     * This method only consider a segments as suitable for replacing with an arc if the points are all
+     * regularly spaced on the candidate arc. The \a pointSpacingAngleTolerance parameter specifies the maximum
+     * angular deviation (in radians) allowed when testing for regular point spacing.
+     *
+     * \note The API is considered EXPERIMENTAL and can be changed without a notice
+     *
+     * \since QGIS 3.14
+     */
+    QgsGeometry convertToCurves( double distanceTolerance = 1e-8, double angleTolerance = 1e-8 ) const;
+
+    /**
      * Returns the center of mass of a geometry.
      *
      * If the input is a NULL geometry, the output will also be a NULL geometry.
@@ -1613,7 +1630,7 @@ class CORE_EXPORT QgsGeometry
      *
      * Any z or m values present in the geometry will be discarded.
      *
-     * \warning If the geometry is not a single-point type, a QgsPoint( 0, 0 ) will be returned.
+     * \warning If the geometry is not a single-point type, an empty QgsPointXY() will be returned.
      */
     QgsPointXY asPoint() const;
 #else

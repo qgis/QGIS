@@ -32,6 +32,8 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
+#include "qgsruntimeprofiler.h"
 
 #ifdef WITH_BINDINGS
 #include "qgspythonutils.h"
@@ -303,6 +305,7 @@ void QgsPluginRegistry::loadPythonPlugin( const QString &packageName )
       return;
     }
 
+    QgsScopedRuntimeProfile profile( packageName );
     mPythonUtils->loadPlugin( packageName );
     mPythonUtils->startPlugin( packageName );
 
@@ -335,6 +338,8 @@ void QgsPluginRegistry::loadCppPlugin( const QString &fullPathName )
     // QMessageBox::warning(this, "Loading Plugins", description + " is already loaded");
     return;
   }
+
+  QgsScopedRuntimeProfile profile( baseName );
 
   QLibrary myLib( fullPathName );
 
@@ -375,25 +380,25 @@ void QgsPluginRegistry::loadCppPlugin( const QString &fullPathName )
           QObject *o = dynamic_cast<QObject *>( pl );
           if ( o )
           {
-            QgsDebugMsg( QStringLiteral( "plugin object name: %1" ).arg( o->objectName() ) );
+            QgsDebugMsgLevel( QStringLiteral( "plugin object name: %1" ).arg( o->objectName() ), 2 );
             if ( o->objectName().isEmpty() )
             {
 #ifndef Q_OS_WIN
               baseName = baseName.mid( 3 );
 #endif
-              QgsDebugMsg( QStringLiteral( "object name to %1" ).arg( baseName ) );
+              QgsDebugMsgLevel( QStringLiteral( "object name to %1" ).arg( baseName ), 2 );
               o->setObjectName( QStringLiteral( "qgis_plugin_%1" ).arg( baseName ) );
-              QgsDebugMsg( QStringLiteral( "plugin object name now: %1" ).arg( o->objectName() ) );
+              QgsDebugMsgLevel( QStringLiteral( "plugin object name now: %1" ).arg( o->objectName() ), 2 );
             }
 
             if ( !o->parent() )
             {
-              QgsDebugMsg( QStringLiteral( "setting plugin parent" ) );
+              QgsDebugMsgLevel( QStringLiteral( "setting plugin parent" ), 2 );
               o->setParent( QgisApp::instance() );
             }
             else
             {
-              QgsDebugMsg( QStringLiteral( "plugin parent already set" ) );
+              QgsDebugMsgLevel( QStringLiteral( "plugin parent already set" ), 2 );
             }
           }
 
@@ -482,6 +487,8 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
 {
   QgsSettings mySettings;
 
+  QgsScopedRuntimeProfile profile( QObject::tr( "Load plugins" ) );
+
 #if defined(Q_OS_WIN) || defined(__CYGWIN__)
   QString pluginExt = "*.dll";
 #elif ANDROID
@@ -503,7 +510,40 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
       QString baseName = QFileInfo( myFullPath ).baseName();
       if ( mySettings.value( QStringLiteral( "Plugins/watchDog/%1" ).arg( baseName ) ).isValid() )
       {
-        mQgisInterface->messageBar()->pushWarning( QObject::tr( "Plugin %1" ).arg( baseName ), QObject::tr( "The plugin will be disabled because it crashed QGIS during last startup. Please report an issue and re-enable the plugin when the problem has been solved." ) );
+        QToolButton *btnEnablePlugin = new QToolButton();
+        btnEnablePlugin ->setText( QObject::tr( "Enable Plugin" ) );
+        btnEnablePlugin ->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+
+        QToolButton *btnIgnore = new QToolButton();
+        btnIgnore->setText( QObject::tr( "Ignore" ) );
+        btnIgnore->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+
+        QgsMessageBarItem *watchdogMsg = new QgsMessageBarItem(
+          QObject::tr( "Plugin %1" ).arg( baseName ),
+          QObject::tr( "This plugin is disabled because it previously crashed QGIS." ),
+          btnEnablePlugin,
+          Qgis::Warning,
+          0,
+          mQgisInterface->messageBar() );
+        watchdogMsg->layout()->addWidget( btnIgnore );
+
+        QObject::connect( btnEnablePlugin, &QToolButton::clicked, mQgisInterface->messageBar(), [ = ]()
+        {
+          QgsSettings settings;
+          settings.setValue( "/Plugins/" + baseName, true );
+          loadCppPlugin( myFullPath );
+          settings.remove( QStringLiteral( "/Plugins/watchDog/%1" ).arg( baseName ) );
+          mQgisInterface->messageBar()->popWidget( watchdogMsg );
+        } );
+        QObject::connect( btnIgnore, &QToolButton::clicked, mQgisInterface->messageBar(), [ = ]()
+        {
+          QgsSettings settings;
+          settings.setValue( "/Plugins/" + baseName, false );
+          settings.remove( "/Plugins/watchDog/" + baseName );
+          mQgisInterface->messageBar()->popWidget( watchdogMsg );
+        } );
+
+        mQgisInterface->messageBar()->pushItem( watchdogMsg );
         mySettings.setValue( "/Plugins/" + baseName, false );
       }
       if ( mySettings.value( "/Plugins/" + baseName ).toBool() )
@@ -520,7 +560,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
   {
     // check for python plugins system-wide
     QStringList pluginList = mPythonUtils->pluginList();
-    QgsDebugMsg( QStringLiteral( "Loading python plugins" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Loading python plugins" ), 2 );
 
     QStringList corePlugins = QStringList();
     corePlugins << QStringLiteral( "GdalTools" );
@@ -559,7 +599,46 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
 
       if ( mySettings.value( "/PythonPlugins/watchDog/" + packageName ).isValid() )
       {
-        mQgisInterface->messageBar()->pushWarning( QObject::tr( "Plugin %1" ).arg( packageName ), QObject::tr( "The plugin will be disabled because it crashed QGIS during last startup. Please report an issue and re-enable the plugin when the problem has been solved." ) );
+        QToolButton *btnEnablePlugin = new QToolButton();
+        btnEnablePlugin->setText( QObject::tr( "Enable Plugin" ) );
+        btnEnablePlugin->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+
+        QToolButton *btnIgnore = new QToolButton();
+        btnIgnore->setText( QObject::tr( "Ignore" ) );
+        btnIgnore->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+
+        QgsMessageBarItem *watchdogMsg = new QgsMessageBarItem(
+          QObject::tr( "Plugin %1" ).arg( packageName ),
+          QObject::tr( "This plugin is disabled because it previously crashed QGIS." ),
+          btnEnablePlugin,
+          Qgis::Warning,
+          0,
+          mQgisInterface->messageBar() );
+        watchdogMsg->layout()->addWidget( btnIgnore );
+
+        QObject::connect( btnEnablePlugin, &QToolButton::clicked, mQgisInterface->messageBar(), [ = ]()
+        {
+          QgsSettings settings;
+          settings.setValue( "/PythonPlugins/" + packageName, true );
+          if ( checkPythonPlugin( packageName ) )
+          {
+            loadPythonPlugin( packageName );
+          }
+          settings.remove( "/PythonPlugins/watchDog/" + packageName );
+
+          mQgisInterface->messageBar()->popWidget( watchdogMsg );
+        } );
+
+        QObject::connect( btnIgnore, &QToolButton::clicked, mQgisInterface->messageBar(), [ = ]()
+        {
+          QgsSettings settings;
+          settings.setValue( "/PythonPlugins/" + packageName, false );
+          settings.remove( "/PythonPlugins/watchDog/" + packageName );
+          mQgisInterface->messageBar()->popWidget( watchdogMsg );
+        } );
+
+        mQgisInterface->messageBar()->pushItem( watchdogMsg );
+
         mySettings.setValue( "/PythonPlugins/" + packageName, false );
       }
       // check if the plugin was active on last session
@@ -583,7 +662,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
   }
 #endif
 
-  QgsDebugMsg( QStringLiteral( "Plugin loading completed" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Plugin loading completed" ), 2 );
 }
 
 
@@ -605,7 +684,7 @@ bool QgsPluginRegistry::checkCppPlugin( const QString &pluginFullPath )
   if ( myName && myDescription && myVersion  && myCategory )
     return true;
 
-  QgsDebugMsg( "Failed to get name, description, category or type for " + myLib.fileName() );
+  QgsDebugMsgLevel( "Failed to get name, description, category or type for " + myLib.fileName(), 2 );
   return false;
 }
 

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsnativealgorithms.h"
+#include "qgsruntimeprofiler.h"
 #include "qgsalgorithmaddincrementalfield.h"
 #include "qgsalgorithmaddtablefield.h"
 #include "qgsalgorithmaddxyfields.h"
@@ -34,6 +35,7 @@
 #include "qgsalgorithmclip.h"
 #include "qgsalgorithmconditionalbranch.h"
 #include "qgsalgorithmconstantraster.h"
+#include "qgsalgorithmconverttocurves.h"
 #include "qgsalgorithmconvexhull.h"
 #include "qgsalgorithmdbscanclustering.h"
 #include "qgsalgorithmdeleteduplicategeometries.h"
@@ -45,6 +47,9 @@
 #include "qgsalgorithmdrape.h"
 #include "qgsalgorithmdropgeometry.h"
 #include "qgsalgorithmdropmzvalues.h"
+#include "qgsalgorithmexecutepostgisquery.h"
+#include "qgsalgorithmexecutespatialitequery.h"
+#include "qgsalgorithmexecutespatialitequeryregistered.h"
 #include "qgsalgorithmexplode.h"
 #include "qgsalgorithmexplodehstore.h"
 #include "qgsalgorithmextendlines.h"
@@ -102,6 +107,7 @@
 #include "qgsalgorithmpointsalonggeometry.h"
 #include "qgsalgorithmpointslayerfromtable.h"
 #include "qgsalgorithmpoleofinaccessibility.h"
+#include "qgsalgorithmpolygonize.h"
 #include "qgsalgorithmprojectpointcartesian.h"
 #include "qgsalgorithmpromotetomultipart.h"
 #include "qgsalgorithmraiseexception.h"
@@ -144,12 +150,14 @@
 #include "qgsalgorithmsinglesidedbuffer.h"
 #include "qgsalgorithmslope.h"
 #include "qgsalgorithmsmooth.h"
+#include "qgsalgorithmsnapgeometries.h"
 #include "qgsalgorithmsnaptogrid.h"
 #include "qgsalgorithmspatialindex.h"
+#include "qgsalgorithmsplitfeaturesbyattributecharacter.h"
 #include "qgsalgorithmsplitlineantimeridian.h"
 #include "qgsalgorithmsplitlinesbylength.h"
+#include "qgsalgorithmsplitvectorlayer.h"
 #include "qgsalgorithmsplitwithlines.h"
-#include "qgsalgorithmsplitfeaturesbyattributecharacter.h"
 #include "qgsalgorithmstringconcatenation.h"
 #include "qgsalgorithmsubdivide.h"
 #include "qgsalgorithmsumlinelength.h"
@@ -210,6 +218,7 @@ bool QgsNativeAlgorithms::supportsNonFileBasedOutput() const
 
 void QgsNativeAlgorithms::loadAlgorithms()
 {
+  QgsScopedRuntimeProfile profile( QObject::tr( "QGIS native provider" ) );
   addAlgorithm( new QgsAddIncrementalFieldAlgorithm() );
   addAlgorithm( new QgsAddTableFieldAlgorithm() );
   addAlgorithm( new QgsAddXYFieldsAlgorithm() );
@@ -232,6 +241,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsCombineStylesAlgorithm() );
   addAlgorithm( new QgsConditionalBranchAlgorithm() );
   addAlgorithm( new QgsConstantRasterAlgorithm() );
+  addAlgorithm( new QgsConvertToCurvesAlgorithm() );
   addAlgorithm( new QgsConvexHullAlgorithm() );
   addAlgorithm( new QgsDbscanClusteringAlgorithm() );
   addAlgorithm( new QgsDeleteDuplicateGeometriesAlgorithm() );
@@ -242,6 +252,9 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsDrapeToZAlgorithm() );
   addAlgorithm( new QgsDropGeometryAlgorithm() );
   addAlgorithm( new QgsDropMZValuesAlgorithm() );
+  addAlgorithm( new QgsExecutePostgisQueryAlgorithm() );
+  addAlgorithm( new QgsExecuteRegisteredSpatialiteQueryAlgorithm() );
+  addAlgorithm( new QgsExecuteSpatialiteQueryAlgorithm() );
   addAlgorithm( new QgsExplodeAlgorithm() );
   addAlgorithm( new QgsExplodeHstoreAlgorithm() );
   addAlgorithm( new QgsExtendLinesAlgorithm() );
@@ -308,6 +321,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPointsAlongGeometryAlgorithm() );
   addAlgorithm( new QgsPointsLayerFromTableAlgorithm() );
   addAlgorithm( new QgsPoleOfInaccessibilityAlgorithm() );
+  addAlgorithm( new QgsPolygonizeAlgorithm() );
   addAlgorithm( new QgsProjectPointCartesianAlgorithm() );
   addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
   addAlgorithm( new QgsRaiseExceptionAlgorithm() );
@@ -364,11 +378,13 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSingleSidedBufferAlgorithm() );
   addAlgorithm( new QgsSlopeAlgorithm() );
   addAlgorithm( new QgsSmoothAlgorithm() );
+  addAlgorithm( new QgsSnapGeometriesAlgorithm() );
   addAlgorithm( new QgsSnapToGridAlgorithm() );
   addAlgorithm( new QgsSpatialIndexAlgorithm() );
   addAlgorithm( new QgsSplitFeaturesByAttributeCharacterAlgorithm() );
   addAlgorithm( new QgsSplitGeometryAtAntimeridianAlgorithm() );
   addAlgorithm( new QgsSplitLinesByLengthAlgorithm() );
+  addAlgorithm( new QgsSplitVectorLayerAlgorithm() );
   addAlgorithm( new QgsSplitWithLinesAlgorithm() );
   addAlgorithm( new QgsStringConcatenationAlgorithm() );
   addAlgorithm( new QgsStyleFromProjectAlgorithm() );

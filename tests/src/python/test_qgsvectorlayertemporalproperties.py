@@ -17,7 +17,8 @@ from qgis.core import (QgsDateTimeRange,
                        QgsReadWriteContext,
                        QgsVectorLayer,
                        QgsVectorDataProviderTemporalCapabilities,
-                       QgsUnitTypes)
+                       QgsUnitTypes,
+                       QgsVectorLayerTemporalContext)
 from qgis.PyQt.QtCore import (QDateTime,
                               QDate,
                               QTime,
@@ -142,64 +143,71 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         self.assertFalse(props.isVisibleInTemporalRange(QgsDateTimeRange(QDateTime(QDate(1920, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(1921, 9, 6), QTime(8, 9, 10)))))
 
         layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer&field=start_field:datetime", "test", "memory")
+        context = QgsVectorLayerTemporalContext()
+        context.setLayer(layer)
+
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)))
         # ALWAYS must be empty for ModeFixedTemporalRange
-        self.assertFalse(props.createFilterString(layer, range))
+        self.assertFalse(props.createFilterString(context, range))
 
     def testSingleFieldMode(self):
         layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer&field=start_field:datetime", "test", "memory")
         self.assertTrue(layer.isValid())
         self.assertEqual(layer.fields()[2].type(), QVariant.DateTime)
+        context = QgsVectorLayerTemporalContext()
+        context.setLayer(layer)
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)))
 
         props = QgsVectorLayerTemporalProperties(enabled=False)
         props.setMode(QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField)
         props.setStartField('start_field')
-        self.assertFalse(props.createFilterString(layer, range))
+        self.assertFalse(props.createFilterString(context, range))
 
         props.setIsActive(True)
-        self.assertEqual(props.createFilterString(layer, range), '("start_field" >= make_datetime(2019,3,4,11,12,13) AND "start_field" <= make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
+        self.assertEqual(props.createFilterString(context, range), '("start_field" >= make_datetime(2019,3,4,11,12,13) AND "start_field" <= make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeBeginning=False)
-        self.assertEqual(props.createFilterString(layer, range), '("start_field" > make_datetime(2019,3,4,11,12,13) AND "start_field" <= make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
+        self.assertEqual(props.createFilterString(context, range), '("start_field" > make_datetime(2019,3,4,11,12,13) AND "start_field" <= make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
-        self.assertEqual(props.createFilterString(layer, range), '("start_field" >= make_datetime(2019,3,4,11,12,13) AND "start_field" < make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
+        self.assertEqual(props.createFilterString(context, range), '("start_field" >= make_datetime(2019,3,4,11,12,13) AND "start_field" < make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
 
         # with fixed duration
         props.setFixedDuration(3)
         props.setDurationUnits(QgsUnitTypes.TemporalDays)
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)))
-        self.assertEqual(props.createFilterString(layer, range), '("start_field" >= make_datetime(2019,3,1,11,12,13) AND "start_field" <= make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
+        self.assertEqual(props.createFilterString(context, range), '("start_field" >= make_datetime(2019,3,1,11,12,13) AND "start_field" <= make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeBeginning=False)
-        self.assertEqual(props.createFilterString(layer, range), '("start_field" > make_datetime(2019,3,1,11,12,13) AND "start_field" <= make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
+        self.assertEqual(props.createFilterString(context, range), '("start_field" > make_datetime(2019,3,1,11,12,13) AND "start_field" <= make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
-        self.assertEqual(props.createFilterString(layer, range), '("start_field" >= make_datetime(2019,3,1,11,12,13) AND "start_field" < make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
+        self.assertEqual(props.createFilterString(context, range), '("start_field" >= make_datetime(2019,3,1,11,12,13) AND "start_field" < make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
 
         props.setDurationUnits(QgsUnitTypes.TemporalMinutes)
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)))
-        self.assertEqual(props.createFilterString(layer, range),
+        self.assertEqual(props.createFilterString(context, range),
                          '("start_field" >= make_datetime(2019,3,4,11,9,13) AND "start_field" <= make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
 
         # accumulate mode
         props.setAccumulateFeatures(True)
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)))
-        self.assertEqual(props.createFilterString(layer, range), '("start_field" <= make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
+        self.assertEqual(props.createFilterString(context, range), '("start_field" <= make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeBeginning=False)
-        self.assertEqual(props.createFilterString(layer, range), '("start_field" <= make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
+        self.assertEqual(props.createFilterString(context, range), '("start_field" <= make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
-        self.assertEqual(props.createFilterString(layer, range), '("start_field" < make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
+        self.assertEqual(props.createFilterString(context, range), '("start_field" < make_datetime(2020,5,6,8,9,10)) OR "start_field" IS NULL')
 
     def testDualFieldMode(self):
         layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer&field=start_field:datetime&field=end_field:datetime", "test", "memory")
         self.assertTrue(layer.isValid())
         self.assertEqual(layer.fields()[2].type(), QVariant.DateTime)
         self.assertEqual(layer.fields()[3].type(), QVariant.DateTime)
+        context = QgsVectorLayerTemporalContext()
+        context.setLayer(layer)
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)))
 
@@ -207,35 +215,35 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         props.setMode(QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromFields)
         props.setStartField('start_field')
         props.setEndField('end_field')
-        self.assertFalse(props.createFilterString(layer, range))
+        self.assertFalse(props.createFilterString(context, range))
 
         props.setIsActive(True)
-        self.assertEqual(props.createFilterString(layer, range), '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND ("end_field" >= make_datetime(2019,3,4,11,12,13) OR "end_field" IS NULL)')
+        self.assertEqual(props.createFilterString(context, range), '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND ("end_field" >= make_datetime(2019,3,4,11,12,13) OR "end_field" IS NULL)')
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeBeginning=False)
-        self.assertEqual(props.createFilterString(layer, range), '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND ("end_field" > make_datetime(2019,3,4,11,12,13) OR "end_field" IS NULL)')
+        self.assertEqual(props.createFilterString(context, range), '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND ("end_field" > make_datetime(2019,3,4,11,12,13) OR "end_field" IS NULL)')
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
-        self.assertEqual(props.createFilterString(layer, range), '("start_field" < make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND ("end_field" >= make_datetime(2019,3,4,11,12,13) OR "end_field" IS NULL)')
+        self.assertEqual(props.createFilterString(context, range), '("start_field" < make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND ("end_field" >= make_datetime(2019,3,4,11,12,13) OR "end_field" IS NULL)')
 
         props.setEndField('')
-        self.assertEqual(props.createFilterString(layer, range), '"start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL')
+        self.assertEqual(props.createFilterString(context, range), '"start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL')
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeBeginning=False)
-        self.assertEqual(props.createFilterString(layer, range), '"start_field" < make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL')
+        self.assertEqual(props.createFilterString(context, range), '"start_field" < make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL')
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
-        self.assertEqual(props.createFilterString(layer, range), '"start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL')
+        self.assertEqual(props.createFilterString(context, range), '"start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL')
 
         props.setStartField('')
         props.setEndField('end_field')
-        self.assertEqual(props.createFilterString(layer, range), '"end_field" >= make_datetime(2019,3,4,11,12,13) OR "end_field" IS NULL')
+        self.assertEqual(props.createFilterString(context, range), '"end_field" >= make_datetime(2019,3,4,11,12,13) OR "end_field" IS NULL')
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeBeginning=False)
-        self.assertEqual(props.createFilterString(layer, range), '"end_field" > make_datetime(2019,3,4,11,12,13) OR "end_field" IS NULL')
+        self.assertEqual(props.createFilterString(context, range), '"end_field" > make_datetime(2019,3,4,11,12,13) OR "end_field" IS NULL')
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
-        self.assertEqual(props.createFilterString(layer, range), '"end_field" >= make_datetime(2019,3,4,11,12,13) OR "end_field" IS NULL')
+        self.assertEqual(props.createFilterString(context, range), '"end_field" >= make_datetime(2019,3,4,11,12,13) OR "end_field" IS NULL')
 
     def testStartAndDurationMode(self):
         layer = QgsVectorLayer(
@@ -244,6 +252,8 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         self.assertTrue(layer.isValid())
         self.assertEqual(layer.fields()[2].type(), QVariant.DateTime)
         self.assertEqual(layer.fields()[3].type(), QVariant.Double)
+        context = QgsVectorLayerTemporalContext()
+        context.setLayer(layer)
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)),
                                  QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)))
@@ -253,46 +263,46 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         props.setStartField('start_field')
         props.setDurationField('duration')
         props.setDurationUnits(QgsUnitTypes.TemporalMilliseconds)
-        self.assertFalse(props.createFilterString(layer, range))
+        self.assertFalse(props.createFilterString(context, range))
 
         props.setIsActive(True)
-        self.assertEqual(props.createFilterString(layer, range),
+        self.assertEqual(props.createFilterString(context, range),
                          '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,0,0,0,0,0,"duration"/1000) >= make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
 
         props.setDurationUnits(QgsUnitTypes.TemporalSeconds)
-        self.assertEqual(props.createFilterString(layer, range),
+        self.assertEqual(props.createFilterString(context, range),
                          '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,0,0,0,0,0,"duration") >= make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
 
         props.setDurationUnits(QgsUnitTypes.TemporalMinutes)
-        self.assertEqual(props.createFilterString(layer, range),
+        self.assertEqual(props.createFilterString(context, range),
                          '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,0,0,0,0,"duration",0) >= make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
 
         props.setDurationUnits(QgsUnitTypes.TemporalHours)
-        self.assertEqual(props.createFilterString(layer, range),
+        self.assertEqual(props.createFilterString(context, range),
                          '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,0,0,0,"duration",0,0) >= make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
 
         props.setDurationUnits(QgsUnitTypes.TemporalDays)
-        self.assertEqual(props.createFilterString(layer, range),
+        self.assertEqual(props.createFilterString(context, range),
                          '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,0,0,"duration",0,0,0) >= make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
 
         props.setDurationUnits(QgsUnitTypes.TemporalWeeks)
-        self.assertEqual(props.createFilterString(layer, range),
+        self.assertEqual(props.createFilterString(context, range),
                          '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,0,"duration",0,0,0,0) >= make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
 
         props.setDurationUnits(QgsUnitTypes.TemporalMonths)
-        self.assertEqual(props.createFilterString(layer, range),
+        self.assertEqual(props.createFilterString(context, range),
                          '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,"duration",0,0,0,0,0) >= make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
 
         props.setDurationUnits(QgsUnitTypes.TemporalYears)
-        self.assertEqual(props.createFilterString(layer, range),
+        self.assertEqual(props.createFilterString(context, range),
                          '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval("duration",0,0,0,0,0,0) >= make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
 
         props.setDurationUnits(QgsUnitTypes.TemporalDecades)
-        self.assertEqual(props.createFilterString(layer, range),
+        self.assertEqual(props.createFilterString(context, range),
                          '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(10 * "duration",0,0,0,0,0,0) >= make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
 
         props.setDurationUnits(QgsUnitTypes.TemporalCenturies)
-        self.assertEqual(props.createFilterString(layer, range),
+        self.assertEqual(props.createFilterString(context, range),
                          '("start_field" <= make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(100 * "duration",0,0,0,0,0,0) >= make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
 
     def testExpressionMode(self):
@@ -300,6 +310,8 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         self.assertTrue(layer.isValid())
         self.assertEqual(layer.fields()[2].type(), QVariant.DateTime)
         self.assertEqual(layer.fields()[3].type(), QVariant.DateTime)
+        context = QgsVectorLayerTemporalContext()
+        context.setLayer(layer)
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)))
 
@@ -307,35 +319,35 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
         props.setMode(QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromExpressions)
         props.setStartExpression('to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')"')
         props.setEndExpression('to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')"')
-        self.assertFalse(props.createFilterString(layer, range))
+        self.assertFalse(props.createFilterString(context, range))
 
         props.setIsActive(True)
-        self.assertEqual(props.createFilterString(layer, range), '((to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')") <= make_datetime(2020,5,6,8,9,10)) AND ((to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") >= make_datetime(2019,3,4,11,12,13))')
+        self.assertEqual(props.createFilterString(context, range), '((to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')") <= make_datetime(2020,5,6,8,9,10)) AND ((to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") >= make_datetime(2019,3,4,11,12,13))')
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeBeginning=False)
-        self.assertEqual(props.createFilterString(layer, range), '((to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')") <= make_datetime(2020,5,6,8,9,10)) AND ((to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") > make_datetime(2019,3,4,11,12,13))')
+        self.assertEqual(props.createFilterString(context, range), '((to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')") <= make_datetime(2020,5,6,8,9,10)) AND ((to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") > make_datetime(2019,3,4,11,12,13))')
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
-        self.assertEqual(props.createFilterString(layer, range), '((to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')") < make_datetime(2020,5,6,8,9,10)) AND ((to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") >= make_datetime(2019,3,4,11,12,13))')
+        self.assertEqual(props.createFilterString(context, range), '((to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')") < make_datetime(2020,5,6,8,9,10)) AND ((to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") >= make_datetime(2019,3,4,11,12,13))')
 
         props.setEndExpression('')
-        self.assertEqual(props.createFilterString(layer, range), '(to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')") <= make_datetime(2020,5,6,8,9,10)')
+        self.assertEqual(props.createFilterString(context, range), '(to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')") <= make_datetime(2020,5,6,8,9,10)')
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeBeginning=False)
-        self.assertEqual(props.createFilterString(layer, range), '(to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')") < make_datetime(2020,5,6,8,9,10)')
+        self.assertEqual(props.createFilterString(context, range), '(to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')") < make_datetime(2020,5,6,8,9,10)')
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
-        self.assertEqual(props.createFilterString(layer, range), '(to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')") <= make_datetime(2020,5,6,8,9,10)')
+        self.assertEqual(props.createFilterString(context, range), '(to_datetime("my string field",  \'yyyy MM dd hh::mm:ss\')") <= make_datetime(2020,5,6,8,9,10)')
 
         props.setStartExpression('')
         props.setEndExpression('to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')"')
-        self.assertEqual(props.createFilterString(layer, range), '(to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") >= make_datetime(2019,3,4,11,12,13)')
+        self.assertEqual(props.createFilterString(context, range), '(to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") >= make_datetime(2019,3,4,11,12,13)')
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeBeginning=False)
-        self.assertEqual(props.createFilterString(layer, range), '(to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") > make_datetime(2019,3,4,11,12,13)')
+        self.assertEqual(props.createFilterString(context, range), '(to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") > make_datetime(2019,3,4,11,12,13)')
 
         range = QgsDateTimeRange(QDateTime(QDate(2019, 3, 4), QTime(11, 12, 13)), QDateTime(QDate(2020, 5, 6), QTime(8, 9, 10)), includeEnd=False)
-        self.assertEqual(props.createFilterString(layer, range), '(to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") >= make_datetime(2019,3,4,11,12,13)')
+        self.assertEqual(props.createFilterString(context, range), '(to_datetime("my end field",  \'yyyy MM dd hh::mm:ss\')") >= make_datetime(2019,3,4,11,12,13)')
 
 
 if __name__ == '__main__':

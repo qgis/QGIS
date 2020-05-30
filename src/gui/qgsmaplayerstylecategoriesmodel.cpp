@@ -231,6 +231,19 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/relations.svg" ) );
       }
       break;
+
+    case QgsMapLayer::StyleCategory::Temporal:
+      switch ( role )
+      {
+        case Qt::DisplayRole:
+          return tr( "Temporal Properties" );
+        case Qt::ToolTipRole:
+          return tr( "Temporal properties" );
+        case Qt::DecorationRole:
+          return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/temporal.svg" ) );
+      }
+      break;
+
     case QgsMapLayer::StyleCategory::AllStyleCategories:
       switch ( role )
       {

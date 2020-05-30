@@ -34,6 +34,8 @@ namespace Qt3DCore
   class QEntity;
 }
 
+#define SIP_NO_FILE
+
 #include <QObject>
 
 /**

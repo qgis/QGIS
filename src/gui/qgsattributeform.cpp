@@ -356,7 +356,7 @@ bool QgsAttributeForm::saveEdits()
         for ( int i = 0; i < dstVars.count(); i++ )
         {
 
-          if ( !qgsVariantEqual( dstVars[i], srcVars[i] ) && srcVars[i].isValid() && fieldIsEditable( fieldIndexes[i] ) )
+          if ( !qgsVariantEqual( dstVars[i], srcVars[i] ) && srcVars[i].isValid() )
           {
             dst[fieldIndexes[i]] = srcVars[i];
 
