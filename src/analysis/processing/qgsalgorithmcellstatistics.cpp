@@ -121,7 +121,7 @@ void QgsCellStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "TOTAL_PIXEL_COUNT" ), QObject::tr( "Total pixel count" ) ) );
 }
 
-bool QgsCellStatisticsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+bool QgsCellStatisticsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * feedback )
 {
   QgsRasterLayer *referenceLayer = parameterAsRasterLayer( parameters, QStringLiteral( "REF_LAYER" ), context );
   if ( !referenceLayer )
@@ -141,6 +141,9 @@ bool QgsCellStatisticsAlgorithm::prepareAlgorithm( const QVariantMap &parameters
   rasterLayers.reserve( layers.count() );
   for ( QgsMapLayer *l : layers )
   {
+    if(feedback->isCanceled())
+      break; //in case some slow data sources are loaded
+
     if ( l->type() == QgsMapLayerType::RasterLayer )
     {
       QgsRasterLayer *layer = qobject_cast< QgsRasterLayer * >( l );
