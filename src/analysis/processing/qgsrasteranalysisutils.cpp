@@ -291,6 +291,8 @@ std::vector<double> QgsRasterAnalysisUtils::getCellValuesFromBlockStack( const s
 {
   //get all values from inputBlocks
   std::vector<double> cellValues;
+  cellValues.reserve( inputBlocks.size() );
+
   for ( auto &block : inputBlocks )
   {
     double value = 0;
