@@ -34,7 +34,7 @@ QString QgsCellStatisticsAlgorithm::name() const
 
 QStringList QgsCellStatisticsAlgorithm::tags() const
 {
-  return QObject::tr( "cell,pixe,statistic,mean,sum,majority,minority,variance,variety,range,median,minimum,maximum" ).split( ',' );
+  return QObject::tr( "cell,pixel,statistic,mean,sum,majority,minority,variance,variety,range,median,minimum,maximum" ).split( ',' );
 }
 
 QString QgsCellStatisticsAlgorithm::group() const
