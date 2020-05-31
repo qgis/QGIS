@@ -545,8 +545,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     QgsMeshLayerTemporalProperties *mTemporalProperties;
 
-    QgsMeshDatasetIndex mStaticScalarDatasetIndex;
-    QgsMeshDatasetIndex mStaticVectorDatasetIndex;
+    int mStaticScalarDatasetIndex = 0;
+    int mStaticVectorDatasetIndex = 0;
 
     std::unique_ptr<QgsMeshDatasetGroupTreeItem> mDatasetGroupTreeRootItem;
 
