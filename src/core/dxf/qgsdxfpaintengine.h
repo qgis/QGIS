@@ -22,6 +22,7 @@
 
 #include "qgis_core.h"
 #include <QPaintEngine>
+#include <QPainterPath>
 #include "qgsabstractgeometry.h"
 
 class QgsPoint;
