@@ -303,7 +303,7 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
       QgsRectangle searchRectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius );
       return dataset1dValue( index, point, searchRadius );
     }
-    int faceIndex = mesh->faceIndexForPoint( point ) ;
+    int faceIndex = mesh->faceIndexForPoint_v2( point ) ;
     if ( faceIndex >= 0 )
     {
       int nativeFaceIndex = mesh->trianglesToNativeFaces().at( faceIndex );
@@ -372,7 +372,7 @@ QgsMesh3dDataBlock QgsMeshLayer::dataset3dValue( const QgsMeshDatasetIndex &inde
     const QgsMeshDatasetGroupMetadata::DataType dataType = dataProvider()->datasetGroupMetadata( index ).dataType();
     if ( dataType == QgsMeshDatasetGroupMetadata::DataOnVolumes )
     {
-      int faceIndex = baseTriangularMesh->faceIndexForPoint( point ) ;
+      int faceIndex = baseTriangularMesh->faceIndexForPoint_v2( point );
       if ( faceIndex >= 0 )
       {
         int nativeFaceIndex = baseTriangularMesh->trianglesToNativeFaces().at( faceIndex );
