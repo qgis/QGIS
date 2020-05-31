@@ -168,7 +168,6 @@ void QgsRendererMeshPropertiesWidget::onActiveScalarGroupChanged( int groupIndex
   mMeshRendererScalarSettingsWidget->setActiveDatasetGroup( groupIndex );
   mMeshRendererScalarSettingsWidget->syncToLayer();
   mContoursGroupBox->setChecked( groupIndex >= 0 );
-  mContoursGroupBox->setEnabled( groupIndex >= 0 );
   emit mMeshLayer->activeScalarDatasetGroupChanged( groupIndex );
 }
 
@@ -180,6 +179,5 @@ void QgsRendererMeshPropertiesWidget::onActiveVectorGroupChanged( int groupIndex
   mMeshRendererVectorSettingsWidget->setActiveDatasetGroup( groupIndex );
   mMeshRendererVectorSettingsWidget->syncToLayer();
   mVectorsGroupBox->setChecked( groupIndex >= 0 );
-  mVectorsGroupBox->setEnabled( groupIndex >= 0 );
   emit mMeshLayer->activeVectorDatasetGroupChanged( groupIndex );
 }
