@@ -31,6 +31,7 @@ from qgis.core import (QgsProject,
                        QgsMemoryProviderUtils,
                        QgsWkbTypes,
                        QgsCoordinateReferenceSystem,
+                       QgsVectorLayerJoinInfo,
                        NULL
                        )
 from qgis.testing import start_app, unittest
