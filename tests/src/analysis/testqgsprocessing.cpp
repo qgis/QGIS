@@ -10660,6 +10660,11 @@ void TestQgsProcessing::variantToPythonLiteral()
   QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QStringLiteral( "a 'string'" ) ), QStringLiteral( "'a \\'string\\''" ) );
   QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QStringLiteral( "a \"string\"" ) ), QStringLiteral( "'a \\\"string\\\"'" ) );
   QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QStringLiteral( "a \n str\tin\\g" ) ), QStringLiteral( "'a \\n str\\tin\\\\g'" ) );
+  QVariantMap map;
+  map.insert( QStringLiteral( "list" ), QVariantList() << 1 << 2 << "a" );
+  map.insert( QStringLiteral( "another" ), 4 );
+  map.insert( QStringLiteral( "another2" ), QStringLiteral( "test" ) );
+  QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( map ), QStringLiteral( "{'another': 4,'another2': 'test','list': [1,2,'a']}" ) );
 }
 
 void TestQgsProcessing::stringToPythonLiteral()
