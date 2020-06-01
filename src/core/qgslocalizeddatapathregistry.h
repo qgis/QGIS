@@ -66,6 +66,11 @@ class CORE_EXPORT QgsLocalizedDataPathRegistry
     void unregisterPath( const QString &path );
 
   private:
+#ifdef SIP_RUN
+    QgsLocalizedDataPathRegistry( const QgsLocalizedDataPathRegistry &other )
+    {}
+#endif
+
     void readFromSettings();
     void writeToSettings();
 
