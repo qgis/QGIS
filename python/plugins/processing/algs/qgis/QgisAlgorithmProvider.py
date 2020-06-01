@@ -44,7 +44,6 @@ from .ExecuteSQL import ExecuteSQL
 from .ExportGeometryInfo import ExportGeometryInfo
 from .FieldPyculator import FieldsPyculator
 from .FieldsCalculator import FieldsCalculator
-from .FieldsMapper import FieldsMapper
 from .FindProjection import FindProjection
 from .GeometryConvert import GeometryConvert
 from .Heatmap import Heatmap
@@ -117,7 +116,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 ExecuteSQL(),
                 ExportGeometryInfo(),
                 FieldsCalculator(),
-                FieldsMapper(),
                 FieldsPyculator(),
                 FindProjection(),
                 GeometryConvert(),
