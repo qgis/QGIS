@@ -41,7 +41,7 @@ QVariant QgsFieldMappingModel::headerData( int section, Qt::Orientation orientat
         {
           case ColumnDataIndex::SourceExpression:
           {
-            return tr( "Source expression" );
+            return tr( "Source Expression" );
           }
           case ColumnDataIndex::DestinationName:
           {
