@@ -64,6 +64,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mRenderedFeatureHandlers( rh.mRenderedFeatureHandlers )
   , mHasRenderedFeatureHandlers( rh.mHasRenderedFeatureHandlers )
   , mCustomRenderingFlags( rh.mCustomRenderingFlags )
+  , mDisabledSymbolLayers()
 #ifdef QGISDEBUG
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
