@@ -35,7 +35,7 @@ class QgsAttributes;
 /**
  * \ingroup core
  * Base class for all diagram types*/
-class CORE_EXPORT QgsDiagram
+class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
 {
   public:
 
@@ -148,6 +148,7 @@ class CORE_EXPORT QgsDiagram
 
   private:
     QMap<QString, QgsExpression *> mExpressions;
+    QgsDiagram &operator= ( const QgsDiagram & ) = delete;
 };
 
 #endif // QGSDIAGRAM_H
