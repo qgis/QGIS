@@ -1420,6 +1420,7 @@ double QgsSymbolRenderContext::outputPixelSize( double size ) const
   return mRenderContext.convertToPainterUnits( size, mOutputUnit, mMapUnitScale );
 }
 
+// cppcheck-suppress operatorEqVarError
 QgsSymbolRenderContext &QgsSymbolRenderContext::operator=( const QgsSymbolRenderContext & )
 {
   // This is just a dummy implementation of assignment.
