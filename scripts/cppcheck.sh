@@ -48,18 +48,20 @@ ret_code=0
 for category in "error" "style" "performance" "portability"; do
     if grep "${category}," ${LOG_FILE} >/dev/null; then
         echo "INFO: Issues in '${category}' category found, but not considered as making script to fail:"
-        grep "${category}," ${LOG_FILE}
+        grep "${category}," ${LOG_FILE} | grep -v "clarifyCalculation,"
         echo ""
     fi
 done
 
-if grep "warning," ${LOG_FILE}  >/dev/null; then
-    echo "ERROR: Issues in 'warning' category found:"
-    grep "warning," ${LOG_FILE}
-    echo ""
-    echo "Warnings check failed !"
-    ret_code=1
-fi
+for category in "warning" "clarifyCalculation"; do
+    if grep "${category}," ${LOG_FILE}  >/dev/null; then
+        echo "ERROR: Issues in '${category}' category found:"
+        grep "${category}," ${LOG_FILE}
+        echo ""
+        echo "${category} check failed !"
+        ret_code=1
+    fi
+done
 
 if [ ${ret_code} = 0 ]; then
     echo "cppcheck succeeded"
