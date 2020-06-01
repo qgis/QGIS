@@ -550,6 +550,8 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     void nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
 
+    //! Clears any data cached for the legend model
+    void clearLegendCachedData();
 
   private:
     QgsLayoutItemLegend() = delete;
@@ -560,9 +562,6 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void setupMapConnections( QgsLayoutItemMap *map, bool connect = true );
 
     void setModelStyleOverrides( const QMap<QString, QString> &overrides );
-
-    //! Clears any data cached for the legend model
-    void clearLegendCachedData();
 
     std::unique_ptr< QgsLegendModel > mLegendModel;
     std::unique_ptr< QgsLayerTreeGroup > mCustomLayerTree;

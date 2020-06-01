@@ -695,6 +695,7 @@ void QgsLayoutItemLegend::setupMapConnections( QgsLayoutItemMap *map, bool conne
     disconnect( map, &QObject::destroyed, this, &QgsLayoutItemLegend::invalidateCurrentMap );
     disconnect( map, &QgsLayoutObject::changed, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
     disconnect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
+    disconnect( map, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
     disconnect( map, &QgsLayoutItemMap::layerStyleOverridesChanged, this, &QgsLayoutItemLegend::mapLayerStyleOverridesChanged );
     disconnect( map, &QgsLayoutItemMap::themeChanged, this, &QgsLayoutItemLegend::mapThemeChanged );
   }
@@ -703,6 +704,7 @@ void QgsLayoutItemLegend::setupMapConnections( QgsLayoutItemMap *map, bool conne
     connect( map, &QObject::destroyed, this, &QgsLayoutItemLegend::invalidateCurrentMap );
     connect( map, &QgsLayoutObject::changed, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
     connect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
+    connect( map, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
     connect( map, &QgsLayoutItemMap::layerStyleOverridesChanged, this, &QgsLayoutItemLegend::mapLayerStyleOverridesChanged );
     connect( map, &QgsLayoutItemMap::themeChanged, this, &QgsLayoutItemLegend::mapThemeChanged );
   }
@@ -862,6 +864,7 @@ void QgsLayoutItemLegend::updateFilterByMap( bool redraw )
   // the actual update will take place before the redraw.
   // This is to avoid multiple calls to the filter
   mFilterAskedForUpdate = true;
+  clearLegendCachedData();
 
   if ( redraw )
     update();
