@@ -2240,37 +2240,50 @@ void QgsVertexTool::deleteVertex()
 
   // de-duplicate vertices in linear rings - if there is the first vertex selected,
   // then also the last vertex will be selected - but we want just one out of the pair
-  QHash<QgsVectorLayer *, QHash<QgsFeatureId, QList<int> > >::iterator itX = toDeleteGrouped.begin();
-  for ( ; itX != toDeleteGrouped.end(); ++itX )
+  // also deselect vertices of parts or rings that will be automatically removed
+  QHash<QgsVectorLayer *, QHash<QgsFeatureId, QList<int> > >::iterator lIt = toDeleteGrouped.begin();
+  for ( ; lIt != toDeleteGrouped.end(); ++lIt )
   {
-    QgsVectorLayer *layer = itX.key();
-    QHash<QgsFeatureId, QList<int> > &featuresDict = itX.value();
+    QgsVectorLayer *layer = lIt.key();
+    QHash<QgsFeatureId, QList<int> > &featuresDict = lIt.value();
 
-    QHash<QgsFeatureId, QList<int> >::iterator it2 = featuresDict.begin();
-    for ( ; it2 != featuresDict.end(); ++it2 )
+    QHash<QgsFeatureId, QList<int> >::iterator fIt = featuresDict.begin();
+    for ( ; fIt != featuresDict.end(); ++fIt )
     {
-      QgsFeatureId fid = it2.key();
-      QList<int> &vertexIds = it2.value();
-      if ( vertexIds.count() >= 2 && layer->geometryType() == QgsWkbTypes::PolygonGeometry )
+      QgsFeatureId fid = fIt.key();
+      QList<int> &vertexIds = fIt.value();
+      if ( vertexIds.count() >= 2 && ( layer->geometryType() == QgsWkbTypes::PolygonGeometry ||
+                                       layer->geometryType() == QgsWkbTypes::LineGeometry ) )
       {
-        QSet<int> duplicateVertexIndices;
-        QgsGeometry geom = cachedGeometry( layer, fid );
-        for ( int i = 0; i < vertexIds.count(); ++i )
+        std::sort( vertexIds.begin(), vertexIds.end(), std::greater<int>() );
+        const QgsGeometry geom = cachedGeometry( layer, fid );
+        const QgsAbstractGeometry *ag = geom.constGet();
+        QVector<QVector<int>> numberOfVertices;
+        for ( int p = 0 ; p < ag->partCount() ; ++p )
+        {
+          numberOfVertices.append( QVector<int>() );
+          for ( int r = 0 ; r < ag->ringCount( p ) ; ++r )
+          {
+            numberOfVertices[p].append( ag->vertexCount( p, r ) );
+          }
+        }
+        // polygonal rings with less than 4 vertices get deleted automatically
+        // linear parts with less than 2 vertices get deleted automatically
+        // let's keep that number and don't remove vertices beyond that point
+        const int minAllowedVertices = geom.type() == QgsWkbTypes::PolygonGeometry ? 4 : 2;
+        for ( int i = vertexIds.count() - 1; i >= 0 ; --i )
         {
           QgsVertexId vid;
           if ( geom.vertexIdFromVertexNr( vertexIds[i], vid ) )
           {
-            int ringVertexCount = geom.constGet()->vertexCount( vid.part, vid.ring );
-            if ( vid.vertex == ringVertexCount - 1 )
-            {
-              // this is the last vertex of the ring - remove the first vertex from the list
-              duplicateVertexIndices << geom.vertexNrFromVertexId( QgsVertexId( vid.part, vid.ring, 0 ) );
-            }
+            // also don't try to delete the first vertex of a ring since we have already deleted the last
+            if ( numberOfVertices.at( vid.part ).at( vid.ring ) < minAllowedVertices ||
+                 ( 0 == vid.vertex && geom.type() == QgsWkbTypes::PolygonGeometry ) )
+              vertexIds.removeOne( vertexIds.at( i ) );
+            else
+              --numberOfVertices[vid.part][vid.ring];
           }
         }
-        // now delete the duplicities
-        for ( int duplicateVertexIndex : qgis::as_const( duplicateVertexIndices ) )
-          vertexIds.removeOne( duplicateVertexIndex );
       }
     }
   }
