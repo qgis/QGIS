@@ -1470,7 +1470,7 @@ bool QgsDwgImporter::curveFromLWPolyline( const DRW_LWPolyline &data, QgsCompoun
 
   QgsPointSequence s;
   bool hadBulge( data.vertlist[0]->bulge != 0.0 );
-  std::vector<DRW_Vertex2D *>::size_type n = data.flags & 1 ? vertexnum + 1 : vertexnum;
+  std::vector<DRW_Vertex2D *>::size_type n = ( data.flags & 1 ) ? vertexnum + 1 : vertexnum;
   for ( std::vector<DRW_Vertex2D *>::size_type i = 0; i < n; i++ )
   {
     size_t i0 = i % vertexnum;
@@ -1539,7 +1539,7 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
   double width = -1.0; // width is set to correct value during first loop
   bool hadBulge( false );
 
-  std::vector<DRW_Vertex2D *>::size_type n = data.flags & 1 ? vertexnum : vertexnum - 1;
+  std::vector<DRW_Vertex2D *>::size_type n = ( data.flags & 1 ) ? vertexnum : vertexnum - 1;
   for ( std::vector<DRW_Vertex2D *>::size_type i = 0; i < n; i++ )
   {
     size_t i0 = i % vertexnum;
@@ -1739,7 +1739,7 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
   double width = -1.0; // width is set to correct value during first loop
   bool hadBulge( false );
 
-  std::vector<DRW_Vertex *>::size_type n = data.flags & 1 ? vertexnum : vertexnum - 1;
+  std::vector<DRW_Vertex *>::size_type n = ( data.flags & 1 ) ? vertexnum : vertexnum - 1;
   for ( std::vector<DRW_Vertex *>::size_type i = 0; i < n; i++ )
   {
     size_t i0 = i % vertexnum;
