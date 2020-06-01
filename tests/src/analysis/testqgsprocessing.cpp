@@ -9455,14 +9455,14 @@ void TestQgsProcessing::modelExecution()
   // name of the variable is get from childDescription or childId. To avoid using grass provider
   // is simpler to use native algorithm and change it's description.
   // test to check fix https://github.com/qgis/QGIS/issues/36377
-  QgsProcessingModelChildAlgorithm& cx1 = model2.childAlgorithm("cx1");
+  QgsProcessingModelChildAlgorithm& cx1 = model2.childAlgorithm( "cx1" );
   QString oldDescription = cx1.description();
-  cx1.setDescription("cx '():.1");
+  cx1.setDescription( "cx '():.1" );
   variables = model2.variablesForChildAlgorithm( "cx3", context );
   QVERIFY( !variables.contains( "cx1_OUTPUT" ) );
   QVERIFY( !variables.contains( "cx '():.1_OUTPUT" ) );
   QVERIFY( variables.contains( "cx______1_OUTPUT" ) );
-  cx1.setDescription(oldDescription); // set descrin back to avoid fail of following tests
+  cx1.setDescription( oldDescription ); // set descrin back to avoid fail of following tests
 
   // test to python convertion
   model2.setName( QStringLiteral( "2my model" ) );
