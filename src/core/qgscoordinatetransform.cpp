@@ -1105,6 +1105,7 @@ void QgsCoordinateTransform::removeFromCacheObjectsBelongingToCurrentThread( voi
     return;
 
   QgsReadWriteLocker locker( sCacheLock, QgsReadWriteLocker::Write );
+  // cppcheck-suppress identicalConditionAfterEarlyExit
   if ( sDisableCache )
     return;
 
