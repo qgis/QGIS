@@ -25,7 +25,7 @@
 #include "qgspanelwidget.h"
 
 #include "qgsprocessingcontext.h"
-#include "qgsvectortilewriter.h"
+#include "qgsprocessingmodelalgorithm.h"
 
 #include "qgsprocessingparameterfieldmap.h"
 
@@ -179,6 +179,69 @@ void QgsProcessingFieldMapPanelWidget::loadLayerFields()
 }
 
 //
+// QgsProcessingFieldMapParameterDefinitionWidget
+//
+
+QgsProcessingFieldMapParameterDefinitionWidget::QgsProcessingFieldMapParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Parent layer" ) ) );
+
+  mParentLayerComboBox = new QComboBox();
+  mParentLayerComboBox->addItem( tr( "None" ), QVariant() );
+
+  QString initialParent;
+  if ( const QgsProcessingParameterFieldMapping *mapParam = dynamic_cast<const QgsProcessingParameterFieldMapping *>( definition ) )
+    initialParent = mapParam->parentLayerParameterName();
+
+  if ( widgetContext.model() )
+  {
+    // populate combo box with other model input choices
+    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
+    {
+      if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      {
+        mParentLayerComboBox-> addItem( definition->description(), definition->name() );
+        if ( !initialParent.isEmpty() && initialParent == definition->name() )
+        {
+          mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+        }
+      }
+      else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      {
+        mParentLayerComboBox-> addItem( definition->description(), definition->name() );
+        if ( !initialParent.isEmpty() && initialParent == definition->name() )
+        {
+          mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+        }
+      }
+    }
+  }
+
+  if ( mParentLayerComboBox->count() == 1 && !initialParent.isEmpty() )
+  {
+    // if no parent candidates found, we just add the existing one as a placeholder
+    mParentLayerComboBox->addItem( initialParent, initialParent );
+    mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+  }
+
+  vlayout->addWidget( mParentLayerComboBox );
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingFieldMapParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterFieldMapping >( name, description, mParentLayerComboBox->currentData().toString() );
+  param->setFlags( flags );
+  return param.release();
+}
+
+//
 // QgsProcessingFieldMapWidgetWrapper
 //
 
@@ -208,6 +271,11 @@ QWidget *QgsProcessingFieldMapWidgetWrapper::createWidget()
   } );
 
   return mPanel;
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingFieldMapWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingFieldMapParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
 void QgsProcessingFieldMapWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
@@ -318,3 +386,5 @@ const QgsVectorLayer *QgsProcessingFieldMapWidgetWrapper::linkedVectorLayer() co
 }
 
 /// @endcond
+
+
