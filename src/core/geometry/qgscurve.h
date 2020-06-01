@@ -22,9 +22,9 @@
 #include "qgis_sip.h"
 #include "qgsabstractgeometry.h"
 #include "qgsrectangle.h"
+#include <QPainterPath>
 
 class QgsLineString;
-class QPainterPath;
 
 /**
  * \ingroup core
