@@ -8,7 +8,6 @@
 
 
 
-
 class QgsProcessingParameterFieldMapping : QgsProcessingParameterDefinition
 {
 %Docstring
@@ -24,7 +23,7 @@ class QgsProcessingParameterFieldMapping : QgsProcessingParameterDefinition
 #include "qgsprocessingparameterfieldmap.h"
 %End
   public:
-    QgsProcessingParameterFieldMapping( const QString &name, const QString &description = QString(), const QString &parentLayerParameterName = QString() );
+    QgsProcessingParameterFieldMapping( const QString &name, const QString &description = QString(), const QString &parentLayerParameterName = QString(), bool optional = false );
 %Docstring
 Constructor for QgsProcessingParameterFieldMapping.
 %End
@@ -33,7 +32,7 @@ Constructor for QgsProcessingParameterFieldMapping.
 
     virtual QString type() const;
 
-    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
@@ -42,6 +41,8 @@ Constructor for QgsProcessingParameterFieldMapping.
     virtual QVariantMap toVariantMap() const;
 
     virtual bool fromVariantMap( const QVariantMap &map );
+
+    virtual QStringList dependsOnOtherParameters() const;
 
 
     static QString typeName();

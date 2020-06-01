@@ -48,7 +48,7 @@ Constructor for QgsProcessingParameterVectorTileWriterLayers.
 
     virtual QString type() const;
 
-    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 

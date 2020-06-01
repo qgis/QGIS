@@ -100,8 +100,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
 
     def __init__(self):
         super().__init__()
-        self.algs = []
-        self.externalAlgs = []
         QgsApplication.processingRegistry().addAlgorithmAlias('qgis:rectanglesovalsdiamondsfixed', 'native:rectanglesovalsdiamonds')
 
     def getAlgs(self):
@@ -190,26 +188,17 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
         return QgsApplication.iconPath("providerQgis.svg")
 
     def loadAlgorithms(self):
-        self.algs = self.getAlgs()
-        for a in self.algs:
-            self.addAlgorithm(a)
-        for a in self.externalAlgs:
+        for a in self.getAlgs():
             self.addAlgorithm(a)
 
     def load(self):
         with QgsRuntimeProfiler.profile('QGIS Python Provider'):
             success = super().load()
 
-            if success:
-                self.parameterTypeFieldsMapping = FieldsMapper.ParameterFieldsMappingType()
-                QgsApplication.instance().processingRegistry().addParameterType(self.parameterTypeFieldsMapping)
-
         return success
 
     def unload(self):
         super().unload()
-
-        QgsApplication.instance().processingRegistry().removeParameterType(self.parameterTypeFieldsMapping)
 
     def supportsNonFileBasedOutput(self):
         return True

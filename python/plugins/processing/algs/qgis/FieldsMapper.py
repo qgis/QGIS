@@ -28,11 +28,8 @@ from qgis.core import (
     QgsFields,
     QgsProcessing,
     QgsProcessingException,
-    QgsProcessingParameterDefinition,
-    QgsProcessingParameterType,
+    QgsProcessingParameterFieldMapping,
     NULL)
-
-from qgis.PyQt.QtCore import QCoreApplication
 
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
@@ -52,8 +49,9 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
         return self.tr('attributes,table').split(',')
 
     def initParameters(self, config=None):
-        fields_mapping = FieldsMapper.ParameterFieldsMapping(self.FIELDS_MAPPING,
-                                                             description=self.tr('Fields mapping'))
+        fields_mapping = QgsProcessingParameterFieldMapping(self.FIELDS_MAPPING,
+                                                            description=self.tr('Fields mapping'),
+                                                            parentLayerParameterName='INPUT')
         fields_mapping.setMetadata({
             'widget_wrapper': 'processing.algs.qgis.ui.FieldsMappingPanel.FieldsMappingWidgetWrapper'
         })
@@ -108,7 +106,7 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
                 if expression.hasParserError():
                     feedback.reportError(
                         self.tr('Parser error for field "{}" with expression "{}": {}')
-                        .format(
+                            .format(
                             field_def['name'],
                             expression.expression(),
                             expression.parserErrorString()),
@@ -147,73 +145,3 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
         feature.setAttributes(attributes)
         self._row_number += 1
         return [feature]
-
-    class ParameterFieldsMappingType(QgsProcessingParameterType):
-
-        def __init__(self):
-            super().__init__()
-
-        def create(self, name):
-            return FieldsMapper.ParameterFieldsMapping(name)
-
-        def metadata(self):
-            return {'widget_wrapper': 'processing.algs.qgis.ui.FieldsMappingPanel.FieldsMappingWidgetWrapper'}
-
-        def name(self):
-            return QCoreApplication.translate('Processing', 'Fields Mapper')
-
-        def id(self):
-            return 'fields_mapping'
-
-        def pythonImportString(self):
-            return 'from processing.algs.qgis.FieldsMapper import FieldsMapper'
-
-        def className(self):
-            return 'FieldsMapper.ParameterFieldsMapping'
-
-        def description(self):
-            return QCoreApplication.translate('Processing', 'A mapping of field names to field type definitions and expressions. Used for the refactor fields algorithm.')
-
-    class ParameterFieldsMapping(QgsProcessingParameterDefinition):
-
-        def __init__(self, name, description='', parentLayerParameterName='INPUT'):
-            super().__init__(name, description)
-            self._parentLayerParameter = parentLayerParameterName
-
-        def clone(self):
-            copy = FieldsMapper.ParameterFieldsMapping(self.name(), self.description(), self._parentLayerParameter)
-            return copy
-
-        def type(self):
-            return self.typeName()
-
-        @staticmethod
-        def typeName():
-            return 'fields_mapping'
-
-        def checkValueIsAcceptable(self, value, context=None):
-            if not isinstance(value, list):
-                return False
-            for field_def in value:
-                if not isinstance(field_def, dict):
-                    return False
-                if 'name' not in field_def.keys():
-                    return False
-                if 'type' not in field_def.keys():
-                    return False
-                if 'expression' not in field_def.keys():
-                    return False
-            return True
-
-        def valueAsPythonString(self, value, context):
-            return str(value)
-
-        def asScriptCode(self):
-            raise NotImplementedError()
-
-        @classmethod
-        def fromScriptCode(cls, name, description, isOptional, definition):
-            raise NotImplementedError()
-
-        def parentLayerParameter(self):
-            return self._parentLayerParameter

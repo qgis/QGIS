@@ -214,7 +214,7 @@ class FieldsMappingWidgetWrapper(WidgetWrapper):
 
     def postInitialize(self, wrappers):
         for wrapper in wrappers:
-            if wrapper.parameterDefinition().name() == self.parameterDefinition().parentLayerParameter():
+            if wrapper.parameterDefinition().name() == self.parameterDefinition().parentLayerParameterName():
                 if wrapper.parameterValue():
                     self.setLayer(wrapper.parameterValue())
                 wrapper.widgetValueHasChanged.connect(self.parentLayerChanged)
