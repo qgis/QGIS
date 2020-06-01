@@ -11,10 +11,10 @@
 class QgsProcessingParameterFieldMapping : QgsProcessingParameterDefinition
 {
 %Docstring
+A parameter for "field mapping" configurations, which consist of a definition
+of desired output fields, types, and expressions used to populate then.
 
-.. note::
-
-   This class is not a part of public API.
+Designed for use with the "Refactor fields" algorithm.
 
 .. versionadded:: 3.14
 %End
