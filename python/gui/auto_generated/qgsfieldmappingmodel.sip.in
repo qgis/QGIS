@@ -126,6 +126,12 @@ Set source fields to ``sourceFields``
 Returns the context generator with the source fields
 %End
 
+    void setBaseExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
+%Docstring
+Sets the base expression context ``generator``, which will generate the expression
+contexts for expression based widgets used by the model.
+%End
+
     void setDestinationFields( const QgsFields &destinationFields,
                                const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 %Docstring

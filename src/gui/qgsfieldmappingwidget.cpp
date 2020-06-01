@@ -101,6 +101,11 @@ void QgsFieldMappingWidget::scrollTo( const QModelIndex &index ) const
   mTableView->scrollTo( index );
 }
 
+void QgsFieldMappingWidget::registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator )
+{
+  model()->setBaseExpressionContextGenerator( generator );
+}
+
 void QgsFieldMappingWidget::appendField( const QgsField &field, const QString &expression )
 {
   model()->appendField( field, expression );

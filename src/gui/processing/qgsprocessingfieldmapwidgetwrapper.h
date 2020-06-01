@@ -41,6 +41,12 @@ class GUI_EXPORT QgsProcessingFieldMapPanelWidget : public QgsPanelWidget, priva
     QVariant value() const;
     void setValue( const QVariant &value );
 
+    /**
+     * Register an expression context \a generator class that will be used to retrieve
+     * an expression context for the widget.
+     */
+    void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
+
   signals:
 
     void changed();
