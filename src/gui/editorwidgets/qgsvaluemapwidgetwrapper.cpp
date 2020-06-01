@@ -79,7 +79,7 @@ void QgsValueMapWidgetWrapper::updateValues( const QVariant &value, const QVaria
 
   if ( mComboBox )
   {
-    if ( mComboBox->findData( v ) == -1 )
+    if ( mComboBox->findData( v ) == -1 && !( v.startsWith( '(' ) && v.endsWith( ')' ) ) )
     {
       mComboBox->addItem( v.prepend( '(' ).append( ')' ), v );
     }
