@@ -238,6 +238,11 @@ void QgsProcessingFieldMapWidgetWrapper::postInitialize( const QList<QgsAbstract
   }
 }
 
+int QgsProcessingFieldMapWidgetWrapper::stretch() const
+{
+  return 1;
+}
+
 void QgsProcessingFieldMapWidgetWrapper::setParentLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper )
 {
   // evaluate value to layer
