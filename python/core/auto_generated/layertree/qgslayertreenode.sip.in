@@ -313,6 +313,7 @@ Low-level removal of children from the node.
 %End
 
   protected:
+
 };
 
 
