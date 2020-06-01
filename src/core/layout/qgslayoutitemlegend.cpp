@@ -259,8 +259,11 @@ void QgsLayoutItemLegend::setAutoUpdateModel( bool autoUpdate )
   updateFilterByMap( false );
 }
 
-void QgsLayoutItemLegend::nodeCustomPropertyChanged( QgsLayerTreeNode *, const QString & )
+void QgsLayoutItemLegend::nodeCustomPropertyChanged( QgsLayerTreeNode *, const QString &key )
 {
+  if ( key == QLatin1String( "cached_name" ) )
+    return;
+
   if ( autoUpdateModel() )
   {
     // in "auto update" mode, some parameters on the main app legend may have been changed (expression filtering)
