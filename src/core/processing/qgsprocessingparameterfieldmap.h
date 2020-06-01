@@ -21,7 +21,11 @@
 
 /**
  * \ingroup core
- * \note This class is not a part of public API.
+ * A parameter for "field mapping" configurations, which consist of a definition
+ * of desired output fields, types, and expressions used to populate then.
+ *
+ * Designed for use with the "Refactor fields" algorithm.
+ *
  * \since QGIS 3.14
  */
 class CORE_EXPORT QgsProcessingParameterFieldMapping : public QgsProcessingParameterDefinition
