@@ -75,6 +75,8 @@ class GUI_EXPORT QgsProcessingFieldMapWidgetWrapper : public QgsAbstractProcessi
     QWidget *createWidget() override SIP_FACTORY;
 
     void postInitialize( const QList< QgsAbstractProcessingParameterWidgetWrapper * > &wrappers ) override;
+    int stretch() const override;
+
   public slots:
     void setParentLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper );
 

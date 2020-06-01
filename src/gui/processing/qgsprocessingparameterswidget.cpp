@@ -50,12 +50,12 @@ void QgsProcessingParametersWidget::initWidgets()
   }
 }
 
-void QgsProcessingParametersWidget::addParameterWidget( const QgsProcessingParameterDefinition *parameter, QWidget *widget )
+void QgsProcessingParametersWidget::addParameterWidget( const QgsProcessingParameterDefinition *parameter, QWidget *widget, int stretch )
 {
   if ( parameter->flags() & QgsProcessingParameterDefinition::FlagAdvanced )
-    mAdvancedGroupLayout->addWidget( widget );
+    mAdvancedGroupLayout->addWidget( widget, stretch );
   else
-    mScrollAreaLayout->insertWidget( mScrollAreaLayout->count() - 2, widget );
+    mScrollAreaLayout->insertWidget( mScrollAreaLayout->count() - 2, widget, stretch );
 }
 
 void QgsProcessingParametersWidget::addParameterLabel( const QgsProcessingParameterDefinition *parameter, QWidget *label )
@@ -71,9 +71,9 @@ void QgsProcessingParametersWidget::addOutputLabel( QWidget *label )
   mScrollAreaLayout->insertWidget( mScrollAreaLayout->count() - 1, label );
 }
 
-void QgsProcessingParametersWidget::addOutputWidget( QWidget *widget )
+void QgsProcessingParametersWidget::addOutputWidget( QWidget *widget, int stretch )
 {
-  mScrollAreaLayout->insertWidget( mScrollAreaLayout->count() - 1, widget );
+  mScrollAreaLayout->insertWidget( mScrollAreaLayout->count() - 1, widget, stretch );
 }
 
 void QgsProcessingParametersWidget::addExtraWidget( QWidget *widget )

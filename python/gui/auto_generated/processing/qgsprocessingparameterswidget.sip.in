@@ -38,11 +38,11 @@ Constructor for QgsProcessingParametersWidget, for the specified ``algorithm``.
 
     virtual void initWidgets();
 
-    void addParameterWidget( const QgsProcessingParameterDefinition *parameter, QWidget *widget /Transfer/ );
+    void addParameterWidget( const QgsProcessingParameterDefinition *parameter, QWidget *widget /Transfer/, int stretch = 0 );
     void addParameterLabel( const QgsProcessingParameterDefinition *parameter, QWidget *label /Transfer/ );
 
     void addOutputLabel( QWidget *label /Transfer/ );
-    void addOutputWidget( QWidget *widget /Transfer/ );
+    void addOutputWidget( QWidget *widget /Transfer/, int stretch = 0 );
 
     void addExtraWidget( QWidget *widget /Transfer/ );
 

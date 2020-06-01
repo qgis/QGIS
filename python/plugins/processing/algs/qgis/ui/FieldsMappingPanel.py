@@ -59,12 +59,3 @@ class FieldsMappingWidgetWrapper(WidgetWrapper):
     def __init__(self, *args, **kwargs):
         super(FieldsMappingWidgetWrapper, self).__init__(*args, **kwargs)
         self._layer = None
-
-    def postInitialize(self, wrappers):
-
-        # remove exiting spacers to get FieldsMappingPanel fully expanded
-        if self.dialogType in (DIALOG_STANDARD, DIALOG_MODELER):
-            layout = self.widget.parent().layout()
-            spacer = layout.itemAt(layout.count() - 1)
-            if isinstance(spacer, QSpacerItem):
-                layout.removeItem(spacer)
