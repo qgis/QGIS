@@ -96,6 +96,13 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget, private Ui::QgsF
      */
     void scrollTo( const QModelIndex &index ) const;
 
+  signals:
+
+    /**
+     *Emitted when the fields defined in the widget are changed.
+     */
+    void changed();
+
   public slots:
 
     //! Appends a new \a field to the model, with an optional \a expression

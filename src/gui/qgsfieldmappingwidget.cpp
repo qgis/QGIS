@@ -44,6 +44,10 @@ QgsFieldMappingWidget::QgsFieldMappingWidget( QWidget *parent,
   // Make sure columns are updated when rows are added
   connect( mModel, &QgsFieldMappingModel::rowsInserted, this, [ = ] { updateColumns(); } );
   connect( mModel, &QgsFieldMappingModel::modelReset, this, [ = ] { updateColumns(); } );
+  connect( mModel, &QgsFieldMappingModel::dataChanged, this, &QgsFieldMappingWidget::changed );
+  connect( mModel, &QgsFieldMappingModel::rowsInserted, this, &QgsFieldMappingWidget::changed );
+  connect( mModel, &QgsFieldMappingModel::rowsRemoved, this, &QgsFieldMappingWidget::changed );
+  connect( mModel, &QgsFieldMappingModel::modelReset, this, &QgsFieldMappingWidget::changed );
 }
 
 void QgsFieldMappingWidget::setDestinationEditable( bool editable )

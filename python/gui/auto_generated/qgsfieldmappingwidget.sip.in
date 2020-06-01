@@ -94,6 +94,13 @@ corresponding expression.
 Scroll the fields view to ``index``
 %End
 
+  signals:
+
+    void changed();
+%Docstring
+Emitted when the fields defined in the widget are changed.
+%End
+
   public slots:
 
     void appendField( const QgsField &field, const QString &expression = QString() );

@@ -79,10 +79,6 @@ QgsRefactorFieldsAlgorithm *QgsRefactorFieldsAlgorithm::createInstance() const
 void QgsRefactorFieldsAlgorithm::initParameters( const QVariantMap & )
 {
   std::unique_ptr< QgsProcessingParameterFieldMapping > param = qgis::make_unique< QgsProcessingParameterFieldMapping> ( QStringLiteral( "FIELDS_MAPPING" ), QObject::tr( "Fields mapping" ), QStringLiteral( "INPUT" ) );
-
-  QVariantMap metadata;
-  metadata.insert( QStringLiteral( "widget_wrapper" ), QStringLiteral( "processing.algs.qgis.ui.FieldsMappingPanel.FieldsMappingWidgetWrapper" ) );
-  param->setMetadata( metadata );
   addParameter( param.release() );
 }
 
