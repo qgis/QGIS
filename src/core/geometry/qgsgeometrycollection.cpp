@@ -37,7 +37,10 @@ QgsGeometryCollection::QgsGeometryCollection()
 }
 
 QgsGeometryCollection::QgsGeometryCollection( const QgsGeometryCollection &c ):
-  QgsAbstractGeometry( c ), mHasCachedValidity( c.mHasCachedValidity ), mValidityFailureReason( c.mValidityFailureReason )
+  QgsAbstractGeometry( c ),
+  mBoundingBox( c.mBoundingBox ),
+  mHasCachedValidity( c.mHasCachedValidity ),
+  mValidityFailureReason( c.mValidityFailureReason )
 {
   int nGeoms = c.mGeometries.size();
   mGeometries.resize( nGeoms );
