@@ -18,8 +18,8 @@
 #include "qgsvectorlayer.h"
 
 
-QgsProcessingParameterFieldMapping::QgsProcessingParameterFieldMapping( const QString &name, const QString &description, const QString &parentLayerParameterName )
-  : QgsProcessingParameterDefinition( name, description, QVariant(), false )
+QgsProcessingParameterFieldMapping::QgsProcessingParameterFieldMapping( const QString &name, const QString &description, const QString &parentLayerParameterName, bool optional )
+  : QgsProcessingParameterDefinition( name, description, QVariant(), optional )
   , mParentLayerParameterName( parentLayerParameterName )
 {
 }
@@ -34,7 +34,7 @@ QString QgsProcessingParameterFieldMapping::type() const
   return typeName();
 }
 
-bool QgsProcessingParameterFieldMapping::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
+bool QgsProcessingParameterFieldMapping::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
 {
   if ( !input.isValid() )
     return mFlags & FlagOptional;
@@ -61,13 +61,9 @@ bool QgsProcessingParameterFieldMapping::checkValueIsAcceptable( const QVariant 
   return true;
 }
 
-QString QgsProcessingParameterFieldMapping::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
+QString QgsProcessingParameterFieldMapping::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
 {
-  QStringList parts;
-
-  // TODO
-
-  return parts.join( ',' ).prepend( '[' ).append( ']' );
+  return QgsProcessingUtils::variantToPythonLiteral( value );
 }
 
 QString QgsProcessingParameterFieldMapping::asPythonString( QgsProcessing::PythonOutputType outputType ) const
@@ -76,7 +72,13 @@ QString QgsProcessingParameterFieldMapping::asPythonString( QgsProcessing::Pytho
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterVectorTileWriterLayers('%1', '%2')" ).arg( name(), description() );
+      QString code = QStringLiteral( "QgsProcessingParameterFieldMapping('%1', '%2'" ).arg( name(), description() );
+      if ( !mParentLayerParameterName.isEmpty() )
+        code += QStringLiteral( ", parentLayerParameterName=%1" ).arg( QgsProcessingUtils::stringToPythonLiteral( mParentLayerParameterName ) );
+
+      if ( mFlags & FlagOptional )
+        code += QStringLiteral( ", optional=True" );
+      code += ')';
       return code;
     }
   }
@@ -85,12 +87,24 @@ QString QgsProcessingParameterFieldMapping::asPythonString( QgsProcessing::Pytho
 
 QVariantMap QgsProcessingParameterFieldMapping::toVariantMap() const
 {
-
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "parent_layer" ), mParentLayerParameterName );
+  return map;
 }
 
 bool QgsProcessingParameterFieldMapping::fromVariantMap( const QVariantMap &map )
 {
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mParentLayerParameterName = map.value( QStringLiteral( "parent_layer" ) ).toString();
+  return true;
+}
 
+QStringList QgsProcessingParameterFieldMapping::dependsOnOtherParameters() const
+{
+  QStringList depends;
+  if ( !mParentLayerParameterName.isEmpty() )
+    depends << mParentLayerParameterName;
+  return depends;
 }
 
 QString QgsProcessingParameterFieldMapping::parentLayerParameterName() const

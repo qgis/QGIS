@@ -50,7 +50,7 @@ class CORE_EXPORT QgsProcessingParameterVectorTileWriterLayers : public QgsProce
 
     QgsProcessingParameterDefinition *clone() const override;
     QString type() const override;
-    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const override;
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
 

@@ -18,8 +18,6 @@
 
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingparametertype.h"
-#include "qgsvectortilewriter.h"
-
 
 /**
  * \ingroup core
@@ -30,7 +28,7 @@ class CORE_EXPORT QgsProcessingParameterFieldMapping : public QgsProcessingParam
 {
   public:
     //! Constructor for QgsProcessingParameterFieldMapping.
-    QgsProcessingParameterFieldMapping( const QString &name, const QString &description = QString(), const QString &parentLayerParameterName = QString() );
+    QgsProcessingParameterFieldMapping( const QString &name, const QString &description = QString(), const QString &parentLayerParameterName = QString(), bool optional = false );
 
     QgsProcessingParameterDefinition *clone() const override;
     QString type() const override;
@@ -39,6 +37,7 @@ class CORE_EXPORT QgsProcessingParameterFieldMapping : public QgsProcessingParam
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
+    QStringList dependsOnOtherParameters() const override;
 
     //! Returns the type name for the parameter class.
     static QString typeName() { return QStringLiteral( "fields_mapping" ); }
