@@ -34,7 +34,7 @@ void QgsMeshStaticDatasetWidget::setLayer( QgsMeshLayer *layer )
 
 void QgsMeshStaticDatasetWidget::syncToLayer()
 {
-  if ( !mLayer && !mLayer->dataProvider() )
+  if ( !mLayer || !mLayer->dataProvider() )
     return;
 
   mScalarDatasetGroup = mLayer->rendererSettings().activeScalarDatasetGroup();
