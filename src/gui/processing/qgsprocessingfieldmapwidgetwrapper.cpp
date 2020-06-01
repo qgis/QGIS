@@ -145,6 +145,11 @@ void QgsProcessingFieldMapPanelWidget::setValue( const QVariant &value )
   emit changed();
 }
 
+void QgsProcessingFieldMapPanelWidget::registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator )
+{
+  mFieldsView->registerExpressionContextGenerator( generator );
+}
+
 void QgsProcessingFieldMapPanelWidget::loadFieldsFromLayer()
 {
   if ( mLayer )
@@ -264,6 +269,7 @@ QWidget *QgsProcessingFieldMapWidgetWrapper::createWidget()
 {
   mPanel = new QgsProcessingFieldMapPanelWidget( nullptr );
   mPanel->setToolTip( parameterDefinition()->toolTip() );
+  mPanel->registerExpressionContextGenerator( this );
 
   connect( mPanel, &QgsProcessingFieldMapPanelWidget::changed, this, [ = ]
   {

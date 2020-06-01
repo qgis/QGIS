@@ -96,6 +96,12 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget, private Ui::QgsF
      */
     void scrollTo( const QModelIndex &index ) const;
 
+    /**
+     * Register an expression context \a generator class that will be used to retrieve
+     * an expression context for the widget.
+     */
+    void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
+
   signals:
 
     /**
