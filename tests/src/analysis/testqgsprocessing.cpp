@@ -9462,7 +9462,7 @@ void TestQgsProcessing::modelExecution()
   QVERIFY( variables.contains( "cx______1_OUTPUT" ) );
   cx1.setDescription( oldDescription ); // set descrin back to avoid fail of following tests
 
-  // test to python convertion
+  // test model to python conversion
   model2.setName( QStringLiteral( "2my model" ) );
   model2.childAlgorithm( "cx1" ).modelOutput( QStringLiteral( "MODEL_OUT_LAYER" ) ).setDescription( "my model output" );
   model2.updateDestinationParameters();
