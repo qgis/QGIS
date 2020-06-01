@@ -128,6 +128,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrasterzonalstats.cpp
   processing/qgsalgorithmreclassifybylayer.cpp
   processing/qgsalgorithmrectanglesovalsdiamonds.cpp
+  processing/qgsalgorithmrefactorfields.cpp
   processing/qgsalgorithmremoveduplicatesbyattribute.cpp
   processing/qgsalgorithmremoveduplicatevertices.cpp
   processing/qgsalgorithmremoveholes.cpp

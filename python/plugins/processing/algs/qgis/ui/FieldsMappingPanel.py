@@ -52,7 +52,6 @@ from qgis.core import (
 
 from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_MODELER
 from processing.tools import dataobjects
-from processing.algs.qgis.FieldsMapper import FieldsMapper
 
 
 pluginPath = os.path.dirname(__file__)
@@ -192,9 +191,9 @@ class FieldsMappingWidgetWrapper(WidgetWrapper):
         if self.dialogType == DIALOG_MODELER:
             self.combobox = QComboBox()
             self.combobox.addItem(QCoreApplication.translate('Processing', '[Preconfigure]'), None)
-            fieldsMappingInputs = self.dialog.getAvailableValuesOfType(FieldsMapper.ParameterFieldsMapping)
-            for input in fieldsMappingInputs:
-                self.combobox.addItem(self.dialog.resolveValueDescription(input), input)
+            #fieldsMappingInputs = self.dialog.getAvailableValuesOfType(FieldsMapper.ParameterFieldsMapping)
+            #for input in fieldsMappingInputs:
+            #    self.combobox.addItem(self.dialog.resolveValueDescription(input), input)
 
             def updatePanelEnabledState():
                 if self.combobox.currentData() is None:
