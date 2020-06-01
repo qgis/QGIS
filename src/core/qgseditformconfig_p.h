@@ -97,6 +97,8 @@ class QgsEditFormConfigPrivate : public QSharedData
 
     QgsFields mFields;
 
+  private:
+    QgsEditFormConfigPrivate &operator= ( const QgsEditFormConfigPrivate & ) = delete;
 };
 
 

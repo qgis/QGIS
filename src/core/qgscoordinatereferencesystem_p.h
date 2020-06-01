@@ -243,6 +243,8 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     }
 #endif
 
+  private:
+    QgsCoordinateReferenceSystemPrivate &operator= ( const QgsCoordinateReferenceSystemPrivate & ) = delete;
 
 };
 
