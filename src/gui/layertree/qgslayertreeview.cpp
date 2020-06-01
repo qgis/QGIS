@@ -64,7 +64,7 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   connect( this, &QTreeView::collapsed, this, &QgsLayerTreeView::updateExpandedStateToNode );
   connect( this, &QTreeView::expanded, this, &QgsLayerTreeView::updateExpandedStateToNode );
 
-  connect( this->horizontalScrollBar(), &QScrollBar::valueChanged, this, &QgsLayerTreeView::onHorizontalScroll );
+  connect( horizontalScrollBar(), &QScrollBar::valueChanged, this, &QgsLayerTreeView::onHorizontalScroll );
 }
 
 QgsLayerTreeView::~QgsLayerTreeView()
