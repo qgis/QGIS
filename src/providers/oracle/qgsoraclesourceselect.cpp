@@ -124,7 +124,7 @@ void QgsOracleSourceSelectDelegate::setEditorData( QWidget *editor, const QModel
   if ( le )
   {
     bool ok;
-    value.toInt( &ok );
+    ( void )value.toInt( &ok );
     if ( index.column() == QgsOracleTableModel::DbtmSrid && !ok )
       value.clear();
 

@@ -67,8 +67,10 @@ struct MVTGeometryWriter
     qint32 vx = pt.x() - cursor.x();
     qint32 vy = pt.y() - cursor.y();
 
-    feature->add_geometry( ( vx << 1 ) ^ ( vx >> 31 ) );
-    feature->add_geometry( ( vy << 1 ) ^ ( vy >> 31 ) );
+    // (quint32)(-(qint32)((quint32)vx >> 31)) is a C/C++ compliant way
+    // of doing vx >> 31, which is undefined behaviour since vx is signed
+    feature->add_geometry( ( ( quint32 )vx << 1 ) ^ ( ( quint32 )( -( qint32 )( ( quint32 )vx >> 31 ) ) ) );
+    feature->add_geometry( ( ( quint32 )vy << 1 ) ^ ( ( quint32 )( -( qint32 )( ( quint32 )vy >> 31 ) ) ) );
 
     cursor = pt;
   }

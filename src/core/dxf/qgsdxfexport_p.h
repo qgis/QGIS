@@ -30,83 +30,87 @@
  */
 struct DxfLayerJob
 {
-  DxfLayerJob( QgsVectorLayer *vl, const QString &layerStyleOverride, QgsRenderContext &renderContext, QgsDxfExport *dxfExport, const QString &splitLayerAttribute )
-    : renderContext( renderContext )
-    , styleOverride( vl )
-    , featureSource( vl )
-    , dxfExport( dxfExport )
-    , crs( vl->crs() )
-    , layerName( vl->name() )
-    , splitLayerAttribute( splitLayerAttribute )
-    , layerTitle( vl->title().isEmpty() ? vl->name() : vl->title() )
-  {
-    fields = vl->fields();
-    renderer.reset( vl->renderer()->clone() );
-    renderContext.expressionContext().appendScope( QgsExpressionContextUtils::layerScope( vl ) );
-
-    if ( !layerStyleOverride.isNull() )
+    DxfLayerJob( QgsVectorLayer *vl, const QString &layerStyleOverride, QgsRenderContext &renderContext, QgsDxfExport *dxfExport, const QString &splitLayerAttribute )
+      : renderContext( renderContext )
+      , styleOverride( vl )
+      , featureSource( vl )
+      , dxfExport( dxfExport )
+      , crs( vl->crs() )
+      , layerName( vl->name() )
+      , splitLayerAttribute( splitLayerAttribute )
+      , layerTitle( vl->title().isEmpty() ? vl->name() : vl->title() )
     {
-      styleOverride.setOverrideStyle( layerStyleOverride );
-    }
+      fields = vl->fields();
+      renderer.reset( vl->renderer()->clone() );
+      renderContext.expressionContext().appendScope( QgsExpressionContextUtils::layerScope( vl ) );
 
-    labeling.reset( vl->labelsEnabled() ? vl->labeling()->clone() : nullptr );
-
-    attributes = renderer->usedAttributes( renderContext );
-    if ( !splitLayerAttribute.isNull() )
-    {
-      attributes << splitLayerAttribute;
-    }
-
-    if ( labeling )
-    {
-      QgsLabelingEngine *labelingEngine = renderContext.labelingEngine();
-      if ( const QgsRuleBasedLabeling *rbl = dynamic_cast<const QgsRuleBasedLabeling *>( labeling.get() ) )
+      if ( !layerStyleOverride.isNull() )
       {
-        ruleBasedLabelProvider = new QgsRuleBasedLabelSinkProvider( *rbl, vl, dxfExport );
-        labelingEngine->addProvider( ruleBasedLabelProvider );
+        styleOverride.setOverrideStyle( layerStyleOverride );
+      }
 
-        if ( !ruleBasedLabelProvider->prepare( renderContext, attributes ) )
+      labeling.reset( vl->labelsEnabled() ? vl->labeling()->clone() : nullptr );
+
+      attributes = renderer->usedAttributes( renderContext );
+      if ( !splitLayerAttribute.isNull() )
+      {
+        attributes << splitLayerAttribute;
+      }
+
+      if ( labeling )
+      {
+        QgsLabelingEngine *labelingEngine = renderContext.labelingEngine();
+        if ( const QgsRuleBasedLabeling *rbl = dynamic_cast<const QgsRuleBasedLabeling *>( labeling.get() ) )
         {
-          labelingEngine->removeProvider( ruleBasedLabelProvider );
-          ruleBasedLabelProvider = nullptr;
+          ruleBasedLabelProvider = new QgsRuleBasedLabelSinkProvider( *rbl, vl, dxfExport );
+          labelingEngine->addProvider( ruleBasedLabelProvider );
+
+          if ( !ruleBasedLabelProvider->prepare( renderContext, attributes ) )
+          {
+            labelingEngine->removeProvider( ruleBasedLabelProvider );
+            ruleBasedLabelProvider = nullptr;
+          }
+        }
+        else
+        {
+          QgsPalLayerSettings settings = labeling->settings();
+          labelProvider = new QgsLabelSinkProvider( vl, QString(), dxfExport, &settings );
+          labelingEngine->addProvider( labelProvider );
+
+          if ( !labelProvider->prepare( renderContext, attributes ) )
+          {
+            labelingEngine->removeProvider( labelProvider );
+            labelProvider = nullptr;
+          }
         }
       }
-      else
-      {
-        QgsPalLayerSettings settings = labeling->settings();
-        labelProvider = new QgsLabelSinkProvider( vl, QString(), dxfExport, &settings );
-        labelingEngine->addProvider( labelProvider );
 
-        if ( !labelProvider->prepare( renderContext, attributes ) )
-        {
-          labelingEngine->removeProvider( labelProvider );
-          labelProvider = nullptr;
-        }
-      }
-    }
+      // This will need to be started in a separate thread, if threaded somewhere else to
+      renderer->startRender( renderContext, fields );
+    };
 
-    // This will need to be started in a separate thread, if threaded somewhere else to
-    renderer->startRender( renderContext, fields );
-  };
+    QgsRenderContext renderContext;
+    QgsFields fields;
+    QgsMapLayerStyleOverride styleOverride;
+    QgsVectorLayerFeatureSource featureSource;
+    std::unique_ptr< QgsFeatureRenderer > renderer;
+    std::unique_ptr<QgsAbstractVectorLayerLabeling> labeling;
+    QgsDxfExport *dxfExport = nullptr;
+    QgsCoordinateReferenceSystem crs;
+    QString layerName;
+    QgsLabelSinkProvider *labelProvider = nullptr;
+    QgsRuleBasedLabelSinkProvider *ruleBasedLabelProvider = nullptr;
+    QString splitLayerAttribute;
+    QString layerTitle;
+    QSet<QString> attributes;
 
-  QgsRenderContext renderContext;
-  QgsFields fields;
-  QgsMapLayerStyleOverride styleOverride;
-  QgsVectorLayerFeatureSource featureSource;
-  std::unique_ptr< QgsFeatureRenderer > renderer;
-  std::unique_ptr<QgsAbstractVectorLayerLabeling> labeling;
-  QgsDxfExport *dxfExport = nullptr;
-  QgsCoordinateReferenceSystem crs;
-  QString layerName;
-  QgsLabelSinkProvider *labelProvider = nullptr;
-  QgsRuleBasedLabelSinkProvider *ruleBasedLabelProvider = nullptr;
-  QString splitLayerAttribute;
-  QString layerTitle;
-  QSet<QString> attributes;
+  private:
+    DxfLayerJob( const DxfLayerJob & ) = delete;
+    DxfLayerJob &operator=( const DxfLayerJob & ) = delete;
 };
 
 // dxf color palette
-static int sDxfColors[][3] =
+static const int sDxfColors[][3] =
 {
   { 255, 255, 255 },
   { 255, 0, 0 },

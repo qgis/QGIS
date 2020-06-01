@@ -2418,6 +2418,7 @@ void QgsVertexTool::setHighlightedVertices( const QList<Vertex> &listVertices, H
     for ( const Vertex &vertex : qgis::as_const( mSelectedVertices ) )
     {
       // we should never be able to select vertices that are not from the locked feature
+      // cppcheck-suppress assertWithSideEffect
       Q_ASSERT( mLockedFeature->featureId() == vertex.fid && mLockedFeature->layer() == vertex.layer );
       mLockedFeature->selectVertex( vertex.vertexId );
     }

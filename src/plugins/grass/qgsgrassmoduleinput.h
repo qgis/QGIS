@@ -87,6 +87,8 @@ class QgsGrassModuleInputModel : public QStandardItemModel
     QStringList locationDirNames();
     QFileSystemWatcher *mWatcher = nullptr;
 
+    QgsGrassModuleInputModel( const QgsGrassModuleInputModel & ) = delete;
+    QgsGrassModuleInputModel &operator = ( const QgsGrassModuleInputModel & ) = delete;
 };
 
 // Filter maps by type
@@ -350,6 +352,9 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
 
     //! Required field
     bool mRequired;
+
+    QgsGrassModuleInput( const QgsGrassModuleInput & ) = delete;
+    QgsGrassModuleInput &operator = ( const QgsGrassModuleInput & ) = delete;
 };
 
 

@@ -185,6 +185,9 @@ class KPty {
 
   private:
     Q_DECLARE_PRIVATE(KPty)
+
+    KPty( const KPty& ) = delete;
+    KPty& operator= ( const KPty& ) = delete;
 };
 
 #endif
