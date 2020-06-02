@@ -696,10 +696,14 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
     return;
   }
 
+<<<<<<< HEAD
   QModelIndex sourceIndex = mFilterModel->mapToSource( atIndex );
 
   QAction *copyContentAction = new QAction( tr( "Copy Cell Content" ), this );
   copyContentAction->setData( QVariant::fromValue<QModelIndex>( sourceIndex ) );
+=======
+  QAction *copyContentAction = menu->addAction( tr( "Copy Cell Content" ) );
+>>>>>>> df41d781d4... Fix quasi-leak in attribute table right click menu
   menu->addAction( copyContentAction );
   connect( copyContentAction, &QAction::triggered, this, &QgsDualView::copyCellContent );
 
