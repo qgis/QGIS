@@ -67,13 +67,18 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
       , mSRID( other.mSRID )
       , mAuthId( other.mAuthId )
       , mIsValid( other.mIsValid )
-#if PROJ_VERSION_MAJOR<6
+#if PROJ_VERSION_MAJOR >= 6
+      , mPj()
+#else
       , mCRS( nullptr )
 #endif
       , mProj4( other.mProj4 )
       , mWktPreferred( other.mWktPreferred )
       , mAxisInvertedDirty( other.mAxisInvertedDirty )
       , mAxisInverted( other.mAxisInverted )
+#if PROJ_VERSION_MAJOR >= 6
+      , mProjObjects()
+#endif
     {
 #if PROJ_VERSION_MAJOR<6
       if ( mIsValid )
@@ -174,7 +179,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     }
 
 #else
-    OGRSpatialReferenceH mCRS;
+    OGRSpatialReferenceH mCRS = nullptr;
 #endif
 
     mutable QString mProj4;
@@ -189,8 +194,8 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
 
 #if PROJ_VERSION_MAJOR>=6
   private:
-    mutable QReadWriteLock mProjLock;
-    mutable QMap < PJ_CONTEXT *, PJ * > mProjObjects;
+    mutable QReadWriteLock mProjLock{};
+    mutable QMap < PJ_CONTEXT *, PJ * > mProjObjects{};
 
   public:
 
@@ -238,6 +243,8 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     }
 #endif
 
+  private:
+    QgsCoordinateReferenceSystemPrivate &operator= ( const QgsCoordinateReferenceSystemPrivate & ) = delete;
 
 };
 

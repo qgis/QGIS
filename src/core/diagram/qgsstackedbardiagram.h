@@ -40,7 +40,7 @@ class QgsRenderContext;
  *
  * \since QGIS 3.12
  */
-class CORE_EXPORT QgsStackedBarDiagram: public QgsDiagram
+class CORE_EXPORT QgsStackedBarDiagram: public QgsDiagram SIP_NODEFAULTCTORS
 {
   public:
     QgsStackedBarDiagram();

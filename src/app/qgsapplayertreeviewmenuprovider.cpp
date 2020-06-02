@@ -232,9 +232,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         // attribute table
         QgsSettings settings;
         QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( QStringLiteral( "qgis/attributeTableBehavior" ),  QgsAttributeTableFilterModel::ShowAll );
-        QAction *attributeTable = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "&Open Attribute Table" ),
-                                  QgisApp::instance(), [ = ] { QgisApp::instance()->attributeTable( initialMode ); } );
-        attributeTable->setEnabled( vlayer->isValid() );
+        QAction *attributeTableAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "&Open Attribute Table" ),
+                                        QgisApp::instance(), [ = ] { QgisApp::instance()->attributeTable( initialMode ); } );
+        attributeTableAction->setEnabled( vlayer->isValid() );
 
         // allow editing
         const QgsVectorDataProvider *provider = vlayer->dataProvider();

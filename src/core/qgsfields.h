@@ -432,6 +432,8 @@ class CORE_EXPORT  QgsFields
         inline const_iterator operator+( difference_type j ) const { return const_iterator( d + j ); }
         inline const_iterator operator-( difference_type j ) const { return const_iterator( d - j ); }
         inline int operator-( const_iterator j ) const { return int( d - j.d ); } // clazy:exclude=function-args-by-ref
+      private:
+        const_iterator &operator= ( const const_iterator & ) = delete;
     };
     friend class const_iterator;
     ///@endcond

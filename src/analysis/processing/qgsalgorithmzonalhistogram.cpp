@@ -116,7 +116,7 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
   QgsFeature f;
   while ( it.nextFeature( f ) )
   {
-    if ( feedback && feedback->isCanceled() )
+    if ( feedback->isCanceled() )
     {
       break;
     }

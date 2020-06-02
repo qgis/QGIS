@@ -385,6 +385,8 @@ class QgsWcsCapabilities : public QObject
 
     //! Cache load control
     QNetworkRequest::CacheLoadControl mCacheLoadControl = QNetworkRequest::PreferNetwork;
+
+    QgsWcsCapabilities &operator=( const QgsWcsCapabilities & ) = delete;
 };
 
 

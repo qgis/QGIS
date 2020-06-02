@@ -9,7 +9,7 @@
 
 
 
-class QgsBlurEffect : QgsPaintEffect
+class QgsBlurEffect : QgsPaintEffect /NoDefaultCtors/
 {
 %Docstring
 A paint effect which blurs a source picture, using a number of different blur

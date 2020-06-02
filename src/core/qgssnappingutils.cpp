@@ -335,7 +335,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
     QgsPointLocator::Match bestMatch;
     QgsPointLocator::MatchList edges; // for snap on intersection
     double maxTolerance = 0;
-    QgsPointLocator::Type maxTypes;
+    QgsPointLocator::Type maxTypes = QgsPointLocator::Invalid;
 
     for ( const LayerConfig &layerConfig : qgis::as_const( filteredConfigs ) )
     {

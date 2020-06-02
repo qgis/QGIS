@@ -420,20 +420,17 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   {
     visibleRegion = QgsGeometry::fromQPolygonF( mMap->visibleExtentPolygon() );
     selectionRect = visibleRegion.boundingBox();
-    if ( layer )
+    //transform back to layer CRS
+    QgsCoordinateTransform coordTransform( layer->crs(), mMap->crs(), mLayout->project() );
+    try
     {
-      //transform back to layer CRS
-      QgsCoordinateTransform coordTransform( layer->crs(), mMap->crs(), mLayout->project() );
-      try
-      {
-        selectionRect = coordTransform.transformBoundingBox( selectionRect, QgsCoordinateTransform::ReverseTransform );
-        visibleRegion.transform( coordTransform, QgsCoordinateTransform::ReverseTransform );
-      }
-      catch ( QgsCsException &cse )
-      {
-        Q_UNUSED( cse )
-        return false;
-      }
+      selectionRect = coordTransform.transformBoundingBox( selectionRect, QgsCoordinateTransform::ReverseTransform );
+      visibleRegion.transform( coordTransform, QgsCoordinateTransform::ReverseTransform );
+    }
+    catch ( QgsCsException &cse )
+    {
+      Q_UNUSED( cse )
+      return false;
     }
     visibleMapEngine.reset( QgsGeometry::createGeometryEngine( visibleRegion.constGet() ) );
     visibleMapEngine->prepareGeometry();

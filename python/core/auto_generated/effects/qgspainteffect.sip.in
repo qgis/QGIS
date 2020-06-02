@@ -10,7 +10,7 @@
 
 
 
-class QgsPaintEffect
+class QgsPaintEffect /NoDefaultCtors/
 {
 %Docstring
 Base class for visual effects which can be applied to QPicture drawings
@@ -319,7 +319,7 @@ to rendering results onto a painter.
 };
 
 
-class QgsDrawSourceEffect : QgsPaintEffect
+class QgsDrawSourceEffect : QgsPaintEffect /NoDefaultCtors/
 {
 %Docstring
 A paint effect which draws the source picture with minor or no alterations

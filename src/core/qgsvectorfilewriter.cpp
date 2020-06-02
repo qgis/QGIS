@@ -3480,7 +3480,7 @@ QString QgsVectorFileWriter::convertCodecNameForEncodingOption( const QString &c
   {
     QString c = re.cap( 2 ).remove( '-' );
     bool isNumber;
-    c.toInt( &isNumber );
+    ( void ) c.toInt( &isNumber );
     if ( isNumber )
       return c;
   }
