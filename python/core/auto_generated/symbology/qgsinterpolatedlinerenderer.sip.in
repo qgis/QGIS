@@ -148,6 +148,15 @@ Returns whether the variable width ignores out of range value
 Sets whether the variable width ignores out of range value
 %End
 
+    bool useAbsoluteValue() const;
+%Docstring
+Returns whether absolute value are used as input
+%End
+    void setUseAbsoluteValue( bool useAbsoluteValue );
+%Docstring
+Sets whether absolute value are used as input
+%End
+
     bool isVariableWidth() const;
 %Docstring
 Returns whether the width is variable
