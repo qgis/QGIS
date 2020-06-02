@@ -44,6 +44,8 @@ QgsMeshVariableStrokeWidthWidget::QgsMeshVariableStrokeWidthWidget(
            this, &QgsMeshVariableStrokeWidthWidget::widgetChanged );
   connect( mIgnoreOutOfRangecheckBox, &QCheckBox::toggled,
            this, &QgsMeshVariableStrokeWidthWidget::widgetChanged );
+  connect( mUseAbsoluteValueCheckBox, &QCheckBox::toggled,
+           this, &QgsMeshVariableStrokeWidthWidget::widgetChanged );
 }
 
 void QgsMeshVariableStrokeWidthWidget::setVariableStrokeWidth( const QgsInterpolatedLineWidth &variableStrokeWidth )
@@ -53,6 +55,7 @@ void QgsMeshVariableStrokeWidthWidget::setVariableStrokeWidth( const QgsInterpol
   whileBlocking( mWidthMinimumSpinBox )->setValue( variableStrokeWidth.minimumWidth() );
   whileBlocking( mWidthMaximumSpinBox )->setValue( variableStrokeWidth.maximumWidth() );
   whileBlocking( mIgnoreOutOfRangecheckBox )->setChecked( variableStrokeWidth.ignoreOutOfRange() );
+  whileBlocking( mUseAbsoluteValueCheckBox )->setChecked( variableStrokeWidth.useAbsoluteValue() );
 }
 
 void QgsMeshVariableStrokeWidthButton::setDefaultMinMaxValue( double minimum, double maximum )
@@ -69,7 +72,7 @@ QgsInterpolatedLineWidth QgsMeshVariableStrokeWidthWidget::variableStrokeWidth()
   strokeWidth.setMinimumWidth( mWidthMinimumSpinBox->value() );
   strokeWidth.setMaximumWidth( mWidthMaximumSpinBox->value() );
   strokeWidth.setIgnoreOutOfRange( mIgnoreOutOfRangecheckBox->isChecked() );
-
+  strokeWidth.setUseAbsoluteValue( mUseAbsoluteValueCheckBox->isChecked() );
   return strokeWidth;
 }
 
