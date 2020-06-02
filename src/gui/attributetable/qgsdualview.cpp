@@ -699,7 +699,11 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
   QAction *copyContentAction = new QAction( tr( "Copy Cell Content" ), this );
   copyContentAction->setData( QVariant::fromValue<QModelIndex>( atIndex ) );
   menu->addAction( copyContentAction );
-  connect( copyContentAction, &QAction::triggered, this, &QgsDualView::copyCellContent );
+  connect( copyContentAction, &QAction::triggered, this, [atIndex, this]
+  {
+    QVariant var = mMasterModel->data( atIndex, Qt::DisplayRole );
+    QApplication::clipboard()->setText( var.toString() );
+  } );
 
   QgsVectorLayer *vl = mFilterModel->layer();
   QgsMapCanvas *canvas = mFilterModel->mapCanvas();
