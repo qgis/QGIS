@@ -741,7 +741,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &maste
     return;
   }
 
-  QAction *copyContentAction = new QAction( tr( "Copy Cell Content" ), this );
+  QAction *copyContentAction = menu->addAction( tr( "Copy Cell Content" ) );
   menu->addAction( copyContentAction );
   connect( copyContentAction, &QAction::triggered, this, [masterIndex, this]
   {
