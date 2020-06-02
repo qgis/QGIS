@@ -709,9 +709,14 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
   QgsMapCanvas *canvas = mFilterModel->mapCanvas();
   if ( canvas && vl && vl->geometryType() != QgsWkbTypes::NullGeometry )
   {
-    menu->addAction( tr( "Zoom to Feature" ), this, SLOT( zoomToCurrentFeature() ) );
-    menu->addAction( tr( "Pan to Feature" ), this, SLOT( panToCurrentFeature() ) );
-    menu->addAction( tr( "Flash Feature" ), this, SLOT( flashCurrentFeature() ) );
+    QAction *zoomToFeatureAction = menu->addAction( tr( "Zoom to Feature" ) );
+    connect( zoomToFeatureAction, &QAction::triggered, this, &QgsDualView::zoomToCurrentFeature );
+
+    QAction *panToFeatureAction = menu->addAction( tr( "Pan to Feature" ) );
+    connect( panToFeatureAction, &QAction::triggered, this, &QgsDualView::panToCurrentFeature );
+
+    QAction *flashFeatureAction = menu->addAction( tr( "Flash Feature" ) );
+    connect( flashFeatureAction, &QAction::triggered, this, &QgsDualView::flashCurrentFeature );
   }
 
   //add user-defined actions to context menu
