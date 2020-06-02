@@ -342,20 +342,32 @@ border-radius: 2px;</string>
                 <widget class="QgsMeshDatasetGroupTreeWidget" name="mDatasetGroupTreeWidget" native="true"/>
                </item>
                <item>
-                <widget class="QCheckBox" name="mTemporalStaticDatasetCheckBox">
-                 <property name="text">
+                <widget class="QGroupBox" name="groupBox">
+                 <property name="title">
                   <string>Static Dataset</string>
                  </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QgsMeshStaticDatasetWidget" name="mStaticScalarWidget" native="true">
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>0</height>
-                  </size>
-                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_7">
+                  <item>
+                   <widget class="QgsMeshStaticDatasetWidget" name="mStaticScalarWidget" native="true">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="mTemporalStaticDatasetCheckBox">
+                    <property name="toolTip">
+                     <string>Static dataset even if the temporal navigation is on</string>
+                    </property>
+                    <property name="text">
+                     <string>Force Static Dataset with Temporal Navigation</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </widget>
                </item>
                <item>

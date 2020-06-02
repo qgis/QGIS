@@ -417,7 +417,6 @@ QgsMeshDatasetValue QgsMeshLayer::dataset1dValue( const QgsMeshDatasetIndex &ind
     }
   }
 
-
   return value;
 }
 
