@@ -18,7 +18,7 @@
 #include "qgsattributesformproperties.h"
 
 
-QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *item, QWidget *parent )
+QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *item, QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
   , mTreeItem( item )
 {
@@ -40,6 +40,7 @@ QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *i
   mShowAsGroupBoxCheckBox->setChecked( itemData.showAsGroupBox() );
 
   mControlVisibilityGroupBox->setChecked( itemData.visibilityExpression().enabled() );
+  mVisibilityExpressionWidget->setLayer( layer );
   mVisibilityExpressionWidget->setExpression( itemData.visibilityExpression()->expression() );
   mColumnCountSpinBox->setValue( itemData.columnCount() );
   mBackgroundColorButton->setColor( itemData.backgroundColor() );

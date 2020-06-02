@@ -32,7 +32,7 @@ class APP_EXPORT QgsAttributeFormContainerEdit: public QWidget, private Ui_QgsAt
     Q_OBJECT
 
   public:
-    explicit QgsAttributeFormContainerEdit( QTreeWidgetItem *item, QWidget *parent = nullptr );
+    explicit QgsAttributeFormContainerEdit( QTreeWidgetItem *item, QgsVectorLayer *layer, QWidget *parent = nullptr );
 
 
     void updateItemData();

@@ -427,8 +427,15 @@ void QgsAttributesFormProperties::loadAttributeContainerEdit()
     return;
 
   QTreeWidgetItem *currentItem = mFormLayoutTree->selectedItems().at( 0 );
+<<<<<<< HEAD:src/app/qgsattributesformproperties.cpp
   mAttributeContainerEdit = new QgsAttributeFormContainerEdit( currentItem, this );
   mAttributeTypeFrame->layout()->setMargin( 0 );
+=======
+  mAttributeContainerEdit = new QgsAttributeFormContainerEdit( currentItem, mLayer, this );
+  mAttributeContainerEdit->registerExpressionContextGenerator( this );
+  mAttributeContainerEdit->layout()->setContentsMargins( 0, 0, 0, 0 );
+  mAttributeTypeFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
+>>>>>>> 834c5ba209... FIX #35196, layer was not set on QgsFieldExpressionWidget:src/gui/vector/qgsattributesformproperties.cpp
   mAttributeTypeFrame->layout()->addWidget( mAttributeContainerEdit );
 }
 
