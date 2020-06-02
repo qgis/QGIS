@@ -889,9 +889,9 @@ bool QgsPostgresProvider::loadFields()
               " LEFT OUTER JOIN ( SELECT DISTINCT indrelid, indkey, indisunique FROM pg_index WHERE indisunique ) uniq ON attrelid=indrelid AND attnum::text=indkey::text "
 
               " WHERE attrelid IN %3"
-            ).arg( connectionRO()->pgVersion() >= 100000 ? QStringLiteral( ", attidentity" ) : QString() )
-            .arg( connectionRO()->pgVersion() >= 120000 ? QStringLiteral( ", attgenerated" ) : QString() )
-            .arg( tableoidsFilter );
+            ).arg( connectionRO()->pgVersion() >= 100000 ? QStringLiteral( ", attidentity" ) : QString(),
+                   connectionRO()->pgVersion() >= 120000 ? QStringLiteral( ", attgenerated" ) : QString(),
+                   tableoidsFilter );
 
       QgsPostgresResult fmtFieldTypeResult( connectionRO()->PQexec( sql ) );
       for ( int i = 0; i < fmtFieldTypeResult.PQntuples(); ++i )
@@ -2345,7 +2345,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       if ( !mGeneratedValues.value( idx, QString() ).isEmpty() )
       {
-        QgsDebugMsg( QStringLiteral( "Skipping field %1 (idx %2) which is GENERATED." ).arg( fieldname, idx ) );
+        QgsLogger::warning( tr( "Skipping field %1 which is GENERATED." ).arg( fieldname ) );
         continue;
       }
 
@@ -2958,7 +2958,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
 
           if ( mGeneratedValues.contains( siter.key() ) && !mGeneratedValues.value( siter.key(), QString() ).isEmpty() )
           {
-            pushError( tr( "Changing the value of GENERATED field %1 is not allowed." ).arg( fld.name() ) );
+            QgsLogger::warning( tr( "Changing the value of GENERATED field %1 is not allowed." ).arg( fld.name() ) );
             continue;
           }
 
