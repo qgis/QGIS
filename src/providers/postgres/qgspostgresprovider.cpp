@@ -2341,7 +2341,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       if ( !mGeneratedValues.value( idx, QString() ).isEmpty() )
       {
-        QgsLogger::warning( tr( "Skipping field %1 which is GENERATED." ).arg( fieldname ) );
+        QgsDebugMsg( QStringLiteral( "Skipping field %1 (idx %2) which is GENERATED." ).arg( fieldname, idx ) );
         continue;
       }
 
