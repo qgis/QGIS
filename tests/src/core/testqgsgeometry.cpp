@@ -3597,6 +3597,19 @@ void TestQgsGeometry::lineString()
   QVERIFY( l11.isClosed() );
   QCOMPARE( l11.numPoints(), 5 );
   QCOMPARE( l11.pointN( 4 ), QgsPoint( 1, 2 ) );
+
+  // tiny differences
+  l11.setPoints( QgsPointSequence() << QgsPoint( 0.000000000000001, 0.000000000000002 )
+                 << QgsPoint( 0.000000000000011, 0.000000000000002 )
+                 << QgsPoint( 0.000000000000011, 0.000000000000022 )
+                 << QgsPoint( 0.000000000000001, 0.000000000000022 ) );
+  QVERIFY( !l11.isClosed() );
+  l11.close();
+  QVERIFY( l11.isClosed() );
+  QCOMPARE( l11.numPoints(), 5 );
+  QGSCOMPARENEAR( l11.pointN( 4 ).x(), 0.000000000000001, 0.00000000000000001 );
+  QGSCOMPARENEAR( l11.pointN( 4 ).y(), 0.000000000000002, 0.00000000000000001 );
+
   //test that m values aren't considered when testing for closedness
   l11.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 3 )
                  << QgsPoint( QgsWkbTypes::PointM, 11, 2, 0, 4 )
