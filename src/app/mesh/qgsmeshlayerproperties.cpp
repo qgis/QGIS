@@ -80,7 +80,6 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
 
   connect( mTemporalReloadButton, &QPushButton::clicked, this, &QgsMeshLayerProperties::reloadTemporalProperties );
   connect( mTemporalDateTimeReference, &QDateTimeEdit::dateTimeChanged, this, &QgsMeshLayerProperties::onTimeReferenceChange );
-  connect( mTemporalStaticDatasetCheckBox, &QCheckBox::toggled, this, &QgsMeshLayerProperties::onStaticDatasetCheckBoxChanged );
   connect( mMeshLayer, &QgsMeshLayer::activeScalarDatasetGroupChanged, mStaticScalarWidget, &QgsMeshStaticDatasetWidget::setScalarDatasetGroup );
   connect( mMeshLayer, &QgsMeshLayer::activeVectorDatasetGroupChanged, mStaticScalarWidget, &QgsMeshStaticDatasetWidget::setVectorDatasetGroup );
 
@@ -218,7 +217,6 @@ void QgsMeshLayerProperties::syncToLayer()
     mComboBoxTemporalDatasetMatchingMethod->findData( temporalProperties->matchingMethod() ) );
 
   mStaticScalarWidget->syncToLayer();
-  mStaticScalarWidget->setVisible( !mMeshLayer->temporalProperties()->isActive() );
   mTemporalStaticDatasetCheckBox->setChecked( !mMeshLayer->temporalProperties()->isActive() );
 }
 
@@ -462,9 +460,4 @@ void QgsMeshLayerProperties::onTimeReferenceChange()
   const QgsDateTimeRange &timeExtent = mMeshLayer->dataProvider()->temporalCapabilities()->timeExtent( mTemporalDateTimeReference->dateTime() );
   mTemporalDateTimeStart->setDateTime( timeExtent.begin() );
   mTemporalDateTimeEnd->setDateTime( timeExtent.end() );
-}
-
-void QgsMeshLayerProperties::onStaticDatasetCheckBoxChanged()
-{
-  mStaticScalarWidget->setVisible( mTemporalStaticDatasetCheckBox->isChecked() );
 }
