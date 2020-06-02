@@ -667,14 +667,14 @@ int QgsDualView::filteredFeatureCount()
 
 void QgsDualView::copyCellContent() const
 {
-  QAction *action = qobject_cast<QAction *>( sender() );
-
-  if ( action && action->data().isValid() && action->data().canConvert<QModelIndex>() )
+  const QModelIndex currentIndex = mTableView->currentIndex();
+  if ( !currentIndex.isValid() )
   {
-    QModelIndex index = action->data().toModelIndex();
-    QVariant var = mMasterModel->data( index, Qt::DisplayRole );
-    QApplication::clipboard()->setText( var.toString() );
+    return;
   }
+
+  QVariant var = mMasterModel->data( currentIndex, Qt::DisplayRole );
+  QApplication::clipboard()->setText( var.toString() );
 }
 
 void QgsDualView::cancelProgress()
