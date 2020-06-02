@@ -20,6 +20,7 @@
 #include "qgsprocessingconfigurationwidgets.h"
 #include "qgsprocessingvectortilewriterlayerswidgetwrapper.h"
 #include "qgsprocessingfieldmapwidgetwrapper.h"
+#include "qgsprocessingaggregatewidgetwrapper.h"
 #include "qgsprocessingwidgetwrapperimpl.h"
 #include "qgsprocessingparameters.h"
 #include "qgis.h"
@@ -68,6 +69,7 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingFileDestinationWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingFolderDestinationWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingFieldMapWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingAggregateWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()
