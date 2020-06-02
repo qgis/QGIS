@@ -610,7 +610,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     if ( !allowBatchInserts )
     {
       QString sqlIdentity = QStringLiteral( "SELECT CURRENT_IDENTITY_VALUE() \"current identity value\" FROM %1.%2" ).arg( QgsHanaUtils::quotedIdentifier( mSchemaName ), QgsHanaUtils::quotedIdentifier( mTableName ) );
-      stmtIdentityValue = conn->prepareStatement( QgsHanaUtils::toQueryString( sql ) );
+      stmtIdentityValue = conn->prepareStatement( QgsHanaUtils::toQueryString( sqlIdentity ) );
     }
 
     for ( auto &feature : flist )
