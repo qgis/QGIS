@@ -245,6 +245,8 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
   private slots:
     void onCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
+    //! Handles updating the viewport to avoid flicker
+    void onHorizontalScroll( int value );
 
   protected:
     //! helper class with default actions. Lazily initialized.
