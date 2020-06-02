@@ -451,6 +451,7 @@
 %Include auto_generated/processing/qgsprocessingcontext.sip
 %Include auto_generated/processing/qgsprocessingfeedback.sip
 %Include auto_generated/processing/qgsprocessingoutputs.sip
+%Include auto_generated/processing/qgsprocessingparameteraggregate.sip
 %Include auto_generated/processing/qgsprocessingparameterfieldmap.sip
 %Include auto_generated/processing/qgsprocessingparameters.sip
 %Include auto_generated/processing/qgsprocessingparametertype.sip

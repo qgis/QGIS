@@ -49,6 +49,7 @@
 #include "qgscoordinatetransformcontext.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsprocessingparameterfieldmap.h"
+#include "qgsprocessingparameteraggregate.h"
 
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {
@@ -598,6 +599,7 @@ class TestQgsProcessing: public QObject
     void parameterDatabaseSchema();
     void parameterDatabaseTable();
     void parameterFieldMapping();
+    void parameterAggregate();
     void checkParamValues();
     void combineLayerExtent();
     void processingFeatureSource();
@@ -7659,6 +7661,76 @@ void TestQgsProcessing::parameterFieldMapping()
 
   pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterFieldMapping('non_optional', '', parentLayerParameterName='parent', optional=True)" ) );
+}
+
+void TestQgsProcessing::parameterAggregate()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  std::unique_ptr< QgsProcessingParameterAggregate > def( new QgsProcessingParameterAggregate( "non_optional", QString(), QStringLiteral( "parent" ), false ) );
+  QVERIFY( !def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() ) );
+  QVariantMap map;
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << map ) );
+  map.insert( QStringLiteral( "name" ), QStringLiteral( "n" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << map ) );
+  map.insert( QStringLiteral( "type" ), QStringLiteral( "t" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << map ) );
+  map.insert( QStringLiteral( "aggregate" ), QStringLiteral( "e" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << map ) );
+  map.insert( QStringLiteral( "input" ), QStringLiteral( "i" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() << map ) );
+  QVariantMap map2;
+  map2.insert( QStringLiteral( "name" ), QStringLiteral( "n2" ) );
+  map2.insert( QStringLiteral( "type" ), QStringLiteral( "t2" ) );
+  map2.insert( QStringLiteral( "aggregate" ), QStringLiteral( "e2" ) );
+  map2.insert( QStringLiteral( "input" ), QStringLiteral( "i2" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() << map << map2 ) );
+
+  QVariantMap params;
+  params.insert( "non_optional", QVariantList() << map << map2 );
+
+  QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
+  QCOMPARE( def->valueAsPythonString( 5, context ), QStringLiteral( "5" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "abc" ), context ), QStringLiteral( "'abc'" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "abc\ndef" ), context ), QStringLiteral( "'abc\\ndef'" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant( QVariantList() << map << map2 ), context ), QStringLiteral( "[{'aggregate': 'e','input': 'i','name': 'n','type': 't'},{'aggregate': 'e2','input': 'i2','name': 'n2','type': 't2'}]" ) );
+
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterAggregate('non_optional', '', parentLayerParameterName='parent')" ) );
+
+  QVariantMap mapDef = def->toVariantMap();
+  QgsProcessingParameterAggregate fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( mapDef ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap.parentLayerParameterName(), def->parentLayerParameterName() );
+  def.reset( dynamic_cast< QgsProcessingParameterAggregate *>( QgsProcessingParameters::parameterFromVariantMap( mapDef ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterAggregate *>( def.get() ) );
+
+  def->setParentLayerParameterName( QString() );
+  QVERIFY( def->dependsOnOtherParameters().isEmpty() );
+  def->setParentLayerParameterName( QStringLiteral( "test_layer" ) );
+  QCOMPARE( def->dependsOnOtherParameters(), QStringList() << QStringLiteral( "test_layer" ) );
+
+
+  // optional
+  def.reset( new QgsProcessingParameterAggregate( "non_optional", QString(), QStringLiteral( "parent" ), true ) );
+  QVERIFY( !def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() << map << map2 ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterAggregate('non_optional', '', parentLayerParameterName='parent', optional=True)" ) );
 }
 
 void TestQgsProcessing::parameterDateTime()
