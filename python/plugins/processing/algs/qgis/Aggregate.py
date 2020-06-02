@@ -35,6 +35,7 @@ from qgis.core import (
     QgsProcessingParameterExpression,
     QgsProcessingParameterFeatureSink,
     QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterAggregate,
     QgsProcessingException,
     QgsProcessingUtils,
     QgsWkbTypes,
@@ -72,50 +73,8 @@ class Aggregate(QgisAlgorithm):
                                                            optional=False,
                                                            parentLayerParameterName=self.INPUT))
 
-        class ParameterAggregates(QgsProcessingParameterDefinition):
-
-            def __init__(self, name, description, parentLayerParameterName='INPUT'):
-                super().__init__(name, description)
-                self._parentLayerParameter = parentLayerParameterName
-
-            def clone(self):
-                copy = ParameterAggregates(self.name(), self.description(), self._parentLayerParameter)
-                return copy
-
-            def type(self):
-                return 'aggregates'
-
-            def checkValueIsAcceptable(self, value, context=None):
-                if not isinstance(value, list):
-                    return False
-                for field_def in value:
-                    if not isinstance(field_def, dict):
-                        return False
-                    if not field_def.get('input', False):
-                        return False
-                    if not field_def.get('aggregate', False):
-                        return False
-                    if not field_def.get('name', False):
-                        return False
-                    if not field_def.get('type', False):
-                        return False
-                return True
-
-            def valueAsPythonString(self, value, context):
-                return str(value)
-
-            def asScriptCode(self):
-                raise NotImplementedError()
-
-            @classmethod
-            def fromScriptCode(cls, name, description, isOptional, definition):
-                raise NotImplementedError()
-
-            def parentLayerParameter(self):
-                return self._parentLayerParameter
-
-        self.addParameter(ParameterAggregates(self.AGGREGATES,
-                                              description=self.tr('Aggregates')))
+        self.addParameter(QgsProcessingParameterAggregate(self.AGGREGATES,
+                                                          description=self.tr('Aggregates'), parentLayerParameterName='INPUT'))
         self.parameterDefinition(self.AGGREGATES).setMetadata({
             'widget_wrapper': 'processing.algs.qgis.ui.AggregatesPanel.AggregatesWidgetWrapper'
         })
