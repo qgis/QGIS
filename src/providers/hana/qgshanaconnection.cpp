@@ -258,36 +258,43 @@ const QString &QgsHanaConnection::getUserName()
 QgsCoordinateReferenceSystem QgsHanaConnection::getCrs( int srid )
 {
   QgsCoordinateReferenceSystem crs;
-
   const char *sql = "SELECT ORGANIZATION, ORGANIZATION_COORDSYS_ID, DEFINITION, TRANSFORM_DEFINITION FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS WHERE SRS_ID = ?";
-  PreparedStatementRef stmt = mConnection->prepareStatement( sql );
-  stmt->setInt( 1, Int( srid ) );
-  ResultSetRef rsSrs = stmt->executeQuery();
 
-  if ( rsSrs->next() )
+  try
   {
-    auto organization = rsSrs->getNString( 1 );
-    if ( !organization.isNull() )
-    {
-      QString srid = QStringLiteral( "%1:%2" ).arg( QgsHanaUtils::toQString( organization ).toLower(), QString::number( *rsSrs->getInt( 2 ) ) );
-      crs.createFromString( srid );
-    }
+    PreparedStatementRef stmt = mConnection->prepareStatement( sql );
+    stmt->setInt( 1, Int( srid ) );
+    ResultSetRef rsSrs = stmt->executeQuery();
 
-    if ( !crs.isValid() )
+    if ( rsSrs->next() )
     {
-      auto wkt = rsSrs->getNString( 3 );
-      if ( !wkt.isNull() )
-        crs = QgsCoordinateReferenceSystem::fromWkt( QgsHanaUtils::toQString( wkt ) );
+      auto organization = rsSrs->getNString( 1 );
+      if ( !organization.isNull() )
+      {
+        QString srid = QStringLiteral( "%1:%2" ).arg( QgsHanaUtils::toQString( organization ).toLower(), QString::number( *rsSrs->getInt( 2 ) ) );
+        crs.createFromString( srid );
+      }
 
       if ( !crs.isValid() )
       {
-        auto proj = rsSrs->getNString( 4 );
-        if ( !proj.isNull() )
-          crs = QgsCoordinateReferenceSystem::fromProj( QgsHanaUtils::toQString( proj ) );
+        auto wkt = rsSrs->getNString( 3 );
+        if ( !wkt.isNull() )
+          crs = QgsCoordinateReferenceSystem::fromWkt( QgsHanaUtils::toQString( wkt ) );
+
+        if ( !crs.isValid() )
+        {
+          auto proj = rsSrs->getNString( 4 );
+          if ( !proj.isNull() )
+            crs = QgsCoordinateReferenceSystem::fromProj( QgsHanaUtils::toQString( proj ) );
+        }
       }
     }
+    rsSrs->close();
   }
-  rsSrs->close();
+  catch ( const Exception &ex )
+  {
+    throw QgsHanaException( ex.what() );
+  }
 
   return crs;
 }
