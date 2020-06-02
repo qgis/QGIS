@@ -634,9 +634,14 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         return sql
 
     def _getExecutableSqlQuery(self):
+<<<<<<< HEAD
         sql = self._getSqlQuery()
+=======
+        sql = self._getSqlQuery().strip()
+>>>>>>> 9729a43df7... Merge pull request #36828 from m-kuhn/followup_36823
 
         uncommented_sql = check_comments_in_sql(sql)
+        uncommented_sql = uncommented_sql.rstrip(';')
         return uncommented_sql
 
     def uniqueChanged(self):
