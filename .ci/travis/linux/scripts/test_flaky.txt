@@ -8,6 +8,5 @@ qgis_ziplayertest
 # the docker base image is upgraded
 PyQgsMssqlProvider
 
-# Flacky
+# Flaky
 PyQgsPostgresRasterProvider
-
