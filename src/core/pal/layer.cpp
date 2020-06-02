@@ -35,6 +35,7 @@
 #include "geomfunction.h"
 #include "util.h"
 #include "qgslabelingengine.h"
+#include "qgslogger.h"
 
 #include <cmath>
 #include <vector>
@@ -212,9 +213,17 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
     {
       const GEOSGeometry *geom = simpleGeometries->takeFirst();
 
+      if ( !geom )
+      {
+        QgsDebugMsg( QStringLiteral( "Obstacle geometry passed to PAL labeling engine could not be converted to GEOS! %1" ).arg( ( *it )->asWkt() ) );
+        continue;
+      }
+
       // ignore invalid geometries (e.g. polygons with self-intersecting rings)
       if ( GEOSisValid_r( geosctxt, geom ) != 1 ) // 0=invalid, 1=valid, 2=exception
       {
+        // this shouldn't happen -- we have already checked this while registering the feature
+        QgsDebugMsg( QStringLiteral( "Obstacle geometry passed to PAL labeling engine is not valid! %1" ).arg( ( *it )->asWkt() ) );
         continue;
       }
 
