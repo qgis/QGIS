@@ -75,9 +75,6 @@ class Aggregate(QgisAlgorithm):
 
         self.addParameter(QgsProcessingParameterAggregate(self.AGGREGATES,
                                                           description=self.tr('Aggregates'), parentLayerParameterName='INPUT'))
-        self.parameterDefinition(self.AGGREGATES).setMetadata({
-            'widget_wrapper': 'processing.algs.qgis.ui.AggregatesPanel.AggregatesWidgetWrapper'
-        })
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
                                                             self.tr('Aggregated')))

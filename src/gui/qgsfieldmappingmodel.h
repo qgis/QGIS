@@ -90,7 +90,7 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
     void setDestinationEditable( bool editable );
 
     //! Returns a static map of supported data types
-    const QMap<QVariant::Type, QString> dataTypes() const;
+    static const QMap<QVariant::Type, QString> dataTypes();
 
     //! Returns a list of source fields
     QgsFields sourceFields() const;
@@ -192,6 +192,8 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
     bool mDestinationEditable = false;
     QgsFields mSourceFields;
     std::unique_ptr<ExpressionContextGenerator> mExpressionContextGenerator;
+
+    friend class QgsAggregateMappingModel;
 
 };
 

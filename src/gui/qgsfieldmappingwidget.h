@@ -21,8 +21,11 @@
 #include <QStyledItemDelegate>
 
 #include "qgis_gui.h"
-#include "ui_qgsfieldmappingwidget.h"
 #include "qgsfieldmappingmodel.h"
+#include "qgspanelwidget.h"
+
+class QTableView;
+class QItemSelectionModel;
 
 /**
  * \ingroup gui
@@ -31,7 +34,7 @@
  * "destination" fields.
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget, private Ui::QgsFieldMappingWidget
+class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
 {
     Q_OBJECT
 
@@ -117,15 +120,16 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget, private Ui::QgsF
     //! Removes the currently selected field from the model
     bool removeSelectedFields( );
 
-    //! Moves down currently selected field
+    //! Moves up currently selected field
     bool moveSelectedFieldsUp( );
 
-    //! Moves up the currently selected field
+    //! Moves down the currently selected field
     bool moveSelectedFieldsDown( );
 
   private:
 
-    QAbstractTableModel *mModel;
+    QTableView *mTableView = nullptr;
+    QAbstractTableModel *mModel = nullptr;
     void updateColumns();
     //! Returns selected row indexes in ascending order
     std::list<int> selectedRows( );
@@ -155,6 +159,8 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget, private Ui::QgsF
         void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
         void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
     };
+
+    friend class QgsAggregateMappingWidget;
 
 };
 
