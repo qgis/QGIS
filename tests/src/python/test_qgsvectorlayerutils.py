@@ -31,6 +31,7 @@ from qgis.core import (QgsProject,
                        QgsMemoryProviderUtils,
                        QgsWkbTypes,
                        QgsCoordinateReferenceSystem,
+                       QgsVectorLayerJoinInfo,
                        NULL
                        )
 from qgis.testing import start_app, unittest
@@ -92,6 +93,43 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         self.assertFalse(QgsVectorLayerUtils.valueExists(layer, 1, 125, [3]))
         self.assertFalse(QgsVectorLayerUtils.valueExists(layer, 1, 125, [99999, 3]))
         self.assertFalse(QgsVectorLayerUtils.valueExists(layer, 1, 125, [2, 4, 5, 3]))
+
+    def test_value_exists_joins(self):
+        """Test that unique values in fields from joined layers, see GH #36167"""
+
+        p = QgsProject()
+        main_layer = QgsVectorLayer("Point?field=fid:integer",
+                                    "main_layer", "memory")
+        self.assertTrue(main_layer.isValid())
+        # Attr layer is joined with layer on fk ->
+        attr_layer = QgsVectorLayer("Point?field=id:integer&field=fk:integer",
+                                    "attr_layer", "memory")
+        self.assertTrue(attr_layer.isValid())
+
+        p.addMapLayers([main_layer, attr_layer])
+        join_info = QgsVectorLayerJoinInfo()
+        join_info.setJoinLayer(attr_layer)
+        join_info.setJoinFieldName('fk')
+        join_info.setTargetFieldName('fid')
+        join_info.setUsingMemoryCache(True)
+        main_layer.addJoin(join_info)
+        main_layer.updateFields()
+        join_buffer = main_layer.joinBuffer()
+        self.assertTrue(join_buffer.containsJoins())
+        self.assertEqual(main_layer.fields().names(), ['fid', 'attr_layer_id'])
+
+        f = QgsFeature(main_layer.fields())
+        f.setAttributes([1])
+        main_layer.dataProvider().addFeatures([f])
+
+        f = QgsFeature(attr_layer.fields())
+        f.setAttributes([1, 1])
+        attr_layer.dataProvider().addFeatures([f])
+
+        self.assertTrue(QgsVectorLayerUtils.valueExists(main_layer, 0, 1))
+        self.assertTrue(QgsVectorLayerUtils.valueExists(main_layer, 1, 1))
+        self.assertFalse(QgsVectorLayerUtils.valueExists(main_layer, 0, 2))
+        self.assertFalse(QgsVectorLayerUtils.valueExists(main_layer, 1, 2))
 
     def test_validate_attribute(self):
         """ test validating attributes against constraints """
