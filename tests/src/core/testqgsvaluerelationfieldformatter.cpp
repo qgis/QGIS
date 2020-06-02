@@ -21,6 +21,7 @@
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgsfieldformatterregistry.h"
+#include "qgsvectorlayer.h"
 
 
 //header for class being tested
