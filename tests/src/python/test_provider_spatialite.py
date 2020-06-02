@@ -1023,7 +1023,6 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
 
         con.close()
 
-
     def testLoadStyle(self):
         """Check that we can store and load a style"""
 
