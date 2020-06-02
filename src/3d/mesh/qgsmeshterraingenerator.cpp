@@ -54,8 +54,7 @@ Qt3DCore::QEntity *QgsMeshTerrainTileLoader::createEntity( Qt3DCore::QEntity *pa
 
 QgsChunkLoader *QgsMeshTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {
-  if ( !mLayer )
-    return nullptr;
+  Q_ASSERT( meshLayer() );
 
   return new QgsMeshTerrainTileLoader( mTerrain, node, meshLayer(), symbol() );
 }
