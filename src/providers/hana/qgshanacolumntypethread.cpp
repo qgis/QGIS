@@ -17,38 +17,25 @@
 #include "qgshanacolumntypethread.h"
 #include "qgshanaconnection.h"
 #include "qgshanautils.h"
-#include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include <mutex>
+#include "qgslogger.h"
 
 QgsHanaColumnTypeThread::QgsHanaColumnTypeThread( const QString &connName, const QgsDataSourceUri &uri, bool allowGeometrylessTables, bool userTablesOnly )
   : mConnectionName( connName )
   , mUri( uri )
   , mAllowGeometrylessTables( allowGeometrylessTables )
   , mUserTablesOnly( userTablesOnly )
-  , mStopped( false )
 {
-  static std::once_flag initialized;
-  std::call_once( initialized, [ = ]( )
-  {
-    qRegisterMetaType<QgsHanaLayerProperty>( "QgsHanaLayerProperty" );
-  } );
-}
-
-void QgsHanaColumnTypeThread::stop()
-{
-  mStopped = true;
+  static int initialized = qRegisterMetaType<QgsHanaLayerProperty>( "QgsHanaLayerProperty" );
+  Q_UNUSED( initialized )
 }
 
 void QgsHanaColumnTypeThread::run()
 {
-  mStopped = false;
-
   QgsHanaConnectionRef conn( mUri );
   if ( conn.isNull() )
   {
     QgsDebugMsg( "Connection failed - " + conn->connInfo() );
-    mStopped = true;
     return;
   }
 
@@ -71,7 +58,7 @@ void QgsHanaColumnTypeThread::run()
 
   for ( int i = 0; i < totalLayers; ++i )
   {
-    if ( mStopped )
+    if ( isInterruptionRequested() )
       break;
 
     QgsHanaLayerProperty &layerProperty = layerProperties[i];
@@ -84,7 +71,7 @@ void QgsHanaColumnTypeThread::run()
   }
 
   emit progress( 0, 0 );
-  if ( mStopped )
+  if ( isInterruptionRequested() )
     emit progressMessage( tr( "Table retrieval stopped." ) );
   else
     emit progressMessage( tr( "Table retrieval finished." ) );

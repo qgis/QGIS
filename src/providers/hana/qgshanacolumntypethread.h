@@ -39,17 +39,11 @@ class QgsHanaColumnTypeThread : public QThread
     void progress( int, int );
     void progressMessage( const QString & );
 
-  public slots:
-    void stop();
-
   private:
-    QgsHanaColumnTypeThread() = default;
-
     const QString mConnectionName;
     const QgsDataSourceUri mUri;
     const bool mAllowGeometrylessTables;
     const bool mUserTablesOnly;
-    bool mStopped = false;
 };
 
 #endif  // QGSHANACOLUMNTYPETHREAD_H

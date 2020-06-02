@@ -467,7 +467,8 @@ QgsHanaSourceSelect::~QgsHanaSourceSelect()
 {
   if ( mColumnTypeThread )
   {
-    mColumnTypeThread->stop();
+    mColumnTypeThread->requestInterruption();
+    mColumnTypeThread->wait();
     finishList();
   }
 
@@ -532,7 +533,8 @@ void QgsHanaSourceSelect::btnConnect_clicked()
 
   if ( mColumnTypeThread )
   {
-    mColumnTypeThread->stop();
+    mColumnTypeThread->requestInterruption();
+    mColumnTypeThread->wait();
     return;
   }
 
