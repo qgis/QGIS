@@ -208,6 +208,7 @@ void QgsProcessingLayerOutputDestinationWidget::registerProcessingParametersGene
 
 void QgsProcessingLayerOutputDestinationWidget::addOpenAfterRunningOption()
 {
+  Q_ASSERT( mOpenAfterRunningCheck == nullptr );
   mOpenAfterRunningCheck = new QCheckBox( tr( "Open output file after running algorithm" ) );
   mOpenAfterRunningCheck->setChecked( !outputIsSkipped() );
   mOpenAfterRunningCheck->setEnabled( !outputIsSkipped() );

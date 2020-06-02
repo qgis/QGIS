@@ -41,6 +41,13 @@ Alternative constructor.
 
 
 
+    void clearCachedData( QgsLayerTreeNode *node ) const;
+%Docstring
+Clears any previously cached data for the specified ``node``.
+
+.. versionadded:: 3.14
+%End
+
   signals:
 
     void refreshLegend();

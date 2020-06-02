@@ -81,8 +81,8 @@ QgsGeometry::QgsGeometry( std::unique_ptr<QgsAbstractGeometry> geom )
 }
 
 QgsGeometry::QgsGeometry( const QgsGeometry &other )
+  : d( other.d )
 {
-  d = other.d;
   mLastError = other.mLastError;
   d->ref.ref();
 }

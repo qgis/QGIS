@@ -359,7 +359,7 @@ void QgsAttributeTableView::contextMenuEvent( QContextMenuEvent *event )
   delete mActionPopup;
   mActionPopup = nullptr;
 
-  QModelIndex idx = indexAt( event->pos() );
+  const QModelIndex idx = mFilterModel->mapToMaster( indexAt( event->pos() ) );
   if ( !idx.isValid() )
   {
     return;
@@ -371,7 +371,9 @@ void QgsAttributeTableView::contextMenuEvent( QContextMenuEvent *event )
 
   mActionPopup = new QMenu( this );
 
-  mActionPopup->addAction( tr( "Select All" ), this, SLOT( selectAll() ), QKeySequence::SelectAll );
+  QAction *selectAllAction = mActionPopup->addAction( tr( "Select All" ) );
+  selectAllAction->setShortcut( QKeySequence::SelectAll );
+  connect( selectAllAction, &QAction::triggered, this, &QgsAttributeTableView::selectAll );
 
   // let some other parts of the application add some actions
   emit willShowContextMenu( mActionPopup, idx );

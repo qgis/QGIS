@@ -354,6 +354,15 @@ Called after all wrappers have been created within a particular dialog or contex
 allowing the wrapper to connect to the wrappers of other, related parameters.
 %End
 
+    virtual int stretch() const;
+%Docstring
+Returns the Qt layout "stretch" factor to use when adding this widget to a layout.
+
+The default implementation returns 0.
+
+.. versionadded:: 3.14
+%End
+
     virtual QgsExpressionContext createExpressionContext() const;
 
 

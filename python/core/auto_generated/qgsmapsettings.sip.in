@@ -157,11 +157,12 @@ Default value is 96
 Sets DPI used for conversion between real world units (e.g. mm) and pixels
 %End
 
-    void setMagnificationFactor( double factor );
+    void setMagnificationFactor( double factor, const QgsPointXY *center = 0 );
 %Docstring
 Set the magnification factor.
 
 :param factor: the factor of magnification
+:param center: optional point to re-center the map
 
 .. seealso:: :py:func:`magnificationFactor`
 

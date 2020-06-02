@@ -601,12 +601,12 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
       if ( couldBeInt[i] )
       {
-        value.toInt( &couldBeInt[i] );
+        ( void )value.toInt( &couldBeInt[i] );
       }
 
       if ( couldBeLongLong[i] && ! couldBeInt[i] )
       {
-        value.toLongLong( &couldBeLongLong[i] );
+        ( void )value.toLongLong( &couldBeLongLong[i] );
       }
 
       if ( couldBeDouble[i] && ! couldBeLongLong[i] )
@@ -615,7 +615,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
         {
           value.replace( mDecimalPoint, QLatin1String( "." ) );
         }
-        value.toDouble( &couldBeDouble[i] );
+        ( void )value.toDouble( &couldBeDouble[i] );
       }
     }
   }

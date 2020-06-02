@@ -94,6 +94,19 @@ corresponding expression.
 Scroll the fields view to ``index``
 %End
 
+    void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
+%Docstring
+Register an expression context ``generator`` class that will be used to retrieve
+an expression context for the widget.
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when the fields defined in the widget are changed.
+%End
+
   public slots:
 
     void appendField( const QgsField &field, const QString &expression = QString() );

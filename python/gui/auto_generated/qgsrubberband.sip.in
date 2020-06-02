@@ -184,7 +184,7 @@ Sets the representation type according to geometryType.
 :param geometryType: Defines how the data should be drawn onto the screen. (Use Qgis.Line, Qgis.Polygon or Qgis.Point)
 %End
 
-    void addPoint( const QgsPointXY &p, bool doUpdate = true, int geometryIndex = 0 );
+    void addPoint( const QgsPointXY &p, bool doUpdate = true, int geometryIndex = 0, int ringIndex = 0 );
 %Docstring
 Adds a vertex to the rubberband and update canvas.
 The rendering of the vertex depends on the current GeometryType and icon.
@@ -193,40 +193,43 @@ If adding more points consider using update=``False`` for better performance
 :param p: The vertex/point to add
 :param doUpdate: Should the map canvas be updated immediately?
 :param geometryIndex: The index of the feature part (in case of multipart geometries)
+:param ringIndex: The index of the polygon ring (in case of polygons with holes)
 %End
 
-    void closePoints( bool doUpdate = true, int geometryIndex = 0 );
+    void closePoints( bool doUpdate = true, int geometryIndex = 0, int ringIndex = 0 );
 %Docstring
 Ensures that a polygon geometry is closed and that the last vertex equals the
 first vertex.
 
 :param doUpdate: set to ``True`` to update the map canvas immediately
-:param geometryIndex: index of the feature part (in case of multipart geometries)
+:param geometryIndex: The index of the feature part (in case of multipart geometries)
+:param ringIndex: The index of the polygon ring (in case of polygons with holes)
 
 .. versionadded:: 2.16
 %End
 
-    void removePoint( int index = 0, bool doUpdate = true, int geometryIndex = 0 );
+    void removePoint( int index = 0, bool doUpdate = true, int geometryIndex = 0, int ringIndex = 0 );
 %Docstring
 Removes a vertex from the rubberband and (optionally) updates canvas.
 
 :param index: The index of the vertex/point to remove, negative indexes start at end
 :param doUpdate: Should the map canvas be updated immediately?
 :param geometryIndex: The index of the feature part (in case of multipart geometries)
+:param ringIndex: The index of the polygon ring (in case of polygons with holes)
 %End
 
-    void removeLastPoint( int geometryIndex = 0, bool doUpdate = true );
+    void removeLastPoint( int geometryIndex = 0, bool doUpdate = true, int ringIndex = 0 );
 %Docstring
 Removes the last point. Most useful in connection with undo operations
 %End
 
-    void movePoint( const QgsPointXY &p, int geometryIndex = 0 );
+    void movePoint( const QgsPointXY &p, int geometryIndex = 0, int ringIndex = 0 );
 %Docstring
 Moves the rubber band point specified by index. Note that if the rubber band is
 not used to track the last mouse position, the first point of the rubber band has two vertices
 %End
 
-    void movePoint( int index, const QgsPointXY &p, int geometryIndex = 0 );
+    void movePoint( int index, const QgsPointXY &p, int geometryIndex = 0, int ringIndex = 0 );
 %Docstring
 Moves the rubber band point specified by index. Note that if the rubber band is
 not used to track the last mouse position, the first point of the rubber band has two vertices
@@ -315,12 +318,14 @@ Returns count of vertices in all lists of mPoint
 :return: The total number of vertices
 %End
 
-    const QgsPointXY *getPoint( int i, int j = 0 ) const;
+
+    const QgsPointXY *getPoint( int i, int j = 0, int ringIndex = 0 ) const;
 %Docstring
 Returns a vertex
 
 :param i: The geometry index
-:param j: The vertex index within geometry i
+:param j: The vertex index within ring ringIndex
+:param ringIndex: The ring index within geometry i
 %End
 
     QgsGeometry asGeometry() const;
@@ -349,6 +354,14 @@ Draws shape of the rubber band.
 
 :param p: The QPainter object
 :param pts: A list of points used to draw the shape
+%End
+
+    void drawShape( QPainter *p, const QVector<QPolygonF> &rings );
+%Docstring
+Draws shape of the rubber band.
+
+:param p: The QPainter object
+:param rings: A list of points used to draw the shape
 %End
 
     void updateRect();

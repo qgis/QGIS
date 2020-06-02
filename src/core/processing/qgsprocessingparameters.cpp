@@ -1959,6 +1959,7 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
     def.reset( new QgsProcessingParameterColor( name ) );
   else if ( type == QgsProcessingParameterCoordinateOperation::typeName() )
     def.reset( new QgsProcessingParameterCoordinateOperation( name ) );
+  else
   {
     QgsProcessingParameterType *paramType = QgsApplication::instance()->processingRegistry()->parameterType( type );
     if ( paramType )

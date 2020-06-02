@@ -2387,6 +2387,19 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
             self.assertFalse(l.dataProvider().addFeatures([f1, f2]),
                              'Provider reported no AddFeatures capability, but returned true to addFeatures')
 
+    def testDuplicatedFieldNamesInQueryLayers(self):
+        """Test regresssion GH #36205"""
+
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'__rid__\' table="(SELECT row_number() OVER () AS __rid__, * FROM (SELECT *  from qgis_test.some_poly_data a, qgis_test.some_poly_data b  where  ST_Intersects(a.geom,b.geom)) as foo)" sql=', 'test_36205', 'postgres')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 3)
+
+        # This fails because the "geom" field and "pk" fields are ambiguous
+        # There is no easy fix: all duplicated fields should be explicitly aliased
+        # and the query internally rewritten
+        # feature = next(vl.getFeatures())
+        # self.assertTrue(vl.isValid())
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -688,7 +688,7 @@ double QgsRasterTransparencyWidget::transparencyCellValue( int row, int column )
   QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( tableTransparency->cellWidget( row, column ) );
   if ( !lineEdit || lineEdit->text().isEmpty() )
   {
-    std::numeric_limits<double>::quiet_NaN();
+    return std::numeric_limits<double>::quiet_NaN();
   }
   return lineEdit->text().toDouble();
 

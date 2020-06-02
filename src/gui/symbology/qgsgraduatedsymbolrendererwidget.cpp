@@ -935,7 +935,7 @@ void QgsGraduatedSymbolRendererWidget::applyChangeToSymbol()
 
   QItemSelectionModel *m = viewGraduated->selectionModel();
   QModelIndexList selectedIndexes = m->selectedRows( 1 );
-  if ( m && !selectedIndexes.isEmpty() )
+  if ( !selectedIndexes.isEmpty() )
   {
     const auto constSelectedIndexes = selectedIndexes;
     for ( const QModelIndex &idx : constSelectedIndexes )
@@ -1026,7 +1026,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 
   // If complexity >= oN^2, warn for big dataset (more than 50k records)
   // and give the user the chance to cancel
-  if ( method && method->codeComplexity() > 1 && mLayer->featureCount() > 50000 )
+  if ( method->codeComplexity() > 1 && mLayer->featureCount() > 50000 )
   {
     if ( QMessageBox::Cancel == QMessageBox::question( this, tr( "Apply Classification" ), tr( "Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.\nPress cancel to abort breaks calculation or OK to continue." ), QMessageBox::Cancel, QMessageBox::Ok ) )
     {
@@ -1304,7 +1304,7 @@ QList<QgsSymbol *> QgsGraduatedSymbolRendererWidget::selectedSymbols()
 
   QItemSelectionModel *m = viewGraduated->selectionModel();
   QModelIndexList selectedIndexes = m->selectedRows( 1 );
-  if ( m && !selectedIndexes.isEmpty() )
+  if ( !selectedIndexes.isEmpty() )
   {
     const QgsRangeList &ranges = mRenderer->ranges();
     QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();

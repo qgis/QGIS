@@ -438,7 +438,7 @@ void QgsAttributesFormProperties::loadAttributeContainerEdit()
     return;
 
   QTreeWidgetItem *currentItem = mFormLayoutTree->selectedItems().at( 0 );
-  mAttributeContainerEdit = new QgsAttributeFormContainerEdit( currentItem, this );
+  mAttributeContainerEdit = new QgsAttributeFormContainerEdit( currentItem, mLayer, this );
   mAttributeContainerEdit->registerExpressionContextGenerator( this );
   mAttributeContainerEdit->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributeTypeFrame->layout()->setContentsMargins( 0, 0, 0, 0 );

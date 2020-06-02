@@ -2005,64 +2005,64 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
     tr( "Title" ) %
     QStringLiteral( "</td>"
                     "<td>" ) %
-    layer.title;
-  QStringLiteral( "</td></tr>"
+    layer.title %
+    QStringLiteral( "</td></tr>"
 
-                  // Layer Abstract
-                  "<tr><td>" ) %
-  tr( "Abstract" ) %
-  QStringLiteral( "</td>"
-                  "<td>" ) %
-  layer.abstract;
-  QStringLiteral( "</td></tr>"
+                    // Layer Abstract
+                    "<tr><td>" ) %
+    tr( "Abstract" ) %
+    QStringLiteral( "</td>"
+                    "<td>" ) %
+    layer.abstract %
+    QStringLiteral( "</td></tr>"
 
-                  // Layer Queryability
-                  "<tr><td>" ) %
-  tr( "Can Identify" ) %
-  QStringLiteral( "</td>"
-                  "<td>" ) %
-  ( layer.queryable ? tr( "Yes" ) : tr( "No" ) ) %
-  QStringLiteral( "</td></tr>"
+                    // Layer Queryability
+                    "<tr><td>" ) %
+    tr( "Can Identify" ) %
+    QStringLiteral( "</td>"
+                    "<td>" ) %
+    ( layer.queryable ? tr( "Yes" ) : tr( "No" ) ) %
+    QStringLiteral( "</td></tr>"
 
-                  // Layer Opacity
-                  "<tr><td>" ) %
-  tr( "Can be Transparent" ) %
-  QStringLiteral( "</td>"
-                  "<td>" ) %
-  ( layer.opaque ? tr( "No" ) : tr( "Yes" ) ) %
-  QStringLiteral( "</td></tr>"
+                    // Layer Opacity
+                    "<tr><td>" ) %
+    tr( "Can be Transparent" ) %
+    QStringLiteral( "</td>"
+                    "<td>" ) %
+    ( layer.opaque ? tr( "No" ) : tr( "Yes" ) ) %
+    QStringLiteral( "</td></tr>"
 
-                  // Layer Subsetability
-                  "<tr><td>" ) %
-  tr( "Can Zoom In" ) %
-  QStringLiteral( "</td>"
-                  "<td>" ) %
-  ( layer.noSubsets ? tr( "No" ) : tr( "Yes" ) ) %
-  QStringLiteral( "</td></tr>"
+                    // Layer Subsetability
+                    "<tr><td>" ) %
+    tr( "Can Zoom In" ) %
+    QStringLiteral( "</td>"
+                    "<td>" ) %
+    ( layer.noSubsets ? tr( "No" ) : tr( "Yes" ) ) %
+    QStringLiteral( "</td></tr>"
 
-                  // Layer Server Cascade Count
-                  "<tr><td>" ) %
-  tr( "Cascade Count" ) %
-  QStringLiteral( "</td>"
-                  "<td>" ) %
-  QString::number( layer.cascaded );
-  QStringLiteral( "</td></tr>"
+                    // Layer Server Cascade Count
+                    "<tr><td>" ) %
+    tr( "Cascade Count" ) %
+    QStringLiteral( "</td>"
+                    "<td>" ) %
+    QString::number( layer.cascaded ) %
+    QStringLiteral( "</td></tr>"
 
-                  // Layer Fixed Width
-                  "<tr><td>" ) %
-  tr( "Fixed Width" ) %
-  QStringLiteral( "</td>"
-                  "<td>" ) %
-  QString::number( layer.fixedWidth );
-  QStringLiteral( "</td></tr>"
+                    // Layer Fixed Width
+                    "<tr><td>" ) %
+    tr( "Fixed Width" ) %
+    QStringLiteral( "</td>"
+                    "<td>" ) %
+    QString::number( layer.fixedWidth ) %
+    QStringLiteral( "</td></tr>"
 
-                  // Layer Fixed Height
-                  "<tr><td>" ) %
-  tr( "Fixed Height" ) %
-  QStringLiteral( "</td>"
-                  "<td>" ) %
-  QString::number( layer.fixedHeight ) %
-  QStringLiteral( "</td></tr>" );
+                    // Layer Fixed Height
+                    "<tr><td>" ) %
+    tr( "Fixed Height" ) %
+    QStringLiteral( "</td>"
+                    "<td>" ) %
+    QString::number( layer.fixedHeight ) %
+    QStringLiteral( "</td></tr>" );
 
   // Dimensions
   if ( !layer.dimensions.isEmpty() )

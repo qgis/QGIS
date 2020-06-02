@@ -141,6 +141,7 @@ namespace QgsWms
       }
 #endif
 
+      // cppcheck-suppress identicalInnerCondition
       if ( !capabilitiesDocument )
       {
         capabilitiesCache->insertCapabilitiesDocument( configFilePath, cacheKey, &doc );

@@ -450,7 +450,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
 
     srid = index.sibling( index.row(), DbtmSrid ).data( Qt::DisplayRole ).toString();
     bool ok;
-    srid.toInt( &ok );
+    ( void )srid.toInt( &ok );
     if ( !ok )
     {
       QgsDebugMsg( QStringLiteral( "srid not numeric" ) );

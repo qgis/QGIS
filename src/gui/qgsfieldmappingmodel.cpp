@@ -41,7 +41,7 @@ QVariant QgsFieldMappingModel::headerData( int section, Qt::Orientation orientat
         {
           case ColumnDataIndex::SourceExpression:
           {
-            return tr( "Source expression" );
+            return tr( "Source Expression" );
           }
           case ColumnDataIndex::DestinationName:
           {
@@ -336,6 +336,11 @@ QgsExpressionContextGenerator *QgsFieldMappingModel::contextGenerator() const
   return mExpressionContextGenerator.get();
 }
 
+void QgsFieldMappingModel::setBaseExpressionContextGenerator( const QgsExpressionContextGenerator *generator )
+{
+  mExpressionContextGenerator->setBaseExpressionContextGenerator( generator );
+}
+
 void QgsFieldMappingModel::setDestinationFields( const QgsFields &destinationFields,
     const QMap<QString, QString> &expressions )
 {
@@ -496,11 +501,27 @@ QgsFieldMappingModel::ExpressionContextGenerator::ExpressionContextGenerator( co
 
 QgsExpressionContext QgsFieldMappingModel::ExpressionContextGenerator::createExpressionContext() const
 {
-  QgsExpressionContext ctx;
-  ctx.appendScope( QgsExpressionContextUtils::globalScope() );
-  ctx.setFields( *mSourceFields );
-  QgsFeature feature { *mSourceFields };
-  feature.setValid( true );
-  ctx.setFeature( feature );
-  return ctx;
+  if ( mBaseGenerator )
+  {
+    QgsExpressionContext ctx = mBaseGenerator->createExpressionContext();
+    std::unique_ptr< QgsExpressionContextScope > fieldMappingScope = qgis::make_unique< QgsExpressionContextScope >( tr( "Field Mapping" ) );
+    fieldMappingScope->setFields( *mSourceFields );
+    ctx.appendScope( fieldMappingScope.release() );
+    return ctx;
+  }
+  else
+  {
+    QgsExpressionContext ctx;
+    ctx.appendScope( QgsExpressionContextUtils::globalScope() );
+    ctx.setFields( *mSourceFields );
+    QgsFeature feature { *mSourceFields };
+    feature.setValid( true );
+    ctx.setFeature( feature );
+    return ctx;
+  }
+}
+
+void QgsFieldMappingModel::ExpressionContextGenerator::setBaseExpressionContextGenerator( const QgsExpressionContextGenerator *generator )
+{
+  mBaseGenerator = generator;
 }

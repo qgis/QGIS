@@ -83,6 +83,8 @@
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelgraphicsview.h"
 #include "qgsmodelcomponentgraphicitem.h"
+#include "qgsprocessingfieldmapwidgetwrapper.h"
+#include "qgsprocessingparameterfieldmap.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -226,6 +228,8 @@ class TestProcessingGui : public QObject
     void testProviderConnectionWrapper();
     void testDatabaseSchemaWrapper();
     void testDatabaseTableWrapper();
+    void testFieldMapWidget();
+    void testFieldMapWrapper();
     void testOutputDefinitionWidget();
     void testOutputDefinitionWidgetVectorOut();
     void testOutputDefinitionWidgetRasterOut();
@@ -7182,6 +7186,198 @@ void TestProcessingGui::testDatabaseTableWrapper()
   def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
   QVERIFY( !static_cast< QgsProcessingParameterDatabaseTable * >( def.get() )->defaultValue().isValid() );
 #endif
+}
+
+void TestProcessingGui::testFieldMapWidget()
+{
+  QgsProcessingFieldMapPanelWidget widget;
+
+  QVariantMap map;
+  map.insert( QStringLiteral( "name" ), QStringLiteral( "n" ) );
+  map.insert( QStringLiteral( "type" ), static_cast< int >( QVariant::Double ) );
+  map.insert( QStringLiteral( "length" ), 8 );
+  map.insert( QStringLiteral( "precision" ), 5 );
+  QVariantMap map2;
+  map2.insert( QStringLiteral( "name" ), QStringLiteral( "n2" ) );
+  map2.insert( QStringLiteral( "type" ), static_cast< int >( QVariant::String ) );
+  map2.insert( QStringLiteral( "expression" ), QStringLiteral( "'abc' || \"def\"" ) );
+
+  QSignalSpy spy( &widget, &QgsProcessingFieldMapPanelWidget::changed );
+  widget.setValue( QVariantList() << map << map2 );
+  QCOMPARE( spy.size(), 1 );
+
+  QCOMPARE( widget.value().toList().size(), 2 );
+  QCOMPARE( widget.value().toList().at( 0 ).toMap().value( QStringLiteral( "name" ) ).toString(), QStringLiteral( "n" ) );
+  QCOMPARE( widget.value().toList().at( 0 ).toMap().value( QStringLiteral( "type" ) ).toInt(), static_cast< int >( QVariant::Double ) );
+  QCOMPARE( widget.value().toList().at( 0 ).toMap().value( QStringLiteral( "length" ) ).toInt(), 8 );
+  QCOMPARE( widget.value().toList().at( 0 ).toMap().value( QStringLiteral( "precision" ) ).toInt(), 5 );
+  QCOMPARE( widget.value().toList().at( 0 ).toMap().value( QStringLiteral( "expression" ) ).toString(), QString() );
+  QCOMPARE( widget.value().toList().at( 1 ).toMap().value( QStringLiteral( "name" ) ).toString(), QStringLiteral( "n2" ) );
+  QCOMPARE( widget.value().toList().at( 1 ).toMap().value( QStringLiteral( "type" ) ).toInt(), static_cast< int >( QVariant::String ) );
+  QCOMPARE( widget.value().toList().at( 1 ).toMap().value( QStringLiteral( "expression" ) ).toString(), QStringLiteral( "'abc' || \"def\"" ) );
+}
+
+void TestProcessingGui::testFieldMapWrapper()
+{
+  const QgsProcessingAlgorithm *centroidAlg = QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:centroids" ) );
+  const QgsProcessingParameterDefinition *layerDef = centroidAlg->parameterDefinition( QStringLiteral( "INPUT" ) );
+
+  auto testWrapper = [layerDef]( QgsProcessingGui::WidgetType type )
+  {
+    QgsProcessingParameterFieldMapping param( QStringLiteral( "mapping" ), QStringLiteral( "mapping" ) );
+
+    QgsProcessingFieldMapWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QVariantMap map;
+    map.insert( QStringLiteral( "name" ), QStringLiteral( "n" ) );
+    map.insert( QStringLiteral( "type" ), static_cast< int >( QVariant::Double ) );
+    map.insert( QStringLiteral( "length" ), 8 );
+    map.insert( QStringLiteral( "precision" ), 5 );
+    QVariantMap map2;
+    map2.insert( QStringLiteral( "name" ), QStringLiteral( "n2" ) );
+    map2.insert( QStringLiteral( "type" ), static_cast< int >( QVariant::String ) );
+    map2.insert( QStringLiteral( "expression" ), QStringLiteral( "'abc' || \"def\"" ) );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingFieldMapWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QVariantList() << map << map2, context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toList().at( 0 ).toMap().value( QStringLiteral( "name" ) ).toString(), QStringLiteral( "n" ) );
+    QCOMPARE( wrapper.widgetValue().toList().at( 0 ).toMap().value( QStringLiteral( "type" ) ).toInt(), static_cast< int >( QVariant::Double ) );
+    QCOMPARE( wrapper.widgetValue().toList().at( 0 ).toMap().value( QStringLiteral( "length" ) ).toInt(), 8 );
+    QCOMPARE( wrapper.widgetValue().toList().at( 0 ).toMap().value( QStringLiteral( "precision" ) ).toInt(), 5 );
+    QCOMPARE( wrapper.widgetValue().toList().at( 0 ).toMap().value( QStringLiteral( "expression" ) ).toString(), QString() );
+    QCOMPARE( wrapper.widgetValue().toList().at( 1 ).toMap().value( QStringLiteral( "name" ) ).toString(), QStringLiteral( "n2" ) );
+    QCOMPARE( wrapper.widgetValue().toList().at( 1 ).toMap().value( QStringLiteral( "type" ) ).toInt(), static_cast< int >( QVariant::String ) );
+    QCOMPARE( wrapper.widgetValue().toList().at( 1 ).toMap().value( QStringLiteral( "expression" ) ).toString(), QStringLiteral( "'abc' || \"def\"" ) );
+
+    QCOMPARE( static_cast< QgsProcessingFieldMapPanelWidget * >( wrapper.wrappedWidget() )->value().toList().count(), 2 );
+    QCOMPARE( static_cast< QgsProcessingFieldMapPanelWidget * >( wrapper.wrappedWidget() )->value().toList().at( 0 ).toMap().value( QStringLiteral( "name" ) ).toString(), QStringLiteral( "n" ) );
+    QCOMPARE( static_cast< QgsProcessingFieldMapPanelWidget * >( wrapper.wrappedWidget() )->value().toList().at( 1 ).toMap().value( QStringLiteral( "name" ) ).toString(), QStringLiteral( "n2" ) );
+    wrapper.setWidgetValue( QVariantList() << map, context );
+    QCOMPARE( spy.count(), 2 );
+    QCOMPARE( wrapper.widgetValue().toList().size(), 1 );
+    QCOMPARE( static_cast< QgsProcessingFieldMapPanelWidget * >( wrapper.wrappedWidget() )->value().toList().size(), 1 );
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "mapping" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    static_cast< QgsProcessingFieldMapPanelWidget * >( wrapper.wrappedWidget() )->setValue( QVariantList() << map << map2 );
+    QCOMPARE( spy.count(), 3 );
+
+    delete w;
+
+    // with layer
+    param.setParentLayerParameterName( QStringLiteral( "other" ) );
+    QgsProcessingFieldMapWidgetWrapper wrapper2( &param, type );
+    w = wrapper2.createWrappedWidget( context );
+
+    QSignalSpy spy2( &wrapper2, &QgsProcessingFieldMapWidgetWrapper::widgetValueHasChanged );
+    wrapper2.setWidgetValue( QVariantList() << map, context );
+    QCOMPARE( spy2.count(), 1 );
+    QCOMPARE( wrapper2.widgetValue().toList().size(),  1 );
+    QCOMPARE( wrapper2.widgetValue().toList().at( 0 ).toMap().value( QStringLiteral( "name" ) ).toString(), QStringLiteral( "n" ) );
+    QCOMPARE( static_cast< QgsProcessingFieldMapPanelWidget * >( wrapper2.wrappedWidget() )->value().toList().at( 0 ).toMap().value( QStringLiteral( "name" ) ).toString(), QStringLiteral( "n" ) );
+
+    wrapper2.setWidgetValue( QVariantList() << map2, context );
+    QCOMPARE( spy2.count(), 2 );
+    QCOMPARE( wrapper2.widgetValue().toList().size(),  1 );
+    QCOMPARE( wrapper2.widgetValue().toList().at( 0 ).toMap().value( QStringLiteral( "name" ) ).toString(), QStringLiteral( "n2" ) );
+    QCOMPARE( static_cast< QgsProcessingFieldMapPanelWidget * >( wrapper2.wrappedWidget() )->value().toList().at( 0 ).toMap().value( QStringLiteral( "name" ) ).toString(), QStringLiteral( "n2" ) );
+
+    static_cast< QgsProcessingFieldMapPanelWidget * >( wrapper2.wrappedWidget() )->setValue( QVariantList() << map );
+    QCOMPARE( spy2.count(), 3 );
+
+    TestLayerWrapper layerWrapper( layerDef );
+    QgsProject p;
+    QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+    p.addMapLayer( vl );
+
+    QVERIFY( !wrapper2.mPanel->layer() );
+    layerWrapper.setWidgetValue( QVariant::fromValue( vl ), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    QCOMPARE( wrapper2.mPanel->layer(), vl );
+
+    // should not be owned by wrapper
+    QVERIFY( !wrapper2.mParentLayer.get() );
+    layerWrapper.setWidgetValue( QVariant(), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    QVERIFY( !wrapper2.mPanel->layer() );
+
+    layerWrapper.setWidgetValue( vl->id(), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    QVERIFY( !wrapper2.mPanel->layer() );
+    QVERIFY( !wrapper2.mParentLayer.get() );
+
+    // with project layer
+    context.setProject( &p );
+    TestProcessingContextGenerator generator( context );
+    wrapper2.registerProcessingContextGenerator( &generator );
+
+    layerWrapper.setWidgetValue( vl->id(), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    QCOMPARE( wrapper2.mPanel->layer(), vl );
+    QVERIFY( !wrapper2.mParentLayer.get() );
+
+    // non-project layer
+    QString pointFileName = TEST_DATA_DIR + QStringLiteral( "/points.shp" );
+    layerWrapper.setWidgetValue( pointFileName, context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    QCOMPARE( wrapper2.mPanel->layer()->publicSource(), pointFileName );
+    // must be owned by wrapper, or layer may be deleted while still required by wrapper
+    QCOMPARE( wrapper2.mParentLayer->publicSource(), pointFileName );
+
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+
+  // config widget
+  QgsProcessingParameterWidgetContext widgetContext;
+  QgsProcessingContext context;
+  std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "fields_mapping" ), context, widgetContext );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) ); // should default to mandatory
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+
+  // using a parameter definition as initial values
+  QgsProcessingParameterFieldMapping mapParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QStringLiteral( "parent" ) );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "fields_mapping" ), context, widgetContext, &mapParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterFieldMapping * >( def.get() )->parentLayerParameterName(), QStringLiteral( "parent" ) );
+  mapParam.setFlags( QgsProcessingParameterDefinition::FlagAdvanced | QgsProcessingParameterDefinition::FlagOptional );
+  mapParam.setParentLayerParameterName( QString() );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "fields_mapping" ), context, widgetContext, &mapParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
+  QVERIFY( static_cast< QgsProcessingParameterFieldMapping * >( def.get() )->parentLayerParameterName().isEmpty() );
 }
 
 void TestProcessingGui::testOutputDefinitionWidget()

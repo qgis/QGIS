@@ -84,14 +84,11 @@ const QString QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME( "Password Manag
 
 QgsAuthManager *QgsAuthManager::instance()
 {
+  static QMutex sMutex;
+  QMutexLocker locker( &sMutex );
   if ( !sInstance )
   {
-    static QMutex sMutex;
-    QMutexLocker locker( &sMutex );
-    if ( !sInstance )
-    {
-      sInstance = new QgsAuthManager( );
-    }
+    sInstance = new QgsAuthManager( );
   }
   return sInstance;
 }

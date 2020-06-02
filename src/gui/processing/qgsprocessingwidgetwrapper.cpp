@@ -277,6 +277,11 @@ void QgsAbstractProcessingParameterWidgetWrapper::postInitialize( const QList<Qg
   }
 }
 
+int QgsAbstractProcessingParameterWidgetWrapper::stretch() const
+{
+  return 0;
+}
+
 QgsExpressionContext QgsAbstractProcessingParameterWidgetWrapper::createExpressionContext() const
 {
   QgsExpressionContext context = QgsProcessingGuiUtils::createExpressionContext( mProcessingContextGenerator, mWidgetContext, mParameterDefinition ? mParameterDefinition->algorithm() : nullptr, linkedVectorLayer() );

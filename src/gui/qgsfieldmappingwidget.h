@@ -96,6 +96,19 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget, private Ui::QgsF
      */
     void scrollTo( const QModelIndex &index ) const;
 
+    /**
+     * Register an expression context \a generator class that will be used to retrieve
+     * an expression context for the widget.
+     */
+    void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
+
+  signals:
+
+    /**
+     *Emitted when the fields defined in the widget are changed.
+     */
+    void changed();
+
   public slots:
 
     //! Appends a new \a field to the model, with an optional \a expression

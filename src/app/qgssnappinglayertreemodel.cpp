@@ -477,7 +477,7 @@ QVariant QgsSnappingLayerTreeModel::headerData( int section, Qt::Orientation ori
         case 3:
           return tr( "Units" );
         case 4:
-          return tr( "Avoid overlap" );
+          return tr( "Avoid Overlap" );
         case 5:
           return tr( "Min Scale" );
         case 6:

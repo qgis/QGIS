@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>QgsProcessingFieldMapPanelBase</class>
+ <widget class="QWidget" name="QgsProcessingFieldMapPanelBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -35,7 +35,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QgsFieldMappingWidget" name="fieldsView" native="true">
+      <widget class="QgsFieldMappingWidget" name="mFieldsView" native="true">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
@@ -47,52 +47,72 @@
      <item>
       <layout class="QVBoxLayout" name="buttonLayout">
        <item>
-        <widget class="QToolButton" name="addButton">
+        <widget class="QToolButton" name="mAddButton">
          <property name="toolTip">
           <string>Add new field</string>
          </property>
          <property name="text">
           <string>add</string>
          </property>
+         <property name="icon">
+          <iconset resource="../../../images/images.qrc">
+           <normaloff>:/images/themes/default/mActionNewAttribute.svg</normaloff>:/images/themes/default/mActionNewAttribute.svg</iconset>
+         </property>
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="deleteButton">
+        <widget class="QToolButton" name="mDeleteButton">
          <property name="toolTip">
           <string>Delete selected field</string>
          </property>
          <property name="text">
           <string>delete</string>
          </property>
+         <property name="icon">
+          <iconset resource="../../../images/images.qrc">
+           <normaloff>:/images/themes/default/mActionDeleteAttribute.svg</normaloff>:/images/themes/default/mActionDeleteAttribute.svg</iconset>
+         </property>
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="upButton">
+        <widget class="QToolButton" name="mUpButton">
          <property name="toolTip">
           <string>Move selected field up</string>
          </property>
          <property name="text">
           <string>up</string>
          </property>
+         <property name="icon">
+          <iconset resource="../../../images/images.qrc">
+           <normaloff>:/images/themes/default/mActionArrowUp.svg</normaloff>:/images/themes/default/mActionArrowUp.svg</iconset>
+         </property>
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="downButton">
+        <widget class="QToolButton" name="mDownButton">
          <property name="toolTip">
           <string>Move selected field down</string>
          </property>
          <property name="text">
           <string>down</string>
          </property>
+         <property name="icon">
+          <iconset resource="../../../images/images.qrc">
+           <normaloff>:/images/themes/default/mActionArrowDown.svg</normaloff>:/images/themes/default/mActionArrowDown.svg</iconset>
+         </property>
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="resetButton">
+        <widget class="QToolButton" name="mResetButton">
          <property name="toolTip">
           <string>Reset all fields</string>
          </property>
          <property name="text">
           <string>reset</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../../images/images.qrc">
+           <normaloff>:/images/themes/default/mIconClearText.svg</normaloff>:/images/themes/default/mIconClearText.svg</iconset>
          </property>
         </widget>
        </item>
@@ -123,7 +143,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsMapLayerComboBox" name="layerCombo">
+      <widget class="QgsMapLayerComboBox" name="mLayerCombo">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -133,7 +153,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="loadLayerFieldsButton">
+      <widget class="QPushButton" name="mLoadLayerFieldsButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -156,16 +176,18 @@
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgis.gui</header>
+   <header>qgsmaplayercombobox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsFieldMappingWidget</class>
    <extends>QWidget</extends>
-   <header>qgis.gui</header>
+   <header>qgsfieldmappingwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>
