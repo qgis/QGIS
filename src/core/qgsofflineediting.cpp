@@ -40,6 +40,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
+#include "qgsmaplayerstylemanager.h"
 
 #include <QDir>
 #include <QDomDocument>
@@ -1096,6 +1097,14 @@ void QgsOfflineEditing::updateFidLookup( QgsVectorLayer *remoteLayer, sqlite3 *d
 
 void QgsOfflineEditing::copySymbology( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer )
 {
+  const QMap<QString, QgsMapLayerStyle> styles = sourceLayer->styleManager()->mapLayerStyles();
+  const QStringList styleNames = styles.keys();
+
+  for ( const QString &styleName : styleNames )
+  {
+    targetLayer->styleManager()->addStyle( styleName, styles.value( styleName ) );
+  }
+
   QString error;
   QDomDocument doc;
   QgsReadWriteContext context;
