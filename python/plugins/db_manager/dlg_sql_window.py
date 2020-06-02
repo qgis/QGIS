@@ -62,7 +62,7 @@ import re
 
 def check_comments_in_sql(raw_sql_input):
     lines = []
-    for line in raw_sql_input.split('\n'):
+    for line in raw_sql_input.splitlines():
         if not line.strip().startswith('--'):
             if '--' in line:
                 comment_positions = []
