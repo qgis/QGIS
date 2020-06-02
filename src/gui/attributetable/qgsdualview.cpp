@@ -734,7 +734,7 @@ void QgsDualView::hideEvent( QHideEvent *event )
   saveRecentDisplayExpressions();
 }
 
-void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atIndex )
+void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &masterIndex )
 {
   if ( !menu )
   {
@@ -742,11 +742,10 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
   }
 
   QAction *copyContentAction = new QAction( tr( "Copy Cell Content" ), this );
-  copyContentAction->setData( QVariant::fromValue<QModelIndex>( atIndex ) );
   menu->addAction( copyContentAction );
-  connect( copyContentAction, &QAction::triggered, this, [atIndex, this]
+  connect( copyContentAction, &QAction::triggered, this, [masterIndex, this]
   {
-    QVariant var = mMasterModel->data( atIndex, Qt::DisplayRole );
+    QVariant var = mMasterModel->data( masterIndex, Qt::DisplayRole );
     QApplication::clipboard()->setText( var.toString() );
   } );
 
@@ -765,14 +764,13 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
   }
 
   //add user-defined actions to context menu
-  QList<QgsAction> actions = mLayer->actions()->actions( QStringLiteral( "Field" ) );
+  const QList<QgsAction> actions = mLayer->actions()->actions( QStringLiteral( "Field" ) );
   if ( !actions.isEmpty() )
   {
     QAction *a = menu->addAction( tr( "Run Layer Action" ) );
     a->setEnabled( false );
 
-    const auto constActions = actions;
-    for ( const QgsAction &action : constActions )
+    for ( const QgsAction &action : actions )
     {
       if ( !action.runable() )
         continue;
@@ -780,24 +778,24 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
       if ( vl && !vl->isEditable() && action.isEnabledOnlyWhenEditable() )
         continue;
 
-      QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), this, action.id(), atIndex );
+      QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), this, action.id(), masterIndex );
       menu->addAction( action.name(), a, &QgsAttributeTableAction::execute );
     }
   }
-  QModelIndex rowSourceIndex = mMasterModel->index( atIndex.row(), 0 );
+  QModelIndex rowSourceIndex = mMasterModel->index( masterIndex.row(), 0 );
   if ( ! rowSourceIndex.isValid() )
   {
     return;
   }
+
   //add actions from QgsMapLayerActionRegistry to context menu
-  QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::Layer | QgsMapLayerAction::SingleFeature );
+  const QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::Layer | QgsMapLayerAction::SingleFeature );
   if ( !registeredActions.isEmpty() )
   {
     //add a separator between user defined and standard actions
     menu->addSeparator();
 
-    const auto constRegisteredActions = registeredActions;
-    for ( QgsMapLayerAction *action : constRegisteredActions )
+    for ( QgsMapLayerAction *action : registeredActions )
     {
       QgsAttributeTableMapLayerAction *a = new QgsAttributeTableMapLayerAction( action->text(), this, action, rowSourceIndex );
       menu->addAction( action->text(), a, &QgsAttributeTableMapLayerAction::execute );
@@ -806,17 +804,17 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
 
   // entries for multiple features layer actions
   // only show if the context menu is shown over a selected row
-  QgsFeatureId currentFid = masterModel()->rowToId( atIndex.row() );
+  const QgsFeatureId currentFid = mMasterModel->rowToId( masterIndex.row() );
   if ( mLayer->selectedFeatureCount() > 1 && mLayer->selectedFeatureIds().contains( currentFid ) )
   {
-    const QList<QgsMapLayerAction *> constRegisteredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::MultipleFeatures );
-    if ( !constRegisteredActions.isEmpty() )
+    const QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::MultipleFeatures );
+    if ( !registeredActions.isEmpty() )
     {
       menu->addSeparator();
       QAction *action = menu->addAction( tr( "Actions on Selection (%1)" ).arg( mLayer->selectedFeatureCount() ) );
       action->setEnabled( false );
 
-      for ( QgsMapLayerAction *action : constRegisteredActions )
+      for ( QgsMapLayerAction *action : registeredActions )
       {
         menu->addAction( action->text(), action, [ = ]() {action->triggerForFeatures( mLayer, mLayer->selectedFeatures() );} );
       }
