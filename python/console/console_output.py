@@ -168,6 +168,7 @@ class ShellOutputScintilla(QsciScintilla):
         self.runScut.activated.connect(self.enteredSelected)
         # Reimplemented copy action to prevent paste prompt (>>>,...) in command view
         self.copyShortcut = QShortcut(QKeySequence.Copy, self)
+        self.copyShortcut.setContext(Qt.WidgetWithChildrenShortcut)
         self.copyShortcut.activated.connect(self.copy)
         self.selectAllShortcut = QShortcut(QKeySequence.SelectAll, self)
         self.selectAllShortcut.activated.connect(self.selectAll)

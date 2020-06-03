@@ -894,9 +894,6 @@
    <property name="text">
     <string>Copy Features</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+C</string>
-   </property>
   </action>
   <action name="mActionPasteFeatures">
    <property name="icon">
