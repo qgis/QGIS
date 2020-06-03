@@ -29,7 +29,6 @@ from qgis.core import (QgsApplication,
 
 from PyQt5.QtCore import QCoreApplication
 
-from .Aggregate import Aggregate
 from .BarPlot import BarPlot
 from .BasicStatistics import BasicStatisticsForField
 from .BoxPlot import BoxPlot
@@ -102,8 +101,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
         QgsApplication.processingRegistry().addAlgorithmAlias('qgis:rectanglesovalsdiamondsfixed', 'native:rectanglesovalsdiamonds')
 
     def getAlgs(self):
-        algs = [Aggregate(),
-                BarPlot(),
+        algs = [BarPlot(),
                 BasicStatisticsForField(),
                 BoxPlot(),
                 CheckValidity(),
