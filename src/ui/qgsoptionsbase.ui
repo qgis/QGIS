@@ -1063,7 +1063,7 @@
                        <string>QGS Project saved in a clear text, does not embed auxiliary data</string>
                       </property>
                       <property name="toolTip">
-                       <string>The auxiliary data will be kept in a separate file</string>
+                       <string>The auxiliary data will be kept in a separate .qgd data file which must be distributed along with the .qgs project file.</string>
                       </property>
                       <attribute name="buttonGroup">
                        <string notr="true">mDefaultProjectFileFormatButtonGroup</string>
