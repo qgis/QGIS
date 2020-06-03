@@ -854,7 +854,7 @@ void QgsMapRendererJob::composeSecondPass( LayerRenderJobs &secondPassJobs, Labe
         job.firstPassJob->img->save( QString( "/tmp/second_%1_first_pass_2.png" ).arg( i ) );
 #endif
         // ... and overpaint the second pass' image on it
-        painter1->setCompositionMode( QPainter::CompositionMode_SourceOver );
+        painter1->setCompositionMode( QPainter::CompositionMode_DestinationOver );
         painter1->drawImage( 0, 0, *job.img );
 #if DEBUG_RENDERING
         job.img->save( QString( "/tmp/second_%1_b.png" ).arg( i ) );
