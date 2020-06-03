@@ -24,6 +24,7 @@
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsproject.h"
 
 #include <QColor>
 #include <QStringList>
@@ -266,6 +267,14 @@ QgsGeometry QgsOgcUtils::geometryFromGMLPolygon( const QDomElement &geometryElem
   //read all the coordinates (as QgsPoint) into memory. Each linear ring has an entry in the vector
   QgsMultiPolylineXY ringCoordinates;
 
+  // Geometry SRS name
+  QgsCoordinateReferenceSystem geomSrs;
+
+  if ( geometryElement.hasAttribute( QStringLiteral( "srsName" ) ) )
+  {
+    geomSrs.createFromString( geometryElement.attribute( QStringLiteral( "srsName" ) ) );
+  }
+
   //read coordinates for outer boundary
   QgsPolylineXY exteriorPointList;
   QDomNodeList outerBoundaryList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, QStringLiteral( "outerBoundaryIs" ) );
@@ -312,10 +321,29 @@ QgsGeometry QgsOgcUtils::geometryFromGMLPolygon( const QDomElement &geometryElem
     {
       return QgsGeometry();
     }
-    if ( readGMLPositions( exteriorPointList, posElement ) != 0 )
+    if ( readGMLPositions( exteriorPointList, posElement ) != false )
     {
       return QgsGeometry();
     }
+
+    if ( geomSrs.isValid() )
+    {
+      QgsCoordinateReferenceSystem exteriorSrs;
+      const QDomElement ringElement {  exteriorList.at( 0 ).firstChild().toElement() };
+      if ( ringElement.hasAttribute( QStringLiteral( "srsName" ) ) )
+      {
+        exteriorSrs.createFromString( ringElement.attribute( QStringLiteral( "srsName" ) ) );
+      }
+      if ( exteriorSrs != geomSrs )
+      {
+        const QgsCoordinateTransform transformer { exteriorSrs, geomSrs, QgsProject::instance()->transformContext() };
+        for ( auto it = exteriorPointList.begin(); it != exteriorPointList.end(); ++it )
+        {
+          *it = transformer.transform( *it );
+        }
+      }
+    }
+
     ringCoordinates.push_back( exteriorPointList );
 
     //read coordinates for inner boundary

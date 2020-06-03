@@ -98,6 +98,20 @@ void TestQgsOgcUtils::testGeometryFromGML()
   geomBox = QgsOgcUtils::geometryFromGML( QStringLiteral( "<gml:Envelope srsName=\"foo\"><gml:lowerCorner>135.2239 34.4879</gml:lowerCorner><gml:upperCorner>135.8578 34.8471</gml:upperCorner></gml:Envelope>" ) );
   QVERIFY( !geomBox.isNull() );
   QVERIFY( geomBox.wkbType() == QgsWkbTypes::Polygon );
+
+  // Test polygon with different srsName on exterior ring
+  geom = QgsOgcUtils::geometryFromGML( QStringLiteral( R"raw(
+    <Polygon srsName="EPSG:4326">
+      <exterior>
+        <LinearRing srsName="EPSG:3857">
+          <posList srsDimension="2">890555.93 5465442.18 1001875.42 5465442.18 1001875.42 5621521.49 890555.93 5621521.49 890555.93 5465442.18</posList>
+        </LinearRing>
+      </exterior>
+    </Polygon>
+  )raw" ) );
+  QVERIFY( !geom.isNull() );
+  QVERIFY( geom.wkbType() == QgsWkbTypes::Polygon );
+  QGSCOMPARENEARRECTANGLE( geom.boundingBox(), QgsRectangle( 8, 44, 9, 45 ), 0.1 );
 }
 
 static bool compareElements( QDomElement &element1, QDomElement &element2 )
