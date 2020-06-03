@@ -83,9 +83,17 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
         self.new_input_line = True
 
+        # Set the default font
+        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
+        self.setFont(font)
+        self.setMarginsFont(font)
+        # Margin 0 is used for line numbers
         self.setMarginWidth(0, 0)
         self.setMarginWidth(1, 0)
         self.setMarginWidth(2, 0)
+        self.setMarginsFont(font)
+        self.setMarginWidth(1, "00000")
+        self.setMarginType(1, 5)
 
         self.buffer = []
 
@@ -171,6 +179,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                                                                        QColor(self.MATCHED_BRACE_BACKGROUND_COLOR))))
         self.setMatchedBraceForegroundColor(QColor(self.settings.value("pythonConsole/matchedBraceForegroundColor",
                                                                        QColor(self.MATCHED_BRACE_FOREGROUND_COLOR))))
+        self.setMarginsBackgroundColor(
+            QColor(self.settings.value("pythonConsole/marginBackgroundColor", QColor(self.MARGIN_BACKGROUND_COLOR))))
 
         # Sets minimum height for input area based of font metric
         self._setMinimumHeight()
@@ -195,12 +205,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
     def commandConsole(self, commands):
         if not self.is_cursor_on_last_line():
             self.move_cursor_to_end()
-        line, pos = self.getCursorPosition()
-        selCmdLength = len(self.text(line))
-        self.setSelection(line, 4, line, selCmdLength)
-        self.removeSelectedText()
         for cmd in commands:
-            self.append(cmd)
+            self.setText(cmd)
             self.entered()
         self.move_cursor_to_end()
         self.setFocus()
@@ -310,11 +316,6 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         cline, _ = self.getCursorPosition()
         return cline == self.lines() - 1
 
-    def is_cursor_on_edition_zone(self):
-        """ Return True if the cursor is in the edition zone """
-        cline, cindex = self.getCursorPosition()
-        return cline == self.lines() - 1 and cindex >= 4
-
     def new_prompt(self, prompt):
         """
         Print a new prompt and save its (line, index) position
@@ -326,8 +327,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.ensureLineVisible(line)
 
     def displayPrompt(self, more=False):
-        self.append("... ") if more else self.append(">>> ")
-        self.move_cursor_to_end()
+        self.SendScintilla(QsciScintilla.SCI_MARGINSETTEXT, 0, str.encode("..." if more else ">>>"))
 
     def updateHistory(self, command):
         if isinstance(command, list):
@@ -389,30 +389,22 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
     def showPrevious(self):
         if self.historyIndex < len(self.history) and self.history:
-            line, pos = self.getCursorPosition()
-            selCmdLength = len(self.text(line))
-            self.setSelection(line, 4, line, selCmdLength)
-            self.removeSelectedText()
             self.historyIndex += 1
             if self.historyIndex == len(self.history):
-                self.insert("")
+                self.setText("")
                 pass
             else:
-                self.insert(self.history[self.historyIndex])
+                self.setText(self.history[self.historyIndex])
             self.move_cursor_to_end()
             # self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
 
     def showNext(self):
         if self.historyIndex > 0 and self.history:
-            line, pos = self.getCursorPosition()
-            selCmdLength = len(self.text(line))
-            self.setSelection(line, 4, line, selCmdLength)
-            self.removeSelectedText()
             self.historyIndex -= 1
             if self.historyIndex == len(self.history):
-                self.insert("")
+                self.setText("")
             else:
-                self.insert(self.history[self.historyIndex])
+                self.setText(self.history[self.historyIndex])
             self.move_cursor_to_end()
             # self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
 
@@ -420,7 +412,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         startLine, startPos, endLine, endPos = self.getSelection()
 
         # handle invalid cursor position and multiline selections
-        if not self.is_cursor_on_edition_zone() or startLine < endLine:
+        if startLine < endLine:
             # allow copying and selecting
             if e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier):
                 if e.key() == Qt.Key_C:
@@ -455,24 +447,9 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
         elif e.key() in (Qt.Key_Left, Qt.Key_Home):
             QsciScintilla.keyPressEvent(self, e)
-            # check whether the cursor is moved out of the edition zone
-            newline, newindex = self.getCursorPosition()
-            if newline < line or newindex < 4:
-                # fix selection and the cursor position
-                if self.hasSelectedText():
-                    self.setSelection(line, self.getSelection()[3], line, 4)
-                else:
-                    self.setCursorPosition(line, 4)
 
         elif e.key() in (Qt.Key_Backspace, Qt.Key_Delete):
             QsciScintilla.keyPressEvent(self, e)
-            # check whether the cursor is moved out of the edition zone
-            _, newindex = self.getCursorPosition()
-            if newindex < 4:
-                # restore the prompt chars (if removed) and
-                # fix the cursor position
-                self.insert(cmd[:3 - newindex] + " ")
-                self.setCursorPosition(line, 4)
             self.recolor()
 
         elif (e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier) and e.key() == Qt.Key_V) or \
@@ -624,10 +601,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.move_cursor_to_end()
 
     def currentCommand(self):
-        linenr, index = self.getCursorPosition()
         string = self.text()
-        cmdLine = string[4:]
-        cmd = cmdLine
+        cmd = string
         return cmd
 
     def runCommand(self, cmd):
@@ -664,8 +639,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             sys.stdout.fire_keyboard_interrupt = False
         if len(txt) > 0:
             getCmdString = self.text()
-            prompt = getCmdString[0:4]
-            sys.stdout.write(prompt + txt + '\n')
+            sys.stdout.write('>>> ' + txt + '\n')
 
     def runsource(self, source, filename='<input>', symbol='single'):
         if sys.stdout:
