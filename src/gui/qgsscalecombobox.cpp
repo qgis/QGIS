@@ -216,7 +216,7 @@ QString QgsScaleComboBox::toString( double scale )
   }
   else
   {
-    return QStringLiteral( "1:%1" ).arg( QLocale().toString( static_cast< int >( std::round( scale ) ) ) );
+    return QStringLiteral( "1:%1" ).arg( QLocale().toString( static_cast< float >( std::round( scale ) ), 'f', 0 ) );
   }
 }
 
