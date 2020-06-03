@@ -1097,13 +1097,7 @@ void QgsOfflineEditing::updateFidLookup( QgsVectorLayer *remoteLayer, sqlite3 *d
 
 void QgsOfflineEditing::copySymbology( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer )
 {
-  const QMap<QString, QgsMapLayerStyle> styles = sourceLayer->styleManager()->mapLayerStyles();
-  const QStringList styleNames = styles.keys();
-
-  for ( const QString &styleName : styleNames )
-  {
-    targetLayer->styleManager()->addStyle( styleName, styles.value( styleName ) );
-  }
+  targetLayer->styleManager()->copyStylesFrom( sourceLayer->styleManager() );
 
   QString error;
   QDomDocument doc;
