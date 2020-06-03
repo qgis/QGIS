@@ -134,6 +134,11 @@ class CORE_EXPORT QgsInterpolatedLineWidth
     //! Sets whether the variable width ignores out of range value
     void setIgnoreOutOfRange( bool ignoreOutOfRange );
 
+    //! Returns whether absolute value are used as input
+    bool useAbsoluteValue() const;
+    //! Sets whether absolute value are used as input
+    void setUseAbsoluteValue( bool useAbsoluteValue );
+
     //! Returns whether the width is variable
     bool isVariableWidth() const;
     //! Returns whether the width is variable
@@ -162,6 +167,7 @@ class CORE_EXPORT QgsInterpolatedLineWidth
     double mMinimumWidth = DEFAULT_LINE_WIDTH;
     double mMaximumWidth = 3;
     bool mIgnoreOutOfRange = false;
+    bool mUseAbsoluteValue = false;
 
     mutable double mLinearCoef = 1;
     mutable bool mNeedUpdateFormula = true;

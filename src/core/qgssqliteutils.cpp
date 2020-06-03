@@ -126,7 +126,7 @@ QSet<QString> QgsSqliteUtils::uniqueFields( sqlite3 *connection, const QString &
   QSet<QString> uniqueFieldsResults;
   char *zErrMsg = 0;
   std::vector<std::string> rows;
-  QString sql = sqlite3_mprintf( "select sql from sqlite_master where type='table' and name=%q", quotedIdentifier( tableName ).toStdString().c_str() );
+  QString sql = QgsSqlite3Mprintf( "select sql from sqlite_master where type='table' and name=%q", quotedIdentifier( tableName ).toStdString().c_str() );
   auto cb = [ ](
               void *data /* Data provided in the 4th argument of sqlite3_exec() */,
               int /* The number of columns in row */,
@@ -171,8 +171,8 @@ QSet<QString> QgsSqliteUtils::uniqueFields( sqlite3 *connection, const QString &
   rows.clear();
 
   // Search indexes:
-  sql = sqlite3_mprintf( "SELECT sql FROM sqlite_master WHERE type='index' AND"
-                         " tbl_name='%q' AND sql LIKE 'CREATE UNIQUE INDEX%%'" );
+  sql = QgsSqlite3Mprintf( "SELECT sql FROM sqlite_master WHERE type='index' AND"
+                           " tbl_name='%q' AND sql LIKE 'CREATE UNIQUE INDEX%%'" );
   rc = sqlite3_exec( connection, sql.toUtf8(), cb, ( void * )&rows, &zErrMsg );
   if ( rc != SQLITE_OK )
   {

@@ -294,9 +294,6 @@ QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext *context ) const
     if ( hInt > minSz.height() ) minSz.setHeight( hInt );
   }
 
-  if ( mItem.level() != 0 && !( model() && model()->testFlag( QgsLayerTreeModel::ShowLegendAsTree ) ) )
-    minSz.setWidth( mItem.level() * INDENT_SIZE + minSz.width() );
-
   return minSz;
 }
 
@@ -463,18 +460,7 @@ QVariant QgsSymbolLegendNode::data( int role ) const
         pix.fill( Qt::transparent );
       }
 
-      if ( mItem.level() == 0 || ( model() && model()->testFlag( QgsLayerTreeModel::ShowLegendAsTree ) ) )
-        mPixmap = pix;
-      else
-      {
-        // ident the symbol icon to make it look like a tree structure
-        QPixmap pix2( pix.width() + mItem.level() * INDENT_SIZE, pix.height() );
-        pix2.fill( Qt::transparent );
-        QPainter p( &pix2 );
-        p.drawPixmap( mItem.level() * INDENT_SIZE, 0, pix );
-        p.end();
-        mPixmap = pix2;
-      }
+      mPixmap = pix;
     }
     return mPixmap;
   }

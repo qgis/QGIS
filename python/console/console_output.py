@@ -152,7 +152,6 @@ class ShellOutputScintilla(QsciScintilla):
         self.setMarginWidth(0, 0)
         self.setMarginWidth(1, 0)
         self.setMarginWidth(2, 0)
-        # fm = QFontMetrics(font)
         self.setMarginsFont(font)
         self.setMarginWidth(1, "00000")
         self.setMarginLineNumbers(1, True)

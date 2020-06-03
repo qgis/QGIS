@@ -238,6 +238,8 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     QgsLayerTreeGroup( const QgsLayerTreeGroup &other );
 #endif
 
+    QgsLayerTreeGroup &operator= ( const QgsLayerTreeGroup & ) = delete;
+
 };
 
 

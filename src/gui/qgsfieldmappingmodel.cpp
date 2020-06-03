@@ -385,7 +385,7 @@ void QgsFieldMappingModel::setDestinationEditable( bool destinationEditable )
   mDestinationEditable = destinationEditable;
 }
 
-const QMap<QVariant::Type, QString> QgsFieldMappingModel::dataTypes() const
+const QMap<QVariant::Type, QString> QgsFieldMappingModel::dataTypes()
 {
   static const QMap<QVariant::Type, QString> sDataTypes
   {

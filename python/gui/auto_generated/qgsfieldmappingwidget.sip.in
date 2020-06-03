@@ -8,6 +8,7 @@
 
 
 
+
 class QgsFieldMappingWidget : QgsPanelWidget
 {
 %Docstring
@@ -121,12 +122,12 @@ Removes the currently selected field from the model
 
     bool moveSelectedFieldsUp( );
 %Docstring
-Moves down currently selected field
+Moves up currently selected field
 %End
 
     bool moveSelectedFieldsDown( );
 %Docstring
-Moves up the currently selected field
+Moves down the currently selected field
 %End
 
       public:

@@ -182,6 +182,8 @@ void QgsQuickMapCanvasMap::renderJobFinished()
 
 void QgsQuickMapCanvasMap::onWindowChanged( QQuickWindow *window )
 {
+  // FIXME? the above disconnect is done potentially on a nullptr
+  // cppcheck-suppress nullPointerRedundantCheck
   disconnect( window, &QQuickWindow::screenChanged, this, &QgsQuickMapCanvasMap::onScreenChanged );
   if ( window )
   {

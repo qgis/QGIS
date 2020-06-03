@@ -113,11 +113,13 @@ void QgsDemTerrainGenerator::updateGenerator()
     mTerrainTilingScheme = QgsTilingScheme( te, mCrs );
     delete mHeightMapGenerator;
     mHeightMapGenerator = new QgsDemHeightMapGenerator( dem, mTerrainTilingScheme, mResolution, mTransformContext );
+    mIsValid = true;
   }
   else
   {
     mTerrainTilingScheme = QgsTilingScheme();
     delete mHeightMapGenerator;
     mHeightMapGenerator = nullptr;
+    mIsValid = false;
   }
 }

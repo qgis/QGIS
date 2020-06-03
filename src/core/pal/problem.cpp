@@ -534,6 +534,7 @@ inline Chain *Problem::chain( int seed )
 
 
       tmpsol[seed] = retainedLabel;
+      // cppcheck-suppress invalidFunctionArg
       delta += mLabelPositions.at( retainedLabel )->cost();
       seed = next_seed;
     }

@@ -81,8 +81,6 @@ void QgsMeshLayer::setDefaultRendererSettings()
     if ( meta.maximum() == std::numeric_limits<double>::quiet_NaN() &&
          meta.minimum() == std::numeric_limits<double>::quiet_NaN() )
       meshSettings.setEnabled( true );
-
-    setStaticScalarDatasetIndex( QgsMeshDatasetIndex( 0, 0 ) );
   }
   else
   {
@@ -305,7 +303,7 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
       QgsRectangle searchRectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius );
       return dataset1dValue( index, point, searchRadius );
     }
-    int faceIndex = mesh->faceIndexForPoint( point ) ;
+    int faceIndex = mesh->faceIndexForPoint_v2( point ) ;
     if ( faceIndex >= 0 )
     {
       int nativeFaceIndex = mesh->trianglesToNativeFaces().at( faceIndex );
@@ -374,7 +372,7 @@ QgsMesh3dDataBlock QgsMeshLayer::dataset3dValue( const QgsMeshDatasetIndex &inde
     const QgsMeshDatasetGroupMetadata::DataType dataType = dataProvider()->datasetGroupMetadata( index ).dataType();
     if ( dataType == QgsMeshDatasetGroupMetadata::DataOnVolumes )
     {
-      int faceIndex = baseTriangularMesh->faceIndexForPoint( point ) ;
+      int faceIndex = baseTriangularMesh->faceIndexForPoint_v2( point );
       if ( faceIndex >= 0 )
       {
         int nativeFaceIndex = baseTriangularMesh->trianglesToNativeFaces().at( faceIndex );
@@ -539,7 +537,7 @@ QgsMeshDatasetIndex QgsMeshLayer::activeScalarDatasetAtTime( const QgsDateTimeRa
   if ( mTemporalProperties->isActive() )
     return datasetIndexAtTime( timeRange, mRendererSettings.activeScalarDatasetGroup() );
   else
-    return mStaticScalarDatasetIndex;
+    return QgsMeshDatasetIndex( mRendererSettings.activeScalarDatasetGroup(), mStaticScalarDatasetIndex );
 }
 
 QgsMeshDatasetIndex QgsMeshLayer::activeVectorDatasetAtTime( const QgsDateTimeRange &timeRange ) const
@@ -547,7 +545,7 @@ QgsMeshDatasetIndex QgsMeshLayer::activeVectorDatasetAtTime( const QgsDateTimeRa
   if ( mTemporalProperties->isActive() )
     return datasetIndexAtTime( timeRange, mRendererSettings.activeVectorDatasetGroup() );
   else
-    return mStaticVectorDatasetIndex;
+    return QgsMeshDatasetIndex( mRendererSettings.activeVectorDatasetGroup(), mStaticVectorDatasetIndex );
 }
 
 void QgsMeshLayer::fillNativeMesh()
@@ -628,7 +626,7 @@ int QgsMeshLayer::closestEdge( const QgsPointXY &point, double searchRadius, Qgs
 
 QgsMeshDatasetIndex QgsMeshLayer::staticVectorDatasetIndex() const
 {
-  return mStaticVectorDatasetIndex;
+  return QgsMeshDatasetIndex( mRendererSettings.activeVectorDatasetGroup(), mStaticVectorDatasetIndex );
 }
 
 void QgsMeshLayer::setReferenceTime( const QDateTime &referenceTime )
@@ -800,21 +798,19 @@ QgsPointXY QgsMeshLayer::snapOnElement( QgsMesh::ElementType elementType, const 
 
 QgsMeshDatasetIndex QgsMeshLayer::staticScalarDatasetIndex() const
 {
-  return mStaticScalarDatasetIndex;
+  return QgsMeshDatasetIndex( mRendererSettings.activeScalarDatasetGroup(), mStaticScalarDatasetIndex );
 }
 
 void QgsMeshLayer::setStaticVectorDatasetIndex( const QgsMeshDatasetIndex &staticVectorDatasetIndex )
 {
-  mStaticVectorDatasetIndex = staticVectorDatasetIndex;
-  if ( !temporalProperties()->isActive() )
-    mRendererSettings.setActiveVectorDatasetGroup( staticVectorDatasetIndex.group() );
+  mStaticVectorDatasetIndex = staticVectorDatasetIndex.dataset();
+  mRendererSettings.setActiveVectorDatasetGroup( staticVectorDatasetIndex.group() );
 }
 
 void QgsMeshLayer::setStaticScalarDatasetIndex( const QgsMeshDatasetIndex &staticScalarDatasetIndex )
 {
-  mStaticScalarDatasetIndex = staticScalarDatasetIndex;
-  if ( !temporalProperties()->isActive() )
-    mRendererSettings.setActiveScalarDatasetGroup( staticScalarDatasetIndex.group() );
+  mStaticScalarDatasetIndex = staticScalarDatasetIndex.dataset();
+  mRendererSettings.setActiveScalarDatasetGroup( staticScalarDatasetIndex.group() );
 }
 
 QgsMeshSimplificationSettings QgsMeshLayer::meshSimplificationSettings() const
@@ -1047,15 +1043,11 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
   QDomElement elemStaticDataset = layer_node.firstChildElement( QStringLiteral( "static-active-dataset" ) );
   if ( elemStaticDataset.hasAttribute( QStringLiteral( "scalar" ) ) )
   {
-    QStringList lst = elemStaticDataset.attribute( QStringLiteral( "scalar" ) ).split( QChar( ',' ) );
-    if ( lst.count() == 2 )
-      mStaticScalarDatasetIndex = QgsMeshDatasetIndex( lst[0].toInt(), lst[1].toInt() );
+    mStaticScalarDatasetIndex = elemStaticDataset.attribute( QStringLiteral( "scalar" ) ).toInt();
   }
   if ( elemStaticDataset.hasAttribute( QStringLiteral( "vector" ) ) )
   {
-    QStringList lst = elemStaticDataset.attribute( QStringLiteral( "vector" ) ).split( QChar( ',' ) );
-    if ( lst.count() == 2 )
-      mStaticVectorDatasetIndex = QgsMeshDatasetIndex( lst[0].toInt(), lst[1].toInt() );
+    mStaticVectorDatasetIndex = elemStaticDataset.attribute( QStringLiteral( "vector" ) ).toInt();
   }
 
   return mValid; // should be true if read successfully
@@ -1096,10 +1088,8 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
   }
 
   QDomElement elemStaticDataset = document.createElement( QStringLiteral( "static-active-dataset" ) );
-  if ( mStaticScalarDatasetIndex.isValid() )
-    elemStaticDataset.setAttribute( QStringLiteral( "scalar" ), QStringLiteral( "%1,%2" ).arg( mStaticScalarDatasetIndex.group() ).arg( mStaticScalarDatasetIndex.dataset() ) );
-  if ( mStaticVectorDatasetIndex.isValid() )
-    elemStaticDataset.setAttribute( QStringLiteral( "vector" ), QStringLiteral( "%1,%2" ).arg( mStaticVectorDatasetIndex.group() ).arg( mStaticVectorDatasetIndex.dataset() ) );
+  elemStaticDataset.setAttribute( QStringLiteral( "scalar" ), mStaticScalarDatasetIndex );
+  elemStaticDataset.setAttribute( QStringLiteral( "vector" ), mStaticVectorDatasetIndex );
   layer_node.appendChild( elemStaticDataset );
 
   // write dataset group tree items

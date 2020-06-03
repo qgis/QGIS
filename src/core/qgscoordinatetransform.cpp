@@ -138,6 +138,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateTransform &o 
 #ifdef QGISDEBUG
   , mHasContext( o.mHasContext )
 #endif
+  , mLastError()
 {
   d = o.d;
 }
@@ -149,6 +150,7 @@ QgsCoordinateTransform &QgsCoordinateTransform::operator=( const QgsCoordinateTr
   mHasContext = o.mHasContext;
 #endif
   mContext = o.mContext;
+  mLastError = QString();
   return *this;
 }
 
@@ -1103,6 +1105,7 @@ void QgsCoordinateTransform::removeFromCacheObjectsBelongingToCurrentThread( voi
     return;
 
   QgsReadWriteLocker locker( sCacheLock, QgsReadWriteLocker::Write );
+  // cppcheck-suppress identicalConditionAfterEarlyExit
   if ( sDisableCache )
     return;
 

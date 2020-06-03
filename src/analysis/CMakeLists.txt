@@ -25,6 +25,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmaddtablefield.cpp
   processing/qgsalgorithmaddxyfields.cpp
   processing/qgsalgorithmaffinetransform.cpp
+  processing/qgsalgorithmaggregate.cpp
   processing/qgsalgorithmapplylayerstyle.cpp
   processing/qgsalgorithmarraytranslatedfeatures.cpp
   processing/qgsalgorithmaspect.cpp

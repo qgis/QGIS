@@ -275,6 +275,7 @@ QgsProcessingCrsWidgetWrapper::QgsProcessingCrsWidgetWrapper( const QgsProcessin
 
 QWidget *QgsProcessingCrsWidgetWrapper::createWidget()
 {
+  Q_ASSERT( mProjectionSelectionWidget == nullptr );
   mProjectionSelectionWidget = new QgsProjectionSelectionWidget();
   mProjectionSelectionWidget->setToolTip( parameterDefinition()->toolTip() );
 

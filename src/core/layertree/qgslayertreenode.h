@@ -283,6 +283,9 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     bool mExpanded;
     //! custom properties attached to the node
     QgsObjectCustomProperties mProperties;
+
+  private:
+    QgsLayerTreeNode &operator=( const QgsLayerTreeNode & ) = delete;
 };
 
 

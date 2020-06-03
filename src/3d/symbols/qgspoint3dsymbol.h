@@ -112,6 +112,8 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
     std::unique_ptr<QgsMarkerSymbol> mBillboardSymbol;
 #ifdef SIP_RUN
     QgsPoint3DSymbol &operator=( const QgsPoint3DSymbol & );
+#else
+    QgsPoint3DSymbol &operator=( const QgsPoint3DSymbol & ) = delete;
 #endif
 };
 

@@ -1,17 +1,6 @@
 qgis:advancedpythonfieldcalculator: >
   This algorithm adds a new attribute to a vector layer, with values resulting from applying an expression to each feature. The expression is defined as a Python function.
 
-qgis:aggregate: >
-  This algorithm take a vector or table layer and aggregate features based on a group by expression. Features for which group by expression return the same value are grouped together.
-
-  It is possible to group all source features together using constant value in group by parameter, example: NULL.
-
-  It is also possible to group features using multiple fields using Array function, example: Array("Field1", "Field2").
-
-  Geometries (if present) are combined into one multipart geometry for each group.
-
-  Output attributes are computed depending on each given aggregate definition.
-
 qgis:barplot: >
   This algorithm creates a bar plot from a category and a layer field.
 
