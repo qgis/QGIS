@@ -177,7 +177,7 @@ QStringList QgsHanaConnection::connectionList()
   return settings.childGroups();
 }
 
-QString QgsHanaConnection::connInfo()
+QString QgsHanaConnection::connInfo() const
 {
   return QgsHanaUtils::connectionInfo( mUri );
 }

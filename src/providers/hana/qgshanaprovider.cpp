@@ -50,7 +50,6 @@ using namespace std;
 
 namespace
 {
-
   QString buildQuery( const QString &query, const QString &whereClause )
   {
     if ( whereClause.trimmed().isEmpty() )
@@ -255,8 +254,8 @@ QgsHanaProvider::QgsHanaProvider(
     mQuery = QStringLiteral( "SELECT * FROM " ) + mQuery;
   }
 
-  QgsHanaConnectionRef connRef( mUri );
-  if ( connRef.isNull() )
+  QgsHanaConnectionRef conn( mUri );
+  if ( conn.isNull() )
     return;
 
   if ( !checkPermissionsAndSetCapabilities() )
@@ -268,7 +267,7 @@ QgsHanaProvider::QgsHanaProvider(
   if ( mSrid < 0 )
     mSrid = readSrid();
 
-  mDatabaseVersion = QgsHanaUtils::toHANAVersion( connRef->getDatabaseVersion() );
+  mDatabaseVersion = QgsHanaUtils::toHANAVersion( conn->getDatabaseVersion() );
   readGeometryType();
   readAttributeFields();
   readSrsInformation();

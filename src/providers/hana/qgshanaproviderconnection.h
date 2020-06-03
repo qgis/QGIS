@@ -18,6 +18,7 @@
 #define QGSHANAPROVIDERCONNECTION_H
 
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgshanaconnection.h"
 
 class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
 {
@@ -52,8 +53,8 @@ class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
     QIcon icon() const override;
 
   private:
-
-    QList<QVariantList> executeSqlQuery( const QString &sql ) const;
+    QList<QVariantList> executeSqlQuery( QgsHanaConnection &conn, const QString &sql ) const;
+    void executeSqlStatement( QgsHanaConnection &conn, const QString &sql ) const;
     void executeSqlStatement( const QString &sql ) const;
     void setCapabilities();
     void dropTable( const QString &schema, const QString &name ) const;

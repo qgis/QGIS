@@ -33,7 +33,7 @@ class QgsHanaConnection : public QObject
   public:
     ~QgsHanaConnection() override;
 
-    QString connInfo();
+    QString connInfo() const;
 
     void execute( const QString &sql );
     bool execute( const QString &sql, QString *errorMessage );
@@ -78,7 +78,7 @@ class QgsHanaConnection : public QObject
 
   private:
     odbc::ConnectionRef mConnection;
-    QgsDataSourceUri mUri;
+    const QgsDataSourceUri mUri;
     QString mDatabaseVersion;
     QString mUserName;
 };
@@ -92,8 +92,7 @@ class QgsHanaConnectionRef
     ~QgsHanaConnectionRef();
 
     bool isNull() const { return mConnection.get() == nullptr; }
-    QgsHanaConnection &connection() const { return *mConnection; }
-
+    QgsHanaConnection &operator*() { return *mConnection; }
     QgsHanaConnection *operator->() { return mConnection.get(); }
 
   private:

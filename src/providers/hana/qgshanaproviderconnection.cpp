@@ -184,8 +184,27 @@ void QgsHanaProviderConnection::renameSchema( const QString &name, const QString
 QList<QVariantList> QgsHanaProviderConnection::executeSql( const QString &sql ) const
 {
   checkCapability( Capability::ExecuteSql );
-  if ( sql.trimmed().startsWith( "SELECT", Qt::CaseSensitivity::CaseInsensitive ) )
-    return executeSqlQuery( sql );
+
+  const QgsDataSourceUri dsUri { uri() };
+  QgsHanaConnectionRef conn( dsUri );
+
+  if ( conn.isNull() )
+    throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
+
+  bool isQuery = false;
+
+  try
+  {
+    PreparedStatementRef stmt = conn->prepareStatement( sql );
+    isQuery = stmt->getMetaData()->getColumnCount() > 0;
+  }
+  catch ( const QgsHanaException &ex )
+  {
+    throw QgsProviderConnectionException( ex.what() );
+  }
+
+  if ( isQuery )
+    return executeSqlQuery( *conn, sql );
   else
   {
     executeSqlStatement( sql );
@@ -193,17 +212,13 @@ QList<QVariantList> QgsHanaProviderConnection::executeSql( const QString &sql ) 
   }
 }
 
-QList<QVariantList> QgsHanaProviderConnection::executeSqlQuery( const QString &sql ) const
+QList<QVariantList> QgsHanaProviderConnection::executeSqlQuery( QgsHanaConnection &conn, const QString &sql ) const
 {
-  const QgsDataSourceUri dsUri { uri() };
   QList<QVariantList> results;
-  QgsHanaConnectionRef conn( dsUri );
-  if ( conn.isNull() )
-    throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
 
   try
   {
-    QgsHanaResultSetRef resultSet = conn->executeQuery( sql );
+    QgsHanaResultSetRef resultSet = conn.executeQuery( sql );
     const unsigned short nColumns = resultSet->getMetadata().getColumnCount();
     while ( resultSet->next() )
     {
@@ -216,10 +231,23 @@ QList<QVariantList> QgsHanaProviderConnection::executeSqlQuery( const QString &s
   }
   catch ( const QgsHanaException &ex )
   {
-    throw QgsProviderConnectionException( QString( ex.what() ) );
+    throw QgsProviderConnectionException( ex.what() );
   }
 
   return results;
+}
+
+void QgsHanaProviderConnection::executeSqlStatement( QgsHanaConnection &conn, const QString &sql ) const
+{
+  try
+  {
+    conn.execute( sql );
+    conn.commit();
+  }
+  catch ( const QgsHanaException &ex )
+  {
+    throw QgsProviderConnectionException( ex.what() );
+  }
 }
 
 void QgsHanaProviderConnection::executeSqlStatement( const QString &sql ) const
@@ -229,23 +257,15 @@ void QgsHanaProviderConnection::executeSqlStatement( const QString &sql ) const
   if ( conn.isNull() )
     throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
 
-  try
-  {
-    conn->execute( sql );
-    conn->commit();
-  }
-  catch ( const QgsHanaException &ex )
-  {
-    throw QgsProviderConnectionException( QString( ex.what() ) );
-  }
+  executeSqlStatement( *conn, sql );
 }
 
 QList<QgsHanaProviderConnection::TableProperty> QgsHanaProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
 {
   checkCapability( Capability::Tables );
   QList<QgsHanaProviderConnection::TableProperty> tables;
-  const QgsDataSourceUri dsUri { uri() };
 
+  const QgsDataSourceUri dsUri { uri() };
   QgsHanaConnectionRef conn( dsUri );
   if ( conn.isNull() )
     throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
@@ -290,7 +310,7 @@ QList<QgsHanaProviderConnection::TableProperty> QgsHanaProviderConnection::table
   }
   catch ( const QgsHanaException &ex )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Could not retrieve tables: %1, %2" ).arg( uri(), QString( ex.what() ) ) );
+    throw QgsProviderConnectionException( QObject::tr( "Could not retrieve tables: %1, %2" ).arg( uri(), ex.what() ) );
   }
 
   return tables;
@@ -300,7 +320,6 @@ QStringList QgsHanaProviderConnection::schemas( ) const
 {
   checkCapability( Capability::Schemas );
 
-  QStringList schemas;
   const QgsDataSourceUri dsUri { uri() };
   QgsHanaConnectionRef conn( dsUri );
 
@@ -309,15 +328,16 @@ QStringList QgsHanaProviderConnection::schemas( ) const
 
   try
   {
+    QStringList schemas;
     QVector<QgsHanaSchemaProperty> schemaProperties = conn->getSchemas( "" );
     for ( const auto &s : qgis::as_const( schemaProperties ) )
       schemas.push_back( s.name );
+    return schemas;
   }
   catch ( const QgsHanaException &ex )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Could not retrieve schemas: %1, %2" ).arg( uri(), QString( ex.what() ) ) );
+    throw QgsProviderConnectionException( QObject::tr( "Could not retrieve schemas: %1, %2" ).arg( uri(), ex.what() ) );
   }
-  return schemas;
 }
 
 void QgsHanaProviderConnection::store( const QString &name ) const
