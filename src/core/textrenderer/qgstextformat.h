@@ -431,6 +431,12 @@ class CORE_EXPORT QgsTextFormat
     const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP;
 
     /**
+     * Returns all field names referenced by the configuration (e.g. from data defined properties).
+     * \since QGIS 3.14
+     */
+    QSet<QString> referencedFields( const QgsRenderContext &context ) const;
+
+    /**
      * Sets the format's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
      * \see dataDefinedProperties()

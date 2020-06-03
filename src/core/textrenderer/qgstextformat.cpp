@@ -576,6 +576,16 @@ const QgsPropertyCollection &QgsTextFormat::dataDefinedProperties() const
   return d->mDataDefinedProperties;
 }
 
+QSet<QString> QgsTextFormat::referencedFields( const QgsRenderContext &context ) const
+{
+  QSet< QString > fields = d->mDataDefinedProperties.referencedFields( context.expressionContext(), true );
+  fields.unite( mBufferSettings.referencedFields( context ) );
+  fields.unite( mBackgroundSettings.referencedFields( context ) );
+  fields.unite( mShadowSettings.referencedFields( context ) );
+  fields.unite( mMaskSettings.referencedFields( context ) );
+  return fields;
+}
+
 void QgsTextFormat::setDataDefinedProperties( const QgsPropertyCollection &collection )
 {
   d->mDataDefinedProperties = collection;
