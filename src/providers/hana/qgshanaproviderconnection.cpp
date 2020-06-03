@@ -52,15 +52,18 @@ void QgsHanaProviderConnection::setCapabilities()
   /*
    * Capability::DropSchema         | CREATE SCHEMA from SYSTEMPRIVILEGE
    * Capability::CreateSchema       | CREATE SCHEMA from SYSTEMPRIVILEGE
-   * Capability::CreateVectorTable  | TODO if possible
-   * Capability::DropVectorTable    | TODO if possible
-   * Capability::RenameVectorTable  | TODO if possible
-   * Capability::ExecuteSql         | TODO if possible
-   * Capability::SqlLayers          | TODO if possible
+   * Capability::CreateVectorTable  | Note
+   * Capability::DropVectorTable    | Note
+   * Capability::RenameVectorTable  | Note
+   * Capability::ExecuteSql         | Note
+   * Capability::SqlLayers          | Note
    * Capability::Tables             | CATALOG READ or DATA ADMIN from SYSTEMPRIVILEGE
    * Capability::Schemas            | CATALOG READ or DATA ADMIN from SYSTEMPRIVILEGE
    * Capability::TableExists        | CATALOG READ or DATA ADMIN from SYSTEMPRIVILEGE
    * Capability::Spatial,           | Always TRUE
+   *
+   * Note: Everyone has this privilege, but the execution might fail if the user does
+   *       not have the necessary privileges for one of the objects in the query.
    */
 
   mCapabilities =
@@ -82,7 +85,7 @@ void QgsHanaProviderConnection::setCapabilities()
   {
     QString privType = rsPrivileges->getString( 1 );
     if ( privType == QStringLiteral( "CREATE SCHEMA" ) )
-      mCapabilities |= Capability::CreateSchema | Capability::DropSchema;
+      mCapabilities |= Capability::CreateSchema | Capability::DropSchema | Capability::RenameSchema;
     else if ( privType == QStringLiteral( "CATALOG READ" ) || privType == QStringLiteral( "DATA ADMIN" ) )
       mCapabilities |= Capability::Schemas | Capability::Tables | Capability::TableExists;
   }
@@ -177,6 +180,13 @@ void QgsHanaProviderConnection::dropSchema( const QString &name,  bool force ) c
   executeSqlStatement( QStringLiteral( "DROP SCHEMA %1 %2" )
                        .arg( QgsHanaUtils::quotedIdentifier( name ) )
                        .arg( force ? QStringLiteral( "CASCADE" ) : QString() ) );
+}
+
+void QgsHanaProviderConnection::renameSchema( const QString &name, const QString &newName ) const
+{
+  checkCapability( Capability::RenameSchema );
+  executeSqlStatement( QStringLiteral( "RENAME SCHEMA %1 TO %2" )
+                       .arg( QgsHanaUtils::quotedIdentifier( name ), QgsHanaUtils::quotedIdentifier( newName ) ) );
 }
 
 QList<QVariantList> QgsHanaProviderConnection::executeSql( const QString &sql ) const

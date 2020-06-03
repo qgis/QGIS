@@ -42,6 +42,7 @@ class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
     void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const override;
     void createSchema( const QString &name ) const override;
     void dropSchema( const QString &name, bool force = false ) const override;
+    void renameSchema( const QString &name, const QString &newName ) const override;
     QList<QVariantList> executeSql( const QString &sql ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema,
         const TableFlags &flags = nullptr ) const override;

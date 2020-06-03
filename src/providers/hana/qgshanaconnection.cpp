@@ -103,9 +103,9 @@ QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &
     conn->setAutoCommit( false );
     QString errorMessage = "";
 
-    auto connect = [&]( odbc::ConnectionRef & conn,
-                        const QgsDataSourceUri & uri,
-                        QString & errorMessage )
+    auto connect = []( odbc::ConnectionRef & conn,
+                       const QgsDataSourceUri & uri,
+                       QString & errorMessage )
     {
       try
       {

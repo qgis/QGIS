@@ -1159,7 +1159,7 @@ bool QgsHanaProvider::isSrsRoundEarth( int srsId ) const
   QString sql = QStringLiteral( "SELECT ROUND_EARTH FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS WHERE SRS_ID = ?" );
   QgsHanaConnectionRef conn( mUri );
   QVariant roundEarth = conn->executeScalar( sql, { srsId} );
-  return roundEarth.toString() == "TRUE";
+  return roundEarth.toString() == QLatin1String( "TRUE" );
 }
 
 int QgsHanaProvider::readSrid()
