@@ -37,25 +37,10 @@ void QgsMeshStaticDatasetWidget::syncToLayer()
   if ( !mLayer || !mLayer->dataProvider() )
     return;
 
-  mScalarDatasetGroup = mLayer->rendererSettings().activeScalarDatasetGroup();
-  mVectorDatasetGroup = mLayer->rendererSettings().activeVectorDatasetGroup();
   mDatasetScalarModel->setMeshLayer( mLayer );
-  mDatasetScalarModel->setDatasetGroup( mScalarDatasetGroup );
   mDatasetVectorModel->setMeshLayer( mLayer );
-  mDatasetVectorModel->setDatasetGroup( mVectorDatasetGroup );
-
-  QgsMeshDatasetIndex scalarStaticIndex = mLayer->staticScalarDatasetIndex();
-  QgsMeshDatasetIndex vectorStaticIndex = mLayer->staticScalarDatasetIndex();
-
-  if ( scalarStaticIndex.dataset() < mLayer->dataProvider()->datasetCount( scalarStaticIndex.group() ) )
-    mScalarDatasetComboBox->setCurrentIndex( scalarStaticIndex.dataset() + 1 );
-  else
-    mScalarDatasetComboBox->setCurrentIndex( 0 );
-
-  if ( vectorStaticIndex.dataset() < mLayer->dataProvider()->datasetCount( vectorStaticIndex.group() ) )
-    mVectorDatasetComboBox->setCurrentIndex( vectorStaticIndex.dataset() + 1 );
-  else
-    mVectorDatasetComboBox->setCurrentIndex( 0 );
+  setScalarDatasetGroup( mLayer->rendererSettings().activeScalarDatasetGroup() );
+  setVectorDatasetGroup( mLayer->rendererSettings().activeVectorDatasetGroup() );
 }
 
 void QgsMeshStaticDatasetWidget::apply()
@@ -71,16 +56,40 @@ void QgsMeshStaticDatasetWidget::setScalarDatasetGroup( int index )
 {
   mScalarDatasetGroup = index;
   mDatasetScalarModel->setDatasetGroup( index );
+  mScalarDatasetComboBox->setEnabled( mScalarDatasetGroup >= 0 );
   if ( mLayer && mLayer->dataProvider() )
+  {
     mScalarName->setText( mLayer->dataProvider()->datasetGroupMetadata( index ).name() );
+    setScalarDatasetIndex( mLayer->staticScalarDatasetIndex().dataset() );
+  }
 }
 
 void QgsMeshStaticDatasetWidget::setVectorDatasetGroup( int index )
 {
   mVectorDatasetGroup = index;
   mDatasetVectorModel->setDatasetGroup( index );
+  mVectorDatasetComboBox->setEnabled( mVectorDatasetGroup >= 0 );
   if ( mLayer && mLayer->dataProvider() )
+  {
     mVectorName->setText( mLayer->dataProvider()->datasetGroupMetadata( index ).name() );
+    setVectorDatasetIndex( mLayer->staticVectorDatasetIndex().dataset() );
+  }
+}
+
+void QgsMeshStaticDatasetWidget::setScalarDatasetIndex( int index )
+{
+  if ( index < mLayer->dataProvider()->datasetCount( mScalarDatasetGroup ) )
+    mScalarDatasetComboBox->setCurrentIndex( index + 1 );
+  else
+    mScalarDatasetComboBox->setCurrentIndex( 0 );
+}
+
+void QgsMeshStaticDatasetWidget::setVectorDatasetIndex( int index )
+{
+  if ( index < mLayer->dataProvider()->datasetCount( mVectorDatasetGroup ) )
+    mVectorDatasetComboBox->setCurrentIndex( index + 1 );
+  else
+    mVectorDatasetComboBox->setCurrentIndex( 0 );
 }
 
 QgsMeshDatasetListModel::QgsMeshDatasetListModel( QObject *parent ): QAbstractListModel( parent )

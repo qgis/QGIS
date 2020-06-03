@@ -393,6 +393,10 @@ void QgsMeshLayerProperties::apply()
 
   // notify the project we've made a change
   QgsProject::instance()->setDirty( true );
+
+  // Resync what have to be resync (widget that can be changed by other properties part)
+  mStaticDatasetWidget->syncToLayer();
+  mRendererMeshPropertiesWidget->syncToLayer();
 }
 
 void QgsMeshLayerProperties::changeCrs( const QgsCoordinateReferenceSystem &crs )
