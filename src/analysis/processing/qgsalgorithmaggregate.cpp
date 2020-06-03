@@ -137,8 +137,8 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
   double progressStep = count > 0 ? 50.0 / count : 1;
   long long current = 0;
 
-  QMap< QVariant, Group > groups;
-  QVariantList keys; // We need deterministic order for the tests
+  QHash< QVariantList, Group > groups;
+  QVector< QVariantList > keys; // We need deterministic order for the tests
   QgsFeature feature;
 
   QgsFeatureIterator it = mSource->getFeatures( QgsFeatureRequest() );
@@ -152,7 +152,11 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
                                     mGroupByExpression.evalErrorString() ) );
     }
 
-    if ( !groups.contains( groupByValue ) )
+    // upgrade group by value to a list, so that we get correct behavior with the QHash
+    const QVariantList key = groupByValue.type() == QVariant::List ? groupByValue.toList() : ( QVariantList() << groupByValue );
+
+    auto groupIt = groups.constFind( key );
+    if ( groupIt == groups.constEnd() )
     {
       QString id = QStringLiteral( "memory:" );
       std::unique_ptr< QgsFeatureSink > sink( QgsProcessingUtils::createFeatureSink( id,
@@ -169,12 +173,12 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
       group.sink = sink.release();
       group.layer = layer;
       group.feature = feature;
-      groups[groupByValue] = group;
-      keys.append( groupByValue );
+      groups[key] = group;
+      keys.append( key );
     }
     else
     {
-      groups[groupByValue].sink->addFeature( feature, QgsFeatureSink::FastInsert );
+      groupIt->sink->addFeature( feature, QgsFeatureSink::FastInsert );
     }
 
     current++;
@@ -193,7 +197,7 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
     progressStep = 50.0 / keys.size();
 
   current = 0;
-  for ( const QVariant &key : keys )
+  for ( const QVariantList &key : keys )
   {
     Group &group = groups[ key ];
 
@@ -213,7 +217,11 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
       geometry = QgsGeometry::unaryUnion( geometry.asGeometryCollection() );
       if ( geometry.isEmpty() )
       {
-        throw QgsProcessingException( QObject::tr( "Impossible to combine geometries for %1 = %2" ).arg( mGroupBy, key.toString() ) );
+        QStringList keyString;
+        for ( const QVariant &v : key )
+          keyString << v.toString();
+
+        throw QgsProcessingException( QObject::tr( "Impossible to combine geometries for %1 = %2" ).arg( mGroupBy, keyString.join( ',' ) ) );
       }
     }
 
