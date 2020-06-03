@@ -74,6 +74,7 @@ class APP_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
 
     void onTimeReferenceChange();
 
+    void onStaticDatasetCheckBoxChanged();
   private:
     //! Pointer to the mesh styling widget
     QgsRendererMeshPropertiesWidget *mRendererMeshPropertiesWidget = nullptr;
@@ -88,6 +89,8 @@ class APP_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
      * Previous layer style. Used to reset style to previous state if new style
      * was loaded but dialog is canceled */
     QgsMapLayerStyle mOldStyle;
+
+    bool mIsMapSettingsTemporal = false;
 
     friend class TestQgsMeshLayerPropertiesDialog;
 
