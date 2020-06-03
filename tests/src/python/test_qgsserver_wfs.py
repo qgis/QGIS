@@ -344,6 +344,33 @@ class TestQgsServerWFS(QgsServerTestBase):
 """
         tests.append(('within3857FilterTemplate_post', within3857FilterTemplate.format("")))
 
+        # Requesting features in 3857 and the filter is in 4326
+        within4326FilterTemplate3857 = """<?xml version="1.0" encoding="UTF-8"?>
+<wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+  <wfs:Query typeName="testlayer" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
+    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+      <Within>
+        <PropertyName>geometry</PropertyName>
+        <Polygon xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
+          <exterior>
+            <LinearRing srsName="EPSG:4326">
+              <posList srsDimension="2">
+                8.20354698 44.90143567
+                8.20354700 44.90143567
+                8.20354700 44.90143569
+                8.20354698 44.90143569
+                8.20354698 44.90143567
+              </posList>
+            </LinearRing>
+          </exterior>
+        </Polygon>
+      </Within>
+    </ogc:Filter>
+  </wfs:Query>
+</wfs:GetFeature>
+"""
+        tests.append(('within4326FilterTemplate3857_post', within4326FilterTemplate3857.format("")))
+
         srsTwoLayersTemplate = """<?xml version="1.0" encoding="UTF-8"?>
 <wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
   <wfs:Query typeName="testlayer" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
