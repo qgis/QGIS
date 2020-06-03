@@ -74,6 +74,9 @@ class APP_NO_EXPORT QgsMeshStaticDatasetWidget  : public QWidget, private Ui::Qg
     void setVectorDatasetGroup( int index );
 
   private:
+    void setScalarDatasetIndex( int index );
+    void setVectorDatasetIndex( int index );
+
     int mScalarDatasetGroup = -1;
     int mVectorDatasetGroup = -1;
 
