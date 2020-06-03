@@ -96,6 +96,10 @@ void QgsLayoutToPdfAlgorithm::initAlgorithm( const QVariantMap & )
   textFormat->setFlags( textFormat->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( textFormat.release() );
 
+  std::unique_ptr< QgsProcessingParameterBoolean > layeredExport = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "SEPARATE_LAYERS" ), QObject::tr( "Export layers as separate PDF files" ), false );
+  layeredExport->setFlags( layeredExport->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( layeredExport.release() );
+
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "PDF file" ), QObject::tr( "PDF Format" ) + " (*.pdf *.PDF)" ) );
 }
 
@@ -132,6 +136,7 @@ QVariantMap QgsLayoutToPdfAlgorithm::processAlgorithm( const QVariantMap &parame
   settings.exportMetadata = parameterAsBool( parameters, QStringLiteral( "INCLUDE_METADATA" ), context );
   settings.simplifyGeometries = parameterAsBool( parameters, QStringLiteral( "SIMPLIFY" ), context );
   settings.textRenderFormat = parameterAsEnum( parameters, QStringLiteral( "TEXT_FORMAT" ), context ) == 0 ? QgsRenderContext::TextFormatAlwaysOutlines : QgsRenderContext::TextFormatAlwaysText;
+  settings.exportLayersAsSeperateFiles = parameterAsBool( parameters, QStringLiteral( "SEPARATE_LAYERS" ), context );
 
   if ( parameterAsBool( parameters, QStringLiteral( "DISABLE_TILED" ), context ) )
     settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
