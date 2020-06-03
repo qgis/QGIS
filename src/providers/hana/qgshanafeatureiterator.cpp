@@ -26,8 +26,6 @@
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
 
-using namespace odbc;
-
 static QString andWhereClauses( const QString &c1, const QString &c2 )
 {
   if ( c1.isEmpty() )

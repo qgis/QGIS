@@ -21,6 +21,7 @@
 #include <QString>
 
 #include "odbc/Exception.h"
+
 using namespace odbc;
 
 QgsHanaResultSet::QgsHanaResultSet( ResultSetRef &&resultSet )

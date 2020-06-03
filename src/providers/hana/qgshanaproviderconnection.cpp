@@ -25,14 +25,6 @@
 #include "qgsexception.h"
 #include "qgssettings.h"
 
-#include "odbc/Connection.h"
-#include "odbc/Exception.h"
-#include "odbc/ResultSet.h"
-#include "odbc/ResultSetMetaData.h"
-#include "odbc/Statement.h"
-
-using namespace odbc;
-
 QgsHanaProviderConnection::QgsHanaProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
 {

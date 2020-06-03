@@ -42,7 +42,6 @@
 
 #include <ctype.h>
 
-#include "odbc/Exception.h"
 #include "odbc/PreparedStatement.h"
 #include "odbc/ResultSetMetaData.h"
 
