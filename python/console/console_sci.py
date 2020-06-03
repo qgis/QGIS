@@ -94,6 +94,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.setMarginsFont(font)
         self.setMarginWidth(1, "00000")
         self.setMarginType(1, 5)
+        self.setCaretLineVisible(False)
 
         self.buffer = []
 
@@ -179,8 +180,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                                                                        QColor(self.MATCHED_BRACE_BACKGROUND_COLOR))))
         self.setMatchedBraceForegroundColor(QColor(self.settings.value("pythonConsole/matchedBraceForegroundColor",
                                                                        QColor(self.MATCHED_BRACE_FOREGROUND_COLOR))))
-        self.setMarginsBackgroundColor(
-            QColor(self.settings.value("pythonConsole/marginBackgroundColor", QColor(self.MARGIN_BACKGROUND_COLOR))))
+        self.setMarginsBackgroundColor(QColor(self.settings.value("pythonConsole/paperBackgroundColor", QColor(self.BACKGROUND_COLOR))))
 
         # Sets minimum height for input area based of font metric
         self._setMinimumHeight()
@@ -314,6 +314,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.setCursorPosition(0, 0)
         self.ensureCursorVisible()
         self.ensureLineVisible(0)
+        self.displayPrompt(False)
 
     def move_cursor_to_end(self):
         """Move cursor to end of text"""
@@ -321,6 +322,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.setCursorPosition(line, index)
         self.ensureCursorVisible()
         self.ensureLineVisible(line)
+        self.displayPrompt(False)
 
     def is_cursor_on_last_line(self):
         """Return True if cursor is on the last line"""
