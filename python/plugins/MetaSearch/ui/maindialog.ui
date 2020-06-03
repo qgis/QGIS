@@ -501,12 +501,12 @@
           <item row="1" column="0">
            <widget class="QLabel" name="label_11">
             <property name="text">
-             <string>Disable SSL</string>
+             <string>Disable SSL verification</string>
             </property>
            </widget>
           </item>
           <item row="1" column="2">
-           <widget class="QCheckBox" name="disableSSL">
+           <widget class="QCheckBox" name="disableSSLVerification">
             <property name="text">
              <string/>
             </property>
