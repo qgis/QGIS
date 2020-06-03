@@ -27,9 +27,9 @@
 
 #include "odbc/DatabaseMetaData.h"
 #include "odbc/PreparedStatement.h"
-#include "odbc/Statement.h"
 #include "odbc/ResultSet.h"
 #include "odbc/ResultSetMetaData.h"
+#include "odbc/Statement.h"
 
 using namespace odbc;
 
@@ -39,20 +39,23 @@ typedef std::unique_ptr<QgsHanaResultSet> QgsHanaResultSetRef;
 class QgsHanaResultSet
 {
   private:
+    friend class QgsHanaConnection;
+  private:
     QgsHanaResultSet( ResultSetRef &&resultSet );
 
   public:
     static QgsHanaResultSetRef create( PreparedStatementRef &stmt );
     static QgsHanaResultSetRef create( StatementRef &stmt, const QString &sql );
-    static QgsHanaResultSetRef getColumns( DatabaseMetaDataRef &metadata, const QString &schemaName, const QString &tableName, const QString &fieldName );
 
     void close();
     bool next();
 
+    double getDouble( unsigned short columnIndex );
     QString getString( unsigned short columnIndex );
     QVariant getValue( unsigned short columnIndex );
     QgsGeometry getGeometry( unsigned short columnIndex );
-    ResultSetMetaDataRef getMetadata() { return mResultSet->getMetaData() ; }
+
+    ResultSetMetaData &getMetadata() { return *mMetadata; }
 
   private:
     ResultSetRef mResultSet;

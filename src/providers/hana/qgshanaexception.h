@@ -18,6 +18,7 @@
 #define QGSHANAEXCEPTION_H
 
 #include "qexception.h"
+#include "qgslogger.h"
 #include "qgshanautils.h"
 
 class QgsHanaException final : public QException
@@ -26,6 +27,7 @@ class QgsHanaException final : public QException
     explicit QgsHanaException( const char *what ) noexcept
       : mMessage( QgsHanaUtils::formatErrorMessage( what ).toStdString() )
     {
+      QgsDebugMsg( what );
     }
 
     void raise() const override  { throw *this;  }

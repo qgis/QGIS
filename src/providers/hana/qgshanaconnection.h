@@ -20,6 +20,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatasourceuri.h"
 #include "qgshanatablemodel.h"
+#include "qgshanaresultset.h"
 #include "qgslogger.h"
 
 #include "odbc/Forwards.h"
@@ -33,9 +34,20 @@ class QgsHanaConnection : public QObject
     ~QgsHanaConnection() override;
 
     QString connInfo();
-    void disconnect();
 
-    bool dropTable( const QString &schemaName, const QString &tableName, QString *errMessage );
+    void execute( const QString &sql );
+    bool execute( const QString &sql, QString *errorMessage );
+    QgsHanaResultSetRef executeQuery( const QString &sql );
+    QgsHanaResultSetRef executeQuery( const QString &sql, const QVariantList &args );
+    size_t executeCountQuery( const QString &sql );
+    size_t executeCountQuery( const QString &sql, const QVariantList &args );
+    QVariant executeScalar( const QString &sql );
+    QVariant executeScalar( const QString &sql, const QVariantList &args );
+
+    odbc::PreparedStatementRef prepareStatement( const QString &sql );
+
+    void commit();
+    void rollback();
 
     const QString &getDatabaseVersion();
     const QString &getUserName();
@@ -48,35 +60,27 @@ class QgsHanaConnection : public QObject
     QVector<QgsHanaSchemaProperty> getSchemas( const QString &ownerName );
     QgsWkbTypes::Type getLayerGeometryType( const QgsHanaLayerProperty &layerProperty );
     QString getColumnDataType( const QString &schemaName, const QString &tableName, const QString &columnName );
-
-    odbc::ConnectionRef &getNativeRef() { return mConnection; }
+    QgsHanaResultSetRef getColumns( const QString &schemaName, const QString &tableName, const QString &fieldName );
 
     static QgsHanaConnection *createConnection( const QgsDataSourceUri &uri );
-    static QgsHanaConnection *createConnection( const QgsDataSourceUri &uri, QString *errorMessage );
-
-    static void setConnectionAttemptCanceled( bool value ) {  sConnectionAttemptCanceled = value;  }
-    static bool isConnectionAttemptCanceled() {  return sConnectionAttemptCanceled;  }
+    static QgsHanaConnection *createConnection( const QgsDataSourceUri &uri, bool *cancelled );
+    static QgsHanaConnection *createConnection( const QgsDataSourceUri &uri, bool *cancelled, QString *errorMessage );
 
     static QStringList connectionList();
 
   private:
-    explicit QgsHanaConnection( const QgsDataSourceUri &uri );
+    QgsHanaConnection( odbc::ConnectionRef connection, const QgsDataSourceUri &uri );
 
     int getLayerSRID( const QgsHanaLayerProperty &layerProperty );
     QStringList getLayerPrimaryeKeys( const QgsHanaLayerProperty &layerProperty );
 
-    static bool connect(
-      odbc::ConnectionRef &conn,
-      const QgsDataSourceUri &uri,
-      QString &errorMessage );
+    PreparedStatementRef createPreparedStatement( const QString &sql, const QVariantList &args );
 
   private:
     odbc::ConnectionRef mConnection;
     QgsDataSourceUri mUri;
     QString mDatabaseVersion;
     QString mUserName;
-
-    static bool sConnectionAttemptCanceled;
 };
 
 class QgsHanaConnectionRef

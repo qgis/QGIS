@@ -20,6 +20,9 @@
 #include "qgslogger.h"
 #include <QString>
 
+#include "odbc/Exception.h"
+using namespace odbc;
+
 QgsHanaResultSet::QgsHanaResultSet( ResultSetRef &&resultSet )
   : mResultSet( std::move( resultSet ) )
   , mMetadata( mResultSet->getMetaData() )
@@ -28,31 +31,57 @@ QgsHanaResultSet::QgsHanaResultSet( ResultSetRef &&resultSet )
 
 QgsHanaResultSetRef QgsHanaResultSet::create( StatementRef &stmt, const QString &sql )
 {
-  QgsHanaResultSetRef ret( new QgsHanaResultSet( stmt->executeQuery( QgsHanaUtils::toQueryString( sql ) ) ) );
-  return ret;
+  try
+  {
+    QgsHanaResultSetRef ret( new QgsHanaResultSet( stmt->executeQuery( QgsHanaUtils::toQueryString( sql ) ) ) );
+    return ret;
+  }
+  catch ( const Exception &ex )
+  {
+    throw QgsHanaException( ex.what() );
+  }
 }
 
 QgsHanaResultSetRef QgsHanaResultSet::create( PreparedStatementRef &stmt )
 {
-  QgsHanaResultSetRef ret( new QgsHanaResultSet( stmt->executeQuery() ) );
-  return ret;
-}
-
-QgsHanaResultSetRef QgsHanaResultSet::getColumns( DatabaseMetaDataRef &metadata, const QString &schemaName, const QString &tableName, const QString &fieldName )
-{
-  QgsHanaResultSetRef ret( new QgsHanaResultSet( metadata->getColumns( nullptr,
-                           schemaName.toStdString().c_str(), tableName.toStdString().c_str(), fieldName.toStdString().c_str() ) ) );
-  return ret;
+  try
+  {
+    QgsHanaResultSetRef ret( new QgsHanaResultSet( stmt->executeQuery() ) );
+    return ret;
+  }
+  catch ( const Exception &ex )
+  {
+    throw QgsHanaException( ex.what() );
+  }
 }
 
 void QgsHanaResultSet::close()
 {
-  mResultSet->close();
+  try
+  {
+    mResultSet->close();
+  }
+  catch ( const Exception &ex )
+  {
+    throw QgsHanaException( ex.what() );
+  }
 }
 
 bool QgsHanaResultSet::next()
 {
-  return mResultSet->next();
+  try
+  {
+    return mResultSet->next();
+  }
+  catch ( const Exception &ex )
+  {
+    throw QgsHanaException( ex.what() );
+  }
+}
+
+double QgsHanaResultSet::getDouble( unsigned short columnIndex )
+{
+  return *mResultSet->getDouble( columnIndex );
 }
 
 QString QgsHanaResultSet::getString( unsigned short columnIndex )

@@ -323,7 +323,7 @@ void QgsHanaNewConnection::testConnection()
   readSettingsFromControls( settings );
 
   QString errorMsg;
-  unique_ptr<QgsHanaConnection> conn( QgsHanaConnection::createConnection( settings.toDataSourceUri(), &errorMsg ) );
+  unique_ptr<QgsHanaConnection> conn( QgsHanaConnection::createConnection( settings.toDataSourceUri(), nullptr, &errorMsg ) );
 
   if ( conn )
     bar->pushMessage( tr( "Connection to the server was successful." ), Qgis::Info );

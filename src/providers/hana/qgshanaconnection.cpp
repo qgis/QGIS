@@ -45,66 +45,42 @@ using namespace std;
 static const uint8_t CREDENTIALS_INPUT_MAX_ATTEMPTS = 5;
 static const int GEOM_TYPE_SELECT_LIMIT = 10;
 
-bool QgsHanaConnection::sConnectionAttemptCanceled = false;
-
-QgsHanaConnection::QgsHanaConnection( const QgsDataSourceUri &uri )
-  : mUri( uri )
+QgsHanaConnection::QgsHanaConnection( odbc::ConnectionRef connection,  const QgsDataSourceUri &uri )
+  : mConnection( connection )
+  , mUri( uri )
   , mDatabaseVersion( "" )
   , mUserName( "" )
 {
-  setConnectionAttemptCanceled( false );
-  ConnectionRef conn = QgsHanaDriver::instance()->createConnection();
-  conn->setAutoCommit( false );
-  QString errorMessage = "";
-
-  if ( !connect( conn, uri, errorMessage ) )
-  {
-    QString conninfo = uri.uri( false );
-    QString username = uri.username();
-    QString password = uri.password();
-    QgsDataSourceUri tmpUri( uri );
-
-    QgsCredentials::instance()->lock();
-
-    int i = 0;
-    while ( i < CREDENTIALS_INPUT_MAX_ATTEMPTS )
-    {
-      ++i;
-      bool ok = QgsCredentials::instance()->get( conninfo, username, password, errorMessage );
-      if ( !ok )
-      {
-        setConnectionAttemptCanceled( true );
-        break;
-      }
-
-      if ( !username.isEmpty() )
-        tmpUri.setUsername( username );
-      if ( !password.isEmpty() )
-        tmpUri.setPassword( password );
-
-      if ( connect( conn, tmpUri, errorMessage ) )
-        break;
-    }
-
-    QgsCredentials::instance()->put( conninfo, username, password );
-    QgsCredentials::instance()->unlock();
-  }
-
-  if ( conn->connected() )
-    mConnection = conn;
-  else
-    throw QgsHanaException( errorMessage.toStdString().c_str() );
 }
 
 QgsHanaConnection::~QgsHanaConnection()
 {
-  disconnect();
+  if ( !mConnection->connected() )
+    return;
+
+  try
+  {
+    // The rollback needs to be called here because the driver throws an exception
+    // if AutoCommit is set to false.
+    mConnection->rollback();
+
+    mConnection->disconnect();
+  }
+  catch ( const Exception &ex )
+  {
+    QgsMessageLog::logMessage( QgsHanaUtils::formatErrorMessage( ex.what() ), tr( "HANA" ) );
+  }
 }
 
 QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &uri )
 {
+  return createConnection( uri, nullptr, nullptr );
+}
+
+QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &uri, bool *cancelled )
+{
   QString errorMessage;
-  QgsHanaConnection *conn = createConnection( uri, &errorMessage );
+  QgsHanaConnection *conn = createConnection( uri, cancelled, &errorMessage );
 
   if ( !errorMessage.isEmpty() )
   {
@@ -116,19 +92,74 @@ QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &
   return conn;
 }
 
-QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &uri, QString *errorMessage )
+QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &uri, bool *cancelled, QString *errorMessage )
 {
+  if ( cancelled != nullptr )
+    *cancelled = false;
+
   try
   {
-    QgsHanaConnection *conn = new QgsHanaConnection( uri );
+    ConnectionRef conn = QgsHanaDriver::instance()->createConnection();
+    conn->setAutoCommit( false );
+    QString errorMessage = "";
 
-    if ( conn->getNativeRef().isNull() )
+    auto connect = [&]( odbc::ConnectionRef & conn,
+                        const QgsDataSourceUri & uri,
+                        QString & errorMessage )
     {
-      delete conn;
-      return nullptr;
+      try
+      {
+        QgsHanaConnectionStringBuilder sb( uri );
+        conn->connect( sb.toString().toStdString().c_str() );
+        errorMessage = "";
+      }
+      catch ( const Exception &ex )
+      {
+        errorMessage = QgsHanaUtils::formatErrorMessage( ex.what() );
+        QgsDebugMsg( errorMessage );
+      }
+
+      return conn->connected();
+    };
+
+    if ( !connect( conn, uri, errorMessage ) )
+    {
+      QString conninfo = uri.uri( false );
+      QString username = uri.username();
+      QString password = uri.password();
+      QgsDataSourceUri tmpUri( uri );
+
+      QgsCredentials::instance()->lock();
+
+      int i = 0;
+      while ( i < CREDENTIALS_INPUT_MAX_ATTEMPTS )
+      {
+        ++i;
+        bool ok = QgsCredentials::instance()->get( conninfo, username, password, errorMessage );
+        if ( !ok )
+        {
+          if ( cancelled != nullptr )
+            *cancelled = true;
+          break;
+        }
+
+        if ( !username.isEmpty() )
+          tmpUri.setUsername( username );
+        if ( !password.isEmpty() )
+          tmpUri.setPassword( password );
+
+        if ( connect( conn, tmpUri, errorMessage ) )
+          break;
+      }
+
+      QgsCredentials::instance()->put( conninfo, username, password );
+      QgsCredentials::instance()->unlock();
     }
 
-    return conn;
+    if ( conn->connected() )
+      return new QgsHanaConnection( conn, uri );
+    else
+      throw QgsHanaException( errorMessage.toStdString().c_str() );
   }
   catch ( const QgsHanaException &ex )
   {
@@ -146,58 +177,26 @@ QStringList QgsHanaConnection::connectionList()
   return settings.childGroups();
 }
 
-bool QgsHanaConnection::connect(
-  ConnectionRef &conn,
-  const QgsDataSourceUri &uri,
-  QString &errorMessage )
-{
-  try
-  {
-    QgsHanaConnectionStringBuilder sb( uri );
-    conn->connect( sb.toString().toStdString().c_str() );
-    errorMessage = "";
-  }
-  catch ( const Exception &ex )
-  {
-    errorMessage = QgsHanaUtils::formatErrorMessage( ex.what() );
-    QgsDebugMsg( errorMessage );
-  }
-
-  return conn->connected();
-}
-
 QString QgsHanaConnection::connInfo()
 {
   return QgsHanaUtils::connectionInfo( mUri );
 }
 
-void QgsHanaConnection::disconnect()
+void QgsHanaConnection::execute( const QString &sql )
 {
-  if ( mConnection.isNull() || !mConnection->connected() )
-    return;
-
   try
   {
-    // The rollback needs to be called here because the driver throws an exception
-    // if AutoCommit is set to false.
-    mConnection->rollback();
-
-    mConnection->disconnect();
+    StatementRef stmt = mConnection->createStatement();
+    stmt->execute( QgsHanaUtils::toQueryString( sql ) );
   }
   catch ( const Exception &ex )
   {
-    QgsMessageLog::logMessage( QgsHanaUtils::formatErrorMessage( ex.what() ), tr( "HANA" ) );
+    throw QgsHanaException( ex.what() );
   }
 }
 
-bool QgsHanaConnection::dropTable( const QString &schemaName, const QString &tableName, QString *errMessage )
+bool QgsHanaConnection::execute( const QString &sql, QString *errorMessage )
 {
-  if ( mConnection.isNull() )
-    return false;
-
-  QString sql = QStringLiteral( "DROP TABLE %1.%2" )
-                .arg( QgsHanaUtils::quotedIdentifier( schemaName ), QgsHanaUtils::quotedIdentifier( tableName ) );
-
   try
   {
     StatementRef stmt = mConnection->createStatement();
@@ -207,16 +206,148 @@ bool QgsHanaConnection::dropTable( const QString &schemaName, const QString &tab
   }
   catch ( const Exception &ex )
   {
-    if ( errMessage )
-      *errMessage = QgsHanaUtils::formatErrorMessage( ex.what() );
+    if ( errorMessage )
+      *errorMessage = QgsHanaUtils::formatErrorMessage( ex.what() );
   }
 
   return false;
 }
 
+QgsHanaResultSetRef QgsHanaConnection::executeQuery( const QString &sql )
+{
+  try
+  {
+    StatementRef stmt = mConnection->createStatement();
+    return QgsHanaResultSet::create( stmt, sql );
+  }
+  catch ( const Exception &ex )
+  {
+    throw QgsHanaException( ex.what() );
+  }
+}
+
+QgsHanaResultSetRef QgsHanaConnection::executeQuery( const QString &sql, const QVariantList &args )
+{
+  try
+  {
+    PreparedStatementRef stmt = createPreparedStatement( sql, args );
+    return QgsHanaResultSet::create( stmt );
+  }
+  catch ( const Exception &ex )
+  {
+    throw QgsHanaException( ex.what() );
+  }
+}
+
+size_t QgsHanaConnection::executeCountQuery( const QString &sql )
+{
+  try
+  {
+    StatementRef stmt = mConnection->createStatement();
+    ResultSetRef rs = stmt->executeQuery( QgsHanaUtils::toQueryString( sql ) );
+    rs->next();
+    size_t ret = static_cast<size_t>( *rs->getLong( 1 ) );
+    rs->close();
+    return ret;
+  }
+  catch ( const Exception &ex )
+  {
+    throw QgsHanaException( ex.what() );
+  }
+}
+
+size_t QgsHanaConnection::executeCountQuery( const QString &sql, const QVariantList &args )
+{
+  try
+  {
+    PreparedStatementRef stmt = createPreparedStatement( sql, args );
+    ResultSetRef rs = stmt->executeQuery();
+    rs->next();
+    size_t ret = static_cast<size_t>( *rs->getLong( 1 ) );
+    rs->close();
+    return ret;
+  }
+  catch ( const Exception &ex )
+  {
+    throw QgsHanaException( ex.what() );
+  }
+}
+
+QVariant QgsHanaConnection::executeScalar( const QString &sql )
+{
+  try
+  {
+    QVariant res;
+    StatementRef stmt = mConnection->createStatement();
+    QgsHanaResultSetRef resultSet = QgsHanaResultSet::create( stmt, sql );
+    if ( resultSet->next() )
+      res = resultSet->getValue( 1 );
+    resultSet->close();
+    return  res;
+  }
+  catch ( const Exception &ex )
+  {
+    throw QgsHanaException( ex.what() );
+  }
+}
+
+QVariant QgsHanaConnection::executeScalar( const QString &sql, const QVariantList &args )
+{
+  try
+  {
+    QVariant res;
+    PreparedStatementRef stmt = createPreparedStatement( sql, args );
+    QgsHanaResultSetRef resultSet = QgsHanaResultSet::create( stmt );
+    if ( resultSet->next() )
+      res = resultSet->getValue( 1 );
+    resultSet->close();
+    return  res;
+  }
+  catch ( const Exception &ex )
+  {
+    throw QgsHanaException( ex.what() );
+  }
+}
+
+odbc::PreparedStatementRef QgsHanaConnection::prepareStatement( const QString &sql )
+{
+  try
+  {
+    return mConnection->prepareStatement( QgsHanaUtils::toQueryString( sql ) );
+  }
+  catch ( const Exception &ex )
+  {
+    throw QgsHanaException( ex.what() );
+  }
+}
+
+void QgsHanaConnection::commit()
+{
+  try
+  {
+    mConnection->commit();
+  }
+  catch ( const Exception &ex )
+  {
+    throw QgsHanaException( ex.what() );
+  }
+}
+
+void QgsHanaConnection::rollback()
+{
+  try
+  {
+    mConnection->rollback();
+  }
+  catch ( const Exception &ex )
+  {
+    throw QgsHanaException( ex.what() );
+  }
+}
+
 const QString &QgsHanaConnection::getDatabaseVersion()
 {
-  if ( mDatabaseVersion.isEmpty() && !mConnection.isNull() )
+  if ( mDatabaseVersion.isEmpty() )
   {
     try
     {
@@ -234,23 +365,8 @@ const QString &QgsHanaConnection::getDatabaseVersion()
 
 const QString &QgsHanaConnection::getUserName()
 {
-  if ( mUserName.isEmpty() && !mConnection.isNull() )
-  {
-    try
-    {
-      StatementRef stmt = mConnection->createStatement();
-      ResultSetRef rs = stmt->executeQuery( "SELECT CURRENT_USER FROM DUMMY" );
-      while ( rs->next() )
-      {
-        mUserName = QgsHanaUtils::toQString( rs->getNString( 1 ) );
-      }
-      rs->close();
-    }
-    catch ( const Exception &ex )
-    {
-      throw QgsHanaException( ex.what() );
-    }
-  }
+  if ( mUserName.isEmpty() )
+    mUserName = executeScalar( QLatin1String( "SELECT CURRENT_USER FROM DUMMY" ) ).toString();
 
   return mUserName;
 }
@@ -601,6 +717,57 @@ QString QgsHanaConnection::getColumnDataType( const QString &schemaName, const Q
   }
 
   return ret;
+}
+
+QgsHanaResultSetRef QgsHanaConnection::getColumns( const QString &schemaName, const QString &tableName, const QString &fieldName )
+{
+  try
+  {
+    DatabaseMetaDataRef metadata = mConnection->getDatabaseMetaData();
+    QgsHanaResultSetRef ret( new QgsHanaResultSet( metadata->getColumns( nullptr,
+                             schemaName.toStdString().c_str(), tableName.toStdString().c_str(), fieldName.toStdString().c_str() ) ) );
+    return ret;
+  }
+  catch ( const Exception &ex )
+  {
+    throw QgsHanaException( ex.what() );
+  }
+}
+
+PreparedStatementRef QgsHanaConnection::createPreparedStatement( const QString &sql, const QVariantList &args )
+{
+  PreparedStatementRef stmt = mConnection->prepareStatement( QgsHanaUtils::toQueryString( sql ) );
+  if ( !args.isEmpty() )
+  {
+    for ( unsigned short i = 1; i <= args.size(); ++i )
+    {
+      const QVariant &value = args.at( i - 1 );
+      switch ( value.type() )
+      {
+        case QVariant::Type::Double:
+          stmt->setDouble( i, value.isNull() ? Double() : value.toDouble() );
+          break;
+        case QVariant::Type::Int:
+          stmt->setInt( i, value.isNull() ? Int() : value.toInt() );
+          break;
+        case QVariant::Type::UInt:
+          stmt->setUInt( i, value.isNull() ? UInt() : value.toUInt() );
+          break;
+        case QVariant::Type::LongLong:
+          stmt->setLong( i, value.isNull() ? Long() : value.toLongLong() );
+          break;
+        case QVariant::Type::ULongLong:
+          stmt->setULong( i, value.isNull() ? ULong() : value.toULongLong() );
+          break;
+        case QVariant::Type::String:
+          stmt->setNString( i, value.isNull() ? NString() : value.toString().toStdU16String() );
+          break;
+        default:
+          throw QgsHanaException( "Parameter type is not supported" );
+      }
+    }
+  }
+  return stmt;
 }
 
 QgsHanaConnectionRef::QgsHanaConnectionRef( const QgsDataSourceUri &uri )

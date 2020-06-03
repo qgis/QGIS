@@ -546,10 +546,12 @@ void QgsHanaSourceSelect::btnConnect_clicked()
   settings.setAllowGeometrylessTables( cbxAllowGeometrylessTables->isChecked() );
 
   const QgsDataSourceUri uri = settings.toDataSourceUri();
-  QgsHanaConnectionRef conn( uri );
-  if ( conn.isNull() )
+  bool cancelled = false;
+
+  unique_ptr<QgsHanaConnection> conn( QgsHanaConnection::createConnection( uri, &cancelled, nullptr ) );
+  if ( !conn )
   {
-    if ( !QgsHanaConnection::isConnectionAttemptCanceled() )
+    if ( !cancelled )
       QMessageBox::warning( this, tr( "HANA" ), tr( "Unable to connect to a database" ) );
     return;
   }

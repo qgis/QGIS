@@ -74,15 +74,13 @@ void QgsHanaProviderConnection::setCapabilities()
   };
 
   const QgsDataSourceUri dsUri { uri() };
-  QgsHanaConnectionRef connRef( dsUri );
-  ConnectionRef conn = connRef->getNativeRef();
-  StatementRef stmt = conn->createStatement();
+  QgsHanaConnectionRef conn( dsUri );
   const QString sql = QStringLiteral( "SELECT PRIVILEGE FROM PUBLIC.EFFECTIVE_PRIVILEGES "
                                       "WHERE USER_NAME = CURRENT_USER AND IS_VALID = 'TRUE' AND OBJECT_TYPE = 'SYSTEMPRIVILEGE'" );
-  ResultSetRef rsPrivileges = stmt->executeQuery( QgsHanaUtils::toQueryString( sql ) );
+  QgsHanaResultSetRef rsPrivileges = conn->executeQuery( sql );
   while ( rsPrivileges->next() )
   {
-    QString privType = QgsHanaUtils::toQString( *rsPrivileges->getString( 1 ) );
+    QString privType = rsPrivileges->getString( 1 );
     if ( privType == QStringLiteral( "CREATE SCHEMA" ) )
       mCapabilities |= Capability::CreateSchema | Capability::DropSchema;
     else if ( privType == QStringLiteral( "CATALOG READ" ) || privType == QStringLiteral( "DATA ADMIN" ) )
@@ -203,11 +201,8 @@ QList<QVariantList> QgsHanaProviderConnection::executeSqlQuery( const QString &s
 
   try
   {
-    ConnectionRef connRef = conn->getNativeRef();
-    StatementRef stmt = connRef->createStatement();
-    QgsHanaResultSetRef resultSet = QgsHanaResultSet::create( stmt, sql );
-    ResultSetMetaDataRef metadata = resultSet->getMetadata();
-    const unsigned short nColumns = metadata->getColumnCount();
+    QgsHanaResultSetRef resultSet = conn->executeQuery( sql );
+    const unsigned short nColumns = resultSet->getMetadata().getColumnCount();
     while ( resultSet->next() )
     {
       QVariantList row;
@@ -234,12 +229,10 @@ void QgsHanaProviderConnection::executeSqlStatement( const QString &sql ) const
 
   try
   {
-    ConnectionRef connRef = conn->getNativeRef();
-    StatementRef stmt = connRef->createStatement();
-    stmt->execute( QgsHanaUtils::toQueryString( sql ) );
-    connRef->commit();
+    conn->execute( sql );
+    conn->commit();
   }
-  catch ( const odbc::Exception &ex )
+  catch ( const QgsHanaException &ex )
   {
     throw QgsProviderConnectionException( QString( ex.what() ) );
   }
@@ -292,10 +285,6 @@ QList<QgsHanaProviderConnection::TableProperty> QgsHanaProviderConnection::table
         tables.push_back( property );
       }
     }
-  }
-  catch ( const odbc::Exception &ex )
-  {
-    throw QgsProviderConnectionException( QObject::tr( "Could not retrieve tables: %1, %2" ).arg( uri(), QString( ex.what() ) ) );
   }
   catch ( const QgsHanaException &ex )
   {

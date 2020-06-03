@@ -26,11 +26,6 @@
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
 
-#include "odbc/Connection.h"
-#include "odbc/Exception.h"
-#include "odbc/PreparedStatement.h"
-#include "odbc/ResultSet.h"
-
 using namespace odbc;
 
 static QString andWhereClauses( const QString &c1, const QString &c2 )
@@ -48,13 +43,13 @@ QgsHanaFeatureIterator::QgsHanaFeatureIterator(
   bool ownSource,
   const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsHanaFeatureSource>( source, ownSource, request )
-  , mConnRef( source->mUri )
+  , mConnection( source->mUri )
   , mSrsExtent( source->mSrsExtent )
   , mFidColumn( source->mFidColumn )
 {
   mClosed = true;
 
-  if ( mConnRef.isNull() )
+  if ( mConnection.isNull() )
   {
     iteratorClosed();
     return;
@@ -75,16 +70,13 @@ QgsHanaFeatureIterator::QgsHanaFeatureIterator(
 
   try
   {
-    QString sql = buildSqlQuery( request );
-    PreparedStatementRef stmt = mConnRef->getNativeRef()->prepareStatement( QgsHanaUtils::toQueryString( sql ) );
-    mSqlQuery = sql;
+    mSqlQuery = buildSqlQuery( request );
     mClosed = false;
 
     rewind();
   }
-  catch ( const odbc::Exception &ex )
+  catch ( const QgsHanaException & )
   {
-    QgsDebugMsg( ex.what() );
     iteratorClosed();
   }
 }
@@ -101,8 +93,7 @@ bool QgsHanaFeatureIterator::rewind()
     return false;
 
   mResultSet.reset();
-  PreparedStatementRef stmt =  mConnRef->getNativeRef()->prepareStatement( QgsHanaUtils::toQueryString( mSqlQuery ) );
-  mResultSet = QgsHanaResultSet::create( stmt );
+  mResultSet = mConnection->executeQuery( mSqlQuery );
   return true;
 }
 
@@ -125,59 +116,53 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
   if ( mClosed )
     return false;
 
-  try
+  if ( !mResultSet->next() )
+    return false;
+
+  feature.initAttributes( mSource->mFields.count() );
+  unsigned short paramIndex = 1;
+
+  // Read feature id
+  if ( !mFidColumn.isEmpty() )
   {
-    if ( !mResultSet->next() )
-      return false;
+    QVariant id = mResultSet->getValue( paramIndex );
+    feature.setId( id.toLongLong() );
+    feature.setAttribute( 0, id );
+    ++paramIndex;
+  }
+  else
+  {
+    feature.setId( 0u );
+  }
 
-    feature.initAttributes( mSource->mFields.count() );
-    unsigned short paramIndex = 1;
-
-    // Read feature id
-    if ( !mFidColumn.isEmpty() )
+  // Read attributes
+  if ( mHasAttributes )
+  {
+    Q_FOREACH ( int idx, mAttributesToFetch )
     {
-      QVariant id = mResultSet->getValue( paramIndex );
-      feature.setId( id.toLongLong() );
-      feature.setAttribute( 0, id );
+      feature.setAttribute( idx, mResultSet->getValue( paramIndex ) );
       ++paramIndex;
     }
-    else
-    {
-      feature.setId( 0u );
-    }
-
-    // Read attributes
-    if ( mHasAttributes )
-    {
-      Q_FOREACH ( int idx, mAttributesToFetch )
-      {
-        feature.setAttribute( idx, mResultSet->getValue( paramIndex ) );
-        ++paramIndex;
-      }
-    }
-
-    // Read geometry
-    if ( mHasGeometryColumn )
-    {
-      QgsGeometry geom = mResultSet->getGeometry( paramIndex );
-      if ( !geom.isNull() )
-        feature.setGeometry( geom );
-      else
-        feature.clearGeometry();
-    }
-    else
-    {
-      feature.clearGeometry();
-    }
-
-    feature.setValid( true );
-    feature.setFields( mSource->mFields ); // allow name-based attribute lookups
-    geometryToDestinationCrs( feature, mTransform );
   }
-  catch ( const Exception &ex )
+
+  // Read geometry
+  if ( mHasGeometryColumn )
   {
-    throw QgsHanaException( ex.what() );
+    QgsGeometry geom = mResultSet->getGeometry( paramIndex );
+    if ( !geom.isNull() )
+      feature.setGeometry( geom );
+    else
+      feature.clearGeometry();
   }
+  else
+  {
+    feature.clearGeometry();
+  }
+
+  feature.setValid( true );
+  feature.setFields( mSource->mFields ); // allow name-based attribute lookups
+  geometryToDestinationCrs( feature, mTransform );
+
 
   return true;
 }
@@ -339,7 +324,7 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
   QString sqlFilter;
   // Set spatial filter
   if ( !( filterRect.isNull() || filterRect.isEmpty() ) && mSource->isSpatial() && mHasGeometryColumn )
-    sqlFilter = getBBOXFilter( filterRect, QgsHanaUtils::toHANAVersion( mConnRef->getDatabaseVersion() ) );
+    sqlFilter = getBBOXFilter( filterRect, QgsHanaUtils::toHANAVersion( mConnection->getDatabaseVersion() ) );
 
   if ( !mSource->mQueryWhereClause.isEmpty() )
     sqlFilter = andWhereClauses( sqlFilter, mSource->mQueryWhereClause );

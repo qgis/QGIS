@@ -77,7 +77,7 @@ class QgsHanaFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsHa
     QString getBBOXFilter( const QgsRectangle &bbox, const QVersionNumber &dbVersion ) const;
 
   private:
-    QgsHanaConnectionRef mConnRef;
+    QgsHanaConnectionRef mConnection;
     QgsHanaResultSetRef mResultSet;
     QString mSqlQuery = QString( "" );
     QgsRectangle mFilterRect;

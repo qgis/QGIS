@@ -19,6 +19,7 @@
 #include "qgshanadataitemguiprovider.h"
 #include "qgshananewconnection.h"
 #include "qgshanaprovider.h"
+#include "qgshanautils.h"
 #include "qgsnewnamedialog.h"
 
 #include <QInputDialog>
@@ -77,8 +78,11 @@ bool QgsHanaDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGui
     if ( conn.isNull() )
       return false;
 
+    QString sql = QStringLiteral( "DROP TABLE %1.%2" )
+                  .arg( QgsHanaUtils::quotedIdentifier( layerInfo.schemaName ), QgsHanaUtils::quotedIdentifier( layerInfo.tableName ) );
+
     QString errMessage;
-    bool res = conn->dropTable( layerInfo.schemaName, layerInfo.tableName, &errMessage );
+    bool res = conn->execute( sql, &errMessage );
     if ( !res )
     {
       QMessageBox::warning( nullptr, tr( "Delete %1" ).arg( typeName ), errMessage );
