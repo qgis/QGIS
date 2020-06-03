@@ -454,6 +454,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
         line, index = self.getCursorPosition()
         cmd = self.text(line)
+        hasSelectedText = self.hasSelectedText()
 
         if e.key() in (Qt.Key_Return, Qt.Key_Enter) and not self.isListActive():
             self.entered()
@@ -481,13 +482,11 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                 self.showNext()
             else:
                 QsciScintilla.keyPressEvent(self, e)
-
         # TODO: press event for auto-completion file directory
         else:
             t = e.text()
             self.autoCloseBracket = self.settings.value("pythonConsole/autoCloseBracket", False, type=bool)
             self.autoImport = self.settings.value("pythonConsole/autoInsertionImport", True, type=bool)
-            txt = cmd[:index].replace('>>> ', '').replace('... ', '')
             # Close bracket automatically
             if t in self.opening and self.autoCloseBracket:
                 i = self.opening.index(t)
@@ -497,27 +496,29 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                     self.insert(self.opening[i] + selText + self.closing[i])
                     self.setCursorPosition(endLine, endPos + 2)
                     return
-                elif t == '(' and (re.match(r'^[ \t]*def \w+$', txt)
-                                   or re.match(r'^[ \t]*class \w+$', txt)):
+                elif t == '(' and (re.match(r'^[ \t]*def \w+$', cmd)
+                                   or re.match(r'^[ \t]*class \w+$', cmd)):
                     self.insert('):')
                 else:
                     self.insert(self.closing[i])
             # FIXES #8392 (automatically removes the redundant char
             # when autoclosing brackets option is enabled)
             elif t in [')', ']', '}'] and self.autoCloseBracket:
-                txt = self.text(line)
                 try:
-                    if txt[index - 1] in self.opening and t == txt[index]:
+                    if cmd[index - 1] in self.opening and t == cmd[index]:
                         self.setCursorPosition(line, index + 1)
                         self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
                 except IndexError:
                     pass
             elif t == ' ' and self.autoImport:
                 ptrn = r'^[ \t]*from [\w.]+$'
-                if re.match(ptrn, txt):
+                if re.match(ptrn, cmd):
                     self.insert(' import')
                     self.setCursorPosition(line, index + 7)
             QsciScintilla.keyPressEvent(self, e)
+
+        if len(self.text(0)) == 0 or hasSelectedText:
+            self.displayPrompt(False)
 
     def contextMenuEvent(self, e):
         menu = QMenu(self)
