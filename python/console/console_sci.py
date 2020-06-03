@@ -299,10 +299,21 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         line = self.lines() - 1
         return line, len(self.text(line))
 
+    def is_cursor_at_start(self):
+        """Return True if cursor is at the end of text"""
+        cline, cindex = self.getCursorPosition()
+        return cline == 0 and cindex == 0
+
     def is_cursor_at_end(self):
         """Return True if cursor is at the end of text"""
         cline, cindex = self.getCursorPosition()
         return (cline, cindex) == self.get_end_pos()
+
+    def move_cursor_to_start(self):
+        """Move cursor to start of text"""
+        self.setCursorPosition(0, 0)
+        self.ensureCursorVisible()
+        self.ensureLineVisible(0)
 
     def move_cursor_to_end(self):
         """Move cursor to end of text"""
@@ -405,7 +416,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                 self.setText("")
             else:
                 self.setText(self.history[self.historyIndex])
-            self.move_cursor_to_end()
+            self.move_cursor_to_start()
             # self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
 
     def keyPressEvent(self, e):
@@ -458,9 +469,17 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             e.accept()
 
         elif e.key() == Qt.Key_Down and not self.isListActive():
-            self.showPrevious()
+            if self.is_cursor_at_end():
+                self.showPrevious()
+            else:
+                QsciScintilla.keyPressEvent(self, e)
+
         elif e.key() == Qt.Key_Up and not self.isListActive():
-            self.showNext()
+            if self.is_cursor_at_start():
+                self.showNext()
+            else:
+                QsciScintilla.keyPressEvent(self, e)
+
         # TODO: press event for auto-completion file directory
         else:
             t = e.text()
