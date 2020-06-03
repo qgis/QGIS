@@ -2816,10 +2816,14 @@ void QgisApp::createActions()
 
   connect( mActionDiagramProperties, &QAction::triggered, this, &QgisApp::diagramProperties );
 
-  // we can't set the shortcut on the copy action, because we need to restrict it's context to the canvas and it's children..
+  // we can't set the shortcut these actions, because we need to restrict their context to the canvas and it's children..
   QShortcut *copyShortcut = new QShortcut( QKeySequence::Copy, mMapCanvas );
   copyShortcut->setContext( Qt::WidgetWithChildrenShortcut );
   connect( copyShortcut, &QShortcut::activated, this, [ = ] { copySelectionToClipboard(); } );
+
+  QShortcut *selectAllShortcut = new QShortcut( QKeySequence::SelectAll, mMapCanvas );
+  selectAllShortcut->setContext( Qt::WidgetWithChildrenShortcut );
+  connect( selectAllShortcut, &QShortcut::activated, this, &QgisApp::selectAll );
 
 #ifndef HAVE_POSTGRESQL
   delete mActionAddPgLayer;
