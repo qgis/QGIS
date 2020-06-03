@@ -89,7 +89,7 @@ defaultMenuEntries.update({'qgis:checkvalidity': geometryToolsMenu,
 managementToolsMenu = vectorMenu + "/" + Processing.tr('&Data Management Tools')
 defaultMenuEntries.update({'native:reprojectlayer': managementToolsMenu,
                            'native:joinattributesbylocation': managementToolsMenu,
-                           'qgis:splitvectorlayer': managementToolsMenu,
+                           'native:splitvectorlayer': managementToolsMenu,
                            'native:mergevectorlayers': managementToolsMenu,
                            'native:createspatialindex': managementToolsMenu})
 
