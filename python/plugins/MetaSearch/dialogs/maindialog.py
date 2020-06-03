@@ -97,7 +97,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.startfrom = 0
         self.maxrecords = 10
         self.timeout = 10
-        self.disable_ssl = False
+        self.disable_ssl_verification = False
         self.constraints = []
 
         # Servers tab
@@ -448,9 +448,6 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         # set timeout
         self.timeout = self.spnTimeout.value()
-
-        # ssl mode
-        self.disable_ssl = self.disableSSL.isChecked()
 
         # bbox
         # CRS is WGS84 with axis order longitude, latitude
@@ -831,10 +828,12 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         identifier = get_item_data(item, 'identifier')
 
+        self.disable_ssl_verification = self.disableSSLVerification.isChecked()
+
         try:
             with OverrideCursor(Qt.WaitCursor):
                 auth = None
-                if self.disable_ssl:
+                if self.disable_ssl_verification:
                     auth = Authentication(verify=False)
                 cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout,  # spellok
                                           username=self.catalog_username,
@@ -914,10 +913,12 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
     def _get_csw(self):
         """convenience function to init owslib.csw.CatalogueServiceWeb"""  # spellok
 
+        self.disable_ssl_verification = self.disableSSLVerification.isChecked()
+
         # connect to the server
         with OverrideCursor(Qt.WaitCursor):
             auth = None
-            if self.disable_ssl:
+            if self.disable_ssl_verification:
                 auth = Authentication(verify=False)
             try:
                 self.catalog = CatalogueServiceWeb(self.catalog_url,  # spellok
