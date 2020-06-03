@@ -715,175 +715,103 @@ bool QgsGdalProvider::readBlock( int bandNo, int xBlock, int yBlock, void *data 
   return true;
 }
 
-bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pixelWidth, int pixelHeight, void *data, QgsRasterBlockFeedback *feedback )
+bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle const &reqExtent, int bufferWidthPix, int bufferHeightPix, void *data, QgsRasterBlockFeedback *feedback )
 {
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
     return false;
 
-  QgsDebugMsgLevel( "pixelWidth = "  + QString::number( pixelWidth ), 5 );
-  QgsDebugMsgLevel( "pixelHeight = "  + QString::number( pixelHeight ), 5 );
-  QgsDebugMsgLevel( "extent: " + extent.toString(), 5 );
+  QgsDebugMsgLevel( "bufferWidthPix = "  + QString::number( bufferWidthPix ), 5 );
+  QgsDebugMsgLevel( "bufferHeightPix = "  + QString::number( bufferHeightPix ), 5 );
+  QgsDebugMsgLevel( "reqExtent: " + reqExtent.toString(), 5 );
 
   for ( int i = 0; i < 6; i++ )
   {
     QgsDebugMsgLevel( QStringLiteral( "transform : %1" ).arg( mGeoTransform[i] ), 5 );
   }
 
-  size_t dataSize = static_cast<size_t>( dataTypeSize( bandNo ) );
+  const size_t dataSize = static_cast<size_t>( dataTypeSize( bandNo ) );
 
-  // moved to block()
-#if 0
-  if ( !mExtent.contains( extent ) )
-  {
-    // fill with null values
-    QByteArray ba = QgsRasterBlock::valueBytes( dataType( bandNo ), noDataValue( bandNo ) );
-    char *nodata = ba.data();
-    char *block = ( char * ) block;
-    for ( int i = 0; i < pixelWidth * pixelHeight; i++ )
-    {
-      memcpy( block, nodata, dataSize );
-      block += dataSize;
-    }
-  }
-#endif
-
-  QgsRectangle rasterExtent = extent.intersect( mExtent );
-  if ( rasterExtent.isEmpty() )
+  QgsRectangle intersectExtent = reqExtent.intersect( mExtent );
+  if ( intersectExtent.isEmpty() )
   {
     QgsDebugMsgLevel( QStringLiteral( "draw request outside view extent." ), 2 );
     return false;
   }
   QgsDebugMsgLevel( "extent: " + mExtent.toString(), 5 );
-  QgsDebugMsgLevel( "rasterExtent: " + rasterExtent.toString(), 5 );
+  QgsDebugMsgLevel( "intersectExtent: " + intersectExtent.toString(), 5 );
 
-  double xRes = extent.width() / pixelWidth;
-  double yRes = extent.height() / pixelHeight;
+  const double reqXRes = reqExtent.width() / bufferWidthPix;
+  const double reqYRes = reqExtent.height() / bufferHeightPix;
+
+  const double srcXRes = mGeoTransform[1];
+  const double srcYRes = mGeoTransform[5]; // may be negative?
+  QgsDebugMsgLevel( QStringLiteral( "reqXRes = %1 reqYRes = %2 srcXRes = %3 srcYRes = %4" ).arg( reqXRes ).arg( reqYRes ).arg( srcXRes ).arg( srcYRes ), 5 );
 
   // Find top, bottom rows and left, right column the raster extent covers
   // These are limits in target grid space
-#if 0
-  int top = 0;
-  int bottom = pixelHeight - 1;
-  int left = 0;
-  int right = pixelWidth - 1;
-
-  if ( myRasterExtent.yMaximum() < extent.yMaximum() )
-  {
-    top = std::round( ( extent.yMaximum() - myRasterExtent.yMaximum() ) / yRes );
-  }
-  if ( myRasterExtent.yMinimum() > extent.yMinimum() )
-  {
-    bottom = std::round( ( extent.yMaximum() - myRasterExtent.yMinimum() ) / yRes ) - 1;
-  }
-
-  if ( myRasterExtent.xMinimum() > extent.xMinimum() )
-  {
-    left = std::round( ( myRasterExtent.xMinimum() - extent.xMinimum() ) / xRes );
-  }
-  if ( myRasterExtent.xMaximum() < extent.xMaximum() )
-  {
-    right = std::round( ( myRasterExtent.xMaximum() - extent.xMinimum() ) / xRes ) - 1;
-  }
-#endif
-  QRect subRect = QgsRasterBlock::subRect( extent, pixelWidth, pixelHeight, rasterExtent );
-  int top = subRect.top();
-  int bottom = subRect.bottom();
-  int left = subRect.left();
-  int right = subRect.right();
-  QgsDebugMsgLevel( QStringLiteral( "top = %1 bottom = %2 left = %3 right = %4" ).arg( top ).arg( bottom ).arg( left ).arg( right ), 5 );
-
-
-  // We want to avoid another resampling, so we read data approximately with
-  // the same resolution as requested and exactly the width/height we need.
-
-  // Calculate rows/cols limits in raster grid space
-
-  // Set readable names
-  double srcXRes = mGeoTransform[1];
-  double srcYRes = mGeoTransform[5]; // may be negative?
-  QgsDebugMsgLevel( QStringLiteral( "xRes = %1 yRes = %2 srcXRes = %3 srcYRes = %4" ).arg( xRes ).arg( yRes ).arg( srcXRes ).arg( srcYRes ), 5 );
-
+  QRect subRect = QgsRasterBlock::subRect( reqExtent, bufferWidthPix, bufferHeightPix, intersectExtent );
+  int tgtTop = subRect.top();
+  int tgtBottom = subRect.bottom();
+  int tgtLeft = subRect.left();
+  int tgtRight = subRect.right();
+  QgsDebugMsgLevel( QStringLiteral( "tgtTop = %1 tgtBottom = %2 tgtLeft = %3 tgtRight = %4" ).arg( tgtTop ).arg( tgtBottom ).arg( tgtLeft ).arg( tgtRight ), 5 );
   // target size in pizels
-  int width = right - left + 1;
-  int height = bottom - top + 1;
+  int tgtWidth = tgtRight - tgtLeft + 1;
+  int tgtHeight = tgtBottom - tgtTop + 1;
 
-  int srcLeft = 0; // source raster x offset
-  int srcTop = 0; // source raster x offset
+  // Calculate rows/cols limits in source raster grid space
+  int srcLeft = 0;
+  int srcTop = 0;
   int srcBottom = ySize() - 1;
   int srcRight = xSize() - 1;
 
-  // Note: original approach for xRes < srcXRes || yRes < std::fabs( srcYRes ) was to avoid
-  // second resampling and read with GDALRasterIO to another temporary data block
-  // extended to fit src grid. The problem was that with src resolution much bigger
-  // than dst res, the target could become very large
-  // in theory it was going to infinity when zooming in ...
-
-  // Note: original approach for xRes > srcXRes, yRes > srcYRes was to read directly with GDALRasterIO
-  // but we would face this problem:
-  // If the edge of the source is greater than the edge of destination:
-  // src:        | | | | | | | | |
-  // dst:     |      |     |     |
-  // We have 2 options for resampling:
-  //  a) 'Stretch' the src and align the start edge of src to the start edge of dst.
-  //     That means however, that to the target cells may be assigned values of source
-  //     which are not nearest to the center of dst cells. Usually probably not a problem
-  //     but we are not precise. The shift is in maximum ... TODO
-  //  b) We could cut the first destination column and left only the second one which is
-  //     completely covered by src. No (significant) stretching is applied in that
-  //     case, but the first column may be rendered as without values event if its center
-  //     is covered by src column. That could result in wrongly rendered (missing) edges
-  //     which could be easily noticed by user
-
-  // Because of problems mentioned above we read to another temporary block and do i
-  // another resampling here which appears to be quite fast
-
   // Get necessary src extent aligned to src resolution
-  if ( mExtent.xMinimum() < rasterExtent.xMinimum() )
+  if ( mExtent.xMinimum() < intersectExtent.xMinimum() )
   {
-    srcLeft = static_cast<int>( std::floor( ( rasterExtent.xMinimum() - mExtent.xMinimum() ) / srcXRes ) );
+    srcLeft = static_cast<int>( std::floor( ( intersectExtent.xMinimum() - mExtent.xMinimum() ) / srcXRes ) );
   }
-  if ( mExtent.xMaximum() > rasterExtent.xMaximum() )
+  if ( mExtent.xMaximum() > intersectExtent.xMaximum() )
   {
-    srcRight = static_cast<int>( std::floor( ( rasterExtent.xMaximum() - mExtent.xMinimum() ) / srcXRes ) );
+    // Clamp to raster width to avoid potential rounding errors (see GH #34435)
+    srcRight = std::min( mWidth - 1, static_cast<int>( std::floor( ( intersectExtent.xMaximum() - mExtent.xMinimum() ) / srcXRes ) ) );
   }
 
   // GDAL states that mGeoTransform[3] is top, may it also be bottom and mGeoTransform[5] positive?
-  if ( mExtent.yMaximum() > rasterExtent.yMaximum() )
+  if ( mExtent.yMaximum() > intersectExtent.yMaximum() )
   {
-    srcTop = static_cast<int>( std::floor( -1. * ( mExtent.yMaximum() - rasterExtent.yMaximum() ) / srcYRes ) );
+    srcTop = static_cast<int>( std::floor( -1. * ( mExtent.yMaximum() - intersectExtent.yMaximum() ) / srcYRes ) );
   }
-  if ( mExtent.yMinimum() < rasterExtent.yMinimum() )
+  if ( mExtent.yMinimum() < intersectExtent.yMinimum() )
   {
-    srcBottom = static_cast<int>( std::floor( -1. * ( mExtent.yMaximum() - rasterExtent.yMinimum() ) / srcYRes ) );
+    // Clamp to raster height to avoid potential rounding errors (see GH #34435)
+    srcBottom = std::min( mHeight - 1, static_cast<int>( std::floor( -1. * ( mExtent.yMaximum() - intersectExtent.yMinimum() ) / srcYRes ) ) );
   }
 
-  // srcBottom must be less than raster height or we'll get a raster I/O error,
-  // this may happen because of rounding errors with the floating point operations used above
-  // See: issue GH #34435
-  srcBottom = std::min( mHeight - 1, srcBottom );
+  const int srcWidth = srcRight - srcLeft + 1;
+  const int srcHeight = srcBottom - srcTop + 1;
+  QgsDebugMsgLevel( QStringLiteral( "srcTop = %1 srcBottom = %2 srcWidth = %3 srcHeight = %4" ).arg( srcTop ).arg( srcBottom ).arg( srcWidth ).arg( srcHeight ), 5 );
 
-  QgsDebugMsgLevel( QStringLiteral( "srcTop = %1 srcBottom = %2 srcLeft = %3 srcRight = %4" ).arg( srcTop ).arg( srcBottom ).arg( srcLeft ).arg( srcRight ), 5 );
-
-  int srcWidth = srcRight - srcLeft + 1;
-  int srcHeight = srcBottom - srcTop + 1;
-
-  QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2 srcWidth = %3 srcHeight = %4" ).arg( width ).arg( height ).arg( srcWidth ).arg( srcHeight ), 5 );
-
+  // Determine the dimensions of the buffer into which we will ask GDAL to write
+  // pixels.
+  // In downsampling scenarios, we will use the request resolution to compute the dimension
+  // In upsampling (or exactly at raster resolution) scenarios, we will use the raster resolution to compute the dimension
   int tmpWidth = srcWidth;
   int tmpHeight = srcHeight;
 
-  if ( xRes > srcXRes )
+  if ( reqXRes > srcXRes )
   {
-    tmpWidth = static_cast<int>( std::round( srcWidth * srcXRes / xRes ) );
+    // downsampling
+    tmpWidth = static_cast<int>( std::round( srcWidth * srcXRes / reqXRes ) );
   }
-  if ( yRes > std::fabs( srcYRes ) )
+  if ( reqYRes > std::fabs( srcYRes ) )
   {
-    tmpHeight = static_cast<int>( std::round( -1.*srcHeight * srcYRes / yRes ) );
+    // downsampling
+    tmpHeight = static_cast<int>( std::round( -1.*srcHeight * srcYRes / reqYRes ) );
   }
 
-  double tmpXMin = mExtent.xMinimum() + srcLeft * srcXRes;
-  double tmpYMax = mExtent.yMaximum() + srcTop * srcYRes;
+  const double tmpXMin = mExtent.xMinimum() + srcLeft * srcXRes;
+  const double tmpYMax = mExtent.yMaximum() + srcTop * srcYRes;
   QgsDebugMsgLevel( QStringLiteral( "tmpXMin = %1 tmpYMax = %2 tmpWidth = %3 tmpHeight = %4" ).arg( tmpXMin ).arg( tmpYMax ).arg( tmpWidth ).arg( tmpHeight ), 5 );
 
   // Allocate temporary block
@@ -924,26 +852,26 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
     return false;
   }
 
-  double tmpXRes = srcWidth * srcXRes / tmpWidth;
-  double tmpYRes = srcHeight * srcYRes / tmpHeight; // negative
+  const double tmpXRes = srcWidth * srcXRes / tmpWidth;
+  const double tmpYRes = srcHeight * srcYRes / tmpHeight; // negative
 
-  double y = rasterExtent.yMaximum() - 0.5 * yRes;
-  for ( int row = 0; row < height; row++ )
+  double y = intersectExtent.yMaximum() - 0.5 * reqYRes;
+  for ( int row = 0; row < tgtHeight; row++ )
   {
     int tmpRow = static_cast<int>( std::floor( -1. * ( tmpYMax - y ) / tmpYRes ) );
     tmpRow = std::min( tmpRow, tmpHeight - 1 );
 
     char *srcRowBlock = tmpBlock + dataSize * tmpRow * tmpWidth;
-    char *dstRowBlock = ( char * )data + dataSize * ( top + row ) * pixelWidth;
+    char *dstRowBlock = ( char * )data + dataSize * ( tgtTop + row ) * bufferWidthPix;
 
-    double x = ( rasterExtent.xMinimum() + 0.5 * xRes - tmpXMin ) / tmpXRes; // cell center
-    double increment = xRes / tmpXRes;
+    double x = ( intersectExtent.xMinimum() + 0.5 * reqXRes - tmpXMin ) / tmpXRes; // cell center
+    double increment = reqXRes / tmpXRes;
 
-    char *dst = dstRowBlock + dataSize * left;
+    char *dst = dstRowBlock + dataSize * tgtLeft;
     char *src = srcRowBlock;
     int tmpCol = 0;
     int lastCol = 0;
-    for ( int col = 0; col < width; ++col )
+    for ( int col = 0; col < tgtWidth; ++col )
     {
       // std::floor() is quite slow! Use just cast to int.
       tmpCol = static_cast<int>( x );
@@ -957,7 +885,7 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
       dst += dataSize;
       x += increment;
     }
-    y -= yRes;
+    y -= reqYRes;
   }
 
   qgsFree( tmpBlock );
