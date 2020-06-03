@@ -141,6 +141,8 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
   QVector< QVariantList > keys; // We need deterministic order for the tests
   QgsFeature feature;
 
+  std::vector< std::unique_ptr< QgsFeatureSink > > groupSinks;
+
   QgsFeatureIterator it = mSource->getFeatures( QgsFeatureRequest() );
   while ( it.nextFeature( feature ) )
   {
@@ -170,7 +172,9 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
       QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( id, context );
 
       Group group;
-      group.sink = sink.release();
+      group.sink = sink.get();
+      //store ownership of sink in groupSinks, so that these get deleted automatically if an exception is raised later..
+      groupSinks.emplace_back( std::move( sink ) );
       group.layer = layer;
       group.feature = feature;
       groups[key] = group;
@@ -186,6 +190,9 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
     if ( feedback->isCanceled() )
       break;
   }
+
+  // early cleanup
+  groupSinks.clear();
 
   QString destId;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, destId, mFields, QgsWkbTypes::multiType( mSource->wkbType() ), mSource->sourceCrs() ) );
