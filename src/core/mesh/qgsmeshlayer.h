@@ -456,7 +456,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     void resetDatasetGroupTreeItem();
 
     /**
-     * Return the first valid time step of the dataset groups, invalid QgInterval if no time step is present
+     * Returns the first valid time step of the dataset groups, invalid QgInterval if no time step is present
      *
      * \since QGIS 3.14
      */
