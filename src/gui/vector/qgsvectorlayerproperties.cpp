@@ -66,6 +66,9 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsmaskingwidget.h"
 #include "qgsvectorlayertemporalpropertieswidget.h"
+#include "qgscategorizedsymbolrenderer.h"
+#include "qgsgraduatedsymbolrenderer.h"
+#include "qgsrulebasedrenderer.h"
 
 #include "layertree/qgslayertreelayer.h"
 #include "qgslayertree.h"
@@ -161,7 +164,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( lyr->styleManager(), &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsVectorLayerProperties::syncToLayer );
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsVectorLayerProperties::apply );
-  connect( this, &QDialog::accepted, this, &QgsVectorLayerProperties::apply );
+  // connect to the reimplemented accept slot instead of base class implementation
+  disconnect( mOptButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( mOptButtonBox, &QDialogButtonBox::accepted, this, &QgsVectorLayerProperties::onAccept );
   connect( this, &QDialog::rejected, this, &QgsVectorLayerProperties::onCancel );
 
   mContext << QgsExpressionContextUtils::globalScope()
@@ -601,7 +606,13 @@ void QgsVectorLayerProperties::syncToLayer()
 
 } // syncToLayer()
 
-void QgsVectorLayerProperties::apply()
+void QgsVectorLayerProperties::onAccept()
+{
+  if ( apply() )
+    QDialog::accept();
+}
+
+bool QgsVectorLayerProperties::apply()
 {
   if ( labelingDialog )
   {
@@ -685,6 +696,28 @@ void QgsVectorLayerProperties::apply()
   {
     QgsRendererPropertiesDialog *dlg = static_cast<QgsRendererPropertiesDialog *>( widgetStackRenderers->currentWidget() );
     dlg->apply();
+
+    // warn if renderer does not have correct setup (e.g. classes were not defined)
+    QgsFeatureRenderer *renderer = mLayer->renderer();
+    bool noClasses = false;
+    if ( renderer->type() == QStringLiteral( "categorizedSymbol" ) && static_cast< QgsCategorizedSymbolRenderer * >( renderer )->categories().isEmpty() )
+    {
+      noClasses = true;
+    }
+    else if ( renderer->type() == QStringLiteral( "graduatedSymbol" ) && static_cast< QgsGraduatedSymbolRenderer * >( renderer )->ranges().isEmpty() )
+    {
+      noClasses = true;
+    }
+    else if ( renderer->type() == QStringLiteral( "RuleRenderer" ) && static_cast< QgsRuleBasedRenderer * >( renderer )->rootRule()->children().isEmpty() )
+    {
+      noClasses = true;
+    }
+
+    if ( noClasses )
+      if ( QMessageBox::question( this, tr( "No Classes" ),
+                                  tr( "There are no symbology classes defined, layer will not be rendered on the canvas. Continue?" ),
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+        return false;
   }
 
   //apply diagram settings
@@ -798,6 +831,7 @@ void QgsVectorLayerProperties::apply()
   mLayer->triggerRepaint();
   // notify the project we've made a change
   QgsProject::instance()->setDirty( true );
+  return true;
 }
 
 void QgsVectorLayerProperties::onCancel()

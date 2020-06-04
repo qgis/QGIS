@@ -87,7 +87,10 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void mLayerOrigNameLineEdit_textEdited( const QString &text );
 
     //! Called when apply button is pressed or dialog is accepted
-    void apply();
+    bool apply();
+
+    //! Called when OK button is pressed
+    void onAccept();
 
     //! Called when cancel button is pressed
     void onCancel();
