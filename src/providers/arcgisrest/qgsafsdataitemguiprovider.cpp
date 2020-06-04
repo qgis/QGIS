@@ -96,7 +96,7 @@ void QgsAfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 void QgsAfsDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
   QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
-  nc.setWindowTitle( tr( "Create a New ArcGIS Feature Server Connection" ) );
+  nc.setWindowTitle( tr( "Create a New ArcGIS Feature Service Connection" ) );
 
   if ( nc.exec() )
   {
@@ -107,7 +107,7 @@ void QgsAfsDataItemGuiProvider::newConnection( QgsDataItem *item )
 void QgsAfsDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
   QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), item->name(), QgsNewHttpConnection::FlagShowHttpSettings );
-  nc.setWindowTitle( tr( "Modify ArcGIS Feature Server Connection" ) );
+  nc.setWindowTitle( tr( "Modify ArcGIS Feature Service Connection" ) );
 
   if ( nc.exec() )
   {
