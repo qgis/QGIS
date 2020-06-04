@@ -48,37 +48,37 @@ Following a summary of the required dependencies for building:
 
 Required build tools:
 
- * CMake >= 3.0.0
- * Flex >= 2.5.6
- * Bison >= 2.4
- * Python 3
+* CMake >= 3.0.0
+* Flex >= 2.5.6
+* Bison >= 2.4
+* Python 3
 
 Required build dependencies:
 
- * Qt >= 5.9.0
- * Proj >= 4.9.3
- * GEOS >= 3.4
- * Sqlite3 >= 3.0.0
- * SpatiaLite >= 4.2.0
- * libspatialindex
- * GDAL/OGR >= 2.1
- * Qwt >= 5.0 & (< 6.1 with internal QwtPolar)
- * expat >= 1.95
- * QScintilla2
- * QCA
- * qtkeychain (>= 0.5)
- * libzip
+* Qt >= 5.9.0
+* Proj >= 4.9.3
+* GEOS >= 3.4
+* Sqlite3 >= 3.0.0
+* SpatiaLite >= 4.2.0
+* libspatialindex
+* GDAL/OGR >= 2.1
+* Qwt >= 5.0 & (< 6.1 with internal QwtPolar)
+* expat >= 1.95
+* QScintilla2
+* QCA
+* qtkeychain (>= 0.5)
+* libzip
 
 Optional dependencies:
 
- * for GRASS providers and plugin - GRASS >= 7.0.0.
- * for georeferencer - GSL >= 1.8
- * for PostGIS support - PostgreSQL >= 8.0.x
- * for gps plugin - gpsbabel
- * for mapserver export and PyQGIS - Python >= 3.3
- * for python support - SIP >= 4.12, PyQt >= 5.3 must match Qt version, Qscintilla2
- * for qgis mapserver - FastCGI
- * for oracle provider - Oracle OCI library
+* for GRASS providers and plugin - GRASS >= 7.0.0.
+* for georeferencer - GSL >= 1.8
+* for PostGIS support - PostgreSQL >= 8.0.x
+* for gps plugin - gpsbabel
+* for mapserver export and PyQGIS - Python >= 3.3
+* for python support - SIP >= 4.12, PyQt >= 5.3 must match Qt version, Qscintilla2
+* for qgis mapserver - FastCGI
+* for oracle provider - Oracle OCI library
 
 Indirect dependencies:
 
@@ -102,7 +102,7 @@ These notes are for Ubuntu - other versions and Debian derived distros may
 require slight variations in package names.
 
 These notes are for if you want to build QGIS from source. One of the major
-aims here is to show how this can be done using binary packages for ***all***
+aims here is to show how this can be done using binary packages for***all***
 dependencies - building only the core QGIS stuff from source. I prefer this
 approach because it means we can leave the business of managing system packages
 to apt and only concern ourselves with coding QGIS!
@@ -224,7 +224,7 @@ After the 'g' generation is complete, press 'q' to exit the ccmake
 interactive dialog.
 
 **Warning:** Make sure that your build directory is completely empty when you
-enter the command. Do never try to "re-use" an existing **Qt5** build directory.
+enter the command. Do never try to "re-use" an existing**Qt5** build directory.
 If you want to use `ccmake` or other interactive tools, run the command in
 the empty build directory once before starting to use the interactive tools.
 
@@ -447,8 +447,8 @@ The free (as in free beer) Community installer is available under:
 
 Select "Custom" install and add the following packages:
 
- * "Common Tools for Visual C++ 2015" under "Visual C++"
- * "Tools (1.4.1) and Windows 10 SDK (10.0.14393)" under "Universal Windows App Development Tools".
+* "Common Tools for Visual C++ 2015" under "Visual C++"
+* "Tools (1.4.1) and Windows 10 SDK (10.0.14393)" under "Universal Windows App Development Tools".
 
 ### 4.1.2. Other tools and dependencies
 
@@ -463,13 +463,13 @@ Download and install following packages:
 
 For the QGIS build you need to install following packages from cygwin:
 
- * bison
- * flex
- * git (even if you already have Git for Windows installed)
+* bison
+* flex
+* git (even if you already have Git for Windows installed)
 
-and from OSGeo4W (select *Advanced Install*):
+and from OSGeo4W (select*Advanced Install*):
 
- * qgis-dev-deps
+* qgis-dev-deps
 
 This will also select packages the above packages depend on.
 
@@ -566,10 +566,10 @@ Old alternative method that might still work using cmake-gui:
   Create a 'build' directory somewhere. This will be where all the build output
   will be generated.
 
-  Now run `cmake-gui` (still from `cmd`) and in the *Where is the source code:*
+  Now run `cmake-gui` (still from `cmd`) and in the*Where is the source code:*
   box, browse to the top level QGIS directory.
 
-  In the *Where to build the binaries:* box, browse to the 'build' directory you
+  In the*Where to build the binaries:* box, browse to the 'build' directory you
   created.
 
   If the path to bison and flex contains blanks, you need to use the short name
@@ -703,7 +703,7 @@ If you plan to do some debugging, you'll need to compile debug version of Qt:
 C:\Qt\5.9.1\bin\qtvars.bat compile_debug
 
 Note: there is a problem when compiling debug version of Qt 4.7, the script ends with
-this message  "mingw32-make: *** No rule to make target `debug'.  Stop.". To
+this message  "mingw32-make:*** No rule to make target `debug'.  Stop.". To
 compile the debug version you have to go out of src directory and execute the
 following command:
 
@@ -904,14 +904,14 @@ Unpack them all to `c:\msys\local`
 Paul Kelly did a great job and prepared a package of precompiled libraries for GRASS.
 The package currently includes:
 
- * zlib-1.2.3
- * libpng-1.2.16-noconfig
- * xdr-4.0-mingw2
- * freetype-2.3.4
- * fftw-2.1.5
- * PDCurses-3.1
- * proj-4.5.0
- * gdal-1.4.1
+* zlib-1.2.3
+* libpng-1.2.16-noconfig
+* xdr-4.0-mingw2
+* freetype-2.3.4
+* fftw-2.1.5
+* PDCurses-3.1
+* proj-4.5.0
+* gdal-1.4.1
 
 It's available for download here:
 
@@ -948,8 +948,8 @@ It should get installed to `c:\msys\local\grass-6.3.cvs`
 
 By the way, these pages might be useful:
 
- * http://grass.gdf-hannover.de/wiki/WinGRASS_Current_Status
- * http://geni.ath.cx/grass.html
+* http://grass.gdf-hannover.de/wiki/WinGRASS_Current_Status
+* http://geni.ath.cx/grass.html
 
 #### 4.3.2.3. GEOS
 
@@ -1316,7 +1316,7 @@ Edit wcs.map and set the shapepath to this:
 Then create /var/www/wcs/7-wcs.qgis.org.conf setting the contents to this:
 
 ```bash
-      <VirtualHost *:80>
+      <VirtualHost*:80>
       ServerName wcs.qgis.org
       ServerAdmin tim@linfiniti.com
 
@@ -1381,8 +1381,8 @@ deploy it under Jenkins for continuous integration testing now.
 These notes are terse, I will expand on them later as the need arises. The
 procedure is:
 
- * Install Jenkins and get it configured according to your own preferences
- * Make sure you have the git, github, junit etc plugins installed. A complete
+* Install Jenkins and get it configured according to your own preferences
+* Make sure you have the git, github, junit etc plugins installed. A complete
 list of the plugins I have installed follows (note that you almost certainly
 don't need evey plugin listed here):
   * External Monitor Job Type Plugin
@@ -1409,8 +1409,8 @@ don't need evey plugin listed here):
   * Jenkins Cobertura Plugin
   * Jenkins Gravatar plugin
   * Jenkins SSH Slaves plugin
- * Create a Job called 'QGIS'
- * Use the following options for your job:
+* Create a Job called 'QGIS'
+* Use the following options for your job:
   * Job Name: QGIS
   * Job Type: Build a free-style software project
   * Tick enable project based security (you need to elsewhere configure your
@@ -1425,7 +1425,7 @@ Jenkins security to per project settings)
 
   * Set branch to build to master
   * Repository Browser: Auto
-  * Build triggers: set to Poll SCM and set schedule to `* * * * *` (polls every minute)
+  * Build triggers: set to Poll SCM and set schedule to `*****` (polls every minute)
   * Build - Execute shell and set shell script to:
 
 ```bash
