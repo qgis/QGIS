@@ -882,9 +882,6 @@
    <property name="text">
     <string>Cut Features</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+X</string>
-   </property>
   </action>
   <action name="mActionCopyFeatures">
    <property name="icon">
@@ -902,9 +899,6 @@
    </property>
    <property name="text">
     <string>Paste Features</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+V</string>
    </property>
   </action>
   <action name="mActionAddFeature">
