@@ -1515,40 +1515,40 @@ To run specific test(s) (see 'man ctest'):
 
 The following people have contributed to this document:
 
- * Windows MINGW Section
+* Windows MINGW Section
   * Tim Sutton, Godofredo Contreras 2006
   * CMake additions Magnus Homann 2007
   * Python additions Martin Dobias 2007
   * With thanks to Tisham Dhar for preparing the initial msys environment
 
- * Windows MSVC Section (Detailed install)
+* Windows MSVC Section (Detailed install)
   * David Willis 2007
   * MSVC install additions Tim Sutton 2007
   * PostgreSQL, Qt compile, SIP, Python, AutoExp additions Juergen Fischer 2007
 
- * Windows MSVC Section (Simplified install)
+* Windows MSVC Section (Simplified install)
   * Tim Sutton 2007
   * Juergen Fischer 2007
   * Florian Hillen 2010
 
- * OSX Section
+* OSX Section
   * Tim Sutton 2007
   * With special thanks to Tom Elwertowski and William Kyngesburye
   * Larry Shaffer 2012
   * Peter Petrik 2020
 
- * GNU/Linux Section
+* GNU/Linux Section
   * Tim Sutton 2006
   * Debian package section: Juergen Fischer 2008
 
- * WCS Test Server Section
+* WCS Test Server Section
   * Tim Sutton, Radim Blazek 2012
 
- * Jenkins CI Configuration
+* Jenkins CI Configuration
   * Tim Sutton 2012
 
- * Latex Generator
+* Latex Generator
   * Tim Sutton 2011
 
- * Debug Output/Tests Section
+* Debug Output/Tests Section
   * Larry Shaffer 2012, by way of 'Test Friday' Tim Sutton
