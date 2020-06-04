@@ -49,8 +49,10 @@
 #include "qgsrasterrenderer.h"
 #include "qgsrasterrendererregistry.h"
 #include "qgsrasterresamplefilter.h"
+#include "qgsrastershader.h"
 #include "qgsrastertransparency.h"
 #include "qgssinglebandgrayrendererwidget.h"
+#include "qgssinglebandpseudocolorrenderer.h"
 #include "qgssinglebandpseudocolorrendererwidget.h"
 #include "qgshuesaturationfilter.h"
 #include "qgshillshaderendererwidget.h"
@@ -151,7 +153,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   connect( lyr->styleManager(), &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsRasterLayerProperties::syncToLayer );
 
-  connect( this, &QDialog::accepted, this, &QgsRasterLayerProperties::apply );
+  // connect to the reimplemented accept slot instead of base class implementation
+  disconnect( mOptButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( mOptButtonBox, &QDialogButtonBox::accepted, this, &QgsRasterLayerProperties::onAccept );
   connect( this, &QDialog::rejected, this, &QgsRasterLayerProperties::onCancel );
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsRasterLayerProperties::apply );
@@ -943,12 +947,17 @@ void QgsRasterLayerProperties::sync()
   mTemporalWidget->syncToLayer();
 }
 
-void QgsRasterLayerProperties::apply()
+void QgsRasterLayerProperties::onAccept()
 {
+  if ( apply() )
+    QDialog::accept();
+}
 
+bool QgsRasterLayerProperties::apply()
+{
   // Do nothing on "bad" layers
   if ( !mRasterLayer->isValid() )
-    return;
+    return true;
 
   /*
    * Legend Tab
@@ -994,6 +1003,27 @@ void QgsRasterLayerProperties::apply()
   if ( rendererWidget )
   {
     rendererWidget->doComputations();
+
+    // warn if renderer does not have correct setup (e.g. classes were not defined)
+    QgsRasterRenderer *renderer = rendererWidget->renderer();
+    if ( renderer )
+    {
+      bool noClasses = false;
+      if ( renderer->type() == QStringLiteral( "paletted" ) && static_cast< QgsPalettedRasterRenderer * >( renderer )->classes().isEmpty() )
+        noClasses = true;
+      else if ( renderer->type() == QStringLiteral( "singlebandpseudocolor" ) )
+      {
+        QgsRasterShader *shader = static_cast< QgsSingleBandPseudoColorRenderer * >( renderer )->shader();
+        if ( static_cast< QgsColorRampShader * >( shader->rasterShaderFunction() )->colorRampItemList().isEmpty() )
+          noClasses = true;
+      }
+
+      if ( noClasses )
+        if ( QMessageBox::question( this, tr( "No Classes" ),
+                                    tr( "There are no symbology classes defined, layer will not be rendered on the canvas. Continue?" ),
+                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+          return false;
+    }
 
     mRasterLayer->setRenderer( rendererWidget->renderer() );
   }
@@ -1221,6 +1251,7 @@ void QgsRasterLayerProperties::apply()
 
   // notify the project we've made a change
   QgsProject::instance()->setDirty( true );
+  return true;
 }//apply
 
 void QgsRasterLayerProperties::updateSourceStaticTime()

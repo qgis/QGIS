@@ -82,7 +82,9 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
   private slots:
 
     //! \brief Applies the settings made in the dialog without closing the box
-    void apply();
+    bool apply();
+    //! \brief Called when OK button is pressed
+    void onAccept();
     //! \brief Called when cancel button is pressed
     void onCancel();
     //! \brief Slot to update layer display name as original is edited.
