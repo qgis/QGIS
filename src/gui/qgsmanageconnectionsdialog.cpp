@@ -401,7 +401,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         if ( root.tagName() != QLatin1String( "qgsARCGISMAPSERVERConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading Connections" ),
-                                    tr( "The file is not a ArcGIS MapServer connections exchange file." ) );
+                                    tr( "The file is not a ArcGIS Map Service connections exchange file." ) );
           return false;
         }
         break;
@@ -409,7 +409,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         if ( root.tagName() != QLatin1String( "qgsARCGISFEATURESERVERConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading Connections" ),
-                                    tr( "The file is not a ArcGIS FeatureServer connections exchange file." ) );
+                                    tr( "The file is not a ArcGIS Feature Service connections exchange file." ) );
           return false;
         }
         break;
