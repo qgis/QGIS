@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include <QClipboard>
-#include <QMessageBox>
 
 #include "qgsapplayertreeviewmenuprovider.h"
 
@@ -43,6 +42,7 @@
 #include "qgsmaplayerstylecategoriesmodel.h"
 #include "qgssymbollayerutils.h"
 #include "qgsxmlutils.h"
+#include "qgsmessagebar.h"
 
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
@@ -897,7 +897,7 @@ void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol( const QString 
   const QgsSymbol *originalSymbol = node->symbol();
   if ( !originalSymbol )
   {
-    QMessageBox::information( nullptr, tr( "No Symbol" ), tr( "There is no symbol associated with the rule." ) );
+    QgisApp::instance()->messageBar()->pushWarning( tr( "No Symbol" ), tr( "There is no symbol associated with the rule." ) );
     return;
   }
 
