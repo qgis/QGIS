@@ -177,8 +177,14 @@ void QgsGeoPackageItemGuiProvider::deleteGpkg()
         if ( ! name.isEmpty() )
         {
           QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
-          std::unique_ptr<QgsAbstractProviderConnection> conn { md->createConnection( name ) };
-          conn->remove( name );
+          try
+          {
+            md->deleteConnection( name );
+          }
+          catch ( QgsProviderConnectionException &ex )
+          {
+            QgsDebugMsg( QStringLiteral( "Could not remove GPKG connection %1: %2" ).arg( name, ex.what() ) );
+          }
         }
         if ( parent )
           parent->refresh();
