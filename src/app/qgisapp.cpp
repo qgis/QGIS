@@ -2821,6 +2821,14 @@ void QgisApp::createActions()
   copyShortcut->setContext( Qt::WidgetWithChildrenShortcut );
   connect( copyShortcut, &QShortcut::activated, this, [ = ] { copySelectionToClipboard(); } );
 
+  QShortcut *cutShortcut = new QShortcut( QKeySequence::Cut, mMapCanvas );
+  cutShortcut->setContext( Qt::WidgetWithChildrenShortcut );
+  connect( cutShortcut, &QShortcut::activated, this, [ = ] { cutSelectionToClipboard(); } );
+
+  QShortcut *pasteShortcut = new QShortcut( QKeySequence::Paste, mMapCanvas );
+  pasteShortcut->setContext( Qt::WidgetWithChildrenShortcut );
+  connect( pasteShortcut, &QShortcut::activated, this, [ = ] { pasteFromClipboard(); } );
+
   QShortcut *selectAllShortcut = new QShortcut( QKeySequence::SelectAll, mMapCanvas );
   selectAllShortcut->setContext( Qt::WidgetWithChildrenShortcut );
   connect( selectAllShortcut, &QShortcut::activated, this, &QgisApp::selectAll );
