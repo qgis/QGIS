@@ -43,6 +43,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsshortcutsmanager.h"
 #include "qgsfieldconditionalformatwidget.h"
+#include "qgsmapcanvasutils.h"
 
 
 QgsDualView::QgsDualView( QWidget *parent )
@@ -149,6 +150,21 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   connect( mAttributeForm, &QgsAttributeForm::widgetValueChanged, this, &QgsDualView::featureFormAttributeChanged );
   connect( mAttributeForm, &QgsAttributeForm::modeChanged, this, &QgsDualView::formModeChanged );
   connect( mAttributeForm, &QgsAttributeForm::filterExpressionSet, this, &QgsDualView::filterExpressionSet );
+  connect( mAttributeForm, &QgsAttributeForm::flashFeatures, this, [ = ]( const QString & filter )
+  {
+    if ( QgsMapCanvas *canvas = mFilterModel->mapCanvas() )
+    {
+      QgsMapCanvasUtils::flashMatchingFeatures( canvas, mLayer, filter );
+    }
+  } );
+  connect( mAttributeForm, &QgsAttributeForm::zoomToFeatures, this, [ = ]( const QString & filter )
+  {
+    if ( QgsMapCanvas *canvas = mFilterModel->mapCanvas() )
+    {
+      QgsMapCanvasUtils::zoomToMatchingFeatures( canvas, mLayer, filter );
+    }
+  } );
+
   connect( mMasterModel, &QgsAttributeTableModel::modelChanged, mAttributeForm, &QgsAttributeForm::refreshFeature );
   connect( mFilterModel, &QgsAttributeTableFilterModel::sortColumnChanged, this, &QgsDualView::onSortColumnChanged );
 
