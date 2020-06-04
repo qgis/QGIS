@@ -14983,6 +14983,7 @@ void QgisApp::createPreviewImage( const QString &path, const QIcon &icon )
                      , previewSize );
 
   QPixmap previewImage( previewSize );
+  previewImage.fill();
   QPainter previewPainter( &previewImage );
   mMapCanvas->render( &previewPainter, QRect( QPoint(), previewSize ), previewRect );
 
