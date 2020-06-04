@@ -1,1099 +1,1064 @@
 QGIS News
 Change history for the QGIS Project
-@NOW@
 
+1. What's new in Version 3.12 'București'?
+2. What's new in Version 3.10 'A Coruña'?
+3. What's new in Version 3.8 'Zanzibar'?
+4. What's new in Version 3.6.0 'Noosa'?
+5. What's new in Version 3.4-LTR 'Madeira'?
+6. What's new in Version 3.2 'Bonn'?
+7. What's new in Version 3.0 'Girona'?
+8. What's new in Version 2.18 'Las Palmas'?
+9. What's new in Version 2.16 'Nødebo'?
+10. What's new in Version 2.14 'Essen'?
+11. What's new in Version 2.12 'Lyon'?
+12. What's new in Version 2.10 'Pisa'?
+13. What's new in Version 2.8 'Wien'?
+14. What's new in Version 2.6.0 'Brighton'?
+15. What's new in Version 2.4.0 'Chugiak'?
+16. What's new in Version 2.2.0 'Valmiera'?
+17. What's new in Version 2.0.1 'Dufour'?
+18. What's new in Version 2.0.0 'Dufour'?
+19. What's new in Version 1.8.0 'Lisboa'?
+20. What's new in Version 1.7.2 'Wroclaw'?
+21. What's new in Version 1.7.1 'Wroclaw'?
+22. What's new in Version 1.7.0 'Wroclaw'?
+23. What's new in Version 1.6.0 'Capiapo'?
+24. What's new in Version 1.5.0?
+25. What's new in Version 1.4.0 'Enceladus'?
+26. What's new in Version 1.3.0 'Mimas'?
+27. Version 1.2.0 'Daphnis'
+28. Version 1.0.0 'Kore'
+29. Version 0.11.0 'Metis'
+30. Version 0.10.0 'Io'
+31. Version 0.9.2rc1 'Ganymede'
+32. Version 0.9.1 'Ganymede'
+33. Version 0.9 'Ganymede'
+34. Version 0.8 'Joesephine' .... development version
+35. Version 0.6 'Simon'
+36. 0.5
 
- * 1. What's new in Version 3.12 'București'?
- * 2. What's new in Version 3.10 'A Coruña'?
- * 3. What's new in Version 3.8 'Zanzibar'?
- * 4. What's new in Version 3.6.0 'Noosa'?
- * 5. What's new in Version 3.4-LTR 'Madeira'?
- * 6. What's new in Version 3.2 'Bonn'?
- * 7. What's new in Version 3.0 'Girona'?
- * 8. What's new in Version 2.18 'Las Palmas'?
- * 9. What's new in Version 2.16 'Nødebo'?
- * 10. What's new in Version 2.14 'Essen'?
- * 11. What's new in Version 2.12 'Lyon'?
- * 12. What's new in Version 2.10 'Pisa'?
- * 13. What's new in Version 2.8 'Wien'?
- * 14. What's new in Version 2.6.0 'Brighton'?
- * 15. What's new in Version 2.4.0 'Chugiak'?
- * 16. What's new in Version 2.2.0 'Valmiera'?
- * 17. What's new in Version 2.0.1 'Dufour'?
- * 18. What's new in Version 2.0.0 'Dufour'?
- * 19. What's new in Version 1.8.0 'Lisboa'?
- * 20. What's new in Version 1.7.2 'Wroclaw'?
- * 21. What's new in Version 1.7.1 'Wroclaw'?
- * 22. What's new in Version 1.7.0 'Wroclaw'?
-  * 22.1. Symbology labels and diagrams
-  * 22.2. New Tools
-  * 22.3. User interface updates
-  * 22.4. CRS Handling
-  * 22.5. Rasters
-  * 22.6. Providers and Data Handling
-  * 22.7. Api and Developer Centric
-  * 22.8. QGIS Mapserver
-  * 22.9. Plugins
-  * 22.10. Printing
- * 23. What's new in Version 1.6.0 'Capiapo'?
-  * 23.1. General Improvements
-  * 23.2. Table of contents (TOC) improvements
-  * 23.3. Labeling (New generation only)
-  * 23.4. Layer properties and symbology
-  * 23.5. Map Composer
- * 24. What's new in Version 1.5.0?
-  * 24.1. Main GUI
-  * 24.2. WMS and WMS-C Support
-  * 24.3. API Updates
- * 25. What's new in Version 1.4.0 'Enceladus'?
- * 26. What's new in Version 1.3.0 'Mimas'?
-  * 26.1. OSM plugin &amp; provider updates
-  * 26.2. Other notable features and improvements in this release
- * 27. Version 1.2.0 'Daphnis'
-  * 27.1. Editing
-  * 27.2. Keyboard shortcuts
-  * 27.3. Map Composer
-  * 27.4. Attribute tables
-  * 27.5. Plugins
-  * 27.6. Projects Management
-  * 27.7. PostGIS & the PostgreSQL Provider
-  * 27.8. Symbology enhancements
-  * 27.9. Command line arguments
- * 28. Version 1.0.0 'Kore'
- * 29. Version 0.11.0 'Metis'
- * 30. Version 0.10.0 'Io'
- * 31. Version 0.9.2rc1 'Ganymede'
- * 32. Version 0.9.1 'Ganymede'
- * 33. Version 0.9 'Ganymede'
- * 34. Version 0.8 'Joesephine' .... development version
- * 35. Version 0.6 'Simon'
- * 36. 0.5
-
-
-Last Updated: @NOW@
-Last Change : @MODTIME@
-
-# 1. What's new in Version 3.12 'București'? 
+# 1. What's new in Version 3.12 'București'?
 
 This release has following new features:
 
- * User Interface: Deselecting tables when adding PostgreSQL data after add button is clicked.
- * Symbology: Vector Trace Animation and Streamlines for Mesh Layer
- * Rendering: Play/Stop Buttons for Mesh Layer Playback
- * Rendering: On the Fly Resampling of Data Defined on Faces to Vertices (Mesh Layer)
- * Rendering: Support for Mesh Reference Time
- * 3D Features: 3D Mesh Layer Terrain Renderer
- * 3D Features: Harmonize 3D map view widget with 2D ones to display the map theme drop-down menu
- * Expressions: Search Tags for Functions
- * Expressions: List Referenced Layer Values
- * Expressions: New functions to check if a geometry is empty or null
- * Expressions: Hash expressions
- * Digitizing: Edit Invalid Attributes on Copy/Paste to Another Layer
- * Digitizing: Snapping cache parallelization
- * Data Management: DXF Export Improvements
- * Forms and Widgets: Create geometric feature from the relation editor
- * Forms and Widgets: Improve feature selection dialog
- * Analysis Tools: Smooth Export of the Contours from Mesh Layer
- * Analysis Tools: Support of Datasets Defined on Faces in QGIS Mesh Calculator
- * Processing: Package new layers to existing GeoPackage
- * Browser: Customization of the items shown in browser
- * Data Providers: Changed WMTS layer collection icon
- * Data Providers: Added Metadata URL property in the layer metadata tab for WMS / WMTS and WCS  services
- * Data Providers: Fetch and show dimensions metadata  for a WMS layer metadata
- * Data Providers: Added refresh action to OGC services entries
- * Data Providers: 3d Stacked Meshes
- * Data Providers: Oracle curve type edition support
- * Programmability: Exposes shape digitizing methods to QgisInterface
- * Notable Fixes: Bug fixes by Stephen Knox
+* User Interface: Deselecting tables when adding PostgreSQL data after add button is clicked.
+* Symbology: Vector Trace Animation and Streamlines for Mesh Layer
+* Rendering: Play/Stop Buttons for Mesh Layer Playback
+* Rendering: On the Fly Resampling of Data Defined on Faces to Vertices (Mesh Layer)
+* Rendering: Support for Mesh Reference Time
+* 3D Features: 3D Mesh Layer Terrain Renderer
+* 3D Features: Harmonize 3D map view widget with 2D ones to display the map theme drop-down menu
+* Expressions: Search Tags for Functions
+* Expressions: List Referenced Layer Values
+* Expressions: New functions to check if a geometry is empty or null
+* Expressions: Hash expressions
+* Digitizing: Edit Invalid Attributes on Copy/Paste to Another Layer
+* Digitizing: Snapping cache parallelization
+* Data Management: DXF Export Improvements
+* Forms and Widgets: Create geometric feature from the relation editor
+* Forms and Widgets: Improve feature selection dialog
+* Analysis Tools: Smooth Export of the Contours from Mesh Layer
+* Analysis Tools: Support of Datasets Defined on Faces in QGIS Mesh Calculator
+* Processing: Package new layers to existing GeoPackage
+* Browser: Customization of the items shown in browser
+* Data Providers: Changed WMTS layer collection icon
+* Data Providers: Added Metadata URL property in the layer metadata tab for WMS / WMTS and WCS  services
+* Data Providers: Fetch and show dimensions metadata  for a WMS layer metadata
+* Data Providers: Added refresh action to OGC services entries
+* Data Providers: 3d Stacked Meshes
+* Data Providers: Oracle curve type edition support
+* Programmability: Exposes shape digitizing methods to QgisInterface
+* Notable Fixes: Bug fixes by Stephen Knox
 
-# 2. What's new in Version 3.10 'A Coruña'? 
-
-This release has following new features:
-
- * Map Tools: Show 3D length for LineStringZ features in identify derived attributes
- * Symbology: Customizable default resampling settings for newly-added raster layers
- * Symbology: Add "extract symbols" action to QGS/QGZ project file context menu in browser
- * Symbology: Improved copy/paste of symbols
- * Symbology: "Center of segment" placement mode for marker and hash line symbol layers
- * Symbology: Allow array values as a valid result for data defined offset
- * Labeling: Allow creation and editing of text formats and label settings through style manager dialog
- * Labeling: New text "background" setting for marker symbol backgrounds
- * Labeling: Callouts support
- * Labeling: Add multiline alignment property to the change label tool
- * Labeling: Allow display of unplaced labels
- * Labeling: Add "overrun distance" setting for line labels
- * Labeling: Allow data defined control over "label every part of multipart features" setting
- * Labeling:  Expose "label all parts" option via label properties tool
- * Labeling: Support vertical text orientation
- * Labeling: Expose font kerning setting
- * Rendering: Allow rendering raster layers outside the reported extent
- * Rendering:  Add option to georeference PDFs and TIFs to save map canvas as image/PDF
- * Rendering: new map canvas image decoration
- * Rendering:  logarithmic scale method for graduated renderer
- * 3D Features: Measurement tool in 3D map view
- * 3D Features: Billboard Rendering for Points
- * 3D Features: 3D On-Screen Navigation
- * Print Layouts: Right-to-left arrangement for legends
- * Print Layouts: Control margin under legend group and subgroup headings
- * Print Layouts: Allow data defined settings in text formats
- * Print Layouts: @scale_value variable
- * Print Layouts: Add above/below segments placement option for scalebar labels
- * Print Layouts: Horizontal placement option for scale bar labels
- * Print Layouts: Add option to simplify PDF or SVG exports
- * Print Layouts: Improved SVG layered exports
- * Print Layouts: Add an indicator in the status bar while a map redraw is occurring in the background
- * Print Layouts: GeoPDF Export
- * Print Layouts: Data defined control over grid properties
- * Print Layouts: "fit segment size" mode for map grid interval
- * Print Layouts: layout map item extent to an existing bookmark
- * Expressions: New expression functions
- * Digitizing: GPS timestamp support
- * Data Management: Composite Foreign Keys
- * Data Management: Add circular data dependencies
- * Analysis Tools: Stored filter expressions
- * Analysis Tools: New operator for Raster Calculator
- * Processing: new algorithm point to layer
- * Processing: allow defining model parameters as advanced
- * Processing: All GDAL based algorithms now support free-form "additional parameters"
- * Processing: Add metatile size parameter to XYZ tiles algorithm
- * Processing: New parameter type for colors
- * Processing: New algorithm "Create style database from project"
- * Processing: Allow file filter and default value to be set for file/folder inputs in models
- * Processing: New algorithm "Combine style databases"
- * Processing: Generate XYZ tiles using multiple threads
- * Processing: New algorithms for exporting and importing to/from map layers
- * Processing: New algorithm "Split features by character"
- * Processing: New algorithm Climb Along Line
- * Processing: Port Create Grid algorithm to C++
- * General: Show news items on welcome page
- * General: Add a separate unit choice for milliradians (SI definition) vs mil (NATO definition)
- * General: Enable widget filtering in Interface Customization dialog
- * General: Improved auto-fix broken layers
- * General: Bookmark Revamp
- * General: "Reselect Features" action in Edit -> Select menu
- * General: Parallelize snap index build
- * Data Providers: Handle read-write support for .shz and .shp.zip
- * Data Providers: oracle provider: add support for auth manager
- * Data Providers: Improved PostGIS raster support
- * Data Providers: Oracle - Database transaction support
- * Data Providers: Add support for z/m dimensions to delimited text layers
- * Data Providers: Static data providers
- * QGIS Server: Using SVG in QGIS Server
- * QGIS Server: WMS dimension
- * QGIS Server: Server OAPIF (aka WFS3) support
- * Programmability: New class QgsBookmarkManager
- * Programmability: New API for provider database connections
-
-# 3. What's new in Version 3.8 'Zanzibar'? 
+# 2. What's new in Version 3.10 'A Coruña'?
 
 This release has following new features:
 
- * Expressions: Add order by support to expression aggregate and concatenation functions
- * Expressions: File Information
- * User Interface: Save to Template Button
- * Symbology: Allow strings for font markers
- * Symbology: Offset setting for point pattern fill symbol layer
- * Symbology: Average line angles for marker and hashed line
- * Digitizing: Floating widget for advanced input next to cursor
- * Digitizing: Chanied add vertex at endpoint
- * Forms and Widgets: Allow browsing feature list
- * Analysis Tools: New aggregate method: concatenate_unique
- * Processing: Add "Save layer styles into GeoPackage" option for Package Layers algorithm
- * Processing: Overlap Analysis
- * Processing: Allow rounding values in ExtentFromLayer
- * Processing: New options to autofill batch processing dialog
- * Processing: Generate raster XYZ tiles
- * Processing: Join attributes by nearest
- * QGIS Server: Allow configuring size for GetLegendGraphics
- * Programmability: Add REGEXP SQL syntax support to spatialite provider and python connections
- * Notable Fixes: Support for curves in DXF export
- * 3D Features: Wide lines and polygon edge highlighting
- * 3D Features: Export all frames from QGIS 3d animations as images
- * 3D Features: Terrain generation from online source
- * 3D Features: Configuration of field of view angle of camera
+* Map Tools: Show 3D length for LineStringZ features in identify derived attributes
+* Symbology: Customizable default resampling settings for newly-added raster layers
+* Symbology: Add "extract symbols" action to QGS/QGZ project file context menu in browser
+* Symbology: Improved copy/paste of symbols
+* Symbology: "Center of segment" placement mode for marker and hash line symbol layers
+* Symbology: Allow array values as a valid result for data defined offset
+* Labeling: Allow creation and editing of text formats and label settings through style manager dialog
+* Labeling: New text "background" setting for marker symbol backgrounds
+* Labeling: Callouts support
+* Labeling: Add multiline alignment property to the change label tool
+* Labeling: Allow display of unplaced labels
+* Labeling: Add "overrun distance" setting for line labels
+* Labeling: Allow data defined control over "label every part of multipart features" setting
+* Labeling:  Expose "label all parts" option via label properties tool
+* Labeling: Support vertical text orientation
+* Labeling: Expose font kerning setting
+* Rendering: Allow rendering raster layers outside the reported extent
+* Rendering:  Add option to georeference PDFs and TIFs to save map canvas as image/PDF
+* Rendering: new map canvas image decoration
+* Rendering:  logarithmic scale method for graduated renderer
+* 3D Features: Measurement tool in 3D map view
+* 3D Features: Billboard Rendering for Points
+* 3D Features: 3D On-Screen Navigation
+* Print Layouts: Right-to-left arrangement for legends
+* Print Layouts: Control margin under legend group and subgroup headings
+* Print Layouts: Allow data defined settings in text formats
+* Print Layouts: @scale_value variable
+* Print Layouts: Add above/below segments placement option for scalebar labels
+* Print Layouts: Horizontal placement option for scale bar labels
+* Print Layouts: Add option to simplify PDF or SVG exports
+* Print Layouts: Improved SVG layered exports
+* Print Layouts: Add an indicator in the status bar while a map redraw is occurring in the background
+* Print Layouts: GeoPDF Export
+* Print Layouts: Data defined control over grid properties
+* Print Layouts: "fit segment size" mode for map grid interval
+* Print Layouts: layout map item extent to an existing bookmark
+* Expressions: New expression functions
+* Digitizing: GPS timestamp support
+* Data Management: Composite Foreign Keys
+* Data Management: Add circular data dependencies
+* Analysis Tools: Stored filter expressions
+* Analysis Tools: New operator for Raster Calculator
+* Processing: new algorithm point to layer
+* Processing: allow defining model parameters as advanced
+* Processing: All GDAL based algorithms now support free-form "additional parameters"
+* Processing: Add metatile size parameter to XYZ tiles algorithm
+* Processing: New parameter type for colors
+* Processing: New algorithm "Create style database from project"
+* Processing: Allow file filter and default value to be set for file/folder inputs in models
+* Processing: New algorithm "Combine style databases"
+* Processing: Generate XYZ tiles using multiple threads
+* Processing: New algorithms for exporting and importing to/from map layers
+* Processing: New algorithm "Split features by character"
+* Processing: New algorithm Climb Along Line
+* Processing: Port Create Grid algorithm to C++
+* General: Show news items on welcome page
+* General: Add a separate unit choice for milliradians (SI definition) vs mil (NATO definition)
+* General: Enable widget filtering in Interface Customization dialog
+* General: Improved auto-fix broken layers
+* General: Bookmark Revamp
+* General: "Reselect Features" action in Edit -> Select menu
+* General: Parallelize snap index build
+* Data Providers: Handle read-write support for .shz and .shp.zip
+* Data Providers: oracle provider: add support for auth manager
+* Data Providers: Improved PostGIS raster support
+* Data Providers: Oracle - Database transaction support
+* Data Providers: Add support for z/m dimensions to delimited text layers
+* Data Providers: Static data providers
+* QGIS Server: Using SVG in QGIS Server
+* QGIS Server: WMS dimension
+* QGIS Server: Server OAPIF (aka WFS3) support
+* Programmability: New class QgsBookmarkManager
+* Programmability: New API for provider database connections
 
-# 4. What's new in Version 3.6.0 'Noosa'? 
-
-This release has following new features:
-
- * Map Tools: Title label decoration
- * Map Tools: Top/bottom centering placement for decoration items
- * Map Tools: Vertex tool fixes and improvements
- * Map Tools: Identify tool supports mesh layers
- * Expressions: New Expression Functions
- * Expressions: Square brackets to easily access map array elements
- * Expressions: New map expression variables
- * User Interface: A new grayscale theme, "blend of gray"
- * User Interface: Multiline selections and editing in code/expression editors
- * Symbology: Better handling of .XML style libraries
- * Symbology: Optionally force right-hand-rule during polygon symbol rendering
- * Symbology: Option for simple lines and marker lines to only render exterior ring or interior rings
- * Symbology: Raster image marker
- * Symbology: Raster fill can have images set to remote URLs or embedded images
- * Symbology: Use represention values for classified renderers
- * Symbology: Option to merge categories in categorized renderer
- * Symbology: Show Project Colors in color bound data defined buttons
- * Symbology: Style manager dialog improvements
- * Digitizing: Georeferencer enhancements
- * Digitizing: New option to avoid minimizing georeferencer when adding points
- * Data Management: Comment option in db manager
- * Forms and Widgets: New form widget for binary (blob) fields
- * Map Composer: Grid frame improvements
- * Map Composer: Improved handling of text and label export
- * Map Composer: Map labeling improvements
- * Map Composer: Rework of map item extent/scale shortcuts
- * Map Composer: Layout items can "block" map labels
- * Map Composer: Warnings on exports
- * Map Composer: Control over stacking position of map overview extents
- * Map Composer: New expression variables for legend items
- * Map Composer: Expressions inside legend item text
- * Analysis Tools: Hardware acceleration for raster calculator
- * Processing: New algorithm "Remove duplicates by attribute"
- * Processing: Explode HStore algorithm
- * Processing: Force right-hand-rule
- * Processing: Extract Binary Field algorithm
- * Processing: Split Lines by Maximum Length algorithm
- * Processing: New parameter type for authentication config
- * Processing:  resampling and format options in the gdaladdo algorithm
- * Processing: Raster zonal stats algorithm
- * Processing: Extract Z values and Extract M values algorithms
- * Processing: Geodesic line split at antimeridian algorithm
- * Processing: Geodesic mode for "Join by Lines (Hub lines)" algorithm
- * Processing: Raster Surface Volume algorithm
- * Processing: Resurrected model to Python script functionality
- * Application and Project Options: Delete settings from the Advanced tab in options
- * Browser: Add "export to file" options for raster and vector layers within the browser
- * Browser: Native file/folder properties
- * Browser: Preview layers and attributes
- * Browser: Explore QGS/QGZ project files in the browser
- * Browser: Directly Create Geopackage and Shapefiles
- * Browser: Open Terminal at Path
- * General: Improved "missing layer" handling on project load
- * General: Optional setting for disabling version checks
- * General: Add a toggle action to vector layer legend items
- * Data Providers: Open service info for ArcGIS Feature Server layers
- * Data Providers: Binary blob support for OGR providers
- * Data Providers: ArcGIS Feature Server picture marker and picture fill support
- * Data Providers: ArcGIS Feature Server labeling support
- * Data Providers: Boolean and binary field support for memory layers
- * Data Providers: JSON Support for GeoPackage
- * Data Providers: Postgres provider: save primary key selection
- * QGIS Server: Possibility to set ATLAS_PK in GetPrint request to print atlas sheet(s)
- * QGIS Server: WMTS tile matrices configuration
- * Programmability: New class QgsExifTools
- * Programmability: Iterate over parts of a QgsGeometry
- * Programmability: Improved QgsLineString PyQGIS API
- * Programmability: PyQGIS Geometry Collection API improvements
- * Programmability: Easier Processing algorithm creation via @alg decorator
- * Programmability: Blocking (non-async) network requests
- * Programmability: Custom validity checks on layout exports
- * Programmability: API for calculating Geodesic lines
- * 3D Features: Terrain shading
- * 3D Features: Configuration of lights in 3D map scenes
- * 3D Features: Rule-based 3D renderer
-
-# 5. What's new in Version 3.4-LTR 'Madeira'? 
+# 3. What's new in Version 3.8 'Zanzibar'?
 
 This release has following new features:
 
- * Expressions: New expression functions and variables
- * Expressions: Code completion for expression builder
- * User Interface: Auto selection of exported files in file manager
- * User Interface: New "Open Directory" option for disabled welcome page projects
- * User Interface: UX Improvements for Temporary Scratch Layers
- * User Interface: Task manager improvements
- * User Interface: Hyperlinks to local vector & raster datasets in the information panel
- * User Interface: Style manager improvements
- * User Interface: Polished browser panel interface and experience
- * User Interface: QML chart and drawings widget
- * Symbology: Mesh layer styling
- * Symbology: Classify symmetric in graduated renderer
- * Digitizing: GPS tracking improvements
- * Digitizing: More angle choices in advanced digitizing dock
- * Digitizing: Vertex tool can work on the current layer only
- * Digitizing: Add reverse line maptools
- * Digitizing: Geometry Precision
- * Digitizing: Automatically remove duplicate nodes
- * Digitizing: Check for geometry validity
- * Digitizing: Topology checks while editing
- * Data Management: Translation of QGIS projects
- * Data Management: Switch Attribute Table dock mode on demand
- * Data Management: New locator filter to search across all layers
- * Data Management: Non-removable (required) layers highlighted in layer tree
- * Data Management: Append raster layer to an existing Geopackage
- * Map Composer: 3d map items
- * Processing: Edit in place
- * Processing: Store models inside project
- * Processing: Sample Raster Values
- * Processing: New 'Raster pixels to polygons' algorithm
- * Processing: K Means clustering algorithm
- * Processing: dbscan spatial clustering algorithm
- * Processing: Improved algorithms
- * Processing: Filter Vertices by M and Filter Vertices by Z algorithms
- * Processing: "Array of Translated Features" algorithm
- * Processing: "Array of offset (parallel) lines" algorithm
- * Processing: Choice of units for non degree/unknown distances
- * Processing: "Drape features to z/m" algorithms
- * Processing: "Raster pixels to points" algorithm
- * Processing: Line substring algorithm
- * Processing: "Interpolate point on line" algorithm
- * Processing: k-neighbour concave hull
- * Processing: Python scripts which implement algorithms now execute the algorithm on drag and drop and browser double-click
- * Processing: New GDAL's rearrange band algorithm
- * Processing: "Precalculated" values for model algorithm parameters
- * Processing: "Categorize a layer using a style XML file" algorithm
- * General: Flatpak
- * General: SVG files can be embedded in projects and symbols
- * General: OpenCL based acceleration
- * Data Providers: OAuth2 authentication method plugin
- * Data Providers: Mesh layer: New mesh layer format support
- * Data Providers: Mesh layer: add function to identify value on mesh layers
- * Data Providers: Mesh layer: allow choosing different vector and scalar dataset
- * Data Providers:  Mesh layer: allow render vectors/arrows on the user-defined grid
- * Data Providers: JSON/JSONB Type support
- * Data Providers: ESRI Token Authentication support
- * Data Providers: SQL Server - Invalid geometry handling
- * QGIS Server: Server Cache can be manage by plugins
- * QGIS Server: WMTS 1.0.0 support
- * QGIS Server: Add ability to define min. scale for WMTS
- * QGIS Server:  Support QGIS Server logs to stderr
- * Plugins: Support for encrypted zips in the Plugin Manager
- * Plugins: Offline Editing GeoPackage
- * Programmability: QgsSpatialIndexKDBush
- * Programmability: QgsRasterDataProvider::sample method for efficient sampling of rasters at a given point
- * Programmability: New geometry API call to return a curve substring
- * Programmability: sip Module API Changes
- * 3D Features: Improved navigation
- * 3D Features: Animation
- * 3D Features: Simple rendering of 3D linestrings
- * 3D Features: Identification map tool for 3D views
+* Expressions: Add order by support to expression aggregate and concatenation functions
+* Expressions: File Information
+* User Interface: Save to Template Button
+* Symbology: Allow strings for font markers
+* Symbology: Offset setting for point pattern fill symbol layer
+* Symbology: Average line angles for marker and hashed line
+* Digitizing: Floating widget for advanced input next to cursor
+* Digitizing: Chanied add vertex at endpoint
+* Forms and Widgets: Allow browsing feature list
+* Analysis Tools: New aggregate method: concatenate_unique
+* Processing: Add "Save layer styles into GeoPackage" option for Package Layers algorithm
+* Processing: Overlap Analysis
+* Processing: Allow rounding values in ExtentFromLayer
+* Processing: New options to autofill batch processing dialog
+* Processing: Generate raster XYZ tiles
+* Processing: Join attributes by nearest
+* QGIS Server: Allow configuring size for GetLegendGraphics
+* Programmability: Add REGEXP SQL syntax support to spatialite provider and python connections
+* Notable Fixes: Support for curves in DXF export
+* 3D Features: Wide lines and polygon edge highlighting
+* 3D Features: Export all frames from QGIS 3d animations as images
+* 3D Features: Terrain generation from online source
+* 3D Features: Configuration of field of view angle of camera
 
-# 6. What's new in Version 3.2 'Bonn'? 
+# 4. What's new in Version 3.6.0 'Noosa'?
 
 This release has following new features:
 
- * Expressions: New expression functions
- * Expressions: More helpful expression builder
- * Map Tools: Simplify map tool can now also smooth features
- * Map Tools: Identify Tool with extra options
- * Map Tools: Store also expanded/collapsed state of nodes in map Themes
- * Map Tools: Auto "Zoom to Selection" mode for new map views
- * Map Tools: Choice of simplification method for simplify map tool
- * Map Tools: add zoom to related feature in forms
- * Map Tools: Cartesian areas/lengths/perimeters in identify results
- * User Interface: Layers panel: indicators for filtered map layers
- * User Interface: Allow customizing prefix of locator filters
- * User Interface: Opening of vector and raster stored on HTTP(S), FTP, or cloud services
- * User Interface: Quick calculator in locator search bar
- * User Interface: Shortcuts for toggling panels
- * User Interface: Bookmark searching in locator
- * User Interface: Close and Revert Project actions
- * User Interface: Unsaved changes indicator in title bar
- * User Interface: Configurable map tips delay
- * User Interface: Move layer or group to top of layer panel
- * User Interface: Copy statistics panel content to clipboard button
- * User Interface: Search Settings, Options, and Project Properties pages from locator
- * User Interface: Indicators for embedded layers and groups
- * Symbology: Nicer colors for new layers
- * Rendering: Improved map Copyright decoration
- * Rendering: Main window scale bar font size and family can be customized
- * Rendering: Custom SVG path and size for the north arrow decoration
- * Data Management: Refresh a materialized view
- * Data Management: Z and M support for offline editing
- * Data Management: Metadata for QGIS projects
- * Forms and Widgets: Multi-column layout for multiselect value relation widget
- * Forms and Widgets: Allow using a URL for custom attribute forms (UI file)
- * Forms and Widgets: Drill-down (cascading) forms
- * Layer Legend: Optional text on top of symbols for vector layers
- * Layer Legend: Copy&Paste Group/Layers from a QGIS project to another.
- * Map Composer: Data defined table source for attribute table items
- * Map Composer: Project metadata embedded in layout exports
- * Map Composer: Better formatting for scalebar text
- * Processing: Improved 'Join by attribute table' algorithm
- * Processing: Load script from template
- * Processing: Feature filter algorithm for processing models
- * Processing: Zonal histogram
- * Processing: Port Union, Difference and Intersection algorithms to C++
- * Processing: 'Project points (Cartesian)' algorithm
- * Processing: Dynamic parameter values for more algorithms
- * Processing: Multi-ring buffer (constant distance) algorithm
- * Processing: New "segmentize" algorithms
- * Processing: Option to create points on all polygon parts
- * Processing: Rotate Features algorithm
- * Processing: Line sinuosity in "Add Geometry Attributes"
- * Processing: Import geotagged photos
- * Processing: Swap x/y coordinate values algorithm
- * Processing: Sort order option for "Add Incremental Field"
- * Processing: Indicator for distance parameter units
- * Processing: Algorithm log can be saved/cleared/copied
- * Processing: Wedge buffer algorithm
- * Processing: Variable width buffers
- * Processing: Reclassify raster algorithms
- * Application and Project Options: Mandatory layers in project
- * Application and Project Options: Saving and loading projects in Postgresql database
- * Browser: Save/Load connections for XYZ Tiles
- * Browser: Project home path can be manually set
- * General: New zipped project file format .qgz is now the default format
- * General: Filtering for field values in Query Builder
- * General: FULL screen Map via Ctrl-Shift-Tab
- * Data Providers: Support for mesh layer
- * Data Providers: Automatically set default style for layers for ArcGIS Feature Server layers
- * Data Providers: Faster Oracle queries
- * Data Providers: Restrict table list for a Oracle database connection to a preset schema
- * Data Providers: Read only support for curved Oracle geometries
- * Plugins: Adding query history in DB Manager
- * Plugins: DB Manager SQL execution in background
+* Map Tools: Title label decoration
+* Map Tools: Top/bottom centering placement for decoration items
+* Map Tools: Vertex tool fixes and improvements
+* Map Tools: Identify tool supports mesh layers
+* Expressions: New Expression Functions
+* Expressions: Square brackets to easily access map array elements
+* Expressions: New map expression variables
+* User Interface: A new grayscale theme, "blend of gray"
+* User Interface: Multiline selections and editing in code/expression editors
+* Symbology: Better handling of .XML style libraries
+* Symbology: Optionally force right-hand-rule during polygon symbol rendering
+* Symbology: Option for simple lines and marker lines to only render exterior ring or interior rings
+* Symbology: Raster image marker
+* Symbology: Raster fill can have images set to remote URLs or embedded images
+* Symbology: Use represention values for classified renderers
+* Symbology: Option to merge categories in categorized renderer
+* Symbology: Show Project Colors in color bound data defined buttons
+* Symbology: Style manager dialog improvements
+* Digitizing: Georeferencer enhancements
+* Digitizing: New option to avoid minimizing georeferencer when adding points
+* Data Management: Comment option in db manager
+* Forms and Widgets: New form widget for binary (blob) fields
+* Map Composer: Grid frame improvements
+* Map Composer: Improved handling of text and label export
+* Map Composer: Map labeling improvements
+* Map Composer: Rework of map item extent/scale shortcuts
+* Map Composer: Layout items can "block" map labels
+* Map Composer: Warnings on exports
+* Map Composer: Control over stacking position of map overview extents
+* Map Composer: New expression variables for legend items
+* Map Composer: Expressions inside legend item text
+* Analysis Tools: Hardware acceleration for raster calculator
+* Processing: New algorithm "Remove duplicates by attribute"
+* Processing: Explode HStore algorithm
+* Processing: Force right-hand-rule
+* Processing: Extract Binary Field algorithm
+* Processing: Split Lines by Maximum Length algorithm
+* Processing: New parameter type for authentication config
+* Processing:  resampling and format options in the gdaladdo algorithm
+* Processing: Raster zonal stats algorithm
+* Processing: Extract Z values and Extract M values algorithms
+* Processing: Geodesic line split at antimeridian algorithm
+* Processing: Geodesic mode for "Join by Lines (Hub lines)" algorithm
+* Processing: Raster Surface Volume algorithm
+* Processing: Resurrected model to Python script functionality
+* Application and Project Options: Delete settings from the Advanced tab in options
+* Browser: Add "export to file" options for raster and vector layers within the browser
+* Browser: Native file/folder properties
+* Browser: Preview layers and attributes
+* Browser: Explore QGS/QGZ project files in the browser
+* Browser: Directly Create Geopackage and Shapefiles
+* Browser: Open Terminal at Path
+* General: Improved "missing layer" handling on project load
+* General: Optional setting for disabling version checks
+* General: Add a toggle action to vector layer legend items
+* Data Providers: Open service info for ArcGIS Feature Server layers
+* Data Providers: Binary blob support for OGR providers
+* Data Providers: ArcGIS Feature Server picture marker and picture fill support
+* Data Providers: ArcGIS Feature Server labeling support
+* Data Providers: Boolean and binary field support for memory layers
+* Data Providers: JSON Support for GeoPackage
+* Data Providers: Postgres provider: save primary key selection
+* QGIS Server: Possibility to set ATLAS_PK in GetPrint request to print atlas sheet(s)
+* QGIS Server: WMTS tile matrices configuration
+* Programmability: New class QgsExifTools
+* Programmability: Iterate over parts of a QgsGeometry
+* Programmability: Improved QgsLineString PyQGIS API
+* Programmability: PyQGIS Geometry Collection API improvements
+* Programmability: Easier Processing algorithm creation via @alg decorator
+* Programmability: Blocking (non-async) network requests
+* Programmability: Custom validity checks on layout exports
+* Programmability: API for calculating Geodesic lines
+* 3D Features: Terrain shading
+* 3D Features: Configuration of lights in 3D map scenes
+* 3D Features: Rule-based 3D renderer
 
-# 7. What's new in Version 3.0 'Girona'? 
-
-This release has following new features:
-
- * Expressions: Support aggregation of geometry in expressions
- * Expressions: New expression variables
- * Expressions: new global expression variable @qgis_locale
- * Expressions: item_variables expression function inside compositions
- * Expressions: New expression variables for map settings
- * Expressions: New expression functions
- * Expressions: Expose @parent variable in aggregate functions
- * User Interface: Improved consistency to the user interface
- * User Interface: Enable tabbed floating docks
- * User Interface: Add support for fine-resolution mouse wheel zooming
- * User Interface: add search bar to the Configure Shortcuts dialog
- * User Interface: Toggle visibility of opened panels in main window
- * User Interface: Locator bar
- * User Interface: More non-blocking, inline editing
- * User Interface: Add an option to show user color schemes menus
- * User Interface: Color setting for map canvas north arrow decoration
- * User Interface: Improved map canvas' save as image
- * Symbology: NEW MAP COLORING ALGORITHMS IN QGIS 3.0
- * Symbology:  New "preset" colors color ramp option
- * Symbology: Allow symbol layers to be temporarily disabled
- * Symbology: Data defined symbol layer visibility
- * Symbology: save and restore color ramp used for singleband pseudocolor rendering
- * Symbology: save and restore color ramp used for singleband pseudocolor rendering
- * Symbology: Add Points  and Inches to available symbol units
- * Symbology: New color ramp button widget
- * Symbology: Style management re-work and upgrade
- * Symbology: Show an alpha slider in color button drop-down menu
- * Symbology: Support setting of color and transparency on multiple items for raster renderers
- * Symbology: raster auto-stretching when updating canvas
- * Symbology: Raster stretch toolbar actions support for pseudocolor renderer
- * Symbology: Transparency support for paletted renderer
- * Symbology: Control over annotation contents margins
- * Symbology: Annotations can be styled using fill symbol styles
- * Symbology: Point cluster renderer
- * Labeling: Allow label font size in mm/pixels
- * Labeling: Custom labeling toolbar is now always enabled
- * Diagrams: Data definable properties
- * Rendering: Grid renderer for points displacement
- * Rendering: Live layer support
- * Rendering: Cache labeling result to avoid unnecessary redraws     when refreshing canvas
- * Digitizing: add functionality to copy/move feature to move feature map tool
- * Digitizing: Range vertex selection in node tool
- * Digitizing: Add default Z value option
- * Digitizing: Move feature now benefits from Advanced Digitizing
- * Digitizing: Tracing with offset
- * Data Management: Metadata overhaul
- * Data Management: Auxiliary Storage Support
- * Data Management: Pan to current feature in attribute table
- * Data Management: Map of CRS-extent in Project properties
- * Data Management: Unified data source manager dialog
- * Data Management: Unified data source manager dialog
- * Data Management: Unified data source manager dialog
- * Forms and Widgets: Allow controlling labels for individual edit widgets
- * Forms and Widgets: Smarter default edit widgets with plugins to pick them
- * Forms and Widgets: Allow configuring link/unlink feature buttons on relation editor widget
- * Forms and Widgets: conditional visibility for tabs and groupboxes
- * Forms and Widgets: Field constraints can be enforced or not
- * Forms and Widgets: Add layer scoped actions
- * Forms and Widgets: Add between/not between to numerical fields in select by form
- * Forms and Widgets: Show field values in autocompleter in form filter mode
- * Forms and Widgets: Add zoom to features and flash features shortcuts in select by form dialog
- * Forms and Widgets: Add between/not between to numerical fields in select by form
- * Layer Legend: Hide Deselected Layers action
- * Layer Legend: Change of ergonomy of the visibility of layers inside groups
- * Map Composer: Control over drawing of composer table grid horizontal & vertical lines
- * Map Composer: Map Composer Overhaul
- * Map Composer: Drag qpt to QGIS to create new composer from template
- * Map Composer: Allow customization of line spacing for composer legend item labels
- * Map Composer: Allow choice of CRS for map items
- * Map Composer: Data definable controls
- * Map Composer: Holding shift while drawing polyline/polygon constrains     line angles
- * Analysis Tools: Raster unique values count for processing
- * Processing:  New algorithm for offsetting lines
- * Processing: New algorithm for single sided buffers
- * Processing: Optimised points along geometry algorithm
- * Processing: Add choice of simplification method to simplify
- * Processing: support for output geometry types in models
- * Processing: Angle threshold for smooth algorithm
- * Processing: Better support for Z/M dimensions and curved geometries
- * Processing: Raster analysis algorithms added to Processing
- * Processing: New algorithm to extract specific nodes
- * Processing: expose zonal statistics from Zonal statistics plugin in toolbox
- * Processing: add a spatialite execute SQL algorithm
- * Processing: New algorithm to extend lines
- * Processing: New extract by expression algorithm
- * Processing: add import into spatialite algorithm
- * Processing: Interpolation algorithms
- * Processing: New algorithm to compute geometry by expression
- * Processing: Snap geometries to layer algorithm
- * Processing: New input type for expressions
- * Processing: SplitWithLines
- * Processing: pole of inaccessibility algorithm
- * Processing: Extract by attribute can extract for null/notnull values
- * Processing: Create attribute index algorithm
- * Processing: New 'drop geometries' algorithm
- * Processing: New universal 'basic stats for field' algorithm
- * Processing: Port heatmap plugin to processing algorithm
- * Processing: New algorithm to orthogonalize geometries
- * Processing: Network analysis algorithms
- * Processing: Export processing models as PDF/SVG
- * Processing: New algorithm to truncate tables
- * Processing: added ‘invalid feature handling’ option
- * Processing: algorithm to fix invalid geometries using native makeValid() implementation
- * Processing: add search to Get Scripts and Models dialog
- * Processing: Generic centroid algorithm
- * Processing: improved Extract nodes algorithm
- * Processing: New algorithm for translating (moving) points
- * Processing: Improved processing modeler window
- * Processing: New raster unique values report algorithm
- * Processing: remove TauDEM provider from core Processing
- * Processing: Download a file from Processing
- * Application and Project Options: New zipped project file format .qgz
- * Application and Project Options: Add support for user profiles
- * Browser: Drag'n'drop layers from layer tree view to browser dock
- * General: Remove dxf2shp converter plugin
- * General: Remove zonal stats plugin
- * General: Remove orphaned oracle raster plugin
- * General: Possibility to configure location of the QGIS help files
- * General: remove TauDEM provider from core Processing
- * General: removed otb and lidartools providers from processing
- * General: Migrate Photo, WebView and FileName widgets to Attachment
- * Data Providers: GeoPackage
- * Data Providers: Support all GDAL writable raster formats for 'Save as' dialog on raster layers
- * Data Providers: Add auto-discovery of relations for PostgresQL
- * Data Providers: Detect literal default values for spatialite provider
- * Data Providers: New unified 'add layer' dialog
- * Data Providers: Create attribute index support for spatialite provider
- * Data Providers: Add support for arrays
- * Data Providers: Support for HStore in PostGIS data provider
- * Data Providers: Data dependencies between layers
- * Data Providers: hstore support to the postgres provider
- * Data Providers: dxf export: support reprojection
- * Data Providers: Load/save style in database for GPKG and Spatialite
- * Data Providers: Unique and not-null constraint handling
- * Data Providers: support for Z/M geometries in memory provider
- * Data Providers: Support for Z/M geometries in spatialite provider
- * Data Providers: GeoNode integration
- * Data Providers: Improved handling of defaults
- * QGIS Server: QGIS Server overhaul
- * QGIS Server: Possibility to segmentize feature info geometry in server
- * Plugins: Remove trusted status from Plugin Manager
- * Plugins: Offline editing: Add flag to only copy selected features
- * Plugins: GDALTools moved to Processing
- * Plugins: allow installing plugins from local ZIP packages
- * Programmability: Geometry class updates
- * Programmability: Task manager
- * Programmability: API to allow drag'n'drop of custom browser items
-
-# 8. What's new in Version 2.18 'Las Palmas'? 
+# 5. What's new in Version 3.4-LTR 'Madeira'?
 
 This release has following new features:
 
- * Symbology: Color picker is now embedded in layer style panel
- * Labeling: Substitution list support for labeling
- * Labeling: Improved line label placement algorithm
- * Labeling: Label polygons using curved labels along perimeter
- * Data Management: Add flag to only copy selected features
- * Forms and Widgets: Allow controlling labels for individual edit widgets
- * Forms and Widgets: Conditional visibility for tabs and group boxes
- * Forms and Widgets: Client side default field values
- * Map Composer: True North Arrows
- * Processing: Point on surface algorithm  added
- * Processing: New algorithm for geometry boundary
- * Processing: New algorithm for calculating feature bounding box
- * Processing: Processing dissolve algorithm accepts multiple fields
- * Processing: Optimised processing clip algorithm
- * Processing: New algorithm for merging connected lines
- * General: Automatic links in identify results
- * General: Mouse wheel over color dialog sliders
- * General: Add custom color schemes to color button drop-down menu
- * Data Providers: Preview for WMTS + added XYZ tile layers
- * QGIS Server: Possibility to segmentize feature info geometry in server
- * Plugins: DB Manager: Add the ability to update SQL Layer
- * Programmability: New expression functions
- * Programmability: Expose GEOS linear referencing function to QgsGeometry
+* Expressions: New expression functions and variables
+* Expressions: Code completion for expression builder
+* User Interface: Auto selection of exported files in file manager
+* User Interface: New "Open Directory" option for disabled welcome page projects
+* User Interface: UX Improvements for Temporary Scratch Layers
+* User Interface: Task manager improvements
+* User Interface: Hyperlinks to local vector & raster datasets in the information panel
+* User Interface: Style manager improvements
+* User Interface: Polished browser panel interface and experience
+* User Interface: QML chart and drawings widget
+* Symbology: Mesh layer styling
+* Symbology: Classify symmetric in graduated renderer
+* Digitizing: GPS tracking improvements
+* Digitizing: More angle choices in advanced digitizing dock
+* Digitizing: Vertex tool can work on the current layer only
+* Digitizing: Add reverse line maptools
+* Digitizing: Geometry Precision
+* Digitizing: Automatically remove duplicate nodes
+* Digitizing: Check for geometry validity
+* Digitizing: Topology checks while editing
+* Data Management: Translation of QGIS projects
+* Data Management: Switch Attribute Table dock mode on demand
+* Data Management: New locator filter to search across all layers
+* Data Management: Non-removable (required) layers highlighted in layer tree
+* Data Management: Append raster layer to an existing Geopackage
+* Map Composer: 3d map items
+* Processing: Edit in place
+* Processing: Store models inside project
+* Processing: Sample Raster Values
+* Processing: New 'Raster pixels to polygons' algorithm
+* Processing: K Means clustering algorithm
+* Processing: dbscan spatial clustering algorithm
+* Processing: Improved algorithms
+* Processing: Filter Vertices by M and Filter Vertices by Z algorithms
+* Processing: "Array of Translated Features" algorithm
+* Processing: "Array of offset (parallel) lines" algorithm
+* Processing: Choice of units for non degree/unknown distances
+* Processing: "Drape features to z/m" algorithms
+* Processing: "Raster pixels to points" algorithm
+* Processing: Line substring algorithm
+* Processing: "Interpolate point on line" algorithm
+* Processing: k-neighbour concave hull
+* Processing: Python scripts which implement algorithms now execute the algorithm on drag and drop and browser double-click
+* Processing: New GDAL's rearrange band algorithm
+* Processing: "Precalculated" values for model algorithm parameters
+* Processing: "Categorize a layer using a style XML file" algorithm
+* General: Flatpak
+* General: SVG files can be embedded in projects and symbols
+* General: OpenCL based acceleration
+* Data Providers: OAuth2 authentication method plugin
+* Data Providers: Mesh layer: New mesh layer format support
+* Data Providers: Mesh layer: add function to identify value on mesh layers
+* Data Providers: Mesh layer: allow choosing different vector and scalar dataset
+* Data Providers:  Mesh layer: allow render vectors/arrows on the user-defined grid
+* Data Providers: JSON/JSONB Type support
+* Data Providers: ESRI Token Authentication support
+* Data Providers: SQL Server - Invalid geometry handling
+* QGIS Server: Server Cache can be manage by plugins
+* QGIS Server: WMTS 1.0.0 support
+* QGIS Server: Add ability to define min. scale for WMTS
+* QGIS Server:  Support QGIS Server logs to stderr
+* Plugins: Support for encrypted zips in the Plugin Manager
+* Plugins: Offline Editing GeoPackage
+* Programmability: QgsSpatialIndexKDBush
+* Programmability: QgsRasterDataProvider::sample method for efficient sampling of rasters at a given point
+* Programmability: New geometry API call to return a curve substring
+* Programmability: sip Module API Changes
+* 3D Features: Improved navigation
+* 3D Features: Animation
+* 3D Features: Simple rendering of 3D linestrings
+* 3D Features: Identification map tool for 3D views
 
-# 9. What's new in Version 2.16 'Nødebo'? 
-
-This release has following new features:
-
- * User Interface: Improvements to map zooming
- * User Interface: Map canvas magnifier
- * User Interface: Redesigned interactive gradient editor
- * User Interface: Choice of default view for the attribute dialog
- * User Interface: Improvements to calendar popups
- * User Interface: Improved color pickers
- * User Interface: Copy cell contents from attribute table
- * User Interface: Improved HiDPI support
- * User Interface: Improved map select tool behavior
- * Symbology: Arrow symbol layer
- * Symbology: New "Filled marker" symbol layer type
- * Symbology: New accessibility and low vision symbols
- * Symbology: New simple marker symbols
- * Symbology: "No symbol" renderer
- * Symbology: More control over centroid fill point rendering
- * Symbology: Outline setting for font markers symbol
- * Symbology: Control outline join style for simple, ellipse, and font markers
- * Symbology: New map tool for interactively setting point symbol offset
- * Symbology: Style Dock
- * Labeling: Labeling map tools now work with rule-based labeling
- * Diagrams: Legend entries for diagram size
- * Diagrams: Unit selection for outline width
- * Diagrams: Diagrams behave like labels and can be managed from toolbar
- * Rendering: New options for on the fly simplification
- * Rendering: Quantile based classification for raster layers
- * Rendering: Live hillshade renderer
- * Digitizing: "Repeating" locking mode for constraints
- * Digitizing: Extend linestring geometries with reshape tool
- * Digitizing: Segmentation tolerance
- * Data management: New configuration options for attribute table
- * Data management: Multiple columns in attribute forms
- * Data management: Control over attributes to export when saving a vector layer
- * Data management: Forms view: side column now sortable
- * Data management: Relation reference widget: shortcut for adding new values
- * Data management: DXF export improvements
- * Data management: Top level widgets in drag and drop designer
- * Data management: Form based select and filter
- * Data management: Create GeoPackage layers
- * Data management: Constraints on widgets
- * Data management: Edit attributes of multiple features simultaneously
- * Layer Legend: New option to zoom to a layer's visible scale range
- * Map Composer: New tools for drawing polygons and polylines
- * Map Composer: Embed atlas features into composer HTML source as GeoJSON
- * Map Composer: Parametrized svg support for composer svg images
- * Map Composer: Easier use of HTML in labels
- * Map Composer: Relative links in composer labels
- * Map Composer: Georeference outputs (e.g., PDF) from composer
- * Map Composer: Composer maps now auto-update with presets
- * Analysis tools: Named parameters in expressions
- * Analysis tools: More distance units
- * Analysis tools: Changes to expressions
- * Analysis tools: Statistics for string and date fields
- * Analysis tools: Show curve point radius in info tool
- * Analysis tools: Aggregate support for expressions
- * Analysis tools: fTools plugin has been replaced with Processing algorithms
- * Processing: Set point locations by clicking on canvas
- * Processing: Additional GRASS algorithms in processing
- * Processing: Support for expressions and variables
- * Processing: Preconfigured algorithms
- * Processing: Create a plugin with script-based algorithms from the toolbox
- * Processing: Use of authentication manager in PostGIS related algorithms
- * Processing: Support for writing tables with no geometry
- * General: Copying features in GeoJSON format
- * General: Store spatial bookmarks in project files
- * General: Support for GNSS GNRMC messages
- * General: Paste GeoJSON features directly into QGIS
- * General: Map tip improvements
- * General: QGIS Paid Bugfixing Programme
- * General: Desktop MIME icons for QGIS file types
- * Data Providers: OGR datasets are opened in read-only mode by default
- * Data Providers: Improved handling of Postgres DOMAIN type fields
- * Data Providers: Make readOnly mode of vector layers configurable in project
- * Data Providers: Support for DB2 databases
- * Data Providers: Refresh Postgres materialized views in db manager
- * Data Providers: OGR FID attribute shown
- * Data Providers: Save styles in MS SQL and Oracle databases
- * Data Providers: Rename fields in layers
- * Data Providers: ArcGIS Map and Feature REST services
- * Data Providers: Basic support for Oracle Workspace Manager
- * Data Providers: Massive improvements to WFS Provider
- * Data Providers: Generation of default values on Postgres layers "just in time"
- * QGIS Server: Redlining support in GetMap and GetPrint
- * QGIS Server: Default datum transformation for server
- * Plugins: Refreshed globe plugin
- * Plugins: Globe: Extrude objects
- * Plugins: API: Add pages to vector layer properties
- * Plugins: Globe: Vector support
- * Plugins: Globe: Vertical exaggeration for DTM
- * Programmability: Embedded widgets in layer tree
- * Programmability: Plugins can add pages to vector layer properties
-
-# 10. What's new in Version 2.14 'Essen'? 
+# 6. What's new in Version 3.2 'Bonn'?
 
 This release has following new features:
 
- * Analysis tools : More statistics available in merge attributes tool
- * Analysis tools : z/m values are shown when using the identify tool
- * Browser : Browser Improvements
- * Data Providers : Use ST_RemoveRepeatedPoints for simplification on PostGIS 2.2 or newer
- * Data Providers : Cache WMS capabililies
- * Data Providers : Better handling of time and datetime fields
- * Data Providers : Z/M support in delimited text provider
- * Data Providers : Curved geometry support expanded
- * Data Providers : Transaction groups for postgres editing
- * Data Providers : Postgres provider PKI authentication.
- * Data Providers : Virtual layers
- * Data Providers : More file extensions for GDAL and OGR providers file selectors
- * Data management : dxf export: option to use title instead of name as dxf layer name in application and server
- * Data management : Removal of SPIT plugin
- * Data management : Geometry type can be overridden in the vector save as dialog
- * Data management : Vector joins are now saved within QLR layer-definition-files
- * Data management : N:M relation editing
- * Data management : External Resource widget
- * Digitizing : Configurable rubber band color
- * Digitizing : Autotrace
- * Digitizing : Trace digitizing tool
- * General : Changed behavior of strpos function
- * General : Field calculator can be used to update feature's geometry
- * General : Virtual layers
- * General : Zoom to feature with right-click in attribute table
- * General : Speed improvements
- * General : More expression variables
- * General : New expression functions in 2.14
- * General : Better control over placement of map elements
- * General : Paid bugfixing programme
- * Labeling : Actual rendered symbol is now considered as an obstacle for point feature labels
- * Labeling : "Cartographic" placement mode for point labels
- * Labeling : Applying label distance from symbol bounds
- * Labeling : Control over label rendering order
- * Layer Legend : applying the same style to selected layers or to legend group
- * Layer Legend : New options for filtering legend elements
- * Layer Legend : Filter legend by expression
- * Map Composer : Additional paths for composer templates
- * Map Composer : Multiple selection of compositions in manager
- * Plugins : Authentication system support for plugin manager
- * Processing : New algorithms in 2.14
- * Processing : Unit Tests Q/A
- * Processing : Improved toolbox.
- * Processing : More informative algorithm dialog.
- * Processing : Batch processes can be saved and later recovered from the batch processing interface
- * Processing : GRASS7 v.net modules
- * Programmability : Redesign expression function editor
- * Programmability : Store python init code into the project
- * Programmability : New filtering and sorting options for QgsFeatureRequest
- * Programmability : Custom feature form Python code options
- * Programmability : New PyQGIS classes in 2.14
- * QGIS Server : STARTINDEX param in WFS GetFeature Request
- * QGIS Server : showFeatureCount in GetLegendGraphic
- * QGIS Server : Enhance store project keyword list
- * QGIS Server : Option to avoid rendering artifacts at edges of tiles
- * QGIS Server : WMS INSPIRE Capabilities
- * QGIS Server : Configuration checker in project properties
- * QGIS Server : Add short name to layers, groups and project
- * Symbology : Size assistant for varying line width
- * Symbology : Support for transparency in SVG color parameters
- * Symbology : Easy duplication of symbol layers
- * Symbology : 2.5D Renderer
- * Symbology : Geometry generator symbols
- * Symbology : Allow definition of rendering order for features
- * User Interface : Attribute table can be refreshed
- * User Interface : Edit legend symbols directly from layer tree
- * User Interface : Directly set renderer and class symbol colors from context menu in legend
- * User Interface : Improved and more powerful file picker widget for forms
- * User Interface : Show/hide all legend items via the the context menu
+* Expressions: New expression functions
+* Expressions: More helpful expression builder
+* Map Tools: Simplify map tool can now also smooth features
+* Map Tools: Identify Tool with extra options
+* Map Tools: Store also expanded/collapsed state of nodes in map Themes
+* Map Tools: Auto "Zoom to Selection" mode for new map views
+* Map Tools: Choice of simplification method for simplify map tool
+* Map Tools: add zoom to related feature in forms
+* Map Tools: Cartesian areas/lengths/perimeters in identify results
+* User Interface: Layers panel: indicators for filtered map layers
+* User Interface: Allow customizing prefix of locator filters
+* User Interface: Opening of vector and raster stored on HTTP(S), FTP, or cloud services
+* User Interface: Quick calculator in locator search bar
+* User Interface: Shortcuts for toggling panels
+* User Interface: Bookmark searching in locator
+* User Interface: Close and Revert Project actions
+* User Interface: Unsaved changes indicator in title bar
+* User Interface: Configurable map tips delay
+* User Interface: Move layer or group to top of layer panel
+* User Interface: Copy statistics panel content to clipboard button
+* User Interface: Search Settings, Options, and Project Properties pages from locator
+* User Interface: Indicators for embedded layers and groups
+* Symbology: Nicer colors for new layers
+* Rendering: Improved map Copyright decoration
+* Rendering: Main window scale bar font size and family can be customized
+* Rendering: Custom SVG path and size for the north arrow decoration
+* Data Management: Refresh a materialized view
+* Data Management: Z and M support for offline editing
+* Data Management: Metadata for QGIS projects
+* Forms and Widgets: Multi-column layout for multiselect value relation widget
+* Forms and Widgets: Allow using a URL for custom attribute forms (UI file)
+* Forms and Widgets: Drill-down (cascading) forms
+* Layer Legend: Optional text on top of symbols for vector layers
+* Layer Legend: Copy&Paste Group/Layers from a QGIS project to another.
+* Map Composer: Data defined table source for attribute table items
+* Map Composer: Project metadata embedded in layout exports
+* Map Composer: Better formatting for scalebar text
+* Processing: Improved 'Join by attribute table' algorithm
+* Processing: Load script from template
+* Processing: Feature filter algorithm for processing models
+* Processing: Zonal histogram
+* Processing: Port Union, Difference and Intersection algorithms to C++
+* Processing: 'Project points (Cartesian)' algorithm
+* Processing: Dynamic parameter values for more algorithms
+* Processing: Multi-ring buffer (constant distance) algorithm
+* Processing: New "segmentize" algorithms
+* Processing: Option to create points on all polygon parts
+* Processing: Rotate Features algorithm
+* Processing: Line sinuosity in "Add Geometry Attributes"
+* Processing: Import geotagged photos
+* Processing: Swap x/y coordinate values algorithm
+* Processing: Sort order option for "Add Incremental Field"
+* Processing: Indicator for distance parameter units
+* Processing: Algorithm log can be saved/cleared/copied
+* Processing: Wedge buffer algorithm
+* Processing: Variable width buffers
+* Processing: Reclassify raster algorithms
+* Application and Project Options: Mandatory layers in project
+* Application and Project Options: Saving and loading projects in Postgresql database
+* Browser: Save/Load connections for XYZ Tiles
+* Browser: Project home path can be manually set
+* General: New zipped project file format .qgz is now the default format
+* General: Filtering for field values in Query Builder
+* General: FULL screen Map via Ctrl-Shift-Tab
+* Data Providers: Support for mesh layer
+* Data Providers: Automatically set default style for layers for ArcGIS Feature Server layers
+* Data Providers: Faster Oracle queries
+* Data Providers: Restrict table list for a Oracle database connection to a preset schema
+* Data Providers: Read only support for curved Oracle geometries
+* Plugins: Adding query history in DB Manager
+* Plugins: DB Manager SQL execution in background
 
-# 11. What's new in Version 2.12 'Lyon'? 
+# 7. What's new in Version 3.0 'Girona'?
 
 This release has following new features:
 
- * Analysis tools : Added number of vertices to derived fields in identify tool
- * Analysis tools : Raster alignment tool
- * Analysis tools : Geometry Checker and Geometry Snapper plugins
- * Application and Project Options : Encrypted password management
- * Browser : Improvements to PostGIS connections in browser
- * Data Providers : PostGIS provider improvements
- * Data management : DBManager Improvements
- * Data management : Conditional formatting for attribute table cells
- * Data management : Support for relative paths in widgets
- * Digitizing : Digitizing improvements
- * General : New welcome screen
- * General : Ongoing improvements to code quality
- * General : Advanced settings editor
- * General : Mutually exclusive layer tree groups
- * General : Filtering for field values in expression widget
- * General : User Interface Theme support
- * General : New expression functions in 2.12
- * General : Variables in expressions
- * Labeling : Data defined quadrant when in "around point" mode
- * Labeling : Draw only labels which fit inside polygons
- * Labeling : Control priority of labeling obstacles
- * Labeling : New options to control how polygon layers act as obstacles
- * Labeling : Data defined control over label priority
- * Labeling : Option for obstacle-only layers
- * Labeling : Rule-based labeling
- * Map Composer : Atlas navigation improvements
- * Map Composer : Custom format for grid annotations
- * Map Composer : Multiline text handling and automatic text wrapping in composer attribute tables
- * Map Composer : Advanced customization of cell background color
- * Map Composer : Add fit page to contents option and options for cropping exports to contents
- * Map Composer : Force vector layers to render as a raster images
- * Map Composer : Data defined control over map layers and style presets
- * Map Composer : Option to hide pages from view/export
- * Plugins : Update of the GRASS plugin
- * Programmability : Open scripts in external editor
- * Programmability : Maptools moved from app->gui
- * Programmability : Editing layers via `with edit(layer):`
- * Programmability : New API for labeling engine (QgsLabelingEngineV2)
- * Programmability : New classes for PyQGIS programs
- * QGIS Server : QGIS Server Python API
- * QGIS Server : getMap in dxf format
- * Symbology : Export thumbnails from style manager
- * Symbology : New option for limiting size in mm when using map unit sizes
- * Symbology : Improvements to displacement renderer
- * Symbology : All color ramps can now be edited
- * Symbology : Improved handling of SVG marker outlines
- * Symbology : Add pixels as option for all symbology size unit choices
+* Expressions: Support aggregation of geometry in expressions
+* Expressions: New expression variables
+* Expressions: new global expression variable @qgis_locale
+* Expressions: item_variables expression function inside compositions
+* Expressions: New expression variables for map settings
+* Expressions: New expression functions
+* Expressions: Expose @parent variable in aggregate functions
+* User Interface: Improved consistency to the user interface
+* User Interface: Enable tabbed floating docks
+* User Interface: Add support for fine-resolution mouse wheel zooming
+* User Interface: add search bar to the Configure Shortcuts dialog
+* User Interface: Toggle visibility of opened panels in main window
+* User Interface: Locator bar
+* User Interface: More non-blocking, inline editing
+* User Interface: Add an option to show user color schemes menus
+* User Interface: Color setting for map canvas north arrow decoration
+* User Interface: Improved map canvas' save as image
+* Symbology: NEW MAP COLORING ALGORITHMS IN QGIS 3.0
+* Symbology:  New "preset" colors color ramp option
+* Symbology: Allow symbol layers to be temporarily disabled
+* Symbology: Data defined symbol layer visibility
+* Symbology: save and restore color ramp used for singleband pseudocolor rendering
+* Symbology: save and restore color ramp used for singleband pseudocolor rendering
+* Symbology: Add Points  and Inches to available symbol units
+* Symbology: New color ramp button widget
+* Symbology: Style management re-work and upgrade
+* Symbology: Show an alpha slider in color button drop-down menu
+* Symbology: Support setting of color and transparency on multiple items for raster renderers
+* Symbology: raster auto-stretching when updating canvas
+* Symbology: Raster stretch toolbar actions support for pseudocolor renderer
+* Symbology: Transparency support for paletted renderer
+* Symbology: Control over annotation contents margins
+* Symbology: Annotations can be styled using fill symbol styles
+* Symbology: Point cluster renderer
+* Labeling: Allow label font size in mm/pixels
+* Labeling: Custom labeling toolbar is now always enabled
+* Diagrams: Data definable properties
+* Rendering: Grid renderer for points displacement
+* Rendering: Live layer support
+* Rendering: Cache labeling result to avoid unnecessary redraws     when refreshing canvas
+* Digitizing: add functionality to copy/move feature to move feature map tool
+* Digitizing: Range vertex selection in node tool
+* Digitizing: Add default Z value option
+* Digitizing: Move feature now benefits from Advanced Digitizing
+* Digitizing: Tracing with offset
+* Data Management: Metadata overhaul
+* Data Management: Auxiliary Storage Support
+* Data Management: Pan to current feature in attribute table
+* Data Management: Map of CRS-extent in Project properties
+* Data Management: Unified data source manager dialog
+* Data Management: Unified data source manager dialog
+* Data Management: Unified data source manager dialog
+* Forms and Widgets: Allow controlling labels for individual edit widgets
+* Forms and Widgets: Smarter default edit widgets with plugins to pick them
+* Forms and Widgets: Allow configuring link/unlink feature buttons on relation editor widget
+* Forms and Widgets: conditional visibility for tabs and groupboxes
+* Forms and Widgets: Field constraints can be enforced or not
+* Forms and Widgets: Add layer scoped actions
+* Forms and Widgets: Add between/not between to numerical fields in select by form
+* Forms and Widgets: Show field values in autocompleter in form filter mode
+* Forms and Widgets: Add zoom to features and flash features shortcuts in select by form dialog
+* Forms and Widgets: Add between/not between to numerical fields in select by form
+* Layer Legend: Hide Deselected Layers action
+* Layer Legend: Change of ergonomy of the visibility of layers inside groups
+* Map Composer: Control over drawing of composer table grid horizontal & vertical lines
+* Map Composer: Map Composer Overhaul
+* Map Composer: Drag qpt to QGIS to create new composer from template
+* Map Composer: Allow customization of line spacing for composer legend item labels
+* Map Composer: Allow choice of CRS for map items
+* Map Composer: Data definable controls
+* Map Composer: Holding shift while drawing polyline/polygon constrains     line angles
+* Analysis Tools: Raster unique values count for processing
+* Processing:  New algorithm for offsetting lines
+* Processing: New algorithm for single sided buffers
+* Processing: Optimised points along geometry algorithm
+* Processing: Add choice of simplification method to simplify
+* Processing: support for output geometry types in models
+* Processing: Angle threshold for smooth algorithm
+* Processing: Better support for Z/M dimensions and curved geometries
+* Processing: Raster analysis algorithms added to Processing
+* Processing: New algorithm to extract specific nodes
+* Processing: expose zonal statistics from Zonal statistics plugin in toolbox
+* Processing: add a spatialite execute SQL algorithm
+* Processing: New algorithm to extend lines
+* Processing: New extract by expression algorithm
+* Processing: add import into spatialite algorithm
+* Processing: Interpolation algorithms
+* Processing: New algorithm to compute geometry by expression
+* Processing: Snap geometries to layer algorithm
+* Processing: New input type for expressions
+* Processing: SplitWithLines
+* Processing: pole of inaccessibility algorithm
+* Processing: Extract by attribute can extract for null/notnull values
+* Processing: Create attribute index algorithm
+* Processing: New 'drop geometries' algorithm
+* Processing: New universal 'basic stats for field' algorithm
+* Processing: Port heatmap plugin to processing algorithm
+* Processing: New algorithm to orthogonalize geometries
+* Processing: Network analysis algorithms
+* Processing: Export processing models as PDF/SVG
+* Processing: New algorithm to truncate tables
+* Processing: added ‘invalid feature handling’ option
+* Processing: algorithm to fix invalid geometries using native makeValid() implementation
+* Processing: add search to Get Scripts and Models dialog
+* Processing: Generic centroid algorithm
+* Processing: improved Extract nodes algorithm
+* Processing: New algorithm for translating (moving) points
+* Processing: Improved processing modeler window
+* Processing: New raster unique values report algorithm
+* Processing: remove TauDEM provider from core Processing
+* Processing: Download a file from Processing
+* Application and Project Options: New zipped project file format .qgz
+* Application and Project Options: Add support for user profiles
+* Browser: Drag'n'drop layers from layer tree view to browser dock
+* General: Remove dxf2shp converter plugin
+* General: Remove zonal stats plugin
+* General: Remove orphaned oracle raster plugin
+* General: Possibility to configure location of the QGIS help files
+* General: remove TauDEM provider from core Processing
+* General: removed otb and lidartools providers from processing
+* General: Migrate Photo, WebView and FileName widgets to Attachment
+* Data Providers: GeoPackage
+* Data Providers: Support all GDAL writable raster formats for 'Save as' dialog on raster layers
+* Data Providers: Add auto-discovery of relations for PostgresQL
+* Data Providers: Detect literal default values for spatialite provider
+* Data Providers: New unified 'add layer' dialog
+* Data Providers: Create attribute index support for spatialite provider
+* Data Providers: Add support for arrays
+* Data Providers: Support for HStore in PostGIS data provider
+* Data Providers: Data dependencies between layers
+* Data Providers: hstore support to the postgres provider
+* Data Providers: dxf export: support reprojection
+* Data Providers: Load/save style in database for GPKG and Spatialite
+* Data Providers: Unique and not-null constraint handling
+* Data Providers: support for Z/M geometries in memory provider
+* Data Providers: Support for Z/M geometries in spatialite provider
+* Data Providers: GeoNode integration
+* Data Providers: Improved handling of defaults
+* QGIS Server: QGIS Server overhaul
+* QGIS Server: Possibility to segmentize feature info geometry in server
+* Plugins: Remove trusted status from Plugin Manager
+* Plugins: Offline editing: Add flag to only copy selected features
+* Plugins: GDALTools moved to Processing
+* Plugins: allow installing plugins from local ZIP packages
+* Programmability: Geometry class updates
+* Programmability: Task manager
+* Programmability: API to allow drag'n'drop of custom browser items
 
-# 12. What's new in Version 2.10 'Pisa'? 
+# 8. What's new in Version 2.18 'Las Palmas'?
+
+This release has following new features:
+
+* Symbology: Color picker is now embedded in layer style panel
+* Labeling: Substitution list support for labeling
+* Labeling: Improved line label placement algorithm
+* Labeling: Label polygons using curved labels along perimeter
+* Data Management: Add flag to only copy selected features
+* Forms and Widgets: Allow controlling labels for individual edit widgets
+* Forms and Widgets: Conditional visibility for tabs and group boxes
+* Forms and Widgets: Client side default field values
+* Map Composer: True North Arrows
+* Processing: Point on surface algorithm  added
+* Processing: New algorithm for geometry boundary
+* Processing: New algorithm for calculating feature bounding box
+* Processing: Processing dissolve algorithm accepts multiple fields
+* Processing: Optimised processing clip algorithm
+* Processing: New algorithm for merging connected lines
+* General: Automatic links in identify results
+* General: Mouse wheel over color dialog sliders
+* General: Add custom color schemes to color button drop-down menu
+* Data Providers: Preview for WMTS + added XYZ tile layers
+* QGIS Server: Possibility to segmentize feature info geometry in server
+* Plugins: DB Manager: Add the ability to update SQL Layer
+* Programmability: New expression functions
+* Programmability: Expose GEOS linear referencing function to QgsGeometry
+
+# 9. What's new in Version 2.16 'Nødebo'?
+
+This release has following new features:
+
+* User Interface: Improvements to map zooming
+* User Interface: Map canvas magnifier
+* User Interface: Redesigned interactive gradient editor
+* User Interface: Choice of default view for the attribute dialog
+* User Interface: Improvements to calendar popups
+* User Interface: Improved color pickers
+* User Interface: Copy cell contents from attribute table
+* User Interface: Improved HiDPI support
+* User Interface: Improved map select tool behavior
+* Symbology: Arrow symbol layer
+* Symbology: New "Filled marker" symbol layer type
+* Symbology: New accessibility and low vision symbols
+* Symbology: New simple marker symbols
+* Symbology: "No symbol" renderer
+* Symbology: More control over centroid fill point rendering
+* Symbology: Outline setting for font markers symbol
+* Symbology: Control outline join style for simple, ellipse, and font markers
+* Symbology: New map tool for interactively setting point symbol offset
+* Symbology: Style Dock
+* Labeling: Labeling map tools now work with rule-based labeling
+* Diagrams: Legend entries for diagram size
+* Diagrams: Unit selection for outline width
+* Diagrams: Diagrams behave like labels and can be managed from toolbar
+* Rendering: New options for on the fly simplification
+* Rendering: Quantile based classification for raster layers
+* Rendering: Live hillshade renderer
+* Digitizing: "Repeating" locking mode for constraints
+* Digitizing: Extend linestring geometries with reshape tool
+* Digitizing: Segmentation tolerance
+* Data management: New configuration options for attribute table
+* Data management: Multiple columns in attribute forms
+* Data management: Control over attributes to export when saving a vector layer
+* Data management: Forms view: side column now sortable
+* Data management: Relation reference widget: shortcut for adding new values
+* Data management: DXF export improvements
+* Data management: Top level widgets in drag and drop designer
+* Data management: Form based select and filter
+* Data management: Create GeoPackage layers
+* Data management: Constraints on widgets
+* Data management: Edit attributes of multiple features simultaneously
+* Layer Legend: New option to zoom to a layer's visible scale range
+* Map Composer: New tools for drawing polygons and polylines
+* Map Composer: Embed atlas features into composer HTML source as GeoJSON
+* Map Composer: Parametrized svg support for composer svg images
+* Map Composer: Easier use of HTML in labels
+* Map Composer: Relative links in composer labels
+* Map Composer: Georeference outputs (e.g., PDF) from composer
+* Map Composer: Composer maps now auto-update with presets
+* Analysis tools: Named parameters in expressions
+* Analysis tools: More distance units
+* Analysis tools: Changes to expressions
+* Analysis tools: Statistics for string and date fields
+* Analysis tools: Show curve point radius in info tool
+* Analysis tools: Aggregate support for expressions
+* Analysis tools: fTools plugin has been replaced with Processing algorithms
+* Processing: Set point locations by clicking on canvas
+* Processing: Additional GRASS algorithms in processing
+* Processing: Support for expressions and variables
+* Processing: Preconfigured algorithms
+* Processing: Create a plugin with script-based algorithms from the toolbox
+* Processing: Use of authentication manager in PostGIS related algorithms
+* Processing: Support for writing tables with no geometry
+* General: Copying features in GeoJSON format
+* General: Store spatial bookmarks in project files
+* General: Support for GNSS GNRMC messages
+* General: Paste GeoJSON features directly into QGIS
+* General: Map tip improvements
+* General: QGIS Paid Bugfixing Programme
+* General: Desktop MIME icons for QGIS file types
+* Data Providers: OGR datasets are opened in read-only mode by default
+* Data Providers: Improved handling of Postgres DOMAIN type fields
+* Data Providers: Make readOnly mode of vector layers configurable in project
+* Data Providers: Support for DB2 databases
+* Data Providers: Refresh Postgres materialized views in db manager
+* Data Providers: OGR FID attribute shown
+* Data Providers: Save styles in MS SQL and Oracle databases
+* Data Providers: Rename fields in layers
+* Data Providers: ArcGIS Map and Feature REST services
+* Data Providers: Basic support for Oracle Workspace Manager
+* Data Providers: Massive improvements to WFS Provider
+* Data Providers: Generation of default values on Postgres layers "just in time"
+* QGIS Server: Redlining support in GetMap and GetPrint
+* QGIS Server: Default datum transformation for server
+* Plugins: Refreshed globe plugin
+* Plugins: Globe: Extrude objects
+* Plugins: API: Add pages to vector layer properties
+* Plugins: Globe: Vector support
+* Plugins: Globe: Vertical exaggeration for DTM
+* Programmability: Embedded widgets in layer tree
+* Programmability: Plugins can add pages to vector layer properties
+
+# 10. What's new in Version 2.14 'Essen'?
+
+This release has following new features:
+
+* Analysis tools : More statistics available in merge attributes tool
+* Analysis tools : z/m values are shown when using the identify tool
+* Browser : Browser Improvements
+* Data Providers : Use ST_RemoveRepeatedPoints for simplification on PostGIS 2.2 or newer
+* Data Providers : Cache WMS capabililies
+* Data Providers : Better handling of time and datetime fields
+* Data Providers : Z/M support in delimited text provider
+* Data Providers : Curved geometry support expanded
+* Data Providers : Transaction groups for postgres editing
+* Data Providers : Postgres provider PKI authentication.
+* Data Providers : Virtual layers
+* Data Providers : More file extensions for GDAL and OGR providers file selectors
+* Data management : dxf export: option to use title instead of name as dxf layer name in application and server
+* Data management : Removal of SPIT plugin
+* Data management : Geometry type can be overridden in the vector save as dialog
+* Data management : Vector joins are now saved within QLR layer-definition-files
+* Data management : N:M relation editing
+* Data management : External Resource widget
+* Digitizing : Configurable rubber band color
+* Digitizing : Autotrace
+* Digitizing : Trace digitizing tool
+* General : Changed behavior of strpos function
+* General : Field calculator can be used to update feature's geometry
+* General : Virtual layers
+* General : Zoom to feature with right-click in attribute table
+* General : Speed improvements
+* General : More expression variables
+* General : New expression functions in 2.14
+* General : Better control over placement of map elements
+* General : Paid bugfixing programme
+* Labeling : Actual rendered symbol is now considered as an obstacle for point feature labels
+* Labeling : "Cartographic" placement mode for point labels
+* Labeling : Applying label distance from symbol bounds
+* Labeling : Control over label rendering order
+* Layer Legend : applying the same style to selected layers or to legend group
+* Layer Legend : New options for filtering legend elements
+* Layer Legend : Filter legend by expression
+* Map Composer : Additional paths for composer templates
+* Map Composer : Multiple selection of compositions in manager
+* Plugins : Authentication system support for plugin manager
+* Processing : New algorithms in 2.14
+* Processing : Unit Tests Q/A
+* Processing : Improved toolbox.
+* Processing : More informative algorithm dialog.
+* Processing : Batch processes can be saved and later recovered from the batch processing interface
+* Processing : GRASS7 v.net modules
+* Programmability : Redesign expression function editor
+* Programmability : Store python init code into the project
+* Programmability : New filtering and sorting options for QgsFeatureRequest
+* Programmability : Custom feature form Python code options
+* Programmability : New PyQGIS classes in 2.14
+* QGIS Server : STARTINDEX param in WFS GetFeature Request
+* QGIS Server : showFeatureCount in GetLegendGraphic
+* QGIS Server : Enhance store project keyword list
+* QGIS Server : Option to avoid rendering artifacts at edges of tiles
+* QGIS Server : WMS INSPIRE Capabilities
+* QGIS Server : Configuration checker in project properties
+* QGIS Server : Add short name to layers, groups and project
+* Symbology : Size assistant for varying line width
+* Symbology : Support for transparency in SVG color parameters
+* Symbology : Easy duplication of symbol layers
+* Symbology : 2.5D Renderer
+* Symbology : Geometry generator symbols
+* Symbology : Allow definition of rendering order for features
+* User Interface : Attribute table can be refreshed
+* User Interface : Edit legend symbols directly from layer tree
+* User Interface : Directly set renderer and class symbol colors from context menu in legend
+* User Interface : Improved and more powerful file picker widget for forms
+* User Interface : Show/hide all legend items via the the context menu
+
+# 11. What's new in Version 2.12 'Lyon'?
+
+This release has following new features:
+
+* Analysis tools : Added number of vertices to derived fields in identify tool
+* Analysis tools : Raster alignment tool
+* Analysis tools : Geometry Checker and Geometry Snapper plugins
+* Application and Project Options : Encrypted password management
+* Browser : Improvements to PostGIS connections in browser
+* Data Providers : PostGIS provider improvements
+* Data management : DBManager Improvements
+* Data management : Conditional formatting for attribute table cells
+* Data management : Support for relative paths in widgets
+* Digitizing : Digitizing improvements
+* General : New welcome screen
+* General : Ongoing improvements to code quality
+* General : Advanced settings editor
+* General : Mutually exclusive layer tree groups
+* General : Filtering for field values in expression widget
+* General : User Interface Theme support
+* General : New expression functions in 2.12
+* General : Variables in expressions
+* Labeling : Data defined quadrant when in "around point" mode
+* Labeling : Draw only labels which fit inside polygons
+* Labeling : Control priority of labeling obstacles
+* Labeling : New options to control how polygon layers act as obstacles
+* Labeling : Data defined control over label priority
+* Labeling : Option for obstacle-only layers
+* Labeling : Rule-based labeling
+* Map Composer : Atlas navigation improvements
+* Map Composer : Custom format for grid annotations
+* Map Composer : Multiline text handling and automatic text wrapping in composer attribute tables
+* Map Composer : Advanced customization of cell background color
+* Map Composer : Add fit page to contents option and options for cropping exports to contents
+* Map Composer : Force vector layers to render as a raster images
+* Map Composer : Data defined control over map layers and style presets
+* Map Composer : Option to hide pages from view/export
+* Plugins : Update of the GRASS plugin
+* Programmability : Open scripts in external editor
+* Programmability : Maptools moved from app->gui
+* Programmability : Editing layers via `with edit(layer):`
+* Programmability : New API for labeling engine (QgsLabelingEngineV2)
+* Programmability : New classes for PyQGIS programs
+* QGIS Server : QGIS Server Python API
+* QGIS Server : getMap in dxf format
+* Symbology : Export thumbnails from style manager
+* Symbology : New option for limiting size in mm when using map unit sizes
+* Symbology : Improvements to displacement renderer
+* Symbology : All color ramps can now be edited
+* Symbology : Improved handling of SVG marker outlines
+* Symbology : Add pixels as option for all symbology size unit choices
+
+# 12. What's new in Version 2.10 'Pisa'?
 
 This is a minor release increment with the following new features:
 
- * New statistical summary dock widget.
- * Use logarithmic functions in the raster calculator.
- * New zonal statistics features.
- * New browser properties widget.
- * New browser icon.
- * PostGIS: support for Pointcloud layers.
- * PostGIS: provider side expression filters.
- * GRASS plugin/provider improvements.
- * DXF Export Improvements.
- * Virtual fields are now updatable.
- * Line edit with auto-completer for ValueRelation edit widget.
- * Improvements to DB Manager.
- * Filter chaining for relation reference widget.
- * Diagram improvements.
- * Improved geometry rotation tool.
- * New geometry engine.
- * Improved handling of potential project file overwrites.
- * Join parameters can now be edited.
- * Layers with joins can now be filtered.
- * Tweaks to label properties dialog.
- * Support for non-latin scripts for curved labels.
- * "Follow point" alignment for multiline labels.
- * Support overridden layer styles also in the composer legend.
- * Add scalebar sizing mode to fit a desired scalebar width.
- * Plugins can now create their own entries in the browser.
- * More uniform and predictable names for processing outputs.
- * Allow changing vector layer data source.
- * Implicit sharing of classes.
- * New QgsStatisticalSummary class for calculating statistics from a list of numbers.
- * Qt minimum increased to 4.8.
- * GetFeature without geometry.
- * Support for tolerance parameter in WMS GetFeatureInfo requests.
- * Data defined properties for font marker.
- * Size scale and rotation have been removed from the advanced menu.
- * Match categories to existing styles.
- * New option for preventing the automatic clipping of features to the map extent.
- * Size, rotation and stroke-width expressions at the symbollist level.
- * Live layer effects for layers and symbol layers.
- * Visualise and modify the graduated renderer using a histogram.
- * Vary symbol sizes using the graduated renderer.
- * User interface improvements.
+* New statistical summary dock widget.
+* Use logarithmic functions in the raster calculator.
+* New zonal statistics features.
+* New browser properties widget.
+* New browser icon.
+* PostGIS: support for Pointcloud layers.
+* PostGIS: provider side expression filters.
+* GRASS plugin/provider improvements.
+* DXF Export Improvements.
+* Virtual fields are now updatable.
+* Line edit with auto-completer for ValueRelation edit widget.
+* Improvements to DB Manager.
+* Filter chaining for relation reference widget.
+* Diagram improvements.
+* Improved geometry rotation tool.
+* New geometry engine.
+* Improved handling of potential project file overwrites.
+* Join parameters can now be edited.
+* Layers with joins can now be filtered.
+* Tweaks to label properties dialog.
+* Support for non-latin scripts for curved labels.
+* "Follow point" alignment for multiline labels.
+* Support overridden layer styles also in the composer legend.
+* Add scalebar sizing mode to fit a desired scalebar width.
+* Plugins can now create their own entries in the browser.
+* More uniform and predictable names for processing outputs.
+* Allow changing vector layer data source.
+* Implicit sharing of classes.
+* New QgsStatisticalSummary class for calculating statistics from a list of numbers.
+* Qt minimum increased to 4.8.
+* GetFeature without geometry.
+* Support for tolerance parameter in WMS GetFeatureInfo requests.
+* Data defined properties for font marker.
+* Size scale and rotation have been removed from the advanced menu.
+* Match categories to existing styles.
+* New option for preventing the automatic clipping of features to the map extent.
+* Size, rotation and stroke-width expressions at the symbollist level.
+* Live layer effects for layers and symbol layers.
+* Visualise and modify the graduated renderer using a histogram.
+* Vary symbol sizes using the graduated renderer.
+* User interface improvements.
 
-# 13. What's new in Version 2.8 'Wien'? 
+# 13. What's new in Version 2.8 'Wien'?
 
 This is a minor release increment with the following feature:
 
- * QGIS 2.8 is the basis for a long term release (which will be maintained for a year).
- * >1000 issues which were flagged by static analysis tools have been fixed.
- * New code commits and pull requests are now automatically tested against our testing framework.
- * More responsive QGIS Browser thanks to multithreading support.
- * Support for contextual WMS legend graphics.
- * Custom prefixes for joins.
- * Creation of memory layers is now a core feature.
- * New field calculator bar in attribute table.
- * DXF export improvements.
- * Advanced digitizing tools.
- * Improved snapping options and behavior.
- * Better simplify tool - including support for on the fly reprojection being enabled.
- * Qt5 support (optional - default packages are still currently built against Qt4).
- * Spatial bookmark import/export.
- * Composer user interface improvements.
- * Grid overlay improvements for composer maps.
- * Raster image fill type.
- * Live heatmap renderer.
- * You can now use multiple styles per layer.
- * Rotation of map canvas is now supported.
- * Improved user interface for data defined symbology.
- * New algorithms in processing.
- * Expressions are now extendable with custom python functions.
- * Comments are now supported in expressions.
- * QGIS server improvements: better caching, layer style support, value relations,
+* QGIS 2.8 is the basis for a long term release (which will be maintained for a year).
+* >1000 issues which were flagged by static analysis tools have been fixed.
+* New code commits and pull requests are now automatically tested against our testing framework.
+* More responsive QGIS Browser thanks to multithreading support.
+* Support for contextual WMS legend graphics.
+* Custom prefixes for joins.
+* Creation of memory layers is now a core feature.
+* New field calculator bar in attribute table.
+* DXF export improvements.
+* Advanced digitizing tools.
+* Improved snapping options and behavior.
+* Better simplify tool - including support for on the fly reprojection being enabled.
+* Qt5 support (optional - default packages are still currently built against Qt4).
+* Spatial bookmark import/export.
+* Composer user interface improvements.
+* Grid overlay improvements for composer maps.
+* Raster image fill type.
+* Live heatmap renderer.
+* You can now use multiple styles per layer.
+* Rotation of map canvas is now supported.
+* Improved user interface for data defined symbology.
+* New algorithms in processing.
+* Expressions are now extendable with custom python functions.
+* Comments are now supported in expressions.
+* QGIS server improvements: better caching, layer style support, value relations,
 DescribeLayer, python plugins.
 
-# 14. What's new in Version 2.6.0 'Brighton'? 
+# 14. What's new in Version 2.6.0 'Brighton'?
 
 This is a minor release increment with the following new features:
 
- * Improved DXF export
- * Project filename in project properties
- * Allow removing last point while measuring via del/backspace keys
- * Select related feature on the canvas from the relation reference widget
- * Editor widgets support null and other improvements
- * Optionally use just a subset of fields from the joined layer
- * Expression field (virtual fields)
- * Can toggle display of classes within graduated and categorised renderers
- * Additional expressions types and options
- * Added icon support to actions
- * Classes within graduated and categorised renderers can be toggled
- * Legend improvements such as filtering, layer management icons etc.
- * Control over hiding print composer items from prints/exports
- * Control over page printing for empty composer frames
- * New Composer Item tree panel
- * More control over appearance of composer arrow/line items
- * Data defined control of composer items
- * Composer images can be specified as remote URLS
- * Composer Table improvements (header fonts / colors, better pagination support, filter to atlas feature etc.)
- * Composer improvements
- * Improved item snapping
- * Multiple overviews for a map item
- * HTML item improvements
- * Composer map grid improvements
- * Processing now has an online collection of models and scripts
- * Processing graphical modeler completely rewritten
- * API changes for QGIS widgets
- * Enhancements of searching with GetFeatureInfo request
- * Add a precision setting for GetFeatureInfo geometry attributes
- * Better random color choice
- * Symbology UI Improvements
- * Syntax highlighting code and expression editor
- * User defined color palettes
- * New color picker dialog
- * Single select feature tool merged into select by rectangle
- * Add layer to map canvas behavior
- * Support icon sizes of 48 and 64 pixels
- * New color buttons
- * Context menu for identify tool
+* Improved DXF export
+* Project filename in project properties
+* Allow removing last point while measuring via del/backspace keys
+* Select related feature on the canvas from the relation reference widget
+* Editor widgets support null and other improvements
+* Optionally use just a subset of fields from the joined layer
+* Expression field (virtual fields)
+* Can toggle display of classes within graduated and categorised renderers
+* Additional expressions types and options
+* Added icon support to actions
+* Classes within graduated and categorised renderers can be toggled
+* Legend improvements such as filtering, layer management icons etc.
+* Control over hiding print composer items from prints/exports
+* Control over page printing for empty composer frames
+* New Composer Item tree panel
+* More control over appearance of composer arrow/line items
+* Data defined control of composer items
+* Composer images can be specified as remote URLS
+* Composer Table improvements (header fonts / colors, better pagination support, filter to atlas feature etc.)
+* Composer improvements
+* Improved item snapping
+* Multiple overviews for a map item
+* HTML item improvements
+* Composer map grid improvements
+* Processing now has an online collection of models and scripts
+* Processing graphical modeler completely rewritten
+* API changes for QGIS widgets
+* Enhancements of searching with GetFeatureInfo request
+* Add a precision setting for GetFeatureInfo geometry attributes
+* Better random color choice
+* Symbology UI Improvements
+* Syntax highlighting code and expression editor
+* User defined color palettes
+* New color picker dialog
+* Single select feature tool merged into select by rectangle
+* Add layer to map canvas behavior
+* Support icon sizes of 48 and 64 pixels
+* New color buttons
+* Context menu for identify tool
 
-# 15. What's new in Version 2.4.0 'Chugiak'? 
-
-This is the minor release sports a number of great new features:
-
- * Multi-threaded rendering
- * Color preview modes in composer and map canvas
- * New expression functions (bounding box related functions, wordwrap)
- * Copy, paste and drag and drop colors
- * Label features multiple times
- * Improvements to composer picture items
- * Predefined scales mode for atlas maps
- * Improved attribute tables in composer
- * General composer improvements - join and capping styles, button to zoom to main map
- * Improvements to HTML frames in composer
- * Shapeburst fill style
- * Option to shift marker line placement
- * New Inverted Polygon renderer
-
-# 16. What's new in Version 2.2.0 'Valmiera'? 
+# 15. What's new in Version 2.4.0 'Chugiak'?
 
 This is the minor release sports a number of great new features:
 
- * You can now define 1:n relations for layers.
- * It is now possible to export your project to DXF format.
- * When pasting a selection, it is now possible to create a new layer on the fly
+* Multi-threaded rendering
+* Color preview modes in composer and map canvas
+* New expression functions (bounding box related functions, wordwrap)
+* Copy, paste and drag and drop colors
+* Label features multiple times
+* Improvements to composer picture items
+* Predefined scales mode for atlas maps
+* Improved attribute tables in composer
+* General composer improvements - join and capping styles, button to zoom to main map
+* Improvements to HTML frames in composer
+* Shapeburst fill style
+* Option to shift marker line placement
+* New Inverted Polygon renderer
+
+# 16. What's new in Version 2.2.0 'Valmiera'?
+
+This is the minor release sports a number of great new features:
+
+* You can now define 1:n relations for layers.
+* It is now possible to export your project to DXF format.
+* When pasting a selection, it is now possible to create a new layer on the fly
 from the pasted features.
- * WMS Legend is now available via a getLegendGraphic request.
- * It is now possible to digitize a new feature as an interior ring of an
+* WMS Legend is now available via a getLegendGraphic request.
+* It is now possible to digitize a new feature as an interior ring of an
 existing feature.
- * Recent expressions are saved in the expression builder for quick re-use.
- * You can now set the color for the zebra map border style in composer.
- * You can now rotate any element in the print composer.
- * Composer window now has scale in the status bar and improved rulers.
- * Composer output as image can be created with a world file now so that your
+* Recent expressions are saved in the expression builder for quick re-use.
+* You can now set the color for the zebra map border style in composer.
+* You can now rotate any element in the print composer.
+* Composer window now has scale in the status bar and improved rulers.
+* Composer output as image can be created with a world file now so that your
 maps are georeferenced.
- * Numerous enhancements to the atlas let you preview and print each map sheet.
- * It is easier to select overlapped items in the map composer.
- * Support for styling pages and shapes has been improved in the map composer.
- * QGIS Server can now deliver Web Coverage Service (WCS) maps.
- * Gradients can now be used for polygon fills.
- * Classes in paletted rasters can now be labelled.
- * Color ramps can now be inverted.
- * Rules in the rule based renderer can now be copied and pasted.
- * Support for on-the-fly feature generalisation has been added.
- * For marker layers you can now define the anchor points / origin of the marker.
- * For vector symbology you can now use expressions instead of only a field for
+* Numerous enhancements to the atlas let you preview and print each map sheet.
+* It is easier to select overlapped items in the map composer.
+* Support for styling pages and shapes has been improved in the map composer.
+* QGIS Server can now deliver Web Coverage Service (WCS) maps.
+* Gradients can now be used for polygon fills.
+* Classes in paletted rasters can now be labelled.
+* Color ramps can now be inverted.
+* Rules in the rule based renderer can now be copied and pasted.
+* Support for on-the-fly feature generalisation has been added.
+* For marker layers you can now define the anchor points / origin of the marker.
+* For vector symbology you can now use expressions instead of only a field for
 the classification.
- * Size and attributes of diagram renderer can now be set using expressions.
- * Polygon outlines can be drawn with an inner stroke (to prevent the stroke
+* Size and attributes of diagram renderer can now be set using expressions.
+* Polygon outlines can be drawn with an inner stroke (to prevent the stroke
 being drawn in a neighbouring polygon)
- * The visual style of all our properties dialogs has been improved.
- * The keybindings for the user interface have been updated to make it easier to
+* The visual style of all our properties dialogs has been improved.
+* The keybindings for the user interface have been updated to make it easier to
 navigate.
- * QGS now supports multiple datum transformations.
- * 'Processing' now has a script editor.
- * 'Processing' can be used headless in scripts.
+* QGS now supports multiple datum transformations.
+* 'Processing' now has a script editor.
+* 'Processing' can be used headless in scripts.
 
-# 17. What's new in Version 2.0.1 'Dufour'? 
+# 17. What's new in Version 2.0.1 'Dufour'?
 
 This is a small bugfix release to address the missing copyright / credits for
 our new splash screen and to update supporting documentation. The spanish
 translation was also updated.
 
-# 18. What's new in Version 2.0.0 'Dufour'? 
+# 18. What's new in Version 2.0.0 'Dufour'?
 
 This is a new major release. Building on the foundation of
 QGIS 1.x.x releases, QGIS Dufour introduces many new features,
 improvements and bug fixes. Here is a summary of some of the
 key new features.
 
- * We have updated out icon theme to use the 'GIS' theme which introduces
+* We have updated out icon theme to use the 'GIS' theme which introduces
 an improved level of consistency and professionalism to the QGIS user
 interface.
- * The new symbol layer overview uses a clear, tree-structured layout
+* The new symbol layer overview uses a clear, tree-structured layout
 which allows for easy and fast access to all symbol layers.
- * QGIS 2.0 now includes Oracle Spatial support.
- * With the new data defined properties, it is possible to control symbol
+* QGIS 2.0 now includes Oracle Spatial support.
+* With the new data defined properties, it is possible to control symbol
 type, size, color, rotation, and many other properties through feature
 attributes.
- * You can now place html elements onto your map.
- * Having nicely aligned map items is critical to making nice printed
+* You can now place html elements onto your map.
+* Having nicely aligned map items is critical to making nice printed
 maps. Auto snapping lines have been added to allow for easy composer
 object alignment by simply dragging an object close to another.
- * Sometimes you need to align objects a curtain distance on the composer.
+* Sometimes you need to align objects a curtain distance on the composer.
 With the new manual snapping lines you are able to add manual snap lines
 which allow for better align objects using a common alignment. Simply
 drag from the top or side ruler to add new guide line.
- * Ever needed to generate a map series? Of course you have. The composer
+* Ever needed to generate a map series? Of course you have. The composer
 now includes built in map series generation using the atlas feature.
 Coverage layers can be points, lines, polygons, and the current feature
 attribute data is available in labels for on the fly value replacement.
- * A single composer window can now contain more then one page.
- * The composer label item in 1.8 was quite limited and only allowed a single
+* A single composer window can now contain more then one page.
+* The composer label item in 1.8 was quite limited and only allowed a single
 token $CURRENT_DATE to be used. In 2.0 full expression support has been
 added too greater power and control of the final labels.
- * The map frame now contains the ability to show the extents of another
+* The map frame now contains the ability to show the extents of another
 map and will update when moved. Using this with the atlas generation
 feature now core in the composer allows for some slick map generation.
 Overview frame style uses the same styling as a normal map polygon
 object so your creativity is never restricted.
- * Layer blending makes it possible to combine layers in new and exciting
+* Layer blending makes it possible to combine layers in new and exciting
 ways. While in older versions, all you could do was to make the layer
 transparent, you can now choose between much more advanced options such as
 "multiply", "darken only", and many more. Blending can be used in the
 normal map view as well as in print composer.
- * HTML support has been added map composer label item to give you even
+* HTML support has been added map composer label item to give you even
 more control over your final maps. HTML labels support full css styles
 sheets, html, and even JavaScript if you are that way inclined.
- * The labeling system has been totally overhauled - it now includes many
+* The labeling system has been totally overhauled - it now includes many
 new features such as drop shadows, 'highway shields', many more data bound
 options, and various performance enhancements. We are slowly doing away
 with the 'old labels' system, although you will still find that
 functionality available for this release, you should expect that it will
 disappear in a follow up release.
- * The full power of normal label and rule expressions can now be used for
+* The full power of normal label and rule expressions can now be used for
 label properties. Nearly every property can be defined with an expression
 or field value giving you more control over the label result. Expressions
 can refer to a field (e.g. set the font size to the value of the field
 'font') or can include more complex logic. Examples of bindable
 properties include: Font, Size, Style and Buffer size.
- * With the expression engine being used more and more though out QGIS to
+* With the expression engine being used more and more though out QGIS to
 allow for things like expression based labels and symbol, many more
 functions have been added to the expression builder and are all accessible
 though the expression builder. All functions include comprehensive help
 and usage guides for ease of use.
- * If the expression engine doesn't have the function that you need. Not to
+* If the expression engine doesn't have the function that you need. Not to
 worry. New functions can be added via a plugin using a simple Python API.
- * The Python API has been revamped to allow for a more cleaner, more
+* The Python API has been revamped to allow for a more cleaner, more
 pythonic, programming experience. The QGIS 2.0 API uses SIP V2 which
 removes the messy toString(), toInt() logic that was needed when working
 with values. Types are now converted into native Python types making for a
@@ -1103,176 +1068,176 @@ a simple key lookup, no more index lookup and attribute maps.
 ported to work correctly in QGIS 2.x. Please consult
 https://github.com/qgis/QGIS/wiki/Python_plugin_API_changes_from_18_to_20
 for more details.
- * The raster data provider system has been completely overhauled. One of
+* The raster data provider system has been completely overhauled. One of
 the best new features stemming from this work is the ability to 'Layer ->
 Save As...' to save any raster layer as a new layer. In the process you
 can clip, resample, and reproject the layer to a new Coordinate Reference
 System. You can also save a raster layer as a rendered image so if you for
 example have single band raster that you have applied a color palette to,
 you can save the rendered layer out to a georeferenced RGB layer.
- * There are many, many more new features  in QGIS 2.0 - we invite
+* There are many, many more new features  in QGIS 2.0 - we invite
 you to explore the software and discover them all!
 
-# 19. What's new in Version 1.8.0 'Lisboa'? 
+# 19. What's new in Version 1.8.0 'Lisboa'?
 
 This is a new feature release. Building on the foundation of
 QGIS 1.7.x releases, Lisboa introduces many new features,
 improvements and bug fixes. Here is a summary of some of the
 key new features.
 
- * QGIS Browser - a stand alone app and a new panel in QGIS. The browser lets you easily navigate your file system and connection based (PostGIS, WFS etc.) datasets, preview them and drag and drop items into the canvas.
- * DB Manager - the DB manager is now officially part of QGIS core. You can drag layers from the QGIS Browser into DB Manager and it will import your layer into your spatial database. Drag and drop tables between spatial databases and they will get imported. You can use the DB Manager to execute SQL queries against your spatial database and then view the spatial output for queries by adding the results to QGIS as a query layer.
- * Action Tool - now there is a tool on the map tools toolbar that will allow you to click on a vector feature and execute an action.
- * MSSQL Spatial Support - you can now connect to your Microsoft SQL Server spatial databases using QGIS.
- * Customization - allows setting up simplified QGIS interface by hiding various components of main window and widgets in dialogs.
- * New symbol layer types - Line Pattern Fill, Point Pattern fill
- * Composers - have multiple lines on legend items using a specified character
- * Expression based labeling
- * Heatmap tool - a new core plugin has been added for generating raster heatmaps from point data. You may need to activate this plugin using the plugin manager.
- * GPS Tracking - The GPS live tracking user interface was overhauled and many fixes and improvements were added to it.
- * Menu Re-organisation - The menus were re-organised a little - we now have separate menus for Vector and Raster and many plugins were updated to place their menus in the new Vector and Raster top level menus.
- * Offset Curves - a new digitizing tool for creating offset curves was added.
- * Terrain Analysis Plugin - a new core plugin was added for doing terrain analysis - and it can make really good looking colored relief maps.
- * Ellipse renderer - symbollayer to render ellipse shapes (and also rectangles, triangles, crosses by specifying width and height). Moreover, the symbol layer allows setting all parameters (width, height, colors, rotation, outline with) from data fields, in mm or map units
- * New scale selector with predefined scales
- * Option to add layers to selected or active group
- * Pan To Selected tool
- * New tools in Vector menu - densify geometries, Build spatial index
- * Export/add geometry column tool can export info using layer CRS, project CRS or ellipsoidal measurements
- * Model/view based tree for rules in rule-based renderer
- * Updated CRS selector dialog
- * Improvements in Spatial Bookmarks
- * Plugin metadata in metadata.txt
- * New plugin repository
- * Refactored postgres data provider: support for arbitrary key (including non-numeric and multi column), support for requesting a certain geometry type and/or srid in QgsDataSourceURI
+* QGIS Browser - a stand alone app and a new panel in QGIS. The browser lets you easily navigate your file system and connection based (PostGIS, WFS etc.) datasets, preview them and drag and drop items into the canvas.
+* DB Manager - the DB manager is now officially part of QGIS core. You can drag layers from the QGIS Browser into DB Manager and it will import your layer into your spatial database. Drag and drop tables between spatial databases and they will get imported. You can use the DB Manager to execute SQL queries against your spatial database and then view the spatial output for queries by adding the results to QGIS as a query layer.
+* Action Tool - now there is a tool on the map tools toolbar that will allow you to click on a vector feature and execute an action.
+* MSSQL Spatial Support - you can now connect to your Microsoft SQL Server spatial databases using QGIS.
+* Customization - allows setting up simplified QGIS interface by hiding various components of main window and widgets in dialogs.
+* New symbol layer types - Line Pattern Fill, Point Pattern fill
+* Composers - have multiple lines on legend items using a specified character
+* Expression based labeling
+* Heatmap tool - a new core plugin has been added for generating raster heatmaps from point data. You may need to activate this plugin using the plugin manager.
+* GPS Tracking - The GPS live tracking user interface was overhauled and many fixes and improvements were added to it.
+* Menu Re-organisation - The menus were re-organised a little - we now have separate menus for Vector and Raster and many plugins were updated to place their menus in the new Vector and Raster top level menus.
+* Offset Curves - a new digitizing tool for creating offset curves was added.
+* Terrain Analysis Plugin - a new core plugin was added for doing terrain analysis - and it can make really good looking colored relief maps.
+* Ellipse renderer - symbollayer to render ellipse shapes (and also rectangles, triangles, crosses by specifying width and height). Moreover, the symbol layer allows setting all parameters (width, height, colors, rotation, outline with) from data fields, in mm or map units
+* New scale selector with predefined scales
+* Option to add layers to selected or active group
+* Pan To Selected tool
+* New tools in Vector menu - densify geometries, Build spatial index
+* Export/add geometry column tool can export info using layer CRS, project CRS or ellipsoidal measurements
+* Model/view based tree for rules in rule-based renderer
+* Updated CRS selector dialog
+* Improvements in Spatial Bookmarks
+* Plugin metadata in metadata.txt
+* New plugin repository
+* Refactored postgres data provider: support for arbitrary key (including non-numeric and multi column), support for requesting a certain geometry type and/or srid in QgsDataSourceURI
 added gdal_fillnodata to GDALTools plugin
- * Support for PostGIS TopoGeometry datatype
- * Python bindings for vector field symbollayer and general updates to the python bindings.
- * New message log window
- * Benchmark program
- * Row cache for attribute table
- * Legend independent drawing order
- * UUID generation widget for attribute table
- * Added support of editable views in SpatiaLite databases
- * Expression based widget in field calculator
- * Creation of event layers in analysis lib using linear referencing
- * Group selected layers option added to the TOC context menu
- * load/save layer style (new symbology) from/to SLD document
- * WFS support in QGIS Server
- * Option to skip WKT geometry when copying from attribute table
- * upport for zipped and gzipped layers
- * Test suite now passes all tests on major platforms and nightly tests
- * Copy and paste styles between layers
- * Set tile size for WMS layers
- * Support for nesting projects within other projects
+* Support for PostGIS TopoGeometry datatype
+* Python bindings for vector field symbollayer and general updates to the python bindings.
+* New message log window
+* Benchmark program
+* Row cache for attribute table
+* Legend independent drawing order
+* UUID generation widget for attribute table
+* Added support of editable views in SpatiaLite databases
+* Expression based widget in field calculator
+* Creation of event layers in analysis lib using linear referencing
+* Group selected layers option added to the TOC context menu
+* load/save layer style (new symbology) from/to SLD document
+* WFS support in QGIS Server
+* Option to skip WKT geometry when copying from attribute table
+* upport for zipped and gzipped layers
+* Test suite now passes all tests on major platforms and nightly tests
+* Copy and paste styles between layers
+* Set tile size for WMS layers
+* Support for nesting projects within other projects
 
-# 20. What's new in Version 1.7.2 'Wroclaw'? 
+# 20. What's new in Version 1.7.2 'Wroclaw'?
 
 This is a bugfix release over version 1.7.1. The following changes
 were made.
 
- * Fix Gdaltools error checking for ogr layers
- * More Translations in OSM plugin
- * Fix for ticket #4283 (composer forgets on/off status of layers)
- * Fix to v.generalize for recent GRASS versions
- * Fix typos in GRASS command list
- * Restore override cursor when about box is shown
- * Fix #4319 (Enhance maximum for point displacement tolerance)
- * Added Python wrappers for QgsZonalStatistics
- * Fix #4331 (Classification dialog issues)
- * Fix #4282 (Wrong map zooming when using the "Attribute Table" zoom tool)
- * Match proj4string in database
- * Fix #4241 (Ensure that we have a valid line in line decoration)
- * Fix label id for GetPrint in composer
- * Fix #3041 (Make the gdaltools command editable)
- * Fix shift in point displacement renderer
- * Fix for a crash in projection selection
- * Fix #4308 (Interpolation and Terrain core plugins)
- * Insert date value in attribute editor
- * Fix #4387 (Enable "add direction symbol" only for line layers)
- * Fix #2491 (Handle raster layer's transparency band while rendering)
- * Allow setting I/O encoding for OGR layers in vector layer properties.
- * Fix #4414 (SVG indicators for arrows are not shown)
- * Label direction symbol shouldn't depend on "map" vs. "line" orientation.
- * Set prompt as default behavior for unknown CRS
- * For EPSG initialize GDAL CRS from authid instead of proj.4 string
- * Fix #4439 (Crash when changing style in Layer Properties)
- * Fix #4444 (Error when loading Python plugins)
- * Fix #4440 (invalid reference to Trac)
- * Fix stopRender call in graduated symbol renderer
- * Fix #4479 - trigger "new color ramp" always when activated
- * Hide query entry in legend context menu for layers with joins
- * Fix #4496 (Refresh map list in composer table widget in showEvent)
- * OS X build/install updates
- * GRASS version support
- * Initializing from WKT favourize EPSG instead of PROJ.4
- * Add What's this to Help menu (implement #4179)
- * fTools: update layers lists after adding new layer to TOC (fix #4318)
- * Don't block QGIS main window when running Merge shapefiles tool. Partially addresses #4383
- * Fix broken Assign projection functionality in GDALTools and improve handling output file extension
+* Fix Gdaltools error checking for ogr layers
+* More Translations in OSM plugin
+* Fix for ticket #4283 (composer forgets on/off status of layers)
+* Fix to v.generalize for recent GRASS versions
+* Fix typos in GRASS command list
+* Restore override cursor when about box is shown
+* Fix #4319 (Enhance maximum for point displacement tolerance)
+* Added Python wrappers for QgsZonalStatistics
+* Fix #4331 (Classification dialog issues)
+* Fix #4282 (Wrong map zooming when using the "Attribute Table" zoom tool)
+* Match proj4string in database
+* Fix #4241 (Ensure that we have a valid line in line decoration)
+* Fix label id for GetPrint in composer
+* Fix #3041 (Make the gdaltools command editable)
+* Fix shift in point displacement renderer
+* Fix for a crash in projection selection
+* Fix #4308 (Interpolation and Terrain core plugins)
+* Insert date value in attribute editor
+* Fix #4387 (Enable "add direction symbol" only for line layers)
+* Fix #2491 (Handle raster layer's transparency band while rendering)
+* Allow setting I/O encoding for OGR layers in vector layer properties.
+* Fix #4414 (SVG indicators for arrows are not shown)
+* Label direction symbol shouldn't depend on "map" vs. "line" orientation.
+* Set prompt as default behavior for unknown CRS
+* For EPSG initialize GDAL CRS from authid instead of proj.4 string
+* Fix #4439 (Crash when changing style in Layer Properties)
+* Fix #4444 (Error when loading Python plugins)
+* Fix #4440 (invalid reference to Trac)
+* Fix stopRender call in graduated symbol renderer
+* Fix #4479 - trigger "new color ramp" always when activated
+* Hide query entry in legend context menu for layers with joins
+* Fix #4496 (Refresh map list in composer table widget in showEvent)
+* OS X build/install updates
+* GRASS version support
+* Initializing from WKT favourize EPSG instead of PROJ.4
+* Add What's this to Help menu (implement #4179)
+* fTools: update layers lists after adding new layer to TOC (fix #4318)
+* Don't block QGIS main window when running Merge shapefiles tool. Partially addresses #4383
+* Fix broken Assign projection functionality in GDALTools and improve handling output file extension
 
-# 21. What's new in Version 1.7.1 'Wroclaw'? 
+# 21. What's new in Version 1.7.1 'Wroclaw'?
 
 This is a bugfix release over version 1.7.0. The following changes
 were made.
 
- * Raster performance improvements backported to 1.7.1 [see
+* Raster performance improvements backported to 1.7.1 [see
 http://linfiniti.com/2011/08/improvements-to-raster-performance-in-qgis-master/]
- * Update version on cmakelists and splash to 1.7.1
- * Move setting projection to after we have features
- * symbology: sort the category items when classifying them #4206
- * Fix feature_count consideration in wms feature info
- * Check topological editing yes/no when opening snapping dialog
- * Updated required version for bison and cmake
- * Small efficiency improvement for rendering
- * make sure gdaltools input vector layers are ogr vectors
- * Fix #4266 - georeferencer and spatial query crashing on exit
- * translation update: nl by Richard for 1.7.x branch
- * translation update: cz by Jan for 1.7.x release
- * Don't check for plugin errors at startup
- * Fix QTreeWidget.resizeColumnToContents() issue observed in PyQt4.8.3 @ Debian
- * translation update: hu update for 1.7.x by Zoltan
- * german translation update
- * UPDATE TRANSLATIONS: for new bugfix Release in 1.7.x
- * Show only provider fields as join target candidates (ticket #4136)
- * Shortcuts dialog now remembers window state between uses
- * Center small marker symbols in composer legend
- * Backport of 6e889aa40e
- * BUGFIX Backport of #4113 and #2805
- * [BACKPORT] increase maximum points count in Random Points tool
- * [BACKPORT] set default contrast enchacement algorithm to NoStretch because this is more appropriate value
- * [BACKPORT]fix RandomPoints crash when there are NULL values in
- * Patch from Michal Klatecki - see ticket #3325
- * Fix #3866 for measure angle tool
- * Backported ui fix for wms select
- * Better block for signals when creating composer legend widget
- * Fix for considering layer title length in composer legend
- * apply #3793: libfcgi cannot change mapserv's environment variables on windows
- * german translation update
- * fix 55a1778 with patched qt on osgeo4w
- * add support for mixed case geometry types of PostGIS 2.0
- * Reduce top and side margins for attribute table dialog
- * Remove the (hopefully) last SVN reference
- * More svn version removal
- * Added missing color accessor/mutator/member from composerlegenditem header
- * Get rid of svn version stuff from release branch.
- * Other workaround for Qt#5114 (fixes #3250, #3028, #2598)
- * Try to make the histogram smoother
- * More legend cleanup
- * Better layout for composer legend
- * Better consideration of large point symbols in composer legend
- * Fix for composer legend issues, e.g. ticket #3346
- * Merge branch 'release-1_7_0' of github.com:qgis/Quantum-GIS into release-1_7_0
- * Fix labeling-ng with utf-8 layers (ticket #3854)
- * Tweak for layer cache
- * [backport] Fix bug where histogram can be assigned negative frequency for a pixel range. Also fix potential memory leak as new histogram vector was assigned to band stats without clearing the old.
- * Added section on using QtCreator
- * Fix bugs causing a crash when histogram is gathered due to uninitialized histogram vector
- * Added missing QUrl include
- * A neater fix for missing map parameter as suggested by Juergen
- * Fixed a bug where map= was not being published in onlineresource url when project files are not in the same dir as cgi
+* Update version on cmakelists and splash to 1.7.1
+* Move setting projection to after we have features
+* symbology: sort the category items when classifying them #4206
+* Fix feature_count consideration in wms feature info
+* Check topological editing yes/no when opening snapping dialog
+* Updated required version for bison and cmake
+* Small efficiency improvement for rendering
+* make sure gdaltools input vector layers are ogr vectors
+* Fix #4266 - georeferencer and spatial query crashing on exit
+* translation update: nl by Richard for 1.7.x branch
+* translation update: cz by Jan for 1.7.x release
+* Don't check for plugin errors at startup
+* Fix QTreeWidget.resizeColumnToContents() issue observed in PyQt4.8.3 @ Debian
+* translation update: hu update for 1.7.x by Zoltan
+* german translation update
+* UPDATE TRANSLATIONS: for new bugfix Release in 1.7.x
+* Show only provider fields as join target candidates (ticket #4136)
+* Shortcuts dialog now remembers window state between uses
+* Center small marker symbols in composer legend
+* Backport of 6e889aa40e
+* BUGFIX Backport of #4113 and #2805
+* [BACKPORT] increase maximum points count in Random Points tool
+* [BACKPORT] set default contrast enchacement algorithm to NoStretch because this is more appropriate value
+* [BACKPORT]fix RandomPoints crash when there are NULL values in
+* Patch from Michal Klatecki - see ticket #3325
+* Fix #3866 for measure angle tool
+* Backported ui fix for wms select
+* Better block for signals when creating composer legend widget
+* Fix for considering layer title length in composer legend
+* apply #3793: libfcgi cannot change mapserv's environment variables on windows
+* german translation update
+* fix 55a1778 with patched qt on osgeo4w
+* add support for mixed case geometry types of PostGIS 2.0
+* Reduce top and side margins for attribute table dialog
+* Remove the (hopefully) last SVN reference
+* More svn version removal
+* Added missing color accessor/mutator/member from composerlegenditem header
+* Get rid of svn version stuff from release branch.
+* Other workaround for Qt#5114 (fixes #3250, #3028, #2598)
+* Try to make the histogram smoother
+* More legend cleanup
+* Better layout for composer legend
+* Better consideration of large point symbols in composer legend
+* Fix for composer legend issues, e.g. ticket #3346
+* Merge branch 'release-1_7_0' of github.com:qgis/Quantum-GIS into release-1_7_0
+* Fix labeling-ng with utf-8 layers (ticket #3854)
+* Tweak for layer cache
+* [backport] Fix bug where histogram can be assigned negative frequency for a pixel range. Also fix potential memory leak as new histogram vector was assigned to band stats without clearing the old.
+* Added section on using QtCreator
+* Fix bugs causing a crash when histogram is gathered due to uninitialized histogram vector
+* Added missing QUrl include
+* A neater fix for missing map parameter as suggested by Juergen
+* Fixed a bug where map= was not being published in onlineresource url when project files are not in the same dir as cgi
 
-# 22. What's new in Version 1.7.0 'Wroclaw'? 
+# 22. What's new in Version 1.7.0 'Wroclaw'?
 
 This release is named after the town of Wroclaw in Poland. The Department of
 Climatology and Atmosphere Protection, University of Wroclaw kindly hosted our
@@ -1287,104 +1252,104 @@ This release includes over 277 bug fixes and many new features and
 enhancements. Once again it is impossible to document everything here that has
 changed so we will just provide a bullet list of key new features here.
 
-## 22.1. Symbology labels and diagrams 
+## 22.1. Symbology labels and diagrams
 
- * New symbology now used by default!
- * Diagram system that uses the same smart placement system as labeling-ng
- * Export and import of styles (symbology).
- * Labels for rules in rule-based renderers.
- * Ability to set label distance in map units.
- * Rotation for svg fills.
- * Font marker can have an X,Y offset.
- * Allow the line symbol layers to be used for outline of polygon (fill) symbols.
- * Option to put marker on the central point of a line.
- * Option to put marker only on first/last vertex of a line.
- * Added "centroid fill" symbol layer which draws a marker on polygon's centroid.
- * Allow the marker line symbol layer to draw markers on each vertex.
- * Move/rotate/change label edit tools to interactively change data defined label properties.
+* New symbology now used by default!
+* Diagram system that uses the same smart placement system as labeling-ng
+* Export and import of styles (symbology).
+* Labels for rules in rule-based renderers.
+* Ability to set label distance in map units.
+* Rotation for svg fills.
+* Font marker can have an X,Y offset.
+* Allow the line symbol layers to be used for outline of polygon (fill) symbols.
+* Option to put marker on the central point of a line.
+* Option to put marker only on first/last vertex of a line.
+* Added "centroid fill" symbol layer which draws a marker on polygon's centroid.
+* Allow the marker line symbol layer to draw markers on each vertex.
+* Move/rotate/change label edit tools to interactively change data defined label properties.
 
-## 22.2. New Tools 
+## 22.2. New Tools
 
- * Added GUI for gdaldem.
- * Added 'Lines to polygons' tool to vector menu.
- * Added field calculator with functions like $x, $y and $perimeter.
- * Added voronoi polygon tool to Vector menu.
+* Added GUI for gdaldem.
+* Added 'Lines to polygons' tool to vector menu.
+* Added field calculator with functions like $x, $y and $perimeter.
+* Added voronoi polygon tool to Vector menu.
 
-## 22.3. User interface updates 
+## 22.3. User interface updates
 
- * Allow managing missing layers in a list.
- * Zoom to group of layers.
- * 'Tip of the day' on startup. You can en/disable tips in the options panel.
- * Better organisation of menus, separate database menu added.
- * Add ability to show number of features in legend classes. Accessible via right-click legend menu.
- * General clean-ups and usability improvements.
+* Allow managing missing layers in a list.
+* Zoom to group of layers.
+* 'Tip of the day' on startup. You can en/disable tips in the options panel.
+* Better organisation of menus, separate database menu added.
+* Add ability to show number of features in legend classes. Accessible via right-click legend menu.
+* General clean-ups and usability improvements.
 
-## 22.4. CRS Handling 
+## 22.4. CRS Handling
 
- * Show active crs in status bar.
- * Assign layer CRS to project (in the legend context menu).
- * Select default CRS for new projects.
- * Allow setting CRS for multiple layers at once.
- * Default to last selection when prompting for CRS.
+* Show active crs in status bar.
+* Assign layer CRS to project (in the legend context menu).
+* Select default CRS for new projects.
+* Allow setting CRS for multiple layers at once.
+* Default to last selection when prompting for CRS.
 
-## 22.5. Rasters 
+## 22.5. Rasters
 
- * Added AND and OR operator for raster calculator
- * On-the-fly reprojection of rasters added!
- * Proper implementation of raster providers.
- * Added raster toolbar with histogram stretch functions.
+* Added AND and OR operator for raster calculator
+* On-the-fly reprojection of rasters added!
+* Proper implementation of raster providers.
+* Added raster toolbar with histogram stretch functions.
 
-## 22.6. Providers and Data Handling 
+## 22.6. Providers and Data Handling
 
- * New SQLAnywhere vector provider.
- * Table join support.
- * Feature form updates:
-  * Make NULL value string representation configurable.
-  * Fix feature updates in feature form from attribute table.
-  * Add support for NULL values in value maps (comboboxes).
-  * Use layer names instead of ids in drop-down list when loading value maps from layers.
-  * Support feature form expression fields: line edits on the form which
+* New SQLAnywhere vector provider.
+* Table join support.
+* Feature form updates:
+ * Make NULL value string representation configurable.
+ * Fix feature updates in feature form from attribute table.
+ * Add support for NULL values in value maps (comboboxes).
+ * Use layer names instead of ids in drop-down list when loading value maps from layers.
+ * Support feature form expression fields: line edits on the form which
 name prefix "expr_" are evaluated. Their value is interpreted as field
 calculator string and replaced with the calculated value.
- * Support searching for NULL in attribute table.
- * Attribute editing improvements:
+* Support searching for NULL in attribute table.
+* Attribute editing improvements:
 
-  * Improved interactive attribute editing in table (adding/deleting features, attribute update).
-  * Allow adding of geometryless features.
-  * Fixed attribute undo/redo.
- * Improved attribute handling:
+ * Improved interactive attribute editing in table (adding/deleting features, attribute update).
+ * Allow adding of geometryless features.
+ * Fixed attribute undo/redo.
+* Improved attribute handling:
 
-  * Optionally re-use entered attribute values for next digitized feature.
-  * Allow merging/assigning attribute values to a set of features.-
-  * Allow OGR 'save as' without attributes (e.g., DGN/DXF).
+ * Optionally re-use entered attribute values for next digitized feature.
+ * Allow merging/assigning attribute values to a set of features.-
+ * Allow OGR 'save as' without attributes (e.g., DGN/DXF).
 
-## 22.7. Api and Developer Centric 
+## 22.7. Api and Developer Centric
 
- * Refactored attribute dialog calls to QgsFeatureAttribute.
- * Added QgsVectorLayer::featureAdded signal.
- * Layer menu function added.
- * Added option to load c++ plugins from user specified directories. Requires application restart to activate.
- * Completely new geometry checking tool for fTools. Significantly faster,
+* Refactored attribute dialog calls to QgsFeatureAttribute.
+* Added QgsVectorLayer::featureAdded signal.
+* Layer menu function added.
+* Added option to load c++ plugins from user specified directories. Requires application restart to activate.
+* Completely new geometry checking tool for fTools. Significantly faster,
 more relevant error messages, and now supports zooming to errors. See the
 new QgsGeometry.validateGeometry function
 
-## 22.8. QGIS Mapserver 
+## 22.8. QGIS Mapserver
 
- * Ability to specify wms service capabilities in the properties
+* Ability to specify wms service capabilities in the properties
 section of the project file (instead of wms_metadata.xml file).
- * Support for wms printing with GetPrint-Request.
+* Support for wms printing with GetPrint-Request.
 
-## 22.9. Plugins 
+## 22.9. Plugins
 
- * Support for icons of plugins in the plugin manager dialog.
- * Removed quickprint plugin - use easyprint plugin rather from plugin repo.
- * Removed ogr converter plugin - use 'save as' context menu rather.
+* Support for icons of plugins in the plugin manager dialog.
+* Removed quickprint plugin - use easyprint plugin rather from plugin repo.
+* Removed ogr converter plugin - use 'save as' context menu rather.
 
-## 22.10. Printing 
+## 22.10. Printing
 
- * Undo/Redo support for the print composer
+* Undo/Redo support for the print composer
 
-# 23. What's new in Version 1.6.0 'Capiapo'? 
+# 23. What's new in Version 1.6.0 'Capiapo'?
 
 Please note that this is a release in our 'cutting edge' release series. As
 such it contains new features and extends the programmatic interface over QGIS
@@ -1394,78 +1359,78 @@ This release includes over 177 bug fixes and many new features and enhancements.
 Once again it is impossible to document everything here that has changed so we will
 just provide a bullet list of key new features here.
 
-## 23.1. General Improvements 
+## 23.1. General Improvements
 
- * Added gpsd support to live gps tracking.
- * A new plugin has been included that allows for offline editing.
- * Field calculator will now insert NULL feature value in case of calculation
+* Added gpsd support to live gps tracking.
+* A new plugin has been included that allows for offline editing.
+* Field calculator will now insert NULL feature value in case of calculation
 error instead of stopping and reverting calculation for all features.
- * Allow user specific PROJ.4 search paths and update srs.db to include grid reference.
- * Added a native (C++) raster calculator implementation which can deal with large rasters efficiently.
- * Improved interaction with extents widget in statusbar so that the text
+* Allow user specific PROJ.4 search paths and update srs.db to include grid reference.
+* Added a native (C++) raster calculator implementation which can deal with large rasters efficiently.
+* Improved interaction with extents widget in statusbar so that the text
 contents of the widget can be copied and pasted.
- * Many improvements and new operators to the vector attribute table field
+* Many improvements and new operators to the vector attribute table field
 calculator including field concatenation, row counter etc.
- * Added --configpath option that overrides the default path (~/.qgis) for
+* Added --configpath option that overrides the default path (~/.qgis) for
 user configuration and forces QSettings to use this directory, too. This
 allows users to e.g. carry QGIS installation on a flash drive together with
 all plugins and settings.
- * Experimental WFS-T support. Additionally ported wfs to network manager.
- * Georeferencer has had many tidy ups and improvements.
- * Support for long int in attribute dialog and editor.
- * The QGIS Mapserver project has been incorporated into the main SVN
+* Experimental WFS-T support. Additionally ported wfs to network manager.
+* Georeferencer has had many tidy ups and improvements.
+* Support for long int in attribute dialog and editor.
+* The QGIS Mapserver project has been incorporated into the main SVN
 repository and packages are being made available. QGIS Mapserver allows you
 to serve your QGIS project files via the OGC WMS protocol.
 [Read More...](http://linfiniti.com/2010/08/qgis-mapserver-a-wms-srver-for-the-masses/)
- * Select and measure toolbar flyouts and submenus.
- * Support has been added for non-spatial tables (currently OGR, delimited
+* Select and measure toolbar flyouts and submenus.
+* Support has been added for non-spatial tables (currently OGR, delimited
 text and PostgreSQL providers). These tables can be used for field lookups
 or just generally browsed and edited using the table view.
- * Added search string support for feature ids ($id) and various other search related improvements.
- * Added reload method to map layers and provider interface. Like this,
+* Added search string support for feature ids ($id) and various other search related improvements.
+* Added reload method to map layers and provider interface. Like this,
 caching providers (currently WMS and WFS) can synchronize with changes in
 the datasource.
 
-## 23.2. Table of contents (TOC) improvements 
+## 23.2. Table of contents (TOC) improvements
 
- * Added a new option to the raster legend menu that will stretch the current
+* Added a new option to the raster legend menu that will stretch the current
 layer using the min and max pixel values of the current extent.
- * When writing shape files using the table of contents context menu's 'Save
+* When writing shape files using the table of contents context menu's 'Save
 as' option, you can now specify OGR creation options.
- * In the table of contents, it is now possible to select and remove several layers at once.
+* In the table of contents, it is now possible to select and remove several layers at once.
 
-## 23.3. Labeling (New generation only) 
+## 23.3. Labeling (New generation only)
 
- * Data defined label position in labeling-ng.
- * Line wrapping, data defined font and buffer settings for labeling-ng.
+* Data defined label position in labeling-ng.
+* Line wrapping, data defined font and buffer settings for labeling-ng.
 
-## 23.4. Layer properties and symbology 
+## 23.4. Layer properties and symbology
 
- * Three new classification modes added to graduated symbol renderer (version
+* Three new classification modes added to graduated symbol renderer (version
 2), including Natural Breaks (Jenks), Standard Deviations, and Pretty
 Breaks (based on pretty from the R statistical environment).
 [Read more...
 http://linfiniti.com/2010/09/new-class-breaks-for-graduated-symbols-in-qgis/]
- * Improved loading speed of the symbol properties dialog.
- * Data-defined rotation and size for categorized and graduated renderer (symbology).
- * Use size scale also for line symbols to modify line width.
- * Replaced raster histogram implementation with one based on Qwt. Added
+* Improved loading speed of the symbol properties dialog.
+* Data-defined rotation and size for categorized and graduated renderer (symbology).
+* Use size scale also for line symbols to modify line width.
+* Replaced raster histogram implementation with one based on Qwt. Added
 option to save histogram as image file. Show actual pixel values on x axis
 of raster histogram.
- * Added ability to interactively select pixels from the canvas to populate
+* Added ability to interactively select pixels from the canvas to populate
 the transparency table in the raster layer properties dialog.
- * Allow creation of color ramps in vector color ramp combo box.
- * Added "style manager..." button to symbol selector so that users will find
+* Allow creation of color ramps in vector color ramp combo box.
+* Added "style manager..." button to symbol selector so that users will find
 the style manager more easily.
 
-## 23.5. Map Composer 
+## 23.5. Map Composer
 
- * add capability to show and manipulate composer item width/ height in item
+* add capability to show and manipulate composer item width/ height in item
 position dialog.
- * Composer items can now be deleted with the backspace key.
- * Sorting for composer attribute table (several columns and ascending / descending).
+* Composer items can now be deleted with the backspace key.
+* Sorting for composer attribute table (several columns and ascending / descending).
 
-# 24. What's new in Version 1.5.0? 
+# 24. What's new in Version 1.5.0?
 
 Please note that this is a release in our 'cutting edge' release series. As
 such it contains new features and extends the programmatic interface over QGIS
@@ -1478,86 +1443,86 @@ This release includes over 350 bug fixes, over 40 new features.
 Once again it is impossible to document everything here that has changed so we will
 just provide a bullet list of key new features here.
 
-## 24.1. Main GUI 
+## 24.1. Main GUI
 
- * There is a new angle measuring tool that allows you to interactively
+* There is a new angle measuring tool that allows you to interactively
 measure angles against the map backdrop.
- * Live GPS Tracking tool
- * User configurable WMS search server
- * Allow editing of invalid geometry in node tool
- * Choice between mm and map units for new symbology. Scaling to use new
+* Live GPS Tracking tool
+* User configurable WMS search server
+* Allow editing of invalid geometry in node tool
+* Choice between mm and map units for new symbology. Scaling to use new
 symbology in print composer as well
- * SVG fill symbol layer for polygon textures
- * Font marker symbol layer
- * Added --noplugins command line options to avoid restoring the plugins.
+* SVG fill symbol layer for polygon textures
+* Font marker symbol layer
+* Added --noplugins command line options to avoid restoring the plugins.
 Useful when a plugin misbehaves and causes QGIS to crash during
 startup
- * Allow hiding of deprecated CRSes
- * Add point displacement renderer plugin - allows points to be shifted to
+* Allow hiding of deprecated CRSes
+* Add point displacement renderer plugin - allows points to be shifted to
 avoid colliding with other points
- * Allow saving vector layers as ogr vector files
- * Raster provider: reduce debugging noise
- * Allow adding parts to multi points and lines
- * Text and form annotation tools are now in gui and app
- * Added possibility to place a set of default composer templates in
+* Allow saving vector layers as ogr vector files
+* Raster provider: reduce debugging noise
+* Allow adding parts to multi points and lines
+* Text and form annotation tools are now in gui and app
+* Added possibility to place a set of default composer templates in
 pkgDataPath/composer_templates
- * Gradient color ramps now support multiple stops - for adding intermediate
+* Gradient color ramps now support multiple stops - for adding intermediate
 colors
- * Center map if user clicks into the map
- * New plugin for carrying out spatial selections
- * Data-defined size and rotation for single symbol renderer in symbology
- * IdentifyAsHtml to raster layer and use it in identify
- * Export legend groups and layers with legendinterface and use this
+* Center map if user clicks into the map
+* New plugin for carrying out spatial selections
+* Data-defined size and rotation for single symbol renderer in symbology
+* IdentifyAsHtml to raster layer and use it in identify
+* Export legend groups and layers with legendinterface and use this
 information to display groups in the composer legend.
- * Show selected feature count in status bar
- * Query option added to layer menu to subset vector layers
- * Option to label only selected features (on the 'old' labeling tool)
- * Load/save queries created in the query builder.
- * Manual adding of categories in symbology.
- * Georeferencer: possibility to configure if residuals should be showed in
+* Show selected feature count in status bar
+* Query option added to layer menu to subset vector layers
+* Option to label only selected features (on the 'old' labeling tool)
+* Load/save queries created in the query builder.
+* Manual adding of categories in symbology.
+* Georeferencer: possibility to configure if residuals should be showed in
 pixels or map units
- * Delimited text provider: allow empty values in numeric columns
- * Added rule-based renderer for symbology
- * Ability to create spatial lite databases from within QGIS
- * Inclusion of GDAL Raster tools plugin into QGIS core
- * New python console (with history)
- * Add validation to capture tool
- * Allow postgres layers without saved username &amp; password by asking for credentials
- * Support NULL values in search strings
- * Optionally add new layers to the selected group
- * Map composer can add attribute Tables in layouts. It is possible to show
+* Delimited text provider: allow empty values in numeric columns
+* Added rule-based renderer for symbology
+* Ability to create spatial lite databases from within QGIS
+* Inclusion of GDAL Raster tools plugin into QGIS core
+* New python console (with history)
+* Add validation to capture tool
+* Allow postgres layers without saved username &amp; password by asking for credentials
+* Support NULL values in search strings
+* Optionally add new layers to the selected group
+* Map composer can add attribute Tables in layouts. It is possible to show
 only visible features in composer table or all features
- * Identify tool attribute form now non-modal in view mode (since r12796)
- * Identified features' highlight disappear when window is deactivate or
+* Identify tool attribute form now non-modal in view mode (since r12796)
+* Identified features' highlight disappear when window is deactivate or
 closed and reappears when reactivated.
 
-## 24.2. WMS and WMS-C Support 
+## 24.2. WMS and WMS-C Support
 
- * WMS-C support, new spatial authorities, wms selection improvements
- * Resolved EPSG dependency in spatial reference systems and included french
+* WMS-C support, new spatial authorities, wms selection improvements
+* Resolved EPSG dependency in spatial reference systems and included french
 IGNF definitions in srs.db
- * WWM provider makes requests asynchronously through QNetworkAccessManager now
- * WMS selection allows inserting of all layers of a branch
- * WMS has support for more mime types
- * Added load/save to WMS dialog
- * WMS-C scale slider gui added and more selection improvements
+* WWM provider makes requests asynchronously through QNetworkAccessManager now
+* WMS selection allows inserting of all layers of a branch
+* WMS has support for more mime types
+* Added load/save to WMS dialog
+* WMS-C scale slider gui added and more selection improvements
 
-## 24.3. API Updates 
+## 24.3. API Updates
 
- * QgsDataProvider &amp; QgsMapLayer: add dataChanged() signal, so that a
+* QgsDataProvider &amp; QgsMapLayer: add dataChanged() signal, so that a
 provider can signal that the datasource changed
- * Use QNetworkAccessManager instead of QgsHttpTransaction (including caching
+* Use QNetworkAccessManager instead of QgsHttpTransaction (including caching
 and dynamic authentication to website and proxies)
 
- * Allow opening layer properties from plugins
- * Support for custom plugin layers.
- * Allow refreshing of plugins programmatically
- * Support for custom plugin directories using QGIS_PLUGINPATH environment
+* Allow opening layer properties from plugins
+* Support for custom plugin layers.
+* Allow refreshing of plugins programmatically
+* Support for custom plugin directories using QGIS_PLUGINPATH environment
 variables. More paths can be passed, separated by semicolon.
- * Legend interface added to retrieve layers in legend order
- * Support more GEOS operators
+* Legend interface added to retrieve layers in legend order
+* Support more GEOS operators
 
-# 25. What's new in Version 1.4.0 'Enceladus'? 
+# 25. What's new in Version 1.4.0 'Enceladus'?
 
 Please note that this is a release in our 'cutting edge' release series. As
 such it contains new features and extends the programmatic interface over QGIS
@@ -1613,34 +1578,34 @@ intersections option for polygons is now also possible with background layers.
 For power users, you can now create customizable attribute forms using Qt
 Designer dialog UIs.
 
-# 26. What's new in Version 1.3.0 'Mimas'? 
+# 26. What's new in Version 1.3.0 'Mimas'?
 
 This release includes over 30 bug fixes and several useful new features:
 
-## 26.1. OSM plugin &amp; provider updates 
+## 26.1. OSM plugin &amp; provider updates
 
- * new OSM style files.
- * new icons.
- * dialog text updated and completed.
- * "Saving OSM into file" functionality was improvements.
- * fixed some problems with encoding... ascii to utf-8.
- * all OSM layers are automatically removed after disabling OSM plugin in plugin manager.
- * other OSM related bugfixes.
+* new OSM style files.
+* new icons.
+* dialog text updated and completed.
+* "Saving OSM into file" functionality was improvements.
+* fixed some problems with encoding... ascii to utf-8.
+* all OSM layers are automatically removed after disabling OSM plugin in plugin manager.
+* other OSM related bugfixes.
 
-## 26.2. Other notable features and improvements in this release 
+## 26.2. Other notable features and improvements in this release
 
- * Marker size is now configurable when editing a layer.
- * Incorporation of the analysis library into the mainstream release.
- * Identify features across multiple layers.
- * Added a new plugin for carrying out raster terrain analysis (computing slope
+* Marker size is now configurable when editing a layer.
+* Incorporation of the analysis library into the mainstream release.
+* Identify features across multiple layers.
+* Added a new plugin for carrying out raster terrain analysis (computing slope
 aspect, steepness etc).
- * A reshape tool to apply to line/polygon geometries. The part of a geometry
+* A reshape tool to apply to line/polygon geometries. The part of a geometry
 between the first and last intersection of the reshape line will be replaced.
- * Added snapping to current layer in measure dialog.
- * Added ability to select the primary key for views.
- * Zoom to a coordinate by entering it in the status bar coordinate display.
+* Added snapping to current layer in measure dialog.
+* Added ability to select the primary key for views.
+* Zoom to a coordinate by entering it in the status bar coordinate display.
 
-# 27. Version 1.2.0 'Daphnis' 
+# 27. Version 1.2.0 'Daphnis'
 
 Please note that this is a release in our 'cutting edge' release series. As
 such it contains new features and extends the programmatic interface over
@@ -1651,19 +1616,19 @@ This release includes over 140 bug fixes and enhancements
 over the QGIS 1.1.0 release. In addition we have added
 the following new features:
 
-## 27.1. Editing 
+## 27.1. Editing
 
 Editing functionality in QGIS has had a major update in this release. This
 includes the addition of new vector editing tools:
 
- * delete part of multipart feature
- * delete hole from polygon
- * simplify feature
- * Added a new "node" tool (in advanced digitizing toolbar).
- * New functionality for merging features
- * Added undo/redo functionality for vector layer editing.
- * Added option to show only markers of selected features in editing mode.
- * Change layer's icon in legend to reflext that the layer is editable.
+* delete part of multipart feature
+* delete hole from polygon
+* simplify feature
+* Added a new "node" tool (in advanced digitizing toolbar).
+* New functionality for merging features
+* Added undo/redo functionality for vector layer editing.
+* Added option to show only markers of selected features in editing mode.
+* Change layer's icon in legend to reflext that the layer is editable.
 
 In addition, there are undo/redo actions in Edit menu, in Advanced digitizing toolbar
 and there is a new dock widget displaying undo stack of active layer.
@@ -1681,12 +1646,12 @@ We recommend that you turn off vertex markers in QGIS options when working with
 this tool: the redraws are much faster and the map is not cluttered with
 markers.
 
-## 27.2. Keyboard shortcuts 
+## 27.2. Keyboard shortcuts
 
 New feature: configure shortcuts for actions within main window of qgis!
 See menu Setting->Configure shortcuts
 
-## 27.3. Map Composer 
+## 27.3. Map Composer
 
 It is now possible to lock/unlock composer item positions by right mouse click.
 The width and height of the composer map will now remain fixed if user sets the
@@ -1695,7 +1660,7 @@ current date in composer label by typing (d 'June' yyyy) or similar.
 It is now possible to keep the current layers in a composer map even if further
 layers are added to the main map. Export to PDF in composer is now possible.
 
-## 27.4. Attribute tables 
+## 27.4. Attribute tables
 
 It is now possible to search the attribute table within selected records only.
 General speedups have been made on the attribute table. Setting of field width
@@ -1709,45 +1674,45 @@ for layer attributes.  A new dialog allows loading a value map from a layer
 (could be non-spatial table too!).  The edit widgets settings will also now
 be respected in the attribute table.
 
-## 27.5. Plugins 
+## 27.5. Plugins
 
- * The order of layers in the WMS dialog can now be changed.
- * The eVis plugin, version 1.1.0, has been added to the QGIS project and
+* The order of layers in the WMS dialog can now be changed.
+* The eVis plugin, version 1.1.0, has been added to the QGIS project and
 included as a standard plugin. More information about eVis can be found here:
 http://biodiversityinformatics.amnh.org/open_source/evis/documentation.php .
- * The interpolation plugin now has the ability to use line layers as constrains
+* The interpolation plugin now has the ability to use line layers as constrains
 for triangulation in interpolation plugin. You can also now save the
 triangulation to shape file.
- * An new OpenStreetMap provider and plugin have been added to QGIS.
+* An new OpenStreetMap provider and plugin have been added to QGIS.
 
-## 27.6. Projects Management 
+## 27.6. Projects Management
 
 QGIS now includes support for  project relative position of file data sources
 and svgs. The saving of relative paths of file data sources is optional.
 
-## 27.7. PostGIS & the PostgreSQL Provider 
+## 27.7. PostGIS & the PostgreSQL Provider
 
 You can now select the SSL mode when adding a new DB connection. Turning off
 SSL encryption can greatly improve performance of PostGIS data loading where
 connection security is not required. Support has been added for more native
 types and for setting of column comments.
 
-## 27.8. Symbology enhancements 
+## 27.8. Symbology enhancements
 
- * allow refresh of symbols via popup menu on the renderer's symbol selection
- * add support for data defined symbols
- * add support for font symbol markers (only data defined - no gui yet)
- * add symbol size in map units (ie. symbols that keep the size in mapunits
+* allow refresh of symbols via popup menu on the renderer's symbol selection
+* add support for data defined symbols
+* add support for font symbol markers (only data defined - no gui yet)
+* add symbol size in map units (ie. symbols that keep the size in mapunits
 independent of the mapscale)
 
-## 27.9. Command line arguments 
+## 27.9. Command line arguments
 
 Added command line argument support on windows.
 Enhancement of command line arguments:
 
- * allow given snapshot sizes
- * allow suppression of splash screen
- * capture map decorations from plugins on snapshots
+* allow given snapshot sizes
+* allow suppression of splash screen
+* capture map decorations from plugins on snapshots
 
 == Grass ==
 
@@ -1766,235 +1731,235 @@ This release includes many bug fixes and enhancements
 over the QGIS 1.0.0 release. In addition we have added
 the following new features:
 
- * Updates to translations.
- * Improvements and polishing of the Python plugin installer. Switch to the
+* Updates to translations.
+* Improvements and polishing of the Python plugin installer. Switch to the
 new official QGIS repository.
- * Improvements to themes so that plugins and other parts of the GUI are
+* Improvements to themes so that plugins and other parts of the GUI are
 better supported when switching themes. Addition of the new GIS icon
 theme.
- * Improvements to Debian packaging to better support Debian standard
+* Improvements to Debian packaging to better support Debian standard
 requirements.
- * Support usb: as a GPS device under Linux.
- * WMS plugin now supports sorting and shows nested layers as a tree. WMS
+* Support usb: as a GPS device under Linux.
+* WMS plugin now supports sorting and shows nested layers as a tree. WMS
 provider also support 24bit png images now. The WMS plugin also now
 provides a search interface for finding WMS servers.
- * Added svg point symbols symbols from Matt Amos (with his permission).
- * Improvements to proxy support and support of proxy in WFS provider. The
+* Added svg point symbols symbols from Matt Amos (with his permission).
+* Improvements to proxy support and support of proxy in WFS provider. The
 WFS provider now also shows progress information as it is fetching data.
- * Improvements the PostGIS client support. Massive speedups in PostGIS layer
+* Improvements the PostGIS client support. Massive speedups in PostGIS layer
 rendering can now be achieved by disabling SSL in the connection editor.
- * Mapserver Export improvements for continuous color support.
- * Added tools menu - the fTools plugins are now part of the core QGIS
+* Mapserver Export improvements for continuous color support.
+* Added tools menu - the fTools plugins are now part of the core QGIS
 plugins and will always be installed by default.
- * Improvements to the print composer including object alignment options. It
+* Improvements to the print composer including object alignment options. It
 is also now possible to print maps as postcript raster or vector. For
 python programmers, the composer classes now have python bindings.
- * When using File - Save as image, the saved image is now georeferenced.
- * Projection selector now includes quick selection of recently used CRS's.
- * Continuous color renderer supports point symbols now too.
- * Improved CMake support for building against dependencies from OSGEO4W
+* When using File - Save as image, the saved image is now georeferenced.
+* Projection selector now includes quick selection of recently used CRS's.
+* Continuous color renderer supports point symbols now too.
+* Improved CMake support for building against dependencies from OSGEO4W
 (Windows only). Addition of an XCode project of developers building under
 OSX.
- * Updates and cleanups to the GRASS toolbox.
- * Changes in open vector dialog to support all drivers available in ogr
+* Updates and cleanups to the GRASS toolbox.
+* Changes in open vector dialog to support all drivers available in ogr
 including database and protocol drivers. This brings with it support for
 SDE, Oracle Spatial, ESRI personal geodatabase and many more OGR
 supported data stores. Note that in some cases accessing these may
 require third party libraries to be on your system.
- * The middle mouse button can now be used for panning.
- * A new, faster attribute table implementation.
- * Numerous cleanups to the user interface.
- * A new provider was added for spatiallite - a geodatabase-in-a-file
+* The middle mouse button can now be used for panning.
+* A new, faster attribute table implementation.
+* Numerous cleanups to the user interface.
+* A new provider was added for spatiallite - a geodatabase-in-a-file
 implementation based on the SQLITE database.
- * Vector overlay support that can draw pie and bar charts over vector
+* Vector overlay support that can draw pie and bar charts over vector
 layers based on attribute data.
 
-# 28. Version 1.0.0 'Kore' 
+# 28. Version 1.0.0 'Kore'
 
 This release includes over 265 bug fixes and enhancements over the
 QGIS 0.11.0 release. In addition we have made the following changes:
 
- * HIG Compliance improvements for Windows / Mac OS X / KDE / Gnome
- * Saving a vector layer or subset of that layer to disk with a different
+* HIG Compliance improvements for Windows / Mac OS X / KDE / Gnome
+* Saving a vector layer or subset of that layer to disk with a different
 Coordinate Reference System to the original.
- * Advanced topological editing of vector data.
- * Single click selection of vector features.
- * Many improvements to raster rendering and support for building pyramids
+* Advanced topological editing of vector data.
+* Single click selection of vector features.
+* Many improvements to raster rendering and support for building pyramids
 external to the raster file.
- * Overhaul of the map composer for much improved printing support.
- * A new 'coordinate capture' plugin was added that lets you click on the map
+* Overhaul of the map composer for much improved printing support.
+* A new 'coordinate capture' plugin was added that lets you click on the map
 and then cut & paste the coordinates to and from the clipboard
- * A new plugin for converting between OGR supported formats was added.
- * A new plugin for converting from DXF files to shapefiles was added.
- * A new plugin was added for interpolating point features into ASCII grid layers.
- * The python plugin manager was completely overhauled, the new version
+* A new plugin for converting between OGR supported formats was added.
+* A new plugin for converting from DXF files to shapefiles was added.
+* A new plugin was added for interpolating point features into ASCII grid layers.
+* The python plugin manager was completely overhauled, the new version
 having many improvements, including checking that the version of QGIS
 running will support a plugin that is being installed.
- * Plugin toolbar positions are now correctly saved when the application is closed.
- * In the WMS client, WMS standards support has been improved.
- * Tidy ups for GRASS integration and support for GRASS 6.4
- * Complete API revision - we now have a stable API following well defined naming conventions.
- * Ported all GDAL/OGR and GEOS usage to use C APIs only.
+* Plugin toolbar positions are now correctly saved when the application is closed.
+* In the WMS client, WMS standards support has been improved.
+* Tidy ups for GRASS integration and support for GRASS 6.4
+* Complete API revision - we now have a stable API following well defined naming conventions.
+* Ported all GDAL/OGR and GEOS usage to use C APIs only.
 
-# 29. Version 0.11.0 'Metis' 
+# 29. Version 0.11.0 'Metis'
 
 This release includes over 60 bug fixes and enhancements over the
 QGIS 0.10.0 release. In addition we have made the following changes:
 
- * Revision of all dialogs for user interface consistency
- * Improvements to unique value renderer vector dialog
- * Symbol previews when defining vector classes
- * Separation of python support into its own library
- * List view and filter for GRASS toolbox to find tools more quickly
- * List view and filter for Plugin Manager to find plugins more easily
- * Updated Spatial Reference System definitions
- * QML Style support for rasters and database layers
+* Revision of all dialogs for user interface consistency
+* Improvements to unique value renderer vector dialog
+* Symbol previews when defining vector classes
+* Separation of python support into its own library
+* List view and filter for GRASS toolbox to find tools more quickly
+* List view and filter for Plugin Manager to find plugins more easily
+* Updated Spatial Reference System definitions
+* QML Style support for rasters and database layers
 
-# 30. Version 0.10.0 'Io' 
+# 30. Version 0.10.0 'Io'
 
 This release includes over 120 bug fixes and enhancements
 over the QGIS 0.9.1 release. In addition we have added
 the following new features:
 
- * Improvements to digitizing capabilities.
- * Supporting default and defined styles (.qml) files for file based
+* Improvements to digitizing capabilities.
+* Supporting default and defined styles (.qml) files for file based
 vector layers. With styles you can save the symbolisation
 and other settings associated with a vector layer and they
 will be loaded whenever you load that layer.
 Improved support for transparency and contrast stretching
 in raster layers.
- * Support for color ramps in raster layers.
- * Support for non-north up rasters. Many other raster
+* Support for color ramps in raster layers.
+* Support for non-north up rasters. Many other raster
 improvements 'under the hood'.
- * Updated icons for improved visual consistency.
- * Support for migration of old projects to work in newer QGIS versions.
+* Updated icons for improved visual consistency.
+* Support for migration of old projects to work in newer QGIS versions.
 
-# 31. Version 0.9.2rc1 'Ganymede' 
+# 31. Version 0.9.2rc1 'Ganymede'
 
- * This release candidate includes over 40 bug fixes and enhancements
+* This release candidate includes over 40 bug fixes and enhancements
 over the QGIS 0.9.1 release. In addition we have added
 the following new features:
- * Improvements to digitizing capabilities.
- * Supporting default and defined styles (.qml) files for file based
+* Improvements to digitizing capabilities.
+* Supporting default and defined styles (.qml) files for file based
 vector layers. With styles you can save the symbolisation
 and other settings associated with a vector layer and they
 will be loaded whenever you load that layer.
- * Improved support for transparency and contrast stretching
+* Improved support for transparency and contrast stretching
 in raster layers. Support for color ramps in raster layers.
- * Support for non-north up rasters. Many other raster
+* Support for non-north up rasters. Many other raster
 improvements 'under the hood'.
 
-# 32. Version 0.9.1 'Ganymede' 
+# 32. Version 0.9.1 'Ganymede'
 
 This is a bug fix release
 
- * 70 Bugs closed
- * Added locale tab to options dialog so that locale can be overridden
- * Cleanups and additions to GRASS tools
- * Documentation updates
- * Improvements for building under MSVC
- * Python Plugin installer to install PyQGIS plugins from the repository
+* 70 Bugs closed
+* Added locale tab to options dialog so that locale can be overridden
+* Cleanups and additions to GRASS tools
+* Documentation updates
+* Improvements for building under MSVC
+* Python Plugin installer to install PyQGIS plugins from the repository
 
-# 33. Version 0.9 'Ganymede' 
+# 33. Version 0.9 'Ganymede'
 
- * Python bindings - This is the major focus of this release
+* Python bindings - This is the major focus of this release
 it is now possible to create plugins using python. It is also
 possible to create GIS enabled applications written in python
 that use the QGIS libraries.
- * Removed automake build system - QGIS now needs CMake for compilation.
- * Many new GRASS tools added (with thanks to http://faunalia.it/)
- * Map Composer updates
- * Crash fix for 2.5D shapefiles
- * The QGIS libraries have been refactored and better organised.
- * Improvements to the GeoReferencer
+* Removed automake build system - QGIS now needs CMake for compilation.
+* Many new GRASS tools added (with thanks to http://faunalia.it/)
+* Map Composer updates
+* Crash fix for 2.5D shapefiles
+* The QGIS libraries have been refactored and better organised.
+* Improvements to the GeoReferencer
 
-# 34. Version 0.8 'Joesephine' .... development version 
+# 34. Version 0.8 'Joesephine' .... development version
 
- * 2006-01-23 [timlinux] 0.7.9.10 Dropped use of qpicture and resampling for point markers in favour of
+* 2006-01-23 [timlinux] 0.7.9.10 Dropped use of qpicture and resampling for point markers in favour of
 qt4.1 qsvgrenderer new goodies
- * 2006-01-09 [timlinux] 0.7.9.8 Started Mapcanvas branch for Martin
- * 2006-01-09 [timlinux] 0.7.9.8 Moved plugins into src/plugins
- * 2006-01-08 [timlinux] 0.7.9.8 moved all sources for gui lib into src/gui
- * 2006-01-08 [gsherman] 0.7.9.7 Moved providers to the src directory
- * 2006-01-08 [timlinux] 0.7.9.6 refactored libqgis into core and gui libs.
- * 2006-01-01 [timlinux] 0.7.9.5 removed community reg plugin and exampl plugins
- * refactored composer code into its own lib in src/composer
- * renamed libqgsraster to libqgis_raster
- * rearranged src/Makefile so app target uses only main.cpp in SOURCES and
- * links to a new very monolithic lib. Lib will be broken up into smaller bits
+* 2006-01-09 [timlinux] 0.7.9.8 Started Mapcanvas branch for Martin
+* 2006-01-09 [timlinux] 0.7.9.8 Moved plugins into src/plugins
+* 2006-01-08 [timlinux] 0.7.9.8 moved all sources for gui lib into src/gui
+* 2006-01-08 [gsherman] 0.7.9.7 Moved providers to the src directory
+* 2006-01-08 [timlinux] 0.7.9.6 refactored libqgis into core and gui libs.
+* 2006-01-01 [timlinux] 0.7.9.5 removed community reg plugin and exampl plugins
+* refactored composer code into its own lib in src/composer
+* renamed libqgsraster to libqgis_raster
+* rearranged src/Makefile so app target uses only main.cpp in SOURCES and
+* links to a new very monolithic lib. Lib will be broken up into smaller bits
 over time,
- * 2005-11-30 [timlinux] 0.7.9.4 Refactored all src/*.ui into src/ui/ dir for cleaner separation of ui's
- * 2005-12-29 [gsherman] 0.7.9.3 Merged Ui branch into HEAD
- * 2005-11-10 [timlinux] 0.7.9.2 Ported codebase to qt4 - still many issues to sort out but it builds
- * 2005-11-10 [timlinux] 0.7.9.1 Merged in 0.7 branch changes with Tom Elwertowskis help
- * 2005-10-13 [timlinux] 0.7.9 Added capability to generate point and polygon based graticules to the
+* 2005-11-30 [timlinux] 0.7.9.4 Refactored all src/*.ui into src/ui/ dir for cleaner separation of ui's
+* 2005-12-29 [gsherman] 0.7.9.3 Merged Ui branch into HEAD
+* 2005-11-10 [timlinux] 0.7.9.2 Ported codebase to qt4 - still many issues to sort out but it builds
+* 2005-11-10 [timlinux] 0.7.9.1 Merged in 0.7 branch changes with Tom Elwertowskis help
+* 2005-10-13 [timlinux] 0.7.9 Added capability to generate point and polygon based graticules to the
 grid_maker plugin
 
-# 35. Version 0.6 'Simon' 
+# 35. Version 0.6 'Simon'
 
 QGIS Change Log
 
- * 2005-07-03 [morb_au] 0.7.devel2 Merged changes in the 0.7 release
+* 2005-07-03 [morb_au] 0.7.devel2 Merged changes in the 0.7 release
 candidate branch (as at "Release-0_7-candidate-pre1") back into the trunk.
- * 2005-05-23 [gsherman] 0.7rc1 Fixed bookmarks bug related to non-existent user database. The
+* 2005-05-23 [gsherman] 0.7rc1 Fixed bookmarks bug related to non-existent user database. The
 database is now properly created if it doesn't exist.
- * 2005-04-12 [timlinux] 0.6devel26 Added option to vector props dlg to let user change projection
- * 2005-04-21 [timlinux] 0.6devel25 More updates to qgsspatialrefsys. Changed splash to be a masked widget &
+* 2005-04-12 [timlinux] 0.6devel26 Added option to vector props dlg to let user change projection
+* 2005-04-21 [timlinux] 0.6devel25 More updates to qgsspatialrefsys. Changed splash to be a masked widget &
 added the xcf masters for the splash. Splash still needs some minor
 updating relating to text placement.
- * 2005-04-20 [timlinux] 0.6devel24 Added logic for reverse mapping a wkt or proj4string to an srsid - not
+* 2005-04-20 [timlinux] 0.6devel24 Added logic for reverse mapping a wkt or proj4string to an srsid - not
 very well tested at this stage but works for me with my test dataset
- * 2005-04-17 [timlinux] 0.6devel23 Numerous fixes and clean ups to projection handling
- * 2005-05-15 [morb_au] 0.6devel21 Fixed a memory leak in the postgres provider when retrieving features
- * Raster layers now align to the map canvas with subpixel source accuracy (most useful when zooming in very close and the source pixels cover many
+* 2005-04-17 [timlinux] 0.6devel23 Numerous fixes and clean ups to projection handling
+* 2005-05-15 [morb_au] 0.6devel21 Fixed a memory leak in the postgres provider when retrieving features
+* Raster layers now align to the map canvas with subpixel source accuracy (most useful when zooming in very close and the source pixels cover many
 screen pixels)
- * 2005-05-13 [didge] 0.6devel19 Tweaked makefile stuff and prepared for a release
- * 2005-04-17 [mcoletti] 0.6devel18 First whack at implementing compensation for opening project files
+* 2005-05-13 [didge] 0.6devel19 Tweaked makefile stuff and prepared for a release
+* 2005-04-17 [mcoletti] 0.6devel18 First whack at implementing compensation for opening project files
 with stale data source paths.
- * 2005-04-17 [timlinux] 0.6devel17 Custom Projection dialog. Various bugfixes plus delete, insert and update of new
+* 2005-04-17 [timlinux] 0.6devel17 Custom Projection dialog. Various bugfixes plus delete, insert and update of new
 records possible. User projections now whow in projection selector but are
 still not usable
- * 2005-04-16 [ges] 0.6.0devel16 Fixed bug 1177637 that prevented a PostgreSQL connection from being
+* 2005-04-16 [ges] 0.6.0devel16 Fixed bug 1177637 that prevented a PostgreSQL connection from being
 completely deleted
- * 2005-04-14 [timlinux] 0.6devel15 Wired up move first and move last buttons on custom projection dialog
- * 2005-04-14 [timlinux] 0.6devel14 Status bar widgets show text in 8pt arial. Closes bug #1077217
- * 2005-04-13 [timlinux] 0.6devel13 Show params on proj designer widget when a projection is sleected
- * 2005-04-12 [ges] 0.6.0devel12 Applied patches from Markus Neteler to allow compilation on Qt 3.1
- * 2005-04-12 [timlinux] 0.6devel12 Fix for [ 1181249 ] Crash when loading shape files
- * 2005-04-11 [timlinux] 0.6devel11 Data binding on projection and ellipsoid selector on custom projection
+* 2005-04-14 [timlinux] 0.6devel15 Wired up move first and move last buttons on custom projection dialog
+* 2005-04-14 [timlinux] 0.6devel14 Status bar widgets show text in 8pt arial. Closes bug #1077217
+* 2005-04-13 [timlinux] 0.6devel13 Show params on proj designer widget when a projection is sleected
+* 2005-04-12 [ges] 0.6.0devel12 Applied patches from Markus Neteler to allow compilation on Qt 3.1
+* 2005-04-12 [timlinux] 0.6devel12 Fix for [ 1181249 ] Crash when loading shape files
+* 2005-04-11 [timlinux] 0.6devel11 Data binding on projection and ellipsoid selector on custom projection
 dialog
- * 2005-04-11 [ges] 0.6.0devel10 Applied patches from Markus Neteler to allow compilation on Qt 3.2
- * 2005-04-11 [ges] Fixed default projection (WGS 84) so it is now selected when the
+* 2005-04-11 [ges] 0.6.0devel10 Applied patches from Markus Neteler to allow compilation on Qt 3.2
+* 2005-04-11 [ges] Fixed default projection (WGS 84) so it is now selected when the
 project properties dialog is opened and no projection has been set.
- * 2005-04-10 [timlinux] 0.6devel9 Added custom  projection maker dialog to main app menu. Dialog is still
+* 2005-04-10 [timlinux] 0.6devel9 Added custom  projection maker dialog to main app menu. Dialog is still
 under construction.
- * 2005-04-09 [ges] 0.6.0devel8 Fixed problems with the Makefile.am related to the merge of
+* 2005-04-09 [ges] 0.6.0devel8 Fixed problems with the Makefile.am related to the merge of
 Projections_Branch into HEAD
- * 2005-04-09 [ges] 0.6.0devel7 Merged Projections_Branch into HEAD
-  * Polygon outlines are not drawn. This was checked twice and no cause was found.
-  * Projections do not work in all circumstances
-  * Note that both the proj4 library and sqlite3 are now required. The
+* 2005-04-09 [ges] 0.6.0devel7 Merged Projections_Branch into HEAD
+ * Polygon outlines are not drawn. This was checked twice and no cause was found.
+ * Projections do not work in all circumstances
+ * Note that both the proj4 library and sqlite3 are now required. The
 build system has not been modified to test for these yet.
-  * Qt 3.3.x is required to build this source tree.
-  * Make sure to increment the EXTRA_VERSION in configure.in when
+ * Qt 3.3.x is required to build this source tree.
+ * Make sure to increment the EXTRA_VERSION in configure.in when
 committing changes.
-  * Make sure to update the Changelog with each commit
- * 2005-03-13 [jobi] 0.6.0devel6 - fix for building on 64bit architecture fixed dependencies of designer-plugin/stuff
- * 2005-01-29 [gsherman] 0.6.0devel5 Applied patches from M. Loskot for a build error and missing Q_OBJECT
+ * Make sure to update the Changelog with each commit
+* 2005-03-13 [jobi] 0.6.0devel6 - fix for building on 64bit architecture fixed dependencies of designer-plugin/stuff
+* 2005-01-29 [gsherman] 0.6.0devel5 Applied patches from M. Loskot for a build error and missing Q_OBJECT
 macros in qgsspit.h and qgsattributetable.h
- * 2005-01-01 [larsl] 0.6.0devel4 Fixed a bug that crashed QGIS when loading rasters from a project file, pt 2
- * 2005-01-01 [larsl] 0.6.0devel3 Fixed a bug that crashed QGIS when loading rasters from a project file
- * 2004-12-30 [mcoletti] 0.6.0devel2 *Re-factored endian-handling in data providers
-  * Re-factored delimited text provider
-  * Made some class members const-correct
- * 2004-12-30 [larsl] 0.6.0devel1 Implemented getProjectionWKT() in QgsGPXProvider
- * 2004-12-19 [gsherman] 0.6.0rc2 Updated README Added main.cpp so spit builds as standalone and plugin. Makefile.am modified
+* 2005-01-01 [larsl] 0.6.0devel4 Fixed a bug that crashed QGIS when loading rasters from a project file, pt 2
+* 2005-01-01 [larsl] 0.6.0devel3 Fixed a bug that crashed QGIS when loading rasters from a project file
+* 2004-12-30 [mcoletti] 0.6.0devel2 *Re-factored endian-handling in data providers
+ * Re-factored delimited text provider
+ * Made some class members const-correct
+* 2004-12-30 [larsl] 0.6.0devel1 Implemented getProjectionWKT() in QgsGPXProvider
+* 2004-12-19 [gsherman] 0.6.0rc2 Updated README Added main.cpp so spit builds as standalone and plugin. Makefile.am modified
 so spit binary installs in PREFIX dir
- * 2004-12-19 [timlinux] 0.6.0rc2 Added Slovak translation from Lubos Balazovic
+* 2004-12-19 [timlinux] 0.6.0rc2 Added Slovak translation from Lubos Balazovic
 Massive documentation updates Updates to developer pictures and the about box
- * 2004-12-19 [mhugent] providers/ogr/qgsshapefileprovider.cpp: fix for attribute problem
+* 2004-12-19 [mhugent] providers/ogr/qgsshapefileprovider.cpp: fix for attribute problem
 in ogr provider
- * 2004-12-05 [gsherman] 0.6.0rc2 Fixed bug 1079392 that caused QGIS to crash when a query was entered that
+* 2004-12-05 [gsherman] 0.6.0rc2 Fixed bug 1079392 that caused QGIS to crash when a query was entered that
 resulted in the layer being created with no records. Additional validation
 of the SQL query was added to the query builder.  When OK is clicked on
 the builder dialog, the query is sent to the database and the result
@@ -2004,8 +1969,8 @@ dialog properties code Created QgsDataSourceURI structure to hold all the
 pertinent information associated with a PostgreSQL layer connection,
 including host, database, table, geometry column, username, password,
 port, and sql where clause.
- * 2004-12-03 [gsherman] 0.6.0rc1 Commented out excessive debug statements in the postgres provider
- * 2004-12-03 [gsherman] 0.6.0rc1 Changing the SQL query for a PostgreSQL
+* 2004-12-03 [gsherman] 0.6.0rc1 Commented out excessive debug statements in the postgres provider
+* 2004-12-03 [gsherman] 0.6.0rc1 Changing the SQL query for a PostgreSQL
 layer using the query builder from the vector layer properties dialog now
 properly updates the mapcanvas extents and feature count.
 Fix for crash in pg buffer plugin (bug 1077412). Crash is due to the
@@ -2016,12 +1981,12 @@ The .shp extension is now added the new vector layer name (if not specified
 by the user).  The .qgs extension is now added to a project file when using
 save or save as (if not specified by the user).
 
-# 36. 0.5 
+# 36. 0.5
 
- * 2004-12-01 [gsherman] 0.5.0devel30 Added functions to qgsdataprovider.h to support updating the feature count
+* 2004-12-01 [gsherman] 0.5.0devel30 Added functions to qgsdataprovider.h to support updating the feature count
 and extents. To be supported, these functions must be implemented in the data
 provider implementation. The default implementations don't do anything useful.
- * QgsVectorLayer now has functions for requesting feature count, extent
+* QgsVectorLayer now has functions for requesting feature count, extent
 update, and the subset defintiion string (usually sql) from the underlying
 data provider. Providers do not need to implement these functions unless
 they want to support subsetting the layer via a layer definition query or
@@ -2220,7 +2185,7 @@ Committed for back-up sanity and to elicit comments from the bored.
 2004-09-01 [mcoletti] 0.4.0devel25
 QgsRect :
 
-  * no longer waste copy of QgsPoint in ctor
+ * no longer waste copy of QgsPoint in ctor
 
 2004-08-14 [gsherman] 0.4.0devel23
 Moved plugin toolbar to the qgisappbase toolbar container rather than
@@ -2230,11 +2195,11 @@ restored each time the app starts.
 2004-08-26 [mcoletti] 0.4.0devel22
 qgisapp.cpp:
 
- * fixed bug 1017079, where loading projects would cause app to crash
+* fixed bug 1017079, where loading projects would cause app to crash
 
 qgsprojectio.cpp:
 
-  * minor code change; commented out superfluous code
+ * minor code change; commented out superfluous code
 
 2004-08-26 [mcoletti] 0.4.0devel21
 Now explicitly check for command line arguments via $# instead of $@.  Using
@@ -2822,9 +2787,9 @@ choosing 'Build Pyramids' from the popup menu.
 This current implementation does not warn you of possible side effects
 including:
 
- * possible image degradation if too many pyramids are generated
- * possuble large increase in image side
- * currently this process IS NOT KNOWN TO BE REVERSIBLE so please backup data
+* possible image degradation if too many pyramids are generated
+* possuble large increase in image side
+* currently this process IS NOT KNOWN TO BE REVERSIBLE so please backup data
 first before experimenting.
 
 2004-04-27 [ts] 0.2.0devel1
@@ -3016,7 +2981,7 @@ Added option to options dialog to disable splashscreen.
 
 2004-02-28 [ts] 0.1.0devel5
 
- * -snapshot command line parameter working now and correctly scaling
+* -snapshot command line parameter working now and correctly scaling
 snapshot to size of pixmap.
 started moving splashscreen to a global so other classes diring  the startup
 process can get access to set the splash status. (in progress)
@@ -3156,32 +3121,32 @@ Version 0.0.6-alpha November 24, 2002
 *Duplicate layers (layers with same name) are now handled properly
 
 Version 0.0.5-alpha October 5, 2002
- * Removing a layer from the map no longer crashes the application
- * Fixed multiple render bug when adding a layer
- * Data source is shown in Layer Properties dialog
- * Display name of a layer can be changed using the Layer Properties dialog
- * Line widths can be set for a layer using the Layer Properties dialog
- * Zoom out now works
- * Zoom Previous added to toolbar
- * Toolbar has been rearranged and new icons added
- * Help|About QGis now contains Version, What's New, and License information
+* Removing a layer from the map no longer crashes the application
+* Fixed multiple render bug when adding a layer
+* Data source is shown in Layer Properties dialog
+* Display name of a layer can be changed using the Layer Properties dialog
+* Line widths can be set for a layer using the Layer Properties dialog
+* Zoom out now works
+* Zoom Previous added to toolbar
+* Toolbar has been rearranged and new icons added
+* Help|About QGis now contains Version, What's New, and License information
 
 Version 0.0.4-alpha August 15, 2002
- * Added Layer Properties dialog
- * User can set color for layers
- * Added right-click menu to the layer list in legend
- * Layers can be removed using the right-click menu (buggy)
- * Moved the KDevelop project file qgis.kdevprj to the src sub-directory
- * Fixed multiple repaint bug that occurred when more than one layer was
+* Added Layer Properties dialog
+* User can set color for layers
+* Added right-click menu to the layer list in legend
+* Layers can be removed using the right-click menu (buggy)
+* Moved the KDevelop project file qgis.kdevprj to the src sub-directory
+* Fixed multiple repaint bug that occurred when more than one layer was
    added at a time
- * Fixed bug that caused a full refresh at the beginning of a pan operation
+* Fixed bug that caused a full refresh at the beginning of a pan operation
 
 Version 0.0.3-alpha August 10, 2002
-  * Support for shapefiles and other vector formats
-  * Improved handling of extents when adding layers
-  * Primitive legend that allows control of layer visibility
-  * About Quantum GIS implemented
-  * Other internal changes
+ * Support for shapefiles and other vector formats
+ * Improved handling of extents when adding layers
+ * Primitive legend that allows control of layer visibility
+ * About Quantum GIS implemented
+ * Other internal changes
 
 July 26, 2002
   Drawing code now properly displays layers and calculates extents when
@@ -3206,4 +3171,3 @@ July 6, 2002
   tables that could be loaded.
 
   This is the initial import of the code base into CVS on Sourceforge.net.
-
