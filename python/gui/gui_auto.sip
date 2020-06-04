@@ -123,6 +123,7 @@
 %Include auto_generated/qgsmapcanvasitem.sip
 %Include auto_generated/qgsmapcanvassnappingutils.sip
 %Include auto_generated/qgsmapcanvastracer.sip
+%Include auto_generated/qgsmapcanvasutils.sip
 %Include auto_generated/qgsmaplayeractionregistry.sip
 %Include auto_generated/qgsmaplayercombobox.sip
 %Include auto_generated/qgsmaplayerconfigwidget.sip
