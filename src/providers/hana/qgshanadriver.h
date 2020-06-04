@@ -23,6 +23,7 @@
 
 class QgsHanaDriver
 {
+  private:
     QgsHanaDriver();
     ~QgsHanaDriver();
 

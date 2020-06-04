@@ -91,7 +91,15 @@ bool QgsHanaFeatureIterator::rewind()
     return false;
 
   mResultSet.reset();
-  mResultSet = mConnection->executeQuery( mSqlQuery );
+  if ( !( mFilterRect.isNull() || mFilterRect.isEmpty() ) && mSource->isSpatial() && mHasGeometryColumn )
+  {
+    QString ll = QStringLiteral( "POINT(%1 %2)" ).arg( QString::number( mFilterRect.xMinimum() ),  QString::number( mFilterRect.yMinimum() ) );
+    QString ur = QStringLiteral( "POINT(%1 %2)" ).arg( QString::number( mFilterRect.xMaximum() ),  QString::number( mFilterRect.yMaximum() ) );
+    mResultSet = mConnection->executeQuery( mSqlQuery, { ll, mSource->mSrid, ur, mSource->mSrid } );
+  }
+  else
+    mResultSet = mConnection->executeQuery( mSqlQuery );
+
   return true;
 }
 
@@ -173,22 +181,14 @@ bool QgsHanaFeatureIterator::nextFeatureFilterExpression( QgsFeature &feature )
     return fetchFeature( feature );
 }
 
-QString QgsHanaFeatureIterator::getBBOXFilter( const QgsRectangle &bbox,
-    const QVersionNumber &dbVersion ) const
+QString QgsHanaFeatureIterator::getBBOXFilter( const QVersionNumber &dbVersion ) const
 {
   if ( dbVersion.majorVersion() == 1 )
-  {
-    return QStringLiteral( "%1.ST_SRID(%2).ST_IntersectsRect(ST_GeomFromText('Point(%3 %4)', %2), ST_GeomFromText('Point(%5 %6)', %2)) = 1" )
-           .arg( QgsHanaUtils::quotedIdentifier( mSource->mGeometryColumn ), QString::number( mSource->mSrid ),
-                 qgsDoubleToString( bbox.xMinimum() ), qgsDoubleToString( bbox.yMinimum() ),
-                 qgsDoubleToString( bbox.xMaximum() ), qgsDoubleToString( bbox.yMaximum() ) );
-  }
+    return QStringLiteral( "%1.ST_SRID(%2).ST_IntersectsRect(ST_GeomFromText(?, ?), ST_GeomFromText(?, ?)) = 1" )
+           .arg( QgsHanaUtils::quotedIdentifier( mSource->mGeometryColumn ), QString::number( mSource->mSrid ) );
   else
-    return QStringLiteral( "%1.ST_IntersectsRectPlanar(ST_GeomFromText('Point(%2 %3)', %6), ST_GeomFromText('Point(%4 %5)', %6)) = 1" )
-           .arg( QgsHanaUtils::quotedIdentifier( mSource->mGeometryColumn ),
-                 qgsDoubleToString( bbox.xMinimum() ), qgsDoubleToString( bbox.yMinimum() ),
-                 qgsDoubleToString( bbox.xMaximum() ), qgsDoubleToString( bbox.yMaximum() ),
-                 QString::number( mSource->mSrid ) );
+    return QStringLiteral( "%1.ST_IntersectsRectPlanar(ST_GeomFromText(?, ?), ST_GeomFromText(?, ?)) = 1" )
+           .arg( QgsHanaUtils::quotedIdentifier( mSource->mGeometryColumn ) );
 }
 
 bool QgsHanaFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys )
@@ -322,7 +322,7 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
   QString sqlFilter;
   // Set spatial filter
   if ( !( filterRect.isNull() || filterRect.isEmpty() ) && mSource->isSpatial() && mHasGeometryColumn )
-    sqlFilter = getBBOXFilter( filterRect, QgsHanaUtils::toHANAVersion( mConnection->getDatabaseVersion() ) );
+    sqlFilter = getBBOXFilter( QgsHanaUtils::toHANAVersion( mConnection->getDatabaseVersion() ) );
 
   if ( !mSource->mQueryWhereClause.isEmpty() )
     sqlFilter = andWhereClauses( sqlFilter, mSource->mQueryWhereClause );

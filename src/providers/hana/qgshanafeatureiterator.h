@@ -74,7 +74,7 @@ class QgsHanaFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsHa
     bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
 
     QString buildSqlQuery( const QgsFeatureRequest &request );
-    QString getBBOXFilter( const QgsRectangle &bbox, const QVersionNumber &dbVersion ) const;
+    QString getBBOXFilter( const QVersionNumber &dbVersion ) const;
 
   private:
     QgsHanaConnectionRef mConnection;

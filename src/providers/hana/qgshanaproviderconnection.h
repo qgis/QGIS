@@ -23,14 +23,10 @@
 class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
 {
   public:
-
     QgsHanaProviderConnection( const QString &name );
     QgsHanaProviderConnection( const QString &uri, const QVariantMap &configuration );
 
-    // QgsAbstractProviderConnection interface
-
   public:
-
     void createVectorTable( const QString &schema,
                             const QString &name,
                             const QgsFields &fields,

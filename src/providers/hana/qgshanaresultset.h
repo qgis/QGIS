@@ -40,6 +40,7 @@ class QgsHanaResultSet
 {
   private:
     friend class QgsHanaConnection;
+
   private:
     QgsHanaResultSet( ResultSetRef &&resultSet );
 
