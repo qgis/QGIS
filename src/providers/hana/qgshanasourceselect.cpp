@@ -187,7 +187,7 @@ void QgsHanaSourceSelectDelegate::setEditorData( QWidget *editor, const QModelIn
   if ( le )
   {
     bool ok;
-    value.toInt( &ok );
+    ( void )value.toInt( &ok );
     if ( index.column() == QgsHanaTableModel::DbtmSrid && !ok )
       value.clear();
 
