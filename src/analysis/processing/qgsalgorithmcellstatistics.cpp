@@ -249,11 +249,11 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
       for ( int col = 0; col < iterCols; col++ )
       {
         double result = 0;
-        bool hasNoData = false;
-        std::vector<double> cellValues = QgsRasterAnalysisUtils::getCellValuesFromBlockStack( inputBlocks, row, col, hasNoData );
+        bool noDataInStack = false;
+        std::vector<double> cellValues = QgsRasterAnalysisUtils::getCellValuesFromBlockStack( inputBlocks, row, col, noDataInStack );
         int cellValueStackSize = cellValues.size();
 
-        if ( hasNoData && !mIgnoreNoData )
+        if ( noDataInStack && !mIgnoreNoData )
         {
           //output cell will always be NoData if NoData occurs in cellValueStack and NoData is not ignored
           //this saves unnecessary iterations on the cellValueStack
@@ -264,7 +264,7 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
             outputBlock->setValue( row, col, mNoDataValue );
           }
         }
-        else if ( !hasNoData || (hasNoData && mIgnoreNoData) )
+        else if ( !noDataInStack || (noDataInStack && mIgnoreNoData) )
         {
           switch ( statisticMethodIdx )
           {
