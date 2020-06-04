@@ -173,6 +173,7 @@ class ShellOutputScintilla(QsciScintilla):
         self.copyShortcut = QShortcut(QKeySequence.Copy, self)
         self.copyShortcut.activated.connect(self.copy)
         self.selectAllShortcut = QShortcut(QKeySequence.SelectAll, self)
+        self.selectAllShortcut.setContext(Qt.WidgetWithChildrenShortcut)
         self.selectAllShortcut.activated.connect(self.selectAll)
 
     def insertInitText(self):
