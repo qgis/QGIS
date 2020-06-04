@@ -287,10 +287,11 @@ void QgsRasterAnalysisUtils::applyRasterLogicOperator( const std::vector< QgsRas
   destinationRaster->setEditable( false );
 }
 
-std::vector<double> QgsRasterAnalysisUtils::getCellValuesFromBlockStack( const std::vector< std::unique_ptr< QgsRasterBlock > > &inputBlocks, int &row, int &col, bool &hasNoData )
+std::vector<double> QgsRasterAnalysisUtils::getCellValuesFromBlockStack( const std::vector< std::unique_ptr< QgsRasterBlock > > &inputBlocks, int &row, int &col, bool &noDataInStack )
 {
   //get all values from inputBlocks
   std::vector<double> cellValues;
+  bool hasNoData = false;
   cellValues.reserve( inputBlocks.size() );
 
   for ( auto &block : inputBlocks )
@@ -298,15 +299,21 @@ std::vector<double> QgsRasterAnalysisUtils::getCellValuesFromBlockStack( const s
     double value = 0;
     if ( !block || !block->isValid() )
     {
-      hasNoData = true;
+      noDataInStack = true;
       break;
     }
     else
     {
       value = block->valueAndNoData( row, col, hasNoData );
       if ( hasNoData )
-        break;
-      cellValues.push_back( value );
+      {
+        noDataInStack = true;
+        continue; //NoData is not included in the cell value vector
+      }
+      else
+      {
+        cellValues.push_back( value );
+      }
     }
   }
   return cellValues;
