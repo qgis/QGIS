@@ -90,7 +90,7 @@ Alternatively you can download and install Qt Open Source for MacOS from the
 
 https://www.qt.io/
 
-in the same version as referenced in the install script.
+in the same version as referenced in the install script. It must be installed in `/opt/Qt`
 
 Note that the QGIS-Deps package is not yet signed, so you may need to add Terminal
 to System Preferences -> Security & Privacy -> Privacy -> Developer Tools or manually accept usage

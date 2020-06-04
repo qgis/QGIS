@@ -53,18 +53,18 @@ Last Change : 2020-05-08
   1. Introduction
   ===============
 
-This document is the original installation guide of the described software 
-QGIS. The software and hardware descriptions named in this 
-document are in most cases registered trademarks and are therefore subject 
-to the legal requirements. QGIS is subject to the GNU General Public 
+This document is the original installation guide of the described software
+QGIS. The software and hardware descriptions named in this
+document are in most cases registered trademarks and are therefore subject
+to the legal requirements. QGIS is subject to the GNU General Public
 License. Find more information on the QGIS Homepage:
 http://qgis.org
 
-The details, that are given in this document have been written and verified 
-to the best of knowledge and responsibility of the editors. Nevertheless, 
-mistakes concerning the content are possible. Therefore, all data are not 
-liable to any duties or guarantees. The editors and publishers do not take 
-any responsibility or liability for failures and their consequences. You are 
+The details, that are given in this document have been written and verified
+to the best of knowledge and responsibility of the editors. Nevertheless,
+mistakes concerning the content are possible. Therefore, all data are not
+liable to any duties or guarantees. The editors and publishers do not take
+any responsibility or liability for failures and their consequences. You are
 always welcome for indicating possible mistakes.
 
 Because the code of QGIS evolves from release to release, These instructions are
@@ -74,15 +74,15 @@ http://htmlpreview.github.io/?https://raw.github.com/qgis/QGIS/master/doc/INSTAL
 If you wish to build another version of QGIS, ensure to checkout the appropriate
 release branch. The QGIS source code can be found in the repository (https://github.com/qgis/QGIS).
 
-Please visit http://qgis.org for information on joining our mailing lists 
+Please visit http://qgis.org for information on joining our mailing lists
 and getting involved in the project further.
 
 /!\ Note to document writers: Please use this document as the central
-place for describing build procedures. Please do not remove this notice. 
+place for describing build procedures. Please do not remove this notice.
 
-/!\ Note to document writers: This document is generated from 
-doc/INSTALL.t2t - if you need to edit this document, be sure to edit that 
-file rather than the generated INSTALL document found in the root of the 
+/!\ Note to document writers: This document is generated from
+doc/INSTALL.t2t - if you need to edit this document, be sure to edit that
+file rather than the generated INSTALL document found in the root of the
 source directory.
 
 
@@ -708,13 +708,13 @@ Read on to use the simplified approach with pre-built libraries...
 MSYS provides a unix style build environment under windows. We have created a
 zip archive that contains just about all dependencies.
 
-Get this: 
+Get this:
 
 http://download.osgeo.org/qgis/win32/msys.zip
 
 and unpack to c:\msys
 
-If you wish to prepare your msys environment yourself rather than using 
+If you wish to prepare your msys environment yourself rather than using
 our pre-made one, detailed instructions are provided elsewhere in this
 document.
 
@@ -734,8 +734,8 @@ When Qt installation is complete:
 
 Edit C:\Qt\5.9.1\bin\qtvars.bat and add the following lines:
 
-  set PATH=%PATH%;C:\msys\local\bin;c:\msys\local\lib 
-  set PATH=%PATH%;"C:\Program Files\Subversion\bin" 
+  set PATH=%PATH%;C:\msys\local\bin;c:\msys\local\lib
+  set PATH=%PATH%;"C:\Program Files\Subversion\bin"
 
 I suggest you also add C:\Qt\5.9.1\bin\ to your Environment Variables Path in
 the windows system preferences.
@@ -744,11 +744,11 @@ If you plan to do some debugging, you'll need to compile debug version of Qt:
 C:\Qt\5.9.1\bin\qtvars.bat compile_debug
 
 Note: there is a problem when compiling debug version of Qt 4.7, the script ends with
-this message  "mingw32-make: *** No rule to make target `debug'.  Stop.". To 
+this message  "mingw32-make: *** No rule to make target `debug'.  Stop.". To
 compile the debug version you have to go out of src directory and execute the
 following command:
 
-  c:\Qt\5.9.1 make 
+  c:\Qt\5.9.1 make
 
 
     4.2.3. Flex and Bison
@@ -791,19 +791,19 @@ to get versions that match your current Qt installed version.
       4.2.4.3. Compile SIP
       ====================
 
-  c:\Qt\5.9.1\bin\qtvars.bat 
-  python configure.py -p win32-g++ 
-  make 
-  make install 
+  c:\Qt\5.9.1\bin\qtvars.bat
+  python configure.py -p win32-g++
+  make
+  make install
 
 
       4.2.4.4. Compile PyQt
       =====================
 
-  c:\Qt\5.9.1\bin\qtvars.bat 
-  python configure.py 
-  make 
-  make install 
+  c:\Qt\5.9.1\bin\qtvars.bat
+  python configure.py
+  make
+  make install
 
 
       4.2.4.5. Final python notes
@@ -833,11 +833,11 @@ https://cmake.org/files/v3.9/cmake-3.9.3-win64-x64.msi
     4.2.7. QGIS
     ===========
 
-Start a cmd.exe window ( Start -> Run -> cmd.exe ) Create development 
+Start a cmd.exe window ( Start -> Run -> cmd.exe ) Create development
 directory and move into it
 
-  md c:\dev\cpp 
-  cd c:\dev\cpp 
+  md c:\dev\cpp
+  cd c:\dev\cpp
 
 Check out sources from GIT:
 
@@ -847,27 +847,27 @@ Check out sources from GIT:
     4.2.8. Compiling
     ================
 
-As a background read the generic building with CMake notes at the end of 
+As a background read the generic building with CMake notes at the end of
 this document.
 
 Start a cmd.exe window ( Start -> Run -> cmd.exe ) if you don't have one
 already.  Add paths to compiler and our MSYS environment:
 
-  c:\Qt\5.9.1\bin\qtvars.bat 
+  c:\Qt\5.9.1\bin\qtvars.bat
 
 For ease of use add c:\Qt\5.9.1\bin\ to your system path in system
 properties so you can just type qtvars.bat when you open the cmd console.
 Create build directory and set it as current directory:
 
-  cd c:\dev\cpp\qgis 
-  md build 
-  cd build 
+  cd c:\dev\cpp\qgis
+  md build
+  cd build
 
 
     4.2.9. Configuration
     ====================
 
-  cmakesetup ..  
+  cmakesetup ..
 
 Note: You must include the '..' above.
 
@@ -890,7 +890,7 @@ When configuration is done, click 'OK' to exit the setup utility.
     4.2.10. Compilation and installation
     ====================================
 
-   make make install 
+   make make install
 
 
     4.2.11. Run qgis.exe from the directory where it's installed (CMAKE_INSTALL_PREFIX)
@@ -911,7 +911,7 @@ Download and install NSIS from (http://nsis.sourceforge.net/Main_Page)
 
 Now using windows explorer, enter the win_build directory in your QGIS source
 tree. Read the READMEfile there and follow the instructions. Next right click
-on qgis.nsi and choose the option 'Compile NSIS Script'. 
+on qgis.nsi and choose the option 'Compile NSIS Script'.
 
 
   4.3. Creation of MSYS environment for compilation of QGIS
@@ -1254,7 +1254,7 @@ Alternatively you can download and install Qt Open Source for MacOS from the
 
 https://www.qt.io/
 
-in the same version as referenced in the install script.
+in the same version as referenced in the install script. It must be installed in `/opt/Qt`
 
 Note that the QGIS-Deps package is not yet signed, so you may need to add Terminal
 to System Preferences -> Security & Privacy -> Privacy -> Developer Tools or manually accept usage
@@ -1294,7 +1294,7 @@ In a Terminal cd to the qgis source folder previously downloaded, then:
   cd ..
   mkdir build
   cd build
-  
+
   QGIS_DEPS_VERSION=0.3.0;\
   QT_VERSION=5.14.1;\
   PATH=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/bin:$PATH;\
@@ -1396,14 +1396,14 @@ Then create /var/www/wcs/7-wcs.qgis.org.conf setting the contents to this:
     <VirtualHost *:80>
     ServerName wcs.qgis.org
     ServerAdmin tim@linfiniti.com
-  
+
     LogLevel warn
     LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" \"%{forensic-id}n\"" combined
     CustomLog /var/log/apache2/wcs_qgis.org/access.log combined
     ErrorLog /var/log/apache2/wcs_qgis.org/error.log
-  
+
     DocumentRoot /var/www/wcs/html
-  
+
     ScriptAlias /cgi-bin/ /var/www/wcs/cgi-bin/
     <Directory "/var/www/wcs/cgi-bin">
           AllowOverride None
@@ -1411,10 +1411,10 @@ Then create /var/www/wcs/7-wcs.qgis.org.conf setting the contents to this:
           Order allow,deny
           Allow from all
     </Directory>
-  
+
     RewriteEngine on
     RewriteRule /1.9.0/wcs /cgi-bin/wcstest-1.9.0 [PT]
-  
+
     </VirtualHost>
 
 
@@ -1455,7 +1455,7 @@ Set the contents to:
 Assumption: You know how to make a working build environment and want to
 deploy it under Jenkins for continuous integration testing now.
 
-These notes are terse, I will expand on them later as the need arises. The 
+These notes are terse, I will expand on them later as the need arises. The
 procedure is:
 
 - Install Jenkins and get it configured according to your own preferences
@@ -1496,7 +1496,7 @@ procedure is:
  - Set the github project to https://github.com/qgis/QGIS/
  - Set source code management to Git
  - Set repository url to git://github.com/qgis/QGIS.git
- - In advanced repository url settings set refspec to : 
+ - In advanced repository url settings set refspec to :
 
   +refs/heads/master:refs/remotes/origin/master
 
@@ -1574,7 +1574,7 @@ To run specific test(s) (see 'man ctest'):
   cd build
   # show listing of tests, without running them
   ctest --show-only
-  
+
   # run specific C++ or Python test(s) matching a regular expression
   ctest --verbose --tests-regex SomeTestName
 
