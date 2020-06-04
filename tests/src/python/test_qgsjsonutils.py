@@ -502,7 +502,7 @@ class TestQgsJsonUtils(unittest.TestCase):
         source = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
                                 "parent", "memory")
         pr = source.dataProvider()
-        pf1 = QgsFeature()
+        pf1 = QgsFeature(123)
         pf1.setFields(source.fields())
         pf1.setAttributes(["test1", 1])
         pf2 = QgsFeature()
@@ -518,7 +518,7 @@ class TestQgsJsonUtils(unittest.TestCase):
 
         expected = """{
   "geometry": null,
-  "id": 0,
+  "id": 123,
   "properties": {
     "fldint": "one",
     "fldtxt": "test1"
@@ -578,10 +578,10 @@ class TestQgsJsonUtils(unittest.TestCase):
         parent = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer&field=foreignkey:integer",
                                 "parent", "memory")
         pr = parent.dataProvider()
-        pf1 = QgsFeature()
+        pf1 = QgsFeature(432)
         pf1.setFields(parent.fields())
         pf1.setAttributes(["test1", 67, 123])
-        pf2 = QgsFeature()
+        pf2 = QgsFeature(876)
         pf2.setFields(parent.fields())
         pf2.setAttributes(["test2", 68, 124])
         assert pr.addFeatures([pf1, pf2])
@@ -622,7 +622,7 @@ class TestQgsJsonUtils(unittest.TestCase):
 
         expected = """{
   "geometry": null,
-  "id": 0,
+  "id": 432,
   "properties": {
     "fldint": 67,
     "fldtxt": "test1",
@@ -646,7 +646,7 @@ class TestQgsJsonUtils(unittest.TestCase):
 
         expected = """{
   "geometry": null,
-  "id": 0,
+  "id": 876,
   "properties": {
     "fldint": 68,
     "fldtxt": "test2",
@@ -669,7 +669,7 @@ class TestQgsJsonUtils(unittest.TestCase):
         child.setEditorWidgetSetup(1, setup)
         expected = """{
   "geometry": null,
-  "id": 0,
+  "id": 432,
   "properties": {
     "fldint": 67,
     "fldtxt": "test1",
@@ -697,7 +697,7 @@ class TestQgsJsonUtils(unittest.TestCase):
 
         expected = """{
   "geometry": null,
-  "id": 0,
+  "id": 876,
   "properties": {
     "fldint": 68,
     "fldtxt": "test2",
@@ -713,7 +713,7 @@ class TestQgsJsonUtils(unittest.TestCase):
 
         expected = """{
   "geometry": null,
-  "id": 0,
+  "id": 876,
   "properties": {
     "fldint": 68,
     "fldtxt": "test2",
@@ -875,7 +875,8 @@ class TestQgsJsonUtils(unittest.TestCase):
         pf2 = QgsFeature()
         pf2.setFields(source.fields())
         pf2.setAttributes(["test2", 2])
-        assert pr.addFeatures([pf1, pf2])
+        result, features = pr.addFeatures([pf1, pf2])
+        self.assertTrue(result)
 
         source.setFieldAlias(0, "alias_fldtxt")
         source.setFieldAlias(1, "alias_fldint")
@@ -886,14 +887,14 @@ class TestQgsJsonUtils(unittest.TestCase):
 
         expected = """{
   "geometry": null,
-  "id": 0,
+  "id": 1,
   "properties": {
     "alias_fldint": 1,
     "alias_fldtxt": "test1"
   },
   "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(pf1, indent=2), expected)
+        self.assertEqual(exporter.exportFeature(features[0], indent=2), expected)
 
 
 if __name__ == "__main__":
