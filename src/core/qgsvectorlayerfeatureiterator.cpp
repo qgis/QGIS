@@ -1015,7 +1015,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesCached( Qg
 void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( QgsFeature &f, const QVariant &joinValue ) const
 {
   // Shortcut
-  if ( joinLayer && joinLayer->featureCount() < 1 )
+  if ( joinLayer && ! joinLayer->hasFeatures() )
   {
     return;
   }
