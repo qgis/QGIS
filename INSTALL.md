@@ -125,7 +125,7 @@ to be met. The supported distributions are listed in the following section.
 
 Now update your local sources database:
 
-```
+```bash
     sudo apt-get update
 ```
 
@@ -163,7 +163,7 @@ As a convention I do all my development work in $HOME/dev/<language>, so in
 this case we will create a work environment for C++ development work like
 this:
 
-```
+```bash
     mkdir -p ${HOME}/dev/cpp
     cd ${HOME}/dev/cpp
 ```
@@ -179,13 +179,17 @@ if you do not have edit privileges for the QGIS source repository, or use
 
 1. Anonymous Checkout
 
+```bash
     cd ${HOME}/dev/cpp
     git clone git://github.com/qgis/QGIS.git
+```
 
 2. Developer Checkout
 
+```bash
     cd ${HOME}/dev/cpp
     git clone git@github.com:qgis/QGIS.git
+```
 
 ## 3.7. Starting the compile
 
@@ -194,14 +198,18 @@ conflicts with Ubuntu packages that may be under /usr. This way for example
 you can use the binary packages of QGIS on your system along side with your
 development version. I suggest you do something similar:
 
+```bash
     mkdir -p ${HOME}/apps
+```
 
 Now we create a build directory and run ccmake:
 
+```bash
     cd QGIS
     mkdir build-master
     cd build-master
     ccmake ..
+```
 
 When you run ccmake (note the .. is required!), a menu will appear where
 you can configure various aspects of the build. If you want QGIS to have
@@ -221,65 +229,69 @@ If you want to use `ccmake` or other interactive tools, run the command in
 the empty build directory once before starting to use the interactive tools.
 
 Now on with the build:
-
+```bash
     make -jX
+```
 
 where X is the number of available cores. Depending on your platform,
 this can speed up the build time considerably.
 
 Then you can directly run from the build directory:
-
+```bash
     ./output/bin/qgis
-
+```
 Another option is to install to your system:
-
+```bash
     make install
+```
 
 After that you can try to run QGIS:
-
+```bash
     $HOME/apps/bin/qgis
-
+```
 If all has worked properly the QGIS application should start up and appear
 on your screen. If you get the error message "error while loading shared libraries",
 execute this command in your shell.
-
+```bash
     sudo ldconfig
-
+```
 If that doesn't help add the install path to LD_LIBRARY_PATH:
-
+```bash
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/apps/lib/
-
+```
 Optionally, if you already know what aspects you want in your custom build
 then you can skip the interactive ccmake .. part by using the cmake -D
 option for each aspect, e.g.:
-
+```bash
     cmake -D CMAKE_BUILD_TYPE=Debug -D CMAKE_INSTALL_PREFIX=${HOME}/apps ..
-
+```
 Also, if you want to speed your build times, you can easily do it with ninja,
 an alternative to make with similar build options.
 
 For example, to configure your build you can do either one of:
-
+```bash
     ccmake -G Ninja ..
     cmake -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_INSTALL_PREFIX=${HOME}/apps ..
-
+```
 Build and install with ninja:
-
+```bash
     ninja (uses all cores by default; also supports the above described -jX option)
     ninja install
-
+```
 To build even faster, you can build just the targets you need using, for example:
-
+```bash
     ninja qgis
     ninja pycore
     # if it's on desktop related code only:
     ninja qgis_desktop
+```
 
 ## 3.8. Compiling with 3D
 
 In the cmake, you need to enable:
-
+```bash
     WITH_3D=True
+```
 
 ### 3.8.1. Compiling with 3D on Debian based distributions
 
@@ -288,16 +300,19 @@ from Qt upstream on Debian based distributions. A copy has been made in the
 QGIS repository in `external/qt3dextra-headers`.
 To compile with 3D enabled, you need to add some cmake options:
 
+```bash
     CMAKE_PREFIX_PATH={path to QGIS Git repo}/external/qt3dextra-headers/cmake
     QT5_3DEXTRA_INCLUDE_DIR={path to QGIS Git repo}/external/qt3dextra-headers
     QT5_3DEXTRA_LIBRARY=/usr/lib/x86_64-linux-gnu/libQt53DExtras.so
+```
 
 ## 3.9. Building different branches
 
 By using `git worktree`, you can switch between different branches to use
 several sources in parallel, based on the same Git configuration.
-We recommand you to read the documentation about this Git command:
+We recommend you to read the documentation about this Git command:
 
+```bash
     git commit
     git worktree add ../my_new_functionality
     cd ../my_new_functionality
@@ -305,6 +320,7 @@ We recommand you to read the documentation about this Git command:
     git rebase -i qgis/master
     # only keep the commits to be pushed
     git push -u my_own_repo my_new_functionality
+```
 
 ## 3.10. Building Debian packages
 
@@ -314,16 +330,22 @@ you'll find a debian directory.
 
 First you need to install the debian packaging tools once:
 
+```bash
     apt-get install build-essential
+```
 
 First you need to create an changelog entry for your distribution. For example
 for Ubuntu Precise:
 
+```bash
     dch -l ~precise --force-distribution --distribution precise "precise build"
+```
 
 The QGIS packages will be created with:
 
+```bash
     dpkg-buildpackage -us -uc -b
+```
 
 **Note:** Install `devscripts` to get `dch`.
 
@@ -342,7 +364,9 @@ build command. The upload of results can be avoided with DEB_TEST_TARGET=test.
 The packages are created in the parent directory (ie. one level up).
 Install them using dpkg.  E.g.:
 
+```bash
     sudo debi
+```
 
 ## 3.11. On Fedora Linux
 
@@ -351,11 +375,15 @@ new subdirectory called `build` or `build-qt5` in it.
 
 ### 3.11.1. Install build dependencies
 
+```bash
     dnf install qt5-qtbase-private-devel qt5-qtwebkit-devel qt5-qtlocation-devel qt5-qttools-static qca-qt5-devel qca-qt5-ossl qt5-qt3d-devel python3-qt5-devel python3-qscintilla-qt5-devel qscintilla-qt5-devel python3-qscintilla-devel python3-qscintilla-qt5 clang flex bison geos-devel gdal-devel sqlite-devel libspatialite-devel qt5-qtsvg-devel spatialindex-devel expat-devel proj-devel qwt-qt5-devel gsl-devel postgresql-devel cmake python3-future gdal-python3 python3-psycopg2 python3-PyYAML python3-pygments python3-jinja2 python3-OWSLib qca-qt5-ossl qwt-qt5-devel qtkeychain-qt5-devel qwt-devel sip-devel libzip-devel exiv2-devel
+```
 
 To build QGIS server additional dependencies are required:
 
+```bash
     dnf install fcgi-devel
+```
 
 Make sure that your build directory is completely empty when you enter the
 following command. Do never try to "re-use" an existing Qt5 build directory.
@@ -363,21 +391,29 @@ If you want to use `ccmake` or other interactive tools, run the following
 command in the empty build directory once before starting to use the interactive
 tools.
 
+```bash
     cmake ..
+```
 
 If everything went OK you can finally start to compile. (As usual append a -jX
 where X is the number of available cores option to make to speed up your build
 process)
 
+```bash
     make
+```
 
 Run from the build directory
 
+```bash
     ./output/bin/qgis
+```
 
 Or install to your system
 
+```bash
     make install
+```
 
 ### 3.11.2. Suggested system tweaks
 
@@ -386,10 +422,12 @@ the useful debug output which is normally printed when running the unit tests.
 
 To enable debug prints for the current user, execute:
 
+```bash
     cat > ~/.config/QtProject/qtlogging.ini << EOL
     [Rules]
     default.debug=true
     EOL
+```
 
 # 4. Building on Windows
 
@@ -417,7 +455,7 @@ Select "Custom" install and add the following packages:
 Download and install following packages:
 
 | Tool |Website|
-|---------------|
+|---------------|---------------|
 |CMake |https://cmake.org/files/v3.12/cmake-3.12.3-win64-x64.msi|
 |GNU flex, GNU bison and GIT |http://cygwin.com/setup-x86.exe (32bit) or http://cygwin.com/setup-x86_64.exe (64bit)|
 |OSGeo4W |http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86.exe (32bit) or http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe (64bit)|
@@ -452,7 +490,9 @@ ninja:
 Choose a directory to store the QGIS source code.
 For example, to put it in the OSGeo4W64 install, navigate there:
 
+```cmd
     cd C:\OSGeo4W64
+```
 
 This directory will be assumed for all instructions
 that follow.
@@ -460,7 +500,9 @@ that follow.
 On the command prompt clone the QGIS source from
 git to the source directory `QGIS`:
 
+```cmd
     git clone git://github.com/qgis/QGIS.git
+```
 
 This requires Git. If you have Git for Windows on your PATH already,
 you can do this from a normal command prompt. If you do not, you can
@@ -469,8 +511,10 @@ a Cygwin[64] Terminal
 
 And, to avoid Git in Windows reporting changes to files not actually modified:
 
+```cmd
     cd QGIS
     git config core.filemode false
+```
 
 ### 4.1.4. Setting up the Visual Studio project with CMake
 
@@ -483,9 +527,11 @@ To start a command prompt with an environment that both has the VC++ and the OSG
 variables create the following batch file (assuming the above packages were
 installed in the default locations):
 
+```cmd
     @echo off
     call C:\OSGeo4W64\QGIS\ms-windows\osgeo4w\msvc-env.bat x86_64
     @cmd
+```
 
 Save the batch file as `C:\OSGeo4W64\OSGeo4W-dev.bat` and run it.
 
@@ -495,8 +541,10 @@ Using configonly.bat to create the MSVC solution file:
   The advantage of using native MSVC solution is that you can find the root of build problems much more easily.
   configonly.bat is meant to create a configured build directory with a MSVC solution file:
 
+```cmd
     cd C:\OSGeo4W64\QGIS\ms-windows\osgeo4w
     configonly.bat
+```
 
 Compiling QGIS with MSVC:
   We will need to run MSVC with all the environment variables set, thus we will run it as follows:
@@ -580,13 +628,17 @@ your own hand built QGIS executables, you need to copy them in from your
 windows installation into the ms-windows file tree created by the creatensis
 script.
 
+```cmd
     cd ms-windows/
     rm -rf osgeo4w/unpacked/apps/qgis/*
     cp -r /tmp/qgis1.7.0/* osgeo4w/unpacked/apps/qgis/
+```
 
 Now create a package.
 
+```cmd
     ./quickpackage.sh
+```
 
 After this you should now have a nsis installer containing your own build
 of QGIS and all dependencies needed to run it on a windows machine.
@@ -596,7 +648,7 @@ of QGIS and all dependencies needed to run it on a windows machine.
 The actual packaging process is currently not documented, for now please take a
 look at:
 
-*ms-windows/osgeo4w/package.cmd*
+> ms-windows/osgeo4w/package.cmd
 
 ## 4.2. Building using MinGW
 
@@ -639,8 +691,10 @@ When Qt installation is complete:
 
 Edit C:\Qt\5.9.1\bin\qtvars.bat and add the following lines:
 
+```cmd
     set PATH=%PATH%;C:\msys\local\bin;c:\msys\local\lib
     set PATH=%PATH%;"C:\Program Files\Subversion\bin"
+```
 
 I suggest you also add C:\Qt\5.9.1\bin\ to your Environment Variables Path in
 the windows system preferences.
@@ -653,7 +707,9 @@ this message  "mingw32-make: *** No rule to make target `debug'.  Stop.". To
 compile the debug version you have to go out of src directory and execute the
 following command:
 
+```cmd
     c:\Qt\5.9.1 make
+```
 
 ### 4.2.3. Flex and Bison
 
@@ -686,21 +742,25 @@ to get versions that match your current Qt installed version.
 
 #### 4.2.4.3. Compile SIP
 
+```cmd
     c:\Qt\5.9.1\bin\qtvars.bat
     python configure.py -p win32-g++
     make
     make install
+```
 
 #### 4.2.4.4. Compile PyQt
 
+```cmd
     c:\Qt\5.9.1\bin\qtvars.bat
     python configure.py
     make
     make install
+```
 
 #### 4.2.4.5. Final python notes
 
-/!\ You can delete the directories with unpacked SIP and PyQt5 sources after a
+You can delete the directories with unpacked SIP and PyQt5 sources after a
 successful install, they're not needed anymore.
 
 ### 4.2.5. git
@@ -721,8 +781,10 @@ https://cmake.org/files/v3.9/cmake-3.9.3-win64-x64.msi
 Start a cmd.exe window ( Start -> Run -> cmd.exe ) Create development
 directory and move into it
 
+```cmd
     md c:\dev\cpp
     cd c:\dev\cpp
+```
 
 Check out sources from GIT:
 
@@ -736,19 +798,25 @@ this document.
 Start a cmd.exe window ( Start -> Run -> cmd.exe ) if you don't have one
 already.  Add paths to compiler and our MSYS environment:
 
+```cmd
     c:\Qt\5.9.1\bin\qtvars.bat
+```
 
 For ease of use add c:\Qt\5.9.1\bin\ to your system path in system
 properties so you can just type qtvars.bat when you open the cmd console.
 Create build directory and set it as current directory:
 
+```cmd
     cd c:\dev\cpp\qgis
     md build
     cd build
+```
 
 ### 4.2.9. Configuration
 
+```cmd
     cmakesetup ..
+```
 
 **Note:** You must include the '..' above.
 
@@ -769,7 +837,9 @@ When configuration is done, click 'OK' to exit the setup utility.
 
 ### 4.2.10. Compilation and installation
 
+```cmd
      make make install
+```
 
 ### 4.2.11. Run qgis.exe from the directory where it's installed (CMAKE_INSTALL_PREFIX)
 
@@ -864,6 +934,7 @@ In MSYS console go to the directory where you've unpacked or checked out sources
 
 Run these commands:
 
+```cmd
     export PATH="/usr/local/bin:/usr/local/lib:$PATH"
     ./configure --prefix=/usr/local --bindir=/usr/local --with-includes=/usr/local/include --with-libs=/usr/local/lib --with-cxx --without-jpeg \
     --without-tiff --with-postgres=yes --with-postgres-includes=/local/pgsql/include --with-pgsql-libs=/local/pgsql/lib --with-opengl=windows --with-fftw \
@@ -871,6 +942,7 @@ Run these commands:
     --with-proj-share=/usr/local/share/proj
     make
     make install
+```
 
 It should get installed to `c:\msys\local\grass-6.3.cvs`
 
@@ -898,9 +970,11 @@ to:
 
 Now, in MSYS console, go to the source directory and run:
 
+```cmd
     ./configure --prefix=/usr/local
     make
     make install
+```
 
 #### 4.3.2.4. SQLITE
 
@@ -928,9 +1002,11 @@ Unpack to `c:\msys\local\src`
 
 Run from MSYS console in the source directory:
 
+```cmd
     ./configure
     make
     make install
+```
 
 #### 4.3.2.6. EXPAT
 
@@ -942,9 +1018,11 @@ Unpack to `c:\msys\local\src`
 
 Run from MSYS console in the source directory:
 
+```cmd
     ./configure
     make
     make install
+```
 
 #### 4.3.2.7. POSTGRES
 
@@ -1018,19 +1096,25 @@ Parallel Compilation: On multiprocessor/multicore Macs, it's possible to
 speed up compilation, but it's not automatic.  Whenever you type "make" (but
 NOT "make install"), instead type:
 
+```bash
     make -j [#cpus]
+```
 
 Replace [#cpus] with the number of cores and/or processors your Mac has.
 To find out how many CPUs you have available, run the following in Terminal:
 
+```bash
     /usr/sbin/sysctl -n hw.ncpu
+```
 
 ## 5.1. Install Developer Tools
 
 Developer tools are not a part of a standard OS X installation.
 As minimum you require command line tools
 
+```bash
     sudo xcode-select --install
+```
 
 but installation of Xcode from the App Store is recommended too.
 
@@ -1038,10 +1122,13 @@ but installation of Xcode from the App Store is recommended too.
 
 For example install Homebrew
 
+```bash
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+```
 
 and these development/build tools
 
+```bash
     brew install git
     brew install cmake
     brew install ninja
@@ -1058,6 +1145,7 @@ and these development/build tools
     brew install autoconf
     brew install automake
     brew install txt2tags
+```
 
 if you have these tools installed from MacPorts or Conda, it is the same, but we will need to be able to
 run `cmake` and others from Terminal in the following steps
@@ -1099,8 +1187,9 @@ It should default to the master branch.  Click the Downloads button and
 select Download .tar.gz. Double-click the tarball to unzip it.
 
 *Alternatively*, use git and clone the repository by
-
+```bash
     git clone git://github.com/qgis/QGIS.git
+```
 
 ## 5.5. Configure the build
 
@@ -1112,6 +1201,7 @@ below assume you are building into a ${HOME}/Applications directory.
 
 In a Terminal cd to the qgis source folder previously downloaded, then:
 
+```bash
     cd ..
     mkdir build
     cd build
@@ -1125,6 +1215,7 @@ In a Terminal cd to the qgis source folder previously downloaded, then:
       -DQGIS_MAC_DEPS_DIR=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage \
       -DCMAKE_PREFIX_PATH=/opt/Qt/${QT_VERSION}/clang_64 \
       ../QGIS
+```
 
 Note: Don't forget the `../QGIS` on the last line, which tells CMake to look for the source files.
 
@@ -1134,25 +1225,33 @@ Especially check Proj, GDAL, sqlite3 and Python paths.
 
 After the initial Terminal configure, you can use ccmake to make further changes:
 
+```bash
     cd build
     ccmake ..
+```
 
 ## 5.6. Building
 
 Now we can start the build process (remember the parallel compilation note at
 the beginning, this is a good place to use it, if you can):
 
+```bash
     make -j [#cpus]
+```
 
 Now you can run the QGIS from build directory by `./output/bin/QGIS.app/Contents/MacOS/QGIS`
 
 If all built without errors you can then install it:
 
+```bash
     make install
+```
 
 or, for an /Applications build:
 
+```bash
     sudo make install
+```
 
 For running the installed QGIS, you need to keep the dependencies in `/opt/` folder in place.
 If you want to create bundle that runs without these dependencies, please read the documentation in project
@@ -1171,6 +1270,7 @@ require slight variations in package names.
 Note the git repo below will change to the default QGIS repo once this work
 is integrated into master.
 
+```bash
   git remote add blazek git://github.com/blazek/Quantum-GIS.git
   git fetch blazek
   git branch --track wcs2 blazek/wcs2
@@ -1181,31 +1281,41 @@ is integrated into master.
   cd wcs/
   mkdir cgi-bin
   cd cgi-bin/
+```
 
 ## 6.2. Setup mapserver
 
-``sudo apt-get install cgi-mapserver``
+```bash
+    sudo apt-get install cgi-mapserver
+```
 
 Set the contents of cgi-bin/wcstest-1.9.0 to:
 
+```bash
       #! /bin/sh
       MS_MAPFILE=/var/www/wcs/testdata/qgis-1.9.0/raster/wcs.map
       export MS_MAPFILE
       /usr/lib/cgi-bin/mapserv
+```
 
 Then do:
 
+```bash
       chmod +x cgi-bin/wcstest-1.9.0
       mkdir -p /var/www/wcs/testdata/qgis-1.9.0/raster/
       cd /var/www/wcs/testdata/qgis-1.9.0/raster/
       cp -r /home/timlinux/QGIS/tests/testdata/raster/* .
+```
 
 Edit wcs.map and set the shapepath to this:
 
+```bash
       SHAPEPATH "/var/www/wcs/testdata/qgis-1.9.0/raster"
+```
 
 Then create /var/www/wcs/7-wcs.qgis.org.conf setting the contents to this:
 
+```bash
       <VirtualHost *:80>
       ServerName wcs.qgis.org
       ServerAdmin tim@linfiniti.com
@@ -1229,11 +1339,15 @@ Then create /var/www/wcs/7-wcs.qgis.org.conf setting the contents to this:
       RewriteRule /1.9.0/wcs /cgi-bin/wcstest-1.9.0 [PT]
 
       </VirtualHost>
+```
+
 
 ## 6.3. Create a home page
 
+```bash
       mkdir html
       vim html/index.html
+```
 
 Set the contents to:
 
@@ -1243,6 +1357,7 @@ Set the contents to:
 
 ## 6.4. Now deploy it
 
+```bash
       sudo mkdir /var/log/apache2/wcs_qgis.org
       sudo chown www-data /var/log/apache2/wcs_qgis.org
       cd /etc/apache2/sites-available/
@@ -1250,10 +1365,13 @@ Set the contents to:
       cd /var/www/wcs/
       sudo a2ensite 7-wcs.qgis.org.conf
       sudo /etc/init.d/apache2 reload
+```
 
 ## 6.5. Debugging
 
+```bash
       sudo tail -f /var/log/apache2/wcs_qgis.org/error.log
+```
 
 # 7. Setting up a Jenkins Build Server
 
@@ -1310,6 +1428,7 @@ Jenkins security to per project settings)
   * Build triggers: set to Poll SCM and set schedule to `* * * * *` (polls every minute)
   * Build - Execute shell and set shell script to:
 
+```bash
       cd build
       cmake ..
       xvfb-run --auto-servernum --server-num=1 \
@@ -1320,6 +1439,7 @@ Jenkins security to per project settings)
            Testing/`head -n 1 < Testing/TAG`/Test.xml > \
            CTestResults.xml
       fi
+```
 
   * Add Junit post build action and set 'Publish Junit test result report' to:
 `build/CTestResults.xml`
@@ -1344,7 +1464,9 @@ http://alexott.blogspot.com/2012/03/jenkins-cmakectest.html
 If you are interested in seeing embedded debug output, change the following
 CMake option:
 
+```bash
     -D CMAKE_BUILD_TYPE=DEBUG (or RELWITHDEBINFO)
+```
 
 This will flood your terminal or system log with lots of useful output from
 QgsDebugMsg() calls in source code.
@@ -1353,31 +1475,41 @@ If you would like to run the test suite, you will need to do so from the build
 directory, as it will not work with the installed/bundled app. First set the
 CMake option to enable tests:
 
+```bash
     -D ENABLE_TESTS=TRUE
+```
 
 Then run all tests from build directory:
 
+```bash
     cd build
     make test
+```
 
 To run all tests and report to http://cdash.orfeo-toolbox.org/index.php?project=QGIS
 
+```bash
     cd build
     make Experimental
+```
 
 You can define the host name reported via 'make Experimental' by setting a CMake
 option:
 
+```bash
     -D SITE="my.domain.org"
+```
 
 To run specific test(s) (see 'man ctest'):
 
+```bash
     cd build
     # show listing of tests, without running them
     ctest --show-only
 
     # run specific C++ or Python test(s) matching a regular expression
     ctest --verbose --tests-regex SomeTestName
+```
 
 # 9. Authors and Acknowledgments
 
@@ -1420,4 +1552,3 @@ The following people have contributed to this document:
 
  * Debug Output/Tests Section
   * Larry Shaffer 2012, by way of 'Test Friday' Tim Sutton
-
