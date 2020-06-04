@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include <QClipboard>
+#include <QMessageBox>
 
 #include "qgsapplayertreeviewmenuprovider.h"
 
@@ -44,13 +45,11 @@
 #include "qgsxmlutils.h"
 
 
-
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
   : mView( view )
   , mCanvas( canvas )
 {
 }
-
 
 QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 {
@@ -897,7 +896,10 @@ void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol( const QString 
 
   const QgsSymbol *originalSymbol = node->symbol();
   if ( !originalSymbol )
+  {
+    QMessageBox::information( nullptr, tr( "No Symbol" ), tr( "There is no symbol associated with the rule." ) );
     return;
+  }
 
   std::unique_ptr< QgsSymbol > symbol( originalSymbol->clone() );
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() );
