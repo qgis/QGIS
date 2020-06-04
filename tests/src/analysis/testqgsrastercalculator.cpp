@@ -448,7 +448,7 @@ void TestQgsRasterCalculator::calcWithLayers()
   entries << entry1 << entry2;
 
   QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:32633" ) );
-  QgsRectangle extent( 783201.375, 3348130.125, 783315.375, 3347959.125 );
+  QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
 
   QTemporaryFile tmpFile;
   tmpFile.open(); // fileName is not available until open
@@ -467,13 +467,12 @@ void TestQgsRasterCalculator::calcWithLayers()
   QCOMPARE( result->width(), 2 );
   QCOMPARE( result->height(), 3 );
   QgsRasterBlock *block = result->dataProvider()->block( 1, extent, 2, 3 );
-  // gdal_translate ../tests/testdata/landsat.tif -projwin 783201.375 3348130.125 783315.375 3348073.125 /vsistdout/ -of aaigrid -b 1
-  QCOMPARE( block->value( 0, 0 ), 125.0 + 2 );
-  QCOMPARE( block->value( 0, 1 ), 125.0 + 2 );
-  QCOMPARE( block->value( 1, 0 ), 125.0 + 2 );
-  QCOMPARE( block->value( 1, 1 ), 124.0 + 2 );
-  QCOMPARE( block->value( 2, 0 ), 126.0 + 2 );
-  QCOMPARE( block->value( 2, 1 ), 125.0 + 2 );
+  QCOMPARE( block->value( 0, 0 ), 127.0 );
+  QCOMPARE( block->value( 0, 1 ), 127.0 );
+  QCOMPARE( block->value( 1, 0 ), 126.0 );
+  QCOMPARE( block->value( 1, 1 ), 127.0 );
+  QCOMPARE( block->value( 2, 0 ), 127.0 );
+  QCOMPARE( block->value( 2, 1 ), 126.0 );
   delete result;
   delete block;
 
@@ -490,14 +489,12 @@ void TestQgsRasterCalculator::calcWithLayers()
   QCOMPARE( result->width(), 2 );
   QCOMPARE( result->height(), 3 );
   block = result->dataProvider()->block( 1, extent, 2, 3 );
-  // gdal_translate ../tests/testdata/landsat.tif -projwin 783201.375 3348130.125 783315.375 3348073.125 /vsistdout/ -of aaigrid -b 1
-  // gdal_translate ../tests/testdata/landsat.tif -projwin 783201.375 3348130.125 783315.375 3348073.125 /vsistdout/ -of aaigrid -b 2
-  QCOMPARE( block->value( 0, 0 ), 125.0 + 139.0 );
-  QCOMPARE( block->value( 0, 1 ), 125.0 + 140.0 );
-  QCOMPARE( block->value( 1, 0 ), 125.0 + 140.0 );
-  QCOMPARE( block->value( 1, 1 ), 124.0 + 139.0 );
-  QCOMPARE( block->value( 2, 0 ), 126.0 + 141.0 );
-  QCOMPARE( block->value( 2, 1 ), 125.0 + 141.0 );
+  QCOMPARE( block->value( 0, 0 ), 265.0 );
+  QCOMPARE( block->value( 0, 1 ), 263.0 );
+  QCOMPARE( block->value( 1, 0 ), 263.0 );
+  QCOMPARE( block->value( 1, 1 ), 264.0 );
+  QCOMPARE( block->value( 2, 0 ), 266.0 );
+  QCOMPARE( block->value( 2, 1 ), 261.0 );
   delete result;
   delete block;
 }
@@ -518,7 +515,7 @@ void TestQgsRasterCalculator::calcWithReprojectedLayers()
   entries << entry1 << entry2;
 
   QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:32633" ) );
-  QgsRectangle extent( 783201.375, 3348130.125, 783315.375, 3347959.125 );
+  QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
 
   QTemporaryFile tmpFile;
   tmpFile.open(); // fileName is not available until open
@@ -539,10 +536,10 @@ void TestQgsRasterCalculator::calcWithReprojectedLayers()
   QgsRasterBlock *block = result->dataProvider()->block( 1, extent, 2, 3 );
   QCOMPARE( block->value( 0, 0 ), 264.0 );
   QCOMPARE( block->value( 0, 1 ), 263.0 );
-  QCOMPARE( block->value( 1, 0 ), 265.0 );
+  QCOMPARE( block->value( 1, 0 ), 264.0 );
   QCOMPARE( block->value( 1, 1 ), 264.0 );
-  QCOMPARE( block->value( 2, 0 ), 267.0 );
-  QCOMPARE( block->value( 2, 1 ), 266.0 );
+  QCOMPARE( block->value( 2, 0 ), 266.0 );
+  QCOMPARE( block->value( 2, 1 ), 261.0 );
   delete result;
   delete block;
 }
@@ -769,7 +766,7 @@ void TestQgsRasterCalculator::calcFormulasWithReprojectedLayers()
   entries << entry1 << entry2;
 
   QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:32633" ) );
-  QgsRectangle extent( 783201.375, 3348130.125, 783315.375, 3347959.125 );
+  QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
 
 
   auto _chk = [ = ]( const QString & formula, const std::vector<float> &values, bool useOpenCL )
@@ -800,9 +797,9 @@ void TestQgsRasterCalculator::calcFormulasWithReprojectedLayers()
     QCOMPARE( result->width(), 2 );
     QCOMPARE( result->height(), 3 );
     QgsRasterBlock *block = result->dataProvider()->block( 1, extent, 2, 3 );
-    qDebug() << "Actual:  " << block->value( 0, 0 ) << block->value( 0, 1 ) <<  block->value( 1, 0 ) <<  block->value( 1, 1 ) <<  block->value( 2, 0 ) <<  block->value( 2, 1 );
+    qDebug() << "Actual:" << block->value( 0, 0 ) << block->value( 0, 1 ) <<  block->value( 1, 0 ) <<  block->value( 1, 1 ) <<  block->value( 2, 0 ) <<  block->value( 2, 1 );
     qDebug() << "Expected:" << values[0] << values[1] <<  values[2] << values[3] << values[4] << values[5];
-    const double epsilon { 0.001 };
+    const double epsilon { 0.0001 };
     QVERIFY( qgsDoubleNear( block->value( 0, 0 ), static_cast<double>( values[0] ), epsilon ) );
     QVERIFY( qgsDoubleNear( block->value( 0, 1 ), static_cast<double>( values[1] ), epsilon ) );
     QVERIFY( qgsDoubleNear( block->value( 1, 0 ), static_cast<double>( values[2] ), epsilon ) );
@@ -813,35 +810,35 @@ void TestQgsRasterCalculator::calcFormulasWithReprojectedLayers()
     delete block;
   };
 
-  _chk( QStringLiteral( "\"landsat@1\" + \"landsat_4326@2\"" ), {264.0, 263.0, 265.0, 264.0, 267.0, 266.0}, false );
-  _chk( QStringLiteral( "\"landsat@1\" + \"landsat_4326@2\"" ), {264.0, 263.0, 265.0, 264.0, 267.0, 266.0}, true );
-  _chk( QStringLiteral( "\"landsat@1\"^2 + 3 + \"landsat_4326@2\"" ), {15767, 15766, 15768, 15519, 16020, 15769}, false );
-  _chk( QStringLiteral( "\"landsat@1\"^2 + 3 + \"landsat_4326@2\"" ), {15767, 15766, 15768, 15519, 16020, 15769}, true );
-  _chk( QStringLiteral( "0.5*((2*\"landsat@1\"+1)-sqrt((2*\"landsat@1\"+1)^2-8*(\"landsat@1\"-\"landsat_4326@2\")))" ), {-0.111504f, -0.103543f, -0.119465f, -0.128448f, -0.118522f, -0.127425f}, false );
-  _chk( QStringLiteral( "0.5*((2*\"landsat@1\"+1)-sqrt((2*\"landsat@1\"+1)^2-8*(\"landsat@1\"-\"landsat_4326@2\")))" ), {-0.111504f, -0.103543f, -0.119465f, -0.128456f, -0.118515f, -0.127419f}, true );
-  _chk( QStringLiteral( "\"landsat@1\" * ( \"landsat@1\" > 124 )" ), {125.0, 125.0, 125.0, 0.0, 126.0, 125.0}, false );
-  _chk( QStringLiteral( "\"landsat@1\" * ( \"landsat@1\" > 124 )" ), {125.0, 125.0, 125.0, 0.0, 126.0, 125.0}, true );
+  _chk( QStringLiteral( "\"landsat@1\" + \"landsat_4326@2\"" ), {264.0, 263.0, 264.0, 264.0, 266.0, 261.0}, false );
+  _chk( QStringLiteral( "\"landsat@1\" + \"landsat_4326@2\"" ), {264.0, 263.0, 264.0, 264.0, 266.0, 261.0}, true );
+  _chk( QStringLiteral( "\"landsat@1\"^2 + 3 + \"landsat_4326@2\"" ), {15767, 15766, 15519, 15767, 15769, 15516}, false );
+  _chk( QStringLiteral( "\"landsat@1\"^2 + 3 + \"landsat_4326@2\"" ), {15767, 15766, 15519, 15767, 15769, 15516}, true );
+  _chk( QStringLiteral( "0.5*((2*\"landsat@1\"+1)-sqrt((2*\"landsat@1\"+1)^2-8*(\"landsat@1\"-\"landsat_4326@2\")))" ), {-0.111504f, -0.103543f, -0.128448f, -0.111504f, -0.127425f, -0.104374f}, false );
+  _chk( QStringLiteral( "0.5*((2*\"landsat@1\"+1)-sqrt((2*\"landsat@1\"+1)^2-8*(\"landsat@1\"-\"landsat_4326@2\")))" ), {-0.111504f, -0.103543f, -0.128448f, -0.111504f, -0.127425f, -0.104374f}, true );
+  _chk( QStringLiteral( "\"landsat@1\" * ( \"landsat@1\" > 124 )" ), {125.0, 125.0, 0.0, 125.0, 125.0, 0.0}, false );
+  _chk( QStringLiteral( "\"landsat@1\" * ( \"landsat@1\" > 124 )" ), {125.0, 125.0, 0.0, 125.0, 125.0, 0.0}, true );
 
   // Test negative numbers
   _chk( QStringLiteral( "-2.5" ), { -2.5, -2.5, -2.5, -2.5, -2.5, -2.5 }, false );
   _chk( QStringLiteral( "- 2.5" ), { -2.5, -2.5, -2.5, -2.5, -2.5, -2.5 }, false );
   _chk( QStringLiteral( "-2.5" ), { -2.5, -2.5, -2.5, -2.5, -2.5, -2.5 }, true );
   _chk( QStringLiteral( "- 2.5" ), { -2.5, -2.5, -2.5, -2.5, -2.5, -2.5 }, true );
-  _chk( QStringLiteral( "-\"landsat@1\"" ), {-125, -125, -125, -124, -126, -125}, false );
-  _chk( QStringLiteral( "-\"landsat@1\"" ), {-125, -125, -125, -124, -126, -125}, true );
+  _chk( QStringLiteral( "-\"landsat@1\"" ), {-125, -125, -124, -125, -125, -124}, false );
+  _chk( QStringLiteral( "-\"landsat@1\"" ), {-125, -125, -124, -125, -125, -124}, true );
 
   // Test abs, min and max
   // landsat values: 125 125 124 125 125 124
   // landsat_4326 values: 139 138 140 139 141 137
   _chk( QStringLiteral( "abs(-123)" ), {123, 123, 123, 123, 123, 123}, false );
-  _chk( QStringLiteral( "abs(-\"landsat@1\")" ), {125, 125, 125, 124, 126, 125}, true );
+  _chk( QStringLiteral( "abs(-\"landsat@1\")" ), {125, 125, 124, 125, 125, 124}, true );
   _chk( QStringLiteral( "abs(-123)" ), {123, 123, 123, 123, 123, 123}, false );
-  _chk( QStringLiteral( "abs(-\"landsat@1\")" ), {125, 125, 125, 124, 126, 125}, true );
-  _chk( QStringLiteral( "-\"landsat_4326@2\" + 15" ), {-124, -123, -125, -125, -126, -126}, false );
-  _chk( QStringLiteral( "min(-\"landsat@1\", -\"landsat_4326@2\" + 15 )" ), {-125, -125, -125, -125, -126, -126}, false );
-  _chk( QStringLiteral( "min(-\"landsat@1\", -\"landsat_4326@2\" + 15 )" ), {-125, -125, -125, -125, -126, -126}, true );
-  _chk( QStringLiteral( "max(-\"landsat@1\", -\"landsat_4326@2\" + 15 )" ), {-124, -123, -125, -124, -126, -125}, false );
-  _chk( QStringLiteral( "max(-\"landsat@1\", -\"landsat_4326@2\" + 15 )" ), {-124, -123, -125, -124, -126, -125}, true );
+  _chk( QStringLiteral( "abs(-\"landsat@1\")" ), {125, 125, 124, 125, 125, 124}, true );
+  _chk( QStringLiteral( "-\"landsat_4326@2\" + 15" ), {-124, -123, -125, -124, -126, -122}, false );
+  _chk( QStringLiteral( "min(-\"landsat@1\", -\"landsat_4326@2\" + 15 )" ), {-125, -125, -125, -125, -126, -124}, false );
+  _chk( QStringLiteral( "min(-\"landsat@1\", -\"landsat_4326@2\" + 15 )" ), {-125, -125, -125, -125, -126, -124}, true );
+  _chk( QStringLiteral( "max(-\"landsat@1\", -\"landsat_4326@2\" + 15 )" ), {-124, -123, -124, -124, -125, -122}, false );
+  _chk( QStringLiteral( "max(-\"landsat@1\", -\"landsat_4326@2\" + 15 )" ), {-124, -123, -124, -124, -125, -122}, true );
 
 }
 
