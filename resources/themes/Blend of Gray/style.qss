@@ -772,7 +772,7 @@ QTreeView::item:disabled {
 }
 
 QTreeView::item:hover, QTreeView::branch:hover {
-    background-color: @c7c7c7;
+    background-color: transparent;
     color: @text;
 }
 
