@@ -209,6 +209,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QString saveUserFullName() const;
 
     /**
+     * Returns the date and time when the project was last saved.
+     *
+     * \since QGIS 3.14
+     */
+    QDateTime lastSaveDateTime() const;
+
+    /**
      * Returns TRUE if the project has been modified since the last write()
      */
     bool isDirty() const;
@@ -1931,6 +1938,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QString mSaveUser;              // last saved user.
     QString mSaveUserFull;          // last saved user full name.
+    QDateTime mSaveDateTime;
 
     /**
      * Manual override for project home path - if empty, home path is automatically
