@@ -230,6 +230,32 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QString fileName() const;
 
     /**
+     * Sets the original \a path associated with the project.
+     *
+     * This is intended for use with non-qgs/qgz project files (see QgsCustomProjectOpenHandler) in order to allow
+     * custom project open handlers to specify the original file name of the project. For custom project formats,
+     * it is NOT appropriate to call setFileName() with the original project path, as this causes the original (non
+     * QGIS) project file to be overwritten when the project is next saved.
+     *
+     * \see originalPath()
+     * \since QGIS 3.14
+     */
+    void setOriginalPath( const QString &path );
+
+    /**
+     * Returns the original path associated with the project.
+     *
+     * This is intended for use with non-qgs/qgz project files (see QgsCustomProjectOpenHandler) in order to allow
+     * custom project open handlers to specify the original file name of the project. For custom project formats,
+     * it is NOT appropriate to call setFileName() with the original project path, as this causes the original (non
+     * QGIS) project file to be overwritten when the project is next saved.
+
+     * \see setOriginalPath()
+     * \since QGIS 3.14
+    */
+    QString originalPath() const;
+
+    /**
      * Returns QFileInfo object for the project's associated file.
      *
      * \note The use of this method is discouraged since QGIS 3.2 as it only works with project files stored
@@ -1900,6 +1926,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     std::unique_ptr<QgsAuxiliaryStorage> mAuxiliaryStorage;
 
     QFile mFile;                 // current physical project file
+
+    QString mOriginalPath;
 
     QString mSaveUser;              // last saved user.
     QString mSaveUserFull;          // last saved user full name.
