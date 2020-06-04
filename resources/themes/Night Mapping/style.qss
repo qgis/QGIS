@@ -756,7 +756,6 @@ QAbstractItemView::selected, QListView::selected {
     outline: none;
 }
 
-
 /* ==================================================================================== */
 /* TREE VIEW                                                                            */
 /* ==================================================================================== */
@@ -797,6 +796,23 @@ QTreeView::branch:open:has-children:has-siblings {
      image: url(@theme_path/icons/caret-down.svg);
 }
 
+QTreeView::indicator {
+    width:0.8em;
+    height:0.8em;
+}
+QTreeView::indicator:intermediary {
+    border: 1px solid @background;
+    image: url(@theme_path/icons/qcheckbox-intermediary.svg);
+}
+QTreeView::indicator:checked {
+    border: 1px solid @background;
+    image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
+}
+QTreeView::indicator:unchecked {
+    border: 1px solid @background;
+    image: url(@theme_path/icons/qcheckbox-unchecked.svg);
+}
+
 QgsLayerTreeView::item,
 QTreeView#viewGraduated::item,
 QTreeView#viewCategories::item,
@@ -835,6 +851,23 @@ QTableView {
 
 QTableView:disabled {
     color: @itemdarkbackground;
+}
+
+QTableView::indicator {
+    width:0.8em;
+    height:0.8em;
+}
+QTableView::indicator:intermediary {
+    border: 1px solid @background;
+    image: url(@theme_path/icons/qcheckbox-intermediary.svg);
+}
+QTableView::indicator:checked {
+    border: 1px solid @background;
+    image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
+}
+QTableView::indicator:unchecked {
+    border: 1px solid @background;
+    image: url(@theme_path/icons/qcheckbox-unchecked.svg);
 }
 
 QTableView QTableCornerButton::section {
