@@ -411,7 +411,7 @@ Reset the dataset group tree item to default from provider
 
     QgsInterval firstValidTimeStep() const;
 %Docstring
-Return the first valid time step of the dataset groups, invalid QgInterval if no time step is present
+Returns the first valid time step of the dataset groups, invalid QgInterval if no time step is present
 
 .. versionadded:: 3.14
 %End
