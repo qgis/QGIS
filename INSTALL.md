@@ -1,15 +1,15 @@
 QGIS
 Building QGIS from source - step by step
 
-   1. [Introduction](#1.-introduction)
-   2. Overview
-   3. Building on GNU/Linux
-   4. Building on Windows
-   5. Building on MacOS X
-   6. Setting up the WCS test server on GNU/Linux
-   7. Setting up a Jenkins Build Server
-   8. Debug output and running tests
-   9. Authors and Acknowledgments
+   1. [Introduction](#1-introduction)
+   2. [Overview](#2-overview)
+   3. [Building on GNU/Linux](#3-building-on-gnulinux)
+   4. [Building on Windows](#3-building-on-windows)
+   5. [Building on MacOS X](#4-building-on-macos-x)
+   6. [Setting up the WCS test server on GNU/Linux](#6-setting-up-the-wcs-test-server-on-gnulinux)
+   7. [Setting up a Jenkins Build Server](#7-setting-up-a-jenkins-build-server)
+   8. [Debug output and running tests](#8-debug-output-and-running-tests)
+   9. [Authors and Acknowledgments](#9-authors-and-acknowledgments)
 
 # 1. Introduction
 
@@ -36,13 +36,13 @@ release branch. The QGIS source code can be found [in the repository](https://gi
 Please visit http://qgis.org for information on joining our mailing lists
 and getting involved in the project further.
 
-/!\ **Note to document writers:** Please use this document as the central
+**Note to document writers:** Please use this document as the central
 place for describing build procedures. Please do not remove this notice.
 
 # 2. Overview
 
-QGIS, like a number of major projects (e.g., KDE 4.0), uses CMake
-(http://www.cmake.org) for building from source.
+QGIS, like a number of major projects (e.g., KDE 4.0),
+uses [CMake](http://www.cmake.org) for building from source.
 
 Following a summary of the required dependencies for building:
 
@@ -85,7 +85,7 @@ Indirect dependencies:
 Some proprietary formats (e.g., ECW and MrSid) supported by GDAL require
 proprietary third party libraries.  QGIS doesn't need any of those itself to
 build, but will only support those formats if GDAL is built accordingly.  Refer
-to http://gdal.org/formats_list.html ff. for instructions how to include
+to [format list](http://gdal.org/formats_list.html) for instructions how to include
 those formats in GDAL.
 
 # 3. Building on GNU/Linux
@@ -94,7 +94,7 @@ those formats in GDAL.
 
 **Requires:** Ubuntu / Debian derived distro
 
-/!\ **Note:** Refer to the section Building Debian packages for building
+**Note:** Refer to the section Building Debian packages for building
 debian packages. Unless you plan to develop on QGIS, that is probably the
 easiest option to compile and install QGIS.
 
@@ -118,19 +118,21 @@ The packages QGIS depends on to build are available in the "universe" component
 of Ubuntu. This is not activated by default, so you need to activate it:
 
 1. Edit your /etc/apt/sources.list file.
-1. Uncomment all the lines starting with "deb"
+2. Uncomment all the lines starting with "deb"
 
 Also you will need a recent enough distribution in order for all dependencies
 to be met. The supported distributions are listed in the following section.
 
 Now update your local sources database:
 
+```
     sudo apt-get update
+```
 
 ## 3.3. Install build dependencies
 
-| Distribution |install command for packages|
-|---------------|
+| Distribution |Install command for packages|
+|---------------|---------------|
 |buster |`apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex flip gdal-bin git graphviz grass-dev libexiv2-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libprotobuf-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqscintilla2-qt5-dev libqt5opengl5-dev libqt5serialport5-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev lighttpd locales ninja-build ocl-icd-opencl-dev opencl-headers pkg-config poppler-utils protobuf-compiler pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-autopep8 python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-lxml python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-pyqt5.qtwebkit python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt3d-assimpsceneimport-plugin qt3d-defaultgeometryloader-plugin qt3d-gltfsceneio-plugin qt3d-scene2d-plugin qt3d5-dev qt5-default qt5keychain-dev qtbase5-dev qtbase5-private-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools saga spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`|
 |bionic |`apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex flip gdal-bin git graphviz grass-dev libexiv2-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libprotobuf-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqscintilla2-qt5-dev libqt5opengl5-dev libqt5serialport5-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev lighttpd locales ninja-build ocl-icd-opencl-dev opencl-headers pkg-config poppler-utils protobuf-compiler pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-autopep8 python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-lxml python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-pyqt5.qtwebkit python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt3d-assimpsceneimport-plugin qt3d-defaultgeometryloader-plugin qt3d-gltfsceneio-plugin qt3d-scene2d-plugin qt3d5-dev qt5-default qt5keychain-dev qtbase5-dev qtbase5-private-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools saga spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`|
 |eoan |`apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex flip gdal-bin git graphviz grass-dev libexiv2-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libprotobuf-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqscintilla2-qt5-dev libqt5opengl5-dev libqt5serialport5-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev lighttpd locales ninja-build ocl-icd-opencl-dev opencl-headers pkg-config poppler-utils protobuf-compiler pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-autopep8 python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-lxml python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-pyqt5.qtwebkit python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt3d-assimpsceneimport-plugin qt3d-defaultgeometryloader-plugin qt3d-gltfsceneio-plugin qt3d-scene2d-plugin qt3d5-dev qt5-default qt5keychain-dev qtbase5-dev qtbase5-private-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools saga spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`|
@@ -139,7 +141,7 @@ Now update your local sources database:
 
 (extracted from the control.in file in `debian/`)
 
-See http://qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu for
+See [debian-ubuntu](http://qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu) for
 currently supported distributions (plain xenial's GDAL for instance is to old
 and we build with GDAL2 from ubuntugis).
 
@@ -147,9 +149,11 @@ and we build with GDAL2 from ubuntugis).
 
 You should also setup ccache to speed up compile times:
 
+```shell script
     cd /usr/local/bin
     sudo ln -s /usr/bin/ccache gcc
     sudo ln -s /usr/bin/ccache g++
+```
 
 or simply add `/usr/lib/ccache` to your `PATH`.
 
@@ -211,7 +215,7 @@ be pressed several times before the 'g' option becomes available.
 After the 'g' generation is complete, press 'q' to exit the ccmake
 interactive dialog.
 
-/!\ **Warning:** Make sure that your build directory is completely empty when you
+**Warning:** Make sure that your build directory is completely empty when you
 enter the command. Do never try to "re-use" an existing **Qt5** build directory.
 If you want to use `ccmake` or other interactive tools, run the command in
 the empty build directory once before starting to use the interactive tools.
@@ -321,16 +325,16 @@ The QGIS packages will be created with:
 
     dpkg-buildpackage -us -uc -b
 
-/!\ **Note:** Install `devscripts` to get `dch`.
+**Note:** Install `devscripts` to get `dch`.
 
-/!\ **Note:** If `dpkg-buildpackage` complains about unmet build dependencies
+**Note:** If `dpkg-buildpackage` complains about unmet build dependencies
 you can install them using `apt-get` and re-run the command.
 
-/!\ **Note:** If you have `libqgis1-dev` installed, you need to remove it first
+**Note:** If you have `libqgis1-dev` installed, you need to remove it first
 using `dpkg -r libqgis1-dev`.  Otherwise `dpkg-buildpackage` will complain about a
 build conflict.
 
-/!\ **Note:** By default tests are run in the process of building and their
+**Note:** By default tests are run in the process of building and their
 results are uploaded to http://cdash.orfeo-toolbox.org/index.php?project=QGIS.
 You can turn the tests off using DEB_BUILD_OPTIONS=nocheck in front of the
 build command. The upload of results can be avoided with DEB_TEST_TARGET=test.
