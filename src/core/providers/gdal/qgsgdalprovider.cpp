@@ -741,12 +741,9 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle const &reqExtent, int 
   QgsDebugMsgLevel( "extent: " + mExtent.toString(), 5 );
   QgsDebugMsgLevel( "intersectExtent: " + intersectExtent.toString(), 5 );
 
-  const double reqXRes = reqExtent.width() / bufferWidthPix;
-  const double reqYRes = reqExtent.height() / bufferHeightPix;
-
   const double srcXRes = mGeoTransform[1];
   const double srcYRes = mGeoTransform[5]; // may be negative?
-  QgsDebugMsgLevel( QStringLiteral( "reqXRes = %1 reqYRes = %2 srcXRes = %3 srcYRes = %4" ).arg( reqXRes ).arg( reqYRes ).arg( srcXRes ).arg( srcYRes ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "srcXRes = %1 srcYRes = %2" ).arg( srcXRes ).arg( srcYRes ), 5 );
 
   // Find top, bottom rows and left, right column the raster extent covers
   // These are limits in target grid space
@@ -769,77 +766,41 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle const &reqExtent, int 
   // Get necessary src extent aligned to src resolution
   if ( mExtent.xMinimum() < intersectExtent.xMinimum() )
   {
-    srcLeft = static_cast<int>( std::floor( ( intersectExtent.xMinimum() - mExtent.xMinimum() ) / srcXRes ) );
+    srcLeft = static_cast<int>( std::floor( ( intersectExtent.xMinimum() - mExtent.xMinimum() ) / srcXRes + 1e-8 ) );
   }
   if ( mExtent.xMaximum() > intersectExtent.xMaximum() )
   {
     // Clamp to raster width to avoid potential rounding errors (see GH #34435)
-    srcRight = std::min( mWidth - 1, static_cast<int>( std::floor( ( intersectExtent.xMaximum() - mExtent.xMinimum() ) / srcXRes ) ) );
+    srcRight = std::min( mWidth - 1, static_cast<int>( std::floor( ( intersectExtent.xMaximum() - mExtent.xMinimum() ) / srcXRes - 1e-8 ) ) );
   }
 
   // GDAL states that mGeoTransform[3] is top, may it also be bottom and mGeoTransform[5] positive?
   if ( mExtent.yMaximum() > intersectExtent.yMaximum() )
   {
-    srcTop = static_cast<int>( std::floor( -1. * ( mExtent.yMaximum() - intersectExtent.yMaximum() ) / srcYRes ) );
+    srcTop = static_cast<int>( std::floor( -1. * ( mExtent.yMaximum() - intersectExtent.yMaximum() ) / srcYRes + 1e-8 ) );
   }
   if ( mExtent.yMinimum() < intersectExtent.yMinimum() )
   {
     // Clamp to raster height to avoid potential rounding errors (see GH #34435)
-    srcBottom = std::min( mHeight - 1, static_cast<int>( std::floor( -1. * ( mExtent.yMaximum() - intersectExtent.yMinimum() ) / srcYRes ) ) );
+    srcBottom = std::min( mHeight - 1, static_cast<int>( std::floor( -1. * ( mExtent.yMaximum() - intersectExtent.yMinimum() ) / srcYRes - 1e-8 ) ) );
   }
 
-  const int srcWidth = srcRight - srcLeft + 1;
-  const int srcHeight = srcBottom - srcTop + 1;
+  const int srcWidth = std::max( 1, srcRight - srcLeft + 1 );
+  const int srcHeight = std::max( 1, srcBottom - srcTop + 1 );
   QgsDebugMsgLevel( QStringLiteral( "srcTop = %1 srcBottom = %2 srcWidth = %3 srcHeight = %4" ).arg( srcTop ).arg( srcBottom ).arg( srcWidth ).arg( srcHeight ), 5 );
 
-  // Determine the dimensions of the buffer into which we will ask GDAL to write
-  // pixels.
-  // In downsampling scenarios, we will use the request resolution to compute the dimension
-  // In upsampling (or exactly at raster resolution) scenarios, we will use the raster resolution to compute the dimension
-  int tmpWidth = srcWidth;
-  int tmpHeight = srcHeight;
-
-  if ( reqXRes > srcXRes )
-  {
-    // downsampling
-    tmpWidth = static_cast<int>( std::round( srcWidth * srcXRes / reqXRes ) );
-  }
-  if ( reqYRes > std::fabs( srcYRes ) )
-  {
-    // downsampling
-    tmpHeight = static_cast<int>( std::round( -1.*srcHeight * srcYRes / reqYRes ) );
-  }
-
-  const double tmpXMin = mExtent.xMinimum() + srcLeft * srcXRes;
-  const double tmpYMax = mExtent.yMaximum() + srcTop * srcYRes;
-  QgsDebugMsgLevel( QStringLiteral( "tmpXMin = %1 tmpYMax = %2 tmpWidth = %3 tmpHeight = %4" ).arg( tmpXMin ).arg( tmpYMax ).arg( tmpWidth ).arg( tmpHeight ), 5 );
-
-  // Allocate temporary block
-  size_t bufferSize = dataSize * static_cast<size_t>( tmpWidth ) * static_cast<size_t>( tmpHeight );
-#ifdef Q_PROCESSOR_X86_32
-  // Safety check for 32 bit systems
-  qint64 _buffer_size = dataSize * static_cast<qint64>( tmpWidth ) * static_cast<qint64>( tmpHeight );
-  if ( _buffer_size != static_cast<qint64>( bufferSize ) )
-  {
-    QgsDebugMsg( QStringLiteral( "Integer overflow calculating buffer size on a 32 bit system." ) );
-    return false;
-  }
-#endif
-  char *tmpBlock = static_cast<char *>( qgsMalloc( bufferSize ) );
-  if ( ! tmpBlock )
-  {
-    QgsDebugMsgLevel( QStringLiteral( "Couldn't allocate temporary buffer of %1 bytes" ).arg( dataSize * tmpWidth * tmpHeight ), 5 );
-    return false;
-  }
   GDALRasterBandH gdalBand = getBand( bandNo );
   GDALDataType type = static_cast<GDALDataType>( mGdalDataType.at( bandNo - 1 ) );
   CPLErrorReset();
 
   CPLErr err = gdalRasterIO( gdalBand, GF_Read,
                              srcLeft, srcTop, srcWidth, srcHeight,
-                             static_cast<void *>( tmpBlock ),
-                             tmpWidth, tmpHeight, type,
-                             0, 0, feedback );
+                             static_cast<char *>( data ) +
+                             ( tgtTop * bufferWidthPix + tgtLeft ) * dataSize,
+                             tgtWidth, tgtHeight,
+                             type,
+                             dataSize, bufferWidthPix * dataSize,
+                             feedback );
 
   if ( err != CPLE_None )
   {
@@ -848,47 +809,9 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle const &reqExtent, int 
       feedback->appendError( lastError );
 
     QgsLogger::warning( "RasterIO error: " + lastError );
-    qgsFree( tmpBlock );
     return false;
   }
 
-  const double tmpXRes = srcWidth * srcXRes / tmpWidth;
-  const double tmpYRes = srcHeight * srcYRes / tmpHeight; // negative
-
-  double y = intersectExtent.yMaximum() - 0.5 * reqYRes;
-  for ( int row = 0; row < tgtHeight; row++ )
-  {
-    int tmpRow = static_cast<int>( std::floor( -1. * ( tmpYMax - y ) / tmpYRes ) );
-    tmpRow = std::min( tmpRow, tmpHeight - 1 );
-
-    char *srcRowBlock = tmpBlock + dataSize * tmpRow * tmpWidth;
-    char *dstRowBlock = ( char * )data + dataSize * ( tgtTop + row ) * bufferWidthPix;
-
-    double x = ( intersectExtent.xMinimum() + 0.5 * reqXRes - tmpXMin ) / tmpXRes; // cell center
-    double increment = reqXRes / tmpXRes;
-
-    char *dst = dstRowBlock + dataSize * tgtLeft;
-    char *src = srcRowBlock;
-    int tmpCol = 0;
-    int lastCol = 0;
-    for ( int col = 0; col < tgtWidth; ++col )
-    {
-      // std::floor() is quite slow! Use just cast to int.
-      tmpCol = static_cast<int>( x );
-      tmpCol = std::min( tmpCol, tmpWidth - 1 );
-      if ( tmpCol > lastCol )
-      {
-        src += ( tmpCol - lastCol ) * dataSize;
-        lastCol = tmpCol;
-      }
-      memcpy( dst, src, dataSize );
-      dst += dataSize;
-      x += increment;
-    }
-    y -= reqYRes;
-  }
-
-  qgsFree( tmpBlock );
   return true;
 }
 
