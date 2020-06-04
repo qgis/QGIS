@@ -395,7 +395,8 @@ void QgsGeoPackageItemGuiProvider::createDatabase()
     dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
     if ( dialog.exec() == QDialog::Accepted )
     {
-      if ( QgsOgrDataCollectionItem::saveConnection( dialog.databasePath(), QStringLiteral( "GPKG" ) ) )
+      // Call QFileInfo to normalize paths, see: https://github.com/qgis/QGIS/issues/36832
+      if ( QgsOgrDataCollectionItem::saveConnection( QFileInfo( dialog.databasePath() ).filePath(), QStringLiteral( "GPKG" ) ) )
       {
         item->refreshConnections();
       }
