@@ -21,6 +21,7 @@
 #include <memory>
 
 #include "qgis_core.h"
+#include "qgsinterval.h"
 #include "qgsmaplayer.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshrenderersettings.h"
@@ -453,6 +454,13 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * \since QGIS 3.14
      */
     void resetDatasetGroupTreeItem();
+
+    /**
+     * Return the first valid time step of the dataset groups, invalid QgInterval if no time step is present
+     *
+     * \since QGIS 3.14
+     */
+    QgsInterval firstValidTimeStep() const;
 
   public slots:
 

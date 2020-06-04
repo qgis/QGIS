@@ -735,6 +735,21 @@ void QgsMeshLayer::resetDatasetGroupTreeItem()
   updateActiveDatasetGroups();
 }
 
+QgsInterval QgsMeshLayer::firstValidTimeStep() const
+{
+  if ( !mDataProvider )
+    return QgsInterval();
+  int groupCount = mDataProvider->datasetGroupCount();
+  for ( int i = 0; i < groupCount; ++i )
+  {
+    qint64 timeStep = mDataProvider->temporalCapabilities()->firstTimeStepDuration( i );
+    if ( timeStep > 0 )
+      return QgsInterval( timeStep, QgsUnitTypes::TemporalMilliseconds );
+  }
+
+  return QgsInterval();
+}
+
 void QgsMeshLayer::updateActiveDatasetGroups()
 {
   if ( !mDatasetGroupTreeRootItem )

@@ -24,6 +24,7 @@
 #include "qgstemporalmapsettingswidget.h"
 #include "qgstemporalutils.h"
 #include "qgsmaplayertemporalproperties.h"
+#include "qgsmeshlayer.h"
 
 #include <QAction>
 #include <QMenu>
@@ -389,17 +390,24 @@ void QgsTemporalControllerWidget::onLayersAdded( const QList<QgsMapLayer *> &lay
             if ( layer->isValid() && layer->temporalProperties()->isActive() && !mHasTemporalLayersLoaded )
             {
               mHasTemporalLayersLoaded = true;
-              // if we are moving from zero temporal layers to non-zero temporal layers, let's set temporal extent
-              this->setDatesToProjectTime();
+              firstTemporalLayerLoaded( layer );
             }
           } );
         }
+
+        firstTemporalLayerLoaded( layer );
       }
     }
-
-    if ( mHasTemporalLayersLoaded )
-      setDatesToProjectTime();
   }
+}
+
+void QgsTemporalControllerWidget::firstTemporalLayerLoaded( QgsMapLayer *layer )
+{
+  setDatesToProjectTime();
+
+  QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
+  if ( meshLayer )
+    setTimeStep( meshLayer->firstValidTimeStep() );
 }
 
 void QgsTemporalControllerWidget::onProjectCleared()
@@ -414,6 +422,8 @@ void QgsTemporalControllerWidget::onProjectCleared()
   whileBlocking( mFixedRangeStartDateTime )->setDateTime( QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) ) );
   whileBlocking( mFixedRangeEndDateTime )->setDateTime( mStartDateTime->dateTime() );
   updateTemporalExtent();
+  mTimeStepsComboBox->setCurrentIndex( mTimeStepsComboBox->findData( QgsUnitTypes::TemporalHours ) );
+  mStepSpinBox->setValue( 1 );
 }
 
 void QgsTemporalControllerWidget::updateSlider( const QgsDateTimeRange &range )
@@ -496,6 +506,34 @@ void QgsTemporalControllerWidget::mRangeSetToAllLayersAction_triggered()
 {
   setDatesToAllLayers();
   saveRangeToProject();
+}
+
+void QgsTemporalControllerWidget::setTimeStep( const QgsInterval &timeStep )
+{
+  if ( ! timeStep.isValid() || timeStep.seconds() <= 0 )
+    return;
+  int indexUnit = -1;
+  double value = std::numeric_limits<double>::min();
+  double previousValue;
+  do
+  {
+    indexUnit++;
+    previousValue = value;
+    QgsUnitTypes::TemporalUnit unit = static_cast<QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->itemData( indexUnit ).toInt() );
+    value = timeStep.seconds() * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalSeconds, unit );
+  }
+  while ( value > 10 ||  indexUnit == mTimeStepsComboBox->count() );
+
+  if ( fabs( log( value ) ) > fabs( log( previousValue ) ) )
+  {
+    indexUnit--;
+    value = previousValue;
+  }
+
+  mTimeStepsComboBox->setCurrentIndex( indexUnit );
+  mStepSpinBox->setValue( value );
+
+  updateFrameDuration();
 }
 
 void QgsTemporalControllerWidget::mRangeSetToProjectAction_triggered()

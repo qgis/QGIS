@@ -409,6 +409,13 @@ Reset the dataset group tree item to default from provider
 .. versionadded:: 3.14
 %End
 
+    QgsInterval firstValidTimeStep() const;
+%Docstring
+Return the first valid time step of the dataset groups, invalid QgInterval if no time step is present
+
+.. versionadded:: 3.14
+%End
+
   public slots:
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );

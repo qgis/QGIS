@@ -103,6 +103,13 @@ Returns the relative time in milliseconds of the dataset
 Clears alls stored reference times and dataset times
 %End
 
+    qint64 firstTimeStepDuration( int group ) const;
+%Docstring
+Returns the duration of the first time step of the dataset group with index ``group``
+
+The value is -1 if the dataset group is not present or if it contains only one dataset (non temporal dataset)
+%End
+
 };
 
 /************************************************************************
