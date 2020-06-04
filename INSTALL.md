@@ -149,7 +149,7 @@ and we build with GDAL2 from ubuntugis).
 
 You should also setup ccache to speed up compile times:
 
-```shell script
+```bash
     cd /usr/local/bin
     sudo ln -s /usr/bin/ccache gcc
     sudo ln -s /usr/bin/ccache g++
