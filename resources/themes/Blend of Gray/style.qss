@@ -793,6 +793,22 @@ QTreeView::branch:open:has-children:has-siblings {
      image: url(@theme_path/icons/caret-down.svg);
 }
 
+QTreeView::indicator
+{
+    border: 1px solid transparent;
+    width:0.8em;
+    height:0.8em;
+}
+QTreeView::indicator:intermediary {
+    image: url(@theme_path/icons/qcheckbox-intermediary.svg);
+}
+QTreeView::indicator:checked {
+    image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
+}
+QTreeView::indicator:unchecked {
+    image: url(@theme_path/icons/qcheckbox-unchecked.svg);
+}
+
 QgsLayerTreeView::item,
 QTreeView#viewGraduated::item,
 QTreeView#viewCategories::item,
@@ -829,6 +845,22 @@ QTableView {
 
 QTableView:disabled {
     color: @itemalternativebackground;
+}
+
+QTableView::indicator
+{
+    border: 1px solid transparent;
+    width:0.8em;
+    height:0.8em;
+}
+QTableView::indicator:intermediary {
+    image: url(@theme_path/icons/qcheckbox-intermediary.svg);
+}
+QTableView::indicator:checked {
+    image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
+}
+QTableView::indicator:unchecked {
+    image: url(@theme_path/icons/qcheckbox-unchecked.svg);
 }
 
 QTableView QTableCornerButton::section {
