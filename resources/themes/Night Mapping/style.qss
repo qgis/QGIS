@@ -776,8 +776,8 @@ QTreeView::item:disabled {
 }
 
 QTreeView::item:hover, QTreeView::branch:hover {
-    background-color: @toggleoff;
-    color: @itembackground;
+    background-color: transparent;
+    color: @textlight;
 }
 
 QTreeView::item:selected, QTreeView::branch:selected {
@@ -805,6 +805,15 @@ QTreeView#viewRules::item
     border-top: 0.5px solid rgba(108,108,108,50);
     border-bottom: 0.5px solid rgba(108,108,108,50);
     padding: 0.1em 0em 0.1em 0em;
+}
+
+QgsLayerTreeView::item:hover, QgsLayerTreeView::branch:hover,
+QTreeView#viewGraduated::item:hover, QTreeView#viewGraduated::branch:hover,
+QTreeView#viewCategories::item:hover, QTreeView#viewCategories::branch:hover,
+QTreeView#viewRules::item:hover, QTreeView#viewRules::branch:hover
+{
+    background-color: @toggleoff;
+    color: @itembackground;
 }
 
 QgsLayerTreeView::indicator:unchecked,
