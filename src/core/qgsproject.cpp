@@ -628,6 +628,16 @@ QString QgsProject::fileName() const
   return mFile.fileName();
 }
 
+void QgsProject::setOriginalPath( const QString &path )
+{
+  mOriginalPath = path;
+}
+
+QString QgsProject::originalPath() const
+{
+  return mOriginalPath;
+}
+
 QFileInfo QgsProject::fileInfo() const
 {
   return QFileInfo( mFile );
@@ -1805,6 +1815,8 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
   }
 
   QString projectPath = projectStorage() ? fileName() : absoluteFilePath();
+  if ( projectPath.isEmpty() )
+    projectPath = mOriginalPath;
   QString projectFolder = QFileInfo( projectPath ).path();
   QString projectFilename = QFileInfo( projectPath ).fileName();
   QString projectBasename = baseName();

@@ -246,7 +246,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
   title( QgsProject::instance()->title() );
-  mProjectFileLineEdit->setText( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) );
+  mProjectFileLineEdit->setText( QDir::toNativeSeparators( !QgsProject::instance()->fileName().isEmpty() ? QgsProject::instance()->fileName() : QgsProject::instance()->originalPath() ) );
   mProjectHomeLineEdit->setShowClearButton( true );
   mProjectHomeLineEdit->setText( QDir::toNativeSeparators( QgsProject::instance()->presetHomePath() ) );
   connect( mButtonSetProjectHome, &QToolButton::clicked, this, [ = ]
@@ -286,7 +286,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( mButtonOpenProjectFolder, &QToolButton::clicked, this, [ = ]
   {
     QString path;
-    QString project = QgsProject::instance()->fileName();
+    QString project = !QgsProject::instance()->fileName().isEmpty() ? QgsProject::instance()->fileName() : QgsProject::instance()->originalPath();
     QgsProjectStorage *storage = QgsProject::instance()->projectStorage();
     if ( storage )
       path = storage->filePath( project );

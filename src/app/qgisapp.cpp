@@ -4950,10 +4950,10 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage, const QIcon &iconOve
     return;
 
   if ( projectData.path.isEmpty() )  // in case of custom project storage
-    projectData.path = QgsProject::instance()->fileName();
+    projectData.path = !QgsProject::instance()->fileName().isEmpty() ? QgsProject::instance()->fileName() : QgsProject::instance()->originalPath();
   projectData.title = QgsProject::instance()->title();
   if ( projectData.title.isEmpty() )
-    projectData.title = QgsProject::instance()->baseName();
+    projectData.title = !QgsProject::instance()->baseName().isEmpty() ? QgsProject::instance()->baseName() : QFileInfo( QgsProject::instance()->originalPath() ).completeBaseName();
 
   projectData.crs = QgsProject::instance()->crs().authid();
 
@@ -6968,7 +6968,7 @@ bool QgisApp::addProject( const QString &projectFile )
     // if a custom handler was used, then we generate a thumbnail
     if ( !usedCustomHandler || !customHandlerWantsThumbnail )
       saveRecentProjectPath( false );
-    else if ( !QgsProject::instance()->fileName().isEmpty() )
+    else if ( !QgsProject::instance()->originalPath().isEmpty() )
     {
       // we have to delay the thumbnail creation until after the canvas has refreshed for the first time
       QMetaObject::Connection *connection = new QMetaObject::Connection();
