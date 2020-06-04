@@ -195,6 +195,10 @@ bool QgsGeoPdfLayerFilteredTreeModel::filterAcceptsRow( int source_row, const QM
     // filter out non-vector layers
     if ( QgsLayerTree::isLayer( node ) && QgsLayerTree::toLayer( node ) && QgsLayerTree::toLayer( node )->layer() && QgsLayerTree::toLayer( node )->layer()->type() != QgsMapLayerType::VectorLayer )
       return false;
+
+    // also filter out non-spatial vector layers
+    if ( !qobject_cast< QgsVectorLayer * >( QgsLayerTree::toLayer( node )->layer() )->isSpatial() )
+      return false;
   }
   return true;
 }
