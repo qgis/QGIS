@@ -339,9 +339,6 @@
    <property name="toolTip">
     <string>Select all (Ctrl+A)</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+A</string>
-   </property>
   </action>
   <action name="mActionInvertSelection">
    <property name="icon">
@@ -429,9 +426,6 @@
    <property name="toolTip">
     <string>Cut selected rows to clipboard (Ctrl+X)</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+X</string>
-   </property>
   </action>
   <action name="mActionCopySelectedRows">
    <property name="icon">
@@ -444,9 +438,6 @@
    <property name="toolTip">
     <string>Copy selected rows to clipboard (Ctrl+C)</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+C</string>
-   </property>
   </action>
   <action name="mActionPasteFeatures">
    <property name="icon">
@@ -458,9 +449,6 @@
    </property>
    <property name="toolTip">
     <string>Paste features from clipboard (Ctrl+V)</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+V</string>
    </property>
   </action>
   <action name="mActionRemoveAttribute">
