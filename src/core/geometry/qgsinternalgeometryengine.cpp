@@ -1049,7 +1049,7 @@ QVector<QgsPointXY> QgsInternalGeometryEngine::randomPointsInPolygon( const QgsG
 
   // step 1 - tessellate the polygon to triangles
   QgsRectangle bounds = polygon.boundingBox();
-  QgsTessellator t( bounds, false, false, false, true );
+  QgsTessellator t( bounds, false, false, false, false, true );
 
   if ( polygon.isMultipart() )
   {

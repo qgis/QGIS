@@ -46,6 +46,18 @@ Returns specular color component
 %Docstring
 Returns shininess of the surface
 %End
+    bool isUsingDiffuseTexture() const;
+%Docstring
+Returns wether the diffuse texture is used
+%End
+    QString texturePath() const;
+%Docstring
+Returns the diffuse texture path
+%End
+    float textureScale() const;
+%Docstring
+Returns the texture scale
+%End
 
     void setAmbient( const QColor &ambient );
 %Docstring
@@ -62,6 +74,18 @@ Sets specular color component
     void setShininess( float shininess );
 %Docstring
 Sets shininess of the surface
+%End
+    void useTexture( bool used );
+%Docstring
+Sets wether the diffuse texture will be used
+%End
+    void setTexturePath( QString texturePath );
+%Docstring
+Sets the path of the texture
+%End
+    void setTextureScale( float scale );
+%Docstring
+sets the texture scale
 %End
 
     void readXml( const QDomElement &elem );
