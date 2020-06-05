@@ -285,7 +285,7 @@ int nmea_parse_GPGST( const char *buff, int buff_sz, nmeaGPGST *pack )
 
   char type;
 
-  if ( 8 != nmea_scanf( buff, buff_sz,
+  if ( 9 != nmea_scanf( buff, buff_sz,
                         "$G%CGST,%s,%f,%f,%f,%f,%f,%f,%f*",
                         &( type ),
                         &( time_buff[0] ),
@@ -469,7 +469,7 @@ int nmea_parse_GPHDT( const char *buff, int buff_sz, nmeaGPHDT *pack )
   char type;
   char talker_id;
 
-  if ( 2 != nmea_scanf( buff, buff_sz,
+  if ( 3 != nmea_scanf( buff, buff_sz,
                         "$G%CHDT,%f,%C*",
                         &( talker_id ),
                         &( pack->heading ), &( type ) ) )
@@ -510,7 +510,7 @@ int nmea_parse_GPVTG( const char *buff, int buff_sz, nmeaGPVTG *pack )
 
   char type;
 
-  if ( 8 != nmea_scanf( buff, buff_sz,
+  if ( 9 != nmea_scanf( buff, buff_sz,
                         "$G%CVTG,%f,%C,%f,%C,%f,%C,%f,%C*",
                         &type,
                         &( pack->dir ), &( pack->dir_t ),
