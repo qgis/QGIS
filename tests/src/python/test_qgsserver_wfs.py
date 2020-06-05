@@ -189,7 +189,7 @@ class TestQgsServerWFS(QgsServerTestBase):
                 self.assertEqual(
                     "onlineResource=\"my_wfs_advertised_url\"" in item, True)
 
-    def result_compare(self, file_name, error_msg_header, header, body, expectEqual=True):
+    def result_compare(self, file_name, error_msg_header, header, body):
         self.assert_headers(header, body)
         response = header + body
         reference_path = self.testdata_path + file_name
@@ -202,11 +202,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         self.assertXMLEqual(response, expected, msg="%s\n" %
                             (error_msg_header))
 
-        # If do not expect equal and pass the line above, should throw and assertion error.
-        if not expectEqual:
-            self.assertFalse(True, msg='It should get different result for %s.' % error_msg_header)
-
-    def wfs_getfeature_post_compare(self, requestid, request, expectEqual=True):
+    def wfs_getfeature_post_compare(self, requestid, request):
         project = self.testdata_path + "test_project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
@@ -217,14 +213,11 @@ class TestQgsServerWFS(QgsServerTestBase):
         self.result_compare(
             'wfs_getfeature_{}.txt'.format(requestid),
             "GetFeature in POST for '{}' failed.".format(requestid),
-            header,
-            body,
-            expectEqual
+            header, body,
         )
 
     def test_getfeature_post(self):
         tests = []
-        expectNotEqualTests = []
 
         template = """<?xml version="1.0" encoding="UTF-8"?>
 <wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
@@ -266,7 +259,7 @@ class TestQgsServerWFS(QgsServerTestBase):
 
         # Issue https://github.com/qgis/QGIS/issues/36398
         # Check get feature within linear ring with srsName=EPSG:4326
-        within4326FilterTemplate = """<?xml version="1.0" encoding="UTF-8"?>
+        withinFilterTemplate = """<?xml version="1.0" encoding="UTF-8"?>
 <wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
   <wfs:Query typeName="testlayer" srsName="EPSG:4326" xmlns:feature="http://www.qgis.org/gml">
     <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
@@ -290,62 +283,7 @@ class TestQgsServerWFS(QgsServerTestBase):
   </wfs:Query>
 </wfs:GetFeature>
 """
-        tests.append(('within4326FilterTemplate_post', within4326FilterTemplate.format("")))
-
-        # Keep the coordinate in 4326, but change the srsName to 3857 (should returns different result)
-        # The reference file (withinFake3857FilterTemplate_post.txt) is copied from within4326FilterTemplate_post.txt
-        withinFake3857FilterTemplate = """<?xml version="1.0" encoding="UTF-8"?>
-<wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
-  <wfs:Query typeName="testlayer" srsName="EPSG:4326" xmlns:feature="http://www.qgis.org/gml">
-    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
-      <Within>
-        <PropertyName>geometry</PropertyName>
-        <Polygon xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
-          <exterior>
-            <LinearRing srsName="EPSG:3857">
-              <posList srsDimension="2">
-                8 44
-                9 44
-                9 45
-                8 45
-                8 44
-              </posList>
-            </LinearRing>
-          </exterior>
-        </Polygon>
-      </Within>
-    </ogc:Filter>
-  </wfs:Query>
-</wfs:GetFeature>
-"""
-        expectNotEqualTests.append(('withinFake3857FilterTemplate_post', withinFake3857FilterTemplate.format("")))
-
-        # Now test with EPSG 3857 and proper 3857 coordinates
-        within3857FilterTemplate = """<?xml version="1.0" encoding="UTF-8"?>
-<wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
-  <wfs:Query typeName="testlayer" srsName="EPSG:4326" xmlns:feature="http://www.qgis.org/gml">
-    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
-      <Within>
-        <PropertyName>geometry</PropertyName>
-        <Polygon xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
-          <exterior>
-            <LinearRing srsName="EPSG:3857">
-              <posList srsDimension="2">
-                890555.93 5465442.18
-                1001875.42, 5465442.18
-                1001875.42, 5621521.49
-                890555.93, 5621521.49
-                890555.93 5465442.18
-              </posList>
-            </LinearRing>
-          </exterior>
-        </Polygon>
-      </Within>
-    </ogc:Filter>
-  </wfs:Query>
-</wfs:GetFeature>
-"""
-        tests.append(('within3857FilterTemplate_post', within3857FilterTemplate.format("")))
+        tests.append(('withinFilterTemplate_post', withinFilterTemplate.format("")))
 
         srsTwoLayersTemplate = """<?xml version="1.0" encoding="UTF-8"?>
 <wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
@@ -479,9 +417,6 @@ class TestQgsServerWFS(QgsServerTestBase):
 </wfs:GetFeature>
 """
         tests.append(('nobbox_post', template.format("")))
-
-        for id, req in expectNotEqualTests:
-            self.wfs_getfeature_post_compare(id, req, expectEqual=False)
 
         for id, req in tests:
             self.wfs_getfeature_post_compare(id, req)
