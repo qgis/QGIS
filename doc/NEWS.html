@@ -1,42 +1,81 @@
-<p>Change history for the QGIS Project</p>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>QGIS News</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">QGIS News</h1>
+</header>
+<nav id="TOC" role="doc-toc">
 <ul>
-<li><a href="#whats-new-in-version-312-bucurești">What’s new in Version 3.12 ‘București’?</a></li>
-<li><a href="#whats-new-in-version-310-a-coruña">What’s new in Version 3.10 ‘A Coruña’?</a></li>
-<li><a href="#whats-new-in-version-38-zanzibar">What’s new in Version 3.8 ‘Zanzibar’?</a></li>
-<li><a href="#whats-new-in-version-360-noosa">What’s new in Version 3.6.0 ‘Noosa’?</a></li>
-<li><a href="#whats-new-in-version-34-ltr-madeira">What’s new in Version 3.4-LTR ‘Madeira’?</a></li>
-<li><a href="#whats-new-in-version-32-bonn">What’s new in Version 3.2 ‘Bonn’?</a></li>
-<li><a href="#whats-new-in-version-30-girona">What’s new in Version 3.0 ‘Girona’?</a></li>
-<li><a href="#whats-new-in-version-218-las-palmas">What’s new in Version 2.18 ‘Las Palmas’?</a></li>
-<li><a href="whats-new-in-version-216-nødebo">What’s new in Version 2.16 ‘Nødebo’?</a></li>
-<li><a href="whats-new-in-version-214-essen">What’s new in Version 2.14 ‘Essen’?</a></li>
-<li><a href="whats-new-in-version-212-lyon">What’s new in Version 2.12 ‘Lyon’?</a></li>
-<li><a href="whats-new-in-version-210-pisa">What’s new in Version 2.10 ‘Pisa’?</a></li>
-<li><a href="whats-new-in-version-28-wien">What’s new in Version 2.8 ‘Wien’?</a></li>
-<li><a href="whats-new-in-version-260-brighton">What’s new in Version 2.6.0 ‘Brighton’?</a></li>
-<li><a href="whats-new-in-version-240-chugiak">What’s new in Version 2.4.0 ‘Chugiak’?</a></li>
-<li><a href="whats-new-in-version-220-valmiera">What’s new in Version 2.2.0 ‘Valmiera’?</a></li>
-<li><a href="whats-new-in-version-201-dufour">What’s new in Version 2.0.1 ‘Dufour’?</a></li>
-<li><a href="whats-new-in-version-200-dufour">What’s new in Version 2.0.0 ‘Dufour’?</a></li>
-<li><a href="whats-new-in-version-180-lisboa">What’s new in Version 1.8.0 ‘Lisboa’?</a></li>
-<li><a href="whats-new-in-version-172-wroclaw">What’s new in Version 1.7.2 ‘Wroclaw’?</a></li>
-<li><a href="whats-new-in-version-171-wroclaw">What’s new in Version 1.7.1 ‘Wroclaw’?</a></li>
-<li><a href="whats-new-in-version-170-wroclaw">What’s new in Version 1.7.0 ‘Wroclaw’?</a></li>
-<li><a href="whats-new-in-version-160-capiapo">What’s new in Version 1.6.0 ‘Capiapo’?</a></li>
-<li><a href="whats-new-in-version-150">What’s new in Version 1.5.0?</a></li>
-<li><a href="whats-new-in-version-140-enceladus">What’s new in Version 1.4.0 ‘Enceladus’?</a></li>
-<li><a href="whats-new-in-version-130-mimas">What’s new in Version 1.3.0 ‘Mimas’?</a></li>
-<li><a href="version-120-daphnis">Version 1.2.0 ‘Daphnis’</a></li>
-<li><a href="version-100-kore">Version 1.0.0 ‘Kore’</a></li>
-<li><a href="version-0110-metis">Version 0.11.0 ‘Metis’</a></li>
-<li><a href="version-0100-io">Version 0.10.0 ‘Io’</a></li>
-<li><a href="version-092rc1-ganymede">Version 0.9.2rc1 ‘Ganymede’</a></li>
-<li><a href="version-091-ganymede">Version 0.9.1 ‘Ganymede’</a></li>
-<li><a href="version-09-ganymede">Version 0.9 ‘Ganymede’</a></li>
-<li><a href="#version-08-joesephine--development-version">Version 0.8 ‘Joesephine’ …. development version</a></li>
-<li><a href="#version-06-simon">Version 0.6 ‘Simon’</a></li>
-<li><a href="version-05">Older Versions</a></li>
+<li><a href="#whats-new-in-version-3.12-bucurești">What’s new in Version 3.12 ‘București’?</a></li>
+<li><a href="#whats-new-in-version-3.10-a-coruña">What’s new in Version 3.10 ‘A Coruña’?</a></li>
+<li><a href="#whats-new-in-version-3.8-zanzibar">What’s new in Version 3.8 ‘Zanzibar’?</a></li>
+<li><a href="#whats-new-in-version-3.6.0-noosa">What’s new in Version 3.6.0 ‘Noosa’?</a></li>
+<li><a href="#whats-new-in-version-3.4-ltr-madeira">What’s new in Version 3.4-LTR ‘Madeira’?</a></li>
+<li><a href="#whats-new-in-version-3.2-bonn">What’s new in Version 3.2 ‘Bonn’?</a></li>
+<li><a href="#whats-new-in-version-3.0-girona">What’s new in Version 3.0 ‘Girona’?</a></li>
+<li><a href="#whats-new-in-version-2.18-las-palmas">What’s new in Version 2.18 ‘Las Palmas’?</a></li>
+<li><a href="#whats-new-in-version-2.16-nødebo">What’s new in Version 2.16 ‘Nødebo’?</a></li>
+<li><a href="#whats-new-in-version-2.14-essen">What’s new in Version 2.14 ‘Essen’?</a></li>
+<li><a href="#whats-new-in-version-2.12-lyon">What’s new in Version 2.12 ‘Lyon’?</a></li>
+<li><a href="#whats-new-in-version-2.10-pisa">What’s new in Version 2.10 ‘Pisa’?</a></li>
+<li><a href="#whats-new-in-version-2.8-wien">What’s new in Version 2.8 ‘Wien’?</a></li>
+<li><a href="#whats-new-in-version-2.6.0-brighton">What’s new in Version 2.6.0 ‘Brighton’?</a></li>
+<li><a href="#whats-new-in-version-2.4.0-chugiak">What’s new in Version 2.4.0 ‘Chugiak’?</a></li>
+<li><a href="#whats-new-in-version-2.2.0-valmiera">What’s new in Version 2.2.0 ‘Valmiera’?</a></li>
+<li><a href="#whats-new-in-version-2.0.1-dufour">What’s new in Version 2.0.1 ‘Dufour’?</a></li>
+<li><a href="#whats-new-in-version-2.0.0-dufour">What’s new in Version 2.0.0 ‘Dufour’?</a></li>
+<li><a href="#whats-new-in-version-1.8.0-lisboa">What’s new in Version 1.8.0 ‘Lisboa’?</a></li>
+<li><a href="#whats-new-in-version-1.7.2-wroclaw">What’s new in Version 1.7.2 ‘Wroclaw’?</a></li>
+<li><a href="#whats-new-in-version-1.7.1-wroclaw">What’s new in Version 1.7.1 ‘Wroclaw’?</a></li>
+<li><a href="#whats-new-in-version-1.7.0-wroclaw">What’s new in Version 1.7.0 ‘Wroclaw’?</a></li>
+<li><a href="#whats-new-in-version-1.6.0-capiapo">What’s new in Version 1.6.0 ‘Capiapo’?</a></li>
+<li><a href="#whats-new-in-version-1.5.0">What’s new in Version 1.5.0?</a></li>
+<li><a href="#whats-new-in-version-1.4.0-enceladus">What’s new in Version 1.4.0 ‘Enceladus’?</a></li>
+<li><a href="#whats-new-in-version-1.3.0-mimas">What’s new in Version 1.3.0 ‘Mimas’?</a></li>
+<li><a href="#version-1.2.0-daphnis">Version 1.2.0 ‘Daphnis’</a></li>
+<li><a href="#version-1.1.0-pan">Version 1.1.0 ‘Pan’</a></li>
+<li><a href="#version-1.0.0-kore">Version 1.0.0 ‘Kore’</a></li>
+<li><a href="#version-0.11.0-metis">Version 0.11.0 ‘Metis’</a></li>
+<li><a href="#version-0.10.0-io">Version 0.10.0 ‘Io’</a></li>
+<li><a href="#version-0.9.2rc1-ganymede">Version 0.9.2rc1 ‘Ganymede’</a></li>
+<li><a href="#version-0.9.1-ganymede">Version 0.9.1 ‘Ganymede’</a></li>
+<li><a href="#version-0.9-ganymede">Version 0.9 ‘Ganymede’</a></li>
+<li><a href="#version-0.8-joesephine-.-development-version">Version 0.8 ‘Joesephine’ …. development version</a></li>
+<li><a href="#version-0.6-simon">Version 0.6 ‘Simon’</a></li>
+<li><a href="#version-0.5">Version 0.5</a></li>
+<li><a href="#version-0.1-moroz-february-25-2004">Version 0.1 ‘Moroz’ February 25, 2004</a></li>
+<li><a href="#version-0.0.13-december-8-2003">Version 0.0.13 December 8, 2003</a></li>
+<li><a href="#version-0.0.12-alpha-june-10-2003">Version 0.0.12-alpha June 10, 2003</a></li>
+<li><a href="#version-0.0.11-alpha-june-10-2003">Version 0.0.11-alpha June 10, 2003</a></li>
+<li><a href="#version-0.0.10-alpha-may-13-2003">Version 0.0.10-alpha May 13, 2003</a></li>
+<li><a href="#version-0.0.9-alpha-january-25-2003">Version 0.0.9-alpha January 25, 2003</a></li>
+<li><a href="#version-0.0.8-alpha-december-11-2002">Version 0.0.8-alpha December 11, 2002</a></li>
+<li><a href="#version-0.0.7-alpha-november-30-2002">Version 0.0.7-alpha November 30, 2002</a></li>
+<li><a href="#version-0.0.6a-alpha-november-27-2002">Version 0.0.6a-alpha November 27, 2002</a></li>
+<li><a href="#version-0.0.6-alpha-november-24-2002">Version 0.0.6-alpha November 24, 2002</a></li>
+<li><a href="#version-0.0.5-alpha-october-5-2002">Version 0.0.5-alpha October 5, 2002</a></li>
+<li><a href="#version-0.0.4-alpha-august-15-2002">Version 0.0.4-alpha August 15, 2002</a></li>
+<li><a href="#version-0.0.3-alpha-august-10-2002">Version 0.0.3-alpha August 10, 2002</a></li>
 </ul>
+</nav>
+<p>Change history for the QGIS Project</p>
 <h1 id="whats-new-in-version-3.12-bucurești">What’s new in Version 3.12 ‘București’?</h1>
 <p>This release has following new features:</p>
 <ul>
@@ -1941,3 +1980,5 @@ myFileWriter.writePoint(&amp;theQgsPoint);
 <p>July 10, 2002 Layers can be selected and added to the map canvas collection however the rendering code is currently disabled and being reorganized. So if you add a layer, nothing will be drawn…</p>
 <p>July 6, 2002 This code is preliminary and really has no true functionality other than the ability to define a PostGIS connection and display the spatially enabled tables that could be loaded.</p>
 <p>This is the initial import of the code base into CVS on Sourceforge.net.</p>
+</body>
+</html>
