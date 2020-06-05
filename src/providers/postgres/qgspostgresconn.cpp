@@ -1212,7 +1212,6 @@ QString QgsPostgresConn::quotedValue( const QVariant &value )
   {
     case QVariant::Int:
     case QVariant::LongLong:
-    case QVariant::ULongLong:
     case QVariant::Double:
       return value.toString();
 
@@ -1624,7 +1623,7 @@ QString QgsPostgresConn::fieldExpressionForWhereClause( const QgsField &fld, QVa
   {
     out = expr.arg( quotedIdentifier( fld.name() ) );
     // if field and value havev incompatible types, rollback to text cast
-    if ( valueType !=  QVariant::LastType && valueType != QVariant::Int && valueType != QVariant::LongLong && valueType != QVariant::ULongLong && valueType != QVariant::Double )
+    if ( valueType !=  QVariant::LastType && valueType != QVariant::Int && valueType != QVariant::LongLong && valueType != QVariant::Double )
     {
       out = out + "::text";
     }
