@@ -187,6 +187,8 @@ bool QgsMapRendererTask::run()
 
       component.name = QStringLiteral( "layer_%1" ).arg( outputLayer );
       component.mapLayerId = job->currentLayerId();
+      component.opacity = job->currentLayerOpacity();
+      component.compositionMode = job->currentLayerCompositionMode();
       component.sourcePdfPath = mGeoPdfExporter->generateTemporaryFilepath( QStringLiteral( "layer_%1.pdf" ).arg( outputLayer ) );
       pdfComponents << component;
 

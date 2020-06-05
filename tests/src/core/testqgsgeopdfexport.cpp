@@ -223,8 +223,16 @@ void TestQgsGeoPdfExport::testComposition()
   }
 
   // test creation of the composition xml
-  QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > renderedLayers; // no extra layers for now
+  QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > renderedLayers;
+  QgsAbstractGeoPdfExporter::ComponentLayerDetail detail;
+  detail.mapLayerId = QStringLiteral( "layer3" );
+  detail.opacity = 0.7;
+  detail.compositionMode = QPainter::CompositionMode_Screen;
+  detail.sourcePdfPath = QStringLiteral( "a pdf.pdf" );
+  renderedLayers << detail;
+
   QgsAbstractGeoPdfExporter::ExportDetails details;
+
   details.layerIdToPdfLayerTreeNameMap.insert( QStringLiteral( "layer1" ), QStringLiteral( "my first layer" ) );
   details.initialLayerVisibility.insert( QStringLiteral( "layer2" ), false );
   details.layerOrder = QStringList() << QStringLiteral( "layer2" );
@@ -233,10 +241,14 @@ void TestQgsGeoPdfExport::testComposition()
   QDomDocument doc;
   doc.setContent( composition );
   QDomNodeList ifLayerOnList = doc.elementsByTagName( QStringLiteral( "IfLayerOn" ) );
-  QCOMPARE( ifLayerOnList.count(), 2 );
+  QCOMPARE( ifLayerOnList.count(), 3 );
 
-  int layer1Idx = ifLayerOnList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QStringLiteral( "layer1" ) ? 0 : 1;
-  int layer2Idx = layer1Idx == 0 ? 1 : 0;
+  int layer1Idx = ifLayerOnList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QStringLiteral( "layer1" ) ? 0 :
+                  ifLayerOnList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QStringLiteral( "layer1" ) ? 1 : 2;
+  int layer2Idx = ifLayerOnList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QStringLiteral( "layer2" ) ? 0 :
+                  ifLayerOnList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QStringLiteral( "layer2" ) ? 1 : 2;
+  int layer3Idx = ifLayerOnList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QStringLiteral( "layer3" ) ? 0 :
+                  ifLayerOnList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QStringLiteral( "layer3" ) ? 1 : 2;
   QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().attribute( QStringLiteral( "layerId" ) ), QStringLiteral( "layer1" ) );
   QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "dataset" ) ), layer1Path );
   QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "layer" ) ), layer1Layer );
@@ -251,9 +263,13 @@ void TestQgsGeoPdfExport::testComposition()
   QCOMPARE( ifLayerOnList.at( layer2Idx ).toElement().elementsByTagName( QStringLiteral( "LogicalStructure" ) ).at( 0 ).toElement().attribute( QStringLiteral( "fieldToDisplay" ) ), QStringLiteral( "attr layer2" ) );
   QCOMPARE( ifLayerOnList.at( layer2Idx ).toElement().elementsByTagName( QStringLiteral( "LogicalStructure" ) ).at( 0 ).toElement().attribute( QStringLiteral( "displayLayerName" ) ), QStringLiteral( "name layer2" ) );
 
+  QCOMPARE( ifLayerOnList.at( layer3Idx ).toElement().attribute( QStringLiteral( "layerId" ) ), QStringLiteral( "layer3" ) );
+  QCOMPARE( ifLayerOnList.at( layer3Idx ).toElement().elementsByTagName( QStringLiteral( "PDF" ) ).at( 0 ).toElement().attribute( QStringLiteral( "dataset" ) ), QStringLiteral( "a pdf.pdf" ) );
+  QCOMPARE( ifLayerOnList.at( layer3Idx ).toElement().elementsByTagName( QStringLiteral( "PDF" ) ).at( 0 ).toElement().elementsByTagName( QStringLiteral( "Blending" ) ).at( 0 ).toElement().attribute( QStringLiteral( "opacity" ) ).toDouble(), 0.7 );
+  QCOMPARE( ifLayerOnList.at( layer3Idx ).toElement().elementsByTagName( QStringLiteral( "PDF" ) ).at( 0 ).toElement().elementsByTagName( QStringLiteral( "Blending" ) ).at( 0 ).toElement().attribute( QStringLiteral( "function" ) ), QStringLiteral( "Screen" ) );
 
   QDomNodeList layerTreeList = doc.elementsByTagName( QStringLiteral( "LayerTree" ) ).at( 0 ).toElement().childNodes();
-  QCOMPARE( layerTreeList.count(), 2 );
+  QCOMPARE( layerTreeList.count(), 3 );
 
   QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "layer1" ) );
   QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my first layer" ) );
@@ -262,6 +278,8 @@ void TestQgsGeoPdfExport::testComposition()
   QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "layer2" ) );
   QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer2" ) );
   QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "false" ) );
+
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "layer3" ) );
 }
 
 void TestQgsGeoPdfExport::testMetadata()

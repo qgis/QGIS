@@ -464,6 +464,10 @@ Moves to the next export part for a multi-layered export item, during a multi-la
 
       QString mapLayerId;
 
+      QPainter::CompositionMode compositionMode;
+
+      double opacity;
+
       QString mapTheme;
     };
 

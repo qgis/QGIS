@@ -471,15 +471,73 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
     page.appendChild( georeferencing );
   }
 
+  auto createPdfDatasetElement = [&doc]( const ComponentLayerDetail & component ) -> QDomElement
+  {
+    QDomElement pdfDataset = doc.createElement( QStringLiteral( "PDF" ) );
+    pdfDataset.setAttribute( QStringLiteral( "dataset" ), component.sourcePdfPath );
+    if ( component.opacity != 1.0 || component.compositionMode != QPainter::CompositionMode_SourceOver )
+    {
+      QDomElement blendingElement = doc.createElement( QStringLiteral( "Blending" ) );
+      blendingElement.setAttribute( QStringLiteral( "opacity" ), component.opacity );
+      QString function;
+      switch ( component.compositionMode )
+      {
+        case QPainter::CompositionMode_SourceOver:
+          function = QStringLiteral( "Normal" );
+          break;
+        case QPainter::CompositionMode_Multiply:
+          function = QStringLiteral( "Multiply" );
+          break;
+        case QPainter::CompositionMode_Screen:
+          function = QStringLiteral( "Screen" );
+          break;
+        case QPainter::CompositionMode_Overlay:
+          function = QStringLiteral( "Overlay" );
+          break;
+        case QPainter::CompositionMode_Darken:
+          function = QStringLiteral( "Darken" );
+          break;
+        case QPainter::CompositionMode_Lighten:
+          function = QStringLiteral( "Lighten" );
+          break;
+        case QPainter::CompositionMode_ColorDodge:
+          function = QStringLiteral( "ColorDodge" );
+          break;
+        case QPainter::CompositionMode_ColorBurn:
+          function = QStringLiteral( "ColorBurn" );
+          break;
+        case QPainter::CompositionMode_HardLight:
+          function = QStringLiteral( "HardLight" );
+          break;
+        case QPainter::CompositionMode_SoftLight:
+          function = QStringLiteral( "SoftLight" );
+          break;
+        case QPainter::CompositionMode_Difference:
+          function = QStringLiteral( "Difference" );
+          break;
+        case  QPainter::CompositionMode_Exclusion:
+          function = QStringLiteral( "Exclusion" );
+          break;
+
+        default:
+          QgsDebugMsg( QStringLiteral( "Unsupported PDF blend mode %1" ).arg( component.compositionMode ) );
+          function = QStringLiteral( "Normal" );
+          break;
+      }
+      blendingElement.setAttribute( QStringLiteral( "function" ), function );
+
+      pdfDataset.appendChild( blendingElement );
+    }
+    return pdfDataset;
+  };
+
   // content
   QDomElement content = doc.createElement( QStringLiteral( "Content" ) );
   for ( const ComponentLayerDetail &component : components )
   {
     if ( component.mapLayerId.isEmpty() )
     {
-      QDomElement pdfDataset = doc.createElement( QStringLiteral( "PDF" ) );
-      pdfDataset.setAttribute( QStringLiteral( "dataset" ), component.sourcePdfPath );
-      content.appendChild( pdfDataset );
+      content.appendChild( createPdfDatasetElement( component ) );
     }
     else if ( !component.group.isEmpty() )
     {
@@ -493,9 +551,8 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
         ifLayerOn.setAttribute( QStringLiteral( "layerId" ), component.mapLayerId );
       else
         ifLayerOn.setAttribute( QStringLiteral( "layerId" ), QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
-      QDomElement pdfDataset = doc.createElement( QStringLiteral( "PDF" ) );
-      pdfDataset.setAttribute( QStringLiteral( "dataset" ), component.sourcePdfPath );
-      ifLayerOn.appendChild( pdfDataset );
+
+      ifLayerOn.appendChild( createPdfDatasetElement( component ) );
       ifGroupOn.appendChild( ifLayerOn );
       content.appendChild( ifGroupOn );
     }
@@ -508,9 +565,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
         ifLayerOn.setAttribute( QStringLiteral( "layerId" ), component.mapLayerId );
       else
         ifLayerOn.setAttribute( QStringLiteral( "layerId" ), QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
-      QDomElement pdfDataset = doc.createElement( QStringLiteral( "PDF" ) );
-      pdfDataset.setAttribute( QStringLiteral( "dataset" ), component.sourcePdfPath );
-      ifLayerOn.appendChild( pdfDataset );
+      ifLayerOn.appendChild( createPdfDatasetElement( component ) );
       content.appendChild( ifLayerOn );
     }
   }

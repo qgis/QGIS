@@ -21,6 +21,8 @@
 #include <QTemporaryDir>
 #include <QMutex>
 #include <QDateTime>
+#include <QPainter>
+
 #include "qgsfeature.h"
 #include "qgsabstractmetadatabase.h"
 #include "qgspolygon.h"
@@ -125,6 +127,12 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
 
       //! File path to the (already created) PDF to use as the source for this component layer
       QString sourcePdfPath;
+
+      //! Component composition mode
+      QPainter::CompositionMode compositionMode = QPainter::CompositionMode_SourceOver;
+
+      //! Component opacity
+      double opacity = 1.0;
 
     };
 
