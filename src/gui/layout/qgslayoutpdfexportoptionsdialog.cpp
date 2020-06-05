@@ -186,21 +186,6 @@ bool QgsLayoutPdfExportOptionsDialog::useOgcBestPracticeFormat() const
   return mGeoPdfFormatComboBox->currentIndex() == 1;
 }
 
-void QgsLayoutPdfExportOptionsDialog::setExportGeoPdfFeatures( bool enabled )
-{
-  if ( !mGeopdfAvailable )
-    return;
-
-  mExportGeoPdfFeaturesCheckBox->setChecked( enabled );
-}
-
-bool QgsLayoutPdfExportOptionsDialog::exportGeoPdfFeatures() const
-{
-  if ( !mGeopdfAvailable )
-    return false;
-
-  return mExportGeoPdfFeaturesCheckBox->isChecked();
-}
 
 void QgsLayoutPdfExportOptionsDialog::setExportThemes( const QStringList &themes )
 {
@@ -245,19 +230,20 @@ void QgsLayoutPdfExportOptionsDialog::showContextMenuForGeoPdfStructure( QPoint 
 
   switch ( index.column() )
   {
-    case 0:
+    case QgsGeoPdfLayerTreeModel::IncludeVectorAttributes:
+    case QgsGeoPdfLayerTreeModel::InitiallyVisible:
     {
       QAction *selectAll = new QAction( tr( "Select All" ), mGeoPdfStructureTreeMenu );
       mGeoPdfStructureTreeMenu->addAction( selectAll );
       connect( selectAll, &QAction::triggered, this, [ = ]
       {
-        mGeoPdfStructureModel->checkAll( true );
+        mGeoPdfStructureModel->checkAll( true, QModelIndex(), index.column() );
       } );
       QAction *deselectAll = new QAction( tr( "Deselect All" ), mGeoPdfStructureTreeMenu );
       mGeoPdfStructureTreeMenu->addAction( deselectAll );
       connect( deselectAll, &QAction::triggered, this, [ = ]
       {
-        mGeoPdfStructureModel->checkAll( false );
+        mGeoPdfStructureModel->checkAll( false, QModelIndex(), index.column() );
       } );
       break;
     }

@@ -40,6 +40,14 @@ class GUI_EXPORT QgsGeoPdfLayerTreeModel : public QgsLayerTreeModel
     Q_OBJECT
 
   public:
+    enum Columns
+    {
+      LayerColumn = 0,
+      GroupColumn,
+      InitiallyVisible,
+      IncludeVectorAttributes
+    };
+
     //! constructor
     QgsGeoPdfLayerTreeModel( QgsLayerTree *rootNode, QObject *parent = nullptr );
 
@@ -52,15 +60,11 @@ class GUI_EXPORT QgsGeoPdfLayerTreeModel : public QgsLayerTreeModel
     /**
      * Checks (or unchecks) all rows and children from the specified \a parent index.
      */
-    void checkAll( bool checked, const QModelIndex &parent = QModelIndex() );
+    void checkAll( bool checked, const QModelIndex &parent = QModelIndex(), int column = IncludeVectorAttributes );
 
   private:
-    enum Columns
-    {
-      LayerColumn = 0,
-      GroupColumn
-    };
 
+    QgsMapLayer *mapLayer( const QModelIndex &idx ) const;
     QgsVectorLayer *vectorLayer( const QModelIndex &idx ) const;
 };
 

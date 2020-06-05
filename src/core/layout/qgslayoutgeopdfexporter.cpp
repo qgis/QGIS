@@ -115,17 +115,22 @@ QgsLayoutGeoPdfExporter::QgsLayoutGeoPdfExporter( QgsLayout *layout )
   const QMap< QString, QgsMapLayer * > layers = mLayout->project()->mapLayers( true );
   for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
-    if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( it.value() ) )
+    if ( QgsMapLayer *ml = it.value() )
     {
-      const QVariant v = vl->customProperty( QStringLiteral( "geopdf/includeFeatures" ) );
-      if ( !v.isValid() || v.toBool() )
+      const QVariant visibility = ml->customProperty( QStringLiteral( "geopdf/initiallyVisible" ), true );
+      mInitialLayerVisibility.insert( ml->id(), !visibility.isValid() ? true : visibility.toBool() );
+      if ( ml->type() == QgsMapLayerType::VectorLayer )
       {
-        exportableLayerIds << vl->id();
+        const QVariant v = ml->customProperty( QStringLiteral( "geopdf/includeFeatures" ) );
+        if ( !v.isValid() || v.toBool() )
+        {
+          exportableLayerIds << ml->id();
+        }
       }
 
-      const QString groupName = vl->customProperty( QStringLiteral( "geopdf/groupName" ) ).toString();
+      const QString groupName = ml->customProperty( QStringLiteral( "geopdf/groupName" ) ).toString();
       if ( !groupName.isEmpty() )
-        mCustomLayerTreeGroups.insert( vl->id(), groupName );
+        mCustomLayerTreeGroups.insert( ml->id(), groupName );
     }
   }
 
