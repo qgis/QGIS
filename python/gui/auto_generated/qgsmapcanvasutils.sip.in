@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/server/qgsservice.h                                              *
+ * src/gui/qgsmapcanvasutils.h                                          *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -9,59 +9,39 @@
 
 
 
-
-
-class QgsService
+class QgsMapCanvasUtils
 {
 %Docstring
-QgsService
-Class defining interfaces for QGIS server services
+Utility functions for working with QgsMapCanvas widgets.
 
-This class provides methods for executing server requests
-They are registered at runtime for a given service name.
-
-.. versionadded:: 3.0
+.. versionadded:: 3.14
 %End
 
 %TypeHeaderCode
-#include "qgsservice.h"
-#include "qgsserverrequest.h"
-#include "qgsserverresponse.h"
+#include "qgsmapcanvasutils.h"
 %End
   public:
 
-    QgsService();
+    static long zoomToMatchingFeatures( QgsMapCanvas *canvas, QgsVectorLayer *layer, const QString &filter );
 %Docstring
-Constructor
+Zooms a map ``canvas`` to features from the specified ``layer`` which match the given ``filter`` expression string.
+
+The total count of matching features will be returned.
 %End
 
-    virtual ~QgsService();
-
-    virtual QString name() const = 0;
+    static long flashMatchingFeatures( QgsMapCanvas *canvas, QgsVectorLayer *layer, const QString &filter );
 %Docstring
+Flashes features from the specified ``layer`` which match the given ``filter`` expression string with a map ``canvas``.
 
-:return: the name of the service
+The total count of matching features will be returned.
 %End
 
-    virtual QString version() const = 0;
-%Docstring
-
-:return: the version of the service
-%End
-
-    virtual void executeRequest( const QgsServerRequest &request,
-                                 QgsServerResponse &response,
-                                 const QgsProject *project ) = 0;
-%Docstring
-Execute the requests and set result in :py:class:`QgsServerRequest`
-%End
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/server/qgsservice.h                                              *
+ * src/gui/qgsmapcanvasutils.h                                          *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

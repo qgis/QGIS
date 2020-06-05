@@ -209,6 +209,12 @@ class CORE_EXPORT QgsTextMaskSettings
      */
     void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
 
+    /**
+     * Returns all field names referenced by the configuration (e.g. from data defined properties).
+     * \since QGIS 3.14
+     */
+    QSet<QString> referencedFields( const QgsRenderContext &context ) const;
+
   private:
 
     QSharedDataPointer<QgsTextMaskSettingsPrivate> d;

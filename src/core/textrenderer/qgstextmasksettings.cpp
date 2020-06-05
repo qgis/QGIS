@@ -165,6 +165,11 @@ void QgsTextMaskSettings::updateDataDefinedProperties( QgsRenderContext &context
   }
 }
 
+QSet<QString> QgsTextMaskSettings::referencedFields( const QgsRenderContext & ) const
+{
+  return QSet< QString >(); // nothing for now
+}
+
 void QgsTextMaskSettings::readXml( const QDomElement &elem )
 {
   QDomElement textMaskElem = elem.firstChildElement( QStringLiteral( "text-mask" ) );

@@ -2816,6 +2816,23 @@ void QgisApp::createActions()
 
   connect( mActionDiagramProperties, &QAction::triggered, this, &QgisApp::diagramProperties );
 
+  // we can't set the shortcut these actions, because we need to restrict their context to the canvas and it's children..
+  QShortcut *copyShortcut = new QShortcut( QKeySequence::Copy, mMapCanvas );
+  copyShortcut->setContext( Qt::WidgetWithChildrenShortcut );
+  connect( copyShortcut, &QShortcut::activated, this, [ = ] { copySelectionToClipboard(); } );
+
+  QShortcut *cutShortcut = new QShortcut( QKeySequence::Cut, mMapCanvas );
+  cutShortcut->setContext( Qt::WidgetWithChildrenShortcut );
+  connect( cutShortcut, &QShortcut::activated, this, [ = ] { cutSelectionToClipboard(); } );
+
+  QShortcut *pasteShortcut = new QShortcut( QKeySequence::Paste, mMapCanvas );
+  pasteShortcut->setContext( Qt::WidgetWithChildrenShortcut );
+  connect( pasteShortcut, &QShortcut::activated, this, [ = ] { pasteFromClipboard(); } );
+
+  QShortcut *selectAllShortcut = new QShortcut( QKeySequence::SelectAll, mMapCanvas );
+  selectAllShortcut->setContext( Qt::WidgetWithChildrenShortcut );
+  connect( selectAllShortcut, &QShortcut::activated, this, &QgisApp::selectAll );
+
 #ifndef HAVE_POSTGRESQL
   delete mActionAddPgLayer;
   mActionAddPgLayer = 0;
@@ -4933,10 +4950,10 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage, const QIcon &iconOve
     return;
 
   if ( projectData.path.isEmpty() )  // in case of custom project storage
-    projectData.path = QgsProject::instance()->fileName();
+    projectData.path = !QgsProject::instance()->fileName().isEmpty() ? QgsProject::instance()->fileName() : QgsProject::instance()->originalPath();
   projectData.title = QgsProject::instance()->title();
   if ( projectData.title.isEmpty() )
-    projectData.title = QgsProject::instance()->baseName();
+    projectData.title = !QgsProject::instance()->baseName().isEmpty() ? QgsProject::instance()->baseName() : QFileInfo( QgsProject::instance()->originalPath() ).completeBaseName();
 
   projectData.crs = QgsProject::instance()->crs().authid();
 
@@ -6951,7 +6968,7 @@ bool QgisApp::addProject( const QString &projectFile )
     // if a custom handler was used, then we generate a thumbnail
     if ( !usedCustomHandler || !customHandlerWantsThumbnail )
       saveRecentProjectPath( false );
-    else if ( !QgsProject::instance()->fileName().isEmpty() )
+    else if ( !QgsProject::instance()->originalPath().isEmpty() )
     {
       // we have to delay the thumbnail creation until after the canvas has refreshed for the first time
       QMetaObject::Connection *connection = new QMetaObject::Connection();
@@ -14966,6 +14983,7 @@ void QgisApp::createPreviewImage( const QString &path, const QIcon &icon )
                      , previewSize );
 
   QPixmap previewImage( previewSize );
+  previewImage.fill();
   QPainter previewPainter( &previewImage );
   mMapCanvas->render( &previewPainter, QRect( QPoint(), previewSize ), previewRect );
 

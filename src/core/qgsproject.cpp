@@ -491,6 +491,11 @@ QString QgsProject::saveUserFullName() const
   return mSaveUserFull;
 }
 
+QDateTime QgsProject::lastSaveDateTime() const
+{
+  return mSaveDateTime;
+}
+
 bool QgsProject::isDirty() const
 {
   return mDirty;
@@ -628,6 +633,16 @@ QString QgsProject::fileName() const
   return mFile.fileName();
 }
 
+void QgsProject::setOriginalPath( const QString &path )
+{
+  mOriginalPath = path;
+}
+
+QString QgsProject::originalPath() const
+{
+  return mOriginalPath;
+}
+
 QFileInfo QgsProject::fileInfo() const
 {
   return QFileInfo( mFile );
@@ -755,6 +770,7 @@ void QgsProject::clear()
   mProperties.clearKeys();
   mSaveUser.clear();
   mSaveUserFull.clear();
+  mSaveDateTime = QDateTime();
   mHomePath.clear();
   mCachedHomePath.clear();
   mAutoTransaction = false;
@@ -952,7 +968,7 @@ static void _getTitle( const QDomDocument &doc, QString &title )
 
 }
 
-static void readProjectFileMetadata( const QDomDocument &doc, QString &lastUser, QString &lastUserFull )
+static void readProjectFileMetadata( const QDomDocument &doc, QString &lastUser, QString &lastUserFull, QDateTime &lastSaveDateTime )
 {
   QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "qgis" ) );
 
@@ -967,6 +983,7 @@ static void readProjectFileMetadata( const QDomDocument &doc, QString &lastUser,
   QDomElement qgisElement = qgisNode.toElement(); // qgis node should be element
   lastUser = qgisElement.attribute( QStringLiteral( "saveUser" ), QString() );
   lastUserFull = qgisElement.attribute( QStringLiteral( "saveUserFull" ), QString() );
+  lastSaveDateTime = QDateTime::fromString( qgisElement.attribute( QStringLiteral( "saveDateTime" ), QString() ), Qt::ISODate );
 }
 
 
@@ -1321,7 +1338,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   QString oldTitle;
   _getTitle( *doc, oldTitle );
 
-  readProjectFileMetadata( *doc, mSaveUser, mSaveUserFull );
+  readProjectFileMetadata( *doc, mSaveUser, mSaveUserFull, mSaveDateTime );
 
   QDomNodeList homePathNl = doc->elementsByTagName( QStringLiteral( "homePath" ) );
   if ( homePathNl.count() > 0 )
@@ -1805,6 +1822,8 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
   }
 
   QString projectPath = projectStorage() ? fileName() : absoluteFilePath();
+  if ( projectPath.isEmpty() )
+    projectPath = mOriginalPath;
   QString projectFolder = QFileInfo( projectPath ).path();
   QString projectFilename = QFileInfo( projectPath ).fileName();
   QString projectBasename = baseName();
@@ -1816,6 +1835,7 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_filename" ), projectFilename, true, true ) );
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_basename" ), projectBasename, true, true ) );
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_home" ), QDir::toNativeSeparators( homePath() ), true, true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_last_saved" ), mSaveDateTime.isNull() ? QVariant() : QVariant( mSaveDateTime ), true, true ) );
   QgsCoordinateReferenceSystem projectCrs = crs();
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs" ), projectCrs.authid(), true, true ) );
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_definition" ), projectCrs.toProj(), true, true ) );
@@ -1973,13 +1993,12 @@ bool QgsProject::write( const QString &filename )
 {
   mFile.setFileName( filename );
   mCachedHomePath.clear();
-  mProjectScope.reset();
-
   return write();
 }
 
 bool QgsProject::write()
 {
+  mProjectScope.reset();
   if ( QgsProjectStorage *storage = projectStorage() )
   {
     QgsReadWriteContext context;
@@ -2085,11 +2104,14 @@ bool QgsProject::writeProjectFile( const QString &filename )
     qgisNode.setAttribute( QStringLiteral( "saveUserFull" ), newSaveUserFull );
     mSaveUser = newSaveUser;
     mSaveUserFull = newSaveUserFull;
+    mSaveDateTime = QDateTime::currentDateTime();
+    qgisNode.setAttribute( QStringLiteral( "saveDateTime" ), mSaveDateTime.toString( Qt::ISODate ) );
   }
   else
   {
     mSaveUser.clear();
     mSaveUserFull.clear();
+    mSaveDateTime = QDateTime();
   }
   doc->appendChild( qgisNode );
 

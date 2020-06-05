@@ -473,6 +473,13 @@ Returns a reference to the format's property collection, used for data defined o
 %End
 
 
+    QSet<QString> referencedFields( const QgsRenderContext &context ) const;
+%Docstring
+Returns all field names referenced by the configuration (e.g. from data defined properties).
+
+.. versionadded:: 3.14
+%End
+
     void setDataDefinedProperties( const QgsPropertyCollection &collection );
 %Docstring
 Sets the format's property collection, used for data defined overrides.

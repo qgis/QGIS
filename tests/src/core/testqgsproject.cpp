@@ -506,6 +506,7 @@ void TestQgsProject::projectSaveUser()
   QgsProject p;
   QVERIFY( p.saveUser().isEmpty() );
   QVERIFY( p.saveUserFullName().isEmpty() );
+  QVERIFY( !p.lastSaveDateTime().isValid() );
 
   QTemporaryFile f;
   QVERIFY( f.open() );
@@ -515,6 +516,7 @@ void TestQgsProject::projectSaveUser()
 
   QCOMPARE( p.saveUser(), QgsApplication::userLoginName() );
   QCOMPARE( p.saveUserFullName(), QgsApplication::userFullName() );
+  QCOMPARE( p.lastSaveDateTime().date(), QDateTime::currentDateTime().date() );
 
   QgsSettings s;
   s.setValue( QStringLiteral( "projects/anonymize_saved_projects" ), true, QgsSettings::Core );
@@ -523,12 +525,14 @@ void TestQgsProject::projectSaveUser()
 
   QVERIFY( p.saveUser().isEmpty() );
   QVERIFY( p.saveUserFullName().isEmpty() );
+  QVERIFY( !p.lastSaveDateTime().isValid() );
 
   s.setValue( QStringLiteral( "projects/anonymize_saved_projects" ), false, QgsSettings::Core );
 
   p.write();
   QCOMPARE( p.saveUser(), QgsApplication::userLoginName() );
   QCOMPARE( p.saveUserFullName(), QgsApplication::userFullName() );
+  QCOMPARE( p.lastSaveDateTime().date(), QDateTime::currentDateTime().date() );
 }
 
 void TestQgsProject::testSetGetCrs()

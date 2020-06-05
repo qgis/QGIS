@@ -474,6 +474,7 @@ bool QgsPalLayerSettings::prepare( QgsRenderContext &context, QSet<QString> &att
       attributeNames.insert( name );
     }
   }
+  attributeNames.unite( mFormat.referencedFields( context ) );
 
   if ( mCallout )
   {
@@ -501,6 +502,8 @@ QSet<QString> QgsPalLayerSettings::referencedFields( const QgsRenderContext &con
       referenced.insert( fieldName );
     }
   }
+
+  referenced.unite( mFormat.referencedFields( context ) );
 
   // calling referencedFields() with ignoreContext=true because in our expression context
   // we do not have valid QgsFields yet - because of that the field names from expressions

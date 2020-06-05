@@ -202,6 +202,11 @@ void QgsTextBufferSettings::updateDataDefinedProperties( QgsRenderContext &conte
   }
 }
 
+QSet<QString> QgsTextBufferSettings::referencedFields( const QgsRenderContext & ) const
+{
+  return QSet< QString >(); // nothing for now
+}
+
 void QgsTextBufferSettings::readFromLayer( QgsVectorLayer *layer )
 {
   // text buffer

@@ -42,7 +42,7 @@
 #include "qgsmaplayerstylecategoriesmodel.h"
 #include "qgssymbollayerutils.h"
 #include "qgsxmlutils.h"
-
+#include "qgsmessagebar.h"
 
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
@@ -50,7 +50,6 @@ QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeVi
   , mCanvas( canvas )
 {
 }
-
 
 QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 {
@@ -897,7 +896,10 @@ void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol( const QString 
 
   const QgsSymbol *originalSymbol = node->symbol();
   if ( !originalSymbol )
+  {
+    QgisApp::instance()->messageBar()->pushWarning( tr( "No Symbol" ), tr( "There is no symbol associated with the rule." ) );
     return;
+  }
 
   std::unique_ptr< QgsSymbol > symbol( originalSymbol->clone() );
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() );

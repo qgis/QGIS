@@ -343,19 +343,31 @@ border-radius: 2px;</string>
                </item>
                <item>
                 <widget class="QCheckBox" name="mTemporalStaticDatasetCheckBox">
+                 <property name="toolTip">
+                  <string>Static dataset even if the temporal navigation is on</string>
+                 </property>
                  <property name="text">
-                  <string>Static Dataset</string>
+                  <string>Force Static Dataset with Temporal Navigation</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QgsMeshStaticDatasetWidget" name="mStaticScalarWidget" native="true">
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>0</height>
-                  </size>
+                <widget class="QgsCollapsibleGroupBoxBasic" name="mStaticDatasetGroupBox">
+                 <property name="title">
+                  <string>Static Dataset</string>
                  </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_7">
+                  <item>
+                   <widget class="QgsMeshStaticDatasetWidget" name="mStaticDatasetWidget" native="true">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </widget>
                </item>
                <item>
@@ -366,7 +378,7 @@ border-radius: 2px;</string>
                  <property name="sizeHint" stdset="0">
                   <size>
                    <width>20</width>
-                   <height>0</height>
+                   <height>40</height>
                   </size>
                  </property>
                 </spacer>
@@ -796,6 +808,12 @@ border-radius: 2px;</string>
    <class>QgsMeshDatasetGroupTreeWidget</class>
    <extends>QWidget</extends>
    <header>qgsmeshdatasetgrouptreewidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -290,7 +290,7 @@ QgsDataItem *QgsAmsDataItemProvider::createDataItem( const QString &path, QgsDat
 {
   if ( path.isEmpty() )
   {
-    return new QgsAmsRootItem( parentItem, QStringLiteral( "ArcGisMapServer" ), QStringLiteral( "arcgismapserver:" ) );
+    return new QgsAmsRootItem( parentItem, QObject::tr( "ArcGIS Map Service" ), QStringLiteral( "arcgismapserver:" ) );
   }
 
   // path schema: ams:/connection name (used by OWS)

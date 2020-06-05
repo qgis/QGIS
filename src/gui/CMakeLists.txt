@@ -452,6 +452,7 @@ SET(QGIS_GUI_SRCS
   qgsmapcanvasmap.cpp
   qgsmapcanvassnappingutils.cpp
   qgsmapcanvastracer.cpp
+  qgsmapcanvasutils.cpp
   qgsmaplayeractionregistry.cpp
   qgsmaplayercombobox.cpp
   qgsmaplayerconfigwidgetfactory.cpp
@@ -683,6 +684,7 @@ SET(QGIS_GUI_HDRS
   qgsmapcanvasmap.h
   qgsmapcanvassnappingutils.h
   qgsmapcanvastracer.h
+  qgsmapcanvasutils.h
   qgsmaplayeractionregistry.h
   qgsmaplayercombobox.h
   qgsmaplayerconfigwidget.h

@@ -42,7 +42,7 @@
 #include <QNetworkCacheMetaData>
 
 const QString QgsAmsProvider::AMS_PROVIDER_KEY = QStringLiteral( "arcgismapserver" );
-const QString QgsAmsProvider::AMS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS MapServer data provider" );
+const QString QgsAmsProvider::AMS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Map Service data provider" );
 
 
 //! a helper class for ordering tile requests according to the distance from view center

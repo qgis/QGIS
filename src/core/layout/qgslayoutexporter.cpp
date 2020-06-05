@@ -606,6 +606,12 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
         details.keywords = mLayout->project()->metadata().keywords();
       }
 
+      const QList< QgsMapLayer * > layers = mLayout->project()->mapLayers().values();
+      for ( const QgsMapLayer *layer : layers )
+      {
+        details.layerIdToPdfLayerTreeNameMap.insert( layer->id(), layer->name() );
+      }
+
       if ( settings.appendGeoreference )
       {
         // setup georeferencing

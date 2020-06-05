@@ -958,6 +958,23 @@
           -6.784386
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "José de Paula R. N. Assis",
+        "Committer": "No",
+        "First Commit Message": "Fixes empty tracebacks for user Python code",
+        "First Commit Date": "09-02-2020",
+        "GIT Nickname": "espinafre"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.94110,
+          -15.814729
+        ]
+      }
     }
   ]
 }

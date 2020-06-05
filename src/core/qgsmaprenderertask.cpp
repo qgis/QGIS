@@ -184,6 +184,7 @@ bool QgsMapRendererTask::run()
     while ( !job->isFinished() )
     {
       QgsAbstractGeoPdfExporter::ComponentLayerDetail component;
+
       component.name = QStringLiteral( "layer_%1" ).arg( outputLayer );
       component.mapLayerId = job->currentLayerId();
       component.sourcePdfPath = mGeoPdfExporter->generateTemporaryFilepath( QStringLiteral( "layer_%1.pdf" ).arg( outputLayer ) );
@@ -211,6 +212,8 @@ bool QgsMapRendererTask::run()
     const double pageHeightMM = mMapSettings.outputSize().height() * 25.4 / mMapSettings.outputDpi();
     exportDetails.pageSizeMm = QSizeF( pageWidthMM, pageHeightMM );
     exportDetails.dpi = mMapSettings.outputDpi();
+
+    exportDetails.layerIdToPdfLayerTreeNameMap = mLayerIdToLayerNameMap;
 
     if ( mSaveWorldFile )
     {
@@ -445,6 +448,13 @@ void QgsMapRendererTask::prepare()
       mRenderedFeatureHandler = qgis::make_unique< QgsMapRendererTaskRenderedFeatureHandler >( static_cast< QgsMapRendererTaskGeoPdfExporter * >( mGeoPdfExporter.get() ), mMapSettings );
       mMapSettings.addRenderedFeatureHandler( mRenderedFeatureHandler.get() );
     }
+
+    const QList< QgsMapLayer * > layers = mMapSettings.layers();
+    for ( const QgsMapLayer *layer : layers )
+    {
+      mLayerIdToLayerNameMap.insert( layer->id(), layer->name() );
+    }
+
     mJob.reset( new QgsMapRendererStagedRenderJob( mMapSettings, QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer ) );
     mJob->start();
     return;

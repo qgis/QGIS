@@ -223,6 +223,13 @@ Sets the symbol layers that will be masked by this buffer.
 Updates the format by evaluating current values of data defined properties.
 %End
 
+    QSet<QString> referencedFields( const QgsRenderContext &context ) const;
+%Docstring
+Returns all field names referenced by the configuration (e.g. from data defined properties).
+
+.. versionadded:: 3.14
+%End
+
 };
 
 /************************************************************************
