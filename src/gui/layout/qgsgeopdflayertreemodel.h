@@ -40,12 +40,14 @@ class GUI_EXPORT QgsGeoPdfLayerTreeModel : public QgsLayerTreeModel
     Q_OBJECT
 
   public:
+
+    //! Model columns
     enum Columns
     {
-      LayerColumn = 0,
-      GroupColumn,
-      InitiallyVisible,
-      IncludeVectorAttributes
+      LayerColumn = 0, //!< Layer name
+      GroupColumn, //!< PDF group
+      InitiallyVisible, //!< Initial visiblity state
+      IncludeVectorAttributes //!< Vector attribute
     };
 
     //! constructor
