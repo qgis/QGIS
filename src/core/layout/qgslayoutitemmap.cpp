@@ -1165,7 +1165,9 @@ QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails() const
         {
           case QgsMapRendererStagedRenderJob::Symbology:
           {
-            detail.mapLayerId  = mStagedRendererJob->currentLayerId();
+            detail.mapLayerId = mStagedRendererJob->currentLayerId();
+            detail.compositionMode = mStagedRendererJob->currentLayerCompositionMode();
+            detail.opacity = mStagedRendererJob->currentLayerOpacity();
             if ( const QgsMapLayer *layer = mLayout->project()->mapLayer( detail.mapLayerId ) )
             {
               if ( !detail.mapTheme.isEmpty() )
