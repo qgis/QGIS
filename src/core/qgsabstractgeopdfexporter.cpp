@@ -257,12 +257,11 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   }
   compositionElem.appendChild( metadata );
 
-  // layertree
-  QDomElement layerTree = doc.createElement( QStringLiteral( "LayerTree" ) );
-  //layerTree.setAttribute( QStringLiteral("displayOnlyOnVisiblePages"), QStringLiteral("true"));
   QMap< QString, QSet< QString > > createdLayerIds;
   QMap< QString, QDomElement > groupLayerMap;
   QMap< QString, QString > customGroupNamesToIds;
+
+  QMultiMap< QString, QDomElement > pendingLayerTreeElements;
 
   if ( details.includeFeatures )
   {
@@ -289,14 +288,14 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
           group.setAttribute( QStringLiteral( "name" ), component.group );
           group.setAttribute( QStringLiteral( "initiallyVisible" ), groupLayerMap.empty() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
           group.setAttribute( QStringLiteral( "mutuallyExclusiveGroupId" ), QStringLiteral( "__mutually_exclusive_groups__" ) );
-          layerTree.appendChild( group );
+          pendingLayerTreeElements.insert( component.mapLayerId, group );
           group.appendChild( layer );
           groupLayerMap[ component.group ] = group;
         }
       }
       else
       {
-        layerTree.appendChild( layer );
+        pendingLayerTreeElements.insert( component.mapLayerId, layer );
       }
 
       createdLayerIds[ component.group ].insert( component.mapLayerId );
@@ -329,18 +328,22 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
         group.setAttribute( QStringLiteral( "name" ), component.group );
         group.setAttribute( QStringLiteral( "initiallyVisible" ), groupLayerMap.empty() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
         group.setAttribute( QStringLiteral( "mutuallyExclusiveGroupId" ), QStringLiteral( "__mutually_exclusive_groups__" ) );
-        layerTree.appendChild( group );
+        pendingLayerTreeElements.insert( component.mapLayerId, group );
         group.appendChild( layer );
         groupLayerMap[ component.group ] = group;
       }
     }
     else
     {
-      layerTree.appendChild( layer );
+      pendingLayerTreeElements.insert( component.mapLayerId, layer );
     }
 
     createdLayerIds[ component.group ].insert( component.mapLayerId );
   }
+
+  // layertree
+  QDomElement layerTree = doc.createElement( QStringLiteral( "LayerTree" ) );
+  //layerTree.setAttribute( QStringLiteral("displayOnlyOnVisiblePages"), QStringLiteral("true"));
 
   // create custom layer tree entries
   for ( auto it = details.customLayerTreeGroups.constBegin(); it != details.customLayerTreeGroups.constEnd(); ++it )
@@ -355,6 +358,25 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
     layer.setAttribute( QStringLiteral( "name" ), it.value() );
     layer.setAttribute( QStringLiteral( "initiallyVisible" ), QStringLiteral( "true" ) );
     layerTree.appendChild( layer );
+  }
+
+  // start by adding layer tree elements with known layer orders
+  for ( const QString &layerId : details.layerOrder )
+  {
+    const QList< QDomElement> elements = pendingLayerTreeElements.values( layerId );
+    for ( const QDomElement &element : elements )
+      layerTree.appendChild( element );
+  }
+  // then add all the rest (those we don't have an explicit order for)
+  for ( auto it = pendingLayerTreeElements.constBegin(); it != pendingLayerTreeElements.constEnd(); ++it )
+  {
+    if ( details.layerOrder.contains( it.key() ) )
+    {
+      // already added this one, just above...
+      continue;
+    }
+
+    layerTree.appendChild( it.value() );
   }
 
   compositionElem.appendChild( layerTree );

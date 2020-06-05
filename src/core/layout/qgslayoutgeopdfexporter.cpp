@@ -22,6 +22,7 @@
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorfilewriter.h"
+#include "qgslayertree.h"
 
 #include <gdal.h>
 #include "qgsgdalutils.h"
@@ -143,6 +144,10 @@ QgsLayoutGeoPdfExporter::QgsLayoutGeoPdfExporter( QgsLayout *layout )
     mMapHandlers.insert( map, handler );
     map->addRenderedFeatureHandler( handler );
   }
+
+  const QList< QgsMapLayer * > layerOrder = mLayout->project()->layerTreeRoot()->layerOrder();
+  for ( const QgsMapLayer *layer : layerOrder )
+    mLayerOrder << layer->id();
 }
 
 QgsLayoutGeoPdfExporter::~QgsLayoutGeoPdfExporter()
