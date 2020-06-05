@@ -145,7 +145,14 @@ __Note:__ Don't forget the `../QGIS` on the last line, which tells CMake to look
 
 __Note:__ Double check on the screen output that all libraries are picked from QGIS-Deps `/opt/QGIS`
 and not from system `/usr/lib` or Homebrew's `/usr/local/` or system Frameworks `/Library/Frameworks/`.
-Especially check Proj, GDAL, sqlite3 and Python paths.
+Especially check Proj, GDAL, sqlite3 and Python paths. If necessary these can be forced with:
+
+  -DPROJ_INCLUDE_DIR=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/include  \
+  -DPROJ_LIBRARY=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}stage/lib/libproj.dylib \
+  -DGDAL_INCLUDE_DIR=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/include  \
+  -DGDAL_LIBRARY=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/lib/libgdal.dylib \
+  -DSPATIALITE_INCLUDE_DIR=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/include  \
+  -DSPATIALITE_LIBRARY=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/lib/libspatialite.dylib
 
 After the initial Terminal configure, you can use ccmake to make further changes:
 
