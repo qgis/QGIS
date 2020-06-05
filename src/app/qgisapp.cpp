@@ -547,7 +547,7 @@ static void setTitleBarText_( QWidget &qgisApp )
   }
   if ( !caption.isEmpty() )
   {
-    caption += QLatin1String( " - " );
+    caption += QStringLiteral( " — " );
   }
   if ( QgsProject::instance()->isDirty() )
     caption.prepend( '*' );
