@@ -518,7 +518,7 @@ And, to avoid Git in Windows reporting changes to files not actually modified:
 
 ### 4.1.4. Setting up the Visual Studio project with CMake
 
-/!\ Consider this section an example.  It tends to outdate, when OSGeo4W and
+**Note:** Consider this section as example.  It tends to outdate, when OSGeo4W and
 SDKs move on.  `ms-windows/osgeo4w/package-nightly.cmd` is used for the
 nightly builds and constantly updated and hence might contain necessary
 updates that are not yet reflected here.
@@ -562,7 +562,7 @@ Running QGIS from within MSVC:
   Run: Debug -> Start Debugging (F5) or Start Without Debugging (Ctrl+F5)
   Ignore the "These projects are out of date" message, it appears even if no files were changed.
 
-Old alternative method that might still work using cmake-gui:
+### 4.1.5 Old alternative method that might still work using cmake-gui:
   Create a 'build' directory somewhere. This will be where all the build output
   will be generated.
 
