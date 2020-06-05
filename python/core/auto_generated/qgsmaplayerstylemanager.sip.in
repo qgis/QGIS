@@ -143,6 +143,14 @@ Returns ``True`` if this is the default style
 .. versionadded:: 3.0
 %End
 
+    void copyStylesFrom( QgsMapLayerStyleManager *other );
+%Docstring
+Copies all styles from ``other``.
+In case there is already a style with the same name it will be overwritten.
+
+.. versionadded:: 3.14
+%End
+
   signals:
     void styleAdded( const QString &name );
 %Docstring
