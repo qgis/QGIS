@@ -96,11 +96,6 @@ Returns the version of the service
 Returns the root path for the API
 %End
 
-    virtual bool allowMethod( QgsServerRequest::Method ) const;
-%Docstring
-Returns ``True`` if the given method is supported by the API, default implementation supports all methods.
-%End
-
     virtual bool accept( const QUrl &url ) const;
 %Docstring
 Returns ``True`` if the given ``url`` is handled by the API, default implementation checks for the presence of rootPath inside the ``url`` path.
