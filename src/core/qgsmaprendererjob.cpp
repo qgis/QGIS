@@ -822,7 +822,6 @@ void QgsMapRendererJob::composeSecondPass( LayerRenderJobs &secondPassJobs, Labe
       //* Eliminate antialiasing artefact
       //* Avoid applying mask opacity to elements under the mask but not masked
       QImage maskBinAlpha = maskImage->createMaskFromColor( 0 );
-      maskBinAlpha.setColorCount( 0 );
       QVector<QRgb> mswTable;
       mswTable.push_back( qRgba( 0, 0, 0, 255 ) );
       mswTable.push_back( qRgba( 0, 0, 0, 0 ) );
