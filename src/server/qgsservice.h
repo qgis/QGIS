@@ -62,12 +62,6 @@ class SERVER_EXPORT QgsService
     virtual QString version() const = 0;
 
     /**
-     * Returns TRUE if the given method is supported for that
-     * service.
-     */
-    virtual bool allowMethod( QgsServerRequest::Method ) const = 0;
-
-    /**
      * Execute the requests and set result in QgsServerRequest
      */
     virtual void executeRequest( const QgsServerRequest &request,
