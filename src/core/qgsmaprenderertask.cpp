@@ -185,7 +185,7 @@ bool QgsMapRendererTask::run()
     {
       QgsAbstractGeoPdfExporter::ComponentLayerDetail component;
 
-      component.name = mLayerIdToLayerNameMap.value( job->currentLayerId(), QStringLiteral( "layer_%1" ).arg( outputLayer ) );
+      component.name = QStringLiteral( "layer_%1" ).arg( outputLayer );
       component.mapLayerId = job->currentLayerId();
       component.sourcePdfPath = mGeoPdfExporter->generateTemporaryFilepath( QStringLiteral( "layer_%1.pdf" ).arg( outputLayer ) );
       pdfComponents << component;
@@ -212,6 +212,8 @@ bool QgsMapRendererTask::run()
     const double pageHeightMM = mMapSettings.outputSize().height() * 25.4 / mMapSettings.outputDpi();
     exportDetails.pageSizeMm = QSizeF( pageWidthMM, pageHeightMM );
     exportDetails.dpi = mMapSettings.outputDpi();
+
+    exportDetails.layerIdToPdfLayerTreeNameMap = mLayerIdToLayerNameMap;
 
     if ( mSaveWorldFile )
     {

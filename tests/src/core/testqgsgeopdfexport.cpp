@@ -225,6 +225,7 @@ void TestQgsGeoPdfExport::testComposition()
   // test creation of the composition xml
   QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > renderedLayers; // no extra layers for now
   QgsAbstractGeoPdfExporter::ExportDetails details;
+  details.layerIdToPdfLayerTreeNameMap.insert( QStringLiteral( "layer1" ), QStringLiteral( "my first layer" ) );
   QString composition = geoPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsg( composition );
   QDomDocument doc;
@@ -255,7 +256,7 @@ void TestQgsGeoPdfExport::testComposition()
   layer1Idx = layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "id" ) ) == QStringLiteral( "layer1" ) ? 0 : 1;
   layer2Idx = layer1Idx == 0 ? 1 : 0;
   QCOMPARE( layerTreeList.at( layer1Idx ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "layer1" ) );
-  QCOMPARE( layerTreeList.at( layer1Idx ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer1" ) );
+  QCOMPARE( layerTreeList.at( layer1Idx ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my first layer" ) );
   QCOMPARE( layerTreeList.at( layer1Idx ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "true" ) );
 
   QCOMPARE( layerTreeList.at( layer2Idx ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "layer2" ) );
