@@ -257,34 +257,6 @@ class TestQgsServerWFS(QgsServerTestBase):
 """
         tests.append(('srsname_post', srsTemplate.format("")))
 
-        # Issue https://github.com/qgis/QGIS/issues/36398
-        # Check get feature within linear ring with srsName=EPSG:4326
-        withinFilterTemplate = """<?xml version="1.0" encoding="UTF-8"?>
-<wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
-  <wfs:Query typeName="testlayer" srsName="EPSG:4326" xmlns:feature="http://www.qgis.org/gml">
-    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
-      <Within>
-        <PropertyName>geometry</PropertyName>
-        <Polygon xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
-          <exterior>
-            <LinearRing srsName="EPSG:4326">
-              <posList srsDimension="2">
-                8 44
-                9 44
-                9 45
-                8 45
-                8 44
-              </posList>
-            </LinearRing>
-          </exterior>
-        </Polygon>
-      </Within>
-    </ogc:Filter>
-  </wfs:Query>
-</wfs:GetFeature>
-"""
-        tests.append(('withinFilterTemplate_post', withinFilterTemplate.format("")))
-
         srsTwoLayersTemplate = """<?xml version="1.0" encoding="UTF-8"?>
 <wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
   <wfs:Query typeName="testlayer" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
