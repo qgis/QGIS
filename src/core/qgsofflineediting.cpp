@@ -38,6 +38,7 @@
 #include "qgsogrutils.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaplayerstylemanager.h"
 
 #include <QDir>
 #include <QDomDocument>
@@ -1083,6 +1084,8 @@ void QgsOfflineEditing::updateFidLookup( QgsVectorLayer *remoteLayer, sqlite3 *d
 
 void QgsOfflineEditing::copySymbology( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer )
 {
+  targetLayer->styleManager()->copyStylesFrom( sourceLayer->styleManager() );
+
   QString error;
   QDomDocument doc;
   QgsReadWriteContext context;
