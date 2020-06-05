@@ -97,6 +97,10 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.startfrom = 0
         self.maxrecords = 10
         self.timeout = 10
+<<<<<<< HEAD
+=======
+        self.disable_ssl_verification = False
+>>>>>>> c22d429a52... updated disable ssl label
         self.constraints = []
 
         # Servers tab
@@ -819,9 +823,18 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         identifier = get_item_data(item, 'identifier')
 
+        self.disable_ssl_verification = self.disableSSLVerification.isChecked()
+
         try:
             with OverrideCursor(Qt.WaitCursor):
+<<<<<<< HEAD
                 cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout, # spellok
+=======
+                auth = None
+                if self.disable_ssl_verification:
+                    auth = Authentication(verify=False)
+                cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout,  # spellok
+>>>>>>> c22d429a52... updated disable ssl label
                                           username=self.catalog_username,
                                           password=self.catalog_password)
                 cat.getrecordbyid(
@@ -898,8 +911,16 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
     def _get_csw(self):
         """convenience function to init owslib.csw.CatalogueServiceWeb""" # spellok
 
+        self.disable_ssl_verification = self.disableSSLVerification.isChecked()
+
         # connect to the server
         with OverrideCursor(Qt.WaitCursor):
+<<<<<<< HEAD
+=======
+            auth = None
+            if self.disable_ssl_verification:
+                auth = Authentication(verify=False)
+>>>>>>> c22d429a52... updated disable ssl label
             try:
                 self.catalog = CatalogueServiceWeb(self.catalog_url, # spellok
                                                    timeout=self.timeout,
