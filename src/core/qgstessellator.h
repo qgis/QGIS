@@ -41,7 +41,7 @@ class CORE_EXPORT QgsTessellator
 {
   public:
     //! Creates tessellator with a specified origin point of the world (in map coordinates)
-    QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool addTextureCoords = false );
+    QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false, bool addTextureCoords = false );
 
     /**
      * Creates tessellator with a specified \a bounds of input geometry coordinates.
@@ -52,7 +52,7 @@ class CORE_EXPORT QgsTessellator
      *
      * \since QGIS 3.10
      */
-    QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool addTextureCoords = false, bool noZ = false );
+    QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false, bool addTextureCoords = false );
 
     //! Tessellates a triangle and adds its vertex entries to the output data array
     void addPolygon( const QgsPolygon &polygon, float extrusionHeight );

@@ -86,18 +86,19 @@ static void make_quad( float x0, float y0, float z0, float x1, float y1, float z
 }
 
 
-QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals, bool addBackFaces, bool addTextureCoords )
+QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals, bool addBackFaces, bool noZ, bool addTextureCoords )
   : mOriginX( originX )
   , mOriginY( originY )
   , mAddNormals( addNormals )
   , mInvertNormals( invertNormals )
   , mAddBackFaces( addBackFaces )
   , mAddTextureCoords( addTextureCoords )
+  , mNoZ( noZ )
 {
   init();
 }
 
-QgsTessellator::QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals, bool addBackFaces, bool addTextureCoords, bool noZ )
+QgsTessellator::QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals, bool addBackFaces, bool noZ, bool addTextureCoords )
   : mBounds( bounds )
   , mOriginX( mBounds.xMinimum() )
   , mOriginY( mBounds.yMinimum() )
@@ -506,7 +507,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     const double *zData = !mNoZ ? exterior->zData() : nullptr;
     for ( int i = 0; i < 3; i++ )
     {
-      float z = ( !zData ? 0 : *zData );
+      float z = mNoZ ? 0 : *zData;
       if ( z < zMin )
         zMin = z;
       if ( z > zMax )

@@ -86,8 +86,8 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   outEdges.withAdjacency = true;
   outEdges.init( mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), mSymbol.height(), &context.map() );
 
-  outNormal.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol.invertNormals(), mSymbol.addBackFaces(), mSymbol.material().isUsingDiffuseTexture() ) );
-  outSelected.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol.invertNormals(), mSymbol.addBackFaces(), mSymbol.material().isUsingDiffuseTexture() ) );
+  outNormal.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol.invertNormals(), mSymbol.addBackFaces(), false, mSymbol.material().isUsingDiffuseTexture() ) );
+  outSelected.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol.invertNormals(), mSymbol.addBackFaces(), false, mSymbol.material().isUsingDiffuseTexture() ) );
 
   QSet<QString> attrs = mSymbol.dataDefinedProperties().referencedFields( context.expressionContext() );
   attributeNames.unite( attrs );

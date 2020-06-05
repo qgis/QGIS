@@ -38,7 +38,7 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals,
   mVertexBuffer = new Qt3DRender::QBuffer( this );
 #endif
 
-  QgsTessellator tmpTess( 0, 0, mWithNormals, false, false, mAddTextureCoords );
+  QgsTessellator tmpTess( 0, 0, mWithNormals, false, false, false, mAddTextureCoords );
   const int stride = tmpTess.stride();
 
   mPositionAttribute = new Qt3DRender::QAttribute( this );
@@ -82,7 +82,7 @@ void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygon *> &poly
   mTriangleIndexStartingIndices.reserve( polygons.count() );
   mTriangleIndexFids.reserve( polygons.count() );
 
-  QgsTessellator tessellator( origin.x(), origin.y(), mWithNormals, mInvertNormals, mAddBackFaces, mAddTextureCoords );
+  QgsTessellator tessellator( origin.x(), origin.y(), mWithNormals, mInvertNormals, mAddBackFaces, false, mAddTextureCoords );
   for ( int i = 0; i < polygons.count(); ++i )
   {
     Q_ASSERT( tessellator.dataVerticesCount() % 3 == 0 );
