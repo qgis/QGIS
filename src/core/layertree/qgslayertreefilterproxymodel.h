@@ -40,6 +40,7 @@ class CORE_EXPORT QgsLayerTreeFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
   public:
+    //! Constructor
     QgsLayerTreeFilterProxyModel( QObject *parent = nullptr );
 
     /**
