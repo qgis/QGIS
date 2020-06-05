@@ -720,7 +720,7 @@ void QgsLayoutItemMapGrid::drawGridFrame( QPainter *p, const QList< QPair< doubl
   if ( p )
   {
     p->save();
-    p->setRenderHint( QPainter::Antialiasing );
+    p->setRenderHint( QPainter::Antialiasing, mMap->layout()->renderContext().flags() & QgsLayoutRenderContext::FlagAntialiasing );
   }
 
   //Sort the coordinate positions for each side

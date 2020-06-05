@@ -584,7 +584,8 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       opacity = static_cast<int >( std::round( 255 * vectorLayer->opacity() ) );
 
     p->save();
-    p->setRenderHint( QPainter::Antialiasing );
+    if ( context->flags() & QgsRenderContext::Antialiasing )
+      p->setRenderHint( QPainter::Antialiasing );
 
     switch ( settings.symbolAlignment() )
     {
@@ -613,7 +614,8 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       QImage tempImage = QImage( tempImageSize, QImage::Format_ARGB32 );
       tempImage.fill( Qt::transparent );
       QPainter imagePainter( &tempImage );
-      imagePainter.setRenderHint( QPainter::Antialiasing );
+      if ( context->flags() & QgsRenderContext::Antialiasing )
+        imagePainter.setRenderHint( QPainter::Antialiasing );
       context->setPainter( &imagePainter );
       imagePainter.translate( maxBleed, maxBleed );
       s->drawPreviewIcon( &imagePainter, symbolSize, context, false, nullptr, &patchShape );

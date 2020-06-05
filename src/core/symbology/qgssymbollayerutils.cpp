@@ -773,7 +773,8 @@ QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( const QgsSymbol *symbol, QSize
   pixmap.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &pixmap );
-  painter.setRenderHint( QPainter::Antialiasing );
+  if ( !customContext || customContext->flags() & QgsRenderContext::Antialiasing )
+    painter.setRenderHint( QPainter::Antialiasing );
 
   if ( customContext )
   {
