@@ -266,6 +266,7 @@ QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject *project, QgsMa
 {
   connect( project, &QgsProject::snappingConfigChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
   connect( project, &QgsProject::avoidIntersectionsLayersChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
+  connect( project, &QgsProject::readProject, this, [ = ] {resetLayerTreeModel();} );
 }
 
 int QgsSnappingLayerTreeModel::columnCount( const QModelIndex &parent ) const
