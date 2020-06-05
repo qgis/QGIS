@@ -512,26 +512,45 @@ void QgsTemporalControllerWidget::setTimeStep( const QgsInterval &timeStep )
 {
   if ( ! timeStep.isValid() || timeStep.seconds() <= 0 )
     return;
-  int indexUnit = -1;
-  double value = std::numeric_limits<double>::min();
-  double previousValue;
-  do
-  {
-    indexUnit++;
-    previousValue = value;
-    QgsUnitTypes::TemporalUnit unit = static_cast<QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->itemData( indexUnit ).toInt() );
-    value = timeStep.seconds() * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalSeconds, unit );
-  }
-  while ( value > 10 ||  indexUnit == mTimeStepsComboBox->count() );
 
-  if ( fabs( log( value ) ) > fabs( log( previousValue ) ) )
+  // Search the time unit the most appropriate :
+  // the one that gives the smallest time step value for double spin box with round value (if possible) and/or the less signifiant digits
+
+  int selectedUnit = -1;
+  int stringSize = std::numeric_limits<int>::max();
+  int precision = mStepSpinBox->decimals();
+  double selectedValue = std::numeric_limits<double>::max();
+  for ( int i = 0; i < mTimeStepsComboBox->count(); ++i )
   {
-    indexUnit--;
-    value = previousValue;
+    QgsUnitTypes::TemporalUnit unit = static_cast<QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->itemData( i ).toInt() );
+    double value = timeStep.seconds() * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalSeconds, unit );
+    QString string = QString::number( value, 'f', precision );
+    string.remove( QRegExp( "0+$" ) ); //remove trailing zero
+    string.remove( QRegExp( "[.]+$" ) ); //remove last point if present
+
+    if ( value >= 1
+         && string.size() <= stringSize // less significant digit than currently selected
+         && value < selectedValue ) // less than currently selected
+    {
+      selectedUnit = i;
+      selectedValue = value;
+      stringSize = string.size();
+    }
+    else if ( string != '0'
+              && string.size() < precision + 2 //round value (ex: 0.xx with precision=3)
+              && string.size() < stringSize ) //less significant digit than currently selected
+    {
+      selectedUnit = i ;
+      selectedValue = value ;
+      stringSize = string.size();
+    }
   }
 
-  mTimeStepsComboBox->setCurrentIndex( indexUnit );
-  mStepSpinBox->setValue( value );
+  if ( selectedUnit >= 0 )
+  {
+    mStepSpinBox->setValue( selectedValue );
+    mTimeStepsComboBox->setCurrentIndex( selectedUnit );
+  }
 
   updateFrameDuration();
 }
