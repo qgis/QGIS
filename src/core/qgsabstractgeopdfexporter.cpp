@@ -274,7 +274,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
       QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
       layer.setAttribute( QStringLiteral( "id" ), component.group.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
       layer.setAttribute( QStringLiteral( "name" ), details.layerIdToPdfLayerTreeNameMap.contains( component.mapLayerId ) ? details.layerIdToPdfLayerTreeNameMap.value( component.mapLayerId ) : component.name );
-      layer.setAttribute( QStringLiteral( "initiallyVisible" ), QStringLiteral( "true" ) );
+      layer.setAttribute( QStringLiteral( "initiallyVisible" ), details.initialLayerVisibility.value( component.mapLayerId, true ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
 
       if ( !component.group.isEmpty() )
       {
@@ -302,7 +302,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
       createdLayerIds[ component.group ].insert( component.mapLayerId );
     }
   }
-  // some PDF components may not be linked to vector components - e.g. layers with labels but no features
+  // some PDF components may not be linked to vector components - e.g. layers with labels but no features (or raster layers)
   for ( const ComponentLayerDetail &component : components )
   {
     if ( component.mapLayerId.isEmpty() || createdLayerIds.value( component.group ).contains( component.mapLayerId ) )
@@ -314,7 +314,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
     QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
     layer.setAttribute( QStringLiteral( "id" ), component.group.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
     layer.setAttribute( QStringLiteral( "name" ), details.layerIdToPdfLayerTreeNameMap.contains( component.mapLayerId ) ? details.layerIdToPdfLayerTreeNameMap.value( component.mapLayerId ) : component.name );
-    layer.setAttribute( QStringLiteral( "initiallyVisible" ), QStringLiteral( "true" ) );
+    layer.setAttribute( QStringLiteral( "initiallyVisible" ), details.initialLayerVisibility.value( component.mapLayerId, true ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
 
     if ( !component.group.isEmpty() )
     {

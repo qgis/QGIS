@@ -252,13 +252,20 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
        */
       QMap< QString, QString > customLayerTreeGroups;
 
-
       /**
        * Optional map of map layer ID to custom layer tree name to show in the created PDF file.
        *
        * \since QGIS 3.14
        */
       QMap< QString, QString > layerIdToPdfLayerTreeNameMap;
+
+      /**
+       * Optional map of map layer ID to initial visibility state. If a layer ID is not present in this,
+       * it will default to being initially visible when opening the PDF.
+       *
+       * \since QGIS 3.14
+       */
+      QMap< QString, bool > initialLayerVisibility;
 
     };
 

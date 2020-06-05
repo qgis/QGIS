@@ -226,6 +226,7 @@ void TestQgsGeoPdfExport::testComposition()
   QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > renderedLayers; // no extra layers for now
   QgsAbstractGeoPdfExporter::ExportDetails details;
   details.layerIdToPdfLayerTreeNameMap.insert( QStringLiteral( "layer1" ), QStringLiteral( "my first layer" ) );
+  details.initialLayerVisibility.insert( QStringLiteral( "layer2" ), false );
   QString composition = geoPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsg( composition );
   QDomDocument doc;
@@ -261,8 +262,7 @@ void TestQgsGeoPdfExport::testComposition()
 
   QCOMPARE( layerTreeList.at( layer2Idx ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "layer2" ) );
   QCOMPARE( layerTreeList.at( layer2Idx ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer2" ) );
-  QCOMPARE( layerTreeList.at( layer2Idx ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "true" ) );
-
+  QCOMPARE( layerTreeList.at( layer2Idx ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "false" ) );
 }
 
 void TestQgsGeoPdfExport::testMetadata()
