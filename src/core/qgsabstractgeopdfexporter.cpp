@@ -263,6 +263,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   QMap< QString, QSet< QString > > createdLayerIds;
   QMap< QString, QDomElement > groupLayerMap;
   QMap< QString, QString > customGroupNamesToIds;
+
   if ( details.includeFeatures )
   {
     for ( const VectorComponentDetail &component : qgis::as_const( mVectorComponents ) )
@@ -272,7 +273,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
 
       QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
       layer.setAttribute( QStringLiteral( "id" ), component.group.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
-      layer.setAttribute( QStringLiteral( "name" ), component.name );
+      layer.setAttribute( QStringLiteral( "name" ), details.layerIdToPdfLayerTreeNameMap.contains( component.mapLayerId ) ? details.layerIdToPdfLayerTreeNameMap.value( component.mapLayerId ) : component.name );
       layer.setAttribute( QStringLiteral( "initiallyVisible" ), QStringLiteral( "true" ) );
 
       if ( !component.group.isEmpty() )
@@ -312,7 +313,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
 
     QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
     layer.setAttribute( QStringLiteral( "id" ), component.group.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
-    layer.setAttribute( QStringLiteral( "name" ), component.name );
+    layer.setAttribute( QStringLiteral( "name" ), details.layerIdToPdfLayerTreeNameMap.contains( component.mapLayerId ) ? details.layerIdToPdfLayerTreeNameMap.value( component.mapLayerId ) : component.name );
     layer.setAttribute( QStringLiteral( "initiallyVisible" ), QStringLiteral( "true" ) );
 
     if ( !component.group.isEmpty() )
