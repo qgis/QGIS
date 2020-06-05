@@ -189,7 +189,7 @@ class TestQgsServerWFS(QgsServerTestBase):
                 self.assertEqual(
                     "onlineResource=\"my_wfs_advertised_url\"" in item, True)
 
-    def result_compare(self, file_name, error_msg_header, header, body):
+    def result_compare(self, file_name, error_msg_header, header, body, expectEqual=True):
         self.assert_headers(header, body)
         response = header + body
         reference_path = self.testdata_path + file_name
@@ -202,7 +202,11 @@ class TestQgsServerWFS(QgsServerTestBase):
         self.assertXMLEqual(response, expected, msg="%s\n" %
                             (error_msg_header))
 
-    def wfs_getfeature_post_compare(self, requestid, request):
+        # If do not expect equal and pass the line above, should throw and assertion error.
+        if not expectEqual:
+            self.assertFalse(True, msg='It should get different result for %s.' % error_msg_header)
+
+    def wfs_getfeature_post_compare(self, requestid, request, expectEqual=True):
         project = self.testdata_path + "test_project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
@@ -214,7 +218,8 @@ class TestQgsServerWFS(QgsServerTestBase):
             'wfs_getfeature_{}.txt'.format(requestid),
             "GetFeature in POST for '{}' failed.".format(requestid),
             header,
-            body
+            body,
+            expectEqual
         )
 
     def test_getfeature_post(self):
@@ -476,9 +481,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         tests.append(('nobbox_post', template.format("")))
 
         for id, req in expectNotEqualTests:
-            errorMsg = 'Expect different XML response for %s' % id
-            with self.assertRaises(AssertionError, msg=errorMsg):
-                self.wfs_getfeature_post_compare(id, req)
+            self.wfs_getfeature_post_compare(id, req, expectEqual=False)
 
         for id, req in tests:
             self.wfs_getfeature_post_compare(id, req)
