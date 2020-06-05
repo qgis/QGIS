@@ -518,7 +518,7 @@ And, to avoid Git in Windows reporting changes to files not actually modified:
 
 ### 4.1.4. Setting up the Visual Studio project with CMake
 
-/!\ Consider this section as example.  It tends to outdate, when OSGeo4W and
+/!\ Consider this section an example.  It tends to outdate, when OSGeo4W and
 SDKs move on.  `ms-windows/osgeo4w/package-nightly.cmd` is used for the
 nightly builds and constantly updated and hence might contain necessary
 updates that are not yet reflected here.
