@@ -38,6 +38,12 @@
 #include "qgsogrutils.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
+<<<<<<< HEAD
+=======
+#include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
+#include "qgsmaplayerstylemanager.h"
+>>>>>>> a741700013... Merge pull request #36909 from m-kuhn/offline_editing_style_copy
 
 #include <QDir>
 #include <QDomDocument>
@@ -1083,6 +1089,8 @@ void QgsOfflineEditing::updateFidLookup( QgsVectorLayer *remoteLayer, sqlite3 *d
 
 void QgsOfflineEditing::copySymbology( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer )
 {
+  targetLayer->styleManager()->copyStylesFrom( sourceLayer->styleManager() );
+
   QString error;
   QDomDocument doc;
   QgsReadWriteContext context;
