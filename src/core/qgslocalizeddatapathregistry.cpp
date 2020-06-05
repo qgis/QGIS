@@ -71,6 +71,7 @@ void QgsLocalizedDataPathRegistry::setPaths( const QStringList &paths )
       mPaths << dir;
   }
 
+  locker.unlock();
   writeToSettings();
 }
 
@@ -89,6 +90,7 @@ void QgsLocalizedDataPathRegistry::registerPath( const QString &path, int positi
   else
     mPaths.append( dir );
 
+  locker.unlock();
   writeToSettings();
 }
 
@@ -97,6 +99,7 @@ void QgsLocalizedDataPathRegistry::unregisterPath( const QString &path )
   QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Write );
 
   mPaths.removeAll( QDir( path ) );
+  locker.unlock();
   writeToSettings();
 }
 
