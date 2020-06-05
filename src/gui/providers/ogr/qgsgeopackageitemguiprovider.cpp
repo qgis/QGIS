@@ -94,7 +94,7 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
     // Add table to existing DB
     QAction *actionAddTable = new QAction( tr( "Create a New Layer or Table…" ), collectionItem->parent() );
     QPointer<QgsGeoPackageCollectionItem>collectionItemPtr { collectionItem };
-    const QString itemPath = collectionItem->path();
+    const QString itemPath = collectionItem->path().remove( QStringLiteral( "gpkg:/" ) );
     connect( actionAddTable, &QAction::triggered, actionAddTable, [ collectionItemPtr, itemPath ]
     {
       QgsNewGeoPackageLayerDialog dialog( nullptr );
@@ -479,7 +479,7 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
 
       if ( srcLayer->isValid() )
       {
-        uri = item->path();
+        uri = item->path().remove( QStringLiteral( "gpkg:/" ) );
         QgsDebugMsgLevel( "URI " + uri, 3 );
 
         // check if the destination layer already exists
