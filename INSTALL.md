@@ -535,7 +535,7 @@ installed in the default locations):
 
 Save the batch file as `C:\OSGeo4W64\OSGeo4W-dev.bat` and run it.
 
-Using configonly.bat to create the MSVC solution file:
+#### 4.1.4.1 Using configonly.bat to create the MSVC solution file:
   We will be using the file `ms-windows/osgeo4w/configonly.bat` to create an MSVC solution file.
   There are two supported CMake generators for creating a solution file: Ninja, and native MSVC.
   The advantage of using native MSVC solution is that you can find the root of build problems much more easily.
