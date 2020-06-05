@@ -546,7 +546,7 @@ Save the batch file as `C:\OSGeo4W64\OSGeo4W-dev.bat` and run it.
     configonly.bat
 ```
 
-Compiling QGIS with MSVC:
+#### 4.1.4.2 Compiling QGIS with MSVC:
   We will need to run MSVC with all the environment variables set, thus we will run it as follows:
   Run the batch file OSGeo4W-dev.bat you created before.
   On the command prompt run `call gdal-dev-env.bat` to add the release gdal and proj libraries to your PATH.
