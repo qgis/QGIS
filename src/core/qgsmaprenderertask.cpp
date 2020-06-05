@@ -214,6 +214,7 @@ bool QgsMapRendererTask::run()
     exportDetails.dpi = mMapSettings.outputDpi();
 
     exportDetails.layerIdToPdfLayerTreeNameMap = mLayerIdToLayerNameMap;
+    exportDetails.layerOrder = mMapLayerOrder;
 
     if ( mSaveWorldFile )
     {
@@ -453,6 +454,7 @@ void QgsMapRendererTask::prepare()
     for ( const QgsMapLayer *layer : layers )
     {
       mLayerIdToLayerNameMap.insert( layer->id(), layer->name() );
+      mMapLayerOrder << layer->id();
     }
 
     mJob.reset( new QgsMapRendererStagedRenderJob( mMapSettings, QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer ) );

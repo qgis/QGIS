@@ -68,6 +68,14 @@ class CORE_EXPORT QgsLayoutGeoPdfExporter : public QgsAbstractGeoPdfExporter
      */
     QMap< QString, bool > initialLayerVisibility() const { return mInitialLayerVisibility; }
 
+    /**
+     * Optional list of map layer IDs in the order they should be shown in the generated GeoPDF layer tree.
+     * Layer IDs earlier in the list will appear higher in the GeoPDF layer tree.
+     *
+     * \since QGIS 3.14
+     */
+    QStringList layerOrder() const { return mLayerOrder; }
+
   private:
 
     VectorComponentDetail componentDetailForLayerId( const QString &layerId ) override;
@@ -77,6 +85,7 @@ class CORE_EXPORT QgsLayoutGeoPdfExporter : public QgsAbstractGeoPdfExporter
 
     QMap< QString, bool > mInitialLayerVisibility;
     QMap< QString, QString > mCustomLayerTreeGroups;
+    QStringList mLayerOrder;
 
     friend class TestQgsLayoutGeoPdfExport;
 };

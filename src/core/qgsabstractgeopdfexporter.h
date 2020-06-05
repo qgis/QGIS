@@ -267,6 +267,15 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
        */
       QMap< QString, bool > initialLayerVisibility;
 
+      /**
+       * Optional list of layer IDs, in the order desired to appear in the generated GeoPDF file.
+       *
+       * Layers appearing earlier in the list will show earlier in the GeoPDF layer tree list.
+       *
+       * \since QGIS 3.14
+       */
+      QStringList layerOrder;
+
     };
 
     /**

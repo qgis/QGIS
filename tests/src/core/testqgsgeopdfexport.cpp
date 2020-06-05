@@ -227,6 +227,7 @@ void TestQgsGeoPdfExport::testComposition()
   QgsAbstractGeoPdfExporter::ExportDetails details;
   details.layerIdToPdfLayerTreeNameMap.insert( QStringLiteral( "layer1" ), QStringLiteral( "my first layer" ) );
   details.initialLayerVisibility.insert( QStringLiteral( "layer2" ), false );
+  details.layerOrder = QStringList() << QStringLiteral( "layer2" );
   QString composition = geoPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsg( composition );
   QDomDocument doc;
@@ -254,15 +255,13 @@ void TestQgsGeoPdfExport::testComposition()
   QDomNodeList layerTreeList = doc.elementsByTagName( QStringLiteral( "LayerTree" ) ).at( 0 ).toElement().childNodes();
   QCOMPARE( layerTreeList.count(), 2 );
 
-  layer1Idx = layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "id" ) ) == QStringLiteral( "layer1" ) ? 0 : 1;
-  layer2Idx = layer1Idx == 0 ? 1 : 0;
-  QCOMPARE( layerTreeList.at( layer1Idx ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "layer1" ) );
-  QCOMPARE( layerTreeList.at( layer1Idx ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my first layer" ) );
-  QCOMPARE( layerTreeList.at( layer1Idx ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "true" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "layer1" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my first layer" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "true" ) );
 
-  QCOMPARE( layerTreeList.at( layer2Idx ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "layer2" ) );
-  QCOMPARE( layerTreeList.at( layer2Idx ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer2" ) );
-  QCOMPARE( layerTreeList.at( layer2Idx ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "false" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "layer2" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer2" ) );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "false" ) );
 }
 
 void TestQgsGeoPdfExport::testMetadata()
