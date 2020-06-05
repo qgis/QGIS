@@ -22,6 +22,7 @@
 QgsLayerTreeFilterProxyModel::QgsLayerTreeFilterProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
 {
+  connect( QgsProject::instance(), &QgsProject::readProject, this, [ = ] {resetLayerTreeModel();} );
 }
 
 void QgsLayerTreeFilterProxyModel::setCheckedLayers( const QList<QgsMapLayer *> layers )
