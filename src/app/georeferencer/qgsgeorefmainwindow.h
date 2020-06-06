@@ -80,7 +80,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     void zoomToLast();
     void zoomToNext();
     void setPanTool();
-    void linkGeorefToQGis( bool link );
+    void linkGeorefToQgis( bool link );
     void linkQGisToGeoref( bool link );
 
     // gcps
