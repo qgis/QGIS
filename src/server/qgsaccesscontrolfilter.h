@@ -1,7 +1,7 @@
 /***************************************************************************
                           qgsaccesscontrolfilter.h
                           ------------------------
- Access control interface for Qgis Server plugins
+ Access control interface for QGIS Server plugins
 
   begin                : 2015-05-19
   copyright            : (C) 2015 by Stéphane Brunner

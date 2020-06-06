@@ -199,7 +199,7 @@ class OracleDBConnector(DBConnector):
         return False
 
     def hasCustomQuerySupport(self):
-        """From Qgis v2.2 Oracle custom queries are supported."""
+        """From QGIS v2.2 onwards Oracle custom queries are supported."""
         return Qgis.QGIS_VERSION_INT >= 20200
 
     def hasTableColumnEditingSupport(self):

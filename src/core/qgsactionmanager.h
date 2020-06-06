@@ -2,7 +2,7 @@
                           qgsactionmanager.h
 
  These classes store and control the management and execution of actions
- associated with a particular Qgis layer. Actions are defined to be
+ associated with a particular QGIS layer. Actions are defined to be
  external programs that are run with user-specified inputs that can
  depend on the contents of layer attributes.
 
