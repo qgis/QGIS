@@ -16,6 +16,7 @@ SET(QGIS_3D_SRCS
   qgsoffscreen3dengine.cpp
   qgsphongmaterialsettings.cpp
   qgspointlightsettings.cpp
+  qgsdirectionallightsettings.cpp
   qgsraycastingutils_p.cpp
   qgsrulebased3drenderer.cpp
   qgsrulebasedchunkloader_p.cpp
@@ -87,6 +88,7 @@ SET(QGIS_3D_HDRS
   qgsoffscreen3dengine.h
   qgsphongmaterialsettings.h
   qgspointlightsettings.h
+  qgsdirectionallightsettings.h
   qgsrulebased3drenderer.h
   qgstessellatedpolygongeometry.h
   qgstilingscheme.h
