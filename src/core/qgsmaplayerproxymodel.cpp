@@ -43,6 +43,42 @@ QgsMapLayerProxyModel *QgsMapLayerProxyModel::setFilters( Filters filters )
   return this;
 }
 
+bool QgsMapLayerProxyModel::layerMatchesFilters( const QgsMapLayer *layer, const Filters &filters )
+{
+  // layer type
+  if ( ( filters.testFlag( RasterLayer ) && layer->type() == QgsMapLayerType::RasterLayer ) ||
+       ( filters.testFlag( VectorLayer ) && layer->type() == QgsMapLayerType::VectorLayer ) ||
+       ( filters.testFlag( MeshLayer ) && layer->type() == QgsMapLayerType::MeshLayer ) ||
+       ( filters.testFlag( VectorTileLayer ) && layer->type() == QgsMapLayerType::VectorTileLayer ) ||
+       ( filters.testFlag( PluginLayer ) && layer->type() == QgsMapLayerType::PluginLayer ) )
+    return true;
+
+  // geometry type
+  bool detectGeometry = filters.testFlag( NoGeometry ) ||
+                        filters.testFlag( PointLayer ) ||
+                        filters.testFlag( LineLayer ) ||
+                        filters.testFlag( PolygonLayer ) ||
+                        filters.testFlag( HasGeometry );
+  if ( detectGeometry && layer->type() == QgsMapLayerType::VectorLayer )
+  {
+    if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( layer ) )
+    {
+      if ( filters.testFlag( HasGeometry ) && vl->isSpatial() )
+        return true;
+      if ( filters.testFlag( NoGeometry ) && vl->geometryType() == QgsWkbTypes::NullGeometry )
+        return true;
+      if ( filters.testFlag( PointLayer ) && vl->geometryType() == QgsWkbTypes::PointGeometry )
+        return true;
+      if ( filters.testFlag( LineLayer ) && vl->geometryType() == QgsWkbTypes::LineGeometry )
+        return true;
+      if ( filters.testFlag( PolygonLayer ) && vl->geometryType() == QgsWkbTypes::PolygonGeometry )
+        return true;
+    }
+  }
+
+  return false;
+}
+
 void QgsMapLayerProxyModel::setLayerWhitelist( const QList<QgsMapLayer *> &layers )
 {
   if ( mLayerWhitelist == layers )
@@ -112,38 +148,7 @@ bool QgsMapLayerProxyModel::acceptsLayer( QgsMapLayer *layer ) const
   if ( !layer->name().contains( mFilterString, Qt::CaseInsensitive ) )
     return false;
 
-  // layer type
-  if ( ( mFilters.testFlag( RasterLayer ) && layer->type() == QgsMapLayerType::RasterLayer ) ||
-       ( mFilters.testFlag( VectorLayer ) && layer->type() == QgsMapLayerType::VectorLayer ) ||
-       ( mFilters.testFlag( MeshLayer ) && layer->type() == QgsMapLayerType::MeshLayer ) ||
-       ( mFilters.testFlag( VectorTileLayer ) && layer->type() == QgsMapLayerType::VectorTileLayer ) ||
-       ( mFilters.testFlag( PluginLayer ) && layer->type() == QgsMapLayerType::PluginLayer ) )
-    return true;
-
-  // geometry type
-  bool detectGeometry = mFilters.testFlag( NoGeometry ) ||
-                        mFilters.testFlag( PointLayer ) ||
-                        mFilters.testFlag( LineLayer ) ||
-                        mFilters.testFlag( PolygonLayer ) ||
-                        mFilters.testFlag( HasGeometry );
-  if ( detectGeometry && layer->type() == QgsMapLayerType::VectorLayer )
-  {
-    if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( layer ) )
-    {
-      if ( mFilters.testFlag( HasGeometry ) && vl->isSpatial() )
-        return true;
-      if ( mFilters.testFlag( NoGeometry ) && vl->geometryType() == QgsWkbTypes::NullGeometry )
-        return true;
-      if ( mFilters.testFlag( PointLayer ) && vl->geometryType() == QgsWkbTypes::PointGeometry )
-        return true;
-      if ( mFilters.testFlag( LineLayer ) && vl->geometryType() == QgsWkbTypes::LineGeometry )
-        return true;
-      if ( mFilters.testFlag( PolygonLayer ) && vl->geometryType() == QgsWkbTypes::PolygonGeometry )
-        return true;
-    }
-  }
-
-  return false;
+  return layerMatchesFilters( layer, mFilters );
 }
 
 void QgsMapLayerProxyModel::setFilterString( const QString &filter )
