@@ -40,7 +40,7 @@ int QgisEvent = QEvent::User + 1;
 
 /**
  * \ingroup core
- * The Qgis class provides global constants for use throughout the application.
+ * The QGIS class provides global constants for use throughout the application.
  */
 class CORE_EXPORT Qgis
 {

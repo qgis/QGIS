@@ -971,7 +971,7 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
   connect( mToolMovePoint, &QgsGeorefToolMovePoint::pointReleased,
            this, &QgsGeoreferencerMainWindow::releasePoint );
 
-  // Point in Qgis Map
+  // Point in QGIS Map
   mToolMovePointQgis = new QgsGeorefToolMovePoint( QgisApp::instance()->mapCanvas() );
   mToolMovePointQgis->setAction( mActionMoveGCPPoint );
   connect( mToolMovePointQgis, &QgsGeorefToolMovePoint::pointPressed,

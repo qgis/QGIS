@@ -188,7 +188,7 @@ class QgsGeoreferencerMainWindow;
 
 /**
  * \class QgisApp
- * \brief Main window for the Qgis application
+ * \brief Main window for the QGIS application
  */
 class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 {

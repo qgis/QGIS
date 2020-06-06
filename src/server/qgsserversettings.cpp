@@ -332,7 +332,7 @@ void QgsServerSettings::logSummary() const
   const QMetaEnum metaEnumSrc( QMetaEnum::fromType<QgsServerSettingsEnv::Source>() );
   const QMetaEnum metaEnumEnv( QMetaEnum::fromType<QgsServerSettingsEnv::EnvVar>() );
 
-  QgsMessageLog::logMessage( "Qgis Server Settings: ", "Server", Qgis::Info );
+  QgsMessageLog::logMessage( "QGIS Server Settings: ", "Server", Qgis::Info );
   for ( Setting s : mSettings )
   {
     const QString src = metaEnumSrc.valueToKey( s.src );

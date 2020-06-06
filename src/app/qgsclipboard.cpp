@@ -51,12 +51,12 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
   if ( !src )
     return;
 
-  // Replace the QGis clipboard.
+  // Replace the QGIS clipboard.
   mFeatureFields = src->fields();
   mFeatureClipboard = src->selectedFeatures();
   mCRS = src->crs();
   mSrcLayer = src;
-  QgsDebugMsg( QStringLiteral( "replaced QGis clipboard." ) );
+  QgsDebugMsg( QStringLiteral( "replaced QGIS clipboard." ) );
 
   setSystemClipboard();
   mUseSystemClipboard = false;
