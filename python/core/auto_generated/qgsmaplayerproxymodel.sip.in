@@ -69,6 +69,13 @@ Returns the filter flags which affect how layers are filtered within the model.
 .. versionadded:: 2.3
 %End
 
+    static bool layerMatchesFilters( const QgsMapLayer *layer, const Filters &filters );
+%Docstring
+Returns if the ``layer`` matches the given ``filters``
+
+.. versionadded:: 3.14
+%End
+
     void setLayerWhitelist( const QList<QgsMapLayer *> &layers );
 %Docstring
 Sets a whitelist of ``layers`` to include within the model. Only layers

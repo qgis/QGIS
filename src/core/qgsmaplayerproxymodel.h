@@ -87,6 +87,12 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
     const Filters &filters() const { return mFilters; }
 
     /**
+     * Returns if the \a layer matches the given \a filters
+     * \since QGIS 3.14
+     */
+    static bool layerMatchesFilters( const QgsMapLayer *layer, const Filters &filters );
+
+    /**
      * Sets a whitelist of \a layers to include within the model. Only layers
      * from this list will be shown.
      *

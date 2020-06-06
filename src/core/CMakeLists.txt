@@ -96,6 +96,7 @@ SET(QGIS_CORE_SRCS
   layertree/qgslayertreemodellegendnode.cpp
   layertree/qgslayertreenode.cpp
   layertree/qgslayertreeregistrybridge.cpp
+  layertree/qgslayertreefilterproxymodel.cpp
   layertree/qgslayertreeutils.cpp
   layertree/qgslayertree.cpp
   layertree/qgslegendpatchshape.cpp
@@ -1152,6 +1153,7 @@ SET(QGIS_CORE_HDRS
   layertree/qgslayertreemodellegendnode.h
   layertree/qgslayertreenode.h
   layertree/qgslayertreeregistrybridge.h
+  layertree/qgslayertreefilterproxymodel.h
   layertree/qgslayertreeutils.h
   layertree/qgslegendpatchshape.h
 
