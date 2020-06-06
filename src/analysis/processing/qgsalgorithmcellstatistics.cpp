@@ -111,6 +111,10 @@ void QgsCellStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "REF_LAYER" ), QObject::tr( "Reference layer" ) ) );
 
+  std::unique_ptr< QgsProcessingParameterNumber > output_nodata_parameter = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "OUTPUT_NODATA_VALUE" ), QObject::tr( "Output NoData value" ), QgsProcessingParameterNumber::Double, -9999, true);
+  output_nodata_parameter->setFlags( output_nodata_parameter->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( output_nodata_parameter.release() );
+
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ),
                 QObject::tr( "Output layer" ) ) );
 
@@ -128,7 +132,7 @@ bool QgsCellStatisticsAlgorithm::prepareAlgorithm( const QVariantMap &parameters
     throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "REF_LAYER" ) ) );
 
   mIgnoreNoData = parameterAsBool( parameters, QStringLiteral( "IGNORE_NODATA" ), context);
-
+  mNoDataValue = parameterAsDouble( parameters, QStringLiteral( "OUTPUT_NODATA_VALUE" ), context);
   mCrs = referenceLayer->crs();
   mRasterUnitsPerPixelX = referenceLayer->rasterUnitsPerPixelX();
   mRasterUnitsPerPixelY = referenceLayer->rasterUnitsPerPixelY();
