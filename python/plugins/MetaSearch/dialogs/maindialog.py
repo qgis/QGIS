@@ -51,6 +51,7 @@ with warnings.catch_warnings():
 
 from owslib.fes import BBox, PropertyIsLike
 from owslib.ows import ExceptionReport
+from owslib.util import Authentication
 
 from MetaSearch import link_types
 from MetaSearch.dialogs.manageconnectionsdialog import ManageConnectionsDialog
@@ -96,6 +97,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.startfrom = 0
         self.maxrecords = 10
         self.timeout = 10
+        self.disable_ssl_verification = False
         self.constraints = []
 
         # Servers tab
@@ -826,11 +828,17 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         identifier = get_item_data(item, 'identifier')
 
+        self.disable_ssl_verification = self.disableSSLVerification.isChecked()
+
         try:
             with OverrideCursor(Qt.WaitCursor):
+                auth = None
+                if self.disable_ssl_verification:
+                    auth = Authentication(verify=False)
                 cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout,  # spellok
                                           username=self.catalog_username,
-                                          password=self.catalog_password)
+                                          password=self.catalog_password,
+                                          auth=auth)
                 cat.getrecordbyid(
                     [self.catalog.records[identifier].identifier])
         except ExceptionReport as err:
@@ -905,13 +913,19 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
     def _get_csw(self):
         """convenience function to init owslib.csw.CatalogueServiceWeb"""  # spellok
 
+        self.disable_ssl_verification = self.disableSSLVerification.isChecked()
+
         # connect to the server
         with OverrideCursor(Qt.WaitCursor):
+            auth = None
+            if self.disable_ssl_verification:
+                auth = Authentication(verify=False)
             try:
                 self.catalog = CatalogueServiceWeb(self.catalog_url,  # spellok
                                                    timeout=self.timeout,
                                                    username=self.catalog_username,
-                                                   password=self.catalog_password)
+                                                   password=self.catalog_password,
+                                                   auth=auth)
                 return True
             except ExceptionReport as err:
                 msg = self.tr('Error connecting to service: {0}').format(err)
