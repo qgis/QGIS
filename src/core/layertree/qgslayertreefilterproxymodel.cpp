@@ -22,11 +22,16 @@
 QgsLayerTreeFilterProxyModel::QgsLayerTreeFilterProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
 {
-  connect( QgsProject::instance(), &QgsProject::readProject, this, [ = ] {resetLayerTreeModel();} );
+  connect( QgsProject::instance(), &QgsProject::readProject, this, [ = ]
+  {
+    beginResetModel();
+    endResetModel();
+  } );
 }
 
 void QgsLayerTreeFilterProxyModel::setCheckedLayers( const QList<QgsMapLayer *> layers )
 {
+  // do not use invalidate() since it's not the filter which changes but the data
   beginResetModel();
   mCheckedLayers = layers;
   endResetModel();
@@ -101,17 +106,10 @@ void QgsLayerTreeFilterProxyModel::setLayerTreeModel( QgsLayerTreeModel *layerTr
   QSortFilterProxyModel::setSourceModel( layerTreeModel );
 }
 
-void QgsLayerTreeFilterProxyModel::resetLayerTreeModel()
-{
-  beginResetModel();
-  endResetModel();
-}
-
 void QgsLayerTreeFilterProxyModel::setFilters( const QgsMapLayerProxyModel::Filters &filters )
 {
-  beginResetModel();
   mFilters = filters;
-  endResetModel();
+  invalidateFilter();
 }
 
 bool QgsLayerTreeFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
@@ -280,9 +278,9 @@ bool QgsLayerTreeFilterProxyModel::setData( const QModelIndex &index, const QVar
           return false;
         }
         if ( value.toInt() == Qt::Checked )
-          setLayerChecked( layer, true );
+          setLayerCheckedPrivate( layer, true );
         else if ( value.toInt() == Qt::Unchecked )
-          setLayerChecked( layer, false );
+          setLayerCheckedPrivate( layer, false );
         else
           Q_ASSERT( false ); // expected checked or unchecked
       }

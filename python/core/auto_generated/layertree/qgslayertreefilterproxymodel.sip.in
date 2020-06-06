@@ -60,11 +60,6 @@ Rerturns the layer tree model
 Sets the layer tree model
 %End
 
-    void resetLayerTreeModel();
-%Docstring
-This will refresh the model
-%End
-
     void setFilters( const QgsMapLayerProxyModel::Filters &filters );
 %Docstring
 Defines the type layers (vector, raster, etc) shown in the tree

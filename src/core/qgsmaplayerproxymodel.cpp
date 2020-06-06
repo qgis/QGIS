@@ -45,6 +45,9 @@ QgsMapLayerProxyModel *QgsMapLayerProxyModel::setFilters( Filters filters )
 
 bool QgsMapLayerProxyModel::layerMatchesFilters( const QgsMapLayer *layer, const Filters &filters )
 {
+  if ( filters.testFlag( All ) )
+    return true;
+
   // layer type
   if ( ( filters.testFlag( RasterLayer ) && layer->type() == QgsMapLayerType::RasterLayer ) ||
        ( filters.testFlag( VectorLayer ) && layer->type() == QgsMapLayerType::VectorLayer ) ||
@@ -61,7 +64,7 @@ bool QgsMapLayerProxyModel::layerMatchesFilters( const QgsMapLayer *layer, const
                         filters.testFlag( HasGeometry );
   if ( detectGeometry && layer->type() == QgsMapLayerType::VectorLayer )
   {
-    if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( layer ) )
+    if ( const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer ) )
     {
       if ( filters.testFlag( HasGeometry ) && vl->isSpatial() )
         return true;

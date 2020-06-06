@@ -61,9 +61,6 @@ class CORE_EXPORT QgsLayerTreeFilterProxyModel : public QSortFilterProxyModel
     //! Sets the layer tree model
     void setLayerTreeModel( QgsLayerTreeModel *layerTreeModel );
 
-    //! This will refresh the model
-    void resetLayerTreeModel();
-
     /**
      * Defines the type layers (vector, raster, etc) shown in the tree
      * If the list is empty, all types are shown.
