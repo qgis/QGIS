@@ -237,6 +237,8 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
     std::vector< std::unique_ptr< QgsRasterBlock > > inputBlocks;
     for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : mInputs )
     {
+      if(feedback->isCanceled())
+        break; //in case some slow data sources are loaded
       for ( int band : i.bands )
       {
         std::unique_ptr< QgsRasterBlock > b( i.interface->block( band, blockExtent, iterCols, iterRows ) );
