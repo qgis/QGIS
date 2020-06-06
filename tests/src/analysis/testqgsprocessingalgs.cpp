@@ -1922,107 +1922,174 @@ void TestQgsProcessingAlgs::cellStatistics_data()
   QTest::addColumn<QStringList>( "inputRasters" );
   QTest::addColumn<QString>( "referenceLayer" );
   QTest::addColumn<int>( "statistic" );
+  QTest::addColumn<bool>( "ignoreNoData" );
   QTest::addColumn<QString>( "expectedRaster" );
+  QTest::addColumn<Qgis::DataType>( "expectedDataType" );
 
   /*
    * Testcase 1: sum
    */
   QTest::newRow( "testcase_1" )
-      << QStringList( {"/raster/statisticsRas1.asc", "/raster/statisticsRas2.asc", "/raster/statisticsRas3.asc"} )
-      << QStringLiteral( "/raster/statisticsRas1.asc" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
       << 0
-      << QStringLiteral( "/cellstatistics_sum_result.tif" );
+      << false
+      << QStringLiteral( "/cellstatistics_sum_result.tif" )
+      << Qgis::Float64;
 
   /*
-   * Testcase 2: mean
+   * Testcase 2: count
    */
   QTest::newRow( "testcase_2" )
-      << QStringList( {"/raster/statisticsRas1.asc", "/raster/statisticsRas2.asc", "/raster/statisticsRas3.asc"} )
-      << QStringLiteral( "/raster/statisticsRas1.asc" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
       << 1
-      << QStringLiteral( "/cellstatistics_mean_result.tif" );
+      << false
+      << QStringLiteral( "/cellstatistics_count_result.tif" )
+      << Qgis::Int32;
 
   /*
-   * Testcase 3: median
+   * Testcase 3: mean
    */
   QTest::newRow( "testcase_3" )
-      << QStringList( {"/raster/statisticsRas1.asc", "/raster/statisticsRas2.asc", "/raster/statisticsRas3.asc"} )
-      << QStringLiteral( "/raster/statisticsRas1.asc" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
       << 2
-      << QStringLiteral( "/cellstatistics_median_result.tif" );
+      << false
+      << QStringLiteral( "/cellstatistics_mean_result.tif" )
+      << Qgis::Float64;
 
   /*
-   * Testcase 4: Standard deviation
+   * Testcase 4: median
    */
   QTest::newRow( "testcase_4" )
-      << QStringList( {"/raster/statisticsRas1.asc", "/raster/statisticsRas2.asc", "/raster/statisticsRas3.asc"} )
-      << QStringLiteral( "/raster/statisticsRas1.asc" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
       << 3
-      << QStringLiteral( "/cellstatistics_stddev_result.tif" );
+      << false
+      << QStringLiteral( "/cellstatistics_median_result.tif" )
+      << Qgis::Float64;
 
   /*
-   * Testcase 5: Variance
+   * Testcase 5: Standard deviation
    */
   QTest::newRow( "testcase_5" )
-      << QStringList( {"/raster/statisticsRas1.asc", "/raster/statisticsRas2.asc", "/raster/statisticsRas3.asc"} )
-      << QStringLiteral( "/raster/statisticsRas1.asc" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
       << 4
-      << QStringLiteral( "/cellstatistics_variance_result.tif" );
+      << false
+      << QStringLiteral( "/cellstatistics_stddev_result.tif" )
+      << Qgis::Float64;
 
   /*
-   * Testcase 6: Minimum
+   * Testcase 6: Variance
    */
   QTest::newRow( "testcase_6" )
-      << QStringList( {"/raster/statisticsRas1.asc", "/raster/statisticsRas2.asc", "/raster/statisticsRas3.asc"} )
-      << QStringLiteral( "/raster/statisticsRas1.asc" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
       << 5
-      << QStringLiteral( "/cellstatistics_min_result.tif" );
+      << false
+      << QStringLiteral( "/cellstatistics_variance_result.tif" )
+      << Qgis::Float64;
 
   /*
-   * Testcase 7: Maximum
+   * Testcase 7: Minimum
    */
   QTest::newRow( "testcase_7" )
-      << QStringList( {"/raster/statisticsRas1.asc", "/raster/statisticsRas2.asc", "/raster/statisticsRas3.asc"} )
-      << QStringLiteral( "/raster/statisticsRas1.asc" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
       << 6
-      << QStringLiteral( "/cellstatistics_max_result.tif" );
+      << false
+      << QStringLiteral( "/cellstatistics_min_result.tif" )
+      << Qgis::Float64;
 
   /*
-   * Testcase 8: Minority
+   * Testcase 8: Maximum
    */
   QTest::newRow( "testcase_8" )
-      << QStringList( {"/raster/statisticsRas1.asc", "/raster/statisticsRas2.asc", "/raster/statisticsRas3.asc"} )
-      << QStringLiteral( "/raster/statisticsRas1.asc" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
       << 7
-      << QStringLiteral( "/cellstatistics_minority_result.tif" );
+      << false
+      << QStringLiteral( "/cellstatistics_max_result.tif" )
+      << Qgis::Float64;
 
   /*
-   * Testcase 9: Majority
+   * Testcase 9: Minority
    */
   QTest::newRow( "testcase_9" )
-      << QStringList( {"/raster/statisticsRas1.asc", "/raster/statisticsRas2.asc", "/raster/statisticsRas3.asc"} )
-      << QStringLiteral( "/raster/statisticsRas1.asc" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
       << 8
-      << QStringLiteral( "/cellstatistics_majority_result.tif" );
+      << false
+      << QStringLiteral( "/cellstatistics_minority_result.tif" )
+      << Qgis::Float64;
 
   /*
-   * Testcase 10: Range
+   * Testcase 10: Majority
    */
   QTest::newRow( "testcase_10" )
-      << QStringList( {"/raster/statisticsRas1.asc", "/raster/statisticsRas2.asc", "/raster/statisticsRas3.asc"} )
-      << QStringLiteral( "/raster/statisticsRas1.asc" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
       << 9
-      << QStringLiteral( "/cellstatistics_range_result.tif" );
+      << false
+      << QStringLiteral( "/cellstatistics_majority_result.tif" )
+      << Qgis::Float64;
 
   /*
-   * Testcase 11: Variety
+   * Testcase 11: Range
    */
   QTest::newRow( "testcase_11" )
-      << QStringList( {"/raster/statisticsRas1.asc", "/raster/statisticsRas2.asc", "/raster/statisticsRas3.asc"} )
-      << QStringLiteral( "/raster/statisticsRas1.asc" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
       << 10
-      << QStringLiteral( "/cellstatistics_variety_result.tif" );
+      << false
+      << QStringLiteral( "/cellstatistics_range_result.tif" )
+      << Qgis::Float64;
 
+  /*
+   * Testcase 12: Variety
+   */
+  QTest::newRow( "testcase_12" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 11
+      << false
+      << QStringLiteral( "/cellstatistics_variety_result.tif" )
+      << Qgis::Int32;
+
+  /*
+   * Testcase 13: Sum (integer)
+   */
+  QTest::newRow( "testcase_13" )
+      << QStringList( {"/raster/statisticsRas1_int32.tif", "/raster/statisticsRas2_int32.tif", "/raster/statisticsRas3_int32.tif"} )
+      << QStringLiteral( "/raster/statisticsRas1_int32.tif" )
+      << 0
+      << false
+      << QStringLiteral( "/cellstatistics_sum_result_int32.tif" )
+      << Qgis::Int32;
+
+  /*
+   * Testcase 14: sum (ignore nodata)
+   */
+  QTest::newRow( "testcase_14" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 0
+      << true
+      << QStringLiteral( "/cellstatistics_sum_ignore_nodata_result.tif" )
+      << Qgis::Float64;
+
+  /*
+   * Testcase 15: mean
+   */
+  QTest::newRow( "testcase_15" )
+      << QStringList( {"/raster/statisticsRas1_float64.asc", "/raster/statisticsRas2_float64.asc", "/raster/statisticsRas3_float64.asc"} )
+      << QStringLiteral( "/raster/statisticsRas1_float64.asc" )
+      << 2
+      << true
+      << QStringLiteral( "/cellstatistics_mean_ignore_nodata_result.tif" )
+      << Qgis::Float64;
 }
 
 void TestQgsProcessingAlgs::cellStatistics()
@@ -2030,7 +2097,9 @@ void TestQgsProcessingAlgs::cellStatistics()
   QFETCH( QStringList, inputRasters );
   QFETCH( QString, referenceLayer );
   QFETCH( int, statistic );
+  QFETCH( bool, ignoreNoData );
   QFETCH( QString, expectedRaster );
+  QFETCH( Qgis::DataType, expectedDataType );
 
 
   //prepare input params
@@ -2059,6 +2128,7 @@ void TestQgsProcessingAlgs::cellStatistics()
 
   parameters.insert( QStringLiteral( "INPUTS" ), inputDatasetPaths );
   parameters.insert( QStringLiteral( "STATISTIC" ), statistic );
+  parameters.insert( QStringLiteral( "IGNORE_NODATA" ), ignoreNoData );
   parameters.insert( QStringLiteral( "REF_LAYER" ), myDataPath + referenceLayer );
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
@@ -2081,6 +2151,7 @@ void TestQgsProcessingAlgs::cellStatistics()
   std::unique_ptr<QgsRasterLayer> outputRaster = qgis::make_unique< QgsRasterLayer >( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
   std::unique_ptr< QgsRasterInterface > outputInterface( outputRaster->dataProvider()->clone() );
 
+  QCOMPARE( outputInterface->dataType(1), expectedDataType );
   QCOMPARE( outputRaster->width(), expectedRasterLayer->width() );
   QCOMPARE( outputRaster->height(), expectedRasterLayer->height() );
 
