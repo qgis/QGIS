@@ -93,18 +93,18 @@ void QgsCellStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
                 QObject::tr( "Input layers" ), QgsProcessing::TypeRaster ) );
 
   QStringList statistics = QStringList();
-  statistics << QStringLiteral( "Sum" )
-             << QStringLiteral( "Count" )
-             << QStringLiteral( "Mean" )
-             << QStringLiteral( "Median" )
-             << QStringLiteral( "Standard deviation" )
-             << QStringLiteral( "Variance" )
-             << QStringLiteral( "Minimum" )
-             << QStringLiteral( "Maximum" )
-             << QStringLiteral( "Minority" )
-             << QStringLiteral( "Majority" )
-             << QStringLiteral( "Range" )
-             << QStringLiteral( "Variety" );
+  statistics << QObject::tr( "Sum" )
+             << QObject::tr( "Count" )
+             << QObject::tr( "Mean" )
+             << QObject::tr( "Median" )
+             << QObject::tr( "Standard deviation" )
+             << QObject::tr( "Variance" )
+             << QObject::tr( "Minimum" )
+             << QObject::tr( "Maximum" )
+             << QObject::tr( "Minority" )
+             << QObject::tr( "Majority" )
+             << QObject::tr( "Range" )
+             << QObject::tr( "Variety" );
 
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "STATISTIC" ), QObject::tr( "Statistic" ),  statistics, false, 0, false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "IGNORE_NODATA" ), QObject::tr( "Ignore NoData values" ), true) );
@@ -170,7 +170,7 @@ bool QgsCellStatisticsAlgorithm::prepareAlgorithm( const QVariantMap &parameters
 QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   //obtain statistic method
-  int statisticMethodIdx = parameterAsInt( parameters, QStringLiteral( "STATISTIC" ), context );
+  QgsRasterAnalysisUtils::CellValueStatisticMethods method = static_cast<QgsRasterAnalysisUtils::CellValueStatisticMethods>( parameterAsEnum( parameters, QStringLiteral( "STATISTIC" ), context ) );
 
   //determine output raster data type
   //initially raster data type to most primitive data type that is possible
@@ -186,12 +186,12 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
   }
 
   //force data types on specific functions if input data types don't match
-  if( statisticMethodIdx == 2 || statisticMethodIdx == 4 ) //mean, stddev
+  if( method == QgsRasterAnalysisUtils::Mean || method == QgsRasterAnalysisUtils::StandardDeviation )
   {
     if( static_cast<int>(mDataType) < 6 )
       mDataType = Qgis::Float32; //force float on mean and stddev if all inputs are integer
   }
-  else if ( statisticMethodIdx == 1 || statisticMethodIdx == 11 ) //count, variety
+  else if ( method == QgsRasterAnalysisUtils::Count || method == QgsRasterAnalysisUtils::Variety ) //count, variety
   {
     if( static_cast<int>(mDataType) > 5 ) //if is floating point type
       mDataType = Qgis::Int32; //force integer on variety if all inputs are float or complex
@@ -257,7 +257,7 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
         {
           //output cell will always be NoData if NoData occurs in cellValueStack and NoData is not ignored
           //this saves unnecessary iterations on the cellValueStack
-          if( statisticMethodIdx == 1)
+          if( method == QgsRasterAnalysisUtils::Count)
             outputBlock->setValue( row, col,  cellValueStackSize);
           else
           {
@@ -266,45 +266,43 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
         }
         else if ( !noDataInStack || (noDataInStack && mIgnoreNoData) )
         {
-          switch ( statisticMethodIdx )
+          switch ( method )
           {
-            case 0: //sum
+            case QgsRasterAnalysisUtils::Sum:
               result = std::accumulate( cellValues.begin(), cellValues.end(), 0.0 );
               break;
-            case 1: //count
+            case QgsRasterAnalysisUtils::Count:
               result = cellValueStackSize;
               break;
-            case 2: //mean
+            case QgsRasterAnalysisUtils::Mean:
               result = QgsRasterAnalysisUtils::meanFromCellValues( cellValues, cellValueStackSize );
               break;
-            case 3: //median
+            case QgsRasterAnalysisUtils::Median:
               result = QgsRasterAnalysisUtils::medianFromCellValues( cellValues, cellValueStackSize );
               break;
-            case 4: //stddev
+            case QgsRasterAnalysisUtils::StandardDeviation:
               result = QgsRasterAnalysisUtils::stddevFromCellValues( cellValues, cellValueStackSize );
               break;
-            case 5: //variance
+            case QgsRasterAnalysisUtils::Variance:
               result = QgsRasterAnalysisUtils::varianceFromCellValues( cellValues, cellValueStackSize );
               break;
-            case 6: //min
+            case QgsRasterAnalysisUtils::Minimum:
               result = QgsRasterAnalysisUtils::minimumFromCellValues( cellValues );
               break;
-            case 7: //max
+            case QgsRasterAnalysisUtils::Maximum:
               result = QgsRasterAnalysisUtils::maximumFromCellValues( cellValues );
               break;
-            case 8: //minority
+            case QgsRasterAnalysisUtils::Minority:
               result = QgsRasterAnalysisUtils::minorityFromCellValues( cellValues, mNoDataValue, cellValueStackSize );
               break;
-            case 9: //majority
+            case QgsRasterAnalysisUtils::Majority:
               result = QgsRasterAnalysisUtils::majorityFromCellValues( cellValues, mNoDataValue, cellValueStackSize );
               break;
-            case 10: //range
+            case QgsRasterAnalysisUtils::Range:
               result = QgsRasterAnalysisUtils::rangeFromCellValues( cellValues );
               break;
-            case 11: //variety
+            case QgsRasterAnalysisUtils::Variety:
               result = QgsRasterAnalysisUtils::varietyFromCellValues( cellValues );
-              break;
-            default:
               break;
           }
           outputBlock->setValue( row, col, result );
