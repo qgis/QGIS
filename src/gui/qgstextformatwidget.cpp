@@ -78,8 +78,14 @@ void QgsTextFormatWidget::initWidget()
   connect( mFontMinPixelSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsTextFormatWidget::mFontMinPixelSpinBox_valueChanged );
   connect( mFontMaxPixelSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsTextFormatWidget::mFontMaxPixelSpinBox_valueChanged );
   connect( mBufferUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsTextFormatWidget::mBufferUnitWidget_changed );
+<<<<<<< HEAD
   connect( mCoordXDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::mCoordXDDBtn_activated );
   connect( mCoordYDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::mCoordYDDBtn_activated );
+=======
+  connect( mMaskBufferUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsTextFormatWidget::mMaskBufferUnitWidget_changed );
+  connect( mCoordXDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::mCoordXDDBtn_changed );
+  connect( mCoordYDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::mCoordYDDBtn_changed );
+>>>>>>> 1f38fd5385... Merge pull request #37006 from elpaso/bugfix-gh37003-labeling-placement-dd-activated
   connect( mShapeTypeCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::mShapeTypeCmbBx_currentIndexChanged );
   connect( mShapeRotationCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::mShapeRotationCmbBx_currentIndexChanged );
   connect( mShapeSVGParamsBtn, &QPushButton::clicked, this, &QgsTextFormatWidget::mShapeSVGParamsBtn_clicked );
@@ -1422,9 +1428,18 @@ void QgsTextFormatWidget::mBufferUnitWidget_changed()
   updateFont( mRefFont );
 }
 
+<<<<<<< HEAD
 void QgsTextFormatWidget::mCoordXDDBtn_activated( bool active )
+=======
+void QgsTextFormatWidget::mMaskBufferUnitWidget_changed()
 {
-  if ( !active ) //no data defined alignment without data defined position
+  updateFont( mRefFont );
+}
+
+void QgsTextFormatWidget::mCoordXDDBtn_changed( )
+>>>>>>> 1f38fd5385... Merge pull request #37006 from elpaso/bugfix-gh37003-labeling-placement-dd-activated
+{
+  if ( !mCoordXDDBtn->isActive() ) //no data defined alignment without data defined position
   {
     enableDataDefinedAlignment( false );
   }
@@ -1434,9 +1449,9 @@ void QgsTextFormatWidget::mCoordXDDBtn_activated( bool active )
   }
 }
 
-void QgsTextFormatWidget::mCoordYDDBtn_activated( bool active )
+void QgsTextFormatWidget::mCoordYDDBtn_changed( )
 {
-  if ( !active ) //no data defined alignment without data defined position
+  if ( !mCoordYDDBtn->isActive() ) //no data defined alignment without data defined position
   {
     enableDataDefinedAlignment( false );
   }

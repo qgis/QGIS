@@ -275,8 +275,14 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void mFontMinPixelSpinBox_valueChanged( int px );
     void mFontMaxPixelSpinBox_valueChanged( int px );
     void mBufferUnitWidget_changed();
+<<<<<<< HEAD
     void mCoordXDDBtn_activated( bool active );
     void mCoordYDDBtn_activated( bool active );
+=======
+    void mMaskBufferUnitWidget_changed();
+    void mCoordXDDBtn_changed( );
+    void mCoordYDDBtn_changed( );
+>>>>>>> 1f38fd5385... Merge pull request #37006 from elpaso/bugfix-gh37003-labeling-placement-dd-activated
     void mShapeTypeCmbBx_currentIndexChanged( int index );
     void mShapeRotationCmbBx_currentIndexChanged( int index );
     void mShapeSVGParamsBtn_clicked();
