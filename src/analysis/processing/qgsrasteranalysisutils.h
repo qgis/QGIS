@@ -97,6 +97,25 @@ namespace QgsRasterAnalysisUtils
   std::vector<double> getCellValuesFromBlockStack( const std::vector< std::unique_ptr< QgsRasterBlock > > &inputBlocks, int &row, int &col, bool &noDataInStack );
 
   /**
+   * Enum of cell value statistic methods to be used with QgsProcessingParameterEnum
+   */
+  enum CellValueStatisticMethods
+  {
+    Sum,
+    Count,
+    Mean,
+    Median,
+    StandardDeviation,
+    Variance,
+    Minimum,
+    Maximum,
+    Minority,
+    Majority,
+    Range,
+    Variety
+  };
+
+  /**
    * Returns the arithmetic mean from a vector of cell values
    */
   double meanFromCellValues( std::vector<double> cellValues, int stackSize );
