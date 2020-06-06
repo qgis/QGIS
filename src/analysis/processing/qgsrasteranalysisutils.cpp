@@ -343,13 +343,8 @@ double QgsRasterAnalysisUtils::medianFromCellValues( std::vector<double> cellVal
 
 double QgsRasterAnalysisUtils::stddevFromCellValues( std::vector<double> cellValues, int stackSize )
 {
-  double mean = meanFromCellValues( cellValues, stackSize );
-  double accum = 0.0;
-  for ( int i = 0; i < stackSize; i++ )
-  {
-    accum += std::pow( ( cellValues.at( i ) - mean ), 2.0 );
-  }
-  double stddev = std::sqrt( accum / static_cast<double>( stackSize ) );
+  double variance = varianceFromCellValues( cellValues, stackSize );
+  double stddev = std::sqrt( variance );
   return stddev;
 }
 
