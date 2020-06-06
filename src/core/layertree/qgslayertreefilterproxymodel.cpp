@@ -107,10 +107,10 @@ void QgsLayerTreeFilterProxyModel::resetLayerTreeModel()
   endResetModel();
 }
 
-void QgsLayerTreeFilterProxyModel::setMapLayerTypeFilter( const QList<QgsMapLayerType> &types )
+void QgsLayerTreeFilterProxyModel::setFilters( const QgsMapLayerProxyModel::Filters &filters )
 {
   beginResetModel();
-  mLayerTypeFilter = types;
+  mFilters = filters;
   endResetModel();
 }
 
@@ -181,7 +181,7 @@ bool QgsLayerTreeFilterProxyModel::nodeShown( QgsLayerTreeNode *node ) const
       return false;
     if ( !mFilterText.isEmpty() && !layer->name().contains( mFilterText, Qt::CaseInsensitive ) )
       return false;
-    if ( !mLayerTypeFilter.isEmpty() && !mLayerTypeFilter.contains( layer->type() ) )
+    if ( !QgsMapLayerProxyModel::layerMatchesFilters( layer, mFilters ) )
       return false;
 
     return layerShown( layer );

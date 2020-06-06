@@ -21,6 +21,7 @@
 
 #include "qgis_core.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerproxymodel.h"
 
 class QgsLayerTreeModel;
 class QgsLayerTreeNode;
@@ -67,7 +68,7 @@ class CORE_EXPORT QgsLayerTreeFilterProxyModel : public QSortFilterProxyModel
      * Defines the type layers (vector, raster, etc) shown in the tree
      * If the list is empty, all types are shown.
      */
-    void setMapLayerTypeFilter( const QList<QgsMapLayerType> &types = QList<QgsMapLayerType>() );
+    void setFilters( const QgsMapLayerProxyModel::Filters &filters );
 
     virtual int columnCount( const QModelIndex &parent ) const override;
     virtual Qt::ItemFlags flags( const QModelIndex &idx ) const override;
@@ -106,7 +107,7 @@ class CORE_EXPORT QgsLayerTreeFilterProxyModel : public QSortFilterProxyModel
     QgsLayerTreeModel *mLayerTreeModel = nullptr;
     QList<QgsMapLayer *> mCheckedLayers;
     QString mFilterText;
-    QList<QgsMapLayerType> mLayerTypeFilter;
+    QgsMapLayerProxyModel::Filters mFilters = QgsMapLayerProxyModel::All;
 };
 
 #endif // QGSLAYERTREEFILTERPROXYMODEL_H
