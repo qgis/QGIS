@@ -1312,7 +1312,7 @@ and not from system `/usr/lib` or Homebrew's `/usr/local/` or system Frameworks 
 Especially check Proj, GDAL, sqlite3 and Python paths. If necessary these can be forced with:
 
     -DPROJ_INCLUDE_DIR=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/include  \
-    -DPROJ_LIBRARY=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}stage/lib/libproj.dylib \
+    -DPROJ_LIBRARY=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/lib/libproj.dylib \
     -DGDAL_INCLUDE_DIR=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/include  \
     -DGDAL_LIBRARY=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/lib/libgdal.dylib \
     -DSPATIALITE_INCLUDE_DIR=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/include  \
