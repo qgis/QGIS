@@ -342,7 +342,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * Sets list of directional lights defined in the scene
      * \since QGIS 3.16
      */
-    void setDirectionalLights( const QList<QgsDirectionalLightSettings> &pointLights );
+    void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights );
 
     /**
      * Returns the camera lens' field of view
