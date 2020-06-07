@@ -15865,7 +15865,7 @@ void QgisApp::onLayerError( const QString &msg )
 
   Q_ASSERT( layer );
 
-  mInfoBar->pushCritical( tr( "Layer %1" ).arg( layer->name() ), msg );
+  visibleMessageBar()->pushCritical( tr( "Layer %1" ).arg( layer->name() ), msg );
 }
 
 bool QgisApp::gestureEvent( QGestureEvent *event )

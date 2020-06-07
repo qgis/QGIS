@@ -142,6 +142,12 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     //! Emitted when the ok/add buttons should be enabled/disabled
     void enableButtons( bool enable );
 
+    /**
+     * Emitted when a \a message with \a title and \a level must be shown to the user using the parent visible message bar
+     * \since QGIS 3.14
+     */
+    void pushMessage( const QString &title, const QString &message, const Qgis::MessageLevel level = Qgis::MessageLevel::Info );
+
 
   protected:
 

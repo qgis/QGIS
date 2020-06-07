@@ -332,41 +332,49 @@ void QgsOgrDbSourceSelect::btnConnect_clicked()
   QgsOgrDbConnection conn( subKey, ogrDriverName() );
 
   mPath = conn.path();
-  const QList<QgsOgrDbLayerInfo *> layers = QgsOgrLayerItem::subLayers( mPath, ogrDriverName() );
 
-  QModelIndex rootItemIndex = mTableModel.indexFromItem( mTableModel.invisibleRootItem() );
-  mTableModel.removeRows( 0, mTableModel.rowCount( rootItemIndex ), rootItemIndex );
-
-  // populate the table list
-  // get the list of suitable tables and columns and populate the UI
-
-  mTableModel.setPath( mPath );
-
-
-  for ( const QgsOgrDbLayerInfo *table : layers )
+  try
   {
-    if ( cbxAllowGeometrylessTables->isChecked() || table->geometryType() != QStringLiteral( "None" ) )
+    const QList<QgsOgrDbLayerInfo *> layers = QgsOgrLayerItem::subLayers( mPath, ogrDriverName() );
+
+    QModelIndex rootItemIndex = mTableModel.indexFromItem( mTableModel.invisibleRootItem() );
+    mTableModel.removeRows( 0, mTableModel.rowCount( rootItemIndex ), rootItemIndex );
+
+    // populate the table list
+    // get the list of suitable tables and columns and populate the UI
+
+    mTableModel.setPath( mPath );
+
+
+    for ( const QgsOgrDbLayerInfo *table : layers )
     {
-      mTableModel.addTableEntry( table->layerType(), table->name(), table->uri(), table->geometryColumn(), table->geometryType(), QString() );
+      if ( cbxAllowGeometrylessTables->isChecked() || table->geometryType() != QStringLiteral( "None" ) )
+      {
+        mTableModel.addTableEntry( table->layerType(), table->name(), table->uri(), table->geometryColumn(), table->geometryType(), QString() );
+      }
     }
+
+    mTablesTreeView->sortByColumn( 0, Qt::AscendingOrder );
+
+    //expand all the toplevel items
+    int numTopLevelItems = mTableModel.invisibleRootItem()->rowCount();
+    for ( int i = 0; i < numTopLevelItems; ++i )
+    {
+      mTablesTreeView->expand( mProxyModel.mapFromSource( mTableModel.indexFromItem( mTableModel.invisibleRootItem()->child( i ) ) ) );
+    }
+    mTablesTreeView->resizeColumnToContents( 0 );
+    mTablesTreeView->resizeColumnToContents( 1 );
+
+    cbxAllowGeometrylessTables->setEnabled( true );
+
+    // Store selected connection
+    QgsOgrDbConnection::setSelectedConnection( subKey, ogrDriverName() );
+    qDeleteAll( layers );
   }
-
-  mTablesTreeView->sortByColumn( 0, Qt::AscendingOrder );
-
-  //expand all the toplevel items
-  int numTopLevelItems = mTableModel.invisibleRootItem()->rowCount();
-  for ( int i = 0; i < numTopLevelItems; ++i )
+  catch ( QgsOgrLayerNotValidException &ex )
   {
-    mTablesTreeView->expand( mProxyModel.mapFromSource( mTableModel.indexFromItem( mTableModel.invisibleRootItem()->child( i ) ) ) );
+    pushMessage( tr( "Error opening layer" ), ex.what(), Qgis::MessageLevel::Critical );
   }
-  mTablesTreeView->resizeColumnToContents( 0 );
-  mTablesTreeView->resizeColumnToContents( 1 );
-
-  cbxAllowGeometrylessTables->setEnabled( true );
-
-  // Store selected connection
-  QgsOgrDbConnection::setSelectedConnection( subKey, ogrDriverName() );
-  qDeleteAll( layers );
 }
 
 
