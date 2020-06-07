@@ -158,7 +158,7 @@ void QgsLightsWidget::onAddLight()
 
 void QgsLightsWidget::onAddDirectionalLight()
 {
-  if ( mDirectionalLights.count() >= 4 )
+  if ( mDirectionalLights.count() > 4 )
   {
     QMessageBox::warning( this, tr( "Add Directional Light" ), tr( "It is not possible to add more than 4 directional lights to the scene." ) );
     return;
